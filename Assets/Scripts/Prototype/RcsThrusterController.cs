@@ -31,7 +31,8 @@ public class RcsThrusterController : MonoBehaviour
     private readonly System.Text.StringBuilder activeNozzleBuilder = new System.Text.StringBuilder(160);
     private int cachedNozzleCount = -1;
     private const float ManualCommandDeadZone = 0.05f;
-    private const float SasAngularVelocityDeadZone = 0.01f;
+    private const float SasAngularVelocityDeadZone = 0.0025f;
+    private const float SasAngularVelocitySettleThreshold = 0.0025f;
     private const float SasCommandDeadZone = 0.0001f;
     private const float SasResponseMultiplier = 48f;
     private const float MinSasBrakingCommand = 0.06f;
@@ -186,6 +187,11 @@ public class RcsThrusterController : MonoBehaviour
         LastTranslationCommand = Vector3.ClampMagnitude(translationCommand, 1f);
         Vector3 manualAttitude = Vector3.ClampMagnitude(attitudeCommand, 1f);
         LastSasCommand = stabilizeAngular && shipRigidbody != null ? ComputeSasCommand(deltaTime) : Vector3.zero;
+        if (stabilizeAngular && shipRigidbody != null)
+        {
+            SettleTinySasAngularVelocity(manualAttitude);
+        }
+
         LastAttitudeCommand = Vector3.ClampMagnitude(manualAttitude + LastSasCommand, 1f);
         ClearRuntimeForces();
 
@@ -223,6 +229,30 @@ public class RcsThrusterController : MonoBehaviour
     private static float ApplySasAngularVelocityDeadZone(float angularVelocity)
     {
         return Mathf.Abs(angularVelocity) <= SasAngularVelocityDeadZone ? 0f : angularVelocity;
+    }
+
+    private void SettleTinySasAngularVelocity(Vector3 manualAttitude)
+    {
+        Vector3 localAngularVelocity = transform.InverseTransformDirection(shipRigidbody.angularVelocity);
+        bool settledX = TrySettleAxis(ref localAngularVelocity.x, manualAttitude.x);
+        bool settledY = TrySettleAxis(ref localAngularVelocity.y, manualAttitude.y);
+        bool settledZ = TrySettleAxis(ref localAngularVelocity.z, manualAttitude.z);
+
+        if (settledX || settledY || settledZ)
+        {
+            shipRigidbody.angularVelocity = transform.TransformDirection(localAngularVelocity);
+        }
+    }
+
+    private static bool TrySettleAxis(ref float localAngularVelocity, float manualCommand)
+    {
+        if (Mathf.Abs(manualCommand) > ManualCommandDeadZone || Mathf.Abs(localAngularVelocity) > SasAngularVelocitySettleThreshold)
+        {
+            return false;
+        }
+
+        localAngularVelocity = 0f;
+        return true;
     }
 
     private static float ApplyMinimumSasCommand(float command)
