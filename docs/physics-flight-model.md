@@ -30,6 +30,8 @@ RCS force comes from installed nozzle transforms named `RCS_Nozzle_*`. The solve
 - `nozzle.transform.position`
 - `nozzle.transform.forward` as the force direction
 
+The visual exhaust convention is the opposite of the force convention: nozzle forward is the force direction, while each nozzle's visible exhaust plume points opposite `nozzle.transform.forward`.
+
 For every active nozzle:
 
 ```csharp

@@ -203,8 +203,8 @@ public class PrototypeBootstrap : MonoBehaviour
             vfx = vfxObject.transform;
         }
 
-        vfx.localPosition = Vector3.forward * 0.18f;
-        vfx.localRotation = Quaternion.identity;
+        vfx.localPosition = Vector3.back * 0.18f;
+        vfx.localRotation = Quaternion.Euler(0f, 180f, 0f);
         vfx.localScale = new Vector3(0.08f, 0.08f, 0.34f);
         RemoveCollider(vfx.gameObject);
         ApplyMaterialColor(vfx.gameObject, RcsVfxColor, true);
