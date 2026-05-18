@@ -30,6 +30,11 @@ public class RcsThrusterController : MonoBehaviour
     private readonly System.Collections.Generic.List<RcsNozzle> nozzles = new System.Collections.Generic.List<RcsNozzle>();
     private readonly System.Text.StringBuilder activeNozzleBuilder = new System.Text.StringBuilder(160);
     private int cachedNozzleCount = -1;
+    private const float ManualCommandDeadZone = 0.05f;
+    private const float SasAngularVelocityDeadZone = 0.01f;
+    private const float SasCommandDeadZone = 0.0001f;
+    private const float SasResponseMultiplier = 48f;
+    private const float MinSasBrakingCommand = 0.06f;
 
     public bool RcsEnabled { get; private set; } = true;
     public bool HasRcs => InstalledNozzleCount > 0;
@@ -191,7 +196,7 @@ public class RcsThrusterController : MonoBehaviour
         }
 
         ApplyTranslationForces();
-        ApplyAttitudeForces();
+        ApplyAttitudeForces(manualAttitude);
         ApplyNozzleVfx();
     }
 
@@ -203,8 +208,26 @@ public class RcsThrusterController : MonoBehaviour
         }
 
         Vector3 localAngularVelocity = transform.InverseTransformDirection(shipRigidbody.angularVelocity);
-        float scale = Mathf.Max(0f, sasAuthority) * Mathf.Max(deltaTime, 0.02f) * 12f;
-        return Vector3.ClampMagnitude(-localAngularVelocity * scale, 1f);
+        localAngularVelocity.x = ApplySasAngularVelocityDeadZone(localAngularVelocity.x);
+        localAngularVelocity.y = ApplySasAngularVelocityDeadZone(localAngularVelocity.y);
+        localAngularVelocity.z = ApplySasAngularVelocityDeadZone(localAngularVelocity.z);
+
+        float scale = Mathf.Max(0f, sasAuthority) * Mathf.Max(deltaTime, 0.02f) * SasResponseMultiplier;
+        Vector3 command = -localAngularVelocity * scale;
+        command.x = ApplyMinimumSasCommand(command.x);
+        command.y = ApplyMinimumSasCommand(command.y);
+        command.z = ApplyMinimumSasCommand(command.z);
+        return Vector3.ClampMagnitude(command, 1f);
+    }
+
+    private static float ApplySasAngularVelocityDeadZone(float angularVelocity)
+    {
+        return Mathf.Abs(angularVelocity) <= SasAngularVelocityDeadZone ? 0f : angularVelocity;
+    }
+
+    private static float ApplyMinimumSasCommand(float command)
+    {
+        return Mathf.Abs(command) <= 0f ? 0f : Mathf.Sign(command) * Mathf.Max(Mathf.Abs(command), MinSasBrakingCommand);
     }
 
     private void ClearRuntimeForces()
@@ -242,16 +265,26 @@ public class RcsThrusterController : MonoBehaviour
         ApplyNozzleSet(desiredForceDirection, magnitude, translation, Vector3.zero);
     }
 
-    private void ApplyAttitudeForces()
+    private void ApplyAttitudeForces(Vector3 manualAttitude)
     {
-        ApplyTorqueDemand(transform.right, LastAttitudeCommand.x, attitudeForce, false);
-        ApplyTorqueDemand(transform.up, LastAttitudeCommand.y, attitudeForce, true);
-        ApplyTorqueDemand(transform.forward, LastAttitudeCommand.z, attitudeForce, false);
+        ApplyTorqueDemand(transform.right, SelectAttitudeCommand(manualAttitude.x, LastSasCommand.x, LastAttitudeCommand.x), attitudeForce, false, SelectAttitudeDeadZone(manualAttitude.x));
+        ApplyTorqueDemand(transform.up, SelectAttitudeCommand(manualAttitude.y, LastSasCommand.y, LastAttitudeCommand.y), attitudeForce, true, SelectAttitudeDeadZone(manualAttitude.y));
+        ApplyTorqueDemand(transform.forward, SelectAttitudeCommand(manualAttitude.z, LastSasCommand.z, LastAttitudeCommand.z), attitudeForce, false, SelectAttitudeDeadZone(manualAttitude.z));
     }
 
-    private void ApplyTorqueDemand(Vector3 positiveAxis, float command, float forceScale, bool recordYaw)
+    private static float SelectAttitudeCommand(float manualCommand, float sasCommand, float combinedCommand)
     {
-        if (Mathf.Abs(command) <= 0.05f || shipRigidbody == null)
+        return Mathf.Abs(manualCommand) > ManualCommandDeadZone ? combinedCommand : sasCommand;
+    }
+
+    private static float SelectAttitudeDeadZone(float manualCommand)
+    {
+        return Mathf.Abs(manualCommand) > ManualCommandDeadZone ? ManualCommandDeadZone : SasCommandDeadZone;
+    }
+
+    private void ApplyTorqueDemand(Vector3 positiveAxis, float command, float forceScale, bool recordYaw, float commandDeadZone)
+    {
+        if (Mathf.Abs(command) <= commandDeadZone || shipRigidbody == null)
         {
             return;
         }

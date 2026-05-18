@@ -41,6 +41,6 @@ Translation commands select nozzles whose actual force direction points with the
 
 ## SAS And Inertia
 
-SAS is an RCS angular counter-command. When effective SAS is on, the controller converts angular velocity into a counter attitude command and lets the same nozzle solver pick usable RCS jets. When SAS is off, there is no direct angular damping from the controller.
+SAS is an RCS angular counter-command. When effective SAS is on, the controller converts angular velocity into a counter attitude command and lets the same nozzle solver pick usable RCS jets. Manual attitude input keeps its coarse command dead zone, but SAS uses a small local angular-velocity dead zone near zero and a minimum active braking command outside that dead zone, so residual pitch, yaw, and roll are not dropped just because their counter-command is below the manual input threshold. When SAS is off, there is no direct angular damping from the controller.
 
 The ship rigidbody uses zero linear and angular damping in this prototype. Releasing controls does not bleed off linear velocity, and rotation persists in vacuum unless SAS/RCS torque counters it.
