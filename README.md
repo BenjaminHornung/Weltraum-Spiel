@@ -16,7 +16,7 @@ This Unity prototype is a generated-primitives-only playable slice for testing z
 | `A` / `D` | Yaw left / right |
 | `Q` / `E` | Roll left / right |
 | `Left Shift` / `Left Control` | Increase / decrease persistent main-thruster throttle |
-| `X` / `Y` | Cut throttle / full throttle |
+| `X` / `Y/Z` | Cut throttle / full throttle |
 | `Space` | Fire the current main gun |
 | `R` | Toggle RCS on/off |
 | `H` / `N` | RCS translate forward / backward |
@@ -31,6 +31,8 @@ This Unity prototype is a generated-primitives-only playable slice for testing z
 | `M` | Reserved; no action in this prototype |
 
 Mouse movement is reserved for the camera. Hold right mouse button to orbit/look around the ship; mouse input does not feed ship attitude.
+
+German keyboard note: full throttle accepts both `Y` and `Z` so the control works reliably when those keys are swapped by the active layout.
 
 ## Controller Status
 

@@ -226,7 +226,7 @@ public class PlayerShipController : MonoBehaviour
             throttleUp |= keyboard.leftShiftKey.isPressed;
             throttleDown |= keyboard.leftCtrlKey.isPressed || keyboard.rightCtrlKey.isPressed;
             cutThrottle |= keyboard.xKey.wasPressedThisFrame;
-            fullThrottle |= keyboard.yKey.wasPressedThisFrame;
+            fullThrottle |= keyboard.yKey.wasPressedThisFrame || keyboard.zKey.wasPressedThisFrame;
             fire |= keyboard.spaceKey.isPressed;
             debugRefuel |= keyboard.backspaceKey.wasPressedThisFrame;
             toggleRcs |= keyboard.rKey.wasPressedThisFrame;
