@@ -1,56 +1,87 @@
-﻿# Tasks: thruster-rcs-flight-controls
+# Tasks: thruster-rcs-flight-controls
+
+## Prior Work
+- [x] Supersede previous S-turnaround control path
+- [x] Diagnose offset-nozzle circular-flight root cause
+- [x] Confirm Unity force-at-position behavior for torque risk
+- [x] Implement initial KSP-like keymap and COM-safe straight main thrust
+- [x] Fix first review findings for missing-axis RCS, SAS gating, and camera reset docs
+- [x] Supersede final verification because new physical RCS/gimbal feedback changed scope
 
 ## Spec Revision
-- [x] Stop superseded S-turnaround verification path
-- [x] Revise proposal.md for W/S throttle and KSP-like turning
-- [x] Revise design.md for throttle, gimbal, RCS pivot, and force-at-position model
-- [x] Revise behavioral spec.md
+- [x] Update proposal.md for directional RCS, larger ship, gimbal visuals, mouse camera, SAS inertia, and physics documentation
+- [x] Update design.md with transform-driven RCS and main-gimbal physics model
+- [x] Update behavioral spec.md with new RCS/nozzle/mouse/SAS acceptance criteria
+- [x] Update tasks.md for the physical RCS/gimbal revision
 - [x] Validate revised spec change
 
-## Discovery
-- [x] Review current post-implementation movement scripts
-- [x] Confirm Unity force-at-position and center-of-mass API guidance
-- [x] Record revised implementation execution
+## Physics Documentation
+- [x] Add docs/physics-flight-model.md
+- [x] Document COM-safe main thrust formula
+- [x] Document gimbal force/torque model
+- [x] Document RCS translation nozzle selection
+- [x] Document RCS attitude torque selection using cross product
+- [x] Document SAS counter-thrust/inertia behavior
+- [x] Link physics document from README
 
-## Runtime Bugfix
-- [ ] Reproduce/diagnose W-only circular-flight acceleration bug
-- [ ] Add straight-main-thrust acceptance requirement to spec
-- [ ] Record bugfix execution
-- [ ] Fix main-thrust force application so W-only acceleration is straight and stable
-- [ ] Verify W-only thrust has near-zero unintended angular velocity
-- [ ] Verify forward acceleration stays positive while W/throttle is active
+## Generated Ship and Visuals
+- [x] Make the generated ship larger and elongated
+- [x] Adjust camera defaults for the larger generated ship
+- [x] Represent main thruster as a visible cube-like gimbal module
+- [x] Create four side-centered RCS block modules
+- [x] Give each RCS block five non-attached nozzle directions
+- [x] Add distinct RCS nozzle VFX color separate from main thruster VFX
+- [x] Ensure only active RCS nozzles emit VFX
 
-## Implementation
-- [ ] Replace binary main thrust command with persistent 0-100% throttle state
-- [ ] Map W to throttle increase and S to throttle decrease
-- [ ] Remove S turnaround/retrograde-assist behavior
-- [ ] Update MainThrusterModule to apply throttle-scaled force at thruster position or compensated centerline as required for straight thrust
-- [ ] Update MainThrusterModule to expose/currently report gimbal command and limit
-- [ ] Update A/D to request left/right turn input, not direct reverse/assist behavior
-- [ ] Update RcsThrusterController to compute installed-RCS pivot/control center at ship creation
-- [ ] Update RcsThrusterController to apply RCS turning force at thruster positions where practical
-- [ ] Combine RCS turning with main-thruster gimbal turning when throttle is above 0
-- [ ] Ensure gimbal turning strength scales with throttle percentage
-- [ ] Keep behavior safe if RCS thrusters are missing
-- [ ] Update PrototypeBootstrap to wire required thruster positions/references
-- [ ] Update PrototypeDebugOverlay with throttle percent, pivot, RCS availability, gimbal command, turn input, and straight-thrust telemetry
-- [ ] Preserve existing bootstrap, camera, fuel, speed, gun, and projectile behavior
+## Main Thruster and Gimbal
+- [x] Set default main gimbal range to 20 degrees
+- [x] Rotate main thruster visual with gimbal command
+- [x] Make main-thruster physics direction follow gimbal command
+- [x] Preserve COM-safe straight no-gimbal thrust
+- [x] Preserve throttle/fuel scaling and projectile/gun behavior
 
-## Documentation
-- [ ] Update README controls for W/S throttle percentage
-- [ ] Document A/D RCS plus gimballed-main-thruster turning
-- [ ] Document KSP-inspired approximation and current limitations
+## RCS Physics
+- [x] Refactor RCS nozzle data to use installed transforms and force directions
+- [x] Implement transform-driven RCS translation selection
+- [x] Implement transform-driven RCS attitude torque selection
+- [x] Ensure A/D yaw at 0% main throttle rotates via RCS torque around COM
+- [x] Ensure missing/moved RCS nozzles change solver output without hardcoded coordinate edits
+- [x] Expose active RCS nozzle count or identifiers for debug overlay
+
+## Mouse, Camera, and Controls
+- [x] Remove mouse input from ship attitude control
+- [x] Add mouse look/orbit behavior to SimpleFollowCamera
+- [x] Keep Backquote camera reset and avoid plain digit3/# mismatch
+- [x] Preserve keyboard attitude controls W/S/A/D/Q/E
+- [x] Preserve throttle controls Left Shift/Left Control/X/Y
+- [x] Preserve RCS controls R and H/N/I/K/J/L
+- [x] Preserve Space fire and M reserved behavior
+
+## SAS and Vacuum Inertia
+- [x] Ensure SAS enabled counters angular velocity after attitude input stops
+- [x] Prefer RCS/nozzle torque model for SAS counter behavior where practical
+- [x] Ensure SAS disabled allows angular velocity to persist in vacuum
+- [x] Ensure releasing controls does not reduce linear velocity by itself
+- [x] Preserve T toggle and hold-F SAS inversion
+
+## Telemetry and README
+- [x] Update PrototypeDebugOverlay with COM, active nozzles, gimbal visual state, SAS, angular velocity, and translation/attitude input
+- [x] Update README with new ship/RCS/gimbal/mouse/SAS behavior
+- [x] Document current prototype limitations and no-hardcoded-position rule
 
 ## Verification
-- [ ] Unity MCP refresh/compile has no script errors
-- [ ] Unity MCP play-mode check confirms bootstrap still creates ship/modules/camera/light/overlay
-- [ ] Verify W increases throttle percentage
-- [ ] Verify S decreases throttle percentage and does not activate reverse/assist
-- [ ] Verify main thrust scales at 50% vs 100% throttle
-- [ ] Verify W-only main thrust accelerates forward without circular flight
-- [ ] Verify W-only main thrust does not flip forward acceleration positive/negative
-- [ ] Verify A/D turn input fires RCS authority at 0% throttle when RCS exists
-- [ ] Verify A/D produces gimbal command and stronger gimbal effect at higher throttle
-- [ ] Verify computed RCS pivot/control center is exposed in debug overlay
-- [ ] Verify gun/projectile still fires
-- [ ] Re-run specs_validate
+- [x] Unity MCP compile has no script errors
+- [x] Unity MCP play-mode check confirms bootstrap creates larger ship/modules/camera/light/overlay
+- [x] Verify mouse does not change ship attitude input
+- [x] Verify mouse camera look/orbit works and Backquote resets camera
+- [x] Verify throttle-only main thrust remains straight and stable
+- [x] Verify main thruster visual gimbals and physics follows it
+- [x] Verify four RCS blocks and five-way nozzles exist on generated ship
+- [x] Verify A/D yaw at 0% main throttle uses RCS torque around COM
+- [x] Verify moved/removed RCS nozzle changes solver output and missing nozzles produce no force
+- [x] Verify RCS VFX only emits from active nozzles
+- [x] Verify SAS enabled reduces angular velocity after input release
+- [x] Verify SAS disabled preserves angular velocity after input release
+- [x] Verify releasing controls does not reduce linear velocity by itself
+- [x] Verify gun/projectile still fires
+- [x] Re-run specs_validate

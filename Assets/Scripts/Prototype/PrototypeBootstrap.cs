@@ -7,6 +7,9 @@ public class PrototypeBootstrap : MonoBehaviour
     [SerializeField] private Vector3 shipStartPosition = new Vector3(0f, 0.5f, 0f);
 
     private const string PrototypeRootName = "PrototypeShip";
+    private static readonly Color HullColor = new Color(0.68f, 0.72f, 0.78f);
+    private static readonly Color RcsBlockColor = new Color(0.22f, 0.85f, 0.95f);
+    private static readonly Color RcsVfxColor = new Color(0.35f, 1f, 0.65f, 0.85f);
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void RuntimeBootstrap()
@@ -16,7 +19,7 @@ public class PrototypeBootstrap : MonoBehaviour
             return;
         }
 
-        if (Object.FindObjectOfType<PrototypeBootstrap>() == null)
+        if (Object.FindAnyObjectByType<PrototypeBootstrap>() == null)
         {
             var bootstrap = new GameObject("PrototypeBootstrap");
             bootstrap.AddComponent<PrototypeBootstrap>();
@@ -32,7 +35,7 @@ public class PrototypeBootstrap : MonoBehaviour
         }
     }
 
-public void BuildPrototype()
+    public void BuildPrototype()
     {
         var ship = GameObject.Find(PrototypeRootName);
         if (ship == null)
@@ -46,8 +49,9 @@ public void BuildPrototype()
 
         shipRigidbody.useGravity = false;
         shipRigidbody.mass = stats.CurrentMass;
-        shipRigidbody.linearDamping = 0.05f;
-        shipRigidbody.angularDamping = 3.5f;
+        shipRigidbody.linearDamping = 0f;
+        shipRigidbody.angularDamping = 0f;
+        shipRigidbody.interpolation = RigidbodyInterpolation.Interpolate;
 
         EnsureModuleParts(ship.transform);
         var mainNozzle = EnsureMainThrusterNozzle(ship.transform);
@@ -62,10 +66,12 @@ public void BuildPrototype()
 
         mainThruster.Configure(mainNozzle, shipRigidbody, stats);
         rcs.ConfigureThrusters(
-            ship.transform.Find("RCS_Up"),
-            ship.transform.Find("RCS_Down"),
+            ship.transform.Find("RCS_Top"),
+            ship.transform.Find("RCS_Bottom"),
             ship.transform.Find("RCS_Left"),
             ship.transform.Find("RCS_Right"),
+            null,
+            null,
             shipRigidbody);
 
         if (gun == null || engine == null)
@@ -101,97 +107,141 @@ public void BuildPrototype()
             return;
         }
 
-        if (Application.isPlaying)
-        {
-            Destroy(child.gameObject);
-        }
-        else
-        {
-            DestroyImmediate(child.gameObject);
-        }
+        DestroyGameObject(child.gameObject);
     }
 
     private static GameObject EnsureModuleParts(Transform ship)
     {
-        BuildModulePart(ship, "Hull", PrimitiveType.Capsule, new Vector3(0f, 0f, 0f), Quaternion.Euler(0f, 90f, 0f), new Vector3(1.8f, 0.8f, 3.0f), new Color(0.75f, 0.78f, 0.85f));
-        BuildModulePart(ship, "Cockpit", PrimitiveType.Sphere, new Vector3(0f, 0.9f, 0.4f), Quaternion.identity, new Vector3(0.7f, 0.45f, 0.7f), new Color(0.82f, 0.2f, 0.2f));
-        BuildModulePart(ship, "FuelTank", PrimitiveType.Cylinder, new Vector3(0f, -0.65f, 0.4f), Quaternion.identity, new Vector3(0.7f, 0.5f, 0.7f), new Color(0.2f, 0.7f, 0.2f));
-        BuildModulePart(ship, "Engine", PrimitiveType.Cylinder, new Vector3(0f, -0.35f, -1.65f), Quaternion.Euler(0f, 90f, 0f), new Vector3(0.6f, 0.2f, 0.9f), new Color(0.16f, 0.44f, 0.9f));
+        BuildModulePart(ship, "Hull", PrimitiveType.Cube, Vector3.zero, Quaternion.identity, new Vector3(1.8f, 1.1f, 6.0f), HullColor);
+        BuildModulePart(ship, "Cockpit", PrimitiveType.Cube, new Vector3(0f, 0.45f, 2.05f), Quaternion.identity, new Vector3(1.0f, 0.45f, 1.0f), new Color(0.82f, 0.2f, 0.2f));
+        BuildModulePart(ship, "FuelTank", PrimitiveType.Cube, new Vector3(0f, -0.45f, 0.1f), Quaternion.identity, new Vector3(1.2f, 0.35f, 2.1f), new Color(0.2f, 0.7f, 0.2f));
 
-        var gun = BuildModulePart(ship, "Gun", PrimitiveType.Cube, new Vector3(0f, 0.15f, 1.55f), Quaternion.identity, new Vector3(0.35f, 0.25f, 0.45f), new Color(0.9f, 0.9f, 0.3f));
+        var gun = BuildModulePart(ship, "Gun", PrimitiveType.Cube, new Vector3(0f, 0.1f, 3.25f), Quaternion.identity, new Vector3(0.32f, 0.22f, 0.65f), new Color(0.9f, 0.9f, 0.3f));
         var muzzle = gun.transform.Find("Muzzle");
         if (muzzle == null)
         {
             var muzzleObj = new GameObject("Muzzle");
             muzzleObj.transform.SetParent(gun.transform, false);
-            muzzleObj.transform.localPosition = new Vector3(0f, 0f, 0.3f);
+            muzzleObj.transform.localPosition = new Vector3(0f, 0f, 0.45f);
             muzzleObj.transform.localRotation = Quaternion.identity;
+        }
+        else
+        {
+            muzzle.localPosition = new Vector3(0f, 0f, 0.45f);
+            muzzle.localRotation = Quaternion.identity;
         }
 
         return ship.gameObject;
     }
 
-private static Transform EnsureMainThrusterNozzle(Transform ship)
+    private static Transform EnsureMainThrusterNozzle(Transform ship)
     {
-        var existing = ship.Find("MainThrusterNozzle");
-        if (existing != null)
+        DestroyChildIfExists(ship, "Engine");
+        var gimbal = BuildModulePart(ship, "MainThrusterGimbal", PrimitiveType.Cube, new Vector3(0f, 0f, -3.35f), Quaternion.identity, new Vector3(1.0f, 0.75f, 0.7f), new Color(0.16f, 0.44f, 0.9f));
+        var nozzle = gimbal.transform.Find("MainThrusterNozzle");
+        if (nozzle == null)
         {
-            existing.localPosition = new Vector3(0f, -0.35f, -2.15f);
-            existing.localRotation = Quaternion.identity;
-            return existing;
+            var nozzleObject = new GameObject("MainThrusterNozzle");
+            nozzleObject.transform.SetParent(gimbal.transform, false);
+            nozzle = nozzleObject.transform;
         }
 
-        var nozzle = new GameObject("MainThrusterNozzle");
-        nozzle.transform.SetParent(ship, false);
-        nozzle.transform.localPosition = new Vector3(0f, -0.35f, -2.15f);
-        nozzle.transform.localRotation = Quaternion.identity;
-        return nozzle.transform;
+        nozzle.localPosition = new Vector3(0f, 0f, -0.55f);
+        nozzle.localRotation = Quaternion.identity;
+        return nozzle;
     }
-
 
     private static void EnsureRcsThrusters(Transform ship)
     {
-        var up = BuildModulePart(ship, "RCS_Up", PrimitiveType.Cube, new Vector3(0f, -0.42f, 0.95f), Quaternion.identity, new Vector3(0.22f, 0.16f, 0.22f), new Color(0.25f, 0.9f, 1f));
-        var down = BuildModulePart(ship, "RCS_Down", PrimitiveType.Cube, new Vector3(0f, 0.78f, 0.95f), Quaternion.identity, new Vector3(0.22f, 0.16f, 0.22f), new Color(0.25f, 0.9f, 1f));
-        var left = BuildModulePart(ship, "RCS_Left", PrimitiveType.Cube, new Vector3(0.9f, 0f, 0.15f), Quaternion.identity, new Vector3(0.16f, 0.22f, 0.22f), new Color(0.25f, 0.9f, 1f));
-        var right = BuildModulePart(ship, "RCS_Right", PrimitiveType.Cube, new Vector3(-0.9f, 0f, 0.15f), Quaternion.identity, new Vector3(0.16f, 0.22f, 0.22f), new Color(0.25f, 0.9f, 1f));
+        DestroyChildIfExists(ship, "RCS_Up");
+        DestroyChildIfExists(ship, "RCS_Down");
+        DestroyChildIfExists(ship, "RCS_Forward");
+        DestroyChildIfExists(ship, "RCS_Back");
 
-        EnsureRcsVfx(up.transform, "RCS_Up_VFX", new Vector3(0f, -0.18f, 0f), new Vector3(0.08f, 0.35f, 0.08f));
-        EnsureRcsVfx(down.transform, "RCS_Down_VFX", new Vector3(0f, 0.18f, 0f), new Vector3(0.08f, 0.35f, 0.08f));
-        EnsureRcsVfx(left.transform, "RCS_Left_VFX", new Vector3(0.18f, 0f, 0f), new Vector3(0.35f, 0.08f, 0.08f));
-        EnsureRcsVfx(right.transform, "RCS_Right_VFX", new Vector3(-0.18f, 0f, 0f), new Vector3(0.35f, 0.08f, 0.08f));
+        BuildRcsBlock(ship, "RCS_Top", new Vector3(0f, 0.7f, 0f), new Vector3(0.55f, 0.22f, 0.55f), Vector3.down);
+        BuildRcsBlock(ship, "RCS_Bottom", new Vector3(0f, -0.7f, 0f), new Vector3(0.55f, 0.22f, 0.55f), Vector3.up);
+        BuildRcsBlock(ship, "RCS_Left", new Vector3(-1.02f, 0f, 0f), new Vector3(0.22f, 0.55f, 0.55f), Vector3.right);
+        BuildRcsBlock(ship, "RCS_Right", new Vector3(1.02f, 0f, 0f), new Vector3(0.22f, 0.55f, 0.55f), Vector3.left);
     }
 
-    private static void EnsureRcsVfx(Transform parent, string name, Vector3 localPos, Vector3 localScale)
+    private static void BuildRcsBlock(Transform ship, string blockName, Vector3 localPosition, Vector3 localScale, Vector3 blockedDirection)
     {
-        var existing = parent.Find(name);
-        if (existing != null)
+        var block = BuildModulePart(ship, blockName, PrimitiveType.Cube, localPosition, Quaternion.identity, localScale, RcsBlockColor);
+        Vector3[] directions = { Vector3.forward, Vector3.back, Vector3.left, Vector3.right, Vector3.up, Vector3.down };
+        for (int i = 0; i < directions.Length; i++)
         {
-            existing.gameObject.SetActive(false);
-            return;
+            Vector3 direction = directions[i];
+            if (Vector3.Dot(direction, blockedDirection) > 0.95f)
+            {
+                continue;
+            }
+
+            EnsureRcsNozzle(block.transform, blockName, DirectionName(direction), direction);
+        }
+    }
+
+    private static void EnsureRcsNozzle(Transform block, string blockName, string directionName, Vector3 localDirection)
+    {
+        string nozzleName = "RCS_Nozzle_" + blockName + "_" + directionName;
+        var nozzle = block.Find(nozzleName);
+        if (nozzle == null)
+        {
+            var nozzleObject = new GameObject(nozzleName);
+            nozzleObject.transform.SetParent(block, false);
+            nozzle = nozzleObject.transform;
         }
 
-        var vfx = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        vfx.name = name;
-        vfx.transform.SetParent(parent, false);
-        vfx.transform.localPosition = localPos;
-        vfx.transform.localRotation = Quaternion.identity;
-        vfx.transform.localScale = localScale;
-        ApplyMaterialColor(vfx, new Color(0.45f, 0.95f, 1f, 0.85f), true);
-        vfx.SetActive(false);
+        nozzle.localPosition = localDirection.normalized * 0.38f;
+        nozzle.localRotation = LookRotationLocal(localDirection.normalized);
+
+        var vfx = nozzle.Find("VFX");
+        if (vfx == null)
+        {
+            var vfxObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            vfxObject.name = "VFX";
+            vfxObject.transform.SetParent(nozzle, false);
+            vfx = vfxObject.transform;
+        }
+
+        vfx.localPosition = Vector3.forward * 0.18f;
+        vfx.localRotation = Quaternion.identity;
+        vfx.localScale = new Vector3(0.08f, 0.08f, 0.34f);
+        RemoveCollider(vfx.gameObject);
+        ApplyMaterialColor(vfx.gameObject, RcsVfxColor, true);
+        vfx.gameObject.SetActive(false);
+    }
+
+    private static Quaternion LookRotationLocal(Vector3 localDirection)
+    {
+        Vector3 up = Mathf.Abs(Vector3.Dot(localDirection, Vector3.up)) > 0.9f ? Vector3.forward : Vector3.up;
+        return Quaternion.LookRotation(localDirection, up);
+    }
+
+    private static string DirectionName(Vector3 direction)
+    {
+        if (direction == Vector3.forward) return "Forward";
+        if (direction == Vector3.back) return "Back";
+        if (direction == Vector3.left) return "Left";
+        if (direction == Vector3.right) return "Right";
+        if (direction == Vector3.up) return "Up";
+        return "Down";
     }
 
     private static GameObject BuildModulePart(Transform parent, string name, PrimitiveType type, Vector3 localPos, Quaternion localRot, Vector3 localScale, Color color)
     {
         var existing = parent.Find(name);
+        GameObject go;
         if (existing != null)
         {
-            return existing.gameObject;
+            go = existing.gameObject;
+        }
+        else
+        {
+            go = GameObject.CreatePrimitive(type);
+            go.name = name;
+            go.transform.SetParent(parent, false);
         }
 
-        var go = GameObject.CreatePrimitive(type);
-        go.name = name;
-        go.transform.SetParent(parent, false);
         go.transform.localPosition = localPos;
         go.transform.localRotation = localRot;
         go.transform.localScale = localScale;
@@ -223,24 +273,33 @@ private static Transform EnsureMainThrusterNozzle(Transform ship)
 
     private static void EnsureOrientationMarkers(Transform ship)
     {
-        if (ship.Find("OrientationMarkers") != null)
+        var markerRoot = ship.Find("OrientationMarkers");
+        if (markerRoot == null)
         {
-            return;
+            markerRoot = new GameObject("OrientationMarkers").transform;
+            markerRoot.SetParent(ship, false);
         }
 
-        var markerRoot = new GameObject("OrientationMarkers");
-        markerRoot.transform.SetParent(ship, false);
-
-        CreateMarker(markerRoot.transform, "Marker_Forward", Color.cyan, new Vector3(0f, 0f, 2f), new Vector3(0.06f, 0.06f, 1.2f));
-        CreateMarker(markerRoot.transform, "Marker_Right", Color.red, new Vector3(1.2f, 0f, 0f), new Vector3(1.2f, 0.06f, 0.06f));
-        CreateMarker(markerRoot.transform, "Marker_Up", Color.green, new Vector3(0f, 1.1f, 0f), new Vector3(0.06f, 1.1f, 0.06f));
+        CreateMarker(markerRoot, "Marker_Forward", Color.cyan, new Vector3(0f, 0f, 3.7f), new Vector3(0.08f, 0.08f, 1.2f));
+        CreateMarker(markerRoot, "Marker_Right", Color.red, new Vector3(1.5f, 0f, 0f), new Vector3(1.2f, 0.08f, 0.08f));
+        CreateMarker(markerRoot, "Marker_Up", Color.green, new Vector3(0f, 1.3f, 0f), new Vector3(0.08f, 1.1f, 0.08f));
     }
 
     private static void CreateMarker(Transform parent, string name, Color color, Vector3 localPos, Vector3 scale)
     {
-        var mark = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        mark.name = name;
-        mark.transform.SetParent(parent, false);
+        var existing = parent.Find(name);
+        GameObject mark;
+        if (existing == null)
+        {
+            mark = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            mark.name = name;
+            mark.transform.SetParent(parent, false);
+        }
+        else
+        {
+            mark = existing.gameObject;
+        }
+
         mark.transform.localPosition = localPos;
         mark.transform.localScale = scale;
         ApplyMaterialColor(mark, color, false);
@@ -270,8 +329,8 @@ private static Transform EnsureMainThrusterNozzle(Transform ship)
         }
 
         var camTransform = camera.transform;
-        camTransform.position = target.position - (target.forward * 12f) + (Vector3.up * 4f);
-        camTransform.LookAt(target.position + target.forward * 2f);
+        camTransform.position = target.position - (target.forward * 18f) + (Vector3.up * 6f);
+        camTransform.LookAt(target.position + target.forward * 1.5f);
 
         var follow = camera.gameObject.GetComponent<SimpleFollowCamera>();
         if (follow == null)
@@ -302,6 +361,56 @@ private static Transform EnsureMainThrusterNozzle(Transform ship)
         else if (sceneLight.GetComponent<Light>() == null)
         {
             sceneLight.AddComponent<Light>().type = LightType.Directional;
+        }
+    }
+
+    private static void DestroyChildIfExists(Transform parent, string childName)
+    {
+        var child = parent.Find(childName);
+        if (child != null)
+        {
+            DestroyGameObject(child.gameObject);
+        }
+    }
+
+    private static void DestroyGameObject(GameObject target)
+    {
+        if (target == null)
+        {
+            return;
+        }
+
+        if (Application.isPlaying)
+        {
+            Destroy(target);
+        }
+        else
+        {
+            DestroyImmediate(target);
+        }
+    }
+
+
+    private static void RemoveCollider(GameObject target)
+    {
+        if (target == null)
+        {
+            return;
+        }
+
+        var collider = target.GetComponent<Collider>();
+        if (collider == null)
+        {
+            return;
+        }
+
+        if (Application.isPlaying)
+        {
+            Destroy(collider);
+        }
+        else
+        {
+            DestroyImmediate(collider);
         }
     }
 }

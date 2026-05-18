@@ -3,12 +3,20 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class RcsThrusterController : MonoBehaviour
 {
+    [System.Serializable]
+    private class RcsNozzle
+    {
+        public string id;
+        public Transform transform;
+        public GameObject vfx;
+        public bool active;
+    }
+
     [Header("RCS Tuning")]
-    [SerializeField] private float translationForce = 12000f;
-    [SerializeField] private float pitchForce = 7000f;
-    [SerializeField] private float yawForce = 7000f;
-    [SerializeField] private float rollForce = 6500f;
-    [SerializeField] private float stabilizationRate = 2.5f;
+    [SerializeField] private float translationForce = 9000f;
+    [SerializeField] private float attitudeForce = 6500f;
+    [SerializeField] private float sasAuthority = 1.8f;
+    [SerializeField] private float minSelectionDot = 0.25f;
     [SerializeField] private Rigidbody shipRigidbody;
 
     [Header("Installed RCS Thrusters")]
@@ -16,18 +24,31 @@ public class RcsThrusterController : MonoBehaviour
     [SerializeField] private Transform downThruster;
     [SerializeField] private Transform leftThruster;
     [SerializeField] private Transform rightThruster;
+    [SerializeField] private Transform forwardThruster;
+    [SerializeField] private Transform backThruster;
 
-    [Header("Translation VFX")]
-    [SerializeField] private GameObject upVfx;
-    [SerializeField] private GameObject downVfx;
-    [SerializeField] private GameObject leftVfx;
-    [SerializeField] private GameObject rightVfx;
+    private readonly System.Collections.Generic.List<RcsNozzle> nozzles = new System.Collections.Generic.List<RcsNozzle>();
+    private readonly System.Text.StringBuilder activeNozzleBuilder = new System.Text.StringBuilder(160);
+    private int cachedNozzleCount = -1;
 
-    public bool HasRcs => upThruster != null || downThruster != null || leftThruster != null || rightThruster != null;
+    public bool RcsEnabled { get; private set; } = true;
+    public bool HasRcs => InstalledNozzleCount > 0;
+    public bool CanApplyRcs => RcsEnabled && HasRcs;
+    public int InstalledNozzleCount
+    {
+        get
+        {
+            RefreshNozzlesIfNeeded();
+            return nozzles.Count;
+        }
+    }
+    public int ActiveNozzleCount { get; private set; }
+    public string ActiveNozzleIds { get; private set; } = string.Empty;
     public Vector3 ControlPivotLocal { get; private set; }
-    public Vector3 ControlPivotWorld => transform.TransformPoint(ControlPivotLocal);
-    public Vector2 LastTranslationCommand { get; private set; }
+    public Vector3 ControlPivotWorld => shipRigidbody != null ? shipRigidbody.worldCenterOfMass : transform.TransformPoint(ControlPivotLocal);
+    public Vector3 LastTranslationCommand { get; private set; }
     public Vector3 LastAttitudeCommand { get; private set; }
+    public Vector3 LastSasCommand { get; private set; }
     public Vector3 LastTranslationForce { get; private set; }
     public Vector3 LastTorque { get; private set; }
     public Vector3 LastForceAtPositionTotal { get; private set; }
@@ -37,22 +58,37 @@ public class RcsThrusterController : MonoBehaviour
     private void Awake()
     {
         ResolveReferences();
-        ResolveThrusterReferences();
-        ResolveVfxReferences();
-        RecomputeControlPivot();
-        SetTranslationVfx(Vector2.zero);
+        ResolveLegacyBlockReferences();
+        RefreshNozzles();
+        ClearNozzleVfx();
     }
 
     public void ConfigureThrusters(Transform up, Transform down, Transform left, Transform right, Rigidbody body)
+    {
+        ConfigureThrusters(up, down, left, right, null, null, body);
+    }
+
+    public void ConfigureThrusters(Transform up, Transform down, Transform left, Transform right, Transform forward, Transform back, Rigidbody body)
     {
         upThruster = up != null ? up : upThruster;
         downThruster = down != null ? down : downThruster;
         leftThruster = left != null ? left : leftThruster;
         rightThruster = right != null ? right : rightThruster;
+        forwardThruster = forward != null ? forward : forwardThruster;
+        backThruster = back != null ? back : backThruster;
         shipRigidbody = body != null ? body : shipRigidbody;
         ResolveReferences();
-        ResolveVfxReferences();
-        RecomputeControlPivot();
+        RefreshNozzles();
+    }
+
+    public void SetRcsEnabled(bool enabled)
+    {
+        RcsEnabled = enabled;
+        if (!RcsEnabled)
+        {
+            ClearRuntimeForces();
+            ClearNozzleVfx();
+        }
     }
 
     private void ResolveReferences()
@@ -63,181 +99,287 @@ public class RcsThrusterController : MonoBehaviour
         }
     }
 
-    private void ResolveThrusterReferences()
+    private void ResolveLegacyBlockReferences()
     {
-        upThruster = upThruster != null ? upThruster : transform.Find("RCS_Up");
-        downThruster = downThruster != null ? downThruster : transform.Find("RCS_Down");
+        upThruster = upThruster != null ? upThruster : transform.Find("RCS_Top");
+        downThruster = downThruster != null ? downThruster : transform.Find("RCS_Bottom");
         leftThruster = leftThruster != null ? leftThruster : transform.Find("RCS_Left");
         rightThruster = rightThruster != null ? rightThruster : transform.Find("RCS_Right");
+        forwardThruster = forwardThruster != null ? forwardThruster : transform.Find("RCS_Forward");
+        backThruster = backThruster != null ? backThruster : transform.Find("RCS_Back");
     }
 
-    private void ResolveVfxReferences()
+    private void RefreshNozzlesIfNeeded()
     {
-        if (upVfx == null)
-        {
-            upVfx = FindChildGameObject("RCS_Up_VFX");
-        }
-
-        if (downVfx == null)
-        {
-            downVfx = FindChildGameObject("RCS_Down_VFX");
-        }
-
-        if (leftVfx == null)
-        {
-            leftVfx = FindChildGameObject("RCS_Left_VFX");
-        }
-
-        if (rightVfx == null)
-        {
-            rightVfx = FindChildGameObject("RCS_Right_VFX");
-        }
-    }
-
-    private GameObject FindChildGameObject(string childName)
-    {
+        int actualCount = 0;
         foreach (Transform child in transform.GetComponentsInChildren<Transform>(true))
         {
-            if (child != transform && child.name == childName)
+            if (child != transform && IsActiveNozzleTransform(child))
             {
-                return child.gameObject;
+                actualCount++;
             }
         }
 
-        return null;
+        if (actualCount != cachedNozzleCount || actualCount != nozzles.Count)
+        {
+            RefreshNozzles();
+        }
+    }
+
+    public void RefreshNozzles()
+    {
+        nozzles.Clear();
+        cachedNozzleCount = 0;
+        Vector3 localSum = Vector3.zero;
+
+        foreach (Transform child in transform.GetComponentsInChildren<Transform>(true))
+        {
+            if (child == transform || !IsActiveNozzleTransform(child))
+            {
+                continue;
+            }
+
+            var nozzle = new RcsNozzle
+            {
+                id = child.name,
+                transform = child,
+                vfx = FindNozzleVfx(child),
+                active = false
+            };
+            nozzles.Add(nozzle);
+            localSum += transform.InverseTransformPoint(child.position);
+            cachedNozzleCount++;
+        }
+
+        ControlPivotLocal = nozzles.Count > 0 ? localSum / nozzles.Count : Vector3.zero;
+    }
+
+    private static bool IsActiveNozzleTransform(Transform nozzle)
+    {
+        return nozzle != null
+            && nozzle.gameObject.activeInHierarchy
+            && nozzle.name.StartsWith("RCS_Nozzle_", System.StringComparison.Ordinal);
+    }
+
+    private static GameObject FindNozzleVfx(Transform nozzle)
+    {
+        var vfx = nozzle.Find("VFX");
+        return vfx != null ? vfx.gameObject : null;
     }
 
     public void RecomputeControlPivot()
     {
-        Vector3 sum = Vector3.zero;
-        int count = 0;
-        AccumulateLocalPosition(upThruster, ref sum, ref count);
-        AccumulateLocalPosition(downThruster, ref sum, ref count);
-        AccumulateLocalPosition(leftThruster, ref sum, ref count);
-        AccumulateLocalPosition(rightThruster, ref sum, ref count);
-        ControlPivotLocal = count > 0 ? sum / count : Vector3.zero;
+        RefreshNozzles();
     }
 
-    private void AccumulateLocalPosition(Transform thruster, ref Vector3 sum, ref int count)
+    public void ApplyControls(Vector3 translationCommand, Vector3 attitudeCommand, bool stabilizeAngular, float deltaTime)
     {
-        if (thruster == null)
+        ResolveReferences();
+        ResolveLegacyBlockReferences();
+        RefreshNozzlesIfNeeded();
+
+        LastTranslationCommand = Vector3.ClampMagnitude(translationCommand, 1f);
+        Vector3 manualAttitude = Vector3.ClampMagnitude(attitudeCommand, 1f);
+        LastSasCommand = stabilizeAngular && shipRigidbody != null ? ComputeSasCommand(deltaTime) : Vector3.zero;
+        LastAttitudeCommand = Vector3.ClampMagnitude(manualAttitude + LastSasCommand, 1f);
+        ClearRuntimeForces();
+
+        if (shipRigidbody == null || !CanApplyRcs)
         {
+            ClearNozzleVfx();
             return;
         }
 
-        sum += transform.InverseTransformPoint(thruster.position);
-        count++;
+        ApplyTranslationForces();
+        ApplyAttitudeForces();
+        ApplyNozzleVfx();
     }
 
-    public void ApplyControls(Vector2 translationCommand, Vector3 attitudeCommand, bool stabilizeAngular, float deltaTime)
+    private Vector3 ComputeSasCommand(float deltaTime)
     {
-        ResolveReferences();
-        ResolveThrusterReferences();
-        ResolveVfxReferences();
+        if (shipRigidbody == null)
+        {
+            return Vector3.zero;
+        }
 
-        LastTranslationCommand = Vector2.ClampMagnitude(translationCommand, 1f);
-        LastAttitudeCommand = Vector3.ClampMagnitude(attitudeCommand, 1f);
+        Vector3 localAngularVelocity = transform.InverseTransformDirection(shipRigidbody.angularVelocity);
+        float scale = Mathf.Max(0f, sasAuthority) * Mathf.Max(deltaTime, 0.02f) * 12f;
+        return Vector3.ClampMagnitude(-localAngularVelocity * scale, 1f);
+    }
+
+    private void ClearRuntimeForces()
+    {
         LastTranslationForce = Vector3.zero;
         LastTorque = Vector3.zero;
         LastForceAtPositionTotal = Vector3.zero;
         LastYawForceWorld = Vector3.zero;
         LastYawTorqueEstimate = Vector3.zero;
-
-        if (shipRigidbody == null)
+        ActiveNozzleCount = 0;
+        ActiveNozzleIds = string.Empty;
+        activeNozzleBuilder.Length = 0;
+        for (int i = 0; i < nozzles.Count; i++)
         {
-            SetTranslationVfx(LastTranslationCommand);
-            return;
+            nozzles[i].active = false;
         }
-
-        if (HasRcs)
-        {
-            ApplyTranslationForces();
-            ApplyAttitudeForces();
-        }
-
-        if (stabilizeAngular)
-        {
-            shipRigidbody.angularVelocity = Vector3.Lerp(shipRigidbody.angularVelocity, Vector3.zero, stabilizationRate * deltaTime);
-        }
-
-        SetTranslationVfx(LastTranslationCommand);
     }
 
     private void ApplyTranslationForces()
     {
-        if (LastTranslationCommand.x > 0.05f)
-        {
-            ApplyForceAtThruster(rightThruster, transform.right * (LastTranslationCommand.x * translationForce));
-        }
-        else if (LastTranslationCommand.x < -0.05f)
-        {
-            ApplyForceAtThruster(leftThruster, transform.right * (LastTranslationCommand.x * translationForce));
-        }
-
-        if (LastTranslationCommand.y > 0.05f)
-        {
-            ApplyForceAtThruster(upThruster, transform.up * (LastTranslationCommand.y * translationForce));
-        }
-        else if (LastTranslationCommand.y < -0.05f)
-        {
-            ApplyForceAtThruster(downThruster, transform.up * (LastTranslationCommand.y * translationForce));
-        }
+        ApplyLinearDemand(transform.right, LastTranslationCommand.x, translationForce, true);
+        ApplyLinearDemand(transform.up, LastTranslationCommand.y, translationForce, true);
+        ApplyLinearDemand(transform.forward, LastTranslationCommand.z, translationForce, true);
     }
 
-    private void ApplyAttitudeForces()
+    private void ApplyLinearDemand(Vector3 positiveDirection, float command, float forceScale, bool translation)
     {
-        float pitch = LastAttitudeCommand.x;
-        float yaw = LastAttitudeCommand.y;
-        float roll = LastAttitudeCommand.z;
-
-        if (Mathf.Abs(yaw) > 0.05f)
-        {
-            Vector3 leftForce = -transform.forward * (yaw * yawForce);
-            Vector3 rightForce = transform.forward * (yaw * yawForce);
-            ApplyForceAtThruster(leftThruster, leftForce, true);
-            ApplyForceAtThruster(rightThruster, rightForce, true);
-            LastYawForceWorld = leftForce + rightForce;
-        }
-
-        if (Mathf.Abs(pitch) > 0.05f)
-        {
-            ApplyForceAtThruster(downThruster, transform.forward * (pitch * pitchForce));
-            ApplyForceAtThruster(upThruster, -transform.forward * (pitch * pitchForce));
-        }
-
-        if (Mathf.Abs(roll) > 0.05f)
-        {
-            ApplyForceAtThruster(leftThruster, transform.up * (roll * rollForce));
-            ApplyForceAtThruster(rightThruster, -transform.up * (roll * rollForce));
-        }
-    }
-
-    private void ApplyForceAtThruster(Transform thruster, Vector3 forceWorld, bool recordYaw = false)
-    {
-        if (shipRigidbody == null || forceWorld.sqrMagnitude <= 0.0001f)
+        if (Mathf.Abs(command) <= 0.05f)
         {
             return;
         }
 
-        Vector3 position = thruster != null ? thruster.position : ControlPivotWorld;
+        Vector3 desiredForceDirection = (positiveDirection * Mathf.Sign(command)).normalized;
+        float magnitude = Mathf.Abs(command) * Mathf.Max(0f, forceScale);
+        ApplyNozzleSet(desiredForceDirection, magnitude, translation, Vector3.zero);
+    }
+
+    private void ApplyAttitudeForces()
+    {
+        ApplyTorqueDemand(transform.right, LastAttitudeCommand.x, attitudeForce, false);
+        ApplyTorqueDemand(transform.up, LastAttitudeCommand.y, attitudeForce, true);
+        ApplyTorqueDemand(transform.forward, LastAttitudeCommand.z, attitudeForce, false);
+    }
+
+    private void ApplyTorqueDemand(Vector3 positiveAxis, float command, float forceScale, bool recordYaw)
+    {
+        if (Mathf.Abs(command) <= 0.05f || shipRigidbody == null)
+        {
+            return;
+        }
+
+        Vector3 desiredTorqueAxis = (positiveAxis * Mathf.Sign(command)).normalized;
+        float magnitude = Mathf.Abs(command) * Mathf.Max(0f, forceScale);
+
+        for (int i = 0; i < nozzles.Count; i++)
+        {
+            RcsNozzle nozzle = nozzles[i];
+            if (!IsActiveNozzleTransform(nozzle.transform))
+            {
+                continue;
+            }
+
+            Vector3 forceDirection = GetNozzleForceDirection(nozzle.transform);
+            Vector3 torqueAxis = Vector3.Cross(nozzle.transform.position - shipRigidbody.worldCenterOfMass, forceDirection);
+            if (torqueAxis.sqrMagnitude <= 0.0001f)
+            {
+                continue;
+            }
+
+            float alignment = Vector3.Dot(torqueAxis.normalized, desiredTorqueAxis);
+            if (alignment <= Mathf.Clamp(minSelectionDot, 0f, 0.95f))
+            {
+                continue;
+            }
+
+            Vector3 force = forceDirection * (magnitude * alignment);
+            ApplyForceAtNozzle(nozzle, force, false, recordYaw);
+        }
+    }
+
+    private void ApplyNozzleSet(Vector3 desiredForceDirection, float magnitude, bool translation, Vector3 torqueAxisForDebug)
+    {
+        for (int i = 0; i < nozzles.Count; i++)
+        {
+            RcsNozzle nozzle = nozzles[i];
+            if (!IsActiveNozzleTransform(nozzle.transform))
+            {
+                continue;
+            }
+
+            Vector3 forceDirection = GetNozzleForceDirection(nozzle.transform);
+            float alignment = Vector3.Dot(forceDirection, desiredForceDirection);
+            if (alignment <= Mathf.Clamp(minSelectionDot, 0f, 0.95f))
+            {
+                continue;
+            }
+
+            Vector3 force = forceDirection * (magnitude * alignment);
+            ApplyForceAtNozzle(nozzle, force, translation, false);
+        }
+    }
+
+    private static Vector3 GetNozzleForceDirection(Transform nozzle)
+    {
+        Vector3 direction = nozzle.forward;
+        if (direction.sqrMagnitude <= 0.0001f)
+        {
+            direction = nozzle.parent != null ? nozzle.parent.forward : Vector3.forward;
+        }
+
+        return direction.normalized;
+    }
+
+    private void ApplyForceAtNozzle(RcsNozzle nozzle, Vector3 forceWorld, bool translation, bool recordYaw)
+    {
+        if (shipRigidbody == null || nozzle == null || !IsActiveNozzleTransform(nozzle.transform) || forceWorld.sqrMagnitude <= 0.0001f)
+        {
+            return;
+        }
+
+        Vector3 position = nozzle.transform.position;
         shipRigidbody.AddForceAtPosition(forceWorld, position, ForceMode.Force);
         Vector3 torque = Vector3.Cross(position - shipRigidbody.worldCenterOfMass, forceWorld);
-        LastTranslationForce += forceWorld;
         LastForceAtPositionTotal += forceWorld;
         LastTorque += torque;
+        nozzle.active = true;
+
+        if (translation)
+        {
+            LastTranslationForce += forceWorld;
+        }
 
         if (recordYaw)
         {
+            LastYawForceWorld += forceWorld;
             LastYawTorqueEstimate += torque;
         }
     }
 
-    public void SetTranslationVfx(Vector2 command)
+    private void ApplyNozzleVfx()
     {
-        SetActive(upVfx, command.y > 0.05f);
-        SetActive(downVfx, command.y < -0.05f);
-        SetActive(leftVfx, command.x < -0.05f);
-        SetActive(rightVfx, command.x > 0.05f);
+        ActiveNozzleCount = 0;
+        activeNozzleBuilder.Length = 0;
+
+        for (int i = 0; i < nozzles.Count; i++)
+        {
+            RcsNozzle nozzle = nozzles[i];
+            bool active = RcsEnabled && nozzle.active;
+            SetActive(nozzle.vfx, active);
+            if (!active)
+            {
+                continue;
+            }
+
+            ActiveNozzleCount++;
+            if (activeNozzleBuilder.Length > 0)
+            {
+                activeNozzleBuilder.Append(", ");
+            }
+
+            activeNozzleBuilder.Append(nozzle.id);
+        }
+
+        ActiveNozzleIds = activeNozzleBuilder.ToString();
+    }
+
+    private void ClearNozzleVfx()
+    {
+        ActiveNozzleCount = 0;
+        ActiveNozzleIds = string.Empty;
+        for (int i = 0; i < nozzles.Count; i++)
+        {
+            nozzles[i].active = false;
+            SetActive(nozzles[i].vfx, false);
+        }
     }
 
     private static void SetActive(GameObject target, bool active)
@@ -251,9 +393,8 @@ public class RcsThrusterController : MonoBehaviour
     private void OnValidate()
     {
         translationForce = Mathf.Max(0f, translationForce);
-        pitchForce = Mathf.Max(0f, pitchForce);
-        yawForce = Mathf.Max(0f, yawForce);
-        rollForce = Mathf.Max(0f, rollForce);
-        stabilizationRate = Mathf.Max(0f, stabilizationRate);
+        attitudeForce = Mathf.Max(0f, attitudeForce);
+        sasAuthority = Mathf.Max(0f, sasAuthority);
+        minSelectionDot = Mathf.Clamp(minSelectionDot, 0f, 0.95f);
     }
 }

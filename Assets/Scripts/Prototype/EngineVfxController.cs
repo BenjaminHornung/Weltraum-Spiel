@@ -39,9 +39,16 @@ public class EngineVfxController : MonoBehaviour
             return;
         }
 
+        var mainNozzle = transform.Find("MainThrusterGimbal/MainThrusterNozzle");
+        if (mainNozzle != null)
+        {
+            nozzle = mainNozzle;
+            return;
+        }
+
         foreach (Transform child in transform.GetComponentsInChildren<Transform>())
         {
-            if (child != transform && child.name == "Engine")
+            if (child != transform && (child.name == "Engine" || child.name == "MainThrusterGimbal"))
             {
                 nozzle = child;
                 return;
@@ -82,8 +89,7 @@ public class EngineVfxController : MonoBehaviour
             shape.radius = 0.18f;
             shape.rotation = Vector3.zero;
             shape.position = Vector3.zero;
-
-            thrustParticles.playOnAwake = false;
+            main.playOnAwake = false;
         }
 
         if (thrustLight == null)

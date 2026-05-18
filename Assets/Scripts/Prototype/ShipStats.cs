@@ -25,10 +25,10 @@ public class ShipStats : MonoBehaviour
     [SerializeField] private float projectileLifetime = 3f;
 
     [Header("Camera")]
-    [Range(10f, 15f)]
-    [SerializeField] private float followDistance = 12f;
-    [Range(3f, 5f)]
-    [SerializeField] private float followHeight = 4f;
+    [Range(10f, 25f)]
+    [SerializeField] private float followDistance = 18f;
+    [Range(3f, 10f)]
+    [SerializeField] private float followHeight = 6f;
 
     public float DryMass => Mathf.Max(0.1f, cockpitMass + hullMass + fuelTankDryMass + engineMass + gunMass);
     public float MaxFuelKg => Mathf.Max(0.01f, maxFuelKg);
@@ -40,8 +40,8 @@ public class ShipStats : MonoBehaviour
     public float ProjectileSpeed => Mathf.Max(0f, projectileSpeed);
     public float ProjectileFireRate => Mathf.Max(0.1f, projectileFireRate);
     public float ProjectileLifetime => Mathf.Max(0.1f, projectileLifetime);
-    public float FollowDistance => Mathf.Clamp(followDistance, 10f, 15f);
-    public float FollowHeight => Mathf.Clamp(followHeight, 3f, 5f);
+    public float FollowDistance => Mathf.Clamp(followDistance, 10f, 25f);
+    public float FollowHeight => Mathf.Clamp(followHeight, 3f, 10f);
 
     public float LastThrottle { get; private set; }
     public float LastAppliedThrust { get; private set; }

@@ -6,18 +6,26 @@ public class MainThrusterModule : MonoBehaviour
 {
     [Header("Main Thruster")]
     [SerializeField] private Transform thrustTransform;
+    [SerializeField] private Transform gimbalVisualTransform;
     [Range(0f, 1f)]
     [SerializeField] private float throttleScale = 1f;
     [SerializeField] private bool supportsGimbal = true;
     [Range(0f, 45f)]
-    [SerializeField] private float gimbalLimitDegrees = 8f;
+    [SerializeField] private float gimbalLimitDegrees = 20f;
+    [Range(0f, 1f)]
+    [SerializeField] private float gimbalResponseScalar = 0.35f;
 
     [Header("Runtime")]
     [SerializeField] private Rigidbody shipRigidbody;
     [SerializeField] private ShipStats shipStats;
 
+
+    private Quaternion gimbalBaseLocalRotation = Quaternion.identity;
+    private bool hasGimbalBaseRotation;
+
     public bool SupportsGimbal => supportsGimbal;
     public float GimbalLimitDegrees => Mathf.Max(0f, gimbalLimitDegrees);
+    public float GimbalResponseScalar => Mathf.Clamp01(gimbalResponseScalar);
     public float LastThrottleCommand { get; private set; }
     public float LastThrottlePercent => LastThrottleCommand * 100f;
     public float LastAppliedThrust { get; private set; }
@@ -25,6 +33,8 @@ public class MainThrusterModule : MonoBehaviour
     public float LastGimbalPitchCommand { get; private set; }
     public float LastGimbalAngleDegrees { get; private set; }
     public Vector3 LastAppliedDirection { get; private set; } = Vector3.forward;
+    public Vector3 LastStraightForceWorld { get; private set; }
+    public Vector3 LastSteeringForceWorld { get; private set; }
     public Vector3 LastForceWorld { get; private set; }
     public Vector3 LastForcePositionWorld { get; private set; }
     public Vector3 LastEstimatedTorque { get; private set; }
@@ -41,6 +51,7 @@ public class MainThrusterModule : MonoBehaviour
         shipRigidbody = body != null ? body : shipRigidbody;
         shipStats = stats != null ? stats : shipStats;
         ResolveReferences();
+        CaptureGimbalBaseRotation();
     }
 
     private void ResolveReferences()
@@ -57,8 +68,41 @@ public class MainThrusterModule : MonoBehaviour
 
         if (thrustTransform == null)
         {
+            thrustTransform = transform.Find("MainThrusterGimbal/MainThrusterNozzle");
+        }
+
+        if (thrustTransform == null)
+        {
+            thrustTransform = transform.Find("MainThrusterNozzle");
+        }
+
+        if (gimbalVisualTransform == null)
+        {
+            gimbalVisualTransform = transform.Find("MainThrusterGimbal");
+        }
+
+        if (gimbalVisualTransform == null && thrustTransform != null && thrustTransform.parent != transform)
+        {
+            gimbalVisualTransform = thrustTransform.parent;
+        }
+
+        if (thrustTransform == null)
+        {
             thrustTransform = transform;
         }
+
+        CaptureGimbalBaseRotation();
+    }
+
+    private void CaptureGimbalBaseRotation()
+    {
+        if (hasGimbalBaseRotation || gimbalVisualTransform == null)
+        {
+            return;
+        }
+
+        gimbalBaseLocalRotation = gimbalVisualTransform.localRotation;
+        hasGimbalBaseRotation = true;
     }
 
     public float Fire(float throttleCommand, float yawCommand, float pitchCommand, float deltaTime)
@@ -67,9 +111,12 @@ public class MainThrusterModule : MonoBehaviour
 
         LastThrottleCommand = Mathf.Clamp01(throttleCommand) * Mathf.Clamp01(throttleScale);
         LastAppliedThrust = 0f;
+        LastStraightForceWorld = Vector3.zero;
+        LastSteeringForceWorld = Vector3.zero;
         LastForceWorld = Vector3.zero;
         LastEstimatedTorque = Vector3.zero;
 
+        Vector3 baseDirection = GetBaseThrustDirection();
         Vector3 thrustDirection = GetThrustDirection(yawCommand, pitchCommand);
         Vector3 forcePosition = thrustTransform != null ? thrustTransform.position : transform.position;
         LastAppliedDirection = thrustDirection;
@@ -87,9 +134,19 @@ public class MainThrusterModule : MonoBehaviour
         }
 
         LastAppliedThrust = LastThrottleCommand * shipStats.Thrust;
-        LastForceWorld = thrustDirection * LastAppliedThrust;
-        LastEstimatedTorque = Vector3.Cross(forcePosition - shipRigidbody.worldCenterOfMass, LastForceWorld);
-        shipRigidbody.AddForceAtPosition(LastForceWorld, forcePosition, ForceMode.Force);
+        LastStraightForceWorld = baseDirection * LastAppliedThrust;
+        LastSteeringForceWorld = (thrustDirection - baseDirection) * LastAppliedThrust;
+        LastForceWorld = LastStraightForceWorld + LastSteeringForceWorld;
+
+        Vector3 centerOfMass = shipRigidbody.worldCenterOfMass;
+        shipRigidbody.AddForceAtPosition(LastStraightForceWorld, centerOfMass, ForceMode.Force);
+
+        if (LastSteeringForceWorld.sqrMagnitude > 0.0001f)
+        {
+            shipRigidbody.AddForceAtPosition(LastSteeringForceWorld, forcePosition, ForceMode.Force);
+            LastEstimatedTorque = Vector3.Cross(forcePosition - centerOfMass, LastSteeringForceWorld);
+        }
+
         return LastAppliedThrust;
     }
 
@@ -97,29 +154,54 @@ public class MainThrusterModule : MonoBehaviour
     {
         ResolveReferences();
 
-        Vector3 baseDirection = thrustTransform != null ? thrustTransform.forward : transform.forward;
-        if (baseDirection.sqrMagnitude <= 0.0001f)
-        {
-            baseDirection = transform.forward;
-        }
-
-        baseDirection.Normalize();
-        LastGimbalYawCommand = supportsGimbal ? Mathf.Clamp(yawCommand, -1f, 1f) : 0f;
-        LastGimbalPitchCommand = supportsGimbal ? Mathf.Clamp(pitchCommand, -1f, 1f) : 0f;
+        Vector3 baseDirection = GetBaseThrustDirection();
+        Vector2 rawGimbalCommand = supportsGimbal
+            ? Vector2.ClampMagnitude(new Vector2(yawCommand, pitchCommand), 1f)
+            : Vector2.zero;
+        Vector2 gimbalCommand = Vector2.ClampMagnitude(rawGimbalCommand * GimbalResponseScalar, 1f);
+        LastGimbalYawCommand = gimbalCommand.x;
+        LastGimbalPitchCommand = gimbalCommand.y;
         LastGimbalAngleDegrees = 0f;
 
         if (!supportsGimbal)
         {
+            ApplyVisualGimbal(Quaternion.identity);
             return baseDirection;
         }
 
-        Vector3 yawAxis = thrustTransform != null ? thrustTransform.up : transform.up;
-        Vector3 pitchAxis = thrustTransform != null ? thrustTransform.right : transform.right;
-        Quaternion yawRotation = Quaternion.AngleAxis(LastGimbalYawCommand * GimbalLimitDegrees, yawAxis);
-        Quaternion pitchRotation = Quaternion.AngleAxis(-LastGimbalPitchCommand * GimbalLimitDegrees, pitchAxis);
+        float yawDegrees = LastGimbalYawCommand * GimbalLimitDegrees;
+        float pitchDegrees = -LastGimbalPitchCommand * GimbalLimitDegrees;
+        Vector3 yawAxis = transform.up;
+        Vector3 pitchAxis = transform.right;
+        Quaternion yawRotation = Quaternion.AngleAxis(yawDegrees, yawAxis);
+        Quaternion pitchRotation = Quaternion.AngleAxis(pitchDegrees, pitchAxis);
         Vector3 gimballed = (yawRotation * pitchRotation * baseDirection).normalized;
         LastGimbalAngleDegrees = Vector3.Angle(baseDirection, gimballed);
+
+        ApplyVisualGimbal(Quaternion.AngleAxis(yawDegrees, Vector3.up) * Quaternion.AngleAxis(pitchDegrees, Vector3.right));
         return gimballed;
+    }
+
+    private void ApplyVisualGimbal(Quaternion localGimbal)
+    {
+        if (gimbalVisualTransform == null)
+        {
+            return;
+        }
+
+        CaptureGimbalBaseRotation();
+        gimbalVisualTransform.localRotation = gimbalBaseLocalRotation * localGimbal;
+    }
+
+    private Vector3 GetBaseThrustDirection()
+    {
+        Vector3 baseDirection = transform.forward;
+        if (baseDirection.sqrMagnitude <= 0.0001f)
+        {
+            baseDirection = Vector3.forward;
+        }
+
+        return baseDirection.normalized;
     }
 
     public void ResetRuntimeState()
@@ -130,6 +212,8 @@ public class MainThrusterModule : MonoBehaviour
         LastGimbalPitchCommand = 0f;
         LastGimbalAngleDegrees = 0f;
         LastAppliedDirection = GetThrustDirection(0f, 0f);
+        LastStraightForceWorld = Vector3.zero;
+        LastSteeringForceWorld = Vector3.zero;
         LastForceWorld = Vector3.zero;
         LastForcePositionWorld = thrustTransform != null ? thrustTransform.position : transform.position;
         LastEstimatedTorque = Vector3.zero;
@@ -139,5 +223,6 @@ public class MainThrusterModule : MonoBehaviour
     {
         throttleScale = Mathf.Clamp01(throttleScale);
         gimbalLimitDegrees = Mathf.Max(0f, gimbalLimitDegrees);
+        gimbalResponseScalar = Mathf.Clamp01(gimbalResponseScalar);
     }
 }

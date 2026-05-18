@@ -8,10 +8,8 @@ using UnityEngine.InputSystem;
 public class PlayerShipController : MonoBehaviour
 {
     [Header("Flight tuning")]
-    [SerializeField] private float stabilizeRate = 2.5f;
-    [SerializeField] private float brakeRate = 4f;
-    [SerializeField] private float mouseSensitivity = 0.12f;
     [SerializeField] private float keyboardAttitudeStrength = 1f;
+    [SerializeField] private float precisionScale = 0.35f;
     [SerializeField] private float gamepadLookSpeed = 1.6f;
     [SerializeField] private float gamepadLookDeadZone = 0.18f;
 
@@ -29,40 +27,61 @@ public class PlayerShipController : MonoBehaviour
 
     private bool throttleUp;
     private bool throttleDown;
+    private bool cutThrottle;
+    private bool fullThrottle;
     private bool fire;
-    private bool refuel;
-    private bool resetVelocity;
-    private bool stabilize;
-    private Vector2 rcsTranslationInput;
+    private bool debugRefuel;
+    private bool toggleRcs;
+    private bool toggleSas;
+    private bool togglePrecision;
+    private bool sasHoldInvert;
+    private bool sasEnabled;
+    private bool precisionControls;
+    private bool rcsEnabled = true;
+    private Vector3 rcsTranslationInput;
     private Vector3 attitudeInput;
-    private float previousSpeed;
+    private float previousForwardSpeed;
 
     public float MainThrottle => mainThrottle;
     public float MainThrottlePercent => mainThrottle * 100f;
     public float MainThrustCommand { get; private set; }
-    public Vector2 RcsTranslationCommand { get; private set; }
+    public Vector3 RcsTranslationCommand { get; private set; }
     public Vector3 RcsAttitudeCommand { get; private set; }
     public float TurnInput { get; private set; }
     public float GimbalYawCommand { get; private set; }
     public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal;
     public float GimbalLimitDegrees => mainThruster != null ? mainThruster.GimbalLimitDegrees : 0f;
+    public float GimbalResponseScalar => mainThruster != null ? mainThruster.GimbalResponseScalar : 0f;
+    public float GimbalPitchCommand => mainThruster != null ? mainThruster.LastGimbalPitchCommand : 0f;
     public float LastGimbalAngleDegrees => mainThruster != null ? mainThruster.LastGimbalAngleDegrees : 0f;
     public Vector3 LastMainThrustDirection => mainThruster != null ? mainThruster.LastAppliedDirection : transform.forward;
     public float LastMainAppliedThrust => mainThruster != null ? mainThruster.LastAppliedThrust : 0f;
     public Vector3 LastMainForceWorld => mainThruster != null ? mainThruster.LastForceWorld : Vector3.zero;
+    public Vector3 LastMainStraightForceWorld => mainThruster != null ? mainThruster.LastStraightForceWorld : Vector3.zero;
+    public Vector3 LastMainSteeringForceWorld => mainThruster != null ? mainThruster.LastSteeringForceWorld : Vector3.zero;
     public Vector3 LastMainForcePositionWorld => mainThruster != null ? mainThruster.LastForcePositionWorld : transform.position;
     public Vector3 LastMainGimbalTorque => mainThruster != null ? mainThruster.LastEstimatedTorque : Vector3.zero;
     public bool HasRcs => rcsThrusters != null && rcsThrusters.HasRcs;
+    public bool RcsEnabled => rcsThrusters != null ? rcsThrusters.RcsEnabled : rcsEnabled;
+    public bool SasEnabled => sasEnabled;
+    public bool EffectiveSasEnabled => sasEnabled ^ sasHoldInvert;
+    public bool PrecisionControls => precisionControls;
+    public float LastForwardAcceleration { get; private set; }
     public Vector3 RcsControlPivotLocal => rcsThrusters != null ? rcsThrusters.ControlPivotLocal : Vector3.zero;
     public Vector3 RcsControlPivotWorld => rcsThrusters != null ? rcsThrusters.ControlPivotWorld : transform.position;
     public Vector3 LastRcsForce => rcsThrusters != null ? rcsThrusters.LastForceAtPositionTotal : Vector3.zero;
-    public Vector3 LastRcsTorque => rcsThrusters != null ? rcsThrusters.LastTorque : Vector3.zero;
-    public Vector3 LastRcsYawTorque => rcsThrusters != null ? rcsThrusters.LastYawTorqueEstimate : Vector3.zero;
+    public Vector3 LastRcsTranslationForce => rcsThrusters != null ? rcsThrusters.LastTranslationForce : Vector3.zero;
+    public Vector3 LastRcsTorque => rcsThrusters != null ? rcsThrusters.LastTorque : Vector3.zero;    public Vector3 LastRcsYawTorque => rcsThrusters != null ? rcsThrusters.LastYawTorqueEstimate : Vector3.zero;
+    public int InstalledRcsNozzleCount => rcsThrusters != null ? rcsThrusters.InstalledNozzleCount : 0;
+    public int ActiveRcsNozzleCount => rcsThrusters != null ? rcsThrusters.ActiveNozzleCount : 0;
+    public string ActiveRcsNozzleIds => rcsThrusters != null ? rcsThrusters.ActiveNozzleIds : string.Empty;
+    public Vector3 LastRcsSasCommand => rcsThrusters != null ? rcsThrusters.LastSasCommand : Vector3.zero;
 
     private void Awake()
     {
         ResolveReferences();
         ConfigureRigidbody();
+        ApplyRcsEnabledState();
     }
 
     private void ResolveReferences()
@@ -106,8 +125,8 @@ public class PlayerShipController : MonoBehaviour
         }
 
         shipRigidbody.useGravity = false;
-        shipRigidbody.linearDamping = 0.05f;
-        shipRigidbody.angularDamping = 3.5f;
+        shipRigidbody.linearDamping = 0f;
+        shipRigidbody.angularDamping = 0f;
         shipRigidbody.interpolation = RigidbodyInterpolation.Interpolate;
     }
 
@@ -154,13 +173,14 @@ public class PlayerShipController : MonoBehaviour
 
         shipRigidbody.mass = shipStats.CurrentMass;
 
-        RcsTranslationCommand = Vector2.ClampMagnitude(rcsTranslationInput, 1f);
-        RcsAttitudeCommand = Vector3.ClampMagnitude(attitudeInput, 1f);
+        float controlScale = precisionControls ? Mathf.Clamp01(precisionScale) : 1f;
+        RcsTranslationCommand = Vector3.ClampMagnitude(rcsTranslationInput, 1f) * controlScale;
+        RcsAttitudeCommand = Vector3.ClampMagnitude(attitudeInput, 1f) * controlScale;
         TurnInput = Mathf.Clamp(RcsAttitudeCommand.y, -1f, 1f);
 
         if (rcsThrusters != null)
         {
-            rcsThrusters.ApplyControls(RcsTranslationCommand, RcsAttitudeCommand, stabilize, Time.fixedDeltaTime);
+            rcsThrusters.ApplyControls(RcsTranslationCommand, RcsAttitudeCommand, EffectiveSasEnabled, Time.fixedDeltaTime);
         }
 
         MainThrustCommand = Mathf.Clamp01(mainThrottle);
@@ -173,20 +193,10 @@ public class PlayerShipController : MonoBehaviour
             appliedThrust = mainThruster.Fire(MainThrustCommand, GimbalYawCommand, gimbalPitchCommand, Time.fixedDeltaTime);
         }
 
-        if (stabilize)
-        {
-            shipRigidbody.angularVelocity = Vector3.Lerp(shipRigidbody.angularVelocity, Vector3.zero, stabilizeRate * Time.fixedDeltaTime);
-            shipRigidbody.linearVelocity = Vector3.Lerp(shipRigidbody.linearVelocity, Vector3.zero, brakeRate * Time.fixedDeltaTime);
-        }
-
-        float acceleration = 0f;
-        if (Time.fixedDeltaTime > 0.0001f)
-        {
-            acceleration = (shipRigidbody.linearVelocity.magnitude - previousSpeed) / Time.fixedDeltaTime;
-        }
-
-        previousSpeed = shipRigidbody.linearVelocity.magnitude;
-        shipStats.RecordFlightTelemetry(MainThrustCommand, appliedThrust, acceleration);
+        float forwardSpeed = Vector3.Dot(shipRigidbody.linearVelocity, transform.forward);
+        LastForwardAcceleration = Time.fixedDeltaTime > 0.0001f ? (forwardSpeed - previousForwardSpeed) / Time.fixedDeltaTime : 0f;
+        previousForwardSpeed = forwardSpeed;
+        shipStats.RecordFlightTelemetry(MainThrustCommand, appliedThrust, LastForwardAcceleration);
 
         if (engineVfx != null)
         {
@@ -198,25 +208,41 @@ public class PlayerShipController : MonoBehaviour
     {
         throttleUp = false;
         throttleDown = false;
+        cutThrottle = false;
+        fullThrottle = false;
         fire = false;
-        refuel = false;
-        resetVelocity = false;
-        stabilize = false;
-        rcsTranslationInput = Vector2.zero;
+        debugRefuel = false;
+        toggleRcs = false;
+        toggleSas = false;
+        togglePrecision = false;
+        sasHoldInvert = false;
+        rcsTranslationInput = Vector3.zero;
         attitudeInput = Vector3.zero;
 
-        Keyboard keyboard = Keyboard.current;
-        Mouse mouse = Mouse.current;
-        Gamepad gamepad = Gamepad.current;
+        Keyboard keyboard = Keyboard.current;        Gamepad gamepad = Gamepad.current;
 
         if (keyboard != null)
         {
-            throttleUp |= keyboard.wKey.isPressed || keyboard.leftShiftKey.isPressed;
-            throttleDown |= keyboard.sKey.isPressed;
+            throttleUp |= keyboard.leftShiftKey.isPressed;
+            throttleDown |= keyboard.leftCtrlKey.isPressed || keyboard.rightCtrlKey.isPressed;
+            cutThrottle |= keyboard.xKey.wasPressedThisFrame;
+            fullThrottle |= keyboard.yKey.wasPressedThisFrame;
             fire |= keyboard.spaceKey.isPressed;
-            refuel |= keyboard.rKey.wasPressedThisFrame;
-            resetVelocity |= keyboard.tKey.wasPressedThisFrame;
-            stabilize |= keyboard.xKey.isPressed;
+            debugRefuel |= keyboard.backspaceKey.wasPressedThisFrame;
+            toggleRcs |= keyboard.rKey.wasPressedThisFrame;
+            toggleSas |= keyboard.tKey.wasPressedThisFrame;
+            togglePrecision |= keyboard.capsLockKey.wasPressedThisFrame;
+            sasHoldInvert |= keyboard.fKey.isPressed;
+
+            if (keyboard.wKey.isPressed)
+            {
+                attitudeInput.x -= keyboardAttitudeStrength;
+            }
+
+            if (keyboard.sKey.isPressed)
+            {
+                attitudeInput.x += keyboardAttitudeStrength;
+            }
 
             if (keyboard.aKey.isPressed)
             {
@@ -226,16 +252,6 @@ public class PlayerShipController : MonoBehaviour
             if (keyboard.dKey.isPressed)
             {
                 attitudeInput.y += keyboardAttitudeStrength;
-            }
-
-            if (keyboard.pageUpKey.isPressed)
-            {
-                attitudeInput.x += keyboardAttitudeStrength;
-            }
-
-            if (keyboard.pageDownKey.isPressed)
-            {
-                attitudeInput.x -= keyboardAttitudeStrength;
             }
 
             if (keyboard.qKey.isPressed)
@@ -248,33 +264,35 @@ public class PlayerShipController : MonoBehaviour
                 attitudeInput.z += keyboardAttitudeStrength;
             }
 
-            if (keyboard.jKey.isPressed || keyboard.leftArrowKey.isPressed)
+            if (keyboard.hKey.isPressed)
             {
-                rcsTranslationInput.x -= 1f;
+                rcsTranslationInput.z += 1f;
             }
 
-            if (keyboard.lKey.isPressed || keyboard.rightArrowKey.isPressed)
+            if (keyboard.nKey.isPressed)
             {
-                rcsTranslationInput.x += 1f;
+                rcsTranslationInput.z -= 1f;
             }
 
-            if (keyboard.iKey.isPressed || keyboard.upArrowKey.isPressed)
+            if (keyboard.iKey.isPressed)
+            {
+                rcsTranslationInput.y -= 1f;
+            }
+
+            if (keyboard.kKey.isPressed)
             {
                 rcsTranslationInput.y += 1f;
             }
 
-            if (keyboard.kKey.isPressed || keyboard.downArrowKey.isPressed)
+            if (keyboard.jKey.isPressed)
             {
-                rcsTranslationInput.y -= 1f;
+                rcsTranslationInput.x -= 1f;
             }
-        }
 
-        if (mouse != null)
-        {
-            Vector2 mouseDelta = mouse.delta.ReadValue();
-            attitudeInput.x += -mouseDelta.y * mouseSensitivity;
-            attitudeInput.y += mouseDelta.x * mouseSensitivity;
-            fire |= mouse.leftButton.isPressed;
+            if (keyboard.lKey.isPressed)
+            {
+                rcsTranslationInput.x += 1f;
+            }
         }
 
         if (gamepad != null)
@@ -285,11 +303,10 @@ public class PlayerShipController : MonoBehaviour
             float leftTrigger = gamepad.leftTrigger.ReadValue();
 
             throttleUp |= rightTrigger > 0.1f;
-            throttleDown |= left.y < -gamepadLookDeadZone;
-            stabilize |= leftTrigger > 0.1f || gamepad.bButton.isPressed;
+            throttleDown |= leftTrigger > 0.1f;
             fire |= gamepad.aButton.isPressed;
-            refuel |= gamepad.xButton.wasPressedThisFrame;
-            resetVelocity |= gamepad.yButton.wasPressedThisFrame;
+            toggleRcs |= gamepad.xButton.wasPressedThisFrame;
+            toggleSas |= gamepad.yButton.wasPressedThisFrame;
 
             if (right.sqrMagnitude > gamepadLookDeadZone * gamepadLookDeadZone)
             {
@@ -299,7 +316,8 @@ public class PlayerShipController : MonoBehaviour
 
             if (left.sqrMagnitude > gamepadLookDeadZone * gamepadLookDeadZone)
             {
-                rcsTranslationInput += left;
+                rcsTranslationInput.x += left.x;
+                rcsTranslationInput.y += left.y;
             }
 
             if (gamepad.leftShoulder.isPressed)
@@ -316,6 +334,18 @@ public class PlayerShipController : MonoBehaviour
 
     private void UpdateMainThrottle(float deltaTime)
     {
+        if (cutThrottle)
+        {
+            mainThrottle = 0f;
+            return;
+        }
+
+        if (fullThrottle)
+        {
+            mainThrottle = 1f;
+            return;
+        }
+
         float throttleDelta = 0f;
         if (throttleUp)
         {
@@ -332,15 +362,33 @@ public class PlayerShipController : MonoBehaviour
 
     private void HandleUtilityInputs()
     {
-        if (refuel)
+        if (toggleRcs)
+        {
+            rcsEnabled = !RcsEnabled;
+            ApplyRcsEnabledState();
+        }
+
+        if (toggleSas)
+        {
+            sasEnabled = !sasEnabled;
+        }
+
+        if (togglePrecision)
+        {
+            precisionControls = !precisionControls;
+        }
+
+        if (debugRefuel)
         {
             shipStats.RefillFuelFull();
         }
+    }
 
-        if (resetVelocity)
+    private void ApplyRcsEnabledState()
+    {
+        if (rcsThrusters != null)
         {
-            shipRigidbody.linearVelocity = Vector3.zero;
-            shipRigidbody.angularVelocity = Vector3.zero;
+            rcsThrusters.SetRcsEnabled(rcsEnabled);
         }
     }
 
@@ -348,5 +396,6 @@ public class PlayerShipController : MonoBehaviour
     {
         mainThrottle = Mathf.Clamp01(mainThrottle);
         throttleChangeRate = Mathf.Max(0f, throttleChangeRate);
+        precisionScale = Mathf.Clamp01(precisionScale);
     }
 }
