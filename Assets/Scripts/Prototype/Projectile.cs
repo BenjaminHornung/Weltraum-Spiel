@@ -19,6 +19,10 @@ public class Projectile : MonoBehaviour
     [SerializeField] private float defaultLifetime = 3f;
     [SerializeField] private Color glowColor = new Color(1f, 0.45f, 0.15f, 1f);
     [SerializeField] private float minimumSweepRadius = 0.01f;
+    [SerializeField] private float projectileMassKg = 1f;
+    [SerializeField] private float damagePerImpulse = 0.02f;
+    [SerializeField] private bool applyImpactImpulse = true;
+    [SerializeField] private bool applyImpactDamage = true;
 
     private float destroyAt;
     private Rigidbody rigidbodyRef;
@@ -28,8 +32,13 @@ public class Projectile : MonoBehaviour
     private Vector3 previousPositionWorld;
     private bool hasPreviousPosition;
     private bool hasReportedHit;
+    private bool destroyQueued;
     private Collider[] ignoredColliders;
     private ProjectileHitData lastHitData;
+    private PrototypeImpactEventData lastImpactEvent;
+    private PrototypeModuleDamageState lastDamagedModule;
+    private float lastDamageApplied;
+    private bool lastImpactImpulseApplied;
 
     public Vector3 PreviousPositionWorld => previousPositionWorld;
     public bool HasPreviousPosition => hasPreviousPosition;
@@ -37,6 +46,11 @@ public class Projectile : MonoBehaviour
     public int IgnoredColliderCount => ignoredColliders != null ? ignoredColliders.Length : 0;
     public bool HasHitData => lastHitData.hasHit;
     public ProjectileHitData LastHitData => lastHitData;
+    public bool HasImpactEvent => lastImpactEvent.hasImpact;
+    public PrototypeImpactEventData LastImpactEvent => lastImpactEvent;
+    public PrototypeModuleDamageState LastDamagedModule => lastDamagedModule;
+    public float LastDamageApplied => lastDamageApplied;
+    public bool LastImpactImpulseApplied => lastImpactImpulseApplied;
 
     private void Awake()
     {
@@ -49,7 +63,9 @@ public class Projectile : MonoBehaviour
     {
         destroyAt = Time.time + Mathf.Max(0.1f, defaultLifetime);
         hasReportedHit = false;
+        destroyQueued = false;
         lastHitData = default;
+        ResetImpactDiagnostics();
         RecordCurrentPosition();
     }
 
@@ -69,7 +85,9 @@ public class Projectile : MonoBehaviour
         rigidbodyRef.linearVelocity = initialVelocity;
         destroyAt = Time.time + Mathf.Max(0.1f, lifetime);
         hasReportedHit = false;
+        destroyQueued = false;
         lastHitData = default;
+        ResetImpactDiagnostics();
         ConfigureIgnoredColliders(collidersToIgnore);
         RecordCurrentPosition();
     }
@@ -92,8 +110,36 @@ public class Projectile : MonoBehaviour
     {
         if (Time.time >= destroyAt)
         {
-            Destroy(gameObject);
+            DestroySelf();
         }
+    }
+
+    private void DestroySelf()
+    {
+        if (destroyQueued)
+        {
+            return;
+        }
+
+        destroyQueued = true;
+        if (Application.isPlaying)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+#if UNITY_EDITOR
+        GameObject target = gameObject;
+        UnityEditor.EditorApplication.delayCall += () =>
+        {
+            if (target != null)
+            {
+                DestroyImmediate(target);
+            }
+        };
+#else
+        Destroy(gameObject);
+#endif
     }
 
     private void SetupVisuals()
@@ -322,6 +368,7 @@ public class Projectile : MonoBehaviour
             incomingVelocity = rigidbodyRef != null ? rigidbodyRef.linearVelocity : Vector3.zero,
             time = Time.time
         };
+        ProcessImpactEvent();
 
         hasReportedHit = true;
         if (targetDummy != null)
@@ -329,7 +376,7 @@ public class Projectile : MonoBehaviour
             targetDummy.PlayHitFeedback(hitPoint);
         }
 
-        Destroy(gameObject);
+        DestroySelf();
         return true;
     }
 
@@ -350,5 +397,70 @@ public class Projectile : MonoBehaviour
     private Vector3 GetCurrentVelocity()
     {
         return rigidbodyRef != null ? rigidbodyRef.linearVelocity : Vector3.zero;
+    }
+
+    private void ProcessImpactEvent()
+    {
+        ResetImpactDiagnostics();
+        lastImpactEvent = PrototypeImpactEventData.FromProjectileHit(lastHitData, projectileMassKg);
+        if (!lastImpactEvent.hasImpact)
+        {
+            return;
+        }
+
+        PrototypeModuleDamageState damageState = FindDamageState(lastHitData.collider, lastImpactEvent.moduleHit);
+        if (applyImpactDamage && damageState != null)
+        {
+            float damage = lastImpactEvent.ImpactImpulseMagnitude * Mathf.Max(0f, damagePerImpulse);
+            lastDamageApplied = damageState.ApplyImpactDamage(lastImpactEvent, damage);
+            lastDamagedModule = damageState;
+        }
+
+        if (!applyImpactImpulse)
+        {
+            return;
+        }
+
+        ShipPhysicsCore core = FindPhysicsCore(lastHitData.collider, lastImpactEvent.targetRigidbody);
+        if (core != null)
+        {
+            lastImpactImpulseApplied = core.ApplyImpactImpulse(lastImpactEvent);
+        }
+    }
+
+    private static PrototypeModuleDamageState FindDamageState(Collider hitCollider, ModuleMassDescriptor module)
+    {
+        if (module != null)
+        {
+            var damageState = module.GetComponent<PrototypeModuleDamageState>();
+            if (damageState != null)
+            {
+                return damageState;
+            }
+        }
+
+        return hitCollider != null ? hitCollider.GetComponentInParent<PrototypeModuleDamageState>() : null;
+    }
+
+    private static ShipPhysicsCore FindPhysicsCore(Collider hitCollider, Rigidbody targetRigidbody)
+    {
+        if (targetRigidbody != null)
+        {
+            var core = targetRigidbody.GetComponent<ShipPhysicsCore>();
+            if (core != null)
+            {
+                return core;
+            }
+        }
+
+        return hitCollider != null ? hitCollider.GetComponentInParent<ShipPhysicsCore>() : null;
+    }
+
+    private void ResetImpactDiagnostics()
+    {
+        lastImpactEvent = default;
+        lastDamagedModule = null;
+        lastDamageApplied = 0f;
+        lastImpactImpulseApplied = false;
     }
 }

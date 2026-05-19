@@ -15,7 +15,7 @@
 - [x] Add simple module damage state
 - [x] Apply one physical degradation path for RCS or engine thrust
 - [x] Add optional impact impulse routing through ShipPhysicsCore
-- [ ] Add debug damage diagnostics
+- [x] Add debug damage diagnostics
 - [ ] Update README and physics docs
 
 ## Verification

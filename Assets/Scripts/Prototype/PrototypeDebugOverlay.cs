@@ -9,6 +9,8 @@ public class PrototypeDebugOverlay : MonoBehaviour
     [SerializeField] private SimpleFollowCamera followCamera;
     [SerializeField] private PlayerShipController shipController;
     [SerializeField] private ShipPhysicsCore targetPhysicsCore;
+    [SerializeField] private FloatingOriginBody floatingOriginBody;
+    [SerializeField] private FloatingOriginManager floatingOriginManager;
 
     [Header("Overlay")]
     [SerializeField] private Vector2 windowPosition = new Vector2(16f, 16f);
@@ -46,6 +48,16 @@ public class PrototypeDebugOverlay : MonoBehaviour
         if (targetPhysicsCore == null)
         {
             targetPhysicsCore = target.GetComponent<ShipPhysicsCore>();
+        }
+
+        if (floatingOriginBody == null)
+        {
+            floatingOriginBody = target.GetComponent<FloatingOriginBody>();
+        }
+
+        if (floatingOriginManager == null && floatingOriginBody != null)
+        {
+            floatingOriginManager = floatingOriginBody.Manager;
         }
 
         if (followCamera == null)
@@ -103,6 +115,7 @@ public class PrototypeDebugOverlay : MonoBehaviour
         Vector3 centerOfMassWorld = targetRigidbody.worldCenterOfMass;
         Vector3 inertiaTensor = targetRigidbody.inertiaTensor;
         ShipMassProperties massProperties = targetStats.LastMassProperties;
+        DamageDiagnostics damageDiagnostics = BuildDamageDiagnostics(target);
 
         Vector3 rcsTranslation = shipController != null ? shipController.RcsTranslationCommand : Vector3.zero;
         Vector3 rcsAttitude = shipController != null ? shipController.RcsAttitudeCommand : Vector3.zero;
@@ -167,6 +180,9 @@ public class PrototypeDebugOverlay : MonoBehaviour
         Vector3 coreForce = shipController != null ? shipController.LastCoreAppliedForce : Vector3.zero;
         Vector3 coreTorque = shipController != null ? shipController.LastCoreAppliedTorque : Vector3.zero;
         int coreApplications = shipController != null ? shipController.LastCoreAppliedForceCount : 0;
+        Vector3 impactImpulse = targetPhysicsCore != null ? targetPhysicsCore.LastImpactImpulse : Vector3.zero;
+        Vector3 impactTorqueImpulse = targetPhysicsCore != null ? targetPhysicsCore.LastImpactTorqueImpulse : Vector3.zero;
+        int impactImpulseCount = targetPhysicsCore != null ? targetPhysicsCore.ImpactImpulseCount : 0;
         ShipAtmosphereSample atmosphereSample = targetPhysicsCore != null ? targetPhysicsCore.LastAtmosphereSample : ShipAtmosphereSample.Zero;
         bool atmosphereActive = atmosphereSample.active;
         float atmosphereDensity = atmosphereSample.densityKgPerCubicMeter;
@@ -204,8 +220,15 @@ public class PrototypeDebugOverlay : MonoBehaviour
         float cameraLookYaw = followCamera != null ? followCamera.LookYaw : 0f;
         float cameraLookPitch = followCamera != null ? followCamera.LookPitch : 0f;
         Vector3 mainForcePosition = shipController != null ? shipController.LastMainForcePositionWorld : centerOfMassWorld;
+        bool floatingOriginPresent = floatingOriginBody != null;
+        bool floatingOriginEnabled = floatingOriginManager != null && floatingOriginManager.FloatingOriginEnabled;
+        LargeWorldVector3d origin = floatingOriginManager != null ? floatingOriginManager.Origin : LargeWorldVector3d.Zero;
+        LargeWorldVector3d absolutePosition = floatingOriginBody != null ? floatingOriginBody.AbsolutePosition : LargeWorldVector3d.Zero;
+        LargeWorldVector3d absoluteVelocity = floatingOriginBody != null ? floatingOriginBody.AbsoluteVelocity : LargeWorldVector3d.Zero;
+        int originShiftCount = floatingOriginManager != null ? floatingOriginManager.ShiftCount : 0;
+        int registeredOriginBodies = floatingOriginManager != null ? floatingOriginManager.RegisteredBodyCount : 0;
 
-        Rect rect = new Rect(windowPosition.x, windowPosition.y, 620f, 740f);
+        Rect rect = new Rect(windowPosition.x, windowPosition.y, 620f, 780f);
         GUI.Box(rect, "Prototype Flight Diagnostics");
 
         GUILayout.BeginArea(new Rect(rect.x + 8f, rect.y + 22f, rect.width - 14f, rect.height - 24f));
@@ -217,11 +240,16 @@ public class PrototypeDebugOverlay : MonoBehaviour
         GUILayout.Label($"Velocity: {FormatVector(linearVelocity)} m/s", labelStyle);
         GUILayout.Label($"Camera: {cameraMode}, anchor error {cameraAnchorError:0.000} m", labelStyle);
         GUILayout.Label($"Camera look: yaw {cameraLookYaw:0.0} deg, pitch {cameraLookPitch:0.0} deg", labelStyle);
+        GUILayout.Label($"Floating origin: {(floatingOriginEnabled ? "on" : "off")} ({(floatingOriginPresent ? "body" : "no body")}), shifts {originShiftCount}, bodies {registeredOriginBodies}", labelStyle);
+        GUILayout.Label($"Origin abs: {FormatLargeVector(origin)}", labelStyle);
+        GUILayout.Label($"Ship abs/local: {FormatLargeVector(absolutePosition)} / {FormatVector(target.position)}", labelStyle);
+        GUILayout.Label($"Ship abs velocity: {FormatLargeVector(absoluteVelocity)} m/s", labelStyle);
         GUILayout.Label($"Angular velocity: {FormatVector(angularVelocity)} rad/s", labelStyle);
         GUILayout.Label($"COM local: {FormatVector(centerOfMassLocal)}", labelStyle);
         GUILayout.Label($"COM world: {FormatVector(centerOfMassWorld)}", labelStyle);
         GUILayout.Label($"Mass model: {massProperties.ModuleCount} modules, dry {massProperties.DryMassKg:0.0} kg, fuel {massProperties.FuelMassKg:0.0} kg", labelStyle);
         GUILayout.Label($"Inertia tensor: {FormatVector(inertiaTensor)} kg*m^2", labelStyle);
+        GUILayout.Label($"Damage: {damageDiagnostics.damagedModules}/{damageDiagnostics.totalModules} modules, worst {damageDiagnostics.worstModule} {damageDiagnostics.worstIntegrityPercent:0}% cap {damageDiagnostics.worstCapabilityMultiplier:0.00}", labelStyle);
         GUILayout.Space(4f);
         GUILayout.Label($"Throttle: {throttlePercent:0}% target {mainTargetThrottle:0.00} actual {mainActualThrottle:0.00} cmd {mainCommand:0.00}", labelStyle);
         GUILayout.Label($"Throttle response: up {FormatRate(throttleSpoolUp)}, down {FormatRate(throttleSpoolDown)}, scale {throttleScale:0.00}", labelStyle);
@@ -266,6 +294,8 @@ public class PrototypeDebugOverlay : MonoBehaviour
         GUILayout.Label($"RCS yaw torque est: {FormatVector(rcsYawTorque)}", labelStyle);
         GUILayout.Label($"Core force: {FormatVector(coreForce)}", labelStyle);
         GUILayout.Label($"Core torque: {FormatVector(coreTorque)}, applications {coreApplications}", labelStyle);
+        GUILayout.Label($"Impact impulse: {FormatVector(impactImpulse)} Ns, count {impactImpulseCount}", labelStyle);
+        GUILayout.Label($"Impact torque impulse: {FormatVector(impactTorqueImpulse)} Ns*m", labelStyle);
         GUILayout.Label($"Atmosphere: {(atmosphereActive ? "active" : "vacuum")} density {atmosphereDensity:0.000} kg/m^3", labelStyle);
         GUILayout.Label($"Atmos drag: {FormatVector(atmosphereDragForce)} N, rel {atmosphereRelativeVelocity.magnitude:0.00} m/s", labelStyle);
         GUILayout.Label($"Atmos Cd/area: {atmosphereDragCoefficient:0.00} / {atmosphereReferenceArea:0.00} m^2", labelStyle);
@@ -363,6 +393,11 @@ public class PrototypeDebugOverlay : MonoBehaviour
         return $"({value.x:0.00}, {value.y:0.00}, {value.z:0.00})";
     }
 
+    private static string FormatLargeVector(LargeWorldVector3d value)
+    {
+        return $"({value.x:0.00}, {value.y:0.00}, {value.z:0.00})";
+    }
+
     private static string FormatRate(float value)
     {
         return value <= 0f ? "instant" : $"{value:0.00}/s";
@@ -378,6 +413,56 @@ public class PrototypeDebugOverlay : MonoBehaviour
         return $"P {(value.x > 0.5f ? "manual" : "auto")}, Y {(value.y > 0.5f ? "manual" : "auto")}, R {(value.z > 0.5f ? "manual" : "auto")}";
     }
 
+    private struct DamageDiagnostics
+    {
+        public int totalModules;
+        public int damagedModules;
+        public string worstModule;
+        public float worstIntegrityPercent;
+        public float worstCapabilityMultiplier;
+    }
+
+    private static DamageDiagnostics BuildDamageDiagnostics(Transform root)
+    {
+        var diagnostics = new DamageDiagnostics
+        {
+            worstModule = "none",
+            worstIntegrityPercent = 100f,
+            worstCapabilityMultiplier = 1f
+        };
+
+        if (root == null)
+        {
+            return diagnostics;
+        }
+
+        PrototypeModuleDamageState[] states = root.GetComponentsInChildren<PrototypeModuleDamageState>(true);
+        diagnostics.totalModules = states.Length;
+        for (int i = 0; i < states.Length; i++)
+        {
+            PrototypeModuleDamageState state = states[i];
+            if (state == null)
+            {
+                continue;
+            }
+
+            if (state.IsDamaged)
+            {
+                diagnostics.damagedModules++;
+            }
+
+            float integrityPercent = state.IntegrityFraction * 100f;
+            if (diagnostics.worstModule == "none" || integrityPercent < diagnostics.worstIntegrityPercent)
+            {
+                diagnostics.worstModule = state.ModuleName;
+                diagnostics.worstIntegrityPercent = integrityPercent;
+                diagnostics.worstCapabilityMultiplier = state.CapabilityMultiplier;
+            }
+        }
+
+        return diagnostics;
+    }
+
     public void Bind(Transform trackTarget, ShipStats stats, Rigidbody rb)
     {
         target = trackTarget;
@@ -386,6 +471,8 @@ public class PrototypeDebugOverlay : MonoBehaviour
         followCamera = GetComponent<SimpleFollowCamera>();
         shipController = trackTarget != null ? trackTarget.GetComponent<PlayerShipController>() : null;
         targetPhysicsCore = trackTarget != null ? trackTarget.GetComponent<ShipPhysicsCore>() : null;
+        floatingOriginBody = trackTarget != null ? trackTarget.GetComponent<FloatingOriginBody>() : null;
+        floatingOriginManager = floatingOriginBody != null ? floatingOriginBody.Manager : null;
     }
 
     private static string Shorten(string value, int maxLength)

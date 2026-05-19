@@ -213,5 +213,13 @@ public static class PrototypeModuleMassLayout
         }
 
         descriptor.Configure(id, dryMassKg, fuelMassKg, useShipFuel, boxSize);
+
+        PrototypeModuleDamageState damageState = module.GetComponent<PrototypeModuleDamageState>();
+        if (damageState == null)
+        {
+            damageState = module.gameObject.AddComponent<PrototypeModuleDamageState>();
+        }
+
+        damageState.Configure(id, 100f, 0f);
     }
 }
