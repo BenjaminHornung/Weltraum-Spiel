@@ -44,8 +44,12 @@ public class MainThrusterModule : MonoBehaviour
     public float LastActualThrottle { get; private set; }
     public float LastThrottlePercent => LastActualThrottle * 100f;
     public float LastAppliedThrust { get; private set; }
-    public float LastGimbalYawCommand { get; private set; }
-    public float LastGimbalPitchCommand { get; private set; }
+    public float LastGimbalYawCommand => LastActualGimbalYawCommand;
+    public float LastGimbalPitchCommand => LastActualGimbalPitchCommand;
+    public float LastTargetGimbalYawCommand { get; private set; }
+    public float LastTargetGimbalPitchCommand { get; private set; }
+    public float LastActualGimbalYawCommand { get; private set; }
+    public float LastActualGimbalPitchCommand { get; private set; }
     public float LastGimbalAngleDegrees { get; private set; }
     public Vector3 LastAppliedDirection { get; private set; } = Vector3.forward;
     public Vector3 LastStraightForceWorld { get; private set; }
@@ -251,8 +255,10 @@ public class MainThrusterModule : MonoBehaviour
             ? Vector2.ClampMagnitude(new Vector2(yawCommand, pitchCommand), 1f)
             : Vector2.zero;
         Vector2 gimbalCommand = Vector2.ClampMagnitude(rawGimbalCommand * GimbalResponseScalar, 1f);
-        LastGimbalYawCommand = gimbalCommand.x;
-        LastGimbalPitchCommand = gimbalCommand.y;
+        LastTargetGimbalYawCommand = gimbalCommand.x;
+        LastTargetGimbalPitchCommand = gimbalCommand.y;
+        LastActualGimbalYawCommand = LastTargetGimbalYawCommand;
+        LastActualGimbalPitchCommand = LastTargetGimbalPitchCommand;
         LastGimbalAngleDegrees = 0f;
 
         if (!supportsGimbal)
@@ -261,8 +267,8 @@ public class MainThrusterModule : MonoBehaviour
             return baseDirection;
         }
 
-        float yawDegrees = LastGimbalYawCommand * GimbalLimitDegrees;
-        float pitchDegrees = -LastGimbalPitchCommand * GimbalLimitDegrees;
+        float yawDegrees = LastActualGimbalYawCommand * GimbalLimitDegrees;
+        float pitchDegrees = -LastActualGimbalPitchCommand * GimbalLimitDegrees;
         Vector3 yawAxis = transform.up;
         Vector3 pitchAxis = transform.right;
         Quaternion yawRotation = Quaternion.AngleAxis(yawDegrees, yawAxis);
@@ -301,8 +307,10 @@ public class MainThrusterModule : MonoBehaviour
         LastTargetThrottle = 0f;
         LastActualThrottle = 0f;
         LastAppliedThrust = 0f;
-        LastGimbalYawCommand = 0f;
-        LastGimbalPitchCommand = 0f;
+        LastTargetGimbalYawCommand = 0f;
+        LastTargetGimbalPitchCommand = 0f;
+        LastActualGimbalYawCommand = 0f;
+        LastActualGimbalPitchCommand = 0f;
         LastGimbalAngleDegrees = 0f;
         LastAppliedDirection = GetThrustDirection(0f, 0f);
         LastStraightForceWorld = Vector3.zero;

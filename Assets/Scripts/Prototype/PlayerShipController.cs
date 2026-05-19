@@ -75,7 +75,11 @@ public class PlayerShipController : MonoBehaviour
 public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal;
     public float GimbalLimitDegrees => mainThruster != null ? mainThruster.GimbalLimitDegrees : 0f;
     public float GimbalResponseScalar => mainThruster != null ? mainThruster.GimbalResponseScalar : 0f;
-    public float GimbalPitchCommand => mainThruster != null ? mainThruster.LastGimbalPitchCommand : 0f;
+    public float GimbalPitchCommand => mainThruster != null ? mainThruster.LastActualGimbalPitchCommand : 0f;
+    public float TargetGimbalYawCommand => mainThruster != null ? mainThruster.LastTargetGimbalYawCommand : GimbalYawCommand;
+    public float TargetGimbalPitchCommand => mainThruster != null ? mainThruster.LastTargetGimbalPitchCommand : 0f;
+    public float ActualGimbalYawCommand => mainThruster != null ? mainThruster.LastActualGimbalYawCommand : GimbalYawCommand;
+    public float ActualGimbalPitchCommand => mainThruster != null ? mainThruster.LastActualGimbalPitchCommand : 0f;
     public float LastGimbalAngleDegrees => mainThruster != null ? mainThruster.LastGimbalAngleDegrees : 0f;
     public MainThrustMode MainThrustMode => mainThruster != null ? mainThruster.ThrustMode : MainThrustMode.ComSafeSteeringOnly;
     public Vector3 LastMainThrustDirection => mainThruster != null ? mainThruster.LastAppliedDirection : transform.forward;
