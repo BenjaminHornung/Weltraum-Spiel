@@ -191,12 +191,22 @@ public class MainThrusterModule : MonoBehaviour
         LastForceWorld = LastStraightForceWorld + LastSteeringForceWorld;
 
         Vector3 centerOfMass = shipRigidbody.worldCenterOfMass;
-        physicsCore.ApplyForceAtCenterOfMass(LastStraightForceWorld, ForceMode.Force);
-
-        if (LastSteeringForceWorld.sqrMagnitude > 0.0001f)
+        if (mainThrustMode == MainThrustMode.FullyPhysicalNozzleForce)
         {
-            physicsCore.ApplyForceAtPosition(LastSteeringForceWorld, forcePosition, ForceMode.Force);
-            LastEstimatedTorque = Vector3.Cross(forcePosition - centerOfMass, LastSteeringForceWorld);
+            LastStraightForceWorld = Vector3.zero;
+            LastSteeringForceWorld = LastForceWorld;
+            physicsCore.ApplyForceAtPosition(LastForceWorld, forcePosition, ForceMode.Force);
+            LastEstimatedTorque = Vector3.Cross(forcePosition - centerOfMass, LastForceWorld);
+        }
+        else
+        {
+            physicsCore.ApplyForceAtCenterOfMass(LastStraightForceWorld, ForceMode.Force);
+
+            if (LastSteeringForceWorld.sqrMagnitude > 0.0001f)
+            {
+                physicsCore.ApplyForceAtPosition(LastSteeringForceWorld, forcePosition, ForceMode.Force);
+                LastEstimatedTorque = Vector3.Cross(forcePosition - centerOfMass, LastSteeringForceWorld);
+            }
         }
 
         return LastAppliedThrust;
