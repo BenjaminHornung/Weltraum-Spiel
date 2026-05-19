@@ -19,9 +19,9 @@
 - [x] Update README and physics docs
 
 ## Verification
-- [ ] Validate changed Unity scripts with Unity MCP
-- [ ] Verify full, half, and zero throttle fuel use
-- [ ] Verify almost-empty tank applies partial thrust
-- [ ] Verify RCS combined commands consume fuel once per final nozzle output
-- [ ] Add test evidence under this spec
-- [ ] Commit implementation with spec title and changelog
+- [x] Validate changed Unity scripts with Unity MCP
+- [x] Verify full, half, and zero throttle fuel use
+- [x] Verify almost-empty tank applies partial thrust
+- [x] Verify RCS combined commands consume fuel once per final nozzle output
+- [x] Add test evidence under this spec
+- [x] Commit implementation with spec title and changelog
