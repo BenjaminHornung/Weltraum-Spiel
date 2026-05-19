@@ -14,7 +14,7 @@
 - [x] Define optional atmosphere settings/volume
 - [x] Keep vacuum as default
 - [x] Add simple drag force calculation
-- [ ] Route drag through ShipPhysicsCore
+- [x] Route drag through ShipPhysicsCore
 - [ ] Add atmosphere diagnostics to overlay/docs
 
 ## Verification
