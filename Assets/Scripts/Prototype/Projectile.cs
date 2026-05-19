@@ -1,5 +1,18 @@
 using UnityEngine;
 
+public struct ProjectileHitData
+{
+    public bool hasHit;
+    public bool fromSweep;
+    public Collider collider;
+    public Rigidbody attachedRigidbody;
+    public PrototypeTargetDummy targetDummy;
+    public Vector3 point;
+    public Vector3 normal;
+    public Vector3 incomingVelocity;
+    public float time;
+}
+
 [RequireComponent(typeof(Rigidbody))]
 public class Projectile : MonoBehaviour
 {
@@ -16,11 +29,14 @@ public class Projectile : MonoBehaviour
     private bool hasPreviousPosition;
     private bool hasReportedHit;
     private Collider[] ignoredColliders;
+    private ProjectileHitData lastHitData;
 
     public Vector3 PreviousPositionWorld => previousPositionWorld;
     public bool HasPreviousPosition => hasPreviousPosition;
     public bool HasReportedHit => hasReportedHit;
     public int IgnoredColliderCount => ignoredColliders != null ? ignoredColliders.Length : 0;
+    public bool HasHitData => lastHitData.hasHit;
+    public ProjectileHitData LastHitData => lastHitData;
 
     private void Awake()
     {
@@ -33,6 +49,7 @@ public class Projectile : MonoBehaviour
     {
         destroyAt = Time.time + Mathf.Max(0.1f, defaultLifetime);
         hasReportedHit = false;
+        lastHitData = default;
         RecordCurrentPosition();
     }
 
@@ -52,6 +69,7 @@ public class Projectile : MonoBehaviour
         rigidbodyRef.linearVelocity = initialVelocity;
         destroyAt = Time.time + Mathf.Max(0.1f, lifetime);
         hasReportedHit = false;
+        lastHitData = default;
         ConfigureIgnoredColliders(collidersToIgnore);
         RecordCurrentPosition();
     }
@@ -230,7 +248,7 @@ public class Projectile : MonoBehaviour
         }
 
         RaycastHit nearest = hits[nearestIndex];
-        return TryReportHit(nearest.collider, nearest.point);
+        return TryReportHit(nearest.collider, nearest.point, nearest.normal, true);
     }
 
     private bool IsProjectileCollider(Collider candidate)
@@ -284,7 +302,7 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    private bool TryReportHit(Collider hitCollider, Vector3 hitPoint)
+    private bool TryReportHit(Collider hitCollider, Vector3 hitPoint, Vector3 hitNormal, bool fromSweep)
     {
         if (hasReportedHit || hitCollider == null || IsIgnoredCollider(hitCollider))
         {
@@ -292,13 +310,25 @@ public class Projectile : MonoBehaviour
         }
 
         var targetDummy = hitCollider.GetComponentInParent<PrototypeTargetDummy>();
-        if (targetDummy == null)
+        lastHitData = new ProjectileHitData
         {
-            return false;
-        }
+            hasHit = true,
+            fromSweep = fromSweep,
+            collider = hitCollider,
+            attachedRigidbody = hitCollider.attachedRigidbody,
+            targetDummy = targetDummy,
+            point = hitPoint,
+            normal = hitNormal,
+            incomingVelocity = rigidbodyRef != null ? rigidbodyRef.linearVelocity : Vector3.zero,
+            time = Time.time
+        };
 
         hasReportedHit = true;
-        targetDummy.PlayHitFeedback(hitPoint);
+        if (targetDummy != null)
+        {
+            targetDummy.PlayHitFeedback(hitPoint);
+        }
+
         Destroy(gameObject);
         return true;
     }
@@ -311,7 +341,14 @@ public class Projectile : MonoBehaviour
             return;
         }
 
-        Vector3 hitPoint = collision.contactCount > 0 ? collision.GetContact(0).point : transform.position;
-        TryReportHit(collision.collider, hitPoint);
+        ContactPoint contact = collision.contactCount > 0 ? collision.GetContact(0) : default;
+        Vector3 hitPoint = collision.contactCount > 0 ? contact.point : transform.position;
+        Vector3 hitNormal = collision.contactCount > 0 ? contact.normal : -GetCurrentVelocity().normalized;
+        TryReportHit(collision.collider, hitPoint, hitNormal, false);
+    }
+
+    private Vector3 GetCurrentVelocity()
+    {
+        return rigidbodyRef != null ? rigidbodyRef.linearVelocity : Vector3.zero;
     }
 }

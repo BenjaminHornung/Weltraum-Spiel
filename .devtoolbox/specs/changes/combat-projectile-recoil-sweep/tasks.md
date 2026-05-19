@@ -16,7 +16,7 @@
 - [x] Track projectile previous position
 - [x] Add raycast or sphere-cast sweep detection
 - [x] Ignore firing ship colliders
-- [ ] Expose hit data for future damage systems
+- [x] Expose hit data for future damage systems
 - [ ] Update README and physics docs
 
 ## Verification
