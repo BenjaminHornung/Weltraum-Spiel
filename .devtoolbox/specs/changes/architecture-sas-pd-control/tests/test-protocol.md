@@ -63,3 +63,22 @@ Result: PASS
 Command: `dotnet build "Weltraum Spiel.sln"`
 
 Result: PASS, with existing Unity/MSB3277 and serialized-field warnings.
+
+## Dotnet Test
+
+Command: `dotnet test "Weltraum Spiel.sln"`
+
+Result: PASS. The Unity-generated solution restores successfully and exits 0; no separate .NET test cases are discovered by this solution.
+
+## Unity EditMode Tests
+
+Tool: Unity MCP `run_tests(mode=EditMode)`
+
+Job: `df4c00e90dbb4751b91ab41f74801836`
+
+```text
+total=25 passed=25 failed=0 skipped=0
+resultState=Passed
+```
+
+Result: PASS
