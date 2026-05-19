@@ -48,8 +48,6 @@ public class RcsThrusterController : MonoBehaviour
     private const float SasAngularVelocityDeadZone = 0.0025f;
     private const float SasAngularVelocitySettleThreshold = 0.0025f;
     private const float SasCommandDeadZone = 0.0001f;
-    private const float SasResponseMultiplier = 48f;
-    private const float MinSasBrakingCommand = 0.06f;
 
         public float TranslationForce => Mathf.Max(0f, translationForce);
     public float AttitudeForce => Mathf.Max(0f, attitudeForce);
@@ -78,6 +76,10 @@ public Vector3 LastSasCommand { get; private set; }
     public SasControlMode LastSasMode { get; private set; } = SasControlMode.KillRotation;
     public bool LastSasTargetRotationValid { get; private set; }
     public Quaternion LastSasTargetRotation { get; private set; } = Quaternion.identity;
+    public Vector3 LastSasAngularVelocityLocal { get; private set; }
+    public Vector3 LastSasAngularErrorLocal { get; private set; }
+    public Vector3 LastRawSasDesiredTorqueLocal { get; private set; }
+    public Vector3 LastSasDesiredTorqueLocal { get; private set; }
     public Vector3 LastTranslationForce { get; private set; }
     public Vector3 LastTorque { get; private set; }
     public Vector3 LastForceAtPositionTotal { get; private set; }
@@ -252,10 +254,20 @@ public void ApplyControls(Vector3 translationCommand, Vector3 attitudeCommand, b
         LastSasMode = sasMode;
         LastSasTargetRotation = sasTargetRotation;
         LastSasTargetRotationValid = hasSasTargetRotation;
-        Vector3 sasCommand = stabilizeAngular && shipRigidbody != null ? ComputeSasCommand(deltaTime) : Vector3.zero;
+        if (!stabilizeAngular || shipRigidbody == null)
+        {
+            LastSasAngularVelocityLocal = Vector3.zero;
+            LastSasAngularErrorLocal = Vector3.zero;
+            LastRawSasDesiredTorqueLocal = Vector3.zero;
+        }
+
+        Vector3 sasCommand = stabilizeAngular && shipRigidbody != null
+            ? ComputeSasCommand(sasMode, sasTargetRotation, hasSasTargetRotation)
+            : Vector3.zero;
         LastRawSasCommand = sasCommand;
         LastSasReleasedAxes = GetSasReleasedAxes(manualAttitude);
         LastSasCommand = MaskSasForManualAxes(sasCommand, manualAttitude);
+        LastSasDesiredTorqueLocal = MaskSasForManualAxes(LastRawSasDesiredTorqueLocal, manualAttitude);
         if (stabilizeAngular && shipRigidbody != null)
         {
             SettleTinySasAngularVelocity(manualAttitude);
@@ -282,24 +294,66 @@ public void ApplyControls(Vector3 translationCommand, Vector3 attitudeCommand, b
         ApplyNozzleVfx();
     }
 
-    private Vector3 ComputeSasCommand(float deltaTime)
+    private Vector3 ComputeSasCommand(SasControlMode sasMode, Quaternion sasTargetRotation, bool hasSasTargetRotation)
     {
         if (shipRigidbody == null)
         {
             return Vector3.zero;
         }
 
+        float torqueAuthority = GetTorqueAuthority();
+        LastRawSasDesiredTorqueLocal = ComputeSasDesiredTorqueLocal(sasMode, sasTargetRotation, hasSasTargetRotation, torqueAuthority);
+        if (torqueAuthority <= 0.0001f)
+        {
+            return Vector3.zero;
+        }
+
+        return Vector3.ClampMagnitude(LastRawSasDesiredTorqueLocal / torqueAuthority, 1f);
+    }
+
+    private Vector3 ComputeSasDesiredTorqueLocal(SasControlMode sasMode, Quaternion sasTargetRotation, bool hasSasTargetRotation, float torqueAuthority)
+    {
         Vector3 localAngularVelocity = transform.InverseTransformDirection(shipRigidbody.angularVelocity);
         localAngularVelocity.x = ApplySasAngularVelocityDeadZone(localAngularVelocity.x);
         localAngularVelocity.y = ApplySasAngularVelocityDeadZone(localAngularVelocity.y);
         localAngularVelocity.z = ApplySasAngularVelocityDeadZone(localAngularVelocity.z);
+        LastSasAngularVelocityLocal = localAngularVelocity;
 
-        float scale = Mathf.Max(0f, sasAuthority) * Mathf.Max(deltaTime, 0.02f) * SasResponseMultiplier;
-        Vector3 command = -localAngularVelocity * scale;
-        command.x = ApplyMinimumSasCommand(command.x);
-        command.y = ApplyMinimumSasCommand(command.y);
-        command.z = ApplyMinimumSasCommand(command.z);
-        return Vector3.ClampMagnitude(command, 1f);
+        Vector3 angularError = sasMode == SasControlMode.HoldAttitude && hasSasTargetRotation
+            ? ComputeAngularErrorLocal(sasTargetRotation)
+            : Vector3.zero;
+        LastSasAngularErrorLocal = angularError;
+
+        float derivativeGain = Mathf.Max(0f, sasAuthority) * torqueAuthority;
+        float proportionalGain = sasMode == SasControlMode.HoldAttitude ? 0.75f * torqueAuthority : 0f;
+        Vector3 desiredTorque = angularError * proportionalGain - localAngularVelocity * derivativeGain;
+        return Vector3.ClampMagnitude(desiredTorque, torqueAuthority);
+    }
+
+    private Vector3 ComputeAngularErrorLocal(Quaternion targetRotation)
+    {
+        Quaternion error = targetRotation * Quaternion.Inverse(transform.rotation);
+        if (error.w < 0f)
+        {
+            error.x = -error.x;
+            error.y = -error.y;
+            error.z = -error.z;
+            error.w = -error.w;
+        }
+
+        error.ToAngleAxis(out float angleDegrees, out Vector3 axisWorld);
+        if (float.IsNaN(axisWorld.x) || axisWorld.sqrMagnitude <= 0.0001f)
+        {
+            return Vector3.zero;
+        }
+
+        if (angleDegrees > 180f)
+        {
+            angleDegrees -= 360f;
+        }
+
+        Vector3 errorWorld = axisWorld.normalized * (angleDegrees * Mathf.Deg2Rad);
+        return transform.InverseTransformDirection(errorWorld);
     }
 
     private static float ApplySasAngularVelocityDeadZone(float angularVelocity)
@@ -329,11 +383,6 @@ public void ApplyControls(Vector3 translationCommand, Vector3 attitudeCommand, b
 
         localAngularVelocity = 0f;
         return true;
-    }
-
-    private static float ApplyMinimumSasCommand(float command)
-    {
-        return Mathf.Abs(command) <= 0f ? 0f : Mathf.Sign(command) * Mathf.Max(Mathf.Abs(command), MinSasBrakingCommand);
     }
 
 private void ClearRuntimeForces()
