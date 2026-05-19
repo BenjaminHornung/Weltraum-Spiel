@@ -10,6 +10,11 @@ public class Projectile : MonoBehaviour
     private Rigidbody rigidbodyRef;
     private TrailRenderer trailRenderer;
     private Light glowLight;
+    private Vector3 previousPositionWorld;
+    private bool hasPreviousPosition;
+
+    public Vector3 PreviousPositionWorld => previousPositionWorld;
+    public bool HasPreviousPosition => hasPreviousPosition;
 
     private void Awake()
     {
@@ -20,6 +25,7 @@ public class Projectile : MonoBehaviour
     private void OnEnable()
     {
         destroyAt = Time.time + Mathf.Max(0.1f, defaultLifetime);
+        RecordCurrentPosition();
     }
 
     public void Initialize(Vector3 initialVelocity, float lifetime)
@@ -32,6 +38,12 @@ public class Projectile : MonoBehaviour
         rigidbodyRef.useGravity = false;
         rigidbodyRef.linearVelocity = initialVelocity;
         destroyAt = Time.time + Mathf.Max(0.1f, lifetime);
+        RecordCurrentPosition();
+    }
+
+    private void FixedUpdate()
+    {
+        RecordCurrentPosition();
     }
 
     private void Update()
@@ -100,6 +112,12 @@ public class Projectile : MonoBehaviour
         glowLight.intensity = 1.8f;
     }
 
+    private void RecordCurrentPosition()
+    {
+        previousPositionWorld = rigidbodyRef != null ? rigidbodyRef.position : transform.position;
+        hasPreviousPosition = true;
+    }
+
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -114,4 +132,3 @@ public class Projectile : MonoBehaviour
         Destroy(gameObject);
     }
 }
-
