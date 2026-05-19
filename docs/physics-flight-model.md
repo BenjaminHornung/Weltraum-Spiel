@@ -22,19 +22,29 @@ Main thrust and RCS still own their behavior and tuning. The core is the common 
 
 ## Main Thrust
 
-Straight main thrust is COM-safe. The main engine computes the ship-forward base thrust vector and applies that force at `Rigidbody.worldCenterOfMass` through `ShipPhysicsCore`:
+Main thrust has an explicit mode so the prototype can switch between stable gameplay thrust and stricter physical nozzle force without bypassing `ShipPhysicsCore`.
+
+`ComSafeSteeringOnly` is the default. The main engine computes the ship-forward base thrust vector and applies that force at `Rigidbody.worldCenterOfMass` through `ShipPhysicsCore`:
 
 ```csharp
 physicsCore.ApplyForceAtCenterOfMass(transform.forward * thrust, ForceMode.Force);
 ```
 
-That means throttle-only forward thrust does not create torque when no gimbal input is present.
+That means throttle-only forward thrust does not create torque when no gimbal input is present. Only the steering delta between the base direction and the gimballed direction is applied at the nozzle transform.
+
+`FullyPhysicalNozzleForce` applies the full gimballed thrust vector at the main nozzle position through `ShipPhysicsCore`:
+
+```csharp
+physicsCore.ApplyForceAtPosition(gimballedDirection * thrust, nozzlePosition, ForceMode.Force);
+```
+
+That mode is more physically literal and can create torque from an off-center nozzle or shifted COM. Its diagnostic torque follows the same cross-product rule as other force-at-position paths.
 
 ## Gimbal
 
 The visible `MainThrusterGimbal` cube rotates with the effective yaw and pitch gimbal command. The default gimbal limit remains 20 degrees, but the default response scalar is 0.35 so normal keyboard attitude input uses a softer cone while preserving the hard cap.
 
-The physical thrust vector follows the same effective gimbal direction as the visual. The straight component is still applied through COM; only the steering delta between the base direction and the gimballed direction is applied at the nozzle transform. That steering component is the only main-thruster source of torque:
+The physical thrust vector follows the same effective gimbal direction as the visual. In `ComSafeSteeringOnly`, the steering component is the only main-thruster source of torque:
 
 ```csharp
 steeringForce = (gimballedDirection - baseDirection) * thrust;

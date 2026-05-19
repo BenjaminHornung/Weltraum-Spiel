@@ -53,14 +53,15 @@ Camera reset is bound to Backquote. Unity Input System key controls are physical
 ## Prototype Values
 
 - `PrototypeBootstrap` can optionally reference a `PrototypeShipConfig` ScriptableObject for prototype tuning. Leave it unassigned to keep the built-in default ship values.
-- Create a config from `Assets > Create > Prototype > Ship Config` to tune fuel, dry masses, main thruster force/gimbal response, RCS thrust/selection values, projectile speed/fire rate/lifetime/scale/mass/recoil, and camera distance/height.
+- Create a config from `Assets > Create > Prototype > Ship Config` to tune fuel, dry masses, main thruster force/mode/gimbal response, RCS thrust/selection values, projectile speed/fire rate/lifetime/scale/mass/recoil, and camera distance/height.
 - This config is only a prototype tuning container. It does not add a ship editor, inventory, save/load, or final module architecture.
 - Fuel is stored as kilograms and contributes to the generated fuel-tank module mass.
 - Full main thrust consumes `0.6 kg/s`, scales with throttle, and the final partial-fuel step applies only the covered thrust fraction.
 - A configured fuel rate of zero means fuel-free thrust; fuel-consuming thrusters stop only when they request fuel and no fuel is available.
 - RCS consumes fuel from the final bounded nozzle allocator output, so combined translation/attitude commands charge each nozzle once after allocation.
 - The generated ship is a larger elongated module craft with a visible cube-like main gimbal module and four side-centered RCS blocks.
-- Main-thruster straight thrust is applied through center of mass; only gimbal steering force is applied at the offset nozzle and contributes intentional torque telemetry.
+- Main-thruster mode defaults to `ComSafeSteeringOnly`: straight thrust is applied through center of mass, and only gimbal steering force is applied at the offset nozzle for intentional torque telemetry.
+- `FullyPhysicalNozzleForce` can be selected for experiments; it applies the full gimballed main-engine force at the nozzle position and can create torque from nozzle/COM offsets.
 - Main-thruster gimbal support keeps a 20 degree hard limit, while the default response scalar uses a softer 0.35 keyboard command. The visible gimbal cube and the physics force vector use the same effective command.
 - Each RCS block has five installed nozzle transforms, excluding the side that faces into the ship wall. RCS translation, attitude, and SAS use actual nozzle positions/directions rather than hardcoded slots.
 - Active RCS nozzles show green debug VFX. The main thruster keeps its separate orange particle effect.

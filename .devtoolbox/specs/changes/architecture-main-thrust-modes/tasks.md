@@ -16,7 +16,7 @@
 - [x] Implement FullyPhysicalNozzleForce path through ShipPhysicsCore
 - [x] Add inspector fields and safe defaults
 - [x] Add debug overlay fields for mode and main-thrust torque
-- [ ] Update README and physics docs
+- [x] Update README and physics docs
 
 ## Verification
 - [ ] Validate changed Unity scripts with Unity MCP
