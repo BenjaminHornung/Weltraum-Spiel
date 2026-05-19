@@ -48,5 +48,6 @@ Findings:
 
 ## Build And Test
 
+- Unity MCP EditMode tests: 25/25 passed (`job_id=38273d830c584cd083acd3ca52301792`).
 - `dotnet build "Weltraum Spiel.sln"`: passed with existing Unity reference/serialized-field warnings.
 - `dotnet test "Weltraum Spiel.sln"`: exited 0.

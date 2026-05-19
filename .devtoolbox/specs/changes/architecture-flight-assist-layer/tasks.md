@@ -24,4 +24,4 @@
 - [x] Verify assist requests are visible separately from manual/SAS
 - [x] Verify no hidden damping is introduced
 - [x] Add test evidence under this spec
-- [ ] Commit implementation with spec title and changelog
+- [x] Commit implementation with spec title and changelog
