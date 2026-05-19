@@ -29,6 +29,11 @@ public class RcsThrusterController : MonoBehaviour
     [SerializeField] private float attitudeForce = 6500f;
     [SerializeField] private float sasAuthority = 1.8f;
     [SerializeField] private float minSelectionDot = 0.25f;
+
+    [Header("SAS PD Control")]
+    [SerializeField] private float sasProportionalGain = 0.75f;
+    [SerializeField] private float sasDerivativeGain = 1.8f;
+
     [SerializeField] private Rigidbody shipRigidbody;
     [SerializeField] private ShipPhysicsCore physicsCore;
     [SerializeField] private ShipStats shipStats;
@@ -49,9 +54,11 @@ public class RcsThrusterController : MonoBehaviour
     private const float SasAngularVelocitySettleThreshold = 0.0025f;
     private const float SasCommandDeadZone = 0.0001f;
 
-        public float TranslationForce => Mathf.Max(0f, translationForce);
+    public float TranslationForce => Mathf.Max(0f, translationForce);
     public float AttitudeForce => Mathf.Max(0f, attitudeForce);
-    public float SasAuthority => Mathf.Max(0f, sasAuthority);
+    public float SasAuthority => Mathf.Max(0f, sasDerivativeGain);
+    public float SasProportionalGain => Mathf.Max(0f, sasProportionalGain);
+    public float SasDerivativeGain => Mathf.Max(0f, sasDerivativeGain);
     public float MinSelectionDot => Mathf.Clamp(minSelectionDot, 0f, 0.95f);
 public bool RcsEnabled { get; private set; } = true;
     public bool HasRcs => InstalledNozzleCount > 0;
@@ -330,8 +337,8 @@ public void ApplyControls(Vector3 translationCommand, Vector3 attitudeCommand, b
             : Vector3.zero;
         LastSasAngularErrorLocal = angularError;
 
-        float derivativeGain = Mathf.Max(0f, sasAuthority) * torqueAuthority;
-        float proportionalGain = sasMode == SasControlMode.HoldAttitude ? 0.75f * torqueAuthority : 0f;
+        float derivativeGain = SasDerivativeGain * torqueAuthority;
+        float proportionalGain = sasMode == SasControlMode.HoldAttitude ? SasProportionalGain * torqueAuthority : 0f;
         Vector3 desiredTorque = angularError * proportionalGain - localAngularVelocity * derivativeGain;
         return Vector3.ClampMagnitude(desiredTorque, torqueAuthority);
     }
@@ -674,6 +681,8 @@ private void ApplyForceAtNozzle(RcsNozzle nozzle, Vector3 forceWorld, bool trans
         translationForce = Mathf.Max(0f, translationForce);
         attitudeForce = Mathf.Max(0f, attitudeForce);
         sasAuthority = Mathf.Max(0f, sasAuthority);
+        sasProportionalGain = Mathf.Max(0f, sasProportionalGain);
+        sasDerivativeGain = Mathf.Max(0f, sasDerivativeGain);
         minSelectionDot = Mathf.Clamp(minSelectionDot, 0f, 0.95f);
     }
 
@@ -690,6 +699,7 @@ public void ApplyConfig(PrototypeShipConfig config)
         translationForce = settings.translationForce;
         attitudeForce = settings.attitudeForce;
         sasAuthority = settings.sasAuthority;
+        sasDerivativeGain = settings.sasAuthority;
         minSelectionDot = settings.minSelectionDot;
         RefreshNozzles();
     }

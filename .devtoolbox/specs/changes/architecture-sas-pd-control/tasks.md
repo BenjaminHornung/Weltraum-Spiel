@@ -15,7 +15,7 @@
 - [x] Convert SAS to desired torque generation
 - [x] Route SAS torque through RCS allocator
 - [x] Add per-axis manual override/masking diagnostics
-- [ ] Add PD gain inspector fields
+- [x] Add PD gain inspector fields
 - [ ] Update debug overlay, README, and physics docs
 
 ## Verification

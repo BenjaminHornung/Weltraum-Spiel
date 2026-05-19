@@ -83,9 +83,11 @@ public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal
     public bool MainThermalOverheated => mainThruster != null && mainThruster.IsOverheated;
     public float MainThermalEfficiency => mainThruster != null ? mainThruster.ThermalEfficiencyScalar : 1f;
     public float MainPowerDrawKw => mainThruster != null ? mainThruster.LastPowerDrawKw : 0f;
-        public float RcsTranslationForceSetting => rcsThrusters != null ? rcsThrusters.TranslationForce : 0f;
+    public float RcsTranslationForceSetting => rcsThrusters != null ? rcsThrusters.TranslationForce : 0f;
     public float RcsAttitudeForceSetting => rcsThrusters != null ? rcsThrusters.AttitudeForce : 0f;
     public float RcsSasAuthority => rcsThrusters != null ? rcsThrusters.SasAuthority : 0f;
+    public float RcsSasProportionalGain => rcsThrusters != null ? rcsThrusters.SasProportionalGain : 0f;
+    public float RcsSasDerivativeGain => rcsThrusters != null ? rcsThrusters.SasDerivativeGain : 0f;
     public float RcsMinSelectionDot => rcsThrusters != null ? rcsThrusters.MinSelectionDot : 0f;
 public bool HasRcs => rcsThrusters != null && rcsThrusters.HasRcs;
     public bool RcsEnabled => rcsThrusters != null ? rcsThrusters.RcsEnabled : rcsEnabled;
