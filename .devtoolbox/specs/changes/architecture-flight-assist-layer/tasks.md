@@ -11,7 +11,7 @@
 
 ## Implementation
 - [x] Inspect input, SAS, RCS allocator, and ShipPhysicsCore through Unity MCP
-- [ ] Define flight-assist mode enum/data
+- [x] Define flight-assist mode enum/data
 - [ ] Add explicit request-source diagnostics
 - [ ] Ensure Simulation Mode preserves momentum
 - [ ] Route any assist force/torque through core/allocators
