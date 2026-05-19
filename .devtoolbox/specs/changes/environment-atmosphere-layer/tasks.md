@@ -20,7 +20,7 @@
 ## Verification
 - [x] Validate changed Unity scripts with Unity MCP
 - [x] Verify default scene has zero atmosphere force
-- [ ] Verify drag opposes velocity in a test atmosphere
+- [x] Verify drag opposes velocity in a test atmosphere
 - [ ] Verify drag scales with squared speed
 - [ ] Add test evidence under this spec
 - [ ] Commit implementation with spec title and changelog
