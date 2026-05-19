@@ -5,6 +5,7 @@ public class GunModule : MonoBehaviour
 {
     [SerializeField] private ShipStats shipStats;
     [SerializeField] private Rigidbody shipRigidbody;
+    [SerializeField] private ShipPhysicsCore physicsCore;
     [SerializeField] private Transform muzzleTransform;
     [SerializeField] private float projectileScale = 0.24f;
     [SerializeField] private float projectileMass = 0.12f;
@@ -14,6 +15,10 @@ public class GunModule : MonoBehaviour
 
     public float ProjectileMass => Mathf.Max(0.001f, projectileMass);
     public bool RecoilEnabled => recoilEnabled;
+    public Vector3 LastProjectileVelocityWorld { get; private set; }
+    public Vector3 LastRecoilImpulseWorld { get; private set; }
+    public Vector3 LastRecoilPositionWorld { get; private set; }
+    public bool LastRecoilApplied { get; private set; }
 
     private void Awake()
     {
@@ -31,6 +36,11 @@ public class GunModule : MonoBehaviour
         if (shipStats == null)
         {
             shipStats = GetComponentInParent<ShipStats>();
+        }
+
+        if (physicsCore == null)
+        {
+            physicsCore = GetComponent<ShipPhysicsCore>();
         }
     }
 
@@ -101,9 +111,33 @@ public class GunModule : MonoBehaviour
         rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
 
         var projectile = projectileObject.AddComponent<Projectile>();
-        projectile.Initialize(shipRigidbody.linearVelocity + (muzzleTransform.forward * shipStats.ProjectileSpeed), shipStats.ProjectileLifetime);
+        LastProjectileVelocityWorld = shipRigidbody.linearVelocity + (muzzleTransform.forward * shipStats.ProjectileSpeed);
+        projectile.Initialize(LastProjectileVelocityWorld, shipStats.ProjectileLifetime);
+        ApplyRecoilImpulse();
     }
 
+    private bool ApplyRecoilImpulse()
+    {
+        LastRecoilApplied = false;
+        LastRecoilImpulseWorld = Vector3.zero;
+        LastRecoilPositionWorld = muzzleTransform != null ? muzzleTransform.position : transform.position;
+
+        if (!recoilEnabled || physicsCore == null || muzzleTransform == null || shipStats == null)
+        {
+            return false;
+        }
+
+        Vector3 projectileMomentum = muzzleTransform.forward * (ProjectileMass * shipStats.ProjectileSpeed);
+        Vector3 recoilImpulse = -projectileMomentum;
+        if (!physicsCore.ApplyForceAtPosition(recoilImpulse, LastRecoilPositionWorld, ForceMode.Impulse))
+        {
+            return false;
+        }
+
+        LastRecoilImpulseWorld = recoilImpulse;
+        LastRecoilApplied = true;
+        return true;
+    }
 
 public void ApplyConfig(PrototypeShipConfig config)
     {
