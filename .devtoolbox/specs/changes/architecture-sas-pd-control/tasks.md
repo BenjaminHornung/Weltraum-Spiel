@@ -13,7 +13,7 @@
 - [x] Inspect current SAS input and allocator integration through Unity MCP
 - [x] Add SAS mode model for Kill Rotation and Hold Attitude
 - [x] Convert SAS to desired torque generation
-- [ ] Route SAS torque through RCS allocator
+- [x] Route SAS torque through RCS allocator
 - [ ] Add per-axis manual override/masking diagnostics
 - [ ] Add PD gain inspector fields
 - [ ] Update debug overlay, README, and physics docs

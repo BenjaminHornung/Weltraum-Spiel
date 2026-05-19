@@ -80,6 +80,9 @@ public Vector3 LastSasCommand { get; private set; }
     public Vector3 LastSasAngularErrorLocal { get; private set; }
     public Vector3 LastRawSasDesiredTorqueLocal { get; private set; }
     public Vector3 LastSasDesiredTorqueLocal { get; private set; }
+    public Vector3 LastSasDesiredTorqueWorld { get; private set; }
+    public Vector3 LastManualDesiredTorqueLocal { get; private set; }
+    public Vector3 LastDesiredTorqueLocal { get; private set; }
     public Vector3 LastTranslationForce { get; private set; }
     public Vector3 LastTorque { get; private set; }
     public Vector3 LastForceAtPositionTotal { get; private set; }
@@ -274,6 +277,13 @@ public void ApplyControls(Vector3 translationCommand, Vector3 attitudeCommand, b
         }
 
         LastAttitudeCommand = Vector3.ClampMagnitude(manualAttitude + LastSasCommand, 1f);
+        Vector3 desiredForceWorld = transform.TransformDirection(LastTranslationCommand) * Mathf.Max(0f, translationForce);
+        float torqueAuthority = GetTorqueAuthority();
+        LastManualDesiredTorqueLocal = Vector3.ClampMagnitude(manualAttitude, 1f) * torqueAuthority;
+        Vector3 desiredTorqueLocal = Vector3.ClampMagnitude(LastManualDesiredTorqueLocal + LastSasDesiredTorqueLocal, torqueAuthority);
+        LastDesiredTorqueLocal = desiredTorqueLocal;
+        Vector3 desiredTorqueWorld = transform.TransformDirection(desiredTorqueLocal);
+        LastSasDesiredTorqueWorld = transform.TransformDirection(LastSasDesiredTorqueLocal);
         ClearRuntimeForces();
 
         if (shipRigidbody == null || physicsCore == null || !CanApplyRcs)
@@ -281,14 +291,6 @@ public void ApplyControls(Vector3 translationCommand, Vector3 attitudeCommand, b
             ClearNozzleVfx();
             return;
         }
-
-        Vector3 desiredForceWorld = transform.TransformDirection(LastTranslationCommand) * Mathf.Max(0f, translationForce);
-        Vector3 desiredTorqueLocal = new Vector3(
-            SelectAttitudeCommand(manualAttitude.x, LastSasCommand.x, LastAttitudeCommand.x),
-            SelectAttitudeCommand(manualAttitude.y, LastSasCommand.y, LastAttitudeCommand.y),
-            SelectAttitudeCommand(manualAttitude.z, LastSasCommand.z, LastAttitudeCommand.z));
-        desiredTorqueLocal = Vector3.ClampMagnitude(desiredTorqueLocal, 1f) * GetTorqueAuthority();
-        Vector3 desiredTorqueWorld = transform.TransformDirection(desiredTorqueLocal);
 
         AllocateAndApplyRcs(desiredForceWorld, desiredTorqueWorld, manualAttitude, deltaTime);
         ApplyNozzleVfx();
