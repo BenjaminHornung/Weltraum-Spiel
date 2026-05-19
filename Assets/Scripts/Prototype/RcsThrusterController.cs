@@ -13,6 +13,17 @@ public class RcsThrusterController : MonoBehaviour
         public bool active;
     }
 
+
+    private class RcsAllocation
+    {
+        public RcsNozzle nozzle;
+        public Vector3 position;
+        public Vector3 forceAtFull;
+        public Vector3 torqueAtFull;
+        public float maxThrust;
+        public float throttle;
+    }
+
     [Header("RCS Tuning")]
     [SerializeField] private float translationForce = 9000f;
     [SerializeField] private float attitudeForce = 6500f;
@@ -67,6 +78,8 @@ public Vector3 LastSasCommand { get; private set; }
     public Vector3 LastForceAtPositionTotal { get; private set; }
     public Vector3 LastYawForceWorld { get; private set; }
     public Vector3 LastYawTorqueEstimate { get; private set; }
+    public float LastMaxNozzleThrottle { get; private set; }
+    public int LastNozzleApplicationCount { get; private set; }
 
     private void Awake()
     {
@@ -186,7 +199,7 @@ public Vector3 LastSasCommand { get; private set; }
         RefreshNozzles();
     }
 
-    public void ApplyControls(Vector3 translationCommand, Vector3 attitudeCommand, bool stabilizeAngular, float deltaTime)
+public void ApplyControls(Vector3 translationCommand, Vector3 attitudeCommand, bool stabilizeAngular, float deltaTime)
     {
         ResolveReferences();
         ResolveLegacyBlockReferences();
@@ -212,8 +225,15 @@ public Vector3 LastSasCommand { get; private set; }
             return;
         }
 
-        ApplyTranslationForces();
-        ApplyAttitudeForces(manualAttitude);
+        Vector3 desiredForceWorld = transform.TransformDirection(LastTranslationCommand) * Mathf.Max(0f, translationForce);
+        Vector3 desiredTorqueLocal = new Vector3(
+            SelectAttitudeCommand(manualAttitude.x, LastSasCommand.x, LastAttitudeCommand.x),
+            SelectAttitudeCommand(manualAttitude.y, LastSasCommand.y, LastAttitudeCommand.y),
+            SelectAttitudeCommand(manualAttitude.z, LastSasCommand.z, LastAttitudeCommand.z));
+        desiredTorqueLocal = Vector3.ClampMagnitude(desiredTorqueLocal, 1f) * GetTorqueAuthority();
+        Vector3 desiredTorqueWorld = transform.TransformDirection(desiredTorqueLocal);
+
+        AllocateAndApplyRcs(desiredForceWorld, desiredTorqueWorld, manualAttitude);
         ApplyNozzleVfx();
     }
 
@@ -271,13 +291,15 @@ public Vector3 LastSasCommand { get; private set; }
         return Mathf.Abs(command) <= 0f ? 0f : Mathf.Sign(command) * Mathf.Max(Mathf.Abs(command), MinSasBrakingCommand);
     }
 
-    private void ClearRuntimeForces()
+private void ClearRuntimeForces()
     {
         LastTranslationForce = Vector3.zero;
         LastTorque = Vector3.zero;
         LastForceAtPositionTotal = Vector3.zero;
         LastYawForceWorld = Vector3.zero;
         LastYawTorqueEstimate = Vector3.zero;
+        LastMaxNozzleThrottle = 0f;
+        LastNozzleApplicationCount = 0;
         ActiveNozzleCount = 0;
         ActiveNozzleIds = string.Empty;
         activeNozzleBuilder.Length = 0;
@@ -566,5 +588,206 @@ public void ApplyConfig(PrototypeShipConfig config)
         sasAuthority = settings.sasAuthority;
         minSelectionDot = settings.minSelectionDot;
         RefreshNozzles();
+    }
+
+
+private void AllocateAndApplyRcs(Vector3 desiredForceWorld, Vector3 desiredTorqueWorld, Vector3 manualAttitude)
+    {
+        if (desiredForceWorld.sqrMagnitude <= 0.0001f && desiredTorqueWorld.sqrMagnitude <= 0.0001f)
+        {
+            return;
+        }
+
+        RcsAllocation[] allocations = BuildAllocationData();
+        if (allocations.Length == 0)
+        {
+            return;
+        }
+
+        float forceWeight;
+        float torqueWeight;
+        GetAllocatorWeights(desiredForceWorld, desiredTorqueWorld, out forceWeight, out torqueWeight);
+        AllocateThrottleGreedy(allocations, desiredForceWorld, desiredTorqueWorld, forceWeight, torqueWeight);
+        ApplyAllocatedForces(allocations, desiredForceWorld, manualAttitude);
+    }
+
+    private RcsAllocation[] BuildAllocationData()
+    {
+        var allocations = new System.Collections.Generic.List<RcsAllocation>(nozzles.Count);
+        for (int i = 0; i < nozzles.Count; i++)
+        {
+            RcsNozzle nozzle = nozzles[i];
+            if (!IsActiveNozzleTransform(nozzle.transform))
+            {
+                continue;
+            }
+
+            float maxThrust = GetNozzleThrust(nozzle, Mathf.Max(attitudeForce, translationForce));
+            if (maxThrust <= 0.0001f)
+            {
+                continue;
+            }
+
+            Vector3 forceAtFull = GetNozzleForceDirection(nozzle.transform) * maxThrust;
+            Vector3 position = nozzle.transform.position;
+            Vector3 lever = position - shipRigidbody.worldCenterOfMass;
+            allocations.Add(new RcsAllocation
+            {
+                nozzle = nozzle,
+                position = position,
+                forceAtFull = forceAtFull,
+                torqueAtFull = Vector3.Cross(lever, forceAtFull),
+                maxThrust = maxThrust,
+                throttle = 0f
+            });
+        }
+
+        return allocations.ToArray();
+    }
+
+    private float GetTorqueAuthority()
+    {
+        float representativeLever = 0f;
+        int leverCount = 0;
+        if (shipRigidbody != null)
+        {
+            Vector3 centerOfMass = shipRigidbody.worldCenterOfMass;
+            for (int i = 0; i < nozzles.Count; i++)
+            {
+                RcsNozzle nozzle = nozzles[i];
+                if (!IsActiveNozzleTransform(nozzle.transform))
+                {
+                    continue;
+                }
+
+                representativeLever += (nozzle.transform.position - centerOfMass).magnitude;
+                leverCount++;
+            }
+        }
+
+        if (leverCount > 0)
+        {
+            representativeLever /= leverCount;
+        }
+
+        representativeLever = Mathf.Max(0.25f, representativeLever);
+        return Mathf.Max(0f, attitudeForce) * representativeLever;
+    }
+
+    private static void GetAllocatorWeights(Vector3 desiredForceWorld, Vector3 desiredTorqueWorld, out float forceWeight, out float torqueWeight)
+    {
+        bool wantsForce = desiredForceWorld.sqrMagnitude > 0.0001f;
+        bool wantsTorque = desiredTorqueWorld.sqrMagnitude > 0.0001f;
+        if (wantsForce && !wantsTorque)
+        {
+            forceWeight = 1f;
+            torqueWeight = 3f;
+            return;
+        }
+
+        if (!wantsForce && wantsTorque)
+        {
+            forceWeight = 3f;
+            torqueWeight = 1f;
+            return;
+        }
+
+        forceWeight = 1.5f;
+        torqueWeight = 1.5f;
+    }
+
+    private static void AllocateThrottleGreedy(RcsAllocation[] allocations, Vector3 desiredForceWorld, Vector3 desiredTorqueWorld, float forceWeight, float torqueWeight)
+    {
+        const int MaxPasses = 32;
+        const float MinImprovement = 0.0001f;
+
+        Vector3 residualForce = desiredForceWorld;
+        Vector3 residualTorque = desiredTorqueWorld;
+        for (int pass = 0; pass < MaxPasses; pass++)
+        {
+            int bestIndex = -1;
+            float bestDelta = 0f;
+            float bestImprovement = 0f;
+
+            for (int i = 0; i < allocations.Length; i++)
+            {
+                RcsAllocation allocation = allocations[i];
+                float remainingThrottle = 1f - allocation.throttle;
+                if (remainingThrottle <= 0.0001f)
+                {
+                    continue;
+                }
+
+                float denominator = WeightedMagnitudeSquared(allocation.forceAtFull, allocation.torqueAtFull, forceWeight, torqueWeight);
+                if (denominator <= 0.0001f)
+                {
+                    continue;
+                }
+
+                float numerator = forceWeight * Vector3.Dot(residualForce, allocation.forceAtFull)
+                    + torqueWeight * Vector3.Dot(residualTorque, allocation.torqueAtFull);
+                float delta = Mathf.Clamp(numerator / denominator, 0f, remainingThrottle);
+                if (delta <= 0.0001f)
+                {
+                    continue;
+                }
+
+                Vector3 newResidualForce = residualForce - allocation.forceAtFull * delta;
+                Vector3 newResidualTorque = residualTorque - allocation.torqueAtFull * delta;
+                float improvement = WeightedMagnitudeSquared(residualForce, residualTorque, forceWeight, torqueWeight)
+                    - WeightedMagnitudeSquared(newResidualForce, newResidualTorque, forceWeight, torqueWeight);
+                if (improvement > bestImprovement)
+                {
+                    bestImprovement = improvement;
+                    bestDelta = delta;
+                    bestIndex = i;
+                }
+            }
+
+            if (bestIndex < 0 || bestImprovement <= MinImprovement)
+            {
+                break;
+            }
+
+            allocations[bestIndex].throttle = Mathf.Clamp01(allocations[bestIndex].throttle + bestDelta);
+            residualForce -= allocations[bestIndex].forceAtFull * bestDelta;
+            residualTorque -= allocations[bestIndex].torqueAtFull * bestDelta;
+        }
+    }
+
+    private static float WeightedMagnitudeSquared(Vector3 force, Vector3 torque, float forceWeight, float torqueWeight)
+    {
+        return force.sqrMagnitude * forceWeight + torque.sqrMagnitude * torqueWeight;
+    }
+
+    private void ApplyAllocatedForces(RcsAllocation[] allocations, Vector3 desiredForceWorld, Vector3 manualAttitude)
+    {
+        bool recordYaw = Mathf.Abs(manualAttitude.y) > ManualCommandDeadZone || Mathf.Abs(LastSasCommand.y) > SasCommandDeadZone;
+        for (int i = 0; i < allocations.Length; i++)
+        {
+            RcsAllocation allocation = allocations[i];
+            float throttle = Mathf.Clamp01(allocation.throttle);
+            if (throttle <= 0.0001f)
+            {
+                continue;
+            }
+
+            Vector3 force = allocation.forceAtFull * throttle;
+            shipRigidbody.AddForceAtPosition(force, allocation.position, ForceMode.Force);
+            Vector3 torque = allocation.torqueAtFull * throttle;
+            LastForceAtPositionTotal += force;
+            LastTorque += torque;
+            LastNozzleApplicationCount++;
+            LastMaxNozzleThrottle = Mathf.Max(LastMaxNozzleThrottle, throttle);
+            allocation.nozzle.active = true;
+
+            if (recordYaw)
+            {
+                LastYawForceWorld += force;
+                LastYawTorqueEstimate += torque;
+            }
+        }
+
+        LastTranslationForce = desiredForceWorld;
     }
 }

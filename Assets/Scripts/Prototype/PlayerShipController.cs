@@ -80,6 +80,8 @@ public bool HasRcs => rcsThrusters != null && rcsThrusters.HasRcs;
     public int InstalledRcsNozzleCount => rcsThrusters != null ? rcsThrusters.InstalledNozzleCount : 0;
     public int ActiveRcsNozzleCount => rcsThrusters != null ? rcsThrusters.ActiveNozzleCount : 0;
     public string ActiveRcsNozzleIds => rcsThrusters != null ? rcsThrusters.ActiveNozzleIds : string.Empty;
+    public float LastRcsMaxNozzleThrottle => rcsThrusters != null ? rcsThrusters.LastMaxNozzleThrottle : 0f;
+    public int LastRcsNozzleApplicationCount => rcsThrusters != null ? rcsThrusters.LastNozzleApplicationCount : 0;
         public Vector3 LastRawRcsSasCommand => rcsThrusters != null ? rcsThrusters.LastRawSasCommand : Vector3.zero;
     public Vector3 LastRcsSasReleasedAxes => rcsThrusters != null ? rcsThrusters.LastSasReleasedAxes : Vector3.one;
 public Vector3 LastRcsSasCommand => rcsThrusters != null ? rcsThrusters.LastSasCommand : Vector3.zero;

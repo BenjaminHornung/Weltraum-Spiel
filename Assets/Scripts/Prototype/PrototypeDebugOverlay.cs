@@ -120,6 +120,8 @@ public class PrototypeDebugOverlay : MonoBehaviour
         int installedNozzles = shipController != null ? shipController.InstalledRcsNozzleCount : 0;
         int activeNozzles = shipController != null ? shipController.ActiveRcsNozzleCount : 0;
         string activeNozzleIds = shipController != null ? shipController.ActiveRcsNozzleIds : string.Empty;
+        float rcsMaxNozzleThrottle = shipController != null ? shipController.LastRcsMaxNozzleThrottle : 0f;
+        int rcsNozzleApplications = shipController != null ? shipController.LastRcsNozzleApplicationCount : 0;
         float rcsTranslationSetting = shipController != null ? shipController.RcsTranslationForceSetting : 0f;
         float rcsAttitudeSetting = shipController != null ? shipController.RcsAttitudeForceSetting : 0f;
         float sasAuthority = shipController != null ? shipController.RcsSasAuthority : 0f;
@@ -175,6 +177,7 @@ public class PrototypeDebugOverlay : MonoBehaviour
         GUILayout.Label($"RCS: installed {(hasRcs ? "yes" : "no")}, enabled {(rcsEnabled ? "yes" : "no")}", labelStyle);
         GUILayout.Label($"RCS tuning: move {rcsTranslationSetting:0} N, attitude {rcsAttitudeSetting:0} N", labelStyle);
         GUILayout.Label($"RCS select dot: {minSelectionDot:0.00}, nozzles {activeNozzles}/{installedNozzles}", labelStyle);
+        GUILayout.Label($"RCS allocator: max throttle {rcsMaxNozzleThrottle:0.00}, applications {rcsNozzleApplications}", labelStyle);
         GUILayout.Label($"Precision: {(precision ? "on" : "off")}", labelStyle);
         GUILayout.Label($"Move cmd: L/R {rcsTranslation.x:0.00}, U/D {rcsTranslation.y:0.00}, F/B {rcsTranslation.z:0.00}", labelStyle);
         GUILayout.Label($"Attitude cmd: P {rcsAttitude.x:0.00}, Y {rcsAttitude.y:0.00}, R {rcsAttitude.z:0.00}", labelStyle);
