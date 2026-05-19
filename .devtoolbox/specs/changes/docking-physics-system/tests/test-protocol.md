@@ -79,3 +79,11 @@ Conclusion: docking should be implemented as a prototype component that computes
 - The test verifies a soft-capture request is `AssistedFlight`, source `Docking`, not debug-only, and clamps both force and torque to the source port maximums.
 - Unity MCP `validate_script` on `Assets/Tests/Editor/DockingPortValidationTests.cs` returned 0 errors and 1 nullable-style warning about `GetComponent` checks.
 - Unity MCP EditMode test job `1d29658e21654ed695c623a6ba18c1f5` passed 1/1.
+
+## 2026-05-19 - Hard Lock Gating
+
+- Added `DockingHardLockPlaceholderOnlyRequestsWhenConstraintsPass`.
+- The test verifies the hard-lock placeholder requests a lock only when hard-lock distance, angle, velocity, and feature constraints pass.
+- The same test verifies aligned-but-too-far and misaligned cases do not request a lock.
+- Unity MCP `validate_script` on `Assets/Tests/Editor/DockingPortValidationTests.cs` returned 0 errors and 1 nullable-style warning about `GetComponent` checks.
+- Unity MCP EditMode test job `39b0dbf3e6be491f8d399c00d4e5d467` passed 3/3 for `DockingPortValidationTests`, including the hard-lock gating test.

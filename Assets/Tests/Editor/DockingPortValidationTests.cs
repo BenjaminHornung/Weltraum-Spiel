@@ -60,6 +60,41 @@ public class DockingPortValidationTests
         }
     }
 
+    [Test]
+    public void DockingHardLockPlaceholderOnlyRequestsWhenConstraintsPass()
+    {
+        using (DockingFixture fixture = DockingFixture.CreateAligned(0.2f))
+        {
+            DockingRelativeState state = fixture.Measure();
+            DockingEligibility eligibility = fixture.SourcePort.EvaluateEligibility(fixture.TargetPort, state);
+            DockingHardLockResult result = fixture.SourcePort.BuildHardLockPrototype(fixture.TargetPort, state);
+
+            Assert.True(eligibility.canHardLock);
+            Assert.True(result.lockRequested);
+            Assert.True(result.placeholder);
+            Assert.False(result.jointCreated);
+            Assert.That(result.diagnostic, Is.EqualTo("hard-lock-placeholder"));
+        }
+
+        using (DockingFixture fixture = DockingFixture.CreateAligned(2f))
+        {
+            DockingHardLockResult result = fixture.SourcePort.BuildHardLockPrototype(fixture.TargetPort, fixture.Measure());
+
+            Assert.False(result.lockRequested);
+            Assert.True(result.placeholder);
+            Assert.False(result.jointCreated);
+        }
+
+        using (DockingFixture fixture = DockingFixture.CreateMisaligned(0.2f))
+        {
+            DockingHardLockResult result = fixture.SourcePort.BuildHardLockPrototype(fixture.TargetPort, fixture.Measure());
+
+            Assert.False(result.lockRequested);
+            Assert.True(result.placeholder);
+            Assert.False(result.jointCreated);
+        }
+    }
+
     private sealed class DockingFixture : System.IDisposable
     {
         public readonly GameObject Source;
