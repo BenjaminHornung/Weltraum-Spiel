@@ -81,6 +81,8 @@ public Vector3 LastSasCommand { get; private set; }
     public Vector3 LastRawSasDesiredTorqueLocal { get; private set; }
     public Vector3 LastSasDesiredTorqueLocal { get; private set; }
     public Vector3 LastSasDesiredTorqueWorld { get; private set; }
+    public Vector3 LastSasManualOverrideAxes { get; private set; }
+    public Vector3 LastSasSuppressedTorqueLocal { get; private set; }
     public Vector3 LastManualDesiredTorqueLocal { get; private set; }
     public Vector3 LastDesiredTorqueLocal { get; private set; }
     public Vector3 LastTranslationForce { get; private set; }
@@ -269,8 +271,10 @@ public void ApplyControls(Vector3 translationCommand, Vector3 attitudeCommand, b
             : Vector3.zero;
         LastRawSasCommand = sasCommand;
         LastSasReleasedAxes = GetSasReleasedAxes(manualAttitude);
+        LastSasManualOverrideAxes = Vector3.one - LastSasReleasedAxes;
         LastSasCommand = MaskSasForManualAxes(sasCommand, manualAttitude);
         LastSasDesiredTorqueLocal = MaskSasForManualAxes(LastRawSasDesiredTorqueLocal, manualAttitude);
+        LastSasSuppressedTorqueLocal = LastRawSasDesiredTorqueLocal - LastSasDesiredTorqueLocal;
         if (stabilizeAngular && shipRigidbody != null)
         {
             SettleTinySasAngularVelocity(manualAttitude);
