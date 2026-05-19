@@ -47,3 +47,17 @@ Covered requirements:
 - Default/no atmosphere: `ApplyEnvironmentForces` returns false, `LastAtmosphereActive` is false, drag force and net applied force are zero.
 - Test atmosphere direction: drag magnitude is positive, `Vector3.Dot(drag, velocity) < 0`, and drag aligns with `-velocity`.
 - Squared-speed scaling: drag at 20 m/s divided by drag at 10 m/s equals `4.0` within `0.001`.
+
+## .NET Commands
+
+```text
+dotnet build ".\Weltraum Spiel.sln"
+```
+
+Result: exit code `0`. Build succeeded with existing Unity reference/version warnings (`MSB3277`) and existing serialized-field warnings.
+
+```text
+dotnet test ".\Weltraum Spiel.sln"
+```
+
+Result: exit code `0`. The command restored projects and found no dotnet test projects to execute.
