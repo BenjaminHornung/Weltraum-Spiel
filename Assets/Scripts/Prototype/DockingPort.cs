@@ -29,6 +29,31 @@ public struct DockingRelativeState
     }
 }
 
+[System.Serializable]
+public struct DockingEligibility
+{
+    public bool validState;
+    public bool withinCaptureRadius;
+    public bool withinHardLockRadius;
+    public bool withinSoftCaptureAngle;
+    public bool withinHardLockAngle;
+    public bool withinSoftCaptureVelocity;
+    public bool withinHardLockVelocity;
+    public bool softCaptureEnabled;
+    public bool hardLockEnabled;
+    public bool canSoftCapture;
+    public bool canHardLock;
+    public string diagnostic;
+
+    public static DockingEligibility Invalid(string diagnostic)
+    {
+        return new DockingEligibility
+        {
+            diagnostic = diagnostic
+        };
+    }
+}
+
 [DisallowMultipleComponent]
 public class DockingPort : MonoBehaviour
 {
@@ -133,6 +158,58 @@ public class DockingPort : MonoBehaviour
         return true;
     }
 
+    public DockingEligibility EvaluateEligibility(DockingPort target, DockingRelativeState state)
+    {
+        return EvaluateEligibility(this, target, state);
+    }
+
+    public static DockingEligibility EvaluateEligibility(
+        DockingPort source,
+        DockingPort target,
+        DockingRelativeState state)
+    {
+        if (source == null || target == null)
+        {
+            return DockingEligibility.Invalid("missing-port");
+        }
+
+        if (!state.valid)
+        {
+            return DockingEligibility.Invalid(string.IsNullOrEmpty(state.diagnostic) ? "invalid-relative-state" : state.diagnostic);
+        }
+
+        float captureRadius = Mathf.Min(source.CaptureRadius, target.CaptureRadius);
+        float hardLockRadius = Mathf.Min(source.HardLockRadius, target.HardLockRadius);
+        float hardAngle = Mathf.Min(source.MaxAngleErrorDegrees, target.MaxAngleErrorDegrees);
+        float softAngle = Mathf.Min(source.SoftCaptureAngleDegrees, target.SoftCaptureAngleDegrees);
+        float hardVelocity = Mathf.Min(source.MaxRelativeVelocity, target.MaxRelativeVelocity);
+        float softVelocity = Mathf.Min(source.SoftCaptureMaxRelativeVelocity, target.SoftCaptureMaxRelativeVelocity);
+
+        var eligibility = new DockingEligibility
+        {
+            validState = true,
+            withinCaptureRadius = state.distance <= captureRadius,
+            withinHardLockRadius = state.distance <= hardLockRadius,
+            withinSoftCaptureAngle = state.angleErrorDegrees <= softAngle,
+            withinHardLockAngle = state.angleErrorDegrees <= hardAngle,
+            withinSoftCaptureVelocity = state.relativeSpeed <= softVelocity,
+            withinHardLockVelocity = state.relativeSpeed <= hardVelocity,
+            softCaptureEnabled = source.SoftCaptureEnabled && target.SoftCaptureEnabled,
+            hardLockEnabled = source.HardLockEnabled && target.HardLockEnabled
+        };
+
+        eligibility.canSoftCapture = eligibility.softCaptureEnabled
+            && eligibility.withinCaptureRadius
+            && eligibility.withinSoftCaptureAngle
+            && eligibility.withinSoftCaptureVelocity;
+        eligibility.canHardLock = eligibility.hardLockEnabled
+            && eligibility.withinHardLockRadius
+            && eligibility.withinHardLockAngle
+            && eligibility.withinHardLockVelocity;
+        eligibility.diagnostic = BuildEligibilityDiagnostic(eligibility);
+        return eligibility;
+    }
+
     public void Configure(
         Vector3 localPosition,
         Vector3 localForward,
@@ -182,5 +259,60 @@ public class DockingPort : MonoBehaviour
     private static Vector3 GetAngularVelocity(Rigidbody body)
     {
         return body != null ? body.angularVelocity : Vector3.zero;
+    }
+
+    private static string BuildEligibilityDiagnostic(DockingEligibility eligibility)
+    {
+        if (!eligibility.validState)
+        {
+            return "invalid-relative-state";
+        }
+
+        if (eligibility.canHardLock)
+        {
+            return "hard-lock-eligible";
+        }
+
+        if (eligibility.canSoftCapture)
+        {
+            return "soft-capture-eligible";
+        }
+
+        if (!eligibility.withinCaptureRadius)
+        {
+            return "outside-capture-radius";
+        }
+
+        if (!eligibility.withinSoftCaptureAngle)
+        {
+            return "angle-too-large";
+        }
+
+        if (!eligibility.withinSoftCaptureVelocity)
+        {
+            return "relative-velocity-too-high";
+        }
+
+        if (!eligibility.softCaptureEnabled)
+        {
+            return "soft-capture-disabled";
+        }
+
+        if (!eligibility.withinHardLockRadius)
+        {
+            return "outside-hard-lock-radius";
+        }
+
+        if (!eligibility.withinHardLockAngle)
+        {
+            return "hard-lock-angle-too-large";
+        }
+
+        if (!eligibility.withinHardLockVelocity)
+        {
+            return "hard-lock-velocity-too-high";
+        }
+
+        return eligibility.hardLockEnabled ? "not-eligible" : "hard-lock-disabled";
     }
 }

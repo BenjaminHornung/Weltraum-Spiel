@@ -13,7 +13,7 @@
 - [x] Inspect existing physics core and flight-assist paths through Unity MCP
 - [x] Define DockingPort data/component
 - [x] Add relative state calculation
-- [ ] Add eligibility checks and diagnostics
+- [x] Add eligibility checks and diagnostics
 - [ ] Add optional soft-capture force/torque request
 - [ ] Add simple hard-lock prototype using a joint or documented placeholder
 - [ ] Update README and physics docs
