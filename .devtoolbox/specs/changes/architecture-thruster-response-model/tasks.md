@@ -23,5 +23,5 @@
 - [x] Verify actual throttle ramps with finite rate
 - [x] Verify actual gimbal angle respects slew rate and max angle
 - [x] Verify default prototype remains responsive
-- [ ] Add test evidence under this spec
+- [x] Add test evidence under this spec
 - [ ] Commit implementation with spec title and changelog
