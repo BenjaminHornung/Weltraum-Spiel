@@ -19,7 +19,7 @@
 - [x] Update overlay/docs with target vs actual output
 
 ## Verification
-- [ ] Validate changed Unity scripts with Unity MCP
+- [x] Validate changed Unity scripts with Unity MCP
 - [ ] Verify actual throttle ramps with finite rate
 - [ ] Verify actual gimbal angle respects slew rate and max angle
 - [ ] Verify default prototype remains responsive
