@@ -62,8 +62,18 @@ public class ShipStats : MonoBehaviour
     public float LastThrottle { get; private set; }
     public float LastAppliedThrust { get; private set; }
     public float LastAcceleration { get; private set; }
+    public float LastFuelRequestedKg { get; private set; }
+    public float LastFuelConsumedKg { get; private set; }
+    public float LastAppliedFuelFraction { get; private set; } = 1f;
 
     public bool HasFuel => CurrentFuelKg > 0f;
+
+    public void ResetFuelFlowTelemetry()
+    {
+        LastFuelRequestedKg = 0f;
+        LastFuelConsumedKg = 0f;
+        LastAppliedFuelFraction = 1f;
+    }
 
     public float ConsumeFuelForThrust(float normalizedThrottle, float deltaTime)
     {
@@ -74,9 +84,12 @@ public class ShipStats : MonoBehaviour
     public float ConsumeFuelForThrust(float normalizedThrottle, float deltaTime, out float appliedFuelFraction)
     {
         float fuelUse = FuelConsumptionKgPerSecond * Mathf.Clamp01(normalizedThrottle) * Mathf.Max(0f, deltaTime);
+        LastFuelRequestedKg = fuelUse;
         if (fuelUse <= 0f)
         {
             appliedFuelFraction = 1f;
+            LastFuelConsumedKg = 0f;
+            LastAppliedFuelFraction = appliedFuelFraction;
             return 0f;
         }
 
@@ -84,12 +97,17 @@ public class ShipStats : MonoBehaviour
         if (previousFuel <= 0f)
         {
             appliedFuelFraction = 0f;
+            LastFuelConsumedKg = 0f;
+            LastAppliedFuelFraction = appliedFuelFraction;
             return 0f;
         }
 
         appliedFuelFraction = Mathf.Clamp01(previousFuel / fuelUse);
-        currentFuelKg = Mathf.Max(0f, previousFuel - fuelUse);
-        return previousFuel - currentFuelKg;
+        float consumedFuel = Mathf.Min(previousFuel, fuelUse);
+        currentFuelKg = previousFuel - consumedFuel;
+        LastFuelConsumedKg = consumedFuel;
+        LastAppliedFuelFraction = appliedFuelFraction;
+        return consumedFuel;
     }
 
     public void RecordFlightTelemetry(float throttle, float appliedThrust, float acceleration)

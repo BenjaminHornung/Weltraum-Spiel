@@ -82,6 +82,18 @@ public class PrototypePhysicsValidationTests
     }
 
     [Test]
+    public void MainFuelUseScalesWithThrottleAndZeroCostStillThrusts()
+    {
+        PhysicsValidationProbe.MainFuelScalingResult result = PhysicsValidationProbe.RunMainFuelScaling();
+
+        Assert.That(result.fullThrottleFuel, Is.EqualTo(0.6f).Within(PhysicsValidationProbe.FuelTolerance));
+        Assert.That(result.halfThrottleFuel, Is.EqualTo(0.3f).Within(PhysicsValidationProbe.FuelTolerance));
+        Assert.That(result.zeroThrottleFuel, Is.EqualTo(0f).Within(PhysicsValidationProbe.FuelTolerance));
+        Assert.That(result.zeroCostThrust, Is.EqualTo(45000f).Within(PhysicsValidationProbe.ForceTolerance));
+        Assert.That(result.zeroCostFuel, Is.EqualTo(0f).Within(PhysicsValidationProbe.FuelTolerance));
+    }
+
+    [Test]
     public void ProjectileMomentumCheckIsDeferredUntilRecoilExists()
     {
         Assert.False(PhysicsValidationProbe.HasProjectileRecoilPath(), "GunModule currently spawns projectiles without a recoil impulse path; momentum checks should be added when recoil exists.");

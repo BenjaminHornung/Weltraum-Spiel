@@ -119,6 +119,15 @@ public static class PhysicsValidationProbe
         public float remainingFuel;
     }
 
+    public struct MainFuelScalingResult
+    {
+        public float fullThrottleFuel;
+        public float halfThrottleFuel;
+        public float zeroThrottleFuel;
+        public float zeroCostThrust;
+        public float zeroCostFuel;
+    }
+
     public struct TimestepResult
     {
         public float impulseAt002;
@@ -218,6 +227,42 @@ public static class PhysicsValidationProbe
                 appliedThrust = applied,
                 expectedThrust = fixture.Stats.Thrust * 0.5f,
                 remainingFuel = fixture.Stats.CurrentFuelKg
+            };
+        }
+    }
+
+    public static MainFuelScalingResult RunMainFuelScaling()
+    {
+        using (GeneratedShipFixture fixture = CreateGeneratedShip())
+        {
+            SetPrivateFloat(fixture.Stats, "currentFuelKg", 10f);
+            SetPrivateFloat(fixture.Stats, "fullThrottleFuelKgPerSecond", 0.6f);
+            fixture.PhysicsCore.BeginPhysicsStep();
+            fixture.MainThruster.Fire(1f, 0f, 0f, 1f);
+            float fullThrottleFuel = fixture.Stats.LastFuelConsumedKg;
+
+            SetPrivateFloat(fixture.Stats, "currentFuelKg", 10f);
+            fixture.PhysicsCore.BeginPhysicsStep();
+            fixture.MainThruster.Fire(0.5f, 0f, 0f, 1f);
+            float halfThrottleFuel = fixture.Stats.LastFuelConsumedKg;
+
+            SetPrivateFloat(fixture.Stats, "currentFuelKg", 10f);
+            fixture.PhysicsCore.BeginPhysicsStep();
+            fixture.MainThruster.Fire(0f, 0f, 0f, 1f);
+            float zeroThrottleFuel = fixture.Stats.LastFuelConsumedKg;
+
+            SetPrivateFloat(fixture.Stats, "currentFuelKg", 0f);
+            SetPrivateFloat(fixture.Stats, "fullThrottleFuelKgPerSecond", 0f);
+            fixture.PhysicsCore.BeginPhysicsStep();
+            float zeroCostThrust = fixture.MainThruster.Fire(1f, 0f, 0f, 1f);
+
+            return new MainFuelScalingResult
+            {
+                fullThrottleFuel = fullThrottleFuel,
+                halfThrottleFuel = halfThrottleFuel,
+                zeroThrottleFuel = zeroThrottleFuel,
+                zeroCostThrust = zeroCostThrust,
+                zeroCostFuel = fixture.Stats.LastFuelConsumedKg
             };
         }
     }

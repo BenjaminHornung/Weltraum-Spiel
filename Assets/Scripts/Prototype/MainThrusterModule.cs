@@ -145,6 +145,10 @@ public bool SupportsGimbal => supportsGimbal;
         LastSteeringForceWorld = Vector3.zero;
         LastForceWorld = Vector3.zero;
         LastEstimatedTorque = Vector3.zero;
+        if (shipStats != null)
+        {
+            shipStats.ResetFuelFlowTelemetry();
+        }
 
         Vector3 baseDirection = GetBaseThrustDirection();
         Vector3 thrustDirection = GetThrustDirection(yawCommand, pitchCommand);

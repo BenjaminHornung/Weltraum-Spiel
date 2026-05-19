@@ -11,8 +11,8 @@
 
 ## Implementation
 - [x] Inspect ShipStats, MainThrusterModule, RcsThrusterController, and ShipPhysicsCore through Unity MCP
-- [ ] Fix zero-fuel-cost thrust semantics
-- [ ] Add partial-fuel thrust scaling for main engines
+- [x] Fix zero-fuel-cost thrust semantics
+- [x] Add partial-fuel thrust scaling for main engines
 - [ ] Add RCS fuel consumption from final allocator output
 - [ ] Feed fuel mass into total mass model or documented interim total mass
 - [ ] Add fuel flow diagnostics to debug overlay
