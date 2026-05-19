@@ -1,5 +1,34 @@
 using UnityEngine;
 
+[System.Serializable]
+public struct DockingRelativeState
+{
+    public bool valid;
+    public Vector3 sourceWorldPosition;
+    public Vector3 targetWorldPosition;
+    public Vector3 sourceWorldForward;
+    public Vector3 targetWorldForward;
+    public Vector3 offsetWorld;
+    public Vector3 offsetLocal;
+    public float distance;
+    public float angleErrorDegrees;
+    public Vector3 relativeVelocityWorld;
+    public Vector3 relativeVelocityLocal;
+    public float relativeSpeed;
+    public float closingSpeed;
+    public Vector3 relativeAngularVelocityLocal;
+    public string diagnostic;
+
+    public static DockingRelativeState Invalid(string diagnostic)
+    {
+        return new DockingRelativeState
+        {
+            valid = false,
+            diagnostic = diagnostic
+        };
+    }
+}
+
 [DisallowMultipleComponent]
 public class DockingPort : MonoBehaviour
 {
@@ -44,6 +73,66 @@ public class DockingPort : MonoBehaviour
     public float MaxSoftCaptureTorque => Mathf.Max(0f, maxSoftCaptureTorque);
     public bool HardLockEnabled => hardLockEnabled;
 
+    public bool TryCalculateRelativeState(
+        DockingPort target,
+        Rigidbody sourceRigidbody,
+        Rigidbody targetRigidbody,
+        out DockingRelativeState state)
+    {
+        return TryCalculateRelativeState(this, target, sourceRigidbody, targetRigidbody, out state);
+    }
+
+    public static bool TryCalculateRelativeState(
+        DockingPort source,
+        DockingPort target,
+        Rigidbody sourceRigidbody,
+        Rigidbody targetRigidbody,
+        out DockingRelativeState state)
+    {
+        if (source == null)
+        {
+            state = DockingRelativeState.Invalid("missing-source-port");
+            return false;
+        }
+
+        if (target == null)
+        {
+            state = DockingRelativeState.Invalid("missing-target-port");
+            return false;
+        }
+
+        Vector3 sourcePosition = source.WorldPosition;
+        Vector3 targetPosition = target.WorldPosition;
+        Vector3 offset = targetPosition - sourcePosition;
+        Vector3 sourceForward = source.WorldForward;
+        Vector3 targetForward = target.WorldForward;
+        Vector3 relativeVelocity = GetPointVelocity(sourceRigidbody, sourcePosition)
+            - GetPointVelocity(targetRigidbody, targetPosition);
+        Vector3 relativeAngularVelocity = GetAngularVelocity(sourceRigidbody)
+            - GetAngularVelocity(targetRigidbody);
+        Vector3 approachDirection = offset.sqrMagnitude > 0.0001f ? offset.normalized : sourceForward;
+
+        state = new DockingRelativeState
+        {
+            valid = true,
+            sourceWorldPosition = sourcePosition,
+            targetWorldPosition = targetPosition,
+            sourceWorldForward = sourceForward,
+            targetWorldForward = targetForward,
+            offsetWorld = offset,
+            offsetLocal = source.transform.InverseTransformDirection(offset),
+            distance = offset.magnitude,
+            angleErrorDegrees = Vector3.Angle(sourceForward, -targetForward),
+            relativeVelocityWorld = relativeVelocity,
+            relativeVelocityLocal = source.transform.InverseTransformDirection(relativeVelocity),
+            relativeSpeed = relativeVelocity.magnitude,
+            closingSpeed = Mathf.Max(0f, -Vector3.Dot(relativeVelocity, approachDirection)),
+            relativeAngularVelocityLocal = source.transform.InverseTransformDirection(relativeAngularVelocity),
+            diagnostic = "relative-state-ok"
+        };
+        return true;
+    }
+
     public void Configure(
         Vector3 localPosition,
         Vector3 localForward,
@@ -83,5 +172,15 @@ public class DockingPort : MonoBehaviour
     private static Vector3 SafeLocalForward(Vector3 direction)
     {
         return direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector3.forward;
+    }
+
+    private static Vector3 GetPointVelocity(Rigidbody body, Vector3 worldPosition)
+    {
+        return body != null ? body.GetPointVelocity(worldPosition) : Vector3.zero;
+    }
+
+    private static Vector3 GetAngularVelocity(Rigidbody body)
+    {
+        return body != null ? body.angularVelocity : Vector3.zero;
     }
 }

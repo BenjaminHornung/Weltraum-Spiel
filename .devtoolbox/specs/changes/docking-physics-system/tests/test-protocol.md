@@ -18,3 +18,10 @@ Conclusion: docking should be implemented as a prototype component that computes
 - The component exposes local port position, local forward direction, capture radius, hard-lock radius, angle limits, relative-velocity limits, soft-capture gains, maximum assist force/torque, and hard-lock enablement.
 - Unity MCP `validate_script` on `Assets/Scripts/Prototype/DockingPort.cs` returned 0 errors and 0 warnings.
 - Unity MCP console query for errors returned 0 entries after script import.
+
+## 2026-05-19 - Relative State Calculation
+
+- Extended `DockingPort` with `DockingRelativeState`.
+- Relative state includes source/target world frames, world/local offset, distance, opposing-port angle error, world/local relative point velocity, relative speed, positive closing speed, and local relative angular velocity.
+- Unity MCP `validate_script` on `Assets/Scripts/Prototype/DockingPort.cs` returned 0 errors and 0 warnings.
+- Unity MCP console query for errors returned 0 entries after the change.
