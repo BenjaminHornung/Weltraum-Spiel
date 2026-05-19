@@ -8,6 +8,7 @@ public class PrototypeDebugOverlay : MonoBehaviour
     [SerializeField] private Transform target;
     [SerializeField] private SimpleFollowCamera followCamera;
     [SerializeField] private PlayerShipController shipController;
+    [SerializeField] private ShipPhysicsCore targetPhysicsCore;
 
     [Header("Overlay")]
     [SerializeField] private Vector2 windowPosition = new Vector2(16f, 16f);
@@ -42,6 +43,10 @@ public class PrototypeDebugOverlay : MonoBehaviour
             targetRigidbody = target.GetComponent<Rigidbody>();
         }
 
+        if (targetPhysicsCore == null)
+        {
+            targetPhysicsCore = target.GetComponent<ShipPhysicsCore>();
+        }
 
         if (followCamera == null)
         {
@@ -138,6 +143,20 @@ public class PrototypeDebugOverlay : MonoBehaviour
         Vector3 coreForce = shipController != null ? shipController.LastCoreAppliedForce : Vector3.zero;
         Vector3 coreTorque = shipController != null ? shipController.LastCoreAppliedTorque : Vector3.zero;
         int coreApplications = shipController != null ? shipController.LastCoreAppliedForceCount : 0;
+        ShipAtmosphereSample atmosphereSample = targetPhysicsCore != null ? targetPhysicsCore.LastAtmosphereSample : ShipAtmosphereSample.Zero;
+        bool atmosphereActive = atmosphereSample.active;
+        float atmosphereDensity = atmosphereSample.densityKgPerCubicMeter;
+        float atmosphereDragCoefficient = atmosphereSample.dragCoefficient;
+        float atmosphereReferenceArea = atmosphereSample.referenceAreaSquareMeters;
+        Vector3 atmosphereRelativeVelocity = atmosphereSample.relativeVelocity;
+        Vector3 atmosphereDragForce = atmosphereSample.dragForce;
+        bool gravityEnabled = shipController != null && shipController.GravityEnabled;
+        bool gravityApplied = shipController != null && shipController.LastGravityApplied;
+        string gravityBodyName = shipController != null ? shipController.LastGravityBodyName : "none";
+        float gravityMu = shipController != null ? shipController.GravityMu : 0f;
+        float gravityDistance = shipController != null ? shipController.LastGravityDistance : 0f;
+        Vector3 gravityAcceleration = shipController != null ? shipController.LastGravityAcceleration : Vector3.zero;
+        Vector3 gravityForce = shipController != null ? shipController.LastGravityForce : Vector3.zero;
         Vector3 mainDirection = shipController != null ? shipController.LastMainThrustDirection : target.transform.forward;
         Vector3 mainForce = shipController != null ? shipController.LastMainForceWorld : Vector3.zero;
         Vector3 mainStraight = shipController != null ? shipController.LastMainStraightForceWorld : Vector3.zero;
@@ -187,6 +206,7 @@ public class PrototypeDebugOverlay : MonoBehaviour
             GUILayout.Label($"Heat/power: heat {mainThermal.LastHeatGeneratedPerSecond:0.0}/s, cool {mainThermal.LastCoolingApplied:0.00}, power {mainPowerDrawKw:0.0} kW", labelStyle);
             GUILayout.Label($"Overheat hook: {(mainThermalEnabled ? "sim" : "off")}, {(mainThermalOverheated ? "active" : "clear")}, eff {mainThermalEfficiency:0.00}", labelStyle);
         }
+
         GUILayout.Label($"Gimbal: {(gimbalEnabled ? "on" : "off")} / {gimbalLimit:0.0} deg", labelStyle);
         GUILayout.Label($"Gimbal cmd: Y {gimbalYaw:0.00} P {gimbalPitch:0.00}, response {gimbalResponse:0.00}, angle {gimbalAngle:0.0}", labelStyle);
         GUILayout.EndVertical();
@@ -208,6 +228,13 @@ public class PrototypeDebugOverlay : MonoBehaviour
         GUILayout.Label($"RCS yaw torque est: {FormatVector(rcsYawTorque)}", labelStyle);
         GUILayout.Label($"Core force: {FormatVector(coreForce)}", labelStyle);
         GUILayout.Label($"Core torque: {FormatVector(coreTorque)}, applications {coreApplications}", labelStyle);
+        GUILayout.Label($"Atmosphere: {(atmosphereActive ? "active" : "vacuum")} density {atmosphereDensity:0.000} kg/m^3", labelStyle);
+        GUILayout.Label($"Atmos drag: {FormatVector(atmosphereDragForce)} N, rel {atmosphereRelativeVelocity.magnitude:0.00} m/s", labelStyle);
+        GUILayout.Label($"Atmos Cd/area: {atmosphereDragCoefficient:0.00} / {atmosphereReferenceArea:0.00} m^2", labelStyle);
+        GUILayout.Label($"Gravity: {(gravityEnabled ? "on" : "off")} body {gravityBodyName}, applied {(gravityApplied ? "yes" : "no")}", labelStyle);
+        GUILayout.Label($"Gravity mu/dist: {gravityMu:0.00} / {gravityDistance:0.00} m", labelStyle);
+        GUILayout.Label($"Gravity accel: {FormatVector(gravityAcceleration)} m/s^2", labelStyle);
+        GUILayout.Label($"Gravity force: {FormatVector(gravityForce)} N", labelStyle);
         GUILayout.Space(4f);
         GUILayout.Label($"SAS: {(sasEnabled ? "on" : "off")} (effective {(effectiveSas ? "on" : "off")}) auth {sasAuthority:0.00}", labelStyle);
         GUILayout.Label($"SAS raw cmd: {FormatVector(rawSasCommand)}", labelStyle);
@@ -240,6 +267,7 @@ public class PrototypeDebugOverlay : MonoBehaviour
         DrawGizmoVector(targetRigidbody.worldCenterOfMass, shipController.LastMainGimbalTorque, torqueVectorScale, Color.red);
         DrawGizmoVector(targetRigidbody.worldCenterOfMass, shipController.LastCoreAppliedForce, forceVectorScale, Color.white);
         DrawGizmoVector(targetRigidbody.worldCenterOfMass, shipController.LastCoreAppliedTorque, torqueVectorScale, Color.blue);
+        DrawGizmoVector(targetRigidbody.worldCenterOfMass, targetPhysicsCore != null ? targetPhysicsCore.LastAtmosphereDragForce : Vector3.zero, forceVectorScale, Color.cyan);
     }
 
     private void DrawRuntimeDebugVectors()
@@ -256,6 +284,7 @@ public class PrototypeDebugOverlay : MonoBehaviour
         DrawDebugVector(targetRigidbody.worldCenterOfMass, shipController.LastMainGimbalTorque, torqueVectorScale, Color.red);
         DrawDebugVector(targetRigidbody.worldCenterOfMass, shipController.LastCoreAppliedForce, forceVectorScale, Color.white);
         DrawDebugVector(targetRigidbody.worldCenterOfMass, shipController.LastCoreAppliedTorque, torqueVectorScale, Color.blue);
+        DrawDebugVector(targetRigidbody.worldCenterOfMass, targetPhysicsCore != null ? targetPhysicsCore.LastAtmosphereDragForce : Vector3.zero, forceVectorScale, Color.cyan);
     }
 
     private static void DrawGizmoVector(Vector3 origin, Vector3 vector, float scale, Color color)
@@ -296,6 +325,7 @@ public class PrototypeDebugOverlay : MonoBehaviour
         targetRigidbody = rb;
         followCamera = GetComponent<SimpleFollowCamera>();
         shipController = trackTarget != null ? trackTarget.GetComponent<PlayerShipController>() : null;
+        targetPhysicsCore = trackTarget != null ? trackTarget.GetComponent<ShipPhysicsCore>() : null;
     }
 
     private static string Shorten(string value, int maxLength)

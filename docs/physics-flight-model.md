@@ -120,6 +120,34 @@ Projectiles store their previous physics position and sweep from that position t
 
 `ProjectileHitData` is the handoff shape for later damage work. It exposes whether the hit came from sweep or collision, the hit collider, attached Rigidbody, optional `PrototypeTargetDummy`, hit point, normal, incoming velocity, and timestamp. This change does not add a damage model; target dummies still only play prototype hit feedback.
 
+## Atmosphere Layer
+
+The prototype remains vacuum by default. No atmosphere object is created by `PrototypeBootstrap`, and `PrototypeAtmosphereVolume` starts with simulation disabled and zero density. A ship only receives atmospheric force when its `ShipPhysicsCore` is explicitly configured with an enabled atmosphere volume or global field.
+
+The first atmosphere force is drag:
+
+```text
+dragForce = -relativeVelocity.normalized * 0.5 * density * speed^2 * dragCoefficient * referenceArea
+```
+
+`PrototypeAtmosphereVolume` supplies density, drag coefficient, reference area, optional wind velocity, and optional spherical bounds. Lift and heating are represented as zero diagnostics for now so later slices can extend the same sample model without changing the default vacuum behavior.
+
+`ShipPhysicsCore.ApplyEnvironmentForces` samples the configured atmosphere and applies non-zero drag at the center of mass through the same force-accounting path used by thrust, RCS, recoil, and other environment forces. The debug overlay reports atmosphere state, density, relative speed, drag coefficient, reference area, and the drag force vector.
+
+## Optional Central Gravity
+
+The prototype remains zero gravity by default. `ShipPhysicsCore` exposes optional central-body settings for a single configured body transform and gravitational parameter `mu`; if no body is assigned, the feature is disabled and no environment acceleration is applied.
+
+When enabled, the core computes:
+
+```text
+acceleration = directionToBody * mu / r^2
+```
+
+The acceleration is applied at the ship center of mass with `ForceMode.Acceleration`, so the ship acceleration is independent of Rigidbody mass. The diagnostic force is still recorded as `acceleration * rb.mass` in the shared wrench telemetry so the overlay can compare environment force with thrust, RCS, and recoil in one place.
+
+The debug overlay reports the active gravity body, distance, `mu`, acceleration vector, diagnostic force, and whether the gravity step applied. This slice intentionally keeps the model to one central body. Future orbital gameplay should prefer readable sphere-of-influence or patched-conic transitions before considering full N-body simulation.
+
 ## Physics Validation
 
 EditMode tests in `Assets/Tests/Editor/PrototypePhysicsValidationTests.cs` exercise deterministic generated ship probes from `PhysicsValidationProbe`. They cover throttle-only main force, gimbal cross-product torque, RCS translation and yaw allocation, partial-fuel thrust scaling, projectile recoil detection, projectile sweep/self-hit checks, thermal heat rise, idle cooling, overheat hook activation, and a 0.02 vs 0.01 timestep comparison.
@@ -133,7 +161,7 @@ The current prototype intentionally defers deeper simulation layers:
 - full fuel mass flow across all thruster systems and fuel-dependent COM changes,
 - SAS as a target-attitude PD controller,
 - full projectile damage and hit impulse effects,
-- gravity, orbit prediction, and floating origin,
+- orbit prediction, sphere-of-influence transitions, patched conics, and floating origin,
 - docking constraints, damage effects, full heat/power networking, and trajectory preview.
 
 Those systems should be added as separate spec changes so each one can be verified against the same force/torque accounting.

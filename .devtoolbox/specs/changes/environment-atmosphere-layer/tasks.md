@@ -15,7 +15,7 @@
 - [x] Keep vacuum as default
 - [x] Add simple drag force calculation
 - [x] Route drag through ShipPhysicsCore
-- [ ] Add atmosphere diagnostics to overlay/docs
+- [x] Add atmosphere diagnostics to overlay/docs
 
 ## Verification
 - [ ] Validate changed Unity scripts with Unity MCP

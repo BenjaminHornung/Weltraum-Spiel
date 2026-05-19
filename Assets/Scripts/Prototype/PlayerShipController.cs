@@ -95,6 +95,13 @@ public Vector3 LastRcsSasCommand => rcsThrusters != null ? rcsThrusters.LastSasC
     public Vector3 LastCoreAppliedForce => physicsCore != null ? physicsCore.NetAppliedForce : Vector3.zero;
     public Vector3 LastCoreAppliedTorque => physicsCore != null ? physicsCore.NetAppliedTorque : Vector3.zero;
     public int LastCoreAppliedForceCount => physicsCore != null ? physicsCore.AppliedForceCount : 0;
+    public bool GravityEnabled => physicsCore != null && physicsCore.CentralGravityEnabled;
+    public string LastGravityBodyName => physicsCore != null ? physicsCore.LastGravityBodyName : "none";
+    public float GravityMu => physicsCore != null ? physicsCore.CentralGravityMu : 0f;
+    public float LastGravityDistance => physicsCore != null ? physicsCore.LastGravityDistance : 0f;
+    public Vector3 LastGravityAcceleration => physicsCore != null ? physicsCore.LastGravityAcceleration : Vector3.zero;
+    public Vector3 LastGravityForce => physicsCore != null ? physicsCore.LastGravityForce : Vector3.zero;
+    public bool LastGravityApplied => physicsCore != null && physicsCore.LastGravityApplied;
 
     private void Awake()
     {
@@ -200,6 +207,7 @@ public Vector3 LastRcsSasCommand => rcsThrusters != null ? rcsThrusters.LastSasC
         if (physicsCore != null)
         {
             physicsCore.BeginPhysicsStep();
+            physicsCore.ApplyEnvironmentForces();
         }
 
         float controlScale = precisionControls ? Mathf.Clamp01(precisionScale) : 1f;
