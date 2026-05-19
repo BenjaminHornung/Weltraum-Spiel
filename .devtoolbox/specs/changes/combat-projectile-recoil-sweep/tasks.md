@@ -10,7 +10,7 @@
 - [x] Commit spec with spec title and changelog
 
 ## Implementation
-- [ ] Inspect Projectile, GunModule, PrototypeTargetDummy, and ShipPhysicsCore through Unity MCP
+- [x] Inspect Projectile, GunModule, PrototypeTargetDummy, and ShipPhysicsCore through Unity MCP
 - [ ] Add projectile mass and optional recoil settings
 - [ ] Apply recoil impulse to shooter
 - [ ] Track projectile previous position
