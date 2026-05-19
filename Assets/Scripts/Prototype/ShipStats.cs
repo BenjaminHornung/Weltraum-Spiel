@@ -23,6 +23,8 @@ public class ShipStats : MonoBehaviour
     [Range(0.1f, 20f)]
     [SerializeField] private float projectileFireRate = 4f;
     [SerializeField] private float projectileLifetime = 3f;
+    [SerializeField] private float projectileMass = 0.12f;
+    [SerializeField] private bool projectileRecoilEnabled = true;
 
     [Header("Camera")]
     [Range(10f, 25f)]
@@ -40,6 +42,8 @@ public class ShipStats : MonoBehaviour
     public float ProjectileSpeed => Mathf.Max(0f, projectileSpeed);
     public float ProjectileFireRate => Mathf.Max(0.1f, projectileFireRate);
     public float ProjectileLifetime => Mathf.Max(0.1f, projectileLifetime);
+    public float ProjectileMass => Mathf.Max(0.001f, projectileMass);
+    public bool ProjectileRecoilEnabled => projectileRecoilEnabled;
     public float FollowDistance => Mathf.Clamp(followDistance, 10f, 25f);
     public float FollowHeight => Mathf.Clamp(followHeight, 3f, 10f);
 
@@ -100,6 +104,7 @@ public class ShipStats : MonoBehaviour
         fullThrottleFuelKgPerSecond = Mathf.Max(0f, fullThrottleFuelKgPerSecond);
         thrustForce = Mathf.Max(0f, thrustForce);
         projectileLifetime = Mathf.Max(0.1f, projectileLifetime);
+        projectileMass = Mathf.Max(0.001f, projectileMass);
     }
 
 
@@ -134,6 +139,8 @@ public void ApplyConfig(PrototypeShipConfig config)
         projectileSpeed = gunSettings.projectileSpeed;
         projectileFireRate = gunSettings.projectileFireRate;
         projectileLifetime = gunSettings.projectileLifetime;
+        projectileMass = gunSettings.projectileMass;
+        projectileRecoilEnabled = gunSettings.recoilEnabled;
 
         PrototypeCameraSettings cameraSettings = config.Camera;
         cameraSettings.Clamp();

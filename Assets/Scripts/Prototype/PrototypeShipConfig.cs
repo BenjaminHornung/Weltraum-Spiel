@@ -143,13 +143,17 @@ public struct PrototypeGunSettings
     [Range(0.1f, 20f)] public float projectileFireRate;
     public float projectileLifetime;
     public float projectileScale;
+    public float projectileMass;
+    public bool recoilEnabled;
 
     public static PrototypeGunSettings Default => new PrototypeGunSettings
     {
         projectileSpeed = 1500f,
         projectileFireRate = 4f,
         projectileLifetime = 3f,
-        projectileScale = 0.24f
+        projectileScale = 0.24f,
+        projectileMass = 0.12f,
+        recoilEnabled = true
     };
 
     public void Clamp()
@@ -158,6 +162,7 @@ public struct PrototypeGunSettings
         projectileFireRate = Mathf.Max(0.1f, projectileFireRate);
         projectileLifetime = Mathf.Max(0.1f, projectileLifetime);
         projectileScale = Mathf.Max(0.01f, projectileScale);
+        projectileMass = Mathf.Max(0.001f, projectileMass);
     }
 }
 

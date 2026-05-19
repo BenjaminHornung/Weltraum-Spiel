@@ -11,7 +11,7 @@
 
 ## Implementation
 - [x] Inspect Projectile, GunModule, PrototypeTargetDummy, and ShipPhysicsCore through Unity MCP
-- [ ] Add projectile mass and optional recoil settings
+- [x] Add projectile mass and optional recoil settings
 - [ ] Apply recoil impulse to shooter
 - [ ] Track projectile previous position
 - [ ] Add raycast or sphere-cast sweep detection

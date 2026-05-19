@@ -7,8 +7,13 @@ public class GunModule : MonoBehaviour
     [SerializeField] private Rigidbody shipRigidbody;
     [SerializeField] private Transform muzzleTransform;
     [SerializeField] private float projectileScale = 0.24f;
+    [SerializeField] private float projectileMass = 0.12f;
+    [SerializeField] private bool recoilEnabled = true;
 
     private float nextFireTime;
+
+    public float ProjectileMass => Mathf.Max(0.001f, projectileMass);
+    public bool RecoilEnabled => recoilEnabled;
 
     private void Awake()
     {
@@ -91,6 +96,7 @@ public class GunModule : MonoBehaviour
         }
 
         rigidbody.useGravity = false;
+        rigidbody.mass = ProjectileMass;
         rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
 
@@ -109,5 +115,7 @@ public void ApplyConfig(PrototypeShipConfig config)
         PrototypeGunSettings settings = config.Gun;
         settings.Clamp();
         projectileScale = settings.projectileScale;
+        projectileMass = settings.projectileMass;
+        recoilEnabled = settings.recoilEnabled;
     }
 }
