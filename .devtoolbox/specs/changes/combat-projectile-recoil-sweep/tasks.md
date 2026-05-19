@@ -26,4 +26,4 @@
 - [x] Verify thin target sweep hit
 - [x] Verify no immediate self-hit
 - [x] Add test evidence under this spec
-- [ ] Commit implementation with spec title and changelog
+- [x] Commit implementation with spec title and changelog
