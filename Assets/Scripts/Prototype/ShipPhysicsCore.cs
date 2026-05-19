@@ -266,7 +266,17 @@ public class ShipPhysicsCore : MonoBehaviour
 
     private void RecordAppliedWrench(Vector3 force, Vector3 torque, ForceMode mode)
     {
-        if (mode == ForceMode.Impulse || mode == ForceMode.VelocityChange)
+        if (mode == ForceMode.VelocityChange)
+        {
+            float mass = shipRigidbody != null ? Mathf.Max(0f, shipRigidbody.mass) : 1f;
+            NetAppliedImpulseWrench = new ShipWrench(
+                NetAppliedImpulseWrench.force + force * mass,
+                NetAppliedImpulseWrench.torque + torque * mass);
+            AppliedImpulseCount++;
+            return;
+        }
+
+        if (mode == ForceMode.Impulse)
         {
             NetAppliedImpulseWrench = new ShipWrench(NetAppliedImpulseWrench.force + force, NetAppliedImpulseWrench.torque + torque);
             AppliedImpulseCount++;

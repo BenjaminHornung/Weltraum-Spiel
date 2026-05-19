@@ -28,6 +28,15 @@ physicsCore.ApplyImpactImpulse(impactEvent);
 
 The impulse is applied at the hit point with `ForceMode.Impulse`. The core records the last impact impulse, hit point, torque impulse, and impact count separately from normal force diagnostics so combat hits can be inspected without hiding the source of the effect.
 
+Continuous force diagnostics and impulse diagnostics are separate. `ForceMode.Impulse` records the supplied vector as Newton-seconds. `ForceMode.VelocityChange` is a Unity delta-velocity request, so diagnostic impulse is mass-scaled before it is added to `NetAppliedImpulse`:
+
+```text
+diagnosticImpulse = velocityChange * rb.mass
+diagnosticAngularImpulse = cross(position - rb.worldCenterOfMass, diagnosticImpulse)
+```
+
+`VelocityChange` never increments the continuous force counters.
+
 ## Main Thrust
 
 Main thrust has an explicit mode so the prototype can switch between stable gameplay thrust and stricter physical nozzle force without bypassing `ShipPhysicsCore`.
@@ -84,9 +93,15 @@ force = nozzle.transform.forward * nozzleBlock.Thrust;
 torque = Vector3.Cross(nozzle.transform.position - rb.worldCenterOfMass, force);
 ```
 
-The generated `RCS_Top`, `RCS_Bottom`, `RCS_Left`, and `RCS_Right` blocks each carry an inspector-editable `RcsThrusterBlock`. Nozzles cache their nearest parent block and use that block's thrust when selected. The block exposes undamaged thrust, but the effective `Thrust` value is multiplied by attached `PrototypeModuleDamageState.CapabilityMultiplier`. Damaged RCS blocks therefore reduce real allocator authority instead of only changing a UI number. The legacy controller-level `translationForce` and `attitudeForce` values remain as fallback magnitudes for nozzles that do not have a parent block, so older hand-built scenes continue to apply force.
+The generated `RCS_Top`, `RCS_Bottom`, `RCS_Left`, and `RCS_Right` blocks each carry an inspector-editable `RcsThrusterBlock`. Nozzles cache their nearest parent block and use that block's thrust when allocated. The block exposes undamaged thrust, but the effective `Thrust` value is multiplied by attached `PrototypeModuleDamageState.CapabilityMultiplier`. Damaged RCS blocks therefore reduce real allocator authority instead of only changing a UI number. The legacy controller-level `translationForce` and `attitudeForce` values remain as fallback magnitudes for nozzles that do not have a parent block, so older hand-built scenes continue to apply force.
 
-Translation commands select nozzles whose actual force direction points with the requested ship-local axis. Attitude commands select nozzles whose cross-product torque points with the requested pitch, yaw, or roll axis. If a nozzle is moved, removed, or rotated, its force and torque contribution changes immediately. Missing nozzles cannot create phantom force.
+Translation, attitude, SAS, and physical flight-assist requests are combined into one desired force/torque wrench before allocation. The current allocator is still a bounded greedy prototype, but it applies each nozzle at most once per physics frame and reports desired, actual, and residual force/torque diagnostics. Status values are residual-aware: `ok`, `limited`, `residual`, `limited-residual`, `spooling-down`, `no nozzles`, `no authority`, `no solution`, and `no fuel` describe what actually happened in that frame.
+
+RCS nozzles keep actual throttle state. With finite response rates, spool-up ramps actual thrust toward the target throttle. When a command is released, spool-down moves actual throttle toward zero and physically applies the remaining decaying nozzle force until the throttle settles. This can create intentional short residual thrust; it is visible through actual/residual force diagnostics and the `spooling-down` status.
+
+The debug console can issue deterministic test pulses for RCS translation, attitude, main thrust, and gimbal checks. These pulses are development probes and bypass precision-control scaling so their output stays comparable across repeated tests.
+
+If a nozzle is moved, removed, or rotated, its force and torque contribution changes immediately. Missing nozzles cannot create phantom force.
 
 ## Module Mass, COM, And Inertia
 
@@ -141,7 +156,7 @@ The PD gains are inspector fields on `RcsThrusterController`. They are not multi
 
 Manual attitude input keeps its coarse command dead zone, and SAS torque is masked per pitch/yaw/roll axis whenever manual attitude input on that same axis exceeds the manual dead zone. SAS remains active on released axes, so a yaw input does not reduce yaw authority but can still allow SAS to damp pitch or roll. Diagnostics expose the mode, local angular velocity, local angular error, raw SAS torque, masked SAS torque, suppressed torque, manual torque, and final desired torque.
 
-SAS uses a small local angular-velocity dead zone near zero. After SAS has braked a non-manual axis into the tiny local settle band, that axis is snapped to zero angular velocity so late SAS activation visibly finishes converging. Translation RCS authority is not reduced by SAS. When RCS is disabled, missing, or fuel-starved, SAS still reports its torque request diagnostics, but no impossible stabilizing torque is applied.
+SAS uses a small local angular-velocity dead zone near zero. After SAS has braked a non-manual axis into the tiny local settle band, that axis is snapped to zero angular velocity so late SAS activation visibly finishes converging. Translation RCS authority is not reduced by SAS. When RCS is disabled, missing, or out of fuel, SAS still reports its torque request diagnostics, but no impossible stabilizing torque is applied.
 
 The ship rigidbody uses zero linear and angular damping in this prototype. Releasing controls does not bleed off linear velocity, and rotation persists in vacuum unless SAS/RCS torque counters it.
 
