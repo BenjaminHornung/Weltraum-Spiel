@@ -59,6 +59,9 @@ public class PlayerShipController : MonoBehaviour
     public float MainThrottle => mainThrottle;
     public float MainThrottlePercent => mainThrottle * 100f;
     public float MainThrustCommand { get; private set; }
+    public float MainTargetThrottle => mainThruster != null ? mainThruster.LastTargetThrottle : MainThrustCommand;
+    public float MainActualThrottle => mainThruster != null ? mainThruster.LastActualThrottle : MainThrustCommand;
+    public float MainActualThrottlePercent => MainActualThrottle * 100f;
     public Vector3 RcsTranslationCommand { get; private set; }
     public Vector3 RcsAttitudeCommand { get; private set; }
     public float TurnInput { get; private set; }
@@ -273,11 +276,12 @@ public Vector3 LastRcsSasCommand => rcsThrusters != null ? rcsThrusters.LastSasC
         float forwardSpeed = Vector3.Dot(shipRigidbody.linearVelocity, transform.forward);
         LastForwardAcceleration = Time.fixedDeltaTime > 0.0001f ? (forwardSpeed - previousForwardSpeed) / Time.fixedDeltaTime : 0f;
         previousForwardSpeed = forwardSpeed;
-        shipStats.RecordFlightTelemetry(MainThrustCommand, appliedThrust, LastForwardAcceleration);
+        float actualThrottle = mainThruster != null ? mainThruster.LastActualThrottle : MainThrustCommand;
+        shipStats.RecordFlightTelemetry(actualThrottle, appliedThrust, LastForwardAcceleration);
 
         if (engineVfx != null)
         {
-            engineVfx.SetThrottle(appliedThrust > 0f ? MainThrustCommand : 0f);
+            engineVfx.SetThrottle(appliedThrust > 0f ? actualThrottle : 0f);
         }
     }
 

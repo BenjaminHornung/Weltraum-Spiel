@@ -11,7 +11,7 @@
 
 ## Implementation
 - [x] Inspect current throttle and gimbal command path through Unity MCP
-- [ ] Add target vs actual throttle fields
+- [x] Add target vs actual throttle fields
 - [ ] Add spool-up and spool-down rates
 - [ ] Add target vs actual gimbal yaw/pitch
 - [ ] Add gimbal slew rate

@@ -31,8 +31,10 @@ public class MainThrusterModule : MonoBehaviour
     public bool SupportsGimbal => supportsGimbal;
     public float GimbalLimitDegrees => Mathf.Max(0f, gimbalLimitDegrees);
     public float GimbalResponseScalar => Mathf.Clamp01(gimbalResponseScalar);
-    public float LastThrottleCommand { get; private set; }
-    public float LastThrottlePercent => LastThrottleCommand * 100f;
+    public float LastThrottleCommand => LastTargetThrottle;
+    public float LastTargetThrottle { get; private set; }
+    public float LastActualThrottle { get; private set; }
+    public float LastThrottlePercent => LastActualThrottle * 100f;
     public float LastAppliedThrust { get; private set; }
     public float LastGimbalYawCommand { get; private set; }
     public float LastGimbalPitchCommand { get; private set; }
@@ -141,7 +143,8 @@ public class MainThrusterModule : MonoBehaviour
     {
         ResolveReferences();
 
-        LastThrottleCommand = Mathf.Clamp01(throttleCommand) * Mathf.Clamp01(throttleScale);
+        LastTargetThrottle = Mathf.Clamp01(throttleCommand) * Mathf.Clamp01(throttleScale);
+        LastActualThrottle = LastTargetThrottle;
         LastAppliedThrust = 0f;
         LastStraightForceWorld = Vector3.zero;
         LastSteeringForceWorld = Vector3.zero;
@@ -158,7 +161,7 @@ public class MainThrusterModule : MonoBehaviour
         LastAppliedDirection = thrustDirection;
         LastForcePositionWorld = forcePosition;
 
-        if (shipRigidbody == null || shipStats == null || physicsCore == null || LastThrottleCommand <= 0f)
+        if (shipRigidbody == null || shipStats == null || physicsCore == null || LastActualThrottle <= 0f)
         {
             AdvanceThermal(0f, deltaTime);
             return 0f;
@@ -171,7 +174,7 @@ public class MainThrusterModule : MonoBehaviour
         }
 
         float appliedFuelFraction;
-        shipStats.ConsumeFuelForThrust(LastThrottleCommand, deltaTime, out appliedFuelFraction);
+        shipStats.ConsumeFuelForThrust(LastActualThrottle, deltaTime, out appliedFuelFraction);
         if (appliedFuelFraction <= 0f)
         {
             AdvanceThermal(0f, deltaTime);
@@ -179,8 +182,8 @@ public class MainThrusterModule : MonoBehaviour
         }
 
         float thermalEfficiency = thermalModule != null ? thermalModule.EfficiencyScalar : 1f;
-        LastAppliedThrust = LastThrottleCommand * shipStats.Thrust * appliedFuelFraction * thermalEfficiency;
-        AdvanceThermal(LastThrottleCommand * appliedFuelFraction, deltaTime);
+        LastAppliedThrust = LastActualThrottle * shipStats.Thrust * appliedFuelFraction * thermalEfficiency;
+        AdvanceThermal(LastActualThrottle * appliedFuelFraction, deltaTime);
         if (LastAppliedThrust <= 0f)
         {
             return 0f;
@@ -276,7 +279,8 @@ public class MainThrusterModule : MonoBehaviour
 
     public void ResetRuntimeState()
     {
-        LastThrottleCommand = 0f;
+        LastTargetThrottle = 0f;
+        LastActualThrottle = 0f;
         LastAppliedThrust = 0f;
         LastGimbalYawCommand = 0f;
         LastGimbalPitchCommand = 0f;
