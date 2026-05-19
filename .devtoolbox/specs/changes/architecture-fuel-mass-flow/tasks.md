@@ -16,7 +16,7 @@
 - [x] Add RCS fuel consumption from final allocator output
 - [x] Feed fuel mass into total mass model or documented interim total mass
 - [x] Add fuel flow diagnostics to debug overlay
-- [ ] Update README and physics docs
+- [x] Update README and physics docs
 
 ## Verification
 - [ ] Validate changed Unity scripts with Unity MCP

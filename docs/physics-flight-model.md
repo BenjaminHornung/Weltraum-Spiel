@@ -78,6 +78,24 @@ The inertia tensor is a diagonal prototype approximation. Each module contribute
 
 The debug overlay reports descriptor module count, dry mass, fuel mass, local/world COM, and Rigidbody inertia tensor so placement and tuning changes are visible during prototype flight.
 
+## Fuel Mass Flow
+
+Fuel consumption is a prototype mass-flow model in kilograms per second at full thrust. The shared fuel API accepts a throttle-equivalent demand and calculates:
+
+```text
+fuelRequested = fullRateKgPerSecond * throttleEquivalent * deltaTime
+fuelFraction = min(1, availableFuel / fuelRequested)
+appliedThrust = requestedThrust * fuelFraction
+```
+
+If `fullRateKgPerSecond` is zero, the fuel request is zero and the fuel fraction stays at 1. This is the explicit fuel-free thrust mode, not a hidden thrust disable.
+
+Main engines pass their final throttle command into this model. If the tank cannot cover the whole physics step, the engine consumes the remaining fuel, clamps the tank at zero, and applies only the covered thrust fraction.
+
+RCS uses the final bounded allocator output as the source of truth. After translation, attitude, and SAS demands are merged into per-nozzle throttle values, the controller sums those final nozzle throttles once, requests fuel for that total, and scales every applied nozzle force by the available fuel fraction. This means a nozzle that contributes to combined commands consumes fuel once for its final throttle share rather than once per command source.
+
+Fuel mass feeds the module mass model through the generated fuel-tank descriptor. `PlayerShipController` reapplies mass properties after thruster fuel use in the physics step, so consumed fuel reduces Rigidbody mass and fuel COM contribution. The debug overlay reports main and RCS fuel requested, fuel used, applied fraction, and RCS allocator throttle totals.
+
 ## SAS And Inertia
 
 SAS is an RCS angular counter-command. When effective SAS is on, the controller converts angular velocity into a counter attitude command and lets the same nozzle solver pick usable RCS jets. Manual attitude input keeps its coarse command dead zone, and SAS is masked per pitch/yaw/roll axis whenever manual attitude input on that same axis exceeds the manual dead zone. SAS remains active on released axes, so a yaw input does not reduce yaw authority but can still allow SAS to damp pitch or roll.
@@ -150,7 +168,7 @@ The debug overlay reports the active gravity body, distance, `mu`, acceleration 
 
 ## Physics Validation
 
-EditMode tests in `Assets/Tests/Editor/PrototypePhysicsValidationTests.cs` exercise deterministic generated ship probes from `PhysicsValidationProbe`. They cover throttle-only main force, gimbal cross-product torque, RCS translation and yaw allocation, partial-fuel thrust scaling, projectile recoil detection, projectile sweep/self-hit checks, thermal heat rise, idle cooling, overheat hook activation, and a 0.02 vs 0.01 timestep comparison.
+EditMode tests in `Assets/Tests/Editor/PrototypePhysicsValidationTests.cs` exercise deterministic generated ship probes from `PhysicsValidationProbe`. They cover throttle-only main force, gimbal cross-product torque, RCS translation and yaw allocation, fuel scaling and mass-flow behavior, projectile recoil detection, projectile sweep/self-hit checks, thermal heat rise, idle cooling, overheat hook activation, and a 0.02 vs 0.01 timestep comparison.
 
 Run the suite through Unity Test Runner EditMode or Unity MCP `run_tests(mode=EditMode)`. Store run output and deterministic probe evidence under the active spec folder, for example `.devtoolbox/specs/changes/validation-physics-test-suite/tests/test-protocol.md`.
 
@@ -158,7 +176,6 @@ Run the suite through Unity Test Runner EditMode or Unity MCP `run_tests(mode=Ed
 
 The current prototype intentionally defers deeper simulation layers:
 
-- full fuel mass flow across all thruster systems and fuel-dependent COM changes,
 - SAS as a target-attitude PD controller,
 - full projectile damage and hit impulse effects,
 - orbit prediction, sphere-of-influence transitions, patched conics, and floating origin,
