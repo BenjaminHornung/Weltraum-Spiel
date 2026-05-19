@@ -109,6 +109,58 @@ public class PrototypePhysicsValidationTests
     }
 
     [Test]
+    public void DefaultPrototypeGravityStepAppliesNoAcceleration()
+    {
+        PhysicsValidationProbe.GravityResult result = PhysicsValidationProbe.RunDefaultGravityStep();
+
+        Assert.False(result.applied);
+        Assert.That(result.bodyName, Is.EqualTo("none"));
+        Assert.That(result.distance, Is.EqualTo(0f).Within(0.001f));
+        Assert.That(result.acceleration.magnitude, Is.EqualTo(0f).Within(0.001f));
+        Assert.That(result.force.magnitude, Is.EqualTo(0f).Within(0.001f));
+        Assert.That(result.applications, Is.EqualTo(0));
+    }
+
+    [Test]
+    public void CentralGravityAccelerationPointsTowardBodyWithMuOverRadiusSquared()
+    {
+        PhysicsValidationProbe.GravityResult result = PhysicsValidationProbe.RunCentralGravityStep(
+            Vector3.zero,
+            new Vector3(10f, 0f, 0f),
+            1000f,
+            250f);
+
+        Assert.True(result.applied);
+        Assert.That(result.bodyName, Is.EqualTo("GravityBody"));
+        Assert.That(result.distance, Is.EqualTo(10f).Within(0.001f));
+        Assert.That(result.acceleration.x, Is.EqualTo(10f).Within(0.001f));
+        Assert.That(result.acceleration.y, Is.EqualTo(0f).Within(0.001f));
+        Assert.That(result.acceleration.z, Is.EqualTo(0f).Within(0.001f));
+        Assert.That(result.force.x, Is.EqualTo(2500f).Within(0.001f));
+        Assert.That(result.netTorque.magnitude, Is.EqualTo(0f).Within(PhysicsValidationProbe.TorqueTolerance));
+        Assert.That(result.applications, Is.EqualTo(1));
+    }
+
+    [Test]
+    public void CentralGravityAccelerationIsMassIndependent()
+    {
+        PhysicsValidationProbe.GravityResult lightShip = PhysicsValidationProbe.RunCentralGravityStep(
+            Vector3.zero,
+            new Vector3(0f, 20f, 0f),
+            800f,
+            100f);
+        PhysicsValidationProbe.GravityResult heavyShip = PhysicsValidationProbe.RunCentralGravityStep(
+            Vector3.zero,
+            new Vector3(0f, 20f, 0f),
+            800f,
+            500f);
+
+        Assert.That(Vector3.Distance(lightShip.acceleration, heavyShip.acceleration), Is.LessThan(0.001f));
+        Assert.That(lightShip.acceleration.y, Is.EqualTo(2f).Within(0.001f));
+        Assert.That(heavyShip.force.y, Is.EqualTo(lightShip.force.y * 5f).Within(0.001f));
+    }
+
+    [Test]
     public void GeneratedModuleDescriptorsDriveRigidbodyMassProperties()
     {
         PhysicsValidationProbe.MassPropertiesResult result = PhysicsValidationProbe.InspectGeneratedMassProperties();

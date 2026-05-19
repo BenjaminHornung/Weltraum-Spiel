@@ -10,17 +10,17 @@
 - [x] Commit spec with spec title and changelog
 
 ## Implementation
-- [ ] Inspect ShipPhysicsCore environment-force extension points through Unity MCP
-- [ ] Define optional gravity source settings
-- [ ] Keep gravity disabled by default
-- [ ] Apply central-body gravity acceleration
-- [ ] Add debug diagnostics for body, distance, and acceleration
-- [ ] Document SOI/patched-conic future direction
+- [x] Inspect ShipPhysicsCore environment-force extension points through Unity MCP
+- [x] Define optional gravity source settings
+- [x] Keep gravity disabled by default
+- [x] Apply central-body gravity acceleration
+- [x] Add debug diagnostics for body, distance, and acceleration
+- [x] Document SOI/patched-conic future direction
 
 ## Verification
-- [ ] Validate changed Unity scripts with Unity MCP
-- [ ] Verify default prototype remains zero gravity
-- [ ] Verify central-body acceleration magnitude and direction
-- [ ] Verify gravity is mass-independent where intended
-- [ ] Add test evidence under this spec
-- [ ] Commit implementation with spec title and changelog
+- [x] Validate changed Unity scripts with Unity MCP
+- [x] Verify default prototype remains zero gravity
+- [x] Verify central-body acceleration magnitude and direction
+- [x] Verify gravity is mass-independent where intended
+- [x] Add test evidence under this spec
+- [x] Commit implementation with spec title and changelog

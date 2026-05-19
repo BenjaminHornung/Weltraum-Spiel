@@ -164,6 +164,17 @@ public static class PhysicsValidationProbe
         public bool disabledByOverheat;
     }
 
+    public struct GravityResult
+    {
+        public bool applied;
+        public string bodyName;
+        public float distance;
+        public Vector3 acceleration;
+        public Vector3 force;
+        public Vector3 netTorque;
+        public int applications;
+    }
+
     public static GeneratedShipFixture CreateGeneratedShip()
     {
         return new GeneratedShipFixture();
@@ -212,6 +223,40 @@ public static class PhysicsValidationProbe
             installedNozzles = fixture.Rcs.InstalledNozzleCount,
             maxNozzleThrottle = fixture.Rcs.LastMaxNozzleThrottle
         };
+    }
+
+    public static GravityResult RunDefaultGravityStep()
+    {
+        using (GeneratedShipFixture fixture = CreateGeneratedShip())
+        {
+            fixture.PhysicsCore.BeginPhysicsStep();
+            bool applied = fixture.PhysicsCore.ApplyEnvironmentForces();
+            return CaptureGravityResult(fixture, applied);
+        }
+    }
+
+    public static GravityResult RunCentralGravityStep(Vector3 shipPosition, Vector3 bodyPosition, float mu, float shipMass)
+    {
+        using (GeneratedShipFixture fixture = CreateGeneratedShip())
+        {
+            fixture.Ship.transform.position = shipPosition;
+            fixture.Rigidbody.mass = shipMass;
+            fixture.Rigidbody.centerOfMass = Vector3.zero;
+
+            var body = new GameObject("GravityBody");
+            try
+            {
+                body.transform.position = bodyPosition;
+                fixture.PhysicsCore.ConfigureCentralGravity(body.transform, mu, true);
+                fixture.PhysicsCore.BeginPhysicsStep();
+                bool applied = fixture.PhysicsCore.ApplyEnvironmentForces();
+                return CaptureGravityResult(fixture, applied);
+            }
+            finally
+            {
+                DestroyGameObject(body);
+            }
+        }
     }
 
     public static FuelPartialResult RunFuelPartialStep()
@@ -502,6 +547,20 @@ public static class PhysicsValidationProbe
 
             remainingFuel = fixture.Stats.CurrentFuelKg;
         }
+    }
+
+    private static GravityResult CaptureGravityResult(GeneratedShipFixture fixture, bool applied)
+    {
+        return new GravityResult
+        {
+            applied = applied,
+            bodyName = fixture.PhysicsCore.LastGravityBodyName,
+            distance = fixture.PhysicsCore.LastGravityDistance,
+            acceleration = fixture.PhysicsCore.LastGravityAcceleration,
+            force = fixture.PhysicsCore.LastGravityForce,
+            netTorque = fixture.PhysicsCore.NetAppliedTorque,
+            applications = fixture.PhysicsCore.AppliedForceCount
+        };
     }
 
     private static Transform CreateMainNozzle(Transform ship)
