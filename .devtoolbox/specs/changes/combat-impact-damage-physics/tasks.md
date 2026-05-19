@@ -14,7 +14,7 @@
 - [x] Define impact event data
 - [x] Add simple module damage state
 - [x] Apply one physical degradation path for RCS or engine thrust
-- [ ] Add optional impact impulse routing through ShipPhysicsCore
+- [x] Add optional impact impulse routing through ShipPhysicsCore
 - [ ] Add debug damage diagnostics
 - [ ] Update README and physics docs
 

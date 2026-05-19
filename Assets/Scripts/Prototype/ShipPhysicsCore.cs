@@ -29,12 +29,20 @@ public class ShipPhysicsCore : MonoBehaviour
     [Header("Atmosphere")]
     [SerializeField] private PrototypeAtmosphereVolume atmosphereVolume;
 
+    [Header("Impact Impulses")]
+    [SerializeField] private bool impactImpulsesEnabled = true;
+
     public Rigidbody ShipRigidbody => shipRigidbody;
     public ShipWrench NetAppliedWrench { get; private set; }
     public Vector3 NetAppliedForce => NetAppliedWrench.force;
     public Vector3 NetAppliedTorque => NetAppliedWrench.torque;
     public int AppliedForceCount { get; private set; }
     public bool HasRigidbody => shipRigidbody != null;
+    public bool ImpactImpulsesEnabled => impactImpulsesEnabled;
+    public Vector3 LastImpactImpulse { get; private set; }
+    public Vector3 LastImpactPoint { get; private set; }
+    public Vector3 LastImpactTorqueImpulse { get; private set; }
+    public int ImpactImpulseCount { get; private set; }
     public bool CentralGravityEnabled => centralGravityEnabled;
     public Transform CentralGravityBody => centralGravityBody;
     public string LastGravityBodyName { get; private set; } = "none";
@@ -67,6 +75,7 @@ public class ShipPhysicsCore : MonoBehaviour
     {
         NetAppliedWrench = ShipWrench.Zero;
         AppliedForceCount = 0;
+        ResetImpactImpulseDiagnostics();
         ResetGravityDiagnostics();
         ResetAtmosphereDiagnostics();
     }
@@ -105,6 +114,34 @@ public class ShipPhysicsCore : MonoBehaviour
             ? Vector3.Cross(position - shipRigidbody.worldCenterOfMass, force)
             : Vector3.zero;
         return new ShipWrench(force, torque);
+    }
+
+    public bool ApplyImpactImpulse(PrototypeImpactEventData impactEvent)
+    {
+        if (!impactEvent.hasImpact)
+        {
+            return false;
+        }
+
+        return ApplyImpactImpulse(impactEvent.impactImpulse, impactEvent.hitPoint);
+    }
+
+    public bool ApplyImpactImpulse(Vector3 impulse, Vector3 position)
+    {
+        ResolveReferences();
+        if (!impactImpulsesEnabled || shipRigidbody == null || impulse.sqrMagnitude <= 0.0001f)
+        {
+            return false;
+        }
+
+        shipRigidbody.AddForceAtPosition(impulse, position, ForceMode.Impulse);
+        Vector3 torqueImpulse = Vector3.Cross(position - shipRigidbody.worldCenterOfMass, impulse);
+        LastImpactImpulse = impulse;
+        LastImpactPoint = position;
+        LastImpactTorqueImpulse = torqueImpulse;
+        ImpactImpulseCount++;
+        RecordAppliedForce(impulse, torqueImpulse);
+        return true;
     }
 
     public void ConfigureCentralGravity(Transform body, float gravitationalParameter, bool enabled)
@@ -227,6 +264,14 @@ public class ShipPhysicsCore : MonoBehaviour
     private void ResetAtmosphereDiagnostics()
     {
         LastAtmosphereSample = ShipAtmosphereSample.Zero;
+    }
+
+    private void ResetImpactImpulseDiagnostics()
+    {
+        LastImpactImpulse = Vector3.zero;
+        LastImpactPoint = shipRigidbody != null ? shipRigidbody.worldCenterOfMass : transform.position;
+        LastImpactTorqueImpulse = Vector3.zero;
+        ImpactImpulseCount = 0;
     }
 
     private void OnValidate()
