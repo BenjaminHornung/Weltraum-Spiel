@@ -15,10 +15,12 @@ public class Projectile : MonoBehaviour
     private Vector3 previousPositionWorld;
     private bool hasPreviousPosition;
     private bool hasReportedHit;
+    private Collider[] ignoredColliders;
 
     public Vector3 PreviousPositionWorld => previousPositionWorld;
     public bool HasPreviousPosition => hasPreviousPosition;
     public bool HasReportedHit => hasReportedHit;
+    public int IgnoredColliderCount => ignoredColliders != null ? ignoredColliders.Length : 0;
 
     private void Awake()
     {
@@ -36,6 +38,11 @@ public class Projectile : MonoBehaviour
 
     public void Initialize(Vector3 initialVelocity, float lifetime)
     {
+        Initialize(initialVelocity, lifetime, null);
+    }
+
+    public void Initialize(Vector3 initialVelocity, float lifetime, Collider[] collidersToIgnore)
+    {
         if (rigidbodyRef == null)
         {
             rigidbodyRef = GetComponent<Rigidbody>();
@@ -45,6 +52,7 @@ public class Projectile : MonoBehaviour
         rigidbodyRef.linearVelocity = initialVelocity;
         destroyAt = Time.time + Mathf.Max(0.1f, lifetime);
         hasReportedHit = false;
+        ConfigureIgnoredColliders(collidersToIgnore);
         RecordCurrentPosition();
     }
 
@@ -204,7 +212,7 @@ public class Projectile : MonoBehaviour
         for (int i = 0; i < hits.Length; i++)
         {
             Collider candidate = hits[i].collider;
-            if (candidate == null || IsProjectileCollider(candidate))
+            if (candidate == null || IsProjectileCollider(candidate) || IsIgnoredCollider(candidate))
             {
                 continue;
             }
@@ -230,9 +238,55 @@ public class Projectile : MonoBehaviour
         return candidate == projectileCollider || candidate.transform == transform || candidate.transform.IsChildOf(transform);
     }
 
+    private bool IsIgnoredCollider(Collider candidate)
+    {
+        if (ignoredColliders == null)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < ignoredColliders.Length; i++)
+        {
+            if (candidate == ignoredColliders[i])
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void ConfigureIgnoredColliders(Collider[] collidersToIgnore)
+    {
+        ignoredColliders = collidersToIgnore;
+        if (ignoredColliders == null || ignoredColliders.Length == 0)
+        {
+            return;
+        }
+
+        if (projectileCollider == null)
+        {
+            projectileCollider = GetComponent<Collider>();
+        }
+
+        if (projectileCollider == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < ignoredColliders.Length; i++)
+        {
+            Collider ignored = ignoredColliders[i];
+            if (ignored != null && ignored != projectileCollider)
+            {
+                Physics.IgnoreCollision(projectileCollider, ignored, true);
+            }
+        }
+    }
+
     private bool TryReportHit(Collider hitCollider, Vector3 hitPoint)
     {
-        if (hasReportedHit || hitCollider == null)
+        if (hasReportedHit || hitCollider == null || IsIgnoredCollider(hitCollider))
         {
             return false;
         }
