@@ -62,3 +62,13 @@ Conclusion: docking should be implemented as a prototype component that computes
 - Unity MCP `validate_script` on `Assets/Scripts/Prototype/DockingPort.cs` returned 0 errors and 0 warnings.
 - Unity MCP `validate_script` on `Assets/Scripts/Prototype/FlightAssistRequest.cs` returned 0 errors and 0 warnings.
 - Unity MCP console query showed no C# compile errors; the only returned entry was the unrelated TestResults save message already observed earlier.
+
+## 2026-05-19 - Rejection Cases
+
+- Added `Assets/Tests/Editor/DockingPortValidationTests.cs`.
+- `DockingEligibilityRejectsDistanceAngleAndHardVelocityCases` verifies:
+  - distance outside capture radius reports `outside-capture-radius`;
+  - opposing-port angle mismatch reports `angle-too-large`;
+  - high relative speed prevents hard lock while still allowing soft capture when inside the soft velocity envelope.
+- Unity MCP `validate_script` on `Assets/Tests/Editor/DockingPortValidationTests.cs` returned 0 errors and 1 nullable-style warning about `GetComponent` checks.
+- Unity MCP EditMode test job `f8d4cf90807641b39170bfa609dd1439` passed 1/1.
