@@ -87,3 +87,11 @@ Conclusion: docking should be implemented as a prototype component that computes
 - The same test verifies aligned-but-too-far and misaligned cases do not request a lock.
 - Unity MCP `validate_script` on `Assets/Tests/Editor/DockingPortValidationTests.cs` returned 0 errors and 1 nullable-style warning about `GetComponent` checks.
 - Unity MCP EditMode test job `39b0dbf3e6be491f8d399c00d4e5d467` passed 3/3 for `DockingPortValidationTests`, including the hard-lock gating test.
+
+## Evidence Index
+
+- Changed Unity scripts were validated through Unity MCP: `DockingPort.cs`, `FlightAssistRequest.cs`, and `DockingPortValidationTests.cs`.
+- Deterministic EditMode coverage lives in `Assets/Tests/Editor/DockingPortValidationTests.cs`.
+- Rejection evidence: Unity MCP EditMode job `f8d4cf90807641b39170bfa609dd1439` passed the distance, angle, and hard-velocity rejection test.
+- Soft-capture bound evidence: Unity MCP EditMode job `1d29658e21654ed695c623a6ba18c1f5` passed the force/torque clamp test.
+- Hard-lock gating evidence: Unity MCP EditMode job `39b0dbf3e6be491f8d399c00d4e5d467` passed all three docking tests, including hard-lock pass and rejection cases.

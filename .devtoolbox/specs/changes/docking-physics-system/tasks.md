@@ -23,5 +23,5 @@
 - [x] Verify angle, distance, and velocity rejection cases
 - [x] Verify soft capture requests are bounded
 - [x] Verify hard lock only occurs when constraints pass
-- [ ] Add test evidence under this spec
+- [x] Add test evidence under this spec
 - [ ] Commit implementation with spec title and changelog
