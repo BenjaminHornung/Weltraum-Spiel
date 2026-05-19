@@ -20,6 +20,12 @@ dotnet test "Weltraum Spiel.sln"
 - Unity MCP script refresh/compile: ready with 0 console errors after refresh.
 - Unity MCP EditMode `PrototypePhysicsValidationTests`: passed 18/18.
 
+## Final Commit Verification
+
+- 2026-05-19 final DevToolbox `specs_validate physics-gravity-orbits`: passed.
+- 2026-05-19 final `dotnet build "Weltraum Spiel.sln"`: passed with existing Unity `MSB3277` reference warnings.
+- 2026-05-19 final `dotnet test "Weltraum Spiel.sln"`: passed with exit code 0.
+
 ## Gravity Evidence
 
 - Default prototype gravity step: no body, no acceleration, no force application.
