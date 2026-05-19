@@ -204,7 +204,9 @@ projectileMomentum = muzzleForward * projectileMass * projectileSpeed;
 physicsCore.ApplyForceAtPosition(-projectileMomentum, muzzlePosition, ForceMode.Impulse);
 ```
 
-The recoil path uses the same core force-at-position telemetry as thrusters, so offset guns can produce both linear impulse and torque diagnostics.
+The recoil path uses the same core force-at-position application path as thrusters, but its diagnostics are recorded separately as `NetAppliedImpulse` and `NetAppliedAngularImpulse`. This keeps one-shot Newton-second recoil from being mixed into continuous `NetAppliedForce` and `NetAppliedTorque` values.
+
+The configured projectile mass is passed into the spawned `Projectile`, so Rigidbody mass, recoil, impact impulse, and impulse-scaled damage all use the same value.
 
 Projectiles store their previous physics position and sweep from that position to the current Rigidbody position each `FixedUpdate`. The sweep uses `Physics.SphereCastAll` with the projectile collider radius, then falls back to `Physics.RaycastAll` for a centerline check. A projectile reports only one hit, shares the same report path for sweep and `OnCollisionEnter`, and ignores its own collider plus all firing-ship colliders passed in at spawn.
 
@@ -241,7 +243,7 @@ Limitations for the first pass:
 
 ## Physics Validation
 
-EditMode tests in `Assets/Tests/Editor/PrototypePhysicsValidationTests.cs` exercise deterministic generated ship probes from `PhysicsValidationProbe`. They cover throttle-only main force, gimbal cross-product torque, RCS translation and yaw allocation, partial-fuel thrust scaling, projectile recoil detection, projectile sweep/self-hit checks, thermal heat rise, idle cooling, overheat hook activation, and a 0.02 vs 0.01 timestep comparison.
+EditMode tests in `Assets/Tests/Editor/PrototypePhysicsValidationTests.cs` exercise deterministic generated ship probes from `PhysicsValidationProbe`. They cover throttle-only main force, gimbal cross-product torque, RCS translation and yaw allocation, RCS spool diagnostics, manual/SAS torque priority, partial-fuel thrust scaling, configured-mass projectile recoil/impact checks, force-vs-impulse diagnostic separation, projectile sweep/self-hit checks, thermal heat rise, idle cooling, overheat hook activation, and a 0.02 vs 0.01 timestep comparison.
 
 Run the suite through Unity Test Runner EditMode or Unity MCP `run_tests(mode=EditMode)`. Store run output and deterministic probe evidence under the active spec folder, for example `.devtoolbox/specs/changes/validation-physics-test-suite/tests/test-protocol.md`.
 

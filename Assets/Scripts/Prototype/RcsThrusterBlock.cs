@@ -52,12 +52,7 @@ public void ConfigureThrust(float configuredThrust)
 
 public void ApplyConfig(PrototypeShipConfig config)
     {
-        if (config == null)
-        {
-            return;
-        }
-
-        PrototypeRcsSettings settings = config.Rcs;
+        PrototypeRcsSettings settings = config != null ? config.Rcs : PrototypeRcsSettings.Default;
         settings.Clamp();
         thrust = settings.blockThrust;
     }

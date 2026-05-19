@@ -115,6 +115,12 @@ public static class PhysicsValidationProbe
     {
         public Vector3 force;
         public Vector3 torque;
+        public Vector3 desiredForce;
+        public Vector3 actualForce;
+        public Vector3 residualForce;
+        public Vector3 desiredTorque;
+        public Vector3 actualTorque;
+        public Vector3 residualTorque;
         public int activeNozzles;
         public int applications;
         public int installedNozzles;
@@ -123,6 +129,46 @@ public static class PhysicsValidationProbe
         public float fuelRequested;
         public float fuelConsumed;
         public float fuelFraction;
+    }
+
+    public struct ProjectileMassResult
+    {
+        public float configuredMass;
+        public float projectileSpeed;
+        public float rigidbodyMass;
+        public float projectileMass;
+        public Vector3 muzzleForward;
+        public Vector3 recoilImpulse;
+        public Vector3 netImpulse;
+        public Vector3 netForce;
+        public float impactImpulseMagnitude;
+        public bool fired;
+    }
+
+    public struct ImpulseDiagnosticsResult
+    {
+        public Vector3 force;
+        public Vector3 torque;
+        public Vector3 impulse;
+        public Vector3 angularImpulse;
+        public int forceCount;
+        public int impulseCount;
+    }
+
+    public struct ManualPriorityResult
+    {
+        public Vector3 manualTorqueLocal;
+        public Vector3 sasTorqueLocal;
+        public Vector3 desiredTorqueLocal;
+    }
+
+    public struct ConfigDefaultsResult
+    {
+        public float projectileMass;
+        public float projectileSpeed;
+        public float mainThrottleScale;
+        public float rcsTranslationForce;
+        public float rcsBlockThrust;
     }
 
     public struct FuelPartialResult
@@ -274,6 +320,12 @@ public static class PhysicsValidationProbe
         {
             force = fixture.PhysicsCore.NetAppliedForce,
             torque = fixture.PhysicsCore.NetAppliedTorque,
+            desiredForce = fixture.Rcs.LastDesiredRcsForceWorld,
+            actualForce = fixture.Rcs.LastActualRcsForceWorld,
+            residualForce = fixture.Rcs.LastResidualRcsForceWorld,
+            desiredTorque = fixture.Rcs.LastDesiredRcsTorqueWorld,
+            actualTorque = fixture.Rcs.LastActualRcsTorqueWorld,
+            residualTorque = fixture.Rcs.LastResidualRcsTorqueWorld,
             activeNozzles = fixture.Rcs.ActiveNozzleCount,
             applications = fixture.Rcs.LastNozzleApplicationCount,
             installedNozzles = fixture.Rcs.InstalledNozzleCount,
@@ -283,6 +335,141 @@ public static class PhysicsValidationProbe
             fuelConsumed = fixture.Rcs.LastFuelConsumedKg,
             fuelFraction = fixture.Rcs.LastAppliedFuelFraction
         };
+    }
+
+    public static ProjectileMassResult RunProjectileMassConsistency(float projectileMass, float projectileSpeed)
+    {
+        using (GeneratedShipFixture fixture = CreateGeneratedShip())
+        {
+            SetPrivateFloat(fixture.Gun, "projectileMass", projectileMass);
+            SetPrivateFloat(fixture.Stats, "projectileSpeed", projectileSpeed);
+            fixture.PhysicsCore.BeginPhysicsStep();
+            bool fired = fixture.Gun.TryFire();
+            Projectile projectile = UnityEngine.Object.FindAnyObjectByType<Projectile>();
+            Rigidbody projectileBody = projectile != null ? projectile.GetComponent<Rigidbody>() : null;
+            float impactImpulse = projectile != null
+                ? PrototypeImpactEventData.EstimateImpulse(fixture.Gun.LastProjectileVelocityWorld - fixture.Rigidbody.linearVelocity, projectile.ProjectileMassKg).magnitude
+                : 0f;
+
+            ProjectileMassResult result = new ProjectileMassResult
+            {
+                configuredMass = projectileMass,
+                projectileSpeed = projectileSpeed,
+                rigidbodyMass = projectileBody != null ? projectileBody.mass : 0f,
+                projectileMass = projectile != null ? projectile.ProjectileMassKg : 0f,
+                muzzleForward = fixture.Gun.LastProjectileVelocityWorld.normalized,
+                recoilImpulse = fixture.Gun.LastRecoilImpulseWorld,
+                netImpulse = fixture.PhysicsCore.NetAppliedImpulse,
+                netForce = fixture.PhysicsCore.NetAppliedForce,
+                impactImpulseMagnitude = impactImpulse,
+                fired = fired
+            };
+
+            if (projectile != null)
+            {
+                DestroyGameObject(projectile.gameObject);
+            }
+
+            return result;
+        }
+    }
+
+    public static ImpulseDiagnosticsResult RunForceImpulseDiagnosticSeparation()
+    {
+        using (GeneratedShipFixture fixture = CreateGeneratedShip())
+        {
+            fixture.PhysicsCore.BeginPhysicsStep();
+            fixture.PhysicsCore.ApplyForceAtCenterOfMass(new Vector3(10f, 0f, 0f), ForceMode.Force);
+            fixture.PhysicsCore.ApplyForceAtPosition(new Vector3(0f, 20f, 0f), fixture.Rigidbody.worldCenterOfMass + Vector3.forward, ForceMode.Impulse);
+            return new ImpulseDiagnosticsResult
+            {
+                force = fixture.PhysicsCore.NetAppliedForce,
+                torque = fixture.PhysicsCore.NetAppliedTorque,
+                impulse = fixture.PhysicsCore.NetAppliedImpulse,
+                angularImpulse = fixture.PhysicsCore.NetAppliedAngularImpulse,
+                forceCount = fixture.PhysicsCore.AppliedForceCount,
+                impulseCount = fixture.PhysicsCore.AppliedImpulseCount
+            };
+        }
+    }
+
+    public static RcsResult RunRcsWithSpool(float spoolRate, Vector3 translationCommand, Vector3 attitudeCommand, float deltaTime)
+    {
+        using (GeneratedShipFixture fixture = CreateGeneratedShip())
+        {
+            SetPrivateFloat(fixture.Rcs, "nozzleSpoolUpRate", spoolRate);
+            SetPrivateFloat(fixture.Rcs, "nozzleSpoolDownRate", spoolRate);
+            fixture.PhysicsCore.BeginPhysicsStep();
+            fixture.Rcs.ApplyControls(translationCommand, attitudeCommand, false, deltaTime);
+            return new RcsResult
+            {
+                force = fixture.PhysicsCore.NetAppliedForce,
+                torque = fixture.PhysicsCore.NetAppliedTorque,
+                desiredForce = fixture.Rcs.LastDesiredRcsForceWorld,
+                actualForce = fixture.Rcs.LastActualRcsForceWorld,
+                residualForce = fixture.Rcs.LastResidualRcsForceWorld,
+                desiredTorque = fixture.Rcs.LastDesiredRcsTorqueWorld,
+                actualTorque = fixture.Rcs.LastActualRcsTorqueWorld,
+                residualTorque = fixture.Rcs.LastResidualRcsTorqueWorld,
+                activeNozzles = fixture.Rcs.ActiveNozzleCount,
+                applications = fixture.Rcs.LastNozzleApplicationCount,
+                installedNozzles = fixture.Rcs.InstalledNozzleCount,
+                maxNozzleThrottle = fixture.Rcs.LastMaxNozzleThrottle,
+                allocatedThrottleTotal = fixture.Rcs.LastAllocatedNozzleThrottleTotal,
+                fuelRequested = fixture.Rcs.LastFuelRequestedKg,
+                fuelConsumed = fixture.Rcs.LastFuelConsumedKg,
+                fuelFraction = fixture.Rcs.LastAppliedFuelFraction
+            };
+        }
+    }
+
+    public static ManualPriorityResult RunManualAttitudePriority()
+    {
+        using (GeneratedShipFixture fixture = CreateGeneratedShip())
+        {
+            fixture.Rigidbody.angularVelocity = fixture.Ship.transform.TransformDirection(new Vector3(1f, 0f, 0f));
+            fixture.PhysicsCore.BeginPhysicsStep();
+            fixture.Rcs.ApplyControls(Vector3.zero, Vector3.up, true, SasControlMode.KillRotation, fixture.Ship.transform.rotation, true, 0.02f);
+            return new ManualPriorityResult
+            {
+                manualTorqueLocal = fixture.Rcs.LastManualDesiredTorqueLocal,
+                sasTorqueLocal = fixture.Rcs.LastSasDesiredTorqueLocal,
+                desiredTorqueLocal = fixture.Rcs.LastDesiredTorqueLocal
+            };
+        }
+    }
+
+    public static ConfigDefaultsResult RunNullConfigDefaults()
+    {
+        using (GeneratedShipFixture fixture = CreateGeneratedShip())
+        {
+            SetPrivateFloat(fixture.Stats, "projectileMass", 9f);
+            SetPrivateFloat(fixture.Stats, "projectileSpeed", 9f);
+            SetPrivateFloat(fixture.MainThruster, "throttleScale", 0.2f);
+            SetPrivateFloat(fixture.Rcs, "translationForce", 123f);
+            RcsThrusterBlock block = fixture.Ship.GetComponentInChildren<RcsThrusterBlock>();
+            if (block != null)
+            {
+                block.ConfigureThrust(123f);
+            }
+
+            fixture.Stats.ApplyConfig(null);
+            fixture.MainThruster.ApplyConfig(null);
+            fixture.Rcs.ApplyConfig(null);
+            if (block != null)
+            {
+                block.ApplyConfig(null);
+            }
+
+            return new ConfigDefaultsResult
+            {
+                projectileMass = fixture.Stats.ProjectileMass,
+                projectileSpeed = fixture.Stats.ProjectileSpeed,
+                mainThrottleScale = fixture.MainThruster.ThrottleScale,
+                rcsTranslationForce = fixture.Rcs.TranslationForce,
+                rcsBlockThrust = block != null ? block.UndamagedThrust : 0f
+            };
+        }
     }
 
     public static GravityResult RunDefaultGravityStep()

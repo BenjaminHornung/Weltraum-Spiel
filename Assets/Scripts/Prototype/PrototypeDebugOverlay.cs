@@ -175,11 +175,20 @@ public class PrototypeDebugOverlay : MonoBehaviour
         Vector3 desiredTorqueLocal = shipController != null ? shipController.LastRcsDesiredTorqueLocal : Vector3.zero;
         Vector3 rcsTotalForce = shipController != null ? shipController.LastRcsForce : Vector3.zero;
         Vector3 rcsTranslationForce = shipController != null ? shipController.LastRcsTranslationForce : Vector3.zero;
+        Vector3 rcsDesiredForce = shipController != null ? shipController.LastRcsDesiredForceWorld : Vector3.zero;
+        Vector3 rcsActualForce = shipController != null ? shipController.LastRcsActualForceWorld : Vector3.zero;
+        Vector3 rcsResidualForce = shipController != null ? shipController.LastRcsResidualForceWorld : Vector3.zero;
+        Vector3 rcsDesiredTorque = shipController != null ? shipController.LastRcsDesiredTorqueWorld : Vector3.zero;
+        Vector3 rcsActualTorque = shipController != null ? shipController.LastRcsActualTorqueWorld : Vector3.zero;
+        Vector3 rcsResidualTorque = shipController != null ? shipController.LastRcsResidualTorqueWorld : Vector3.zero;
         Vector3 rcsTorque = shipController != null ? shipController.LastRcsTorque : Vector3.zero;
         Vector3 rcsYawTorque = shipController != null ? shipController.LastRcsYawTorque : Vector3.zero;
         Vector3 coreForce = shipController != null ? shipController.LastCoreAppliedForce : Vector3.zero;
         Vector3 coreTorque = shipController != null ? shipController.LastCoreAppliedTorque : Vector3.zero;
+        Vector3 coreImpulse = shipController != null ? shipController.LastCoreAppliedImpulse : Vector3.zero;
+        Vector3 coreAngularImpulse = shipController != null ? shipController.LastCoreAppliedAngularImpulse : Vector3.zero;
         int coreApplications = shipController != null ? shipController.LastCoreAppliedForceCount : 0;
+        int coreImpulseApplications = shipController != null ? shipController.LastCoreAppliedImpulseCount : 0;
         Vector3 impactImpulse = targetPhysicsCore != null ? targetPhysicsCore.LastImpactImpulse : Vector3.zero;
         Vector3 impactTorqueImpulse = targetPhysicsCore != null ? targetPhysicsCore.LastImpactTorqueImpulse : Vector3.zero;
         int impactImpulseCount = targetPhysicsCore != null ? targetPhysicsCore.ImpactImpulseCount : 0;
@@ -288,12 +297,20 @@ public class PrototypeDebugOverlay : MonoBehaviour
         GUILayout.Label($"Turn input: {turnInput:0.00}", labelStyle);
         GUILayout.Label($"RCS pivot local: {FormatVector(rcsPivotLocal)}", labelStyle);
         GUILayout.Label($"RCS pivot world: {FormatVector(rcsPivotWorld)}", labelStyle);
+        GUILayout.Label($"RCS force desired: {FormatVector(rcsDesiredForce)}", labelStyle);
+        GUILayout.Label($"RCS force actual: {FormatVector(rcsActualForce)}", labelStyle);
+        GUILayout.Label($"RCS force residual: {FormatVector(rcsResidualForce)}", labelStyle);
+        GUILayout.Label($"RCS torque desired: {FormatVector(rcsDesiredTorque)}", labelStyle);
+        GUILayout.Label($"RCS torque actual: {FormatVector(rcsActualTorque)}", labelStyle);
+        GUILayout.Label($"RCS torque residual: {FormatVector(rcsResidualTorque)}", labelStyle);
         GUILayout.Label($"RCS total force: {FormatVector(rcsTotalForce)}", labelStyle);
         GUILayout.Label($"RCS translate force: {FormatVector(rcsTranslationForce)}", labelStyle);
         GUILayout.Label($"RCS torque est: {FormatVector(rcsTorque)}", labelStyle);
         GUILayout.Label($"RCS yaw torque est: {FormatVector(rcsYawTorque)}", labelStyle);
         GUILayout.Label($"Core force: {FormatVector(coreForce)}", labelStyle);
         GUILayout.Label($"Core torque: {FormatVector(coreTorque)}, applications {coreApplications}", labelStyle);
+        GUILayout.Label($"Core impulse: {FormatVector(coreImpulse)} Ns, applications {coreImpulseApplications}", labelStyle);
+        GUILayout.Label($"Core angular impulse: {FormatVector(coreAngularImpulse)} Ns*m", labelStyle);
         GUILayout.Label($"Impact impulse: {FormatVector(impactImpulse)} Ns, count {impactImpulseCount}", labelStyle);
         GUILayout.Label($"Impact torque impulse: {FormatVector(impactTorqueImpulse)} Ns*m", labelStyle);
         GUILayout.Label($"Atmosphere: {(atmosphereActive ? "active" : "vacuum")} density {atmosphereDensity:0.000} kg/m^3", labelStyle);
@@ -483,5 +500,20 @@ public class PrototypeDebugOverlay : MonoBehaviour
         }
 
         return value.Substring(0, Mathf.Max(0, maxLength - 3)) + "...";
+    }
+
+
+public bool DrawDebugVectors => drawDebugVectors;
+
+    public bool DrawDebugGizmos => drawDebugGizmos;
+
+    public void SetDrawDebugVectors(bool enabled)
+    {
+        drawDebugVectors = enabled;
+    }
+
+    public void SetDrawDebugGizmos(bool enabled)
+    {
+        drawDebugGizmos = enabled;
     }
 }

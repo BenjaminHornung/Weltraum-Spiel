@@ -105,6 +105,9 @@ public class PrototypePhysicsValidationTests
         {
             PhysicsValidationProbe.RcsResult translation = PhysicsValidationProbe.RunRcs(fixture, Vector3.right, Vector3.zero);
             Assert.That(translation.force.x, Is.GreaterThan(8000f));
+            Assert.That(Vector3.Distance(translation.force, translation.actualForce), Is.LessThan(PhysicsValidationProbe.ForceTolerance));
+            Assert.That(Vector3.Distance(translation.desiredForce, Vector3.right * 9000f), Is.LessThan(PhysicsValidationProbe.ForceTolerance));
+            Assert.That(Vector3.Distance(translation.residualForce, translation.desiredForce - translation.actualForce), Is.LessThan(PhysicsValidationProbe.ForceTolerance));
             Assert.That(Mathf.Abs(translation.force.y), Is.LessThan(PhysicsValidationProbe.ForceTolerance));
             Assert.That(Mathf.Abs(translation.force.z), Is.LessThan(PhysicsValidationProbe.RcsResidualForceTolerance));
             Assert.That(translation.torque.magnitude, Is.LessThan(100f));
@@ -115,6 +118,8 @@ public class PrototypePhysicsValidationTests
             PhysicsValidationProbe.RcsResult yaw = PhysicsValidationProbe.RunRcs(fixture, Vector3.zero, Vector3.up);
             Assert.That(yaw.force.magnitude, Is.LessThan(PhysicsValidationProbe.RcsResidualForceTolerance));
             Assert.That(yaw.torque.y, Is.GreaterThan(1000f));
+            Assert.That(Vector3.Distance(yaw.torque, yaw.actualTorque), Is.LessThan(PhysicsValidationProbe.TorqueTolerance));
+            Assert.That(Vector3.Distance(yaw.residualTorque, yaw.desiredTorque - yaw.actualTorque), Is.LessThan(PhysicsValidationProbe.TorqueTolerance));
             Assert.That(yaw.maxNozzleThrottle, Is.LessThanOrEqualTo(1f + PhysicsValidationProbe.NozzleThrottleTolerance));
             Assert.That(yaw.applications, Is.EqualTo(yaw.activeNozzles));
             Assert.That(yaw.installedNozzles, Is.EqualTo(20));
@@ -159,9 +164,64 @@ public class PrototypePhysicsValidationTests
     }
 
     [Test]
-    public void ProjectileMomentumCheckDetectsRecoilPathWhenImplemented()
+    public void ProjectileMomentumUsesConfiguredMassForRecoilAndImpact()
     {
-        Assert.True(PhysicsValidationProbe.HasProjectileRecoilPath(), "GunModule should expose a recoil impulse path when projectile recoil is implemented.");
+        PhysicsValidationProbe.ProjectileMassResult result = PhysicsValidationProbe.RunProjectileMassConsistency(2.5f, 100f);
+        Vector3 expectedRecoil = -result.muzzleForward * result.configuredMass * result.projectileSpeed;
+
+        Assert.True(result.fired);
+        Assert.That(result.rigidbodyMass, Is.EqualTo(result.configuredMass).Within(PhysicsValidationProbe.FuelTolerance));
+        Assert.That(result.projectileMass, Is.EqualTo(result.configuredMass).Within(PhysicsValidationProbe.FuelTolerance));
+        Assert.That(Vector3.Distance(result.recoilImpulse, expectedRecoil), Is.LessThan(PhysicsValidationProbe.TimestepImpulseTolerance));
+        Assert.That(Vector3.Distance(result.netImpulse, expectedRecoil), Is.LessThan(PhysicsValidationProbe.TimestepImpulseTolerance));
+        Assert.That(result.netForce.magnitude, Is.EqualTo(0f).Within(PhysicsValidationProbe.ForceTolerance));
+        Assert.That(result.impactImpulseMagnitude, Is.EqualTo(result.configuredMass * result.projectileSpeed).Within(PhysicsValidationProbe.TimestepImpulseTolerance));
+    }
+
+    [Test]
+    public void ForceModeImpulseDoesNotInflateContinuousForceDiagnostics()
+    {
+        PhysicsValidationProbe.ImpulseDiagnosticsResult result = PhysicsValidationProbe.RunForceImpulseDiagnosticSeparation();
+
+        Assert.That(result.force, Is.EqualTo(new Vector3(10f, 0f, 0f)));
+        Assert.That(result.torque.magnitude, Is.EqualTo(0f).Within(PhysicsValidationProbe.TorqueTolerance));
+        Assert.That(result.impulse, Is.EqualTo(new Vector3(0f, 20f, 0f)));
+        Assert.That(Vector3.Distance(result.angularImpulse, new Vector3(-20f, 0f, 0f)), Is.LessThan(PhysicsValidationProbe.TimestepImpulseTolerance));
+        Assert.That(result.forceCount, Is.EqualTo(1));
+        Assert.That(result.impulseCount, Is.EqualTo(1));
+    }
+
+    [Test]
+    public void RcsSpoolLimitsActualNozzleThrottle()
+    {
+        PhysicsValidationProbe.RcsResult result = PhysicsValidationProbe.RunRcsWithSpool(2f, Vector3.right, Vector3.zero, 0.02f);
+
+        Assert.That(result.desiredForce.magnitude, Is.GreaterThan(0f));
+        Assert.That(result.maxNozzleThrottle, Is.EqualTo(0.04f).Within(PhysicsValidationProbe.NozzleThrottleTolerance));
+        Assert.That(result.actualForce.magnitude, Is.LessThan(result.desiredForce.magnitude));
+        Assert.That(result.residualForce.magnitude, Is.GreaterThan(0f));
+    }
+
+    [Test]
+    public void ManualAttitudeKeepsPriorityOverSasTorqueBudget()
+    {
+        PhysicsValidationProbe.ManualPriorityResult result = PhysicsValidationProbe.RunManualAttitudePriority();
+
+        Assert.That(Mathf.Abs(result.sasTorqueLocal.x), Is.GreaterThan(0f));
+        Assert.That(result.desiredTorqueLocal.y, Is.EqualTo(result.manualTorqueLocal.y).Within(PhysicsValidationProbe.TorqueTolerance));
+        Assert.That(Mathf.Abs(result.desiredTorqueLocal.x), Is.LessThan(PhysicsValidationProbe.TorqueTolerance));
+    }
+
+    [Test]
+    public void NullConfigRestoresReusablePrototypeDefaults()
+    {
+        PhysicsValidationProbe.ConfigDefaultsResult result = PhysicsValidationProbe.RunNullConfigDefaults();
+
+        Assert.That(result.projectileMass, Is.EqualTo(PrototypeGunSettings.Default.projectileMass).Within(PhysicsValidationProbe.FuelTolerance));
+        Assert.That(result.projectileSpeed, Is.EqualTo(PrototypeGunSettings.Default.projectileSpeed).Within(PhysicsValidationProbe.FuelTolerance));
+        Assert.That(result.mainThrottleScale, Is.EqualTo(PrototypeMainThrusterSettings.Default.throttleScale).Within(PhysicsValidationProbe.NozzleThrottleTolerance));
+        Assert.That(result.rcsTranslationForce, Is.EqualTo(PrototypeRcsSettings.Default.translationForce).Within(PhysicsValidationProbe.FuelTolerance));
+        Assert.That(result.rcsBlockThrust, Is.EqualTo(PrototypeRcsSettings.Default.blockThrust).Within(PhysicsValidationProbe.FuelTolerance));
     }
 
     [Test]

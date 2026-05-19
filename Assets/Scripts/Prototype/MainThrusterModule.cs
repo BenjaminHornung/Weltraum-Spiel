@@ -374,12 +374,7 @@ public class MainThrusterModule : MonoBehaviour
 
     public void ApplyConfig(PrototypeShipConfig config)
     {
-        if (config == null)
-        {
-            return;
-        }
-
-        PrototypeMainThrusterSettings settings = config.MainThruster;
+        PrototypeMainThrusterSettings settings = config != null ? config.MainThruster : PrototypeMainThrusterSettings.Default;
         settings.Clamp();
         mainThrustMode = SanitizeThrustMode(settings.mainThrustMode);
         throttleScale = settings.throttleScale;

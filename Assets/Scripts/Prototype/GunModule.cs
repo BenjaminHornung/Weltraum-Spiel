@@ -112,7 +112,7 @@ public class GunModule : MonoBehaviour
 
         var projectile = projectileObject.AddComponent<Projectile>();
         LastProjectileVelocityWorld = shipRigidbody.linearVelocity + (muzzleTransform.forward * shipStats.ProjectileSpeed);
-        projectile.Initialize(LastProjectileVelocityWorld, shipStats.ProjectileLifetime, GetComponentsInChildren<Collider>());
+        projectile.Initialize(LastProjectileVelocityWorld, shipStats.ProjectileLifetime, ProjectileMass, GetComponentsInChildren<Collider>());
         ApplyRecoilImpulse();
     }
 
@@ -141,12 +141,7 @@ public class GunModule : MonoBehaviour
 
 public void ApplyConfig(PrototypeShipConfig config)
     {
-        if (config == null)
-        {
-            return;
-        }
-
-        PrototypeGunSettings settings = config.Gun;
+        PrototypeGunSettings settings = config != null ? config.Gun : PrototypeGunSettings.Default;
         settings.Clamp();
         projectileScale = settings.projectileScale;
         projectileMass = settings.projectileMass;

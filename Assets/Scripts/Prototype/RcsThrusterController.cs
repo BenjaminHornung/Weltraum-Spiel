@@ -11,6 +11,7 @@ public class RcsThrusterController : MonoBehaviour
         public GameObject vfx;
         public RcsThrusterBlock block;
         public bool active;
+        public float actualThrottle;
     }
 
 
@@ -105,6 +106,12 @@ public Vector3 LastSasCommand { get; private set; }
     public bool LastFlightAssistDebugOnly => LastFlightAssistRequest.debugOnlyNonPhysical;
     public Vector3 LastManualDesiredTorqueLocal { get; private set; }
     public Vector3 LastDesiredTorqueLocal { get; private set; }
+    public Vector3 LastDesiredRcsForceWorld { get; private set; }
+    public Vector3 LastActualRcsForceWorld { get; private set; }
+    public Vector3 LastResidualRcsForceWorld { get; private set; }
+    public Vector3 LastDesiredRcsTorqueWorld { get; private set; }
+    public Vector3 LastActualRcsTorqueWorld { get; private set; }
+    public Vector3 LastResidualRcsTorqueWorld { get; private set; }
     public Vector3 LastTranslationForce { get; private set; }
     public Vector3 LastTorque { get; private set; }
     public Vector3 LastForceAtPositionTotal { get; private set; }
@@ -113,6 +120,8 @@ public Vector3 LastSasCommand { get; private set; }
     public float LastMaxNozzleThrottle { get; private set; }
     public float LastAllocatedNozzleThrottleTotal { get; private set; }
     public int LastNozzleApplicationCount { get; private set; }
+    public int LastSaturatedNozzleCount { get; private set; }
+    public string LastAllocatorStatus { get; private set; } = "idle";
     public float LastFuelRequestedKg { get; private set; }
     public float LastFuelConsumedKg { get; private set; }
     public float LastAppliedFuelFraction { get; private set; } = 1f;
@@ -325,7 +334,7 @@ public void ApplyControls(Vector3 translationCommand, Vector3 attitudeCommand, b
         float torqueAuthority = GetTorqueAuthority();
         LastManualDesiredTorqueLocal = Vector3.ClampMagnitude(manualAttitude, 1f) * torqueAuthority;
         Vector3 assistTorqueLocal = flightAssistRequest.HasPhysicalRequest ? flightAssistRequest.torqueLocal : Vector3.zero;
-        Vector3 desiredTorqueLocal = Vector3.ClampMagnitude(LastManualDesiredTorqueLocal + LastSasDesiredTorqueLocal + assistTorqueLocal, torqueAuthority);
+        Vector3 desiredTorqueLocal = CombineManualPriorityTorque(LastManualDesiredTorqueLocal, LastSasDesiredTorqueLocal + assistTorqueLocal, torqueAuthority);
         LastDesiredTorqueLocal = desiredTorqueLocal;
         Vector3 desiredTorqueWorld = transform.TransformDirection(desiredTorqueLocal);
         LastSasDesiredTorqueWorld = transform.TransformDirection(LastSasDesiredTorqueLocal);
@@ -436,12 +445,20 @@ private void ClearRuntimeForces()
     {
         LastTranslationForce = Vector3.zero;
         LastTorque = Vector3.zero;
+        LastDesiredRcsForceWorld = Vector3.zero;
+        LastActualRcsForceWorld = Vector3.zero;
+        LastResidualRcsForceWorld = Vector3.zero;
+        LastDesiredRcsTorqueWorld = Vector3.zero;
+        LastActualRcsTorqueWorld = Vector3.zero;
+        LastResidualRcsTorqueWorld = Vector3.zero;
         LastForceAtPositionTotal = Vector3.zero;
         LastYawForceWorld = Vector3.zero;
         LastYawTorqueEstimate = Vector3.zero;
         LastMaxNozzleThrottle = 0f;
         LastAllocatedNozzleThrottleTotal = 0f;
         LastNozzleApplicationCount = 0;
+        LastSaturatedNozzleCount = 0;
+        LastAllocatorStatus = RcsEnabled ? "idle" : "disabled";
         LastFuelRequestedKg = 0f;
         LastFuelConsumedKg = 0f;
         LastAppliedFuelFraction = 1f;
@@ -725,12 +742,7 @@ private void ApplyForceAtNozzle(RcsNozzle nozzle, Vector3 forceWorld, bool trans
 
 public void ApplyConfig(PrototypeShipConfig config)
     {
-        if (config == null)
-        {
-            return;
-        }
-
-        PrototypeRcsSettings settings = config.Rcs;
+        PrototypeRcsSettings settings = config != null ? config.Rcs : PrototypeRcsSettings.Default;
         settings.Clamp();
         translationForce = settings.translationForce;
         attitudeForce = settings.attitudeForce;
@@ -745,22 +757,30 @@ public void ApplyConfig(PrototypeShipConfig config)
 
 private void AllocateAndApplyRcs(Vector3 desiredForceWorld, Vector3 desiredTorqueWorld, Vector3 manualAttitude, float deltaTime)
     {
+        LastDesiredRcsForceWorld = desiredForceWorld;
+        LastDesiredRcsTorqueWorld = desiredTorqueWorld;
+        LastResidualRcsForceWorld = desiredForceWorld;
+        LastResidualRcsTorqueWorld = desiredTorqueWorld;
+
         if (desiredForceWorld.sqrMagnitude <= 0.0001f && desiredTorqueWorld.sqrMagnitude <= 0.0001f)
         {
+            LastAllocatorStatus = "idle";
+            SpoolNozzlesDown(deltaTime);
             return;
         }
 
         RcsAllocation[] allocations = BuildAllocationData();
         if (allocations.Length == 0)
         {
+            LastAllocatorStatus = "no nozzles";
             return;
         }
 
         float forceWeight;
         float torqueWeight;
-        GetAllocatorWeights(desiredForceWorld, desiredTorqueWorld, out forceWeight, out torqueWeight);
+        GetAllocatorWeights(allocations, desiredForceWorld, desiredTorqueWorld, out forceWeight, out torqueWeight);
         AllocateThrottleGreedy(allocations, desiredForceWorld, desiredTorqueWorld, forceWeight, torqueWeight);
-        ApplyAllocatedForces(allocations, desiredForceWorld, manualAttitude, deltaTime);
+        ApplyAllocatedForces(allocations, desiredForceWorld, desiredTorqueWorld, manualAttitude, deltaTime);
     }
 
     private RcsAllocation[] BuildAllocationData()
@@ -826,32 +846,45 @@ private void AllocateAndApplyRcs(Vector3 desiredForceWorld, Vector3 desiredTorqu
         return Mathf.Max(0f, attitudeForce) * representativeLever;
     }
 
-    private static void GetAllocatorWeights(Vector3 desiredForceWorld, Vector3 desiredTorqueWorld, out float forceWeight, out float torqueWeight)
+    private static void GetAllocatorWeights(RcsAllocation[] allocations, Vector3 desiredForceWorld, Vector3 desiredTorqueWorld, out float forceWeight, out float torqueWeight)
     {
         bool wantsForce = desiredForceWorld.sqrMagnitude > 0.0001f;
         bool wantsTorque = desiredTorqueWorld.sqrMagnitude > 0.0001f;
+        float representativeForce = 1f;
+        float representativeTorque = 1f;
+        if (allocations != null)
+        {
+            for (int i = 0; i < allocations.Length; i++)
+            {
+                representativeForce = Mathf.Max(representativeForce, allocations[i].forceAtFull.magnitude);
+                representativeTorque = Mathf.Max(representativeTorque, allocations[i].torqueAtFull.magnitude);
+            }
+        }
+
+        float forceScale = Mathf.Max(1f, desiredForceWorld.magnitude, representativeForce);
+        float torqueScale = Mathf.Max(1f, desiredTorqueWorld.magnitude, representativeTorque);
         if (wantsForce && !wantsTorque)
         {
-            forceWeight = 1f;
-            torqueWeight = 3f;
+            forceWeight = 3f / (forceScale * forceScale);
+            torqueWeight = 3f / (torqueScale * torqueScale);
             return;
         }
 
         if (!wantsForce && wantsTorque)
         {
-            forceWeight = 3f;
-            torqueWeight = 1f;
+            forceWeight = 3f / (forceScale * forceScale);
+            torqueWeight = 3f / (torqueScale * torqueScale);
             return;
         }
 
-        forceWeight = 1.5f;
-        torqueWeight = 1.5f;
+        forceWeight = 1.5f / (forceScale * forceScale);
+        torqueWeight = 1.5f / (torqueScale * torqueScale);
     }
 
     private static void AllocateThrottleGreedy(RcsAllocation[] allocations, Vector3 desiredForceWorld, Vector3 desiredTorqueWorld, float forceWeight, float torqueWeight)
     {
         const int MaxPasses = 32;
-        const float MinImprovement = 0.0001f;
+        const float MinImprovement = 0.0000001f;
 
         Vector3 residualForce = desiredForceWorld;
         Vector3 residualTorque = desiredTorqueWorld;
@@ -912,37 +945,64 @@ private void AllocateAndApplyRcs(Vector3 desiredForceWorld, Vector3 desiredTorqu
         return force.sqrMagnitude * forceWeight + torque.sqrMagnitude * torqueWeight;
     }
 
-    private void ApplyAllocatedForces(RcsAllocation[] allocations, Vector3 desiredForceWorld, Vector3 manualAttitude, float deltaTime)
+    private void ApplyAllocatedForces(RcsAllocation[] allocations, Vector3 desiredForceWorld, Vector3 desiredTorqueWorld, Vector3 manualAttitude, float deltaTime)
     {
         bool recordYaw = Mathf.Abs(manualAttitude.y) > ManualCommandDeadZone || Mathf.Abs(LastSasCommand.y) > SasCommandDeadZone;
-        float totalAllocatedThrottle = 0f;
+        float requestedThrottleTotal = 0f;
         for (int i = 0; i < allocations.Length; i++)
         {
-            totalAllocatedThrottle += Mathf.Clamp01(allocations[i].throttle);
+            requestedThrottleTotal += Mathf.Clamp01(allocations[i].throttle);
         }
 
-        LastAllocatedNozzleThrottleTotal = totalAllocatedThrottle;
-        float fuelFraction = ConsumeFuelForAllocatedThrottle(totalAllocatedThrottle, deltaTime);
-        if (fuelFraction <= 0f)
+        if (requestedThrottleTotal <= 0f)
         {
+            LastAllocatorStatus = "no solution";
+            SpoolNozzlesDown(deltaTime);
             return;
         }
 
+        float[] actualThrottles = new float[allocations.Length];
+        float actualThrottleTotal = 0f;
         for (int i = 0; i < allocations.Length; i++)
         {
             RcsAllocation allocation = allocations[i];
-            float throttle = Mathf.Clamp01(allocation.throttle) * fuelFraction;
+            float throttle = MoveNozzleThrottleTowards(allocation.nozzle, Mathf.Clamp01(allocation.throttle), deltaTime);
+            actualThrottles[i] = throttle;
+            actualThrottleTotal += throttle;
+        }
+
+        float fuelFraction = ConsumeFuelForAllocatedThrottle(actualThrottleTotal, deltaTime);
+        if (fuelFraction <= 0f)
+        {
+            LastAllocatorStatus = "no fuel";
+            LastAllocatedNozzleThrottleTotal = actualThrottleTotal;
+            return;
+        }
+
+        LastAllocatedNozzleThrottleTotal = actualThrottleTotal * fuelFraction;
+        for (int i = 0; i < allocations.Length; i++)
+        {
+            RcsAllocation allocation = allocations[i];
+            float throttle = actualThrottles[i] * fuelFraction;
             if (throttle <= 0.0001f)
             {
                 continue;
             }
 
+            allocation.nozzle.actualThrottle = throttle;
+
             Vector3 force = allocation.forceAtFull * throttle;
             physicsCore.ApplyForceAtPosition(force, allocation.position, ForceMode.Force);
             Vector3 torque = allocation.torqueAtFull * throttle;
             LastForceAtPositionTotal += force;
+            LastActualRcsForceWorld += force;
             LastTorque += torque;
+            LastActualRcsTorqueWorld += torque;
             LastNozzleApplicationCount++;
+            if (throttle >= 0.999f)
+            {
+                LastSaturatedNozzleCount++;
+            }
             LastMaxNozzleThrottle = Mathf.Max(LastMaxNozzleThrottle, throttle);
             allocation.nozzle.active = true;
 
@@ -953,7 +1013,49 @@ private void AllocateAndApplyRcs(Vector3 desiredForceWorld, Vector3 desiredTorqu
             }
         }
 
-        LastTranslationForce = desiredForceWorld * fuelFraction;
+        LastTranslationForce = LastActualRcsForceWorld;
+        LastResidualRcsForceWorld = desiredForceWorld - LastActualRcsForceWorld;
+        LastResidualRcsTorqueWorld = desiredTorqueWorld - LastActualRcsTorqueWorld;
+        LastAllocatorStatus = LastSaturatedNozzleCount > 0 ? "limited" : "ok";
+    }
+
+    private float MoveNozzleThrottleTowards(RcsNozzle nozzle, float targetThrottle, float deltaTime)
+    {
+        if (nozzle == null)
+        {
+            return Mathf.Clamp01(targetThrottle);
+        }
+
+        float rate = targetThrottle >= nozzle.actualThrottle ? NozzleSpoolUpRate : NozzleSpoolDownRate;
+        if (rate <= 0f)
+        {
+            nozzle.actualThrottle = Mathf.Clamp01(targetThrottle);
+            return nozzle.actualThrottle;
+        }
+
+        nozzle.actualThrottle = Mathf.MoveTowards(nozzle.actualThrottle, Mathf.Clamp01(targetThrottle), rate * Mathf.Max(0f, deltaTime));
+        return nozzle.actualThrottle;
+    }
+
+    private void SpoolNozzlesDown(float deltaTime)
+    {
+        for (int i = 0; i < nozzles.Count; i++)
+        {
+            MoveNozzleThrottleTowards(nozzles[i], 0f, deltaTime);
+        }
+    }
+
+    private static Vector3 CombineManualPriorityTorque(Vector3 manualTorqueLocal, Vector3 secondaryTorqueLocal, float torqueAuthority)
+    {
+        if (torqueAuthority <= 0.0001f)
+        {
+            return Vector3.zero;
+        }
+
+        Vector3 manual = Vector3.ClampMagnitude(manualTorqueLocal, torqueAuthority);
+        float remainingAuthority = Mathf.Max(0f, torqueAuthority - manual.magnitude);
+        Vector3 secondary = Vector3.ClampMagnitude(secondaryTorqueLocal, remainingAuthority);
+        return manual + secondary;
     }
 
     private float ConsumeFuelForAllocatedThrottle(float totalAllocatedThrottle, float deltaTime)

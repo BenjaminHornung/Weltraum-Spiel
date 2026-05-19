@@ -34,9 +34,13 @@ public class ShipPhysicsCore : MonoBehaviour
 
     public Rigidbody ShipRigidbody => shipRigidbody;
     public ShipWrench NetAppliedWrench { get; private set; }
+    public ShipWrench NetAppliedImpulseWrench { get; private set; }
     public Vector3 NetAppliedForce => NetAppliedWrench.force;
     public Vector3 NetAppliedTorque => NetAppliedWrench.torque;
+    public Vector3 NetAppliedImpulse => NetAppliedImpulseWrench.force;
+    public Vector3 NetAppliedAngularImpulse => NetAppliedImpulseWrench.torque;
     public int AppliedForceCount { get; private set; }
+    public int AppliedImpulseCount { get; private set; }
     public bool HasRigidbody => shipRigidbody != null;
     public bool ImpactImpulsesEnabled => impactImpulsesEnabled;
     public Vector3 LastImpactImpulse { get; private set; }
@@ -74,7 +78,9 @@ public class ShipPhysicsCore : MonoBehaviour
     public void BeginPhysicsStep()
     {
         NetAppliedWrench = ShipWrench.Zero;
+        NetAppliedImpulseWrench = ShipWrench.Zero;
         AppliedForceCount = 0;
+        AppliedImpulseCount = 0;
         ResetImpactImpulseDiagnostics();
         ResetGravityDiagnostics();
         ResetAtmosphereDiagnostics();
@@ -89,7 +95,7 @@ public class ShipPhysicsCore : MonoBehaviour
         }
 
         shipRigidbody.AddForce(force, mode);
-        RecordAppliedForce(force, Vector3.zero);
+        RecordAppliedWrench(force, Vector3.zero, mode);
         return true;
     }
 
@@ -103,7 +109,7 @@ public class ShipPhysicsCore : MonoBehaviour
 
         shipRigidbody.AddForceAtPosition(force, position, mode);
         Vector3 torque = Vector3.Cross(position - shipRigidbody.worldCenterOfMass, force);
-        RecordAppliedForce(force, torque);
+        RecordAppliedWrench(force, torque, mode);
         return true;
     }
 
@@ -140,7 +146,7 @@ public class ShipPhysicsCore : MonoBehaviour
         LastImpactPoint = position;
         LastImpactTorqueImpulse = torqueImpulse;
         ImpactImpulseCount++;
-        RecordAppliedForce(impulse, torqueImpulse);
+        RecordAppliedWrench(impulse, torqueImpulse, ForceMode.Impulse);
         return true;
     }
 
@@ -234,12 +240,19 @@ public class ShipPhysicsCore : MonoBehaviour
         }
 
         shipRigidbody.AddForce(acceleration, ForceMode.Acceleration);
-        RecordAppliedForce(acceleration * shipRigidbody.mass, Vector3.zero);
+        RecordAppliedWrench(acceleration * shipRigidbody.mass, Vector3.zero, ForceMode.Force);
         return true;
     }
 
-    private void RecordAppliedForce(Vector3 force, Vector3 torque)
+    private void RecordAppliedWrench(Vector3 force, Vector3 torque, ForceMode mode)
     {
+        if (mode == ForceMode.Impulse || mode == ForceMode.VelocityChange)
+        {
+            NetAppliedImpulseWrench = new ShipWrench(NetAppliedImpulseWrench.force + force, NetAppliedImpulseWrench.torque + torque);
+            AppliedImpulseCount++;
+            return;
+        }
+
         NetAppliedWrench = new ShipWrench(NetAppliedWrench.force + force, NetAppliedWrench.torque + torque);
         AppliedForceCount++;
     }

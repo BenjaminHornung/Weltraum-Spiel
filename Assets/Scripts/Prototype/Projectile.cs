@@ -48,6 +48,7 @@ public class Projectile : MonoBehaviour
     public ProjectileHitData LastHitData => lastHitData;
     public bool HasImpactEvent => lastImpactEvent.hasImpact;
     public PrototypeImpactEventData LastImpactEvent => lastImpactEvent;
+    public float ProjectileMassKg => Mathf.Max(0.001f, projectileMassKg);
     public PrototypeModuleDamageState LastDamagedModule => lastDamagedModule;
     public float LastDamageApplied => lastDamageApplied;
     public bool LastImpactImpulseApplied => lastImpactImpulseApplied;
@@ -76,12 +77,19 @@ public class Projectile : MonoBehaviour
 
     public void Initialize(Vector3 initialVelocity, float lifetime, Collider[] collidersToIgnore)
     {
+        Initialize(initialVelocity, lifetime, projectileMassKg, collidersToIgnore);
+    }
+
+    public void Initialize(Vector3 initialVelocity, float lifetime, float configuredProjectileMassKg, Collider[] collidersToIgnore)
+    {
         if (rigidbodyRef == null)
         {
             rigidbodyRef = GetComponent<Rigidbody>();
         }
 
+        projectileMassKg = Mathf.Max(0.001f, configuredProjectileMassKg);
         rigidbodyRef.useGravity = false;
+        rigidbodyRef.mass = ProjectileMassKg;
         rigidbodyRef.linearVelocity = initialVelocity;
         destroyAt = Time.time + Mathf.Max(0.1f, lifetime);
         hasReportedHit = false;
