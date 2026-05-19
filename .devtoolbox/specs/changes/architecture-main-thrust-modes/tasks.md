@@ -11,7 +11,7 @@
 
 ## Implementation
 - [x] Inspect existing MainThrusterModule and ShipPhysicsCore force routing through Unity MCP
-- [ ] Add explicit main-thrust mode enum
+- [x] Add explicit main-thrust mode enum
 - [ ] Keep ComSafeSteeringOnly as default
 - [ ] Implement FullyPhysicalNozzleForce path through ShipPhysicsCore
 - [ ] Add inspector fields and safe defaults
