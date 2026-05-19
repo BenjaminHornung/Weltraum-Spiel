@@ -88,6 +88,8 @@ public struct PrototypeMainThrusterSettings
     public MainThrustMode mainThrustMode;
     [Range(0f, 1f)] public float reverseThrustMultiplier;
     [Range(0f, 1f)] public float throttleScale;
+    public float throttleSpoolUpRate;
+    public float throttleSpoolDownRate;
     public bool supportsGimbal;
     [Range(0f, 45f)] public float gimbalLimitDegrees;
     [Range(0f, 1f)] public float gimbalResponseScalar;
@@ -98,6 +100,8 @@ public struct PrototypeMainThrusterSettings
         mainThrustMode = MainThrustMode.ComSafeSteeringOnly,
         reverseThrustMultiplier = 0.35f,
         throttleScale = 1f,
+        throttleSpoolUpRate = 0f,
+        throttleSpoolDownRate = 0f,
         supportsGimbal = true,
         gimbalLimitDegrees = 20f,
         gimbalResponseScalar = 0.35f
@@ -111,6 +115,8 @@ public struct PrototypeMainThrusterSettings
             : MainThrustMode.ComSafeSteeringOnly;
         reverseThrustMultiplier = Mathf.Clamp01(reverseThrustMultiplier);
         throttleScale = Mathf.Clamp01(throttleScale);
+        throttleSpoolUpRate = Mathf.Max(0f, throttleSpoolUpRate);
+        throttleSpoolDownRate = Mathf.Max(0f, throttleSpoolDownRate);
         gimbalLimitDegrees = Mathf.Max(0f, gimbalLimitDegrees);
         gimbalResponseScalar = Mathf.Clamp01(gimbalResponseScalar);
     }

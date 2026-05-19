@@ -10,6 +10,12 @@ public class MainThrusterModule : MonoBehaviour
     [SerializeField] private MainThrustMode mainThrustMode = MainThrustMode.ComSafeSteeringOnly;
     [Range(0f, 1f)]
     [SerializeField] private float throttleScale = 1f;
+
+    [Header("Throttle Response")]
+    [SerializeField] private float throttleSpoolUpRate;
+    [SerializeField] private float throttleSpoolDownRate;
+
+    [Header("Gimbal")]
     [SerializeField] private bool supportsGimbal = true;
     [Range(0f, 45f)]
     [SerializeField] private float gimbalLimitDegrees = 20f;
@@ -31,6 +37,8 @@ public class MainThrusterModule : MonoBehaviour
     public bool SupportsGimbal => supportsGimbal;
     public float GimbalLimitDegrees => Mathf.Max(0f, gimbalLimitDegrees);
     public float GimbalResponseScalar => Mathf.Clamp01(gimbalResponseScalar);
+    public float ThrottleSpoolUpRate => Mathf.Max(0f, throttleSpoolUpRate);
+    public float ThrottleSpoolDownRate => Mathf.Max(0f, throttleSpoolDownRate);
     public float LastThrottleCommand => LastTargetThrottle;
     public float LastTargetThrottle { get; private set; }
     public float LastActualThrottle { get; private set; }
@@ -144,7 +152,7 @@ public class MainThrusterModule : MonoBehaviour
         ResolveReferences();
 
         LastTargetThrottle = Mathf.Clamp01(throttleCommand) * Mathf.Clamp01(throttleScale);
-        LastActualThrottle = LastTargetThrottle;
+        LastActualThrottle = MoveThrottleTowards(LastActualThrottle, LastTargetThrottle, deltaTime);
         LastAppliedThrust = 0f;
         LastStraightForceWorld = Vector3.zero;
         LastSteeringForceWorld = Vector3.zero;
@@ -223,6 +231,17 @@ public class MainThrusterModule : MonoBehaviour
         }
     }
 
+    private float MoveThrottleTowards(float current, float target, float deltaTime)
+    {
+        float rate = target >= current ? ThrottleSpoolUpRate : ThrottleSpoolDownRate;
+        if (rate <= 0f)
+        {
+            return target;
+        }
+
+        return Mathf.MoveTowards(current, target, rate * Mathf.Max(0f, deltaTime));
+    }
+
     public Vector3 GetThrustDirection(float yawCommand, float pitchCommand)
     {
         ResolveReferences();
@@ -298,10 +317,18 @@ public class MainThrusterModule : MonoBehaviour
         mainThrustMode = SanitizeThrustMode(mode);
     }
 
+    public void ConfigureThrottleResponse(float spoolUpRate, float spoolDownRate)
+    {
+        throttleSpoolUpRate = Mathf.Max(0f, spoolUpRate);
+        throttleSpoolDownRate = Mathf.Max(0f, spoolDownRate);
+    }
+
     private void OnValidate()
     {
         mainThrustMode = SanitizeThrustMode(mainThrustMode);
         throttleScale = Mathf.Clamp01(throttleScale);
+        throttleSpoolUpRate = Mathf.Max(0f, throttleSpoolUpRate);
+        throttleSpoolDownRate = Mathf.Max(0f, throttleSpoolDownRate);
         gimbalLimitDegrees = Mathf.Max(0f, gimbalLimitDegrees);
         gimbalResponseScalar = Mathf.Clamp01(gimbalResponseScalar);
     }
@@ -318,6 +345,8 @@ public class MainThrusterModule : MonoBehaviour
         settings.Clamp();
         mainThrustMode = SanitizeThrustMode(settings.mainThrustMode);
         throttleScale = settings.throttleScale;
+        throttleSpoolUpRate = settings.throttleSpoolUpRate;
+        throttleSpoolDownRate = settings.throttleSpoolDownRate;
         supportsGimbal = settings.supportsGimbal;
         gimbalLimitDegrees = settings.gimbalLimitDegrees;
         gimbalResponseScalar = settings.gimbalResponseScalar;

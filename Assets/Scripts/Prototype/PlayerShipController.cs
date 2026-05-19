@@ -23,6 +23,9 @@ public class PlayerShipController : MonoBehaviour
     [Header("SAS")]
     [SerializeField] private SasControlMode sasMode = SasControlMode.KillRotation;
 
+    [Header("Flight Assist")]
+    [SerializeField] private FlightAssistMode flightAssistMode = FlightAssistMode.Simulation;
+
     [Header("Main Throttle")]
     [Range(0f, 1f)]
     [SerializeField] private float mainThrottle;
@@ -67,6 +70,8 @@ public class PlayerShipController : MonoBehaviour
     public float TurnInput { get; private set; }
     public float GimbalYawCommand { get; private set; }
         public float MainThrottleScale => mainThruster != null ? mainThruster.ThrottleScale : 0f;
+    public float MainThrottleSpoolUpRate => mainThruster != null ? mainThruster.ThrottleSpoolUpRate : 0f;
+    public float MainThrottleSpoolDownRate => mainThruster != null ? mainThruster.ThrottleSpoolDownRate : 0f;
 public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal;
     public float GimbalLimitDegrees => mainThruster != null ? mainThruster.GimbalLimitDegrees : 0f;
     public float GimbalResponseScalar => mainThruster != null ? mainThruster.GimbalResponseScalar : 0f;
@@ -97,8 +102,13 @@ public bool HasRcs => rcsThrusters != null && rcsThrusters.HasRcs;
     public bool SasEnabled => sasEnabled;
     public bool EffectiveSasEnabled => sasEnabled ^ sasHoldInvert;
     public SasControlMode SasMode => sasMode;
+    public FlightAssistMode FlightAssistMode => flightAssistMode;
     public bool HasSasTargetRotation => sasTargetRotationValid;
     public Quaternion SasTargetRotation => sasTargetRotationValid ? sasTargetRotation : transform.rotation;
+    public FlightAssistRequest LastFlightAssistRequest { get; private set; } = FlightAssistRequest.None;
+    public Vector3 LastFlightAssistForceWorld => LastFlightAssistRequest.forceWorld;
+    public Vector3 LastFlightAssistTorqueLocal => LastFlightAssistRequest.torqueLocal;
+    public bool LastFlightAssistDebugOnly => LastFlightAssistRequest.debugOnlyNonPhysical;
     public bool PrecisionControls => precisionControls;
     public float LastForwardAcceleration { get; private set; }
     public Vector3 RcsControlPivotLocal => rcsThrusters != null ? rcsThrusters.ControlPivotLocal : Vector3.zero;
@@ -249,6 +259,7 @@ public Vector3 LastRcsSasCommand => rcsThrusters != null ? rcsThrusters.LastSasC
         RcsAttitudeCommand = Vector3.ClampMagnitude(attitudeInput, 1f) * controlScale;
         TurnInput = Mathf.Clamp(RcsAttitudeCommand.y, -1f, 1f);
         UpdateSasTargetRotation(RcsAttitudeCommand);
+        LastFlightAssistRequest = BuildFlightAssistRequest();
 
         if (rcsThrusters != null)
         {
@@ -504,6 +515,23 @@ public Vector3 LastRcsSasCommand => rcsThrusters != null ? rcsThrusters.LastSasC
         if (!EffectiveSasEnabled || !sasTargetRotationValid || manualAttitudeCommand.sqrMagnitude > SasManualTargetRefreshDeadZone * SasManualTargetRefreshDeadZone)
         {
             CaptureSasTargetRotation();
+        }
+    }
+
+    private FlightAssistRequest BuildFlightAssistRequest()
+    {
+        switch (flightAssistMode)
+        {
+            case FlightAssistMode.AssistedFlight:
+            case FlightAssistMode.DebugAssist:
+                return new FlightAssistRequest(
+                    flightAssistMode,
+                    flightAssistMode == FlightAssistMode.DebugAssist ? FlightAssistRequestSource.DebugOnly : FlightAssistRequestSource.FlightAssist,
+                    Vector3.zero,
+                    Vector3.zero,
+                    flightAssistMode == FlightAssistMode.DebugAssist);
+            default:
+                return FlightAssistRequest.None;
         }
     }
 
