@@ -10,7 +10,7 @@
 - [x] Commit spec with spec title and changelog
 
 ## Implementation
-- [ ] Inspect ShipStats, MainThrusterModule, RcsThrusterController, and ShipPhysicsCore through Unity MCP
+- [x] Inspect ShipStats, MainThrusterModule, RcsThrusterController, and ShipPhysicsCore through Unity MCP
 - [ ] Fix zero-fuel-cost thrust semantics
 - [ ] Add partial-fuel thrust scaling for main engines
 - [ ] Add RCS fuel consumption from final allocator output
