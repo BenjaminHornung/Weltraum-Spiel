@@ -1,0 +1,26 @@
+﻿# Tasks: environment-atmosphere-layer
+
+## Spec
+- [x] Create spec change folder
+- [x] Add proposal.md
+- [x] Add design.md
+- [x] Add behavioral spec requirements
+- [x] Add tasks.md
+- [x] Validate spec with DevToolbox
+- [x] Commit spec with spec title and changelog
+
+## Implementation
+- [ ] Inspect ShipPhysicsCore environment-force hooks through Unity MCP
+- [ ] Define optional atmosphere settings/volume
+- [ ] Keep vacuum as default
+- [ ] Add simple drag force calculation
+- [ ] Route drag through ShipPhysicsCore
+- [ ] Add atmosphere diagnostics to overlay/docs
+
+## Verification
+- [ ] Validate changed Unity scripts with Unity MCP
+- [ ] Verify default scene has zero atmosphere force
+- [ ] Verify drag opposes velocity in a test atmosphere
+- [ ] Verify drag scales with squared speed
+- [ ] Add test evidence under this spec
+- [ ] Commit implementation with spec title and changelog
