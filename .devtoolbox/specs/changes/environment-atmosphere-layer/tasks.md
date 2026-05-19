@@ -10,7 +10,7 @@
 - [x] Commit spec with spec title and changelog
 
 ## Implementation
-- [ ] Inspect ShipPhysicsCore environment-force hooks through Unity MCP
+- [x] Inspect ShipPhysicsCore environment-force hooks through Unity MCP
 - [ ] Define optional atmosphere settings/volume
 - [ ] Keep vacuum as default
 - [ ] Add simple drag force calculation
