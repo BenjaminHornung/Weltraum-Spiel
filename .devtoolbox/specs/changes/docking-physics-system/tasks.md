@@ -14,7 +14,7 @@
 - [x] Define DockingPort data/component
 - [x] Add relative state calculation
 - [x] Add eligibility checks and diagnostics
-- [ ] Add optional soft-capture force/torque request
+- [x] Add optional soft-capture force/torque request
 - [ ] Add simple hard-lock prototype using a joint or documented placeholder
 - [ ] Update README and physics docs
 

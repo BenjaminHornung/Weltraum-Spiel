@@ -54,6 +54,16 @@ public struct DockingEligibility
     }
 }
 
+[System.Serializable]
+public struct DockingSoftCaptureRequest
+{
+    public bool requested;
+    public FlightAssistRequest assistRequest;
+    public Vector3 forceWorld;
+    public Vector3 torqueLocal;
+    public string diagnostic;
+}
+
 [DisallowMultipleComponent]
 public class DockingPort : MonoBehaviour
 {
@@ -131,8 +141,8 @@ public class DockingPort : MonoBehaviour
         Vector3 offset = targetPosition - sourcePosition;
         Vector3 sourceForward = source.WorldForward;
         Vector3 targetForward = target.WorldForward;
-        Vector3 relativeVelocity = GetPointVelocity(sourceRigidbody, sourcePosition)
-            - GetPointVelocity(targetRigidbody, targetPosition);
+        Vector3 relativeVelocity = GetPointVelocity(targetRigidbody, targetPosition)
+            - GetPointVelocity(sourceRigidbody, sourcePosition);
         Vector3 relativeAngularVelocity = GetAngularVelocity(sourceRigidbody)
             - GetAngularVelocity(targetRigidbody);
         Vector3 approachDirection = offset.sqrMagnitude > 0.0001f ? offset.normalized : sourceForward;
@@ -208,6 +218,61 @@ public class DockingPort : MonoBehaviour
             && eligibility.withinHardLockVelocity;
         eligibility.diagnostic = BuildEligibilityDiagnostic(eligibility);
         return eligibility;
+    }
+
+    public DockingSoftCaptureRequest BuildSoftCaptureRequest(DockingPort target, DockingRelativeState state)
+    {
+        return BuildSoftCaptureRequest(this, target, state, EvaluateEligibility(target, state));
+    }
+
+    public DockingSoftCaptureRequest BuildSoftCaptureRequest(
+        DockingPort target,
+        DockingRelativeState state,
+        DockingEligibility eligibility)
+    {
+        return BuildSoftCaptureRequest(this, target, state, eligibility);
+    }
+
+    public static DockingSoftCaptureRequest BuildSoftCaptureRequest(
+        DockingPort source,
+        DockingPort target,
+        DockingRelativeState state,
+        DockingEligibility eligibility)
+    {
+        if (source == null || target == null)
+        {
+            return CreateNoSoftCaptureRequest("missing-port");
+        }
+
+        if (!eligibility.canSoftCapture)
+        {
+            return CreateNoSoftCaptureRequest(string.IsNullOrEmpty(eligibility.diagnostic) ? "soft-capture-not-eligible" : eligibility.diagnostic);
+        }
+
+        Vector3 forceWorld = state.offsetWorld * source.SoftCapturePositionGain
+            + state.relativeVelocityWorld * source.SoftCaptureVelocityGain;
+        forceWorld = Vector3.ClampMagnitude(forceWorld, source.MaxSoftCaptureForce);
+
+        Vector3 correctionAxisWorld = Vector3.Cross(source.WorldForward, -target.WorldForward);
+        Vector3 torqueLocal = source.transform.InverseTransformDirection(correctionAxisWorld) * source.SoftCaptureAngularGain;
+        torqueLocal -= state.relativeAngularVelocityLocal * source.SoftCaptureAngularGain;
+        torqueLocal = Vector3.ClampMagnitude(torqueLocal, source.MaxSoftCaptureTorque);
+
+        var assist = new FlightAssistRequest(
+            FlightAssistMode.AssistedFlight,
+            FlightAssistRequestSource.Docking,
+            forceWorld,
+            torqueLocal,
+            false);
+
+        return new DockingSoftCaptureRequest
+        {
+            requested = assist.HasPhysicalRequest,
+            assistRequest = assist,
+            forceWorld = forceWorld,
+            torqueLocal = torqueLocal,
+            diagnostic = assist.HasPhysicalRequest ? "soft-capture-requested" : "soft-capture-zero-request"
+        };
     }
 
     public void Configure(
@@ -314,5 +379,17 @@ public class DockingPort : MonoBehaviour
         }
 
         return eligibility.hardLockEnabled ? "not-eligible" : "hard-lock-disabled";
+    }
+
+    private static DockingSoftCaptureRequest CreateNoSoftCaptureRequest(string diagnostic)
+    {
+        return new DockingSoftCaptureRequest
+        {
+            requested = false,
+            assistRequest = FlightAssistRequest.None,
+            forceWorld = Vector3.zero,
+            torqueLocal = Vector3.zero,
+            diagnostic = diagnostic
+        };
     }
 }

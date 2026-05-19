@@ -33,3 +33,12 @@ Conclusion: docking should be implemented as a prototype component that computes
 - Diagnostics return explicit reasons such as `outside-capture-radius`, `angle-too-large`, `relative-velocity-too-high`, `soft-capture-eligible`, and `hard-lock-eligible`.
 - Unity MCP `validate_script` on `Assets/Scripts/Prototype/DockingPort.cs` returned 0 errors and 0 warnings.
 - Unity MCP console query for errors returned 0 entries after the change.
+
+## 2026-05-19 - Soft Capture Request
+
+- Extended `DockingPort` with `DockingSoftCaptureRequest` and `BuildSoftCaptureRequest`.
+- Soft capture returns `FlightAssistMode.AssistedFlight`, `FlightAssistRequestSource.Docking`, and `debugOnlyNonPhysical = false` only when soft-capture eligibility passes.
+- Force and torque requests are bounded by `MaxSoftCaptureForce` and `MaxSoftCaptureTorque`.
+- Corrected relative velocity to represent target-point velocity relative to source-point velocity so positive closing speed reports true approach.
+- Unity MCP `validate_script` on `Assets/Scripts/Prototype/DockingPort.cs` and `Assets/Scripts/Prototype/FlightAssistRequest.cs` returned 0 errors and 0 warnings.
+- Unity MCP console query for errors returned 0 entries after the change.
