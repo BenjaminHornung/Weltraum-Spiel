@@ -100,6 +100,22 @@ public class FloatingOriginBody : MonoBehaviour
         }
     }
 
+    public void ResetAbsoluteState(Vector3 localPosition, Vector3 velocity)
+    {
+        LargeWorldVector3d origin = manager != null ? manager.Origin : LargeWorldVector3d.Zero;
+        absolutePosition = origin + localPosition;
+        absoluteVelocity = LargeWorldVector3d.FromVector3(velocity);
+
+        Rigidbody body = GetCachedRigidbody();
+        if (body != null)
+        {
+            body.position = localPosition;
+            body.linearVelocity = velocity;
+        }
+
+        transform.position = localPosition;
+    }
+
     private Rigidbody GetCachedRigidbody()
     {
         if (cachedRigidbody == null)

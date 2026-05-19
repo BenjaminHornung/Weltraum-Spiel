@@ -40,6 +40,11 @@ public class SimpleFollowCamera : MonoBehaviour
         snapNextFrame = true;
     }
 
+    public void SnapNextFrame()
+    {
+        snapNextFrame = true;
+    }
+
     private void Update()
     {
         var keyboard = UnityEngine.InputSystem.Keyboard.current;

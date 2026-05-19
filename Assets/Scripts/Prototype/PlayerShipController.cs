@@ -639,8 +639,56 @@ public void SetRcsEnabled(bool enabled)
 
     public void ResetPosition()
     {
-        transform.position = Vector3.zero;
+        ResetFlightState(Vector3.zero, Quaternion.identity, true);
     }
+
+    public void ResetFlightState(Vector3 position, Quaternion rotation, bool cutMainThrottle)
+    {
+        if (shipRigidbody == null)
+        {
+            ResolveReferences();
+        }
+
+        if (cutMainThrottle)
+        {
+            mainThrottle = 0f;
+            MainThrustCommand = 0f;
+            pendingDebugMainThrottlePulse = 0f;
+        }
+
+        pendingDebugRcsTranslationPulse = Vector3.zero;
+        pendingDebugRcsAttitudePulse = Vector3.zero;
+        RcsTranslationCommand = Vector3.zero;
+        RcsAttitudeCommand = Vector3.zero;
+        TurnInput = 0f;
+        GimbalYawCommand = 0f;
+        LastForwardAcceleration = 0f;
+        previousForwardSpeed = 0f;
+        LastFlightAssistRequest = FlightAssistRequest.None;
+
+        if (shipRigidbody != null)
+        {
+            shipRigidbody.position = position;
+            shipRigidbody.rotation = rotation;
+            shipRigidbody.linearVelocity = Vector3.zero;
+            shipRigidbody.angularVelocity = Vector3.zero;
+        }
+
+        transform.SetPositionAndRotation(position, rotation);
+
+        FloatingOriginBody floatingOriginBody = GetComponent<FloatingOriginBody>();
+        if (floatingOriginBody != null)
+        {
+            floatingOriginBody.ResetAbsoluteState(position, Vector3.zero);
+        }
+
+        SimpleFollowCamera followCamera = Camera.main != null ? Camera.main.GetComponent<SimpleFollowCamera>() : null;
+        if (followCamera != null)
+        {
+            followCamera.SnapNextFrame();
+        }
+    }
+
 
     public void ResetVelocity()
     {

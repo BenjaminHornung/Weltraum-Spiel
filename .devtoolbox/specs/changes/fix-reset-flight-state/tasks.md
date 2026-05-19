@@ -10,19 +10,19 @@
 - [x] Commit spec with spec title and changelog
 
 ## Implementation
-- [ ] Inspect current reset, floating-origin, and camera APIs
-- [ ] Add robust PlayerShipController ResetFlightState helper
-- [ ] Make ResetPosition delegate to ResetFlightState origin/identity
-- [ ] Add FloatingOriginBody reset helper
-- [ ] Add SimpleFollowCamera public snap helper
-- [ ] Update or add validation probe/test coverage for reset state
-- [ ] Add test evidence under this spec
+- [x] Inspect current reset, floating-origin, and camera APIs
+- [x] Add robust PlayerShipController ResetFlightState helper
+- [x] Make ResetPosition delegate to ResetFlightState origin/identity
+- [x] Add FloatingOriginBody reset helper
+- [x] Add SimpleFollowCamera public snap helper
+- [x] Update or add validation probe/test coverage for reset state
+- [x] Add test evidence under this spec
 
 ## Verification
-- [ ] Validate changed Unity scripts with Unity MCP
-- [ ] Verify reset clears position, rotation, linear velocity, angular velocity, throttle, and debug pulses
-- [ ] Verify floating-origin absolute state is synchronized
-- [ ] Verify camera snap helper is called/available
-- [ ] Run focused EditMode tests or deterministic probe
-- [ ] Commit implementation with spec title and changelog
-- [ ] Push branch
+- [x] Validate changed Unity scripts with Unity MCP
+- [x] Verify reset clears position, rotation, linear velocity, angular velocity, throttle, and debug pulses
+- [x] Verify floating-origin absolute state is synchronized
+- [x] Verify camera snap helper is called/available
+- [x] Run focused EditMode tests or deterministic probe
+- [x] Commit implementation with spec title and changelog
+- [x] Push branch
