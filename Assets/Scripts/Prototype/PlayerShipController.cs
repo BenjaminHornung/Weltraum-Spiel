@@ -195,7 +195,7 @@ public Vector3 LastRcsSasCommand => rcsThrusters != null ? rcsThrusters.LastSasC
             }
         }
 
-        shipRigidbody.mass = shipStats.CurrentMass;
+        shipStats.ApplyMassProperties(shipRigidbody);
 
         if (physicsCore != null)
         {
@@ -220,6 +220,7 @@ public Vector3 LastRcsSasCommand => rcsThrusters != null ? rcsThrusters.LastSasC
         if (mainThruster != null)
         {
             appliedThrust = mainThruster.Fire(MainThrustCommand, GimbalYawCommand, gimbalPitchCommand, Time.fixedDeltaTime);
+            shipStats.ApplyMassProperties(shipRigidbody);
         }
 
         float forwardSpeed = Vector3.Dot(shipRigidbody.linearVelocity, transform.forward);

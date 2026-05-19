@@ -36,6 +36,7 @@ public struct PrototypeShipMassSettings
     public float fuelTankDryMass;
     public float engineMass;
     public float gunMass;
+    public float rcsBlockMass;
 
     public static PrototypeShipMassSettings Default => new PrototypeShipMassSettings
     {
@@ -43,7 +44,8 @@ public struct PrototypeShipMassSettings
         hullMass = 1000f,
         fuelTankDryMass = 400f,
         engineMass = 700f,
-        gunMass = 250f
+        gunMass = 250f,
+        rcsBlockMass = 80f
     };
 
     public void Clamp()
@@ -53,6 +55,7 @@ public struct PrototypeShipMassSettings
         fuelTankDryMass = Mathf.Max(0f, fuelTankDryMass);
         engineMass = Mathf.Max(0f, engineMass);
         gunMass = Mathf.Max(0f, gunMass);
+        rcsBlockMass = Mathf.Max(0f, rcsBlockMass);
     }
 }
 

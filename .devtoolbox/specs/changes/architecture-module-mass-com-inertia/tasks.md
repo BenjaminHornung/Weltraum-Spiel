@@ -10,19 +10,19 @@
 - [x] Commit spec with spec title and changelog
 
 ## Implementation
-- [ ] Inspect existing ShipStats, PrototypeBootstrap, and ShipPhysicsCore through Unity MCP
-- [ ] Define module mass descriptor data
-- [ ] Add generated descriptors for prototype modules
-- [ ] Calculate total mass from descriptors
-- [ ] Calculate local center of mass
-- [ ] Apply Rigidbody centerOfMass
-- [ ] Add simple box inertia approximation
-- [ ] Publish mass diagnostics to overlay/docs
+- [x] Inspect existing ShipStats, PrototypeBootstrap, and ShipPhysicsCore through Unity MCP
+- [x] Define module mass descriptor data
+- [x] Add generated descriptors for prototype modules
+- [x] Calculate total mass from descriptors
+- [x] Calculate local center of mass
+- [x] Apply Rigidbody centerOfMass
+- [x] Add simple box inertia approximation
+- [x] Publish mass diagnostics to overlay/docs
 
 ## Verification
-- [ ] Validate changed Unity scripts with Unity MCP
-- [ ] Verify symmetric ship COM is centered
-- [ ] Verify moving a heavy module shifts COM predictably
-- [ ] Verify wider/longer ships alter angular acceleration
-- [ ] Add test evidence under this spec
-- [ ] Commit implementation with spec title and changelog
+- [x] Validate changed Unity scripts with Unity MCP
+- [x] Verify symmetric ship COM is centered
+- [x] Verify moving a heavy module shifts COM predictably
+- [x] Verify wider/longer ships alter angular acceleration
+- [x] Add test evidence under this spec
+- [x] Commit implementation with spec title and changelog

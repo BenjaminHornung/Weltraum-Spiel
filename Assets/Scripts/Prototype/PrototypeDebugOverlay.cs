@@ -96,6 +96,8 @@ public class PrototypeDebugOverlay : MonoBehaviour
         float rbMass = targetRigidbody.mass;
         Vector3 centerOfMassLocal = targetRigidbody.centerOfMass;
         Vector3 centerOfMassWorld = targetRigidbody.worldCenterOfMass;
+        Vector3 inertiaTensor = targetRigidbody.inertiaTensor;
+        ShipMassProperties massProperties = targetStats.LastMassProperties;
 
         Vector3 rcsTranslation = shipController != null ? shipController.RcsTranslationCommand : Vector3.zero;
         Vector3 rcsAttitude = shipController != null ? shipController.RcsAttitudeCommand : Vector3.zero;
@@ -152,7 +154,7 @@ public class PrototypeDebugOverlay : MonoBehaviour
         float cameraLookPitch = followCamera != null ? followCamera.LookPitch : 0f;
         Vector3 mainForcePosition = shipController != null ? shipController.LastMainForcePositionWorld : centerOfMassWorld;
 
-        Rect rect = new Rect(windowPosition.x, windowPosition.y, 620f, 600f);
+        Rect rect = new Rect(windowPosition.x, windowPosition.y, 620f, 630f);
         GUI.Box(rect, "Prototype Flight Diagnostics");
 
         GUILayout.BeginArea(new Rect(rect.x + 8f, rect.y + 22f, rect.width - 14f, rect.height - 24f));
@@ -167,6 +169,8 @@ public class PrototypeDebugOverlay : MonoBehaviour
         GUILayout.Label($"Angular velocity: {FormatVector(angularVelocity)} rad/s", labelStyle);
         GUILayout.Label($"COM local: {FormatVector(centerOfMassLocal)}", labelStyle);
         GUILayout.Label($"COM world: {FormatVector(centerOfMassWorld)}", labelStyle);
+        GUILayout.Label($"Mass model: {massProperties.ModuleCount} modules, dry {massProperties.DryMassKg:0.0} kg, fuel {massProperties.FuelMassKg:0.0} kg", labelStyle);
+        GUILayout.Label($"Inertia tensor: {FormatVector(inertiaTensor)} kg*m^2", labelStyle);
         GUILayout.Space(4f);
         GUILayout.Label($"Throttle: {throttlePercent:0}% cmd {mainCommand:0.00} scale {throttleScale:0.00}", labelStyle);
         GUILayout.Label($"Main thrust: {targetStats.LastAppliedThrust:0} / {targetStats.Thrust:0} N", labelStyle);

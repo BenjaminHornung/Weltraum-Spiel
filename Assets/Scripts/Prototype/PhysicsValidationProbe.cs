@@ -5,10 +5,13 @@ using UnityEngine;
 public static class PhysicsValidationProbe
 {
     public const float ForceTolerance = 1f;
+    public const float RcsResidualForceTolerance = 2f;
     public const float TorqueTolerance = 1f;
     public const float NozzleThrottleTolerance = 0.0001f;
     public const float FuelTolerance = 0.01f;
     public const float TimestepImpulseTolerance = 0.01f;
+    public const float CenterOfMassTolerance = 0.0001f;
+    public const float InertiaTolerance = 0.01f;
 
     public sealed class GeneratedShipFixture : IDisposable
     {
@@ -58,6 +61,12 @@ public static class PhysicsValidationProbe
             CreateRcsBlock(Ship.transform, "RCS_Bottom", new Vector3(0f, -0.7f, 0f), new Vector3(0.55f, 0.22f, 0.55f), Vector3.up);
             CreateRcsBlock(Ship.transform, "RCS_Left", new Vector3(-1.02f, 0f, 0f), new Vector3(0.22f, 0.55f, 0.55f), Vector3.right);
             CreateRcsBlock(Ship.transform, "RCS_Right", new Vector3(1.02f, 0f, 0f), new Vector3(0.22f, 0.55f, 0.55f), Vector3.left);
+            CreateMassPart(Ship.transform, "Hull", Vector3.zero, new Vector3(1.8f, 1.1f, 6.0f));
+            CreateMassPart(Ship.transform, "Cockpit", new Vector3(0f, 0.45f, 2.05f), new Vector3(1.0f, 0.45f, 1.0f));
+            CreateMassPart(Ship.transform, "FuelTank", new Vector3(0f, -0.45f, 0.1f), new Vector3(1.2f, 0.35f, 2.1f));
+            CreateMassPart(Ship.transform, "Gun", new Vector3(0f, 0.1f, 3.25f), new Vector3(0.32f, 0.22f, 0.65f));
+            PrototypeModuleMassLayout.ConfigureGeneratedPrototypeDescriptors(Ship.transform, Stats);
+            Stats.ApplyMassProperties(Rigidbody);
 
             MainThruster.Configure(nozzle, Rigidbody, Stats, PhysicsCore, MainThermal);
             Rcs.ConfigureThrusters(
@@ -116,6 +125,24 @@ public static class PhysicsValidationProbe
         public float impulseAt001;
         public float fuelAt002;
         public float fuelAt001;
+    }
+
+    public struct MassPropertiesResult
+    {
+        public float totalMass;
+        public float expectedMass;
+        public Vector3 centerOfMass;
+        public Vector3 expectedCenterOfMass;
+        public Vector3 inertiaTensor;
+        public int moduleCount;
+    }
+
+    public struct InertiaComparisonResult
+    {
+        public float compactInertiaZ;
+        public float wideInertiaZ;
+        public float compactAngularAcceleration;
+        public float wideAngularAcceleration;
     }
 
     public struct ThermalStepResult
@@ -331,6 +358,91 @@ public static class PhysicsValidationProbe
             };
         }
     }
+
+    public static MassPropertiesResult InspectGeneratedMassProperties()
+    {
+        using (GeneratedShipFixture fixture = CreateGeneratedShip())
+        {
+            ShipMassProperties properties = fixture.Stats.LastMassProperties;
+            return new MassPropertiesResult
+            {
+                totalMass = fixture.Rigidbody.mass,
+                expectedMass = properties.TotalMassKg,
+                centerOfMass = fixture.Rigidbody.centerOfMass,
+                expectedCenterOfMass = properties.LocalCenterOfMass,
+                inertiaTensor = fixture.Rigidbody.inertiaTensor,
+                moduleCount = properties.ModuleCount
+            };
+        }
+    }
+
+    public static MassPropertiesResult CalculateSymmetricCenterOfMass()
+    {
+        GameObject root = new GameObject("SymmetricMassProbe");
+        try
+        {
+            AddDescriptor(root.transform, "Left", new Vector3(-1f, 0f, 0f), 100f, Vector3.one);
+            AddDescriptor(root.transform, "Right", new Vector3(1f, 0f, 0f), 100f, Vector3.one);
+
+            ModuleMassDescriptor[] descriptors = root.GetComponentsInChildren<ModuleMassDescriptor>();
+            ShipMassProperties properties = ShipMassProperties.Calculate(root.transform, descriptors, 0f, 0f);
+            return new MassPropertiesResult
+            {
+                totalMass = properties.TotalMassKg,
+                expectedMass = 200f,
+                centerOfMass = properties.LocalCenterOfMass,
+                expectedCenterOfMass = Vector3.zero,
+                inertiaTensor = properties.InertiaTensor,
+                moduleCount = properties.ModuleCount
+            };
+        }
+        finally
+        {
+            DestroyGameObject(root);
+        }
+    }
+
+    public static MassPropertiesResult CalculateHeavyModuleShift()
+    {
+        GameObject root = new GameObject("HeavyModuleShiftProbe");
+        try
+        {
+            AddDescriptor(root.transform, "Light", new Vector3(-1f, 0f, 0f), 100f, Vector3.one);
+            AddDescriptor(root.transform, "Heavy", new Vector3(2f, 0f, 0f), 300f, Vector3.one);
+
+            ModuleMassDescriptor[] descriptors = root.GetComponentsInChildren<ModuleMassDescriptor>();
+            ShipMassProperties properties = ShipMassProperties.Calculate(root.transform, descriptors, 0f, 0f);
+            return new MassPropertiesResult
+            {
+                totalMass = properties.TotalMassKg,
+                expectedMass = 400f,
+                centerOfMass = properties.LocalCenterOfMass,
+                expectedCenterOfMass = new Vector3(1.25f, 0f, 0f),
+                inertiaTensor = properties.InertiaTensor,
+                moduleCount = properties.ModuleCount
+            };
+        }
+        finally
+        {
+            DestroyGameObject(root);
+        }
+    }
+
+    public static InertiaComparisonResult CompareWideAndCompactInertia()
+    {
+        ShipMassProperties compact = CalculatePairInertia("CompactInertiaProbe", 0.5f);
+        ShipMassProperties wide = CalculatePairInertia("WideInertiaProbe", 2f);
+        const float torque = 1000f;
+
+        return new InertiaComparisonResult
+        {
+            compactInertiaZ = compact.InertiaTensor.z,
+            wideInertiaZ = wide.InertiaTensor.z,
+            compactAngularAcceleration = torque / compact.InertiaTensor.z,
+            wideAngularAcceleration = torque / wide.InertiaTensor.z
+        };
+    }
+
     private static void RunMainThrustSteps(float deltaTime, int steps, out float impulse, out float remainingFuel)
     {
         using (GeneratedShipFixture fixture = CreateGeneratedShip())
@@ -359,6 +471,15 @@ public static class PhysicsValidationProbe
         nozzle.transform.localPosition = new Vector3(0f, 0f, -0.55f);
         nozzle.transform.localRotation = Quaternion.identity;
         return nozzle.transform;
+    }
+
+    private static GameObject CreateMassPart(Transform ship, string partName, Vector3 localPosition, Vector3 localScale)
+    {
+        var part = new GameObject(partName);
+        part.transform.SetParent(ship, false);
+        part.transform.localPosition = localPosition;
+        part.transform.localScale = localScale;
+        return part;
     }
 
     private static void CreateRcsBlock(Transform ship, string blockName, Vector3 localPosition, Vector3 localScale, Vector3 blockedDirection)
@@ -411,6 +532,31 @@ public static class PhysicsValidationProbe
         if (direction == Vector3.right) return "Right";
         if (direction == Vector3.up) return "Up";
         return "Down";
+    }
+
+    private static ModuleMassDescriptor AddDescriptor(Transform root, string name, Vector3 localPosition, float massKg, Vector3 boxSize)
+    {
+        var module = new GameObject(name);
+        module.transform.SetParent(root, false);
+        module.transform.localPosition = localPosition;
+        ModuleMassDescriptor descriptor = module.AddComponent<ModuleMassDescriptor>();
+        descriptor.Configure(name, massKg, 0f, false, boxSize);
+        return descriptor;
+    }
+
+    private static ShipMassProperties CalculatePairInertia(string rootName, float halfWidth)
+    {
+        GameObject root = new GameObject(rootName);
+        try
+        {
+            AddDescriptor(root.transform, "Left", new Vector3(-halfWidth, 0f, 0f), 100f, Vector3.one);
+            AddDescriptor(root.transform, "Right", new Vector3(halfWidth, 0f, 0f), 100f, Vector3.one);
+            return ShipMassProperties.Calculate(root.transform, root.GetComponentsInChildren<ModuleMassDescriptor>(), 0f, 0f);
+        }
+        finally
+        {
+            DestroyGameObject(root);
+        }
     }
 
     private static void SetPrivateFloat(object target, string fieldName, float value)

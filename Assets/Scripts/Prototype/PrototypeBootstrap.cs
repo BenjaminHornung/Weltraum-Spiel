@@ -85,6 +85,8 @@ public class PrototypeBootstrap : MonoBehaviour
             true,
             PrototypeThermalModule.OverheatEffect.ThrottleToHalf);
         EnsureRcsThrusters(ship.transform, shipConfig);
+        PrototypeModuleMassLayout.ConfigureGeneratedPrototypeDescriptors(ship.transform, stats);
+        stats.ApplyMassProperties(shipRigidbody);
         RemoveRootFallbackChild(ship.transform, "Muzzle");
 
         var gun = GetOrAddComponent<GunModule>(ship);

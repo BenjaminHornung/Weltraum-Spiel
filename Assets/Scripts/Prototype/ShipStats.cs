@@ -8,6 +8,7 @@ public class ShipStats : MonoBehaviour
     [SerializeField] private float fuelTankDryMass = 400f;
     [SerializeField] private float engineMass = 700f;
     [SerializeField] private float gunMass = 250f;
+    [SerializeField] private float rcsBlockMass = 80f;
 
     [Header("Fuel (kg)")]
     [SerializeField] private float maxFuelKg = 300f;
@@ -32,10 +33,21 @@ public class ShipStats : MonoBehaviour
     [Range(3f, 10f)]
     [SerializeField] private float followHeight = 6f;
 
-    public float DryMass => Mathf.Max(0.1f, cockpitMass + hullMass + fuelTankDryMass + engineMass + gunMass);
+    private ShipMassProperties lastMassProperties;
+    private bool hasMassProperties;
+
+    public float CockpitMass => Mathf.Max(0f, cockpitMass);
+    public float HullMass => Mathf.Max(0f, hullMass);
+    public float FuelTankDryMass => Mathf.Max(0f, fuelTankDryMass);
+    public float EngineMass => Mathf.Max(0f, engineMass);
+    public float GunMass => Mathf.Max(0f, gunMass);
+    public float RcsBlockMass => Mathf.Max(0f, rcsBlockMass);
+
+    public float DryMass => Mathf.Max(0.1f, CockpitMass + HullMass + FuelTankDryMass + EngineMass + GunMass + (RcsBlockMass * 4f));
     public float MaxFuelKg => Mathf.Max(0.01f, maxFuelKg);
     public float CurrentFuelKg => Mathf.Clamp(currentFuelKg, 0f, MaxFuelKg);
-    public float CurrentMass => DryMass + CurrentFuelKg;
+    public float CurrentMass => hasMassProperties && lastMassProperties.HasDescriptors ? lastMassProperties.TotalMassKg : DryMass + CurrentFuelKg;
+    public ShipMassProperties LastMassProperties => hasMassProperties ? lastMassProperties : ShipMassProperties.Fallback(DryMass + CurrentFuelKg);
     public float Thrust => Mathf.Max(0f, thrustForce);
     public float ReverseThrustMultiplier => Mathf.Clamp01(reverseThrustMultiplier);
     public float FuelConsumptionKgPerSecond => Mathf.Max(0f, fullThrottleFuelKgPerSecond);
@@ -92,6 +104,36 @@ public class ShipStats : MonoBehaviour
         currentFuelKg = MaxFuelKg;
     }
 
+    public ShipMassProperties RecalculateMassProperties()
+    {
+        ModuleMassDescriptor[] descriptors = GetComponentsInChildren<ModuleMassDescriptor>(false);
+        lastMassProperties = ShipMassProperties.Calculate(transform, descriptors, CurrentFuelKg, DryMass + CurrentFuelKg);
+        hasMassProperties = true;
+        return lastMassProperties;
+    }
+
+    public ShipMassProperties ApplyMassProperties(Rigidbody body)
+    {
+        ShipMassProperties properties = RecalculateMassProperties();
+        if (body == null)
+        {
+            return properties;
+        }
+
+        body.mass = properties.TotalMassKg;
+
+        if (properties.HasDescriptors)
+        {
+            body.automaticCenterOfMass = false;
+            body.centerOfMass = properties.LocalCenterOfMass;
+            body.automaticInertiaTensor = false;
+            body.inertiaTensorRotation = Quaternion.identity;
+            body.inertiaTensor = properties.InertiaTensor;
+        }
+
+        return properties;
+    }
+
     private void OnValidate()
     {
         cockpitMass = Mathf.Max(0f, cockpitMass);
@@ -99,6 +141,7 @@ public class ShipStats : MonoBehaviour
         fuelTankDryMass = Mathf.Max(0f, fuelTankDryMass);
         engineMass = Mathf.Max(0f, engineMass);
         gunMass = Mathf.Max(0f, gunMass);
+        rcsBlockMass = Mathf.Max(0f, rcsBlockMass);
         maxFuelKg = Mathf.Max(0.01f, maxFuelKg);
         currentFuelKg = Mathf.Clamp(currentFuelKg, 0f, maxFuelKg);
         fullThrottleFuelKgPerSecond = Mathf.Max(0f, fullThrottleFuelKgPerSecond);
@@ -122,6 +165,7 @@ public void ApplyConfig(PrototypeShipConfig config)
         fuelTankDryMass = massSettings.fuelTankDryMass;
         engineMass = massSettings.engineMass;
         gunMass = massSettings.gunMass;
+        rcsBlockMass = massSettings.rcsBlockMass;
 
         PrototypeShipFuelSettings fuelSettings = config.Fuel;
         fuelSettings.Clamp();

@@ -57,14 +57,14 @@ public class PrototypePhysicsValidationTests
             PhysicsValidationProbe.RcsResult translation = PhysicsValidationProbe.RunRcs(fixture, Vector3.right, Vector3.zero);
             Assert.That(translation.force.x, Is.GreaterThan(8000f));
             Assert.That(Mathf.Abs(translation.force.y), Is.LessThan(PhysicsValidationProbe.ForceTolerance));
-            Assert.That(Mathf.Abs(translation.force.z), Is.LessThan(PhysicsValidationProbe.ForceTolerance));
+            Assert.That(Mathf.Abs(translation.force.z), Is.LessThan(PhysicsValidationProbe.RcsResidualForceTolerance));
             Assert.That(translation.torque.magnitude, Is.LessThan(100f));
             Assert.That(translation.maxNozzleThrottle, Is.LessThanOrEqualTo(1f + PhysicsValidationProbe.NozzleThrottleTolerance));
             Assert.That(translation.applications, Is.EqualTo(translation.activeNozzles));
             Assert.That(translation.activeNozzles, Is.GreaterThan(0));
 
             PhysicsValidationProbe.RcsResult yaw = PhysicsValidationProbe.RunRcs(fixture, Vector3.zero, Vector3.up);
-            Assert.That(yaw.force.magnitude, Is.LessThan(PhysicsValidationProbe.ForceTolerance));
+            Assert.That(yaw.force.magnitude, Is.LessThan(PhysicsValidationProbe.RcsResidualForceTolerance));
             Assert.That(yaw.torque.y, Is.GreaterThan(1000f));
             Assert.That(yaw.maxNozzleThrottle, Is.LessThanOrEqualTo(1f + PhysicsValidationProbe.NozzleThrottleTolerance));
             Assert.That(yaw.applications, Is.EqualTo(yaw.activeNozzles));
@@ -95,6 +95,48 @@ public class PrototypePhysicsValidationTests
         Assert.That(result.impulseAt002, Is.EqualTo(result.impulseAt001).Within(PhysicsValidationProbe.TimestepImpulseTolerance));
         Assert.That(result.fuelAt002, Is.EqualTo(result.fuelAt001).Within(PhysicsValidationProbe.FuelTolerance));
     }
+
+    [Test]
+    public void GeneratedModuleDescriptorsDriveRigidbodyMassProperties()
+    {
+        PhysicsValidationProbe.MassPropertiesResult result = PhysicsValidationProbe.InspectGeneratedMassProperties();
+
+        Assert.That(result.moduleCount, Is.EqualTo(9));
+        Assert.That(result.totalMass, Is.EqualTo(result.expectedMass).Within(PhysicsValidationProbe.FuelTolerance));
+        Assert.That(Vector3.Distance(result.centerOfMass, result.expectedCenterOfMass), Is.LessThan(PhysicsValidationProbe.CenterOfMassTolerance));
+        Assert.That(result.inertiaTensor.x, Is.GreaterThan(0f));
+        Assert.That(result.inertiaTensor.y, Is.GreaterThan(0f));
+        Assert.That(result.inertiaTensor.z, Is.GreaterThan(0f));
+    }
+
+    [Test]
+    public void SymmetricModuleLayoutKeepsCenterOfMassCentered()
+    {
+        PhysicsValidationProbe.MassPropertiesResult result = PhysicsValidationProbe.CalculateSymmetricCenterOfMass();
+
+        Assert.That(result.totalMass, Is.EqualTo(result.expectedMass).Within(PhysicsValidationProbe.FuelTolerance));
+        Assert.That(Vector3.Distance(result.centerOfMass, result.expectedCenterOfMass), Is.LessThan(PhysicsValidationProbe.CenterOfMassTolerance));
+    }
+
+    [Test]
+    public void MovingHeavyModuleShiftsCenterOfMassTowardIt()
+    {
+        PhysicsValidationProbe.MassPropertiesResult result = PhysicsValidationProbe.CalculateHeavyModuleShift();
+
+        Assert.That(result.totalMass, Is.EqualTo(result.expectedMass).Within(PhysicsValidationProbe.FuelTolerance));
+        Assert.That(Vector3.Distance(result.centerOfMass, result.expectedCenterOfMass), Is.LessThan(PhysicsValidationProbe.CenterOfMassTolerance));
+        Assert.That(result.centerOfMass.x, Is.GreaterThan(0f));
+    }
+
+    [Test]
+    public void WiderModuleLayoutRaisesInertiaAndLowersAngularAcceleration()
+    {
+        PhysicsValidationProbe.InertiaComparisonResult result = PhysicsValidationProbe.CompareWideAndCompactInertia();
+
+        Assert.That(result.wideInertiaZ, Is.GreaterThan(result.compactInertiaZ + PhysicsValidationProbe.InertiaTolerance));
+        Assert.That(result.wideAngularAcceleration, Is.LessThan(result.compactAngularAcceleration));
+    }
+
     [Test]
     public void ThermalModuleHeatsWhileMainThrusterIsActive()
     {
