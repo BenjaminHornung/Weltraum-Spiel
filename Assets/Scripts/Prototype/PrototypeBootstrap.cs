@@ -10,6 +10,7 @@ public class PrototypeBootstrap : MonoBehaviour
     private static readonly Color HullColor = new Color(0.68f, 0.72f, 0.78f);
     private static readonly Color RcsBlockColor = new Color(0.22f, 0.85f, 0.95f);
     private static readonly Color RcsVfxColor = new Color(0.35f, 1f, 0.65f, 0.85f);
+    private const float DefaultRcsBlockThrust = 6500f;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void RuntimeBootstrap()
@@ -167,6 +168,9 @@ public class PrototypeBootstrap : MonoBehaviour
     private static void BuildRcsBlock(Transform ship, string blockName, Vector3 localPosition, Vector3 localScale, Vector3 blockedDirection)
     {
         var block = BuildModulePart(ship, blockName, PrimitiveType.Cube, localPosition, Quaternion.identity, localScale, RcsBlockColor);
+        var thrusterBlock = GetOrAddComponent<RcsThrusterBlock>(block);
+        thrusterBlock.ConfigureDefault(DefaultRcsBlockThrust);
+
         Vector3[] directions = { Vector3.forward, Vector3.back, Vector3.left, Vector3.right, Vector3.up, Vector3.down };
         for (int i = 0; i < directions.Length; i++)
         {
@@ -203,9 +207,9 @@ public class PrototypeBootstrap : MonoBehaviour
             vfx = vfxObject.transform;
         }
 
-        vfx.localPosition = Vector3.back * 0.18f;
+        vfx.localPosition = Vector3.back * 2.3f;
         vfx.localRotation = Quaternion.Euler(0f, 180f, 0f);
-        vfx.localScale = new Vector3(0.08f, 0.08f, 0.34f);
+        vfx.localScale = new Vector3(0.08f, 0.08f, 0.12f);
         RemoveCollider(vfx.gameObject);
         ApplyMaterialColor(vfx.gameObject, RcsVfxColor, true);
         vfx.gameObject.SetActive(false);

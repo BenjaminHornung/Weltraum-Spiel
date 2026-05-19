@@ -9,6 +9,7 @@ public class RcsThrusterController : MonoBehaviour
         public string id;
         public Transform transform;
         public GameObject vfx;
+        public RcsThrusterBlock block;
         public bool active;
     }
 
@@ -150,6 +151,7 @@ public class RcsThrusterController : MonoBehaviour
                 id = child.name,
                 transform = child,
                 vfx = FindNozzleVfx(child),
+                block = FindNozzleBlock(child),
                 active = false
             };
             nozzles.Add(nozzle);
@@ -186,7 +188,8 @@ public class RcsThrusterController : MonoBehaviour
 
         LastTranslationCommand = Vector3.ClampMagnitude(translationCommand, 1f);
         Vector3 manualAttitude = Vector3.ClampMagnitude(attitudeCommand, 1f);
-        LastSasCommand = stabilizeAngular && shipRigidbody != null ? ComputeSasCommand(deltaTime) : Vector3.zero;
+        Vector3 sasCommand = stabilizeAngular && shipRigidbody != null ? ComputeSasCommand(deltaTime) : Vector3.zero;
+        LastSasCommand = MaskSasForManualAxes(sasCommand, manualAttitude);
         if (stabilizeAngular && shipRigidbody != null)
         {
             SettleTinySasAngularVelocity(manualAttitude);
@@ -283,7 +286,7 @@ public class RcsThrusterController : MonoBehaviour
         ApplyLinearDemand(transform.forward, LastTranslationCommand.z, translationForce, true);
     }
 
-    private void ApplyLinearDemand(Vector3 positiveDirection, float command, float forceScale, bool translation)
+    private void ApplyLinearDemand(Vector3 positiveDirection, float command, float fallbackForceScale, bool translation)
     {
         if (Mathf.Abs(command) <= 0.05f)
         {
@@ -291,8 +294,7 @@ public class RcsThrusterController : MonoBehaviour
         }
 
         Vector3 desiredForceDirection = (positiveDirection * Mathf.Sign(command)).normalized;
-        float magnitude = Mathf.Abs(command) * Mathf.Max(0f, forceScale);
-        ApplyNozzleSet(desiredForceDirection, magnitude, translation, Vector3.zero);
+        ApplyNozzleSet(desiredForceDirection, Mathf.Abs(command), fallbackForceScale, translation, Vector3.zero);
     }
 
     private void ApplyAttitudeForces(Vector3 manualAttitude)
@@ -312,7 +314,7 @@ public class RcsThrusterController : MonoBehaviour
         return Mathf.Abs(manualCommand) > ManualCommandDeadZone ? ManualCommandDeadZone : SasCommandDeadZone;
     }
 
-    private void ApplyTorqueDemand(Vector3 positiveAxis, float command, float forceScale, bool recordYaw, float commandDeadZone)
+    private void ApplyTorqueDemand(Vector3 positiveAxis, float command, float fallbackForceScale, bool recordYaw, float commandDeadZone)
     {
         if (Mathf.Abs(command) <= commandDeadZone || shipRigidbody == null)
         {
@@ -320,7 +322,7 @@ public class RcsThrusterController : MonoBehaviour
         }
 
         Vector3 desiredTorqueAxis = (positiveAxis * Mathf.Sign(command)).normalized;
-        float magnitude = Mathf.Abs(command) * Mathf.Max(0f, forceScale);
+        float commandMagnitude = Mathf.Abs(command);
 
         for (int i = 0; i < nozzles.Count; i++)
         {
@@ -343,12 +345,13 @@ public class RcsThrusterController : MonoBehaviour
                 continue;
             }
 
-            Vector3 force = forceDirection * (magnitude * alignment);
+            float nozzleThrust = GetNozzleThrust(nozzle, fallbackForceScale);
+            Vector3 force = forceDirection * (commandMagnitude * nozzleThrust * alignment);
             ApplyForceAtNozzle(nozzle, force, false, recordYaw);
         }
     }
 
-    private void ApplyNozzleSet(Vector3 desiredForceDirection, float magnitude, bool translation, Vector3 torqueAxisForDebug)
+    private void ApplyNozzleSet(Vector3 desiredForceDirection, float commandMagnitude, float fallbackForceScale, bool translation, Vector3 torqueAxisForDebug)
     {
         for (int i = 0; i < nozzles.Count; i++)
         {
@@ -365,10 +368,59 @@ public class RcsThrusterController : MonoBehaviour
                 continue;
             }
 
-            Vector3 force = forceDirection * (magnitude * alignment);
+            float nozzleThrust = GetNozzleThrust(nozzle, fallbackForceScale);
+            Vector3 force = forceDirection * (commandMagnitude * nozzleThrust * alignment);
             ApplyForceAtNozzle(nozzle, force, translation, false);
         }
     }
+
+    private static Vector3 MaskSasForManualAxes(Vector3 sasCommand, Vector3 manualAttitude)
+    {
+        if (Mathf.Abs(manualAttitude.x) > ManualCommandDeadZone)
+        {
+            sasCommand.x = 0f;
+        }
+
+        if (Mathf.Abs(manualAttitude.y) > ManualCommandDeadZone)
+        {
+            sasCommand.y = 0f;
+        }
+
+        if (Mathf.Abs(manualAttitude.z) > ManualCommandDeadZone)
+        {
+            sasCommand.z = 0f;
+        }
+
+        return sasCommand;
+    }
+
+    private static RcsThrusterBlock FindNozzleBlock(Transform nozzle)
+    {
+        Transform current = nozzle;
+        while (current != null)
+        {
+            var block = current.GetComponent<RcsThrusterBlock>();
+            if (block != null)
+            {
+                return block;
+            }
+
+            current = current.parent;
+        }
+
+        return null;
+    }
+
+    private static float GetNozzleThrust(RcsNozzle nozzle, float fallbackForceScale)
+    {
+        if (nozzle != null && nozzle.block != null)
+        {
+            return nozzle.block.Thrust;
+        }
+
+        return Mathf.Max(0f, fallbackForceScale);
+    }
+
 
     private static Vector3 GetNozzleForceDirection(Transform nozzle)
     {
