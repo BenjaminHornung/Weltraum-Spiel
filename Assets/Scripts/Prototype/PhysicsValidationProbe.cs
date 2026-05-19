@@ -88,7 +88,13 @@ public static class PhysicsValidationProbe
 
     public struct MainThrustResult
     {
+        public MainThrustMode mode;
         public float appliedThrust;
+        public Vector3 forceWorld;
+        public Vector3 straightForce;
+        public Vector3 steeringForce;
+        public Vector3 forcePositionWorld;
+        public Vector3 estimatedTorque;
         public Vector3 netForce;
         public Vector3 netTorque;
         public int applications;
@@ -96,7 +102,10 @@ public static class PhysicsValidationProbe
 
     public struct GimbalResult
     {
+        public MainThrustMode mode;
+        public Vector3 forceWorld;
         public Vector3 steeringForce;
+        public Vector3 forcePositionWorld;
         public Vector3 expectedTorque;
         public Vector3 estimatedTorque;
         public Vector3 netTorque;
@@ -194,11 +203,29 @@ public static class PhysicsValidationProbe
 
     public static MainThrustResult RunMainThrust(GeneratedShipFixture fixture, float throttle, float deltaTime)
     {
+        return RunMainThrustWithMode(fixture, MainThrustMode.ComSafeSteeringOnly, throttle, 0f, 0f, deltaTime);
+    }
+
+    public static MainThrustResult RunMainThrustWithMode(
+        GeneratedShipFixture fixture,
+        MainThrustMode mode,
+        float throttle,
+        float yawCommand,
+        float pitchCommand,
+        float deltaTime)
+    {
+        fixture.MainThruster.SetThrustMode(mode);
         fixture.PhysicsCore.BeginPhysicsStep();
-        float applied = fixture.MainThruster.Fire(throttle, 0f, 0f, deltaTime);
+        float applied = fixture.MainThruster.Fire(throttle, yawCommand, pitchCommand, deltaTime);
         return new MainThrustResult
         {
+            mode = fixture.MainThruster.ThrustMode,
             appliedThrust = applied,
+            forceWorld = fixture.MainThruster.LastForceWorld,
+            straightForce = fixture.MainThruster.LastStraightForceWorld,
+            steeringForce = fixture.MainThruster.LastSteeringForceWorld,
+            forcePositionWorld = fixture.MainThruster.LastForcePositionWorld,
+            estimatedTorque = fixture.MainThruster.LastEstimatedTorque,
             netForce = fixture.PhysicsCore.NetAppliedForce,
             netTorque = fixture.PhysicsCore.NetAppliedTorque,
             applications = fixture.PhysicsCore.AppliedForceCount
@@ -207,15 +234,32 @@ public static class PhysicsValidationProbe
 
     public static GimbalResult RunGimbal(GeneratedShipFixture fixture, float yawCommand, float pitchCommand, float deltaTime)
     {
+        return RunGimbalWithMode(fixture, MainThrustMode.ComSafeSteeringOnly, yawCommand, pitchCommand, deltaTime);
+    }
+
+    public static GimbalResult RunGimbalWithMode(
+        GeneratedShipFixture fixture,
+        MainThrustMode mode,
+        float yawCommand,
+        float pitchCommand,
+        float deltaTime)
+    {
+        fixture.MainThruster.SetThrustMode(mode);
         fixture.PhysicsCore.BeginPhysicsStep();
         fixture.MainThruster.Fire(1f, yawCommand, pitchCommand, deltaTime);
+        Vector3 torqueForce = fixture.MainThruster.ThrustMode == MainThrustMode.FullyPhysicalNozzleForce
+            ? fixture.MainThruster.LastForceWorld
+            : fixture.MainThruster.LastSteeringForceWorld;
         Vector3 expectedTorque = Vector3.Cross(
             fixture.MainThruster.LastForcePositionWorld - fixture.Rigidbody.worldCenterOfMass,
-            fixture.MainThruster.LastSteeringForceWorld);
+            torqueForce);
 
         return new GimbalResult
         {
+            mode = fixture.MainThruster.ThrustMode,
+            forceWorld = fixture.MainThruster.LastForceWorld,
             steeringForce = fixture.MainThruster.LastSteeringForceWorld,
+            forcePositionWorld = fixture.MainThruster.LastForcePositionWorld,
             expectedTorque = expectedTorque,
             estimatedTorque = fixture.MainThruster.LastEstimatedTorque,
             netTorque = fixture.PhysicsCore.NetAppliedTorque

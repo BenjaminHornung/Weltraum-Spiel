@@ -26,11 +26,38 @@ public class PrototypePhysicsValidationTests
         {
             PhysicsValidationProbe.MainThrustResult result = PhysicsValidationProbe.RunMainThrust(fixture, 0.5f, 0.02f);
 
+            Assert.That(result.mode, Is.EqualTo(MainThrustMode.ComSafeSteeringOnly));
             Assert.That(result.appliedThrust, Is.EqualTo(22500f).Within(PhysicsValidationProbe.ForceTolerance));
             Assert.That(result.netForce.z, Is.EqualTo(22500f).Within(PhysicsValidationProbe.ForceTolerance));
             Assert.That(result.netForce.x, Is.EqualTo(0f).Within(PhysicsValidationProbe.ForceTolerance));
             Assert.That(result.netForce.y, Is.EqualTo(0f).Within(PhysicsValidationProbe.ForceTolerance));
             Assert.That(result.netTorque.magnitude, Is.EqualTo(0f).Within(PhysicsValidationProbe.TorqueTolerance));
+            Assert.AreEqual(1, result.applications);
+        }
+    }
+
+    [Test]
+    public void FullyPhysicalMainThrottleAppliesFullForceAtNozzlePosition()
+    {
+        using (PhysicsValidationProbe.GeneratedShipFixture fixture = PhysicsValidationProbe.CreateGeneratedShip())
+        {
+            PhysicsValidationProbe.MainThrustResult result = PhysicsValidationProbe.RunMainThrustWithMode(
+                fixture,
+                MainThrustMode.FullyPhysicalNozzleForce,
+                0.5f,
+                0f,
+                0f,
+                0.02f);
+            Vector3 expectedTorque = Vector3.Cross(result.forcePositionWorld - fixture.Rigidbody.worldCenterOfMass, result.forceWorld);
+
+            Assert.That(result.mode, Is.EqualTo(MainThrustMode.FullyPhysicalNozzleForce));
+            Assert.That(result.appliedThrust, Is.EqualTo(22500f).Within(PhysicsValidationProbe.ForceTolerance));
+            Assert.That(Vector3.Distance(result.forcePositionWorld, fixture.MainThruster.LastForcePositionWorld), Is.LessThan(PhysicsValidationProbe.CenterOfMassTolerance));
+            Assert.That(result.straightForce.magnitude, Is.EqualTo(0f).Within(PhysicsValidationProbe.ForceTolerance));
+            Assert.That(Vector3.Distance(result.steeringForce, result.forceWorld), Is.LessThan(PhysicsValidationProbe.ForceTolerance));
+            Assert.That(Vector3.Distance(result.netForce, result.forceWorld), Is.LessThan(PhysicsValidationProbe.ForceTolerance));
+            Assert.That(Vector3.Distance(result.estimatedTorque, expectedTorque), Is.LessThan(PhysicsValidationProbe.TorqueTolerance));
+            Assert.That(Vector3.Distance(result.netTorque, expectedTorque), Is.LessThan(PhysicsValidationProbe.TorqueTolerance));
             Assert.AreEqual(1, result.applications);
         }
     }
@@ -42,10 +69,32 @@ public class PrototypePhysicsValidationTests
         {
             PhysicsValidationProbe.GimbalResult result = PhysicsValidationProbe.RunGimbal(fixture, 1f, 0f, 0.02f);
 
+            Assert.That(result.mode, Is.EqualTo(MainThrustMode.ComSafeSteeringOnly));
             Assert.That(result.steeringForce.magnitude, Is.GreaterThan(100f));
             Assert.That(Vector3.Distance(result.estimatedTorque, result.expectedTorque), Is.LessThan(PhysicsValidationProbe.TorqueTolerance));
             Assert.That(Vector3.Distance(result.netTorque, result.expectedTorque), Is.LessThan(PhysicsValidationProbe.TorqueTolerance));
             Assert.That(result.netTorque.magnitude, Is.GreaterThan(1000f));
+        }
+    }
+
+    [Test]
+    public void FullyPhysicalGimbalTorqueDiagnosticsMatchFullForceCrossProduct()
+    {
+        using (PhysicsValidationProbe.GeneratedShipFixture fixture = PhysicsValidationProbe.CreateGeneratedShip())
+        {
+            PhysicsValidationProbe.GimbalResult result = PhysicsValidationProbe.RunGimbalWithMode(
+                fixture,
+                MainThrustMode.FullyPhysicalNozzleForce,
+                1f,
+                0f,
+                0.02f);
+            Vector3 expectedTorque = Vector3.Cross(result.forcePositionWorld - fixture.Rigidbody.worldCenterOfMass, result.forceWorld);
+
+            Assert.That(result.mode, Is.EqualTo(MainThrustMode.FullyPhysicalNozzleForce));
+            Assert.That(result.forceWorld.magnitude, Is.GreaterThan(100f));
+            Assert.That(Vector3.Distance(result.expectedTorque, expectedTorque), Is.LessThan(PhysicsValidationProbe.TorqueTolerance));
+            Assert.That(Vector3.Distance(result.estimatedTorque, expectedTorque), Is.LessThan(PhysicsValidationProbe.TorqueTolerance));
+            Assert.That(Vector3.Distance(result.netTorque, expectedTorque), Is.LessThan(PhysicsValidationProbe.TorqueTolerance));
         }
     }
 

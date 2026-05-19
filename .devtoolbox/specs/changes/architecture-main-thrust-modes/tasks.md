@@ -19,9 +19,9 @@
 - [x] Update README and physics docs
 
 ## Verification
-- [ ] Validate changed Unity scripts with Unity MCP
-- [ ] Verify default throttle-only torque remains near zero
-- [ ] Verify fully physical mode applies force at nozzle position
-- [ ] Verify gimbal torque diagnostics match expected cross product
-- [ ] Add test evidence under this spec
-- [ ] Commit implementation with spec title and changelog
+- [x] Validate changed Unity scripts with Unity MCP
+- [x] Verify default throttle-only torque remains near zero
+- [x] Verify fully physical mode applies force at nozzle position
+- [x] Verify gimbal torque diagnostics match expected cross product
+- [x] Add test evidence under this spec
+- [x] Commit implementation with spec title and changelog
