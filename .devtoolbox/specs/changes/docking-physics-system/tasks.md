@@ -16,7 +16,7 @@
 - [x] Add eligibility checks and diagnostics
 - [x] Add optional soft-capture force/torque request
 - [x] Add simple hard-lock prototype using a joint or documented placeholder
-- [ ] Update README and physics docs
+- [x] Update README and physics docs
 
 ## Verification
 - [ ] Validate changed Unity scripts with Unity MCP

@@ -68,6 +68,7 @@ Camera reset is bound to Backquote. Unity Input System key controls are physical
 - SAS has `KillRotation` and `HoldAttitude` modes. It creates a ship-local PD torque request from angular velocity and optional target attitude, then sends that request through the same RCS nozzle allocator as manual attitude.
 - SAS exposes proportional and derivative gains on `RcsThrusterController`. Manual pitch, yaw, or roll input masks SAS on that same axis while released axes continue to stabilize.
 - Flight assist is an explicit request layer with `Simulation`, `AssistedFlight`, and `DebugAssist` modes. Simulation mode sends no assist force or torque, assisted requests must go through the RCS allocator and `ShipPhysicsCore`, and debug-only requests are labeled so they cannot masquerade as physical flight.
+- `DockingPort` is a prototype docking data component. It reports world port frame data, relative state, eligibility diagnostics, bounded soft-capture `FlightAssistRequest` values, and a hard-lock placeholder that only requests lock after distance, angle, and velocity checks pass.
 - Active RCS nozzles show green debug VFX. The main thruster keeps its separate orange particle effect.
 - The no-hardcoded-position rule is intentional: moving/removing an `RCS_Nozzle_*` transform changes solver output, and missing nozzles create no phantom force.
 - The RCS toggle gates RCS force application and VFX.
@@ -89,6 +90,7 @@ Optional CC0 assets, such as local low-poly ships or Kenney packs, may be consid
 - The camera mode cycle is intentionally minimal and only switches between prepared follow offsets/orbit baselines.
 - SAS is a local PD torque controller routed through RCS, not a full flight computer or hidden angular damping layer.
 - Flight assist does not use hidden Rigidbody damping. Physical assist requests are allocator-limited; debug-only helpers are diagnostics/testing aids only.
+- Docking hard lock is currently a documented placeholder rather than an active joint. It is gated by docking constraints so later joint work can reuse the same diagnostics.
 - RCS allocation is a prototype bounded allocator, not a final optimizer, but it is transform-based and uses real lever arms around COM.
 - Deferred physics-core slices include additional SAS/autopilot modes, docking, deeper damage effects, and trajectory prediction.
 - Full armor balance, part detachment, visual destruction, and combat economy are out of scope.

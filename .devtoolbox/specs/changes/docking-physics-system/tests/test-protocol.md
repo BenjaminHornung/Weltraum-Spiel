@@ -50,3 +50,8 @@ Conclusion: docking should be implemented as a prototype component that computes
 - If a future `hardLockCreatesJoint` option is enabled, the diagnostic reports `hard-lock-joint-not-yet-implemented` rather than silently creating an unstable constraint.
 - Unity MCP `validate_script` on `Assets/Scripts/Prototype/DockingPort.cs` returned 0 errors and 0 warnings.
 - Unity MCP console query showed no C# compile errors; the only returned entry was an unrelated TestResults save message.
+
+## 2026-05-19 - README And Physics Docs
+
+- Updated `README.md` with the prototype `DockingPort` capability and current hard-lock placeholder limit.
+- Updated `docs/physics-flight-model.md` with port frame data, relative state equations, eligibility diagnostics, soft-capture request routing, and hard-lock placeholder behavior.

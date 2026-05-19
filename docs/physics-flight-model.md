@@ -157,6 +157,25 @@ The prototype names three modes:
 
 `RcsThrusterController` records assist mode, request source, force, torque, and debug-only status separately from manual and SAS diagnostics. The debug overlay shows manual command, SAS command/torque, and assist request fields side by side so future flight bugs can identify which layer asked for a wrench.
 
+## Docking Prototype
+
+`DockingPort` is the first docking physics component. It defines a local port frame (`localPosition` and `localForward`) plus capture radius, hard-lock radius, angle limits, relative-velocity limits, soft-capture gains, maximum soft-capture force/torque, and hard-lock enablement. The world port position and forward direction are derived from the owning transform so moving a ship or module moves the port without separate bookkeeping.
+
+Relative state is measured between two ports without applying any physics:
+
+```text
+offset = targetPortWorldPosition - sourcePortWorldPosition
+angleError = Angle(sourceForward, -targetForward)
+relativeVelocity = targetPointVelocity - sourcePointVelocity
+closingSpeed = max(0, -dot(relativeVelocity, normalize(offset)))
+```
+
+Eligibility uses the stricter settings across both ports. Soft capture requires capture radius, soft angle, soft relative velocity, and both ports enabling soft capture. Hard lock requires hard-lock radius, hard angle, hard relative velocity, and both ports enabling hard lock. Diagnostics report concrete reasons such as `outside-capture-radius`, `angle-too-large`, `relative-velocity-too-high`, `soft-capture-eligible`, and `hard-lock-eligible`.
+
+Soft capture does not teleport or write Rigidbody velocity. When eligible, it produces a bounded physical `FlightAssistRequest` with source `Docking`, mode `AssistedFlight`, and `debugOnlyNonPhysical = false`. The request is designed to flow through the existing flight-assist/RCS allocator path before concrete forces reach `ShipPhysicsCore`.
+
+Hard lock is intentionally a documented placeholder in this slice. `BuildHardLockPrototype` only requests a lock when `DockingEligibility.canHardLock` is true, reports `hard-lock-placeholder`, and does not create a joint. If the experimental joint toggle is enabled before a joint implementation exists, diagnostics report `hard-lock-joint-not-yet-implemented` rather than silently adding an unstable constraint.
+
 ## Power And Heat
 
 Prototype modules can carry an optional `PrototypeThermalModule`. The component declares power draw, heat generation, heat capacity, cooling rate, ambient temperature, maximum temperature, and an optional overheat effect. Thermal simulation defaults to off on generated modules, so the current flight prototype is unchanged unless a module is explicitly enabled.
