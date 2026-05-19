@@ -40,9 +40,17 @@ physicsCore.ApplyForceAtPosition(gimballedDirection * thrust, nozzlePosition, Fo
 
 That mode is more physically literal and can create torque from an off-center nozzle or shifted COM. Its diagnostic torque follows the same cross-product rule as other force-at-position paths.
 
+Main throttle now distinguishes the commanded target throttle from the actual throttle used for force, fuel, thermal activity, and engine VFX. The default spool-up and spool-down rates are zero, which means instant response for the prototype. Setting finite rates makes actual throttle move toward target throttle with:
+
+```text
+actualThrottle = MoveTowards(actualThrottle, targetThrottle, ratePerSecond * deltaTime)
+```
+
 ## Gimbal
 
 The visible `MainThrusterGimbal` cube rotates with the effective yaw and pitch gimbal command. The default gimbal limit remains 20 degrees, but the default response scalar is 0.35 so normal keyboard attitude input uses a softer cone while preserving the hard cap.
+
+Gimbal yaw and pitch also expose target and actual commands. The default slew rate is zero for instant response. Finite slew values move the actual gimbal command toward the target command in degrees per second, then apply the existing max-angle clamp before calculating visual rotation and thrust direction.
 
 The physical thrust vector follows the same effective gimbal direction as the visual. In `ComSafeSteeringOnly`, the steering component is the only main-thruster source of torque:
 

@@ -75,6 +75,7 @@ public class PlayerShipController : MonoBehaviour
 public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal;
     public float GimbalLimitDegrees => mainThruster != null ? mainThruster.GimbalLimitDegrees : 0f;
     public float GimbalResponseScalar => mainThruster != null ? mainThruster.GimbalResponseScalar : 0f;
+    public float GimbalSlewRateDegreesPerSecond => mainThruster != null ? mainThruster.GimbalSlewRateDegreesPerSecond : 0f;
     public float GimbalPitchCommand => mainThruster != null ? mainThruster.LastActualGimbalPitchCommand : 0f;
     public float TargetGimbalYawCommand => mainThruster != null ? mainThruster.LastTargetGimbalYawCommand : GimbalYawCommand;
     public float TargetGimbalPitchCommand => mainThruster != null ? mainThruster.LastTargetGimbalPitchCommand : 0f;
@@ -101,6 +102,8 @@ public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal
     public float RcsSasProportionalGain => rcsThrusters != null ? rcsThrusters.SasProportionalGain : 0f;
     public float RcsSasDerivativeGain => rcsThrusters != null ? rcsThrusters.SasDerivativeGain : 0f;
     public float RcsMinSelectionDot => rcsThrusters != null ? rcsThrusters.MinSelectionDot : 0f;
+    public float RcsNozzleSpoolUpRate => rcsThrusters != null ? rcsThrusters.NozzleSpoolUpRate : 0f;
+    public float RcsNozzleSpoolDownRate => rcsThrusters != null ? rcsThrusters.NozzleSpoolDownRate : 0f;
 public bool HasRcs => rcsThrusters != null && rcsThrusters.HasRcs;
     public bool RcsEnabled => rcsThrusters != null ? rcsThrusters.RcsEnabled : rcsEnabled;
     public bool SasEnabled => sasEnabled;

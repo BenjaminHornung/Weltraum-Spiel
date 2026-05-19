@@ -16,7 +16,7 @@
 - [x] Add target vs actual gimbal yaw/pitch
 - [x] Add gimbal slew rate
 - [x] Optionally prepare RCS response fields without changing defaults
-- [ ] Update overlay/docs with target vs actual output
+- [x] Update overlay/docs with target vs actual output
 
 ## Verification
 - [ ] Validate changed Unity scripts with Unity MCP

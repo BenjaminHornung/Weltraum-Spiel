@@ -106,14 +106,21 @@ public class PrototypeDebugOverlay : MonoBehaviour
 
         Vector3 rcsTranslation = shipController != null ? shipController.RcsTranslationCommand : Vector3.zero;
         Vector3 rcsAttitude = shipController != null ? shipController.RcsAttitudeCommand : Vector3.zero;
-        float throttlePercent = shipController != null ? shipController.MainThrottlePercent : targetStats.LastThrottle * 100f;
+        float throttlePercent = shipController != null ? shipController.MainActualThrottlePercent : targetStats.LastThrottle * 100f;
         float mainCommand = shipController != null ? shipController.MainThrustCommand : targetStats.LastThrottle;
+        float mainTargetThrottle = shipController != null ? shipController.MainTargetThrottle : targetStats.LastThrottle;
+        float mainActualThrottle = shipController != null ? shipController.MainActualThrottle : targetStats.LastThrottle;
         float throttleScale = shipController != null ? shipController.MainThrottleScale : 0f;
+        float throttleSpoolUp = shipController != null ? shipController.MainThrottleSpoolUpRate : 0f;
+        float throttleSpoolDown = shipController != null ? shipController.MainThrottleSpoolDownRate : 0f;
         bool gimbalEnabled = shipController != null && shipController.GimbalEnabled;
         float gimbalLimit = shipController != null ? shipController.GimbalLimitDegrees : 0f;
         float gimbalResponse = shipController != null ? shipController.GimbalResponseScalar : 0f;
-        float gimbalYaw = shipController != null ? shipController.GimbalYawCommand : 0f;
-        float gimbalPitch = shipController != null ? shipController.GimbalPitchCommand : 0f;
+        float gimbalSlewRate = shipController != null ? shipController.GimbalSlewRateDegreesPerSecond : 0f;
+        float targetGimbalYaw = shipController != null ? shipController.TargetGimbalYawCommand : 0f;
+        float targetGimbalPitch = shipController != null ? shipController.TargetGimbalPitchCommand : 0f;
+        float actualGimbalYaw = shipController != null ? shipController.ActualGimbalYawCommand : 0f;
+        float actualGimbalPitch = shipController != null ? shipController.ActualGimbalPitchCommand : 0f;
         float gimbalAngle = shipController != null ? shipController.LastGimbalAngleDegrees : 0f;
         float turnInput = shipController != null ? shipController.TurnInput : 0f;
         bool hasRcs = shipController != null && shipController.HasRcs;
@@ -137,6 +144,8 @@ public class PrototypeDebugOverlay : MonoBehaviour
         SasControlMode sasMode = shipController != null ? shipController.SasMode : SasControlMode.KillRotation;
         FlightAssistMode flightAssistMode = shipController != null ? shipController.FlightAssistMode : FlightAssistMode.Simulation;
         float minSelectionDot = shipController != null ? shipController.RcsMinSelectionDot : 0f;
+        float rcsNozzleSpoolUp = shipController != null ? shipController.RcsNozzleSpoolUpRate : 0f;
+        float rcsNozzleSpoolDown = shipController != null ? shipController.RcsNozzleSpoolDownRate : 0f;
         Vector3 rawSasCommand = shipController != null ? shipController.LastRawRcsSasCommand : Vector3.zero;
         Vector3 sasCommand = shipController != null ? shipController.LastRcsSasCommand : Vector3.zero;
         Vector3 sasReleasedAxes = shipController != null ? shipController.LastRcsSasReleasedAxes : Vector3.one;
@@ -214,7 +223,8 @@ public class PrototypeDebugOverlay : MonoBehaviour
         GUILayout.Label($"Mass model: {massProperties.ModuleCount} modules, dry {massProperties.DryMassKg:0.0} kg, fuel {massProperties.FuelMassKg:0.0} kg", labelStyle);
         GUILayout.Label($"Inertia tensor: {FormatVector(inertiaTensor)} kg*m^2", labelStyle);
         GUILayout.Space(4f);
-        GUILayout.Label($"Throttle: {throttlePercent:0}% cmd {mainCommand:0.00} scale {throttleScale:0.00}", labelStyle);
+        GUILayout.Label($"Throttle: {throttlePercent:0}% target {mainTargetThrottle:0.00} actual {mainActualThrottle:0.00} cmd {mainCommand:0.00}", labelStyle);
+        GUILayout.Label($"Throttle response: up {FormatRate(throttleSpoolUp)}, down {FormatRate(throttleSpoolDown)}, scale {throttleScale:0.00}", labelStyle);
         GUILayout.Label($"Main thrust: {targetStats.LastAppliedThrust:0} / {targetStats.Thrust:0} N", labelStyle);
         GUILayout.Label($"Main fuel: req {mainFuelRequested:0.000} kg, used {mainFuelConsumed:0.000} kg, frac {mainFuelFraction:0.00}", labelStyle);
         GUILayout.Label($"Forward accel: {forwardAcceleration:0.0} m/s^2", labelStyle);
@@ -233,12 +243,14 @@ public class PrototypeDebugOverlay : MonoBehaviour
         }
 
         GUILayout.Label($"Gimbal: {(gimbalEnabled ? "on" : "off")} / {gimbalLimit:0.0} deg", labelStyle);
-        GUILayout.Label($"Gimbal cmd: Y {gimbalYaw:0.00} P {gimbalPitch:0.00}, response {gimbalResponse:0.00}, angle {gimbalAngle:0.0}", labelStyle);
+        GUILayout.Label($"Gimbal target: Y {targetGimbalYaw:0.00} P {targetGimbalPitch:0.00}, response {gimbalResponse:0.00}", labelStyle);
+        GUILayout.Label($"Gimbal actual: Y {actualGimbalYaw:0.00} P {actualGimbalPitch:0.00}, slew {FormatRate(gimbalSlewRate)}, angle {gimbalAngle:0.0}", labelStyle);
         GUILayout.EndVertical();
 
         GUILayout.BeginVertical(GUILayout.Width(300f));
         GUILayout.Label($"RCS: installed {(hasRcs ? "yes" : "no")}, enabled {(rcsEnabled ? "yes" : "no")}", labelStyle);
         GUILayout.Label($"RCS tuning: move {rcsTranslationSetting:0} N, attitude {rcsAttitudeSetting:0} N", labelStyle);
+        GUILayout.Label($"RCS response: up {FormatRate(rcsNozzleSpoolUp)}, down {FormatRate(rcsNozzleSpoolDown)}", labelStyle);
         GUILayout.Label($"RCS select dot: {minSelectionDot:0.00}, nozzles {activeNozzles}/{installedNozzles}", labelStyle);
         GUILayout.Label($"RCS allocator: max {rcsMaxNozzleThrottle:0.00}, sum {rcsAllocatedThrottleTotal:0.00}, applications {rcsNozzleApplications}", labelStyle);
         GUILayout.Label($"RCS fuel: req {rcsFuelRequested:0.000} kg, used {rcsFuelConsumed:0.000} kg, frac {rcsFuelFraction:0.00}", labelStyle);
@@ -349,6 +361,11 @@ public class PrototypeDebugOverlay : MonoBehaviour
     private static string FormatVector(Vector3 value)
     {
         return $"({value.x:0.00}, {value.y:0.00}, {value.z:0.00})";
+    }
+
+    private static string FormatRate(float value)
+    {
+        return value <= 0f ? "instant" : $"{value:0.00}/s";
     }
 
     private static string FormatAxisMask(Vector3 value)
