@@ -21,7 +21,7 @@
 ## Verification
 - [x] Validate changed Unity scripts with Unity MCP
 - [x] Verify actual throttle ramps with finite rate
-- [ ] Verify actual gimbal angle respects slew rate and max angle
+- [x] Verify actual gimbal angle respects slew rate and max angle
 - [ ] Verify default prototype remains responsive
 - [ ] Add test evidence under this spec
 - [ ] Commit implementation with spec title and changelog
