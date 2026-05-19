@@ -16,7 +16,7 @@
 - [x] Ensure Simulation Mode preserves momentum
 - [x] Route any assist force/torque through core/allocators
 - [x] Mark debug-only non-physical helpers clearly if needed
-- [ ] Update README and physics docs
+- [x] Update README and physics docs
 
 ## Verification
 - [ ] Validate changed Unity scripts with Unity MCP

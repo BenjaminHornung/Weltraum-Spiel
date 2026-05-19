@@ -130,6 +130,18 @@ SAS uses a small local angular-velocity dead zone near zero. After SAS has brake
 
 The ship rigidbody uses zero linear and angular damping in this prototype. Releasing controls does not bleed off linear velocity, and rotation persists in vacuum unless SAS/RCS torque counters it.
 
+## Flight Assist Layer
+
+Flight assist is an explicit request layer above the existing allocator/core path. It does not write Rigidbody velocity, does not add hidden linear or angular damping, and does not bypass actuator limits.
+
+The prototype names three modes:
+
+- `Simulation`: default Newtonian behavior. No assist force or torque request is generated, so vacuum linear and angular momentum persist unless real actuators or environment forces act.
+- `AssistedFlight`: reserved for physical assist behaviors such as velocity or rotation help. Any non-zero force or torque request is merged into the same RCS allocator demand used by manual input and SAS before `ShipPhysicsCore` applies concrete forces.
+- `DebugAssist`: reserved for testing helpers. Requests are visible in diagnostics and marked debug-only/non-physical; the allocator excludes them from physical force application unless a future change intentionally adds a separately documented debug path.
+
+`RcsThrusterController` records assist mode, request source, force, torque, and debug-only status separately from manual and SAS diagnostics. The debug overlay shows manual command, SAS command/torque, and assist request fields side by side so future flight bugs can identify which layer asked for a wrench.
+
 ## Power And Heat
 
 Prototype modules can carry an optional `PrototypeThermalModule`. The component declares power draw, heat generation, heat capacity, cooling rate, ambient temperature, maximum temperature, and an optional overheat effect. Thermal simulation defaults to off on generated modules, so the current flight prototype is unchanged unless a module is explicitly enabled.
