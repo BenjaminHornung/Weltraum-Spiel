@@ -1,4 +1,4 @@
-﻿# Tasks: architecture-flight-assist-layer
+# Tasks: architecture-flight-assist-layer
 
 ## Spec
 - [x] Create spec change folder
@@ -10,7 +10,7 @@
 - [x] Commit spec with spec title and changelog
 
 ## Implementation
-- [ ] Inspect input, SAS, RCS allocator, and ShipPhysicsCore through Unity MCP
+- [x] Inspect input, SAS, RCS allocator, and ShipPhysicsCore through Unity MCP
 - [ ] Define flight-assist mode enum/data
 - [ ] Add explicit request-source diagnostics
 - [ ] Ensure Simulation Mode preserves momentum
