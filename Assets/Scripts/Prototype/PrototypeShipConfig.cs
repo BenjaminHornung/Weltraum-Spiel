@@ -133,6 +133,8 @@ public struct PrototypeRcsSettings
     public float attitudeForce;
     public float sasAuthority;
     [Range(0f, 0.95f)] public float minSelectionDot;
+    public float nozzleSpoolUpRate;
+    public float nozzleSpoolDownRate;
 
     public static PrototypeRcsSettings Default => new PrototypeRcsSettings
     {
@@ -140,7 +142,9 @@ public struct PrototypeRcsSettings
         translationForce = 9000f,
         attitudeForce = 6500f,
         sasAuthority = 1.8f,
-        minSelectionDot = 0.25f
+        minSelectionDot = 0.25f,
+        nozzleSpoolUpRate = 0f,
+        nozzleSpoolDownRate = 0f
     };
 
     public void Clamp()
@@ -150,6 +154,8 @@ public struct PrototypeRcsSettings
         attitudeForce = Mathf.Max(0f, attitudeForce);
         sasAuthority = Mathf.Max(0f, sasAuthority);
         minSelectionDot = Mathf.Clamp(minSelectionDot, 0f, 0.95f);
+        nozzleSpoolUpRate = Mathf.Max(0f, nozzleSpoolUpRate);
+        nozzleSpoolDownRate = Mathf.Max(0f, nozzleSpoolDownRate);
     }
 }
 

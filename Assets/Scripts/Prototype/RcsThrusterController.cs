@@ -30,6 +30,10 @@ public class RcsThrusterController : MonoBehaviour
     [SerializeField] private float sasAuthority = 1.8f;
     [SerializeField] private float minSelectionDot = 0.25f;
 
+    [Header("RCS Response")]
+    [SerializeField] private float nozzleSpoolUpRate;
+    [SerializeField] private float nozzleSpoolDownRate;
+
     [Header("SAS PD Control")]
     [SerializeField] private float sasProportionalGain = 0.75f;
     [SerializeField] private float sasDerivativeGain = 1.8f;
@@ -60,6 +64,8 @@ public class RcsThrusterController : MonoBehaviour
     public float SasProportionalGain => Mathf.Max(0f, sasProportionalGain);
     public float SasDerivativeGain => Mathf.Max(0f, sasDerivativeGain);
     public float MinSelectionDot => Mathf.Clamp(minSelectionDot, 0f, 0.95f);
+    public float NozzleSpoolUpRate => Mathf.Max(0f, nozzleSpoolUpRate);
+    public float NozzleSpoolDownRate => Mathf.Max(0f, nozzleSpoolDownRate);
 public bool RcsEnabled { get; private set; } = true;
     public bool HasRcs => InstalledNozzleCount > 0;
     public bool CanApplyRcs => RcsEnabled && HasRcs;
@@ -712,6 +718,8 @@ private void ApplyForceAtNozzle(RcsNozzle nozzle, Vector3 forceWorld, bool trans
         sasProportionalGain = Mathf.Max(0f, sasProportionalGain);
         sasDerivativeGain = Mathf.Max(0f, sasDerivativeGain);
         minSelectionDot = Mathf.Clamp(minSelectionDot, 0f, 0.95f);
+        nozzleSpoolUpRate = Mathf.Max(0f, nozzleSpoolUpRate);
+        nozzleSpoolDownRate = Mathf.Max(0f, nozzleSpoolDownRate);
     }
 
 
@@ -729,6 +737,8 @@ public void ApplyConfig(PrototypeShipConfig config)
         sasAuthority = settings.sasAuthority;
         sasDerivativeGain = settings.sasAuthority;
         minSelectionDot = settings.minSelectionDot;
+        nozzleSpoolUpRate = settings.nozzleSpoolUpRate;
+        nozzleSpoolDownRate = settings.nozzleSpoolDownRate;
         RefreshNozzles();
     }
 
