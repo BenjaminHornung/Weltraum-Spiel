@@ -25,5 +25,5 @@
 - [x] Verify recoil impulse direction and magnitude
 - [x] Verify thin target sweep hit
 - [x] Verify no immediate self-hit
-- [ ] Add test evidence under this spec
+- [x] Add test evidence under this spec
 - [ ] Commit implementation with spec title and changelog
