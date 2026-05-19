@@ -10,7 +10,7 @@
 - [x] Commit spec with spec title and changelog
 
 ## Implementation
-- [ ] Inspect existing MainThrusterModule and ShipPhysicsCore force routing through Unity MCP
+- [x] Inspect existing MainThrusterModule and ShipPhysicsCore force routing through Unity MCP
 - [ ] Add explicit main-thrust mode enum
 - [ ] Keep ComSafeSteeringOnly as default
 - [ ] Implement FullyPhysicalNozzleForce path through ShipPhysicsCore
