@@ -1,4 +1,4 @@
-﻿# Tasks: architecture-sas-pd-control
+# Tasks: architecture-sas-pd-control
 
 ## Spec
 - [x] Create spec change folder
@@ -10,7 +10,7 @@
 - [x] Commit spec with spec title and changelog
 
 ## Implementation
-- [ ] Inspect current SAS input and allocator integration through Unity MCP
+- [x] Inspect current SAS input and allocator integration through Unity MCP
 - [ ] Add SAS mode model for Kill Rotation and Hold Attitude
 - [ ] Convert SAS to desired torque generation
 - [ ] Route SAS torque through RCS allocator
