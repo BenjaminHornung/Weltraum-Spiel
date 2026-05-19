@@ -342,6 +342,7 @@ public void ApplyControls(Vector3 translationCommand, Vector3 attitudeCommand, b
 
         if (shipRigidbody == null || physicsCore == null || !CanApplyRcs)
         {
+            PreserveUnavailableRcsDiagnostics(desiredForceWorld, desiredTorqueWorld, GetUnavailableRcsStatus());
             ClearNozzleVfx();
             return;
         }
@@ -470,6 +471,42 @@ private void ClearRuntimeForces()
             nozzles[i].active = false;
         }
     }
+
+    private void PreserveUnavailableRcsDiagnostics(Vector3 desiredForceWorld, Vector3 desiredTorqueWorld, string allocatorStatus)
+    {
+        LastDesiredRcsForceWorld = desiredForceWorld;
+        LastDesiredRcsTorqueWorld = desiredTorqueWorld;
+        LastActualRcsForceWorld = Vector3.zero;
+        LastActualRcsTorqueWorld = Vector3.zero;
+        LastResidualRcsForceWorld = desiredForceWorld;
+        LastResidualRcsTorqueWorld = desiredTorqueWorld;
+        LastMaxNozzleThrottle = 0f;
+        LastAllocatedNozzleThrottleTotal = 0f;
+        LastNozzleApplicationCount = 0;
+        LastSaturatedNozzleCount = 0;
+        LastAllocatorStatus = allocatorStatus;
+    }
+
+    private string GetUnavailableRcsStatus()
+    {
+        if (!RcsEnabled)
+        {
+            return "disabled";
+        }
+
+        if (!HasRcs)
+        {
+            return "no nozzles";
+        }
+
+        if (shipRigidbody == null || physicsCore == null)
+        {
+            return "no authority";
+        }
+
+        return "no solution";
+    }
+
 
     private void ApplyTranslationForces()
     {

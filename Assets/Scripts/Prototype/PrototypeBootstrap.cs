@@ -121,7 +121,7 @@ public class PrototypeBootstrap : MonoBehaviour
 
         if (spawnTestTarget)
         {
-            EnsureTestTarget();
+            SpawnTestTarget();
         }
 
         SetupMainCamera(ship.transform, stats, shipRigidbody);
@@ -421,6 +421,13 @@ public class PrototypeBootstrap : MonoBehaviour
             overlay = camera.gameObject.AddComponent<PrototypeDebugOverlay>();
         }
         overlay.Bind(target, stats, body);
+
+        var debugConsole = camera.gameObject.GetComponent<PrototypeFlightDebugConsole>();
+        if (debugConsole == null)
+        {
+            debugConsole = camera.gameObject.AddComponent<PrototypeFlightDebugConsole>();
+        }
+        debugConsole.Bind(target, stats, body, Object.FindAnyObjectByType<PrototypeBootstrap>());
     }
 
     private static void EnsureSceneDirectionalLight()
@@ -514,5 +521,11 @@ public class PrototypeBootstrap : MonoBehaviour
 
         collider.isTrigger = false;
         GetOrAddComponent<PrototypeTargetDummy>(target);
+    }
+
+
+public void SpawnTestTarget()
+    {
+        EnsureTestTarget();
     }
 }

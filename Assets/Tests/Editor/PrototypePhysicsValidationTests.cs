@@ -143,6 +143,81 @@ public class PrototypePhysicsValidationTests
     }
 
     [Test]
+    public void RcsUnavailableCommandsKeepDesiredResidualDiagnostics()
+    {
+        using (PhysicsValidationProbe.GeneratedShipFixture fixture = PhysicsValidationProbe.CreateGeneratedShip())
+        {
+            fixture.Rcs.SetRcsEnabled(false);
+            fixture.PhysicsCore.BeginPhysicsStep();
+            fixture.Rcs.ApplyControls(Vector3.right, Vector3.up, false, 0.02f);
+
+            AssertUnavailableRcsDiagnostics(fixture.Rcs, "disabled");
+            Assert.That(fixture.PhysicsCore.NetAppliedForce.magnitude, Is.EqualTo(0f).Within(PhysicsValidationProbe.ForceTolerance));
+            Assert.That(fixture.PhysicsCore.NetAppliedTorque.magnitude, Is.EqualTo(0f).Within(PhysicsValidationProbe.TorqueTolerance));
+        }
+
+        using (PhysicsValidationProbe.GeneratedShipFixture fixture = PhysicsValidationProbe.CreateGeneratedShip())
+        {
+            for (int i = fixture.Ship.transform.childCount - 1; i >= 0; i--)
+            {
+                Transform child = fixture.Ship.transform.GetChild(i);
+                if (child.name.StartsWith("RCS_"))
+                {
+                    Object.DestroyImmediate(child.gameObject);
+                }
+            }
+
+            fixture.Rcs.RefreshNozzles();
+            fixture.PhysicsCore.BeginPhysicsStep();
+            fixture.Rcs.ApplyControls(Vector3.right, Vector3.up, false, 0.02f);
+
+            Assert.That(fixture.Rcs.InstalledNozzleCount, Is.EqualTo(0));
+            AssertUnavailableRcsDiagnostics(fixture.Rcs, "no nozzles");
+            Assert.That(fixture.PhysicsCore.NetAppliedForce.magnitude, Is.EqualTo(0f).Within(PhysicsValidationProbe.ForceTolerance));
+            Assert.That(fixture.PhysicsCore.NetAppliedTorque.magnitude, Is.EqualTo(0f).Within(PhysicsValidationProbe.TorqueTolerance));
+        }
+
+        GameObject noAuthorityShip = new GameObject("RcsNoAuthorityShip");
+        try
+        {
+            Rigidbody body = noAuthorityShip.AddComponent<Rigidbody>();
+            body.useGravity = false;
+            RcsThrusterController rcs = noAuthorityShip.AddComponent<RcsThrusterController>();
+            GameObject nozzle = new GameObject("RCS_Nozzle_NoAuthority_Right");
+            nozzle.transform.SetParent(noAuthorityShip.transform, false);
+            nozzle.transform.localPosition = Vector3.right;
+            nozzle.transform.forward = Vector3.right;
+            rcs.ConfigureThrusters(null, null, null, null, null, null, body, null);
+
+            rcs.ApplyControls(Vector3.right, Vector3.up, false, 0.02f);
+
+            Assert.That(rcs.InstalledNozzleCount, Is.EqualTo(1));
+            AssertUnavailableRcsDiagnostics(rcs, "no authority");
+        }
+        finally
+        {
+            Object.DestroyImmediate(noAuthorityShip);
+        }
+    }
+
+    private static void AssertUnavailableRcsDiagnostics(RcsThrusterController rcs, string expectedStatus)
+    {
+        Assert.That(rcs.LastAllocatorStatus, Is.EqualTo(expectedStatus));
+        Assert.That(Vector3.Distance(rcs.LastDesiredRcsForceWorld, Vector3.right * 9000f), Is.LessThan(PhysicsValidationProbe.ForceTolerance));
+        Assert.That(rcs.LastDesiredRcsTorqueWorld.magnitude, Is.GreaterThan(0f));
+        Assert.That(rcs.LastActualRcsForceWorld.magnitude, Is.EqualTo(0f).Within(PhysicsValidationProbe.ForceTolerance));
+        Assert.That(rcs.LastActualRcsTorqueWorld.magnitude, Is.EqualTo(0f).Within(PhysicsValidationProbe.TorqueTolerance));
+        Assert.That(Vector3.Distance(rcs.LastResidualRcsForceWorld, rcs.LastDesiredRcsForceWorld), Is.LessThan(PhysicsValidationProbe.ForceTolerance));
+        Assert.That(Vector3.Distance(rcs.LastResidualRcsTorqueWorld, rcs.LastDesiredRcsTorqueWorld), Is.LessThan(PhysicsValidationProbe.TorqueTolerance));
+        Assert.That(rcs.LastMaxNozzleThrottle, Is.EqualTo(0f).Within(PhysicsValidationProbe.NozzleThrottleTolerance));
+        Assert.That(rcs.LastAllocatedNozzleThrottleTotal, Is.EqualTo(0f).Within(PhysicsValidationProbe.NozzleThrottleTolerance));
+        Assert.That(rcs.LastSaturatedNozzleCount, Is.EqualTo(0));
+        Assert.That(rcs.LastNozzleApplicationCount, Is.EqualTo(0));
+        Assert.That(rcs.ActiveNozzleCount, Is.EqualTo(0));
+    }
+
+
+    [Test]
     public void FuelPartialStepScalesThrustAndDoesNotGoNegative()
     {
         PhysicsValidationProbe.FuelPartialResult result = PhysicsValidationProbe.RunFuelPartialStep();

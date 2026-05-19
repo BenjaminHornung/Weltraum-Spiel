@@ -58,7 +58,9 @@ public class PlayerShipController : MonoBehaviour
     private float previousForwardSpeed;
     private Quaternion sasTargetRotation = Quaternion.identity;
     private const float SasManualTargetRefreshDeadZone = 0.05f;
-
+    private Vector3 pendingDebugRcsTranslationPulse;
+    private Vector3 pendingDebugRcsAttitudePulse;
+    private float pendingDebugMainThrottlePulse;
     public float MainThrottle => mainThrottle;
     public float MainThrottlePercent => mainThrottle * 100f;
     public float MainThrustCommand { get; private set; }
@@ -274,8 +276,14 @@ public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal
         }
 
         float controlScale = precisionControls ? Mathf.Clamp01(precisionScale) : 1f;
-        RcsTranslationCommand = Vector3.ClampMagnitude(rcsTranslationInput, 1f) * controlScale;
-        RcsAttitudeCommand = Vector3.ClampMagnitude(attitudeInput, 1f) * controlScale;
+        Vector3 combinedTranslationInput = rcsTranslationInput + pendingDebugRcsTranslationPulse;
+        Vector3 combinedAttitudeInput = attitudeInput + pendingDebugRcsAttitudePulse;
+        float mainThrottlePulse = pendingDebugMainThrottlePulse;
+        pendingDebugRcsTranslationPulse = Vector3.zero;
+        pendingDebugRcsAttitudePulse = Vector3.zero;
+        pendingDebugMainThrottlePulse = 0f;
+        RcsTranslationCommand = Vector3.ClampMagnitude(combinedTranslationInput, 1f) * controlScale;
+        RcsAttitudeCommand = Vector3.ClampMagnitude(combinedAttitudeInput, 1f) * controlScale;
         TurnInput = Mathf.Clamp(RcsAttitudeCommand.y, -1f, 1f);
         UpdateSasTargetRotation(RcsAttitudeCommand);
         LastFlightAssistRequest = BuildFlightAssistRequest();
@@ -293,7 +301,7 @@ public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal
                 Time.fixedDeltaTime);
         }
 
-        MainThrustCommand = Mathf.Clamp01(mainThrottle);
+        MainThrustCommand = Mathf.Clamp01(Mathf.Max(mainThrottle, mainThrottlePulse));
         GimbalYawCommand = MainThrustCommand > 0f && GimbalEnabled ? TurnInput : 0f;
         float gimbalPitchCommand = MainThrustCommand > 0f && GimbalEnabled ? Mathf.Clamp(RcsAttitudeCommand.x, -1f, 1f) : 0f;
 
@@ -560,5 +568,148 @@ public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal
         mainThrottle = Mathf.Clamp01(mainThrottle);
         throttleChangeRate = Mathf.Max(0f, throttleChangeRate);
         precisionScale = Mathf.Clamp01(precisionScale);
+    }
+
+
+public void SetRcsEnabled(bool enabled)
+    {
+        rcsEnabled = enabled;
+        ApplyRcsEnabledState();
+    }
+
+    public void SetSasEnabled(bool enabled)
+    {
+        sasEnabled = enabled;
+        if (sasEnabled)
+        {
+            CaptureSasTargetRotation();
+        }
+    }
+
+    public void SetPrecisionControls(bool enabled)
+    {
+        precisionControls = enabled;
+    }
+
+    public void SetFlightAssistMode(FlightAssistMode mode)
+    {
+        flightAssistMode = mode;
+    }
+
+    public void SetMainThrustMode(MainThrustMode mode)
+    {
+        if (mainThruster == null)
+        {
+            ResolveReferences();
+        }
+
+        if (mainThruster != null)
+        {
+            mainThruster.SetThrustMode(mode);
+        }
+    }
+
+    public void SetMainThrottle(float normalizedThrottle)
+    {
+        mainThrottle = Mathf.Clamp01(normalizedThrottle);
+    }
+
+    public void CutMainThrottle()
+    {
+        SetMainThrottle(0f);
+    }
+
+    public void FullMainThrottle()
+    {
+        SetMainThrottle(1f);
+    }
+
+    public void RefuelFull()
+    {
+        if (shipStats == null)
+        {
+            ResolveReferences();
+        }
+
+        if (shipStats != null)
+        {
+            shipStats.RefillFuelFull();
+        }
+    }
+
+    public void ResetPosition()
+    {
+        transform.position = Vector3.zero;
+    }
+
+    public void ResetVelocity()
+    {
+        if (shipRigidbody == null)
+        {
+            ResolveReferences();
+        }
+
+        if (shipRigidbody != null)
+        {
+            shipRigidbody.linearVelocity = Vector3.zero;
+            previousForwardSpeed = 0f;
+        }
+    }
+
+    public void ResetAngularVelocity()
+    {
+        if (shipRigidbody == null)
+        {
+            ResolveReferences();
+        }
+
+        if (shipRigidbody != null)
+        {
+            shipRigidbody.angularVelocity = Vector3.zero;
+        }
+    }
+
+    public void PulseRcsTranslation(Vector3 command)
+    {
+        pendingDebugRcsTranslationPulse = Vector3.ClampMagnitude(command, 1f);
+    }
+
+    public void PulseRcsAttitude(Vector3 command)
+    {
+        pendingDebugRcsAttitudePulse = Vector3.ClampMagnitude(command, 1f);
+    }
+
+    public void PulseMainThrust(float normalizedThrottle)
+    {
+        pendingDebugMainThrottlePulse = Mathf.Clamp01(normalizedThrottle);
+    }
+
+    public void PulseGimbal(float yawCommand, float pitchCommand)
+    {
+        pendingDebugRcsAttitudePulse = Vector3.ClampMagnitude(new Vector3(pitchCommand, yawCommand, 0f), 1f);
+        pendingDebugMainThrottlePulse = 1f;
+    }
+
+    public bool HasDamageStates()
+    {
+        return GetComponentsInChildren<PrototypeModuleDamageState>(true).Length > 0;
+    }
+
+    public void ClearPrototypeDamage()
+    {
+        PrototypeModuleDamageState[] damageStates = GetComponentsInChildren<PrototypeModuleDamageState>(true);
+        for (int i = 0; i < damageStates.Length; i++)
+        {
+            damageStates[i].RepairFull();
+        }
+    }
+
+    public void ApplyPrototypeDamage(float damagePerModule)
+    {
+        PrototypeModuleDamageState[] damageStates = GetComponentsInChildren<PrototypeModuleDamageState>(true);
+        for (int i = 0; i < damageStates.Length; i++)
+        {
+            damageStates[i].ApplyDamage(damagePerModule);
+        }
     }
 }
