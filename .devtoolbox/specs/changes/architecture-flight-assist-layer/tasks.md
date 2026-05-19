@@ -19,7 +19,7 @@
 - [x] Update README and physics docs
 
 ## Verification
-- [ ] Validate changed Unity scripts with Unity MCP
+- [x] Validate changed Unity scripts with Unity MCP
 - [ ] Verify assist off preserves vacuum inertia
 - [ ] Verify assist requests are visible separately from manual/SAS
 - [ ] Verify no hidden damping is introduced
