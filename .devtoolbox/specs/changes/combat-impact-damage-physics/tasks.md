@@ -23,5 +23,5 @@
 - [x] Verify hit event data is populated
 - [x] Verify damaged RCS/engine reduces physical authority
 - [x] Verify diagnostics show degraded state
-- [ ] Add test evidence under this spec
+- [x] Add test evidence under this spec
 - [ ] Commit implementation with spec title and changelog
