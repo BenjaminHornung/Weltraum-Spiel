@@ -7,6 +7,7 @@ public class MainThrusterModule : MonoBehaviour
     [Header("Main Thruster")]
     [SerializeField] private Transform thrustTransform;
     [SerializeField] private Transform gimbalVisualTransform;
+    [SerializeField] private MainThrustMode mainThrustMode = MainThrustMode.ComSafeSteeringOnly;
     [Range(0f, 1f)]
     [SerializeField] private float throttleScale = 1f;
     [SerializeField] private bool supportsGimbal = true;
@@ -25,8 +26,9 @@ public class MainThrusterModule : MonoBehaviour
     private Quaternion gimbalBaseLocalRotation = Quaternion.identity;
     private bool hasGimbalBaseRotation;
 
-        public float ThrottleScale => Mathf.Clamp01(throttleScale);
-public bool SupportsGimbal => supportsGimbal;
+    public MainThrustMode ThrustMode => mainThrustMode;
+    public float ThrottleScale => Mathf.Clamp01(throttleScale);
+    public bool SupportsGimbal => supportsGimbal;
     public float GimbalLimitDegrees => Mathf.Max(0f, gimbalLimitDegrees);
     public float GimbalResponseScalar => Mathf.Clamp01(gimbalResponseScalar);
     public float LastThrottleCommand { get; private set; }
@@ -285,7 +287,7 @@ public bool SupportsGimbal => supportsGimbal;
     }
 
 
-public void ApplyConfig(PrototypeShipConfig config)
+    public void ApplyConfig(PrototypeShipConfig config)
     {
         if (config == null)
         {
@@ -294,6 +296,7 @@ public void ApplyConfig(PrototypeShipConfig config)
 
         PrototypeMainThrusterSettings settings = config.MainThruster;
         settings.Clamp();
+        mainThrustMode = settings.mainThrustMode;
         throttleScale = settings.throttleScale;
         supportsGimbal = settings.supportsGimbal;
         gimbalLimitDegrees = settings.gimbalLimitDegrees;

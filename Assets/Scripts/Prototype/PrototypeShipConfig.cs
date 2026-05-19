@@ -85,6 +85,7 @@ public struct PrototypeShipFuelSettings
 public struct PrototypeMainThrusterSettings
 {
     public float thrustForce;
+    public MainThrustMode mainThrustMode;
     [Range(0f, 1f)] public float reverseThrustMultiplier;
     [Range(0f, 1f)] public float throttleScale;
     public bool supportsGimbal;
@@ -94,6 +95,7 @@ public struct PrototypeMainThrusterSettings
     public static PrototypeMainThrusterSettings Default => new PrototypeMainThrusterSettings
     {
         thrustForce = 45000f,
+        mainThrustMode = MainThrustMode.ComSafeSteeringOnly,
         reverseThrustMultiplier = 0.35f,
         throttleScale = 1f,
         supportsGimbal = true,
