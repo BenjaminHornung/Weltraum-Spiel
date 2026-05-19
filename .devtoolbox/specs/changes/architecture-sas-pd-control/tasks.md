@@ -22,6 +22,6 @@
 - [x] Validate changed Unity scripts with Unity MCP
 - [x] Verify yaw, pitch, and roll stop to tolerance
 - [x] Verify SAS cannot stabilize without available thruster authority
-- [ ] Verify manual axes remain responsive while SAS is on
+- [x] Verify manual axes remain responsive while SAS is on
 - [ ] Add test evidence under this spec
 - [ ] Commit implementation with spec title and changelog
