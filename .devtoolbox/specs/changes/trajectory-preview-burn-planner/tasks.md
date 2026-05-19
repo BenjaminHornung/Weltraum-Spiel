@@ -1,4 +1,4 @@
-﻿# Tasks: trajectory-preview-burn-planner
+# Tasks: trajectory-preview-burn-planner
 
 ## Spec
 - [x] Create spec change folder
@@ -10,7 +10,7 @@
 - [x] Commit spec with spec title and changelog
 
 ## Implementation
-- [ ] Inspect shared physics formulas and gravity/fuel availability through Unity MCP
+- [x] Inspect shared physics formulas and gravity/fuel availability through Unity MCP
 - [ ] Define lightweight prediction state
 - [ ] Add bounded fixed-step predictor
 - [ ] Add debug trajectory output or gizmo placeholder
