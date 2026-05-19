@@ -30,6 +30,7 @@ public class RcsThrusterController : MonoBehaviour
     [SerializeField] private float sasAuthority = 1.8f;
     [SerializeField] private float minSelectionDot = 0.25f;
     [SerializeField] private Rigidbody shipRigidbody;
+    [SerializeField] private ShipPhysicsCore physicsCore;
 
     [Header("Installed RCS Thrusters")]
     [SerializeField] private Transform upThruster;
@@ -96,6 +97,11 @@ public Vector3 LastSasCommand { get; private set; }
 
     public void ConfigureThrusters(Transform up, Transform down, Transform left, Transform right, Transform forward, Transform back, Rigidbody body)
     {
+        ConfigureThrusters(up, down, left, right, forward, back, body, null);
+    }
+
+    public void ConfigureThrusters(Transform up, Transform down, Transform left, Transform right, Transform forward, Transform back, Rigidbody body, ShipPhysicsCore core)
+    {
         upThruster = up != null ? up : upThruster;
         downThruster = down != null ? down : downThruster;
         leftThruster = left != null ? left : leftThruster;
@@ -103,6 +109,7 @@ public Vector3 LastSasCommand { get; private set; }
         forwardThruster = forward != null ? forward : forwardThruster;
         backThruster = back != null ? back : backThruster;
         shipRigidbody = body != null ? body : shipRigidbody;
+        physicsCore = core != null ? core : physicsCore;
         ResolveReferences();
         RefreshNozzles();
     }
@@ -122,6 +129,16 @@ public Vector3 LastSasCommand { get; private set; }
         if (shipRigidbody == null)
         {
             shipRigidbody = GetComponent<Rigidbody>();
+        }
+
+        if (physicsCore == null)
+        {
+            physicsCore = GetComponent<ShipPhysicsCore>();
+        }
+
+        if (physicsCore != null && shipRigidbody == null)
+        {
+            shipRigidbody = physicsCore.ShipRigidbody;
         }
     }
 
@@ -219,7 +236,7 @@ public void ApplyControls(Vector3 translationCommand, Vector3 attitudeCommand, b
         LastAttitudeCommand = Vector3.ClampMagnitude(manualAttitude + LastSasCommand, 1f);
         ClearRuntimeForces();
 
-        if (shipRigidbody == null || !CanApplyRcs)
+        if (shipRigidbody == null || physicsCore == null || !CanApplyRcs)
         {
             ClearNozzleVfx();
             return;
@@ -393,7 +410,7 @@ private void NeutralizeAttitudeLinearForce(Vector3 attitudeForceTotal)
         }
 
         Vector3 counterForce = -attitudeForceTotal;
-        shipRigidbody.AddForce(counterForce, ForceMode.Force);
+        physicsCore.ApplyForceAtCenterOfMass(counterForce, ForceMode.Force);
         LastForceAtPositionTotal += counterForce;
     }
 
@@ -498,13 +515,13 @@ private void ApplyForceAtNozzle(RcsNozzle nozzle, Vector3 forceWorld, bool trans
         Vector3 torque = Vector3.zero;
         if (translation)
         {
-            shipRigidbody.AddForce(forceWorld, ForceMode.Force);
+            physicsCore.ApplyForceAtCenterOfMass(forceWorld, ForceMode.Force);
             LastTranslationForce += forceWorld;
         }
         else
         {
             Vector3 position = nozzle.transform.position;
-            shipRigidbody.AddForceAtPosition(forceWorld, position, ForceMode.Force);
+            physicsCore.ApplyForceAtPosition(forceWorld, position, ForceMode.Force);
             torque = Vector3.Cross(position - shipRigidbody.worldCenterOfMass, forceWorld);
             LastTorque += torque;
         }
@@ -773,7 +790,7 @@ private void AllocateAndApplyRcs(Vector3 desiredForceWorld, Vector3 desiredTorqu
             }
 
             Vector3 force = allocation.forceAtFull * throttle;
-            shipRigidbody.AddForceAtPosition(force, allocation.position, ForceMode.Force);
+            physicsCore.ApplyForceAtPosition(force, allocation.position, ForceMode.Force);
             Vector3 torque = allocation.torqueAtFull * throttle;
             LastForceAtPositionTotal += force;
             LastTorque += torque;

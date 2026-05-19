@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(ShipStats))]
 [RequireComponent(typeof(MainThrusterModule))]
 [RequireComponent(typeof(RcsThrusterController))]
+[RequireComponent(typeof(ShipPhysicsCore))]
 public class PlayerShipController : MonoBehaviour
 {
     [Header("Flight tuning")]
@@ -24,6 +25,7 @@ public class PlayerShipController : MonoBehaviour
     [SerializeField] private EngineVfxController engineVfx;
     [SerializeField] private MainThrusterModule mainThruster;
     [SerializeField] private RcsThrusterController rcsThrusters;
+    [SerializeField] private ShipPhysicsCore physicsCore;
 
     private bool throttleUp;
     private bool throttleDown;
@@ -85,6 +87,9 @@ public bool HasRcs => rcsThrusters != null && rcsThrusters.HasRcs;
         public Vector3 LastRawRcsSasCommand => rcsThrusters != null ? rcsThrusters.LastRawSasCommand : Vector3.zero;
     public Vector3 LastRcsSasReleasedAxes => rcsThrusters != null ? rcsThrusters.LastSasReleasedAxes : Vector3.one;
 public Vector3 LastRcsSasCommand => rcsThrusters != null ? rcsThrusters.LastSasCommand : Vector3.zero;
+    public Vector3 LastCoreAppliedForce => physicsCore != null ? physicsCore.NetAppliedForce : Vector3.zero;
+    public Vector3 LastCoreAppliedTorque => physicsCore != null ? physicsCore.NetAppliedTorque : Vector3.zero;
+    public int LastCoreAppliedForceCount => physicsCore != null ? physicsCore.AppliedForceCount : 0;
 
     private void Awake()
     {
@@ -123,6 +128,11 @@ public Vector3 LastRcsSasCommand => rcsThrusters != null ? rcsThrusters.LastSasC
         if (rcsThrusters == null)
         {
             rcsThrusters = GetComponent<RcsThrusterController>();
+        }
+
+        if (physicsCore == null)
+        {
+            physicsCore = GetComponent<ShipPhysicsCore>();
         }
     }
 
@@ -181,6 +191,11 @@ public Vector3 LastRcsSasCommand => rcsThrusters != null ? rcsThrusters.LastSasC
         }
 
         shipRigidbody.mass = shipStats.CurrentMass;
+
+        if (physicsCore != null)
+        {
+            physicsCore.BeginPhysicsStep();
+        }
 
         float controlScale = precisionControls ? Mathf.Clamp01(precisionScale) : 1f;
         RcsTranslationCommand = Vector3.ClampMagnitude(rcsTranslationInput, 1f) * controlScale;

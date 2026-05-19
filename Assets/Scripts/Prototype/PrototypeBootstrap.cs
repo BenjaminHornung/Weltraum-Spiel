@@ -59,6 +59,9 @@ public class PrototypeBootstrap : MonoBehaviour
         shipRigidbody.angularDamping = 0f;
         shipRigidbody.interpolation = RigidbodyInterpolation.Interpolate;
 
+        var physicsCore = GetOrAddComponent<ShipPhysicsCore>(ship);
+        physicsCore.Configure(shipRigidbody);
+
         EnsureModuleParts(ship.transform);
         var mainNozzle = EnsureMainThrusterNozzle(ship.transform);
         EnsureRcsThrusters(ship.transform, shipConfig);
@@ -73,7 +76,7 @@ public class PrototypeBootstrap : MonoBehaviour
         rcs.ApplyConfig(shipConfig);
         GetOrAddComponent<PlayerShipController>(ship);
 
-        mainThruster.Configure(mainNozzle, shipRigidbody, stats);
+        mainThruster.Configure(mainNozzle, shipRigidbody, stats, physicsCore);
         rcs.ConfigureThrusters(
             ship.transform.Find("RCS_Top"),
             ship.transform.Find("RCS_Bottom"),
@@ -81,7 +84,8 @@ public class PrototypeBootstrap : MonoBehaviour
             ship.transform.Find("RCS_Right"),
             null,
             null,
-            shipRigidbody);
+            shipRigidbody,
+            physicsCore);
 
         if (gun == null || engine == null)
         {

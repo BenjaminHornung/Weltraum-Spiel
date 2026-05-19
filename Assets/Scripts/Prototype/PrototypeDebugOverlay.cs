@@ -133,6 +133,9 @@ public class PrototypeDebugOverlay : MonoBehaviour
         Vector3 rcsTranslationForce = shipController != null ? shipController.LastRcsTranslationForce : Vector3.zero;
         Vector3 rcsTorque = shipController != null ? shipController.LastRcsTorque : Vector3.zero;
         Vector3 rcsYawTorque = shipController != null ? shipController.LastRcsYawTorque : Vector3.zero;
+        Vector3 coreForce = shipController != null ? shipController.LastCoreAppliedForce : Vector3.zero;
+        Vector3 coreTorque = shipController != null ? shipController.LastCoreAppliedTorque : Vector3.zero;
+        int coreApplications = shipController != null ? shipController.LastCoreAppliedForceCount : 0;
         Vector3 mainDirection = shipController != null ? shipController.LastMainThrustDirection : target.transform.forward;
         Vector3 mainForce = shipController != null ? shipController.LastMainForceWorld : Vector3.zero;
         Vector3 mainStraight = shipController != null ? shipController.LastMainStraightForceWorld : Vector3.zero;
@@ -188,6 +191,8 @@ public class PrototypeDebugOverlay : MonoBehaviour
         GUILayout.Label($"RCS translate force: {FormatVector(rcsTranslationForce)}", labelStyle);
         GUILayout.Label($"RCS torque est: {FormatVector(rcsTorque)}", labelStyle);
         GUILayout.Label($"RCS yaw torque est: {FormatVector(rcsYawTorque)}", labelStyle);
+        GUILayout.Label($"Core force: {FormatVector(coreForce)}", labelStyle);
+        GUILayout.Label($"Core torque: {FormatVector(coreTorque)}, applications {coreApplications}", labelStyle);
         GUILayout.Space(4f);
         GUILayout.Label($"SAS: {(sasEnabled ? "on" : "off")} (effective {(effectiveSas ? "on" : "off")}) auth {sasAuthority:0.00}", labelStyle);
         GUILayout.Label($"SAS raw cmd: {FormatVector(rawSasCommand)}", labelStyle);
@@ -218,6 +223,8 @@ public class PrototypeDebugOverlay : MonoBehaviour
         DrawGizmoVector(shipController.RcsControlPivotWorld, shipController.LastRcsTranslationForce, forceVectorScale, Color.green);
         DrawGizmoVector(targetRigidbody.worldCenterOfMass, shipController.LastRcsTorque, torqueVectorScale, Color.yellow);
         DrawGizmoVector(targetRigidbody.worldCenterOfMass, shipController.LastMainGimbalTorque, torqueVectorScale, Color.red);
+        DrawGizmoVector(targetRigidbody.worldCenterOfMass, shipController.LastCoreAppliedForce, forceVectorScale, Color.white);
+        DrawGizmoVector(targetRigidbody.worldCenterOfMass, shipController.LastCoreAppliedTorque, torqueVectorScale, Color.blue);
     }
 
     private void DrawRuntimeDebugVectors()
@@ -232,6 +239,8 @@ public class PrototypeDebugOverlay : MonoBehaviour
         DrawDebugVector(shipController.RcsControlPivotWorld, shipController.LastRcsTranslationForce, forceVectorScale, Color.green);
         DrawDebugVector(targetRigidbody.worldCenterOfMass, shipController.LastRcsTorque, torqueVectorScale, Color.yellow);
         DrawDebugVector(targetRigidbody.worldCenterOfMass, shipController.LastMainGimbalTorque, torqueVectorScale, Color.red);
+        DrawDebugVector(targetRigidbody.worldCenterOfMass, shipController.LastCoreAppliedForce, forceVectorScale, Color.white);
+        DrawDebugVector(targetRigidbody.worldCenterOfMass, shipController.LastCoreAppliedTorque, torqueVectorScale, Color.blue);
     }
 
     private static void DrawGizmoVector(Vector3 origin, Vector3 vector, float scale, Color color)

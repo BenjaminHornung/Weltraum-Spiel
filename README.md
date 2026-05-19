@@ -66,6 +66,7 @@ Camera reset is bound to Backquote. Unity Input System key controls are physical
 - Active RCS nozzles show green debug VFX. The main thruster keeps its separate orange particle effect.
 - The no-hardcoded-position rule is intentional: moving/removing an `RCS_Nozzle_*` transform changes solver output, and missing nozzles create no phantom force.
 - The RCS toggle gates RCS force application and VFX.
+- Ship-level force application now routes through a thin `ShipPhysicsCore`. Main thrusters and RCS still own their current behavior, but final Rigidbody force calls and net force/torque diagnostics have a central path.
 - The physics model is documented in [docs/physics-flight-model.md](docs/physics-flight-model.md).
 - Projectile velocity is the ship Rigidbody velocity plus muzzle forward velocity.
 - Projectile lifetime defaults to 3 seconds.
@@ -79,7 +80,8 @@ Optional CC0 assets, such as local low-poly ships or Kenney packs, may be consid
 - This is not the final ship editor or gameplay architecture.
 - The camera mode cycle is intentionally minimal and only switches between prepared follow offsets/orbit baselines.
 - SAS is a simple RCS angular counter-command, not a full flight computer.
-- RCS nozzle selection is prototype-simple, but it is transform-based and uses real lever arms around COM.
+- RCS allocation is a prototype bounded allocator, not a final optimizer, but it is transform-based and uses real lever arms around COM.
+- Deferred physics-core slices include module mass/COM/inertia, fuel mass flow, SAS as a PD control layer, projectile recoil, gravity/orbits, docking, damage, heat/power, and trajectory prediction.
 - Projectile damage and reliable high-speed collision are out of scope.
 - IMGUI is used for the debug overlay because it is temporary prototype UI.
 - Controller input has not been manually verified on physical hardware.

@@ -2,12 +2,30 @@
 
 This prototype uses generated primitives only, but the force model is intentionally transform-driven so the ship can be debugged in the Unity hierarchy.
 
-## Main Thrust
+## Ship Physics Core
 
-Straight main thrust is COM-safe. The main engine computes the ship-forward base thrust vector and applies that force at `Rigidbody.worldCenterOfMass`:
+Ship-level force application is routed through `ShipPhysicsCore`. This is a deliberately thin prototype component, not the final simulation architecture. It owns the ship `Rigidbody` reference for migrated systems and records the net applied force and torque for each physics step.
+
+The shared diagnostic shape is a wrench:
+
+```text
+W = [Fx, Fy, Fz, Tx, Ty, Tz]
+```
+
+For a force applied at a world position, the diagnostic torque remains:
 
 ```csharp
-rb.AddForceAtPosition(transform.forward * thrust, rb.worldCenterOfMass, ForceMode.Force);
+torque = Vector3.Cross(position - rb.worldCenterOfMass, force);
+```
+
+Main thrust and RCS still own their behavior and tuning. The core is the common application and telemetry path, so future systems such as SAS modes, recoil, docking assist, damage, or autopilot can request physical effects without independently bypassing shared force accounting.
+
+## Main Thrust
+
+Straight main thrust is COM-safe. The main engine computes the ship-forward base thrust vector and applies that force at `Rigidbody.worldCenterOfMass` through `ShipPhysicsCore`:
+
+```csharp
+physicsCore.ApplyForceAtCenterOfMass(transform.forward * thrust, ForceMode.Force);
 ```
 
 That means throttle-only forward thrust does not create torque when no gimbal input is present.
@@ -51,3 +69,16 @@ SAS is an RCS angular counter-command. When effective SAS is on, the controller 
 SAS uses a small local angular-velocity dead zone near zero and a minimum active braking command outside that dead zone, so residual pitch, yaw, and roll are not dropped just because their counter-command is below the manual input threshold. After SAS has braked a non-manual axis into the tiny local settle band, that axis is snapped to zero angular velocity so late SAS activation visibly finishes converging. Translation RCS authority is not reduced by SAS. When SAS is off, there is no direct angular damping from the controller.
 
 The ship rigidbody uses zero linear and angular damping in this prototype. Releasing controls does not bleed off linear velocity, and rotation persists in vacuum unless SAS/RCS torque counters it.
+
+## Deferred Physics Slices
+
+The current prototype intentionally defers deeper simulation layers:
+
+- module mass distribution, center of mass, and inertia tensor approximation,
+- fuel mass flow and fuel-dependent COM changes,
+- SAS as a target-attitude PD controller,
+- projectile recoil and hit impulse,
+- gravity, orbit prediction, and floating origin,
+- docking constraints, damage effects, heat, power, and trajectory preview.
+
+Those systems should be added as separate spec changes so each one can be verified against the same force/torque accounting.

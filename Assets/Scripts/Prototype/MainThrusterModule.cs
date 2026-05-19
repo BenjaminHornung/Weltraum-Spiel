@@ -18,6 +18,7 @@ public class MainThrusterModule : MonoBehaviour
     [Header("Runtime")]
     [SerializeField] private Rigidbody shipRigidbody;
     [SerializeField] private ShipStats shipStats;
+    [SerializeField] private ShipPhysicsCore physicsCore;
 
 
     private Quaternion gimbalBaseLocalRotation = Quaternion.identity;
@@ -46,11 +47,12 @@ public bool SupportsGimbal => supportsGimbal;
         ResolveReferences();
     }
 
-    public void Configure(Transform nozzleTransform, Rigidbody body, ShipStats stats)
+    public void Configure(Transform nozzleTransform, Rigidbody body, ShipStats stats, ShipPhysicsCore core)
     {
         thrustTransform = nozzleTransform != null ? nozzleTransform : thrustTransform;
         shipRigidbody = body != null ? body : shipRigidbody;
         shipStats = stats != null ? stats : shipStats;
+        physicsCore = core != null ? core : physicsCore;
         ResolveReferences();
         CaptureGimbalBaseRotation();
     }
@@ -65,6 +67,16 @@ public bool SupportsGimbal => supportsGimbal;
         if (shipStats == null)
         {
             shipStats = GetComponent<ShipStats>();
+        }
+
+        if (physicsCore == null)
+        {
+            physicsCore = GetComponent<ShipPhysicsCore>();
+        }
+
+        if (physicsCore != null && shipRigidbody == null)
+        {
+            shipRigidbody = physicsCore.ShipRigidbody;
         }
 
         if (thrustTransform == null)
@@ -123,7 +135,7 @@ public bool SupportsGimbal => supportsGimbal;
         LastAppliedDirection = thrustDirection;
         LastForcePositionWorld = forcePosition;
 
-        if (shipRigidbody == null || shipStats == null || LastThrottleCommand <= 0f)
+        if (shipRigidbody == null || shipStats == null || physicsCore == null || LastThrottleCommand <= 0f)
         {
             return 0f;
         }
@@ -140,11 +152,11 @@ public bool SupportsGimbal => supportsGimbal;
         LastForceWorld = LastStraightForceWorld + LastSteeringForceWorld;
 
         Vector3 centerOfMass = shipRigidbody.worldCenterOfMass;
-        shipRigidbody.AddForceAtPosition(LastStraightForceWorld, centerOfMass, ForceMode.Force);
+        physicsCore.ApplyForceAtCenterOfMass(LastStraightForceWorld, ForceMode.Force);
 
         if (LastSteeringForceWorld.sqrMagnitude > 0.0001f)
         {
-            shipRigidbody.AddForceAtPosition(LastSteeringForceWorld, forcePosition, ForceMode.Force);
+            physicsCore.ApplyForceAtPosition(LastSteeringForceWorld, forcePosition, ForceMode.Force);
             LastEstimatedTorque = Vector3.Cross(forcePosition - centerOfMass, LastSteeringForceWorld);
         }
 
