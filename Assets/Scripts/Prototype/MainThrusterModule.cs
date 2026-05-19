@@ -26,7 +26,7 @@ public class MainThrusterModule : MonoBehaviour
     private Quaternion gimbalBaseLocalRotation = Quaternion.identity;
     private bool hasGimbalBaseRotation;
 
-    public MainThrustMode ThrustMode => mainThrustMode;
+    public MainThrustMode ThrustMode => SanitizeThrustMode(mainThrustMode);
     public float ThrottleScale => Mathf.Clamp01(throttleScale);
     public bool SupportsGimbal => supportsGimbal;
     public float GimbalLimitDegrees => Mathf.Max(0f, gimbalLimitDegrees);
@@ -191,7 +191,7 @@ public class MainThrusterModule : MonoBehaviour
         LastForceWorld = LastStraightForceWorld + LastSteeringForceWorld;
 
         Vector3 centerOfMass = shipRigidbody.worldCenterOfMass;
-        if (mainThrustMode == MainThrustMode.FullyPhysicalNozzleForce)
+        if (ThrustMode == MainThrustMode.FullyPhysicalNozzleForce)
         {
             LastStraightForceWorld = Vector3.zero;
             LastSteeringForceWorld = LastForceWorld;
@@ -289,8 +289,14 @@ public class MainThrusterModule : MonoBehaviour
         LastEstimatedTorque = Vector3.zero;
     }
 
+    public void SetThrustMode(MainThrustMode mode)
+    {
+        mainThrustMode = SanitizeThrustMode(mode);
+    }
+
     private void OnValidate()
     {
+        mainThrustMode = SanitizeThrustMode(mainThrustMode);
         throttleScale = Mathf.Clamp01(throttleScale);
         gimbalLimitDegrees = Mathf.Max(0f, gimbalLimitDegrees);
         gimbalResponseScalar = Mathf.Clamp01(gimbalResponseScalar);
@@ -306,10 +312,17 @@ public class MainThrusterModule : MonoBehaviour
 
         PrototypeMainThrusterSettings settings = config.MainThruster;
         settings.Clamp();
-        mainThrustMode = settings.mainThrustMode;
+        mainThrustMode = SanitizeThrustMode(settings.mainThrustMode);
         throttleScale = settings.throttleScale;
         supportsGimbal = settings.supportsGimbal;
         gimbalLimitDegrees = settings.gimbalLimitDegrees;
         gimbalResponseScalar = settings.gimbalResponseScalar;
+    }
+
+    private static MainThrustMode SanitizeThrustMode(MainThrustMode mode)
+    {
+        return mode == MainThrustMode.FullyPhysicalNozzleForce
+            ? MainThrustMode.FullyPhysicalNozzleForce
+            : MainThrustMode.ComSafeSteeringOnly;
     }
 }

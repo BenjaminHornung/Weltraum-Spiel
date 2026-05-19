@@ -106,6 +106,9 @@ public struct PrototypeMainThrusterSettings
     public void Clamp()
     {
         thrustForce = Mathf.Max(0f, thrustForce);
+        mainThrustMode = mainThrustMode == MainThrustMode.FullyPhysicalNozzleForce
+            ? MainThrustMode.FullyPhysicalNozzleForce
+            : MainThrustMode.ComSafeSteeringOnly;
         reverseThrustMultiplier = Mathf.Clamp01(reverseThrustMultiplier);
         throttleScale = Mathf.Clamp01(throttleScale);
         gimbalLimitDegrees = Mathf.Max(0f, gimbalLimitDegrees);
