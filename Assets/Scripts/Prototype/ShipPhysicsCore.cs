@@ -157,6 +157,32 @@ public class ShipPhysicsCore : MonoBehaviour
         centralGravityEnabled = enabled && centralGravityBody != null && centralGravityMu > 0f;
     }
 
+    public bool TryEvaluateCentralGravityAcceleration(Vector3 samplePosition, out Vector3 acceleration, out float distance, out string bodyName)
+    {
+        acceleration = Vector3.zero;
+        distance = 0f;
+        bodyName = centralGravityBody != null && centralGravityEnabled ? centralGravityBody.name : "none";
+
+        if (!centralGravityEnabled || centralGravityBody == null || CentralGravityMu <= 0f)
+        {
+            return false;
+        }
+
+        Vector3 toBody = centralGravityBody.position - samplePosition;
+        if (toBody.sqrMagnitude <= 0.000001f)
+        {
+            bodyName = centralGravityBody.name;
+            return false;
+        }
+
+        float minDistance = Mathf.Max(0.001f, minimumGravityDistance);
+        float distanceSquared = Mathf.Max(toBody.sqrMagnitude, minDistance * minDistance);
+        distance = Mathf.Sqrt(distanceSquared);
+        acceleration = toBody.normalized * (CentralGravityMu / distanceSquared);
+        bodyName = centralGravityBody.name;
+        return TrajectoryPredictionMath.IsFinite(acceleration);
+    }
+
     public void ConfigureAtmosphere(PrototypeAtmosphereVolume volume)
     {
         atmosphereVolume = volume;
@@ -211,19 +237,13 @@ public class ShipPhysicsCore : MonoBehaviour
             return false;
         }
 
-        Vector3 toBody = centralGravityBody.position - shipRigidbody.worldCenterOfMass;
-        if (toBody.sqrMagnitude <= 0.000001f)
+        if (!TryEvaluateCentralGravityAcceleration(shipRigidbody.worldCenterOfMass, out Vector3 acceleration, out float distance, out string bodyName))
         {
-            LastGravityBodyName = centralGravityBody.name;
+            LastGravityBodyName = bodyName;
             return false;
         }
 
-        float minDistance = Mathf.Max(0.001f, minimumGravityDistance);
-        float distanceSquared = Mathf.Max(toBody.sqrMagnitude, minDistance * minDistance);
-        float distance = Mathf.Sqrt(distanceSquared);
-        Vector3 acceleration = toBody.normalized * (CentralGravityMu / distanceSquared);
-
-        LastGravityBodyName = centralGravityBody.name;
+        LastGravityBodyName = bodyName;
         LastGravityDistance = distance;
         LastGravityAcceleration = acceleration;
         LastGravityForce = acceleration * shipRigidbody.mass;
