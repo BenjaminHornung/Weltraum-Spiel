@@ -1,4 +1,4 @@
-﻿# Tasks: architecture-thruster-response-model
+# Tasks: architecture-thruster-response-model
 
 ## Spec
 - [x] Create spec change folder
@@ -10,7 +10,7 @@
 - [x] Commit spec with spec title and changelog
 
 ## Implementation
-- [ ] Inspect current throttle and gimbal command path through Unity MCP
+- [x] Inspect current throttle and gimbal command path through Unity MCP
 - [ ] Add target vs actual throttle fields
 - [ ] Add spool-up and spool-down rates
 - [ ] Add target vs actual gimbal yaw/pitch
