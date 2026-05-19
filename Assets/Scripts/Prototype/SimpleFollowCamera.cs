@@ -20,7 +20,7 @@ public class SimpleFollowCamera : MonoBehaviour
     private int cameraMode;
     private bool snapNextFrame;
     private float orbitYaw;
-    private float orbitPitch = 18f;
+    private float orbitPitch;
 
     public int CameraMode => cameraMode;
     public float OrbitYaw => orbitYaw;
@@ -79,11 +79,11 @@ public class SimpleFollowCamera : MonoBehaviour
         float positionBlend = snapNextFrame ? 1f : 1f - Mathf.Exp(-positionSmooth * Time.deltaTime);
         transform.position = Vector3.Lerp(transform.position, desiredPosition, positionBlend);
 
-        Vector3 lookTarget = target.position + target.forward * 1.5f;
+        Vector3 lookTarget = GetLookTarget();
         Vector3 direction = lookTarget - transform.position;
         if (direction.sqrMagnitude > 0.01f)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
+            Quaternion targetRotation = Quaternion.LookRotation(direction, GetLookUp());
             float rotationBlend = snapNextFrame ? 1f : 1f - Mathf.Exp(-rotationSmooth * Time.deltaTime);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationBlend);
         }
@@ -93,26 +93,43 @@ public class SimpleFollowCamera : MonoBehaviour
 
     private Vector3 GetDesiredPosition(float followDistance, float followHeight)
     {
-        Quaternion orbit = Quaternion.AngleAxis(orbitYaw, Vector3.up) * Quaternion.AngleAxis(orbitPitch, Vector3.right);
-
         if (cameraMode == 1)
         {
+            Quaternion orbit = Quaternion.AngleAxis(orbitYaw, Vector3.up) * Quaternion.AngleAxis(orbitPitch, Vector3.right);
             return target.position + orbit * new Vector3(0f, followHeight * 1.4f, -followDistance * 1.25f);
         }
 
         if (cameraMode == 2)
         {
+            Quaternion orbit = Quaternion.AngleAxis(orbitYaw, Vector3.up) * Quaternion.AngleAxis(orbitPitch, Vector3.right);
             return target.position + orbit * new Vector3(-followDistance * 0.9f, followHeight, 0f);
         }
 
-        return target.position + orbit * new Vector3(0f, followHeight, -followDistance);
+        Vector3 chaseOffset = (-target.forward * followDistance) + (target.up * followHeight);
+        if (Mathf.Approximately(orbitYaw, 0f) && Mathf.Approximately(orbitPitch, 0f))
+        {
+            return target.position + chaseOffset;
+        }
+
+        Quaternion lookOffset = Quaternion.AngleAxis(orbitYaw, target.up) * Quaternion.AngleAxis(orbitPitch, target.right);
+        return target.position + lookOffset * chaseOffset;
+    }
+
+    private Vector3 GetLookTarget()
+    {
+        return target.position + target.forward * 1.5f;
+    }
+
+    private Vector3 GetLookUp()
+    {
+        return cameraMode == 0 ? target.up : Vector3.up;
     }
 
     private void ResetOrbit()
     {
         cameraMode = 0;
         orbitYaw = 0f;
-        orbitPitch = 18f;
+        orbitPitch = 0f;
         snapNextFrame = true;
     }
 }

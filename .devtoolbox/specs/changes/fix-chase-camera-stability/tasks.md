@@ -1,4 +1,4 @@
-# Tasks: fix-chase-camera-stability
+﻿# Tasks: fix-chase-camera-stability
 
 ## Spec
 - [x] Create spec change folder
@@ -9,25 +9,25 @@
 - [x] Validate spec with DevToolbox
 
 ## Investigation
-- [ ] Inspect current SimpleFollowCamera behavior
-- [ ] Confirm default mode uses world-space orbit instead of ship-relative chase offset
-- [ ] Identify bootstrap/camera binding compatibility requirements
+- [x] Inspect current SimpleFollowCamera behavior
+- [x] Confirm default mode uses world-space orbit instead of ship-relative chase offset
+- [x] Identify bootstrap/camera binding compatibility requirements
 
 ## Implementation
-- [ ] Make mode 0 a ship-relative chase camera
-- [ ] Keep mouse look camera-only and preserve reset behavior
-- [ ] Keep V camera mode cycling functional
-- [ ] Tune default smoothing for stable RCS maneuvers
-- [ ] Update README or camera documentation if needed
-- [ ] Add test evidence under this spec
+- [x] Make mode 0 a ship-relative chase camera
+- [x] Keep mouse look camera-only and preserve reset behavior
+- [x] Keep V camera mode cycling functional
+- [x] Tune default smoothing for stable RCS maneuvers
+- [x] Update README or camera documentation if needed
+- [x] Add test evidence under this spec
 
 ## Verification
-- [ ] Validate changed Unity scripts with Unity MCP
-- [ ] Refresh or compile scripts with Unity MCP and check console errors
-- [ ] Verify default chase offset follows yaw, pitch, and roll changes
-- [ ] Verify mouse look does not alter ship input state
-- [ ] Verify reset returns to mode 0 chase
-- [ ] Verify bootstrap still binds the camera
-- [ ] Confirm DevToolbox spec validation passes
-- [ ] Confirm git working tree only contains this spec slice before commit
-- [ ] Commit with spec title and meaningful changelog
+- [x] Validate changed Unity scripts with Unity MCP
+- [x] Refresh or compile scripts with Unity MCP and check console errors
+- [x] Verify default chase offset follows yaw, pitch, and roll changes
+- [x] Verify mouse look does not alter ship input state
+- [x] Verify reset returns to mode 0 chase
+- [x] Verify bootstrap still binds the camera
+- [x] Confirm DevToolbox spec validation passes
+- [x] Confirm git working tree only contains this spec slice before commit
+- [x] Commit with spec title and meaningful changelog
