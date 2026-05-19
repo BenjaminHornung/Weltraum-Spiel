@@ -55,3 +55,10 @@ Conclusion: docking should be implemented as a prototype component that computes
 
 - Updated `README.md` with the prototype `DockingPort` capability and current hard-lock placeholder limit.
 - Updated `docs/physics-flight-model.md` with port frame data, relative state equations, eligibility diagnostics, soft-capture request routing, and hard-lock placeholder behavior.
+
+## 2026-05-19 - Unity MCP Script Validation
+
+- Unity MCP editor state was ready and not compiling in `Assets/Scenes/PrototypeBootstrapHost.unity`.
+- Unity MCP `validate_script` on `Assets/Scripts/Prototype/DockingPort.cs` returned 0 errors and 0 warnings.
+- Unity MCP `validate_script` on `Assets/Scripts/Prototype/FlightAssistRequest.cs` returned 0 errors and 0 warnings.
+- Unity MCP console query showed no C# compile errors; the only returned entry was the unrelated TestResults save message already observed earlier.

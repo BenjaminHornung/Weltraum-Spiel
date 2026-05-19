@@ -19,7 +19,7 @@
 - [x] Update README and physics docs
 
 ## Verification
-- [ ] Validate changed Unity scripts with Unity MCP
+- [x] Validate changed Unity scripts with Unity MCP
 - [ ] Verify angle, distance, and velocity rejection cases
 - [ ] Verify soft capture requests are bounded
 - [ ] Verify hard lock only occurs when constraints pass
