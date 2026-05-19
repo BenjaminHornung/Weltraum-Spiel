@@ -322,7 +322,7 @@ public Vector3 LastSasCommand { get; private set; }
         return Mathf.Abs(manualCommand) > ManualCommandDeadZone ? ManualCommandDeadZone : SasCommandDeadZone;
     }
 
-    private void ApplyTorqueDemand(Vector3 positiveAxis, float command, float fallbackForceScale, bool recordYaw, float commandDeadZone)
+private void ApplyTorqueDemand(Vector3 positiveAxis, float command, float fallbackForceScale, bool recordYaw, float commandDeadZone)
     {
         if (Mathf.Abs(command) <= commandDeadZone || shipRigidbody == null)
         {
@@ -331,6 +331,7 @@ public Vector3 LastSasCommand { get; private set; }
 
         Vector3 desiredTorqueAxis = (positiveAxis * Mathf.Sign(command)).normalized;
         float commandMagnitude = Mathf.Abs(command);
+        Vector3 attitudeForceTotal = Vector3.zero;
 
         for (int i = 0; i < nozzles.Count; i++)
         {
@@ -356,8 +357,24 @@ public Vector3 LastSasCommand { get; private set; }
             float nozzleThrust = GetNozzleThrust(nozzle, fallbackForceScale);
             Vector3 force = forceDirection * (commandMagnitude * nozzleThrust * alignment);
             ApplyForceAtNozzle(nozzle, force, false, recordYaw);
+            attitudeForceTotal += force;
         }
+
+        NeutralizeAttitudeLinearForce(attitudeForceTotal);
     }
+
+private void NeutralizeAttitudeLinearForce(Vector3 attitudeForceTotal)
+    {
+        if (shipRigidbody == null || attitudeForceTotal.sqrMagnitude <= 0.0001f)
+        {
+            return;
+        }
+
+        Vector3 counterForce = -attitudeForceTotal;
+        shipRigidbody.AddForce(counterForce, ForceMode.Force);
+        LastForceAtPositionTotal += counterForce;
+    }
+
 
     private void ApplyNozzleSet(Vector3 desiredForceDirection, float commandMagnitude, float fallbackForceScale, bool translation, Vector3 torqueAxisForDebug)
     {
