@@ -20,7 +20,7 @@
 
 ## Verification
 - [x] Validate changed Unity scripts with Unity MCP
-- [ ] Verify hit event data is populated
+- [x] Verify hit event data is populated
 - [ ] Verify damaged RCS/engine reduces physical authority
 - [ ] Verify diagnostics show degraded state
 - [ ] Add test evidence under this spec
