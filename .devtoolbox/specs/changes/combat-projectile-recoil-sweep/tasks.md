@@ -17,7 +17,7 @@
 - [x] Add raycast or sphere-cast sweep detection
 - [x] Ignore firing ship colliders
 - [x] Expose hit data for future damage systems
-- [ ] Update README and physics docs
+- [x] Update README and physics docs
 
 ## Verification
 - [ ] Validate changed Unity scripts with Unity MCP

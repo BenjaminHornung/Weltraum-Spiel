@@ -70,9 +70,30 @@ SAS uses a small local angular-velocity dead zone near zero and a minimum active
 
 The ship rigidbody uses zero linear and angular damping in this prototype. Releasing controls does not bleed off linear velocity, and rotation persists in vacuum unless SAS/RCS torque counters it.
 
+## Projectile Recoil And Sweep
+
+Gun fire keeps projectile velocity relative to the moving ship:
+
+```csharp
+projectileVelocity = shipRigidbody.linearVelocity + muzzleTransform.forward * shipStats.ProjectileSpeed;
+```
+
+Each projectile has a configured mass. When recoil is enabled, `GunModule` applies the opposite muzzle-relative momentum to the firing ship at the muzzle position through `ShipPhysicsCore`:
+
+```csharp
+projectileMomentum = muzzleForward * projectileMass * projectileSpeed;
+physicsCore.ApplyForceAtPosition(-projectileMomentum, muzzlePosition, ForceMode.Impulse);
+```
+
+The recoil path uses the same core force-at-position telemetry as thrusters, so offset guns can produce both linear impulse and torque diagnostics.
+
+Projectiles store their previous physics position and sweep from that position to the current Rigidbody position each `FixedUpdate`. The sweep uses `Physics.SphereCastAll` with the projectile collider radius, then falls back to `Physics.RaycastAll` for a centerline check. A projectile reports only one hit, shares the same report path for sweep and `OnCollisionEnter`, and ignores its own collider plus all firing-ship colliders passed in at spawn.
+
+`ProjectileHitData` is the handoff shape for later damage work. It exposes whether the hit came from sweep or collision, the hit collider, attached Rigidbody, optional `PrototypeTargetDummy`, hit point, normal, incoming velocity, and timestamp. This change does not add a damage model; target dummies still only play prototype hit feedback.
+
 ## Physics Validation
 
-EditMode tests in `Assets/Tests/Editor/PrototypePhysicsValidationTests.cs` exercise deterministic generated ship probes from `PhysicsValidationProbe`. They cover throttle-only main force, gimbal cross-product torque, RCS translation and yaw allocation, partial-fuel thrust scaling, projectile recoil detection, and a 0.02 vs 0.01 timestep comparison.
+EditMode tests in `Assets/Tests/Editor/PrototypePhysicsValidationTests.cs` exercise deterministic generated ship probes from `PhysicsValidationProbe`. They cover throttle-only main force, gimbal cross-product torque, RCS translation and yaw allocation, partial-fuel thrust scaling, projectile recoil detection, projectile sweep/self-hit checks, and a 0.02 vs 0.01 timestep comparison.
 
 Run the suite through Unity Test Runner EditMode or Unity MCP `run_tests(mode=EditMode)`. Store run output and deterministic probe evidence under the active spec folder, for example `.devtoolbox/specs/changes/validation-physics-test-suite/tests/test-protocol.md`.
 
@@ -83,7 +104,7 @@ The current prototype intentionally defers deeper simulation layers:
 - module mass distribution, center of mass, and inertia tensor approximation,
 - full fuel mass flow across all thruster systems and fuel-dependent COM changes,
 - SAS as a target-attitude PD controller,
-- projectile recoil and hit impulse,
+- full projectile damage and hit impulse effects,
 - gravity, orbit prediction, and floating origin,
 - docking constraints, damage effects, heat, power, and trajectory preview.
 

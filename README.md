@@ -53,7 +53,7 @@ Camera reset is bound to Backquote. Unity Input System key controls are physical
 ## Prototype Values
 
 - `PrototypeBootstrap` can optionally reference a `PrototypeShipConfig` ScriptableObject for prototype tuning. Leave it unassigned to keep the built-in default ship values.
-- Create a config from `Assets > Create > Prototype > Ship Config` to tune fuel, dry masses, main thruster force/gimbal response, RCS thrust/selection values, projectile speed/fire rate/lifetime/scale, and camera distance/height.
+- Create a config from `Assets > Create > Prototype > Ship Config` to tune fuel, dry masses, main thruster force/gimbal response, RCS thrust/selection values, projectile speed/fire rate/lifetime/scale/mass/recoil, and camera distance/height.
 - This config is only a prototype tuning container. It does not add a ship editor, inventory, save/load, or final module architecture.
 - Fuel is stored as kilograms.
 - Full main thrust consumes `0.6 kg/s`.
@@ -69,6 +69,9 @@ Camera reset is bound to Backquote. Unity Input System key controls are physical
 - Ship-level force application now routes through a thin `ShipPhysicsCore`. Main thrusters and RCS still own their current behavior, but final Rigidbody force calls and net force/torque diagnostics have a central path.
 - The physics model is documented in [docs/physics-flight-model.md](docs/physics-flight-model.md).
 - Projectile velocity is the ship Rigidbody velocity plus muzzle forward velocity.
+- Projectile firing applies optional recoil impulse opposite the muzzle direction using configured projectile mass and projectile speed.
+- Projectiles ignore the firing ship's colliders and sweep their previous-to-current physics travel with sphere/raycast checks for fast target hits.
+- Projectile hit reports expose collider, Rigidbody, hit point, normal, incoming velocity, and sweep/collision source for future damage systems.
 - Projectile lifetime defaults to 3 seconds.
 
 ## Optional Asset Policy
@@ -81,7 +84,7 @@ Optional CC0 assets, such as local low-poly ships or Kenney packs, may be consid
 - The camera mode cycle is intentionally minimal and only switches between prepared follow offsets/orbit baselines.
 - SAS is a simple RCS angular counter-command, not a full flight computer.
 - RCS allocation is a prototype bounded allocator, not a final optimizer, but it is transform-based and uses real lever arms around COM.
-- Deferred physics-core slices include module mass/COM/inertia, fuel mass flow, SAS as a PD control layer, projectile recoil, gravity/orbits, docking, damage, heat/power, and trajectory prediction.
-- Projectile damage and reliable high-speed collision are out of scope.
+- Deferred physics-core slices include module mass/COM/inertia, fuel mass flow, SAS as a PD control layer, gravity/orbits, docking, damage, heat/power, and trajectory prediction.
+- Full projectile damage and combat balance are out of scope.
 - IMGUI is used for the debug overlay because it is temporary prototype UI.
 - Controller input has not been manually verified on physical hardware.
