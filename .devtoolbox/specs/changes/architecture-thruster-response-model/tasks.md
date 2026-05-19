@@ -14,7 +14,7 @@
 - [x] Add target vs actual throttle fields
 - [x] Add spool-up and spool-down rates
 - [x] Add target vs actual gimbal yaw/pitch
-- [ ] Add gimbal slew rate
+- [x] Add gimbal slew rate
 - [ ] Optionally prepare RCS response fields without changing defaults
 - [ ] Update overlay/docs with target vs actual output
 

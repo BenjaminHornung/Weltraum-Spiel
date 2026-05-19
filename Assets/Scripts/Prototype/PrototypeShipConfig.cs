@@ -93,6 +93,7 @@ public struct PrototypeMainThrusterSettings
     public bool supportsGimbal;
     [Range(0f, 45f)] public float gimbalLimitDegrees;
     [Range(0f, 1f)] public float gimbalResponseScalar;
+    public float gimbalSlewRateDegreesPerSecond;
 
     public static PrototypeMainThrusterSettings Default => new PrototypeMainThrusterSettings
     {
@@ -104,7 +105,8 @@ public struct PrototypeMainThrusterSettings
         throttleSpoolDownRate = 0f,
         supportsGimbal = true,
         gimbalLimitDegrees = 20f,
-        gimbalResponseScalar = 0.35f
+        gimbalResponseScalar = 0.35f,
+        gimbalSlewRateDegreesPerSecond = 0f
     };
 
     public void Clamp()
@@ -119,6 +121,7 @@ public struct PrototypeMainThrusterSettings
         throttleSpoolDownRate = Mathf.Max(0f, throttleSpoolDownRate);
         gimbalLimitDegrees = Mathf.Max(0f, gimbalLimitDegrees);
         gimbalResponseScalar = Mathf.Clamp01(gimbalResponseScalar);
+        gimbalSlewRateDegreesPerSecond = Mathf.Max(0f, gimbalSlewRateDegreesPerSecond);
     }
 }
 
