@@ -22,5 +22,5 @@
 - [x] Verify default scene has zero atmosphere force
 - [x] Verify drag opposes velocity in a test atmosphere
 - [x] Verify drag scales with squared speed
-- [ ] Add test evidence under this spec
+- [x] Add test evidence under this spec
 - [ ] Commit implementation with spec title and changelog
