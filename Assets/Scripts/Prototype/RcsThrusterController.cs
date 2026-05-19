@@ -449,24 +449,29 @@ public Vector3 LastSasCommand { get; private set; }
         return direction.normalized;
     }
 
-    private void ApplyForceAtNozzle(RcsNozzle nozzle, Vector3 forceWorld, bool translation, bool recordYaw)
+private void ApplyForceAtNozzle(RcsNozzle nozzle, Vector3 forceWorld, bool translation, bool recordYaw)
     {
         if (shipRigidbody == null || nozzle == null || !IsActiveNozzleTransform(nozzle.transform) || forceWorld.sqrMagnitude <= 0.0001f)
         {
             return;
         }
 
-        Vector3 position = nozzle.transform.position;
-        shipRigidbody.AddForceAtPosition(forceWorld, position, ForceMode.Force);
-        Vector3 torque = Vector3.Cross(position - shipRigidbody.worldCenterOfMass, forceWorld);
-        LastForceAtPositionTotal += forceWorld;
-        LastTorque += torque;
-        nozzle.active = true;
-
+        Vector3 torque = Vector3.zero;
         if (translation)
         {
+            shipRigidbody.AddForce(forceWorld, ForceMode.Force);
             LastTranslationForce += forceWorld;
         }
+        else
+        {
+            Vector3 position = nozzle.transform.position;
+            shipRigidbody.AddForceAtPosition(forceWorld, position, ForceMode.Force);
+            torque = Vector3.Cross(position - shipRigidbody.worldCenterOfMass, forceWorld);
+            LastTorque += torque;
+        }
+
+        LastForceAtPositionTotal += forceWorld;
+        nozzle.active = true;
 
         if (recordYaw)
         {
