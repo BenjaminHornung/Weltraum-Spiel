@@ -3,8 +3,17 @@ using UnityEngine;
 public class RcsThrusterBlock : MonoBehaviour
 {
     [SerializeField] private float thrust = 6500f;
+    [SerializeField] private PrototypeModuleDamageState damageState;
 
-    public float Thrust => Mathf.Max(0f, thrust);
+    public float UndamagedThrust => Mathf.Max(0f, thrust);
+    public float DamageCapabilityMultiplier => damageState != null ? damageState.CapabilityMultiplier : 1f;
+    public float Thrust => UndamagedThrust * DamageCapabilityMultiplier;
+    public PrototypeModuleDamageState DamageState => damageState;
+
+    private void Awake()
+    {
+        ResolveReferences();
+    }
 
     private void OnValidate()
     {
@@ -37,5 +46,21 @@ public void ApplyConfig(PrototypeShipConfig config)
         PrototypeRcsSettings settings = config.Rcs;
         settings.Clamp();
         thrust = settings.blockThrust;
+    }
+
+
+public void ConfigureDamageState(PrototypeModuleDamageState state)
+    {
+        damageState = state != null ? state : damageState;
+        ResolveReferences();
+    }
+
+
+private void ResolveReferences()
+    {
+        if (damageState == null)
+        {
+            damageState = GetComponent<PrototypeModuleDamageState>();
+        }
     }
 }

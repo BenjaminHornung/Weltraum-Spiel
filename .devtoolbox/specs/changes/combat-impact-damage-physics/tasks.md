@@ -13,7 +13,7 @@
 - [x] Inspect projectile hit feedback, module descriptors, RCS, and main thruster through Unity MCP
 - [x] Define impact event data
 - [x] Add simple module damage state
-- [ ] Apply one physical degradation path for RCS or engine thrust
+- [x] Apply one physical degradation path for RCS or engine thrust
 - [ ] Add optional impact impulse routing through ShipPhysicsCore
 - [ ] Add debug damage diagnostics
 - [ ] Update README and physics docs
