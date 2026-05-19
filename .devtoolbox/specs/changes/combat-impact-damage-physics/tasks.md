@@ -19,7 +19,7 @@
 - [x] Update README and physics docs
 
 ## Verification
-- [ ] Validate changed Unity scripts with Unity MCP
+- [x] Validate changed Unity scripts with Unity MCP
 - [ ] Verify hit event data is populated
 - [ ] Verify damaged RCS/engine reduces physical authority
 - [ ] Verify diagnostics show degraded state

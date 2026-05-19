@@ -221,5 +221,11 @@ public static class PrototypeModuleMassLayout
         }
 
         damageState.Configure(id, 100f, 0f);
+
+        RcsThrusterBlock rcsBlock = module.GetComponent<RcsThrusterBlock>();
+        if (rcsBlock != null)
+        {
+            rcsBlock.ConfigureDamageState(damageState);
+        }
     }
 }

@@ -6,9 +6,23 @@ public class RcsThrusterBlock : MonoBehaviour
     [SerializeField] private PrototypeModuleDamageState damageState;
 
     public float UndamagedThrust => Mathf.Max(0f, thrust);
-    public float DamageCapabilityMultiplier => damageState != null ? damageState.CapabilityMultiplier : 1f;
+    public float DamageCapabilityMultiplier
+    {
+        get
+        {
+            ResolveReferences();
+            return damageState != null ? damageState.CapabilityMultiplier : 1f;
+        }
+    }
     public float Thrust => UndamagedThrust * DamageCapabilityMultiplier;
-    public PrototypeModuleDamageState DamageState => damageState;
+    public PrototypeModuleDamageState DamageState
+    {
+        get
+        {
+            ResolveReferences();
+            return damageState;
+        }
+    }
 
     private void Awake()
     {
