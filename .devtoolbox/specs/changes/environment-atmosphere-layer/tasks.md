@@ -18,7 +18,7 @@
 - [x] Add atmosphere diagnostics to overlay/docs
 
 ## Verification
-- [ ] Validate changed Unity scripts with Unity MCP
+- [x] Validate changed Unity scripts with Unity MCP
 - [ ] Verify default scene has zero atmosphere force
 - [ ] Verify drag opposes velocity in a test atmosphere
 - [ ] Verify drag scales with squared speed
