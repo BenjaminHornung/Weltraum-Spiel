@@ -8,7 +8,14 @@ public class PrototypeDebugOverlay : MonoBehaviour
     [SerializeField] private Transform target;
     [SerializeField] private PlayerShipController shipController;
 
+    [Header("Overlay")]
     [SerializeField] private Vector2 windowPosition = new Vector2(16f, 16f);
+
+    [Header("Debug Vectors")]
+    [SerializeField] private bool drawDebugVectors;
+    [SerializeField] private bool drawDebugGizmos;
+    [SerializeField] private float forceVectorScale = 0.00015f;
+    [SerializeField] private float torqueVectorScale = 0.00025f;
 
     private GUIStyle labelStyle;
 
@@ -52,6 +59,17 @@ public class PrototypeDebugOverlay : MonoBehaviour
         labelStyle.normal.textColor = Color.white;
     }
 
+    private void LateUpdate()
+    {
+        if (!drawDebugVectors)
+        {
+            return;
+        }
+
+        ResolveTargetReferences();
+        DrawRuntimeDebugVectors();
+    }
+
     private void OnGUI()
     {
         if (targetStats == null || targetRigidbody == null || shipController == null)
@@ -65,12 +83,19 @@ public class PrototypeDebugOverlay : MonoBehaviour
 
         EnsureStyle();
 
-        float speedMps = targetRigidbody.linearVelocity.magnitude;
+        Vector3 linearVelocity = targetRigidbody.linearVelocity;
+        Vector3 angularVelocity = targetRigidbody.angularVelocity;
+        float speedMps = linearVelocity.magnitude;
         float speedKph = speedMps * 3.6f;
+        float rbMass = targetRigidbody.mass;
+        Vector3 centerOfMassLocal = targetRigidbody.centerOfMass;
+        Vector3 centerOfMassWorld = targetRigidbody.worldCenterOfMass;
+
         Vector3 rcsTranslation = shipController != null ? shipController.RcsTranslationCommand : Vector3.zero;
         Vector3 rcsAttitude = shipController != null ? shipController.RcsAttitudeCommand : Vector3.zero;
         float throttlePercent = shipController != null ? shipController.MainThrottlePercent : targetStats.LastThrottle * 100f;
         float mainCommand = shipController != null ? shipController.MainThrustCommand : targetStats.LastThrottle;
+        float throttleScale = shipController != null ? shipController.MainThrottleScale : 0f;
         bool gimbalEnabled = shipController != null && shipController.GimbalEnabled;
         float gimbalLimit = shipController != null ? shipController.GimbalLimitDegrees : 0f;
         float gimbalResponse = shipController != null ? shipController.GimbalResponseScalar : 0f;
@@ -84,48 +109,145 @@ public class PrototypeDebugOverlay : MonoBehaviour
         bool effectiveSas = shipController != null && shipController.EffectiveSasEnabled;
         bool precision = shipController != null && shipController.PrecisionControls;
         float forwardAcceleration = shipController != null ? shipController.LastForwardAcceleration : targetStats.LastAcceleration;
-        Vector3 angularVelocity = targetRigidbody.angularVelocity;        Vector3 rcsPivotLocal = shipController != null ? shipController.RcsControlPivotLocal : Vector3.zero;
-        Vector3 centerOfMass = targetRigidbody.worldCenterOfMass;
+        Vector3 rcsPivotLocal = shipController != null ? shipController.RcsControlPivotLocal : Vector3.zero;
+        Vector3 rcsPivotWorld = shipController != null ? shipController.RcsControlPivotWorld : centerOfMassWorld;
         int installedNozzles = shipController != null ? shipController.InstalledRcsNozzleCount : 0;
         int activeNozzles = shipController != null ? shipController.ActiveRcsNozzleCount : 0;
         string activeNozzleIds = shipController != null ? shipController.ActiveRcsNozzleIds : string.Empty;
+        float rcsTranslationSetting = shipController != null ? shipController.RcsTranslationForceSetting : 0f;
+        float rcsAttitudeSetting = shipController != null ? shipController.RcsAttitudeForceSetting : 0f;
+        float sasAuthority = shipController != null ? shipController.RcsSasAuthority : 0f;
+        float minSelectionDot = shipController != null ? shipController.RcsMinSelectionDot : 0f;
+        Vector3 rawSasCommand = shipController != null ? shipController.LastRawRcsSasCommand : Vector3.zero;
         Vector3 sasCommand = shipController != null ? shipController.LastRcsSasCommand : Vector3.zero;
+        Vector3 sasReleasedAxes = shipController != null ? shipController.LastRcsSasReleasedAxes : Vector3.one;
+        Vector3 rcsTotalForce = shipController != null ? shipController.LastRcsForce : Vector3.zero;
         Vector3 rcsTranslationForce = shipController != null ? shipController.LastRcsTranslationForce : Vector3.zero;
         Vector3 rcsTorque = shipController != null ? shipController.LastRcsTorque : Vector3.zero;
+        Vector3 rcsYawTorque = shipController != null ? shipController.LastRcsYawTorque : Vector3.zero;
+        Vector3 mainDirection = shipController != null ? shipController.LastMainThrustDirection : target.transform.forward;
+        Vector3 mainForce = shipController != null ? shipController.LastMainForceWorld : Vector3.zero;
         Vector3 mainStraight = shipController != null ? shipController.LastMainStraightForceWorld : Vector3.zero;
         Vector3 mainSteering = shipController != null ? shipController.LastMainSteeringForceWorld : Vector3.zero;
         Vector3 mainTorque = shipController != null ? shipController.LastMainGimbalTorque : Vector3.zero;
+        Vector3 mainForcePosition = shipController != null ? shipController.LastMainForcePositionWorld : centerOfMassWorld;
 
-        Rect rect = new Rect(windowPosition.x, windowPosition.y, 560f, 470f);
-        GUI.Box(rect, "Prototype Debug");
+        Rect rect = new Rect(windowPosition.x, windowPosition.y, 620f, 560f);
+        GUI.Box(rect, "Prototype Flight Diagnostics");
 
-        GUILayout.BeginArea(new Rect(rect.x + 8f, rect.y + 22f, rect.width - 14f, rect.height - 20f));
+        GUILayout.BeginArea(new Rect(rect.x + 8f, rect.y + 22f, rect.width - 14f, rect.height - 24f));
+        GUILayout.BeginHorizontal();
+        GUILayout.BeginVertical(GUILayout.Width(300f));
         GUILayout.Label($"Fuel: {targetStats.CurrentFuelKg:0.0} / {targetStats.MaxFuelKg:0.0} kg", labelStyle);
+        GUILayout.Label($"Mass: stats {targetStats.CurrentMass:0.0} kg, rb {rbMass:0.0} kg", labelStyle);
         GUILayout.Label($"Speed: {speedMps:0.0} m/s ({speedKph:0.0} km/h)", labelStyle);
-        GUILayout.Label($"Mass: {targetStats.CurrentMass:0.0} kg", labelStyle);
-        GUILayout.Label($"Throttle: {throttlePercent:0}%", labelStyle);
-        GUILayout.Label($"SAS: {(sasEnabled ? "on" : "off")} (effective {(effectiveSas ? "on" : "off")})", labelStyle);        GUILayout.Label($"RCS: installed {(hasRcs ? "yes" : "no")}, enabled {(rcsEnabled ? "yes" : "no")}, nozzles {activeNozzles}/{installedNozzles}", labelStyle);
-        GUILayout.Label($"Precision: {(precision ? "on" : "off")}", labelStyle);
-        GUILayout.Label($"Main: cmd {mainCommand:0.00}, thrust {targetStats.LastAppliedThrust:0} / {targetStats.Thrust:0} N", labelStyle);
-        GUILayout.Label($"Forward accel: {forwardAcceleration:0.0} m/s^2", labelStyle);        GUILayout.Label($"COM world: {FormatVector(centerOfMass)}", labelStyle);
+        GUILayout.Label($"Velocity: {FormatVector(linearVelocity)} m/s", labelStyle);
         GUILayout.Label($"Angular velocity: {FormatVector(angularVelocity)} rad/s", labelStyle);
+        GUILayout.Label($"COM local: {FormatVector(centerOfMassLocal)}", labelStyle);
+        GUILayout.Label($"COM world: {FormatVector(centerOfMassWorld)}", labelStyle);
+        GUILayout.Space(4f);
+        GUILayout.Label($"Throttle: {throttlePercent:0}% cmd {mainCommand:0.00} scale {throttleScale:0.00}", labelStyle);
+        GUILayout.Label($"Main thrust: {targetStats.LastAppliedThrust:0} / {targetStats.Thrust:0} N", labelStyle);
+        GUILayout.Label($"Forward accel: {forwardAcceleration:0.0} m/s^2", labelStyle);
+        GUILayout.Label($"Main dir: {FormatVector(mainDirection)}", labelStyle);
+        GUILayout.Label($"Main force pos: {FormatVector(mainForcePosition)}", labelStyle);
+        GUILayout.Label($"Main force: {FormatVector(mainForce)}", labelStyle);
+        GUILayout.Label($"Main straight: {FormatVector(mainStraight)}", labelStyle);
+        GUILayout.Label($"Main steering: {FormatVector(mainSteering)}", labelStyle);
+        GUILayout.Label($"Main torque est: {FormatVector(mainTorque)}", labelStyle);
+        GUILayout.Label($"Gimbal: {(gimbalEnabled ? "on" : "off")} / {gimbalLimit:0.0} deg", labelStyle);
+        GUILayout.Label($"Gimbal cmd: Y {gimbalYaw:0.00} P {gimbalPitch:0.00}, response {gimbalResponse:0.00}, angle {gimbalAngle:0.0}", labelStyle);
+        GUILayout.EndVertical();
+
+        GUILayout.BeginVertical(GUILayout.Width(300f));
+        GUILayout.Label($"RCS: installed {(hasRcs ? "yes" : "no")}, enabled {(rcsEnabled ? "yes" : "no")}", labelStyle);
+        GUILayout.Label($"RCS tuning: move {rcsTranslationSetting:0} N, attitude {rcsAttitudeSetting:0} N", labelStyle);
+        GUILayout.Label($"RCS select dot: {minSelectionDot:0.00}, nozzles {activeNozzles}/{installedNozzles}", labelStyle);
+        GUILayout.Label($"Precision: {(precision ? "on" : "off")}", labelStyle);
+        GUILayout.Label($"Move cmd: L/R {rcsTranslation.x:0.00}, U/D {rcsTranslation.y:0.00}, F/B {rcsTranslation.z:0.00}", labelStyle);
+        GUILayout.Label($"Attitude cmd: P {rcsAttitude.x:0.00}, Y {rcsAttitude.y:0.00}, R {rcsAttitude.z:0.00}", labelStyle);
         GUILayout.Label($"Turn input: {turnInput:0.00}", labelStyle);
-        GUILayout.Label($"Attitude input: P {rcsAttitude.x:0.00}, Y {rcsAttitude.y:0.00}, R {rcsAttitude.z:0.00}", labelStyle);
-        GUILayout.Label($"RCS move: L/R {rcsTranslation.x:0.00}, U/D {rcsTranslation.y:0.00}, F/B {rcsTranslation.z:0.00}", labelStyle);        GUILayout.Label($"RCS pivot local: {FormatVector(rcsPivotLocal)}", labelStyle);
-        GUILayout.Label($"RCS SAS cmd: {FormatVector(sasCommand)}", labelStyle);
+        GUILayout.Label($"RCS pivot local: {FormatVector(rcsPivotLocal)}", labelStyle);
+        GUILayout.Label($"RCS pivot world: {FormatVector(rcsPivotWorld)}", labelStyle);
+        GUILayout.Label($"RCS total force: {FormatVector(rcsTotalForce)}", labelStyle);
         GUILayout.Label($"RCS translate force: {FormatVector(rcsTranslationForce)}", labelStyle);
         GUILayout.Label($"RCS torque est: {FormatVector(rcsTorque)}", labelStyle);
-        GUILayout.Label($"Gimbal: {(gimbalEnabled ? "on" : "off")} / {gimbalLimit:0.0} deg, response {gimbalResponse:0.00}, cmd Y {gimbalYaw:0.00} P {gimbalPitch:0.00}, angle {gimbalAngle:0.0}", labelStyle);
-        GUILayout.Label($"Active nozzles: {Shorten(activeNozzleIds, 68)}", labelStyle);
-        GUILayout.Label($"Main straight force: {FormatVector(mainStraight)}", labelStyle);
-        GUILayout.Label($"Main steering force: {FormatVector(mainSteering)}", labelStyle);
-        GUILayout.Label($"Main torque est: {FormatVector(mainTorque)}", labelStyle);
+        GUILayout.Label($"RCS yaw torque est: {FormatVector(rcsYawTorque)}", labelStyle);
+        GUILayout.Space(4f);
+        GUILayout.Label($"SAS: {(sasEnabled ? "on" : "off")} (effective {(effectiveSas ? "on" : "off")}) auth {sasAuthority:0.00}", labelStyle);
+        GUILayout.Label($"SAS raw cmd: {FormatVector(rawSasCommand)}", labelStyle);
+        GUILayout.Label($"SAS masked cmd: {FormatVector(sasCommand)}", labelStyle);
+        GUILayout.Label($"SAS released axes: {FormatAxisMask(sasReleasedAxes)}", labelStyle);
+        GUILayout.Label($"Debug vectors: lines {(drawDebugVectors ? "on" : "off")}, gizmos {(drawDebugGizmos ? "on" : "off")}", labelStyle);
+        GUILayout.Label($"Active nozzles: {Shorten(activeNozzleIds, 74)}", labelStyle);
+        GUILayout.EndVertical();
+        GUILayout.EndHorizontal();
         GUILayout.EndArea();
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (!drawDebugGizmos)
+        {
+            return;
+        }
+
+        ResolveTargetReferences();
+        if (targetRigidbody == null || shipController == null)
+        {
+            return;
+        }
+
+        DrawGizmoVector(shipController.LastMainForcePositionWorld, shipController.LastMainForceWorld, forceVectorScale, Color.cyan);
+        DrawGizmoVector(shipController.LastMainForcePositionWorld, shipController.LastMainSteeringForceWorld, forceVectorScale, Color.magenta);
+        DrawGizmoVector(shipController.RcsControlPivotWorld, shipController.LastRcsTranslationForce, forceVectorScale, Color.green);
+        DrawGizmoVector(targetRigidbody.worldCenterOfMass, shipController.LastRcsTorque, torqueVectorScale, Color.yellow);
+        DrawGizmoVector(targetRigidbody.worldCenterOfMass, shipController.LastMainGimbalTorque, torqueVectorScale, Color.red);
+    }
+
+    private void DrawRuntimeDebugVectors()
+    {
+        if (targetRigidbody == null || shipController == null)
+        {
+            return;
+        }
+
+        DrawDebugVector(shipController.LastMainForcePositionWorld, shipController.LastMainForceWorld, forceVectorScale, Color.cyan);
+        DrawDebugVector(shipController.LastMainForcePositionWorld, shipController.LastMainSteeringForceWorld, forceVectorScale, Color.magenta);
+        DrawDebugVector(shipController.RcsControlPivotWorld, shipController.LastRcsTranslationForce, forceVectorScale, Color.green);
+        DrawDebugVector(targetRigidbody.worldCenterOfMass, shipController.LastRcsTorque, torqueVectorScale, Color.yellow);
+        DrawDebugVector(targetRigidbody.worldCenterOfMass, shipController.LastMainGimbalTorque, torqueVectorScale, Color.red);
+    }
+
+    private static void DrawGizmoVector(Vector3 origin, Vector3 vector, float scale, Color color)
+    {
+        if (vector.sqrMagnitude <= 0.0001f || scale <= 0f)
+        {
+            return;
+        }
+
+        Gizmos.color = color;
+        Gizmos.DrawLine(origin, origin + vector * scale);
+    }
+
+    private static void DrawDebugVector(Vector3 origin, Vector3 vector, float scale, Color color)
+    {
+        if (vector.sqrMagnitude <= 0.0001f || scale <= 0f)
+        {
+            return;
+        }
+
+        Debug.DrawLine(origin, origin + vector * scale, color, 0f, false);
     }
 
     private static string FormatVector(Vector3 value)
     {
         return $"({value.x:0.00}, {value.y:0.00}, {value.z:0.00})";
+    }
+
+    private static string FormatAxisMask(Vector3 value)
+    {
+        return $"P {(value.x > 0.5f ? "released" : "manual")}, Y {(value.y > 0.5f ? "released" : "manual")}, R {(value.z > 0.5f ? "released" : "manual")}";
     }
 
     public void Bind(Transform trackTarget, ShipStats stats, Rigidbody rb)
@@ -135,7 +257,6 @@ public class PrototypeDebugOverlay : MonoBehaviour
         targetRigidbody = rb;
         shipController = trackTarget != null ? trackTarget.GetComponent<PlayerShipController>() : null;
     }
-
 
     private static string Shorten(string value, int maxLength)
     {

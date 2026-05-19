@@ -23,7 +23,8 @@ public class MainThrusterModule : MonoBehaviour
     private Quaternion gimbalBaseLocalRotation = Quaternion.identity;
     private bool hasGimbalBaseRotation;
 
-    public bool SupportsGimbal => supportsGimbal;
+        public float ThrottleScale => Mathf.Clamp01(throttleScale);
+public bool SupportsGimbal => supportsGimbal;
     public float GimbalLimitDegrees => Mathf.Max(0f, gimbalLimitDegrees);
     public float GimbalResponseScalar => Mathf.Clamp01(gimbalResponseScalar);
     public float LastThrottleCommand { get; private set; }

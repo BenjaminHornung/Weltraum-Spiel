@@ -38,7 +38,11 @@ public class RcsThrusterController : MonoBehaviour
     private const float SasResponseMultiplier = 48f;
     private const float MinSasBrakingCommand = 0.06f;
 
-    public bool RcsEnabled { get; private set; } = true;
+        public float TranslationForce => Mathf.Max(0f, translationForce);
+    public float AttitudeForce => Mathf.Max(0f, attitudeForce);
+    public float SasAuthority => Mathf.Max(0f, sasAuthority);
+    public float MinSelectionDot => Mathf.Clamp(minSelectionDot, 0f, 0.95f);
+public bool RcsEnabled { get; private set; } = true;
     public bool HasRcs => InstalledNozzleCount > 0;
     public bool CanApplyRcs => RcsEnabled && HasRcs;
     public int InstalledNozzleCount
@@ -55,7 +59,9 @@ public class RcsThrusterController : MonoBehaviour
     public Vector3 ControlPivotWorld => shipRigidbody != null ? shipRigidbody.worldCenterOfMass : transform.TransformPoint(ControlPivotLocal);
     public Vector3 LastTranslationCommand { get; private set; }
     public Vector3 LastAttitudeCommand { get; private set; }
-    public Vector3 LastSasCommand { get; private set; }
+        public Vector3 LastRawSasCommand { get; private set; }
+    public Vector3 LastSasReleasedAxes { get; private set; } = Vector3.one;
+public Vector3 LastSasCommand { get; private set; }
     public Vector3 LastTranslationForce { get; private set; }
     public Vector3 LastTorque { get; private set; }
     public Vector3 LastForceAtPositionTotal { get; private set; }
@@ -189,6 +195,8 @@ public class RcsThrusterController : MonoBehaviour
         LastTranslationCommand = Vector3.ClampMagnitude(translationCommand, 1f);
         Vector3 manualAttitude = Vector3.ClampMagnitude(attitudeCommand, 1f);
         Vector3 sasCommand = stabilizeAngular && shipRigidbody != null ? ComputeSasCommand(deltaTime) : Vector3.zero;
+        LastRawSasCommand = sasCommand;
+        LastSasReleasedAxes = GetSasReleasedAxes(manualAttitude);
         LastSasCommand = MaskSasForManualAxes(sasCommand, manualAttitude);
         if (stabilizeAngular && shipRigidbody != null)
         {
@@ -372,6 +380,14 @@ public class RcsThrusterController : MonoBehaviour
             Vector3 force = forceDirection * (commandMagnitude * nozzleThrust * alignment);
             ApplyForceAtNozzle(nozzle, force, translation, false);
         }
+    }
+
+    private static Vector3 GetSasReleasedAxes(Vector3 manualAttitude)
+    {
+        return new Vector3(
+            Mathf.Abs(manualAttitude.x) > ManualCommandDeadZone ? 0f : 1f,
+            Mathf.Abs(manualAttitude.y) > ManualCommandDeadZone ? 0f : 1f,
+            Mathf.Abs(manualAttitude.z) > ManualCommandDeadZone ? 0f : 1f);
     }
 
     private static Vector3 MaskSasForManualAxes(Vector3 sasCommand, Vector3 manualAttitude)

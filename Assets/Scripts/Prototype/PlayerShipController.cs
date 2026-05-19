@@ -49,7 +49,8 @@ public class PlayerShipController : MonoBehaviour
     public Vector3 RcsAttitudeCommand { get; private set; }
     public float TurnInput { get; private set; }
     public float GimbalYawCommand { get; private set; }
-    public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal;
+        public float MainThrottleScale => mainThruster != null ? mainThruster.ThrottleScale : 0f;
+public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal;
     public float GimbalLimitDegrees => mainThruster != null ? mainThruster.GimbalLimitDegrees : 0f;
     public float GimbalResponseScalar => mainThruster != null ? mainThruster.GimbalResponseScalar : 0f;
     public float GimbalPitchCommand => mainThruster != null ? mainThruster.LastGimbalPitchCommand : 0f;
@@ -61,7 +62,11 @@ public class PlayerShipController : MonoBehaviour
     public Vector3 LastMainSteeringForceWorld => mainThruster != null ? mainThruster.LastSteeringForceWorld : Vector3.zero;
     public Vector3 LastMainForcePositionWorld => mainThruster != null ? mainThruster.LastForcePositionWorld : transform.position;
     public Vector3 LastMainGimbalTorque => mainThruster != null ? mainThruster.LastEstimatedTorque : Vector3.zero;
-    public bool HasRcs => rcsThrusters != null && rcsThrusters.HasRcs;
+        public float RcsTranslationForceSetting => rcsThrusters != null ? rcsThrusters.TranslationForce : 0f;
+    public float RcsAttitudeForceSetting => rcsThrusters != null ? rcsThrusters.AttitudeForce : 0f;
+    public float RcsSasAuthority => rcsThrusters != null ? rcsThrusters.SasAuthority : 0f;
+    public float RcsMinSelectionDot => rcsThrusters != null ? rcsThrusters.MinSelectionDot : 0f;
+public bool HasRcs => rcsThrusters != null && rcsThrusters.HasRcs;
     public bool RcsEnabled => rcsThrusters != null ? rcsThrusters.RcsEnabled : rcsEnabled;
     public bool SasEnabled => sasEnabled;
     public bool EffectiveSasEnabled => sasEnabled ^ sasHoldInvert;
@@ -75,7 +80,9 @@ public class PlayerShipController : MonoBehaviour
     public int InstalledRcsNozzleCount => rcsThrusters != null ? rcsThrusters.InstalledNozzleCount : 0;
     public int ActiveRcsNozzleCount => rcsThrusters != null ? rcsThrusters.ActiveNozzleCount : 0;
     public string ActiveRcsNozzleIds => rcsThrusters != null ? rcsThrusters.ActiveNozzleIds : string.Empty;
-    public Vector3 LastRcsSasCommand => rcsThrusters != null ? rcsThrusters.LastSasCommand : Vector3.zero;
+        public Vector3 LastRawRcsSasCommand => rcsThrusters != null ? rcsThrusters.LastRawSasCommand : Vector3.zero;
+    public Vector3 LastRcsSasReleasedAxes => rcsThrusters != null ? rcsThrusters.LastSasReleasedAxes : Vector3.one;
+public Vector3 LastRcsSasCommand => rcsThrusters != null ? rcsThrusters.LastSasCommand : Vector3.zero;
 
     private void Awake()
     {
