@@ -11,10 +11,10 @@ Implemented the narrow consistency fixes for RCS spool-down, residual-aware allo
 
 ## Unity EditMode Tests
 
-Full EditMode job `73162e934aed49e189f16fc8a922748c`:
+Full EditMode job `5e913337f9c547618a17270cb751d0fb`:
 
-- Total: 41
-- Passed: 41
+- Total: 46
+- Passed: 46
 - Failed: 0
 
 ## Covered Checks
@@ -29,8 +29,9 @@ Full EditMode job `73162e934aed49e189f16fc8a922748c`:
 
 - `dotnet build "Weltraum Spiel.sln"`: passed with existing Unity/MSB3277 and serialized-field warnings.
 - `dotnet test "Weltraum Spiel.sln" --no-build`: passed.
+- After later `trajectory-preview-burn-planner` commits on the same branch, a repeated solution build failed because `Assembly-CSharp-Editor.csproj` still references missing `Assets\Tests\Editor\TrajectoryPreviewPredictionTests.cs`. Unity EditMode tests still pass through Unity MCP, but the solution build needs that trajectory test artifact restored or the generated project file refreshed.
 - DevToolbox `verify_run`: spec validation passed, but the default bare `dotnet build`, `dotnet test`, and `dotnet format` steps failed with the known MSB1011/multiple-project-file root issue. The explicit solution-scoped commands above are the applicable verification for this Unity project.
 
 ## Console Notes
 
-`read_console` with C# error filtering showed no compiler errors after the final script refresh. An earlier Unity TestRunner start saw a temporary cleanup artifact while unrelated dirty test changes were still present; those unrelated changes were stashed/restored to HEAD before the final 41/41 EditMode run.
+`read_console` with C# error filtering showed no compiler errors after the final script refresh. An earlier Unity TestRunner start saw a temporary cleanup artifact while unrelated dirty test changes were still present; those unrelated changes were stashed/restored to HEAD before the final 46/46 EditMode run.
