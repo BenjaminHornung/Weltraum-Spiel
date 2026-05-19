@@ -23,5 +23,5 @@
 - [x] Verify assist off preserves vacuum inertia
 - [x] Verify assist requests are visible separately from manual/SAS
 - [x] Verify no hidden damping is introduced
-- [ ] Add test evidence under this spec
+- [x] Add test evidence under this spec
 - [ ] Commit implementation with spec title and changelog
