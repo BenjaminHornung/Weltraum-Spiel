@@ -135,6 +135,7 @@ public class PrototypeDebugOverlay : MonoBehaviour
         float sasProportionalGain = shipController != null ? shipController.RcsSasProportionalGain : 0f;
         float sasDerivativeGain = shipController != null ? shipController.RcsSasDerivativeGain : 0f;
         SasControlMode sasMode = shipController != null ? shipController.SasMode : SasControlMode.KillRotation;
+        FlightAssistMode flightAssistMode = shipController != null ? shipController.FlightAssistMode : FlightAssistMode.Simulation;
         float minSelectionDot = shipController != null ? shipController.RcsMinSelectionDot : 0f;
         Vector3 rawSasCommand = shipController != null ? shipController.LastRawRcsSasCommand : Vector3.zero;
         Vector3 sasCommand = shipController != null ? shipController.LastRcsSasCommand : Vector3.zero;
@@ -145,6 +146,9 @@ public class PrototypeDebugOverlay : MonoBehaviour
         Vector3 rawSasTorqueLocal = shipController != null ? shipController.LastRawRcsSasDesiredTorqueLocal : Vector3.zero;
         Vector3 sasTorqueLocal = shipController != null ? shipController.LastRcsSasDesiredTorqueLocal : Vector3.zero;
         Vector3 suppressedSasTorqueLocal = shipController != null ? shipController.LastRcsSasSuppressedTorqueLocal : Vector3.zero;
+        Vector3 assistForceWorld = shipController != null ? shipController.LastFlightAssistForceWorld : Vector3.zero;
+        Vector3 assistTorqueLocal = shipController != null ? shipController.LastFlightAssistTorqueLocal : Vector3.zero;
+        bool assistDebugOnly = shipController != null && shipController.LastFlightAssistDebugOnly;
         Vector3 manualTorqueLocal = shipController != null ? shipController.LastRcsManualDesiredTorqueLocal : Vector3.zero;
         Vector3 desiredTorqueLocal = shipController != null ? shipController.LastRcsDesiredTorqueLocal : Vector3.zero;
         Vector3 rcsTotalForce = shipController != null ? shipController.LastRcsForce : Vector3.zero;
@@ -267,6 +271,9 @@ public class PrototypeDebugOverlay : MonoBehaviour
         GUILayout.Label($"SAS torque raw: {FormatVector(rawSasTorqueLocal)} Nm", labelStyle);
         GUILayout.Label($"SAS torque masked: {FormatVector(sasTorqueLocal)} Nm", labelStyle);
         GUILayout.Label($"SAS torque blocked: {FormatVector(suppressedSasTorqueLocal)} Nm", labelStyle);
+        GUILayout.Label($"Assist: {flightAssistMode}{(assistDebugOnly ? " (debug-only)" : string.Empty)}", labelStyle);
+        GUILayout.Label($"Assist force req: {FormatVector(assistForceWorld)} N", labelStyle);
+        GUILayout.Label($"Assist torque req: {FormatVector(assistTorqueLocal)} Nm", labelStyle);
         GUILayout.Label($"Torque demand: manual {FormatVector(manualTorqueLocal)}", labelStyle);
         GUILayout.Label($"Torque demand: total {FormatVector(desiredTorqueLocal)}", labelStyle);
         GUILayout.Label($"SAS released axes: {FormatAxisMask(sasReleasedAxes)}", labelStyle);
