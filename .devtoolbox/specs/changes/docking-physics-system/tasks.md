@@ -24,4 +24,4 @@
 - [x] Verify soft capture requests are bounded
 - [x] Verify hard lock only occurs when constraints pass
 - [x] Add test evidence under this spec
-- [ ] Commit implementation with spec title and changelog
+- [x] Commit implementation with spec title and changelog
