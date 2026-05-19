@@ -14,7 +14,7 @@ The project already has a working Unity prototype with generated primitive ship 
 1. `archive-completed-prototype-specs`
    - Housekeeping: archive completed active changes after DevToolbox preflight.
 2. `prototype-waypoint-navigation-autopilot-v0`
-   - Highest priority gameplay-enabler. Realistic controls need navigation assist before larger gameplay loops.
+   - Highest priority gameplay-enabler. Realistic controls need navigation assist before larger gameplay loops. This draft explicitly includes initial velocity and remaining-fuel feasibility checks.
 3. `prototype-regression-test-harness`
    - Add repeatable smoke tests before the prototype grows further.
 4. `controller-feel-validation-pass`
@@ -34,13 +34,26 @@ The project already has a working Unity prototype with generated primitive ship 
 11. `mission-reward-part-unlock-v0`
    - Mission reward/currency loop that unlocks parts for ship building.
 12. `prototype-autopilot-arrival-tuning`
-   - Follow-up after the first autopilot works; tune overshoot, lateral velocity, and arrival quality.
+   - Follow-up after the first autopilot works; tune overshoot, lateral velocity, arrival quality, and low-fuel conservative behavior.
 13. `prototype-nav-target-ui`
    - HUD markers and navigation readouts after autopilot model stabilizes.
 14. `prototype-docking-approach-assist`
    - Precise final approach mode for stations/docking targets.
 15. `prototype-gravity-well-navigation-research`
    - Later research slice for gravity wells and slingshot navigation.
+
+## Later Star-Citizen-Scope Drafts
+
+These are intentionally later-stage drafts. They should not be promoted before the spaceflight, navigation, ship-building, and combat core is stable.
+
+16. `basic-ground-walkaround-prototype`
+    - Minimal on-foot controller and one interaction object.
+17. `ship-to-ground-transition`
+    - Controlled mode switch between ship flight and walkaround gameplay.
+18. `small-outpost-pve-mission`
+    - Tiny ground/outpost mission linked back to ship progression.
+19. `planet-landing-zone-prototype`
+    - Minimal planet/moon visual, landing-zone marker, lights, and transition point.
 
 ## Promotion Rule
 
