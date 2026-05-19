@@ -13,7 +13,7 @@
 - [x] Inspect ShipPhysicsCore environment-force hooks through Unity MCP
 - [x] Define optional atmosphere settings/volume
 - [x] Keep vacuum as default
-- [ ] Add simple drag force calculation
+- [x] Add simple drag force calculation
 - [ ] Route drag through ShipPhysicsCore
 - [ ] Add atmosphere diagnostics to overlay/docs
 

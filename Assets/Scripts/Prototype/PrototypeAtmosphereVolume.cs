@@ -45,6 +45,8 @@ public struct ShipAtmosphereSample
 
 public class PrototypeAtmosphereVolume : MonoBehaviour
 {
+    private const float MinimumVelocitySqr = 0.000001f;
+
     [Header("Atmosphere")]
     [SerializeField] private bool simulationEnabled;
     [SerializeField] private float densityKgPerCubicMeter;
@@ -106,16 +108,42 @@ public class PrototypeAtmosphereVolume : MonoBehaviour
             return false;
         }
 
+        Vector3 relativeVelocity = bodyVelocity - windVelocity;
+        Vector3 dragForce = CalculateDragForce(
+            relativeVelocity,
+            DensityKgPerCubicMeter,
+            DragCoefficient,
+            ReferenceAreaSquareMeters);
+
         sample = new ShipAtmosphereSample(
             true,
             DensityKgPerCubicMeter,
             DragCoefficient,
             ReferenceAreaSquareMeters,
-            bodyVelocity - windVelocity,
-            Vector3.zero,
+            relativeVelocity,
+            dragForce,
             Vector3.zero,
             Vector3.zero);
         return true;
+    }
+
+    public static Vector3 CalculateDragForce(
+        Vector3 relativeVelocity,
+        float densityKgPerCubicMeter,
+        float dragCoefficient,
+        float referenceAreaSquareMeters)
+    {
+        float speedSquared = relativeVelocity.sqrMagnitude;
+        float density = Mathf.Max(0f, densityKgPerCubicMeter);
+        float coefficient = Mathf.Max(0f, dragCoefficient);
+        float area = Mathf.Max(0f, referenceAreaSquareMeters);
+        if (speedSquared <= MinimumVelocitySqr || density <= 0f || coefficient <= 0f || area <= 0f)
+        {
+            return Vector3.zero;
+        }
+
+        float magnitude = 0.5f * density * speedSquared * coefficient * area;
+        return -relativeVelocity.normalized * magnitude;
     }
 
     private void OnValidate()
