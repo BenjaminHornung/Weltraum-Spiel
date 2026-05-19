@@ -22,7 +22,7 @@ This Unity prototype is a generated-primitives-only playable slice for testing z
 | `H` / `N` | RCS translate forward / backward |
 | `I` / `K` | RCS translate down / up |
 | `J` / `L` | RCS translate left / right |
-| `T` | Toggle SAS angular stabilization |
+| `T` | Toggle SAS angular stabilization through the RCS allocator |
 | Hold `F` | Temporarily invert effective SAS state |
 | `Caps Lock` | Toggle precision controls for reduced attitude and RCS strength |
 | `V` | Cycle the prepared follow-camera mode |
@@ -64,6 +64,8 @@ Camera reset is bound to Backquote. Unity Input System key controls are physical
 - `FullyPhysicalNozzleForce` can be selected for experiments; it applies the full gimballed main-engine force at the nozzle position and can create torque from nozzle/COM offsets.
 - Main-thruster gimbal support keeps a 20 degree hard limit, while the default response scalar uses a softer 0.35 keyboard command. The visible gimbal cube and the physics force vector use the same effective command.
 - Each RCS block has five installed nozzle transforms, excluding the side that faces into the ship wall. RCS translation, attitude, and SAS use actual nozzle positions/directions rather than hardcoded slots.
+- SAS has `KillRotation` and `HoldAttitude` modes. It creates a ship-local PD torque request from angular velocity and optional target attitude, then sends that request through the same RCS nozzle allocator as manual attitude.
+- SAS exposes proportional and derivative gains on `RcsThrusterController`. Manual pitch, yaw, or roll input masks SAS on that same axis while released axes continue to stabilize.
 - Active RCS nozzles show green debug VFX. The main thruster keeps its separate orange particle effect.
 - The no-hardcoded-position rule is intentional: moving/removing an `RCS_Nozzle_*` transform changes solver output, and missing nozzles create no phantom force.
 - The RCS toggle gates RCS force application and VFX.
@@ -83,9 +85,9 @@ Optional CC0 assets, such as local low-poly ships or Kenney packs, may be consid
 
 - This is not the final ship editor or gameplay architecture.
 - The camera mode cycle is intentionally minimal and only switches between prepared follow offsets/orbit baselines.
-- SAS is a simple RCS angular counter-command, not a full flight computer.
+- SAS is a local PD torque controller routed through RCS, not a full flight computer or hidden angular damping layer.
 - RCS allocation is a prototype bounded allocator, not a final optimizer, but it is transform-based and uses real lever arms around COM.
-- Deferred physics-core slices include SAS as a PD control layer, gravity/orbits, docking, damage, heat/power, and trajectory prediction.
+- Deferred physics-core slices include additional SAS/autopilot modes, docking, damage, and trajectory prediction.
 - Full projectile damage and combat balance are out of scope.
 - IMGUI is used for the debug overlay because it is temporary prototype UI.
 - Controller input has not been manually verified on physical hardware.

@@ -16,7 +16,7 @@
 - [x] Route SAS torque through RCS allocator
 - [x] Add per-axis manual override/masking diagnostics
 - [x] Add PD gain inspector fields
-- [ ] Update debug overlay, README, and physics docs
+- [x] Update debug overlay, README, and physics docs
 
 ## Verification
 - [ ] Validate changed Unity scripts with Unity MCP

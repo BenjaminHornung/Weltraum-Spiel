@@ -132,10 +132,21 @@ public class PrototypeDebugOverlay : MonoBehaviour
         float rcsTranslationSetting = shipController != null ? shipController.RcsTranslationForceSetting : 0f;
         float rcsAttitudeSetting = shipController != null ? shipController.RcsAttitudeForceSetting : 0f;
         float sasAuthority = shipController != null ? shipController.RcsSasAuthority : 0f;
+        float sasProportionalGain = shipController != null ? shipController.RcsSasProportionalGain : 0f;
+        float sasDerivativeGain = shipController != null ? shipController.RcsSasDerivativeGain : 0f;
+        SasControlMode sasMode = shipController != null ? shipController.SasMode : SasControlMode.KillRotation;
         float minSelectionDot = shipController != null ? shipController.RcsMinSelectionDot : 0f;
         Vector3 rawSasCommand = shipController != null ? shipController.LastRawRcsSasCommand : Vector3.zero;
         Vector3 sasCommand = shipController != null ? shipController.LastRcsSasCommand : Vector3.zero;
         Vector3 sasReleasedAxes = shipController != null ? shipController.LastRcsSasReleasedAxes : Vector3.one;
+        Vector3 sasManualAxes = shipController != null ? shipController.LastRcsSasManualOverrideAxes : Vector3.zero;
+        Vector3 sasAngularVelocityLocal = shipController != null ? shipController.LastRcsSasAngularVelocityLocal : Vector3.zero;
+        Vector3 sasAngularErrorLocal = shipController != null ? shipController.LastRcsSasAngularErrorLocal : Vector3.zero;
+        Vector3 rawSasTorqueLocal = shipController != null ? shipController.LastRawRcsSasDesiredTorqueLocal : Vector3.zero;
+        Vector3 sasTorqueLocal = shipController != null ? shipController.LastRcsSasDesiredTorqueLocal : Vector3.zero;
+        Vector3 suppressedSasTorqueLocal = shipController != null ? shipController.LastRcsSasSuppressedTorqueLocal : Vector3.zero;
+        Vector3 manualTorqueLocal = shipController != null ? shipController.LastRcsManualDesiredTorqueLocal : Vector3.zero;
+        Vector3 desiredTorqueLocal = shipController != null ? shipController.LastRcsDesiredTorqueLocal : Vector3.zero;
         Vector3 rcsTotalForce = shipController != null ? shipController.LastRcsForce : Vector3.zero;
         Vector3 rcsTranslationForce = shipController != null ? shipController.LastRcsTranslationForce : Vector3.zero;
         Vector3 rcsTorque = shipController != null ? shipController.LastRcsTorque : Vector3.zero;
@@ -181,7 +192,7 @@ public class PrototypeDebugOverlay : MonoBehaviour
         float cameraLookPitch = followCamera != null ? followCamera.LookPitch : 0f;
         Vector3 mainForcePosition = shipController != null ? shipController.LastMainForcePositionWorld : centerOfMassWorld;
 
-        Rect rect = new Rect(windowPosition.x, windowPosition.y, 620f, 630f);
+        Rect rect = new Rect(windowPosition.x, windowPosition.y, 620f, 740f);
         GUI.Box(rect, "Prototype Flight Diagnostics");
 
         GUILayout.BeginArea(new Rect(rect.x + 8f, rect.y + 22f, rect.width - 14f, rect.height - 24f));
@@ -247,10 +258,19 @@ public class PrototypeDebugOverlay : MonoBehaviour
         GUILayout.Label($"Gravity accel: {FormatVector(gravityAcceleration)} m/s^2", labelStyle);
         GUILayout.Label($"Gravity force: {FormatVector(gravityForce)} N", labelStyle);
         GUILayout.Space(4f);
-        GUILayout.Label($"SAS: {(sasEnabled ? "on" : "off")} (effective {(effectiveSas ? "on" : "off")}) auth {sasAuthority:0.00}", labelStyle);
+        GUILayout.Label($"SAS: {(sasEnabled ? "on" : "off")} (effective {(effectiveSas ? "on" : "off")}) {sasMode}", labelStyle);
+        GUILayout.Label($"SAS PD: Kp {sasProportionalGain:0.00}, Kd {sasDerivativeGain:0.00}, auth {sasAuthority:0.00}", labelStyle);
+        GUILayout.Label($"SAS local w: {FormatVector(sasAngularVelocityLocal)} rad/s", labelStyle);
+        GUILayout.Label($"SAS angular err: {FormatVector(sasAngularErrorLocal)} rad", labelStyle);
         GUILayout.Label($"SAS raw cmd: {FormatVector(rawSasCommand)}", labelStyle);
         GUILayout.Label($"SAS masked cmd: {FormatVector(sasCommand)}", labelStyle);
+        GUILayout.Label($"SAS torque raw: {FormatVector(rawSasTorqueLocal)} Nm", labelStyle);
+        GUILayout.Label($"SAS torque masked: {FormatVector(sasTorqueLocal)} Nm", labelStyle);
+        GUILayout.Label($"SAS torque blocked: {FormatVector(suppressedSasTorqueLocal)} Nm", labelStyle);
+        GUILayout.Label($"Torque demand: manual {FormatVector(manualTorqueLocal)}", labelStyle);
+        GUILayout.Label($"Torque demand: total {FormatVector(desiredTorqueLocal)}", labelStyle);
         GUILayout.Label($"SAS released axes: {FormatAxisMask(sasReleasedAxes)}", labelStyle);
+        GUILayout.Label($"SAS manual axes: {FormatManualMask(sasManualAxes)}", labelStyle);
         GUILayout.Label($"Debug vectors: lines {(drawDebugVectors ? "on" : "off")}, gizmos {(drawDebugGizmos ? "on" : "off")}", labelStyle);
         GUILayout.Label($"Active nozzles: {Shorten(activeNozzleIds, 74)}", labelStyle);
         GUILayout.EndVertical();
@@ -327,6 +347,11 @@ public class PrototypeDebugOverlay : MonoBehaviour
     private static string FormatAxisMask(Vector3 value)
     {
         return $"P {(value.x > 0.5f ? "released" : "manual")}, Y {(value.y > 0.5f ? "released" : "manual")}, R {(value.z > 0.5f ? "released" : "manual")}";
+    }
+
+    private static string FormatManualMask(Vector3 value)
+    {
+        return $"P {(value.x > 0.5f ? "manual" : "auto")}, Y {(value.y > 0.5f ? "manual" : "auto")}, R {(value.z > 0.5f ? "manual" : "auto")}";
     }
 
     public void Bind(Transform trackTarget, ShipStats stats, Rigidbody rb)

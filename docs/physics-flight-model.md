@@ -108,9 +108,25 @@ Fuel mass feeds the module mass model through the generated fuel-tank descriptor
 
 ## SAS And Inertia
 
-SAS is an RCS angular counter-command. When effective SAS is on, the controller converts angular velocity into a counter attitude command and lets the same nozzle solver pick usable RCS jets. Manual attitude input keeps its coarse command dead zone, and SAS is masked per pitch/yaw/roll axis whenever manual attitude input on that same axis exceeds the manual dead zone. SAS remains active on released axes, so a yaw input does not reduce yaw authority but can still allow SAS to damp pitch or roll.
+SAS is a ship-local PD torque request routed through the same RCS allocator as manual attitude. There is no hidden Rigidbody angular damping layer. When effective SAS is on, `RcsThrusterController` computes local angular velocity, optional local attitude error, and a desired torque before the bounded nozzle allocator decides what can actually be applied.
 
-SAS uses a small local angular-velocity dead zone near zero and a minimum active braking command outside that dead zone, so residual pitch, yaw, and roll are not dropped just because their counter-command is below the manual input threshold. After SAS has braked a non-manual axis into the tiny local settle band, that axis is snapped to zero angular velocity so late SAS activation visibly finishes converging. Translation RCS authority is not reduced by SAS. When SAS is off, there is no direct angular damping from the controller.
+`KillRotation` only damps angular velocity:
+
+```text
+desiredTorqueLocal = -Kd * localAngularVelocity
+```
+
+`HoldAttitude` captures a target rotation and adds proportional correction from the shortest rotation error:
+
+```text
+desiredTorqueLocal = Kp * angularErrorLocal - Kd * localAngularVelocity
+```
+
+The PD gains are inspector fields on `RcsThrusterController`. They are not multiplied by `fixedDeltaTime`; Unity's force integration handles timestep application after the allocator applies nozzle forces with `ForceMode.Force`.
+
+Manual attitude input keeps its coarse command dead zone, and SAS torque is masked per pitch/yaw/roll axis whenever manual attitude input on that same axis exceeds the manual dead zone. SAS remains active on released axes, so a yaw input does not reduce yaw authority but can still allow SAS to damp pitch or roll. Diagnostics expose the mode, local angular velocity, local angular error, raw SAS torque, masked SAS torque, suppressed torque, manual torque, and final desired torque.
+
+SAS uses a small local angular-velocity dead zone near zero. After SAS has braked a non-manual axis into the tiny local settle band, that axis is snapped to zero angular velocity so late SAS activation visibly finishes converging. Translation RCS authority is not reduced by SAS. When RCS is disabled, missing, or fuel-starved, SAS still reports its torque request diagnostics, but no impossible stabilizing torque is applied.
 
 The ship rigidbody uses zero linear and angular damping in this prototype. Releasing controls does not bleed off linear velocity, and rotation persists in vacuum unless SAS/RCS torque counters it.
 
@@ -186,9 +202,8 @@ Run the suite through Unity Test Runner EditMode or Unity MCP `run_tests(mode=Ed
 
 The current prototype intentionally defers deeper simulation layers:
 
-- SAS as a target-attitude PD controller,
 - full projectile damage and hit impulse effects,
 - orbit prediction, sphere-of-influence transitions, patched conics, and floating origin,
-- docking constraints, damage effects, full heat/power networking, and trajectory preview.
+- additional SAS/autopilot modes, docking constraints, damage effects, full heat/power networking, and trajectory preview.
 
 Those systems should be added as separate spec changes so each one can be verified against the same force/torque accounting.
