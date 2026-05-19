@@ -1,4 +1,4 @@
-﻿# Tasks: docking-physics-system
+# Tasks: docking-physics-system
 
 ## Spec
 - [x] Create spec change folder
@@ -10,7 +10,7 @@
 - [x] Commit spec with spec title and changelog
 
 ## Implementation
-- [ ] Inspect existing physics core and flight-assist paths through Unity MCP
+- [x] Inspect existing physics core and flight-assist paths through Unity MCP
 - [ ] Define DockingPort data/component
 - [ ] Add relative state calculation
 - [ ] Add eligibility checks and diagnostics
