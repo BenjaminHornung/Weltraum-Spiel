@@ -17,6 +17,7 @@ public static class PhysicsValidationProbe
         public readonly ShipStats Stats;
         public readonly ShipPhysicsCore PhysicsCore;
         public readonly MainThrusterModule MainThruster;
+        public readonly PrototypeThermalModule MainThermal;
         public readonly RcsThrusterController Rcs;
         public readonly GunModule Gun;
 
@@ -41,12 +42,24 @@ public static class PhysicsValidationProbe
             Rcs = Ship.AddComponent<RcsThrusterController>();
 
             Transform nozzle = CreateMainNozzle(Ship.transform);
+            MainThermal = nozzle.parent.gameObject.AddComponent<PrototypeThermalModule>();
+            MainThermal.Configure(
+                "Main Thruster",
+                false,
+                180f,
+                85f,
+                450f,
+                6f,
+                120f,
+                20f,
+                true,
+                PrototypeThermalModule.OverheatEffect.DisableModule);
             CreateRcsBlock(Ship.transform, "RCS_Top", new Vector3(0f, 0.7f, 0f), new Vector3(0.55f, 0.22f, 0.55f), Vector3.down);
             CreateRcsBlock(Ship.transform, "RCS_Bottom", new Vector3(0f, -0.7f, 0f), new Vector3(0.55f, 0.22f, 0.55f), Vector3.up);
             CreateRcsBlock(Ship.transform, "RCS_Left", new Vector3(-1.02f, 0f, 0f), new Vector3(0.22f, 0.55f, 0.55f), Vector3.right);
             CreateRcsBlock(Ship.transform, "RCS_Right", new Vector3(1.02f, 0f, 0f), new Vector3(0.22f, 0.55f, 0.55f), Vector3.left);
 
-            MainThruster.Configure(nozzle, Rigidbody, Stats, PhysicsCore);
+            MainThruster.Configure(nozzle, Rigidbody, Stats, PhysicsCore, MainThermal);
             Rcs.ConfigureThrusters(
                 Ship.transform.Find("RCS_Top"),
                 Ship.transform.Find("RCS_Bottom"),
@@ -103,6 +116,16 @@ public static class PhysicsValidationProbe
         public float impulseAt001;
         public float fuelAt002;
         public float fuelAt001;
+    }
+
+    public struct ThermalStepResult
+    {
+        public float initialTemperature;
+        public float finalTemperature;
+        public float appliedThrust;
+        public float powerDrawKw;
+        public bool overheated;
+        public bool disabledByOverheat;
     }
 
     public static GeneratedShipFixture CreateGeneratedShip()
@@ -213,6 +236,101 @@ public static class PhysicsValidationProbe
         return false;
     }
 
+    public static ThermalStepResult RunThermalHeatRiseStep()
+    {
+        using (GeneratedShipFixture fixture = CreateGeneratedShip())
+        {
+            fixture.MainThermal.Configure(
+                "Main Thruster",
+                true,
+                24f,
+                50f,
+                100f,
+                0f,
+                100f,
+                20f,
+                true,
+                PrototypeThermalModule.OverheatEffect.DisableModule);
+            fixture.MainThermal.ResetToAmbient();
+            float initialTemperature = fixture.MainThermal.CurrentTemperature;
+            fixture.PhysicsCore.BeginPhysicsStep();
+            float applied = fixture.MainThruster.Fire(1f, 0f, 0f, 2f);
+            return new ThermalStepResult
+            {
+                initialTemperature = initialTemperature,
+                finalTemperature = fixture.MainThermal.CurrentTemperature,
+                appliedThrust = applied,
+                powerDrawKw = fixture.MainThermal.LastPowerDrawKw,
+                overheated = fixture.MainThermal.IsOverheated,
+                disabledByOverheat = fixture.MainThermal.ShouldDisableModule
+            };
+        }
+    }
+
+    public static ThermalStepResult RunThermalCoolingStep()
+    {
+        using (GeneratedShipFixture fixture = CreateGeneratedShip())
+        {
+            fixture.MainThermal.Configure(
+                "Main Thruster",
+                true,
+                24f,
+                50f,
+                100f,
+                5f,
+                100f,
+                20f,
+                true,
+                PrototypeThermalModule.OverheatEffect.DisableModule);
+            fixture.MainThermal.SetTemperature(80f);
+            float initialTemperature = fixture.MainThermal.CurrentTemperature;
+            fixture.PhysicsCore.BeginPhysicsStep();
+            float applied = fixture.MainThruster.Fire(0f, 0f, 0f, 2f);
+            return new ThermalStepResult
+            {
+                initialTemperature = initialTemperature,
+                finalTemperature = fixture.MainThermal.CurrentTemperature,
+                appliedThrust = applied,
+                powerDrawKw = fixture.MainThermal.LastPowerDrawKw,
+                overheated = fixture.MainThermal.IsOverheated,
+                disabledByOverheat = fixture.MainThermal.ShouldDisableModule
+            };
+        }
+    }
+
+    public static ThermalStepResult RunThermalOverheatStep()
+    {
+        using (GeneratedShipFixture fixture = CreateGeneratedShip())
+        {
+            fixture.MainThermal.Configure(
+                "Main Thruster",
+                true,
+                24f,
+                1000f,
+                100f,
+                0f,
+                25f,
+                20f,
+                true,
+                PrototypeThermalModule.OverheatEffect.DisableModule);
+            fixture.MainThermal.ResetToAmbient();
+            fixture.PhysicsCore.BeginPhysicsStep();
+            fixture.MainThruster.Fire(1f, 0f, 0f, 1f);
+            float overheatedTemperature = fixture.MainThermal.CurrentTemperature;
+
+            fixture.PhysicsCore.BeginPhysicsStep();
+            float disabledThrust = fixture.MainThruster.Fire(1f, 0f, 0f, 0.02f);
+            return new ThermalStepResult
+            {
+                initialTemperature = 20f,
+                finalTemperature = overheatedTemperature,
+                appliedThrust = disabledThrust,
+                powerDrawKw = fixture.MainThermal.LastPowerDrawKw,
+                overheated = fixture.MainThermal.IsOverheated,
+                disabledByOverheat = fixture.MainThermal.ShouldDisableModule
+            };
+        }
+    }
     private static void RunMainThrustSteps(float deltaTime, int steps, out float impulse, out float remainingFuel)
     {
         using (GeneratedShipFixture fixture = CreateGeneratedShip())

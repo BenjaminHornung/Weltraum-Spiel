@@ -19,6 +19,7 @@ public class MainThrusterModule : MonoBehaviour
     [SerializeField] private Rigidbody shipRigidbody;
     [SerializeField] private ShipStats shipStats;
     [SerializeField] private ShipPhysicsCore physicsCore;
+    [SerializeField] private PrototypeThermalModule thermalModule;
 
 
     private Quaternion gimbalBaseLocalRotation = Quaternion.identity;
@@ -41,6 +42,11 @@ public bool SupportsGimbal => supportsGimbal;
     public Vector3 LastForcePositionWorld { get; private set; }
     public Vector3 LastEstimatedTorque { get; private set; }
     public bool FiredThisStep => LastAppliedThrust > 0f;
+    public PrototypeThermalModule ThermalModule => thermalModule;
+    public bool ThermalSimulationEnabled => thermalModule != null && thermalModule.SimulationEnabled;
+    public bool IsOverheated => thermalModule != null && thermalModule.IsOverheated;
+    public float ThermalEfficiencyScalar => thermalModule != null ? thermalModule.EfficiencyScalar : 1f;
+    public float LastPowerDrawKw => thermalModule != null ? thermalModule.LastPowerDrawKw : 0f;
 
     private void Awake()
     {
@@ -49,10 +55,16 @@ public bool SupportsGimbal => supportsGimbal;
 
     public void Configure(Transform nozzleTransform, Rigidbody body, ShipStats stats, ShipPhysicsCore core)
     {
+        Configure(nozzleTransform, body, stats, core, null);
+    }
+
+    public void Configure(Transform nozzleTransform, Rigidbody body, ShipStats stats, ShipPhysicsCore core, PrototypeThermalModule thermal)
+    {
         thrustTransform = nozzleTransform != null ? nozzleTransform : thrustTransform;
         shipRigidbody = body != null ? body : shipRigidbody;
         shipStats = stats != null ? stats : shipStats;
         physicsCore = core != null ? core : physicsCore;
+        thermalModule = thermal != null ? thermal : thermalModule;
         ResolveReferences();
         CaptureGimbalBaseRotation();
     }
@@ -72,6 +84,11 @@ public bool SupportsGimbal => supportsGimbal;
         if (physicsCore == null)
         {
             physicsCore = GetComponent<ShipPhysicsCore>();
+        }
+
+        if (thermalModule == null)
+        {
+            thermalModule = GetComponent<PrototypeThermalModule>();
         }
 
         if (physicsCore != null && shipRigidbody == null)
@@ -137,6 +154,13 @@ public bool SupportsGimbal => supportsGimbal;
 
         if (shipRigidbody == null || shipStats == null || physicsCore == null || LastThrottleCommand <= 0f)
         {
+            AdvanceThermal(0f, deltaTime);
+            return 0f;
+        }
+
+        if (thermalModule != null && thermalModule.ShouldDisableModule)
+        {
+            AdvanceThermal(0f, deltaTime);
             return 0f;
         }
 
@@ -144,10 +168,18 @@ public bool SupportsGimbal => supportsGimbal;
         shipStats.ConsumeFuelForThrust(LastThrottleCommand, deltaTime, out appliedFuelFraction);
         if (appliedFuelFraction <= 0f)
         {
+            AdvanceThermal(0f, deltaTime);
             return 0f;
         }
 
-        LastAppliedThrust = LastThrottleCommand * shipStats.Thrust * appliedFuelFraction;
+        float thermalEfficiency = thermalModule != null ? thermalModule.EfficiencyScalar : 1f;
+        LastAppliedThrust = LastThrottleCommand * shipStats.Thrust * appliedFuelFraction * thermalEfficiency;
+        AdvanceThermal(LastThrottleCommand * appliedFuelFraction, deltaTime);
+        if (LastAppliedThrust <= 0f)
+        {
+            return 0f;
+        }
+
         LastStraightForceWorld = baseDirection * LastAppliedThrust;
         LastSteeringForceWorld = (thrustDirection - baseDirection) * LastAppliedThrust;
         LastForceWorld = LastStraightForceWorld + LastSteeringForceWorld;
@@ -162,6 +194,14 @@ public bool SupportsGimbal => supportsGimbal;
         }
 
         return LastAppliedThrust;
+    }
+
+    private void AdvanceThermal(float activityFraction, float deltaTime)
+    {
+        if (thermalModule != null)
+        {
+            thermalModule.Advance(activityFraction, deltaTime);
+        }
     }
 
     public Vector3 GetThrustDirection(float yawCommand, float pitchCommand)

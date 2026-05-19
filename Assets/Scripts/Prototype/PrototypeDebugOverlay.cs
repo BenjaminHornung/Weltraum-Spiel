@@ -141,13 +141,18 @@ public class PrototypeDebugOverlay : MonoBehaviour
         Vector3 mainStraight = shipController != null ? shipController.LastMainStraightForceWorld : Vector3.zero;
         Vector3 mainSteering = shipController != null ? shipController.LastMainSteeringForceWorld : Vector3.zero;
         Vector3 mainTorque = shipController != null ? shipController.LastMainGimbalTorque : Vector3.zero;
+        PrototypeThermalModule mainThermal = shipController != null ? shipController.MainThermalModule : null;
+        bool mainThermalEnabled = shipController != null && shipController.MainThermalEnabled;
+        bool mainThermalOverheated = shipController != null && shipController.MainThermalOverheated;
+        float mainThermalEfficiency = shipController != null ? shipController.MainThermalEfficiency : 1f;
+        float mainPowerDrawKw = shipController != null ? shipController.MainPowerDrawKw : 0f;
         string cameraMode = followCamera != null ? followCamera.CameraModeName : "none";
         float cameraAnchorError = followCamera != null ? followCamera.AnchorError : 0f;
         float cameraLookYaw = followCamera != null ? followCamera.LookYaw : 0f;
         float cameraLookPitch = followCamera != null ? followCamera.LookPitch : 0f;
         Vector3 mainForcePosition = shipController != null ? shipController.LastMainForcePositionWorld : centerOfMassWorld;
 
-        Rect rect = new Rect(windowPosition.x, windowPosition.y, 620f, 560f);
+        Rect rect = new Rect(windowPosition.x, windowPosition.y, 620f, 600f);
         GUI.Box(rect, "Prototype Flight Diagnostics");
 
         GUILayout.BeginArea(new Rect(rect.x + 8f, rect.y + 22f, rect.width - 14f, rect.height - 24f));
@@ -172,6 +177,12 @@ public class PrototypeDebugOverlay : MonoBehaviour
         GUILayout.Label($"Main straight: {FormatVector(mainStraight)}", labelStyle);
         GUILayout.Label($"Main steering: {FormatVector(mainSteering)}", labelStyle);
         GUILayout.Label($"Main torque est: {FormatVector(mainTorque)}", labelStyle);
+        if (mainThermal != null)
+        {
+            GUILayout.Label($"Thermal: {mainThermal.ModuleName} {mainThermal.CurrentTemperature:0.0}/{mainThermal.MaxTemperature:0.0} C {mainThermal.StateLabel}", labelStyle);
+            GUILayout.Label($"Heat/power: heat {mainThermal.LastHeatGeneratedPerSecond:0.0}/s, cool {mainThermal.LastCoolingApplied:0.00}, power {mainPowerDrawKw:0.0} kW", labelStyle);
+            GUILayout.Label($"Overheat hook: {(mainThermalEnabled ? "sim" : "off")}, {(mainThermalOverheated ? "active" : "clear")}, eff {mainThermalEfficiency:0.00}", labelStyle);
+        }
         GUILayout.Label($"Gimbal: {(gimbalEnabled ? "on" : "off")} / {gimbalLimit:0.0} deg", labelStyle);
         GUILayout.Label($"Gimbal cmd: Y {gimbalYaw:0.00} P {gimbalPitch:0.00}, response {gimbalResponse:0.00}, angle {gimbalAngle:0.0}", labelStyle);
         GUILayout.EndVertical();

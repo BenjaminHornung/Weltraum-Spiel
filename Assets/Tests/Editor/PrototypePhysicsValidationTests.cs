@@ -95,5 +95,39 @@ public class PrototypePhysicsValidationTests
         Assert.That(result.impulseAt002, Is.EqualTo(result.impulseAt001).Within(PhysicsValidationProbe.TimestepImpulseTolerance));
         Assert.That(result.fuelAt002, Is.EqualTo(result.fuelAt001).Within(PhysicsValidationProbe.FuelTolerance));
     }
+    [Test]
+    public void ThermalModuleHeatsWhileMainThrusterIsActive()
+    {
+        PhysicsValidationProbe.ThermalStepResult result = PhysicsValidationProbe.RunThermalHeatRiseStep();
+
+        Assert.That(result.finalTemperature, Is.GreaterThan(result.initialTemperature));
+        Assert.That(result.finalTemperature, Is.EqualTo(21f).Within(0.001f));
+        Assert.That(result.appliedThrust, Is.GreaterThan(0f));
+        Assert.That(result.powerDrawKw, Is.EqualTo(24f).Within(0.001f));
+        Assert.False(result.overheated);
+    }
+
+    [Test]
+    public void ThermalModuleCoolsWhileMainThrusterIsIdle()
+    {
+        PhysicsValidationProbe.ThermalStepResult result = PhysicsValidationProbe.RunThermalCoolingStep();
+
+        Assert.That(result.finalTemperature, Is.LessThan(result.initialTemperature));
+        Assert.That(result.finalTemperature, Is.EqualTo(70f).Within(0.001f));
+        Assert.That(result.appliedThrust, Is.EqualTo(0f).Within(PhysicsValidationProbe.ForceTolerance));
+        Assert.That(result.powerDrawKw, Is.EqualTo(0f).Within(0.001f));
+    }
+
+    [Test]
+    public void ThermalOverheatHookDisablesMainThrusterAtThreshold()
+    {
+        PhysicsValidationProbe.ThermalStepResult result = PhysicsValidationProbe.RunThermalOverheatStep();
+
+        Assert.That(result.finalTemperature, Is.GreaterThanOrEqualTo(25f));
+        Assert.True(result.overheated);
+        Assert.True(result.disabledByOverheat);
+        Assert.That(result.appliedThrust, Is.EqualTo(0f).Within(PhysicsValidationProbe.ForceTolerance));
+        Assert.That(result.powerDrawKw, Is.EqualTo(0f).Within(0.001f));
+    }
 }
 #endif

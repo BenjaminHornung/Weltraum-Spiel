@@ -64,6 +64,26 @@ public class PrototypeBootstrap : MonoBehaviour
 
         EnsureModuleParts(ship.transform);
         var mainNozzle = EnsureMainThrusterNozzle(ship.transform);
+        var mainThermal = EnsureThermalModule(
+            mainNozzle != null && mainNozzle.parent != null ? mainNozzle.parent.gameObject : ship,
+            "Main Thruster",
+            180f,
+            85f,
+            450f,
+            6f,
+            120f,
+            true,
+            PrototypeThermalModule.OverheatEffect.DisableModule);
+        EnsureThermalModule(
+            ship.transform.Find("Gun") != null ? ship.transform.Find("Gun").gameObject : ship,
+            "Gun",
+            12f,
+            18f,
+            160f,
+            4f,
+            95f,
+            true,
+            PrototypeThermalModule.OverheatEffect.ThrottleToHalf);
         EnsureRcsThrusters(ship.transform, shipConfig);
         RemoveRootFallbackChild(ship.transform, "Muzzle");
 
@@ -76,7 +96,7 @@ public class PrototypeBootstrap : MonoBehaviour
         rcs.ApplyConfig(shipConfig);
         GetOrAddComponent<PlayerShipController>(ship);
 
-        mainThruster.Configure(mainNozzle, shipRigidbody, stats, physicsCore);
+        mainThruster.Configure(mainNozzle, shipRigidbody, stats, physicsCore, mainThermal);
         rcs.ConfigureThrusters(
             ship.transform.Find("RCS_Top"),
             ship.transform.Find("RCS_Bottom"),
@@ -275,6 +295,32 @@ public class PrototypeBootstrap : MonoBehaviour
         go.transform.localScale = localScale;
         ApplyMaterialColor(go, color, false);
         return go;
+    }
+
+    private static PrototypeThermalModule EnsureThermalModule(
+        GameObject target,
+        string moduleName,
+        float powerDrawKw,
+        float heatGenerationPerSecond,
+        float heatCapacity,
+        float coolingRate,
+        float maxTemperature,
+        bool overheatEffectEnabled,
+        PrototypeThermalModule.OverheatEffect overheatEffect)
+    {
+        var thermalModule = GetOrAddComponent<PrototypeThermalModule>(target);
+        thermalModule.Configure(
+            moduleName,
+            thermalModule.SimulationEnabled,
+            powerDrawKw,
+            heatGenerationPerSecond,
+            heatCapacity,
+            coolingRate,
+            maxTemperature,
+            20f,
+            overheatEffectEnabled,
+            overheatEffect);
+        return thermalModule;
     }
 
     private static void ApplyMaterialColor(GameObject go, Color color, bool emissive)

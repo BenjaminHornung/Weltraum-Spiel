@@ -64,6 +64,11 @@ public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal
     public Vector3 LastMainSteeringForceWorld => mainThruster != null ? mainThruster.LastSteeringForceWorld : Vector3.zero;
     public Vector3 LastMainForcePositionWorld => mainThruster != null ? mainThruster.LastForcePositionWorld : transform.position;
     public Vector3 LastMainGimbalTorque => mainThruster != null ? mainThruster.LastEstimatedTorque : Vector3.zero;
+    public PrototypeThermalModule MainThermalModule => mainThruster != null ? mainThruster.ThermalModule : null;
+    public bool MainThermalEnabled => mainThruster != null && mainThruster.ThermalSimulationEnabled;
+    public bool MainThermalOverheated => mainThruster != null && mainThruster.IsOverheated;
+    public float MainThermalEfficiency => mainThruster != null ? mainThruster.ThermalEfficiencyScalar : 1f;
+    public float MainPowerDrawKw => mainThruster != null ? mainThruster.LastPowerDrawKw : 0f;
         public float RcsTranslationForceSetting => rcsThrusters != null ? rcsThrusters.TranslationForce : 0f;
     public float RcsAttitudeForceSetting => rcsThrusters != null ? rcsThrusters.AttitudeForce : 0f;
     public float RcsSasAuthority => rcsThrusters != null ? rcsThrusters.SasAuthority : 0f;

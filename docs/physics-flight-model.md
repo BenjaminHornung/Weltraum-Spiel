@@ -62,6 +62,22 @@ The generated `RCS_Top`, `RCS_Bottom`, `RCS_Left`, and `RCS_Right` blocks each c
 
 Translation commands select nozzles whose actual force direction points with the requested ship-local axis. Attitude commands select nozzles whose cross-product torque points with the requested pitch, yaw, or roll axis. If a nozzle is moved, removed, or rotated, its force and torque contribution changes immediately. Missing nozzles cannot create phantom force.
 
+## Module Mass, COM, And Inertia
+
+Generated prototype modules carry `ModuleMassDescriptor` components. Each descriptor exposes dry mass, optional fuel mass, local position through its transform, and an approximate box size. `ShipStats.ApplyMassProperties` collects those descriptors every physics step, sums dry plus active fuel mass, calculates the local center of mass as the mass-weighted average of module positions, and applies the result to the Rigidbody.
+
+The fuel tank descriptor uses the current ship fuel value, so main-thruster fuel use can reduce total mass immediately. The Rigidbody uses manual mass properties while descriptors are available:
+
+```csharp
+rb.mass = properties.TotalMassKg;
+rb.centerOfMass = properties.LocalCenterOfMass;
+rb.inertiaTensor = properties.InertiaTensor;
+```
+
+The inertia tensor is a diagonal prototype approximation. Each module contributes the standard cuboid inertia for its descriptor box size, plus a parallel-axis offset from the calculated center of mass. This keeps the behavior inspectable while making wide or long layouts rotate more slowly under the same torque.
+
+The debug overlay reports descriptor module count, dry mass, fuel mass, local/world COM, and Rigidbody inertia tensor so placement and tuning changes are visible during prototype flight.
+
 ## SAS And Inertia
 
 SAS is an RCS angular counter-command. When effective SAS is on, the controller converts angular velocity into a counter attitude command and lets the same nozzle solver pick usable RCS jets. Manual attitude input keeps its coarse command dead zone, and SAS is masked per pitch/yaw/roll axis whenever manual attitude input on that same axis exceeds the manual dead zone. SAS remains active on released axes, so a yaw input does not reduce yaw authority but can still allow SAS to damp pitch or roll.
@@ -69,6 +85,19 @@ SAS is an RCS angular counter-command. When effective SAS is on, the controller 
 SAS uses a small local angular-velocity dead zone near zero and a minimum active braking command outside that dead zone, so residual pitch, yaw, and roll are not dropped just because their counter-command is below the manual input threshold. After SAS has braked a non-manual axis into the tiny local settle band, that axis is snapped to zero angular velocity so late SAS activation visibly finishes converging. Translation RCS authority is not reduced by SAS. When SAS is off, there is no direct angular damping from the controller.
 
 The ship rigidbody uses zero linear and angular damping in this prototype. Releasing controls does not bleed off linear velocity, and rotation persists in vacuum unless SAS/RCS torque counters it.
+
+## Power And Heat
+
+Prototype modules can carry an optional `PrototypeThermalModule`. The component declares power draw, heat generation, heat capacity, cooling rate, ambient temperature, maximum temperature, and an optional overheat effect. Thermal simulation defaults to off on generated modules, so the current flight prototype is unchanged unless a module is explicitly enabled.
+
+The first-pass deterministic model is:
+
+```text
+temperature += heatGeneratedPerSecond / heatCapacity * deltaTime
+temperature -= coolingRate * deltaTime
+```
+
+Cooling is clamped at ambient temperature. Active modules report current power draw for diagnostics. The generated main thruster has a configured overheat hook that can disable thrust when thermal simulation is enabled and the module temperature reaches its limit. The debug overlay shows main-thruster temperature, thermal state, heat, cooling, power draw, and overheat hook efficiency.
 
 ## Projectile Recoil And Sweep
 
@@ -93,7 +122,7 @@ Projectiles store their previous physics position and sweep from that position t
 
 ## Physics Validation
 
-EditMode tests in `Assets/Tests/Editor/PrototypePhysicsValidationTests.cs` exercise deterministic generated ship probes from `PhysicsValidationProbe`. They cover throttle-only main force, gimbal cross-product torque, RCS translation and yaw allocation, partial-fuel thrust scaling, projectile recoil detection, projectile sweep/self-hit checks, and a 0.02 vs 0.01 timestep comparison.
+EditMode tests in `Assets/Tests/Editor/PrototypePhysicsValidationTests.cs` exercise deterministic generated ship probes from `PhysicsValidationProbe`. They cover throttle-only main force, gimbal cross-product torque, RCS translation and yaw allocation, partial-fuel thrust scaling, projectile recoil detection, projectile sweep/self-hit checks, thermal heat rise, idle cooling, overheat hook activation, and a 0.02 vs 0.01 timestep comparison.
 
 Run the suite through Unity Test Runner EditMode or Unity MCP `run_tests(mode=EditMode)`. Store run output and deterministic probe evidence under the active spec folder, for example `.devtoolbox/specs/changes/validation-physics-test-suite/tests/test-protocol.md`.
 
@@ -101,11 +130,10 @@ Run the suite through Unity Test Runner EditMode or Unity MCP `run_tests(mode=Ed
 
 The current prototype intentionally defers deeper simulation layers:
 
-- module mass distribution, center of mass, and inertia tensor approximation,
 - full fuel mass flow across all thruster systems and fuel-dependent COM changes,
 - SAS as a target-attitude PD controller,
 - full projectile damage and hit impulse effects,
 - gravity, orbit prediction, and floating origin,
-- docking constraints, damage effects, heat, power, and trajectory preview.
+- docking constraints, damage effects, full heat/power networking, and trajectory preview.
 
 Those systems should be added as separate spec changes so each one can be verified against the same force/torque accounting.
