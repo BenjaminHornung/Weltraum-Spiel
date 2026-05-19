@@ -42,6 +42,9 @@
 # Visual Studio cache directory
 .vs/
 
+# DevToolbox local runner config contains machine-specific absolute paths.
+.devtoolbox/config/
+
 # Gradle cache directory
 .gradle/
 

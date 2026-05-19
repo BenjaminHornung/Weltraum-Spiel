@@ -394,17 +394,10 @@ public static class PhysicsValidationProbe
     public static bool HasProjectileRecoilPath()
     {
         const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
-        foreach (FieldInfo field in typeof(GunModule).GetFields(flags))
-        {
-            if (field.Name.IndexOf("recoil", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                return true;
-            }
-        }
-
         foreach (MethodInfo method in typeof(GunModule).GetMethods(flags))
         {
-            if (method.Name.IndexOf("recoil", StringComparison.OrdinalIgnoreCase) >= 0)
+            if (method.Name.IndexOf("recoil", StringComparison.OrdinalIgnoreCase) >= 0
+                && method.Name.IndexOf("enabled", StringComparison.OrdinalIgnoreCase) < 0)
             {
                 return true;
             }
@@ -702,22 +695,6 @@ public static class PhysicsValidationProbe
         vfx.SetActive(false);
     }
 
-    private static Quaternion LookRotationLocal(Vector3 localDirection)
-    {
-        Vector3 up = Mathf.Abs(Vector3.Dot(localDirection, Vector3.up)) > 0.9f ? Vector3.forward : Vector3.up;
-        return Quaternion.LookRotation(localDirection, up);
-    }
-
-    private static string DirectionName(Vector3 direction)
-    {
-        if (direction == Vector3.forward) return "Forward";
-        if (direction == Vector3.back) return "Back";
-        if (direction == Vector3.left) return "Left";
-        if (direction == Vector3.right) return "Right";
-        if (direction == Vector3.up) return "Up";
-        return "Down";
-    }
-
     private static ModuleMassDescriptor AddDescriptor(Transform root, string name, Vector3 localPosition, float massKg, Vector3 boxSize)
     {
         var module = new GameObject(name);
@@ -741,6 +718,22 @@ public static class PhysicsValidationProbe
         {
             DestroyGameObject(root);
         }
+    }
+
+    private static Quaternion LookRotationLocal(Vector3 localDirection)
+    {
+        Vector3 up = Mathf.Abs(Vector3.Dot(localDirection, Vector3.up)) > 0.9f ? Vector3.forward : Vector3.up;
+        return Quaternion.LookRotation(localDirection, up);
+    }
+
+    private static string DirectionName(Vector3 direction)
+    {
+        if (direction == Vector3.forward) return "Forward";
+        if (direction == Vector3.back) return "Back";
+        if (direction == Vector3.left) return "Left";
+        if (direction == Vector3.right) return "Right";
+        if (direction == Vector3.up) return "Up";
+        return "Down";
     }
 
     private static void SetPrivateFloat(object target, string fieldName, float value)

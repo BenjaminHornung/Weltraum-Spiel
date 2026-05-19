@@ -159,9 +159,9 @@ public class PrototypePhysicsValidationTests
     }
 
     [Test]
-    public void ProjectileMomentumCheckIsDeferredUntilRecoilExists()
+    public void ProjectileMomentumCheckDetectsRecoilPathWhenImplemented()
     {
-        Assert.False(PhysicsValidationProbe.HasProjectileRecoilPath(), "GunModule currently spawns projectiles without a recoil impulse path; momentum checks should be added when recoil exists.");
+        Assert.True(PhysicsValidationProbe.HasProjectileRecoilPath(), "GunModule should expose a recoil impulse path when projectile recoil is implemented.");
     }
 
     [Test]
