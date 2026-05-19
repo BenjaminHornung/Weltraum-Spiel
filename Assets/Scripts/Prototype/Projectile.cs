@@ -5,26 +5,32 @@ public class Projectile : MonoBehaviour
 {
     [SerializeField] private float defaultLifetime = 3f;
     [SerializeField] private Color glowColor = new Color(1f, 0.45f, 0.15f, 1f);
+    [SerializeField] private float minimumSweepRadius = 0.01f;
 
     private float destroyAt;
     private Rigidbody rigidbodyRef;
+    private Collider projectileCollider;
     private TrailRenderer trailRenderer;
     private Light glowLight;
     private Vector3 previousPositionWorld;
     private bool hasPreviousPosition;
+    private bool hasReportedHit;
 
     public Vector3 PreviousPositionWorld => previousPositionWorld;
     public bool HasPreviousPosition => hasPreviousPosition;
+    public bool HasReportedHit => hasReportedHit;
 
     private void Awake()
     {
         rigidbodyRef = GetComponent<Rigidbody>();
+        projectileCollider = GetComponent<Collider>();
         SetupVisuals();
     }
 
     private void OnEnable()
     {
         destroyAt = Time.time + Mathf.Max(0.1f, defaultLifetime);
+        hasReportedHit = false;
         RecordCurrentPosition();
     }
 
@@ -38,12 +44,22 @@ public class Projectile : MonoBehaviour
         rigidbodyRef.useGravity = false;
         rigidbodyRef.linearVelocity = initialVelocity;
         destroyAt = Time.time + Mathf.Max(0.1f, lifetime);
+        hasReportedHit = false;
         RecordCurrentPosition();
     }
 
     private void FixedUpdate()
     {
-        RecordCurrentPosition();
+        Vector3 currentPosition = GetCurrentPosition();
+        if (!hasReportedHit && hasPreviousPosition)
+        {
+            SweepTravel(previousPositionWorld, currentPosition);
+        }
+
+        if (!hasReportedHit)
+        {
+            RecordPosition(currentPosition);
+        }
     }
 
     private void Update()
@@ -114,21 +130,134 @@ public class Projectile : MonoBehaviour
 
     private void RecordCurrentPosition()
     {
-        previousPositionWorld = rigidbodyRef != null ? rigidbodyRef.position : transform.position;
+        RecordPosition(GetCurrentPosition());
+    }
+
+    private void RecordPosition(Vector3 position)
+    {
+        previousPositionWorld = position;
         hasPreviousPosition = true;
+    }
+
+    private Vector3 GetCurrentPosition()
+    {
+        return rigidbodyRef != null ? rigidbodyRef.position : transform.position;
+    }
+
+    private void SweepTravel(Vector3 from, Vector3 to)
+    {
+        Vector3 travel = to - from;
+        float distance = travel.magnitude;
+        if (distance <= 0.0001f)
+        {
+            return;
+        }
+
+        Vector3 direction = travel / distance;
+        RaycastHit[] hits = Physics.SphereCastAll(
+            from,
+            GetSweepRadius(),
+            direction,
+            distance,
+            Physics.DefaultRaycastLayers,
+            QueryTriggerInteraction.Ignore);
+
+        if (TryReportNearestHit(hits))
+        {
+            return;
+        }
+
+        hits = Physics.RaycastAll(
+            from,
+            direction,
+            distance,
+            Physics.DefaultRaycastLayers,
+            QueryTriggerInteraction.Ignore);
+        TryReportNearestHit(hits);
+    }
+
+    private float GetSweepRadius()
+    {
+        if (projectileCollider == null)
+        {
+            projectileCollider = GetComponent<Collider>();
+        }
+
+        if (projectileCollider != null)
+        {
+            Vector3 extents = projectileCollider.bounds.extents;
+            return Mathf.Max(minimumSweepRadius, Mathf.Min(extents.x, Mathf.Min(extents.y, extents.z)));
+        }
+
+        return Mathf.Max(0.001f, minimumSweepRadius);
+    }
+
+    private bool TryReportNearestHit(RaycastHit[] hits)
+    {
+        if (hits == null || hits.Length == 0)
+        {
+            return false;
+        }
+
+        int nearestIndex = -1;
+        float nearestDistance = float.PositiveInfinity;
+        for (int i = 0; i < hits.Length; i++)
+        {
+            Collider candidate = hits[i].collider;
+            if (candidate == null || IsProjectileCollider(candidate))
+            {
+                continue;
+            }
+
+            if (hits[i].distance < nearestDistance)
+            {
+                nearestIndex = i;
+                nearestDistance = hits[i].distance;
+            }
+        }
+
+        if (nearestIndex < 0)
+        {
+            return false;
+        }
+
+        RaycastHit nearest = hits[nearestIndex];
+        return TryReportHit(nearest.collider, nearest.point);
+    }
+
+    private bool IsProjectileCollider(Collider candidate)
+    {
+        return candidate == projectileCollider || candidate.transform == transform || candidate.transform.IsChildOf(transform);
+    }
+
+    private bool TryReportHit(Collider hitCollider, Vector3 hitPoint)
+    {
+        if (hasReportedHit || hitCollider == null)
+        {
+            return false;
+        }
+
+        var targetDummy = hitCollider.GetComponentInParent<PrototypeTargetDummy>();
+        if (targetDummy == null)
+        {
+            return false;
+        }
+
+        hasReportedHit = true;
+        targetDummy.PlayHitFeedback(hitPoint);
+        Destroy(gameObject);
+        return true;
     }
 
 
     private void OnCollisionEnter(Collision collision)
     {
-        var targetDummy = collision.collider.GetComponentInParent<PrototypeTargetDummy>();
-        if (targetDummy == null)
+        if (collision.collider == null)
         {
             return;
         }
 
         Vector3 hitPoint = collision.contactCount > 0 ? collision.GetContact(0).point : transform.position;
-        targetDummy.PlayHitFeedback(hitPoint);
-        Destroy(gameObject);
+        TryReportHit(collision.collider, hitPoint);
     }
 }

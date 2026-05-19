@@ -14,7 +14,7 @@
 - [x] Add projectile mass and optional recoil settings
 - [x] Apply recoil impulse to shooter
 - [x] Track projectile previous position
-- [ ] Add raycast or sphere-cast sweep detection
+- [x] Add raycast or sphere-cast sweep detection
 - [ ] Ignore firing ship colliders
 - [ ] Expose hit data for future damage systems
 - [ ] Update README and physics docs
