@@ -9,25 +9,25 @@
 - [x] Validate spec with DevToolbox
 
 ## Investigation
-- [ ] Inspect current mode 0 mouse-look offset behavior
-- [ ] Confirm current look offsets rotate the camera anchor
-- [ ] Confirm debug camera mode behavior to preserve
+- [x] Inspect current mode 0 mouse-look offset behavior
+- [x] Confirm current look offsets rotate the camera anchor
+- [x] Confirm debug camera mode behavior to preserve
 
 ## Implementation
-- [ ] Keep mode 0 camera position fixed at the ship-local rear anchor
-- [ ] Make mouse look adjust only look direction or look target in mode 0
-- [ ] Keep ship centered or nearly centered in default chase view
-- [ ] Preserve V camera perspective cycling for debug modes
-- [ ] Preserve reset behavior and snap-to-chase
-- [ ] Add test evidence under this spec
+- [x] Keep mode 0 camera position fixed at the ship-local rear anchor
+- [x] Make mouse look adjust only look direction or look target in mode 0
+- [x] Keep ship centered or nearly centered in default chase view
+- [x] Preserve V camera perspective cycling for debug modes
+- [x] Preserve reset behavior and snap-to-chase
+- [x] Add test evidence under this spec
 
 ## Verification
-- [ ] Validate changed Unity scripts with Unity MCP
-- [ ] Refresh or compile scripts with Unity MCP and check console errors
-- [ ] Verify mode 0 anchor follows ship yaw, pitch, and roll
-- [ ] Verify mouse look does not move the mode 0 anchor
-- [ ] Verify mouse look changes view direction
-- [ ] Verify reset returns to anchored mode 0 chase
-- [ ] Confirm DevToolbox spec validation passes
-- [ ] Confirm git working tree only contains this spec slice before commit
-- [ ] Commit with spec title and meaningful changelog
+- [x] Validate changed Unity scripts with Unity MCP
+- [x] Refresh or compile scripts with Unity MCP and check console errors
+- [x] Verify mode 0 anchor follows ship yaw, pitch, and roll
+- [x] Verify mouse look does not move the mode 0 anchor
+- [x] Verify mouse look changes view direction
+- [x] Verify reset returns to anchored mode 0 chase
+- [x] Confirm DevToolbox spec validation passes
+- [x] Confirm git working tree only contains this spec slice before commit
+- [x] Commit with spec title and meaningful changelog

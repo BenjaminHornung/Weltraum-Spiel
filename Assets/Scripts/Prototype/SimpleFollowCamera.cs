@@ -16,6 +16,9 @@ public class SimpleFollowCamera : MonoBehaviour
     [SerializeField] private float mouseOrbitSensitivity = 0.18f;
     [SerializeField] private float minPitch = -20f;
     [SerializeField] private float maxPitch = 75f;
+    [SerializeField] private float anchoredLookYawLimit = 18f;
+    [SerializeField] private float anchoredLookPitchLimit = 12f;
+    [SerializeField] private float anchoredLookTargetOffsetScale = 0.08f;
 
     private int cameraMode;
     private bool snapNextFrame;
@@ -105,19 +108,23 @@ public class SimpleFollowCamera : MonoBehaviour
             return target.position + orbit * new Vector3(-followDistance * 0.9f, followHeight, 0f);
         }
 
-        Vector3 chaseOffset = (-target.forward * followDistance) + (target.up * followHeight);
-        if (Mathf.Approximately(orbitYaw, 0f) && Mathf.Approximately(orbitPitch, 0f))
-        {
-            return target.position + chaseOffset;
-        }
-
-        Quaternion lookOffset = Quaternion.AngleAxis(orbitYaw, target.up) * Quaternion.AngleAxis(orbitPitch, target.right);
-        return target.position + lookOffset * chaseOffset;
+        return target.position - target.forward * followDistance + target.up * followHeight;
     }
 
     private Vector3 GetLookTarget()
     {
-        return target.position + target.forward * 1.5f;
+        Vector3 baseLookTarget = target.position + target.forward * 1.5f;
+        if (cameraMode != 0)
+        {
+            return baseLookTarget;
+        }
+
+        float lookYaw = Mathf.Clamp(orbitYaw, -anchoredLookYawLimit, anchoredLookYawLimit);
+        float lookPitch = Mathf.Clamp(orbitPitch, -anchoredLookPitchLimit, anchoredLookPitchLimit);
+        float lateralOffset = lookYaw * anchoredLookTargetOffsetScale;
+        float verticalOffset = lookPitch * anchoredLookTargetOffsetScale;
+
+        return baseLookTarget + target.right * lateralOffset + target.up * verticalOffset;
     }
 
     private Vector3 GetLookUp()
