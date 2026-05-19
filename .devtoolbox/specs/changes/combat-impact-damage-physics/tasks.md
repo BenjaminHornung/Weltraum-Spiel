@@ -22,6 +22,6 @@
 - [x] Validate changed Unity scripts with Unity MCP
 - [x] Verify hit event data is populated
 - [x] Verify damaged RCS/engine reduces physical authority
-- [ ] Verify diagnostics show degraded state
+- [x] Verify diagnostics show degraded state
 - [ ] Add test evidence under this spec
 - [ ] Commit implementation with spec title and changelog
