@@ -64,6 +64,15 @@ public struct DockingSoftCaptureRequest
     public string diagnostic;
 }
 
+[System.Serializable]
+public struct DockingHardLockResult
+{
+    public bool lockRequested;
+    public bool jointCreated;
+    public bool placeholder;
+    public string diagnostic;
+}
+
 [DisallowMultipleComponent]
 public class DockingPort : MonoBehaviour
 {
@@ -89,6 +98,7 @@ public class DockingPort : MonoBehaviour
 
     [Header("Hard Lock")]
     [SerializeField] private bool hardLockEnabled = true;
+    [SerializeField] private bool hardLockCreatesJoint;
 
     public Vector3 LocalPosition => localPosition;
     public Vector3 LocalForward => SafeLocalForward(localForward);
@@ -107,6 +117,7 @@ public class DockingPort : MonoBehaviour
     public float MaxSoftCaptureForce => Mathf.Max(0f, maxSoftCaptureForce);
     public float MaxSoftCaptureTorque => Mathf.Max(0f, maxSoftCaptureTorque);
     public bool HardLockEnabled => hardLockEnabled;
+    public bool HardLockCreatesJoint => hardLockCreatesJoint;
 
     public bool TryCalculateRelativeState(
         DockingPort target,
@@ -275,6 +286,42 @@ public class DockingPort : MonoBehaviour
         };
     }
 
+    public DockingHardLockResult BuildHardLockPrototype(DockingPort target, DockingRelativeState state)
+    {
+        return BuildHardLockPrototype(this, target, EvaluateEligibility(target, state));
+    }
+
+    public DockingHardLockResult BuildHardLockPrototype(
+        DockingPort target,
+        DockingEligibility eligibility)
+    {
+        return BuildHardLockPrototype(this, target, eligibility);
+    }
+
+    public static DockingHardLockResult BuildHardLockPrototype(
+        DockingPort source,
+        DockingPort target,
+        DockingEligibility eligibility)
+    {
+        if (source == null || target == null)
+        {
+            return CreateNoHardLockResult("missing-port");
+        }
+
+        if (!eligibility.canHardLock)
+        {
+            return CreateNoHardLockResult(string.IsNullOrEmpty(eligibility.diagnostic) ? "hard-lock-not-eligible" : eligibility.diagnostic);
+        }
+
+        return new DockingHardLockResult
+        {
+            lockRequested = true,
+            jointCreated = false,
+            placeholder = !source.HardLockCreatesJoint,
+            diagnostic = source.HardLockCreatesJoint ? "hard-lock-joint-not-yet-implemented" : "hard-lock-placeholder"
+        };
+    }
+
     public void Configure(
         Vector3 localPosition,
         Vector3 localForward,
@@ -389,6 +436,17 @@ public class DockingPort : MonoBehaviour
             assistRequest = FlightAssistRequest.None,
             forceWorld = Vector3.zero,
             torqueLocal = Vector3.zero,
+            diagnostic = diagnostic
+        };
+    }
+
+    private static DockingHardLockResult CreateNoHardLockResult(string diagnostic)
+    {
+        return new DockingHardLockResult
+        {
+            lockRequested = false,
+            jointCreated = false,
+            placeholder = true,
             diagnostic = diagnostic
         };
     }

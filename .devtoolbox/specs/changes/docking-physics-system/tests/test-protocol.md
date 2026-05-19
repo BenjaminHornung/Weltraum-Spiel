@@ -42,3 +42,11 @@ Conclusion: docking should be implemented as a prototype component that computes
 - Corrected relative velocity to represent target-point velocity relative to source-point velocity so positive closing speed reports true approach.
 - Unity MCP `validate_script` on `Assets/Scripts/Prototype/DockingPort.cs` and `Assets/Scripts/Prototype/FlightAssistRequest.cs` returned 0 errors and 0 warnings.
 - Unity MCP console query for errors returned 0 entries after the change.
+
+## 2026-05-19 - Hard Lock Placeholder
+
+- Extended `DockingPort` with `DockingHardLockResult` and `BuildHardLockPrototype`.
+- Hard lock is a documented placeholder in this slice: it requests a lock only when `DockingEligibility.canHardLock` is true and does not create a joint yet.
+- If a future `hardLockCreatesJoint` option is enabled, the diagnostic reports `hard-lock-joint-not-yet-implemented` rather than silently creating an unstable constraint.
+- Unity MCP `validate_script` on `Assets/Scripts/Prototype/DockingPort.cs` returned 0 errors and 0 warnings.
+- Unity MCP console query showed no C# compile errors; the only returned entry was an unrelated TestResults save message.
