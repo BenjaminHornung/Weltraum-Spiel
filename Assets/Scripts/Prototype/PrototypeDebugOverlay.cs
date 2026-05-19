@@ -167,6 +167,13 @@ public class PrototypeDebugOverlay : MonoBehaviour
         bool mainThermalOverheated = shipController != null && shipController.MainThermalOverheated;
         float mainThermalEfficiency = shipController != null ? shipController.MainThermalEfficiency : 1f;
         float mainPowerDrawKw = shipController != null ? shipController.MainPowerDrawKw : 0f;
+        float mainFuelRequested = targetStats.LastFuelRequestedKg;
+        float mainFuelConsumed = targetStats.LastFuelConsumedKg;
+        float mainFuelFraction = targetStats.LastAppliedFuelFraction;
+        float rcsFuelRequested = shipController != null ? shipController.LastRcsFuelRequestedKg : 0f;
+        float rcsFuelConsumed = shipController != null ? shipController.LastRcsFuelConsumedKg : 0f;
+        float rcsFuelFraction = shipController != null ? shipController.LastRcsFuelFraction : 1f;
+        float rcsAllocatedThrottleTotal = shipController != null ? shipController.LastRcsAllocatedNozzleThrottleTotal : 0f;
         string cameraMode = followCamera != null ? followCamera.CameraModeName : "none";
         float cameraAnchorError = followCamera != null ? followCamera.AnchorError : 0f;
         float cameraLookYaw = followCamera != null ? followCamera.LookYaw : 0f;
@@ -193,6 +200,7 @@ public class PrototypeDebugOverlay : MonoBehaviour
         GUILayout.Space(4f);
         GUILayout.Label($"Throttle: {throttlePercent:0}% cmd {mainCommand:0.00} scale {throttleScale:0.00}", labelStyle);
         GUILayout.Label($"Main thrust: {targetStats.LastAppliedThrust:0} / {targetStats.Thrust:0} N", labelStyle);
+        GUILayout.Label($"Main fuel: req {mainFuelRequested:0.000} kg, used {mainFuelConsumed:0.000} kg, frac {mainFuelFraction:0.00}", labelStyle);
         GUILayout.Label($"Forward accel: {forwardAcceleration:0.0} m/s^2", labelStyle);
         GUILayout.Label($"Main dir: {FormatVector(mainDirection)}", labelStyle);
         GUILayout.Label($"Main force pos: {FormatVector(mainForcePosition)}", labelStyle);
@@ -215,7 +223,8 @@ public class PrototypeDebugOverlay : MonoBehaviour
         GUILayout.Label($"RCS: installed {(hasRcs ? "yes" : "no")}, enabled {(rcsEnabled ? "yes" : "no")}", labelStyle);
         GUILayout.Label($"RCS tuning: move {rcsTranslationSetting:0} N, attitude {rcsAttitudeSetting:0} N", labelStyle);
         GUILayout.Label($"RCS select dot: {minSelectionDot:0.00}, nozzles {activeNozzles}/{installedNozzles}", labelStyle);
-        GUILayout.Label($"RCS allocator: max throttle {rcsMaxNozzleThrottle:0.00}, applications {rcsNozzleApplications}", labelStyle);
+        GUILayout.Label($"RCS allocator: max {rcsMaxNozzleThrottle:0.00}, sum {rcsAllocatedThrottleTotal:0.00}, applications {rcsNozzleApplications}", labelStyle);
+        GUILayout.Label($"RCS fuel: req {rcsFuelRequested:0.000} kg, used {rcsFuelConsumed:0.000} kg, frac {rcsFuelFraction:0.00}", labelStyle);
         GUILayout.Label($"Precision: {(precision ? "on" : "off")}", labelStyle);
         GUILayout.Label($"Move cmd: L/R {rcsTranslation.x:0.00}, U/D {rcsTranslation.y:0.00}, F/B {rcsTranslation.z:0.00}", labelStyle);
         GUILayout.Label($"Attitude cmd: P {rcsAttitude.x:0.00}, Y {rcsAttitude.y:0.00}, R {rcsAttitude.z:0.00}", labelStyle);

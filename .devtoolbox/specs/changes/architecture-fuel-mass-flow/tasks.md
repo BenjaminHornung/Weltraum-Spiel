@@ -15,7 +15,7 @@
 - [x] Add partial-fuel thrust scaling for main engines
 - [x] Add RCS fuel consumption from final allocator output
 - [x] Feed fuel mass into total mass model or documented interim total mass
-- [ ] Add fuel flow diagnostics to debug overlay
+- [x] Add fuel flow diagnostics to debug overlay
 - [ ] Update README and physics docs
 
 ## Verification
