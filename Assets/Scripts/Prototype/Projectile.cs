@@ -99,5 +99,19 @@ public class Projectile : MonoBehaviour
         glowLight.range = 3f;
         glowLight.intensity = 1.8f;
     }
+
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        var targetDummy = collision.collider.GetComponentInParent<PrototypeTargetDummy>();
+        if (targetDummy == null)
+        {
+            return;
+        }
+
+        Vector3 hitPoint = collision.contactCount > 0 ? collision.GetContact(0).point : transform.position;
+        targetDummy.PlayHitFeedback(hitPoint);
+        Destroy(gameObject);
+    }
 }
 

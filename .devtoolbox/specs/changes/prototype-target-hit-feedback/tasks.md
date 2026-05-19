@@ -9,16 +9,16 @@
 - [x] Validate spec with DevToolbox
 
 ## Implementation
-- [ ] Inspect existing projectile collision/lifetime behavior
-- [ ] Add simple target dummy component
-- [ ] Spawn or document test target placement
-- [ ] Add visible hit feedback
-- [ ] Preserve projectile lifetime cleanup
-- [ ] Add test evidence under this spec
+- [x] Inspect existing projectile collision/lifetime behavior
+- [x] Add simple target dummy component
+- [x] Spawn or document test target placement
+- [x] Add visible hit feedback
+- [x] Preserve projectile lifetime cleanup
+- [x] Add test evidence under this spec
 
 ## Verification
-- [ ] Validate changed Unity scripts with Unity MCP
-- [ ] Verify projectile can hit target dummy
-- [ ] Verify hit feedback is visible
-- [ ] Verify projectile cleanup still works
-- [ ] Commit implementation with spec title and changelog
+- [x] Validate changed Unity scripts with Unity MCP
+- [x] Verify projectile can hit target dummy
+- [x] Verify hit feedback is visible
+- [x] Verify projectile cleanup still works
+- [x] Commit implementation with spec title and changelog

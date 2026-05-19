@@ -6,6 +6,9 @@ public class PrototypeBootstrap : MonoBehaviour
     [SerializeField] private PrototypeShipConfig shipConfig;
     [SerializeField] private bool addOrientationMarkers = true;
     [SerializeField] private Vector3 shipStartPosition = new Vector3(0f, 0.5f, 0f);
+    [SerializeField] private bool spawnTestTarget = true;
+    [SerializeField] private Vector3 testTargetPosition = new Vector3(0f, 0.5f, 42f);
+    [SerializeField] private Vector3 testTargetScale = new Vector3(4f, 4f, 0.6f);
 
     private const string PrototypeRootName = "PrototypeShip";
     private static readonly Color HullColor = new Color(0.68f, 0.72f, 0.78f);
@@ -88,6 +91,11 @@ public class PrototypeBootstrap : MonoBehaviour
         if (addOrientationMarkers)
         {
             EnsureOrientationMarkers(ship.transform);
+        }
+
+        if (spawnTestTarget)
+        {
+            EnsureTestTarget();
         }
 
         SetupMainCamera(ship.transform, stats, shipRigidbody);
@@ -428,5 +436,31 @@ public class PrototypeBootstrap : MonoBehaviour
         {
             DestroyImmediate(collider);
         }
+    }
+
+
+    private void EnsureTestTarget()
+    {
+        const string targetName = "PrototypeTargetDummy";
+        var target = GameObject.Find(targetName);
+        if (target == null)
+        {
+            target = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            target.name = targetName;
+        }
+
+        target.transform.position = testTargetPosition;
+        target.transform.rotation = Quaternion.identity;
+        target.transform.localScale = testTargetScale;
+        ApplyMaterialColor(target, new Color(0.25f, 0.85f, 1f, 1f), true);
+
+        var collider = target.GetComponent<BoxCollider>();
+        if (collider == null)
+        {
+            collider = target.AddComponent<BoxCollider>();
+        }
+
+        collider.isTrigger = false;
+        GetOrAddComponent<PrototypeTargetDummy>(target);
     }
 }
