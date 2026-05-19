@@ -21,7 +21,7 @@
 ## Verification
 - [x] Validate changed Unity scripts with Unity MCP
 - [x] Verify assist off preserves vacuum inertia
-- [ ] Verify assist requests are visible separately from manual/SAS
+- [x] Verify assist requests are visible separately from manual/SAS
 - [ ] Verify no hidden damping is introduced
 - [ ] Add test evidence under this spec
 - [ ] Commit implementation with spec title and changelog
