@@ -110,6 +110,10 @@ public static class PhysicsValidationProbe
         public int applications;
         public int installedNozzles;
         public float maxNozzleThrottle;
+        public float allocatedThrottleTotal;
+        public float fuelRequested;
+        public float fuelConsumed;
+        public float fuelFraction;
     }
 
     public struct FuelPartialResult
@@ -221,7 +225,11 @@ public static class PhysicsValidationProbe
             activeNozzles = fixture.Rcs.ActiveNozzleCount,
             applications = fixture.Rcs.LastNozzleApplicationCount,
             installedNozzles = fixture.Rcs.InstalledNozzleCount,
-            maxNozzleThrottle = fixture.Rcs.LastMaxNozzleThrottle
+            maxNozzleThrottle = fixture.Rcs.LastMaxNozzleThrottle,
+            allocatedThrottleTotal = fixture.Rcs.LastAllocatedNozzleThrottleTotal,
+            fuelRequested = fixture.Rcs.LastFuelRequestedKg,
+            fuelConsumed = fixture.Rcs.LastFuelConsumedKg,
+            fuelFraction = fixture.Rcs.LastAppliedFuelFraction
         };
     }
 

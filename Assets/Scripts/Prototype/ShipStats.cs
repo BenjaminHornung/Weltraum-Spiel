@@ -83,7 +83,7 @@ public class ShipStats : MonoBehaviour
 
     public float ConsumeFuelForThrust(float normalizedThrottle, float deltaTime, out float appliedFuelFraction)
     {
-        float fuelUse = FuelConsumptionKgPerSecond * Mathf.Clamp01(normalizedThrottle) * Mathf.Max(0f, deltaTime);
+        float fuelUse = FuelConsumptionKgPerSecond * Mathf.Max(0f, normalizedThrottle) * Mathf.Max(0f, deltaTime);
         LastFuelRequestedKg = fuelUse;
         if (fuelUse <= 0f)
         {

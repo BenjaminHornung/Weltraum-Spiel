@@ -73,6 +73,22 @@ public class PrototypePhysicsValidationTests
     }
 
     [Test]
+    public void RcsFuelUseFollowsFinalCombinedAllocatorOutput()
+    {
+        using (PhysicsValidationProbe.GeneratedShipFixture fixture = PhysicsValidationProbe.CreateGeneratedShip())
+        {
+            PhysicsValidationProbe.RcsResult result = PhysicsValidationProbe.RunRcs(fixture, Vector3.right, Vector3.up);
+            float expectedFuel = 0.6f * result.allocatedThrottleTotal * 0.02f;
+
+            Assert.That(result.allocatedThrottleTotal, Is.GreaterThan(0f));
+            Assert.That(result.fuelRequested, Is.EqualTo(expectedFuel).Within(PhysicsValidationProbe.FuelTolerance));
+            Assert.That(result.fuelConsumed, Is.EqualTo(expectedFuel).Within(PhysicsValidationProbe.FuelTolerance));
+            Assert.That(result.fuelFraction, Is.EqualTo(1f).Within(PhysicsValidationProbe.NozzleThrottleTolerance));
+            Assert.That(result.maxNozzleThrottle, Is.LessThanOrEqualTo(1f + PhysicsValidationProbe.NozzleThrottleTolerance));
+        }
+    }
+
+    [Test]
     public void FuelPartialStepScalesThrustAndDoesNotGoNegative()
     {
         PhysicsValidationProbe.FuelPartialResult result = PhysicsValidationProbe.RunFuelPartialStep();
