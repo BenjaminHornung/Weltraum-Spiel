@@ -69,13 +69,15 @@ public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal
     public float GimbalResponseScalar => mainThruster != null ? mainThruster.GimbalResponseScalar : 0f;
     public float GimbalPitchCommand => mainThruster != null ? mainThruster.LastGimbalPitchCommand : 0f;
     public float LastGimbalAngleDegrees => mainThruster != null ? mainThruster.LastGimbalAngleDegrees : 0f;
+    public MainThrustMode MainThrustMode => mainThruster != null ? mainThruster.ThrustMode : MainThrustMode.ComSafeSteeringOnly;
     public Vector3 LastMainThrustDirection => mainThruster != null ? mainThruster.LastAppliedDirection : transform.forward;
     public float LastMainAppliedThrust => mainThruster != null ? mainThruster.LastAppliedThrust : 0f;
     public Vector3 LastMainForceWorld => mainThruster != null ? mainThruster.LastForceWorld : Vector3.zero;
     public Vector3 LastMainStraightForceWorld => mainThruster != null ? mainThruster.LastStraightForceWorld : Vector3.zero;
     public Vector3 LastMainSteeringForceWorld => mainThruster != null ? mainThruster.LastSteeringForceWorld : Vector3.zero;
     public Vector3 LastMainForcePositionWorld => mainThruster != null ? mainThruster.LastForcePositionWorld : transform.position;
-    public Vector3 LastMainGimbalTorque => mainThruster != null ? mainThruster.LastEstimatedTorque : Vector3.zero;
+    public Vector3 LastMainThrustTorque => mainThruster != null ? mainThruster.LastEstimatedTorque : Vector3.zero;
+    public Vector3 LastMainGimbalTorque => LastMainThrustTorque;
     public PrototypeThermalModule MainThermalModule => mainThruster != null ? mainThruster.ThermalModule : null;
     public bool MainThermalEnabled => mainThruster != null && mainThruster.ThermalSimulationEnabled;
     public bool MainThermalOverheated => mainThruster != null && mainThruster.IsOverheated;

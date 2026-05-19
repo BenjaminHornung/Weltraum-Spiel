@@ -15,7 +15,7 @@
 - [x] Keep ComSafeSteeringOnly as default
 - [x] Implement FullyPhysicalNozzleForce path through ShipPhysicsCore
 - [x] Add inspector fields and safe defaults
-- [ ] Add debug overlay fields for mode and main-thrust torque
+- [x] Add debug overlay fields for mode and main-thrust torque
 - [ ] Update README and physics docs
 
 ## Verification

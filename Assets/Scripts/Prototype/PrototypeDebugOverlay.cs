@@ -157,11 +157,12 @@ public class PrototypeDebugOverlay : MonoBehaviour
         float gravityDistance = shipController != null ? shipController.LastGravityDistance : 0f;
         Vector3 gravityAcceleration = shipController != null ? shipController.LastGravityAcceleration : Vector3.zero;
         Vector3 gravityForce = shipController != null ? shipController.LastGravityForce : Vector3.zero;
+        string mainThrustMode = shipController != null ? shipController.MainThrustMode.ToString() : MainThrustMode.ComSafeSteeringOnly.ToString();
         Vector3 mainDirection = shipController != null ? shipController.LastMainThrustDirection : target.transform.forward;
         Vector3 mainForce = shipController != null ? shipController.LastMainForceWorld : Vector3.zero;
         Vector3 mainStraight = shipController != null ? shipController.LastMainStraightForceWorld : Vector3.zero;
         Vector3 mainSteering = shipController != null ? shipController.LastMainSteeringForceWorld : Vector3.zero;
-        Vector3 mainTorque = shipController != null ? shipController.LastMainGimbalTorque : Vector3.zero;
+        Vector3 mainTorque = shipController != null ? shipController.LastMainThrustTorque : Vector3.zero;
         PrototypeThermalModule mainThermal = shipController != null ? shipController.MainThermalModule : null;
         bool mainThermalEnabled = shipController != null && shipController.MainThermalEnabled;
         bool mainThermalOverheated = shipController != null && shipController.MainThermalOverheated;
@@ -202,12 +203,13 @@ public class PrototypeDebugOverlay : MonoBehaviour
         GUILayout.Label($"Main thrust: {targetStats.LastAppliedThrust:0} / {targetStats.Thrust:0} N", labelStyle);
         GUILayout.Label($"Main fuel: req {mainFuelRequested:0.000} kg, used {mainFuelConsumed:0.000} kg, frac {mainFuelFraction:0.00}", labelStyle);
         GUILayout.Label($"Forward accel: {forwardAcceleration:0.0} m/s^2", labelStyle);
+        GUILayout.Label($"Main mode: {mainThrustMode}", labelStyle);
         GUILayout.Label($"Main dir: {FormatVector(mainDirection)}", labelStyle);
         GUILayout.Label($"Main force pos: {FormatVector(mainForcePosition)}", labelStyle);
         GUILayout.Label($"Main force: {FormatVector(mainForce)}", labelStyle);
         GUILayout.Label($"Main straight: {FormatVector(mainStraight)}", labelStyle);
         GUILayout.Label($"Main steering: {FormatVector(mainSteering)}", labelStyle);
-        GUILayout.Label($"Main torque est: {FormatVector(mainTorque)}", labelStyle);
+        GUILayout.Label($"Main thrust torque: {FormatVector(mainTorque)}", labelStyle);
         if (mainThermal != null)
         {
             GUILayout.Label($"Thermal: {mainThermal.ModuleName} {mainThermal.CurrentTemperature:0.0}/{mainThermal.MaxTemperature:0.0} C {mainThermal.StateLabel}", labelStyle);
@@ -273,7 +275,7 @@ public class PrototypeDebugOverlay : MonoBehaviour
         DrawGizmoVector(shipController.LastMainForcePositionWorld, shipController.LastMainSteeringForceWorld, forceVectorScale, Color.magenta);
         DrawGizmoVector(shipController.RcsControlPivotWorld, shipController.LastRcsTranslationForce, forceVectorScale, Color.green);
         DrawGizmoVector(targetRigidbody.worldCenterOfMass, shipController.LastRcsTorque, torqueVectorScale, Color.yellow);
-        DrawGizmoVector(targetRigidbody.worldCenterOfMass, shipController.LastMainGimbalTorque, torqueVectorScale, Color.red);
+        DrawGizmoVector(targetRigidbody.worldCenterOfMass, shipController.LastMainThrustTorque, torqueVectorScale, Color.red);
         DrawGizmoVector(targetRigidbody.worldCenterOfMass, shipController.LastCoreAppliedForce, forceVectorScale, Color.white);
         DrawGizmoVector(targetRigidbody.worldCenterOfMass, shipController.LastCoreAppliedTorque, torqueVectorScale, Color.blue);
         DrawGizmoVector(targetRigidbody.worldCenterOfMass, targetPhysicsCore != null ? targetPhysicsCore.LastAtmosphereDragForce : Vector3.zero, forceVectorScale, Color.cyan);
@@ -290,7 +292,7 @@ public class PrototypeDebugOverlay : MonoBehaviour
         DrawDebugVector(shipController.LastMainForcePositionWorld, shipController.LastMainSteeringForceWorld, forceVectorScale, Color.magenta);
         DrawDebugVector(shipController.RcsControlPivotWorld, shipController.LastRcsTranslationForce, forceVectorScale, Color.green);
         DrawDebugVector(targetRigidbody.worldCenterOfMass, shipController.LastRcsTorque, torqueVectorScale, Color.yellow);
-        DrawDebugVector(targetRigidbody.worldCenterOfMass, shipController.LastMainGimbalTorque, torqueVectorScale, Color.red);
+        DrawDebugVector(targetRigidbody.worldCenterOfMass, shipController.LastMainThrustTorque, torqueVectorScale, Color.red);
         DrawDebugVector(targetRigidbody.worldCenterOfMass, shipController.LastCoreAppliedForce, forceVectorScale, Color.white);
         DrawDebugVector(targetRigidbody.worldCenterOfMass, shipController.LastCoreAppliedTorque, torqueVectorScale, Color.blue);
         DrawDebugVector(targetRigidbody.worldCenterOfMass, targetPhysicsCore != null ? targetPhysicsCore.LastAtmosphereDragForce : Vector3.zero, forceVectorScale, Color.cyan);
