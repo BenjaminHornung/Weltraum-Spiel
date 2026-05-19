@@ -1,6 +1,12 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+public enum SasControlMode
+{
+    KillRotation,
+    HoldAttitude
+}
+
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(ShipStats))]
 [RequireComponent(typeof(MainThrusterModule))]
@@ -13,6 +19,9 @@ public class PlayerShipController : MonoBehaviour
     [SerializeField] private float precisionScale = 0.35f;
     [SerializeField] private float gamepadLookSpeed = 1.6f;
     [SerializeField] private float gamepadLookDeadZone = 0.18f;
+
+    [Header("SAS")]
+    [SerializeField] private SasControlMode sasMode = SasControlMode.KillRotation;
 
     [Header("Main Throttle")]
     [Range(0f, 1f)]
@@ -38,11 +47,14 @@ public class PlayerShipController : MonoBehaviour
     private bool togglePrecision;
     private bool sasHoldInvert;
     private bool sasEnabled;
+    private bool sasTargetRotationValid;
     private bool precisionControls;
     private bool rcsEnabled = true;
     private Vector3 rcsTranslationInput;
     private Vector3 attitudeInput;
     private float previousForwardSpeed;
+    private Quaternion sasTargetRotation = Quaternion.identity;
+    private const float SasManualTargetRefreshDeadZone = 0.05f;
 
     public float MainThrottle => mainThrottle;
     public float MainThrottlePercent => mainThrottle * 100f;
@@ -77,6 +89,9 @@ public bool HasRcs => rcsThrusters != null && rcsThrusters.HasRcs;
     public bool RcsEnabled => rcsThrusters != null ? rcsThrusters.RcsEnabled : rcsEnabled;
     public bool SasEnabled => sasEnabled;
     public bool EffectiveSasEnabled => sasEnabled ^ sasHoldInvert;
+    public SasControlMode SasMode => sasMode;
+    public bool HasSasTargetRotation => sasTargetRotationValid;
+    public Quaternion SasTargetRotation => sasTargetRotationValid ? sasTargetRotation : transform.rotation;
     public bool PrecisionControls => precisionControls;
     public float LastForwardAcceleration { get; private set; }
     public Vector3 RcsControlPivotLocal => rcsThrusters != null ? rcsThrusters.ControlPivotLocal : Vector3.zero;
@@ -218,10 +233,18 @@ public Vector3 LastRcsSasCommand => rcsThrusters != null ? rcsThrusters.LastSasC
         RcsTranslationCommand = Vector3.ClampMagnitude(rcsTranslationInput, 1f) * controlScale;
         RcsAttitudeCommand = Vector3.ClampMagnitude(attitudeInput, 1f) * controlScale;
         TurnInput = Mathf.Clamp(RcsAttitudeCommand.y, -1f, 1f);
+        UpdateSasTargetRotation(RcsAttitudeCommand);
 
         if (rcsThrusters != null)
         {
-            rcsThrusters.ApplyControls(RcsTranslationCommand, RcsAttitudeCommand, EffectiveSasEnabled, Time.fixedDeltaTime);
+            rcsThrusters.ApplyControls(
+                RcsTranslationCommand,
+                RcsAttitudeCommand,
+                EffectiveSasEnabled,
+                sasMode,
+                SasTargetRotation,
+                HasSasTargetRotation,
+                Time.fixedDeltaTime);
         }
 
         MainThrustCommand = Mathf.Clamp01(mainThrottle);
@@ -413,6 +436,10 @@ public Vector3 LastRcsSasCommand => rcsThrusters != null ? rcsThrusters.LastSasC
         if (toggleSas)
         {
             sasEnabled = !sasEnabled;
+            if (sasEnabled)
+            {
+                CaptureSasTargetRotation();
+            }
         }
 
         if (togglePrecision)
@@ -431,6 +458,36 @@ public Vector3 LastRcsSasCommand => rcsThrusters != null ? rcsThrusters.LastSasC
         if (rcsThrusters != null)
         {
             rcsThrusters.SetRcsEnabled(rcsEnabled);
+        }
+    }
+
+    public void SetSasMode(SasControlMode mode)
+    {
+        sasMode = mode;
+        CaptureSasTargetRotation();
+    }
+
+    public void CaptureSasTargetRotation()
+    {
+        sasTargetRotation = transform.rotation;
+        sasTargetRotationValid = true;
+    }
+
+    private void UpdateSasTargetRotation(Vector3 manualAttitudeCommand)
+    {
+        if (sasMode != SasControlMode.HoldAttitude)
+        {
+            if (!sasTargetRotationValid)
+            {
+                CaptureSasTargetRotation();
+            }
+
+            return;
+        }
+
+        if (!EffectiveSasEnabled || !sasTargetRotationValid || manualAttitudeCommand.sqrMagnitude > SasManualTargetRefreshDeadZone * SasManualTargetRefreshDeadZone)
+        {
+            CaptureSasTargetRotation();
         }
     }
 

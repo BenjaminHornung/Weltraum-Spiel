@@ -75,6 +75,9 @@ public bool RcsEnabled { get; private set; } = true;
         public Vector3 LastRawSasCommand { get; private set; }
     public Vector3 LastSasReleasedAxes { get; private set; } = Vector3.one;
 public Vector3 LastSasCommand { get; private set; }
+    public SasControlMode LastSasMode { get; private set; } = SasControlMode.KillRotation;
+    public bool LastSasTargetRotationValid { get; private set; }
+    public Quaternion LastSasTargetRotation { get; private set; } = Quaternion.identity;
     public Vector3 LastTranslationForce { get; private set; }
     public Vector3 LastTorque { get; private set; }
     public Vector3 LastForceAtPositionTotal { get; private set; }
@@ -228,12 +231,27 @@ public Vector3 LastSasCommand { get; private set; }
 
 public void ApplyControls(Vector3 translationCommand, Vector3 attitudeCommand, bool stabilizeAngular, float deltaTime)
     {
+        ApplyControls(translationCommand, attitudeCommand, stabilizeAngular, SasControlMode.KillRotation, transform.rotation, false, deltaTime);
+    }
+
+    public void ApplyControls(
+        Vector3 translationCommand,
+        Vector3 attitudeCommand,
+        bool stabilizeAngular,
+        SasControlMode sasMode,
+        Quaternion sasTargetRotation,
+        bool hasSasTargetRotation,
+        float deltaTime)
+    {
         ResolveReferences();
         ResolveLegacyBlockReferences();
         RefreshNozzlesIfNeeded();
 
         LastTranslationCommand = Vector3.ClampMagnitude(translationCommand, 1f);
         Vector3 manualAttitude = Vector3.ClampMagnitude(attitudeCommand, 1f);
+        LastSasMode = sasMode;
+        LastSasTargetRotation = sasTargetRotation;
+        LastSasTargetRotationValid = hasSasTargetRotation;
         Vector3 sasCommand = stabilizeAngular && shipRigidbody != null ? ComputeSasCommand(deltaTime) : Vector3.zero;
         LastRawSasCommand = sasCommand;
         LastSasReleasedAxes = GetSasReleasedAxes(manualAttitude);

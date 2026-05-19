@@ -11,7 +11,7 @@
 
 ## Implementation
 - [x] Inspect current SAS input and allocator integration through Unity MCP
-- [ ] Add SAS mode model for Kill Rotation and Hold Attitude
+- [x] Add SAS mode model for Kill Rotation and Hold Attitude
 - [ ] Convert SAS to desired torque generation
 - [ ] Route SAS torque through RCS allocator
 - [ ] Add per-axis manual override/masking diagnostics
