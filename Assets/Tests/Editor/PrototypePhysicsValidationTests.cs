@@ -190,6 +190,15 @@ public class PrototypePhysicsValidationTests
     }
 
     [Test]
+    public void FuelConsumptionReducesRigidbodyMassThroughMassModel()
+    {
+        PhysicsValidationProbe.FuelMassConsumptionResult result = PhysicsValidationProbe.RunFuelMassConsumptionStep();
+
+        Assert.That(result.fuelConsumed, Is.GreaterThan(0f));
+        Assert.That(result.initialMass - result.finalMass, Is.EqualTo(result.expectedMassDrop).Within(PhysicsValidationProbe.FuelTolerance));
+    }
+
+    [Test]
     public void SymmetricModuleLayoutKeepsCenterOfMassCentered()
     {
         PhysicsValidationProbe.MassPropertiesResult result = PhysicsValidationProbe.CalculateSymmetricCenterOfMass();

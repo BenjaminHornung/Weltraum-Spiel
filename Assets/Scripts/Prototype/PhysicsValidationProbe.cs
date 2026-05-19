@@ -150,6 +150,14 @@ public static class PhysicsValidationProbe
         public int moduleCount;
     }
 
+    public struct FuelMassConsumptionResult
+    {
+        public float initialMass;
+        public float finalMass;
+        public float fuelConsumed;
+        public float expectedMassDrop;
+    }
+
     public struct InertiaComparisonResult
     {
         public float compactInertiaZ;
@@ -470,6 +478,26 @@ public static class PhysicsValidationProbe
                 expectedCenterOfMass = properties.LocalCenterOfMass,
                 inertiaTensor = fixture.Rigidbody.inertiaTensor,
                 moduleCount = properties.ModuleCount
+            };
+        }
+    }
+
+    public static FuelMassConsumptionResult RunFuelMassConsumptionStep()
+    {
+        using (GeneratedShipFixture fixture = CreateGeneratedShip())
+        {
+            float initialMass = fixture.Rigidbody.mass;
+            fixture.PhysicsCore.BeginPhysicsStep();
+            fixture.MainThruster.Fire(1f, 0f, 0f, 1f);
+            float fuelConsumed = fixture.Stats.LastFuelConsumedKg;
+            fixture.Stats.ApplyMassProperties(fixture.Rigidbody);
+
+            return new FuelMassConsumptionResult
+            {
+                initialMass = initialMass,
+                finalMass = fixture.Rigidbody.mass,
+                fuelConsumed = fuelConsumed,
+                expectedMassDrop = fuelConsumed
             };
         }
     }
