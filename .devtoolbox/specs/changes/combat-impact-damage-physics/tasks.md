@@ -16,7 +16,7 @@
 - [x] Apply one physical degradation path for RCS or engine thrust
 - [x] Add optional impact impulse routing through ShipPhysicsCore
 - [x] Add debug damage diagnostics
-- [ ] Update README and physics docs
+- [x] Update README and physics docs
 
 ## Verification
 - [ ] Validate changed Unity scripts with Unity MCP

@@ -64,6 +64,7 @@ Camera reset is bound to Backquote. Unity Input System key controls are physical
 - `FullyPhysicalNozzleForce` can be selected for experiments; it applies the full gimballed main-engine force at the nozzle position and can create torque from nozzle/COM offsets.
 - Main-thruster gimbal support keeps a 20 degree hard limit, while the default response scalar uses a softer 0.35 keyboard command. The visible gimbal cube and the physics force vector use the same effective command.
 - Each RCS block has five installed nozzle transforms, excluding the side that faces into the ship wall. RCS translation, attitude, and SAS use actual nozzle positions/directions rather than hardcoded slots.
+- Generated module proxies now carry simple damage state. Damaged RCS blocks scale their effective thrust through the existing RCS allocator, so physical authority falls with module integrity.
 - SAS has `KillRotation` and `HoldAttitude` modes. It creates a ship-local PD torque request from angular velocity and optional target attitude, then sends that request through the same RCS nozzle allocator as manual attitude.
 - SAS exposes proportional and derivative gains on `RcsThrusterController`. Manual pitch, yaw, or roll input masks SAS on that same axis while released axes continue to stabilize.
 - Flight assist is an explicit request layer with `Simulation`, `AssistedFlight`, and `DebugAssist` modes. Simulation mode sends no assist force or torque, assisted requests must go through the RCS allocator and `ShipPhysicsCore`, and debug-only requests are labeled so they cannot masquerade as physical flight.
@@ -75,7 +76,7 @@ Camera reset is bound to Backquote. Unity Input System key controls are physical
 - Projectile velocity is the ship Rigidbody velocity plus muzzle forward velocity.
 - Projectile firing applies optional recoil impulse opposite the muzzle direction using configured projectile mass and projectile speed.
 - Projectiles ignore the firing ship's colliders and sweep their previous-to-current physics travel with sphere/raycast checks for fast target hits.
-- Projectile hit reports expose collider, Rigidbody, hit point, normal, incoming velocity, and sweep/collision source for future damage systems.
+- Projectile hits populate impact event data with hit point, normal, relative velocity, impulse estimate, and module hit. Module damage and optional target impact impulse route through the same prototype physics diagnostics.
 - Projectile lifetime defaults to 3 seconds.
 
 ## Optional Asset Policy
@@ -89,7 +90,7 @@ Optional CC0 assets, such as local low-poly ships or Kenney packs, may be consid
 - SAS is a local PD torque controller routed through RCS, not a full flight computer or hidden angular damping layer.
 - Flight assist does not use hidden Rigidbody damping. Physical assist requests are allocator-limited; debug-only helpers are diagnostics/testing aids only.
 - RCS allocation is a prototype bounded allocator, not a final optimizer, but it is transform-based and uses real lever arms around COM.
-- Deferred physics-core slices include additional SAS/autopilot modes, docking, damage, and trajectory prediction.
-- Full projectile damage and combat balance are out of scope.
+- Deferred physics-core slices include additional SAS/autopilot modes, docking, deeper damage effects, and trajectory prediction.
+- Full armor balance, part detachment, visual destruction, and combat economy are out of scope.
 - IMGUI is used for the debug overlay because it is temporary prototype UI.
 - Controller input has not been manually verified on physical hardware.

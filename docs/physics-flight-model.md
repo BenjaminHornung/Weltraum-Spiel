@@ -20,6 +20,14 @@ torque = Vector3.Cross(position - rb.worldCenterOfMass, force);
 
 Main thrust and RCS still own their behavior and tuning. The core is the common application and telemetry path, so future systems such as SAS modes, recoil, docking assist, damage, or autopilot can request physical effects without independently bypassing shared force accounting.
 
+Impact impulses have an explicit optional path:
+
+```csharp
+physicsCore.ApplyImpactImpulse(impactEvent);
+```
+
+The impulse is applied at the hit point with `ForceMode.Impulse`. The core records the last impact impulse, hit point, torque impulse, and impact count separately from normal force diagnostics so combat hits can be inspected without hiding the source of the effect.
+
 ## Main Thrust
 
 Main thrust has an explicit mode so the prototype can switch between stable gameplay thrust and stricter physical nozzle force without bypassing `ShipPhysicsCore`.
@@ -76,7 +84,7 @@ force = nozzle.transform.forward * nozzleBlock.Thrust;
 torque = Vector3.Cross(nozzle.transform.position - rb.worldCenterOfMass, force);
 ```
 
-The generated `RCS_Top`, `RCS_Bottom`, `RCS_Left`, and `RCS_Right` blocks each carry an inspector-editable `RcsThrusterBlock`. Nozzles cache their nearest parent block and use that block's thrust when selected. The legacy controller-level `translationForce` and `attitudeForce` values remain as fallback magnitudes for nozzles that do not have a parent block, so older hand-built scenes continue to apply force.
+The generated `RCS_Top`, `RCS_Bottom`, `RCS_Left`, and `RCS_Right` blocks each carry an inspector-editable `RcsThrusterBlock`. Nozzles cache their nearest parent block and use that block's thrust when selected. The block exposes undamaged thrust, but the effective `Thrust` value is multiplied by attached `PrototypeModuleDamageState.CapabilityMultiplier`. Damaged RCS blocks therefore reduce real allocator authority instead of only changing a UI number. The legacy controller-level `translationForce` and `attitudeForce` values remain as fallback magnitudes for nozzles that do not have a parent block, so older hand-built scenes continue to apply force.
 
 Translation commands select nozzles whose actual force direction points with the requested ship-local axis. Attitude commands select nozzles whose cross-product torque points with the requested pitch, yaw, or roll axis. If a nozzle is moved, removed, or rotated, its force and torque contribution changes immediately. Missing nozzles cannot create phantom force.
 
@@ -96,23 +104,22 @@ The inertia tensor is a diagonal prototype approximation. Each module contribute
 
 The debug overlay reports descriptor module count, dry mass, fuel mass, local/world COM, and Rigidbody inertia tensor so placement and tuning changes are visible during prototype flight.
 
-## Fuel Mass Flow
+## Impact Damage
 
-Fuel consumption is a prototype mass-flow model in kilograms per second at full thrust. The shared fuel API accepts a throttle-equivalent demand and calculates:
+Projectile hits produce `PrototypeImpactEventData` from the existing `ProjectileHitData` handoff. The impact event records:
 
-```text
-fuelRequested = fullRateKgPerSecond * throttleEquivalent * deltaTime
-fuelFraction = min(1, availableFuel / fuelRequested)
-appliedThrust = requestedThrust * fuelFraction
-```
+- hit point and normal,
+- target collider and Rigidbody,
+- nearest `ModuleMassDescriptor`,
+- relative velocity,
+- impulse estimate,
+- timestamp.
 
-If `fullRateKgPerSecond` is zero, the fuel request is zero and the fuel fraction stays at 1. This is the explicit fuel-free thrust mode, not a hidden thrust disable.
+Generated module descriptors also ensure a `PrototypeModuleDamageState` is present on each module proxy. The first damage state tracks max/current integrity, damage fraction, capability multiplier, last impact event, last applied damage, and a compact state label. This is intentionally scalar and deterministic; armor, part detachment, leaks, and visual destruction remain later slices.
 
-Main engines pass their final throttle command into this model. If the tank cannot cover the whole physics step, the engine consumes the remaining fuel, clamps the tank at zero, and applies only the covered thrust fraction.
+When a projectile hit finds a damage state, it applies simple impulse-scaled damage to that module. When the hit target also has a `ShipPhysicsCore`, the projectile can route the impact impulse through `ApplyImpactImpulse`. Target dummy feedback still uses the same hit path, so the visual prototype remains unchanged while module damage and impulse diagnostics become inspectable.
 
-RCS uses the final bounded allocator output as the source of truth. After translation, attitude, and SAS demands are merged into per-nozzle throttle values, the controller sums those final nozzle throttles once, requests fuel for that total, and scales every applied nozzle force by the available fuel fraction. This means a nozzle that contributes to combined commands consumes fuel once for its final throttle share rather than once per command source.
-
-Fuel mass feeds the module mass model through the generated fuel-tank descriptor. `PlayerShipController` reapplies mass properties after thruster fuel use in the physics step, so consumed fuel reduces Rigidbody mass and fuel COM contribution. The debug overlay reports main and RCS fuel requested, fuel used, applied fraction, and RCS allocator throttle totals.
+The debug overlay reports damaged module count, the worst module integrity, the worst capability multiplier, last impact impulse, and last impact torque impulse.
 
 ## SAS And Inertia
 
@@ -182,21 +189,7 @@ The recoil path uses the same core force-at-position telemetry as thrusters, so 
 
 Projectiles store their previous physics position and sweep from that position to the current Rigidbody position each `FixedUpdate`. The sweep uses `Physics.SphereCastAll` with the projectile collider radius, then falls back to `Physics.RaycastAll` for a centerline check. A projectile reports only one hit, shares the same report path for sweep and `OnCollisionEnter`, and ignores its own collider plus all firing-ship colliders passed in at spawn.
 
-`ProjectileHitData` is the handoff shape for later damage work. It exposes whether the hit came from sweep or collision, the hit collider, attached Rigidbody, optional `PrototypeTargetDummy`, hit point, normal, incoming velocity, and timestamp. This change does not add a damage model; target dummies still only play prototype hit feedback.
-
-## Atmosphere Layer
-
-The prototype remains vacuum by default. No atmosphere object is created by `PrototypeBootstrap`, and `PrototypeAtmosphereVolume` starts with simulation disabled and zero density. A ship only receives atmospheric force when its `ShipPhysicsCore` is explicitly configured with an enabled atmosphere volume or global field.
-
-The first atmosphere force is drag:
-
-```text
-dragForce = -relativeVelocity.normalized * 0.5 * density * speed^2 * dragCoefficient * referenceArea
-```
-
-`PrototypeAtmosphereVolume` supplies density, drag coefficient, reference area, optional wind velocity, and optional spherical bounds. Lift and heating are represented as zero diagnostics for now so later slices can extend the same sample model without changing the default vacuum behavior.
-
-`ShipPhysicsCore.ApplyEnvironmentForces` samples the configured atmosphere and applies non-zero drag at the center of mass through the same force-accounting path used by thrust, RCS, recoil, and other environment forces. The debug overlay reports atmosphere state, density, relative speed, drag coefficient, reference area, and the drag force vector.
+`ProjectileHitData` remains the low-level hit shape. It exposes whether the hit came from sweep or collision, the hit collider, attached Rigidbody, optional `PrototypeTargetDummy`, hit point, normal, incoming velocity, and timestamp. `PrototypeImpactEventData` is built from that hit data for module damage and optional impulse routing.
 
 ## Optional Central Gravity
 
@@ -212,9 +205,24 @@ The acceleration is applied at the ship center of mass with `ForceMode.Accelerat
 
 The debug overlay reports the active gravity body, distance, `mu`, acceleration vector, diagnostic force, and whether the gravity step applied. This slice intentionally keeps the model to one central body. Future orbital gameplay should prefer readable sphere-of-influence or patched-conic transitions before considering full N-body simulation.
 
+## Floating Origin Infrastructure
+
+Large-world state is represented separately from Unity's local float transforms. `LargeWorldTransformState` stores double-precision absolute position and velocity beside the local Unity position, rotation, and angular velocity. `FloatingOriginBody` owns that state for a participating object, while `FloatingOriginManager` optionally shifts the local origin when its configured focus body crosses the local distance threshold.
+
+The manager is disabled by default and is not required by the current prototype scene. When enabled, a shift first captures each registered body's absolute state from the old origin, advances the absolute origin by the focus body's local offset, then reapplies every registered body at its new local position. Rigidbody linear and angular velocity are restored after the local position write so momentum survives the shift. Relative offsets between registered bodies are expected to remain stable.
+
+This infrastructure intentionally avoids flight-control, thruster, weapon, and custom-physics ownership. Those systems continue to operate on normal local transforms and `Rigidbody.worldCenterOfMass` while the registered bodies remain near the active local origin.
+
+Limitations for the first pass:
+
+- World-space particle systems can visually pop during an origin shift unless their live particles are separately offset.
+- Trail renderers and projectile sweep history use world positions; shift-aware compensation is needed before shifting active trails/projectiles in gameplay.
+- Physics joints, constraints, and connected bodies must all be registered together or they can see an artificial separation jump.
+- Streaming, multiplayer replication, planet-scale terrain, and custom double-precision physics remain out of scope.
+
 ## Physics Validation
 
-EditMode tests in `Assets/Tests/Editor/PrototypePhysicsValidationTests.cs` exercise deterministic generated ship probes from `PhysicsValidationProbe`. They cover throttle-only main force, gimbal cross-product torque, RCS translation and yaw allocation, fuel scaling and mass-flow behavior, projectile recoil detection, projectile sweep/self-hit checks, thermal heat rise, idle cooling, overheat hook activation, and a 0.02 vs 0.01 timestep comparison.
+EditMode tests in `Assets/Tests/Editor/PrototypePhysicsValidationTests.cs` exercise deterministic generated ship probes from `PhysicsValidationProbe`. They cover throttle-only main force, gimbal cross-product torque, RCS translation and yaw allocation, partial-fuel thrust scaling, projectile recoil detection, projectile sweep/self-hit checks, thermal heat rise, idle cooling, overheat hook activation, and a 0.02 vs 0.01 timestep comparison.
 
 Run the suite through Unity Test Runner EditMode or Unity MCP `run_tests(mode=EditMode)`. Store run output and deterministic probe evidence under the active spec folder, for example `.devtoolbox/specs/changes/validation-physics-test-suite/tests/test-protocol.md`.
 
@@ -222,7 +230,8 @@ Run the suite through Unity Test Runner EditMode or Unity MCP `run_tests(mode=Ed
 
 The current prototype intentionally defers deeper simulation layers:
 
-- full projectile damage and hit impulse effects,
+- full fuel mass flow across all thruster systems and fuel-dependent COM changes,
+- armor, leaks, part detachment, visual destruction, and full combat balance,
 - orbit prediction, sphere-of-influence transitions, patched conics, and floating origin,
 - additional SAS/autopilot modes, docking constraints, damage effects, full heat/power networking, and trajectory preview.
 
