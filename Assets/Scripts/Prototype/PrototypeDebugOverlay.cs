@@ -6,6 +6,7 @@ public class PrototypeDebugOverlay : MonoBehaviour
     [SerializeField] private ShipStats targetStats;
     [SerializeField] private Rigidbody targetRigidbody;
     [SerializeField] private Transform target;
+    [SerializeField] private SimpleFollowCamera followCamera;
     [SerializeField] private PlayerShipController shipController;
 
     [Header("Overlay")]
@@ -41,6 +42,11 @@ public class PrototypeDebugOverlay : MonoBehaviour
             targetRigidbody = target.GetComponent<Rigidbody>();
         }
 
+
+        if (followCamera == null)
+        {
+            followCamera = GetComponent<SimpleFollowCamera>();
+        }
         if (shipController == null)
         {
             shipController = target.GetComponent<PlayerShipController>();
@@ -130,6 +136,10 @@ public class PrototypeDebugOverlay : MonoBehaviour
         Vector3 mainStraight = shipController != null ? shipController.LastMainStraightForceWorld : Vector3.zero;
         Vector3 mainSteering = shipController != null ? shipController.LastMainSteeringForceWorld : Vector3.zero;
         Vector3 mainTorque = shipController != null ? shipController.LastMainGimbalTorque : Vector3.zero;
+        string cameraMode = followCamera != null ? followCamera.CameraModeName : "none";
+        float cameraAnchorError = followCamera != null ? followCamera.AnchorError : 0f;
+        float cameraLookYaw = followCamera != null ? followCamera.LookYaw : 0f;
+        float cameraLookPitch = followCamera != null ? followCamera.LookPitch : 0f;
         Vector3 mainForcePosition = shipController != null ? shipController.LastMainForcePositionWorld : centerOfMassWorld;
 
         Rect rect = new Rect(windowPosition.x, windowPosition.y, 620f, 560f);
@@ -142,6 +152,8 @@ public class PrototypeDebugOverlay : MonoBehaviour
         GUILayout.Label($"Mass: stats {targetStats.CurrentMass:0.0} kg, rb {rbMass:0.0} kg", labelStyle);
         GUILayout.Label($"Speed: {speedMps:0.0} m/s ({speedKph:0.0} km/h)", labelStyle);
         GUILayout.Label($"Velocity: {FormatVector(linearVelocity)} m/s", labelStyle);
+        GUILayout.Label($"Camera: {cameraMode}, anchor error {cameraAnchorError:0.000} m", labelStyle);
+        GUILayout.Label($"Camera look: yaw {cameraLookYaw:0.0} deg, pitch {cameraLookPitch:0.0} deg", labelStyle);
         GUILayout.Label($"Angular velocity: {FormatVector(angularVelocity)} rad/s", labelStyle);
         GUILayout.Label($"COM local: {FormatVector(centerOfMassLocal)}", labelStyle);
         GUILayout.Label($"COM world: {FormatVector(centerOfMassWorld)}", labelStyle);
@@ -255,6 +267,7 @@ public class PrototypeDebugOverlay : MonoBehaviour
         target = trackTarget;
         targetStats = stats;
         targetRigidbody = rb;
+        followCamera = GetComponent<SimpleFollowCamera>();
         shipController = trackTarget != null ? trackTarget.GetComponent<PlayerShipController>() : null;
     }
 

@@ -10,18 +10,18 @@
 - [x] Commit spec with spec title and changelog
 
 ## Implementation
-- [ ] Inspect current camera smoothing and lag behavior
-- [ ] Create DevToolbox execution for implementation slice
-- [ ] Update SimpleFollowCamera Mode 0 to exact ship-locked pose
-- [ ] Make Mode 0 mouse look momentary and anchor-safe
-- [ ] Preserve V debug camera modes and reset behavior
-- [ ] Add camera diagnostics to PrototypeDebugOverlay
-- [ ] Add test evidence under this spec change
+- [x] Inspect current camera smoothing and lag behavior
+- [x] Create DevToolbox execution for implementation slice
+- [x] Update SimpleFollowCamera Mode 0 to exact ship-locked pose
+- [x] Make Mode 0 mouse look momentary and anchor-safe
+- [x] Preserve V debug camera modes and reset behavior
+- [x] Add camera diagnostics to PrototypeDebugOverlay
+- [x] Add test evidence under this spec change
 
 ## Verification
-- [ ] Validate changed Unity scripts with Unity MCP
-- [ ] Refresh/compile scripts and check Unity console errors
-- [ ] Run deterministic anchor/no-lag probe through Unity MCP
-- [ ] Verify Rigidbody interpolation remains enabled for the player ship
-- [ ] Confirm DevToolbox spec validation passes
-- [ ] Commit implementation with spec title and changelog
+- [x] Validate changed Unity scripts with Unity MCP
+- [x] Refresh/compile scripts and check Unity console errors
+- [x] Run deterministic anchor/no-lag probe through Unity MCP
+- [x] Verify Rigidbody interpolation remains enabled for the player ship
+- [x] Confirm DevToolbox spec validation passes
+- [x] Commit implementation with spec title and changelog
