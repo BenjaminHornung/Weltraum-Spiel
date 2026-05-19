@@ -10,7 +10,7 @@
 - [x] Commit spec with spec title and changelog
 
 ## Implementation
-- [ ] Inspect existing Unity MCP probes and test evidence conventions
+- [x] Inspect existing Unity MCP probes and test evidence conventions
 - [ ] Define deterministic generated ship test setup
 - [ ] Add main thrust force/torque check
 - [ ] Add gimbal torque check
