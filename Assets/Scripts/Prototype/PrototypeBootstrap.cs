@@ -3,6 +3,7 @@ using UnityEngine;
 public class PrototypeBootstrap : MonoBehaviour
 {
     [SerializeField] private bool buildOnStart = true;
+    [SerializeField] private PrototypeShipConfig shipConfig;
     [SerializeField] private bool addOrientationMarkers = true;
     [SerializeField] private Vector3 shipStartPosition = new Vector3(0f, 0.5f, 0f);
 
@@ -46,6 +47,7 @@ public class PrototypeBootstrap : MonoBehaviour
         }
 
         var stats = GetOrAddComponent<ShipStats>(ship);
+        stats.ApplyConfig(shipConfig);
         var shipRigidbody = GetOrAddComponent<Rigidbody>(ship);
 
         shipRigidbody.useGravity = false;
@@ -56,13 +58,16 @@ public class PrototypeBootstrap : MonoBehaviour
 
         EnsureModuleParts(ship.transform);
         var mainNozzle = EnsureMainThrusterNozzle(ship.transform);
-        EnsureRcsThrusters(ship.transform);
+        EnsureRcsThrusters(ship.transform, shipConfig);
         RemoveRootFallbackChild(ship.transform, "Muzzle");
 
         var gun = GetOrAddComponent<GunModule>(ship);
         var engine = GetOrAddComponent<EngineVfxController>(ship);
         var mainThruster = GetOrAddComponent<MainThrusterModule>(ship);
         var rcs = GetOrAddComponent<RcsThrusterController>(ship);
+        gun.ApplyConfig(shipConfig);
+        mainThruster.ApplyConfig(shipConfig);
+        rcs.ApplyConfig(shipConfig);
         GetOrAddComponent<PlayerShipController>(ship);
 
         mainThruster.Configure(mainNozzle, shipRigidbody, stats);
@@ -152,24 +157,31 @@ public class PrototypeBootstrap : MonoBehaviour
         return nozzle;
     }
 
-    private static void EnsureRcsThrusters(Transform ship)
+    private static void EnsureRcsThrusters(Transform ship, PrototypeShipConfig config)
     {
         DestroyChildIfExists(ship, "RCS_Up");
         DestroyChildIfExists(ship, "RCS_Down");
         DestroyChildIfExists(ship, "RCS_Forward");
         DestroyChildIfExists(ship, "RCS_Back");
 
-        BuildRcsBlock(ship, "RCS_Top", new Vector3(0f, 0.7f, 0f), new Vector3(0.55f, 0.22f, 0.55f), Vector3.down);
-        BuildRcsBlock(ship, "RCS_Bottom", new Vector3(0f, -0.7f, 0f), new Vector3(0.55f, 0.22f, 0.55f), Vector3.up);
-        BuildRcsBlock(ship, "RCS_Left", new Vector3(-1.02f, 0f, 0f), new Vector3(0.22f, 0.55f, 0.55f), Vector3.right);
-        BuildRcsBlock(ship, "RCS_Right", new Vector3(1.02f, 0f, 0f), new Vector3(0.22f, 0.55f, 0.55f), Vector3.left);
+        BuildRcsBlock(ship, "RCS_Top", new Vector3(0f, 0.7f, 0f), new Vector3(0.55f, 0.22f, 0.55f), Vector3.down, config);
+        BuildRcsBlock(ship, "RCS_Bottom", new Vector3(0f, -0.7f, 0f), new Vector3(0.55f, 0.22f, 0.55f), Vector3.up, config);
+        BuildRcsBlock(ship, "RCS_Left", new Vector3(-1.02f, 0f, 0f), new Vector3(0.22f, 0.55f, 0.55f), Vector3.right, config);
+        BuildRcsBlock(ship, "RCS_Right", new Vector3(1.02f, 0f, 0f), new Vector3(0.22f, 0.55f, 0.55f), Vector3.left, config);
     }
 
-    private static void BuildRcsBlock(Transform ship, string blockName, Vector3 localPosition, Vector3 localScale, Vector3 blockedDirection)
+    private static void BuildRcsBlock(Transform ship, string blockName, Vector3 localPosition, Vector3 localScale, Vector3 blockedDirection, PrototypeShipConfig config)
     {
         var block = BuildModulePart(ship, blockName, PrimitiveType.Cube, localPosition, Quaternion.identity, localScale, RcsBlockColor);
         var thrusterBlock = GetOrAddComponent<RcsThrusterBlock>(block);
-        thrusterBlock.ConfigureDefault(DefaultRcsBlockThrust);
+        if (config != null)
+        {
+            thrusterBlock.ApplyConfig(config);
+        }
+        else
+        {
+            thrusterBlock.ConfigureDefault(DefaultRcsBlockThrust);
+        }
 
         Vector3[] directions = { Vector3.forward, Vector3.back, Vector3.left, Vector3.right, Vector3.up, Vector3.down };
         for (int i = 0; i < directions.Length; i++)

@@ -225,4 +225,20 @@ public class MainThrusterModule : MonoBehaviour
         gimbalLimitDegrees = Mathf.Max(0f, gimbalLimitDegrees);
         gimbalResponseScalar = Mathf.Clamp01(gimbalResponseScalar);
     }
+
+
+public void ApplyConfig(PrototypeShipConfig config)
+    {
+        if (config == null)
+        {
+            return;
+        }
+
+        PrototypeMainThrusterSettings settings = config.MainThruster;
+        settings.Clamp();
+        throttleScale = settings.throttleScale;
+        supportsGimbal = settings.supportsGimbal;
+        gimbalLimitDegrees = settings.gimbalLimitDegrees;
+        gimbalResponseScalar = settings.gimbalResponseScalar;
+    }
 }

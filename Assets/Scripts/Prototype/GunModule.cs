@@ -97,4 +97,17 @@ public class GunModule : MonoBehaviour
         var projectile = projectileObject.AddComponent<Projectile>();
         projectile.Initialize(shipRigidbody.linearVelocity + (muzzleTransform.forward * shipStats.ProjectileSpeed), shipStats.ProjectileLifetime);
     }
+
+
+public void ApplyConfig(PrototypeShipConfig config)
+    {
+        if (config == null)
+        {
+            return;
+        }
+
+        PrototypeGunSettings settings = config.Gun;
+        settings.Clamp();
+        projectileScale = settings.projectileScale;
+    }
 }

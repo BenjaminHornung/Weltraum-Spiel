@@ -52,6 +52,9 @@ Camera reset is bound to Backquote. Unity Input System key controls are physical
 
 ## Prototype Values
 
+- `PrototypeBootstrap` can optionally reference a `PrototypeShipConfig` ScriptableObject for prototype tuning. Leave it unassigned to keep the built-in default ship values.
+- Create a config from `Assets > Create > Prototype > Ship Config` to tune fuel, dry masses, main thruster force/gimbal response, RCS thrust/selection values, projectile speed/fire rate/lifetime/scale, and camera distance/height.
+- This config is only a prototype tuning container. It does not add a ship editor, inventory, save/load, or final module architecture.
 - Fuel is stored as kilograms.
 - Full main thrust consumes `0.6 kg/s`.
 - Main thrust stops when fuel reaches zero.

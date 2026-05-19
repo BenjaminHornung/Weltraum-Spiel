@@ -87,5 +87,44 @@ public class ShipStats : MonoBehaviour
         thrustForce = Mathf.Max(0f, thrustForce);
         projectileLifetime = Mathf.Max(0.1f, projectileLifetime);
     }
+
+
+public void ApplyConfig(PrototypeShipConfig config)
+    {
+        if (config == null)
+        {
+            return;
+        }
+
+        PrototypeShipMassSettings massSettings = config.Masses;
+        massSettings.Clamp();
+        cockpitMass = massSettings.cockpitMass;
+        hullMass = massSettings.hullMass;
+        fuelTankDryMass = massSettings.fuelTankDryMass;
+        engineMass = massSettings.engineMass;
+        gunMass = massSettings.gunMass;
+
+        PrototypeShipFuelSettings fuelSettings = config.Fuel;
+        fuelSettings.Clamp();
+        maxFuelKg = fuelSettings.maxFuelKg;
+        currentFuelKg = fuelSettings.currentFuelKg;
+        fullThrottleFuelKgPerSecond = fuelSettings.fullThrottleFuelKgPerSecond;
+
+        PrototypeMainThrusterSettings thrusterSettings = config.MainThruster;
+        thrusterSettings.Clamp();
+        thrustForce = thrusterSettings.thrustForce;
+        reverseThrustMultiplier = thrusterSettings.reverseThrustMultiplier;
+
+        PrototypeGunSettings gunSettings = config.Gun;
+        gunSettings.Clamp();
+        projectileSpeed = gunSettings.projectileSpeed;
+        projectileFireRate = gunSettings.projectileFireRate;
+        projectileLifetime = gunSettings.projectileLifetime;
+
+        PrototypeCameraSettings cameraSettings = config.Camera;
+        cameraSettings.Clamp();
+        followDistance = cameraSettings.followDistance;
+        followHeight = cameraSettings.followHeight;
+    }
 }
 

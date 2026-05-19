@@ -512,4 +512,21 @@ public class RcsThrusterController : MonoBehaviour
         sasAuthority = Mathf.Max(0f, sasAuthority);
         minSelectionDot = Mathf.Clamp(minSelectionDot, 0f, 0.95f);
     }
+
+
+public void ApplyConfig(PrototypeShipConfig config)
+    {
+        if (config == null)
+        {
+            return;
+        }
+
+        PrototypeRcsSettings settings = config.Rcs;
+        settings.Clamp();
+        translationForce = settings.translationForce;
+        attitudeForce = settings.attitudeForce;
+        sasAuthority = settings.sasAuthority;
+        minSelectionDot = settings.minSelectionDot;
+        RefreshNozzles();
+    }
 }
