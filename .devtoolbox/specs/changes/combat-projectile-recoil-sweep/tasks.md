@@ -23,7 +23,7 @@
 - [x] Validate changed Unity scripts with Unity MCP
 - [x] Verify relative projectile velocity is unchanged
 - [x] Verify recoil impulse direction and magnitude
-- [ ] Verify thin target sweep hit
+- [x] Verify thin target sweep hit
 - [ ] Verify no immediate self-hit
 - [ ] Add test evidence under this spec
 - [ ] Commit implementation with spec title and changelog
