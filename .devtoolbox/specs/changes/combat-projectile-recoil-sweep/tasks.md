@@ -21,7 +21,7 @@
 
 ## Verification
 - [x] Validate changed Unity scripts with Unity MCP
-- [ ] Verify relative projectile velocity is unchanged
+- [x] Verify relative projectile velocity is unchanged
 - [ ] Verify recoil impulse direction and magnitude
 - [ ] Verify thin target sweep hit
 - [ ] Verify no immediate self-hit
