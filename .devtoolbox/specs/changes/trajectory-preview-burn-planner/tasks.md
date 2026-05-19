@@ -14,7 +14,7 @@
 - [x] Define lightweight prediction state
 - [x] Add bounded fixed-step predictor
 - [x] Add debug trajectory output or gizmo placeholder
-- [ ] Add burn plan data shape
+- [x] Add burn plan data shape
 - [ ] Compare prediction against short real simulation
 - [ ] Document included/excluded forces
 
