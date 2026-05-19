@@ -140,13 +140,14 @@ public bool SupportsGimbal => supportsGimbal;
             return 0f;
         }
 
-        float fuelUsed = shipStats.ConsumeFuelForThrust(LastThrottleCommand, deltaTime);
-        if (fuelUsed <= 0f)
+        float appliedFuelFraction;
+        shipStats.ConsumeFuelForThrust(LastThrottleCommand, deltaTime, out appliedFuelFraction);
+        if (appliedFuelFraction <= 0f)
         {
             return 0f;
         }
 
-        LastAppliedThrust = LastThrottleCommand * shipStats.Thrust;
+        LastAppliedThrust = LastThrottleCommand * shipStats.Thrust * appliedFuelFraction;
         LastStraightForceWorld = baseDirection * LastAppliedThrust;
         LastSteeringForceWorld = (thrustDirection - baseDirection) * LastAppliedThrust;
         LastForceWorld = LastStraightForceWorld + LastSteeringForceWorld;

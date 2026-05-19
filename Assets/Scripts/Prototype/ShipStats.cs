@@ -51,13 +51,27 @@ public class ShipStats : MonoBehaviour
 
     public float ConsumeFuelForThrust(float normalizedThrottle, float deltaTime)
     {
+        float appliedFuelFraction;
+        return ConsumeFuelForThrust(normalizedThrottle, deltaTime, out appliedFuelFraction);
+    }
+
+    public float ConsumeFuelForThrust(float normalizedThrottle, float deltaTime, out float appliedFuelFraction)
+    {
         float fuelUse = FuelConsumptionKgPerSecond * Mathf.Clamp01(normalizedThrottle) * Mathf.Max(0f, deltaTime);
-        if (fuelUse <= 0f || CurrentFuelKg <= 0f)
+        if (fuelUse <= 0f)
         {
+            appliedFuelFraction = 1f;
             return 0f;
         }
 
         float previousFuel = CurrentFuelKg;
+        if (previousFuel <= 0f)
+        {
+            appliedFuelFraction = 0f;
+            return 0f;
+        }
+
+        appliedFuelFraction = Mathf.Clamp01(previousFuel / fuelUse);
         currentFuelKg = Mathf.Max(0f, previousFuel - fuelUse);
         return previousFuel - currentFuelKg;
     }
@@ -127,4 +141,3 @@ public void ApplyConfig(PrototypeShipConfig config)
         followHeight = cameraSettings.followHeight;
     }
 }
-

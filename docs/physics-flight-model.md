@@ -70,12 +70,18 @@ SAS uses a small local angular-velocity dead zone near zero and a minimum active
 
 The ship rigidbody uses zero linear and angular damping in this prototype. Releasing controls does not bleed off linear velocity, and rotation persists in vacuum unless SAS/RCS torque counters it.
 
+## Physics Validation
+
+EditMode tests in `Assets/Tests/Editor/PrototypePhysicsValidationTests.cs` exercise deterministic generated ship probes from `PhysicsValidationProbe`. They cover throttle-only main force, gimbal cross-product torque, RCS translation and yaw allocation, partial-fuel thrust scaling, projectile recoil detection, and a 0.02 vs 0.01 timestep comparison.
+
+Run the suite through Unity Test Runner EditMode or Unity MCP `run_tests(mode=EditMode)`. Store run output and deterministic probe evidence under the active spec folder, for example `.devtoolbox/specs/changes/validation-physics-test-suite/tests/test-protocol.md`.
+
 ## Deferred Physics Slices
 
 The current prototype intentionally defers deeper simulation layers:
 
 - module mass distribution, center of mass, and inertia tensor approximation,
-- fuel mass flow and fuel-dependent COM changes,
+- full fuel mass flow across all thruster systems and fuel-dependent COM changes,
 - SAS as a target-attitude PD controller,
 - projectile recoil and hit impulse,
 - gravity, orbit prediction, and floating origin,
