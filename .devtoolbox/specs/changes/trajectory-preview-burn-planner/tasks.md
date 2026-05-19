@@ -11,7 +11,7 @@
 
 ## Implementation
 - [x] Inspect shared physics formulas and gravity/fuel availability through Unity MCP
-- [ ] Define lightweight prediction state
+- [x] Define lightweight prediction state
 - [ ] Add bounded fixed-step predictor
 - [ ] Add debug trajectory output or gizmo placeholder
 - [ ] Add burn plan data shape
