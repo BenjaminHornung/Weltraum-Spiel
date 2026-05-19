@@ -24,4 +24,4 @@
 - [x] Verify damaged RCS/engine reduces physical authority
 - [x] Verify diagnostics show degraded state
 - [x] Add test evidence under this spec
-- [ ] Commit implementation with spec title and changelog
+- [x] Commit implementation with spec title and changelog
