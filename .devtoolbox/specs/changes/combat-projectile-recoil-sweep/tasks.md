@@ -20,7 +20,7 @@
 - [x] Update README and physics docs
 
 ## Verification
-- [ ] Validate changed Unity scripts with Unity MCP
+- [x] Validate changed Unity scripts with Unity MCP
 - [ ] Verify relative projectile velocity is unchanged
 - [ ] Verify recoil impulse direction and magnitude
 - [ ] Verify thin target sweep hit
