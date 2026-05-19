@@ -1,4 +1,4 @@
-﻿# Tasks: combat-impact-damage-physics
+# Tasks: combat-impact-damage-physics
 
 ## Spec
 - [x] Create spec change folder
@@ -10,7 +10,7 @@
 - [x] Commit spec with spec title and changelog
 
 ## Implementation
-- [ ] Inspect projectile hit feedback, module descriptors, RCS, and main thruster through Unity MCP
+- [x] Inspect projectile hit feedback, module descriptors, RCS, and main thruster through Unity MCP
 - [ ] Define impact event data
 - [ ] Add simple module damage state
 - [ ] Apply one physical degradation path for RCS or engine thrust
