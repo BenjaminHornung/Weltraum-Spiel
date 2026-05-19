@@ -274,6 +274,7 @@ public Vector3 LastRcsSasCommand => rcsThrusters != null ? rcsThrusters.LastSasC
                 sasMode,
                 SasTargetRotation,
                 HasSasTargetRotation,
+                LastFlightAssistRequest,
                 Time.fixedDeltaTime);
         }
 

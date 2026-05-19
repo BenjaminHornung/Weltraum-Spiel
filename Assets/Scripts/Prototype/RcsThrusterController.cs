@@ -90,6 +90,13 @@ public Vector3 LastSasCommand { get; private set; }
     public Vector3 LastSasDesiredTorqueWorld { get; private set; }
     public Vector3 LastSasManualOverrideAxes { get; private set; }
     public Vector3 LastSasSuppressedTorqueLocal { get; private set; }
+    public FlightAssistRequest LastFlightAssistRequest { get; private set; } = FlightAssistRequest.None;
+    public FlightAssistMode LastFlightAssistMode => LastFlightAssistRequest.mode;
+    public FlightAssistRequestSource LastFlightAssistSource => LastFlightAssistRequest.source;
+    public Vector3 LastFlightAssistForceWorld => LastFlightAssistRequest.forceWorld;
+    public Vector3 LastFlightAssistDesiredTorqueLocal => LastFlightAssistRequest.torqueLocal;
+    public Vector3 LastFlightAssistDesiredTorqueWorld { get; private set; }
+    public bool LastFlightAssistDebugOnly => LastFlightAssistRequest.debugOnlyNonPhysical;
     public Vector3 LastManualDesiredTorqueLocal { get; private set; }
     public Vector3 LastDesiredTorqueLocal { get; private set; }
     public Vector3 LastTranslationForce { get; private set; }
@@ -245,7 +252,7 @@ public Vector3 LastSasCommand { get; private set; }
 
 public void ApplyControls(Vector3 translationCommand, Vector3 attitudeCommand, bool stabilizeAngular, float deltaTime)
     {
-        ApplyControls(translationCommand, attitudeCommand, stabilizeAngular, SasControlMode.KillRotation, transform.rotation, false, deltaTime);
+        ApplyControls(translationCommand, attitudeCommand, stabilizeAngular, SasControlMode.KillRotation, transform.rotation, false, FlightAssistRequest.None, deltaTime);
     }
 
     public void ApplyControls(
@@ -257,6 +264,19 @@ public void ApplyControls(Vector3 translationCommand, Vector3 attitudeCommand, b
         bool hasSasTargetRotation,
         float deltaTime)
     {
+        ApplyControls(translationCommand, attitudeCommand, stabilizeAngular, sasMode, sasTargetRotation, hasSasTargetRotation, FlightAssistRequest.None, deltaTime);
+    }
+
+    public void ApplyControls(
+        Vector3 translationCommand,
+        Vector3 attitudeCommand,
+        bool stabilizeAngular,
+        SasControlMode sasMode,
+        Quaternion sasTargetRotation,
+        bool hasSasTargetRotation,
+        FlightAssistRequest flightAssistRequest,
+        float deltaTime)
+    {
         ResolveReferences();
         ResolveLegacyBlockReferences();
         RefreshNozzlesIfNeeded();
@@ -266,6 +286,8 @@ public void ApplyControls(Vector3 translationCommand, Vector3 attitudeCommand, b
         LastSasMode = sasMode;
         LastSasTargetRotation = sasTargetRotation;
         LastSasTargetRotationValid = hasSasTargetRotation;
+        LastFlightAssistRequest = flightAssistRequest;
+        LastFlightAssistDesiredTorqueWorld = transform.TransformDirection(flightAssistRequest.torqueLocal);
         if (!stabilizeAngular || shipRigidbody == null)
         {
             LastSasAngularVelocityLocal = Vector3.zero;
@@ -289,9 +311,15 @@ public void ApplyControls(Vector3 translationCommand, Vector3 attitudeCommand, b
 
         LastAttitudeCommand = Vector3.ClampMagnitude(manualAttitude + LastSasCommand, 1f);
         Vector3 desiredForceWorld = transform.TransformDirection(LastTranslationCommand) * Mathf.Max(0f, translationForce);
+        if (flightAssistRequest.HasPhysicalRequest)
+        {
+            desiredForceWorld += flightAssistRequest.forceWorld;
+        }
+
         float torqueAuthority = GetTorqueAuthority();
         LastManualDesiredTorqueLocal = Vector3.ClampMagnitude(manualAttitude, 1f) * torqueAuthority;
-        Vector3 desiredTorqueLocal = Vector3.ClampMagnitude(LastManualDesiredTorqueLocal + LastSasDesiredTorqueLocal, torqueAuthority);
+        Vector3 assistTorqueLocal = flightAssistRequest.HasPhysicalRequest ? flightAssistRequest.torqueLocal : Vector3.zero;
+        Vector3 desiredTorqueLocal = Vector3.ClampMagnitude(LastManualDesiredTorqueLocal + LastSasDesiredTorqueLocal + assistTorqueLocal, torqueAuthority);
         LastDesiredTorqueLocal = desiredTorqueLocal;
         Vector3 desiredTorqueWorld = transform.TransformDirection(desiredTorqueLocal);
         LastSasDesiredTorqueWorld = transform.TransformDirection(LastSasDesiredTorqueLocal);

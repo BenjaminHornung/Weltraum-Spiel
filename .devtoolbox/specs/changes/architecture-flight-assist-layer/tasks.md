@@ -14,7 +14,7 @@
 - [x] Define flight-assist mode enum/data
 - [x] Add explicit request-source diagnostics
 - [x] Ensure Simulation Mode preserves momentum
-- [ ] Route any assist force/torque through core/allocators
+- [x] Route any assist force/torque through core/allocators
 - [ ] Mark debug-only non-physical helpers clearly if needed
 - [ ] Update README and physics docs
 
