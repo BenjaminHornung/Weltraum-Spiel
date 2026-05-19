@@ -15,7 +15,7 @@
 - [x] Add explicit request-source diagnostics
 - [x] Ensure Simulation Mode preserves momentum
 - [x] Route any assist force/torque through core/allocators
-- [ ] Mark debug-only non-physical helpers clearly if needed
+- [x] Mark debug-only non-physical helpers clearly if needed
 - [ ] Update README and physics docs
 
 ## Verification
