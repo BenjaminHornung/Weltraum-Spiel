@@ -38,6 +38,28 @@ public class DockingPortValidationTests
         }
     }
 
+    [Test]
+    public void DockingSoftCaptureRequestIsPhysicalAndBounded()
+    {
+        using (DockingFixture fixture = DockingFixture.CreateAligned(3f))
+        {
+            fixture.SourceBody.angularVelocity = Vector3.up * 10f;
+            DockingRelativeState state = fixture.Measure();
+            DockingEligibility eligibility = fixture.SourcePort.EvaluateEligibility(fixture.TargetPort, state);
+            DockingSoftCaptureRequest request = fixture.SourcePort.BuildSoftCaptureRequest(fixture.TargetPort, state, eligibility);
+
+            Assert.True(eligibility.canSoftCapture);
+            Assert.True(request.requested);
+            Assert.That(request.assistRequest.mode, Is.EqualTo(FlightAssistMode.AssistedFlight));
+            Assert.That(request.assistRequest.source, Is.EqualTo(FlightAssistRequestSource.Docking));
+            Assert.False(request.assistRequest.debugOnlyNonPhysical);
+            Assert.That(request.forceWorld.magnitude, Is.EqualTo(fixture.SourcePort.MaxSoftCaptureForce).Within(0.001f));
+            Assert.That(request.torqueLocal.magnitude, Is.EqualTo(fixture.SourcePort.MaxSoftCaptureTorque).Within(0.001f));
+            Assert.That(request.forceWorld.magnitude, Is.LessThanOrEqualTo(fixture.SourcePort.MaxSoftCaptureForce + 0.001f));
+            Assert.That(request.torqueLocal.magnitude, Is.LessThanOrEqualTo(fixture.SourcePort.MaxSoftCaptureTorque + 0.001f));
+        }
+    }
+
     private sealed class DockingFixture : System.IDisposable
     {
         public readonly GameObject Source;

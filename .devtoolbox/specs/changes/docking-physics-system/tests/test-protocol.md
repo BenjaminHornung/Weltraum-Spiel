@@ -72,3 +72,10 @@ Conclusion: docking should be implemented as a prototype component that computes
   - high relative speed prevents hard lock while still allowing soft capture when inside the soft velocity envelope.
 - Unity MCP `validate_script` on `Assets/Tests/Editor/DockingPortValidationTests.cs` returned 0 errors and 1 nullable-style warning about `GetComponent` checks.
 - Unity MCP EditMode test job `f8d4cf90807641b39170bfa609dd1439` passed 1/1.
+
+## 2026-05-19 - Soft Capture Bounds
+
+- Added `DockingSoftCaptureRequestIsPhysicalAndBounded`.
+- The test verifies a soft-capture request is `AssistedFlight`, source `Docking`, not debug-only, and clamps both force and torque to the source port maximums.
+- Unity MCP `validate_script` on `Assets/Tests/Editor/DockingPortValidationTests.cs` returned 0 errors and 1 nullable-style warning about `GetComponent` checks.
+- Unity MCP EditMode test job `1d29658e21654ed695c623a6ba18c1f5` passed 1/1.

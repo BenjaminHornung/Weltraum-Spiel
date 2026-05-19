@@ -21,7 +21,7 @@
 ## Verification
 - [x] Validate changed Unity scripts with Unity MCP
 - [x] Verify angle, distance, and velocity rejection cases
-- [ ] Verify soft capture requests are bounded
+- [x] Verify soft capture requests are bounded
 - [ ] Verify hard lock only occurs when constraints pass
 - [ ] Add test evidence under this spec
 - [ ] Commit implementation with spec title and changelog
