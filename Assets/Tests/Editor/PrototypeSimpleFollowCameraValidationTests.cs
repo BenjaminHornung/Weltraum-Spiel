@@ -98,6 +98,114 @@ public class PrototypeSimpleFollowCameraValidationTests
     }
 
     [Test]
+    public void HighestPriorityCameraAnchorWinsOverVisualBoundsForFocus()
+    {
+        GameObject ship = new GameObject("SimpleFollowCameraTestShip");
+        ShipStats stats = ship.AddComponent<ShipStats>();
+        SimpleFollowCamera camera = BuildCamera(ship);
+        GameObject visual = BuildVisualChild(ship, "SimpleFollowCameraOffsetVisual", Vector3.one * 3f);
+        visual.transform.localPosition = new Vector3(0f, 8f, 20f);
+        PrototypeCameraAnchor lowAnchor = BuildCameraAnchor(ship, "LowCameraAnchor", new Vector3(-4f, 1f, 0f), 1);
+        PrototypeCameraAnchor highAnchor = BuildCameraAnchor(ship, "HighCameraAnchor", new Vector3(3f, 2f, -1f), 10);
+
+        camera.BindTarget(ship.transform, stats);
+        InvokeLateUpdate(camera);
+
+        Assert.That(camera.FocusSourceLabel, Is.EqualTo("CameraAnchor"));
+        AssertVector(camera.FocusPoint, highAnchor.FocusPoint, 0.001f);
+        Assert.That(Vector3.Distance(camera.FocusPoint, visual.GetComponent<Renderer>().bounds.center), Is.GreaterThan(1f));
+        Assert.That(lowAnchor, Is.Not.Null);
+    }
+
+    [Test]
+    public void RigidbodyCenterOfMassWinsWhenNoCameraAnchorExists()
+    {
+        GameObject ship = new GameObject("SimpleFollowCameraTestShip");
+        ShipStats stats = ship.AddComponent<ShipStats>();
+        Rigidbody body = ship.AddComponent<Rigidbody>();
+        body.useGravity = false;
+        body.centerOfMass = new Vector3(1.5f, -0.25f, 2.25f);
+        GameObject visual = BuildVisualChild(ship, "SimpleFollowCameraOffsetVisual", Vector3.one * 2f);
+        visual.transform.localPosition = new Vector3(0f, 6f, 18f);
+        SimpleFollowCamera camera = BuildCamera(ship);
+
+        camera.BindTarget(ship.transform, stats);
+        InvokeLateUpdate(camera);
+
+        Assert.That(camera.FocusSourceLabel, Is.EqualTo("Rigidbody.worldCenterOfMass"));
+        AssertVector(camera.FocusPoint, body.worldCenterOfMass, 0.001f);
+        Assert.That(Vector3.Distance(camera.FocusPoint, visual.GetComponent<Renderer>().bounds.center), Is.GreaterThan(1f));
+    }
+
+    [Test]
+    public void VisualBoundsDriveDistanceWithoutMovingAnchorFocus()
+    {
+        GameObject ship = new GameObject("SimpleFollowCameraTestShip");
+        ShipStats stats = ship.AddComponent<ShipStats>();
+        PrototypeCameraAnchor anchor = BuildCameraAnchor(ship, "CameraAnchor", new Vector3(0f, 0.5f, 0f), 0);
+        GameObject visual = BuildVisualChild(ship, "SimpleFollowCameraLargeOffsetVisual", Vector3.one * 30f);
+        visual.transform.localPosition = new Vector3(0f, 0f, 35f);
+        SimpleFollowCamera camera = BuildCamera(ship);
+
+        camera.BindTarget(ship.transform, stats);
+        InvokeLateUpdate(camera);
+
+        Assert.That(camera.FocusSourceLabel, Is.EqualTo("CameraAnchor"));
+        AssertVector(camera.FocusPoint, anchor.FocusPoint, 0.001f);
+        Assert.True(camera.HasVisualBounds);
+        Assert.That(camera.VisualBoundsRadius, Is.GreaterThan(10f));
+        Assert.That(camera.BaseVisualDistance, Is.GreaterThan(stats.FollowDistance));
+        Assert.That(Vector3.Distance(camera.VisualBoundsCenter, camera.FocusPoint), Is.GreaterThan(1f));
+    }
+
+    [Test]
+    public void OrbitZoomPreservesViewRayToSemanticFocusWhenAnchorExists()
+    {
+        GameObject ship = new GameObject("SimpleFollowCameraTestShip");
+        ShipStats stats = ship.AddComponent<ShipStats>();
+        BuildCameraAnchor(ship, "CameraAnchor", new Vector3(0f, 1f, 0f), 0);
+        GameObject visual = BuildVisualChild(ship, "SimpleFollowCameraOffsetVisual", Vector3.one * 4f);
+        visual.transform.localPosition = new Vector3(4f, 2f, 12f);
+        SimpleFollowCamera camera = BuildCamera(ship);
+
+        camera.BindTarget(ship.transform, stats);
+        camera.CycleCameraMode();
+        InvokeLateUpdate(camera);
+
+        Vector3 focus = camera.FocusPoint;
+        Vector3 beforeRay = (camera.transform.position - focus).normalized;
+
+        camera.AdjustZoom(-3f);
+        InvokeLateUpdate(camera);
+
+        Vector3 afterRay = (camera.transform.position - camera.FocusPoint).normalized;
+        Assert.That(camera.FocusSourceLabel, Is.EqualTo("CameraAnchor"));
+        Assert.That(Vector3.Angle(beforeRay, afterRay), Is.LessThan(0.1f), "Zoom should preserve the semantic focus ray when an anchor exists.");
+    }
+
+    [Test]
+    public void DiagnosticsReportTargetFocusVisualBoundsAndDistance()
+    {
+        GameObject ship = new GameObject("SimpleFollowCameraTestShip");
+        ShipStats stats = ship.AddComponent<ShipStats>();
+        PrototypeCameraAnchor anchor = BuildCameraAnchor(ship, "CameraAnchor", new Vector3(0f, 1f, 0f), 0);
+        GameObject visual = BuildVisualChild(ship, "SimpleFollowCameraVisual", Vector3.one * 2f);
+        visual.transform.localPosition = new Vector3(0f, 2f, 5f);
+        SimpleFollowCamera camera = BuildCamera(ship);
+
+        camera.BindTarget(ship.transform, stats);
+        InvokeLateUpdate(camera);
+
+        Assert.That(camera.TargetName, Is.EqualTo(ship.name));
+        Assert.That(camera.FocusSourceLabel, Is.EqualTo("CameraAnchor"));
+        AssertVector(camera.FocusPoint, anchor.FocusPoint, 0.001f);
+        Assert.True(camera.HasVisualBounds);
+        AssertVector(camera.VisualBoundsCenter, visual.GetComponent<Renderer>().bounds.center, 0.001f);
+        Assert.That(camera.VisualBoundsRadius, Is.GreaterThan(0f));
+        Assert.That(camera.EffectiveDistance, Is.GreaterThan(0f));
+    }
+
+    [Test]
     public void VisualBoundsReframeChangesBaseDistanceWithinConfiguredClamps()
     {
         GameObject ship = new GameObject("SimpleFollowCameraTestShip");
@@ -215,6 +323,23 @@ public class PrototypeSimpleFollowCameraValidationTests
         visual.transform.localPosition = Vector3.zero;
         visual.transform.localScale = scale;
         return visual;
+    }
+
+    private static PrototypeCameraAnchor BuildCameraAnchor(GameObject parent, string name, Vector3 localPosition, int priority)
+    {
+        GameObject anchorObject = new GameObject(name);
+        anchorObject.transform.SetParent(parent.transform, false);
+        anchorObject.transform.localPosition = localPosition;
+        PrototypeCameraAnchor anchor = anchorObject.AddComponent<PrototypeCameraAnchor>();
+        FieldInfo priorityField = typeof(PrototypeCameraAnchor).GetField("priority", NonPublicInstance);
+        Assert.NotNull(priorityField);
+        priorityField.SetValue(anchor, priority);
+        return anchor;
+    }
+
+    private static void AssertVector(Vector3 actual, Vector3 expected, float tolerance)
+    {
+        Assert.That(Vector3.Distance(actual, expected), Is.LessThanOrEqualTo(tolerance), $"Expected {expected}, got {actual}.");
     }
 
     private static void InvokeLateUpdate(SimpleFollowCamera camera)

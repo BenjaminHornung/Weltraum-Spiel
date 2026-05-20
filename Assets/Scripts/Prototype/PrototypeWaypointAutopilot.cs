@@ -68,12 +68,16 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     [SerializeField] private float finalApproachThrottle = 0.25f;
     [SerializeField] private float finalApproachLateralToleranceMetersPerSecond = 0.2f;
     [SerializeField] private float lateralCorrectionSpeed = 6f;
+    [SerializeField] private float lateralCorrectionDampingSeconds = 2f;
+    [SerializeField] private float holdCompletionSpeedMetersPerSecond = 0.12f;
+    [SerializeField] private float obstacleClearanceRadiusMeters = 8f;
     [SerializeField] private float fuelReserveSeconds = 8f;
 
     [Header("Runtime")]
     [SerializeField] private Rigidbody shipRigidbody;
     [SerializeField] private ShipStats shipStats;
     [SerializeField] private PlayerShipController shipController;
+    [SerializeField] private PrototypeObstacleDetector obstacleDetector;
 
     private bool autopilotEngaged;
     private bool togglePressedLastFrame;
@@ -87,6 +91,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private Vector3 desiredBurnDirection;
     private bool limitedFinalApproachCapability;
     private PrototypeMomentumAssist momentumAssist;
+    private PrototypeTrajectoryPlanner trajectoryPlanner;
 
     public PrototypeWaypointAutopilotState CurrentState { get; private set; } = PrototypeWaypointAutopilotState.Idle;
     public PrototypeNavigationTarget CurrentTarget => currentTarget;
@@ -109,6 +114,21 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     public Vector3 RequestedRcsTranslation => requestedRcsTranslation;
     public Vector3 DesiredBurnDirection => desiredBurnDirection;
     public bool LimitedFinalApproachCapability => limitedFinalApproachCapability;
+    public PrototypeObstacleDetectionResult LastObstacleDetection { get; private set; }
+    public PrototypeTrajectoryPlan LastTrajectoryPlan { get; private set; }
+    public PrototypeTrajectoryPhase LastTrajectoryPhase => LastTrajectoryPlan.phase;
+    public bool NavigationObstacleDetected => LastObstacleDetection.detected;
+    public string NavigationPlanStatus => string.IsNullOrWhiteSpace(LastTrajectoryPlan.status) ? "clear" : LastTrajectoryPlan.status;
+    public PrototypeTrajectoryPlan CurrentPlan => LastTrajectoryPlan;
+    public string ObstacleStatus => LastObstacleDetection.hasObstacle
+        ? $"{LastTrajectoryPlan.obstacleLabel} @ {LastObstacleDetection.hitDistance:0.0}m"
+        : "clear";
+    public Vector3 AvoidanceWaypoint => LastTrajectoryPlan.avoidanceWaypoint;
+    public float PlannedEta => LastTrajectoryPlan.plannedEtaSeconds;
+    public float PlannedStoppingDistance => LastTrajectoryPlan.plannedStoppingDistance;
+    public Vector3 RequestedAcceleration => LastTrajectoryPlan.desiredAccelerationWorld;
+    public Vector3 RequestedRcsForce => requestedRcsTranslation;
+    public string FailureReason => ArrivalFailureReason;
 
     private void Awake()
     {
@@ -155,6 +175,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     {
         ResolveReferences();
         RefreshDiagnostics();
+        RefreshNavigationPlan();
 
         if (!autopilotEngaged)
         {
@@ -199,13 +220,17 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         if (HasArrived())
         {
             SetState(PrototypeWaypointAutopilotState.HoldPosition, "holding");
-            ClearCommands();
-            ApplyLateralCorrection();
             arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.Hold;
             arrivalFailureReason = string.Empty;
             limitedFinalApproachCapability = false;
-            SetState(PrototypeWaypointAutopilotState.Complete, "arrived");
-            autopilotEngaged = false;
+            ApplyHoldDamping();
+            if (ShouldCompleteHold())
+            {
+                ClearCommands();
+                SetState(PrototypeWaypointAutopilotState.Complete, "arrived");
+                autopilotEngaged = false;
+            }
+
             return;
         }
 
@@ -272,6 +297,8 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         requestedMainThrottle = 0f;
         requestedRcsTranslation = Vector3.zero;
         desiredBurnDirection = Vector3.zero;
+        LastObstacleDetection = PrototypeObstacleDetectionResult.Clear(GetObstacleClearanceRadius());
+        LastTrajectoryPlan = PrototypeTrajectoryPlan.Clear(LastMetrics.directionToTarget.sqrMagnitude > 0.0001f ? LastMetrics.directionToTarget : transform.forward);
     }
 
     public void Abort(string reason = "aborted")
@@ -326,6 +353,13 @@ public void ResetForBootstrap()
     {
         RefreshDiagnostics();
         return LastMetrics;
+    }
+
+    public void ReplanNow()
+    {
+        ResolveReferences();
+        RefreshDiagnostics();
+        RefreshNavigationPlan();
     }
 
     public static PrototypeWaypointAutopilotMetrics CalculateMetrics(
@@ -411,6 +445,16 @@ public void ResetForBootstrap()
         bool requestedFineApproach = inFinalApproachWindow && !LastMetrics.shouldBrake;
         bool hasLowLateralSpeed = LastMetrics.lateralSpeed <= Mathf.Max(0.05f, finalApproachLateralToleranceMetersPerSecond);
 
+        if (LastTrajectoryPlan.RequiresAvoidance)
+        {
+            arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.LongRangeBurn;
+            limitedFinalApproachCapability = false;
+            arrivalFailureReason = string.Empty;
+            SetState(PrototypeWaypointAutopilotState.Accelerate, "avoidance");
+            ApplyAutopilotRequest(LastTrajectoryPlan.desiredBurnDirection, LastTrajectoryPlan.mainThrottleLimit);
+            return;
+        }
+
         if ((LastMetrics.shouldBrake || (LastMetrics.distance <= GetArrivalDistance() && !requestedFineApproach))
             && LastMetrics.distance <= Mathf.Max(finalApproachDistanceMeters, GetArrivalDistance() * 2f))
         {
@@ -488,7 +532,7 @@ public void ResetForBootstrap()
         }
 
         Vector3 attitudeCommand = Vector3.zero;
-        Vector3 assistForceWorld = ComputeLateralCorrectionForceWorld();
+        Vector3 assistForceWorld = CombineRcsForces(ComputeLateralCorrectionForceWorld(), LastTrajectoryPlan.requestedRcsForceWorld);
         float requestedMainThrottle = 0f;
         Vector3 desiredDirectionNormalized = Vector3.zero;
 
@@ -523,6 +567,17 @@ public void ResetForBootstrap()
         requestedMainThrottle = Mathf.Clamp01(requestedMainThrottle);
         this.requestedMainThrottle = requestedMainThrottle;
         this.requestedRcsTranslation = assistForceWorld;
+        PrototypeTrajectoryPlan updatedPlan = LastTrajectoryPlan;
+        updatedPlan.requestedMainThrottle = requestedMainThrottle;
+        updatedPlan.requestedRcsForceWorld = assistForceWorld;
+        updatedPlan.desiredBurnDirectionWorld = desiredBurnDirection;
+        updatedPlan.desiredAccelerationWorld = desiredDirectionNormalized * GetMaxAcceleration() * requestedMainThrottle;
+        if (assistForceWorld.sqrMagnitude > 0.0001f)
+        {
+            updatedPlan.desiredAccelerationWorld += assistForceWorld / GetShipMassKg();
+        }
+
+        LastTrajectoryPlan = updatedPlan;
         shipController.SetExternalFlightAssistRequest(new FlightAssistRequest(
             FlightAssistMode.AssistedFlight,
             FlightAssistRequestSource.WaypointAutopilot,
@@ -566,9 +621,70 @@ private Vector3 ComputeLateralCorrectionForceWorld()
             return Vector3.zero;
         }
 
-        return correctionWorld.sqrMagnitude > 0.0001f
-            ? correctionWorld.normalized * Mathf.Clamp01(LastMetrics.lateralSpeed / Mathf.Max(0.1f, lateralCorrectionSpeed)) * rcsTranslationScale
-            : Vector3.zero;
+        if (correctionWorld.sqrMagnitude <= 0.0001f)
+        {
+            return Vector3.zero;
+        }
+
+        float mass = shipRigidbody != null ? Mathf.Max(0.01f, shipRigidbody.mass) : shipStats != null ? Mathf.Max(0.01f, shipStats.CurrentMass) : 1f;
+        float desiredAcceleration = LastMetrics.lateralSpeed / Mathf.Max(0.1f, lateralCorrectionDampingSeconds);
+        float shapedForce = mass * desiredAcceleration * Mathf.Clamp01(LastMetrics.lateralSpeed / Mathf.Max(0.1f, lateralCorrectionSpeed));
+        return correctionWorld.normalized * Mathf.Min(rcsTranslationScale, shapedForce);
+    }
+
+    private Vector3 CombineRcsForces(Vector3 primaryForceWorld, Vector3 plannedForceWorld)
+    {
+        Vector3 combinedForce = primaryForceWorld + ClampRcsForceWorld(plannedForceWorld);
+        return ClampRcsForceWorld(combinedForce);
+    }
+
+    private Vector3 ClampRcsForceWorld(Vector3 forceWorld)
+    {
+        if (forceWorld.sqrMagnitude <= 0.0001f || !CanUseRcsTranslation())
+        {
+            return Vector3.zero;
+        }
+
+        return Vector3.ClampMagnitude(forceWorld, GetRcsTranslationForceScale());
+    }
+
+    private void ApplyHoldDamping()
+    {
+        if (shipController == null || shipRigidbody == null)
+        {
+            ClearCommands();
+            return;
+        }
+
+        Vector3 dampingForce = ComputeVelocityDampingForceWorld(shipRigidbody.linearVelocity);
+        requestedMainThrottle = 0f;
+        requestedRcsTranslation = dampingForce;
+        desiredBurnDirection = Vector3.zero;
+        shipController.SetExternalFlightAssistRequest(new FlightAssistRequest(
+            FlightAssistMode.AssistedFlight,
+            FlightAssistRequestSource.WaypointAutopilot,
+            dampingForce,
+            Vector3.zero,
+            0f,
+            false));
+    }
+
+    private Vector3 ComputeVelocityDampingForceWorld(Vector3 velocity)
+    {
+        if (!CanUseRcsTranslation() || velocity.sqrMagnitude <= 0.0001f)
+        {
+            return Vector3.zero;
+        }
+
+        float rcsAuthority = GetRcsTranslationForceScale();
+        if (rcsAuthority <= 0.0001f)
+        {
+            return Vector3.zero;
+        }
+
+        float mass = GetShipMassKg();
+        float desiredForce = mass * (velocity.magnitude / Mathf.Max(0.1f, lateralCorrectionDampingSeconds));
+        return -velocity.normalized * Mathf.Min(rcsAuthority, desiredForce);
     }
 
     private Vector3 ComputeAttitudeCommand(Vector3 desiredDirection)
@@ -603,6 +719,37 @@ private Vector3 ComputeLateralCorrectionForceWorld()
         ArrivalStatus = HasArrived() ? "arrived" : LastMetrics.shouldBrake ? "brake" : "en route";
     }
 
+    private void RefreshNavigationPlan()
+    {
+        if (trajectoryPlanner == null)
+        {
+            trajectoryPlanner = new PrototypeTrajectoryPlanner();
+        }
+
+        if (shipRigidbody == null || currentTarget == null)
+        {
+            LastObstacleDetection = PrototypeObstacleDetectionResult.Clear(GetObstacleClearanceRadius());
+            LastTrajectoryPlan = PrototypeTrajectoryPlan.Clear(Vector3.forward);
+            return;
+        }
+
+        float clearance = GetObstacleClearanceRadius();
+        LastObstacleDetection = obstacleDetector != null
+            ? obstacleDetector.DetectDirectPath(shipRigidbody, currentTarget.Position, clearance)
+            : PrototypeObstacleDetectionResult.Clear(clearance);
+        LastTrajectoryPlan = trajectoryPlanner.Plan(
+            new PrototypeTrajectorySnapshot(
+                shipRigidbody.worldCenterOfMass,
+                shipRigidbody.linearVelocity,
+                currentTarget.Position,
+                transform.forward,
+                shipRigidbody.mass,
+                GetMaxAcceleration(),
+                GetRcsTranslationForceScale(),
+                clearance),
+            LastObstacleDetection);
+    }
+
     private bool HasArrived()
     {
         float arrivalDistance = GetArrivalDistance();
@@ -610,8 +757,12 @@ private Vector3 ComputeLateralCorrectionForceWorld()
             && LastMetrics.distance <= arrivalDistance
             && shipRigidbody != null
             && LastMetrics.relativeSpeed <= Mathf.Max(0.05f, arrivalSpeedMetersPerSecond)
-            && LastMetrics.lateralSpeed <= Mathf.Max(0.05f, finalApproachLateralToleranceMetersPerSecond)
-            && LastMetrics.closingSpeed >= 0f;
+            && LastMetrics.lateralSpeed <= Mathf.Max(0.05f, finalApproachLateralToleranceMetersPerSecond);
+    }
+
+    private bool ShouldCompleteHold()
+    {
+        return shipRigidbody == null || shipRigidbody.linearVelocity.magnitude <= Mathf.Max(0.01f, holdCompletionSpeedMetersPerSecond);
     }
 
     private float GetArrivalDistance()
@@ -667,6 +818,22 @@ private Vector3 ComputeLateralCorrectionForceWorld()
             : 0f;
     }
 
+    private float GetObstacleClearanceRadius()
+    {
+        float detectorRadius = obstacleDetector != null ? obstacleDetector.DefaultClearanceRadiusMeters : 0f;
+        return Mathf.Max(0.01f, obstacleClearanceRadiusMeters, detectorRadius);
+    }
+
+    private float GetShipMassKg()
+    {
+        if (shipRigidbody != null)
+        {
+            return Mathf.Max(0.01f, shipRigidbody.mass);
+        }
+
+        return shipStats != null ? Mathf.Max(0.01f, shipStats.CurrentMass) : 1f;
+    }
+
     private bool HasAnyNavigationAuthority()
     {
         return CanUseMainThrottle() || CanUseRcsTranslation();
@@ -697,6 +864,7 @@ private void ClearCommands()
         requestedMainThrottle = 0f;
         requestedRcsTranslation = Vector3.zero;
         desiredBurnDirection = Vector3.zero;
+        LastTrajectoryPlan = PrototypeTrajectoryPlan.Clear(LastMetrics.directionToTarget.sqrMagnitude > 0.0001f ? LastMetrics.directionToTarget : Vector3.forward);
     }
 
     private void HandleInput()
@@ -763,6 +931,18 @@ private void ClearCommands()
         {
             momentumAssist = GetComponent<PrototypeMomentumAssist>();
         }
+        if (obstacleDetector == null)
+        {
+            obstacleDetector = GetComponent<PrototypeObstacleDetector>();
+        }
+        if (obstacleDetector == null)
+        {
+            obstacleDetector = gameObject.AddComponent<PrototypeObstacleDetector>();
+        }
+        if (trajectoryPlanner == null)
+        {
+            trajectoryPlanner = new PrototypeTrajectoryPlanner();
+        }
         if (waypointManager == null)
         {
             waypointManager = GetComponent<PrototypeWaypointManager>();
@@ -789,6 +969,9 @@ private void ClearCommands()
         finalApproachThrottle = Mathf.Clamp01(finalApproachThrottle);
         finalApproachLateralToleranceMetersPerSecond = Mathf.Max(0.01f, finalApproachLateralToleranceMetersPerSecond);
         lateralCorrectionSpeed = Mathf.Max(0.1f, lateralCorrectionSpeed);
+        lateralCorrectionDampingSeconds = Mathf.Max(0.1f, lateralCorrectionDampingSeconds);
+        holdCompletionSpeedMetersPerSecond = Mathf.Max(0.01f, holdCompletionSpeedMetersPerSecond);
+        obstacleClearanceRadiusMeters = Mathf.Max(0.01f, obstacleClearanceRadiusMeters);
         fuelReserveSeconds = Mathf.Max(0f, fuelReserveSeconds);
     }
 }

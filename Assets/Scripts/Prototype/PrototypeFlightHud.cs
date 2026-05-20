@@ -63,6 +63,7 @@ public class PrototypeFlightHud : MonoBehaviour
     public bool LastHasSasMarker { get; private set; }
     public bool LastHasTargetMarker { get; private set; }
     public bool LastHasDebugForceMarkers { get; private set; }
+    public string LastNavigationComputerSummary { get; private set; } = "NavComp: n/a";
 
     private void Start()
     {
@@ -89,7 +90,7 @@ public class PrototypeFlightHud : MonoBehaviour
         ResolveReferences();
         RefreshDiagnostics();
         EnsureStyles();
-        windowState.SetSize(Mathf.Max(300f, (navballRadius * 2f) + 84f), windowState.Collapsed ? 58f : Mathf.Max(300f, (navballRadius * 2f) + 166f));
+        windowState.SetSize(Mathf.Max(300f, (navballRadius * 2f) + 84f), windowState.Collapsed ? 58f : Mathf.Max(322f, (navballRadius * 2f) + 188f));
         windowState.Rect = GUI.Window(windowState.WindowId, windowState.Rect, DrawHudWindow, "HUD / Navball");
         windowState.ClampToScreen();
         windowState.SaveToPrefs();
@@ -254,6 +255,7 @@ public class PrototypeFlightHud : MonoBehaviour
         LastDesiredForceMarker = Vector2.zero;
         LastActualForceMarker = Vector2.zero;
         LastResidualForceMarker = Vector2.zero;
+        LastNavigationComputerSummary = BuildNavigationComputerSummary();
 
         Vector3 velocity = targetRigidbody != null ? targetRigidbody.linearVelocity : Vector3.zero;
         if (velocity.magnitude > velocityMarkerThreshold)
@@ -428,7 +430,7 @@ public class PrototypeFlightHud : MonoBehaviour
 
         DrawQuickActions(contentRect);
 
-        Rect hintRect = new Rect(contentRect.x + 8f, contentRect.yMax - 66f, contentRect.width - 16f, 52f);
+        Rect hintRect = new Rect(contentRect.x + 8f, contentRect.yMax - 86f, contentRect.width - 16f, 72f);
         string targetLabel = waypointAutopilot != null ? waypointAutopilot.TargetName : (trackedTarget != null ? trackedTarget.name : "none");
         PrototypeFlightControlDiagnostics diagnostics = shipController != null ? shipController.FlightControlDiagnostics : default;
         string cameraLine = followCamera != null
@@ -442,7 +444,7 @@ public class PrototypeFlightHud : MonoBehaviour
         string autopilotReason = waypointAutopilot != null && !string.IsNullOrWhiteSpace(waypointAutopilot.ArrivalFailureReason)
             ? $" | {waypointAutopilot.ArrivalFailureReason}"
             : string.Empty;
-        GUI.Label(hintRect, $"G Autopilot | Tab/B Target | Caps Mode\n{cameraLine}\nTarget: {targetLabel} | Auto: {autopilotLabel} | phase: {autopilotPhase}{autopilotReason} | {ResolveControlModeHint()} | {sasLabel}", smallLabelStyle);
+        GUI.Label(hintRect, $"G Autopilot | Tab/B Target | Caps Mode\n{cameraLine}\nTarget: {targetLabel} | Auto: {autopilotLabel} | phase: {autopilotPhase}{autopilotReason} | {ResolveControlModeHint()} | {sasLabel}\n{LastNavigationComputerSummary}", smallLabelStyle);
 
         Rect labelRect = new Rect(contentRect.x + 8f, contentRect.yMax - 14f, contentRect.width - 16f, 14f);
         GUI.Label(labelRect, "Mode: " + LastModeLabel, centeredLabelStyle);
@@ -542,6 +544,31 @@ public class PrototypeFlightHud : MonoBehaviour
         GUILayout.EndArea();
     }
 
+    private string BuildNavigationComputerSummary()
+    {
+        if (waypointAutopilot == null)
+        {
+            return "NavComp: n/a";
+        }
+
+        string phase = waypointAutopilot.CurrentPlan.statusLabel;
+        if (string.IsNullOrWhiteSpace(phase))
+        {
+            phase = waypointAutopilot.ArrivalPhase.ToString();
+        }
+
+        string avoidance = waypointAutopilot.CurrentPlan.avoidanceActive
+            ? "avoid " + FormatVectorCompact(waypointAutopilot.AvoidanceWaypoint)
+            : "avoid off";
+        string warning = waypointAutopilot.FuelFeasible ? string.Empty : " | WARN fuel";
+        if (!string.IsNullOrWhiteSpace(waypointAutopilot.FailureReason) && waypointAutopilot.FailureReason != "none")
+        {
+            warning += " | WARN " + waypointAutopilot.FailureReason;
+        }
+
+        return $"NavComp: {waypointAutopilot.TargetName} {FormatCompact(waypointAutopilot.DistanceToTarget)}m rel {FormatCompact(waypointAutopilot.LastMetrics.relativeSpeed)}m/s | {phase} | {(waypointAutopilot.AutopilotEngaged ? "auto on" : "auto off")} | obs {waypointAutopilot.ObstacleStatus} | {avoidance} | ETA {FormatCompactTime(waypointAutopilot.PlannedEta)} | main {waypointAutopilot.RequestedMainThrottle:0.00} RCS {FormatCompact(waypointAutopilot.RequestedRcsForce.magnitude)}N{warning}";
+    }
+
     private static Vector2 MarkerLabelOffset(Vector2 markerOffset, float size, string label)
     {
         if (label == "FWD")
@@ -590,5 +617,30 @@ public class PrototypeFlightHud : MonoBehaviour
             default:
                 return "Mode: Cruise";
         }
+    }
+
+    private static string FormatCompact(float value)
+    {
+        if (float.IsNaN(value))
+        {
+            return "n/a";
+        }
+
+        if (float.IsInfinity(value))
+        {
+            return "inf";
+        }
+
+        return value.ToString("0.0");
+    }
+
+    private static string FormatCompactTime(float value)
+    {
+        return float.IsInfinity(value) ? "inf" : FormatCompact(value) + "s";
+    }
+
+    private static string FormatVectorCompact(Vector3 value)
+    {
+        return $"({value.x:0},{value.y:0},{value.z:0})";
     }
 }

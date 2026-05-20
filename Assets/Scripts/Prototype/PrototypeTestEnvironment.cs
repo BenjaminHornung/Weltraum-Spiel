@@ -277,7 +277,7 @@ public class PrototypeTestEnvironment : MonoBehaviour
             GameObject asteroid = CreatePrimitive("Asteroid_Visual_" + (i + 1), PrimitiveType.Sphere, position, new Vector3(scale * 1.3f, scale * 0.8f, scale), group);
             asteroid.transform.rotation = Quaternion.Euler(i * 19f, i * 37f, i * 11f);
             ApplyMaterial(asteroid, Color.Lerp(ObstacleColor, Color.white, (i % 3) * 0.08f), false);
-            RemoveCollider(asteroid);
+            ConfigureNavigationObstacle(asteroid, scale);
             AddPoint("Asteroid " + (i + 1), PrototypeEnvironmentPointKind.Obstacle, position, ObstacleColor, scale);
         }
 
@@ -574,6 +574,28 @@ public class PrototypeTestEnvironment : MonoBehaviour
         {
             DestroyImmediate(collider);
         }
+    }
+
+    private static void ConfigureNavigationObstacle(GameObject target, float radiusMeters)
+    {
+        if (target == null)
+        {
+            return;
+        }
+
+        Collider collider = target.GetComponent<Collider>();
+        if (collider != null)
+        {
+            collider.isTrigger = true;
+        }
+
+        PrototypeNavigationObstacle obstacle = target.GetComponent<PrototypeNavigationObstacle>();
+        if (obstacle == null)
+        {
+            obstacle = target.AddComponent<PrototypeNavigationObstacle>();
+        }
+
+        obstacle.Configure(radiusMeters);
     }
 
     private static void DestroyObject(GameObject target)

@@ -16,6 +16,7 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
     [SerializeField] private GameObject importedDemoCargoVisualPrefab;
 
     private const string PrototypeRootName = "PrototypeShip";
+    private const string RuntimeManagerName = "PrototypeShipVisualSwitcher_Manager";
     private const string ImportedVisualRootName = "ImportedShipVisual";
     private const string ImportedScoutVisualPath = "Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.fbx";
     private const string ImportedCargoVisualPath = "Assets/Art/PrototypeShipKit/DemoShips/demo_cargo_mk1.fbx";
@@ -38,14 +39,22 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
         PrototypeShipVisualSwitcher switcher = Object.FindAnyObjectByType<PrototypeShipVisualSwitcher>();
         if (switcher != null)
         {
+            switcher.gameObject.name = RuntimeManagerName;
+            StripManagerObjectComponents(switcher.gameObject);
             switcher.ResetForRuntimeBaseline();
             return;
         }
 
-        var switcherObject = new GameObject("PrototypeShipVisualSwitcher");
+        var switcherObject = new GameObject(RuntimeManagerName);
         var runtimeSwitcher = switcherObject.AddComponent<PrototypeShipVisualSwitcher>();
+        StripManagerObjectComponents(switcherObject);
         runtimeSwitcher.ResetForRuntimeBaseline();
         Object.DontDestroyOnLoad(switcherObject);
+    }
+
+    private void Awake()
+    {
+        StripManagerObjectComponents(gameObject);
     }
 
     private void Update()
@@ -73,6 +82,7 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
 
     public void ApplyNow()
     {
+        StripManagerObjectComponents(gameObject);
         Transform ship = FindShip();
         if (ship != null)
         {
@@ -199,7 +209,11 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
         }
 
         SimpleFollowCamera followCamera = Camera.main.GetComponent<SimpleFollowCamera>();
-        followCamera?.ReframeToTargetVisualBounds();
+        if (followCamera != null)
+        {
+            followCamera.ReframeToTargetVisualBounds();
+            followCamera.SnapNextFrame();
+        }
     }
 
     private static PrototypeShipVisualMode NextVisualMode(PrototypeShipVisualMode mode)
@@ -317,6 +331,32 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
         for (int i = 0; i < rigidbodies.Length; i++)
         {
             DestroyComponent(rigidbodies[i]);
+        }
+    }
+
+    private static void StripManagerObjectComponents(GameObject manager)
+    {
+        if (manager == null)
+        {
+            return;
+        }
+
+        Renderer renderer = manager.GetComponent<Renderer>();
+        if (renderer != null)
+        {
+            DestroyComponent(renderer);
+        }
+
+        Collider collider = manager.GetComponent<Collider>();
+        if (collider != null)
+        {
+            DestroyComponent(collider);
+        }
+
+        Rigidbody body = manager.GetComponent<Rigidbody>();
+        if (body != null)
+        {
+            DestroyComponent(body);
         }
     }
 

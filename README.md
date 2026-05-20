@@ -75,14 +75,30 @@ Camera reset is bound to Backquote. Unity Input System key controls are physical
 - When debug vectors or RCS Test diagnostics are enabled, the HUD can also show desired, actual, and residual RCS force markers so allocator limitations are visible without reading the full debug overlay.
 - The mode label reserves `WORLD`, `VELOCITY`, `TARGET`, `DOCKING`, and `ORBIT/GRAVITY`, but the visible HUD only prints the active short label such as `Mode: TARGET`.
 - `PrototypeFlightDebugConsole` is a development console for testing. Refuel, reset, damage, spawn target, test pulses, variant selection, debug vector toggles, UI presets, control calibration, gimbal mode tuning, navigation/autopilot controls, and debug assist controls are debug-only actions, not final player-facing gameplay UI.
-- `PrototypeWaypointAutopilot` is a prototype navigation assist. It reports selected target, distance, closing speed, lateral speed, stopping distance, fuel estimate, autopilot state, ETA, and arrival status in the debug overlay.
+- `PrototypeWaypointAutopilot` is now backed by a small Navigation Computer. It reports selected target, distance, relative speed, current trajectory phase, obstacle status, avoidance status, planned ETA/stopping distance, requested acceleration, requested RCS force, requested main throttle, fuel estimate, and arrival/hold status.
+- The compact HUD includes a Navigation Computer panel for target, phase, distance, relative speed, autopilot state, obstacle/avoidance state, ETA, and main/RCS request summary. Warning chips surface `NO TARGET`, `NO AUTHORITY`, `FUEL INSUFFICIENT`, `OBSTACLE`, `AVOIDANCE`, and `HOLDING`.
+- The debug console has a Navigation Computer foldout with engage/abort, previous/next target, replan, obstacle-gizmo toggle, spawn obstacle test scenario, and clear obstacle test scenario controls. Test-scenario spawning stays in debug UI only.
+- `PrototypeMinimapOverlay` marks navigation obstacles and draws either `Ship -> Target` or `Ship -> AvoidanceWaypoint -> Target`, depending on the current plan.
 - `PrototypeMomentumAssist` exposes a physical Kill Momentum action. It commands existing main/RCS/SAS assist paths and reports Idle, AlignForBrake, MainBrake, RcsDamp, Complete, Aborted, FuelInsufficient, and NoAuthority; it is not a debug velocity reset.
+
+## Navigation Computer And Camera Anchor
+
+- `PrototypeNavigationObstacle` marks autopilot-blocking hazards with radius, clearance, display name, and gizmos. Radius falls back to collider or renderer bounds when no explicit radius is set.
+- `PrototypeObstacleDetector` uses SphereCast for collider-backed obstacles and a geometric line/sphere fallback for `PrototypeNavigationObstacle` components without colliders. It ignores the ship's own colliders and reports hit point, normal, distance, clearance, obstacle label, and avoidance direction.
+- `PrototypeTrajectoryPlanner` produces explicit phases: `Idle`, `AlignForBurn`, `LongRangeBurn`, `Coast`, `Avoidance`, `Brake`, `FinalApproach`, `Hold`, and `Failed`. A blocked direct path creates an avoidance waypoint and forbids main-burn direction into the obstacle corridor.
+- RCS trajectory requests are force-based and mass-scaled. Lateral correction uses `desiredAcceleration * rb.mass`, then clamps to available RCS translation authority instead of using a fixed normalized force.
+- Arrival uses distance plus full relative speed and lateral speed limits. It no longer requires `closingSpeed >= 0`, so a ship that is slightly drifting away inside the arrival envelope can still enter hold if relative velocity is low enough.
+- Hold dampens small residual velocity with RCS for a confirmation window before completion.
+- `PrototypeCameraAnchor` separates semantic camera focus from visual bounds. The focus prefers the highest-priority anchor, then Rigidbody center of mass, then visual bounds, then target position. Visual bounds still control fit distance and safe zoom.
+- `SimpleFollowCamera` now exposes focus source, focus point, visual-bounds center/radius, effective distance, zoom, target name, and bounds availability. Reframing changes distance but does not move focus away from the anchor/COM.
+- `PrototypeBootstrap` ensures a camera anchor on the prototype ship, keeps exactly one active main camera, rebinds HUD/debug/minimap/follow camera after rebuilds, and snaps/reframes the follow camera to the active ship.
+- `PrototypeShipVisualSwitcher_Manager` may live at the origin as a non-rendered/non-physical manager only. Imported visuals remain children of `PrototypeShip/ImportedShipVisual` and visual switching reframes the camera without moving the camera anchor.
 
 ## Prototype Test Environment
 
 - `PrototypeBootstrap` can generate a `PrototypeEnvironment` root each time the prototype is rebuilt. Rebuild clears the previous generated root first so the test range does not duplicate.
 - The environment is generated only from Unity primitives, LineRenderer rings/axes, simple materials, lights, and TextMesh labels. No external asset pack is required. Its default display mode favors a Training-style readable view instead of full debug clutter.
-- The generated test range includes an origin beacon, color-coded X/Y/Z axes, 100 m / 250 m / 500 m / 1000 m range rings, multiple target dummies, navigation beacons, approach gates, a station/hangar placeholder, and a non-damaging visual asteroid field.
+- The generated test range includes an origin beacon, color-coded X/Y/Z axes, 100 m / 250 m / 500 m / 1000 m range rings, multiple target dummies, navigation beacons, approach gates, a station/hangar placeholder, and a non-damaging asteroid field that can also be detected as Navigation Computer obstacles.
 - Targets use the existing `PrototypeTargetDummy` hit-feedback component. Beacons, gates, station, and obstacles are orientation landmarks for manual flight, RCS translation, minimap testing, and future waypoint/autopilot work. Large gate/range labels stay reduced or hidden unless fuller diagnostics are requested.
 
 ## Prototype Values
@@ -105,8 +121,8 @@ Camera reset is bound to Backquote. Unity Input System key controls are physical
 - SAS exposes proportional and derivative gains on `RcsThrusterController`. Manual pitch, yaw, or roll input masks SAS on that same axis while released axes continue to stabilize.
 - Flight assist is an explicit request layer with `Simulation`, `AssistedFlight`, and `DebugAssist` modes. Simulation mode sends no assist force or torque, assisted requests must go through the RCS allocator and `ShipPhysicsCore`, and debug-only requests are labeled so they cannot masquerade as physical flight. Momentum Assist adds a `MomentumAssist` request source for Kill Momentum so braking stays visible and physical.
 - Waypoint navigation creates three visible primitive targets at runtime. `Tab` and `B` cycle them, and `G` toggles a conservative autopilot that normalizes to Cruise mode, sends a `WaypointAutopilot` assist request, and combines main-throttle intent with RCS attitude/lateral correction when available.
-- The waypoint autopilot estimates stopping distance from current closing speed and conservative deceleration. It accounts for initial velocity and lateral velocity, and it may refuse a route with `FuelInsufficient` instead of pretending the ship can arrive.
-- Arrival now requires distance, full relative speed, and lateral speed limits together. Near the target it transitions through `LongRangeBurn`, `Brake`, `LateralCorrection`, `FinalApproach`, and `Hold` diagnostics for transparent behavior, and completion requires a valid relative-speed/lateral-speed envelope.
+- The waypoint autopilot estimates stopping distance from current closing speed and conservative deceleration. It also plans around detected obstacles, accounts for initial/lateral velocity, and may refuse a route with `FuelInsufficient` or `NoAuthority` instead of pretending the ship can arrive.
+- Arrival now requires distance, full relative speed, and lateral speed limits together. Near the target it transitions through `LongRangeBurn`, `Avoidance`, `Brake`, `LateralCorrection`, `FinalApproach`, and `Hold` diagnostics for transparent behavior, and completion requires a valid relative-speed/lateral-speed envelope.
 - Final approach prefers low main throttle and RCS-based lateral correction when available; when RCS is unavailable or disabled, coarse main-burn/brake remains possible and diagnostics report a reduced final-approach capability instead of a fake precision completion.
 - Failure/limitation reasons expose `FuelInsufficient`, `NoAuthority`, and reduced final-approach capability in the debug console telemetry.
 - `DockingPort` is a prototype docking data component. It reports world port frame data, relative state, eligibility diagnostics, bounded soft-capture `FlightAssistRequest` values, and a hard-lock placeholder that only requests lock after distance, angle, and velocity checks pass.
@@ -131,11 +147,11 @@ Optional CC0 assets, such as local low-poly ships or Kenney packs, may be consid
 ## Known Limits
 
 - This is not the final ship editor or gameplay architecture.
-- Camera framing tracks visible active child `Renderer` bounds for a tighter ship-centered baseline in `OrbitInspect` and `FreeInspect` without mutating `ShipStats` follow values.
+- Camera framing targets `PrototypeCameraAnchor` or Rigidbody COM for semantic focus. Visible active child `Renderer` bounds are used for distance/fit safety, not for shifting the semantic focus when an anchor/COM exists.
 - `V` cycles camera framing modes `ChaseLocked -> OrbitInspect -> Side -> FreeInspect -> ChaseLocked`, and camera distance can be adjusted continuously via scroll or debug controls.
 - SAS is a local PD torque controller routed through RCS, not a full flight computer or hidden angular damping layer.
 - Flight assist does not use hidden Rigidbody damping. Physical assist requests are allocator-limited; debug-only helpers are diagnostics/testing aids only.
-- Waypoint autopilot v0 is a local prototype assist, not an orbital navigator, map UI, docking planner, slingshot planner, or obstacle-avoidance system. It does not use hidden teleporting or direct Rigidbody velocity writes during runtime navigation.
+- The Navigation Computer is still local-space prototype guidance, not an orbital navigator, map UI, docking planner, slingshot planner, or full maneuver-node planner. It does not use hidden teleporting or direct Rigidbody velocity writes during runtime navigation.
 - Manual throttle, attitude, or RCS input aborts waypoint autopilot and active momentum assist where that assist is not deliberately in a hold/status state, returning control to the pilot.
 - Docking hard lock is currently a documented placeholder rather than an active joint. It is gated by docking constraints so later joint work can reuse the same diagnostics.
 - RCS allocation is a prototype bounded allocator, not a final optimizer, but it is transform-based and uses real lever arms around COM.

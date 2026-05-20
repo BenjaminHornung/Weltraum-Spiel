@@ -110,6 +110,7 @@ public class PrototypeBootstrap : MonoBehaviour
         EnsureRcsThrusters(ship.transform, layout, variant);
         PrototypeModuleMassLayout.ConfigureGeneratedPrototypeDescriptors(ship.transform, stats, layout);
         stats.ApplyMassProperties(shipRigidbody);
+        EnsureCameraAnchor(ship.transform, shipRigidbody);
         RemoveRootFallbackChild(ship.transform, "Muzzle");
 
         var gun = GetOrAddComponent<GunModule>(ship);
@@ -712,16 +713,7 @@ public class PrototypeBootstrap : MonoBehaviour
 
     private static void SetupMainCamera(Transform target, ShipStats stats, Rigidbody body, PrototypeTestEnvironment testEnvironment)
     {
-        var camera = Camera.main;
-        if (camera == null)
-        {
-            var existingMain = GameObject.Find("Main Camera");
-            if (existingMain != null)
-            {
-                camera = existingMain.GetComponent<Camera>();
-            }
-        }
-
+        var camera = ResolveSingleMainCamera();
         if (camera == null)
         {
             var camObj = new GameObject("Main Camera");
@@ -745,6 +737,8 @@ public class PrototypeBootstrap : MonoBehaviour
             follow = camera.gameObject.AddComponent<SimpleFollowCamera>();
         }
         follow.BindTarget(target, stats);
+        follow.ReframeToTargetVisualBounds();
+        follow.SnapNextFrame();
 
         var overlay = camera.gameObject.GetComponent<PrototypeDebugOverlay>();
         if (overlay == null)
@@ -779,6 +773,76 @@ public class PrototypeBootstrap : MonoBehaviour
             debugConsole = camera.gameObject.AddComponent<PrototypeFlightDebugConsole>();
         }
         debugConsole.Bind(target, stats, body, Object.FindAnyObjectByType<PrototypeBootstrap>());
+    }
+
+    private static Camera ResolveSingleMainCamera()
+    {
+        Camera selected = Camera.main;
+        if (selected == null)
+        {
+            GameObject existingMain = GameObject.Find("Main Camera");
+            selected = existingMain != null ? existingMain.GetComponent<Camera>() : null;
+        }
+
+        Camera[] cameras = Object.FindObjectsByType<Camera>(FindObjectsInactive.Include);
+        for (int i = 0; i < cameras.Length; i++)
+        {
+            Camera candidate = cameras[i];
+            if (candidate == null)
+            {
+                continue;
+            }
+
+            bool isMainCamera = candidate.CompareTag("MainCamera") || candidate.gameObject.name == "Main Camera";
+            if (!isMainCamera)
+            {
+                continue;
+            }
+
+            if (selected == null)
+            {
+                selected = candidate;
+                selected.gameObject.name = "Main Camera";
+                selected.tag = "MainCamera";
+                selected.gameObject.SetActive(true);
+                continue;
+            }
+
+            if (candidate != selected)
+            {
+                DestroyGameObject(candidate.gameObject);
+            }
+        }
+
+        if (selected != null)
+        {
+            selected.gameObject.name = "Main Camera";
+            selected.tag = "MainCamera";
+            selected.gameObject.SetActive(true);
+        }
+
+        return selected;
+    }
+
+    private static void EnsureCameraAnchor(Transform ship, Rigidbody shipRigidbody)
+    {
+        if (ship == null)
+        {
+            return;
+        }
+
+        Transform anchorTransform = ship.Find("PrototypeCameraAnchor");
+        if (anchorTransform == null)
+        {
+            anchorTransform = new GameObject("PrototypeCameraAnchor").transform;
+            anchorTransform.SetParent(ship, false);
+        }
+
+        anchorTransform.position = shipRigidbody != null ? shipRigidbody.worldCenterOfMass : ship.position;
+        if (anchorTransform.GetComponent<PrototypeCameraAnchor>() == null)
+        {
+            anchorTransform.gameObject.AddComponent<PrototypeCameraAnchor>();
+        }
     }
 
     private PrototypeTestEnvironment EnsureTestEnvironment()

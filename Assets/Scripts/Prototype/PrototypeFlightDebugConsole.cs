@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class PrototypeFlightDebugConsole : MonoBehaviour
 {
+    private const string ObstacleScenarioPrefix = "PrototypeNavObstacleScenario_";
+
     [SerializeField] private ShipStats targetStats;
     [SerializeField] private Rigidbody targetRigidbody;
     [SerializeField] private Transform target;
@@ -450,11 +452,42 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
         }
         GUILayout.EndHorizontal();
 
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("Replan Now"))
+        {
+            waypointAutopilot.ReplanNow();
+        }
+
+        if (GUILayout.Button("Toggle obstacle debug gizmos"))
+        {
+            ToggleObstacleDebugGizmos();
+        }
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("Spawn obstacle test scenario"))
+        {
+            SpawnObstacleTestScenario();
+        }
+
+        if (GUILayout.Button("Clear obstacle test scenario"))
+        {
+            ClearObstacleTestScenario();
+        }
+        GUILayout.EndHorizontal();
+
         GUILayout.Label($"Distance: {FormatCompact(waypointAutopilot.DistanceToTarget)} m", labelStyle);
         GUILayout.Label($"Closing speed: {FormatCompact(waypointAutopilot.ClosingSpeed)} m/s", labelStyle);
         GUILayout.Label($"Lateral speed: {FormatCompact(waypointAutopilot.LateralSpeed)} m/s", labelStyle);
         GUILayout.Label($"Stopping distance: {FormatCompact(waypointAutopilot.StoppingDistance)} m", labelStyle);
         GUILayout.Label($"Arrival phase: {waypointAutopilot.ArrivalPhase}", labelStyle);
+        PrototypeTrajectoryPlan plan = waypointAutopilot.CurrentPlan;
+        GUILayout.Label($"Plan: {plan.statusLabel} phase {plan.phase} valid {(plan.isValid ? "yes" : "no")}", labelStyle);
+        GUILayout.Label($"Desired accel: {FormatVector(waypointAutopilot.RequestedAcceleration)} m/s2", labelStyle);
+        GUILayout.Label($"Obstacle: {plan.obstacleLabel} @ {FormatCompact(plan.obstacleDistance)} m | {waypointAutopilot.ObstacleStatus}", labelStyle);
+        GUILayout.Label($"Avoidance waypoint: {FormatVector(waypointAutopilot.AvoidanceWaypoint)}", labelStyle);
+        GUILayout.Label($"Plan stop/ETA: {FormatCompact(waypointAutopilot.PlannedStoppingDistance)} m / {FormatFuel(waypointAutopilot.PlannedEta)} s", labelStyle);
+        GUILayout.Label($"Arrival envelope: dist <= {FormatCompact(waypointAutopilot.LastMetrics.distance)} m, speed {FormatCompact(waypointAutopilot.LastMetrics.relativeSpeed)} m/s, lateral {FormatCompact(waypointAutopilot.LastMetrics.lateralSpeed)} m/s", labelStyle);
         GUILayout.Label($"Fuel available/required: {FormatFuel(waypointAutopilot.AvailableBurnSeconds)} / {FormatFuel(waypointAutopilot.RequiredBurnSeconds)} s", labelStyle);
         GUILayout.Label($"Desired burn dir: {FormatVector(waypointAutopilot.DesiredBurnDirection)}", labelStyle);
         GUILayout.Label($"Req main throttle: {waypointAutopilot.RequestedMainThrottle:0.00}", labelStyle);
@@ -472,6 +505,67 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
         else
         {
             GUILayout.Label("Momentum Assist unavailable: no PrototypeMomentumAssist.", labelStyle);
+        }
+    }
+
+    private void ToggleObstacleDebugGizmos()
+    {
+        PrototypeNavigationObstacle[] obstacles = FindObjectsByType<PrototypeNavigationObstacle>(FindObjectsInactive.Exclude);
+        bool anyHidden = false;
+        for (int i = 0; i < obstacles.Length; i++)
+        {
+            if (obstacles[i] != null && !obstacles[i].ShowDebugGizmo)
+            {
+                anyHidden = true;
+                break;
+            }
+        }
+
+        for (int i = 0; i < obstacles.Length; i++)
+        {
+            if (obstacles[i] != null)
+            {
+                obstacles[i].SetDebugGizmoVisible(anyHidden);
+            }
+        }
+    }
+
+    private void SpawnObstacleTestScenario()
+    {
+        ClearObstacleTestScenario();
+        Vector3 origin = target != null ? target.position : Vector3.zero;
+        Vector3 forward = target != null ? target.forward : Vector3.forward;
+        Vector3 right = target != null ? target.right : Vector3.right;
+        CreateScenarioObstacle("Center", origin + forward * 80f, 8f);
+        CreateScenarioObstacle("Offset", origin + forward * 135f + right * 22f, 10f);
+        Physics.SyncTransforms();
+        waypointAutopilot?.ReplanNow();
+    }
+
+    private void CreateScenarioObstacle(string suffix, Vector3 position, float radiusMeters)
+    {
+        GameObject obstacle = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        obstacle.name = ObstacleScenarioPrefix + suffix;
+        obstacle.transform.position = position;
+        obstacle.transform.localScale = Vector3.one * Mathf.Max(0.1f, radiusMeters * 2f);
+        Collider obstacleCollider = obstacle.GetComponent<Collider>();
+        if (obstacleCollider != null)
+        {
+            obstacleCollider.isTrigger = true;
+        }
+
+        obstacle.AddComponent<PrototypeNavigationObstacle>().Configure(radiusMeters, 8f, true);
+    }
+
+    private void ClearObstacleTestScenario()
+    {
+        GameObject[] objects = FindObjectsByType<GameObject>(FindObjectsInactive.Exclude);
+        for (int i = 0; i < objects.Length; i++)
+        {
+            if (objects[i] != null && objects[i].name.StartsWith(ObstacleScenarioPrefix, StringComparison.Ordinal))
+            {
+                Destroy(objects[i]);
+            }
         }
     }
 

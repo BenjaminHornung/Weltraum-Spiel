@@ -202,6 +202,51 @@ The prototype names three modes:
 
 `PrototypeWaypointAutopilot` is also routed through the explicit request layer. Engaging it switches the controller to Normal/Cruise, enables RCS/SAS, aborts Momentum Assist, clears stale manual-input state, and sends one aggregated `WaypointAutopilot` request per fixed step. That request can contain lateral RCS force, attitude torque, and main-throttle intent together, so final-approach lateral correction is not overwritten by burn alignment.
 
+## Navigation Computer And Camera Focus
+
+`PrototypeWaypointAutopilot` now delegates trajectory decisions to `PrototypeTrajectoryPlanner` instead of directly treating every fixed step as a direct-target burn/brake reaction. The planner emits explicit phases:
+
+- `Idle`
+- `AlignForBurn`
+- `LongRangeBurn`
+- `Coast`
+- `Avoidance`
+- `Brake`
+- `FinalApproach`
+- `Hold`
+- `Failed`
+
+The autopilot still sends physical `FlightAssistRequest` values only. It does not assign `Rigidbody.position`, `Rigidbody.rotation`, `Rigidbody.linearVelocity`, or `Rigidbody.angularVelocity` in the runtime navigation path.
+
+Obstacle detection is handled by `PrototypeObstacleDetector`. Collider-backed obstacles use `Physics.SphereCast` with a cast radius derived from ship radius plus clearance. Cast distance is the maximum of minimum lookahead, velocity-scaled lookahead, and stopping-distance safety. `PrototypeNavigationObstacle` components without colliders are checked with a geometric line/sphere fallback so debug/environment points can still block a route. Ship-owned colliders are ignored.
+
+When direct line of sight is blocked, the planner sets `Avoidance`, computes a temporary avoidance waypoint, and keeps the desired burn direction out of the obstacle corridor. If the main thruster is not aligned within the configured burn angle, main throttle remains zero and RCS is used to push out of the blocked corridor while attitude aligns. Once the path is clear, the plan returns to normal direct-target phases.
+
+RCS requests are mass-based force requests:
+
+```text
+requestedRcsForceWorld = desiredAccelerationWorld * rb.mass
+```
+
+Lateral correction follows the same rule:
+
+```text
+desiredLateralAcceleration = -lateralVelocity / dampingSeconds
+requestedForce = desiredLateralAcceleration * rb.mass
+requestedForce = clampMagnitude(requestedForce, availableRcsTranslationAuthority)
+```
+
+Stopping decisions include planned stopping distance and conservative alignment lead time. Arrival uses distance, full relative speed, and lateral speed together. It intentionally does not require `closingSpeed >= 0`, because a ship drifting slightly away inside the arrival radius should still be able to hold when total relative speed is low enough. Hold uses RCS damping for a confirmation window before completion.
+
+`PrototypeCameraAnchor` separates semantic focus from visual fit. `SimpleFollowCamera` resolves focus in this order:
+
+1. Highest-priority `PrototypeCameraAnchor`
+2. `Rigidbody.worldCenterOfMass`
+3. Visual bounds center
+4. Target transform position
+
+Renderer bounds continue to drive perspective fit distance and safe minimum zoom, but they do not move the focus point when an anchor or COM is available. This keeps asymmetric/imported visuals from dragging the camera away from the ship center.
+
 ## Docking Prototype
 
 `DockingPort` is the first docking physics component. It defines a local port frame (`localPosition` and `localForward`) plus capture radius, hard-lock radius, angle limits, relative-velocity limits, soft-capture gains, maximum soft-capture force/torque, and hard-lock enablement. The world port position and forward direction are derived from the owning transform so moving a ship or module moves the port without separate bookkeeping.
