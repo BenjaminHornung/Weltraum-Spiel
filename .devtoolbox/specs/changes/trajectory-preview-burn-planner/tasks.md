@@ -24,4 +24,4 @@
 - [x] Verify gravity-only prediction matches short simulation tolerance
 - [x] Verify burn plan estimates direction/duration/throttle/fuel
 - [x] Add test evidence under this spec
-- [ ] Commit implementation with spec title and changelog
+- [x] Commit implementation with spec title and changelog
