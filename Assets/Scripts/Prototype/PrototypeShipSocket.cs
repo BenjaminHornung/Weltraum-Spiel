@@ -95,6 +95,13 @@ public static class PrototypeShipSocketUtility
     public const string RuntimeRcsNozzlePrefix = "RCS_Nozzle_";
     public const string ImportedRcsNozzleToken = "RCS_NOZZLE_";
     public const string MuzzleName = "Muzzle";
+    public const string WeaponTurretBasePrefix = "WEAPON_TURRET_BASE_";
+    public const string WeaponTurretYawPrefix = "WEAPON_TURRET_YAW_";
+    public const string WeaponTurretPitchPrefix = "WEAPON_TURRET_PITCH_";
+    public const string WeaponMuzzlePrefix = "WEAPON_MUZZLE_";
+    public const string WeaponMuzzleFlashPrefix = "WEAPON_MUZZLE_FLASH_";
+    public const string WeaponClearancePrefix = "WEAPON_CLEARANCE_";
+    public const string WeaponArcLimitPrefix = "WEAPON_ARC_LIMIT_";
 
     public static int EnsureSocketsInHierarchy(Transform root)
     {
@@ -206,6 +213,16 @@ public static class PrototypeShipSocketUtility
             {
                 return candidate;
             }
+
+            if (socketType == PrototypeShipSocketType.TurretYawPivot && IsWeaponTurretYawName(candidate.name))
+            {
+                return candidate;
+            }
+
+            if (socketType == PrototypeShipSocketType.TurretPitchPivot && IsWeaponTurretPitchName(candidate.name))
+            {
+                return candidate;
+            }
         }
 
         return null;
@@ -260,12 +277,43 @@ public static class PrototypeShipSocketUtility
             return false;
         }
 
+        if (IsWeaponMuzzleFlashName(transformName))
+        {
+            return false;
+        }
+
         string upper = transformName.ToUpperInvariant();
         return transformName == MuzzleName
             || transformName.StartsWith(MuzzleName, System.StringComparison.Ordinal)
             || upper == "MUZZLE"
             || upper.EndsWith("_MUZZLE", System.StringComparison.Ordinal)
             || upper.Contains("MUZZLE");
+    }
+
+    public static bool IsWeaponTurretBaseName(string transformName)
+    {
+        return StartsWithUpper(transformName, WeaponTurretBasePrefix);
+    }
+
+    public static bool IsWeaponTurretYawName(string transformName)
+    {
+        return StartsWithUpper(transformName, WeaponTurretYawPrefix);
+    }
+
+    public static bool IsWeaponTurretPitchName(string transformName)
+    {
+        return StartsWithUpper(transformName, WeaponTurretPitchPrefix);
+    }
+
+    public static bool IsWeaponMuzzleFlashName(string transformName)
+    {
+        return StartsWithUpper(transformName, WeaponMuzzleFlashPrefix);
+    }
+
+    public static bool IsWeaponSafetyMarkerName(string transformName)
+    {
+        return StartsWithUpper(transformName, WeaponClearancePrefix)
+            || StartsWithUpper(transformName, WeaponArcLimitPrefix);
     }
 
     public static bool TryInferDescriptor(Transform transform, out PrototypeShipSocketDescriptor descriptor)
@@ -310,19 +358,25 @@ public static class PrototypeShipSocketUtility
             return true;
         }
 
-        if (objectName == "TurretYawPivot" || objectName.EndsWith("_TURRET_YAW_PIVOT", System.StringComparison.Ordinal))
+        if (objectName == "TurretYawPivot" || objectName.EndsWith("_TURRET_YAW_PIVOT", System.StringComparison.Ordinal) || IsWeaponTurretYawName(objectName))
         {
-            descriptor = CreateDescriptor(objectName, PrototypeShipSocketType.TurretYawPivot, PrototypeShipSocketAxisRole.BarrelForward, partId, moduleId, groupId, PrototypeShipSocketDirection.Muzzle, false, true, "Future turret yaw pivot metadata.");
+            descriptor = CreateDescriptor(objectName, PrototypeShipSocketType.TurretYawPivot, PrototypeShipSocketAxisRole.BarrelForward, partId, moduleId, groupId, PrototypeShipSocketDirection.Muzzle, true, true, "Turret yaw pivot marker.");
             return true;
         }
 
-        if (objectName == "TurretPitchPivot" || objectName.EndsWith("_TURRET_PITCH_PIVOT", System.StringComparison.Ordinal))
+        if (objectName == "TurretPitchPivot" || objectName.EndsWith("_TURRET_PITCH_PIVOT", System.StringComparison.Ordinal) || IsWeaponTurretPitchName(objectName))
         {
-            descriptor = CreateDescriptor(objectName, PrototypeShipSocketType.TurretPitchPivot, PrototypeShipSocketAxisRole.BarrelForward, partId, moduleId, groupId, PrototypeShipSocketDirection.Muzzle, false, true, "Future turret pitch pivot metadata.");
+            descriptor = CreateDescriptor(objectName, PrototypeShipSocketType.TurretPitchPivot, PrototypeShipSocketAxisRole.BarrelForward, partId, moduleId, groupId, PrototypeShipSocketDirection.Muzzle, true, true, "Turret pitch pivot marker.");
             return true;
         }
 
-        if (objectName.Contains("CONN_") || objectName.Contains("HARDPOINT"))
+        if (IsWeaponTurretBaseName(objectName))
+        {
+            descriptor = CreateDescriptor(objectName, PrototypeShipSocketType.Hardpoint, PrototypeShipSocketAxisRole.BarrelForward, partId, moduleId, groupId, PrototypeShipSocketDirection.Muzzle, true, true, "Turret base marker.");
+            return true;
+        }
+
+        if (objectName.Contains("CONN_") || objectName.Contains("HARDPOINT") || IsWeaponSafetyMarkerName(objectName))
         {
             descriptor = CreateDescriptor(objectName, PrototypeShipSocketType.Hardpoint, PrototypeShipSocketAxisRole.ConnectorNormal, partId, moduleId, groupId, InferDirection(objectName), false, true, "Builder connector or hardpoint socket.");
             return true;
@@ -343,6 +397,12 @@ public static class PrototypeShipSocketUtility
             || objectName.Contains("VIS_PART_")
             || objectName.Contains("_Mesh")
             || objectName.Contains("GEO_");
+    }
+
+    private static bool StartsWithUpper(string value, string prefix)
+    {
+        return !string.IsNullOrEmpty(value)
+            && value.ToUpperInvariant().StartsWith(prefix, System.StringComparison.Ordinal);
     }
 
     private static PrototypeShipSocketDescriptor CreateDescriptor(string socketId, PrototypeShipSocketType socketType, PrototypeShipSocketAxisRole axisRole, string partId, string moduleId, string groupId, PrototypeShipSocketDirection direction, bool isRuntimeSocket, bool isBuilderSocket, string notes)

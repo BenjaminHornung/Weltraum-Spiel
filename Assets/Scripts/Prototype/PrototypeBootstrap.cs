@@ -111,6 +111,8 @@ public class PrototypeBootstrap : MonoBehaviour
         PrototypeModuleMassLayout.ConfigureGeneratedPrototypeDescriptors(ship.transform, stats, layout);
         stats.ApplyMassProperties(shipRigidbody);
         RemoveRootFallbackChild(ship.transform, "Muzzle");
+        var weaponBinder = GetOrAddComponent<PrototypeShipKitWeaponBinder>(ship);
+        weaponBinder.BindNow();
 
         var gun = GetOrAddComponent<GunModule>(ship);
         var engine = GetOrAddComponent<EngineVfxController>(ship);
@@ -391,16 +393,23 @@ public class PrototypeBootstrap : MonoBehaviour
                 GunColor,
                 PrototypeModuleMassRole.Gun,
                 gunEntry.ModuleId);
-            var muzzle = gun.transform.Find(gunEntry.MuzzleId);
-            if (muzzle == null)
-            {
-                var muzzleObj = new GameObject(gunEntry.MuzzleId);
-                muzzleObj.transform.SetParent(gun.transform, false);
-                muzzle = muzzleObj.transform;
-            }
+            string markerSuffix = SanitizeMarkerSuffix(gunEntry.ModuleId);
+            Transform baseMarker = EnsureChild(gun.transform, "WEAPON_TURRET_BASE_" + markerSuffix);
+            Transform yawMarker = EnsureChild(baseMarker, "WEAPON_TURRET_YAW_" + markerSuffix);
+            Transform pitchMarker = EnsureChild(yawMarker, "WEAPON_TURRET_PITCH_" + markerSuffix);
+            Transform muzzle = EnsureChild(pitchMarker, "WEAPON_MUZZLE_" + markerSuffix);
+            Transform legacyMuzzle = EnsureChild(pitchMarker, gunEntry.MuzzleId);
 
+            baseMarker.localPosition = Vector3.zero;
+            baseMarker.localRotation = Quaternion.identity;
+            yawMarker.localPosition = Vector3.zero;
+            yawMarker.localRotation = Quaternion.identity;
+            pitchMarker.localPosition = Vector3.zero;
+            pitchMarker.localRotation = Quaternion.identity;
             muzzle.localPosition = gunEntry.MuzzleLocalPosition;
             muzzle.localRotation = Quaternion.Euler(gunEntry.MuzzleLocalEulerAngles);
+            legacyMuzzle.localPosition = gunEntry.MuzzleLocalPosition;
+            legacyMuzzle.localRotation = Quaternion.Euler(gunEntry.MuzzleLocalEulerAngles);
             EnsureThermalModule(
                 gun,
                 "Gun",
@@ -412,6 +421,29 @@ public class PrototypeBootstrap : MonoBehaviour
                 true,
                 PrototypeThermalModule.OverheatEffect.ThrottleToHalf);
         }
+    }
+
+    private static Transform EnsureChild(Transform parent, string childName)
+    {
+        var child = parent.Find(childName);
+        if (child != null)
+        {
+            return child;
+        }
+
+        var childObject = new GameObject(childName);
+        childObject.transform.SetParent(parent, false);
+        return childObject.transform;
+    }
+
+    private static string SanitizeMarkerSuffix(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return "PRIMARY";
+        }
+
+        return value.Trim().Replace(' ', '_').ToUpperInvariant();
     }
 
     private static void EnsureRcsThrusters(Transform ship, PrototypeShipLayout layout, PrototypeShipVariant variant)
