@@ -183,3 +183,25 @@ New focused regression coverage:
 - `HudComputesProgradeAndRetrogradeMarkersFromShipLocalVelocity` confirms velocity markers move to opposite ship-local sides and switch the HUD mode label to `VELOCITY`.
 - `HudShowsSasHoldAndTargetMarkersWhenAvailable` confirms SAS and target markers are available when a controller hold attitude and target dummy exist.
 - `BootstrapBindsHudAfterVariantSpawn` confirms `PrototypeBootstrap` binds `PrototypeFlightHud` after baseline and one-sided variant spawns and keeps the controller reference connected.
+
+## Slice 4 Remaining Verification Closeout
+
+Added focused verification for the three remaining open checks:
+
+- `DebugConsoleBackedActionsMirrorRuntimeControllerState` verifies the runtime methods used by the debug console for RCS, SAS, precision controls, cut/full throttle, refuel, reset velocity, and reset angular velocity produce the same controller state changes used by the keyboard-driven systems.
+- `DebugVectorTogglesUpdateRuntimeOverlayState` verifies runtime debug vector and gizmo toggles mutate `PrototypeDebugOverlay` state.
+- `DualMainThrusterSingleEngineFailureCreatesExpectedPhysicalTorque` verifies a Dual Main Thruster variant with one engine disabled by the existing thermal shutdown path produces one-engine thrust and the expected fully physical off-center torque.
+
+Focused validation:
+
+- `manage_script validate Assets/Tests/Editor/PrototypeShipVariantValidationTests.cs`: 0 diagnostics.
+- Unity console query for C# compiler errors: 0 entries.
+- Unity EditMode job `e8f0f238b88542a9ab4de4cefba0e6a6`: 58 total, 58 passed, 0 failed, 0 skipped.
+- `dotnet build ".\Weltraum Spiel.sln" --no-restore`: passed with existing Unity/MCP assembly conflict warnings, 0 errors.
+- `dotnet test ".\Weltraum Spiel.sln" --no-build`: exited successfully.
+
+DevToolbox verification:
+
+- `specs_validate prototype-debug-console-navball-ship-variants`: passed.
+- `verify_run` passed the specs step.
+- `verify_run` still failed generic Build/Test/Lint steps because it invokes `dotnet build`, `dotnet test`, and `dotnet format --verify-no-changes` from the Unity project root without specifying `Weltraum Spiel.sln`. MSBuild reports MSB1011 because multiple project/solution files exist. Explicit solution-scoped build/test commands above passed.

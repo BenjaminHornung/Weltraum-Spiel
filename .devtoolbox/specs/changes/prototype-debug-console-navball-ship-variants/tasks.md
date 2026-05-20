@@ -61,11 +61,11 @@
 ## Verification
 
 - [x] Validate changed Unity scripts with Unity MCP
-- [ ] Verify console buttons mirror existing keyboard behavior
-- [ ] Verify debug vector toggles work at runtime
+- [x] Verify console buttons mirror existing keyboard behavior
+- [x] Verify debug vector toggles work at runtime
 - [x] Verify Baseline variant remains stable
 - [x] Verify Dual Main Thruster symmetric thrust has near-zero unintended torque
-- [ ] Verify single-engine failure creates expected torque
+- [x] Verify single-engine failure creates expected torque
 - [x] Verify Off-Center Main Thruster shows COM-safe vs fully physical difference
 - [x] Verify One-Sided RCS reports residual force/torque
 - [x] Verify Navball prograde/retrograde markers respond to velocity direction

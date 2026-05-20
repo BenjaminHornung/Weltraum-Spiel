@@ -43,6 +43,72 @@ public class PrototypeShipVariantValidationTests
     }
 
     [Test]
+    public void DebugConsoleBackedActionsMirrorRuntimeControllerState()
+    {
+        GameObject ship = BuildVariant(0);
+        var controller = ship.GetComponent<PlayerShipController>();
+        var stats = ship.GetComponent<ShipStats>();
+        var body = ship.GetComponent<Rigidbody>();
+
+        Assert.NotNull(Camera.main.GetComponent<PrototypeFlightDebugConsole>());
+
+        controller.SetRcsEnabled(false);
+        Assert.False(controller.RcsEnabled);
+        controller.SetRcsEnabled(true);
+        Assert.True(controller.RcsEnabled);
+
+        controller.SetSasEnabled(false);
+        Assert.False(controller.SasEnabled);
+        controller.SetSasEnabled(true);
+        Assert.True(controller.SasEnabled);
+        Assert.True(controller.HasSasTargetRotation);
+
+        controller.SetPrecisionControls(true);
+        Assert.True(controller.PrecisionControls);
+        controller.SetPrecisionControls(false);
+        Assert.False(controller.PrecisionControls);
+
+        controller.SetMainThrottle(0.42f);
+        Assert.That(controller.MainThrottle, Is.EqualTo(0.42f).Within(0.0001f));
+        controller.FullMainThrottle();
+        Assert.That(controller.MainThrottle, Is.EqualTo(1f).Within(0.0001f));
+        controller.CutMainThrottle();
+        Assert.That(controller.MainThrottle, Is.EqualTo(0f).Within(0.0001f));
+
+        stats.ConsumeFuelForThrust(1f, 1f);
+        Assert.That(stats.CurrentFuelKg, Is.LessThan(stats.MaxFuelKg));
+        controller.RefuelFull();
+        Assert.That(stats.CurrentFuelKg, Is.EqualTo(stats.MaxFuelKg).Within(0.0001f));
+
+        body.linearVelocity = new Vector3(12f, -3f, 4f);
+        body.angularVelocity = new Vector3(0.4f, 0.5f, -0.3f);
+        controller.ResetVelocity();
+        controller.ResetAngularVelocity();
+
+        Assert.That(body.linearVelocity.magnitude, Is.EqualTo(0f).Within(0.0001f));
+        Assert.That(body.angularVelocity.magnitude, Is.EqualTo(0f).Within(0.0001f));
+    }
+
+    [Test]
+    public void DebugVectorTogglesUpdateRuntimeOverlayState()
+    {
+        BuildVariant(0);
+        var overlay = Camera.main.GetComponent<PrototypeDebugOverlay>();
+
+        Assert.NotNull(overlay);
+
+        overlay.SetDrawDebugVectors(false);
+        overlay.SetDrawDebugGizmos(false);
+        Assert.False(overlay.DrawDebugVectors);
+        Assert.False(overlay.DrawDebugGizmos);
+
+        overlay.SetDrawDebugVectors(true);
+        overlay.SetDrawDebugGizmos(true);
+        Assert.True(overlay.DrawDebugVectors);
+        Assert.True(overlay.DrawDebugGizmos);
+    }
+
+    [Test]
     public void DualMainThrusterVariantAppliesSymmetricComSafeThrustWithoutUnintendedTorque()
     {
         GameObject ship = BuildVariant(1);
@@ -81,6 +147,34 @@ public class PrototypeShipVariantValidationTests
 
         Assert.That(physicsCore.NetAppliedForce.z, Is.GreaterThan(40000f));
         Assert.That(Mathf.Abs(physicsCore.NetAppliedTorque.y), Is.GreaterThan(1000f));
+    }
+
+    [Test]
+    public void DualMainThrusterSingleEngineFailureCreatesExpectedPhysicalTorque()
+    {
+        GameObject ship = BuildVariant(1);
+        MainThrusterBank bank = ship.GetComponent<MainThrusterBank>();
+        ShipPhysicsCore physicsCore = ship.GetComponent<ShipPhysicsCore>();
+        MainThrusterModule[] thrusters = ship.GetComponents<MainThrusterModule>();
+
+        Assert.That(thrusters.Length, Is.EqualTo(2));
+
+        PrototypeThermalModule failedThermal = thrusters[0].ThermalModule;
+        Assert.NotNull(failedThermal);
+        failedThermal.SetSimulationEnabled(true);
+        failedThermal.SetTemperature(failedThermal.MaxTemperature + 25f);
+        Assert.True(failedThermal.ShouldDisableModule);
+
+        bank.SetThrustMode(MainThrustMode.FullyPhysicalNozzleForce);
+
+        physicsCore.BeginPhysicsStep();
+        float appliedThrust = bank.Fire(1f, 0f, 0f, 0.02f);
+
+        Assert.That(appliedThrust, Is.GreaterThan(20000f));
+        Assert.That(appliedThrust, Is.LessThan(30000f));
+        Assert.That(physicsCore.NetAppliedForce.z, Is.GreaterThan(20000f));
+        Assert.That(Mathf.Abs(physicsCore.NetAppliedTorque.y), Is.GreaterThan(1000f));
+        Assert.That(Vector3.Distance(physicsCore.NetAppliedTorque, bank.LastEstimatedTorque), Is.LessThan(0.01f));
     }
 
     [Test]
