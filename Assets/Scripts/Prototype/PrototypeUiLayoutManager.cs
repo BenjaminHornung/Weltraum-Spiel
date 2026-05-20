@@ -17,6 +17,7 @@ public static class PrototypeUiLayoutManager
     public const string HudWindowId = "hud-navball";
     public const string KeybindWindowId = "keybinds";
     public const string MinimapWindowId = "minimap";
+    public const string WeaponComputerWindowId = "weapon-computer";
 
     private static readonly Dictionary<string, PrototypeUiWindowState> Windows = new Dictionary<string, PrototypeUiWindowState>();
     private static int hotkeyFrame = -1;
@@ -104,7 +105,8 @@ public static class PrototypeUiLayoutManager
         PrototypeFlightDebugConsole console,
         PrototypeFlightHud hud,
         PrototypeKeybindOverlay keybinds,
-        PrototypeMinimapOverlay minimap)
+        PrototypeMinimapOverlay minimap,
+        PrototypeWeaponComputerPanel weaponComputer)
     {
         if (Time.frameCount == hotkeyFrame)
         {
@@ -143,6 +145,11 @@ public static class PrototypeUiLayoutManager
         {
             minimap.SetWindowVisible(!minimap.IsWindowVisible);
         }
+
+        if (keyboard.f7Key.wasPressedThisFrame && weaponComputer != null)
+        {
+            weaponComputer.SetWindowVisible(!weaponComputer.IsWindowVisible);
+        }
     }
 
     public static void ApplyPreset(
@@ -151,7 +158,8 @@ public static class PrototypeUiLayoutManager
         PrototypeFlightDebugConsole console,
         PrototypeFlightHud hud,
         PrototypeKeybindOverlay keybinds,
-        PrototypeMinimapOverlay minimap)
+        PrototypeMinimapOverlay minimap,
+        PrototypeWeaponComputerPanel weaponComputer = null)
     {
         CurrentPreset = preset;
 
@@ -195,6 +203,12 @@ public static class PrototypeUiLayoutManager
             minimap.SetLabelsVisible(preset != PrototypeUiPreset.RcsTest);
         }
 
+        if (weaponComputer != null)
+        {
+            weaponComputer.SetWindowVisible(preset != PrototypeUiPreset.Basic);
+            weaponComputer.SetWindowCollapsed(false);
+        }
+
         ResolveOverlaps();
     }
 
@@ -203,13 +217,15 @@ public static class PrototypeUiLayoutManager
         PrototypeFlightDebugConsole console,
         PrototypeFlightHud hud,
         PrototypeKeybindOverlay keybinds,
-        PrototypeMinimapOverlay minimap)
+        PrototypeMinimapOverlay minimap,
+        PrototypeWeaponComputerPanel weaponComputer = null)
     {
         diagnostics?.SetWindowVisible(false);
         console?.SetConsoleVisible(false);
         hud?.SetHudVisible(false);
         keybinds?.SetWindowVisible(false);
         minimap?.SetWindowVisible(false);
+        weaponComputer?.SetWindowVisible(false);
     }
 
     public static void ClearWindowsForTests()
@@ -264,6 +280,10 @@ public static class PrototypeUiLayoutManager
                 rect.x = screenBounds.xMax - rect.width - ScreenPadding;
                 rect.y = screenBounds.yMax - rect.height - ScreenPadding;
                 break;
+            case WeaponComputerWindowId:
+                rect.x = screenBounds.x + ScreenPadding;
+                rect.y = screenBounds.y + 96f;
+                break;
         }
 
         return ClampRect(rect, screenBounds);
@@ -298,6 +318,7 @@ public static class PrototypeUiLayoutManager
             HudWindowId,
             MinimapWindowId,
             DiagnosticsWindowId,
+            WeaponComputerWindowId,
             KeybindWindowId,
             DebugConsoleWindowId
         };

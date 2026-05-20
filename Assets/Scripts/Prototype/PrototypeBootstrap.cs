@@ -116,6 +116,7 @@ public class PrototypeBootstrap : MonoBehaviour
         var engine = GetOrAddComponent<EngineVfxController>(ship);
         var mainThruster = GetOrAddComponent<MainThrusterBank>(ship);
         var rcs = GetOrAddComponent<RcsThrusterController>(ship);
+        var weaponComputer = GetOrAddComponent<PrototypeWeaponComputer>(ship);
         if (shipConfig != null)
         {
             gun.ApplyConfig(shipConfig);
@@ -148,6 +149,8 @@ public class PrototypeBootstrap : MonoBehaviour
             physicsCore);
         waypointAutopilot.Bind(waypointManager, controller, stats, shipRigidbody);
         momentumAssist.Bind(controller, shipRigidbody, stats);
+        PrototypeTurretWeapon turretWeapon = ship.GetComponentInChildren<PrototypeTurretWeapon>();
+        weaponComputer.Bind(ship.transform, stats, turretWeapon);
         controller.ResetStartupFlightControls(shipStartPosition, Quaternion.identity);
         waypointAutopilot.ResetForBootstrap();
         momentumAssist.ResetForBootstrap();
@@ -780,6 +783,15 @@ public class PrototypeBootstrap : MonoBehaviour
             debugConsole = camera.gameObject.AddComponent<PrototypeFlightDebugConsole>();
         }
         debugConsole.Bind(target, stats, body, Object.FindAnyObjectByType<PrototypeBootstrap>());
+
+        var weaponComputer = target != null ? target.GetComponent<PrototypeWeaponComputer>() : null;
+        var turretWeapon = target != null ? target.GetComponentInChildren<PrototypeTurretWeapon>() : null;
+        var weaponComputerPanel = camera.gameObject.GetComponent<PrototypeWeaponComputerPanel>();
+        if (weaponComputerPanel == null)
+        {
+            weaponComputerPanel = camera.gameObject.AddComponent<PrototypeWeaponComputerPanel>();
+        }
+        weaponComputerPanel.Bind(target, stats, weaponComputer, turretWeapon);
     }
 
     private PrototypeTestEnvironment EnsureTestEnvironment()

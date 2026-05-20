@@ -11,6 +11,7 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
     [SerializeField] private PrototypeFlightHud flightHud;
     [SerializeField] private PrototypeKeybindOverlay keybindOverlay;
     [SerializeField] private PrototypeMinimapOverlay minimapOverlay;
+    [SerializeField] private PrototypeWeaponComputerPanel weaponComputerPanel;
     [SerializeField] private PrototypeBootstrap bootstrap;
     [SerializeField] private PrototypeWaypointAutopilot waypointAutopilot;
     [SerializeField] private PrototypeMomentumAssist momentumAssist;
@@ -92,6 +93,11 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
             minimapOverlay = GetComponent<PrototypeMinimapOverlay>();
         }
 
+        if (weaponComputerPanel == null)
+        {
+            weaponComputerPanel = GetComponent<PrototypeWeaponComputerPanel>();
+        }
+
         if (bootstrap == null)
         {
             bootstrap = FindAnyObjectByType<PrototypeBootstrap>();
@@ -113,7 +119,7 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
     private void Update()
     {
         ResolveReferences();
-        PrototypeUiLayoutManager.HandleFunctionKeys(debugOverlay, this, flightHud, keybindOverlay, minimapOverlay);
+        PrototypeUiLayoutManager.HandleFunctionKeys(debugOverlay, this, flightHud, keybindOverlay, minimapOverlay, weaponComputerPanel);
     }
 
     private void OnGUI()
@@ -222,14 +228,14 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
 
         if (GUILayout.Button("Hide All Debug UI"))
         {
-            PrototypeUiLayoutManager.HideAll(debugOverlay, this, flightHud, keybindOverlay, minimapOverlay);
+            PrototypeUiLayoutManager.HideAll(debugOverlay, this, flightHud, keybindOverlay, minimapOverlay, weaponComputerPanel);
         }
         GUILayout.EndHorizontal();
     }
 
     private void ApplyPreset(PrototypeUiPreset preset)
     {
-        PrototypeUiLayoutManager.ApplyPreset(preset, debugOverlay, this, flightHud, keybindOverlay, minimapOverlay);
+        PrototypeUiLayoutManager.ApplyPreset(preset, debugOverlay, this, flightHud, keybindOverlay, minimapOverlay, weaponComputerPanel);
     }
 
     private void DrawControls()
@@ -724,6 +730,7 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
         flightHud = GetComponent<PrototypeFlightHud>();
         keybindOverlay = GetComponent<PrototypeKeybindOverlay>();
         minimapOverlay = GetComponent<PrototypeMinimapOverlay>();
+        weaponComputerPanel = GetComponent<PrototypeWeaponComputerPanel>();
         bootstrap = sourceBootstrap != null ? sourceBootstrap : FindAnyObjectByType<PrototypeBootstrap>();
     }
 

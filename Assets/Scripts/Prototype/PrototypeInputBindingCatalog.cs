@@ -23,7 +23,8 @@ public static class PrototypeInputBindingCatalog
             "F3 Debug Console",
             "F4 HUD/Navball",
             "F5 Minimap/Radar",
-            "F6 Cycle generated/imported ship visuals"
+            "F6 Cycle generated/imported ship visuals",
+            "F7 Weapon Computer"
         }),
         new PrototypeInputBindingSection("Navigation / Autopilot", new[]
         {
@@ -52,7 +53,8 @@ public static class PrototypeInputBindingCatalog
         }),
         new PrototypeInputBindingSection("Weapons", new[]
         {
-            "Space: fire"
+            "Space: fire",
+            "Weapon Computer: multi-select targets, choose priority, toggle Auto Fire"
         }),
         new PrototypeInputBindingSection("Debug", new[]
         {
