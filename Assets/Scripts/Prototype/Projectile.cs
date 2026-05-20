@@ -78,6 +78,29 @@ public class Projectile : MonoBehaviour
         }
     }
     public float ProjectileRadiusMeters => ProjectileDiameterMeters * 0.5f;
+    public float SweepRadiusMeters
+    {
+        get
+        {
+            if (configuredSweepRadius > 0f)
+            {
+                return Mathf.Max(minimumSweepRadius, configuredSweepRadius);
+            }
+
+            if (projectileCollider == null)
+            {
+                projectileCollider = GetComponent<Collider>();
+            }
+
+            if (projectileCollider != null)
+            {
+                Vector3 extents = projectileCollider.bounds.extents;
+                return Mathf.Max(minimumSweepRadius, Mathf.Min(extents.x, Mathf.Min(extents.y, extents.z)));
+            }
+
+            return Mathf.Max(0.001f, minimumSweepRadius);
+        }
+    }
     public PrototypeModuleDamageState LastDamagedModule => lastDamagedModule;
     public float LastDamageApplied => lastDamageApplied;
     public bool LastImpactImpulseApplied => lastImpactImpulseApplied;
@@ -337,23 +360,7 @@ public class Projectile : MonoBehaviour
 
     private float GetSweepRadius()
     {
-        if (configuredSweepRadius > 0f)
-        {
-            return Mathf.Max(minimumSweepRadius, configuredSweepRadius);
-        }
-
-        if (projectileCollider == null)
-        {
-            projectileCollider = GetComponent<Collider>();
-        }
-
-        if (projectileCollider != null)
-        {
-            Vector3 extents = projectileCollider.bounds.extents;
-            return Mathf.Max(minimumSweepRadius, Mathf.Min(extents.x, Mathf.Min(extents.y, extents.z)));
-        }
-
-        return Mathf.Max(0.001f, minimumSweepRadius);
+        return SweepRadiusMeters;
     }
 
     private bool TryReportNearestHit(RaycastHit[] hits)
