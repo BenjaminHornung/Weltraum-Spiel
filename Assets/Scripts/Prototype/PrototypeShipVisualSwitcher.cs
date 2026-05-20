@@ -30,14 +30,22 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void RuntimeBootstrap()
     {
-        if (!Application.isPlaying || Object.FindAnyObjectByType<PrototypeShipVisualSwitcher>() != null)
+        if (!Application.isPlaying)
         {
             return;
         }
 
-        var switcher = new GameObject("PrototypeShipVisualSwitcher");
-        switcher.AddComponent<PrototypeShipVisualSwitcher>();
-        Object.DontDestroyOnLoad(switcher);
+        PrototypeShipVisualSwitcher switcher = Object.FindAnyObjectByType<PrototypeShipVisualSwitcher>();
+        if (switcher != null)
+        {
+            switcher.ResetForRuntimeBaseline();
+            return;
+        }
+
+        var switcherObject = new GameObject("PrototypeShipVisualSwitcher");
+        var runtimeSwitcher = switcherObject.AddComponent<PrototypeShipVisualSwitcher>();
+        runtimeSwitcher.ResetForRuntimeBaseline();
+        Object.DontDestroyOnLoad(switcherObject);
     }
 
     private void Update()
@@ -70,6 +78,14 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
         {
             ApplyVisualMode(ship);
         }
+    }
+
+    private void ResetForRuntimeBaseline()
+    {
+        visualMode = PrototypeShipVisualMode.GeneratedPrimitives;
+        appliedMode = (PrototypeShipVisualMode)(-1);
+        cachedShip = null;
+        ApplyNow();
     }
 
     private void EnsureCurrentModeApplied()
@@ -309,6 +325,8 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
         Transform child = parent.Find(childName);
         if (child != null)
         {
+            child.gameObject.SetActive(false);
+            child.SetParent(null, false);
             DestroyGameObject(child.gameObject);
         }
     }

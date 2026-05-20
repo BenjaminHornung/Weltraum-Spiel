@@ -6,7 +6,7 @@ public class PrototypeBootstrap : MonoBehaviour
     [SerializeField] private bool buildOnStart = true;
     [SerializeField] private PrototypeShipConfig shipConfig;
     [SerializeField] private int selectedVariantIndex;
-    [SerializeField] private bool addOrientationMarkers = true;
+    [SerializeField] private bool addOrientationMarkers = false;
     [SerializeField] private Vector3 shipStartPosition = new Vector3(0f, 0.5f, 0f);
     [SerializeField] private bool spawnTestTarget = true;
     [SerializeField] private Vector3 testTargetPosition = new Vector3(0f, 0.5f, 42f);
@@ -15,6 +15,8 @@ public class PrototypeBootstrap : MonoBehaviour
 
     private const string PrototypeRootName = "PrototypeShip";
     private const float DefaultRcsBlockThrust = 6500f;
+    private const float DirectionalLightMinIntensity = 1.0f;
+    private const float DirectionalLightMaxIntensity = 1.45f;
     private static readonly Color MainThrusterColor = PrototypeModuleColorPalette.MainThruster;
     private static readonly Color MainThrusterRingColor = PrototypeModuleColorPalette.MainThrusterNozzleRing;
     private static readonly Color RcsBlockColor = PrototypeModuleColorPalette.RcsBlock;
@@ -159,6 +161,10 @@ public class PrototypeBootstrap : MonoBehaviour
         {
             EnsureOrientationMarkers(ship.transform);
         }
+        else
+        {
+            RemoveOrientationMarkers(ship.transform);
+        }
 
         if (spawnTestTarget)
         {
@@ -299,7 +305,9 @@ public class PrototypeBootstrap : MonoBehaviour
                 moduleEntry.LocalPosition,
                 Quaternion.Euler(moduleEntry.LocalEulerAngles),
                 moduleEntry.LocalScale,
-                ColorForModule(moduleEntry.MassRole));
+                ColorForModule(moduleEntry.MassRole),
+                moduleEntry.MassRole,
+                moduleEntry.ModuleId);
             if (moduleEntry.MassRole == PrototypeModuleMassRole.FuelTank)
             {
                 EnsureFuelTankCue(moduleObject, moduleEntry.LocalScale);
@@ -326,7 +334,9 @@ public class PrototypeBootstrap : MonoBehaviour
                 entry.LocalPosition,
                 Quaternion.Euler(entry.LocalEulerAngles),
                 entry.LocalScale,
-                MainThrusterColor);
+                MainThrusterColor,
+                PrototypeModuleMassRole.Engine,
+                entry.ModuleId);
             var nozzle = gimbal.transform.Find(entry.NozzleId);
             if (nozzle == null)
             {
@@ -375,7 +385,9 @@ public class PrototypeBootstrap : MonoBehaviour
                 gunEntry.LocalPosition,
                 Quaternion.Euler(gunEntry.LocalEulerAngles),
                 gunEntry.LocalScale,
-                GunColor);
+                GunColor,
+                PrototypeModuleMassRole.Gun,
+                gunEntry.ModuleId);
             var muzzle = gun.transform.Find(gunEntry.MuzzleId);
             if (muzzle == null)
             {
@@ -417,7 +429,16 @@ public class PrototypeBootstrap : MonoBehaviour
 
     private static void BuildRcsBlock(Transform ship, string blockName, Vector3 localPosition, Vector3 localScale, Vector3 blockedDirection, PrototypeRcsSettings settings)
     {
-        var block = BuildModulePart(ship, blockName, PrimitiveType.Cube, localPosition, Quaternion.identity, localScale, RcsBlockColor);
+        var block = BuildModulePart(
+            ship,
+            blockName,
+            PrimitiveType.Cube,
+            localPosition,
+            Quaternion.identity,
+            localScale,
+            RcsBlockColor,
+            PrototypeModuleMassRole.RcsBlock,
+            blockName);
         var thrusterBlock = GetOrAddComponent<RcsThrusterBlock>(block);
         settings.Clamp();
         thrusterBlock.ApplySettings(settings.blockThrust > 0f ? settings : PrototypeRcsSettings.Default);
@@ -542,6 +563,20 @@ public class PrototypeBootstrap : MonoBehaviour
 
     private static GameObject BuildModulePart(Transform parent, string name, PrimitiveType type, Vector3 localPos, Quaternion localRot, Vector3 localScale, Color color)
     {
+        return BuildModulePart(parent, name, type, localPos, localRot, localScale, color, PrototypeModuleMassRole.Custom, string.Empty);
+    }
+
+    private static GameObject BuildModulePart(
+        Transform parent,
+        string name,
+        PrimitiveType type,
+        Vector3 localPos,
+        Quaternion localRot,
+        Vector3 localScale,
+        Color color,
+        PrototypeModuleMassRole massRole,
+        string gameplayRole)
+    {
         var existing = parent.Find(name);
         GameObject go;
         if (existing != null)
@@ -559,6 +594,8 @@ public class PrototypeBootstrap : MonoBehaviour
         go.transform.localRotation = localRot;
         go.transform.localScale = localScale;
         ApplyMaterialColor(go, color, false);
+        var metadata = PrototypeShipPartVisualFactory.ResolveMetadata(name, localScale, massRole, gameplayRole);
+        PrototypeShipPartVisualFactory.ApplyGeneratedVisual(go, metadata, color);
         return go;
     }
 
@@ -615,7 +652,13 @@ public class PrototypeBootstrap : MonoBehaviour
         if (emissive && material.HasProperty("_EmissionColor"))
         {
             material.EnableKeyword("_EMISSION");
-            material.SetColor("_EmissionColor", color * 2.5f);
+            material.SetColor("_EmissionColor", color * 1.25f);
+            return;
+        }
+        if (material.HasProperty("_EmissionColor"))
+        {
+            material.SetColor("_EmissionColor", Color.black);
+            material.DisableKeyword("_EMISSION");
         }
     }
 
@@ -631,6 +674,20 @@ public class PrototypeBootstrap : MonoBehaviour
         CreateMarker(markerRoot, "Marker_Forward", PrototypeModuleColorPalette.MarkerForward, new Vector3(0f, 0f, 3.7f), new Vector3(0.08f, 0.08f, 1.2f));
         CreateMarker(markerRoot, "Marker_Right", PrototypeModuleColorPalette.MarkerRight, new Vector3(1.5f, 0f, 0f), new Vector3(1.2f, 0.08f, 0.08f));
         CreateMarker(markerRoot, "Marker_Up", PrototypeModuleColorPalette.MarkerUp, new Vector3(0f, 1.3f, 0f), new Vector3(0.08f, 1.1f, 0.08f));
+    }
+
+    private static void RemoveOrientationMarkers(Transform ship)
+    {
+        if (ship == null)
+        {
+            return;
+        }
+
+        var markerRoot = ship.Find("OrientationMarkers");
+        if (markerRoot != null)
+        {
+            DestroyGameObject(markerRoot.gameObject);
+        }
     }
 
     private static void CreateMarker(Transform parent, string name, Color color, Vector3 localPos, Vector3 scale)
@@ -734,25 +791,29 @@ public class PrototypeBootstrap : MonoBehaviour
     private static void EnsureSceneDirectionalLight()
     {
         var sceneLight = GameObject.Find("Directional Light");
+        var sceneLightColor = new Color(0.86f, 0.9f, 0.97f, 1f);
         if (sceneLight == null)
         {
             sceneLight = new GameObject("Directional Light");
             var light = sceneLight.AddComponent<Light>();
             light.type = LightType.Directional;
-            light.intensity = 1.2f;
-            light.color = new Color(0.88f, 0.92f, 1f, 1f);
+            light.intensity = Mathf.Clamp(1.2f, DirectionalLightMinIntensity, DirectionalLightMaxIntensity);
+            light.color = sceneLightColor;
             sceneLight.transform.rotation = Quaternion.Euler(50f, 330f, 0f);
         }
         else if (sceneLight.GetComponent<Light>() == null)
         {
-            sceneLight.AddComponent<Light>().type = LightType.Directional;
+            var addedLight = sceneLight.AddComponent<Light>();
+            addedLight.type = LightType.Directional;
+            addedLight.intensity = Mathf.Clamp(1.2f, DirectionalLightMinIntensity, DirectionalLightMaxIntensity);
+            addedLight.color = sceneLightColor;
         }
         else
         {
             var light = sceneLight.GetComponent<Light>();
             light.type = LightType.Directional;
-            light.intensity = Mathf.Max(light.intensity, 1.15f);
-            light.color = new Color(0.88f, 0.92f, 1f, 1f);
+            light.intensity = Mathf.Clamp(light.intensity, DirectionalLightMinIntensity, DirectionalLightMaxIntensity);
+            light.color = sceneLightColor;
         }
     }
 

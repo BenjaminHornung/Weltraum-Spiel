@@ -42,6 +42,7 @@ public sealed class PrototypeEnvironmentPoint
 public class PrototypeTestEnvironment : MonoBehaviour
 {
     [SerializeField] private PrototypeEnvironmentDisplayMode environmentDisplayMode = PrototypeEnvironmentDisplayMode.Training;
+    private const float NonFullDebugOriginScale = 0.12f;
     public const string RootName = "PrototypeEnvironment";
 
     private static readonly Color OriginColor = new Color(1f, 0.92f, 0.28f, 1f);
@@ -101,7 +102,7 @@ public class PrototypeTestEnvironment : MonoBehaviour
     private void BuildOriginBeacon()
     {
         Transform group = CreateGroup("Origin");
-        float beaconScale = environmentDisplayMode == PrototypeEnvironmentDisplayMode.FullDebug ? 1f : 0.25f;
+        float beaconScale = environmentDisplayMode == PrototypeEnvironmentDisplayMode.FullDebug ? 1f : NonFullDebugOriginScale;
         GameObject mast = CreatePrimitive("Origin_Beacon_Tower", PrimitiveType.Cylinder, new Vector3(0f, 12f * beaconScale, 0f), Vector3.one, group);
         mast.transform.localScale = new Vector3(2.5f * beaconScale, 12f * beaconScale, 2.5f * beaconScale);
         ApplyMaterial(mast, OriginColor, true);
@@ -120,7 +121,7 @@ public class PrototypeTestEnvironment : MonoBehaviour
         pointLight.type = LightType.Point;
         pointLight.color = OriginColor;
         pointLight.range = Mathf.Lerp(70f, 220f, beaconScale);
-        pointLight.intensity = Mathf.Lerp(1.1f, 2.6f, beaconScale);
+        pointLight.intensity = Mathf.Lerp(0.55f, 1.9f, beaconScale);
 
         if (ShouldCreateEnvironmentLabel(PrototypeEnvironmentPointKind.Origin, 0))
         {
@@ -131,6 +132,15 @@ public class PrototypeTestEnvironment : MonoBehaviour
 
     private void BuildWorldAxes()
     {
+        AddPoint("+X Axis", PrototypeEnvironmentPointKind.Axis, new Vector3(1000f, 0f, 0f), AxisXColor);
+        AddPoint("+Y Axis", PrototypeEnvironmentPointKind.Axis, new Vector3(0f, 400f, 0f), AxisYColor);
+        AddPoint("+Z Axis", PrototypeEnvironmentPointKind.Axis, new Vector3(0f, 0f, 1000f), AxisZColor);
+
+        if (environmentDisplayMode != PrototypeEnvironmentDisplayMode.FullDebug)
+        {
+            return;
+        }
+
         Transform group = CreateGroup("World_Axes");
         CreateLine("Axis_X", group, AxisXColor, 1.2f, new Vector3(-1000f, 0.1f, 0f), new Vector3(1000f, 0.1f, 0f));
         CreateLine("Axis_Y", group, AxisYColor, 1.2f, new Vector3(0f, -100f, 0f), new Vector3(0f, 420f, 0f));
@@ -151,9 +161,6 @@ public class PrototypeTestEnvironment : MonoBehaviour
             CreateLabel("Label_Z", "+Z", new Vector3(0f, 12f, 1010f), AxisZColor, group, 10f);
         }
 
-        AddPoint("+X Axis", PrototypeEnvironmentPointKind.Axis, new Vector3(1000f, 0f, 0f), AxisXColor);
-        AddPoint("+Y Axis", PrototypeEnvironmentPointKind.Axis, new Vector3(0f, 400f, 0f), AxisYColor);
-        AddPoint("+Z Axis", PrototypeEnvironmentPointKind.Axis, new Vector3(0f, 0f, 1000f), AxisZColor);
     }
 
     private void BuildRangeRings()

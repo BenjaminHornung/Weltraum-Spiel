@@ -13,9 +13,9 @@ public static class PrototypeModuleColorPalette
     public static readonly Color CargoUtility = new Color(0.86f, 0.57f, 0.22f, 1f);
     public static readonly Color Damaged = new Color(0.24f, 0.06f, 0.06f, 1f);
     public static readonly Color RcsVfx = new Color(0.06f, 1f, 0.92f, 0.95f);
-    public static readonly Color MarkerForward = Color.cyan;
-    public static readonly Color MarkerRight = new Color(0.95f, 0.18f, 0.18f, 1f);
-    public static readonly Color MarkerUp = new Color(0.28f, 0.95f, 0.38f, 1f);
+    public static readonly Color MarkerForward = new Color(0.42f, 0.62f, 0.77f, 1f);
+    public static readonly Color MarkerRight = new Color(0.67f, 0.5f, 0.33f, 1f);
+    public static readonly Color MarkerUp = new Color(0.48f, 0.73f, 0.54f, 1f);
     public static readonly Color Target = new Color(0.25f, 0.85f, 1f, 1f);
 
     public static Color ForMassRole(PrototypeModuleMassRole role)

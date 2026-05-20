@@ -125,6 +125,8 @@ Debug UI presets are available from the debug console:
 
 The generated primitive modules use a central prototype color palette so role information is readable during physics tests. Hull, cockpit, fuel tank, main engine, RCS block, gun, cargo/utility, target, and orientation markers use higher-contrast colors across built-in variants without importing final assets. RCS VFX is stronger and cyan/green while active nozzles fire; main-engine VFX uses a separate orange/blue exhaust and visible nozzle ring.
 
+Generated visuals are now authored through `PrototypeShipPartVisualFactory`, which maps existing layout entries to reusable archetypes (`CockpitWedge`, `HullCore`, `FuelTankPod`, `MainEngineBell`, `RcsPod`, `GunMount`, `CargoBox`, `UtilityBlock`, `ConnectorHardpointMarker`) from lightweight runtime metadata. Unsupported entries now fall back to neutral hull/utility visuals instead of always appearing as plain cubes, preserving a readable prototype style while keeping `MainThrusterNozzle`, `RCS_Nozzle_*`, and `Muzzle` gameplay transforms unchanged.
+
 If a nozzle is moved, removed, or rotated, its force and torque contribution changes immediately. Missing nozzles cannot create phantom force.
 
 ## Module Mass, COM, And Inertia

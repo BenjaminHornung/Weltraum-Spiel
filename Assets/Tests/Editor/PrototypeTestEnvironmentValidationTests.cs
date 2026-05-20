@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -43,6 +44,44 @@ public class PrototypeTestEnvironmentValidationTests
     }
 
     [Test]
+    public void Rebuild_DefaultTrainingEnvironmentHidesWorldAxesVisuals()
+    {
+        GameObject host = new GameObject("EnvironmentValidationHost");
+        PrototypeTestEnvironment environment = host.AddComponent<PrototypeTestEnvironment>();
+
+        environment.Rebuild();
+
+        Assert.IsNull(GameObject.Find("PrototypeEnvironment/World_Axes"));
+        Assert.That(Count(environment, PrototypeEnvironmentPointKind.Axis), Is.GreaterThanOrEqualTo(3));
+    }
+
+    [Test]
+    public void Rebuild_MinimalEnvironmentHidesWorldAxesVisuals()
+    {
+        GameObject host = new GameObject("EnvironmentValidationHost");
+        PrototypeTestEnvironment environment = host.AddComponent<PrototypeTestEnvironment>();
+        SetEnvironmentDisplayMode(environment, PrototypeEnvironmentDisplayMode.Minimal);
+
+        environment.Rebuild();
+
+        Assert.IsNull(GameObject.Find("PrototypeEnvironment/World_Axes"));
+        Assert.That(Count(environment, PrototypeEnvironmentPointKind.Axis), Is.GreaterThanOrEqualTo(3));
+    }
+
+    [Test]
+    public void Rebuild_FullDebugEnvironmentRendersWorldAxesVisuals()
+    {
+        GameObject host = new GameObject("EnvironmentValidationHost");
+        PrototypeTestEnvironment environment = host.AddComponent<PrototypeTestEnvironment>();
+        SetEnvironmentDisplayMode(environment, PrototypeEnvironmentDisplayMode.FullDebug);
+
+        environment.Rebuild();
+
+        Assert.NotNull(GameObject.Find("PrototypeEnvironment/World_Axes"));
+        Assert.That(Count(environment, PrototypeEnvironmentPointKind.Axis), Is.GreaterThanOrEqualTo(3));
+    }
+
+    [Test]
     public void BootstrapBindsGeneratedEnvironmentAndMinimapToMainCamera()
     {
         GameObject host = new GameObject("BootstrapEnvironmentValidationHost");
@@ -83,6 +122,39 @@ public class PrototypeTestEnvironmentValidationTests
         Assert.False(minimap.ShowLabels);
     }
 
+    [Test]
+    public void BuildPrototypeDefaultsOrientationMarkersToOff()
+    {
+        GameObject host = new GameObject("BootstrapEnvironmentValidationHost");
+        PrototypeBootstrap bootstrap = host.AddComponent<PrototypeBootstrap>();
+
+        bootstrap.BuildPrototype();
+
+        GameObject ship = GameObject.Find("PrototypeShip");
+        Assert.NotNull(ship);
+        Assert.IsNull(ship.transform.Find("OrientationMarkers"));
+    }
+
+    [Test]
+    public void DirectionalLightIsCappedWhenBootstrapBuilds()
+    {
+        var sceneLightObject = new GameObject("Directional Light");
+        var sceneLight = sceneLightObject.AddComponent<Light>();
+        sceneLight.type = LightType.Directional;
+        sceneLight.intensity = 8f;
+
+        GameObject host = new GameObject("BootstrapEnvironmentValidationHost");
+        PrototypeBootstrap bootstrap = host.AddComponent<PrototypeBootstrap>();
+        bootstrap.BuildPrototype();
+
+        GameObject builtLight = GameObject.Find("Directional Light");
+        Assert.NotNull(builtLight);
+        sceneLight = builtLight.GetComponent<Light>();
+        Assert.NotNull(sceneLight);
+        Assert.That(sceneLight.intensity, Is.LessThanOrEqualTo(1.5f));
+        Assert.That(sceneLight.intensity, Is.GreaterThan(1f));
+    }
+
     private static int Count(PrototypeTestEnvironment environment, PrototypeEnvironmentPointKind kind)
     {
         int count = 0;
@@ -96,6 +168,13 @@ public class PrototypeTestEnvironmentValidationTests
         }
 
         return count;
+    }
+
+    private static void SetEnvironmentDisplayMode(PrototypeTestEnvironment environment, PrototypeEnvironmentDisplayMode mode)
+    {
+        FieldInfo displayModeField = typeof(PrototypeTestEnvironment).GetField("environmentDisplayMode", BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(displayModeField);
+        displayModeField.SetValue(environment, mode);
     }
 
     private static int CountNamed(string objectName)

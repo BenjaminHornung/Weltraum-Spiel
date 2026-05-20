@@ -270,7 +270,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PrototypeBootstrap
   buildOnStart: 1
-  addOrientationMarkers: 1
+  addOrientationMarkers: 0
   shipStartPosition: {x: 0, y: 0.5, z: 0}
 --- !u!1 &410087039
 GameObject:
