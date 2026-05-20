@@ -234,20 +234,19 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
             return;
         }
 
-        bool rcsEnabled = GUILayout.Toggle(shipController.RcsEnabled, "RCS");
+        PrototypeFlightControlDiagnostics diagnostics = shipController.FlightControlDiagnostics;
+        bool rcsEnabled = GUILayout.Toggle(diagnostics.rcsEnabled, "RCS");
         if (rcsEnabled != shipController.RcsEnabled)
         {
             shipController.SetRcsEnabled(rcsEnabled);
         }
 
-        bool sasEnabled = GUILayout.Toggle(shipController.SasEnabled, "SAS");
+        bool sasEnabled = GUILayout.Toggle(diagnostics.sasEnabled, "SAS");
         if (sasEnabled != shipController.SasEnabled)
         {
             shipController.SetSasEnabled(sasEnabled);
         }
-
-        PrototypeFlightControlDiagnostics diagnostics = shipController.FlightControlDiagnostics;
-        GUILayout.Label($"Control mode: {shipController.ControlModeLabel}", labelStyle);
+        GUILayout.Label($"Control mode: {diagnostics.controlModeLabel}", labelStyle);
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("Normal"))
         {
@@ -264,7 +263,7 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
             shipController.SetControlMode(FlightControlMode.Translation);
         }
         GUILayout.EndHorizontal();
-        GUILayout.Label($"States: RCS {(diagnostics.rcsEnabled ? "on" : "off")} | SAS {(diagnostics.sasEnabled ? "on" : "off")} effective {(diagnostics.effectiveSasEnabled ? "on" : "off")} | Main {(diagnostics.mainThrusterAllowed ? "allowed" : "off")} | Gimbal {(diagnostics.gimbalAllowed ? "allowed" : "off")}", labelStyle);
+        GUILayout.Label($"States: RCS {(diagnostics.rcsEnabled ? "on" : "off")}/{(diagnostics.rcsAvailable ? "available" : "unavailable")} {diagnostics.rcsAllocatorStatus} | SAS armed {(diagnostics.sasEnabled ? "on" : "off")} effective {(diagnostics.effectiveSasEnabled ? "on" : "off")} | Main {(diagnostics.mainThrusterAllowed ? "allowed" : "off")} | Gimbal {(diagnostics.gimbalAllowed ? "allowed" : "off")}", labelStyle);
 
         if (debugOverlay != null)
         {
@@ -370,8 +369,9 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
         }
 
         GUILayout.Label($"Target: {waypointAutopilot.TargetName}", labelStyle);
-        GUILayout.Label($"Autopilot engaged: {(waypointAutopilot.AutopilotEngaged ? "yes" : "no")}", labelStyle);
-        GUILayout.Label($"State: {waypointAutopilot.CurrentState}", labelStyle);
+        PrototypeFlightControlDiagnostics diagnostics = shipController.FlightControlDiagnostics;
+        GUILayout.Label($"Autopilot engaged: {(diagnostics.autopilotEngaged ? "yes" : "no")}", labelStyle);
+        GUILayout.Label($"State: {diagnostics.autopilotState}", labelStyle);
 
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("Previous Target"))
@@ -408,7 +408,7 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
 
         if (momentumAssist != null)
         {
-            GUILayout.Label($"Momentum Assist: {(momentumAssist.IsActive ? "on" : "off")} | {momentumAssist.CurrentState} / {momentumAssist.StatusLabel}", labelStyle);
+            GUILayout.Label($"Momentum Assist: {(diagnostics.momentumAssistActive ? "on" : "off")} | {diagnostics.momentumAssistState} / {diagnostics.momentumAssistStatus}", labelStyle);
         }
         else
         {
@@ -439,7 +439,7 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
             }
             else
             {
-                momentumAssist.Activate();
+                momentumAssist.ActivateFromUi();
             }
         }
 
@@ -686,4 +686,5 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
         actionsOpen = true;
         pulsesOpen = expanded || PrototypeUiLayoutManager.CurrentPreset == PrototypeUiPreset.FullDiagnostics;
     }
+
 }

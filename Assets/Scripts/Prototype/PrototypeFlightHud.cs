@@ -424,11 +424,11 @@ public class PrototypeFlightHud : MonoBehaviour
 
         Rect hintRect = new Rect(contentRect.x + 8f, contentRect.yMax - 56f, contentRect.width - 16f, 38f);
         string targetLabel = waypointAutopilot != null ? waypointAutopilot.TargetName : (trackedTarget != null ? trackedTarget.name : "none");
-        string autopilotLabel = waypointAutopilot != null
-            ? $"{(waypointAutopilot.AutopilotEngaged ? "ON" : "OFF")} {waypointAutopilot.CurrentState}"
-            : "N/A";
         PrototypeFlightControlDiagnostics diagnostics = shipController != null ? shipController.FlightControlDiagnostics : default;
-        string sasLabel = shipController != null ? (diagnostics.effectiveSasEnabled ? "SAS On" : "SAS Off") : "SAS n/a";
+        string autopilotLabel = shipController != null
+            ? $"{(diagnostics.autopilotEngaged ? "ON" : "OFF")} {diagnostics.autopilotState}"
+            : "N/A";
+        string sasLabel = shipController != null ? (diagnostics.effectiveSasEnabled ? "SAS Eff On" : "SAS Eff Off") : "SAS n/a";
         GUI.Label(hintRect, $"G Autopilot | Tab/B Target | Caps Mode\nTarget: {targetLabel} | Auto: {autopilotLabel} | {ResolveControlModeHint()} | {sasLabel}", smallLabelStyle);
 
         Rect labelRect = new Rect(contentRect.x + 8f, contentRect.yMax - 14f, contentRect.width - 16f, 14f);
@@ -521,7 +521,7 @@ public class PrototypeFlightHud : MonoBehaviour
             shipController.SetSasEnabled(!sasEnabled);
         }
 
-        string momentumLabel = momentumAssist != null ? momentumAssist.CurrentState.ToString() : "No Momentum";
+        string momentumLabel = momentumAssist != null ? diagnostics.momentumAssistState.ToString() : "No Momentum";
         GUILayout.Label(momentumLabel, smallLabelStyle, GUILayout.Width(88f), GUILayout.Height(16f));
 
         GUILayout.EndHorizontal();

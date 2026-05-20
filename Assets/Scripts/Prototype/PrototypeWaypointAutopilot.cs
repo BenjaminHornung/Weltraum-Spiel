@@ -68,6 +68,8 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private bool togglePressedLastFrame;
     private bool nextPressedLastFrame;
     private bool previousPressedLastFrame;
+    private float manualOverrideGraceUntilTime;
+    private PrototypeMomentumAssist momentumAssist;
 
     public PrototypeWaypointAutopilotState CurrentState { get; private set; } = PrototypeWaypointAutopilotState.Idle;
     public PrototypeNavigationTarget CurrentTarget => currentTarget;
@@ -120,7 +122,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private void Update()
     {
         HandleInput();
-        if (autopilotEngaged && shipController != null && shipController.LastManualFlightInput)
+        if (autopilotEngaged && shipController != null && shipController.LastManualFlightInput && Time.time >= manualOverrideGraceUntilTime)
         {
             Abort("manual override");
         }
@@ -166,7 +168,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         RunAutopilotStep();
     }
 
-    public void ToggleAutopilot()
+public void ToggleAutopilot()
     {
         if (autopilotEngaged)
         {
@@ -185,6 +187,13 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return;
         }
 
+        ResolveReferences();
+        if (shipController == null)
+        {
+            SetState(PrototypeWaypointAutopilotState.Failed, "missing controller");
+            return;
+        }
+
         RefreshDiagnostics();
         LastFuelEstimate = EstimateFuel(LastMetrics, shipStats, GetMaxAcceleration(), fuelReserveSeconds);
         if (!LastFuelEstimate.isFeasible)
@@ -192,6 +201,17 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             SetState(PrototypeWaypointAutopilotState.FuelInsufficient, "fuel insufficient");
             return;
         }
+
+        // Waypoint autopilot is a system controller: normalize ship controls before it asks for actuators.
+        momentumAssist?.Abort("autopilot engaged");
+        shipController.ClearExternalFlightAssistRequest();
+        shipController.SetControlMode(FlightControlMode.Normal);
+        shipController.SetRcsEnabled(true);
+        shipController.SetSasEnabled(true);
+        shipController.CaptureSasTargetRotation();
+        shipController.SetMainThrottle(0f);
+        shipController.ClearManualFlightInputForAssist();
+        manualOverrideGraceUntilTime = Time.time + 0.25f;
 
         autopilotEngaged = true;
         SetState(PrototypeWaypointAutopilotState.FuelCheck, "fuel ok");
@@ -203,6 +223,15 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         ClearCommands();
         SetState(PrototypeWaypointAutopilotState.Aborted, reason);
     }
+
+public void ResetForBootstrap()
+    {
+        autopilotEngaged = false;
+        manualOverrideGraceUntilTime = 0f;
+        ClearCommands();
+        SetState(currentTarget != null ? PrototypeWaypointAutopilotState.TargetSelected : PrototypeWaypointAutopilotState.Idle, currentTarget != null ? "target selected" : "idle");
+    }
+
 
     public void SelectTarget(PrototypeNavigationTarget target)
     {
@@ -319,8 +348,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         if (LastMetrics.distance <= Mathf.Max(finalApproachDistanceMeters, GetArrivalDistance() * 2f))
         {
             SetState(PrototypeWaypointAutopilotState.FinalApproach, "final approach");
-            ApplyLateralCorrection();
-            ApplyBurn(LastMetrics.closingSpeed > arrivalSpeedMetersPerSecond ? -shipRigidbody.linearVelocity : LastMetrics.directionToTarget, finalApproachThrottle);
+            ApplyAutopilotRequest(LastMetrics.closingSpeed > arrivalSpeedMetersPerSecond ? -shipRigidbody.linearVelocity : LastMetrics.directionToTarget, finalApproachThrottle);
             return;
         }
 
@@ -331,50 +359,84 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
                 : -LastMetrics.directionToTarget;
             float angle = Vector3.Angle(transform.forward, brakeDirection);
             SetState(angle > alignmentAngleDegrees ? PrototypeWaypointAutopilotState.FlipForBrake : PrototypeWaypointAutopilotState.Brake, "braking");
-            ApplyBurn(brakeDirection, 1f);
-            ApplyLateralCorrection();
+            ApplyAutopilotRequest(brakeDirection, 1f);
             return;
         }
 
         SetState(PrototypeWaypointAutopilotState.Accelerate, "accelerating");
-        ApplyBurn(LastMetrics.directionToTarget, 1f);
-        ApplyLateralCorrection();
+        ApplyAutopilotRequest(LastMetrics.directionToTarget, 1f);
     }
 
-    private void ApplyBurn(Vector3 desiredDirection, float throttle)
+private void ApplyAutopilotRequest(Vector3 desiredDirection, float throttle)
     {
-        if (shipController == null || desiredDirection.sqrMagnitude <= 0.0001f)
+        if (shipController == null)
         {
             ClearCommands();
             return;
         }
 
-        desiredDirection.Normalize();
-        Vector3 attitudeCommand = ComputeAttitudeCommand(desiredDirection);
-        shipController.PulseRcsAttitude(attitudeCommand);
+        Vector3 attitudeCommand = Vector3.zero;
+        Vector3 assistForceWorld = ComputeLateralCorrectionForceWorld();
+        float requestedMainThrottle = 0f;
 
-        float angle = Vector3.Angle(transform.forward, desiredDirection);
-        if (angle <= alignmentAngleDegrees)
+        if (desiredDirection.sqrMagnitude > 0.0001f)
         {
-            shipController.SetMainThrottle(Mathf.Clamp01(throttle));
+            desiredDirection.Normalize();
+            attitudeCommand = ComputeAttitudeCommand(desiredDirection);
+            float angle = Vector3.Angle(transform.forward, desiredDirection);
+            if (angle <= alignmentAngleDegrees)
+            {
+                requestedMainThrottle = Mathf.Clamp01(throttle);
+            }
+            else
+            {
+                if (CurrentState != PrototypeWaypointAutopilotState.FinalApproach && CurrentState != PrototypeWaypointAutopilotState.FlipForBrake)
+            {
+                SetState(PrototypeWaypointAutopilotState.AlignForBurn, "aligning");
+            }
+            }
+        }
+
+        shipController.SetExternalFlightAssistRequest(new FlightAssistRequest(
+            FlightAssistMode.AssistedFlight,
+            FlightAssistRequestSource.WaypointAutopilot,
+            assistForceWorld,
+            attitudeCommand,
+            requestedMainThrottle,
+            false));
+    }
+
+private void ApplyLateralCorrection()
+    {
+        Vector3 forceWorld = ComputeLateralCorrectionForceWorld();
+        if (shipController == null || forceWorld.sqrMagnitude <= 0.0001f)
+        {
             return;
         }
 
-        SetState(CurrentState == PrototypeWaypointAutopilotState.FlipForBrake ? CurrentState : PrototypeWaypointAutopilotState.AlignForBurn, "aligning");
-        shipController.SetMainThrottle(0f);
+        FlightAssistRequest existing = shipController.HasExternalFlightAssistRequest
+            ? shipController.LastExternalFlightAssistRequest
+            : FlightAssistRequest.None;
+        shipController.SetExternalFlightAssistRequest(new FlightAssistRequest(
+            FlightAssistMode.AssistedFlight,
+            FlightAssistRequestSource.WaypointAutopilot,
+            existing.forceWorld + forceWorld,
+            existing.torqueLocal,
+            existing.mainThrottle,
+            false));
     }
 
-    private void ApplyLateralCorrection()
+private Vector3 ComputeLateralCorrectionForceWorld()
     {
         if (shipController == null || !shipController.HasRcs || !shipController.RcsEnabled || LastMetrics.lateralSpeed <= 0.05f)
         {
-            return;
+            return Vector3.zero;
         }
 
         Vector3 correctionWorld = -LastMetrics.lateralVelocity;
-        Vector3 local = transform.InverseTransformDirection(correctionWorld.normalized);
-        float scale = Mathf.Clamp01(LastMetrics.lateralSpeed / Mathf.Max(0.1f, lateralCorrectionSpeed));
-        shipController.PulseRcsTranslation(Vector3.ClampMagnitude(local * scale, 1f));
+        return correctionWorld.sqrMagnitude > 0.0001f
+            ? correctionWorld.normalized * Mathf.Clamp01(LastMetrics.lateralSpeed / Mathf.Max(0.1f, lateralCorrectionSpeed)) * shipController.RcsTranslationForceSetting
+            : Vector3.zero;
     }
 
     private Vector3 ComputeAttitudeCommand(Vector3 desiredDirection)
@@ -436,11 +498,12 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         return acceleration * reverseScalar;
     }
 
-    private void ClearCommands()
+private void ClearCommands()
     {
         if (shipController != null)
         {
             shipController.SetMainThrottle(0f);
+            shipController.ClearExternalFlightAssistRequest();
         }
     }
 
@@ -502,6 +565,12 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             shipController = GetComponent<PlayerShipController>();
         }
 
+
+
+        if (momentumAssist == null)
+        {
+            momentumAssist = GetComponent<PrototypeMomentumAssist>();
+        }
         if (waypointManager == null)
         {
             waypointManager = GetComponent<PrototypeWaypointManager>();

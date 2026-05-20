@@ -146,6 +146,9 @@ public class PrototypeBootstrap : MonoBehaviour
             physicsCore);
         waypointAutopilot.Bind(waypointManager, controller, stats, shipRigidbody);
         momentumAssist.Bind(controller, shipRigidbody, stats);
+        controller.ResetStartupFlightControls(shipStartPosition, Quaternion.identity);
+        waypointAutopilot.ResetForBootstrap();
+        momentumAssist.ResetForBootstrap();
 
         if (gun == null || engine == null)
         {

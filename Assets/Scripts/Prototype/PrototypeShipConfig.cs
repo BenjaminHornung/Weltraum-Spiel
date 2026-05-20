@@ -104,9 +104,9 @@ public struct PrototypeMainThrusterSettings
         throttleSpoolUpRate = 0f,
         throttleSpoolDownRate = 0f,
         supportsGimbal = true,
-        gimbalLimitDegrees = 20f,
-        gimbalResponseScalar = 0.35f,
-        gimbalSlewRateDegreesPerSecond = 0f
+        gimbalLimitDegrees = 10f,
+        gimbalResponseScalar = 0.14f,
+        gimbalSlewRateDegreesPerSecond = 30f
     };
 
     public void Clamp()

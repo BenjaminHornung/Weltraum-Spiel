@@ -15,6 +15,7 @@ public enum FlightAssistRequestSource
     FlightAssist,
     MomentumAssist,
     Docking,
+    WaypointAutopilot,
     DebugOnly
 }
 
@@ -25,6 +26,7 @@ public struct FlightAssistRequest
     public FlightAssistRequestSource source;
     public Vector3 forceWorld;
     public Vector3 torqueLocal;
+    public float mainThrottle;
     public bool debugOnlyNonPhysical;
 
     public FlightAssistRequest(
@@ -33,11 +35,23 @@ public struct FlightAssistRequest
         Vector3 forceWorld,
         Vector3 torqueLocal,
         bool debugOnlyNonPhysical)
+        : this(mode, source, forceWorld, torqueLocal, 0f, debugOnlyNonPhysical)
+    {
+    }
+
+    public FlightAssistRequest(
+        FlightAssistMode mode,
+        FlightAssistRequestSource source,
+        Vector3 forceWorld,
+        Vector3 torqueLocal,
+        float mainThrottle,
+        bool debugOnlyNonPhysical)
     {
         this.mode = mode;
         this.source = source;
         this.forceWorld = forceWorld;
         this.torqueLocal = torqueLocal;
+        this.mainThrottle = Mathf.Clamp01(mainThrottle);
         this.debugOnlyNonPhysical = debugOnlyNonPhysical;
     }
 
@@ -51,5 +65,5 @@ public struct FlightAssistRequest
     public bool HasPhysicalRequest => !debugOnlyNonPhysical
         && (forceWorld.sqrMagnitude > 0.0001f || torqueLocal.sqrMagnitude > 0.0001f);
 
-    public bool HasAnyRequest => forceWorld.sqrMagnitude > 0.0001f || torqueLocal.sqrMagnitude > 0.0001f;
+    public bool HasAnyRequest => forceWorld.sqrMagnitude > 0.0001f || torqueLocal.sqrMagnitude > 0.0001f || mainThrottle > 0.0001f;
 }

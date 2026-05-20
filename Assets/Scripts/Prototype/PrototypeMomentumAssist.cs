@@ -45,6 +45,7 @@ public class PrototypeMomentumAssist : MonoBehaviour
     private bool hasAuthorityForRcsDamp;
     private string lastStatusLabel = "idle";
     private PrototypeMomentumAssistState currentState = PrototypeMomentumAssistState.Idle;
+    private float manualOverrideGraceUntilTime;
 
     public bool IsActive => isActive;
     public PrototypeMomentumAssistState CurrentState => currentState;
@@ -92,7 +93,7 @@ public class PrototypeMomentumAssist : MonoBehaviour
             return;
         }
 
-        if (shipController.LastManualFlightInput)
+        if (shipController.LastManualFlightInput && Time.time >= manualOverrideGraceUntilTime)
         {
             Abort("manual override");
             return;
@@ -145,7 +146,7 @@ public class PrototypeMomentumAssist : MonoBehaviour
         LastRequestedTorqueLocal = Vector3.zero;
     }
 
-    public void Toggle()
+public void Toggle()
     {
         if (isActive)
         {
@@ -153,7 +154,7 @@ public class PrototypeMomentumAssist : MonoBehaviour
             return;
         }
 
-        Activate();
+        ActivateFromUi();
     }
 
     public void Activate()
@@ -175,6 +176,7 @@ public class PrototypeMomentumAssist : MonoBehaviour
             return;
         }
 
+        shipController.ClearManualFlightInputForAssist();
         isActive = true;
         holdTimer = 0f;
         SetState(NeedsControl ? (CanUseMainBrake ? PrototypeMomentumAssistState.AlignForBrake : PrototypeMomentumAssistState.RcsDamp) : PrototypeMomentumAssistState.Complete, "activated");
@@ -184,6 +186,14 @@ public class PrototypeMomentumAssist : MonoBehaviour
         shipController.ClearExternalFlightAssistRequest();
         shipController.SetMainThrottle(0f);
     }
+
+public void ActivateFromUi()
+    {
+        manualOverrideGraceUntilTime = Time.time + 0.25f;
+        shipController?.ClearManualFlightInputForAssist();
+        Activate();
+    }
+
 
     public void Abort(string reason = "aborted")
     {
@@ -196,6 +206,20 @@ public class PrototypeMomentumAssist : MonoBehaviour
         holdTimer = 0f;
         SetState(PrototypeMomentumAssistState.Aborted, reason);
     }
+
+public void ResetForBootstrap()
+    {
+        shipController?.SetMainThrottle(0f);
+        shipController?.ClearExternalFlightAssistRequest();
+        LastRequestedForceWorld = Vector3.zero;
+        LastRequestedTorqueLocal = Vector3.zero;
+        LastMainThrottleRequest = 0f;
+        manualOverrideGraceUntilTime = 0f;
+        isActive = false;
+        holdTimer = 0f;
+        SetState(PrototypeMomentumAssistState.Idle, "idle");
+    }
+
 
     private FlightAssistRequest BuildRequest()
     {

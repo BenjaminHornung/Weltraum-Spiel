@@ -160,12 +160,12 @@ public class PrototypeDebugOverlay : MonoBehaviour
         float actualGimbalPitch = shipController != null ? shipController.ActualGimbalPitchCommand : 0f;
         float gimbalAngle = shipController != null ? shipController.LastGimbalAngleDegrees : 0f;
         float turnInput = shipController != null ? shipController.TurnInput : 0f;
-        bool hasRcs = shipController != null && shipController.HasRcs;
-        bool rcsEnabled = shipController != null && shipController.RcsEnabled;
         PrototypeFlightControlDiagnostics controlDiagnostics = shipController != null ? shipController.FlightControlDiagnostics : default;
+        bool hasRcs = controlDiagnostics.rcsAvailable;
+        bool rcsEnabled = controlDiagnostics.rcsEnabled;
         bool sasEnabled = controlDiagnostics.sasEnabled;
         bool effectiveSas = controlDiagnostics.effectiveSasEnabled;
-        string controlModeLabel = shipController != null ? shipController.ControlModeLabel : "n/a";
+        string controlModeLabel = controlDiagnostics.controlModeLabel;
         float forwardAcceleration = shipController != null ? shipController.LastForwardAcceleration : targetStats.LastAcceleration;
         Vector3 rcsPivotLocal = shipController != null ? shipController.RcsControlPivotLocal : Vector3.zero;
         Vector3 rcsPivotWorld = shipController != null ? shipController.RcsControlPivotWorld : centerOfMassWorld;
@@ -262,8 +262,8 @@ public class PrototypeDebugOverlay : MonoBehaviour
         int originShiftCount = floatingOriginManager != null ? floatingOriginManager.ShiftCount : 0;
         int registeredOriginBodies = floatingOriginManager != null ? floatingOriginManager.RegisteredBodyCount : 0;
         string navTargetName = waypointAutopilot != null ? waypointAutopilot.TargetName : "none";
-        string autopilotState = waypointAutopilot != null ? waypointAutopilot.CurrentState.ToString() : "none";
-        string autopilotArrival = waypointAutopilot != null ? waypointAutopilot.ArrivalStatus : "unavailable";
+        string autopilotState = shipController != null ? controlDiagnostics.autopilotState.ToString() : "none";
+        string autopilotArrival = shipController != null ? controlDiagnostics.autopilotStatus : "unavailable";
         float navDistance = waypointAutopilot != null ? waypointAutopilot.DistanceToTarget : 0f;
         float navClosingSpeed = waypointAutopilot != null ? waypointAutopilot.ClosingSpeed : 0f;
         float navLateralSpeed = waypointAutopilot != null ? waypointAutopilot.LateralSpeed : 0f;
@@ -342,7 +342,7 @@ public class PrototypeDebugOverlay : MonoBehaviour
                     rcsSectionOpen = GUILayout.Toggle(rcsSectionOpen, "RCS");
                     if (rcsSectionOpen)
                     {
-                        GUILayout.Label($"RCS: installed {(hasRcs ? "yes" : "no")}, enabled {(rcsEnabled ? "yes" : "no")}", labelStyle);
+                        GUILayout.Label($"RCS: enabled {(rcsEnabled ? "yes" : "no")}, available {(hasRcs ? "yes" : "no")}, allocator {controlDiagnostics.rcsAllocatorStatus}", labelStyle);
                         GUILayout.Label($"RCS tuning: move {rcsTranslationSetting:0} N, attitude {rcsAttitudeSetting:0} N", labelStyle);
                         GUILayout.Label($"RCS response: up {FormatRate(rcsNozzleSpoolUp)}, down {FormatRate(rcsNozzleSpoolDown)}", labelStyle);
                         GUILayout.Label($"RCS select dot: {minSelectionDot:0.00}, nozzles {activeNozzles}/{installedNozzles}", labelStyle);
@@ -366,7 +366,7 @@ public class PrototypeDebugOverlay : MonoBehaviour
                     sasSectionOpen = GUILayout.Toggle(sasSectionOpen, "SAS");
                     if (sasSectionOpen)
                     {
-                        GUILayout.Label($"SAS: {(sasEnabled ? "on" : "off")} (effective {(effectiveSas ? "on" : "off")}) {sasMode}", labelStyle);
+                        GUILayout.Label($"SAS: armed {(sasEnabled ? "on" : "off")} / effective {(effectiveSas ? "on" : "off")} / authority {(controlDiagnostics.sasHasAuthority ? "yes" : "no")} {sasMode}", labelStyle);
                         GUILayout.Label($"SAS PD: Kp {sasProportionalGain:0.00}, Kd {sasDerivativeGain:0.00}, auth {sasAuthority:0.00}", labelStyle);
                         GUILayout.Label($"SAS local w: {FormatVector(sasAngularVelocityLocal)} rad/s", labelStyle);
                         GUILayout.Label($"SAS angular err: {FormatVector(sasAngularErrorLocal)} rad", labelStyle);
@@ -671,4 +671,5 @@ public class PrototypeDebugOverlay : MonoBehaviour
             advancedDiagnosticsOpen = true;
         }
     }
+
 }

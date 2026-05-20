@@ -33,35 +33,68 @@ public readonly struct PrototypeFlightControlDiagnostics
 {
     public PrototypeFlightControlDiagnostics(
         bool rcsEnabled,
+        bool rcsAvailable,
+        string rcsAllocatorStatus,
+        float rcsActualForceMagnitude,
+        float rcsActualTorqueMagnitude,
         bool sasEnabled,
         bool effectiveSasEnabled,
+        bool sasHasAuthority,
+        float sasActualTorqueMagnitude,
         FlightControlMode controlMode,
+        string controlModeLabel,
         float mainThrottle,
         bool mainThrusterAllowed,
         bool gimbalAllowed,
-        FlightAssistMode autopilotState,
-        PrototypeMomentumAssistState momentumAssistState)
+        bool autopilotEngaged,
+        PrototypeWaypointAutopilotState autopilotState,
+        string autopilotStatus,
+        bool momentumAssistActive,
+        PrototypeMomentumAssistState momentumAssistState,
+        string momentumAssistStatus)
     {
         this.rcsEnabled = rcsEnabled;
+        this.rcsAvailable = rcsAvailable;
+        this.rcsAllocatorStatus = string.IsNullOrWhiteSpace(rcsAllocatorStatus) ? "unavailable" : rcsAllocatorStatus;
+        this.rcsActualForceMagnitude = rcsActualForceMagnitude;
+        this.rcsActualTorqueMagnitude = rcsActualTorqueMagnitude;
         this.sasEnabled = sasEnabled;
         this.effectiveSasEnabled = effectiveSasEnabled;
+        this.sasHasAuthority = sasHasAuthority;
+        this.sasActualTorqueMagnitude = sasActualTorqueMagnitude;
         this.controlMode = controlMode;
+        this.controlModeLabel = string.IsNullOrWhiteSpace(controlModeLabel) ? "Cruise" : controlModeLabel;
         this.mainThrottle = mainThrottle;
         this.mainThrusterAllowed = mainThrusterAllowed;
         this.gimbalAllowed = gimbalAllowed;
+        this.autopilotEngaged = autopilotEngaged;
         this.autopilotState = autopilotState;
+        this.autopilotStatus = string.IsNullOrWhiteSpace(autopilotStatus) ? "unavailable" : autopilotStatus;
+        this.momentumAssistActive = momentumAssistActive;
         this.momentumAssistState = momentumAssistState;
+        this.momentumAssistStatus = string.IsNullOrWhiteSpace(momentumAssistStatus) ? "unavailable" : momentumAssistStatus;
     }
 
     public readonly bool rcsEnabled;
+    public readonly bool rcsAvailable;
+    public readonly string rcsAllocatorStatus;
+    public readonly float rcsActualForceMagnitude;
+    public readonly float rcsActualTorqueMagnitude;
     public readonly bool sasEnabled;
     public readonly bool effectiveSasEnabled;
+    public readonly bool sasHasAuthority;
+    public readonly float sasActualTorqueMagnitude;
     public readonly FlightControlMode controlMode;
+    public readonly string controlModeLabel;
     public readonly float mainThrottle;
     public readonly bool mainThrusterAllowed;
     public readonly bool gimbalAllowed;
-    public readonly FlightAssistMode autopilotState;
+    public readonly bool autopilotEngaged;
+    public readonly PrototypeWaypointAutopilotState autopilotState;
+    public readonly string autopilotStatus;
+    public readonly bool momentumAssistActive;
     public readonly PrototypeMomentumAssistState momentumAssistState;
+    public readonly string momentumAssistStatus;
 }
 
 [RequireComponent(typeof(Rigidbody))]
@@ -113,7 +146,7 @@ public class PlayerShipController : MonoBehaviour
     private bool toggleSas;
     private bool cycleControlMode;
     private bool sasHoldInvert;
-    private bool sasEnabled;
+    private bool sasEnabled = true;
     private bool sasTargetRotationValid;
     private FlightControlMode controlMode = FlightControlMode.Normal;
     private RcsManeuverLayer activeRcsLayer = RcsManeuverLayer.Attitude;
@@ -129,6 +162,7 @@ public class PlayerShipController : MonoBehaviour
     private Vector3 pendingDebugRcsAttitudePulse;
     private float pendingDebugMainThrottlePulse;
     private PrototypeMomentumAssist momentumAssist;
+    private PrototypeWaypointAutopilot waypointAutopilot;
     public float MainThrottle => mainThrottle;
     public float MainThrottlePercent => mainThrottle * 100f;
     public float MainThrustCommand { get; private set; }
@@ -264,14 +298,25 @@ public class PlayerShipController : MonoBehaviour
         {
             return new PrototypeFlightControlDiagnostics(
                 RcsEnabled,
+                HasRcs,
+                LastRcsAllocatorStatus,
+                LastRcsActualForceWorld.magnitude,
+                LastRcsActualTorqueWorld.magnitude,
                 SasEnabled,
                 EffectiveSasEnabled,
+                RcsEnabled && HasRcs && RcsSasAuthority > 0f,
+                LastRcsSasDesiredTorqueLocal.magnitude,
                 ControlMode,
+                ControlModeLabel,
                 MainThrottle,
                 MainThrusterAllowed,
                 GimbalAllowed,
-                FlightAssistMode,
-                momentumAssist != null ? momentumAssist.CurrentState : PrototypeMomentumAssistState.Idle);
+                waypointAutopilot != null && waypointAutopilot.AutopilotEngaged,
+                waypointAutopilot != null ? waypointAutopilot.CurrentState : PrototypeWaypointAutopilotState.Idle,
+                waypointAutopilot != null ? waypointAutopilot.ArrivalStatus : "unavailable",
+                momentumAssist != null && momentumAssist.IsActive,
+                momentumAssist != null ? momentumAssist.CurrentState : PrototypeMomentumAssistState.Idle,
+                momentumAssist != null ? momentumAssist.StatusLabel : "unavailable");
         }
     }
 
@@ -319,6 +364,12 @@ public class PlayerShipController : MonoBehaviour
             physicsCore = GetComponent<ShipPhysicsCore>();
         }
 
+
+
+        if (waypointAutopilot == null)
+        {
+            waypointAutopilot = GetComponent<PrototypeWaypointAutopilot>();
+        }
         if (momentumAssist == null)
         {
             momentumAssist = GetComponent<PrototypeMomentumAssist>();
@@ -418,7 +469,10 @@ public class PlayerShipController : MonoBehaviour
                 Time.fixedDeltaTime);
         }
 
-        MainThrustCommand = MainThrusterAllowed ? Mathf.Clamp01(Mathf.Max(mainThrottle, mainThrottlePulse)) : 0f;
+        float assistMainThrottle = LastFlightAssistRequest.source == FlightAssistRequestSource.WaypointAutopilot
+            ? LastFlightAssistRequest.mainThrottle
+            : 0f;
+        MainThrustCommand = MainThrusterAllowed ? Mathf.Clamp01(Mathf.Max(mainThrottle, mainThrottlePulse, assistMainThrottle)) : 0f;
         Vector3 desiredGimbalCommand = GetGimbalAssistCommand();
         GimbalYawCommand = desiredGimbalCommand.y;
         float gimbalPitchCommand = desiredGimbalCommand.x;
@@ -744,6 +798,11 @@ public class PlayerShipController : MonoBehaviour
         externalFlightAssistRequest = FlightAssistRequest.None;
     }
 
+    public void ClearManualFlightInputForAssist()
+    {
+        LastManualFlightInput = false;
+    }
+
     private void OnValidate()
     {
         mainThrottle = Mathf.Clamp01(mainThrottle);
@@ -987,6 +1046,16 @@ public class PlayerShipController : MonoBehaviour
         {
             followCamera.SnapNextFrame();
         }
+    }
+
+    public void ResetStartupFlightControls(Vector3 position, Quaternion rotation)
+    {
+        ResetFlightState(position, rotation, true);
+        SetControlMode(FlightControlMode.Normal);
+        SetRcsEnabled(true);
+        SetSasEnabled(true);
+        CaptureSasTargetRotation();
+        ClearManualFlightInputForAssist();
     }
 
 
