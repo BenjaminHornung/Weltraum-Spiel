@@ -438,7 +438,11 @@ public class PrototypeFlightHud : MonoBehaviour
             ? $"{(diagnostics.autopilotEngaged ? "ON" : "OFF")} {diagnostics.autopilotState}"
             : "N/A";
         string sasLabel = shipController != null ? (diagnostics.effectiveSasEnabled ? "SAS Eff On" : "SAS Eff Off") : "SAS n/a";
-        GUI.Label(hintRect, $"G Autopilot | Tab/B Target | Caps Mode\n{cameraLine}\nTarget: {targetLabel} | Auto: {autopilotLabel} | {ResolveControlModeHint()} | {sasLabel}", smallLabelStyle);
+        string autopilotPhase = waypointAutopilot != null ? waypointAutopilot.ArrivalPhase.ToString() : "n/a";
+        string autopilotReason = waypointAutopilot != null && !string.IsNullOrWhiteSpace(waypointAutopilot.ArrivalFailureReason)
+            ? $" | {waypointAutopilot.ArrivalFailureReason}"
+            : string.Empty;
+        GUI.Label(hintRect, $"G Autopilot | Tab/B Target | Caps Mode\n{cameraLine}\nTarget: {targetLabel} | Auto: {autopilotLabel} | phase: {autopilotPhase}{autopilotReason} | {ResolveControlModeHint()} | {sasLabel}", smallLabelStyle);
 
         Rect labelRect = new Rect(contentRect.x + 8f, contentRect.yMax - 14f, contentRect.width - 16f, 14f);
         GUI.Label(labelRect, "Mode: " + LastModeLabel, centeredLabelStyle);

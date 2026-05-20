@@ -9,13 +9,28 @@ using UnityEngine;
 public class PrototypeWaypointAutopilotValidationTests
 {
     private const BindingFlags PrivateInstance = BindingFlags.Instance | BindingFlags.NonPublic;
+    private const string AutopilotRigTargetPrefix = "AutopilotRigTarget";
+    private const string AutopilotRigTargetRootName = "WaypointAutopilotValidationTarget";
+    private static int autopilotRigTargetCounter;
+
+    [SetUp]
+    public void SetUp()
+    {
+        autopilotRigTargetCounter = 0;
+        CleanupValidationNavigationTargets();
+        DestroyByPrefix("WaypointAutopilotValidationShip");
+        DestroyByPrefix("WaypointAutopilotValidationTarget");
+        DestroyByPrefix(AutopilotRigTargetPrefix);
+    }
 
     [TearDown]
     public void TearDown()
     {
         DestroyNamed("PrototypeNavigationWaypoints");
-        DestroyNamed("WaypointAutopilotValidationShip");
-        DestroyNamed("WaypointAutopilotValidationTarget");
+        DestroyByPrefix("WaypointAutopilotValidationShip");
+        DestroyByPrefix("WaypointAutopilotValidationTarget");
+        DestroyByPrefix(AutopilotRigTargetRootName);
+        CleanupValidationNavigationTargets();
     }
 
     [Test]
@@ -121,6 +136,124 @@ public class PrototypeWaypointAutopilotValidationTests
     }
 
     [Test]
+    public void AutopilotRestTargetAheadRequestsLongRangeBurn()
+    {
+        var rig = CreateAutopilotRig();
+        ShipStats stats = rig.Ship.GetComponent<ShipStats>();
+        SetPrivateFloat(stats, "currentFuelKg", 25f);
+        rig.Body.linearVelocity = Vector3.zero;
+        rig.Target.transform.position = Vector3.forward * 150f;
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+        InvokeFixedUpdate(rig.Autopilot);
+
+        Assert.True(rig.Autopilot.AutopilotEngaged);
+        Assert.That(rig.Autopilot.ArrivalPhase, Is.EqualTo(PrototypeWaypointAutopilotArrivalPhase.LongRangeBurn));
+        Assert.That(rig.Autopilot.RequestedMainThrottle, Is.GreaterThan(0.8f));
+        Assert.That(rig.Autopilot.DesiredBurnDirection.z, Is.GreaterThan(0.98f));
+        Assert.False(rig.Autopilot.ArrivalFailureReason == "FuelInsufficient");
+    }
+
+    [Test]
+    public void AutopilotForwardVelocityTriggersBrakeEarlierThanRestCase()
+    {
+        var restRig = CreateAutopilotRig();
+        restRig.Target.transform.position = Vector3.forward * 150f;
+        restRig.Body.linearVelocity = Vector3.zero;
+        restRig.Autopilot.SelectTarget(restRig.Target);
+        restRig.Autopilot.ToggleAutopilot();
+        InvokeFixedUpdate(restRig.Autopilot);
+        Assert.That(restRig.Autopilot.ArrivalPhase, Is.Not.EqualTo(PrototypeWaypointAutopilotArrivalPhase.Brake));
+
+        restRig.Autopilot.ToggleAutopilot();
+
+        var fastRig = CreateAutopilotRig();
+        fastRig.Target.transform.position = Vector3.forward * 150f;
+        fastRig.Body.linearVelocity = Vector3.forward * 45f;
+        fastRig.Autopilot.SelectTarget(fastRig.Target);
+        fastRig.Autopilot.ToggleAutopilot();
+        InvokeFixedUpdate(fastRig.Autopilot);
+        Assert.That(fastRig.Autopilot.ArrivalPhase, Is.EqualTo(PrototypeWaypointAutopilotArrivalPhase.Brake));
+    }
+
+    [Test]
+    public void AutopilotLateralVelocityRequestsCorrection()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 80f;
+        rig.Body.linearVelocity = Vector3.right * 4f;
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+        InvokeFixedUpdate(rig.Autopilot);
+
+        Assert.That(rig.Autopilot.ArrivalPhase, Is.EqualTo(PrototypeWaypointAutopilotArrivalPhase.LateralCorrection));
+        Assert.True(rig.Controller.HasExternalFlightAssistRequest);
+        Assert.That(rig.Controller.LastExternalFlightAssistRequest.forceWorld.x, Is.LessThan(-0.0001f));
+    }
+
+    [Test]
+    public void AutopilotTooCloseAndFastRequestsBrake()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 12f;
+        rig.Body.linearVelocity = Vector3.forward * 20f;
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+        InvokeFixedUpdate(rig.Autopilot);
+
+        Assert.That(rig.Autopilot.ArrivalPhase, Is.EqualTo(PrototypeWaypointAutopilotArrivalPhase.Brake));
+        Assert.That(rig.Autopilot.CurrentState, Is.Not.EqualTo(PrototypeWaypointAutopilotState.Complete));
+    }
+
+    [Test]
+    public void AutopilotNoRcsAllowsCoarseBurnAndReportsLimitedApproach()
+    {
+        var fastBurnRig = CreateAutopilotRig();
+        fastBurnRig.Controller.SetRcsEnabled(false);
+        fastBurnRig.Target.transform.position = Vector3.forward * 150f;
+        fastBurnRig.Body.linearVelocity = Vector3.zero;
+        fastBurnRig.Autopilot.SelectTarget(fastBurnRig.Target);
+        fastBurnRig.Autopilot.ToggleAutopilot();
+        InvokeFixedUpdate(fastBurnRig.Autopilot);
+
+        Assert.That(fastBurnRig.Autopilot.ArrivalPhase, Is.EqualTo(PrototypeWaypointAutopilotArrivalPhase.LongRangeBurn));
+        Assert.That(fastBurnRig.Autopilot.RequestedMainThrottle, Is.GreaterThan(0.8f));
+        Assert.False(fastBurnRig.Autopilot.LimitedFinalApproachCapability);
+
+        var approachRig = CreateAutopilotRig();
+        SetPrivateFloat(approachRig.Ship.GetComponent<RcsThrusterController>(), "translationForce", 0f);
+        approachRig.Target.Configure("ApproachTarget", 10f);
+        approachRig.Target.transform.position = Vector3.forward * 12f;
+        approachRig.Body.linearVelocity = Vector3.zero;
+        approachRig.Autopilot.SelectTarget(approachRig.Target);
+        approachRig.Autopilot.ToggleAutopilot();
+        InvokeFixedUpdate(approachRig.Autopilot);
+
+        Assert.That(approachRig.Autopilot.ArrivalPhase, Is.EqualTo(PrototypeWaypointAutopilotArrivalPhase.FinalApproach));
+        Assert.True(approachRig.Autopilot.LimitedFinalApproachCapability);
+        Assert.That(approachRig.Autopilot.ArrivalFailureReason, Is.EqualTo("reduced final approach capability"));
+    }
+
+    [Test]
+    public void AutopilotManualOverrideAfterGraceAbortsAndClearsRequest()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 120f;
+        rig.Body.linearVelocity = Vector3.zero;
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+        SetPrivateFloat(rig.Autopilot, "manualOverrideGraceUntilTime", -10f);
+        SetPrivateProperty(rig.Controller, "LastManualFlightInput", true);
+        InvokeUpdate(rig.Autopilot);
+        InvokeFixedUpdate(rig.Autopilot);
+
+        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.Aborted));
+        Assert.False(rig.Autopilot.AutopilotEngaged);
+        Assert.False(rig.Controller.HasExternalFlightAssistRequest);
+        Assert.That(rig.Autopilot.ArrivalFailureReason, Is.EqualTo("manual override"));
+    }
+
+    [Test]
     public void FuelEstimateRejectsFarTargetWithLowFuelButAllowsFuelFreeThrust()
     {
         GameObject ship = new GameObject("WaypointAutopilotValidationShip");
@@ -152,7 +285,7 @@ public class PrototypeWaypointAutopilotValidationTests
         GameObject ship = CreateShipRig();
         var manager = ship.AddComponent<PrototypeWaypointManager>();
         manager.EnsureDefaultWaypoints();
-        var autopilot = ship.AddComponent<PrototypeWaypointAutopilot>();
+        var autopilot = ship.GetComponent<PrototypeWaypointAutopilot>() ?? ship.AddComponent<PrototypeWaypointAutopilot>();
         ShipStats stats = ship.GetComponent<ShipStats>();
         SetPrivateFloat(stats, "currentFuelKg", 0f);
 
@@ -188,13 +321,40 @@ public class PrototypeWaypointAutopilotValidationTests
         ShipStats stats = ship.AddComponent<ShipStats>();
         ShipPhysicsCore physicsCore = ship.AddComponent<ShipPhysicsCore>();
         ship.AddComponent<GunModule>();
+        var mainThruster = ship.AddComponent<MainThrusterBank>();
         ship.AddComponent<EngineVfxController>();
-        ship.AddComponent<MainThrusterBank>();
-        ship.AddComponent<RcsThrusterController>();
+        var rcs = ship.AddComponent<RcsThrusterController>();
+        var mainModule = ship.AddComponent<MainThrusterModule>();
         ship.AddComponent<PlayerShipController>();
+        mainModule.Configure(ship.transform, body, stats, physicsCore);
+        mainThruster.Configure(new[] { mainModule }, body, stats, physicsCore);
+        ConfigureRcsNozzles(ship.transform, rcs, body, physicsCore);
         physicsCore.Configure(body);
         stats.ApplyMassProperties(body);
         return ship;
+    }
+
+    private static AutopilotRig CreateAutopilotRig()
+    {
+        GameObject ship = CreateShipRig();
+        GameObject root = EnsureAutopilotRigTargetRoot();
+        var target = new GameObject($"{AutopilotRigTargetPrefix}_{autopilotRigTargetCounter++}");
+        target.transform.SetParent(root.transform, false);
+        target.AddComponent<PrototypeNavigationTarget>().Configure("ValidationTarget", 10f);
+        var autopilot = ship.GetComponent<PrototypeWaypointAutopilot>() ?? ship.AddComponent<PrototypeWaypointAutopilot>();
+        var controller = ship.GetComponent<PlayerShipController>() ?? ship.AddComponent<PlayerShipController>();
+        var body = ship.GetComponent<Rigidbody>();
+        var targetComponent = target.GetComponent<PrototypeNavigationTarget>();
+        autopilot.Bind(null, controller, ship.GetComponent<ShipStats>(), body);
+        autopilot.SelectTarget(targetComponent);
+        return new AutopilotRig
+        {
+            Ship = ship,
+            Target = targetComponent,
+            Autopilot = autopilot,
+            Controller = controller,
+            Body = body
+        };
     }
 
     private static void SetPrivateFloat(object target, string fieldName, float value)
@@ -202,6 +362,15 @@ public class PrototypeWaypointAutopilotValidationTests
         FieldInfo field = target.GetType().GetField(fieldName, PrivateInstance);
         Assert.NotNull(field, fieldName);
         field.SetValue(target, value);
+    }
+
+    private static void SetPrivateProperty<T>(object target, string propertyName, T value)
+    {
+        PropertyInfo property = target.GetType().GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        Assert.NotNull(property, propertyName);
+        MethodInfo setter = property.GetSetMethod(true);
+        Assert.NotNull(setter, $"{propertyName} has no set method");
+        setter.Invoke(target, new object[] { value });
     }
 
     private static string StripComments(string line)
@@ -217,6 +386,121 @@ public class PrototypeWaypointAutopilotValidationTests
         {
             UnityEngine.Object.DestroyImmediate(target);
         }
+    }
+
+    private static GameObject EnsureAutopilotRigTargetRoot()
+    {
+        GameObject root = GameObject.Find(AutopilotRigTargetRootName);
+        if (root == null)
+        {
+            root = new GameObject(AutopilotRigTargetRootName);
+        }
+
+        return root;
+    }
+
+    private static void CleanupValidationNavigationTargets()
+    {
+        PrototypeNavigationTarget[] targets = UnityEngine.Object.FindObjectsOfType<PrototypeNavigationTarget>();
+        for (int i = 0; i < targets.Length; i++)
+        {
+            if (targets[i] == null)
+            {
+                continue;
+            }
+
+            if (targets[i].name.StartsWith(AutopilotRigTargetPrefix))
+            {
+                UnityEngine.Object.DestroyImmediate(targets[i].gameObject);
+                continue;
+            }
+
+            if (targets[i].GetComponent<Renderer>() == null)
+            {
+                UnityEngine.Object.DestroyImmediate(targets[i].gameObject);
+            }
+        }
+    }
+
+    private static void DestroyByPrefix(string prefix)
+    {
+        GameObject[] objects = UnityEngine.Object.FindObjectsOfType<GameObject>();
+        for (int i = 0; i < objects.Length; i++)
+        {
+            GameObject target = objects[i];
+            if (target != null && target.name.StartsWith(prefix))
+            {
+                UnityEngine.Object.DestroyImmediate(target);
+            }
+        }
+    }
+
+    private static void ConfigureRcsNozzles(Transform shipTransform, RcsThrusterController rcs, Rigidbody body, ShipPhysicsCore physicsCore)
+    {
+        Transform[] nozzleTransforms = new Transform[6];
+        string[] nozzleNames =
+        {
+            "RCS_Nozzle_Up",
+            "RCS_Nozzle_Down",
+            "RCS_Nozzle_Left",
+            "RCS_Nozzle_Right",
+            "RCS_Nozzle_Forward",
+            "RCS_Nozzle_Back"
+        };
+        Vector3[] localPositions =
+        {
+            Vector3.up,
+            Vector3.down,
+            Vector3.left,
+            Vector3.right,
+            Vector3.forward,
+            Vector3.back
+        };
+
+        for (int i = 0; i < nozzleNames.Length; i++)
+        {
+            nozzleTransforms[i] = shipTransform.Find(nozzleNames[i]);
+            if (nozzleTransforms[i] == null)
+            {
+                GameObject nozzle = new GameObject(nozzleNames[i]);
+                nozzle.transform.SetParent(shipTransform, false);
+                nozzle.transform.localPosition = localPositions[i];
+                nozzleTransforms[i] = nozzle.transform;
+            }
+        }
+
+        rcs.ConfigureThrusters(
+            nozzleTransforms[0],
+            nozzleTransforms[1],
+            nozzleTransforms[2],
+            nozzleTransforms[3],
+            nozzleTransforms[4],
+            nozzleTransforms[5],
+            body,
+            physicsCore);
+    }
+
+    private static void InvokeFixedUpdate(object target)
+    {
+        MethodInfo fixedUpdate = target.GetType().GetMethod("FixedUpdate", PrivateInstance);
+        Assert.NotNull(fixedUpdate);
+        fixedUpdate.Invoke(target, null);
+    }
+
+    private static void InvokeUpdate(object target)
+    {
+        MethodInfo update = target.GetType().GetMethod("Update", PrivateInstance);
+        Assert.NotNull(update);
+        update.Invoke(target, null);
+    }
+
+    private struct AutopilotRig
+    {
+        public GameObject Ship;
+        public Rigidbody Body;
+        public PlayerShipController Controller;
+        public PrototypeWaypointAutopilot Autopilot;
+        public PrototypeNavigationTarget Target;
     }
 }
 #endif

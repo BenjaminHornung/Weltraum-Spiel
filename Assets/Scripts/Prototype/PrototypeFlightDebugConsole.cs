@@ -454,9 +454,15 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
         GUILayout.Label($"Closing speed: {FormatCompact(waypointAutopilot.ClosingSpeed)} m/s", labelStyle);
         GUILayout.Label($"Lateral speed: {FormatCompact(waypointAutopilot.LateralSpeed)} m/s", labelStyle);
         GUILayout.Label($"Stopping distance: {FormatCompact(waypointAutopilot.StoppingDistance)} m", labelStyle);
+        GUILayout.Label($"Arrival phase: {waypointAutopilot.ArrivalPhase}", labelStyle);
         GUILayout.Label($"Fuel available/required: {FormatFuel(waypointAutopilot.AvailableBurnSeconds)} / {FormatFuel(waypointAutopilot.RequiredBurnSeconds)} s", labelStyle);
+        GUILayout.Label($"Desired burn dir: {FormatVector(waypointAutopilot.DesiredBurnDirection)}", labelStyle);
+        GUILayout.Label($"Req main throttle: {waypointAutopilot.RequestedMainThrottle:0.00}", labelStyle);
+        GUILayout.Label($"Req RCS translation: {FormatVector(waypointAutopilot.RequestedRcsTranslation)}", labelStyle);
+        GUILayout.Label($"Limited final approach: {(waypointAutopilot.LimitedFinalApproachCapability ? "yes" : "no")}", labelStyle);
         GUILayout.Label($"Arrival status: {waypointAutopilot.ArrivalStatus}", labelStyle);
         GUILayout.Label($"Fuel insufficient hint: {(waypointAutopilot.FuelFeasible ? "no" : "yes")}", labelStyle);
+        GUILayout.Label($"Failure/limitation: {waypointAutopilot.ArrivalFailureReason}", labelStyle);
         GUILayout.Label($"Manual override: {(shipController.LastManualFlightInput ? "active" : "inactive")}", labelStyle);
 
         if (momentumAssist != null)
