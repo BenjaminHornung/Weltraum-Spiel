@@ -1,0 +1,541 @@
+{
+  "kitId": "prototype_low_poly_ship_kit_v0",
+  "units": "meters",
+  "style": "low-poly hard-surface sci-fi",
+  "localForwardAxis": "+Y",
+  "localUpAxis": "+Z",
+  "intendedUnityForward": "+Z",
+  "intendedUnityUp": "+Y",
+  "parts": [
+    {
+      "partId": "cockpit_wedge_mk1",
+      "displayName": "Cockpit Wedge Mk1",
+      "category": "Cockpit",
+      "role": "Cockpit",
+      "blendObjectName": "PART_Cockpit_Wedge_Mk1",
+      "exportPath": "Assets/Art/PrototypeShipKit/Parts/cockpit_wedge_mk1.glb",
+      "dimensionsMeters": {
+        "x": 1.2,
+        "y": 1.6,
+        "z": 0.8
+      },
+      "massEstimateKg": 250,
+      "connectors": [
+        {
+          "id": "CONN_REAR_HULL",
+          "name": "PART_Cockpit_Wedge_Mk1_CONN_REAR_HULL",
+          "type": "rear",
+          "localPosition": [
+            0,
+            -0.82,
+            0
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            180
+          ]
+        }
+      ],
+      "notes": "prototype only"
+    },
+    {
+      "partId": "hull_core_mk1",
+      "displayName": "Hull Core Mk1",
+      "category": "Hull",
+      "role": "Hull",
+      "blendObjectName": "PART_Hull_Core_Mk1",
+      "exportPath": "Assets/Art/PrototypeShipKit/Parts/hull_core_mk1.glb",
+      "dimensionsMeters": {
+        "x": 1.4,
+        "y": 2.0,
+        "z": 1.0
+      },
+      "massEstimateKg": 600,
+      "connectors": [
+        {
+          "id": "CONN_FRONT",
+          "name": "PART_Hull_Core_Mk1_CONN_FRONT",
+          "type": "front",
+          "localPosition": [
+            0,
+            1.02,
+            0
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "CONN_REAR",
+          "name": "PART_Hull_Core_Mk1_CONN_REAR",
+          "type": "rear",
+          "localPosition": [
+            0,
+            -1.02,
+            0
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            180
+          ]
+        },
+        {
+          "id": "CONN_LEFT",
+          "name": "PART_Hull_Core_Mk1_CONN_LEFT",
+          "type": "mount",
+          "localPosition": [
+            -0.74,
+            0,
+            0
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            90
+          ]
+        },
+        {
+          "id": "CONN_RIGHT",
+          "name": "PART_Hull_Core_Mk1_CONN_RIGHT",
+          "type": "mount",
+          "localPosition": [
+            0.74,
+            0,
+            0
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            -90
+          ]
+        },
+        {
+          "id": "CONN_TOP",
+          "name": "PART_Hull_Core_Mk1_CONN_TOP",
+          "type": "mount",
+          "localPosition": [
+            0,
+            0,
+            0.54
+          ],
+          "localRotationEuler": [
+            -90,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "CONN_BOTTOM",
+          "name": "PART_Hull_Core_Mk1_CONN_BOTTOM",
+          "type": "mount",
+          "localPosition": [
+            0,
+            0,
+            -0.54
+          ],
+          "localRotationEuler": [
+            90,
+            0,
+            0
+          ]
+        }
+      ],
+      "notes": "prototype only"
+    },
+    {
+      "partId": "hull_segment_mk1",
+      "displayName": "Hull Segment Mk1",
+      "category": "Hull",
+      "role": "Hull",
+      "blendObjectName": "PART_Hull_Segment_Mk1",
+      "exportPath": "Assets/Art/PrototypeShipKit/Parts/hull_segment_mk1.glb",
+      "dimensionsMeters": {
+        "x": 1.2,
+        "y": 1.5,
+        "z": 0.9
+      },
+      "massEstimateKg": 420,
+      "connectors": [
+        {
+          "id": "CONN_FRONT",
+          "name": "PART_Hull_Segment_Mk1_CONN_FRONT",
+          "type": "front",
+          "localPosition": [
+            0,
+            0.77,
+            0
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "CONN_REAR",
+          "name": "PART_Hull_Segment_Mk1_CONN_REAR",
+          "type": "rear",
+          "localPosition": [
+            0,
+            -0.77,
+            0
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            180
+          ]
+        },
+        {
+          "id": "CONN_LEFT",
+          "name": "PART_Hull_Segment_Mk1_CONN_LEFT",
+          "type": "mount",
+          "localPosition": [
+            -0.64,
+            0,
+            0
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            90
+          ]
+        },
+        {
+          "id": "CONN_RIGHT",
+          "name": "PART_Hull_Segment_Mk1_CONN_RIGHT",
+          "type": "mount",
+          "localPosition": [
+            0.64,
+            0,
+            0
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            -90
+          ]
+        }
+      ],
+      "notes": "prototype only"
+    },
+    {
+      "partId": "fuel_tank_small_mk1",
+      "displayName": "Fuel Tank Small Mk1",
+      "category": "Fuel",
+      "role": "FuelTank",
+      "blendObjectName": "PART_Fuel_Tank_Small_Mk1",
+      "exportPath": "Assets/Art/PrototypeShipKit/Parts/fuel_tank_small_mk1.glb",
+      "dimensionsMeters": {
+        "x": 0.45,
+        "y": 1.4,
+        "z": 0.45
+      },
+      "massEstimateKg": 120,
+      "connectors": [
+        {
+          "id": "CONN_MOUNT",
+          "name": "PART_Fuel_Tank_Small_Mk1_CONN_MOUNT",
+          "type": "mount",
+          "localPosition": [
+            0,
+            0,
+            0.29
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "notes": "prototype only",
+      "fuelEstimateKg": 300
+    },
+    {
+      "partId": "main_engine_bell_mk1",
+      "displayName": "Main Engine Bell Mk1",
+      "category": "Engine",
+      "role": "MainThruster",
+      "blendObjectName": "PART_Main_Engine_Bell_Mk1",
+      "exportPath": "Assets/Art/PrototypeShipKit/Parts/main_engine_bell_mk1.glb",
+      "dimensionsMeters": {
+        "x": 0.6,
+        "y": 0.9,
+        "z": 0.6
+      },
+      "massEstimateKg": 350,
+      "connectors": [
+        {
+          "id": "CONN_FRONT_HULL",
+          "name": "PART_Main_Engine_Bell_Mk1_CONN_FRONT_HULL",
+          "type": "front",
+          "localPosition": [
+            0,
+            0.47,
+            0
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "THRUST_NOZZLE_MAIN",
+          "name": "PART_Main_Engine_Bell_Mk1_THRUST_NOZZLE_MAIN",
+          "type": "nozzle",
+          "localPosition": [
+            0,
+            -0.49,
+            0
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            180
+          ]
+        }
+      ],
+      "notes": "prototype only",
+      "thrustEstimateN": 45000
+    },
+    {
+      "partId": "rcs_pod_4way_mk1",
+      "displayName": "RCS Pod 4Way Mk1",
+      "category": "RCS",
+      "role": "RCS",
+      "blendObjectName": "PART_RCS_Pod_4Way_Mk1",
+      "exportPath": "Assets/Art/PrototypeShipKit/Parts/rcs_pod_4way_mk1.glb",
+      "dimensionsMeters": {
+        "x": 0.45,
+        "y": 0.35,
+        "z": 0.35
+      },
+      "massEstimateKg": 80,
+      "connectors": [
+        {
+          "id": "CONN_MOUNT",
+          "name": "PART_RCS_Pod_4Way_Mk1_CONN_MOUNT",
+          "type": "mount",
+          "localPosition": [
+            0,
+            0,
+            -0.21
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "RCS_NOZZLE_FORWARD",
+          "name": "PART_RCS_Pod_4Way_Mk1_RCS_NOZZLE_FORWARD",
+          "type": "nozzle",
+          "localPosition": [
+            0,
+            0.3,
+            0
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "RCS_NOZZLE_BACK",
+          "name": "PART_RCS_Pod_4Way_Mk1_RCS_NOZZLE_BACK",
+          "type": "nozzle",
+          "localPosition": [
+            0,
+            -0.3,
+            0
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            180
+          ]
+        },
+        {
+          "id": "RCS_NOZZLE_LEFT",
+          "name": "PART_RCS_Pod_4Way_Mk1_RCS_NOZZLE_LEFT",
+          "type": "nozzle",
+          "localPosition": [
+            -0.35,
+            0,
+            0
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            90
+          ]
+        },
+        {
+          "id": "RCS_NOZZLE_RIGHT",
+          "name": "PART_RCS_Pod_4Way_Mk1_RCS_NOZZLE_RIGHT",
+          "type": "nozzle",
+          "localPosition": [
+            0.35,
+            0,
+            0
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            -90
+          ]
+        }
+      ],
+      "notes": "prototype only",
+      "thrustEstimateN": 6500
+    },
+    {
+      "partId": "gun_mount_light_mk1",
+      "displayName": "Gun Mount Light Mk1",
+      "category": "Weapon",
+      "role": "Gun",
+      "blendObjectName": "PART_Gun_Mount_Light_Mk1",
+      "exportPath": "Assets/Art/PrototypeShipKit/Parts/gun_mount_light_mk1.glb",
+      "dimensionsMeters": {
+        "x": 0.25,
+        "y": 0.9,
+        "z": 0.25
+      },
+      "massEstimateKg": 90,
+      "connectors": [
+        {
+          "id": "CONN_MOUNT",
+          "name": "PART_Gun_Mount_Light_Mk1_CONN_MOUNT",
+          "type": "mount",
+          "localPosition": [
+            0,
+            -0.32,
+            -0.08
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "MUZZLE",
+          "name": "PART_Gun_Mount_Light_Mk1_MUZZLE",
+          "type": "muzzle",
+          "localPosition": [
+            0,
+            0.53,
+            0.03
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "notes": "prototype only"
+    },
+    {
+      "partId": "cargo_pod_small_mk1",
+      "displayName": "Cargo Pod Small Mk1",
+      "category": "Cargo",
+      "role": "Cargo",
+      "blendObjectName": "PART_Cargo_Pod_Small_Mk1",
+      "exportPath": "Assets/Art/PrototypeShipKit/Parts/cargo_pod_small_mk1.glb",
+      "dimensionsMeters": {
+        "x": 1.0,
+        "y": 0.8,
+        "z": 0.7
+      },
+      "massEstimateKg": 220,
+      "connectors": [
+        {
+          "id": "CONN_MOUNT",
+          "name": "PART_Cargo_Pod_Small_Mk1_CONN_MOUNT",
+          "type": "mount",
+          "localPosition": [
+            0,
+            0,
+            0.4
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "notes": "prototype only"
+    },
+    {
+      "partId": "connector_hardpoint_mk1",
+      "displayName": "Connector Hardpoint Mk1",
+      "category": "Connector",
+      "role": "Hardpoint",
+      "blendObjectName": "PART_Connector_Hardpoint_Mk1",
+      "exportPath": "Assets/Art/PrototypeShipKit/Parts/connector_hardpoint_mk1.glb",
+      "dimensionsMeters": {
+        "x": 0.42,
+        "y": 0.42,
+        "z": 0.12
+      },
+      "massEstimateKg": 10,
+      "connectors": [
+        {
+          "id": "CONN_MOUNT",
+          "name": "PART_Connector_Hardpoint_Mk1_CONN_MOUNT",
+          "type": "mount",
+          "localPosition": [
+            0,
+            0,
+            0.09
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "notes": "prototype only"
+    }
+  ],
+  "demoShips": [
+    {
+      "id": "demo_scout_mk1",
+      "displayName": "Demo Scout Mk1",
+      "exportPath": "Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.glb",
+      "partsUsed": [
+        "cockpit_wedge_mk1",
+        "hull_core_mk1",
+        "main_engine_bell_mk1",
+        "rcs_pod_4way_mk1",
+        "gun_mount_light_mk1",
+        "fuel_tank_small_mk1"
+      ]
+    },
+    {
+      "id": "demo_cargo_mk1",
+      "displayName": "Demo Cargo Mk1",
+      "exportPath": "Assets/Art/PrototypeShipKit/DemoShips/demo_cargo_mk1.glb",
+      "partsUsed": [
+        "cockpit_wedge_mk1",
+        "hull_core_mk1",
+        "hull_segment_mk1",
+        "cargo_pod_small_mk1",
+        "fuel_tank_small_mk1",
+        "main_engine_bell_mk1",
+        "rcs_pod_4way_mk1"
+      ]
+    }
+  ]
+}
