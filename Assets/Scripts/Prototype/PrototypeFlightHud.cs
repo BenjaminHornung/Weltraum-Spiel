@@ -20,6 +20,7 @@ public class PrototypeFlightHud : MonoBehaviour
     [SerializeField] private PrototypeWaypointAutopilot waypointAutopilot;
     [SerializeField] private PrototypeMomentumAssist momentumAssist;
     [SerializeField] private Transform trackedTarget;
+    private SimpleFollowCamera followCamera;
 
     [Header("HUD")]
     [SerializeField] private bool showHud = true;
@@ -209,6 +210,11 @@ public class PrototypeFlightHud : MonoBehaviour
         if (debugOverlay == null)
         {
             debugOverlay = GetComponent<PrototypeDebugOverlay>();
+        }
+
+        if (followCamera == null)
+        {
+            followCamera = GetComponent<SimpleFollowCamera>();
         }
 
         ResolveTrackedTarget();
@@ -422,14 +428,17 @@ public class PrototypeFlightHud : MonoBehaviour
 
         DrawQuickActions(contentRect);
 
-        Rect hintRect = new Rect(contentRect.x + 8f, contentRect.yMax - 56f, contentRect.width - 16f, 38f);
+        Rect hintRect = new Rect(contentRect.x + 8f, contentRect.yMax - 66f, contentRect.width - 16f, 52f);
         string targetLabel = waypointAutopilot != null ? waypointAutopilot.TargetName : (trackedTarget != null ? trackedTarget.name : "none");
         PrototypeFlightControlDiagnostics diagnostics = shipController != null ? shipController.FlightControlDiagnostics : default;
+        string cameraLine = followCamera != null
+            ? $"Cam: {followCamera.CameraModeName} | dist {followCamera.EffectiveDistance:0.00} ({followCamera.BaseVisualDistance:0.00}) | zoom {followCamera.Zoom:0.00} | bounds {followCamera.BaseVisualBoundsRadius:0.00}"
+            : "Cam: unavailable";
         string autopilotLabel = shipController != null
             ? $"{(diagnostics.autopilotEngaged ? "ON" : "OFF")} {diagnostics.autopilotState}"
             : "N/A";
         string sasLabel = shipController != null ? (diagnostics.effectiveSasEnabled ? "SAS Eff On" : "SAS Eff Off") : "SAS n/a";
-        GUI.Label(hintRect, $"G Autopilot | Tab/B Target | Caps Mode\nTarget: {targetLabel} | Auto: {autopilotLabel} | {ResolveControlModeHint()} | {sasLabel}", smallLabelStyle);
+        GUI.Label(hintRect, $"G Autopilot | Tab/B Target | Caps Mode\n{cameraLine}\nTarget: {targetLabel} | Auto: {autopilotLabel} | {ResolveControlModeHint()} | {sasLabel}", smallLabelStyle);
 
         Rect labelRect = new Rect(contentRect.x + 8f, contentRect.yMax - 14f, contentRect.width - 16f, 14f);
         GUI.Label(labelRect, "Mode: " + LastModeLabel, centeredLabelStyle);

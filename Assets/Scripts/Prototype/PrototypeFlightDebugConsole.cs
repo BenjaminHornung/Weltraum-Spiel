@@ -14,6 +14,7 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
     [SerializeField] private PrototypeBootstrap bootstrap;
     [SerializeField] private PrototypeWaypointAutopilot waypointAutopilot;
     [SerializeField] private PrototypeMomentumAssist momentumAssist;
+    [SerializeField] private SimpleFollowCamera followCamera;
     [SerializeField] private Vector2 windowPosition = new Vector2(660f, 16f);
 
     private bool showConsole;
@@ -79,6 +80,11 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
         if (keybindOverlay == null)
         {
             keybindOverlay = GetComponent<PrototypeKeybindOverlay>();
+        }
+
+        if (followCamera == null)
+        {
+            followCamera = GetComponent<SimpleFollowCamera>();
         }
 
         if (minimapOverlay == null)
@@ -288,8 +294,55 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
         DrawEnumSelector("Assist", shipController.FlightAssistMode, shipController.SetFlightAssistMode);
         DrawEnumSelector("Main thrust", shipController.MainThrustMode, shipController.SetMainThrustMode);
         DrawEnumSelector("Gimbal assist", shipController.GimbalAssistMode, shipController.SetGimbalAssistMode);
+        DrawCameraControls();
         DrawControlCalibration();
         DrawVariantSelector();
+    }
+
+    private void DrawCameraControls()
+    {
+        GUILayout.Label("Camera framing", labelStyle);
+
+        if (followCamera == null)
+        {
+            GUILayout.Label("Camera controls unavailable: no SimpleFollowCamera found.", labelStyle);
+            return;
+        }
+
+        GUILayout.Label($"Mode: {followCamera.CameraModeName} | Dist {followCamera.EffectiveDistance:0.00} (base {followCamera.BaseVisualDistance:0.00}) | Zoom {followCamera.Zoom:0.00} | Bounds {followCamera.BaseVisualBoundsRadius:0.00}", labelStyle);
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("Previous mode"))
+        {
+            followCamera.PreviousCameraMode();
+        }
+
+        if (GUILayout.Button("Next mode"))
+        {
+            followCamera.CycleCameraMode();
+        }
+
+        if (GUILayout.Button("Reset framing"))
+        {
+            followCamera.ResetFraming();
+        }
+
+        if (GUILayout.Button("Reframe"))
+        {
+            followCamera.ReframeToTargetVisualBounds();
+        }
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("Zoom In"))
+        {
+            followCamera.AdjustZoom(-1f);
+        }
+
+        if (GUILayout.Button("Zoom Out"))
+        {
+            followCamera.AdjustZoom(1f);
+        }
+        GUILayout.EndHorizontal();
     }
 
     private void DrawActions()

@@ -91,7 +91,7 @@ public class PrototypeKeybindOverlay : MonoBehaviour
             DrawCategory("Navigation / Autopilot", "Tab next\nB previous\nG toggle Autopilot\nAutopilot uses Cruise/Main Thrust.");
             DrawCategory("Momentum Assist", "HUD button Kill Momentum\nDebug Console Engage/Abort Momentum Assist\nUses physical main/RCS/SAS assist requests, not velocity reset.");
             DrawCategory("SAS / Assist", "T toggle SAS\nHold F invert SAS");
-            DrawCategory("Camera", "Right mouse orbit\nV camera mode\nBackquote/backslash/quote/3 reset camera");
+            DrawCategory("Camera", "Right mouse orbit camera\nCamera modes: ChaseLocked -> OrbitInspect -> Side -> FreeInspect (V)\nMouse wheel zoom in all modes\nFreeInspect: hold RMB + WASD + Q/E to move inspect framing target\nBackquote/backslash/quote/3 reset framing");
             DrawCategory("Weapons", "Space fire");
             DrawCategory("Debug", "Backspace refill fuel\nHUD markers: FWD, PRO, RET, TGT\nDebug vectors add DES, ACT, RES");
             GUILayout.EndScrollView();

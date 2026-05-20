@@ -250,6 +250,10 @@ public class PrototypeDebugOverlay : MonoBehaviour
         float rcsFuelFraction = shipController != null ? shipController.LastRcsFuelFraction : 1f;
         float rcsAllocatedThrottleTotal = shipController != null ? shipController.LastRcsAllocatedNozzleThrottleTotal : 0f;
         string cameraMode = followCamera != null ? followCamera.CameraModeName : "none";
+        float cameraBaseDistance = followCamera != null ? followCamera.BaseVisualDistance : 0f;
+        float cameraBaseBoundsRadius = followCamera != null ? followCamera.BaseVisualBoundsRadius : 0f;
+        float cameraEffectiveDistance = followCamera != null ? followCamera.EffectiveDistance : 0f;
+        float cameraZoom = followCamera != null ? followCamera.Zoom : 0f;
         float cameraAnchorError = followCamera != null ? followCamera.AnchorError : 0f;
         float cameraLookYaw = followCamera != null ? followCamera.LookYaw : 0f;
         float cameraLookPitch = followCamera != null ? followCamera.LookPitch : 0f;
@@ -307,7 +311,7 @@ public class PrototypeDebugOverlay : MonoBehaviour
                         GUILayout.Label($"Mass: stats {targetStats.CurrentMass:0.0} kg, rb {rbMass:0.0} kg", labelStyle);
                         GUILayout.Label($"Velocity: {FormatVector(linearVelocity)} m/s", labelStyle);
                         GUILayout.Label($"Angular velocity: {FormatVector(angularVelocity)} rad/s", labelStyle);
-                        GUILayout.Label($"Camera: {cameraMode}, anchor error {cameraAnchorError:0.000} m", labelStyle);
+                        GUILayout.Label($"Camera: {cameraMode}, dist {cameraEffectiveDistance:0.00} (base {cameraBaseDistance:0.00}), zoom {cameraZoom:0.00}, bounds {cameraBaseBoundsRadius:0.00}, anchor {cameraAnchorError:0.000} m", labelStyle);
                         GUILayout.Label($"Camera look: yaw {cameraLookYaw:0.0} deg, pitch {cameraLookPitch:0.0} deg", labelStyle);
                         GUILayout.Label($"COM local/world: {FormatVector(centerOfMassLocal)} / {FormatVector(centerOfMassWorld)}", labelStyle);
                         GUILayout.Label($"Mass model: {massProperties.ModuleCount} modules, dry {massProperties.DryMassKg:0.0} kg, fuel {massProperties.FuelMassKg:0.0} kg", labelStyle);

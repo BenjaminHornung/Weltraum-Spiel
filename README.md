@@ -33,12 +33,15 @@ This Unity prototype is a generated-primitives-only playable slice for testing z
 | `Tab` / `B` | Select next / previous navigation waypoint |
 | `G` | Toggle waypoint autopilot for the selected target |
 | Hold `F` | Temporarily invert effective SAS state |
-| `V` | Cycle the prepared follow-camera mode |
-| Backquote | Reset camera framing |
+| `V` | Cycle camera mode: `ChaseLocked -> OrbitInspect -> Side -> FreeInspect -> ChaseLocked` |
+| Mouse wheel | Zoom camera in all camera modes |
+| Right Mouse Button | Orbit/look around in any camera mode |
+| Backquote / Backslash / Quote / `3` | Reset camera framing |
 | `Backspace` | Debug-only refill fuel |
 | `M` | Reserved; no action in this prototype |
 
-Mouse movement is reserved for the camera. Hold right mouse button to orbit/look around the ship; mouse input does not feed ship attitude.
+Mouse movement is reserved for the camera. Hold right mouse button to orbit/look around the ship. In `FreeInspect`, right mouse plus `WASD` and `Q`/`E` moves the inspection target. Mouse scroll zooms in all modes.
+`ChaseLocked` keeps a limited look offset window and recenters toward its anchor when RMB is released. `OrbitInspect` is ship/visual-bounds centered and does not auto-recenter.
 
 German keyboard note: full throttle accepts both `Y` and `Z` so the control works reliably when those keys are swapped by the active layout.
 
@@ -124,7 +127,8 @@ Optional CC0 assets, such as local low-poly ships or Kenney packs, may be consid
 ## Known Limits
 
 - This is not the final ship editor or gameplay architecture.
-- The camera mode cycle is intentionally minimal and only switches between prepared follow offsets/orbit baselines.
+- Camera framing tracks visible active child `Renderer` bounds for a tighter ship-centered baseline in `OrbitInspect` and `FreeInspect` without mutating `ShipStats` follow values.
+- `V` cycles camera framing modes `ChaseLocked -> OrbitInspect -> Side -> FreeInspect -> ChaseLocked`, and camera distance can be adjusted continuously via scroll or debug controls.
 - SAS is a local PD torque controller routed through RCS, not a full flight computer or hidden angular damping layer.
 - Flight assist does not use hidden Rigidbody damping. Physical assist requests are allocator-limited; debug-only helpers are diagnostics/testing aids only.
 - Waypoint autopilot v0 is a local prototype assist, not an orbital navigator, map UI, docking planner, slingshot planner, or obstacle-avoidance system. It does not use hidden teleporting or direct Rigidbody velocity writes during runtime navigation.

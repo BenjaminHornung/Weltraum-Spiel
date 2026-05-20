@@ -102,6 +102,7 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
         {
             SetGeneratedPrototypeVisualsVisible(ship, layout, true);
             appliedMode = visualMode;
+            NotifyCameraAfterVisualChange();
             return;
         }
 
@@ -111,6 +112,7 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
             Debug.LogWarning($"Prototype ship visual '{SelectedVisualModeName}' is unavailable. Generated primitives remain visible.");
             SetGeneratedPrototypeVisualsVisible(ship, layout, true);
             appliedMode = visualMode;
+            NotifyCameraAfterVisualChange();
             return;
         }
 
@@ -125,6 +127,7 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
         visualInstance.transform.localRotation = Quaternion.Euler(ImportedVisualAlignmentEuler);
         StripRuntimePhysicsFromVisual(visualInstance);
         appliedMode = visualMode;
+        NotifyCameraAfterVisualChange();
     }
 
     private Transform FindShip()
@@ -172,6 +175,17 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
 #endif
     }
 
+    private static void NotifyCameraAfterVisualChange()
+    {
+        if (Camera.main == null)
+        {
+            return;
+        }
+
+        SimpleFollowCamera followCamera = Camera.main.GetComponent<SimpleFollowCamera>();
+        followCamera?.ReframeToTargetVisualBounds();
+    }
+
     private static PrototypeShipVisualMode NextVisualMode(PrototypeShipVisualMode mode)
     {
         int count = System.Enum.GetValues(typeof(PrototypeShipVisualMode)).Length;
@@ -199,15 +213,14 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
         for (int i = 0; i < modules.Length; i++)
         {
             Transform module = ship.Find(modules[i].ModuleId);
-            SetDirectRendererVisible(module, visible);
-            SetChildRendererVisible(module, "FuelCue", visible);
+            SetModuleRenderersVisible(module, visible);
         }
 
         PrototypeMainThrusterLayoutEntry[] mainThrusters = activeLayout.MainThrusters;
         for (int i = 0; i < mainThrusters.Length; i++)
         {
             Transform gimbal = ship.Find(mainThrusters[i].ModuleId);
-            SetDirectRendererVisible(gimbal, visible);
+            SetModuleRenderersVisible(gimbal, visible);
 
             Transform nozzle = gimbal != null ? gimbal.Find(mainThrusters[i].NozzleId) : null;
             SetChildRendererVisible(nozzle, "NozzleRing", visible);
@@ -217,13 +230,33 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
         PrototypeGunLayoutEntry[] guns = activeLayout.Guns;
         for (int i = 0; i < guns.Length; i++)
         {
-            SetDirectRendererVisible(ship.Find(guns[i].ModuleId), visible);
+            SetModuleRenderersVisible(ship.Find(guns[i].ModuleId), visible);
         }
 
         PrototypeRcsBlockLayoutEntry[] rcsBlocks = activeLayout.RcsBlocks;
         for (int i = 0; i < rcsBlocks.Length; i++)
         {
-            SetDirectRendererVisible(ship.Find(rcsBlocks[i].BlockId), visible);
+            SetModuleRenderersVisible(ship.Find(rcsBlocks[i].BlockId), visible);
+        }
+    }
+
+    private static void SetModuleRenderersVisible(Transform module, bool visible)
+    {
+        if (module == null)
+        {
+            return;
+        }
+
+        Renderer[] renderers = module.GetComponentsInChildren<Renderer>(true);
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            if (renderers[i].transform == module)
+            {
+                renderers[i].enabled = false;
+                continue;
+            }
+
+            renderers[i].enabled = visible;
         }
     }
 
