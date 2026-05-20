@@ -29,11 +29,11 @@
 
 ## Slice 2: Ship Variants and Main Thruster Bank
 
-- [ ] Create PrototypeShipVariant data model
-- [ ] Create PrototypeShipLayout data model
-- [ ] Add module, main thruster, RCS block, and gun layout definitions
+- [x] Create PrototypeShipVariant data model
+- [x] Create PrototypeShipLayout data model
+- [x] Add module, main thruster, RCS block, and gun layout definitions
 - [ ] Update PrototypeBootstrap to build from selected layout while preserving existing baseline behavior
-- [ ] Add MainThrusterBank or equivalent aggregate for multiple main thrusters
+- [x] Add MainThrusterBank or equivalent aggregate for multiple main thrusters
 - [ ] Add Baseline Balanced variant
 - [ ] Add Dual Main Thruster variant
 - [ ] Add Off-Center Main Thruster variant

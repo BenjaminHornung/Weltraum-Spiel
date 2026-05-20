@@ -139,12 +139,24 @@ public class GunModule : MonoBehaviour
         return true;
     }
 
-public void ApplyConfig(PrototypeShipConfig config)
+    public void ApplyConfig(PrototypeShipConfig config)
     {
         PrototypeGunSettings settings = config != null ? config.Gun : PrototypeGunSettings.Default;
+        ApplySettings(settings);
+    }
+
+    public void ApplySettings(PrototypeGunSettings settings)
+    {
         settings.Clamp();
         projectileScale = settings.projectileScale;
         projectileMass = settings.projectileMass;
         recoilEnabled = settings.recoilEnabled;
+    }
+
+    public void ConfigureMuzzle(Transform muzzle)
+    {
+        muzzleTransform = muzzle != null ? muzzle : muzzleTransform;
+        ResolveReferences();
+        EnsureMuzzleTransform();
     }
 }

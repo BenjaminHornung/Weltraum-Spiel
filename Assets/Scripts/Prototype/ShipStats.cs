@@ -172,6 +172,31 @@ public class ShipStats : MonoBehaviour
 public void ApplyConfig(PrototypeShipConfig config)
     {
         PrototypeShipMassSettings massSettings = config != null ? config.Masses : PrototypeShipMassSettings.Default;
+        PrototypeShipFuelSettings fuelSettings = config != null ? config.Fuel : PrototypeShipFuelSettings.Default;
+        PrototypeMainThrusterSettings thrusterSettings = config != null ? config.MainThruster : PrototypeMainThrusterSettings.Default;
+        PrototypeGunSettings gunSettings = config != null ? config.Gun : PrototypeGunSettings.Default;
+        PrototypeCameraSettings cameraSettings = config != null ? config.Camera : PrototypeCameraSettings.Default;
+        ApplySettings(massSettings, fuelSettings, thrusterSettings, gunSettings, cameraSettings);
+    }
+
+    public void ApplyVariant(PrototypeShipVariant variant)
+    {
+        if (variant == null)
+        {
+            ApplyConfig(null);
+            return;
+        }
+
+        ApplySettings(variant.Masses, variant.Fuel, variant.MainThruster, variant.Gun, variant.Camera);
+    }
+
+    public void ApplySettings(
+        PrototypeShipMassSettings massSettings,
+        PrototypeShipFuelSettings fuelSettings,
+        PrototypeMainThrusterSettings thrusterSettings,
+        PrototypeGunSettings gunSettings,
+        PrototypeCameraSettings cameraSettings)
+    {
         massSettings.Clamp();
         cockpitMass = massSettings.cockpitMass;
         hullMass = massSettings.hullMass;
@@ -180,18 +205,15 @@ public void ApplyConfig(PrototypeShipConfig config)
         gunMass = massSettings.gunMass;
         rcsBlockMass = massSettings.rcsBlockMass;
 
-        PrototypeShipFuelSettings fuelSettings = config != null ? config.Fuel : PrototypeShipFuelSettings.Default;
         fuelSettings.Clamp();
         maxFuelKg = fuelSettings.maxFuelKg;
         currentFuelKg = fuelSettings.currentFuelKg;
         fullThrottleFuelKgPerSecond = fuelSettings.fullThrottleFuelKgPerSecond;
 
-        PrototypeMainThrusterSettings thrusterSettings = config != null ? config.MainThruster : PrototypeMainThrusterSettings.Default;
         thrusterSettings.Clamp();
         thrustForce = thrusterSettings.thrustForce;
         reverseThrustMultiplier = thrusterSettings.reverseThrustMultiplier;
 
-        PrototypeGunSettings gunSettings = config != null ? config.Gun : PrototypeGunSettings.Default;
         gunSettings.Clamp();
         projectileSpeed = gunSettings.projectileSpeed;
         projectileFireRate = gunSettings.projectileFireRate;
@@ -199,7 +221,6 @@ public void ApplyConfig(PrototypeShipConfig config)
         projectileMass = gunSettings.projectileMass;
         projectileRecoilEnabled = gunSettings.recoilEnabled;
 
-        PrototypeCameraSettings cameraSettings = config != null ? config.Camera : PrototypeCameraSettings.Default;
         cameraSettings.Clamp();
         followDistance = cameraSettings.followDistance;
         followHeight = cameraSettings.followHeight;

@@ -43,29 +43,30 @@ public class RcsThrusterBlock : MonoBehaviour
         }
     }
 
-
-public void ConfigureThrust(float configuredThrust)
+    public void ConfigureThrust(float configuredThrust)
     {
         thrust = Mathf.Max(0f, configuredThrust);
     }
 
-
-public void ApplyConfig(PrototypeShipConfig config)
+    public void ApplyConfig(PrototypeShipConfig config)
     {
         PrototypeRcsSettings settings = config != null ? config.Rcs : PrototypeRcsSettings.Default;
+        ApplySettings(settings);
+    }
+
+    public void ApplySettings(PrototypeRcsSettings settings)
+    {
         settings.Clamp();
         thrust = settings.blockThrust;
     }
 
-
-public void ConfigureDamageState(PrototypeModuleDamageState state)
+    public void ConfigureDamageState(PrototypeModuleDamageState state)
     {
         damageState = state != null ? state : damageState;
         ResolveReferences();
     }
 
-
-private void ResolveReferences()
+    private void ResolveReferences()
     {
         if (damageState == null)
         {

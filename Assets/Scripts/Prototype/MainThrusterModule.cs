@@ -371,10 +371,14 @@ public class MainThrusterModule : MonoBehaviour
         gimbalSlewRateDegreesPerSecond = Mathf.Max(0f, gimbalSlewRateDegreesPerSecond);
     }
 
-
     public void ApplyConfig(PrototypeShipConfig config)
     {
         PrototypeMainThrusterSettings settings = config != null ? config.MainThruster : PrototypeMainThrusterSettings.Default;
+        ApplySettings(settings);
+    }
+
+    public void ApplySettings(PrototypeMainThrusterSettings settings)
+    {
         settings.Clamp();
         mainThrustMode = SanitizeThrustMode(settings.mainThrustMode);
         throttleScale = settings.throttleScale;

@@ -805,6 +805,11 @@ private void ApplyForceAtNozzle(RcsNozzle nozzle, Vector3 forceWorld, bool trans
     public void ApplyConfig(PrototypeShipConfig config)
     {
         PrototypeRcsSettings settings = config != null ? config.Rcs : PrototypeRcsSettings.Default;
+        ApplySettings(settings);
+    }
+
+    public void ApplySettings(PrototypeRcsSettings settings)
+    {
         settings.Clamp();
         translationForce = settings.translationForce;
         attitudeForce = settings.attitudeForce;

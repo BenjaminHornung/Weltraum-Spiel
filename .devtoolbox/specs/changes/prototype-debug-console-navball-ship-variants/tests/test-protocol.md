@@ -48,3 +48,34 @@ Reviewer finding fixed:
 - Runtime clicking of every IMGUI button in Play Mode.
 - Visual appearance of debug vector/gizmo toggles in the Game view.
 - Ship variant selector beyond its Slice 1 placeholder state.
+
+## Slice 2 Data Model And Main Thruster Bank
+
+Added prototype-only data models and the first aggregate path for future ship variants:
+
+- `PrototypeShipVariant` as a `ScriptableObject` variant wrapper.
+- `PrototypeShipLayout` with inline serializable module, main-thruster, RCS-block, and gun layout entries.
+- `MainThrusterBank` as an aggregate over one or more `MainThrusterModule` instances.
+- `ApplySettings` helpers for ship stats, main thruster, RCS, gun, and RCS block code paths so future generated variants do not need to pass a full `PrototypeShipConfig` object everywhere.
+
+Validation:
+
+- `validate_script Assets/Scripts/Prototype/PrototypeShipVariant.cs`: 0 errors, 0 warnings
+- `validate_script Assets/Scripts/Prototype/PrototypeShipLayout.cs`: 0 errors, 0 warnings
+- `validate_script Assets/Scripts/Prototype/MainThrusterBank.cs`: 0 errors, 0 warnings
+- `validate_script Assets/Scripts/Prototype/MainThrusterModule.cs`: 0 errors, 0 warnings
+- `validate_script Assets/Scripts/Prototype/GunModule.cs`: 0 errors, 0 warnings
+- `validate_script Assets/Scripts/Prototype/RcsThrusterBlock.cs`: 0 errors, 0 warnings
+- `validate_script Assets/Scripts/Prototype/RcsThrusterController.cs`: 0 errors, 0 warnings
+- `validate_script Assets/Scripts/Prototype/ShipStats.cs`: 0 errors, 0 warnings
+- `validate_script Assets/Scripts/Prototype/PlayerShipController.cs`: 0 errors, 1 existing/performance warning about string concatenation in `Update`
+- `read_console` with `filter_text: CS`: 0 C# compiler error entries
+- Unity EditMode job `6451ca8831a44c719459cc73ad0b0c06`: 46 total, 46 passed, 0 failed, 0 skipped
+- `dotnet build ".\Weltraum Spiel.sln" --no-restore`: passed with existing Unity/MCP assembly conflict warnings and 0 errors
+
+Not yet included in this slice:
+
+- Bootstrap variant spawning.
+- Concrete named variant assets or generated variant selection.
+- Runtime verification of dual-engine/off-center/one-sided/no-RCS variant behavior.
+- Navball HUD.

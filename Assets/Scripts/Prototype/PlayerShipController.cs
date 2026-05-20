@@ -9,7 +9,7 @@ public enum SasControlMode
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(ShipStats))]
-[RequireComponent(typeof(MainThrusterModule))]
+[RequireComponent(typeof(MainThrusterBank))]
 [RequireComponent(typeof(RcsThrusterController))]
 [RequireComponent(typeof(ShipPhysicsCore))]
 public class PlayerShipController : MonoBehaviour
@@ -35,7 +35,7 @@ public class PlayerShipController : MonoBehaviour
     [SerializeField] private ShipStats shipStats;
     [SerializeField] private GunModule gunModule;
     [SerializeField] private EngineVfxController engineVfx;
-    [SerializeField] private MainThrusterModule mainThruster;
+    [SerializeField] private MainThrusterBank mainThruster;
     [SerializeField] private RcsThrusterController rcsThrusters;
     [SerializeField] private ShipPhysicsCore physicsCore;
 
@@ -199,7 +199,7 @@ public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal
 
         if (mainThruster == null)
         {
-            mainThruster = GetComponent<MainThrusterModule>();
+            mainThruster = GetComponent<MainThrusterBank>();
         }
 
         if (rcsThrusters == null)
