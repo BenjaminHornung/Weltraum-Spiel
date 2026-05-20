@@ -46,3 +46,26 @@ Not directly mouse-verified through MCP:
 
 - `README.md` and `PrototypeKeybindOverlay` list the same F-key UI toggles available in this workspace.
 - `docs/physics-flight-model.md` documents the prototype HUD/debug behavior at the same temporary-IMGUI level as the implementation.
+
+## 2026-05-20 Architecture Slice Addendum
+
+Scope:
+
+- Added shared IMGUI data surfaces: `PrototypeUiFormatter`, `PrototypeUiStyle`, `PrototypeHudViewModel`, `PrototypeDebugViewModel`, `PrototypeAutopilotViewModel`, `PrototypeMomentumAssistViewModel`, and `PrototypeKeybindViewModel`.
+- Added `PrototypeInputBindingCatalog` so the runtime keybind overlay renders structured mode-aware bindings instead of hardcoded text blocks.
+- Extended layout reset with zone defaults, testable bounds clamping, and simple overlap resolution.
+- Added regression coverage in `PrototypeUiArchitectureValidationTests`.
+- During full-suite verification, fixed an existing imported-visual RCS blocker where inactive/generated RCS nozzles were still counted when an imported ship visual was active.
+
+Fresh verification:
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| `specs_validate prototype-ui-readability-testability-pass` | Passed | ServiceRunner reported proposal, design, tasks, and spec valid. |
+| Unity console check | Passed | Cleared after full test run; no error entries remained. |
+| Unity MCP focused EditMode UI architecture tests | Passed | Job `9233d4615e014a0fafe26aa3ed38f484`: 4 total, 4 passed. |
+| Unity MCP imported scout blocker rerun | Passed | Job `86c5e32b236643d2b53b18a22a5fe5e7`: 1 total, 1 passed after RCS active imported-root filtering. |
+| Unity MCP full EditMode suite | Passed | Job `ab843b945bfc41b5a058e2480a78ec2f`: 128 total, 128 passed. |
+| `dotnet build "Weltraum Spiel.sln" --no-restore` | Passed | 0 errors; existing Unity/MCP assembly-version warnings remain. |
+| `dotnet test "Weltraum Spiel.sln" --no-build` | Passed | Exit code 0. |
+| Scoped `git diff --check` | Passed | Checked changed UI/RCS/test files; only line-ending warnings were emitted. |

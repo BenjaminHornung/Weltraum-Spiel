@@ -39,6 +39,7 @@ public class PrototypeFlightHud : MonoBehaviour
     private GUIStyle centeredLabelStyle;
     private GUIStyle compactButtonStyle;
     private PrototypeUiWindowState windowState;
+    private PrototypeHudViewModel currentViewModel;
 
     public Transform Target => target;
     public Rigidbody TargetRigidbody => targetRigidbody;
@@ -241,53 +242,35 @@ public class PrototypeFlightHud : MonoBehaviour
 
     private void RefreshDiagnostics()
     {
-        LastModeLabelStructure = BuildModeLabelStructure();
-        LastForwardMarker = Vector2.zero;
-        LastHasVelocityMarker = false;
-        LastHasSasMarker = false;
-        LastHasTargetMarker = false;
-        LastHasDebugForceMarkers = false;
-        LastProgradeMarker = Vector2.zero;
-        LastRetrogradeMarker = Vector2.zero;
-        LastSasMarker = Vector2.zero;
-        LastTargetMarker = Vector2.zero;
-        LastDesiredForceMarker = Vector2.zero;
-        LastActualForceMarker = Vector2.zero;
-        LastResidualForceMarker = Vector2.zero;
+        currentViewModel = PrototypeHudViewModelBuilder.Build(
+            target,
+            targetRigidbody,
+            shipController,
+            targetStats,
+            trackedTarget,
+            waypointAutopilot,
+            momentumAssist,
+            debugOverlay != null && debugOverlay.DrawDebugVectors,
+            showDebugForceMarkers,
+            navballRadius,
+            velocityMarkerThreshold,
+            forceMarkerReferenceNewton,
+            hudMode);
 
-        Vector3 velocity = targetRigidbody != null ? targetRigidbody.linearVelocity : Vector3.zero;
-        if (velocity.magnitude > velocityMarkerThreshold)
-        {
-            LastHasVelocityMarker = true;
-            LastProgradeMarker = ProjectWorldDirectionToMarker(velocity);
-            LastRetrogradeMarker = ProjectWorldDirectionToMarker(-velocity);
-        }
-
-        if (shipController != null && shipController.HasSasTargetRotation)
-        {
-            LastHasSasMarker = true;
-            LastSasMarker = ProjectWorldDirectionToMarker(shipController.SasTargetRotation * Vector3.forward);
-        }
-
-        if (target != null && trackedTarget != null)
-        {
-            Vector3 targetDirection = trackedTarget.position - target.position;
-            if (targetDirection.sqrMagnitude > 0.0001f)
-            {
-                LastHasTargetMarker = true;
-                LastTargetMarker = ProjectWorldDirectionToMarker(targetDirection);
-            }
-        }
-
-        if (ShouldShowDebugForceMarkers())
-        {
-            LastHasDebugForceMarkers = true;
-            LastDesiredForceMarker = ProjectForceVectorToMarker(shipController.LastRcsDesiredForceWorld);
-            LastActualForceMarker = ProjectForceVectorToMarker(shipController.LastRcsActualForceWorld);
-            LastResidualForceMarker = ProjectForceVectorToMarker(shipController.LastRcsResidualForceWorld);
-        }
-
-        LastModeLabel = ResolveActiveModeLabel(velocity);
+        LastModeLabelStructure = currentViewModel.ModeLabelStructure;
+        LastForwardMarker = currentViewModel.ForwardMarker;
+        LastHasVelocityMarker = currentViewModel.HasVelocityMarker;
+        LastHasSasMarker = currentViewModel.HasSasMarker;
+        LastHasTargetMarker = currentViewModel.HasTargetMarker;
+        LastHasDebugForceMarkers = currentViewModel.HasDebugForceMarkers;
+        LastProgradeMarker = currentViewModel.ProgradeMarker;
+        LastRetrogradeMarker = currentViewModel.RetrogradeMarker;
+        LastSasMarker = currentViewModel.SasMarker;
+        LastTargetMarker = currentViewModel.TargetMarker;
+        LastDesiredForceMarker = currentViewModel.DesiredForceMarker;
+        LastActualForceMarker = currentViewModel.ActualForceMarker;
+        LastResidualForceMarker = currentViewModel.ResidualForceMarker;
+        LastModeLabel = currentViewModel.ModeLabel;
     }
 
     private bool ShouldShowDebugForceMarkers()
@@ -345,33 +328,10 @@ public class PrototypeFlightHud : MonoBehaviour
             return;
         }
 
-        labelStyle = new GUIStyle(GUI.skin.label)
-        {
-            fontSize = 13,
-            alignment = TextAnchor.UpperLeft
-        };
-        labelStyle.normal.textColor = Color.white;
-
-        smallLabelStyle = new GUIStyle(GUI.skin.label)
-        {
-            fontSize = 11,
-            alignment = TextAnchor.MiddleCenter
-        };
-        smallLabelStyle.normal.textColor = Color.white;
-
-        centeredLabelStyle = new GUIStyle(GUI.skin.label)
-        {
-            fontSize = 12,
-            alignment = TextAnchor.MiddleCenter
-        };
-        centeredLabelStyle.normal.textColor = Color.white;
-
-        compactButtonStyle = new GUIStyle(GUI.skin.button)
-        {
-            fontSize = 10,
-            alignment = TextAnchor.MiddleCenter,
-            padding = new RectOffset(4, 4, 2, 2)
-        };
+        labelStyle = PrototypeUiStyle.CreateLabelStyle();
+        smallLabelStyle = PrototypeUiStyle.CreateSmallLabelStyle(11);
+        centeredLabelStyle = PrototypeUiStyle.CreateLabelStyle(12, false, TextAnchor.MiddleCenter);
+        compactButtonStyle = PrototypeUiStyle.CreateCompactButtonStyle();
     }
 
     private void DrawHudWindow(int id)
@@ -429,20 +389,16 @@ public class PrototypeFlightHud : MonoBehaviour
         DrawQuickActions(contentRect);
 
         Rect hintRect = new Rect(contentRect.x + 8f, contentRect.yMax - 66f, contentRect.width - 16f, 52f);
-        string targetLabel = waypointAutopilot != null ? waypointAutopilot.TargetName : (trackedTarget != null ? trackedTarget.name : "none");
-        PrototypeFlightControlDiagnostics diagnostics = shipController != null ? shipController.FlightControlDiagnostics : default;
-        string cameraLine = followCamera != null
-            ? $"Cam: {followCamera.CameraModeName} | dist {followCamera.EffectiveDistance:0.00} ({followCamera.BaseVisualDistance:0.00}) | zoom {followCamera.Zoom:0.00} | bounds {followCamera.BaseVisualBoundsRadius:0.00}"
-            : "Cam: unavailable";
-        string autopilotLabel = shipController != null
-            ? $"{(diagnostics.autopilotEngaged ? "ON" : "OFF")} {diagnostics.autopilotState}"
+        PrototypeAutopilotViewModel autopilot = currentViewModel.Autopilot;
+        PrototypeMomentumAssistViewModel momentum = currentViewModel.MomentumAssist;
+        PrototypeHudStatusViewModel status = currentViewModel.Status;
+        string autoState = autopilot.IsAvailable
+            ? $"{(autopilot.IsEngaged ? "ON" : "OFF")} {autopilot.StateLabel}"
             : "N/A";
-        string sasLabel = shipController != null ? (diagnostics.effectiveSasEnabled ? "SAS Eff On" : "SAS Eff Off") : "SAS n/a";
-        string autopilotPhase = waypointAutopilot != null ? waypointAutopilot.ArrivalPhase.ToString() : "n/a";
-        string autopilotReason = waypointAutopilot != null && !string.IsNullOrWhiteSpace(waypointAutopilot.ArrivalFailureReason)
-            ? $" | {waypointAutopilot.ArrivalFailureReason}"
-            : string.Empty;
-        GUI.Label(hintRect, $"G Autopilot | Tab/B Target | Caps Mode\n{cameraLine}\nTarget: {targetLabel} | Auto: {autopilotLabel} | phase: {autopilotPhase}{autopilotReason} | {ResolveControlModeHint()} | {sasLabel}", smallLabelStyle);
+        string warning = status.HasWarning ? $" | {status.WarningText}" : string.Empty;
+        string topLine = $"{PrototypeUiFormatter.FormatSpeed(status.SpeedMetersPerSecond)} | Fuel {PrototypeUiFormatter.FormatCompact(status.FuelCurrentKg)}/{PrototypeUiFormatter.FormatCompact(status.FuelMaxKg)} kg | Thr {status.ThrottlePercent:0}%{warning}";
+        string bottomLine = $"Target {autopilot.TargetName} | Auto {autoState} | Kill {momentum.State} | {currentViewModel.ControlModeHint} | {currentViewModel.SasLabel}";
+        GUI.Label(hintRect, topLine + "\n" + bottomLine, smallLabelStyle);
 
         Rect labelRect = new Rect(contentRect.x + 8f, contentRect.yMax - 14f, contentRect.width - 16f, 14f);
         GUI.Label(labelRect, "Mode: " + LastModeLabel, centeredLabelStyle);

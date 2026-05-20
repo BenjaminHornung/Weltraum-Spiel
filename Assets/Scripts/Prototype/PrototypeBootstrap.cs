@@ -765,6 +765,7 @@ public class PrototypeBootstrap : MonoBehaviour
         {
             keybinds = camera.gameObject.AddComponent<PrototypeKeybindOverlay>();
         }
+        keybinds.Bind(target);
 
         var minimap = camera.gameObject.GetComponent<PrototypeMinimapOverlay>();
         if (minimap == null)

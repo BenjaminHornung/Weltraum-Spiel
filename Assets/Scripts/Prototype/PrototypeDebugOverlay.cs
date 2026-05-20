@@ -161,6 +161,7 @@ public class PrototypeDebugOverlay : MonoBehaviour
         float gimbalAngle = shipController != null ? shipController.LastGimbalAngleDegrees : 0f;
         float turnInput = shipController != null ? shipController.TurnInput : 0f;
         PrototypeFlightControlDiagnostics controlDiagnostics = shipController != null ? shipController.FlightControlDiagnostics : default;
+        PrototypeDebugViewModel debugViewModel = PrototypeDebugViewModelBuilder.Build(targetStats, targetRigidbody, shipController);
         bool hasRcs = controlDiagnostics.rcsAvailable;
         bool rcsEnabled = controlDiagnostics.rcsEnabled;
         bool sasEnabled = controlDiagnostics.sasEnabled;
@@ -296,9 +297,9 @@ public class PrototypeDebugOverlay : MonoBehaviour
 
             if (!windowState.Collapsed)
             {
-                GUILayout.Label($"Fuel {targetStats.CurrentFuelKg:0.0}/{targetStats.MaxFuelKg:0.0} kg | Speed {speedMps:0.0} m/s | Throttle {throttlePercent:0}%", labelStyle);
-                GUILayout.Label($"RCS {(controlDiagnostics.rcsEnabled ? "on" : "off")} | SAS {(sasEnabled ? "on" : "off")} effective {(effectiveSas ? "on" : "off")} | Mode {controlModeLabel} | Main {targetStats.LastAppliedThrust:0} N", labelStyle);
-                GUILayout.Label($"Target {navTargetName} | Mode {flightAssistMode} | Debug vectors {(drawDebugVectors ? "on" : "off")}", labelStyle);
+                GUILayout.Label($"Fuel {targetStats.CurrentFuelKg:0.0}/{targetStats.MaxFuelKg:0.0} kg | Speed {PrototypeUiFormatter.FormatSpeed(debugViewModel.SpeedMetersPerSecond)} | Throttle {debugViewModel.MainThrottlePercent:0}%", labelStyle);
+                GUILayout.Label($"RCS {PrototypeUiFormatter.FormatStatus(debugViewModel.RcsEnabled, "on", "off")} | SAS {PrototypeUiFormatter.FormatStatus(debugViewModel.SasEnabled, "on", "off")} effective {PrototypeUiFormatter.FormatStatus(debugViewModel.EffectiveSasEnabled, "on", "off")} | Mode {debugViewModel.ControlMode} | Main {targetStats.LastAppliedThrust:0} N", labelStyle);
+                GUILayout.Label($"Target {navTargetName} | Auto {debugViewModel.AutopilotState} | Debug vectors {(drawDebugVectors ? "on" : "off")}", labelStyle);
 
                 advancedDiagnosticsOpen = GUILayout.Toggle(advancedDiagnosticsOpen, "Advanced Diagnostics");
                 if (advancedDiagnosticsOpen)

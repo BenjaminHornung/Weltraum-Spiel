@@ -228,9 +228,10 @@ public class RcsThrusterController : MonoBehaviour
     private void RefreshNozzlesIfNeeded()
     {
         int actualCount = 0;
-        foreach (Transform child in transform.GetComponentsInChildren<Transform>(true))
+        Transform searchRoot = ResolveNozzleSearchRoot();
+        foreach (Transform child in searchRoot.GetComponentsInChildren<Transform>(true))
         {
-            if (child != transform && IsActiveNozzleTransform(child))
+            if (child != searchRoot && child.gameObject.activeInHierarchy && IsActiveNozzleTransform(child))
             {
                 actualCount++;
             }
@@ -247,10 +248,17 @@ public class RcsThrusterController : MonoBehaviour
         nozzles.Clear();
         cachedNozzleCount = 0;
         Vector3 localSum = Vector3.zero;
+        var seenNozzleKeys = new System.Collections.Generic.HashSet<string>();
+        Transform searchRoot = ResolveNozzleSearchRoot();
 
-        foreach (Transform child in transform.GetComponentsInChildren<Transform>(true))
+        foreach (Transform child in searchRoot.GetComponentsInChildren<Transform>(true))
         {
-            if (child == transform || !IsActiveNozzleTransform(child))
+            if (child == searchRoot || !child.gameObject.activeInHierarchy || !IsActiveNozzleTransform(child))
+            {
+                continue;
+            }
+
+            if (!seenNozzleKeys.Add(BuildNozzleDedupeKey(child)))
             {
                 continue;
             }
@@ -285,6 +293,14 @@ public class RcsThrusterController : MonoBehaviour
         ControlPivotLocal = nozzles.Count > 0 ? localSum / nozzles.Count : Vector3.zero;
     }
 
+    private Transform ResolveNozzleSearchRoot()
+    {
+        Transform importedVisual = transform.Find("ImportedShipVisual");
+        return importedVisual != null && importedVisual.gameObject.activeInHierarchy
+            ? importedVisual
+            : transform;
+    }
+
     private static bool IsActiveNozzleTransform(Transform nozzle)
     {
         return PrototypeShipSocketUtility.IsRuntimeRcsNozzle(nozzle);
@@ -294,6 +310,28 @@ public class RcsThrusterController : MonoBehaviour
     {
         Transform vfx = nozzle != null ? nozzle.Find("VFX") : null;
         return vfx != null ? vfx.gameObject : null;
+    }
+    private static string BuildNozzleDedupeKey(Transform nozzle)
+    {
+        PrototypeShipSocket socket = nozzle != null ? nozzle.GetComponent<PrototypeShipSocket>() : null;
+        string direction = socket != null ? socket.Direction.ToString() : InferNozzleDirection(nozzle != null ? nozzle.name : string.Empty);
+        Vector3 position = nozzle != null ? nozzle.position : Vector3.zero;
+        return direction + "|"
+            + Mathf.RoundToInt(position.x * 1000f) + "|"
+            + Mathf.RoundToInt(position.y * 1000f) + "|"
+            + Mathf.RoundToInt(position.z * 1000f);
+    }
+
+    private static string InferNozzleDirection(string name)
+    {
+        string upper = string.IsNullOrEmpty(name) ? string.Empty : name.ToUpperInvariant();
+        if (upper.Contains("FORWARD")) return "Forward";
+        if (upper.Contains("BACK")) return "Back";
+        if (upper.Contains("LEFT")) return "Left";
+        if (upper.Contains("RIGHT")) return "Right";
+        if (upper.Contains("UP")) return "Up";
+        if (upper.Contains("DOWN")) return "Down";
+        return "Unknown";
     }
 
     public void RecomputeControlPivot()

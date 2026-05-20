@@ -20,20 +20,23 @@ public static class PrototypeUiLayoutManager
 
     private static readonly Dictionary<string, PrototypeUiWindowState> Windows = new Dictionary<string, PrototypeUiWindowState>();
     private static int hotkeyFrame = -1;
+    private const float ScreenPadding = 12f;
+    private const float WindowSpacing = 12f;
 
     public static PrototypeUiPreset CurrentPreset { get; private set; } = PrototypeUiPreset.FlightTest;
 
     public static PrototypeUiWindowState GetWindow(string id, Rect defaultRect, bool defaultVisible, bool defaultCollapsed, bool rememberPosition = true)
     {
+        Rect resolvedDefault = ResolveDefaultRect(id, defaultRect, GetGuiSafeArea());
         if (!Windows.TryGetValue(id, out PrototypeUiWindowState state))
         {
-            state = new PrototypeUiWindowState(id, defaultRect, defaultVisible, defaultCollapsed, rememberPosition);
+            state = new PrototypeUiWindowState(id, resolvedDefault, defaultVisible, defaultCollapsed, rememberPosition);
             Windows.Add(id, state);
             state.LoadFromPrefs();
         }
         else
         {
-            state.SetDefaultRect(defaultRect);
+            state.SetDefaultRect(resolvedDefault);
         }
 
         state.ClampToScreen();
@@ -42,10 +45,57 @@ public static class PrototypeUiLayoutManager
 
     public static void ResetLayout()
     {
+        ResetLayout(GetGuiSafeArea());
+    }
+
+    public static void ResetLayout(Rect screenBounds)
+    {
         foreach (PrototypeUiWindowState state in Windows.Values)
         {
             state.Reset();
-            state.ClampToScreen();
+            state.ClampToBounds(screenBounds);
+        }
+
+        ResolveOverlaps(screenBounds);
+    }
+
+    public static void ResolveOverlaps()
+    {
+        ResolveOverlaps(GetGuiSafeArea());
+    }
+
+    public static void ResolveOverlaps(Rect screenBounds)
+    {
+        PrototypeUiWindowState[] states = GetPriorityOrderedWindows();
+        for (int i = 0; i < states.Length; i++)
+        {
+            PrototypeUiWindowState current = states[i];
+            if (current == null || !current.Visible)
+            {
+                continue;
+            }
+
+            current.ClampToBounds(screenBounds);
+            for (int guard = 0; guard < 24 && OverlapsAnyPreviousVisible(states, i, current.Rect); guard++)
+            {
+                Rect rect = current.Rect;
+                rect.x += WindowSpacing;
+                rect.y += WindowSpacing;
+                current.Rect = rect;
+                current.ClampToBounds(screenBounds);
+
+                Rect clamped = current.Rect;
+                if (Mathf.Approximately(clamped.xMax, screenBounds.xMax - ScreenPadding)
+                    || Mathf.Approximately(clamped.yMax, screenBounds.yMax - ScreenPadding))
+                {
+                    clamped.x = screenBounds.x + ScreenPadding;
+                    clamped.y = Mathf.Min(
+                        screenBounds.yMax - clamped.height - ScreenPadding,
+                        screenBounds.y + ScreenPadding + ((guard + 1) * WindowSpacing * 2f));
+                    current.Rect = clamped;
+                    current.ClampToBounds(screenBounds);
+                }
+            }
         }
     }
 
@@ -144,6 +194,8 @@ public static class PrototypeUiLayoutManager
             minimap.SetWindowCollapsed(false);
             minimap.SetLabelsVisible(preset != PrototypeUiPreset.RcsTest);
         }
+
+        ResolveOverlaps();
     }
 
     public static void HideAll(
@@ -158,5 +210,129 @@ public static class PrototypeUiLayoutManager
         hud?.SetHudVisible(false);
         keybinds?.SetWindowVisible(false);
         minimap?.SetWindowVisible(false);
+    }
+
+    public static void ClearWindowsForTests()
+    {
+        Windows.Clear();
+        hotkeyFrame = -1;
+        CurrentPreset = PrototypeUiPreset.FlightTest;
+    }
+
+    public static IReadOnlyCollection<PrototypeUiWindowState> WindowsForTests => Windows.Values;
+
+    public static Rect ResolveDefaultRectForTests(string id, Rect fallback, Rect screenBounds)
+    {
+        return ResolveDefaultRect(id, fallback, screenBounds);
+    }
+
+    public static PrototypeUiWindowState GetWindowForTests(string id, Rect defaultRect, bool defaultVisible, bool defaultCollapsed, Rect screenBounds)
+    {
+        Rect resolvedDefault = ResolveDefaultRect(id, defaultRect, screenBounds);
+        var state = new PrototypeUiWindowState(id, resolvedDefault, defaultVisible, defaultCollapsed, false);
+        Windows[id] = state;
+        return state;
+    }
+
+    private static Rect ResolveDefaultRect(string id, Rect fallback, Rect screenBounds)
+    {
+        if (screenBounds.width <= 0f || screenBounds.height <= 0f)
+        {
+            return fallback;
+        }
+
+        Rect rect = fallback;
+        switch (id)
+        {
+            case DiagnosticsWindowId:
+                rect.x = screenBounds.xMax - rect.width - ScreenPadding;
+                rect.y = screenBounds.y + ScreenPadding;
+                break;
+            case DebugConsoleWindowId:
+                rect.x = screenBounds.x + ScreenPadding;
+                rect.y = screenBounds.y + ScreenPadding;
+                break;
+            case HudWindowId:
+                rect.x = screenBounds.center.x - (rect.width * 0.5f);
+                rect.y = screenBounds.yMax - rect.height - ScreenPadding;
+                break;
+            case KeybindWindowId:
+                rect.x = screenBounds.x + ScreenPadding;
+                rect.y = screenBounds.yMax - rect.height - ScreenPadding;
+                break;
+            case MinimapWindowId:
+                rect.x = screenBounds.xMax - rect.width - ScreenPadding;
+                rect.y = screenBounds.yMax - rect.height - ScreenPadding;
+                break;
+        }
+
+        return ClampRect(rect, screenBounds);
+    }
+
+    private static Rect GetGuiSafeArea()
+    {
+        Rect safeArea = Screen.safeArea;
+        if (Screen.width <= 0 || Screen.height <= 0 || safeArea.width <= 0f || safeArea.height <= 0f)
+        {
+            return new Rect(0f, 0f, Mathf.Max(1f, Screen.width), Mathf.Max(1f, Screen.height));
+        }
+
+        return new Rect(safeArea.x, Screen.height - safeArea.yMax, safeArea.width, safeArea.height);
+    }
+
+    private static Rect ClampRect(Rect rect, Rect bounds)
+    {
+        float maxWidth = Mathf.Max(180f, bounds.width - (ScreenPadding * 2f));
+        float maxHeight = Mathf.Max(42f, bounds.height - (ScreenPadding * 2f));
+        rect.width = Mathf.Clamp(rect.width, 180f, maxWidth);
+        rect.height = Mathf.Clamp(rect.height, 42f, maxHeight);
+        rect.x = Mathf.Clamp(rect.x, bounds.x + ScreenPadding, Mathf.Max(bounds.x + ScreenPadding, bounds.xMax - rect.width - ScreenPadding));
+        rect.y = Mathf.Clamp(rect.y, bounds.y + ScreenPadding, Mathf.Max(bounds.y + ScreenPadding, bounds.yMax - rect.height - ScreenPadding));
+        return rect;
+    }
+
+    private static PrototypeUiWindowState[] GetPriorityOrderedWindows()
+    {
+        string[] priority =
+        {
+            HudWindowId,
+            MinimapWindowId,
+            DiagnosticsWindowId,
+            KeybindWindowId,
+            DebugConsoleWindowId
+        };
+
+        var ordered = new List<PrototypeUiWindowState>(Windows.Count);
+        for (int i = 0; i < priority.Length; i++)
+        {
+            if (Windows.TryGetValue(priority[i], out PrototypeUiWindowState state))
+            {
+                ordered.Add(state);
+            }
+        }
+
+        foreach (PrototypeUiWindowState state in Windows.Values)
+        {
+            if (!ordered.Contains(state))
+            {
+                ordered.Add(state);
+            }
+        }
+
+        return ordered.ToArray();
+    }
+
+    private static bool OverlapsAnyPreviousVisible(PrototypeUiWindowState[] states, int currentIndex, Rect currentRect)
+    {
+        for (int i = 0; i < currentIndex; i++)
+        {
+            PrototypeUiWindowState previous = states[i];
+            if (previous != null && previous.Visible && currentRect.Overlaps(previous.Rect))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

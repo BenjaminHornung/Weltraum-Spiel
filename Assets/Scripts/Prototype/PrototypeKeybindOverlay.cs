@@ -4,10 +4,18 @@ public class PrototypeKeybindOverlay : MonoBehaviour
 {
     private GUIStyle labelStyle;
     private GUIStyle headingStyle;
+    private GUIStyle activeHeadingStyle;
+    private GUIStyle mutedLabelStyle;
     private Vector2 scrollPosition;
     private PrototypeUiWindowState windowState;
+    private PlayerShipController shipController;
 
     public bool IsWindowVisible => ResolveWindowState().Visible;
+
+    public void Bind(Transform trackTarget)
+    {
+        shipController = trackTarget != null ? trackTarget.GetComponent<PlayerShipController>() : null;
+    }
 
     private void OnGUI()
     {
@@ -62,10 +70,14 @@ public class PrototypeKeybindOverlay : MonoBehaviour
         };
         labelStyle.normal.textColor = Color.white;
 
-        headingStyle = new GUIStyle(labelStyle)
+        headingStyle = PrototypeUiStyle.CreateSectionHeadingStyle();
+        activeHeadingStyle = PrototypeUiStyle.CreateSectionHeadingStyle();
+        activeHeadingStyle.normal.textColor = PrototypeUiStyle.ActiveColor;
+        mutedLabelStyle = new GUIStyle(labelStyle)
         {
-            fontStyle = FontStyle.Bold
+            fontSize = 12
         };
+        mutedLabelStyle.normal.textColor = PrototypeUiStyle.MutedColor;
     }
 
     private void DrawWindow(int id)
@@ -82,18 +94,16 @@ public class PrototypeKeybindOverlay : MonoBehaviour
 
         if (!windowState.Collapsed)
         {
+            PrototypeKeybindViewModel viewModel = PrototypeKeybindViewModelBuilder.Build(ResolveActiveControlMode());
             scrollPosition = GUILayout.BeginScrollView(scrollPosition);
-            DrawCategory("UI", "F1 Keybinds\nF2 Flight Diagnostics\nF3 Debug Console\nF4 HUD/Navball\nF5 Minimap/Radar");
-            DrawCategory("Control Mode", "Caps Lock cycles Cruise / Precision / Translation\nHUD Mode button cycles the same\nDebug Console has explicit Normal, Precision, Translation buttons.");
-            DrawCategory("Normal Mode", "W/S pitch\nA/D yaw\nQ/E roll\nLeft Shift / Left Ctrl throttle up/down\nX cut throttle\nY/Z full throttle\nH/N legacy RCS forward/back if RCS is enabled.");
-            DrawCategory("Precision Mode", "W/S pitch via RCS\nA/D yaw via RCS\nQ/E roll via RCS\nMain thruster and gimbal disabled\nShift/Ctrl do not change throttle\nH/N optional RCS up/down.");
-            DrawCategory("Translation Mode", "W/S translate forward/back\nA/D translate left/right\nH/N translate up/down\nQ/E roll remains available\nMain thruster and gimbal disabled\nShift/Ctrl do not change throttle.");
-            DrawCategory("Navigation / Autopilot", "Tab next\nB previous\nG toggle Autopilot\nAutopilot uses Cruise/Main Thrust.");
-            DrawCategory("Momentum Assist", "HUD button Kill Momentum\nDebug Console Engage/Abort Momentum Assist\nUses physical main/RCS/SAS assist requests, not velocity reset.");
-            DrawCategory("SAS / Assist", "T toggle SAS\nHold F invert SAS");
-            DrawCategory("Camera", "Right mouse orbit camera\nCamera modes: ChaseLocked -> OrbitInspect -> Side -> FreeInspect (V)\nMouse wheel zoom in all modes\nFreeInspect: hold RMB + WASD + Q/E to move inspect framing target\nBackquote/backslash/quote/3 reset framing");
-            DrawCategory("Weapons", "Space fire");
-            DrawCategory("Debug", "Backspace refill fuel\nHUD markers: FWD, PRO, RET, TGT\nDebug vectors add DES, ACT, RES");
+            GUILayout.Label("Active Mode: " + viewModel.ActiveFlightControlModeLabel, activeHeadingStyle);
+            DrawModeBindings(viewModel);
+
+            for (int i = 0; i < viewModel.CommonSections.Count; i++)
+            {
+                DrawCategory(viewModel.CommonSections[i]);
+            }
+
             GUILayout.EndScrollView();
         }
 
@@ -101,16 +111,44 @@ public class PrototypeKeybindOverlay : MonoBehaviour
         GUI.DragWindow(new Rect(0f, 0f, 10000f, 24f));
     }
 
-    private void DrawCategory(string title, string lines)
+    private void DrawModeBindings(PrototypeKeybindViewModel viewModel)
+    {
+        DrawCategory("Control Mode", "Caps Lock cycles Cruise / Precision / Translation\nHUD Mode button cycles the same\nDebug Console has explicit Cruise, Precision, Translation buttons.", false);
+        for (int i = 0; i < viewModel.ModeBindings.Count; i++)
+        {
+            PrototypeKeybindModeBindingViewModel binding = viewModel.ModeBindings[i];
+            GUILayout.Space(3f);
+            GUILayout.Label((binding.IsActive ? "> " : string.Empty) + binding.Label, binding.IsActive ? activeHeadingStyle : headingStyle);
+            GUILayout.Label(binding.Summary, binding.IsActive ? labelStyle : mutedLabelStyle);
+            GUILayout.Label(string.Join("\n", binding.Differences), binding.IsActive ? labelStyle : mutedLabelStyle);
+        }
+    }
+
+    private void DrawCategory(PrototypeKeybindSectionViewModel section)
+    {
+        DrawCategory(section.Title, string.Join("\n", section.Lines), section.DebugOnly);
+    }
+
+    private void DrawCategory(string title, string lines, bool debugOnly)
     {
         GUILayout.Space(3f);
-        GUILayout.Label(title, headingStyle);
-        GUILayout.Label(lines, labelStyle);
+        GUILayout.Label(debugOnly ? title + " (Debug)" : title, debugOnly ? activeHeadingStyle : headingStyle);
+        GUILayout.Label(lines, debugOnly ? mutedLabelStyle : labelStyle);
     }
 
     private float CalculateExpandedHeight()
     {
         float maxHeight = Mathf.Max(140f, Screen.height - 92f);
         return Mathf.Clamp(520f, 140f, maxHeight);
+    }
+
+    private FlightControlMode ResolveActiveControlMode()
+    {
+        if (shipController == null)
+        {
+            shipController = FindAnyObjectByType<PlayerShipController>();
+        }
+
+        return shipController != null ? shipController.ControlMode : FlightControlMode.Normal;
     }
 }

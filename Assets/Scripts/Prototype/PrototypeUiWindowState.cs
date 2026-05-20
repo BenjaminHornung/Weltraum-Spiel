@@ -98,13 +98,20 @@ public sealed class PrototypeUiWindowState
 
     public void ClampToScreen()
     {
+        ClampToBounds(new Rect(0f, 0f, Screen.width, Screen.height));
+    }
+
+    public void ClampToBounds(Rect bounds)
+    {
         Rect rect = Rect;
-        float maxWidth = Mathf.Max(MinimumWidth, Screen.width - (ScreenPadding * 2f));
-        float maxHeight = Mathf.Max(MinimumHeight, Screen.height - (ScreenPadding * 2f));
+        float width = Mathf.Max(1f, bounds.width);
+        float height = Mathf.Max(1f, bounds.height);
+        float maxWidth = Mathf.Max(MinimumWidth, width - (ScreenPadding * 2f));
+        float maxHeight = Mathf.Max(MinimumHeight, height - (ScreenPadding * 2f));
         rect.width = Mathf.Clamp(rect.width, MinimumWidth, maxWidth);
         rect.height = Mathf.Clamp(rect.height, MinimumHeight, maxHeight);
-        rect.x = Mathf.Clamp(rect.x, ScreenPadding, Mathf.Max(ScreenPadding, Screen.width - rect.width - ScreenPadding));
-        rect.y = Mathf.Clamp(rect.y, ScreenPadding, Mathf.Max(ScreenPadding, Screen.height - rect.height - ScreenPadding));
+        rect.x = Mathf.Clamp(rect.x, bounds.x + ScreenPadding, Mathf.Max(bounds.x + ScreenPadding, bounds.xMax - rect.width - ScreenPadding));
+        rect.y = Mathf.Clamp(rect.y, bounds.y + ScreenPadding, Mathf.Max(bounds.y + ScreenPadding, bounds.yMax - rect.height - ScreenPadding));
         Rect = rect;
     }
 }

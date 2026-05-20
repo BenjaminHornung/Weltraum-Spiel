@@ -241,6 +241,7 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
         }
 
         PrototypeFlightControlDiagnostics diagnostics = shipController.FlightControlDiagnostics;
+        PrototypeDebugViewModel debugViewModel = PrototypeDebugViewModelBuilder.Build(targetStats, targetRigidbody, shipController);
         bool rcsEnabled = GUILayout.Toggle(diagnostics.rcsEnabled, "RCS");
         if (rcsEnabled != shipController.RcsEnabled)
         {
@@ -252,7 +253,7 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
         {
             shipController.SetSasEnabled(sasEnabled);
         }
-        GUILayout.Label($"Control mode: {diagnostics.controlModeLabel}", labelStyle);
+        GUILayout.Label($"Control mode: {debugViewModel.ControlMode} | Speed {PrototypeUiFormatter.FormatSpeed(debugViewModel.SpeedMetersPerSecond)} | Thr {debugViewModel.MainThrottlePercent:0}%", labelStyle);
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("Normal"))
         {
