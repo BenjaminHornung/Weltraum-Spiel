@@ -107,7 +107,7 @@ The debug console can issue deterministic test pulses for RCS translation, attit
 
 Built-in prototype ship variants are generated to expose physics behavior under controlled layouts rather than to model a final ship editor. Baseline Balanced is the reference layout; Dual Main Thruster checks symmetric engine force; Off-Center Main Thruster compares COM-safe and fully physical nozzle-force modes; One-Sided RCS and No-RCS intentionally expose allocator residuals and missing-authority states; Heavy Cargo checks mass and inertia scaling.
 
-The main camera now owns the debug console, compact flight diagnostics, keybind helper, minimap, and `PrototypeFlightHud` after each bootstrap or variant spawn. These remain temporary draggable IMGUI windows so prototype testing can keep the play view clear without a final UI Toolkit migration. `F1`, `F2`, `F3`, `F4`, and `F5` toggle keybinds, diagnostics, debug console, HUD/Navball, and minimap.
+The main camera now owns the debug console, compact flight diagnostics, keybind helper, minimap, `PrototypeFlightHud`, and `PrototypeWeaponComputerPanel` after each bootstrap or variant spawn. These remain temporary draggable IMGUI windows so prototype testing can keep the play view clear without a final UI Toolkit migration. `F1`, `F2`, `F3`, `F4`, `F5`, and `F7` toggle keybinds, diagnostics, debug console, HUD/Navball, minimap, and the Weapon Computer panel.
 
 The HUD projects world vectors into ship-local marker space:
 
@@ -130,6 +130,33 @@ The generated primitive modules use a central prototype color palette so role in
 Generated visuals are now authored through `PrototypeShipPartVisualFactory`, which maps existing layout entries to reusable archetypes (`CockpitWedge`, `HullCore`, `FuelTankPod`, `MainEngineBell`, `RcsPod`, `GunMount`, `CargoBox`, `UtilityBlock`, `ConnectorHardpointMarker`) from lightweight runtime metadata. Unsupported entries now fall back to neutral hull/utility visuals instead of always appearing as plain cubes, preserving a readable prototype style while keeping `MainThrusterNozzle`, `RCS_Nozzle_*`, and `Muzzle` gameplay transforms unchanged.
 
 If a nozzle is moved, removed, or rotated, its force and torque contribution changes immediately. Missing nozzles cannot create phantom force.
+
+## Weapon Computer And Turret Prototype
+
+The weapon computer is a prototype targeting layer, not a final combat AI. `PrototypeWeaponComputer` discovers targets from components and transforms rather than scene names. Targets with one or more `PrototypeModuleDamageState` components use summed current/max integrity for health priority. `PrototypeTargetDummy`, `ShipStats`, and Rigidbody-only targets use a neutral fallback health value and expose `no health source` so the UI does not imply real damage data where none exists.
+
+The selectable priority modes are:
+
+- `ManualOrder`: first selected target wins.
+- `Nearest`: nearest selected target relative to the owning ship wins.
+- `HighestHealth`: selected target with highest current health wins.
+- `LowestHealth`: selected target with lowest current health wins.
+
+Auto Fire reuses the same `PrototypeTurretWeapon.TryFireAt` path as manual fire, so arc checks, engagement range, cooldown, hit chance, projectile spawn, and recoil diagnostics stay centralized. `leadTargetEnabled` exists as a settings flag for later work, but v0 does not solve a ballistic intercept.
+
+The turret mount is marker/component driven. Generated fallback ships create this hierarchy:
+
+```text
+WEAPON_TURRET_BASE_*
+  WEAPON_TURRET_YAW_*
+    WEAPON_TURRET_PITCH_*
+      WEAPON_MUZZLE_*
+      Muzzle
+```
+
+The legacy `Muzzle` child remains under the pitch pivot for compatibility, but the runtime weapon binding prefers the explicit `WEAPON_MUZZLE_*` marker and does not create a silent ship-center muzzle fallback when a real marker is missing. Imported ship kits can use `PrototypeShipKitWeaponBinder` to bind `WEAPON_TURRET_BASE_*`, `WEAPON_TURRET_YAW_*`, `WEAPON_TURRET_PITCH_*`, `WEAPON_MUZZLE_*`, optional `WEAPON_MUZZLE_FLASH_*`, and optional safety markers without hardcoded demo-scout/demo-cargo transform paths.
+
+Yaw and pitch are evaluated in mount-local space. Requested angles are clamped to the configured yaw/pitch limits; if the requested target direction differs from the clamped direction, the turret reports `out of arc` and does not fire. The initial generated nose-gun values are conservative (`-35` to `35` degrees yaw and `-10` to `35` degrees pitch) and can be tightened by arc safety validation if imported hull bounds require it.
 
 ## Module Mass, COM, And Inertia
 
@@ -244,7 +271,7 @@ Gun fire keeps projectile velocity relative to the moving ship:
 projectileVelocity = shipRigidbody.linearVelocity + muzzleTransform.forward * shipStats.ProjectileSpeed;
 ```
 
-Each projectile has a configured mass. When recoil is enabled, `GunModule` applies the opposite muzzle-relative momentum to the firing ship at the muzzle position through `ShipPhysicsCore`:
+Each projectile has configured mass, speed, lifetime, and diameter. The turret path reads the normalized values from `ShipStats`; the legacy `GunModule` path keeps its local configured projectile mass/diameter populated through `ApplySettings` so existing Space-fire scenes remain compatible. When recoil is enabled, the opposite muzzle-relative momentum is applied to the firing ship at the muzzle position through `ShipPhysicsCore`:
 
 ```csharp
 projectileMomentum = muzzleForward * projectileMass * projectileSpeed;
@@ -255,7 +282,11 @@ The recoil path uses the same core force-at-position application path as thruste
 
 The configured projectile mass is passed into the spawned `Projectile`, so Rigidbody mass, recoil, impact impulse, and impulse-scaled damage all use the same value.
 
-Projectiles store their previous physics position and sweep from that position to the current Rigidbody position each `FixedUpdate`. The sweep uses `Physics.SphereCastAll` with the projectile collider radius, then falls back to `Physics.RaycastAll` for a centerline check. A projectile reports only one hit, shares the same report path for sweep and `OnCollisionEnter`, and ignores its own collider plus all firing-ship colliders passed in at spawn.
+Projectile diameter is also passed into `Projectile.Initialize`. Diameter updates the visible scale, the sphere collider baseline, trail start width, and the sweep radius (`diameter * 0.5`, clamped by the minimum sweep radius). This keeps balance values tied to both what the player sees and what the sweep/hit detection samples.
+
+`hitChance` is intentionally a prototype balance scalar, not a real ballistic simulation. It is deterministic in tests: `1.0` fires directly along the target/muzzle direction, while `0.0` still spawns a projectile but applies deterministic aim dispersion so a miss remains inspectable in the scene and recoil still occurs.
+
+Projectiles store their previous physics position and sweep from that position to the current Rigidbody position each `FixedUpdate`. The sweep uses `Physics.SphereCastAll` with the projectile sweep radius, then falls back to `Physics.RaycastAll` for a centerline check. A projectile reports only one hit, shares the same report path for sweep and `OnCollisionEnter`, and ignores its own collider plus all firing-ship colliders passed in at spawn.
 
 `ProjectileHitData` remains the low-level hit shape. It exposes whether the hit came from sweep or collision, the hit collider, attached Rigidbody, optional `PrototypeTargetDummy`, hit point, normal, incoming velocity, and timestamp. `PrototypeImpactEventData` is built from that hit data for module damage and optional impulse routing.
 
@@ -308,6 +339,8 @@ Limitations for the first pass:
 ## Physics Validation
 
 EditMode tests in `Assets/Tests/Editor/PrototypePhysicsValidationTests.cs` exercise deterministic generated ship probes from `PhysicsValidationProbe`. They cover throttle-only main force, gimbal cross-product torque, RCS translation and yaw allocation, RCS spool diagnostics, manual/SAS torque priority, partial-fuel thrust scaling, configured-mass projectile recoil/impact checks, force-vs-impulse diagnostic separation, projectile sweep/self-hit checks, thermal heat rise, idle cooling, overheat hook activation, and a 0.02 vs 0.01 timestep comparison.
+
+Weapon/turret coverage lives in `Assets/Tests/Editor/PrototypeWeaponComputerTurretValidationTests.cs`. It covers settings clamps, local turret arc blocking and clamping, priority target selection, dummy health fallback labels, deterministic hit chance and cooldown, projectile diameter/sweep diagnostics, recoil impulse routing through `ShipPhysicsCore`, marker binder idempotency, bootstrap-generated real muzzle markers, and Weapon Computer panel binding/status safety.
 
 Run the suite through Unity Test Runner EditMode or Unity MCP `run_tests(mode=EditMode)`. Store run output and deterministic probe evidence under the active spec folder, for example `.devtoolbox/specs/changes/validation-physics-test-suite/tests/test-protocol.md`.
 

@@ -14,5 +14,5 @@
 ## Verification And Docs
 
 - [x] 6. Add/extend editor tests for settings clamp, target priority, turret arc, fire control, projectile diameter, recoil, binder idempotency, bootstrap, and UI status safety.
-- [ ] 7. Update README, physics docs, and change test protocol with validation results, Unity test results, Blender/preview status, and known limits.
+- [x] 7. Update README, physics docs, and change test protocol with validation results, Unity test results, Blender/preview status, and known limits.
 - [ ] 8. Run final DevToolbox/Unity/dotnet verification, fix remaining failures, and push completed commits to `origin/main`.
