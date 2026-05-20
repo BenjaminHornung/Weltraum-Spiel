@@ -16,9 +16,11 @@ public class PrototypeBootstrap : MonoBehaviour
     private const string PrototypeRootName = "PrototypeShip";
     private const float DefaultRcsBlockThrust = 6500f;
     private static readonly Color MainThrusterColor = PrototypeModuleColorPalette.MainThruster;
+    private static readonly Color MainThrusterRingColor = PrototypeModuleColorPalette.MainThrusterNozzleRing;
     private static readonly Color RcsBlockColor = PrototypeModuleColorPalette.RcsBlock;
     private static readonly Color GunColor = PrototypeModuleColorPalette.Gun;
     private static readonly Color RcsVfxColor = PrototypeModuleColorPalette.RcsVfx;
+    private static readonly Color FuelTankCueColor = PrototypeModuleColorPalette.FuelTankCue;
 
     private PrototypeShipVariant[] runtimeVariants;
 
@@ -129,6 +131,7 @@ public class PrototypeBootstrap : MonoBehaviour
         var waypointManager = GetOrAddComponent<PrototypeWaypointManager>(ship);
         waypointManager.EnsureDefaultWaypoints();
         var waypointAutopilot = GetOrAddComponent<PrototypeWaypointAutopilot>(ship);
+        var momentumAssist = GetOrAddComponent<PrototypeMomentumAssist>(ship);
 
         mainThruster.Configure(mainThrusterModules, shipRigidbody, stats, physicsCore);
         engine.ConfigureNozzle(primaryMainNozzle);
@@ -142,6 +145,7 @@ public class PrototypeBootstrap : MonoBehaviour
             shipRigidbody,
             physicsCore);
         waypointAutopilot.Bind(waypointManager, controller, stats, shipRigidbody);
+        momentumAssist.Bind(controller, shipRigidbody, stats);
 
         if (gun == null || engine == null)
         {
@@ -284,15 +288,19 @@ public class PrototypeBootstrap : MonoBehaviour
         PrototypeModuleLayoutEntry[] modules = layout != null ? layout.Modules : PrototypeShipLayout.Baseline().Modules;
         for (int i = 0; i < modules.Length; i++)
         {
-            PrototypeModuleLayoutEntry module = modules[i];
-            BuildModulePart(
+            PrototypeModuleLayoutEntry moduleEntry = modules[i];
+            GameObject moduleObject = BuildModulePart(
                 ship,
-                module.ModuleId,
+                moduleEntry.ModuleId,
                 PrimitiveType.Cube,
-                module.LocalPosition,
-                Quaternion.Euler(module.LocalEulerAngles),
-                module.LocalScale,
-                ColorForModule(module.MassRole));
+                moduleEntry.LocalPosition,
+                Quaternion.Euler(moduleEntry.LocalEulerAngles),
+                moduleEntry.LocalScale,
+                ColorForModule(moduleEntry.MassRole));
+            if (moduleEntry.MassRole == PrototypeModuleMassRole.FuelTank)
+            {
+                EnsureFuelTankCue(moduleObject, moduleEntry.LocalScale);
+            }
         }
 
         return ship.gameObject;
@@ -326,6 +334,7 @@ public class PrototypeBootstrap : MonoBehaviour
 
             nozzle.localPosition = entry.NozzleLocalPosition;
             nozzle.localRotation = Quaternion.Euler(entry.NozzleLocalEulerAngles);
+            EnsureMainThrusterNozzleRing(nozzle);
             if (primaryNozzle == null)
             {
                 primaryNozzle = nozzle;
@@ -447,12 +456,64 @@ public class PrototypeBootstrap : MonoBehaviour
             vfx = vfxObject.transform;
         }
 
-        vfx.localPosition = Vector3.back * 2.3f;
+        vfx.localPosition = Vector3.back * 1.25f;
         vfx.localRotation = Quaternion.Euler(0f, 180f, 0f);
-        vfx.localScale = new Vector3(0.08f, 0.08f, 0.12f);
+        vfx.localScale = new Vector3(0.12f, 0.12f, 0.16f);
         RemoveCollider(vfx.gameObject);
         ApplyMaterialColor(vfx.gameObject, RcsVfxColor, true);
         vfx.gameObject.SetActive(false);
+    }
+
+    private static void EnsureMainThrusterNozzleRing(Transform nozzle)
+    {
+        if (nozzle == null)
+        {
+            return;
+        }
+
+        const float RingRadius = 0.21f;
+        const float RingThickness = 0.035f;
+        var ring = nozzle.Find("NozzleRing");
+        if (ring == null)
+        {
+            var ringObject = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            ringObject.name = "NozzleRing";
+            ringObject.transform.SetParent(nozzle, false);
+            RemoveCollider(ringObject);
+            ring = ringObject.transform;
+        }
+
+        ring.localPosition = Vector3.zero;
+        ring.localRotation = Quaternion.Euler(90f, 0f, 0f);
+        ring.localScale = new Vector3(RingRadius, RingThickness, RingRadius);
+        ApplyMaterialColor(ring.gameObject, MainThrusterRingColor, true);
+        ring.gameObject.SetActive(true);
+    }
+
+    private static void EnsureFuelTankCue(GameObject module, Vector3 moduleScale)
+    {
+        if (module == null)
+        {
+            return;
+        }
+
+        var cue = module.transform.Find("FuelCue");
+        if (cue == null)
+        {
+            var cueObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            cueObject.name = "FuelCue";
+            cueObject.transform.SetParent(module.transform, false);
+            RemoveCollider(cueObject);
+            cue = cueObject.transform;
+        }
+
+        float cueHalfScale = Mathf.Min(moduleScale.x, moduleScale.y) * 0.26f;
+        cueHalfScale = Mathf.Max(cueHalfScale, 0.07f);
+        cue.localPosition = new Vector3(0f, moduleScale.y * 0.42f, moduleScale.z * -0.38f);
+        cue.localRotation = Quaternion.identity;
+        cue.localScale = new Vector3(cueHalfScale, cueHalfScale, cueHalfScale * 0.55f);
+        ApplyMaterialColor(cue.gameObject, FuelTankCueColor, true);
+        cue.gameObject.SetActive(true);
     }
 
     private static Quaternion LookRotationLocal(Vector3 localDirection)

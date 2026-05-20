@@ -17,6 +17,8 @@ public class PrototypeFlightHud : MonoBehaviour
     [SerializeField] private Transform target;
     [SerializeField] private PlayerShipController shipController;
     [SerializeField] private PrototypeDebugOverlay debugOverlay;
+    [SerializeField] private PrototypeWaypointAutopilot waypointAutopilot;
+    [SerializeField] private PrototypeMomentumAssist momentumAssist;
     [SerializeField] private Transform trackedTarget;
 
     [Header("HUD")]
@@ -34,6 +36,7 @@ public class PrototypeFlightHud : MonoBehaviour
     private GUIStyle labelStyle;
     private GUIStyle smallLabelStyle;
     private GUIStyle centeredLabelStyle;
+    private GUIStyle compactButtonStyle;
     private PrototypeUiWindowState windowState;
 
     public Transform Target => target;
@@ -85,7 +88,7 @@ public class PrototypeFlightHud : MonoBehaviour
         ResolveReferences();
         RefreshDiagnostics();
         EnsureStyles();
-        windowState.SetSize(Mathf.Max(300f, (navballRadius * 2f) + 84f), windowState.Collapsed ? 58f : Mathf.Max(300f, (navballRadius * 2f) + 116f));
+        windowState.SetSize(Mathf.Max(300f, (navballRadius * 2f) + 84f), windowState.Collapsed ? 58f : Mathf.Max(300f, (navballRadius * 2f) + 166f));
         windowState.Rect = GUI.Window(windowState.WindowId, windowState.Rect, DrawHudWindow, "HUD / Navball");
         windowState.ClampToScreen();
         windowState.SaveToPrefs();
@@ -190,6 +193,16 @@ public class PrototypeFlightHud : MonoBehaviour
             if (shipController == null)
             {
                 shipController = target.GetComponent<PlayerShipController>();
+            }
+
+            if (waypointAutopilot == null)
+            {
+                waypointAutopilot = target.GetComponent<PrototypeWaypointAutopilot>();
+            }
+
+            if (momentumAssist == null)
+            {
+                momentumAssist = target.GetComponent<PrototypeMomentumAssist>();
             }
         }
 
@@ -346,6 +359,13 @@ public class PrototypeFlightHud : MonoBehaviour
             alignment = TextAnchor.MiddleCenter
         };
         centeredLabelStyle.normal.textColor = Color.white;
+
+        compactButtonStyle = new GUIStyle(GUI.skin.button)
+        {
+            fontSize = 10,
+            alignment = TextAnchor.MiddleCenter,
+            padding = new RectOffset(4, 4, 2, 2)
+        };
     }
 
     private void DrawHudWindow(int id)
@@ -400,7 +420,18 @@ public class PrototypeFlightHud : MonoBehaviour
             DrawMarker(center, LastResidualForceMarker, new Color(1f, 0.45f, 1f, 1f), "RES", markerSize * 0.75f);
         }
 
-        Rect labelRect = new Rect(contentRect.x + 8f, contentRect.yMax - 28f, contentRect.width - 16f, 20f);
+        DrawQuickActions(contentRect);
+
+        Rect hintRect = new Rect(contentRect.x + 8f, contentRect.yMax - 56f, contentRect.width - 16f, 38f);
+        string targetLabel = waypointAutopilot != null ? waypointAutopilot.TargetName : (trackedTarget != null ? trackedTarget.name : "none");
+        string autopilotLabel = waypointAutopilot != null
+            ? $"{(waypointAutopilot.AutopilotEngaged ? "ON" : "OFF")} {waypointAutopilot.CurrentState}"
+            : "N/A";
+        PrototypeFlightControlDiagnostics diagnostics = shipController != null ? shipController.FlightControlDiagnostics : default;
+        string sasLabel = shipController != null ? (diagnostics.effectiveSasEnabled ? "SAS On" : "SAS Off") : "SAS n/a";
+        GUI.Label(hintRect, $"G Autopilot | Tab/B Target | Caps Mode\nTarget: {targetLabel} | Auto: {autopilotLabel} | {ResolveControlModeHint()} | {sasLabel}", smallLabelStyle);
+
+        Rect labelRect = new Rect(contentRect.x + 8f, contentRect.yMax - 14f, contentRect.width - 16f, 14f);
         GUI.Label(labelRect, "Mode: " + LastModeLabel, centeredLabelStyle);
     }
 
@@ -434,6 +465,70 @@ public class PrototypeFlightHud : MonoBehaviour
         smallLabelStyle.normal.textColor = Color.white;
     }
 
+    private void DrawQuickActions(Rect contentRect)
+    {
+        if (shipController == null)
+        {
+            return;
+        }
+
+        Rect quickActionRect = new Rect(contentRect.x + 8f, contentRect.y + (navballRadius * 2f) + 26f, contentRect.width - 16f, 50f);
+        GUILayout.BeginArea(quickActionRect);
+        GUILayout.BeginVertical();
+        GUILayout.BeginHorizontal();
+
+        GUI.enabled = waypointAutopilot != null;
+        if (GUILayout.Button("Prev", compactButtonStyle, GUILayout.Width(52f), GUILayout.Height(16f)))
+        {
+            waypointAutopilot?.SelectPreviousTarget();
+        }
+
+        if (GUILayout.Button("Next", compactButtonStyle, GUILayout.Width(52f), GUILayout.Height(16f)))
+        {
+            waypointAutopilot?.SelectNextTarget();
+        }
+
+        if (GUILayout.Button(waypointAutopilot != null && waypointAutopilot.AutopilotEngaged ? "Autopilot Off" : "Autopilot On", compactButtonStyle, GUILayout.Width(88f), GUILayout.Height(16f)))
+        {
+            waypointAutopilot?.ToggleAutopilot();
+        }
+
+        GUI.enabled = momentumAssist != null;
+        if (GUILayout.Button("Kill Momentum", compactButtonStyle, GUILayout.Width(88f), GUILayout.Height(16f)))
+        {
+            momentumAssist?.Toggle();
+        }
+        GUI.enabled = true;
+
+        GUILayout.EndHorizontal();
+        GUILayout.BeginHorizontal();
+
+        PrototypeFlightControlDiagnostics diagnostics = shipController.FlightControlDiagnostics;
+        string modeButton = diagnostics.controlMode switch
+        {
+            FlightControlMode.Precision => "Mode: Precision",
+            FlightControlMode.Translation => "Mode: Transl",
+            _ => "Mode: Cruise"
+        };
+        if (GUILayout.Button(modeButton, compactButtonStyle, GUILayout.Width(96f), GUILayout.Height(16f)))
+        {
+            shipController.CycleControlMode();
+        }
+
+        bool sasEnabled = diagnostics.sasEnabled;
+        if (GUILayout.Button(sasEnabled ? "SAS Off" : "SAS On", compactButtonStyle, GUILayout.Width(58f), GUILayout.Height(16f)))
+        {
+            shipController.SetSasEnabled(!sasEnabled);
+        }
+
+        string momentumLabel = momentumAssist != null ? momentumAssist.CurrentState.ToString() : "No Momentum";
+        GUILayout.Label(momentumLabel, smallLabelStyle, GUILayout.Width(88f), GUILayout.Height(16f));
+
+        GUILayout.EndHorizontal();
+        GUILayout.EndVertical();
+        GUILayout.EndArea();
+    }
+
     private static Vector2 MarkerLabelOffset(Vector2 markerOffset, float size, string label)
     {
         if (label == "FWD")
@@ -463,5 +558,24 @@ public class PrototypeFlightHud : MonoBehaviour
         GUI.DrawTexture(new Rect(start.x, start.y - (thickness * 0.5f), length, thickness), Texture2D.whiteTexture);
         GUI.matrix = oldMatrix;
         GUI.color = oldColor;
+    }
+
+    private string ResolveControlModeHint()
+    {
+        if (shipController == null)
+        {
+            return "Mode: n/a";
+        }
+
+        PrototypeFlightControlDiagnostics diagnostics = shipController.FlightControlDiagnostics;
+        switch (diagnostics.controlMode)
+        {
+            case FlightControlMode.Precision:
+                return "Mode: Precision";
+            case FlightControlMode.Translation:
+                return "Mode: Translation";
+            default:
+                return "Mode: Cruise";
+        }
     }
 }

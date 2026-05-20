@@ -162,9 +162,10 @@ public class PrototypeDebugOverlay : MonoBehaviour
         float turnInput = shipController != null ? shipController.TurnInput : 0f;
         bool hasRcs = shipController != null && shipController.HasRcs;
         bool rcsEnabled = shipController != null && shipController.RcsEnabled;
-        bool sasEnabled = shipController != null && shipController.SasEnabled;
-        bool effectiveSas = shipController != null && shipController.EffectiveSasEnabled;
-        bool precision = shipController != null && shipController.PrecisionControls;
+        PrototypeFlightControlDiagnostics controlDiagnostics = shipController != null ? shipController.FlightControlDiagnostics : default;
+        bool sasEnabled = controlDiagnostics.sasEnabled;
+        bool effectiveSas = controlDiagnostics.effectiveSasEnabled;
+        string controlModeLabel = shipController != null ? shipController.ControlModeLabel : "n/a";
         float forwardAcceleration = shipController != null ? shipController.LastForwardAcceleration : targetStats.LastAcceleration;
         Vector3 rcsPivotLocal = shipController != null ? shipController.RcsControlPivotLocal : Vector3.zero;
         Vector3 rcsPivotWorld = shipController != null ? shipController.RcsControlPivotWorld : centerOfMassWorld;
@@ -292,7 +293,7 @@ public class PrototypeDebugOverlay : MonoBehaviour
             if (!windowState.Collapsed)
             {
                 GUILayout.Label($"Fuel {targetStats.CurrentFuelKg:0.0}/{targetStats.MaxFuelKg:0.0} kg | Speed {speedMps:0.0} m/s | Throttle {throttlePercent:0}%", labelStyle);
-                GUILayout.Label($"RCS {(rcsEnabled ? "on" : "off")} | SAS {(sasEnabled ? "on" : "off")} | Precision {(precision ? "on" : "off")} | Main {targetStats.LastAppliedThrust:0} N", labelStyle);
+                GUILayout.Label($"RCS {(controlDiagnostics.rcsEnabled ? "on" : "off")} | SAS {(sasEnabled ? "on" : "off")} effective {(effectiveSas ? "on" : "off")} | Mode {controlModeLabel} | Main {targetStats.LastAppliedThrust:0} N", labelStyle);
                 GUILayout.Label($"Target {navTargetName} | Mode {flightAssistMode} | Debug vectors {(drawDebugVectors ? "on" : "off")}", labelStyle);
 
                 advancedDiagnosticsOpen = GUILayout.Toggle(advancedDiagnosticsOpen, "Advanced Diagnostics");

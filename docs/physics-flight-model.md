@@ -65,9 +65,9 @@ actualThrottle = MoveTowards(actualThrottle, targetThrottle, ratePerSecond * del
 
 ## Gimbal
 
-The visible `MainThrusterGimbal` cube rotates with the effective yaw and pitch gimbal command. The default gimbal limit remains 20 degrees, but the default response scalar is 0.35 so normal keyboard attitude input uses a softer cone while preserving the hard cap.
+The visible `MainThrusterGimbal` cube rotates with the effective yaw and pitch gimbal command. The default gimbal setup is intentionally calmer than the early prototype: 10 degree hard limit, 0.14 response scalar, and 30 degrees-per-second slew. `GimbalAssistMode` gates how much attitude input can feed the main-thruster gimbal; the default is `AutopilotOnly`, with Off, Low, Manual, and ExperimentalFull still available from diagnostics.
 
-Gimbal yaw and pitch also expose target and actual commands. The default slew rate is zero for instant response. Finite slew values move the actual gimbal command toward the target command in degrees per second, then apply the existing max-angle clamp before calculating visual rotation and thrust direction.
+Gimbal yaw and pitch also expose target and actual commands. Finite slew values move the actual gimbal command toward the target command in degrees per second, then apply the existing max-angle clamp before calculating visual rotation and thrust direction. Precision and Translation control modes force the main-thruster command and gimbal commands to zero, so close-range maneuvering uses RCS/SAS instead of surprise main-engine steering.
 
 The physical thrust vector follows the same effective gimbal direction as the visual. In `ComSafeSteeringOnly`, the steering component is the only main-thruster source of torque:
 
@@ -95,17 +95,17 @@ torque = Vector3.Cross(nozzle.transform.position - rb.worldCenterOfMass, force);
 
 The generated `RCS_Top`, `RCS_Bottom`, `RCS_Left`, and `RCS_Right` blocks each carry an inspector-editable `RcsThrusterBlock`. Nozzles cache their nearest parent block and use that block's thrust when allocated. The block exposes undamaged thrust, but the effective `Thrust` value is multiplied by attached `PrototypeModuleDamageState.CapabilityMultiplier`. Damaged RCS blocks therefore reduce real allocator authority instead of only changing a UI number. The legacy controller-level `translationForce` and `attitudeForce` values remain as fallback magnitudes for nozzles that do not have a parent block, so older hand-built scenes continue to apply force.
 
-Translation, attitude, SAS, and physical flight-assist requests are combined into one desired force/torque wrench before allocation. The current allocator is still a bounded greedy prototype, but it applies each nozzle at most once per physics frame and reports desired, actual, and residual force/torque diagnostics. Status values are residual-aware: `ok`, `limited`, `residual`, `limited-residual`, `spooling-down`, `no nozzles`, `no authority`, `no solution`, and `no fuel` describe what actually happened in that frame.
+Translation, attitude, SAS, and physical flight-assist requests are combined into one desired force/torque wrench before allocation. `FlightControlMode` is explicit: Normal/Cruise maps W/S/A/D/Q/E to pitch/yaw/roll while Shift/Ctrl adjust main throttle; Precision keeps W/S/A/D/Q/E as RCS attitude with main/gimbal forced off; Translation maps W/S to forward/back, A/D to left/right, H/N to up/down, and leaves Q/E as roll. Caps Lock and the HUD mode button cycle these modes; Left Alt is not part of the primary control model. The current allocator is still a bounded greedy prototype, but it applies each nozzle at most once per physics frame and reports desired, actual, and residual force/torque diagnostics. Status values are residual-aware: `ok`, `limited`, `residual`, `limited-residual`, `spooling-down`, `no nozzles`, `no authority`, `no solution`, and `no fuel` describe what actually happened in that frame.
 
 RCS nozzles keep actual throttle state. With finite response rates, spool-up ramps actual thrust toward the target throttle. When a command is released, spool-down moves actual throttle toward zero and physically applies the remaining decaying nozzle force until the throttle settles. This can create intentional short residual thrust; it is visible through actual/residual force diagnostics and the `spooling-down` status.
 
-The debug console can issue deterministic test pulses for RCS translation, attitude, main thrust, and gimbal checks. These pulses are development probes and bypass precision-control scaling so their output stays comparable across repeated tests. Refuel, reset, damage, target spawning, variant spawning, debug assist, and pulse buttons are debug-only controls and should not be treated as player-facing gameplay input.
+The debug console can issue deterministic test pulses for RCS translation, attitude, main thrust, and gimbal checks. These pulses are development probes and bypass runtime input-layer state so their output stays comparable across repeated tests. Refuel, reset, damage, target spawning, variant spawning, debug assist, and pulse buttons are debug-only controls and should not be treated as player-facing gameplay input.
 
 ## Variant Diagnostics And HUD
 
 Built-in prototype ship variants are generated to expose physics behavior under controlled layouts rather than to model a final ship editor. Baseline Balanced is the reference layout; Dual Main Thruster checks symmetric engine force; Off-Center Main Thruster compares COM-safe and fully physical nozzle-force modes; One-Sided RCS and No-RCS intentionally expose allocator residuals and missing-authority states; Heavy Cargo checks mass and inertia scaling.
 
-The main camera now owns the debug console, compact flight diagnostics, keybind helper, and `PrototypeFlightHud` after each bootstrap or variant spawn. These remain temporary draggable IMGUI windows so prototype testing can keep the play view clear without a final UI Toolkit migration. `F1`, `F2`, `F3`, and `F4` toggle keybinds, diagnostics, debug console, and HUD/Navball.
+The main camera now owns the debug console, compact flight diagnostics, keybind helper, minimap, and `PrototypeFlightHud` after each bootstrap or variant spawn. These remain temporary draggable IMGUI windows so prototype testing can keep the play view clear without a final UI Toolkit migration. `F1`, `F2`, `F3`, `F4`, and `F5` toggle keybinds, diagnostics, debug console, HUD/Navball, and minimap.
 
 The HUD projects world vectors into ship-local marker space:
 
@@ -114,7 +114,7 @@ localDirection = shipTransform.InverseTransformDirection(worldDirection.normaliz
 marker = new Vector2(localDirection.x, -localDirection.y) * radius
 ```
 
-Forward, prograde, retrograde, SAS hold, and optional target markers use that projection. The default HUD keeps marker labels short and prints only the active mode label, for example `Mode: TARGET`, instead of the full reserved mode list. When debug vector mode or RCS Test diagnostics are enabled, desired, actual, and residual RCS force markers use the same projection so a one-sided or fuel-limited allocator result can be inspected visually. The HUD reserves mode labels for `WORLD`, `VELOCITY`, `TARGET`, `DOCKING`, and `ORBIT/GRAVITY`; the current slice only displays prototype labels and does not implement a final 3D navball, docking director, or orbital map.
+Forward, prograde, retrograde, SAS hold, and optional target markers use that projection. The default HUD keeps marker labels short and prints only the active mode label, for example `Mode: TARGET`, instead of the full reserved mode list. A compact quick-action strip exposes previous/next target, autopilot, Kill Momentum, Control Mode, and SAS while keeping the navball view readable. HUD, diagnostics, and debug console read SAS/RCS/control-mode state from the controller diagnostics snapshot instead of keeping local copies. When debug vector mode or RCS Test diagnostics are enabled, desired, actual, and residual RCS force markers use the same projection so a one-sided or fuel-limited allocator result can be inspected visually. The HUD reserves mode labels for `WORLD`, `VELOCITY`, `TARGET`, `DOCKING`, and `ORBIT/GRAVITY`; the current slice only displays prototype labels and does not implement a final 3D navball, docking director, or orbital map.
 
 Debug UI presets are available from the debug console:
 
@@ -123,7 +123,7 @@ Debug UI presets are available from the debug console:
 - RCS Test: allocator diagnostics and debug force markers visible.
 - Full Diagnostics: deeper foldout diagnostics and all existing debug buttons.
 
-The generated primitive modules use a central prototype color palette so role information is readable during physics tests. Hull, cockpit, fuel tank, main engine, RCS block, gun, cargo/utility, target, and orientation markers use consistent colors across built-in variants without importing final assets.
+The generated primitive modules use a central prototype color palette so role information is readable during physics tests. Hull, cockpit, fuel tank, main engine, RCS block, gun, cargo/utility, target, and orientation markers use higher-contrast colors across built-in variants without importing final assets. RCS VFX is stronger and cyan/green while active nozzles fire; main-engine VFX uses a separate orange/blue exhaust and visible nozzle ring.
 
 If a nozzle is moved, removed, or rotated, its force and torque contribution changes immediately. Missing nozzles cannot create phantom force.
 
@@ -195,6 +195,8 @@ The prototype names three modes:
 - `DebugAssist`: reserved for testing helpers. Requests are visible in diagnostics and marked debug-only/non-physical; the allocator excludes them from physical force application unless a future change intentionally adds a separately documented debug path.
 
 `RcsThrusterController` records assist mode, request source, force, torque, and debug-only status separately from manual and SAS diagnostics. The debug overlay shows manual command, SAS command/torque, and assist request fields side by side so future flight bugs can identify which layer asked for a wrench.
+
+`PrototypeMomentumAssist` adds a physical Kill Momentum helper above this request layer. It has explicit states (`Idle`, `AlignForBrake`, `MainBrake`, `RcsDamp`, `Complete`, `Aborted`, `NoAuthority`, `FuelInsufficient`) and never stops the ship by writing Rigidbody velocity or teleporting. At higher speeds, when main thrust is available and the ship is in Normal/Cruise control mode, it aligns for a main-engine brake and requests main throttle plus RCS/SAS-style torque through the normal controller path. At lower speeds, or whenever Precision/Translation has disabled main thrust, it damps linear and angular motion with physical RCS assist requests. Manual flight input aborts the assist so the pilot can immediately take control.
 
 ## Docking Prototype
 

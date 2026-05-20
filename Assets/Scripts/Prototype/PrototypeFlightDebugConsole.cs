@@ -12,14 +12,19 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
     [SerializeField] private PrototypeKeybindOverlay keybindOverlay;
     [SerializeField] private PrototypeMinimapOverlay minimapOverlay;
     [SerializeField] private PrototypeBootstrap bootstrap;
+    [SerializeField] private PrototypeWaypointAutopilot waypointAutopilot;
+    [SerializeField] private PrototypeMomentumAssist momentumAssist;
     [SerializeField] private Vector2 windowPosition = new Vector2(660f, 16f);
 
     private bool showConsole;
     private bool consoleCollapsed = true;
     private bool controlsOpen = true;
     private bool actionsOpen = true;
+    private bool navigationAutopilotOpen = true;
+    private bool momentumAssistOpen = true;
     private bool pulsesOpen = true;
     private bool rcsDiagnosticsOpen = true;
+    private bool controlCalibrationOpen = true;
     private GUIStyle labelStyle;
     private Vector2 scrollPosition;
     private PrototypeUiWindowState windowState;
@@ -48,6 +53,16 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
             if (shipController == null)
             {
                 shipController = target.GetComponent<PlayerShipController>();
+            }
+
+            if (waypointAutopilot == null)
+            {
+                waypointAutopilot = target.GetComponent<PrototypeWaypointAutopilot>();
+            }
+
+            if (momentumAssist == null)
+            {
+                momentumAssist = target.GetComponent<PrototypeMomentumAssist>();
             }
         }
 
@@ -166,6 +181,8 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
                 GUILayout.BeginVertical(GUILayout.Width(310f));
                 DrawControls();
                 DrawActions();
+                DrawNavigationAutopilotStatus();
+                DrawMomentumAssist();
                 GUILayout.EndVertical();
                 GUILayout.BeginVertical(GUILayout.Width(310f));
                 DrawPulses();
@@ -229,11 +246,25 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
             shipController.SetSasEnabled(sasEnabled);
         }
 
-        bool precision = GUILayout.Toggle(shipController.PrecisionControls, "Precision controls");
-        if (precision != shipController.PrecisionControls)
+        PrototypeFlightControlDiagnostics diagnostics = shipController.FlightControlDiagnostics;
+        GUILayout.Label($"Control mode: {shipController.ControlModeLabel}", labelStyle);
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("Normal"))
         {
-            shipController.SetPrecisionControls(precision);
+            shipController.SetControlMode(FlightControlMode.Normal);
         }
+
+        if (GUILayout.Button("Precision"))
+        {
+            shipController.SetControlMode(FlightControlMode.Precision);
+        }
+
+        if (GUILayout.Button("Translation"))
+        {
+            shipController.SetControlMode(FlightControlMode.Translation);
+        }
+        GUILayout.EndHorizontal();
+        GUILayout.Label($"States: RCS {(diagnostics.rcsEnabled ? "on" : "off")} | SAS {(diagnostics.sasEnabled ? "on" : "off")} effective {(diagnostics.effectiveSasEnabled ? "on" : "off")} | Main {(diagnostics.mainThrusterAllowed ? "allowed" : "off")} | Gimbal {(diagnostics.gimbalAllowed ? "allowed" : "off")}", labelStyle);
 
         if (debugOverlay != null)
         {
@@ -257,6 +288,8 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
         DrawEnumSelector("SAS mode", shipController.SasMode, shipController.SetSasMode);
         DrawEnumSelector("Assist", shipController.FlightAssistMode, shipController.SetFlightAssistMode);
         DrawEnumSelector("Main thrust", shipController.MainThrustMode, shipController.SetMainThrustMode);
+        DrawEnumSelector("Gimbal assist", shipController.GimbalAssistMode, shipController.SetGimbalAssistMode);
+        DrawControlCalibration();
         DrawVariantSelector();
     }
 
@@ -316,6 +349,115 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
         }
     }
 
+    private void DrawNavigationAutopilotStatus()
+    {
+        navigationAutopilotOpen = GUILayout.Toggle(navigationAutopilotOpen, "Navigation / Autopilot");
+        if (!navigationAutopilotOpen)
+        {
+            return;
+        }
+
+        if (shipController == null)
+        {
+            GUILayout.Label("Autopilot controls unavailable: no PlayerShipController bound.", labelStyle);
+            return;
+        }
+
+        if (waypointAutopilot == null)
+        {
+            GUILayout.Label("Autopilot unavailable: no PrototypeWaypointAutopilot.", labelStyle);
+            return;
+        }
+
+        GUILayout.Label($"Target: {waypointAutopilot.TargetName}", labelStyle);
+        GUILayout.Label($"Autopilot engaged: {(waypointAutopilot.AutopilotEngaged ? "yes" : "no")}", labelStyle);
+        GUILayout.Label($"State: {waypointAutopilot.CurrentState}", labelStyle);
+
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("Previous Target"))
+        {
+            waypointAutopilot.SelectPreviousTarget();
+        }
+
+        if (GUILayout.Button("Next Target"))
+        {
+            waypointAutopilot.SelectNextTarget();
+        }
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button(waypointAutopilot.AutopilotEngaged ? "Autopilot Off" : "Autopilot On"))
+        {
+            waypointAutopilot.ToggleAutopilot();
+        }
+
+        if (GUILayout.Button("Abort Autopilot"))
+        {
+            waypointAutopilot.Abort();
+        }
+        GUILayout.EndHorizontal();
+
+        GUILayout.Label($"Distance: {FormatCompact(waypointAutopilot.DistanceToTarget)} m", labelStyle);
+        GUILayout.Label($"Closing speed: {FormatCompact(waypointAutopilot.ClosingSpeed)} m/s", labelStyle);
+        GUILayout.Label($"Lateral speed: {FormatCompact(waypointAutopilot.LateralSpeed)} m/s", labelStyle);
+        GUILayout.Label($"Stopping distance: {FormatCompact(waypointAutopilot.StoppingDistance)} m", labelStyle);
+        GUILayout.Label($"Fuel available/required: {FormatFuel(waypointAutopilot.AvailableBurnSeconds)} / {FormatFuel(waypointAutopilot.RequiredBurnSeconds)} s", labelStyle);
+        GUILayout.Label($"Arrival status: {waypointAutopilot.ArrivalStatus}", labelStyle);
+        GUILayout.Label($"Fuel insufficient hint: {(waypointAutopilot.FuelFeasible ? "no" : "yes")}", labelStyle);
+        GUILayout.Label($"Manual override: {(shipController.LastManualFlightInput ? "active" : "inactive")}", labelStyle);
+
+        if (momentumAssist != null)
+        {
+            GUILayout.Label($"Momentum Assist: {(momentumAssist.IsActive ? "on" : "off")} | {momentumAssist.CurrentState} / {momentumAssist.StatusLabel}", labelStyle);
+        }
+        else
+        {
+            GUILayout.Label("Momentum Assist unavailable: no PrototypeMomentumAssist.", labelStyle);
+        }
+    }
+
+    private void DrawMomentumAssist()
+    {
+        momentumAssistOpen = GUILayout.Toggle(momentumAssistOpen, "Momentum Assist");
+        if (!momentumAssistOpen)
+        {
+            return;
+        }
+
+        if (momentumAssist == null)
+        {
+            GUILayout.Label("Momentum Assist unavailable: no PrototypeMomentumAssist.", labelStyle);
+            return;
+        }
+
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button(momentumAssist.IsActive ? "Abort" : "Engage"))
+        {
+            if (momentumAssist.IsActive)
+            {
+                momentumAssist.Abort("debug console");
+            }
+            else
+            {
+                momentumAssist.Activate();
+            }
+        }
+
+        if (GUILayout.Button("Toggle"))
+        {
+            momentumAssist.Toggle();
+        }
+        GUILayout.EndHorizontal();
+
+        GUILayout.Label($"State: {momentumAssist.CurrentState} / {momentumAssist.StatusLabel}", labelStyle);
+        GUILayout.Label($"Speed: {FormatCompact(momentumAssist.SpeedMetersPerSecond)} m/s | Angular: {FormatCompact(momentumAssist.AngularSpeed)} rad/s", labelStyle);
+        GUILayout.Label($"Brake direction: {FormatVector(momentumAssist.LastBrakeDirectionWorld)}", labelStyle);
+        GUILayout.Label($"RCS desired force: {FormatVector(momentumAssist.LastRequestedForceWorld)} N", labelStyle);
+        GUILayout.Label($"Requested torque: {FormatVector(momentumAssist.LastRequestedTorqueLocal)} Nm", labelStyle);
+        GUILayout.Label($"Main throttle request: {momentumAssist.LastMainThrottleRequest:0.00}", labelStyle);
+        GUILayout.Label($"Authority/status: main {(momentumAssist.CanUseMainBrake ? "yes" : "no")} | {momentumAssist.StatusLabel}", labelStyle);
+    }
+
     private void DrawPulses()
     {
         pulsesOpen = GUILayout.Toggle(pulsesOpen, "Test Pulses");
@@ -353,6 +495,56 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
         if (GUILayout.Button("Gimbal yaw")) shipController.PulseGimbal(1f, 0f);
         if (GUILayout.Button("Gimbal pitch")) shipController.PulseGimbal(0f, 1f);
         GUILayout.EndHorizontal();
+    }
+
+    private void DrawControlCalibration()
+    {
+        controlCalibrationOpen = GUILayout.Toggle(controlCalibrationOpen, "Control calibration");
+        if (!controlCalibrationOpen)
+        {
+            return;
+        }
+
+        string interpretationLabel = shipController.ControlMode switch
+        {
+            FlightControlMode.Translation => "Translation (W/S forward/back, A/D left/right)",
+            FlightControlMode.Precision => "Precision attitude (RCS, no main)",
+            _ => "Cruise attitude (main throttle enabled)"
+        };
+
+        GUILayout.Label($"Flight mode: {shipController.ControlModeLabel}", labelStyle);
+        GUILayout.Label($"RCS layer: {shipController.ActiveRcsLayerLabel}", labelStyle);
+        GUILayout.Label($"Key interpretation: {interpretationLabel}", labelStyle);
+        GUILayout.Label($"Attitude command: {FormatVector(shipController.RcsAttitudeCommand)}", labelStyle);
+        GUILayout.Label($"Translation command: {FormatVector(shipController.RcsTranslationCommand)}", labelStyle);
+        GUILayout.Label(shipController.ControlMode == FlightControlMode.Translation
+            ? "W/S forward/back, A/D left/right, H/N up/down, Q/E roll"
+            : "W/S pitch, A/D yaw, Q/E roll", labelStyle);
+        GUILayout.Label($"Angular velocity local: {FormatVector(shipController.LastRcsSasAngularVelocityLocal)} rad/s", labelStyle);
+
+        bool invertKeyboardPitch = GUILayout.Toggle(shipController.InvertKeyboardPitch, "Invert keyboard pitch");
+        if (invertKeyboardPitch != shipController.InvertKeyboardPitch)
+        {
+            shipController.SetInvertKeyboardPitch(invertKeyboardPitch);
+        }
+
+        bool invertKeyboardYaw = GUILayout.Toggle(shipController.InvertKeyboardYaw, "Invert keyboard yaw");
+        if (invertKeyboardYaw != shipController.InvertKeyboardYaw)
+        {
+            shipController.SetInvertKeyboardYaw(invertKeyboardYaw);
+        }
+
+        bool invertKeyboardRoll = GUILayout.Toggle(shipController.InvertKeyboardRoll, "Invert keyboard roll");
+        if (invertKeyboardRoll != shipController.InvertKeyboardRoll)
+        {
+            shipController.SetInvertKeyboardRoll(invertKeyboardRoll);
+        }
+
+        bool invertGamepadPitch = GUILayout.Toggle(shipController.InvertGamepadPitch, "Invert gamepad pitch");
+        if (invertGamepadPitch != shipController.InvertGamepadPitch)
+        {
+            shipController.SetInvertGamepadPitch(invertGamepadPitch);
+        }
     }
 
     private void DrawRcsDiagnostics()
@@ -425,6 +617,31 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
         return $"({value.x:0.00}, {value.y:0.00}, {value.z:0.00})";
     }
 
+    private static string FormatCompact(float value)
+    {
+        if (float.IsNaN(value))
+        {
+            return "n/a";
+        }
+
+        if (float.IsInfinity(value))
+        {
+            return "inf";
+        }
+
+        return value.ToString("0.00");
+    }
+
+    private static string FormatFuel(float value)
+    {
+        if (float.IsNaN(value))
+        {
+            return "n/a";
+        }
+
+        return float.IsInfinity(value) ? "inf" : value.ToString("0.00");
+    }
+
     private static string Shorten(string value, int maxLength)
     {
         if (string.IsNullOrEmpty(value) || value.Length <= maxLength)
@@ -441,6 +658,8 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
         targetStats = stats;
         targetRigidbody = rb;
         shipController = trackTarget != null ? trackTarget.GetComponent<PlayerShipController>() : null;
+        waypointAutopilot = trackTarget != null ? trackTarget.GetComponent<PrototypeWaypointAutopilot>() : null;
+        momentumAssist = trackTarget != null ? trackTarget.GetComponent<PrototypeMomentumAssist>() : null;
         debugOverlay = GetComponent<PrototypeDebugOverlay>();
         flightHud = GetComponent<PrototypeFlightHud>();
         keybindOverlay = GetComponent<PrototypeKeybindOverlay>();

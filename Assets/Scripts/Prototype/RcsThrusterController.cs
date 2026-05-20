@@ -12,6 +12,8 @@ public class RcsThrusterController : MonoBehaviour
         public RcsThrusterBlock block;
         public bool active;
         public float actualThrottle;
+        public Vector3 baseVfxScale;
+        public Color baseVfxColor;
     }
 
 
@@ -34,6 +36,12 @@ public class RcsThrusterController : MonoBehaviour
     [Header("RCS Response")]
     [SerializeField] private float nozzleSpoolUpRate;
     [SerializeField] private float nozzleSpoolDownRate;
+
+    [Header("RCS Visuals")]
+    [SerializeField] private float minRcsNozzleThrottleForVfx = 0.015f;
+    [SerializeField] private float activeRcsNozzleScaleBoost = 1.3f;
+    [SerializeField] private float idleRcsNozzleScaleBoost = 0.35f;
+    [SerializeField] private float vfxEmissiveBoost = 2.2f;
 
     [Header("SAS PD Control")]
     [SerializeField] private float sasProportionalGain = 0.75f;
@@ -247,13 +255,27 @@ public class RcsThrusterController : MonoBehaviour
                 continue;
             }
 
+            GameObject nozzleVfx = FindNozzleVfx(child);
+            Vector3 vfxScale = nozzleVfx != null ? nozzleVfx.transform.localScale : Vector3.one;
+            Color vfxColor = Color.white;
+            if (nozzleVfx != null)
+            {
+                var vfxRenderer = nozzleVfx.GetComponent<Renderer>();
+                if (vfxRenderer != null && vfxRenderer.sharedMaterial != null)
+                {
+                    vfxColor = vfxRenderer.sharedMaterial.color;
+                }
+            }
+
             var nozzle = new RcsNozzle
             {
                 id = child.name,
                 transform = child,
-                vfx = FindNozzleVfx(child),
+                vfx = nozzleVfx,
                 block = FindNozzleBlock(child),
-                active = false
+                active = false,
+                baseVfxScale = vfxScale,
+                baseVfxColor = vfxColor
             };
             nozzles.Add(nozzle);
             localSum += transform.InverseTransformPoint(child.position);
@@ -281,7 +303,7 @@ public class RcsThrusterController : MonoBehaviour
         RefreshNozzles();
     }
 
-public void ApplyControls(Vector3 translationCommand, Vector3 attitudeCommand, bool stabilizeAngular, float deltaTime)
+    public void ApplyControls(Vector3 translationCommand, Vector3 attitudeCommand, bool stabilizeAngular, float deltaTime)
     {
         ApplyControls(translationCommand, attitudeCommand, stabilizeAngular, SasControlMode.KillRotation, transform.rotation, false, FlightAssistRequest.None, deltaTime);
     }
@@ -458,7 +480,7 @@ public void ApplyControls(Vector3 translationCommand, Vector3 attitudeCommand, b
         return true;
     }
 
-private void ClearRuntimeForces()
+    private void ClearRuntimeForces()
     {
         LastTranslationForce = Vector3.zero;
         LastTorque = Vector3.zero;
@@ -558,7 +580,7 @@ private void ClearRuntimeForces()
         return Mathf.Abs(manualCommand) > ManualCommandDeadZone ? ManualCommandDeadZone : SasCommandDeadZone;
     }
 
-private void ApplyTorqueDemand(Vector3 positiveAxis, float command, float fallbackForceScale, bool recordYaw, float commandDeadZone)
+    private void ApplyTorqueDemand(Vector3 positiveAxis, float command, float fallbackForceScale, bool recordYaw, float commandDeadZone)
     {
         if (Mathf.Abs(command) <= commandDeadZone || shipRigidbody == null)
         {
@@ -599,7 +621,7 @@ private void ApplyTorqueDemand(Vector3 positiveAxis, float command, float fallba
         NeutralizeAttitudeLinearForce(attitudeForceTotal);
     }
 
-private void NeutralizeAttitudeLinearForce(Vector3 attitudeForceTotal)
+    private void NeutralizeAttitudeLinearForce(Vector3 attitudeForceTotal)
     {
         if (shipRigidbody == null || attitudeForceTotal.sqrMagnitude <= 0.0001f)
         {
@@ -702,7 +724,7 @@ private void NeutralizeAttitudeLinearForce(Vector3 attitudeForceTotal)
         return direction.normalized;
     }
 
-private void ApplyForceAtNozzle(RcsNozzle nozzle, Vector3 forceWorld, bool translation, bool recordYaw)
+    private void ApplyForceAtNozzle(RcsNozzle nozzle, Vector3 forceWorld, bool translation, bool recordYaw)
     {
         if (shipRigidbody == null || nozzle == null || !IsActiveNozzleTransform(nozzle.transform) || forceWorld.sqrMagnitude <= 0.0001f)
         {
@@ -741,9 +763,12 @@ private void ApplyForceAtNozzle(RcsNozzle nozzle, Vector3 forceWorld, bool trans
         for (int i = 0; i < nozzles.Count; i++)
         {
             RcsNozzle nozzle = nozzles[i];
-            bool active = RcsEnabled && nozzle.active;
-            SetActive(nozzle.vfx, active);
-            if (!active)
+            float throttle = nozzle != null ? Mathf.Clamp01(nozzle.actualThrottle) : 0f;
+            bool physicallyActive = RcsEnabled && nozzle != null && nozzle.active && throttle > 0.0001f;
+            bool visible = physicallyActive && throttle >= minRcsNozzleThrottleForVfx;
+            SetActive(nozzle.vfx, visible);
+            UpdateRcsNozzleVfx(nozzle, visible ? throttle : 0f);
+            if (!physicallyActive)
             {
                 continue;
             }
@@ -758,6 +783,37 @@ private void ApplyForceAtNozzle(RcsNozzle nozzle, Vector3 forceWorld, bool trans
         }
 
         ActiveNozzleIds = activeNozzleBuilder.ToString();
+    }
+
+    private void UpdateRcsNozzleVfx(RcsNozzle nozzle, float throttle)
+    {
+        if (nozzle == null || nozzle.vfx == null)
+        {
+            return;
+        }
+
+        float scaleBoost = Mathf.Lerp(idleRcsNozzleScaleBoost, activeRcsNozzleScaleBoost, throttle);
+        nozzle.vfx.transform.localScale = nozzle.baseVfxScale * scaleBoost;
+
+        var renderer = nozzle.vfx.GetComponent<Renderer>();
+        if (renderer == null)
+        {
+            return;
+        }
+
+        var material = Application.isPlaying ? renderer.material : renderer.sharedMaterial;
+        if (material == null)
+        {
+            return;
+        }
+
+        float alpha = Mathf.Lerp(0.12f, Mathf.Max(0.65f, nozzle.baseVfxColor.a), throttle);
+        material.color = new Color(nozzle.baseVfxColor.r, nozzle.baseVfxColor.g, nozzle.baseVfxColor.b, alpha);
+        if (material.HasProperty("_EmissionColor"))
+        {
+            material.EnableKeyword("_EMISSION");
+            material.SetColor("_EmissionColor", new Color(nozzle.baseVfxColor.r, nozzle.baseVfxColor.g, nozzle.baseVfxColor.b, alpha) * (vfxEmissiveBoost * Mathf.Lerp(0.35f, 1f, throttle)));
+        }
     }
 
     private void ClearNozzleVfx()

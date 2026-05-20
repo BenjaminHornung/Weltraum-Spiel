@@ -8,12 +8,19 @@ public class PrototypeMinimapOverlay : MonoBehaviour
     [SerializeField] private Transform target;
     [SerializeField] private Rigidbody targetRigidbody;
     [SerializeField] private PrototypeTestEnvironment environment;
-    [SerializeField] private bool showLabels = true;
+    [SerializeField] private bool showLabels;
+    [SerializeField] private bool showTargets = true;
+    [SerializeField] private bool showBeacons = true;
+    [SerializeField] private bool showGates = true;
+    [SerializeField] private bool showStation = true;
+    [SerializeField] private bool showObstacles = true;
     [SerializeField] private int zoomIndex = 2;
 
+    private const int MaxRelevantMapLabels = 3;
     private GUIStyle labelStyle;
     private GUIStyle smallLabelStyle;
     private PrototypeUiWindowState windowState;
+    private readonly HashSet<PrototypeEnvironmentPoint> labeledPoints = new HashSet<PrototypeEnvironmentPoint>();
 
     public bool IsWindowVisible => ResolveWindowState().Visible;
     public Transform Target => target;
@@ -168,6 +175,36 @@ public class PrototypeMinimapOverlay : MonoBehaviour
         GUILayout.Label("Range " + Mathf.RoundToInt(CurrentZoomMeters) + " m", labelStyle, GUILayout.Width(118f));
         showLabels = GUILayout.Toggle(showLabels, "Labels");
         GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        showTargets = GUILayout.Toggle(showTargets, "Targets");
+        showBeacons = GUILayout.Toggle(showBeacons, "Beacons");
+        showGates = GUILayout.Toggle(showGates, "Gates");
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        showStation = GUILayout.Toggle(showStation, "Station");
+        showObstacles = GUILayout.Toggle(showObstacles, "Obstacles");
+        GUILayout.EndHorizontal();
+    }
+
+    private bool ShouldRenderPoint(PrototypeEnvironmentPointKind kind)
+    {
+        switch (kind)
+        {
+            case PrototypeEnvironmentPointKind.Target:
+                return showTargets;
+            case PrototypeEnvironmentPointKind.Beacon:
+                return showBeacons;
+            case PrototypeEnvironmentPointKind.Gate:
+                return showGates;
+            case PrototypeEnvironmentPointKind.Station:
+                return showStation;
+            case PrototypeEnvironmentPointKind.Obstacle:
+                return showObstacles;
+            default:
+                return true;
+        }
     }
 
     private void DrawMap(Rect mapRect)
@@ -232,6 +269,8 @@ public class PrototypeMinimapOverlay : MonoBehaviour
             return;
         }
 
+        PrepareLabelSet(sourcePoints);
+
         for (int i = 0; i < sourcePoints.Count; i++)
         {
             PrototypeEnvironmentPoint point = sourcePoints[i];
@@ -242,6 +281,11 @@ public class PrototypeMinimapOverlay : MonoBehaviour
 
             Vector2 position = WorldToMap(point.Position, center, radius);
             if (!mapRect.Contains(position))
+            {
+                continue;
+            }
+
+            if (!ShouldRenderPoint(point.Kind))
             {
                 continue;
             }
@@ -280,11 +324,88 @@ public class PrototypeMinimapOverlay : MonoBehaviour
                 break;
         }
 
-        if (showLabels && point.Kind != PrototypeEnvironmentPointKind.Obstacle)
+        if (showLabels && labeledPoints.Contains(point))
         {
             smallLabelStyle.normal.textColor = color;
             GUI.Label(new Rect(position.x + 6f, position.y - 8f, 136f, 18f), BuildPointLabel(point), smallLabelStyle);
             smallLabelStyle.normal.textColor = Color.white;
+        }
+    }
+
+    private void PrepareLabelSet(IReadOnlyList<PrototypeEnvironmentPoint> sourcePoints)
+    {
+        labeledPoints.Clear();
+        if (!showLabels || sourcePoints == null)
+        {
+            return;
+        }
+
+        PrototypeEnvironmentPoint[] nearestRelevant = new PrototypeEnvironmentPoint[MaxRelevantMapLabels];
+        float[] nearestDistances = new float[MaxRelevantMapLabels];
+        for (int i = 0; i < nearestDistances.Length; i++)
+        {
+            nearestDistances[i] = float.PositiveInfinity;
+        }
+
+        Vector3 labelOrigin = target != null ? target.position : Vector3.zero;
+        for (int i = 0; i < sourcePoints.Count; i++)
+        {
+            PrototypeEnvironmentPoint point = sourcePoints[i];
+            if (point == null || !ShouldRenderPoint(point.Kind))
+            {
+                continue;
+            }
+
+            if (point.Kind == PrototypeEnvironmentPointKind.Origin || point.Kind == PrototypeEnvironmentPointKind.Station)
+            {
+                labeledPoints.Add(point);
+                continue;
+            }
+
+            if (IsRelevantLabelCandidate(point.Kind))
+            {
+                InsertNearestLabelCandidate(point, Vector3.Distance(labelOrigin, point.Position), nearestRelevant, nearestDistances);
+            }
+        }
+
+        for (int i = 0; i < nearestRelevant.Length; i++)
+        {
+            if (nearestRelevant[i] != null)
+            {
+                labeledPoints.Add(nearestRelevant[i]);
+            }
+        }
+    }
+
+    private static bool IsRelevantLabelCandidate(PrototypeEnvironmentPointKind kind)
+    {
+        return kind == PrototypeEnvironmentPointKind.Target
+            || kind == PrototypeEnvironmentPointKind.Beacon
+            || kind == PrototypeEnvironmentPointKind.Gate;
+    }
+
+    private static void InsertNearestLabelCandidate(
+        PrototypeEnvironmentPoint point,
+        float distance,
+        PrototypeEnvironmentPoint[] nearestRelevant,
+        float[] nearestDistances)
+    {
+        for (int i = 0; i < nearestRelevant.Length; i++)
+        {
+            if (distance >= nearestDistances[i])
+            {
+                continue;
+            }
+
+            for (int j = nearestRelevant.Length - 1; j > i; j--)
+            {
+                nearestRelevant[j] = nearestRelevant[j - 1];
+                nearestDistances[j] = nearestDistances[j - 1];
+            }
+
+            nearestRelevant[i] = point;
+            nearestDistances[i] = distance;
+            return;
         }
     }
 

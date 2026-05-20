@@ -13,6 +13,7 @@ public enum FlightAssistRequestSource
     Manual,
     Sas,
     FlightAssist,
+    MomentumAssist,
     Docking,
     DebugOnly
 }

@@ -1,10 +1,67 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+public enum RcsManeuverLayer
+{
+    Attitude,
+    Translation
+}
+
+public enum FlightControlMode
+{
+    Normal,
+    Precision,
+    Translation
+}
+
 public enum SasControlMode
 {
     KillRotation,
     HoldAttitude
+}
+
+public enum GimbalAssistMode
+{
+    Off,
+    Low,
+    Manual,
+    AutopilotOnly,
+    ExperimentalFull
+}
+
+public readonly struct PrototypeFlightControlDiagnostics
+{
+    public PrototypeFlightControlDiagnostics(
+        bool rcsEnabled,
+        bool sasEnabled,
+        bool effectiveSasEnabled,
+        FlightControlMode controlMode,
+        float mainThrottle,
+        bool mainThrusterAllowed,
+        bool gimbalAllowed,
+        FlightAssistMode autopilotState,
+        PrototypeMomentumAssistState momentumAssistState)
+    {
+        this.rcsEnabled = rcsEnabled;
+        this.sasEnabled = sasEnabled;
+        this.effectiveSasEnabled = effectiveSasEnabled;
+        this.controlMode = controlMode;
+        this.mainThrottle = mainThrottle;
+        this.mainThrusterAllowed = mainThrusterAllowed;
+        this.gimbalAllowed = gimbalAllowed;
+        this.autopilotState = autopilotState;
+        this.momentumAssistState = momentumAssistState;
+    }
+
+    public readonly bool rcsEnabled;
+    public readonly bool sasEnabled;
+    public readonly bool effectiveSasEnabled;
+    public readonly FlightControlMode controlMode;
+    public readonly float mainThrottle;
+    public readonly bool mainThrusterAllowed;
+    public readonly bool gimbalAllowed;
+    public readonly FlightAssistMode autopilotState;
+    public readonly PrototypeMomentumAssistState momentumAssistState;
 }
 
 [RequireComponent(typeof(Rigidbody))]
@@ -19,6 +76,13 @@ public class PlayerShipController : MonoBehaviour
     [SerializeField] private float precisionScale = 0.35f;
     [SerializeField] private float gamepadLookSpeed = 1.6f;
     [SerializeField] private float gamepadLookDeadZone = 0.18f;
+
+    [Header("RCS Maneuver")]
+    [SerializeField] private GimbalAssistMode gimbalAssistMode = GimbalAssistMode.AutopilotOnly;
+    [SerializeField] private bool invertKeyboardPitch;
+    [SerializeField] private bool invertKeyboardYaw;
+    [SerializeField] private bool invertKeyboardRoll;
+    [SerializeField] private bool invertGamepadPitch;
 
     [Header("SAS")]
     [SerializeField] private SasControlMode sasMode = SasControlMode.KillRotation;
@@ -47,20 +111,24 @@ public class PlayerShipController : MonoBehaviour
     private bool debugRefuel;
     private bool toggleRcs;
     private bool toggleSas;
-    private bool togglePrecision;
+    private bool cycleControlMode;
     private bool sasHoldInvert;
     private bool sasEnabled;
     private bool sasTargetRotationValid;
-    private bool precisionControls;
+    private FlightControlMode controlMode = FlightControlMode.Normal;
+    private RcsManeuverLayer activeRcsLayer = RcsManeuverLayer.Attitude;
     private bool rcsEnabled = true;
     private Vector3 rcsTranslationInput;
     private Vector3 attitudeInput;
     private float previousForwardSpeed;
     private Quaternion sasTargetRotation = Quaternion.identity;
+    private bool hasExternalFlightAssistRequest;
+    private FlightAssistRequest externalFlightAssistRequest = FlightAssistRequest.None;
     private const float SasManualTargetRefreshDeadZone = 0.05f;
     private Vector3 pendingDebugRcsTranslationPulse;
     private Vector3 pendingDebugRcsAttitudePulse;
     private float pendingDebugMainThrottlePulse;
+    private PrototypeMomentumAssist momentumAssist;
     public float MainThrottle => mainThrottle;
     public float MainThrottlePercent => mainThrottle * 100f;
     public float MainThrustCommand { get; private set; }
@@ -71,10 +139,10 @@ public class PlayerShipController : MonoBehaviour
     public Vector3 RcsAttitudeCommand { get; private set; }
     public float TurnInput { get; private set; }
     public float GimbalYawCommand { get; private set; }
-        public float MainThrottleScale => mainThruster != null ? mainThruster.ThrottleScale : 0f;
+    public float MainThrottleScale => mainThruster != null ? mainThruster.ThrottleScale : 0f;
     public float MainThrottleSpoolUpRate => mainThruster != null ? mainThruster.ThrottleSpoolUpRate : 0f;
     public float MainThrottleSpoolDownRate => mainThruster != null ? mainThruster.ThrottleSpoolDownRate : 0f;
-public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal;
+    public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal;
     public float GimbalLimitDegrees => mainThruster != null ? mainThruster.GimbalLimitDegrees : 0f;
     public float GimbalResponseScalar => mainThruster != null ? mainThruster.GimbalResponseScalar : 0f;
     public float GimbalSlewRateDegreesPerSecond => mainThruster != null ? mainThruster.GimbalSlewRateDegreesPerSecond : 0f;
@@ -106,6 +174,8 @@ public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal
     public float RcsMinSelectionDot => rcsThrusters != null ? rcsThrusters.MinSelectionDot : 0f;
     public float RcsNozzleSpoolUpRate => rcsThrusters != null ? rcsThrusters.NozzleSpoolUpRate : 0f;
     public float RcsNozzleSpoolDownRate => rcsThrusters != null ? rcsThrusters.NozzleSpoolDownRate : 0f;
+    public bool HasMainThruster => mainThruster != null && mainThruster.ThrusterCount > 0;
+    public int MainThrusterCount => mainThruster != null ? mainThruster.ThrusterCount : 0;
     public bool HasRcs => rcsThrusters != null && rcsThrusters.HasRcs;
     public bool RcsEnabled => rcsThrusters != null ? rcsThrusters.RcsEnabled : rcsEnabled;
     public bool SasEnabled => sasEnabled;
@@ -115,11 +185,31 @@ public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal
     public bool HasSasTargetRotation => sasTargetRotationValid;
     public Quaternion SasTargetRotation => sasTargetRotationValid ? sasTargetRotation : transform.rotation;
     public bool LastManualFlightInput { get; private set; }
+    public bool HasExternalFlightAssistRequest => hasExternalFlightAssistRequest;
+    public FlightAssistRequest LastExternalFlightAssistRequest => externalFlightAssistRequest;
     public FlightAssistRequest LastFlightAssistRequest { get; private set; } = FlightAssistRequest.None;
     public Vector3 LastFlightAssistForceWorld => LastFlightAssistRequest.forceWorld;
     public Vector3 LastFlightAssistTorqueLocal => LastFlightAssistRequest.torqueLocal;
     public bool LastFlightAssistDebugOnly => LastFlightAssistRequest.debugOnlyNonPhysical;
-    public bool PrecisionControls => precisionControls;
+    public FlightControlMode ControlMode => controlMode;
+    public string ControlModeLabel => controlMode switch
+    {
+        FlightControlMode.Precision => "Precision",
+        FlightControlMode.Translation => "Translation",
+        _ => "Cruise"
+    };
+    public bool MainThrusterAllowed => controlMode == FlightControlMode.Normal;
+    public bool GimbalAllowed => controlMode == FlightControlMode.Normal;
+    public bool RcsManeuverMode => controlMode != FlightControlMode.Normal;
+    public RcsManeuverLayer ActiveRcsLayer => activeRcsLayer;
+    public string ActiveRcsLayerLabel => activeRcsLayer.ToString();
+    public bool IsRcsTranslationLayerActive => controlMode == FlightControlMode.Translation;
+    public bool PrecisionControls => controlMode == FlightControlMode.Precision;
+    public GimbalAssistMode GimbalAssistMode => gimbalAssistMode;
+    public bool InvertKeyboardPitch => invertKeyboardPitch;
+    public bool InvertKeyboardYaw => invertKeyboardYaw;
+    public bool InvertKeyboardRoll => invertKeyboardRoll;
+    public bool InvertGamepadPitch => invertGamepadPitch;
     public float LastForwardAcceleration { get; private set; }
     public Vector3 RcsControlPivotLocal => rcsThrusters != null ? rcsThrusters.ControlPivotLocal : Vector3.zero;
     public Vector3 RcsControlPivotWorld => rcsThrusters != null ? rcsThrusters.ControlPivotWorld : transform.position;
@@ -168,6 +258,22 @@ public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal
     public Vector3 LastGravityAcceleration => physicsCore != null ? physicsCore.LastGravityAcceleration : Vector3.zero;
     public Vector3 LastGravityForce => physicsCore != null ? physicsCore.LastGravityForce : Vector3.zero;
     public bool LastGravityApplied => physicsCore != null && physicsCore.LastGravityApplied;
+    public PrototypeFlightControlDiagnostics FlightControlDiagnostics
+    {
+        get
+        {
+            return new PrototypeFlightControlDiagnostics(
+                RcsEnabled,
+                SasEnabled,
+                EffectiveSasEnabled,
+                ControlMode,
+                MainThrottle,
+                MainThrusterAllowed,
+                GimbalAllowed,
+                FlightAssistMode,
+                momentumAssist != null ? momentumAssist.CurrentState : PrototypeMomentumAssistState.Idle);
+        }
+    }
 
     private void Awake()
     {
@@ -211,6 +317,11 @@ public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal
         if (physicsCore == null)
         {
             physicsCore = GetComponent<ShipPhysicsCore>();
+        }
+
+        if (momentumAssist == null)
+        {
+            momentumAssist = GetComponent<PrototypeMomentumAssist>();
         }
     }
 
@@ -276,13 +387,18 @@ public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal
             physicsCore.ApplyEnvironmentForces();
         }
 
-        float controlScale = precisionControls ? Mathf.Clamp01(precisionScale) : 1f;
+        float controlScale = 1f;
         Vector3 combinedTranslationInput = rcsTranslationInput + pendingDebugRcsTranslationPulse;
         Vector3 combinedAttitudeInput = attitudeInput + pendingDebugRcsAttitudePulse;
         float mainThrottlePulse = pendingDebugMainThrottlePulse;
         pendingDebugRcsTranslationPulse = Vector3.zero;
         pendingDebugRcsAttitudePulse = Vector3.zero;
         pendingDebugMainThrottlePulse = 0f;
+        if (IsControlModeRcsForced)
+        {
+            rcsEnabled = true;
+            ApplyRcsEnabledState();
+        }
         RcsTranslationCommand = Vector3.ClampMagnitude(combinedTranslationInput, 1f) * controlScale;
         RcsAttitudeCommand = Vector3.ClampMagnitude(combinedAttitudeInput, 1f) * controlScale;
         TurnInput = Mathf.Clamp(RcsAttitudeCommand.y, -1f, 1f);
@@ -302,9 +418,10 @@ public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal
                 Time.fixedDeltaTime);
         }
 
-        MainThrustCommand = Mathf.Clamp01(Mathf.Max(mainThrottle, mainThrottlePulse));
-        GimbalYawCommand = MainThrustCommand > 0f && GimbalEnabled ? TurnInput : 0f;
-        float gimbalPitchCommand = MainThrustCommand > 0f && GimbalEnabled ? Mathf.Clamp(RcsAttitudeCommand.x, -1f, 1f) : 0f;
+        MainThrustCommand = MainThrusterAllowed ? Mathf.Clamp01(Mathf.Max(mainThrottle, mainThrottlePulse)) : 0f;
+        Vector3 desiredGimbalCommand = GetGimbalAssistCommand();
+        GimbalYawCommand = desiredGimbalCommand.y;
+        float gimbalPitchCommand = desiredGimbalCommand.x;
 
         float appliedThrust = 0f;
         if (mainThruster != null)
@@ -335,85 +452,41 @@ public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal
         debugRefuel = false;
         toggleRcs = false;
         toggleSas = false;
-        togglePrecision = false;
+        cycleControlMode = false;
         sasHoldInvert = false;
         rcsTranslationInput = Vector3.zero;
         attitudeInput = Vector3.zero;
 
-        Keyboard keyboard = Keyboard.current;        Gamepad gamepad = Gamepad.current;
+        Keyboard keyboard = Keyboard.current;
+        Gamepad gamepad = Gamepad.current;
 
         if (keyboard != null)
         {
-            throttleUp |= keyboard.leftShiftKey.isPressed;
-            throttleDown |= keyboard.leftCtrlKey.isPressed || keyboard.rightCtrlKey.isPressed;
+            throttleUp |= MainThrusterAllowed && keyboard.leftShiftKey.isPressed;
+            throttleDown |= MainThrusterAllowed && (keyboard.leftCtrlKey.isPressed || keyboard.rightCtrlKey.isPressed);
+
             cutThrottle |= keyboard.xKey.wasPressedThisFrame;
             fullThrottle |= keyboard.yKey.wasPressedThisFrame || keyboard.zKey.wasPressedThisFrame;
             fire |= keyboard.spaceKey.isPressed;
             debugRefuel |= keyboard.backspaceKey.wasPressedThisFrame;
             toggleRcs |= keyboard.rKey.wasPressedThisFrame;
             toggleSas |= keyboard.tKey.wasPressedThisFrame;
-            togglePrecision |= keyboard.capsLockKey.wasPressedThisFrame;
+            cycleControlMode |= keyboard.capsLockKey.wasPressedThisFrame;
             sasHoldInvert |= keyboard.fKey.isPressed;
 
-            if (keyboard.wKey.isPressed)
-            {
-                attitudeInput.x -= keyboardAttitudeStrength;
-            }
-
-            if (keyboard.sKey.isPressed)
-            {
-                attitudeInput.x += keyboardAttitudeStrength;
-            }
-
-            if (keyboard.aKey.isPressed)
-            {
-                attitudeInput.y -= keyboardAttitudeStrength;
-            }
-
-            if (keyboard.dKey.isPressed)
-            {
-                attitudeInput.y += keyboardAttitudeStrength;
-            }
-
-            if (keyboard.qKey.isPressed)
-            {
-                attitudeInput.z -= keyboardAttitudeStrength;
-            }
-
-            if (keyboard.eKey.isPressed)
-            {
-                attitudeInput.z += keyboardAttitudeStrength;
-            }
-
-            if (keyboard.hKey.isPressed)
-            {
-                rcsTranslationInput.z += 1f;
-            }
-
-            if (keyboard.nKey.isPressed)
-            {
-                rcsTranslationInput.z -= 1f;
-            }
-
-            if (keyboard.iKey.isPressed)
-            {
-                rcsTranslationInput.y -= 1f;
-            }
-
-            if (keyboard.kKey.isPressed)
-            {
-                rcsTranslationInput.y += 1f;
-            }
-
-            if (keyboard.jKey.isPressed)
-            {
-                rcsTranslationInput.x -= 1f;
-            }
-
-            if (keyboard.lKey.isPressed)
-            {
-                rcsTranslationInput.x += 1f;
-            }
+            ApplyKeyboardFlightKeys(
+                keyboard.wKey.isPressed,
+                keyboard.sKey.isPressed,
+                keyboard.aKey.isPressed,
+                keyboard.dKey.isPressed,
+                keyboard.qKey.isPressed,
+                keyboard.eKey.isPressed,
+                keyboard.hKey.isPressed,
+                keyboard.nKey.isPressed,
+                keyboard.iKey.isPressed,
+                keyboard.kKey.isPressed,
+                keyboard.jKey.isPressed,
+                keyboard.lKey.isPressed);
         }
 
         if (gamepad != null)
@@ -423,15 +496,16 @@ public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal
             float rightTrigger = gamepad.rightTrigger.ReadValue();
             float leftTrigger = gamepad.leftTrigger.ReadValue();
 
-            throttleUp |= rightTrigger > 0.1f;
-            throttleDown |= leftTrigger > 0.1f;
+            throttleUp |= MainThrusterAllowed && rightTrigger > 0.1f;
+            throttleDown |= MainThrusterAllowed && leftTrigger > 0.1f;
             fire |= gamepad.aButton.isPressed;
             toggleRcs |= gamepad.xButton.wasPressedThisFrame;
             toggleSas |= gamepad.yButton.wasPressedThisFrame;
 
             if (right.sqrMagnitude > gamepadLookDeadZone * gamepadLookDeadZone)
             {
-                attitudeInput.x += -right.y * gamepadLookSpeed;
+                float gamepadPitchDirection = invertGamepadPitch ? -1f : 1f;
+                attitudeInput.x += -right.y * gamepadLookSpeed * gamepadPitchDirection;
                 attitudeInput.y += right.x * gamepadLookSpeed;
             }
 
@@ -451,6 +525,7 @@ public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal
                 attitudeInput.z += keyboardAttitudeStrength;
             }
         }
+        activeRcsLayer = controlMode == FlightControlMode.Translation ? RcsManeuverLayer.Translation : RcsManeuverLayer.Attitude;
 
         LastManualFlightInput = throttleUp
             || throttleDown
@@ -462,6 +537,12 @@ public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal
 
     private void UpdateMainThrottle(float deltaTime)
     {
+        if (!MainThrusterAllowed)
+        {
+            mainThrottle = 0f;
+            return;
+        }
+
         if (cutThrottle)
         {
             mainThrottle = 0f;
@@ -493,6 +574,10 @@ public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal
         if (toggleRcs)
         {
             rcsEnabled = !RcsEnabled;
+            if (IsControlModeRcsForced)
+            {
+                rcsEnabled = true;
+            }
             ApplyRcsEnabledState();
         }
 
@@ -505,9 +590,9 @@ public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal
             }
         }
 
-        if (togglePrecision)
+        if (cycleControlMode)
         {
-            precisionControls = !precisionControls;
+            CycleControlMode();
         }
 
         if (debugRefuel)
@@ -520,8 +605,79 @@ public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal
     {
         if (rcsThrusters != null)
         {
-            rcsThrusters.SetRcsEnabled(rcsEnabled);
+            rcsThrusters.SetRcsEnabled(IsControlModeRcsForced || rcsEnabled);
         }
+    }
+
+    private bool IsControlModeRcsForced => controlMode == FlightControlMode.Precision || controlMode == FlightControlMode.Translation;
+
+    private void ApplyKeyboardFlightKeys(
+        bool w,
+        bool s,
+        bool a,
+        bool d,
+        bool q,
+        bool e,
+        bool h,
+        bool n,
+        bool i,
+        bool k,
+        bool j,
+        bool l)
+    {
+        float keyboardPitchDirection = invertKeyboardPitch ? 1f : -1f;
+        float keyboardYawDirection = invertKeyboardYaw ? -1f : 1f;
+        float keyboardRollDirection = invertKeyboardRoll ? -1f : 1f;
+
+        activeRcsLayer = controlMode == FlightControlMode.Translation ? RcsManeuverLayer.Translation : RcsManeuverLayer.Attitude;
+
+        if (controlMode == FlightControlMode.Translation)
+        {
+            if (w) rcsTranslationInput.z += 1f;
+            if (s) rcsTranslationInput.z -= 1f;
+            if (a) rcsTranslationInput.x -= 1f;
+            if (d) rcsTranslationInput.x += 1f;
+            if (h) rcsTranslationInput.y += 1f;
+            if (n) rcsTranslationInput.y -= 1f;
+        }
+        else
+        {
+            if (w) attitudeInput.x += keyboardAttitudeStrength * keyboardPitchDirection;
+            if (s) attitudeInput.x -= keyboardAttitudeStrength * keyboardPitchDirection;
+            if (a) attitudeInput.y -= keyboardAttitudeStrength * keyboardYawDirection;
+            if (d) attitudeInput.y += keyboardAttitudeStrength * keyboardYawDirection;
+
+            if (h)
+            {
+                if (controlMode == FlightControlMode.Precision)
+                {
+                    rcsTranslationInput.y += 1f;
+                }
+                else
+                {
+                    rcsTranslationInput.z += 1f;
+                }
+            }
+
+            if (n)
+            {
+                if (controlMode == FlightControlMode.Precision)
+                {
+                    rcsTranslationInput.y -= 1f;
+                }
+                else
+                {
+                    rcsTranslationInput.z -= 1f;
+                }
+            }
+        }
+
+        if (q) attitudeInput.z -= keyboardAttitudeStrength * keyboardRollDirection;
+        if (e) attitudeInput.z += keyboardAttitudeStrength * keyboardRollDirection;
+        if (i) rcsTranslationInput.y -= 1f;
+        if (k) rcsTranslationInput.y += 1f;
+        if (j) rcsTranslationInput.x -= 1f;
+        if (l) rcsTranslationInput.x += 1f;
     }
 
     public void SetSasMode(SasControlMode mode)
@@ -556,6 +712,11 @@ public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal
 
     private FlightAssistRequest BuildFlightAssistRequest()
     {
+        if (hasExternalFlightAssistRequest)
+        {
+            return externalFlightAssistRequest;
+        }
+
         switch (flightAssistMode)
         {
             case FlightAssistMode.AssistedFlight:
@@ -571,6 +732,18 @@ public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal
         }
     }
 
+    public void SetExternalFlightAssistRequest(FlightAssistRequest request)
+    {
+        hasExternalFlightAssistRequest = true;
+        externalFlightAssistRequest = request;
+    }
+
+    public void ClearExternalFlightAssistRequest()
+    {
+        hasExternalFlightAssistRequest = false;
+        externalFlightAssistRequest = FlightAssistRequest.None;
+    }
+
     private void OnValidate()
     {
         mainThrottle = Mathf.Clamp01(mainThrottle);
@@ -579,7 +752,7 @@ public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal
     }
 
 
-public void SetRcsEnabled(bool enabled)
+    public void SetRcsEnabled(bool enabled)
     {
         rcsEnabled = enabled;
         ApplyRcsEnabledState();
@@ -596,7 +769,125 @@ public void SetRcsEnabled(bool enabled)
 
     public void SetPrecisionControls(bool enabled)
     {
-        precisionControls = enabled;
+        SetControlMode(enabled ? FlightControlMode.Precision : FlightControlMode.Normal);
+    }
+
+    public void SetRcsManeuverMode(bool enabled)
+    {
+        SetControlMode(enabled ? FlightControlMode.Precision : FlightControlMode.Normal);
+    }
+
+    public void SetControlMode(FlightControlMode mode)
+    {
+        controlMode = mode;
+        activeRcsLayer = controlMode == FlightControlMode.Translation ? RcsManeuverLayer.Translation : RcsManeuverLayer.Attitude;
+        if (IsControlModeRcsForced)
+        {
+            mainThrottle = 0f;
+            MainThrustCommand = 0f;
+            GimbalYawCommand = 0f;
+            rcsEnabled = true;
+        }
+
+        ApplyRcsEnabledState();
+    }
+
+    public void CycleControlMode()
+    {
+        SetControlMode(controlMode switch
+        {
+            FlightControlMode.Normal => FlightControlMode.Precision,
+            FlightControlMode.Precision => FlightControlMode.Translation,
+            _ => FlightControlMode.Normal
+        });
+    }
+
+    public void ApplyModeSpecificInputForTests(bool w, bool s, bool a, bool d, bool q, bool e, bool h, bool n, bool shift, bool ctrl)
+    {
+        rcsTranslationInput = Vector3.zero;
+        attitudeInput = Vector3.zero;
+        throttleUp = MainThrusterAllowed && shift;
+        throttleDown = MainThrusterAllowed && ctrl;
+        ApplyKeyboardFlightKeys(w, s, a, d, q, e, h, n, false, false, false, false);
+        RcsTranslationCommand = Vector3.ClampMagnitude(rcsTranslationInput, 1f);
+        RcsAttitudeCommand = Vector3.ClampMagnitude(attitudeInput, 1f);
+    }
+
+    public void SetGimbalAssistMode(GimbalAssistMode mode)
+    {
+        gimbalAssistMode = mode;
+    }
+
+    public void SetInvertKeyboardPitch(bool invert)
+    {
+        invertKeyboardPitch = invert;
+    }
+
+    public void SetInvertKeyboardYaw(bool invert)
+    {
+        invertKeyboardYaw = invert;
+    }
+
+    public void SetInvertKeyboardRoll(bool invert)
+    {
+        invertKeyboardRoll = invert;
+    }
+
+    public void SetInvertGamepadPitch(bool invert)
+    {
+        invertGamepadPitch = invert;
+    }
+
+    private Vector3 GetGimbalAssistCommand()
+    {
+        if (!GimbalEnabled)
+        {
+            return Vector3.zero;
+        }
+
+        if (!GimbalAllowed || MainThrustCommand <= 0f)
+        {
+            return Vector3.zero;
+        }
+
+        Vector3 yawPitchInput = new Vector3(Mathf.Clamp(RcsAttitudeCommand.x, -1f, 1f), Mathf.Clamp(RcsAttitudeCommand.y, -1f, 1f), 0f);
+
+        switch (gimbalAssistMode)
+        {
+            case GimbalAssistMode.Off:
+                return Vector3.zero;
+            case GimbalAssistMode.Low:
+                return yawPitchInput * 0.32f;
+            case GimbalAssistMode.AutopilotOnly:
+            case GimbalAssistMode.ExperimentalFull:
+                Vector3 autopilotAssist = GetAutopilotGimbalAssist();
+                if (gimbalAssistMode == GimbalAssistMode.AutopilotOnly)
+                {
+                    return autopilotAssist;
+                }
+
+                return Vector3.ClampMagnitude(yawPitchInput + autopilotAssist, 1f);
+            case GimbalAssistMode.Manual:
+            default:
+                return yawPitchInput;
+        }
+    }
+
+    private Vector3 GetAutopilotGimbalAssist()
+    {
+        if (!EffectiveSasEnabled || shipRigidbody == null)
+        {
+            return Vector3.zero;
+        }
+
+        Vector3 angularVelocityLocal = transform.InverseTransformDirection(shipRigidbody.angularVelocity);
+        if (angularVelocityLocal.sqrMagnitude <= 0.0001f)
+        {
+            return Vector3.zero;
+        }
+
+        Vector3 dampingCommand = new Vector3(-angularVelocityLocal.x, -angularVelocityLocal.y, 0f);
+        return Vector3.ClampMagnitude(dampingCommand * 0.15f, 1f);
     }
 
     public void SetFlightAssistMode(FlightAssistMode mode)
@@ -619,7 +910,7 @@ public void SetRcsEnabled(bool enabled)
 
     public void SetMainThrottle(float normalizedThrottle)
     {
-        mainThrottle = Mathf.Clamp01(normalizedThrottle);
+        mainThrottle = MainThrusterAllowed ? Mathf.Clamp01(normalizedThrottle) : 0f;
     }
 
     public void CutMainThrottle()
@@ -673,6 +964,7 @@ public void SetRcsEnabled(bool enabled)
         LastForwardAcceleration = 0f;
         previousForwardSpeed = 0f;
         LastFlightAssistRequest = FlightAssistRequest.None;
+        ClearExternalFlightAssistRequest();
 
         if (shipRigidbody != null)
         {

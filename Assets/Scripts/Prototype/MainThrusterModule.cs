@@ -18,10 +18,10 @@ public class MainThrusterModule : MonoBehaviour
     [Header("Gimbal")]
     [SerializeField] private bool supportsGimbal = true;
     [Range(0f, 45f)]
-    [SerializeField] private float gimbalLimitDegrees = 20f;
+    [SerializeField] private float gimbalLimitDegrees = 10f;
     [Range(0f, 1f)]
-    [SerializeField] private float gimbalResponseScalar = 0.35f;
-    [SerializeField] private float gimbalSlewRateDegreesPerSecond;
+    [SerializeField] private float gimbalResponseScalar = 0.14f;
+    [SerializeField] private float gimbalSlewRateDegreesPerSecond = 30f;
 
     [Header("Runtime")]
     [SerializeField] private Rigidbody shipRigidbody;

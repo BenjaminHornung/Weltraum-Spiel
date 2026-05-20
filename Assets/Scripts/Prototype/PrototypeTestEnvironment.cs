@@ -13,6 +13,13 @@ public enum PrototypeEnvironmentPointKind
     Obstacle
 }
 
+public enum PrototypeEnvironmentDisplayMode
+{
+    Minimal,
+    Training,
+    FullDebug
+}
+
 public sealed class PrototypeEnvironmentPoint
 {
     public PrototypeEnvironmentPoint(string label, PrototypeEnvironmentPointKind kind, Vector3 position, Color color, float radius = 0f)
@@ -34,6 +41,7 @@ public sealed class PrototypeEnvironmentPoint
 [DisallowMultipleComponent]
 public class PrototypeTestEnvironment : MonoBehaviour
 {
+    [SerializeField] private PrototypeEnvironmentDisplayMode environmentDisplayMode = PrototypeEnvironmentDisplayMode.Training;
     public const string RootName = "PrototypeEnvironment";
 
     private static readonly Color OriginColor = new Color(1f, 0.92f, 0.28f, 1f);
@@ -51,6 +59,7 @@ public class PrototypeTestEnvironment : MonoBehaviour
 
     public IReadOnlyList<PrototypeEnvironmentPoint> Points => points;
     public Transform Root => root;
+    public PrototypeEnvironmentDisplayMode EnvironmentDisplayMode => environmentDisplayMode;
 
     public void Rebuild()
     {
@@ -92,12 +101,13 @@ public class PrototypeTestEnvironment : MonoBehaviour
     private void BuildOriginBeacon()
     {
         Transform group = CreateGroup("Origin");
-        GameObject mast = CreatePrimitive("Origin_Beacon_Tower", PrimitiveType.Cylinder, new Vector3(0f, 12f, 0f), Vector3.one, group);
-        mast.transform.localScale = new Vector3(2.5f, 12f, 2.5f);
+        float beaconScale = environmentDisplayMode == PrototypeEnvironmentDisplayMode.FullDebug ? 1f : 0.25f;
+        GameObject mast = CreatePrimitive("Origin_Beacon_Tower", PrimitiveType.Cylinder, new Vector3(0f, 12f * beaconScale, 0f), Vector3.one, group);
+        mast.transform.localScale = new Vector3(2.5f * beaconScale, 12f * beaconScale, 2.5f * beaconScale);
         ApplyMaterial(mast, OriginColor, true);
         RemoveCollider(mast);
 
-        GameObject light = CreatePrimitive("Origin_Beacon_Light", PrimitiveType.Sphere, new Vector3(0f, 26f, 0f), Vector3.one * 7f, group);
+        GameObject light = CreatePrimitive("Origin_Beacon_Light", PrimitiveType.Sphere, new Vector3(0f, 26f * beaconScale, 0f), Vector3.one * (7f * beaconScale), group);
         ApplyMaterial(light, OriginColor, true);
         RemoveCollider(light);
 
@@ -109,11 +119,14 @@ public class PrototypeTestEnvironment : MonoBehaviour
 
         pointLight.type = LightType.Point;
         pointLight.color = OriginColor;
-        pointLight.range = 220f;
-        pointLight.intensity = 2.6f;
+        pointLight.range = Mathf.Lerp(70f, 220f, beaconScale);
+        pointLight.intensity = Mathf.Lerp(1.1f, 2.6f, beaconScale);
 
-        CreateLabel("Label_ORIGIN", "ORIGIN", new Vector3(0f, 38f, 0f), OriginColor, group, 5f);
-        AddPoint("ORIGIN", PrototypeEnvironmentPointKind.Origin, Vector3.zero, OriginColor, 18f);
+        if (ShouldCreateEnvironmentLabel(PrototypeEnvironmentPointKind.Origin, 0))
+        {
+            CreateLabel("Label_ORIGIN", "ORIGIN", new Vector3(0f, 38f * beaconScale, 0f), OriginColor, group, 5f);
+        }
+        AddPoint("ORIGIN", PrototypeEnvironmentPointKind.Origin, Vector3.zero, OriginColor, 18f * beaconScale);
     }
 
     private void BuildWorldAxes()
@@ -123,9 +136,20 @@ public class PrototypeTestEnvironment : MonoBehaviour
         CreateLine("Axis_Y", group, AxisYColor, 1.2f, new Vector3(0f, -100f, 0f), new Vector3(0f, 420f, 0f));
         CreateLine("Axis_Z", group, AxisZColor, 1.2f, new Vector3(0f, 0.1f, -1000f), new Vector3(0f, 0.1f, 1000f));
 
-        CreateLabel("Label_X", "+X", new Vector3(1010f, 12f, 0f), AxisXColor, group, 10f);
-        CreateLabel("Label_Y", "+Y", new Vector3(0f, 430f, 0f), AxisYColor, group, 10f);
-        CreateLabel("Label_Z", "+Z", new Vector3(0f, 12f, 1010f), AxisZColor, group, 10f);
+        if (ShouldCreateEnvironmentLabel(PrototypeEnvironmentPointKind.Axis, 0))
+        {
+            CreateLabel("Label_X", "+X", new Vector3(1010f, 12f, 0f), AxisXColor, group, 10f);
+        }
+
+        if (ShouldCreateEnvironmentLabel(PrototypeEnvironmentPointKind.Axis, 1))
+        {
+            CreateLabel("Label_Y", "+Y", new Vector3(0f, 430f, 0f), AxisYColor, group, 10f);
+        }
+
+        if (ShouldCreateEnvironmentLabel(PrototypeEnvironmentPointKind.Axis, 2))
+        {
+            CreateLabel("Label_Z", "+Z", new Vector3(0f, 12f, 1010f), AxisZColor, group, 10f);
+        }
 
         AddPoint("+X Axis", PrototypeEnvironmentPointKind.Axis, new Vector3(1000f, 0f, 0f), AxisXColor);
         AddPoint("+Y Axis", PrototypeEnvironmentPointKind.Axis, new Vector3(0f, 400f, 0f), AxisYColor);
@@ -140,8 +164,15 @@ public class PrototypeTestEnvironment : MonoBehaviour
         {
             float radius = rings[i];
             Color color = Color.Lerp(RingColor, Color.white, i * 0.08f);
-            CreateRing("Range_" + Mathf.RoundToInt(radius) + "m", group, radius, Vector3.zero, RingPlane.XZ, color, 0.75f);
-            CreateLabel("Label_Range_" + Mathf.RoundToInt(radius), Mathf.RoundToInt(radius) + " m", new Vector3(radius, 4f, 0f), color, group, 4f);
+            if (ShouldRenderRangeRing(i))
+            {
+                CreateRing("Range_" + Mathf.RoundToInt(radius) + "m", group, radius, Vector3.zero, RingPlane.XZ, color, 0.75f);
+                if (ShouldCreateEnvironmentLabel(PrototypeEnvironmentPointKind.RangeRing, i))
+                {
+                    CreateLabel("Label_Range_" + Mathf.RoundToInt(radius), Mathf.RoundToInt(radius) + " m", new Vector3(radius, 4f, 0f), color, group, 4f);
+                }
+            }
+
             AddPoint(Mathf.RoundToInt(radius) + " m ring", PrototypeEnvironmentPointKind.RangeRing, Vector3.zero, color, radius);
         }
     }
@@ -149,21 +180,21 @@ public class PrototypeTestEnvironment : MonoBehaviour
     private void BuildTargets()
     {
         Transform group = CreateGroup("Targets");
-        CreateTarget(group, "Target Close", new Vector3(0f, 0.5f, 100f), new Vector3(9f, 9f, 1.2f), PrototypeModuleColorPalette.Target);
-        CreateTarget(group, "Target Far", new Vector3(0f, 0.5f, 500f), new Vector3(16f, 16f, 2f), new Color(0.2f, 0.58f, 1f, 1f));
-        CreateTarget(group, "Target High", new Vector3(0f, 150f, 300f), new Vector3(12f, 12f, 1.5f), new Color(0.4f, 1f, 0.95f, 1f));
-        CreateTarget(group, "Target Left", new Vector3(-250f, 35f, 220f), new Vector3(11f, 11f, 1.4f), new Color(0.2f, 0.85f, 0.7f, 1f));
-        CreateTarget(group, "Target Right", new Vector3(250f, -20f, 260f), new Vector3(11f, 11f, 1.4f), new Color(0.6f, 0.95f, 1f, 1f));
-        CreateTarget(group, "Target Moving Placeholder", new Vector3(120f, 70f, 650f), new Vector3(14f, 8f, 2f), new Color(1f, 0.62f, 0.2f, 1f));
+        CreateTarget(group, "Target Close", new Vector3(0f, 0.5f, 100f), new Vector3(9f, 9f, 1.2f), PrototypeModuleColorPalette.Target, 0);
+        CreateTarget(group, "Target Far", new Vector3(0f, 0.5f, 500f), new Vector3(16f, 16f, 2f), new Color(0.2f, 0.58f, 1f, 1f), 1);
+        CreateTarget(group, "Target High", new Vector3(0f, 150f, 300f), new Vector3(12f, 12f, 1.5f), new Color(0.4f, 1f, 0.95f, 1f), 2);
+        CreateTarget(group, "Target Left", new Vector3(-250f, 35f, 220f), new Vector3(11f, 11f, 1.4f), new Color(0.2f, 0.85f, 0.7f, 1f), 3);
+        CreateTarget(group, "Target Right", new Vector3(250f, -20f, 260f), new Vector3(11f, 11f, 1.4f), new Color(0.6f, 0.95f, 1f, 1f), 4);
+        CreateTarget(group, "Target Moving Placeholder", new Vector3(120f, 70f, 650f), new Vector3(14f, 8f, 2f), new Color(1f, 0.62f, 0.2f, 1f), 5);
     }
 
     private void BuildNavigationBeacons()
     {
         Transform group = CreateGroup("Navigation_Beacons");
-        CreateBeacon(group, "Beacon Alpha", new Vector3(-180f, 45f, 320f), BeaconColor);
-        CreateBeacon(group, "Beacon Beta", new Vector3(260f, 70f, 380f), new Color(1f, 0.62f, 0.95f, 1f));
-        CreateBeacon(group, "Beacon Gamma", new Vector3(-420f, 140f, 760f), new Color(0.72f, 0.54f, 1f, 1f));
-        CreateBeacon(group, "Beacon Delta", new Vector3(440f, -40f, 920f), new Color(1f, 0.74f, 0.86f, 1f));
+        CreateBeacon(group, "Beacon Alpha", new Vector3(-180f, 45f, 320f), BeaconColor, 0);
+        CreateBeacon(group, "Beacon Beta", new Vector3(260f, 70f, 380f), new Color(1f, 0.62f, 0.95f, 1f), 1);
+        CreateBeacon(group, "Beacon Gamma", new Vector3(-420f, 140f, 760f), new Color(0.72f, 0.54f, 1f, 1f), 2);
+        CreateBeacon(group, "Beacon Delta", new Vector3(440f, -40f, 920f), new Color(1f, 0.74f, 0.86f, 1f), 3);
     }
 
     private void BuildApproachGates()
@@ -181,10 +212,17 @@ public class PrototypeTestEnvironment : MonoBehaviour
         {
             Vector3 position = gatePositions[i];
             string label = "Gate " + (i + 1);
-            CreateRing(label + "_Frame", group, 34f + i * 4f, position, RingPlane.XY, GateColor, 1.4f);
-            CreateLine(label + "_TopBottom", group, GateColor, 0.8f, position + new Vector3(0f, -36f, 0f), position + new Vector3(0f, 36f, 0f));
-            CreateLine(label + "_LeftRight", group, GateColor, 0.8f, position + new Vector3(-36f, 0f, 0f), position + new Vector3(36f, 0f, 0f));
-            CreateLabel("Label_" + label.Replace(" ", "_"), label, position + new Vector3(0f, 46f, 0f), GateColor, group, 4.5f);
+            if (ShouldRenderApproachGate(i))
+            {
+                CreateRing(label + "_Frame", group, 34f + i * 4f, position, RingPlane.XY, GateColor, 1.4f);
+                CreateLine(label + "_TopBottom", group, GateColor, 0.8f, position + new Vector3(0f, -36f, 0f), position + new Vector3(0f, 36f, 0f));
+                CreateLine(label + "_LeftRight", group, GateColor, 0.8f, position + new Vector3(-36f, 0f, 0f), position + new Vector3(36f, 0f, 0f));
+                if (ShouldCreateEnvironmentLabel(PrototypeEnvironmentPointKind.Gate, i))
+                {
+                    CreateLabel("Label_" + label.Replace(" ", "_"), label, position + new Vector3(0f, 46f, 0f), GateColor, group, 4.5f);
+                }
+            }
+
             AddPoint(label, PrototypeEnvironmentPointKind.Gate, position, GateColor, 38f);
         }
     }
@@ -201,7 +239,10 @@ public class PrototypeTestEnvironment : MonoBehaviour
         CreateStationPart(group, "Station_Dock_Frame_Bottom", origin + new Vector3(0f, -46f, -30f), new Vector3(100f, 8f, 8f), GateColor);
         CreateStationPart(group, "Station_Dock_Frame_Left", origin + new Vector3(-54f, 0f, -30f), new Vector3(8f, 92f, 8f), GateColor);
         CreateStationPart(group, "Station_Dock_Frame_Right", origin + new Vector3(54f, 0f, -30f), new Vector3(8f, 92f, 8f), GateColor);
-        CreateLabel("Label_Station", "STATION / HANGAR", origin + new Vector3(0f, 74f, -30f), StationColor, group, 7f);
+        if (ShouldCreateEnvironmentLabel(PrototypeEnvironmentPointKind.Station, 0))
+        {
+            CreateLabel("Label_Station", "STATION / HANGAR", origin + new Vector3(0f, 74f, -30f), StationColor, group, 7f);
+        }
         AddPoint("Station / Hangar", PrototypeEnvironmentPointKind.Station, origin, StationColor, 70f);
     }
 
@@ -233,10 +274,13 @@ public class PrototypeTestEnvironment : MonoBehaviour
             AddPoint("Asteroid " + (i + 1), PrototypeEnvironmentPointKind.Obstacle, position, ObstacleColor, scale);
         }
 
-        CreateLabel("Label_Asteroid_Field", "VISUAL OBSTACLE FIELD", fieldCenter + new Vector3(0f, 120f, 0f), ObstacleColor, group, 7f);
+        if (ShouldCreateEnvironmentLabel(PrototypeEnvironmentPointKind.Obstacle, 0))
+        {
+            CreateLabel("Label_Asteroid_Field", "VISUAL OBSTACLE FIELD", fieldCenter + new Vector3(0f, 120f, 0f), ObstacleColor, group, 7f);
+        }
     }
 
-    private void CreateTarget(Transform group, string label, Vector3 position, Vector3 scale, Color color)
+    private void CreateTarget(Transform group, string label, Vector3 position, Vector3 scale, Color color, int labelIndex)
     {
         GameObject target = CreatePrimitive(label, PrimitiveType.Cube, position, scale, group);
         target.transform.LookAt(Vector3.zero);
@@ -253,11 +297,15 @@ public class PrototypeTestEnvironment : MonoBehaviour
             target.AddComponent<PrototypeTargetDummy>();
         }
 
-        CreateLabel("Label_" + label.Replace(" ", "_"), label, position + Vector3.up * (scale.y + 10f), color, group, 4.5f);
+        if (ShouldCreateEnvironmentLabel(PrototypeEnvironmentPointKind.Target, labelIndex))
+        {
+            CreateLabel("Label_" + label.Replace(" ", "_"), label, position + Vector3.up * (scale.y + 10f), color, group, 4.5f);
+        }
+
         AddPoint(label, PrototypeEnvironmentPointKind.Target, position, color, Mathf.Max(scale.x, scale.y));
     }
 
-    private void CreateBeacon(Transform group, string label, Vector3 position, Color color)
+    private void CreateBeacon(Transform group, string label, Vector3 position, Color color, int labelIndex)
     {
         GameObject beacon = CreatePrimitive(label, PrimitiveType.Sphere, position, Vector3.one * 15f, group);
         ApplyMaterial(beacon, color, true);
@@ -267,8 +315,70 @@ public class PrototypeTestEnvironment : MonoBehaviour
         ApplyMaterial(mast, color * 0.72f, true);
         RemoveCollider(mast);
 
-        CreateLabel("Label_" + label.Replace(" ", "_"), label, position + Vector3.up * 22f, color, group, 4.5f);
+        if (ShouldCreateEnvironmentLabel(PrototypeEnvironmentPointKind.Beacon, labelIndex))
+        {
+            CreateLabel("Label_" + label.Replace(" ", "_"), label, position + Vector3.up * 22f, color, group, 4.5f);
+        }
+
         AddPoint(label, PrototypeEnvironmentPointKind.Beacon, position, color, 16f);
+    }
+
+    private bool ShouldRenderRangeRing(int index)
+    {
+        if (environmentDisplayMode == PrototypeEnvironmentDisplayMode.FullDebug)
+        {
+            return true;
+        }
+
+        if (environmentDisplayMode == PrototypeEnvironmentDisplayMode.Training)
+        {
+            return index < 2;
+        }
+
+        return index < 1;
+    }
+
+    private bool ShouldRenderApproachGate(int index)
+    {
+        if (environmentDisplayMode == PrototypeEnvironmentDisplayMode.FullDebug)
+        {
+            return true;
+        }
+
+        if (environmentDisplayMode == PrototypeEnvironmentDisplayMode.Training)
+        {
+            return index < 2;
+        }
+
+        return false;
+    }
+
+    private bool ShouldCreateEnvironmentLabel(PrototypeEnvironmentPointKind kind, int orderIndex)
+    {
+        if (environmentDisplayMode == PrototypeEnvironmentDisplayMode.FullDebug)
+        {
+            return true;
+        }
+
+        if (environmentDisplayMode == PrototypeEnvironmentDisplayMode.Training)
+        {
+            if (kind == PrototypeEnvironmentPointKind.Origin || kind == PrototypeEnvironmentPointKind.Station)
+            {
+                return true;
+            }
+
+            if (kind == PrototypeEnvironmentPointKind.Target)
+            {
+                return orderIndex < 1;
+            }
+
+            if (kind == PrototypeEnvironmentPointKind.Beacon)
+            {
+                return orderIndex < 1;
+            }
+        }
+
+        return false;
     }
 
     private void CreateStationPart(Transform parent, string name, Vector3 position, Vector3 scale, Color color)
@@ -307,11 +417,12 @@ public class PrototypeTestEnvironment : MonoBehaviour
         GameObject ring = new GameObject(name);
         ring.transform.SetParent(parent, false);
         LineRenderer line = ring.AddComponent<LineRenderer>();
+        float scaledWidth = ScaleEnvironmentLineWidth(width);
         line.useWorldSpace = false;
         line.loop = true;
         line.positionCount = segments;
-        line.startWidth = width;
-        line.endWidth = width;
+        line.startWidth = scaledWidth;
+        line.endWidth = scaledWidth;
         line.startColor = color;
         line.endColor = color;
         line.material = CreateMaterial(color, true);
@@ -338,14 +449,26 @@ public class PrototypeTestEnvironment : MonoBehaviour
         GameObject lineObject = new GameObject(name);
         lineObject.transform.SetParent(parent, false);
         LineRenderer line = lineObject.AddComponent<LineRenderer>();
+        float scaledWidth = ScaleEnvironmentLineWidth(width);
         line.useWorldSpace = false;
         line.positionCount = positions.Length;
-        line.startWidth = width;
-        line.endWidth = width;
+        line.startWidth = scaledWidth;
+        line.endWidth = scaledWidth;
         line.startColor = color;
         line.endColor = color;
         line.material = CreateMaterial(color, true);
         line.SetPositions(positions);
+    }
+
+    private float ScaleEnvironmentLineWidth(float width)
+    {
+        if (environmentDisplayMode == PrototypeEnvironmentDisplayMode.FullDebug)
+        {
+            return width;
+        }
+
+        float scale = environmentDisplayMode == PrototypeEnvironmentDisplayMode.Training ? 0.22f : 0.12f;
+        return Mathf.Max(0.05f, width * scale);
     }
 
     private void CreateLabel(string name, string text, Vector3 position, Color color, Transform parent, float characterSize)
@@ -359,8 +482,10 @@ public class PrototypeTestEnvironment : MonoBehaviour
         mesh.text = text;
         mesh.anchor = TextAnchor.MiddleCenter;
         mesh.alignment = TextAlignment.Center;
-        mesh.fontSize = 48;
-        mesh.characterSize = characterSize;
+        mesh.fontSize = 32;
+        float modeScale = environmentDisplayMode == PrototypeEnvironmentDisplayMode.FullDebug ? 0.35f : 0.09f;
+        float maxSize = environmentDisplayMode == PrototypeEnvironmentDisplayMode.FullDebug ? 3.5f : 0.75f;
+        mesh.characterSize = Mathf.Clamp(characterSize * modeScale, 0.12f, maxSize);
         mesh.color = color;
     }
 
