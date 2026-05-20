@@ -532,7 +532,7 @@
         "gun_mount_light_mk1",
         "fuel_tank_small_mk1"
       ],
-      "notes": "RCS pods are mounted on left/right side hardpoint plates; hull-facing inboard nozzles are removed and replaced by lime side-mount faces. Extra underside mount plates are intentionally absent on demo ships."
+      "notes": "RCS pods are mounted on left/right side hardpoint plates; hull-facing inboard nozzles are removed and replaced by lime side-mount faces. Extra underside mount plates are intentionally absent. Each demo RCS pod includes visible forward, back, outboard, up, and down nozzle geometry."
     },
     {
       "id": "demo_cargo_mk1",
@@ -548,7 +548,7 @@
         "main_engine_bell_mk1",
         "rcs_pod_4way_mk1"
       ],
-      "notes": "RCS pods are mounted on left/right side hardpoint plates; hull-facing inboard nozzles are removed and replaced by lime side-mount faces. Extra underside mount plates are intentionally absent on demo ships."
+      "notes": "RCS pods are mounted on left/right side hardpoint plates; hull-facing inboard nozzles are removed and replaced by lime side-mount faces. Extra underside mount plates are intentionally absent. Each demo RCS pod includes visible forward, back, outboard, up, and down nozzle geometry. Side fuel tanks are seated against hull-side saddles with visible clamps and lower braces."
     }
   ]
 }

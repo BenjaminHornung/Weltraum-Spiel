@@ -90,6 +90,18 @@ Unity visual switch follow-up:
 - Unity alignment probe for FBX visual rotation `(-90, 180, 0)` confirmed cockpit ahead of engine on Unity `+Z` and top panels on Unity `+Y`.
 - Runtime MCP sanity check after one cycle: `visualRoot=True`, `rcs=20`, generated hull renderer hidden.
 
+Fourth follow-up RCS vertical nozzle and cargo tank attachment correction:
+
+- User feedback: side RCS pods still needed visible up/down firing nozzles, while keeping the ship-facing side free of thruster geometry.
+- Added visible `GEO_RCS_Nozzle_Up` and `GEO_RCS_Nozzle_Down` geometry plus `RCS_NOZZLE_UP` and `RCS_NOZZLE_DOWN` empties to all 8 demo RCS pods.
+- Blender audit result: `ok: true`.
+- `DEMO_Scout_Mk1`: 4 RCS pods, 4 up nozzle meshes, 4 down nozzle meshes, 4 up nozzle empties, 4 down nozzle empties, 0 inboard nozzles, 0 underside mount geometry.
+- `DEMO_Cargo_Mk1`: 4 RCS pods, 4 up nozzle meshes, 4 down nozzle meshes, 4 up nozzle empties, 4 down nozzle empties, 0 inboard nozzles, 0 underside mount geometry.
+- User feedback: Cargo side fuel tanks appeared to float beside the ship.
+- Moved the two Cargo demo fuel tank roots to local positions `[-0.88, -0.60, -0.42]` and `[0.88, -0.60, -0.42]`.
+- Added 2 hull-side fuel tank saddles, 6 visible clamp blocks, and 2 lower braces to `DEMO_Cargo_Mk1`.
+- Re-exported demo GLB and Unity-readable FBX files: `demo_scout_mk1.glb`, `demo_scout_mk1.fbx`, `demo_cargo_mk1.glb`, `demo_cargo_mk1.fbx`.
+
 Required generated counts:
 
 - Blender scene created: yes.
@@ -121,6 +133,7 @@ PowerShell JSON/file verification:
 - Unity MCP refresh after the RCS attachment correction returned idle and console check returned 0 error/warning entries.
 - Unity MCP refresh after the RCS side-mount correction returned idle and console check returned 0 error/warning entries.
 - Unity MCP refresh after the Unity visual switch and final RCS underside-mount cleanup returned idle. Console check returned 0 errors; the remaining warnings were pre-existing obsolete API warnings in `PrototypeTestEnvironmentValidationTests.cs` and an MCP WebSocket warning.
+- Unity MCP refresh after the RCS vertical-nozzle and Cargo fuel-tank attachment correction returned idle. Console check returned 0 errors; the remaining warnings were the same pre-existing obsolete API warnings in `PrototypeTestEnvironmentValidationTests.cs` and an MCP WebSocket warning.
 
 Expected part exports exist:
 
@@ -145,8 +158,10 @@ Unity verification:
 
 - `PrototypeShipVisualSwitcherValidationTests` EditMode run passed: 2/2.
 - `PrototypeShipVariantValidationTests.BaselineVariantBuildsStableRigAndRebindsDebugConsole` EditMode run passed: 1/1.
-- `PrototypeShipVisualSwitcherValidationTests.ImportedScoutVisualKeepsGameplayRigAndCanReturnToGeneratedPrimitives` verifies imported Scout visual attachment, primitive shell hiding, no underside RCS mount geometry, 20 RCS nozzles retained, and switching back to generated primitives.
-- `PrototypeShipVisualSwitcherValidationTests.ImportedCargoVisualAlignsWithUnityForwardAndUp` verifies imported Cargo alignment, no underside RCS mount geometry, cockpit ahead on Unity `+Z`, and top panels above the ship on Unity `+Y`.
+- Follow-up focused `PrototypeShipVisualSwitcherValidationTests` EditMode run passed: 2/2.
+- Direct Unity FBX hierarchy audit: Scout `up=4`, `down=4`, `underside=0`; Cargo `up=4`, `down=4`, `underside=0`, `sideSaddles=2`, `clamps=6`, `lowerBraces=2`.
+- `PrototypeShipVisualSwitcherValidationTests.ImportedScoutVisualKeepsGameplayRigAndCanReturnToGeneratedPrimitives` verifies imported Scout visual attachment, primitive shell hiding, no underside RCS mount geometry, 4 up RCS nozzles, 4 down RCS nozzles, 20 gameplay RCS nozzles retained, and switching back to generated primitives.
+- `PrototypeShipVisualSwitcherValidationTests.ImportedCargoVisualAlignsWithUnityForwardAndUp` verifies imported Cargo alignment, no underside RCS mount geometry, 4 up RCS nozzles, 4 down RCS nozzles, fuel tank side saddles/clamps, cockpit ahead on Unity `+Z`, and top panels above the ship on Unity `+Y`.
 
 ## Scope / Safety Checks
 

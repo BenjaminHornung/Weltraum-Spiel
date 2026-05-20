@@ -23,6 +23,9 @@ Summary:
 - Follow-up RCS correction re-exported `rcs_pod_4way_mk1.glb`, `demo_scout_mk1.glb`, and `demo_cargo_mk1.glb`; both demo ships now have 4 RCS roots, 4 hardpoint plates, 4 blank inboard faces, and 0 inward-facing RCS nozzle objects.
 - Second RCS correction moved demo RCS pods to left/right side hardpoints instead of top/bottom placement; both demo ships have 4 side-mounted RCS roots, 4 side hardpoint plates, 4 blank inboard faces, 0 inward-facing RCS nozzle objects, and 0 pods flagged as top/bottom mounted.
 - Final RCS side-mount cleanup removed demo-only underside mount geometry from all 8 demo RCS pods; both demo ships now have 4 side-mount faces, 4 side `CONN_MOUNT` markers, 0 inboard nozzles, and 0 underside mount geometry.
+- Follow-up RCS vertical nozzle correction added up/down nozzle geometry and empties to all 8 demo RCS pods while keeping 0 inboard nozzles and 0 underside mount geometry.
+- Follow-up Cargo tank attachment correction added 2 hull-side saddles, 6 visible clamp blocks, and 2 lower braces to the Cargo demo fuel tanks.
 - Unity-readable FBX exports were added for all 9 parts and both demo ships because this Unity project imports `.glb` as `DefaultAsset`.
 - New non-gameplay `PrototypeShipVisualSwitcher` supports `F6` cycling between generated primitives, imported Scout, and imported Cargo visuals while keeping the existing gameplay rig active.
 - Unity EditMode verification passed: `PrototypeShipVisualSwitcherValidationTests` 2/2 and baseline `PrototypeShipVariantValidationTests` 1/1.
+- Follow-up Unity EditMode verification passed: `PrototypeShipVisualSwitcherValidationTests` 2/2, including 4 up and 4 down RCS nozzles on both imported demo FBX visuals plus Cargo tank saddles/clamps.
