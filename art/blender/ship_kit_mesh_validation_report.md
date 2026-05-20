@@ -1,11 +1,11 @@
 # Ship Kit Mesh Validation Report
 
 - Result: PASS
-- Object count: 411
-- Mesh count: 264
+- Object count: 473
+- Mesh count: 266
 - Material count: 13
-- Meshes with material assignment: 264
-- Connector/nozzle/muzzle empties: 99
+- Meshes with material assignment: 266
+- Connector/nozzle/muzzle empties: 101
 - Negative scale objects: 0
 - Meshes missing materials: 0
 - Non-opaque materials: 0

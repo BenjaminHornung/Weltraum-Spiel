@@ -38,7 +38,33 @@
           ]
         }
       ],
-      "notes": "prototype only"
+      "notes": "prototype only",
+      "sockets": [
+        {
+          "id": "CONN_REAR_HULL",
+          "name": "PART_Cockpit_Wedge_Mk1_CONN_REAR_HULL",
+          "canonicalName": "PART_Cockpit_Wedge_Mk1_CONN_REAR_HULL",
+          "socketType": "Hardpoint",
+          "localAxisRole": "ConnectorNormal",
+          "partId": "cockpit_wedge_mk1",
+          "moduleId": "cockpit_wedge_mk1",
+          "groupId": "cockpit_wedge_mk1",
+          "direction": "Back",
+          "isRuntimeSocket": false,
+          "isBuilderSocket": true,
+          "localPosition": [
+            0,
+            -0.82,
+            0
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            180
+          ],
+          "notes": "builder hardpoint socket"
+        }
+      ]
     },
     {
       "partId": "hull_core_mk1",
@@ -146,7 +172,153 @@
           ]
         }
       ],
-      "notes": "prototype only"
+      "notes": "prototype only",
+      "sockets": [
+        {
+          "id": "CONN_FRONT",
+          "name": "PART_Hull_Core_Mk1_CONN_FRONT",
+          "canonicalName": "PART_Hull_Core_Mk1_CONN_FRONT",
+          "socketType": "Hardpoint",
+          "localAxisRole": "ConnectorNormal",
+          "partId": "hull_core_mk1",
+          "moduleId": "hull_core_mk1",
+          "groupId": "hull_core_mk1",
+          "direction": "Forward",
+          "isRuntimeSocket": false,
+          "isBuilderSocket": true,
+          "localPosition": [
+            0,
+            1.02,
+            0
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            0
+          ],
+          "notes": "builder hardpoint socket"
+        },
+        {
+          "id": "CONN_REAR",
+          "name": "PART_Hull_Core_Mk1_CONN_REAR",
+          "canonicalName": "PART_Hull_Core_Mk1_CONN_REAR",
+          "socketType": "Hardpoint",
+          "localAxisRole": "ConnectorNormal",
+          "partId": "hull_core_mk1",
+          "moduleId": "hull_core_mk1",
+          "groupId": "hull_core_mk1",
+          "direction": "Back",
+          "isRuntimeSocket": false,
+          "isBuilderSocket": true,
+          "localPosition": [
+            0,
+            -1.02,
+            0
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            180
+          ],
+          "notes": "builder hardpoint socket"
+        },
+        {
+          "id": "CONN_LEFT",
+          "name": "PART_Hull_Core_Mk1_CONN_LEFT",
+          "canonicalName": "PART_Hull_Core_Mk1_CONN_LEFT",
+          "socketType": "Hardpoint",
+          "localAxisRole": "ConnectorNormal",
+          "partId": "hull_core_mk1",
+          "moduleId": "hull_core_mk1",
+          "groupId": "hull_core_mk1",
+          "direction": "Left",
+          "isRuntimeSocket": false,
+          "isBuilderSocket": true,
+          "localPosition": [
+            -0.74,
+            0,
+            0
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            90
+          ],
+          "notes": "builder hardpoint socket"
+        },
+        {
+          "id": "CONN_RIGHT",
+          "name": "PART_Hull_Core_Mk1_CONN_RIGHT",
+          "canonicalName": "PART_Hull_Core_Mk1_CONN_RIGHT",
+          "socketType": "Hardpoint",
+          "localAxisRole": "ConnectorNormal",
+          "partId": "hull_core_mk1",
+          "moduleId": "hull_core_mk1",
+          "groupId": "hull_core_mk1",
+          "direction": "Right",
+          "isRuntimeSocket": false,
+          "isBuilderSocket": true,
+          "localPosition": [
+            0.74,
+            0,
+            0
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            -90
+          ],
+          "notes": "builder hardpoint socket"
+        },
+        {
+          "id": "CONN_TOP",
+          "name": "PART_Hull_Core_Mk1_CONN_TOP",
+          "canonicalName": "PART_Hull_Core_Mk1_CONN_TOP",
+          "socketType": "Hardpoint",
+          "localAxisRole": "ConnectorNormal",
+          "partId": "hull_core_mk1",
+          "moduleId": "hull_core_mk1",
+          "groupId": "hull_core_mk1",
+          "direction": "Up",
+          "isRuntimeSocket": false,
+          "isBuilderSocket": true,
+          "localPosition": [
+            0,
+            0,
+            0.54
+          ],
+          "localRotationEuler": [
+            -90,
+            0,
+            0
+          ],
+          "notes": "builder hardpoint socket"
+        },
+        {
+          "id": "CONN_BOTTOM",
+          "name": "PART_Hull_Core_Mk1_CONN_BOTTOM",
+          "canonicalName": "PART_Hull_Core_Mk1_CONN_BOTTOM",
+          "socketType": "Hardpoint",
+          "localAxisRole": "ConnectorNormal",
+          "partId": "hull_core_mk1",
+          "moduleId": "hull_core_mk1",
+          "groupId": "hull_core_mk1",
+          "direction": "Down",
+          "isRuntimeSocket": false,
+          "isBuilderSocket": true,
+          "localPosition": [
+            0,
+            0,
+            -0.54
+          ],
+          "localRotationEuler": [
+            90,
+            0,
+            0
+          ],
+          "notes": "builder hardpoint socket"
+        }
+      ]
     },
     {
       "partId": "hull_segment_mk1",
@@ -224,7 +396,105 @@
           ]
         }
       ],
-      "notes": "prototype only"
+      "notes": "prototype only",
+      "sockets": [
+        {
+          "id": "CONN_FRONT",
+          "name": "PART_Hull_Segment_Mk1_CONN_FRONT",
+          "canonicalName": "PART_Hull_Segment_Mk1_CONN_FRONT",
+          "socketType": "Hardpoint",
+          "localAxisRole": "ConnectorNormal",
+          "partId": "hull_segment_mk1",
+          "moduleId": "hull_segment_mk1",
+          "groupId": "hull_segment_mk1",
+          "direction": "Forward",
+          "isRuntimeSocket": false,
+          "isBuilderSocket": true,
+          "localPosition": [
+            0,
+            0.77,
+            0
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            0
+          ],
+          "notes": "builder hardpoint socket"
+        },
+        {
+          "id": "CONN_REAR",
+          "name": "PART_Hull_Segment_Mk1_CONN_REAR",
+          "canonicalName": "PART_Hull_Segment_Mk1_CONN_REAR",
+          "socketType": "Hardpoint",
+          "localAxisRole": "ConnectorNormal",
+          "partId": "hull_segment_mk1",
+          "moduleId": "hull_segment_mk1",
+          "groupId": "hull_segment_mk1",
+          "direction": "Back",
+          "isRuntimeSocket": false,
+          "isBuilderSocket": true,
+          "localPosition": [
+            0,
+            -0.77,
+            0
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            180
+          ],
+          "notes": "builder hardpoint socket"
+        },
+        {
+          "id": "CONN_LEFT",
+          "name": "PART_Hull_Segment_Mk1_CONN_LEFT",
+          "canonicalName": "PART_Hull_Segment_Mk1_CONN_LEFT",
+          "socketType": "Hardpoint",
+          "localAxisRole": "ConnectorNormal",
+          "partId": "hull_segment_mk1",
+          "moduleId": "hull_segment_mk1",
+          "groupId": "hull_segment_mk1",
+          "direction": "Left",
+          "isRuntimeSocket": false,
+          "isBuilderSocket": true,
+          "localPosition": [
+            -0.64,
+            0,
+            0
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            90
+          ],
+          "notes": "builder hardpoint socket"
+        },
+        {
+          "id": "CONN_RIGHT",
+          "name": "PART_Hull_Segment_Mk1_CONN_RIGHT",
+          "canonicalName": "PART_Hull_Segment_Mk1_CONN_RIGHT",
+          "socketType": "Hardpoint",
+          "localAxisRole": "ConnectorNormal",
+          "partId": "hull_segment_mk1",
+          "moduleId": "hull_segment_mk1",
+          "groupId": "hull_segment_mk1",
+          "direction": "Right",
+          "isRuntimeSocket": false,
+          "isBuilderSocket": true,
+          "localPosition": [
+            0.64,
+            0,
+            0
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            -90
+          ],
+          "notes": "builder hardpoint socket"
+        }
+      ]
     },
     {
       "partId": "fuel_tank_small_mk1",
@@ -258,7 +528,33 @@
         }
       ],
       "notes": "prototype only",
-      "fuelEstimateKg": 300
+      "fuelEstimateKg": 300,
+      "sockets": [
+        {
+          "id": "CONN_MOUNT",
+          "name": "PART_Fuel_Tank_Small_Mk1_CONN_MOUNT",
+          "canonicalName": "PART_Fuel_Tank_Small_Mk1_CONN_MOUNT",
+          "socketType": "Hardpoint",
+          "localAxisRole": "ConnectorNormal",
+          "partId": "fuel_tank_small_mk1",
+          "moduleId": "fuel_tank_small_mk1",
+          "groupId": "fuel_tank_small_mk1",
+          "direction": "Unknown",
+          "isRuntimeSocket": false,
+          "isBuilderSocket": true,
+          "localPosition": [
+            0,
+            0,
+            0.29
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            0
+          ],
+          "notes": "builder hardpoint socket"
+        }
+      ]
     },
     {
       "partId": "main_engine_bell_mk1",
@@ -307,7 +603,81 @@
         }
       ],
       "notes": "prototype only",
-      "thrustEstimateN": 45000
+      "thrustEstimateN": 45000,
+      "sockets": [
+        {
+          "id": "CONN_FRONT_HULL",
+          "name": "PART_Main_Engine_Bell_Mk1_CONN_FRONT_HULL",
+          "canonicalName": "PART_Main_Engine_Bell_Mk1_CONN_FRONT_HULL",
+          "socketType": "Hardpoint",
+          "localAxisRole": "ConnectorNormal",
+          "partId": "main_engine_bell_mk1",
+          "moduleId": "main_engine_bell_mk1",
+          "groupId": "main_engine_bell_mk1",
+          "direction": "Forward",
+          "isRuntimeSocket": false,
+          "isBuilderSocket": true,
+          "localPosition": [
+            0,
+            0.47,
+            0
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            0
+          ],
+          "notes": "builder hardpoint socket"
+        },
+        {
+          "id": "THRUST_NOZZLE_MAIN",
+          "name": "PART_Main_Engine_Bell_Mk1_THRUST_NOZZLE_MAIN",
+          "canonicalName": "MainThrusterNozzle",
+          "socketType": "MainThrusterNozzle",
+          "localAxisRole": "ForceDirection",
+          "partId": "main_engine_bell_mk1",
+          "moduleId": "main_engine_bell_mk1",
+          "groupId": "main_engine_bell_mk1",
+          "direction": "Main",
+          "isRuntimeSocket": true,
+          "isBuilderSocket": false,
+          "localPosition": [
+            0,
+            -0.49,
+            0
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            180
+          ],
+          "notes": "runtime functional socket; forward is force/projectile direction unless documented otherwise"
+        },
+        {
+          "id": "MAIN_THRUSTER_GIMBAL_PIVOT",
+          "name": "MainThrusterGimbal",
+          "canonicalName": "MainThrusterGimbal",
+          "socketType": "MainThrusterGimbalPivot",
+          "localAxisRole": "ForceDirection",
+          "partId": "main_engine_bell_mk1",
+          "moduleId": "main_engine_bell_mk1",
+          "groupId": "main_engine_bell_mk1",
+          "direction": "Main",
+          "isRuntimeSocket": true,
+          "isBuilderSocket": false,
+          "localPosition": [
+            0,
+            0,
+            0
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            0
+          ],
+          "notes": "optional visual gimbal pivot; MainThrusterNozzle is parented under this alias in exported models"
+        }
+      ]
     },
     {
       "partId": "rcs_pod_4way_mk1",
@@ -398,10 +768,210 @@
             0,
             -90
           ]
+        },
+        {
+          "id": "RCS_NOZZLE_UP",
+          "name": "PART_RCS_Pod_4Way_Mk1_RCS_NOZZLE_UP",
+          "type": "nozzle",
+          "localPosition": [
+            0,
+            0,
+            0.36
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "RCS_NOZZLE_DOWN",
+          "name": "PART_RCS_Pod_4Way_Mk1_RCS_NOZZLE_DOWN",
+          "type": "nozzle",
+          "localPosition": [
+            0,
+            0,
+            -0.36
+          ],
+          "localRotationEuler": [
+            180,
+            0,
+            0
+          ]
         }
       ],
       "notes": "prototype only; demo assemblies side-mount pods and remove the hull-facing inboard nozzle so no thruster points into the ship",
-      "thrustEstimateN": 6500
+      "thrustEstimateN": 6500,
+      "sockets": [
+        {
+          "id": "CONN_MOUNT",
+          "name": "PART_RCS_Pod_4Way_Mk1_CONN_MOUNT",
+          "canonicalName": "PART_RCS_Pod_4Way_Mk1_CONN_MOUNT",
+          "socketType": "Hardpoint",
+          "localAxisRole": "ConnectorNormal",
+          "partId": "rcs_pod_4way_mk1",
+          "moduleId": "rcs_pod_4way_mk1",
+          "groupId": "rcs_pod_4way_mk1",
+          "direction": "Unknown",
+          "isRuntimeSocket": false,
+          "isBuilderSocket": true,
+          "localPosition": [
+            0,
+            0,
+            -0.21
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            0
+          ],
+          "notes": "builder hardpoint socket"
+        },
+        {
+          "id": "RCS_NOZZLE_FORWARD",
+          "name": "PART_RCS_Pod_4Way_Mk1_RCS_NOZZLE_FORWARD",
+          "canonicalName": "RCS_Nozzle_PARTRCSPod4WayMk1_Forward",
+          "socketType": "RcsNozzle",
+          "localAxisRole": "ForceDirection",
+          "partId": "rcs_pod_4way_mk1",
+          "moduleId": "rcs_pod_4way_mk1",
+          "groupId": "rcs_pod_4way_mk1",
+          "direction": "Forward",
+          "isRuntimeSocket": true,
+          "isBuilderSocket": false,
+          "localPosition": [
+            0,
+            0.3,
+            0
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            0
+          ],
+          "notes": "runtime functional socket; forward is force/projectile direction unless documented otherwise"
+        },
+        {
+          "id": "RCS_NOZZLE_BACK",
+          "name": "PART_RCS_Pod_4Way_Mk1_RCS_NOZZLE_BACK",
+          "canonicalName": "RCS_Nozzle_PARTRCSPod4WayMk1_Back",
+          "socketType": "RcsNozzle",
+          "localAxisRole": "ForceDirection",
+          "partId": "rcs_pod_4way_mk1",
+          "moduleId": "rcs_pod_4way_mk1",
+          "groupId": "rcs_pod_4way_mk1",
+          "direction": "Back",
+          "isRuntimeSocket": true,
+          "isBuilderSocket": false,
+          "localPosition": [
+            0,
+            -0.3,
+            0
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            180
+          ],
+          "notes": "runtime functional socket; forward is force/projectile direction unless documented otherwise"
+        },
+        {
+          "id": "RCS_NOZZLE_LEFT",
+          "name": "PART_RCS_Pod_4Way_Mk1_RCS_NOZZLE_LEFT",
+          "canonicalName": "RCS_Nozzle_PARTRCSPod4WayMk1_Left",
+          "socketType": "RcsNozzle",
+          "localAxisRole": "ForceDirection",
+          "partId": "rcs_pod_4way_mk1",
+          "moduleId": "rcs_pod_4way_mk1",
+          "groupId": "rcs_pod_4way_mk1",
+          "direction": "Left",
+          "isRuntimeSocket": true,
+          "isBuilderSocket": false,
+          "localPosition": [
+            -0.35,
+            0,
+            0
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            90
+          ],
+          "notes": "runtime functional socket; forward is force/projectile direction unless documented otherwise"
+        },
+        {
+          "id": "RCS_NOZZLE_RIGHT",
+          "name": "PART_RCS_Pod_4Way_Mk1_RCS_NOZZLE_RIGHT",
+          "canonicalName": "RCS_Nozzle_PARTRCSPod4WayMk1_Right",
+          "socketType": "RcsNozzle",
+          "localAxisRole": "ForceDirection",
+          "partId": "rcs_pod_4way_mk1",
+          "moduleId": "rcs_pod_4way_mk1",
+          "groupId": "rcs_pod_4way_mk1",
+          "direction": "Right",
+          "isRuntimeSocket": true,
+          "isBuilderSocket": false,
+          "localPosition": [
+            0.35,
+            0,
+            0
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            -90
+          ],
+          "notes": "runtime functional socket; forward is force/projectile direction unless documented otherwise"
+        },
+        {
+          "id": "RCS_NOZZLE_UP",
+          "name": "PART_RCS_Pod_4Way_Mk1_RCS_NOZZLE_UP",
+          "canonicalName": "RCS_Nozzle_PARTRCSPod4WayMk1_Up",
+          "socketType": "RcsNozzle",
+          "localAxisRole": "ForceDirection",
+          "partId": "rcs_pod_4way_mk1",
+          "moduleId": "rcs_pod_4way_mk1",
+          "groupId": "rcs_pod_4way_mk1",
+          "direction": "Up",
+          "isRuntimeSocket": true,
+          "isBuilderSocket": false,
+          "localPosition": [
+            0,
+            0,
+            0.36
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            0
+          ],
+          "notes": "runtime functional socket; forward is force/projectile direction unless documented otherwise"
+        },
+        {
+          "id": "RCS_NOZZLE_DOWN",
+          "name": "PART_RCS_Pod_4Way_Mk1_RCS_NOZZLE_DOWN",
+          "canonicalName": "RCS_Nozzle_PARTRCSPod4WayMk1_Down",
+          "socketType": "RcsNozzle",
+          "localAxisRole": "ForceDirection",
+          "partId": "rcs_pod_4way_mk1",
+          "moduleId": "rcs_pod_4way_mk1",
+          "groupId": "rcs_pod_4way_mk1",
+          "direction": "Down",
+          "isRuntimeSocket": true,
+          "isBuilderSocket": false,
+          "localPosition": [
+            0,
+            0,
+            -0.36
+          ],
+          "localRotationEuler": [
+            180,
+            0,
+            0
+          ],
+          "notes": "runtime functional socket; forward is force/projectile direction unless documented otherwise"
+        }
+      ]
     },
     {
       "partId": "gun_mount_light_mk1",
@@ -449,7 +1019,105 @@
           ]
         }
       ],
-      "notes": "prototype only"
+      "notes": "prototype only",
+      "sockets": [
+        {
+          "id": "CONN_MOUNT",
+          "name": "PART_Gun_Mount_Light_Mk1_CONN_MOUNT",
+          "canonicalName": "PART_Gun_Mount_Light_Mk1_CONN_MOUNT",
+          "socketType": "Hardpoint",
+          "localAxisRole": "ConnectorNormal",
+          "partId": "gun_mount_light_mk1",
+          "moduleId": "gun_mount_light_mk1",
+          "groupId": "gun_mount_light_mk1",
+          "direction": "Unknown",
+          "isRuntimeSocket": false,
+          "isBuilderSocket": true,
+          "localPosition": [
+            0,
+            -0.32,
+            -0.08
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            0
+          ],
+          "notes": "builder hardpoint socket"
+        },
+        {
+          "id": "MUZZLE",
+          "name": "PART_Gun_Mount_Light_Mk1_MUZZLE",
+          "canonicalName": "Muzzle",
+          "socketType": "WeaponMuzzle",
+          "localAxisRole": "BarrelForward",
+          "partId": "gun_mount_light_mk1",
+          "moduleId": "gun_mount_light_mk1",
+          "groupId": "gun_mount_light_mk1",
+          "direction": "Muzzle",
+          "isRuntimeSocket": true,
+          "isBuilderSocket": false,
+          "localPosition": [
+            0,
+            0.53,
+            0.03
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            0
+          ],
+          "notes": "runtime functional socket; forward is force/projectile direction unless documented otherwise"
+        },
+        {
+          "id": "TURRET_YAW_PIVOT",
+          "name": "TurretYawPivot",
+          "canonicalName": "TurretYawPivot",
+          "socketType": "TurretYawPivot",
+          "localAxisRole": "BarrelForward",
+          "partId": "gun_mount_light_mk1",
+          "moduleId": "gun_mount_light_mk1",
+          "groupId": "gun_mount_light_mk1",
+          "direction": "Muzzle",
+          "isRuntimeSocket": false,
+          "isBuilderSocket": true,
+          "localPosition": [
+            0,
+            -0.1,
+            0
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            0
+          ],
+          "notes": "future turret yaw metadata only; no turret AI in this change"
+        },
+        {
+          "id": "TURRET_PITCH_PIVOT",
+          "name": "TurretPitchPivot",
+          "canonicalName": "TurretPitchPivot",
+          "socketType": "TurretPitchPivot",
+          "localAxisRole": "BarrelForward",
+          "partId": "gun_mount_light_mk1",
+          "moduleId": "gun_mount_light_mk1",
+          "groupId": "gun_mount_light_mk1",
+          "direction": "Muzzle",
+          "isRuntimeSocket": false,
+          "isBuilderSocket": true,
+          "localPosition": [
+            0,
+            0.28,
+            0.03
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            0
+          ],
+          "notes": "future turret pitch metadata only; no turret AI in this change"
+        }
+      ]
     },
     {
       "partId": "cargo_pod_small_mk1",
@@ -482,7 +1150,33 @@
           ]
         }
       ],
-      "notes": "prototype only"
+      "notes": "prototype only",
+      "sockets": [
+        {
+          "id": "CONN_MOUNT",
+          "name": "PART_Cargo_Pod_Small_Mk1_CONN_MOUNT",
+          "canonicalName": "PART_Cargo_Pod_Small_Mk1_CONN_MOUNT",
+          "socketType": "Hardpoint",
+          "localAxisRole": "ConnectorNormal",
+          "partId": "cargo_pod_small_mk1",
+          "moduleId": "cargo_pod_small_mk1",
+          "groupId": "cargo_pod_small_mk1",
+          "direction": "Unknown",
+          "isRuntimeSocket": false,
+          "isBuilderSocket": true,
+          "localPosition": [
+            0,
+            0,
+            0.4
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            0
+          ],
+          "notes": "builder hardpoint socket"
+        }
+      ]
     },
     {
       "partId": "connector_hardpoint_mk1",
@@ -515,7 +1209,33 @@
           ]
         }
       ],
-      "notes": "prototype only"
+      "notes": "prototype only",
+      "sockets": [
+        {
+          "id": "CONN_MOUNT",
+          "name": "PART_Connector_Hardpoint_Mk1_CONN_MOUNT",
+          "canonicalName": "PART_Connector_Hardpoint_Mk1_CONN_MOUNT",
+          "socketType": "Hardpoint",
+          "localAxisRole": "ConnectorNormal",
+          "partId": "connector_hardpoint_mk1",
+          "moduleId": "connector_hardpoint_mk1",
+          "groupId": "connector_hardpoint_mk1",
+          "direction": "Unknown",
+          "isRuntimeSocket": false,
+          "isBuilderSocket": true,
+          "localPosition": [
+            0,
+            0,
+            0.09
+          ],
+          "localRotationEuler": [
+            0,
+            0,
+            0
+          ],
+          "notes": "builder hardpoint socket"
+        }
+      ]
     }
   ],
   "demoShips": [
@@ -550,5 +1270,34 @@
       ],
       "notes": "RCS pods are mounted on left/right side hardpoint plates; hull-facing inboard nozzles are removed and replaced by lime side-mount faces. Extra underside mount plates are intentionally absent. Each demo RCS pod includes visible forward, back, outboard, up, and down nozzle geometry. Side fuel tanks are seated against hull-side saddles with visible clamps and lower braces."
     }
-  ]
+  ],
+  "socketContract": {
+    "version": "prototype-functional-sockets-v0",
+    "localForwardAxis": "+Y",
+    "localUpAxis": "+Z",
+    "intendedUnityForward": "+Z",
+    "intendedUnityUp": "+Y",
+    "forceDirectionContract": "Nozzle.forward is gameplay force direction; VFX plume renders opposite that direction.",
+    "muzzleDirectionContract": "Muzzle.forward is projectile spawn direction.",
+    "connectorDirectionContract": "Connector.forward is the builder connector normal; connector up documents roll alignment.",
+    "canonicalRuntimeNames": [
+      "MainThrusterGimbal",
+      "MainThrusterNozzle",
+      "RCS_Nozzle_<PodId>_<Direction>",
+      "Muzzle",
+      "TurretYawPivot",
+      "TurretPitchPivot"
+    ],
+    "importedAliasTokens": [
+      "THRUST_NOZZLE_MAIN",
+      "RCS_NOZZLE_FORWARD",
+      "RCS_NOZZLE_BACK",
+      "RCS_NOZZLE_LEFT",
+      "RCS_NOZZLE_RIGHT",
+      "RCS_NOZZLE_UP",
+      "RCS_NOZZLE_DOWN",
+      "MUZZLE",
+      "CONN_"
+    ]
+  }
 }

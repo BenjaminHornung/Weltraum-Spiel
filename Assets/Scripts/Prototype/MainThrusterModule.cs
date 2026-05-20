@@ -65,6 +65,8 @@ public class MainThrusterModule : MonoBehaviour
     public bool IsOverheated => thermalModule != null && thermalModule.IsOverheated;
     public float ThermalEfficiencyScalar => thermalModule != null ? thermalModule.EfficiencyScalar : 1f;
     public float LastPowerDrawKw => thermalModule != null ? thermalModule.LastPowerDrawKw : 0f;
+    public Transform ThrustTransform => thrustTransform;
+    public Transform GimbalVisualTransform => gimbalVisualTransform;
 
     private void Awake()
     {
@@ -84,6 +86,29 @@ public class MainThrusterModule : MonoBehaviour
         physicsCore = core != null ? core : physicsCore;
         thermalModule = thermal != null ? thermal : thermalModule;
         ResolveReferences();
+        CaptureGimbalBaseRotation();
+    }
+    public void Configure(Transform nozzleTransform, Transform gimbalPivot, Rigidbody body, ShipStats stats, ShipPhysicsCore core, PrototypeThermalModule thermal)
+    {
+        thrustTransform = nozzleTransform != null ? nozzleTransform : thrustTransform;
+        if (gimbalPivot != null)
+        {
+            ConfigureGimbalVisualTransform(gimbalPivot);
+        }
+
+        Configure(thrustTransform, body, stats, core, thermal);
+    }
+
+    public void ConfigureGimbalVisualTransform(Transform gimbalPivot)
+    {
+        if (gimbalPivot == null)
+        {
+            return;
+        }
+
+        gimbalVisualTransform = gimbalPivot;
+        supportsGimbal = true;
+        hasGimbalBaseRotation = false;
         CaptureGimbalBaseRotation();
     }
 
@@ -397,3 +422,5 @@ public class MainThrusterModule : MonoBehaviour
             : MainThrustMode.ComSafeSteeringOnly;
     }
 }
+
+

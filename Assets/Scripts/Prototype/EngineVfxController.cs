@@ -18,6 +18,7 @@ public class EngineVfxController : MonoBehaviour
     [SerializeField] private Color plumeHotColor = new Color(1f, 0.46f, 0.12f, 0.95f);
 
     private float throttle;
+    public Transform Nozzle => nozzle;
 
     private void Awake()
     {
@@ -59,6 +60,13 @@ public class EngineVfxController : MonoBehaviour
     {
         if (nozzle != null)
         {
+            return;
+        }
+
+        Transform socketNozzle = PrototypeShipSocketUtility.FindBestSocketTransform(transform, PrototypeShipSocketType.MainThrusterNozzle);
+        if (socketNozzle != null)
+        {
+            nozzle = socketNozzle;
             return;
         }
 
@@ -250,3 +258,5 @@ public class EngineVfxController : MonoBehaviour
         thrustLight.intensity = Mathf.Lerp(minLightIntensity, maxLightIntensity, normalizedThrottle);
     }
 }
+
+

@@ -72,7 +72,7 @@ public sealed class PrototypeShipKitVfxBinder : MonoBehaviour
 
             stats.NozzleTransformCount++;
 
-            if (nozzle.name.Contains(MainThrusterNozzleToken))
+            if (PrototypeShipSocketUtility.IsMainThrusterNozzleName(nozzle.name))
             {
                 if (BindSingleNozzle(nozzle, mainPrefab, MainThrusterVfxChildName, previewActive))
                 {
@@ -80,7 +80,7 @@ public sealed class PrototypeShipKitVfxBinder : MonoBehaviour
                 }
                 stats.MainThrusterBindings++;
             }
-            else if (nozzle.name.Contains(RcsNozzleToken))
+            else if (PrototypeShipSocketUtility.IsRcsNozzleName(nozzle.name))
             {
                 if (BindSingleNozzle(nozzle, rcsPrefab, RcsThrusterVfxChildName, previewActive))
                 {
@@ -100,7 +100,7 @@ public sealed class PrototypeShipKitVfxBinder : MonoBehaviour
             return false;
         }
 
-        if (!transformName.Contains(MainThrusterNozzleToken) && !transformName.Contains(RcsNozzleToken))
+        if (!PrototypeShipSocketUtility.IsMainThrusterNozzleName(transformName) && !PrototypeShipSocketUtility.IsRcsNozzleName(transformName))
         {
             return false;
         }
@@ -168,3 +168,4 @@ public sealed class PrototypeShipKitVfxBinder : MonoBehaviour
         public int CreatedInstances;
     }
 }
+
