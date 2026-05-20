@@ -14,6 +14,7 @@
       "role": "Cockpit",
       "blendObjectName": "PART_Cockpit_Wedge_Mk1",
       "exportPath": "Assets/Art/PrototypeShipKit/Parts/cockpit_wedge_mk1.glb",
+      "unityModelPath": "Assets/Art/PrototypeShipKit/Parts/cockpit_wedge_mk1.fbx",
       "dimensionsMeters": {
         "x": 1.2,
         "y": 1.6,
@@ -46,6 +47,7 @@
       "role": "Hull",
       "blendObjectName": "PART_Hull_Core_Mk1",
       "exportPath": "Assets/Art/PrototypeShipKit/Parts/hull_core_mk1.glb",
+      "unityModelPath": "Assets/Art/PrototypeShipKit/Parts/hull_core_mk1.fbx",
       "dimensionsMeters": {
         "x": 1.4,
         "y": 2.0,
@@ -153,6 +155,7 @@
       "role": "Hull",
       "blendObjectName": "PART_Hull_Segment_Mk1",
       "exportPath": "Assets/Art/PrototypeShipKit/Parts/hull_segment_mk1.glb",
+      "unityModelPath": "Assets/Art/PrototypeShipKit/Parts/hull_segment_mk1.fbx",
       "dimensionsMeters": {
         "x": 1.2,
         "y": 1.5,
@@ -230,6 +233,7 @@
       "role": "FuelTank",
       "blendObjectName": "PART_Fuel_Tank_Small_Mk1",
       "exportPath": "Assets/Art/PrototypeShipKit/Parts/fuel_tank_small_mk1.glb",
+      "unityModelPath": "Assets/Art/PrototypeShipKit/Parts/fuel_tank_small_mk1.fbx",
       "dimensionsMeters": {
         "x": 0.45,
         "y": 1.4,
@@ -263,6 +267,7 @@
       "role": "MainThruster",
       "blendObjectName": "PART_Main_Engine_Bell_Mk1",
       "exportPath": "Assets/Art/PrototypeShipKit/Parts/main_engine_bell_mk1.glb",
+      "unityModelPath": "Assets/Art/PrototypeShipKit/Parts/main_engine_bell_mk1.fbx",
       "dimensionsMeters": {
         "x": 0.6,
         "y": 0.9,
@@ -311,6 +316,7 @@
       "role": "RCS",
       "blendObjectName": "PART_RCS_Pod_4Way_Mk1",
       "exportPath": "Assets/Art/PrototypeShipKit/Parts/rcs_pod_4way_mk1.glb",
+      "unityModelPath": "Assets/Art/PrototypeShipKit/Parts/rcs_pod_4way_mk1.fbx",
       "dimensionsMeters": {
         "x": 0.45,
         "y": 0.35,
@@ -404,6 +410,7 @@
       "role": "Gun",
       "blendObjectName": "PART_Gun_Mount_Light_Mk1",
       "exportPath": "Assets/Art/PrototypeShipKit/Parts/gun_mount_light_mk1.glb",
+      "unityModelPath": "Assets/Art/PrototypeShipKit/Parts/gun_mount_light_mk1.fbx",
       "dimensionsMeters": {
         "x": 0.25,
         "y": 0.9,
@@ -451,6 +458,7 @@
       "role": "Cargo",
       "blendObjectName": "PART_Cargo_Pod_Small_Mk1",
       "exportPath": "Assets/Art/PrototypeShipKit/Parts/cargo_pod_small_mk1.glb",
+      "unityModelPath": "Assets/Art/PrototypeShipKit/Parts/cargo_pod_small_mk1.fbx",
       "dimensionsMeters": {
         "x": 1.0,
         "y": 0.8,
@@ -483,6 +491,7 @@
       "role": "Hardpoint",
       "blendObjectName": "PART_Connector_Hardpoint_Mk1",
       "exportPath": "Assets/Art/PrototypeShipKit/Parts/connector_hardpoint_mk1.glb",
+      "unityModelPath": "Assets/Art/PrototypeShipKit/Parts/connector_hardpoint_mk1.fbx",
       "dimensionsMeters": {
         "x": 0.42,
         "y": 0.42,
@@ -514,6 +523,7 @@
       "id": "demo_scout_mk1",
       "displayName": "Demo Scout Mk1",
       "exportPath": "Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.glb",
+      "unityModelPath": "Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.fbx",
       "partsUsed": [
         "cockpit_wedge_mk1",
         "hull_core_mk1",
@@ -522,12 +532,13 @@
         "gun_mount_light_mk1",
         "fuel_tank_small_mk1"
       ],
-      "notes": "RCS pods are mounted on left/right side hardpoint plates; hull-facing inboard nozzles are removed and replaced by blank attachment faces."
+      "notes": "RCS pods are mounted on left/right side hardpoint plates; hull-facing inboard nozzles are removed and replaced by lime side-mount faces. Extra underside mount plates are intentionally absent on demo ships."
     },
     {
       "id": "demo_cargo_mk1",
       "displayName": "Demo Cargo Mk1",
       "exportPath": "Assets/Art/PrototypeShipKit/DemoShips/demo_cargo_mk1.glb",
+      "unityModelPath": "Assets/Art/PrototypeShipKit/DemoShips/demo_cargo_mk1.fbx",
       "partsUsed": [
         "cockpit_wedge_mk1",
         "hull_core_mk1",
@@ -537,7 +548,7 @@
         "main_engine_bell_mk1",
         "rcs_pod_4way_mk1"
       ],
-      "notes": "RCS pods are mounted on left/right side hardpoint plates; hull-facing inboard nozzles are removed and replaced by blank attachment faces."
+      "notes": "RCS pods are mounted on left/right side hardpoint plates; hull-facing inboard nozzles are removed and replaced by lime side-mount faces. Extra underside mount plates are intentionally absent on demo ships."
     }
   ]
 }

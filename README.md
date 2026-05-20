@@ -17,6 +17,7 @@ This Unity prototype is a generated-primitives-only playable slice for testing z
 | `F3` | Toggle flight debug console |
 | `F4` | Toggle HUD/Navball |
 | `F5` | Toggle minimap/radar |
+| `F6` | Cycle generated / imported scout / imported cargo ship visuals |
 | `W` / `S` | Pitch down / up |
 | `A` / `D` | Yaw left / right |
 | `Q` / `E` | Roll left / right |
@@ -62,7 +63,7 @@ Camera reset is bound to Backquote. Unity Input System key controls are physical
 ## Prototype HUD And Debug UI
 
 - `PrototypeFlightHud`, `PrototypeDebugOverlay`, `PrototypeFlightDebugConsole`, `PrototypeKeybindOverlay`, and `PrototypeMinimapOverlay` are bound to the main camera after every generated ship spawn. They remain temporary IMGUI prototype UI, not final HUD art.
-- `F1` toggles a draggable keybind helper. `F2`, `F3`, `F4`, and `F5` toggle flight diagnostics, debug console, HUD/Navball, and minimap without relying on German-keyboard-sensitive punctuation keys.
+- `F1` toggles a draggable keybind helper. `F2`, `F3`, `F4`, `F5`, and `F6` toggle flight diagnostics, debug console, HUD/Navball, minimap, and ship visuals without relying on German-keyboard-sensitive punctuation keys.
 - The default startup view is the compact Flight Test preset: small flight diagnostics, HUD/Navball, and minimap, with the debug console hidden until needed.
 - Debug Console presets are available for Basic, Flight Test, RCS Test, and Full Diagnostics. Presets only change UI visibility/collapsed state and debug marker visibility; they do not change flight physics or control bindings.
 - `PrototypeMinimapOverlay` is a simple top-down XZ radar centered on the ship. It draws heading, velocity, range rings, origin, targets, beacons, gates, station, and visual obstacles with 250 m / 500 m / 1000 m / 2500 m zoom levels, filter toggles, optional opacity, and labels off by default. When labels are enabled, they stay limited to origin/station plus a few nearest relevant points.

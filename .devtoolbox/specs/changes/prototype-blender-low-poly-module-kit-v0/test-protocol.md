@@ -9,6 +9,7 @@ This verification covers the procedural Blender low-poly modular spaceship kit g
 - Blender scene: `art/blender/prototype_modular_ship_kit_v0.blend`
 - Part exports: `Assets/Art/PrototypeShipKit/Parts/*.glb`
 - Demo ship exports: `Assets/Art/PrototypeShipKit/DemoShips/*.glb`
+- Unity-readable exports: `Assets/Art/PrototypeShipKit/Parts/*.fbx` and `Assets/Art/PrototypeShipKit/DemoShips/*.fbx`
 - Manifest: `Assets/Art/PrototypeShipKit/prototype_ship_kit_manifest.json`
 
 ## DevToolbox
@@ -69,6 +70,26 @@ Second follow-up RCS side-mount correction:
 - Updated exports: `demo_scout_mk1.glb` and `demo_cargo_mk1.glb`.
 - Manifest demo notes now describe left/right side hardpoint mounting.
 
+Third follow-up RCS side-mount cleanup:
+
+- User feedback: demo ship RCS pods still showed an extra underside mount in addition to the ship-side attachment.
+- Removed demo-only RCS underside mount meshes from Scout and Cargo: 24 objects total (`Blank_MountPlate_Underside` and `Mount_Rails_ForeAft*` variants).
+- Moved 8 demo RCS `CONN_MOUNT` empties to the ship-facing side of their pods.
+- Recolored 8 inboard no-thruster faces to `MAT_Connector_Lime` so the only visible RCS mount face is the ship-side face.
+- Blender audit result: `ok: true`.
+- `DEMO_Scout_Mk1`: 4 RCS pods, 4 side-mount faces, 4 side connectors, 0 inboard nozzles, 0 underside mount geometry.
+- `DEMO_Cargo_Mk1`: 4 RCS pods, 4 side-mount faces, 4 side connectors, 0 inboard nozzles, 0 underside mount geometry.
+- Re-exported demo GLB and Unity-readable FBX files: `demo_scout_mk1.glb`, `demo_scout_mk1.fbx`, `demo_cargo_mk1.glb`, `demo_cargo_mk1.fbx`.
+
+Unity visual switch follow-up:
+
+- Unity `.glb` assets import as `DefaultAsset` in this project, so Blender also exported Unity-readable `.fbx` files for the 9 parts and 2 demo ships.
+- Added new non-gameplay component `Assets/Scripts/Prototype/PrototypeShipVisualSwitcher.cs`; existing `PrototypeBootstrap`, `PlayerShipController`, `RcsThrusterController`, and VFX/controller scripts were not changed.
+- Runtime switch: `F6` cycles `GeneratedPrimitives`, `ImportedDemoScout`, and `ImportedDemoCargo`.
+- The switcher hides generated primitive renderers only; gameplay transforms, colliders, RCS nozzles, weapon muzzle, thruster modules, and controllers remain active.
+- Unity alignment probe for FBX visual rotation `(-90, 180, 0)` confirmed cockpit ahead of engine on Unity `+Z` and top panels on Unity `+Y`.
+- Runtime MCP sanity check after one cycle: `visualRoot=True`, `rcs=20`, generated hull renderer hidden.
+
 Required generated counts:
 
 - Blender scene created: yes.
@@ -91,12 +112,15 @@ PowerShell JSON/file verification:
 - Manifest demo ship entries: 2.
 - Part GLB files: 9.
 - Demo GLB files: 2.
+- Part FBX files: 9.
+- Demo FBX files: 2.
 - Blend file exists: true.
 - Unity MCP `refresh_unity` was requested after file generation.
 - Unity generated `.meta` files for `Assets/Art`, `Assets/Art/PrototypeShipKit`, the Parts/DemoShips folders, the manifest, all 9 part GLBs, and both demo GLBs.
 - Unity MCP console check after refresh returned 0 error/warning entries.
 - Unity MCP refresh after the RCS attachment correction returned idle and console check returned 0 error/warning entries.
 - Unity MCP refresh after the RCS side-mount correction returned idle and console check returned 0 error/warning entries.
+- Unity MCP refresh after the Unity visual switch and final RCS underside-mount cleanup returned idle. Console check returned 0 errors; the remaining warnings were pre-existing obsolete API warnings in `PrototypeTestEnvironmentValidationTests.cs` and an MCP WebSocket warning.
 
 Expected part exports exist:
 
@@ -114,13 +138,21 @@ Expected demo exports exist:
 
 - `demo_scout_mk1.glb`
 - `demo_cargo_mk1.glb`
+- `demo_scout_mk1.fbx`
+- `demo_cargo_mk1.fbx`
+
+Unity verification:
+
+- `PrototypeShipVisualSwitcherValidationTests` EditMode run passed: 2/2.
+- `PrototypeShipVariantValidationTests.BaselineVariantBuildsStableRigAndRebindsDebugConsole` EditMode run passed: 1/1.
+- `PrototypeShipVisualSwitcherValidationTests.ImportedScoutVisualKeepsGameplayRigAndCanReturnToGeneratedPrimitives` verifies imported Scout visual attachment, primitive shell hiding, no underside RCS mount geometry, 20 RCS nozzles retained, and switching back to generated primitives.
+- `PrototypeShipVisualSwitcherValidationTests.ImportedCargoVisualAlignsWithUnityForwardAndUp` verifies imported Cargo alignment, no underside RCS mount geometry, cockpit ahead on Unity `+Z`, and top panels above the ship on Unity `+Y`.
 
 ## Scope / Safety Checks
 
 - No external asset packs were used. Materials are procedural Blender material data blocks and no image textures are referenced.
-- This run created new Blender/art/spec/manifest artifacts only.
-- Git status before asset generation already showed unrelated dirty C# prototype/UI/controller files in the shared workspace.
-- A scoped post-generation git status shows those C# files remain dirty, but they were not edited by this asset run:
+- Initial asset generation created Blender/art/spec/manifest artifacts. The follow-up Unity integration added one new visual-switcher script, one new editor test file, README control documentation, and Unity-readable FBX assets.
+- Existing gameplay/controller scripts were not edited:
   - `Assets/Scripts/Prototype/EngineVfxController.cs`
   - `Assets/Scripts/Prototype/PlayerShipController.cs`
   - `Assets/Scripts/Prototype/PrototypeBootstrap.cs`
@@ -135,3 +167,4 @@ Acceptance criteria passed for this prototype run:
 - Cockpit, hull, fuel, main engine, RCS, gun, cargo, and connector roles are visually/materially distinguishable.
 - Connector and hardpoint markers exist and are visible in the `.blend`.
 - Part names, custom properties, connector names, GLB exports, and manifest entries are consistent enough for later Unity import experiments.
+- Demo ship FBX visuals can be switched in Unity with `F6` without replacing the gameplay prototype rig.
