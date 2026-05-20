@@ -32,14 +32,14 @@
 - [x] Create PrototypeShipVariant data model
 - [x] Create PrototypeShipLayout data model
 - [x] Add module, main thruster, RCS block, and gun layout definitions
-- [ ] Update PrototypeBootstrap to build from selected layout while preserving existing baseline behavior
+- [x] Update PrototypeBootstrap to build from selected layout while preserving existing baseline behavior
 - [x] Add MainThrusterBank or equivalent aggregate for multiple main thrusters
-- [ ] Add Baseline Balanced variant
-- [ ] Add Dual Main Thruster variant
-- [ ] Add Off-Center Main Thruster variant
-- [ ] Add One-Sided RCS variant
-- [ ] Add Heavy Cargo variant
-- [ ] Add No-RCS variant
+- [x] Add Baseline Balanced variant
+- [x] Add Dual Main Thruster variant
+- [x] Add Off-Center Main Thruster variant
+- [x] Add One-Sided RCS variant
+- [x] Add Heavy Cargo variant
+- [x] Add No-RCS variant
 - [ ] Wire camera/controller/HUD/debug console after variant spawn
 
 ## Slice 3: Navball-Light HUD
@@ -63,11 +63,11 @@
 - [x] Validate changed Unity scripts with Unity MCP
 - [ ] Verify console buttons mirror existing keyboard behavior
 - [ ] Verify debug vector toggles work at runtime
-- [ ] Verify Baseline variant remains stable
-- [ ] Verify Dual Main Thruster symmetric thrust has near-zero unintended torque
+- [x] Verify Baseline variant remains stable
+- [x] Verify Dual Main Thruster symmetric thrust has near-zero unintended torque
 - [ ] Verify single-engine failure creates expected torque
-- [ ] Verify Off-Center Main Thruster shows COM-safe vs fully physical difference
-- [ ] Verify One-Sided RCS reports residual force/torque
+- [x] Verify Off-Center Main Thruster shows COM-safe vs fully physical difference
+- [x] Verify One-Sided RCS reports residual force/torque
 - [ ] Verify Navball prograde/retrograde markers respond to velocity direction
 - [x] Verify no compile errors in Unity console
 - [x] Add test evidence under this spec

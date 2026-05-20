@@ -199,6 +199,80 @@ public static class PrototypeModuleMassLayout
         ConfigureDescriptor(ship.Find("RCS_Right"), "RCS_Right", stats.RcsBlockMass, 0f, false, new Vector3(0.22f, 0.55f, 0.55f));
     }
 
+    public static void ConfigureGeneratedPrototypeDescriptors(Transform ship, ShipStats stats, PrototypeShipLayout layout)
+    {
+        if (ship == null || stats == null)
+        {
+            return;
+        }
+
+        if (layout == null)
+        {
+            ConfigureGeneratedPrototypeDescriptors(ship, stats);
+            return;
+        }
+
+        PrototypeModuleLayoutEntry[] modules = layout.Modules;
+        for (int i = 0; i < modules.Length; i++)
+        {
+            PrototypeModuleLayoutEntry module = modules[i];
+            ConfigureDescriptor(
+                ship.Find(module.ModuleId),
+                module.ModuleId,
+                GetModuleDryMass(stats, module.MassRole, module.HasDryMassOverride, module.DryMassKg),
+                module.UsesCurrentShipFuel ? stats.CurrentFuelKg : 0f,
+                module.UsesCurrentShipFuel,
+                module.MassBoxSize);
+        }
+
+        PrototypeMainThrusterLayoutEntry[] mainThrusters = layout.MainThrusters;
+        for (int i = 0; i < mainThrusters.Length; i++)
+        {
+            PrototypeMainThrusterLayoutEntry thruster = mainThrusters[i];
+            ConfigureDescriptor(ship.Find(thruster.ModuleId), "Engine", stats.EngineMass, 0f, false, thruster.LocalScale);
+        }
+
+        PrototypeGunLayoutEntry[] guns = layout.Guns;
+        for (int i = 0; i < guns.Length; i++)
+        {
+            PrototypeGunLayoutEntry gun = guns[i];
+            ConfigureDescriptor(ship.Find(gun.ModuleId), gun.ModuleId, stats.GunMass, 0f, false, gun.LocalScale);
+        }
+
+        PrototypeRcsBlockLayoutEntry[] rcsBlocks = layout.RcsBlocks;
+        for (int i = 0; i < rcsBlocks.Length; i++)
+        {
+            PrototypeRcsBlockLayoutEntry block = rcsBlocks[i];
+            ConfigureDescriptor(ship.Find(block.BlockId), block.BlockId, stats.RcsBlockMass, 0f, false, block.LocalScale);
+        }
+    }
+
+    private static float GetModuleDryMass(ShipStats stats, PrototypeModuleMassRole role, bool hasOverride, float overrideMass)
+    {
+        if (hasOverride)
+        {
+            return overrideMass;
+        }
+
+        switch (role)
+        {
+            case PrototypeModuleMassRole.Cockpit:
+                return stats.CockpitMass;
+            case PrototypeModuleMassRole.FuelTank:
+                return stats.FuelTankDryMass;
+            case PrototypeModuleMassRole.Engine:
+                return stats.EngineMass;
+            case PrototypeModuleMassRole.Gun:
+                return stats.GunMass;
+            case PrototypeModuleMassRole.RcsBlock:
+                return stats.RcsBlockMass;
+            case PrototypeModuleMassRole.Hull:
+            case PrototypeModuleMassRole.Custom:
+            default:
+                return stats.HullMass;
+        }
+    }
+
     private static void ConfigureDescriptor(Transform module, string id, float dryMassKg, float fuelMassKg, bool useShipFuel, Vector3 boxSize)
     {
         if (module == null)

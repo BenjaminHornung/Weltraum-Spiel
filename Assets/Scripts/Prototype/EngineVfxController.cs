@@ -27,6 +27,24 @@ public class EngineVfxController : MonoBehaviour
         ApplyThrottle();
     }
 
+    public void ConfigureNozzle(Transform nozzleTransform)
+    {
+        if (nozzleTransform == null)
+        {
+            return;
+        }
+
+        if (nozzle != nozzleTransform)
+        {
+            nozzle = nozzleTransform;
+            thrustParticles = null;
+            thrustLight = null;
+        }
+
+        EnsureParticles();
+        ApplyThrottle();
+    }
+
     private void Update()
     {
         ApplyThrottle();

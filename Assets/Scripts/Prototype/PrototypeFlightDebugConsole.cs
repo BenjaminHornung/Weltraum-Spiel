@@ -150,7 +150,7 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
         DrawEnumSelector("SAS mode", shipController.SasMode, shipController.SetSasMode);
         DrawEnumSelector("Assist", shipController.FlightAssistMode, shipController.SetFlightAssistMode);
         DrawEnumSelector("Main thrust", shipController.MainThrustMode, shipController.SetMainThrustMode);
-        GUILayout.Label("Ship variant: Baseline Balanced (placeholder)", labelStyle);
+        DrawVariantSelector();
     }
 
     private void DrawActions()
@@ -260,6 +260,33 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
         GUILayout.Label($"Nozzle max: {shipController.LastRcsMaxNozzleThrottle:0.00}, saturated {shipController.LastRcsSaturatedNozzleCount}, active {shipController.ActiveRcsNozzleCount}/{shipController.InstalledRcsNozzleCount}", labelStyle);
         GUILayout.Label($"Allocator: {shipController.LastRcsAllocatorStatus}, applications {shipController.LastRcsNozzleApplicationCount}", labelStyle);
         GUILayout.Label($"Active nozzles: {Shorten(shipController.ActiveRcsNozzleIds, 78)}", labelStyle);
+    }
+
+    private void DrawVariantSelector()
+    {
+        if (bootstrap == null)
+        {
+            GUILayout.Label("Ship variant selector unavailable: no PrototypeBootstrap.", labelStyle);
+            return;
+        }
+
+        GUILayout.BeginHorizontal();
+        GUILayout.Label($"Ship variant: {bootstrap.SelectedVariantName}", labelStyle, GUILayout.Width(245f));
+        if (GUILayout.Button("Prev"))
+        {
+            bootstrap.SelectPreviousVariant();
+        }
+
+        if (GUILayout.Button("Next"))
+        {
+            bootstrap.SelectNextVariant();
+        }
+        GUILayout.EndHorizontal();
+
+        if (GUILayout.Button("Spawn Selected Variant"))
+        {
+            bootstrap.BuildSelectedVariant();
+        }
     }
 
     private void DrawEnumSelector<T>(string label, T value, Action<T> apply) where T : Enum

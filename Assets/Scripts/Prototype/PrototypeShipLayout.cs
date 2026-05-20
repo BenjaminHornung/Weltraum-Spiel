@@ -4,10 +4,30 @@ using UnityEngine;
 [Serializable]
 public sealed class PrototypeShipLayout
 {
-    [SerializeField] private PrototypeModuleLayoutEntry[] modules = DefaultModules();
-    [SerializeField] private PrototypeMainThrusterLayoutEntry[] mainThrusters = DefaultMainThrusters();
-    [SerializeField] private PrototypeRcsBlockLayoutEntry[] rcsBlocks = DefaultRcsBlocks();
-    [SerializeField] private PrototypeGunLayoutEntry[] guns = DefaultGuns();
+    [SerializeField] private PrototypeModuleLayoutEntry[] modules =
+    {
+        new PrototypeModuleLayoutEntry("Hull", Vector3.zero, new Vector3(1.8f, 1.1f, 6.0f), PrototypeModuleMassRole.Hull),
+        new PrototypeModuleLayoutEntry("Cockpit", new Vector3(0f, 0.45f, 2.05f), new Vector3(1.0f, 0.45f, 1.0f), PrototypeModuleMassRole.Cockpit),
+        new PrototypeModuleLayoutEntry("FuelTank", new Vector3(0f, -0.45f, 0.1f), new Vector3(1.2f, 0.35f, 2.1f), PrototypeModuleMassRole.FuelTank)
+    };
+
+    [SerializeField] private PrototypeMainThrusterLayoutEntry[] mainThrusters =
+    {
+        new PrototypeMainThrusterLayoutEntry("MainThrusterGimbal", "MainThrusterNozzle", new Vector3(0f, 0f, -3.35f), new Vector3(1.0f, 0.75f, 0.7f), new Vector3(0f, 0f, -0.55f))
+    };
+
+    [SerializeField] private PrototypeRcsBlockLayoutEntry[] rcsBlocks =
+    {
+        new PrototypeRcsBlockLayoutEntry("RCS_Top", new Vector3(0f, 0.7f, 0f), new Vector3(0.55f, 0.22f, 0.55f), Vector3.down),
+        new PrototypeRcsBlockLayoutEntry("RCS_Bottom", new Vector3(0f, -0.7f, 0f), new Vector3(0.55f, 0.22f, 0.55f), Vector3.up),
+        new PrototypeRcsBlockLayoutEntry("RCS_Left", new Vector3(-1.02f, 0f, 0f), new Vector3(0.22f, 0.55f, 0.55f), Vector3.right),
+        new PrototypeRcsBlockLayoutEntry("RCS_Right", new Vector3(1.02f, 0f, 0f), new Vector3(0.22f, 0.55f, 0.55f), Vector3.left)
+    };
+
+    [SerializeField] private PrototypeGunLayoutEntry[] guns =
+    {
+        new PrototypeGunLayoutEntry("Gun", new Vector3(0f, 0.1f, 3.25f), new Vector3(0.32f, 0.22f, 0.65f), "Muzzle", new Vector3(0f, 0f, 0.45f))
+    };
 
     public PrototypeModuleLayoutEntry[] Modules => modules ?? Array.Empty<PrototypeModuleLayoutEntry>();
     public PrototypeMainThrusterLayoutEntry[] MainThrusters => mainThrusters ?? Array.Empty<PrototypeMainThrusterLayoutEntry>();
@@ -16,120 +36,63 @@ public sealed class PrototypeShipLayout
 
     public static PrototypeShipLayout Baseline()
     {
-        return Create(DefaultModules(), DefaultMainThrusters(), DefaultRcsBlocks(), DefaultGuns());
+        return new PrototypeShipLayout();
     }
 
     public static PrototypeShipLayout DualMainThruster()
     {
-        return Create(
-            DefaultModules(),
-            new[]
+        return new PrototypeShipLayout
+        {
+            mainThrusters = new[]
             {
                 new PrototypeMainThrusterLayoutEntry("MainThruster_Left", "MainThrusterNozzle", new Vector3(-0.55f, 0f, -3.35f), new Vector3(0.75f, 0.65f, 0.7f), new Vector3(0f, 0f, -0.55f)),
                 new PrototypeMainThrusterLayoutEntry("MainThruster_Right", "MainThrusterNozzle", new Vector3(0.55f, 0f, -3.35f), new Vector3(0.75f, 0.65f, 0.7f), new Vector3(0f, 0f, -0.55f))
-            },
-            DefaultRcsBlocks(),
-            DefaultGuns());
+            }
+        };
     }
 
     public static PrototypeShipLayout OffCenterMainThruster()
     {
-        return Create(
-            DefaultModules(),
-            new[]
+        return new PrototypeShipLayout
+        {
+            mainThrusters = new[]
             {
                 new PrototypeMainThrusterLayoutEntry("MainThruster_Offset", "MainThrusterNozzle", new Vector3(0.85f, 0f, -3.35f), new Vector3(0.9f, 0.7f, 0.7f), new Vector3(0f, 0f, -0.55f))
-            },
-            DefaultRcsBlocks(),
-            DefaultGuns());
+            }
+        };
     }
 
     public static PrototypeShipLayout OneSidedRcs()
     {
-        return Create(
-            DefaultModules(),
-            DefaultMainThrusters(),
-            new[]
+        return new PrototypeShipLayout
+        {
+            rcsBlocks = new[]
             {
                 new PrototypeRcsBlockLayoutEntry("RCS_Right_Only_A", new Vector3(1.02f, 0f, 1.15f), new Vector3(0.22f, 0.55f, 0.55f), Vector3.left),
                 new PrototypeRcsBlockLayoutEntry("RCS_Right_Only_B", new Vector3(1.02f, 0f, -1.15f), new Vector3(0.22f, 0.55f, 0.55f), Vector3.left)
-            },
-            DefaultGuns());
+            }
+        };
     }
 
     public static PrototypeShipLayout HeavyCargo()
     {
-        var modules = DefaultModules();
-        Array.Resize(ref modules, modules.Length + 1);
-        modules[modules.Length - 1] = new PrototypeModuleLayoutEntry(
-            "CargoMass",
-            new Vector3(0f, -0.05f, -1.35f),
-            new Vector3(1.65f, 0.9f, 1.45f),
-            PrototypeModuleMassRole.Custom,
-            2800f);
-
-        return Create(modules, DefaultMainThrusters(), DefaultRcsBlocks(), DefaultGuns());
+        return new PrototypeShipLayout
+        {
+            modules = new[]
+            {
+                new PrototypeModuleLayoutEntry("Hull", Vector3.zero, new Vector3(1.8f, 1.1f, 6.0f), PrototypeModuleMassRole.Hull),
+                new PrototypeModuleLayoutEntry("Cockpit", new Vector3(0f, 0.45f, 2.05f), new Vector3(1.0f, 0.45f, 1.0f), PrototypeModuleMassRole.Cockpit),
+                new PrototypeModuleLayoutEntry("FuelTank", new Vector3(0f, -0.45f, 0.1f), new Vector3(1.2f, 0.35f, 2.1f), PrototypeModuleMassRole.FuelTank),
+                new PrototypeModuleLayoutEntry("CargoMass", new Vector3(0f, -0.05f, -1.35f), new Vector3(1.65f, 0.9f, 1.45f), PrototypeModuleMassRole.Custom, 2800f)
+            }
+        };
     }
 
     public static PrototypeShipLayout NoRcs()
     {
-        return Create(DefaultModules(), DefaultMainThrusters(), Array.Empty<PrototypeRcsBlockLayoutEntry>(), DefaultGuns());
-    }
-
-    private static PrototypeShipLayout Create(
-        PrototypeModuleLayoutEntry[] moduleEntries,
-        PrototypeMainThrusterLayoutEntry[] mainThrusterEntries,
-        PrototypeRcsBlockLayoutEntry[] rcsBlockEntries,
-        PrototypeGunLayoutEntry[] gunEntries)
-    {
         return new PrototypeShipLayout
         {
-            modules = moduleEntries,
-            mainThrusters = mainThrusterEntries,
-            rcsBlocks = rcsBlockEntries,
-            guns = gunEntries
-        };
-    }
-
-    private static PrototypeModuleLayoutEntry[] DefaultModules()
-    {
-        return new[]
-        {
-            new PrototypeModuleLayoutEntry("Hull", Vector3.zero, new Vector3(1.8f, 1.1f, 6.0f), PrototypeModuleMassRole.Hull),
-            new PrototypeModuleLayoutEntry("Cockpit", new Vector3(0f, 0.45f, 2.05f), new Vector3(1.0f, 0.45f, 1.0f), PrototypeModuleMassRole.Cockpit),
-            new PrototypeModuleLayoutEntry("FuelTank", new Vector3(0f, -0.45f, 0.1f), new Vector3(1.2f, 0.35f, 2.1f), PrototypeModuleMassRole.FuelTank)
-        };
-    }
-
-    private static PrototypeMainThrusterLayoutEntry[] DefaultMainThrusters()
-    {
-        return new[]
-        {
-            new PrototypeMainThrusterLayoutEntry(
-                "MainThrusterGimbal",
-                "MainThrusterNozzle",
-                new Vector3(0f, 0f, -3.35f),
-                new Vector3(1.0f, 0.75f, 0.7f),
-                new Vector3(0f, 0f, -0.55f))
-        };
-    }
-
-    private static PrototypeRcsBlockLayoutEntry[] DefaultRcsBlocks()
-    {
-        return new[]
-        {
-            new PrototypeRcsBlockLayoutEntry("RCS_Top", new Vector3(0f, 0.7f, 0f), new Vector3(0.55f, 0.22f, 0.55f), Vector3.down),
-            new PrototypeRcsBlockLayoutEntry("RCS_Bottom", new Vector3(0f, -0.7f, 0f), new Vector3(0.55f, 0.22f, 0.55f), Vector3.up),
-            new PrototypeRcsBlockLayoutEntry("RCS_Left", new Vector3(-1.02f, 0f, 0f), new Vector3(0.22f, 0.55f, 0.55f), Vector3.right),
-            new PrototypeRcsBlockLayoutEntry("RCS_Right", new Vector3(1.02f, 0f, 0f), new Vector3(0.22f, 0.55f, 0.55f), Vector3.left)
-        };
-    }
-
-    private static PrototypeGunLayoutEntry[] DefaultGuns()
-    {
-        return new[]
-        {
-            new PrototypeGunLayoutEntry("Gun", new Vector3(0f, 0.1f, 3.25f), new Vector3(0.32f, 0.22f, 0.65f), "Muzzle", new Vector3(0f, 0f, 0.45f))
+            rcsBlocks = Array.Empty<PrototypeRcsBlockLayoutEntry>()
         };
     }
 }

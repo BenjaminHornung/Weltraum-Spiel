@@ -1,9 +1,11 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PrototypeBootstrap : MonoBehaviour
 {
     [SerializeField] private bool buildOnStart = true;
     [SerializeField] private PrototypeShipConfig shipConfig;
+    [SerializeField] private int selectedVariantIndex;
     [SerializeField] private bool addOrientationMarkers = true;
     [SerializeField] private Vector3 shipStartPosition = new Vector3(0f, 0.5f, 0f);
     [SerializeField] private bool spawnTestTarget = true;
@@ -11,10 +13,30 @@ public class PrototypeBootstrap : MonoBehaviour
     [SerializeField] private Vector3 testTargetScale = new Vector3(4f, 4f, 0.6f);
 
     private const string PrototypeRootName = "PrototypeShip";
+    private const float DefaultRcsBlockThrust = 6500f;
     private static readonly Color HullColor = new Color(0.68f, 0.72f, 0.78f);
+    private static readonly Color CockpitColor = new Color(0.82f, 0.2f, 0.2f);
+    private static readonly Color FuelTankColor = new Color(0.2f, 0.7f, 0.2f);
+    private static readonly Color GunColor = new Color(0.9f, 0.9f, 0.3f);
+    private static readonly Color CargoColor = new Color(0.45f, 0.5f, 0.56f);
+    private static readonly Color MainThrusterColor = new Color(0.16f, 0.44f, 0.9f);
     private static readonly Color RcsBlockColor = new Color(0.22f, 0.85f, 0.95f);
     private static readonly Color RcsVfxColor = new Color(0.35f, 1f, 0.65f, 0.85f);
-    private const float DefaultRcsBlockThrust = 6500f;
+
+    private PrototypeShipVariant[] runtimeVariants;
+
+    public PrototypeShipVariant[] BuiltInVariants
+    {
+        get
+        {
+            EnsureRuntimeVariants();
+            return runtimeVariants;
+        }
+    }
+
+    public int SelectedVariantIndex => Mathf.Clamp(selectedVariantIndex, 0, Mathf.Max(0, BuiltInVariants.Length - 1));
+    public PrototypeShipVariant SelectedVariant => BuiltInVariants.Length > 0 ? BuiltInVariants[SelectedVariantIndex] : PrototypeShipVariant.Baseline();
+    public string SelectedVariantName => SelectedVariant != null ? SelectedVariant.DisplayName : "Baseline Balanced";
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void RuntimeBootstrap()
@@ -42,6 +64,16 @@ public class PrototypeBootstrap : MonoBehaviour
 
     public void BuildPrototype()
     {
+        BuildPrototype(SelectedVariant);
+    }
+
+    public void BuildPrototype(PrototypeShipVariant variant)
+    {
+        variant = variant ?? PrototypeShipVariant.Baseline();
+        int variantIndex = FindVariantIndex(variant.VariantId);
+        selectedVariantIndex = variantIndex >= 0 ? variantIndex : 0;
+
+        PrototypeShipLayout layout = variant.Layout ?? PrototypeShipLayout.Baseline();
         var ship = GameObject.Find(PrototypeRootName);
         if (ship == null)
         {
@@ -49,10 +81,19 @@ public class PrototypeBootstrap : MonoBehaviour
             ship.transform.position = shipStartPosition;
         }
 
-        var stats = GetOrAddComponent<ShipStats>(ship);
-        stats.ApplyConfig(shipConfig);
-        var shipRigidbody = GetOrAddComponent<Rigidbody>(ship);
+        ClearGeneratedShipChildren(ship.transform);
 
+        var stats = GetOrAddComponent<ShipStats>(ship);
+        if (shipConfig != null)
+        {
+            stats.ApplyConfig(shipConfig);
+        }
+        else
+        {
+            stats.ApplyVariant(variant);
+        }
+
+        var shipRigidbody = GetOrAddComponent<Rigidbody>(ship);
         shipRigidbody.useGravity = false;
         shipRigidbody.mass = stats.CurrentMass;
         shipRigidbody.linearDamping = 0f;
@@ -62,43 +103,35 @@ public class PrototypeBootstrap : MonoBehaviour
         var physicsCore = GetOrAddComponent<ShipPhysicsCore>(ship);
         physicsCore.Configure(shipRigidbody);
 
-        EnsureModuleParts(ship.transform);
-        var mainNozzle = EnsureMainThrusterNozzle(ship.transform);
-        var mainThermal = EnsureThermalModule(
-            mainNozzle != null && mainNozzle.parent != null ? mainNozzle.parent.gameObject : ship,
-            "Main Thruster",
-            180f,
-            85f,
-            450f,
-            6f,
-            120f,
-            true,
-            PrototypeThermalModule.OverheatEffect.DisableModule);
-        EnsureThermalModule(
-            ship.transform.Find("Gun") != null ? ship.transform.Find("Gun").gameObject : ship,
-            "Gun",
-            12f,
-            18f,
-            160f,
-            4f,
-            95f,
-            true,
-            PrototypeThermalModule.OverheatEffect.ThrottleToHalf);
-        EnsureRcsThrusters(ship.transform, shipConfig);
-        PrototypeModuleMassLayout.ConfigureGeneratedPrototypeDescriptors(ship.transform, stats);
+        EnsureModuleParts(ship.transform, layout);
+        MainThrusterModule[] mainThrusterModules = EnsureMainThrusters(ship.transform, layout, stats, shipRigidbody, physicsCore, variant, out Transform primaryMainNozzle);
+        EnsureGunModules(ship.transform, layout);
+        EnsureRcsThrusters(ship.transform, layout, variant);
+        PrototypeModuleMassLayout.ConfigureGeneratedPrototypeDescriptors(ship.transform, stats, layout);
         stats.ApplyMassProperties(shipRigidbody);
         RemoveRootFallbackChild(ship.transform, "Muzzle");
 
         var gun = GetOrAddComponent<GunModule>(ship);
         var engine = GetOrAddComponent<EngineVfxController>(ship);
-        var mainThruster = GetOrAddComponent<MainThrusterModule>(ship);
+        var mainThruster = GetOrAddComponent<MainThrusterBank>(ship);
         var rcs = GetOrAddComponent<RcsThrusterController>(ship);
-        gun.ApplyConfig(shipConfig);
-        mainThruster.ApplyConfig(shipConfig);
-        rcs.ApplyConfig(shipConfig);
+        if (shipConfig != null)
+        {
+            gun.ApplyConfig(shipConfig);
+            mainThruster.ApplyConfig(shipConfig);
+            rcs.ApplyConfig(shipConfig);
+        }
+        else
+        {
+            gun.ApplySettings(variant.Gun);
+            mainThruster.ApplySettings(variant.MainThruster);
+            rcs.ApplySettings(variant.Rcs);
+        }
+
         GetOrAddComponent<PlayerShipController>(ship);
 
-        mainThruster.Configure(mainNozzle, shipRigidbody, stats, physicsCore, mainThermal);
+        mainThruster.Configure(mainThrusterModules, shipRigidbody, stats, physicsCore);
+        engine.ConfigureNozzle(primaryMainNozzle);
         rcs.ConfigureThrusters(
             ship.transform.Find("RCS_Top"),
             ship.transform.Find("RCS_Bottom"),
@@ -128,6 +161,76 @@ public class PrototypeBootstrap : MonoBehaviour
         EnsureSceneDirectionalLight();
     }
 
+    public void SelectVariant(int index)
+    {
+        selectedVariantIndex = Mathf.Clamp(index, 0, Mathf.Max(0, BuiltInVariants.Length - 1));
+    }
+
+    public void SelectNextVariant()
+    {
+        if (BuiltInVariants.Length == 0)
+        {
+            selectedVariantIndex = 0;
+            return;
+        }
+
+        selectedVariantIndex = (SelectedVariantIndex + 1) % BuiltInVariants.Length;
+    }
+
+    public void SelectPreviousVariant()
+    {
+        if (BuiltInVariants.Length == 0)
+        {
+            selectedVariantIndex = 0;
+            return;
+        }
+
+        selectedVariantIndex = (SelectedVariantIndex + BuiltInVariants.Length - 1) % BuiltInVariants.Length;
+    }
+
+    public void SpawnSelectedVariant()
+    {
+        BuildPrototype(SelectedVariant);
+    }
+
+    public void BuildBuiltInVariant(int index)
+    {
+        SelectVariant(index);
+        SpawnSelectedVariant();
+    }
+
+    public void BuildSelectedVariant()
+    {
+        SpawnSelectedVariant();
+    }
+
+    public void SpawnTestTarget()
+    {
+        EnsureTestTarget();
+    }
+
+    private void EnsureRuntimeVariants()
+    {
+        if (runtimeVariants == null || runtimeVariants.Length == 0)
+        {
+            runtimeVariants = PrototypeShipVariant.BuiltIns();
+        }
+    }
+
+    private int FindVariantIndex(string variantId)
+    {
+        PrototypeShipVariant[] variants = BuiltInVariants;
+        for (int i = 0; i < variants.Length; i++)
+        {
+            if (variants[i] != null && variants[i].VariantId == variantId)
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
     private static T GetOrAddComponent<T>(GameObject target) where T : Component
     {
         var component = target.GetComponent<T>();
@@ -137,6 +240,25 @@ public class PrototypeBootstrap : MonoBehaviour
         }
 
         return component;
+    }
+
+    private static void ClearGeneratedShipChildren(Transform ship)
+    {
+        if (ship == null)
+        {
+            return;
+        }
+
+        for (int i = ship.childCount - 1; i >= 0; i--)
+        {
+            DestroyGameObjectImmediate(ship.GetChild(i).gameObject);
+        }
+
+        MainThrusterModule[] existingThrusters = ship.GetComponents<MainThrusterModule>();
+        for (int i = 0; i < existingThrusters.Length; i++)
+        {
+            DestroyComponentImmediate(existingThrusters[i]);
+        }
     }
 
     private static void RemoveRootFallbackChild(Transform parent, string childName)
@@ -150,72 +272,137 @@ public class PrototypeBootstrap : MonoBehaviour
         DestroyGameObject(child.gameObject);
     }
 
-    private static GameObject EnsureModuleParts(Transform ship)
+    private static GameObject EnsureModuleParts(Transform ship, PrototypeShipLayout layout)
     {
-        BuildModulePart(ship, "Hull", PrimitiveType.Cube, Vector3.zero, Quaternion.identity, new Vector3(1.8f, 1.1f, 6.0f), HullColor);
-        BuildModulePart(ship, "Cockpit", PrimitiveType.Cube, new Vector3(0f, 0.45f, 2.05f), Quaternion.identity, new Vector3(1.0f, 0.45f, 1.0f), new Color(0.82f, 0.2f, 0.2f));
-        BuildModulePart(ship, "FuelTank", PrimitiveType.Cube, new Vector3(0f, -0.45f, 0.1f), Quaternion.identity, new Vector3(1.2f, 0.35f, 2.1f), new Color(0.2f, 0.7f, 0.2f));
-
-        var gun = BuildModulePart(ship, "Gun", PrimitiveType.Cube, new Vector3(0f, 0.1f, 3.25f), Quaternion.identity, new Vector3(0.32f, 0.22f, 0.65f), new Color(0.9f, 0.9f, 0.3f));
-        var muzzle = gun.transform.Find("Muzzle");
-        if (muzzle == null)
+        PrototypeModuleLayoutEntry[] modules = layout != null ? layout.Modules : PrototypeShipLayout.Baseline().Modules;
+        for (int i = 0; i < modules.Length; i++)
         {
-            var muzzleObj = new GameObject("Muzzle");
-            muzzleObj.transform.SetParent(gun.transform, false);
-            muzzleObj.transform.localPosition = new Vector3(0f, 0f, 0.45f);
-            muzzleObj.transform.localRotation = Quaternion.identity;
-        }
-        else
-        {
-            muzzle.localPosition = new Vector3(0f, 0f, 0.45f);
-            muzzle.localRotation = Quaternion.identity;
+            PrototypeModuleLayoutEntry module = modules[i];
+            BuildModulePart(
+                ship,
+                module.ModuleId,
+                PrimitiveType.Cube,
+                module.LocalPosition,
+                Quaternion.Euler(module.LocalEulerAngles),
+                module.LocalScale,
+                ColorForModule(module.MassRole));
         }
 
         return ship.gameObject;
     }
 
-    private static Transform EnsureMainThrusterNozzle(Transform ship)
+    private static MainThrusterModule[] EnsureMainThrusters(Transform ship, PrototypeShipLayout layout, ShipStats stats, Rigidbody shipRigidbody, ShipPhysicsCore physicsCore, PrototypeShipVariant variant, out Transform primaryNozzle)
     {
         DestroyChildIfExists(ship, "Engine");
-        var gimbal = BuildModulePart(ship, "MainThrusterGimbal", PrimitiveType.Cube, new Vector3(0f, 0f, -3.35f), Quaternion.identity, new Vector3(1.0f, 0.75f, 0.7f), new Color(0.16f, 0.44f, 0.9f));
-        var nozzle = gimbal.transform.Find("MainThrusterNozzle");
-        if (nozzle == null)
+
+        PrototypeMainThrusterLayoutEntry[] entries = layout != null ? layout.MainThrusters : PrototypeShipLayout.Baseline().MainThrusters;
+        var modules = new List<MainThrusterModule>(entries.Length);
+        primaryNozzle = null;
+        for (int i = 0; i < entries.Length; i++)
         {
-            var nozzleObject = new GameObject("MainThrusterNozzle");
-            nozzleObject.transform.SetParent(gimbal.transform, false);
-            nozzle = nozzleObject.transform;
+            PrototypeMainThrusterLayoutEntry entry = entries[i];
+            var gimbal = BuildModulePart(
+                ship,
+                entry.ModuleId,
+                PrimitiveType.Cube,
+                entry.LocalPosition,
+                Quaternion.Euler(entry.LocalEulerAngles),
+                entry.LocalScale,
+                MainThrusterColor);
+            var nozzle = gimbal.transform.Find(entry.NozzleId);
+            if (nozzle == null)
+            {
+                var nozzleObject = new GameObject(entry.NozzleId);
+                nozzleObject.transform.SetParent(gimbal.transform, false);
+                nozzle = nozzleObject.transform;
+            }
+
+            nozzle.localPosition = entry.NozzleLocalPosition;
+            nozzle.localRotation = Quaternion.Euler(entry.NozzleLocalEulerAngles);
+            if (primaryNozzle == null)
+            {
+                primaryNozzle = nozzle;
+            }
+
+            var mainThermal = EnsureThermalModule(
+                gimbal,
+                "Main Thruster",
+                180f,
+                85f,
+                450f,
+                6f,
+                120f,
+                true,
+                PrototypeThermalModule.OverheatEffect.DisableModule);
+            var module = ship.gameObject.AddComponent<MainThrusterModule>();
+            module.Configure(nozzle, shipRigidbody, stats, physicsCore, mainThermal);
+            module.ApplySettings(variant != null ? variant.MainThruster : PrototypeMainThrusterSettings.Default);
+            modules.Add(module);
         }
 
-        nozzle.localPosition = new Vector3(0f, 0f, -0.55f);
-        nozzle.localRotation = Quaternion.identity;
-        return nozzle;
+        return modules.ToArray();
     }
 
-    private static void EnsureRcsThrusters(Transform ship, PrototypeShipConfig config)
+    private static void EnsureGunModules(Transform ship, PrototypeShipLayout layout)
+    {
+        PrototypeGunLayoutEntry[] guns = layout != null ? layout.Guns : PrototypeShipLayout.Baseline().Guns;
+        for (int i = 0; i < guns.Length; i++)
+        {
+            PrototypeGunLayoutEntry gunEntry = guns[i];
+            var gun = BuildModulePart(
+                ship,
+                gunEntry.ModuleId,
+                PrimitiveType.Cube,
+                gunEntry.LocalPosition,
+                Quaternion.Euler(gunEntry.LocalEulerAngles),
+                gunEntry.LocalScale,
+                GunColor);
+            var muzzle = gun.transform.Find(gunEntry.MuzzleId);
+            if (muzzle == null)
+            {
+                var muzzleObj = new GameObject(gunEntry.MuzzleId);
+                muzzleObj.transform.SetParent(gun.transform, false);
+                muzzle = muzzleObj.transform;
+            }
+
+            muzzle.localPosition = gunEntry.MuzzleLocalPosition;
+            muzzle.localRotation = Quaternion.Euler(gunEntry.MuzzleLocalEulerAngles);
+            EnsureThermalModule(
+                gun,
+                "Gun",
+                12f,
+                18f,
+                160f,
+                4f,
+                95f,
+                true,
+                PrototypeThermalModule.OverheatEffect.ThrottleToHalf);
+        }
+    }
+
+    private static void EnsureRcsThrusters(Transform ship, PrototypeShipLayout layout, PrototypeShipVariant variant)
     {
         DestroyChildIfExists(ship, "RCS_Up");
         DestroyChildIfExists(ship, "RCS_Down");
         DestroyChildIfExists(ship, "RCS_Forward");
         DestroyChildIfExists(ship, "RCS_Back");
 
-        BuildRcsBlock(ship, "RCS_Top", new Vector3(0f, 0.7f, 0f), new Vector3(0.55f, 0.22f, 0.55f), Vector3.down, config);
-        BuildRcsBlock(ship, "RCS_Bottom", new Vector3(0f, -0.7f, 0f), new Vector3(0.55f, 0.22f, 0.55f), Vector3.up, config);
-        BuildRcsBlock(ship, "RCS_Left", new Vector3(-1.02f, 0f, 0f), new Vector3(0.22f, 0.55f, 0.55f), Vector3.right, config);
-        BuildRcsBlock(ship, "RCS_Right", new Vector3(1.02f, 0f, 0f), new Vector3(0.22f, 0.55f, 0.55f), Vector3.left, config);
+        PrototypeRcsBlockLayoutEntry[] blocks = layout != null ? layout.RcsBlocks : PrototypeShipLayout.Baseline().RcsBlocks;
+        PrototypeRcsSettings settings = variant != null ? variant.Rcs : PrototypeRcsSettings.Default;
+        for (int i = 0; i < blocks.Length; i++)
+        {
+            PrototypeRcsBlockLayoutEntry block = blocks[i];
+            BuildRcsBlock(ship, block.BlockId, block.LocalPosition, block.LocalScale, block.BlockedLocalDirection, settings);
+        }
     }
 
-    private static void BuildRcsBlock(Transform ship, string blockName, Vector3 localPosition, Vector3 localScale, Vector3 blockedDirection, PrototypeShipConfig config)
+    private static void BuildRcsBlock(Transform ship, string blockName, Vector3 localPosition, Vector3 localScale, Vector3 blockedDirection, PrototypeRcsSettings settings)
     {
         var block = BuildModulePart(ship, blockName, PrimitiveType.Cube, localPosition, Quaternion.identity, localScale, RcsBlockColor);
         var thrusterBlock = GetOrAddComponent<RcsThrusterBlock>(block);
-        if (config != null)
-        {
-            thrusterBlock.ApplyConfig(config);
-        }
-        else
-        {
-            thrusterBlock.ConfigureDefault(DefaultRcsBlockThrust);
-        }
+        settings.Clamp();
+        thrusterBlock.ApplySettings(settings.blockThrust > 0f ? settings : PrototypeRcsSettings.Default);
+        thrusterBlock.ConfigureDefault(DefaultRcsBlockThrust);
 
         Vector3[] directions = { Vector3.forward, Vector3.back, Vector3.left, Vector3.right, Vector3.up, Vector3.down };
         for (int i = 0; i < directions.Length; i++)
@@ -277,6 +464,21 @@ public class PrototypeBootstrap : MonoBehaviour
         return "Down";
     }
 
+    private static Color ColorForModule(PrototypeModuleMassRole role)
+    {
+        switch (role)
+        {
+            case PrototypeModuleMassRole.Cockpit:
+                return CockpitColor;
+            case PrototypeModuleMassRole.FuelTank:
+                return FuelTankColor;
+            case PrototypeModuleMassRole.Custom:
+                return CargoColor;
+            default:
+                return HullColor;
+        }
+    }
+
     private static GameObject BuildModulePart(Transform parent, string name, PrimitiveType type, Vector3 localPos, Quaternion localRot, Vector3 localScale, Color color)
     {
         var existing = parent.Find(name);
@@ -333,17 +535,26 @@ public class PrototypeBootstrap : MonoBehaviour
             return;
         }
 
-        if (renderer.sharedMaterial == null)
+        Material material = Application.isPlaying ? renderer.material : renderer.sharedMaterial;
+        if (material == null || (!Application.isPlaying && material.name == "Default-Material"))
         {
             var shader = Shader.Find("Universal Render Pipeline/Lit");
-            renderer.material = new Material(shader == null ? Shader.Find("Standard") : shader);
+            material = new Material(shader == null ? Shader.Find("Standard") : shader);
+            if (Application.isPlaying)
+            {
+                renderer.material = material;
+            }
+            else
+            {
+                renderer.sharedMaterial = material;
+            }
         }
 
-        renderer.material.color = color;
-        if (emissive && renderer.material.HasProperty("_EmissionColor"))
+        material.color = color;
+        if (emissive && material.HasProperty("_EmissionColor"))
         {
-            renderer.material.EnableKeyword("_EMISSION");
-            renderer.material.SetColor("_EmissionColor", color * 2.5f);
+            material.EnableKeyword("_EMISSION");
+            material.SetColor("_EmissionColor", color * 2.5f);
         }
     }
 
@@ -473,6 +684,42 @@ public class PrototypeBootstrap : MonoBehaviour
         }
     }
 
+    private static void DestroyGameObjectImmediate(GameObject target)
+    {
+        if (target == null)
+        {
+            return;
+        }
+
+        DestroyImmediate(target);
+    }
+
+    private static void DestroyComponent(Component target)
+    {
+        if (target == null)
+        {
+            return;
+        }
+
+        if (Application.isPlaying)
+        {
+            Destroy(target);
+        }
+        else
+        {
+            DestroyImmediate(target);
+        }
+    }
+
+    private static void DestroyComponentImmediate(Component target)
+    {
+        if (target == null)
+        {
+            return;
+        }
+
+        DestroyImmediate(target);
+    }
 
     private static void RemoveCollider(GameObject target)
     {
@@ -497,7 +744,6 @@ public class PrototypeBootstrap : MonoBehaviour
         }
     }
 
-
     private void EnsureTestTarget()
     {
         const string targetName = "PrototypeTargetDummy";
@@ -521,11 +767,5 @@ public class PrototypeBootstrap : MonoBehaviour
 
         collider.isTrigger = false;
         GetOrAddComponent<PrototypeTargetDummy>(target);
-    }
-
-
-public void SpawnTestTarget()
-    {
-        EnsureTestTarget();
     }
 }

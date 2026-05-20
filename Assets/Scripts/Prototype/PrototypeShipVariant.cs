@@ -61,7 +61,7 @@ public sealed class PrototypeShipVariant
 
     public static PrototypeShipVariant NoRcs()
     {
-        return Create("no-rcs", "No RCS", PrototypeShipLayout.NoRcs());
+        return Create("no-rcs", "No-RCS", PrototypeShipLayout.NoRcs());
     }
 
     public static PrototypeShipVariant[] BuiltIns()
