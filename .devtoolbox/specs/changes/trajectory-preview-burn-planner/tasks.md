@@ -23,5 +23,5 @@
 - [x] Verify bounded prediction returns finite states
 - [x] Verify gravity-only prediction matches short simulation tolerance
 - [x] Verify burn plan estimates direction/duration/throttle/fuel
-- [ ] Add test evidence under this spec
+- [x] Add test evidence under this spec
 - [ ] Commit implementation with spec title and changelog
