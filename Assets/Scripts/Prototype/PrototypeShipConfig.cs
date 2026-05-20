@@ -132,6 +132,8 @@ public struct PrototypeRcsSettings
     public float translationForce;
     public float attitudeForce;
     public float sasAuthority;
+    public float sasProportionalGain;
+    public float sasDerivativeGain;
     [Range(0f, 0.95f)] public float minSelectionDot;
     public float nozzleSpoolUpRate;
     public float nozzleSpoolDownRate;
@@ -142,6 +144,8 @@ public struct PrototypeRcsSettings
         translationForce = 9000f,
         attitudeForce = 6500f,
         sasAuthority = 1.8f,
+        sasProportionalGain = 0.75f,
+        sasDerivativeGain = 1.8f,
         minSelectionDot = 0.25f,
         nozzleSpoolUpRate = 0f,
         nozzleSpoolDownRate = 0f
@@ -153,6 +157,8 @@ public struct PrototypeRcsSettings
         translationForce = Mathf.Max(0f, translationForce);
         attitudeForce = Mathf.Max(0f, attitudeForce);
         sasAuthority = Mathf.Max(0f, sasAuthority);
+        sasProportionalGain = Mathf.Max(0f, sasProportionalGain);
+        sasDerivativeGain = Mathf.Max(0f, sasDerivativeGain);
         minSelectionDot = Mathf.Clamp(minSelectionDot, 0f, 0.95f);
         nozzleSpoolUpRate = Mathf.Max(0f, nozzleSpoolUpRate);
         nozzleSpoolDownRate = Mathf.Max(0f, nozzleSpoolDownRate);

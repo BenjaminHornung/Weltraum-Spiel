@@ -5,10 +5,13 @@ using UnityEngine;
 
 public class PrototypeControlModeValidationTests
 {
+    private const BindingFlags PrivateInstance = BindingFlags.Instance | BindingFlags.NonPublic;
+
     [TearDown]
     public void TearDown()
     {
         DestroyNamed("ControlModeShip");
+        DestroyNamed("SasAuthorityShip");
         DestroyNamed("ControlModeBootstrap");
         DestroyNamed("PrototypeShip");
         DestroyNamed("PrototypeTargetDummy");
@@ -98,11 +101,7 @@ public class PrototypeControlModeValidationTests
     [Test]
     public void MomentumAssistEngageCreatesPhysicalRequestOnGeneratedShip()
     {
-        GameObject bootstrapObject = new GameObject("ControlModeBootstrap");
-        PrototypeBootstrap bootstrap = bootstrapObject.AddComponent<PrototypeBootstrap>();
-        bootstrap.BuildBuiltInVariant(0);
-
-        GameObject ship = GameObject.Find("PrototypeShip");
+        GameObject ship = CreateGeneratedShip();
         Assert.NotNull(ship);
         Rigidbody rb = ship.GetComponent<Rigidbody>();
         PlayerShipController controller = ship.GetComponent<PlayerShipController>();
@@ -127,6 +126,121 @@ public class PrototypeControlModeValidationTests
         }
     }
 
+    [Test]
+    public void TranslationMode_WHeld_DoesNotAutoBrake()
+    {
+        PlayerShipController controller = CreateGeneratedController();
+        Rigidbody rb = controller.GetComponent<Rigidbody>();
+
+        controller.SetControlMode(FlightControlMode.Translation);
+        rb.linearVelocity = Vector3.forward * 4f;
+        controller.ApplyModeSpecificInputForTests(w: true, s: false, a: false, d: false, q: false, e: false, h: false, n: false, shift: false, ctrl: false);
+
+        InvokeFixedUpdate(controller);
+
+        Assert.That(controller.LastFlightAssistRequest.source, Is.EqualTo(FlightAssistRequestSource.None));
+        Assert.That(controller.LastFlightAssistRequest.forceWorld.sqrMagnitude, Is.EqualTo(0f).Within(PhysicsValidationProbe.ForceTolerance));
+        Assert.That(controller.LastFlightAssistRequest.mainThrottle, Is.EqualTo(0f).Within(PhysicsValidationProbe.ForceTolerance));
+    }
+
+    [Test]
+    public void TranslationMode_WReleased_SasAutoStopRequestsOpposingForce()
+    {
+        PlayerShipController controller = CreateGeneratedController();
+        Rigidbody rb = controller.GetComponent<Rigidbody>();
+
+        controller.SetControlMode(FlightControlMode.Translation);
+        rb.linearVelocity = Vector3.forward * 5f;
+        controller.ApplyModeSpecificInputForTests(w: false, s: false, a: false, d: false, q: true, e: false, h: false, n: false, shift: false, ctrl: false);
+
+        InvokeFixedUpdate(controller);
+
+        Assert.That(controller.LastFlightAssistRequest.source, Is.EqualTo(FlightAssistRequestSource.Sas));
+        Assert.That(controller.LastFlightAssistRequest.mainThrottle, Is.EqualTo(0f).Within(PhysicsValidationProbe.ForceTolerance));
+        Assert.That(controller.LastFlightAssistRequest.torqueLocal, Is.EqualTo(Vector3.zero).Within(PhysicsValidationProbe.ForceTolerance));
+        Assert.That(controller.LastFlightAssistRequest.forceWorld.magnitude, Is.GreaterThan(0f));
+        Assert.That(Vector3.Dot(controller.LastFlightAssistRequest.forceWorld, rb.linearVelocity), Is.LessThan(0f));
+    }
+
+    [Test]
+    public void TranslationMode_AutoStop_ReducesVelocityOverSteps()
+    {
+        PlayerShipController controller = CreateGeneratedController();
+        Rigidbody rb = controller.GetComponent<Rigidbody>();
+
+        controller.SetControlMode(FlightControlMode.Translation);
+        rb.linearVelocity = Vector3.forward * 8f;
+        controller.ApplyModeSpecificInputForTests(w: false, s: false, a: false, d: false, q: false, e: false, h: false, n: false, shift: false, ctrl: false);
+
+        float initialSpeed = rb.linearVelocity.magnitude;
+        for (int i = 0; i < 10; i++)
+        {
+            InvokeFixedUpdate(controller);
+
+            FlightAssistRequest request = controller.LastFlightAssistRequest;
+            Assert.That(request.source, Is.EqualTo(FlightAssistRequestSource.Sas));
+            rb.linearVelocity += request.forceWorld / rb.mass * Time.fixedDeltaTime;
+            Assert.That(rb.linearVelocity.magnitude, Is.GreaterThanOrEqualTo(0f));
+        }
+
+        Assert.That(rb.linearVelocity.magnitude, Is.LessThan(initialSpeed));
+    }
+
+    [Test]
+    public void SasAuthorityProperty_UsesAuthorityNotDerivativeGain()
+    {
+        GameObject ship = new GameObject("SasAuthorityShip");
+        Rigidbody rb = ship.AddComponent<Rigidbody>();
+        RcsThrusterController rcs = ship.AddComponent<RcsThrusterController>();
+        MethodInfo computeSasCommand = typeof(RcsThrusterController).GetMethod("ComputeSasCommand", PrivateInstance);
+        MethodInfo resolveReferences = typeof(RcsThrusterController).GetMethod("ResolveReferences", PrivateInstance);
+        Assert.NotNull(computeSasCommand);
+        Assert.NotNull(resolveReferences);
+
+        rcs.ApplySettings(new PrototypeRcsSettings
+        {
+            blockThrust = 6500f,
+            translationForce = 9000f,
+            attitudeForce = 6500f,
+            sasAuthority = 0f,
+            sasProportionalGain = 0.75f,
+            sasDerivativeGain = 1.8f,
+            minSelectionDot = 0.25f,
+            nozzleSpoolUpRate = 0f,
+            nozzleSpoolDownRate = 0f
+        });
+        resolveReferences.Invoke(rcs, null);
+        rb.angularVelocity = new Vector3(0.15f, -0.27f, 0.33f);
+        Vector3 commandWithZeroAuthority = (Vector3)computeSasCommand.Invoke(
+            rcs,
+            new object[] { SasControlMode.KillRotation, Quaternion.identity, false }
+        );
+        Assert.That(rcs.SasAuthority, Is.EqualTo(0f).Within(PhysicsValidationProbe.ForceTolerance));
+        Assert.That(commandWithZeroAuthority, Is.EqualTo(Vector3.zero).Within(PhysicsValidationProbe.ForceTolerance));
+
+        rcs.ApplySettings(new PrototypeRcsSettings
+        {
+            blockThrust = 6500f,
+            translationForce = 9000f,
+            attitudeForce = 6500f,
+            sasAuthority = 2.4f,
+            sasProportionalGain = 0.75f,
+            sasDerivativeGain = 1.8f,
+            minSelectionDot = 0.25f,
+            nozzleSpoolUpRate = 0f,
+            nozzleSpoolDownRate = 0f
+        });
+        Vector3 commandWithAuthority = (Vector3)computeSasCommand.Invoke(
+            rcs,
+            new object[] { SasControlMode.KillRotation, Quaternion.identity, false }
+        );
+
+        Assert.That(rcs.SasAuthority, Is.EqualTo(2.4f).Within(PhysicsValidationProbe.ForceTolerance));
+        Assert.That(rcs.SasDerivativeGain, Is.EqualTo(1.8f).Within(PhysicsValidationProbe.ForceTolerance));
+        Assert.That(commandWithAuthority.magnitude, Is.GreaterThan(0f));
+        Assert.That(commandWithAuthority, Is.Not.EqualTo(commandWithZeroAuthority));
+    }
+
     private static PlayerShipController CreateMinimalController()
     {
         GameObject ship = new GameObject("ControlModeShip");
@@ -141,11 +255,33 @@ public class PrototypeControlModeValidationTests
         return ship.AddComponent<PlayerShipController>();
     }
 
+    private static GameObject CreateGeneratedShip()
+    {
+        GameObject bootstrapObject = new GameObject("ControlModeBootstrap");
+        PrototypeBootstrap bootstrap = bootstrapObject.AddComponent<PrototypeBootstrap>();
+        bootstrap.BuildBuiltInVariant(0);
+        return GameObject.Find("PrototypeShip");
+    }
+
+    private static PlayerShipController CreateGeneratedController()
+    {
+        GameObject ship = CreateGeneratedShip();
+        Assert.NotNull(ship);
+        return ship.GetComponent<PlayerShipController>();
+    }
+
     private static void InvokeFixedUpdate(PrototypeMomentumAssist momentum)
     {
-        MethodInfo fixedUpdate = typeof(PrototypeMomentumAssist).GetMethod("FixedUpdate", BindingFlags.Instance | BindingFlags.NonPublic);
+        MethodInfo fixedUpdate = typeof(PrototypeMomentumAssist).GetMethod("FixedUpdate", PrivateInstance);
         Assert.NotNull(fixedUpdate);
         fixedUpdate.Invoke(momentum, null);
+    }
+
+    private static void InvokeFixedUpdate(PlayerShipController controller)
+    {
+        MethodInfo fixedUpdate = typeof(PlayerShipController).GetMethod("FixedUpdate", PrivateInstance);
+        Assert.NotNull(fixedUpdate);
+        fixedUpdate.Invoke(controller, null);
     }
 
     private static void DestroyNamed(string objectName)

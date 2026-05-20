@@ -84,7 +84,7 @@ public class RcsThrusterController : MonoBehaviour
 
     public float TranslationForce => Mathf.Max(0f, translationForce);
     public float AttitudeForce => Mathf.Max(0f, attitudeForce);
-    public float SasAuthority => Mathf.Max(0f, sasDerivativeGain);
+    public float SasAuthority => Mathf.Max(0f, sasAuthority);
     public float SasProportionalGain => Mathf.Max(0f, sasProportionalGain);
     public float SasDerivativeGain => Mathf.Max(0f, sasDerivativeGain);
     public float MinSelectionDot => Mathf.Clamp(minSelectionDot, 0f, 0.95f);
@@ -287,14 +287,12 @@ public class RcsThrusterController : MonoBehaviour
 
     private static bool IsActiveNozzleTransform(Transform nozzle)
     {
-        return nozzle != null
-            && nozzle.gameObject.activeInHierarchy
-            && nozzle.name.StartsWith("RCS_Nozzle_", System.StringComparison.Ordinal);
+        return PrototypeShipSocketUtility.IsRuntimeRcsNozzle(nozzle);
     }
 
     private static GameObject FindNozzleVfx(Transform nozzle)
     {
-        var vfx = nozzle.Find("VFX");
+        Transform vfx = nozzle != null ? nozzle.Find("VFX") : null;
         return vfx != null ? vfx.gameObject : null;
     }
 
@@ -396,7 +394,7 @@ public class RcsThrusterController : MonoBehaviour
             return Vector3.zero;
         }
 
-        float torqueAuthority = GetTorqueAuthority();
+        float torqueAuthority = GetSasTorqueAuthority();
         LastRawSasDesiredTorqueLocal = ComputeSasDesiredTorqueLocal(sasMode, sasTargetRotation, hasSasTargetRotation, torqueAuthority);
         if (torqueAuthority <= 0.0001f)
         {
@@ -870,7 +868,8 @@ public class RcsThrusterController : MonoBehaviour
         translationForce = settings.translationForce;
         attitudeForce = settings.attitudeForce;
         sasAuthority = settings.sasAuthority;
-        sasDerivativeGain = settings.sasAuthority;
+        sasProportionalGain = settings.sasProportionalGain;
+        sasDerivativeGain = settings.sasDerivativeGain;
         minSelectionDot = settings.minSelectionDot;
         nozzleSpoolUpRate = settings.nozzleSpoolUpRate;
         nozzleSpoolDownRate = settings.nozzleSpoolDownRate;
@@ -968,6 +967,11 @@ public class RcsThrusterController : MonoBehaviour
 
         representativeLever = Mathf.Max(0.25f, representativeLever);
         return Mathf.Max(0f, attitudeForce) * representativeLever;
+    }
+
+    private float GetSasTorqueAuthority()
+    {
+        return GetTorqueAuthority() * SasAuthority;
     }
 
     private static void GetAllocatorWeights(RcsAllocation[] allocations, Vector3 desiredForceWorld, Vector3 desiredTorqueWorld, out float forceWeight, out float torqueWeight)

@@ -45,7 +45,7 @@ Mouse movement is reserved for the camera. Hold right mouse button to orbit/look
 
 German keyboard note: full throttle accepts both `Y` and `Z` so the control works reliably when those keys are swapped by the active layout.
 
-Control mode is explicit and cycles with `Caps Lock` or the HUD mode button. Cruise Mode is the long-distance mode: W/S pitch, A/D yaw, Q/E roll, Shift/Ctrl adjust persistent main throttle, and the waypoint autopilot uses the main-thruster burn/brake path. Precision Mode forces main thruster and gimbal off, forces RCS available, and keeps W/S pitch, A/D yaw, and Q/E roll for exact attitude control. Translation Mode also forces main/gimbal off and maps W/S to forward/back, A/D to left/right, H/N to up/down, while Q/E remains roll. Left Alt is not used as the primary mode switch.
+Control mode is explicit and cycles with `Caps Lock` or the HUD mode button. Cruise Mode is the long-distance mode: W/S pitch, A/D yaw, Q/E roll, Shift/Ctrl adjust persistent main throttle, and the waypoint autopilot uses the main-thruster burn/brake path. Precision Mode forces main thruster and gimbal off, forces RCS available, and keeps W/S pitch, A/D yaw, and Q/E roll for exact attitude control. Translation Mode also forces main/gimbal off and maps W/S to forward/back, A/D to left/right, H/N to up/down, while Q/E remains roll. When translation input is released, translation mode can auto-stop drift by issuing a physical SAS oppose-velocity assist request until speed drops below threshold.
 
 ## Controller Status
 
@@ -76,7 +76,7 @@ Camera reset is bound to Backquote. Unity Input System key controls are physical
 - The mode label reserves `WORLD`, `VELOCITY`, `TARGET`, `DOCKING`, and `ORBIT/GRAVITY`, but the visible HUD only prints the active short label such as `Mode: TARGET`.
 - `PrototypeFlightDebugConsole` is a development console for testing. Refuel, reset, damage, spawn target, test pulses, variant selection, debug vector toggles, UI presets, control calibration, gimbal mode tuning, navigation/autopilot controls, and debug assist controls are debug-only actions, not final player-facing gameplay UI.
 - `PrototypeWaypointAutopilot` is a prototype navigation assist. It reports selected target, distance, closing speed, lateral speed, stopping distance, fuel estimate, autopilot state, ETA, and arrival status in the debug overlay.
-- `PrototypeMomentumAssist` exposes a physical Kill Momentum action. It commands existing main/RCS/SAS assist paths and reports Idle, AlignForBrake, MainBrake, RcsDamp, Complete, Aborted, FuelInsufficient, and NoAuthority; it is not a debug velocity reset.
+- `PrototypeMomentumAssist` exposes a physical Kill Momentum action. It commands existing main/RCS/SAS assist paths and reports Idle, AlignForBrake, MainBrake, RcsDamp, Complete, Aborted, FuelInsufficient, and NoAuthority; it is not a debug velocity reset. Momentum damping uses mass/authority-scaled RCS requests rather than direct velocity writes.
 
 ## Prototype Test Environment
 
@@ -102,7 +102,7 @@ Camera reset is bound to Backquote. Unity Input System key controls are physical
 - Each RCS block has five installed nozzle transforms, excluding the side that faces into the ship wall. RCS translation, attitude, and SAS use actual nozzle positions/directions rather than hardcoded slots.
 - Generated module proxies now carry simple damage state. Damaged RCS blocks scale their effective thrust through the existing RCS allocator, so physical authority falls with module integrity.
 - SAS has `KillRotation` and `HoldAttitude` modes. It creates a ship-local PD torque request from angular velocity and optional target attitude, then sends that request through the same RCS nozzle allocator as manual attitude.
-- SAS exposes proportional and derivative gains on `RcsThrusterController`. Manual pitch, yaw, or roll input masks SAS on that same axis while released axes continue to stabilize.
+- SAS exposes separate authority and gains on `RcsThrusterController`: `SasAuthority` is a scaling budget, while `SasProportionalGain` and `SasDerivativeGain` are the control gains. Manual pitch, yaw, or roll input masks SAS on that same axis while released axes continue to stabilize.
 - Flight assist is an explicit request layer with `Simulation`, `AssistedFlight`, and `DebugAssist` modes. Simulation mode sends no assist force or torque, assisted requests must go through the RCS allocator and `ShipPhysicsCore`, and debug-only requests are labeled so they cannot masquerade as physical flight. Momentum Assist adds a `MomentumAssist` request source for Kill Momentum so braking stays visible and physical.
 - Waypoint navigation creates three visible primitive targets at runtime. `Tab` and `B` cycle them, and `G` toggles a conservative autopilot that normalizes to Cruise mode, sends a `WaypointAutopilot` assist request, and combines main-throttle intent with RCS attitude/lateral correction when available.
 - The waypoint autopilot estimates stopping distance from current closing speed and conservative deceleration. It accounts for initial velocity and lateral velocity, and it may refuse a route with `FuelInsufficient` instead of pretending the ship can arrive.

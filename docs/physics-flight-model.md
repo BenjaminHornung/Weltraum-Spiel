@@ -97,6 +97,8 @@ The generated `RCS_Top`, `RCS_Bottom`, `RCS_Left`, and `RCS_Right` blocks each c
 
 Translation, attitude, SAS, and physical flight-assist requests are combined into one desired force/torque wrench before allocation. `FlightControlMode` is explicit: Normal/Cruise maps W/S/A/D/Q/E to pitch/yaw/roll while Shift/Ctrl adjust main throttle; Precision keeps W/S/A/D/Q/E as RCS attitude with main/gimbal forced off; Translation maps W/S to forward/back, A/D to left/right, H/N to up/down, and leaves Q/E as roll. Caps Lock and the HUD mode button cycle these modes; Left Alt is not part of the primary control model. The current allocator is still a bounded greedy prototype, but it applies each nozzle at most once per physics frame and reports desired, actual, and residual force/torque diagnostics. Status values are residual-aware: `ok`, `limited`, `residual`, `limited-residual`, `spooling-down`, `no nozzles`, `no authority`, `no solution`, and `no fuel` describe what actually happened in that frame.
 
+Translation mode can also request "SAS AutoStop" when no translation input is active: the controller emits a physical assist request opposite current linear velocity, scaled by ship mass and the configured translation auto-stop gain, then clamped by translation RCS force capacity.
+
 RCS nozzles keep actual throttle state. With finite response rates, spool-up ramps actual thrust toward the target throttle. When a command is released, spool-down moves actual throttle toward zero and physically applies the remaining decaying nozzle force until the throttle settles. This can create intentional short residual thrust; it is visible through actual/residual force diagnostics and the `spooling-down` status.
 
 The debug console can issue deterministic test pulses for RCS translation, attitude, main thrust, and gimbal checks. These pulses are development probes and bypass runtime input-layer state so their output stays comparable across repeated tests. Refuel, reset, damage, target spawning, variant spawning, debug assist, and pulse buttons are debug-only controls and should not be treated as player-facing gameplay input.
@@ -166,19 +168,19 @@ The debug overlay reports damaged module count, the worst module integrity, the 
 
 SAS is a ship-local PD torque request routed through the same RCS allocator as manual attitude. There is no hidden Rigidbody angular damping layer. When effective SAS is on, `RcsThrusterController` computes local angular velocity, optional local attitude error, and a desired torque before the bounded nozzle allocator decides what can actually be applied.
 
-`KillRotation` only damps angular velocity:
+`KillRotation` only damps angular velocity, scaled by total authority:
 
 ```text
-desiredTorqueLocal = -Kd * localAngularVelocity
+desiredTorqueLocal = -angularDampGain * SasAuthority * localAngularVelocity
 ```
 
 `HoldAttitude` captures a target rotation and adds proportional correction from the shortest rotation error:
 
 ```text
-desiredTorqueLocal = Kp * angularErrorLocal - Kd * localAngularVelocity
+desiredTorqueLocal = SasAuthority * (Kp * angularErrorLocal - Kd * localAngularVelocity)
 ```
 
-The PD gains are inspector fields on `RcsThrusterController`. They are not multiplied by `fixedDeltaTime`; Unity's force integration handles timestep application after the allocator applies nozzle forces with `ForceMode.Force`.
+`SasAuthority` scales the maximum authority budget (in ship-local units), while `SasProportionalGain` and `SasDerivativeGain` are the normalized control gains. All terms are not multiplied by `fixedDeltaTime`; Unity's force integration handles timestep application after the allocator applies nozzle forces with `ForceMode.Force`.
 
 Manual attitude input keeps its coarse command dead zone, and SAS torque is masked per pitch/yaw/roll axis whenever manual attitude input on that same axis exceeds the manual dead zone. SAS remains active on released axes, so a yaw input does not reduce yaw authority but can still allow SAS to damp pitch or roll. Diagnostics expose the mode, local angular velocity, local angular error, raw SAS torque, masked SAS torque, suppressed torque, manual torque, and final desired torque.
 
@@ -198,7 +200,7 @@ The prototype names three modes:
 
 `RcsThrusterController` records assist mode, request source, force, torque, and debug-only status separately from manual and SAS diagnostics. The debug overlay shows manual command, SAS command/torque, and assist request fields side by side so future flight bugs can identify which layer asked for a wrench.
 
-`PrototypeMomentumAssist` adds a physical Kill Momentum helper above this request layer. It has explicit states (`Idle`, `AlignForBrake`, `MainBrake`, `RcsDamp`, `Complete`, `Aborted`, `NoAuthority`, `FuelInsufficient`) and never stops the ship by writing Rigidbody velocity or teleporting. At higher speeds, when main thrust is available and the ship is in Normal/Cruise control mode, it aligns for a main-engine brake and requests main throttle plus RCS/SAS-style torque through the normal controller path. At lower speeds, or whenever Precision/Translation has disabled main thrust, it damps linear and angular motion with physical RCS assist requests. HUD activation grants a short stale-input grace window, then manual flight input aborts the assist so the pilot can immediately take control.
+`PrototypeMomentumAssist` adds a physical Kill Momentum helper above this request layer. It has explicit states (`Idle`, `AlignForBrake`, `MainBrake`, `RcsDamp`, `Complete`, `Aborted`, `NoAuthority`, `FuelInsufficient`) and never stops the ship by writing Rigidbody velocity or teleporting. At higher speeds, when main thrust is available and the ship is in Normal/Cruise control mode, it aligns for a main-engine brake and requests main throttle plus RCS/SAS-style torque through the normal controller path. At lower speeds, or whenever Precision/Translation has disabled main thrust, it damps linear and angular motion with physical RCS assist requests. Linear damping uses a mass-scaled `-v * m * linearDampGain` clamp and angular damping uses a torque-budget-scaled `-ωlocal * maxTorque * angularDampGain` clamp request. HUD activation grants a short stale-input grace window, then manual flight input aborts the assist so the pilot can immediately take control.
 
 `PrototypeWaypointAutopilot` is also routed through the explicit request layer. Engaging it switches the controller to Normal/Cruise, enables RCS/SAS, aborts Momentum Assist, clears stale manual-input state, and sends one aggregated `WaypointAutopilot` request per fixed step. That request can contain lateral RCS force, attitude torque, and main-throttle intent together, so final-approach lateral correction is not overwritten by burn alignment.
 

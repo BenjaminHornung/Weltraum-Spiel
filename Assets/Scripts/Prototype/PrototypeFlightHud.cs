@@ -507,7 +507,11 @@ public class PrototypeFlightHud : MonoBehaviour
         }
 
         GUI.enabled = momentumAssist != null;
-        if (GUILayout.Button("Kill Momentum", compactButtonStyle, GUILayout.Width(88f), GUILayout.Height(16f)))
+        string killMomentumLabel = momentumAssist != null && momentumAssist.IsActive
+            ? $"Kill: {momentumAssist.CurrentState}"
+            : "Kill Momentum";
+        float killMomentumWidth = momentumAssist != null && momentumAssist.IsActive ? 126f : 88f;
+        if (GUILayout.Button(killMomentumLabel, compactButtonStyle, GUILayout.Width(killMomentumWidth), GUILayout.Height(16f)))
         {
             momentumAssist?.Toggle();
         }

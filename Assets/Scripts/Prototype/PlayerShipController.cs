@@ -122,6 +122,10 @@ public class PlayerShipController : MonoBehaviour
 
     [Header("Flight Assist")]
     [SerializeField] private FlightAssistMode flightAssistMode = FlightAssistMode.Simulation;
+    [SerializeField] private bool translationAutoStopWithSas = true;
+    [SerializeField] private float translationAutoStopSpeedThreshold = 0.05f;
+    [SerializeField] private float translationAutoStopGain = 2.8f;
+    [SerializeField] private float translationAutoStopMaxForceScale = 1.0f;
 
     [Header("Main Throttle")]
     [Range(0f, 1f)]
@@ -469,7 +473,7 @@ public class PlayerShipController : MonoBehaviour
                 Time.fixedDeltaTime);
         }
 
-        float assistMainThrottle = LastFlightAssistRequest.source == FlightAssistRequestSource.WaypointAutopilot
+        float assistMainThrottle = CanAssistRequestMainThrottle(LastFlightAssistRequest)
             ? LastFlightAssistRequest.mainThrottle
             : 0f;
         MainThrustCommand = MainThrusterAllowed ? Mathf.Clamp01(Mathf.Max(mainThrottle, mainThrottlePulse, assistMainThrottle)) : 0f;
@@ -771,6 +775,20 @@ public class PlayerShipController : MonoBehaviour
             return externalFlightAssistRequest;
         }
 
+        if (ShouldApplyTranslationAutoStop())
+        {
+            float maxForce = GetTranslationAutoStopMaxForce();
+            Vector3 requestForceWorld = Vector3.ClampMagnitude(
+                -shipRigidbody.linearVelocity * Mathf.Max(1f, shipRigidbody.mass) * translationAutoStopGain,
+                maxForce);
+            return new FlightAssistRequest(
+                FlightAssistMode.AssistedFlight,
+                FlightAssistRequestSource.Sas,
+                requestForceWorld,
+                Vector3.zero,
+                false);
+        }
+
         switch (flightAssistMode)
         {
             case FlightAssistMode.AssistedFlight:
@@ -808,6 +826,40 @@ public class PlayerShipController : MonoBehaviour
         mainThrottle = Mathf.Clamp01(mainThrottle);
         throttleChangeRate = Mathf.Max(0f, throttleChangeRate);
         precisionScale = Mathf.Clamp01(precisionScale);
+        translationAutoStopSpeedThreshold = Mathf.Max(0f, translationAutoStopSpeedThreshold);
+        translationAutoStopGain = Mathf.Max(0f, translationAutoStopGain);
+        translationAutoStopMaxForceScale = Mathf.Max(0f, translationAutoStopMaxForceScale);
+    }
+
+    private bool ShouldApplyTranslationAutoStop()
+    {
+        if (!translationAutoStopWithSas || controlMode != FlightControlMode.Translation || shipRigidbody == null || RcsTranslationCommand.sqrMagnitude > 0.0001f)
+        {
+            return false;
+        }
+
+        if (!RcsEnabled || !HasRcs || !EffectiveSasEnabled)
+        {
+            return false;
+        }
+
+        if (shipRigidbody.linearVelocity.magnitude <= translationAutoStopSpeedThreshold)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private float GetTranslationAutoStopMaxForce()
+    {
+        return Mathf.Max(0f, RcsTranslationForceSetting * translationAutoStopMaxForceScale);
+    }
+
+    private static bool CanAssistRequestMainThrottle(FlightAssistRequest request)
+    {
+        return request.source == FlightAssistRequestSource.WaypointAutopilot
+            || request.source == FlightAssistRequestSource.MomentumAssist;
     }
 
 

@@ -232,10 +232,8 @@ public void ResetForBootstrap()
 
         Vector3 linearVelocityWorld = shipRigidbody.linearVelocity;
         Vector3 angularVelocityLocal = transform.InverseTransformDirection(shipRigidbody.angularVelocity);
-        Vector3 dampLinearWorld = linearVelocityWorld.sqrMagnitude > 0.0001f
-            ? Vector3.ClampMagnitude(-linearVelocityWorld * linearDampGain, GetMaxRcsForce())
-            : Vector3.zero;
-        Vector3 dampTorqueLocal = Vector3.ClampMagnitude(-angularVelocityLocal * angularDampGain, GetMaxRcsTorque());
+        Vector3 dampLinearWorld = GetDampingLinearForce(linearVelocityWorld);
+        Vector3 dampTorqueLocal = GetDampingAngularTorque(angularVelocityLocal);
         Vector3 requestedTorqueLocal = dampTorqueLocal;
 
         Vector3 desiredBrakeDirection = GetBrakeDirection();
@@ -254,9 +252,14 @@ public void ResetForBootstrap()
             float speedScale = Mathf.InverseLerp(mainBrakeEntrySpeedMetersPerSecond, mainBrakeMaxSpeedForMinThrottle, SpeedMetersPerSecond);
             float targetThrottle = Mathf.Lerp(mainBrakeMinThrottle, mainBrakeMaxThrottle, speedScale);
             LastMainThrottleRequest = Mathf.Clamp(targetThrottle, 0f, mainBrakeMaxThrottle);
-            shipController.SetMainThrottle(LastMainThrottleRequest);
             SetState(PrototypeMomentumAssistState.MainBrake, "main brake");
-            return new FlightAssistRequest(FlightAssistMode.AssistedFlight, FlightAssistRequestSource.MomentumAssist, Vector3.zero, requestedTorqueLocal, false);
+            return new FlightAssistRequest(
+                FlightAssistMode.AssistedFlight,
+                FlightAssistRequestSource.MomentumAssist,
+                Vector3.zero,
+                requestedTorqueLocal,
+                LastMainThrottleRequest,
+                false);
         }
 
         if (CanUseMainBrake)
@@ -271,6 +274,29 @@ public void ResetForBootstrap()
         shipController.SetMainThrottle(0f);
         SetState(PrototypeMomentumAssistState.RcsDamp, "rcs damp");
         return new FlightAssistRequest(FlightAssistMode.AssistedFlight, FlightAssistRequestSource.MomentumAssist, dampLinearWorld, requestedTorqueLocal, false);
+    }
+
+    private Vector3 GetDampingLinearForce(Vector3 linearVelocityWorld)
+    {
+        if (linearVelocityWorld.sqrMagnitude <= 0.0001f || shipRigidbody == null)
+        {
+            return Vector3.zero;
+        }
+
+        float mass = Mathf.Max(1f, shipRigidbody.mass);
+        float maxForce = GetMaxRcsForce();
+        return Vector3.ClampMagnitude(-linearVelocityWorld * mass * linearDampGain, maxForce);
+    }
+
+    private Vector3 GetDampingAngularTorque(Vector3 angularVelocityLocal)
+    {
+        if (angularVelocityLocal.sqrMagnitude <= 0.0001f)
+        {
+            return Vector3.zero;
+        }
+
+        float maxTorque = GetMaxRcsTorque();
+        return Vector3.ClampMagnitude(-angularVelocityLocal * maxTorque * angularDampGain, maxTorque);
     }
 
     private void HandleHold()
