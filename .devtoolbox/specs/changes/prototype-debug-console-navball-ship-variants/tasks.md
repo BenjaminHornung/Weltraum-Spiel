@@ -40,23 +40,23 @@
 - [x] Add One-Sided RCS variant
 - [x] Add Heavy Cargo variant
 - [x] Add No-RCS variant
-- [ ] Wire camera/controller/HUD/debug console after variant spawn
+- [x] Wire camera/controller/HUD/debug console after variant spawn
 
 ## Slice 3: Navball-Light HUD
 
-- [ ] Create PrototypeFlightHud
-- [ ] Add navball-light circle and forward/crosshair marker
-- [ ] Add velocity prograde and retrograde markers
-- [ ] Add SAS hold marker when available
-- [ ] Add optional target marker when target exists
-- [ ] Add optional desired/actual/residual force markers for debug mode
-- [ ] Add mode label structure for WORLD, VELOCITY, TARGET, DOCKING, and ORBIT/GRAVITY
+- [x] Create PrototypeFlightHud
+- [x] Add navball-light circle and forward/crosshair marker
+- [x] Add velocity prograde and retrograde markers
+- [x] Add SAS hold marker when available
+- [x] Add optional target marker when target exists
+- [x] Add optional desired/actual/residual force markers for debug mode
+- [x] Add mode label structure for WORLD, VELOCITY, TARGET, DOCKING, and ORBIT/GRAVITY
 
 ## Documentation
 
-- [ ] Update README controls/debug section
-- [ ] Update physics docs with variant-test purpose and RCS residual diagnostics
-- [ ] Document which debug actions are debug-only
+- [x] Update README controls/debug section
+- [x] Update physics docs with variant-test purpose and RCS residual diagnostics
+- [x] Document which debug actions are debug-only
 
 ## Verification
 
@@ -68,7 +68,7 @@
 - [ ] Verify single-engine failure creates expected torque
 - [x] Verify Off-Center Main Thruster shows COM-safe vs fully physical difference
 - [x] Verify One-Sided RCS reports residual force/torque
-- [ ] Verify Navball prograde/retrograde markers respond to velocity direction
+- [x] Verify Navball prograde/retrograde markers respond to velocity direction
 - [x] Verify no compile errors in Unity console
 - [x] Add test evidence under this spec
 - [x] Commit implementation with spec title and changelog

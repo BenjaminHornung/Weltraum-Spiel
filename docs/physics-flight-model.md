@@ -99,7 +99,20 @@ Translation, attitude, SAS, and physical flight-assist requests are combined int
 
 RCS nozzles keep actual throttle state. With finite response rates, spool-up ramps actual thrust toward the target throttle. When a command is released, spool-down moves actual throttle toward zero and physically applies the remaining decaying nozzle force until the throttle settles. This can create intentional short residual thrust; it is visible through actual/residual force diagnostics and the `spooling-down` status.
 
-The debug console can issue deterministic test pulses for RCS translation, attitude, main thrust, and gimbal checks. These pulses are development probes and bypass precision-control scaling so their output stays comparable across repeated tests.
+The debug console can issue deterministic test pulses for RCS translation, attitude, main thrust, and gimbal checks. These pulses are development probes and bypass precision-control scaling so their output stays comparable across repeated tests. Refuel, reset, damage, target spawning, variant spawning, debug assist, and pulse buttons are debug-only controls and should not be treated as player-facing gameplay input.
+
+## Variant Diagnostics And HUD
+
+Built-in prototype ship variants are generated to expose physics behavior under controlled layouts rather than to model a final ship editor. Baseline Balanced is the reference layout; Dual Main Thruster checks symmetric engine force; Off-Center Main Thruster compares COM-safe and fully physical nozzle-force modes; One-Sided RCS and No-RCS intentionally expose allocator residuals and missing-authority states; Heavy Cargo checks mass and inertia scaling.
+
+The main camera now owns both the debug console and `PrototypeFlightHud` after each bootstrap or variant spawn. The HUD projects world vectors into ship-local marker space:
+
+```text
+localDirection = shipTransform.InverseTransformDirection(worldDirection.normalized)
+marker = new Vector2(localDirection.x, -localDirection.y) * radius
+```
+
+Forward, prograde, retrograde, SAS hold, and optional target markers use that projection. When debug vector mode is enabled, desired, actual, and residual RCS force markers use the same projection so a one-sided or fuel-limited allocator result can be inspected visually. The HUD reserves mode labels for `WORLD`, `VELOCITY`, `TARGET`, `DOCKING`, and `ORBIT/GRAVITY`; the current slice only displays prototype labels and does not implement a final 3D navball, docking director, or orbital map.
 
 If a nozzle is moved, removed, or rotated, its force and torque contribution changes immediately. Missing nozzles cannot create phantom force.
 

@@ -1,0 +1,398 @@
+using UnityEngine;
+
+[RequireComponent(typeof(Camera))]
+public class PrototypeFlightHud : MonoBehaviour
+{
+    public enum HudMode
+    {
+        World,
+        Velocity,
+        Target,
+        Docking,
+        OrbitGravity
+    }
+
+    [SerializeField] private ShipStats targetStats;
+    [SerializeField] private Rigidbody targetRigidbody;
+    [SerializeField] private Transform target;
+    [SerializeField] private PlayerShipController shipController;
+    [SerializeField] private PrototypeDebugOverlay debugOverlay;
+    [SerializeField] private Transform trackedTarget;
+
+    [Header("HUD")]
+    [SerializeField] private bool showHud = true;
+    [SerializeField] private Vector2 navballCenterOffset = new Vector2(0f, -126f);
+    [SerializeField] private float navballRadius = 78f;
+    [SerializeField] private float markerSize = 10f;
+    [SerializeField] private float velocityMarkerThreshold = 0.05f;
+    [SerializeField] private HudMode hudMode = HudMode.World;
+
+    [Header("Debug Markers")]
+    [SerializeField] private bool showDebugForceMarkers = true;
+    [SerializeField] private float forceMarkerReferenceNewton = 9000f;
+
+    private GUIStyle labelStyle;
+    private GUIStyle smallLabelStyle;
+    private GUIStyle centeredLabelStyle;
+
+    public Transform Target => target;
+    public Rigidbody TargetRigidbody => targetRigidbody;
+    public ShipStats TargetStats => targetStats;
+    public PlayerShipController ShipController => shipController;
+    public Transform TrackedTarget => trackedTarget;
+    public bool ShowHud => showHud;
+    public bool ShowDebugForceMarkers => showDebugForceMarkers;
+    public float NavballRadius => navballRadius;
+    public HudMode Mode => hudMode;
+    public string LastModeLabel { get; private set; } = "WORLD";
+    public string LastModeLabelStructure { get; private set; } = "WORLD | VELOCITY | TARGET | DOCKING | ORBIT/GRAVITY";
+    public Vector2 LastForwardMarker { get; private set; }
+    public Vector2 LastProgradeMarker { get; private set; }
+    public Vector2 LastRetrogradeMarker { get; private set; }
+    public Vector2 LastSasMarker { get; private set; }
+    public Vector2 LastTargetMarker { get; private set; }
+    public Vector2 LastDesiredForceMarker { get; private set; }
+    public Vector2 LastActualForceMarker { get; private set; }
+    public Vector2 LastResidualForceMarker { get; private set; }
+    public bool LastHasVelocityMarker { get; private set; }
+    public bool LastHasSasMarker { get; private set; }
+    public bool LastHasTargetMarker { get; private set; }
+    public bool LastHasDebugForceMarkers { get; private set; }
+
+    private void Start()
+    {
+        ResolveReferences();
+        RefreshDiagnostics();
+    }
+
+    private void OnValidate()
+    {
+        navballRadius = Mathf.Max(36f, navballRadius);
+        markerSize = Mathf.Max(4f, markerSize);
+        velocityMarkerThreshold = Mathf.Max(0f, velocityMarkerThreshold);
+        forceMarkerReferenceNewton = Mathf.Max(1f, forceMarkerReferenceNewton);
+    }
+
+    private void OnGUI()
+    {
+        if (!showHud)
+        {
+            return;
+        }
+
+        ResolveReferences();
+        RefreshDiagnostics();
+        EnsureStyles();
+        DrawHud();
+    }
+
+    public void Bind(Transform trackTarget, ShipStats stats, Rigidbody rb)
+    {
+        target = trackTarget;
+        targetStats = stats != null ? stats : (trackTarget != null ? trackTarget.GetComponent<ShipStats>() : null);
+        targetRigidbody = rb != null ? rb : (trackTarget != null ? trackTarget.GetComponent<Rigidbody>() : null);
+        shipController = trackTarget != null ? trackTarget.GetComponent<PlayerShipController>() : null;
+        debugOverlay = GetComponent<PrototypeDebugOverlay>();
+        ResolveTrackedTarget();
+        RefreshDiagnostics();
+    }
+
+    public void SetTrackedTarget(Transform targetTransform)
+    {
+        trackedTarget = targetTransform;
+        RefreshDiagnostics();
+    }
+
+    public void SetHudVisible(bool visible)
+    {
+        showHud = visible;
+    }
+
+    public void SetShowDebugForceMarkers(bool visible)
+    {
+        showDebugForceMarkers = visible;
+    }
+
+    public void SetMode(HudMode mode)
+    {
+        hudMode = mode;
+        RefreshDiagnostics();
+    }
+
+    public void RefreshDiagnosticsForTests()
+    {
+        ResolveReferences();
+        RefreshDiagnostics();
+    }
+
+    public Vector2 ProjectWorldDirectionToMarker(Vector3 worldDirection)
+    {
+        if (target == null || worldDirection.sqrMagnitude <= Mathf.Epsilon)
+        {
+            return Vector2.zero;
+        }
+
+        Vector3 localDirection = target.InverseTransformDirection(worldDirection.normalized);
+        Vector2 projected = new Vector2(localDirection.x, -localDirection.y) * navballRadius;
+        return Vector2.ClampMagnitude(projected, navballRadius);
+    }
+
+    public string BuildModeLabelStructure()
+    {
+        return "WORLD | VELOCITY | TARGET | DOCKING | ORBIT/GRAVITY";
+    }
+
+    private void ResolveReferences()
+    {
+        if (target != null)
+        {
+            if (targetStats == null)
+            {
+                targetStats = target.GetComponent<ShipStats>();
+            }
+
+            if (targetRigidbody == null)
+            {
+                targetRigidbody = target.GetComponent<Rigidbody>();
+            }
+
+            if (shipController == null)
+            {
+                shipController = target.GetComponent<PlayerShipController>();
+            }
+        }
+
+        if (debugOverlay == null)
+        {
+            debugOverlay = GetComponent<PrototypeDebugOverlay>();
+        }
+
+        ResolveTrackedTarget();
+    }
+
+    private void ResolveTrackedTarget()
+    {
+        if (trackedTarget != null)
+        {
+            return;
+        }
+
+        PrototypeTargetDummy dummy = FindAnyObjectByType<PrototypeTargetDummy>();
+        if (dummy != null)
+        {
+            trackedTarget = dummy.transform;
+        }
+    }
+
+    private void RefreshDiagnostics()
+    {
+        LastModeLabelStructure = BuildModeLabelStructure();
+        LastForwardMarker = Vector2.zero;
+        LastHasVelocityMarker = false;
+        LastHasSasMarker = false;
+        LastHasTargetMarker = false;
+        LastHasDebugForceMarkers = false;
+        LastProgradeMarker = Vector2.zero;
+        LastRetrogradeMarker = Vector2.zero;
+        LastSasMarker = Vector2.zero;
+        LastTargetMarker = Vector2.zero;
+        LastDesiredForceMarker = Vector2.zero;
+        LastActualForceMarker = Vector2.zero;
+        LastResidualForceMarker = Vector2.zero;
+
+        Vector3 velocity = targetRigidbody != null ? targetRigidbody.linearVelocity : Vector3.zero;
+        if (velocity.magnitude > velocityMarkerThreshold)
+        {
+            LastHasVelocityMarker = true;
+            LastProgradeMarker = ProjectWorldDirectionToMarker(velocity);
+            LastRetrogradeMarker = ProjectWorldDirectionToMarker(-velocity);
+        }
+
+        if (shipController != null && shipController.HasSasTargetRotation)
+        {
+            LastHasSasMarker = true;
+            LastSasMarker = ProjectWorldDirectionToMarker(shipController.SasTargetRotation * Vector3.forward);
+        }
+
+        if (target != null && trackedTarget != null)
+        {
+            Vector3 targetDirection = trackedTarget.position - target.position;
+            if (targetDirection.sqrMagnitude > 0.0001f)
+            {
+                LastHasTargetMarker = true;
+                LastTargetMarker = ProjectWorldDirectionToMarker(targetDirection);
+            }
+        }
+
+        if (ShouldShowDebugForceMarkers())
+        {
+            LastHasDebugForceMarkers = true;
+            LastDesiredForceMarker = ProjectForceVectorToMarker(shipController.LastRcsDesiredForceWorld);
+            LastActualForceMarker = ProjectForceVectorToMarker(shipController.LastRcsActualForceWorld);
+            LastResidualForceMarker = ProjectForceVectorToMarker(shipController.LastRcsResidualForceWorld);
+        }
+
+        LastModeLabel = ResolveActiveModeLabel(velocity);
+    }
+
+    private bool ShouldShowDebugForceMarkers()
+    {
+        if (!showDebugForceMarkers || shipController == null)
+        {
+            return false;
+        }
+
+        return debugOverlay == null || debugOverlay.DrawDebugVectors || shipController.FlightAssistMode == FlightAssistMode.DebugAssist;
+    }
+
+    private Vector2 ProjectForceVectorToMarker(Vector3 force)
+    {
+        if (force.sqrMagnitude <= 0.0001f)
+        {
+            return Vector2.zero;
+        }
+
+        Vector2 marker = ProjectWorldDirectionToMarker(force);
+        float magnitudeScale = Mathf.Clamp01(force.magnitude / forceMarkerReferenceNewton);
+        return marker * Mathf.Lerp(0.35f, 1f, magnitudeScale);
+    }
+
+    private string ResolveActiveModeLabel(Vector3 velocity)
+    {
+        if (hudMode == HudMode.OrbitGravity || (shipController != null && shipController.GravityEnabled))
+        {
+            return "ORBIT/GRAVITY";
+        }
+
+        if (hudMode == HudMode.Docking)
+        {
+            return "DOCKING";
+        }
+
+        if (hudMode == HudMode.Target || LastHasTargetMarker)
+        {
+            return "TARGET";
+        }
+
+        if (hudMode == HudMode.Velocity || velocity.magnitude > velocityMarkerThreshold)
+        {
+            return "VELOCITY";
+        }
+
+        return "WORLD";
+    }
+
+    private void EnsureStyles()
+    {
+        if (labelStyle != null)
+        {
+            return;
+        }
+
+        labelStyle = new GUIStyle(GUI.skin.label)
+        {
+            fontSize = 13,
+            alignment = TextAnchor.UpperLeft
+        };
+        labelStyle.normal.textColor = Color.white;
+
+        smallLabelStyle = new GUIStyle(GUI.skin.label)
+        {
+            fontSize = 11,
+            alignment = TextAnchor.MiddleCenter
+        };
+        smallLabelStyle.normal.textColor = Color.white;
+
+        centeredLabelStyle = new GUIStyle(GUI.skin.label)
+        {
+            fontSize = 12,
+            alignment = TextAnchor.MiddleCenter
+        };
+        centeredLabelStyle.normal.textColor = Color.white;
+    }
+
+    private void DrawHud()
+    {
+        float centerX = (Screen.width * 0.5f) + navballCenterOffset.x;
+        float centerY = Screen.height + navballCenterOffset.y;
+        Vector2 center = new Vector2(centerX, centerY);
+        Rect bounds = new Rect(center.x - navballRadius - 12f, center.y - navballRadius - 28f, (navballRadius + 12f) * 2f, (navballRadius + 12f) * 2f + 32f);
+
+        GUI.Box(bounds, "Flight HUD");
+        DrawCircle(center, navballRadius, new Color(0.65f, 0.85f, 1f, 0.9f), 2f);
+        DrawCrosshair(center, navballRadius * 0.18f, Color.white);
+        DrawMarker(center, LastForwardMarker, Color.white, "FWD", markerSize);
+
+        if (LastHasVelocityMarker)
+        {
+            DrawMarker(center, LastProgradeMarker, Color.green, "PRO", markerSize);
+            DrawMarker(center, LastRetrogradeMarker, new Color(1f, 0.45f, 0.45f, 1f), "RET", markerSize);
+        }
+
+        if (LastHasSasMarker)
+        {
+            DrawMarker(center, LastSasMarker, new Color(1f, 0.9f, 0.25f, 1f), "SAS", markerSize * 0.9f);
+        }
+
+        if (LastHasTargetMarker)
+        {
+            DrawMarker(center, LastTargetMarker, new Color(0.25f, 0.85f, 1f, 1f), "TGT", markerSize * 0.9f);
+        }
+
+        if (LastHasDebugForceMarkers)
+        {
+            DrawMarker(center, LastDesiredForceMarker, new Color(0.35f, 0.75f, 1f, 1f), "DES", markerSize * 0.75f);
+            DrawMarker(center, LastActualForceMarker, new Color(0.4f, 1f, 0.55f, 1f), "ACT", markerSize * 0.75f);
+            DrawMarker(center, LastResidualForceMarker, new Color(1f, 0.45f, 1f, 1f), "RES", markerSize * 0.75f);
+        }
+
+        Rect labelRect = new Rect(bounds.x + 8f, bounds.y + bounds.height - 39f, bounds.width - 16f, 16f);
+        GUI.Label(labelRect, "Mode: " + LastModeLabel, centeredLabelStyle);
+        Rect structureRect = new Rect(bounds.x + 8f, bounds.y + bounds.height - 22f, bounds.width - 16f, 16f);
+        GUI.Label(structureRect, LastModeLabelStructure, smallLabelStyle);
+    }
+
+    private void DrawCrosshair(Vector2 center, float length, Color color)
+    {
+        DrawLine(center + Vector2.left * length, center + Vector2.right * length, color, 1.5f);
+        DrawLine(center + Vector2.up * length, center + Vector2.down * length, color, 1.5f);
+    }
+
+    private void DrawCircle(Vector2 center, float radius, Color color, float thickness)
+    {
+        const int segments = 64;
+        Vector2 previous = center + new Vector2(radius, 0f);
+        for (int i = 1; i <= segments; i++)
+        {
+            float angle = (Mathf.PI * 2f * i) / segments;
+            Vector2 next = center + new Vector2(Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius);
+            DrawLine(previous, next, color, thickness);
+            previous = next;
+        }
+    }
+
+    private void DrawMarker(Vector2 center, Vector2 markerOffset, Color color, string label, float size)
+    {
+        Vector2 position = center + Vector2.ClampMagnitude(markerOffset, navballRadius);
+        DrawLine(position + Vector2.left * size, position + Vector2.right * size, color, 2f);
+        DrawLine(position + Vector2.up * size, position + Vector2.down * size, color, 2f);
+        smallLabelStyle.normal.textColor = color;
+        GUI.Label(new Rect(position.x - 24f, position.y + size - 2f, 48f, 16f), label, smallLabelStyle);
+        smallLabelStyle.normal.textColor = Color.white;
+    }
+
+    private static void DrawLine(Vector2 start, Vector2 end, Color color, float thickness)
+    {
+        Matrix4x4 oldMatrix = GUI.matrix;
+        Color oldColor = GUI.color;
+        Vector2 delta = end - start;
+        float angle = Mathf.Atan2(delta.y, delta.x) * Mathf.Rad2Deg;
+        float length = delta.magnitude;
+
+        GUI.color = color;
+        GUIUtility.RotateAroundPivot(angle, start);
+        GUI.DrawTexture(new Rect(start.x, start.y - (thickness * 0.5f), length, thickness), Texture2D.whiteTexture);
+        GUI.matrix = oldMatrix;
+        GUI.color = oldColor;
+    }
+}

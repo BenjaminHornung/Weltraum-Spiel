@@ -50,6 +50,14 @@ Controller input is attempted through the Unity Input System when a gamepad is c
 This mapping has compile/play coverage only in this slice. Hardware feel and per-controller layout still need manual verification.
 Camera reset is bound to Backquote. Unity Input System key controls are physical-location based, so this prototype does not treat plain `3` as `#`; non-US hash-key support needs a verified layout-specific binding before it is documented as a control.
 
+## Prototype HUD And Debug UI
+
+- `PrototypeFlightHud` is bound to the main camera after every generated ship spawn. It is a temporary navball-light IMGUI overlay, not final HUD art.
+- The HUD shows a center forward marker, velocity prograde/retrograde markers, a SAS marker when a hold target is available, and a target marker when `PrototypeTargetDummy` exists.
+- When debug vectors are enabled, the HUD can also show desired, actual, and residual RCS force markers so allocator limitations are visible without reading the full debug overlay.
+- The mode label structure reserves `WORLD`, `VELOCITY`, `TARGET`, `DOCKING`, and `ORBIT/GRAVITY`. Only the simple prototype labels are active in this slice.
+- `PrototypeFlightDebugConsole` is a development console for testing. Refuel, reset, damage, spawn target, test pulses, variant selection, debug vector toggles, and debug assist controls are debug-only actions, not player-facing gameplay controls.
+
 ## Prototype Values
 
 - `PrototypeBootstrap` can optionally reference a `PrototypeShipConfig` ScriptableObject for prototype tuning. Leave it unassigned to keep the built-in default ship values.
@@ -69,6 +77,7 @@ Camera reset is bound to Backquote. Unity Input System key controls are physical
 - SAS exposes proportional and derivative gains on `RcsThrusterController`. Manual pitch, yaw, or roll input masks SAS on that same axis while released axes continue to stabilize.
 - Flight assist is an explicit request layer with `Simulation`, `AssistedFlight`, and `DebugAssist` modes. Simulation mode sends no assist force or torque, assisted requests must go through the RCS allocator and `ShipPhysicsCore`, and debug-only requests are labeled so they cannot masquerade as physical flight.
 - `DockingPort` is a prototype docking data component. It reports world port frame data, relative state, eligibility diagnostics, bounded soft-capture `FlightAssistRequest` values, and a hard-lock placeholder that only requests lock after distance, angle, and velocity checks pass.
+- Built-in debug variants are available through the flight debug console: Baseline Balanced, Dual Main Thruster, Off-Center Main Thruster, One-Sided RCS, Heavy Cargo, and No-RCS. These variants are generated test rigs for physics behavior, not a final ship editor.
 - Active RCS nozzles show green debug VFX. The main thruster keeps its separate orange particle effect.
 - The no-hardcoded-position rule is intentional: moving/removing an `RCS_Nozzle_*` transform changes solver output, and missing nozzles create no phantom force.
 - The RCS toggle gates RCS force application and VFX.

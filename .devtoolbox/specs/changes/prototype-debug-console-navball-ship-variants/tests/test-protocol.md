@@ -150,3 +150,36 @@ Still not included:
 - Navball HUD.
 - Runtime browser-style clicking of every IMGUI debug button.
 - README and physics-doc updates for the completed variant selector.
+
+## Slice 3 Navball-Light HUD
+
+Added the first temporary flight HUD without adding final HUD art or a full 3D navball:
+
+- `PrototypeFlightHud` is created on the main camera and rebound by `PrototypeBootstrap.SetupMainCamera` after every generated ship or variant spawn.
+- The HUD draws a lightweight IMGUI navball circle with center forward/crosshair marker, velocity prograde/retrograde markers, SAS hold marker, optional target marker, and optional desired/actual/residual RCS force markers for debug vector mode.
+- Mode label structure is present for `WORLD`, `VELOCITY`, `TARGET`, `DOCKING`, and `ORBIT/GRAVITY`.
+- README now documents the temporary HUD and marks debug console actions as debug-only.
+- `docs/physics-flight-model.md` documents variant-test purpose, residual RCS diagnostics, and the HUD vector projection formula.
+
+Focused validation:
+
+- `validate_script Assets/Scripts/Prototype/PrototypeFlightHud.cs`: 0 errors, 0 warnings.
+- `validate_script Assets/Tests/Editor/PrototypeFlightHudValidationTests.cs`: 0 errors, 0 warnings.
+- `validate_script Assets/Scripts/Prototype/PrototypeBootstrap.cs`: 0 errors, 0 warnings.
+- Unity EditMode job `a8b9cec58092453db089da9f697e8bc2`: 3 total, 3 passed, 0 failed, 0 skipped.
+- Unity console query for C# compiler errors: 0 entries.
+- Full Unity EditMode job `7f16fcc7389d4c488265f5acd5eeeedc`: 55 total, 55 passed, 0 failed, 0 skipped.
+- `dotnet build ".\Weltraum Spiel.sln" --no-restore`: passed with existing Unity/MCP assembly conflict warnings and existing serialized-field warnings, 0 errors.
+- `dotnet test ".\Weltraum Spiel.sln" --no-build`: exited successfully.
+- `specs_validate prototype-debug-console-navball-ship-variants`: passed.
+
+DevToolbox verification:
+
+- `verify_run` passed the specs step.
+- `verify_run` still failed its generic Build/Test/Lint steps because it invokes `dotnet build`, `dotnet test`, and `dotnet format --verify-no-changes` from the Unity project root without specifying the solution. MSBuild reports MSB1011 because multiple project/solution files exist. Explicit solution-scoped build/test commands above passed.
+
+New focused regression coverage:
+
+- `HudComputesProgradeAndRetrogradeMarkersFromShipLocalVelocity` confirms velocity markers move to opposite ship-local sides and switch the HUD mode label to `VELOCITY`.
+- `HudShowsSasHoldAndTargetMarkersWhenAvailable` confirms SAS and target markers are available when a controller hold attitude and target dummy exist.
+- `BootstrapBindsHudAfterVariantSpawn` confirms `PrototypeBootstrap` binds `PrototypeFlightHud` after baseline and one-sided variant spawns and keeps the controller reference connected.

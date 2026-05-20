@@ -633,6 +633,13 @@ public class PrototypeBootstrap : MonoBehaviour
         }
         overlay.Bind(target, stats, body);
 
+        var hud = camera.gameObject.GetComponent<PrototypeFlightHud>();
+        if (hud == null)
+        {
+            hud = camera.gameObject.AddComponent<PrototypeFlightHud>();
+        }
+        hud.Bind(target, stats, body);
+
         var debugConsole = camera.gameObject.GetComponent<PrototypeFlightDebugConsole>();
         if (debugConsole == null)
         {
