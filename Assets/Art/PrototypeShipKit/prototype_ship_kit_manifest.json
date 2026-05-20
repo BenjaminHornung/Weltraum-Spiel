@@ -394,7 +394,7 @@
           ]
         }
       ],
-      "notes": "prototype only",
+      "notes": "prototype only; demo assemblies side-mount pods and remove the hull-facing inboard nozzle so no thruster points into the ship",
       "thrustEstimateN": 6500
     },
     {
@@ -521,7 +521,8 @@
         "rcs_pod_4way_mk1",
         "gun_mount_light_mk1",
         "fuel_tank_small_mk1"
-      ]
+      ],
+      "notes": "RCS pods are mounted on left/right side hardpoint plates; hull-facing inboard nozzles are removed and replaced by blank attachment faces."
     },
     {
       "id": "demo_cargo_mk1",
@@ -535,7 +536,8 @@
         "fuel_tank_small_mk1",
         "main_engine_bell_mk1",
         "rcs_pod_4way_mk1"
-      ]
+      ],
+      "notes": "RCS pods are mounted on left/right side hardpoint plates; hull-facing inboard nozzles are removed and replaced by blank attachment faces."
     }
   ]
 }

@@ -38,6 +38,37 @@ Blender verification script result:
 - `DEMO_Scout_Mk1` visible descendant object count: 115.
 - `DEMO_Cargo_Mk1` visible descendant object count: 133.
 
+Follow-up RCS attachment correction:
+
+- Source `PART_RCS_Pod_4Way_Mk1` now has an explicit blank underside mount plate and mounting note.
+- `DEMO_Scout_Mk1` RCS root count: 4.
+- `DEMO_Scout_Mk1` RCS hardpoint plates: 4.
+- `DEMO_Scout_Mk1` blank inboard no-thruster faces: 4.
+- `DEMO_Scout_Mk1` inward-facing RCS nozzle objects found: 0.
+- `DEMO_Cargo_Mk1` RCS root count: 4.
+- `DEMO_Cargo_Mk1` RCS hardpoint plates: 4.
+- `DEMO_Cargo_Mk1` blank inboard no-thruster faces: 4.
+- `DEMO_Cargo_Mk1` inward-facing RCS nozzle objects found: 0.
+- Updated exports: `rcs_pod_4way_mk1.glb`, `demo_scout_mk1.glb`, and `demo_cargo_mk1.glb`.
+- Manifest RCS and demo ship notes document the blank mount face and inboard nozzle removal in demo assemblies.
+
+Second follow-up RCS side-mount correction:
+
+- User feedback: RCS pods should be mounted on ship sides, not all on top or bottom.
+- `DEMO_Scout_Mk1` and `DEMO_Cargo_Mk1` were rebuilt with four RCS pods mounted on left/right side hardpoint plates.
+- `DEMO_Scout_Mk1` side-mounted RCS root count: 4.
+- `DEMO_Scout_Mk1` side hardpoint plates: 4.
+- `DEMO_Scout_Mk1` blank inboard no-thruster faces: 4.
+- `DEMO_Scout_Mk1` inward-facing RCS nozzle objects found: 0.
+- `DEMO_Scout_Mk1` RCS pods flagged as top/bottom mounted: 0.
+- `DEMO_Cargo_Mk1` side-mounted RCS root count: 4.
+- `DEMO_Cargo_Mk1` side hardpoint plates: 4.
+- `DEMO_Cargo_Mk1` blank inboard no-thruster faces: 4.
+- `DEMO_Cargo_Mk1` inward-facing RCS nozzle objects found: 0.
+- `DEMO_Cargo_Mk1` RCS pods flagged as top/bottom mounted: 0.
+- Updated exports: `demo_scout_mk1.glb` and `demo_cargo_mk1.glb`.
+- Manifest demo notes now describe left/right side hardpoint mounting.
+
 Required generated counts:
 
 - Blender scene created: yes.
@@ -64,6 +95,8 @@ PowerShell JSON/file verification:
 - Unity MCP `refresh_unity` was requested after file generation.
 - Unity generated `.meta` files for `Assets/Art`, `Assets/Art/PrototypeShipKit`, the Parts/DemoShips folders, the manifest, all 9 part GLBs, and both demo GLBs.
 - Unity MCP console check after refresh returned 0 error/warning entries.
+- Unity MCP refresh after the RCS attachment correction returned idle and console check returned 0 error/warning entries.
+- Unity MCP refresh after the RCS side-mount correction returned idle and console check returned 0 error/warning entries.
 
 Expected part exports exist:
 
