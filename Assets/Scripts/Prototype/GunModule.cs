@@ -7,6 +7,7 @@ public class GunModule : MonoBehaviour
     [SerializeField] private Rigidbody shipRigidbody;
     [SerializeField] private ShipPhysicsCore physicsCore;
     [SerializeField] private Transform muzzleTransform;
+    [SerializeField] private PrototypeTurretWeapon turretWeapon;
     [SerializeField] private float projectileScale = 0.24f;
     [SerializeField] private float projectileMass = 0.12f;
     [SerializeField] private bool recoilEnabled = true;
@@ -21,11 +22,15 @@ public class GunModule : MonoBehaviour
     public Vector3 LastRecoilPositionWorld { get; private set; }
     public bool LastRecoilApplied { get; private set; }
     public Transform MuzzleTransform => muzzleTransform;
+    public PrototypeTurretWeapon TurretWeapon => turretWeapon;
 
     private void Awake()
     {
         ResolveReferences();
-        EnsureMuzzleTransform();
+        if (turretWeapon == null)
+        {
+            EnsureMuzzleTransform();
+        }
     }
 
     private void ResolveReferences()
@@ -43,6 +48,15 @@ public class GunModule : MonoBehaviour
         if (physicsCore == null)
         {
             physicsCore = GetComponent<ShipPhysicsCore>();
+        }
+
+        if (turretWeapon == null)
+        {
+            turretWeapon = GetComponent<PrototypeTurretWeapon>();
+            if (turretWeapon == null)
+            {
+                turretWeapon = GetComponentInChildren<PrototypeTurretWeapon>();
+            }
         }
     }
 
@@ -77,9 +91,19 @@ public class GunModule : MonoBehaviour
 
     public bool TryFire()
     {
+        ResolveReferences();
+        if (turretWeapon != null)
+        {
+            bool firedByTurret = turretWeapon.TryFire();
+            LastProjectileVelocityWorld = turretWeapon.LastProjectileVelocityWorld;
+            LastRecoilImpulseWorld = turretWeapon.LastRecoilImpulseWorld;
+            LastRecoilPositionWorld = turretWeapon.LastRecoilPositionWorld;
+            LastRecoilApplied = turretWeapon.LastRecoilApplied;
+            return firedByTurret;
+        }
+
         if (shipStats == null || shipRigidbody == null || muzzleTransform == null)
         {
-            ResolveReferences();
             EnsureMuzzleTransform();
         }
 
@@ -171,6 +195,12 @@ public class GunModule : MonoBehaviour
         muzzleTransform = muzzle != null ? muzzle : muzzleTransform;
         ResolveReferences();
         EnsureMuzzleTransform();
+    }
+
+    public void ConfigureTurretWeapon(PrototypeTurretWeapon weapon)
+    {
+        turretWeapon = weapon;
+        ResolveReferences();
     }
 }
 
