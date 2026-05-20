@@ -32,10 +32,11 @@ public class SimpleFollowCamera : MonoBehaviour
     [SerializeField] private float anchoredModeDistanceClampMin = 4f;
     [Range(20f, 160f)]
     [SerializeField] private float anchoredModeDistanceClampMax = 120f;
-    [SerializeField] private float visualBoundsDistanceMultiplier = 2.2f;
-    [SerializeField] private float visualBoundsMinZoomMultiplier = 1.35f;
+    [SerializeField] private float visualFramingPadding = 1.2f;
+    [SerializeField] private float visualBoundsMinZoomPadding = 0.75f;
     [SerializeField] private float freeInspectMoveSpeed = 8f;
 
+    private Camera attachedCamera;
     private CameraViewMode cameraMode;
     private bool snapNextFrame;
     private float orbitYaw;
@@ -67,6 +68,7 @@ public class SimpleFollowCamera : MonoBehaviour
 
     public void BindTarget(Transform newTarget, ShipStats stats)
     {
+        EnsureCamera();
         target = newTarget;
         targetStats = stats;
         freeInspectLookTarget = Vector3.zero;
@@ -194,16 +196,22 @@ public class SimpleFollowCamera : MonoBehaviour
 
     private void LateUpdate()
     {
+        EnsureCamera();
+
         if (target == null)
         {
             anchorError = 0f;
             return;
         }
 
-        float followHeight = targetStats != null ? targetStats.FollowHeight : height;
-        float followDistance = ResolveBaseDistance(followHeight);
+        RefreshVisualBounds();
 
-        Vector3 desiredPosition = GetDesiredPosition(followDistance, followHeight);
+        float followHeight = targetStats != null ? targetStats.FollowHeight : height;
+        float baseDistance = ResolveBaseDistance(followHeight);
+        Vector3 lookTarget = GetLookTargetFromMode(cameraMode);
+        Vector3 viewDirection = GetViewDirectionFromPivot(cameraMode, followHeight, baseDistance);
+        float followDistance = ResolveEffectiveDistance(baseDistance, lookTarget, viewDirection);
+        Vector3 desiredPosition = lookTarget + viewDirection * followDistance;
 
         if (cameraMode == CameraViewMode.ChaseLocked)
         {
@@ -217,7 +225,6 @@ public class SimpleFollowCamera : MonoBehaviour
         float positionBlend = snapNextFrame ? 1f : 1f - Mathf.Exp(-positionSmooth * Time.deltaTime);
         transform.position = Vector3.Lerp(transform.position, desiredPosition, positionBlend);
 
-        Vector3 lookTarget = GetLookTargetFromMode(cameraMode);
         Vector3 direction = lookTarget - transform.position;
         if (direction.sqrMagnitude > 0.01f)
         {
@@ -325,53 +332,88 @@ public class SimpleFollowCamera : MonoBehaviour
     {
         float minDistance = Mathf.Max(0.1f, anchoredModeDistanceClampMin);
         float maxDistance = Mathf.Max(minDistance, anchoredModeDistanceClampMax);
-        float minZoomDistance = minDistance;
 
         float rawDistance = targetStats != null ? targetStats.FollowDistance : distance;
         baseVisualBoundsRadius = hasVisualBounds ? visualBoundsRadius : 0f;
 
         if (hasVisualBounds)
         {
-            float visualDistance = (baseVisualBoundsRadius * visualBoundsDistanceMultiplier) + followHeight;
+            float visualDistance = CalculatePerspectiveFitDistance(baseVisualBoundsRadius) + followHeight;
             rawDistance = Mathf.Max(rawDistance, visualDistance);
-            minZoomDistance = Mathf.Max(minZoomDistance, baseVisualBoundsRadius * visualBoundsMinZoomMultiplier);
         }
 
-        minZoomDistance = Mathf.Min(minZoomDistance, maxDistance);
         baseFollowDistance = Mathf.Clamp(rawDistance, minDistance, maxDistance);
-        effectiveFollowDistance = Mathf.Clamp(baseFollowDistance + zoomOffset, minZoomDistance, maxDistance);
+        return baseFollowDistance;
+    }
 
+    private float ResolveEffectiveDistance(float baseDistance, Vector3 pivot, Vector3 viewDirection)
+    {
+        float minDistance = Mathf.Max(0.1f, anchoredModeDistanceClampMin);
+        float maxDistance = Mathf.Max(minDistance, anchoredModeDistanceClampMax);
+        float safeMinDistance = ResolveSafeVisualDistance(pivot, viewDirection, minDistance);
+        float effectiveMaxDistance = Mathf.Max(maxDistance, safeMinDistance);
+        effectiveFollowDistance = Mathf.Clamp(baseDistance + zoomOffset, safeMinDistance, effectiveMaxDistance);
         return effectiveFollowDistance;
     }
 
-    private Vector3 GetDesiredPosition(float followDistance, float followHeight)
+    private float ResolveSafeVisualDistance(Vector3 pivot, Vector3 viewDirection, float fallbackMinDistance)
+    {
+        if (!hasVisualBounds || visualBoundsRadius <= 0.01f || viewDirection.sqrMagnitude <= 0.01f)
+        {
+            return fallbackMinDistance;
+        }
+
+        Vector3 ray = viewDirection.normalized;
+        Vector3 pivotToBoundsCenter = pivot - visualBoundsCenter;
+        float safeRadius = visualBoundsRadius + visualBoundsMinZoomPadding + (attachedCamera != null ? attachedCamera.nearClipPlane : 0f);
+        float b = Vector3.Dot(pivotToBoundsCenter, ray);
+        float c = Vector3.Dot(pivotToBoundsCenter, pivotToBoundsCenter) - (safeRadius * safeRadius);
+
+        if (c >= 0f && b >= 0f)
+        {
+            return fallbackMinDistance;
+        }
+
+        float discriminant = (b * b) - c;
+        if (discriminant <= 0f)
+        {
+            return fallbackMinDistance;
+        }
+
+        float farIntersection = -b + Mathf.Sqrt(discriminant);
+        if (farIntersection <= 0f)
+        {
+            return fallbackMinDistance;
+        }
+
+        return Mathf.Max(fallbackMinDistance, farIntersection);
+    }
+
+    private Vector3 GetViewDirectionFromPivot(CameraViewMode mode, float followHeight, float baseDistance)
     {
         if (target == null)
         {
-            return Vector3.zero;
+            return Vector3.back;
         }
 
-        if (cameraMode == CameraViewMode.FreeInspect)
+        float distanceForAngle = Mathf.Max(1f, baseDistance);
+        if (mode == CameraViewMode.ChaseLocked)
         {
-            Vector3 focus = GetLookTargetFromMode(cameraMode);
-            Quaternion orbit = Quaternion.AngleAxis(orbitYaw, Vector3.up) * Quaternion.AngleAxis(orbitPitch, Vector3.right);
-            return focus + orbit * new Vector3(0f, 0f, -followDistance);
+            return (target.rotation * new Vector3(0f, followHeight, -distanceForAngle)).normalized;
         }
 
         Quaternion orbitRotation = Quaternion.AngleAxis(orbitYaw, Vector3.up) * Quaternion.AngleAxis(orbitPitch, Vector3.right);
-        Vector3 lookTarget = GetLookTargetFromMode(cameraMode);
-
-        if (cameraMode == CameraViewMode.OrbitInspect)
+        if (mode == CameraViewMode.Side)
         {
-            return lookTarget + orbitRotation * new Vector3(0f, followHeight * 1.4f, -followDistance * 1.25f);
+            return (orbitRotation * new Vector3(-distanceForAngle, followHeight, 0f)).normalized;
         }
 
-        if (cameraMode == CameraViewMode.Side)
+        if (mode == CameraViewMode.FreeInspect)
         {
-            return lookTarget + orbitRotation * new Vector3(-followDistance * 0.9f, followHeight, 0f);
+            return (orbitRotation * Vector3.back).normalized;
         }
 
-        return GetVisualFocusPoint() + target.rotation * new Vector3(0f, followHeight, -followDistance);
+        return (orbitRotation * new Vector3(0f, followHeight, -distanceForAngle)).normalized;
     }
 
     private Vector3 GetLookTargetFromMode(CameraViewMode mode)
@@ -407,6 +449,32 @@ public class SimpleFollowCamera : MonoBehaviour
         }
 
         return hasVisualBounds ? visualBoundsCenter : target.position;
+    }
+
+    private float CalculatePerspectiveFitDistance(float radius)
+    {
+        if (radius <= 0.01f)
+        {
+            return distance;
+        }
+
+        if (attachedCamera == null || attachedCamera.orthographic)
+        {
+            return radius * 2f * Mathf.Max(1f, visualFramingPadding);
+        }
+
+        float verticalFov = Mathf.Max(1f, attachedCamera.fieldOfView) * Mathf.Deg2Rad;
+        float horizontalFov = Camera.VerticalToHorizontalFieldOfView(attachedCamera.fieldOfView, Mathf.Max(0.01f, attachedCamera.aspect)) * Mathf.Deg2Rad;
+        float limitingFov = Mathf.Max(1f * Mathf.Deg2Rad, Mathf.Min(verticalFov, horizontalFov));
+        return (radius / Mathf.Sin(limitingFov * 0.5f)) * Mathf.Max(1f, visualFramingPadding);
+    }
+
+    private void EnsureCamera()
+    {
+        if (attachedCamera == null)
+        {
+            attachedCamera = GetComponent<Camera>();
+        }
     }
 
     private Vector3 GetLookUp()

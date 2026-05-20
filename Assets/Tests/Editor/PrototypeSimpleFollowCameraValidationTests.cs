@@ -67,12 +67,34 @@ public class PrototypeSimpleFollowCameraValidationTests
         camera.AdjustZoom(-1000f);
         InvokeLateUpdate(camera);
 
-        float minBoundsZoomMultiplier = GetPrivateFloat(camera, "visualBoundsMinZoomMultiplier");
+        float minBoundsZoomPadding = GetPrivateFloat(camera, "visualBoundsMinZoomPadding");
         Bounds visualBounds = largeVisual.GetComponent<Renderer>().bounds;
         float cameraDistanceFromVisualCenter = Vector3.Distance(camera.transform.position, visualBounds.center);
 
-        Assert.That(camera.EffectiveDistance, Is.GreaterThanOrEqualTo(camera.BaseVisualBoundsRadius * minBoundsZoomMultiplier - 0.01f));
+        Assert.That(camera.EffectiveDistance, Is.GreaterThanOrEqualTo(camera.BaseVisualBoundsRadius + minBoundsZoomPadding - 0.01f));
         Assert.That(cameraDistanceFromVisualCenter, Is.GreaterThan(camera.BaseVisualBoundsRadius), "Extreme zoom-in should keep the camera outside the visible ship bounds.");
+    }
+
+    [Test]
+    public void OrbitZoomPreservesViewRayToVisualPivot()
+    {
+        GameObject ship = new GameObject("SimpleFollowCameraTestShip");
+        ShipStats stats = ship.AddComponent<ShipStats>();
+        SimpleFollowCamera camera = BuildCamera(ship);
+        GameObject visual = BuildVisualChild(ship, "SimpleFollowCameraOffsetVisual", Vector3.one * 4f);
+        visual.transform.localPosition = new Vector3(2f, 1f, 5f);
+        camera.BindTarget(ship.transform, stats);
+        camera.CycleCameraMode();
+        InvokeLateUpdate(camera);
+
+        Vector3 visualCenter = visual.GetComponent<Renderer>().bounds.center;
+        Vector3 beforeRay = (camera.transform.position - visualCenter).normalized;
+
+        camera.AdjustZoom(-3f);
+        InvokeLateUpdate(camera);
+
+        Vector3 afterRay = (camera.transform.position - visual.GetComponent<Renderer>().bounds.center).normalized;
+        Assert.That(Vector3.Angle(beforeRay, afterRay), Is.LessThan(0.1f), "Zoom should dolly on the same ray instead of changing the framing anchor.");
     }
 
     [Test]
@@ -121,6 +143,25 @@ public class PrototypeSimpleFollowCameraValidationTests
 
         Vector3 toVisualCenter = offsetVisual.GetComponent<Renderer>().bounds.center - camera.transform.position;
         Assert.That(Vector3.Angle(camera.transform.forward, toVisualCenter), Is.LessThan(1f), "Chase camera should frame the visual bounds center, not just the gameplay transform origin.");
+    }
+
+    [Test]
+    public void VisualBoundsAnchorFollowsMovingTarget()
+    {
+        GameObject ship = new GameObject("SimpleFollowCameraTestShip");
+        ShipStats stats = ship.AddComponent<ShipStats>();
+        SimpleFollowCamera camera = BuildCamera(ship);
+        GameObject visual = BuildVisualChild(ship, "SimpleFollowCameraMovingVisual", Vector3.one * 2f);
+        visual.transform.localPosition = new Vector3(0f, 2f, 6f);
+
+        camera.BindTarget(ship.transform, stats);
+        InvokeLateUpdate(camera);
+
+        ship.transform.position = new Vector3(30f, 0f, 0f);
+        InvokeLateUpdate(camera);
+
+        Vector3 toVisualCenter = visual.GetComponent<Renderer>().bounds.center - camera.transform.position;
+        Assert.That(Vector3.Angle(camera.transform.forward, toVisualCenter), Is.LessThan(1f), "World-space Renderer.bounds must be refreshed while the ship moves, or the camera anchors to stale space.");
     }
 
     [Test]
