@@ -22,25 +22,26 @@ public class PrototypeFlightHud : MonoBehaviour
     [Header("HUD")]
     [SerializeField] private bool showHud = true;
     [SerializeField] private Vector2 navballCenterOffset = new Vector2(0f, -126f);
-    [SerializeField] private float navballRadius = 78f;
+    [SerializeField] private float navballRadius = 88f;
     [SerializeField] private float markerSize = 10f;
     [SerializeField] private float velocityMarkerThreshold = 0.05f;
     [SerializeField] private HudMode hudMode = HudMode.World;
 
     [Header("Debug Markers")]
-    [SerializeField] private bool showDebugForceMarkers = true;
+    [SerializeField] private bool showDebugForceMarkers;
     [SerializeField] private float forceMarkerReferenceNewton = 9000f;
 
     private GUIStyle labelStyle;
     private GUIStyle smallLabelStyle;
     private GUIStyle centeredLabelStyle;
+    private PrototypeUiWindowState windowState;
 
     public Transform Target => target;
     public Rigidbody TargetRigidbody => targetRigidbody;
     public ShipStats TargetStats => targetStats;
     public PlayerShipController ShipController => shipController;
     public Transform TrackedTarget => trackedTarget;
-    public bool ShowHud => showHud;
+    public bool ShowHud => ResolveWindowState().Visible;
     public bool ShowDebugForceMarkers => showDebugForceMarkers;
     public float NavballRadius => navballRadius;
     public HudMode Mode => hudMode;
@@ -75,7 +76,8 @@ public class PrototypeFlightHud : MonoBehaviour
 
     private void OnGUI()
     {
-        if (!showHud)
+        ResolveWindowState();
+        if (!windowState.Visible)
         {
             return;
         }
@@ -83,7 +85,10 @@ public class PrototypeFlightHud : MonoBehaviour
         ResolveReferences();
         RefreshDiagnostics();
         EnsureStyles();
-        DrawHud();
+        windowState.SetSize(Mathf.Max(300f, (navballRadius * 2f) + 84f), windowState.Collapsed ? 58f : Mathf.Max(300f, (navballRadius * 2f) + 116f));
+        windowState.Rect = GUI.Window(windowState.WindowId, windowState.Rect, DrawHudWindow, "HUD / Navball");
+        windowState.ClampToScreen();
+        windowState.SaveToPrefs();
     }
 
     public void Bind(Transform trackTarget, ShipStats stats, Rigidbody rb)
@@ -106,11 +111,17 @@ public class PrototypeFlightHud : MonoBehaviour
     public void SetHudVisible(bool visible)
     {
         showHud = visible;
+        ResolveWindowState().Visible = visible;
     }
 
     public void SetShowDebugForceMarkers(bool visible)
     {
         showDebugForceMarkers = visible;
+    }
+
+    public void SetHudCollapsed(bool collapsed)
+    {
+        ResolveWindowState().Collapsed = collapsed;
     }
 
     public void SetMode(HudMode mode)
@@ -140,6 +151,26 @@ public class PrototypeFlightHud : MonoBehaviour
     public string BuildModeLabelStructure()
     {
         return "WORLD | VELOCITY | TARGET | DOCKING | ORBIT/GRAVITY";
+    }
+
+    private PrototypeUiWindowState ResolveWindowState()
+    {
+        if (windowState == null)
+        {
+            Rect defaultRect = new Rect(
+                Mathf.Max(16f, (Screen.width - 320f) * 0.5f),
+                Mathf.Max(16f, Screen.height - 336f),
+                320f,
+                320f);
+            windowState = PrototypeUiLayoutManager.GetWindow(
+                PrototypeUiLayoutManager.HudWindowId,
+                defaultRect,
+                showHud,
+                false);
+            showHud = windowState.Visible;
+        }
+
+        return windowState;
     }
 
     private void ResolveReferences()
@@ -173,6 +204,11 @@ public class PrototypeFlightHud : MonoBehaviour
     private void ResolveTrackedTarget()
     {
         if (trackedTarget != null)
+        {
+            return;
+        }
+
+        if (shipController == null)
         {
             return;
         }
@@ -237,12 +273,13 @@ public class PrototypeFlightHud : MonoBehaviour
 
     private bool ShouldShowDebugForceMarkers()
     {
-        if (!showDebugForceMarkers || shipController == null)
+        if (shipController == null)
         {
             return false;
         }
 
-        return debugOverlay == null || debugOverlay.DrawDebugVectors || shipController.FlightAssistMode == FlightAssistMode.DebugAssist;
+        bool debugVectorsActive = debugOverlay != null && debugOverlay.DrawDebugVectors;
+        return showDebugForceMarkers || debugVectorsActive || shipController.FlightAssistMode == FlightAssistMode.DebugAssist;
     }
 
     private Vector2 ProjectForceVectorToMarker(Vector3 force)
@@ -311,14 +348,31 @@ public class PrototypeFlightHud : MonoBehaviour
         centeredLabelStyle.normal.textColor = Color.white;
     }
 
-    private void DrawHud()
+    private void DrawHudWindow(int id)
     {
-        float centerX = (Screen.width * 0.5f) + navballCenterOffset.x;
-        float centerY = Screen.height + navballCenterOffset.y;
-        Vector2 center = new Vector2(centerX, centerY);
-        Rect bounds = new Rect(center.x - navballRadius - 12f, center.y - navballRadius - 28f, (navballRadius + 12f) * 2f, (navballRadius + 12f) * 2f + 32f);
+        GUILayout.BeginVertical();
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button(windowState.Collapsed ? "Open" : "Collapse", GUILayout.Width(76f)))
+        {
+            windowState.Collapsed = !windowState.Collapsed;
+        }
 
-        GUI.Box(bounds, "Flight HUD");
+        GUILayout.Label("F4 toggles HUD/Navball", labelStyle);
+        GUILayout.EndHorizontal();
+
+        if (!windowState.Collapsed)
+        {
+            DrawHud(new Rect(10f, 42f, windowState.Rect.width - 20f, windowState.Rect.height - 52f));
+        }
+
+        GUILayout.EndVertical();
+        GUI.DragWindow(new Rect(0f, 0f, 10000f, 24f));
+    }
+
+    private void DrawHud(Rect contentRect)
+    {
+        Vector2 center = new Vector2(contentRect.center.x, contentRect.y + navballRadius + 16f);
+
         DrawCircle(center, navballRadius, new Color(0.65f, 0.85f, 1f, 0.9f), 2f);
         DrawCrosshair(center, navballRadius * 0.18f, Color.white);
         DrawMarker(center, LastForwardMarker, Color.white, "FWD", markerSize);
@@ -329,7 +383,7 @@ public class PrototypeFlightHud : MonoBehaviour
             DrawMarker(center, LastRetrogradeMarker, new Color(1f, 0.45f, 0.45f, 1f), "RET", markerSize);
         }
 
-        if (LastHasSasMarker)
+        if (LastHasSasMarker && LastHasDebugForceMarkers)
         {
             DrawMarker(center, LastSasMarker, new Color(1f, 0.9f, 0.25f, 1f), "SAS", markerSize * 0.9f);
         }
@@ -346,10 +400,8 @@ public class PrototypeFlightHud : MonoBehaviour
             DrawMarker(center, LastResidualForceMarker, new Color(1f, 0.45f, 1f, 1f), "RES", markerSize * 0.75f);
         }
 
-        Rect labelRect = new Rect(bounds.x + 8f, bounds.y + bounds.height - 39f, bounds.width - 16f, 16f);
+        Rect labelRect = new Rect(contentRect.x + 8f, contentRect.yMax - 28f, contentRect.width - 16f, 20f);
         GUI.Label(labelRect, "Mode: " + LastModeLabel, centeredLabelStyle);
-        Rect structureRect = new Rect(bounds.x + 8f, bounds.y + bounds.height - 22f, bounds.width - 16f, 16f);
-        GUI.Label(structureRect, LastModeLabelStructure, smallLabelStyle);
     }
 
     private void DrawCrosshair(Vector2 center, float length, Color color)
@@ -377,8 +429,25 @@ public class PrototypeFlightHud : MonoBehaviour
         DrawLine(position + Vector2.left * size, position + Vector2.right * size, color, 2f);
         DrawLine(position + Vector2.up * size, position + Vector2.down * size, color, 2f);
         smallLabelStyle.normal.textColor = color;
-        GUI.Label(new Rect(position.x - 24f, position.y + size - 2f, 48f, 16f), label, smallLabelStyle);
+        Vector2 labelOffset = MarkerLabelOffset(markerOffset, size, label);
+        GUI.Label(new Rect(position.x + labelOffset.x - 26f, position.y + labelOffset.y - 8f, 52f, 18f), label, smallLabelStyle);
         smallLabelStyle.normal.textColor = Color.white;
+    }
+
+    private static Vector2 MarkerLabelOffset(Vector2 markerOffset, float size, string label)
+    {
+        if (label == "FWD")
+        {
+            return new Vector2(-34f, -size - 18f);
+        }
+
+        if (markerOffset.sqrMagnitude <= 1f)
+        {
+            return new Vector2(0f, size + 10f);
+        }
+
+        Vector2 direction = markerOffset.normalized;
+        return direction * (size + 16f);
     }
 
     private static void DrawLine(Vector2 start, Vector2 end, Color color, float thickness)

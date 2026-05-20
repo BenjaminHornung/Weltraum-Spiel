@@ -105,14 +105,25 @@ The debug console can issue deterministic test pulses for RCS translation, attit
 
 Built-in prototype ship variants are generated to expose physics behavior under controlled layouts rather than to model a final ship editor. Baseline Balanced is the reference layout; Dual Main Thruster checks symmetric engine force; Off-Center Main Thruster compares COM-safe and fully physical nozzle-force modes; One-Sided RCS and No-RCS intentionally expose allocator residuals and missing-authority states; Heavy Cargo checks mass and inertia scaling.
 
-The main camera now owns both the debug console and `PrototypeFlightHud` after each bootstrap or variant spawn. The HUD projects world vectors into ship-local marker space:
+The main camera now owns the debug console, compact flight diagnostics, keybind helper, and `PrototypeFlightHud` after each bootstrap or variant spawn. These remain temporary draggable IMGUI windows so prototype testing can keep the play view clear without a final UI Toolkit migration. `F1`, `F2`, `F3`, and `F4` toggle keybinds, diagnostics, debug console, and HUD/Navball.
+
+The HUD projects world vectors into ship-local marker space:
 
 ```text
 localDirection = shipTransform.InverseTransformDirection(worldDirection.normalized)
 marker = new Vector2(localDirection.x, -localDirection.y) * radius
 ```
 
-Forward, prograde, retrograde, SAS hold, and optional target markers use that projection. When debug vector mode is enabled, desired, actual, and residual RCS force markers use the same projection so a one-sided or fuel-limited allocator result can be inspected visually. The HUD reserves mode labels for `WORLD`, `VELOCITY`, `TARGET`, `DOCKING`, and `ORBIT/GRAVITY`; the current slice only displays prototype labels and does not implement a final 3D navball, docking director, or orbital map.
+Forward, prograde, retrograde, SAS hold, and optional target markers use that projection. The default HUD keeps marker labels short and prints only the active mode label, for example `Mode: TARGET`, instead of the full reserved mode list. When debug vector mode or RCS Test diagnostics are enabled, desired, actual, and residual RCS force markers use the same projection so a one-sided or fuel-limited allocator result can be inspected visually. The HUD reserves mode labels for `WORLD`, `VELOCITY`, `TARGET`, `DOCKING`, and `ORBIT/GRAVITY`; the current slice only displays prototype labels and does not implement a final 3D navball, docking director, or orbital map.
+
+Debug UI presets are available from the debug console:
+
+- Basic: minimal UI coverage for normal play-view inspection.
+- Flight Test: compact flight diagnostics plus HUD/Navball.
+- RCS Test: allocator diagnostics and debug force markers visible.
+- Full Diagnostics: deeper foldout diagnostics and all existing debug buttons.
+
+The generated primitive modules use a central prototype color palette so role information is readable during physics tests. Hull, cockpit, fuel tank, main engine, RCS block, gun, cargo/utility, target, and orientation markers use consistent colors across built-in variants without importing final assets.
 
 If a nozzle is moved, removed, or rotated, its force and torque contribution changes immediately. Missing nozzles cannot create phantom force.
 

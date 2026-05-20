@@ -81,8 +81,10 @@ public class PrototypeFlightHudValidationTests
         Assert.NotNull(Camera.main);
         PrototypeFlightHud hud = Camera.main.GetComponent<PrototypeFlightHud>();
         Assert.NotNull(hud);
+        Assert.NotNull(Camera.main.GetComponent<PrototypeKeybindOverlay>());
         Assert.AreSame(ship.transform, hud.Target);
         Assert.NotNull(hud.TargetRigidbody);
+        Assert.False(hud.ShowDebugForceMarkers);
         Assert.That(hud.BuildModeLabelStructure(), Does.Contain("WORLD"));
         Assert.That(hud.BuildModeLabelStructure(), Does.Contain("VELOCITY"));
         Assert.That(hud.BuildModeLabelStructure(), Does.Contain("TARGET"));
@@ -99,6 +101,32 @@ public class PrototypeFlightHudValidationTests
         Assert.NotNull(hud);
         Assert.AreSame(ship.transform, hud.Target);
         Assert.NotNull(hud.ShipController);
+    }
+
+    [Test]
+    public void HudDebugForceMarkersStayQuietUntilDebugVectorsAreActive()
+    {
+        GameObject ship = new GameObject("HudShip");
+        Rigidbody rb = ship.AddComponent<Rigidbody>();
+        ShipStats stats = ship.AddComponent<ShipStats>();
+        AddFlightControllerDependencies(ship);
+        GameObject cameraObject = new GameObject("HudCamera");
+        cameraObject.AddComponent<Camera>();
+        PrototypeDebugOverlay overlay = cameraObject.AddComponent<PrototypeDebugOverlay>();
+        PrototypeFlightHud hud = cameraObject.AddComponent<PrototypeFlightHud>();
+
+        hud.Bind(ship.transform, stats, rb);
+        hud.SetShowDebugForceMarkers(false);
+        overlay.SetDrawDebugVectors(false);
+
+        hud.RefreshDiagnosticsForTests();
+
+        Assert.False(hud.LastHasDebugForceMarkers);
+
+        overlay.SetDrawDebugVectors(true);
+        hud.RefreshDiagnosticsForTests();
+
+        Assert.True(hud.LastHasDebugForceMarkers);
     }
 
     private static PlayerShipController AddFlightControllerDependencies(GameObject ship)

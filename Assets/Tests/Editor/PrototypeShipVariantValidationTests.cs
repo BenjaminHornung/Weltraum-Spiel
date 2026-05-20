@@ -40,6 +40,7 @@ public class PrototypeShipVariantValidationTests
         Assert.That(ship.GetComponent<RcsThrusterController>().InstalledNozzleCount, Is.EqualTo(20));
         Assert.NotNull(Camera.main);
         Assert.NotNull(Camera.main.GetComponent<PrototypeFlightDebugConsole>());
+        Assert.NotNull(Camera.main.GetComponent<PrototypeKeybindOverlay>());
     }
 
     [Test]

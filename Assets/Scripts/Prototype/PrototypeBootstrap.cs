@@ -11,17 +11,14 @@ public class PrototypeBootstrap : MonoBehaviour
     [SerializeField] private bool spawnTestTarget = true;
     [SerializeField] private Vector3 testTargetPosition = new Vector3(0f, 0.5f, 42f);
     [SerializeField] private Vector3 testTargetScale = new Vector3(4f, 4f, 0.6f);
+    [SerializeField] private bool buildTestEnvironment = true;
 
     private const string PrototypeRootName = "PrototypeShip";
     private const float DefaultRcsBlockThrust = 6500f;
-    private static readonly Color HullColor = new Color(0.68f, 0.72f, 0.78f);
-    private static readonly Color CockpitColor = new Color(0.82f, 0.2f, 0.2f);
-    private static readonly Color FuelTankColor = new Color(0.2f, 0.7f, 0.2f);
-    private static readonly Color GunColor = new Color(0.9f, 0.9f, 0.3f);
-    private static readonly Color CargoColor = new Color(0.45f, 0.5f, 0.56f);
-    private static readonly Color MainThrusterColor = new Color(0.16f, 0.44f, 0.9f);
-    private static readonly Color RcsBlockColor = new Color(0.22f, 0.85f, 0.95f);
-    private static readonly Color RcsVfxColor = new Color(0.35f, 1f, 0.65f, 0.85f);
+    private static readonly Color MainThrusterColor = PrototypeModuleColorPalette.MainThruster;
+    private static readonly Color RcsBlockColor = PrototypeModuleColorPalette.RcsBlock;
+    private static readonly Color GunColor = PrototypeModuleColorPalette.Gun;
+    private static readonly Color RcsVfxColor = PrototypeModuleColorPalette.RcsVfx;
 
     private PrototypeShipVariant[] runtimeVariants;
 
@@ -161,7 +158,8 @@ public class PrototypeBootstrap : MonoBehaviour
             SpawnTestTarget();
         }
 
-        SetupMainCamera(ship.transform, stats, shipRigidbody);
+        PrototypeTestEnvironment testEnvironment = buildTestEnvironment ? EnsureTestEnvironment() : null;
+        SetupMainCamera(ship.transform, stats, shipRigidbody, testEnvironment);
         EnsureSceneDirectionalLight();
     }
 
@@ -211,6 +209,11 @@ public class PrototypeBootstrap : MonoBehaviour
     public void SpawnTestTarget()
     {
         EnsureTestTarget();
+    }
+
+    public void RebuildTestEnvironment()
+    {
+        EnsureTestEnvironment();
     }
 
     private void EnsureRuntimeVariants()
@@ -470,17 +473,7 @@ public class PrototypeBootstrap : MonoBehaviour
 
     private static Color ColorForModule(PrototypeModuleMassRole role)
     {
-        switch (role)
-        {
-            case PrototypeModuleMassRole.Cockpit:
-                return CockpitColor;
-            case PrototypeModuleMassRole.FuelTank:
-                return FuelTankColor;
-            case PrototypeModuleMassRole.Custom:
-                return CargoColor;
-            default:
-                return HullColor;
-        }
+        return PrototypeModuleColorPalette.ForMassRole(role);
     }
 
     private static GameObject BuildModulePart(Transform parent, string name, PrimitiveType type, Vector3 localPos, Quaternion localRot, Vector3 localScale, Color color)
@@ -571,9 +564,9 @@ public class PrototypeBootstrap : MonoBehaviour
             markerRoot.SetParent(ship, false);
         }
 
-        CreateMarker(markerRoot, "Marker_Forward", Color.cyan, new Vector3(0f, 0f, 3.7f), new Vector3(0.08f, 0.08f, 1.2f));
-        CreateMarker(markerRoot, "Marker_Right", Color.red, new Vector3(1.5f, 0f, 0f), new Vector3(1.2f, 0.08f, 0.08f));
-        CreateMarker(markerRoot, "Marker_Up", Color.green, new Vector3(0f, 1.3f, 0f), new Vector3(0.08f, 1.1f, 0.08f));
+        CreateMarker(markerRoot, "Marker_Forward", PrototypeModuleColorPalette.MarkerForward, new Vector3(0f, 0f, 3.7f), new Vector3(0.08f, 0.08f, 1.2f));
+        CreateMarker(markerRoot, "Marker_Right", PrototypeModuleColorPalette.MarkerRight, new Vector3(1.5f, 0f, 0f), new Vector3(1.2f, 0.08f, 0.08f));
+        CreateMarker(markerRoot, "Marker_Up", PrototypeModuleColorPalette.MarkerUp, new Vector3(0f, 1.3f, 0f), new Vector3(0.08f, 1.1f, 0.08f));
     }
 
     private static void CreateMarker(Transform parent, string name, Color color, Vector3 localPos, Vector3 scale)
@@ -596,7 +589,7 @@ public class PrototypeBootstrap : MonoBehaviour
         ApplyMaterialColor(mark, color, false);
     }
 
-    private static void SetupMainCamera(Transform target, ShipStats stats, Rigidbody body)
+    private static void SetupMainCamera(Transform target, ShipStats stats, Rigidbody body, PrototypeTestEnvironment testEnvironment)
     {
         var camera = Camera.main;
         if (camera == null)
@@ -620,6 +613,8 @@ public class PrototypeBootstrap : MonoBehaviour
         }
 
         var camTransform = camera.transform;
+        camera.clearFlags = CameraClearFlags.SolidColor;
+        camera.backgroundColor = new Color(0.008f, 0.012f, 0.026f, 1f);
         camTransform.position = target.position - (target.forward * 18f) + (Vector3.up * 6f);
         camTransform.LookAt(target.position + target.forward * 1.5f);
 
@@ -644,12 +639,32 @@ public class PrototypeBootstrap : MonoBehaviour
         }
         hud.Bind(target, stats, body);
 
+        var keybinds = camera.gameObject.GetComponent<PrototypeKeybindOverlay>();
+        if (keybinds == null)
+        {
+            keybinds = camera.gameObject.AddComponent<PrototypeKeybindOverlay>();
+        }
+
+        var minimap = camera.gameObject.GetComponent<PrototypeMinimapOverlay>();
+        if (minimap == null)
+        {
+            minimap = camera.gameObject.AddComponent<PrototypeMinimapOverlay>();
+        }
+        minimap.Bind(target, body, testEnvironment);
+
         var debugConsole = camera.gameObject.GetComponent<PrototypeFlightDebugConsole>();
         if (debugConsole == null)
         {
             debugConsole = camera.gameObject.AddComponent<PrototypeFlightDebugConsole>();
         }
         debugConsole.Bind(target, stats, body, Object.FindAnyObjectByType<PrototypeBootstrap>());
+    }
+
+    private PrototypeTestEnvironment EnsureTestEnvironment()
+    {
+        var environment = GetOrAddComponent<PrototypeTestEnvironment>(gameObject);
+        environment.Rebuild();
+        return environment;
     }
 
     private static void EnsureSceneDirectionalLight()
@@ -661,11 +676,19 @@ public class PrototypeBootstrap : MonoBehaviour
             var light = sceneLight.AddComponent<Light>();
             light.type = LightType.Directional;
             light.intensity = 1.2f;
+            light.color = new Color(0.88f, 0.92f, 1f, 1f);
             sceneLight.transform.rotation = Quaternion.Euler(50f, 330f, 0f);
         }
         else if (sceneLight.GetComponent<Light>() == null)
         {
             sceneLight.AddComponent<Light>().type = LightType.Directional;
+        }
+        else
+        {
+            var light = sceneLight.GetComponent<Light>();
+            light.type = LightType.Directional;
+            light.intensity = Mathf.Max(light.intensity, 1.15f);
+            light.color = new Color(0.88f, 0.92f, 1f, 1f);
         }
     }
 
@@ -768,7 +791,7 @@ public class PrototypeBootstrap : MonoBehaviour
         target.transform.position = testTargetPosition;
         target.transform.rotation = Quaternion.identity;
         target.transform.localScale = testTargetScale;
-        ApplyMaterialColor(target, new Color(0.25f, 0.85f, 1f, 1f), true);
+        ApplyMaterialColor(target, PrototypeModuleColorPalette.Target, true);
 
         var collider = target.GetComponent<BoxCollider>();
         if (collider == null)

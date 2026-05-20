@@ -23,6 +23,19 @@ public class PrototypeDebugOverlay : MonoBehaviour
     [SerializeField] private float torqueVectorScale = 0.00025f;
 
     private GUIStyle labelStyle;
+    private PrototypeUiWindowState windowState;
+    private Vector2 diagnosticsScroll;
+    private bool advancedDiagnosticsOpen;
+    private bool flightSectionOpen = true;
+    private bool propulsionSectionOpen;
+    private bool rcsSectionOpen;
+    private bool sasSectionOpen;
+    private bool physicsSectionOpen;
+    private bool damageSectionOpen;
+    private bool environmentSectionOpen;
+    private bool navigationSectionOpen;
+
+    public bool IsWindowVisible => ResolveWindowState().Visible;
 
     private void Start()
     {
@@ -111,6 +124,11 @@ public class PrototypeDebugOverlay : MonoBehaviour
         }
 
         EnsureStyle();
+        ResolveWindowState();
+        if (!windowState.Visible)
+        {
+            return;
+        }
 
         Vector3 linearVelocity = targetRigidbody.linearVelocity;
         Vector3 angularVelocity = targetRigidbody.angularVelocity;
@@ -254,117 +272,171 @@ public class PrototypeDebugOverlay : MonoBehaviour
         float navRequiredBurn = waypointAutopilot != null ? waypointAutopilot.RequiredBurnSeconds : 0f;
         bool navFuelFeasible = waypointAutopilot != null && waypointAutopilot.FuelFeasible;
 
-        Rect rect = new Rect(windowPosition.x, windowPosition.y, 620f, 830f);
-        GUI.Box(rect, "Prototype Flight Diagnostics");
-
-        GUILayout.BeginArea(new Rect(rect.x + 8f, rect.y + 22f, rect.width - 14f, rect.height - 24f));
-        GUILayout.BeginHorizontal();
-        GUILayout.BeginVertical(GUILayout.Width(300f));
-        GUILayout.Label($"Fuel: {targetStats.CurrentFuelKg:0.0} / {targetStats.MaxFuelKg:0.0} kg", labelStyle);
-        GUILayout.Label($"Mass: stats {targetStats.CurrentMass:0.0} kg, rb {rbMass:0.0} kg", labelStyle);
-        GUILayout.Label($"Speed: {speedMps:0.0} m/s ({speedKph:0.0} km/h)", labelStyle);
-        GUILayout.Label($"Velocity: {FormatVector(linearVelocity)} m/s", labelStyle);
-        GUILayout.Label($"Camera: {cameraMode}, anchor error {cameraAnchorError:0.000} m", labelStyle);
-        GUILayout.Label($"Camera look: yaw {cameraLookYaw:0.0} deg, pitch {cameraLookPitch:0.0} deg", labelStyle);
-        GUILayout.Label($"Floating origin: {(floatingOriginEnabled ? "on" : "off")} ({(floatingOriginPresent ? "body" : "no body")}), shifts {originShiftCount}, bodies {registeredOriginBodies}", labelStyle);
-        GUILayout.Label($"Origin abs: {FormatLargeVector(origin)}", labelStyle);
-        GUILayout.Label($"Ship abs/local: {FormatLargeVector(absolutePosition)} / {FormatVector(target.position)}", labelStyle);
-        GUILayout.Label($"Ship abs velocity: {FormatLargeVector(absoluteVelocity)} m/s", labelStyle);
-        GUILayout.Label($"Angular velocity: {FormatVector(angularVelocity)} rad/s", labelStyle);
-        GUILayout.Label($"COM local: {FormatVector(centerOfMassLocal)}", labelStyle);
-        GUILayout.Label($"COM world: {FormatVector(centerOfMassWorld)}", labelStyle);
-        GUILayout.Label($"Mass model: {massProperties.ModuleCount} modules, dry {massProperties.DryMassKg:0.0} kg, fuel {massProperties.FuelMassKg:0.0} kg", labelStyle);
-        GUILayout.Label($"Inertia tensor: {FormatVector(inertiaTensor)} kg*m^2", labelStyle);
-        GUILayout.Label($"Damage: {damageDiagnostics.damagedModules}/{damageDiagnostics.totalModules} modules, worst {damageDiagnostics.worstModule} {damageDiagnostics.worstIntegrityPercent:0}% cap {damageDiagnostics.worstCapabilityMultiplier:0.00}", labelStyle);
-        GUILayout.Space(4f);
-        GUILayout.Label($"Throttle: {throttlePercent:0}% target {mainTargetThrottle:0.00} actual {mainActualThrottle:0.00} cmd {mainCommand:0.00}", labelStyle);
-        GUILayout.Label($"Throttle response: up {FormatRate(throttleSpoolUp)}, down {FormatRate(throttleSpoolDown)}, scale {throttleScale:0.00}", labelStyle);
-        GUILayout.Label($"Main thrust: {targetStats.LastAppliedThrust:0} / {targetStats.Thrust:0} N", labelStyle);
-        GUILayout.Label($"Main fuel: req {mainFuelRequested:0.000} kg, used {mainFuelConsumed:0.000} kg, frac {mainFuelFraction:0.00}", labelStyle);
-        GUILayout.Label($"Forward accel: {forwardAcceleration:0.0} m/s^2", labelStyle);
-        GUILayout.Label($"Main mode: {mainThrustMode}", labelStyle);
-        GUILayout.Label($"Main dir: {FormatVector(mainDirection)}", labelStyle);
-        GUILayout.Label($"Main force pos: {FormatVector(mainForcePosition)}", labelStyle);
-        GUILayout.Label($"Main force: {FormatVector(mainForce)}", labelStyle);
-        GUILayout.Label($"Main straight: {FormatVector(mainStraight)}", labelStyle);
-        GUILayout.Label($"Main steering: {FormatVector(mainSteering)}", labelStyle);
-        GUILayout.Label($"Main thrust torque: {FormatVector(mainTorque)}", labelStyle);
-        if (mainThermal != null)
+        void DrawWindow(int id)
         {
-            GUILayout.Label($"Thermal: {mainThermal.ModuleName} {mainThermal.CurrentTemperature:0.0}/{mainThermal.MaxTemperature:0.0} C {mainThermal.StateLabel}", labelStyle);
-            GUILayout.Label($"Heat/power: heat {mainThermal.LastHeatGeneratedPerSecond:0.0}/s, cool {mainThermal.LastCoolingApplied:0.00}, power {mainPowerDrawKw:0.0} kW", labelStyle);
-            GUILayout.Label($"Overheat hook: {(mainThermalEnabled ? "sim" : "off")}, {(mainThermalOverheated ? "active" : "clear")}, eff {mainThermalEfficiency:0.00}", labelStyle);
+            GUILayout.BeginVertical();
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button(windowState.Collapsed ? "Open" : "Collapse", GUILayout.Width(76f)))
+            {
+                windowState.Collapsed = !windowState.Collapsed;
+            }
+
+            if (GUILayout.Button("Hide", GUILayout.Width(54f)))
+            {
+                windowState.Visible = false;
+            }
+
+            GUILayout.Label("F2 toggles diagnostics", labelStyle);
+            GUILayout.EndHorizontal();
+
+            if (!windowState.Collapsed)
+            {
+                GUILayout.Label($"Fuel {targetStats.CurrentFuelKg:0.0}/{targetStats.MaxFuelKg:0.0} kg | Speed {speedMps:0.0} m/s | Throttle {throttlePercent:0}%", labelStyle);
+                GUILayout.Label($"RCS {(rcsEnabled ? "on" : "off")} | SAS {(sasEnabled ? "on" : "off")} | Precision {(precision ? "on" : "off")} | Main {targetStats.LastAppliedThrust:0} N", labelStyle);
+                GUILayout.Label($"Target {navTargetName} | Mode {flightAssistMode} | Debug vectors {(drawDebugVectors ? "on" : "off")}", labelStyle);
+
+                advancedDiagnosticsOpen = GUILayout.Toggle(advancedDiagnosticsOpen, "Advanced Diagnostics");
+                if (advancedDiagnosticsOpen)
+                {
+                    diagnosticsScroll = GUILayout.BeginScrollView(diagnosticsScroll);
+
+                    flightSectionOpen = GUILayout.Toggle(flightSectionOpen, "Flight");
+                    if (flightSectionOpen)
+                    {
+                        GUILayout.Label($"Mass: stats {targetStats.CurrentMass:0.0} kg, rb {rbMass:0.0} kg", labelStyle);
+                        GUILayout.Label($"Velocity: {FormatVector(linearVelocity)} m/s", labelStyle);
+                        GUILayout.Label($"Angular velocity: {FormatVector(angularVelocity)} rad/s", labelStyle);
+                        GUILayout.Label($"Camera: {cameraMode}, anchor error {cameraAnchorError:0.000} m", labelStyle);
+                        GUILayout.Label($"Camera look: yaw {cameraLookYaw:0.0} deg, pitch {cameraLookPitch:0.0} deg", labelStyle);
+                        GUILayout.Label($"COM local/world: {FormatVector(centerOfMassLocal)} / {FormatVector(centerOfMassWorld)}", labelStyle);
+                        GUILayout.Label($"Mass model: {massProperties.ModuleCount} modules, dry {massProperties.DryMassKg:0.0} kg, fuel {massProperties.FuelMassKg:0.0} kg", labelStyle);
+                        GUILayout.Label($"Inertia tensor: {FormatVector(inertiaTensor)} kg*m^2", labelStyle);
+                    }
+
+                    propulsionSectionOpen = GUILayout.Toggle(propulsionSectionOpen, "Propulsion");
+                    if (propulsionSectionOpen)
+                    {
+                        GUILayout.Label($"Throttle: target {mainTargetThrottle:0.00} actual {mainActualThrottle:0.00} cmd {mainCommand:0.00}", labelStyle);
+                        GUILayout.Label($"Throttle response: up {FormatRate(throttleSpoolUp)}, down {FormatRate(throttleSpoolDown)}, scale {throttleScale:0.00}", labelStyle);
+                        GUILayout.Label($"Main thrust: {targetStats.LastAppliedThrust:0} / {targetStats.Thrust:0} N", labelStyle);
+                        GUILayout.Label($"Main fuel: req {mainFuelRequested:0.000} kg, used {mainFuelConsumed:0.000} kg, frac {mainFuelFraction:0.00}", labelStyle);
+                        GUILayout.Label($"Forward accel: {forwardAcceleration:0.0} m/s^2", labelStyle);
+                        GUILayout.Label($"Main mode: {mainThrustMode}", labelStyle);
+                        GUILayout.Label($"Main dir: {FormatVector(mainDirection)}", labelStyle);
+                        GUILayout.Label($"Main force pos: {FormatVector(mainForcePosition)}", labelStyle);
+                        GUILayout.Label($"Main force: {FormatVector(mainForce)}", labelStyle);
+                        GUILayout.Label($"Main straight/steering: {FormatVector(mainStraight)} / {FormatVector(mainSteering)}", labelStyle);
+                        GUILayout.Label($"Main thrust torque: {FormatVector(mainTorque)}", labelStyle);
+                        GUILayout.Label($"Gimbal: {(gimbalEnabled ? "on" : "off")} / {gimbalLimit:0.0} deg", labelStyle);
+                        GUILayout.Label($"Gimbal target: Y {targetGimbalYaw:0.00} P {targetGimbalPitch:0.00}, response {gimbalResponse:0.00}", labelStyle);
+                        GUILayout.Label($"Gimbal actual: Y {actualGimbalYaw:0.00} P {actualGimbalPitch:0.00}, slew {FormatRate(gimbalSlewRate)}, angle {gimbalAngle:0.0}", labelStyle);
+                        if (mainThermal != null)
+                        {
+                            GUILayout.Label($"Thermal: {mainThermal.ModuleName} {mainThermal.CurrentTemperature:0.0}/{mainThermal.MaxTemperature:0.0} C {mainThermal.StateLabel}", labelStyle);
+                            GUILayout.Label($"Heat/power: heat {mainThermal.LastHeatGeneratedPerSecond:0.0}/s, cool {mainThermal.LastCoolingApplied:0.00}, power {mainPowerDrawKw:0.0} kW", labelStyle);
+                            GUILayout.Label($"Overheat hook: {(mainThermalEnabled ? "sim" : "off")}, {(mainThermalOverheated ? "active" : "clear")}, eff {mainThermalEfficiency:0.00}", labelStyle);
+                        }
+                    }
+
+                    rcsSectionOpen = GUILayout.Toggle(rcsSectionOpen, "RCS");
+                    if (rcsSectionOpen)
+                    {
+                        GUILayout.Label($"RCS: installed {(hasRcs ? "yes" : "no")}, enabled {(rcsEnabled ? "yes" : "no")}", labelStyle);
+                        GUILayout.Label($"RCS tuning: move {rcsTranslationSetting:0} N, attitude {rcsAttitudeSetting:0} N", labelStyle);
+                        GUILayout.Label($"RCS response: up {FormatRate(rcsNozzleSpoolUp)}, down {FormatRate(rcsNozzleSpoolDown)}", labelStyle);
+                        GUILayout.Label($"RCS select dot: {minSelectionDot:0.00}, nozzles {activeNozzles}/{installedNozzles}", labelStyle);
+                        GUILayout.Label($"RCS allocator: max {rcsMaxNozzleThrottle:0.00}, sum {rcsAllocatedThrottleTotal:0.00}, applications {rcsNozzleApplications}", labelStyle);
+                        GUILayout.Label($"RCS fuel: req {rcsFuelRequested:0.000} kg, used {rcsFuelConsumed:0.000} kg, frac {rcsFuelFraction:0.00}", labelStyle);
+                        GUILayout.Label($"Move cmd: L/R {rcsTranslation.x:0.00}, U/D {rcsTranslation.y:0.00}, F/B {rcsTranslation.z:0.00}", labelStyle);
+                        GUILayout.Label($"Attitude cmd: P {rcsAttitude.x:0.00}, Y {rcsAttitude.y:0.00}, R {rcsAttitude.z:0.00}", labelStyle);
+                        GUILayout.Label($"RCS pivot local/world: {FormatVector(rcsPivotLocal)} / {FormatVector(rcsPivotWorld)}", labelStyle);
+                        GUILayout.Label($"RCS force desired: {FormatVector(rcsDesiredForce)}", labelStyle);
+                        GUILayout.Label($"RCS force actual: {FormatVector(rcsActualForce)}", labelStyle);
+                        GUILayout.Label($"RCS force residual: {FormatVector(rcsResidualForce)}", labelStyle);
+                        GUILayout.Label($"RCS torque desired: {FormatVector(rcsDesiredTorque)}", labelStyle);
+                        GUILayout.Label($"RCS torque actual: {FormatVector(rcsActualTorque)}", labelStyle);
+                        GUILayout.Label($"RCS torque residual: {FormatVector(rcsResidualTorque)}", labelStyle);
+                        GUILayout.Label($"RCS total force: {FormatVector(rcsTotalForce)}", labelStyle);
+                        GUILayout.Label($"RCS translate force: {FormatVector(rcsTranslationForce)}", labelStyle);
+                        GUILayout.Label($"RCS torque/yaw est: {FormatVector(rcsTorque)} / {FormatVector(rcsYawTorque)}", labelStyle);
+                        GUILayout.Label($"Active nozzles: {Shorten(activeNozzleIds, 74)}", labelStyle);
+                    }
+
+                    sasSectionOpen = GUILayout.Toggle(sasSectionOpen, "SAS");
+                    if (sasSectionOpen)
+                    {
+                        GUILayout.Label($"SAS: {(sasEnabled ? "on" : "off")} (effective {(effectiveSas ? "on" : "off")}) {sasMode}", labelStyle);
+                        GUILayout.Label($"SAS PD: Kp {sasProportionalGain:0.00}, Kd {sasDerivativeGain:0.00}, auth {sasAuthority:0.00}", labelStyle);
+                        GUILayout.Label($"SAS local w: {FormatVector(sasAngularVelocityLocal)} rad/s", labelStyle);
+                        GUILayout.Label($"SAS angular err: {FormatVector(sasAngularErrorLocal)} rad", labelStyle);
+                        GUILayout.Label($"SAS raw/masked cmd: {FormatVector(rawSasCommand)} / {FormatVector(sasCommand)}", labelStyle);
+                        GUILayout.Label($"SAS torque raw: {FormatVector(rawSasTorqueLocal)} Nm", labelStyle);
+                        GUILayout.Label($"SAS torque masked: {FormatVector(sasTorqueLocal)} Nm", labelStyle);
+                        GUILayout.Label($"SAS torque blocked: {FormatVector(suppressedSasTorqueLocal)} Nm", labelStyle);
+                        GUILayout.Label($"Assist: {flightAssistMode}{(assistDebugOnly ? " (debug-only)" : string.Empty)}", labelStyle);
+                        GUILayout.Label($"Assist force/torque req: {FormatVector(assistForceWorld)} N / {FormatVector(assistTorqueLocal)} Nm", labelStyle);
+                        GUILayout.Label($"Torque demand: manual {FormatVector(manualTorqueLocal)}", labelStyle);
+                        GUILayout.Label($"Torque demand: total {FormatVector(desiredTorqueLocal)}", labelStyle);
+                        GUILayout.Label($"SAS released axes: {FormatAxisMask(sasReleasedAxes)}", labelStyle);
+                        GUILayout.Label($"SAS manual axes: {FormatManualMask(sasManualAxes)}", labelStyle);
+                    }
+
+                    physicsSectionOpen = GUILayout.Toggle(physicsSectionOpen, "Physics Core");
+                    if (physicsSectionOpen)
+                    {
+                        GUILayout.Label($"Core force: {FormatVector(coreForce)}", labelStyle);
+                        GUILayout.Label($"Core torque: {FormatVector(coreTorque)}, applications {coreApplications}", labelStyle);
+                        GUILayout.Label($"Core impulse: {FormatVector(coreImpulse)} Ns, applications {coreImpulseApplications}", labelStyle);
+                        GUILayout.Label($"Core angular impulse: {FormatVector(coreAngularImpulse)} Ns*m", labelStyle);
+                        GUILayout.Label($"Impact impulse: {FormatVector(impactImpulse)} Ns, count {impactImpulseCount}", labelStyle);
+                        GUILayout.Label($"Impact torque impulse: {FormatVector(impactTorqueImpulse)} Ns*m", labelStyle);
+                    }
+
+                    damageSectionOpen = GUILayout.Toggle(damageSectionOpen, "Damage");
+                    if (damageSectionOpen)
+                    {
+                        GUILayout.Label($"Damage: {damageDiagnostics.damagedModules}/{damageDiagnostics.totalModules} modules, worst {damageDiagnostics.worstModule} {damageDiagnostics.worstIntegrityPercent:0}% cap {damageDiagnostics.worstCapabilityMultiplier:0.00}", labelStyle);
+                    }
+
+                    environmentSectionOpen = GUILayout.Toggle(environmentSectionOpen, "Atmosphere/Gravity");
+                    if (environmentSectionOpen)
+                    {
+                        GUILayout.Label($"Atmosphere: {(atmosphereActive ? "active" : "vacuum")} density {atmosphereDensity:0.000} kg/m^3", labelStyle);
+                        GUILayout.Label($"Atmos drag: {FormatVector(atmosphereDragForce)} N, rel {atmosphereRelativeVelocity.magnitude:0.00} m/s", labelStyle);
+                        GUILayout.Label($"Atmos Cd/area: {atmosphereDragCoefficient:0.00} / {atmosphereReferenceArea:0.00} m^2", labelStyle);
+                        GUILayout.Label($"Gravity: {(gravityEnabled ? "on" : "off")} body {gravityBodyName}, applied {(gravityApplied ? "yes" : "no")}", labelStyle);
+                        GUILayout.Label($"Gravity mu/dist: {gravityMu:0.00} / {gravityDistance:0.00} m", labelStyle);
+                        GUILayout.Label($"Gravity accel: {FormatVector(gravityAcceleration)} m/s^2", labelStyle);
+                        GUILayout.Label($"Gravity force: {FormatVector(gravityForce)} N", labelStyle);
+                    }
+
+                    navigationSectionOpen = GUILayout.Toggle(navigationSectionOpen, "Navigation/Floating Origin");
+                    if (navigationSectionOpen)
+                    {
+                        GUILayout.Label($"Nav target: {navTargetName}", labelStyle);
+                        GUILayout.Label($"Autopilot: {autopilotState}, {autopilotArrival}", labelStyle);
+                        GUILayout.Label($"Nav dist/ETA: {navDistance:0.0} m, {FormatEta(navEtaSeconds)}", labelStyle);
+                        GUILayout.Label($"Nav speed: closing {navClosingSpeed:0.0} m/s, lateral {navLateralSpeed:0.0} m/s", labelStyle);
+                        GUILayout.Label($"Nav stop/fuel: {navStoppingDistance:0.0} m, burn {FormatBurn(navAvailableBurn)} / {navRequiredBurn:0.0}s {(navFuelFeasible ? "ok" : "low")}", labelStyle);
+                        GUILayout.Label($"Floating origin: {(floatingOriginEnabled ? "on" : "off")} ({(floatingOriginPresent ? "body" : "no body")}), shifts {originShiftCount}, bodies {registeredOriginBodies}", labelStyle);
+                        GUILayout.Label($"Origin abs: {FormatLargeVector(origin)}", labelStyle);
+                        GUILayout.Label($"Ship abs/local: {FormatLargeVector(absolutePosition)} / {FormatVector(target.position)}", labelStyle);
+                        GUILayout.Label($"Ship abs velocity: {FormatLargeVector(absoluteVelocity)} m/s", labelStyle);
+                    }
+
+                    GUILayout.Label($"Debug vectors: lines {(drawDebugVectors ? "on" : "off")}, gizmos {(drawDebugGizmos ? "on" : "off")}", labelStyle);
+                    GUILayout.EndScrollView();
+                }
+            }
+
+            GUILayout.EndVertical();
+            GUI.DragWindow(new Rect(0f, 0f, 10000f, 24f));
         }
 
-        GUILayout.Label($"Gimbal: {(gimbalEnabled ? "on" : "off")} / {gimbalLimit:0.0} deg", labelStyle);
-        GUILayout.Label($"Gimbal target: Y {targetGimbalYaw:0.00} P {targetGimbalPitch:0.00}, response {gimbalResponse:0.00}", labelStyle);
-        GUILayout.Label($"Gimbal actual: Y {actualGimbalYaw:0.00} P {actualGimbalPitch:0.00}, slew {FormatRate(gimbalSlewRate)}, angle {gimbalAngle:0.0}", labelStyle);
-        GUILayout.EndVertical();
-
-        GUILayout.BeginVertical(GUILayout.Width(300f));
-        GUILayout.Label($"RCS: installed {(hasRcs ? "yes" : "no")}, enabled {(rcsEnabled ? "yes" : "no")}", labelStyle);
-        GUILayout.Label($"RCS tuning: move {rcsTranslationSetting:0} N, attitude {rcsAttitudeSetting:0} N", labelStyle);
-        GUILayout.Label($"RCS response: up {FormatRate(rcsNozzleSpoolUp)}, down {FormatRate(rcsNozzleSpoolDown)}", labelStyle);
-        GUILayout.Label($"RCS select dot: {minSelectionDot:0.00}, nozzles {activeNozzles}/{installedNozzles}", labelStyle);
-        GUILayout.Label($"RCS allocator: max {rcsMaxNozzleThrottle:0.00}, sum {rcsAllocatedThrottleTotal:0.00}, applications {rcsNozzleApplications}", labelStyle);
-        GUILayout.Label($"RCS fuel: req {rcsFuelRequested:0.000} kg, used {rcsFuelConsumed:0.000} kg, frac {rcsFuelFraction:0.00}", labelStyle);
-        GUILayout.Label($"Precision: {(precision ? "on" : "off")}", labelStyle);
-        GUILayout.Label($"Move cmd: L/R {rcsTranslation.x:0.00}, U/D {rcsTranslation.y:0.00}, F/B {rcsTranslation.z:0.00}", labelStyle);
-        GUILayout.Label($"Attitude cmd: P {rcsAttitude.x:0.00}, Y {rcsAttitude.y:0.00}, R {rcsAttitude.z:0.00}", labelStyle);
-        GUILayout.Label($"Turn input: {turnInput:0.00}", labelStyle);
-        GUILayout.Label($"RCS pivot local: {FormatVector(rcsPivotLocal)}", labelStyle);
-        GUILayout.Label($"RCS pivot world: {FormatVector(rcsPivotWorld)}", labelStyle);
-        GUILayout.Label($"RCS force desired: {FormatVector(rcsDesiredForce)}", labelStyle);
-        GUILayout.Label($"RCS force actual: {FormatVector(rcsActualForce)}", labelStyle);
-        GUILayout.Label($"RCS force residual: {FormatVector(rcsResidualForce)}", labelStyle);
-        GUILayout.Label($"RCS torque desired: {FormatVector(rcsDesiredTorque)}", labelStyle);
-        GUILayout.Label($"RCS torque actual: {FormatVector(rcsActualTorque)}", labelStyle);
-        GUILayout.Label($"RCS torque residual: {FormatVector(rcsResidualTorque)}", labelStyle);
-        GUILayout.Label($"RCS total force: {FormatVector(rcsTotalForce)}", labelStyle);
-        GUILayout.Label($"RCS translate force: {FormatVector(rcsTranslationForce)}", labelStyle);
-        GUILayout.Label($"RCS torque est: {FormatVector(rcsTorque)}", labelStyle);
-        GUILayout.Label($"RCS yaw torque est: {FormatVector(rcsYawTorque)}", labelStyle);
-        GUILayout.Label($"Core force: {FormatVector(coreForce)}", labelStyle);
-        GUILayout.Label($"Core torque: {FormatVector(coreTorque)}, applications {coreApplications}", labelStyle);
-        GUILayout.Label($"Core impulse: {FormatVector(coreImpulse)} Ns, applications {coreImpulseApplications}", labelStyle);
-        GUILayout.Label($"Core angular impulse: {FormatVector(coreAngularImpulse)} Ns*m", labelStyle);
-        GUILayout.Label($"Impact impulse: {FormatVector(impactImpulse)} Ns, count {impactImpulseCount}", labelStyle);
-        GUILayout.Label($"Impact torque impulse: {FormatVector(impactTorqueImpulse)} Ns*m", labelStyle);
-        GUILayout.Label($"Atmosphere: {(atmosphereActive ? "active" : "vacuum")} density {atmosphereDensity:0.000} kg/m^3", labelStyle);
-        GUILayout.Label($"Atmos drag: {FormatVector(atmosphereDragForce)} N, rel {atmosphereRelativeVelocity.magnitude:0.00} m/s", labelStyle);
-        GUILayout.Label($"Atmos Cd/area: {atmosphereDragCoefficient:0.00} / {atmosphereReferenceArea:0.00} m^2", labelStyle);
-        GUILayout.Label($"Gravity: {(gravityEnabled ? "on" : "off")} body {gravityBodyName}, applied {(gravityApplied ? "yes" : "no")}", labelStyle);
-        GUILayout.Label($"Gravity mu/dist: {gravityMu:0.00} / {gravityDistance:0.00} m", labelStyle);
-        GUILayout.Label($"Gravity accel: {FormatVector(gravityAcceleration)} m/s^2", labelStyle);
-        GUILayout.Label($"Gravity force: {FormatVector(gravityForce)} N", labelStyle);
-        GUILayout.Space(4f);
-        GUILayout.Label($"Nav target: {navTargetName}", labelStyle);
-        GUILayout.Label($"Autopilot: {autopilotState}, {autopilotArrival}", labelStyle);
-        GUILayout.Label($"Nav dist/ETA: {navDistance:0.0} m, {FormatEta(navEtaSeconds)}", labelStyle);
-        GUILayout.Label($"Nav speed: closing {navClosingSpeed:0.0} m/s, lateral {navLateralSpeed:0.0} m/s", labelStyle);
-        GUILayout.Label($"Nav stop/fuel: {navStoppingDistance:0.0} m, burn {FormatBurn(navAvailableBurn)} / {navRequiredBurn:0.0}s {(navFuelFeasible ? "ok" : "low")}", labelStyle);
-        GUILayout.Space(4f);
-        GUILayout.Label($"SAS: {(sasEnabled ? "on" : "off")} (effective {(effectiveSas ? "on" : "off")}) {sasMode}", labelStyle);
-        GUILayout.Label($"SAS PD: Kp {sasProportionalGain:0.00}, Kd {sasDerivativeGain:0.00}, auth {sasAuthority:0.00}", labelStyle);
-        GUILayout.Label($"SAS local w: {FormatVector(sasAngularVelocityLocal)} rad/s", labelStyle);
-        GUILayout.Label($"SAS angular err: {FormatVector(sasAngularErrorLocal)} rad", labelStyle);
-        GUILayout.Label($"SAS raw cmd: {FormatVector(rawSasCommand)}", labelStyle);
-        GUILayout.Label($"SAS masked cmd: {FormatVector(sasCommand)}", labelStyle);
-        GUILayout.Label($"SAS torque raw: {FormatVector(rawSasTorqueLocal)} Nm", labelStyle);
-        GUILayout.Label($"SAS torque masked: {FormatVector(sasTorqueLocal)} Nm", labelStyle);
-        GUILayout.Label($"SAS torque blocked: {FormatVector(suppressedSasTorqueLocal)} Nm", labelStyle);
-        GUILayout.Label($"Assist: {flightAssistMode}{(assistDebugOnly ? " (debug-only)" : string.Empty)}", labelStyle);
-        GUILayout.Label($"Assist force req: {FormatVector(assistForceWorld)} N", labelStyle);
-        GUILayout.Label($"Assist torque req: {FormatVector(assistTorqueLocal)} Nm", labelStyle);
-        GUILayout.Label($"Torque demand: manual {FormatVector(manualTorqueLocal)}", labelStyle);
-        GUILayout.Label($"Torque demand: total {FormatVector(desiredTorqueLocal)}", labelStyle);
-        GUILayout.Label($"SAS released axes: {FormatAxisMask(sasReleasedAxes)}", labelStyle);
-        GUILayout.Label($"SAS manual axes: {FormatManualMask(sasManualAxes)}", labelStyle);
-        GUILayout.Label($"Debug vectors: lines {(drawDebugVectors ? "on" : "off")}, gizmos {(drawDebugGizmos ? "on" : "off")}", labelStyle);
-        GUILayout.Label($"Active nozzles: {Shorten(activeNozzleIds, 74)}", labelStyle);
-        GUILayout.EndVertical();
-        GUILayout.EndHorizontal();
-        GUILayout.EndArea();
+        windowState.SetSize(advancedDiagnosticsOpen ? 680f : 440f, windowState.Collapsed ? 58f : (advancedDiagnosticsOpen ? 740f : 184f));
+        windowState.Rect = GUI.Window(windowState.WindowId, windowState.Rect, DrawWindow, "Flight Diagnostics");
+        windowState.ClampToScreen();
+        windowState.SaveToPrefs();
     }
 
     private void OnDrawGizmos()
@@ -513,6 +585,20 @@ public class PrototypeDebugOverlay : MonoBehaviour
         return diagnostics;
     }
 
+    private PrototypeUiWindowState ResolveWindowState()
+    {
+        if (windowState == null)
+        {
+            windowState = PrototypeUiLayoutManager.GetWindow(
+                PrototypeUiLayoutManager.DiagnosticsWindowId,
+                new Rect(windowPosition.x, windowPosition.y, 440f, 184f),
+                true,
+                false);
+        }
+
+        return windowState;
+    }
+
     public void Bind(Transform trackTarget, ShipStats stats, Rigidbody rb)
     {
         target = trackTarget;
@@ -537,9 +623,11 @@ public class PrototypeDebugOverlay : MonoBehaviour
     }
 
 
-public bool DrawDebugVectors => drawDebugVectors;
+    public bool DrawDebugVectors => drawDebugVectors;
 
     public bool DrawDebugGizmos => drawDebugGizmos;
+
+    public bool AdvancedDiagnosticsOpen => advancedDiagnosticsOpen;
 
     public void SetDrawDebugVectors(bool enabled)
     {
@@ -549,5 +637,37 @@ public bool DrawDebugVectors => drawDebugVectors;
     public void SetDrawDebugGizmos(bool enabled)
     {
         drawDebugGizmos = enabled;
+    }
+
+    public void SetWindowVisible(bool visible)
+    {
+        ResolveWindowState().Visible = visible;
+    }
+
+    public void SetWindowCollapsed(bool collapsed)
+    {
+        ResolveWindowState().Collapsed = collapsed;
+    }
+
+    public void SetAdvancedDiagnostics(bool enabled)
+    {
+        advancedDiagnosticsOpen = enabled;
+        if (enabled)
+        {
+            propulsionSectionOpen = true;
+            physicsSectionOpen = true;
+            environmentSectionOpen = true;
+            navigationSectionOpen = true;
+        }
+    }
+
+    public void SetRcsDiagnosticsExpanded(bool expanded)
+    {
+        rcsSectionOpen = expanded;
+        sasSectionOpen = expanded;
+        if (expanded)
+        {
+            advancedDiagnosticsOpen = true;
+        }
     }
 }

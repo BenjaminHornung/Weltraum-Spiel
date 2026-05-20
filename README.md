@@ -6,12 +6,17 @@ This Unity prototype is a generated-primitives-only playable slice for testing z
 
 - Open the project in Unity 6000.4.7f1 or newer in the Unity 6 line.
 - Load `Assets/Scenes/PrototypeBootstrapHost.unity`, or press Play from an empty/nearly empty scene. `PrototypeBootstrap` creates the prototype objects at runtime when needed.
-- No external asset pack is required. The ship, orientation markers, engine effect, and projectiles are generated from Unity primitives and built-in components.
+- No external asset pack is required. The ship, test environment, orientation markers, engine effect, and projectiles are generated from Unity primitives and built-in components.
 
 ## Controls
 
 | Key | Action |
 | --- | --- |
+| `F1` | Toggle compact keybind help |
+| `F2` | Toggle flight diagnostics / debug overlay |
+| `F3` | Toggle flight debug console |
+| `F4` | Toggle HUD/Navball |
+| `F5` | Toggle minimap/radar |
 | `W` / `S` | Pitch down / up |
 | `A` / `D` | Yaw left / right |
 | `Q` / `E` | Roll left / right |
@@ -54,12 +59,23 @@ Camera reset is bound to Backquote. Unity Input System key controls are physical
 
 ## Prototype HUD And Debug UI
 
-- `PrototypeFlightHud` is bound to the main camera after every generated ship spawn. It is a temporary navball-light IMGUI overlay, not final HUD art.
-- The HUD shows a center forward marker, velocity prograde/retrograde markers, a SAS marker when a hold target is available, and a target marker when `PrototypeTargetDummy` exists.
-- When debug vectors are enabled, the HUD can also show desired, actual, and residual RCS force markers so allocator limitations are visible without reading the full debug overlay.
-- The mode label structure reserves `WORLD`, `VELOCITY`, `TARGET`, `DOCKING`, and `ORBIT/GRAVITY`. Only the simple prototype labels are active in this slice.
-- `PrototypeFlightDebugConsole` is a development console for testing. Refuel, reset, damage, spawn target, test pulses, variant selection, debug vector toggles, and debug assist controls are debug-only actions, not player-facing gameplay controls.
+- `PrototypeFlightHud`, `PrototypeDebugOverlay`, `PrototypeFlightDebugConsole`, `PrototypeKeybindOverlay`, and `PrototypeMinimapOverlay` are bound to the main camera after every generated ship spawn. They remain temporary IMGUI prototype UI, not final HUD art.
+- `F1` toggles a draggable keybind helper. `F2`, `F3`, `F4`, and `F5` toggle flight diagnostics, debug console, HUD/Navball, and minimap without relying on German-keyboard-sensitive punctuation keys.
+- The default startup view is the compact Flight Test preset: small flight diagnostics, HUD/Navball, and minimap, with the debug console hidden until needed.
+- Debug Console presets are available for Basic, Flight Test, RCS Test, and Full Diagnostics. Presets only change UI visibility/collapsed state and debug marker visibility; they do not change flight physics or control bindings.
+- `PrototypeMinimapOverlay` is a simple top-down XZ radar centered on the ship. It draws heading, velocity, range rings, origin, targets, beacons, gates, station, and visual obstacles with 250 m / 500 m / 1000 m / 2500 m zoom levels and optional labels.
+- The HUD shows a center forward marker, velocity prograde/retrograde markers, and a target marker when `PrototypeTargetDummy` exists. SAS and debug force markers remain available when relevant, but the default marker set stays short.
+- When debug vectors or RCS Test diagnostics are enabled, the HUD can also show desired, actual, and residual RCS force markers so allocator limitations are visible without reading the full debug overlay.
+- The mode label reserves `WORLD`, `VELOCITY`, `TARGET`, `DOCKING`, and `ORBIT/GRAVITY`, but the visible HUD only prints the active short label such as `Mode: TARGET`.
+- `PrototypeFlightDebugConsole` is a development console for testing. Refuel, reset, damage, spawn target, test pulses, variant selection, debug vector toggles, UI presets, and debug assist controls are debug-only actions, not player-facing gameplay controls.
 - `PrototypeWaypointAutopilot` is a prototype navigation assist. It reports selected target, distance, closing speed, lateral speed, stopping distance, fuel estimate, autopilot state, ETA, and arrival status in the debug overlay.
+
+## Prototype Test Environment
+
+- `PrototypeBootstrap` can generate a `PrototypeEnvironment` root each time the prototype is rebuilt. Rebuild clears the previous generated root first so the test range does not duplicate.
+- The environment is generated only from Unity primitives, LineRenderer rings/axes, simple materials, lights, and TextMesh labels. No external asset pack is required.
+- The generated test range includes an origin beacon, color-coded X/Y/Z axes, 100 m / 250 m / 500 m / 1000 m range rings, multiple target dummies, navigation beacons, approach gates, a station/hangar placeholder, and a non-damaging visual asteroid field.
+- Targets use the existing `PrototypeTargetDummy` hit-feedback component. Beacons, gates, station, and obstacles are orientation landmarks for manual flight, RCS translation, minimap testing, and future waypoint/autopilot work.
 
 ## Prototype Values
 
@@ -83,6 +99,7 @@ Camera reset is bound to Backquote. Unity Input System key controls are physical
 - The waypoint autopilot estimates stopping distance from current closing speed and conservative deceleration. It accounts for initial velocity and lateral velocity, and it may refuse a route with `FuelInsufficient` instead of pretending the ship can arrive.
 - `DockingPort` is a prototype docking data component. It reports world port frame data, relative state, eligibility diagnostics, bounded soft-capture `FlightAssistRequest` values, and a hard-lock placeholder that only requests lock after distance, angle, and velocity checks pass.
 - Built-in debug variants are available through the flight debug console: Baseline Balanced, Dual Main Thruster, Off-Center Main Thruster, One-Sided RCS, Heavy Cargo, and No-RCS. These variants are generated test rigs for physics behavior, not a final ship editor.
+- Generated primitive modules use a role-based prototype palette so hull, cockpit, fuel tanks, engines, RCS blocks, guns, cargo/utility, target markers, and orientation markers are easier to tell apart during tests.
 - Active RCS nozzles show green debug VFX. The main thruster keeps its separate orange particle effect.
 - The no-hardcoded-position rule is intentional: moving/removing an `RCS_Nozzle_*` transform changes solver output, and missing nozzles create no phantom force.
 - The RCS toggle gates RCS force application and VFX.

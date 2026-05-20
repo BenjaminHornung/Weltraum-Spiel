@@ -8,15 +8,23 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
     [SerializeField] private Transform target;
     [SerializeField] private PlayerShipController shipController;
     [SerializeField] private PrototypeDebugOverlay debugOverlay;
+    [SerializeField] private PrototypeFlightHud flightHud;
+    [SerializeField] private PrototypeKeybindOverlay keybindOverlay;
+    [SerializeField] private PrototypeMinimapOverlay minimapOverlay;
     [SerializeField] private PrototypeBootstrap bootstrap;
     [SerializeField] private Vector2 windowPosition = new Vector2(660f, 16f);
 
-    private bool showConsole = true;
+    private bool showConsole;
+    private bool consoleCollapsed = true;
     private bool controlsOpen = true;
     private bool actionsOpen = true;
     private bool pulsesOpen = true;
     private bool rcsDiagnosticsOpen = true;
     private GUIStyle labelStyle;
+    private Vector2 scrollPosition;
+    private PrototypeUiWindowState windowState;
+
+    public bool IsConsoleVisible => ResolveWindowState().Visible;
 
     private void Start()
     {
@@ -48,6 +56,21 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
             debugOverlay = GetComponent<PrototypeDebugOverlay>();
         }
 
+        if (flightHud == null)
+        {
+            flightHud = GetComponent<PrototypeFlightHud>();
+        }
+
+        if (keybindOverlay == null)
+        {
+            keybindOverlay = GetComponent<PrototypeKeybindOverlay>();
+        }
+
+        if (minimapOverlay == null)
+        {
+            minimapOverlay = GetComponent<PrototypeMinimapOverlay>();
+        }
+
         if (bootstrap == null)
         {
             bootstrap = FindAnyObjectByType<PrototypeBootstrap>();
@@ -66,6 +89,12 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
         labelStyle.normal.textColor = Color.white;
     }
 
+    private void Update()
+    {
+        ResolveReferences();
+        PrototypeUiLayoutManager.HandleFunctionKeys(debugOverlay, this, flightHud, keybindOverlay, minimapOverlay);
+    }
+
     private void OnGUI()
     {
         if (!Application.isEditor && !Debug.isDebugBuild)
@@ -75,31 +104,109 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
 
         ResolveReferences();
         EnsureStyle();
+        ResolveWindowState();
 
-        if (GUILayout.Button(showConsole ? "Hide Flight Debug Console" : "Show Flight Debug Console", GUILayout.Width(220f)))
-        {
-            showConsole = !showConsole;
-        }
-
-        if (!showConsole || shipController == null)
+        if (!windowState.Visible)
         {
             return;
         }
 
-        Rect rect = new Rect(windowPosition.x, windowPosition.y, 640f, 500f);
-        GUI.Box(rect, "Prototype Flight Debug Console");
-        GUILayout.BeginArea(new Rect(rect.x + 8f, rect.y + 22f, rect.width - 16f, rect.height - 28f));
+        windowState.SetSize(consoleCollapsed ? 260f : 660f, consoleCollapsed ? 64f : 560f);
+        windowState.Collapsed = consoleCollapsed;
+        windowState.Rect = GUI.Window(windowState.WindowId, windowState.Rect, DrawWindow, "Debug Console");
+        windowState.ClampToScreen();
+        windowState.SaveToPrefs();
+    }
+
+    private PrototypeUiWindowState ResolveWindowState()
+    {
+        if (windowState == null)
+        {
+            windowState = PrototypeUiLayoutManager.GetWindow(
+                PrototypeUiLayoutManager.DebugConsoleWindowId,
+                new Rect(windowPosition.x, windowPosition.y, 660f, 560f),
+                showConsole,
+                consoleCollapsed);
+            showConsole = windowState.Visible;
+            consoleCollapsed = windowState.Collapsed;
+        }
+
+        return windowState;
+    }
+
+    private void DrawWindow(int id)
+    {
+        GUILayout.BeginVertical();
         GUILayout.BeginHorizontal();
-        GUILayout.BeginVertical(GUILayout.Width(305f));
-        DrawControls();
-        DrawActions();
-        GUILayout.EndVertical();
-        GUILayout.BeginVertical(GUILayout.Width(305f));
-        DrawPulses();
-        DrawRcsDiagnostics();
-        GUILayout.EndVertical();
+        if (GUILayout.Button(consoleCollapsed ? "Open" : "Collapse", GUILayout.Width(76f)))
+        {
+            SetConsoleCollapsed(!consoleCollapsed);
+        }
+
+        if (GUILayout.Button("Hide", GUILayout.Width(54f)))
+        {
+            SetConsoleVisible(false);
+        }
+
+        GUILayout.Label("F3 toggles console", labelStyle);
         GUILayout.EndHorizontal();
-        GUILayout.EndArea();
+
+        if (!consoleCollapsed)
+        {
+            DrawPresetControls();
+
+            if (shipController == null)
+            {
+                GUILayout.Label("No PlayerShipController bound.", labelStyle);
+            }
+            else
+            {
+                scrollPosition = GUILayout.BeginScrollView(scrollPosition);
+                GUILayout.BeginHorizontal();
+                GUILayout.BeginVertical(GUILayout.Width(310f));
+                DrawControls();
+                DrawActions();
+                GUILayout.EndVertical();
+                GUILayout.BeginVertical(GUILayout.Width(310f));
+                DrawPulses();
+                DrawRcsDiagnostics();
+                GUILayout.EndVertical();
+                GUILayout.EndHorizontal();
+                GUILayout.EndScrollView();
+            }
+        }
+
+        GUILayout.EndVertical();
+        GUI.DragWindow(new Rect(0f, 0f, 10000f, 24f));
+    }
+
+    private void DrawPresetControls()
+    {
+        GUILayout.Label("UI preset", labelStyle);
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("Basic")) ApplyPreset(PrototypeUiPreset.Basic);
+        if (GUILayout.Button("Flight Test")) ApplyPreset(PrototypeUiPreset.FlightTest);
+        if (GUILayout.Button("RCS Test")) ApplyPreset(PrototypeUiPreset.RcsTest);
+        if (GUILayout.Button("Full Diagnostics")) ApplyPreset(PrototypeUiPreset.FullDiagnostics);
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("Reset Layout"))
+        {
+            PrototypeUiLayoutManager.ResetLayout();
+            ApplyPreset(PrototypeUiLayoutManager.CurrentPreset);
+        }
+
+        if (GUILayout.Button("Hide All Debug UI"))
+        {
+            PrototypeUiLayoutManager.HideAll(debugOverlay, this, flightHud, keybindOverlay, minimapOverlay);
+        }
+        GUILayout.EndHorizontal();
+    }
+
+    private void ApplyPreset(PrototypeUiPreset preset)
+    {
+        PrototypeUiLayoutManager.ApplyPreset(preset, debugOverlay, this, flightHud, keybindOverlay, minimapOverlay);
     }
 
     private void DrawControls()
@@ -190,6 +297,11 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
         if (GUILayout.Button("Spawn target"))
         {
             bootstrap.SpawnTestTarget();
+        }
+
+        if (GUILayout.Button("Rebuild environment"))
+        {
+            bootstrap.RebuildTestEnvironment();
         }
         GUI.enabled = true;
 
@@ -330,6 +442,29 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
         targetRigidbody = rb;
         shipController = trackTarget != null ? trackTarget.GetComponent<PlayerShipController>() : null;
         debugOverlay = GetComponent<PrototypeDebugOverlay>();
+        flightHud = GetComponent<PrototypeFlightHud>();
+        keybindOverlay = GetComponent<PrototypeKeybindOverlay>();
+        minimapOverlay = GetComponent<PrototypeMinimapOverlay>();
         bootstrap = sourceBootstrap != null ? sourceBootstrap : FindAnyObjectByType<PrototypeBootstrap>();
+    }
+
+    public void SetConsoleVisible(bool visible)
+    {
+        showConsole = visible;
+        ResolveWindowState().Visible = visible;
+    }
+
+    public void SetConsoleCollapsed(bool collapsed)
+    {
+        consoleCollapsed = collapsed;
+        ResolveWindowState().Collapsed = collapsed;
+    }
+
+    public void SetRcsDiagnosticsExpanded(bool expanded)
+    {
+        rcsDiagnosticsOpen = expanded;
+        controlsOpen = true;
+        actionsOpen = true;
+        pulsesOpen = expanded || PrototypeUiLayoutManager.CurrentPreset == PrototypeUiPreset.FullDiagnostics;
     }
 }
