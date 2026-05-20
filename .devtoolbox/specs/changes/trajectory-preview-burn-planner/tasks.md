@@ -19,9 +19,9 @@
 - [x] Document included/excluded forces
 
 ## Verification
-- [ ] Validate changed Unity scripts with Unity MCP
-- [ ] Verify bounded prediction returns finite states
-- [ ] Verify gravity-only prediction matches short simulation tolerance
-- [ ] Verify burn plan estimates direction/duration/throttle/fuel
-- [ ] Add test evidence under this spec
-- [ ] Commit implementation with spec title and changelog
+- [x] Validate changed Unity scripts with Unity MCP
+- [x] Verify bounded prediction returns finite states
+- [x] Verify gravity-only prediction matches short simulation tolerance
+- [x] Verify burn plan estimates direction/duration/throttle/fuel
+- [x] Add test evidence under this spec
+- [x] Commit implementation with spec title and changelog
