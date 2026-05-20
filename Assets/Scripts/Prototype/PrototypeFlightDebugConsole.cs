@@ -30,6 +30,7 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
     private GUIStyle labelStyle;
     private Vector2 scrollPosition;
     private PrototypeUiWindowState windowState;
+    private bool sceneBootstrapLookupAttempted;
 
     public bool IsConsoleVisible => ResolveWindowState().Visible;
 
@@ -100,6 +101,12 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
 
         if (bootstrap == null)
         {
+            if (sceneBootstrapLookupAttempted)
+            {
+                return;
+            }
+
+            sceneBootstrapLookupAttempted = true;
             bootstrap = FindAnyObjectByType<PrototypeBootstrap>();
         }
     }
@@ -118,7 +125,11 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
 
     private void Update()
     {
-        ResolveReferences();
+        if (HasMissingReferences())
+        {
+            ResolveReferences();
+        }
+
         PrototypeUiLayoutManager.HandleFunctionKeys(debugOverlay, this, flightHud, keybindOverlay, minimapOverlay, weaponComputerPanel);
     }
 
@@ -129,8 +140,6 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
             return;
         }
 
-        ResolveReferences();
-        EnsureStyle();
         ResolveWindowState();
 
         if (!windowState.Visible)
@@ -138,11 +147,17 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
             return;
         }
 
+        if (HasMissingReferences())
+        {
+            ResolveReferences();
+        }
+
+        EnsureStyle();
         windowState.SetSize(consoleCollapsed ? 260f : 660f, consoleCollapsed ? 64f : 560f);
         windowState.Collapsed = consoleCollapsed;
         windowState.Rect = GUI.Window(windowState.WindowId, windowState.Rect, DrawWindow, "Debug Console");
         windowState.ClampToScreen();
-        windowState.SaveToPrefs();
+        windowState.TrySaveToPrefsThrottled();
     }
 
     private PrototypeUiWindowState ResolveWindowState()
@@ -159,6 +174,18 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
         }
 
         return windowState;
+    }
+
+    private bool HasMissingReferences()
+    {
+        return debugOverlay == null
+            || flightHud == null
+            || keybindOverlay == null
+            || minimapOverlay == null
+            || weaponComputerPanel == null
+            || followCamera == null
+            || (target != null && (targetStats == null || targetRigidbody == null || shipController == null || waypointAutopilot == null || momentumAssist == null))
+            || (bootstrap == null && !sceneBootstrapLookupAttempted);
     }
 
     private void DrawWindow(int id)
@@ -466,6 +493,8 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
         GUILayout.Label($"Desired burn dir: {FormatVector(waypointAutopilot.DesiredBurnDirection)}", labelStyle);
         GUILayout.Label($"Req main throttle: {waypointAutopilot.RequestedMainThrottle:0.00}", labelStyle);
         GUILayout.Label($"Req RCS translation: {FormatVector(waypointAutopilot.RequestedRcsTranslation)}", labelStyle);
+        GUILayout.Label($"Avoidance: {(waypointAutopilot.AvoidanceActive ? "active" : "clear")} | {waypointAutopilot.AvoidanceReason} | {waypointAutopilot.AvoidanceTargetName}", labelStyle);
+        GUILayout.Label($"Avoid vector: {FormatVector(waypointAutopilot.AvoidanceVectorWorld)} | dist {FormatCompact(waypointAutopilot.AvoidanceDistance)} m | clearance {FormatCompact(waypointAutopilot.AvoidanceClearanceMeters)} m", labelStyle);
         GUILayout.Label($"Limited final approach: {(waypointAutopilot.LimitedFinalApproachCapability ? "yes" : "no")}", labelStyle);
         GUILayout.Label($"Arrival status: {waypointAutopilot.ArrivalStatus}", labelStyle);
         GUILayout.Label($"Fuel insufficient hint: {(waypointAutopilot.FuelFeasible ? "no" : "yes")}", labelStyle);
@@ -627,6 +656,10 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
         GUILayout.Label($"Torque desired: {FormatVector(shipController.LastRcsDesiredTorqueWorld)} Nm", labelStyle);
         GUILayout.Label($"Torque actual: {FormatVector(shipController.LastRcsActualTorqueWorld)} Nm", labelStyle);
         GUILayout.Label($"Torque residual: {FormatVector(shipController.LastRcsResidualTorqueWorld)} Nm", labelStyle);
+        GUILayout.Label($"Weapon recoil impulse: {FormatVector(shipController.LastWeaponRecoilImpulseWorld)} Ns", labelStyle);
+        GUILayout.Label($"Weapon recoil angular: {FormatVector(shipController.LastWeaponRecoilAngularImpulseWorld)} Ns*m", labelStyle);
+        GUILayout.Label($"Weapon stabilization: {shipController.LastWeaponStabilizationStatus} req {FormatVector(shipController.LastWeaponStabilizationTorqueRequestWorld)} Nm", labelStyle);
+        GUILayout.Label($"Weapon stabilization residual: {FormatVector(shipController.LastWeaponStabilizationResidualRcsTorqueWorld)} Nm", labelStyle);
         GUILayout.Label($"Nozzle max: {shipController.LastRcsMaxNozzleThrottle:0.00}, saturated {shipController.LastRcsSaturatedNozzleCount}, active {shipController.ActiveRcsNozzleCount}/{shipController.InstalledRcsNozzleCount}", labelStyle);
         GUILayout.Label($"Allocator: {shipController.LastRcsAllocatorStatus}, applications {shipController.LastRcsNozzleApplicationCount}", labelStyle);
         GUILayout.Label($"Active nozzles: {Shorten(shipController.ActiveRcsNozzleIds, 78)}", labelStyle);
@@ -731,7 +764,16 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
         keybindOverlay = GetComponent<PrototypeKeybindOverlay>();
         minimapOverlay = GetComponent<PrototypeMinimapOverlay>();
         weaponComputerPanel = GetComponent<PrototypeWeaponComputerPanel>();
-        bootstrap = sourceBootstrap != null ? sourceBootstrap : FindAnyObjectByType<PrototypeBootstrap>();
+        if (sourceBootstrap != null)
+        {
+            bootstrap = sourceBootstrap;
+            sceneBootstrapLookupAttempted = true;
+        }
+        else if (!sceneBootstrapLookupAttempted)
+        {
+            sceneBootstrapLookupAttempted = true;
+            bootstrap = FindAnyObjectByType<PrototypeBootstrap>();
+        }
     }
 
     public void SetConsoleVisible(bool visible)

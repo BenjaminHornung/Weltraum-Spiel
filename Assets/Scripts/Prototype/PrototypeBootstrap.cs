@@ -824,6 +824,14 @@ public class PrototypeBootstrap : MonoBehaviour
             weaponComputerPanel = camera.gameObject.AddComponent<PrototypeWeaponComputerPanel>();
         }
         weaponComputerPanel.Bind(target, stats, weaponComputer, turretWeapon);
+        PrototypeUiLayoutManager.ApplyPreset(
+            PrototypeUiLayoutManager.CurrentPreset,
+            overlay,
+            debugConsole,
+            hud,
+            keybinds,
+            minimap,
+            weaponComputerPanel);
     }
 
     private PrototypeTestEnvironment EnsureTestEnvironment()

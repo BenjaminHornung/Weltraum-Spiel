@@ -142,6 +142,7 @@ public static class PhysicsValidationProbe
         public Vector3 netImpulse;
         public Vector3 netForce;
         public float impactImpulseMagnitude;
+        public bool createdProjectileGameObject;
         public bool fired;
     }
 
@@ -347,21 +348,23 @@ public static class PhysicsValidationProbe
             bool fired = fixture.Gun.TryFire();
             Projectile projectile = UnityEngine.Object.FindAnyObjectByType<Projectile>();
             Rigidbody projectileBody = projectile != null ? projectile.GetComponent<Rigidbody>() : null;
-            float impactImpulse = projectile != null
-                ? PrototypeImpactEventData.EstimateImpulse(fixture.Gun.LastProjectileVelocityWorld - fixture.Rigidbody.linearVelocity, projectile.ProjectileMassKg).magnitude
-                : 0f;
+            float runtimeProjectileMass = projectile != null ? projectile.ProjectileMassKg : fixture.Gun.ProjectileMass;
+            float impactImpulse = PrototypeImpactEventData.EstimateImpulse(
+                fixture.Gun.LastProjectileVelocityWorld - fixture.Rigidbody.linearVelocity,
+                runtimeProjectileMass).magnitude;
 
             ProjectileMassResult result = new ProjectileMassResult
             {
                 configuredMass = projectileMass,
                 projectileSpeed = projectileSpeed,
                 rigidbodyMass = projectileBody != null ? projectileBody.mass : 0f,
-                projectileMass = projectile != null ? projectile.ProjectileMassKg : 0f,
+                projectileMass = runtimeProjectileMass,
                 muzzleForward = fixture.Gun.LastProjectileVelocityWorld.normalized,
                 recoilImpulse = fixture.Gun.LastRecoilImpulseWorld,
                 netImpulse = fixture.PhysicsCore.NetAppliedImpulse,
                 netForce = fixture.PhysicsCore.NetAppliedForce,
                 impactImpulseMagnitude = impactImpulse,
+                createdProjectileGameObject = projectile != null,
                 fired = fired
             };
 

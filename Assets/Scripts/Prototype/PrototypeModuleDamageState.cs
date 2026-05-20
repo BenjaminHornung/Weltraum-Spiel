@@ -30,6 +30,16 @@ public class PrototypeModuleDamageState : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        PrototypeWeaponTargetRegistry.Register(transform);
+    }
+
+    private void OnDisable()
+    {
+        PrototypeWeaponTargetRegistry.Unregister(transform);
+    }
+
     public void Configure(string configuredModuleName, float configuredMaxIntegrity, float configuredMinimumCapabilityMultiplier)
     {
         moduleName = string.IsNullOrWhiteSpace(configuredModuleName) ? gameObject.name : configuredModuleName;

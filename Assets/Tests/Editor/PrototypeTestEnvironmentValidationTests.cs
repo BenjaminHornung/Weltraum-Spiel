@@ -44,6 +44,25 @@ public class PrototypeTestEnvironmentValidationTests
     }
 
     [Test]
+    public void Rebuild_MarksAsteroidsAsNavigationObstacles()
+    {
+        GameObject host = new GameObject("EnvironmentValidationHost");
+        PrototypeTestEnvironment environment = host.AddComponent<PrototypeTestEnvironment>();
+
+        environment.Rebuild();
+
+        GameObject asteroid = GameObject.Find("Asteroid_Visual_1");
+        Assert.NotNull(asteroid);
+        Assert.NotNull(asteroid.GetComponent<Collider>());
+        PrototypeNavigationObstacle obstacle = asteroid.GetComponent<PrototypeNavigationObstacle>();
+        Assert.NotNull(obstacle);
+        Assert.That(obstacle.Label, Is.EqualTo("Asteroid 1"));
+        Assert.That(obstacle.ClearanceRadiusMeters, Is.GreaterThan(0f));
+        Assert.That(obstacle.DangerRadiusMeters, Is.GreaterThan(0f));
+        Assert.True(obstacle.BlocksAutopilotNavigation);
+    }
+
+    [Test]
     public void Rebuild_DefaultTrainingEnvironmentHidesWorldAxesVisuals()
     {
         GameObject host = new GameObject("EnvironmentValidationHost");

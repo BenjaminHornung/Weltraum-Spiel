@@ -20,6 +20,7 @@ public class PrototypeMinimapOverlay : MonoBehaviour
     private GUIStyle labelStyle;
     private GUIStyle smallLabelStyle;
     private PrototypeUiWindowState windowState;
+    private readonly PrototypeUiSampleGate referenceLookupSampler = new PrototypeUiSampleGate(0.5f);
     private readonly HashSet<PrototypeEnvironmentPoint> labeledPoints = new HashSet<PrototypeEnvironmentPoint>();
 
     public bool IsWindowVisible => ResolveWindowState().Visible;
@@ -30,7 +31,7 @@ public class PrototypeMinimapOverlay : MonoBehaviour
 
     private void Start()
     {
-        ResolveReferences();
+        ResolveReferences(true);
     }
 
     private void OnValidate()
@@ -40,18 +41,18 @@ public class PrototypeMinimapOverlay : MonoBehaviour
 
     private void OnGUI()
     {
-        ResolveReferences();
         ResolveWindowState();
         if (!windowState.Visible)
         {
             return;
         }
 
+        ResolveReferences();
         EnsureStyles();
         windowState.SetSize(320f, windowState.Collapsed ? 58f : 384f);
         windowState.Rect = GUI.Window(windowState.WindowId, windowState.Rect, DrawWindow, "Minimap / Radar");
         windowState.ClampToScreen();
-        windowState.SaveToPrefs();
+        windowState.TrySaveToPrefsThrottled();
     }
 
     public void Bind(Transform trackTarget, Rigidbody body, PrototypeTestEnvironment sourceEnvironment)
@@ -59,7 +60,7 @@ public class PrototypeMinimapOverlay : MonoBehaviour
         target = trackTarget;
         targetRigidbody = body != null ? body : (trackTarget != null ? trackTarget.GetComponent<Rigidbody>() : null);
         environment = sourceEnvironment != null ? sourceEnvironment : environment;
-        ResolveReferences();
+        ResolveReferences(true);
     }
 
     public void SetWindowVisible(bool visible)
@@ -97,14 +98,14 @@ public class PrototypeMinimapOverlay : MonoBehaviour
         return windowState;
     }
 
-    private void ResolveReferences()
+    private void ResolveReferences(bool forceSceneSearch = false)
     {
         if (target != null && targetRigidbody == null)
         {
             targetRigidbody = target.GetComponent<Rigidbody>();
         }
 
-        if (environment == null)
+        if (environment == null && (forceSceneSearch || referenceLookupSampler.ShouldSample(Time.unscaledTime)))
         {
             environment = FindAnyObjectByType<PrototypeTestEnvironment>();
         }

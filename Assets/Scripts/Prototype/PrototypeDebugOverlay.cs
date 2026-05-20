@@ -1,8 +1,11 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
 public class PrototypeDebugOverlay : MonoBehaviour
 {
+    private const float HeavyDiagnosticsIntervalSeconds = 0.2f;
+
     [SerializeField] private ShipStats targetStats;
     [SerializeField] private Rigidbody targetRigidbody;
     [SerializeField] private Transform target;
@@ -22,6 +25,8 @@ public class PrototypeDebugOverlay : MonoBehaviour
     [SerializeField] private float forceVectorScale = 0.00015f;
     [SerializeField] private float torqueVectorScale = 0.00025f;
 
+    private readonly PrototypeUiSampleGate heavyDiagnosticsSampler = new PrototypeUiSampleGate(HeavyDiagnosticsIntervalSeconds);
+    private readonly PrototypeUiSampleGate damageDiagnosticsSampler = new PrototypeUiSampleGate(HeavyDiagnosticsIntervalSeconds);
     private GUIStyle labelStyle;
     private PrototypeUiWindowState windowState;
     private Vector2 diagnosticsScroll;
@@ -34,12 +39,459 @@ public class PrototypeDebugOverlay : MonoBehaviour
     private bool damageSectionOpen;
     private bool environmentSectionOpen;
     private bool navigationSectionOpen;
+    private int lastCompactDiagnosticsFrame = -1;
+    private PrototypeDebugViewModel compactDebugViewModel;
+    private string compactFuelLine = "No ShipStats bound.";
+    private string compactControlLine = string.Empty;
+    private string compactTargetLine = string.Empty;
+    private AdvancedDiagnosticsSnapshot advancedSnapshot;
+    private DamageDiagnostics cachedDamageDiagnostics;
 
     public bool IsWindowVisible => ResolveWindowState().Visible;
+    public bool DrawDebugVectors => drawDebugVectors;
+    public bool DrawDebugGizmos => drawDebugGizmos;
+    public bool AdvancedDiagnosticsOpen => advancedDiagnosticsOpen;
+    public int HeavyDiagnosticsSampleCountForTests => heavyDiagnosticsSampler.SampleCount;
+    public int DamageDiagnosticsSampleCountForTests => damageDiagnosticsSampler.SampleCount;
 
     private void Start()
     {
         ResolveTargetReferences();
+    }
+
+    private void LateUpdate()
+    {
+        if (!drawDebugVectors)
+        {
+            return;
+        }
+
+        ResolveTargetReferences();
+        DrawRuntimeDebugVectors();
+    }
+
+    private void OnGUI()
+    {
+        EnsureStyle();
+        ResolveWindowState();
+        if (!windowState.Visible)
+        {
+            return;
+        }
+
+        if (!windowState.Collapsed)
+        {
+            if (targetStats == null || targetRigidbody == null || shipController == null)
+            {
+                ResolveTargetReferences();
+            }
+
+            RefreshCompactDiagnosticsIfNeeded();
+        }
+
+        windowState.SetSize(advancedDiagnosticsOpen ? 680f : 440f, windowState.Collapsed ? 58f : (advancedDiagnosticsOpen ? 740f : 184f));
+        windowState.Rect = GUI.Window(windowState.WindowId, windowState.Rect, DrawWindow, "Flight Diagnostics");
+        windowState.ClampToScreen();
+        windowState.TrySaveToPrefsThrottled();
+    }
+
+    private void DrawWindow(int id)
+    {
+        GUILayout.BeginVertical();
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button(windowState.Collapsed ? "Open" : "Collapse", GUILayout.Width(76f)))
+        {
+            windowState.Collapsed = !windowState.Collapsed;
+        }
+
+        if (GUILayout.Button("Hide", GUILayout.Width(54f)))
+        {
+            windowState.Visible = false;
+        }
+
+        GUILayout.Label("F2 toggles diagnostics", labelStyle);
+        GUILayout.EndHorizontal();
+
+        if (!windowState.Collapsed)
+        {
+            DrawCompactDiagnostics();
+            DrawAdvancedDiagnostics(Time.unscaledTime);
+        }
+
+        GUILayout.EndVertical();
+        GUI.DragWindow(new Rect(0f, 0f, 10000f, 24f));
+    }
+
+    private void DrawCompactDiagnostics()
+    {
+        GUILayout.Label(compactFuelLine, labelStyle);
+        GUILayout.Label(compactControlLine, labelStyle);
+        GUILayout.Label(compactTargetLine, labelStyle);
+    }
+
+    private void DrawAdvancedDiagnostics(float nowSeconds)
+    {
+        bool wasAdvancedOpen = advancedDiagnosticsOpen;
+        advancedDiagnosticsOpen = GUILayout.Toggle(advancedDiagnosticsOpen, "Advanced Diagnostics");
+        if (!advancedDiagnosticsOpen)
+        {
+            return;
+        }
+
+        RefreshAdvancedDiagnosticsIfNeeded(nowSeconds, !wasAdvancedOpen);
+        diagnosticsScroll = GUILayout.BeginScrollView(diagnosticsScroll);
+        DrawSampledSection(ref flightSectionOpen, "Flight", advancedSnapshot.FlightLines, nowSeconds);
+        DrawSampledSection(ref propulsionSectionOpen, "Propulsion", advancedSnapshot.PropulsionLines, nowSeconds);
+        DrawSampledSection(ref rcsSectionOpen, "RCS", advancedSnapshot.RcsLines, nowSeconds);
+        DrawSampledSection(ref sasSectionOpen, "SAS", advancedSnapshot.SasLines, nowSeconds);
+        DrawSampledSection(ref physicsSectionOpen, "Physics Core", advancedSnapshot.PhysicsLines, nowSeconds);
+        DrawDamageSection(nowSeconds);
+        DrawSampledSection(ref environmentSectionOpen, "Atmosphere/Gravity", advancedSnapshot.EnvironmentLines, nowSeconds);
+        DrawSampledSection(ref navigationSectionOpen, "Navigation/Floating Origin", advancedSnapshot.NavigationLines, nowSeconds);
+        GUILayout.Label($"Debug vectors: lines {(drawDebugVectors ? "on" : "off")}, gizmos {(drawDebugGizmos ? "on" : "off")}", labelStyle);
+        GUILayout.EndScrollView();
+    }
+
+    private void DrawSampledSection(ref bool open, string title, string[] lines, float nowSeconds)
+    {
+        bool wasOpen = open;
+        open = GUILayout.Toggle(open, title);
+        if (!open)
+        {
+            return;
+        }
+
+        RefreshAdvancedDiagnosticsIfNeeded(nowSeconds, !wasOpen);
+        DrawLines(lines);
+    }
+
+    private void DrawDamageSection(float nowSeconds)
+    {
+        bool wasOpen = damageSectionOpen;
+        damageSectionOpen = GUILayout.Toggle(damageSectionOpen, "Damage");
+        if (!damageSectionOpen)
+        {
+            return;
+        }
+
+        RefreshDamageDiagnosticsIfNeeded(nowSeconds, !wasOpen);
+        GUILayout.Label($"Damage: {cachedDamageDiagnostics.damagedModules}/{cachedDamageDiagnostics.totalModules} modules, worst {cachedDamageDiagnostics.worstModule} {cachedDamageDiagnostics.worstIntegrityPercent:0}% cap {cachedDamageDiagnostics.worstCapabilityMultiplier:0.00}", labelStyle);
+    }
+
+    private void DrawLines(string[] lines)
+    {
+        if (lines == null || lines.Length == 0)
+        {
+            GUILayout.Label("Waiting for diagnostics sample.", labelStyle);
+            return;
+        }
+
+        for (int i = 0; i < lines.Length; i++)
+        {
+            GUILayout.Label(lines[i], labelStyle);
+        }
+    }
+
+    private void RefreshCompactDiagnosticsIfNeeded()
+    {
+        if (lastCompactDiagnosticsFrame == Time.frameCount)
+        {
+            return;
+        }
+
+        lastCompactDiagnosticsFrame = Time.frameCount;
+        if (targetStats == null || targetRigidbody == null)
+        {
+            compactFuelLine = "No ship diagnostics bound.";
+            compactControlLine = string.Empty;
+            compactTargetLine = string.Empty;
+            return;
+        }
+
+        compactDebugViewModel = PrototypeDebugViewModelBuilder.Build(targetStats, targetRigidbody, shipController);
+        string navTargetName = waypointAutopilot != null ? waypointAutopilot.TargetName : "none";
+        compactFuelLine = $"Fuel {targetStats.CurrentFuelKg:0.0}/{targetStats.MaxFuelKg:0.0} kg | Speed {PrototypeUiFormatter.FormatSpeed(compactDebugViewModel.SpeedMetersPerSecond)} | Throttle {compactDebugViewModel.MainThrottlePercent:0}%";
+        compactControlLine = $"RCS {PrototypeUiFormatter.FormatStatus(compactDebugViewModel.RcsEnabled, "on", "off")} | SAS {PrototypeUiFormatter.FormatStatus(compactDebugViewModel.SasEnabled, "on", "off")} effective {PrototypeUiFormatter.FormatStatus(compactDebugViewModel.EffectiveSasEnabled, "on", "off")} | Mode {compactDebugViewModel.ControlMode} | Main {targetStats.LastAppliedThrust:0} N";
+        compactTargetLine = $"Target {navTargetName} | Auto {compactDebugViewModel.AutopilotState} | Debug vectors {(drawDebugVectors ? "on" : "off")}";
+    }
+
+    private void RefreshAdvancedDiagnosticsIfNeeded(float nowSeconds, bool force = false)
+    {
+        if (!advancedDiagnosticsOpen || targetStats == null || targetRigidbody == null)
+        {
+            return;
+        }
+
+        if (!heavyDiagnosticsSampler.ShouldSample(nowSeconds, force))
+        {
+            return;
+        }
+
+        advancedSnapshot = BuildAdvancedDiagnosticsSnapshot();
+    }
+
+    private void RefreshDamageDiagnosticsIfNeeded(float nowSeconds, bool force = false)
+    {
+        if (!advancedDiagnosticsOpen || !damageSectionOpen)
+        {
+            return;
+        }
+
+        if (!damageDiagnosticsSampler.ShouldSample(nowSeconds, force))
+        {
+            return;
+        }
+
+        cachedDamageDiagnostics = BuildDamageDiagnostics(target);
+    }
+
+    public void RefreshVisibleDiagnosticsForTests(float nowSeconds)
+    {
+        ResolveWindowState();
+        if (!windowState.Visible || windowState.Collapsed)
+        {
+            return;
+        }
+
+        ResolveTargetReferences();
+        RefreshCompactDiagnosticsIfNeeded();
+        RefreshAdvancedDiagnosticsIfNeeded(nowSeconds);
+        RefreshDamageDiagnosticsIfNeeded(nowSeconds);
+    }
+
+    private AdvancedDiagnosticsSnapshot BuildAdvancedDiagnosticsSnapshot()
+    {
+        var snapshot = new AdvancedDiagnosticsSnapshot();
+        if (flightSectionOpen)
+        {
+            snapshot.FlightLines = BuildFlightLines();
+        }
+
+        if (propulsionSectionOpen)
+        {
+            snapshot.PropulsionLines = BuildPropulsionLines();
+        }
+
+        if (rcsSectionOpen)
+        {
+            snapshot.RcsLines = BuildRcsLines();
+        }
+
+        if (sasSectionOpen)
+        {
+            snapshot.SasLines = BuildSasLines();
+        }
+
+        if (physicsSectionOpen)
+        {
+            snapshot.PhysicsLines = BuildPhysicsLines();
+        }
+
+        if (environmentSectionOpen)
+        {
+            snapshot.EnvironmentLines = BuildEnvironmentLines();
+        }
+
+        if (navigationSectionOpen)
+        {
+            snapshot.NavigationLines = BuildNavigationLines();
+        }
+
+        return snapshot;
+    }
+
+    private string[] BuildFlightLines()
+    {
+        Vector3 linearVelocity = targetRigidbody != null ? targetRigidbody.linearVelocity : Vector3.zero;
+        Vector3 angularVelocity = targetRigidbody != null ? targetRigidbody.angularVelocity : Vector3.zero;
+        float rbMass = targetRigidbody != null ? targetRigidbody.mass : 0f;
+        Vector3 centerOfMassLocal = targetRigidbody != null ? targetRigidbody.centerOfMass : Vector3.zero;
+        Vector3 centerOfMassWorld = targetRigidbody != null ? targetRigidbody.worldCenterOfMass : Vector3.zero;
+        Vector3 inertiaTensor = targetRigidbody != null ? targetRigidbody.inertiaTensor : Vector3.zero;
+        ShipMassProperties massProperties = targetStats != null ? targetStats.LastMassProperties : default;
+        string cameraMode = followCamera != null ? followCamera.CameraModeName : "none";
+        float cameraBaseDistance = followCamera != null ? followCamera.BaseVisualDistance : 0f;
+        float cameraBaseBoundsRadius = followCamera != null ? followCamera.BaseVisualBoundsRadius : 0f;
+        float cameraEffectiveDistance = followCamera != null ? followCamera.EffectiveDistance : 0f;
+        float cameraZoom = followCamera != null ? followCamera.Zoom : 0f;
+        float cameraAnchorError = followCamera != null ? followCamera.AnchorError : 0f;
+        float cameraLookYaw = followCamera != null ? followCamera.LookYaw : 0f;
+        float cameraLookPitch = followCamera != null ? followCamera.LookPitch : 0f;
+
+        return new[]
+        {
+            $"Mass: stats {(targetStats != null ? targetStats.CurrentMass : 0f):0.0} kg, rb {rbMass:0.0} kg",
+            $"Velocity: {FormatVector(linearVelocity)} m/s",
+            $"Angular velocity: {FormatVector(angularVelocity)} rad/s",
+            $"Camera: {cameraMode}, dist {cameraEffectiveDistance:0.00} (base {cameraBaseDistance:0.00}), zoom {cameraZoom:0.00}, bounds {cameraBaseBoundsRadius:0.00}, anchor {cameraAnchorError:0.000} m",
+            $"Camera look: yaw {cameraLookYaw:0.0} deg, pitch {cameraLookPitch:0.0} deg",
+            $"COM local/world: {FormatVector(centerOfMassLocal)} / {FormatVector(centerOfMassWorld)}",
+            $"Mass model: {massProperties.ModuleCount} modules, dry {massProperties.DryMassKg:0.0} kg, fuel {massProperties.FuelMassKg:0.0} kg",
+            $"Inertia tensor: {FormatVector(inertiaTensor)} kg*m^2"
+        };
+    }
+
+    private string[] BuildPropulsionLines()
+    {
+        Vector3 centerOfMassWorld = targetRigidbody != null ? targetRigidbody.worldCenterOfMass : Vector3.zero;
+        float mainCommand = shipController != null ? shipController.MainThrustCommand : (targetStats != null ? targetStats.LastThrottle : 0f);
+        float mainTargetThrottle = shipController != null ? shipController.MainTargetThrottle : (targetStats != null ? targetStats.LastThrottle : 0f);
+        float mainActualThrottle = shipController != null ? shipController.MainActualThrottle : (targetStats != null ? targetStats.LastThrottle : 0f);
+        float throttleScale = shipController != null ? shipController.MainThrottleScale : 0f;
+        float throttleSpoolUp = shipController != null ? shipController.MainThrottleSpoolUpRate : 0f;
+        float throttleSpoolDown = shipController != null ? shipController.MainThrottleSpoolDownRate : 0f;
+        bool gimbalEnabled = shipController != null && shipController.GimbalEnabled;
+        float gimbalLimit = shipController != null ? shipController.GimbalLimitDegrees : 0f;
+        float gimbalResponse = shipController != null ? shipController.GimbalResponseScalar : 0f;
+        float gimbalSlewRate = shipController != null ? shipController.GimbalSlewRateDegreesPerSecond : 0f;
+        float targetGimbalYaw = shipController != null ? shipController.TargetGimbalYawCommand : 0f;
+        float targetGimbalPitch = shipController != null ? shipController.TargetGimbalPitchCommand : 0f;
+        float actualGimbalYaw = shipController != null ? shipController.ActualGimbalYawCommand : 0f;
+        float actualGimbalPitch = shipController != null ? shipController.ActualGimbalPitchCommand : 0f;
+        float gimbalAngle = shipController != null ? shipController.LastGimbalAngleDegrees : 0f;
+        float forwardAcceleration = shipController != null ? shipController.LastForwardAcceleration : (targetStats != null ? targetStats.LastAcceleration : 0f);
+        string mainThrustMode = shipController != null ? shipController.MainThrustMode.ToString() : MainThrustMode.ComSafeSteeringOnly.ToString();
+        Vector3 mainDirection = shipController != null ? shipController.LastMainThrustDirection : (target != null ? target.forward : Vector3.forward);
+        Vector3 mainForcePosition = shipController != null ? shipController.LastMainForcePositionWorld : centerOfMassWorld;
+        Vector3 mainForce = shipController != null ? shipController.LastMainForceWorld : Vector3.zero;
+        Vector3 mainStraight = shipController != null ? shipController.LastMainStraightForceWorld : Vector3.zero;
+        Vector3 mainSteering = shipController != null ? shipController.LastMainSteeringForceWorld : Vector3.zero;
+        Vector3 mainTorque = shipController != null ? shipController.LastMainThrustTorque : Vector3.zero;
+        PrototypeThermalModule mainThermal = shipController != null ? shipController.MainThermalModule : null;
+
+        var lines = new List<string>
+        {
+            $"Throttle: target {mainTargetThrottle:0.00} actual {mainActualThrottle:0.00} cmd {mainCommand:0.00}",
+            $"Throttle response: up {FormatRate(throttleSpoolUp)}, down {FormatRate(throttleSpoolDown)}, scale {throttleScale:0.00}",
+            $"Main thrust: {(targetStats != null ? targetStats.LastAppliedThrust : 0f):0} / {(targetStats != null ? targetStats.Thrust : 0f):0} N",
+            $"Main fuel: req {(targetStats != null ? targetStats.LastFuelRequestedKg : 0f):0.000} kg, used {(targetStats != null ? targetStats.LastFuelConsumedKg : 0f):0.000} kg, frac {(targetStats != null ? targetStats.LastAppliedFuelFraction : 0f):0.00}",
+            $"Forward accel: {forwardAcceleration:0.0} m/s^2",
+            $"Main mode: {mainThrustMode}",
+            $"Main dir: {FormatVector(mainDirection)}",
+            $"Main force pos: {FormatVector(mainForcePosition)}",
+            $"Main force: {FormatVector(mainForce)}",
+            $"Main straight/steering: {FormatVector(mainStraight)} / {FormatVector(mainSteering)}",
+            $"Main thrust torque: {FormatVector(mainTorque)}",
+            $"Gimbal: {(gimbalEnabled ? "on" : "off")} / {gimbalLimit:0.0} deg",
+            $"Gimbal target: Y {targetGimbalYaw:0.00} P {targetGimbalPitch:0.00}, response {gimbalResponse:0.00}",
+            $"Gimbal actual: Y {actualGimbalYaw:0.00} P {actualGimbalPitch:0.00}, slew {FormatRate(gimbalSlewRate)}, angle {gimbalAngle:0.0}"
+        };
+
+        if (mainThermal != null)
+        {
+            lines.Add($"Thermal: {mainThermal.ModuleName} {mainThermal.CurrentTemperature:0.0}/{mainThermal.MaxTemperature:0.0} C {mainThermal.StateLabel}");
+            lines.Add($"Heat/power: heat {mainThermal.LastHeatGeneratedPerSecond:0.0}/s, cool {mainThermal.LastCoolingApplied:0.00}, power {(shipController != null ? shipController.MainPowerDrawKw : 0f):0.0} kW");
+            lines.Add($"Overheat hook: {(shipController != null && shipController.MainThermalEnabled ? "sim" : "off")}, {(shipController != null && shipController.MainThermalOverheated ? "active" : "clear")}, eff {(shipController != null ? shipController.MainThermalEfficiency : 1f):0.00}");
+        }
+
+        return lines.ToArray();
+    }
+
+    private string[] BuildRcsLines()
+    {
+        PrototypeFlightControlDiagnostics controlDiagnostics = shipController != null ? shipController.FlightControlDiagnostics : default;
+        Vector3 centerOfMassWorld = targetRigidbody != null ? targetRigidbody.worldCenterOfMass : Vector3.zero;
+        Vector3 rcsPivotWorld = shipController != null ? shipController.RcsControlPivotWorld : centerOfMassWorld;
+
+        return new[]
+        {
+            $"RCS: enabled {(controlDiagnostics.rcsEnabled ? "yes" : "no")}, available {(controlDiagnostics.rcsAvailable ? "yes" : "no")}, allocator {controlDiagnostics.rcsAllocatorStatus}",
+            $"RCS tuning: move {(shipController != null ? shipController.RcsTranslationForceSetting : 0f):0} N, attitude {(shipController != null ? shipController.RcsAttitudeForceSetting : 0f):0} N",
+            $"RCS response: up {FormatRate(shipController != null ? shipController.RcsNozzleSpoolUpRate : 0f)}, down {FormatRate(shipController != null ? shipController.RcsNozzleSpoolDownRate : 0f)}",
+            $"RCS select dot: {(shipController != null ? shipController.RcsMinSelectionDot : 0f):0.00}, nozzles {(shipController != null ? shipController.ActiveRcsNozzleCount : 0)}/{(shipController != null ? shipController.InstalledRcsNozzleCount : 0)}",
+            $"RCS allocator: max {(shipController != null ? shipController.LastRcsMaxNozzleThrottle : 0f):0.00}, sum {(shipController != null ? shipController.LastRcsAllocatedNozzleThrottleTotal : 0f):0.00}, applications {(shipController != null ? shipController.LastRcsNozzleApplicationCount : 0)}",
+            $"RCS fuel: req {(shipController != null ? shipController.LastRcsFuelRequestedKg : 0f):0.000} kg, used {(shipController != null ? shipController.LastRcsFuelConsumedKg : 0f):0.000} kg, frac {(shipController != null ? shipController.LastRcsFuelFraction : 1f):0.00}",
+            $"Move cmd: L/R {(shipController != null ? shipController.RcsTranslationCommand.x : 0f):0.00}, U/D {(shipController != null ? shipController.RcsTranslationCommand.y : 0f):0.00}, F/B {(shipController != null ? shipController.RcsTranslationCommand.z : 0f):0.00}",
+            $"Attitude cmd: P {(shipController != null ? shipController.RcsAttitudeCommand.x : 0f):0.00}, Y {(shipController != null ? shipController.RcsAttitudeCommand.y : 0f):0.00}, R {(shipController != null ? shipController.RcsAttitudeCommand.z : 0f):0.00}",
+            $"RCS pivot local/world: {FormatVector(shipController != null ? shipController.RcsControlPivotLocal : Vector3.zero)} / {FormatVector(rcsPivotWorld)}",
+            $"RCS force desired: {FormatVector(shipController != null ? shipController.LastRcsDesiredForceWorld : Vector3.zero)}",
+            $"RCS force actual: {FormatVector(shipController != null ? shipController.LastRcsActualForceWorld : Vector3.zero)}",
+            $"RCS force residual: {FormatVector(shipController != null ? shipController.LastRcsResidualForceWorld : Vector3.zero)}",
+            $"RCS torque desired: {FormatVector(shipController != null ? shipController.LastRcsDesiredTorqueWorld : Vector3.zero)}",
+            $"RCS torque actual: {FormatVector(shipController != null ? shipController.LastRcsActualTorqueWorld : Vector3.zero)}",
+            $"RCS torque residual: {FormatVector(shipController != null ? shipController.LastRcsResidualTorqueWorld : Vector3.zero)}",
+            $"RCS total force: {FormatVector(shipController != null ? shipController.LastRcsForce : Vector3.zero)}",
+            $"RCS translate force: {FormatVector(shipController != null ? shipController.LastRcsTranslationForce : Vector3.zero)}",
+            $"RCS torque/yaw est: {FormatVector(shipController != null ? shipController.LastRcsTorque : Vector3.zero)} / {FormatVector(shipController != null ? shipController.LastRcsYawTorque : Vector3.zero)}",
+            $"Active nozzles: {Shorten(shipController != null ? shipController.ActiveRcsNozzleIds : string.Empty, 74)}"
+        };
+    }
+
+    private string[] BuildSasLines()
+    {
+        PrototypeFlightControlDiagnostics controlDiagnostics = shipController != null ? shipController.FlightControlDiagnostics : default;
+        return new[]
+        {
+            $"SAS: armed {(controlDiagnostics.sasEnabled ? "on" : "off")} / effective {(controlDiagnostics.effectiveSasEnabled ? "on" : "off")} / authority {(controlDiagnostics.sasHasAuthority ? "yes" : "no")} {(shipController != null ? shipController.SasMode : SasControlMode.KillRotation)}",
+            $"SAS PD: Kp {(shipController != null ? shipController.RcsSasProportionalGain : 0f):0.00}, Kd {(shipController != null ? shipController.RcsSasDerivativeGain : 0f):0.00}, auth {(shipController != null ? shipController.RcsSasAuthority : 0f):0.00}",
+            $"SAS local w: {FormatVector(shipController != null ? shipController.LastRcsSasAngularVelocityLocal : Vector3.zero)} rad/s",
+            $"SAS angular err: {FormatVector(shipController != null ? shipController.LastRcsSasAngularErrorLocal : Vector3.zero)} rad",
+            $"SAS raw/masked cmd: {FormatVector(shipController != null ? shipController.LastRawRcsSasCommand : Vector3.zero)} / {FormatVector(shipController != null ? shipController.LastRcsSasCommand : Vector3.zero)}",
+            $"SAS torque raw: {FormatVector(shipController != null ? shipController.LastRawRcsSasDesiredTorqueLocal : Vector3.zero)} Nm",
+            $"SAS torque masked: {FormatVector(shipController != null ? shipController.LastRcsSasDesiredTorqueLocal : Vector3.zero)} Nm",
+            $"SAS torque blocked: {FormatVector(shipController != null ? shipController.LastRcsSasSuppressedTorqueLocal : Vector3.zero)} Nm",
+            $"Assist: {(shipController != null ? shipController.FlightAssistMode : FlightAssistMode.Simulation)}{(shipController != null && shipController.LastFlightAssistDebugOnly ? " (debug-only)" : string.Empty)}",
+            $"Assist force/torque req: {FormatVector(shipController != null ? shipController.LastFlightAssistForceWorld : Vector3.zero)} N / {FormatVector(shipController != null ? shipController.LastFlightAssistTorqueLocal : Vector3.zero)} Nm",
+            $"Weapon recoil impulse: {FormatVector(shipController != null ? shipController.LastWeaponRecoilImpulseWorld : Vector3.zero)} Ns",
+            $"Weapon recoil angular: {FormatVector(shipController != null ? shipController.LastWeaponRecoilAngularImpulseWorld : Vector3.zero)} Ns*m",
+            $"Weapon stabilization: {(shipController != null ? shipController.LastWeaponStabilizationStatus : "unavailable")} req {FormatVector(shipController != null ? shipController.LastWeaponStabilizationTorqueRequestWorld : Vector3.zero)} Nm",
+            $"Weapon stabilization residual: {FormatVector(shipController != null ? shipController.LastWeaponStabilizationResidualRcsTorqueWorld : Vector3.zero)} Nm",
+            $"Torque demand: manual {FormatVector(shipController != null ? shipController.LastRcsManualDesiredTorqueLocal : Vector3.zero)}",
+            $"Torque demand: total {FormatVector(shipController != null ? shipController.LastRcsDesiredTorqueLocal : Vector3.zero)}",
+            $"SAS released axes: {FormatAxisMask(shipController != null ? shipController.LastRcsSasReleasedAxes : Vector3.one)}",
+            $"SAS manual axes: {FormatManualMask(shipController != null ? shipController.LastRcsSasManualOverrideAxes : Vector3.zero)}"
+        };
+    }
+
+    private string[] BuildPhysicsLines()
+    {
+        return new[]
+        {
+            $"Core force: {FormatVector(shipController != null ? shipController.LastCoreAppliedForce : Vector3.zero)}",
+            $"Core torque: {FormatVector(shipController != null ? shipController.LastCoreAppliedTorque : Vector3.zero)}, applications {(shipController != null ? shipController.LastCoreAppliedForceCount : 0)}",
+            $"Core impulse: {FormatVector(shipController != null ? shipController.LastCoreAppliedImpulse : Vector3.zero)} Ns, applications {(shipController != null ? shipController.LastCoreAppliedImpulseCount : 0)}",
+            $"Core angular impulse: {FormatVector(shipController != null ? shipController.LastCoreAppliedAngularImpulse : Vector3.zero)} Ns*m",
+            $"Impact impulse: {FormatVector(targetPhysicsCore != null ? targetPhysicsCore.LastImpactImpulse : Vector3.zero)} Ns, count {(targetPhysicsCore != null ? targetPhysicsCore.ImpactImpulseCount : 0)}",
+            $"Impact torque impulse: {FormatVector(targetPhysicsCore != null ? targetPhysicsCore.LastImpactTorqueImpulse : Vector3.zero)} Ns*m"
+        };
+    }
+
+    private string[] BuildEnvironmentLines()
+    {
+        ShipAtmosphereSample atmosphereSample = targetPhysicsCore != null ? targetPhysicsCore.LastAtmosphereSample : ShipAtmosphereSample.Zero;
+        return new[]
+        {
+            $"Atmosphere: {(atmosphereSample.active ? "active" : "vacuum")} density {atmosphereSample.densityKgPerCubicMeter:0.000} kg/m^3",
+            $"Atmos drag: {FormatVector(atmosphereSample.dragForce)} N, rel {atmosphereSample.relativeVelocity.magnitude:0.00} m/s",
+            $"Atmos Cd/area: {atmosphereSample.dragCoefficient:0.00} / {atmosphereSample.referenceAreaSquareMeters:0.00} m^2",
+            $"Gravity: {(shipController != null && shipController.GravityEnabled ? "on" : "off")} body {(shipController != null ? shipController.LastGravityBodyName : "none")}, applied {(shipController != null && shipController.LastGravityApplied ? "yes" : "no")}",
+            $"Gravity mu/dist: {(shipController != null ? shipController.GravityMu : 0f):0.00} / {(shipController != null ? shipController.LastGravityDistance : 0f):0.00} m",
+            $"Gravity accel: {FormatVector(shipController != null ? shipController.LastGravityAcceleration : Vector3.zero)} m/s^2",
+            $"Gravity force: {FormatVector(shipController != null ? shipController.LastGravityForce : Vector3.zero)} N"
+        };
+    }
+
+    private string[] BuildNavigationLines()
+    {
+        PrototypeFlightControlDiagnostics controlDiagnostics = shipController != null ? shipController.FlightControlDiagnostics : default;
+        bool floatingOriginPresent = floatingOriginBody != null;
+        bool floatingOriginEnabled = floatingOriginManager != null && floatingOriginManager.FloatingOriginEnabled;
+        LargeWorldVector3d origin = floatingOriginManager != null ? floatingOriginManager.Origin : LargeWorldVector3d.Zero;
+        LargeWorldVector3d absolutePosition = floatingOriginBody != null ? floatingOriginBody.AbsolutePosition : LargeWorldVector3d.Zero;
+        LargeWorldVector3d absoluteVelocity = floatingOriginBody != null ? floatingOriginBody.AbsoluteVelocity : LargeWorldVector3d.Zero;
+
+        return new[]
+        {
+            $"Nav target: {(waypointAutopilot != null ? waypointAutopilot.TargetName : "none")}",
+            $"Autopilot: {(shipController != null ? controlDiagnostics.autopilotState.ToString() : "none")}, {(shipController != null ? controlDiagnostics.autopilotStatus : "unavailable")}",
+            $"Nav dist/ETA: {(waypointAutopilot != null ? waypointAutopilot.DistanceToTarget : 0f):0.0} m, {FormatEta(waypointAutopilot != null ? waypointAutopilot.EtaSeconds : float.PositiveInfinity)}",
+            $"Nav speed: closing {(waypointAutopilot != null ? waypointAutopilot.ClosingSpeed : 0f):0.0} m/s, lateral {(waypointAutopilot != null ? waypointAutopilot.LateralSpeed : 0f):0.0} m/s",
+            $"Nav stop/fuel: {(waypointAutopilot != null ? waypointAutopilot.StoppingDistance : 0f):0.0} m, burn {FormatBurn(waypointAutopilot != null ? waypointAutopilot.AvailableBurnSeconds : 0f)} / {(waypointAutopilot != null ? waypointAutopilot.RequiredBurnSeconds : 0f):0.0}s {(waypointAutopilot != null && waypointAutopilot.FuelFeasible ? "ok" : "low")}",
+            $"Floating origin: {(floatingOriginEnabled ? "on" : "off")} ({(floatingOriginPresent ? "body" : "no body")}), shifts {(floatingOriginManager != null ? floatingOriginManager.ShiftCount : 0)}, bodies {(floatingOriginManager != null ? floatingOriginManager.RegisteredBodyCount : 0)}",
+            $"Origin abs: {FormatLargeVector(origin)}",
+            $"Ship abs/local: {FormatLargeVector(absolutePosition)} / {FormatVector(target != null ? target.position : Vector3.zero)}",
+            $"Ship abs velocity: {FormatLargeVector(absoluteVelocity)} m/s"
+        };
     }
 
     private void ResolveTargetReferences()
@@ -78,6 +530,7 @@ public class PrototypeDebugOverlay : MonoBehaviour
         {
             followCamera = GetComponent<SimpleFollowCamera>();
         }
+
         if (shipController == null)
         {
             shipController = target.GetComponent<PlayerShipController>();
@@ -99,350 +552,6 @@ public class PrototypeDebugOverlay : MonoBehaviour
         labelStyle = new GUIStyle(GUI.skin.label);
         labelStyle.fontSize = 13;
         labelStyle.normal.textColor = Color.white;
-    }
-
-    private void LateUpdate()
-    {
-        if (!drawDebugVectors)
-        {
-            return;
-        }
-
-        ResolveTargetReferences();
-        DrawRuntimeDebugVectors();
-    }
-
-    private void OnGUI()
-    {
-        if (targetStats == null || targetRigidbody == null || shipController == null)
-        {
-            ResolveTargetReferences();
-            if (targetStats == null || targetRigidbody == null)
-            {
-                return;
-            }
-        }
-
-        EnsureStyle();
-        ResolveWindowState();
-        if (!windowState.Visible)
-        {
-            return;
-        }
-
-        Vector3 linearVelocity = targetRigidbody.linearVelocity;
-        Vector3 angularVelocity = targetRigidbody.angularVelocity;
-        float speedMps = linearVelocity.magnitude;
-        float speedKph = speedMps * 3.6f;
-        float rbMass = targetRigidbody.mass;
-        Vector3 centerOfMassLocal = targetRigidbody.centerOfMass;
-        Vector3 centerOfMassWorld = targetRigidbody.worldCenterOfMass;
-        Vector3 inertiaTensor = targetRigidbody.inertiaTensor;
-        ShipMassProperties massProperties = targetStats.LastMassProperties;
-        DamageDiagnostics damageDiagnostics = BuildDamageDiagnostics(target);
-
-        Vector3 rcsTranslation = shipController != null ? shipController.RcsTranslationCommand : Vector3.zero;
-        Vector3 rcsAttitude = shipController != null ? shipController.RcsAttitudeCommand : Vector3.zero;
-        float throttlePercent = shipController != null ? shipController.MainActualThrottlePercent : targetStats.LastThrottle * 100f;
-        float mainCommand = shipController != null ? shipController.MainThrustCommand : targetStats.LastThrottle;
-        float mainTargetThrottle = shipController != null ? shipController.MainTargetThrottle : targetStats.LastThrottle;
-        float mainActualThrottle = shipController != null ? shipController.MainActualThrottle : targetStats.LastThrottle;
-        float throttleScale = shipController != null ? shipController.MainThrottleScale : 0f;
-        float throttleSpoolUp = shipController != null ? shipController.MainThrottleSpoolUpRate : 0f;
-        float throttleSpoolDown = shipController != null ? shipController.MainThrottleSpoolDownRate : 0f;
-        bool gimbalEnabled = shipController != null && shipController.GimbalEnabled;
-        float gimbalLimit = shipController != null ? shipController.GimbalLimitDegrees : 0f;
-        float gimbalResponse = shipController != null ? shipController.GimbalResponseScalar : 0f;
-        float gimbalSlewRate = shipController != null ? shipController.GimbalSlewRateDegreesPerSecond : 0f;
-        float targetGimbalYaw = shipController != null ? shipController.TargetGimbalYawCommand : 0f;
-        float targetGimbalPitch = shipController != null ? shipController.TargetGimbalPitchCommand : 0f;
-        float actualGimbalYaw = shipController != null ? shipController.ActualGimbalYawCommand : 0f;
-        float actualGimbalPitch = shipController != null ? shipController.ActualGimbalPitchCommand : 0f;
-        float gimbalAngle = shipController != null ? shipController.LastGimbalAngleDegrees : 0f;
-        float turnInput = shipController != null ? shipController.TurnInput : 0f;
-        PrototypeFlightControlDiagnostics controlDiagnostics = shipController != null ? shipController.FlightControlDiagnostics : default;
-        PrototypeDebugViewModel debugViewModel = PrototypeDebugViewModelBuilder.Build(targetStats, targetRigidbody, shipController);
-        bool hasRcs = controlDiagnostics.rcsAvailable;
-        bool rcsEnabled = controlDiagnostics.rcsEnabled;
-        bool sasEnabled = controlDiagnostics.sasEnabled;
-        bool effectiveSas = controlDiagnostics.effectiveSasEnabled;
-        string controlModeLabel = controlDiagnostics.controlModeLabel;
-        float forwardAcceleration = shipController != null ? shipController.LastForwardAcceleration : targetStats.LastAcceleration;
-        Vector3 rcsPivotLocal = shipController != null ? shipController.RcsControlPivotLocal : Vector3.zero;
-        Vector3 rcsPivotWorld = shipController != null ? shipController.RcsControlPivotWorld : centerOfMassWorld;
-        int installedNozzles = shipController != null ? shipController.InstalledRcsNozzleCount : 0;
-        int activeNozzles = shipController != null ? shipController.ActiveRcsNozzleCount : 0;
-        string activeNozzleIds = shipController != null ? shipController.ActiveRcsNozzleIds : string.Empty;
-        float rcsMaxNozzleThrottle = shipController != null ? shipController.LastRcsMaxNozzleThrottle : 0f;
-        int rcsNozzleApplications = shipController != null ? shipController.LastRcsNozzleApplicationCount : 0;
-        float rcsTranslationSetting = shipController != null ? shipController.RcsTranslationForceSetting : 0f;
-        float rcsAttitudeSetting = shipController != null ? shipController.RcsAttitudeForceSetting : 0f;
-        float sasAuthority = shipController != null ? shipController.RcsSasAuthority : 0f;
-        float sasProportionalGain = shipController != null ? shipController.RcsSasProportionalGain : 0f;
-        float sasDerivativeGain = shipController != null ? shipController.RcsSasDerivativeGain : 0f;
-        SasControlMode sasMode = shipController != null ? shipController.SasMode : SasControlMode.KillRotation;
-        FlightAssistMode flightAssistMode = shipController != null ? shipController.FlightAssistMode : FlightAssistMode.Simulation;
-        float minSelectionDot = shipController != null ? shipController.RcsMinSelectionDot : 0f;
-        float rcsNozzleSpoolUp = shipController != null ? shipController.RcsNozzleSpoolUpRate : 0f;
-        float rcsNozzleSpoolDown = shipController != null ? shipController.RcsNozzleSpoolDownRate : 0f;
-        Vector3 rawSasCommand = shipController != null ? shipController.LastRawRcsSasCommand : Vector3.zero;
-        Vector3 sasCommand = shipController != null ? shipController.LastRcsSasCommand : Vector3.zero;
-        Vector3 sasReleasedAxes = shipController != null ? shipController.LastRcsSasReleasedAxes : Vector3.one;
-        Vector3 sasManualAxes = shipController != null ? shipController.LastRcsSasManualOverrideAxes : Vector3.zero;
-        Vector3 sasAngularVelocityLocal = shipController != null ? shipController.LastRcsSasAngularVelocityLocal : Vector3.zero;
-        Vector3 sasAngularErrorLocal = shipController != null ? shipController.LastRcsSasAngularErrorLocal : Vector3.zero;
-        Vector3 rawSasTorqueLocal = shipController != null ? shipController.LastRawRcsSasDesiredTorqueLocal : Vector3.zero;
-        Vector3 sasTorqueLocal = shipController != null ? shipController.LastRcsSasDesiredTorqueLocal : Vector3.zero;
-        Vector3 suppressedSasTorqueLocal = shipController != null ? shipController.LastRcsSasSuppressedTorqueLocal : Vector3.zero;
-        Vector3 assistForceWorld = shipController != null ? shipController.LastFlightAssistForceWorld : Vector3.zero;
-        Vector3 assistTorqueLocal = shipController != null ? shipController.LastFlightAssistTorqueLocal : Vector3.zero;
-        bool assistDebugOnly = shipController != null && shipController.LastFlightAssistDebugOnly;
-        Vector3 manualTorqueLocal = shipController != null ? shipController.LastRcsManualDesiredTorqueLocal : Vector3.zero;
-        Vector3 desiredTorqueLocal = shipController != null ? shipController.LastRcsDesiredTorqueLocal : Vector3.zero;
-        Vector3 rcsTotalForce = shipController != null ? shipController.LastRcsForce : Vector3.zero;
-        Vector3 rcsTranslationForce = shipController != null ? shipController.LastRcsTranslationForce : Vector3.zero;
-        Vector3 rcsDesiredForce = shipController != null ? shipController.LastRcsDesiredForceWorld : Vector3.zero;
-        Vector3 rcsActualForce = shipController != null ? shipController.LastRcsActualForceWorld : Vector3.zero;
-        Vector3 rcsResidualForce = shipController != null ? shipController.LastRcsResidualForceWorld : Vector3.zero;
-        Vector3 rcsDesiredTorque = shipController != null ? shipController.LastRcsDesiredTorqueWorld : Vector3.zero;
-        Vector3 rcsActualTorque = shipController != null ? shipController.LastRcsActualTorqueWorld : Vector3.zero;
-        Vector3 rcsResidualTorque = shipController != null ? shipController.LastRcsResidualTorqueWorld : Vector3.zero;
-        Vector3 rcsTorque = shipController != null ? shipController.LastRcsTorque : Vector3.zero;
-        Vector3 rcsYawTorque = shipController != null ? shipController.LastRcsYawTorque : Vector3.zero;
-        Vector3 coreForce = shipController != null ? shipController.LastCoreAppliedForce : Vector3.zero;
-        Vector3 coreTorque = shipController != null ? shipController.LastCoreAppliedTorque : Vector3.zero;
-        Vector3 coreImpulse = shipController != null ? shipController.LastCoreAppliedImpulse : Vector3.zero;
-        Vector3 coreAngularImpulse = shipController != null ? shipController.LastCoreAppliedAngularImpulse : Vector3.zero;
-        int coreApplications = shipController != null ? shipController.LastCoreAppliedForceCount : 0;
-        int coreImpulseApplications = shipController != null ? shipController.LastCoreAppliedImpulseCount : 0;
-        Vector3 impactImpulse = targetPhysicsCore != null ? targetPhysicsCore.LastImpactImpulse : Vector3.zero;
-        Vector3 impactTorqueImpulse = targetPhysicsCore != null ? targetPhysicsCore.LastImpactTorqueImpulse : Vector3.zero;
-        int impactImpulseCount = targetPhysicsCore != null ? targetPhysicsCore.ImpactImpulseCount : 0;
-        ShipAtmosphereSample atmosphereSample = targetPhysicsCore != null ? targetPhysicsCore.LastAtmosphereSample : ShipAtmosphereSample.Zero;
-        bool atmosphereActive = atmosphereSample.active;
-        float atmosphereDensity = atmosphereSample.densityKgPerCubicMeter;
-        float atmosphereDragCoefficient = atmosphereSample.dragCoefficient;
-        float atmosphereReferenceArea = atmosphereSample.referenceAreaSquareMeters;
-        Vector3 atmosphereRelativeVelocity = atmosphereSample.relativeVelocity;
-        Vector3 atmosphereDragForce = atmosphereSample.dragForce;
-        bool gravityEnabled = shipController != null && shipController.GravityEnabled;
-        bool gravityApplied = shipController != null && shipController.LastGravityApplied;
-        string gravityBodyName = shipController != null ? shipController.LastGravityBodyName : "none";
-        float gravityMu = shipController != null ? shipController.GravityMu : 0f;
-        float gravityDistance = shipController != null ? shipController.LastGravityDistance : 0f;
-        Vector3 gravityAcceleration = shipController != null ? shipController.LastGravityAcceleration : Vector3.zero;
-        Vector3 gravityForce = shipController != null ? shipController.LastGravityForce : Vector3.zero;
-        string mainThrustMode = shipController != null ? shipController.MainThrustMode.ToString() : MainThrustMode.ComSafeSteeringOnly.ToString();
-        Vector3 mainDirection = shipController != null ? shipController.LastMainThrustDirection : target.transform.forward;
-        Vector3 mainForce = shipController != null ? shipController.LastMainForceWorld : Vector3.zero;
-        Vector3 mainStraight = shipController != null ? shipController.LastMainStraightForceWorld : Vector3.zero;
-        Vector3 mainSteering = shipController != null ? shipController.LastMainSteeringForceWorld : Vector3.zero;
-        Vector3 mainTorque = shipController != null ? shipController.LastMainThrustTorque : Vector3.zero;
-        PrototypeThermalModule mainThermal = shipController != null ? shipController.MainThermalModule : null;
-        bool mainThermalEnabled = shipController != null && shipController.MainThermalEnabled;
-        bool mainThermalOverheated = shipController != null && shipController.MainThermalOverheated;
-        float mainThermalEfficiency = shipController != null ? shipController.MainThermalEfficiency : 1f;
-        float mainPowerDrawKw = shipController != null ? shipController.MainPowerDrawKw : 0f;
-        float mainFuelRequested = targetStats.LastFuelRequestedKg;
-        float mainFuelConsumed = targetStats.LastFuelConsumedKg;
-        float mainFuelFraction = targetStats.LastAppliedFuelFraction;
-        float rcsFuelRequested = shipController != null ? shipController.LastRcsFuelRequestedKg : 0f;
-        float rcsFuelConsumed = shipController != null ? shipController.LastRcsFuelConsumedKg : 0f;
-        float rcsFuelFraction = shipController != null ? shipController.LastRcsFuelFraction : 1f;
-        float rcsAllocatedThrottleTotal = shipController != null ? shipController.LastRcsAllocatedNozzleThrottleTotal : 0f;
-        string cameraMode = followCamera != null ? followCamera.CameraModeName : "none";
-        float cameraBaseDistance = followCamera != null ? followCamera.BaseVisualDistance : 0f;
-        float cameraBaseBoundsRadius = followCamera != null ? followCamera.BaseVisualBoundsRadius : 0f;
-        float cameraEffectiveDistance = followCamera != null ? followCamera.EffectiveDistance : 0f;
-        float cameraZoom = followCamera != null ? followCamera.Zoom : 0f;
-        float cameraAnchorError = followCamera != null ? followCamera.AnchorError : 0f;
-        float cameraLookYaw = followCamera != null ? followCamera.LookYaw : 0f;
-        float cameraLookPitch = followCamera != null ? followCamera.LookPitch : 0f;
-        Vector3 mainForcePosition = shipController != null ? shipController.LastMainForcePositionWorld : centerOfMassWorld;
-        bool floatingOriginPresent = floatingOriginBody != null;
-        bool floatingOriginEnabled = floatingOriginManager != null && floatingOriginManager.FloatingOriginEnabled;
-        LargeWorldVector3d origin = floatingOriginManager != null ? floatingOriginManager.Origin : LargeWorldVector3d.Zero;
-        LargeWorldVector3d absolutePosition = floatingOriginBody != null ? floatingOriginBody.AbsolutePosition : LargeWorldVector3d.Zero;
-        LargeWorldVector3d absoluteVelocity = floatingOriginBody != null ? floatingOriginBody.AbsoluteVelocity : LargeWorldVector3d.Zero;
-        int originShiftCount = floatingOriginManager != null ? floatingOriginManager.ShiftCount : 0;
-        int registeredOriginBodies = floatingOriginManager != null ? floatingOriginManager.RegisteredBodyCount : 0;
-        string navTargetName = waypointAutopilot != null ? waypointAutopilot.TargetName : "none";
-        string autopilotState = shipController != null ? controlDiagnostics.autopilotState.ToString() : "none";
-        string autopilotArrival = shipController != null ? controlDiagnostics.autopilotStatus : "unavailable";
-        float navDistance = waypointAutopilot != null ? waypointAutopilot.DistanceToTarget : 0f;
-        float navClosingSpeed = waypointAutopilot != null ? waypointAutopilot.ClosingSpeed : 0f;
-        float navLateralSpeed = waypointAutopilot != null ? waypointAutopilot.LateralSpeed : 0f;
-        float navStoppingDistance = waypointAutopilot != null ? waypointAutopilot.StoppingDistance : 0f;
-        float navEtaSeconds = waypointAutopilot != null ? waypointAutopilot.EtaSeconds : float.PositiveInfinity;
-        float navAvailableBurn = waypointAutopilot != null ? waypointAutopilot.AvailableBurnSeconds : 0f;
-        float navRequiredBurn = waypointAutopilot != null ? waypointAutopilot.RequiredBurnSeconds : 0f;
-        bool navFuelFeasible = waypointAutopilot != null && waypointAutopilot.FuelFeasible;
-
-        void DrawWindow(int id)
-        {
-            GUILayout.BeginVertical();
-            GUILayout.BeginHorizontal();
-            if (GUILayout.Button(windowState.Collapsed ? "Open" : "Collapse", GUILayout.Width(76f)))
-            {
-                windowState.Collapsed = !windowState.Collapsed;
-            }
-
-            if (GUILayout.Button("Hide", GUILayout.Width(54f)))
-            {
-                windowState.Visible = false;
-            }
-
-            GUILayout.Label("F2 toggles diagnostics", labelStyle);
-            GUILayout.EndHorizontal();
-
-            if (!windowState.Collapsed)
-            {
-                GUILayout.Label($"Fuel {targetStats.CurrentFuelKg:0.0}/{targetStats.MaxFuelKg:0.0} kg | Speed {PrototypeUiFormatter.FormatSpeed(debugViewModel.SpeedMetersPerSecond)} | Throttle {debugViewModel.MainThrottlePercent:0}%", labelStyle);
-                GUILayout.Label($"RCS {PrototypeUiFormatter.FormatStatus(debugViewModel.RcsEnabled, "on", "off")} | SAS {PrototypeUiFormatter.FormatStatus(debugViewModel.SasEnabled, "on", "off")} effective {PrototypeUiFormatter.FormatStatus(debugViewModel.EffectiveSasEnabled, "on", "off")} | Mode {debugViewModel.ControlMode} | Main {targetStats.LastAppliedThrust:0} N", labelStyle);
-                GUILayout.Label($"Target {navTargetName} | Auto {debugViewModel.AutopilotState} | Debug vectors {(drawDebugVectors ? "on" : "off")}", labelStyle);
-
-                advancedDiagnosticsOpen = GUILayout.Toggle(advancedDiagnosticsOpen, "Advanced Diagnostics");
-                if (advancedDiagnosticsOpen)
-                {
-                    diagnosticsScroll = GUILayout.BeginScrollView(diagnosticsScroll);
-
-                    flightSectionOpen = GUILayout.Toggle(flightSectionOpen, "Flight");
-                    if (flightSectionOpen)
-                    {
-                        GUILayout.Label($"Mass: stats {targetStats.CurrentMass:0.0} kg, rb {rbMass:0.0} kg", labelStyle);
-                        GUILayout.Label($"Velocity: {FormatVector(linearVelocity)} m/s", labelStyle);
-                        GUILayout.Label($"Angular velocity: {FormatVector(angularVelocity)} rad/s", labelStyle);
-                        GUILayout.Label($"Camera: {cameraMode}, dist {cameraEffectiveDistance:0.00} (base {cameraBaseDistance:0.00}), zoom {cameraZoom:0.00}, bounds {cameraBaseBoundsRadius:0.00}, anchor {cameraAnchorError:0.000} m", labelStyle);
-                        GUILayout.Label($"Camera look: yaw {cameraLookYaw:0.0} deg, pitch {cameraLookPitch:0.0} deg", labelStyle);
-                        GUILayout.Label($"COM local/world: {FormatVector(centerOfMassLocal)} / {FormatVector(centerOfMassWorld)}", labelStyle);
-                        GUILayout.Label($"Mass model: {massProperties.ModuleCount} modules, dry {massProperties.DryMassKg:0.0} kg, fuel {massProperties.FuelMassKg:0.0} kg", labelStyle);
-                        GUILayout.Label($"Inertia tensor: {FormatVector(inertiaTensor)} kg*m^2", labelStyle);
-                    }
-
-                    propulsionSectionOpen = GUILayout.Toggle(propulsionSectionOpen, "Propulsion");
-                    if (propulsionSectionOpen)
-                    {
-                        GUILayout.Label($"Throttle: target {mainTargetThrottle:0.00} actual {mainActualThrottle:0.00} cmd {mainCommand:0.00}", labelStyle);
-                        GUILayout.Label($"Throttle response: up {FormatRate(throttleSpoolUp)}, down {FormatRate(throttleSpoolDown)}, scale {throttleScale:0.00}", labelStyle);
-                        GUILayout.Label($"Main thrust: {targetStats.LastAppliedThrust:0} / {targetStats.Thrust:0} N", labelStyle);
-                        GUILayout.Label($"Main fuel: req {mainFuelRequested:0.000} kg, used {mainFuelConsumed:0.000} kg, frac {mainFuelFraction:0.00}", labelStyle);
-                        GUILayout.Label($"Forward accel: {forwardAcceleration:0.0} m/s^2", labelStyle);
-                        GUILayout.Label($"Main mode: {mainThrustMode}", labelStyle);
-                        GUILayout.Label($"Main dir: {FormatVector(mainDirection)}", labelStyle);
-                        GUILayout.Label($"Main force pos: {FormatVector(mainForcePosition)}", labelStyle);
-                        GUILayout.Label($"Main force: {FormatVector(mainForce)}", labelStyle);
-                        GUILayout.Label($"Main straight/steering: {FormatVector(mainStraight)} / {FormatVector(mainSteering)}", labelStyle);
-                        GUILayout.Label($"Main thrust torque: {FormatVector(mainTorque)}", labelStyle);
-                        GUILayout.Label($"Gimbal: {(gimbalEnabled ? "on" : "off")} / {gimbalLimit:0.0} deg", labelStyle);
-                        GUILayout.Label($"Gimbal target: Y {targetGimbalYaw:0.00} P {targetGimbalPitch:0.00}, response {gimbalResponse:0.00}", labelStyle);
-                        GUILayout.Label($"Gimbal actual: Y {actualGimbalYaw:0.00} P {actualGimbalPitch:0.00}, slew {FormatRate(gimbalSlewRate)}, angle {gimbalAngle:0.0}", labelStyle);
-                        if (mainThermal != null)
-                        {
-                            GUILayout.Label($"Thermal: {mainThermal.ModuleName} {mainThermal.CurrentTemperature:0.0}/{mainThermal.MaxTemperature:0.0} C {mainThermal.StateLabel}", labelStyle);
-                            GUILayout.Label($"Heat/power: heat {mainThermal.LastHeatGeneratedPerSecond:0.0}/s, cool {mainThermal.LastCoolingApplied:0.00}, power {mainPowerDrawKw:0.0} kW", labelStyle);
-                            GUILayout.Label($"Overheat hook: {(mainThermalEnabled ? "sim" : "off")}, {(mainThermalOverheated ? "active" : "clear")}, eff {mainThermalEfficiency:0.00}", labelStyle);
-                        }
-                    }
-
-                    rcsSectionOpen = GUILayout.Toggle(rcsSectionOpen, "RCS");
-                    if (rcsSectionOpen)
-                    {
-                        GUILayout.Label($"RCS: enabled {(rcsEnabled ? "yes" : "no")}, available {(hasRcs ? "yes" : "no")}, allocator {controlDiagnostics.rcsAllocatorStatus}", labelStyle);
-                        GUILayout.Label($"RCS tuning: move {rcsTranslationSetting:0} N, attitude {rcsAttitudeSetting:0} N", labelStyle);
-                        GUILayout.Label($"RCS response: up {FormatRate(rcsNozzleSpoolUp)}, down {FormatRate(rcsNozzleSpoolDown)}", labelStyle);
-                        GUILayout.Label($"RCS select dot: {minSelectionDot:0.00}, nozzles {activeNozzles}/{installedNozzles}", labelStyle);
-                        GUILayout.Label($"RCS allocator: max {rcsMaxNozzleThrottle:0.00}, sum {rcsAllocatedThrottleTotal:0.00}, applications {rcsNozzleApplications}", labelStyle);
-                        GUILayout.Label($"RCS fuel: req {rcsFuelRequested:0.000} kg, used {rcsFuelConsumed:0.000} kg, frac {rcsFuelFraction:0.00}", labelStyle);
-                        GUILayout.Label($"Move cmd: L/R {rcsTranslation.x:0.00}, U/D {rcsTranslation.y:0.00}, F/B {rcsTranslation.z:0.00}", labelStyle);
-                        GUILayout.Label($"Attitude cmd: P {rcsAttitude.x:0.00}, Y {rcsAttitude.y:0.00}, R {rcsAttitude.z:0.00}", labelStyle);
-                        GUILayout.Label($"RCS pivot local/world: {FormatVector(rcsPivotLocal)} / {FormatVector(rcsPivotWorld)}", labelStyle);
-                        GUILayout.Label($"RCS force desired: {FormatVector(rcsDesiredForce)}", labelStyle);
-                        GUILayout.Label($"RCS force actual: {FormatVector(rcsActualForce)}", labelStyle);
-                        GUILayout.Label($"RCS force residual: {FormatVector(rcsResidualForce)}", labelStyle);
-                        GUILayout.Label($"RCS torque desired: {FormatVector(rcsDesiredTorque)}", labelStyle);
-                        GUILayout.Label($"RCS torque actual: {FormatVector(rcsActualTorque)}", labelStyle);
-                        GUILayout.Label($"RCS torque residual: {FormatVector(rcsResidualTorque)}", labelStyle);
-                        GUILayout.Label($"RCS total force: {FormatVector(rcsTotalForce)}", labelStyle);
-                        GUILayout.Label($"RCS translate force: {FormatVector(rcsTranslationForce)}", labelStyle);
-                        GUILayout.Label($"RCS torque/yaw est: {FormatVector(rcsTorque)} / {FormatVector(rcsYawTorque)}", labelStyle);
-                        GUILayout.Label($"Active nozzles: {Shorten(activeNozzleIds, 74)}", labelStyle);
-                    }
-
-                    sasSectionOpen = GUILayout.Toggle(sasSectionOpen, "SAS");
-                    if (sasSectionOpen)
-                    {
-                        GUILayout.Label($"SAS: armed {(sasEnabled ? "on" : "off")} / effective {(effectiveSas ? "on" : "off")} / authority {(controlDiagnostics.sasHasAuthority ? "yes" : "no")} {sasMode}", labelStyle);
-                        GUILayout.Label($"SAS PD: Kp {sasProportionalGain:0.00}, Kd {sasDerivativeGain:0.00}, auth {sasAuthority:0.00}", labelStyle);
-                        GUILayout.Label($"SAS local w: {FormatVector(sasAngularVelocityLocal)} rad/s", labelStyle);
-                        GUILayout.Label($"SAS angular err: {FormatVector(sasAngularErrorLocal)} rad", labelStyle);
-                        GUILayout.Label($"SAS raw/masked cmd: {FormatVector(rawSasCommand)} / {FormatVector(sasCommand)}", labelStyle);
-                        GUILayout.Label($"SAS torque raw: {FormatVector(rawSasTorqueLocal)} Nm", labelStyle);
-                        GUILayout.Label($"SAS torque masked: {FormatVector(sasTorqueLocal)} Nm", labelStyle);
-                        GUILayout.Label($"SAS torque blocked: {FormatVector(suppressedSasTorqueLocal)} Nm", labelStyle);
-                        GUILayout.Label($"Assist: {flightAssistMode}{(assistDebugOnly ? " (debug-only)" : string.Empty)}", labelStyle);
-                        GUILayout.Label($"Assist force/torque req: {FormatVector(assistForceWorld)} N / {FormatVector(assistTorqueLocal)} Nm", labelStyle);
-                        GUILayout.Label($"Torque demand: manual {FormatVector(manualTorqueLocal)}", labelStyle);
-                        GUILayout.Label($"Torque demand: total {FormatVector(desiredTorqueLocal)}", labelStyle);
-                        GUILayout.Label($"SAS released axes: {FormatAxisMask(sasReleasedAxes)}", labelStyle);
-                        GUILayout.Label($"SAS manual axes: {FormatManualMask(sasManualAxes)}", labelStyle);
-                    }
-
-                    physicsSectionOpen = GUILayout.Toggle(physicsSectionOpen, "Physics Core");
-                    if (physicsSectionOpen)
-                    {
-                        GUILayout.Label($"Core force: {FormatVector(coreForce)}", labelStyle);
-                        GUILayout.Label($"Core torque: {FormatVector(coreTorque)}, applications {coreApplications}", labelStyle);
-                        GUILayout.Label($"Core impulse: {FormatVector(coreImpulse)} Ns, applications {coreImpulseApplications}", labelStyle);
-                        GUILayout.Label($"Core angular impulse: {FormatVector(coreAngularImpulse)} Ns*m", labelStyle);
-                        GUILayout.Label($"Impact impulse: {FormatVector(impactImpulse)} Ns, count {impactImpulseCount}", labelStyle);
-                        GUILayout.Label($"Impact torque impulse: {FormatVector(impactTorqueImpulse)} Ns*m", labelStyle);
-                    }
-
-                    damageSectionOpen = GUILayout.Toggle(damageSectionOpen, "Damage");
-                    if (damageSectionOpen)
-                    {
-                        GUILayout.Label($"Damage: {damageDiagnostics.damagedModules}/{damageDiagnostics.totalModules} modules, worst {damageDiagnostics.worstModule} {damageDiagnostics.worstIntegrityPercent:0}% cap {damageDiagnostics.worstCapabilityMultiplier:0.00}", labelStyle);
-                    }
-
-                    environmentSectionOpen = GUILayout.Toggle(environmentSectionOpen, "Atmosphere/Gravity");
-                    if (environmentSectionOpen)
-                    {
-                        GUILayout.Label($"Atmosphere: {(atmosphereActive ? "active" : "vacuum")} density {atmosphereDensity:0.000} kg/m^3", labelStyle);
-                        GUILayout.Label($"Atmos drag: {FormatVector(atmosphereDragForce)} N, rel {atmosphereRelativeVelocity.magnitude:0.00} m/s", labelStyle);
-                        GUILayout.Label($"Atmos Cd/area: {atmosphereDragCoefficient:0.00} / {atmosphereReferenceArea:0.00} m^2", labelStyle);
-                        GUILayout.Label($"Gravity: {(gravityEnabled ? "on" : "off")} body {gravityBodyName}, applied {(gravityApplied ? "yes" : "no")}", labelStyle);
-                        GUILayout.Label($"Gravity mu/dist: {gravityMu:0.00} / {gravityDistance:0.00} m", labelStyle);
-                        GUILayout.Label($"Gravity accel: {FormatVector(gravityAcceleration)} m/s^2", labelStyle);
-                        GUILayout.Label($"Gravity force: {FormatVector(gravityForce)} N", labelStyle);
-                    }
-
-                    navigationSectionOpen = GUILayout.Toggle(navigationSectionOpen, "Navigation/Floating Origin");
-                    if (navigationSectionOpen)
-                    {
-                        GUILayout.Label($"Nav target: {navTargetName}", labelStyle);
-                        GUILayout.Label($"Autopilot: {autopilotState}, {autopilotArrival}", labelStyle);
-                        GUILayout.Label($"Nav dist/ETA: {navDistance:0.0} m, {FormatEta(navEtaSeconds)}", labelStyle);
-                        GUILayout.Label($"Nav speed: closing {navClosingSpeed:0.0} m/s, lateral {navLateralSpeed:0.0} m/s", labelStyle);
-                        GUILayout.Label($"Nav stop/fuel: {navStoppingDistance:0.0} m, burn {FormatBurn(navAvailableBurn)} / {navRequiredBurn:0.0}s {(navFuelFeasible ? "ok" : "low")}", labelStyle);
-                        GUILayout.Label($"Floating origin: {(floatingOriginEnabled ? "on" : "off")} ({(floatingOriginPresent ? "body" : "no body")}), shifts {originShiftCount}, bodies {registeredOriginBodies}", labelStyle);
-                        GUILayout.Label($"Origin abs: {FormatLargeVector(origin)}", labelStyle);
-                        GUILayout.Label($"Ship abs/local: {FormatLargeVector(absolutePosition)} / {FormatVector(target.position)}", labelStyle);
-                        GUILayout.Label($"Ship abs velocity: {FormatLargeVector(absoluteVelocity)} m/s", labelStyle);
-                    }
-
-                    GUILayout.Label($"Debug vectors: lines {(drawDebugVectors ? "on" : "off")}, gizmos {(drawDebugGizmos ? "on" : "off")}", labelStyle);
-                    GUILayout.EndScrollView();
-                }
-            }
-
-            GUILayout.EndVertical();
-            GUI.DragWindow(new Rect(0f, 0f, 10000f, 24f));
-        }
-
-        windowState.SetSize(advancedDiagnosticsOpen ? 680f : 440f, windowState.Collapsed ? 58f : (advancedDiagnosticsOpen ? 740f : 184f));
-        windowState.Rect = GUI.Window(windowState.WindowId, windowState.Rect, DrawWindow, "Flight Diagnostics");
-        windowState.ClampToScreen();
-        windowState.SaveToPrefs();
     }
 
     private void OnDrawGizmos()
@@ -541,6 +650,114 @@ public class PrototypeDebugOverlay : MonoBehaviour
         return $"P {(value.x > 0.5f ? "manual" : "auto")}, Y {(value.y > 0.5f ? "manual" : "auto")}, R {(value.z > 0.5f ? "manual" : "auto")}";
     }
 
+    private static string Shorten(string value, int maxLength)
+    {
+        if (string.IsNullOrEmpty(value) || value.Length <= maxLength)
+        {
+            return string.IsNullOrEmpty(value) ? "none" : value;
+        }
+
+        return value.Substring(0, Mathf.Max(0, maxLength - 3)) + "...";
+    }
+
+    private PrototypeUiWindowState ResolveWindowState()
+    {
+        if (windowState == null)
+        {
+            windowState = PrototypeUiLayoutManager.GetWindow(
+                PrototypeUiLayoutManager.DiagnosticsWindowId,
+                new Rect(windowPosition.x, windowPosition.y, 440f, 184f),
+                true,
+                false);
+        }
+
+        return windowState;
+    }
+
+    public void Bind(Transform trackTarget, ShipStats stats, Rigidbody rb)
+    {
+        target = trackTarget;
+        targetStats = stats;
+        targetRigidbody = rb;
+        followCamera = GetComponent<SimpleFollowCamera>();
+        shipController = trackTarget != null ? trackTarget.GetComponent<PlayerShipController>() : null;
+        targetPhysicsCore = trackTarget != null ? trackTarget.GetComponent<ShipPhysicsCore>() : null;
+        floatingOriginBody = trackTarget != null ? trackTarget.GetComponent<FloatingOriginBody>() : null;
+        floatingOriginManager = floatingOriginBody != null ? floatingOriginBody.Manager : null;
+        waypointAutopilot = trackTarget != null ? trackTarget.GetComponent<PrototypeWaypointAutopilot>() : null;
+        lastCompactDiagnosticsFrame = -1;
+        heavyDiagnosticsSampler.Invalidate();
+        damageDiagnosticsSampler.Invalidate();
+    }
+
+    public void SetDrawDebugVectors(bool enabled)
+    {
+        drawDebugVectors = enabled;
+        lastCompactDiagnosticsFrame = -1;
+    }
+
+    public void SetDrawDebugGizmos(bool enabled)
+    {
+        drawDebugGizmos = enabled;
+    }
+
+    public void SetWindowVisible(bool visible)
+    {
+        ResolveWindowState().Visible = visible;
+    }
+
+    public void SetWindowCollapsed(bool collapsed)
+    {
+        ResolveWindowState().Collapsed = collapsed;
+    }
+
+    public void SetAdvancedDiagnostics(bool enabled)
+    {
+        if (advancedDiagnosticsOpen != enabled)
+        {
+            heavyDiagnosticsSampler.Invalidate();
+        }
+
+        advancedDiagnosticsOpen = enabled;
+        if (enabled)
+        {
+            propulsionSectionOpen = true;
+            physicsSectionOpen = true;
+            environmentSectionOpen = true;
+            navigationSectionOpen = true;
+        }
+    }
+
+    public void SetRcsDiagnosticsExpanded(bool expanded)
+    {
+        rcsSectionOpen = expanded;
+        sasSectionOpen = expanded;
+        if (expanded)
+        {
+            SetAdvancedDiagnostics(true);
+        }
+    }
+
+    public void SetDamageDiagnosticsExpandedForTests(bool expanded)
+    {
+        damageSectionOpen = expanded;
+        if (expanded)
+        {
+            SetAdvancedDiagnostics(true);
+        }
+    }
+
+    private struct AdvancedDiagnosticsSnapshot
+    {
+        public string[] FlightLines;
+        public string[] PropulsionLines;
+        public string[] RcsLines;
+        public string[] SasLines;
+        public string[] PhysicsLines;
+        public string[] EnvironmentLines;
+        public string[] NavigationLines;
+    }
+
     private struct DamageDiagnostics
     {
         public int totalModules;
@@ -590,91 +807,4 @@ public class PrototypeDebugOverlay : MonoBehaviour
 
         return diagnostics;
     }
-
-    private PrototypeUiWindowState ResolveWindowState()
-    {
-        if (windowState == null)
-        {
-            windowState = PrototypeUiLayoutManager.GetWindow(
-                PrototypeUiLayoutManager.DiagnosticsWindowId,
-                new Rect(windowPosition.x, windowPosition.y, 440f, 184f),
-                true,
-                false);
-        }
-
-        return windowState;
-    }
-
-    public void Bind(Transform trackTarget, ShipStats stats, Rigidbody rb)
-    {
-        target = trackTarget;
-        targetStats = stats;
-        targetRigidbody = rb;
-        followCamera = GetComponent<SimpleFollowCamera>();
-        shipController = trackTarget != null ? trackTarget.GetComponent<PlayerShipController>() : null;
-        targetPhysicsCore = trackTarget != null ? trackTarget.GetComponent<ShipPhysicsCore>() : null;
-        floatingOriginBody = trackTarget != null ? trackTarget.GetComponent<FloatingOriginBody>() : null;
-        floatingOriginManager = floatingOriginBody != null ? floatingOriginBody.Manager : null;
-        waypointAutopilot = trackTarget != null ? trackTarget.GetComponent<PrototypeWaypointAutopilot>() : null;
-    }
-
-    private static string Shorten(string value, int maxLength)
-    {
-        if (string.IsNullOrEmpty(value) || value.Length <= maxLength)
-        {
-            return string.IsNullOrEmpty(value) ? "none" : value;
-        }
-
-        return value.Substring(0, Mathf.Max(0, maxLength - 3)) + "...";
-    }
-
-
-    public bool DrawDebugVectors => drawDebugVectors;
-
-    public bool DrawDebugGizmos => drawDebugGizmos;
-
-    public bool AdvancedDiagnosticsOpen => advancedDiagnosticsOpen;
-
-    public void SetDrawDebugVectors(bool enabled)
-    {
-        drawDebugVectors = enabled;
-    }
-
-    public void SetDrawDebugGizmos(bool enabled)
-    {
-        drawDebugGizmos = enabled;
-    }
-
-    public void SetWindowVisible(bool visible)
-    {
-        ResolveWindowState().Visible = visible;
-    }
-
-    public void SetWindowCollapsed(bool collapsed)
-    {
-        ResolveWindowState().Collapsed = collapsed;
-    }
-
-    public void SetAdvancedDiagnostics(bool enabled)
-    {
-        advancedDiagnosticsOpen = enabled;
-        if (enabled)
-        {
-            propulsionSectionOpen = true;
-            physicsSectionOpen = true;
-            environmentSectionOpen = true;
-            navigationSectionOpen = true;
-        }
-    }
-
-    public void SetRcsDiagnosticsExpanded(bool expanded)
-    {
-        rcsSectionOpen = expanded;
-        sasSectionOpen = expanded;
-        if (expanded)
-        {
-            advancedDiagnosticsOpen = true;
-        }
-    }
-
 }

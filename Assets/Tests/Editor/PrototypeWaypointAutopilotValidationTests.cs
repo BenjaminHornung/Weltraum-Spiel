@@ -20,6 +20,8 @@ public class PrototypeWaypointAutopilotValidationTests
         CleanupValidationNavigationTargets();
         DestroyByPrefix("WaypointAutopilotValidationShip");
         DestroyByPrefix("WaypointAutopilotValidationTarget");
+        DestroyByPrefix("WaypointAutopilotValidationObstacle");
+        DestroyByPrefix("WaypointAutopilotValidationProjectile");
         DestroyByPrefix(AutopilotRigTargetPrefix);
     }
 
@@ -29,6 +31,8 @@ public class PrototypeWaypointAutopilotValidationTests
         DestroyNamed("PrototypeNavigationWaypoints");
         DestroyByPrefix("WaypointAutopilotValidationShip");
         DestroyByPrefix("WaypointAutopilotValidationTarget");
+        DestroyByPrefix("WaypointAutopilotValidationObstacle");
+        DestroyByPrefix("WaypointAutopilotValidationProjectile");
         DestroyByPrefix(AutopilotRigTargetRootName);
         CleanupValidationNavigationTargets();
     }
@@ -72,6 +76,7 @@ public class PrototypeWaypointAutopilotValidationTests
             "Accelerate",
             "FlipForBrake",
             "Brake",
+            "ObstacleAvoidance",
             "FinalApproach",
             "HoldPosition",
             "Complete",
@@ -235,6 +240,138 @@ public class PrototypeWaypointAutopilotValidationTests
     }
 
     [Test]
+    public void ObstacleInCorridorTriggersAvoidanceAndRcsRequest()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 150f;
+        rig.Body.linearVelocity = Vector3.zero;
+        GameObject obstacle = CreateNavigationObstacle("WaypointAutopilotValidationObstacle_Blocking", Vector3.forward * 45f, 6f);
+        Physics.SyncTransforms();
+
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+        InvokeFixedUpdate(rig.Autopilot);
+
+        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.ObstacleAvoidance));
+        Assert.That(rig.Autopilot.ArrivalPhase, Is.EqualTo(PrototypeWaypointAutopilotArrivalPhase.Avoidance));
+        Assert.True(rig.Autopilot.AvoidanceActive);
+        Assert.That(rig.Autopilot.AvoidanceTargetName, Is.EqualTo("WaypointAutopilotValidationObstacle_Blocking"));
+        Assert.That(rig.Autopilot.AvoidanceDistance, Is.GreaterThan(0f));
+        Assert.That(rig.Autopilot.AvoidanceVectorWorld.sqrMagnitude, Is.GreaterThan(0.5f));
+        Assert.That(Vector3.Dot(rig.Autopilot.AvoidanceVectorWorld.normalized, Vector3.forward), Is.LessThan(0.25f));
+        Assert.That(rig.Autopilot.RequestedMainThrottle, Is.EqualTo(0f).Within(0.0001f));
+        Assert.True(rig.Controller.HasExternalFlightAssistRequest);
+        Assert.That(rig.Controller.LastExternalFlightAssistRequest.forceWorld.magnitude, Is.GreaterThan(0f));
+        Assert.AreSame(obstacle.GetComponent<Collider>(), rig.Autopilot.LastObstacleHit.collider);
+    }
+
+    [Test]
+    public void ObstacleOutsideCorridorIsIgnored()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 150f;
+        rig.Body.linearVelocity = Vector3.zero;
+        CreateNavigationObstacle("WaypointAutopilotValidationObstacle_Outside", new Vector3(36f, 0f, 45f), 4f);
+        Physics.SyncTransforms();
+
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+        InvokeFixedUpdate(rig.Autopilot);
+
+        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.Accelerate));
+        Assert.False(rig.Autopilot.AvoidanceActive);
+        Assert.That(rig.Autopilot.ArrivalPhase, Is.EqualTo(PrototypeWaypointAutopilotArrivalPhase.LongRangeBurn));
+        Assert.That(rig.Autopilot.RequestedMainThrottle, Is.GreaterThan(0.8f));
+    }
+
+    [Test]
+    public void ObstacleScanIgnoresTriggerAndProjectileHits()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 150f;
+        rig.Body.linearVelocity = Vector3.zero;
+        CreateNavigationObstacle("WaypointAutopilotValidationObstacle_Trigger", Vector3.forward * 25f, 6f, true);
+        CreateProjectileObstacle("WaypointAutopilotValidationProjectile_Ignored", Vector3.forward * 38f);
+        CreateNavigationObstacle("WaypointAutopilotValidationObstacle_ValidBehindIgnoredHits", Vector3.forward * 64f, 6f);
+        Physics.SyncTransforms();
+
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+        InvokeFixedUpdate(rig.Autopilot);
+
+        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.ObstacleAvoidance));
+        Assert.That(rig.Autopilot.AvoidanceTargetName, Is.EqualTo("WaypointAutopilotValidationObstacle_ValidBehindIgnoredHits"));
+        Assert.That(rig.Autopilot.LastObstacleHit.collider.GetComponentInParent<Projectile>(), Is.Null);
+        Assert.False(rig.Autopilot.LastObstacleHit.collider.isTrigger);
+    }
+
+    [Test]
+    public void BrakeCorridorUsesCurrentVelocityForObstacleDetection()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 150f;
+        rig.Body.linearVelocity = Vector3.forward * 45f;
+        CreateNavigationObstacle("WaypointAutopilotValidationObstacle_BrakePath", Vector3.forward * 40f, 6f);
+        Physics.SyncTransforms();
+
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+        InvokeFixedUpdate(rig.Autopilot);
+
+        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.ObstacleAvoidance));
+        Assert.That(rig.Autopilot.ArrivalPhase, Is.EqualTo(PrototypeWaypointAutopilotArrivalPhase.Avoidance));
+        Assert.That(rig.Autopilot.AvoidanceTargetName, Is.EqualTo("WaypointAutopilotValidationObstacle_BrakePath"));
+        Assert.That(rig.Autopilot.RequestedMainThrottle, Is.EqualTo(0f).Within(0.0001f));
+    }
+
+    [Test]
+    public void NoAvoidanceAuthorityFailsWithObstacleSpecificReason()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 80f;
+        rig.Body.linearVelocity = Vector3.zero;
+        SetPrivateFloat(rig.Ship.GetComponent<ShipStats>(), "fullThrottleFuelKgPerSecond", 0f);
+        SetPrivateFloat(rig.Ship.GetComponent<ShipStats>(), "thrustForce", 0f);
+        SetPrivateFloat(rig.Ship.GetComponent<RcsThrusterController>(), "translationForce", 0f);
+        SetPrivateField(rig.Ship.GetComponent<MainThrusterBank>(), "thrusters", Array.Empty<MainThrusterModule>());
+        CreateNavigationObstacle("WaypointAutopilotValidationObstacle_NoAuthority", Vector3.forward * 30f, 6f);
+        Physics.SyncTransforms();
+
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+
+        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.Failed));
+        Assert.False(rig.Autopilot.AutopilotEngaged);
+        Assert.That(rig.Autopilot.ArrivalFailureReason, Is.EqualTo("NoAvoidanceAuthority"));
+    }
+
+    [Test]
+    public void AvoidanceReturnsToLongRangeBurnAfterClearFrames()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 150f;
+        rig.Body.linearVelocity = Vector3.zero;
+        GameObject obstacle = CreateNavigationObstacle("WaypointAutopilotValidationObstacle_ClearLater", Vector3.forward * 45f, 6f);
+        Physics.SyncTransforms();
+
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+        InvokeFixedUpdate(rig.Autopilot);
+        Assert.True(rig.Autopilot.AvoidanceActive);
+
+        UnityEngine.Object.DestroyImmediate(obstacle);
+        Physics.SyncTransforms();
+        InvokeFixedUpdate(rig.Autopilot);
+        InvokeFixedUpdate(rig.Autopilot);
+        InvokeFixedUpdate(rig.Autopilot);
+
+        Assert.False(rig.Autopilot.AvoidanceActive);
+        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.Accelerate));
+        Assert.That(rig.Autopilot.ArrivalPhase, Is.EqualTo(PrototypeWaypointAutopilotArrivalPhase.LongRangeBurn));
+        Assert.That(rig.Autopilot.RequestedMainThrottle, Is.GreaterThan(0.8f));
+    }
+
+    [Test]
     public void AutopilotManualOverrideAfterGraceAbortsAndClearsRequest()
     {
         var rig = CreateAutopilotRig();
@@ -305,11 +442,12 @@ public class PrototypeWaypointAutopilotValidationTests
         Assert.True(File.Exists(sourceFile), sourceFile);
 
         string[] lines = File.ReadAllLines(sourceFile);
-        Regex directRigidbodyWrite = new Regex(@"\.(position|rotation|linearVelocity|angularVelocity)\s*=", RegexOptions.Compiled);
+        Regex directRigidbodyWrite = new Regex(@"\.(position|rotation|velocity|linearVelocity|angularVelocity)\s*=", RegexOptions.Compiled);
         for (int i = 0; i < lines.Length; i++)
         {
             string noComments = StripComments(lines[i]);
             Assert.False(directRigidbodyWrite.IsMatch(noComments), $"Direct Rigidbody write detected in PrototypeWaypointAutopilot.cs line {i + 1}: {lines[i]}");
+            Assert.False(noComments.Contains("SphereCastAll"), $"Unbounded physics query detected in PrototypeWaypointAutopilot.cs line {i + 1}: {lines[i]}");
         }
     }
 
@@ -358,6 +496,13 @@ public class PrototypeWaypointAutopilotValidationTests
     }
 
     private static void SetPrivateFloat(object target, string fieldName, float value)
+    {
+        FieldInfo field = target.GetType().GetField(fieldName, PrivateInstance);
+        Assert.NotNull(field, fieldName);
+        field.SetValue(target, value);
+    }
+
+    private static void SetPrivateField(object target, string fieldName, object value)
     {
         FieldInfo field = target.GetType().GetField(fieldName, PrivateInstance);
         Assert.NotNull(field, fieldName);
@@ -433,6 +578,32 @@ public class PrototypeWaypointAutopilotValidationTests
                 UnityEngine.Object.DestroyImmediate(target);
             }
         }
+    }
+
+    private static GameObject CreateNavigationObstacle(string name, Vector3 position, float scale, bool trigger = false)
+    {
+        GameObject obstacle = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        obstacle.name = name;
+        obstacle.transform.position = position;
+        obstacle.transform.localScale = Vector3.one * scale;
+        Collider collider = obstacle.GetComponent<Collider>();
+        Assert.NotNull(collider);
+        collider.isTrigger = trigger;
+        PrototypeNavigationObstacle metadata = obstacle.AddComponent<PrototypeNavigationObstacle>();
+        metadata.Configure(name, scale + 4f, Mathf.Max(1f, scale * 0.5f), true);
+        return obstacle;
+    }
+
+    private static GameObject CreateProjectileObstacle(string name, Vector3 position)
+    {
+        GameObject projectile = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        projectile.name = name;
+        projectile.transform.position = position;
+        projectile.transform.localScale = Vector3.one * 5f;
+        Rigidbody body = projectile.AddComponent<Rigidbody>();
+        body.useGravity = false;
+        projectile.AddComponent<Projectile>();
+        return projectile;
     }
 
     private static void ConfigureRcsNozzles(Transform shipTransform, RcsThrusterController rcs, Rigidbody body, ShipPhysicsCore physicsCore)

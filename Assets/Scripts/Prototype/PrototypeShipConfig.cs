@@ -174,7 +174,9 @@ public struct PrototypeGunSettings
     public const float MinimumProjectileMass = 0.001f;
     public const float MinimumEngagementRangeMeters = 0.01f;
     public const float MinimumTurretSlewDegreesPerSecond = 0.01f;
+    public const int DefaultTracerEveryNthShot = 2;
 
+    public WeaponProjectileMode projectileMode;
     public float projectileSpeed;
     [Range(0.1f, 20f)] public float projectileFireRate;
     public float projectileLifetime;
@@ -182,6 +184,9 @@ public struct PrototypeGunSettings
     public float projectileMass;
     public bool recoilEnabled;
     public float projectileDiameter;
+    public float projectileRadius;
+    public int tracerEveryNthShot;
+    public float projectileSpreadDegrees;
     [Range(0f, 1f)] public float hitChance;
     public float engagementRangeMeters;
     public float yawLimitLeftDegrees;
@@ -194,6 +199,7 @@ public struct PrototypeGunSettings
 
     public static PrototypeGunSettings Default => new PrototypeGunSettings
     {
+        projectileMode = WeaponProjectileMode.Hitscan,
         projectileSpeed = 1500f,
         projectileFireRate = 4f,
         projectileLifetime = 3f,
@@ -201,6 +207,9 @@ public struct PrototypeGunSettings
         projectileMass = 0.12f,
         recoilEnabled = true,
         projectileDiameter = 0.24f,
+        projectileRadius = 0.12f,
+        tracerEveryNthShot = DefaultTracerEveryNthShot,
+        projectileSpreadDegrees = 0f,
         hitChance = 1f,
         engagementRangeMeters = 4500f,
         yawLimitLeftDegrees = -35f,
@@ -214,14 +223,29 @@ public struct PrototypeGunSettings
 
     public void Clamp()
     {
+        if (projectileMode != WeaponProjectileMode.Hitscan
+            && projectileMode != WeaponProjectileMode.SimulatedProjectile
+            && projectileMode != WeaponProjectileMode.GuidedProjectile)
+        {
+            projectileMode = WeaponProjectileMode.Hitscan;
+        }
+
         projectileSpeed = Mathf.Max(0f, projectileSpeed);
         projectileFireRate = Mathf.Max(MinimumProjectileFireRate, projectileFireRate);
         projectileLifetime = Mathf.Max(MinimumProjectileLifetime, projectileLifetime);
         projectileScale = Mathf.Max(MinimumProjectileDiameter, projectileScale);
+        if (projectileDiameter <= 0f && projectileScale <= 0f && projectileRadius > 0f)
+        {
+            projectileDiameter = projectileRadius * 2f;
+        }
+
         projectileDiameter = projectileDiameter > 0f
             ? Mathf.Max(MinimumProjectileDiameter, projectileDiameter)
             : projectileScale;
+        projectileRadius = Mathf.Max(MinimumProjectileDiameter * 0.5f, projectileDiameter * 0.5f);
         projectileMass = Mathf.Max(MinimumProjectileMass, projectileMass);
+        tracerEveryNthShot = Mathf.Max(0, tracerEveryNthShot);
+        projectileSpreadDegrees = Mathf.Clamp(projectileSpreadDegrees, 0f, 45f);
         hitChance = Mathf.Clamp01(hitChance);
         engagementRangeMeters = Mathf.Max(MinimumEngagementRangeMeters, engagementRangeMeters);
         turretSlewDegreesPerSecond = Mathf.Max(MinimumTurretSlewDegreesPerSecond, turretSlewDegreesPerSecond);

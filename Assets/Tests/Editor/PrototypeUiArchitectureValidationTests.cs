@@ -8,6 +8,7 @@ public class PrototypeUiArchitectureValidationTests
     [TearDown]
     public void TearDown()
     {
+        PrototypeUiWindowState.SetPrefsStorageForTests(null);
         PrototypeUiLayoutManager.ClearWindowsForTests();
         DestroyNamed("UiArchitectureShip");
         DestroyNamed("UiArchitectureTarget");
@@ -101,6 +102,95 @@ public class PrototypeUiArchitectureValidationTests
     }
 
     [Test]
+    public void WindowStateDoesNotPersistUnchangedRepaintState()
+    {
+        var storage = new TestPrefsStorage();
+        PrototypeUiWindowState.SetPrefsStorageForTests(storage);
+        var state = new PrototypeUiWindowState("ui-perf-no-dirty", new Rect(10f, 20f, 300f, 200f), true, false, true);
+
+        Assert.False(state.IsDirty);
+        Assert.False(state.TrySaveToPrefsThrottled(0f, false));
+        Assert.That(storage.WriteCount, Is.EqualTo(0));
+
+        state.Visible = false;
+
+        Assert.True(state.IsDirty);
+        Assert.True(state.TrySaveToPrefsThrottled(1f, false));
+        Assert.False(state.IsDirty);
+        Assert.That(storage.WriteCount, Is.EqualTo(6));
+
+        Assert.False(state.TrySaveToPrefsThrottled(2f, false));
+        Assert.That(storage.WriteCount, Is.EqualTo(6));
+    }
+
+    [Test]
+    public void WindowStateMarksDirtyForVisibilityCollapsedAndRectChanges()
+    {
+        var storage = new TestPrefsStorage();
+        PrototypeUiWindowState.SetPrefsStorageForTests(storage);
+        var state = new PrototypeUiWindowState("ui-perf-dirty", new Rect(10f, 20f, 300f, 200f), true, false, true);
+
+        state.Visible = false;
+        Assert.True(state.IsDirty);
+        Assert.True(state.TrySaveToPrefsThrottled(1f, false));
+
+        state.Collapsed = true;
+        Assert.True(state.IsDirty);
+        Assert.False(state.TrySaveToPrefsThrottled(1.1f, false));
+        Assert.True(state.IsDirty);
+        Assert.True(state.TrySaveToPrefsThrottled(1.8f, false));
+
+        Rect moved = state.Rect;
+        moved.x += 24f;
+        state.Rect = moved;
+        Assert.True(state.IsDirty);
+    }
+
+    [Test]
+    public void DiagnosticsSamplingLimitsRefreshCadence()
+    {
+        GameObject ship = new GameObject("UiArchitectureShip");
+        Rigidbody rb = ship.AddComponent<Rigidbody>();
+        ShipStats stats = ship.AddComponent<ShipStats>();
+        AddFlightControllerDependencies(ship);
+        GameObject cameraObject = new GameObject("UiArchitectureCamera");
+        cameraObject.AddComponent<Camera>();
+        PrototypeDebugOverlay overlay = cameraObject.AddComponent<PrototypeDebugOverlay>();
+        overlay.Bind(ship.transform, stats, rb);
+        overlay.SetAdvancedDiagnostics(true);
+
+        overlay.RefreshVisibleDiagnosticsForTests(0f);
+        overlay.RefreshVisibleDiagnosticsForTests(0.1f);
+        overlay.RefreshVisibleDiagnosticsForTests(0.25f);
+
+        Assert.That(overlay.HeavyDiagnosticsSampleCountForTests, Is.EqualTo(2));
+    }
+
+    [Test]
+    public void CollapsedDebugOverlayDoesNotCollectHeavyDiagnostics()
+    {
+        GameObject ship = new GameObject("UiArchitectureShip");
+        Rigidbody rb = ship.AddComponent<Rigidbody>();
+        ShipStats stats = ship.AddComponent<ShipStats>();
+        AddFlightControllerDependencies(ship);
+        GameObject module = new GameObject("UiArchitectureShipModule");
+        module.transform.SetParent(ship.transform, false);
+        module.AddComponent<PrototypeModuleDamageState>();
+        GameObject cameraObject = new GameObject("UiArchitectureCamera");
+        cameraObject.AddComponent<Camera>();
+        PrototypeDebugOverlay overlay = cameraObject.AddComponent<PrototypeDebugOverlay>();
+        overlay.Bind(ship.transform, stats, rb);
+        overlay.SetAdvancedDiagnostics(true);
+        overlay.SetDamageDiagnosticsExpandedForTests(true);
+        overlay.SetWindowCollapsed(true);
+
+        overlay.RefreshVisibleDiagnosticsForTests(0f);
+
+        Assert.That(overlay.HeavyDiagnosticsSampleCountForTests, Is.EqualTo(0));
+        Assert.That(overlay.DamageDiagnosticsSampleCountForTests, Is.EqualTo(0));
+    }
+
+    [Test]
     public void UiPresetsDoNotMutateFlightControlValues()
     {
         GameObject ship = new GameObject("UiArchitectureShip");
@@ -132,6 +222,34 @@ public class PrototypeUiArchitectureValidationTests
         Assert.That(controller.ControlMode, Is.EqualTo(initialMode));
         Assert.That(controller.SasEnabled, Is.EqualTo(initialSas));
         Assert.That(controller.MainThrottle, Is.EqualTo(initialThrottle).Within(0.001f));
+    }
+
+    [Test]
+    public void FlightTestPresetKeepsDebugConsoleAndWeaponComputerClosed()
+    {
+        GameObject cameraObject = new GameObject("UiArchitectureCamera");
+        cameraObject.AddComponent<Camera>();
+        var diagnostics = cameraObject.AddComponent<PrototypeDebugOverlay>();
+        var console = cameraObject.AddComponent<PrototypeFlightDebugConsole>();
+        var hud = cameraObject.AddComponent<PrototypeFlightHud>();
+        var keybinds = cameraObject.AddComponent<PrototypeKeybindOverlay>();
+        var minimap = cameraObject.AddComponent<PrototypeMinimapOverlay>();
+        var weaponComputer = cameraObject.AddComponent<PrototypeWeaponComputerPanel>();
+
+        PrototypeUiLayoutManager.ApplyPreset(PrototypeUiPreset.FlightTest, diagnostics, console, hud, keybinds, minimap, weaponComputer);
+
+        Assert.True(diagnostics.IsWindowVisible);
+        Assert.True(hud.ShowHud);
+        Assert.True(minimap.IsWindowVisible);
+        Assert.False(minimap.ShowLabels);
+        Assert.False(console.IsConsoleVisible);
+        Assert.False(weaponComputer.IsWindowVisible);
+
+        PrototypeUiLayoutManager.ApplyPreset(PrototypeUiPreset.FullDiagnostics, diagnostics, console, hud, keybinds, minimap, weaponComputer);
+
+        Assert.True(console.IsConsoleVisible);
+        Assert.True(weaponComputer.IsWindowVisible);
+        Assert.True(minimap.ShowLabels);
     }
 
     private static void AssertModeContains(PrototypeKeybindViewModel viewModel, FlightControlMode mode, string expectedLine)
@@ -179,6 +297,44 @@ public class PrototypeUiArchitectureValidationTests
         if (target != null)
         {
             Object.DestroyImmediate(target);
+        }
+    }
+
+    private sealed class TestPrefsStorage : IPrototypeUiPrefsStorage
+    {
+        private readonly Dictionary<string, float> floats = new Dictionary<string, float>();
+        private readonly Dictionary<string, int> ints = new Dictionary<string, int>();
+
+        public int WriteCount { get; private set; }
+        public int DeleteCount { get; private set; }
+
+        public float GetFloat(string key, float defaultValue)
+        {
+            return floats.TryGetValue(key, out float value) ? value : defaultValue;
+        }
+
+        public int GetInt(string key, int defaultValue)
+        {
+            return ints.TryGetValue(key, out int value) ? value : defaultValue;
+        }
+
+        public void SetFloat(string key, float value)
+        {
+            floats[key] = value;
+            WriteCount++;
+        }
+
+        public void SetInt(string key, int value)
+        {
+            ints[key] = value;
+            WriteCount++;
+        }
+
+        public void DeleteKey(string key)
+        {
+            floats.Remove(key);
+            ints.Remove(key);
+            DeleteCount++;
         }
     }
 }

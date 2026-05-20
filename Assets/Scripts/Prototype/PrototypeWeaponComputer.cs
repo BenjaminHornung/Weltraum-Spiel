@@ -17,11 +17,14 @@ public class PrototypeWeaponComputer : MonoBehaviour
     [SerializeField] private PrototypeWeaponTargetPriorityMode priorityMode;
     [SerializeField] private bool autoFireEnabled;
     [SerializeField] private float refreshIntervalSeconds = 0.5f;
+    [SerializeField] private bool enableDebugFallbackDiscovery;
 
     private readonly List<PrototypeWeaponTarget> availableTargets = new List<PrototypeWeaponTarget>();
     private readonly List<int> selectedTargetIds = new List<int>();
-    private float nextRefreshTime;
+    private float nextDebugFallbackRefreshTime;
+    private int observedTargetRegistryVersion = int.MinValue;
     private bool hasLoadedDefaultAutoFire;
+    private bool hasAttemptedReferenceResolve;
 
     public IReadOnlyList<PrototypeWeaponTarget> AvailableTargets => availableTargets;
     public PrototypeWeaponTarget ActiveTarget { get; private set; }
@@ -34,16 +37,20 @@ public class PrototypeWeaponComputer : MonoBehaviour
 
     private void Awake()
     {
-        ResolveReferences();
+        ResolveReferences(force: true);
         RefreshTargets();
     }
 
     private void Update()
     {
-        ResolveReferences();
-        if (Time.time >= nextRefreshTime)
+        ResolveReferences(force: false);
+        if (PrototypeWeaponTargetRegistry.Version != observedTargetRegistryVersion)
         {
             RefreshTargets();
+        }
+        else if (enableDebugFallbackDiscovery && Time.time >= nextDebugFallbackRefreshTime)
+        {
+            RefreshTargets(includeDebugFallback: true);
         }
 
         UpdateActiveTargetAndStatus();
@@ -60,7 +67,7 @@ public class PrototypeWeaponComputer : MonoBehaviour
         shipRoot = root != null ? root : shipRoot;
         shipStats = stats != null ? stats : shipStats;
         turretWeapon = weapon != null ? weapon : turretWeapon;
-        ResolveReferences();
+        ResolveReferences(force: true);
         RefreshTargets();
     }
 
@@ -108,10 +115,15 @@ public class PrototypeWeaponComputer : MonoBehaviour
 
     public void RefreshTargets()
     {
-        nextRefreshTime = Time.time + Mathf.Max(0.1f, refreshIntervalSeconds);
-        ResolveReferences();
-        availableTargets.Clear();
-        availableTargets.AddRange(PrototypeWeaponTarget.Discover(shipRoot));
+        RefreshTargets(includeDebugFallback: false);
+    }
+
+    private void RefreshTargets(bool includeDebugFallback)
+    {
+        nextDebugFallbackRefreshTime = Time.time + Mathf.Max(0.5f, refreshIntervalSeconds);
+        ResolveReferences(force: false);
+        PrototypeWeaponTarget.DiscoverInto(shipRoot, availableTargets, includeDebugFallback);
+        observedTargetRegistryVersion = PrototypeWeaponTargetRegistry.Version;
         PruneSelection();
         UpdateActiveTargetAndStatus();
     }
@@ -144,8 +156,13 @@ public class PrototypeWeaponComputer : MonoBehaviour
         TurretStatusLabel = NormalizeStatusLabel(LastTurretStatus);
     }
 
-    private void ResolveReferences()
+    private void ResolveReferences(bool force)
     {
+        if (!force && hasAttemptedReferenceResolve && shipRoot != null && (shipStats != null || hasLoadedDefaultAutoFire))
+        {
+            return;
+        }
+
         if (shipRoot == null)
         {
             shipRoot = transform;
@@ -166,6 +183,8 @@ public class PrototypeWeaponComputer : MonoBehaviour
             autoFireEnabled = shipStats.AutoFireEnabled;
             hasLoadedDefaultAutoFire = true;
         }
+
+        hasAttemptedReferenceResolve = true;
     }
 
     private void PruneSelection()

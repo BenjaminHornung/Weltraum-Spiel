@@ -18,6 +18,12 @@ public class Projectile : MonoBehaviour
 {
     private const float MinimumProjectileDiameterMeters = 0.01f;
     private const float MinimumTrailStartWidth = 0.01f;
+    private const int SweepHitBufferSize = 32;
+
+    private static readonly RaycastHit[] SweepHits = new RaycastHit[SweepHitBufferSize];
+    private static readonly RaycastHit[] RayHits = new RaycastHit[SweepHitBufferSize];
+    private static Material sharedProjectileMaterial;
+    private static Material sharedTrailMaterial;
 
     [SerializeField] private float defaultLifetime = 3f;
     [SerializeField] private Color glowColor = new Color(1f, 0.45f, 0.15f, 1f);
@@ -26,6 +32,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] private float damagePerImpulse = 0.02f;
     [SerializeField] private bool applyImpactImpulse = true;
     [SerializeField] private bool applyImpactDamage = true;
+    [SerializeField] private bool debugLightEnabled;
 
     private float destroyAt;
     private Rigidbody rigidbodyRef;
@@ -109,6 +116,7 @@ public class Projectile : MonoBehaviour
     {
         rigidbodyRef = GetComponent<Rigidbody>();
         projectileCollider = GetComponent<Collider>();
+        PrototypeProjectileRuntimeMarker.Mark(gameObject);
         SetupVisuals();
     }
 
@@ -257,16 +265,7 @@ public class Projectile : MonoBehaviour
         Renderer meshRenderer = GetComponent<Renderer>();
         if (meshRenderer != null)
         {
-            Shader shader = Shader.Find("Universal Render Pipeline/Lit");
-            Material material = new Material(shader == null ? Shader.Find("Standard") : shader);
-            material.color = glowColor;
-            if (material.HasProperty("_EmissionColor"))
-            {
-                material.EnableKeyword("_EMISSION");
-                material.SetColor("_EmissionColor", glowColor * 2f);
-            }
-
-            meshRenderer.material = material;
+            meshRenderer.sharedMaterial = GetSharedProjectileMaterial(glowColor);
         }
 
         SphereCollider collider = GetComponent<SphereCollider>();
@@ -284,9 +283,7 @@ public class Projectile : MonoBehaviour
             }
         }
 
-        Shader trailShader = Shader.Find("Sprites/Default");
-        trailRenderer.material = new Material(trailShader == null ? Shader.Find("Unlit/Color") : trailShader);
-        trailRenderer.material.color = glowColor;
+        trailRenderer.sharedMaterial = GetSharedTrailMaterial(glowColor);
         trailRenderer.startWidth = 0.08f;
         trailRenderer.endWidth = 0f;
         trailRenderer.alignment = LineAlignment.View;
@@ -294,6 +291,21 @@ public class Projectile : MonoBehaviour
         trailRenderer.minVertexDistance = 0.03f;
         trailRenderer.startColor = glowColor;
         trailRenderer.endColor = new Color(glowColor.r, glowColor.g, glowColor.b, 0f);
+
+        if (!debugLightEnabled)
+        {
+            if (glowLight == null)
+            {
+                glowLight = GetComponent<Light>();
+            }
+
+            if (glowLight != null)
+            {
+                glowLight.enabled = false;
+            }
+
+            return;
+        }
 
         if (glowLight == null)
         {
@@ -336,26 +348,28 @@ public class Projectile : MonoBehaviour
         }
 
         Vector3 direction = travel / distance;
-        RaycastHit[] hits = Physics.SphereCastAll(
+        int hitCount = Physics.SphereCastNonAlloc(
             from,
             GetSweepRadius(),
             direction,
+            SweepHits,
             distance,
             Physics.DefaultRaycastLayers,
             QueryTriggerInteraction.Ignore);
 
-        if (TryReportNearestHit(hits))
+        if (TryReportNearestHit(SweepHits, hitCount))
         {
             return;
         }
 
-        hits = Physics.RaycastAll(
+        hitCount = Physics.RaycastNonAlloc(
             from,
             direction,
+            RayHits,
             distance,
             Physics.DefaultRaycastLayers,
             QueryTriggerInteraction.Ignore);
-        TryReportNearestHit(hits);
+        TryReportNearestHit(RayHits, hitCount);
     }
 
     private float GetSweepRadius()
@@ -363,16 +377,16 @@ public class Projectile : MonoBehaviour
         return SweepRadiusMeters;
     }
 
-    private bool TryReportNearestHit(RaycastHit[] hits)
+    private bool TryReportNearestHit(RaycastHit[] hits, int hitCount)
     {
-        if (hits == null || hits.Length == 0)
+        if (hits == null || hitCount <= 0)
         {
             return false;
         }
 
         int nearestIndex = -1;
         float nearestDistance = float.PositiveInfinity;
-        for (int i = 0; i < hits.Length; i++)
+        for (int i = 0; i < hitCount; i++)
         {
             Collider candidate = hits[i].collider;
             if (candidate == null || IsProjectileCollider(candidate) || IsIgnoredCollider(candidate))
@@ -561,5 +575,62 @@ public class Projectile : MonoBehaviour
         lastDamagedModule = null;
         lastDamageApplied = 0f;
         lastImpactImpulseApplied = false;
+    }
+
+    private static Material GetSharedProjectileMaterial(Color color)
+    {
+        if (sharedProjectileMaterial != null)
+        {
+            return sharedProjectileMaterial;
+        }
+
+        Shader shader = Shader.Find("Universal Render Pipeline/Lit");
+        if (shader == null)
+        {
+            shader = Shader.Find("Standard");
+        }
+
+        sharedProjectileMaterial = CreateSharedMaterial(shader, color, 2f);
+        return sharedProjectileMaterial;
+    }
+
+    private static Material GetSharedTrailMaterial(Color color)
+    {
+        if (sharedTrailMaterial != null)
+        {
+            return sharedTrailMaterial;
+        }
+
+        Shader shader = Shader.Find("Sprites/Default");
+        if (shader == null)
+        {
+            shader = Shader.Find("Unlit/Color");
+        }
+
+        if (shader == null)
+        {
+            shader = Shader.Find("Standard");
+        }
+
+        sharedTrailMaterial = CreateSharedMaterial(shader, color, 1.5f);
+        return sharedTrailMaterial;
+    }
+
+    private static Material CreateSharedMaterial(Shader shader, Color color, float emission)
+    {
+        Material material = new Material(shader);
+        material.color = color;
+        if (material.HasProperty("_BaseColor"))
+        {
+            material.SetColor("_BaseColor", color);
+        }
+
+        if (material.HasProperty("_EmissionColor"))
+        {
+            material.EnableKeyword("_EMISSION");
+            material.SetColor("_EmissionColor", color * emission);
+        }
+
+        return material;
     }
 }

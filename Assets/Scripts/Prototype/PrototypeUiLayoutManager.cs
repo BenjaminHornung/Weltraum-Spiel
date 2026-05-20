@@ -200,12 +200,12 @@ public static class PrototypeUiLayoutManager
         {
             minimap.SetWindowVisible(preset != PrototypeUiPreset.Basic);
             minimap.SetWindowCollapsed(false);
-            minimap.SetLabelsVisible(preset != PrototypeUiPreset.RcsTest);
+            minimap.SetLabelsVisible(preset == PrototypeUiPreset.FullDiagnostics);
         }
 
         if (weaponComputer != null)
         {
-            weaponComputer.SetWindowVisible(preset != PrototypeUiPreset.Basic);
+            weaponComputer.SetWindowVisible(preset == PrototypeUiPreset.FullDiagnostics);
             weaponComputer.SetWindowCollapsed(false);
         }
 

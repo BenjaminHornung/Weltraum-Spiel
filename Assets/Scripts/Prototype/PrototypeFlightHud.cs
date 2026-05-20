@@ -40,6 +40,9 @@ public class PrototypeFlightHud : MonoBehaviour
     private GUIStyle compactButtonStyle;
     private PrototypeUiWindowState windowState;
     private PrototypeHudViewModel currentViewModel;
+    private int lastDiagnosticsFrame = -1;
+    private string cachedStatusTopLine = string.Empty;
+    private string cachedStatusBottomLine = string.Empty;
 
     public Transform Target => target;
     public Rigidbody TargetRigidbody => targetRigidbody;
@@ -67,8 +70,8 @@ public class PrototypeFlightHud : MonoBehaviour
 
     private void Start()
     {
-        ResolveReferences();
-        RefreshDiagnostics();
+        ResolveReferences(true);
+        RefreshDiagnostics(true);
     }
 
     private void OnValidate()
@@ -87,13 +90,17 @@ public class PrototypeFlightHud : MonoBehaviour
             return;
         }
 
-        ResolveReferences();
-        RefreshDiagnostics();
+        ResolveReferences(false);
         EnsureStyles();
+        if (!windowState.Collapsed)
+        {
+            RefreshDiagnostics();
+        }
+
         windowState.SetSize(Mathf.Max(300f, (navballRadius * 2f) + 84f), windowState.Collapsed ? 58f : Mathf.Max(300f, (navballRadius * 2f) + 166f));
         windowState.Rect = GUI.Window(windowState.WindowId, windowState.Rect, DrawHudWindow, "HUD / Navball");
         windowState.ClampToScreen();
-        windowState.SaveToPrefs();
+        windowState.TrySaveToPrefsThrottled();
     }
 
     public void Bind(Transform trackTarget, ShipStats stats, Rigidbody rb)
@@ -103,14 +110,14 @@ public class PrototypeFlightHud : MonoBehaviour
         targetRigidbody = rb != null ? rb : (trackTarget != null ? trackTarget.GetComponent<Rigidbody>() : null);
         shipController = trackTarget != null ? trackTarget.GetComponent<PlayerShipController>() : null;
         debugOverlay = GetComponent<PrototypeDebugOverlay>();
-        ResolveTrackedTarget();
-        RefreshDiagnostics();
+        ResolveTrackedTarget(true);
+        RefreshDiagnostics(true);
     }
 
     public void SetTrackedTarget(Transform targetTransform)
     {
         trackedTarget = targetTransform;
-        RefreshDiagnostics();
+        RefreshDiagnostics(true);
     }
 
     public void SetHudVisible(bool visible)
@@ -132,13 +139,13 @@ public class PrototypeFlightHud : MonoBehaviour
     public void SetMode(HudMode mode)
     {
         hudMode = mode;
-        RefreshDiagnostics();
+        RefreshDiagnostics(true);
     }
 
     public void RefreshDiagnosticsForTests()
     {
-        ResolveReferences();
-        RefreshDiagnostics();
+        ResolveReferences(false);
+        RefreshDiagnostics(true);
     }
 
     public Vector2 ProjectWorldDirectionToMarker(Vector3 worldDirection)
@@ -178,7 +185,7 @@ public class PrototypeFlightHud : MonoBehaviour
         return windowState;
     }
 
-    private void ResolveReferences()
+    private void ResolveReferences(bool allowSceneTargetSearch)
     {
         if (target != null)
         {
@@ -192,15 +199,15 @@ public class PrototypeFlightHud : MonoBehaviour
                 targetRigidbody = target.GetComponent<Rigidbody>();
             }
 
-        if (shipController == null)
-        {
-            shipController = target.GetComponent<PlayerShipController>();
-        }
+            if (shipController == null)
+            {
+                shipController = target.GetComponent<PlayerShipController>();
+            }
 
-        if (followCamera == null)
-        {
-            followCamera = GetComponent<SimpleFollowCamera>();
-        }
+            if (followCamera == null)
+            {
+                followCamera = GetComponent<SimpleFollowCamera>();
+            }
 
             if (waypointAutopilot == null)
             {
@@ -218,17 +225,17 @@ public class PrototypeFlightHud : MonoBehaviour
             debugOverlay = GetComponent<PrototypeDebugOverlay>();
         }
 
-        ResolveTrackedTarget();
+        ResolveTrackedTarget(allowSceneTargetSearch);
     }
 
-    private void ResolveTrackedTarget()
+    private void ResolveTrackedTarget(bool allowSceneSearch)
     {
         if (trackedTarget != null)
         {
             return;
         }
 
-        if (shipController == null)
+        if (shipController == null || !allowSceneSearch)
         {
             return;
         }
@@ -240,8 +247,14 @@ public class PrototypeFlightHud : MonoBehaviour
         }
     }
 
-    private void RefreshDiagnostics()
+    private void RefreshDiagnostics(bool force = false)
     {
+        if (!force && lastDiagnosticsFrame == Time.frameCount)
+        {
+            return;
+        }
+
+        lastDiagnosticsFrame = Time.frameCount;
         currentViewModel = PrototypeHudViewModelBuilder.Build(
             target,
             targetRigidbody,
@@ -271,6 +284,20 @@ public class PrototypeFlightHud : MonoBehaviour
         LastActualForceMarker = currentViewModel.ActualForceMarker;
         LastResidualForceMarker = currentViewModel.ResidualForceMarker;
         LastModeLabel = currentViewModel.ModeLabel;
+        CacheStatusLines();
+    }
+
+    private void CacheStatusLines()
+    {
+        PrototypeAutopilotViewModel autopilot = currentViewModel.Autopilot;
+        PrototypeMomentumAssistViewModel momentum = currentViewModel.MomentumAssist;
+        PrototypeHudStatusViewModel status = currentViewModel.Status;
+        string autoState = autopilot.IsAvailable
+            ? $"{(autopilot.IsEngaged ? "ON" : "OFF")} {autopilot.StateLabel}"
+            : "N/A";
+        string warning = status.HasWarning ? $" | {status.WarningText}" : string.Empty;
+        cachedStatusTopLine = $"{PrototypeUiFormatter.FormatSpeed(status.SpeedMetersPerSecond)} | Fuel {PrototypeUiFormatter.FormatCompact(status.FuelCurrentKg)}/{PrototypeUiFormatter.FormatCompact(status.FuelMaxKg)} kg | Thr {status.ThrottlePercent:0}%{warning}";
+        cachedStatusBottomLine = $"Target {autopilot.TargetName} | Auto {autoState} | Kill {momentum.State} | {currentViewModel.ControlModeHint} | {currentViewModel.SasLabel}";
     }
 
     private bool ShouldShowDebugForceMarkers()
@@ -389,16 +416,7 @@ public class PrototypeFlightHud : MonoBehaviour
         DrawQuickActions(contentRect);
 
         Rect hintRect = new Rect(contentRect.x + 8f, contentRect.yMax - 66f, contentRect.width - 16f, 52f);
-        PrototypeAutopilotViewModel autopilot = currentViewModel.Autopilot;
-        PrototypeMomentumAssistViewModel momentum = currentViewModel.MomentumAssist;
-        PrototypeHudStatusViewModel status = currentViewModel.Status;
-        string autoState = autopilot.IsAvailable
-            ? $"{(autopilot.IsEngaged ? "ON" : "OFF")} {autopilot.StateLabel}"
-            : "N/A";
-        string warning = status.HasWarning ? $" | {status.WarningText}" : string.Empty;
-        string topLine = $"{PrototypeUiFormatter.FormatSpeed(status.SpeedMetersPerSecond)} | Fuel {PrototypeUiFormatter.FormatCompact(status.FuelCurrentKg)}/{PrototypeUiFormatter.FormatCompact(status.FuelMaxKg)} kg | Thr {status.ThrottlePercent:0}%{warning}";
-        string bottomLine = $"Target {autopilot.TargetName} | Auto {autoState} | Kill {momentum.State} | {currentViewModel.ControlModeHint} | {currentViewModel.SasLabel}";
-        GUI.Label(hintRect, topLine + "\n" + bottomLine, smallLabelStyle);
+        GUI.Label(hintRect, cachedStatusTopLine + "\n" + cachedStatusBottomLine, smallLabelStyle);
 
         Rect labelRect = new Rect(contentRect.x + 8f, contentRect.yMax - 14f, contentRect.width - 16f, 14f);
         GUI.Label(labelRect, "Mode: " + LastModeLabel, centeredLabelStyle);
@@ -412,7 +430,7 @@ public class PrototypeFlightHud : MonoBehaviour
 
     private void DrawCircle(Vector2 center, float radius, Color color, float thickness)
     {
-        const int segments = 64;
+        const int segments = 40;
         Vector2 previous = center + new Vector2(radius, 0f);
         for (int i = 1; i <= segments; i++)
         {

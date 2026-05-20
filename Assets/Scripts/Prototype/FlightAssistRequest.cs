@@ -16,6 +16,7 @@ public enum FlightAssistRequestSource
     MomentumAssist,
     Docking,
     WaypointAutopilot,
+    WeaponStabilization,
     DebugOnly
 }
 

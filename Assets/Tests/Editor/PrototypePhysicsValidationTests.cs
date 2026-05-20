@@ -245,7 +245,8 @@ public class PrototypePhysicsValidationTests
         Vector3 expectedRecoil = -result.muzzleForward * result.configuredMass * result.projectileSpeed;
 
         Assert.True(result.fired);
-        Assert.That(result.rigidbodyMass, Is.EqualTo(result.configuredMass).Within(PhysicsValidationProbe.FuelTolerance));
+        Assert.False(result.createdProjectileGameObject);
+        Assert.That(result.rigidbodyMass, Is.EqualTo(0f).Within(PhysicsValidationProbe.FuelTolerance));
         Assert.That(result.projectileMass, Is.EqualTo(result.configuredMass).Within(PhysicsValidationProbe.FuelTolerance));
         Assert.That(Vector3.Distance(result.recoilImpulse, expectedRecoil), Is.LessThan(PhysicsValidationProbe.TimestepImpulseTolerance));
         Assert.That(Vector3.Distance(result.netImpulse, expectedRecoil), Is.LessThan(PhysicsValidationProbe.TimestepImpulseTolerance));

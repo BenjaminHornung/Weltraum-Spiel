@@ -1,6 +1,8 @@
 #if UNITY_EDITOR
 using System;
+using System.IO;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -12,6 +14,13 @@ public class PrototypeWeaponComputerTurretValidationTests
     [TearDown]
     public void TearDown()
     {
+        PrototypeWeaponTargetRegistry.ClearForTests();
+        if (PrototypeProjectileSimulation.Instance != null)
+        {
+            PrototypeProjectileSimulation.Instance.ClearRuntime();
+        }
+
+        DestroyObjects<PrototypeProjectileSimulation>();
         DestroyObjects<Projectile>();
         DestroyNamed("WeaponComputerTestShip");
         DestroyNamed("WeaponComputerTargetNear");
@@ -142,7 +151,10 @@ public class PrototypeWeaponComputerTurretValidationTests
             Assert.That(Vector3.Angle(fixture.Weapon.LastProjectileVelocityWorld, fixture.Muzzle.forward), Is.LessThan(AngleTolerance));
             Assert.False(secondShot);
             Assert.That(fixture.Weapon.LastFireStatus.blockReason, Is.EqualTo(PrototypeTurretFireBlockReason.Cooldown));
-            Assert.That(FindProjectiles().Length, Is.EqualTo(1));
+            Assert.That(FindProjectiles().Length, Is.EqualTo(0));
+            Assert.True(fixture.Weapon.LastFireResult.fired);
+            Assert.That(fixture.Weapon.LastFireResult.mode, Is.EqualTo(WeaponProjectileMode.Hitscan));
+            Assert.That(PrototypeProjectileSimulation.Instance.ActiveProjectileCount, Is.EqualTo(0));
         }
 
         DestroyObjects<Projectile>();
@@ -160,7 +172,34 @@ public class PrototypeWeaponComputerTurretValidationTests
             Assert.That(Vector3.Angle(fixture.Weapon.LastProjectileVelocityWorld, fixture.Muzzle.forward), Is.GreaterThan(0.1f));
             Vector3 expectedMissRecoil = -fixture.Weapon.LastProjectileVelocityWorld.normalized * (fixture.Stats.ProjectileMass * fixture.Stats.ProjectileSpeed);
             Assert.That(Vector3.Distance(fixture.Weapon.LastRecoilImpulseWorld, expectedMissRecoil), Is.LessThan(PhysicsValidationProbe.TimestepImpulseTolerance));
-            Assert.That(FindProjectiles().Length, Is.EqualTo(1));
+            Assert.That(FindProjectiles().Length, Is.EqualTo(0));
+            Assert.True(fixture.Weapon.LastFireResult.fired);
+        }
+    }
+
+    [Test]
+    public void SimulatedProjectileUsesManagerPathWithoutProjectileGameObject()
+    {
+        using (TurretFixture fixture = new TurretFixture())
+        {
+            SetWeaponStats(
+                fixture.Stats,
+                projectileSpeed: 60f,
+                projectileMass: 1f,
+                projectileDiameter: 0.2f,
+                projectileMode: WeaponProjectileMode.SimulatedProjectile);
+
+            bool fired = fixture.Weapon.TryFireAt(fixture.Muzzle.position + Vector3.forward * 40f);
+
+            Assert.True(fired);
+            Assert.That(FindProjectiles().Length, Is.EqualTo(0));
+            Assert.NotNull(PrototypeProjectileSimulation.Instance);
+            Assert.That(PrototypeProjectileSimulation.Instance.ActiveProjectileCount, Is.EqualTo(1));
+            Assert.That(PrototypeProjectileSimulation.Instance.LastFireResult.mode, Is.EqualTo(WeaponProjectileMode.SimulatedProjectile));
+
+            PrototypeProjectileSimulation.Instance.Simulate(0.25f);
+
+            Assert.That(PrototypeProjectileSimulation.Instance.ActiveProjectileCount, Is.EqualTo(1));
         }
     }
 
@@ -177,6 +216,98 @@ public class PrototypeWeaponComputerTurretValidationTests
             System.Collections.Generic.List<PrototypeWeaponTarget> targets = PrototypeWeaponTarget.Discover(fixture.Ship.transform);
             Assert.That(targets.Exists(candidate => candidate.TargetTransform == target.transform), Is.True);
             Assert.That(targets.Exists(candidate => candidate.TargetTransform != null && candidate.TargetTransform.GetComponent<Projectile>() != null), Is.False);
+            Assert.That(targets.Exists(candidate => candidate.TargetTransform != null && candidate.TargetTransform.GetComponentInChildren<PrototypeProjectileRuntimeMarker>() != null), Is.False);
+        }
+    }
+
+    [Test]
+    public void ProjectileVisualPoolReusesTracerObjectsAndSharedMaterials()
+    {
+        GameObject poolObject = new GameObject("ProjectileVisualPoolTest");
+        PrototypeProjectileRuntimeMarker.Mark(poolObject);
+        PrototypeProjectileVisualPool pool = poolObject.AddComponent<PrototypeProjectileVisualPool>();
+        pool.EnsurePrewarmed();
+        int createdBefore = pool.TracerCreatedCount;
+        Material sharedMaterial = pool.SharedTracerMaterial;
+
+        pool.EmitTracer(Vector3.zero, Vector3.forward * 10f, 0.1f);
+        pool.Tick(Time.time + 1f);
+        pool.EmitTracer(Vector3.zero, Vector3.forward * 20f, 0.1f);
+
+        Assert.That(pool.TracerCreatedCount, Is.EqualTo(createdBefore));
+        Assert.AreSame(sharedMaterial, pool.SharedTracerMaterial);
+        Assert.That(pool.GetActiveCount(PrototypeProjectileVisualKind.Tracer), Is.EqualTo(1));
+
+        UnityEngine.Object.DestroyImmediate(poolObject);
+    }
+
+    [Test]
+    public void HighFireRateHitscanKeepsProjectileObjectsAndVisualsBounded()
+    {
+        PrototypeProjectileSimulation simulation = PrototypeProjectileSimulation.GetOrCreateDefault();
+        simulation.ClearRuntime();
+        int visualCountBefore = simulation.VisualPool.TotalCreatedCount;
+        var request = PrototypeProjectileFireRequest.FromWeapon(
+            WeaponProjectileMode.Hitscan,
+            null,
+            null,
+            Vector3.forward,
+            Vector3.zero,
+            100f,
+            0.1f,
+            1f,
+            2f,
+            100f,
+            10);
+        request.origin = Vector3.zero;
+        request.emitMuzzleVisual = false;
+
+        for (int i = 0; i < 60; i++)
+        {
+            simulation.Fire(request);
+        }
+
+        Assert.That(FindProjectiles().Length, Is.EqualTo(0));
+        Assert.That(simulation.ActiveProjectileCount, Is.EqualTo(0));
+        Assert.That(simulation.VisualPool.TotalCreatedCount, Is.LessThanOrEqualTo(visualCountBefore + 1));
+        Assert.That(simulation.TotalShotsProcessed, Is.GreaterThanOrEqualTo(60));
+    }
+
+    [Test]
+    public void WeaponTargetDiscoveryRequiresExplicitMarkerForRigidbodyOnlyObjects()
+    {
+        using (WeaponComputerFixture fixture = new WeaponComputerFixture())
+        {
+            GameObject unmarked = CreateRigidbodyTarget("WeaponComputerTargetNear", new Vector3(0f, 0f, 10f), addMarker: false);
+            GameObject marked = CreateRigidbodyTarget("WeaponComputerTargetFar", new Vector3(0f, 0f, 20f), addMarker: true);
+
+            fixture.Computer.RefreshTargets();
+
+            Assert.Null(FindAvailableTarget(fixture.Computer, unmarked.transform));
+            Assert.NotNull(FindAvailableTarget(fixture.Computer, marked.transform));
+        }
+    }
+
+    [Test]
+    public void WeaponTargetDiscoveryDoesNotUseGlobalRigidbodyFallback()
+    {
+        string source = File.ReadAllText(Path.Combine(Application.dataPath, "Scripts", "Prototype", "PrototypeWeaponTarget.cs"));
+        Assert.False(Regex.IsMatch(source, @"FindObjectsByType\s*<\s*Rigidbody\s*>"));
+    }
+
+    [Test]
+    public void WeaponComputerRefreshUsesRegistryWithoutDebugFallbackByDefault()
+    {
+        using (WeaponComputerFixture fixture = new WeaponComputerFixture())
+        {
+            int fallbackCountBefore = PrototypeWeaponTarget.DebugFallbackDiscoveryCount;
+            CreateRigidbodyTarget("WeaponComputerTargetNear", new Vector3(0f, 0f, 10f), addMarker: true);
+
+            fixture.Computer.RefreshTargets();
+
+            Assert.That(PrototypeWeaponTarget.LastDiscoveryUsedDebugFallback, Is.False);
+            Assert.That(PrototypeWeaponTarget.DebugFallbackDiscoveryCount, Is.EqualTo(fallbackCountBefore));
+            Assert.That(PrototypeWeaponTarget.LastRegistryCandidateCount, Is.GreaterThanOrEqualTo(1));
         }
     }
 
@@ -299,6 +430,7 @@ public class PrototypeWeaponComputerTurretValidationTests
             dummy.name = "WeaponComputerDummyTarget";
             dummy.transform.position = new Vector3(0f, 0f, 10f);
             dummy.AddComponent<PrototypeTargetDummy>();
+            dummy.AddComponent<PrototypeWeaponTargetMarker>().Configure(dummy.transform);
 
             fixture.Computer.RefreshTargets();
             SelectTarget(fixture.Computer, dummy.transform);
@@ -326,17 +458,23 @@ public class PrototypeWeaponComputerTurretValidationTests
         float projectileDiameter = 0.2f,
         float fireRate = 10f,
         float hitChance = 1f,
+        WeaponProjectileMode projectileMode = WeaponProjectileMode.Hitscan,
+        int tracerEveryNthShot = PrototypeGunSettings.DefaultTracerEveryNthShot,
         float yawLeft = -35f,
         float yawRight = 35f,
         float pitchMin = -10f,
         float pitchMax = 35f)
     {
+        SetPrivateField(stats, "projectileMode", projectileMode);
         SetPrivateField(stats, "projectileSpeed", projectileSpeed);
         SetPrivateField(stats, "projectileMass", projectileMass);
         SetPrivateField(stats, "projectileDiameter", projectileDiameter);
+        SetPrivateField(stats, "projectileRadius", projectileDiameter * 0.5f);
         SetPrivateField(stats, "projectileFireRate", fireRate);
         SetPrivateField(stats, "projectileLifetime", 2f);
         SetPrivateField(stats, "projectileRecoilEnabled", true);
+        SetPrivateField(stats, "tracerEveryNthShot", tracerEveryNthShot);
+        SetPrivateField(stats, "projectileSpreadDegrees", 0f);
         SetPrivateField(stats, "hitChance", hitChance);
         SetPrivateField(stats, "engagementRangeMeters", 500f);
         SetPrivateField(stats, "yawLimitLeftDegrees", yawLeft);
@@ -370,12 +508,17 @@ public class PrototypeWeaponComputerTurretValidationTests
         return null;
     }
 
-    private static GameObject CreateRigidbodyTarget(string name, Vector3 position)
+    private static GameObject CreateRigidbodyTarget(string name, Vector3 position, bool addMarker = true)
     {
         GameObject target = new GameObject(name);
         target.transform.position = position;
         Rigidbody body = target.AddComponent<Rigidbody>();
         body.useGravity = false;
+        if (addMarker)
+        {
+            target.AddComponent<PrototypeWeaponTargetMarker>().Configure(target.transform);
+        }
+
         return target;
     }
 
@@ -499,6 +642,11 @@ public class PrototypeWeaponComputerTurretValidationTests
 
         public void Dispose()
         {
+            if (PrototypeProjectileSimulation.Instance != null)
+            {
+                PrototypeProjectileSimulation.Instance.ClearRuntime();
+            }
+
             DestroyObjects<Projectile>();
             DestroyNamed("WeaponComputerTestShip");
         }

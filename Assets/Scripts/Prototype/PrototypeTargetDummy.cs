@@ -33,6 +33,13 @@ public class PrototypeTargetDummy : MonoBehaviour
         {
             baseScale = transform.localScale;
         }
+
+        PrototypeWeaponTargetRegistry.Register(transform);
+    }
+
+    private void OnDisable()
+    {
+        PrototypeWeaponTargetRegistry.Unregister(transform);
     }
 
     private void Update()

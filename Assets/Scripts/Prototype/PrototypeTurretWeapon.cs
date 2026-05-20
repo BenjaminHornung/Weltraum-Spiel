@@ -8,6 +8,7 @@ public class PrototypeTurretWeapon : MonoBehaviour
     [SerializeField] private Rigidbody shipRigidbody;
     [SerializeField] private ShipPhysicsCore physicsCore;
     [SerializeField] private PrototypeTurretMount mount;
+    [SerializeField] private WeaponRecoilStabilizer recoilStabilizer;
     [SerializeField] private bool recoilEnabled = true;
     [SerializeField] private float missDispersionDegrees = 6f;
 
@@ -25,6 +26,7 @@ public class PrototypeTurretWeapon : MonoBehaviour
     public Vector3 LastRecoilImpulseWorld { get; private set; }
     public Vector3 LastRecoilPositionWorld { get; private set; }
     public bool LastRecoilApplied { get; private set; }
+    public PrototypeProjectileFireResult LastFireResult { get; private set; }
     public bool LastShotWasIntendedHit { get; private set; }
     public float LastAppliedYawDegrees { get; private set; }
     public float LastAppliedPitchDegrees { get; private set; }
@@ -120,7 +122,7 @@ public class PrototypeTurretWeapon : MonoBehaviour
             return false;
         }
 
-        SpawnProjectile(targetWorldPosition, hasTarget);
+        FireRuntimeProjectile(targetWorldPosition, hasTarget);
         nextFireTime = Time.time + (1f / shipStats.ProjectileFireRate);
         status.intendedHit = LastShotWasIntendedHit;
         LastFireStatus = status;
@@ -193,37 +195,25 @@ public class PrototypeTurretWeapon : MonoBehaviour
         return LastFireStatus;
     }
 
-    private void SpawnProjectile(Vector3 targetWorldPosition, bool hasTarget)
+    private void FireRuntimeProjectile(Vector3 targetWorldPosition, bool hasTarget)
     {
         Transform muzzle = mount.Muzzle;
         Vector3 shotDirection = GetShotDirection(targetWorldPosition, hasTarget);
-        Quaternion shotRotation = Quaternion.LookRotation(shotDirection, mount.MountRoot.up);
-
-        var projectileObject = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        projectileObject.name = "PrototypeProjectile";
-        projectileObject.transform.position = muzzle.position;
-        projectileObject.transform.rotation = shotRotation;
-        projectileObject.transform.localScale = Vector3.one * shipStats.ProjectileDiameter;
-
-        var rigidbody = projectileObject.GetComponent<Rigidbody>();
-        if (rigidbody == null)
-        {
-            rigidbody = projectileObject.AddComponent<Rigidbody>();
-        }
-
-        rigidbody.useGravity = false;
-        rigidbody.mass = shipStats.ProjectileMass;
-        rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-        rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
-
-        var projectile = projectileObject.AddComponent<Projectile>();
-        LastProjectileVelocityWorld = shipRigidbody.linearVelocity + (shotDirection * shipStats.ProjectileSpeed);
-        projectile.Initialize(
-            LastProjectileVelocityWorld,
-            shipStats.ProjectileLifetime,
+        PrototypeProjectileFireRequest request = PrototypeProjectileFireRequest.FromWeapon(
+            shipStats.ProjectileMode,
+            shipRigidbody != null ? shipRigidbody.transform : transform,
+            muzzle,
+            shotDirection,
+            shipRigidbody != null ? shipRigidbody.linearVelocity : Vector3.zero,
+            shipStats.ProjectileSpeed,
+            shipStats.ProjectileRadius,
             shipStats.ProjectileMass,
-            shipStats.ProjectileDiameter,
-            shipRigidbody.GetComponentsInChildren<Collider>());
+            shipStats.ProjectileLifetime,
+            Mathf.Max(shipStats.EngagementRangeMeters, shipStats.ProjectileSpeed * shipStats.ProjectileLifetime),
+            shipStats.TracerEveryNthShot);
+
+        LastFireResult = PrototypeProjectileSimulation.GetOrCreateDefault().Fire(request);
+        LastProjectileVelocityWorld = LastFireResult.projectileVelocityWorld;
 
         ApplyRecoilImpulse(shotDirection);
     }
@@ -236,10 +226,10 @@ public class PrototypeTurretWeapon : MonoBehaviour
         LastShotWasIntendedHit = hitChance >= 1f || (hitChance > 0f && roll <= hitChance);
         if (LastShotWasIntendedHit)
         {
-            return directDirection;
+            return ApplySpread(directDirection);
         }
 
-        return ApplyDeterministicMissDispersion(directDirection, roll);
+        return ApplySpread(ApplyDeterministicMissDispersion(directDirection, roll));
     }
 
     private Vector3 ApplyDeterministicMissDispersion(Vector3 directDirection, float roll)
@@ -279,6 +269,11 @@ public class PrototypeTurretWeapon : MonoBehaviour
 
         LastRecoilImpulseWorld = recoilImpulse;
         LastRecoilApplied = true;
+        if (recoilStabilizer != null)
+        {
+            recoilStabilizer.RecordRecoilImpulse(recoilImpulse, LastRecoilPositionWorld);
+        }
+
         return true;
     }
 
@@ -297,6 +292,11 @@ public class PrototypeTurretWeapon : MonoBehaviour
         if (physicsCore == null)
         {
             physicsCore = GetComponentInParent<ShipPhysicsCore>();
+        }
+
+        if (recoilStabilizer == null)
+        {
+            recoilStabilizer = GetComponentInParent<WeaponRecoilStabilizer>();
         }
 
         if (mount == null)
@@ -376,5 +376,27 @@ public class PrototypeTurretWeapon : MonoBehaviour
     private static bool Approximately(float first, float second)
     {
         return Mathf.Abs(first - second) <= 0.01f;
+    }
+
+    private Vector3 ApplySpread(Vector3 direction)
+    {
+        Vector3 normalized = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector3.forward;
+        float spread = shipStats != null ? shipStats.ProjectileSpreadDegrees : 0f;
+        if (spread <= 0.0001f)
+        {
+            return normalized;
+        }
+
+        Vector2 offset = new Vector2((GetRoll() - 0.5f) * 2f, (GetRoll() - 0.5f) * 2f) * spread;
+        Vector3 axisA = Vector3.Cross(normalized, mount != null && mount.MountRoot != null ? mount.MountRoot.up : Vector3.up);
+        if (axisA.sqrMagnitude < 0.0001f)
+        {
+            axisA = Vector3.Cross(normalized, Vector3.right);
+        }
+
+        axisA.Normalize();
+        Vector3 axisB = Vector3.Cross(normalized, axisA).normalized;
+        Quaternion rotation = Quaternion.AngleAxis(offset.x, axisA) * Quaternion.AngleAxis(offset.y, axisB);
+        return (rotation * normalized).normalized;
     }
 }

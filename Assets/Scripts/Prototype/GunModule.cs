@@ -8,6 +8,7 @@ public class GunModule : MonoBehaviour
     [SerializeField] private ShipPhysicsCore physicsCore;
     [SerializeField] private Transform muzzleTransform;
     [SerializeField] private PrototypeTurretWeapon turretWeapon;
+    [SerializeField] private WeaponRecoilStabilizer recoilStabilizer;
     [SerializeField] private float projectileScale = 0.24f;
     [SerializeField] private float projectileMass = 0.12f;
     [SerializeField] private bool recoilEnabled = true;
@@ -21,6 +22,7 @@ public class GunModule : MonoBehaviour
     public Vector3 LastRecoilImpulseWorld { get; private set; }
     public Vector3 LastRecoilPositionWorld { get; private set; }
     public bool LastRecoilApplied { get; private set; }
+    public PrototypeProjectileFireResult LastFireResult { get; private set; }
     public Transform MuzzleTransform => muzzleTransform;
     public PrototypeTurretWeapon TurretWeapon => turretWeapon;
 
@@ -57,6 +59,11 @@ public class GunModule : MonoBehaviour
             {
                 turretWeapon = GetComponentInChildren<PrototypeTurretWeapon>();
             }
+        }
+
+        if (recoilStabilizer == null)
+        {
+            recoilStabilizer = GetComponentInParent<WeaponRecoilStabilizer>();
         }
     }
 
@@ -119,43 +126,32 @@ public class GunModule : MonoBehaviour
         }
 
         nextFireTime = Time.time + delay;
-        SpawnProjectile();
+        FireRuntimeProjectile();
         return true;
     }
 
-    private void SpawnProjectile()
+    private void FireRuntimeProjectile()
     {
-        var projectileObject = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        projectileObject.name = "PrototypeProjectile";
-        projectileObject.transform.position = muzzleTransform.position;
-        projectileObject.transform.rotation = muzzleTransform.rotation;
-        float configuredProjectileMass = ProjectileMass;
-        float configuredProjectileDiameter = ProjectileDiameter;
-        projectileObject.transform.localScale = Vector3.one * configuredProjectileDiameter;
-
-        var rigidbody = projectileObject.GetComponent<Rigidbody>();
-        if (rigidbody == null)
-        {
-            rigidbody = projectileObject.AddComponent<Rigidbody>();
-        }
-
-        rigidbody.useGravity = false;
-        rigidbody.mass = configuredProjectileMass;
-        rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-        rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
-
-        var projectile = projectileObject.AddComponent<Projectile>();
-        LastProjectileVelocityWorld = shipRigidbody.linearVelocity + (muzzleTransform.forward * shipStats.ProjectileSpeed);
-        projectile.Initialize(
-            LastProjectileVelocityWorld,
+        Vector3 shotDirection = ApplySpread(muzzleTransform.forward, shipStats.ProjectileSpreadDegrees);
+        PrototypeProjectileFireRequest request = PrototypeProjectileFireRequest.FromWeapon(
+            shipStats.ProjectileMode,
+            shipRigidbody != null ? shipRigidbody.transform : transform,
+            muzzleTransform,
+            shotDirection,
+            shipRigidbody != null ? shipRigidbody.linearVelocity : Vector3.zero,
+            shipStats.ProjectileSpeed,
+            shipStats.ProjectileRadius,
+            ProjectileMass,
             shipStats.ProjectileLifetime,
-            configuredProjectileMass,
-            configuredProjectileDiameter,
-            GetComponentsInChildren<Collider>());
-        ApplyRecoilImpulse();
+            Mathf.Max(shipStats.EngagementRangeMeters, shipStats.ProjectileSpeed * shipStats.ProjectileLifetime),
+            shipStats.TracerEveryNthShot);
+
+        LastFireResult = PrototypeProjectileSimulation.GetOrCreateDefault().Fire(request);
+        LastProjectileVelocityWorld = LastFireResult.projectileVelocityWorld;
+        ApplyRecoilImpulse(shotDirection);
     }
 
-    private bool ApplyRecoilImpulse()
+    private bool ApplyRecoilImpulse(Vector3 projectileDirectionWorld)
     {
         LastRecoilApplied = false;
         LastRecoilImpulseWorld = Vector3.zero;
@@ -166,7 +162,10 @@ public class GunModule : MonoBehaviour
             return false;
         }
 
-        Vector3 projectileMomentum = muzzleTransform.forward * (ProjectileMass * shipStats.ProjectileSpeed);
+        Vector3 recoilDirection = projectileDirectionWorld.sqrMagnitude > 0.0001f
+            ? projectileDirectionWorld.normalized
+            : muzzleTransform.forward;
+        Vector3 projectileMomentum = recoilDirection * (ProjectileMass * shipStats.ProjectileSpeed);
         Vector3 recoilImpulse = -projectileMomentum;
         if (!physicsCore.ApplyForceAtPosition(recoilImpulse, LastRecoilPositionWorld, ForceMode.Impulse))
         {
@@ -175,6 +174,11 @@ public class GunModule : MonoBehaviour
 
         LastRecoilImpulseWorld = recoilImpulse;
         LastRecoilApplied = true;
+        if (recoilStabilizer != null)
+        {
+            recoilStabilizer.RecordRecoilImpulse(recoilImpulse, LastRecoilPositionWorld);
+        }
+
         return true;
     }
 
@@ -203,6 +207,28 @@ public class GunModule : MonoBehaviour
     {
         turretWeapon = weapon;
         ResolveReferences();
+    }
+
+    private static Vector3 ApplySpread(Vector3 direction, float spreadDegrees)
+    {
+        Vector3 normalized = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector3.forward;
+        float spread = Mathf.Max(0f, spreadDegrees);
+        if (spread <= 0.0001f)
+        {
+            return normalized;
+        }
+
+        Vector2 offset = Random.insideUnitCircle * spread;
+        Vector3 axisA = Vector3.Cross(normalized, Vector3.up);
+        if (axisA.sqrMagnitude < 0.0001f)
+        {
+            axisA = Vector3.Cross(normalized, Vector3.right);
+        }
+
+        axisA.Normalize();
+        Vector3 axisB = Vector3.Cross(normalized, axisA).normalized;
+        Quaternion rotation = Quaternion.AngleAxis(offset.x, axisA) * Quaternion.AngleAxis(offset.y, axisB);
+        return (rotation * normalized).normalized;
     }
 }
 

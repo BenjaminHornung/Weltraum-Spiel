@@ -102,6 +102,7 @@ public readonly struct PrototypeFlightControlDiagnostics
 [RequireComponent(typeof(MainThrusterBank))]
 [RequireComponent(typeof(RcsThrusterController))]
 [RequireComponent(typeof(ShipPhysicsCore))]
+[RequireComponent(typeof(WeaponRecoilStabilizer))]
 public class PlayerShipController : MonoBehaviour
 {
     [Header("Flight tuning")]
@@ -139,6 +140,7 @@ public class PlayerShipController : MonoBehaviour
     [SerializeField] private MainThrusterBank mainThruster;
     [SerializeField] private RcsThrusterController rcsThrusters;
     [SerializeField] private ShipPhysicsCore physicsCore;
+    [SerializeField] private WeaponRecoilStabilizer weaponRecoilStabilizer;
 
     private bool throttleUp;
     private bool throttleDown;
@@ -229,6 +231,15 @@ public class PlayerShipController : MonoBehaviour
     public Vector3 LastFlightAssistForceWorld => LastFlightAssistRequest.forceWorld;
     public Vector3 LastFlightAssistTorqueLocal => LastFlightAssistRequest.torqueLocal;
     public bool LastFlightAssistDebugOnly => LastFlightAssistRequest.debugOnlyNonPhysical;
+    public Vector3 LastWeaponRecoilImpulseWorld => weaponRecoilStabilizer != null ? weaponRecoilStabilizer.LastWeaponRecoilImpulseWorld : Vector3.zero;
+    public Vector3 LastWeaponRecoilPositionWorld => weaponRecoilStabilizer != null ? weaponRecoilStabilizer.LastWeaponRecoilPositionWorld : transform.position;
+    public Vector3 LastWeaponRecoilAngularImpulseWorld => weaponRecoilStabilizer != null ? weaponRecoilStabilizer.LastEstimatedRecoilAngularImpulseWorld : Vector3.zero;
+    public Vector3 LastWeaponStabilizationTorqueRequestWorld => weaponRecoilStabilizer != null ? weaponRecoilStabilizer.LastWeaponStabilizationTorqueRequestWorld : Vector3.zero;
+    public Vector3 LastWeaponStabilizationTorqueRequestLocal => weaponRecoilStabilizer != null ? weaponRecoilStabilizer.LastWeaponStabilizationTorqueRequestLocal : Vector3.zero;
+    public Vector3 LastWeaponStabilizationActualRcsTorqueWorld => weaponRecoilStabilizer != null ? weaponRecoilStabilizer.LastWeaponStabilizationActualRcsTorqueWorld : Vector3.zero;
+    public Vector3 LastWeaponStabilizationResidualRcsTorqueWorld => weaponRecoilStabilizer != null ? weaponRecoilStabilizer.LastWeaponStabilizationResidualRcsTorqueWorld : Vector3.zero;
+    public string LastWeaponStabilizationStatus => weaponRecoilStabilizer != null ? weaponRecoilStabilizer.LastWeaponStabilizationStatus : "unavailable";
+    public bool WeaponStabilizationActive => weaponRecoilStabilizer != null && weaponRecoilStabilizer.LastWeaponStabilizationRequestActive;
     public FlightControlMode ControlMode => controlMode;
     public string ControlModeLabel => controlMode switch
     {
@@ -368,7 +379,19 @@ public class PlayerShipController : MonoBehaviour
             physicsCore = GetComponent<ShipPhysicsCore>();
         }
 
+        if (weaponRecoilStabilizer == null)
+        {
+            weaponRecoilStabilizer = GetComponent<WeaponRecoilStabilizer>();
+            if (weaponRecoilStabilizer == null)
+            {
+                weaponRecoilStabilizer = gameObject.AddComponent<WeaponRecoilStabilizer>();
+            }
+        }
 
+        if (weaponRecoilStabilizer != null)
+        {
+            weaponRecoilStabilizer.Configure(shipRigidbody);
+        }
 
         if (waypointAutopilot == null)
         {
@@ -471,6 +494,13 @@ public class PlayerShipController : MonoBehaviour
                 HasSasTargetRotation,
                 LastFlightAssistRequest,
                 Time.fixedDeltaTime);
+            if (weaponRecoilStabilizer != null)
+            {
+                weaponRecoilStabilizer.RecordRcsDiagnostics(
+                    rcsThrusters.LastActualRcsTorqueWorld,
+                    rcsThrusters.LastResidualRcsTorqueWorld,
+                    rcsThrusters.LastAllocatorStatus);
+            }
         }
 
         float assistMainThrottle = CanAssistRequestMainThrottle(LastFlightAssistRequest)
@@ -770,6 +800,11 @@ public class PlayerShipController : MonoBehaviour
 
     private FlightAssistRequest BuildFlightAssistRequest()
     {
+        return CombineWithWeaponStabilization(BuildBaseFlightAssistRequest());
+    }
+
+    private FlightAssistRequest BuildBaseFlightAssistRequest()
+    {
         if (hasExternalFlightAssistRequest)
         {
             return externalFlightAssistRequest;
@@ -802,6 +837,40 @@ public class PlayerShipController : MonoBehaviour
             default:
                 return FlightAssistRequest.None;
         }
+    }
+
+    private FlightAssistRequest CombineWithWeaponStabilization(FlightAssistRequest baseRequest)
+    {
+        if (weaponRecoilStabilizer == null)
+        {
+            return baseRequest;
+        }
+
+        FlightAssistRequest weaponRequest = weaponRecoilStabilizer.BuildFlightAssistRequest(
+            transform,
+            EffectiveSasEnabled,
+            RcsEnabled,
+            HasRcs,
+            Time.fixedDeltaTime);
+        if (!weaponRequest.HasAnyRequest)
+        {
+            return baseRequest;
+        }
+
+        if (!baseRequest.HasAnyRequest)
+        {
+            return weaponRequest;
+        }
+
+        Vector3 forceWorld = baseRequest.HasPhysicalRequest ? baseRequest.forceWorld : Vector3.zero;
+        Vector3 torqueLocal = baseRequest.HasPhysicalRequest ? baseRequest.torqueLocal : Vector3.zero;
+        return new FlightAssistRequest(
+            baseRequest.mode == FlightAssistMode.Simulation ? weaponRequest.mode : baseRequest.mode,
+            baseRequest.source == FlightAssistRequestSource.None ? weaponRequest.source : baseRequest.source,
+            forceWorld + weaponRequest.forceWorld,
+            torqueLocal + weaponRequest.torqueLocal,
+            Mathf.Max(baseRequest.mainThrottle, weaponRequest.mainThrottle),
+            false);
     }
 
     public void SetExternalFlightAssistRequest(FlightAssistRequest request)

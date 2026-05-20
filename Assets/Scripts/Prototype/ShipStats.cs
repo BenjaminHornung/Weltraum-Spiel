@@ -20,12 +20,16 @@ public class ShipStats : MonoBehaviour
     [SerializeField] private float reverseThrustMultiplier = 0.35f;
 
     [Header("Projectiles")]
+    [SerializeField] private WeaponProjectileMode projectileMode = WeaponProjectileMode.Hitscan;
     [SerializeField] private float projectileSpeed = 1500f;
     [Range(0.1f, 20f)]
     [SerializeField] private float projectileFireRate = 4f;
     [SerializeField] private float projectileLifetime = 3f;
     [SerializeField] private float projectileDiameter = 0.24f;
+    [SerializeField] private float projectileRadius = 0.12f;
     [SerializeField] private float projectileMass = 0.12f;
+    [SerializeField] private int tracerEveryNthShot = PrototypeGunSettings.DefaultTracerEveryNthShot;
+    [SerializeField] private float projectileSpreadDegrees;
     [SerializeField] private bool projectileRecoilEnabled = true;
     [Range(0f, 1f)]
     [SerializeField] private float hitChance = 1f;
@@ -62,12 +66,16 @@ public class ShipStats : MonoBehaviour
     public float Thrust => Mathf.Max(0f, thrustForce);
     public float ReverseThrustMultiplier => Mathf.Clamp01(reverseThrustMultiplier);
     public float FuelConsumptionKgPerSecond => Mathf.Max(0f, fullThrottleFuelKgPerSecond);
+    public WeaponProjectileMode ProjectileMode => projectileMode;
     public float ProjectileSpeed => Mathf.Max(0f, projectileSpeed);
     public float ProjectileFireRate => Mathf.Max(PrototypeGunSettings.MinimumProjectileFireRate, projectileFireRate);
     public float ProjectileLifetime => Mathf.Max(PrototypeGunSettings.MinimumProjectileLifetime, projectileLifetime);
+    public float ProjectileMaxLifetime => ProjectileLifetime;
     public float ProjectileDiameter => Mathf.Max(PrototypeGunSettings.MinimumProjectileDiameter, projectileDiameter);
     public float ProjectileRadius => ProjectileDiameter * 0.5f;
     public float ProjectileMass => Mathf.Max(PrototypeGunSettings.MinimumProjectileMass, projectileMass);
+    public int TracerEveryNthShot => Mathf.Max(0, tracerEveryNthShot);
+    public float ProjectileSpreadDegrees => Mathf.Clamp(projectileSpreadDegrees, 0f, 45f);
     public bool ProjectileRecoilEnabled => projectileRecoilEnabled;
     public float HitChance => Mathf.Clamp01(hitChance);
     public float EngagementRangeMeters => Mathf.Max(PrototypeGunSettings.MinimumEngagementRangeMeters, engagementRangeMeters);
@@ -89,6 +97,16 @@ public class ShipStats : MonoBehaviour
     public float LastAppliedFuelFraction { get; private set; } = 1f;
 
     public bool HasFuel => CurrentFuelKg > 0f;
+
+    private void OnEnable()
+    {
+        PrototypeWeaponTargetRegistry.Register(transform);
+    }
+
+    private void OnDisable()
+    {
+        PrototypeWeaponTargetRegistry.Unregister(transform);
+    }
 
     public void ResetFuelFlowTelemetry()
     {
@@ -186,11 +204,26 @@ public class ShipStats : MonoBehaviour
         currentFuelKg = Mathf.Clamp(currentFuelKg, 0f, maxFuelKg);
         fullThrottleFuelKgPerSecond = Mathf.Max(0f, fullThrottleFuelKgPerSecond);
         thrustForce = Mathf.Max(0f, thrustForce);
+        if (projectileMode != WeaponProjectileMode.Hitscan
+            && projectileMode != WeaponProjectileMode.SimulatedProjectile
+            && projectileMode != WeaponProjectileMode.GuidedProjectile)
+        {
+            projectileMode = WeaponProjectileMode.Hitscan;
+        }
+
         projectileSpeed = Mathf.Max(0f, projectileSpeed);
         projectileFireRate = Mathf.Max(PrototypeGunSettings.MinimumProjectileFireRate, projectileFireRate);
         projectileLifetime = Mathf.Max(PrototypeGunSettings.MinimumProjectileLifetime, projectileLifetime);
+        if (projectileDiameter <= 0f && projectileRadius > 0f)
+        {
+            projectileDiameter = projectileRadius * 2f;
+        }
+
         projectileDiameter = Mathf.Max(PrototypeGunSettings.MinimumProjectileDiameter, projectileDiameter);
+        projectileRadius = ProjectileRadius;
         projectileMass = Mathf.Max(PrototypeGunSettings.MinimumProjectileMass, projectileMass);
+        tracerEveryNthShot = Mathf.Max(0, tracerEveryNthShot);
+        projectileSpreadDegrees = Mathf.Clamp(projectileSpreadDegrees, 0f, 45f);
         hitChance = Mathf.Clamp01(hitChance);
         engagementRangeMeters = Mathf.Max(PrototypeGunSettings.MinimumEngagementRangeMeters, engagementRangeMeters);
         turretSlewDegreesPerSecond = Mathf.Max(PrototypeGunSettings.MinimumTurretSlewDegreesPerSecond, turretSlewDegreesPerSecond);
@@ -245,11 +278,15 @@ public class ShipStats : MonoBehaviour
         reverseThrustMultiplier = thrusterSettings.reverseThrustMultiplier;
 
         gunSettings.Clamp();
+        projectileMode = gunSettings.projectileMode;
         projectileSpeed = gunSettings.projectileSpeed;
         projectileFireRate = gunSettings.projectileFireRate;
         projectileLifetime = gunSettings.projectileLifetime;
         projectileDiameter = gunSettings.projectileDiameter;
+        projectileRadius = gunSettings.projectileRadius;
         projectileMass = gunSettings.projectileMass;
+        tracerEveryNthShot = gunSettings.tracerEveryNthShot;
+        projectileSpreadDegrees = gunSettings.projectileSpreadDegrees;
         projectileRecoilEnabled = gunSettings.recoilEnabled;
         hitChance = gunSettings.hitChance;
         engagementRangeMeters = gunSettings.engagementRangeMeters;

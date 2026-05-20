@@ -21,14 +21,8 @@ public class PrototypeWeaponComputerPanel : MonoBehaviour
         ResolveReferences();
     }
 
-    private void Update()
-    {
-        ResolveReferences();
-    }
-
     private void OnGUI()
     {
-        ResolveReferences();
         ResolveWindowState();
         if (!windowState.Visible)
         {
@@ -36,10 +30,15 @@ public class PrototypeWeaponComputerPanel : MonoBehaviour
         }
 
         EnsureStyles();
+        if (!windowState.Collapsed && HasMissingReferences())
+        {
+            ResolveReferences();
+        }
+
         windowState.SetSize(420f, windowState.Collapsed ? 58f : Mathf.Clamp(Screen.height - 96f, 300f, 620f));
         windowState.Rect = GUI.Window(windowState.WindowId, windowState.Rect, DrawWindow, "Weapon Computer");
         windowState.ClampToScreen();
-        windowState.SaveToPrefs();
+        windowState.TrySaveToPrefsThrottled();
     }
 
     public void Bind(Transform root, ShipStats stats, PrototypeWeaponComputer computer, PrototypeTurretWeapon weapon)
@@ -99,6 +98,11 @@ public class PrototypeWeaponComputerPanel : MonoBehaviour
         {
             turretWeapon = weaponComputer.TurretWeapon;
         }
+    }
+
+    private bool HasMissingReferences()
+    {
+        return shipRoot != null && (shipStats == null || weaponComputer == null || turretWeapon == null);
     }
 
     private void EnsureStyles()

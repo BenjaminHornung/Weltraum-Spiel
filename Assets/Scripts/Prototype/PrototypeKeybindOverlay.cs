@@ -9,12 +9,18 @@ public class PrototypeKeybindOverlay : MonoBehaviour
     private Vector2 scrollPosition;
     private PrototypeUiWindowState windowState;
     private PlayerShipController shipController;
+    private PrototypeKeybindViewModel cachedViewModel;
+    private FlightControlMode cachedControlMode;
+    private bool hasCachedViewModel;
+    private bool sceneControllerLookupAttempted;
 
     public bool IsWindowVisible => ResolveWindowState().Visible;
 
     public void Bind(Transform trackTarget)
     {
         shipController = trackTarget != null ? trackTarget.GetComponent<PlayerShipController>() : null;
+        sceneControllerLookupAttempted = shipController != null;
+        hasCachedViewModel = false;
     }
 
     private void OnGUI()
@@ -29,7 +35,7 @@ public class PrototypeKeybindOverlay : MonoBehaviour
         windowState.SetSize(430f, windowState.Collapsed ? 58f : CalculateExpandedHeight());
         windowState.Rect = GUI.Window(windowState.WindowId, windowState.Rect, DrawWindow, "Keybinds");
         windowState.ClampToScreen();
-        windowState.SaveToPrefs();
+        windowState.TrySaveToPrefsThrottled();
     }
 
     public void SetWindowVisible(bool visible)
@@ -94,7 +100,7 @@ public class PrototypeKeybindOverlay : MonoBehaviour
 
         if (!windowState.Collapsed)
         {
-            PrototypeKeybindViewModel viewModel = PrototypeKeybindViewModelBuilder.Build(ResolveActiveControlMode());
+            PrototypeKeybindViewModel viewModel = GetViewModel();
             scrollPosition = GUILayout.BeginScrollView(scrollPosition);
             GUILayout.Label("Active Mode: " + viewModel.ActiveFlightControlModeLabel, activeHeadingStyle);
             DrawModeBindings(viewModel);
@@ -144,11 +150,25 @@ public class PrototypeKeybindOverlay : MonoBehaviour
 
     private FlightControlMode ResolveActiveControlMode()
     {
-        if (shipController == null)
+        if (shipController == null && !sceneControllerLookupAttempted)
         {
+            sceneControllerLookupAttempted = true;
             shipController = FindAnyObjectByType<PlayerShipController>();
         }
 
         return shipController != null ? shipController.ControlMode : FlightControlMode.Normal;
+    }
+
+    private PrototypeKeybindViewModel GetViewModel()
+    {
+        FlightControlMode activeMode = ResolveActiveControlMode();
+        if (!hasCachedViewModel || activeMode != cachedControlMode)
+        {
+            cachedControlMode = activeMode;
+            cachedViewModel = PrototypeKeybindViewModelBuilder.Build(activeMode);
+            hasCachedViewModel = true;
+        }
+
+        return cachedViewModel;
     }
 }

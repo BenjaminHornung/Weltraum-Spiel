@@ -277,7 +277,7 @@ public class PrototypeTestEnvironment : MonoBehaviour
             GameObject asteroid = CreatePrimitive("Asteroid_Visual_" + (i + 1), PrimitiveType.Sphere, position, new Vector3(scale * 1.3f, scale * 0.8f, scale), group);
             asteroid.transform.rotation = Quaternion.Euler(i * 19f, i * 37f, i * 11f);
             ApplyMaterial(asteroid, Color.Lerp(ObstacleColor, Color.white, (i % 3) * 0.08f), false);
-            RemoveCollider(asteroid);
+            MarkNavigationObstacle(asteroid, "Asteroid " + (i + 1), scale + 8f, Mathf.Max(2f, scale * 0.35f));
             AddPoint("Asteroid " + (i + 1), PrototypeEnvironmentPointKind.Obstacle, position, ObstacleColor, scale);
         }
 
@@ -526,6 +526,28 @@ public class PrototypeTestEnvironment : MonoBehaviour
         {
             renderer.sharedMaterial = material;
         }
+    }
+
+    private static void MarkNavigationObstacle(GameObject target, string label, float clearanceRadius, float dangerRadius)
+    {
+        if (target == null)
+        {
+            return;
+        }
+
+        Collider collider = target.GetComponent<Collider>();
+        if (collider != null)
+        {
+            collider.isTrigger = false;
+        }
+
+        PrototypeNavigationObstacle obstacle = target.GetComponent<PrototypeNavigationObstacle>();
+        if (obstacle == null)
+        {
+            obstacle = target.AddComponent<PrototypeNavigationObstacle>();
+        }
+
+        obstacle.Configure(label, clearanceRadius, dangerRadius, true);
     }
 
     private static Material CreateMaterial(Color color, bool emissive)

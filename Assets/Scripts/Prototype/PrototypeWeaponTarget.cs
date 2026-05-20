@@ -4,6 +4,8 @@ using UnityEngine;
 public sealed class PrototypeWeaponTarget
 {
     private const float NeutralFallbackHealth = 100f;
+    private static readonly List<Transform> RegisteredTargetBuffer = new List<Transform>();
+    private static readonly HashSet<int> SeenTargetIds = new HashSet<int>();
 
     private PrototypeWeaponTarget(
         Transform targetTransform,
@@ -31,6 +33,9 @@ public sealed class PrototypeWeaponTarget
     public int StableId { get; }
     public Vector3 Position => TargetTransform != null ? TargetTransform.position : Vector3.zero;
     public bool IsValid => TargetTransform != null;
+    public static int LastRegistryCandidateCount { get; private set; }
+    public static bool LastDiscoveryUsedDebugFallback { get; private set; }
+    public static int DebugFallbackDiscoveryCount { get; private set; }
 
     public static PrototypeWeaponTarget FromTransform(Transform candidate)
     {
@@ -39,7 +44,7 @@ public sealed class PrototypeWeaponTarget
             return null;
         }
 
-        if (IsProjectileCandidate(candidate))
+        if (IsIgnoredCandidate(candidate))
         {
             return null;
         }
@@ -50,11 +55,12 @@ public sealed class PrototypeWeaponTarget
             return null;
         }
 
-        if (IsProjectileCandidate(root))
+        if (IsIgnoredCandidate(root))
         {
             return null;
         }
 
+        bool isExplicitlyMarked = HasExplicitMarker(candidate, root);
         PrototypeModuleDamageState[] damageStates = root.GetComponentsInChildren<PrototypeModuleDamageState>(false);
         if (damageStates != null && damageStates.Length > 0)
         {
@@ -84,7 +90,7 @@ public sealed class PrototypeWeaponTarget
             return new PrototypeWeaponTarget(root, BuildLabel(root), NeutralFallbackHealth, NeutralFallbackHealth, "no health source", false);
         }
 
-        if (root.GetComponent<ShipStats>() != null || root.GetComponent<Rigidbody>() != null)
+        if (root.GetComponent<ShipStats>() != null || isExplicitlyMarked)
         {
             return new PrototypeWeaponTarget(root, BuildLabel(root), NeutralFallbackHealth, NeutralFallbackHealth, "no health source", false);
         }
@@ -95,13 +101,52 @@ public sealed class PrototypeWeaponTarget
     public static List<PrototypeWeaponTarget> Discover(Transform ownerRoot)
     {
         var targets = new List<PrototypeWeaponTarget>();
-        var seen = new HashSet<int>();
-        AddTargetsFromComponents(Object.FindObjectsByType<PrototypeModuleDamageState>(FindObjectsInactive.Exclude), ownerRoot, targets, seen);
-        AddTargetsFromComponents(Object.FindObjectsByType<PrototypeTargetDummy>(FindObjectsInactive.Exclude), ownerRoot, targets, seen);
-        AddTargetsFromComponents(Object.FindObjectsByType<ShipStats>(FindObjectsInactive.Exclude), ownerRoot, targets, seen);
-        AddTargetsFromComponents(Object.FindObjectsByType<Rigidbody>(FindObjectsInactive.Exclude), ownerRoot, targets, seen);
-        targets.Sort((left, right) => left.StableId.CompareTo(right.StableId));
+        DiscoverInto(ownerRoot, targets, includeDebugFallback: false);
         return targets;
+    }
+
+    public static void DiscoverInto(Transform ownerRoot, List<PrototypeWeaponTarget> targets, bool includeDebugFallback)
+    {
+        if (targets == null)
+        {
+            return;
+        }
+
+        targets.Clear();
+        SeenTargetIds.Clear();
+        LastDiscoveryUsedDebugFallback = includeDebugFallback;
+        PrototypeWeaponTargetRegistry.CopyRegisteredTargets(RegisteredTargetBuffer);
+        LastRegistryCandidateCount = RegisteredTargetBuffer.Count;
+        AddTargetsFromTransforms(RegisteredTargetBuffer, ownerRoot, targets, SeenTargetIds);
+        if (includeDebugFallback)
+        {
+            DebugFallbackDiscoveryCount++;
+            AddTargetsFromComponents(Object.FindObjectsByType<PrototypeModuleDamageState>(FindObjectsInactive.Exclude), ownerRoot, targets, SeenTargetIds);
+            AddTargetsFromComponents(Object.FindObjectsByType<PrototypeTargetDummy>(FindObjectsInactive.Exclude), ownerRoot, targets, SeenTargetIds);
+            AddTargetsFromComponents(Object.FindObjectsByType<ShipStats>(FindObjectsInactive.Exclude), ownerRoot, targets, SeenTargetIds);
+        }
+
+        targets.Sort((left, right) => left.StableId.CompareTo(right.StableId));
+        SeenTargetIds.Clear();
+    }
+
+    private static void AddTargetsFromTransforms(List<Transform> candidates, Transform ownerRoot, List<PrototypeWeaponTarget> targets, HashSet<int> seen)
+    {
+        if (candidates == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < candidates.Count; i++)
+        {
+            Transform candidate = candidates[i];
+            if (candidate == null)
+            {
+                continue;
+            }
+
+            AddTargetFromTransform(candidate, ownerRoot, targets, seen);
+        }
     }
 
     private static void AddTargetsFromComponents<T>(T[] components, Transform ownerRoot, List<PrototypeWeaponTarget> targets, HashSet<int> seen)
@@ -120,20 +165,25 @@ public sealed class PrototypeWeaponTarget
                 continue;
             }
 
-            Transform root = ResolveTargetRoot(component.transform);
-            if (root == null || IsSameHierarchy(ownerRoot, root) || IsProjectileCandidate(root))
-            {
-                continue;
-            }
-
-            PrototypeWeaponTarget target = FromTransform(root);
-            if (target == null || !target.IsValid || !seen.Add(target.StableId))
-            {
-                continue;
-            }
-
-            targets.Add(target);
+            AddTargetFromTransform(component.transform, ownerRoot, targets, seen);
         }
+    }
+
+    private static void AddTargetFromTransform(Transform candidate, Transform ownerRoot, List<PrototypeWeaponTarget> targets, HashSet<int> seen)
+    {
+        Transform root = ResolveTargetRoot(candidate);
+        if (root == null || IsSameHierarchy(ownerRoot, root) || IsIgnoredCandidate(candidate) || IsIgnoredCandidate(root))
+        {
+            return;
+        }
+
+        PrototypeWeaponTarget target = FromTransform(candidate);
+        if (target == null || !target.IsValid || !seen.Add(target.StableId))
+        {
+            return;
+        }
+
+        targets.Add(target);
     }
 
     private static Transform ResolveTargetRoot(Transform candidate)
@@ -175,9 +225,61 @@ public sealed class PrototypeWeaponTarget
         return candidate == ownerRoot || candidate.IsChildOf(ownerRoot) || ownerRoot.IsChildOf(candidate);
     }
 
+    private static bool IsIgnoredCandidate(Transform candidate)
+    {
+        return IsProjectileCandidate(candidate) || IsWeaponVisualCandidate(candidate);
+    }
+
     private static bool IsProjectileCandidate(Transform candidate)
     {
-        return candidate != null && candidate.GetComponentInParent<Projectile>() != null;
+        return candidate != null
+            && (candidate.GetComponentInParent<Projectile>() != null
+                || PrototypeProjectileRuntimeMarker.IsRuntimeProjectileTransform(candidate));
+    }
+
+    private static bool IsWeaponVisualCandidate(Transform candidate)
+    {
+        Transform current = candidate;
+        while (current != null)
+        {
+            string name = current.name;
+            if (!string.IsNullOrEmpty(name))
+            {
+                string upper = name.ToUpperInvariant();
+                if (upper.StartsWith("WEAPON_MUZZLE")
+                    || upper.StartsWith("WEAPON_TURRET")
+                    || upper.Contains("MUZZLE_FLASH"))
+                {
+                    return true;
+                }
+            }
+
+            if (current.GetComponent<PrototypeTurretWeapon>() != null || current.GetComponent<PrototypeTurretMount>() != null)
+            {
+                return true;
+            }
+
+            current = current.parent;
+        }
+
+        return false;
+    }
+
+    private static bool HasExplicitMarker(Transform candidate, Transform root)
+    {
+        PrototypeWeaponTargetMarker marker = candidate != null ? candidate.GetComponentInParent<PrototypeWeaponTargetMarker>() : null;
+        if (marker != null && marker.TargetRoot != null)
+        {
+            return root == marker.TargetRoot || marker.TargetRoot.IsChildOf(root) || root.IsChildOf(marker.TargetRoot);
+        }
+
+        if (root == null)
+        {
+            return false;
+        }
+
+        return root.GetComponent<PrototypeWeaponTargetMarker>() != null
+            || root.GetComponentInChildren<PrototypeWeaponTargetMarker>(false) != null;
     }
 
     private static string BuildLabel(Transform target)
