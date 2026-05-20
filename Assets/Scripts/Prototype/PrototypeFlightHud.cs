@@ -191,10 +191,15 @@ public class PrototypeFlightHud : MonoBehaviour
                 targetRigidbody = target.GetComponent<Rigidbody>();
             }
 
-            if (shipController == null)
-            {
-                shipController = target.GetComponent<PlayerShipController>();
-            }
+        if (shipController == null)
+        {
+            shipController = target.GetComponent<PlayerShipController>();
+        }
+
+        if (followCamera == null)
+        {
+            followCamera = GetComponent<SimpleFollowCamera>();
+        }
 
             if (waypointAutopilot == null)
             {
@@ -210,11 +215,6 @@ public class PrototypeFlightHud : MonoBehaviour
         if (debugOverlay == null)
         {
             debugOverlay = GetComponent<PrototypeDebugOverlay>();
-        }
-
-        if (followCamera == null)
-        {
-            followCamera = GetComponent<SimpleFollowCamera>();
         }
 
         ResolveTrackedTarget();
