@@ -24,8 +24,19 @@ public class ShipStats : MonoBehaviour
     [Range(0.1f, 20f)]
     [SerializeField] private float projectileFireRate = 4f;
     [SerializeField] private float projectileLifetime = 3f;
+    [SerializeField] private float projectileDiameter = 0.24f;
     [SerializeField] private float projectileMass = 0.12f;
     [SerializeField] private bool projectileRecoilEnabled = true;
+    [Range(0f, 1f)]
+    [SerializeField] private float hitChance = 1f;
+    [SerializeField] private float engagementRangeMeters = 4500f;
+    [SerializeField] private float yawLimitLeftDegrees = -35f;
+    [SerializeField] private float yawLimitRightDegrees = 35f;
+    [SerializeField] private float pitchMinDegrees = -10f;
+    [SerializeField] private float pitchMaxDegrees = 35f;
+    [SerializeField] private float turretSlewDegreesPerSecond = 90f;
+    [SerializeField] private bool autoFireEnabled;
+    [SerializeField] private bool leadTargetEnabled;
 
     [Header("Camera")]
     [Range(10f, 25f)]
@@ -52,10 +63,21 @@ public class ShipStats : MonoBehaviour
     public float ReverseThrustMultiplier => Mathf.Clamp01(reverseThrustMultiplier);
     public float FuelConsumptionKgPerSecond => Mathf.Max(0f, fullThrottleFuelKgPerSecond);
     public float ProjectileSpeed => Mathf.Max(0f, projectileSpeed);
-    public float ProjectileFireRate => Mathf.Max(0.1f, projectileFireRate);
-    public float ProjectileLifetime => Mathf.Max(0.1f, projectileLifetime);
-    public float ProjectileMass => Mathf.Max(0.001f, projectileMass);
+    public float ProjectileFireRate => Mathf.Max(PrototypeGunSettings.MinimumProjectileFireRate, projectileFireRate);
+    public float ProjectileLifetime => Mathf.Max(PrototypeGunSettings.MinimumProjectileLifetime, projectileLifetime);
+    public float ProjectileDiameter => Mathf.Max(PrototypeGunSettings.MinimumProjectileDiameter, projectileDiameter);
+    public float ProjectileRadius => ProjectileDiameter * 0.5f;
+    public float ProjectileMass => Mathf.Max(PrototypeGunSettings.MinimumProjectileMass, projectileMass);
     public bool ProjectileRecoilEnabled => projectileRecoilEnabled;
+    public float HitChance => Mathf.Clamp01(hitChance);
+    public float EngagementRangeMeters => Mathf.Max(PrototypeGunSettings.MinimumEngagementRangeMeters, engagementRangeMeters);
+    public float YawLimitLeftDegrees => GetNormalizedMinimumAngle(yawLimitLeftDegrees, yawLimitRightDegrees);
+    public float YawLimitRightDegrees => GetNormalizedMaximumAngle(yawLimitLeftDegrees, yawLimitRightDegrees);
+    public float PitchMinDegrees => GetNormalizedMinimumAngle(pitchMinDegrees, pitchMaxDegrees);
+    public float PitchMaxDegrees => GetNormalizedMaximumAngle(pitchMinDegrees, pitchMaxDegrees);
+    public float TurretSlewDegreesPerSecond => Mathf.Max(PrototypeGunSettings.MinimumTurretSlewDegreesPerSecond, turretSlewDegreesPerSecond);
+    public bool AutoFireEnabled => autoFireEnabled;
+    public bool LeadTargetEnabled => leadTargetEnabled;
     public float FollowDistance => Mathf.Clamp(followDistance, 10f, 25f);
     public float FollowHeight => Mathf.Clamp(followHeight, 3f, 10f);
 
@@ -164,12 +186,20 @@ public class ShipStats : MonoBehaviour
         currentFuelKg = Mathf.Clamp(currentFuelKg, 0f, maxFuelKg);
         fullThrottleFuelKgPerSecond = Mathf.Max(0f, fullThrottleFuelKgPerSecond);
         thrustForce = Mathf.Max(0f, thrustForce);
-        projectileLifetime = Mathf.Max(0.1f, projectileLifetime);
-        projectileMass = Mathf.Max(0.001f, projectileMass);
+        projectileSpeed = Mathf.Max(0f, projectileSpeed);
+        projectileFireRate = Mathf.Max(PrototypeGunSettings.MinimumProjectileFireRate, projectileFireRate);
+        projectileLifetime = Mathf.Max(PrototypeGunSettings.MinimumProjectileLifetime, projectileLifetime);
+        projectileDiameter = Mathf.Max(PrototypeGunSettings.MinimumProjectileDiameter, projectileDiameter);
+        projectileMass = Mathf.Max(PrototypeGunSettings.MinimumProjectileMass, projectileMass);
+        hitChance = Mathf.Clamp01(hitChance);
+        engagementRangeMeters = Mathf.Max(PrototypeGunSettings.MinimumEngagementRangeMeters, engagementRangeMeters);
+        turretSlewDegreesPerSecond = Mathf.Max(PrototypeGunSettings.MinimumTurretSlewDegreesPerSecond, turretSlewDegreesPerSecond);
+        NormalizeAngles(ref yawLimitLeftDegrees, ref yawLimitRightDegrees);
+        NormalizeAngles(ref pitchMinDegrees, ref pitchMaxDegrees);
     }
 
 
-public void ApplyConfig(PrototypeShipConfig config)
+    public void ApplyConfig(PrototypeShipConfig config)
     {
         PrototypeShipMassSettings massSettings = config != null ? config.Masses : PrototypeShipMassSettings.Default;
         PrototypeShipFuelSettings fuelSettings = config != null ? config.Fuel : PrototypeShipFuelSettings.Default;
@@ -218,11 +248,43 @@ public void ApplyConfig(PrototypeShipConfig config)
         projectileSpeed = gunSettings.projectileSpeed;
         projectileFireRate = gunSettings.projectileFireRate;
         projectileLifetime = gunSettings.projectileLifetime;
+        projectileDiameter = gunSettings.projectileDiameter;
         projectileMass = gunSettings.projectileMass;
         projectileRecoilEnabled = gunSettings.recoilEnabled;
+        hitChance = gunSettings.hitChance;
+        engagementRangeMeters = gunSettings.engagementRangeMeters;
+        yawLimitLeftDegrees = gunSettings.yawLimitLeftDegrees;
+        yawLimitRightDegrees = gunSettings.yawLimitRightDegrees;
+        pitchMinDegrees = gunSettings.pitchMinDegrees;
+        pitchMaxDegrees = gunSettings.pitchMaxDegrees;
+        turretSlewDegreesPerSecond = gunSettings.turretSlewDegreesPerSecond;
+        autoFireEnabled = gunSettings.autoFireEnabled;
+        leadTargetEnabled = gunSettings.leadTargetEnabled;
 
         cameraSettings.Clamp();
         followDistance = cameraSettings.followDistance;
         followHeight = cameraSettings.followHeight;
+    }
+
+    private static float GetNormalizedMinimumAngle(float first, float second)
+    {
+        first = Mathf.Clamp(first, -180f, 180f);
+        second = Mathf.Clamp(second, -180f, 180f);
+        return Mathf.Min(first, second);
+    }
+
+    private static float GetNormalizedMaximumAngle(float first, float second)
+    {
+        first = Mathf.Clamp(first, -180f, 180f);
+        second = Mathf.Clamp(second, -180f, 180f);
+        return Mathf.Max(first, second);
+    }
+
+    private static void NormalizeAngles(ref float minimum, ref float maximum)
+    {
+        float normalizedMinimum = GetNormalizedMinimumAngle(minimum, maximum);
+        float normalizedMaximum = GetNormalizedMaximumAngle(minimum, maximum);
+        minimum = normalizedMinimum;
+        maximum = normalizedMaximum;
     }
 }

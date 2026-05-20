@@ -168,12 +168,29 @@ public struct PrototypeRcsSettings
 [System.Serializable]
 public struct PrototypeGunSettings
 {
+    public const float MinimumProjectileFireRate = 0.1f;
+    public const float MinimumProjectileLifetime = 0.1f;
+    public const float MinimumProjectileDiameter = 0.01f;
+    public const float MinimumProjectileMass = 0.001f;
+    public const float MinimumEngagementRangeMeters = 0.01f;
+    public const float MinimumTurretSlewDegreesPerSecond = 0.01f;
+
     public float projectileSpeed;
     [Range(0.1f, 20f)] public float projectileFireRate;
     public float projectileLifetime;
     public float projectileScale;
     public float projectileMass;
     public bool recoilEnabled;
+    public float projectileDiameter;
+    [Range(0f, 1f)] public float hitChance;
+    public float engagementRangeMeters;
+    public float yawLimitLeftDegrees;
+    public float yawLimitRightDegrees;
+    public float pitchMinDegrees;
+    public float pitchMaxDegrees;
+    public float turretSlewDegreesPerSecond;
+    public bool autoFireEnabled;
+    public bool leadTargetEnabled;
 
     public static PrototypeGunSettings Default => new PrototypeGunSettings
     {
@@ -182,16 +199,48 @@ public struct PrototypeGunSettings
         projectileLifetime = 3f,
         projectileScale = 0.24f,
         projectileMass = 0.12f,
-        recoilEnabled = true
+        recoilEnabled = true,
+        projectileDiameter = 0.24f,
+        hitChance = 1f,
+        engagementRangeMeters = 4500f,
+        yawLimitLeftDegrees = -35f,
+        yawLimitRightDegrees = 35f,
+        pitchMinDegrees = -10f,
+        pitchMaxDegrees = 35f,
+        turretSlewDegreesPerSecond = 90f,
+        autoFireEnabled = false,
+        leadTargetEnabled = false
     };
 
     public void Clamp()
     {
         projectileSpeed = Mathf.Max(0f, projectileSpeed);
-        projectileFireRate = Mathf.Max(0.1f, projectileFireRate);
-        projectileLifetime = Mathf.Max(0.1f, projectileLifetime);
-        projectileScale = Mathf.Max(0.01f, projectileScale);
-        projectileMass = Mathf.Max(0.001f, projectileMass);
+        projectileFireRate = Mathf.Max(MinimumProjectileFireRate, projectileFireRate);
+        projectileLifetime = Mathf.Max(MinimumProjectileLifetime, projectileLifetime);
+        projectileScale = Mathf.Max(MinimumProjectileDiameter, projectileScale);
+        projectileDiameter = projectileDiameter > 0f
+            ? Mathf.Max(MinimumProjectileDiameter, projectileDiameter)
+            : projectileScale;
+        projectileMass = Mathf.Max(MinimumProjectileMass, projectileMass);
+        hitChance = Mathf.Clamp01(hitChance);
+        engagementRangeMeters = Mathf.Max(MinimumEngagementRangeMeters, engagementRangeMeters);
+        turretSlewDegreesPerSecond = Mathf.Max(MinimumTurretSlewDegreesPerSecond, turretSlewDegreesPerSecond);
+        NormalizeOrderedAngles(ref yawLimitLeftDegrees, ref yawLimitRightDegrees);
+        NormalizeOrderedAngles(ref pitchMinDegrees, ref pitchMaxDegrees);
+    }
+
+    private static void NormalizeOrderedAngles(ref float minimum, ref float maximum)
+    {
+        minimum = Mathf.Clamp(minimum, -180f, 180f);
+        maximum = Mathf.Clamp(maximum, -180f, 180f);
+        if (minimum <= maximum)
+        {
+            return;
+        }
+
+        float swap = minimum;
+        minimum = maximum;
+        maximum = swap;
     }
 }
 

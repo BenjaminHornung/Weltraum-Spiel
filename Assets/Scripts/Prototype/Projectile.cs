@@ -16,6 +16,9 @@ public struct ProjectileHitData
 [RequireComponent(typeof(Rigidbody))]
 public class Projectile : MonoBehaviour
 {
+    private const float MinimumProjectileDiameterMeters = 0.01f;
+    private const float MinimumTrailStartWidth = 0.01f;
+
     [SerializeField] private float defaultLifetime = 3f;
     [SerializeField] private Color glowColor = new Color(1f, 0.45f, 0.15f, 1f);
     [SerializeField] private float minimumSweepRadius = 0.01f;
@@ -39,6 +42,8 @@ public class Projectile : MonoBehaviour
     private PrototypeModuleDamageState lastDamagedModule;
     private float lastDamageApplied;
     private bool lastImpactImpulseApplied;
+    private float configuredProjectileDiameterMeters;
+    private float configuredSweepRadius;
 
     public Vector3 PreviousPositionWorld => previousPositionWorld;
     public bool HasPreviousPosition => hasPreviousPosition;
@@ -49,6 +54,30 @@ public class Projectile : MonoBehaviour
     public bool HasImpactEvent => lastImpactEvent.hasImpact;
     public PrototypeImpactEventData LastImpactEvent => lastImpactEvent;
     public float ProjectileMassKg => Mathf.Max(0.001f, projectileMassKg);
+    public float ProjectileDiameterMeters
+    {
+        get
+        {
+            if (configuredProjectileDiameterMeters > 0f)
+            {
+                return configuredProjectileDiameterMeters;
+            }
+
+            if (projectileCollider == null)
+            {
+                projectileCollider = GetComponent<Collider>();
+            }
+
+            if (projectileCollider != null)
+            {
+                Vector3 extents = projectileCollider.bounds.extents;
+                return Mathf.Max(MinimumProjectileDiameterMeters, Mathf.Min(extents.x, Mathf.Min(extents.y, extents.z)) * 2f);
+            }
+
+            return Mathf.Max(MinimumProjectileDiameterMeters, Mathf.Max(transform.lossyScale.x, Mathf.Max(transform.lossyScale.y, transform.lossyScale.z)));
+        }
+    }
+    public float ProjectileRadiusMeters => ProjectileDiameterMeters * 0.5f;
     public PrototypeModuleDamageState LastDamagedModule => lastDamagedModule;
     public float LastDamageApplied => lastDamageApplied;
     public bool LastImpactImpulseApplied => lastImpactImpulseApplied;
@@ -82,9 +111,30 @@ public class Projectile : MonoBehaviour
 
     public void Initialize(Vector3 initialVelocity, float lifetime, float configuredProjectileMassKg, Collider[] collidersToIgnore)
     {
+        InitializeInternal(initialVelocity, lifetime, configuredProjectileMassKg, 0f, false, collidersToIgnore);
+    }
+
+    public void Initialize(Vector3 initialVelocity, float lifetime, float configuredProjectileMassKg, float configuredProjectileDiameterMeters, Collider[] collidersToIgnore)
+    {
+        InitializeInternal(initialVelocity, lifetime, configuredProjectileMassKg, configuredProjectileDiameterMeters, true, collidersToIgnore);
+    }
+
+    private void InitializeInternal(
+        Vector3 initialVelocity,
+        float lifetime,
+        float configuredProjectileMassKg,
+        float configuredProjectileDiameterMeters,
+        bool applyConfiguredDiameter,
+        Collider[] collidersToIgnore)
+    {
         if (rigidbodyRef == null)
         {
             rigidbodyRef = GetComponent<Rigidbody>();
+        }
+
+        if (applyConfiguredDiameter)
+        {
+            ApplyProjectileDiameter(configuredProjectileDiameterMeters);
         }
 
         projectileMassKg = Mathf.Max(0.001f, configuredProjectileMassKg);
@@ -98,6 +148,35 @@ public class Projectile : MonoBehaviour
         ResetImpactDiagnostics();
         ConfigureIgnoredColliders(collidersToIgnore);
         RecordCurrentPosition();
+    }
+
+    private void ApplyProjectileDiameter(float diameterMeters)
+    {
+        configuredProjectileDiameterMeters = Mathf.Max(MinimumProjectileDiameterMeters, diameterMeters);
+        configuredSweepRadius = Mathf.Max(minimumSweepRadius, configuredProjectileDiameterMeters * 0.5f);
+        transform.localScale = Vector3.one * configuredProjectileDiameterMeters;
+
+        SphereCollider sphereCollider = GetComponent<SphereCollider>();
+        if (sphereCollider != null)
+        {
+            sphereCollider.radius = 0.5f;
+            sphereCollider.center = Vector3.zero;
+            projectileCollider = sphereCollider;
+        }
+        else if (projectileCollider == null)
+        {
+            projectileCollider = GetComponent<Collider>();
+        }
+
+        if (trailRenderer == null)
+        {
+            trailRenderer = GetComponent<TrailRenderer>();
+        }
+
+        if (trailRenderer != null)
+        {
+            trailRenderer.startWidth = Mathf.Max(MinimumTrailStartWidth, configuredProjectileDiameterMeters * 0.35f);
+        }
     }
 
     private void FixedUpdate()
@@ -258,6 +337,11 @@ public class Projectile : MonoBehaviour
 
     private float GetSweepRadius()
     {
+        if (configuredSweepRadius > 0f)
+        {
+            return Mathf.Max(minimumSweepRadius, configuredSweepRadius);
+        }
+
         if (projectileCollider == null)
         {
             projectileCollider = GetComponent<Collider>();
