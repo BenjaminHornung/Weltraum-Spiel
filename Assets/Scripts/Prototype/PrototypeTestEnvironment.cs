@@ -567,6 +567,7 @@ public class PrototypeTestEnvironment : MonoBehaviour
 
         if (Application.isPlaying)
         {
+            collider.enabled = false;
             Destroy(collider);
         }
         else

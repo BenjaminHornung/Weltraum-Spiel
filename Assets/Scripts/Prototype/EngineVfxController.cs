@@ -177,6 +177,7 @@ public class EngineVfxController : MonoBehaviour
             {
                 if (Application.isPlaying)
                 {
+                    ringCollider.enabled = false;
                     Destroy(ringCollider);
                 }
                 else

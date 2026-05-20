@@ -457,6 +457,7 @@ public static class PrototypeShipPartVisualFactory
         {
             if (Application.isPlaying)
             {
+                collider.enabled = false;
                 Object.Destroy(collider);
             }
             else

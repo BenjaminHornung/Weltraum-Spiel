@@ -340,6 +340,16 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
 
         if (Application.isPlaying)
         {
+            if (target is Collider collider)
+            {
+                collider.enabled = false;
+            }
+            else if (target is Rigidbody body)
+            {
+                body.detectCollisions = false;
+                body.isKinematic = true;
+            }
+
             Destroy(target);
         }
         else
