@@ -122,8 +122,8 @@ Camera reset is bound to Backquote. Unity Input System key controls are physical
 - The RCS toggle gates RCS force application and VFX.
 - Ship-level force application now routes through a thin `ShipPhysicsCore`. Main thrusters and RCS still own their current behavior, but final Rigidbody force calls and net force/torque diagnostics have a central path.
 - The debug overlay reports fuel mass, main/RCS fuel request, actual fuel used, fuel fraction, and RCS allocator throttle totals. The physics model is documented in [docs/physics-flight-model.md](docs/physics-flight-model.md).
-- Projectile velocity is the ship Rigidbody velocity plus muzzle forward velocity.
-- Projectile firing applies optional recoil impulse opposite the muzzle direction using configured projectile mass and projectile speed through `ShipPhysicsCore`.
+- Projectile velocity is the ship Rigidbody velocity plus the actual shot direction times projectile speed.
+- Projectile firing applies optional recoil impulse opposite the actual shot direction using configured projectile mass and projectile speed through `ShipPhysicsCore`; direct shots use muzzle forward, while deterministic misses use the dispersed shot direction.
 - Projectile diameter controls visible projectile scale, collider-backed radius, trail width, and sweep radius. It is distinct from the legacy projectile scale fallback.
 - `hitChance` is a deterministic prototype balance value. A miss still spawns a projectile with deterministic aim dispersion; it is not a magic no-shot unless a future design explicitly changes that.
 - Projectiles ignore the firing ship's colliders and sweep their previous-to-current physics travel with sphere/raycast checks for fast target hits.

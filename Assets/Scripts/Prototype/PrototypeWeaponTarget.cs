@@ -39,8 +39,18 @@ public sealed class PrototypeWeaponTarget
             return null;
         }
 
+        if (IsProjectileCandidate(candidate))
+        {
+            return null;
+        }
+
         Transform root = ResolveTargetRoot(candidate);
         if (root == null)
+        {
+            return null;
+        }
+
+        if (IsProjectileCandidate(root))
         {
             return null;
         }
@@ -111,7 +121,7 @@ public sealed class PrototypeWeaponTarget
             }
 
             Transform root = ResolveTargetRoot(component.transform);
-            if (root == null || IsSameHierarchy(ownerRoot, root))
+            if (root == null || IsSameHierarchy(ownerRoot, root) || IsProjectileCandidate(root))
             {
                 continue;
             }
@@ -163,6 +173,11 @@ public sealed class PrototypeWeaponTarget
         }
 
         return candidate == ownerRoot || candidate.IsChildOf(ownerRoot) || ownerRoot.IsChildOf(candidate);
+    }
+
+    private static bool IsProjectileCandidate(Transform candidate)
+    {
+        return candidate != null && candidate.GetComponentInParent<Projectile>() != null;
     }
 
     private static string BuildLabel(Transform target)

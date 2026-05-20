@@ -57,9 +57,10 @@ public sealed class PrototypeShipKitWeaponBinder : MonoBehaviour
             report.warnings.Add("No weapon muzzle marker found; turret binding will not create a ship-center muzzle fallback.");
         }
 
-        Rigidbody shipRigidbody = GetOrAddComponent<Rigidbody>(gameObject, createMissingRuntimeComponents);
-        ShipStats shipStats = GetOrAddComponent<ShipStats>(gameObject, createMissingRuntimeComponents);
-        ShipPhysicsCore physicsCore = GetOrAddComponent<ShipPhysicsCore>(gameObject, createMissingRuntimeComponents);
+        GameObject runtimeRoot = root.gameObject;
+        Rigidbody shipRigidbody = GetOrAddComponent<Rigidbody>(runtimeRoot, createMissingRuntimeComponents);
+        ShipStats shipStats = GetOrAddComponent<ShipStats>(runtimeRoot, createMissingRuntimeComponents);
+        ShipPhysicsCore physicsCore = GetOrAddComponent<ShipPhysicsCore>(runtimeRoot, createMissingRuntimeComponents);
         if (physicsCore != null && shipRigidbody != null)
         {
             physicsCore.Configure(shipRigidbody);
@@ -146,7 +147,7 @@ public sealed class PrototypeShipKitWeaponBinder : MonoBehaviour
             return;
         }
 
-        GunModule gun = GetOrAddComponent<GunModule>(gameObject, createMissingRuntimeComponents);
+        GunModule gun = GetOrAddComponent<GunModule>(root.gameObject, createMissingRuntimeComponents);
         if (gun != null)
         {
             gun.ConfigureMuzzle(primaryWeapon.Muzzle);
@@ -154,10 +155,10 @@ public sealed class PrototypeShipKitWeaponBinder : MonoBehaviour
             report.boundGunModules = 1;
         }
 
-        PrototypeWeaponComputer weaponComputer = GetOrAddComponent<PrototypeWeaponComputer>(gameObject, createMissingRuntimeComponents);
+        PrototypeWeaponComputer weaponComputer = GetOrAddComponent<PrototypeWeaponComputer>(root.gameObject, createMissingRuntimeComponents);
         if (weaponComputer != null)
         {
-            weaponComputer.Bind(transform, shipStats, primaryWeapon);
+            weaponComputer.Bind(root, shipStats, primaryWeapon);
             report.boundWeaponComputers = 1;
         }
     }

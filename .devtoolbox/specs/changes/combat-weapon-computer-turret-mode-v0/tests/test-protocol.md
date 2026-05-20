@@ -17,17 +17,19 @@ Branch: `main`
 - Unity console error check: 0 errors.
 - `dotnet build "Weltraum Spiel.sln"`: Succeeded. Existing Unity assembly/reference warnings remain.
 - `dotnet test "Weltraum Spiel.sln"`: Exited 0.
-- Unity MCP EditMode full suite: 128 total, 128 passed, 0 failed, 0 skipped.
+- Unity MCP EditMode full suite after final review fixes: 140 total, 140 passed, 0 failed, 0 skipped.
+- Final review pass identified and fixed recoil direction consistency on deterministic misses, projectile exclusion from target discovery, `markerRoot` runtime ownership in `PrototypeShipKitWeaponBinder`, and muzzle-flash VFX child socket misclassification.
 
 ## Coverage Notes
 
 - Settings clamp: `PrototypeGunSettings` hit chance, fire rate, diameter, mass, range, turret slew, and yaw/pitch normalization are covered.
 - Turret arc: inside target accepted; outside target blocks fire; yaw/pitch clamp diagnostics are covered.
 - Target priority: `ManualOrder`, `Nearest`, `HighestHealth`, `LowestHealth`, and `PrototypeTargetDummy` no-health fallback are covered.
-- Fire control: 100 percent hit chance direct fire, 0 percent deterministic miss dispersion, projectile spawn on miss, and cooldown blocking are covered.
+- Fire control: 100 percent hit chance direct fire, 0 percent deterministic miss dispersion, projectile spawn on miss, recoil direction consistency, and cooldown blocking are covered.
 - Projectile diameter: visible scale, trail width, radius, and sweep radius diagnostics are covered.
+- Target discovery: live projectiles are excluded from selectable target pools.
 - Recoil: impulse direction/magnitude and `ShipPhysicsCore` impulse registration are covered.
-- Binder/bootstrap: `WEAPON_MUZZLE_*` discovery, idempotent binding, muzzle flash child idempotency, generated bootstrap marker muzzle, and no root ship-center `Muzzle` fallback are covered.
+- Binder/bootstrap: `WEAPON_MUZZLE_*` discovery, idempotent binding, muzzle flash child idempotency, wrapper `markerRoot` runtime ownership, generated bootstrap marker muzzle, and no root ship-center `Muzzle` fallback are covered.
 - UI/computer: panel binding, target selection, priority setting, auto-fire toggle, and status-label null safety are covered.
 
 ## Blender / Imported Ship Kit Status

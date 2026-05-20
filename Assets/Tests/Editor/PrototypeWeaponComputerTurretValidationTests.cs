@@ -20,6 +20,7 @@ public class PrototypeWeaponComputerTurretValidationTests
         DestroyNamed("WeaponComputerTargetLowHealth");
         DestroyNamed("WeaponComputerDummyTarget");
         DestroyNamed("WeaponBinderTestShip");
+        DestroyNamed("WeaponBinderWrapper");
         DestroyNamed("PrototypeBootstrapTestHost");
         DestroyNamed("PrototypeShip");
         DestroyNamed("PrototypeProjectile");
@@ -86,8 +87,8 @@ public class PrototypeWeaponComputerTurretValidationTests
         {
             GameObject near = CreateRigidbodyTarget("WeaponComputerTargetNear", new Vector3(0f, 0f, 8f));
             GameObject far = CreateRigidbodyTarget("WeaponComputerTargetFar", new Vector3(0f, 0f, 24f));
-            GameObject highHealth = CreateDamageTarget("WeaponComputerTargetHighHealth", new Vector3(0f, 0f, 16f), 0.9f);
-            GameObject lowHealth = CreateDamageTarget("WeaponComputerTargetLowHealth", new Vector3(0f, 0f, 18f), 0.2f);
+            GameObject highHealth = CreateDamageTarget("WeaponComputerTargetHighHealth", new Vector3(0f, 0f, 16f), 200f, 1f);
+            GameObject lowHealth = CreateDamageTarget("WeaponComputerTargetLowHealth", new Vector3(0f, 0f, 18f), 100f, 0.2f);
 
             fixture.Computer.RefreshTargets();
             SelectTarget(fixture.Computer, near.transform);
@@ -157,7 +158,25 @@ public class PrototypeWeaponComputerTurretValidationTests
             Assert.True(fired);
             Assert.False(fixture.Weapon.LastShotWasIntendedHit);
             Assert.That(Vector3.Angle(fixture.Weapon.LastProjectileVelocityWorld, fixture.Muzzle.forward), Is.GreaterThan(0.1f));
+            Vector3 expectedMissRecoil = -fixture.Weapon.LastProjectileVelocityWorld.normalized * (fixture.Stats.ProjectileMass * fixture.Stats.ProjectileSpeed);
+            Assert.That(Vector3.Distance(fixture.Weapon.LastRecoilImpulseWorld, expectedMissRecoil), Is.LessThan(PhysicsValidationProbe.TimestepImpulseTolerance));
             Assert.That(FindProjectiles().Length, Is.EqualTo(1));
+        }
+    }
+
+    [Test]
+    public void WeaponTargetDiscoveryIgnoresLiveProjectiles()
+    {
+        using (TurretFixture fixture = new TurretFixture())
+        {
+            GameObject target = CreateRigidbodyTarget("WeaponComputerTargetNear", new Vector3(0f, 0f, 30f));
+            SetWeaponStats(fixture.Stats, projectileSpeed: 80f, projectileMass: 1f, projectileDiameter: 0.2f, hitChance: 1f);
+
+            Assert.True(fixture.Weapon.TryFireAt(target.transform.position));
+
+            System.Collections.Generic.List<PrototypeWeaponTarget> targets = PrototypeWeaponTarget.Discover(fixture.Ship.transform);
+            Assert.That(targets.Exists(candidate => candidate.TargetTransform == target.transform), Is.True);
+            Assert.That(targets.Exists(candidate => candidate.TargetTransform != null && candidate.TargetTransform.GetComponent<Projectile>() != null), Is.False);
         }
     }
 
@@ -167,6 +186,7 @@ public class PrototypeWeaponComputerTurretValidationTests
         GameObject projectileObject = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         projectileObject.name = "PrototypeProjectile";
         projectileObject.AddComponent<Rigidbody>();
+        projectileObject.AddComponent<TrailRenderer>();
         Projectile projectile = projectileObject.AddComponent<Projectile>();
 
         projectile.Initialize(Vector3.forward * 10f, 1f, 3f, 0.6f, null);
@@ -219,6 +239,29 @@ public class PrototypeWeaponComputerTurretValidationTests
         Assert.That(ship.GetComponents<PrototypeWeaponComputer>().Length, Is.EqualTo(1));
         Assert.That(ship.GetComponentsInChildren<PrototypeTurretWeapon>(true).Length, Is.EqualTo(1));
         Assert.That(CountDescendantNames(ship.transform, PrototypeShipKitWeaponBinder.MuzzleFlashVfxChildName), Is.EqualTo(1));
+        Assert.That(PrototypeShipSocketUtility.FindSockets(ship.transform, PrototypeShipSocketType.WeaponMuzzle, false).Count, Is.EqualTo(1));
+    }
+
+    [Test]
+    public void WeaponBinderUsesMarkerRootForRuntimeOwnershipWhenMountedOnWrapper()
+    {
+        GameObject wrapper = new GameObject("WeaponBinderWrapper");
+        Transform markerRoot = CreateChild(wrapper.transform, "WeaponBinderTestShip");
+        CreateWeaponMarkerHierarchy(markerRoot, "PRIMARY", includeFlash: false);
+
+        PrototypeShipKitWeaponBinder binder = wrapper.AddComponent<PrototypeShipKitWeaponBinder>();
+        SetPrivateField(binder, "markerRoot", markerRoot);
+        PrototypeShipKitWeaponBinder.BindReport report = binder.BindNow();
+
+        Assert.That(report.boundTurretWeapons, Is.EqualTo(1));
+        Assert.NotNull(markerRoot.GetComponent<Rigidbody>());
+        Assert.NotNull(markerRoot.GetComponent<ShipStats>());
+        Assert.NotNull(markerRoot.GetComponent<ShipPhysicsCore>());
+        Assert.NotNull(markerRoot.GetComponent<GunModule>());
+        Assert.NotNull(markerRoot.GetComponent<PrototypeWeaponComputer>());
+        Assert.Null(wrapper.GetComponent<Rigidbody>());
+        Assert.Null(wrapper.GetComponent<GunModule>());
+        Assert.Null(wrapper.GetComponent<PrototypeWeaponComputer>());
     }
 
     [Test]
@@ -336,13 +379,13 @@ public class PrototypeWeaponComputerTurretValidationTests
         return target;
     }
 
-    private static GameObject CreateDamageTarget(string name, Vector3 position, float integrityFraction)
+    private static GameObject CreateDamageTarget(string name, Vector3 position, float maxIntegrity, float integrityFraction)
     {
         GameObject root = CreateRigidbodyTarget(name, position);
         GameObject module = new GameObject(name + "_Module");
         module.transform.SetParent(root.transform, false);
         PrototypeModuleDamageState damageState = module.AddComponent<PrototypeModuleDamageState>();
-        damageState.Configure(name, 100f, 0f);
+        damageState.Configure(name, maxIntegrity, 0f);
         damageState.SetIntegrityFraction(integrityFraction);
         return root;
     }
@@ -384,12 +427,12 @@ public class PrototypeWeaponComputerTurretValidationTests
 
     private static Projectile[] FindProjectiles()
     {
-        return UnityEngine.Object.FindObjectsByType<Projectile>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        return UnityEngine.Object.FindObjectsByType<Projectile>(FindObjectsInactive.Include);
     }
 
     private static void DestroyObjects<T>() where T : UnityEngine.Object
     {
-        T[] objects = UnityEngine.Object.FindObjectsByType<T>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        T[] objects = UnityEngine.Object.FindObjectsByType<T>(FindObjectsInactive.Include);
         for (int i = 0; i < objects.Length; i++)
         {
             if (objects[i] != null)

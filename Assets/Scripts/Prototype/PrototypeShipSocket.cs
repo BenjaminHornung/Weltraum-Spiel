@@ -283,6 +283,11 @@ public static class PrototypeShipSocketUtility
         }
 
         string upper = transformName.ToUpperInvariant();
+        if (upper.Contains("MUZZLEFLASH") || upper.Contains("MUZZLE_FLASH") || (upper.Contains("MUZZLE") && (upper.Contains("FLASH") || upper.Contains("VFX"))))
+        {
+            return false;
+        }
+
         return transformName == MuzzleName
             || transformName.StartsWith(MuzzleName, System.StringComparison.Ordinal)
             || upper == "MUZZLE"

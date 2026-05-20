@@ -268,13 +268,13 @@ Cooling is clamped at ambient temperature. Active modules report current power d
 Gun fire keeps projectile velocity relative to the moving ship:
 
 ```csharp
-projectileVelocity = shipRigidbody.linearVelocity + muzzleTransform.forward * shipStats.ProjectileSpeed;
+projectileVelocity = shipRigidbody.linearVelocity + shotDirectionWorld * shipStats.ProjectileSpeed;
 ```
 
-Each projectile has configured mass, speed, lifetime, and diameter. The turret path reads the normalized values from `ShipStats`; the legacy `GunModule` path keeps its local configured projectile mass/diameter populated through `ApplySettings` so existing Space-fire scenes remain compatible. When recoil is enabled, the opposite muzzle-relative momentum is applied to the firing ship at the muzzle position through `ShipPhysicsCore`:
+Each projectile has configured mass, speed, lifetime, and diameter. The turret path reads the normalized values from `ShipStats`; the legacy `GunModule` path keeps its local configured projectile mass/diameter populated through `ApplySettings` so existing Space-fire scenes remain compatible. When recoil is enabled, the opposite shot-direction momentum is applied to the firing ship at the muzzle position through `ShipPhysicsCore`:
 
 ```csharp
-projectileMomentum = muzzleForward * projectileMass * projectileSpeed;
+projectileMomentum = shotDirectionWorld * projectileMass * projectileSpeed;
 physicsCore.ApplyForceAtPosition(-projectileMomentum, muzzlePosition, ForceMode.Impulse);
 ```
 
@@ -284,7 +284,7 @@ The configured projectile mass is passed into the spawned `Projectile`, so Rigid
 
 Projectile diameter is also passed into `Projectile.Initialize`. Diameter updates the visible scale, the sphere collider baseline, trail start width, and the sweep radius (`diameter * 0.5`, clamped by the minimum sweep radius). This keeps balance values tied to both what the player sees and what the sweep/hit detection samples.
 
-`hitChance` is intentionally a prototype balance scalar, not a real ballistic simulation. It is deterministic in tests: `1.0` fires directly along the target/muzzle direction, while `0.0` still spawns a projectile but applies deterministic aim dispersion so a miss remains inspectable in the scene and recoil still occurs.
+`hitChance` is intentionally a prototype balance scalar, not a real ballistic simulation. It is deterministic in tests: `1.0` fires directly along the target/muzzle direction, while `0.0` still spawns a projectile but applies deterministic aim dispersion so a miss remains inspectable in the scene and recoil still matches the actual shot direction.
 
 Projectiles store their previous physics position and sweep from that position to the current Rigidbody position each `FixedUpdate`. The sweep uses `Physics.SphereCastAll` with the projectile sweep radius, then falls back to `Physics.RaycastAll` for a centerline check. A projectile reports only one hit, shares the same report path for sweep and `OnCollisionEnter`, and ignores its own collider plus all firing-ship colliders passed in at spawn.
 
@@ -340,7 +340,7 @@ Limitations for the first pass:
 
 EditMode tests in `Assets/Tests/Editor/PrototypePhysicsValidationTests.cs` exercise deterministic generated ship probes from `PhysicsValidationProbe`. They cover throttle-only main force, gimbal cross-product torque, RCS translation and yaw allocation, RCS spool diagnostics, manual/SAS torque priority, partial-fuel thrust scaling, configured-mass projectile recoil/impact checks, force-vs-impulse diagnostic separation, projectile sweep/self-hit checks, thermal heat rise, idle cooling, overheat hook activation, and a 0.02 vs 0.01 timestep comparison.
 
-Weapon/turret coverage lives in `Assets/Tests/Editor/PrototypeWeaponComputerTurretValidationTests.cs`. It covers settings clamps, local turret arc blocking and clamping, priority target selection, dummy health fallback labels, deterministic hit chance and cooldown, projectile diameter/sweep diagnostics, recoil impulse routing through `ShipPhysicsCore`, marker binder idempotency, bootstrap-generated real muzzle markers, and Weapon Computer panel binding/status safety.
+Weapon/turret coverage lives in `Assets/Tests/Editor/PrototypeWeaponComputerTurretValidationTests.cs`. It covers settings clamps, local turret arc blocking and clamping, priority target selection, dummy health fallback labels, deterministic hit chance and cooldown, projectile exclusion from target discovery, projectile diameter/sweep diagnostics, recoil impulse routing through `ShipPhysicsCore`, marker binder idempotency including wrapper `markerRoot` ownership, bootstrap-generated real muzzle markers, and Weapon Computer panel binding/status safety.
 
 Run the suite through Unity Test Runner EditMode or Unity MCP `run_tests(mode=EditMode)`. Store run output and deterministic probe evidence under the active spec folder, for example `.devtoolbox/specs/changes/validation-physics-test-suite/tests/test-protocol.md`.
 

@@ -225,7 +225,7 @@ public class PrototypeTurretWeapon : MonoBehaviour
             shipStats.ProjectileDiameter,
             shipRigidbody.GetComponentsInChildren<Collider>());
 
-        ApplyRecoilImpulse();
+        ApplyRecoilImpulse(shotDirection);
     }
 
     private Vector3 GetShotDirection(Vector3 targetWorldPosition, bool hasTarget)
@@ -256,7 +256,7 @@ public class PrototypeTurretWeapon : MonoBehaviour
         return (Quaternion.AngleAxis(angle, axis) * directDirection).normalized;
     }
 
-    private bool ApplyRecoilImpulse()
+    private bool ApplyRecoilImpulse(Vector3 projectileDirectionWorld)
     {
         LastRecoilApplied = false;
         LastRecoilImpulseWorld = Vector3.zero;
@@ -267,7 +267,10 @@ public class PrototypeTurretWeapon : MonoBehaviour
             return false;
         }
 
-        Vector3 projectileMomentum = mount.Muzzle.forward * (shipStats.ProjectileMass * shipStats.ProjectileSpeed);
+        Vector3 recoilDirection = projectileDirectionWorld.sqrMagnitude > 0.0001f
+            ? projectileDirectionWorld.normalized
+            : mount.Muzzle.forward;
+        Vector3 projectileMomentum = recoilDirection * (shipStats.ProjectileMass * shipStats.ProjectileSpeed);
         Vector3 recoilImpulse = -projectileMomentum;
         if (!physicsCore.ApplyForceAtPosition(recoilImpulse, LastRecoilPositionWorld, ForceMode.Impulse))
         {
