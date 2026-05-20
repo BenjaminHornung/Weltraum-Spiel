@@ -15,8 +15,8 @@
 - [x] Add bounded fixed-step predictor
 - [x] Add debug trajectory output or gizmo placeholder
 - [x] Add burn plan data shape
-- [ ] Compare prediction against short real simulation
-- [ ] Document included/excluded forces
+- [x] Compare prediction against short real simulation
+- [x] Document included/excluded forces
 
 ## Verification
 - [ ] Validate changed Unity scripts with Unity MCP
