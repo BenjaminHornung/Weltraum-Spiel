@@ -241,6 +241,23 @@ The acceleration is applied at the ship center of mass with `ForceMode.Accelerat
 
 The debug overlay reports the active gravity body, distance, `mu`, acceleration vector, diagnostic force, and whether the gravity step applied. This slice intentionally keeps the model to one central body. Future orbital gameplay should prefer readable sphere-of-influence or patched-conic transitions before considering full N-body simulation.
 
+## Trajectory Preview And Burn Planning
+
+The first trajectory preview slice is debug-only and intentionally narrow. `TrajectoryPredictionState` captures local position, velocity, rotation, angular velocity, elapsed time, and remaining fuel. `TrajectoryPredictor` advances that state with a bounded fixed-step loop and finite-value guards so preview work cannot run unbounded in Play Mode or editor tooling.
+
+Included forces for this slice:
+
+- Local translation from the initial velocity.
+- Optional central gravity through `ShipPhysicsCore.TryEvaluateCentralGravityAcceleration`, using the same `mu / r^2` formula and minimum-distance clamp as the live gravity step.
+
+Excluded forces and effects for this slice:
+
+- Main thruster, RCS, SAS, flight assist, recoil, docking assist, atmosphere, drag, thermal effects, collisions, damage, and floating-origin shifts.
+- Rotation integration beyond carrying the sampled rotation and angular velocity through the preview state.
+- Orbit-map UI, maneuver-node editing, patched conics, sphere-of-influence transitions, and full N-body prediction.
+
+`TrajectoryBurnPlan` is a data-only helper for early burn estimates. It records burn direction, duration, throttle, requested fuel, available estimated fuel, applied fuel fraction, and approximate delta-v from `thrust * throttle * fuelFraction * duration / mass`. It does not yet modify the trajectory preview path or reserve fuel; that coupling belongs in a later maneuver-planning slice.
+
 ## Floating Origin Infrastructure
 
 Large-world state is represented separately from Unity's local float transforms. `LargeWorldTransformState` stores double-precision absolute position and velocity beside the local Unity position, rotation, and angular velocity. `FloatingOriginBody` owns that state for a participating object, while `FloatingOriginManager` optionally shifts the local origin when its configured focus body crosses the local distance threshold.
@@ -268,7 +285,7 @@ The current prototype intentionally defers deeper simulation layers:
 
 - full fuel mass flow across all thruster systems and fuel-dependent COM changes,
 - armor, leaks, part detachment, visual destruction, and full combat balance,
-- orbit prediction, sphere-of-influence transitions, patched conics, and floating origin,
-- additional SAS/autopilot modes, docking constraints, damage effects, full heat/power networking, and trajectory preview.
+- orbit-map UI, sphere-of-influence transitions, patched conics, and full maneuver-node planning,
+- additional SAS/autopilot modes, docking constraints, damage effects, full heat/power networking, and higher-fidelity trajectory preview.
 
 Those systems should be added as separate spec changes so each one can be verified against the same force/torque accounting.
