@@ -23,6 +23,8 @@ This Unity prototype is a generated-primitives-only playable slice for testing z
 | `I` / `K` | RCS translate down / up |
 | `J` / `L` | RCS translate left / right |
 | `T` | Toggle SAS angular stabilization through the RCS allocator |
+| `Tab` / `B` | Select next / previous navigation waypoint |
+| `G` | Toggle waypoint autopilot for the selected target |
 | Hold `F` | Temporarily invert effective SAS state |
 | `Caps Lock` | Toggle precision controls for reduced attitude and RCS strength |
 | `V` | Cycle the prepared follow-camera mode |
@@ -57,6 +59,7 @@ Camera reset is bound to Backquote. Unity Input System key controls are physical
 - When debug vectors are enabled, the HUD can also show desired, actual, and residual RCS force markers so allocator limitations are visible without reading the full debug overlay.
 - The mode label structure reserves `WORLD`, `VELOCITY`, `TARGET`, `DOCKING`, and `ORBIT/GRAVITY`. Only the simple prototype labels are active in this slice.
 - `PrototypeFlightDebugConsole` is a development console for testing. Refuel, reset, damage, spawn target, test pulses, variant selection, debug vector toggles, and debug assist controls are debug-only actions, not player-facing gameplay controls.
+- `PrototypeWaypointAutopilot` is a prototype navigation assist. It reports selected target, distance, closing speed, lateral speed, stopping distance, fuel estimate, autopilot state, ETA, and arrival status in the debug overlay.
 
 ## Prototype Values
 
@@ -76,6 +79,8 @@ Camera reset is bound to Backquote. Unity Input System key controls are physical
 - SAS has `KillRotation` and `HoldAttitude` modes. It creates a ship-local PD torque request from angular velocity and optional target attitude, then sends that request through the same RCS nozzle allocator as manual attitude.
 - SAS exposes proportional and derivative gains on `RcsThrusterController`. Manual pitch, yaw, or roll input masks SAS on that same axis while released axes continue to stabilize.
 - Flight assist is an explicit request layer with `Simulation`, `AssistedFlight`, and `DebugAssist` modes. Simulation mode sends no assist force or torque, assisted requests must go through the RCS allocator and `ShipPhysicsCore`, and debug-only requests are labeled so they cannot masquerade as physical flight.
+- Waypoint navigation creates three visible primitive targets at runtime. `Tab` and `B` cycle them, and `G` toggles a conservative autopilot that accelerates and brakes through the existing main-thruster/fuel path while using RCS pulses for attitude and lateral correction when available.
+- The waypoint autopilot estimates stopping distance from current closing speed and conservative deceleration. It accounts for initial velocity and lateral velocity, and it may refuse a route with `FuelInsufficient` instead of pretending the ship can arrive.
 - `DockingPort` is a prototype docking data component. It reports world port frame data, relative state, eligibility diagnostics, bounded soft-capture `FlightAssistRequest` values, and a hard-lock placeholder that only requests lock after distance, angle, and velocity checks pass.
 - Built-in debug variants are available through the flight debug console: Baseline Balanced, Dual Main Thruster, Off-Center Main Thruster, One-Sided RCS, Heavy Cargo, and No-RCS. These variants are generated test rigs for physics behavior, not a final ship editor.
 - Active RCS nozzles show green debug VFX. The main thruster keeps its separate orange particle effect.
@@ -99,6 +104,8 @@ Optional CC0 assets, such as local low-poly ships or Kenney packs, may be consid
 - The camera mode cycle is intentionally minimal and only switches between prepared follow offsets/orbit baselines.
 - SAS is a local PD torque controller routed through RCS, not a full flight computer or hidden angular damping layer.
 - Flight assist does not use hidden Rigidbody damping. Physical assist requests are allocator-limited; debug-only helpers are diagnostics/testing aids only.
+- Waypoint autopilot v0 is a local prototype assist, not an orbital navigator, map UI, docking planner, slingshot planner, or obstacle-avoidance system. It does not use hidden teleporting or direct Rigidbody velocity writes during runtime navigation.
+- Manual throttle or attitude input aborts waypoint autopilot and returns control to the pilot.
 - Docking hard lock is currently a documented placeholder rather than an active joint. It is gated by docking constraints so later joint work can reuse the same diagnostics.
 - RCS allocation is a prototype bounded allocator, not a final optimizer, but it is transform-based and uses real lever arms around COM.
 - Deferred physics-core slices include additional SAS/autopilot modes, docking, deeper damage effects, and trajectory prediction.

@@ -128,7 +128,10 @@ public class PrototypeBootstrap : MonoBehaviour
             rcs.ApplySettings(variant.Rcs);
         }
 
-        GetOrAddComponent<PlayerShipController>(ship);
+        var controller = GetOrAddComponent<PlayerShipController>(ship);
+        var waypointManager = GetOrAddComponent<PrototypeWaypointManager>(ship);
+        waypointManager.EnsureDefaultWaypoints();
+        var waypointAutopilot = GetOrAddComponent<PrototypeWaypointAutopilot>(ship);
 
         mainThruster.Configure(mainThrusterModules, shipRigidbody, stats, physicsCore);
         engine.ConfigureNozzle(primaryMainNozzle);
@@ -141,6 +144,7 @@ public class PrototypeBootstrap : MonoBehaviour
             null,
             shipRigidbody,
             physicsCore);
+        waypointAutopilot.Bind(waypointManager, controller, stats, shipRigidbody);
 
         if (gun == null || engine == null)
         {

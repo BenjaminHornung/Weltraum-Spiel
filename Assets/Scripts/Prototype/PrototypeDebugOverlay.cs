@@ -11,6 +11,7 @@ public class PrototypeDebugOverlay : MonoBehaviour
     [SerializeField] private ShipPhysicsCore targetPhysicsCore;
     [SerializeField] private FloatingOriginBody floatingOriginBody;
     [SerializeField] private FloatingOriginManager floatingOriginManager;
+    [SerializeField] private PrototypeWaypointAutopilot waypointAutopilot;
 
     [Header("Overlay")]
     [SerializeField] private Vector2 windowPosition = new Vector2(16f, 16f);
@@ -67,6 +68,11 @@ public class PrototypeDebugOverlay : MonoBehaviour
         if (shipController == null)
         {
             shipController = target.GetComponent<PlayerShipController>();
+        }
+
+        if (waypointAutopilot == null)
+        {
+            waypointAutopilot = target.GetComponent<PrototypeWaypointAutopilot>();
         }
     }
 
@@ -236,8 +242,19 @@ public class PrototypeDebugOverlay : MonoBehaviour
         LargeWorldVector3d absoluteVelocity = floatingOriginBody != null ? floatingOriginBody.AbsoluteVelocity : LargeWorldVector3d.Zero;
         int originShiftCount = floatingOriginManager != null ? floatingOriginManager.ShiftCount : 0;
         int registeredOriginBodies = floatingOriginManager != null ? floatingOriginManager.RegisteredBodyCount : 0;
+        string navTargetName = waypointAutopilot != null ? waypointAutopilot.TargetName : "none";
+        string autopilotState = waypointAutopilot != null ? waypointAutopilot.CurrentState.ToString() : "none";
+        string autopilotArrival = waypointAutopilot != null ? waypointAutopilot.ArrivalStatus : "unavailable";
+        float navDistance = waypointAutopilot != null ? waypointAutopilot.DistanceToTarget : 0f;
+        float navClosingSpeed = waypointAutopilot != null ? waypointAutopilot.ClosingSpeed : 0f;
+        float navLateralSpeed = waypointAutopilot != null ? waypointAutopilot.LateralSpeed : 0f;
+        float navStoppingDistance = waypointAutopilot != null ? waypointAutopilot.StoppingDistance : 0f;
+        float navEtaSeconds = waypointAutopilot != null ? waypointAutopilot.EtaSeconds : float.PositiveInfinity;
+        float navAvailableBurn = waypointAutopilot != null ? waypointAutopilot.AvailableBurnSeconds : 0f;
+        float navRequiredBurn = waypointAutopilot != null ? waypointAutopilot.RequiredBurnSeconds : 0f;
+        bool navFuelFeasible = waypointAutopilot != null && waypointAutopilot.FuelFeasible;
 
-        Rect rect = new Rect(windowPosition.x, windowPosition.y, 620f, 780f);
+        Rect rect = new Rect(windowPosition.x, windowPosition.y, 620f, 830f);
         GUI.Box(rect, "Prototype Flight Diagnostics");
 
         GUILayout.BeginArea(new Rect(rect.x + 8f, rect.y + 22f, rect.width - 14f, rect.height - 24f));
@@ -320,6 +337,12 @@ public class PrototypeDebugOverlay : MonoBehaviour
         GUILayout.Label($"Gravity mu/dist: {gravityMu:0.00} / {gravityDistance:0.00} m", labelStyle);
         GUILayout.Label($"Gravity accel: {FormatVector(gravityAcceleration)} m/s^2", labelStyle);
         GUILayout.Label($"Gravity force: {FormatVector(gravityForce)} N", labelStyle);
+        GUILayout.Space(4f);
+        GUILayout.Label($"Nav target: {navTargetName}", labelStyle);
+        GUILayout.Label($"Autopilot: {autopilotState}, {autopilotArrival}", labelStyle);
+        GUILayout.Label($"Nav dist/ETA: {navDistance:0.0} m, {FormatEta(navEtaSeconds)}", labelStyle);
+        GUILayout.Label($"Nav speed: closing {navClosingSpeed:0.0} m/s, lateral {navLateralSpeed:0.0} m/s", labelStyle);
+        GUILayout.Label($"Nav stop/fuel: {navStoppingDistance:0.0} m, burn {FormatBurn(navAvailableBurn)} / {navRequiredBurn:0.0}s {(navFuelFeasible ? "ok" : "low")}", labelStyle);
         GUILayout.Space(4f);
         GUILayout.Label($"SAS: {(sasEnabled ? "on" : "off")} (effective {(effectiveSas ? "on" : "off")}) {sasMode}", labelStyle);
         GUILayout.Label($"SAS PD: Kp {sasProportionalGain:0.00}, Kd {sasDerivativeGain:0.00}, auth {sasAuthority:0.00}", labelStyle);
@@ -420,6 +443,16 @@ public class PrototypeDebugOverlay : MonoBehaviour
         return value <= 0f ? "instant" : $"{value:0.00}/s";
     }
 
+    private static string FormatEta(float value)
+    {
+        return float.IsInfinity(value) || float.IsNaN(value) ? "--" : $"{value:0.0}s";
+    }
+
+    private static string FormatBurn(float value)
+    {
+        return float.IsInfinity(value) || float.IsNaN(value) ? "free" : $"{value:0.0}s";
+    }
+
     private static string FormatAxisMask(Vector3 value)
     {
         return $"P {(value.x > 0.5f ? "released" : "manual")}, Y {(value.y > 0.5f ? "released" : "manual")}, R {(value.z > 0.5f ? "released" : "manual")}";
@@ -490,6 +523,7 @@ public class PrototypeDebugOverlay : MonoBehaviour
         targetPhysicsCore = trackTarget != null ? trackTarget.GetComponent<ShipPhysicsCore>() : null;
         floatingOriginBody = trackTarget != null ? trackTarget.GetComponent<FloatingOriginBody>() : null;
         floatingOriginManager = floatingOriginBody != null ? floatingOriginBody.Manager : null;
+        waypointAutopilot = trackTarget != null ? trackTarget.GetComponent<PrototypeWaypointAutopilot>() : null;
     }
 
     private static string Shorten(string value, int maxLength)

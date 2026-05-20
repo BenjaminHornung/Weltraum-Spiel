@@ -114,6 +114,7 @@ public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal
     public FlightAssistMode FlightAssistMode => flightAssistMode;
     public bool HasSasTargetRotation => sasTargetRotationValid;
     public Quaternion SasTargetRotation => sasTargetRotationValid ? sasTargetRotation : transform.rotation;
+    public bool LastManualFlightInput { get; private set; }
     public FlightAssistRequest LastFlightAssistRequest { get; private set; } = FlightAssistRequest.None;
     public Vector3 LastFlightAssistForceWorld => LastFlightAssistRequest.forceWorld;
     public Vector3 LastFlightAssistTorqueLocal => LastFlightAssistRequest.torqueLocal;
@@ -450,6 +451,13 @@ public bool GimbalEnabled => mainThruster != null && mainThruster.SupportsGimbal
                 attitudeInput.z += keyboardAttitudeStrength;
             }
         }
+
+        LastManualFlightInput = throttleUp
+            || throttleDown
+            || cutThrottle
+            || fullThrottle
+            || rcsTranslationInput.sqrMagnitude > 0.0001f
+            || attitudeInput.sqrMagnitude > 0.0001f;
     }
 
     private void UpdateMainThrottle(float deltaTime)
