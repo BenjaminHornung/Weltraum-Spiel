@@ -56,6 +56,12 @@ public class PrototypeNavigationObstacle : MonoBehaviour
         radius = Mathf.Max(0.1f, radiusMeters);
     }
 
+    public void Configure(float radiusMeters, string displayName)
+    {
+        radius = Mathf.Max(0.1f, radiusMeters);
+        this.displayName = string.IsNullOrWhiteSpace(displayName) ? name : displayName;
+    }
+
     public void Configure(float radiusMeters, float clearanceMeters, bool blocksAutopilot = true)
     {
         radius = Mathf.Max(0.1f, radiusMeters);

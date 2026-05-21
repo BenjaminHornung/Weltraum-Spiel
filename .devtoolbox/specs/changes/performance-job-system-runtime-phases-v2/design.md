@@ -54,6 +54,20 @@ Each benchmark performs warmup, scalar timing, job timing, parity checks, and wr
 
 `.devtoolbox/specs/changes/performance-job-system-runtime-phases-v2/tests/performance/`
 
+## Measured Results
+
+Unity EditMode benchmark run `a9e190b318fd40cab43e485b3fa44db6` completed 7/7 tests. Median timings after warmup:
+
+| Phase | Items | Work units | Scalar median | Job median | Speedup |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Phase 2 Projectile integration | 262144 | 262144 | 17.1319 ms | 0.5585 ms | 30.67x |
+| Phase 3 Target scoring | 262144 | 262144 | 68.5922 ms | 0.5424 ms | 126.46x |
+| Phase 4 Trajectory evaluation | 32768 | 3145728 | 187.8394 ms | 0.6808 ms | 275.91x |
+| Phase 5 Sensor filtering | 262144 | 262144 | 59.1424 ms | 0.5196 ms | 113.82x |
+| Phase 6 RCS nozzle scoring | 262144 | 262144 | 65.7580 ms | 1.0481 ms | 62.74x |
+
+Aggregate scalar median was 398.4639 ms. Aggregate job median was 3.3494 ms, for a 118.97x data-kernel speedup.
+
 ## Safety Rules
 
 - Job structs must not contain `Transform`, `GameObject`, `Renderer`, `Rigidbody`, `Component`, `Collider`, or `string`.

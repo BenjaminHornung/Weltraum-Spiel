@@ -15,26 +15,26 @@
 - [x] 4. Implement Phase 4 trajectory candidate evaluation job path.
 - [x] 5. Implement Phase 5 sensor/minimap filtering job path.
 - [x] 6. Implement Phase 6 RCS allocator scoring job path.
-- [ ] 7. Add source guards that jobs do not call Unity hierarchy APIs.
+- [x] 7. Add source guards that jobs do not call Unity hierarchy APIs.
 
 ## Measurement
 
-- [ ] 1. Add deterministic benchmark harness.
-- [ ] 2. Write scalar/job timing CSV.
-- [ ] 3. Write benchmark summary markdown with speedup ratios.
-- [ ] 4. Capture Unity profiler/counter evidence.
-- [ ] 5. Capture screenshots proving editor/test scene is alive.
+- [x] 1. Add deterministic benchmark harness.
+- [x] 2. Write scalar/job timing CSV.
+- [x] 3. Write benchmark summary markdown with speedup ratios.
+- [x] 4. Capture Unity profiler/counter evidence.
+- [x] 5. Capture screenshots proving editor/test scene is alive.
 
 ## Verification
 
-- [ ] 1. Run targeted Unity EditMode parity/performance tests.
-- [ ] 2. Run full Unity EditMode suite or record concrete blocker.
-- [ ] 3. Run `dotnet build "Weltraum Spiel.sln"`.
-- [ ] 4. Run `dotnet test "Weltraum Spiel.sln" --no-build`.
-- [ ] 5. Update test protocol with commands, logs, screenshots, and artifacts.
-- [ ] 6. Review implementation for main-thread/job-thread boundary violations.
+- [x] 1. Run targeted Unity EditMode parity/performance tests.
+- [x] 2. Run full Unity EditMode suite or record concrete blocker.
+- [x] 3. Run `dotnet build "Weltraum Spiel.sln"`.
+- [x] 4. Run `dotnet test "Weltraum Spiel.sln" --no-build`.
+- [x] 5. Update test protocol with commands, logs, screenshots, and artifacts.
+- [x] 6. Review implementation for main-thread/job-thread boundary violations.
 
 ## Closeout
 
-- [ ] 1. Commit implementation and evidence.
-- [ ] 2. Push `main` to `origin/main`.
+- [x] 1. Commit implementation and evidence.
+- [x] 2. Push `main` to `origin/main`.

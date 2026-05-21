@@ -283,14 +283,15 @@ public class SimpleFollowCamera : MonoBehaviour
             return;
         }
 
-        float positionBlend = snapNextFrame ? 1f : 1f - Mathf.Exp(-positionSmooth * Time.deltaTime);
+        bool shouldSnapThisFrame = snapNextFrame || Time.deltaTime <= Mathf.Epsilon;
+        float positionBlend = shouldSnapThisFrame ? 1f : 1f - Mathf.Exp(-positionSmooth * Time.deltaTime);
         transform.position = Vector3.Lerp(transform.position, desiredPosition, positionBlend);
 
         Vector3 direction = lookTarget - transform.position;
         if (direction.sqrMagnitude > 0.01f)
         {
             Quaternion targetRotation = Quaternion.LookRotation(direction, GetLookUp());
-            float rotationBlend = snapNextFrame ? 1f : 1f - Mathf.Exp(-rotationSmooth * Time.deltaTime);
+            float rotationBlend = shouldSnapThisFrame ? 1f : 1f - Mathf.Exp(-rotationSmooth * Time.deltaTime);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationBlend);
         }
 
