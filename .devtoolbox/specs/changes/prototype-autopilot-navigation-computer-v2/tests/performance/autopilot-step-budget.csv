@@ -1,0 +1,8 @@
+metric,budget,observed,status,source
+planner_candidates_per_plan,8,8,pass,PrototypeTrajectoryPlanner
+editmode_v2_tests_total,>0,19,pass,editmode-results.xml
+editmode_v2_tests_failed,0,0,pass,editmode-results.xml
+playmode_v2_tests_total,>0,6,pass,playmode-results.xml
+playmode_v2_tests_failed,0,0,pass,playmode-results.xml
+fixedupdate_findobjects_calls,0,0,pass,source review and registry/cache path
+runtime_rigidbody_direct_state_writes,0,0,pass,source guard test
