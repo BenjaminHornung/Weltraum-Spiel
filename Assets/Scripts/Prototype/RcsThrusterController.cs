@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(Rigidbody))]
 public class RcsThrusterController : MonoBehaviour
@@ -17,7 +18,7 @@ public class RcsThrusterController : MonoBehaviour
     }
 
 
-    private class RcsAllocation
+    private struct RcsAllocation
     {
         public RcsNozzle nozzle;
         public Vector3 position;
@@ -60,7 +61,9 @@ public class RcsThrusterController : MonoBehaviour
     [SerializeField] private Transform backThruster;
 
     private readonly System.Collections.Generic.List<RcsNozzle> nozzles = new System.Collections.Generic.List<RcsNozzle>();
+    private readonly List<RcsAllocation> allocationScratch = new List<RcsAllocation>(32);
     private readonly System.Text.StringBuilder activeNozzleBuilder = new System.Text.StringBuilder(160);
+    private float[] actualThrottleScratch = new float[0];
     private int nozzleRefreshCount;
     private bool nozzlesDirty = true;
     private Transform cachedNozzleSearchRoot;
@@ -366,8 +369,28 @@ public class RcsThrusterController : MonoBehaviour
 
     private static GameObject FindNozzleVfx(Transform nozzle)
     {
-        Transform vfx = nozzle != null ? nozzle.Find("VFX") : null;
-        return vfx != null ? vfx.gameObject : null;
+        if (nozzle == null)
+        {
+            return null;
+        }
+
+        string[] childNames =
+        {
+            "VFX",
+            PrototypeShipKitVfxBinder.RcsThrusterVfxChildName,
+            "RcsThrusterVfx"
+        };
+
+        for (int i = 0; i < childNames.Length; i++)
+        {
+            Transform vfx = nozzle.Find(childNames[i]);
+            if (vfx != null)
+            {
+                return vfx.gameObject;
+            }
+        }
+
+        return null;
     }
     private static string BuildNozzleDedupeKey(Transform nozzle)
     {
@@ -1022,15 +1045,15 @@ public class RcsThrusterController : MonoBehaviour
         LastResidualRcsForceWorld = desiredForceWorld;
         LastResidualRcsTorqueWorld = desiredTorqueWorld;
 
-        RcsAllocation[] allocations = BuildAllocationData();
+        int allocationCount = BuildAllocationData();
         bool hasRequest = desiredForceWorld.sqrMagnitude > 0.0001f || desiredTorqueWorld.sqrMagnitude > 0.0001f;
         if (!hasRequest)
         {
-            ApplySpoolDownForces(allocations, desiredForceWorld, desiredTorqueWorld, manualAttitude, deltaTime, AllocatorStatusSpoolingDown);
+            ApplySpoolDownForces(allocationScratch, allocationCount, desiredForceWorld, desiredTorqueWorld, manualAttitude, deltaTime, AllocatorStatusSpoolingDown);
             return;
         }
 
-        if (allocations.Length == 0)
+        if (allocationCount == 0)
         {
             LastAllocatorStatus = AllocatorStatusNoNozzles;
             return;
@@ -1038,15 +1061,20 @@ public class RcsThrusterController : MonoBehaviour
 
         float forceWeight;
         float torqueWeight;
-        GetAllocatorWeights(allocations, desiredForceWorld, desiredTorqueWorld, out forceWeight, out torqueWeight);
-        AllocateThrottleGreedy(allocations, desiredForceWorld, desiredTorqueWorld, forceWeight, torqueWeight);
-        ApplyAllocatedForces(allocations, desiredForceWorld, desiredTorqueWorld, manualAttitude, deltaTime);
+        GetAllocatorWeights(allocationScratch, allocationCount, desiredForceWorld, desiredTorqueWorld, out forceWeight, out torqueWeight);
+        AllocateThrottleGreedy(allocationScratch, allocationCount, desiredForceWorld, desiredTorqueWorld, forceWeight, torqueWeight);
+        ApplyAllocatedForces(allocationScratch, allocationCount, desiredForceWorld, desiredTorqueWorld, manualAttitude, deltaTime);
     }
 
 
-    private RcsAllocation[] BuildAllocationData()
+    private int BuildAllocationData()
     {
-        var allocations = new System.Collections.Generic.List<RcsAllocation>(nozzles.Count);
+        allocationScratch.Clear();
+        if (allocationScratch.Capacity < nozzles.Count)
+        {
+            allocationScratch.Capacity = nozzles.Count;
+        }
+
         for (int i = 0; i < nozzles.Count; i++)
         {
             RcsNozzle nozzle = nozzles[i];
@@ -1064,7 +1092,7 @@ public class RcsThrusterController : MonoBehaviour
             Vector3 forceAtFull = GetNozzleForceDirection(nozzle.transform) * maxThrust;
             Vector3 position = nozzle.transform.position;
             Vector3 lever = position - shipRigidbody.worldCenterOfMass;
-            allocations.Add(new RcsAllocation
+            allocationScratch.Add(new RcsAllocation
             {
                 nozzle = nozzle,
                 position = position,
@@ -1075,7 +1103,7 @@ public class RcsThrusterController : MonoBehaviour
             });
         }
 
-        return allocations.ToArray();
+        return allocationScratch.Count;
     }
 
     private float GetTorqueAuthority()
@@ -1112,7 +1140,7 @@ public class RcsThrusterController : MonoBehaviour
         return GetTorqueAuthority() * SasAuthority;
     }
 
-    private static void GetAllocatorWeights(RcsAllocation[] allocations, Vector3 desiredForceWorld, Vector3 desiredTorqueWorld, out float forceWeight, out float torqueWeight)
+    private static void GetAllocatorWeights(List<RcsAllocation> allocations, int allocationCount, Vector3 desiredForceWorld, Vector3 desiredTorqueWorld, out float forceWeight, out float torqueWeight)
     {
         bool wantsForce = desiredForceWorld.sqrMagnitude > 0.0001f;
         bool wantsTorque = desiredTorqueWorld.sqrMagnitude > 0.0001f;
@@ -1120,7 +1148,7 @@ public class RcsThrusterController : MonoBehaviour
         float representativeTorque = 1f;
         if (allocations != null)
         {
-            for (int i = 0; i < allocations.Length; i++)
+            for (int i = 0; i < allocationCount; i++)
             {
                 representativeForce = Mathf.Max(representativeForce, allocations[i].forceAtFull.magnitude);
                 representativeTorque = Mathf.Max(representativeTorque, allocations[i].torqueAtFull.magnitude);
@@ -1147,7 +1175,7 @@ public class RcsThrusterController : MonoBehaviour
         torqueWeight = 1.5f / (torqueScale * torqueScale);
     }
 
-    private static void AllocateThrottleGreedy(RcsAllocation[] allocations, Vector3 desiredForceWorld, Vector3 desiredTorqueWorld, float forceWeight, float torqueWeight)
+    private static void AllocateThrottleGreedy(List<RcsAllocation> allocations, int allocationCount, Vector3 desiredForceWorld, Vector3 desiredTorqueWorld, float forceWeight, float torqueWeight)
     {
         const int MaxPasses = 32;
         const float MinImprovement = 0.0000001f;
@@ -1160,7 +1188,7 @@ public class RcsThrusterController : MonoBehaviour
             float bestDelta = 0f;
             float bestImprovement = 0f;
 
-            for (int i = 0; i < allocations.Length; i++)
+            for (int i = 0; i < allocationCount; i++)
             {
                 RcsAllocation allocation = allocations[i];
                 float remainingThrottle = 1f - allocation.throttle;
@@ -1200,9 +1228,11 @@ public class RcsThrusterController : MonoBehaviour
                 break;
             }
 
-            allocations[bestIndex].throttle = Mathf.Clamp01(allocations[bestIndex].throttle + bestDelta);
-            residualForce -= allocations[bestIndex].forceAtFull * bestDelta;
-            residualTorque -= allocations[bestIndex].torqueAtFull * bestDelta;
+            RcsAllocation bestAllocation = allocations[bestIndex];
+            bestAllocation.throttle = Mathf.Clamp01(bestAllocation.throttle + bestDelta);
+            allocations[bestIndex] = bestAllocation;
+            residualForce -= bestAllocation.forceAtFull * bestDelta;
+            residualTorque -= bestAllocation.torqueAtFull * bestDelta;
         }
     }
 
@@ -1211,28 +1241,28 @@ public class RcsThrusterController : MonoBehaviour
         return force.sqrMagnitude * forceWeight + torque.sqrMagnitude * torqueWeight;
     }
 
-    private void ApplyAllocatedForces(RcsAllocation[] allocations, Vector3 desiredForceWorld, Vector3 desiredTorqueWorld, Vector3 manualAttitude, float deltaTime)
+    private void ApplyAllocatedForces(List<RcsAllocation> allocations, int allocationCount, Vector3 desiredForceWorld, Vector3 desiredTorqueWorld, Vector3 manualAttitude, float deltaTime)
     {
         bool recordYaw = Mathf.Abs(manualAttitude.y) > ManualCommandDeadZone || Mathf.Abs(LastSasCommand.y) > SasCommandDeadZone;
         float requestedThrottleTotal = 0f;
-        for (int i = 0; i < allocations.Length; i++)
+        for (int i = 0; i < allocationCount; i++)
         {
             requestedThrottleTotal += Mathf.Clamp01(allocations[i].throttle);
         }
 
         if (requestedThrottleTotal <= 0f)
         {
-            ApplySpoolDownForces(allocations, desiredForceWorld, desiredTorqueWorld, manualAttitude, deltaTime, AllocatorStatusNoSolution);
+            ApplySpoolDownForces(allocations, allocationCount, desiredForceWorld, desiredTorqueWorld, manualAttitude, deltaTime, AllocatorStatusNoSolution);
             return;
         }
 
-        float[] actualThrottles = new float[allocations.Length];
+        EnsureActualThrottleCapacity(allocationCount);
         float actualThrottleTotal = 0f;
-        for (int i = 0; i < allocations.Length; i++)
+        for (int i = 0; i < allocationCount; i++)
         {
             RcsAllocation allocation = allocations[i];
             float throttle = MoveNozzleThrottleTowards(allocation.nozzle, Mathf.Clamp01(allocation.throttle), deltaTime);
-            actualThrottles[i] = throttle;
+            actualThrottleScratch[i] = throttle;
             actualThrottleTotal += throttle;
         }
 
@@ -1248,10 +1278,10 @@ public class RcsThrusterController : MonoBehaviour
         }
 
         LastAllocatedNozzleThrottleTotal = actualThrottleTotal * fuelFraction;
-        for (int i = 0; i < allocations.Length; i++)
+        for (int i = 0; i < allocationCount; i++)
         {
             RcsAllocation allocation = allocations[i];
-            float throttle = actualThrottles[i] * fuelFraction;
+            float throttle = actualThrottleScratch[i] * fuelFraction;
             allocation.nozzle.actualThrottle = throttle;
             if (throttle <= 0.0001f)
             {
@@ -1287,26 +1317,27 @@ public class RcsThrusterController : MonoBehaviour
     }
 
     private void ApplySpoolDownForces(
-        RcsAllocation[] allocations,
+        List<RcsAllocation> allocations,
+        int allocationCount,
         Vector3 desiredForceWorld,
         Vector3 desiredTorqueWorld,
         Vector3 manualAttitude,
         float deltaTime,
         string inactiveStatus)
     {
-        if (allocations == null || allocations.Length == 0)
+        if (allocations == null || allocationCount == 0)
         {
             LastAllocatorStatus = inactiveStatus == AllocatorStatusSpoolingDown ? AllocatorStatusIdle : inactiveStatus;
             return;
         }
 
         bool recordYaw = Mathf.Abs(manualAttitude.y) > ManualCommandDeadZone || Mathf.Abs(LastSasCommand.y) > SasCommandDeadZone;
-        float[] actualThrottles = new float[allocations.Length];
+        EnsureActualThrottleCapacity(allocationCount);
         float actualThrottleTotal = 0f;
-        for (int i = 0; i < allocations.Length; i++)
+        for (int i = 0; i < allocationCount; i++)
         {
             float throttle = MoveNozzleThrottleTowards(allocations[i].nozzle, 0f, deltaTime);
-            actualThrottles[i] = throttle;
+            actualThrottleScratch[i] = throttle;
             actualThrottleTotal += throttle;
         }
 
@@ -1330,10 +1361,10 @@ public class RcsThrusterController : MonoBehaviour
         }
 
         LastAllocatedNozzleThrottleTotal = actualThrottleTotal * fuelFraction;
-        for (int i = 0; i < allocations.Length; i++)
+        for (int i = 0; i < allocationCount; i++)
         {
             RcsAllocation allocation = allocations[i];
-            float throttle = actualThrottles[i] * fuelFraction;
+            float throttle = actualThrottleScratch[i] * fuelFraction;
             allocation.nozzle.actualThrottle = throttle;
             if (throttle <= 0.0001f)
             {
@@ -1368,6 +1399,16 @@ public class RcsThrusterController : MonoBehaviour
         LastAllocatorStatus = desiredForceWorld.sqrMagnitude <= 0.0001f && desiredTorqueWorld.sqrMagnitude <= 0.0001f
             ? AllocatorStatusSpoolingDown
             : DetermineAllocatorStatus(desiredForceWorld, desiredTorqueWorld, LastResidualRcsForceWorld, LastResidualRcsTorqueWorld);
+    }
+
+    private void EnsureActualThrottleCapacity(int requiredCount)
+    {
+        if (actualThrottleScratch.Length >= requiredCount)
+        {
+            return;
+        }
+
+        actualThrottleScratch = new float[Mathf.Max(requiredCount, actualThrottleScratch.Length * 2, 8)];
     }
 
     private string DetermineAllocatorStatus(Vector3 desiredForceWorld, Vector3 desiredTorqueWorld, Vector3 residualForceWorld, Vector3 residualTorqueWorld)

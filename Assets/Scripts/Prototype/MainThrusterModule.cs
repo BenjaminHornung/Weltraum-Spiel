@@ -342,7 +342,7 @@ public class MainThrusterModule : MonoBehaviour
 
     private Vector3 GetBaseThrustDirection()
     {
-        Vector3 baseDirection = transform.forward;
+        Vector3 baseDirection = thrustTransform != null ? thrustTransform.forward : transform.forward;
         if (baseDirection.sqrMagnitude <= 0.0001f)
         {
             baseDirection = Vector3.forward;

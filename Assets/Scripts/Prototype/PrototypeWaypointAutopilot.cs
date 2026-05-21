@@ -8,6 +8,7 @@ public enum PrototypeWaypointAutopilotState
     FuelCheck,
     AlignForBurn,
     Accelerate,
+    ObstacleAvoidance,
     FlipForBrake,
     Brake,
     FinalApproach,
@@ -23,6 +24,17 @@ public enum PrototypeWaypointAutopilotArrivalPhase
     LongRangeBurn,
     Brake,
     LateralCorrection,
+    FinalApproach,
+    Hold
+}
+
+public enum PrototypeWaypointAutopilotNavigationPhase
+{
+    Direct,
+    AvoidancePlanning,
+    Avoiding,
+    ReacquireDirectPath,
+    Brake,
     FinalApproach,
     Hold
 }
@@ -71,7 +83,12 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     [SerializeField] private float lateralCorrectionDampingSeconds = 2f;
     [SerializeField] private float holdCompletionSpeedMetersPerSecond = 0.12f;
     [SerializeField] private float obstacleClearanceRadiusMeters = 8f;
+    [SerializeField] private float navigationPlanIntervalSeconds = 0.2f;
     [SerializeField] private float fuelReserveSeconds = 8f;
+    [Header("V2 Navigation Timing")]
+    [SerializeField] private float avoidanceLockSeconds = 4f;
+    [SerializeField] private float avoidReacquireTimeoutSeconds = 2.5f;
+    [SerializeField] private float holdConfirmSeconds = 1.5f;
 
     [Header("Runtime")]
     [SerializeField] private Rigidbody shipRigidbody;
@@ -90,6 +107,17 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private Vector3 requestedRcsTranslation;
     private Vector3 desiredBurnDirection;
     private bool limitedFinalApproachCapability;
+    private bool navigationDebugPlanningActive;
+    private bool navigationPlanDirty = true;
+    private float nextNavigationPlanTime;
+    private float avoidanceHoldExpireTime;
+    private float holdConfirmUntilTime;
+    private bool holdConfirmStarted;
+    private float reacquireDirectPathUntilTime;
+    private PrototypeWaypointAutopilotNavigationPhase navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.Direct;
+    private Vector3 stableAvoidanceWaypoint;
+    private Vector3 stableAvoidanceDirection;
+    private bool hasStableAvoidance;
     private PrototypeMomentumAssist momentumAssist;
     private PrototypeTrajectoryPlanner trajectoryPlanner;
 
@@ -139,6 +167,18 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     public Vector3 RequestedAcceleration => LastTrajectoryPlan.desiredAccelerationWorld;
     public Vector3 RequestedRcsForce => requestedRcsTranslation;
     public string FailureReason => ArrivalFailureReason;
+    public PrototypeWaypointAutopilotNavigationPhase NavigationPhaseV2 => navigationPhaseV2;
+    public PrototypeWaypointAutopilotNavigationPhase NavigationPhase => navigationPhaseV2;
+    public PrototypeTrajectorySegmentType ActiveSegmentType => LastTrajectoryPlan.activeSegmentType;
+    public string ActiveSegmentLabel => LastTrajectoryPlan.activeSegmentType.ToString();
+    public PrototypeTrajectoryCandidateScore[] CandidateScores => LastTrajectoryPlan.candidateScores ?? System.Array.Empty<PrototypeTrajectoryCandidateScore>();
+    public PrototypeTrajectorySegment[] PlanSegments => LastTrajectoryPlan.segments ?? System.Array.Empty<PrototypeTrajectorySegment>();
+    public Vector3[] PredictedRoute => LastTrajectoryPlan.predictedPath ?? System.Array.Empty<Vector3>();
+    public string SelectedCandidate => string.IsNullOrWhiteSpace(LastTrajectoryPlan.selectedCandidate) ? "direct" : LastTrajectoryPlan.selectedCandidate;
+    public string SelectedCandidateReason => string.IsNullOrWhiteSpace(LastTrajectoryPlan.selectedCandidateReason) ? NavigationPlanStatus : LastTrajectoryPlan.selectedCandidateReason;
+    public int NavigationPlanRefreshCount { get; private set; }
+    public bool NavigationDebugPlanningActive => navigationDebugPlanningActive;
+    public float NavigationPlanIntervalSeconds => Mathf.Clamp(navigationPlanIntervalSeconds, 0.1f, 0.25f);
 
     private void Awake()
     {
@@ -185,7 +225,10 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     {
         ResolveReferences();
         RefreshDiagnostics();
-        RefreshNavigationPlan();
+        if (ShouldRefreshNavigationPlanThisTick())
+        {
+            RefreshNavigationPlan();
+        }
 
         if (!autopilotEngaged)
         {
@@ -211,8 +254,8 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         LastFuelEstimate = EstimateFuel(LastMetrics, shipStats, GetMaxAcceleration(), fuelReserveSeconds);
         if (!LastFuelEstimate.isFeasible || (!LastFuelEstimate.isFuelFree && !shipStats.HasFuel))
         {
-            SetState(PrototypeWaypointAutopilotState.FuelInsufficient, "fuel insufficient");
             arrivalFailureReason = "FuelInsufficient";
+            SetState(PrototypeWaypointAutopilotState.FuelInsufficient, "FuelInsufficient");
             ClearCommands();
             autopilotEngaged = false;
             return;
@@ -221,20 +264,28 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         if (!HasAnyNavigationAuthority())
         {
             arrivalFailureReason = "NoAuthority";
-            SetState(PrototypeWaypointAutopilotState.Failed, "no authority");
+            SetState(PrototypeWaypointAutopilotState.Failed, "NoAuthority");
             ClearCommands();
             autopilotEngaged = false;
             return;
+        }
+        else if (!CanUseRcsTranslation() && CanUseMainThrottle())
+        {
+            arrivalFailureReason = "LimitedRcsAuthority";
+        }
+        else
+        {
+            arrivalFailureReason = string.Empty;
         }
 
         if (HasArrived())
         {
             SetState(PrototypeWaypointAutopilotState.HoldPosition, "holding");
             arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.Hold;
-            arrivalFailureReason = string.Empty;
+            UpdateHoldStatus();
             limitedFinalApproachCapability = false;
             ApplyHoldDamping();
-            if (ShouldCompleteHold())
+            if (HasHoldConfirmWindowElapsed())
             {
                 ClearCommands();
                 SetState(PrototypeWaypointAutopilotState.Complete, "arrived");
@@ -285,8 +336,17 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         if (!HasAnyNavigationAuthority())
         {
             arrivalFailureReason = "NoAuthority";
-            SetState(PrototypeWaypointAutopilotState.Failed, "no authority");
+            SetState(PrototypeWaypointAutopilotState.Failed, "NoAuthority");
             return;
+        }
+
+        if (!CanUseRcsTranslation() && CanUseMainThrottle())
+        {
+            arrivalFailureReason = "LimitedRcsAuthority";
+        }
+        else if (string.IsNullOrWhiteSpace(arrivalFailureReason))
+        {
+            arrivalFailureReason = string.Empty;
         }
 
         // Waypoint autopilot is a system controller: normalize ship controls before it asks for actuators.
@@ -307,23 +367,38 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         requestedMainThrottle = 0f;
         requestedRcsTranslation = Vector3.zero;
         desiredBurnDirection = Vector3.zero;
+        hasStableAvoidance = false;
+        stableAvoidanceWaypoint = Vector3.zero;
+        stableAvoidanceDirection = Vector3.zero;
+        avoidanceHoldExpireTime = 0f;
+        reacquireDirectPathUntilTime = 0f;
+        holdConfirmUntilTime = 0f;
+        navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.Direct;
         LastObstacleDetection = PrototypeObstacleDetectionResult.Clear(GetObstacleClearanceRadius());
         LastTrajectoryPlan = PrototypeTrajectoryPlan.Clear(LastMetrics.directionToTarget.sqrMagnitude > 0.0001f ? LastMetrics.directionToTarget : transform.forward);
+        MarkNavigationPlanDirty();
     }
 
     public void Abort(string reason = "aborted")
     {
         autopilotEngaged = false;
         ClearCommands();
+        hasStableAvoidance = false;
+        holdConfirmUntilTime = 0f;
+        navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.Direct;
         arrivalFailureReason = reason;
         SetState(PrototypeWaypointAutopilotState.Aborted, reason);
     }
 
-public void ResetForBootstrap()
+    public void ResetForBootstrap()
     {
         autopilotEngaged = false;
         manualOverrideGraceUntilTime = 0f;
         ClearCommands();
+        hasStableAvoidance = false;
+        holdConfirmUntilTime = 0f;
+        navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.Direct;
+        MarkNavigationPlanDirty();
         SetState(currentTarget != null ? PrototypeWaypointAutopilotState.TargetSelected : PrototypeWaypointAutopilotState.Idle, currentTarget != null ? "target selected" : "idle");
     }
 
@@ -337,6 +412,7 @@ public void ResetForBootstrap()
         }
 
         RefreshDiagnostics();
+        MarkNavigationPlanDirty();
         if (!autopilotEngaged)
         {
             SetState(target != null ? PrototypeWaypointAutopilotState.TargetSelected : PrototypeWaypointAutopilotState.Idle, target != null ? "target selected" : "idle");
@@ -369,7 +445,92 @@ public void ResetForBootstrap()
     {
         ResolveReferences();
         RefreshDiagnostics();
+        MarkNavigationPlanDirty();
         RefreshNavigationPlan();
+    }
+
+    public void SetNavigationDebugPlanningActive(bool active)
+    {
+        if (navigationDebugPlanningActive == active)
+        {
+            return;
+        }
+
+        navigationDebugPlanningActive = active;
+        if (active)
+        {
+            MarkNavigationPlanDirty();
+        }
+    }
+
+    public string[] BuildNavigationWarningChips()
+    {
+        string[] chips = new string[8];
+        int count = 0;
+        if (currentTarget == null)
+        {
+            chips[count++] = "NO TARGET";
+        }
+
+        if (!HasAnyNavigationAuthority())
+        {
+            chips[count++] = "NO AUTHORITY";
+        }
+
+        if (!FuelFeasible || string.Equals(ArrivalFailureReason, "FuelInsufficient", System.StringComparison.OrdinalIgnoreCase))
+        {
+            chips[count++] = "FUEL INSUFFICIENT";
+        }
+
+        if (NavigationObstacleDetected || LastTrajectoryPlan.directPathBlocked)
+        {
+            chips[count++] = "OBSTACLE";
+        }
+
+        if (AvoidanceActive || navigationPhaseV2 == PrototypeWaypointAutopilotNavigationPhase.Avoiding)
+        {
+            chips[count++] = "AVOIDANCE";
+        }
+
+        if (LimitedFinalApproachCapability
+            || LastTrajectoryPlan.limitedRcsAuthority
+            || string.Equals(ArrivalFailureReason, "LimitedRcsAuthority", System.StringComparison.OrdinalIgnoreCase))
+        {
+            chips[count++] = "LIMITED RCS";
+        }
+
+        if (LastTrajectoryPlan.holdNoAuthority || string.Equals(ArrivalFailureReason, "HoldNoAuthority", System.StringComparison.OrdinalIgnoreCase))
+        {
+            chips[count++] = "NO AUTHORITY";
+        }
+        else if (LastTrajectoryPlan.limitedHoldAuthority || string.Equals(ArrivalFailureReason, "LimitedHoldAuthority", System.StringComparison.OrdinalIgnoreCase))
+        {
+            chips[count++] = "LIMITED HOLD";
+        }
+
+        if (navigationPhaseV2 == PrototypeWaypointAutopilotNavigationPhase.Hold || CurrentState == PrototypeWaypointAutopilotState.HoldPosition)
+        {
+            chips[count++] = "HOLDING";
+        }
+
+        if (count == chips.Length)
+        {
+            return chips;
+        }
+
+        string[] trimmed = new string[count];
+        for (int i = 0; i < count; i++)
+        {
+            trimmed[i] = chips[i];
+        }
+
+        return trimmed;
+    }
+
+    public void MarkNavigationPlanDirty()
+    {
+        navigationPlanDirty = true;
+        nextNavigationPlanTime = 0f;
     }
 
     public static PrototypeWaypointAutopilotMetrics CalculateMetrics(
@@ -454,15 +615,67 @@ public void ResetForBootstrap()
         bool inFinalApproachWindow = LastMetrics.distance <= finalApproachWindowMeters;
         bool requestedFineApproach = inFinalApproachWindow && !LastMetrics.shouldBrake;
         bool hasLowLateralSpeed = LastMetrics.lateralSpeed <= Mathf.Max(0.05f, finalApproachLateralToleranceMetersPerSecond);
+        bool currentlyAvoiding = LastTrajectoryPlan.RequiresAvoidance && LastTrajectoryPlan.obstacleDetected;
+        bool wasAvoiding = navigationPhaseV2 == PrototypeWaypointAutopilotNavigationPhase.AvoidancePlanning
+            || navigationPhaseV2 == PrototypeWaypointAutopilotNavigationPhase.Avoiding;
+        bool isReacquiring = !currentlyAvoiding && hasStableAvoidance && Time.time <= reacquireDirectPathUntilTime;
 
-        if (LastTrajectoryPlan.RequiresAvoidance)
+        if (currentlyAvoiding)
         {
+            hasStableAvoidance = true;
+            stableAvoidanceWaypoint = LastTrajectoryPlan.avoidanceWaypoint;
+            stableAvoidanceDirection = LastTrajectoryPlan.avoidanceDirection.sqrMagnitude > 0.0001f
+                ? LastTrajectoryPlan.avoidanceDirection.normalized
+                : LastTrajectoryPlan.desiredBurnDirection.normalized;
+            if (stableAvoidanceDirection.sqrMagnitude <= 0.0001f)
+            {
+                stableAvoidanceDirection = LastMetrics.directionToTarget;
+            }
+
+            avoidanceHoldExpireTime = Time.time + Mathf.Max(0f, avoidanceLockSeconds);
+            reacquireDirectPathUntilTime = 0f;
+            navigationPhaseV2 = LastTrajectoryPlan.navigationPhase == PrototypeAutopilotNavigationPhase.AvoidancePlanning
+                ? PrototypeWaypointAutopilotNavigationPhase.AvoidancePlanning
+                : PrototypeWaypointAutopilotNavigationPhase.Avoiding;
+
             arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.LongRangeBurn;
             limitedFinalApproachCapability = false;
             arrivalFailureReason = string.Empty;
-            SetState(PrototypeWaypointAutopilotState.Accelerate, "avoidance");
-            ApplyAutopilotRequest(LastTrajectoryPlan.desiredBurnDirection, LastTrajectoryPlan.mainThrottleLimit);
+            SetState(PrototypeWaypointAutopilotState.ObstacleAvoidance, "obstacle avoidance");
+            ApplyAutopilotRequest(ResolveAvoidanceRequestDirection(), LastTrajectoryPlan.mainThrottleLimit);
             return;
+        }
+
+        if (wasAvoiding && !currentlyAvoiding && Time.time <= avoidanceHoldExpireTime + avoidReacquireTimeoutSeconds)
+        {
+            if (hasStableAvoidance)
+            {
+                reacquireDirectPathUntilTime = Time.time + avoidReacquireTimeoutSeconds;
+                navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.ReacquireDirectPath;
+                arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.LongRangeBurn;
+                SetState(PrototypeWaypointAutopilotState.AlignForBurn, "reacquire");
+                ApplyAutopilotRequest(LastMetrics.directionToTarget, 1f);
+                return;
+            }
+        }
+
+        if (!currentlyAvoiding && Time.time > avoidanceHoldExpireTime)
+        {
+            hasStableAvoidance = false;
+        }
+
+        if (!currentlyAvoiding && isReacquiring)
+        {
+            navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.ReacquireDirectPath;
+            arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.LongRangeBurn;
+            SetState(PrototypeWaypointAutopilotState.AlignForBurn, "reacquire");
+            ApplyAutopilotRequest(LastMetrics.directionToTarget, 1f);
+            return;
+        }
+
+        if (!currentlyAvoiding && !isReacquiring)
+        {
+            navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.Direct;
         }
 
         if ((LastMetrics.shouldBrake || (LastMetrics.distance <= GetArrivalDistance() && !requestedFineApproach))
@@ -474,6 +687,7 @@ public void ResetForBootstrap()
                 ? -shipRigidbody.linearVelocity.normalized
                 : -LastMetrics.directionToTarget;
             float angle = Vector3.Angle(transform.forward, brakeDirection);
+            navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.Brake;
             SetState(angle > alignmentAngleDegrees ? PrototypeWaypointAutopilotState.FlipForBrake : PrototypeWaypointAutopilotState.Brake, "braking");
             ApplyAutopilotRequest(brakeDirection, 1f);
             return;
@@ -482,12 +696,13 @@ public void ResetForBootstrap()
         if (requestedFineApproach)
         {
             SetState(PrototypeWaypointAutopilotState.FinalApproach, "final approach");
+            navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.FinalApproach;
             limitedFinalApproachCapability = !CanUseRcsTranslation();
             arrivalPhase = LastMetrics.lateralSpeed > finalApproachLateralToleranceMetersPerSecond
                 ? PrototypeWaypointAutopilotArrivalPhase.LateralCorrection
                 : PrototypeWaypointAutopilotArrivalPhase.FinalApproach;
             arrivalFailureReason = LimitedFinalApproachCapability
-                ? "reduced final approach capability"
+                ? "LimitedRcsAuthority"
                 : string.Empty;
 
             ApplyAutopilotRequest(
@@ -504,6 +719,7 @@ public void ResetForBootstrap()
                 ? -shipRigidbody.linearVelocity.normalized
                 : -LastMetrics.directionToTarget;
             float angle = Vector3.Angle(transform.forward, brakeDirection);
+            navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.Brake;
             SetState(angle > alignmentAngleDegrees ? PrototypeWaypointAutopilotState.FlipForBrake : PrototypeWaypointAutopilotState.Brake, "braking");
             ApplyAutopilotRequest(brakeDirection, 1f);
             return;
@@ -520,7 +736,7 @@ public void ResetForBootstrap()
 
         if (requestedFineApproach)
         {
-            arrivalFailureReason = hasLowLateralSpeed ? string.Empty : "reduced final approach capability";
+            arrivalFailureReason = hasLowLateralSpeed ? string.Empty : "LimitedRcsAuthority";
             limitedFinalApproachCapability = !hasLowLateralSpeed;
         }
         else
@@ -529,8 +745,24 @@ public void ResetForBootstrap()
             limitedFinalApproachCapability = false;
         }
 
+        if (!CanUseRcsTranslation() && CanUseMainThrottle())
+        {
+            arrivalFailureReason = "LimitedRcsAuthority";
+        }
+
+        navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.Direct;
         SetState(PrototypeWaypointAutopilotState.Accelerate, "accelerating");
         ApplyAutopilotRequest(LastMetrics.directionToTarget, 1f);
+    }
+
+    private Vector3 ResolveAvoidanceRequestDirection()
+    {
+        if (hasStableAvoidance && stableAvoidanceDirection.sqrMagnitude > 0.0001f)
+        {
+            return stableAvoidanceDirection;
+        }
+
+        return LastTrajectoryPlan.desiredBurnDirection;
     }
 
     private void ApplyAutopilotRequest(Vector3 desiredDirection, float throttle, bool finalApproach = false)
@@ -542,7 +774,16 @@ public void ResetForBootstrap()
         }
 
         Vector3 attitudeCommand = Vector3.zero;
-        Vector3 assistForceWorld = CombineRcsForces(ComputeLateralCorrectionForceWorld(), LastTrajectoryPlan.requestedRcsForceWorld);
+        Vector3 desiredRcsForceWorld = LastTrajectoryPlan.requestedRcsForceWorld;
+        if (desiredRcsForceWorld.sqrMagnitude > 0.0001f)
+        {
+            float mass = GetShipMassKg();
+            desiredRcsForceWorld = Vector3.ClampMagnitude(desiredRcsForceWorld * Mathf.Clamp01(mass / Mathf.Max(0.01f, mass)), GetRcsTranslationForceScale());
+        }
+
+        Vector3 assistForceWorld = CombineRcsForces(ComputeLateralCorrectionForceWorld(), desiredRcsForceWorld);
+        bool limitedRcsAuthority = desiredRcsForceWorld.sqrMagnitude > 0.0001f
+            && assistForceWorld.magnitude + 0.001f < desiredRcsForceWorld.magnitude;
         float requestedMainThrottle = 0f;
         Vector3 desiredDirectionNormalized = Vector3.zero;
 
@@ -552,13 +793,15 @@ public void ResetForBootstrap()
             attitudeCommand = ComputeAttitudeCommand(desiredDirectionNormalized);
             desiredBurnDirection = desiredDirectionNormalized;
             float angle = Vector3.Angle(transform.forward, desiredDirectionNormalized);
-            if (angle <= alignmentAngleDegrees)
+            if (angle <= alignmentAngleDegrees && CanUseMainThrottle())
             {
                 requestedMainThrottle = Mathf.Clamp01(throttle);
             }
             else
             {
-                if (CurrentState != PrototypeWaypointAutopilotState.FinalApproach && CurrentState != PrototypeWaypointAutopilotState.FlipForBrake)
+                if (CurrentState != PrototypeWaypointAutopilotState.FinalApproach
+                    && CurrentState != PrototypeWaypointAutopilotState.FlipForBrake
+                    && CurrentState != PrototypeWaypointAutopilotState.ObstacleAvoidance)
                 {
                     SetState(PrototypeWaypointAutopilotState.AlignForBurn, "aligning");
                 }
@@ -569,10 +812,6 @@ public void ResetForBootstrap()
         {
             requestedMainThrottle = Mathf.Min(1f, requestedMainThrottle);
         }
-        else
-        {
-            requestedMainThrottle = Mathf.Clamp01(Mathf.Max(0.02f, requestedMainThrottle));
-        }
 
         requestedMainThrottle = Mathf.Clamp01(requestedMainThrottle);
         this.requestedMainThrottle = requestedMainThrottle;
@@ -580,7 +819,14 @@ public void ResetForBootstrap()
         PrototypeTrajectoryPlan updatedPlan = LastTrajectoryPlan;
         updatedPlan.requestedMainThrottle = requestedMainThrottle;
         updatedPlan.requestedRcsForceWorld = assistForceWorld;
+        updatedPlan.limitedRcsAuthority = updatedPlan.limitedRcsAuthority || limitedRcsAuthority;
+        if (updatedPlan.limitedRcsAuthority && string.IsNullOrWhiteSpace(updatedPlan.warningStatus))
+        {
+            updatedPlan.warningStatus = "LimitedRcsAuthority";
+        }
+
         updatedPlan.desiredBurnDirectionWorld = desiredBurnDirection;
+        updatedPlan.desiredBurnDirection = desiredBurnDirection;
         updatedPlan.desiredAccelerationWorld = desiredDirectionNormalized * GetMaxAcceleration() * requestedMainThrottle;
         if (assistForceWorld.sqrMagnitude > 0.0001f)
         {
@@ -588,6 +834,11 @@ public void ResetForBootstrap()
         }
 
         LastTrajectoryPlan = updatedPlan;
+        if (updatedPlan.limitedRcsAuthority && string.IsNullOrWhiteSpace(arrivalFailureReason))
+        {
+            arrivalFailureReason = "LimitedRcsAuthority";
+        }
+
         shipController.SetExternalFlightAssistRequest(new FlightAssistRequest(
             FlightAssistMode.AssistedFlight,
             FlightAssistRequestSource.WaypointAutopilot,
@@ -670,6 +921,26 @@ private Vector3 ComputeLateralCorrectionForceWorld()
         requestedMainThrottle = 0f;
         requestedRcsTranslation = dampingForce;
         desiredBurnDirection = Vector3.zero;
+        PrototypeTrajectoryPlan updatedPlan = LastTrajectoryPlan;
+        updatedPlan.navigationPhase = PrototypeAutopilotNavigationPhase.Hold;
+        updatedPlan.activeSegmentType = PrototypeTrajectorySegmentType.Hold;
+        updatedPlan.requestedMainThrottle = 0f;
+        updatedPlan.requestedRcsForceWorld = dampingForce;
+        updatedPlan.desiredAccelerationWorld = dampingForce / GetShipMassKg();
+        if (shipRigidbody.linearVelocity.sqrMagnitude > 0.0001f && dampingForce.sqrMagnitude <= 0.0001f)
+        {
+            updatedPlan.holdNoAuthority = true;
+            updatedPlan.warningStatus = "HoldNoAuthority";
+            arrivalFailureReason = "HoldNoAuthority";
+        }
+        else if (!CanUseRcsTranslation() && shipRigidbody.linearVelocity.sqrMagnitude > 0.0001f)
+        {
+            updatedPlan.limitedHoldAuthority = true;
+            updatedPlan.warningStatus = "LimitedHoldAuthority";
+            arrivalFailureReason = "LimitedHoldAuthority";
+        }
+
+        LastTrajectoryPlan = updatedPlan;
         shipController.SetExternalFlightAssistRequest(new FlightAssistRequest(
             FlightAssistMode.AssistedFlight,
             FlightAssistRequestSource.WaypointAutopilot,
@@ -740,6 +1011,7 @@ private Vector3 ComputeLateralCorrectionForceWorld()
         {
             LastObstacleDetection = PrototypeObstacleDetectionResult.Clear(GetObstacleClearanceRadius());
             LastTrajectoryPlan = PrototypeTrajectoryPlan.Clear(Vector3.forward);
+            CompleteNavigationPlanRefresh();
             return;
         }
 
@@ -747,7 +1019,8 @@ private Vector3 ComputeLateralCorrectionForceWorld()
         LastObstacleDetection = obstacleDetector != null
             ? obstacleDetector.DetectDirectPath(shipRigidbody, currentTarget.Position, clearance)
             : PrototypeObstacleDetectionResult.Clear(clearance);
-        LastTrajectoryPlan = trajectoryPlanner.Plan(
+        bool keepStableAvoidance = hasStableAvoidance && Time.time < avoidanceHoldExpireTime;
+        PrototypeTrajectoryPlan plan = trajectoryPlanner.Plan(
             new PrototypeTrajectorySnapshot(
                 shipRigidbody.worldCenterOfMass,
                 shipRigidbody.linearVelocity,
@@ -756,8 +1029,72 @@ private Vector3 ComputeLateralCorrectionForceWorld()
                 shipRigidbody.mass,
                 GetMaxAcceleration(),
                 GetRcsTranslationForceScale(),
-                clearance),
-            LastObstacleDetection);
+                clearance,
+                shipStats != null ? shipStats.Thrust : 0f,
+                shipStats != null ? shipStats.FuelConsumptionKgPerSecond : 0f,
+                shipStats != null ? shipStats.CurrentFuelKg : 0f,
+                GetArrivalDistance(),
+                arrivalSpeedMetersPerSecond,
+                finalApproachLateralToleranceMetersPerSecond),
+            LastObstacleDetection,
+            keepStableAvoidance,
+            stableAvoidanceWaypoint,
+            keepStableAvoidance ? "stable" : string.Empty);
+        plan.navigationPhase = ConvertNavigationPhase(navigationPhaseV2);
+        if (plan.RequiresAvoidance && keepStableAvoidance && stableAvoidanceWaypoint.sqrMagnitude > 0.0001f)
+        {
+            plan.avoidanceWaypoint = stableAvoidanceWaypoint;
+            plan.avoidanceDirection = stableAvoidanceDirection.sqrMagnitude > 0.0001f ? stableAvoidanceDirection.normalized : plan.avoidanceDirection;
+            plan.selectedCandidate = "stable";
+            plan.selectedCandidateReason = "locked avoidance waypoint";
+            plan.navigationPhase = PrototypeAutopilotNavigationPhase.Avoiding;
+        }
+
+        LastTrajectoryPlan = plan;
+        CompleteNavigationPlanRefresh();
+    }
+
+    private bool ShouldRefreshNavigationPlanThisTick()
+    {
+        if (!autopilotEngaged && !navigationDebugPlanningActive)
+        {
+            return false;
+        }
+
+        if (navigationPlanDirty)
+        {
+            return true;
+        }
+
+        return Time.time >= nextNavigationPlanTime;
+    }
+
+    private static PrototypeAutopilotNavigationPhase ConvertNavigationPhase(PrototypeWaypointAutopilotNavigationPhase phase)
+    {
+        switch (phase)
+        {
+            case PrototypeWaypointAutopilotNavigationPhase.AvoidancePlanning:
+                return PrototypeAutopilotNavigationPhase.AvoidancePlanning;
+            case PrototypeWaypointAutopilotNavigationPhase.Avoiding:
+                return PrototypeAutopilotNavigationPhase.Avoiding;
+            case PrototypeWaypointAutopilotNavigationPhase.ReacquireDirectPath:
+                return PrototypeAutopilotNavigationPhase.ReacquireDirectPath;
+            case PrototypeWaypointAutopilotNavigationPhase.Brake:
+                return PrototypeAutopilotNavigationPhase.Brake;
+            case PrototypeWaypointAutopilotNavigationPhase.FinalApproach:
+                return PrototypeAutopilotNavigationPhase.FinalApproach;
+            case PrototypeWaypointAutopilotNavigationPhase.Hold:
+                return PrototypeAutopilotNavigationPhase.Hold;
+            default:
+                return PrototypeAutopilotNavigationPhase.Direct;
+        }
+    }
+
+    private void CompleteNavigationPlanRefresh()
+    {
+        NavigationPlanRefreshCount++;
+        navigationPlanDirty = false;
+        nextNavigationPlanTime = Time.time + NavigationPlanIntervalSeconds;
     }
 
     private bool HasArrived()
@@ -770,9 +1107,67 @@ private Vector3 ComputeLateralCorrectionForceWorld()
             && LastMetrics.lateralSpeed <= Mathf.Max(0.05f, finalApproachLateralToleranceMetersPerSecond);
     }
 
-    private bool ShouldCompleteHold()
+    private void UpdateHoldStatus()
+    {
+        navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.Hold;
+        if (!HasArrived())
+        {
+            holdConfirmStarted = false;
+            return;
+        }
+
+        if (shipRigidbody == null || shipRigidbody.linearVelocity.sqrMagnitude > 0.01f)
+        {
+            holdConfirmUntilTime = Time.time + Mathf.Max(0f, holdConfirmSeconds);
+            holdConfirmStarted = true;
+            return;
+        }
+
+        if (HasHoldControlAuthority())
+        {
+            arrivalFailureReason = CanUseRcsTranslation() ? "none" : "LimitedHoldAuthority";
+        }
+        else
+        {
+            arrivalFailureReason = "HoldNoAuthority";
+        }
+
+        if (HasHoldVelocitySettled())
+        {
+            if (!holdConfirmStarted)
+            {
+                holdConfirmUntilTime = Time.time + Mathf.Max(0f, holdConfirmSeconds);
+                holdConfirmStarted = true;
+            }
+        }
+        else
+        {
+            holdConfirmUntilTime = Time.time + Mathf.Max(0f, holdConfirmSeconds);
+            holdConfirmStarted = true;
+        }
+    }
+
+    private bool HasHoldControlAuthority()
+    {
+        return CanUseRcsTranslation() || CanUseMainThrottle();
+    }
+
+    private bool HasHoldVelocitySettled()
     {
         return shipRigidbody == null || shipRigidbody.linearVelocity.magnitude <= Mathf.Max(0.01f, holdCompletionSpeedMetersPerSecond);
+    }
+
+    private bool HasHoldConfirmWindowElapsed()
+    {
+        return HasHoldVelocitySettled()
+            && holdConfirmStarted
+            && Time.time >= holdConfirmUntilTime
+            && holdConfirmUntilTime >= 0f;
+    }
+
+    private bool ShouldCompleteHold()
+    {
+        return HasHoldConfirmWindowElapsed();
     }
 
     private float GetArrivalDistance()
@@ -874,6 +1269,8 @@ private void ClearCommands()
         requestedMainThrottle = 0f;
         requestedRcsTranslation = Vector3.zero;
         desiredBurnDirection = Vector3.zero;
+        holdConfirmStarted = false;
+        holdConfirmUntilTime = 0f;
         LastTrajectoryPlan = PrototypeTrajectoryPlan.Clear(LastMetrics.directionToTarget.sqrMagnitude > 0.0001f ? LastMetrics.directionToTarget : Vector3.forward);
     }
 
@@ -982,6 +1379,10 @@ private void ClearCommands()
         lateralCorrectionDampingSeconds = Mathf.Max(0.1f, lateralCorrectionDampingSeconds);
         holdCompletionSpeedMetersPerSecond = Mathf.Max(0.01f, holdCompletionSpeedMetersPerSecond);
         obstacleClearanceRadiusMeters = Mathf.Max(0.01f, obstacleClearanceRadiusMeters);
+        navigationPlanIntervalSeconds = Mathf.Clamp(navigationPlanIntervalSeconds, 0.1f, 0.25f);
         fuelReserveSeconds = Mathf.Max(0f, fuelReserveSeconds);
+        avoidanceLockSeconds = Mathf.Max(0f, avoidanceLockSeconds);
+        avoidReacquireTimeoutSeconds = Mathf.Max(0.1f, avoidReacquireTimeoutSeconds);
+        holdConfirmSeconds = Mathf.Max(0.1f, holdConfirmSeconds);
     }
 }

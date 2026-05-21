@@ -15,6 +15,7 @@ public class PrototypeShipVisualSwitcherValidationTests
         DestroyNamed("VariantTestBootstrap");
         DestroyNamed("PrototypeShipVisualSwitcher");
         DestroyNamed("PrototypeShipVisualSwitcher_Manager");
+        DestroyNamed("GameplaySwitcherHost");
         DestroyNamed("StaleCameraTarget");
         DestroyNamed("OldMainCamera");
     }
@@ -245,6 +246,29 @@ public class PrototypeShipVisualSwitcherValidationTests
     }
 
     [Test]
+    public void SwitcherOnGameplayObjectDoesNotStripPhysicsOrRenderingComponents()
+    {
+        BuildBaselineShip();
+        var host = new GameObject("GameplaySwitcherHost");
+        var meshFilter = host.AddComponent<MeshFilter>();
+        meshFilter.sharedMesh = new Mesh();
+        var renderer = host.AddComponent<MeshRenderer>();
+        var collider = host.AddComponent<BoxCollider>();
+        var body = host.AddComponent<Rigidbody>();
+        var switcher = host.AddComponent<PrototypeShipVisualSwitcher>();
+
+        switcher.SelectVisualMode(PrototypeShipVisualMode.GeneratedPrimitives);
+
+        Assert.AreEqual("GameplaySwitcherHost", host.name);
+        Assert.AreSame(renderer, host.GetComponent<MeshRenderer>());
+        Assert.AreSame(collider, host.GetComponent<BoxCollider>());
+        Assert.AreSame(body, host.GetComponent<Rigidbody>());
+        Assert.NotNull(host.GetComponent<PrototypeShipVisualSwitcher>());
+
+        Object.DestroyImmediate(meshFilter.sharedMesh);
+    }
+
+    [Test]
     public void VisualChangeReframesCameraWithoutMovingAnchorOrBreakingBinding()
     {
         GameObject ship = BuildBaselineShip();
@@ -282,6 +306,7 @@ public class PrototypeShipVisualSwitcherValidationTests
     {
         var bootstrapObject = new GameObject("VariantTestBootstrap");
         var bootstrap = bootstrapObject.AddComponent<PrototypeBootstrap>();
+        bootstrap.SetBuildMode(PrototypeShipBuildMode.GeneratedPrimitiveFallback, false);
         bootstrap.BuildBuiltInVariant(variantIndex);
 
         GameObject ship = GameObject.Find("PrototypeShip");

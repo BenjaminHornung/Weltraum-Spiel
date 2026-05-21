@@ -1,6 +1,20 @@
 # Prototype Physics Flight Model
 
-This prototype uses generated primitives only, but the force model is intentionally transform-driven so the ship can be debugged in the Unity hierarchy.
+This prototype uses the imported Blender Demo Scout as the default runtime ship, and the force model is intentionally transform-driven so the ship can be debugged in the Unity hierarchy. Generated primitives remain as an explicit fallback/debug build mode.
+
+## Imported Functional Socket Binding
+
+`PrototypeBootstrap` defaults to `PrototypeShipBuildMode.ImportedDemoScoutFunctionalDefault`. The runtime root remains `PrototypeShip`, but the Blender scout is instantiated under `PrototypeShip/ImportedShipVisual` and bound by `PrototypeFunctionalShipBinder`.
+
+The binder runs `PrototypeShipSocketUtility.EnsureSocketsInHierarchy` on the imported model, then binds:
+
+- main thrust from imported `THRUST_NOZZLE_MAIN*` sockets,
+- RCS from imported `RCS_NOZZLE_*` sockets,
+- engine and RCS VFX children at those sockets,
+- the visible turret hierarchy from `WEAPON_TURRET_BASE_*`, `WEAPON_TURRET_YAW_*`, `WEAPON_TURRET_PITCH_*`,
+- projectile origin and muzzle flash from `WEAPON_MUZZLE_*` and `WEAPON_MUZZLE_FLASH_*`.
+
+In the imported default mode, missing required functional sockets do not silently fall back to root-space placeholders. A missing main nozzle disables the normal engine-nozzle fallback, and a missing weapon muzzle prevents firing instead of creating `PrototypeShip/Muzzle`.
 
 ## Ship Physics Core
 
@@ -41,10 +55,10 @@ diagnosticAngularImpulse = cross(position - rb.worldCenterOfMass, diagnosticImpu
 
 Main thrust has an explicit mode so the prototype can switch between stable gameplay thrust and stricter physical nozzle force without bypassing `ShipPhysicsCore`.
 
-`ComSafeSteeringOnly` is the default. The main engine computes the ship-forward base thrust vector and applies that force at `Rigidbody.worldCenterOfMass` through `ShipPhysicsCore`:
+`ComSafeSteeringOnly` is the default. The main engine computes the nozzle-forward base thrust vector and applies that force at `Rigidbody.worldCenterOfMass` through `ShipPhysicsCore`:
 
 ```csharp
-physicsCore.ApplyForceAtCenterOfMass(transform.forward * thrust, ForceMode.Force);
+physicsCore.ApplyForceAtCenterOfMass(thrustTransform.forward * thrust, ForceMode.Force);
 ```
 
 That means throttle-only forward thrust does not create torque when no gimbal input is present. Only the steering delta between the base direction and the gimballed direction is applied at the nozzle transform.
@@ -63,6 +77,8 @@ Main throttle now distinguishes the commanded target throttle from the actual th
 actualThrottle = MoveTowards(actualThrottle, targetThrottle, ratePerSecond * deltaTime)
 ```
 
+For imported ships, `EngineVfxController.Nozzle` is configured to the imported `THRUST_NOZZLE_MAIN*` transform. The normal imported path disables the root `EngineNozzle` fallback so a missing Blender marker is visible as a binding failure instead of a fake effect at the ship origin.
+
 ## Gimbal
 
 The visible `MainThrusterGimbal` cube rotates with the effective yaw and pitch gimbal command. The default gimbal setup is intentionally calmer than the early prototype: 10 degree hard limit, 0.14 response scalar, and 30 degrees-per-second slew. `GimbalAssistMode` gates how much attitude input can feed the main-thruster gimbal; the default is `AutopilotOnly`, with Off, Low, Manual, and ExperimentalFull still available from diagnostics.
@@ -78,7 +94,7 @@ torque = Vector3.Cross(nozzlePosition - rb.worldCenterOfMass, steeringForce);
 
 ## RCS Nozzles
 
-RCS force comes from installed nozzle transforms named `RCS_Nozzle_*`. The solver does not assume fixed positions. Each nozzle supplies:
+RCS force comes from installed nozzle transforms named `RCS_Nozzle_*` or imported `RCS_NOZZLE_*`. The solver does not assume fixed positions. Each nozzle supplies:
 
 - `nozzle.transform.position`
 - `nozzle.transform.forward` as the force direction
@@ -94,6 +110,8 @@ torque = Vector3.Cross(nozzle.transform.position - rb.worldCenterOfMass, force);
 ```
 
 The generated `RCS_Top`, `RCS_Bottom`, `RCS_Left`, and `RCS_Right` blocks each carry an inspector-editable `RcsThrusterBlock`. Nozzles cache their nearest parent block and use that block's thrust when allocated. The block exposes undamaged thrust, but the effective `Thrust` value is multiplied by attached `PrototypeModuleDamageState.CapabilityMultiplier`. Damaged RCS blocks therefore reduce real allocator authority instead of only changing a UI number. The legacy controller-level `translationForce` and `attitudeForce` values remain as fallback magnitudes for nozzles that do not have a parent block, so older hand-built scenes continue to apply force.
+
+Imported default ships set `RcsThrusterController.UseImportedFunctionalSockets` to true and refresh nozzles from `PrototypeShip/ImportedShipVisual`. RCS VFX lookup accepts `VFX`, `PreviewRcsThrusterVfx`, and `RcsThrusterVfx` children, so the allocator activates effects at the actual imported nozzle positions rather than generated `RCS_Top`/`RCS_Left` locations.
 
 Translation, attitude, SAS, and physical flight-assist requests are combined into one desired force/torque wrench before allocation. `FlightControlMode` is explicit: Normal/Cruise maps W/S/A/D/Q/E to pitch/yaw/roll while Shift/Ctrl adjust main throttle; Precision keeps W/S/A/D/Q/E as RCS attitude with main/gimbal forced off; Translation maps W/S to forward/back, A/D to left/right, H/N to up/down, and leaves Q/E as roll. Caps Lock and the HUD mode button cycle these modes; Left Alt is not part of the primary control model. The current allocator is still a bounded greedy prototype, but it applies each nozzle at most once per physics frame and reports desired, actual, and residual force/torque diagnostics. Status values are residual-aware: `ok`, `limited`, `residual`, `limited-residual`, `spooling-down`, `no nozzles`, `no authority`, `no solution`, and `no fuel` describe what actually happened in that frame.
 
@@ -146,6 +164,14 @@ The inertia tensor is a diagonal prototype approximation. Each module contribute
 The debug overlay reports descriptor module count, dry mass, fuel mass, local/world COM, and Rigidbody inertia tensor so placement and tuning changes are visible during prototype flight.
 
 ## Impact Damage
+
+## Weapon Turret, Muzzle Origin, And Recoil
+
+The imported Demo Scout gun is a visible turret hierarchy. The yaw mesh is parented under `WEAPON_TURRET_YAW_PRIMARY`, and the barrel/muzzle mesh is parented under `WEAPON_TURRET_PITCH_PRIMARY`, so runtime aim changes are visible in the ship model.
+
+`PrototypeTurretWeapon.EvaluateFireStatus` is side-effect-free by default. Aim motion is advanced through `TickAimAtTarget`, which slews yaw and pitch toward the requested target using `ShipStats.TurretSlewDegreesPerSecond`. `TryFireAt` fires only when the requested target is in arc, in range, off cooldown, and aligned within the prototype tolerance. Manual fire without an active Weapon Computer target still fires along the current muzzle forward direction.
+
+Projectile, tracer, recoil, and muzzle flash origins are taken from `WEAPON_MUZZLE_PRIMARY` and `WEAPON_MUZZLE_FLASH_PRIMARY`. In the imported default path, missing muzzle markers produce `NoMuzzle`/missing-socket status instead of a root-space projectile at `Vector3.zero`.
 
 Projectile hits produce `PrototypeImpactEventData` from the existing `ProjectileHitData` handoff. The impact event records:
 
@@ -204,23 +230,33 @@ The prototype names three modes:
 
 ## Navigation Computer And Camera Focus
 
-`PrototypeWaypointAutopilot` now delegates trajectory decisions to `PrototypeTrajectoryPlanner` instead of directly treating every fixed step as a direct-target burn/brake reaction. The planner emits explicit phases:
+`PrototypeWaypointAutopilot` delegates trajectory decisions to `PrototypeTrajectoryPlanner` instead of treating every fixed step as a direct-target burn/brake reaction. Navigation Computer v2 separates the high-level autopilot phase from the active trajectory segment. Runtime phases are:
 
-- `Idle`
-- `AlignForBurn`
-- `LongRangeBurn`
-- `Coast`
-- `Avoidance`
+- `Direct`
+- `AvoidancePlanning`
+- `Avoiding`
+- `ReacquireDirectPath`
 - `Brake`
 - `FinalApproach`
 - `Hold`
-- `Failed`
 
 The autopilot still sends physical `FlightAssistRequest` values only. It does not assign `Rigidbody.position`, `Rigidbody.rotation`, `Rigidbody.linearVelocity`, or `Rigidbody.angularVelocity` in the runtime navigation path.
 
-Obstacle detection is handled by `PrototypeObstacleDetector`. Collider-backed obstacles use `Physics.SphereCast` with a cast radius derived from ship radius plus clearance. Cast distance is the maximum of minimum lookahead, velocity-scaled lookahead, and stopping-distance safety. `PrototypeNavigationObstacle` components without colliders are checked with a geometric line/sphere fallback so debug/environment points can still block a route. Ship-owned colliders are ignored.
+Obstacle detection is handled by `PrototypeObstacleDetector`. Collider-backed obstacles first use `Physics.OverlapSphereNonAlloc` at the cast origin because Unity sphere casts do not report colliders that already overlap the initial sphere. The detector then uses `Physics.SphereCastNonAlloc` for path lookahead, colliding with trigger obstacles, selecting the nearest blocking `PrototypeNavigationObstacle`, filtering non-blocking hazards, and ignoring ship-owned colliders. `PrototypeNavigationObstacle` components without colliders are checked through a registry-backed geometric line/sphere fallback so debug/environment points can still block a route without per-frame scene scans.
 
-When direct line of sight is blocked, the planner sets `Avoidance`, computes a temporary avoidance waypoint, and keeps the desired burn direction out of the obstacle corridor. If the main thruster is not aligned within the configured burn angle, main throttle remains zero and RCS is used to push out of the blocked corridor while attitude aligns. Once the path is clear, the plan returns to normal direct-target phases.
+When direct line of sight is blocked, the planner builds scored candidates: direct, left, right, up, down, and diagonal variants where useful. Candidate scoring combines collision clearance, estimated delta-v, heading change, lateral velocity reduction, fuel feasibility, braking feasibility, and RCS authority margin. The chosen candidate records its score and reason, emits an avoidance waypoint, and keeps the desired burn direction out of the obstacle corridor. The autopilot keeps a stable avoidance waypoint during the lock window so it does not oscillate between sides, then transitions through `ReacquireDirectPath` once clearance and line of sight are available.
+
+Plans are reported as segments for diagnostics and UI:
+
+- `Align`
+- `Burn`
+- `Coast`
+- `AvoidanceBurn`
+- `Brake`
+- `FinalApproach`
+- `Hold`
+
+Each segment carries duration, direction, throttle, expected delta-v, expected fuel, predicted closest obstacle distance, and predicted miss distance to target. Main thrust is reserved for meaningful delta-v along the planned burn direction; if the ship is not aligned, main throttle stays at zero and the request is attitude/RCS-only. RCS is used for lateral correction, avoidance sidestep, final approach, and hold damping. RCS requests remain mass-based and are clamped to available translation authority; insufficient authority reports `LimitedRcsAuthority`, `HoldNoAuthority`, or `LimitedHoldAuthority`.
 
 RCS requests are mass-based force requests:
 
@@ -236,7 +272,7 @@ requestedForce = desiredLateralAcceleration * rb.mass
 requestedForce = clampMagnitude(requestedForce, availableRcsTranslationAuthority)
 ```
 
-Stopping decisions include planned stopping distance and conservative alignment lead time. Arrival uses distance, full relative speed, and lateral speed together. It intentionally does not require `closingSpeed >= 0`, because a ship drifting slightly away inside the arrival radius should still be able to hold when total relative speed is low enough. Hold uses RCS damping for a confirmation window before completion.
+Stopping decisions include planned stopping distance, burn estimate, and conservative alignment lead time. Arrival uses distance, full relative speed, and lateral speed together. It intentionally does not require `closingSpeed >= 0`, because a ship drifting slightly away inside the arrival radius should still be able to hold when total relative speed is low enough. Hold uses RCS damping for a confirmation window before completion; if the hold envelope cannot be maintained, the autopilot keeps reporting an authority limit rather than faking completion.
 
 `PrototypeCameraAnchor` separates semantic focus from visual fit. `SimpleFollowCamera` resolves focus in this order:
 
@@ -324,14 +360,15 @@ Included forces for this slice:
 
 - Local translation from the initial velocity.
 - Optional central gravity through `ShipPhysicsCore.TryEvaluateCentralGravityAcceleration`, using the same `mu / r^2` formula and minimum-distance clamp as the live gravity step.
+- Optional autopilot actuator inputs: main-thrust acceleration along the planned burn direction, optional RCS acceleration, and fuel consumption over fixed prediction steps.
 
 Excluded forces and effects for this slice:
 
-- Main thruster, RCS, SAS, flight assist, recoil, docking assist, atmosphere, drag, thermal effects, collisions, damage, and floating-origin shifts.
+- SAS, manual flight assist, recoil, docking assist, atmosphere, drag, thermal effects, collision response, damage, and floating-origin shifts.
 - Rotation integration beyond carrying the sampled rotation and angular velocity through the preview state.
 - Orbit-map UI, maneuver-node editing, patched conics, sphere-of-influence transitions, and full N-body prediction.
 
-`TrajectoryBurnPlan` is a data-only helper for early burn estimates. It records burn direction, duration, throttle, requested fuel, available estimated fuel, applied fuel fraction, and approximate delta-v from `thrust * throttle * fuelFraction * duration / mass`. It does not yet modify the trajectory preview path or reserve fuel; that coupling belongs in a later maneuver-planning slice.
+`TrajectoryBurnPlan` records burn direction, duration, throttle, requested fuel, available estimated fuel, applied fuel fraction, and approximate delta-v from `thrust * throttle * fuelFraction * duration / mass`. Navigation Computer v2 uses those estimates inside candidate scoring and segment diagnostics; it is still a local prototype planner, not a full maneuver-node or orbital transfer planner.
 
 ## Floating Origin Infrastructure
 

@@ -82,6 +82,93 @@ def load_manifest():
         return json.load(handle)
 
 
+def collect_descendants(root_name):
+    root = bpy.data.objects.get(root_name)
+    if root is None:
+        return []
+
+    objects = []
+
+    def walk(current):
+        objects.append(current)
+        for child in current.children:
+            walk(child)
+
+    walk(root)
+    return objects
+
+
+def is_runtime_marker(obj):
+    return obj is not None and obj.type == "EMPTY" and "VIS_PART" not in obj.name
+
+
+def has_descendant_or_self(candidate, ancestor):
+    current = candidate
+    while current is not None:
+        if current == ancestor:
+            return True
+        current = current.parent
+    return False
+
+
+def validate_demo_scout_functional_markers():
+    objects = collect_descendants("DEMO_Scout_Mk1")
+    names = {obj.name for obj in objects}
+    runtime_empties = [obj for obj in objects if is_runtime_marker(obj)]
+    missing = []
+    hierarchy_issues = []
+
+    required_weapon_markers = [
+        "WEAPON_TURRET_BASE_PRIMARY",
+        "WEAPON_TURRET_YAW_PRIMARY",
+        "WEAPON_TURRET_PITCH_PRIMARY",
+        "WEAPON_MUZZLE_PRIMARY",
+        "WEAPON_MUZZLE_FLASH_PRIMARY",
+    ]
+    for marker in required_weapon_markers:
+        if marker not in names:
+            missing.append(marker)
+
+    if not any("THRUST_NOZZLE_MAIN" in obj.name for obj in runtime_empties):
+        missing.append("THRUST_NOZZLE_MAIN*")
+
+    required_rcs_directions = ["FORWARD", "BACK", "LEFT", "RIGHT", "UP", "DOWN"]
+    for direction in required_rcs_directions:
+        if not any("RCS_NOZZLE_" in obj.name and direction in obj.name.upper() for obj in runtime_empties):
+            missing.append("RCS_NOZZLE_" + direction + "_*")
+
+    base = bpy.data.objects.get("WEAPON_TURRET_BASE_PRIMARY")
+    yaw = bpy.data.objects.get("WEAPON_TURRET_YAW_PRIMARY")
+    pitch = bpy.data.objects.get("WEAPON_TURRET_PITCH_PRIMARY")
+    muzzle = bpy.data.objects.get("WEAPON_MUZZLE_PRIMARY")
+    flash = bpy.data.objects.get("WEAPON_MUZZLE_FLASH_PRIMARY")
+    barrel = bpy.data.objects.get("DEMO_Scout_Mk1_GEO_Gun_Barrel")
+    yaw_mesh = bpy.data.objects.get("DEMO_Scout_Mk1_GEO_Gun_Mount_Base")
+    muzzle_mesh = bpy.data.objects.get("DEMO_Scout_Mk1_GEO_Gun_Muzzle_Red")
+
+    if yaw is not None and base is not None and yaw.parent != base:
+        hierarchy_issues.append("WEAPON_TURRET_YAW_PRIMARY must be child of WEAPON_TURRET_BASE_PRIMARY.")
+    if pitch is not None and yaw is not None and pitch.parent != yaw:
+        hierarchy_issues.append("WEAPON_TURRET_PITCH_PRIMARY must be child of WEAPON_TURRET_YAW_PRIMARY.")
+    if muzzle is not None and pitch is not None and muzzle.parent != pitch:
+        hierarchy_issues.append("WEAPON_MUZZLE_PRIMARY must be child of WEAPON_TURRET_PITCH_PRIMARY.")
+    if flash is not None and muzzle is not None and not has_descendant_or_self(flash, muzzle):
+        hierarchy_issues.append("WEAPON_MUZZLE_FLASH_PRIMARY must follow WEAPON_MUZZLE_PRIMARY.")
+    if barrel is not None and pitch is not None and not has_descendant_or_self(barrel, pitch):
+        hierarchy_issues.append("Gun barrel mesh must be below WEAPON_TURRET_PITCH_PRIMARY.")
+    if muzzle_mesh is not None and pitch is not None and not has_descendant_or_self(muzzle_mesh, pitch):
+        hierarchy_issues.append("Gun muzzle mesh must be below WEAPON_TURRET_PITCH_PRIMARY.")
+    if yaw_mesh is not None and yaw is not None and not has_descendant_or_self(yaw_mesh, yaw):
+        hierarchy_issues.append("Visible yaw assembly mesh must be below WEAPON_TURRET_YAW_PRIMARY.")
+
+    return {
+        "missingFunctionalMarkers": missing,
+        "functionalMarkerMissingCount": len(missing),
+        "turretHierarchyIssues": hierarchy_issues,
+        "turretHierarchyIssueCount": len(hierarchy_issues),
+    }
+
+
 def validate():
     objects = collect_collection_objects("ModularShipKit")
     mesh_objects = [obj for obj in objects if obj.type == "MESH"]
@@ -131,6 +218,7 @@ def validate():
         if demo.get("unityModelPath"):
             expected_exports.append(demo.get("unityModelPath"))
     missing_exports = [path for path in expected_exports if path and not path_exists(path)]
+    functional_marker_result = validate_demo_scout_functional_markers()
 
     result = {
         "objectCount": len(objects),
@@ -153,6 +241,7 @@ def validate():
         "transparentMaterials": sorted(set(transparent_materials)),
         "missingExports": missing_exports,
         "meshIssues": per_mesh_issues[:80],
+        **functional_marker_result,
     }
     result["ok"] = (
         result["meshCount"] > 0
@@ -166,6 +255,8 @@ def validate():
         and result["nonManifoldEdges"] == 0
         and result["zeroAreaFaces"] == 0
         and result["missingExportCount"] == 0
+        and result["functionalMarkerMissingCount"] == 0
+        and result["turretHierarchyIssueCount"] == 0
     )
     return result
 
@@ -190,12 +281,16 @@ def write_report(result):
         f"- Boundary edges: {result['boundaryEdges']}",
         f"- Zero-area faces: {result['zeroAreaFaces']}",
         f"- Missing exports: {result['missingExportCount']}",
+        f"- Missing Demo Scout functional markers: {result['functionalMarkerMissingCount']}",
+        f"- Demo Scout turret hierarchy issues: {result['turretHierarchyIssueCount']}",
         "",
         "## Notes",
         "",
         "- Materials are expected to be opaque for this prototype, including the dark-blue canopy.",
         "- Blender 5 reports alpha-1 materials as HASHED/DITHERED; this report treats them as opaque-compatible when alpha is 1 and surface mode is not BLENDED.",
         "- Connector, nozzle, and muzzle empties are intentionally counted as builder/gameplay metadata.",
+        "- Demo Scout runtime markers are required: main/RCS nozzles and WEAPON_* turret/muzzle markers fail this report when missing.",
+        "- Marker axes: Unity forward is force/projectile direction; plume VFX renders opposite the nozzle forward axis.",
         "- Boundary edge count is expected to remain zero for the current solid low-poly kit.",
         "",
     ]
@@ -215,6 +310,14 @@ def write_report(result):
     if result["missingExports"]:
         lines.extend(["## Missing Exports", ""])
         lines.extend(f"- {path}" for path in result["missingExports"])
+        lines.append("")
+    if result["missingFunctionalMarkers"]:
+        lines.extend(["## Missing Demo Scout Functional Markers", ""])
+        lines.extend(f"- {name}" for name in result["missingFunctionalMarkers"])
+        lines.append("")
+    if result["turretHierarchyIssues"]:
+        lines.extend(["## Demo Scout Turret Hierarchy Issues", ""])
+        lines.extend(f"- {issue}" for issue in result["turretHierarchyIssues"])
         lines.append("")
     if result["meshIssues"]:
         lines.extend(["## Mesh Issue Samples", ""])

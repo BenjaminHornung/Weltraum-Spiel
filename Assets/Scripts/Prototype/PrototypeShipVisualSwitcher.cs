@@ -10,7 +10,7 @@ public enum PrototypeShipVisualMode
 
 public class PrototypeShipVisualSwitcher : MonoBehaviour
 {
-    [SerializeField] private PrototypeShipVisualMode visualMode = PrototypeShipVisualMode.GeneratedPrimitives;
+    [SerializeField] private PrototypeShipVisualMode visualMode = PrototypeShipVisualMode.ImportedDemoScout;
     [SerializeField] private bool hideGeneratedPrototypePrimitivesWithImportedVisual = true;
     [SerializeField] private GameObject importedDemoScoutVisualPrefab;
     [SerializeField] private GameObject importedDemoCargoVisualPrefab;
@@ -23,6 +23,7 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
     private const string ImportedScoutVisualPath = "Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.fbx";
     private const string ImportedCargoVisualPath = "Assets/Art/PrototypeShipKit/DemoShips/demo_cargo_mk1.fbx";
     private static readonly Vector3 ImportedVisualAlignmentEuler = new Vector3(-90f, 180f, 0f);
+    private const float ImportedVisualLocalScale = 100f;
 
     private Transform cachedShip;
     private PrototypeBootstrap cachedBootstrap;
@@ -49,9 +50,14 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
         PrototypeShipVisualSwitcher switcher = Object.FindAnyObjectByType<PrototypeShipVisualSwitcher>();
         if (switcher != null)
         {
-            switcher.gameObject.name = RuntimeManagerName;
+            if (!IsRuntimeManagerObject(switcher.gameObject))
+            {
+                switcher = CreateRuntimeManagerFrom(switcher);
+            }
+
             StripManagerObjectComponents(switcher.gameObject);
             switcher.ResetForRuntimeBaseline();
+            Object.DontDestroyOnLoad(switcher.gameObject);
             return;
         }
 
@@ -64,7 +70,7 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
 
     private void Awake()
     {
-        StripManagerObjectComponents(gameObject);
+        EnsureManagerObjectIsClean();
     }
 
     private void Update()
@@ -92,7 +98,7 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
 
     public void ApplyNow()
     {
-        StripManagerObjectComponents(gameObject);
+        EnsureManagerObjectIsClean();
         Transform ship = FindShip();
         if (ship != null)
         {
@@ -106,6 +112,29 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
         appliedMode = (PrototypeShipVisualMode)(-1);
         cachedShip = null;
         ApplyNow();
+    }
+
+    private void EnsureManagerObjectIsClean()
+    {
+        if (!IsRuntimeManagerObject(gameObject))
+        {
+            return;
+        }
+
+        StripManagerObjectComponents(gameObject);
+    }
+
+    private void CopyRuntimeConfigurationFrom(PrototypeShipVisualSwitcher source)
+    {
+        if (source == null)
+        {
+            return;
+        }
+
+        visualMode = source.visualMode;
+        hideGeneratedPrototypePrimitivesWithImportedVisual = source.hideGeneratedPrototypePrimitivesWithImportedVisual;
+        importedDemoScoutVisualPrefab = source.importedDemoScoutVisualPrefab;
+        importedDemoCargoVisualPrefab = source.importedDemoCargoVisualPrefab;
     }
 
     private void EnsureCurrentModeApplied()
@@ -134,6 +163,7 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
         PrototypeShipLayout layout = ResolveActiveLayout();
         if (visualMode == PrototypeShipVisualMode.GeneratedPrimitives)
         {
+            ApplyFunctionalBuildMode(ship, PrototypeShipBuildMode.GeneratedPrimitiveFallback);
             SetGeneratedPrototypeVisualsVisible(ship, layout, true);
             SetImportedVisualActive(null);
             appliedMode = visualMode;
@@ -141,22 +171,88 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
             return;
         }
 
-        GameObject visualPrefab = ResolveImportedShipVisualPrefab(visualMode);
-        if (visualPrefab == null)
+        PrototypeFunctionalShipBinder.BindReport report = ApplyFunctionalBuildMode(ship, ToBuildMode(visualMode));
+        GameObject activeImportedVisual = CacheFunctionalImportedVisual(report);
+        if (report != null && !report.hasRequiredFunctionalSockets)
         {
-            Debug.LogWarning($"Prototype ship visual '{SelectedVisualModeName}' is unavailable. Generated primitives remain visible.");
-            SetGeneratedPrototypeVisualsVisible(ship, layout, true);
-            SetImportedVisualActive(null);
-            appliedMode = visualMode;
-            NotifyCachesAfterVisualChange(ship);
-            return;
+            Debug.LogWarning($"Prototype ship visual '{SelectedVisualModeName}' could not be bound functionally. Missing: {string.Join(", ", report.missingRequiredSockets)}");
         }
 
         SetGeneratedPrototypeVisualsVisible(ship, layout, !hideGeneratedPrototypePrimitivesWithImportedVisual);
-        GameObject visualInstance = EnsureImportedVisualInstance(ship, visualMode, visualPrefab);
-        SetImportedVisualActive(visualInstance);
+        if (activeImportedVisual == null)
+        {
+            activeImportedVisual = EnsureImportedVisualInstance(ship, visualMode, ResolveImportedShipVisualPrefab(visualMode));
+        }
+
+        SetImportedVisualActive(activeImportedVisual);
         appliedMode = visualMode;
         NotifyCachesAfterVisualChange(ship);
+    }
+
+    private PrototypeFunctionalShipBinder.BindReport ApplyFunctionalBuildMode(Transform ship, PrototypeShipBuildMode mode)
+    {
+        if (ship == null)
+        {
+            return null;
+        }
+
+        if (cachedBootstrap == null)
+        {
+            cachedBootstrap = Object.FindAnyObjectByType<PrototypeBootstrap>();
+        }
+
+        if (cachedBootstrap != null)
+        {
+            cachedBootstrap.SetBuildMode(mode, false);
+        }
+
+        PrototypeFunctionalShipBinder binder = ship.GetComponent<PrototypeFunctionalShipBinder>();
+        if (binder == null)
+        {
+            binder = ship.gameObject.AddComponent<PrototypeFunctionalShipBinder>();
+        }
+
+        binder.Configure(
+            mode,
+            importedDemoScoutVisualPrefab,
+            importedDemoCargoVisualPrefab);
+        return binder.BindNow();
+    }
+
+    private GameObject CacheFunctionalImportedVisual(PrototypeFunctionalShipBinder.BindReport report)
+    {
+        if (report == null)
+        {
+            return null;
+        }
+
+        if (report.importedVisualRoot != null)
+        {
+            importedVisualRoot = report.importedVisualRoot;
+        }
+
+        if (report.importedShipInstance == null)
+        {
+            return null;
+        }
+
+        GameObject instance = report.importedShipInstance.gameObject;
+        instance.name = GetImportedVisualInstanceName(visualMode);
+        SetCachedImportedVisualInstance(visualMode, instance);
+        return instance;
+    }
+
+    private static PrototypeShipBuildMode ToBuildMode(PrototypeShipVisualMode mode)
+    {
+        switch (mode)
+        {
+            case PrototypeShipVisualMode.ImportedDemoCargo:
+                return PrototypeShipBuildMode.ImportedDemoCargoFunctional;
+            case PrototypeShipVisualMode.ImportedDemoScout:
+                return PrototypeShipBuildMode.ImportedDemoScoutFunctionalDefault;
+            default:
+                return PrototypeShipBuildMode.GeneratedPrimitiveFallback;
+        }
     }
 
     private Transform FindShip()
@@ -229,6 +325,7 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
         visualInstance.name = GetImportedVisualInstanceName(mode);
         visualInstance.transform.localPosition = Vector3.zero;
         visualInstance.transform.localRotation = Quaternion.Euler(ImportedVisualAlignmentEuler);
+        visualInstance.transform.localScale = Vector3.one * ImportedVisualLocalScale;
         StripRuntimePhysicsFromVisual(visualInstance);
         SetCachedImportedVisualInstance(mode, visualInstance);
         return visualInstance;
@@ -382,6 +479,26 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
     {
         int count = System.Enum.GetValues(typeof(PrototypeShipVisualMode)).Length;
         return (PrototypeShipVisualMode)(((int)mode + 1) % Mathf.Max(1, count));
+    }
+
+    private static bool IsRuntimeManagerObject(GameObject target)
+    {
+        return target != null && target.name == RuntimeManagerName;
+    }
+
+    private static PrototypeShipVisualSwitcher CreateRuntimeManagerFrom(PrototypeShipVisualSwitcher source)
+    {
+        var managerObject = new GameObject(RuntimeManagerName);
+        var manager = managerObject.AddComponent<PrototypeShipVisualSwitcher>();
+        manager.CopyRuntimeConfigurationFrom(source);
+
+        if (source != null)
+        {
+            source.enabled = false;
+            Debug.LogWarning($"PrototypeShipVisualSwitcher was found on '{source.gameObject.name}'. Runtime visual switching moved to '{RuntimeManagerName}' without stripping the original object.");
+        }
+
+        return manager;
     }
 
     private static string VisualModeDisplayName(PrototypeShipVisualMode mode)

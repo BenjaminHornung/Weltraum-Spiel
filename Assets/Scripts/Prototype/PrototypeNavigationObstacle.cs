@@ -1,4 +1,70 @@
 using UnityEngine;
+using System.Collections.Generic;
+
+public static class PrototypeNavigationObstacleRegistry
+{
+    private static readonly List<PrototypeNavigationObstacle> ActiveObstacles = new List<PrototypeNavigationObstacle>(32);
+
+    public static int Version { get; private set; }
+    public static int Count => ActiveObstacles.Count;
+
+    public static void Register(PrototypeNavigationObstacle obstacle)
+    {
+        if (obstacle == null || ActiveObstacles.Contains(obstacle))
+        {
+            return;
+        }
+
+        ActiveObstacles.Add(obstacle);
+        Version++;
+    }
+
+    public static void Unregister(PrototypeNavigationObstacle obstacle)
+    {
+        if (obstacle == null)
+        {
+            return;
+        }
+
+        if (ActiveObstacles.Remove(obstacle))
+        {
+            Version++;
+        }
+    }
+
+    public static int CopyActiveObstacles(List<PrototypeNavigationObstacle> buffer)
+    {
+        if (buffer == null)
+        {
+            return 0;
+        }
+
+        buffer.Clear();
+        for (int i = ActiveObstacles.Count - 1; i >= 0; i--)
+        {
+            PrototypeNavigationObstacle obstacle = ActiveObstacles[i];
+            if (obstacle == null)
+            {
+                ActiveObstacles.RemoveAt(i);
+                Version++;
+                continue;
+            }
+
+            if (obstacle.isActiveAndEnabled)
+            {
+                buffer.Add(obstacle);
+            }
+        }
+
+        return buffer.Count;
+    }
+
+    public static void ClearForTests()
+    {
+        ActiveObstacles.Clear();
+        Version++;
+    }
+}
 
 [DisallowMultipleComponent]
 public class PrototypeNavigationObstacle : MonoBehaviour
@@ -54,12 +120,14 @@ public class PrototypeNavigationObstacle : MonoBehaviour
     public void Configure(float radiusMeters)
     {
         radius = Mathf.Max(0.1f, radiusMeters);
+        RegisterIfActive();
     }
 
     public void Configure(float radiusMeters, string displayName)
     {
         radius = Mathf.Max(0.1f, radiusMeters);
         this.displayName = string.IsNullOrWhiteSpace(displayName) ? name : displayName;
+        RegisterIfActive();
     }
 
     public void Configure(float radiusMeters, float clearanceMeters, bool blocksAutopilot = true)
@@ -67,11 +135,30 @@ public class PrototypeNavigationObstacle : MonoBehaviour
         radius = Mathf.Max(0.1f, radiusMeters);
         this.clearanceMeters = Mathf.Max(0f, clearanceMeters);
         this.blocksAutopilot = blocksAutopilot;
+        RegisterIfActive();
     }
 
     public void SetDebugGizmoVisible(bool visible)
     {
         showDebugGizmo = visible;
+    }
+
+    private void OnEnable()
+    {
+        PrototypeNavigationObstacleRegistry.Register(this);
+    }
+
+    private void OnDisable()
+    {
+        PrototypeNavigationObstacleRegistry.Unregister(this);
+    }
+
+    private void RegisterIfActive()
+    {
+        if (isActiveAndEnabled)
+        {
+            PrototypeNavigationObstacleRegistry.Register(this);
+        }
     }
 
     private void OnValidate()

@@ -5,6 +5,8 @@ public class PrototypeBootstrap : MonoBehaviour
 {
     [SerializeField] private bool buildOnStart = true;
     [SerializeField] private PrototypeShipConfig shipConfig;
+    [SerializeField] private PrototypeShipBuildMode buildMode = PrototypeShipBuildMode.ImportedDemoScoutFunctionalDefault;
+    [SerializeField] private bool allowGeneratedFallbackWhenImportedAssetMissing = true;
     [SerializeField] private int selectedVariantIndex;
     [SerializeField] private bool addOrientationMarkers = false;
     [SerializeField] private Vector3 shipStartPosition = new Vector3(0f, 0.5f, 0f);
@@ -38,6 +40,7 @@ public class PrototypeBootstrap : MonoBehaviour
     public int SelectedVariantIndex => Mathf.Clamp(selectedVariantIndex, 0, Mathf.Max(0, BuiltInVariants.Length - 1));
     public PrototypeShipVariant SelectedVariant => BuiltInVariants.Length > 0 ? BuiltInVariants[SelectedVariantIndex] : PrototypeShipVariant.Baseline();
     public string SelectedVariantName => SelectedVariant != null ? SelectedVariant.DisplayName : "Baseline Balanced";
+    public PrototypeShipBuildMode BuildMode => buildMode;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void RuntimeBootstrap()
@@ -104,16 +107,50 @@ public class PrototypeBootstrap : MonoBehaviour
         var physicsCore = GetOrAddComponent<ShipPhysicsCore>(ship);
         physicsCore.Configure(shipRigidbody);
 
-        EnsureModuleParts(ship.transform, layout);
-        MainThrusterModule[] mainThrusterModules = EnsureMainThrusters(ship.transform, layout, stats, shipRigidbody, physicsCore, variant, out Transform primaryMainNozzle);
-        EnsureGunModules(ship.transform, layout);
-        EnsureRcsThrusters(ship.transform, layout, variant);
-        PrototypeModuleMassLayout.ConfigureGeneratedPrototypeDescriptors(ship.transform, stats, layout);
+        bool useGeneratedFallback = buildMode == PrototypeShipBuildMode.GeneratedPrimitiveFallback;
+        MainThrusterModule[] mainThrusterModules = new MainThrusterModule[0];
+        Transform primaryMainNozzle = null;
+        PrototypeFunctionalShipBinder.BindReport functionalBindReport = null;
+
+        if (!useGeneratedFallback)
+        {
+            PrototypeFunctionalShipBinder functionalBinder = GetOrAddComponent<PrototypeFunctionalShipBinder>(ship);
+            functionalBinder.Configure(buildMode);
+            functionalBindReport = functionalBinder.BindNow();
+            useGeneratedFallback = functionalBindReport == null || !functionalBindReport.hasRequiredFunctionalSockets;
+            if (useGeneratedFallback)
+            {
+                string warning = functionalBindReport != null && functionalBindReport.missingRequiredSockets.Count > 0
+                    ? string.Join(", ", functionalBindReport.missingRequiredSockets)
+                    : "unknown imported binding failure";
+                Debug.LogWarning("Imported functional ship binding failed (" + warning + ").");
+                if (!allowGeneratedFallbackWhenImportedAssetMissing)
+                {
+                    useGeneratedFallback = false;
+                }
+                else
+                {
+                    ClearGeneratedShipChildren(ship.transform);
+                }
+            }
+        }
+
+        if (useGeneratedFallback)
+        {
+            EnsureModuleParts(ship.transform, layout);
+            mainThrusterModules = EnsureMainThrusters(ship.transform, layout, stats, shipRigidbody, physicsCore, variant, out primaryMainNozzle);
+            EnsureGunModules(ship.transform, layout);
+            EnsureRcsThrusters(ship.transform, layout, variant);
+            PrototypeModuleMassLayout.ConfigureGeneratedPrototypeDescriptors(ship.transform, stats, layout);
+            var weaponBinder = GetOrAddComponent<PrototypeShipKitWeaponBinder>(ship);
+            weaponBinder.Configure(ship.transform, ship.transform, true, true);
+            weaponBinder.BindNow();
+        }
+
         stats.ApplyMassProperties(shipRigidbody);
         EnsureCameraAnchor(ship.transform, shipRigidbody);
         RemoveRootFallbackChild(ship.transform, "Muzzle");
-        var weaponBinder = GetOrAddComponent<PrototypeShipKitWeaponBinder>(ship);
-        weaponBinder.BindNow();
+        RemoveRootFallbackChild(ship.transform, "EngineNozzle");
 
         var gun = GetOrAddComponent<GunModule>(ship);
         var engine = GetOrAddComponent<EngineVfxController>(ship);
@@ -139,17 +176,32 @@ public class PrototypeBootstrap : MonoBehaviour
         var waypointAutopilot = GetOrAddComponent<PrototypeWaypointAutopilot>(ship);
         var momentumAssist = GetOrAddComponent<PrototypeMomentumAssist>(ship);
 
-        mainThruster.Configure(mainThrusterModules, shipRigidbody, stats, physicsCore);
-        engine.ConfigureNozzle(primaryMainNozzle);
-        rcs.ConfigureThrusters(
-            ship.transform.Find("RCS_Top"),
-            ship.transform.Find("RCS_Bottom"),
-            ship.transform.Find("RCS_Left"),
-            ship.transform.Find("RCS_Right"),
-            null,
-            null,
-            shipRigidbody,
-            physicsCore);
+        if (useGeneratedFallback)
+        {
+            mainThruster.Configure(mainThrusterModules, shipRigidbody, stats, physicsCore);
+            engine.SetAllowFallbackNozzle(true);
+            engine.ConfigureNozzle(primaryMainNozzle);
+            rcs.SetUseImportedFunctionalSockets(false);
+            rcs.ConfigureThrusters(
+                ship.transform.Find("RCS_Top"),
+                ship.transform.Find("RCS_Bottom"),
+                ship.transform.Find("RCS_Left"),
+                ship.transform.Find("RCS_Right"),
+                null,
+                null,
+                shipRigidbody,
+                physicsCore);
+        }
+        else
+        {
+            gun.SetAllowMuzzleFallback(false);
+            engine.SetAllowFallbackNozzle(false);
+            rcs.SetUseImportedFunctionalSockets(true);
+            rcs.MarkNozzlesDirty();
+            rcs.RefreshNozzles();
+            mainThruster.Configure(ship.GetComponents<MainThrusterModule>(), shipRigidbody, stats, physicsCore);
+        }
+
         waypointAutopilot.Bind(waypointManager, controller, stats, shipRigidbody);
         momentumAssist.Bind(controller, shipRigidbody, stats);
         PrototypeTurretWeapon turretWeapon = ship.GetComponentInChildren<PrototypeTurretWeapon>();
@@ -223,6 +275,15 @@ public class PrototypeBootstrap : MonoBehaviour
     public void BuildSelectedVariant()
     {
         SpawnSelectedVariant();
+    }
+
+    public void SetBuildMode(PrototypeShipBuildMode mode, bool rebuild)
+    {
+        buildMode = mode;
+        if (rebuild)
+        {
+            BuildPrototype();
+        }
     }
 
     public void SpawnTestTarget()

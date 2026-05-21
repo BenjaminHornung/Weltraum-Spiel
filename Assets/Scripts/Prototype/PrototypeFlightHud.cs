@@ -90,7 +90,7 @@ public class PrototypeFlightHud : MonoBehaviour
         ResolveReferences();
         RefreshDiagnostics();
         EnsureStyles();
-        windowState.SetSize(Mathf.Max(300f, (navballRadius * 2f) + 84f), windowState.Collapsed ? 58f : Mathf.Max(322f, (navballRadius * 2f) + 188f));
+        windowState.SetSize(Mathf.Max(460f, (navballRadius * 2f) + 124f), windowState.Collapsed ? 58f : Mathf.Max(454f, (navballRadius * 2f) + 278f));
         windowState.Rect = GUI.Window(windowState.WindowId, windowState.Rect, DrawHudWindow, "HUD / Navball");
         windowState.ClampToScreen();
         windowState.SaveToPrefs();
@@ -430,7 +430,7 @@ public class PrototypeFlightHud : MonoBehaviour
 
         DrawQuickActions(contentRect);
 
-        Rect hintRect = new Rect(contentRect.x + 8f, contentRect.yMax - 86f, contentRect.width - 16f, 72f);
+        Rect hintRect = new Rect(contentRect.x + 8f, contentRect.yMax - 132f, contentRect.width - 16f, 116f);
         string targetLabel = waypointAutopilot != null ? waypointAutopilot.TargetName : (trackedTarget != null ? trackedTarget.name : "none");
         PrototypeFlightControlDiagnostics diagnostics = shipController != null ? shipController.FlightControlDiagnostics : default;
         string cameraLine = followCamera != null
@@ -551,22 +551,22 @@ public class PrototypeFlightHud : MonoBehaviour
             return "NavComp: n/a";
         }
 
-        string phase = waypointAutopilot.CurrentPlan.statusLabel;
-        if (string.IsNullOrWhiteSpace(phase))
-        {
-            phase = waypointAutopilot.ArrivalPhase.ToString();
-        }
-
+        string phase = waypointAutopilot.NavigationPhase.ToString();
+        string activeSegment = waypointAutopilot.ActiveSegmentLabel;
         string avoidance = waypointAutopilot.CurrentPlan.avoidanceActive
-            ? "avoid " + FormatVectorCompact(waypointAutopilot.AvoidanceWaypoint)
-            : "avoid off";
-        string warning = waypointAutopilot.FuelFeasible ? string.Empty : " | WARN fuel";
-        if (!string.IsNullOrWhiteSpace(waypointAutopilot.FailureReason) && waypointAutopilot.FailureReason != "none")
-        {
-            warning += " | WARN " + waypointAutopilot.FailureReason;
-        }
+            ? "active " + FormatVectorCompact(waypointAutopilot.AvoidanceWaypoint)
+            : "off";
+        string obstacle = waypointAutopilot.CurrentPlan.directPathBlocked
+            ? "blocking " + waypointAutopilot.ObstacleStatus
+            : waypointAutopilot.ObstacleStatus;
+        string[] chips = waypointAutopilot.BuildNavigationWarningChips();
+        string chipLine = chips.Length > 0 ? string.Join(" ", chips) : "OK";
 
-        return $"NavComp: {waypointAutopilot.TargetName} {FormatCompact(waypointAutopilot.DistanceToTarget)}m rel {FormatCompact(waypointAutopilot.LastMetrics.relativeSpeed)}m/s | {phase} | {(waypointAutopilot.AutopilotEngaged ? "auto on" : "auto off")} | obs {waypointAutopilot.ObstacleStatus} | {avoidance} | ETA {FormatCompactTime(waypointAutopilot.PlannedEta)} | main {waypointAutopilot.RequestedMainThrottle:0.00} RCS {FormatCompact(waypointAutopilot.RequestedRcsForce.magnitude)}N{warning}";
+        return "Navigation Computer\n"
+            + $"Target {waypointAutopilot.TargetName} | Dist {FormatCompact(waypointAutopilot.DistanceToTarget)}m | Rel {FormatCompact(waypointAutopilot.LastMetrics.relativeSpeed)}m/s\n"
+            + $"Phase {phase} | Segment {activeSegment} | Auto {(waypointAutopilot.AutopilotEngaged ? "ON" : "OFF")}\n"
+            + $"Obstacle {obstacle} | Avoidance {avoidance} | ETA {FormatCompactTime(waypointAutopilot.PlannedEta)}\n"
+            + $"Main {waypointAutopilot.RequestedMainThrottle:0.00} | RCS {FormatCompact(waypointAutopilot.RequestedRcsForce.magnitude)}N | {chipLine}";
     }
 
     private static Vector2 MarkerLabelOffset(Vector2 markerOffset, float size, string label)

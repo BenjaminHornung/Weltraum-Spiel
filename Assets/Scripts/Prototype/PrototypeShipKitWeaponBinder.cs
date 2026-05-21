@@ -7,6 +7,7 @@ public sealed class PrototypeShipKitWeaponBinder : MonoBehaviour
     public const string MuzzleFlashVfxChildName = "PrototypeMuzzleFlashVfx";
 
     [SerializeField] private Transform markerRoot;
+    [SerializeField] private Transform runtimeOwnerRoot;
     [SerializeField] private bool bindOnAwake;
     [SerializeField] private bool createMissingRuntimeComponents = true;
     [SerializeField] private bool createMuzzleFlashVfxChild = true;
@@ -19,6 +20,18 @@ public sealed class PrototypeShipKitWeaponBinder : MonoBehaviour
         {
             BindNow();
         }
+    }
+
+    public void Configure(
+        Transform markers,
+        Transform runtimeOwner = null,
+        bool createRuntimeComponents = true,
+        bool createFlashVfxChild = true)
+    {
+        markerRoot = markers != null ? markers : markerRoot;
+        runtimeOwnerRoot = runtimeOwner != null ? runtimeOwner : runtimeOwnerRoot;
+        createMissingRuntimeComponents = createRuntimeComponents;
+        createMuzzleFlashVfxChild = createFlashVfxChild;
     }
 
     public BindReport BindNow()
@@ -57,7 +70,8 @@ public sealed class PrototypeShipKitWeaponBinder : MonoBehaviour
             report.warnings.Add("No weapon muzzle marker found; turret binding will not create a ship-center muzzle fallback.");
         }
 
-        GameObject runtimeRoot = root.gameObject;
+        Transform runtimeRootTransform = runtimeOwnerRoot != null ? runtimeOwnerRoot : root;
+        GameObject runtimeRoot = runtimeRootTransform.gameObject;
         Rigidbody shipRigidbody = GetOrAddComponent<Rigidbody>(runtimeRoot, createMissingRuntimeComponents);
         ShipStats shipStats = GetOrAddComponent<ShipStats>(runtimeRoot, createMissingRuntimeComponents);
         ShipPhysicsCore physicsCore = GetOrAddComponent<ShipPhysicsCore>(runtimeRoot, createMissingRuntimeComponents);
@@ -101,7 +115,7 @@ public sealed class PrototypeShipKitWeaponBinder : MonoBehaviour
             }
         }
 
-        BindRootRuntimeComponents(root, shipStats, shipRigidbody, physicsCore, primaryWeapon, report);
+        BindRootRuntimeComponents(runtimeRootTransform, shipStats, shipRigidbody, physicsCore, primaryWeapon, report);
         LastReport = report;
         return report;
     }
@@ -128,9 +142,7 @@ public sealed class PrototypeShipKitWeaponBinder : MonoBehaviour
             return report;
         }
 
-        binder.markerRoot = root;
-        binder.createMissingRuntimeComponents = createMissingRuntimeComponents;
-        binder.createMuzzleFlashVfxChild = createMuzzleFlashVfxChild;
+        binder.Configure(root, null, createMissingRuntimeComponents, createMuzzleFlashVfxChild);
         return binder.BindNow();
     }
 
@@ -150,6 +162,7 @@ public sealed class PrototypeShipKitWeaponBinder : MonoBehaviour
         GunModule gun = GetOrAddComponent<GunModule>(root.gameObject, createMissingRuntimeComponents);
         if (gun != null)
         {
+            gun.SetAllowMuzzleFallback(false);
             gun.ConfigureMuzzle(primaryWeapon.Muzzle);
             gun.ConfigureTurretWeapon(primaryWeapon);
             report.boundGunModules = 1;

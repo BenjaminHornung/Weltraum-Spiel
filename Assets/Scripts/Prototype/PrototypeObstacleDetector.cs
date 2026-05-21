@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public struct PrototypeObstacleDetectionResult
 {
@@ -100,7 +101,12 @@ public class PrototypeObstacleDetector : MonoBehaviour
     [SerializeField] private bool useSphereCast = true;
     [SerializeField] private bool includeNavigationObstacleComponentsWithoutCollider = true;
 
+    private const int OverlapBufferCapacity = 64;
+    private const float SmallDistanceThreshold = 0.0001f;
+
     private readonly RaycastHit[] hitBuffer = new RaycastHit[32];
+    private readonly Collider[] overlapBuffer = new Collider[OverlapBufferCapacity];
+    private readonly List<PrototypeNavigationObstacle> fallbackObstacles = new List<PrototypeNavigationObstacle>(32);
 
     public float DefaultClearanceRadiusMeters => Mathf.Max(0.01f, defaultClearanceMeters);
     public float DefaultClearanceMeters => DefaultClearanceRadiusMeters;
@@ -111,6 +117,11 @@ public class PrototypeObstacleDetector : MonoBehaviour
     public float ShipRadius => shipRadius;
     public bool UseSphereCast => useSphereCast;
     public bool IncludeNavigationObstacleComponentsWithoutCollider => includeNavigationObstacleComponentsWithoutCollider;
+
+    public void SetIncludeNavigationObstacleComponentsWithoutCollider(bool include)
+    {
+        includeNavigationObstacleComponentsWithoutCollider = include;
+    }
 
     public PrototypeObstacleDetectionResult DetectDirectPath(
         Rigidbody ownShip,
@@ -158,18 +169,27 @@ public class PrototypeObstacleDetector : MonoBehaviour
 
         Vector3 direction = toTarget / pathDistance;
         float maxDistance = ComputeLookAheadDistance(currentVelocity, stoppingDistanceMeters, pathDistance);
-        if (useSphereCast
-            && Physics.SphereCast(origin, clearanceRadius, direction, out RaycastHit firstHit, maxDistance, layerMask, QueryTriggerInteraction.Collide)
-            && TryBuildResult(firstHit, ownRoot, clearanceRadius, out PrototypeObstacleDetectionResult firstResult))
+        PrototypeObstacleDetectionResult bestResult = PrototypeObstacleDetectionResult.Clear(clearanceRadius);
+        bool hasBest = false;
+        float bestDistance = float.PositiveInfinity;
+
+        if (TryDetectOverlapObstacles(
+            origin,
+            direction,
+            clearanceRadius,
+            maxDistance,
+            ownRoot,
+            out PrototypeObstacleDetectionResult overlapResult,
+            out float overlapDistance))
         {
-            return firstResult;
+            bestResult = overlapResult;
+            hasBest = true;
+            bestDistance = overlapDistance;
         }
 
         int count = useSphereCast
             ? Physics.SphereCastNonAlloc(origin, clearanceRadius, direction, hitBuffer, maxDistance, layerMask, QueryTriggerInteraction.Collide)
             : Physics.RaycastNonAlloc(origin, direction, hitBuffer, maxDistance, layerMask, QueryTriggerInteraction.Collide);
-        int bestIndex = -1;
-        float bestDistance = float.PositiveInfinity;
         for (int i = 0; i < count; i++)
         {
             RaycastHit hit = hitBuffer[i];
@@ -178,18 +198,22 @@ public class PrototypeObstacleDetector : MonoBehaviour
                 continue;
             }
 
-            if (!TryBuildResult(hit, ownRoot, clearanceRadius, out _))
+            if (!TryBuildResult(hit, ownRoot, maxDistance, clearanceRadius, out PrototypeObstacleDetectionResult candidateResult, out float candidateDistance))
             {
                 continue;
             }
 
-            bestIndex = i;
-            bestDistance = hit.distance;
+            if (candidateDistance < bestDistance)
+            {
+                bestDistance = candidateDistance;
+                bestResult = candidateResult;
+                hasBest = true;
+            }
         }
 
-        if (bestIndex >= 0 && TryBuildResult(hitBuffer[bestIndex], ownRoot, clearanceRadius, out PrototypeObstacleDetectionResult result))
+        if (hasBest)
         {
-            return result;
+            return bestResult;
         }
 
         if (includeNavigationObstacleComponentsWithoutCollider
@@ -204,10 +228,13 @@ public class PrototypeObstacleDetector : MonoBehaviour
     private static bool TryBuildResult(
         RaycastHit hit,
         Transform ownRoot,
+        float maxDistance,
         float clearanceRadius,
-        out PrototypeObstacleDetectionResult result)
+        out PrototypeObstacleDetectionResult result,
+        out float candidatePathDistance)
     {
         result = PrototypeObstacleDetectionResult.Clear(clearanceRadius);
+        candidatePathDistance = float.PositiveInfinity;
         Collider hitCollider = hit.collider;
         if (hitCollider == null)
         {
@@ -225,7 +252,114 @@ public class PrototypeObstacleDetector : MonoBehaviour
             return false;
         }
 
+        if (hit.distance < 0f || hit.distance > maxDistance)
+        {
+            return false;
+        }
+
+        candidatePathDistance = Mathf.Clamp(hit.distance, 0f, maxDistance);
         result = PrototypeObstacleDetectionResult.Hit(obstacle, hitCollider, hit, clearanceRadius);
+        if (candidatePathDistance <= SmallDistanceThreshold)
+        {
+            result.status = "overlap:" + obstacle.DisplayName;
+        }
+
+        return true;
+    }
+
+    private bool TryDetectOverlapObstacles(
+        Vector3 origin,
+        Vector3 direction,
+        float clearanceRadius,
+        float maxDistance,
+        Transform ownRoot,
+        out PrototypeObstacleDetectionResult result,
+        out float bestDistanceAlongPath)
+    {
+        result = PrototypeObstacleDetectionResult.Clear(clearanceRadius);
+        bestDistanceAlongPath = float.PositiveInfinity;
+
+        int overlapCount = Physics.OverlapSphereNonAlloc(
+            origin,
+            Mathf.Max(shipRadius + clearanceRadius, 0.05f),
+            overlapBuffer,
+            layerMask,
+            QueryTriggerInteraction.Collide);
+
+        bool found = false;
+        for (int i = 0; i < overlapCount; i++)
+        {
+            Collider overlapCollider = overlapBuffer[i];
+            if (!TryBuildOverlapResult(
+                overlapCollider,
+                origin,
+                direction,
+                maxDistance,
+                ownRoot,
+                clearanceRadius,
+                out PrototypeObstacleDetectionResult candidate,
+                out float candidateDistance))
+            {
+                continue;
+            }
+
+            if (candidateDistance < bestDistanceAlongPath)
+            {
+                bestDistanceAlongPath = candidateDistance;
+                result = candidate;
+                found = true;
+            }
+        }
+
+        return found;
+    }
+
+    private bool TryBuildOverlapResult(
+        Collider overlapCollider,
+        Vector3 origin,
+        Vector3 direction,
+        float maxDistance,
+        Transform ownRoot,
+        float clearanceRadius,
+        out PrototypeObstacleDetectionResult result,
+        out float candidateDistance)
+    {
+        result = PrototypeObstacleDetectionResult.Clear(clearanceRadius);
+        candidateDistance = float.PositiveInfinity;
+
+        if (overlapCollider == null)
+        {
+            return false;
+        }
+
+        if (ownRoot != null && overlapCollider.transform.IsChildOf(ownRoot))
+        {
+            return false;
+        }
+
+        PrototypeNavigationObstacle obstacle = overlapCollider.GetComponentInParent<PrototypeNavigationObstacle>();
+        if (obstacle == null || !obstacle.BlocksAutopilot)
+        {
+            return false;
+        }
+
+        Vector3 toObstacle = obstacle.WorldPosition - origin;
+        float projectedDistance = Vector3.Dot(toObstacle, direction);
+        float clampedDistance = Mathf.Clamp(projectedDistance, 0f, maxDistance);
+        Vector3 closestPointOnPath = origin + direction * clampedDistance;
+        Vector3 fromPath = obstacle.WorldPosition - closestPointOnPath;
+        float combinedRadius = obstacle.EffectiveClearanceRadius + clearanceRadius + Mathf.Max(0f, shipRadius);
+        if (fromPath.sqrMagnitude > combinedRadius * combinedRadius)
+        {
+            return false;
+        }
+
+        candidateDistance = clampedDistance;
+        Vector3 point = overlapCollider.ClosestPoint(closestPointOnPath);
+        Vector3 normal = fromPath.sqrMagnitude > SmallDistanceThreshold ? -fromPath.normalized : -direction;
+        result = PrototypeObstacleDetectionResult.HitFallback(obstacle, point, normal, candidateDistance, clearanceRadius);
+        result.collider = overlapCollider;
+        result.status = "overlap:" + obstacle.DisplayName;
         return true;
     }
 
@@ -262,15 +396,15 @@ public class PrototypeObstacleDetector : MonoBehaviour
         out PrototypeObstacleDetectionResult result)
     {
         result = PrototypeObstacleDetectionResult.Clear(clearanceRadius);
-        PrototypeNavigationObstacle[] obstacles = FindObjectsByType<PrototypeNavigationObstacle>(FindObjectsInactive.Exclude);
+        PrototypeNavigationObstacleRegistry.CopyActiveObstacles(fallbackObstacles);
         PrototypeNavigationObstacle bestObstacle = null;
         Vector3 bestPoint = Vector3.zero;
         Vector3 bestNormal = Vector3.zero;
         float bestDistance = float.PositiveInfinity;
 
-        for (int i = 0; i < obstacles.Length; i++)
+        for (int i = 0; i < fallbackObstacles.Count; i++)
         {
-            PrototypeNavigationObstacle obstacle = obstacles[i];
+            PrototypeNavigationObstacle obstacle = fallbackObstacles[i];
             if (obstacle == null || !obstacle.BlocksAutopilot || obstacle.GetComponentInChildren<Collider>() != null)
             {
                 continue;
@@ -288,14 +422,21 @@ public class PrototypeObstacleDetector : MonoBehaviour
 
             Vector3 toObstacle = obstacle.WorldPosition - origin;
             float projectedDistance = Vector3.Dot(toObstacle, direction);
-            if (projectedDistance < 0f || projectedDistance > maxDistance || projectedDistance >= bestDistance)
+            float combinedRadius = obstacle.EffectiveClearanceRadius + clearanceRadius + Mathf.Max(0f, shipRadius);
+            bool overlapsStart = toObstacle.sqrMagnitude <= combinedRadius * combinedRadius;
+            if (!overlapsStart && (projectedDistance < 0f || projectedDistance > maxDistance || projectedDistance >= bestDistance))
             {
                 continue;
             }
 
-            Vector3 closestPointOnPath = origin + direction * projectedDistance;
+            float candidateDistance = overlapsStart ? 0f : projectedDistance;
+            if (candidateDistance >= bestDistance)
+            {
+                continue;
+            }
+
+            Vector3 closestPointOnPath = origin + direction * candidateDistance;
             Vector3 fromPath = obstacle.WorldPosition - closestPointOnPath;
-            float combinedRadius = obstacle.EffectiveClearanceRadius + clearanceRadius + Mathf.Max(0f, shipRadius);
             if (fromPath.sqrMagnitude > combinedRadius * combinedRadius)
             {
                 continue;
@@ -304,7 +445,7 @@ public class PrototypeObstacleDetector : MonoBehaviour
             bestObstacle = obstacle;
             bestPoint = closestPointOnPath;
             bestNormal = fromPath.sqrMagnitude > 0.0001f ? -fromPath.normalized : -direction;
-            bestDistance = projectedDistance;
+            bestDistance = candidateDistance;
         }
 
         if (bestObstacle == null)

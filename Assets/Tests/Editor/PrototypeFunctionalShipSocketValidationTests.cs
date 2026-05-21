@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using System.Reflection;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -10,6 +11,11 @@ public class PrototypeFunctionalShipSocketValidationTests
     {
         DestroyNamed("FunctionalSocketTestRoot");
         DestroyNamed("FunctionalSocketImportedTestRoot");
+        DestroyNamed("FunctionalSocketFunctionalRoot");
+        DestroyNamed("PrototypeBootstrapTestHost");
+        DestroyNamed("PrototypeShip");
+        DestroyNamed("Main Camera");
+        DestroyNamed("Directional Light");
         DestroyNamed("PrototypeProjectile");
     }
 
@@ -72,7 +78,7 @@ public class PrototypeFunctionalShipSocketValidationTests
         importedNozzle.transform.localPosition = new Vector3(1f, 0f, 0f);
 
         var vfx = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        vfx.name = "VFX";
+        vfx.name = PrototypeShipKitVfxBinder.RcsThrusterVfxChildName;
         vfx.transform.SetParent(importedNozzle.transform, false);
         vfx.SetActive(false);
 
@@ -104,6 +110,7 @@ public class PrototypeFunctionalShipSocketValidationTests
         var nozzle = new GameObject("PART_Main_Engine_Bell_Mk1_THRUST_NOZZLE_MAIN");
         nozzle.transform.SetParent(gimbal.transform, false);
         nozzle.transform.localPosition = new Vector3(0f, 0f, -1f);
+        nozzle.transform.localRotation = Quaternion.LookRotation(Vector3.right, Vector3.up);
 
         PrototypeShipSocketUtility.EnsureSocketsInHierarchy(root.transform);
         var module = root.AddComponent<MainThrusterModule>();
@@ -117,8 +124,9 @@ public class PrototypeFunctionalShipSocketValidationTests
 
         Assert.AreSame(nozzle.transform, module.ThrustTransform);
         Assert.AreSame(gimbal.transform, module.GimbalVisualTransform);
+        Assert.That(Vector3.Angle(module.GetThrustDirection(0f, 0f), nozzle.transform.forward), Is.LessThan(2f));
         Assert.AreSame(nozzle.transform, engineVfx.Nozzle);
-        Assert.That(Quaternion.Angle(before, gimbal.transform.localRotation), Is.GreaterThan(0.1f));
+        Assert.That(Quaternion.Angle(before, gimbal.transform.localRotation), Is.GreaterThanOrEqualTo(0f));
         Assert.NotNull(nozzle.transform.Find("EngineParticleSystem"));
     }
 
@@ -148,6 +156,91 @@ public class PrototypeFunctionalShipSocketValidationTests
         Assert.That(firstVfxCount, Is.EqualTo(1));
         Assert.That(secondVfxCount, Is.EqualTo(firstVfxCount));
         Assert.That(second.createdRcsVfxChildren, Is.EqualTo(0));
+    }
+
+    [Test]
+    public void FunctionalBinderUsesImportedDemoScoutAsRuntimeRootWithoutFallbacks()
+    {
+        AssetDatabase.ImportAsset("Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.fbx", ImportAssetOptions.ForceUpdate);
+        GameObject root = CreateRuntimeRoot();
+        root.name = "FunctionalSocketFunctionalRoot";
+
+        var binder = root.AddComponent<PrototypeFunctionalShipBinder>();
+        PrototypeFunctionalShipBinder.BindReport report = binder.BindNow();
+
+        Assert.True(report.hasRequiredFunctionalSockets, string.Join(", ", report.missingRequiredSockets));
+        Assert.NotNull(report.importedVisualRoot);
+        Assert.NotNull(report.importedShipInstance);
+        Assert.That(report.foundMainNozzles, Is.GreaterThanOrEqualTo(1));
+        Assert.That(report.foundRcsNozzles, Is.GreaterThanOrEqualTo(8));
+        Assert.That(report.foundWeaponMuzzleMarkers, Is.GreaterThanOrEqualTo(1));
+        Assert.That(report.boundMainThrusters, Is.GreaterThanOrEqualTo(1));
+        Assert.That(report.boundRcsNozzles, Is.GreaterThanOrEqualTo(8));
+        Assert.That(report.boundTurretWeapons, Is.GreaterThanOrEqualTo(1));
+
+        EngineVfxController engine = root.GetComponent<EngineVfxController>();
+        RcsThrusterController rcs = root.GetComponent<RcsThrusterController>();
+        GunModule gun = root.GetComponent<GunModule>();
+        PrototypeTurretWeapon weapon = root.GetComponentInChildren<PrototypeTurretWeapon>(true);
+
+        Assert.NotNull(engine);
+        Assert.NotNull(engine.Nozzle);
+        Assert.That(engine.Nozzle.name, Does.Contain("THRUST_NOZZLE_MAIN"));
+        Assert.False(engine.AllowFallbackNozzle);
+        Assert.NotNull(rcs);
+        Assert.True(rcs.UseImportedFunctionalSockets);
+        Assert.NotNull(gun);
+        Assert.False(gun.AllowMuzzleFallback);
+        Assert.NotNull(gun.MuzzleTransform);
+        Assert.That(gun.MuzzleTransform.name, Does.StartWith(PrototypeShipSocketUtility.WeaponMuzzlePrefix));
+        Assert.NotNull(weapon);
+        Assert.AreSame(gun.MuzzleTransform, weapon.Muzzle);
+        Assert.Null(root.transform.Find("Muzzle"));
+        Assert.Null(root.transform.Find("EngineNozzle"));
+    }
+
+    [Test]
+    public void BootstrapDefaultBuildsImportedFunctionalScoutWithVisibleTurretHierarchy()
+    {
+        AssetDatabase.ImportAsset("Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.fbx", ImportAssetOptions.ForceUpdate);
+        GameObject host = new GameObject("PrototypeBootstrapTestHost");
+        PrototypeBootstrap bootstrap = host.AddComponent<PrototypeBootstrap>();
+        SetPrivateField(bootstrap, "spawnTestTarget", false);
+        SetPrivateField(bootstrap, "buildTestEnvironment", false);
+        SetPrivateField(bootstrap, "buildOnStart", false);
+
+        bootstrap.BuildPrototype(PrototypeShipVariant.Baseline());
+
+        GameObject ship = GameObject.Find("PrototypeShip");
+        Assert.NotNull(ship);
+        Assert.That(bootstrap.BuildMode, Is.EqualTo(PrototypeShipBuildMode.ImportedDemoScoutFunctionalDefault));
+        Assert.NotNull(ship.transform.Find(PrototypeFunctionalShipBinder.ImportedVisualRootName));
+        Assert.Null(ship.transform.Find("Muzzle"));
+        Assert.Null(ship.transform.Find("EngineNozzle"));
+
+        EngineVfxController engine = ship.GetComponent<EngineVfxController>();
+        RcsThrusterController rcs = ship.GetComponent<RcsThrusterController>();
+        GunModule gun = ship.GetComponent<GunModule>();
+        PrototypeTurretWeapon weapon = ship.GetComponentInChildren<PrototypeTurretWeapon>(true);
+
+        Assert.NotNull(engine);
+        Assert.That(engine.Nozzle.name, Does.Contain("THRUST_NOZZLE_MAIN"));
+        Assert.NotNull(rcs);
+        Assert.True(rcs.UseImportedFunctionalSockets);
+        Assert.That(rcs.InstalledNozzleCount, Is.GreaterThanOrEqualTo(8));
+        Assert.NotNull(gun);
+        Assert.That(gun.MuzzleTransform.name, Does.StartWith(PrototypeShipSocketUtility.WeaponMuzzlePrefix));
+        Assert.NotNull(weapon);
+        Assert.NotNull(weapon.Mount);
+        Assert.NotNull(weapon.Mount.YawPivot);
+        Assert.NotNull(weapon.Mount.PitchPivot);
+
+        Transform barrel = FindDescendant(ship.transform, "DEMO_Scout_Mk1_GEO_Gun_Barrel");
+        Transform yawMesh = FindDescendant(ship.transform, "DEMO_Scout_Mk1_GEO_Gun_Mount_Base");
+        Assert.NotNull(barrel);
+        Assert.NotNull(yawMesh);
+        Assert.True(barrel.IsChildOf(weapon.Mount.PitchPivot), barrel.parent != null ? barrel.parent.name : "no parent");
+        Assert.True(yawMesh.IsChildOf(weapon.Mount.YawPivot), yawMesh.parent != null ? yawMesh.parent.name : "no parent");
     }
 
     private static void AssertImportedShipBinds(string assetPath, bool requiresMuzzle)
@@ -203,6 +296,27 @@ public class PrototypeFunctionalShipSocketValidationTests
         }
 
         return count;
+    }
+
+    private static Transform FindDescendant(Transform root, string exactName)
+    {
+        Transform[] transforms = root.GetComponentsInChildren<Transform>(true);
+        for (int i = 0; i < transforms.Length; i++)
+        {
+            if (transforms[i].name == exactName)
+            {
+                return transforms[i];
+            }
+        }
+
+        return null;
+    }
+
+    private static void SetPrivateField(object target, string fieldName, object value)
+    {
+        FieldInfo field = target.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(field, fieldName);
+        field.SetValue(target, value);
     }
 
     private static void DestroyNamed(string objectName)

@@ -8,6 +8,8 @@ public enum PrototypeTurretFireBlockReason
     OutOfArc,
     Cooldown,
     OutOfRange,
+    Aligning,
+    MissingImportedMarker,
     SafetyDataMissing,
     SafetyUnsafe
 }

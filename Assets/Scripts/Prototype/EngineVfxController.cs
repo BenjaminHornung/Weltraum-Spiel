@@ -16,9 +16,11 @@ public class EngineVfxController : MonoBehaviour
     [SerializeField] private float activeThrottleForVfx = 0.01f;
     [SerializeField] private Color plumeColdColor = new Color(0.2f, 0.6f, 1f, 0.85f);
     [SerializeField] private Color plumeHotColor = new Color(1f, 0.46f, 0.12f, 0.95f);
+    [SerializeField] private bool allowFallbackNozzle = true;
 
     private float throttle;
     public Transform Nozzle => nozzle;
+    public bool AllowFallbackNozzle => allowFallbackNozzle;
 
     private void Awake()
     {
@@ -36,6 +38,12 @@ public class EngineVfxController : MonoBehaviour
     {
         if (nozzleTransform == null)
         {
+            if (!allowFallbackNozzle)
+            {
+                nozzle = null;
+                DisableVisuals();
+            }
+
             return;
         }
 
@@ -49,6 +57,20 @@ public class EngineVfxController : MonoBehaviour
 
         EnsureParticles();
         ApplyThrottle();
+    }
+
+    public void SetAllowFallbackNozzle(bool allowFallback)
+    {
+        allowFallbackNozzle = allowFallback;
+        if (!allowFallbackNozzle && nozzle != null && nozzle.parent == transform && nozzle.name == "EngineNozzle")
+        {
+            var fallback = nozzle.gameObject;
+            nozzle = null;
+            thrustParticles = null;
+            thrustLight = null;
+            thrustNozzleRing = null;
+            DestroyGameObject(fallback);
+        }
     }
 
     private void Update()
@@ -86,15 +108,23 @@ public class EngineVfxController : MonoBehaviour
             }
         }
 
-        var fallback = new GameObject("EngineNozzle");
-        fallback.transform.SetParent(transform, false);
-        fallback.transform.localPosition = Vector3.zero;
-        fallback.transform.localRotation = Quaternion.identity;
-        nozzle = fallback.transform;
+        if (allowFallbackNozzle)
+        {
+            var fallback = new GameObject("EngineNozzle");
+            fallback.transform.SetParent(transform, false);
+            fallback.transform.localPosition = Vector3.zero;
+            fallback.transform.localRotation = Quaternion.identity;
+            nozzle = fallback.transform;
+        }
     }
 
     private void EnsureParticles()
     {
+        if (nozzle == null)
+        {
+            return;
+        }
+
         if (thrustParticles == null)
         {
             var host = new GameObject("EngineParticleSystem");
@@ -199,6 +229,12 @@ public class EngineVfxController : MonoBehaviour
 
     private void ApplyThrottle()
     {
+        if (nozzle == null)
+        {
+            DisableVisuals();
+            return;
+        }
+
         if (thrustParticles == null || thrustLight == null)
         {
             return;
@@ -256,6 +292,47 @@ public class EngineVfxController : MonoBehaviour
         Color lightColor = Color.Lerp(plumeColdColor, plumeHotColor, normalizedThrottle);
         thrustLight.color = lightColor;
         thrustLight.intensity = Mathf.Lerp(minLightIntensity, maxLightIntensity, normalizedThrottle);
+    }
+
+    private void DisableVisuals()
+    {
+        if (thrustParticles != null && thrustParticles.isPlaying)
+        {
+            thrustParticles.Stop();
+        }
+
+        if (thrustParticles != null)
+        {
+            var emission = thrustParticles.emission;
+            emission.enabled = false;
+        }
+
+        if (thrustLight != null)
+        {
+            thrustLight.intensity = 0f;
+        }
+
+        if (thrustNozzleRing != null)
+        {
+            thrustNozzleRing.SetActive(false);
+        }
+    }
+
+    private static void DestroyGameObject(GameObject target)
+    {
+        if (target == null)
+        {
+            return;
+        }
+
+        if (Application.isPlaying)
+        {
+            Destroy(target);
+        }
+        else
+        {
+            DestroyImmediate(target);
+        }
     }
 }
 

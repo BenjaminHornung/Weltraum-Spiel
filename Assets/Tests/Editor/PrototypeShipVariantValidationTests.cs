@@ -216,6 +216,7 @@ public class PrototypeShipVariantValidationTests
     {
         var bootstrapObject = new GameObject("VariantTestBootstrap");
         var bootstrap = bootstrapObject.AddComponent<PrototypeBootstrap>();
+        bootstrap.SetBuildMode(PrototypeShipBuildMode.GeneratedPrimitiveFallback, false);
         bootstrap.BuildBuiltInVariant(builtInIndex);
 
         GameObject ship = GameObject.Find("PrototypeShip");

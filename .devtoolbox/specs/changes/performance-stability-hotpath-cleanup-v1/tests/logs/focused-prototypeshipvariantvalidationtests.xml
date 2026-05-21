@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="9" result="Passed" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-05-21 12:07:22Z" end-time="2026-05-21 12:07:23Z" duration="0.3479522">
+  <test-suite type="TestSuite" id="1000" name="Weltraum Spiel" fullname="Weltraum Spiel" runstate="Runnable" testcasecount="228" result="Passed" start-time="2026-05-21 12:07:22Z" end-time="2026-05-21 12:07:23Z" duration="0.347952" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1257" name="Assembly-CSharp-Editor.dll" fullname="E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="228" result="Passed" start-time="2026-05-21 12:07:22Z" end-time="2026-05-21 12:07:23Z" duration="0.329953" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="44092" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1125" name="PrototypeShipVariantValidationTests" fullname="PrototypeShipVariantValidationTests" classname="PrototypeShipVariantValidationTests" runstate="Runnable" testcasecount="9" result="Passed" start-time="2026-05-21 12:07:22Z" end-time="2026-05-21 12:07:23Z" duration="0.317453" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1127" name="BaselineVariantBuildsStableRigAndRebindsDebugConsole" fullname="PrototypeShipVariantValidationTests.BaselineVariantBuildsStableRigAndRebindsDebugConsole" methodname="BaselineVariantBuildsStableRigAndRebindsDebugConsole" classname="PrototypeShipVariantValidationTests" runstate="Runnable" seed="934122158" result="Passed" start-time="2026-05-21 12:07:22Z" end-time="2026-05-21 12:07:23Z" duration="0.168735" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1126" name="BuiltInVariantsExposeExpectedPrototypeCases" fullname="PrototypeShipVariantValidationTests.BuiltInVariantsExposeExpectedPrototypeCases" methodname="BuiltInVariantsExposeExpectedPrototypeCases" classname="PrototypeShipVariantValidationTests" runstate="Runnable" seed="656625545" result="Passed" start-time="2026-05-21 12:07:23Z" end-time="2026-05-21 12:07:23Z" duration="0.000799" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1128" name="DebugConsoleBackedActionsMirrorRuntimeControllerState" fullname="PrototypeShipVariantValidationTests.DebugConsoleBackedActionsMirrorRuntimeControllerState" methodname="DebugConsoleBackedActionsMirrorRuntimeControllerState" classname="PrototypeShipVariantValidationTests" runstate="Runnable" seed="1705685241" result="Passed" start-time="2026-05-21 12:07:23Z" end-time="2026-05-21 12:07:23Z" duration="0.023214" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1129" name="DebugVectorTogglesUpdateRuntimeOverlayState" fullname="PrototypeShipVariantValidationTests.DebugVectorTogglesUpdateRuntimeOverlayState" methodname="DebugVectorTogglesUpdateRuntimeOverlayState" classname="PrototypeShipVariantValidationTests" runstate="Runnable" seed="2827186" result="Passed" start-time="2026-05-21 12:07:23Z" end-time="2026-05-21 12:07:23Z" duration="0.016297" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1132" name="DualMainThrusterSingleEngineFailureCreatesExpectedPhysicalTorque" fullname="PrototypeShipVariantValidationTests.DualMainThrusterSingleEngineFailureCreatesExpectedPhysicalTorque" methodname="DualMainThrusterSingleEngineFailureCreatesExpectedPhysicalTorque" classname="PrototypeShipVariantValidationTests" runstate="Runnable" seed="367386126" result="Passed" start-time="2026-05-21 12:07:23Z" end-time="2026-05-21 12:07:23Z" duration="0.021284" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1130" name="DualMainThrusterVariantAppliesSymmetricComSafeThrustWithoutUnintendedTorque" fullname="PrototypeShipVariantValidationTests.DualMainThrusterVariantAppliesSymmetricComSafeThrustWithoutUnintendedTorque" methodname="DualMainThrusterVariantAppliesSymmetricComSafeThrustWithoutUnintendedTorque" classname="PrototypeShipVariantValidationTests" runstate="Runnable" seed="1198940552" result="Passed" start-time="2026-05-21 12:07:23Z" end-time="2026-05-21 12:07:23Z" duration="0.018767" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1134" name="NoRcsVariantReportsMissingRcsAuthority" fullname="PrototypeShipVariantValidationTests.NoRcsVariantReportsMissingRcsAuthority" methodname="NoRcsVariantReportsMissingRcsAuthority" classname="PrototypeShipVariantValidationTests" runstate="Runnable" seed="1073230384" result="Passed" start-time="2026-05-21 12:07:23Z" end-time="2026-05-21 12:07:23Z" duration="0.013408" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1131" name="OffCenterMainThrusterVariantShowsComSafeVsPhysicalTorqueDifference" fullname="PrototypeShipVariantValidationTests.OffCenterMainThrusterVariantShowsComSafeVsPhysicalTorqueDifference" methodname="OffCenterMainThrusterVariantShowsComSafeVsPhysicalTorqueDifference" classname="PrototypeShipVariantValidationTests" runstate="Runnable" seed="784465765" result="Passed" start-time="2026-05-21 12:07:23Z" end-time="2026-05-21 12:07:23Z" duration="0.017279" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1133" name="OneSidedRcsVariantReportsResidualForUnsupportedTranslation" fullname="PrototypeShipVariantValidationTests.OneSidedRcsVariantReportsResidualForUnsupportedTranslation" methodname="OneSidedRcsVariantReportsResidualForUnsupportedTranslation" classname="PrototypeShipVariantValidationTests" runstate="Runnable" seed="234895300" result="Passed" start-time="2026-05-21 12:07:23Z" end-time="2026-05-21 12:07:23Z" duration="0.018816" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[<b><color=#2EA3FF>MCP-FOR-UNITY</color></b>: [TestRunnerNoThrottle] Restored Interaction Mode after test run.
+Saving results to: C:/Users/benni/AppData/LocalLow/DefaultCompany/Weltraum Spiel\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

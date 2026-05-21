@@ -98,4 +98,44 @@ public struct TrajectoryBurnPlan
             stats != null ? stats.CurrentFuelKg : 0f,
             massKg);
     }
+
+    public static float EstimateDistanceWithDeltaV(
+        float deltaV,
+        float maxAcceleration)
+    {
+        float acceleration = Mathf.Max(0f, maxAcceleration);
+        if (acceleration <= 0f || deltaV <= 0f)
+        {
+            return 0f;
+        }
+
+        float timeToDeltaV = deltaV / acceleration;
+        return 0.5f * acceleration * (timeToDeltaV * timeToDeltaV);
+    }
+
+    public static float EstimateDeltaVForDuration(
+        float durationSeconds,
+        float maxAcceleration)
+    {
+        return Mathf.Max(0f, durationSeconds) * Mathf.Max(0f, maxAcceleration);
+    }
+
+    public static TrajectoryBurnPlan EstimateMainBurnForDistance(
+        Vector3 directionWorld,
+        float distanceMeters,
+        float throttle,
+        float maxAcceleration,
+        ShipStats stats,
+        float massKg)
+    {
+        float throttleScale = Mathf.Clamp01(throttle);
+        float maxDeltaV = EstimateDeltaVForDuration(Mathf.Sqrt(Mathf.Max(0f, 2f * distanceMeters) / Mathf.Max(0.0001f, maxAcceleration)), Mathf.Max(0f, maxAcceleration));
+        float duration = maxAcceleration > 0.0001f ? Mathf.Abs(maxDeltaV) / maxAcceleration : 0f;
+        return EstimateMainBurn(
+            directionWorld,
+            duration,
+            throttleScale,
+            stats,
+            massKg);
+    }
 }

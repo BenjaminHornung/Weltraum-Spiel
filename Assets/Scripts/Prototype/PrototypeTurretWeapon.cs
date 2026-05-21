@@ -11,6 +11,8 @@ public class PrototypeTurretWeapon : MonoBehaviour
     [SerializeField] private WeaponRecoilStabilizer recoilStabilizer;
     [SerializeField] private bool recoilEnabled = true;
     [SerializeField] private float missDispersionDegrees = 6f;
+    [SerializeField] private float alignmentToleranceDegrees = 1.5f;
+    [SerializeField] private float muzzleFlashSeconds = 0.08f;
 
     private Quaternion yawPivotBaseLocalRotation;
     private Quaternion pitchPivotBaseLocalRotation;
@@ -19,6 +21,7 @@ public class PrototypeTurretWeapon : MonoBehaviour
     private bool hasForcedRoll;
     private float forcedRoll;
     private System.Random deterministicRandom = new System.Random(1337);
+    private GameObject activeMuzzleFlashVisual;
 
     public Func<float> RollSource { get; set; }
     public PrototypeTurretFireStatus LastFireStatus { get; private set; }
@@ -88,12 +91,34 @@ public class PrototypeTurretWeapon : MonoBehaviour
 
     public PrototypeTurretFireStatus EvaluateFireStatus()
     {
-        return EvaluateFireStatusInternal(Vector3.zero, false, true);
+        return EvaluateFireStatusInternal(Vector3.zero, false, false);
     }
 
     public PrototypeTurretFireStatus EvaluateFireStatus(Vector3 targetWorldPosition)
     {
-        return EvaluateFireStatusInternal(targetWorldPosition, true, true);
+        return EvaluateFireStatus(targetWorldPosition, false);
+    }
+
+    public PrototypeTurretFireStatus EvaluateFireStatus(Vector3 targetWorldPosition, bool applyAim)
+    {
+        return EvaluateFireStatusInternal(targetWorldPosition, true, applyAim);
+    }
+
+    public PrototypeTurretFireStatus TickAimAtTarget(Transform target, float deltaTime)
+    {
+        return target != null ? TickAimAtTarget(target.position, deltaTime) : EvaluateFireStatus();
+    }
+
+    public PrototypeTurretFireStatus TickAimAtTarget(Vector3 targetWorldPosition, float deltaTime)
+    {
+        PrototypeTurretFireStatus status = EvaluateFireStatusInternal(targetWorldPosition, true, false);
+        if (CanAimWithStatus(status))
+        {
+            ApplyAimTowards(status.appliedYawDegrees, status.appliedPitchDegrees, deltaTime);
+            status = EvaluateFireStatusInternal(targetWorldPosition, true, false);
+        }
+
+        return status;
     }
 
     public PrototypeTurretArcSafetyResult ValidateArcSafety()
@@ -115,7 +140,12 @@ public class PrototypeTurretWeapon : MonoBehaviour
 
     private bool TryFireInternal(Vector3 targetWorldPosition, bool hasTarget)
     {
-        PrototypeTurretFireStatus status = EvaluateFireStatusInternal(targetWorldPosition, hasTarget, true);
+        if (hasTarget)
+        {
+            TickAimAtTarget(targetWorldPosition, Mathf.Max(Time.deltaTime, Time.fixedDeltaTime));
+        }
+
+        PrototypeTurretFireStatus status = EvaluateFireStatusInternal(targetWorldPosition, hasTarget, false);
         if (!status.canFire)
         {
             LastFireStatus = status;
@@ -163,6 +193,11 @@ public class PrototypeTurretWeapon : MonoBehaviour
         bool outsideArc = !Approximately(requestedYaw, appliedYaw) || !Approximately(requestedPitch, appliedPitch);
         if (outsideArc)
         {
+            if (applyAim)
+            {
+                ApplyAim(appliedYaw, appliedPitch);
+            }
+
             LastFireStatus = PrototypeTurretFireStatus.Blocked(
                 PrototypeTurretFireBlockReason.OutOfArc,
                 "out of arc",
@@ -172,6 +207,20 @@ public class PrototypeTurretWeapon : MonoBehaviour
                 appliedPitch,
                 distanceMeters: distance,
                 hasSelectedTarget: hasTarget);
+            return LastFireStatus;
+        }
+
+        if (hasTarget && !IsAligned(appliedYaw, appliedPitch))
+        {
+            LastFireStatus = PrototypeTurretFireStatus.Blocked(
+                PrototypeTurretFireBlockReason.Aligning,
+                "aligning",
+                requestedYaw,
+                requestedPitch,
+                appliedYaw,
+                appliedPitch,
+                distanceMeters: distance,
+                hasSelectedTarget: true);
             return LastFireStatus;
         }
 
@@ -214,6 +263,7 @@ public class PrototypeTurretWeapon : MonoBehaviour
 
         LastFireResult = PrototypeProjectileSimulation.GetOrCreateDefault().Fire(request);
         LastProjectileVelocityWorld = LastFireResult.projectileVelocityWorld;
+        PulseMuzzleFlash();
 
         ApplyRecoilImpulse(shotDirection);
     }
@@ -356,6 +406,73 @@ public class PrototypeTurretWeapon : MonoBehaviour
         LastAppliedPitchDegrees = Mathf.Clamp(pitchDegrees, shipStats.PitchMinDegrees, shipStats.PitchMaxDegrees);
         mount.YawPivot.localRotation = yawPivotBaseLocalRotation * Quaternion.Euler(0f, LastAppliedYawDegrees, 0f);
         mount.PitchPivot.localRotation = pitchPivotBaseLocalRotation * Quaternion.Euler(-LastAppliedPitchDegrees, 0f, 0f);
+    }
+
+    private void ApplyAimTowards(float yawDegrees, float pitchDegrees, float deltaTime)
+    {
+        CaptureBasePivotRotations();
+        if (!hasBasePivotRotations || shipStats == null)
+        {
+            return;
+        }
+
+        float maxStep = shipStats.TurretSlewDegreesPerSecond * Mathf.Max(0f, deltaTime);
+        if (maxStep <= 0f)
+        {
+            return;
+        }
+
+        float targetYaw = Mathf.Clamp(yawDegrees, shipStats.YawLimitLeftDegrees, shipStats.YawLimitRightDegrees);
+        float targetPitch = Mathf.Clamp(pitchDegrees, shipStats.PitchMinDegrees, shipStats.PitchMaxDegrees);
+        float nextYaw = Mathf.MoveTowardsAngle(LastAppliedYawDegrees, targetYaw, maxStep);
+        float nextPitch = Mathf.MoveTowards(LastAppliedPitchDegrees, targetPitch, maxStep);
+        ApplyAim(nextYaw, nextPitch);
+    }
+
+    private bool IsAligned(float targetYawDegrees, float targetPitchDegrees)
+    {
+        float tolerance = Mathf.Max(0.1f, alignmentToleranceDegrees);
+        return Mathf.Abs(Mathf.DeltaAngle(LastAppliedYawDegrees, targetYawDegrees)) <= tolerance
+            && Mathf.Abs(LastAppliedPitchDegrees - targetPitchDegrees) <= tolerance;
+    }
+
+    private static bool CanAimWithStatus(PrototypeTurretFireStatus status)
+    {
+        return status.blockReason == PrototypeTurretFireBlockReason.None
+            || status.blockReason == PrototypeTurretFireBlockReason.Aligning
+            || status.blockReason == PrototypeTurretFireBlockReason.Cooldown
+            || status.blockReason == PrototypeTurretFireBlockReason.OutOfArc;
+    }
+
+    private void PulseMuzzleFlash()
+    {
+        Transform flashMarker = mount != null ? mount.MuzzleFlashMarker : null;
+        Transform host = flashMarker != null ? flashMarker : mount != null ? mount.Muzzle : null;
+        if (host == null)
+        {
+            return;
+        }
+
+        Transform visual = flashMarker != null ? flashMarker.Find(PrototypeShipKitWeaponBinder.MuzzleFlashVfxChildName) : null;
+        activeMuzzleFlashVisual = visual != null ? visual.gameObject : host.gameObject;
+        activeMuzzleFlashVisual.SetActive(true);
+
+        ParticleSystem[] particleSystems = activeMuzzleFlashVisual.GetComponentsInChildren<ParticleSystem>(true);
+        for (int i = 0; i < particleSystems.Length; i++)
+        {
+            particleSystems[i].Play();
+        }
+
+        CancelInvoke(nameof(DisableMuzzleFlashVisual));
+        Invoke(nameof(DisableMuzzleFlashVisual), Mathf.Max(0.01f, muzzleFlashSeconds));
+    }
+
+    private void DisableMuzzleFlashVisual()
+    {
+        if (activeMuzzleFlashVisual != null)
+        {
+            activeMuzzleFlashVisual.SetActive(false);
+        }
     }
 
     private float GetRoll()

@@ -136,9 +136,9 @@ public class PrototypeWeaponComputer : MonoBehaviour
         {
             LastTurretStatus = PrototypeTurretFireStatus.Blocked(
                 PrototypeTurretFireBlockReason.NoAuthority,
-                "no selected target",
+                "no target",
                 hasSelectedTarget: false);
-            TurretStatusLabel = "no selected target";
+            TurretStatusLabel = "no target";
             return;
         }
 

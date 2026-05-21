@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="25" result="Passed" total="25" passed="25" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-05-21 11:53:33Z" end-time="2026-05-21 11:53:33Z" duration="0.179037">
+  <test-suite type="TestSuite" id="1000" name="Weltraum Spiel" fullname="Weltraum Spiel" runstate="Runnable" testcasecount="228" result="Passed" start-time="2026-05-21 11:53:33Z" end-time="2026-05-21 11:53:33Z" duration="0.179037" total="25" passed="25" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1257" name="Assembly-CSharp-Editor.dll" fullname="E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="228" result="Passed" start-time="2026-05-21 11:53:33Z" end-time="2026-05-21 11:53:33Z" duration="0.155947" total="25" passed="25" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="102112" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1187" name="PrototypeWaypointAutopilotValidationTests" fullname="PrototypeWaypointAutopilotValidationTests" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" testcasecount="25" result="Passed" start-time="2026-05-21 11:53:33Z" end-time="2026-05-21 11:53:33Z" duration="0.141835" total="25" passed="25" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1205" name="ArrivalAllowsSlightNegativeClosingSpeedAndHoldDampensResidualVelocity" fullname="PrototypeWaypointAutopilotValidationTests.ArrivalAllowsSlightNegativeClosingSpeedAndHoldDampensResidualVelocity" methodname="ArrivalAllowsSlightNegativeClosingSpeedAndHoldDampensResidualVelocity" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="911255424" result="Passed" start-time="2026-05-21 11:53:33Z" end-time="2026-05-21 11:53:33Z" duration="0.043462" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1195" name="AutopilotForwardVelocityTriggersBrakeEarlierThanRestCase" fullname="PrototypeWaypointAutopilotValidationTests.AutopilotForwardVelocityTriggersBrakeEarlierThanRestCase" methodname="AutopilotForwardVelocityTriggersBrakeEarlierThanRestCase" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="1704826789" result="Passed" start-time="2026-05-21 11:53:33Z" end-time="2026-05-21 11:53:33Z" duration="0.005456" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1196" name="AutopilotLateralVelocityRequestsCorrection" fullname="PrototypeWaypointAutopilotValidationTests.AutopilotLateralVelocityRequestsCorrection" methodname="AutopilotLateralVelocityRequestsCorrection" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="1531501270" result="Passed" start-time="2026-05-21 11:53:33Z" end-time="2026-05-21 11:53:33Z" duration="0.002158" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1209" name="AutopilotManualOverrideAfterGraceAbortsAndClearsRequest" fullname="PrototypeWaypointAutopilotValidationTests.AutopilotManualOverrideAfterGraceAbortsAndClearsRequest" methodname="AutopilotManualOverrideAfterGraceAbortsAndClearsRequest" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="317467916" result="Passed" start-time="2026-05-21 11:53:33Z" end-time="2026-05-21 11:53:33Z" duration="0.002624" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1208" name="AutopilotNoRcsAllowsCoarseBurnAndReportsLimitedApproach" fullname="PrototypeWaypointAutopilotValidationTests.AutopilotNoRcsAllowsCoarseBurnAndReportsLimitedApproach" methodname="AutopilotNoRcsAllowsCoarseBurnAndReportsLimitedApproach" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="1050230934" result="Passed" start-time="2026-05-21 11:53:33Z" end-time="2026-05-21 11:53:33Z" duration="0.002672" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1211" name="AutopilotReportsFuelInsufficientBeforeCommandingLowFuelManeuver" fullname="PrototypeWaypointAutopilotValidationTests.AutopilotReportsFuelInsufficientBeforeCommandingLowFuelManeuver" methodname="AutopilotReportsFuelInsufficientBeforeCommandingLowFuelManeuver" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="802655728" result="Passed" start-time="2026-05-21 11:53:33Z" end-time="2026-05-21 11:53:33Z" duration="0.014222" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1194" name="AutopilotRestTargetAheadRequestsLongRangeBurn" fullname="PrototypeWaypointAutopilotValidationTests.AutopilotRestTargetAheadRequestsLongRangeBurn" methodname="AutopilotRestTargetAheadRequestsLongRangeBurn" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="151734232" result="Passed" start-time="2026-05-21 11:53:33Z" end-time="2026-05-21 11:53:33Z" duration="0.001507" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1212" name="AutopilotSourceDoesNotAssignRigidbodyMotionStateDirectly" fullname="PrototypeWaypointAutopilotValidationTests.AutopilotSourceDoesNotAssignRigidbodyMotionStateDirectly" methodname="AutopilotSourceDoesNotAssignRigidbodyMotionStateDirectly" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="1183778669" result="Passed" start-time="2026-05-21 11:53:33Z" end-time="2026-05-21 11:53:33Z" duration="0.011516" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1189" name="AutopilotStateEnumContainsRequiredStatesExactly" fullname="PrototypeWaypointAutopilotValidationTests.AutopilotStateEnumContainsRequiredStatesExactly" methodname="AutopilotStateEnumContainsRequiredStatesExactly" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="1454854145" result="Passed" start-time="2026-05-21 11:53:33Z" end-time="2026-05-21 11:53:33Z" duration="0.001703" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1207" name="AutopilotTooCloseAndFastRequestsBrake" fullname="PrototypeWaypointAutopilotValidationTests.AutopilotTooCloseAndFastRequestsBrake" methodname="AutopilotTooCloseAndFastRequestsBrake" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="1152007325" result="Passed" start-time="2026-05-21 11:53:33Z" end-time="2026-05-21 11:53:33Z" duration="0.001288" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1199" name="DirectObstaclePlansAvoidanceAndAutopilotDoesNotBurnIntoObstacle" fullname="PrototypeWaypointAutopilotValidationTests.DirectObstaclePlansAvoidanceAndAutopilotDoesNotBurnIntoObstacle" methodname="DirectObstaclePlansAvoidanceAndAutopilotDoesNotBurnIntoObstacle" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="29449842" result="Passed" start-time="2026-05-21 11:53:33Z" end-time="2026-05-21 11:53:33Z" duration="0.010214" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1200" name="DisengagedAutopilotDoesNotRefreshNavigationPlanInFixedUpdate" fullname="PrototypeWaypointAutopilotValidationTests.DisengagedAutopilotDoesNotRefreshNavigationPlanInFixedUpdate" methodname="DisengagedAutopilotDoesNotRefreshNavigationPlanInFixedUpdate" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="344934162" result="Passed" start-time="2026-05-21 11:53:33Z" end-time="2026-05-21 11:53:33Z" duration="0.001984" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1202" name="EngagedAutopilotThrottlesNavigationPlanRefreshesInsideInterval" fullname="PrototypeWaypointAutopilotValidationTests.EngagedAutopilotThrottlesNavigationPlanRefreshesInsideInterval" methodname="EngagedAutopilotThrottlesNavigationPlanRefreshesInsideInterval" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="74587308" result="Passed" start-time="2026-05-21 11:53:33Z" end-time="2026-05-21 11:53:33Z" duration="0.001888" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1193" name="ForwardInitialVelocityChangesBrakingDecision" fullname="PrototypeWaypointAutopilotValidationTests.ForwardInitialVelocityChangesBrakingDecision" methodname="ForwardInitialVelocityChangesBrakingDecision" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="71694176" result="Passed" start-time="2026-05-21 11:53:33Z" end-time="2026-05-21 11:53:33Z" duration="0.000571" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1210" name="FuelEstimateRejectsFarTargetWithLowFuelButAllowsFuelFreeThrust" fullname="PrototypeWaypointAutopilotValidationTests.FuelEstimateRejectsFarTargetWithLowFuelButAllowsFuelFreeThrust" methodname="FuelEstimateRejectsFarTargetWithLowFuelButAllowsFuelFreeThrust" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="1761398030" result="Passed" start-time="2026-05-21 11:53:33Z" end-time="2026-05-21 11:53:33Z" duration="0.000538" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1204" name="LateralCorrectionForceScalesWithMassAndClampsToAuthority" fullname="PrototypeWaypointAutopilotValidationTests.LateralCorrectionForceScalesWithMassAndClampsToAuthority" methodname="LateralCorrectionForceScalesWithMassAndClampsToAuthority" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="1890799435" result="Passed" start-time="2026-05-21 11:53:33Z" end-time="2026-05-21 11:53:33Z" duration="0.004519" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1191" name="MetricsComputeClosingLateralAndStoppingDistance" fullname="PrototypeWaypointAutopilotValidationTests.MetricsComputeClosingLateralAndStoppingDistance" methodname="MetricsComputeClosingLateralAndStoppingDistance" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="236063903" result="Passed" start-time="2026-05-21 11:53:33Z" end-time="2026-05-21 11:53:33Z" duration="0.000431" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1192" name="MetricsTreatAwayFromTargetVelocityAsZeroStoppingDistance" fullname="PrototypeWaypointAutopilotValidationTests.MetricsTreatAwayFromTargetVelocityAsZeroStoppingDistance" methodname="MetricsTreatAwayFromTargetVelocityAsZeroStoppingDistance" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="1733238701" result="Passed" start-time="2026-05-21 11:53:33Z" end-time="2026-05-21 11:53:33Z" duration="0.000246" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1198" name="NavigationObstacleExposesSpecShapeAndDetectorFindsColliderlessFallback" fullname="PrototypeWaypointAutopilotValidationTests.NavigationObstacleExposesSpecShapeAndDetectorFindsColliderlessFallback" methodname="NavigationObstacleExposesSpecShapeAndDetectorFindsColliderlessFallback" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="933477584" result="Passed" start-time="2026-05-21 11:53:33Z" end-time="2026-05-21 11:53:33Z" duration="0.002519" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1206" name="NoAuthorityAndFuelInsufficientDoNotCreatePhysicalRequest" fullname="PrototypeWaypointAutopilotValidationTests.NoAuthorityAndFuelInsufficientDoNotCreatePhysicalRequest" methodname="NoAuthorityAndFuelInsufficientDoNotCreatePhysicalRequest" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="1456331360" result="Passed" start-time="2026-05-21 11:53:33Z" end-time="2026-05-21 11:53:33Z" duration="0.003181" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1197" name="ObstacleDetectorFindsDirectTriggerObstacleIgnoresOwnShipAndClearsEmptyPath" fullname="PrototypeWaypointAutopilotValidationTests.ObstacleDetectorFindsDirectTriggerObstacleIgnoresOwnShipAndClearsEmptyPath" methodname="ObstacleDetectorFindsDirectTriggerObstacleIgnoresOwnShipAndClearsEmptyPath" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="748072338" result="Passed" start-time="2026-05-21 11:53:33Z" end-time="2026-05-21 11:53:33Z" duration="0.001597" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1203" name="ObstacleDetectorSourceDoesNotUseGlobalFindObjectsFallback" fullname="PrototypeWaypointAutopilotValidationTests.ObstacleDetectorSourceDoesNotUseGlobalFindObjectsFallback" methodname="ObstacleDetectorSourceDoesNotUseGlobalFindObjectsFallback" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="781303013" result="Passed" start-time="2026-05-21 11:53:33Z" end-time="2026-05-21 11:53:33Z" duration="0.001534" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1201" name="ReplanNowRefreshesNavigationPlanWhileDisengaged" fullname="PrototypeWaypointAutopilotValidationTests.ReplanNowRefreshesNavigationPlanWhileDisengaged" methodname="ReplanNowRefreshesNavigationPlanWhileDisengaged" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="882818980" result="Passed" start-time="2026-05-21 11:53:33Z" end-time="2026-05-21 11:53:33Z" duration="0.001618" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1190" name="TrajectoryPhaseEnumContainsRequestedNavigationComputerPhases" fullname="PrototypeWaypointAutopilotValidationTests.TrajectoryPhaseEnumContainsRequestedNavigationComputerPhases" methodname="TrajectoryPhaseEnumContainsRequestedNavigationComputerPhases" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="818748163" result="Passed" start-time="2026-05-21 11:53:33Z" end-time="2026-05-21 11:53:33Z" duration="0.000502" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1188" name="WaypointManagerGeneratesThreeVisibleSelectableWaypoints" fullname="PrototypeWaypointAutopilotValidationTests.WaypointManagerGeneratesThreeVisibleSelectableWaypoints" methodname="WaypointManagerGeneratesThreeVisibleSelectableWaypoints" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="265811677" result="Passed" start-time="2026-05-21 11:53:33Z" end-time="2026-05-21 11:53:33Z" duration="0.001177" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[<b><color=#2EA3FF>MCP-FOR-UNITY</color></b>: [TestRunnerNoThrottle] Restored Interaction Mode after test run.
+Saving results to: C:/Users/benni/AppData/LocalLow/DefaultCompany/Weltraum Spiel\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

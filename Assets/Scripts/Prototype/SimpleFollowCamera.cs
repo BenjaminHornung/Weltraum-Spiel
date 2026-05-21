@@ -79,6 +79,8 @@ public class SimpleFollowCamera : MonoBehaviour
     private float anchorError;
     private CameraVisualBoundsData cachedVisualBoundsSnapshot;
     private int visualBoundsIncludedRendererCount;
+    private bool hasPreviousFocusPoint;
+    private Vector3 previousFocusPoint;
 
     public int CameraMode => (int)cameraMode;
     public string CameraModeName => GetCameraModeName(cameraMode);
@@ -113,6 +115,7 @@ public class SimpleFollowCamera : MonoBehaviour
         MarkVisualBoundsDirty();
         freeInspectLookTarget = Vector3.zero;
         hasFreeInspectLookTarget = false;
+        hasPreviousFocusPoint = false;
         snapNextFrame = true;
         ReframeToTargetVisualBounds();
     }
@@ -125,7 +128,7 @@ public class SimpleFollowCamera : MonoBehaviour
     public void CycleCameraMode()
     {
         SetCameraMode((CameraViewMode)(((int)cameraMode + 1) % 4));
-        ReframeToTargetVisualBounds();
+        ReframeToTargetVisualBounds(false);
     }
 
     public void PreviousCameraMode()
@@ -137,7 +140,7 @@ public class SimpleFollowCamera : MonoBehaviour
         }
 
         SetCameraMode((CameraViewMode)previousMode);
-        ReframeToTargetVisualBounds();
+        ReframeToTargetVisualBounds(false);
     }
 
     public void ResetFraming()
@@ -164,9 +167,13 @@ public class SimpleFollowCamera : MonoBehaviour
         snapNextFrame = true;
     }
 
-    public void ReframeToTargetVisualBounds()
+    public void ReframeToTargetVisualBounds(bool forceBoundsRefresh = true)
     {
-        MarkVisualBoundsDirty();
+        if (forceBoundsRefresh)
+        {
+            MarkVisualBoundsDirty();
+        }
+
         RefreshVisualBoundsIfNeeded();
 
         if (target == null)
@@ -259,6 +266,7 @@ public class SimpleFollowCamera : MonoBehaviour
         if (target == null)
         {
             anchorError = 0f;
+            hasPreviousFocusPoint = false;
             return;
         }
 
@@ -266,6 +274,7 @@ public class SimpleFollowCamera : MonoBehaviour
         UpdateCachedVisualBoundsWorldSpace();
         RefreshFocusPoint();
         UpdateVisualBoundsSnapshot();
+        bool focusJumped = HasLargeFocusDiscontinuity();
 
         float followHeight = targetStats != null ? targetStats.FollowHeight : height;
         float baseDistance = ResolveBaseDistance(followHeight);
@@ -280,10 +289,11 @@ public class SimpleFollowCamera : MonoBehaviour
             transform.SetPositionAndRotation(desiredPosition, desiredRotation);
             anchorError = Vector3.Distance(transform.position, desiredPosition);
             snapNextFrame = false;
+            RememberFocusPointForNextFrame();
             return;
         }
 
-        bool shouldSnapThisFrame = snapNextFrame || Time.deltaTime <= Mathf.Epsilon;
+        bool shouldSnapThisFrame = snapNextFrame || focusJumped || Time.deltaTime <= Mathf.Epsilon;
         float positionBlend = shouldSnapThisFrame ? 1f : 1f - Mathf.Exp(-positionSmooth * Time.deltaTime);
         transform.position = Vector3.Lerp(transform.position, desiredPosition, positionBlend);
 
@@ -297,6 +307,7 @@ public class SimpleFollowCamera : MonoBehaviour
 
         anchorError = Vector3.Distance(transform.position, desiredPosition);
         snapNextFrame = false;
+        RememberFocusPointForNextFrame();
     }
 
     private void HandleMouseOrbit(UnityEngine.InputSystem.Mouse mouse, bool rightMouseHeld)
@@ -567,6 +578,7 @@ public class SimpleFollowCamera : MonoBehaviour
     {
         if (!isVisualBoundsDirty)
         {
+            UpdateCachedVisualBoundsWorldSpace();
             return;
         }
 
@@ -575,6 +587,23 @@ public class SimpleFollowCamera : MonoBehaviour
         isVisualBoundsDirty = false;
         visualBoundsRefreshCount++;
         UpdateVisualBoundsSnapshot();
+    }
+
+    private bool HasLargeFocusDiscontinuity()
+    {
+        if (!hasPreviousFocusPoint)
+        {
+            return false;
+        }
+
+        float snapThreshold = Mathf.Max(4f, Mathf.Max(effectiveFollowDistance * 0.5f, baseFollowDistance * 0.5f));
+        return Vector3.Distance(previousFocusPoint, focusPoint) > snapThreshold;
+    }
+
+    private void RememberFocusPointForNextFrame()
+    {
+        previousFocusPoint = focusPoint;
+        hasPreviousFocusPoint = true;
     }
 
     private void RefreshVisualBounds()

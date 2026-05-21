@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="2" result="Passed" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-05-21 12:00:56Z" end-time="2026-05-21 12:00:56Z" duration="0.0398701">
+  <test-suite type="TestSuite" id="1000" name="Weltraum Spiel" fullname="Weltraum Spiel" runstate="Runnable" testcasecount="228" result="Passed" start-time="2026-05-21 12:00:56Z" end-time="2026-05-21 12:00:56Z" duration="0.039870" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1257" name="Assembly-CSharp-Editor.dll" fullname="E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="228" result="Passed" start-time="2026-05-21 12:00:56Z" end-time="2026-05-21 12:00:56Z" duration="0.029605" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="44756" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1072" name="PrototypeHotpathAllocationValidationTests" fullname="PrototypeHotpathAllocationValidationTests" classname="PrototypeHotpathAllocationValidationTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-05-21 12:00:56Z" end-time="2026-05-21 12:00:56Z" duration="0.025062" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1073" name="RcsAllocatorSourceReusesScratchBuffersInHotpathMethods" fullname="PrototypeHotpathAllocationValidationTests.RcsAllocatorSourceReusesScratchBuffersInHotpathMethods" methodname="RcsAllocatorSourceReusesScratchBuffersInHotpathMethods" classname="PrototypeHotpathAllocationValidationTests" runstate="Runnable" seed="1954016171" result="Passed" start-time="2026-05-21 12:00:56Z" end-time="2026-05-21 12:00:56Z" duration="0.011547" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1074" name="VisualSwitcherSourceOnlyStripsDedicatedManagerObjectInAwakeAndApplyNow" fullname="PrototypeHotpathAllocationValidationTests.VisualSwitcherSourceOnlyStripsDedicatedManagerObjectInAwakeAndApplyNow" methodname="VisualSwitcherSourceOnlyStripsDedicatedManagerObjectInAwakeAndApplyNow" classname="PrototypeHotpathAllocationValidationTests" runstate="Runnable" seed="1814287028" result="Passed" start-time="2026-05-21 12:00:56Z" end-time="2026-05-21 12:00:56Z" duration="0.000577" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[<b><color=#2EA3FF>MCP-FOR-UNITY</color></b>: [TestRunnerNoThrottle] Restored Interaction Mode after test run.
+Saving results to: C:/Users/benni/AppData/LocalLow/DefaultCompany/Weltraum Spiel\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

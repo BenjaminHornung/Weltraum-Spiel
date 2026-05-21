@@ -85,8 +85,38 @@ public class PrototypeWeaponComputerTurretValidationTests
 
             Assert.False(fired);
             Assert.That(fixture.Weapon.LastFireStatus.blockReason, Is.EqualTo(PrototypeTurretFireBlockReason.OutOfArc));
-            Assert.That(fixture.Weapon.LastAppliedYawDegrees, Is.EqualTo(35f).Within(AngleTolerance));
+            Assert.That(fixture.Weapon.LastAppliedYawDegrees, Is.GreaterThan(0f));
+            Assert.That(fixture.Weapon.LastAppliedYawDegrees, Is.LessThan(35f));
             Assert.That(fixture.Weapon.LastAppliedPitchDegrees, Is.EqualTo(0f).Within(AngleTolerance));
+        }
+    }
+
+    [Test]
+    public void TurretAimSlewsTowardTargetBeforeFiring()
+    {
+        using (TurretFixture fixture = new TurretFixture())
+        {
+            SetWeaponStats(fixture.Stats, yawLeft: -35f, yawRight: 35f, pitchMin: -10f, pitchMax: 35f);
+            Vector3 target = fixture.Muzzle.position + Quaternion.Euler(0f, 24f, 0f) * Vector3.forward * 30f;
+
+            PrototypeTurretFireStatus first = fixture.Weapon.EvaluateFireStatus(target);
+            Assert.That(first.blockReason, Is.EqualTo(PrototypeTurretFireBlockReason.Aligning));
+            Assert.That(fixture.Weapon.LastAppliedYawDegrees, Is.EqualTo(0f).Within(AngleTolerance));
+
+            fixture.Weapon.TickAimAtTarget(target, 0.1f);
+            float yawAfterFirstTick = fixture.Weapon.LastAppliedYawDegrees;
+            Assert.That(yawAfterFirstTick, Is.GreaterThan(0f));
+            Assert.That(yawAfterFirstTick, Is.LessThan(24f));
+            Assert.False(fixture.Weapon.TryFireAt(target));
+            Assert.That(fixture.Weapon.LastFireStatus.blockReason, Is.EqualTo(PrototypeTurretFireBlockReason.Aligning));
+
+            for (int i = 0; i < 20; i++)
+            {
+                fixture.Weapon.TickAimAtTarget(target, 0.1f);
+            }
+
+            Assert.That(fixture.Weapon.LastAppliedYawDegrees, Is.EqualTo(24f).Within(1.6f));
+            Assert.True(fixture.Weapon.TryFireAt(target));
         }
     }
 

@@ -21,6 +21,18 @@ public sealed class PrototypeImportedShipBinder : MonoBehaviour
         }
     }
 
+    public void Configure(
+        Transform root,
+        PrototypeShipVfxLibrary library = null,
+        bool createRuntimeComponents = true,
+        bool createVfxChildren = true)
+    {
+        socketRoot = root != null ? root : socketRoot;
+        vfxLibrary = library != null ? library : vfxLibrary;
+        createMissingRuntimeComponents = createRuntimeComponents;
+        createRuntimeVfxChildren = createVfxChildren;
+    }
+
     public BindReport BindNow()
     {
         Transform root = socketRoot != null ? socketRoot : transform;
@@ -122,6 +134,7 @@ public sealed class PrototypeImportedShipBinder : MonoBehaviour
         EngineVfxController engineVfx = GetOrAddComponent<EngineVfxController>(gameObject, createMissingRuntimeComponents);
         if (engineVfx != null)
         {
+            engineVfx.SetAllowFallbackNozzle(false);
             engineVfx.ConfigureNozzle(mainNozzles[0].transform);
         }
     }
@@ -147,7 +160,9 @@ public sealed class PrototypeImportedShipBinder : MonoBehaviour
         RcsThrusterController rcsController = GetOrAddComponent<RcsThrusterController>(gameObject, createMissingRuntimeComponents);
         if (rcsController != null)
         {
+            rcsController.SetUseImportedFunctionalSockets(true);
             rcsController.ConfigureThrusters(null, null, null, null, null, null, shipRigidbody, physicsCore);
+            rcsController.MarkNozzlesDirty();
             rcsController.RefreshNozzles();
             report.boundRcsNozzles = rcsController.InstalledNozzleCount;
         }
@@ -166,6 +181,7 @@ public sealed class PrototypeImportedShipBinder : MonoBehaviour
             return;
         }
 
+        gun.SetAllowMuzzleFallback(false);
         gun.ConfigureMuzzle(muzzles[0].transform);
         report.boundGuns = 1;
         report.boundMuzzleName = muzzles[0].name;
@@ -194,7 +210,10 @@ public sealed class PrototypeImportedShipBinder : MonoBehaviour
 
     private bool EnsureRcsVfx(Transform nozzle)
     {
-        if (nozzle == null || nozzle.Find("VFX") != null)
+        if (nozzle == null
+            || nozzle.Find("VFX") != null
+            || nozzle.Find(PrototypeShipKitVfxBinder.RcsThrusterVfxChildName) != null
+            || nozzle.Find("RcsThrusterVfx") != null)
         {
             return false;
         }

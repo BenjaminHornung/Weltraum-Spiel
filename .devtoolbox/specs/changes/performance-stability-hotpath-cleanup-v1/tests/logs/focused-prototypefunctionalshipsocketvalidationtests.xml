@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="8" result="Passed" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-05-21 12:00:39Z" end-time="2026-05-21 12:00:40Z" duration="0.5843302">
+  <test-suite type="TestSuite" id="1000" name="Weltraum Spiel" fullname="Weltraum Spiel" runstate="Runnable" testcasecount="228" result="Passed" start-time="2026-05-21 12:00:39Z" end-time="2026-05-21 12:00:40Z" duration="0.584330" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1257" name="Assembly-CSharp-Editor.dll" fullname="E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="228" result="Passed" start-time="2026-05-21 12:00:39Z" end-time="2026-05-21 12:00:40Z" duration="0.568270" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="26852" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1059" name="PrototypeFunctionalShipSocketValidationTests" fullname="PrototypeFunctionalShipSocketValidationTests" classname="PrototypeFunctionalShipSocketValidationTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-05-21 12:00:39Z" end-time="2026-05-21 12:00:40Z" duration="0.552016" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1065" name="BinderIsIdempotentAndCreatesRuntimeVfxChildren" fullname="PrototypeFunctionalShipSocketValidationTests.BinderIsIdempotentAndCreatesRuntimeVfxChildren" methodname="BinderIsIdempotentAndCreatesRuntimeVfxChildren" classname="PrototypeFunctionalShipSocketValidationTests" runstate="Runnable" seed="769038884" result="Passed" start-time="2026-05-21 12:00:39Z" end-time="2026-05-21 12:00:39Z" duration="0.051275" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1067" name="BootstrapDefaultBuildsImportedFunctionalScoutWithVisibleTurretHierarchy" fullname="PrototypeFunctionalShipSocketValidationTests.BootstrapDefaultBuildsImportedFunctionalScoutWithVisibleTurretHierarchy" methodname="BootstrapDefaultBuildsImportedFunctionalScoutWithVisibleTurretHierarchy" classname="PrototypeFunctionalShipSocketValidationTests" runstate="Runnable" seed="1352868278" result="Passed" start-time="2026-05-21 12:00:39Z" end-time="2026-05-21 12:00:40Z" duration="0.315067" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1066" name="FunctionalBinderUsesImportedDemoScoutAsRuntimeRootWithoutFallbacks" fullname="PrototypeFunctionalShipSocketValidationTests.FunctionalBinderUsesImportedDemoScoutAsRuntimeRootWithoutFallbacks" methodname="FunctionalBinderUsesImportedDemoScoutAsRuntimeRootWithoutFallbacks" classname="PrototypeFunctionalShipSocketValidationTests" runstate="Runnable" seed="448983671" result="Passed" start-time="2026-05-21 12:00:40Z" end-time="2026-05-21 12:00:40Z" duration="0.095237" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1061" name="GunModuleUsesImportedMuzzleForProjectileAndRecoil" fullname="PrototypeFunctionalShipSocketValidationTests.GunModuleUsesImportedMuzzleForProjectileAndRecoil" methodname="GunModuleUsesImportedMuzzleForProjectileAndRecoil" classname="PrototypeFunctionalShipSocketValidationTests" runstate="Runnable" seed="194393519" result="Passed" start-time="2026-05-21 12:00:40Z" end-time="2026-05-21 12:00:40Z" duration="0.015143" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1060" name="ImportedDemoShipsBindFunctionalSocketsWithoutDuplicating" fullname="PrototypeFunctionalShipSocketValidationTests.ImportedDemoShipsBindFunctionalSocketsWithoutDuplicating" methodname="ImportedDemoShipsBindFunctionalSocketsWithoutDuplicating" classname="PrototypeFunctionalShipSocketValidationTests" runstate="Runnable" seed="353491261" result="Passed" start-time="2026-05-21 12:00:40Z" end-time="2026-05-21 12:00:40Z" duration="0.044080" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1064" name="MainThrusterVfxAndGimbalBindToImportedNozzle" fullname="PrototypeFunctionalShipSocketValidationTests.MainThrusterVfxAndGimbalBindToImportedNozzle" methodname="MainThrusterVfxAndGimbalBindToImportedNozzle" classname="PrototypeFunctionalShipSocketValidationTests" runstate="Runnable" seed="1782369070" result="Passed" start-time="2026-05-21 12:00:40Z" end-time="2026-05-21 12:00:40Z" duration="0.004770" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1063" name="RcsThrusterControllerDefaultsToGeneratedNozzleHierarchyAndCanOptIntoImportedSockets" fullname="PrototypeFunctionalShipSocketValidationTests.RcsThrusterControllerDefaultsToGeneratedNozzleHierarchyAndCanOptIntoImportedSockets" methodname="RcsThrusterControllerDefaultsToGeneratedNozzleHierarchyAndCanOptIntoImportedSockets" classname="PrototypeFunctionalShipSocketValidationTests" runstate="Runnable" seed="1569373603" result="Passed" start-time="2026-05-21 12:00:40Z" end-time="2026-05-21 12:00:40Z" duration="0.008666" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1062" name="RcsThrusterControllerDetectsImportedSocketsAndVfxChildren" fullname="PrototypeFunctionalShipSocketValidationTests.RcsThrusterControllerDetectsImportedSocketsAndVfxChildren" methodname="RcsThrusterControllerDetectsImportedSocketsAndVfxChildren" classname="PrototypeFunctionalShipSocketValidationTests" runstate="Runnable" seed="146878819" result="Passed" start-time="2026-05-21 12:00:40Z" end-time="2026-05-21 12:00:40Z" duration="0.000747" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[<b><color=#2EA3FF>MCP-FOR-UNITY</color></b>: [TestRunnerNoThrottle] Restored Interaction Mode after test run.
+Saving results to: C:/Users/benni/AppData/LocalLow/DefaultCompany/Weltraum Spiel\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

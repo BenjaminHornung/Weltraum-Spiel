@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="12" result="Passed" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-05-21 12:01:26Z" end-time="2026-05-21 12:01:26Z" duration="0.7207199">
+  <test-suite type="TestSuite" id="1000" name="Weltraum Spiel" fullname="Weltraum Spiel" runstate="Runnable" testcasecount="228" result="Passed" start-time="2026-05-21 12:01:26Z" end-time="2026-05-21 12:01:26Z" duration="0.720720" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1257" name="Assembly-CSharp-Editor.dll" fullname="E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="228" result="Passed" start-time="2026-05-21 12:01:26Z" end-time="2026-05-21 12:01:26Z" duration="0.699423" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="18536" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1135" name="PrototypeShipVisualSwitcherValidationTests" fullname="PrototypeShipVisualSwitcherValidationTests" classname="PrototypeShipVisualSwitcherValidationTests" runstate="Runnable" testcasecount="12" result="Passed" start-time="2026-05-21 12:01:26Z" end-time="2026-05-21 12:01:26Z" duration="0.689254" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1142" name="BootstrapLeavesOneActiveMainCameraAndOverwritesFollowTarget" fullname="PrototypeShipVisualSwitcherValidationTests.BootstrapLeavesOneActiveMainCameraAndOverwritesFollowTarget" methodname="BootstrapLeavesOneActiveMainCameraAndOverwritesFollowTarget" classname="PrototypeShipVisualSwitcherValidationTests" runstate="Runnable" seed="2087170838" result="Passed" start-time="2026-05-21 12:01:26Z" end-time="2026-05-21 12:01:26Z" duration="0.196490" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1139" name="GeneratedVisualHullBoundsAreNotDoubleScaled" fullname="PrototypeShipVisualSwitcherValidationTests.GeneratedVisualHullBoundsAreNotDoubleScaled" methodname="GeneratedVisualHullBoundsAreNotDoubleScaled" classname="PrototypeShipVisualSwitcherValidationTests" runstate="Runnable" seed="486364856" result="Passed" start-time="2026-05-21 12:01:26Z" end-time="2026-05-21 12:01:26Z" duration="0.022692" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1147" name="HeavyCargoCargoMassDoesNotShowHardpointMarkerByDefault" fullname="PrototypeShipVisualSwitcherValidationTests.HeavyCargoCargoMassDoesNotShowHardpointMarkerByDefault" methodname="HeavyCargoCargoMassDoesNotShowHardpointMarkerByDefault" classname="PrototypeShipVisualSwitcherValidationTests" runstate="Runnable" seed="1916658098" result="Passed" start-time="2026-05-21 12:01:26Z" end-time="2026-05-21 12:01:26Z" duration="0.019196" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1140" name="ImportedCargoVisualAlignsWithUnityForwardAndUp" fullname="PrototypeShipVisualSwitcherValidationTests.ImportedCargoVisualAlignsWithUnityForwardAndUp" methodname="ImportedCargoVisualAlignsWithUnityForwardAndUp" classname="PrototypeShipVisualSwitcherValidationTests" runstate="Runnable" seed="919929342" result="Passed" start-time="2026-05-21 12:01:26Z" end-time="2026-05-21 12:01:26Z" duration="0.068179" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Prototype ship visual 'Imported Demo Cargo' could not be bound functionally. Missing: WEAPON_TURRET_BASE_*, WEAPON_TURRET_YAW_*, WEAPON_TURRET_PITCH_*, WEAPON_MUZZLE_*, WEAPON_MUZZLE_*, WEAPON_TURRET_* hierarchy
+]]></output>
+        </test-case>
+        <test-case id="1136" name="ImportedScoutVisualKeepsGameplayRigAndCanReturnToGeneratedPrimitives" fullname="PrototypeShipVisualSwitcherValidationTests.ImportedScoutVisualKeepsGameplayRigAndCanReturnToGeneratedPrimitives" methodname="ImportedScoutVisualKeepsGameplayRigAndCanReturnToGeneratedPrimitives" classname="PrototypeShipVisualSwitcherValidationTests" runstate="Runnable" seed="315663723" result="Passed" start-time="2026-05-21 12:01:26Z" end-time="2026-05-21 12:01:26Z" duration="0.053768" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1143" name="ImportedVisualRootStaysChildedAndMovesWithShip" fullname="PrototypeShipVisualSwitcherValidationTests.ImportedVisualRootStaysChildedAndMovesWithShip" methodname="ImportedVisualRootStaysChildedAndMovesWithShip" classname="PrototypeShipVisualSwitcherValidationTests" runstate="Runnable" seed="93850538" result="Passed" start-time="2026-05-21 12:01:26Z" end-time="2026-05-21 12:01:26Z" duration="0.042383" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1141" name="ImportedVisualSwitcherReusesPooledScoutAndCargoInstances" fullname="PrototypeShipVisualSwitcherValidationTests.ImportedVisualSwitcherReusesPooledScoutAndCargoInstances" methodname="ImportedVisualSwitcherReusesPooledScoutAndCargoInstances" classname="PrototypeShipVisualSwitcherValidationTests" runstate="Runnable" seed="170235860" result="Passed" start-time="2026-05-21 12:01:26Z" end-time="2026-05-21 12:01:26Z" duration="0.079362" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Prototype ship visual 'Imported Demo Cargo' could not be bound functionally. Missing: WEAPON_TURRET_BASE_*, WEAPON_TURRET_YAW_*, WEAPON_TURRET_PITCH_*, WEAPON_MUZZLE_*, WEAPON_MUZZLE_*, WEAPON_TURRET_* hierarchy
+]]></output>
+        </test-case>
+        <test-case id="1144" name="ManagerObjectHasClearNameAndNoRuntimePhysicsOrRenderingComponents" fullname="PrototypeShipVisualSwitcherValidationTests.ManagerObjectHasClearNameAndNoRuntimePhysicsOrRenderingComponents" methodname="ManagerObjectHasClearNameAndNoRuntimePhysicsOrRenderingComponents" classname="PrototypeShipVisualSwitcherValidationTests" runstate="Runnable" seed="1853210371" result="Passed" start-time="2026-05-21 12:01:26Z" end-time="2026-05-21 12:01:26Z" duration="0.017118" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1137" name="RuntimeBootstrapBaselineResetReturnsToGeneratedPrimitives" fullname="PrototypeShipVisualSwitcherValidationTests.RuntimeBootstrapBaselineResetReturnsToGeneratedPrimitives" methodname="RuntimeBootstrapBaselineResetReturnsToGeneratedPrimitives" classname="PrototypeShipVisualSwitcherValidationTests" runstate="Runnable" seed="1418296209" result="Passed" start-time="2026-05-21 12:01:26Z" end-time="2026-05-21 12:01:26Z" duration="0.040242" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1145" name="SwitcherOnGameplayObjectDoesNotStripPhysicsOrRenderingComponents" fullname="PrototypeShipVisualSwitcherValidationTests.SwitcherOnGameplayObjectDoesNotStripPhysicsOrRenderingComponents" methodname="SwitcherOnGameplayObjectDoesNotStripPhysicsOrRenderingComponents" classname="PrototypeShipVisualSwitcherValidationTests" runstate="Runnable" seed="247762520" result="Passed" start-time="2026-05-21 12:01:26Z" end-time="2026-05-21 12:01:26Z" duration="0.016527" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1138" name="SwitchingGeneratedImportedGeneratedModesDoesNotReEnableModuleRootRenderers" fullname="PrototypeShipVisualSwitcherValidationTests.SwitchingGeneratedImportedGeneratedModesDoesNotReEnableModuleRootRenderers" methodname="SwitchingGeneratedImportedGeneratedModesDoesNotReEnableModuleRootRenderers" classname="PrototypeShipVisualSwitcherValidationTests" runstate="Runnable" seed="696464600" result="Passed" start-time="2026-05-21 12:01:26Z" end-time="2026-05-21 12:01:26Z" duration="0.071416" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Prototype ship visual 'Imported Demo Cargo' could not be bound functionally. Missing: WEAPON_TURRET_BASE_*, WEAPON_TURRET_YAW_*, WEAPON_TURRET_PITCH_*, WEAPON_MUZZLE_*, WEAPON_MUZZLE_*, WEAPON_TURRET_* hierarchy
+]]></output>
+        </test-case>
+        <test-case id="1146" name="VisualChangeReframesCameraWithoutMovingAnchorOrBreakingBinding" fullname="PrototypeShipVisualSwitcherValidationTests.VisualChangeReframesCameraWithoutMovingAnchorOrBreakingBinding" methodname="VisualChangeReframesCameraWithoutMovingAnchorOrBreakingBinding" classname="PrototypeShipVisualSwitcherValidationTests" runstate="Runnable" seed="1051294763" result="Passed" start-time="2026-05-21 12:01:26Z" end-time="2026-05-21 12:01:26Z" duration="0.043058" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[<b><color=#2EA3FF>MCP-FOR-UNITY</color></b>: [TestRunnerNoThrottle] Restored Interaction Mode after test run.
+Saving results to: C:/Users/benni/AppData/LocalLow/DefaultCompany/Weltraum Spiel\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

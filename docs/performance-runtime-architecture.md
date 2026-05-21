@@ -12,7 +12,7 @@
 - Weapon target discovery
   - Target registries are searched repeatedly, often by hierarchy/object graph traversal and component lookups.
 - Autopilot path and obstacle logic
-  - Candidate path checks and obstacle filtering currently run as mixed read/write logic in one main-thread pass.
+  - Candidate path checks and obstacle filtering still rely on main-thread Unity physics queries, but Navigation Computer v2 keeps obstacle registration cached and moves candidate scoring/prediction into plain data helpers.
 - Minimap and sensor data
   - Broad scan of world objects/containers to produce contact and icon updates for minimap and sensors.
 - Debug UI diagnostics
@@ -48,7 +48,7 @@ The system is split into four layers with clear hand-off points.
 - Can move to jobs/Burst after data snapshot pass
   - Projectile movement integration, hit-scan prefilter scoring, and candidate filtering.
   - Target scoring and ranking math.
-  - Path candidate cost evaluation and obstacle distance math for autopilot.
+  - Path candidate cost evaluation, trajectory segment scoring, and colliderless obstacle distance math for autopilot.
   - Minimap/sensor filtering math and thresholding using primitive/struct data.
   - RCS allocator math where using local numeric arrays (phase 6 optional).
 
@@ -123,7 +123,15 @@ The main thread is responsible for building input snapshots and applying outputs
   - `float ObstaclePenalty`
   - `float FuelPenalty`
   - `float SafetyScore`
+  - `float BrakeFeasibility`
+  - `float RcsAuthorityMargin`
   - `uint Version`
+
+## Navigation Computer v2 runtime notes
+
+`PrototypeObstacleDetector` keeps Unity physics queries on the main thread. The v2 detector adds a start-overlap pass with `Physics.OverlapSphereNonAlloc`, then uses `SphereCastNonAlloc` and a registry-backed colliderless fallback. The registry avoids per-frame `FindObjectsByType<PrototypeNavigationObstacle>` scans; tests can clear or refresh it deterministically.
+
+`PrototypeTrajectoryPlanner` is still managed C# rather than Burst, but its candidate inputs and outputs are plain structs and arrays: candidates, burn plan, predicted path, segment diagnostics, and score records. That keeps the current prototype readable while preserving a migration path where candidate scoring and prediction can move behind a snapshot/job boundary later. The autopilot itself consumes only the selected plan and sends physical `FlightAssistRequest` values; it does not write Rigidbody state directly.
 - `SensorContactData`
   - `int SensorId`
   - `int TargetId`

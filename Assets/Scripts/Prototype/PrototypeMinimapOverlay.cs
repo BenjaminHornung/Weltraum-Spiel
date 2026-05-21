@@ -319,19 +319,60 @@ public class PrototypeMinimapOverlay : MonoBehaviour
 
         Vector2 shipPoint = center;
         Vector2 targetPoint = WorldToMap(navigationAutopilot.CurrentTarget.Position, center, radius);
-        Color routeColor = new Color(0.25f, 0.9f, 1f, 0.88f);
+        PrototypeTrajectoryPlan plan = navigationAutopilot.CurrentPlan;
+        Color routeColor = plan.directPathBlocked
+            ? new Color(1f, 0.42f, 0.25f, 0.9f)
+            : new Color(0.25f, 0.9f, 1f, 0.88f);
 
-        if (navigationAutopilot.CurrentPlan.avoidanceActive)
+        DrawClippedRouteSegment(mapRect, shipPoint, targetPoint, routeColor);
+        DrawObstacleClearance(mapRect, center, radius, plan);
+
+        Vector3[] predictedRoute = navigationAutopilot.PredictedRoute;
+        if (predictedRoute.Length > 1)
+        {
+            DrawPredictedRoute(mapRect, center, radius, predictedRoute);
+        }
+
+        if (plan.avoidanceActive)
         {
             Vector2 avoidancePoint = WorldToMap(navigationAutopilot.AvoidanceWaypoint, center, radius);
-            DrawClippedRouteSegment(mapRect, shipPoint, avoidancePoint, routeColor);
-            DrawClippedRouteSegment(mapRect, avoidancePoint, targetPoint, routeColor);
+            DrawClippedRouteSegment(mapRect, shipPoint, avoidancePoint, new Color(1f, 0.85f, 0.2f, 0.95f));
+            DrawClippedRouteSegment(mapRect, avoidancePoint, targetPoint, new Color(0.25f, 0.9f, 1f, 0.88f));
             DrawCircle(avoidancePoint, 5f, new Color(1f, 0.85f, 0.2f, 0.95f), 1.4f);
             LastRouteUsedAvoidance = true;
+        }
+    }
+
+    private void DrawPredictedRoute(Rect mapRect, Vector2 center, float radius, Vector3[] route)
+    {
+        Color predictedColor = new Color(0.75f, 1f, 0.45f, 0.82f);
+        for (int i = 1; i < route.Length; i++)
+        {
+            Vector2 previous = WorldToMap(route[i - 1], center, radius);
+            Vector2 next = WorldToMap(route[i], center, radius);
+            DrawClippedRouteSegment(mapRect, previous, next, predictedColor);
+        }
+    }
+
+    private void DrawObstacleClearance(Rect mapRect, Vector2 center, float radius, PrototypeTrajectoryPlan plan)
+    {
+        PrototypeObstacleDetectionResult detection = navigationAutopilot.LastObstacleDetection;
+        if (!detection.hasObstacle || detection.obstacle == null)
+        {
             return;
         }
 
-        DrawClippedRouteSegment(mapRect, shipPoint, targetPoint, routeColor);
+        Vector2 obstaclePoint = WorldToMap(detection.obstacle.WorldPosition, center, radius);
+        if (!mapRect.Contains(obstaclePoint))
+        {
+            return;
+        }
+
+        float clearanceRadius = (detection.obstacle.EffectiveClearanceRadius + Mathf.Max(0f, detection.clearanceRadius)) * (radius / CurrentZoomMeters);
+        Color clearanceColor = plan.directPathBlocked
+            ? new Color(1f, 0.35f, 0.2f, 0.78f)
+            : new Color(0.3f, 0.9f, 0.55f, 0.62f);
+        DrawCircle(obstaclePoint, Mathf.Clamp(clearanceRadius, 4f, radius), clearanceColor, 1.2f);
     }
 
     private static void DrawClippedRouteSegment(Rect mapRect, Vector2 start, Vector2 end, Color color)

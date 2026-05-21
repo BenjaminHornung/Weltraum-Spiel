@@ -1,0 +1,597 @@
+#if UNITY_EDITOR
+using System;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using NUnit.Framework;
+using UnityEngine;
+
+public class PrototypeAutopilotNavigationComputerV2ValidationTests
+{
+    private const BindingFlags PrivateInstance = BindingFlags.Instance | BindingFlags.NonPublic;
+
+    [SetUp]
+    public void SetUp()
+    {
+        DestroyByPrefix("AutopilotV2Validation");
+        PrototypeNavigationObstacleRegistry.ClearForTests();
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+        DestroyByPrefix("AutopilotV2Validation");
+        PrototypeNavigationObstacleRegistry.ClearForTests();
+    }
+
+    [Test]
+    public void ObstacleDetector_OverlapAtStart_IsDetected()
+    {
+        var rig = CreateAutopilotRig();
+        GameObject obstacleObject = CreateObstacle("AutopilotV2ValidationOverlap", Vector3.forward * 1.5f, 4f, true, true);
+        Physics.SyncTransforms();
+
+        PrototypeObstacleDetectionResult result = rig.Detector.DetectDirectPath(rig.Body, Vector3.forward * 120f, 3f);
+
+        Assert.True(result.detected);
+        Assert.AreSame(obstacleObject.GetComponent<PrototypeNavigationObstacle>(), result.obstacle);
+        Assert.That(result.distance, Is.EqualTo(0f).Within(0.001f));
+        Assert.That(result.hitDistance, Is.EqualTo(0f).Within(0.001f));
+    }
+
+    [Test]
+    public void ObstacleDetector_MultipleObstacles_SelectsNearestBlocking()
+    {
+        var rig = CreateAutopilotRig();
+        GameObject far = CreateObstacle("AutopilotV2ValidationFar", Vector3.forward * 80f, 4f, true, true);
+        GameObject near = CreateObstacle("AutopilotV2ValidationNear", Vector3.forward * 35f, 4f, true, true);
+        Physics.SyncTransforms();
+
+        PrototypeObstacleDetectionResult result = rig.Detector.DetectDirectPath(rig.Body, Vector3.forward * 150f, 3f);
+
+        Assert.True(result.detected);
+        Assert.AreSame(near.GetComponent<PrototypeNavigationObstacle>(), result.obstacle);
+        Assert.AreNotSame(far.GetComponent<PrototypeNavigationObstacle>(), result.obstacle);
+    }
+
+    [Test]
+    public void ObstacleDetector_NonBlockingObstacle_IsIgnored()
+    {
+        var rig = CreateAutopilotRig();
+        CreateObstacle("AutopilotV2ValidationNonBlocking", Vector3.forward * 35f, 4f, false, true);
+        Physics.SyncTransforms();
+
+        PrototypeObstacleDetectionResult result = rig.Detector.DetectDirectPath(rig.Body, Vector3.forward * 150f, 3f);
+
+        Assert.True(result.IsClear);
+    }
+
+    [Test]
+    public void ObstacleDetector_TriggersAreDetected()
+    {
+        var rig = CreateAutopilotRig();
+        GameObject obstacleObject = CreateObstacle("AutopilotV2ValidationTrigger", Vector3.forward * 45f, 5f, true, true);
+        Physics.SyncTransforms();
+
+        PrototypeObstacleDetectionResult result = rig.Detector.DetectDirectPath(rig.Body, Vector3.forward * 150f, 3f);
+
+        Assert.True(result.detected);
+        Assert.True(result.collider != null && result.collider.isTrigger);
+        Assert.AreSame(obstacleObject.GetComponent<PrototypeNavigationObstacle>(), result.obstacle);
+    }
+
+    [Test]
+    public void Planner_DirectCandidateWinsWhenClear()
+    {
+        PrototypeTrajectoryPlan plan = new PrototypeTrajectoryPlanner().Plan(
+            CreateSnapshot(Vector3.zero, Vector3.zero, Vector3.forward * 200f),
+            PrototypeObstacleDetectionResult.Clear(8f));
+
+        Assert.False(plan.avoidanceActive);
+        Assert.That(plan.selectedCandidate, Is.EqualTo("direct"));
+        Assert.That(plan.navigationPhase, Is.EqualTo(PrototypeAutopilotNavigationPhase.Direct));
+        Assert.That(plan.candidateScores.Single().name, Is.EqualTo("direct"));
+    }
+
+    [Test]
+    public void Planner_AvoidanceCandidateWinsWhenDirectBlocked()
+    {
+        PrototypeObstacleDetectionResult detection = CreateBlockingDetection();
+        PrototypeTrajectoryPlan plan = new PrototypeTrajectoryPlanner().Plan(
+            CreateSnapshot(Vector3.zero, Vector3.zero, Vector3.forward * 200f),
+            detection);
+
+        Assert.True(plan.avoidanceActive);
+        Assert.That(plan.selectedCandidate, Is.Not.EqualTo("direct"));
+        Assert.That(plan.navigationPhase, Is.EqualTo(PrototypeAutopilotNavigationPhase.AvoidancePlanning));
+        Assert.That(plan.avoidanceWaypoint.sqrMagnitude, Is.GreaterThan(0.1f));
+    }
+
+    [Test]
+    public void Planner_CandidateScorePenalizesCollision()
+    {
+        PrototypeObstacleDetectionResult detection = CreateBlockingDetection();
+        PrototypeTrajectoryPlan plan = new PrototypeTrajectoryPlanner().Plan(
+            CreateSnapshot(Vector3.zero, Vector3.zero, Vector3.forward * 200f),
+            detection);
+
+        PrototypeTrajectoryCandidateScore direct = plan.candidateScores.Single(score => score.name == "direct");
+        PrototypeTrajectoryCandidateScore selected = plan.candidateScores.Single(score => score.name == plan.selectedCandidate);
+
+        Assert.True(direct.collisionPredicted);
+        Assert.That(direct.score, Is.LessThan(selected.score));
+        Assert.That(direct.reason, Does.Contain("collision"));
+    }
+
+    [Test]
+    public void Planner_CandidateScorePenalizesImpossibleBrake()
+    {
+        PrototypeTrajectoryPlan plan = new PrototypeTrajectoryPlanner().Plan(
+            CreateSnapshot(Vector3.zero, Vector3.forward * 80f, Vector3.forward * 65f, maxMainAcceleration: 3f),
+            PrototypeObstacleDetectionResult.Clear(8f));
+
+        PrototypeTrajectoryCandidateScore direct = plan.candidateScores.Single(score => score.name == "direct");
+
+        Assert.False(direct.canBrakeBeforeTarget);
+    }
+
+    [Test]
+    public void Planner_UsesBurnPlanFuelAndDeltaV()
+    {
+        PrototypeTrajectoryPlan plan = new PrototypeTrajectoryPlanner().Plan(
+            CreateSnapshot(Vector3.zero, Vector3.zero, Vector3.forward * 250f, fuelKgPerSecond: 0.8f, availableFuelKg: 20f),
+            PrototypeObstacleDetectionResult.Clear(8f));
+
+        Assert.True(plan.burnPlan.HasBurn);
+        Assert.That(plan.burnPlan.estimatedDeltaV, Is.GreaterThan(0f));
+        Assert.That(plan.burnPlan.estimatedFuelKg, Is.GreaterThan(0f));
+        Assert.That(plan.segments.Any(segment => segment.type == PrototypeTrajectorySegmentType.Burn), Is.True);
+        Assert.That(plan.predictedPath.Length, Is.GreaterThan(3));
+    }
+
+    [Test]
+    public void Planner_HeavyShipNeedsMoreRcsForce()
+    {
+        PrototypeObstacleDetectionResult detection = CreateBlockingDetection();
+        PrototypeTrajectoryPlan light = new PrototypeTrajectoryPlanner().Plan(
+            CreateSnapshot(Vector3.zero, Vector3.zero, Vector3.forward * 200f, massKg: 100f, maxRcsForce: 100000f),
+            detection);
+        PrototypeTrajectoryPlan heavy = new PrototypeTrajectoryPlanner().Plan(
+            CreateSnapshot(Vector3.zero, Vector3.zero, Vector3.forward * 200f, massKg: 1000f, maxRcsForce: 100000f),
+            detection);
+
+        Assert.That(light.requestedRcsForceWorld.magnitude, Is.GreaterThan(0f));
+        Assert.That(heavy.requestedRcsForceWorld.magnitude, Is.GreaterThan(light.requestedRcsForceWorld.magnitude * 5f));
+    }
+
+    [Test]
+    public void Planner_LimitedRcsReportsLimitedAuthority()
+    {
+        PrototypeObstacleDetectionResult detection = CreateBlockingDetection();
+        PrototypeTrajectoryPlan plan = new PrototypeTrajectoryPlanner().Plan(
+            CreateSnapshot(Vector3.zero, Vector3.right * 20f, Vector3.forward * 200f, massKg: 2000f, maxRcsForce: 35f),
+            detection);
+
+        Assert.True(plan.limitedRcsAuthority);
+        Assert.That(plan.warningStatus, Is.EqualTo("LimitedRcsAuthority"));
+        Assert.That(plan.candidateScores.Any(score => score.rcsAuthorityMargin < 0f), Is.True);
+    }
+
+    [Test]
+    public void Autopilot_NoAuthorityDoesNotFakeComplete()
+    {
+        var rig = CreateAutopilotRig();
+        SetPrivateFloat(rig.Rcs, "translationForce", 0f);
+        UnityEngine.Object.DestroyImmediate(rig.Ship.GetComponent<MainThrusterModule>());
+        SetPrivateField(rig.Ship.GetComponent<MainThrusterBank>(), "thrusters", Array.Empty<MainThrusterModule>());
+        rig.Target.transform.position = Vector3.forward * 2f;
+        rig.Body.linearVelocity = Vector3.zero;
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+
+        Assert.That(rig.Autopilot.CurrentState, Is.Not.EqualTo(PrototypeWaypointAutopilotState.Complete));
+        Assert.False(rig.Autopilot.AutopilotEngaged);
+        Assert.That(rig.Autopilot.ArrivalFailureReason, Is.EqualTo("NoAuthority"));
+    }
+
+    [Test]
+    public void Autopilot_FuelInsufficientBeforeBurn()
+    {
+        var rig = CreateAutopilotRig();
+        SetPrivateFloat(rig.Stats, "currentFuelKg", 0f);
+        rig.Target.transform.position = Vector3.forward * 500f;
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+
+        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.FuelInsufficient));
+        Assert.False(rig.Autopilot.AutopilotEngaged);
+        Assert.False(rig.Controller.HasExternalFlightAssistRequest);
+    }
+
+    [Test]
+    public void Autopilot_HoldRequiresStableVelocityWindow()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 2f;
+        rig.Body.linearVelocity = Vector3.zero;
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+        InvokeFixedUpdate(rig.Autopilot);
+
+        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.HoldPosition));
+        Assert.True(rig.Autopilot.AutopilotEngaged);
+
+        SetPrivateField(rig.Autopilot, "holdConfirmStarted", true);
+        SetPrivateFloat(rig.Autopilot, "holdConfirmUntilTime", 0f);
+        InvokeFixedUpdate(rig.Autopilot);
+
+        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.Complete));
+        Assert.False(rig.Autopilot.AutopilotEngaged);
+    }
+
+    [Test]
+    public void Autopilot_AvoidanceWaypointPersistsAcrossFrames()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 180f;
+        CreateObstacle("AutopilotV2ValidationBlocking", Vector3.forward * 55f, 7f, true, true);
+        Physics.SyncTransforms();
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+        InvokeFixedUpdate(rig.Autopilot);
+        Vector3 firstWaypoint = rig.Autopilot.AvoidanceWaypoint;
+
+        rig.Autopilot.ReplanNow();
+        InvokeFixedUpdate(rig.Autopilot);
+
+        Assert.True(rig.Autopilot.AvoidanceActive);
+        Assert.That(Vector3.Distance(firstWaypoint, rig.Autopilot.AvoidanceWaypoint), Is.LessThan(0.001f));
+        Assert.That(
+            rig.Autopilot.NavigationPhase,
+            Is.EqualTo(PrototypeWaypointAutopilotNavigationPhase.AvoidancePlanning).Or.EqualTo(PrototypeWaypointAutopilotNavigationPhase.Avoiding));
+    }
+
+    [Test]
+    public void Autopilot_ReacquiresDirectPathAfterAvoidance()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 180f;
+        GameObject obstacle = CreateObstacle("AutopilotV2ValidationBlocking", Vector3.forward * 55f, 7f, true, true);
+        Physics.SyncTransforms();
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+        InvokeFixedUpdate(rig.Autopilot);
+        Assert.True(rig.Autopilot.AvoidanceActive);
+
+        UnityEngine.Object.DestroyImmediate(obstacle);
+        Physics.SyncTransforms();
+        rig.Autopilot.ReplanNow();
+        InvokeFixedUpdate(rig.Autopilot);
+
+        Assert.False(rig.Autopilot.NavigationObstacleDetected);
+        Assert.That(rig.Autopilot.NavigationPhase, Is.EqualTo(PrototypeWaypointAutopilotNavigationPhase.ReacquireDirectPath));
+    }
+
+    [Test]
+    public void NavigationComputerHud_BuildsStructuredPanelAndWarningChips()
+    {
+        var rig = CreateAutopilotRig();
+        SetPrivateFloat(rig.Rcs, "translationForce", 0f);
+        rig.Target.transform.position = Vector3.forward * 12f;
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+        InvokeFixedUpdate(rig.Autopilot);
+
+        GameObject cameraObject = new GameObject("AutopilotV2ValidationCamera");
+        cameraObject.AddComponent<Camera>();
+        var hud = cameraObject.AddComponent<PrototypeFlightHud>();
+        hud.Bind(rig.Ship.transform, rig.Stats, rig.Body);
+        hud.RefreshDiagnosticsForTests();
+
+        Assert.That(hud.LastNavigationComputerSummary, Does.Contain("Navigation Computer"));
+        Assert.That(hud.LastNavigationComputerSummary, Does.Contain("Phase"));
+        Assert.That(hud.LastNavigationComputerSummary, Does.Contain("Segment"));
+        Assert.That(hud.LastNavigationComputerSummary, Does.Contain("LIMITED RCS"));
+        Assert.That(hud.LastNavigationComputerSummary.Split('\n').Length, Is.GreaterThanOrEqualTo(5));
+    }
+
+    [Test]
+    public void NavigationComputerSources_RenderStructuredDebugAndMinimapEvidence()
+    {
+        string root = Directory.GetCurrentDirectory();
+        string debugConsole = File.ReadAllText(Path.Combine(root, "Assets", "Scripts", "Prototype", "PrototypeFlightDebugConsole.cs"));
+        string minimap = File.ReadAllText(Path.Combine(root, "Assets", "Scripts", "Prototype", "PrototypeMinimapOverlay.cs"));
+
+        StringAssert.Contains("Plan Summary", debugConsole);
+        StringAssert.Contains("Candidate Scores", debugConsole);
+        StringAssert.Contains("Current Segment", debugConsole);
+        StringAssert.Contains("Obstacle Detection", debugConsole);
+        StringAssert.Contains("Actuator Requests", debugConsole);
+        StringAssert.Contains("Fuel/Burn Estimate", debugConsole);
+        StringAssert.Contains("Test Scenario Controls", debugConsole);
+        StringAssert.Contains("PredictedRoute", minimap);
+        StringAssert.Contains("DrawObstacleClearance", minimap);
+        StringAssert.Contains("directPathBlocked", minimap);
+    }
+
+    [Test]
+    public void NavigationComputerV2SyntheticEvidence_WritesMarkedHeadlessPngs()
+    {
+        string screenshotDir = Path.Combine(
+            Directory.GetCurrentDirectory(),
+            ".devtoolbox",
+            "specs",
+            "changes",
+            "prototype-autopilot-navigation-computer-v2",
+            "tests",
+            "screenshots");
+        Directory.CreateDirectory(screenshotDir);
+
+        WriteSyntheticEvidenceImage(Path.Combine(screenshotDir, "direct-route.png"), new Color(0.1f, 0.55f, 0.95f), false, false);
+        WriteSyntheticEvidenceImage(Path.Combine(screenshotDir, "obstacle-detected.png"), new Color(1f, 0.36f, 0.18f), true, false);
+        WriteSyntheticEvidenceImage(Path.Combine(screenshotDir, "avoidance-active.png"), new Color(1f, 0.78f, 0.18f), true, true);
+        WriteSyntheticEvidenceImage(Path.Combine(screenshotDir, "reacquire-direct-path.png"), new Color(0.45f, 0.72f, 1f), false, true);
+        WriteSyntheticEvidenceImage(Path.Combine(screenshotDir, "final-hold.png"), new Color(0.35f, 0.9f, 0.45f), false, false);
+        WriteSyntheticEvidenceImage(Path.Combine(screenshotDir, "navigation-computer-gui.png"), new Color(0.25f, 0.85f, 1f), true, true);
+
+        Assert.True(File.Exists(Path.Combine(screenshotDir, "direct-route.png")));
+        Assert.True(File.Exists(Path.Combine(screenshotDir, "reacquire-direct-path.png")));
+        Assert.True(File.Exists(Path.Combine(screenshotDir, "navigation-computer-gui.png")));
+    }
+
+    private static PrototypeTrajectorySnapshot CreateSnapshot(
+        Vector3 position,
+        Vector3 velocity,
+        Vector3 target,
+        float massKg = 250f,
+        float maxMainAcceleration = 8f,
+        float maxRcsForce = 12000f,
+        float fuelKgPerSecond = 0.4f,
+        float availableFuelKg = 50f)
+    {
+        return new PrototypeTrajectorySnapshot(
+            position,
+            velocity,
+            target,
+            Vector3.forward,
+            massKg,
+            maxMainAcceleration,
+            maxRcsForce,
+            8f,
+            massKg * maxMainAcceleration,
+            fuelKgPerSecond,
+            availableFuelKg,
+            10f,
+            1f,
+            0.2f);
+    }
+
+    private static PrototypeObstacleDetectionResult CreateBlockingDetection()
+    {
+        var rig = CreateAutopilotRig();
+        CreateObstacle("AutopilotV2ValidationPlannerObstacle", Vector3.forward * 55f, 8f, true, true);
+        Physics.SyncTransforms();
+        return rig.Detector.DetectDirectPath(Vector3.zero, Vector3.forward * 200f, 8f, rig.Ship.transform, Vector3.zero, 0f);
+    }
+
+    private static AutopilotRig CreateAutopilotRig()
+    {
+        GameObject ship = CreateShipRig();
+        GameObject targetObject = new GameObject("AutopilotV2ValidationTarget");
+        var target = targetObject.AddComponent<PrototypeNavigationTarget>();
+        target.Configure("ValidationTarget", 10f);
+
+        var detector = ship.GetComponent<PrototypeObstacleDetector>() ?? ship.AddComponent<PrototypeObstacleDetector>();
+        detector.SetIncludeNavigationObstacleComponentsWithoutCollider(true);
+        var autopilot = ship.GetComponent<PrototypeWaypointAutopilot>() ?? ship.AddComponent<PrototypeWaypointAutopilot>();
+        var controller = ship.GetComponent<PlayerShipController>();
+        var body = ship.GetComponent<Rigidbody>();
+        var stats = ship.GetComponent<ShipStats>();
+        autopilot.Bind(null, controller, stats, body);
+        autopilot.SelectTarget(target);
+
+        return new AutopilotRig
+        {
+            Ship = ship,
+            Body = body,
+            Stats = stats,
+            Controller = controller,
+            Rcs = ship.GetComponent<RcsThrusterController>(),
+            Detector = detector,
+            Autopilot = autopilot,
+            Target = target
+        };
+    }
+
+    private static GameObject CreateShipRig()
+    {
+        GameObject ship = new GameObject("AutopilotV2ValidationShip");
+        Rigidbody body = ship.AddComponent<Rigidbody>();
+        body.useGravity = false;
+        ShipStats stats = ship.AddComponent<ShipStats>();
+        ShipPhysicsCore physicsCore = ship.AddComponent<ShipPhysicsCore>();
+        ship.AddComponent<GunModule>();
+        var mainThruster = ship.AddComponent<MainThrusterBank>();
+        ship.AddComponent<EngineVfxController>();
+        var rcs = ship.AddComponent<RcsThrusterController>();
+        var mainModule = ship.AddComponent<MainThrusterModule>();
+        ship.AddComponent<PlayerShipController>();
+        ship.AddComponent<PrototypeObstacleDetector>();
+        mainModule.Configure(ship.transform, body, stats, physicsCore);
+        mainThruster.Configure(new[] { mainModule }, body, stats, physicsCore);
+        ConfigureRcsNozzles(ship.transform, rcs, body, physicsCore);
+        physicsCore.Configure(body);
+        stats.ApplyMassProperties(body);
+        return ship;
+    }
+
+    private static GameObject CreateObstacle(string name, Vector3 position, float radius, bool blocksAutopilot, bool trigger)
+    {
+        GameObject obstacle = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        obstacle.name = name;
+        obstacle.transform.position = position;
+        obstacle.transform.localScale = Vector3.one * Mathf.Max(0.1f, radius * 2f);
+        Collider collider = obstacle.GetComponent<Collider>();
+        Assert.NotNull(collider);
+        collider.isTrigger = trigger;
+        obstacle.AddComponent<PrototypeNavigationObstacle>().Configure(radius, 8f, blocksAutopilot);
+        return obstacle;
+    }
+
+    private static void ConfigureRcsNozzles(Transform shipTransform, RcsThrusterController rcs, Rigidbody body, ShipPhysicsCore physicsCore)
+    {
+        Transform[] nozzleTransforms = new Transform[6];
+        Vector3[] localPositions =
+        {
+            Vector3.up,
+            Vector3.down,
+            Vector3.left,
+            Vector3.right,
+            Vector3.forward,
+            Vector3.back
+        };
+
+        for (int i = 0; i < nozzleTransforms.Length; i++)
+        {
+            GameObject nozzle = new GameObject("AutopilotV2ValidationRcsNozzle" + i);
+            nozzle.transform.SetParent(shipTransform, false);
+            nozzle.transform.localPosition = localPositions[i];
+            nozzleTransforms[i] = nozzle.transform;
+        }
+
+        rcs.ConfigureThrusters(
+            nozzleTransforms[0],
+            nozzleTransforms[1],
+            nozzleTransforms[2],
+            nozzleTransforms[3],
+            nozzleTransforms[4],
+            nozzleTransforms[5],
+            body,
+            physicsCore);
+    }
+
+    private static void SetPrivateFloat(object target, string fieldName, float value)
+    {
+        FieldInfo field = target.GetType().GetField(fieldName, PrivateInstance);
+        Assert.NotNull(field, fieldName);
+        field.SetValue(target, value);
+    }
+
+    private static void SetPrivateField(object target, string fieldName, object value)
+    {
+        FieldInfo field = target.GetType().GetField(fieldName, PrivateInstance);
+        Assert.NotNull(field, fieldName);
+        field.SetValue(target, value);
+    }
+
+    private static void WriteSyntheticEvidenceImage(string path, Color accent, bool obstacle, bool avoidance)
+    {
+        const int width = 640;
+        const int height = 360;
+        var texture = new Texture2D(width, height, TextureFormat.RGBA32, false);
+        Color background = new Color(0.02f, 0.025f, 0.04f, 1f);
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                texture.SetPixel(x, y, background);
+            }
+        }
+
+        Fill(texture, 24, 24, 250, 136, new Color(0.06f, 0.08f, 0.12f, 1f));
+        Fill(texture, 34, 42, 230, 14, accent);
+        Fill(texture, 34, 68, 160, 10, new Color(0.75f, 0.9f, 1f, 1f));
+        Fill(texture, 34, 92, 190, 10, avoidance ? new Color(1f, 0.82f, 0.2f, 1f) : new Color(0.35f, 0.9f, 0.45f, 1f));
+        Fill(texture, 34, 116, 104, 10, obstacle ? new Color(1f, 0.34f, 0.18f, 1f) : new Color(0.35f, 0.9f, 0.45f, 1f));
+        DrawLine(texture, new Vector2(90f, 276f), avoidance ? new Vector2(310f, 182f) : new Vector2(520f, 276f), accent, 4);
+        if (avoidance)
+        {
+            DrawLine(texture, new Vector2(310f, 182f), new Vector2(520f, 276f), new Color(0.35f, 0.9f, 1f, 1f), 4);
+        }
+
+        if (obstacle)
+        {
+            DrawCircle(texture, new Vector2(310f, 250f), 38, new Color(1f, 0.28f, 0.15f, 1f));
+        }
+
+        Fill(texture, 440, 38, 150, 20, new Color(1f, 1f, 1f, 1f));
+        Fill(texture, 440, 68, 82, 14, accent);
+        Fill(texture, 440, 96, 116, 14, avoidance ? new Color(1f, 0.82f, 0.2f, 1f) : new Color(0.35f, 0.9f, 0.45f, 1f));
+        File.WriteAllBytes(path, texture.EncodeToPNG());
+        UnityEngine.Object.DestroyImmediate(texture);
+    }
+
+    private static void Fill(Texture2D texture, int x, int y, int width, int height, Color color)
+    {
+        for (int yy = Mathf.Max(0, y); yy < Mathf.Min(texture.height, y + height); yy++)
+        {
+            for (int xx = Mathf.Max(0, x); xx < Mathf.Min(texture.width, x + width); xx++)
+            {
+                texture.SetPixel(xx, yy, color);
+            }
+        }
+    }
+
+    private static void DrawLine(Texture2D texture, Vector2 start, Vector2 end, Color color, int radius)
+    {
+        int steps = Mathf.CeilToInt(Vector2.Distance(start, end));
+        for (int i = 0; i <= steps; i++)
+        {
+            Vector2 point = Vector2.Lerp(start, end, steps > 0 ? (float)i / steps : 0f);
+            Fill(texture, Mathf.RoundToInt(point.x) - radius, Mathf.RoundToInt(point.y) - radius, radius * 2, radius * 2, color);
+        }
+    }
+
+    private static void DrawCircle(Texture2D texture, Vector2 center, int radius, Color color)
+    {
+        for (int y = -radius; y <= radius; y++)
+        {
+            for (int x = -radius; x <= radius; x++)
+            {
+                float distance = Mathf.Sqrt((x * x) + (y * y));
+                if (distance >= radius - 2 && distance <= radius + 2)
+                {
+                    int px = Mathf.RoundToInt(center.x) + x;
+                    int py = Mathf.RoundToInt(center.y) + y;
+                    if (px >= 0 && px < texture.width && py >= 0 && py < texture.height)
+                    {
+                        texture.SetPixel(px, py, color);
+                    }
+                }
+            }
+        }
+    }
+
+    private static void InvokeFixedUpdate(object target)
+    {
+        MethodInfo fixedUpdate = target.GetType().GetMethod("FixedUpdate", PrivateInstance);
+        Assert.NotNull(fixedUpdate);
+        fixedUpdate.Invoke(target, null);
+    }
+
+    private static void DestroyByPrefix(string prefix)
+    {
+        GameObject[] objects = UnityEngine.Object.FindObjectsOfType<GameObject>();
+        for (int i = 0; i < objects.Length; i++)
+        {
+            GameObject target = objects[i];
+            if (target != null && target.name.StartsWith(prefix))
+            {
+                UnityEngine.Object.DestroyImmediate(target);
+            }
+        }
+    }
+
+    private struct AutopilotRig
+    {
+        public GameObject Ship;
+        public Rigidbody Body;
+        public ShipStats Stats;
+        public PlayerShipController Controller;
+        public RcsThrusterController Rcs;
+        public PrototypeObstacleDetector Detector;
+        public PrototypeWaypointAutopilot Autopilot;
+        public PrototypeNavigationTarget Target;
+    }
+}
+#endif

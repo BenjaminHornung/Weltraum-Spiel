@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="6" result="Passed" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-05-21 12:12:20Z" end-time="2026-05-21 12:12:20Z" duration="0.1360588">
+  <test-suite type="TestSuite" id="1014" name="Weltraum Spiel" fullname="Weltraum Spiel" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-05-21 12:12:20Z" end-time="2026-05-21 12:12:20Z" duration="0.136059" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1010" name="Assembly-CSharp.dll" fullname="E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/ScriptAssemblies/Assembly-CSharp.dll" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-05-21 12:12:20Z" end-time="2026-05-21 12:12:20Z" duration="0.128925" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="19080" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1001" name="PrototypeAutopilotNavigationPlayModeTests" fullname="PrototypeAutopilotNavigationPlayModeTests" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-05-21 12:12:20Z" end-time="2026-05-21 12:12:20Z" duration="0.126966" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1003" name="PlayMode_Autopilot_AvoidsObstacle_ThenReachesWaypoint" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_AvoidsObstacle_ThenReachesWaypoint" methodname="PlayMode_Autopilot_AvoidsObstacle_ThenReachesWaypoint" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="1837576302" result="Passed" start-time="2026-05-21 12:12:20Z" end-time="2026-05-21 12:12:20Z" duration="0.066915" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[AutopilotPlayModeV2 result state=Complete phase=Hold position=-3.39,0.00,87.42 com=-3.39,0.00,87.42 distance=9.22 lateral=0.00 sawAvoidance=True sawReacquire=True sawDirectAfterAvoidance=False minClearance=10.63 candidate=direct reason=direct path clear
+]]></output>
+        </test-case>
+        <test-case id="1005" name="PlayMode_Autopilot_HeavyCargo_ReportsLimitedOrCompletesWithinRelaxedEnvelope" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_HeavyCargo_ReportsLimitedOrCompletesWithinRelaxedEnvelope" methodname="PlayMode_Autopilot_HeavyCargo_ReportsLimitedOrCompletesWithinRelaxedEnvelope" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="1064047026" result="Passed" start-time="2026-05-21 12:12:20Z" end-time="2026-05-21 12:12:20Z" duration="0.013154" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[AutopilotPlayModeV2 result state=Complete phase=Hold position=0.12,0.00,68.74 com=0.12,0.00,68.74 distance=9.26 lateral=0.00 sawAvoidance=False sawReacquire=False sawDirectAfterAvoidance=False minClearance=Infinity candidate=direct reason=direct path clear
+]]></output>
+        </test-case>
+        <test-case id="1007" name="PlayMode_Autopilot_ManualOverride_AbortsAndClearsRequests" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_ManualOverride_AbortsAndClearsRequests" methodname="PlayMode_Autopilot_ManualOverride_AbortsAndClearsRequests" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="604749752" result="Passed" start-time="2026-05-21 12:12:20Z" end-time="2026-05-21 12:12:20Z" duration="0.001770" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1006" name="PlayMode_Autopilot_NoRcs_DoesNotFakePrecisionComplete" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_NoRcs_DoesNotFakePrecisionComplete" methodname="PlayMode_Autopilot_NoRcs_DoesNotFakePrecisionComplete" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="864312231" result="Passed" start-time="2026-05-21 12:12:20Z" end-time="2026-05-21 12:12:20Z" duration="0.006340" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[AutopilotPlayModeV2 result state=FinalApproach phase=FinalApproach position=7.20,0.00,0.00 com=7.20,0.00,0.00 distance=11.53 lateral=3.12 sawAvoidance=False sawReacquire=False sawDirectAfterAvoidance=False minClearance=Infinity candidate=direct reason=direct path clear
+]]></output>
+        </test-case>
+        <test-case id="1002" name="PlayMode_Autopilot_ReachesWaypoint_NoObstacle" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_ReachesWaypoint_NoObstacle" methodname="PlayMode_Autopilot_ReachesWaypoint_NoObstacle" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="1035780623" result="Passed" start-time="2026-05-21 12:12:20Z" end-time="2026-05-21 12:12:20Z" duration="0.012428" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[AutopilotPlayModeV2 result state=Complete phase=Hold position=0.00,0.00,62.74 com=0.00,0.00,62.74 distance=9.26 lateral=0.00 sawAvoidance=False sawReacquire=False sawDirectAfterAvoidance=False minClearance=Infinity candidate=direct reason=direct path clear
+]]></output>
+        </test-case>
+        <test-case id="1004" name="PlayMode_Autopilot_StartsWithLateralVelocity_ReachesHold" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_StartsWithLateralVelocity_ReachesHold" methodname="PlayMode_Autopilot_StartsWithLateralVelocity_ReachesHold" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="667840357" result="Passed" start-time="2026-05-21 12:12:20Z" end-time="2026-05-21 12:12:20Z" duration="0.011772" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[AutopilotPlayModeV2 result state=Complete phase=Hold position=0.19,0.00,54.79 com=0.19,0.00,54.79 distance=9.22 lateral=0.00 sawAvoidance=False sawReacquire=False sawDirectAfterAvoidance=False minClearance=Infinity candidate=direct reason=direct path clear
+<b><color=#2EA3FF>MCP-FOR-UNITY</color></b>: [TestRunnerNoThrottle] Restored Interaction Mode after test run.
+Saving results to: C:/Users/benni/AppData/LocalLow/DefaultCompany/Weltraum Spiel\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

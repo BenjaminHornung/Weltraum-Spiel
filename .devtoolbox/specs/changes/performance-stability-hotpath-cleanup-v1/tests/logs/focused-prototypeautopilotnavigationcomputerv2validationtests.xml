@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="19" result="Passed" total="19" passed="19" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-05-21 12:00:26Z" end-time="2026-05-21 12:00:26Z" duration="0.274104">
+  <test-suite type="TestSuite" id="1000" name="Weltraum Spiel" fullname="Weltraum Spiel" runstate="Runnable" testcasecount="228" result="Passed" start-time="2026-05-21 12:00:26Z" end-time="2026-05-21 12:00:26Z" duration="0.274104" total="19" passed="19" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1257" name="Assembly-CSharp-Editor.dll" fullname="E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="228" result="Passed" start-time="2026-05-21 12:00:26Z" end-time="2026-05-21 12:00:26Z" duration="0.260801" total="19" passed="19" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="10304" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1022" name="PrototypeAutopilotNavigationComputerV2ValidationTests" fullname="PrototypeAutopilotNavigationComputerV2ValidationTests" classname="PrototypeAutopilotNavigationComputerV2ValidationTests" runstate="Runnable" testcasecount="19" result="Passed" start-time="2026-05-21 12:00:26Z" end-time="2026-05-21 12:00:26Z" duration="0.249098" total="19" passed="19" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1037" name="Autopilot_AvoidanceWaypointPersistsAcrossFrames" fullname="PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_AvoidanceWaypointPersistsAcrossFrames" methodname="Autopilot_AvoidanceWaypointPersistsAcrossFrames" classname="PrototypeAutopilotNavigationComputerV2ValidationTests" runstate="Runnable" seed="297619066" result="Passed" start-time="2026-05-21 12:00:26Z" end-time="2026-05-21 12:00:26Z" duration="0.043276" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1035" name="Autopilot_FuelInsufficientBeforeBurn" fullname="PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_FuelInsufficientBeforeBurn" methodname="Autopilot_FuelInsufficientBeforeBurn" classname="PrototypeAutopilotNavigationComputerV2ValidationTests" runstate="Runnable" seed="63597490" result="Passed" start-time="2026-05-21 12:00:26Z" end-time="2026-05-21 12:00:26Z" duration="0.001484" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1036" name="Autopilot_HoldRequiresStableVelocityWindow" fullname="PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_HoldRequiresStableVelocityWindow" methodname="Autopilot_HoldRequiresStableVelocityWindow" classname="PrototypeAutopilotNavigationComputerV2ValidationTests" runstate="Runnable" seed="769178065" result="Passed" start-time="2026-05-21 12:00:26Z" end-time="2026-05-21 12:00:26Z" duration="0.003198" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1034" name="Autopilot_NoAuthorityDoesNotFakeComplete" fullname="PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_NoAuthorityDoesNotFakeComplete" methodname="Autopilot_NoAuthorityDoesNotFakeComplete" classname="PrototypeAutopilotNavigationComputerV2ValidationTests" runstate="Runnable" seed="818642872" result="Passed" start-time="2026-05-21 12:00:26Z" end-time="2026-05-21 12:00:26Z" duration="0.001484" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1038" name="Autopilot_ReacquiresDirectPathAfterAvoidance" fullname="PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_ReacquiresDirectPathAfterAvoidance" methodname="Autopilot_ReacquiresDirectPathAfterAvoidance" classname="PrototypeAutopilotNavigationComputerV2ValidationTests" runstate="Runnable" seed="608632528" result="Passed" start-time="2026-05-21 12:00:26Z" end-time="2026-05-21 12:00:26Z" duration="0.001725" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1039" name="NavigationComputerHud_BuildsStructuredPanelAndWarningChips" fullname="PrototypeAutopilotNavigationComputerV2ValidationTests.NavigationComputerHud_BuildsStructuredPanelAndWarningChips" methodname="NavigationComputerHud_BuildsStructuredPanelAndWarningChips" classname="PrototypeAutopilotNavigationComputerV2ValidationTests" runstate="Runnable" seed="53284381" result="Passed" start-time="2026-05-21 12:00:26Z" end-time="2026-05-21 12:00:26Z" duration="0.004984" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1040" name="NavigationComputerSources_RenderStructuredDebugAndMinimapEvidence" fullname="PrototypeAutopilotNavigationComputerV2ValidationTests.NavigationComputerSources_RenderStructuredDebugAndMinimapEvidence" methodname="NavigationComputerSources_RenderStructuredDebugAndMinimapEvidence" classname="PrototypeAutopilotNavigationComputerV2ValidationTests" runstate="Runnable" seed="204887742" result="Passed" start-time="2026-05-21 12:00:26Z" end-time="2026-05-21 12:00:26Z" duration="0.003299" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1041" name="NavigationComputerV2SyntheticEvidence_WritesMarkedHeadlessPngs" fullname="PrototypeAutopilotNavigationComputerV2ValidationTests.NavigationComputerV2SyntheticEvidence_WritesMarkedHeadlessPngs" methodname="NavigationComputerV2SyntheticEvidence_WritesMarkedHeadlessPngs" classname="PrototypeAutopilotNavigationComputerV2ValidationTests" runstate="Runnable" seed="1392680555" result="Passed" start-time="2026-05-21 12:00:26Z" end-time="2026-05-21 12:00:26Z" duration="0.154042" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1024" name="ObstacleDetector_MultipleObstacles_SelectsNearestBlocking" fullname="PrototypeAutopilotNavigationComputerV2ValidationTests.ObstacleDetector_MultipleObstacles_SelectsNearestBlocking" methodname="ObstacleDetector_MultipleObstacles_SelectsNearestBlocking" classname="PrototypeAutopilotNavigationComputerV2ValidationTests" runstate="Runnable" seed="2133403208" result="Passed" start-time="2026-05-21 12:00:26Z" end-time="2026-05-21 12:00:26Z" duration="0.002265" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1025" name="ObstacleDetector_NonBlockingObstacle_IsIgnored" fullname="PrototypeAutopilotNavigationComputerV2ValidationTests.ObstacleDetector_NonBlockingObstacle_IsIgnored" methodname="ObstacleDetector_NonBlockingObstacle_IsIgnored" classname="PrototypeAutopilotNavigationComputerV2ValidationTests" runstate="Runnable" seed="1485337950" result="Passed" start-time="2026-05-21 12:00:26Z" end-time="2026-05-21 12:00:26Z" duration="0.001131" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1023" name="ObstacleDetector_OverlapAtStart_IsDetected" fullname="PrototypeAutopilotNavigationComputerV2ValidationTests.ObstacleDetector_OverlapAtStart_IsDetected" methodname="ObstacleDetector_OverlapAtStart_IsDetected" classname="PrototypeAutopilotNavigationComputerV2ValidationTests" runstate="Runnable" seed="322598834" result="Passed" start-time="2026-05-21 12:00:26Z" end-time="2026-05-21 12:00:26Z" duration="0.003015" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1026" name="ObstacleDetector_TriggersAreDetected" fullname="PrototypeAutopilotNavigationComputerV2ValidationTests.ObstacleDetector_TriggersAreDetected" methodname="ObstacleDetector_TriggersAreDetected" classname="PrototypeAutopilotNavigationComputerV2ValidationTests" runstate="Runnable" seed="510682530" result="Passed" start-time="2026-05-21 12:00:26Z" end-time="2026-05-21 12:00:26Z" duration="0.001179" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1028" name="Planner_AvoidanceCandidateWinsWhenDirectBlocked" fullname="PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_AvoidanceCandidateWinsWhenDirectBlocked" methodname="Planner_AvoidanceCandidateWinsWhenDirectBlocked" classname="PrototypeAutopilotNavigationComputerV2ValidationTests" runstate="Runnable" seed="935887707" result="Passed" start-time="2026-05-21 12:00:26Z" end-time="2026-05-21 12:00:26Z" duration="0.002181" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1029" name="Planner_CandidateScorePenalizesCollision" fullname="PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_CandidateScorePenalizesCollision" methodname="Planner_CandidateScorePenalizesCollision" classname="PrototypeAutopilotNavigationComputerV2ValidationTests" runstate="Runnable" seed="1131567004" result="Passed" start-time="2026-05-21 12:00:26Z" end-time="2026-05-21 12:00:26Z" duration="0.002319" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1030" name="Planner_CandidateScorePenalizesImpossibleBrake" fullname="PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_CandidateScorePenalizesImpossibleBrake" methodname="Planner_CandidateScorePenalizesImpossibleBrake" classname="PrototypeAutopilotNavigationComputerV2ValidationTests" runstate="Runnable" seed="629947341" result="Passed" start-time="2026-05-21 12:00:26Z" end-time="2026-05-21 12:00:26Z" duration="0.000400" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1027" name="Planner_DirectCandidateWinsWhenClear" fullname="PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_DirectCandidateWinsWhenClear" methodname="Planner_DirectCandidateWinsWhenClear" classname="PrototypeAutopilotNavigationComputerV2ValidationTests" runstate="Runnable" seed="1641685068" result="Passed" start-time="2026-05-21 12:00:26Z" end-time="2026-05-21 12:00:26Z" duration="0.000852" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1032" name="Planner_HeavyShipNeedsMoreRcsForce" fullname="PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_HeavyShipNeedsMoreRcsForce" methodname="Planner_HeavyShipNeedsMoreRcsForce" classname="PrototypeAutopilotNavigationComputerV2ValidationTests" runstate="Runnable" seed="1832422293" result="Passed" start-time="2026-05-21 12:00:26Z" end-time="2026-05-21 12:00:26Z" duration="0.001396" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1033" name="Planner_LimitedRcsReportsLimitedAuthority" fullname="PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_LimitedRcsReportsLimitedAuthority" methodname="Planner_LimitedRcsReportsLimitedAuthority" classname="PrototypeAutopilotNavigationComputerV2ValidationTests" runstate="Runnable" seed="23587281" result="Passed" start-time="2026-05-21 12:00:26Z" end-time="2026-05-21 12:00:26Z" duration="0.001643" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1031" name="Planner_UsesBurnPlanFuelAndDeltaV" fullname="PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_UsesBurnPlanFuelAndDeltaV" methodname="Planner_UsesBurnPlanFuelAndDeltaV" classname="PrototypeAutopilotNavigationComputerV2ValidationTests" runstate="Runnable" seed="1180425762" result="Passed" start-time="2026-05-21 12:00:26Z" end-time="2026-05-21 12:00:26Z" duration="0.001141" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[<b><color=#2EA3FF>MCP-FOR-UNITY</color></b>: [TestRunnerNoThrottle] Restored Interaction Mode after test run.
+Saving results to: C:/Users/benni/AppData/LocalLow/DefaultCompany/Weltraum Spiel\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

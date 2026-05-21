@@ -23,6 +23,7 @@ public class PrototypeWaypointAutopilotValidationTests
         DestroyByPrefix("WaypointAutopilotValidationObstacle");
         DestroyByPrefix("WaypointAutopilotValidationDetector");
         DestroyByPrefix(AutopilotRigTargetPrefix);
+        PrototypeNavigationObstacleRegistry.ClearForTests();
     }
 
     [TearDown]
@@ -35,6 +36,7 @@ public class PrototypeWaypointAutopilotValidationTests
         DestroyByPrefix("WaypointAutopilotValidationDetector");
         DestroyByPrefix(AutopilotRigTargetRootName);
         CleanupValidationNavigationTargets();
+        PrototypeNavigationObstacleRegistry.ClearForTests();
     }
 
     [Test]
@@ -74,6 +76,7 @@ public class PrototypeWaypointAutopilotValidationTests
             "FuelCheck",
             "AlignForBurn",
             "Accelerate",
+            "ObstacleAvoidance",
             "FlipForBrake",
             "Brake",
             "FinalApproach",
@@ -250,6 +253,7 @@ public class PrototypeWaypointAutopilotValidationTests
 
         var detectorObject = new GameObject("WaypointAutopilotValidationDetector");
         var detector = detectorObject.AddComponent<PrototypeObstacleDetector>();
+        detector.SetIncludeNavigationObstacleComponentsWithoutCollider(true);
         var ignoredObject = new GameObject("WaypointAutopilotValidationObstacleIgnored");
         ignoredObject.transform.position = Vector3.forward * 25f;
         ignoredObject.AddComponent<PrototypeNavigationObstacle>().Configure(8f, 4f, false);
@@ -292,6 +296,7 @@ public class PrototypeWaypointAutopilotValidationTests
         InvokeFixedUpdate(rig.Autopilot);
 
         Assert.True(rig.Autopilot.NavigationObstacleDetected);
+        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.ObstacleAvoidance));
         Assert.That(rig.Autopilot.LastTrajectoryPhase, Is.EqualTo(PrototypeTrajectoryPhase.Avoidance));
         Assert.That(Vector3.Dot(rig.Autopilot.DesiredBurnDirection.normalized, rig.Autopilot.LastTrajectoryPlan.obstacleDirection.normalized), Is.LessThan(0.76f));
         Assert.True(rig.Autopilot.CurrentPlan.isValid);
@@ -306,6 +311,71 @@ public class PrototypeWaypointAutopilotValidationTests
         Assert.That(rig.Autopilot.FailureReason, Is.EqualTo(rig.Autopilot.ArrivalFailureReason));
         Assert.That(rig.Controller.LastExternalFlightAssistRequest.source, Is.EqualTo(FlightAssistRequestSource.WaypointAutopilot));
         Assert.False(rig.Controller.LastExternalFlightAssistRequest.debugOnlyNonPhysical);
+    }
+
+    [Test]
+    public void DisengagedAutopilotDoesNotRefreshNavigationPlanInFixedUpdate()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 150f;
+        CreateObstacle("WaypointAutopilotValidationObstacle", Vector3.forward * 55f, 8f);
+        Physics.SyncTransforms();
+
+        int before = rig.Autopilot.NavigationPlanRefreshCount;
+        InvokeFixedUpdate(rig.Autopilot);
+        InvokeFixedUpdate(rig.Autopilot);
+
+        Assert.False(rig.Autopilot.AutopilotEngaged);
+        Assert.That(rig.Autopilot.NavigationPlanRefreshCount, Is.EqualTo(before));
+        Assert.False(rig.Autopilot.NavigationObstacleDetected);
+    }
+
+    [Test]
+    public void ReplanNowRefreshesNavigationPlanWhileDisengaged()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 150f;
+        CreateObstacle("WaypointAutopilotValidationObstacle", Vector3.forward * 55f, 8f);
+        Physics.SyncTransforms();
+
+        int before = rig.Autopilot.NavigationPlanRefreshCount;
+        rig.Autopilot.ReplanNow();
+
+        Assert.False(rig.Autopilot.AutopilotEngaged);
+        Assert.That(rig.Autopilot.NavigationPlanRefreshCount, Is.EqualTo(before + 1));
+        Assert.True(rig.Autopilot.NavigationObstacleDetected);
+    }
+
+    [Test]
+    public void EngagedAutopilotThrottlesNavigationPlanRefreshesInsideInterval()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 150f;
+        rig.Body.linearVelocity = Vector3.zero;
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+
+        InvokeFixedUpdate(rig.Autopilot);
+        int afterFirstTick = rig.Autopilot.NavigationPlanRefreshCount;
+        InvokeFixedUpdate(rig.Autopilot);
+        InvokeFixedUpdate(rig.Autopilot);
+
+        Assert.True(rig.Autopilot.AutopilotEngaged);
+        Assert.That(afterFirstTick, Is.EqualTo(1));
+        Assert.That(rig.Autopilot.NavigationPlanRefreshCount, Is.EqualTo(afterFirstTick));
+        Assert.That(rig.Autopilot.NavigationPlanIntervalSeconds, Is.InRange(0.1f, 0.25f));
+    }
+
+    [Test]
+    public void ObstacleDetectorSourceDoesNotUseGlobalFindObjectsFallback()
+    {
+        string sourceFile = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "Scripts", "Prototype", "PrototypeObstacleDetector.cs");
+        Assert.True(File.Exists(sourceFile), sourceFile);
+
+        string source = File.ReadAllText(sourceFile);
+
+        Assert.False(source.Contains("FindObjectsByType<PrototypeNavigationObstacle>"), "Detector fallback must use PrototypeNavigationObstacleRegistry.");
+        Assert.False(source.Contains("FindObjectsOfType<PrototypeNavigationObstacle>"), "Detector fallback must use PrototypeNavigationObstacleRegistry.");
     }
 
     [Test]
@@ -353,7 +423,8 @@ public class PrototypeWaypointAutopilotValidationTests
         completeRig.Autopilot.ToggleAutopilot();
         InvokeFixedUpdate(completeRig.Autopilot);
 
-        Assert.That(completeRig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.Complete));
+        Assert.That(completeRig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.HoldPosition));
+        Assert.True(completeRig.Autopilot.AutopilotEngaged);
 
         var holdRig = CreateAutopilotRig();
         holdRig.Target.transform.position = Vector3.forward * 5f;
@@ -434,7 +505,7 @@ public class PrototypeWaypointAutopilotValidationTests
 
         Assert.That(approachRig.Autopilot.ArrivalPhase, Is.EqualTo(PrototypeWaypointAutopilotArrivalPhase.FinalApproach));
         Assert.True(approachRig.Autopilot.LimitedFinalApproachCapability);
-        Assert.That(approachRig.Autopilot.ArrivalFailureReason, Is.EqualTo("reduced final approach capability"));
+        Assert.That(approachRig.Autopilot.ArrivalFailureReason, Is.EqualTo("LimitedRcsAuthority"));
     }
 
     [Test]

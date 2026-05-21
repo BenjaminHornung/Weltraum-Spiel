@@ -12,6 +12,7 @@ public class GunModule : MonoBehaviour
     [SerializeField] private float projectileScale = 0.24f;
     [SerializeField] private float projectileMass = 0.12f;
     [SerializeField] private bool recoilEnabled = true;
+    [SerializeField] private bool allowMuzzleFallback = true;
 
     private float nextFireTime;
 
@@ -25,6 +26,7 @@ public class GunModule : MonoBehaviour
     public PrototypeProjectileFireResult LastFireResult { get; private set; }
     public Transform MuzzleTransform => muzzleTransform;
     public PrototypeTurretWeapon TurretWeapon => turretWeapon;
+    public bool AllowMuzzleFallback => allowMuzzleFallback;
 
     private void Awake()
     {
@@ -89,11 +91,25 @@ public class GunModule : MonoBehaviour
             }
         }
 
-        var fallback = new GameObject("Muzzle");
-        fallback.transform.SetParent(transform, false);
-        fallback.transform.localPosition = Vector3.zero;
-        fallback.transform.localRotation = Quaternion.identity;
-        muzzleTransform = fallback.transform;
+        if (allowMuzzleFallback)
+        {
+            var fallback = new GameObject("Muzzle");
+            fallback.transform.SetParent(transform, false);
+            fallback.transform.localPosition = Vector3.zero;
+            fallback.transform.localRotation = Quaternion.identity;
+            muzzleTransform = fallback.transform;
+        }
+    }
+
+    public void SetAllowMuzzleFallback(bool allowFallback)
+    {
+        allowMuzzleFallback = allowFallback;
+        if (!allowMuzzleFallback && muzzleTransform != null && muzzleTransform.parent == transform && muzzleTransform.name == "Muzzle")
+        {
+            var fallback = muzzleTransform.gameObject;
+            muzzleTransform = null;
+            DestroyGameObject(fallback);
+        }
     }
 
     public bool TryFire()
@@ -101,7 +117,9 @@ public class GunModule : MonoBehaviour
         ResolveReferences();
         if (turretWeapon != null)
         {
-            bool firedByTurret = turretWeapon.TryFire();
+            PrototypeWeaponComputer weaponComputer = GetComponentInParent<PrototypeWeaponComputer>();
+            Transform activeTarget = weaponComputer != null ? weaponComputer.ActiveTargetTransform : null;
+            bool firedByTurret = activeTarget != null ? turretWeapon.TryFireAt(activeTarget) : turretWeapon.TryFire();
             LastProjectileVelocityWorld = turretWeapon.LastProjectileVelocityWorld;
             LastRecoilImpulseWorld = turretWeapon.LastRecoilImpulseWorld;
             LastRecoilPositionWorld = turretWeapon.LastRecoilPositionWorld;
@@ -198,7 +216,11 @@ public class GunModule : MonoBehaviour
 
     public void ConfigureMuzzle(Transform muzzle)
     {
-        muzzleTransform = muzzle != null ? muzzle : muzzleTransform;
+        if (muzzle != null)
+        {
+            muzzleTransform = muzzle;
+        }
+
         ResolveReferences();
         EnsureMuzzleTransform();
     }
@@ -229,6 +251,23 @@ public class GunModule : MonoBehaviour
         Vector3 axisB = Vector3.Cross(normalized, axisA).normalized;
         Quaternion rotation = Quaternion.AngleAxis(offset.x, axisA) * Quaternion.AngleAxis(offset.y, axisB);
         return (rotation * normalized).normalized;
+    }
+
+    private static void DestroyGameObject(GameObject target)
+    {
+        if (target == null)
+        {
+            return;
+        }
+
+        if (Application.isPlaying)
+        {
+            Destroy(target);
+        }
+        else
+        {
+            DestroyImmediate(target);
+        }
     }
 }
 

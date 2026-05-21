@@ -1252,7 +1252,110 @@
         "gun_mount_light_mk1",
         "fuel_tank_small_mk1"
       ],
-      "notes": "RCS pods are mounted on left/right side hardpoint plates; hull-facing inboard nozzles are removed and replaced by lime side-mount faces. Extra underside mount plates are intentionally absent. Each demo RCS pod includes visible forward, back, outboard, up, and down nozzle geometry."
+      "functionalRuntimeDefault": true,
+      "functionalSockets": [
+        {
+          "id": "THRUST_NOZZLE_MAIN_PRIMARY",
+          "name": "DEMO_Scout_Mk1_PART_Main_Engine_Bell_Mk1_THRUST_NOZZLE_MAIN",
+          "socketType": "MainThrusterNozzle",
+          "localAxisRole": "ForceDirection",
+          "direction": "Main",
+          "notes": "Unity forward is main thrust force direction; plume VFX renders opposite."
+        },
+        {
+          "id": "RCS_NOZZLE_FORWARD",
+          "namePattern": "DEMO_Scout_Mk1_PART_RCS_Pod_4Way_Mk1*_RCS_NOZZLE_FORWARD*",
+          "socketType": "RcsNozzle",
+          "localAxisRole": "ForceDirection",
+          "direction": "Forward",
+          "minimumCount": 4
+        },
+        {
+          "id": "RCS_NOZZLE_BACK",
+          "namePattern": "DEMO_Scout_Mk1_PART_RCS_Pod_4Way_Mk1*_RCS_NOZZLE_BACK*",
+          "socketType": "RcsNozzle",
+          "localAxisRole": "ForceDirection",
+          "direction": "Back",
+          "minimumCount": 4
+        },
+        {
+          "id": "RCS_NOZZLE_LEFT",
+          "namePattern": "DEMO_Scout_Mk1_PART_RCS_Pod_4Way_Mk1*_RCS_NOZZLE_LEFT*",
+          "socketType": "RcsNozzle",
+          "localAxisRole": "ForceDirection",
+          "direction": "Left",
+          "minimumCount": 2
+        },
+        {
+          "id": "RCS_NOZZLE_RIGHT",
+          "namePattern": "DEMO_Scout_Mk1_PART_RCS_Pod_4Way_Mk1*_RCS_NOZZLE_RIGHT*",
+          "socketType": "RcsNozzle",
+          "localAxisRole": "ForceDirection",
+          "direction": "Right",
+          "minimumCount": 2
+        },
+        {
+          "id": "RCS_NOZZLE_UP",
+          "namePattern": "DEMO_Scout_Mk1_PART_RCS_Pod_4Way_Mk1*_RCS_NOZZLE_UP*",
+          "socketType": "RcsNozzle",
+          "localAxisRole": "ForceDirection",
+          "direction": "Up",
+          "minimumCount": 4
+        },
+        {
+          "id": "RCS_NOZZLE_DOWN",
+          "namePattern": "DEMO_Scout_Mk1_PART_RCS_Pod_4Way_Mk1*_RCS_NOZZLE_DOWN*",
+          "socketType": "RcsNozzle",
+          "localAxisRole": "ForceDirection",
+          "direction": "Down",
+          "minimumCount": 4
+        },
+        {
+          "id": "WEAPON_TURRET_BASE_PRIMARY",
+          "name": "WEAPON_TURRET_BASE_PRIMARY",
+          "socketType": "TurretBase",
+          "localAxisRole": "BarrelForward",
+          "direction": "Muzzle"
+        },
+        {
+          "id": "WEAPON_TURRET_YAW_PRIMARY",
+          "name": "WEAPON_TURRET_YAW_PRIMARY",
+          "socketType": "TurretYawPivot",
+          "localAxisRole": "BarrelForward",
+          "direction": "Muzzle",
+          "visibleMeshChildren": [
+            "DEMO_Scout_Mk1_GEO_Gun_Mount_Base"
+          ]
+        },
+        {
+          "id": "WEAPON_TURRET_PITCH_PRIMARY",
+          "name": "WEAPON_TURRET_PITCH_PRIMARY",
+          "socketType": "TurretPitchPivot",
+          "localAxisRole": "BarrelForward",
+          "direction": "Muzzle",
+          "visibleMeshChildren": [
+            "DEMO_Scout_Mk1_GEO_Gun_Barrel",
+            "DEMO_Scout_Mk1_GEO_Gun_Muzzle_Red"
+          ]
+        },
+        {
+          "id": "WEAPON_MUZZLE_PRIMARY",
+          "name": "WEAPON_MUZZLE_PRIMARY",
+          "socketType": "WeaponMuzzle",
+          "localAxisRole": "BarrelForward",
+          "direction": "Muzzle",
+          "notes": "Projectile, tracer, recoil and muzzle-origin VFX start here."
+        },
+        {
+          "id": "WEAPON_MUZZLE_FLASH_PRIMARY",
+          "name": "WEAPON_MUZZLE_FLASH_PRIMARY",
+          "socketType": "WeaponMuzzleFlash",
+          "localAxisRole": "BarrelForward",
+          "direction": "Muzzle",
+          "notes": "Runtime flash VFX is attached here and follows the pitch pivot."
+        }
+      ],
+      "notes": "Default runtime ship. RCS pods are mounted on left/right side hardpoint plates; hull-facing inboard nozzles are removed and replaced by lime side-mount faces. Extra underside mount plates are intentionally absent. Each demo RCS pod includes visible forward, back, outboard, up, and down nozzle geometry. The visible gun base follows WEAPON_TURRET_YAW_PRIMARY, and barrel/muzzle geometry follows WEAPON_TURRET_PITCH_PRIMARY."
     },
     {
       "id": "demo_cargo_mk1",
@@ -1286,7 +1389,12 @@
       "RCS_Nozzle_<PodId>_<Direction>",
       "Muzzle",
       "TurretYawPivot",
-      "TurretPitchPivot"
+      "TurretPitchPivot",
+      "WEAPON_TURRET_BASE_<Group>",
+      "WEAPON_TURRET_YAW_<Group>",
+      "WEAPON_TURRET_PITCH_<Group>",
+      "WEAPON_MUZZLE_<Group>",
+      "WEAPON_MUZZLE_FLASH_<Group>"
     ],
     "importedAliasTokens": [
       "THRUST_NOZZLE_MAIN",
@@ -1297,6 +1405,11 @@
       "RCS_NOZZLE_UP",
       "RCS_NOZZLE_DOWN",
       "MUZZLE",
+      "WEAPON_TURRET_BASE_",
+      "WEAPON_TURRET_YAW_",
+      "WEAPON_TURRET_PITCH_",
+      "WEAPON_MUZZLE_",
+      "WEAPON_MUZZLE_FLASH_",
       "CONN_"
     ]
   }

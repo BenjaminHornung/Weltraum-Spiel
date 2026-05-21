@@ -413,8 +413,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PrototypeBootstrap
   buildOnStart: 1
+  shipConfig: {fileID: 0}
+  buildMode: 0
+  allowGeneratedFallbackWhenImportedAssetMissing: 1
+  selectedVariantIndex: 0
   addOrientationMarkers: 0
   shipStartPosition: {x: 0, y: 0.5, z: 0}
+  spawnTestTarget: 1
+  testTargetPosition: {x: 0, y: 0.5, z: 42}
+  testTargetScale: {x: 4, y: 4, z: 0.6}
+  buildTestEnvironment: 1
 --- !u!4 &757126138
 Transform:
   m_ObjectHideFlags: 0

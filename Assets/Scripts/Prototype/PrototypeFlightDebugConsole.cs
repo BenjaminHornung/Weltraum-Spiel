@@ -442,6 +442,7 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
         navigationAutopilotOpen = GUILayout.Toggle(navigationAutopilotOpen, "Navigation / Autopilot");
         if (!navigationAutopilotOpen)
         {
+            waypointAutopilot?.SetNavigationDebugPlanningActive(false);
             return;
         }
 
@@ -457,6 +458,8 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
             return;
         }
 
+        waypointAutopilot.SetNavigationDebugPlanningActive(true);
+        GUILayout.Label("Plan Summary", labelStyle);
         GUILayout.Label($"Target: {waypointAutopilot.TargetName}", labelStyle);
         PrototypeFlightControlDiagnostics diagnostics = shipController.FlightControlDiagnostics;
         GUILayout.Label($"Autopilot engaged: {(diagnostics.autopilotEngaged ? "yes" : "no")}", labelStyle);
@@ -486,6 +489,7 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
         }
         GUILayout.EndHorizontal();
 
+        GUILayout.Label("Test Scenario Controls", labelStyle);
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("Replan Now"))
         {
@@ -510,19 +514,38 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
         }
         GUILayout.EndHorizontal();
 
+        GUILayout.Label("Current Segment", labelStyle);
         GUILayout.Label($"Distance: {FormatCompact(waypointAutopilot.DistanceToTarget)} m", labelStyle);
         GUILayout.Label($"Closing speed: {FormatCompact(waypointAutopilot.ClosingSpeed)} m/s", labelStyle);
         GUILayout.Label($"Lateral speed: {FormatCompact(waypointAutopilot.LateralSpeed)} m/s", labelStyle);
         GUILayout.Label($"Stopping distance: {FormatCompact(waypointAutopilot.StoppingDistance)} m", labelStyle);
         GUILayout.Label($"Arrival phase: {waypointAutopilot.ArrivalPhase}", labelStyle);
         PrototypeTrajectoryPlan plan = waypointAutopilot.CurrentPlan;
-        GUILayout.Label($"Plan: {plan.statusLabel} phase {plan.phase} valid {(plan.isValid ? "yes" : "no")}", labelStyle);
+        GUILayout.Label($"Plan: {plan.statusLabel} nav {waypointAutopilot.NavigationPhase} phase {plan.phase} valid {(plan.isValid ? "yes" : "no")}", labelStyle);
+        GUILayout.Label($"Active segment: {waypointAutopilot.ActiveSegmentLabel} | candidate {waypointAutopilot.SelectedCandidate} | {waypointAutopilot.SelectedCandidateReason}", labelStyle);
+        GUILayout.Label($"Plan refreshes: {waypointAutopilot.NavigationPlanRefreshCount} @ {waypointAutopilot.NavigationPlanIntervalSeconds:0.00}s", labelStyle);
+        GUILayout.Label($"Predicted route points: {waypointAutopilot.PredictedRoute.Length}", labelStyle);
+
+        GUILayout.Label("Candidate Scores", labelStyle);
+        PrototypeTrajectoryCandidateScore[] scores = waypointAutopilot.CandidateScores;
+        for (int i = 0; i < Mathf.Min(scores.Length, 7); i++)
+        {
+            PrototypeTrajectoryCandidateScore score = scores[i];
+            GUILayout.Label($"{score.name}: {score.score:0.0} clear {FormatCompact(score.clearanceMeters)}m dv {FormatCompact(score.deltaV)} brake {(score.canBrakeBeforeTarget ? "yes" : "no")} rcs {FormatCompact(score.rcsAuthorityMargin)} | {score.reason}", labelStyle);
+        }
+
+        GUILayout.Label("Obstacle Detection", labelStyle);
         GUILayout.Label($"Desired accel: {FormatVector(waypointAutopilot.RequestedAcceleration)} m/s2", labelStyle);
         GUILayout.Label($"Obstacle: {plan.obstacleLabel} @ {FormatCompact(plan.obstacleDistance)} m | {waypointAutopilot.ObstacleStatus}", labelStyle);
         GUILayout.Label($"Avoidance waypoint: {FormatVector(waypointAutopilot.AvoidanceWaypoint)}", labelStyle);
         GUILayout.Label($"Plan stop/ETA: {FormatCompact(waypointAutopilot.PlannedStoppingDistance)} m / {FormatFuel(waypointAutopilot.PlannedEta)} s", labelStyle);
         GUILayout.Label($"Arrival envelope: dist <= {FormatCompact(waypointAutopilot.LastMetrics.distance)} m, speed {FormatCompact(waypointAutopilot.LastMetrics.relativeSpeed)} m/s, lateral {FormatCompact(waypointAutopilot.LastMetrics.lateralSpeed)} m/s", labelStyle);
+
+        GUILayout.Label("Fuel/Burn Estimate", labelStyle);
         GUILayout.Label($"Fuel available/required: {FormatFuel(waypointAutopilot.AvailableBurnSeconds)} / {FormatFuel(waypointAutopilot.RequiredBurnSeconds)} s", labelStyle);
+        GUILayout.Label($"Burn plan: duration {FormatFuel(plan.burnPlan.durationSeconds)} s | dV {FormatCompact(plan.burnPlan.estimatedDeltaV)} m/s | fuel {FormatCompact(plan.burnPlan.estimatedFuelKg)} kg", labelStyle);
+
+        GUILayout.Label("Actuator Requests", labelStyle);
         GUILayout.Label($"Desired burn dir: {FormatVector(waypointAutopilot.DesiredBurnDirection)}", labelStyle);
         GUILayout.Label($"Req main throttle: {waypointAutopilot.RequestedMainThrottle:0.00}", labelStyle);
         GUILayout.Label($"Req RCS translation: {FormatVector(waypointAutopilot.RequestedRcsTranslation)}", labelStyle);

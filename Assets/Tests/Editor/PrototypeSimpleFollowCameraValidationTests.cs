@@ -233,6 +233,27 @@ public class PrototypeSimpleFollowCameraValidationTests
     }
 
     [Test]
+    public void CameraModeCycleReframesWithoutForcingVisualBoundsRefresh()
+    {
+        GameObject ship = new GameObject("SimpleFollowCameraTestShip");
+        ShipStats stats = ship.AddComponent<ShipStats>();
+        SimpleFollowCamera camera = BuildCamera(ship);
+        BuildVisualChild(ship, "SimpleFollowCameraModeCycleVisual", Vector3.one * 2f);
+
+        camera.BindTarget(ship.transform, stats);
+        InvokeLateUpdate(camera);
+        int refreshCount = camera.VisualBoundsRefreshCount;
+
+        camera.CycleCameraMode();
+        InvokeLateUpdate(camera);
+        camera.CycleCameraMode();
+        InvokeLateUpdate(camera);
+
+        Assert.That(camera.VisualBoundsRefreshCount, Is.EqualTo(refreshCount));
+        Assert.That(camera.CameraMode, Is.EqualTo(2));
+    }
+
+    [Test]
     public void VisualBoundsSnapshotIsStableInSteadyStateAndUpdatesOnlyOnDirtyRefresh()
     {
         GameObject ship = new GameObject("SimpleFollowCameraTestShip");
