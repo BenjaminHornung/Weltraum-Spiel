@@ -61,7 +61,9 @@ public class RcsThrusterController : MonoBehaviour
 
     private readonly System.Collections.Generic.List<RcsNozzle> nozzles = new System.Collections.Generic.List<RcsNozzle>();
     private readonly System.Text.StringBuilder activeNozzleBuilder = new System.Text.StringBuilder(160);
-    private int cachedNozzleCount = -1;
+    private int nozzleRefreshCount;
+    private bool nozzlesDirty = true;
+    private Transform cachedNozzleSearchRoot;
     private const float ManualCommandDeadZone = 0.05f;
     private const float SasAngularVelocityDeadZone = 0.0025f;
     private const float SasAngularVelocitySettleThreshold = 0.0025f;
@@ -81,6 +83,7 @@ public class RcsThrusterController : MonoBehaviour
     private const float AllocatorResidualLimitRatio = 0.05f;
 
     private const float SasCommandDeadZone = 0.0001f;
+    private const string ImportedShipVisualName = "ImportedShipVisual";
 
     public float TranslationForce => Mathf.Max(0f, translationForce);
     public float AttitudeForce => Mathf.Max(0f, attitudeForce);
@@ -90,6 +93,8 @@ public class RcsThrusterController : MonoBehaviour
     public float MinSelectionDot => Mathf.Clamp(minSelectionDot, 0f, 0.95f);
     public float NozzleSpoolUpRate => Mathf.Max(0f, nozzleSpoolUpRate);
     public float NozzleSpoolDownRate => Mathf.Max(0f, nozzleSpoolDownRate);
+    public bool UseImportedFunctionalSockets { get; private set; }
+    public int NozzleRefreshCount => nozzleRefreshCount;
     public bool RcsEnabled { get; private set; } = true;
     public bool HasRcs => InstalledNozzleCount > 0;
     public bool CanApplyRcs => RcsEnabled && HasRcs;
@@ -227,17 +232,7 @@ public class RcsThrusterController : MonoBehaviour
 
     private void RefreshNozzlesIfNeeded()
     {
-        int actualCount = 0;
-        Transform searchRoot = ResolveNozzleSearchRoot();
-        foreach (Transform child in searchRoot.GetComponentsInChildren<Transform>(true))
-        {
-            if (child != searchRoot && child.gameObject.activeInHierarchy && IsActiveNozzleTransform(child))
-            {
-                actualCount++;
-            }
-        }
-
-        if (actualCount != cachedNozzleCount || actualCount != nozzles.Count)
+        if (nozzlesDirty)
         {
             RefreshNozzles();
         }
@@ -246,14 +241,20 @@ public class RcsThrusterController : MonoBehaviour
     public void RefreshNozzles()
     {
         nozzles.Clear();
-        cachedNozzleCount = 0;
+        nozzleRefreshCount++;
         Vector3 localSum = Vector3.zero;
         var seenNozzleKeys = new System.Collections.Generic.HashSet<string>();
         Transform searchRoot = ResolveNozzleSearchRoot();
+        cachedNozzleSearchRoot = searchRoot;
 
         foreach (Transform child in searchRoot.GetComponentsInChildren<Transform>(true))
         {
             if (child == searchRoot || !child.gameObject.activeInHierarchy || !IsActiveNozzleTransform(child))
+            {
+                continue;
+            }
+
+            if (!UseImportedFunctionalSockets && IsDescendantOfImportedVisual(child))
             {
                 continue;
             }
@@ -287,18 +288,57 @@ public class RcsThrusterController : MonoBehaviour
             };
             nozzles.Add(nozzle);
             localSum += transform.InverseTransformPoint(child.position);
-            cachedNozzleCount++;
         }
 
         ControlPivotLocal = nozzles.Count > 0 ? localSum / nozzles.Count : Vector3.zero;
+        nozzlesDirty = false;
+    }
+
+    public void SetUseImportedFunctionalSockets(bool useImportedFunctionalSockets)
+    {
+        if (UseImportedFunctionalSockets == useImportedFunctionalSockets)
+        {
+            return;
+        }
+
+        UseImportedFunctionalSockets = useImportedFunctionalSockets;
+        MarkNozzlesDirty();
+    }
+
+    public void MarkNozzlesDirty()
+    {
+        nozzlesDirty = true;
     }
 
     private Transform ResolveNozzleSearchRoot()
     {
-        Transform importedVisual = transform.Find("ImportedShipVisual");
-        return importedVisual != null && importedVisual.gameObject.activeInHierarchy
+        if (!UseImportedFunctionalSockets)
+        {
+            return transform;
+        }
+
+        Transform importedVisual = transform.Find(ImportedShipVisualName);
+        cachedNozzleSearchRoot = importedVisual != null && importedVisual.gameObject.activeInHierarchy
             ? importedVisual
             : transform;
+
+        return cachedNozzleSearchRoot;
+    }
+
+    private bool IsDescendantOfImportedVisual(Transform candidate)
+    {
+        Transform current = candidate;
+        while (current != null)
+        {
+            if (current.name == ImportedShipVisualName)
+            {
+                return true;
+            }
+
+            current = current.parent;
+        }
+
+        return false;
     }
 
     private static bool IsActiveNozzleTransform(Transform nozzle)

@@ -8,6 +8,7 @@ public class PrototypeMinimapOverlay : MonoBehaviour
     [SerializeField] private Transform target;
     [SerializeField] private Rigidbody targetRigidbody;
     [SerializeField] private PrototypeTestEnvironment environment;
+    [SerializeField] private PrototypeWaypointAutopilot navigationAutopilot;
     [SerializeField] private bool showLabels;
     [SerializeField] private bool showTargets = true;
     [SerializeField] private bool showBeacons = true;
@@ -20,18 +21,19 @@ public class PrototypeMinimapOverlay : MonoBehaviour
     private GUIStyle labelStyle;
     private GUIStyle smallLabelStyle;
     private PrototypeUiWindowState windowState;
-    private readonly PrototypeUiSampleGate referenceLookupSampler = new PrototypeUiSampleGate(0.5f);
     private readonly HashSet<PrototypeEnvironmentPoint> labeledPoints = new HashSet<PrototypeEnvironmentPoint>();
 
     public bool IsWindowVisible => ResolveWindowState().Visible;
     public Transform Target => target;
     public PrototypeTestEnvironment Environment => environment;
+    public PrototypeWaypointAutopilot NavigationAutopilot => navigationAutopilot;
     public bool ShowLabels => showLabels;
     public float CurrentZoomMeters => ZoomLevels[Mathf.Clamp(zoomIndex, 0, ZoomLevels.Length - 1)];
+    public bool LastRouteUsedAvoidance { get; private set; }
 
     private void Start()
     {
-        ResolveReferences(true);
+        ResolveReferences();
     }
 
     private void OnValidate()
@@ -41,18 +43,18 @@ public class PrototypeMinimapOverlay : MonoBehaviour
 
     private void OnGUI()
     {
+        ResolveReferences();
         ResolveWindowState();
         if (!windowState.Visible)
         {
             return;
         }
 
-        ResolveReferences();
         EnsureStyles();
         windowState.SetSize(320f, windowState.Collapsed ? 58f : 384f);
         windowState.Rect = GUI.Window(windowState.WindowId, windowState.Rect, DrawWindow, "Minimap / Radar");
         windowState.ClampToScreen();
-        windowState.TrySaveToPrefsThrottled();
+        windowState.SaveToPrefs();
     }
 
     public void Bind(Transform trackTarget, Rigidbody body, PrototypeTestEnvironment sourceEnvironment)
@@ -60,7 +62,13 @@ public class PrototypeMinimapOverlay : MonoBehaviour
         target = trackTarget;
         targetRigidbody = body != null ? body : (trackTarget != null ? trackTarget.GetComponent<Rigidbody>() : null);
         environment = sourceEnvironment != null ? sourceEnvironment : environment;
-        ResolveReferences(true);
+        navigationAutopilot = trackTarget != null ? trackTarget.GetComponent<PrototypeWaypointAutopilot>() : navigationAutopilot;
+        ResolveReferences();
+    }
+
+    public void BindNavigationAutopilot(PrototypeWaypointAutopilot autopilot)
+    {
+        navigationAutopilot = autopilot;
     }
 
     public void SetWindowVisible(bool visible)
@@ -98,14 +106,19 @@ public class PrototypeMinimapOverlay : MonoBehaviour
         return windowState;
     }
 
-    private void ResolveReferences(bool forceSceneSearch = false)
+    private void ResolveReferences()
     {
         if (target != null && targetRigidbody == null)
         {
             targetRigidbody = target.GetComponent<Rigidbody>();
         }
 
-        if (environment == null && (forceSceneSearch || referenceLookupSampler.ShouldSample(Time.unscaledTime)))
+        if (target != null && navigationAutopilot == null)
+        {
+            navigationAutopilot = target.GetComponent<PrototypeWaypointAutopilot>();
+        }
+
+        if (environment == null)
         {
             environment = FindAnyObjectByType<PrototypeTestEnvironment>();
         }
@@ -222,6 +235,7 @@ public class PrototypeMinimapOverlay : MonoBehaviour
         DrawCircle(center, radius, new Color(0.3f, 0.62f, 1f, 0.95f), 1.2f);
         DrawRangeRings(center, radius);
         DrawEnvironmentPoints(mapRect, center, radius);
+        DrawNavigationRoute(mapRect, center, radius);
         DrawShip(center, radius);
 
         GUI.Label(new Rect(mapRect.x + 8f, mapRect.yMax - 22f, mapRect.width - 16f, 18f), "XZ radar centered on ship", smallLabelStyle);
@@ -293,6 +307,41 @@ public class PrototypeMinimapOverlay : MonoBehaviour
 
             DrawBlip(position, point);
         }
+    }
+
+    private void DrawNavigationRoute(Rect mapRect, Vector2 center, float radius)
+    {
+        LastRouteUsedAvoidance = false;
+        if (target == null || navigationAutopilot == null || navigationAutopilot.CurrentTarget == null)
+        {
+            return;
+        }
+
+        Vector2 shipPoint = center;
+        Vector2 targetPoint = WorldToMap(navigationAutopilot.CurrentTarget.Position, center, radius);
+        Color routeColor = new Color(0.25f, 0.9f, 1f, 0.88f);
+
+        if (navigationAutopilot.CurrentPlan.avoidanceActive)
+        {
+            Vector2 avoidancePoint = WorldToMap(navigationAutopilot.AvoidanceWaypoint, center, radius);
+            DrawClippedRouteSegment(mapRect, shipPoint, avoidancePoint, routeColor);
+            DrawClippedRouteSegment(mapRect, avoidancePoint, targetPoint, routeColor);
+            DrawCircle(avoidancePoint, 5f, new Color(1f, 0.85f, 0.2f, 0.95f), 1.4f);
+            LastRouteUsedAvoidance = true;
+            return;
+        }
+
+        DrawClippedRouteSegment(mapRect, shipPoint, targetPoint, routeColor);
+    }
+
+    private static void DrawClippedRouteSegment(Rect mapRect, Vector2 start, Vector2 end, Color color)
+    {
+        if (!mapRect.Contains(start) && !mapRect.Contains(end))
+        {
+            return;
+        }
+
+        DrawLine(start, end, color, 1.4f);
     }
 
     private void DrawBlip(Vector2 position, PrototypeEnvironmentPoint point)

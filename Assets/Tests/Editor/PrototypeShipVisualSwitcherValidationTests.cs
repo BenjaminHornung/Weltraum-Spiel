@@ -14,6 +14,9 @@ public class PrototypeShipVisualSwitcherValidationTests
         DestroyNamed("Directional Light");
         DestroyNamed("VariantTestBootstrap");
         DestroyNamed("PrototypeShipVisualSwitcher");
+        DestroyNamed("PrototypeShipVisualSwitcher_Manager");
+        DestroyNamed("StaleCameraTarget");
+        DestroyNamed("OldMainCamera");
     }
 
     [Test]
@@ -140,6 +143,95 @@ public class PrototypeShipVisualSwitcherValidationTests
         Assert.That(topPanel.position.y, Is.GreaterThan(ship.transform.position.y));
     }
 
+    [Test]
+    public void BootstrapLeavesOneActiveMainCameraAndOverwritesFollowTarget()
+    {
+        GameObject staleTarget = new GameObject("StaleCameraTarget");
+        GameObject staleMainCamera = new GameObject("Main Camera");
+        staleMainCamera.tag = "MainCamera";
+        staleMainCamera.AddComponent<Camera>();
+        SimpleFollowCamera staleFollow = staleMainCamera.AddComponent<SimpleFollowCamera>();
+        staleFollow.BindTarget(staleTarget.transform, staleTarget.AddComponent<ShipStats>());
+
+        GameObject duplicateMainCamera = new GameObject("OldMainCamera");
+        duplicateMainCamera.tag = "MainCamera";
+        duplicateMainCamera.AddComponent<Camera>();
+
+        GameObject ship = BuildBaselineShip();
+        Camera mainCamera = Camera.main;
+        Assert.NotNull(mainCamera);
+        SimpleFollowCamera follow = mainCamera.GetComponent<SimpleFollowCamera>();
+        Assert.NotNull(follow);
+        InvokeLateUpdate(follow);
+
+        Assert.That(CountActiveMainCameras(), Is.EqualTo(1));
+        Assert.That(follow.TargetName, Is.EqualTo(ship.name));
+        Assert.NotNull(ship.transform.Find("PrototypeCameraAnchor"));
+        Assert.That(follow.FocusSourceLabel, Is.EqualTo("CameraAnchor"));
+    }
+
+    [Test]
+    public void ImportedVisualRootStaysChildedAndMovesWithShip()
+    {
+        GameObject ship = BuildBaselineShip();
+        var switcher = CreateSwitcher();
+
+        switcher.SelectVisualMode(PrototypeShipVisualMode.ImportedDemoScout);
+
+        Transform visualRoot = ship.transform.Find("ImportedShipVisual");
+        Assert.NotNull(visualRoot);
+        Assert.That(visualRoot.parent, Is.EqualTo(ship.transform));
+        Vector3 initialVisualPosition = visualRoot.position;
+        Vector3 delta = new Vector3(12f, 3f, -5f);
+
+        ship.transform.position += delta;
+
+        AssertVector(visualRoot.position, initialVisualPosition + delta, 0.001f);
+        Assert.That(visualRoot.parent, Is.EqualTo(ship.transform));
+    }
+
+    [Test]
+    public void ManagerObjectHasClearNameAndNoRuntimePhysicsOrRenderingComponents()
+    {
+        GameObject ship = BuildBaselineShip();
+        var switcher = CreateSwitcher();
+        switcher.gameObject.AddComponent<BoxCollider>();
+        switcher.gameObject.AddComponent<Rigidbody>();
+        switcher.gameObject.AddComponent<MeshRenderer>();
+
+        switcher.SelectVisualMode(PrototypeShipVisualMode.GeneratedPrimitives);
+
+        Assert.That(ship, Is.Not.Null);
+        Assert.That(switcher.gameObject.name, Is.EqualTo("PrototypeShipVisualSwitcher_Manager"));
+        Assert.Null(switcher.GetComponent<Renderer>());
+        Assert.Null(switcher.GetComponent<Collider>());
+        Assert.Null(switcher.GetComponent<Rigidbody>());
+    }
+
+    [Test]
+    public void VisualChangeReframesCameraWithoutMovingAnchorOrBreakingBinding()
+    {
+        GameObject ship = BuildBaselineShip();
+        Transform anchor = ship.transform.Find("PrototypeCameraAnchor");
+        Assert.NotNull(anchor);
+        Vector3 anchorLocalPosition = anchor.localPosition;
+        SimpleFollowCamera follow = Camera.main.GetComponent<SimpleFollowCamera>();
+        Assert.NotNull(follow);
+        InvokeLateUpdate(follow);
+        float beforeDistance = follow.EffectiveDistance;
+        var switcher = CreateSwitcher();
+
+        switcher.SelectVisualMode(PrototypeShipVisualMode.ImportedDemoScout);
+        InvokeLateUpdate(follow);
+
+        Assert.That(follow.TargetName, Is.EqualTo(ship.name));
+        Assert.That(follow.FocusSourceLabel, Is.EqualTo("CameraAnchor"));
+        AssertVector(anchor.localPosition, anchorLocalPosition, 0.001f);
+        Assert.That(follow.EffectiveDistance, Is.GreaterThan(0f));
+        Assert.That(beforeDistance, Is.GreaterThan(0f));
+        Assert.NotNull(ship.transform.Find("ImportedShipVisual"));
+    }
+
     private static GameObject BuildBaselineShip()
     {
         return BuildVariantShip(0);
@@ -163,7 +255,7 @@ public class PrototypeShipVisualSwitcherValidationTests
 
     private static PrototypeShipVisualSwitcher CreateSwitcher()
     {
-        var switcherObject = new GameObject("PrototypeShipVisualSwitcher");
+        var switcherObject = new GameObject("PrototypeShipVisualSwitcher_Manager");
         return switcherObject.AddComponent<PrototypeShipVisualSwitcher>();
     }
 
@@ -291,6 +383,33 @@ public class PrototypeShipVisualSwitcherValidationTests
         }
 
         return bounds;
+    }
+
+    private static int CountActiveMainCameras()
+    {
+        Camera[] cameras = Object.FindObjectsByType<Camera>(FindObjectsInactive.Exclude);
+        int count = 0;
+        for (int i = 0; i < cameras.Length; i++)
+        {
+            if (cameras[i] != null && cameras[i].CompareTag("MainCamera"))
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    private static void InvokeLateUpdate(SimpleFollowCamera camera)
+    {
+        MethodInfo lateUpdate = typeof(SimpleFollowCamera).GetMethod("LateUpdate", BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(lateUpdate, "SimpleFollowCamera LateUpdate method should exist for test update.");
+        lateUpdate.Invoke(camera, null);
+    }
+
+    private static void AssertVector(Vector3 actual, Vector3 expected, float tolerance)
+    {
+        Assert.That(Vector3.Distance(actual, expected), Is.LessThanOrEqualTo(tolerance), $"Expected {expected}, got {actual}.");
     }
 
     private static int CountDescendantNamesContaining(Transform root, string namePart)

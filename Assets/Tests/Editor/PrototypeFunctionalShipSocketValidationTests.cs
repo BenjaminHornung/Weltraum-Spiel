@@ -62,6 +62,42 @@ public class PrototypeFunctionalShipSocketValidationTests
     }
 
     [Test]
+    public void RcsThrusterControllerDefaultsToGeneratedNozzleHierarchyAndCanOptIntoImportedSockets()
+    {
+        GameObject root = CreateRuntimeRoot();
+        var importedVisual = new GameObject("ImportedShipVisual");
+        importedVisual.transform.SetParent(root.transform, false);
+        var importedNozzle = new GameObject("PART_RCS_Pod_4Way_Mk1_RCS_NOZZLE_FORWARD");
+        importedNozzle.transform.SetParent(importedVisual.transform, false);
+        importedNozzle.transform.localPosition = new Vector3(1f, 0f, 0f);
+
+        var vfx = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        vfx.name = "VFX";
+        vfx.transform.SetParent(importedNozzle.transform, false);
+        vfx.SetActive(false);
+
+        var controller = root.AddComponent<RcsThrusterController>();
+        controller.RefreshNozzles();
+
+        int initialRefreshes = controller.NozzleRefreshCount;
+        Assert.False(controller.UseImportedFunctionalSockets);
+        Assert.That(controller.InstalledNozzleCount, Is.EqualTo(0));
+        Assert.That(controller.NozzleRefreshCount, Is.EqualTo(1));
+        Assert.That(initialRefreshes, Is.EqualTo(1));
+
+        controller.ApplyControls(Vector3.forward, Vector3.zero, false, 0.02f);
+        Assert.That(controller.NozzleRefreshCount, Is.EqualTo(initialRefreshes));
+
+        controller.SetUseImportedFunctionalSockets(true);
+        Assert.True(controller.UseImportedFunctionalSockets);
+        controller.ApplyControls(Vector3.forward, Vector3.zero, false, 0.02f);
+        Assert.That(controller.NozzleRefreshCount, Is.EqualTo(initialRefreshes + 1));
+        Assert.That(controller.InstalledNozzleCount, Is.EqualTo(1));
+        Assert.That(controller.ActiveNozzleCount, Is.EqualTo(1));
+        Assert.True(vfx.activeSelf);
+    }
+
+    [Test]
     public void MainThrusterVfxAndGimbalBindToImportedNozzle()
     {
         GameObject root = CreateRuntimeRoot();

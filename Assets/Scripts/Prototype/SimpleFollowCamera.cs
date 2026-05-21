@@ -47,6 +47,8 @@ public class SimpleFollowCamera : MonoBehaviour
     private Vector3 visualBoundsCenter;
     private float visualBoundsRadius;
     private bool hasVisualBounds;
+    private Vector3 focusPoint;
+    private string focusSourceLabel = "TargetPosition";
 
     private float baseFollowDistance;
     private float effectiveFollowDistance;
@@ -63,6 +65,12 @@ public class SimpleFollowCamera : MonoBehaviour
     public float BaseVisualDistance => baseFollowDistance;
     public float BaseVisualBoundsRadius => baseVisualBoundsRadius;
     public float EffectiveDistance => effectiveFollowDistance;
+    public Vector3 FocusPoint => focusPoint;
+    public string FocusSourceLabel => focusSourceLabel;
+    public Vector3 VisualBoundsCenter => visualBoundsCenter;
+    public float VisualBoundsRadius => visualBoundsRadius;
+    public string TargetName => target != null ? target.name : string.Empty;
+    public bool HasVisualBounds => hasVisualBounds;
 
     private float anchorError;
 
@@ -135,7 +143,7 @@ public class SimpleFollowCamera : MonoBehaviour
 
         if (cameraMode == CameraViewMode.FreeInspect)
         {
-            freeInspectLookTarget = GetVisualFocusPoint();
+            freeInspectLookTarget = GetFocusPoint();
             hasFreeInspectLookTarget = true;
         }
 
@@ -151,7 +159,7 @@ public class SimpleFollowCamera : MonoBehaviour
 
         if (nextMode == CameraViewMode.FreeInspect)
         {
-            freeInspectLookTarget = GetVisualFocusPoint();
+            freeInspectLookTarget = GetFocusPoint();
             hasFreeInspectLookTarget = true;
         }
 
@@ -425,7 +433,7 @@ public class SimpleFollowCamera : MonoBehaviour
 
         if (mode == CameraViewMode.ChaseLocked || mode == CameraViewMode.OrbitInspect || mode == CameraViewMode.Side)
         {
-            return GetVisualFocusPoint();
+            return GetFocusPoint();
         }
 
         if (mode == CameraViewMode.FreeInspect)
@@ -435,20 +443,20 @@ public class SimpleFollowCamera : MonoBehaviour
                 return freeInspectLookTarget;
             }
 
-            return GetVisualFocusPoint();
+            return GetFocusPoint();
         }
 
-        return GetVisualFocusPoint();
+        return GetFocusPoint();
     }
 
-    private Vector3 GetVisualFocusPoint()
+    private Vector3 GetFocusPoint()
     {
         if (target == null)
         {
             return Vector3.zero;
         }
 
-        return hasVisualBounds ? visualBoundsCenter : target.position;
+        return focusPoint;
     }
 
     private float CalculatePerspectiveFitDistance(float radius)
@@ -486,7 +494,7 @@ public class SimpleFollowCamera : MonoBehaviour
     {
         float lookYaw = Mathf.Clamp(orbitYaw, -anchoredLookYawLimit, anchoredLookYawLimit);
         float lookPitch = Mathf.Clamp(orbitPitch, -anchoredLookPitchLimit, anchoredLookPitchLimit);
-        Vector3 direction = GetVisualFocusPoint() - cameraPosition;
+        Vector3 direction = GetFocusPoint() - cameraPosition;
         Quaternion anchorRotation = direction.sqrMagnitude > 0.01f
             ? Quaternion.LookRotation(direction, target.up)
             : target.rotation;
@@ -508,6 +516,8 @@ public class SimpleFollowCamera : MonoBehaviour
             hasVisualBounds = false;
             visualBoundsCenter = Vector3.zero;
             visualBoundsRadius = 0f;
+            focusPoint = Vector3.zero;
+            focusSourceLabel = "None";
             return;
         }
 
@@ -546,11 +556,65 @@ public class SimpleFollowCamera : MonoBehaviour
             visualBoundsRadius = 0f;
         }
 
+        RefreshFocusPoint();
+
         if (cameraMode == CameraViewMode.FreeInspect && !hasVisualBounds)
         {
-            freeInspectLookTarget = target.position;
+            freeInspectLookTarget = GetFocusPoint();
             hasFreeInspectLookTarget = true;
         }
+    }
+
+    private void RefreshFocusPoint()
+    {
+        PrototypeCameraAnchor anchor = ResolveHighestPriorityAnchor();
+        if (anchor != null)
+        {
+            focusPoint = anchor.FocusPoint;
+            focusSourceLabel = "CameraAnchor";
+            return;
+        }
+
+        Rigidbody targetBody = target.GetComponent<Rigidbody>();
+        if (targetBody != null)
+        {
+            focusPoint = targetBody.worldCenterOfMass;
+            focusSourceLabel = "Rigidbody.worldCenterOfMass";
+            return;
+        }
+
+        if (hasVisualBounds)
+        {
+            focusPoint = visualBoundsCenter;
+            focusSourceLabel = "VisualBounds";
+            return;
+        }
+
+        focusPoint = target.position;
+        focusSourceLabel = "TargetPosition";
+    }
+
+    private PrototypeCameraAnchor ResolveHighestPriorityAnchor()
+    {
+        PrototypeCameraAnchor[] anchors = target.GetComponentsInChildren<PrototypeCameraAnchor>(true);
+        PrototypeCameraAnchor best = null;
+        int bestPriority = int.MinValue;
+        for (int i = 0; i < anchors.Length; i++)
+        {
+            PrototypeCameraAnchor anchor = anchors[i];
+            if (anchor == null || !anchor.isActiveAndEnabled)
+            {
+                continue;
+            }
+
+            if (best == null || anchor.Priority > bestPriority)
+            {
+                best = anchor;
+                bestPriority = anchor.Priority;
+            }
+        }
+
+        return best;
     }
 
     private static string GetCameraModeName(CameraViewMode mode)

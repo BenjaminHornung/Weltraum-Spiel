@@ -1,12 +1,12 @@
 # Working Spaceflight Prototype
 
-This Unity prototype is a generated-primitives-only playable slice for testing zero-gravity ship movement, fuel use, speed feedback, high-rate weapon projectiles, transform-driven RCS, prototype weapon computer/turret behavior, and placeholder VFX.
+This Unity prototype is a generated-primitives-only playable slice for testing zero-gravity ship movement, fuel use, speed feedback, projectiles, transform-driven RCS, and placeholder VFX.
 
 ## Setup
 
 - Open the project in Unity 6000.4.7f1 or newer in the Unity 6 line.
 - Load `Assets/Scenes/PrototypeBootstrapHost.unity`, or press Play from an empty/nearly empty scene. `PrototypeBootstrap` creates the prototype objects at runtime when needed.
-- No external asset pack is required. The ship, test environment, orientation markers, engine effect, and pooled projectile visuals are generated from Unity primitives and built-in components.
+- No external asset pack is required. The ship, test environment, orientation markers, engine effect, and projectiles are generated from Unity primitives and built-in components.
 
 ## Controls
 
@@ -18,7 +18,6 @@ This Unity prototype is a generated-primitives-only playable slice for testing z
 | `F4` | Toggle HUD/Navball |
 | `F5` | Toggle minimap/radar |
 | `F6` | Cycle generated / imported scout / imported cargo ship visuals |
-| `F7` | Toggle Weapon Computer panel |
 | `W` / `S` | Pitch down / up |
 | `A` / `D` | Yaw left / right |
 | `Q` / `E` | Roll left / right |
@@ -46,7 +45,7 @@ Mouse movement is reserved for the camera. Hold right mouse button to orbit/look
 
 German keyboard note: full throttle accepts both `Y` and `Z` so the control works reliably when those keys are swapped by the active layout.
 
-Control mode is explicit and cycles with `Caps Lock` or the HUD mode button. Cruise Mode is the long-distance mode: W/S pitch, A/D yaw, Q/E roll, Shift/Ctrl adjust persistent main throttle, and the waypoint autopilot uses the main-thruster burn/brake path. Precision Mode forces main thruster and gimbal off, forces RCS available, and keeps W/S pitch, A/D yaw, and Q/E roll for exact attitude control. Translation Mode also forces main/gimbal off and maps W/S to forward/back, A/D to left/right, H/N to up/down, while Q/E remains roll. When translation input is released, translation mode can auto-stop drift by issuing a physical SAS oppose-velocity assist request until speed drops below threshold.
+Control mode is explicit and cycles with `Caps Lock` or the HUD mode button. Cruise Mode is the long-distance mode: W/S pitch, A/D yaw, Q/E roll, Shift/Ctrl adjust persistent main throttle, and the waypoint autopilot uses the main-thruster burn/brake path. Precision Mode forces main thruster and gimbal off, forces RCS available, and keeps W/S pitch, A/D yaw, and Q/E roll for exact attitude control. Translation Mode also forces main/gimbal off and maps W/S to forward/back, A/D to left/right, H/N to up/down, while Q/E remains roll. Left Alt is not used as the primary mode switch.
 
 ## Controller Status
 
@@ -66,32 +65,46 @@ Camera reset is bound to Backquote. Unity Input System key controls are physical
 
 ## Prototype HUD And Debug UI
 
-- `PrototypeFlightHud`, `PrototypeDebugOverlay`, `PrototypeFlightDebugConsole`, `PrototypeKeybindOverlay`, `PrototypeMinimapOverlay`, and `PrototypeWeaponComputerPanel` are bound to the main camera after every generated ship spawn. They remain temporary IMGUI prototype UI, not final HUD art.
-- `F1` toggles a draggable keybind helper. `F2`, `F3`, `F4`, `F5`, `F6`, and `F7` toggle flight diagnostics, debug console, HUD/Navball, minimap, ship visuals, and the Weapon Computer panel without relying on German-keyboard-sensitive punctuation keys.
-- The default startup view is the compact Flight Test preset: small flight diagnostics, HUD/Navball, and minimap, with the debug console and Weapon Computer panel hidden until deliberately opened.
-- Debug Console presets are available for Basic, Flight Test, RCS Test, and Full Diagnostics. Presets only change UI visibility/collapsed state, label density, and debug marker visibility; they do not change flight physics or control bindings. Full Diagnostics is intentionally the expensive debug mode.
-- The temporary IMGUI windows throttle window-state persistence and sample heavier diagnostics instead of rebuilding all debug data every repaint. Collapsed windows should be cheap; open Full Diagnostics when you need the full readout.
-- `PrototypeMinimapOverlay` is a simple top-down XZ radar centered on the ship. It draws heading, velocity, range rings, origin, targets, beacons, gates, station, and visual obstacles with 250 m / 500 m / 1000 m / 2500 m zoom levels, filter toggles, optional opacity, and labels off by default. When labels are enabled in Full Diagnostics, they stay limited to origin/station plus a few nearest relevant points.
+- `PrototypeFlightHud`, `PrototypeDebugOverlay`, `PrototypeFlightDebugConsole`, `PrototypeKeybindOverlay`, and `PrototypeMinimapOverlay` are bound to the main camera after every generated ship spawn. They remain temporary IMGUI prototype UI, not final HUD art.
+- `F1` toggles a draggable keybind helper. `F2`, `F3`, `F4`, `F5`, and `F6` toggle flight diagnostics, debug console, HUD/Navball, minimap, and ship visuals without relying on German-keyboard-sensitive punctuation keys.
+- The default startup view is the compact Flight Test preset: small flight diagnostics, HUD/Navball, and minimap, with the debug console hidden until needed.
+- Debug Console presets are available for Basic, Flight Test, RCS Test, and Full Diagnostics. Presets only change UI visibility/collapsed state and debug marker visibility; they do not change flight physics or control bindings.
+- `PrototypeMinimapOverlay` is a simple top-down XZ radar centered on the ship. It draws heading, velocity, range rings, origin, targets, beacons, gates, station, and visual obstacles with 250 m / 500 m / 1000 m / 2500 m zoom levels, filter toggles, optional opacity, and labels off by default. When labels are enabled, they stay limited to origin/station plus a few nearest relevant points.
 - The HUD shows a center forward marker, velocity prograde/retrograde markers, and a target marker when `PrototypeTargetDummy` exists. SAS and debug force markers remain available when relevant, but the default marker set stays short.
 - The HUD/Navball includes small quick actions for previous/next target, autopilot, Kill Momentum, Control Mode, and SAS. A compact hint line shows `G Autopilot | Tab/B Target | Caps Mode`, the selected target, autopilot state, and active control mode.
 - When debug vectors or RCS Test diagnostics are enabled, the HUD can also show desired, actual, and residual RCS force markers so allocator limitations are visible without reading the full debug overlay.
 - The mode label reserves `WORLD`, `VELOCITY`, `TARGET`, `DOCKING`, and `ORBIT/GRAVITY`, but the visible HUD only prints the active short label such as `Mode: TARGET`.
 - `PrototypeFlightDebugConsole` is a development console for testing. Refuel, reset, damage, spawn target, test pulses, variant selection, debug vector toggles, UI presets, control calibration, gimbal mode tuning, navigation/autopilot controls, and debug assist controls are debug-only actions, not final player-facing gameplay UI.
-- `PrototypeWeaponComputerPanel` lists available weapon targets, supports multi-select, priority modes (`ManualOrder`, `Nearest`, `HighestHealth`, `LowestHealth`), Auto Fire, active target/status display, and turret debug values. It is separate from the navball HUD so the HUD remains focused on flight state.
-- `PrototypeWaypointAutopilot` is a prototype navigation assist. It reports selected target, distance, closing speed, lateral speed, stopping distance, fuel estimate, autopilot state, ETA, arrival status, and cached obstacle-avoidance diagnostics in the debug overlay.
-- `PrototypeMomentumAssist` exposes a physical Kill Momentum action. It commands existing main/RCS/SAS assist paths and reports Idle, AlignForBrake, MainBrake, RcsDamp, Complete, Aborted, FuelInsufficient, and NoAuthority; it is not a debug velocity reset. Momentum damping uses mass/authority-scaled RCS requests rather than direct velocity writes.
+- `PrototypeWaypointAutopilot` is now backed by a small Navigation Computer. It reports selected target, distance, relative speed, current trajectory phase, obstacle status, avoidance status, planned ETA/stopping distance, requested acceleration, requested RCS force, requested main throttle, fuel estimate, and arrival/hold status.
+- The compact HUD includes a Navigation Computer panel for target, phase, distance, relative speed, autopilot state, obstacle/avoidance state, ETA, and main/RCS request summary. Warning chips surface `NO TARGET`, `NO AUTHORITY`, `FUEL INSUFFICIENT`, `OBSTACLE`, `AVOIDANCE`, and `HOLDING`.
+- The debug console has a Navigation Computer foldout with engage/abort, previous/next target, replan, obstacle-gizmo toggle, spawn obstacle test scenario, and clear obstacle test scenario controls. Test-scenario spawning stays in debug UI only.
+- `PrototypeMinimapOverlay` marks navigation obstacles and draws either `Ship -> Target` or `Ship -> AvoidanceWaypoint -> Target`, depending on the current plan.
+- `PrototypeMomentumAssist` exposes a physical Kill Momentum action. It commands existing main/RCS/SAS assist paths and reports Idle, AlignForBrake, MainBrake, RcsDamp, Complete, Aborted, FuelInsufficient, and NoAuthority; it is not a debug velocity reset.
+
+## Navigation Computer And Camera Anchor
+
+- `PrototypeNavigationObstacle` marks autopilot-blocking hazards with radius, clearance, display name, and gizmos. Radius falls back to collider or renderer bounds when no explicit radius is set.
+- `PrototypeObstacleDetector` uses SphereCast for collider-backed obstacles and a geometric line/sphere fallback for `PrototypeNavigationObstacle` components without colliders. It ignores the ship's own colliders and reports hit point, normal, distance, clearance, obstacle label, and avoidance direction.
+- `PrototypeTrajectoryPlanner` produces explicit phases: `Idle`, `AlignForBurn`, `LongRangeBurn`, `Coast`, `Avoidance`, `Brake`, `FinalApproach`, `Hold`, and `Failed`. A blocked direct path creates an avoidance waypoint and forbids main-burn direction into the obstacle corridor.
+- RCS trajectory requests are force-based and mass-scaled. Lateral correction uses `desiredAcceleration * rb.mass`, then clamps to available RCS translation authority instead of using a fixed normalized force.
+- Arrival uses distance plus full relative speed and lateral speed limits. It no longer requires `closingSpeed >= 0`, so a ship that is slightly drifting away inside the arrival envelope can still enter hold if relative velocity is low enough.
+- Hold dampens small residual velocity with RCS for a confirmation window before completion.
+- `PrototypeCameraAnchor` separates semantic camera focus from visual bounds. The focus prefers the highest-priority anchor, then Rigidbody center of mass, then visual bounds, then target position. Visual bounds still control fit distance and safe zoom.
+- `SimpleFollowCamera` now exposes focus source, focus point, visual-bounds center/radius, effective distance, zoom, target name, and bounds availability. Reframing changes distance but does not move focus away from the anchor/COM.
+- `PrototypeBootstrap` ensures a camera anchor on the prototype ship, keeps exactly one active main camera, rebinds HUD/debug/minimap/follow camera after rebuilds, and snaps/reframes the follow camera to the active ship.
+- `PrototypeShipVisualSwitcher_Manager` may live at the origin as a non-rendered/non-physical manager only. Imported visuals remain children of `PrototypeShip/ImportedShipVisual` and visual switching reframes the camera without moving the camera anchor.
 
 ## Prototype Test Environment
 
 - `PrototypeBootstrap` can generate a `PrototypeEnvironment` root each time the prototype is rebuilt. Rebuild clears the previous generated root first so the test range does not duplicate.
 - The environment is generated only from Unity primitives, LineRenderer rings/axes, simple materials, lights, and TextMesh labels. No external asset pack is required. Its default display mode favors a Training-style readable view instead of full debug clutter.
-- The generated test range includes an origin beacon, color-coded X/Y/Z axes, 100 m / 250 m / 500 m / 1000 m range rings, multiple target dummies, navigation beacons, approach gates, a station/hangar placeholder, and a non-damaging visual asteroid field.
+- The generated test range includes an origin beacon, color-coded X/Y/Z axes, 100 m / 250 m / 500 m / 1000 m range rings, multiple target dummies, navigation beacons, approach gates, a station/hangar placeholder, and a non-damaging asteroid field that can also be detected as Navigation Computer obstacles.
 - Targets use the existing `PrototypeTargetDummy` hit-feedback component. Beacons, gates, station, and obstacles are orientation landmarks for manual flight, RCS translation, minimap testing, and future waypoint/autopilot work. Large gate/range labels stay reduced or hidden unless fuller diagnostics are requested.
 
 ## Prototype Values
 
 - `PrototypeBootstrap` can optionally reference a `PrototypeShipConfig` ScriptableObject for prototype tuning. Leave it unassigned to keep the built-in default ship values.
-- Create a config from `Assets > Create > Prototype > Ship Config` to tune fuel, dry masses, main thruster force/mode/gimbal response, RCS thrust/selection values, projectile mode/speed/fire rate/lifetime/diameter/radius/mass/recoil, tracer cadence, spread, hit chance, engagement range, turret yaw/pitch limits, turret slew, Auto Fire defaults, lead-target placeholder flags, and camera distance/height.
+- Create a config from `Assets > Create > Prototype > Ship Config` to tune fuel, dry masses, main thruster force/mode/gimbal response, RCS thrust/selection values, projectile speed/fire rate/lifetime/scale/mass/recoil, and camera distance/height.
 - This config is only a prototype tuning container. It does not add a ship editor, inventory, save/load, or final module architecture.
 - Fuel is stored as kilograms and contributes to the generated fuel-tank module mass.
 - Full main thrust consumes `0.6 kg/s`, scales with throttle, and the final partial-fuel step applies only the covered thrust fraction.
@@ -105,35 +118,27 @@ Camera reset is bound to Backquote. Unity Input System key controls are physical
 - Each RCS block has five installed nozzle transforms, excluding the side that faces into the ship wall. RCS translation, attitude, and SAS use actual nozzle positions/directions rather than hardcoded slots.
 - Generated module proxies now carry simple damage state. Damaged RCS blocks scale their effective thrust through the existing RCS allocator, so physical authority falls with module integrity.
 - SAS has `KillRotation` and `HoldAttitude` modes. It creates a ship-local PD torque request from angular velocity and optional target attitude, then sends that request through the same RCS nozzle allocator as manual attitude.
-- SAS exposes separate authority and gains on `RcsThrusterController`: `SasAuthority` is a scaling budget, while `SasProportionalGain` and `SasDerivativeGain` are the control gains. Manual pitch, yaw, or roll input masks SAS on that same axis while released axes continue to stabilize.
+- SAS exposes proportional and derivative gains on `RcsThrusterController`. Manual pitch, yaw, or roll input masks SAS on that same axis while released axes continue to stabilize.
 - Flight assist is an explicit request layer with `Simulation`, `AssistedFlight`, and `DebugAssist` modes. Simulation mode sends no assist force or torque, assisted requests must go through the RCS allocator and `ShipPhysicsCore`, and debug-only requests are labeled so they cannot masquerade as physical flight. Momentum Assist adds a `MomentumAssist` request source for Kill Momentum so braking stays visible and physical.
 - Waypoint navigation creates three visible primitive targets at runtime. `Tab` and `B` cycle them, and `G` toggles a conservative autopilot that normalizes to Cruise mode, sends a `WaypointAutopilot` assist request, and combines main-throttle intent with RCS attitude/lateral correction when available.
-- The waypoint autopilot estimates stopping distance from current closing speed and conservative deceleration. It accounts for initial velocity and lateral velocity, and it may refuse a route with `FuelInsufficient` instead of pretending the ship can arrive.
-- Arrival now requires distance, full relative speed, and lateral speed limits together. Near the target it transitions through `LongRangeBurn`, `Brake`, `LateralCorrection`, `FinalApproach`, and `Hold` diagnostics for transparent behavior, and completion requires a valid relative-speed/lateral-speed envelope.
+- The waypoint autopilot estimates stopping distance from current closing speed and conservative deceleration. It also plans around detected obstacles, accounts for initial/lateral velocity, and may refuse a route with `FuelInsufficient` or `NoAuthority` instead of pretending the ship can arrive.
+- Arrival now requires distance, full relative speed, and lateral speed limits together. Near the target it transitions through `LongRangeBurn`, `Avoidance`, `Brake`, `LateralCorrection`, `FinalApproach`, and `Hold` diagnostics for transparent behavior, and completion requires a valid relative-speed/lateral-speed envelope.
 - Final approach prefers low main throttle and RCS-based lateral correction when available; when RCS is unavailable or disabled, coarse main-burn/brake remains possible and diagnostics report a reduced final-approach capability instead of a fake precision completion.
-- Obstacle avoidance is local and reactive. The autopilot checks the planned burn, brake, or final-approach corridor with bounded non-alloc sphere casts, ignores own-ship colliders, triggers, projectiles, waypoints, UI, and layers outside its mask, and enters `ObstacleAvoidance` when a physical blocker is in the corridor.
-- During avoidance the autopilot suppresses unsafe main throttle and requests lateral RCS/attitude through the existing `FlightAssistRequest` path. If RCS is unavailable it may only use main thrust after the ship is aligned away from the blocked corridor; it does not teleport, damp hidden velocity, or write Rigidbody velocity directly.
-- Failure/limitation reasons expose `FuelInsufficient`, `NoAuthority`, `NoAvoidanceAuthority`, `ObstacleBlocked`, and reduced final-approach capability in the debug console telemetry.
+- Failure/limitation reasons expose `FuelInsufficient`, `NoAuthority`, and reduced final-approach capability in the debug console telemetry.
 - `DockingPort` is a prototype docking data component. It reports world port frame data, relative state, eligibility diagnostics, bounded soft-capture `FlightAssistRequest` values, and a hard-lock placeholder that only requests lock after distance, angle, and velocity checks pass.
 - Built-in debug variants are available through the flight debug console: Baseline Balanced, Dual Main Thruster, Off-Center Main Thruster, One-Sided RCS, Heavy Cargo, and No-RCS. These variants are generated test rigs for physics behavior, not a final ship editor.
 - Generated primitive modules use a higher-contrast role palette so hull, cockpit, fuel tanks, engines, RCS blocks, guns, cargo/utility, target markers, and orientation markers are easier to tell apart during tests. Cockpit, fuel, main engine, RCS, gun, and cargo roles are intentionally distinct primitives, not final art assets.
 - Generated modules now build through `PrototypeShipPartVisualFactory` via lightweight metadata (`partId`, `category`, `massRole`, `visualArchetype`) and reusable part archetypes (`CockpitWedge`, `HullCore`, `FuelTankPod`, `MainEngineBell`, `RcsPod`, `GunMount`, `CargoBox`, `UtilityBlock`, etc.), so connector/hardpoint placeholders can be migrated into a builder-ready pipeline later.
-- Generated gun modules now build a marker-based turret chain: `WEAPON_TURRET_BASE_*`, `WEAPON_TURRET_YAW_*`, `WEAPON_TURRET_PITCH_*`, and `WEAPON_MUZZLE_*`, with optional `WEAPON_MUZZLE_FLASH_*` and safety markers for imported kits. `PrototypeShipKitWeaponBinder` binds these markers to `PrototypeTurretMount`, `PrototypeTurretWeapon`, `GunModule`, and `PrototypeWeaponComputer` without hardcoded ship-specific paths.
-- Weapon target discovery is registry-based. `PrototypeWeaponTargetMarker`, `PrototypeTargetDummy`, `ShipStats`, and `PrototypeModuleDamageState` register explicit combat targets; bare Rigidbody-only props are not weapon targets unless they are marked. Damage-state health is still aggregated, and explicit non-health targets show `no health source` in the Weapon Computer debug label.
 - Active RCS nozzles show stronger cyan/green debug VFX only while their nozzles are active. The main thruster keeps a separate orange/blue effect with a visible nozzle ring.
 - The no-hardcoded-position rule is intentional: moving/removing an `RCS_Nozzle_*` transform changes solver output, and missing nozzles create no phantom force.
 - The RCS toggle gates RCS force application and VFX.
 - Ship-level force application now routes through a thin `ShipPhysicsCore`. Main thrusters and RCS still own their current behavior, but final Rigidbody force calls and net force/torque diagnostics have a central path.
 - The debug overlay reports fuel mass, main/RCS fuel request, actual fuel used, fuel fraction, and RCS allocator throttle totals. The physics model is documented in [docs/physics-flight-model.md](docs/physics-flight-model.md).
-- `WeaponProjectileMode.Hitscan` is the default for fast guns and auto-fire turrets. It resolves hits through the shared `PrototypeProjectileSimulation` with bounded NonAlloc ray/sphere casts and does not create a Rigidbody bullet GameObject per shot.
-- `WeaponProjectileMode.SimulatedProjectile` is reserved for slow visible ordnance where travel time matters. It stores lightweight projectile records in the manager, advances previous-to-current sweeps, and uses pooled visuals rather than primitive/Rigidbody/trail/light creation per shot.
-- `WeaponProjectileMode.GuidedProjectile` is a placeholder for later missile work and should evolve from compact fire/hit data, not from one network object per bullet.
-- Projectile velocity is the ship Rigidbody velocity plus the actual shot direction times projectile speed. Projectile firing applies optional recoil impulse opposite that direction through `ShipPhysicsCore`, independent of whether hit simulation is hitscan or simulated.
-- Weapon recoil stabilization estimates `cross(muzzlePosition - COM, recoilImpulse)` after a shot and emits a short `WeaponStabilization` flight-assist torque request through SAS/RCS. It does not cancel recoil directly; the RCS allocator applies only what the ship can physically produce and reports residual torque.
-- Projectile diameter/radius controls hit sweep size and pooled visual scale. `tracerEveryNthShot` controls how often tracers are rendered; `0` disables tracers while every shot still simulates.
-- `hitChance` and optional spread are prototype balance controls. Misses use deterministic dispersion in turret tests and still apply recoil from the actual shot direction.
+- Projectile velocity is the ship Rigidbody velocity plus muzzle forward velocity.
+- Projectile firing applies optional recoil impulse opposite the muzzle direction using configured projectile mass and projectile speed.
+- Projectiles ignore the firing ship's colliders and sweep their previous-to-current physics travel with sphere/raycast checks for fast target hits.
 - Projectile hits populate impact event data with hit point, normal, relative velocity, impulse estimate, and module hit. Module damage and optional target impact impulse route through the same prototype physics diagnostics.
-- Runtime projectile visuals are marked/layered so Weapon Computer target discovery does not select bullets, tracers, muzzle flashes, or impacts.
+- Projectile lifetime defaults to 3 seconds.
 
 ## Optional Asset Policy
 
@@ -142,18 +147,15 @@ Optional CC0 assets, such as local low-poly ships or Kenney packs, may be consid
 ## Known Limits
 
 - This is not the final ship editor or gameplay architecture.
-- Camera framing tracks visible active child `Renderer` bounds for a tighter ship-centered baseline in `OrbitInspect` and `FreeInspect` without mutating `ShipStats` follow values.
+- Camera framing targets `PrototypeCameraAnchor` or Rigidbody COM for semantic focus. Visible active child `Renderer` bounds are used for distance/fit safety, not for shifting the semantic focus when an anchor/COM exists.
 - `V` cycles camera framing modes `ChaseLocked -> OrbitInspect -> Side -> FreeInspect -> ChaseLocked`, and camera distance can be adjusted continuously via scroll or debug controls.
 - SAS is a local PD torque controller routed through RCS, not a full flight computer or hidden angular damping layer.
 - Flight assist does not use hidden Rigidbody damping. Physical assist requests are allocator-limited; debug-only helpers are diagnostics/testing aids only.
-- Weapon recoil stabilization is limited by SAS being effective, RCS being enabled, available fuel, and the actual nozzle layout. If authority is insufficient, diagnostics show the requested stabilization torque, actual RCS torque, and residual torque instead of pretending recoil was removed.
-- Waypoint autopilot v1 is a local prototype assist, not an orbital navigator, map UI, docking planner, slingshot planner, or global route planner. Its obstacle avoidance is reactive corridor avoidance only; dense fields, concave traps, excessive speed, low fuel, or insufficient RCS/main-thruster authority can still produce `ObstacleBlocked` or `NoAvoidanceAuthority`.
+- The Navigation Computer is still local-space prototype guidance, not an orbital navigator, map UI, docking planner, slingshot planner, or full maneuver-node planner. It does not use hidden teleporting or direct Rigidbody velocity writes during runtime navigation.
 - Manual throttle, attitude, or RCS input aborts waypoint autopilot and active momentum assist where that assist is not deliberately in a hold/status state, returning control to the pilot.
 - Docking hard lock is currently a documented placeholder rather than an active joint. It is gated by docking constraints so later joint work can reuse the same diagnostics.
 - RCS allocation is a prototype bounded allocator, not a final optimizer, but it is transform-based and uses real lever arms around COM.
 - Deferred physics-core slices include additional SAS/autopilot modes, docking, deeper damage effects, and trajectory prediction.
 - Full armor balance, part detachment, visual destruction, and combat economy are out of scope.
 - IMGUI is used for the debug overlay because it is temporary prototype UI.
-- The Weapon Computer/Turret Mode is a prototype slice. It does not add a final ShipBuilder, enemy AI, networking, line-of-sight solver, or true ballistic lead solution yet.
-- Imported Blender/FBX weapon markers are supported by the binder when present, but current committed gameplay logic does not hardcode demo-scout or demo-cargo paths. Art export marker updates must remain explicit in the ship-kit pipeline before they are treated as finished asset work.
 - Controller input has not been manually verified on physical hardware.

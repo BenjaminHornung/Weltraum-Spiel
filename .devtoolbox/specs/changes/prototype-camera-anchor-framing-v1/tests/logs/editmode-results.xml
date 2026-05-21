@@ -1,0 +1,856 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="130" result="Passed" total="130" passed="130" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-05-20 17:08:56Z" end-time="2026-05-20 17:08:57Z" duration="1.1344199">
+  <test-suite type="TestSuite" id="1000" name="Weltraum Spiel" fullname="Weltraum Spiel" runstate="Runnable" testcasecount="130" result="Passed" start-time="2026-05-20 17:08:56Z" end-time="2026-05-20 17:08:57Z" duration="1.134420" total="130" passed="130" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1150" name="Assembly-CSharp-Editor.dll" fullname="E:/Unity/Weltraum Spiel/Weltraum Spiel-autopilot-navigation-computer-camera-anchor-v1/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="130" result="Passed" start-time="2026-05-20 17:08:56Z" end-time="2026-05-20 17:08:57Z" duration="1.127415" total="130" passed="130" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="61724" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1001" name="DockingPortValidationTests" fullname="DockingPortValidationTests" classname="DockingPortValidationTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-05-20 17:08:56Z" end-time="2026-05-20 17:08:56Z" duration="0.034849" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1002" name="DockingEligibilityRejectsDistanceAngleAndHardVelocityCases" fullname="DockingPortValidationTests.DockingEligibilityRejectsDistanceAngleAndHardVelocityCases" methodname="DockingEligibilityRejectsDistanceAngleAndHardVelocityCases" classname="DockingPortValidationTests" runstate="Runnable" seed="796434244" result="Passed" start-time="2026-05-20 17:08:56Z" end-time="2026-05-20 17:08:56Z" duration="0.017676" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1004" name="DockingHardLockPlaceholderOnlyRequestsWhenConstraintsPass" fullname="DockingPortValidationTests.DockingHardLockPlaceholderOnlyRequestsWhenConstraintsPass" methodname="DockingHardLockPlaceholderOnlyRequestsWhenConstraintsPass" classname="DockingPortValidationTests" runstate="Runnable" seed="2042696157" result="Passed" start-time="2026-05-20 17:08:56Z" end-time="2026-05-20 17:08:56Z" duration="0.001317" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1003" name="DockingSoftCaptureRequestIsPhysicalAndBounded" fullname="DockingPortValidationTests.DockingSoftCaptureRequestIsPhysicalAndBounded" methodname="DockingSoftCaptureRequestIsPhysicalAndBounded" classname="DockingPortValidationTests" runstate="Runnable" seed="879500193" result="Passed" start-time="2026-05-20 17:08:56Z" end-time="2026-05-20 17:08:56Z" duration="0.003074" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1005" name="FloatingOriginValidationTests" fullname="FloatingOriginValidationTests" classname="FloatingOriginValidationTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-05-20 17:08:56Z" end-time="2026-05-20 17:08:56Z" duration="0.006807" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1006" name="AbsoluteStateStoresLargePositionSeparateFromLocalTransform" fullname="FloatingOriginValidationTests.AbsoluteStateStoresLargePositionSeparateFromLocalTransform" methodname="AbsoluteStateStoresLargePositionSeparateFromLocalTransform" classname="FloatingOriginValidationTests" runstate="Runnable" seed="1809346992" result="Passed" start-time="2026-05-20 17:08:56Z" end-time="2026-05-20 17:08:56Z" duration="0.002873" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1008" name="DisabledFloatingOriginLeavesPrototypeLocalPositionUntouched" fullname="FloatingOriginValidationTests.DisabledFloatingOriginLeavesPrototypeLocalPositionUntouched" methodname="DisabledFloatingOriginLeavesPrototypeLocalPositionUntouched" classname="FloatingOriginValidationTests" runstate="Runnable" seed="666909801" result="Passed" start-time="2026-05-20 17:08:56Z" end-time="2026-05-20 17:08:56Z" duration="0.001537" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1007" name="OriginShiftPreservesRelativePositionsAndRigidbodyVelocity" fullname="FloatingOriginValidationTests.OriginShiftPreservesRelativePositionsAndRigidbodyVelocity" methodname="OriginShiftPreservesRelativePositionsAndRigidbodyVelocity" classname="FloatingOriginValidationTests" runstate="Runnable" seed="1379394786" result="Passed" start-time="2026-05-20 17:08:56Z" end-time="2026-05-20 17:08:56Z" duration="0.001573" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1009" name="PrototypeAtmosphereValidationTests" fullname="PrototypeAtmosphereValidationTests" classname="PrototypeAtmosphereValidationTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-05-20 17:08:56Z" end-time="2026-05-20 17:08:56Z" duration="0.005844" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1011" name="AtmosphereDragOpposesVelocity" fullname="PrototypeAtmosphereValidationTests.AtmosphereDragOpposesVelocity" methodname="AtmosphereDragOpposesVelocity" classname="PrototypeAtmosphereValidationTests" runstate="Runnable" seed="1766028727" result="Passed" start-time="2026-05-20 17:08:56Z" end-time="2026-05-20 17:08:56Z" duration="0.004050" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1012" name="AtmosphereDragScalesWithSquaredSpeed" fullname="PrototypeAtmosphereValidationTests.AtmosphereDragScalesWithSquaredSpeed" methodname="AtmosphereDragScalesWithSquaredSpeed" classname="PrototypeAtmosphereValidationTests" runstate="Runnable" seed="1748253896" result="Passed" start-time="2026-05-20 17:08:56Z" end-time="2026-05-20 17:08:56Z" duration="0.000462" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1010" name="NoAtmosphereConfiguredAppliesZeroAtmosphereForce" fullname="PrototypeAtmosphereValidationTests.NoAtmosphereConfiguredAppliesZeroAtmosphereForce" methodname="NoAtmosphereConfiguredAppliesZeroAtmosphereForce" classname="PrototypeAtmosphereValidationTests" runstate="Runnable" seed="820664826" result="Passed" start-time="2026-05-20 17:08:56Z" end-time="2026-05-20 17:08:56Z" duration="0.000583" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1013" name="PrototypeAutopilotMomentumStartupStateTests" fullname="PrototypeAutopilotMomentumStartupStateTests" classname="PrototypeAutopilotMomentumStartupStateTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-05-20 17:08:56Z" end-time="2026-05-20 17:08:56Z" duration="0.201182" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="ParameterizedMethod" id="1018" name="AutopilotEngageNormalizesModeAndRequestsActuators" fullname="PrototypeAutopilotMomentumStartupStateTests.AutopilotEngageNormalizesModeAndRequestsActuators" classname="PrototypeAutopilotMomentumStartupStateTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-05-20 17:08:56Z" end-time="2026-05-20 17:08:56Z" duration="0.143853" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-case id="1016" name="AutopilotEngageNormalizesModeAndRequestsActuators(Precision)" fullname="PrototypeAutopilotMomentumStartupStateTests.AutopilotEngageNormalizesModeAndRequestsActuators(Precision)" methodname="AutopilotEngageNormalizesModeAndRequestsActuators" classname="PrototypeAutopilotMomentumStartupStateTests" runstate="Runnable" seed="13857111" result="Passed" start-time="2026-05-20 17:08:56Z" end-time="2026-05-20 17:08:56Z" duration="0.135864" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+          <test-case id="1017" name="AutopilotEngageNormalizesModeAndRequestsActuators(Translation)" fullname="PrototypeAutopilotMomentumStartupStateTests.AutopilotEngageNormalizesModeAndRequestsActuators(Translation)" methodname="AutopilotEngageNormalizesModeAndRequestsActuators" classname="PrototypeAutopilotMomentumStartupStateTests" runstate="Runnable" seed="1988644995" result="Passed" start-time="2026-05-20 17:08:56Z" end-time="2026-05-20 17:08:56Z" duration="0.007470" asserts="0">
+            <properties>
+              <property name="retryIteration" value="0" />
+              <property name="repeatIteration" value="0" />
+            </properties>
+          </test-case>
+        </test-suite>
+        <test-case id="1015" name="DiagnosticsSnapshotExposesSharedRuntimeState" fullname="PrototypeAutopilotMomentumStartupStateTests.DiagnosticsSnapshotExposesSharedRuntimeState" methodname="DiagnosticsSnapshotExposesSharedRuntimeState" classname="PrototypeAutopilotMomentumStartupStateTests" runstate="Runnable" seed="1856707804" result="Passed" start-time="2026-05-20 17:08:56Z" end-time="2026-05-20 17:08:56Z" duration="0.011812" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1019" name="FinalApproachLateralSpeedCreatesExternalForceRequest" fullname="PrototypeAutopilotMomentumStartupStateTests.FinalApproachLateralSpeedCreatesExternalForceRequest" methodname="FinalApproachLateralSpeedCreatesExternalForceRequest" classname="PrototypeAutopilotMomentumStartupStateTests" runstate="Runnable" seed="411096636" result="Passed" start-time="2026-05-20 17:08:56Z" end-time="2026-05-20 17:08:56Z" duration="0.011937" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1021" name="MainThrusterDefaultsUseCalmerGimbalTuning" fullname="PrototypeAutopilotMomentumStartupStateTests.MainThrusterDefaultsUseCalmerGimbalTuning" methodname="MainThrusterDefaultsUseCalmerGimbalTuning" classname="PrototypeAutopilotMomentumStartupStateTests" runstate="Runnable" seed="1929857942" result="Passed" start-time="2026-05-20 17:08:56Z" end-time="2026-05-20 17:08:56Z" duration="0.000988" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1020" name="MomentumAssistUsesMainBrakeOnlyInNormalMode" fullname="PrototypeAutopilotMomentumStartupStateTests.MomentumAssistUsesMainBrakeOnlyInNormalMode" methodname="MomentumAssistUsesMainBrakeOnlyInNormalMode" classname="PrototypeAutopilotMomentumStartupStateTests" runstate="Runnable" seed="354947353" result="Passed" start-time="2026-05-20 17:08:56Z" end-time="2026-05-20 17:08:56Z" duration="0.010876" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1014" name="RebuildingExistingPrototypeShipResetsFlightStartupState" fullname="PrototypeAutopilotMomentumStartupStateTests.RebuildingExistingPrototypeShipResetsFlightStartupState" methodname="RebuildingExistingPrototypeShipResetsFlightStartupState" classname="PrototypeAutopilotMomentumStartupStateTests" runstate="Runnable" seed="1250290787" result="Passed" start-time="2026-05-20 17:08:56Z" end-time="2026-05-20 17:08:56Z" duration="0.019731" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1022" name="PrototypeControlModeValidationTests" fullname="PrototypeControlModeValidationTests" classname="PrototypeControlModeValidationTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-05-20 17:08:56Z" end-time="2026-05-20 17:08:56Z" duration="0.015302" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1023" name="CapsCycleOrderUsesExplicitControlModes" fullname="PrototypeControlModeValidationTests.CapsCycleOrderUsesExplicitControlModes" methodname="CapsCycleOrderUsesExplicitControlModes" classname="PrototypeControlModeValidationTests" runstate="Runnable" seed="2089318205" result="Passed" start-time="2026-05-20 17:08:56Z" end-time="2026-05-20 17:08:56Z" duration="0.001114" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1026" name="DiagnosticsSnapshotIsSingleSourceForUiState" fullname="PrototypeControlModeValidationTests.DiagnosticsSnapshotIsSingleSourceForUiState" methodname="DiagnosticsSnapshotIsSingleSourceForUiState" classname="PrototypeControlModeValidationTests" runstate="Runnable" seed="1026644283" result="Passed" start-time="2026-05-20 17:08:56Z" end-time="2026-05-20 17:08:56Z" duration="0.000609" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1027" name="MomentumAssistEngageCreatesPhysicalRequestOnGeneratedShip" fullname="PrototypeControlModeValidationTests.MomentumAssistEngageCreatesPhysicalRequestOnGeneratedShip" methodname="MomentumAssistEngageCreatesPhysicalRequestOnGeneratedShip" classname="PrototypeControlModeValidationTests" runstate="Runnable" seed="667690028" result="Passed" start-time="2026-05-20 17:08:56Z" end-time="2026-05-20 17:08:56Z" duration="0.009960" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1025" name="PrecisionAndTranslationForceMainThrottleAndGimbalOff" fullname="PrototypeControlModeValidationTests.PrecisionAndTranslationForceMainThrottleAndGimbalOff" methodname="PrecisionAndTranslationForceMainThrottleAndGimbalOff" classname="PrototypeControlModeValidationTests" runstate="Runnable" seed="1288894383" result="Passed" start-time="2026-05-20 17:08:56Z" end-time="2026-05-20 17:08:56Z" duration="0.000633" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1024" name="TranslationModeMapsWasdToTranslationWithoutPitchYaw" fullname="PrototypeControlModeValidationTests.TranslationModeMapsWasdToTranslationWithoutPitchYaw" methodname="TranslationModeMapsWasdToTranslationWithoutPitchYaw" classname="PrototypeControlModeValidationTests" runstate="Runnable" seed="124375926" result="Passed" start-time="2026-05-20 17:08:56Z" end-time="2026-05-20 17:08:56Z" duration="0.001062" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1028" name="PrototypeEvidenceScreenshotTests" fullname="PrototypeEvidenceScreenshotTests" classname="PrototypeEvidenceScreenshotTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-05-20 17:08:56Z" end-time="2026-05-20 17:08:57Z" duration="0.387878" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1029" name="GenerateNavigationAndCameraEvidenceScreenshots" fullname="PrototypeEvidenceScreenshotTests.GenerateNavigationAndCameraEvidenceScreenshots" methodname="GenerateNavigationAndCameraEvidenceScreenshots" classname="PrototypeEvidenceScreenshotTests" runstate="Runnable" seed="391615377" result="Passed" start-time="2026-05-20 17:08:56Z" end-time="2026-05-20 17:08:57Z" duration="0.386916" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1030" name="PrototypeFlightHudValidationTests" fullname="PrototypeFlightHudValidationTests" classname="PrototypeFlightHudValidationTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.028680" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1033" name="BootstrapBindsHudAfterVariantSpawn" fullname="PrototypeFlightHudValidationTests.BootstrapBindsHudAfterVariantSpawn" methodname="BootstrapBindsHudAfterVariantSpawn" classname="PrototypeFlightHudValidationTests" runstate="Runnable" seed="864252382" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.023815" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1031" name="HudComputesProgradeAndRetrogradeMarkersFromShipLocalVelocity" fullname="PrototypeFlightHudValidationTests.HudComputesProgradeAndRetrogradeMarkersFromShipLocalVelocity" methodname="HudComputesProgradeAndRetrogradeMarkersFromShipLocalVelocity" classname="PrototypeFlightHudValidationTests" runstate="Runnable" seed="639912617" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000936" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1034" name="HudDebugForceMarkersStayQuietUntilDebugVectorsAreActive" fullname="PrototypeFlightHudValidationTests.HudDebugForceMarkersStayQuietUntilDebugVectorsAreActive" methodname="HudDebugForceMarkersStayQuietUntilDebugVectorsAreActive" classname="PrototypeFlightHudValidationTests" runstate="Runnable" seed="217577998" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.001055" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1032" name="HudShowsSasHoldAndTargetMarkersWhenAvailable" fullname="PrototypeFlightHudValidationTests.HudShowsSasHoldAndTargetMarkersWhenAvailable" methodname="HudShowsSasHoldAndTargetMarkersWhenAvailable" classname="PrototypeFlightHudValidationTests" runstate="Runnable" seed="815787835" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000950" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1035" name="PrototypeMomentumAssistValidationTests" fullname="PrototypeMomentumAssistValidationTests" classname="PrototypeMomentumAssistValidationTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.006330" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1036" name="MomentumAssistDoesNotResetPhysicsOrVelocity" fullname="PrototypeMomentumAssistValidationTests.MomentumAssistDoesNotResetPhysicsOrVelocity" methodname="MomentumAssistDoesNotResetPhysicsOrVelocity" classname="PrototypeMomentumAssistValidationTests" runstate="Runnable" seed="1763273527" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.002260" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1037" name="PrototypePhysicsValidationTests" fullname="PrototypePhysicsValidationTests" classname="PrototypePhysicsValidationTests" runstate="Runnable" testcasecount="27" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.099700" total="27" passed="27" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1056" name="CentralGravityAccelerationIsMassIndependent" fullname="PrototypePhysicsValidationTests.CentralGravityAccelerationIsMassIndependent" methodname="CentralGravityAccelerationIsMassIndependent" classname="PrototypePhysicsValidationTests" runstate="Runnable" seed="34355947" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.006995" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1055" name="CentralGravityAccelerationPointsTowardBodyWithMuOverRadiusSquared" fullname="PrototypePhysicsValidationTests.CentralGravityAccelerationPointsTowardBodyWithMuOverRadiusSquared" methodname="CentralGravityAccelerationPointsTowardBodyWithMuOverRadiusSquared" classname="PrototypePhysicsValidationTests" runstate="Runnable" seed="281892759" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.001890" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1054" name="DefaultPrototypeGravityStepAppliesNoAcceleration" fullname="PrototypePhysicsValidationTests.DefaultPrototypeGravityStepAppliesNoAcceleration" methodname="DefaultPrototypeGravityStepAppliesNoAcceleration" classname="PrototypePhysicsValidationTests" runstate="Runnable" seed="1914536235" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.001642" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1038" name="DeterministicGeneratedShipSetupCreatesExpectedPhysicsRig" fullname="PrototypePhysicsValidationTests.DeterministicGeneratedShipSetupCreatesExpectedPhysicsRig" methodname="DeterministicGeneratedShipSetupCreatesExpectedPhysicsRig" classname="PrototypePhysicsValidationTests" runstate="Runnable" seed="1885719460" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.001750" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1049" name="ForceModeImpulseDoesNotInflateContinuousForceDiagnostics" fullname="PrototypePhysicsValidationTests.ForceModeImpulseDoesNotInflateContinuousForceDiagnostics" methodname="ForceModeImpulseDoesNotInflateContinuousForceDiagnostics" classname="PrototypePhysicsValidationTests" runstate="Runnable" seed="835351038" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.003234" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1058" name="FuelConsumptionReducesRigidbodyMassThroughMassModel" fullname="PrototypePhysicsValidationTests.FuelConsumptionReducesRigidbodyMassThroughMassModel" methodname="FuelConsumptionReducesRigidbodyMassThroughMassModel" classname="PrototypePhysicsValidationTests" runstate="Runnable" seed="1550786876" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.004486" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1046" name="FuelPartialStepScalesThrustAndDoesNotGoNegative" fullname="PrototypePhysicsValidationTests.FuelPartialStepScalesThrustAndDoesNotGoNegative" methodname="FuelPartialStepScalesThrustAndDoesNotGoNegative" classname="PrototypePhysicsValidationTests" runstate="Runnable" seed="82628521" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.002255" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1042" name="FullyPhysicalGimbalTorqueDiagnosticsMatchFullForceCrossProduct" fullname="PrototypePhysicsValidationTests.FullyPhysicalGimbalTorqueDiagnosticsMatchFullForceCrossProduct" methodname="FullyPhysicalGimbalTorqueDiagnosticsMatchFullForceCrossProduct" classname="PrototypePhysicsValidationTests" runstate="Runnable" seed="792011259" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.001935" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1040" name="FullyPhysicalMainThrottleAppliesFullForceAtNozzlePosition" fullname="PrototypePhysicsValidationTests.FullyPhysicalMainThrottleAppliesFullForceAtNozzlePosition" methodname="FullyPhysicalMainThrottleAppliesFullForceAtNozzlePosition" classname="PrototypePhysicsValidationTests" runstate="Runnable" seed="385267241" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.002207" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1057" name="GeneratedModuleDescriptorsDriveRigidbodyMassProperties" fullname="PrototypePhysicsValidationTests.GeneratedModuleDescriptorsDriveRigidbodyMassProperties" methodname="GeneratedModuleDescriptorsDriveRigidbodyMassProperties" classname="PrototypePhysicsValidationTests" runstate="Runnable" seed="1049203162" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.002189" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1041" name="GimbalSteeringTorqueMatchesCrossProductEstimate" fullname="PrototypePhysicsValidationTests.GimbalSteeringTorqueMatchesCrossProductEstimate" methodname="GimbalSteeringTorqueMatchesCrossProductEstimate" classname="PrototypePhysicsValidationTests" runstate="Runnable" seed="449732260" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.002494" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1047" name="MainFuelUseScalesWithThrottleAndZeroCostStillThrusts" fullname="PrototypePhysicsValidationTests.MainFuelUseScalesWithThrottleAndZeroCostStillThrusts" methodname="MainFuelUseScalesWithThrottleAndZeroCostStillThrusts" classname="PrototypePhysicsValidationTests" runstate="Runnable" seed="975067385" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.002756" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1039" name="MainThrottleAppliesForwardForceWithoutUnintendedTorque" fullname="PrototypePhysicsValidationTests.MainThrottleAppliesForwardForceWithoutUnintendedTorque" methodname="MainThrottleAppliesForwardForceWithoutUnintendedTorque" classname="PrototypePhysicsValidationTests" runstate="Runnable" seed="1833561937" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.002583" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1053" name="MainThrustTimestepComparisonKeepsImpulseAndFuelStable" fullname="PrototypePhysicsValidationTests.MainThrustTimestepComparisonKeepsImpulseAndFuelStable" methodname="MainThrustTimestepComparisonKeepsImpulseAndFuelStable" classname="PrototypePhysicsValidationTests" runstate="Runnable" seed="1502252377" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.006421" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1051" name="ManualAttitudeKeepsPriorityOverSasTorqueBudget" fullname="PrototypePhysicsValidationTests.ManualAttitudeKeepsPriorityOverSasTorqueBudget" methodname="ManualAttitudeKeepsPriorityOverSasTorqueBudget" classname="PrototypePhysicsValidationTests" runstate="Runnable" seed="1019603173" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.009683" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1060" name="MovingHeavyModuleShiftsCenterOfMassTowardIt" fullname="PrototypePhysicsValidationTests.MovingHeavyModuleShiftsCenterOfMassTowardIt" methodname="MovingHeavyModuleShiftsCenterOfMassTowardIt" classname="PrototypePhysicsValidationTests" runstate="Runnable" seed="5239404" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000934" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1052" name="NullConfigRestoresReusablePrototypeDefaults" fullname="PrototypePhysicsValidationTests.NullConfigRestoresReusablePrototypeDefaults" methodname="NullConfigRestoresReusablePrototypeDefaults" classname="PrototypePhysicsValidationTests" runstate="Runnable" seed="44800987" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.004485" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1048" name="ProjectileMomentumUsesConfiguredMassForRecoilAndImpact" fullname="PrototypePhysicsValidationTests.ProjectileMomentumUsesConfiguredMassForRecoilAndImpact" methodname="ProjectileMomentumUsesConfiguredMassForRecoilAndImpact" classname="PrototypePhysicsValidationTests" runstate="Runnable" seed="590478849" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.005110" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1043" name="RcsAllocatorProducesTranslationAttitudeAndBoundedNozzleUsage" fullname="PrototypePhysicsValidationTests.RcsAllocatorProducesTranslationAttitudeAndBoundedNozzleUsage" methodname="RcsAllocatorProducesTranslationAttitudeAndBoundedNozzleUsage" classname="PrototypePhysicsValidationTests" runstate="Runnable" seed="1508562130" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.005819" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1044" name="RcsFuelUseFollowsFinalCombinedAllocatorOutput" fullname="PrototypePhysicsValidationTests.RcsFuelUseFollowsFinalCombinedAllocatorOutput" methodname="RcsFuelUseFollowsFinalCombinedAllocatorOutput" classname="PrototypePhysicsValidationTests" runstate="Runnable" seed="178721935" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.002820" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1050" name="RcsSpoolLimitsActualNozzleThrottle" fullname="PrototypePhysicsValidationTests.RcsSpoolLimitsActualNozzleThrottle" methodname="RcsSpoolLimitsActualNozzleThrottle" classname="PrototypePhysicsValidationTests" runstate="Runnable" seed="89764112" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.002916" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1045" name="RcsUnavailableCommandsKeepDesiredResidualDiagnostics" fullname="PrototypePhysicsValidationTests.RcsUnavailableCommandsKeepDesiredResidualDiagnostics" methodname="RcsUnavailableCommandsKeepDesiredResidualDiagnostics" classname="PrototypePhysicsValidationTests" runstate="Runnable" seed="934448487" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.006786" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1059" name="SymmetricModuleLayoutKeepsCenterOfMassCentered" fullname="PrototypePhysicsValidationTests.SymmetricModuleLayoutKeepsCenterOfMassCentered" methodname="SymmetricModuleLayoutKeepsCenterOfMassCentered" classname="PrototypePhysicsValidationTests" runstate="Runnable" seed="1767096638" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000507" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1063" name="ThermalModuleCoolsWhileMainThrusterIsIdle" fullname="PrototypePhysicsValidationTests.ThermalModuleCoolsWhileMainThrusterIsIdle" methodname="ThermalModuleCoolsWhileMainThrusterIsIdle" classname="PrototypePhysicsValidationTests" runstate="Runnable" seed="901941129" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.002226" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1062" name="ThermalModuleHeatsWhileMainThrusterIsActive" fullname="PrototypePhysicsValidationTests.ThermalModuleHeatsWhileMainThrusterIsActive" methodname="ThermalModuleHeatsWhileMainThrusterIsActive" classname="PrototypePhysicsValidationTests" runstate="Runnable" seed="850708515" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.002211" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1064" name="ThermalOverheatHookDisablesMainThrusterAtThreshold" fullname="PrototypePhysicsValidationTests.ThermalOverheatHookDisablesMainThrusterAtThreshold" methodname="ThermalOverheatHookDisablesMainThrusterAtThreshold" classname="PrototypePhysicsValidationTests" runstate="Runnable" seed="807012331" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.002005" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1061" name="WiderModuleLayoutRaisesInertiaAndLowersAngularAcceleration" fullname="PrototypePhysicsValidationTests.WiderModuleLayoutRaisesInertiaAndLowersAngularAcceleration" methodname="WiderModuleLayoutRaisesInertiaAndLowersAngularAcceleration" classname="PrototypePhysicsValidationTests" runstate="Runnable" seed="266946764" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000464" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1065" name="PrototypeShipKitImportVfxValidationTests" fullname="PrototypeShipKitImportVfxValidationTests" classname="PrototypeShipKitImportVfxValidationTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.029173" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1068" name="BinderAttachesVfxToImportedDemoNozzlesWithoutDuplicating" fullname="PrototypeShipKitImportVfxValidationTests.BinderAttachesVfxToImportedDemoNozzlesWithoutDuplicating" methodname="BinderAttachesVfxToImportedDemoNozzlesWithoutDuplicating" classname="PrototypeShipKitImportVfxValidationTests" runstate="Runnable" seed="365900181" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.016168" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1066" name="CanonicalShipKitMaterialsAreOpaque" fullname="PrototypeShipKitImportVfxValidationTests.CanonicalShipKitMaterialsAreOpaque" methodname="CanonicalShipKitMaterialsAreOpaque" classname="PrototypeShipKitImportVfxValidationTests" runstate="Runnable" seed="1844047693" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.006406" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1069" name="PreviewSceneAssetExists" fullname="PrototypeShipKitImportVfxValidationTests.PreviewSceneAssetExists" methodname="PreviewSceneAssetExists" classname="PrototypeShipKitImportVfxValidationTests" runstate="Runnable" seed="815948594" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000957" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1067" name="VfxPrefabsContainParticleSystems" fullname="PrototypeShipKitImportVfxValidationTests.VfxPrefabsContainParticleSystems" methodname="VfxPrefabsContainParticleSystems" classname="PrototypeShipKitImportVfxValidationTests" runstate="Runnable" seed="994414085" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000245" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1070" name="PrototypeShipVariantValidationTests" fullname="PrototypeShipVariantValidationTests" classname="PrototypeShipVariantValidationTests" runstate="Runnable" testcasecount="9" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.085429" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1072" name="BaselineVariantBuildsStableRigAndRebindsDebugConsole" fullname="PrototypeShipVariantValidationTests.BaselineVariantBuildsStableRigAndRebindsDebugConsole" methodname="BaselineVariantBuildsStableRigAndRebindsDebugConsole" classname="PrototypeShipVariantValidationTests" runstate="Runnable" seed="694723888" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.007335" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1071" name="BuiltInVariantsExposeExpectedPrototypeCases" fullname="PrototypeShipVariantValidationTests.BuiltInVariantsExposeExpectedPrototypeCases" methodname="BuiltInVariantsExposeExpectedPrototypeCases" classname="PrototypeShipVariantValidationTests" runstate="Runnable" seed="1237714981" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000265" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1073" name="DebugConsoleBackedActionsMirrorRuntimeControllerState" fullname="PrototypeShipVariantValidationTests.DebugConsoleBackedActionsMirrorRuntimeControllerState" methodname="DebugConsoleBackedActionsMirrorRuntimeControllerState" classname="PrototypeShipVariantValidationTests" runstate="Runnable" seed="141941475" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.009059" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1074" name="DebugVectorTogglesUpdateRuntimeOverlayState" fullname="PrototypeShipVariantValidationTests.DebugVectorTogglesUpdateRuntimeOverlayState" methodname="DebugVectorTogglesUpdateRuntimeOverlayState" classname="PrototypeShipVariantValidationTests" runstate="Runnable" seed="2019660702" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.007317" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1077" name="DualMainThrusterSingleEngineFailureCreatesExpectedPhysicalTorque" fullname="PrototypeShipVariantValidationTests.DualMainThrusterSingleEngineFailureCreatesExpectedPhysicalTorque" methodname="DualMainThrusterSingleEngineFailureCreatesExpectedPhysicalTorque" classname="PrototypeShipVariantValidationTests" runstate="Runnable" seed="1901033631" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.010431" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1075" name="DualMainThrusterVariantAppliesSymmetricComSafeThrustWithoutUnintendedTorque" fullname="PrototypeShipVariantValidationTests.DualMainThrusterVariantAppliesSymmetricComSafeThrustWithoutUnintendedTorque" methodname="DualMainThrusterVariantAppliesSymmetricComSafeThrustWithoutUnintendedTorque" classname="PrototypeShipVariantValidationTests" runstate="Runnable" seed="1360796564" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.009795" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1079" name="NoRcsVariantReportsMissingRcsAuthority" fullname="PrototypeShipVariantValidationTests.NoRcsVariantReportsMissingRcsAuthority" methodname="NoRcsVariantReportsMissingRcsAuthority" classname="PrototypeShipVariantValidationTests" runstate="Runnable" seed="1014260980" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.006762" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1076" name="OffCenterMainThrusterVariantShowsComSafeVsPhysicalTorqueDifference" fullname="PrototypeShipVariantValidationTests.OffCenterMainThrusterVariantShowsComSafeVsPhysicalTorqueDifference" methodname="OffCenterMainThrusterVariantShowsComSafeVsPhysicalTorqueDifference" classname="PrototypeShipVariantValidationTests" runstate="Runnable" seed="1698071445" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.009889" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1078" name="OneSidedRcsVariantReportsResidualForUnsupportedTranslation" fullname="PrototypeShipVariantValidationTests.OneSidedRcsVariantReportsResidualForUnsupportedTranslation" methodname="OneSidedRcsVariantReportsResidualForUnsupportedTranslation" classname="PrototypeShipVariantValidationTests" runstate="Runnable" seed="933203540" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.009321" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1080" name="PrototypeShipVisualSwitcherValidationTests" fullname="PrototypeShipVisualSwitcherValidationTests" classname="PrototypeShipVisualSwitcherValidationTests" runstate="Runnable" testcasecount="10" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.122683" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1086" name="BootstrapLeavesOneActiveMainCameraAndOverwritesFollowTarget" fullname="PrototypeShipVisualSwitcherValidationTests.BootstrapLeavesOneActiveMainCameraAndOverwritesFollowTarget" methodname="BootstrapLeavesOneActiveMainCameraAndOverwritesFollowTarget" classname="PrototypeShipVisualSwitcherValidationTests" runstate="Runnable" seed="2056370156" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.011854" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1084" name="GeneratedVisualHullBoundsAreNotDoubleScaled" fullname="PrototypeShipVisualSwitcherValidationTests.GeneratedVisualHullBoundsAreNotDoubleScaled" methodname="GeneratedVisualHullBoundsAreNotDoubleScaled" classname="PrototypeShipVisualSwitcherValidationTests" runstate="Runnable" seed="1362324262" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.012328" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1090" name="HeavyCargoCargoMassDoesNotShowHardpointMarkerByDefault" fullname="PrototypeShipVisualSwitcherValidationTests.HeavyCargoCargoMassDoesNotShowHardpointMarkerByDefault" methodname="HeavyCargoCargoMassDoesNotShowHardpointMarkerByDefault" classname="PrototypeShipVisualSwitcherValidationTests" runstate="Runnable" seed="879184722" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.009107" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1085" name="ImportedCargoVisualAlignsWithUnityForwardAndUp" fullname="PrototypeShipVisualSwitcherValidationTests.ImportedCargoVisualAlignsWithUnityForwardAndUp" methodname="ImportedCargoVisualAlignsWithUnityForwardAndUp" classname="PrototypeShipVisualSwitcherValidationTests" runstate="Runnable" seed="945272708" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.015854" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1081" name="ImportedScoutVisualKeepsGameplayRigAndCanReturnToGeneratedPrimitives" fullname="PrototypeShipVisualSwitcherValidationTests.ImportedScoutVisualKeepsGameplayRigAndCanReturnToGeneratedPrimitives" methodname="ImportedScoutVisualKeepsGameplayRigAndCanReturnToGeneratedPrimitives" classname="PrototypeShipVisualSwitcherValidationTests" runstate="Runnable" seed="544289695" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.012640" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1087" name="ImportedVisualRootStaysChildedAndMovesWithShip" fullname="PrototypeShipVisualSwitcherValidationTests.ImportedVisualRootStaysChildedAndMovesWithShip" methodname="ImportedVisualRootStaysChildedAndMovesWithShip" classname="PrototypeShipVisualSwitcherValidationTests" runstate="Runnable" seed="2100318228" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.011883" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1088" name="ManagerObjectHasClearNameAndNoRuntimePhysicsOrRenderingComponents" fullname="PrototypeShipVisualSwitcherValidationTests.ManagerObjectHasClearNameAndNoRuntimePhysicsOrRenderingComponents" methodname="ManagerObjectHasClearNameAndNoRuntimePhysicsOrRenderingComponents" classname="PrototypeShipVisualSwitcherValidationTests" runstate="Runnable" seed="828837137" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.010238" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1082" name="RuntimeBootstrapBaselineResetReturnsToGeneratedPrimitives" fullname="PrototypeShipVisualSwitcherValidationTests.RuntimeBootstrapBaselineResetReturnsToGeneratedPrimitives" methodname="RuntimeBootstrapBaselineResetReturnsToGeneratedPrimitives" classname="PrototypeShipVisualSwitcherValidationTests" runstate="Runnable" seed="1970086944" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.011963" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1083" name="SwitchingGeneratedImportedGeneratedModesDoesNotReEnableModuleRootRenderers" fullname="PrototypeShipVisualSwitcherValidationTests.SwitchingGeneratedImportedGeneratedModesDoesNotReEnableModuleRootRenderers" methodname="SwitchingGeneratedImportedGeneratedModesDoesNotReEnableModuleRootRenderers" classname="PrototypeShipVisualSwitcherValidationTests" runstate="Runnable" seed="1745132694" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.012382" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1089" name="VisualChangeReframesCameraWithoutMovingAnchorOrBreakingBinding" fullname="PrototypeShipVisualSwitcherValidationTests.VisualChangeReframesCameraWithoutMovingAnchorOrBreakingBinding" methodname="VisualChangeReframesCameraWithoutMovingAnchorOrBreakingBinding" classname="PrototypeShipVisualSwitcherValidationTests" runstate="Runnable" seed="975598252" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.011311" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1091" name="PrototypeSimpleFollowCameraValidationTests" fullname="PrototypeSimpleFollowCameraValidationTests" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" testcasecount="13" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.010876" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1092" name="CameraModeCycleVisitsFreeInspectAndWraps" fullname="PrototypeSimpleFollowCameraValidationTests.CameraModeCycleVisitsFreeInspectAndWraps" methodname="CameraModeCycleVisitsFreeInspectAndWraps" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" seed="1361358375" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000804" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1102" name="ChaseLockedAimsAtOffsetVisualBoundsCenter" fullname="PrototypeSimpleFollowCameraValidationTests.ChaseLockedAimsAtOffsetVisualBoundsCenter" methodname="ChaseLockedAimsAtOffsetVisualBoundsCenter" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" seed="407183607" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000818" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1100" name="DiagnosticsReportTargetFocusVisualBoundsAndDistance" fullname="PrototypeSimpleFollowCameraValidationTests.DiagnosticsReportTargetFocusVisualBoundsAndDistance" methodname="DiagnosticsReportTargetFocusVisualBoundsAndDistance" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" seed="1754575714" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000983" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1096" name="HighestPriorityCameraAnchorWinsOverVisualBoundsForFocus" fullname="PrototypeSimpleFollowCameraValidationTests.HighestPriorityCameraAnchorWinsOverVisualBoundsForFocus" methodname="HighestPriorityCameraAnchorWinsOverVisualBoundsForFocus" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" seed="2113465822" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000750" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1099" name="OrbitZoomPreservesViewRayToSemanticFocusWhenAnchorExists" fullname="PrototypeSimpleFollowCameraValidationTests.OrbitZoomPreservesViewRayToSemanticFocusWhenAnchorExists" methodname="OrbitZoomPreservesViewRayToSemanticFocusWhenAnchorExists" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" seed="964783600" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000776" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1095" name="OrbitZoomPreservesViewRayToVisualPivot" fullname="PrototypeSimpleFollowCameraValidationTests.OrbitZoomPreservesViewRayToVisualPivot" methodname="OrbitZoomPreservesViewRayToVisualPivot" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" seed="1820766034" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000677" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1104" name="ResetFramingReturnsToChaseLockedAndDefaultOffsets" fullname="PrototypeSimpleFollowCameraValidationTests.ResetFramingReturnsToChaseLockedAndDefaultOffsets" methodname="ResetFramingReturnsToChaseLockedAndDefaultOffsets" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" seed="1208544734" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000675" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1097" name="RigidbodyCenterOfMassWinsWhenNoCameraAnchorExists" fullname="PrototypeSimpleFollowCameraValidationTests.RigidbodyCenterOfMassWinsWhenNoCameraAnchorExists" methodname="RigidbodyCenterOfMassWinsWhenNoCameraAnchorExists" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" seed="319520245" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000548" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1103" name="VisualBoundsAnchorFollowsMovingTarget" fullname="PrototypeSimpleFollowCameraValidationTests.VisualBoundsAnchorFollowsMovingTarget" methodname="VisualBoundsAnchorFollowsMovingTarget" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" seed="1296241780" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000478" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1098" name="VisualBoundsDriveDistanceWithoutMovingAnchorFocus" fullname="PrototypeSimpleFollowCameraValidationTests.VisualBoundsDriveDistanceWithoutMovingAnchorFocus" methodname="VisualBoundsDriveDistanceWithoutMovingAnchorFocus" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" seed="184999980" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000513" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1101" name="VisualBoundsReframeChangesBaseDistanceWithinConfiguredClamps" fullname="PrototypeSimpleFollowCameraValidationTests.VisualBoundsReframeChangesBaseDistanceWithinConfiguredClamps" methodname="VisualBoundsReframeChangesBaseDistanceWithinConfiguredClamps" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" seed="548884159" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000728" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1093" name="ZoomAdjustsEffectiveDistanceWithoutMutatingShipStatsFollowDistance" fullname="PrototypeSimpleFollowCameraValidationTests.ZoomAdjustsEffectiveDistanceWithoutMutatingShipStatsFollowDistance" methodname="ZoomAdjustsEffectiveDistanceWithoutMutatingShipStatsFollowDistance" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" seed="1095509963" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000321" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1094" name="ZoomInCannotPassThroughLargeVisualBounds" fullname="PrototypeSimpleFollowCameraValidationTests.ZoomInCannotPassThroughLargeVisualBounds" methodname="ZoomInCannotPassThroughLargeVisualBounds" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" seed="572131261" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000496" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1105" name="PrototypeTestEnvironmentValidationTests" fullname="PrototypeTestEnvironmentValidationTests" classname="PrototypeTestEnvironmentValidationTests" runstate="Runnable" testcasecount="9" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.039937" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1111" name="BootstrapBindsGeneratedEnvironmentAndMinimapToMainCamera" fullname="PrototypeTestEnvironmentValidationTests.BootstrapBindsGeneratedEnvironmentAndMinimapToMainCamera" methodname="BootstrapBindsGeneratedEnvironmentAndMinimapToMainCamera" classname="PrototypeTestEnvironmentValidationTests" runstate="Runnable" seed="943369836" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.007637" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1113" name="BuildPrototypeDefaultsOrientationMarkersToOff" fullname="PrototypeTestEnvironmentValidationTests.BuildPrototypeDefaultsOrientationMarkersToOff" methodname="BuildPrototypeDefaultsOrientationMarkersToOff" classname="PrototypeTestEnvironmentValidationTests" runstate="Runnable" seed="45856830" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.006294" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1114" name="DirectionalLightIsCappedWhenBootstrapBuilds" fullname="PrototypeTestEnvironmentValidationTests.DirectionalLightIsCappedWhenBootstrapBuilds" methodname="DirectionalLightIsCappedWhenBootstrapBuilds" classname="PrototypeTestEnvironmentValidationTests" runstate="Runnable" seed="1328550983" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.005782" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1106" name="EnvironmentRebuildCreatesRequiredLandmarkKindsWithoutDuplicateRoot" fullname="PrototypeTestEnvironmentValidationTests.EnvironmentRebuildCreatesRequiredLandmarkKindsWithoutDuplicateRoot" methodname="EnvironmentRebuildCreatesRequiredLandmarkKindsWithoutDuplicateRoot" classname="PrototypeTestEnvironmentValidationTests" runstate="Runnable" seed="1219960662" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.005268" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1112" name="MinimapExposesFixedZoomLevelsAndLabelToggle" fullname="PrototypeTestEnvironmentValidationTests.MinimapExposesFixedZoomLevelsAndLabelToggle" methodname="MinimapExposesFixedZoomLevelsAndLabelToggle" classname="PrototypeTestEnvironmentValidationTests" runstate="Runnable" seed="1791804036" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000450" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1110" name="Rebuild_AsteroidsAreTriggerNavigationObstacles" fullname="PrototypeTestEnvironmentValidationTests.Rebuild_AsteroidsAreTriggerNavigationObstacles" methodname="Rebuild_AsteroidsAreTriggerNavigationObstacles" classname="PrototypeTestEnvironmentValidationTests" runstate="Runnable" seed="250982454" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.003147" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1107" name="Rebuild_DefaultTrainingEnvironmentHidesWorldAxesVisuals" fullname="PrototypeTestEnvironmentValidationTests.Rebuild_DefaultTrainingEnvironmentHidesWorldAxesVisuals" methodname="Rebuild_DefaultTrainingEnvironmentHidesWorldAxesVisuals" classname="PrototypeTestEnvironmentValidationTests" runstate="Runnable" seed="370439716" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.002564" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1109" name="Rebuild_FullDebugEnvironmentRendersWorldAxesVisuals" fullname="PrototypeTestEnvironmentValidationTests.Rebuild_FullDebugEnvironmentRendersWorldAxesVisuals" methodname="Rebuild_FullDebugEnvironmentRendersWorldAxesVisuals" classname="PrototypeTestEnvironmentValidationTests" runstate="Runnable" seed="1166505209" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.005134" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1108" name="Rebuild_MinimalEnvironmentHidesWorldAxesVisuals" fullname="PrototypeTestEnvironmentValidationTests.Rebuild_MinimalEnvironmentHidesWorldAxesVisuals" methodname="Rebuild_MinimalEnvironmentHidesWorldAxesVisuals" classname="PrototypeTestEnvironmentValidationTests" runstate="Runnable" seed="224178992" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.002243" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1115" name="PrototypeWaypointAutopilotValidationTests" fullname="PrototypeWaypointAutopilotValidationTests" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" testcasecount="21" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.027189" total="21" passed="21" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1129" name="ArrivalAllowsSlightNegativeClosingSpeedAndHoldDampensResidualVelocity" fullname="PrototypeWaypointAutopilotValidationTests.ArrivalAllowsSlightNegativeClosingSpeedAndHoldDampensResidualVelocity" methodname="ArrivalAllowsSlightNegativeClosingSpeedAndHoldDampensResidualVelocity" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="621742406" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.003477" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1123" name="AutopilotForwardVelocityTriggersBrakeEarlierThanRestCase" fullname="PrototypeWaypointAutopilotValidationTests.AutopilotForwardVelocityTriggersBrakeEarlierThanRestCase" methodname="AutopilotForwardVelocityTriggersBrakeEarlierThanRestCase" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="440917417" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.001596" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1124" name="AutopilotLateralVelocityRequestsCorrection" fullname="PrototypeWaypointAutopilotValidationTests.AutopilotLateralVelocityRequestsCorrection" methodname="AutopilotLateralVelocityRequestsCorrection" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="2139240031" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000933" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1133" name="AutopilotManualOverrideAfterGraceAbortsAndClearsRequest" fullname="PrototypeWaypointAutopilotValidationTests.AutopilotManualOverrideAfterGraceAbortsAndClearsRequest" methodname="AutopilotManualOverrideAfterGraceAbortsAndClearsRequest" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="1286775034" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.001375" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1132" name="AutopilotNoRcsAllowsCoarseBurnAndReportsLimitedApproach" fullname="PrototypeWaypointAutopilotValidationTests.AutopilotNoRcsAllowsCoarseBurnAndReportsLimitedApproach" methodname="AutopilotNoRcsAllowsCoarseBurnAndReportsLimitedApproach" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="928355566" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.001267" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1135" name="AutopilotReportsFuelInsufficientBeforeCommandingLowFuelManeuver" fullname="PrototypeWaypointAutopilotValidationTests.AutopilotReportsFuelInsufficientBeforeCommandingLowFuelManeuver" methodname="AutopilotReportsFuelInsufficientBeforeCommandingLowFuelManeuver" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="157481558" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000846" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1122" name="AutopilotRestTargetAheadRequestsLongRangeBurn" fullname="PrototypeWaypointAutopilotValidationTests.AutopilotRestTargetAheadRequestsLongRangeBurn" methodname="AutopilotRestTargetAheadRequestsLongRangeBurn" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="1759897125" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000764" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1136" name="AutopilotSourceDoesNotAssignRigidbodyMotionStateDirectly" fullname="PrototypeWaypointAutopilotValidationTests.AutopilotSourceDoesNotAssignRigidbodyMotionStateDirectly" methodname="AutopilotSourceDoesNotAssignRigidbodyMotionStateDirectly" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="771014556" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.002369" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1117" name="AutopilotStateEnumContainsRequiredStatesExactly" fullname="PrototypeWaypointAutopilotValidationTests.AutopilotStateEnumContainsRequiredStatesExactly" methodname="AutopilotStateEnumContainsRequiredStatesExactly" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="759714335" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.001450" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1131" name="AutopilotTooCloseAndFastRequestsBrake" fullname="PrototypeWaypointAutopilotValidationTests.AutopilotTooCloseAndFastRequestsBrake" methodname="AutopilotTooCloseAndFastRequestsBrake" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="1409901947" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000824" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1127" name="DirectObstaclePlansAvoidanceAndAutopilotDoesNotBurnIntoObstacle" fullname="PrototypeWaypointAutopilotValidationTests.DirectObstaclePlansAvoidanceAndAutopilotDoesNotBurnIntoObstacle" methodname="DirectObstaclePlansAvoidanceAndAutopilotDoesNotBurnIntoObstacle" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="1664194224" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.001616" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1121" name="ForwardInitialVelocityChangesBrakingDecision" fullname="PrototypeWaypointAutopilotValidationTests.ForwardInitialVelocityChangesBrakingDecision" methodname="ForwardInitialVelocityChangesBrakingDecision" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="550688512" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000291" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1134" name="FuelEstimateRejectsFarTargetWithLowFuelButAllowsFuelFreeThrust" fullname="PrototypeWaypointAutopilotValidationTests.FuelEstimateRejectsFarTargetWithLowFuelButAllowsFuelFreeThrust" methodname="FuelEstimateRejectsFarTargetWithLowFuelButAllowsFuelFreeThrust" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="1067632251" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000384" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1128" name="LateralCorrectionForceScalesWithMassAndClampsToAuthority" fullname="PrototypeWaypointAutopilotValidationTests.LateralCorrectionForceScalesWithMassAndClampsToAuthority" methodname="LateralCorrectionForceScalesWithMassAndClampsToAuthority" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="282900344" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.001579" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1119" name="MetricsComputeClosingLateralAndStoppingDistance" fullname="PrototypeWaypointAutopilotValidationTests.MetricsComputeClosingLateralAndStoppingDistance" methodname="MetricsComputeClosingLateralAndStoppingDistance" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="1564110431" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000336" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1120" name="MetricsTreatAwayFromTargetVelocityAsZeroStoppingDistance" fullname="PrototypeWaypointAutopilotValidationTests.MetricsTreatAwayFromTargetVelocityAsZeroStoppingDistance" methodname="MetricsTreatAwayFromTargetVelocityAsZeroStoppingDistance" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="1473876473" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000259" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1126" name="NavigationObstacleExposesSpecShapeAndDetectorFindsColliderlessFallback" fullname="PrototypeWaypointAutopilotValidationTests.NavigationObstacleExposesSpecShapeAndDetectorFindsColliderlessFallback" methodname="NavigationObstacleExposesSpecShapeAndDetectorFindsColliderlessFallback" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="1889288445" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.001927" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1130" name="NoAuthorityAndFuelInsufficientDoNotCreatePhysicalRequest" fullname="PrototypeWaypointAutopilotValidationTests.NoAuthorityAndFuelInsufficientDoNotCreatePhysicalRequest" methodname="NoAuthorityAndFuelInsufficientDoNotCreatePhysicalRequest" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="1335061283" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.001251" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1125" name="ObstacleDetectorFindsDirectTriggerObstacleIgnoresOwnShipAndClearsEmptyPath" fullname="PrototypeWaypointAutopilotValidationTests.ObstacleDetectorFindsDirectTriggerObstacleIgnoresOwnShipAndClearsEmptyPath" methodname="ObstacleDetectorFindsDirectTriggerObstacleIgnoresOwnShipAndClearsEmptyPath" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="1467327934" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000808" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1118" name="TrajectoryPhaseEnumContainsRequestedNavigationComputerPhases" fullname="PrototypeWaypointAutopilotValidationTests.TrajectoryPhaseEnumContainsRequestedNavigationComputerPhases" methodname="TrajectoryPhaseEnumContainsRequestedNavigationComputerPhases" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="1232969498" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000463" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1116" name="WaypointManagerGeneratesThreeVisibleSelectableWaypoints" fullname="PrototypeWaypointAutopilotValidationTests.WaypointManagerGeneratesThreeVisibleSelectableWaypoints" methodname="WaypointManagerGeneratesThreeVisibleSelectableWaypoints" classname="PrototypeWaypointAutopilotValidationTests" runstate="Runnable" seed="21714214" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000726" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1137" name="RcsSpoolStatusVelocityChangeTests" fullname="RcsSpoolStatusVelocityChangeTests" classname="RcsSpoolStatusVelocityChangeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.007986" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1138" name="ForceModeVelocityChangeDiagnosticsUseMassScaledImpulse" fullname="RcsSpoolStatusVelocityChangeTests.ForceModeVelocityChangeDiagnosticsUseMassScaledImpulse" methodname="ForceModeVelocityChangeDiagnosticsUseMassScaledImpulse" classname="RcsSpoolStatusVelocityChangeTests" runstate="Runnable" seed="2004240918" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.001900" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1141" name="RcsAllocatorStatusReportsLimitedResiduals" fullname="RcsSpoolStatusVelocityChangeTests.RcsAllocatorStatusReportsLimitedResiduals" methodname="RcsAllocatorStatusReportsLimitedResiduals" classname="RcsSpoolStatusVelocityChangeTests" runstate="Runnable" seed="398461960" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.001881" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1140" name="RcsIdleWithoutResidualThrottleAppliesNoForce" fullname="RcsSpoolStatusVelocityChangeTests.RcsIdleWithoutResidualThrottleAppliesNoForce" methodname="RcsIdleWithoutResidualThrottleAppliesNoForce" classname="RcsSpoolStatusVelocityChangeTests" runstate="Runnable" seed="956124873" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.001306" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1139" name="RcsSpoolDownAppliesResidualForceUntilNozzlesSettle" fullname="RcsSpoolStatusVelocityChangeTests.RcsSpoolDownAppliesResidualForceUntilNozzlesSettle" methodname="RcsSpoolDownAppliesResidualForceUntilNozzlesSettle" classname="RcsSpoolStatusVelocityChangeTests" runstate="Runnable" seed="1516421826" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.002003" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1142" name="ResetFlightStateValidationTests" fullname="ResetFlightStateValidationTests" classname="ResetFlightStateValidationTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.002733" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1143" name="ResetFlightStateClearsMotionThrottleDebugPulsesAndFloatingOriginState" fullname="ResetFlightStateValidationTests.ResetFlightStateClearsMotionThrottleDebugPulsesAndFloatingOriginState" methodname="ResetFlightStateClearsMotionThrottleDebugPulsesAndFloatingOriginState" classname="ResetFlightStateValidationTests" runstate="Runnable" seed="2504318" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.002074" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1144" name="TrajectoryPreviewPredictionTests" fullname="TrajectoryPreviewPredictionTests" classname="TrajectoryPreviewPredictionTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.008591" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1145" name="BoundedPredictionReturnsFiniteStates" fullname="TrajectoryPreviewPredictionTests.BoundedPredictionReturnsFiniteStates" methodname="BoundedPredictionReturnsFiniteStates" classname="TrajectoryPreviewPredictionTests" runstate="Runnable" seed="1623664469" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.002185" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1149" name="BurnPlanEstimatesDirectionDurationThrottleFuelAndDeltaV" fullname="TrajectoryPreviewPredictionTests.BurnPlanEstimatesDirectionDurationThrottleFuelAndDeltaV" methodname="BurnPlanEstimatesDirectionDurationThrottleFuelAndDeltaV" classname="TrajectoryPreviewPredictionTests" runstate="Runnable" seed="1141717915" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000671" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1148" name="DebugGizmoRefreshStoresPredictedStates" fullname="TrajectoryPreviewPredictionTests.DebugGizmoRefreshStoresPredictedStates" methodname="DebugGizmoRefreshStoresPredictedStates" classname="TrajectoryPreviewPredictionTests" runstate="Runnable" seed="1902239838" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.001714" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1147" name="GravityOnlyPredictionMatchesShortSimulationTolerance" fullname="TrajectoryPreviewPredictionTests.GravityOnlyPredictionMatchesShortSimulationTolerance" methodname="GravityOnlyPredictionMatchesShortSimulationTolerance" classname="TrajectoryPreviewPredictionTests" runstate="Runnable" seed="972830228" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.002555" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1146" name="PredictionClampsStepCountToBound" fullname="TrajectoryPreviewPredictionTests.PredictionClampsStepCountToBound" methodname="PredictionClampsStepCountToBound" classname="TrajectoryPreviewPredictionTests" runstate="Runnable" seed="3647302" result="Passed" start-time="2026-05-20 17:08:57Z" end-time="2026-05-20 17:08:57Z" duration="0.000656" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[<b><color=#2EA3FF>MCP-FOR-UNITY</color></b>: [TestRunnerNoThrottle] Restored Interaction Mode after test run.
+Saving results to: C:/Users/benni/AppData/LocalLow/DefaultCompany/Weltraum Spiel\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

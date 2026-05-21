@@ -101,6 +101,24 @@ public class PrototypeTestEnvironmentValidationTests
     }
 
     [Test]
+    public void Rebuild_AsteroidsAreTriggerNavigationObstacles()
+    {
+        GameObject host = new GameObject("EnvironmentValidationHost");
+        PrototypeTestEnvironment environment = host.AddComponent<PrototypeTestEnvironment>();
+
+        environment.Rebuild();
+
+        PrototypeNavigationObstacle[] obstacles = Object.FindObjectsOfType<PrototypeNavigationObstacle>();
+        Assert.That(obstacles.Length, Is.GreaterThanOrEqualTo(5));
+        for (int i = 0; i < obstacles.Length; i++)
+        {
+            Collider obstacleCollider = obstacles[i].GetComponent<Collider>();
+            Assert.NotNull(obstacleCollider);
+            Assert.True(obstacleCollider.isTrigger);
+        }
+    }
+
+    [Test]
     public void BootstrapBindsGeneratedEnvironmentAndMinimapToMainCamera()
     {
         GameObject host = new GameObject("BootstrapEnvironmentValidationHost");

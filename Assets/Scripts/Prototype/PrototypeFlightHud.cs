@@ -39,10 +39,6 @@ public class PrototypeFlightHud : MonoBehaviour
     private GUIStyle centeredLabelStyle;
     private GUIStyle compactButtonStyle;
     private PrototypeUiWindowState windowState;
-    private PrototypeHudViewModel currentViewModel;
-    private int lastDiagnosticsFrame = -1;
-    private string cachedStatusTopLine = string.Empty;
-    private string cachedStatusBottomLine = string.Empty;
 
     public Transform Target => target;
     public Rigidbody TargetRigidbody => targetRigidbody;
@@ -67,11 +63,12 @@ public class PrototypeFlightHud : MonoBehaviour
     public bool LastHasSasMarker { get; private set; }
     public bool LastHasTargetMarker { get; private set; }
     public bool LastHasDebugForceMarkers { get; private set; }
+    public string LastNavigationComputerSummary { get; private set; } = "NavComp: n/a";
 
     private void Start()
     {
-        ResolveReferences(true);
-        RefreshDiagnostics(true);
+        ResolveReferences();
+        RefreshDiagnostics();
     }
 
     private void OnValidate()
@@ -90,17 +87,13 @@ public class PrototypeFlightHud : MonoBehaviour
             return;
         }
 
-        ResolveReferences(false);
+        ResolveReferences();
+        RefreshDiagnostics();
         EnsureStyles();
-        if (!windowState.Collapsed)
-        {
-            RefreshDiagnostics();
-        }
-
-        windowState.SetSize(Mathf.Max(300f, (navballRadius * 2f) + 84f), windowState.Collapsed ? 58f : Mathf.Max(300f, (navballRadius * 2f) + 166f));
+        windowState.SetSize(Mathf.Max(300f, (navballRadius * 2f) + 84f), windowState.Collapsed ? 58f : Mathf.Max(322f, (navballRadius * 2f) + 188f));
         windowState.Rect = GUI.Window(windowState.WindowId, windowState.Rect, DrawHudWindow, "HUD / Navball");
         windowState.ClampToScreen();
-        windowState.TrySaveToPrefsThrottled();
+        windowState.SaveToPrefs();
     }
 
     public void Bind(Transform trackTarget, ShipStats stats, Rigidbody rb)
@@ -110,14 +103,14 @@ public class PrototypeFlightHud : MonoBehaviour
         targetRigidbody = rb != null ? rb : (trackTarget != null ? trackTarget.GetComponent<Rigidbody>() : null);
         shipController = trackTarget != null ? trackTarget.GetComponent<PlayerShipController>() : null;
         debugOverlay = GetComponent<PrototypeDebugOverlay>();
-        ResolveTrackedTarget(true);
-        RefreshDiagnostics(true);
+        ResolveTrackedTarget();
+        RefreshDiagnostics();
     }
 
     public void SetTrackedTarget(Transform targetTransform)
     {
         trackedTarget = targetTransform;
-        RefreshDiagnostics(true);
+        RefreshDiagnostics();
     }
 
     public void SetHudVisible(bool visible)
@@ -139,13 +132,13 @@ public class PrototypeFlightHud : MonoBehaviour
     public void SetMode(HudMode mode)
     {
         hudMode = mode;
-        RefreshDiagnostics(true);
+        RefreshDiagnostics();
     }
 
     public void RefreshDiagnosticsForTests()
     {
-        ResolveReferences(false);
-        RefreshDiagnostics(true);
+        ResolveReferences();
+        RefreshDiagnostics();
     }
 
     public Vector2 ProjectWorldDirectionToMarker(Vector3 worldDirection)
@@ -185,7 +178,7 @@ public class PrototypeFlightHud : MonoBehaviour
         return windowState;
     }
 
-    private void ResolveReferences(bool allowSceneTargetSearch)
+    private void ResolveReferences()
     {
         if (target != null)
         {
@@ -199,15 +192,15 @@ public class PrototypeFlightHud : MonoBehaviour
                 targetRigidbody = target.GetComponent<Rigidbody>();
             }
 
-            if (shipController == null)
-            {
-                shipController = target.GetComponent<PlayerShipController>();
-            }
+        if (shipController == null)
+        {
+            shipController = target.GetComponent<PlayerShipController>();
+        }
 
-            if (followCamera == null)
-            {
-                followCamera = GetComponent<SimpleFollowCamera>();
-            }
+        if (followCamera == null)
+        {
+            followCamera = GetComponent<SimpleFollowCamera>();
+        }
 
             if (waypointAutopilot == null)
             {
@@ -225,17 +218,17 @@ public class PrototypeFlightHud : MonoBehaviour
             debugOverlay = GetComponent<PrototypeDebugOverlay>();
         }
 
-        ResolveTrackedTarget(allowSceneTargetSearch);
+        ResolveTrackedTarget();
     }
 
-    private void ResolveTrackedTarget(bool allowSceneSearch)
+    private void ResolveTrackedTarget()
     {
         if (trackedTarget != null)
         {
             return;
         }
 
-        if (shipController == null || !allowSceneSearch)
+        if (shipController == null)
         {
             return;
         }
@@ -247,57 +240,56 @@ public class PrototypeFlightHud : MonoBehaviour
         }
     }
 
-    private void RefreshDiagnostics(bool force = false)
+    private void RefreshDiagnostics()
     {
-        if (!force && lastDiagnosticsFrame == Time.frameCount)
+        LastModeLabelStructure = BuildModeLabelStructure();
+        LastForwardMarker = Vector2.zero;
+        LastHasVelocityMarker = false;
+        LastHasSasMarker = false;
+        LastHasTargetMarker = false;
+        LastHasDebugForceMarkers = false;
+        LastProgradeMarker = Vector2.zero;
+        LastRetrogradeMarker = Vector2.zero;
+        LastSasMarker = Vector2.zero;
+        LastTargetMarker = Vector2.zero;
+        LastDesiredForceMarker = Vector2.zero;
+        LastActualForceMarker = Vector2.zero;
+        LastResidualForceMarker = Vector2.zero;
+        LastNavigationComputerSummary = BuildNavigationComputerSummary();
+
+        Vector3 velocity = targetRigidbody != null ? targetRigidbody.linearVelocity : Vector3.zero;
+        if (velocity.magnitude > velocityMarkerThreshold)
         {
-            return;
+            LastHasVelocityMarker = true;
+            LastProgradeMarker = ProjectWorldDirectionToMarker(velocity);
+            LastRetrogradeMarker = ProjectWorldDirectionToMarker(-velocity);
         }
 
-        lastDiagnosticsFrame = Time.frameCount;
-        currentViewModel = PrototypeHudViewModelBuilder.Build(
-            target,
-            targetRigidbody,
-            shipController,
-            targetStats,
-            trackedTarget,
-            waypointAutopilot,
-            momentumAssist,
-            debugOverlay != null && debugOverlay.DrawDebugVectors,
-            showDebugForceMarkers,
-            navballRadius,
-            velocityMarkerThreshold,
-            forceMarkerReferenceNewton,
-            hudMode);
+        if (shipController != null && shipController.HasSasTargetRotation)
+        {
+            LastHasSasMarker = true;
+            LastSasMarker = ProjectWorldDirectionToMarker(shipController.SasTargetRotation * Vector3.forward);
+        }
 
-        LastModeLabelStructure = currentViewModel.ModeLabelStructure;
-        LastForwardMarker = currentViewModel.ForwardMarker;
-        LastHasVelocityMarker = currentViewModel.HasVelocityMarker;
-        LastHasSasMarker = currentViewModel.HasSasMarker;
-        LastHasTargetMarker = currentViewModel.HasTargetMarker;
-        LastHasDebugForceMarkers = currentViewModel.HasDebugForceMarkers;
-        LastProgradeMarker = currentViewModel.ProgradeMarker;
-        LastRetrogradeMarker = currentViewModel.RetrogradeMarker;
-        LastSasMarker = currentViewModel.SasMarker;
-        LastTargetMarker = currentViewModel.TargetMarker;
-        LastDesiredForceMarker = currentViewModel.DesiredForceMarker;
-        LastActualForceMarker = currentViewModel.ActualForceMarker;
-        LastResidualForceMarker = currentViewModel.ResidualForceMarker;
-        LastModeLabel = currentViewModel.ModeLabel;
-        CacheStatusLines();
-    }
+        if (target != null && trackedTarget != null)
+        {
+            Vector3 targetDirection = trackedTarget.position - target.position;
+            if (targetDirection.sqrMagnitude > 0.0001f)
+            {
+                LastHasTargetMarker = true;
+                LastTargetMarker = ProjectWorldDirectionToMarker(targetDirection);
+            }
+        }
 
-    private void CacheStatusLines()
-    {
-        PrototypeAutopilotViewModel autopilot = currentViewModel.Autopilot;
-        PrototypeMomentumAssistViewModel momentum = currentViewModel.MomentumAssist;
-        PrototypeHudStatusViewModel status = currentViewModel.Status;
-        string autoState = autopilot.IsAvailable
-            ? $"{(autopilot.IsEngaged ? "ON" : "OFF")} {autopilot.StateLabel}"
-            : "N/A";
-        string warning = status.HasWarning ? $" | {status.WarningText}" : string.Empty;
-        cachedStatusTopLine = $"{PrototypeUiFormatter.FormatSpeed(status.SpeedMetersPerSecond)} | Fuel {PrototypeUiFormatter.FormatCompact(status.FuelCurrentKg)}/{PrototypeUiFormatter.FormatCompact(status.FuelMaxKg)} kg | Thr {status.ThrottlePercent:0}%{warning}";
-        cachedStatusBottomLine = $"Target {autopilot.TargetName} | Auto {autoState} | Kill {momentum.State} | {currentViewModel.ControlModeHint} | {currentViewModel.SasLabel}";
+        if (ShouldShowDebugForceMarkers())
+        {
+            LastHasDebugForceMarkers = true;
+            LastDesiredForceMarker = ProjectForceVectorToMarker(shipController.LastRcsDesiredForceWorld);
+            LastActualForceMarker = ProjectForceVectorToMarker(shipController.LastRcsActualForceWorld);
+            LastResidualForceMarker = ProjectForceVectorToMarker(shipController.LastRcsResidualForceWorld);
+        }
+
+        LastModeLabel = ResolveActiveModeLabel(velocity);
     }
 
     private bool ShouldShowDebugForceMarkers()
@@ -355,10 +347,33 @@ public class PrototypeFlightHud : MonoBehaviour
             return;
         }
 
-        labelStyle = PrototypeUiStyle.CreateLabelStyle();
-        smallLabelStyle = PrototypeUiStyle.CreateSmallLabelStyle(11);
-        centeredLabelStyle = PrototypeUiStyle.CreateLabelStyle(12, false, TextAnchor.MiddleCenter);
-        compactButtonStyle = PrototypeUiStyle.CreateCompactButtonStyle();
+        labelStyle = new GUIStyle(GUI.skin.label)
+        {
+            fontSize = 13,
+            alignment = TextAnchor.UpperLeft
+        };
+        labelStyle.normal.textColor = Color.white;
+
+        smallLabelStyle = new GUIStyle(GUI.skin.label)
+        {
+            fontSize = 11,
+            alignment = TextAnchor.MiddleCenter
+        };
+        smallLabelStyle.normal.textColor = Color.white;
+
+        centeredLabelStyle = new GUIStyle(GUI.skin.label)
+        {
+            fontSize = 12,
+            alignment = TextAnchor.MiddleCenter
+        };
+        centeredLabelStyle.normal.textColor = Color.white;
+
+        compactButtonStyle = new GUIStyle(GUI.skin.button)
+        {
+            fontSize = 10,
+            alignment = TextAnchor.MiddleCenter,
+            padding = new RectOffset(4, 4, 2, 2)
+        };
     }
 
     private void DrawHudWindow(int id)
@@ -415,8 +430,21 @@ public class PrototypeFlightHud : MonoBehaviour
 
         DrawQuickActions(contentRect);
 
-        Rect hintRect = new Rect(contentRect.x + 8f, contentRect.yMax - 66f, contentRect.width - 16f, 52f);
-        GUI.Label(hintRect, cachedStatusTopLine + "\n" + cachedStatusBottomLine, smallLabelStyle);
+        Rect hintRect = new Rect(contentRect.x + 8f, contentRect.yMax - 86f, contentRect.width - 16f, 72f);
+        string targetLabel = waypointAutopilot != null ? waypointAutopilot.TargetName : (trackedTarget != null ? trackedTarget.name : "none");
+        PrototypeFlightControlDiagnostics diagnostics = shipController != null ? shipController.FlightControlDiagnostics : default;
+        string cameraLine = followCamera != null
+            ? $"Cam: {followCamera.CameraModeName} | dist {followCamera.EffectiveDistance:0.00} ({followCamera.BaseVisualDistance:0.00}) | zoom {followCamera.Zoom:0.00} | bounds {followCamera.BaseVisualBoundsRadius:0.00}"
+            : "Cam: unavailable";
+        string autopilotLabel = shipController != null
+            ? $"{(diagnostics.autopilotEngaged ? "ON" : "OFF")} {diagnostics.autopilotState}"
+            : "N/A";
+        string sasLabel = shipController != null ? (diagnostics.effectiveSasEnabled ? "SAS Eff On" : "SAS Eff Off") : "SAS n/a";
+        string autopilotPhase = waypointAutopilot != null ? waypointAutopilot.ArrivalPhase.ToString() : "n/a";
+        string autopilotReason = waypointAutopilot != null && !string.IsNullOrWhiteSpace(waypointAutopilot.ArrivalFailureReason)
+            ? $" | {waypointAutopilot.ArrivalFailureReason}"
+            : string.Empty;
+        GUI.Label(hintRect, $"G Autopilot | Tab/B Target | Caps Mode\n{cameraLine}\nTarget: {targetLabel} | Auto: {autopilotLabel} | phase: {autopilotPhase}{autopilotReason} | {ResolveControlModeHint()} | {sasLabel}\n{LastNavigationComputerSummary}", smallLabelStyle);
 
         Rect labelRect = new Rect(contentRect.x + 8f, contentRect.yMax - 14f, contentRect.width - 16f, 14f);
         GUI.Label(labelRect, "Mode: " + LastModeLabel, centeredLabelStyle);
@@ -430,7 +458,7 @@ public class PrototypeFlightHud : MonoBehaviour
 
     private void DrawCircle(Vector2 center, float radius, Color color, float thickness)
     {
-        const int segments = 40;
+        const int segments = 64;
         Vector2 previous = center + new Vector2(radius, 0f);
         for (int i = 1; i <= segments; i++)
         {
@@ -481,11 +509,7 @@ public class PrototypeFlightHud : MonoBehaviour
         }
 
         GUI.enabled = momentumAssist != null;
-        string killMomentumLabel = momentumAssist != null && momentumAssist.IsActive
-            ? $"Kill: {momentumAssist.CurrentState}"
-            : "Kill Momentum";
-        float killMomentumWidth = momentumAssist != null && momentumAssist.IsActive ? 126f : 88f;
-        if (GUILayout.Button(killMomentumLabel, compactButtonStyle, GUILayout.Width(killMomentumWidth), GUILayout.Height(16f)))
+        if (GUILayout.Button("Kill Momentum", compactButtonStyle, GUILayout.Width(88f), GUILayout.Height(16f)))
         {
             momentumAssist?.Toggle();
         }
@@ -518,6 +542,31 @@ public class PrototypeFlightHud : MonoBehaviour
         GUILayout.EndHorizontal();
         GUILayout.EndVertical();
         GUILayout.EndArea();
+    }
+
+    private string BuildNavigationComputerSummary()
+    {
+        if (waypointAutopilot == null)
+        {
+            return "NavComp: n/a";
+        }
+
+        string phase = waypointAutopilot.CurrentPlan.statusLabel;
+        if (string.IsNullOrWhiteSpace(phase))
+        {
+            phase = waypointAutopilot.ArrivalPhase.ToString();
+        }
+
+        string avoidance = waypointAutopilot.CurrentPlan.avoidanceActive
+            ? "avoid " + FormatVectorCompact(waypointAutopilot.AvoidanceWaypoint)
+            : "avoid off";
+        string warning = waypointAutopilot.FuelFeasible ? string.Empty : " | WARN fuel";
+        if (!string.IsNullOrWhiteSpace(waypointAutopilot.FailureReason) && waypointAutopilot.FailureReason != "none")
+        {
+            warning += " | WARN " + waypointAutopilot.FailureReason;
+        }
+
+        return $"NavComp: {waypointAutopilot.TargetName} {FormatCompact(waypointAutopilot.DistanceToTarget)}m rel {FormatCompact(waypointAutopilot.LastMetrics.relativeSpeed)}m/s | {phase} | {(waypointAutopilot.AutopilotEngaged ? "auto on" : "auto off")} | obs {waypointAutopilot.ObstacleStatus} | {avoidance} | ETA {FormatCompactTime(waypointAutopilot.PlannedEta)} | main {waypointAutopilot.RequestedMainThrottle:0.00} RCS {FormatCompact(waypointAutopilot.RequestedRcsForce.magnitude)}N{warning}";
     }
 
     private static Vector2 MarkerLabelOffset(Vector2 markerOffset, float size, string label)
@@ -568,5 +617,30 @@ public class PrototypeFlightHud : MonoBehaviour
             default:
                 return "Mode: Cruise";
         }
+    }
+
+    private static string FormatCompact(float value)
+    {
+        if (float.IsNaN(value))
+        {
+            return "n/a";
+        }
+
+        if (float.IsInfinity(value))
+        {
+            return "inf";
+        }
+
+        return value.ToString("0.0");
+    }
+
+    private static string FormatCompactTime(float value)
+    {
+        return float.IsInfinity(value) ? "inf" : FormatCompact(value) + "s";
+    }
+
+    private static string FormatVectorCompact(Vector3 value)
+    {
+        return $"({value.x:0},{value.y:0},{value.z:0})";
     }
 }
