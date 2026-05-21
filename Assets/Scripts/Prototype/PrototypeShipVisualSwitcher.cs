@@ -18,11 +18,21 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
     private const string PrototypeRootName = "PrototypeShip";
     private const string RuntimeManagerName = "PrototypeShipVisualSwitcher_Manager";
     private const string ImportedVisualRootName = "ImportedShipVisual";
+    private const string ImportedScoutInstanceName = "ImportedDemoScoutVisual";
+    private const string ImportedCargoInstanceName = "ImportedDemoCargoVisual";
     private const string ImportedScoutVisualPath = "Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.fbx";
     private const string ImportedCargoVisualPath = "Assets/Art/PrototypeShipKit/DemoShips/demo_cargo_mk1.fbx";
     private static readonly Vector3 ImportedVisualAlignmentEuler = new Vector3(-90f, 180f, 0f);
 
     private Transform cachedShip;
+    private PrototypeBootstrap cachedBootstrap;
+    private Transform importedVisualRoot;
+    private GameObject importedScoutVisualInstance;
+    private GameObject importedCargoVisualInstance;
+    private GameObject cachedImportedScoutVisualPrefab;
+    private GameObject cachedImportedCargoVisualPrefab;
+    private bool importedScoutPrefabResolved;
+    private bool importedCargoPrefabResolved;
     private PrototypeShipVisualMode appliedMode = (PrototypeShipVisualMode)(-1);
 
     public PrototypeShipVisualMode SelectedVisualMode => visualMode;
@@ -108,7 +118,7 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
 
         bool hasImportedVisual = ship.Find(ImportedVisualRootName) != null;
         bool needsImportedVisual = visualMode != PrototypeShipVisualMode.GeneratedPrimitives;
-        if (appliedMode != visualMode || hasImportedVisual != needsImportedVisual)
+        if (appliedMode != visualMode || (needsImportedVisual && !hasImportedVisual))
         {
             ApplyVisualMode(ship);
         }
@@ -121,14 +131,13 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
             return;
         }
 
-        DestroyChildIfExists(ship, ImportedVisualRootName);
-
         PrototypeShipLayout layout = ResolveActiveLayout();
         if (visualMode == PrototypeShipVisualMode.GeneratedPrimitives)
         {
             SetGeneratedPrototypeVisualsVisible(ship, layout, true);
+            SetImportedVisualActive(null);
             appliedMode = visualMode;
-            NotifyCameraAfterVisualChange();
+            NotifyCachesAfterVisualChange(ship);
             return;
         }
 
@@ -137,23 +146,17 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
         {
             Debug.LogWarning($"Prototype ship visual '{SelectedVisualModeName}' is unavailable. Generated primitives remain visible.");
             SetGeneratedPrototypeVisualsVisible(ship, layout, true);
+            SetImportedVisualActive(null);
             appliedMode = visualMode;
-            NotifyCameraAfterVisualChange();
+            NotifyCachesAfterVisualChange(ship);
             return;
         }
 
         SetGeneratedPrototypeVisualsVisible(ship, layout, !hideGeneratedPrototypePrimitivesWithImportedVisual);
-
-        var visualRoot = new GameObject(ImportedVisualRootName);
-        visualRoot.transform.SetParent(ship, false);
-
-        GameObject visualInstance = Instantiate(visualPrefab, visualRoot.transform);
-        visualInstance.name = visualPrefab.name + "_Visual";
-        visualInstance.transform.localPosition = Vector3.zero;
-        visualInstance.transform.localRotation = Quaternion.Euler(ImportedVisualAlignmentEuler);
-        StripRuntimePhysicsFromVisual(visualInstance);
+        GameObject visualInstance = EnsureImportedVisualInstance(ship, visualMode, visualPrefab);
+        SetImportedVisualActive(visualInstance);
         appliedMode = visualMode;
-        NotifyCameraAfterVisualChange();
+        NotifyCachesAfterVisualChange(ship);
     }
 
     private Transform FindShip()
@@ -170,8 +173,12 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
 
     private PrototypeShipLayout ResolveActiveLayout()
     {
-        PrototypeBootstrap bootstrap = Object.FindAnyObjectByType<PrototypeBootstrap>();
-        PrototypeShipVariant variant = bootstrap != null ? bootstrap.SelectedVariant : null;
+        if (cachedBootstrap == null)
+        {
+            cachedBootstrap = Object.FindAnyObjectByType<PrototypeBootstrap>();
+        }
+
+        PrototypeShipVariant variant = cachedBootstrap != null ? cachedBootstrap.SelectedVariant : null;
         return variant != null ? variant.Layout : PrototypeShipLayout.Baseline();
     }
 
@@ -180,15 +187,148 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
         switch (mode)
         {
             case PrototypeShipVisualMode.ImportedDemoScout:
-                return importedDemoScoutVisualPrefab != null
-                    ? importedDemoScoutVisualPrefab
-                    : LoadImportedVisualAsset(ImportedScoutVisualPath);
+                if (!importedScoutPrefabResolved)
+                {
+                    cachedImportedScoutVisualPrefab = importedDemoScoutVisualPrefab != null
+                        ? importedDemoScoutVisualPrefab
+                        : LoadImportedVisualAsset(ImportedScoutVisualPath);
+                    importedScoutPrefabResolved = true;
+                }
+
+                return cachedImportedScoutVisualPrefab;
             case PrototypeShipVisualMode.ImportedDemoCargo:
-                return importedDemoCargoVisualPrefab != null
-                    ? importedDemoCargoVisualPrefab
-                    : LoadImportedVisualAsset(ImportedCargoVisualPath);
+                if (!importedCargoPrefabResolved)
+                {
+                    cachedImportedCargoVisualPrefab = importedDemoCargoVisualPrefab != null
+                        ? importedDemoCargoVisualPrefab
+                        : LoadImportedVisualAsset(ImportedCargoVisualPath);
+                    importedCargoPrefabResolved = true;
+                }
+
+                return cachedImportedCargoVisualPrefab;
             default:
                 return null;
+        }
+    }
+
+    private GameObject EnsureImportedVisualInstance(Transform ship, PrototypeShipVisualMode mode, GameObject visualPrefab)
+    {
+        Transform root = EnsureImportedVisualRoot(ship);
+        if (root == null || visualPrefab == null)
+        {
+            return null;
+        }
+
+        GameObject cachedInstance = GetCachedImportedVisualInstance(mode);
+        if (cachedInstance != null)
+        {
+            return cachedInstance;
+        }
+
+        GameObject visualInstance = Instantiate(visualPrefab, root);
+        visualInstance.name = GetImportedVisualInstanceName(mode);
+        visualInstance.transform.localPosition = Vector3.zero;
+        visualInstance.transform.localRotation = Quaternion.Euler(ImportedVisualAlignmentEuler);
+        StripRuntimePhysicsFromVisual(visualInstance);
+        SetCachedImportedVisualInstance(mode, visualInstance);
+        return visualInstance;
+    }
+
+    private Transform EnsureImportedVisualRoot(Transform ship)
+    {
+        if (ship == null)
+        {
+            importedVisualRoot = null;
+            return null;
+        }
+
+        if (importedVisualRoot != null && importedVisualRoot.parent == ship)
+        {
+            return importedVisualRoot;
+        }
+
+        importedVisualRoot = ship.Find(ImportedVisualRootName);
+        if (importedVisualRoot == null)
+        {
+            var rootObject = new GameObject(ImportedVisualRootName);
+            importedVisualRoot = rootObject.transform;
+            importedVisualRoot.SetParent(ship, false);
+        }
+
+        importedVisualRoot.localPosition = Vector3.zero;
+        importedVisualRoot.localRotation = Quaternion.identity;
+        importedVisualRoot.localScale = Vector3.one;
+        return importedVisualRoot;
+    }
+
+    private GameObject GetCachedImportedVisualInstance(PrototypeShipVisualMode mode)
+    {
+        switch (mode)
+        {
+            case PrototypeShipVisualMode.ImportedDemoScout:
+                return importedScoutVisualInstance;
+            case PrototypeShipVisualMode.ImportedDemoCargo:
+                return importedCargoVisualInstance;
+            default:
+                return null;
+        }
+    }
+
+    private void SetCachedImportedVisualInstance(PrototypeShipVisualMode mode, GameObject visualInstance)
+    {
+        switch (mode)
+        {
+            case PrototypeShipVisualMode.ImportedDemoScout:
+                importedScoutVisualInstance = visualInstance;
+                break;
+            case PrototypeShipVisualMode.ImportedDemoCargo:
+                importedCargoVisualInstance = visualInstance;
+                break;
+        }
+    }
+
+    private static string GetImportedVisualInstanceName(PrototypeShipVisualMode mode)
+    {
+        switch (mode)
+        {
+            case PrototypeShipVisualMode.ImportedDemoScout:
+                return ImportedScoutInstanceName;
+            case PrototypeShipVisualMode.ImportedDemoCargo:
+                return ImportedCargoInstanceName;
+            default:
+                return "ImportedDemoVisual";
+        }
+    }
+
+    private void SetImportedVisualActive(GameObject activeInstance)
+    {
+        if (importedVisualRoot == null && cachedShip != null)
+        {
+            importedVisualRoot = cachedShip.Find(ImportedVisualRootName);
+        }
+
+        if (importedVisualRoot != null)
+        {
+            for (int i = 0; i < importedVisualRoot.childCount; i++)
+            {
+                GameObject child = importedVisualRoot.GetChild(i).gameObject;
+                child.SetActive(child == activeInstance);
+            }
+        }
+
+        if (importedScoutVisualInstance != null)
+        {
+            importedScoutVisualInstance.SetActive(importedScoutVisualInstance == activeInstance);
+        }
+
+        if (importedCargoVisualInstance != null)
+        {
+            importedCargoVisualInstance.SetActive(importedCargoVisualInstance == activeInstance);
+        }
+
+        if (importedVisualRoot != null)
+        {
+            importedVisualRoot.gameObject.SetActive(activeInstance != null);
         }
     }
 
@@ -201,6 +341,12 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
 #endif
     }
 
+    private static void NotifyCachesAfterVisualChange(Transform ship)
+    {
+        NotifyCameraAfterVisualChange();
+        NotifyRcsAfterVisualChange(ship);
+    }
+
     private static void NotifyCameraAfterVisualChange()
     {
         if (Camera.main == null)
@@ -211,8 +357,24 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
         SimpleFollowCamera followCamera = Camera.main.GetComponent<SimpleFollowCamera>();
         if (followCamera != null)
         {
+            followCamera.MarkVisualBoundsDirty();
             followCamera.ReframeToTargetVisualBounds();
             followCamera.SnapNextFrame();
+        }
+    }
+
+    private static void NotifyRcsAfterVisualChange(Transform ship)
+    {
+        if (ship == null)
+        {
+            return;
+        }
+
+        RcsThrusterController rcs = ship.GetComponent<RcsThrusterController>();
+        if (rcs != null && rcs.UseImportedFunctionalSockets)
+        {
+            rcs.MarkNozzlesDirty();
+            rcs.RefreshNozzles();
         }
     }
 

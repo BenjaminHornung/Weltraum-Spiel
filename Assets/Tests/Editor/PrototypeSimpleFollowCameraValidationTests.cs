@@ -159,7 +159,7 @@ public class PrototypeSimpleFollowCameraValidationTests
     }
 
     [Test]
-    public void OrbitZoomPreservesViewRayToSemanticFocusWhenAnchorExists()
+    public void OrbitZoomPreservesViewRayToVisualPivotWhenAnchorExists()
     {
         GameObject ship = new GameObject("SimpleFollowCameraTestShip");
         ShipStats stats = ship.AddComponent<ShipStats>();
@@ -172,15 +172,15 @@ public class PrototypeSimpleFollowCameraValidationTests
         camera.CycleCameraMode();
         InvokeLateUpdate(camera);
 
-        Vector3 focus = camera.FocusPoint;
+        Vector3 focus = camera.VisualBoundsCenter;
         Vector3 beforeRay = (camera.transform.position - focus).normalized;
 
         camera.AdjustZoom(-3f);
         InvokeLateUpdate(camera);
 
-        Vector3 afterRay = (camera.transform.position - camera.FocusPoint).normalized;
-        Assert.That(camera.FocusSourceLabel, Is.EqualTo("CameraAnchor"));
-        Assert.That(Vector3.Angle(beforeRay, afterRay), Is.LessThan(0.1f), "Zoom should preserve the semantic focus ray when an anchor exists.");
+        Vector3 afterRay = (camera.transform.position - camera.VisualBoundsCenter).normalized;
+        Assert.That(camera.FocusSourceLabel, Is.EqualTo("VisualBounds"));
+        Assert.That(Vector3.Angle(beforeRay, afterRay), Is.LessThan(0.1f), "Orbit zoom should preserve the visual pivot ray even when ChaseLocked uses an anchor.");
     }
 
     [Test]
@@ -203,6 +203,51 @@ public class PrototypeSimpleFollowCameraValidationTests
         AssertVector(camera.VisualBoundsCenter, visual.GetComponent<Renderer>().bounds.center, 0.001f);
         Assert.That(camera.VisualBoundsRadius, Is.GreaterThan(0f));
         Assert.That(camera.EffectiveDistance, Is.GreaterThan(0f));
+    }
+
+    [Test]
+    public void VisualBoundsCacheDoesNotRefreshUntilMarkedDirty()
+    {
+        GameObject ship = new GameObject("SimpleFollowCameraTestShip");
+        ShipStats stats = ship.AddComponent<ShipStats>();
+        SimpleFollowCamera camera = BuildCamera(ship);
+        GameObject visual = BuildVisualChild(ship, "SimpleFollowCameraCachedVisual", Vector3.one * 2f);
+
+        camera.BindTarget(ship.transform, stats);
+        InvokeLateUpdate(camera);
+        int refreshCount = camera.VisualBoundsRefreshCount;
+        float initialRadius = camera.VisualBoundsRadius;
+
+        visual.transform.localScale = Vector3.one * 20f;
+        InvokeLateUpdate(camera);
+        InvokeLateUpdate(camera);
+
+        Assert.That(camera.VisualBoundsRefreshCount, Is.EqualTo(refreshCount));
+        Assert.That(camera.VisualBoundsRadius, Is.EqualTo(initialRadius).Within(0.001f));
+
+        camera.MarkVisualBoundsDirty();
+        InvokeLateUpdate(camera);
+
+        Assert.That(camera.VisualBoundsRefreshCount, Is.EqualTo(refreshCount + 1));
+        Assert.That(camera.VisualBoundsRadius, Is.GreaterThan(initialRadius));
+    }
+
+    [Test]
+    public void CameraBoundsIgnoreVfxMarkersAndExplicitIgnoreComponents()
+    {
+        GameObject ship = new GameObject("SimpleFollowCameraTestShip");
+        ShipStats stats = ship.AddComponent<ShipStats>();
+        SimpleFollowCamera camera = BuildCamera(ship);
+        BuildVisualChild(ship, "SimpleFollowCameraShipMesh", Vector3.one * 2f);
+        BuildVisualChild(ship, "Huge_VFX_Debug_Marker", Vector3.one * 200f);
+        GameObject ignored = BuildVisualChild(ship, "HugeVisibleIgnoredMesh", Vector3.one * 200f);
+        ignored.AddComponent<PrototypeIgnoreCameraBounds>();
+
+        camera.BindTarget(ship.transform, stats);
+        InvokeLateUpdate(camera);
+
+        Assert.True(camera.HasVisualBounds);
+        Assert.That(camera.VisualBoundsRadius, Is.LessThan(5f), "Ignored VFX/marker renderers should not inflate camera fit bounds.");
     }
 
     [Test]
@@ -238,7 +283,7 @@ public class PrototypeSimpleFollowCameraValidationTests
     }
 
     [Test]
-    public void ChaseLockedAimsAtOffsetVisualBoundsCenter()
+    public void ChaseLockedAimsAtShipFocusWhenVisualBoundsAreOffset()
     {
         GameObject ship = new GameObject("SimpleFollowCameraTestShip");
         ShipStats stats = ship.AddComponent<ShipStats>();
@@ -249,8 +294,11 @@ public class PrototypeSimpleFollowCameraValidationTests
         camera.BindTarget(ship.transform, stats);
         InvokeLateUpdate(camera);
 
+        Vector3 toShipFocus = ship.transform.position - camera.transform.position;
         Vector3 toVisualCenter = offsetVisual.GetComponent<Renderer>().bounds.center - camera.transform.position;
-        Assert.That(Vector3.Angle(camera.transform.forward, toVisualCenter), Is.LessThan(1f), "Chase camera should frame the visual bounds center, not just the gameplay transform origin.");
+        Assert.That(camera.FocusSourceLabel, Is.EqualTo("TargetPosition"));
+        Assert.That(Vector3.Angle(camera.transform.forward, toShipFocus), Is.LessThan(1f), "Chase camera should stay anchored to the gameplay ship focus.");
+        Assert.That(Vector3.Angle(camera.transform.forward, toVisualCenter), Is.GreaterThan(1f), "Offset imported visual bounds should not drag the ChaseLocked pivot.");
     }
 
     [Test]
@@ -263,13 +311,16 @@ public class PrototypeSimpleFollowCameraValidationTests
         visual.transform.localPosition = new Vector3(0f, 2f, 6f);
 
         camera.BindTarget(ship.transform, stats);
+        camera.CycleCameraMode();
         InvokeLateUpdate(camera);
+        int refreshCount = camera.VisualBoundsRefreshCount;
 
         ship.transform.position = new Vector3(30f, 0f, 0f);
         InvokeLateUpdate(camera);
 
         Vector3 toVisualCenter = visual.GetComponent<Renderer>().bounds.center - camera.transform.position;
-        Assert.That(Vector3.Angle(camera.transform.forward, toVisualCenter), Is.LessThan(1f), "World-space Renderer.bounds must be refreshed while the ship moves, or the camera anchors to stale space.");
+        Assert.That(camera.VisualBoundsRefreshCount, Is.EqualTo(refreshCount), "Moving the target should reuse cached renderer membership and transform the cached local bounds center.");
+        Assert.That(Vector3.Angle(camera.transform.forward, toVisualCenter), Is.LessThan(1f), "Cached local visual bounds must follow the moving ship without a renderer hierarchy refresh.");
     }
 
     [Test]

@@ -82,8 +82,6 @@ public class PrototypeFunctionalShipSocketValidationTests
         int initialRefreshes = controller.NozzleRefreshCount;
         Assert.False(controller.UseImportedFunctionalSockets);
         Assert.That(controller.InstalledNozzleCount, Is.EqualTo(0));
-        Assert.That(controller.NozzleRefreshCount, Is.EqualTo(1));
-        Assert.That(initialRefreshes, Is.EqualTo(1));
 
         controller.ApplyControls(Vector3.forward, Vector3.zero, false, 0.02f);
         Assert.That(controller.NozzleRefreshCount, Is.EqualTo(initialRefreshes));

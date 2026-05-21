@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
@@ -10,6 +12,18 @@ public class SimpleFollowCamera : MonoBehaviour
         Side = 2,
         FreeInspect = 3
     }
+
+    private static readonly string[] VisualBoundsNameFilters =
+    {
+        "VFX",
+        "MUZZLE_FLASH",
+        "WEAPON_CLEARANCE",
+        "WEAPON_ARC_LIMIT",
+        "Debug",
+        "Label",
+        "Ring",
+        "Marker"
+    };
 
     [SerializeField] private Transform target;
     [SerializeField] private ShipStats targetStats;
@@ -45,14 +59,24 @@ public class SimpleFollowCamera : MonoBehaviour
     private Vector3 freeInspectLookTarget;
     private bool hasFreeInspectLookTarget;
     private Vector3 visualBoundsCenter;
+    private Vector3 visualBoundsCenterLocal;
     private float visualBoundsRadius;
     private bool hasVisualBounds;
+    private bool isVisualBoundsDirty = true;
+    private int visualBoundsRefreshCount;
+    private Vector3 visualBoundsCenterOffsetFromCom;
+    private readonly List<Renderer> visualBoundsRenderers = new List<Renderer>(32);
     private Vector3 focusPoint;
     private string focusSourceLabel = "TargetPosition";
+    private Rigidbody targetRigidbody;
+    private PrototypeCameraAnchor targetAnchor;
+    private Transform namedFocusAnchor;
+    private string namedFocusAnchorLabel = "TargetPosition";
 
     private float baseFollowDistance;
     private float effectiveFollowDistance;
     private float baseVisualBoundsRadius;
+    private float anchorError;
 
     public int CameraMode => (int)cameraMode;
     public string CameraModeName => GetCameraModeName(cameraMode);
@@ -67,18 +91,21 @@ public class SimpleFollowCamera : MonoBehaviour
     public float EffectiveDistance => effectiveFollowDistance;
     public Vector3 FocusPoint => focusPoint;
     public string FocusSourceLabel => focusSourceLabel;
+    public string CameraFocusSource => focusSourceLabel;
     public Vector3 VisualBoundsCenter => visualBoundsCenter;
     public float VisualBoundsRadius => visualBoundsRadius;
+    public Vector3 VisualBoundsCenterOffsetFromCom => visualBoundsCenterOffsetFromCom;
+    public int VisualBoundsRefreshCount => visualBoundsRefreshCount;
     public string TargetName => target != null ? target.name : string.Empty;
     public bool HasVisualBounds => hasVisualBounds;
-
-    private float anchorError;
 
     public void BindTarget(Transform newTarget, ShipStats stats)
     {
         EnsureCamera();
         target = newTarget;
         targetStats = stats;
+        ResolveTargetHierarchyReferences();
+        MarkVisualBoundsDirty();
         freeInspectLookTarget = Vector3.zero;
         hasFreeInspectLookTarget = false;
         snapNextFrame = true;
@@ -134,20 +161,33 @@ public class SimpleFollowCamera : MonoBehaviour
 
     public void ReframeToTargetVisualBounds()
     {
-        RefreshVisualBounds();
+        MarkVisualBoundsDirty();
+        RefreshVisualBoundsIfNeeded();
 
         if (target == null)
         {
             return;
         }
 
+        RefreshFocusPoint();
+
         if (cameraMode == CameraViewMode.FreeInspect)
         {
-            freeInspectLookTarget = GetFocusPoint();
+            freeInspectLookTarget = focusPoint;
             hasFreeInspectLookTarget = true;
         }
 
         snapNextFrame = true;
+    }
+
+    public void MarkVisualBoundsDirty()
+    {
+        isVisualBoundsDirty = true;
+    }
+
+    public void InvalidateVisualBounds()
+    {
+        MarkVisualBoundsDirty();
     }
 
     private void SetCameraMode(CameraViewMode nextMode)
@@ -212,7 +252,9 @@ public class SimpleFollowCamera : MonoBehaviour
             return;
         }
 
-        RefreshVisualBounds();
+        RefreshVisualBoundsIfNeeded();
+        UpdateCachedVisualBoundsWorldSpace();
+        RefreshFocusPoint();
 
         float followHeight = targetStats != null ? targetStats.FollowHeight : height;
         float baseDistance = ResolveBaseDistance(followHeight);
@@ -509,26 +551,42 @@ public class SimpleFollowCamera : MonoBehaviour
             || keyboard.digit3Key.wasPressedThisFrame;
     }
 
+    private void RefreshVisualBoundsIfNeeded()
+    {
+        if (!isVisualBoundsDirty)
+        {
+            return;
+        }
+
+        ResolveTargetHierarchyReferences();
+        RefreshVisualBounds();
+        isVisualBoundsDirty = false;
+        visualBoundsRefreshCount++;
+    }
+
     private void RefreshVisualBounds()
     {
         if (target == null)
         {
             hasVisualBounds = false;
             visualBoundsCenter = Vector3.zero;
+            visualBoundsCenterLocal = Vector3.zero;
             visualBoundsRadius = 0f;
+            visualBoundsCenterOffsetFromCom = Vector3.zero;
             focusPoint = Vector3.zero;
             focusSourceLabel = "None";
             return;
         }
 
-        Renderer[] renderers = target.GetComponentsInChildren<Renderer>(true);
+        visualBoundsRenderers.Clear();
+        target.GetComponentsInChildren(true, visualBoundsRenderers);
         bool hasBounds = false;
         Bounds combined = new Bounds(target.position, Vector3.zero);
 
-        for (int i = 0; i < renderers.Length; i++)
+        for (int i = 0; i < visualBoundsRenderers.Count; i++)
         {
-            Renderer renderer = renderers[i];
-            if (renderer == null || !renderer.enabled || !renderer.gameObject.activeInHierarchy)
+            Renderer renderer = visualBoundsRenderers[i];
+            if (!ShouldIncludeRendererInVisualBounds(renderer))
             {
                 continue;
             }
@@ -548,45 +606,118 @@ public class SimpleFollowCamera : MonoBehaviour
         if (hasBounds)
         {
             visualBoundsCenter = combined.center;
+            visualBoundsCenterLocal = target.InverseTransformPoint(combined.center);
             visualBoundsRadius = combined.extents.magnitude;
         }
         else
         {
             visualBoundsCenter = target.position;
+            visualBoundsCenterLocal = Vector3.zero;
             visualBoundsRadius = 0f;
         }
 
-        RefreshFocusPoint();
-
-        if (cameraMode == CameraViewMode.FreeInspect && !hasVisualBounds)
-        {
-            freeInspectLookTarget = GetFocusPoint();
-            hasFreeInspectLookTarget = true;
-        }
+        UpdateCachedVisualBoundsWorldSpace();
     }
 
-    private void RefreshFocusPoint()
+    private void UpdateCachedVisualBoundsWorldSpace()
     {
-        PrototypeCameraAnchor anchor = ResolveHighestPriorityAnchor();
-        if (anchor != null)
+        if (target == null)
         {
-            focusPoint = anchor.FocusPoint;
-            focusSourceLabel = "CameraAnchor";
-            return;
-        }
-
-        Rigidbody targetBody = target.GetComponent<Rigidbody>();
-        if (targetBody != null)
-        {
-            focusPoint = targetBody.worldCenterOfMass;
-            focusSourceLabel = "Rigidbody.worldCenterOfMass";
+            visualBoundsCenterOffsetFromCom = Vector3.zero;
             return;
         }
 
         if (hasVisualBounds)
         {
-            focusPoint = visualBoundsCenter;
-            focusSourceLabel = "VisualBounds";
+            visualBoundsCenter = target.TransformPoint(visualBoundsCenterLocal);
+            visualBoundsCenterOffsetFromCom = visualBoundsCenter - ResolveCenterOfMassOrTargetPosition();
+        }
+        else
+        {
+            visualBoundsCenter = target.position;
+            visualBoundsCenterOffsetFromCom = Vector3.zero;
+        }
+    }
+
+    private Vector3 ResolveCenterOfMassOrTargetPosition()
+    {
+        if (target == null)
+        {
+            return Vector3.zero;
+        }
+
+        return targetRigidbody != null ? targetRigidbody.worldCenterOfMass : target.position;
+    }
+
+    private bool ShouldIncludeRendererInVisualBounds(Renderer renderer)
+    {
+        if (renderer == null || !renderer.enabled || !renderer.gameObject.activeInHierarchy)
+        {
+            return false;
+        }
+
+        if (renderer.GetComponentInParent<PrototypeIgnoreCameraBounds>() != null)
+        {
+            return false;
+        }
+
+        string renderName = renderer.gameObject.name;
+        for (int i = 0; i < VisualBoundsNameFilters.Length; i++)
+        {
+            if (renderName.IndexOf(VisualBoundsNameFilters[i], StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void RefreshFocusPoint()
+    {
+        if (target == null)
+        {
+            focusPoint = Vector3.zero;
+            focusSourceLabel = "None";
+            return;
+        }
+
+        if (cameraMode == CameraViewMode.ChaseLocked)
+        {
+            ResolveChaseFocusPoint();
+        }
+        else
+        {
+            ResolveNonChaseFocusPoint();
+        }
+
+        if (cameraMode == CameraViewMode.FreeInspect && !hasVisualBounds && !hasFreeInspectLookTarget)
+        {
+            freeInspectLookTarget = focusPoint;
+            hasFreeInspectLookTarget = true;
+        }
+    }
+
+    private void ResolveChaseFocusPoint()
+    {
+        if (targetAnchor != null)
+        {
+            focusPoint = targetAnchor.FocusPoint;
+            focusSourceLabel = "CameraAnchor";
+            return;
+        }
+
+        if (namedFocusAnchor != null)
+        {
+            focusPoint = namedFocusAnchor.position;
+            focusSourceLabel = namedFocusAnchorLabel;
+            return;
+        }
+
+        if (targetRigidbody != null)
+        {
+            focusPoint = targetRigidbody.worldCenterOfMass;
+            focusSourceLabel = "Rigidbody.worldCenterOfMass";
             return;
         }
 
@@ -594,11 +725,74 @@ public class SimpleFollowCamera : MonoBehaviour
         focusSourceLabel = "TargetPosition";
     }
 
+    private void ResolveNonChaseFocusPoint()
+    {
+        if (hasVisualBounds)
+        {
+            focusPoint = visualBoundsCenter;
+            focusSourceLabel = "VisualBounds";
+            return;
+        }
+
+        if (targetAnchor != null)
+        {
+            focusPoint = targetAnchor.FocusPoint;
+            focusSourceLabel = "CameraAnchor";
+            return;
+        }
+
+        if (targetRigidbody != null)
+        {
+            focusPoint = targetRigidbody.worldCenterOfMass;
+            focusSourceLabel = "Rigidbody.worldCenterOfMass";
+            return;
+        }
+
+        focusPoint = target.position;
+        focusSourceLabel = "TargetPosition";
+    }
+
+    private void ResolveTargetHierarchyReferences()
+    {
+        if (target == null)
+        {
+            targetRigidbody = null;
+            targetAnchor = null;
+            namedFocusAnchor = null;
+            namedFocusAnchorLabel = "TargetPosition";
+            return;
+        }
+
+        targetRigidbody = target.GetComponent<Rigidbody>();
+        targetAnchor = ResolveHighestPriorityAnchor();
+        namedFocusAnchor = null;
+        namedFocusAnchorLabel = "TargetPosition";
+
+        if (targetAnchor == null)
+        {
+            Transform focusAnchor = FindDescendantByName(target.transform, "CameraFocusAnchor");
+            if (focusAnchor != null)
+            {
+                namedFocusAnchor = focusAnchor;
+                namedFocusAnchorLabel = "CameraFocusAnchor";
+                return;
+            }
+
+            focusAnchor = FindDescendantByName(target.transform, "PrototypeCameraAnchor");
+            if (focusAnchor != null)
+            {
+                namedFocusAnchor = focusAnchor;
+                namedFocusAnchorLabel = "PrototypeCameraAnchor";
+            }
+        }
+    }
+
     private PrototypeCameraAnchor ResolveHighestPriorityAnchor()
     {
         PrototypeCameraAnchor[] anchors = target.GetComponentsInChildren<PrototypeCameraAnchor>(true);
         PrototypeCameraAnchor best = null;
         int bestPriority = int.MinValue;
+
         for (int i = 0; i < anchors.Length; i++)
         {
             PrototypeCameraAnchor anchor = anchors[i];
@@ -615,6 +809,26 @@ public class SimpleFollowCamera : MonoBehaviour
         }
 
         return best;
+    }
+
+    private static Transform FindDescendantByName(Transform root, string targetName)
+    {
+        for (int i = 0; i < root.childCount; i++)
+        {
+            Transform child = root.GetChild(i);
+            if (string.Equals(child.name, targetName, StringComparison.Ordinal))
+            {
+                return child;
+            }
+
+            Transform match = FindDescendantByName(child, targetName);
+            if (match != null)
+            {
+                return match;
+            }
+        }
+
+        return null;
     }
 
     private static string GetCameraModeName(CameraViewMode mode)

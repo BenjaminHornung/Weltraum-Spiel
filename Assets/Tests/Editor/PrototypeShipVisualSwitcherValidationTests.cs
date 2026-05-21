@@ -39,7 +39,9 @@ public class PrototypeShipVisualSwitcherValidationTests
 
         switcher.SelectVisualMode(PrototypeShipVisualMode.GeneratedPrimitives);
 
-        Assert.Null(ship.transform.Find("ImportedShipVisual"));
+        visualRoot = ship.transform.Find("ImportedShipVisual");
+        Assert.NotNull(visualRoot, "Imported visual root is pooled after first use.");
+        Assert.False(visualRoot.gameObject.activeSelf);
         Transform hullKitRoot = ship.transform.Find("Hull").Find(PrototypeShipPartVisualFactory.VisualRootName);
         Assert.NotNull(hullKitRoot);
         Assert.False(ship.transform.Find("Hull").GetComponent<Renderer>().enabled);
@@ -62,7 +64,9 @@ public class PrototypeShipVisualSwitcherValidationTests
         resetMethod.Invoke(switcher, null);
 
         Assert.That(switcher.SelectedVisualMode, Is.EqualTo(PrototypeShipVisualMode.GeneratedPrimitives));
-        Assert.Null(ship.transform.Find("ImportedShipVisual"));
+        Transform importedRoot = ship.transform.Find("ImportedShipVisual");
+        Assert.NotNull(importedRoot, "Runtime reset keeps pooled imported visuals inactive instead of destroying them.");
+        Assert.False(importedRoot.gameObject.activeSelf);
         Assert.False(ship.transform.Find("Hull").GetComponent<Renderer>().enabled);
         Transform hullKitRoot = ship.transform.Find("Hull").Find(PrototypeShipPartVisualFactory.VisualRootName);
         Assert.NotNull(hullKitRoot);
@@ -141,6 +145,38 @@ public class PrototypeShipVisualSwitcherValidationTests
         Assert.That(cockpitToEngine.z, Is.GreaterThan(3.5f));
         Assert.That(Mathf.Abs(cockpitToEngine.x), Is.LessThan(0.1f));
         Assert.That(topPanel.position.y, Is.GreaterThan(ship.transform.position.y));
+    }
+
+    [Test]
+    public void ImportedVisualSwitcherReusesPooledScoutAndCargoInstances()
+    {
+        GameObject ship = BuildBaselineShip();
+        var switcher = CreateSwitcher();
+
+        switcher.SelectVisualMode(PrototypeShipVisualMode.ImportedDemoScout);
+        Transform visualRoot = ship.transform.Find("ImportedShipVisual");
+        Assert.NotNull(visualRoot);
+        Transform firstScout = visualRoot.Find("ImportedDemoScoutVisual");
+        Assert.NotNull(firstScout);
+        Assert.True(firstScout.gameObject.activeSelf);
+        Assert.That(CountDirectChildrenNamed(ship.transform, "ImportedShipVisual"), Is.EqualTo(1));
+
+        switcher.SelectVisualMode(PrototypeShipVisualMode.ImportedDemoCargo);
+        Transform cargo = visualRoot.Find("ImportedDemoCargoVisual");
+        Assert.NotNull(cargo);
+        Assert.True(cargo.gameObject.activeSelf);
+        Assert.False(firstScout.gameObject.activeSelf);
+        Assert.That(CountDirectChildrenNamed(ship.transform, "ImportedShipVisual"), Is.EqualTo(1));
+
+        switcher.SelectVisualMode(PrototypeShipVisualMode.GeneratedPrimitives);
+        Assert.False(visualRoot.gameObject.activeSelf);
+
+        switcher.SelectVisualMode(PrototypeShipVisualMode.ImportedDemoScout);
+        Assert.AreSame(firstScout, visualRoot.Find("ImportedDemoScoutVisual"));
+        Assert.AreSame(cargo, visualRoot.Find("ImportedDemoCargoVisual"));
+        Assert.True(firstScout.gameObject.activeSelf);
+        Assert.False(cargo.gameObject.activeSelf);
+        Assert.That(CountDirectChildrenNamed(ship.transform, "ImportedShipVisual"), Is.EqualTo(1));
     }
 
     [Test]
@@ -423,6 +459,20 @@ public class PrototypeShipVisualSwitcherValidationTests
         for (int i = 0; i < root.childCount; i++)
         {
             count += CountDescendantNamesContaining(root.GetChild(i), namePart);
+        }
+
+        return count;
+    }
+
+    private static int CountDirectChildrenNamed(Transform root, string childName)
+    {
+        int count = 0;
+        for (int i = 0; i < root.childCount; i++)
+        {
+            if (root.GetChild(i).name == childName)
+            {
+                count++;
+            }
         }
 
         return count;

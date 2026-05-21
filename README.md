@@ -90,9 +90,12 @@ Camera reset is bound to Backquote. Unity Input System key controls are physical
 - Arrival uses distance plus full relative speed and lateral speed limits. It no longer requires `closingSpeed >= 0`, so a ship that is slightly drifting away inside the arrival envelope can still enter hold if relative velocity is low enough.
 - Hold dampens small residual velocity with RCS for a confirmation window before completion.
 - `PrototypeCameraAnchor` separates semantic camera focus from visual bounds. The focus prefers the highest-priority anchor, then Rigidbody center of mass, then visual bounds, then target position. Visual bounds still control fit distance and safe zoom.
-- `SimpleFollowCamera` now exposes focus source, focus point, visual-bounds center/radius, effective distance, zoom, target name, and bounds availability. Reframing changes distance but does not move focus away from the anchor/COM.
+- `SimpleFollowCamera` caches visual bounds and only refreshes the renderer list when the target is bound, reframed, visually switched, or explicitly dirtied. `ChaseLocked` stays on the anchor/COM/target flight focus, while visual bounds affect distance and safe zoom.
+- Camera bounds exclude VFX, muzzle flash, weapon clearance/arc markers, debug labels/rings/markers, and objects tagged with `PrototypeIgnoreCameraBounds` so helper visuals do not inflate framing.
+- `SimpleFollowCamera` exposes focus source, focus point, visual-bounds center/radius, visual center offset from COM, bounds refresh count, effective distance, zoom, target name, and bounds availability. Reframing changes distance but does not move focus away from the anchor/COM.
 - `PrototypeBootstrap` ensures a camera anchor on the prototype ship, keeps exactly one active main camera, rebinds HUD/debug/minimap/follow camera after rebuilds, and snaps/reframes the follow camera to the active ship.
 - `PrototypeShipVisualSwitcher_Manager` may live at the origin as a non-rendered/non-physical manager only. Imported visuals remain children of `PrototypeShip/ImportedShipVisual` and visual switching reframes the camera without moving the camera anchor.
+- F6 visual switching is visual-only by default: generated RCS/weapon sockets keep controlling flight while imported Scout/Cargo meshes are lazy-loaded once, stripped of runtime physics once, then reused by toggling active pooled children. Imported functional sockets remain an explicit opt-in on `RcsThrusterController`.
 
 ## Prototype Test Environment
 
