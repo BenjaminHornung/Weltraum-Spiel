@@ -77,6 +77,8 @@ public class SimpleFollowCamera : MonoBehaviour
     private float effectiveFollowDistance;
     private float baseVisualBoundsRadius;
     private float anchorError;
+    private CameraVisualBoundsData cachedVisualBoundsSnapshot;
+    private int visualBoundsIncludedRendererCount;
 
     public int CameraMode => (int)cameraMode;
     public string CameraModeName => GetCameraModeName(cameraMode);
@@ -96,6 +98,9 @@ public class SimpleFollowCamera : MonoBehaviour
     public float VisualBoundsRadius => visualBoundsRadius;
     public Vector3 VisualBoundsCenterOffsetFromCom => visualBoundsCenterOffsetFromCom;
     public int VisualBoundsRefreshCount => visualBoundsRefreshCount;
+    public int VisualBoundsRendererCount => cachedVisualBoundsSnapshot.includedRendererCount;
+    public int VisualBoundsTotalRendererCount => cachedVisualBoundsSnapshot.totalRendererCount;
+    public CameraVisualBoundsData VisualBoundsSnapshot => cachedVisualBoundsSnapshot;
     public string TargetName => target != null ? target.name : string.Empty;
     public bool HasVisualBounds => hasVisualBounds;
 
@@ -190,6 +195,11 @@ public class SimpleFollowCamera : MonoBehaviour
         MarkVisualBoundsDirty();
     }
 
+    public CameraVisualBoundsData CopyVisualBoundsSnapshot()
+    {
+        return cachedVisualBoundsSnapshot;
+    }
+
     private void SetCameraMode(CameraViewMode nextMode)
     {
         if (cameraMode == nextMode)
@@ -255,6 +265,7 @@ public class SimpleFollowCamera : MonoBehaviour
         RefreshVisualBoundsIfNeeded();
         UpdateCachedVisualBoundsWorldSpace();
         RefreshFocusPoint();
+        UpdateVisualBoundsSnapshot();
 
         float followHeight = targetStats != null ? targetStats.FollowHeight : height;
         float baseDistance = ResolveBaseDistance(followHeight);
@@ -562,12 +573,14 @@ public class SimpleFollowCamera : MonoBehaviour
         RefreshVisualBounds();
         isVisualBoundsDirty = false;
         visualBoundsRefreshCount++;
+        UpdateVisualBoundsSnapshot();
     }
 
     private void RefreshVisualBounds()
     {
         if (target == null)
         {
+            visualBoundsRenderers.Clear();
             hasVisualBounds = false;
             visualBoundsCenter = Vector3.zero;
             visualBoundsCenterLocal = Vector3.zero;
@@ -575,12 +588,14 @@ public class SimpleFollowCamera : MonoBehaviour
             visualBoundsCenterOffsetFromCom = Vector3.zero;
             focusPoint = Vector3.zero;
             focusSourceLabel = "None";
+            visualBoundsIncludedRendererCount = 0;
             return;
         }
 
         visualBoundsRenderers.Clear();
         target.GetComponentsInChildren(true, visualBoundsRenderers);
         bool hasBounds = false;
+        int includedRendererCount = 0;
         Bounds combined = new Bounds(target.position, Vector3.zero);
 
         for (int i = 0; i < visualBoundsRenderers.Count; i++)
@@ -591,6 +606,7 @@ public class SimpleFollowCamera : MonoBehaviour
                 continue;
             }
 
+            includedRendererCount++;
             if (!hasBounds)
             {
                 combined = renderer.bounds;
@@ -616,7 +632,22 @@ public class SimpleFollowCamera : MonoBehaviour
             visualBoundsRadius = 0f;
         }
 
+        visualBoundsIncludedRendererCount = includedRendererCount;
         UpdateCachedVisualBoundsWorldSpace();
+    }
+
+    private void UpdateVisualBoundsSnapshot()
+    {
+        cachedVisualBoundsSnapshot.snapshotVersion = visualBoundsRefreshCount;
+        cachedVisualBoundsSnapshot.refreshCount = visualBoundsRefreshCount;
+        cachedVisualBoundsSnapshot.totalRendererCount = visualBoundsRenderers.Count;
+        cachedVisualBoundsSnapshot.includedRendererCount = visualBoundsIncludedRendererCount;
+        cachedVisualBoundsSnapshot.hasVisualBounds = hasVisualBounds ? 1 : 0;
+        cachedVisualBoundsSnapshot.visualBoundsCenter = visualBoundsCenter;
+        cachedVisualBoundsSnapshot.visualBoundsCenterLocal = visualBoundsCenterLocal;
+        cachedVisualBoundsSnapshot.visualBoundsRadius = visualBoundsRadius;
+        cachedVisualBoundsSnapshot.visualBoundsCenterOffsetFromCom = visualBoundsCenterOffsetFromCom;
+        cachedVisualBoundsSnapshot.focusPoint = focusPoint;
     }
 
     private void UpdateCachedVisualBoundsWorldSpace()

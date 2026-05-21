@@ -97,12 +97,58 @@ public class PrototypeProjectileSimulation : MonoBehaviour
     private readonly List<ActiveProjectile> activeProjectiles = new List<ActiveProjectile>(128);
     private RaycastHit[] hitBuffer;
     private int totalShotsProcessed;
+    private int nextProjectileId = 1;
+    private int projectileSnapshotVersion;
 
     public static PrototypeProjectileSimulation Instance => instance;
     public PrototypeProjectileVisualPool VisualPool => visualPool;
     public int ActiveProjectileCount => activeProjectiles.Count;
     public int TotalShotsProcessed => totalShotsProcessed;
+    public int CopyActiveProjectileSnapshot(List<ProjectileData> buffer)
+    {
+        if (buffer == null)
+        {
+            return 0;
+        }
+
+        int snapshotVersion = ++projectileSnapshotVersion;
+        buffer.Clear();
+        for (int i = 0; i < activeProjectiles.Count; i++)
+        {
+            ActiveProjectile projectile = activeProjectiles[i];
+            buffer.Add(new ProjectileData
+            {
+                projectileId = projectile.id,
+                ownerTargetId = projectile.ownerRoot != null ? projectile.ownerRoot.GetHashCode() : 0,
+                mode = WeaponProjectileMode.SimulatedProjectile,
+                snapshotVersion = snapshotVersion,
+                hitMask = projectile.hitMask,
+                previousPosition = projectile.previousPosition,
+                position = projectile.position,
+                direction = projectile.direction,
+                velocity = projectile.velocity,
+                radius = projectile.radius,
+                mass = projectile.mass,
+                lifetime = projectile.lifetime,
+                age = projectile.age,
+                damagePerImpulse = projectile.damagePerImpulse,
+                applyImpactDamageFlag = projectile.applyImpactDamage ? 1 : 0,
+                applyImpactImpulseFlag = projectile.applyImpactImpulse ? 1 : 0,
+                lastDamageApplied = projectile.lastDamageApplied,
+                lastImpactImpulseAppliedFlag = projectile.lastImpactImpulseApplied ? 1 : 0
+            });
+        }
+
+        return buffer.Count;
+    }
     public int HitBufferSize => hitBuffer != null ? hitBuffer.Length : Mathf.Max(1, hitBufferSize);
+    public int NextProjectileId
+    {
+        get
+        {
+            return nextProjectileId;
+        }
+    }
     public PrototypeProjectileFireResult LastFireResult { get; private set; }
 
     public static PrototypeProjectileSimulation GetOrCreateDefault()
@@ -298,6 +344,7 @@ public class PrototypeProjectileSimulation : MonoBehaviour
 
         activeProjectiles.Add(new ActiveProjectile
         {
+            id = nextProjectileId++,
             ownerRoot = request.ownerRoot,
             previousPosition = request.origin,
             position = request.origin,
@@ -543,6 +590,7 @@ public class PrototypeProjectileSimulation : MonoBehaviour
 
     private struct ActiveProjectile
     {
+        public int id;
         public Transform ownerRoot;
         public Vector3 previousPosition;
         public Vector3 position;

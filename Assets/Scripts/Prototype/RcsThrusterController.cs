@@ -106,6 +106,24 @@ public class RcsThrusterController : MonoBehaviour
             return nozzles.Count;
         }
     }
+    public int CopyNozzleSnapshot(System.Collections.Generic.List<RcsNozzleData> buffer)
+    {
+        if (buffer == null)
+        {
+            return 0;
+        }
+
+        buffer.Clear();
+        int shipId = shipRigidbody != null ? shipRigidbody.GetHashCode() : 0;
+        bool snapshotIsDirty = nozzlesDirty;
+        for (int i = 0; i < nozzles.Count; i++)
+        {
+            RcsNozzle nozzle = nozzles[i];
+            buffer.Add(CreateNozzleSnapshot(nozzle, i, shipId, nozzleRefreshCount, snapshotIsDirty));
+        }
+
+        return buffer.Count;
+    }
     public int ActiveNozzleCount { get; private set; }
     public string ActiveNozzleIds { get; private set; } = string.Empty;
     public Vector3 ControlPivotLocal { get; private set; }
@@ -377,6 +395,48 @@ public class RcsThrusterController : MonoBehaviour
     public void RecomputeControlPivot()
     {
         RefreshNozzles();
+    }
+
+    private static RcsNozzleData CreateNozzleSnapshot(RcsNozzle nozzle, int fallbackId, int shipId, int cacheVersion, bool isCacheDirty)
+    {
+        if (nozzle == null || nozzle.transform == null)
+        {
+            return new RcsNozzleData
+            {
+                nozzleId = fallbackId,
+                shipId = shipId,
+                snapshotVersion = cacheVersion,
+                isActive = 0,
+                isSpooling = 0,
+                localPosition = Vector3.zero,
+                worldPosition = Vector3.zero,
+                localForward = Vector3.zero,
+                localUp = Vector3.up,
+                localRight = Vector3.right,
+                baseVfxScale = Vector3.one,
+                actualThrottle = 0f,
+                cacheVersion = cacheVersion,
+                isCacheDirty = isCacheDirty ? 1 : 0
+            };
+        }
+
+        return new RcsNozzleData
+        {
+            nozzleId = nozzle.transform.GetHashCode(),
+            shipId = shipId,
+            snapshotVersion = cacheVersion,
+            isActive = nozzle.active ? 1 : 0,
+            isSpooling = nozzle.actualThrottle > 0.0001f ? 1 : 0,
+            localPosition = nozzle.transform.localPosition,
+            worldPosition = nozzle.transform.position,
+            localForward = nozzle.transform.localRotation * Vector3.forward,
+            localUp = nozzle.transform.localRotation * Vector3.up,
+            localRight = nozzle.transform.localRotation * Vector3.right,
+            baseVfxScale = nozzle.baseVfxScale,
+            actualThrottle = nozzle.actualThrottle,
+            cacheVersion = cacheVersion,
+            isCacheDirty = isCacheDirty ? 1 : 0
+        };
     }
 
     public void ApplyControls(Vector3 translationCommand, Vector3 attitudeCommand, bool stabilizeAngular, float deltaTime)

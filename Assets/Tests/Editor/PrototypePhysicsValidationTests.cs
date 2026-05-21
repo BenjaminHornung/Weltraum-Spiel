@@ -1,5 +1,8 @@
 #if UNITY_EDITOR
 using NUnit.Framework;
+using System.IO;
+using System.Text.RegularExpressions;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PrototypePhysicsValidationTests
@@ -140,6 +143,62 @@ public class PrototypePhysicsValidationTests
             Assert.That(result.fuelFraction, Is.EqualTo(1f).Within(PhysicsValidationProbe.NozzleThrottleTolerance));
             Assert.That(result.maxNozzleThrottle, Is.LessThanOrEqualTo(1f + PhysicsValidationProbe.NozzleThrottleTolerance));
         }
+    }
+
+    [Test]
+    public void RcsNozzleSnapshotIsStableUntilCacheRefresh()
+    {
+        using (PhysicsValidationProbe.GeneratedShipFixture fixture = PhysicsValidationProbe.CreateGeneratedShip())
+        {
+            var snapshots = new List<RcsNozzleData>();
+            int firstNozzleId = -1;
+
+            fixture.Rcs.CopyNozzleSnapshot(snapshots);
+            int refreshCount = fixture.Rcs.NozzleRefreshCount;
+            int firstCount = snapshots.Count;
+            Assert.That(firstCount, Is.GreaterThan(0));
+            firstNozzleId = snapshots[0].nozzleId;
+            int firstCacheVersion = snapshots[0].cacheVersion;
+            Assert.That(snapshots[0].isCacheDirty, Is.EqualTo(0));
+            Assert.That(snapshots[0].snapshotVersion, Is.EqualTo(firstCacheVersion));
+
+            fixture.Rcs.CopyNozzleSnapshot(snapshots);
+            Assert.That(fixture.Rcs.NozzleRefreshCount, Is.EqualTo(refreshCount));
+            Assert.That(snapshots.Count, Is.EqualTo(firstCount));
+            Assert.That(snapshots[0].cacheVersion, Is.EqualTo(firstCacheVersion));
+            Assert.That(snapshots[0].isCacheDirty, Is.EqualTo(0));
+            Assert.That(snapshots[0].snapshotVersion, Is.EqualTo(firstCacheVersion));
+
+            fixture.Rcs.MarkNozzlesDirty();
+            fixture.Rcs.CopyNozzleSnapshot(snapshots);
+            Assert.That(fixture.Rcs.NozzleRefreshCount, Is.EqualTo(refreshCount));
+            Assert.That(snapshots.Count, Is.EqualTo(firstCount));
+            Assert.That(snapshots[0].nozzleId, Is.EqualTo(firstNozzleId));
+            Assert.That(snapshots[0].cacheVersion, Is.EqualTo(firstCacheVersion));
+            Assert.That(snapshots[0].isCacheDirty, Is.EqualTo(1));
+            Assert.That(snapshots[0].snapshotVersion, Is.EqualTo(firstCacheVersion));
+
+            fixture.Rcs.RefreshNozzles();
+            fixture.Rcs.CopyNozzleSnapshot(snapshots);
+            Assert.That(fixture.Rcs.NozzleRefreshCount, Is.EqualTo(refreshCount + 1));
+            Assert.That(snapshots.Count, Is.EqualTo(firstCount));
+            Assert.That(snapshots[0].nozzleId, Is.EqualTo(firstNozzleId));
+            Assert.That(snapshots[0].cacheVersion, Is.EqualTo(refreshCount + 1));
+            Assert.That(snapshots[0].isCacheDirty, Is.EqualTo(0));
+            Assert.That(snapshots[0].snapshotVersion, Is.EqualTo(refreshCount + 1));
+        }
+    }
+
+    [Test]
+    public void RcsNozzleCopyMethodAvoidsHierarchyRefreshSideEffects()
+    {
+        string source = File.ReadAllText(Path.Combine(Application.dataPath, "Scripts", "Prototype", "RcsThrusterController.cs"));
+        string methodBody = ExtractMethodBody(source, "CopyNozzleSnapshot");
+
+        Assert.That(
+            Regex.IsMatch(methodBody, @"\b(GetComponent|GetComponentInParent|GetComponentsInChildren|FindObjects|RefreshNozzles)\b"),
+            Is.False,
+            "CopyNozzleSnapshot should not trigger component lookup or hierarchy refresh side effects.");
     }
 
     [Test]
@@ -444,6 +503,36 @@ public class PrototypePhysicsValidationTests
         Assert.True(result.disabledByOverheat);
         Assert.That(result.appliedThrust, Is.EqualTo(0f).Within(PhysicsValidationProbe.ForceTolerance));
         Assert.That(result.powerDrawKw, Is.EqualTo(0f).Within(0.001f));
+    }
+
+    private static string ExtractMethodBody(string source, string methodName)
+    {
+        int methodStart = source.IndexOf(methodName + "(", System.StringComparison.Ordinal);
+        Assert.IsTrue(methodStart >= 0, $"Method '{methodName}' not found in source.");
+
+        int bodyStart = source.IndexOf('{', methodStart);
+        Assert.IsTrue(bodyStart >= 0, $"Method '{methodName}' body was not found.");
+
+        int braceDepth = 0;
+        for (int i = bodyStart; i < source.Length; i++)
+        {
+            char c = source[i];
+            if (c == '{')
+            {
+                braceDepth++;
+            }
+            else if (c == '}')
+            {
+                braceDepth--;
+                if (braceDepth == 0)
+                {
+                    return source.Substring(bodyStart, i - bodyStart + 1);
+                }
+            }
+        }
+
+        Assert.Fail($"Unable to parse method body for '{methodName}'.");
+        return string.Empty;
     }
 }
 #endif

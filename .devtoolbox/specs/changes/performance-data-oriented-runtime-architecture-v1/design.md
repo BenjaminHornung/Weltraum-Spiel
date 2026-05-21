@@ -1,114 +1,203 @@
 # Design: Data-Oriented Runtime Architecture v1
 
-## Baseline Hotpath Analysis
+## Baseline hotpath targets
 
-The first migration step is to document current hot-path behavior, not re-architect it blindly.
+The following systems are the performance-critical baseline and must be represented in the new data flow:
 
-### Current hotpath categories
+- SimpleFollowCamera visual bounds and diagnostic reads.
+- RcsThrusterController nozzle refresh/allocation behavior.
+- Projectile simulation and hit evaluation.
+- Weapon target discovery and target registry reads.
+- Autopilot path and obstacle logic.
+- Minimap and sensor data generation.
+- Debug UI diagnostics and status lines.
 
-- Projectile fire + impact evaluation.
-- Target registry lookups used for hit filtering and status checks.
-- RCS/control/visual feedback reads that are currently pulled repeatedly from mutable component graphs.
-- Camera-facing state updates that can run without full scene scans.
+## Layered architecture
 
-### Anti-patterns to remove before parallel execution
+### 1) Unity Scene Layer
+- Owns all `GameObject` and `Component` state.
+- Responsible for scene object writes, render updates, hierarchy operations, and transform side effects.
+- Owns non-serializable references and event hooks.
 
-- Repeated scene/object discovery in hot loops.
-- Mixed ownership data and temporary containers allocated per frame.
-- Runtime writes performed directly inside simulation logic that is intended for worker threads.
-- Implicit threading assumptions in gameplay scripts without explicit apply boundaries.
+### 2) Runtime Data Layer
+- Stores frame-consistent runtime structs:
+  - `ProjectileData`
+  - `TargetData`
+  - `ShipRuntimeState`
+  - `RcsNozzleData`
+  - `TrajectoryCandidateData`
+  - `SensorContactData`
+  - `CameraVisualBoundsData`
+- Uses stable IDs, version stamps, and dirty masks.
+- Provides immutable read slices for Simulation Systems during a frame step.
 
-## Core Design
+### 3) Simulation Systems
+- Pure, deterministic numeric systems over blittable arrays.
+- Burst-compatible candidates for:
+  - projectile movement / candidate filtering
+  - target scoring
+  - trajectory and obstacle scoring
+  - sensor and minimap filtering
+  - optional RCS allocator math
+- Emits compact `RuntimeDataPatch` style events.
 
-### 1) Snapshot-first runtime
+### 4) Apply Layer
+- Main-thread patch application and event commit.
+- Applies results to Unity scene graph, physics side effects, and UI.
+- Enforces patch order and deterministic side effects.
+- Converts patches into `Transform`, `Component`, and diagnostic updates.
 
-Introduce explicit snapshot layers that represent per-frame read sets consumed by runtime workers.
+## Main-thread vs job/Burst boundaries
 
-- `RuntimeDataSnapshot` captures stable scalar fields for each participating entity per frame.
-- `RuntimeDataPatch` captures only changed fields needed by downstream systems.
-- Snapshot IDs include versioning to prevent stale read/write races.
+### Must stay on main thread
+- `Transform`, `GameObject`, `Renderer`, `Rigidbody` access.
+- `GetComponent`, `GetComponentsInChildren`, `Instantiate`, `Destroy`.
+- Unity Physics API calls and any non-thread-safe object query/write.
+- Scene hierarchy mutation and direct object lifecycle work.
 
-Rules:
+### Can move to jobs/Burst
+- All data-first computations in listed hot paths.
+- `SimpleFollowCamera` bounds math and camera filter calculations over blittable data.
+- `RcsThrusterController` nozzle scoring/math when using local numeric data.
+- Projectile movement and hit scan prefilter passes.
+- Weapon target scoring and threat ranking.
+- Autopilot trajectory candidate scoring.
+- Sensor/minimap threshold and aggregation math.
 
-- Snapshots are immutable for the duration of a frame step.
-- Snapshot construction stays on the main thread and writes only plain structs/arrays.
-- Runtime workers receive `NativeArray`-style contiguous views in later phases.
+### Snapshot + apply rule
+- Main thread builds snapshots and validates dirty masks.
+- Jobs consume snapshots only.
+- Main thread applies patches after completion.
 
-### 2) Main-thread boundary contract
+### Unity API restrictions in jobs
+Jobs/Burst code must not call:
 
-The following operations must stay on main thread:
+- `Transform`
+- `GameObject`
+- `Renderer`
+- `Rigidbody`
+- `GetComponent`
+- `GetComponentsInChildren`
+- `Instantiate`
+- `Destroy`
+- normal `UnityEngine.Physics` methods
 
-- UnityEngine object/Transform reads that are not explicitly copied into snapshot fields.
-- Component enable/disable and GameObject hierarchy writes.
-- Any API not guaranteed Burst-safe or job-safe.
-- Camera update calls and render-adjacent side effects.
+Only plain data math is allowed in jobs.
 
-The following operations may move to job threads when readiness criteria are satisfied:
+## Data models
 
-- Transform-delta integration into numeric simulation models.
-- Projectile/collision prefilter loops and broad numeric evaluation.
-- Target scoring/filter passes over blittable arrays.
-- Dirty-flag propagation and compact event emission.
+- `ProjectileData`
+  - `ProjectileId`
+  - `OwnerShipId`
+  - `Position`
+  - `Velocity`
+  - `Speed`
+  - `RangeRemaining`
+  - `LifeTime`
+  - `TargetId`
+  - `LayerMask`
+  - `HitState`
+  - `Version`
+- `TargetData`
+  - `TargetId`
+  - `Position`
+  - `Velocity`
+  - `Radius`
+  - `Team`
+  - `Priority`
+  - `SensorFlags`
+  - `ActiveVersion`
+- `ShipRuntimeState`
+  - `ShipId`
+  - `Position`
+  - `Forward`
+  - `LinearVelocity`
+  - `AngularVelocity`
+  - `Energy`
+  - `Health`
+  - `Shield`
+  - `Destination`
+  - `AutopilotState`
+  - `Version`
+- `RcsNozzleData`
+  - `ShipId`
+  - `NozzleIndex`
+  - `LocalDirection`
+  - `MaxForce`
+  - `Heat`
+  - `Efficiency`
+  - `CurrentDemand`
+  - `DirtyMask`
+  - `Version`
+- `TrajectoryCandidateData`
+  - `ShipId`
+  - `CandidateIndex`
+  - `TargetPoint`
+  - `VelocityBias`
+  - `DistanceScore`
+  - `ObstaclePenalty`
+  - `FuelPenalty`
+  - `SafetyScore`
+  - `Version`
+- `SensorContactData`
+  - `SensorId`
+  - `TargetId`
+  - `ContactPosition`
+  - `Distance`
+  - `SignalStrength`
+  - `Flags`
+  - `Version`
+- `CameraVisualBoundsData`
+  - `CameraId`
+  - `Origin`
+  - `LeftRight`
+  - `TopBottom`
+  - `Near`
+  - `Far`
+  - `DirtyFrame`
 
-### 3) Data model strategy
+## Phased migration plan
 
-#### runtime-data-snapshots
+- Phase 1 - cache and dirty flags
+  - Add dirty tracking for hotpath entry points.
+  - Build snapshots only when source fields change.
+  - Remove steady-state hierarchy scans in simulation loops.
+- Phase 2 - projectile movement / hitscan candidates
+  - Move movement integration and hit-candidate prefilter into job-ready paths.
+  - Keep authoritative impact checks in apply layer.
+- Phase 3 - target scoring
+  - Move target ranking and filtering to jobs over `TargetData`.
+  - Keep deterministic winner selection and tie handling deterministic.
+- Phase 4 - autopilot trajectory candidates
+  - Generate candidate trajectories in parallel data systems.
+  - Apply only one chosen trajectory per frame in scene layer.
+- Phase 5 - sensor/minimap filtering
+  - Use numeric contact filtering and culling for minimap/sensor outputs.
+  - Apply final contact set changes to UI and scene markers on main thread.
+- Phase 6 - optional RCS allocator math
+  - Move allocator math and nozzle force budgeting to data path.
+  - Keep nozzle enablement and force application in main thread.
 
-- Define contiguous arrays indexed by runtime participant IDs.
-- Store only blittable fields required by hot-path math.
-- Include optional `Version` token to invalidate/refresh stale data.
+## Performance budget and anti-regressions
 
-#### projectile-simulation-data-model
+- No steady-state hierarchy scans in hotpath loops.
+- No `Instantiate` / `Destroy` in projectile, target, camera, or RCS hotpath.
+- No per-frame allocations in projectile, target, camera, or RCS runtime paths.
+- Jobs are restricted to data math.
+- Snapshot/pool sizing avoids per-frame list growth.
+- Main-thread apply handles all Unity object interactions.
 
-- Separate request, active record, and impact result structs.
-- Keep owner/target references as stable IDs, not direct `Component` references in worker inputs.
-- Use fixed-capacity capacities and explicit overflow counters in initial phase.
+## Reference documents checked locally
 
-#### target-registry-data-model
-
-- Create a normalized registry keyed by stable target IDs.
-- Store:
-  - `RootId`
-  - `TransformId`
-  - `LayerMask/TeamTags` bit fields
-  - `ColliderProfile`
-  - `TargetState` and revision stamp
-
-#### camera-rcs-cache-dirty-flags
-
-- Maintain dirty flags for fields that feed camera and RCS calculations.
-- Only recompute caches for dirty partitions when changed inputs arrive.
-- Ensure cache reads are version-checked and fall back to last-applied snapshot.
-
-### 4) Phased Job/Burst migration (incremental only)
-
-- **Phase 0: safe refactors (no jobs)**  
-  Introduce snapshot boundaries, immutable frames, and dirty-flag contracts while keeping execution on main thread.
-
-- **Phase 1: read-only parallel prep**  
-  Convert pure functions that use only blittable snapshot data into burst-compatible jobs.
-
-- **Phase 2: bounded parallel workers**  
-  Move selected hot loops (projectile stepping, target filtering) into scheduled jobs with explicit completion and merge points.
-
-- **Phase 3: end-to-end apply phase**  
-  Introduce batched main-thread apply passes for required Unity API writes and deterministic event commit.
-
-### 5) Acceptance envelope
-
-- Hot paths should be auditable via spec-driven behavior checks.
-- No unbounded temporary allocations in the documented hot path.
-- Clear separation between simulation state mutations and apply-side effects.
-- Forward migration can be gated by this criteria set:
-  - snapshots are in use,
-  - data models are blittable,
-  - task boundaries are explicitly mapped,
-  - dirty flags prevent redundant recomputation,
-  - at least one end-to-end worker path is represented in specs.
+- `E:\Unity\Documentation\en\Manual\job-system-overview.html`
+- `E:\Unity\Documentation\en\Manual\job-system-thread-safe-types.html`
+- `E:\Unity\Documentation\en\Manual\job-system-native-container.html`
+- `E:\Unity\Documentation\en\ScriptReference\Rigidbody.AddForce.html`
+- `E:\Unity\Documentation\en\ScriptReference\Component.GetComponentsInChildren.html`
 
 ## Risks and constraints
 
-- Over-aggressive parallelization can add synchronization overhead that masks gains.
-- Snapshot freshness and stale handles must be treated as correctness-sensitive.
-- Some Unity APIs cannot be jobified and still require main-thread batching.
-- The architecture should prioritize correctness and migration safety over speculative optimization.
+- Snapshot drift and stale handles are correctness risks and must be guarded by version checks.
+- Over-partitioning can increase scheduling overhead and reduce performance.
+- Gameplay behavior parity is required before widening job use.
+- Unity object APIs in jobs are a hard boundary and are not allowed.

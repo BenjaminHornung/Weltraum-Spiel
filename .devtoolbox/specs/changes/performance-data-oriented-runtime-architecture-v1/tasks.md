@@ -15,35 +15,35 @@
 
 ## Implementation
 
-- [ ] 1. Add value-only runtime snapshot models for `ProjectileData`, `TargetData`, `ShipRuntimeState`, `RcsNozzleData`, `TrajectoryCandidateData`, `SensorContactData`, and `CameraVisualBoundsData`.
-- [ ] 2. Expose camera visual-bounds snapshot and cache diagnostics without adding steady-state hierarchy scans.
-- [ ] 3. Expose RCS nozzle snapshot and cache diagnostics without adding steady-state hierarchy scans.
-- [ ] 4. Expose projectile manager snapshot data from the existing pooled/manager path.
-- [ ] 5. Expose target registry snapshot data from registered targets without enabling debug fallback discovery by default.
-- [ ] 6. Preserve main-thread apply behavior for Rigidbody, Transform, GameObject, Renderer, UI, and VFX writes.
+- [x] 1. Add value-only runtime snapshot models for `ProjectileData`, `TargetData`, `ShipRuntimeState`, `RcsNozzleData`, `TrajectoryCandidateData`, `SensorContactData`, and `CameraVisualBoundsData`.
+- [x] 2. Expose camera visual-bounds snapshot and cache diagnostics without adding steady-state hierarchy scans.
+- [x] 3. Expose RCS nozzle snapshot and cache diagnostics without adding steady-state hierarchy scans.
+- [x] 4. Expose projectile manager snapshot data from the existing pooled/manager path.
+- [x] 5. Expose target registry snapshot data from registered targets without enabling debug fallback discovery by default.
+- [x] 6. Preserve main-thread apply behavior for Rigidbody, Transform, GameObject, Renderer, UI, and VFX writes.
 
 ## Tests
 
-- [ ] 1. Add/extend camera dirty-flag and visual-bounds snapshot tests.
-- [ ] 2. Add/extend RCS nozzle cache/snapshot stability tests.
-- [ ] 3. Add/extend projectile and target registry snapshot tests.
-- [ ] 4. Add source-guard coverage for simulation/job-boundary Unity API rules where runtime observation is not practical.
+- [x] 1. Add/extend camera dirty-flag and visual-bounds snapshot tests.
+- [x] 2. Add/extend RCS nozzle cache/snapshot stability tests.
+- [x] 3. Add/extend projectile and target registry snapshot tests.
+- [x] 4. Add source-guard coverage for simulation/job-boundary Unity API rules where runtime observation is not practical.
 
 ## Documentation
 
-- [ ] 1. Add `docs/performance-runtime-architecture.md`.
-- [ ] 2. Document the current hotpath analysis and which parts must remain on the main thread.
-- [ ] 3. Document the phased Job System/Burst migration plan and performance budget.
-- [ ] 4. Record local Unity documentation references used for Job System and Unity API constraints.
+- [x] 1. Add `docs/performance-runtime-architecture.md`.
+- [x] 2. Document the current hotpath analysis and which parts must remain on the main thread.
+- [x] 3. Document the phased Job System/Burst migration plan and performance budget.
+- [x] 4. Record local Unity documentation references used for Job System and Unity API constraints.
 
 ## Verification
 
 - [x] 1. Run safe local structure validation for required change files and spec scenarios.
 - [x] 2. Record that `npx --yes openspec validate ...` was blocked by the security reviewer because it would download and execute unpinned npm code.
-- [ ] 3. Run focused compile/test validation available without a Unity Editor session.
-- [ ] 4. Retry Unity MCP editor validation if a Unity session reconnects.
-- [ ] 5. Update `tests/test-protocol.md` with executed commands and results.
-- [ ] 6. Run final review for thread-boundary violations, new hierarchy scans, and missing tests.
+- [x] 3. Run focused compile/test validation available without a Unity Editor session.
+- [x] 4. Retry Unity MCP editor validation if a Unity session reconnects.
+- [x] 5. Update `tests/test-protocol.md` with executed commands and results.
+- [x] 6. Run final review for thread-boundary violations, new hierarchy scans, and missing tests.
 
 ## Closeout
 

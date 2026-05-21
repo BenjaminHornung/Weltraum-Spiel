@@ -233,6 +233,40 @@ public class PrototypeSimpleFollowCameraValidationTests
     }
 
     [Test]
+    public void VisualBoundsSnapshotIsStableInSteadyStateAndUpdatesOnlyOnDirtyRefresh()
+    {
+        GameObject ship = new GameObject("SimpleFollowCameraTestShip");
+        ShipStats stats = ship.AddComponent<ShipStats>();
+        SimpleFollowCamera camera = BuildCamera(ship);
+        BuildVisualChild(ship, "SimpleFollowCameraSnapshotVisual", Vector3.one * 2f);
+
+        camera.BindTarget(ship.transform, stats);
+        InvokeLateUpdate(camera);
+        CameraVisualBoundsData initialSnapshot = camera.CopyVisualBoundsSnapshot();
+        int initialRefreshCount = initialSnapshot.refreshCount;
+        int initialSnapshotVersion = initialSnapshot.snapshotVersion;
+        int initialRendererCount = initialSnapshot.includedRendererCount;
+
+        InvokeLateUpdate(camera);
+        InvokeLateUpdate(camera);
+        CameraVisualBoundsData steadySnapshot = camera.CopyVisualBoundsSnapshot();
+
+        Assert.That(steadySnapshot.refreshCount, Is.EqualTo(initialRefreshCount));
+        Assert.That(steadySnapshot.snapshotVersion, Is.EqualTo(initialSnapshotVersion));
+        Assert.That(steadySnapshot.includedRendererCount, Is.EqualTo(initialRendererCount));
+        Assert.That(steadySnapshot.totalRendererCount, Is.GreaterThanOrEqualTo(initialRendererCount));
+        Assert.That(steadySnapshot.visualBoundsRadius, Is.EqualTo(initialSnapshot.visualBoundsRadius).Within(0.001f));
+
+        camera.MarkVisualBoundsDirty();
+        InvokeLateUpdate(camera);
+        CameraVisualBoundsData refreshedSnapshot = camera.CopyVisualBoundsSnapshot();
+
+        Assert.That(refreshedSnapshot.refreshCount, Is.EqualTo(initialRefreshCount + 1));
+        Assert.That(refreshedSnapshot.snapshotVersion, Is.EqualTo(initialSnapshotVersion + 1));
+        Assert.That(refreshedSnapshot.includedRendererCount, Is.EqualTo(initialRendererCount));
+    }
+
+    [Test]
     public void CameraBoundsIgnoreVfxMarkersAndExplicitIgnoreComponents()
     {
         GameObject ship = new GameObject("SimpleFollowCameraTestShip");

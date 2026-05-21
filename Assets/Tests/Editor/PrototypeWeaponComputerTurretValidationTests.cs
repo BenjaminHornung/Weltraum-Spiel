@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -204,6 +205,59 @@ public class PrototypeWeaponComputerTurretValidationTests
     }
 
     [Test]
+    public void SimulatedProjectileSnapshotPersistsAcrossSimulationFrames()
+    {
+        PrototypeProjectileSimulation simulation = PrototypeProjectileSimulation.GetOrCreateDefault();
+        simulation.ClearRuntime();
+        var request = PrototypeProjectileFireRequest.FromWeapon(
+            WeaponProjectileMode.SimulatedProjectile,
+            null,
+            null,
+            Vector3.forward,
+            Vector3.zero,
+            100f,
+            0.1f,
+            1f,
+            2f,
+            100f,
+            0);
+        request.origin = Vector3.zero;
+        request.muzzleTransform = null;
+        request.emitMuzzleVisual = false;
+        request.hitMask = Physics.DefaultRaycastLayers;
+
+        bool fired = simulation.Fire(request).fired;
+        Assert.That(fired, Is.True);
+        Assert.That(simulation.ActiveProjectileCount, Is.EqualTo(1));
+
+        var snapshotA = new List<ProjectileData>();
+        int firstSnapshotCount = simulation.CopyActiveProjectileSnapshot(snapshotA);
+        Assert.That(firstSnapshotCount, Is.EqualTo(1));
+        Assert.That(snapshotA.Count, Is.EqualTo(1));
+        int trackedProjectileId = snapshotA[0].projectileId;
+        Assert.That(snapshotA[0].age, Is.EqualTo(0f).Within(0.0001f));
+
+        simulation.Simulate(0.2f);
+
+        var snapshotB = new List<ProjectileData>();
+        int secondSnapshotCount = simulation.CopyActiveProjectileSnapshot(snapshotB);
+        Assert.That(simulation.ActiveProjectileCount, Is.EqualTo(1));
+        Assert.That(secondSnapshotCount, Is.EqualTo(1));
+        Assert.That(snapshotB[0].projectileId, Is.EqualTo(trackedProjectileId));
+        Assert.That(snapshotB[0].age, Is.GreaterThan(0f));
+    }
+
+    [Test]
+    public void RuntimeSnapshotDataModelsDoNotStoreUnityObjectReferences()
+    {
+        string source = File.ReadAllText(Path.Combine(Application.dataPath, "Scripts", "Prototype", "PrototypeRuntimeDataSnapshots.cs"));
+
+        Assert.False(Regex.IsMatch(source, @"\b(Transform|GameObject|Renderer|Rigidbody|Component|Collider|string)\s+\w+\s*;"));
+        Assert.False(Regex.IsMatch(source, @"\b(GetComponent|GetComponentsInChildren|FindObjectsByType|Instantiate|Destroy)\b"));
+        Assert.False(Regex.IsMatch(source, @"\bPhysics\."));
+    }
+
+    [Test]
     public void WeaponTargetDiscoveryIgnoresLiveProjectiles()
     {
         using (TurretFixture fixture = new TurretFixture())
@@ -218,6 +272,41 @@ public class PrototypeWeaponComputerTurretValidationTests
             Assert.That(targets.Exists(candidate => candidate.TargetTransform != null && candidate.TargetTransform.GetComponent<Projectile>() != null), Is.False);
             Assert.That(targets.Exists(candidate => candidate.TargetTransform != null && candidate.TargetTransform.GetComponentInChildren<PrototypeProjectileRuntimeMarker>() != null), Is.False);
         }
+    }
+
+    [Test]
+    public void WeaponTargetRegistrySnapshotRemainsStableWithoutChanges()
+    {
+        GameObject near = CreateRigidbodyTarget("WeaponComputerTargetNear", new Vector3(0f, 0f, 12f));
+        GameObject far = CreateRigidbodyTarget("WeaponComputerTargetFar", new Vector3(0f, 0f, 20f));
+        PrototypeWeaponTargetRegistry.Register(near.transform);
+        PrototypeWeaponTargetRegistry.Register(far.transform);
+
+        var snapshotA = new List<TargetData>();
+        int countA = PrototypeWeaponTargetRegistry.CopyRegisteredTargetData(snapshotA);
+        Assert.That(countA, Is.EqualTo(2));
+
+        var snapshotB = new List<TargetData>();
+        int countB = PrototypeWeaponTargetRegistry.CopyRegisteredTargetData(snapshotB);
+        Assert.That(countB, Is.EqualTo(countA));
+        Assert.That(snapshotB.Count, Is.EqualTo(snapshotA.Count));
+
+        for (int i = 0; i < snapshotA.Count; i++)
+        {
+            Assert.That(snapshotB.Exists(candidate => candidate.targetId == snapshotA[i].targetId), Is.True);
+        }
+    }
+
+    [Test]
+    public void WeaponTargetRegistryCopyMethodAvoidsComponentAndHierarchyScanWork()
+    {
+        string source = File.ReadAllText(Path.Combine(Application.dataPath, "Scripts", "Prototype", "PrototypeWeaponTargetRegistry.cs"));
+        string methodBody = ExtractMethodBody(source, "CopyRegisteredTargetData");
+
+        Assert.That(
+            Regex.IsMatch(methodBody, @"\b(GetComponent|GetComponentInParent|GetComponentsInChildren|FindObjects|FindObject|FindAnyObject|RefreshNozzles)\b"),
+            Is.False,
+            "CopyRegisteredTargetData should use cached references instead of hierarchy scans or component lookups.");
     }
 
     [Test]
@@ -671,6 +760,36 @@ public class PrototypeWeaponComputerTurretValidationTests
         {
             DestroyNamed("WeaponComputerTestShip");
         }
+    }
+
+    private static string ExtractMethodBody(string source, string methodName)
+    {
+        int methodStart = source.IndexOf(methodName + "(", System.StringComparison.Ordinal);
+        Assert.IsTrue(methodStart >= 0, $"Method '{methodName}' not found in source.");
+
+        int bodyStart = source.IndexOf('{', methodStart);
+        Assert.IsTrue(bodyStart >= 0, $"Method '{methodName}' body was not found.");
+
+        int braceDepth = 0;
+        for (int i = bodyStart; i < source.Length; i++)
+        {
+            char c = source[i];
+            if (c == '{')
+            {
+                braceDepth++;
+            }
+            else if (c == '}')
+            {
+                braceDepth--;
+                if (braceDepth == 0)
+                {
+                    return source.Substring(bodyStart, i - bodyStart + 1);
+                }
+            }
+        }
+
+        Assert.Fail($"Unable to parse method body for '{methodName}'.");
+        return string.Empty;
     }
 }
 #endif

@@ -3,7 +3,15 @@ using UnityEngine;
 
 public static class PrototypeWeaponTargetRegistry
 {
-    private static readonly List<Transform> targets = new List<Transform>();
+    private struct RegisteredTarget
+    {
+        public int targetId;
+        public Transform target;
+        public Rigidbody targetBody;
+        public PrototypeModuleDamageState damageState;
+    }
+
+    private static readonly List<RegisteredTarget> targets = new List<RegisteredTarget>();
     private static readonly HashSet<int> targetIds = new HashSet<int>();
 
     public static int Version { get; private set; }
@@ -30,7 +38,13 @@ public static class PrototypeWeaponTargetRegistry
             return;
         }
 
-        targets.Add(target);
+        targets.Add(new RegisteredTarget
+        {
+            targetId = id,
+            target = target,
+            targetBody = target.GetComponent<Rigidbody>(),
+            damageState = target.GetComponentInParent<PrototypeModuleDamageState>()
+        });
         Version++;
     }
 
@@ -49,7 +63,8 @@ public static class PrototypeWeaponTargetRegistry
 
         for (int i = targets.Count - 1; i >= 0; i--)
         {
-            if (targets[i] == null || GetTargetId(targets[i]) == id)
+            RegisteredTarget registeredTarget = targets[i];
+            if (registeredTarget.target == target || registeredTarget.target == null || registeredTarget.targetId == id)
             {
                 targets.RemoveAt(i);
             }
@@ -69,12 +84,60 @@ public static class PrototypeWeaponTargetRegistry
         buffer.Clear();
         for (int i = 0; i < targets.Count; i++)
         {
-            Transform target = targets[i];
+            RegisteredTarget registeredTarget = targets[i];
+            Transform target = registeredTarget.target;
             if (target != null && target.gameObject.activeInHierarchy)
             {
                 buffer.Add(target);
             }
         }
+    }
+
+    public static int CopyRegisteredTargetData(List<TargetData> buffer)
+    {
+        if (buffer == null)
+        {
+            return 0;
+        }
+
+        PruneInvalidTargets();
+        buffer.Clear();
+        int snapshotVersion = Version;
+        for (int i = 0; i < targets.Count; i++)
+        {
+            RegisteredTarget registeredTarget = targets[i];
+            Transform target = registeredTarget.target;
+            if (target == null || !target.gameObject.activeInHierarchy)
+            {
+                continue;
+            }
+
+            float maxHealth = 0f;
+            float currentHealth = 0f;
+            if (registeredTarget.damageState != null)
+            {
+                maxHealth = registeredTarget.damageState.MaxIntegrity;
+                currentHealth = registeredTarget.damageState.CurrentIntegrity;
+            }
+
+            buffer.Add(new TargetData
+            {
+                targetId = registeredTarget.targetId,
+                snapshotVersion = snapshotVersion,
+                position = target.position,
+                rotation = target.rotation,
+                forward = target.forward,
+                up = target.up,
+                linearVelocity = registeredTarget.targetBody != null ? registeredTarget.targetBody.linearVelocity : Vector3.zero,
+                isActiveInHierarchy = target.gameObject.activeInHierarchy ? 1 : 0,
+                hasRigidbody = registeredTarget.targetBody != null ? 1 : 0,
+                hasDamageState = registeredTarget.damageState != null ? 1 : 0,
+                currentHealth = currentHealth,
+                maxHealth = maxHealth
+            });
+        }
+
+        return buffer.Count;
     }
 
     public static void ClearForTests()
@@ -89,8 +152,8 @@ public static class PrototypeWeaponTargetRegistry
         bool changed = false;
         for (int i = targets.Count - 1; i >= 0; i--)
         {
-            Transform target = targets[i];
-            if (target != null)
+            RegisteredTarget registeredTarget = targets[i];
+            if (registeredTarget.target != null)
             {
                 continue;
             }
@@ -107,9 +170,10 @@ public static class PrototypeWeaponTargetRegistry
         targetIds.Clear();
         for (int i = 0; i < targets.Count; i++)
         {
-            if (targets[i] != null)
+            RegisteredTarget registeredTarget = targets[i];
+            if (registeredTarget.target != null)
             {
-                targetIds.Add(GetTargetId(targets[i]));
+                targetIds.Add(registeredTarget.targetId);
             }
         }
 
