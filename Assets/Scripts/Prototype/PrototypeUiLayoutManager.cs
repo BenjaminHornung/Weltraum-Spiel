@@ -24,7 +24,7 @@ public static class PrototypeUiLayoutManager
     private const float ScreenPadding = 12f;
     private const float WindowSpacing = 12f;
 
-    public static PrototypeUiPreset CurrentPreset { get; private set; } = PrototypeUiPreset.FlightTest;
+    public static PrototypeUiPreset CurrentPreset { get; private set; } = PrototypeUiPreset.Basic;
 
     public static PrototypeUiWindowState GetWindow(string id, Rect defaultRect, bool defaultVisible, bool defaultCollapsed, bool rememberPosition = true)
     {
@@ -232,7 +232,7 @@ public static class PrototypeUiLayoutManager
     {
         Windows.Clear();
         hotkeyFrame = -1;
-        CurrentPreset = PrototypeUiPreset.FlightTest;
+        CurrentPreset = PrototypeUiPreset.Basic;
     }
 
     public static IReadOnlyCollection<PrototypeUiWindowState> WindowsForTests => Windows.Values;

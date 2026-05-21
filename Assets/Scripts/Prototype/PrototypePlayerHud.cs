@@ -1,0 +1,1858 @@
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.UI;
+using UnityEngine.UI;
+
+public enum PrototypePlayerHudSeverity
+{
+    Normal,
+    Info,
+    Warning,
+    Danger,
+    Disabled
+}
+
+public readonly struct PrototypePlayerHudChip
+{
+    public PrototypePlayerHudChip(string label, PrototypePlayerHudSeverity severity)
+    {
+        Label = string.IsNullOrWhiteSpace(label) ? string.Empty : label;
+        Severity = severity;
+    }
+
+    public string Label { get; }
+    public PrototypePlayerHudSeverity Severity { get; }
+    public bool IsEmpty => string.IsNullOrWhiteSpace(Label);
+}
+
+public readonly struct PrototypePlayerFlightSnapshot
+{
+    public PrototypePlayerFlightSnapshot(
+        float speedMetersPerSecond,
+        float throttlePercent,
+        float fuelCurrentKg,
+        float fuelMaxKg,
+        string controlModeLabel,
+        string controlModeHint,
+        string mainEngineLabel,
+        string rcsLabel,
+        string sasLabel)
+    {
+        SpeedMetersPerSecond = speedMetersPerSecond;
+        ThrottlePercent = Mathf.Clamp(throttlePercent, 0f, 100f);
+        FuelCurrentKg = Mathf.Max(0f, fuelCurrentKg);
+        FuelMaxKg = Mathf.Max(0f, fuelMaxKg);
+        ControlModeLabel = string.IsNullOrWhiteSpace(controlModeLabel) ? "Cruise" : controlModeLabel;
+        ControlModeHint = string.IsNullOrWhiteSpace(controlModeHint) ? string.Empty : controlModeHint;
+        MainEngineLabel = string.IsNullOrWhiteSpace(mainEngineLabel) ? "Main n/a" : mainEngineLabel;
+        RcsLabel = string.IsNullOrWhiteSpace(rcsLabel) ? "RCS n/a" : rcsLabel;
+        SasLabel = string.IsNullOrWhiteSpace(sasLabel) ? "SAS n/a" : sasLabel;
+    }
+
+    public float SpeedMetersPerSecond { get; }
+    public float ThrottlePercent { get; }
+    public float FuelCurrentKg { get; }
+    public float FuelMaxKg { get; }
+    public float FuelPercent => FuelMaxKg > 0.001f ? Mathf.Clamp01(FuelCurrentKg / FuelMaxKg) : 0f;
+    public string ControlModeLabel { get; }
+    public string ControlModeHint { get; }
+    public string MainEngineLabel { get; }
+    public string RcsLabel { get; }
+    public string SasLabel { get; }
+}
+
+public readonly struct PrototypePlayerNavigationSnapshot
+{
+    public PrototypePlayerNavigationSnapshot(
+        bool visible,
+        string targetName,
+        float distanceMeters,
+        float relativeSpeed,
+        float closingSpeed,
+        float lateralSpeed,
+        string etaLabel,
+        string stateLabel,
+        string phaseLabel,
+        string[] warningLabels)
+    {
+        Visible = visible;
+        TargetName = string.IsNullOrWhiteSpace(targetName) ? "No target" : targetName;
+        DistanceMeters = Mathf.Max(0f, distanceMeters);
+        RelativeSpeed = Mathf.Max(0f, relativeSpeed);
+        ClosingSpeed = closingSpeed;
+        LateralSpeed = Mathf.Max(0f, lateralSpeed);
+        EtaLabel = string.IsNullOrWhiteSpace(etaLabel) ? "--" : etaLabel;
+        StateLabel = string.IsNullOrWhiteSpace(stateLabel) ? "Bereit" : stateLabel;
+        PhaseLabel = string.IsNullOrWhiteSpace(phaseLabel) ? "Direkter Kurs" : phaseLabel;
+        WarningLabels = warningLabels ?? System.Array.Empty<string>();
+    }
+
+    public bool Visible { get; }
+    public string TargetName { get; }
+    public float DistanceMeters { get; }
+    public float RelativeSpeed { get; }
+    public float ClosingSpeed { get; }
+    public float LateralSpeed { get; }
+    public string EtaLabel { get; }
+    public string StateLabel { get; }
+    public string PhaseLabel { get; }
+    public string[] WarningLabels { get; }
+}
+
+public readonly struct PrototypePlayerCombatSnapshot
+{
+    public PrototypePlayerCombatSnapshot(
+        bool visible,
+        string targetName,
+        float healthPercent,
+        string healthLabel,
+        float rangeMeters,
+        string fireStatusLabel,
+        PrototypePlayerHudSeverity fireSeverity,
+        string autoFireLabel,
+        string priorityLabel)
+    {
+        Visible = visible;
+        TargetName = string.IsNullOrWhiteSpace(targetName) ? "No target" : targetName;
+        HealthPercent = Mathf.Clamp01(healthPercent);
+        HealthLabel = string.IsNullOrWhiteSpace(healthLabel) ? "--" : healthLabel;
+        RangeMeters = Mathf.Max(0f, rangeMeters);
+        FireStatusLabel = string.IsNullOrWhiteSpace(fireStatusLabel) ? "Weapon offline" : fireStatusLabel;
+        FireSeverity = fireSeverity;
+        AutoFireLabel = string.IsNullOrWhiteSpace(autoFireLabel) ? "Auto Fire: Off" : autoFireLabel;
+        PriorityLabel = string.IsNullOrWhiteSpace(priorityLabel) ? "ManualOrder" : priorityLabel;
+    }
+
+    public bool Visible { get; }
+    public string TargetName { get; }
+    public float HealthPercent { get; }
+    public string HealthLabel { get; }
+    public float RangeMeters { get; }
+    public string FireStatusLabel { get; }
+    public PrototypePlayerHudSeverity FireSeverity { get; }
+    public string AutoFireLabel { get; }
+    public string PriorityLabel { get; }
+}
+
+public readonly struct PrototypePlayerDockingSnapshot
+{
+    public PrototypePlayerDockingSnapshot(
+        bool visible,
+        string targetName,
+        float distanceMeters,
+        float angleErrorDegrees,
+        float relativeSpeed,
+        float closingSpeed,
+        Vector2 lateralOffsetMeters,
+        string statusLabel,
+        PrototypePlayerHudSeverity statusSeverity,
+        string hardLockLabel)
+    {
+        Visible = visible;
+        TargetName = string.IsNullOrWhiteSpace(targetName) ? "Docking port" : targetName;
+        DistanceMeters = Mathf.Max(0f, distanceMeters);
+        AngleErrorDegrees = Mathf.Max(0f, angleErrorDegrees);
+        RelativeSpeed = Mathf.Max(0f, relativeSpeed);
+        ClosingSpeed = closingSpeed;
+        LateralOffsetMeters = lateralOffsetMeters;
+        StatusLabel = string.IsNullOrWhiteSpace(statusLabel) ? "Docking n/a" : statusLabel;
+        StatusSeverity = statusSeverity;
+        HardLockLabel = string.IsNullOrWhiteSpace(hardLockLabel) ? "Prototype: Hard Lock noch nicht verbunden" : hardLockLabel;
+    }
+
+    public bool Visible { get; }
+    public string TargetName { get; }
+    public float DistanceMeters { get; }
+    public float AngleErrorDegrees { get; }
+    public float RelativeSpeed { get; }
+    public float ClosingSpeed { get; }
+    public Vector2 LateralOffsetMeters { get; }
+    public string StatusLabel { get; }
+    public PrototypePlayerHudSeverity StatusSeverity { get; }
+    public string HardLockLabel { get; }
+}
+
+public readonly struct PrototypePlayerShipStatusSnapshot
+{
+    public PrototypePlayerShipStatusSnapshot(
+        string fuelLabel,
+        string mainEngineLabel,
+        string rcsLabel,
+        string sasLabel,
+        string weaponLabel,
+        string damageLabel)
+    {
+        FuelLabel = string.IsNullOrWhiteSpace(fuelLabel) ? "Fuel n/a" : fuelLabel;
+        MainEngineLabel = string.IsNullOrWhiteSpace(mainEngineLabel) ? "Main n/a" : mainEngineLabel;
+        RcsLabel = string.IsNullOrWhiteSpace(rcsLabel) ? "RCS n/a" : rcsLabel;
+        SasLabel = string.IsNullOrWhiteSpace(sasLabel) ? "SAS n/a" : sasLabel;
+        WeaponLabel = string.IsNullOrWhiteSpace(weaponLabel) ? "Weapon n/a" : weaponLabel;
+        DamageLabel = string.IsNullOrWhiteSpace(damageLabel) ? "Modules nominal" : damageLabel;
+    }
+
+    public string FuelLabel { get; }
+    public string MainEngineLabel { get; }
+    public string RcsLabel { get; }
+    public string SasLabel { get; }
+    public string WeaponLabel { get; }
+    public string DamageLabel { get; }
+}
+
+public readonly struct PrototypePlayerHudSnapshot
+{
+    public PrototypePlayerHudSnapshot(
+        PrototypePlayerFlightSnapshot flight,
+        PrototypePlayerNavigationSnapshot navigation,
+        PrototypePlayerCombatSnapshot combat,
+        PrototypePlayerDockingSnapshot docking,
+        PrototypePlayerShipStatusSnapshot shipStatus,
+        PrototypePlayerHudChip[] warnings,
+        PrototypePlayerHudChip[] assistChips,
+        PrototypeHudViewModel markerModel,
+        Vector3 shipWorldPosition,
+        Vector3 shipForward,
+        Vector3? navigationTargetWorldPosition,
+        Vector3? combatTargetWorldPosition)
+    {
+        Flight = flight;
+        Navigation = navigation;
+        Combat = combat;
+        Docking = docking;
+        ShipStatus = shipStatus;
+        Warnings = warnings ?? System.Array.Empty<PrototypePlayerHudChip>();
+        AssistChips = assistChips ?? System.Array.Empty<PrototypePlayerHudChip>();
+        MarkerModel = markerModel;
+        ShipWorldPosition = shipWorldPosition;
+        ShipForward = shipForward.sqrMagnitude > 0.0001f ? shipForward.normalized : Vector3.forward;
+        NavigationTargetWorldPosition = navigationTargetWorldPosition;
+        CombatTargetWorldPosition = combatTargetWorldPosition;
+    }
+
+    public PrototypePlayerFlightSnapshot Flight { get; }
+    public PrototypePlayerNavigationSnapshot Navigation { get; }
+    public PrototypePlayerCombatSnapshot Combat { get; }
+    public PrototypePlayerDockingSnapshot Docking { get; }
+    public PrototypePlayerShipStatusSnapshot ShipStatus { get; }
+    public PrototypePlayerHudChip[] Warnings { get; }
+    public PrototypePlayerHudChip[] AssistChips { get; }
+    public PrototypeHudViewModel MarkerModel { get; }
+    public Vector3 ShipWorldPosition { get; }
+    public Vector3 ShipForward { get; }
+    public Vector3? NavigationTargetWorldPosition { get; }
+    public Vector3? CombatTargetWorldPosition { get; }
+}
+
+public static class PrototypePlayerHudSnapshotBuilder
+{
+    public static PrototypePlayerHudSnapshot Build(
+        Transform shipRoot,
+        Rigidbody shipRigidbody,
+        ShipStats stats,
+        PlayerShipController controller,
+        PrototypeWaypointAutopilot autopilot,
+        PrototypeMomentumAssist momentumAssist,
+        PrototypeWeaponComputer weaponComputer,
+        DockingPort sourceDockingPort,
+        DockingPort targetDockingPort)
+    {
+        Transform navTarget = autopilot != null && autopilot.CurrentTarget != null
+            ? autopilot.CurrentTarget.transform
+            : ResolveFallbackTarget(shipRoot, weaponComputer);
+        var markerModel = PrototypeHudViewModelBuilder.Build(
+            shipRoot,
+            shipRigidbody,
+            controller,
+            stats,
+            navTarget,
+            autopilot,
+            momentumAssist,
+            false,
+            false,
+            88f,
+            0.05f,
+            9000f,
+            sourceDockingPort != null && targetDockingPort != null
+                ? PrototypeFlightHud.HudMode.Docking
+                : PrototypeFlightHud.HudMode.World);
+
+        PrototypePlayerFlightSnapshot flight = BuildFlight(shipRigidbody, stats, controller);
+        PrototypePlayerNavigationSnapshot navigation = BuildNavigation(autopilot);
+        PrototypePlayerCombatSnapshot combat = BuildCombat(weaponComputer);
+        PrototypePlayerDockingSnapshot docking = BuildDocking(sourceDockingPort, targetDockingPort, shipRigidbody);
+        PrototypePlayerShipStatusSnapshot shipStatus = BuildShipStatus(stats, controller, weaponComputer);
+        PrototypePlayerHudChip[] warnings = BuildWarningChips(stats, controller, autopilot, momentumAssist, combat, docking);
+        PrototypePlayerHudChip[] assists = BuildAssistChips(autopilot, momentumAssist, combat, docking);
+
+        return new PrototypePlayerHudSnapshot(
+            flight,
+            navigation,
+            combat,
+            docking,
+            shipStatus,
+            warnings,
+            assists,
+            markerModel,
+            shipRoot != null ? shipRoot.position : Vector3.zero,
+            shipRoot != null ? shipRoot.forward : Vector3.forward,
+            autopilot != null && autopilot.CurrentTarget != null ? autopilot.CurrentTarget.Position : (Vector3?)null,
+            weaponComputer != null && weaponComputer.ActiveTargetTransform != null ? weaponComputer.ActiveTargetTransform.position : (Vector3?)null);
+    }
+
+    public static string TranslateNavigationState(PrototypeWaypointAutopilotState state)
+    {
+        switch (state)
+        {
+            case PrototypeWaypointAutopilotState.TargetSelected:
+                return "Ziel gewaehlt";
+            case PrototypeWaypointAutopilotState.FuelCheck:
+                return "Treibstoff pruefen";
+            case PrototypeWaypointAutopilotState.AlignForBurn:
+                return "Zum Schub ausrichten";
+            case PrototypeWaypointAutopilotState.Accelerate:
+                return "Beschleunigen";
+            case PrototypeWaypointAutopilotState.ObstacleAvoidance:
+                return "Ausweichkurs";
+            case PrototypeWaypointAutopilotState.FlipForBrake:
+                return "Zum Bremsen drehen";
+            case PrototypeWaypointAutopilotState.Brake:
+                return "Bremsen";
+            case PrototypeWaypointAutopilotState.FinalApproach:
+                return "Endanflug";
+            case PrototypeWaypointAutopilotState.HoldPosition:
+                return "Position halten";
+            case PrototypeWaypointAutopilotState.Complete:
+                return "Ankunft";
+            case PrototypeWaypointAutopilotState.Aborted:
+                return "Abgebrochen";
+            case PrototypeWaypointAutopilotState.FuelInsufficient:
+                return "Zu wenig Treibstoff";
+            case PrototypeWaypointAutopilotState.Failed:
+                return "Fehler";
+            default:
+                return "Bereit";
+        }
+    }
+
+    public static string TranslateArrivalPhase(PrototypeWaypointAutopilotArrivalPhase phase)
+    {
+        switch (phase)
+        {
+            case PrototypeWaypointAutopilotArrivalPhase.Brake:
+                return "Bremsphase";
+            case PrototypeWaypointAutopilotArrivalPhase.LateralCorrection:
+                return "Seitendrift korrigieren";
+            case PrototypeWaypointAutopilotArrivalPhase.FinalApproach:
+                return "Endanflug";
+            case PrototypeWaypointAutopilotArrivalPhase.Hold:
+                return "Halten";
+            default:
+                return "Reiseflug-Burn";
+        }
+    }
+
+    public static string TranslateNavigationPhase(PrototypeWaypointAutopilotNavigationPhase phase)
+    {
+        switch (phase)
+        {
+            case PrototypeWaypointAutopilotNavigationPhase.AvoidancePlanning:
+                return "Ausweichkurs planen";
+            case PrototypeWaypointAutopilotNavigationPhase.Avoiding:
+                return "Ausweichen";
+            case PrototypeWaypointAutopilotNavigationPhase.ReacquireDirectPath:
+                return "Direktkurs wieder aufnehmen";
+            case PrototypeWaypointAutopilotNavigationPhase.Brake:
+                return "Bremsen";
+            case PrototypeWaypointAutopilotNavigationPhase.FinalApproach:
+                return "Endanflug";
+            case PrototypeWaypointAutopilotNavigationPhase.Hold:
+                return "Halten";
+            default:
+                return "Direkter Kurs";
+        }
+    }
+
+    public static string TranslateWarning(string warning)
+    {
+        if (string.IsNullOrWhiteSpace(warning))
+        {
+            return string.Empty;
+        }
+
+        switch (warning.Trim())
+        {
+            case "LOW FUEL":
+                return "Treibstoff niedrig";
+            case "NO RCS":
+                return "RCS nicht verfuegbar";
+            case "NO AUTHORITY":
+                return "Keine Steuerautoritaet";
+            case "AUTOPILOT FUEL":
+            case "FuelInsufficient":
+            case "Fuel Insufficient":
+                return "Autopilot: zu wenig Treibstoff";
+            case "AUTOPILOT ABORTED":
+            case "Aborted":
+                return "Autopilot abgebrochen";
+            case "LimitedRcsAuthority":
+            case "Limited RCS":
+                return "RCS limitiert";
+            case "LimitedHoldAuthority":
+            case "Limited Hold":
+                return "Halten limitiert";
+            case "Obstacle":
+                return "Hindernis";
+            case "Avoidance":
+                return "Ausweichkurs";
+            case "OutOfArc":
+                return "Ziel ausserhalb Feuerwinkel";
+            case "OutOfRange":
+                return "Ziel ausser Reichweite";
+            case "Cooldown":
+                return "Waffe laedt";
+            case "NoMuzzle":
+                return "Waffe offline";
+            default:
+                return TranslateDockingDiagnostic(warning);
+        }
+    }
+
+    public static string TranslateDockingDiagnostic(string diagnostic)
+    {
+        switch (diagnostic)
+        {
+            case "outside-capture-radius":
+                return "Ausser Docking-Reichweite";
+            case "angle-too-large":
+                return "Ausrichtung zu schraeg";
+            case "relative-velocity-too-high":
+                return "Anflug zu schnell";
+            case "soft-capture-disabled":
+                return "Soft Capture deaktiviert";
+            case "soft-capture-eligible":
+                return "Soft Capture bereit";
+            case "outside-hard-lock-radius":
+                return "Fuer Lock zu weit entfernt";
+            case "hard-lock-angle-too-large":
+                return "Fuer Lock zu schraeg";
+            case "hard-lock-velocity-too-high":
+                return "Fuer Lock zu schnell";
+            case "hard-lock-eligible":
+                return "Lock-Kriterien erfuellt";
+            case "hard-lock-placeholder":
+                return "Prototype: Hard Lock noch nicht verbunden";
+            default:
+                return string.IsNullOrWhiteSpace(diagnostic) ? string.Empty : diagnostic;
+        }
+    }
+
+    public static string TranslateFireStatus(PrototypeTurretFireStatus status)
+    {
+        if (status.canFire)
+        {
+            return status.hasSelectedTarget ? "Bereit" : "Boresight bereit";
+        }
+
+        switch (status.blockReason)
+        {
+            case PrototypeTurretFireBlockReason.NoMuzzle:
+            case PrototypeTurretFireBlockReason.MissingImportedMarker:
+                return "Waffe offline";
+            case PrototypeTurretFireBlockReason.NoAuthority:
+            case PrototypeTurretFireBlockReason.SafetyDataMissing:
+            case PrototypeTurretFireBlockReason.SafetyUnsafe:
+                return "Keine Waffenautoritaet";
+            case PrototypeTurretFireBlockReason.OutOfArc:
+                return "Ausserhalb Feuerwinkel";
+            case PrototypeTurretFireBlockReason.Cooldown:
+                return "Cooldown " + status.cooldownRemainingSeconds.ToString("0.0") + "s";
+            case PrototypeTurretFireBlockReason.OutOfRange:
+                return "Ausser Reichweite";
+            case PrototypeTurretFireBlockReason.Aligning:
+                return "Ausrichten";
+            default:
+                return string.IsNullOrWhiteSpace(status.message) ? "Waffe wartet" : status.message;
+        }
+    }
+
+    public static string BuildPlayerHelpText(FlightControlMode activeMode, bool includeDebugControls)
+    {
+        var lines = new List<string>();
+        lines.Add("Modus: " + PrototypeInputBindingCatalog.GetModeLabel(activeMode));
+        lines.AddRange(PrototypeInputBindingCatalog.BuildDifference(activeMode));
+
+        PrototypeInputBindingSection[] sections = PrototypeInputBindingCatalog.GlobalSections;
+        for (int i = 0; i < sections.Length; i++)
+        {
+            PrototypeInputBindingSection section = sections[i];
+            if (section.DebugOnly && !includeDebugControls)
+            {
+                continue;
+            }
+
+            for (int j = 0; j < section.Lines.Length; j++)
+            {
+                string line = section.Lines[j];
+                if (!includeDebugControls && IsDebugHelpLine(line))
+                {
+                    continue;
+                }
+
+                lines.Add(line);
+            }
+        }
+
+        return string.Join("\n", lines);
+    }
+
+    private static bool IsDebugHelpLine(string line)
+    {
+        if (string.IsNullOrWhiteSpace(line))
+        {
+            return true;
+        }
+
+        string lower = line.ToLowerInvariant();
+        return lower.Contains("debug")
+            || lower.Contains("diagnostics")
+            || lower.Contains("refill")
+            || lower.Contains("des/act/res");
+    }
+
+    private static PrototypePlayerFlightSnapshot BuildFlight(
+        Rigidbody shipRigidbody,
+        ShipStats stats,
+        PlayerShipController controller)
+    {
+        PrototypeFlightControlDiagnostics diagnostics = controller != null ? controller.FlightControlDiagnostics : default;
+        float speed = shipRigidbody != null ? shipRigidbody.linearVelocity.magnitude : 0f;
+        float throttle = controller != null ? controller.MainActualThrottlePercent : (stats != null ? stats.LastThrottle * 100f : 0f);
+        string mode = controller != null ? PrototypeInputBindingCatalog.GetModeLabel(controller.ControlMode) : "Cruise";
+        string modeHint = controller != null ? PrototypeInputBindingCatalog.GetModeSummary(controller.ControlMode) : string.Empty;
+        string main = controller == null
+            ? "Main n/a"
+            : diagnostics.mainThrusterAllowed ? "Main ready" : "Main disabled by mode";
+        if (controller != null && controller.MainThermalOverheated)
+        {
+            main = "Main overheated";
+        }
+
+        string rcs = controller == null
+            ? "RCS n/a"
+            : !controller.HasRcs ? "RCS no authority" : diagnostics.rcsEnabled ? "RCS ready" : "RCS off";
+        string sas = controller == null
+            ? "SAS n/a"
+            : diagnostics.effectiveSasEnabled ? "SAS on" : diagnostics.sasEnabled ? "SAS inverted" : "SAS off";
+        if (controller != null && diagnostics.sasEnabled && !diagnostics.sasHasAuthority)
+        {
+            sas = "SAS ineffective";
+        }
+
+        return new PrototypePlayerFlightSnapshot(
+            speed,
+            throttle,
+            stats != null ? stats.CurrentFuelKg : 0f,
+            stats != null ? stats.MaxFuelKg : 0f,
+            mode,
+            modeHint,
+            main,
+            rcs,
+            sas);
+    }
+
+    private static PrototypePlayerNavigationSnapshot BuildNavigation(PrototypeWaypointAutopilot autopilot)
+    {
+        if (autopilot == null || autopilot.CurrentTarget == null)
+        {
+            return new PrototypePlayerNavigationSnapshot(
+                false,
+                "No target",
+                0f,
+                0f,
+                0f,
+                0f,
+                "--",
+                "Bereit",
+                "Direkter Kurs",
+                System.Array.Empty<string>());
+        }
+
+        string eta = FormatEta(autopilot.EtaSeconds);
+        string[] sourceWarnings = autopilot.BuildNavigationWarningChips();
+        string[] warnings = new string[sourceWarnings.Length];
+        for (int i = 0; i < sourceWarnings.Length; i++)
+        {
+            warnings[i] = TranslateWarning(sourceWarnings[i]);
+        }
+
+        bool visible = autopilot.CurrentTarget != null || autopilot.AutopilotEngaged;
+        return new PrototypePlayerNavigationSnapshot(
+            visible,
+            autopilot.TargetName,
+            autopilot.DistanceToTarget,
+            autopilot.LastMetrics.relativeSpeed,
+            autopilot.ClosingSpeed,
+            autopilot.LateralSpeed,
+            eta,
+            TranslateNavigationState(autopilot.CurrentState),
+            TranslateNavigationPhase(autopilot.NavigationPhase),
+            warnings);
+    }
+
+    private static PrototypePlayerCombatSnapshot BuildCombat(PrototypeWeaponComputer weaponComputer)
+    {
+        if (weaponComputer == null)
+        {
+            return new PrototypePlayerCombatSnapshot(
+                false,
+                "No target",
+                0f,
+                "--",
+                0f,
+                "Weapon offline",
+                PrototypePlayerHudSeverity.Disabled,
+                "Auto Fire: Off",
+                "ManualOrder");
+        }
+
+        PrototypeWeaponTarget target = weaponComputer.ActiveTarget;
+        PrototypeTurretFireStatus fireStatus = weaponComputer.LastTurretStatus;
+        bool hasTarget = target != null && target.IsValid;
+        float healthPercent = hasTarget ? target.CurrentHealth / Mathf.Max(1f, target.MaxHealth) : 0f;
+        string health = hasTarget ? target.CurrentHealth.ToString("0") + "/" + target.MaxHealth.ToString("0") : "--";
+        string autoFire = BuildAutoFireLabel(weaponComputer.AutoFireEnabled, hasTarget, fireStatus);
+        string fireLabel = TranslateFireStatus(fireStatus);
+        PrototypePlayerHudSeverity severity = fireStatus.canFire
+            ? PrototypePlayerHudSeverity.Info
+            : FireBlockSeverity(fireStatus.blockReason);
+
+        return new PrototypePlayerCombatSnapshot(
+            hasTarget || weaponComputer.AutoFireEnabled,
+            hasTarget ? target.Label : "No target",
+            healthPercent,
+            health,
+            fireStatus.distanceMeters,
+            fireLabel,
+            severity,
+            autoFire,
+            weaponComputer.PriorityMode.ToString());
+    }
+
+    private static PrototypePlayerDockingSnapshot BuildDocking(DockingPort source, DockingPort target, Rigidbody sourceRigidbody)
+    {
+        if (source == null || target == null)
+        {
+            return new PrototypePlayerDockingSnapshot(
+                false,
+                "Docking port",
+                0f,
+                0f,
+                0f,
+                0f,
+                Vector2.zero,
+                "Docking n/a",
+                PrototypePlayerHudSeverity.Disabled,
+                "Prototype: Hard Lock noch nicht verbunden");
+        }
+
+        Rigidbody targetRigidbody = target.GetComponentInParent<Rigidbody>();
+        if (!source.TryCalculateRelativeState(target, sourceRigidbody, targetRigidbody, out DockingRelativeState state))
+        {
+            return new PrototypePlayerDockingSnapshot(
+                true,
+                target.name,
+                0f,
+                0f,
+                0f,
+                0f,
+                Vector2.zero,
+                TranslateDockingDiagnostic(state.diagnostic),
+                PrototypePlayerHudSeverity.Warning,
+                "Prototype: Hard Lock noch nicht verbunden");
+        }
+
+        DockingEligibility eligibility = source.EvaluateEligibility(target, state);
+        DockingHardLockResult hardLock = source.BuildHardLockPrototype(target, eligibility);
+        string hardLockLabel = hardLock.lockRequested && !hardLock.jointCreated
+            ? TranslateDockingDiagnostic(hardLock.diagnostic)
+            : TranslateDockingDiagnostic(eligibility.diagnostic);
+        PrototypePlayerHudSeverity severity = eligibility.canSoftCapture || eligibility.canHardLock
+            ? PrototypePlayerHudSeverity.Info
+            : PrototypePlayerHudSeverity.Warning;
+
+        return new PrototypePlayerDockingSnapshot(
+            true,
+            target.name,
+            state.distance,
+            state.angleErrorDegrees,
+            state.relativeSpeed,
+            state.closingSpeed,
+            new Vector2(state.offsetLocal.x, state.offsetLocal.y),
+            TranslateDockingDiagnostic(eligibility.diagnostic),
+            severity,
+            hardLockLabel);
+    }
+
+    private static PrototypePlayerShipStatusSnapshot BuildShipStatus(
+        ShipStats stats,
+        PlayerShipController controller,
+        PrototypeWeaponComputer weaponComputer)
+    {
+        string fuel = stats != null
+            ? "Fuel " + (stats.CurrentFuelKg / Mathf.Max(0.01f, stats.MaxFuelKg) * 100f).ToString("0") + "%"
+            : "Fuel n/a";
+        string main = controller != null && controller.FlightControlDiagnostics.mainThrusterAllowed
+            ? "Main ready"
+            : "Main disabled";
+        string rcs = controller != null && controller.HasRcs
+            ? controller.RcsEnabled ? "RCS ready" : "RCS off"
+            : "RCS no authority";
+        string sas = controller != null && controller.EffectiveSasEnabled ? "SAS on" : "SAS off";
+        string weapon = "Weapon n/a";
+        if (weaponComputer != null)
+        {
+            PrototypeTurretFireStatus fireStatus = weaponComputer.LastTurretStatus;
+            bool idleWithoutTarget = weaponComputer.ActiveTarget == null && !weaponComputer.AutoFireEnabled && !fireStatus.hasSelectedTarget;
+            weapon = idleWithoutTarget ? "Weapon standby" : TranslateFireStatus(fireStatus);
+        }
+        string damage = controller != null && controller.HasDamageStates()
+            ? "Modules damaged"
+            : "Modules nominal";
+
+        return new PrototypePlayerShipStatusSnapshot(fuel, main, rcs, sas, weapon, damage);
+    }
+
+    private static PrototypePlayerHudChip[] BuildWarningChips(
+        ShipStats stats,
+        PlayerShipController controller,
+        PrototypeWaypointAutopilot autopilot,
+        PrototypeMomentumAssist momentumAssist,
+        PrototypePlayerCombatSnapshot combat,
+        PrototypePlayerDockingSnapshot docking)
+    {
+        var chips = new List<PrototypePlayerHudChip>();
+        if (stats != null)
+        {
+            float fuelPercent = stats.CurrentFuelKg / Mathf.Max(0.01f, stats.MaxFuelKg);
+            if (fuelPercent <= 0.001f)
+            {
+                chips.Add(new PrototypePlayerHudChip("Treibstoff leer", PrototypePlayerHudSeverity.Danger));
+            }
+            else if (fuelPercent <= 0.1f)
+            {
+                chips.Add(new PrototypePlayerHudChip("Treibstoff niedrig", PrototypePlayerHudSeverity.Warning));
+            }
+        }
+
+        if (controller != null && !controller.HasRcs && controller.ControlMode != FlightControlMode.Normal)
+        {
+            chips.Add(new PrototypePlayerHudChip("RCS nicht verfuegbar", PrototypePlayerHudSeverity.Danger));
+        }
+
+        if (autopilot != null)
+        {
+            if (autopilot.AutopilotEngaged && !autopilot.FuelFeasible)
+            {
+                chips.Add(new PrototypePlayerHudChip("Autopilot: zu wenig Treibstoff", PrototypePlayerHudSeverity.Warning));
+            }
+
+            if (autopilot.CurrentState == PrototypeWaypointAutopilotState.Aborted || autopilot.CurrentState == PrototypeWaypointAutopilotState.Failed)
+            {
+                chips.Add(new PrototypePlayerHudChip("Autopilot abgebrochen", PrototypePlayerHudSeverity.Warning));
+            }
+
+            string[] navWarnings = autopilot.BuildNavigationWarningChips();
+            for (int i = 0; i < navWarnings.Length; i++)
+            {
+                AddUnique(chips, TranslateWarning(navWarnings[i]), PrototypePlayerHudSeverity.Warning);
+            }
+        }
+
+        if (momentumAssist != null && momentumAssist.CurrentState == PrototypeMomentumAssistState.NoAuthority)
+        {
+            chips.Add(new PrototypePlayerHudChip("Keine Steuerautoritaet", PrototypePlayerHudSeverity.Danger));
+        }
+
+        if (combat.Visible && combat.FireSeverity != PrototypePlayerHudSeverity.Info && combat.FireSeverity != PrototypePlayerHudSeverity.Normal)
+        {
+            chips.Add(new PrototypePlayerHudChip(combat.FireStatusLabel, combat.FireSeverity));
+        }
+
+        if (docking.Visible && docking.StatusSeverity == PrototypePlayerHudSeverity.Warning)
+        {
+            chips.Add(new PrototypePlayerHudChip(docking.StatusLabel, PrototypePlayerHudSeverity.Warning));
+        }
+
+        return chips.ToArray();
+    }
+
+    private static PrototypePlayerHudChip[] BuildAssistChips(
+        PrototypeWaypointAutopilot autopilot,
+        PrototypeMomentumAssist momentumAssist,
+        PrototypePlayerCombatSnapshot combat,
+        PrototypePlayerDockingSnapshot docking)
+    {
+        var chips = new List<PrototypePlayerHudChip>();
+        if (autopilot != null && autopilot.AutopilotEngaged)
+        {
+            chips.Add(new PrototypePlayerHudChip("Autopilot: " + TranslateNavigationState(autopilot.CurrentState), PrototypePlayerHudSeverity.Info));
+        }
+
+        if (momentumAssist != null && momentumAssist.IsActive)
+        {
+            chips.Add(new PrototypePlayerHudChip("Kill Momentum: " + TranslateMomentumState(momentumAssist.CurrentState), PrototypePlayerHudSeverity.Info));
+        }
+
+        if (docking.Visible && docking.StatusSeverity == PrototypePlayerHudSeverity.Info)
+        {
+            chips.Add(new PrototypePlayerHudChip(docking.StatusLabel, PrototypePlayerHudSeverity.Info));
+        }
+
+        if (combat.Visible && combat.AutoFireLabel.Contains("Armed"))
+        {
+            chips.Add(new PrototypePlayerHudChip("Auto Fire", PrototypePlayerHudSeverity.Info));
+        }
+
+        return chips.ToArray();
+    }
+
+    private static string TranslateMomentumState(PrototypeMomentumAssistState state)
+    {
+        switch (state)
+        {
+            case PrototypeMomentumAssistState.AlignForBrake:
+                return "Ausrichten";
+            case PrototypeMomentumAssistState.MainBrake:
+                return "Haupttriebwerk bremst";
+            case PrototypeMomentumAssistState.RcsDamp:
+                return "RCS daempft";
+            case PrototypeMomentumAssistState.Complete:
+                return "Abgeschlossen";
+            case PrototypeMomentumAssistState.Aborted:
+                return "Abgebrochen";
+            case PrototypeMomentumAssistState.NoAuthority:
+                return "Keine Autoritaet";
+            case PrototypeMomentumAssistState.FuelInsufficient:
+                return "Zu wenig Treibstoff";
+            default:
+                return "Bereit";
+        }
+    }
+
+    private static string BuildAutoFireLabel(bool enabled, bool hasTarget, PrototypeTurretFireStatus status)
+    {
+        if (!enabled)
+        {
+            return "Auto Fire: Off";
+        }
+
+        if (!hasTarget)
+        {
+            return "Auto Fire: No target";
+        }
+
+        return status.canFire
+            ? "Auto Fire: Armed"
+            : "Auto Fire: Waiting - " + TranslateFireStatus(status);
+    }
+
+    private static PrototypePlayerHudSeverity FireBlockSeverity(PrototypeTurretFireBlockReason reason)
+    {
+        switch (reason)
+        {
+            case PrototypeTurretFireBlockReason.NoMuzzle:
+            case PrototypeTurretFireBlockReason.NoAuthority:
+            case PrototypeTurretFireBlockReason.MissingImportedMarker:
+            case PrototypeTurretFireBlockReason.SafetyDataMissing:
+            case PrototypeTurretFireBlockReason.SafetyUnsafe:
+                return PrototypePlayerHudSeverity.Danger;
+            case PrototypeTurretFireBlockReason.None:
+                return PrototypePlayerHudSeverity.Info;
+            default:
+                return PrototypePlayerHudSeverity.Warning;
+        }
+    }
+
+    private static void AddUnique(List<PrototypePlayerHudChip> chips, string label, PrototypePlayerHudSeverity severity)
+    {
+        if (string.IsNullOrWhiteSpace(label))
+        {
+            return;
+        }
+
+        for (int i = 0; i < chips.Count; i++)
+        {
+            if (chips[i].Label == label)
+            {
+                return;
+            }
+        }
+
+        chips.Add(new PrototypePlayerHudChip(label, severity));
+    }
+
+    private static string FormatEta(float eta)
+    {
+        if (float.IsNaN(eta) || float.IsInfinity(eta) || eta <= 0f)
+        {
+            return "--";
+        }
+
+        if (eta >= 60f)
+        {
+            int minutes = Mathf.FloorToInt(eta / 60f);
+            int seconds = Mathf.RoundToInt(eta - (minutes * 60f));
+            return minutes + "m " + seconds.ToString("00") + "s";
+        }
+
+        return eta.ToString("0") + "s";
+    }
+
+    private static Transform ResolveFallbackTarget(Transform shipRoot, PrototypeWeaponComputer weaponComputer)
+    {
+        if (weaponComputer != null && weaponComputer.ActiveTargetTransform != null)
+        {
+            return weaponComputer.ActiveTargetTransform;
+        }
+
+        PrototypeTargetDummy dummy = UnityEngine.Object.FindAnyObjectByType<PrototypeTargetDummy>();
+        if (dummy != null && (shipRoot == null || !dummy.transform.IsChildOf(shipRoot)))
+        {
+            return dummy.transform;
+        }
+
+        return null;
+    }
+}
+
+[RequireComponent(typeof(Camera))]
+public class PrototypePlayerHudRenderer : MonoBehaviour
+{
+    private const float MarkerRadius = 88f;
+    private const float CanvasReferenceWidth = 1280f;
+    private const float CanvasReferenceHeight = 720f;
+
+    [SerializeField] private Transform shipRoot;
+    [SerializeField] private Rigidbody shipRigidbody;
+    [SerializeField] private ShipStats shipStats;
+    [SerializeField] private PlayerShipController controller;
+    [SerializeField] private PrototypeWaypointAutopilot autopilot;
+    [SerializeField] private PrototypeMomentumAssist momentumAssist;
+    [SerializeField] private PrototypeWeaponComputer weaponComputer;
+    [SerializeField] private DockingPort sourceDockingPort;
+    [SerializeField] private DockingPort targetDockingPort;
+    [SerializeField] private bool showPlayerHud = true;
+    [SerializeField] private bool includeDebugHelp;
+
+    private Canvas canvas;
+    private PrototypePlayerHudOverlayGraphic overlayGraphic;
+    private PrototypePlayerHudRadarGraphic radarGraphic;
+    private Text topWarningText;
+    private readonly List<Text> assistTexts = new List<Text>();
+    private Text speedText;
+    private Text throttleText;
+    private Text fuelText;
+    private Image throttleFill;
+    private Image fuelFill;
+    private Text modeText;
+    private Text rcsText;
+    private Text sasText;
+    private Text systemText;
+    private Text contextTitleText;
+    private Text contextBodyText;
+    private Text radarText;
+    private Text helpText;
+    private GameObject helpPanel;
+    private Button killMomentumButton;
+    private readonly List<Text> markerLabels = new List<Text>();
+    private PrototypePlayerHudSnapshot lastSnapshot;
+
+    public bool ShowPlayerHud => showPlayerHud;
+    public PrototypePlayerHudSnapshot LastSnapshot => lastSnapshot;
+
+    private void Awake()
+    {
+        ResolveReferences();
+        EnsureUi();
+    }
+
+    private void Start()
+    {
+        ResolveReferences();
+        RefreshNow();
+    }
+
+    private void Update()
+    {
+        if (UnityEngine.InputSystem.Keyboard.current != null
+            && UnityEngine.InputSystem.Keyboard.current.f1Key.wasPressedThisFrame)
+        {
+            SetHelpVisible(helpPanel == null || !helpPanel.activeSelf);
+        }
+
+        RefreshNow();
+    }
+
+    private void OnGUI()
+    {
+        if (!showPlayerHud || !Application.isPlaying)
+        {
+            return;
+        }
+
+        DrawRadarGui(new Rect(Screen.width - 196f, 26f, 170f, 170f), lastSnapshot);
+    }
+
+    public void Bind(Transform root, ShipStats stats, Rigidbody body)
+    {
+        shipRoot = root != null ? root : shipRoot;
+        shipStats = stats != null ? stats : shipStats;
+        shipRigidbody = body != null ? body : shipRigidbody;
+        ResolveReferences();
+        EnsureUi();
+        RefreshNow();
+    }
+
+    public void SetTargetDockingPort(DockingPort dockingPort)
+    {
+        targetDockingPort = dockingPort;
+    }
+
+    public void SetPlayerHudVisible(bool visible)
+    {
+        showPlayerHud = visible;
+        if (canvas != null)
+        {
+            canvas.enabled = visible;
+        }
+    }
+
+    public void RefreshNow()
+    {
+        ResolveReferences();
+        EnsureUi();
+        lastSnapshot = PrototypePlayerHudSnapshotBuilder.Build(
+            shipRoot,
+            shipRigidbody,
+            shipStats,
+            controller,
+            autopilot,
+            momentumAssist,
+            weaponComputer,
+            sourceDockingPort,
+            targetDockingPort);
+        ApplySnapshot(lastSnapshot);
+    }
+
+    private void ResolveReferences()
+    {
+        if (shipRoot != null)
+        {
+            if (shipRigidbody == null)
+            {
+                shipRigidbody = shipRoot.GetComponent<Rigidbody>();
+            }
+
+            if (shipStats == null)
+            {
+                shipStats = shipRoot.GetComponent<ShipStats>();
+            }
+
+            if (controller == null)
+            {
+                controller = shipRoot.GetComponent<PlayerShipController>();
+            }
+
+            if (autopilot == null)
+            {
+                autopilot = shipRoot.GetComponent<PrototypeWaypointAutopilot>();
+            }
+
+            if (momentumAssist == null)
+            {
+                momentumAssist = shipRoot.GetComponent<PrototypeMomentumAssist>();
+            }
+
+            if (weaponComputer == null)
+            {
+                weaponComputer = shipRoot.GetComponent<PrototypeWeaponComputer>();
+            }
+
+            if (sourceDockingPort == null)
+            {
+                sourceDockingPort = shipRoot.GetComponentInChildren<DockingPort>();
+            }
+        }
+
+        if (weaponComputer != null)
+        {
+            weaponComputer.UpdateActiveTargetAndStatus();
+        }
+    }
+
+    private void EnsureUi()
+    {
+        if (canvas != null)
+        {
+            return;
+        }
+
+        GameObject canvasObject = new GameObject("PrototypePlayerHudCanvas");
+        canvasObject.transform.SetParent(transform, false);
+        canvas = canvasObject.AddComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvas.sortingOrder = 30;
+        canvas.enabled = showPlayerHud;
+
+        CanvasScaler scaler = canvasObject.AddComponent<CanvasScaler>();
+        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(CanvasReferenceWidth, CanvasReferenceHeight);
+        scaler.matchWidthOrHeight = 0.5f;
+        canvasObject.AddComponent<GraphicRaycaster>();
+
+        EnsureEventSystem();
+
+        CreateTopStrip(canvasObject.transform);
+        CreateBottomBar(canvasObject.transform);
+        CreateSystemPanel(canvasObject.transform);
+        CreateContextPanel(canvasObject.transform);
+        CreateRadarPanel(canvasObject.transform);
+
+        overlayGraphic = CreateGraphic<PrototypePlayerHudOverlayGraphic>("FlightMarkers", canvasObject.transform, StretchFull());
+        overlayGraphic.raycastTarget = false;
+
+        CreateMarkerLabels(canvasObject.transform);
+        CreateHelpPanel(canvasObject.transform);
+    }
+
+    private void CreateTopStrip(Transform parent)
+    {
+        RectTransform strip = CreatePanel("AlertAssistStrip", parent, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(620f, 42f), new Vector2(0f, -24f));
+        topWarningText = CreateText("PrimaryWarning", strip, 15, TextAnchor.MiddleCenter, Color.white, StretchFull(10f, 5f));
+        for (int i = 0; i < 3; i++)
+        {
+            Text chip = CreateText("AssistChip" + (i + 1), strip, 11, TextAnchor.MiddleCenter, PrototypeUiStyle.ActiveColor, new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(160f, 18f), new Vector2(14f + (i * 166f), 3f)));
+            assistTexts.Add(chip);
+        }
+    }
+
+    private void CreateBottomBar(Transform parent)
+    {
+        RectTransform bar = CreatePanel("FlightStatusBar", parent, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(760f, 76f), new Vector2(0f, 36f));
+        speedText = CreateText("Speed", bar, 19, TextAnchor.MiddleLeft, Color.white, new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 1f), new Vector2(0f, 0.5f), new Vector2(138f, -12f), new Vector2(16f, 0f)));
+        throttleText = CreateText("Throttle", bar, 12, TextAnchor.UpperLeft, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(160f, 30f), new Vector2(158f, 12f)));
+        fuelText = CreateText("Fuel", bar, 12, TextAnchor.UpperLeft, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(160f, 30f), new Vector2(338f, 12f)));
+        throttleFill = CreateBar("ThrottleBar", bar, new Vector2(158f, -14f));
+        fuelFill = CreateBar("FuelBar", bar, new Vector2(338f, -14f));
+        modeText = CreateText("Mode", bar, 14, TextAnchor.MiddleCenter, Color.white, new RectPreset(new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(132f, 28f), new Vector2(-188f, 14f)));
+        rcsText = CreateText("Rcs", bar, 12, TextAnchor.MiddleCenter, PrototypeUiStyle.ActiveColor, new RectPreset(new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(104f, 22f), new Vector2(-194f, -16f)));
+        sasText = CreateText("Sas", bar, 12, TextAnchor.MiddleCenter, PrototypeUiStyle.ActiveColor, new RectPreset(new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(104f, 22f), new Vector2(-82f, -16f)));
+        killMomentumButton = CreateButton("KillMomentum", bar, "Kill Momentum", new RectPreset(new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(124f, 24f), new Vector2(-72f, 16f)));
+    }
+
+    private void CreateSystemPanel(Transform parent)
+    {
+        RectTransform panel = CreatePanel("ShipSystems", parent, new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(248f, 128f), new Vector2(24f, 24f));
+        systemText = CreateText("SystemsText", panel, 12, TextAnchor.UpperLeft, Color.white, StretchFull(12f, 10f));
+    }
+
+    private void CreateContextPanel(Transform parent)
+    {
+        RectTransform panel = CreatePanel("ContextPanel", parent, new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(334f, 166f), new Vector2(-24f, 24f));
+        contextTitleText = CreateText("ContextTitle", panel, 14, TextAnchor.UpperLeft, Color.white, new RectPreset(new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(-22f, 26f), new Vector2(0f, -16f)));
+        contextBodyText = CreateText("ContextBody", panel, 12, TextAnchor.UpperLeft, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-22f, -48f), new Vector2(0f, -28f)));
+    }
+
+    private void CreateRadarPanel(Transform parent)
+    {
+        RectTransform panel = CreatePanel("RadarPanel", parent, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(170f, 170f), new Vector2(-24f, -24f));
+        radarGraphic = CreateGraphic<PrototypePlayerHudRadarGraphic>("RadarGraphic", panel, StretchFull(8f, 8f));
+        radarGraphic.raycastTarget = false;
+        radarText = CreateText("RadarText", panel, 10, TextAnchor.LowerCenter, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-12f, 18f), new Vector2(0f, 10f)));
+    }
+
+    private void CreateHelpPanel(Transform parent)
+    {
+        RectTransform panel = CreatePanel("PlayerHelp", parent, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(620f, 390f), Vector2.zero);
+        helpPanel = panel.gameObject;
+        helpText = CreateText("HelpText", panel, 12, TextAnchor.UpperLeft, Color.white, StretchFull(18f, 16f));
+        helpPanel.SetActive(false);
+    }
+
+    private void CreateMarkerLabels(Transform parent)
+    {
+        string[] labels = { "FWD", "PRO", "RET", "TGT" };
+        for (int i = 0; i < labels.Length; i++)
+        {
+            Text label = CreateText("Marker_" + labels[i], parent, 10, TextAnchor.MiddleCenter, Color.white, new RectPreset(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(44f, 18f), Vector2.zero));
+            markerLabels.Add(label);
+        }
+    }
+
+    private void ApplySnapshot(PrototypePlayerHudSnapshot snapshot)
+    {
+        if (canvas != null)
+        {
+            canvas.enabled = showPlayerHud;
+        }
+
+        if (!showPlayerHud)
+        {
+            return;
+        }
+
+        topWarningText.text = BuildWarningStrip(snapshot);
+        for (int i = 0; i < assistTexts.Count; i++)
+        {
+            bool visible = i < snapshot.AssistChips.Length && !snapshot.AssistChips[i].IsEmpty;
+            assistTexts[i].gameObject.SetActive(visible);
+            if (visible)
+            {
+                assistTexts[i].text = snapshot.AssistChips[i].Label;
+                assistTexts[i].color = ColorForSeverity(snapshot.AssistChips[i].Severity);
+            }
+        }
+
+        speedText.text = snapshot.Flight.SpeedMetersPerSecond.ToString("0") + " m/s";
+        throttleText.text = "Throttle " + snapshot.Flight.ThrottlePercent.ToString("0") + "%";
+        fuelText.text = "Fuel " + (snapshot.Flight.FuelPercent * 100f).ToString("0") + "%";
+        SetBar(throttleFill, snapshot.Flight.ThrottlePercent / 100f, PrototypeModuleColorPalette.MainThruster);
+        SetBar(fuelFill, snapshot.Flight.FuelPercent, snapshot.Flight.FuelPercent <= 0.1f ? PrototypeUiStyle.WarningColor : PrototypeModuleColorPalette.FuelTankCue);
+        modeText.text = snapshot.Flight.ControlModeLabel;
+        rcsText.text = snapshot.Flight.RcsLabel;
+        sasText.text = snapshot.Flight.SasLabel;
+
+        systemText.text =
+            snapshot.ShipStatus.FuelLabel + "\n"
+            + snapshot.ShipStatus.MainEngineLabel + "\n"
+            + snapshot.ShipStatus.RcsLabel + "\n"
+            + snapshot.ShipStatus.SasLabel + "\n"
+            + snapshot.ShipStatus.WeaponLabel + "\n"
+            + snapshot.ShipStatus.DamageLabel;
+
+        ApplyContext(snapshot);
+        radarText.text = "Range 1 km";
+        if (helpText != null)
+        {
+            FlightControlMode activeMode = controller != null ? controller.ControlMode : FlightControlMode.Normal;
+            helpText.text = PrototypePlayerHudSnapshotBuilder.BuildPlayerHelpText(activeMode, includeDebugHelp);
+        }
+
+        if (killMomentumButton != null)
+        {
+            killMomentumButton.onClick.RemoveAllListeners();
+            killMomentumButton.onClick.AddListener(() => momentumAssist?.ActivateFromUi());
+            killMomentumButton.interactable = momentumAssist != null;
+        }
+
+        overlayGraphic.SetSnapshot(snapshot);
+        if (radarGraphic != null)
+        {
+            radarGraphic.SetSnapshot(snapshot);
+        }
+        UpdateMarkerLabels(snapshot);
+    }
+
+    private void ApplyContext(PrototypePlayerHudSnapshot snapshot)
+    {
+        if (snapshot.Docking.Visible)
+        {
+            contextTitleText.text = "Docking: " + snapshot.Docking.TargetName;
+            contextBodyText.text =
+                "Dist " + FormatDistance(snapshot.Docking.DistanceMeters) + " | Angle " + snapshot.Docking.AngleErrorDegrees.ToString("0.0") + " deg\n"
+                + "Rel " + snapshot.Docking.RelativeSpeed.ToString("0.0") + " m/s | Closing " + snapshot.Docking.ClosingSpeed.ToString("0.0") + " m/s\n"
+                + "Offset " + snapshot.Docking.LateralOffsetMeters.x.ToString("0.0") + " / " + snapshot.Docking.LateralOffsetMeters.y.ToString("0.0") + " m\n"
+                + snapshot.Docking.StatusLabel + "\n"
+                + snapshot.Docking.HardLockLabel;
+            contextBodyText.color = ColorForSeverity(snapshot.Docking.StatusSeverity);
+            return;
+        }
+
+        if (snapshot.Combat.Visible)
+        {
+            contextTitleText.text = "Combat: " + snapshot.Combat.TargetName;
+            contextBodyText.text =
+                "Health " + snapshot.Combat.HealthLabel + " | Range " + FormatDistance(snapshot.Combat.RangeMeters) + "\n"
+                + snapshot.Combat.FireStatusLabel + "\n"
+                + snapshot.Combat.AutoFireLabel + "\n"
+                + "Priority " + snapshot.Combat.PriorityLabel;
+            contextBodyText.color = ColorForSeverity(snapshot.Combat.FireSeverity);
+            return;
+        }
+
+        if (snapshot.Navigation.Visible)
+        {
+            contextTitleText.text = "Navigation: " + snapshot.Navigation.TargetName;
+            contextBodyText.text =
+                "Dist " + FormatDistance(snapshot.Navigation.DistanceMeters) + " | ETA " + snapshot.Navigation.EtaLabel + "\n"
+                + "Closing " + snapshot.Navigation.ClosingSpeed.ToString("0.0") + " m/s | Lateral " + snapshot.Navigation.LateralSpeed.ToString("0.0") + " m/s\n"
+                + snapshot.Navigation.StateLabel + "\n"
+                + snapshot.Navigation.PhaseLabel;
+            contextBodyText.color = PrototypeUiStyle.MutedColor;
+            return;
+        }
+
+        contextTitleText.text = "Navigation";
+        contextBodyText.text = "No target\nTab next target | B previous target\nG Autopilot | Space fire";
+        contextBodyText.color = PrototypeUiStyle.MutedColor;
+    }
+
+    private void UpdateMarkerLabels(PrototypePlayerHudSnapshot snapshot)
+    {
+        if (markerLabels.Count < 4)
+        {
+            return;
+        }
+
+        SetMarkerLabel(markerLabels[0], snapshot.MarkerModel.ForwardMarker, true, Color.white);
+        SetMarkerLabel(markerLabels[1], snapshot.MarkerModel.ProgradeMarker, snapshot.MarkerModel.HasVelocityMarker, PrototypeUiStyle.OkColor);
+        SetMarkerLabel(markerLabels[2], snapshot.MarkerModel.RetrogradeMarker, snapshot.MarkerModel.HasVelocityMarker, PrototypeUiStyle.DangerColor);
+        SetMarkerLabel(markerLabels[3], snapshot.MarkerModel.TargetMarker, snapshot.MarkerModel.HasTargetMarker, PrototypeModuleColorPalette.Target);
+    }
+
+    private void SetMarkerLabel(Text label, Vector2 markerOffset, bool visible, Color color)
+    {
+        label.gameObject.SetActive(visible);
+        label.color = color;
+        RectTransform rect = label.rectTransform;
+        Vector2 clamped = Vector2.ClampMagnitude(markerOffset, MarkerRadius);
+        rect.anchoredPosition = new Vector2(clamped.x, clamped.y - 86f);
+    }
+
+    private static string BuildWarningStrip(PrototypePlayerHudSnapshot snapshot)
+    {
+        if (snapshot.Warnings.Length == 0)
+        {
+            return snapshot.AssistChips.Length > 0 ? snapshot.AssistChips[0].Label : "Flight nominal";
+        }
+
+        int chipCount = Mathf.Min(3, snapshot.Warnings.Length);
+        var parts = new string[chipCount];
+        for (int i = 0; i < chipCount; i++)
+        {
+            parts[i] = snapshot.Warnings[i].Label;
+        }
+
+        return string.Join("  |  ", parts);
+    }
+
+    private static Image CreateBar(string name, Transform parent, Vector2 anchoredPosition)
+    {
+        RectTransform bg = CreatePanel(name + "Background", parent, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(146f, 6f), anchoredPosition);
+        bg.GetComponent<Image>().color = new Color(0.09f, 0.11f, 0.15f, 0.94f);
+        Image fill = CreateGraphic<Image>(name + "Fill", bg, StretchFull());
+        fill.color = Color.white;
+        return fill;
+    }
+
+    private static Button CreateButton(string name, Transform parent, string label, RectPreset preset)
+    {
+        RectTransform rect = CreateRect(name, parent, preset);
+        Image image = rect.gameObject.AddComponent<Image>();
+        image.color = new Color(0.13f, 0.16f, 0.21f, 0.94f);
+        Button button = rect.gameObject.AddComponent<Button>();
+        ColorBlock colors = button.colors;
+        colors.normalColor = image.color;
+        colors.highlightedColor = new Color(0.18f, 0.22f, 0.28f, 0.98f);
+        colors.pressedColor = new Color(0.09f, 0.12f, 0.16f, 1f);
+        colors.selectedColor = colors.highlightedColor;
+        colors.disabledColor = new Color(0.08f, 0.09f, 0.11f, 0.6f);
+        button.colors = colors;
+        CreateText(name + "Text", rect, 11, TextAnchor.MiddleCenter, Color.white, StretchFull(4f, 2f)).text = label;
+        return button;
+    }
+
+    private static RectTransform CreatePanel(string name, Transform parent, Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot, Vector2 size, Vector2 anchoredPosition)
+    {
+        RectTransform rect = CreateRect(name, parent, new RectPreset(anchorMin, anchorMax, pivot, size, anchoredPosition));
+        Image image = rect.gameObject.AddComponent<Image>();
+        image.color = new Color(0.022f, 0.027f, 0.039f, 0.76f);
+        return rect;
+    }
+
+    private static Text CreateText(string name, Transform parent, int fontSize, TextAnchor alignment, Color color, RectPreset preset)
+    {
+        Text text = CreateGraphic<Text>(name, parent, preset);
+        text.font = ResolveRuntimeFont();
+        text.fontSize = fontSize;
+        text.alignment = alignment;
+        text.color = color;
+        text.horizontalOverflow = HorizontalWrapMode.Wrap;
+        text.verticalOverflow = VerticalWrapMode.Truncate;
+        text.raycastTarget = false;
+        return text;
+    }
+
+    private static T CreateGraphic<T>(string name, Transform parent, RectPreset preset) where T : Graphic
+    {
+        RectTransform rect = CreateRect(name, parent, preset);
+        return rect.gameObject.AddComponent<T>();
+    }
+
+    private static RectTransform CreateRect(string name, Transform parent, RectPreset preset)
+    {
+        GameObject go = new GameObject(name);
+        go.transform.SetParent(parent, false);
+        RectTransform rect = go.AddComponent<RectTransform>();
+        rect.anchorMin = preset.AnchorMin;
+        rect.anchorMax = preset.AnchorMax;
+        rect.pivot = preset.Pivot;
+        rect.sizeDelta = preset.SizeDelta;
+        rect.anchoredPosition = preset.AnchoredPosition;
+        return rect;
+    }
+
+    private static void SetBar(Image fill, float normalized, Color color)
+    {
+        if (fill == null)
+        {
+            return;
+        }
+
+        normalized = Mathf.Clamp01(normalized);
+        fill.color = color;
+        RectTransform rect = fill.rectTransform;
+        rect.anchorMin = Vector2.zero;
+        rect.anchorMax = new Vector2(normalized, 1f);
+        rect.offsetMin = Vector2.zero;
+        rect.offsetMax = Vector2.zero;
+    }
+
+    private static void EnsureEventSystem()
+    {
+        EventSystem[] eventSystems = UnityEngine.Object.FindObjectsByType<EventSystem>(FindObjectsInactive.Exclude);
+        if (eventSystems != null && eventSystems.Length > 0)
+        {
+            return;
+        }
+
+        GameObject eventSystemObject = new GameObject("PrototypePlayerHudEventSystem");
+        eventSystemObject.AddComponent<EventSystem>();
+        eventSystemObject.AddComponent<InputSystemUIInputModule>();
+    }
+
+    private void SetHelpVisible(bool visible)
+    {
+        if (helpPanel != null)
+        {
+            helpPanel.SetActive(visible);
+        }
+    }
+
+    private static string FormatDistance(float meters)
+    {
+        if (meters >= 1000f)
+        {
+            return (meters / 1000f).ToString("0.0") + " km";
+        }
+
+        return meters.ToString("0") + " m";
+    }
+
+    private static Color ColorForSeverity(PrototypePlayerHudSeverity severity)
+    {
+        switch (severity)
+        {
+            case PrototypePlayerHudSeverity.Info:
+                return PrototypeUiStyle.ActiveColor;
+            case PrototypePlayerHudSeverity.Warning:
+                return PrototypeUiStyle.WarningColor;
+            case PrototypePlayerHudSeverity.Danger:
+                return PrototypeUiStyle.DangerColor;
+            case PrototypePlayerHudSeverity.Disabled:
+                return PrototypeUiStyle.DisabledColor;
+            default:
+                return Color.white;
+        }
+    }
+
+    private static Font ResolveRuntimeFont()
+    {
+        Font font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        if (font == null)
+        {
+            font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+        }
+
+        return font;
+    }
+
+    private static void DrawRadarGui(Rect rect, PrototypePlayerHudSnapshot snapshot)
+    {
+        Vector2 center = rect.center;
+        float radius = Mathf.Min(rect.width, rect.height) * 0.36f;
+        Color ringColor = new Color(0.25f, 0.85f, 1f, 0.95f);
+        DrawCircleGui(center, radius, ringColor, 1.6f, 48);
+        DrawCircleGui(center, radius * 0.5f, ringColor, 1f, 48);
+        DrawLineGui(center + Vector2.left * radius, center + Vector2.right * radius, ringColor, 1f);
+        DrawLineGui(center + Vector2.up * radius, center + Vector2.down * radius, ringColor, 1f);
+
+        Vector2 heading = new Vector2(snapshot.ShipForward.x, -snapshot.ShipForward.z);
+        if (heading.sqrMagnitude <= 0.001f)
+        {
+            heading = Vector2.up;
+        }
+
+        heading.Normalize();
+        Vector2 right = new Vector2(heading.y, -heading.x);
+        DrawLineGui(center + heading * 12f, center - heading * 8f - right * 7f, Color.white, 1.5f);
+        DrawLineGui(center - heading * 8f - right * 7f, center - heading * 8f + right * 7f, Color.white, 1.5f);
+        DrawLineGui(center - heading * 8f + right * 7f, center + heading * 12f, Color.white, 1.5f);
+
+        if (snapshot.NavigationTargetWorldPosition.HasValue)
+        {
+            Vector2 target = WorldToRadarGui(center, radius, snapshot.ShipWorldPosition, snapshot.NavigationTargetWorldPosition.Value);
+            DrawLineGui(center, target, PrototypeModuleColorPalette.Target, 1f);
+            DrawBlipGui(target, PrototypeModuleColorPalette.Target);
+        }
+
+        if (snapshot.CombatTargetWorldPosition.HasValue)
+        {
+            DrawBlipGui(WorldToRadarGui(center, radius, snapshot.ShipWorldPosition, snapshot.CombatTargetWorldPosition.Value), PrototypeModuleColorPalette.Gun);
+        }
+    }
+
+    private static Vector2 WorldToRadarGui(Vector2 center, float radius, Vector3 origin, Vector3 target)
+    {
+        Vector3 delta = target - origin;
+        Vector2 flat = new Vector2(delta.x, -delta.z) / 1000f * radius;
+        return center + Vector2.ClampMagnitude(flat, radius);
+    }
+
+    private static void DrawBlipGui(Vector2 point, Color color)
+    {
+        DrawLineGui(point + Vector2.left * 4f, point + Vector2.right * 4f, color, 2f);
+        DrawLineGui(point + Vector2.up * 4f, point + Vector2.down * 4f, color, 2f);
+    }
+
+    private static void DrawCircleGui(Vector2 center, float radius, Color color, float thickness, int segments)
+    {
+        Vector2 previous = center + Vector2.right * radius;
+        for (int i = 1; i <= segments; i++)
+        {
+            float angle = Mathf.PI * 2f * i / segments;
+            Vector2 next = center + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
+            DrawLineGui(previous, next, color, thickness);
+            previous = next;
+        }
+    }
+
+    private static void DrawLineGui(Vector2 start, Vector2 end, Color color, float thickness)
+    {
+        Vector2 delta = end - start;
+        if (delta.sqrMagnitude < 0.001f)
+        {
+            return;
+        }
+
+        Matrix4x4 oldMatrix = GUI.matrix;
+        Color oldColor = GUI.color;
+        GUI.color = color;
+        GUIUtility.RotateAroundPivot(Mathf.Atan2(delta.y, delta.x) * Mathf.Rad2Deg, start);
+        GUI.DrawTexture(new Rect(start.x, start.y - (thickness * 0.5f), delta.magnitude, thickness), Texture2D.whiteTexture);
+        GUI.matrix = oldMatrix;
+        GUI.color = oldColor;
+    }
+
+    private static RectPreset StretchFull(float insetX = 0f, float insetY = 0f)
+    {
+        return new RectPreset(
+            Vector2.zero,
+            Vector2.one,
+            new Vector2(0.5f, 0.5f),
+            new Vector2(-insetX * 2f, -insetY * 2f),
+            Vector2.zero);
+    }
+}
+
+public sealed class PrototypePlayerHudOverlayGraphic : MaskableGraphic
+{
+    private PrototypePlayerHudSnapshot snapshot;
+
+    public void SetSnapshot(PrototypePlayerHudSnapshot value)
+    {
+        snapshot = value;
+        SetVerticesDirty();
+    }
+
+    protected override void OnPopulateMesh(VertexHelper vh)
+    {
+        vh.Clear();
+        Rect rect = rectTransform.rect;
+        Vector2 center = rect.center + new Vector2(0f, -86f);
+        DrawCircle(vh, center, 88f, new Color(0.35f, 0.62f, 0.88f, 0.72f), 1.5f, 64);
+        DrawLine(vh, center + Vector2.left * 18f, center + Vector2.right * 18f, Color.white, 1.4f);
+        DrawLine(vh, center + Vector2.up * 18f, center + Vector2.down * 18f, Color.white, 1.4f);
+        DrawMarker(vh, center, snapshot.MarkerModel.ForwardMarker, Color.white, 10f);
+
+        if (snapshot.MarkerModel.HasVelocityMarker)
+        {
+            DrawMarker(vh, center, snapshot.MarkerModel.ProgradeMarker, PrototypeUiStyle.OkColor, 9f);
+            DrawMarker(vh, center, snapshot.MarkerModel.RetrogradeMarker, PrototypeUiStyle.DangerColor, 9f);
+        }
+
+        if (snapshot.MarkerModel.HasTargetMarker)
+        {
+            DrawMarker(vh, center, snapshot.MarkerModel.TargetMarker, PrototypeModuleColorPalette.Target, 10f);
+        }
+
+        if (snapshot.Docking.Visible)
+        {
+            DrawDockingDirector(vh, center, snapshot.Docking);
+        }
+
+        if (snapshot.Combat.Visible && snapshot.MarkerModel.HasTargetMarker)
+        {
+            DrawCombatBracket(vh, center + Vector2.ClampMagnitude(snapshot.MarkerModel.TargetMarker, 88f), ColorForSeverity(snapshot.Combat.FireSeverity));
+        }
+
+    }
+
+    private static void DrawDockingDirector(VertexHelper vh, Vector2 center, PrototypePlayerDockingSnapshot docking)
+    {
+        float offsetScale = 8f;
+        Vector2 offset = Vector2.ClampMagnitude(docking.LateralOffsetMeters * offsetScale, 48f);
+        Color color = ColorForSeverity(docking.StatusSeverity);
+        DrawCircle(vh, center, 48f, new Color(color.r, color.g, color.b, 0.5f), 1f, 40);
+        DrawLine(vh, center + offset + Vector2.left * 12f, center + offset + Vector2.right * 12f, color, 1.8f);
+        DrawLine(vh, center + offset + Vector2.up * 12f, center + offset + Vector2.down * 12f, color, 1.8f);
+    }
+
+    private static void DrawCombatBracket(VertexHelper vh, Vector2 center, Color color)
+    {
+        const float outer = 26f;
+        const float inner = 14f;
+        DrawLine(vh, center + new Vector2(-outer, -outer), center + new Vector2(-inner, -outer), color, 2f);
+        DrawLine(vh, center + new Vector2(-outer, -outer), center + new Vector2(-outer, -inner), color, 2f);
+        DrawLine(vh, center + new Vector2(outer, -outer), center + new Vector2(inner, -outer), color, 2f);
+        DrawLine(vh, center + new Vector2(outer, -outer), center + new Vector2(outer, -inner), color, 2f);
+        DrawLine(vh, center + new Vector2(-outer, outer), center + new Vector2(-inner, outer), color, 2f);
+        DrawLine(vh, center + new Vector2(-outer, outer), center + new Vector2(-outer, inner), color, 2f);
+        DrawLine(vh, center + new Vector2(outer, outer), center + new Vector2(inner, outer), color, 2f);
+        DrawLine(vh, center + new Vector2(outer, outer), center + new Vector2(outer, inner), color, 2f);
+    }
+
+    private static void DrawRadar(VertexHelper vh, Rect rect, PrototypePlayerHudSnapshot value)
+    {
+        Vector2 radarCenter = new Vector2(rect.xMax - 109f, rect.yMax - 109f);
+        const float radius = 68f;
+        Color ringColor = new Color(0.35f, 0.62f, 0.88f, 0.58f);
+        DrawCircle(vh, radarCenter, radius, ringColor, 1.2f, 48);
+        DrawCircle(vh, radarCenter, radius * 0.5f, ringColor, 0.9f, 48);
+        DrawLine(vh, radarCenter + Vector2.left * radius, radarCenter + Vector2.right * radius, ringColor, 0.8f);
+        DrawLine(vh, radarCenter + Vector2.up * radius, radarCenter + Vector2.down * radius, ringColor, 0.8f);
+
+        Vector2 heading = new Vector2(value.ShipForward.x, value.ShipForward.z);
+        if (heading.sqrMagnitude <= 0.001f)
+        {
+            heading = Vector2.up;
+        }
+
+        heading.Normalize();
+        Vector2 right = new Vector2(heading.y, -heading.x);
+        DrawLine(vh, radarCenter + heading * 13f, radarCenter - heading * 9f - right * 7f, Color.white, 1.5f);
+        DrawLine(vh, radarCenter - heading * 9f - right * 7f, radarCenter - heading * 9f + right * 7f, Color.white, 1.5f);
+        DrawLine(vh, radarCenter - heading * 9f + right * 7f, radarCenter + heading * 13f, Color.white, 1.5f);
+
+        if (value.NavigationTargetWorldPosition.HasValue)
+        {
+            DrawRadarBlip(vh, radarCenter, radius, value.ShipWorldPosition, value.NavigationTargetWorldPosition.Value, PrototypeModuleColorPalette.Target);
+            DrawLine(vh, radarCenter, ClampRadarPoint(radarCenter, radius, value.ShipWorldPosition, value.NavigationTargetWorldPosition.Value), PrototypeModuleColorPalette.Target, 1f);
+        }
+
+        if (value.CombatTargetWorldPosition.HasValue)
+        {
+            DrawRadarBlip(vh, radarCenter, radius, value.ShipWorldPosition, value.CombatTargetWorldPosition.Value, PrototypeModuleColorPalette.Gun);
+        }
+    }
+
+    private static void DrawRadarBlip(VertexHelper vh, Vector2 radarCenter, float radius, Vector3 origin, Vector3 target, Color color)
+    {
+        Vector2 point = ClampRadarPoint(radarCenter, radius, origin, target);
+        DrawLine(vh, point + Vector2.left * 4f, point + Vector2.right * 4f, color, 2f);
+        DrawLine(vh, point + Vector2.up * 4f, point + Vector2.down * 4f, color, 2f);
+    }
+
+    private static Vector2 ClampRadarPoint(Vector2 radarCenter, float radius, Vector3 origin, Vector3 target)
+    {
+        Vector3 delta = target - origin;
+        Vector2 flat = new Vector2(delta.x, delta.z) / 1000f * radius;
+        return radarCenter + Vector2.ClampMagnitude(new Vector2(flat.x, flat.y), radius);
+    }
+
+    private static void DrawMarker(VertexHelper vh, Vector2 center, Vector2 markerOffset, Color color, float size)
+    {
+        Vector2 position = center + Vector2.ClampMagnitude(markerOffset, 88f);
+        DrawLine(vh, position + Vector2.left * size, position + Vector2.right * size, color, 1.8f);
+        DrawLine(vh, position + Vector2.up * size, position + Vector2.down * size, color, 1.8f);
+    }
+
+    private static void DrawCircle(VertexHelper vh, Vector2 center, float radius, Color color, float thickness, int segments)
+    {
+        Vector2 previous = center + Vector2.right * radius;
+        for (int i = 1; i <= segments; i++)
+        {
+            float angle = Mathf.PI * 2f * i / segments;
+            Vector2 next = center + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
+            DrawLine(vh, previous, next, color, thickness);
+            previous = next;
+        }
+    }
+
+    private static void DrawLine(VertexHelper vh, Vector2 start, Vector2 end, Color color, float thickness)
+    {
+        Vector2 delta = end - start;
+        if (delta.sqrMagnitude < 0.001f)
+        {
+            return;
+        }
+
+        Vector2 normal = new Vector2(-delta.y, delta.x).normalized * (thickness * 0.5f);
+        int index = vh.currentVertCount;
+        UIVertex vertex = UIVertex.simpleVert;
+        vertex.color = color;
+        vertex.position = start - normal;
+        vh.AddVert(vertex);
+        vertex.position = start + normal;
+        vh.AddVert(vertex);
+        vertex.position = end + normal;
+        vh.AddVert(vertex);
+        vertex.position = end - normal;
+        vh.AddVert(vertex);
+        vh.AddTriangle(index, index + 1, index + 2);
+        vh.AddTriangle(index, index + 2, index + 3);
+    }
+
+    private static Color ColorForSeverity(PrototypePlayerHudSeverity severity)
+    {
+        switch (severity)
+        {
+            case PrototypePlayerHudSeverity.Info:
+                return PrototypeUiStyle.ActiveColor;
+            case PrototypePlayerHudSeverity.Warning:
+                return PrototypeUiStyle.WarningColor;
+            case PrototypePlayerHudSeverity.Danger:
+                return PrototypeUiStyle.DangerColor;
+            case PrototypePlayerHudSeverity.Disabled:
+                return PrototypeUiStyle.DisabledColor;
+            default:
+                return Color.white;
+        }
+    }
+}
+
+public sealed class PrototypePlayerHudRadarGraphic : MaskableGraphic
+{
+    private PrototypePlayerHudSnapshot snapshot;
+
+    public void SetSnapshot(PrototypePlayerHudSnapshot value)
+    {
+        snapshot = value;
+        SetVerticesDirty();
+    }
+
+    protected override void OnPopulateMesh(VertexHelper vh)
+    {
+        vh.Clear();
+        Rect rect = rectTransform.rect;
+        Vector2 center = rect.center;
+        float radius = Mathf.Min(rect.width, rect.height) * 0.42f;
+        Color ringColor = new Color(0.25f, 0.85f, 1f, 0.95f);
+
+        DrawCircle(vh, center, radius, ringColor, 1.8f, 48);
+        DrawCircle(vh, center, radius * 0.5f, ringColor, 1.2f, 48);
+        DrawLine(vh, center + Vector2.left * radius, center + Vector2.right * radius, ringColor, 1.1f);
+        DrawLine(vh, center + Vector2.up * radius, center + Vector2.down * radius, ringColor, 1.1f);
+
+        Vector2 heading = new Vector2(snapshot.ShipForward.x, snapshot.ShipForward.z);
+        if (heading.sqrMagnitude <= 0.001f)
+        {
+            heading = Vector2.up;
+        }
+
+        heading.Normalize();
+        Vector2 right = new Vector2(heading.y, -heading.x);
+        DrawLine(vh, center + heading * 13f, center - heading * 9f - right * 7f, Color.white, 1.5f);
+        DrawLine(vh, center - heading * 9f - right * 7f, center - heading * 9f + right * 7f, Color.white, 1.5f);
+        DrawLine(vh, center - heading * 9f + right * 7f, center + heading * 13f, Color.white, 1.5f);
+
+        if (snapshot.NavigationTargetWorldPosition.HasValue)
+        {
+            Vector2 target = ClampRadarPoint(center, radius, snapshot.ShipWorldPosition, snapshot.NavigationTargetWorldPosition.Value);
+            DrawLine(vh, center, target, PrototypeModuleColorPalette.Target, 1f);
+            DrawBlip(vh, target, PrototypeModuleColorPalette.Target);
+        }
+
+        if (snapshot.CombatTargetWorldPosition.HasValue)
+        {
+            DrawBlip(vh, ClampRadarPoint(center, radius, snapshot.ShipWorldPosition, snapshot.CombatTargetWorldPosition.Value), PrototypeModuleColorPalette.Gun);
+        }
+    }
+
+    private static void DrawBlip(VertexHelper vh, Vector2 point, Color color)
+    {
+        DrawLine(vh, point + Vector2.left * 4f, point + Vector2.right * 4f, color, 2f);
+        DrawLine(vh, point + Vector2.up * 4f, point + Vector2.down * 4f, color, 2f);
+    }
+
+    private static Vector2 ClampRadarPoint(Vector2 center, float radius, Vector3 origin, Vector3 target)
+    {
+        Vector3 delta = target - origin;
+        Vector2 flat = new Vector2(delta.x, delta.z) / 1000f * radius;
+        return center + Vector2.ClampMagnitude(flat, radius);
+    }
+
+    private static void DrawCircle(VertexHelper vh, Vector2 center, float radius, Color color, float thickness, int segments)
+    {
+        Vector2 previous = center + Vector2.right * radius;
+        for (int i = 1; i <= segments; i++)
+        {
+            float angle = Mathf.PI * 2f * i / segments;
+            Vector2 next = center + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
+            DrawLine(vh, previous, next, color, thickness);
+            previous = next;
+        }
+    }
+
+    private static void DrawLine(VertexHelper vh, Vector2 start, Vector2 end, Color color, float thickness)
+    {
+        Vector2 delta = end - start;
+        if (delta.sqrMagnitude < 0.001f)
+        {
+            return;
+        }
+
+        Vector2 normal = new Vector2(-delta.y, delta.x).normalized * (thickness * 0.5f);
+        int index = vh.currentVertCount;
+        UIVertex vertex = UIVertex.simpleVert;
+        vertex.color = color;
+        vertex.position = start - normal;
+        vh.AddVert(vertex);
+        vertex.position = start + normal;
+        vh.AddVert(vertex);
+        vertex.position = end + normal;
+        vh.AddVert(vertex);
+        vertex.position = end - normal;
+        vh.AddVert(vertex);
+        vh.AddTriangle(index, index + 1, index + 2);
+        vh.AddTriangle(index, index + 2, index + 3);
+    }
+}
+
+public readonly struct RectPreset
+{
+    public RectPreset(Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot, Vector2 sizeDelta, Vector2 anchoredPosition)
+    {
+        AnchorMin = anchorMin;
+        AnchorMax = anchorMax;
+        Pivot = pivot;
+        SizeDelta = sizeDelta;
+        AnchoredPosition = anchoredPosition;
+    }
+
+    public Vector2 AnchorMin { get; }
+    public Vector2 AnchorMax { get; }
+    public Vector2 Pivot { get; }
+    public Vector2 SizeDelta { get; }
+    public Vector2 AnchoredPosition { get; }
+}

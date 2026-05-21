@@ -879,6 +879,14 @@ public class PrototypeBootstrap : MonoBehaviour
             weaponComputerPanel = camera.gameObject.AddComponent<PrototypeWeaponComputerPanel>();
         }
         weaponComputerPanel.Bind(target, stats, weaponComputer, turretWeapon);
+
+        var playerHud = camera.gameObject.GetComponent<PrototypePlayerHudRenderer>();
+        if (playerHud == null)
+        {
+            playerHud = camera.gameObject.AddComponent<PrototypePlayerHudRenderer>();
+        }
+        playerHud.Bind(target, stats, body);
+
         PrototypeUiLayoutManager.ApplyPreset(
             PrototypeUiLayoutManager.CurrentPreset,
             overlay,
