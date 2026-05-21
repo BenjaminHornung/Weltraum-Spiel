@@ -112,3 +112,106 @@ public struct CameraVisualBoundsData
     public Vector3 visualBoundsCenterOffsetFromCom;
     public Vector3 focusPoint;
 }
+
+public struct ProjectileIntegrationResultData
+{
+    public int projectileId;
+    public int snapshotVersion;
+    public Vector3 previousPosition;
+    public Vector3 position;
+    public float age;
+    public float lifetime;
+    public int isAlive;
+}
+
+public struct TargetScoreSettingsData
+{
+    public Vector3 origin;
+    public Vector3 forward;
+    public float maxRange;
+    public float fieldOfViewCosine;
+    public float projectileSpeed;
+    public float maxLeadTime;
+    public int priorityMode;
+}
+
+public struct TargetScoreResultData
+{
+    public int targetId;
+    public int snapshotVersion;
+    public Vector3 leadPosition;
+    public float distanceSquared;
+    public float angleCosine;
+    public float healthFraction;
+    public float priorityScore;
+    public int isValid;
+}
+
+public struct TrajectoryCandidateInputData
+{
+    public int candidateId;
+    public int snapshotVersion;
+    public Vector3 origin;
+    public Vector3 velocity;
+    public Vector3 acceleration;
+    public Vector3 targetPosition;
+    public Vector3 obstaclePosition;
+    public float obstacleRadius;
+    public float duration;
+    public float fixedDeltaTime;
+    public float fuelCostPerSecond;
+    public int steps;
+}
+
+public struct TrajectoryEvaluationResultData
+{
+    public int candidateId;
+    public int snapshotVersion;
+    public Vector3 finalPosition;
+    public Vector3 finalVelocity;
+    public float targetDistanceSquared;
+    public float obstacleRisk;
+    public float fuelEstimate;
+    public float score;
+    public int isValid;
+}
+
+public struct SensorFilterSettingsData
+{
+    public Vector3 origin;
+    public Vector3 forward;
+    public float maxRange;
+    public float fieldOfViewCosine;
+}
+
+public struct SensorContactResultData
+{
+    public int contactId;
+    public int targetId;
+    public int snapshotVersion;
+    public Vector3 direction;
+    public float distanceSquared;
+    public float priorityScore;
+    public int isVisible;
+}
+
+public struct RcsAllocationRequestData
+{
+    public Vector3 desiredForceWorld;
+    public Vector3 desiredTorqueWorld;
+    public Vector3 centerOfMassWorld;
+    public float maxNozzleThrust;
+    public float forceWeight;
+    public float torqueWeight;
+}
+
+public struct RcsNozzleAllocationResultData
+{
+    public int nozzleId;
+    public int snapshotVersion;
+    public Vector3 forceAtRecommendedThrottle;
+    public Vector3 torqueAtRecommendedThrottle;
+    public float recommendedThrottle;
+    public float contributionScore;
+    public int isValid;
+}
