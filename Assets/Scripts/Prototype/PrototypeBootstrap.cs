@@ -836,7 +836,7 @@ public class PrototypeBootstrap : MonoBehaviour
 
         var dockingApproachAssist = GetOrAddComponent<PrototypeDockingApproachAssist>(ship);
         dockingApproachAssist.Bind(controller, shipRigidbody, sourceDockingPort, targetDockingPort, targetCandidates);
-        dockingApproachAssist.SetAssistEnabled(true);
+        dockingApproachAssist.SetAssistEnabled(false);
         dockingApproachAssist.ResetForBootstrap();
         return targetDockingPort;
     }
@@ -1032,10 +1032,6 @@ public class PrototypeBootstrap : MonoBehaviour
         }
         playerHud.Bind(target, stats, body);
         playerHud.BindTrajectoryPreview(trajectoryPreview);
-        if (dockingTargetPort != null)
-        {
-            playerHud.SetTargetDockingPort(dockingTargetPort);
-        }
 
         PrototypeUiLayoutManager.ApplyPreset(
             PrototypeUiLayoutManager.CurrentPreset,

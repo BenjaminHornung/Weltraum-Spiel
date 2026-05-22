@@ -287,6 +287,8 @@ public readonly struct PrototypePlayerHudSnapshot
 
 public static class PrototypePlayerHudSnapshotBuilder
 {
+    private const float DockingGuidanceRadiusMeters = 120f;
+
     public static PrototypePlayerHudSnapshot Build(
         Transform shipRoot,
         Rigidbody shipRigidbody,
@@ -304,6 +306,28 @@ public static class PrototypePlayerHudSnapshotBuilder
         Transform navTarget = autopilot != null && autopilot.CurrentTarget != null
             ? autopilot.CurrentTarget.transform
             : ResolveFallbackTarget(shipRoot, weaponComputer);
+        bool dockingTargetSelected = targetDockingPort != null;
+        DockingPort effectiveSourceDockingPort = sourceDockingPort != null
+            ? sourceDockingPort
+            : dockingApproachAssist != null ? dockingApproachAssist.SourceDockingPort : null;
+        DockingPort effectiveTargetDockingPort = targetDockingPort;
+        if (effectiveTargetDockingPort == null
+            && dockingApproachAssist != null
+            && dockingApproachAssist.IsAssistanceRouted)
+        {
+            effectiveTargetDockingPort = dockingApproachAssist.TargetDockingPort;
+        }
+
+        PrototypePlayerFlightSnapshot flight = BuildFlight(shipRigidbody, stats, controller);
+        PrototypePlayerNavigationSnapshot navigation = BuildNavigation(autopilot, trajectoryPreview);
+        PrototypePlayerCombatSnapshot combat = BuildCombat(weaponComputer);
+        PrototypePveArenaSnapshot arena = arenaLoop != null ? arenaLoop.Snapshot : default;
+        PrototypePlayerDockingSnapshot docking = BuildDocking(
+            effectiveSourceDockingPort,
+            effectiveTargetDockingPort,
+            shipRigidbody,
+            dockingApproachAssist,
+            dockingTargetSelected);
         var markerModel = PrototypeHudViewModelBuilder.Build(
             shipRoot,
             shipRigidbody,
@@ -317,15 +341,10 @@ public static class PrototypePlayerHudSnapshotBuilder
             88f,
             0.05f,
             9000f,
-            sourceDockingPort != null && targetDockingPort != null
+            docking.Visible
                 ? PrototypeFlightHud.HudMode.Docking
                 : PrototypeFlightHud.HudMode.World);
 
-        PrototypePlayerFlightSnapshot flight = BuildFlight(shipRigidbody, stats, controller);
-        PrototypePlayerNavigationSnapshot navigation = BuildNavigation(autopilot, trajectoryPreview);
-        PrototypePlayerCombatSnapshot combat = BuildCombat(weaponComputer);
-        PrototypePveArenaSnapshot arena = arenaLoop != null ? arenaLoop.Snapshot : default;
-        PrototypePlayerDockingSnapshot docking = BuildDocking(sourceDockingPort, targetDockingPort, shipRigidbody, dockingApproachAssist);
         PrototypePlayerShipStatusSnapshot shipStatus = BuildShipStatus(stats, controller, weaponComputer);
         PrototypePlayerHudChip[] warnings = BuildWarningChips(stats, controller, autopilot, momentumAssist, combat, docking);
         PrototypePlayerHudChip[] assists = BuildAssistChips(autopilot, momentumAssist, navigation, combat, docking, arena);
@@ -731,7 +750,8 @@ public static class PrototypePlayerHudSnapshotBuilder
         DockingPort source,
         DockingPort target,
         Rigidbody sourceRigidbody,
-        PrototypeDockingApproachAssist dockingApproachAssist)
+        PrototypeDockingApproachAssist dockingApproachAssist,
+        bool dockingTargetSelected)
     {
         if (source == null || target == null)
         {
@@ -755,11 +775,14 @@ public static class PrototypePlayerHudSnapshotBuilder
                 0f);
         }
 
+        bool assistRouted = dockingApproachAssist != null
+            && dockingApproachAssist.IsAssistanceRouted
+            && dockingApproachAssist.TargetDockingPort == target;
         Rigidbody targetRigidbody = target.GetComponentInParent<Rigidbody>();
         if (!source.TryCalculateRelativeState(target, sourceRigidbody, targetRigidbody, out DockingRelativeState state))
         {
             return new PrototypePlayerDockingSnapshot(
-                true,
+                dockingTargetSelected || assistRouted,
                 target.name,
                 0f,
                 0f,
@@ -787,9 +810,6 @@ public static class PrototypePlayerHudSnapshotBuilder
         string softCaptureLabel = softCapture.requested
             ? "Soft Capture bereit"
             : TranslateDockingDiagnostic(softCapture.diagnostic);
-        bool assistRouted = dockingApproachAssist != null
-            && dockingApproachAssist.IsAssistanceRouted
-            && dockingApproachAssist.TargetDockingPort == target;
         string assistLabel = assistRouted ? "Soft Capture Assist aktiv" : "Soft Capture Assist inaktiv";
         PrototypePlayerHudSeverity severity = eligibility.canSoftCapture || eligibility.canHardLock
             ? PrototypePlayerHudSeverity.Info
@@ -797,9 +817,12 @@ public static class PrototypePlayerHudSnapshotBuilder
         float captureRadius = Mathf.Max(0.001f, Mathf.Min(source.CaptureRadius, target.CaptureRadius));
         float softAngle = Mathf.Max(0.001f, Mathf.Min(source.SoftCaptureAngleDegrees, target.SoftCaptureAngleDegrees));
         float softVelocity = Mathf.Max(0.001f, Mathf.Min(source.SoftCaptureMaxRelativeVelocity, target.SoftCaptureMaxRelativeVelocity));
+        bool visible = dockingTargetSelected
+            || assistRouted
+            || (softCapture.requested && state.distance <= DockingGuidanceRadiusMeters);
 
         return new PrototypePlayerDockingSnapshot(
-            true,
+            visible,
             target.name,
             state.distance,
             state.angleErrorDegrees,
@@ -1295,6 +1318,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private RectTransform topStripRect;
     private RectTransform bottomBarRect;
     private RectTransform systemPanelRect;
+    private RectTransform objectivePanelRect;
     private RectTransform contextPanelRect;
     private RectTransform radarPanelRect;
     private Text topWarningText;
@@ -1309,6 +1333,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private Text rcsText;
     private Text sasText;
     private Text systemText;
+    private Text objectiveTitleText;
+    private Text objectiveBodyText;
     private Text contextTitleText;
     private Text contextBodyText;
     private readonly List<Image> contextGaugeFills = new List<Image>();
@@ -1501,6 +1527,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         CreateTopStrip(canvasObject.transform);
         CreateBottomBar(canvasObject.transform);
         CreateSystemPanel(canvasObject.transform);
+        CreateObjectivePanel(canvasObject.transform);
         CreateContextPanel(canvasObject.transform);
         CreateRadarPanel(canvasObject.transform);
 
@@ -1543,6 +1570,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         topStripRect = FindHudComponent<RectTransform>("AlertAssistStrip");
         bottomBarRect = FindHudComponent<RectTransform>("FlightStatusBar");
         systemPanelRect = FindHudComponent<RectTransform>("ShipSystems");
+        objectivePanelRect = FindHudComponent<RectTransform>("ObjectivePanel");
         contextPanelRect = FindHudComponent<RectTransform>("ContextPanel");
         radarPanelRect = FindHudComponent<RectTransform>("RadarPanel");
         topWarningText = FindHudComponent<Text>("PrimaryWarning");
@@ -1556,6 +1584,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         rcsText = FindHudComponent<Text>("Rcs");
         sasText = FindHudComponent<Text>("Sas");
         systemText = FindHudComponent<Text>("SystemsText");
+        objectiveTitleText = FindHudComponent<Text>("ObjectiveTitle");
+        objectiveBodyText = FindHudComponent<Text>("ObjectiveBody");
         contextTitleText = FindHudComponent<Text>("ContextTitle");
         contextBodyText = FindHudComponent<Text>("ContextBody");
         radarText = FindHudComponent<Text>("RadarText");
@@ -1604,6 +1634,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             && topStripRect != null
             && bottomBarRect != null
             && systemPanelRect != null
+            && objectivePanelRect != null
             && contextPanelRect != null
             && radarPanelRect != null
             && topWarningText != null
@@ -1617,6 +1648,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             && rcsText != null
             && sasText != null
             && systemText != null
+            && objectiveTitleText != null
+            && objectiveBodyText != null
             && contextTitleText != null
             && contextBodyText != null
             && radarText != null
@@ -1674,6 +1707,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         topStripRect = null;
         bottomBarRect = null;
         systemPanelRect = null;
+        objectivePanelRect = null;
         contextPanelRect = null;
         radarPanelRect = null;
         topWarningText = null;
@@ -1688,6 +1722,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         rcsText = null;
         sasText = null;
         systemText = null;
+        objectiveTitleText = null;
+        objectiveBodyText = null;
         contextTitleText = null;
         contextBodyText = null;
         contextGaugeFills.Clear();
@@ -1749,6 +1785,14 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         RectTransform panel = CreatePanel("ShipSystems", parent, new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(248f, 128f), new Vector2(24f, 24f));
         systemPanelRect = panel;
         systemText = CreateText("SystemsText", panel, 12, TextAnchor.UpperLeft, Color.white, StretchFull(12f, 10f));
+    }
+
+    private void CreateObjectivePanel(Transform parent)
+    {
+        RectTransform panel = CreatePanel("ObjectivePanel", parent, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(270f, 82f), new Vector2(24f, -82f));
+        objectivePanelRect = panel;
+        objectiveTitleText = CreateText("ObjectiveTitle", panel, 12, TextAnchor.UpperLeft, Color.white, new RectPreset(new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(-20f, 22f), new Vector2(0f, -12f)));
+        objectiveBodyText = CreateText("ObjectiveBody", panel, 11, TextAnchor.UpperLeft, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(-20f, 38f), new Vector2(0f, -38f)));
     }
 
     private void CreateContextPanel(Transform parent)
@@ -1849,9 +1893,9 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             + snapshot.ShipStatus.RcsLabel + "\n"
             + snapshot.ShipStatus.SasLabel + "\n"
             + snapshot.ShipStatus.WeaponLabel + "\n"
-            + snapshot.ShipStatus.DamageLabel
-            + BuildArenaSystemLine(snapshot.Arena);
+            + snapshot.ShipStatus.DamageLabel;
 
+        ApplyObjectivePanel(snapshot.Arena);
         ApplyContext(snapshot);
         radarText.text = "Range 1 km";
         if (helpText != null && helpPanel != null && helpPanel.activeSelf)
@@ -1941,7 +1985,12 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
     private void ApplyResponsiveLayout(int width, int height, bool force)
     {
-        if (topStripRect == null || bottomBarRect == null || systemPanelRect == null || contextPanelRect == null || radarPanelRect == null)
+        if (topStripRect == null
+            || bottomBarRect == null
+            || systemPanelRect == null
+            || objectivePanelRect == null
+            || contextPanelRect == null
+            || radarPanelRect == null)
         {
             return;
         }
@@ -1994,11 +2043,14 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
         float sideAvailableWidth = safeWidth - (margin * 2f) - gap;
         float systemWidth = narrow ? 220f : 248f;
+        float objectiveWidth = narrow ? 238f : 270f;
+        float objectiveHeight = shortScreen ? 74f : 82f;
         float contextWidth = narrow ? 306f : 356f;
         if (systemWidth + contextWidth > sideAvailableWidth)
         {
             systemWidth = Mathf.Clamp(sideAvailableWidth * 0.42f, 156f, systemWidth);
             contextWidth = Mathf.Clamp(sideAvailableWidth - systemWidth - gap, 220f, contextWidth);
+            objectiveWidth = Mathf.Clamp(systemWidth, 156f, objectiveWidth);
         }
 
         float radarLeft = safeWidth - margin - radarSize;
@@ -2020,6 +2072,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         ApplyRect(bottomBarRect, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(bottomWidth, bottomHeight), new Vector2(0f, bottomOffset));
         ApplyBottomBarChildLayout(bottomWidth, narrow);
         ApplyRect(systemPanelRect, new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(systemWidth, systemHeight), new Vector2(margin, sideBottom));
+        ApplyRect(objectivePanelRect, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(objectiveWidth, objectiveHeight), new Vector2(margin, -(margin + 56f)));
         ApplyRect(contextPanelRect, new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(contextWidth, contextHeight), new Vector2(-margin, sideBottom));
         ApplyRect(radarPanelRect, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(radarSize, radarSize), new Vector2(-margin, -margin));
     }
@@ -2130,17 +2183,42 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         rect.anchoredPosition = anchoredPosition;
     }
 
+    private void ApplyObjectivePanel(PrototypePveArenaSnapshot arena)
+    {
+        if (objectivePanelRect == null || objectiveTitleText == null || objectiveBodyText == null)
+        {
+            return;
+        }
+
+        objectivePanelRect.gameObject.SetActive(arena.IsVisible);
+        if (!arena.IsVisible)
+        {
+            return;
+        }
+
+        objectiveTitleText.text = arena.ObjectiveName;
+        objectiveBodyText.text = "Targets " + arena.ProgressLabel + " | " + arena.StatusLabel
+            + (arena.Completed ? "\n" + arena.RewardStubLabel : string.Empty);
+        objectiveBodyText.color = arena.Completed ? PrototypeUiStyle.ActiveColor : PrototypeUiStyle.MutedColor;
+    }
+
     private void ApplyContext(PrototypePlayerHudSnapshot snapshot)
     {
-        if (snapshot.Arena.Completed)
+        if (ApplyCriticalContext(snapshot))
         {
-            contextTitleText.text = "Arena: " + snapshot.Arena.ObjectiveName;
+            return;
+        }
+
+        if (snapshot.Combat.Visible)
+        {
+            contextTitleText.text = "Combat: " + snapshot.Combat.TargetName;
             contextBodyText.text =
-                snapshot.Arena.StatusLabel + " | Targets " + snapshot.Arena.ProgressLabel + "\n"
-                + snapshot.Arena.RewardStubLabel + "\n"
-                + "Reset arena to replay";
-            contextBodyText.color = PrototypeUiStyle.ActiveColor;
-            SetContextGauge(0, "Objective", snapshot.Arena.ProgressFraction, PrototypeUiStyle.ActiveColor, true);
+                "Health " + snapshot.Combat.HealthLabel + " | Range " + FormatDistance(snapshot.Combat.RangeMeters) + "\n"
+                + snapshot.Combat.FireStatusLabel + "\n"
+                + snapshot.Combat.AutoFireLabel + "\n"
+                + "Priority " + snapshot.Combat.PriorityLabel;
+            contextBodyText.color = ColorForSeverity(snapshot.Combat.FireSeverity);
+            SetContextGauge(0, "Integrity", snapshot.Combat.HealthPercent, ColorForSeverity(snapshot.Combat.FireSeverity), true);
             SetContextGauge(1, string.Empty, 0f, Color.white, false);
             SetContextGauge(2, string.Empty, 0f, Color.white, false);
             return;
@@ -2163,21 +2241,6 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             return;
         }
 
-        if (snapshot.Combat.Visible)
-        {
-            contextTitleText.text = "Combat: " + snapshot.Combat.TargetName;
-            contextBodyText.text =
-                "Health " + snapshot.Combat.HealthLabel + " | Range " + FormatDistance(snapshot.Combat.RangeMeters) + "\n"
-                + snapshot.Combat.FireStatusLabel + "\n"
-                + snapshot.Combat.AutoFireLabel + "\n"
-                + "Priority " + snapshot.Combat.PriorityLabel;
-            contextBodyText.color = ColorForSeverity(snapshot.Combat.FireSeverity);
-            SetContextGauge(0, "Integrity", snapshot.Combat.HealthPercent, ColorForSeverity(snapshot.Combat.FireSeverity), true);
-            SetContextGauge(1, string.Empty, 0f, Color.white, false);
-            SetContextGauge(2, string.Empty, 0f, Color.white, false);
-            return;
-        }
-
         if (snapshot.Navigation.Visible)
         {
             contextTitleText.text = "Navigation: " + snapshot.Navigation.TargetName;
@@ -2195,21 +2258,40 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             return;
         }
 
+        if (snapshot.Arena.IsVisible)
+        {
+            contextTitleText.text = "Objective: " + snapshot.Arena.ObjectiveName;
+            contextBodyText.text =
+                snapshot.Arena.StatusLabel + " | Targets " + snapshot.Arena.ProgressLabel
+                + (snapshot.Arena.Completed ? "\n" + snapshot.Arena.RewardStubLabel : "\nComplete the marked targets");
+            contextBodyText.color = snapshot.Arena.Completed ? PrototypeUiStyle.ActiveColor : PrototypeUiStyle.MutedColor;
+            SetContextGauge(0, "Objective", snapshot.Arena.ProgressFraction, PrototypeUiStyle.ActiveColor, true);
+            SetContextGauge(1, string.Empty, 0f, Color.white, false);
+            SetContextGauge(2, string.Empty, 0f, Color.white, false);
+            return;
+        }
+
         contextTitleText.text = "Navigation";
         contextBodyText.text = "Kein Navigationsziel";
         contextBodyText.color = PrototypeUiStyle.MutedColor;
         HideContextGauges();
     }
 
-    private static string BuildArenaSystemLine(PrototypePveArenaSnapshot arena)
+    private bool ApplyCriticalContext(PrototypePlayerHudSnapshot snapshot)
     {
-        if (!arena.IsVisible)
+        for (int i = 0; i < snapshot.Warnings.Length; i++)
         {
-            return string.Empty;
+            if (snapshot.Warnings[i].Severity == PrototypePlayerHudSeverity.Danger)
+            {
+                contextTitleText.text = "Critical";
+                contextBodyText.text = snapshot.Warnings[i].Label;
+                contextBodyText.color = PrototypeUiStyle.DangerColor;
+                HideContextGauges();
+                return true;
+            }
         }
 
-        string line = "\nArena: " + arena.ObjectiveName + " " + arena.ProgressLabel + " " + arena.StatusLabel;
-        return arena.Completed ? line + " | " + arena.RewardStubLabel : line;
+        return false;
     }
 
     private void HideContextGauges()

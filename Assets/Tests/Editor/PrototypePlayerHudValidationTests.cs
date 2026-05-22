@@ -269,14 +269,77 @@ public class PrototypePlayerHudValidationTests
         Assert.NotNull(Camera.main.GetComponent<PrototypeDebugOverlay>());
         var assist = GameObject.Find("PrototypeShip").GetComponent<PrototypeDockingApproachAssist>();
         Assert.NotNull(assist);
+        Assert.False(assist.AssistEnabled);
 
         playerHud.RefreshNow();
 
         Assert.That(playerHud.LastSnapshot.Flight.FuelMaxKg, Is.GreaterThan(0f));
         Assert.That(playerHud.LastSnapshot.Flight.ControlModeLabel, Is.EqualTo("Cruise"));
-        Assert.True(playerHud.LastSnapshot.Docking.Visible);
-        Assert.That(playerHud.LastSnapshot.Docking.TargetName, Is.EqualTo("PrototypeDockingApproachTarget"));
-        Assert.That(playerHud.LastSnapshot.Docking.SoftCaptureAssistLabel, Does.Contain("Assist"));
+        Assert.False(playerHud.LastSnapshot.Docking.Visible);
+        Assert.That(Labels(playerHud.LastSnapshot.Warnings), Does.Not.Contain("Ausser Docking-Reichweite"));
+        Assert.That(Labels(playerHud.LastSnapshot.Warnings), Does.Not.Contain("Docking n/a"));
+    }
+
+    [Test]
+    public void ContextPriorityShowsCriticalCombatDockingNavigationObjectiveInOrder()
+    {
+        GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+        cameraObject.AddComponent<Camera>();
+        PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+        playerHud.RefreshNow();
+
+        var combat = new PrototypePlayerCombatSnapshot(
+            true,
+            "Arena Target 01",
+            0.45f,
+            "45/100",
+            320f,
+            "Ready",
+            PrototypePlayerHudSeverity.Info,
+            "Auto Fire: Armed",
+            "Nearest");
+        var docking = CreateDockingSnapshot(true);
+        var navigation = CreateNavigationSnapshot(true);
+        var arena = new PrototypePveArenaSnapshot("Clear the Arena", true, false, 3, 0, string.Empty);
+
+        ApplySnapshotForTest(playerHud, CreateHudSnapshot(CreateCombatSnapshot(false), docking, navigation, arena));
+        Assert.That(FindText(playerHud, "ContextTitle").text, Is.EqualTo("Docking: Docking Port A"));
+
+        ApplySnapshotForTest(playerHud, CreateHudSnapshot(combat, docking, navigation, arena));
+        Assert.That(FindText(playerHud, "ContextTitle").text, Is.EqualTo("Combat: Arena Target 01"));
+
+        ApplySnapshotForTest(playerHud, CreateHudSnapshot(combat, docking, navigation, arena, new[] { new PrototypePlayerHudChip("RCS nicht verfuegbar", PrototypePlayerHudSeverity.Danger) }));
+        Assert.That(FindText(playerHud, "ContextTitle").text, Is.EqualTo("Critical"));
+        Assert.That(FindText(playerHud, "ContextBody").text, Is.EqualTo("RCS nicht verfuegbar"));
+
+        ApplySnapshotForTest(playerHud, CreateHudSnapshot(CreateCombatSnapshot(false), CreateDockingSnapshot(false), navigation, arena));
+        Assert.That(FindText(playerHud, "ContextTitle").text, Is.EqualTo("Navigation: Nav Beacon"));
+
+        ApplySnapshotForTest(playerHud, CreateHudSnapshot(CreateCombatSnapshot(false), CreateDockingSnapshot(false), CreateNavigationSnapshot(false), arena));
+        Assert.That(FindText(playerHud, "ContextTitle").text, Is.EqualTo("Objective: Clear the Arena"));
+    }
+
+    [Test]
+    public void ObjectivePanelSeparatesArenaProgressFromShipSystems()
+    {
+        GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+        cameraObject.AddComponent<Camera>();
+        PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+        playerHud.RefreshNow();
+
+        var arena = new PrototypePveArenaSnapshot("Clear the Arena", true, false, 3, 1, string.Empty);
+        ApplySnapshotForTest(playerHud, CreateHudSnapshot(CreateCombatSnapshot(false), CreateDockingSnapshot(false), CreateNavigationSnapshot(false), arena));
+
+        Text systems = FindText(playerHud, "SystemsText");
+        Text objectiveTitle = FindText(playerHud, "ObjectiveTitle");
+        Text objectiveBody = FindText(playerHud, "ObjectiveBody");
+
+        Assert.That(systems.text, Does.Contain("Fuel"));
+        Assert.That(systems.text, Does.Not.Contain("Arena"));
+        Assert.That(systems.text, Does.Not.Contain("Clear the Arena"));
+        Assert.That(objectiveTitle.transform.parent.gameObject.activeSelf, Is.True);
+        Assert.That(objectiveTitle.text, Is.EqualTo("Clear the Arena"));
+        Assert.That(objectiveBody.text, Does.Contain("Targets 1/3"));
     }
 
     [Test]
@@ -477,6 +540,94 @@ public class PrototypePlayerHudValidationTests
         }
     }
 
+    private static PrototypePlayerHudSnapshot CreateHudSnapshot(
+        PrototypePlayerCombatSnapshot combat,
+        PrototypePlayerDockingSnapshot docking,
+        PrototypePlayerNavigationSnapshot navigation,
+        PrototypePveArenaSnapshot arena,
+        PrototypePlayerHudChip[] warnings = null)
+    {
+        return new PrototypePlayerHudSnapshot(
+            new PrototypePlayerFlightSnapshot(0f, 0f, 100f, 100f, "Cruise", string.Empty, "Main ready", "RCS ready", "SAS on"),
+            navigation,
+            combat,
+            arena,
+            docking,
+            new PrototypePlayerShipStatusSnapshot("Fuel 100%", "Main ready", "RCS ready", "SAS on", "Weapon standby", "Modules nominal"),
+            warnings ?? new PrototypePlayerHudChip[0],
+            new PrototypePlayerHudChip[0],
+            default,
+            Vector3.zero,
+            Vector3.forward,
+            null,
+            null);
+    }
+
+    private static PrototypePlayerCombatSnapshot CreateCombatSnapshot(bool visible)
+    {
+        return new PrototypePlayerCombatSnapshot(
+            visible,
+            visible ? "Arena Target 01" : "No target",
+            visible ? 0.45f : 0f,
+            visible ? "45/100" : "--",
+            visible ? 320f : 0f,
+            visible ? "Ready" : "Weapon standby",
+            visible ? PrototypePlayerHudSeverity.Info : PrototypePlayerHudSeverity.Disabled,
+            visible ? "Auto Fire: Armed" : "Auto Fire: Off",
+            "ManualOrder");
+    }
+
+    private static PrototypePlayerDockingSnapshot CreateDockingSnapshot(bool visible)
+    {
+        return new PrototypePlayerDockingSnapshot(
+            visible,
+            "Docking Port A",
+            18f,
+            2f,
+            0.3f,
+            0.1f,
+            Vector2.zero,
+            "Lock-Kriterien erfuellt",
+            PrototypePlayerHudSeverity.Info,
+            "Prototype: Hard Lock noch nicht verbunden",
+            true,
+            "Soft Capture bereit",
+            visible,
+            visible ? "Soft Capture Assist aktiv" : "Assist inaktiv",
+            0.2f,
+            0.2f,
+            0.2f);
+    }
+
+    private static PrototypePlayerNavigationSnapshot CreateNavigationSnapshot(bool visible)
+    {
+        return new PrototypePlayerNavigationSnapshot(
+            visible,
+            visible ? "Nav Beacon" : "No target",
+            "Waypoint",
+            visible ? 840f : 0f,
+            0f,
+            0f,
+            0f,
+            "--",
+            "Ziel gewaehlt",
+            "Direkter Kurs",
+            new string[0],
+            new Vector3[0],
+            PrototypeTrajectoryPreviewSnapshot.Unavailable("Trajectory Preview", 0, 0f),
+            false,
+            Vector3.zero,
+            string.Empty);
+    }
+
+    private static void ApplySnapshotForTest(PrototypePlayerHudRenderer playerHud, PrototypePlayerHudSnapshot snapshot)
+    {
+        MethodInfo method = typeof(PrototypePlayerHudRenderer).GetMethod("ApplySnapshot", BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        method.Invoke(playerHud, new object[] { snapshot });
+        Canvas.ForceUpdateCanvases();
+    }
+
     private static string[] Labels(PrototypePlayerHudChip[] chips)
     {
         string[] labels = new string[chips.Length];
@@ -509,6 +660,7 @@ public class PrototypePlayerHudValidationTests
 
         RectTransform bottom = FindRect(playerHud, "FlightStatusBar");
         RectTransform systems = FindRect(playerHud, "ShipSystems");
+        RectTransform objective = FindRect(playerHud, "ObjectivePanel");
         RectTransform context = FindRect(playerHud, "ContextPanel");
         RectTransform radar = FindRect(playerHud, "RadarPanel");
         RectTransform top = FindRect(playerHud, "AlertAssistStrip");
@@ -522,12 +674,21 @@ public class PrototypePlayerHudValidationTests
         RectTransform assist1 = FindRect(playerHud, "AssistChip1");
         RectTransform assist2 = FindRect(playerHud, "AssistChip2");
         RectTransform assist3 = FindRect(playerHud, "AssistChip3");
+        RectTransform objectiveTitle = FindRect(playerHud, "ObjectiveTitle");
+        RectTransform objectiveBody = FindRect(playerHud, "ObjectiveBody");
+        objective.gameObject.SetActive(true);
+        Canvas.ForceUpdateCanvases();
 
         Assert.False(Overlaps(bottom, systems), width + "x" + height + " bottom/systems");
         Assert.False(Overlaps(bottom, context), width + "x" + height + " bottom/context");
+        Assert.False(Overlaps(bottom, objective), width + "x" + height + " bottom/objective");
         Assert.False(Overlaps(systems, context), width + "x" + height + " systems/context");
+        Assert.False(Overlaps(systems, objective), width + "x" + height + " systems/objective");
+        Assert.False(Overlaps(objective, context), width + "x" + height + " objective/context");
         Assert.False(Overlaps(context, radar), width + "x" + height + " context/radar");
         Assert.False(Overlaps(top, radar), width + "x" + height + " top/radar");
+        Assert.False(Overlaps(top, objective), width + "x" + height + " top/objective");
+        Assert.False(Overlaps(objective, radar), width + "x" + height + " objective/radar");
         Assert.False(Overlaps(throttle, fuel), width + "x" + height + " throttle/fuel");
         Assert.False(Overlaps(fuel, rcs), width + "x" + height + " fuel/rcs");
         Assert.False(Overlaps(rcs, sas), width + "x" + height + " rcs/sas");
@@ -536,6 +697,7 @@ public class PrototypePlayerHudValidationTests
         Assert.False(Overlaps(primaryWarning, assist1), width + "x" + height + " warning/assist1");
         Assert.False(Overlaps(primaryWarning, assist2), width + "x" + height + " warning/assist2");
         Assert.False(Overlaps(primaryWarning, assist3), width + "x" + height + " warning/assist3");
+        Assert.False(Overlaps(objectiveTitle, objectiveBody), width + "x" + height + " objective title/body");
     }
 
     private static RectTransform FindRect(PrototypePlayerHudRenderer playerHud, string objectName)
