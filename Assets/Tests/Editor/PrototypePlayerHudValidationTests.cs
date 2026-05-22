@@ -27,6 +27,7 @@ public class PrototypePlayerHudValidationTests
         DestroyNamed("PlayerHudRadarDockTarget");
         DestroyNamed("PlayerHudRadarEnvironment");
         DestroyNamed("PlayerHudRadarWaypointManager");
+        DestroyNamed("PlayerHudNavManager");
         DestroyNamed("PlayerHudIndicatorShip");
         DestroyNamed("PlayerHudIndicatorWaypointManager");
         DestroyNamed("PlayerHudIndicatorCombatTarget");
@@ -673,6 +674,23 @@ public class PrototypePlayerHudValidationTests
     }
 
     [Test]
+    public void ResponsiveLayoutKeepsNavigationComputerControlsSeparated()
+    {
+        GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+        cameraObject.AddComponent<Camera>();
+        PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+        playerHud.RefreshNow();
+        ApplySnapshotForTest(playerHud, CreateHudSnapshot(CreateCombatSnapshot(false), CreateDockingSnapshot(false), CreateNavigationSnapshot(true), default));
+
+        AssertNavigationControlsSeparated(playerHud, 2560, 1080);
+        AssertNavigationControlsSeparated(playerHud, 1920, 1080);
+        AssertNavigationControlsSeparated(playerHud, 1280, 720);
+        AssertNavigationControlsSeparated(playerHud, 1024, 768);
+        AssertNavigationControlsSeparated(playerHud, 900, 1600);
+        AssertNavigationControlsSeparated(playerHud, 640, 480);
+    }
+
+    [Test]
     public void RefreshRebindsGeneratedCanvasWithoutCreatingDuplicateHudWindows()
     {
         GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
@@ -762,6 +780,88 @@ public class PrototypePlayerHudValidationTests
             Assert.False(button.interactable);
             Assert.That(label.text, Is.EqualTo("No Authority"));
         }
+    }
+
+    [Test]
+    public void NavigationComputerControlsReuseAutopilotAndPreviewApis()
+    {
+        using (var builder = new PrototypeScenarioBuilder())
+        {
+            PrototypeShipRig rig = builder.CreateShip("PlayerHudNavShip");
+            GameObject managerObject = new GameObject("PlayerHudNavManager");
+            PrototypeWaypointManager manager = managerObject.AddComponent<PrototypeWaypointManager>();
+            manager.EnsureDefaultWaypoints();
+
+            PrototypeWaypointAutopilot autopilot = rig.Ship.GetComponent<PrototypeWaypointAutopilot>();
+            if (autopilot == null)
+            {
+                autopilot = rig.Ship.AddComponent<PrototypeWaypointAutopilot>();
+            }
+
+            autopilot.Bind(manager, rig.Controller, rig.Stats, rig.Body);
+            autopilot.SelectTarget(manager.SelectedTarget);
+
+            PrototypeTrajectoryPreviewNavMap preview = rig.Ship.AddComponent<PrototypeTrajectoryPreviewNavMap>();
+            preview.Bind(rig.Ship.transform, rig.Body, rig.Stats, rig.PhysicsCore, autopilot);
+            preview.ConfigureForTests(true, 8, 12, 0.1f, false, true);
+
+            GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+            cameraObject.AddComponent<Camera>();
+            PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+            playerHud.Bind(rig.Ship.transform, rig.Stats, rig.Body);
+            playerHud.RefreshNow();
+
+            int initialIndex = manager.SelectedIndex;
+            string initialTargetName = autopilot.CurrentTarget != null ? autopilot.CurrentTarget.DisplayName : string.Empty;
+            string initialTargetLabel = "Target " + (initialIndex + 1) + "/" + manager.TargetCount;
+
+            RectTransform controls = FindRect(playerHud, "NavigationControls");
+            Assert.True(controls.gameObject.activeInHierarchy);
+            Assert.That(FindText(playerHud, "ContextBody").text, Does.Contain(initialTargetLabel));
+            Assert.That(FindText(playerHud, "NavAutopilotText").text, Is.EqualTo("Engage"));
+            Assert.That(FindText(playerHud, "NavPreviewText").text, Is.EqualTo("Preview On"));
+
+            Button next = FindButton(playerHud, "NavNextTarget");
+            Button previous = FindButton(playerHud, "NavPreviousTarget");
+            Button autopilotButton = FindButton(playerHud, "NavAutopilot");
+            Button replan = FindButton(playerHud, "NavReplan");
+            Button previewButton = FindButton(playerHud, "NavPreview");
+
+            Assert.True(next.interactable);
+            Assert.True(previous.interactable);
+            Assert.True(autopilotButton.interactable);
+            Assert.True(replan.interactable);
+            Assert.True(previewButton.interactable);
+
+            next.onClick.Invoke();
+            Assert.NotNull(autopilot.CurrentTarget);
+            Assert.That(autopilot.CurrentTarget.DisplayName, Is.Not.EqualTo(initialTargetName));
+            Assert.That(FindText(playerHud, "ContextBody").text, Does.Contain("Target " + (manager.SelectedIndex + 1) + "/" + manager.TargetCount));
+
+            previewButton.onClick.Invoke();
+            Assert.False(preview.PreviewEnabled);
+            Assert.That(FindText(playerHud, "NavPreviewText").text, Is.EqualTo("Preview Off"));
+
+            autopilotButton.onClick.Invoke();
+            Assert.True(autopilot.AutopilotEngaged);
+            Assert.That(FindText(playerHud, "NavAutopilotText").text, Is.EqualTo("Abort AP"));
+
+            replan.onClick.Invoke();
+            Assert.NotNull(autopilot.CurrentTarget);
+        }
+    }
+
+    [Test]
+    public void NavigationComputerControlsHideOutsideNavigationContext()
+    {
+        GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+        cameraObject.AddComponent<Camera>();
+        PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+        playerHud.RefreshNow();
+
+        ApplySnapshotForTest(playerHud, CreateHudSnapshot(CreateCombatSnapshot(true), CreateDockingSnapshot(false), CreateNavigationSnapshot(false), default));
+
+        Assert.False(FindRect(playerHud, "NavigationControls").gameObject.activeInHierarchy);
     }
 
     [Test]
@@ -945,7 +1045,9 @@ public class PrototypePlayerHudValidationTests
             PrototypeTrajectoryPreviewSnapshot.Unavailable("Trajectory Preview", 0, 0f),
             false,
             Vector3.zero,
-            string.Empty);
+            string.Empty,
+            visible ? 2 : 0,
+            visible ? 3 : 0);
     }
 
     private static void ApplySnapshotForTest(PrototypePlayerHudRenderer playerHud, PrototypePlayerHudSnapshot snapshot)
@@ -1109,6 +1211,39 @@ public class PrototypePlayerHudValidationTests
         }
     }
 
+    private static void AssertNavigationControlsSeparated(PrototypePlayerHudRenderer playerHud, int width, int height)
+    {
+        playerHud.ApplyResponsiveLayoutForTests(width, height);
+        Canvas.ForceUpdateCanvases();
+
+        RectTransform row = FindRect(playerHud, "NavigationControls");
+        RectTransform body = FindRect(playerHud, "ContextBody");
+        RectTransform gauges = FindRect(playerHud, "ContextGauges");
+        RectTransform[] buttons =
+        {
+            FindRect(playerHud, "NavPreviousTarget"),
+            FindRect(playerHud, "NavNextTarget"),
+            FindRect(playerHud, "NavAutopilot"),
+            FindRect(playerHud, "NavReplan"),
+            FindRect(playerHud, "NavPreview")
+        };
+
+        Assert.True(row.gameObject.activeInHierarchy, width + "x" + height + " nav controls hidden");
+        Assert.False(Overlaps(row, body), width + "x" + height + " nav controls/body");
+        Assert.False(Overlaps(row, gauges), width + "x" + height + " nav controls/gauges");
+
+        Rect rowRect = WorldRect(row);
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            Rect buttonRect = WorldRect(buttons[i]);
+            Assert.True(Contains(rowRect, buttonRect), width + "x" + height + " nav button outside row " + buttons[i].gameObject.name);
+            for (int j = i + 1; j < buttons.Length; j++)
+            {
+                Assert.False(Overlaps(buttons[i], buttons[j]), width + "x" + height + " nav button overlap " + i + "/" + j);
+            }
+        }
+    }
+
     private static RectTransform FindRect(PrototypePlayerHudRenderer playerHud, string objectName)
     {
         RectTransform[] rects = playerHud.GetComponentsInChildren<RectTransform>(true);
@@ -1162,6 +1297,15 @@ public class PrototypePlayerHudValidationTests
             && rectA.xMax > rectB.xMin
             && rectA.yMin < rectB.yMax
             && rectA.yMax > rectB.yMin;
+    }
+
+    private static bool Contains(Rect outer, Rect inner)
+    {
+        const float epsilon = 0.5f;
+        return inner.xMin >= outer.xMin - epsilon
+            && inner.xMax <= outer.xMax + epsilon
+            && inner.yMin >= outer.yMin - epsilon
+            && inner.yMax <= outer.yMax + epsilon;
     }
 
     private static Rect WorldRect(RectTransform rect)

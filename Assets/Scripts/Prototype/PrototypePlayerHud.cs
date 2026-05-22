@@ -80,7 +80,9 @@ public readonly struct PrototypePlayerNavigationSnapshot
         PrototypeTrajectoryPreviewSnapshot trajectoryPreview,
         bool hasAvoidanceCue,
         Vector3 avoidanceWorldPosition,
-        string avoidanceLabel)
+        string avoidanceLabel,
+        int targetIndex,
+        int targetCount)
     {
         Visible = visible;
         TargetName = string.IsNullOrWhiteSpace(targetName) ? "No target" : targetName;
@@ -98,6 +100,8 @@ public readonly struct PrototypePlayerNavigationSnapshot
         HasAvoidanceCue = hasAvoidanceCue;
         AvoidanceWorldPosition = avoidanceWorldPosition;
         AvoidanceLabel = string.IsNullOrWhiteSpace(avoidanceLabel) ? string.Empty : avoidanceLabel;
+        TargetIndex = targetIndex > 0 && targetCount > 0 ? Mathf.Min(targetIndex, targetCount) : 0;
+        TargetCount = Mathf.Max(0, targetCount);
     }
 
     public bool Visible { get; }
@@ -116,6 +120,11 @@ public readonly struct PrototypePlayerNavigationSnapshot
     public bool HasAvoidanceCue { get; }
     public Vector3 AvoidanceWorldPosition { get; }
     public string AvoidanceLabel { get; }
+    public int TargetIndex { get; }
+    public int TargetCount { get; }
+    public string TargetListLabel => TargetIndex > 0 && TargetCount > 0
+        ? "Target " + TargetIndex + "/" + TargetCount
+        : "Target --";
 }
 
 public readonly struct PrototypePlayerCombatSnapshot
@@ -843,7 +852,9 @@ public static class PrototypePlayerHudSnapshotBuilder
                 preview,
                 false,
                 Vector3.zero,
-                string.Empty);
+                string.Empty,
+                0,
+                0);
         }
 
         string eta = FormatNavigationEta(autopilot.EtaSeconds, autopilot.ClosingSpeed);
@@ -857,6 +868,8 @@ public static class PrototypePlayerHudSnapshotBuilder
         Vector3[] routePoints = CopyRoutePoints(autopilot.PredictedRoute, 8);
         bool hasAvoidanceCue = autopilot.AvoidanceActive || autopilot.NavigationObstacleDetected;
         bool visible = autopilot.CurrentTarget != null || autopilot.AutopilotEngaged;
+        int targetCount = autopilot.WaypointManager != null ? autopilot.WaypointManager.TargetCount : (autopilot.CurrentTarget != null ? 1 : 0);
+        int targetIndex = autopilot.WaypointManager != null && targetCount > 0 ? autopilot.WaypointManager.SelectedIndex + 1 : (autopilot.CurrentTarget != null ? 1 : 0);
         return new PrototypePlayerNavigationSnapshot(
             visible,
             autopilot.TargetName,
@@ -873,7 +886,9 @@ public static class PrototypePlayerHudSnapshotBuilder
             preview,
             hasAvoidanceCue,
             autopilot.AvoidanceWaypoint,
-            hasAvoidanceCue ? BuildAvoidanceLabel(autopilot) : string.Empty);
+            hasAvoidanceCue ? BuildAvoidanceLabel(autopilot) : string.Empty,
+            targetIndex,
+            targetCount);
     }
 
     private static PrototypePlayerRadarSnapshot BuildRadar(
@@ -2024,6 +2039,15 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private Text objectiveBodyText;
     private Text contextTitleText;
     private Text contextBodyText;
+    private RectTransform navigationControlRow;
+    private Button navPreviousButton;
+    private Button navNextButton;
+    private Button navAutopilotButton;
+    private Button navReplanButton;
+    private Button navPreviewButton;
+    private Text navAutopilotButtonText;
+    private Text navPreviewButtonText;
+    private RectTransform contextGaugePanelRect;
     private readonly List<Image> contextGaugeFills = new List<Image>();
     private readonly List<Text> contextGaugeLabels = new List<Text>();
     private Text radarText;
@@ -2278,6 +2302,15 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         objectiveBodyText = FindHudComponent<Text>("ObjectiveBody");
         contextTitleText = FindHudComponent<Text>("ContextTitle");
         contextBodyText = FindHudComponent<Text>("ContextBody");
+        navigationControlRow = FindHudComponent<RectTransform>("NavigationControls");
+        navPreviousButton = FindHudComponent<Button>("NavPreviousTarget");
+        navNextButton = FindHudComponent<Button>("NavNextTarget");
+        navAutopilotButton = FindHudComponent<Button>("NavAutopilot");
+        navReplanButton = FindHudComponent<Button>("NavReplan");
+        navPreviewButton = FindHudComponent<Button>("NavPreview");
+        navAutopilotButtonText = FindHudComponent<Text>("NavAutopilotText");
+        navPreviewButtonText = FindHudComponent<Text>("NavPreviewText");
+        contextGaugePanelRect = FindHudComponent<RectTransform>("ContextGauges");
         radarText = FindHudComponent<Text>("RadarText");
         helpText = FindHudComponent<Text>("HelpText");
         helpPanel = helpText != null ? helpText.transform.parent.gameObject : null;
@@ -2352,6 +2385,15 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             && objectiveBodyText != null
             && contextTitleText != null
             && contextBodyText != null
+            && navigationControlRow != null
+            && navPreviousButton != null
+            && navNextButton != null
+            && navAutopilotButton != null
+            && navReplanButton != null
+            && navPreviewButton != null
+            && navAutopilotButtonText != null
+            && navPreviewButtonText != null
+            && contextGaugePanelRect != null
             && radarText != null
             && helpText != null
             && helpPanel != null
@@ -2427,6 +2469,15 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         objectiveBodyText = null;
         contextTitleText = null;
         contextBodyText = null;
+        navigationControlRow = null;
+        navPreviousButton = null;
+        navNextButton = null;
+        navAutopilotButton = null;
+        navReplanButton = null;
+        navPreviewButton = null;
+        navAutopilotButtonText = null;
+        navPreviewButtonText = null;
+        contextGaugePanelRect = null;
         contextGaugeFills.Clear();
         contextGaugeLabels.Clear();
         radarText = null;
@@ -2505,11 +2556,26 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         contextTitleText = CreateText("ContextTitle", panel, 14, TextAnchor.UpperLeft, Color.white, new RectPreset(new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(-22f, 26f), new Vector2(0f, -16f)));
         contextBodyText = CreateText("ContextBody", panel, 12, TextAnchor.UpperLeft, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-22f, -112f), new Vector2(0f, 6f)));
         CreateContextGaugePanel(panel);
+        CreateNavigationControls(panel);
+    }
+
+    private void CreateNavigationControls(Transform parent)
+    {
+        navigationControlRow = CreateRect("NavigationControls", parent, new RectPreset(new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-22f, 24f), new Vector2(0f, 72f)));
+        navPreviousButton = CreateButton("NavPreviousTarget", navigationControlRow, "Prev", new RectPreset(new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(36f, 22f), new Vector2(0f, 0f)));
+        navNextButton = CreateButton("NavNextTarget", navigationControlRow, "Next", new RectPreset(new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(36f, 22f), new Vector2(40f, 0f)));
+        navAutopilotButton = CreateButton("NavAutopilot", navigationControlRow, "Engage", new RectPreset(new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(64f, 22f), new Vector2(80f, 0f)));
+        navReplanButton = CreateButton("NavReplan", navigationControlRow, "Plan", new RectPreset(new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(48f, 22f), new Vector2(148f, 0f)));
+        navPreviewButton = CreateButton("NavPreview", navigationControlRow, "Preview", new RectPreset(new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(72f, 22f), new Vector2(0f, 0f)));
+        navAutopilotButtonText = navAutopilotButton.GetComponentInChildren<Text>(true);
+        navPreviewButtonText = navPreviewButton.GetComponentInChildren<Text>(true);
+        navigationControlRow.gameObject.SetActive(false);
     }
 
     private void CreateContextGaugePanel(Transform parent)
     {
         RectTransform panel = CreateRect("ContextGauges", parent, new RectPreset(new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-22f, 58f), new Vector2(0f, 12f)));
+        contextGaugePanelRect = panel;
         for (int i = 0; i < 3; i++)
         {
             CreateContextGaugeRow(panel, i);
@@ -2685,6 +2751,109 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         killMomentumButton.interactable = interactable;
     }
 
+    private void ConfigureNavigationControls(bool visible)
+    {
+        if (navigationControlRow == null)
+        {
+            return;
+        }
+
+        navigationControlRow.gameObject.SetActive(visible);
+        if (!visible)
+        {
+            RemoveNavigationButtonListeners();
+            return;
+        }
+
+        bool hasAutopilot = autopilot != null;
+        bool hasTarget = hasAutopilot && autopilot.CurrentTarget != null;
+        int targetCount = hasAutopilot && autopilot.WaypointManager != null ? autopilot.WaypointManager.TargetCount : (hasTarget ? 1 : 0);
+
+        SetNavigationButtonState(navPreviousButton, hasAutopilot && targetCount > 1, () =>
+        {
+            autopilot.SelectPreviousTarget();
+            autopilot.ReplanNow();
+            RefreshNow();
+        });
+        SetNavigationButtonState(navNextButton, hasAutopilot && targetCount > 1, () =>
+        {
+            autopilot.SelectNextTarget();
+            autopilot.ReplanNow();
+            RefreshNow();
+        });
+
+        if (navAutopilotButtonText != null)
+        {
+            navAutopilotButtonText.text = !hasAutopilot ? "AP n/a" : autopilot.AutopilotEngaged ? "Abort AP" : "Engage";
+        }
+
+        SetNavigationButtonState(navAutopilotButton, hasAutopilot && (hasTarget || autopilot.AutopilotEngaged), () =>
+        {
+            autopilot.ToggleAutopilot();
+            RefreshNow();
+        });
+        SetNavigationButtonState(navReplanButton, hasAutopilot && hasTarget, () =>
+        {
+            autopilot.ReplanNow();
+            RefreshNow();
+        });
+
+        bool hasPreview = trajectoryPreview != null;
+        if (navPreviewButtonText != null)
+        {
+            navPreviewButtonText.text = !hasPreview ? "Preview n/a" : trajectoryPreview.PreviewEnabled ? "Preview On" : "Preview Off";
+        }
+
+        SetNavigationButtonState(navPreviewButton, hasPreview, () =>
+        {
+            trajectoryPreview.TogglePreview();
+            RefreshNow();
+        });
+    }
+
+    private void RemoveNavigationButtonListeners()
+    {
+        if (navPreviousButton != null)
+        {
+            navPreviousButton.onClick.RemoveAllListeners();
+        }
+
+        if (navNextButton != null)
+        {
+            navNextButton.onClick.RemoveAllListeners();
+        }
+
+        if (navAutopilotButton != null)
+        {
+            navAutopilotButton.onClick.RemoveAllListeners();
+        }
+
+        if (navReplanButton != null)
+        {
+            navReplanButton.onClick.RemoveAllListeners();
+        }
+
+        if (navPreviewButton != null)
+        {
+            navPreviewButton.onClick.RemoveAllListeners();
+        }
+    }
+
+    private static void SetNavigationButtonState(Button button, bool interactable, UnityEngine.Events.UnityAction action)
+    {
+        if (button == null)
+        {
+            return;
+        }
+
+        button.interactable = interactable;
+        button.onClick.RemoveAllListeners();
+        if (interactable && action != null)
+        {
+            button.onClick.AddListener(action);
+        }
+    }
+
     public void ApplyResponsiveLayoutForTests(int width, int height)
     {
         ApplyResponsiveLayout(width, height, true);
@@ -2801,6 +2970,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         ApplyRect(objectivePanelRect, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(objectiveWidth, objectiveHeight), new Vector2(margin, -(margin + 56f)));
         ApplyRect(contextPanelRect, new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(contextWidth, contextHeight), new Vector2(-margin, sideBottom));
         ApplyRect(radarPanelRect, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(radarSize, radarSize), new Vector2(-margin, -margin));
+        ApplyContextBodyLayout(navigationControlRow != null && navigationControlRow.gameObject.activeSelf);
     }
 
     private float ApplyCanvasScalePolicy(int screenWidth, int screenHeight)
@@ -2930,6 +3100,9 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
     private void ApplyContext(PrototypePlayerHudSnapshot snapshot)
     {
+        ConfigureNavigationControls(false);
+        ApplyContextBodyLayout(false);
+
         if (ApplyCriticalContext(snapshot))
         {
             return;
@@ -2969,9 +3142,11 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
         if (snapshot.Navigation.Visible)
         {
+            ApplyContextBodyLayout(true);
+            ConfigureNavigationControls(true);
             contextTitleText.text = "Navigation: " + snapshot.Navigation.TargetName;
             contextBodyText.text =
-                snapshot.Navigation.TargetTypeLabel + " | Dist " + FormatDistance(snapshot.Navigation.DistanceMeters) + " | ETA " + snapshot.Navigation.EtaLabel + "\n"
+                snapshot.Navigation.TargetTypeLabel + " | " + snapshot.Navigation.TargetListLabel + " | Dist " + FormatDistance(snapshot.Navigation.DistanceMeters) + " | ETA " + snapshot.Navigation.EtaLabel + "\n"
                 + "Closing " + snapshot.Navigation.ClosingSpeed.ToString("0.0") + " m/s | Lateral " + snapshot.Navigation.LateralSpeed.ToString("0.0") + " m/s\n"
                 + snapshot.Navigation.StateLabel + "\n"
                 + snapshot.Navigation.PhaseLabel
@@ -3001,6 +3176,33 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         contextBodyText.text = "Kein Navigationsziel";
         contextBodyText.color = PrototypeUiStyle.MutedColor;
         HideContextGauges();
+    }
+
+    private void ApplyContextBodyLayout(bool navigationControlsVisible)
+    {
+        if (contextBodyText == null)
+        {
+            return;
+        }
+
+        if (navigationControlsVisible)
+        {
+            float contextHeight = contextPanelRect != null ? Mathf.Max(120f, contextPanelRect.rect.height) : 194f;
+            float gaugeHeight = contextHeight < 180f ? 42f : 50f;
+            float gaugeBottom = 10f;
+            float rowBottom = gaugeBottom + gaugeHeight + 4f;
+            float bodyBottom = rowBottom + 28f;
+            float bodyHeight = Mathf.Clamp(contextHeight - bodyBottom - 42f, 28f, 60f);
+
+            ApplyRect(contextGaugePanelRect, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-22f, gaugeHeight), new Vector2(0f, gaugeBottom));
+            ApplyRect(navigationControlRow, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-22f, 24f), new Vector2(0f, rowBottom));
+            ApplyRect(contextBodyText.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-22f, bodyHeight), new Vector2(0f, bodyBottom));
+            return;
+        }
+
+        ApplyRect(contextGaugePanelRect, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-22f, 58f), new Vector2(0f, 12f));
+        ApplyRect(navigationControlRow, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-22f, 24f), new Vector2(0f, 72f));
+        ApplyRect(contextBodyText.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-22f, -112f), new Vector2(0f, 6f));
     }
 
     private bool ApplyCriticalContext(PrototypePlayerHudSnapshot snapshot)
