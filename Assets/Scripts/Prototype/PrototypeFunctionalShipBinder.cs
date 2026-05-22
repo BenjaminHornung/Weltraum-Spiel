@@ -7,11 +7,14 @@ public sealed class PrototypeFunctionalShipBinder : MonoBehaviour
     public const string ImportedVisualRootName = "ImportedShipVisual";
     public const string DemoScoutInstanceName = "ImportedDemoScoutVisual";
     public const string DemoCargoInstanceName = "ImportedDemoCargoVisual";
+    public const string FunctionalSocketRigName = "FunctionalSocketRig";
     public const string DemoScoutAssetPath = "Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.fbx";
     public const string DemoCargoAssetPath = "Assets/Art/PrototypeShipKit/DemoShips/demo_cargo_mk1.fbx";
 
     private static readonly Vector3 ImportedShipLocalEulerAngles = new Vector3(-90f, 180f, 0f);
     private const float ImportedShipLocalScale = 100f;
+    private const float FunctionalSocketScaleTolerance = 0.02f;
+    private const float MainNozzleForwardDotMinimum = 0.9f;
 
     [SerializeField] private PrototypeShipBuildMode buildMode = PrototypeShipBuildMode.ImportedDemoScoutFunctionalDefault;
     [SerializeField] private GameObject demoScoutPrefab;
@@ -43,6 +46,7 @@ public sealed class PrototypeFunctionalShipBinder : MonoBehaviour
 
         if (buildMode == PrototypeShipBuildMode.GeneratedPrimitiveFallback)
         {
+            EnsureGeneratedPrimitiveRcsPath();
             report.warnings.Add("Functional imported binder skipped because generated primitive fallback mode is active.");
             LastReport = report;
             return report;
@@ -52,6 +56,7 @@ public sealed class PrototypeFunctionalShipBinder : MonoBehaviour
         GameObject prefab = ResolvePrefab(buildMode, report);
         if (prefab == null)
         {
+            EnsureGeneratedPrimitiveRcsPath();
             report.missingRequiredSockets.Add("Imported demo ship asset");
             LastReport = report;
             return report;
@@ -70,20 +75,45 @@ public sealed class PrototypeFunctionalShipBinder : MonoBehaviour
         report.importedShipInstance = importedInstance.transform;
 
         PrototypeShipSocketUtility.EnsureSocketsInHierarchy(importedInstance.transform);
+        Transform functionalSocketRig = EnsureFunctionalSocketRig();
+        BuildFunctionalSocketProxyRig(importedInstance.transform, functionalSocketRig, report);
+        PrototypeShipSocketUtility.EnsureSocketsInHierarchy(functionalSocketRig);
+        AttachVisibleTurretGeometryToProxy(importedInstance.transform, functionalSocketRig, report);
+        report.functionalSocketRig = functionalSocketRig;
+
+        if (!ValidateFunctionalSocketScales(functionalSocketRig, report))
+        {
+            ValidateRequiredRuntimeSockets(report);
+            LastReport = report;
+            return report;
+        }
+
+        ValidateMainNozzleDirection(functionalSocketRig, report);
+        if (report.missingRequiredSockets.Contains("THRUST_NOZZLE_MAIN*.forward aligned with PrototypeShip.forward"))
+        {
+            ValidateRequiredRuntimeSockets(report);
+            LastReport = report;
+            return report;
+        }
+
         BindVisualVfx(importedInstance.transform, report);
 
         PrototypeImportedShipBinder importedBinder = GetOrAddComponent<PrototypeImportedShipBinder>(gameObject, createMissingRuntimeComponents);
         if (importedBinder != null)
         {
-            importedBinder.Configure(importedInstance.transform, vfxLibrary, createMissingRuntimeComponents, createRuntimeVfxChildren);
+            importedBinder.Configure(functionalSocketRig, vfxLibrary, createMissingRuntimeComponents, createRuntimeVfxChildren);
             PrototypeImportedShipBinder.BindReport importedReport = importedBinder.BindNow();
             report.foundMainNozzles = importedReport.foundMainNozzles;
             report.foundRcsNozzles = importedReport.foundRcsNozzles;
             report.foundMuzzles = importedReport.foundMuzzles;
+            report.foundHardpoints = importedReport.foundHardpoints;
             report.boundMainThrusters = importedReport.boundMainThrusters;
             report.boundRcsNozzles = importedReport.boundRcsNozzles;
             report.boundGunModules = importedReport.boundGuns;
+            report.boundHardpoints = importedReport.boundHardpoints;
             report.createdRcsVfxChildren = importedReport.createdRcsVfxChildren;
+            report.createdHardpointBindings = importedReport.createdHardpointBindings;
+            report.duplicateHardpointsSkipped = importedReport.duplicateHardpointsSkipped;
             report.missingRequiredSockets.AddRange(importedReport.missingRequiredSockets);
             report.warnings.AddRange(importedReport.warnings);
         }
@@ -91,7 +121,7 @@ public sealed class PrototypeFunctionalShipBinder : MonoBehaviour
         PrototypeShipKitWeaponBinder weaponBinder = GetOrAddComponent<PrototypeShipKitWeaponBinder>(gameObject, createMissingRuntimeComponents);
         if (weaponBinder != null)
         {
-            weaponBinder.Configure(importedInstance.transform, transform, createMissingRuntimeComponents, true);
+            weaponBinder.Configure(functionalSocketRig, transform, createMissingRuntimeComponents, true);
             PrototypeShipKitWeaponBinder.BindReport weaponReport = weaponBinder.BindNow();
             report.foundTurretBases = weaponReport.foundBases;
             report.foundTurretYawPivots = weaponReport.foundYawPivots;
@@ -110,6 +140,283 @@ public sealed class PrototypeFunctionalShipBinder : MonoBehaviour
         ValidateRequiredRuntimeSockets(report);
         LastReport = report;
         return report;
+    }
+
+    private Transform EnsureFunctionalSocketRig()
+    {
+        Transform rig = transform.Find(FunctionalSocketRigName);
+        if (rig == null)
+        {
+            rig = new GameObject(FunctionalSocketRigName).transform;
+            rig.SetParent(transform, false);
+        }
+
+        for (int i = rig.childCount - 1; i >= 0; i--)
+        {
+            DestroyGameObject(rig.GetChild(i).gameObject);
+        }
+
+        rig.localPosition = Vector3.zero;
+        rig.localRotation = Quaternion.identity;
+        rig.localScale = Vector3.one;
+        rig.gameObject.SetActive(true);
+        return rig;
+    }
+
+    private void BuildFunctionalSocketProxyRig(Transform importedInstance, Transform proxyRoot, BindReport report)
+    {
+        if (importedInstance == null || proxyRoot == null)
+        {
+            return;
+        }
+
+        var proxyBySource = new Dictionary<Transform, Transform>();
+        PrototypeShipSocket[] sourceSockets = importedInstance.GetComponentsInChildren<PrototypeShipSocket>(true);
+        for (int i = 0; i < sourceSockets.Length; i++)
+        {
+            PrototypeShipSocket sourceSocket = sourceSockets[i];
+            if (!IsFunctionalRuntimeSocket(sourceSocket))
+            {
+                continue;
+            }
+
+            CreateProxyForSocket(sourceSocket.transform, sourceSocket, proxyRoot, proxyBySource);
+            report.createdFunctionalSocketProxies++;
+        }
+    }
+
+    private Transform CreateProxyForSocket(
+        Transform source,
+        PrototypeShipSocket sourceSocket,
+        Transform proxyRoot,
+        Dictionary<Transform, Transform> proxyBySource)
+    {
+        if (source == null)
+        {
+            return null;
+        }
+
+        if (proxyBySource.TryGetValue(source, out Transform existing))
+        {
+            return existing;
+        }
+
+        Transform parentProxy = proxyRoot;
+        Transform parent = source.parent;
+        while (parent != null)
+        {
+            if (proxyBySource.TryGetValue(parent, out parentProxy))
+            {
+                break;
+            }
+
+            PrototypeShipSocket parentSocket = parent.GetComponent<PrototypeShipSocket>();
+            if (IsFunctionalRuntimeSocket(parentSocket))
+            {
+                parentProxy = CreateProxyForSocket(parent, parentSocket, proxyRoot, proxyBySource);
+                break;
+            }
+
+            parent = parent.parent;
+        }
+
+        GameObject proxyObject = new GameObject(source.name);
+        Transform proxy = proxyObject.transform;
+        proxy.SetParent(parentProxy != null ? parentProxy : proxyRoot, false);
+        proxy.position = source.position;
+        proxy.rotation = ResolveProxyRotation(source, sourceSocket);
+        proxy.localScale = Vector3.one;
+        proxyBySource[source] = proxy;
+        return proxy;
+    }
+
+    private Quaternion ResolveProxyRotation(Transform source, PrototypeShipSocket sourceSocket)
+    {
+        if (sourceSocket != null && sourceSocket.SocketType == PrototypeShipSocketType.MainThrusterNozzle)
+        {
+            return BuildForceDirectionRotation(transform.forward);
+        }
+
+        if (sourceSocket != null
+            && sourceSocket.SocketType == PrototypeShipSocketType.RcsNozzle
+            && TryResolveRcsForceDirection(sourceSocket.Direction, out Vector3 forceDirection))
+        {
+            return BuildForceDirectionRotation(forceDirection);
+        }
+
+        return source != null ? source.rotation : transform.rotation;
+    }
+
+    private Quaternion BuildForceDirectionRotation(Vector3 forceDirectionWorld)
+    {
+        Vector3 forceDirection = forceDirectionWorld.sqrMagnitude > 0.0001f
+            ? forceDirectionWorld.normalized
+            : transform.forward;
+        Vector3 up = Mathf.Abs(Vector3.Dot(forceDirection, transform.up)) > 0.9f
+            ? transform.forward
+            : transform.up;
+        return Quaternion.LookRotation(forceDirection, up);
+    }
+
+    private bool TryResolveRcsForceDirection(PrototypeShipSocketDirection direction, out Vector3 forceDirectionWorld)
+    {
+        switch (direction)
+        {
+            case PrototypeShipSocketDirection.Forward:
+                forceDirectionWorld = transform.forward;
+                return true;
+            case PrototypeShipSocketDirection.Back:
+                forceDirectionWorld = -transform.forward;
+                return true;
+            case PrototypeShipSocketDirection.Left:
+                forceDirectionWorld = -transform.right;
+                return true;
+            case PrototypeShipSocketDirection.Right:
+                forceDirectionWorld = transform.right;
+                return true;
+            case PrototypeShipSocketDirection.Up:
+                forceDirectionWorld = transform.up;
+                return true;
+            case PrototypeShipSocketDirection.Down:
+                forceDirectionWorld = -transform.up;
+                return true;
+            default:
+                forceDirectionWorld = Vector3.zero;
+                return false;
+        }
+    }
+
+    private void AttachVisibleTurretGeometryToProxy(Transform importedInstance, Transform functionalSocketRig, BindReport report)
+    {
+        if (importedInstance == null || functionalSocketRig == null)
+        {
+            return;
+        }
+
+        Transform sourceYaw = FindFirstDescendant(importedInstance, PrototypeShipSocketUtility.IsWeaponTurretYawName);
+        Transform sourcePitch = FindFirstDescendant(importedInstance, PrototypeShipSocketUtility.IsWeaponTurretPitchName);
+        Transform proxyYaw = FindFirstDescendant(functionalSocketRig, PrototypeShipSocketUtility.IsWeaponTurretYawName);
+        Transform proxyPitch = FindFirstDescendant(functionalSocketRig, PrototypeShipSocketUtility.IsWeaponTurretPitchName);
+
+        ReparentVisualChildren(sourceYaw, proxyYaw, report);
+        ReparentVisualChildren(sourcePitch, proxyPitch, report);
+    }
+
+    private static void ReparentVisualChildren(Transform sourcePivot, Transform proxyPivot, BindReport report)
+    {
+        if (sourcePivot == null || proxyPivot == null)
+        {
+            return;
+        }
+
+        for (int i = sourcePivot.childCount - 1; i >= 0; i--)
+        {
+            Transform child = sourcePivot.GetChild(i);
+            if (IsFunctionalMarkerName(child.name))
+            {
+                continue;
+            }
+
+            child.SetParent(proxyPivot, true);
+            report.reparentedVisibleTurretChildren++;
+        }
+    }
+
+    private static Transform FindFirstDescendant(Transform root, System.Predicate<string> namePredicate)
+    {
+        if (root == null || namePredicate == null)
+        {
+            return null;
+        }
+
+        Transform[] transforms = root.GetComponentsInChildren<Transform>(true);
+        for (int i = 0; i < transforms.Length; i++)
+        {
+            if (namePredicate(transforms[i].name))
+            {
+                return transforms[i];
+            }
+        }
+
+        return null;
+    }
+
+    private bool ValidateFunctionalSocketScales(Transform importedInstance, BindReport report)
+    {
+        if (importedInstance == null)
+        {
+            return false;
+        }
+
+        bool valid = true;
+        PrototypeShipSocket[] sockets = importedInstance.GetComponentsInChildren<PrototypeShipSocket>(true);
+        for (int i = 0; i < sockets.Length; i++)
+        {
+            PrototypeShipSocket socket = sockets[i];
+            if (!IsFunctionalRuntimeSocket(socket))
+            {
+                continue;
+            }
+
+            Vector3 lossyScale = socket.transform.lossyScale;
+            if (IsApproximatelyUnitScale(lossyScale))
+            {
+                continue;
+            }
+
+            valid = false;
+            report.unsafeFunctionalSocketScaleCount++;
+            if (string.IsNullOrEmpty(report.firstUnsafeFunctionalSocketName))
+            {
+                report.firstUnsafeFunctionalSocketName = socket.name;
+                report.firstUnsafeFunctionalSocketLossyScale = lossyScale;
+                report.missingRequiredSockets.Add("unsafe functional socket scale");
+                report.warnings.Add(
+                    $"Functional socket '{socket.name}' has unsafe lossyScale {lossyScale}. Imported physics binding was aborted.");
+            }
+        }
+
+        return valid;
+    }
+
+    private void ValidateMainNozzleDirection(Transform importedInstance, BindReport report)
+    {
+        List<PrototypeShipSocket> mainNozzles = PrototypeShipSocketUtility.FindSockets(
+            importedInstance,
+            PrototypeShipSocketType.MainThrusterNozzle,
+            false);
+        if (mainNozzles.Count == 0)
+        {
+            return;
+        }
+
+        float bestDot = -1f;
+        string bestName = string.Empty;
+        Vector3 shipForward = transform.forward.normalized;
+        for (int i = 0; i < mainNozzles.Count; i++)
+        {
+            Transform nozzle = mainNozzles[i] != null ? mainNozzles[i].transform : null;
+            if (nozzle == null)
+            {
+                continue;
+            }
+
+            float dot = Vector3.Dot(nozzle.forward.normalized, shipForward);
+            if (dot > bestDot)
+            {
+                bestDot = dot;
+                bestName = nozzle.name;
+            }
+        }
+
+        report.bestMainNozzleForwardDot = bestDot;
+        report.bestMainNozzleForwardName = bestName;
+        if (bestDot < MainNozzleForwardDotMinimum)
+        {
+            report.missingRequiredSockets.Add("THRUST_NOZZLE_MAIN*.forward aligned with PrototypeShip.forward");
+            report.warnings.Add(
+                $"Best imported main nozzle forward alignment is {bestDot:0.000} on '{bestName}', expected >= {MainNozzleForwardDotMinimum:0.000}.");
+        }
     }
 
     private Transform EnsureImportedVisualRoot()
@@ -331,6 +638,43 @@ public sealed class PrototypeFunctionalShipBinder : MonoBehaviour
         return component;
     }
 
+    private static bool IsFunctionalRuntimeSocket(PrototypeShipSocket socket)
+    {
+        if (socket == null || !socket.IsRuntimeSocket)
+        {
+            return false;
+        }
+
+        return socket.SocketType == PrototypeShipSocketType.MainThrusterNozzle
+            || socket.SocketType == PrototypeShipSocketType.MainThrusterGimbalPivot
+            || socket.SocketType == PrototypeShipSocketType.RcsNozzle
+            || socket.SocketType == PrototypeShipSocketType.WeaponMuzzle
+            || socket.SocketType == PrototypeShipSocketType.TurretYawPivot
+            || socket.SocketType == PrototypeShipSocketType.TurretPitchPivot
+            || (socket.SocketType == PrototypeShipSocketType.Hardpoint
+                && PrototypeShipSocketUtility.IsWeaponTurretBaseName(socket.name));
+    }
+
+    private static bool IsFunctionalMarkerName(string objectName)
+    {
+        return PrototypeShipSocketUtility.IsMainThrusterNozzleName(objectName)
+            || PrototypeShipSocketUtility.IsMainThrusterGimbalName(objectName)
+            || PrototypeShipSocketUtility.IsRcsNozzleName(objectName)
+            || PrototypeShipSocketUtility.IsWeaponTurretBaseName(objectName)
+            || PrototypeShipSocketUtility.IsWeaponTurretYawName(objectName)
+            || PrototypeShipSocketUtility.IsWeaponTurretPitchName(objectName)
+            || PrototypeShipSocketUtility.IsWeaponMuzzleName(objectName)
+            || PrototypeShipSocketUtility.IsWeaponMuzzleFlashName(objectName)
+            || PrototypeShipSocketUtility.IsWeaponSafetyMarkerName(objectName);
+    }
+
+    private static bool IsApproximatelyUnitScale(Vector3 scale)
+    {
+        return Mathf.Abs(scale.x - 1f) <= FunctionalSocketScaleTolerance
+            && Mathf.Abs(scale.y - 1f) <= FunctionalSocketScaleTolerance
+            && Mathf.Abs(scale.z - 1f) <= FunctionalSocketScaleTolerance;
+    }
+
     private static void DestroyComponent(Component target)
     {
         if (target == null)
@@ -348,17 +692,43 @@ public sealed class PrototypeFunctionalShipBinder : MonoBehaviour
         }
     }
 
+    private void EnsureGeneratedPrimitiveRcsPath()
+    {
+        RcsThrusterController rcs = GetComponent<RcsThrusterController>();
+        if (rcs == null)
+        {
+            return;
+        }
+
+        rcs.SetUseImportedFunctionalSockets(false);
+        rcs.MarkNozzlesDirty();
+    }
+
+    private static void DestroyGameObject(GameObject target)
+    {
+        if (target == null)
+        {
+            return;
+        }
+
+        DestroyImmediate(target);
+    }
+
     [System.Serializable]
     public sealed class BindReport
     {
         public PrototypeShipBuildMode requestedBuildMode;
         public Transform importedVisualRoot;
         public Transform importedShipInstance;
+        public Transform functionalSocketRig;
         public bool createdImportedInstance;
         public bool hasRequiredFunctionalSockets;
+        public int createdFunctionalSocketProxies;
+        public int reparentedVisibleTurretChildren;
         public int foundMainNozzles;
         public int foundRcsNozzles;
         public int foundMuzzles;
+        public int foundHardpoints;
         public int foundTurretBases;
         public int foundTurretYawPivots;
         public int foundTurretPitchPivots;
@@ -369,11 +739,19 @@ public sealed class PrototypeFunctionalShipBinder : MonoBehaviour
         public int boundTurretWeapons;
         public int boundGunModules;
         public int boundWeaponComputers;
+        public int boundHardpoints;
         public int createdRcsVfxChildren;
+        public int createdHardpointBindings;
+        public int duplicateHardpointsSkipped;
         public int visualMainVfxBindings;
         public int visualRcsVfxBindings;
         public int visualVfxCreatedInstances;
+        public int unsafeFunctionalSocketScaleCount;
+        public float bestMainNozzleForwardDot;
         public string boundMuzzleName;
+        public string firstUnsafeFunctionalSocketName;
+        public string bestMainNozzleForwardName;
+        public Vector3 firstUnsafeFunctionalSocketLossyScale;
         public List<string> missingRequiredSockets = new List<string>();
         public List<string> warnings = new List<string>();
     }

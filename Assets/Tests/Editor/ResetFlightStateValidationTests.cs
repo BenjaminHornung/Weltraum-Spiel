@@ -28,9 +28,21 @@ public class ResetFlightStateValidationTests
             ship.AddComponent<MainThrusterModule>();
             ship.AddComponent<RcsThrusterController>();
             ship.AddComponent<ShipPhysicsCore>();
+            WeaponRecoilStabilizer weaponRecoilStabilizer = ship.AddComponent<WeaponRecoilStabilizer>();
             PlayerShipController controller = ship.AddComponent<PlayerShipController>();
             FloatingOriginBody floatingOriginBody = ship.AddComponent<FloatingOriginBody>();
             floatingOriginBody.Configure(manager, manager.Origin + new Vector3(25f, 30f, 35f));
+
+            weaponRecoilStabilizer.Configure(body);
+            weaponRecoilStabilizer.RecordRecoilImpulse(
+                new Vector3(0f, 7f, -30f),
+                body.worldCenterOfMass + Vector3.right * 0.3f);
+            FlightAssistRequest pendingRecoil = weaponRecoilStabilizer.BuildFlightAssistRequest(
+                ship.transform,
+                effectiveSasEnabled: true,
+                rcsEnabled: true,
+                hasRcs: true,
+                deltaTime: 0.02f);
 
             Vector3 resetPosition = new Vector3(3f, 4f, 5f);
             Quaternion resetRotation = Quaternion.Euler(0f, 90f, 0f);
@@ -43,8 +55,16 @@ public class ResetFlightStateValidationTests
             controller.PulseMainThrust(1f);
             controller.PulseRcsTranslation(Vector3.right);
             controller.PulseRcsAttitude(Vector3.up);
+            Assert.That(pendingRecoil.source, Is.EqualTo(FlightAssistRequestSource.WeaponStabilization));
+            Assert.That(weaponRecoilStabilizer.RemainingCompensationSeconds, Is.GreaterThan(0f));
+            Assert.That(weaponRecoilStabilizer.LastWeaponStabilizationRequestActive, Is.True);
 
             controller.ResetFlightState(resetPosition, resetRotation, true);
+            Assert.That(weaponRecoilStabilizer.RemainingCompensationSeconds, Is.EqualTo(0f).Within(0.001f));
+            Assert.False(weaponRecoilStabilizer.LastWeaponStabilizationRequestActive);
+            Assert.That(weaponRecoilStabilizer.LastWeaponStabilizationStatus, Is.EqualTo("reset"));
+            Assert.That(weaponRecoilStabilizer.LastWeaponStabilizationTorqueRequestWorld, Is.EqualTo(Vector3.zero));
+
             LargeWorldVector3d expectedAbsolutePosition = manager.Origin + resetPosition;
 
             Assert.That(Vector3.Distance(body.position, resetPosition), Is.LessThan(0.001f));

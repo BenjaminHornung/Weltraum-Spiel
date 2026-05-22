@@ -481,6 +481,11 @@ public class PlayerShipController : MonoBehaviour
         RcsAttitudeCommand = Vector3.ClampMagnitude(combinedAttitudeInput, 1f) * controlScale;
         TurnInput = Mathf.Clamp(RcsAttitudeCommand.y, -1f, 1f);
         UpdateSasTargetRotation(RcsAttitudeCommand);
+        if (HasManualControlOverride(RcsTranslationCommand, RcsAttitudeCommand, mainThrottlePulse))
+        {
+            ClearExternalFlightAssistRequest();
+        }
+
         LastFlightAssistRequest = BuildFlightAssistRequest();
 
         if (rcsThrusters != null)
@@ -801,6 +806,17 @@ public class PlayerShipController : MonoBehaviour
     private FlightAssistRequest BuildFlightAssistRequest()
     {
         return CombineWithWeaponStabilization(BuildBaseFlightAssistRequest());
+    }
+
+    private bool HasManualControlOverride(Vector3 translationCommand, Vector3 attitudeCommand, float mainThrottlePulse)
+    {
+        return translationCommand.sqrMagnitude > 0.0001f
+            || attitudeCommand.sqrMagnitude > 0.0001f
+            || mainThrottlePulse > 0.0001f
+            || throttleUp
+            || throttleDown
+            || cutThrottle
+            || fullThrottle;
     }
 
     private FlightAssistRequest BuildBaseFlightAssistRequest()
@@ -1145,6 +1161,10 @@ public class PlayerShipController : MonoBehaviour
         previousForwardSpeed = 0f;
         LastFlightAssistRequest = FlightAssistRequest.None;
         ClearExternalFlightAssistRequest();
+        if (weaponRecoilStabilizer != null)
+        {
+            weaponRecoilStabilizer.ClearPendingRequest("reset");
+        }
 
         if (shipRigidbody != null)
         {

@@ -81,11 +81,14 @@ public class RcsThrusterController : MonoBehaviour
     private const string AllocatorStatusNoAuthority = "no authority";
     private const string AllocatorStatusNoSolution = "no solution";
     private const string AllocatorStatusFuelStarved = "no fuel";
+    private const string AllocatorStatusComTranslationFallback = "com-translation-fallback";
     private const float AllocatorResidualForceTolerance = 0.5f;
     private const float AllocatorResidualTorqueTolerance = 0.5f;
     private const float AllocatorResidualLimitRatio = 0.05f;
 
     private const float SasCommandDeadZone = 0.0001f;
+    private const float SasMinimumDampingTime = 0.12f;
+    private const float SasHoldAngularVelocityLimit = 3f;
     private const string ImportedShipVisualName = "ImportedShipVisual";
 
     public float TranslationForce => Mathf.Max(0f, translationForce);
@@ -338,6 +341,13 @@ public class RcsThrusterController : MonoBehaviour
             return transform;
         }
 
+        Transform functionalSocketRig = transform.Find(PrototypeFunctionalShipBinder.FunctionalSocketRigName);
+        if (functionalSocketRig != null && functionalSocketRig.gameObject.activeInHierarchy)
+        {
+            cachedNozzleSearchRoot = functionalSocketRig;
+            return cachedNozzleSearchRoot;
+        }
+
         Transform importedVisual = transform.Find(ImportedShipVisualName);
         cachedNozzleSearchRoot = importedVisual != null && importedVisual.gameObject.activeInHierarchy
             ? importedVisual
@@ -578,10 +588,40 @@ public class RcsThrusterController : MonoBehaviour
             : Vector3.zero;
         LastSasAngularErrorLocal = angularError;
 
-        float derivativeGain = SasDerivativeGain * torqueAuthority;
-        float proportionalGain = sasMode == SasControlMode.HoldAttitude ? SasProportionalGain * torqueAuthority : 0f;
-        Vector3 desiredTorque = angularError * proportionalGain - localAngularVelocity * derivativeGain;
+        float dampingTime = Mathf.Max(SasMinimumDampingTime, 1f / Mathf.Max(0.01f, SasDerivativeGain));
+        Vector3 desiredAngularVelocity = sasMode == SasControlMode.HoldAttitude
+            ? Vector3.ClampMagnitude(angularError * (SasProportionalGain / dampingTime), SasHoldAngularVelocityLimit)
+            : Vector3.zero;
+        Vector3 desiredAngularAcceleration = (desiredAngularVelocity - localAngularVelocity) / dampingTime;
+        Vector3 desiredTorque = TransformLocalAngularAccelerationToTorque(desiredAngularAcceleration);
         return Vector3.ClampMagnitude(desiredTorque, torqueAuthority);
+    }
+
+    private Vector3 TransformLocalAngularAccelerationToTorque(Vector3 localAngularAcceleration)
+    {
+        if (shipRigidbody == null || localAngularAcceleration.sqrMagnitude <= 0.000001f)
+        {
+            return Vector3.zero;
+        }
+
+        Vector3 inertia = shipRigidbody.inertiaTensor;
+        if (!IsFinitePositive(inertia.x) || !IsFinitePositive(inertia.y) || !IsFinitePositive(inertia.z))
+        {
+            return Vector3.zero;
+        }
+
+        Quaternion inertiaRotation = shipRigidbody.inertiaTensorRotation;
+        Vector3 principalAcceleration = Quaternion.Inverse(inertiaRotation) * localAngularAcceleration;
+        Vector3 principalTorque = new Vector3(
+            principalAcceleration.x * inertia.x,
+            principalAcceleration.y * inertia.y,
+            principalAcceleration.z * inertia.z);
+        return inertiaRotation * principalTorque;
+    }
+
+    private static bool IsFinitePositive(float value)
+    {
+        return float.IsFinite(value) && value > 0.000001f;
     }
 
     private Vector3 ComputeAngularErrorLocal(Quaternion targetRotation)
@@ -1040,16 +1080,33 @@ public class RcsThrusterController : MonoBehaviour
 
     private void AllocateAndApplyRcs(Vector3 desiredForceWorld, Vector3 desiredTorqueWorld, Vector3 manualAttitude, float deltaTime)
     {
-        LastDesiredRcsForceWorld = desiredForceWorld;
+        Vector3 diagnosticDesiredForceWorld = desiredForceWorld;
+        Vector3 allocationDesiredForceWorld = desiredForceWorld;
+        bool splitImportedTranslation = TryApplyImportedTranslationAtCenterOfMass(diagnosticDesiredForceWorld, deltaTime);
+        if (splitImportedTranslation)
+        {
+            allocationDesiredForceWorld = Vector3.zero;
+        }
+
+        LastDesiredRcsForceWorld = diagnosticDesiredForceWorld;
         LastDesiredRcsTorqueWorld = desiredTorqueWorld;
-        LastResidualRcsForceWorld = desiredForceWorld;
+        LastResidualRcsForceWorld = diagnosticDesiredForceWorld - LastActualRcsForceWorld;
         LastResidualRcsTorqueWorld = desiredTorqueWorld;
 
         int allocationCount = BuildAllocationData();
-        bool hasRequest = desiredForceWorld.sqrMagnitude > 0.0001f || desiredTorqueWorld.sqrMagnitude > 0.0001f;
+        bool hasRequest = allocationDesiredForceWorld.sqrMagnitude > 0.0001f || desiredTorqueWorld.sqrMagnitude > 0.0001f;
         if (!hasRequest)
         {
-            ApplySpoolDownForces(allocationScratch, allocationCount, desiredForceWorld, desiredTorqueWorld, manualAttitude, deltaTime, AllocatorStatusSpoolingDown);
+            if (splitImportedTranslation)
+            {
+                LastResidualRcsForceWorld = diagnosticDesiredForceWorld - LastActualRcsForceWorld;
+                LastAllocatorStatus = LastResidualRcsForceWorld.magnitude <= Mathf.Max(AllocatorResidualForceTolerance, diagnosticDesiredForceWorld.magnitude * AllocatorResidualLimitRatio)
+                    ? AllocatorStatusComTranslationFallback
+                    : AllocatorStatusResidual;
+                return;
+            }
+
+            ApplySpoolDownForces(allocationScratch, allocationCount, diagnosticDesiredForceWorld, desiredTorqueWorld, manualAttitude, deltaTime, AllocatorStatusSpoolingDown);
             return;
         }
 
@@ -1061,9 +1118,9 @@ public class RcsThrusterController : MonoBehaviour
 
         float forceWeight;
         float torqueWeight;
-        GetAllocatorWeights(allocationScratch, allocationCount, desiredForceWorld, desiredTorqueWorld, out forceWeight, out torqueWeight);
-        AllocateThrottleGreedy(allocationScratch, allocationCount, desiredForceWorld, desiredTorqueWorld, forceWeight, torqueWeight);
-        ApplyAllocatedForces(allocationScratch, allocationCount, desiredForceWorld, desiredTorqueWorld, manualAttitude, deltaTime);
+        GetAllocatorWeights(allocationScratch, allocationCount, allocationDesiredForceWorld, desiredTorqueWorld, out forceWeight, out torqueWeight);
+        AllocateThrottleGreedy(allocationScratch, allocationCount, allocationDesiredForceWorld, desiredTorqueWorld, forceWeight, torqueWeight);
+        ApplyAllocatedForces(allocationScratch, allocationCount, diagnosticDesiredForceWorld, desiredTorqueWorld, manualAttitude, deltaTime);
     }
 
 
@@ -1252,6 +1309,11 @@ public class RcsThrusterController : MonoBehaviour
 
         if (requestedThrottleTotal <= 0f)
         {
+            if (TryApplyPureTranslationCenterOfMassFallback(desiredForceWorld, desiredTorqueWorld, deltaTime, AllocatorStatusNoSolution))
+            {
+                return;
+            }
+
             ApplySpoolDownForces(allocations, allocationCount, desiredForceWorld, desiredTorqueWorld, manualAttitude, deltaTime, AllocatorStatusNoSolution);
             return;
         }
@@ -1313,7 +1375,127 @@ public class RcsThrusterController : MonoBehaviour
         LastTranslationForce = LastActualRcsForceWorld;
         LastResidualRcsForceWorld = desiredForceWorld - LastActualRcsForceWorld;
         LastResidualRcsTorqueWorld = desiredTorqueWorld - LastActualRcsTorqueWorld;
+        NeutralizePureAttitudeLinearResidual(desiredForceWorld, desiredTorqueWorld);
         LastAllocatorStatus = DetermineAllocatorStatus(desiredForceWorld, desiredTorqueWorld, LastResidualRcsForceWorld, LastResidualRcsTorqueWorld);
+    }
+
+    private bool TryApplyPureTranslationCenterOfMassFallback(Vector3 desiredForceWorld, Vector3 desiredTorqueWorld, float deltaTime, string fallbackStatus)
+    {
+        if (desiredForceWorld.sqrMagnitude <= 0.0001f
+            || desiredTorqueWorld.sqrMagnitude > 0.0001f
+            || !UseImportedFunctionalSockets
+            || physicsCore == null
+            || shipRigidbody == null
+            || !CanApplyRcs)
+        {
+            return false;
+        }
+
+        float throttleEquivalent = Mathf.Clamp01(desiredForceWorld.magnitude / Mathf.Max(0.0001f, TranslationForce));
+        float fuelFraction = ConsumeFuelForAllocatedThrottle(throttleEquivalent, deltaTime);
+        if (fuelFraction <= 0f)
+        {
+            LastAllocatorStatus = AllocatorStatusFuelStarved;
+            LastAllocatedNozzleThrottleTotal = 0f;
+            LastResidualRcsForceWorld = desiredForceWorld;
+            LastResidualRcsTorqueWorld = desiredTorqueWorld;
+            ResetNozzleRuntimeState();
+            return true;
+        }
+
+        Vector3 appliedForce = desiredForceWorld * fuelFraction;
+        physicsCore.ApplyForceAtCenterOfMass(appliedForce, ForceMode.Force);
+        LastActualRcsForceWorld += appliedForce;
+        LastTranslationForce = LastActualRcsForceWorld;
+        LastResidualRcsForceWorld = desiredForceWorld - LastActualRcsForceWorld;
+        LastResidualRcsTorqueWorld = desiredTorqueWorld - LastActualRcsTorqueWorld;
+        LastAllocatedNozzleThrottleTotal = throttleEquivalent * fuelFraction;
+        LastAllocatorStatus = LastResidualRcsForceWorld.magnitude <= Mathf.Max(AllocatorResidualForceTolerance, desiredForceWorld.magnitude * AllocatorResidualLimitRatio)
+            ? AllocatorStatusComTranslationFallback
+            : fallbackStatus;
+        return true;
+    }
+
+    private bool TryApplyImportedTranslationAtCenterOfMass(Vector3 desiredForceWorld, float deltaTime)
+    {
+        if (!UseImportedFunctionalSockets
+            || desiredForceWorld.sqrMagnitude <= 0.0001f
+            || physicsCore == null
+            || shipRigidbody == null
+            || !CanApplyRcs)
+        {
+            return false;
+        }
+
+        float throttleEquivalent = Mathf.Clamp01(desiredForceWorld.magnitude / Mathf.Max(0.0001f, TranslationForce));
+        float fuelFraction = ConsumeFuelForAllocatedThrottle(throttleEquivalent, deltaTime);
+        if (fuelFraction <= 0f)
+        {
+            LastAllocatorStatus = AllocatorStatusFuelStarved;
+            LastResidualRcsForceWorld = desiredForceWorld;
+            ResetNozzleRuntimeState();
+            return true;
+        }
+
+        Vector3 appliedForce = desiredForceWorld * fuelFraction;
+        physicsCore.ApplyForceAtCenterOfMass(appliedForce, ForceMode.Force);
+        LastActualRcsForceWorld += appliedForce;
+        LastTranslationForce = LastActualRcsForceWorld;
+        LastResidualRcsForceWorld = desiredForceWorld - LastActualRcsForceWorld;
+        LastAllocatedNozzleThrottleTotal += throttleEquivalent * fuelFraction;
+        MarkVisualNozzlesForTranslation(desiredForceWorld, throttleEquivalent * fuelFraction);
+        return true;
+    }
+
+    private void MarkVisualNozzlesForTranslation(Vector3 desiredForceWorld, float throttle)
+    {
+        if (desiredForceWorld.sqrMagnitude <= 0.0001f || throttle <= 0.0001f)
+        {
+            return;
+        }
+
+        Vector3 desiredDirection = desiredForceWorld.normalized;
+        float selectionDot = Mathf.Clamp(minSelectionDot, 0f, 0.95f);
+        for (int i = 0; i < nozzles.Count; i++)
+        {
+            RcsNozzle nozzle = nozzles[i];
+            if (!IsActiveNozzleTransform(nozzle.transform))
+            {
+                continue;
+            }
+
+            float alignment = Vector3.Dot(GetNozzleForceDirection(nozzle.transform), desiredDirection);
+            if (alignment <= selectionDot)
+            {
+                continue;
+            }
+
+            nozzle.active = true;
+            nozzle.actualThrottle = Mathf.Max(nozzle.actualThrottle, Mathf.Clamp01(throttle * alignment));
+            LastMaxNozzleThrottle = Mathf.Max(LastMaxNozzleThrottle, nozzle.actualThrottle);
+        }
+    }
+
+    private void NeutralizePureAttitudeLinearResidual(Vector3 desiredForceWorld, Vector3 desiredTorqueWorld)
+    {
+        Vector3 undesiredForceWorld = LastActualRcsForceWorld - desiredForceWorld;
+        if (physicsCore == null
+            || desiredTorqueWorld.sqrMagnitude <= 0.0001f
+            || undesiredForceWorld.sqrMagnitude <= 0.0001f)
+        {
+            return;
+        }
+
+        Vector3 counterForce = -undesiredForceWorld;
+        if (!physicsCore.ApplyForceAtCenterOfMass(counterForce, ForceMode.Force))
+        {
+            return;
+        }
+
+        LastForceAtPositionTotal += counterForce;
+        LastActualRcsForceWorld += counterForce;
+        LastTranslationForce = LastActualRcsForceWorld;
+        LastResidualRcsForceWorld = desiredForceWorld - LastActualRcsForceWorld;
     }
 
     private void ApplySpoolDownForces(

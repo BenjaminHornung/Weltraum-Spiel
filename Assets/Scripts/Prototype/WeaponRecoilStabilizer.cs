@@ -116,6 +116,18 @@ public class WeaponRecoilStabilizer : MonoBehaviour
         }
     }
 
+    public void ClearPendingRequest(string status)
+    {
+        pendingCounterAngularImpulseWorld = Vector3.zero;
+        remainingCompensationSeconds = 0f;
+        LastWeaponStabilizationTorqueRequestWorld = Vector3.zero;
+        LastWeaponStabilizationTorqueRequestLocal = Vector3.zero;
+        LastWeaponStabilizationActualRcsTorqueWorld = Vector3.zero;
+        LastWeaponStabilizationResidualRcsTorqueWorld = Vector3.zero;
+        LastWeaponStabilizationRequestActive = false;
+        LastWeaponStabilizationStatus = string.IsNullOrWhiteSpace(status) ? "idle" : status;
+    }
+
     public static Vector3 EstimateRecoilImpulse(Vector3 shotDirectionWorld, float projectileMass, float projectileSpeed)
     {
         Vector3 direction = shotDirectionWorld.sqrMagnitude > RequestEpsilon
