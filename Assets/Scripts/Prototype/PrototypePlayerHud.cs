@@ -1426,16 +1426,21 @@ public static class PrototypePlayerHudSnapshotBuilder
         PrototypeWeaponTarget target = weaponComputer.ActiveTarget;
         PrototypeTurretFireStatus fireStatus = weaponComputer.LastTurretStatus;
         bool hasTarget = target != null && target.IsValid;
+        int availableTargetCount = weaponComputer.AvailableTargets != null ? weaponComputer.AvailableTargets.Count : 0;
         float healthPercent = hasTarget ? target.CurrentHealth / Mathf.Max(1f, target.MaxHealth) : 0f;
         string health = hasTarget ? target.CurrentHealth.ToString("0") + "/" + target.MaxHealth.ToString("0") : "--";
         string autoFire = BuildAutoFireLabel(weaponComputer.AutoFireEnabled, hasTarget, fireStatus);
-        string fireLabel = TranslateFireStatus(fireStatus);
+        string fireLabel = hasTarget ? TranslateFireStatus(fireStatus) : "No target";
         PrototypePlayerHudSeverity severity = fireStatus.canFire
             ? PrototypePlayerHudSeverity.Info
-            : FireBlockSeverity(fireStatus.blockReason);
+            : !hasTarget && weaponComputer.AutoFireEnabled
+                ? PrototypePlayerHudSeverity.Warning
+                : !hasTarget
+                    ? PrototypePlayerHudSeverity.Disabled
+                    : FireBlockSeverity(fireStatus.blockReason);
 
         return new PrototypePlayerCombatSnapshot(
-            hasTarget || weaponComputer.AutoFireEnabled,
+            hasTarget || weaponComputer.AutoFireEnabled || availableTargetCount > 0,
             hasTarget ? target.Label : "No target",
             healthPercent,
             health,
@@ -2047,6 +2052,14 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private Button navPreviewButton;
     private Text navAutopilotButtonText;
     private Text navPreviewButtonText;
+    private RectTransform combatControlRow;
+    private Button combatPreviousButton;
+    private Button combatNextButton;
+    private Button combatClearButton;
+    private Button combatAutoFireButton;
+    private Button combatPriorityButton;
+    private Text combatAutoFireButtonText;
+    private Text combatPriorityButtonText;
     private RectTransform contextGaugePanelRect;
     private readonly List<Image> contextGaugeFills = new List<Image>();
     private readonly List<Text> contextGaugeLabels = new List<Text>();
@@ -2310,6 +2323,14 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         navPreviewButton = FindHudComponent<Button>("NavPreview");
         navAutopilotButtonText = FindHudComponent<Text>("NavAutopilotText");
         navPreviewButtonText = FindHudComponent<Text>("NavPreviewText");
+        combatControlRow = FindHudComponent<RectTransform>("CombatControls");
+        combatPreviousButton = FindHudComponent<Button>("CombatPreviousTarget");
+        combatNextButton = FindHudComponent<Button>("CombatNextTarget");
+        combatClearButton = FindHudComponent<Button>("CombatClearTarget");
+        combatAutoFireButton = FindHudComponent<Button>("CombatAutoFire");
+        combatPriorityButton = FindHudComponent<Button>("CombatPriority");
+        combatAutoFireButtonText = FindHudComponent<Text>("CombatAutoFireText");
+        combatPriorityButtonText = FindHudComponent<Text>("CombatPriorityText");
         contextGaugePanelRect = FindHudComponent<RectTransform>("ContextGauges");
         radarText = FindHudComponent<Text>("RadarText");
         helpText = FindHudComponent<Text>("HelpText");
@@ -2393,6 +2414,14 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             && navPreviewButton != null
             && navAutopilotButtonText != null
             && navPreviewButtonText != null
+            && combatControlRow != null
+            && combatPreviousButton != null
+            && combatNextButton != null
+            && combatClearButton != null
+            && combatAutoFireButton != null
+            && combatPriorityButton != null
+            && combatAutoFireButtonText != null
+            && combatPriorityButtonText != null
             && contextGaugePanelRect != null
             && radarText != null
             && helpText != null
@@ -2477,6 +2506,14 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         navPreviewButton = null;
         navAutopilotButtonText = null;
         navPreviewButtonText = null;
+        combatControlRow = null;
+        combatPreviousButton = null;
+        combatNextButton = null;
+        combatClearButton = null;
+        combatAutoFireButton = null;
+        combatPriorityButton = null;
+        combatAutoFireButtonText = null;
+        combatPriorityButtonText = null;
         contextGaugePanelRect = null;
         contextGaugeFills.Clear();
         contextGaugeLabels.Clear();
@@ -2557,6 +2594,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         contextBodyText = CreateText("ContextBody", panel, 12, TextAnchor.UpperLeft, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-22f, -112f), new Vector2(0f, 6f)));
         CreateContextGaugePanel(panel);
         CreateNavigationControls(panel);
+        CreateCombatControls(panel);
     }
 
     private void CreateNavigationControls(Transform parent)
@@ -2570,6 +2608,29 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         navAutopilotButtonText = navAutopilotButton.GetComponentInChildren<Text>(true);
         navPreviewButtonText = navPreviewButton.GetComponentInChildren<Text>(true);
         navigationControlRow.gameObject.SetActive(false);
+    }
+
+    private void CreateCombatControls(Transform parent)
+    {
+        combatControlRow = CreateRect("CombatControls", parent, new RectPreset(new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-22f, 24f), new Vector2(0f, 72f)));
+        combatPreviousButton = CreateButton("CombatPreviousTarget", combatControlRow, "Prev", new RectPreset(new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(36f, 22f), new Vector2(0f, 0f)));
+        combatNextButton = CreateButton("CombatNextTarget", combatControlRow, "Next", new RectPreset(new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(36f, 22f), new Vector2(40f, 0f)));
+        combatClearButton = CreateButton("CombatClearTarget", combatControlRow, "Clear", new RectPreset(new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(44f, 22f), new Vector2(80f, 0f)));
+        combatAutoFireButton = CreateButton("CombatAutoFire", combatControlRow, "Auto", new RectPreset(new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(72f, 22f), new Vector2(128f, 0f)));
+        combatPriorityButton = CreateButton("CombatPriority", combatControlRow, "Prio", new RectPreset(new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(80f, 22f), new Vector2(0f, 0f)));
+        combatAutoFireButtonText = combatAutoFireButton.GetComponentInChildren<Text>(true);
+        combatPriorityButtonText = combatPriorityButton.GetComponentInChildren<Text>(true);
+        if (combatAutoFireButtonText != null)
+        {
+            combatAutoFireButtonText.fontSize = 9;
+        }
+
+        if (combatPriorityButtonText != null)
+        {
+            combatPriorityButtonText.fontSize = 9;
+        }
+
+        combatControlRow.gameObject.SetActive(false);
     }
 
     private void CreateContextGaugePanel(Transform parent)
@@ -2839,6 +2900,107 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         }
     }
 
+    private void ConfigureCombatControls(bool visible)
+    {
+        if (combatControlRow == null)
+        {
+            return;
+        }
+
+        combatControlRow.gameObject.SetActive(visible);
+        if (!visible)
+        {
+            RemoveCombatButtonListeners();
+            return;
+        }
+
+        bool hasComputer = weaponComputer != null;
+        int targetCount = hasComputer ? weaponComputer.AvailableTargets.Count : 0;
+        bool hasSelection = hasComputer && weaponComputer.SelectedTargetCount > 0;
+
+        SetNavigationButtonState(combatPreviousButton, hasComputer && targetCount > 0, () =>
+        {
+            weaponComputer.SelectPreviousTarget();
+            RefreshNow();
+        });
+        SetNavigationButtonState(combatNextButton, hasComputer && targetCount > 0, () =>
+        {
+            weaponComputer.SelectNextTarget();
+            RefreshNow();
+        });
+        SetNavigationButtonState(combatClearButton, hasSelection, () =>
+        {
+            weaponComputer.ClearSelection();
+            RefreshNow();
+        });
+
+        if (combatAutoFireButtonText != null)
+        {
+            combatAutoFireButtonText.text = !hasComputer ? "Auto n/a" : weaponComputer.AutoFireEnabled ? "Auto On" : "Auto Off";
+        }
+
+        SetNavigationButtonState(combatAutoFireButton, hasComputer, () =>
+        {
+            weaponComputer.SetAutoFireEnabled(!weaponComputer.AutoFireEnabled);
+            weaponComputer.UpdateActiveTargetAndStatus();
+            RefreshNow();
+        });
+
+        if (combatPriorityButtonText != null)
+        {
+            combatPriorityButtonText.text = !hasComputer ? "Prio n/a" : "Prio " + CompactPriorityLabel(weaponComputer.PriorityMode);
+        }
+
+        SetNavigationButtonState(combatPriorityButton, hasComputer, () =>
+        {
+            weaponComputer.CyclePriorityMode();
+            RefreshNow();
+        });
+    }
+
+    private void RemoveCombatButtonListeners()
+    {
+        if (combatPreviousButton != null)
+        {
+            combatPreviousButton.onClick.RemoveAllListeners();
+        }
+
+        if (combatNextButton != null)
+        {
+            combatNextButton.onClick.RemoveAllListeners();
+        }
+
+        if (combatClearButton != null)
+        {
+            combatClearButton.onClick.RemoveAllListeners();
+        }
+
+        if (combatAutoFireButton != null)
+        {
+            combatAutoFireButton.onClick.RemoveAllListeners();
+        }
+
+        if (combatPriorityButton != null)
+        {
+            combatPriorityButton.onClick.RemoveAllListeners();
+        }
+    }
+
+    private static string CompactPriorityLabel(PrototypeWeaponTargetPriorityMode mode)
+    {
+        switch (mode)
+        {
+            case PrototypeWeaponTargetPriorityMode.Nearest:
+                return "Near";
+            case PrototypeWeaponTargetPriorityMode.HighestHealth:
+                return "High HP";
+            case PrototypeWeaponTargetPriorityMode.LowestHealth:
+                return "Low HP";
+            default:
+                return "Manual";
+        }
+    }
+
     private static void SetNavigationButtonState(Button button, bool interactable, UnityEngine.Events.UnityAction action)
     {
         if (button == null)
@@ -2970,7 +3132,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         ApplyRect(objectivePanelRect, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(objectiveWidth, objectiveHeight), new Vector2(margin, -(margin + 56f)));
         ApplyRect(contextPanelRect, new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(contextWidth, contextHeight), new Vector2(-margin, sideBottom));
         ApplyRect(radarPanelRect, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(radarSize, radarSize), new Vector2(-margin, -margin));
-        ApplyContextBodyLayout(navigationControlRow != null && navigationControlRow.gameObject.activeSelf);
+        ApplyContextBodyLayout((navigationControlRow != null && navigationControlRow.gameObject.activeSelf) || (combatControlRow != null && combatControlRow.gameObject.activeSelf));
     }
 
     private float ApplyCanvasScalePolicy(int screenWidth, int screenHeight)
@@ -3101,6 +3263,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private void ApplyContext(PrototypePlayerHudSnapshot snapshot)
     {
         ConfigureNavigationControls(false);
+        ConfigureCombatControls(false);
         ApplyContextBodyLayout(false);
 
         if (ApplyCriticalContext(snapshot))
@@ -3110,6 +3273,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
         if (snapshot.Combat.Visible)
         {
+            ApplyContextBodyLayout(true);
+            ConfigureCombatControls(true);
             contextTitleText.text = "Combat: " + snapshot.Combat.TargetName;
             contextBodyText.text =
                 "Health " + snapshot.Combat.HealthLabel + " | Range " + FormatDistance(snapshot.Combat.RangeMeters) + "\n"
@@ -3196,12 +3361,14 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
             ApplyRect(contextGaugePanelRect, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-22f, gaugeHeight), new Vector2(0f, gaugeBottom));
             ApplyRect(navigationControlRow, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-22f, 24f), new Vector2(0f, rowBottom));
+            ApplyRect(combatControlRow, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-22f, 24f), new Vector2(0f, rowBottom));
             ApplyRect(contextBodyText.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-22f, bodyHeight), new Vector2(0f, bodyBottom));
             return;
         }
 
         ApplyRect(contextGaugePanelRect, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-22f, 58f), new Vector2(0f, 12f));
         ApplyRect(navigationControlRow, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-22f, 24f), new Vector2(0f, 72f));
+        ApplyRect(combatControlRow, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-22f, 24f), new Vector2(0f, 72f));
         ApplyRect(contextBodyText.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-22f, -112f), new Vector2(0f, 6f));
     }
 

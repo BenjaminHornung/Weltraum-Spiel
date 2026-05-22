@@ -34,6 +34,7 @@ public class PrototypeWeaponComputer : MonoBehaviour
     public PrototypeWeaponTargetPriorityMode PriorityMode => priorityMode;
     public bool AutoFireEnabled => autoFireEnabled;
     public PrototypeTurretWeapon TurretWeapon => turretWeapon;
+    public int SelectedTargetCount => selectedTargetIds.Count;
 
     private void Awake()
     {
@@ -88,6 +89,27 @@ public class PrototypeWeaponComputer : MonoBehaviour
         UpdateActiveTargetAndStatus();
     }
 
+    public PrototypeWeaponTargetPriorityMode CyclePriorityMode()
+    {
+        switch (priorityMode)
+        {
+            case PrototypeWeaponTargetPriorityMode.Nearest:
+                SetPriorityMode(PrototypeWeaponTargetPriorityMode.HighestHealth);
+                break;
+            case PrototypeWeaponTargetPriorityMode.HighestHealth:
+                SetPriorityMode(PrototypeWeaponTargetPriorityMode.LowestHealth);
+                break;
+            case PrototypeWeaponTargetPriorityMode.LowestHealth:
+                SetPriorityMode(PrototypeWeaponTargetPriorityMode.ManualOrder);
+                break;
+            default:
+                SetPriorityMode(PrototypeWeaponTargetPriorityMode.Nearest);
+                break;
+        }
+
+        return priorityMode;
+    }
+
     public bool IsSelected(PrototypeWeaponTarget target)
     {
         return target != null && selectedTargetIds.Contains(target.StableId);
@@ -117,6 +139,16 @@ public class PrototypeWeaponComputer : MonoBehaviour
     {
         selectedTargetIds.Clear();
         UpdateActiveTargetAndStatus();
+    }
+
+    public bool SelectNextTarget()
+    {
+        return SelectRelativeTarget(1);
+    }
+
+    public bool SelectPreviousTarget()
+    {
+        return SelectRelativeTarget(-1);
     }
 
     public void RefreshTargets()
@@ -202,6 +234,59 @@ public class PrototypeWeaponComputer : MonoBehaviour
                 selectedTargetIds.RemoveAt(i);
             }
         }
+    }
+
+    private bool SelectRelativeTarget(int direction)
+    {
+        RefreshTargets();
+        if (availableTargets.Count == 0)
+        {
+            ClearSelection();
+            return false;
+        }
+
+        int currentIndex = IndexOfActiveOrSelectedTarget();
+        int offset = direction >= 0 ? 1 : -1;
+        int nextIndex = currentIndex < 0
+            ? (offset > 0 ? 0 : availableTargets.Count - 1)
+            : (currentIndex + offset + availableTargets.Count) % availableTargets.Count;
+
+        PrototypeWeaponTarget next = availableTargets[nextIndex];
+        if (next == null || !next.IsValid)
+        {
+            ClearSelection();
+            return false;
+        }
+
+        selectedTargetIds.Clear();
+        selectedTargetIds.Add(next.StableId);
+        UpdateActiveTargetAndStatus();
+        return ActiveTarget != null;
+    }
+
+    private int IndexOfActiveOrSelectedTarget()
+    {
+        int activeId = ActiveTarget != null ? ActiveTarget.StableId : 0;
+        if (activeId == 0 && selectedTargetIds.Count > 0)
+        {
+            activeId = selectedTargetIds[0];
+        }
+
+        if (activeId == 0)
+        {
+            return -1;
+        }
+
+        for (int i = 0; i < availableTargets.Count; i++)
+        {
+            PrototypeWeaponTarget target = availableTargets[i];
+            if (target != null && target.StableId == activeId)
+            {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
     private PrototypeWeaponTarget SelectActiveTarget()

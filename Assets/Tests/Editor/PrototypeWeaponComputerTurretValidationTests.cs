@@ -26,6 +26,8 @@ public class PrototypeWeaponComputerTurretValidationTests
         DestroyNamed("WeaponComputerTestShip");
         DestroyNamed("WeaponComputerTargetNear");
         DestroyNamed("WeaponComputerTargetFar");
+        DestroyNamed("WeaponComputerPlayerTargetA");
+        DestroyNamed("WeaponComputerPlayerTargetB");
         DestroyNamed("WeaponComputerTargetHighHealth");
         DestroyNamed("WeaponComputerTargetLowHealth");
         DestroyNamed("WeaponComputerDummyTarget");
@@ -148,6 +150,41 @@ public class PrototypeWeaponComputerTurretValidationTests
 
             fixture.Computer.SetPriorityMode(PrototypeWeaponTargetPriorityMode.LowestHealth);
             Assert.AreSame(lowHealth.transform, fixture.Computer.ActiveTargetTransform);
+        }
+    }
+
+    [Test]
+    public void WeaponComputerPlayerHelpersCycleTargetsAndPriority()
+    {
+        using (WeaponComputerFixture fixture = new WeaponComputerFixture())
+        {
+            CreateRigidbodyTarget("WeaponComputerPlayerTargetA", new Vector3(0f, 0f, 12f));
+            CreateRigidbodyTarget("WeaponComputerPlayerTargetB", new Vector3(0f, 0f, 24f));
+            fixture.Computer.RefreshTargets();
+
+            Assert.That(fixture.Computer.AvailableTargets.Count, Is.GreaterThanOrEqualTo(2));
+            Assert.That(fixture.Computer.SelectedTargetCount, Is.EqualTo(0));
+
+            Assert.True(fixture.Computer.SelectNextTarget());
+            Transform first = fixture.Computer.AvailableTargets[0].TargetTransform;
+            Transform second = fixture.Computer.AvailableTargets[1].TargetTransform;
+            Assert.AreSame(first, fixture.Computer.ActiveTargetTransform);
+            Assert.That(fixture.Computer.SelectedTargetCount, Is.EqualTo(1));
+
+            Assert.True(fixture.Computer.SelectNextTarget());
+            Assert.AreSame(second, fixture.Computer.ActiveTargetTransform);
+
+            Assert.True(fixture.Computer.SelectPreviousTarget());
+            Assert.AreSame(first, fixture.Computer.ActiveTargetTransform);
+
+            Assert.That(fixture.Computer.CyclePriorityMode(), Is.EqualTo(PrototypeWeaponTargetPriorityMode.Nearest));
+            Assert.That(fixture.Computer.CyclePriorityMode(), Is.EqualTo(PrototypeWeaponTargetPriorityMode.HighestHealth));
+            Assert.That(fixture.Computer.CyclePriorityMode(), Is.EqualTo(PrototypeWeaponTargetPriorityMode.LowestHealth));
+            Assert.That(fixture.Computer.CyclePriorityMode(), Is.EqualTo(PrototypeWeaponTargetPriorityMode.ManualOrder));
+
+            fixture.Computer.ClearSelection();
+            Assert.That(fixture.Computer.SelectedTargetCount, Is.EqualTo(0));
+            Assert.Null(fixture.Computer.ActiveTargetTransform);
         }
     }
 

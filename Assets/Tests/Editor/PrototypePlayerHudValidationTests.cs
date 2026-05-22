@@ -691,6 +691,91 @@ public class PrototypePlayerHudValidationTests
     }
 
     [Test]
+    public void ResponsiveLayoutKeepsCombatComputerControlsSeparated()
+    {
+        GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+        cameraObject.AddComponent<Camera>();
+        PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+        playerHud.RefreshNow();
+        ApplySnapshotForTest(playerHud, CreateHudSnapshot(CreateCombatSnapshot(true), CreateDockingSnapshot(false), CreateNavigationSnapshot(false), default));
+
+        AssertCombatControlsSeparated(playerHud, 2560, 1080);
+        AssertCombatControlsSeparated(playerHud, 1920, 1080);
+        AssertCombatControlsSeparated(playerHud, 1280, 720);
+        AssertCombatControlsSeparated(playerHud, 1024, 768);
+        AssertCombatControlsSeparated(playerHud, 900, 1600);
+        AssertCombatControlsSeparated(playerHud, 640, 480);
+    }
+
+    [Test]
+    public void CombatComputerControlsReuseWeaponComputerApis()
+    {
+        using (var builder = new PrototypeScenarioBuilder())
+        {
+            PrototypeCombatRig combatRig = builder.CreateCombatRig("PlayerHudCombatControlsShip");
+            builder.CreateWeaponTarget("PlayerHudCombatControlsTargetA", combatRig.Muzzle.position + Vector3.forward * 40f);
+            builder.CreateWeaponTarget("PlayerHudCombatControlsTargetB", combatRig.Muzzle.position + Vector3.forward * 70f);
+            combatRig.Computer.RefreshTargets();
+
+            GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+            cameraObject.AddComponent<Camera>();
+            PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+            playerHud.Bind(combatRig.Ship.Ship.transform, combatRig.Ship.Stats, combatRig.Ship.Body);
+            playerHud.RefreshNow();
+
+            RectTransform controls = FindRect(playerHud, "CombatControls");
+            Assert.True(controls.gameObject.activeInHierarchy);
+            Assert.That(FindText(playerHud, "ContextTitle").text, Is.EqualTo("Combat: No target"));
+            Assert.That(FindText(playerHud, "CombatAutoFireText").text, Is.EqualTo("Auto Off"));
+            Assert.That(FindText(playerHud, "CombatPriorityText").text, Is.EqualTo("Prio Manual"));
+
+            Button next = FindButton(playerHud, "CombatNextTarget");
+            Button previous = FindButton(playerHud, "CombatPreviousTarget");
+            Button clear = FindButton(playerHud, "CombatClearTarget");
+            Button autoFire = FindButton(playerHud, "CombatAutoFire");
+            Button priority = FindButton(playerHud, "CombatPriority");
+
+            Assert.True(next.interactable);
+            Assert.True(previous.interactable);
+            Assert.False(clear.interactable);
+            Assert.True(autoFire.interactable);
+            Assert.True(priority.interactable);
+
+            next.onClick.Invoke();
+            Assert.NotNull(combatRig.Computer.ActiveTarget);
+            Assert.That(FindText(playerHud, "ContextTitle").text, Does.StartWith("Combat: PlayerHudCombatControlsTarget"));
+            Assert.True(FindButton(playerHud, "CombatClearTarget").interactable);
+
+            autoFire.onClick.Invoke();
+            Assert.True(combatRig.Computer.AutoFireEnabled);
+            Assert.That(FindText(playerHud, "CombatAutoFireText").text, Is.EqualTo("Auto On"));
+            Assert.That(FindText(playerHud, "ContextBody").text, Does.Contain("Auto Fire:"));
+
+            priority.onClick.Invoke();
+            Assert.That(combatRig.Computer.PriorityMode, Is.EqualTo(PrototypeWeaponTargetPriorityMode.Nearest));
+            Assert.That(FindText(playerHud, "CombatPriorityText").text, Is.EqualTo("Prio Near"));
+
+            clear.onClick.Invoke();
+            Assert.Null(combatRig.Computer.ActiveTarget);
+            Assert.That(combatRig.Computer.SelectedTargetCount, Is.EqualTo(0));
+            Assert.That(FindText(playerHud, "ContextTitle").text, Is.EqualTo("Combat: No target"));
+        }
+    }
+
+    [Test]
+    public void CombatComputerControlsHideOutsideCombatContext()
+    {
+        GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+        cameraObject.AddComponent<Camera>();
+        PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+        playerHud.RefreshNow();
+
+        ApplySnapshotForTest(playerHud, CreateHudSnapshot(CreateCombatSnapshot(false), CreateDockingSnapshot(false), CreateNavigationSnapshot(true), default));
+
+        Assert.False(FindRect(playerHud, "CombatControls").gameObject.activeInHierarchy);
+    }
+
+    [Test]
     public void RefreshRebindsGeneratedCanvasWithoutCreatingDuplicateHudWindows()
     {
         GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
@@ -1240,6 +1325,39 @@ public class PrototypePlayerHudValidationTests
             for (int j = i + 1; j < buttons.Length; j++)
             {
                 Assert.False(Overlaps(buttons[i], buttons[j]), width + "x" + height + " nav button overlap " + i + "/" + j);
+            }
+        }
+    }
+
+    private static void AssertCombatControlsSeparated(PrototypePlayerHudRenderer playerHud, int width, int height)
+    {
+        playerHud.ApplyResponsiveLayoutForTests(width, height);
+        Canvas.ForceUpdateCanvases();
+
+        RectTransform row = FindRect(playerHud, "CombatControls");
+        RectTransform body = FindRect(playerHud, "ContextBody");
+        RectTransform gauges = FindRect(playerHud, "ContextGauges");
+        RectTransform[] buttons =
+        {
+            FindRect(playerHud, "CombatPreviousTarget"),
+            FindRect(playerHud, "CombatNextTarget"),
+            FindRect(playerHud, "CombatClearTarget"),
+            FindRect(playerHud, "CombatAutoFire"),
+            FindRect(playerHud, "CombatPriority")
+        };
+
+        Assert.True(row.gameObject.activeInHierarchy, width + "x" + height + " combat controls hidden");
+        Assert.False(Overlaps(row, body), width + "x" + height + " combat controls/body");
+        Assert.False(Overlaps(row, gauges), width + "x" + height + " combat controls/gauges");
+
+        Rect rowRect = WorldRect(row);
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            Rect buttonRect = WorldRect(buttons[i]);
+            Assert.True(Contains(rowRect, buttonRect), width + "x" + height + " combat button outside row " + buttons[i].gameObject.name);
+            for (int j = i + 1; j < buttons.Length; j++)
+            {
+                Assert.False(Overlaps(buttons[i], buttons[j]), width + "x" + height + " combat button overlap " + i + "/" + j);
             }
         }
     }
