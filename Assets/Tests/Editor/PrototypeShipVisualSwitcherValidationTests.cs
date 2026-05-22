@@ -50,9 +50,12 @@ public class PrototypeShipVisualSwitcherValidationTests
     }
 
     [Test]
-    public void RuntimeBootstrapBaselineResetReturnsToGeneratedPrimitives()
+    public void RuntimeBootstrapBaselineResetKeepsImportedFunctionalDefault()
     {
         GameObject ship = BuildBaselineShip();
+        PrototypeBootstrap bootstrap = Object.FindAnyObjectByType<PrototypeBootstrap>();
+        Assert.NotNull(bootstrap);
+        bootstrap.SetBuildMode(PrototypeShipBuildMode.ImportedDemoScoutFunctionalDefault, false);
         var switcher = CreateSwitcher();
 
         switcher.SelectVisualMode(PrototypeShipVisualMode.ImportedDemoScout);
@@ -64,14 +67,12 @@ public class PrototypeShipVisualSwitcherValidationTests
         Assert.NotNull(resetMethod);
         resetMethod.Invoke(switcher, null);
 
-        Assert.That(switcher.SelectedVisualMode, Is.EqualTo(PrototypeShipVisualMode.GeneratedPrimitives));
+        Assert.That(switcher.SelectedVisualMode, Is.EqualTo(PrototypeShipVisualMode.ImportedDemoScout));
         Transform importedRoot = ship.transform.Find("ImportedShipVisual");
-        Assert.NotNull(importedRoot, "Runtime reset keeps pooled imported visuals inactive instead of destroying them.");
-        Assert.False(importedRoot.gameObject.activeSelf);
+        Assert.NotNull(importedRoot, "Runtime reset keeps imported visuals active for the default functional ship.");
+        Assert.True(importedRoot.gameObject.activeSelf);
         Assert.False(ship.transform.Find("Hull").GetComponent<Renderer>().enabled);
-        Transform hullKitRoot = ship.transform.Find("Hull").Find(PrototypeShipPartVisualFactory.VisualRootName);
-        Assert.NotNull(hullKitRoot);
-        Assert.True(AllRenderersEnabled(hullKitRoot));
+        Assert.That(bootstrap.BuildMode, Is.EqualTo(PrototypeShipBuildMode.ImportedDemoScoutFunctionalDefault));
     }
 
     [Test]

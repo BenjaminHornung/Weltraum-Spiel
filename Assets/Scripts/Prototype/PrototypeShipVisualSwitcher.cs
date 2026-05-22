@@ -108,7 +108,7 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
 
     private void ResetForRuntimeBaseline()
     {
-        visualMode = PrototypeShipVisualMode.GeneratedPrimitives;
+        visualMode = ResolveBootstrapVisualMode(PrototypeShipVisualMode.ImportedDemoScout);
         appliedMode = (PrototypeShipVisualMode)(-1);
         cachedShip = null;
         ApplyNow();
@@ -145,6 +145,7 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
             return;
         }
 
+        MirrorBootstrapBuildMode();
         bool hasImportedVisual = ship.Find(ImportedVisualRootName) != null;
         bool needsImportedVisual = visualMode != PrototypeShipVisualMode.GeneratedPrimitives;
         if (appliedMode != visualMode || (needsImportedVisual && !hasImportedVisual))
@@ -219,6 +220,31 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
         return binder.BindNow();
     }
 
+    private void MirrorBootstrapBuildMode()
+    {
+        PrototypeBootstrap bootstrap = ResolveBootstrap();
+        if (bootstrap != null)
+        {
+            visualMode = ToVisualMode(bootstrap.BuildMode);
+        }
+    }
+
+    private PrototypeShipVisualMode ResolveBootstrapVisualMode(PrototypeShipVisualMode fallback)
+    {
+        PrototypeBootstrap bootstrap = ResolveBootstrap();
+        return bootstrap != null ? ToVisualMode(bootstrap.BuildMode) : fallback;
+    }
+
+    private PrototypeBootstrap ResolveBootstrap()
+    {
+        if (cachedBootstrap == null)
+        {
+            cachedBootstrap = Object.FindAnyObjectByType<PrototypeBootstrap>();
+        }
+
+        return cachedBootstrap;
+    }
+
     private GameObject CacheFunctionalImportedVisual(PrototypeFunctionalShipBinder.BindReport report)
     {
         if (report == null)
@@ -252,6 +278,20 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
                 return PrototypeShipBuildMode.ImportedDemoScoutFunctionalDefault;
             default:
                 return PrototypeShipBuildMode.GeneratedPrimitiveFallback;
+        }
+    }
+
+    private static PrototypeShipVisualMode ToVisualMode(PrototypeShipBuildMode mode)
+    {
+        switch (mode)
+        {
+            case PrototypeShipBuildMode.GeneratedPrimitiveFallback:
+                return PrototypeShipVisualMode.GeneratedPrimitives;
+            case PrototypeShipBuildMode.ImportedDemoCargoFunctional:
+                return PrototypeShipVisualMode.ImportedDemoCargo;
+            case PrototypeShipBuildMode.ImportedDemoScoutFunctionalDefault:
+            default:
+                return PrototypeShipVisualMode.ImportedDemoScout;
         }
     }
 
