@@ -39,7 +39,7 @@ Goal: Default runtime uses the Blender Demo Scout as the functional `PrototypeSh
 
 ## Unity EditMode Tests
 
-Focused run:
+Original focused run:
 
 - `PrototypeFunctionalShipSocketValidationTests`
 - `PrototypeWeaponComputerTurretValidationTests`
@@ -61,9 +61,29 @@ Coverage highlights:
 - Visible barrel/yaw meshes are under the imported yaw/pitch pivots.
 - Turret aim status no longer hard-snaps during status evaluation; `TickAimAtTarget` slews before firing.
 
+Hotfix regression run:
+
+- `PrototypeFunctionalShipSocketValidationTests`
+- `PrototypeShipVisualSwitcherValidationTests`
+
+Result:
+
+- Unity MCP job: `e12637df55a74c3193b5d80f6017a582`
+- PASS: 20 / 20
+- Duration: 0.9924421 seconds
+
+Hotfix coverage highlights:
+
+- `ResetForRuntimeBaseline` mirrors imported bootstrap default instead of forcing `GeneratedPrimitives`.
+- VisualSwitcher does not switch the default runtime to `GeneratedPrimitiveFallback` unless generated mode is explicitly selected.
+- Imported visual remains active for the default path.
+- Functional sockets bind through unscaled `FunctionalSocketRig` proxies.
+- Main nozzle proxy scale is safe and `THRUST_NOZZLE_MAIN*.forward` aligns with `PrototypeShip.forward`.
+- No root `Muzzle` or root `EngineNozzle` exists in imported default.
+
 ## Unity PlayMode / Runtime Simulation
 
-Focused run:
+Original focused run:
 
 - `PrototypeFunctionalBlenderRuntimePlayModeTests`
 
@@ -81,6 +101,27 @@ Coverage highlights:
 - RCS pulse activates at least one imported RCS VFX child near an imported `RCS_NOZZLE_*`.
 - Turret target fire slews and fires from imported `WEAPON_MUZZLE_PRIMARY`.
 
+Hotfix regression run:
+
+- `PrototypeFunctionalBlenderRuntimePlayModeTests.BootstrapPlayModeKeepsImportedScoutVisibleAndPlayableForTenSeconds`
+
+Result:
+
+- Unity MCP job: `5b23f80f26b74e4ea34ee03628a73b4b`
+- PASS: 1 / 1
+- Duration: 0.1813091 seconds
+
+Hotfix coverage highlights:
+
+- Host-like bootstrap flow keeps `BuildMode=ImportedDemoScoutFunctionalDefault`.
+- VisualSwitcher stays `ImportedDemoScout` after repeated runtime frames.
+- `ImportedShipVisual` remains active.
+- PlayerShipController `FullMainThrottle` / `FixedUpdate` path increases Rigidbody velocity along `PrototypeShip.forward`.
+- 10 seconds of scripted PlayMode physics keeps position finite, max frame jump below 25 m, and angular velocity below 5 rad/s.
+- Main thruster VFX plays at imported/proxy `THRUST_NOZZLE_MAIN*`.
+- RCS pulse through `PlayerShipController.PulseRcsTranslation` activates imported RCS VFX.
+- Weapon Computer target selection and AutoFire rotate yaw/pitch and fire from `WEAPON_MUZZLE_PRIMARY`.
+
 Additional Unity MCP probe:
 
 - `execute_code` functional binder runtime probe: PASS
@@ -90,12 +131,31 @@ Additional Unity MCP probe:
 
 - Loaded `Assets/Scenes/PrototypeBootstrapHost.unity`.
 - Saved the scene after setting the scene `PrototypeBootstrap.buildOnStart` to true, so pressing Play from that scene now runs the bootstrap path.
-- Captured Scene View screenshot:
+- Scene serialized `allowGeneratedFallbackWhenImportedAssetMissing: 0`, so generated fallback is not automatic default.
+- Pressed Play through Unity MCP and verified:
+  - `buildMode=ImportedDemoScoutFunctionalDefault`
+  - `visualMode=ImportedDemoScout`
+  - `importedActive=True`
+  - no root fallback `Muzzle`
+  - no root fallback `EngineNozzle`
+  - main nozzle dot to ship forward `1.000`
+  - main nozzle lossy scale `(1.00, 1.00, 1.00)`
+  - PlayerShipController throttle speed delta `119.458`
+  - max frame jump `2.389`
+  - max angular velocity `0.000`
+  - RCS active nozzles `4`
+  - RCS angular velocity `0.027`
+  - turret yaw delta `17.988`
+  - turret pitch delta `8.007`
+  - turret fired from `WEAPON_MUZZLE_PRIMARY`
+- Captured screenshots:
   - `tests/screenshots/unity-scene-view-prototype-bootstrap-host.png`
-
-Note: A broad EditMode test run was accidentally started after the focused test runs. It became stale in Unity MCP and reported pre-existing unrelated Autopilot failures while blocked on a momentum-assist test. Focused EditMode/PlayMode evidence above was collected before that broad run, and a direct MCP runtime probe was used afterward because the stale Test Runner job prevented starting another focused run.
+  - `tests/screenshots/unity-game-view-imported-default-hotfix.png`
+  - `tests/screenshots/unity-scene-view-imported-default-hotfix.png`
+  - `tests/screenshots/unity-game-view-hotfix-after-controls.png`
+- Captured log:
+  - `tests/logs/unity-manual-game-view-hotfix-probe.md`
 
 ## Open Limits
 
-- Manual visual inspection through the Game View was limited by the stale Unity Test Runner state after the accidental broad run.
 - Cargo imported mode still reports missing weapon markers and is not part of the accepted default path for this change.

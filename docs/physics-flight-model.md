@@ -16,6 +16,8 @@ The binder runs `PrototypeShipSocketUtility.EnsureSocketsInHierarchy` on the imp
 
 In the imported default mode, missing required functional sockets do not silently fall back to root-space placeholders. A missing main nozzle disables the normal engine-nozzle fallback, and a missing weapon muzzle prevents firing instead of creating `PrototypeShip/Muzzle`.
 
+Builder-facing hardpoints are normalized through the same socket layer. `PrototypeShipHardpointBinder` binds imported `CONN_*`, `HARDPOINT`, weapon-base, and connector sockets into `PrototypeShipHardpoint` components with stable ids, part/module/group metadata, direction, and runtime/builder flags. Generated primitive fallback ships create a `GeneratedConnectorRig` with unit-scale connector sockets derived from generated module mass descriptors, then run the same binder. Repeated binds update existing records and report duplicates instead of creating parallel hardpoints, and the generated fallback remains available as an explicit debug/build mode.
+
 ## Ship Physics Core
 
 Ship-level force application is routed through `ShipPhysicsCore`. This is a deliberately thin prototype component, not the final simulation architecture. It owns the ship `Rigidbody` reference for migrated systems and records the net applied force and torque for each physics step.
@@ -122,6 +124,8 @@ The debug console can issue deterministic test pulses for RCS translation, attit
 ## Variant Diagnostics And HUD
 
 Built-in prototype ship variants are generated to expose physics behavior under controlled layouts rather than to model a final ship editor. Baseline Balanced is the reference layout; Dual Main Thruster checks symmetric engine force; Off-Center Main Thruster compares COM-safe and fully physical nozzle-force modes; One-Sided RCS and No-RCS intentionally expose allocator residuals and missing-authority states; Heavy Cargo checks mass and inertia scaling.
+
+`PrototypeShipBlueprint` adds the first data-driven generated-ship layer on top of those same variant and layout paths. A blueprint contains reusable module definitions and positioned module instances, validates required cockpit, fuel, main-thruster, RCS, and gun coverage, then converts into `PrototypeShipVariant` and `PrototypeShipLayout` instead of bypassing existing flight components. Scout Blueprint and Hauler Blueprint are built-in samples for deterministic testing: their dry mass, fuel capacity, main thrust, RCS block thrust, weapon tuning, module positions, COM, and inertia come from installed part data. They remain generated fallback/debug ships and do not alter imported Blender functional binding.
 
 The main camera now owns the debug console, compact flight diagnostics, keybind helper, minimap, and `PrototypeFlightHud` after each bootstrap or variant spawn. These remain temporary draggable IMGUI windows so prototype testing can keep the play view clear without a final UI Toolkit migration. `F1`, `F2`, `F3`, `F4`, and `F5` toggle keybinds, diagnostics, debug console, HUD/Navball, and minimap.
 
@@ -300,6 +304,10 @@ Eligibility uses the stricter settings across both ports. Soft capture requires 
 
 Soft capture does not teleport or write Rigidbody velocity. When eligible, it produces a bounded physical `FlightAssistRequest` with source `Docking`, mode `AssistedFlight`, and `debugOnlyNonPhysical = false`. The request is designed to flow through the existing flight-assist/RCS allocator path before concrete forces reach `ShipPhysicsCore`.
 
+`PrototypeDockingApproachAssist` is the runtime bridge from those diagnostics to play. It binds a source port, chooses an explicit or discovered target port outside the ship hierarchy, and exposes the latest target, distance, closing speed, lateral offset, alignment, refusal, and routed-assist state to the player HUD. When soft capture is eligible and enabled, it forwards the existing `DockingSoftCaptureRequest.assistRequest` into `PlayerShipController.SetExternalFlightAssistRequest`; when disabled, ineligible, or missing a target it clears only docking-owned external assist requests. The component does not assign Rigidbody position or velocity.
+
+`PrototypeBootstrap` adds a small component-backed docking approach target only when no other target port is available. The target is kinematic, faces the player source port, and is bound through component references/candidate lists rather than an existing demo hierarchy path.
+
 Hard lock is intentionally a documented placeholder in this slice. `BuildHardLockPrototype` only requests a lock when `DockingEligibility.canHardLock` is true, reports `hard-lock-placeholder`, and does not create a joint. If the experimental joint toggle is enabled before a joint implementation exists, diagnostics report `hard-lock-joint-not-yet-implemented` rather than silently adding an unstable constraint.
 
 ## Power And Heat
@@ -369,6 +377,12 @@ Excluded forces and effects for this slice:
 - Orbit-map UI, maneuver-node editing, patched conics, sphere-of-influence transitions, and full N-body prediction.
 
 `TrajectoryBurnPlan` records burn direction, duration, throttle, requested fuel, available estimated fuel, applied fuel fraction, and approximate delta-v from `thrust * throttle * fuelFraction * duration / mass`. Navigation Computer v2 uses those estimates inside candidate scoring and segment diagnostics; it is still a local prototype planner, not a full maneuver-node or orbital transfer planner.
+
+`PrototypeTrajectoryPreviewNavMap` promotes the first slice from debug-only gizmos into a bounded player-facing nav-map source. It prefers the existing `PrototypeWaypointAutopilot.PredictedRoute` when that route is available, otherwise it samples `TrajectoryPredictor` with the same `ShipPhysicsCore` central-gravity hook and a small `TrajectoryBurnPlan` estimate. The component clamps the prediction step count, fixed horizon, and rendered point count, then reports `Disabled`, `Unavailable`, `Empty`, `Valid`, or `Truncated` so HUD/minimap tests can distinguish "off" from "no safe data".
+
+The preview is toggleable through the minimap control surface and is bound by `PrototypeBootstrap` to both `PrototypePlayerHudRenderer` and `PrototypeMinimapOverlay`. HUD radar and minimap rendering use the existing route drawing surfaces with a separate preview color, and both paths filter non-finite points before any geometry is drawn.
+
+This v1 layer intentionally does not add full N-body simulation, patched conics, sphere-of-influence transitions, maneuver-node editing, a persistent route planner, or unbounded prediction. It remains local prototype guidance over the current predictor and burn-plan infrastructure.
 
 ## Floating Origin Infrastructure
 

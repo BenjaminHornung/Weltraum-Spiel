@@ -1,0 +1,18 @@
+Unity MCP EditMode targeted run
+
+Test filter:
+PrototypeShipBlueprintBuilderValidationTests
+
+Job id:
+38f7517329af4c28b7ff1f0eec04c0d3
+
+Result:
+Passed
+
+Summary:
+total=5
+passed=5
+failed=0
+skipped=0
+durationSeconds=0.2828257
+freshRerunDurationSeconds=0.3368133

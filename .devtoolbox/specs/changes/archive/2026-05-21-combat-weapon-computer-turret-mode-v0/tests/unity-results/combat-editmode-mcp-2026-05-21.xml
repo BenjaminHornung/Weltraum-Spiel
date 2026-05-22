@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="29" result="Passed" total="29" passed="29" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-05-21 21:04:17Z" end-time="2026-05-21 21:04:18Z" duration="0.6162292">
+  <test-suite type="TestSuite" id="1000" name="Weltraum Spiel" fullname="Weltraum Spiel" runstate="Runnable" testcasecount="239" result="Passed" start-time="2026-05-21 21:04:17Z" end-time="2026-05-21 21:04:18Z" duration="0.616229" total="29" passed="29" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1270" name="Assembly-CSharp-Editor.dll" fullname="E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="239" result="Passed" start-time="2026-05-21 21:04:17Z" end-time="2026-05-21 21:04:18Z" duration="0.515586" total="29" passed="29" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="38384" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1226" name="PrototypeWeaponComputerTurretValidationTests" fullname="PrototypeWeaponComputerTurretValidationTests" classname="PrototypeWeaponComputerTurretValidationTests" runstate="Runnable" testcasecount="23" result="Passed" start-time="2026-05-21 21:04:17Z" end-time="2026-05-21 21:04:18Z" duration="0.387380" total="23" passed="23" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1248" name="BootstrapCreatesTurretCompatibleWeaponWithRealMarkerMuzzle" fullname="PrototypeWeaponComputerTurretValidationTests.BootstrapCreatesTurretCompatibleWeaponWithRealMarkerMuzzle" methodname="BootstrapCreatesTurretCompatibleWeaponWithRealMarkerMuzzle" classname="PrototypeWeaponComputerTurretValidationTests" runstate="Runnable" seed="1203321022" result="Passed" start-time="2026-05-21 21:04:17Z" end-time="2026-05-21 21:04:17Z" duration="0.193766" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1232" name="FireControlUsesDeterministicHitChanceAndCooldown" fullname="PrototypeWeaponComputerTurretValidationTests.FireControlUsesDeterministicHitChanceAndCooldown" methodname="FireControlUsesDeterministicHitChanceAndCooldown" classname="PrototypeWeaponComputerTurretValidationTests" runstate="Runnable" seed="2018565861" result="Passed" start-time="2026-05-21 21:04:17Z" end-time="2026-05-21 21:04:17Z" duration="0.026112" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1240" name="HighFireRateHitscanKeepsProjectileObjectsAndVisualsBounded" fullname="PrototypeWeaponComputerTurretValidationTests.HighFireRateHitscanKeepsProjectileObjectsAndVisualsBounded" methodname="HighFireRateHitscanKeepsProjectileObjectsAndVisualsBounded" classname="PrototypeWeaponComputerTurretValidationTests" runstate="Runnable" seed="1135645151" result="Passed" start-time="2026-05-21 21:04:17Z" end-time="2026-05-21 21:04:17Z" duration="0.005209" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1244" name="ProjectileDiameterControlsScaleAndSweepRadius" fullname="PrototypeWeaponComputerTurretValidationTests.ProjectileDiameterControlsScaleAndSweepRadius" methodname="ProjectileDiameterControlsScaleAndSweepRadius" classname="PrototypeWeaponComputerTurretValidationTests" runstate="Runnable" seed="1509365349" result="Passed" start-time="2026-05-21 21:04:17Z" end-time="2026-05-21 21:04:17Z" duration="0.003276" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1239" name="ProjectileVisualPoolReusesTracerObjectsAndSharedMaterials" fullname="PrototypeWeaponComputerTurretValidationTests.ProjectileVisualPoolReusesTracerObjectsAndSharedMaterials" methodname="ProjectileVisualPoolReusesTracerObjectsAndSharedMaterials" classname="PrototypeWeaponComputerTurretValidationTests" runstate="Runnable" seed="447231791" result="Passed" start-time="2026-05-21 21:04:17Z" end-time="2026-05-21 21:04:17Z" duration="0.005783" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1235" name="RuntimeSnapshotDataModelsDoNotStoreUnityObjectReferences" fullname="PrototypeWeaponComputerTurretValidationTests.RuntimeSnapshotDataModelsDoNotStoreUnityObjectReferences" methodname="RuntimeSnapshotDataModelsDoNotStoreUnityObjectReferences" classname="PrototypeWeaponComputerTurretValidationTests" runstate="Runnable" seed="128699777" result="Passed" start-time="2026-05-21 21:04:17Z" end-time="2026-05-21 21:04:17Z" duration="0.000798" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1234" name="SimulatedProjectileSnapshotPersistsAcrossSimulationFrames" fullname="PrototypeWeaponComputerTurretValidationTests.SimulatedProjectileSnapshotPersistsAcrossSimulationFrames" methodname="SimulatedProjectileSnapshotPersistsAcrossSimulationFrames" classname="PrototypeWeaponComputerTurretValidationTests" runstate="Runnable" seed="1385195967" result="Passed" start-time="2026-05-21 21:04:17Z" end-time="2026-05-21 21:04:17Z" duration="0.007109" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1233" name="SimulatedProjectileUsesManagerPathWithoutProjectileGameObject" fullname="PrototypeWeaponComputerTurretValidationTests.SimulatedProjectileUsesManagerPathWithoutProjectileGameObject" methodname="SimulatedProjectileUsesManagerPathWithoutProjectileGameObject" classname="PrototypeWeaponComputerTurretValidationTests" runstate="Runnable" seed="478252866" result="Passed" start-time="2026-05-21 21:04:17Z" end-time="2026-05-21 21:04:17Z" duration="0.004132" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1229" name="TurretAimSlewsTowardTargetBeforeFiring" fullname="PrototypeWeaponComputerTurretValidationTests.TurretAimSlewsTowardTargetBeforeFiring" methodname="TurretAimSlewsTowardTargetBeforeFiring" classname="PrototypeWeaponComputerTurretValidationTests" runstate="Runnable" seed="1071291946" result="Passed" start-time="2026-05-21 21:04:17Z" end-time="2026-05-21 21:04:17Z" duration="0.004292" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1228" name="TurretArcAcceptsInsideTargetAndBlocksOutsideTargetWithClampedAngles" fullname="PrototypeWeaponComputerTurretValidationTests.TurretArcAcceptsInsideTargetAndBlocksOutsideTargetWithClampedAngles" methodname="TurretArcAcceptsInsideTargetAndBlocksOutsideTargetWithClampedAngles" classname="PrototypeWeaponComputerTurretValidationTests" runstate="Runnable" seed="894817199" result="Passed" start-time="2026-05-21 21:04:17Z" end-time="2026-05-21 21:04:17Z" duration="0.000818" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1245" name="TurretRecoilRegistersImpulseThroughShipPhysicsCore" fullname="PrototypeWeaponComputerTurretValidationTests.TurretRecoilRegistersImpulseThroughShipPhysicsCore" methodname="TurretRecoilRegistersImpulseThroughShipPhysicsCore" classname="PrototypeWeaponComputerTurretValidationTests" runstate="Runnable" seed="731062804" result="Passed" start-time="2026-05-21 21:04:17Z" end-time="2026-05-21 21:04:18Z" duration="0.003992" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1227" name="TurretSettingsClampNormalizesWeaponBalanceValues" fullname="PrototypeWeaponComputerTurretValidationTests.TurretSettingsClampNormalizesWeaponBalanceValues" methodname="TurretSettingsClampNormalizesWeaponBalanceValues" classname="PrototypeWeaponComputerTurretValidationTests" runstate="Runnable" seed="1828451126" result="Passed" start-time="2026-05-21 21:04:18Z" end-time="2026-05-21 21:04:18Z" duration="0.000657" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1246" name="WeaponBinderFindsMarkersAndBindNowIsIdempotent" fullname="PrototypeWeaponComputerTurretValidationTests.WeaponBinderFindsMarkersAndBindNowIsIdempotent" methodname="WeaponBinderFindsMarkersAndBindNowIsIdempotent" classname="PrototypeWeaponComputerTurretValidationTests" runstate="Runnable" seed="100522598" result="Passed" start-time="2026-05-21 21:04:18Z" end-time="2026-05-21 21:04:18Z" duration="0.002206" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1247" name="WeaponBinderUsesMarkerRootForRuntimeOwnershipWhenMountedOnWrapper" fullname="PrototypeWeaponComputerTurretValidationTests.WeaponBinderUsesMarkerRootForRuntimeOwnershipWhenMountedOnWrapper" methodname="WeaponBinderUsesMarkerRootForRuntimeOwnershipWhenMountedOnWrapper" classname="PrototypeWeaponComputerTurretValidationTests" runstate="Runnable" seed="1516135984" result="Passed" start-time="2026-05-21 21:04:18Z" end-time="2026-05-21 21:04:18Z" duration="0.000671" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1249" name="WeaponComputerPanelBindingAndStatusLabelsAreNullSafe" fullname="PrototypeWeaponComputerTurretValidationTests.WeaponComputerPanelBindingAndStatusLabelsAreNullSafe" methodname="WeaponComputerPanelBindingAndStatusLabelsAreNullSafe" classname="PrototypeWeaponComputerTurretValidationTests" runstate="Runnable" seed="2037289424" result="Passed" start-time="2026-05-21 21:04:18Z" end-time="2026-05-21 21:04:18Z" duration="0.006942" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1230" name="WeaponComputerPriorityModesChooseSelectedTargetsByDistanceAndHealth" fullname="PrototypeWeaponComputerTurretValidationTests.WeaponComputerPriorityModesChooseSelectedTargetsByDistanceAndHealth" methodname="WeaponComputerPriorityModesChooseSelectedTargetsByDistanceAndHealth" classname="PrototypeWeaponComputerTurretValidationTests" runstate="Runnable" seed="1256267850" result="Passed" start-time="2026-05-21 21:04:18Z" end-time="2026-05-21 21:04:18Z" duration="0.001558" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1243" name="WeaponComputerRefreshUsesRegistryWithoutDebugFallbackByDefault" fullname="PrototypeWeaponComputerTurretValidationTests.WeaponComputerRefreshUsesRegistryWithoutDebugFallbackByDefault" methodname="WeaponComputerRefreshUsesRegistryWithoutDebugFallbackByDefault" classname="PrototypeWeaponComputerTurretValidationTests" runstate="Runnable" seed="67896633" result="Passed" start-time="2026-05-21 21:04:18Z" end-time="2026-05-21 21:04:18Z" duration="0.000425" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1242" name="WeaponTargetDiscoveryDoesNotUseGlobalRigidbodyFallback" fullname="PrototypeWeaponComputerTurretValidationTests.WeaponTargetDiscoveryDoesNotUseGlobalRigidbodyFallback" methodname="WeaponTargetDiscoveryDoesNotUseGlobalRigidbodyFallback" classname="PrototypeWeaponComputerTurretValidationTests" runstate="Runnable" seed="937392107" result="Passed" start-time="2026-05-21 21:04:18Z" end-time="2026-05-21 21:04:18Z" duration="0.000571" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1236" name="WeaponTargetDiscoveryIgnoresLiveProjectiles" fullname="PrototypeWeaponComputerTurretValidationTests.WeaponTargetDiscoveryIgnoresLiveProjectiles" methodname="WeaponTargetDiscoveryIgnoresLiveProjectiles" classname="PrototypeWeaponComputerTurretValidationTests" runstate="Runnable" seed="1660404233" result="Passed" start-time="2026-05-21 21:04:18Z" end-time="2026-05-21 21:04:18Z" duration="0.004938" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1241" name="WeaponTargetDiscoveryRequiresExplicitMarkerForRigidbodyOnlyObjects" fullname="PrototypeWeaponComputerTurretValidationTests.WeaponTargetDiscoveryRequiresExplicitMarkerForRigidbodyOnlyObjects" methodname="WeaponTargetDiscoveryRequiresExplicitMarkerForRigidbodyOnlyObjects" classname="PrototypeWeaponComputerTurretValidationTests" runstate="Runnable" seed="965021391" result="Passed" start-time="2026-05-21 21:04:18Z" end-time="2026-05-21 21:04:18Z" duration="0.000430" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1231" name="WeaponTargetDummyFallbackHealthIsStableAndLabelled" fullname="PrototypeWeaponComputerTurretValidationTests.WeaponTargetDummyFallbackHealthIsStableAndLabelled" methodname="WeaponTargetDummyFallbackHealthIsStableAndLabelled" classname="PrototypeWeaponComputerTurretValidationTests" runstate="Runnable" seed="294867076" result="Passed" start-time="2026-05-21 21:04:18Z" end-time="2026-05-21 21:04:18Z" duration="0.000381" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1238" name="WeaponTargetRegistryCopyMethodAvoidsComponentAndHierarchyScanWork" fullname="PrototypeWeaponComputerTurretValidationTests.WeaponTargetRegistryCopyMethodAvoidsComponentAndHierarchyScanWork" methodname="WeaponTargetRegistryCopyMethodAvoidsComponentAndHierarchyScanWork" classname="PrototypeWeaponComputerTurretValidationTests" runstate="Runnable" seed="1496978016" result="Passed" start-time="2026-05-21 21:04:18Z" end-time="2026-05-21 21:04:18Z" duration="0.001354" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1237" name="WeaponTargetRegistrySnapshotRemainsStableWithoutChanges" fullname="PrototypeWeaponComputerTurretValidationTests.WeaponTargetRegistrySnapshotRemainsStableWithoutChanges" methodname="WeaponTargetRegistrySnapshotRemainsStableWithoutChanges" classname="PrototypeWeaponComputerTurretValidationTests" runstate="Runnable" seed="1804659816" result="Passed" start-time="2026-05-21 21:04:18Z" end-time="2026-05-21 21:04:18Z" duration="0.001608" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+      <test-suite type="TestFixture" id="1263" name="WeaponRecoilStabilizationValidationTests" fullname="WeaponRecoilStabilizationValidationTests" classname="WeaponRecoilStabilizationValidationTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-05-21 21:04:18Z" end-time="2026-05-21 21:04:18Z" duration="0.034040" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1269" name="AutoFireTurretOffCenterRecoilRequestsRcsWeaponStabilization" fullname="WeaponRecoilStabilizationValidationTests.AutoFireTurretOffCenterRecoilRequestsRcsWeaponStabilization" methodname="AutoFireTurretOffCenterRecoilRequestsRcsWeaponStabilization" classname="WeaponRecoilStabilizationValidationTests" runstate="Runnable" seed="1554628425" result="Passed" start-time="2026-05-21 21:04:18Z" end-time="2026-05-21 21:04:18Z" duration="0.023374" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1266" name="InsufficientRcsAuthorityLeavesResidualTorqueVisible" fullname="WeaponRecoilStabilizationValidationTests.InsufficientRcsAuthorityLeavesResidualTorqueVisible" methodname="InsufficientRcsAuthorityLeavesResidualTorqueVisible" classname="WeaponRecoilStabilizationValidationTests" runstate="Runnable" seed="1404074932" result="Passed" start-time="2026-05-21 21:04:18Z" end-time="2026-05-21 21:04:18Z" duration="0.003063" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1267" name="ManualAttitudeHasPriorityOverWeaponStabilizationTorque" fullname="WeaponRecoilStabilizationValidationTests.ManualAttitudeHasPriorityOverWeaponStabilizationTorque" methodname="ManualAttitudeHasPriorityOverWeaponStabilizationTorque" classname="WeaponRecoilStabilizationValidationTests" runstate="Runnable" seed="2049586362" result="Passed" start-time="2026-05-21 21:04:18Z" end-time="2026-05-21 21:04:18Z" duration="0.002116" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1264" name="StabilizerEstimatesCounterTorqueFromOffCenterRecoilImpulse" fullname="WeaponRecoilStabilizationValidationTests.StabilizerEstimatesCounterTorqueFromOffCenterRecoilImpulse" methodname="StabilizerEstimatesCounterTorqueFromOffCenterRecoilImpulse" classname="WeaponRecoilStabilizationValidationTests" runstate="Runnable" seed="1620761359" result="Passed" start-time="2026-05-21 21:04:18Z" end-time="2026-05-21 21:04:18Z" duration="0.000655" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1268" name="WeaponRecoilStabilizerDoesNotAssignRigidbodyAngularVelocity" fullname="WeaponRecoilStabilizationValidationTests.WeaponRecoilStabilizerDoesNotAssignRigidbodyAngularVelocity" methodname="WeaponRecoilStabilizerDoesNotAssignRigidbodyAngularVelocity" classname="WeaponRecoilStabilizationValidationTests" runstate="Runnable" seed="781699332" result="Passed" start-time="2026-05-21 21:04:18Z" end-time="2026-05-21 21:04:18Z" duration="0.000707" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1265" name="WeaponStabilizationRequestRunsThroughRcsAllocator" fullname="WeaponRecoilStabilizationValidationTests.WeaponStabilizationRequestRunsThroughRcsAllocator" methodname="WeaponStabilizationRequestRunsThroughRcsAllocator" classname="WeaponRecoilStabilizationValidationTests" runstate="Runnable" seed="570612914" result="Passed" start-time="2026-05-21 21:04:18Z" end-time="2026-05-21 21:04:18Z" duration="0.002108" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[<b><color=#2EA3FF>MCP-FOR-UNITY</color></b>: [TestRunnerNoThrottle] Restored Interaction Mode after test run.
+Saving results to: C:/Users/benni/AppData/LocalLow/DefaultCompany/Weltraum Spiel\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

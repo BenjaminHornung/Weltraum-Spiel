@@ -1,0 +1,85 @@
+# Unity PlayMode Movement Evidence
+
+- Scene: Assets/Scenes/PrototypeBootstrapHost.unity
+- Visual: ImportedDemoScout
+- Driver: live Unity PlayMode scene with PlayerShipController, RcsThrusterController, ShipPhysicsCore and SimpleFollowCamera.
+- Input: simulated through PlayerShipController test hooks; physics is stepped in Unity PlayMode for deterministic evidence.
+
+- PASS: Exactly one active Main Camera (count=1)
+- PASS: PrototypeShip has Rigidbody (rb=True)
+- PASS: PrototypeShip has PlayerShipController (controller=True)
+- PASS: PrototypeShip has RcsThrusterController (rcs=True)
+- PASS: PrototypeShip has ShipPhysicsCore (physicsCore=True)
+- PASS: Imported Scout selected (visual=ImportedDemoScout)
+- PASS: A-Translation-W-forward visible stable velocity (velocityDot=2.864989)
+- PASS: A-Translation-W-forward actual force direction (forceDot=9000)
+- PASS: A-Translation-W-forward residual force small (residualRatio=0)
+- PASS: A-Translation-W-forward no unwanted torque (torque=0)
+- PASS: Screenshot translation-mode-imported-ship.png (E:\Unity\Weltraum Spiel\Weltraum Spiel\.devtoolbox\specs\changes\fix-flight-control-jitter-regression-v1\tests\screenshots\translation-mode-imported-ship.png)
+- PASS: A-Translation-S-back visible stable velocity (velocityDot=2.865535)
+- PASS: A-Translation-S-back actual force direction (forceDot=9000)
+- PASS: A-Translation-S-back residual force small (residualRatio=0)
+- PASS: A-Translation-S-back no unwanted torque (torque=0)
+- PASS: A-Translation-A-left visible stable velocity (velocityDot=2.866083)
+- PASS: A-Translation-A-left actual force direction (forceDot=9000)
+- PASS: A-Translation-A-left residual force small (residualRatio=0)
+- PASS: A-Translation-A-left no unwanted torque (torque=0)
+- PASS: A-Translation-D-right visible stable velocity (velocityDot=2.86663)
+- PASS: A-Translation-D-right actual force direction (forceDot=9000)
+- PASS: A-Translation-D-right residual force small (residualRatio=0)
+- PASS: A-Translation-D-right no unwanted torque (torque=0)
+- PASS: A-Translation-H-up visible stable velocity (velocityDot=2.867178)
+- PASS: A-Translation-H-up actual force direction (forceDot=9000)
+- PASS: A-Translation-H-up residual force small (residualRatio=0)
+- PASS: A-Translation-H-up no unwanted torque (torque=0)
+- PASS: A-Translation-N-down visible stable velocity (velocityDot=2.867726)
+- PASS: A-Translation-N-down actual force direction (forceDot=9000)
+- PASS: A-Translation-N-down residual force small (residualRatio=0)
+- PASS: A-Translation-N-down no unwanted torque (torque=0)
+- PASS: B-Attitude-W-pitch actual torque present (torque=8136.465)
+- PASS: B-Attitude-W-pitch residual torque bounded (residualTorque=2.618589)
+- PASS: B-Attitude-W-pitch linear force neutralized (force=0)
+- PASS: B-Attitude-W-pitch no linear drift (velocity=0)
+- PASS: Screenshot normal-attitude-sas-on.png (E:\Unity\Weltraum Spiel\Weltraum Spiel\.devtoolbox\specs\changes\fix-flight-control-jitter-regression-v1\tests\screenshots\normal-attitude-sas-on.png)
+- PASS: B-Attitude-S-pitch actual torque present (torque=8136.465)
+- PASS: B-Attitude-S-pitch residual torque bounded (residualTorque=2.618291)
+- PASS: B-Attitude-S-pitch linear force neutralized (force=0)
+- PASS: B-Attitude-S-pitch no linear drift (velocity=0)
+- PASS: B-Attitude-A-yaw actual torque present (torque=8137.921)
+- PASS: B-Attitude-A-yaw residual torque bounded (residualTorque=1.105279)
+- PASS: B-Attitude-A-yaw linear force neutralized (force=0)
+- PASS: B-Attitude-A-yaw no linear drift (velocity=0)
+- PASS: B-Attitude-D-yaw actual torque present (torque=8137.92)
+- PASS: B-Attitude-D-yaw residual torque bounded (residualTorque=1.105806)
+- PASS: B-Attitude-D-yaw linear force neutralized (force=0)
+- PASS: B-Attitude-D-yaw no linear drift (velocity=0)
+- PASS: B-Attitude-Q-roll actual torque present (torque=8138.351)
+- PASS: B-Attitude-Q-roll residual torque bounded (residualTorque=0.699373)
+- PASS: B-Attitude-Q-roll linear force neutralized (force=0)
+- PASS: B-Attitude-Q-roll no linear drift (velocity=0)
+- PASS: B-Attitude-E-roll actual torque present (torque=8138.352)
+- PASS: B-Attitude-E-roll residual torque bounded (residualTorque=0.699628)
+- PASS: B-Attitude-E-roll linear force neutralized (force=0)
+- PASS: B-Attitude-E-roll no linear drift (velocity=0)
+- PASS: C-SAS-on external assist idle (source=None)
+- PASS: C-SAS-on desired torque finite (sasTorque=(0.00, 14650.24, 0.00))
+- PASS: C-SAS-off preserves physical drift (before=50 after=50)
+- PASS: D-main-thruster accelerates forward (velocity=(0.00, 0.00, 16.77))
+- PASS: D-main-thruster no unexpected spin (angularVelocity=0)
+- PASS: Screenshot main-thrust-imported-ship.png (E:\Unity\Weltraum Spiel\Weltraum Spiel\.devtoolbox\specs\changes\fix-flight-control-jitter-regression-v1\tests\screenshots\main-thrust-imported-ship.png)
+- PASS: E-F6 keeps Rigidbody (rb=True)
+- PASS: E-F6 keeps PlayerShipController (controller=True)
+- PASS: E-F6 keeps RCS (rcs=True)
+- PASS: E-F6 keeps Camera binding (camera=True)
+- PASS: E-F6 no stale external assist (source=None)
+- PASS: Screenshot f6-switch-after-movement.png (E:\Unity\Weltraum Spiel\Weltraum Spiel\.devtoolbox\specs\changes\fix-flight-control-jitter-regression-v1\tests\screenshots\f6-switch-after-movement.png)
+- PASS: F-manual input clears stale external assist (source=None)
+
+## Summary
+- Final visual mode: ImportedDemoScout
+- Final allocator status: com-translation-fallback
+- Final active/installed nozzles: 4/20
+- Final camera focus source: CameraAnchor
+- Visual bounds refresh count: 25
+- RCS nozzle refresh count: 27
+- Final verdict: PASS
