@@ -1270,5 +1270,7 @@ public class PrototypeBootstrap : MonoBehaviour
 
         collider.isTrigger = false;
         GetOrAddComponent<PrototypeTargetDummy>(target);
+        var marker = GetOrAddComponent<PrototypeWeaponTargetMarker>(target);
+        marker.Configure(target.transform);
     }
 }

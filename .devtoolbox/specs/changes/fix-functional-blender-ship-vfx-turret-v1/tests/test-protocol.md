@@ -36,6 +36,13 @@ Goal: Default runtime uses the Blender Demo Scout as the functional `PrototypeSh
 
 - Unity script refresh/compile after runtime and test changes: PASS
 - Console error check after compile: no C# compile errors.
+- Weapon-computer/turret regression script validation after the 2026-05-22 fix: PASS
+  - `PrototypeTurretMount.cs`
+  - `PrototypeTurretWeapon.cs`
+  - `PrototypeFunctionalShipBinder.cs`
+  - `PrototypeShipKitWeaponBinder.cs`
+  - `PrototypeProjectileSimulation.cs`
+  - `PrototypeFunctionalBlenderRuntimePlayModeTests.cs`
 
 ## Unity EditMode Tests
 
@@ -81,6 +88,27 @@ Hotfix coverage highlights:
 - Main nozzle proxy scale is safe and `THRUST_NOZZLE_MAIN*.forward` aligns with `PrototypeShip.forward`.
 - No root `Muzzle` or root `EngineNozzle` exists in imported default.
 
+Weapon computer / Blender turret regression run:
+
+- `PrototypeWeaponComputerTurretValidationTests.TurretBlocksFireWhenOwnHullLineOfFireIsBlocked`
+- `PrototypeWeaponComputerTurretValidationTests.BootstrapRegistersDefaultTestTargetForWeaponComputer`
+- `PrototypeFunctionalShipSocketValidationTests.FunctionalBinderUsesImportedDemoScoutAsRuntimeRootWithoutFallbacks`
+- `PrototypeUiArchitectureValidationTests.FlightTestPresetKeepsDebugConsoleClosedAndWeaponComputerCollapsed`
+- `PrototypePlayerHudValidationTests.CombatTranslatorMapsWeaponBlocksWithoutYawPitchOrTuningLeak`
+
+Result:
+
+- Unity MCP job: `1266b76a57934efe92843dfd03ee2627`
+- PASS: 5 / 5
+
+Coverage highlights:
+
+- Default `PrototypeTargetDummy` is registered through `PrototypeWeaponTargetMarker`.
+- Weapon Computer is visible in normal flight/combat UI and collapsed outside diagnostics.
+- HUD help includes `F7 Weapon Computer`.
+- Line-of-fire blocked shots report `LineBlocked`.
+- Imported Demo Scout functional binding requires visible yaw and pitch turret renderers.
+
 ## Unity PlayMode / Runtime Simulation
 
 Original focused run:
@@ -122,6 +150,25 @@ Hotfix coverage highlights:
 - RCS pulse through `PlayerShipController.PulseRcsTranslation` activates imported RCS VFX.
 - Weapon Computer target selection and AutoFire rotate yaw/pitch and fire from `WEAPON_MUZZLE_PRIMARY`.
 
+Weapon computer / Blender turret regression run:
+
+- `PrototypeFunctionalBlenderRuntimePlayModeTests.BootstrapPlayModeKeepsImportedScoutVisibleAndPlayableForTenSeconds`
+- `PrototypeFunctionalBlenderRuntimePlayModeTests.BootstrapPlayModeRegistersDefaultTargetForWeaponComputer`
+
+Result:
+
+- Unity MCP job: `144fa3b7736542a19ab58f655c7254b9`
+- PASS: 2 / 2
+
+Coverage highlights:
+
+- Default scene keeps `BuildMode=ImportedDemoScoutFunctionalDefault` and `VisualMode=ImportedDemoScout`.
+- Weapon Computer discovers the default target marker without debug fallback discovery.
+- Selecting a target with AutoFire off still slews yaw/pitch over frames.
+- Visible yaw assembly and barrel renderers are children of the imported/proxy yaw and pitch pivots and rotate with them.
+- Line-of-fire blocked by own hull blocks firing.
+- Valid fire uses `WEAPON_MUZZLE_PRIMARY` for origin and uses the actual muzzle/barrel forward vector for projectile direction.
+
 Additional Unity MCP probe:
 
 - `execute_code` functional binder runtime probe: PASS
@@ -153,9 +200,35 @@ Additional Unity MCP probe:
   - `tests/screenshots/unity-game-view-imported-default-hotfix.png`
   - `tests/screenshots/unity-scene-view-imported-default-hotfix.png`
   - `tests/screenshots/unity-game-view-hotfix-after-controls.png`
+  - `tests/screenshots/weapon-computer-blender-turret-gameview-verified.png`
 - Captured log:
   - `tests/logs/unity-manual-game-view-hotfix-probe.md`
+
+Additional 2026-05-22 manual Game View probe:
+
+- Pressed Play through Unity MCP from `Assets/Scenes/PrototypeBootstrapHost.unity`.
+- Expanded the Weapon Computer panel through runtime API to make the visual state explicit.
+- Selected a discovered arena target with AutoFire off and ticked aim for visual tracking evidence.
+- Runtime probe result:
+  - `buildMode=ImportedDemoScoutFunctionalDefault`
+  - `visualMode=Imported Demo Scout`
+  - `weaponComputer=True`
+  - `panelVisible=True`
+  - `panelCollapsed=False`
+  - `targets=13`
+  - `active=PrototypeArenaTarget_03`
+  - `autoFire=False`
+  - `status=out of arc`
+  - `muzzle=WEAPON_MUZZLE_PRIMARY`
+- Captured screenshot:
+  - `tests/screenshots/weapon-computer-blender-turret-gameview-verified.png`
+
+## Additional Local Checks
+
+- `dotnet build "Weltraum Spiel.sln" --no-restore`: BLOCKED by a stale project-file reference to missing source `Assets\Tests\Editor\PrototypeImportedBlenderJitterEvidenceTests.cs`.
+- Unity MCP script validation and focused Unity EditMode/PlayMode tests above compile and run successfully despite that stale external project-file reference.
 
 ## Open Limits
 
 - Cargo imported mode still reports missing weapon markers and is not part of the accepted default path for this change.
+- The 2026-05-22 weapon-computer/turret fix did not modify `art/blender/prototype_modular_ship_kit_v0.blend`; it verifies and uses the already-imported hierarchy through Unity. The runtime bug fixed here was the Unity binding/visibility/line-of-fire path, including idempotent visible turret proxy binding.

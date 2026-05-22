@@ -5,6 +5,7 @@ public class PrototypeCameraAnchor : MonoBehaviour
 {
     [SerializeField] private Vector3 focusOffsetLocal;
     [SerializeField] private bool preferRigidbodyCenterOfMass = true;
+    [SerializeField] private bool useInterpolatedTransformForCameraFocus = true;
     [SerializeField] private bool useVisualBoundsForDistanceOnly = true;
     [SerializeField] private int priority;
     [SerializeField] private bool showGizmo = true;
@@ -12,6 +13,7 @@ public class PrototypeCameraAnchor : MonoBehaviour
 
     public Vector3 FocusOffsetLocal => focusOffsetLocal;
     public bool PreferRigidbodyCenterOfMass => preferRigidbodyCenterOfMass;
+    public bool UseInterpolatedTransformForCameraFocus => useInterpolatedTransformForCameraFocus;
     public bool UseVisualBoundsForDistanceOnly => useVisualBoundsForDistanceOnly;
     public int Priority => priority;
     public bool ShowGizmo => showGizmo;
@@ -29,7 +31,7 @@ public class PrototypeCameraAnchor : MonoBehaviour
 
     private Vector3 ResolveWorldFocusPoint(out string sourceLabel)
     {
-        if (preferRigidbodyCenterOfMass)
+        if (preferRigidbodyCenterOfMass && !useInterpolatedTransformForCameraFocus)
         {
             Rigidbody body = GetComponentInParent<Rigidbody>();
             if (body != null)

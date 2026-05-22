@@ -90,6 +90,22 @@ public sealed class PrototypeShipKitWeaponBinder : MonoBehaviour
                 continue;
             }
 
+            int yawRendererCount = CountVisibleNonMarkerRenderers(set.Yaw, set.Pitch);
+            int pitchRendererCount = CountVisibleNonMarkerRenderers(set.Pitch);
+            report.visibleYawRenderers += yawRendererCount;
+            report.visiblePitchRenderers += pitchRendererCount;
+            if (yawRendererCount <= 0)
+            {
+                report.missingRequiredMarkers.Add("visible yaw renderer under " + set.Yaw.name);
+                report.warnings.Add("Weapon marker group " + set.DisplayName + " has no visible yaw assembly renderer under " + set.Yaw.name + ".");
+            }
+
+            if (pitchRendererCount <= 0)
+            {
+                report.missingRequiredMarkers.Add("visible pitch renderer under " + set.Pitch.name);
+                report.warnings.Add("Weapon marker group " + set.DisplayName + " has no visible barrel renderer under " + set.Pitch.name + ".");
+            }
+
             PrototypeTurretMount mount = GetOrAddComponent<PrototypeTurretMount>(set.Base.gameObject, createMissingRuntimeComponents);
             PrototypeTurretWeapon turretWeapon = GetOrAddComponent<PrototypeTurretWeapon>(set.Base.gameObject, createMissingRuntimeComponents);
             if (mount == null || turretWeapon == null)
@@ -254,6 +270,64 @@ public sealed class PrototypeShipKitWeaponBinder : MonoBehaviour
         return transformName.ToUpperInvariant().StartsWith(PrototypeShipSocketUtility.WeaponMuzzlePrefix, System.StringComparison.Ordinal);
     }
 
+    private static int CountVisibleNonMarkerRenderers(Transform pivot, Transform excludedSubtree = null)
+    {
+        if (pivot == null)
+        {
+            return 0;
+        }
+
+        int count = 0;
+        Renderer[] renderers = pivot.GetComponentsInChildren<Renderer>(true);
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            Renderer renderer = renderers[i];
+            if (renderer == null
+                || !renderer.enabled
+                || IsFunctionalMarkerRenderer(renderer.transform)
+                || (excludedSubtree != null && renderer.transform.IsChildOf(excludedSubtree)))
+            {
+                continue;
+            }
+
+            count++;
+        }
+
+        return count;
+    }
+
+    private static bool IsFunctionalMarkerRenderer(Transform candidate)
+    {
+        if (candidate == null)
+        {
+            return true;
+        }
+
+        if (IsFunctionalMarkerName(candidate.name))
+        {
+            return true;
+        }
+
+        Transform parent = candidate.parent;
+        return parent != null
+            && (PrototypeShipSocketUtility.IsWeaponMuzzleName(parent.name)
+                || PrototypeShipSocketUtility.IsWeaponMuzzleFlashName(parent.name)
+                || PrototypeShipSocketUtility.IsWeaponSafetyMarkerName(parent.name));
+    }
+
+    private static bool IsFunctionalMarkerName(string objectName)
+    {
+        return PrototypeShipSocketUtility.IsMainThrusterNozzleName(objectName)
+            || PrototypeShipSocketUtility.IsMainThrusterGimbalName(objectName)
+            || PrototypeShipSocketUtility.IsRcsNozzleName(objectName)
+            || PrototypeShipSocketUtility.IsWeaponTurretBaseName(objectName)
+            || PrototypeShipSocketUtility.IsWeaponTurretYawName(objectName)
+            || PrototypeShipSocketUtility.IsWeaponTurretPitchName(objectName)
+            || PrototypeShipSocketUtility.IsWeaponMuzzleName(objectName)
+            || PrototypeShipSocketUtility.IsWeaponMuzzleFlashName(objectName)
+            || PrototypeShipSocketUtility.IsWeaponSafetyMarkerName(objectName);
+    }
+
     private static Transform FindByKeyOrClosest(Transform origin, List<Transform> candidates, string key, string prefix)
     {
         if (candidates == null || candidates.Count == 0)
@@ -406,6 +480,8 @@ public sealed class PrototypeShipKitWeaponBinder : MonoBehaviour
         public int boundGunModules;
         public int boundWeaponComputers;
         public int createdMuzzleFlashVfxChildren;
+        public int visibleYawRenderers;
+        public int visiblePitchRenderers;
         public string boundMuzzleName;
         public List<string> missingRequiredMarkers = new List<string>();
         public List<string> warnings = new List<string>();

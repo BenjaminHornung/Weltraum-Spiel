@@ -35,6 +35,9 @@ public class SimpleFollowCamera : MonoBehaviour
 
     [SerializeField] private float positionSmooth = 8f;
     [SerializeField] private float rotationSmooth = 10f;
+    [SerializeField] private float chaseLockedPositionSmooth = 16f;
+    [SerializeField] private float chaseLockedRotationSmooth = 18f;
+    [SerializeField] private float chaseLockedFocusSmooth = 20f;
     [SerializeField] private float mouseOrbitSensitivity = 0.18f;
     [SerializeField] private float mouseWheelSensitivity = 1.1f;
     [SerializeField] private float minPitch = -20f;
@@ -81,6 +84,11 @@ public class SimpleFollowCamera : MonoBehaviour
     private int visualBoundsIncludedRendererCount;
     private bool hasPreviousFocusPoint;
     private Vector3 previousFocusPoint;
+    private bool hasChaseLockedSmoothedFocusPoint;
+    private Vector3 chaseLockedSmoothedFocusPoint;
+    private Vector3 rawFocusPoint;
+    private float lastFocusPointDelta;
+    private bool lastChaseLockedSnap;
 
     public int CameraMode => (int)cameraMode;
     public string CameraModeName => GetCameraModeName(cameraMode);
@@ -94,6 +102,10 @@ public class SimpleFollowCamera : MonoBehaviour
     public float BaseVisualBoundsRadius => baseVisualBoundsRadius;
     public float EffectiveDistance => effectiveFollowDistance;
     public Vector3 FocusPoint => focusPoint;
+    public Vector3 RawFocusPoint => rawFocusPoint;
+    public Vector3 SmoothedFocusPoint => hasChaseLockedSmoothedFocusPoint ? chaseLockedSmoothedFocusPoint : focusPoint;
+    public float LastFocusPointDelta => lastFocusPointDelta;
+    public bool LastChaseLockedSnap => lastChaseLockedSnap;
     public string FocusSourceLabel => focusSourceLabel;
     public string CameraFocusSource => focusSourceLabel;
     public Vector3 VisualBoundsCenter => visualBoundsCenter;
@@ -116,6 +128,7 @@ public class SimpleFollowCamera : MonoBehaviour
         freeInspectLookTarget = Vector3.zero;
         hasFreeInspectLookTarget = false;
         hasPreviousFocusPoint = false;
+        ResetChaseLockedFocusSmoothing();
         snapNextFrame = true;
         ReframeToTargetVisualBounds();
     }
@@ -151,6 +164,7 @@ public class SimpleFollowCamera : MonoBehaviour
         zoomOffset = 0f;
         freeInspectLookTarget = Vector3.zero;
         hasFreeInspectLookTarget = false;
+        ResetChaseLockedFocusSmoothing();
         snapNextFrame = true;
         ReframeToTargetVisualBounds();
     }
@@ -172,6 +186,7 @@ public class SimpleFollowCamera : MonoBehaviour
         if (forceBoundsRefresh)
         {
             MarkVisualBoundsDirty();
+            ResetChaseLockedFocusSmoothing();
         }
 
         RefreshVisualBoundsIfNeeded();
@@ -275,25 +290,34 @@ public class SimpleFollowCamera : MonoBehaviour
         RefreshFocusPoint();
         UpdateVisualBoundsSnapshot();
         bool focusJumped = HasLargeFocusDiscontinuity();
+        bool shouldSnapThisFrame = snapNextFrame || focusJumped || Time.deltaTime <= Mathf.Epsilon;
 
         float followHeight = targetStats != null ? targetStats.FollowHeight : height;
         float baseDistance = ResolveBaseDistance(followHeight);
         Vector3 lookTarget = GetLookTargetFromMode(cameraMode);
+        if (cameraMode == CameraViewMode.ChaseLocked)
+        {
+            lookTarget = ResolveChaseLockedLookTarget(lookTarget, shouldSnapThisFrame);
+        }
+
         Vector3 viewDirection = GetViewDirectionFromPivot(cameraMode, followHeight, baseDistance);
         float followDistance = ResolveEffectiveDistance(baseDistance, lookTarget, viewDirection);
         Vector3 desiredPosition = lookTarget + viewDirection * followDistance;
 
         if (cameraMode == CameraViewMode.ChaseLocked)
         {
-            Quaternion desiredRotation = GetDesiredRotation(desiredPosition);
-            transform.SetPositionAndRotation(desiredPosition, desiredRotation);
+            Quaternion desiredRotation = GetDesiredRotation(desiredPosition, lookTarget);
+            float chasePositionBlend = shouldSnapThisFrame ? 1f : 1f - Mathf.Exp(-chaseLockedPositionSmooth * Time.deltaTime);
+            transform.position = Vector3.Lerp(transform.position, desiredPosition, chasePositionBlend);
+            float chaseRotationBlend = shouldSnapThisFrame ? 1f : 1f - Mathf.Exp(-chaseLockedRotationSmooth * Time.deltaTime);
+            transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, chaseRotationBlend);
             anchorError = Vector3.Distance(transform.position, desiredPosition);
+            lastChaseLockedSnap = shouldSnapThisFrame;
             snapNextFrame = false;
             RememberFocusPointForNextFrame();
             return;
         }
 
-        bool shouldSnapThisFrame = snapNextFrame || focusJumped || Time.deltaTime <= Mathf.Epsilon;
         float positionBlend = shouldSnapThisFrame ? 1f : 1f - Mathf.Exp(-positionSmooth * Time.deltaTime);
         transform.position = Vector3.Lerp(transform.position, desiredPosition, positionBlend);
 
@@ -306,6 +330,7 @@ public class SimpleFollowCamera : MonoBehaviour
         }
 
         anchorError = Vector3.Distance(transform.position, desiredPosition);
+        lastChaseLockedSnap = false;
         snapNextFrame = false;
         RememberFocusPointForNextFrame();
     }
@@ -555,15 +580,44 @@ public class SimpleFollowCamera : MonoBehaviour
         return cameraMode == CameraViewMode.ChaseLocked ? target.up : Vector3.up;
     }
 
-    private Quaternion GetDesiredRotation(Vector3 cameraPosition)
+    private Quaternion GetDesiredRotation(Vector3 cameraPosition, Vector3 targetFocusPoint)
     {
         float lookYaw = Mathf.Clamp(orbitYaw, -anchoredLookYawLimit, anchoredLookYawLimit);
         float lookPitch = Mathf.Clamp(orbitPitch, -anchoredLookPitchLimit, anchoredLookPitchLimit);
-        Vector3 direction = GetFocusPoint() - cameraPosition;
+        Vector3 direction = targetFocusPoint - cameraPosition;
         Quaternion anchorRotation = direction.sqrMagnitude > 0.01f
             ? Quaternion.LookRotation(direction, target.up)
             : target.rotation;
         return anchorRotation * Quaternion.Euler(lookPitch, lookYaw, 0f);
+    }
+
+    private Vector3 ResolveChaseLockedLookTarget(Vector3 rawLookTarget, bool shouldSnapThisFrame)
+    {
+        rawFocusPoint = rawLookTarget;
+        if (!hasChaseLockedSmoothedFocusPoint || shouldSnapThisFrame)
+        {
+            lastFocusPointDelta = hasChaseLockedSmoothedFocusPoint
+                ? Vector3.Distance(chaseLockedSmoothedFocusPoint, rawLookTarget)
+                : 0f;
+            chaseLockedSmoothedFocusPoint = rawLookTarget;
+            hasChaseLockedSmoothedFocusPoint = true;
+            return chaseLockedSmoothedFocusPoint;
+        }
+
+        Vector3 before = chaseLockedSmoothedFocusPoint;
+        float focusBlend = 1f - Mathf.Exp(-chaseLockedFocusSmooth * Time.deltaTime);
+        chaseLockedSmoothedFocusPoint = Vector3.Lerp(chaseLockedSmoothedFocusPoint, rawLookTarget, focusBlend);
+        lastFocusPointDelta = Vector3.Distance(before, chaseLockedSmoothedFocusPoint);
+        return chaseLockedSmoothedFocusPoint;
+    }
+
+    private void ResetChaseLockedFocusSmoothing()
+    {
+        hasChaseLockedSmoothedFocusPoint = false;
+        chaseLockedSmoothedFocusPoint = Vector3.zero;
+        rawFocusPoint = Vector3.zero;
+        lastFocusPointDelta = 0f;
+        lastChaseLockedSnap = false;
     }
 
     private static bool WasResetPressed(UnityEngine.InputSystem.Keyboard keyboard)
@@ -752,6 +806,7 @@ public class SimpleFollowCamera : MonoBehaviour
             ResolveNonChaseFocusPoint();
         }
 
+        rawFocusPoint = focusPoint;
         if (cameraMode == CameraViewMode.FreeInspect && !hasVisualBounds && !hasFreeInspectLookTarget)
         {
             freeInspectLookTarget = focusPoint;

@@ -225,7 +225,7 @@ public class PrototypeUiArchitectureValidationTests
     }
 
     [Test]
-    public void FlightTestPresetKeepsDebugConsoleAndWeaponComputerClosed()
+    public void FlightTestPresetKeepsDebugConsoleClosedAndWeaponComputerCollapsed()
     {
         GameObject cameraObject = new GameObject("UiArchitectureCamera");
         cameraObject.AddComponent<Camera>();
@@ -243,12 +243,14 @@ public class PrototypeUiArchitectureValidationTests
         Assert.True(minimap.IsWindowVisible);
         Assert.False(minimap.ShowLabels);
         Assert.False(console.IsConsoleVisible);
-        Assert.False(weaponComputer.IsWindowVisible);
+        Assert.True(weaponComputer.IsWindowVisible);
+        Assert.True(weaponComputer.IsWindowCollapsed);
 
         PrototypeUiLayoutManager.ApplyPreset(PrototypeUiPreset.FullDiagnostics, diagnostics, console, hud, keybinds, minimap, weaponComputer);
 
         Assert.True(console.IsConsoleVisible);
         Assert.True(weaponComputer.IsWindowVisible);
+        Assert.False(weaponComputer.IsWindowCollapsed);
         Assert.True(minimap.ShowLabels);
     }
 

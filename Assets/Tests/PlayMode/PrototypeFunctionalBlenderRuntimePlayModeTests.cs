@@ -68,6 +68,8 @@ public class PrototypeFunctionalBlenderRuntimePlayModeTests
             Rigidbody body = ship.GetComponent<Rigidbody>();
             PrototypeWeaponComputer computer = ship.GetComponent<PrototypeWeaponComputer>();
             PrototypeTurretWeapon weapon = ship.GetComponentInChildren<PrototypeTurretWeapon>(true);
+            PrototypeWeaponComputerPanel weaponPanel = Camera.main != null ? Camera.main.GetComponent<PrototypeWeaponComputerPanel>() : null;
+            ShipStats stats = ship.GetComponent<ShipStats>();
 
             Assert.NotNull(engine);
             Assert.NotNull(engine.Nozzle);
@@ -82,6 +84,9 @@ public class PrototypeFunctionalBlenderRuntimePlayModeTests
             Assert.NotNull(body);
             Assert.NotNull(computer);
             Assert.NotNull(weapon);
+            Assert.NotNull(weaponPanel);
+            Assert.True(weaponPanel.IsWindowVisible);
+            Assert.True(weaponPanel.IsWindowCollapsed);
             Assert.NotNull(weapon.Muzzle);
             Assert.That(weapon.Muzzle.name, Does.StartWith(PrototypeShipSocketUtility.WeaponMuzzlePrefix));
             AssertSafeFunctionalSocketScale(weapon.Muzzle);
@@ -134,12 +139,50 @@ public class PrototypeFunctionalBlenderRuntimePlayModeTests
             target.transform.position = weapon.Muzzle.position + targetDirection * 32f;
             target.AddComponent<Rigidbody>().useGravity = false;
             target.AddComponent<PrototypeWeaponTargetMarker>().Configure(target.transform);
+            SetPrivateField(stats, "hitChance", 1f);
+            SetPrivateField(stats, "projectileSpreadDegrees", 0f);
             computer.RefreshTargets();
             SelectTarget(computer, target.transform);
-            computer.SetAutoFireEnabled(true);
+            computer.SetAutoFireEnabled(false);
 
             float yawBefore = weapon.LastAppliedYawDegrees;
             float pitchBefore = weapon.LastAppliedPitchDegrees;
+            Transform barrel = FindDescendant(ship.transform, "DEMO_Scout_Mk1_GEO_Gun_Barrel");
+            Transform yawMesh = FindDescendant(ship.transform, "DEMO_Scout_Mk1_GEO_Gun_Mount_Base");
+            Assert.NotNull(barrel);
+            Assert.NotNull(yawMesh);
+            Assert.True(barrel.IsChildOf(weapon.Mount.PitchPivot), barrel.parent != null ? barrel.parent.name : "no parent");
+            Assert.True(yawMesh.IsChildOf(weapon.Mount.YawPivot), yawMesh.parent != null ? yawMesh.parent.name : "no parent");
+            Quaternion barrelRotationBefore = barrel.rotation;
+            Quaternion yawMeshRotationBefore = yawMesh.rotation;
+            for (int i = 0; i < 30; i++)
+            {
+                InvokeMethod(computer, "Update");
+            }
+
+            Assert.That(Mathf.Abs(weapon.LastAppliedYawDegrees - yawBefore), Is.GreaterThan(0.5f));
+            Assert.That(Mathf.Abs(weapon.LastAppliedPitchDegrees - pitchBefore), Is.GreaterThan(0.1f));
+            Assert.That(Quaternion.Angle(yawMeshRotationBefore, yawMesh.rotation), Is.GreaterThan(0.5f));
+            Assert.That(Quaternion.Angle(barrelRotationBefore, barrel.rotation), Is.GreaterThan(0.1f));
+            Assert.False(weapon.LastFireResult.fired);
+
+            GameObject fireBlocker = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            fireBlocker.name = "RuntimeOwnHullFireBlocker";
+            fireBlocker.transform.SetParent(ship.transform, true);
+            fireBlocker.transform.position = weapon.Muzzle.position + weapon.Muzzle.forward * 0.35f;
+            fireBlocker.transform.localScale = Vector3.one * 0.25f;
+            Physics.SyncTransforms();
+            computer.SetAutoFireEnabled(true);
+            for (int i = 0; i < 10; i++)
+            {
+                InvokeMethod(computer, "Update");
+            }
+
+            Assert.False(weapon.LastFireResult.fired);
+            Assert.That(weapon.LastFireStatus.blockReason, Is.EqualTo(PrototypeTurretFireBlockReason.LineBlocked));
+            Object.DestroyImmediate(fireBlocker);
+            Physics.SyncTransforms();
+
             bool fired = false;
             for (int i = 0; i < 90; i++)
             {
@@ -151,10 +194,9 @@ public class PrototypeFunctionalBlenderRuntimePlayModeTests
                 }
             }
 
-            Assert.That(Mathf.Abs(weapon.LastAppliedYawDegrees - yawBefore), Is.GreaterThan(0.5f));
-            Assert.That(Mathf.Abs(weapon.LastAppliedPitchDegrees - pitchBefore), Is.GreaterThan(0.1f));
             Assert.True(fired, computer.TurretStatusLabel);
             Assert.That(Vector3.Distance(weapon.LastMuzzleWorldPosition, weapon.Muzzle.position), Is.LessThan(0.25f));
+            Assert.That(Vector3.Angle(weapon.LastFireResult.directionWorld, weapon.Muzzle.forward), Is.LessThan(2f));
             Assert.That(Vector3.Distance(weapon.LastRecoilPositionWorld, body.worldCenterOfMass), Is.LessThan(0.25f));
             Assert.That(weapon.LastRecoilAngularImpulseWorld.magnitude, Is.LessThan(0.01f));
             Assert.True(weapon.LastFireResult.muzzleVisualEmitted || weapon.LastFireResult.tracerVisualEmitted);
@@ -163,6 +205,36 @@ public class PrototypeFunctionalBlenderRuntimePlayModeTests
         {
             Physics.simulationMode = previousSimulationMode;
         }
+    }
+
+    [Test]
+    public void BootstrapPlayModeRegistersDefaultTargetForWeaponComputer()
+    {
+        DestroyNamed("PrototypeBootstrap");
+        DestroyNamed("PrototypeShip");
+        DestroyNamed("PrototypeShipVisualSwitcher_Manager");
+
+        GameObject host = new GameObject("PrototypeBootstrapPlayModeHost");
+        PrototypeBootstrap bootstrap = host.AddComponent<PrototypeBootstrap>();
+        SetPrivateField(bootstrap, "buildOnStart", false);
+        SetPrivateField(bootstrap, "spawnTestTarget", true);
+        SetPrivateField(bootstrap, "buildTestEnvironment", false);
+        SetPrivateField(bootstrap, "allowGeneratedFallbackWhenImportedAssetMissing", false);
+        bootstrap.BuildPrototype(PrototypeShipVariant.Baseline());
+
+        GameObject ship = GameObject.Find("PrototypeShip");
+        GameObject target = GameObject.Find("PrototypeTargetDummy");
+        Assert.NotNull(ship);
+        Assert.NotNull(target);
+        Assert.NotNull(target.GetComponent<PrototypeTargetDummy>());
+        Assert.NotNull(target.GetComponent<PrototypeWeaponTargetMarker>());
+
+        PrototypeWeaponComputer computer = ship.GetComponent<PrototypeWeaponComputer>();
+        Assert.NotNull(computer);
+        computer.RefreshTargets();
+        Assert.That(PrototypeWeaponTarget.LastDiscoveryUsedDebugFallback, Is.False);
+        SelectTarget(computer, target.transform);
+        Assert.AreSame(target.transform, computer.ActiveTargetTransform);
     }
 
     private static GameObject FindActiveRcsVfxNearImportedNozzle(Transform ship)
@@ -233,6 +305,20 @@ public class PrototypeFunctionalBlenderRuntimePlayModeTests
         }
 
         Assert.Fail("Runtime target was not discovered by the weapon computer.");
+    }
+
+    private static Transform FindDescendant(Transform root, string exactName)
+    {
+        Transform[] transforms = root.GetComponentsInChildren<Transform>(true);
+        for (int i = 0; i < transforms.Length; i++)
+        {
+            if (transforms[i].name == exactName)
+            {
+                return transforms[i];
+            }
+        }
+
+        return null;
     }
 
     private static void InvokeMethod(object target, string methodName, params object[] args)

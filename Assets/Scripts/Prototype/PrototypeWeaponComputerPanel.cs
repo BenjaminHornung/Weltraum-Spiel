@@ -15,6 +15,7 @@ public class PrototypeWeaponComputerPanel : MonoBehaviour
     private PrototypeUiWindowState windowState;
 
     public bool IsWindowVisible => ResolveWindowState().Visible;
+    public bool IsWindowCollapsed => ResolveWindowState().Collapsed;
 
     private void Start()
     {
@@ -237,6 +238,16 @@ public class PrototypeWeaponComputerPanel : MonoBehaviour
         GUILayout.Label(
             $"Yaw {fireStatus.appliedYawDegrees:0.0}/{fireStatus.requestedYawDegrees:0.0} | Pitch {fireStatus.appliedPitchDegrees:0.0}/{fireStatus.requestedPitchDegrees:0.0}",
             labelStyle);
+        if (shipStats != null)
+        {
+            GUILayout.Label(
+                $"Arc Y {shipStats.YawLimitLeftDegrees:0}/{shipStats.YawLimitRightDegrees:0} | P {shipStats.PitchMinDegrees:0}/{shipStats.PitchMaxDegrees:0}",
+                labelStyle);
+            GUILayout.Label(
+                $"Range {fireStatus.distanceMeters:0}/{shipStats.EngagementRangeMeters:0} m | AutoFire {(weaponComputer != null && weaponComputer.AutoFireEnabled ? "on" : "off")}",
+                labelStyle);
+        }
+
         if (fireStatus.cooldownRemainingSeconds > 0f)
         {
             GUILayout.Label("Cooldown: " + fireStatus.cooldownRemainingSeconds.ToString("0.00") + " s", labelStyle);

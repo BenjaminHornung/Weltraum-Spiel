@@ -474,6 +474,27 @@ public class PrototypeWeaponComputerTurretValidationTests
     }
 
     [Test]
+    public void TurretBlocksFireWhenOwnHullLineOfFireIsBlocked()
+    {
+        using (TurretFixture fixture = new TurretFixture())
+        {
+            SetWeaponStats(fixture.Stats, projectileSpeed: 120f, projectileMass: 2f, projectileDiameter: 0.3f, fireRate: 4f, hitChance: 1f);
+            GameObject blocker = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            blocker.name = "WeaponComputerHullBlocker";
+            blocker.transform.SetParent(fixture.Ship.transform, true);
+            blocker.transform.position = fixture.Muzzle.position + fixture.Muzzle.forward * 0.45f;
+            blocker.transform.localScale = Vector3.one * 0.35f;
+            Physics.SyncTransforms();
+
+            bool fired = fixture.Weapon.TryFireAt(fixture.Muzzle.position + Vector3.forward * 40f);
+
+            Assert.False(fired);
+            Assert.That(fixture.Weapon.LastFireStatus.blockReason, Is.EqualTo(PrototypeTurretFireBlockReason.LineBlocked));
+            Assert.False(fixture.Weapon.LastFireResult.fired);
+        }
+    }
+
+    [Test]
     public void TurretPhysicalMuzzleRecoilIsExplicitAndRecordsAngularImpulse()
     {
         using (TurretFixture fixture = new TurretFixture())
@@ -506,6 +527,8 @@ public class PrototypeWeaponComputerTurretValidationTests
         Assert.That(first.foundMuzzleFlashes, Is.EqualTo(1));
         Assert.That(first.boundTurretWeapons, Is.EqualTo(1));
         Assert.That(first.boundWeaponComputers, Is.EqualTo(1));
+        Assert.That(first.visibleYawRenderers, Is.GreaterThanOrEqualTo(1));
+        Assert.That(first.visiblePitchRenderers, Is.GreaterThanOrEqualTo(1));
         Assert.That(first.boundMuzzleName, Is.EqualTo("WEAPON_MUZZLE_PRIMARY"));
         Assert.That(second.createdMuzzleFlashVfxChildren, Is.EqualTo(0));
         Assert.That(ship.GetComponents<PrototypeShipKitWeaponBinder>().Length, Is.EqualTo(1));
@@ -561,6 +584,31 @@ public class PrototypeWeaponComputerTurretValidationTests
         Assert.True(PrototypeShipSocketUtility.IsWeaponMuzzleName(weapon.Muzzle.name));
         Assert.That(weapon.Muzzle.name, Does.StartWith(PrototypeShipSocketUtility.WeaponMuzzlePrefix));
         Assert.Null(ship.transform.Find("Muzzle"));
+    }
+
+    [Test]
+    public void BootstrapRegistersDefaultTestTargetForWeaponComputer()
+    {
+        GameObject host = new GameObject("PrototypeBootstrapTestHost");
+        PrototypeBootstrap bootstrap = host.AddComponent<PrototypeBootstrap>();
+        SetPrivateField(bootstrap, "spawnTestTarget", true);
+        SetPrivateField(bootstrap, "buildTestEnvironment", false);
+        SetPrivateField(bootstrap, "buildOnStart", false);
+
+        bootstrap.BuildPrototype(PrototypeShipVariant.Baseline());
+
+        GameObject ship = GameObject.Find("PrototypeShip");
+        GameObject target = GameObject.Find("PrototypeTargetDummy");
+        Assert.NotNull(ship);
+        Assert.NotNull(target);
+        Assert.NotNull(target.GetComponent<PrototypeTargetDummy>());
+        Assert.NotNull(target.GetComponent<PrototypeWeaponTargetMarker>());
+
+        PrototypeWeaponComputer computer = ship.GetComponent<PrototypeWeaponComputer>();
+        Assert.NotNull(computer);
+        computer.RefreshTargets();
+        Assert.NotNull(FindAvailableTarget(computer, target.transform));
+        Assert.That(PrototypeWeaponTarget.LastDiscoveryUsedDebugFallback, Is.False);
     }
 
     [Test]
@@ -682,6 +730,8 @@ public class PrototypeWeaponComputerTurretValidationTests
         Transform pitch = CreateChild(yaw, PrototypeShipSocketUtility.WeaponTurretPitchPrefix + suffix);
         Transform muzzle = CreateChild(pitch, PrototypeShipSocketUtility.WeaponMuzzlePrefix + suffix);
         muzzle.localPosition = Vector3.forward;
+        CreateVisibleRenderer(yaw, "GEO_Test_Turret_Yaw");
+        CreateVisibleRenderer(pitch, "GEO_Test_Turret_Barrel");
         if (includeFlash)
         {
             CreateChild(muzzle, PrototypeShipSocketUtility.WeaponMuzzleFlashPrefix + suffix);
@@ -693,6 +743,19 @@ public class PrototypeWeaponComputerTurretValidationTests
         GameObject child = new GameObject(name);
         child.transform.SetParent(parent, false);
         return child.transform;
+    }
+
+    private static void CreateVisibleRenderer(Transform parent, string name)
+    {
+        GameObject visual = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        visual.name = name;
+        visual.transform.SetParent(parent, false);
+        visual.transform.localScale = Vector3.one * 0.2f;
+        Collider collider = visual.GetComponent<Collider>();
+        if (collider != null)
+        {
+            UnityEngine.Object.DestroyImmediate(collider);
+        }
     }
 
     private static int CountDescendantNames(Transform root, string exactName)

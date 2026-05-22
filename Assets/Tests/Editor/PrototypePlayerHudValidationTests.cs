@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
@@ -26,6 +27,12 @@ public class PrototypePlayerHudValidationTests
         DestroyNamed("PlayerHudRadarDockTarget");
         DestroyNamed("PlayerHudRadarEnvironment");
         DestroyNamed("PlayerHudRadarWaypointManager");
+        DestroyNamed("PlayerHudIndicatorShip");
+        DestroyNamed("PlayerHudIndicatorWaypointManager");
+        DestroyNamed("PlayerHudIndicatorCombatTarget");
+        DestroyNamed("PlayerHudIndicatorDockTarget");
+        DestroyNamed("PlayerHudIndicatorArena");
+        DestroyNamed("PlayerHudIndicatorProjectionCamera");
         DestroyNamed("PlayerHudCombatShip");
         DestroyNamed("PlayerHudWeaponComputer");
         DestroyNamed("PlayerHudDamageShip");
@@ -228,6 +235,144 @@ public class PrototypePlayerHudValidationTests
                 radar));
 
         Assert.That(FindText(playerHud, "RadarText").text, Is.EqualTo("Range 250 m"));
+    }
+
+    [Test]
+    public void TargetIndicatorSnapshotCollectsSelectedAndObjectiveTargets()
+    {
+        using (var builder = new PrototypeScenarioBuilder())
+        {
+            PrototypeCombatRig combatRig = builder.CreateCombatRig("PlayerHudIndicatorShip");
+            GameObject managerObject = new GameObject("PlayerHudIndicatorWaypointManager");
+            PrototypeWaypointManager manager = managerObject.AddComponent<PrototypeWaypointManager>();
+            manager.EnsureDefaultWaypoints();
+
+            PrototypeWaypointAutopilot autopilot = combatRig.Ship.Ship.AddComponent<PrototypeWaypointAutopilot>();
+            autopilot.Bind(manager, combatRig.Ship.Controller, combatRig.Ship.Stats, combatRig.Ship.Body);
+            autopilot.SelectTarget(manager.SelectedTarget);
+
+            builder.CreateWeaponTarget("PlayerHudIndicatorCombatTarget", new Vector3(35f, 0f, 140f));
+            combatRig.Computer.RefreshTargets();
+            combatRig.Computer.ToggleTarget(combatRig.Computer.AvailableTargets[0]);
+
+            DockingPort sourceDocking = combatRig.Ship.Ship.AddComponent<DockingPort>();
+            sourceDocking.Configure(Vector3.zero, Vector3.forward, 3f, 10f, 1.5f);
+            GameObject dockingObject = new GameObject("PlayerHudIndicatorDockTarget");
+            dockingObject.transform.position = new Vector3(0f, 0f, 70f);
+            DockingPort dockingTarget = dockingObject.AddComponent<DockingPort>();
+            dockingTarget.Configure(Vector3.zero, Vector3.forward, 3f, 10f, 1.5f);
+
+            GameObject arenaObject = new GameObject("PlayerHudIndicatorArena");
+            PrototypePveArenaLoop arenaLoop = arenaObject.AddComponent<PrototypePveArenaLoop>();
+            arenaLoop.StartOrResetArena();
+
+            PrototypePlayerHudSnapshot snapshot = PrototypePlayerHudSnapshotBuilder.Build(
+                combatRig.Ship.Ship.transform,
+                combatRig.Ship.Body,
+                combatRig.Ship.Stats,
+                combatRig.Ship.Controller,
+                autopilot,
+                null,
+                combatRig.Computer,
+                sourceDocking,
+                dockingTarget,
+                arenaLoop,
+                null,
+                null);
+
+            AssertIndicatorContains(snapshot.TargetIndicators, PrototypePlayerTargetIndicatorKind.Navigation, "Nav Waypoint", true);
+            AssertIndicatorContains(snapshot.TargetIndicators, PrototypePlayerTargetIndicatorKind.Combat, "PlayerHudIndicatorCombatTarget", true);
+            AssertIndicatorContains(snapshot.TargetIndicators, PrototypePlayerTargetIndicatorKind.Docking, "PlayerHudIndicatorDockTarget", true);
+            Assert.That(CountIndicatorKind(snapshot.TargetIndicators, PrototypePlayerTargetIndicatorKind.Objective), Is.GreaterThanOrEqualTo(3));
+
+            PrototypePlayerHudSnapshot noDockingSnapshot = PrototypePlayerHudSnapshotBuilder.Build(
+                combatRig.Ship.Ship.transform,
+                combatRig.Ship.Body,
+                combatRig.Ship.Stats,
+                combatRig.Ship.Controller,
+                autopilot,
+                null,
+                combatRig.Computer,
+                sourceDocking,
+                null,
+                arenaLoop,
+                null,
+                null);
+
+            Assert.That(CountIndicatorKind(noDockingSnapshot.TargetIndicators, PrototypePlayerTargetIndicatorKind.Docking), Is.EqualTo(0));
+        }
+    }
+
+    [Test]
+    public void TargetIndicatorProjectionClampsOffscreenAndHidesRiskyLabels()
+    {
+        GameObject cameraObject = new GameObject("PlayerHudIndicatorProjectionCamera");
+        Camera projectionCamera = cameraObject.AddComponent<Camera>();
+        cameraObject.transform.position = Vector3.zero;
+        cameraObject.transform.rotation = Quaternion.identity;
+        projectionCamera.nearClipPlane = 0.1f;
+        projectionCamera.farClipPlane = 2000f;
+
+        PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+        playerHud.RefreshNow();
+
+        var indicators = new PrototypePlayerTargetIndicatorSnapshot(new[]
+        {
+            new PrototypePlayerTargetIndicator(
+                PrototypePlayerTargetIndicatorKind.Navigation,
+                "Forward Nav",
+                "Ziel gewaehlt",
+                new Vector3(0f, 0f, 120f),
+                120f,
+                PrototypePlayerHudSeverity.Info,
+                0f,
+                true,
+                true),
+            new PrototypePlayerTargetIndicator(
+                PrototypePlayerTargetIndicatorKind.Combat,
+                "Far Right Combat",
+                "Bereit",
+                new Vector3(500f, 0f, 120f),
+                514f,
+                PrototypePlayerHudSeverity.Info,
+                0.8f,
+                true,
+                true),
+            new PrototypePlayerTargetIndicator(
+                PrototypePlayerTargetIndicatorKind.Docking,
+                "Behind Dock",
+                "Docking",
+                new Vector3(0f, 0f, -80f),
+                80f,
+                PrototypePlayerHudSeverity.Warning,
+                0f,
+                true,
+                true)
+        });
+
+        PrototypePlayerHudSnapshot snapshot = CreateHudSnapshot(
+            CreateCombatSnapshot(false),
+            CreateDockingSnapshot(false),
+            CreateNavigationSnapshot(false),
+            default,
+            null,
+            null,
+            indicators);
+
+        PrototypePlayerProjectedTargetIndicator[] projected = playerHud.ProjectTargetIndicatorsForTests(1280, 720, snapshot);
+
+        Assert.That(projected.Length, Is.EqualTo(3));
+        Assert.False(projected[0].Offscreen);
+        Assert.True(projected[0].LabelVisible);
+        Assert.True(projected[1].Offscreen);
+        Assert.True(projected[2].Offscreen);
+        Assert.That(projected[1].CanvasPosition.x, Is.LessThanOrEqualTo(244.5f));
+
+        PrototypePlayerProjectedTargetIndicator[] tinyProjected = playerHud.ProjectTargetIndicatorsForTests(640, 480, snapshot);
+        Assert.False(tinyProjected[0].LabelVisible);
+
+        ApplySnapshotForTest(playerHud, snapshot);
+        AssertTargetIndicatorLabelsDoNotOverlap(playerHud);
     }
 
     [Test]
@@ -675,7 +820,8 @@ public class PrototypePlayerHudValidationTests
         PrototypePlayerNavigationSnapshot navigation,
         PrototypePveArenaSnapshot arena,
         PrototypePlayerHudChip[] warnings = null,
-        PrototypePlayerRadarSnapshot? radar = null)
+        PrototypePlayerRadarSnapshot? radar = null,
+        PrototypePlayerTargetIndicatorSnapshot? targetIndicators = null)
     {
         PrototypePlayerRadarSnapshot radarSnapshot = radar ?? new PrototypePlayerRadarSnapshot(
             1000f,
@@ -687,6 +833,8 @@ public class PrototypePlayerHudValidationTests
             new Vector3[0],
             false,
             Vector3.zero);
+        PrototypePlayerTargetIndicatorSnapshot targetIndicatorSnapshot = targetIndicators
+            ?? new PrototypePlayerTargetIndicatorSnapshot(new PrototypePlayerTargetIndicator[0]);
         return new PrototypePlayerHudSnapshot(
             new PrototypePlayerFlightSnapshot(0f, 0f, 100f, 100f, "Cruise", string.Empty, "Main ready", "RCS ready", "SAS on"),
             navigation,
@@ -698,6 +846,7 @@ public class PrototypePlayerHudValidationTests
             new PrototypePlayerHudChip[0],
             default,
             radarSnapshot,
+            targetIndicatorSnapshot,
             Vector3.zero,
             Vector3.forward,
             null,
@@ -808,6 +957,38 @@ public class PrototypePlayerHudValidationTests
         return count;
     }
 
+    private static void AssertIndicatorContains(
+        PrototypePlayerTargetIndicatorSnapshot snapshot,
+        PrototypePlayerTargetIndicatorKind kind,
+        string labelPart,
+        bool selected)
+    {
+        for (int i = 0; i < snapshot.Indicators.Length; i++)
+        {
+            PrototypePlayerTargetIndicator indicator = snapshot.Indicators[i];
+            if (indicator.Kind == kind && indicator.Selected == selected && indicator.Label.Contains(labelPart))
+            {
+                return;
+            }
+        }
+
+        Assert.Fail("Missing target indicator " + kind + " containing " + labelPart);
+    }
+
+    private static int CountIndicatorKind(PrototypePlayerTargetIndicatorSnapshot snapshot, PrototypePlayerTargetIndicatorKind kind)
+    {
+        int count = 0;
+        for (int i = 0; i < snapshot.Indicators.Length; i++)
+        {
+            if (snapshot.Indicators[i].Kind == kind)
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
     private static void SetPrivateField(object target, string fieldName, object value)
     {
         FieldInfo field = target.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
@@ -867,6 +1048,27 @@ public class PrototypePlayerHudValidationTests
         Assert.False(Overlaps(primaryWarning, assist2), width + "x" + height + " warning/assist2");
         Assert.False(Overlaps(primaryWarning, assist3), width + "x" + height + " warning/assist3");
         Assert.False(Overlaps(objectiveTitle, objectiveBody), width + "x" + height + " objective title/body");
+    }
+
+    private static void AssertTargetIndicatorLabelsDoNotOverlap(PrototypePlayerHudRenderer playerHud)
+    {
+        var visibleLabels = new List<RectTransform>();
+        for (int i = 0; i < 6; i++)
+        {
+            RectTransform rect = FindRect(playerHud, "TargetIndicatorLabel" + i);
+            if (rect.gameObject.activeInHierarchy)
+            {
+                visibleLabels.Add(rect);
+            }
+        }
+
+        for (int i = 0; i < visibleLabels.Count; i++)
+        {
+            for (int j = i + 1; j < visibleLabels.Count; j++)
+            {
+                Assert.False(Overlaps(visibleLabels[i], visibleLabels[j]), "target indicator label overlap " + i + "/" + j);
+            }
+        }
     }
 
     private static RectTransform FindRect(PrototypePlayerHudRenderer playerHud, string objectName)

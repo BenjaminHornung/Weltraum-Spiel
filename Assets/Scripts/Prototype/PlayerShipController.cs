@@ -173,6 +173,11 @@ public class PlayerShipController : MonoBehaviour
     private const float MassPropertiesFuelDeltaThreshold = 0.25f;
     private float nextMassPropertiesRefreshTime;
     private float lastMassPropertiesFuelKg = -1f;
+    private bool lastTranslationAutoStopActive;
+    private Vector3 lastTranslationAutoStopForceWorld;
+    private bool lastManualTranslationInputHeld;
+    private float lastManualInputGraceUntil;
+    private float lastTranslationAutoStopBlend;
     public float MainThrottle => mainThrottle;
     public float MainThrottlePercent => mainThrottle * 100f;
     public float MainThrustCommand { get; private set; }
@@ -229,6 +234,11 @@ public class PlayerShipController : MonoBehaviour
     public bool HasSasTargetRotation => sasTargetRotationValid;
     public Quaternion SasTargetRotation => sasTargetRotationValid ? sasTargetRotation : transform.rotation;
     public bool LastManualFlightInput { get; private set; }
+    public bool TranslationAutoStopActive => lastTranslationAutoStopActive;
+    public Vector3 TranslationAutoStopForceWorld => lastTranslationAutoStopForceWorld;
+    public bool ManualTranslationInputHeld => lastManualTranslationInputHeld;
+    public float ManualInputGraceUntil => lastManualInputGraceUntil;
+    public float TranslationAutoStopBlend => lastTranslationAutoStopBlend;
     public bool HasExternalFlightAssistRequest => hasExternalFlightAssistRequest;
     public FlightAssistRequest LastExternalFlightAssistRequest => externalFlightAssistRequest;
     public FlightAssistRequest LastFlightAssistRequest { get; private set; } = FlightAssistRequest.None;
@@ -510,6 +520,12 @@ public class PlayerShipController : MonoBehaviour
         }
         RcsTranslationCommand = Vector3.ClampMagnitude(combinedTranslationInput, 1f) * controlScale;
         RcsAttitudeCommand = Vector3.ClampMagnitude(combinedAttitudeInput, 1f) * controlScale;
+        lastManualTranslationInputHeld = RcsTranslationCommand.sqrMagnitude > 0.0001f;
+        if (lastManualTranslationInputHeld)
+        {
+            lastManualInputGraceUntil = Time.time;
+        }
+
         TurnInput = Mathf.Clamp(RcsAttitudeCommand.y, -1f, 1f);
         UpdateSasTargetRotation(RcsAttitudeCommand);
         if (HasManualControlOverride(RcsTranslationCommand, RcsAttitudeCommand, mainThrottlePulse))
@@ -851,6 +867,10 @@ public class PlayerShipController : MonoBehaviour
 
     private FlightAssistRequest BuildBaseFlightAssistRequest()
     {
+        lastTranslationAutoStopActive = false;
+        lastTranslationAutoStopForceWorld = Vector3.zero;
+        lastTranslationAutoStopBlend = 0f;
+
         if (hasExternalFlightAssistRequest)
         {
             return externalFlightAssistRequest;
@@ -862,6 +882,11 @@ public class PlayerShipController : MonoBehaviour
             Vector3 requestForceWorld = Vector3.ClampMagnitude(
                 -shipRigidbody.linearVelocity * Mathf.Max(1f, shipRigidbody.mass) * translationAutoStopGain,
                 maxForce);
+            lastTranslationAutoStopActive = true;
+            lastTranslationAutoStopForceWorld = requestForceWorld;
+            lastTranslationAutoStopBlend = maxForce > 0.0001f
+                ? Mathf.Clamp01(requestForceWorld.magnitude / maxForce)
+                : 0f;
             return new FlightAssistRequest(
                 FlightAssistMode.AssistedFlight,
                 FlightAssistRequestSource.Sas,

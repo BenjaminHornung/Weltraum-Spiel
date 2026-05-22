@@ -205,8 +205,8 @@ public static class PrototypeUiLayoutManager
 
         if (weaponComputer != null)
         {
-            weaponComputer.SetWindowVisible(preset == PrototypeUiPreset.FullDiagnostics);
-            weaponComputer.SetWindowCollapsed(false);
+            weaponComputer.SetWindowVisible(true);
+            weaponComputer.SetWindowCollapsed(preset != PrototypeUiPreset.FullDiagnostics);
         }
 
         ResolveOverlaps();

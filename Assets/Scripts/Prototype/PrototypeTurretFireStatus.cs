@@ -11,7 +11,8 @@ public enum PrototypeTurretFireBlockReason
     Aligning,
     MissingImportedMarker,
     SafetyDataMissing,
-    SafetyUnsafe
+    SafetyUnsafe,
+    LineBlocked
 }
 
 [System.Serializable]

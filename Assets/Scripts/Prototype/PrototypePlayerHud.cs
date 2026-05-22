@@ -309,6 +309,79 @@ public readonly struct PrototypePlayerRadarSnapshot
     public Vector3 AvoidanceWorldPosition { get; }
 }
 
+public enum PrototypePlayerTargetIndicatorKind
+{
+    Navigation,
+    Combat,
+    Docking,
+    Objective
+}
+
+public readonly struct PrototypePlayerTargetIndicator
+{
+    public PrototypePlayerTargetIndicator(
+        PrototypePlayerTargetIndicatorKind kind,
+        string label,
+        string statusLabel,
+        Vector3 worldPosition,
+        float distanceMeters,
+        PrototypePlayerHudSeverity severity,
+        float healthFraction,
+        bool selected,
+        bool showLabel)
+    {
+        Kind = kind;
+        Label = string.IsNullOrWhiteSpace(label) ? kind.ToString() : label;
+        StatusLabel = string.IsNullOrWhiteSpace(statusLabel) ? string.Empty : statusLabel;
+        WorldPosition = worldPosition;
+        DistanceMeters = Mathf.Max(0f, distanceMeters);
+        Severity = severity;
+        HealthFraction = Mathf.Clamp01(healthFraction);
+        Selected = selected;
+        ShowLabel = showLabel;
+    }
+
+    public PrototypePlayerTargetIndicatorKind Kind { get; }
+    public string Label { get; }
+    public string StatusLabel { get; }
+    public Vector3 WorldPosition { get; }
+    public float DistanceMeters { get; }
+    public PrototypePlayerHudSeverity Severity { get; }
+    public float HealthFraction { get; }
+    public bool Selected { get; }
+    public bool ShowLabel { get; }
+}
+
+public readonly struct PrototypePlayerTargetIndicatorSnapshot
+{
+    public PrototypePlayerTargetIndicatorSnapshot(PrototypePlayerTargetIndicator[] indicators)
+    {
+        Indicators = indicators ?? System.Array.Empty<PrototypePlayerTargetIndicator>();
+    }
+
+    public PrototypePlayerTargetIndicator[] Indicators { get; }
+}
+
+public readonly struct PrototypePlayerProjectedTargetIndicator
+{
+    public PrototypePlayerProjectedTargetIndicator(
+        PrototypePlayerTargetIndicator indicator,
+        Vector2 canvasPosition,
+        bool offscreen,
+        bool labelVisible)
+    {
+        Indicator = indicator;
+        CanvasPosition = canvasPosition;
+        Offscreen = offscreen;
+        LabelVisible = labelVisible;
+    }
+
+    public PrototypePlayerTargetIndicator Indicator { get; }
+    public Vector2 CanvasPosition { get; }
+    public bool Offscreen { get; }
+    public bool LabelVisible { get; }
+}
+
 public readonly struct PrototypePlayerHudSnapshot
 {
     public PrototypePlayerHudSnapshot(
@@ -322,6 +395,7 @@ public readonly struct PrototypePlayerHudSnapshot
         PrototypePlayerHudChip[] assistChips,
         PrototypeHudViewModel markerModel,
         PrototypePlayerRadarSnapshot radar,
+        PrototypePlayerTargetIndicatorSnapshot targetIndicators,
         Vector3 shipWorldPosition,
         Vector3 shipForward,
         Vector3? navigationTargetWorldPosition,
@@ -337,6 +411,7 @@ public readonly struct PrototypePlayerHudSnapshot
         AssistChips = assistChips ?? System.Array.Empty<PrototypePlayerHudChip>();
         MarkerModel = markerModel;
         Radar = radar;
+        TargetIndicators = targetIndicators;
         ShipWorldPosition = shipWorldPosition;
         ShipForward = shipForward.sqrMagnitude > 0.0001f ? shipForward.normalized : Vector3.forward;
         NavigationTargetWorldPosition = navigationTargetWorldPosition;
@@ -353,6 +428,7 @@ public readonly struct PrototypePlayerHudSnapshot
     public PrototypePlayerHudChip[] AssistChips { get; }
     public PrototypeHudViewModel MarkerModel { get; }
     public PrototypePlayerRadarSnapshot Radar { get; }
+    public PrototypePlayerTargetIndicatorSnapshot TargetIndicators { get; }
     public Vector3 ShipWorldPosition { get; }
     public Vector3 ShipForward { get; }
     public Vector3? NavigationTargetWorldPosition { get; }
@@ -429,6 +505,13 @@ public static class PrototypePlayerHudSnapshotBuilder
             effectiveTargetDockingPort,
             arenaLoop,
             navigation);
+        PrototypePlayerTargetIndicatorSnapshot targetIndicators = BuildTargetIndicators(
+            shipRoot,
+            navigation,
+            combat,
+            docking,
+            arena,
+            radar);
 
         return new PrototypePlayerHudSnapshot(
             flight,
@@ -441,6 +524,7 @@ public static class PrototypePlayerHudSnapshotBuilder
             assists,
             markerModel,
             radar,
+            targetIndicators,
             shipRoot != null ? shipRoot.position : Vector3.zero,
             shipRoot != null ? shipRoot.forward : Vector3.forward,
             autopilot != null && autopilot.CurrentTarget != null ? autopilot.CurrentTarget.Position : (Vector3?)null,
@@ -840,6 +924,158 @@ public static class PrototypePlayerHudSnapshotBuilder
             preview,
             navigation.HasAvoidanceCue,
             navigation.AvoidanceWorldPosition);
+    }
+
+    private static PrototypePlayerTargetIndicatorSnapshot BuildTargetIndicators(
+        Transform shipRoot,
+        PrototypePlayerNavigationSnapshot navigation,
+        PrototypePlayerCombatSnapshot combat,
+        PrototypePlayerDockingSnapshot docking,
+        PrototypePveArenaSnapshot arena,
+        PrototypePlayerRadarSnapshot radar)
+    {
+        Vector3 origin = shipRoot != null ? shipRoot.position : radar.ShipWorldPosition;
+        var indicators = new List<PrototypePlayerTargetIndicator>(8);
+        var keys = new HashSet<string>();
+
+        PrototypePlayerRadarBlip selectedCombat;
+        if (TryFindRadarBlip(radar, PrototypePlayerRadarBlipKind.SelectedCombat, out selectedCombat))
+        {
+            AddTargetIndicator(
+                indicators,
+                keys,
+                PrototypePlayerTargetIndicatorKind.Combat,
+                combat.TargetName,
+                combat.FireStatusLabel,
+                selectedCombat.WorldPosition,
+                Vector3.Distance(origin, selectedCombat.WorldPosition),
+                combat.FireSeverity,
+                combat.HealthPercent,
+                selected: true,
+                showLabel: true);
+        }
+
+        PrototypePlayerRadarBlip dockingTarget;
+        if (docking.Visible && TryFindRadarBlip(radar, PrototypePlayerRadarBlipKind.Docking, out dockingTarget))
+        {
+            AddTargetIndicator(
+                indicators,
+                keys,
+                PrototypePlayerTargetIndicatorKind.Docking,
+                docking.TargetName,
+                docking.StatusLabel,
+                dockingTarget.WorldPosition,
+                docking.DistanceMeters,
+                docking.StatusSeverity,
+                0f,
+                selected: true,
+                showLabel: true);
+        }
+
+        PrototypePlayerRadarBlip selectedNavigation;
+        if (navigation.Visible && TryFindRadarBlip(radar, PrototypePlayerRadarBlipKind.SelectedNavigation, out selectedNavigation))
+        {
+            AddTargetIndicator(
+                indicators,
+                keys,
+                PrototypePlayerTargetIndicatorKind.Navigation,
+                navigation.TargetName,
+                navigation.StateLabel,
+                selectedNavigation.WorldPosition,
+                navigation.DistanceMeters,
+                PrototypePlayerHudSeverity.Info,
+                0f,
+                selected: true,
+                showLabel: true);
+        }
+
+        if (arena.IsVisible)
+        {
+            PrototypePlayerRadarBlip[] blips = radar.Blips;
+            int objectiveCount = 0;
+            for (int i = 0; i < blips.Length && objectiveCount < 4; i++)
+            {
+                if (blips[i].Kind != PrototypePlayerRadarBlipKind.Objective)
+                {
+                    continue;
+                }
+
+                if (AddTargetIndicator(
+                    indicators,
+                    keys,
+                    PrototypePlayerTargetIndicatorKind.Objective,
+                    blips[i].Label,
+                    "Objective",
+                    blips[i].WorldPosition,
+                    Vector3.Distance(origin, blips[i].WorldPosition),
+                    PrototypePlayerHudSeverity.Info,
+                    0f,
+                    selected: false,
+                    showLabel: false))
+                {
+                    objectiveCount++;
+                }
+            }
+        }
+
+        return new PrototypePlayerTargetIndicatorSnapshot(indicators.ToArray());
+    }
+
+    private static bool TryFindRadarBlip(PrototypePlayerRadarSnapshot radar, PrototypePlayerRadarBlipKind kind, out PrototypePlayerRadarBlip result)
+    {
+        PrototypePlayerRadarBlip[] blips = radar.Blips;
+        for (int i = 0; i < blips.Length; i++)
+        {
+            if (blips[i].Kind == kind)
+            {
+                result = blips[i];
+                return true;
+            }
+        }
+
+        result = default;
+        return false;
+    }
+
+    private static bool AddTargetIndicator(
+        List<PrototypePlayerTargetIndicator> indicators,
+        HashSet<string> keys,
+        PrototypePlayerTargetIndicatorKind kind,
+        string label,
+        string statusLabel,
+        Vector3 worldPosition,
+        float distanceMeters,
+        PrototypePlayerHudSeverity severity,
+        float healthFraction,
+        bool selected,
+        bool showLabel)
+    {
+        string key = BuildTargetIndicatorKey(worldPosition);
+        if (!keys.Add(key))
+        {
+            return false;
+        }
+
+        indicators.Add(new PrototypePlayerTargetIndicator(
+            kind,
+            label,
+            statusLabel,
+            worldPosition,
+            distanceMeters,
+            severity,
+            healthFraction,
+            selected,
+            showLabel));
+        return true;
+    }
+
+    private static string BuildTargetIndicatorKey(Vector3 worldPosition)
+    {
+        return Mathf.RoundToInt(worldPosition.x * 10f).ToString()
+            + "|"
+            + Mathf.RoundToInt(worldPosition.y * 10f).ToString()
+            + "|"
+            + Mathf.RoundToInt(worldPosition.z * 10f).ToString();
     }
 
     private static void AddNavigationRadarBlips(
@@ -1745,6 +1981,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private const float MarkerRadius = 88f;
     private const float CanvasReferenceWidth = 1280f;
     private const float CanvasReferenceHeight = 720f;
+    private const int TargetIndicatorLabelCount = 6;
 
     [SerializeField] private Transform shipRoot;
     [SerializeField] private Rigidbody shipRigidbody;
@@ -1795,6 +2032,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private Button killMomentumButton;
     private Text killMomentumButtonText;
     private readonly List<Text> markerLabels = new List<Text>();
+    private readonly List<Text> targetIndicatorLabels = new List<Text>();
+    private PrototypePlayerProjectedTargetIndicator[] projectedTargetIndicators = System.Array.Empty<PrototypePlayerProjectedTargetIndicator>();
     private PrototypePlayerHudSnapshot lastSnapshot;
     private int lastLayoutWidth = -1;
     private int lastLayoutHeight = -1;
@@ -1985,6 +2224,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         overlayGraphic.raycastTarget = false;
 
         CreateMarkerLabels(canvasObject.transform);
+        CreateTargetIndicatorLabels(canvasObject.transform);
         CreateHelpPanel(canvasObject.transform);
     }
 
@@ -2078,6 +2318,16 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             }
         }
 
+        targetIndicatorLabels.Clear();
+        for (int i = 0; i < TargetIndicatorLabelCount; i++)
+        {
+            Text label = FindHudComponent<Text>("TargetIndicatorLabel" + i);
+            if (label != null)
+            {
+                targetIndicatorLabels.Add(label);
+            }
+        }
+
         bool complete = canvasScaler != null
             && overlayGraphic != null
             && radarGraphic != null
@@ -2110,7 +2360,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             && assistTexts.Count == 3
             && contextGaugeLabels.Count == 3
             && contextGaugeFills.Count == 3
-            && markerLabels.Count == 4;
+            && markerLabels.Count == 4
+            && targetIndicatorLabels.Count == TargetIndicatorLabelCount;
 
         if (!complete)
         {
@@ -2184,6 +2435,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         killMomentumButton = null;
         killMomentumButtonText = null;
         markerLabels.Clear();
+        targetIndicatorLabels.Clear();
+        projectedTargetIndicators = System.Array.Empty<PrototypePlayerProjectedTargetIndicator>();
         hasCachedHelpText = false;
     }
 
@@ -2302,6 +2555,16 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         }
     }
 
+    private void CreateTargetIndicatorLabels(Transform parent)
+    {
+        for (int i = 0; i < TargetIndicatorLabelCount; i++)
+        {
+            Text label = CreateText("TargetIndicatorLabel" + i, parent, 10, TextAnchor.UpperCenter, Color.white, new RectPreset(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(150f, 34f), Vector2.zero));
+            label.gameObject.SetActive(false);
+            targetIndicatorLabels.Add(label);
+        }
+    }
+
     private void ApplySnapshot(PrototypePlayerHudSnapshot snapshot)
     {
         if (canvas != null)
@@ -2364,7 +2627,10 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
         ConfigureKillMomentumButton();
 
+        projectedTargetIndicators = ProjectTargetIndicators(snapshot, GetComponent<Camera>(), GetCanvasSize());
+        UpdateTargetIndicatorLabels(projectedTargetIndicators);
         overlayGraphic.SetSnapshot(snapshot);
+        overlayGraphic.SetProjectedTargetIndicators(projectedTargetIndicators);
         if (radarGraphic != null)
         {
             radarGraphic.SetSnapshot(snapshot);
@@ -2423,6 +2689,16 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     {
         ApplyResponsiveLayout(width, height, true);
     }
+
+    public PrototypePlayerProjectedTargetIndicator[] ProjectTargetIndicatorsForTests(
+        int width,
+        int height,
+        PrototypePlayerHudSnapshot snapshot)
+    {
+        return ProjectTargetIndicators(snapshot, GetComponent<Camera>(), new Vector2(Mathf.Max(1, width), Mathf.Max(1, height)));
+    }
+
+    public PrototypePlayerProjectedTargetIndicator[] LastProjectedTargetIndicators => projectedTargetIndicators;
 
     private void ApplyResponsiveLayout()
     {
@@ -2792,6 +3068,205 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         rect.anchoredPosition = new Vector2(clamped.x, clamped.y - 86f);
     }
 
+    private Vector2 GetCanvasSize()
+    {
+        RectTransform canvasRect = canvas != null ? canvas.GetComponent<RectTransform>() : null;
+        if (canvasRect != null && canvasRect.rect.width > 1f && canvasRect.rect.height > 1f)
+        {
+            return canvasRect.rect.size;
+        }
+
+        return new Vector2(CanvasReferenceWidth, CanvasReferenceHeight);
+    }
+
+    private static PrototypePlayerProjectedTargetIndicator[] ProjectTargetIndicators(
+        PrototypePlayerHudSnapshot snapshot,
+        Camera projectionCamera,
+        Vector2 canvasSize)
+    {
+        PrototypePlayerTargetIndicator[] indicators = snapshot.TargetIndicators.Indicators;
+        if (projectionCamera == null || indicators == null || indicators.Length == 0)
+        {
+            return System.Array.Empty<PrototypePlayerProjectedTargetIndicator>();
+        }
+
+        Vector2 size = new Vector2(Mathf.Max(1f, canvasSize.x), Mathf.Max(1f, canvasSize.y));
+        Rect markerSafeRect = BuildTargetIndicatorSafeRect(size);
+        Rect labelSafeRect = BuildTargetIndicatorLabelSafeRect(markerSafeRect);
+        var projected = new PrototypePlayerProjectedTargetIndicator[indicators.Length];
+        for (int i = 0; i < indicators.Length; i++)
+        {
+            PrototypePlayerTargetIndicator indicator = indicators[i];
+            Vector3 viewport = projectionCamera.WorldToViewportPoint(indicator.WorldPosition);
+            bool behindCamera = viewport.z <= 0f;
+            Vector2 viewportPoint = new Vector2(viewport.x, viewport.y);
+            if (behindCamera)
+            {
+                viewportPoint = new Vector2(1f - viewportPoint.x, 1f - viewportPoint.y);
+            }
+
+            Vector2 rawCanvas = new Vector2(
+                (viewportPoint.x - 0.5f) * size.x,
+                (viewportPoint.y - 0.5f) * size.y);
+            Vector2 clampedCanvas = ClampToRect(rawCanvas, markerSafeRect);
+            bool outsideViewport = viewportPoint.x < 0f || viewportPoint.x > 1f || viewportPoint.y < 0f || viewportPoint.y > 1f;
+            bool clampedBySafeArea = (clampedCanvas - rawCanvas).sqrMagnitude > 0.01f;
+            bool offscreen = behindCamera || outsideViewport || clampedBySafeArea;
+            Vector2 labelPosition = clampedCanvas + new Vector2(0f, offscreen ? -28f : 20f);
+            bool labelVisible = indicator.ShowLabel
+                && size.x >= 720f
+                && size.y >= 520f
+                && labelSafeRect.Contains(labelPosition);
+
+            projected[i] = new PrototypePlayerProjectedTargetIndicator(indicator, clampedCanvas, offscreen, labelVisible);
+        }
+
+        return projected;
+    }
+
+    private static Rect BuildTargetIndicatorSafeRect(Vector2 canvasSize)
+    {
+        float width = Mathf.Max(1f, canvasSize.x);
+        float height = Mathf.Max(1f, canvasSize.y);
+        bool narrow = width < 980f;
+        bool shortScreen = height < 620f;
+        float margin = narrow ? 16f : 24f;
+        float gap = narrow ? 12f : 16f;
+        float leftReserve = narrow ? margin + 76f : margin + 270f + gap;
+        float rightReserve = narrow ? margin + 96f : margin + 356f + gap;
+        float topReserve = margin + (shortScreen ? 54f : 68f);
+        float bottomReserve = margin + (shortScreen ? 104f : 128f);
+        Rect safe = new Rect(
+            (-width * 0.5f) + leftReserve,
+            (-height * 0.5f) + bottomReserve,
+            width - leftReserve - rightReserve,
+            height - topReserve - bottomReserve);
+
+        float minimumWidth = Mathf.Min(width - (margin * 2f), 220f);
+        if (safe.width < minimumWidth)
+        {
+            safe.x = -minimumWidth * 0.5f;
+            safe.width = minimumWidth;
+        }
+
+        float minimumHeight = Mathf.Min(height - (margin * 2f), 160f);
+        if (safe.height < minimumHeight)
+        {
+            safe.y = -minimumHeight * 0.5f;
+            safe.height = minimumHeight;
+        }
+
+        return safe;
+    }
+
+    private static Rect BuildTargetIndicatorLabelSafeRect(Rect markerSafeRect)
+    {
+        const float labelHalfWidth = 76f;
+        const float labelHeight = 42f;
+        if (markerSafeRect.width <= labelHalfWidth * 2f || markerSafeRect.height <= labelHeight * 2f)
+        {
+            return new Rect(markerSafeRect.center, Vector2.zero);
+        }
+
+        return new Rect(
+            markerSafeRect.xMin + labelHalfWidth,
+            markerSafeRect.yMin + labelHeight,
+            markerSafeRect.width - (labelHalfWidth * 2f),
+            markerSafeRect.height - (labelHeight * 2f));
+    }
+
+    private static Vector2 ClampToRect(Vector2 value, Rect rect)
+    {
+        return new Vector2(
+            Mathf.Clamp(value.x, rect.xMin, rect.xMax),
+            Mathf.Clamp(value.y, rect.yMin, rect.yMax));
+    }
+
+    private void UpdateTargetIndicatorLabels(PrototypePlayerProjectedTargetIndicator[] projectedIndicators)
+    {
+        for (int i = 0; i < targetIndicatorLabels.Count; i++)
+        {
+            targetIndicatorLabels[i].gameObject.SetActive(false);
+        }
+
+        if (projectedIndicators == null)
+        {
+            return;
+        }
+
+        var occupiedLabelRects = new List<Rect>(targetIndicatorLabels.Count);
+        for (int i = 0; i < projectedIndicators.Length && i < targetIndicatorLabels.Count; i++)
+        {
+            PrototypePlayerProjectedTargetIndicator projected = projectedIndicators[i];
+            if (!projected.LabelVisible)
+            {
+                continue;
+            }
+
+            Vector2 size = new Vector2(projected.Indicator.Kind == PrototypePlayerTargetIndicatorKind.Combat ? 170f : 150f, 34f);
+            Vector2 position = projected.CanvasPosition + new Vector2(0f, projected.Offscreen ? -28f : 20f);
+            Rect labelRect = new Rect(position.x - (size.x * 0.5f), position.y - 2f, size.x, size.y);
+            if (OverlapsAny(labelRect, occupiedLabelRects))
+            {
+                continue;
+            }
+
+            Text label = targetIndicatorLabels[i];
+            label.gameObject.SetActive(true);
+            label.text = BuildTargetIndicatorLabel(projected.Indicator);
+            label.color = ColorForTargetIndicator(projected.Indicator);
+            label.fontSize = projected.Indicator.Kind == PrototypePlayerTargetIndicatorKind.Objective ? 9 : 10;
+            RectTransform rect = label.rectTransform;
+            rect.anchoredPosition = position;
+            rect.sizeDelta = size;
+            occupiedLabelRects.Add(labelRect);
+        }
+    }
+
+    private static bool OverlapsAny(Rect candidate, List<Rect> occupied)
+    {
+        for (int i = 0; i < occupied.Count; i++)
+        {
+            if (candidate.Overlaps(occupied[i]))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static string BuildTargetIndicatorLabel(PrototypePlayerTargetIndicator indicator)
+    {
+        string distance = FormatDistance(indicator.DistanceMeters);
+        if (indicator.Kind == PrototypePlayerTargetIndicatorKind.Combat && indicator.HealthFraction > 0f)
+        {
+            return indicator.Label + "\n" + distance + " | " + (indicator.HealthFraction * 100f).ToString("0") + "% | " + indicator.StatusLabel;
+        }
+
+        if (!string.IsNullOrWhiteSpace(indicator.StatusLabel))
+        {
+            return indicator.Label + "\n" + distance + " | " + indicator.StatusLabel;
+        }
+
+        return indicator.Label + "\n" + distance;
+    }
+
+    private static Color ColorForTargetIndicator(PrototypePlayerTargetIndicator indicator)
+    {
+        switch (indicator.Kind)
+        {
+            case PrototypePlayerTargetIndicatorKind.Combat:
+                return ColorForSeverity(indicator.Severity);
+            case PrototypePlayerTargetIndicatorKind.Docking:
+                return PrototypeUiStyle.ActiveColor;
+            case PrototypePlayerTargetIndicatorKind.Objective:
+                return PrototypeUiStyle.WarningColor;
+            default:
+                return PrototypeModuleColorPalette.Target;
+        }
+    }
+
     private static string BuildWarningStrip(PrototypePlayerHudSnapshot snapshot)
     {
         if (snapshot.Warnings.Length == 0)
@@ -3082,10 +3557,17 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 public sealed class PrototypePlayerHudOverlayGraphic : MaskableGraphic
 {
     private PrototypePlayerHudSnapshot snapshot;
+    private PrototypePlayerProjectedTargetIndicator[] projectedTargetIndicators = System.Array.Empty<PrototypePlayerProjectedTargetIndicator>();
 
     public void SetSnapshot(PrototypePlayerHudSnapshot value)
     {
         snapshot = value;
+        SetVerticesDirty();
+    }
+
+    public void SetProjectedTargetIndicators(PrototypePlayerProjectedTargetIndicator[] value)
+    {
+        projectedTargetIndicators = value ?? System.Array.Empty<PrototypePlayerProjectedTargetIndicator>();
         SetVerticesDirty();
     }
 
@@ -3098,6 +3580,7 @@ public sealed class PrototypePlayerHudOverlayGraphic : MaskableGraphic
         DrawLine(vh, center + Vector2.left * 18f, center + Vector2.right * 18f, Color.white, 1.4f);
         DrawLine(vh, center + Vector2.up * 18f, center + Vector2.down * 18f, Color.white, 1.4f);
         DrawMarker(vh, center, snapshot.MarkerModel.ForwardMarker, Color.white, 10f);
+        DrawTargetIndicators(vh, projectedTargetIndicators);
 
         if (snapshot.MarkerModel.HasVelocityMarker)
         {
@@ -3120,6 +3603,83 @@ public sealed class PrototypePlayerHudOverlayGraphic : MaskableGraphic
             DrawCombatBracket(vh, center + Vector2.ClampMagnitude(snapshot.MarkerModel.TargetMarker, 88f), ColorForSeverity(snapshot.Combat.FireSeverity));
         }
 
+    }
+
+    private static void DrawTargetIndicators(VertexHelper vh, PrototypePlayerProjectedTargetIndicator[] projectedIndicators)
+    {
+        if (projectedIndicators == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < projectedIndicators.Length; i++)
+        {
+            PrototypePlayerProjectedTargetIndicator projected = projectedIndicators[i];
+            Color color = ColorForTargetIndicator(projected.Indicator);
+            if (projected.Offscreen)
+            {
+                DrawOffscreenArrow(vh, projected.CanvasPosition, color);
+                continue;
+            }
+
+            switch (projected.Indicator.Kind)
+            {
+                case PrototypePlayerTargetIndicatorKind.Combat:
+                    DrawCombatBracket(vh, projected.CanvasPosition, color);
+                    DrawHealthTick(vh, projected.CanvasPosition, projected.Indicator.HealthFraction, color);
+                    break;
+                case PrototypePlayerTargetIndicatorKind.Docking:
+                    DrawDockingIndicator(vh, projected.CanvasPosition, color);
+                    break;
+                case PrototypePlayerTargetIndicatorKind.Objective:
+                    DrawDiamond(vh, projected.CanvasPosition, color, 12f, 1.6f);
+                    break;
+                default:
+                    DrawDiamond(vh, projected.CanvasPosition, color, projected.Indicator.Selected ? 15f : 11f, projected.Indicator.Selected ? 1.9f : 1.4f);
+                    break;
+            }
+        }
+    }
+
+    private static void DrawOffscreenArrow(VertexHelper vh, Vector2 position, Color color)
+    {
+        Vector2 direction = position.sqrMagnitude > 0.001f ? position.normalized : Vector2.up;
+        Vector2 tangent = new Vector2(-direction.y, direction.x);
+        Vector2 tip = position;
+        Vector2 baseCenter = position - direction * 18f;
+        DrawLine(vh, tip, baseCenter + tangent * 8f, color, 2f);
+        DrawLine(vh, tip, baseCenter - tangent * 8f, color, 2f);
+        DrawLine(vh, baseCenter + tangent * 8f, baseCenter - tangent * 8f, color, 1.4f);
+    }
+
+    private static void DrawDiamond(VertexHelper vh, Vector2 center, Color color, float size, float thickness)
+    {
+        DrawLine(vh, center + Vector2.up * size, center + Vector2.right * size, color, thickness);
+        DrawLine(vh, center + Vector2.right * size, center + Vector2.down * size, color, thickness);
+        DrawLine(vh, center + Vector2.down * size, center + Vector2.left * size, color, thickness);
+        DrawLine(vh, center + Vector2.left * size, center + Vector2.up * size, color, thickness);
+    }
+
+    private static void DrawDockingIndicator(VertexHelper vh, Vector2 center, Color color)
+    {
+        DrawCircle(vh, center, 18f, color, 1.5f, 32);
+        DrawLine(vh, center + Vector2.left * 24f, center + Vector2.left * 10f, color, 1.7f);
+        DrawLine(vh, center + Vector2.right * 10f, center + Vector2.right * 24f, color, 1.7f);
+        DrawLine(vh, center + Vector2.up * 10f, center + Vector2.up * 24f, color, 1.7f);
+        DrawLine(vh, center + Vector2.down * 24f, center + Vector2.down * 10f, color, 1.7f);
+    }
+
+    private static void DrawHealthTick(VertexHelper vh, Vector2 center, float healthFraction, Color color)
+    {
+        if (healthFraction <= 0f)
+        {
+            return;
+        }
+
+        Vector2 start = center + new Vector2(-24f, -34f);
+        Vector2 end = start + Vector2.right * (48f * Mathf.Clamp01(healthFraction));
+        DrawLine(vh, start, start + Vector2.right * 48f, new Color(color.r, color.g, color.b, 0.28f), 2f);
+        DrawLine(vh, start, end, color, 2f);
     }
 
     private static void DrawDockingDirector(VertexHelper vh, Vector2 center, PrototypePlayerDockingSnapshot docking)
@@ -3281,6 +3841,21 @@ public sealed class PrototypePlayerHudOverlayGraphic : MaskableGraphic
                 return PrototypeUiStyle.DisabledColor;
             default:
                 return Color.white;
+        }
+    }
+
+    private static Color ColorForTargetIndicator(PrototypePlayerTargetIndicator indicator)
+    {
+        switch (indicator.Kind)
+        {
+            case PrototypePlayerTargetIndicatorKind.Combat:
+                return ColorForSeverity(indicator.Severity);
+            case PrototypePlayerTargetIndicatorKind.Docking:
+                return PrototypeUiStyle.ActiveColor;
+            case PrototypePlayerTargetIndicatorKind.Objective:
+                return PrototypeUiStyle.WarningColor;
+            default:
+                return PrototypeModuleColorPalette.Target;
         }
     }
 }

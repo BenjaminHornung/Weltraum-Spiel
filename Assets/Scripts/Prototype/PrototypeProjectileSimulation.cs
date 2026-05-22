@@ -71,6 +71,7 @@ public struct PrototypeProjectileFireResult
 {
     public bool fired;
     public WeaponProjectileMode mode;
+    public Vector3 directionWorld;
     public Vector3 projectileVelocityWorld;
     public bool hasImmediateHit;
     public ProjectileHitData hitData;
@@ -226,6 +227,7 @@ public class PrototypeProjectileSimulation : MonoBehaviour
         {
             fired = true,
             mode = request.mode,
+            directionWorld = request.direction,
             projectileVelocityWorld = request.inheritedVelocity + (request.direction * request.projectileSpeed),
             activeSimulatedProjectileCount = activeProjectiles.Count
         };

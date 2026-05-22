@@ -54,11 +54,17 @@ public class PrototypeWeaponComputer : MonoBehaviour
         }
 
         UpdateActiveTargetAndStatus();
+        if (turretWeapon != null && ActiveTargetTransform != null)
+        {
+            LastTurretStatus = turretWeapon.TickAimAtTarget(ActiveTargetTransform, Time.deltaTime);
+            TurretStatusLabel = BuildStatusLabel(LastTurretStatus);
+        }
+
         if (autoFireEnabled && turretWeapon != null && ActiveTargetTransform != null)
         {
             turretWeapon.TryFireAt(ActiveTargetTransform);
             LastTurretStatus = turretWeapon.LastFireStatus;
-            TurretStatusLabel = NormalizeStatusLabel(LastTurretStatus);
+            TurretStatusLabel = BuildStatusLabel(LastTurretStatus);
         }
     }
 
@@ -153,7 +159,7 @@ public class PrototypeWeaponComputer : MonoBehaviour
         }
 
         LastTurretStatus = turretWeapon.EvaluateFireStatus(ActiveTarget.Position);
-        TurretStatusLabel = NormalizeStatusLabel(LastTurretStatus);
+        TurretStatusLabel = BuildStatusLabel(LastTurretStatus);
     }
 
     private void ResolveReferences(bool force)
@@ -286,5 +292,15 @@ public class PrototypeWeaponComputer : MonoBehaviour
         }
 
         return status.canFire ? "in arc" : "no authority";
+    }
+
+    private string BuildStatusLabel(PrototypeTurretFireStatus status)
+    {
+        if (!autoFireEnabled && status.hasSelectedTarget && status.canFire)
+        {
+            return "tracking";
+        }
+
+        return NormalizeStatusLabel(status);
     }
 }

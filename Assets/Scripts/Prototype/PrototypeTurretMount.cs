@@ -24,6 +24,7 @@ public class PrototypeTurretMount : MonoBehaviour
     public Transform Muzzle => muzzle;
     public Transform MuzzleFlashMarker => muzzleFlashMarker;
     public PrototypeTurretArcSafetyResult LastArcSafetyResult => lastArcSafetyResult;
+    public bool HasLineOfFireSafetyData => hullSafetyCollider != null || hullSafetyRenderer != null || useManualLocalSafetyBounds;
 
     private void Awake()
     {
@@ -90,7 +91,7 @@ public class PrototypeTurretMount : MonoBehaviour
     public PrototypeTurretArcSafetyResult ValidateArcSafety(float yawMinDegrees, float yawMaxDegrees, float pitchMinDegrees, float pitchMaxDegrees)
     {
         ResolveMissingReferences();
-        if (muzzle == null || yawPivot == null || pitchPivot == null || !HasSafetyData())
+        if (muzzle == null || yawPivot == null || pitchPivot == null || !HasLineOfFireSafetyData)
         {
             lastArcSafetyResult = PrototypeTurretArcSafetyResult.MissingData();
             return lastArcSafetyResult;
@@ -146,6 +147,49 @@ public class PrototypeTurretMount : MonoBehaviour
         ValidateArcSafety(yawMin, yawMax, pitchMin, pitchMax);
     }
 
+    public bool IsLineOfFireBlocked(Vector3 worldPosition, Vector3 worldDirection, float distanceMeters, out float hitDistanceMeters)
+    {
+        hitDistanceMeters = 0f;
+        if (!HasLineOfFireSafetyData)
+        {
+            return false;
+        }
+
+        Vector3 direction = worldDirection.sqrMagnitude > 0.0001f ? worldDirection.normalized : MountRoot.forward;
+        float rayDistance = Mathf.Max(0.01f, distanceMeters);
+        if (IsInsideSafetyBounds(worldPosition))
+        {
+            return true;
+        }
+
+        Ray ray = new Ray(worldPosition, direction);
+        if (hullSafetyCollider != null && hullSafetyCollider.Raycast(ray, out RaycastHit colliderHit, rayDistance))
+        {
+            hitDistanceMeters = colliderHit.distance;
+            return true;
+        }
+
+        if (hullSafetyRenderer != null && hullSafetyRenderer.bounds.IntersectRay(ray, out float rendererDistance) && rendererDistance <= rayDistance)
+        {
+            hitDistanceMeters = rendererDistance;
+            return true;
+        }
+
+        if (!useManualLocalSafetyBounds)
+        {
+            return false;
+        }
+
+        Ray localRay = new Ray(MountRoot.InverseTransformPoint(worldPosition), MountRoot.InverseTransformDirection(direction));
+        if (manualLocalSafetyBounds.IntersectRay(localRay, out float manualDistance) && manualDistance <= rayDistance)
+        {
+            hitDistanceMeters = manualDistance;
+            return true;
+        }
+
+        return false;
+    }
+
     private Transform FindByNameToken(string token)
     {
         Transform[] transforms = GetComponentsInChildren<Transform>(true);
@@ -174,11 +218,6 @@ public class PrototypeTurretMount : MonoBehaviour
         }
 
         return null;
-    }
-
-    private bool HasSafetyData()
-    {
-        return hullSafetyCollider != null || hullSafetyRenderer != null || useManualLocalSafetyBounds;
     }
 
     private Vector3 EstimateSampledMuzzlePosition(float yaw, float pitch)

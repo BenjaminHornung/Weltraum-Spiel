@@ -247,6 +247,8 @@ public class PrototypeFunctionalShipSocketValidationTests
         Assert.That(report.boundMainThrusters, Is.GreaterThanOrEqualTo(1));
         Assert.That(report.boundRcsNozzles, Is.GreaterThanOrEqualTo(8));
         Assert.That(report.boundTurretWeapons, Is.GreaterThanOrEqualTo(1));
+        Assert.That(report.visibleTurretYawRenderers, Is.GreaterThanOrEqualTo(1));
+        Assert.That(report.visibleTurretPitchRenderers, Is.GreaterThanOrEqualTo(1));
         Assert.That(report.unsafeFunctionalSocketScaleCount, Is.EqualTo(0), report.firstUnsafeFunctionalSocketName);
         Assert.That(report.bestMainNozzleForwardDot, Is.GreaterThanOrEqualTo(0.9f), report.bestMainNozzleForwardName);
 

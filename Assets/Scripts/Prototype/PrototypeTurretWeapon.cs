@@ -15,6 +15,8 @@ public class PrototypeTurretWeapon : MonoBehaviour
     [SerializeField] private float maxRecoilAngularImpulse = 250f;
     [SerializeField] private float missDispersionDegrees = 6f;
     [SerializeField] private float alignmentToleranceDegrees = 1.5f;
+    [SerializeField] private float lineOfFireSafetyDistanceMeters = 4f;
+    [SerializeField] private float lineOfFireStartOffsetMeters = 0.05f;
     [SerializeField] private float muzzleFlashSeconds = 0.08f;
 
     private Quaternion yawPivotBaseLocalRotation;
@@ -231,6 +233,20 @@ public class PrototypeTurretWeapon : MonoBehaviour
             return LastFireStatus;
         }
 
+        if (IsOwnShipLineOfFireBlocked(out _))
+        {
+            LastFireStatus = PrototypeTurretFireStatus.Blocked(
+                PrototypeTurretFireBlockReason.LineBlocked,
+                "line blocked",
+                requestedYaw,
+                requestedPitch,
+                appliedYaw,
+                appliedPitch,
+                distanceMeters: distance,
+                hasSelectedTarget: hasTarget);
+            return LastFireStatus;
+        }
+
         float cooldownRemaining = nextFireTime - Time.time;
         if (cooldownRemaining > 0f)
         {
@@ -277,7 +293,9 @@ public class PrototypeTurretWeapon : MonoBehaviour
 
     private Vector3 GetShotDirection(Vector3 targetWorldPosition, bool hasTarget)
     {
-        Vector3 directDirection = GetRequestedAimDirection(targetWorldPosition, hasTarget);
+        Vector3 directDirection = mount != null && mount.Muzzle != null && mount.Muzzle.forward.sqrMagnitude > 0.0001f
+            ? mount.Muzzle.forward.normalized
+            : GetRequestedAimDirection(targetWorldPosition, hasTarget);
         float hitChance = shipStats != null ? shipStats.HitChance : 1f;
         float roll = GetRoll();
         LastShotWasIntendedHit = hitChance >= 1f || (hitChance > 0f && roll <= hitChance);
@@ -358,7 +376,7 @@ public class PrototypeTurretWeapon : MonoBehaviour
         if (angularImpulse.magnitude <= maxAngularImpulse)
         {
             LastRecoilAngularImpulseWorld = angularImpulse;
-            return physicsCore.ApplyForceAtPosition(recoilImpulse, LastRecoilPositionWorld, ForceMode.Impulse);
+        return physicsCore.ApplyForceAtPosition(recoilImpulse, LastRecoilPositionWorld, ForceMode.Impulse);
         }
 
         LastRecoilAngularImpulseWorld = Vector3.ClampMagnitude(angularImpulse, maxAngularImpulse);
@@ -481,6 +499,90 @@ public class PrototypeTurretWeapon : MonoBehaviour
         float tolerance = Mathf.Max(0.1f, alignmentToleranceDegrees);
         return Mathf.Abs(Mathf.DeltaAngle(LastAppliedYawDegrees, targetYawDegrees)) <= tolerance
             && Mathf.Abs(LastAppliedPitchDegrees - targetPitchDegrees) <= tolerance;
+    }
+
+    private bool IsOwnShipLineOfFireBlocked(out float hitDistanceMeters)
+    {
+        hitDistanceMeters = 0f;
+        if (mount == null || mount.Muzzle == null)
+        {
+            return false;
+        }
+
+        Vector3 direction = mount.Muzzle.forward.sqrMagnitude > 0.0001f ? mount.Muzzle.forward.normalized : transform.forward;
+        float maxDistance = Mathf.Max(0.01f, lineOfFireSafetyDistanceMeters);
+        Vector3 rayOrigin = mount.Muzzle.position + direction * Mathf.Max(0f, lineOfFireStartOffsetMeters);
+        if (mount.HasLineOfFireSafetyData && mount.IsLineOfFireBlocked(rayOrigin, direction, maxDistance, out hitDistanceMeters))
+        {
+            return true;
+        }
+
+        Transform ownerRoot = shipRigidbody != null ? shipRigidbody.transform : transform.root;
+        if (ownerRoot == null)
+        {
+            return false;
+        }
+
+        Collider[] ownColliders = ownerRoot.GetComponentsInChildren<Collider>(true);
+        if (ownColliders == null || ownColliders.Length == 0)
+        {
+            return false;
+        }
+
+        RaycastHit[] hits = Physics.RaycastAll(rayOrigin, direction, maxDistance, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Collide);
+        bool blocked = false;
+        float nearest = float.PositiveInfinity;
+        for (int i = 0; i < hits.Length; i++)
+        {
+            Collider candidate = hits[i].collider;
+            if (!IsOwnHullSafetyCollider(candidate, ownerRoot))
+            {
+                continue;
+            }
+
+            blocked = true;
+            nearest = Mathf.Min(nearest, hits[i].distance);
+        }
+
+        for (int i = 0; i < ownColliders.Length; i++)
+        {
+            Collider candidate = ownColliders[i];
+            if (!IsOwnHullSafetyCollider(candidate, ownerRoot))
+            {
+                continue;
+            }
+
+            Vector3 closest = candidate.ClosestPoint(rayOrigin);
+            if ((closest - rayOrigin).sqrMagnitude <= 0.0001f)
+            {
+                blocked = true;
+                nearest = 0f;
+            }
+        }
+
+        if (!blocked)
+        {
+            return false;
+        }
+
+        hitDistanceMeters = float.IsPositiveInfinity(nearest) ? 0f : nearest;
+        return true;
+    }
+
+    private bool IsOwnHullSafetyCollider(Collider candidate, Transform ownerRoot)
+    {
+        if (candidate == null || !candidate.enabled || !candidate.gameObject.activeInHierarchy || ownerRoot == null)
+        {
+            return false;
+        }
+
+        Transform candidateTransform = candidate.transform;
+        if (candidateTransform == null || !candidateTransform.IsChildOf(ownerRoot))
+        {
+            return false;
+        }
+
+        return mount == null || mount.MountRoot == null || !candidateTransform.IsChildOf(mount.MountRoot);
     }
 
     private static bool CanAimWithStatus(PrototypeTurretFireStatus status)
