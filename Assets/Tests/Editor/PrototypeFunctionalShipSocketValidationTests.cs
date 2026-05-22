@@ -29,7 +29,7 @@ public class PrototypeFunctionalShipSocketValidationTests
     }
 
     [Test]
-    public void GunModuleUsesImportedMuzzleForProjectileAndRecoil()
+    public void GunModuleUsesImportedMuzzleForProjectileAndSafeRecoil()
     {
         GameObject root = CreateRuntimeRoot();
         var muzzle = new GameObject("PART_Gun_Mount_Light_Mk1_MUZZLE");
@@ -42,7 +42,9 @@ public class PrototypeFunctionalShipSocketValidationTests
 
         Assert.AreSame(muzzle.transform, gun.MuzzleTransform);
         Assert.True(gun.TryFire());
-        Assert.That(Vector3.Distance(gun.LastRecoilPositionWorld, muzzle.transform.position), Is.LessThan(0.001f));
+        Assert.That(Vector3.Distance(gun.LastMuzzleWorldPosition, muzzle.transform.position), Is.LessThan(0.001f));
+        Assert.That(Vector3.Distance(gun.LastRecoilPositionWorld, root.GetComponent<Rigidbody>().worldCenterOfMass), Is.LessThan(0.001f));
+        Assert.That(gun.LastRecoilAngularImpulseWorld.magnitude, Is.EqualTo(0f).Within(0.001f));
         Assert.That(Vector3.Distance(gun.LastProjectileVelocityWorld.normalized, muzzle.transform.forward), Is.LessThan(0.001f));
     }
 

@@ -217,7 +217,19 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
             mode,
             importedDemoScoutVisualPrefab,
             importedDemoCargoVisualPrefab);
-        return binder.BindNow();
+        PrototypeFunctionalShipBinder.BindReport report = binder.BindNow();
+        if (mode != PrototypeShipBuildMode.GeneratedPrimitiveFallback)
+        {
+            ShipStats stats = ship.GetComponent<ShipStats>();
+            Rigidbody body = ship.GetComponent<Rigidbody>();
+            if (stats != null && body != null)
+            {
+                PrototypeModuleMassLayout.ConfigureImportedFunctionalDescriptors(ship, stats, mode);
+                stats.ApplyMassProperties(body);
+            }
+        }
+
+        return report;
     }
 
     private void MirrorBootstrapBuildMode()

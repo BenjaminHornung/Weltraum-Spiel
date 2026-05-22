@@ -13,6 +13,9 @@ public class GunModule : MonoBehaviour
     [SerializeField] private float projectileMass = 0.12f;
     [SerializeField] private bool recoilEnabled = true;
     [SerializeField] private bool allowMuzzleFallback = true;
+    [SerializeField] private WeaponRecoilMode recoilMode = WeaponRecoilMode.CenterOfMassSafe;
+    [SerializeField] private float maxPhysicalRecoilLeverArm = 10f;
+    [SerializeField] private float maxRecoilAngularImpulse = 250f;
 
     private float nextFireTime;
 
@@ -20,9 +23,13 @@ public class GunModule : MonoBehaviour
     public float ProjectileDiameter => Mathf.Max(PrototypeGunSettings.MinimumProjectileDiameter, projectileScale);
     public bool RecoilEnabled => recoilEnabled;
     public Vector3 LastProjectileVelocityWorld { get; private set; }
+    public Vector3 LastMuzzleWorldPosition { get; private set; }
+    public float LastMuzzleLeverArm { get; private set; }
     public Vector3 LastRecoilImpulseWorld { get; private set; }
     public Vector3 LastRecoilPositionWorld { get; private set; }
+    public Vector3 LastRecoilAngularImpulseWorld { get; private set; }
     public bool LastRecoilApplied { get; private set; }
+    public WeaponRecoilMode RecoilMode => recoilMode;
     public PrototypeProjectileFireResult LastFireResult { get; private set; }
     public Transform MuzzleTransform => muzzleTransform;
     public PrototypeTurretWeapon TurretWeapon => turretWeapon;
@@ -121,9 +128,13 @@ public class GunModule : MonoBehaviour
             Transform activeTarget = weaponComputer != null ? weaponComputer.ActiveTargetTransform : null;
             bool firedByTurret = activeTarget != null ? turretWeapon.TryFireAt(activeTarget) : turretWeapon.TryFire();
             LastProjectileVelocityWorld = turretWeapon.LastProjectileVelocityWorld;
+            LastMuzzleWorldPosition = turretWeapon.LastMuzzleWorldPosition;
+            LastMuzzleLeverArm = turretWeapon.LastMuzzleLeverArm;
             LastRecoilImpulseWorld = turretWeapon.LastRecoilImpulseWorld;
             LastRecoilPositionWorld = turretWeapon.LastRecoilPositionWorld;
+            LastRecoilAngularImpulseWorld = turretWeapon.LastRecoilAngularImpulseWorld;
             LastRecoilApplied = turretWeapon.LastRecoilApplied;
+            LastFireResult = turretWeapon.LastFireResult;
             return firedByTurret;
         }
 
@@ -173,7 +184,11 @@ public class GunModule : MonoBehaviour
     {
         LastRecoilApplied = false;
         LastRecoilImpulseWorld = Vector3.zero;
-        LastRecoilPositionWorld = muzzleTransform != null ? muzzleTransform.position : transform.position;
+        LastRecoilAngularImpulseWorld = Vector3.zero;
+        LastMuzzleWorldPosition = muzzleTransform != null ? muzzleTransform.position : transform.position;
+        LastRecoilPositionWorld = LastMuzzleWorldPosition;
+        Vector3 centerOfMass = shipRigidbody != null ? shipRigidbody.worldCenterOfMass : transform.position;
+        LastMuzzleLeverArm = Vector3.Distance(LastMuzzleWorldPosition, centerOfMass);
 
         if (!recoilEnabled || physicsCore == null || muzzleTransform == null || shipStats == null || !shipStats.ProjectileRecoilEnabled)
         {
@@ -185,7 +200,8 @@ public class GunModule : MonoBehaviour
             : muzzleTransform.forward;
         Vector3 projectileMomentum = recoilDirection * (ProjectileMass * shipStats.ProjectileSpeed);
         Vector3 recoilImpulse = -projectileMomentum;
-        if (!physicsCore.ApplyForceAtPosition(recoilImpulse, LastRecoilPositionWorld, ForceMode.Impulse))
+        bool applied = ApplyRecoilByMode(recoilImpulse, centerOfMass);
+        if (!applied)
         {
             return false;
         }
@@ -200,6 +216,36 @@ public class GunModule : MonoBehaviour
         return true;
     }
 
+    private bool ApplyRecoilByMode(Vector3 recoilImpulse, Vector3 centerOfMass)
+    {
+        if (recoilMode == WeaponRecoilMode.Disabled)
+        {
+            return false;
+        }
+
+        if (recoilMode == WeaponRecoilMode.CenterOfMassSafe || LastMuzzleLeverArm > Mathf.Max(0.01f, maxPhysicalRecoilLeverArm))
+        {
+            LastRecoilPositionWorld = centerOfMass;
+            LastRecoilAngularImpulseWorld = Vector3.zero;
+            return physicsCore.ApplyForceAtCenterOfMass(recoilImpulse, ForceMode.Impulse);
+        }
+
+        Vector3 angularImpulse = Vector3.Cross(LastRecoilPositionWorld - centerOfMass, recoilImpulse);
+        float maxAngularImpulse = Mathf.Max(0f, maxRecoilAngularImpulse);
+        if (angularImpulse.magnitude <= maxAngularImpulse)
+        {
+            LastRecoilAngularImpulseWorld = angularImpulse;
+            return physicsCore.ApplyForceAtPosition(recoilImpulse, LastRecoilPositionWorld, ForceMode.Impulse);
+        }
+
+        LastRecoilAngularImpulseWorld = Vector3.ClampMagnitude(angularImpulse, maxAngularImpulse);
+        bool linearApplied = physicsCore.ApplyForceAtCenterOfMass(recoilImpulse, ForceMode.Impulse);
+        bool angularApplied = LastRecoilAngularImpulseWorld.sqrMagnitude <= 0.0001f
+            || physicsCore.ApplyTorque(LastRecoilAngularImpulseWorld, ForceMode.Impulse);
+        LastRecoilPositionWorld = centerOfMass;
+        return linearApplied || angularApplied;
+    }
+
     public void ApplyConfig(PrototypeShipConfig config)
     {
         PrototypeGunSettings settings = config != null ? config.Gun : PrototypeGunSettings.Default;
@@ -212,6 +258,15 @@ public class GunModule : MonoBehaviour
         projectileScale = settings.projectileDiameter;
         projectileMass = settings.projectileMass;
         recoilEnabled = settings.recoilEnabled;
+    }
+
+    public void SetRecoilMode(WeaponRecoilMode mode)
+    {
+        recoilMode = mode;
+        if (turretWeapon != null)
+        {
+            turretWeapon.SetRecoilMode(mode);
+        }
     }
 
     public void ConfigureMuzzle(Transform muzzle)

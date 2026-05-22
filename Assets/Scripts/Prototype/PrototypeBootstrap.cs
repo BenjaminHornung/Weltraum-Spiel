@@ -153,6 +153,10 @@ public class PrototypeBootstrap : MonoBehaviour
             hardpointBinder.Configure(ship.transform, true, true);
             hardpointBinder.BindNow();
         }
+        else
+        {
+            PrototypeModuleMassLayout.ConfigureImportedFunctionalDescriptors(ship.transform, stats, buildMode);
+        }
 
         stats.ApplyMassProperties(shipRigidbody);
         EnsureCameraAnchor(ship.transform, shipRigidbody);

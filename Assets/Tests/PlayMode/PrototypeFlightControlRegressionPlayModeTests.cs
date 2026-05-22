@@ -6,6 +6,11 @@ using UnityEngine;
 public class PrototypeFlightControlRegressionPlayModeTests
 {
     private const BindingFlags PrivateInstance = BindingFlags.Instance | BindingFlags.NonPublic;
+    private const float ImportedScoutMaxLeverArmMeters = 10f;
+    private const float ImportedCargoMaxLeverArmMeters = 20f;
+    private const float MaxNormalAngularVelocity = 2.5f;
+    private const float MaxRecoilAngularVelocity = 0.75f;
+    private const float MaxTranslationAngularVelocity = 0.5f;
 
     [TearDown]
     public void TearDown()
@@ -32,6 +37,27 @@ public class PrototypeFlightControlRegressionPlayModeTests
         AssertDirection(rig, ship.transform, PrototypeShipSocketDirection.Right, ship.transform.right);
         AssertDirection(rig, ship.transform, PrototypeShipSocketDirection.Up, ship.transform.up);
         AssertDirection(rig, ship.transform, PrototypeShipSocketDirection.Down, -ship.transform.up);
+    }
+
+    [Test]
+    public void ImportedFunctionalPhysicsSanityHasSaneInertiaAndLeverArms()
+    {
+        GameObject ship = BuildImportedShip(PrototypeShipBuildMode.ImportedDemoScoutFunctionalDefault);
+        Rigidbody body = ship.GetComponent<Rigidbody>();
+        PrototypeShipPhysicsSanityReport report = PrototypeShipPhysicsSanity.Capture(ship);
+
+        Assert.False(body.automaticCenterOfMass);
+        Assert.False(body.automaticInertiaTensor);
+        Assert.True(report.hasModuleMassDescriptors);
+        Assert.That(report.moduleMassDescriptorCount, Is.GreaterThanOrEqualTo(6));
+        Assert.That(report.inertiaTensor.x, Is.GreaterThan(100f));
+        Assert.That(report.inertiaTensor.y, Is.GreaterThan(100f));
+        Assert.That(report.inertiaTensor.z, Is.GreaterThan(100f));
+        Assert.That(report.maxRcsNozzleLeverArm, Is.LessThan(ImportedScoutMaxLeverArmMeters));
+        Assert.That(report.averageRcsNozzleLeverArm, Is.GreaterThan(0f));
+        Assert.That(report.maxMuzzleLeverArm, Is.LessThan(ImportedScoutMaxLeverArmMeters));
+        Assert.That(report.maxMainNozzleLeverArm, Is.LessThan(ImportedScoutMaxLeverArmMeters));
+        Assert.That(report.computedTorqueAuthority, Is.LessThanOrEqualTo(12000.1f));
     }
 
     [Test]
@@ -79,6 +105,31 @@ public class PrototypeFlightControlRegressionPlayModeTests
     }
 
     [Test]
+    public void TranslationModeAllAxesAreStableForImportedDefault()
+    {
+        SimulationMode previousSimulationMode = Physics.simulationMode;
+        Physics.simulationMode = SimulationMode.Script;
+        try
+        {
+            GameObject ship = BuildImportedShip(PrototypeShipBuildMode.ImportedDemoScoutFunctionalDefault);
+            PlayerShipController controller = ship.GetComponent<PlayerShipController>();
+            Rigidbody body = ship.GetComponent<Rigidbody>();
+            RcsThrusterController rcs = ship.GetComponent<RcsThrusterController>();
+
+            AssertTranslationAxis(ship, controller, body, rcs, true, false, false, false, false, false, false, false, ship.transform.forward);
+            AssertTranslationAxis(ship, controller, body, rcs, false, true, false, false, false, false, false, false, -ship.transform.forward);
+            AssertTranslationAxis(ship, controller, body, rcs, false, false, true, false, false, false, false, false, -ship.transform.right);
+            AssertTranslationAxis(ship, controller, body, rcs, false, false, false, true, false, false, false, false, ship.transform.right);
+            AssertTranslationAxis(ship, controller, body, rcs, false, false, false, false, false, false, true, false, ship.transform.up);
+            AssertTranslationAxis(ship, controller, body, rcs, false, false, false, false, false, false, false, true, -ship.transform.up);
+        }
+        finally
+        {
+            Physics.simulationMode = previousSimulationMode;
+        }
+    }
+
+    [Test]
     public void ImportedDefaultNormalAttitudeRotatesWithoutResidualLinearDrift()
     {
         SimulationMode previousSimulationMode = Physics.simulationMode;
@@ -108,6 +159,71 @@ public class PrototypeFlightControlRegressionPlayModeTests
             Assert.That(rcs.LastActualRcsForceWorld.magnitude, Is.LessThan(50f), rcs.LastAllocatorStatus);
             Assert.That(maxLinearSpeed, Is.LessThan(0.25f));
             Assert.That(body.angularVelocity.magnitude, Is.GreaterThan(0.01f));
+            Assert.That(body.angularVelocity.magnitude, Is.LessThan(MaxNormalAngularVelocity));
+        }
+        finally
+        {
+            Physics.simulationMode = previousSimulationMode;
+        }
+    }
+
+    [Test]
+    public void NormalModeWasdAngularVelocityIsBounded()
+    {
+        SimulationMode previousSimulationMode = Physics.simulationMode;
+        Physics.simulationMode = SimulationMode.Script;
+        try
+        {
+            GameObject ship = BuildImportedShip(PrototypeShipBuildMode.ImportedDemoScoutFunctionalDefault);
+            PlayerShipController controller = ship.GetComponent<PlayerShipController>();
+            Rigidbody body = ship.GetComponent<Rigidbody>();
+
+            AssertAttitudeAxis(controller, body, true, false, false, false, false, false);
+            AssertAttitudeAxis(controller, body, false, true, false, false, false, false);
+            AssertAttitudeAxis(controller, body, false, false, true, false, false, false);
+            AssertAttitudeAxis(controller, body, false, false, false, true, false, false);
+            AssertAttitudeAxis(controller, body, false, false, false, false, true, false);
+            AssertAttitudeAxis(controller, body, false, false, false, false, false, true);
+            Assert.That(ship.transform.position.magnitude, Is.LessThan(10f));
+        }
+        finally
+        {
+            Physics.simulationMode = previousSimulationMode;
+        }
+    }
+
+    [Test]
+    public void SpaceFireDoesNotCauseWildSpin()
+    {
+        SimulationMode previousSimulationMode = Physics.simulationMode;
+        Physics.simulationMode = SimulationMode.Script;
+        try
+        {
+            GameObject ship = BuildImportedShip(PrototypeShipBuildMode.ImportedDemoScoutFunctionalDefault);
+            PlayerShipController controller = ship.GetComponent<PlayerShipController>();
+            Rigidbody body = ship.GetComponent<Rigidbody>();
+            GunModule gun = ship.GetComponent<GunModule>();
+            PrototypeTurretWeapon turret = ship.GetComponentInChildren<PrototypeTurretWeapon>();
+            Assert.NotNull(gun);
+            Assert.NotNull(turret);
+
+            ResetManualFlight(controller, body, true);
+            SetPrivateField(turret, "nextFireTime", -1f);
+            Assert.True(gun.TryFire(), "Default imported scout should fire through its real GunModule/Turret path.");
+
+            float maxAngularSpeed = body.angularVelocity.magnitude;
+            for (int i = 0; i < 60; i++)
+            {
+                controller.ApplyModeSpecificInputForTests(w: false, s: false, a: false, d: false, q: false, e: false, h: false, n: false, shift: false, ctrl: false);
+                InvokeFixedUpdate(controller);
+                Physics.Simulate(Time.fixedDeltaTime);
+                maxAngularSpeed = Mathf.Max(maxAngularSpeed, body.angularVelocity.magnitude);
+            }
+
+            PrototypeShipPhysicsSanityReport report = PrototypeShipPhysicsSanity.Capture(ship);
+            Assert.That(report.maxMuzzleLeverArm, Is.LessThan(ImportedScoutMaxLeverArmMeters));
+            Assert.That(report.recoilAngularImpulseWorld.magnitude, Is.LessThan(1f));
+            Assert.That(maxAngularSpeed, Is.LessThan(MaxRecoilAngularVelocity));
         }
         finally
         {
@@ -184,6 +300,66 @@ public class PrototypeFlightControlRegressionPlayModeTests
         }
 
         Assert.That(bestDot, Is.GreaterThan(0.95f), $"Direction {direction} best socket {bestName} on {ship.name}");
+    }
+
+    private static void AssertTranslationAxis(
+        GameObject ship,
+        PlayerShipController controller,
+        Rigidbody body,
+        RcsThrusterController rcs,
+        bool w,
+        bool s,
+        bool a,
+        bool d,
+        bool q,
+        bool e,
+        bool h,
+        bool n,
+        Vector3 expectedDirection)
+    {
+        ResetManualFlight(controller, body, true);
+        controller.SetControlMode(FlightControlMode.Translation);
+        float maxAngularSpeed = 0f;
+        Vector3 previousForce = Vector3.zero;
+        bool hasPreviousForce = false;
+        for (int i = 0; i < 60; i++)
+        {
+            controller.ApplyModeSpecificInputForTests(w, s, a, d, q, e, h, n, false, false);
+            InvokeFixedUpdate(controller);
+            Physics.Simulate(Time.fixedDeltaTime);
+            maxAngularSpeed = Mathf.Max(maxAngularSpeed, body.angularVelocity.magnitude);
+            if (hasPreviousForce && rcs.LastActualRcsForceWorld.sqrMagnitude > 1f && previousForce.sqrMagnitude > 1f)
+            {
+                Assert.That(Vector3.Dot(previousForce.normalized, rcs.LastActualRcsForceWorld.normalized), Is.GreaterThan(0.95f));
+            }
+
+            previousForce = rcs.LastActualRcsForceWorld;
+            hasPreviousForce = true;
+        }
+
+        float velocityDot = Vector3.Dot(body.linearVelocity, expectedDirection.normalized);
+        Assert.That(velocityDot, Is.GreaterThan(0.25f), ship.name);
+        Assert.That(maxAngularSpeed, Is.LessThan(MaxTranslationAngularVelocity), rcs.LastAllocatorStatus);
+    }
+
+    private static void AssertAttitudeAxis(PlayerShipController controller, Rigidbody body, bool w, bool s, bool a, bool d, bool q, bool e)
+    {
+        ResetManualFlight(controller, body, true);
+        controller.SetControlMode(FlightControlMode.Normal);
+        float maxAngularSpeed = 0f;
+        float maxLinearSpeed = 0f;
+        for (int i = 0; i < 60; i++)
+        {
+            controller.ApplyModeSpecificInputForTests(w, s, a, d, q, e, false, false, false, false);
+            InvokeFixedUpdate(controller);
+            Physics.Simulate(Time.fixedDeltaTime);
+            maxAngularSpeed = Mathf.Max(maxAngularSpeed, body.angularVelocity.magnitude);
+            maxLinearSpeed = Mathf.Max(maxLinearSpeed, body.linearVelocity.magnitude);
+        }
+
+        Assert.That(maxAngularSpeed, Is.GreaterThan(0.01f));
+        Assert.That(maxAngularSpeed, Is.LessThan(MaxNormalAngularVelocity));
+        Assert.That(maxLinearSpeed, Is.LessThan(0.25f));
     }
 
     private static void ResetManualFlight(PlayerShipController controller, Rigidbody body, bool sasEnabled)

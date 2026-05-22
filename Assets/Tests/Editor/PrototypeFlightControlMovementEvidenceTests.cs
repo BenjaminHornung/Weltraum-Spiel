@@ -14,7 +14,7 @@ using Object = UnityEngine.Object;
 public class PrototypeFlightControlMovementEvidenceTests
 {
     private const string ScenePath = "Assets/Scenes/PrototypeBootstrapHost.unity";
-    private const string ChangeName = "fix-flight-control-wasd-rcs-jitter-regression-v2";
+    private const string ChangeName = "fix-imported-functional-ship-spin-root-cause-v1";
     private const int LongHoldFrames = 60;
     private const int ShortHoldFrames = 30;
     private const float IdleHoldSeconds = 3f;
@@ -30,6 +30,11 @@ public class PrototypeFlightControlMovementEvidenceTests
         {
             runner.RunAll();
         }
+    }
+
+    public static void RunImportedFunctionalSpinRootCauseEvidenceNowForMcp()
+    {
+        RunPrototypeBootstrapHostImportedShipMovementEvidenceNowForMcp();
     }
 
     [UnityTest]
@@ -79,6 +84,8 @@ public class PrototypeFlightControlMovementEvidenceTests
         private readonly PrototypeWaypointAutopilot autopilot;
         private readonly PrototypeMomentumAssist momentumAssist;
         private readonly WeaponRecoilStabilizer weaponStabilizer;
+        private readonly GunModule gun;
+        private readonly PrototypeTurretWeapon turretWeapon;
         private readonly Camera mainCamera;
         private readonly SimpleFollowCamera followCamera;
         private readonly MethodInfo fixedUpdate;
@@ -106,6 +113,8 @@ public class PrototypeFlightControlMovementEvidenceTests
             PrototypeWaypointAutopilot autopilot,
             PrototypeMomentumAssist momentumAssist,
             WeaponRecoilStabilizer weaponStabilizer,
+            GunModule gun,
+            PrototypeTurretWeapon turretWeapon,
             Camera mainCamera,
             SimpleFollowCamera followCamera,
             string evidenceRoot,
@@ -120,6 +129,8 @@ public class PrototypeFlightControlMovementEvidenceTests
             this.autopilot = autopilot;
             this.momentumAssist = momentumAssist;
             this.weaponStabilizer = weaponStabilizer;
+            this.gun = gun;
+            this.turretWeapon = turretWeapon;
             this.mainCamera = mainCamera;
             this.followCamera = followCamera;
             this.evidenceRoot = evidenceRoot;
@@ -165,6 +176,8 @@ public class PrototypeFlightControlMovementEvidenceTests
             PrototypeWaypointAutopilot autopilot = ship.GetComponent<PrototypeWaypointAutopilot>();
             PrototypeMomentumAssist momentumAssist = ship.GetComponent<PrototypeMomentumAssist>();
             WeaponRecoilStabilizer weaponStabilizer = ship.GetComponent<WeaponRecoilStabilizer>();
+            GunModule gun = ship.GetComponent<GunModule>();
+            PrototypeTurretWeapon turretWeapon = ship.GetComponentInChildren<PrototypeTurretWeapon>(true);
             Camera mainCamera = Camera.main;
             SimpleFollowCamera followCamera = mainCamera != null ? mainCamera.GetComponent<SimpleFollowCamera>() : null;
 
@@ -172,6 +185,8 @@ public class PrototypeFlightControlMovementEvidenceTests
             Assert.NotNull(rigidbody, "PrototypeShip must keep Rigidbody.");
             Assert.NotNull(rcs, "PrototypeShip must keep RcsThrusterController.");
             Assert.NotNull(physicsCore, "PrototypeShip must keep ShipPhysicsCore.");
+            Assert.NotNull(gun, "PrototypeShip must keep GunModule.");
+            Assert.NotNull(turretWeapon, "PrototypeShip must keep PrototypeTurretWeapon.");
             Assert.NotNull(mainCamera, "PrototypeBootstrapHost must have a Main Camera.");
             Assert.NotNull(followCamera, "Main Camera must use SimpleFollowCamera.");
 
@@ -195,6 +210,8 @@ public class PrototypeFlightControlMovementEvidenceTests
                 autopilot,
                 momentumAssist,
                 weaponStabilizer,
+                gun,
+                turretWeapon,
                 mainCamera,
                 followCamera,
                 evidenceRoot,
@@ -212,6 +229,7 @@ public class PrototypeFlightControlMovementEvidenceTests
             RunIdleStability();
             RunTranslationTests();
             RunAttitudeTests();
+            RunWeaponFireTest();
             RunSasComparison();
             RunMainThrusterTest();
             RunVisualSwitchTest();
@@ -231,7 +249,7 @@ public class PrototypeFlightControlMovementEvidenceTests
 
         private void WriteHeaders()
         {
-            csv.WriteLine("time,visualMode,controlMode,sasEnabled,rcsEnabled,hasExternalAssist,externalAssistSource,rcsTranslationCommand.x,rcsTranslationCommand.y,rcsTranslationCommand.z,rcsAttitudeCommand.x,rcsAttitudeCommand.y,rcsAttitudeCommand.z,linearVelocity.x,linearVelocity.y,linearVelocity.z,angularVelocity.x,angularVelocity.y,angularVelocity.z,desiredForce.x,desiredForce.y,desiredForce.z,actualForce.x,actualForce.y,actualForce.z,residualForce.x,residualForce.y,residualForce.z,desiredTorque.x,desiredTorque.y,desiredTorque.z,actualTorque.x,actualTorque.y,actualTorque.z,residualTorque.x,residualTorque.y,residualTorque.z,allocatorStatus,activeNozzleCount,installedNozzleCount,mainThrottle,mainThrustCommand,cameraAnchorError,visualBoundsRefreshCount,nozzleRefreshCount");
+            csv.WriteLine("time,buildMode,visualMode,controlMode,input,mass,centerOfMass.x,centerOfMass.y,centerOfMass.z,inertiaTensor.x,inertiaTensor.y,inertiaTensor.z,moduleMassDescriptorCount,maxRcsLeverArm,averageRcsLeverArm,maxMuzzleLeverArm,computedTorqueAuthority,desiredTorque.x,desiredTorque.y,desiredTorque.z,actualTorque.x,actualTorque.y,actualTorque.z,angularVelocity.x,angularVelocity.y,angularVelocity.z,angularVelocityMagnitude,recoilAngularImpulseMagnitude,actualForce.x,actualForce.y,actualForce.z,linearVelocity.x,linearVelocity.y,linearVelocity.z,externalAssistSource,rcsSolverMode,allocatorStatus,sasEnabled,rcsEnabled,hasExternalAssist,rcsTranslationCommand.x,rcsTranslationCommand.y,rcsTranslationCommand.z,rcsAttitudeCommand.x,rcsAttitudeCommand.y,rcsAttitudeCommand.z,residualForce.x,residualForce.y,residualForce.z,residualTorque.x,residualTorque.y,residualTorque.z,mainThrottle,mainThrustCommand,cameraAnchorError,visualBoundsRefreshCount,nozzleRefreshCount,activeNozzleCount,installedNozzleCount");
 
             protocol.WriteLine("# Unity PlayMode Movement Evidence");
             protocol.WriteLine();
@@ -240,8 +258,8 @@ public class PrototypeFlightControlMovementEvidenceTests
             protocol.WriteLine("- Unity: " + Application.unityVersion);
             protocol.WriteLine("- fixedDeltaTime: " + F(fixedDeltaTime));
             protocol.WriteLine("- Evidence root: " + evidenceRoot);
-            protocol.WriteLine("- Log artifact: " + Path.Combine(evidenceRoot, "logs", "unity-playmode-flight-control.log"));
-            protocol.WriteLine("- CSV artifact: " + Path.Combine(evidenceRoot, "performance", "flight-control-diagnostics.csv"));
+            protocol.WriteLine("- Log artifact: " + Path.Combine(evidenceRoot, "logs", "flight-spin-root-cause.log"));
+            protocol.WriteLine("- CSV artifact: " + Path.Combine(evidenceRoot, "performance", "flight-control-spin-diagnostics.csv"));
             protocol.WriteLine("- Screenshot artifacts: idle-sas-on.png, translation-forward.png, translation-left-right.png, normal-attitude-sas-on.png, imported-ship-translation.png");
             protocol.WriteLine("- Driver: live Unity PlayMode scene with PlayerShipController, RcsThrusterController, ShipPhysicsCore and SimpleFollowCamera.");
             protocol.WriteLine("- Input: simulated through PlayerShipController test hooks; physics is stepped in Unity PlayMode for deterministic evidence.");
@@ -356,6 +374,24 @@ public class PrototypeFlightControlMovementEvidenceTests
             {
                 CaptureScreenshot(screenshotName);
             }
+        }
+
+        private void RunWeaponFireTest()
+        {
+            ResetFlight(true, FlightControlMode.Normal);
+            gun.SetRecoilMode(WeaponRecoilMode.CenterOfMassSafe);
+            SetPrivateField(turretWeapon, "nextFireTime", -1f);
+            bool fired = gun.TryFire();
+            Sample("B2-space-fire");
+
+            float maxAngularSpeed = rigidbody.angularVelocity.magnitude;
+            RunRelease("B2-space-fire-release", LongHoldFrames);
+            maxAngularSpeed = Mathf.Max(maxAngularSpeed, rigidbody.angularVelocity.magnitude);
+
+            Mark("B2-Space fire uses real gun/turret path", fired, "fireStatus=" + turretWeapon.LastFireStatus.blockReason);
+            Mark("B2-Space fire safe recoil mode", gun.RecoilMode == WeaponRecoilMode.CenterOfMassSafe && turretWeapon.RecoilMode == WeaponRecoilMode.CenterOfMassSafe, "gun=" + gun.RecoilMode + " turret=" + turretWeapon.RecoilMode);
+            Mark("B2-Space fire recoil angular impulse bounded", turretWeapon.LastRecoilAngularImpulseWorld.magnitude < 0.01f, "angularImpulse=" + F(turretWeapon.LastRecoilAngularImpulseWorld.magnitude));
+            Mark("B2-Space fire angular velocity bounded", maxAngularSpeed < 0.75f, "maxAngularSpeed=" + F(maxAngularSpeed));
         }
 
         private void RunSasComparison()
@@ -489,32 +525,45 @@ public class PrototypeFlightControlMovementEvidenceTests
         private void Sample(string phase)
         {
             string source = ExternalSource();
+            PrototypeShipPhysicsSanityReport report = PrototypeShipPhysicsSanity.Capture(ship);
             csv.WriteLine(
                 F(simulatedTime) + ","
+                + BuildModeLabel() + ","
                 + switcher.SelectedVisualMode + ","
                 + controller.ControlMode + ","
+                + phase + ","
+                + F(report.mass) + ","
+                + V(report.centerOfMass) + ","
+                + V(report.inertiaTensor) + ","
+                + report.moduleMassDescriptorCount + ","
+                + F(report.maxRcsNozzleLeverArm) + ","
+                + F(report.averageRcsNozzleLeverArm) + ","
+                + F(report.maxMuzzleLeverArm) + ","
+                + F(report.computedTorqueAuthority) + ","
+                + V(controller.LastRcsDesiredTorqueWorld) + ","
+                + V(controller.LastRcsActualTorqueWorld) + ","
+                + V(rigidbody.angularVelocity) + ","
+                + F(rigidbody.angularVelocity.magnitude) + ","
+                + F(report.recoilAngularImpulseWorld.magnitude) + ","
+                + V(controller.LastRcsActualForceWorld) + ","
+                + V(rigidbody.linearVelocity) + ","
+                + source + ","
+                + rcs.SolverMode + ","
+                + controller.LastRcsAllocatorStatus + ","
                 + controller.EffectiveSasEnabled + ","
                 + controller.RcsEnabled + ","
                 + controller.HasExternalFlightAssistRequest + ","
-                + source + ","
                 + V(controller.RcsTranslationCommand) + ","
                 + V(controller.RcsAttitudeCommand) + ","
-                + V(rigidbody.linearVelocity) + ","
-                + V(rigidbody.angularVelocity) + ","
-                + V(controller.LastRcsDesiredForceWorld) + ","
-                + V(controller.LastRcsActualForceWorld) + ","
                 + V(controller.LastRcsResidualForceWorld) + ","
-                + V(controller.LastRcsDesiredTorqueWorld) + ","
-                + V(controller.LastRcsActualTorqueWorld) + ","
                 + V(controller.LastRcsResidualTorqueWorld) + ","
-                + controller.LastRcsAllocatorStatus + ","
-                + controller.ActiveRcsNozzleCount + ","
-                + controller.InstalledRcsNozzleCount + ","
                 + F(controller.MainThrottle) + ","
                 + F(controller.MainThrustCommand) + ","
                 + F(followCamera.AnchorError) + ","
                 + followCamera.VisualBoundsRefreshCount + ","
-                + rcs.NozzleRefreshCount);
+                + rcs.NozzleRefreshCount + ","
+                + controller.ActiveRcsNozzleCount + ","
+                + controller.InstalledRcsNozzleCount);
 
             log.WriteLine(
                 phase
@@ -596,9 +645,17 @@ public class PrototypeFlightControlMovementEvidenceTests
 
         private void WriteProtocolVerdict()
         {
+            PrototypeShipPhysicsSanityReport report = PrototypeShipPhysicsSanity.Capture(ship);
             protocol.WriteLine();
             protocol.WriteLine("## Summary");
             protocol.WriteLine("- Final visual mode: " + switcher.SelectedVisualMode);
+            protocol.WriteLine("- Final build mode: " + BuildModeLabel());
+            protocol.WriteLine("- Inertia tensor: " + report.inertiaTensor);
+            protocol.WriteLine("- Module mass descriptor count: " + report.moduleMassDescriptorCount);
+            protocol.WriteLine("- Max RCS lever arm: " + F(report.maxRcsNozzleLeverArm));
+            protocol.WriteLine("- Max muzzle lever arm: " + F(report.maxMuzzleLeverArm));
+            protocol.WriteLine("- Effective torque authority: " + F(report.computedTorqueAuthority));
+            protocol.WriteLine("- Last recoil angular impulse: " + report.recoilAngularImpulseWorld);
             protocol.WriteLine("- Final allocator status: " + controller.LastRcsAllocatorStatus);
             protocol.WriteLine("- Allocator status note: stable-prototype is expected for default live flight; translation is applied at center of mass and attitude/SAS torque is applied directly through ShipPhysicsCore.");
             protocol.WriteLine("- Final active/installed nozzles: " + controller.ActiveRcsNozzleCount + "/" + controller.InstalledRcsNozzleCount);
@@ -619,10 +676,10 @@ public class PrototypeFlightControlMovementEvidenceTests
 
         private void WriteEvidenceArtifacts()
         {
-            string logPath = Path.Combine(evidenceRoot, "logs", "unity-playmode-flight-control.log");
-            string csvPath = Path.Combine(evidenceRoot, "performance", "flight-control-diagnostics.csv");
-            string mirrorLogPath = Path.Combine(mirrorRoot, "logs", "unity-playmode-flight-control.log");
-            string mirrorCsvPath = Path.Combine(mirrorRoot, "performance", "flight-control-diagnostics.csv");
+            string logPath = Path.Combine(evidenceRoot, "logs", "flight-spin-root-cause.log");
+            string csvPath = Path.Combine(evidenceRoot, "performance", "flight-control-spin-diagnostics.csv");
+            string mirrorLogPath = Path.Combine(mirrorRoot, "logs", "flight-spin-root-cause.log");
+            string mirrorCsvPath = Path.Combine(mirrorRoot, "performance", "flight-control-spin-diagnostics.csv");
 
             File.WriteAllText(logPath, log.ToString());
             File.WriteAllText(csvPath, csv.ToString());
@@ -639,6 +696,20 @@ public class PrototypeFlightControlMovementEvidenceTests
         {
             File.WriteAllText(Path.Combine(evidenceRoot, "test-protocol.md"), protocol.ToString());
             File.WriteAllText(Path.Combine(mirrorRoot, "test-protocol.md"), protocol.ToString());
+        }
+
+        private string BuildModeLabel()
+        {
+            switch (switcher.SelectedVisualMode)
+            {
+                case PrototypeShipVisualMode.GeneratedPrimitives:
+                    return PrototypeShipBuildMode.GeneratedPrimitiveFallback.ToString();
+                case PrototypeShipVisualMode.ImportedDemoCargo:
+                    return PrototypeShipBuildMode.ImportedDemoCargoFunctional.ToString();
+                case PrototypeShipVisualMode.ImportedDemoScout:
+                default:
+                    return PrototypeShipBuildMode.ImportedDemoScoutFunctionalDefault.ToString();
+            }
         }
 
         private string ExternalSource()
@@ -661,6 +732,13 @@ public class PrototypeFlightControlMovementEvidenceTests
         private static string V(Vector3 value)
         {
             return F(value.x) + "," + F(value.y) + "," + F(value.z);
+        }
+
+        private static void SetPrivateField(object target, string fieldName, object value)
+        {
+            FieldInfo field = target.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.NotNull(field, fieldName);
+            field.SetValue(target, value);
         }
     }
 }

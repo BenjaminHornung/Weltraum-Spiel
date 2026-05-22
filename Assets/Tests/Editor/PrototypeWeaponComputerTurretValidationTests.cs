@@ -107,7 +107,8 @@ public class PrototypeWeaponComputerTurretValidationTests
             float yawAfterFirstTick = fixture.Weapon.LastAppliedYawDegrees;
             Assert.That(yawAfterFirstTick, Is.GreaterThan(0f));
             Assert.That(yawAfterFirstTick, Is.LessThan(24f));
-            Assert.False(fixture.Weapon.TryFireAt(target));
+            PrototypeTurretFireStatus afterFirstTick = fixture.Weapon.EvaluateFireStatus(target);
+            Assert.False(afterFirstTick.canFire);
             Assert.That(fixture.Weapon.LastFireStatus.blockReason, Is.EqualTo(PrototypeTurretFireBlockReason.Aligning));
 
             for (int i = 0; i < 20; i++)
@@ -451,7 +452,7 @@ public class PrototypeWeaponComputerTurretValidationTests
     }
 
     [Test]
-    public void TurretRecoilRegistersImpulseThroughShipPhysicsCore()
+    public void TurretSafeRecoilRegistersCenterOfMassImpulseThroughShipPhysicsCore()
     {
         using (TurretFixture fixture = new TurretFixture())
         {
@@ -466,7 +467,29 @@ public class PrototypeWeaponComputerTurretValidationTests
             Assert.That(fixture.PhysicsCore.AppliedImpulseCount, Is.EqualTo(1));
             Assert.That(Vector3.Distance(fixture.Weapon.LastRecoilImpulseWorld, expectedImpulse), Is.LessThan(PhysicsValidationProbe.TimestepImpulseTolerance));
             Assert.That(Vector3.Distance(fixture.PhysicsCore.NetAppliedImpulse, expectedImpulse), Is.LessThan(PhysicsValidationProbe.TimestepImpulseTolerance));
+            Assert.That(Vector3.Distance(fixture.Weapon.LastMuzzleWorldPosition, fixture.Muzzle.position), Is.LessThan(DistanceTolerance));
+            Assert.That(Vector3.Distance(fixture.Weapon.LastRecoilPositionWorld, fixture.Body.worldCenterOfMass), Is.LessThan(DistanceTolerance));
+            Assert.That(fixture.Weapon.LastRecoilAngularImpulseWorld.magnitude, Is.EqualTo(0f).Within(DistanceTolerance));
+        }
+    }
+
+    [Test]
+    public void TurretPhysicalMuzzleRecoilIsExplicitAndRecordsAngularImpulse()
+    {
+        using (TurretFixture fixture = new TurretFixture())
+        {
+            SetWeaponStats(fixture.Stats, projectileSpeed: 80f, projectileMass: 1.5f, projectileDiameter: 0.25f, hitChance: 1f);
+            fixture.Muzzle.localPosition = new Vector3(0.25f, 0f, 1f);
+            fixture.Weapon.SetRecoilMode(WeaponRecoilMode.PhysicalMuzzle);
+            fixture.PhysicsCore.BeginPhysicsStep();
+
+            bool fired = fixture.Weapon.TryFireAt(fixture.Muzzle.position + Vector3.forward * 20f);
+
+            Assert.True(fired);
+            Assert.True(fixture.Weapon.LastRecoilApplied);
             Assert.That(Vector3.Distance(fixture.Weapon.LastRecoilPositionWorld, fixture.Muzzle.position), Is.LessThan(DistanceTolerance));
+            Assert.That(fixture.Weapon.LastRecoilAngularImpulseWorld.magnitude, Is.GreaterThan(0.01f));
+            Assert.That(fixture.PhysicsCore.NetAppliedAngularImpulse.magnitude, Is.GreaterThan(0.01f));
         }
     }
 

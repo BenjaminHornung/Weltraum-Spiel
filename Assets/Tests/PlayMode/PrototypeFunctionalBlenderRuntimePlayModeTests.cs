@@ -154,7 +154,9 @@ public class PrototypeFunctionalBlenderRuntimePlayModeTests
             Assert.That(Mathf.Abs(weapon.LastAppliedYawDegrees - yawBefore), Is.GreaterThan(0.5f));
             Assert.That(Mathf.Abs(weapon.LastAppliedPitchDegrees - pitchBefore), Is.GreaterThan(0.1f));
             Assert.True(fired, computer.TurretStatusLabel);
-            Assert.That(Vector3.Distance(weapon.LastRecoilPositionWorld, weapon.Muzzle.position), Is.LessThan(0.25f));
+            Assert.That(Vector3.Distance(weapon.LastMuzzleWorldPosition, weapon.Muzzle.position), Is.LessThan(0.25f));
+            Assert.That(Vector3.Distance(weapon.LastRecoilPositionWorld, body.worldCenterOfMass), Is.LessThan(0.25f));
+            Assert.That(weapon.LastRecoilAngularImpulseWorld.magnitude, Is.LessThan(0.01f));
             Assert.True(weapon.LastFireResult.muzzleVisualEmitted || weapon.LastFireResult.tracerVisualEmitted);
         }
         finally

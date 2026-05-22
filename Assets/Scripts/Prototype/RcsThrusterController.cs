@@ -41,6 +41,13 @@ public class RcsThrusterController : MonoBehaviour
     [SerializeField] private float minSelectionDot = 0.25f;
     [SerializeField] private RcsSolverMode rcsSolverMode = RcsSolverMode.StablePrototype;
 
+    [Header("Stable Prototype Angular Limits")]
+    [SerializeField] private float manualAngularAccelerationLimitRadPerSec2 = 1.25f;
+    [SerializeField] private float sasAngularAccelerationLimitRadPerSec2 = 4f;
+    [SerializeField] private float maxManualAngularVelocityRadPerSec = 2.2f;
+    [SerializeField] private float maxSasAngularVelocityRadPerSec = 3f;
+    [SerializeField] private float maxStablePrototypeTorqueNm = 12000f;
+
     [Header("RCS Response")]
     [SerializeField] private float nozzleSpoolUpRate;
     [SerializeField] private float nozzleSpoolDownRate;
@@ -167,6 +174,9 @@ public class RcsThrusterController : MonoBehaviour
     public bool LastFlightAssistDebugOnly => LastFlightAssistRequest.debugOnlyNonPhysical;
     public Vector3 LastManualDesiredTorqueLocal { get; private set; }
     public Vector3 LastDesiredTorqueLocal { get; private set; }
+    public float LastComputedTorqueAuthority { get; private set; }
+    public float LastPhysicalNozzleTorqueAuthority { get; private set; }
+    public float LastStablePrototypeTorqueAuthority { get; private set; }
     public Vector3 LastDesiredRcsForceWorld { get; private set; }
     public Vector3 LastActualRcsForceWorld { get; private set; }
     public Vector3 LastResidualRcsForceWorld { get; private set; }
@@ -555,8 +565,10 @@ public class RcsThrusterController : MonoBehaviour
             desiredForceWorld += flightAssistRequest.forceWorld;
         }
 
-        float torqueAuthority = GetTorqueAuthority();
-        LastManualDesiredTorqueLocal = Vector3.ClampMagnitude(manualAttitude, 1f) * torqueAuthority;
+        float torqueAuthority = GetEffectiveTorqueAuthority();
+        LastManualDesiredTorqueLocal = rcsSolverMode == RcsSolverMode.StablePrototype
+            ? ComputeStableManualDesiredTorqueLocal(manualAttitude)
+            : Vector3.ClampMagnitude(manualAttitude, 1f) * torqueAuthority;
         Vector3 assistTorqueLocal = flightAssistRequest.HasPhysicalRequest ? flightAssistRequest.torqueLocal : Vector3.zero;
         Vector3 desiredTorqueLocal = CombineManualPriorityTorque(LastManualDesiredTorqueLocal, LastSasDesiredTorqueLocal + assistTorqueLocal, torqueAuthority);
         LastDesiredTorqueLocal = desiredTorqueLocal;
@@ -582,7 +594,7 @@ public class RcsThrusterController : MonoBehaviour
             return Vector3.zero;
         }
 
-        float torqueAuthority = GetSasTorqueAuthority();
+        float torqueAuthority = GetEffectiveSasTorqueAuthority();
         LastRawSasDesiredTorqueLocal = ComputeSasDesiredTorqueLocal(sasMode, sasTargetRotation, hasSasTargetRotation, torqueAuthority);
         if (torqueAuthority <= 0.0001f)
         {
@@ -607,11 +619,69 @@ public class RcsThrusterController : MonoBehaviour
 
         float dampingTime = Mathf.Max(SasMinimumDampingTime, 1f / Mathf.Max(0.01f, SasDerivativeGain));
         Vector3 desiredAngularVelocity = sasMode == SasControlMode.HoldAttitude
-            ? Vector3.ClampMagnitude(angularError * (SasProportionalGain / dampingTime), SasHoldAngularVelocityLimit)
+            ? Vector3.ClampMagnitude(angularError * (SasProportionalGain / dampingTime), GetSasAngularVelocityLimit())
             : Vector3.zero;
         Vector3 desiredAngularAcceleration = (desiredAngularVelocity - localAngularVelocity) / dampingTime;
+        desiredAngularAcceleration = ClampStableAngularAcceleration(desiredAngularAcceleration, sasAngularAccelerationLimitRadPerSec2);
         Vector3 desiredTorque = TransformLocalAngularAccelerationToTorque(desiredAngularAcceleration);
         return Vector3.ClampMagnitude(desiredTorque, torqueAuthority);
+    }
+
+    private Vector3 ComputeStableManualDesiredTorqueLocal(Vector3 manualAttitude)
+    {
+        if (shipRigidbody == null)
+        {
+            return Vector3.zero;
+        }
+
+        Vector3 command = Vector3.ClampMagnitude(manualAttitude, 1f);
+        if (command.sqrMagnitude <= ManualCommandDeadZone * ManualCommandDeadZone)
+        {
+            return Vector3.zero;
+        }
+
+        Vector3 localAngularVelocity = transform.InverseTransformDirection(shipRigidbody.angularVelocity);
+        float maxVelocity = Mathf.Max(0.01f, maxManualAngularVelocityRadPerSec);
+        LimitManualAccelerationByVelocity(ref command.x, localAngularVelocity.x, maxVelocity);
+        LimitManualAccelerationByVelocity(ref command.y, localAngularVelocity.y, maxVelocity);
+        LimitManualAccelerationByVelocity(ref command.z, localAngularVelocity.z, maxVelocity);
+
+        Vector3 desiredAngularAcceleration = command * Mathf.Max(0f, manualAngularAccelerationLimitRadPerSec2);
+        desiredAngularAcceleration = ClampStableAngularAcceleration(desiredAngularAcceleration, manualAngularAccelerationLimitRadPerSec2);
+        return Vector3.ClampMagnitude(
+            TransformLocalAngularAccelerationToTorque(desiredAngularAcceleration),
+            GetStablePrototypeTorqueAuthority());
+    }
+
+    private static void LimitManualAccelerationByVelocity(ref float commandAxis, float angularVelocityAxis, float maxVelocity)
+    {
+        if (Mathf.Abs(commandAxis) <= ManualCommandDeadZone)
+        {
+            commandAxis = 0f;
+            return;
+        }
+
+        if (Mathf.Sign(commandAxis) == Mathf.Sign(angularVelocityAxis) && Mathf.Abs(angularVelocityAxis) >= maxVelocity)
+        {
+            commandAxis = 0f;
+        }
+    }
+
+    private Vector3 ClampStableAngularAcceleration(Vector3 angularAcceleration, float limit)
+    {
+        if (rcsSolverMode != RcsSolverMode.StablePrototype)
+        {
+            return angularAcceleration;
+        }
+
+        return Vector3.ClampMagnitude(angularAcceleration, Mathf.Max(0f, limit));
+    }
+
+    private float GetSasAngularVelocityLimit()
+    {
+        return rcsSolverMode == RcsSolverMode.StablePrototype
+            ? Mathf.Max(0.01f, maxSasAngularVelocityRadPerSec)
+            : SasHoldAngularVelocityLimit;
     }
 
     private Vector3 TransformLocalAngularAccelerationToTorque(Vector3 localAngularAcceleration)
@@ -1189,7 +1259,7 @@ public class RcsThrusterController : MonoBehaviour
             ? desiredForceWorld.magnitude / Mathf.Max(0.0001f, TranslationForce)
             : 0f;
         float torqueThrottleEquivalent = hasDesiredTorque
-            ? desiredTorqueWorld.magnitude / Mathf.Max(0.0001f, GetTorqueAuthority())
+            ? desiredTorqueWorld.magnitude / Mathf.Max(0.0001f, GetEffectiveTorqueAuthority())
             : 0f;
 
         float requestedThrottleTotal = Mathf.Abs(translationThrottleEquivalent) + Mathf.Abs(torqueThrottleEquivalent);
@@ -1324,9 +1394,43 @@ public class RcsThrusterController : MonoBehaviour
         return Mathf.Max(0f, attitudeForce) * representativeLever;
     }
 
+    public float ComputePhysicalNozzleTorqueAuthorityForDiagnostics()
+    {
+        RefreshNozzlesIfNeeded();
+        return GetTorqueAuthority();
+    }
+
+    public float ComputeEffectiveTorqueAuthorityForDiagnostics()
+    {
+        RefreshNozzlesIfNeeded();
+        return GetEffectiveTorqueAuthority();
+    }
+
+    private float GetEffectiveTorqueAuthority()
+    {
+        LastPhysicalNozzleTorqueAuthority = GetTorqueAuthority();
+        LastStablePrototypeTorqueAuthority = GetStablePrototypeTorqueAuthority();
+        LastComputedTorqueAuthority = rcsSolverMode == RcsSolverMode.StablePrototype
+            ? LastStablePrototypeTorqueAuthority
+            : LastPhysicalNozzleTorqueAuthority;
+        return LastComputedTorqueAuthority;
+    }
+
+    private float GetStablePrototypeTorqueAuthority()
+    {
+        return Mathf.Max(0.0001f, maxStablePrototypeTorqueNm);
+    }
+
     private float GetSasTorqueAuthority()
     {
         return GetTorqueAuthority() * SasAuthority;
+    }
+
+    private float GetEffectiveSasTorqueAuthority()
+    {
+        return rcsSolverMode == RcsSolverMode.StablePrototype
+            ? GetStablePrototypeTorqueAuthority()
+            : GetSasTorqueAuthority();
     }
 
     private static void GetAllocatorWeights(List<RcsAllocation> allocations, int allocationCount, Vector3 desiredForceWorld, Vector3 desiredTorqueWorld, out float forceWeight, out float torqueWeight)

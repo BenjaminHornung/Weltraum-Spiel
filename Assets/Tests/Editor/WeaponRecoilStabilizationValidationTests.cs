@@ -251,6 +251,7 @@ public class WeaponRecoilStabilizationValidationTests
         mount.Configure(baseMarker, yaw, pitch, muzzle, null);
         PrototypeTurretWeapon weapon = baseMarker.gameObject.AddComponent<PrototypeTurretWeapon>();
         weapon.Configure(fixture.Stats, fixture.Rigidbody, fixture.PhysicsCore, mount);
+        weapon.SetRecoilMode(WeaponRecoilMode.PhysicalMuzzle);
         return weapon;
     }
 

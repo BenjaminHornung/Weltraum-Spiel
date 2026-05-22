@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class ShipStats : MonoBehaviour
 {
+    private const float FallbackInertiaMinimum = 100f;
+    private static readonly Vector3 FallbackInertiaBoxSize = new Vector3(2.2f, 1.2f, 5.4f);
+
     [Header("Module Masses (kg)")]
     [SerializeField] private float cockpitMass = 800f;
     [SerializeField] private float hullMass = 1000f;
@@ -188,8 +191,29 @@ public class ShipStats : MonoBehaviour
             body.inertiaTensorRotation = Quaternion.identity;
             body.inertiaTensor = properties.InertiaTensor;
         }
+        else
+        {
+            body.automaticCenterOfMass = false;
+            body.centerOfMass = properties.LocalCenterOfMass;
+            body.automaticInertiaTensor = false;
+            body.inertiaTensorRotation = Quaternion.identity;
+            body.inertiaTensor = CalculateSafeBoxInertia(properties.TotalMassKg, FallbackInertiaBoxSize);
+        }
 
         return properties;
+    }
+
+    private static Vector3 CalculateSafeBoxInertia(float massKg, Vector3 size)
+    {
+        float mass = Mathf.Max(0.1f, massKg);
+        Vector3 box = new Vector3(
+            Mathf.Max(0.1f, Mathf.Abs(size.x)),
+            Mathf.Max(0.1f, Mathf.Abs(size.y)),
+            Mathf.Max(0.1f, Mathf.Abs(size.z)));
+        return new Vector3(
+            Mathf.Max(FallbackInertiaMinimum, mass / 12f * ((box.y * box.y) + (box.z * box.z))),
+            Mathf.Max(FallbackInertiaMinimum, mass / 12f * ((box.x * box.x) + (box.z * box.z))),
+            Mathf.Max(FallbackInertiaMinimum, mass / 12f * ((box.x * box.x) + (box.y * box.y))));
     }
 
     private void OnValidate()

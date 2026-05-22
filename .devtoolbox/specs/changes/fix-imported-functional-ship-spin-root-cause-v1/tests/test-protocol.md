@@ -1,0 +1,139 @@
+# Unity PlayMode Movement Evidence
+
+- Scene: Assets/Scenes/PrototypeBootstrapHost.unity
+- Visual: ImportedDemoScout
+- Unity: 6000.4.7f1
+- fixedDeltaTime: 0.02
+- Evidence root: E:\Unity\Weltraum Spiel\Weltraum Spiel\.devtoolbox\specs\changes\fix-imported-functional-ship-spin-root-cause-v1\tests
+- Log artifact: E:\Unity\Weltraum Spiel\Weltraum Spiel\.devtoolbox\specs\changes\fix-imported-functional-ship-spin-root-cause-v1\tests\logs\flight-spin-root-cause.log
+- CSV artifact: E:\Unity\Weltraum Spiel\Weltraum Spiel\.devtoolbox\specs\changes\fix-imported-functional-ship-spin-root-cause-v1\tests\performance\flight-control-spin-diagnostics.csv
+- Screenshot artifacts: idle-sas-on.png, translation-forward.png, translation-left-right.png, normal-attitude-sas-on.png, imported-ship-translation.png
+- Driver: live Unity PlayMode scene with PlayerShipController, RcsThrusterController, ShipPhysicsCore and SimpleFollowCamera.
+- Input: simulated through PlayerShipController test hooks; physics is stepped in Unity PlayMode for deterministic evidence.
+- Evidence checks include HasExternalFlightAssistRequest, LastExternalFlightAssistRequest.source, LastFlightAssistRequest.source, LastFlightAssistRequest.forceWorld, LastFlightAssistRequest.torqueLocal, WeaponStabilizationActive, LastWeaponStabilizationStatus.
+
+- PASS: Exactly one active Main Camera (count=1)
+- PASS: PrototypeShip has Rigidbody (rb=True)
+- PASS: PrototypeShip has PlayerShipController (controller=True)
+- PASS: PrototypeShip has RcsThrusterController (rcs=True)
+- PASS: PrototypeShip has ShipPhysicsCore (physicsCore=True)
+- PASS: Imported Scout selected (visual=ImportedDemoScout)
+- PASS: Idle linear velocity near-zero (linear=0)
+- PASS: Idle angular velocity near-zero (angular=0)
+- PASS: Idle RCS desired force bounded (desiredForce=0)
+- PASS: Idle RCS actual force bounded (actualForce=0)
+- PASS: Idle RCS residual force bounded (residualForce=0)
+- PASS: Idle RCS actual torque bounded (actualTorque=0)
+- PASS: Idle RCS residual torque bounded (residualTorque=0)
+- PASS: Idle camera anchor error bounded (anchorError=0)
+- PASS: Screenshot idle-sas-on.png (E:\Unity\Weltraum Spiel\Weltraum Spiel\.devtoolbox\specs\changes\fix-imported-functional-ship-spin-root-cause-v1\tests\screenshots\idle-sas-on.png)
+- PASS: Translation checks use imported/default visual (visual=ImportedDemoScout)
+- PASS: A-Translation-W-forward visible stable velocity (velocityDot=2.864902)
+- PASS: A-Translation-W-forward actual force direction (forceDot=9000)
+- PASS: A-Translation-W-forward residual force small (residualRatio=0)
+- PASS: A-Translation-W-forward no unwanted torque (torque=0)
+- PASS: Screenshot translation-forward.png (E:\Unity\Weltraum Spiel\Weltraum Spiel\.devtoolbox\specs\changes\fix-imported-functional-ship-spin-root-cause-v1\tests\screenshots\translation-forward.png)
+- PASS: A-Translation-S-back visible stable velocity (velocityDot=2.865447)
+- PASS: A-Translation-S-back actual force direction (forceDot=9000)
+- PASS: A-Translation-S-back residual force small (residualRatio=0)
+- PASS: A-Translation-S-back no unwanted torque (torque=0)
+- PASS: A-Translation-A-left visible stable velocity (velocityDot=2.865998)
+- PASS: A-Translation-A-left actual force direction (forceDot=9000)
+- PASS: A-Translation-A-left residual force small (residualRatio=0)
+- PASS: A-Translation-A-left no unwanted torque (torque=0)
+- PASS: Screenshot translation-left-right.png (E:\Unity\Weltraum Spiel\Weltraum Spiel\.devtoolbox\specs\changes\fix-imported-functional-ship-spin-root-cause-v1\tests\screenshots\translation-left-right.png)
+- PASS: A-Translation-D-right visible stable velocity (velocityDot=2.866543)
+- PASS: A-Translation-D-right actual force direction (forceDot=9000)
+- PASS: A-Translation-D-right residual force small (residualRatio=0)
+- PASS: A-Translation-D-right no unwanted torque (torque=0)
+- PASS: A-Translation-H-up visible stable velocity (velocityDot=2.86709)
+- PASS: A-Translation-H-up actual force direction (forceDot=9000)
+- PASS: A-Translation-H-up residual force small (residualRatio=0)
+- PASS: A-Translation-H-up no unwanted torque (torque=0)
+- PASS: A-Translation-N-down visible stable velocity (velocityDot=2.86764)
+- PASS: A-Translation-N-down actual force direction (forceDot=9000)
+- PASS: A-Translation-N-down residual force small (residualRatio=0)
+- PASS: A-Translation-N-down no unwanted torque (torque=0)
+- PASS: Screenshot imported-ship-translation.png (E:\Unity\Weltraum Spiel\Weltraum Spiel\.devtoolbox\specs\changes\fix-imported-functional-ship-spin-root-cause-v1\tests\screenshots\imported-ship-translation.png)
+- PASS: B-Attitude-W-pitch actual torque present (torque=12000)
+- PASS: B-Attitude-W-pitch residual torque bounded (residualTorque=0)
+- PASS: B-Attitude-W-pitch linear force neutralized (force=0)
+- PASS: B-Attitude-W-pitch no linear drift (velocity=0)
+- PASS: Screenshot normal-attitude-sas-on.png (E:\Unity\Weltraum Spiel\Weltraum Spiel\.devtoolbox\specs\changes\fix-imported-functional-ship-spin-root-cause-v1\tests\screenshots\normal-attitude-sas-on.png)
+- PASS: B-Attitude-S-pitch actual torque present (torque=12000)
+- PASS: B-Attitude-S-pitch residual torque bounded (residualTorque=0)
+- PASS: B-Attitude-S-pitch linear force neutralized (force=0)
+- PASS: B-Attitude-S-pitch no linear drift (velocity=0)
+- PASS: B-Attitude-A-yaw actual torque present (torque=12000)
+- PASS: B-Attitude-A-yaw residual torque bounded (residualTorque=0)
+- PASS: B-Attitude-A-yaw linear force neutralized (force=0)
+- PASS: B-Attitude-A-yaw no linear drift (velocity=0)
+- PASS: B-Attitude-D-yaw actual torque present (torque=12000)
+- PASS: B-Attitude-D-yaw residual torque bounded (residualTorque=0)
+- PASS: B-Attitude-D-yaw linear force neutralized (force=0)
+- PASS: B-Attitude-D-yaw no linear drift (velocity=0)
+- PASS: B-Attitude-Q-roll actual torque present (torque=1644.493)
+- PASS: B-Attitude-Q-roll residual torque bounded (residualTorque=0)
+- PASS: B-Attitude-Q-roll linear force neutralized (force=0)
+- PASS: B-Attitude-Q-roll no linear drift (velocity=0)
+- PASS: B-Attitude-E-roll actual torque present (torque=1644.458)
+- PASS: B-Attitude-E-roll residual torque bounded (residualTorque=0)
+- PASS: B-Attitude-E-roll linear force neutralized (force=0)
+- PASS: B-Attitude-E-roll no linear drift (velocity=0)
+- PASS: B2-Space fire uses real gun/turret path (fireStatus=None)
+- PASS: B2-Space fire safe recoil mode (gun=CenterOfMassSafe turret=CenterOfMassSafe)
+- PASS: B2-Space fire recoil angular impulse bounded (angularImpulse=0)
+- PASS: B2-Space fire angular velocity bounded (maxAngularSpeed=0)
+- PASS: C-SAS-on external assist idle (source=None)
+- PASS: C-SAS-on desired torque finite (sasTorque=(0.00, -1496.76, 0.00))
+- PASS: C-SAS-on damps angular velocity after input (before=0.549608 after=0.061191)
+- PASS: C-SAS-off preserves physical drift (before=0.549629 after=0.549629)
+- PASS: D-main-thruster accelerates forward (velocity=(0.00, 0.00, 16.75))
+- PASS: D-main-thruster no unexpected spin (angularVelocity=0)
+- PASS: E-F6 Generated visual active (visual=GeneratedPrimitives)
+- PASS: E-F6 disables imported functional nozzle path (useImportedSockets=False)
+- PASS: E-F6 re-enables imported functional nozzle path for Scout (useImportedSockets=True)
+- PASS: E-F6 Scout nozzles rebound (installed=20)
+- PASS: E-F6 Cargo keeps imported functional nozzle path (useImportedSockets=True)
+- PASS: E-F6 returns to Imported Scout (visual=ImportedDemoScout)
+- PASS: E-F6 keeps Rigidbody (rb=True)
+- PASS: E-F6 keeps PlayerShipController (controller=True)
+- PASS: E-F6 keeps RCS (rcs=True)
+- PASS: E-F6 keeps Camera binding (camera=True)
+- PASS: E-F6 no stale external assist (source=None)
+- PASS: F-external source waypoint set (source=WaypointAutopilot)
+- PASS: F-manual input clears stale external assist (source=None)
+- PASS: Log artifact written (E:\Unity\Weltraum Spiel\Weltraum Spiel\.devtoolbox\specs\changes\fix-imported-functional-ship-spin-root-cause-v1\tests\logs\flight-spin-root-cause.log bytes=97316)
+- PASS: CSV artifact written (E:\Unity\Weltraum Spiel\Weltraum Spiel\.devtoolbox\specs\changes\fix-imported-functional-ship-spin-root-cause-v1\tests\performance\flight-control-spin-diagnostics.csv bytes=47732)
+
+## Summary
+- Final visual mode: ImportedDemoScout
+- Final build mode: ImportedDemoScoutFunctionalDefault
+- Inertia tensor: (12634.19, 13098.10, 1314.68)
+- Module mass descriptor count: 9
+- Max RCS lever arm: 1.476775
+- Max muzzle lever arm: 1.771028
+- Effective torque authority: 12000
+- Last recoil angular impulse: (0.00, 0.00, 0.00)
+- Final allocator status: stable-prototype
+- Allocator status note: stable-prototype is expected for default live flight; translation is applied at center of mass and attitude/SAS torque is applied directly through ShipPhysicsCore.
+- Final active/installed nozzles: 4/20
+- Nozzle count note: 4 active of 20 is expected for a one-axis RCS sample; installed count must remain stable at 20.
+- Movement tolerances: translation velocityDot > 0.25, forceDot > 1000, residual force ratio < 0.1, pure-attitude residual torque < 25, pure-attitude linear force < 50.
+- Final camera focus source: CameraAnchor
+- Visual bounds refresh count: 29
+- RCS nozzle refresh count: 35
+- HasExternalFlightAssistRequest: False
+- LastExternalFlightAssistRequest.source: None
+- LastFlightAssistRequest.source: None
+- LastFlightAssistRequest.forceWorld: (0.00, 0.00, 0.00)
+- LastFlightAssistRequest.torqueLocal: (0.00, 0.00, 0.00)
+- WeaponStabilizationActive: False
+- LastWeaponStabilizationStatus: idle
+- Final verdict: PASS
+
+## Review Notes
+- Claude plan review completed after implementation. It agreed the patch targets the root cause: imported functional mass/inertia, stable RCS torque decoupled from nozzle lever arms, and center-of-mass-safe weapon recoil by default.
+- Review follow-ups checked locally: `ShipStats.ApplyMassProperties` explicitly disables `automaticCenterOfMass` and `automaticInertiaTensor`; the imported functional sanity PlayMode test asserts both flags are false.
+- Remaining non-blocking hardening ideas: add a dedicated safe-box fallback test, add an `ExperimentalPhysicalNozzles` guard test, and avoid using `PrototypeShipPhysicsSanity.Capture` as a per-frame gameplay path because it intentionally uses Unity hierarchy reads for evidence diagnostics only.
+- Unity MCP note: the final evidence UnityTest wrote a passing XML result and all artifacts, but the MCP test job remained stale as `tests_running` after completion. The authoritative result used here is Unity's generated `TestResults.xml` plus the written protocol/log/CSV/screenshots.

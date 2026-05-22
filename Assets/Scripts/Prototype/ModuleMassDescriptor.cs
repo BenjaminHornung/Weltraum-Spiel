@@ -181,6 +181,8 @@ public struct ShipMassProperties
 
 public static class PrototypeModuleMassLayout
 {
+    private const string ImportedFunctionalMassRootName = "ImportedFunctionalMassDescriptors";
+
     public static void ConfigureGeneratedPrototypeDescriptors(Transform ship, ShipStats stats)
     {
         if (ship == null || stats == null)
@@ -263,6 +265,66 @@ public static class PrototypeModuleMassLayout
                 false,
                 block.LocalScale);
         }
+    }
+
+    public static void ConfigureImportedFunctionalDescriptors(Transform ship, ShipStats stats, PrototypeShipBuildMode buildMode)
+    {
+        if (ship == null || stats == null)
+        {
+            return;
+        }
+
+        Transform root = EnsureMassDescriptorRoot(ship);
+        bool cargo = buildMode == PrototypeShipBuildMode.ImportedDemoCargoFunctional;
+        Vector3 hullSize = cargo ? new Vector3(3.4f, 1.6f, 8.2f) : new Vector3(2.2f, 1.2f, 5.4f);
+        Vector3 cockpitPosition = cargo ? new Vector3(0f, 0.45f, 2.45f) : new Vector3(0f, 0.38f, 1.75f);
+        Vector3 fuelPosition = cargo ? new Vector3(0f, -0.05f, -0.65f) : new Vector3(0f, -0.05f, -0.45f);
+        Vector3 enginePosition = cargo ? new Vector3(0f, 0f, -4.0f) : new Vector3(0f, 0f, -2.65f);
+        Vector3 gunPosition = cargo ? new Vector3(0f, 0.72f, 2.9f) : new Vector3(0f, 0.55f, 2.35f);
+        float rcsX = cargo ? 1.55f : 1.05f;
+        float rcsY = cargo ? 0.75f : 0.55f;
+        float rcsZ = cargo ? 1.9f : 1.25f;
+
+        ConfigureDescriptor(EnsureDescriptorAnchor(root, "Hull", Vector3.zero), "ImportedHull", stats.HullMass, 0f, false, hullSize);
+        ConfigureDescriptor(EnsureDescriptorAnchor(root, "Cockpit", cockpitPosition), "ImportedCockpit", stats.CockpitMass, 0f, false, cargo ? new Vector3(1.4f, 0.8f, 1.6f) : new Vector3(1.0f, 0.65f, 1.2f));
+        ConfigureDescriptor(EnsureDescriptorAnchor(root, "FuelTank", fuelPosition), "ImportedFuelTank", stats.FuelTankDryMass, stats.CurrentFuelKg, true, cargo ? new Vector3(2.5f, 0.9f, 3.0f) : new Vector3(1.6f, 0.7f, 2.0f));
+        ConfigureDescriptor(EnsureDescriptorAnchor(root, "Engine", enginePosition), "ImportedEngine", stats.EngineMass, 0f, false, cargo ? new Vector3(1.8f, 1.0f, 1.2f) : new Vector3(1.2f, 0.85f, 0.9f));
+        ConfigureDescriptor(EnsureDescriptorAnchor(root, "Gun", gunPosition), "ImportedGun", stats.GunMass, 0f, false, cargo ? new Vector3(0.65f, 0.45f, 1.1f) : new Vector3(0.45f, 0.32f, 0.85f));
+        ConfigureDescriptor(EnsureDescriptorAnchor(root, "RCS_Top", new Vector3(0f, rcsY, rcsZ)), "ImportedRCS_Top", stats.RcsBlockMass, 0f, false, new Vector3(0.7f, 0.28f, 0.7f));
+        ConfigureDescriptor(EnsureDescriptorAnchor(root, "RCS_Bottom", new Vector3(0f, -rcsY, rcsZ)), "ImportedRCS_Bottom", stats.RcsBlockMass, 0f, false, new Vector3(0.7f, 0.28f, 0.7f));
+        ConfigureDescriptor(EnsureDescriptorAnchor(root, "RCS_Left", new Vector3(-rcsX, 0f, -rcsZ)), "ImportedRCS_Left", stats.RcsBlockMass, 0f, false, new Vector3(0.28f, 0.7f, 0.7f));
+        ConfigureDescriptor(EnsureDescriptorAnchor(root, "RCS_Right", new Vector3(rcsX, 0f, -rcsZ)), "ImportedRCS_Right", stats.RcsBlockMass, 0f, false, new Vector3(0.28f, 0.7f, 0.7f));
+    }
+
+    private static Transform EnsureMassDescriptorRoot(Transform ship)
+    {
+        Transform root = ship.Find(ImportedFunctionalMassRootName);
+        if (root == null)
+        {
+            root = new GameObject(ImportedFunctionalMassRootName).transform;
+            root.SetParent(ship, false);
+        }
+
+        root.localPosition = Vector3.zero;
+        root.localRotation = Quaternion.identity;
+        root.localScale = Vector3.one;
+        root.gameObject.hideFlags = HideFlags.DontSaveInBuild;
+        return root;
+    }
+
+    private static Transform EnsureDescriptorAnchor(Transform root, string name, Vector3 localPosition)
+    {
+        Transform anchor = root.Find(name);
+        if (anchor == null)
+        {
+            anchor = new GameObject(name).transform;
+            anchor.SetParent(root, false);
+        }
+
+        anchor.localPosition = localPosition;
+        anchor.localRotation = Quaternion.identity;
+        anchor.localScale = Vector3.one;
+        return anchor;
     }
 
     private static float GetModuleDryMass(ShipStats stats, PrototypeModuleMassRole role, bool hasOverride, float overrideMass)
