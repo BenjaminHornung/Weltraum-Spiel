@@ -1,0 +1,1153 @@
+﻿{
+  "generatedAtUtc": "2026-05-22T20:31:06.2713735Z",
+  "project": {
+    "name": "Weltraum Spiel",
+    "rootPath": "E:/Unity/Weltraum Spiel/Weltraum Spiel",
+    "assetsPath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Assets",
+    "unityVersion": "6000.4.7f1",
+    "platform": "WindowsEditor"
+  },
+  "limitations": [
+    "Asset Store My Assets is not exposed through Unity MCP here; only assets imported into this project and packages already downloaded in local Unity caches were discoverable.",
+    "Local Asset Store archives were not imported, unpacked, copied, or inspected for protected content; only cache folder names, archive names, sizes, and metadata/readme file names are recorded.",
+    "Scenes are inventoried by path only. The exporter does not open, save, or modify scene contents.",
+    "Prefab inspection reads component type names from prefab assets without instantiating or saving them.",
+    "Usefulness and risk values are metadata heuristics to guide manual inspection, not legal, license, or compatibility approval."
+  ],
+  "installedPackages": [
+    {
+      "name": "com.coplaydev.unity-mcp",
+      "displayName": "MCP for Unity",
+      "version": "9.6.9-beta.8",
+      "source": "Git",
+      "description": "A bridge that connects AI assistants to Unity via the MCP (Model Context Protocol). Allows AI clients like Claude Code, Cursor, and VSCode to directly control your Unity Editor for enhanced development workflows.  Features automated setup wizard, cross-platform support, and seamless integration with popular AI development tools.  Join Our Discord: https://discord.gg/y4p8KfzrN4",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.coplaydev.unity-mcp@1c35e6bd3ab3",
+      "usefulForWeltraumSpiel": "yes",
+      "reason": "Core editor automation and verification tooling for this workflow."
+    },
+    {
+      "name": "com.unity.ai.navigation",
+      "displayName": "AI Navigation",
+      "version": "2.0.12",
+      "source": "Registry",
+      "description": "The AI Navigation package contains high-level components that allow you to use navmeshes to incorporate navigation and pathfinding in your game. With this package installed you can build and use navmeshes at runtime and at edit time, create dynamic obstacles, and use links to allow specific actions (like jumping) as your characters navigate between navmeshes.",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.ai.navigation@734c2c4c5591",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Potentially useful for station/interior navigation, less directly useful for free-space flight."
+    },
+    {
+      "name": "com.unity.burst",
+      "displayName": "Burst",
+      "version": "1.8.29",
+      "source": "Registry",
+      "description": "Burst is a compiler that translates from IL/.NET bytecode to highly optimized native code using LLVM.",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.burst@6bb9aca3ef38",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Useful for measured simulation/performance hotspots; adopt only with profiler evidence."
+    },
+    {
+      "name": "com.unity.collab-proxy",
+      "displayName": "Unity Version Control",
+      "version": "2.12.4",
+      "source": "Registry",
+      "description": "The package gives you the ability to use Unity Version Control in the Unity editor. To use Unity Version Control, a subscription is required. Learn more about how you can get started for free by visiting https://unity.com/solutions/version-control",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.collab-proxy@0b1559bcd34e",
+      "usefulForWeltraumSpiel": "no",
+      "reason": "Editor integration only; helpful for development but not a reusable game asset."
+    },
+    {
+      "name": "com.unity.collections",
+      "displayName": "Collections",
+      "version": "6.4.0",
+      "source": "BuiltIn",
+      "description": "A C# collections library providing data structures that can be used in jobs, and optimized by Burst compiler.",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.collections@5b6ebd78ccc0",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Useful for measured simulation/performance hotspots; adopt only with profiler evidence."
+    },
+    {
+      "name": "com.unity.ext.nunit",
+      "displayName": "Custom NUnit",
+      "version": "2.0.5",
+      "source": "BuiltIn",
+      "description": "A custom version of NUnit used by Unity Test Framework. Based on NUnit version 3.5 and works with all platforms, il2cpp and Mono AOT.",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.ext.nunit@d8c07649098d",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Installed package; inspect when its feature area becomes part of the next milestone."
+    },
+    {
+      "name": "com.unity.ide.rider",
+      "displayName": "JetBrains Rider Editor",
+      "version": "3.0.40",
+      "source": "Registry",
+      "description": "The JetBrains Rider Editor package provides an integration for using the JetBrains Rider IDE as a code editor for Unity. It adds support for generating .csproj files for code completion and auto-discovery of installations.",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.ide.rider@e4950c6d131b",
+      "usefulForWeltraumSpiel": "no",
+      "reason": "Editor integration only; helpful for development but not a reusable game asset."
+    },
+    {
+      "name": "com.unity.ide.visualstudio",
+      "displayName": "Visual Studio Editor",
+      "version": "2.0.27",
+      "source": "Registry",
+      "description": "Code editor integration for supporting Visual Studio as code editor for unity. Adds support for generating csproj files for intellisense purposes, auto discovery of installations, etc.",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.ide.visualstudio@dc1ddd4f09b6",
+      "usefulForWeltraumSpiel": "no",
+      "reason": "Editor integration only; helpful for development but not a reusable game asset."
+    },
+    {
+      "name": "com.unity.inputsystem",
+      "displayName": "Input System",
+      "version": "1.19.0",
+      "source": "Registry",
+      "description": "A new input system which can be used as a more extensible and customizable alternative to Unity's classic input system in UnityEngine.Input.",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.inputsystem@21a28c3a6c83",
+      "usefulForWeltraumSpiel": "yes",
+      "reason": "Foundation for ship controls, HUD input, and future builder interactions."
+    },
+    {
+      "name": "com.unity.mathematics",
+      "displayName": "Mathematics",
+      "version": "1.3.3",
+      "source": "Registry",
+      "description": "Unity's C# SIMD math library providing vector types and math functions with a shader like syntax.",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.mathematics@19a9377c4ffa",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Useful for measured simulation/performance hotspots; adopt only with profiler evidence."
+    },
+    {
+      "name": "com.unity.modules.accessibility",
+      "displayName": "Accessibility",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "The Accessibility module includes APIs and tools that facilitate the development of accessible user experiences in Unity. Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.AccessibilityModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.accessibility",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Built-in Unity module; infrastructure rather than a standalone asset to inspect."
+    },
+    {
+      "name": "com.unity.modules.adaptiveperformance",
+      "displayName": "Adaptive Performance",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "Adaptive Performance is a built-in module that allows users to adjust settings based on performance metrics. Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.AdaptivePerformanceModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.adaptiveperformance",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Built-in Unity module; infrastructure rather than a standalone asset to inspect."
+    },
+    {
+      "name": "com.unity.modules.ai",
+      "displayName": "AI",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "The AI module implements the path finding features in Unity. Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.AIModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.ai",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Built-in Unity module; infrastructure rather than a standalone asset to inspect."
+    },
+    {
+      "name": "com.unity.modules.androidjni",
+      "displayName": "Android JNI",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "AndroidJNI module allows you to call Java code. Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.AndroidJNIModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.androidjni",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Built-in Unity module; infrastructure rather than a standalone asset to inspect."
+    },
+    {
+      "name": "com.unity.modules.animation",
+      "displayName": "Animation",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "The Animation module implements Unity's animation system. Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.AnimationModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.animation",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Built-in Unity module; infrastructure rather than a standalone asset to inspect."
+    },
+    {
+      "name": "com.unity.modules.assetbundle",
+      "displayName": "Asset Bundle",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "The AssetBundle module implements the AssetBundle class and related APIs to load data from AssetBundles. Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.AssetBundleModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.assetbundle",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Built-in Unity module; infrastructure rather than a standalone asset to inspect."
+    },
+    {
+      "name": "com.unity.modules.audio",
+      "displayName": "Audio",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "The Audio module implements Unity's audio system. Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.AudioModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.audio",
+      "usefulForWeltraumSpiel": "yes",
+      "reason": "Required for future thruster, weapon, impact, alert, and ambience audio."
+    },
+    {
+      "name": "com.unity.modules.cloth",
+      "displayName": "Cloth",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "The Cloth module implements cloth physics simulation through the Cloth component. Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.ClothModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.cloth",
+      "usefulForWeltraumSpiel": "yes",
+      "reason": "Core to flight, docking, projectile, and collision behavior."
+    },
+    {
+      "name": "com.unity.modules.director",
+      "displayName": "Director",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "The Director module implements the PlayableDirector class. Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.DirectorModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.director",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Built-in Unity module; infrastructure rather than a standalone asset to inspect."
+    },
+    {
+      "name": "com.unity.modules.hierarchycore",
+      "displayName": "Hierarchy Core",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "Module that contains a high-performance hierarchy container. Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.HierarchyCoreModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.hierarchycore",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Built-in Unity module; infrastructure rather than a standalone asset to inspect."
+    },
+    {
+      "name": "com.unity.modules.imageconversion",
+      "displayName": "Image Conversion",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "The ImageConversion module implements the ImageConversion class which provides helper methods for converting image data. Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.ImageConversionModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.imageconversion",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Built-in Unity module; infrastructure rather than a standalone asset to inspect."
+    },
+    {
+      "name": "com.unity.modules.imgui",
+      "displayName": "IMGUI",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "The IMGUI module provides Unity's immediate mode GUI solution for creating in-game and editor user interfaces. Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.IMGUIModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.imgui",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Built-in Unity module; infrastructure rather than a standalone asset to inspect."
+    },
+    {
+      "name": "com.unity.modules.jsonserialize",
+      "displayName": "JSONSerialize",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "The JSONSerialize module provides the JsonUtility class which lets you serialize Unity Objects to JSON format. Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.JSONSerializeModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.jsonserialize",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Built-in Unity module; infrastructure rather than a standalone asset to inspect."
+    },
+    {
+      "name": "com.unity.modules.particlesystem",
+      "displayName": "Particle System",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "The ParticleSystem module implements Unity's Particle System. Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.ParticleSystemModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.particlesystem",
+      "usefulForWeltraumSpiel": "yes",
+      "reason": "Directly relevant to thruster, RCS, weapon, and impact VFX."
+    },
+    {
+      "name": "com.unity.modules.physics",
+      "displayName": "Physics",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "The Physics module implements 3D physics in Unity. Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.PhysicsModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.physics",
+      "usefulForWeltraumSpiel": "yes",
+      "reason": "Core to flight, docking, projectile, and collision behavior."
+    },
+    {
+      "name": "com.unity.modules.physics2d",
+      "displayName": "Physics 2D",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "The Physics2d module implements 2D physics in Unity. Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.Physics2DModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.physics2d",
+      "usefulForWeltraumSpiel": "yes",
+      "reason": "Core to flight, docking, projectile, and collision behavior."
+    },
+    {
+      "name": "com.unity.modules.screencapture",
+      "displayName": "Screen Capture",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "The ScreenCapture module provides functionality to take screen shots using the ScreenCapture class. Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.ScreenCaptureModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.screencapture",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Built-in Unity module; infrastructure rather than a standalone asset to inspect."
+    },
+    {
+      "name": "com.unity.modules.subsystems",
+      "displayName": "Subsystems",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "The Subsystem module contains the definitions and runtime support for general subsystems in Unity. Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.SubsystemsModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.subsystems",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Built-in Unity module; infrastructure rather than a standalone asset to inspect."
+    },
+    {
+      "name": "com.unity.modules.terrain",
+      "displayName": "Terrain",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "The Terrain module implements Unity's Terrain rendering engine available through the Terrain component. Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.TerrainModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.terrain",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Built-in Unity module; infrastructure rather than a standalone asset to inspect."
+    },
+    {
+      "name": "com.unity.modules.terrainphysics",
+      "displayName": "Terrain Physics",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "The TerrainPhysics module connects the Terrain and Physics modules by implementing the TerrainCollider component. Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.TerrainPhysicsModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.terrainphysics",
+      "usefulForWeltraumSpiel": "yes",
+      "reason": "Core to flight, docking, projectile, and collision behavior."
+    },
+    {
+      "name": "com.unity.modules.tilemap",
+      "displayName": "Tilemap",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "The Tilemap module implements the Tilemap class. Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.TilemapModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.tilemap",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Built-in Unity module; infrastructure rather than a standalone asset to inspect."
+    },
+    {
+      "name": "com.unity.modules.ui",
+      "displayName": "UI",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "The UI module implements basic components required for Unity's UI system Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.UIModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.ui",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Built-in Unity module; infrastructure rather than a standalone asset to inspect."
+    },
+    {
+      "name": "com.unity.modules.uielements",
+      "displayName": "UIElements",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "The UIElements module implements the UIElements retained mode UI framework. Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.UIElementsModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.uielements",
+      "usefulForWeltraumSpiel": "yes",
+      "reason": "Useful for HUD, menus, debug panels, and ship-builder UI."
+    },
+    {
+      "name": "com.unity.modules.umbra",
+      "displayName": "Umbra",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "The Umbra module implements Unity's occlusion culling system. Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.UmbraModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.umbra",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Built-in Unity module; infrastructure rather than a standalone asset to inspect."
+    },
+    {
+      "name": "com.unity.modules.unityanalytics",
+      "displayName": "Unity Analytics",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.unityanalytics",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Built-in Unity module; infrastructure rather than a standalone asset to inspect."
+    },
+    {
+      "name": "com.unity.modules.unitywebrequest",
+      "displayName": "Unity Web Request",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "The UnityWebRequest module lets you communicate with http services. Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.UnityWebRequestModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.unitywebrequest",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Built-in Unity module; infrastructure rather than a standalone asset to inspect."
+    },
+    {
+      "name": "com.unity.modules.unitywebrequestassetbundle",
+      "displayName": "Unity Web Request Asset Bundle",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "The UnityWebRequestAssetBundle module provides the DownloadHandlerAssetBundle class to use UnityWebRequest to download Asset Bundles. Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.UnityWebRequestAssetBundleModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.unitywebrequestassetbundle",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Built-in Unity module; infrastructure rather than a standalone asset to inspect."
+    },
+    {
+      "name": "com.unity.modules.unitywebrequestaudio",
+      "displayName": "Unity Web Request Audio",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "The UnityWebRequestAudio module provides the DownloadHandlerAudioClip class to use UnityWebRequest to download AudioClips. Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.UnityWebRequestAudioModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.unitywebrequestaudio",
+      "usefulForWeltraumSpiel": "yes",
+      "reason": "Required for future thruster, weapon, impact, alert, and ambience audio."
+    },
+    {
+      "name": "com.unity.modules.unitywebrequesttexture",
+      "displayName": "Unity Web Request Texture",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "The UnityWebRequestTexture module provides the DownloadHandlerTexture class to use UnityWebRequest to download Textures. Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.UnityWebRequestTextureModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.unitywebrequesttexture",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Built-in Unity module; infrastructure rather than a standalone asset to inspect."
+    },
+    {
+      "name": "com.unity.modules.unitywebrequestwww",
+      "displayName": "Unity Web Request WWW",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "The UnityWebRequestWWW module implements the legacy WWW lets you communicate with http services. Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.UnityWebRequestWWWModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.unitywebrequestwww",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Built-in Unity module; infrastructure rather than a standalone asset to inspect."
+    },
+    {
+      "name": "com.unity.modules.vectorgraphics",
+      "displayName": "Vector Graphics",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.vectorgraphics",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Built-in Unity module; infrastructure rather than a standalone asset to inspect."
+    },
+    {
+      "name": "com.unity.modules.vehicles",
+      "displayName": "Vehicles",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "The Vehicles module implements vehicle physics simulation through the WheelCollider component. Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.VehiclesModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.vehicles",
+      "usefulForWeltraumSpiel": "yes",
+      "reason": "Core to flight, docking, projectile, and collision behavior."
+    },
+    {
+      "name": "com.unity.modules.video",
+      "displayName": "Video",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "The Video module lets you play back video files in your content. Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.VideoModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.video",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Built-in Unity module; infrastructure rather than a standalone asset to inspect."
+    },
+    {
+      "name": "com.unity.modules.vr",
+      "displayName": "VR",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "The VR module implements support for virtual reality devices in Unity. (This module is obsolete, please use UnityEngine.XRModule instead) Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.VRModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.vr",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Built-in Unity module; infrastructure rather than a standalone asset to inspect."
+    },
+    {
+      "name": "com.unity.modules.wind",
+      "displayName": "Wind",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "The Wind module implements the WindZone component which can affect terrain rendering and particle simulations. Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.WindModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.wind",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Built-in Unity module; infrastructure rather than a standalone asset to inspect."
+    },
+    {
+      "name": "com.unity.modules.xr",
+      "displayName": "XR",
+      "version": "1.0.0",
+      "source": "BuiltIn",
+      "description": "The XR module contains the VR and AR related platform support functionality. Scripting API: https://docs.unity3d.com/ScriptReference/UnityEngine.XRModule.html",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.xr",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Built-in Unity module; infrastructure rather than a standalone asset to inspect."
+    },
+    {
+      "name": "com.unity.multiplayer.center",
+      "displayName": "Multiplayer Center",
+      "version": "1.0.1",
+      "source": "BuiltIn",
+      "description": "The multiplayer center provides a starting point to create multiplayer games. It will recommend specific packages and enable you to easily access integrations, samples and documentation.",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.multiplayer.center@f01f4ba8d00a",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "May guide future networking decisions, but no Netcode package is installed."
+    },
+    {
+      "name": "com.unity.nuget.mono-cecil",
+      "displayName": "Mono Cecil",
+      "version": "1.11.6",
+      "source": "Registry",
+      "description": "The mono cecil library from https://www.nuget.org/packages/Mono.Cecil/  This package is intended for internal Unity use only. Most Unity users will be better suited using the existing community tooling. To avoid assembly clashes, please use this package if you intend to use Mono.Cecil.",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.nuget.mono-cecil@ecb9724e46ff",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Installed package; inspect when its feature area becomes part of the next milestone."
+    },
+    {
+      "name": "com.unity.nuget.newtonsoft-json",
+      "displayName": "Newtonsoft Json",
+      "version": "3.2.2",
+      "source": "Registry",
+      "description": "Newtonsoft Json for use in Unity projects and Unity packages. Currently synced to version 13.0.2.  This package is used for advanced json serialization and deserialization. Most Unity users will be better suited using the existing json tools built into Unity. To avoid assembly clashes, please use this package if you intend to use Newtonsoft Json.",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.nuget.newtonsoft-json@4dfd81071c64",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Installed package; inspect when its feature area becomes part of the next milestone."
+    },
+    {
+      "name": "com.unity.render-pipelines.core",
+      "displayName": "Scriptable Render Pipeline Core",
+      "version": "17.4.0",
+      "source": "BuiltIn",
+      "description": "SRP Core makes it easier to create or customize a Scriptable Render Pipeline (SRP). SRP Core contains reusable code, including boilerplate code for working with platform-specific graphics APIs, utility functions for common rendering operations, and  shader libraries. The code in SRP Core is use by the High Definition Render Pipeline (HDRP) and Universal Render Pipeline (URP). If you are creating a custom SRP from scratch or customizing a prebuilt SRP, using SRP Core will save you time.",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.render-pipelines.core@6f62546dd936",
+      "usefulForWeltraumSpiel": "yes",
+      "reason": "Active rendering pipeline; use as shader and post-processing compatibility baseline."
+    },
+    {
+      "name": "com.unity.render-pipelines.universal",
+      "displayName": "Universal Render Pipeline",
+      "version": "17.4.0",
+      "source": "BuiltIn",
+      "description": "The Universal Render Pipeline (URP) is a prebuilt Scriptable Render Pipeline, made by Unity. URP provides artist-friendly workflows that let you quickly and easily create optimized graphics across a range of platforms, from mobile to high-end consoles and PCs.",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.render-pipelines.universal@7228970dbdbf",
+      "usefulForWeltraumSpiel": "yes",
+      "reason": "Active rendering pipeline; use as shader and post-processing compatibility baseline."
+    },
+    {
+      "name": "com.unity.render-pipelines.universal-config",
+      "displayName": "Universal Render Pipeline Config",
+      "version": "17.4.0",
+      "source": "BuiltIn",
+      "description": "Configuration files for the Universal Render Pipeline.",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.render-pipelines.universal-config@0db4263b9e6b",
+      "usefulForWeltraumSpiel": "yes",
+      "reason": "Active rendering pipeline; use as shader and post-processing compatibility baseline."
+    },
+    {
+      "name": "com.unity.searcher",
+      "displayName": "Searcher",
+      "version": "4.9.4",
+      "source": "Registry",
+      "description": "General search window for use in the Editor. First target use is for GraphView node search.",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.searcher@d45a78918735",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Installed package; inspect when its feature area becomes part of the next milestone."
+    },
+    {
+      "name": "com.unity.shadergraph",
+      "displayName": "Shader Graph",
+      "version": "17.4.0",
+      "source": "BuiltIn",
+      "description": "The Shader Graph package adds a visual Shader editing tool to Unity. You can use this tool to create Shaders in a visual way instead of writing code. Specific render pipelines can implement specific graph features. Currently, both the High Definition Rendering Pipeline and the Universal Rendering Pipeline support Shader Graph.",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.shadergraph@6db99422c248",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Installed package; inspect when its feature area becomes part of the next milestone."
+    },
+    {
+      "name": "com.unity.test-framework",
+      "displayName": "Test Framework",
+      "version": "1.6.0",
+      "source": "BuiltIn",
+      "description": "Test framework for running Edit mode and Play mode tests in Unity.",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.test-framework@76560ee600cb",
+      "usefulForWeltraumSpiel": "yes",
+      "reason": "Project already relies on Unity tests for regression evidence."
+    },
+    {
+      "name": "com.unity.test-framework.performance",
+      "displayName": "Performance testing API",
+      "version": "3.4.0",
+      "source": "Registry",
+      "description": "Package that extends Unity Test Framework package. Adds performance testing capabilities and collects configuration metadata.",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.test-framework.performance@aa81a99c4a75",
+      "usefulForWeltraumSpiel": "yes",
+      "reason": "Project already relies on Unity tests for regression evidence."
+    },
+    {
+      "name": "com.unity.timeline",
+      "displayName": "Timeline",
+      "version": "1.8.12",
+      "source": "Registry",
+      "description": "Use Unity Timeline to create cinematic content, game-play sequences, audio sequences, and complex particle effects.",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.timeline@8cd8509afae5",
+      "usefulForWeltraumSpiel": "yes",
+      "reason": "Required for future thruster, weapon, impact, alert, and ambience audio."
+    },
+    {
+      "name": "com.unity.ugui",
+      "displayName": "uGUI",
+      "version": "2.0.0",
+      "source": "BuiltIn",
+      "description": "uGUI (Unity UI) is a set of tools for developing user interfaces for games and applications. It is a GameObject-based UI system that uses Components and the Game View to arrange, position, and style user interfaces. ​ You cannot use Unity UI to create or change user interfaces in the Unity Editor.",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.ugui@4dc88464a83d",
+      "usefulForWeltraumSpiel": "yes",
+      "reason": "Useful for HUD, menus, debug panels, and ship-builder UI."
+    },
+    {
+      "name": "com.unity.visualscripting",
+      "displayName": "Visual Scripting",
+      "version": "1.9.11",
+      "source": "Registry",
+      "description": "Visual scripting is a workflow that uses visual, node-based graphs to design behaviors rather than write lines of C# script.  Enabling artists, designers and programmers alike, visual scripting can be used to design final logic, quickly create prototypes, iterate on gameplay and create custom nodes to help streamline collaboration.  Visual scripting is compatible with third-party APIs, including most packages, assets and custom libraries.",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.visualscripting@8bed5ad90189",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Could support prototyping, but avoid parallel gameplay logic without tests."
+    }
+  ],
+  "importedAssets": [
+    {
+      "topLevelFolder": "Art",
+      "category": "configuration/data",
+      "assetCount": 2,
+      "representativeFiles": [
+        "Assets/Art/PrototypeShipKit/prototype_ship_kit_manifest.json",
+        "Assets/Art/PrototypeShipKit/VFX/PrototypeShipVfxLibrary.asset"
+      ],
+      "likelyPurpose": "Thruster/RCS visual effects and material library.",
+      "dependenciesIfPractical": [
+        "Assets/Art/PrototypeShipKit/VFX/Prefabs/MainThrusterVfx.prefab",
+        "Assets/Art/PrototypeShipKit/VFX/Prefabs/RcsThrusterVfx.prefab"
+      ],
+      "componentNames": [],
+      "recommendation": "Reuse directly for flight evidence; adapt for combat variants later."
+    },
+    {
+      "topLevelFolder": "Art",
+      "category": "materials",
+      "assetCount": 15,
+      "representativeFiles": [
+        "Assets/Art/PrototypeShipKit/Materials/MAT_Cargo_Violet.mat",
+        "Assets/Art/PrototypeShipKit/Materials/MAT_Cockpit_Glass_DarkBlue.mat",
+        "Assets/Art/PrototypeShipKit/Materials/MAT_Connector_Lime.mat",
+        "Assets/Art/PrototypeShipKit/Materials/MAT_Debug_Axis_Blue.mat",
+        "Assets/Art/PrototypeShipKit/Materials/MAT_Debug_Axis_Green.mat",
+        "Assets/Art/PrototypeShipKit/Materials/MAT_Debug_Axis_Red.mat",
+        "Assets/Art/PrototypeShipKit/Materials/MAT_Engine_DarkMetal.mat",
+        "Assets/Art/PrototypeShipKit/Materials/MAT_Engine_Emission_Orange.mat"
+      ],
+      "likelyPurpose": "Prototype ship-kit material palette.",
+      "dependenciesIfPractical": [
+        "Packages/com.unity.render-pipelines.universal/Shaders/Lit.shader",
+        "Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesUnlit.shader"
+      ],
+      "componentNames": [],
+      "recommendation": "Reuse as current visual language; normalize before external shader packs."
+    },
+    {
+      "topLevelFolder": "Art",
+      "category": "models/meshes",
+      "assetCount": 22,
+      "representativeFiles": [
+        "Assets/Art/PrototypeShipKit/DemoShips/demo_cargo_mk1.fbx",
+        "Assets/Art/PrototypeShipKit/DemoShips/demo_cargo_mk1.glb",
+        "Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.fbx",
+        "Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.glb",
+        "Assets/Art/PrototypeShipKit/Parts/cargo_pod_small_mk1.fbx",
+        "Assets/Art/PrototypeShipKit/Parts/cargo_pod_small_mk1.glb",
+        "Assets/Art/PrototypeShipKit/Parts/cockpit_wedge_mk1.fbx",
+        "Assets/Art/PrototypeShipKit/Parts/cockpit_wedge_mk1.glb"
+      ],
+      "likelyPurpose": "Modular ship parts for current ship-builder/runtime visual work.",
+      "dependenciesIfPractical": [
+        "Packages/com.unity.render-pipelines.universal/Shaders/Lit.shader"
+      ],
+      "componentNames": [],
+      "recommendation": "Reuse directly and extend metadata before creating duplicate ship-part art."
+    },
+    {
+      "topLevelFolder": "Art",
+      "category": "VFX/particle systems",
+      "assetCount": 2,
+      "representativeFiles": [
+        "Assets/Art/PrototypeShipKit/VFX/Prefabs/MainThrusterVfx.prefab",
+        "Assets/Art/PrototypeShipKit/VFX/Prefabs/RcsThrusterVfx.prefab"
+      ],
+      "likelyPurpose": "Thruster/RCS visual effects and material library.",
+      "dependenciesIfPractical": [
+        "Assets/Art/PrototypeShipKit/VFX/Materials/MAT_VFX_MainThruster.mat",
+        "Assets/Art/PrototypeShipKit/VFX/Materials/MAT_VFX_RCS.mat"
+      ],
+      "componentNames": [
+        "Transform",
+        "ParticleSystem",
+        "ParticleSystemRenderer",
+        "Light"
+      ],
+      "recommendation": "Reuse directly for flight evidence; adapt for combat variants later."
+    },
+    {
+      "topLevelFolder": "Editor",
+      "category": "scripts/editor tools",
+      "assetCount": 1,
+      "representativeFiles": [
+        "Assets/Editor/AssetInventoryExporter.cs"
+      ],
+      "likelyPurpose": "Editor-only inventory/export tooling.",
+      "dependenciesIfPractical": [],
+      "componentNames": [],
+      "recommendation": "Keep editor utilities isolated under Assets/Editor and do not ship them in runtime builds."
+    },
+    {
+      "topLevelFolder": "Scenes",
+      "category": "scenes",
+      "assetCount": 3,
+      "representativeFiles": [
+        "Assets/Scenes/PrototypeBootstrapHost.unity",
+        "Assets/Scenes/PrototypeShipKitPreview.unity",
+        "Assets/Scenes/SampleScene.unity"
+      ],
+      "likelyPurpose": "Main prototype host, preview, sample, and recovery scenes.",
+      "dependenciesIfPractical": [
+        "Assets/Art/PrototypeShipKit/VFX/Prefabs/MainThrusterVfx.prefab",
+        "Assets/Art/PrototypeShipKit/Parts/hull_segment_mk1.fbx",
+        "Assets/Art/PrototypeShipKit/VFX/Prefabs/RcsThrusterVfx.prefab",
+        "Assets/Art/PrototypeShipKit/Materials/MAT_Fuel_Green.mat",
+        "Assets/Art/PrototypeShipKit/DemoShips/demo_cargo_mk1.fbx",
+        "Assets/Art/PrototypeShipKit/VFX/Materials/MAT_VFX_RCS.mat",
+        "Assets/Art/PrototypeShipKit/Parts/cockpit_wedge_mk1.fbx",
+        "Assets/Art/PrototypeShipKit/Materials/MAT_Weapon_YellowRed.mat",
+        "Assets/Art/PrototypeShipKit/Materials/MAT_Hull_Panel.mat",
+        "Assets/Art/PrototypeShipKit/Materials/MAT_RCS_Cyan.mat"
+      ],
+      "componentNames": [],
+      "recommendation": "Use PrototypeBootstrapHost and PrototypeShipKitPreview as inspection entry points."
+    },
+    {
+      "topLevelFolder": "Scripts",
+      "category": "scripts/editor tools",
+      "assetCount": 90,
+      "representativeFiles": [
+        "Assets/Scripts/Prototype/DockingPort.cs",
+        "Assets/Scripts/Prototype/EngineVfxController.cs",
+        "Assets/Scripts/Prototype/FlightAssistRequest.cs",
+        "Assets/Scripts/Prototype/FloatingOriginBody.cs",
+        "Assets/Scripts/Prototype/FloatingOriginManager.cs",
+        "Assets/Scripts/Prototype/GunModule.cs",
+        "Assets/Scripts/Prototype/LargeWorldTransformState.cs",
+        "Assets/Scripts/Prototype/LargeWorldVector3d.cs"
+      ],
+      "likelyPurpose": "Project-owned gameplay, HUD, flight, docking, combat, builder, and validation systems.",
+      "dependenciesIfPractical": [],
+      "componentNames": [],
+      "recommendation": "Reuse existing systems instead of importing overlapping gameplay frameworks."
+    },
+    {
+      "topLevelFolder": "Settings",
+      "category": "configuration/data",
+      "assetCount": 7,
+      "representativeFiles": [
+        "Assets/Settings/DefaultVolumeProfile.asset",
+        "Assets/Settings/Mobile_Renderer.asset",
+        "Assets/Settings/Mobile_RPAsset.asset",
+        "Assets/Settings/PC_Renderer.asset",
+        "Assets/Settings/PC_RPAsset.asset",
+        "Assets/Settings/SampleSceneProfile.asset",
+        "Assets/Settings/UniversalRenderPipelineGlobalSettings.asset"
+      ],
+      "likelyPurpose": "URP and project rendering settings.",
+      "dependenciesIfPractical": [
+        "Packages/com.unity.render-pipelines.universal/Shaders/Debug/ProbeVolumeSamplingDebugPositionNormal.compute",
+        "Packages/com.unity.render-pipelines.universal/Shaders/Debug/HDRDebugView.shader",
+        "Packages/com.unity.render-pipelines.universal/Shaders/Debug/DebugReplacement.shader",
+        "Packages/com.unity.render-pipelines.universal/Runtime/Data/PostProcessData.asset",
+        "Packages/com.unity.render-pipelines.universal/Textures/BlueNoise64/L/LDR_LLL1_0.png",
+        "Assets/Settings/Mobile_Renderer.asset",
+        "Assets/Settings/SampleSceneProfile.asset",
+        "Packages/com.unity.render-pipelines.universal/Textures/BayerMatrix.png",
+        "Packages/com.unity.render-pipelines.universal/Textures/BlueNoise256/LDR_LLL1_1.png",
+        "Packages/com.unity.render-pipelines.universal/Textures/BlueNoise256/LDR_LLL1_6.png"
+      ],
+      "componentNames": [],
+      "recommendation": "Keep as compatibility baseline for imported shaders, materials, and VFX."
+    },
+    {
+      "topLevelFolder": "Tests",
+      "category": "scripts/editor tools",
+      "assetCount": 43,
+      "representativeFiles": [
+        "Assets/Tests/Editor/DockingPortValidationTests.cs",
+        "Assets/Tests/Editor/FloatingOriginValidationTests.cs",
+        "Assets/Tests/Editor/PrototypeAtmosphereValidationTests.cs",
+        "Assets/Tests/Editor/PrototypeAutopilotMomentumStartupStateTests.cs",
+        "Assets/Tests/Editor/PrototypeAutopilotNavigationComputerV2ValidationTests.cs",
+        "Assets/Tests/Editor/PrototypeControlModeValidationTests.cs",
+        "Assets/Tests/Editor/PrototypeDockingApproachAssistValidationTests.cs",
+        "Assets/Tests/Editor/PrototypeEvidenceScreenshotTests.cs"
+      ],
+      "likelyPurpose": "Regression and evidence coverage for prototype systems.",
+      "dependenciesIfPractical": [],
+      "componentNames": [],
+      "recommendation": "Keep using for verification before asset or package swaps."
+    },
+    {
+      "topLevelFolder": "TutorialInfo",
+      "category": "configuration/data",
+      "assetCount": 1,
+      "representativeFiles": [
+        "Assets/TutorialInfo/Layout.wlt"
+      ],
+      "likelyPurpose": "Unity template tutorial/readme assets.",
+      "dependenciesIfPractical": [],
+      "componentNames": [],
+      "recommendation": "Low value for Weltraum-Spiel; avoid expanding this area."
+    },
+    {
+      "topLevelFolder": "TutorialInfo",
+      "category": "scripts/editor tools",
+      "assetCount": 2,
+      "representativeFiles": [
+        "Assets/TutorialInfo/Scripts/Editor/ReadmeEditor.cs",
+        "Assets/TutorialInfo/Scripts/Readme.cs"
+      ],
+      "likelyPurpose": "Unity template tutorial/readme assets.",
+      "dependenciesIfPractical": [],
+      "componentNames": [],
+      "recommendation": "Low value for Weltraum-Spiel; avoid expanding this area."
+    },
+    {
+      "topLevelFolder": "TutorialInfo",
+      "category": "UI assets/fonts/icons",
+      "assetCount": 1,
+      "representativeFiles": [
+        "Assets/TutorialInfo/Icons/URP.png"
+      ],
+      "likelyPurpose": "Unity template tutorial/readme assets.",
+      "dependenciesIfPractical": [],
+      "componentNames": [],
+      "recommendation": "Low value for Weltraum-Spiel; avoid expanding this area."
+    },
+    {
+      "topLevelFolder": "_Recovery",
+      "category": "scenes",
+      "assetCount": 2,
+      "representativeFiles": [
+        "Assets/_Recovery/0 (1).unity",
+        "Assets/_Recovery/0.unity"
+      ],
+      "likelyPurpose": "Unity recovery scene data; not intended as production content.",
+      "dependenciesIfPractical": [],
+      "componentNames": [],
+      "recommendation": "Avoid using except as emergency reference."
+    },
+    {
+      "topLevelFolder": "_Root",
+      "category": "configuration/data",
+      "assetCount": 1,
+      "representativeFiles": [
+        "Assets/InputSystem_Actions.inputactions"
+      ],
+      "likelyPurpose": "Configuration, manifests, input actions, or ScriptableObject data.",
+      "dependenciesIfPractical": [],
+      "componentNames": [],
+      "recommendation": "Inspect before changing because these often bind runtime systems."
+    },
+    {
+      "topLevelFolder": "_Root",
+      "category": "documentation/readmes",
+      "assetCount": 1,
+      "representativeFiles": [
+        "Assets/Readme.asset"
+      ],
+      "likelyPurpose": "Readme or documentation asset metadata.",
+      "dependenciesIfPractical": [
+        "Assets/TutorialInfo/Icons/URP.png"
+      ],
+      "componentNames": [],
+      "recommendation": "Keep as reference only; do not treat Unity template readmes as game content."
+    }
+  ],
+  "localDownloadedPackages": [
+    {
+      "source": "Asset Store cache",
+      "vendorOrPublisherFolder": "BOXOPHOBIC",
+      "packageOrFolderName": "FREE Skybox Extended Shader",
+      "rootPath": "C:/Users/benni/AppData/Roaming/Unity/Asset Store-5.x/BOXOPHOBIC",
+      "availableFiles": [
+        "Shaders/FREE Skybox Extended Shader.unitypackage"
+      ],
+      "availableFileCount": 1,
+      "sizeBytes": 10744324,
+      "looksLike": ".unitypackage",
+      "readmeOrMetadata": [],
+      "categoryGuess": "Space environment/skybox",
+      "usefulForWeltraumSpiel": "maybe",
+      "importRisk": "medium - verify URP 17.4 shader compatibility first."
+    },
+    {
+      "source": "Asset Store cache",
+      "vendorOrPublisherFolder": "GameAI Programmer",
+      "packageOrFolderName": "Easy Poly Map Creator--Custom your LowPoly world",
+      "rootPath": "C:/Users/benni/AppData/Roaming/Unity/Asset Store-5.x/GameAI Programmer",
+      "availableFiles": [
+        "Editor ExtensionsTerrain/Easy Poly Map Creator--Custom your LowPoly world.unitypackage"
+      ],
+      "availableFileCount": 1,
+      "sizeBytes": 1251846,
+      "looksLike": ".unitypackage",
+      "readmeOrMetadata": [],
+      "categoryGuess": "Planet-surface/environment placeholders",
+      "usefulForWeltraumSpiel": "no/maybe",
+      "importRisk": "low/medium - mostly art, but can add many materials/textures and non-space content."
+    },
+    {
+      "source": "Asset Store cache",
+      "vendorOrPublisherFolder": "JustCreate",
+      "packageOrFolderName": "Low-Poly Simple Nature Pack",
+      "rootPath": "C:/Users/benni/AppData/Roaming/Unity/Asset Store-5.x/JustCreate",
+      "availableFiles": [
+        "3D ModelsEnvironmentsLandscapes/Low-Poly Simple Nature Pack.unitypackage"
+      ],
+      "availableFileCount": 1,
+      "sizeBytes": 2011659,
+      "looksLike": ".unitypackage",
+      "readmeOrMetadata": [],
+      "categoryGuess": "Planet-surface/environment placeholders",
+      "usefulForWeltraumSpiel": "no/maybe",
+      "importRisk": "low/medium - mostly art, but can add many materials/textures and non-space content."
+    },
+    {
+      "source": "Asset Store cache",
+      "vendorOrPublisherFolder": "Kyrylo Kuzyk",
+      "packageOrFolderName": "PrimeTween High-Performance Animations and Sequences",
+      "rootPath": "C:/Users/benni/AppData/Roaming/Unity/Asset Store-5.x/Kyrylo Kuzyk",
+      "availableFiles": [
+        "Editor ExtensionsAnimation/PrimeTween High-Performance Animations and Sequences.unitypackage"
+      ],
+      "availableFileCount": 1,
+      "sizeBytes": 12422210,
+      "looksLike": ".unitypackage",
+      "readmeOrMetadata": [],
+      "categoryGuess": "UI/animation polish",
+      "usefulForWeltraumSpiel": "maybe",
+      "importRisk": "medium - runtime code/input/UI dependency; isolate first."
+    },
+    {
+      "source": "Asset Store cache",
+      "vendorOrPublisherFolder": "Polytope Studio",
+      "packageOrFolderName": "Low Poly Environment - Nature Free - LOWPOLY MEDIEVAL FANTASY SERIES",
+      "rootPath": "C:/Users/benni/AppData/Roaming/Unity/Asset Store-5.x/Polytope Studio",
+      "availableFiles": [
+        "3D ModelsEnvironments/Low Poly Environment - Nature Free - LOWPOLY MEDIEVAL FANTASY SERIES.unitypackage"
+      ],
+      "availableFileCount": 1,
+      "sizeBytes": 54156941,
+      "looksLike": ".unitypackage",
+      "readmeOrMetadata": [],
+      "categoryGuess": "Planet-surface/environment placeholders",
+      "usefulForWeltraumSpiel": "no/maybe",
+      "importRisk": "low/medium - mostly art, but can add many materials/textures and non-space content."
+    },
+    {
+      "source": "Asset Store cache",
+      "vendorOrPublisherFolder": "Shapes",
+      "packageOrFolderName": "Nature Starter Kit 2",
+      "rootPath": "C:/Users/benni/AppData/Roaming/Unity/Asset Store-5.x/Shapes",
+      "availableFiles": [
+        "3D ModelsEnvironments/Nature Starter Kit 2.unitypackage"
+      ],
+      "availableFileCount": 1,
+      "sizeBytes": 70821049,
+      "looksLike": ".unitypackage",
+      "readmeOrMetadata": [],
+      "categoryGuess": "Planet-surface/environment placeholders",
+      "usefulForWeltraumSpiel": "no/maybe",
+      "importRisk": "low/medium - mostly art, but can add many materials/textures and non-space content."
+    },
+    {
+      "source": "Asset Store cache",
+      "vendorOrPublisherFolder": "UModeler Inc",
+      "packageOrFolderName": "UModeler X",
+      "rootPath": "C:/Users/benni/AppData/Roaming/Unity/Asset Store-5.x/UModeler Inc",
+      "availableFiles": [
+        "Editor ExtensionsModeling/UModeler X.unitypackage"
+      ],
+      "availableFileCount": 1,
+      "sizeBytes": 18678702,
+      "looksLike": ".unitypackage",
+      "readmeOrMetadata": [],
+      "categoryGuess": "Editor tooling/modeling",
+      "usefulForWeltraumSpiel": "maybe",
+      "importRisk": "medium/high - editor extension and possible paid-license workflow impact; test outside main first."
+    },
+    {
+      "source": "Asset Store cache",
+      "vendorOrPublisherFolder": "Unity Technologies",
+      "packageOrFolderName": "Legacy Particle Pack",
+      "rootPath": "C:/Users/benni/AppData/Roaming/Unity/Asset Store-5.x/Unity Technologies",
+      "availableFiles": [
+        "Particle Systems/Legacy Particle Pack.unitypackage",
+        "Particle Systems/Particle Pack.unitypackage"
+      ],
+      "availableFileCount": 2,
+      "sizeBytes": 102243447,
+      "looksLike": ".unitypackage",
+      "readmeOrMetadata": [],
+      "categoryGuess": "Thruster/combat VFX",
+      "usefulForWeltraumSpiel": "maybe",
+      "importRisk": "medium - may include legacy shaders/materials; import into throwaway first."
+    },
+    {
+      "source": "Asset Store cache",
+      "vendorOrPublisherFolder": "Unity Technologies",
+      "packageOrFolderName": "Particle Pack",
+      "rootPath": "C:/Users/benni/AppData/Roaming/Unity/Asset Store-5.x/Unity Technologies",
+      "availableFiles": [
+        "Particle Systems/Legacy Particle Pack.unitypackage",
+        "Particle Systems/Particle Pack.unitypackage"
+      ],
+      "availableFileCount": 2,
+      "sizeBytes": 165078710,
+      "looksLike": ".unitypackage",
+      "readmeOrMetadata": [],
+      "categoryGuess": "Thruster/combat VFX",
+      "usefulForWeltraumSpiel": "maybe",
+      "importRisk": "medium - may include legacy shaders/materials; import into throwaway first."
+    },
+    {
+      "source": "Asset Store cache",
+      "vendorOrPublisherFolder": "yasirkula",
+      "packageOrFolderName": "In-game Debug Console",
+      "rootPath": "C:/Users/benni/AppData/Roaming/Unity/Asset Store-5.x/yasirkula",
+      "availableFiles": [
+        "ScriptingGUI/In-game Debug Console.unitypackage"
+      ],
+      "availableFileCount": 1,
+      "sizeBytes": 314245,
+      "looksLike": ".unitypackage",
+      "readmeOrMetadata": [],
+      "categoryGuess": "Editor/runtime debug tooling",
+      "usefulForWeltraumSpiel": "maybe",
+      "importRisk": "medium - runtime code/input/UI dependency; isolate first."
+    }
+  ],
+  "usefulnessMatrix": [
+    {
+      "category": "Player-facing UI/HUD",
+      "candidateAssets": "PrototypePlayerHud.cs; PrototypeFlightHud.cs; PrototypeMinimapOverlay.cs; PrototypeUiStyle.cs; uGUI/UIElements; In-game Debug Console cache",
+      "whatToReuse": "Reuse the existing HUD snapshot/rendering and minimap model first.",
+      "whatToAdapt": "Test PrimeTween or debug console later for polish/debug builds.",
+      "whatToAvoid": "Avoid replacing the current HUD stack with an imported UI kit before input, scaling, and tests are checked."
+    },
+    {
+      "category": "Space ships / modular ship parts",
+      "candidateAssets": "Assets/Art/PrototypeShipKit/Parts; DemoShips; prototype_ship_kit_manifest.json; PrototypeShipVisualSwitcher.cs",
+      "whatToReuse": "Reuse imported FBX/GLB parts and manifest for builder/runtime visual modes.",
+      "whatToAdapt": "Adapt materials, hardpoints, and socket metadata as the builder matures.",
+      "whatToAvoid": "Avoid nature/environment packs for ships; they do not cover hardpoints or ship-scale constraints."
+    },
+    {
+      "category": "Thruster/RCS VFX",
+      "candidateAssets": "MainThrusterVfx.prefab; RcsThrusterVfx.prefab; PrototypeShipVfxLibrary.asset; Unity Particle Pack cache",
+      "whatToReuse": "Use existing VFX prefabs directly for current flight evidence.",
+      "whatToAdapt": "Inspect particle packs in a throwaway project for exhaust variants.",
+      "whatToAvoid": "Avoid importing legacy particle content directly until shader/render pipeline compatibility is verified."
+    },
+    {
+      "category": "Weapons/projectiles/combat VFX",
+      "candidateAssets": "gun_mount_light_mk1; PrototypeTurretWeapon.cs; PrototypeProjectileSimulation.cs; Particle Pack cache",
+      "whatToReuse": "Reuse weapon binder and projectile runtime systems.",
+      "whatToAdapt": "Adapt particle effects for muzzle flashes, impacts, and trails after test import.",
+      "whatToAvoid": "Avoid imported projectile scripts that overlap the deterministic combat simulation."
+    },
+    {
+      "category": "Space environment/skybox/planets/asteroids",
+      "candidateAssets": "URP settings; FREE Skybox Extended Shader cache; low-poly nature/environment caches",
+      "whatToReuse": "Reuse URP settings as the rendering baseline.",
+      "whatToAdapt": "Test skybox shader and low-poly packs as placeholder planet-surface art only.",
+      "whatToAvoid": "Avoid assuming nature packs solve space needs; planets, asteroids, nebulae, and starfields are still missing."
+    },
+    {
+      "category": "Docking/stations/hangars",
+      "candidateAssets": "connector_hardpoint_mk1; DockingPort.cs; PrototypeDockingApproachAssist.cs; UModeler X cache",
+      "whatToReuse": "Reuse docking code and connector hardpoint art.",
+      "whatToAdapt": "Use UModeler or simple FBX blockouts in a test project for station/hangar grayboxes.",
+      "whatToAvoid": "Avoid importing broad editor modeling tools before licensing and generated-asset workflow are settled."
+    },
+    {
+      "category": "Ship builder/UI inventory",
+      "candidateAssets": "PrototypeShipBlueprint.cs; PrototypeShipLayout.cs; PrototypeShipVariant.cs; PrototypeUiViewModels.cs; PrimeTween cache",
+      "whatToReuse": "Reuse blueprint/layout/view-model code.",
+      "whatToAdapt": "Adapt UI animation tooling only after the builder flow is stable.",
+      "whatToAvoid": "Avoid adding a second inventory framework before the current model is exhausted."
+    },
+    {
+      "category": "Audio/SFX/music",
+      "candidateAssets": "Unity audio module only; no imported SFX/music assets found",
+      "whatToReuse": "Use built-in audio support.",
+      "whatToAdapt": "Add thruster, weapon, impact, docking, alert, ambience, and music packs later.",
+      "whatToAvoid": "Avoid wiring a large audio system until actual clips exist."
+    },
+    {
+      "category": "Editor tooling",
+      "candidateAssets": "MCP for Unity; Test Framework; UModeler X cache; Easy Poly Map Creator cache",
+      "whatToReuse": "Reuse Unity MCP and tests for iteration and evidence.",
+      "whatToAdapt": "Evaluate modeling/terrain extensions in a throwaway project.",
+      "whatToAvoid": "Avoid editor extensions that change settings or generate assets without a rollback plan."
+    },
+    {
+      "category": "Performance/optimization",
+      "candidateAssets": "Burst/Collections transitive packages; PrototypeRuntimeJobSystems.cs; URP",
+      "whatToReuse": "Reuse current job-system and runtime snapshot architecture.",
+      "whatToAdapt": "Consider Burst only for measured hotspots.",
+      "whatToAvoid": "Avoid optimization packages or import-setting changes without profiler evidence."
+    },
+    {
+      "category": "Networking/save/persistence",
+      "candidateAssets": "Multiplayer Center installed; no Netcode or persistence asset found",
+      "whatToReuse": "Reuse none yet beyond package discovery.",
+      "whatToAdapt": "Evaluate save-game and networking approaches after gameplay contracts stabilize.",
+      "whatToAvoid": "Avoid importing networking frameworks speculatively."
+    }
+  ],
+  "finalRecommendations": {
+    "top10AssetsOrPackagesToInspectFirst": [
+      "Assets/Art/PrototypeShipKit/Parts/*.fbx and *.glb - current modular ship vocabulary.",
+      "Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1 and demo_cargo_mk1 - assembled visual baselines.",
+      "Assets/Art/PrototypeShipKit/VFX/Prefabs/MainThrusterVfx.prefab and RcsThrusterVfx.prefab - already bound to flight evidence.",
+      "Assets/Art/PrototypeShipKit/prototype_ship_kit_manifest.json - metadata for parts, sockets, and categories.",
+      "PrototypePlayerHud.cs plus PrototypeMinimapOverlay.cs - player-facing HUD and tactical scan surface.",
+      "com.unity.render-pipelines.universal - active rendering path and shader compatibility baseline.",
+      "com.unity.inputsystem - current controls/input action foundation.",
+      "Unity Technologies/Particle Pack.unitypackage - candidate combat and thruster VFX, throwaway import first.",
+      "BOXOPHOBIC/FREE Skybox Extended Shader.unitypackage - candidate skybox tooling, verify URP compatibility first.",
+      "Kyrylo Kuzyk/PrimeTween.unitypackage or yasirkula/In-game Debug Console.unitypackage - optional UI/debug polish after throwaway import."
+    ],
+    "importIntoThrowawayProjectFirst": [
+      "All local Asset Store .unitypackage archives, especially Particle Pack, Legacy Particle Pack, UModeler X, PrimeTween, In-game Debug Console, and Skybox Extended Shader.",
+      "Shader or render-pipeline-affecting packages before they touch URP settings.",
+      "Editor extensions that may add project settings, menu items, generated assets, or dependencies.",
+      "Large environment/nature packs because they are mostly planet-surface placeholders and can add many materials/textures."
+    ],
+    "safeToUseDirectly": [
+      "Imported PrototypeShipKit FBX/GLB parts, materials, demo ships, and VFX prefabs already under Assets/Art.",
+      "Installed Unity packages already referenced by the project: URP, Input System, Test Framework, uGUI/UIElements, Physics, Audio, Particle System.",
+      "Existing scripts and tests under Assets/Scripts/Prototype and Assets/Tests as project-owned implementation evidence."
+    ],
+    "mayConflictWithProjectSettings": [
+      "Skybox/shader packages if they assume Built-in Render Pipeline instead of URP 17.4.",
+      "Particle packs that include legacy materials, shaders, or quality settings.",
+      "Runtime debug console or UI packages that bind input, canvases, or EventSystem state.",
+      "UModeler X or terrain/editor extensions that may add editor settings, generated assets, or paid-license constraints.",
+      "Visual Scripting if used as a parallel gameplay logic path without tests."
+    ],
+    "missingAssetCategories": [
+      "Purpose-built space skyboxes/starfields/nebulae verified on URP.",
+      "Planets, moons, asteroids, debris fields, stations, docking bays, hangars, and cargo props.",
+      "Weapon muzzle flashes, projectile trails, shield/impact/explosion VFX tuned for space combat.",
+      "Thruster, RCS, weapon, impact, docking, UI alert, ambience, and music audio packs.",
+      "Save-game/persistence and networking packages or project-owned implementations."
+    ]
+  }
+}

@@ -1,0 +1,166 @@
+﻿# Unity Asset Inventory - Weltraum-Spiel
+
+Generated UTC: 2026-05-22T20:31:06.2713735Z
+
+## Project
+- Name: Weltraum Spiel
+- Unity: 6000.4.7f1
+- Root: E:/Unity/Weltraum Spiel/Weltraum Spiel
+- Assets: E:/Unity/Weltraum Spiel/Weltraum Spiel/Assets
+
+## Limitations
+- Asset Store My Assets is not exposed through Unity MCP here; only assets imported into this project and packages already downloaded in local Unity caches were discoverable.
+- Local Asset Store archives were not imported, unpacked, copied, or inspected for protected content; only cache folder names, archive names, sizes, and metadata/readme file names are recorded.
+- Scenes are inventoried by path only. The exporter does not open, save, or modify scene contents.
+- Prefab inspection reads component type names from prefab assets without instantiating or saving them.
+- Usefulness and risk values are metadata heuristics to guide manual inspection, not legal, license, or compatibility approval.
+
+## Installed Unity Packages
+| Name | Version | Source | Useful | Reason | Package path |
+|---|---:|---|---|---|---|
+| com.coplaydev.unity-mcp | 9.6.9-beta.8 | Git | yes | Core editor automation and verification tooling for this workflow. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.coplaydev.unity-mcp@1c35e6bd3ab3 |
+| com.unity.ai.navigation | 2.0.12 | Registry | maybe | Potentially useful for station/interior navigation, less directly useful for free-space flight. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.ai.navigation@734c2c4c5591 |
+| com.unity.burst | 1.8.29 | Registry | maybe | Useful for measured simulation/performance hotspots; adopt only with profiler evidence. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.burst@6bb9aca3ef38 |
+| com.unity.collab-proxy | 2.12.4 | Registry | no | Editor integration only; helpful for development but not a reusable game asset. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.collab-proxy@0b1559bcd34e |
+| com.unity.collections | 6.4.0 | BuiltIn | maybe | Useful for measured simulation/performance hotspots; adopt only with profiler evidence. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.collections@5b6ebd78ccc0 |
+| com.unity.ext.nunit | 2.0.5 | BuiltIn | maybe | Installed package; inspect when its feature area becomes part of the next milestone. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.ext.nunit@d8c07649098d |
+| com.unity.ide.rider | 3.0.40 | Registry | no | Editor integration only; helpful for development but not a reusable game asset. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.ide.rider@e4950c6d131b |
+| com.unity.ide.visualstudio | 2.0.27 | Registry | no | Editor integration only; helpful for development but not a reusable game asset. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.ide.visualstudio@dc1ddd4f09b6 |
+| com.unity.inputsystem | 1.19.0 | Registry | yes | Foundation for ship controls, HUD input, and future builder interactions. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.inputsystem@21a28c3a6c83 |
+| com.unity.mathematics | 1.3.3 | Registry | maybe | Useful for measured simulation/performance hotspots; adopt only with profiler evidence. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.mathematics@19a9377c4ffa |
+| com.unity.modules.accessibility | 1.0.0 | BuiltIn | maybe | Built-in Unity module; infrastructure rather than a standalone asset to inspect. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.accessibility |
+| com.unity.modules.adaptiveperformance | 1.0.0 | BuiltIn | maybe | Built-in Unity module; infrastructure rather than a standalone asset to inspect. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.adaptiveperformance |
+| com.unity.modules.ai | 1.0.0 | BuiltIn | maybe | Built-in Unity module; infrastructure rather than a standalone asset to inspect. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.ai |
+| com.unity.modules.androidjni | 1.0.0 | BuiltIn | maybe | Built-in Unity module; infrastructure rather than a standalone asset to inspect. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.androidjni |
+| com.unity.modules.animation | 1.0.0 | BuiltIn | maybe | Built-in Unity module; infrastructure rather than a standalone asset to inspect. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.animation |
+| com.unity.modules.assetbundle | 1.0.0 | BuiltIn | maybe | Built-in Unity module; infrastructure rather than a standalone asset to inspect. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.assetbundle |
+| com.unity.modules.audio | 1.0.0 | BuiltIn | yes | Required for future thruster, weapon, impact, alert, and ambience audio. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.audio |
+| com.unity.modules.cloth | 1.0.0 | BuiltIn | yes | Core to flight, docking, projectile, and collision behavior. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.cloth |
+| com.unity.modules.director | 1.0.0 | BuiltIn | maybe | Built-in Unity module; infrastructure rather than a standalone asset to inspect. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.director |
+| com.unity.modules.hierarchycore | 1.0.0 | BuiltIn | maybe | Built-in Unity module; infrastructure rather than a standalone asset to inspect. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.hierarchycore |
+| com.unity.modules.imageconversion | 1.0.0 | BuiltIn | maybe | Built-in Unity module; infrastructure rather than a standalone asset to inspect. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.imageconversion |
+| com.unity.modules.imgui | 1.0.0 | BuiltIn | maybe | Built-in Unity module; infrastructure rather than a standalone asset to inspect. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.imgui |
+| com.unity.modules.jsonserialize | 1.0.0 | BuiltIn | maybe | Built-in Unity module; infrastructure rather than a standalone asset to inspect. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.jsonserialize |
+| com.unity.modules.particlesystem | 1.0.0 | BuiltIn | yes | Directly relevant to thruster, RCS, weapon, and impact VFX. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.particlesystem |
+| com.unity.modules.physics | 1.0.0 | BuiltIn | yes | Core to flight, docking, projectile, and collision behavior. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.physics |
+| com.unity.modules.physics2d | 1.0.0 | BuiltIn | yes | Core to flight, docking, projectile, and collision behavior. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.physics2d |
+| com.unity.modules.screencapture | 1.0.0 | BuiltIn | maybe | Built-in Unity module; infrastructure rather than a standalone asset to inspect. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.screencapture |
+| com.unity.modules.subsystems | 1.0.0 | BuiltIn | maybe | Built-in Unity module; infrastructure rather than a standalone asset to inspect. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.subsystems |
+| com.unity.modules.terrain | 1.0.0 | BuiltIn | maybe | Built-in Unity module; infrastructure rather than a standalone asset to inspect. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.terrain |
+| com.unity.modules.terrainphysics | 1.0.0 | BuiltIn | yes | Core to flight, docking, projectile, and collision behavior. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.terrainphysics |
+| com.unity.modules.tilemap | 1.0.0 | BuiltIn | maybe | Built-in Unity module; infrastructure rather than a standalone asset to inspect. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.tilemap |
+| com.unity.modules.ui | 1.0.0 | BuiltIn | maybe | Built-in Unity module; infrastructure rather than a standalone asset to inspect. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.ui |
+| com.unity.modules.uielements | 1.0.0 | BuiltIn | yes | Useful for HUD, menus, debug panels, and ship-builder UI. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.uielements |
+| com.unity.modules.umbra | 1.0.0 | BuiltIn | maybe | Built-in Unity module; infrastructure rather than a standalone asset to inspect. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.umbra |
+| com.unity.modules.unityanalytics | 1.0.0 | BuiltIn | maybe | Built-in Unity module; infrastructure rather than a standalone asset to inspect. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.unityanalytics |
+| com.unity.modules.unitywebrequest | 1.0.0 | BuiltIn | maybe | Built-in Unity module; infrastructure rather than a standalone asset to inspect. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.unitywebrequest |
+| com.unity.modules.unitywebrequestassetbundle | 1.0.0 | BuiltIn | maybe | Built-in Unity module; infrastructure rather than a standalone asset to inspect. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.unitywebrequestassetbundle |
+| com.unity.modules.unitywebrequestaudio | 1.0.0 | BuiltIn | yes | Required for future thruster, weapon, impact, alert, and ambience audio. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.unitywebrequestaudio |
+| com.unity.modules.unitywebrequesttexture | 1.0.0 | BuiltIn | maybe | Built-in Unity module; infrastructure rather than a standalone asset to inspect. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.unitywebrequesttexture |
+| com.unity.modules.unitywebrequestwww | 1.0.0 | BuiltIn | maybe | Built-in Unity module; infrastructure rather than a standalone asset to inspect. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.unitywebrequestwww |
+| com.unity.modules.vectorgraphics | 1.0.0 | BuiltIn | maybe | Built-in Unity module; infrastructure rather than a standalone asset to inspect. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.vectorgraphics |
+| com.unity.modules.vehicles | 1.0.0 | BuiltIn | yes | Core to flight, docking, projectile, and collision behavior. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.vehicles |
+| com.unity.modules.video | 1.0.0 | BuiltIn | maybe | Built-in Unity module; infrastructure rather than a standalone asset to inspect. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.video |
+| com.unity.modules.vr | 1.0.0 | BuiltIn | maybe | Built-in Unity module; infrastructure rather than a standalone asset to inspect. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.vr |
+| com.unity.modules.wind | 1.0.0 | BuiltIn | maybe | Built-in Unity module; infrastructure rather than a standalone asset to inspect. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.wind |
+| com.unity.modules.xr | 1.0.0 | BuiltIn | maybe | Built-in Unity module; infrastructure rather than a standalone asset to inspect. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.modules.xr |
+| com.unity.multiplayer.center | 1.0.1 | BuiltIn | maybe | May guide future networking decisions, but no Netcode package is installed. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.multiplayer.center@f01f4ba8d00a |
+| com.unity.nuget.mono-cecil | 1.11.6 | Registry | maybe | Installed package; inspect when its feature area becomes part of the next milestone. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.nuget.mono-cecil@ecb9724e46ff |
+| com.unity.nuget.newtonsoft-json | 3.2.2 | Registry | maybe | Installed package; inspect when its feature area becomes part of the next milestone. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.nuget.newtonsoft-json@4dfd81071c64 |
+| com.unity.render-pipelines.core | 17.4.0 | BuiltIn | yes | Active rendering pipeline; use as shader and post-processing compatibility baseline. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.render-pipelines.core@6f62546dd936 |
+| com.unity.render-pipelines.universal | 17.4.0 | BuiltIn | yes | Active rendering pipeline; use as shader and post-processing compatibility baseline. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.render-pipelines.universal@7228970dbdbf |
+| com.unity.render-pipelines.universal-config | 17.4.0 | BuiltIn | yes | Active rendering pipeline; use as shader and post-processing compatibility baseline. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.render-pipelines.universal-config@0db4263b9e6b |
+| com.unity.searcher | 4.9.4 | Registry | maybe | Installed package; inspect when its feature area becomes part of the next milestone. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.searcher@d45a78918735 |
+| com.unity.shadergraph | 17.4.0 | BuiltIn | maybe | Installed package; inspect when its feature area becomes part of the next milestone. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.shadergraph@6db99422c248 |
+| com.unity.test-framework | 1.6.0 | BuiltIn | yes | Project already relies on Unity tests for regression evidence. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.test-framework@76560ee600cb |
+| com.unity.test-framework.performance | 3.4.0 | Registry | yes | Project already relies on Unity tests for regression evidence. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.test-framework.performance@aa81a99c4a75 |
+| com.unity.timeline | 1.8.12 | Registry | yes | Required for future thruster, weapon, impact, alert, and ambience audio. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.timeline@8cd8509afae5 |
+| com.unity.ugui | 2.0.0 | BuiltIn | yes | Useful for HUD, menus, debug panels, and ship-builder UI. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.ugui@4dc88464a83d |
+| com.unity.visualscripting | 1.9.11 | Registry | maybe | Could support prototyping, but avoid parallel gameplay logic without tests. | E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.visualscripting@8bed5ad90189 |
+
+## Imported Project Assets
+| Top folder | Category | Count | Representative files | Likely purpose | Dependencies/components | Recommendation |
+|---|---|---:|---|---|---|---|
+| Art | configuration/data | 2 | Assets/Art/PrototypeShipKit/prototype_ship_kit_manifest.json<br>Assets/Art/PrototypeShipKit/VFX/PrototypeShipVfxLibrary.asset | Thruster/RCS visual effects and material library. | Assets/Art/PrototypeShipKit/VFX/Prefabs/MainThrusterVfx.prefab<br>Assets/Art/PrototypeShipKit/VFX/Prefabs/RcsThrusterVfx.prefab | Reuse directly for flight evidence; adapt for combat variants later. |
+| Art | materials | 15 | Assets/Art/PrototypeShipKit/Materials/MAT_Cargo_Violet.mat<br>Assets/Art/PrototypeShipKit/Materials/MAT_Cockpit_Glass_DarkBlue.mat<br>Assets/Art/PrototypeShipKit/Materials/MAT_Connector_Lime.mat<br>Assets/Art/PrototypeShipKit/Materials/MAT_Debug_Axis_Blue.mat<br>Assets/Art/PrototypeShipKit/Materials/MAT_Debug_Axis_Green.mat<br>Assets/Art/PrototypeShipKit/Materials/MAT_Debug_Axis_Red.mat<br>Assets/Art/PrototypeShipKit/Materials/MAT_Engine_DarkMetal.mat<br>Assets/Art/PrototypeShipKit/Materials/MAT_Engine_Emission_Orange.mat | Prototype ship-kit material palette. | Packages/com.unity.render-pipelines.universal/Shaders/Lit.shader<br>Packages/com.unity.render-pipelines.universal/Shaders/Particles/ParticlesUnlit.shader | Reuse as current visual language; normalize before external shader packs. |
+| Art | models/meshes | 22 | Assets/Art/PrototypeShipKit/DemoShips/demo_cargo_mk1.fbx<br>Assets/Art/PrototypeShipKit/DemoShips/demo_cargo_mk1.glb<br>Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.fbx<br>Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.glb<br>Assets/Art/PrototypeShipKit/Parts/cargo_pod_small_mk1.fbx<br>Assets/Art/PrototypeShipKit/Parts/cargo_pod_small_mk1.glb<br>Assets/Art/PrototypeShipKit/Parts/cockpit_wedge_mk1.fbx<br>Assets/Art/PrototypeShipKit/Parts/cockpit_wedge_mk1.glb | Modular ship parts for current ship-builder/runtime visual work. | Packages/com.unity.render-pipelines.universal/Shaders/Lit.shader | Reuse directly and extend metadata before creating duplicate ship-part art. |
+| Art | VFX/particle systems | 2 | Assets/Art/PrototypeShipKit/VFX/Prefabs/MainThrusterVfx.prefab<br>Assets/Art/PrototypeShipKit/VFX/Prefabs/RcsThrusterVfx.prefab | Thruster/RCS visual effects and material library. | Assets/Art/PrototypeShipKit/VFX/Materials/MAT_VFX_MainThruster.mat<br>Assets/Art/PrototypeShipKit/VFX/Materials/MAT_VFX_RCS.mat<br>Components: Transform, ParticleSystem, ParticleSystemRenderer, Light | Reuse directly for flight evidence; adapt for combat variants later. |
+| Editor | scripts/editor tools | 1 | Assets/Editor/AssetInventoryExporter.cs | Editor-only inventory/export tooling. |  | Keep editor utilities isolated under Assets/Editor and do not ship them in runtime builds. |
+| Scenes | scenes | 3 | Assets/Scenes/PrototypeBootstrapHost.unity<br>Assets/Scenes/PrototypeShipKitPreview.unity<br>Assets/Scenes/SampleScene.unity | Main prototype host, preview, sample, and recovery scenes. | Assets/Art/PrototypeShipKit/VFX/Prefabs/MainThrusterVfx.prefab<br>Assets/Art/PrototypeShipKit/Parts/hull_segment_mk1.fbx<br>Assets/Art/PrototypeShipKit/VFX/Prefabs/RcsThrusterVfx.prefab<br>Assets/Art/PrototypeShipKit/Materials/MAT_Fuel_Green.mat<br>Assets/Art/PrototypeShipKit/DemoShips/demo_cargo_mk1.fbx<br>Assets/Art/PrototypeShipKit/VFX/Materials/MAT_VFX_RCS.mat<br>Assets/Art/PrototypeShipKit/Parts/cockpit_wedge_mk1.fbx<br>Assets/Art/PrototypeShipKit/Materials/MAT_Weapon_YellowRed.mat<br>Assets/Art/PrototypeShipKit/Materials/MAT_Hull_Panel.mat<br>Assets/Art/PrototypeShipKit/Materials/MAT_RCS_Cyan.mat | Use PrototypeBootstrapHost and PrototypeShipKitPreview as inspection entry points. |
+| Scripts | scripts/editor tools | 90 | Assets/Scripts/Prototype/DockingPort.cs<br>Assets/Scripts/Prototype/EngineVfxController.cs<br>Assets/Scripts/Prototype/FlightAssistRequest.cs<br>Assets/Scripts/Prototype/FloatingOriginBody.cs<br>Assets/Scripts/Prototype/FloatingOriginManager.cs<br>Assets/Scripts/Prototype/GunModule.cs<br>Assets/Scripts/Prototype/LargeWorldTransformState.cs<br>Assets/Scripts/Prototype/LargeWorldVector3d.cs | Project-owned gameplay, HUD, flight, docking, combat, builder, and validation systems. |  | Reuse existing systems instead of importing overlapping gameplay frameworks. |
+| Settings | configuration/data | 7 | Assets/Settings/DefaultVolumeProfile.asset<br>Assets/Settings/Mobile_Renderer.asset<br>Assets/Settings/Mobile_RPAsset.asset<br>Assets/Settings/PC_Renderer.asset<br>Assets/Settings/PC_RPAsset.asset<br>Assets/Settings/SampleSceneProfile.asset<br>Assets/Settings/UniversalRenderPipelineGlobalSettings.asset | URP and project rendering settings. | Packages/com.unity.render-pipelines.universal/Shaders/Debug/ProbeVolumeSamplingDebugPositionNormal.compute<br>Packages/com.unity.render-pipelines.universal/Shaders/Debug/HDRDebugView.shader<br>Packages/com.unity.render-pipelines.universal/Shaders/Debug/DebugReplacement.shader<br>Packages/com.unity.render-pipelines.universal/Runtime/Data/PostProcessData.asset<br>Packages/com.unity.render-pipelines.universal/Textures/BlueNoise64/L/LDR_LLL1_0.png<br>Assets/Settings/Mobile_Renderer.asset<br>Assets/Settings/SampleSceneProfile.asset<br>Packages/com.unity.render-pipelines.universal/Textures/BayerMatrix.png<br>Packages/com.unity.render-pipelines.universal/Textures/BlueNoise256/LDR_LLL1_1.png<br>Packages/com.unity.render-pipelines.universal/Textures/BlueNoise256/LDR_LLL1_6.png | Keep as compatibility baseline for imported shaders, materials, and VFX. |
+| Tests | scripts/editor tools | 43 | Assets/Tests/Editor/DockingPortValidationTests.cs<br>Assets/Tests/Editor/FloatingOriginValidationTests.cs<br>Assets/Tests/Editor/PrototypeAtmosphereValidationTests.cs<br>Assets/Tests/Editor/PrototypeAutopilotMomentumStartupStateTests.cs<br>Assets/Tests/Editor/PrototypeAutopilotNavigationComputerV2ValidationTests.cs<br>Assets/Tests/Editor/PrototypeControlModeValidationTests.cs<br>Assets/Tests/Editor/PrototypeDockingApproachAssistValidationTests.cs<br>Assets/Tests/Editor/PrototypeEvidenceScreenshotTests.cs | Regression and evidence coverage for prototype systems. |  | Keep using for verification before asset or package swaps. |
+| TutorialInfo | configuration/data | 1 | Assets/TutorialInfo/Layout.wlt | Unity template tutorial/readme assets. |  | Low value for Weltraum-Spiel; avoid expanding this area. |
+| TutorialInfo | scripts/editor tools | 2 | Assets/TutorialInfo/Scripts/Editor/ReadmeEditor.cs<br>Assets/TutorialInfo/Scripts/Readme.cs | Unity template tutorial/readme assets. |  | Low value for Weltraum-Spiel; avoid expanding this area. |
+| TutorialInfo | UI assets/fonts/icons | 1 | Assets/TutorialInfo/Icons/URP.png | Unity template tutorial/readme assets. |  | Low value for Weltraum-Spiel; avoid expanding this area. |
+| _Recovery | scenes | 2 | Assets/_Recovery/0 (1).unity<br>Assets/_Recovery/0.unity | Unity recovery scene data; not intended as production content. |  | Avoid using except as emergency reference. |
+| _Root | configuration/data | 1 | Assets/InputSystem_Actions.inputactions | Configuration, manifests, input actions, or ScriptableObject data. |  | Inspect before changing because these often bind runtime systems. |
+| _Root | documentation/readmes | 1 | Assets/Readme.asset | Readme or documentation asset metadata. | Assets/TutorialInfo/Icons/URP.png | Keep as reference only; do not treat Unity template readmes as game content. |
+
+## Local Downloaded Asset Store / UPM Packages
+| Source | Publisher | Package/cache item | Files | Type | Metadata/readmes | Category guess | Useful | Import risk |
+|---|---|---|---:|---|---|---|---|---|
+| Asset Store cache | BOXOPHOBIC | FREE Skybox Extended Shader | 1 | .unitypackage | none found | Space environment/skybox | maybe | medium - verify URP 17.4 shader compatibility first. |
+| Asset Store cache | GameAI Programmer | Easy Poly Map Creator--Custom your LowPoly world | 1 | .unitypackage | none found | Planet-surface/environment placeholders | no/maybe | low/medium - mostly art, but can add many materials/textures and non-space content. |
+| Asset Store cache | JustCreate | Low-Poly Simple Nature Pack | 1 | .unitypackage | none found | Planet-surface/environment placeholders | no/maybe | low/medium - mostly art, but can add many materials/textures and non-space content. |
+| Asset Store cache | Kyrylo Kuzyk | PrimeTween High-Performance Animations and Sequences | 1 | .unitypackage | none found | UI/animation polish | maybe | medium - runtime code/input/UI dependency; isolate first. |
+| Asset Store cache | Polytope Studio | Low Poly Environment - Nature Free - LOWPOLY MEDIEVAL FANTASY SERIES | 1 | .unitypackage | none found | Planet-surface/environment placeholders | no/maybe | low/medium - mostly art, but can add many materials/textures and non-space content. |
+| Asset Store cache | Shapes | Nature Starter Kit 2 | 1 | .unitypackage | none found | Planet-surface/environment placeholders | no/maybe | low/medium - mostly art, but can add many materials/textures and non-space content. |
+| Asset Store cache | UModeler Inc | UModeler X | 1 | .unitypackage | none found | Editor tooling/modeling | maybe | medium/high - editor extension and possible paid-license workflow impact; test outside main first. |
+| Asset Store cache | Unity Technologies | Legacy Particle Pack | 2 | .unitypackage | none found | Thruster/combat VFX | maybe | medium - may include legacy shaders/materials; import into throwaway first. |
+| Asset Store cache | Unity Technologies | Particle Pack | 2 | .unitypackage | none found | Thruster/combat VFX | maybe | medium - may include legacy shaders/materials; import into throwaway first. |
+| Asset Store cache | yasirkula | In-game Debug Console | 1 | .unitypackage | none found | Editor/runtime debug tooling | maybe | medium - runtime code/input/UI dependency; isolate first. |
+
+## Weltraum-Spiel Usefulness Matrix
+| Category | Candidate assets | What to reuse | What to adapt | What to avoid |
+|---|---|---|---|---|
+| Player-facing UI/HUD | PrototypePlayerHud.cs; PrototypeFlightHud.cs; PrototypeMinimapOverlay.cs; PrototypeUiStyle.cs; uGUI/UIElements; In-game Debug Console cache | Reuse the existing HUD snapshot/rendering and minimap model first. | Test PrimeTween or debug console later for polish/debug builds. | Avoid replacing the current HUD stack with an imported UI kit before input, scaling, and tests are checked. |
+| Space ships / modular ship parts | Assets/Art/PrototypeShipKit/Parts; DemoShips; prototype_ship_kit_manifest.json; PrototypeShipVisualSwitcher.cs | Reuse imported FBX/GLB parts and manifest for builder/runtime visual modes. | Adapt materials, hardpoints, and socket metadata as the builder matures. | Avoid nature/environment packs for ships; they do not cover hardpoints or ship-scale constraints. |
+| Thruster/RCS VFX | MainThrusterVfx.prefab; RcsThrusterVfx.prefab; PrototypeShipVfxLibrary.asset; Unity Particle Pack cache | Use existing VFX prefabs directly for current flight evidence. | Inspect particle packs in a throwaway project for exhaust variants. | Avoid importing legacy particle content directly until shader/render pipeline compatibility is verified. |
+| Weapons/projectiles/combat VFX | gun_mount_light_mk1; PrototypeTurretWeapon.cs; PrototypeProjectileSimulation.cs; Particle Pack cache | Reuse weapon binder and projectile runtime systems. | Adapt particle effects for muzzle flashes, impacts, and trails after test import. | Avoid imported projectile scripts that overlap the deterministic combat simulation. |
+| Space environment/skybox/planets/asteroids | URP settings; FREE Skybox Extended Shader cache; low-poly nature/environment caches | Reuse URP settings as the rendering baseline. | Test skybox shader and low-poly packs as placeholder planet-surface art only. | Avoid assuming nature packs solve space needs; planets, asteroids, nebulae, and starfields are still missing. |
+| Docking/stations/hangars | connector_hardpoint_mk1; DockingPort.cs; PrototypeDockingApproachAssist.cs; UModeler X cache | Reuse docking code and connector hardpoint art. | Use UModeler or simple FBX blockouts in a test project for station/hangar grayboxes. | Avoid importing broad editor modeling tools before licensing and generated-asset workflow are settled. |
+| Ship builder/UI inventory | PrototypeShipBlueprint.cs; PrototypeShipLayout.cs; PrototypeShipVariant.cs; PrototypeUiViewModels.cs; PrimeTween cache | Reuse blueprint/layout/view-model code. | Adapt UI animation tooling only after the builder flow is stable. | Avoid adding a second inventory framework before the current model is exhausted. |
+| Audio/SFX/music | Unity audio module only; no imported SFX/music assets found | Use built-in audio support. | Add thruster, weapon, impact, docking, alert, ambience, and music packs later. | Avoid wiring a large audio system until actual clips exist. |
+| Editor tooling | MCP for Unity; Test Framework; UModeler X cache; Easy Poly Map Creator cache | Reuse Unity MCP and tests for iteration and evidence. | Evaluate modeling/terrain extensions in a throwaway project. | Avoid editor extensions that change settings or generate assets without a rollback plan. |
+| Performance/optimization | Burst/Collections transitive packages; PrototypeRuntimeJobSystems.cs; URP | Reuse current job-system and runtime snapshot architecture. | Consider Burst only for measured hotspots. | Avoid optimization packages or import-setting changes without profiler evidence. |
+| Networking/save/persistence | Multiplayer Center installed; no Netcode or persistence asset found | Reuse none yet beyond package discovery. | Evaluate save-game and networking approaches after gameplay contracts stabilize. | Avoid importing networking frameworks speculatively. |
+
+## Final Recommendations
+
+### Top 10 assets/packages to inspect first
+- Assets/Art/PrototypeShipKit/Parts/*.fbx and *.glb - current modular ship vocabulary.
+- Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1 and demo_cargo_mk1 - assembled visual baselines.
+- Assets/Art/PrototypeShipKit/VFX/Prefabs/MainThrusterVfx.prefab and RcsThrusterVfx.prefab - already bound to flight evidence.
+- Assets/Art/PrototypeShipKit/prototype_ship_kit_manifest.json - metadata for parts, sockets, and categories.
+- PrototypePlayerHud.cs plus PrototypeMinimapOverlay.cs - player-facing HUD and tactical scan surface.
+- com.unity.render-pipelines.universal - active rendering path and shader compatibility baseline.
+- com.unity.inputsystem - current controls/input action foundation.
+- Unity Technologies/Particle Pack.unitypackage - candidate combat and thruster VFX, throwaway import first.
+- BOXOPHOBIC/FREE Skybox Extended Shader.unitypackage - candidate skybox tooling, verify URP compatibility first.
+- Kyrylo Kuzyk/PrimeTween.unitypackage or yasirkula/In-game Debug Console.unitypackage - optional UI/debug polish after throwaway import.
+
+### Assets that should be imported into a throwaway test project first
+- All local Asset Store .unitypackage archives, especially Particle Pack, Legacy Particle Pack, UModeler X, PrimeTween, In-game Debug Console, and Skybox Extended Shader.
+- Shader or render-pipeline-affecting packages before they touch URP settings.
+- Editor extensions that may add project settings, menu items, generated assets, or dependencies.
+- Large environment/nature packs because they are mostly planet-surface placeholders and can add many materials/textures.
+
+### Assets safe to use directly
+- Imported PrototypeShipKit FBX/GLB parts, materials, demo ships, and VFX prefabs already under Assets/Art.
+- Installed Unity packages already referenced by the project: URP, Input System, Test Framework, uGUI/UIElements, Physics, Audio, Particle System.
+- Existing scripts and tests under Assets/Scripts/Prototype and Assets/Tests as project-owned implementation evidence.
+
+### Assets that may conflict with project settings
+- Skybox/shader packages if they assume Built-in Render Pipeline instead of URP 17.4.
+- Particle packs that include legacy materials, shaders, or quality settings.
+- Runtime debug console or UI packages that bind input, canvases, or EventSystem state.
+- UModeler X or terrain/editor extensions that may add editor settings, generated assets, or paid-license constraints.
+- Visual Scripting if used as a parallel gameplay logic path without tests.
+
+### Missing asset categories
+- Purpose-built space skyboxes/starfields/nebulae verified on URP.
+- Planets, moons, asteroids, debris fields, stations, docking bays, hangars, and cargo props.
+- Weapon muzzle flashes, projectile trails, shield/impact/explosion VFX tuned for space combat.
+- Thruster, RCS, weapon, impact, docking, UI alert, ambience, and music audio packs.
+- Save-game/persistence and networking packages or project-owned implementations.
