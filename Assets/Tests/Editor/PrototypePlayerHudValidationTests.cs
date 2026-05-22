@@ -13,12 +13,19 @@ public class PrototypePlayerHudValidationTests
     public void TearDown()
     {
         PrototypeWeaponTargetRegistry.ClearForTests();
+        PrototypeNavigationObstacleRegistry.ClearForTests();
         DestroyNamed("PrototypeBootstrap");
         DestroyNamed("PrototypeShip");
         DestroyNamed("PrototypeDockingApproachTarget");
         DestroyNamed("PrototypePlayerHudCamera");
+        DestroyNamed("PrototypeNavigationWaypoints");
+        DestroyNamed("PrototypeEnvironment");
         DestroyNamed("PlayerHudDockSource");
         DestroyNamed("PlayerHudDockTarget");
+        DestroyNamed("PlayerHudRadarArena");
+        DestroyNamed("PlayerHudRadarDockTarget");
+        DestroyNamed("PlayerHudRadarEnvironment");
+        DestroyNamed("PlayerHudRadarWaypointManager");
         DestroyNamed("PlayerHudCombatShip");
         DestroyNamed("PlayerHudWeaponComputer");
         DestroyNamed("PlayerHudDamageShip");
@@ -110,6 +117,120 @@ public class PrototypePlayerHudValidationTests
     }
 
     [Test]
+    public void RadarSnapshotCollectsGameplayBlipsRoutePreviewAndHazards()
+    {
+        using (var builder = new PrototypeScenarioBuilder())
+        {
+            PrototypeCombatRig combatRig = builder.CreateCombatRig("PlayerHudRadarShip");
+            GameObject managerObject = new GameObject("PlayerHudRadarWaypointManager");
+            PrototypeWaypointManager manager = managerObject.AddComponent<PrototypeWaypointManager>();
+            manager.EnsureDefaultWaypoints();
+
+            PrototypeWaypointAutopilot autopilot = combatRig.Ship.Ship.AddComponent<PrototypeWaypointAutopilot>();
+            autopilot.Bind(manager, combatRig.Ship.Controller, combatRig.Ship.Stats, combatRig.Ship.Body);
+            autopilot.SelectTarget(manager.SelectedTarget);
+
+            PrototypeTrajectoryPlan plan = PrototypeTrajectoryPlan.Clear(Vector3.forward);
+            plan.predictedPath = new[]
+            {
+                combatRig.Ship.Ship.transform.position,
+                combatRig.Ship.Ship.transform.position + Vector3.forward * 120f,
+                combatRig.Ship.Ship.transform.position + Vector3.forward * 260f
+            };
+            plan.avoidanceActive = true;
+            plan.avoidanceWaypoint = combatRig.Ship.Ship.transform.position + new Vector3(42f, 0f, 140f);
+            plan.obstacleLabel = "Radar Hazard";
+            SetAutoProperty(autopilot, "LastTrajectoryPlan", plan);
+
+            PrototypeTrajectoryPreviewNavMap preview = combatRig.Ship.Ship.AddComponent<PrototypeTrajectoryPreviewNavMap>();
+            preview.ConfigureForTests(true, 4, 10, 0.1f, false, true);
+            preview.Bind(combatRig.Ship.Ship.transform, combatRig.Ship.Body, combatRig.Ship.Stats, combatRig.Ship.PhysicsCore, autopilot);
+
+            builder.CreateWeaponTarget("PlayerHudRadarCombatTarget", new Vector3(70f, 0f, 180f));
+            combatRig.Computer.RefreshTargets();
+            Assert.That(combatRig.Computer.AvailableTargets.Count, Is.GreaterThan(0));
+            combatRig.Computer.ToggleTarget(combatRig.Computer.AvailableTargets[0]);
+            Assert.NotNull(combatRig.Computer.ActiveTargetTransform);
+
+            GameObject arenaObject = new GameObject("PlayerHudRadarArena");
+            PrototypePveArenaLoop arenaLoop = arenaObject.AddComponent<PrototypePveArenaLoop>();
+            arenaLoop.StartOrResetArena();
+
+            GameObject dockingObject = new GameObject("PlayerHudRadarDockTarget");
+            dockingObject.transform.position = new Vector3(120f, 0f, 320f);
+            DockingPort dockingTarget = dockingObject.AddComponent<DockingPort>();
+            dockingTarget.Configure(Vector3.zero, Vector3.forward, 3f, 10f, 1.5f);
+
+            GameObject environmentObject = new GameObject("PlayerHudRadarEnvironment");
+            PrototypeTestEnvironment environment = environmentObject.AddComponent<PrototypeTestEnvironment>();
+            environment.Rebuild();
+
+            builder.CreateObstacle("PlayerHudRadarObstacle", new Vector3(28f, 0f, 92f), 10f);
+
+            PrototypePlayerHudSnapshot snapshot = PrototypePlayerHudSnapshotBuilder.Build(
+                combatRig.Ship.Ship.transform,
+                combatRig.Ship.Body,
+                combatRig.Ship.Stats,
+                combatRig.Ship.Controller,
+                autopilot,
+                null,
+                combatRig.Computer,
+                null,
+                dockingTarget,
+                arenaLoop,
+                null,
+                preview);
+
+            Assert.That(snapshot.Radar.RangeMeters, Is.EqualTo(5000f));
+            Assert.That(snapshot.Radar.RangeLabel, Is.EqualTo("Range 5 km"));
+            Assert.That(snapshot.Radar.RouteWorldPoints.Length, Is.EqualTo(3));
+            Assert.That(snapshot.Radar.TrajectoryPreviewWorldPoints.Length, Is.GreaterThan(1));
+            Assert.True(snapshot.Radar.HasAvoidanceWaypoint);
+            AssertRadarContains(snapshot.Radar, PrototypePlayerRadarBlipKind.SelectedNavigation, "Nav Waypoint");
+            Assert.That(CountRadarKind(snapshot.Radar, PrototypePlayerRadarBlipKind.Navigation), Is.GreaterThanOrEqualTo(2));
+            Assert.That(CountRadarKind(snapshot.Radar, PrototypePlayerRadarBlipKind.Objective), Is.GreaterThanOrEqualTo(3));
+            AssertRadarContains(snapshot.Radar, PrototypePlayerRadarBlipKind.SelectedCombat, "PlayerHudRadarCombatTarget");
+            AssertRadarContains(snapshot.Radar, PrototypePlayerRadarBlipKind.Docking, "PlayerHudRadarDockTarget");
+            AssertRadarContains(snapshot.Radar, PrototypePlayerRadarBlipKind.Beacon, "Beacon");
+            AssertRadarContains(snapshot.Radar, PrototypePlayerRadarBlipKind.Gate, "Gate");
+            AssertRadarContains(snapshot.Radar, PrototypePlayerRadarBlipKind.Station, "Station");
+            Assert.That(CountRadarKind(snapshot.Radar, PrototypePlayerRadarBlipKind.Hazard), Is.GreaterThan(0));
+        }
+    }
+
+    [Test]
+    public void RadarTextUsesSnapshotAutoRangeLabel()
+    {
+        GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+        cameraObject.AddComponent<Camera>();
+        PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+        playerHud.RefreshNow();
+
+        var radar = new PrototypePlayerRadarSnapshot(
+            250f,
+            "Range 250 m",
+            Vector3.zero,
+            Vector3.forward,
+            new PrototypePlayerRadarBlip[0],
+            new Vector3[0],
+            new Vector3[0],
+            false,
+            Vector3.zero);
+
+        ApplySnapshotForTest(
+            playerHud,
+            CreateHudSnapshot(
+                CreateCombatSnapshot(false),
+                CreateDockingSnapshot(false),
+                CreateNavigationSnapshot(false),
+                default,
+                null,
+                radar));
+
+        Assert.That(FindText(playerHud, "RadarText").text, Is.EqualTo("Range 250 m"));
+    }
+
+    [Test]
     public void CombatTranslatorMapsWeaponBlocksWithoutYawPitchOrTuningLeak()
     {
         PrototypeTurretFireStatus outOfArc = PrototypeTurretFireStatus.Blocked(
@@ -127,12 +248,19 @@ public class PrototypePlayerHudValidationTests
             cooldownRemainingSeconds: 0.4f,
             distanceMeters: 320f,
             hasSelectedTarget: true);
+        PrototypeTurretFireStatus lineBlocked = PrototypeTurretFireStatus.Blocked(
+            PrototypeTurretFireBlockReason.LineBlocked,
+            "line blocked",
+            distanceMeters: 20f,
+            hasSelectedTarget: true);
 
         string outOfArcLabel = PrototypePlayerHudSnapshotBuilder.TranslateFireStatus(outOfArc);
         string cooldownLabel = PrototypePlayerHudSnapshotBuilder.TranslateFireStatus(cooldown);
+        string lineBlockedLabel = PrototypePlayerHudSnapshotBuilder.TranslateFireStatus(lineBlocked);
 
         Assert.That(outOfArcLabel, Is.EqualTo("Ausserhalb Feuerwinkel"));
         Assert.That(cooldownLabel, Is.EqualTo("Cooldown 0.4s"));
+        Assert.That(lineBlockedLabel, Is.EqualTo("Schusslinie blockiert"));
         Assert.That(outOfArcLabel, Does.Not.Contain("Yaw"));
         Assert.That(outOfArcLabel, Does.Not.Contain("Pitch"));
         Assert.That(outOfArcLabel, Does.Not.Contain("Hit"));
@@ -245,6 +373,7 @@ public class PrototypePlayerHudValidationTests
         Assert.That(help, Does.Contain("W/S: translate forward/back"));
         Assert.That(help, Does.Contain("Space: fire"));
         Assert.That(help, Does.Contain("F1: player help"));
+        Assert.That(help, Does.Contain("F7 Weapon Computer"));
         Assert.That(help, Does.Not.Contain("Debug Console"));
         Assert.That(help, Does.Not.Contain("Flight Diagnostics"));
         Assert.That(help, Does.Not.Contain("DES/ACT/RES"));
@@ -545,8 +674,19 @@ public class PrototypePlayerHudValidationTests
         PrototypePlayerDockingSnapshot docking,
         PrototypePlayerNavigationSnapshot navigation,
         PrototypePveArenaSnapshot arena,
-        PrototypePlayerHudChip[] warnings = null)
+        PrototypePlayerHudChip[] warnings = null,
+        PrototypePlayerRadarSnapshot? radar = null)
     {
+        PrototypePlayerRadarSnapshot radarSnapshot = radar ?? new PrototypePlayerRadarSnapshot(
+            1000f,
+            "Range 1 km",
+            Vector3.zero,
+            Vector3.forward,
+            new PrototypePlayerRadarBlip[0],
+            new Vector3[0],
+            new Vector3[0],
+            false,
+            Vector3.zero);
         return new PrototypePlayerHudSnapshot(
             new PrototypePlayerFlightSnapshot(0f, 0f, 100f, 100f, "Cruise", string.Empty, "Main ready", "RCS ready", "SAS on"),
             navigation,
@@ -557,6 +697,7 @@ public class PrototypePlayerHudValidationTests
             warnings ?? new PrototypePlayerHudChip[0],
             new PrototypePlayerHudChip[0],
             default,
+            radarSnapshot,
             Vector3.zero,
             Vector3.forward,
             null,
@@ -637,6 +778,34 @@ public class PrototypePlayerHudValidationTests
         }
 
         return labels;
+    }
+
+    private static void AssertRadarContains(PrototypePlayerRadarSnapshot radar, PrototypePlayerRadarBlipKind kind, string labelPart)
+    {
+        for (int i = 0; i < radar.Blips.Length; i++)
+        {
+            PrototypePlayerRadarBlip blip = radar.Blips[i];
+            if (blip.Kind == kind && blip.Label.Contains(labelPart))
+            {
+                return;
+            }
+        }
+
+        Assert.Fail("Missing radar blip " + kind + " containing " + labelPart);
+    }
+
+    private static int CountRadarKind(PrototypePlayerRadarSnapshot radar, PrototypePlayerRadarBlipKind kind)
+    {
+        int count = 0;
+        for (int i = 0; i < radar.Blips.Length; i++)
+        {
+            if (radar.Blips[i].Kind == kind)
+            {
+                count++;
+            }
+        }
+
+        return count;
     }
 
     private static void SetPrivateField(object target, string fieldName, object value)

@@ -238,6 +238,77 @@ public readonly struct PrototypePlayerShipStatusSnapshot
     public string DamageLabel { get; }
 }
 
+public enum PrototypePlayerRadarBlipKind
+{
+    Navigation,
+    SelectedNavigation,
+    Combat,
+    SelectedCombat,
+    Objective,
+    Docking,
+    Beacon,
+    Gate,
+    Station,
+    Hazard
+}
+
+public readonly struct PrototypePlayerRadarBlip
+{
+    public PrototypePlayerRadarBlip(
+        PrototypePlayerRadarBlipKind kind,
+        string label,
+        Vector3 worldPosition,
+        float radiusMeters = 0f)
+    {
+        Kind = kind;
+        Label = string.IsNullOrWhiteSpace(label) ? kind.ToString() : label;
+        WorldPosition = worldPosition;
+        RadiusMeters = Mathf.Max(0f, radiusMeters);
+    }
+
+    public PrototypePlayerRadarBlipKind Kind { get; }
+    public string Label { get; }
+    public Vector3 WorldPosition { get; }
+    public float RadiusMeters { get; }
+    public bool IsSelected => Kind == PrototypePlayerRadarBlipKind.SelectedNavigation
+        || Kind == PrototypePlayerRadarBlipKind.SelectedCombat;
+}
+
+public readonly struct PrototypePlayerRadarSnapshot
+{
+    public PrototypePlayerRadarSnapshot(
+        float rangeMeters,
+        string rangeLabel,
+        Vector3 shipWorldPosition,
+        Vector3 shipForward,
+        PrototypePlayerRadarBlip[] blips,
+        Vector3[] routeWorldPoints,
+        Vector3[] trajectoryPreviewWorldPoints,
+        bool hasAvoidanceWaypoint,
+        Vector3 avoidanceWorldPosition)
+    {
+        RangeMeters = Mathf.Max(1f, rangeMeters);
+        RangeLabel = string.IsNullOrWhiteSpace(rangeLabel) ? "Range --" : rangeLabel;
+        ShipWorldPosition = shipWorldPosition;
+        ShipForward = shipForward.sqrMagnitude > 0.0001f ? shipForward.normalized : Vector3.forward;
+        Blips = blips ?? System.Array.Empty<PrototypePlayerRadarBlip>();
+        RouteWorldPoints = routeWorldPoints ?? System.Array.Empty<Vector3>();
+        TrajectoryPreviewWorldPoints = trajectoryPreviewWorldPoints ?? System.Array.Empty<Vector3>();
+        HasAvoidanceWaypoint = hasAvoidanceWaypoint;
+        AvoidanceWorldPosition = avoidanceWorldPosition;
+    }
+
+    public float RangeMeters { get; }
+    public string RangeLabel { get; }
+    public Vector3 ShipWorldPosition { get; }
+    public Vector3 ShipForward { get; }
+    public PrototypePlayerRadarBlip[] Blips { get; }
+    public Vector3[] RouteWorldPoints { get; }
+    public Vector3[] TrajectoryPreviewWorldPoints { get; }
+    public bool HasAvoidanceWaypoint { get; }
+    public Vector3 AvoidanceWorldPosition { get; }
+}
+
 public readonly struct PrototypePlayerHudSnapshot
 {
     public PrototypePlayerHudSnapshot(
@@ -250,6 +321,7 @@ public readonly struct PrototypePlayerHudSnapshot
         PrototypePlayerHudChip[] warnings,
         PrototypePlayerHudChip[] assistChips,
         PrototypeHudViewModel markerModel,
+        PrototypePlayerRadarSnapshot radar,
         Vector3 shipWorldPosition,
         Vector3 shipForward,
         Vector3? navigationTargetWorldPosition,
@@ -264,6 +336,7 @@ public readonly struct PrototypePlayerHudSnapshot
         Warnings = warnings ?? System.Array.Empty<PrototypePlayerHudChip>();
         AssistChips = assistChips ?? System.Array.Empty<PrototypePlayerHudChip>();
         MarkerModel = markerModel;
+        Radar = radar;
         ShipWorldPosition = shipWorldPosition;
         ShipForward = shipForward.sqrMagnitude > 0.0001f ? shipForward.normalized : Vector3.forward;
         NavigationTargetWorldPosition = navigationTargetWorldPosition;
@@ -279,6 +352,7 @@ public readonly struct PrototypePlayerHudSnapshot
     public PrototypePlayerHudChip[] Warnings { get; }
     public PrototypePlayerHudChip[] AssistChips { get; }
     public PrototypeHudViewModel MarkerModel { get; }
+    public PrototypePlayerRadarSnapshot Radar { get; }
     public Vector3 ShipWorldPosition { get; }
     public Vector3 ShipForward { get; }
     public Vector3? NavigationTargetWorldPosition { get; }
@@ -348,6 +422,13 @@ public static class PrototypePlayerHudSnapshotBuilder
         PrototypePlayerShipStatusSnapshot shipStatus = BuildShipStatus(stats, controller, weaponComputer);
         PrototypePlayerHudChip[] warnings = BuildWarningChips(stats, controller, autopilot, momentumAssist, combat, docking);
         PrototypePlayerHudChip[] assists = BuildAssistChips(autopilot, momentumAssist, navigation, combat, docking, arena);
+        PrototypePlayerRadarSnapshot radar = BuildRadar(
+            shipRoot,
+            autopilot,
+            weaponComputer,
+            effectiveTargetDockingPort,
+            arenaLoop,
+            navigation);
 
         return new PrototypePlayerHudSnapshot(
             flight,
@@ -359,6 +440,7 @@ public static class PrototypePlayerHudSnapshotBuilder
             warnings,
             assists,
             markerModel,
+            radar,
             shipRoot != null ? shipRoot.position : Vector3.zero,
             shipRoot != null ? shipRoot.forward : Vector3.forward,
             autopilot != null && autopilot.CurrentTarget != null ? autopilot.CurrentTarget.Position : (Vector3?)null,
@@ -540,6 +622,8 @@ public static class PrototypePlayerHudSnapshotBuilder
             case PrototypeTurretFireBlockReason.SafetyDataMissing:
             case PrototypeTurretFireBlockReason.SafetyUnsafe:
                 return "Keine Waffenautoritaet";
+            case PrototypeTurretFireBlockReason.LineBlocked:
+                return "Schusslinie blockiert";
             case PrototypeTurretFireBlockReason.OutOfArc:
                 return "Ausserhalb Feuerwinkel";
             case PrototypeTurretFireBlockReason.Cooldown:
@@ -561,6 +645,7 @@ public static class PrototypePlayerHudSnapshotBuilder
         if (!includeDebugControls)
         {
             lines.Add("F1: player help");
+            lines.Add("F7 Weapon Computer");
         }
 
         PrototypeInputBindingSection[] sections = PrototypeInputBindingCatalog.GlobalSections;
@@ -705,6 +790,370 @@ public static class PrototypePlayerHudSnapshotBuilder
             hasAvoidanceCue,
             autopilot.AvoidanceWaypoint,
             hasAvoidanceCue ? BuildAvoidanceLabel(autopilot) : string.Empty);
+    }
+
+    private static PrototypePlayerRadarSnapshot BuildRadar(
+        Transform shipRoot,
+        PrototypeWaypointAutopilot autopilot,
+        PrototypeWeaponComputer weaponComputer,
+        DockingPort dockingTarget,
+        PrototypePveArenaLoop arenaLoop,
+        PrototypePlayerNavigationSnapshot navigation)
+    {
+        Vector3 origin = shipRoot != null ? shipRoot.position : Vector3.zero;
+        Vector3 forward = shipRoot != null ? shipRoot.forward : Vector3.forward;
+        var blips = new List<PrototypePlayerRadarBlip>(32);
+        var keys = new HashSet<string>();
+
+        AddNavigationRadarBlips(blips, keys, autopilot);
+        AddArenaRadarBlips(blips, keys, arenaLoop);
+        AddCombatRadarBlips(blips, keys, shipRoot, weaponComputer);
+        AddDockingRadarBlip(blips, keys, dockingTarget);
+        AddEnvironmentRadarBlips(blips, keys);
+        AddNavigationObstacleRadarBlips(blips, keys);
+
+        Vector3[] route = navigation.RouteWorldPoints ?? System.Array.Empty<Vector3>();
+        Vector3[] preview = navigation.TrajectoryPreview.HasRenderablePoints
+            ? CopyRoutePoints(navigation.TrajectoryPreview.Points, 16)
+            : System.Array.Empty<Vector3>();
+        float farthestMeters = 0f;
+        for (int i = 0; i < blips.Count; i++)
+        {
+            farthestMeters = Mathf.Max(farthestMeters, FlatDistance(origin, blips[i].WorldPosition));
+        }
+
+        farthestMeters = MaxFlatDistance(origin, route, farthestMeters);
+        farthestMeters = MaxFlatDistance(origin, preview, farthestMeters);
+        if (navigation.HasAvoidanceCue)
+        {
+            farthestMeters = Mathf.Max(farthestMeters, FlatDistance(origin, navigation.AvoidanceWorldPosition));
+        }
+
+        float rangeMeters = ResolveRadarRangeMeters(farthestMeters);
+        return new PrototypePlayerRadarSnapshot(
+            rangeMeters,
+            FormatRadarRangeLabel(rangeMeters),
+            origin,
+            forward,
+            blips.ToArray(),
+            route,
+            preview,
+            navigation.HasAvoidanceCue,
+            navigation.AvoidanceWorldPosition);
+    }
+
+    private static void AddNavigationRadarBlips(
+        List<PrototypePlayerRadarBlip> blips,
+        HashSet<string> keys,
+        PrototypeWaypointAutopilot autopilot)
+    {
+        PrototypeNavigationTarget selected = autopilot != null ? autopilot.CurrentTarget : null;
+        PrototypeWaypointManager manager = autopilot != null ? autopilot.WaypointManager : null;
+        if (manager == null && selected == null)
+        {
+            return;
+        }
+
+        if (manager != null)
+        {
+            manager.RefreshTargets();
+            PrototypeNavigationTarget[] targets = manager.NavigationTargets;
+            for (int i = 0; i < targets.Length; i++)
+            {
+                PrototypeNavigationTarget target = targets[i];
+                if (target == null || !target.isActiveAndEnabled)
+                {
+                    continue;
+                }
+
+                bool isSelected = selected != null && target == selected;
+                AddRadarBlip(
+                    blips,
+                    keys,
+                    isSelected ? PrototypePlayerRadarBlipKind.SelectedNavigation : PrototypePlayerRadarBlipKind.Navigation,
+                    target.DisplayName,
+                    target.Position,
+                    target.ArrivalRadius);
+            }
+        }
+
+        if (selected != null)
+        {
+            AddRadarBlip(
+                blips,
+                keys,
+                PrototypePlayerRadarBlipKind.SelectedNavigation,
+                selected.DisplayName,
+                selected.Position,
+                selected.ArrivalRadius);
+        }
+    }
+
+    private static void AddArenaRadarBlips(
+        List<PrototypePlayerRadarBlip> blips,
+        HashSet<string> keys,
+        PrototypePveArenaLoop arenaLoop)
+    {
+        if (arenaLoop == null || arenaLoop.Targets == null)
+        {
+            return;
+        }
+
+        IReadOnlyList<PrototypePveArenaTarget> targets = arenaLoop.Targets;
+        for (int i = 0; i < targets.Count; i++)
+        {
+            PrototypePveArenaTarget target = targets[i];
+            if (target == null || target.Transform == null || target.IsDestroyed || !target.Transform.gameObject.activeInHierarchy)
+            {
+                continue;
+            }
+
+            AddRadarBlip(
+                blips,
+                keys,
+                PrototypePlayerRadarBlipKind.Objective,
+                target.Transform.name,
+                target.Transform.position,
+                6f);
+        }
+    }
+
+    private static void AddCombatRadarBlips(
+        List<PrototypePlayerRadarBlip> blips,
+        HashSet<string> keys,
+        Transform shipRoot,
+        PrototypeWeaponComputer weaponComputer)
+    {
+        var seenTargetIds = new HashSet<int>();
+        Transform selectedTarget = weaponComputer != null ? weaponComputer.ActiveTargetTransform : null;
+        if (weaponComputer != null && weaponComputer.AvailableTargets != null)
+        {
+            IReadOnlyList<PrototypeWeaponTarget> availableTargets = weaponComputer.AvailableTargets;
+            for (int i = 0; i < availableTargets.Count; i++)
+            {
+                PrototypeWeaponTarget target = availableTargets[i];
+                if (target == null || !target.IsValid || IsSameHierarchy(shipRoot, target.TargetTransform))
+                {
+                    continue;
+                }
+
+                seenTargetIds.Add(target.StableId);
+                AddRadarBlip(
+                    blips,
+                    keys,
+                    IsSameHierarchy(selectedTarget, target.TargetTransform)
+                        ? PrototypePlayerRadarBlipKind.SelectedCombat
+                        : PrototypePlayerRadarBlipKind.Combat,
+                    target.Label,
+                    target.Position,
+                    6f);
+            }
+        }
+
+        var registeredTargets = new List<Transform>();
+        PrototypeWeaponTargetRegistry.CopyRegisteredTargets(registeredTargets);
+        for (int i = 0; i < registeredTargets.Count; i++)
+        {
+            Transform candidate = registeredTargets[i];
+            PrototypeWeaponTarget target = PrototypeWeaponTarget.FromTransform(candidate);
+            Transform targetTransform = target != null && target.TargetTransform != null ? target.TargetTransform : candidate;
+            if (targetTransform == null || IsSameHierarchy(shipRoot, targetTransform))
+            {
+                continue;
+            }
+
+            int targetId = targetTransform.GetHashCode();
+            if (!seenTargetIds.Add(targetId))
+            {
+                continue;
+            }
+
+            AddRadarBlip(
+                blips,
+                keys,
+                IsSameHierarchy(selectedTarget, targetTransform)
+                    ? PrototypePlayerRadarBlipKind.SelectedCombat
+                    : PrototypePlayerRadarBlipKind.Combat,
+                target != null ? target.Label : targetTransform.name,
+                targetTransform.position,
+                6f);
+        }
+    }
+
+    private static void AddDockingRadarBlip(
+        List<PrototypePlayerRadarBlip> blips,
+        HashSet<string> keys,
+        DockingPort dockingTarget)
+    {
+        if (dockingTarget == null)
+        {
+            return;
+        }
+
+        AddRadarBlip(
+            blips,
+            keys,
+            PrototypePlayerRadarBlipKind.Docking,
+            dockingTarget.name,
+            dockingTarget.transform.position,
+            8f);
+    }
+
+    private static void AddEnvironmentRadarBlips(List<PrototypePlayerRadarBlip> blips, HashSet<string> keys)
+    {
+        PrototypeTestEnvironment environment = UnityEngine.Object.FindAnyObjectByType<PrototypeTestEnvironment>();
+        if (environment == null)
+        {
+            return;
+        }
+
+        PrototypeEnvironmentPoint[] points = environment.GetPointsSnapshot();
+        for (int i = 0; i < points.Length; i++)
+        {
+            PrototypeEnvironmentPoint point = points[i];
+            if (point == null || !TryMapEnvironmentPointKind(point.Kind, out PrototypePlayerRadarBlipKind blipKind))
+            {
+                continue;
+            }
+
+            AddRadarBlip(blips, keys, blipKind, point.Label, point.Position, point.Radius);
+        }
+    }
+
+    private static void AddNavigationObstacleRadarBlips(List<PrototypePlayerRadarBlip> blips, HashSet<string> keys)
+    {
+        var obstacles = new List<PrototypeNavigationObstacle>();
+        PrototypeNavigationObstacleRegistry.CopyActiveObstacles(obstacles);
+        for (int i = 0; i < obstacles.Count; i++)
+        {
+            PrototypeNavigationObstacle obstacle = obstacles[i];
+            if (obstacle == null || !obstacle.isActiveAndEnabled)
+            {
+                continue;
+            }
+
+            AddRadarBlip(
+                blips,
+                keys,
+                PrototypePlayerRadarBlipKind.Hazard,
+                obstacle.DisplayName,
+                obstacle.WorldPosition,
+                obstacle.EffectiveClearanceRadius);
+        }
+    }
+
+    private static bool TryMapEnvironmentPointKind(PrototypeEnvironmentPointKind pointKind, out PrototypePlayerRadarBlipKind blipKind)
+    {
+        switch (pointKind)
+        {
+            case PrototypeEnvironmentPointKind.Beacon:
+                blipKind = PrototypePlayerRadarBlipKind.Beacon;
+                return true;
+            case PrototypeEnvironmentPointKind.Gate:
+                blipKind = PrototypePlayerRadarBlipKind.Gate;
+                return true;
+            case PrototypeEnvironmentPointKind.Station:
+                blipKind = PrototypePlayerRadarBlipKind.Station;
+                return true;
+            case PrototypeEnvironmentPointKind.Obstacle:
+                blipKind = PrototypePlayerRadarBlipKind.Hazard;
+                return true;
+            default:
+                blipKind = default;
+                return false;
+        }
+    }
+
+    private static void AddRadarBlip(
+        List<PrototypePlayerRadarBlip> blips,
+        HashSet<string> keys,
+        PrototypePlayerRadarBlipKind kind,
+        string label,
+        Vector3 worldPosition,
+        float radiusMeters)
+    {
+        if (blips == null || keys == null)
+        {
+            return;
+        }
+
+        string key = BuildRadarBlipKey(kind, label, worldPosition);
+        if (!keys.Add(key))
+        {
+            return;
+        }
+
+        blips.Add(new PrototypePlayerRadarBlip(kind, label, worldPosition, radiusMeters));
+    }
+
+    private static string BuildRadarBlipKey(PrototypePlayerRadarBlipKind kind, string label, Vector3 position)
+    {
+        return kind.ToString()
+            + "|"
+            + (string.IsNullOrWhiteSpace(label) ? string.Empty : label)
+            + "|"
+            + Mathf.RoundToInt(position.x * 10f).ToString()
+            + "|"
+            + Mathf.RoundToInt(position.y * 10f).ToString()
+            + "|"
+            + Mathf.RoundToInt(position.z * 10f).ToString();
+    }
+
+    private static bool IsSameHierarchy(Transform left, Transform right)
+    {
+        if (left == null || right == null)
+        {
+            return false;
+        }
+
+        return left == right || left.IsChildOf(right) || right.IsChildOf(left);
+    }
+
+    private static float MaxFlatDistance(Vector3 origin, Vector3[] points, float currentMax)
+    {
+        if (points == null)
+        {
+            return currentMax;
+        }
+
+        float maxDistance = currentMax;
+        for (int i = 0; i < points.Length; i++)
+        {
+            maxDistance = Mathf.Max(maxDistance, FlatDistance(origin, points[i]));
+        }
+
+        return maxDistance;
+    }
+
+    private static float FlatDistance(Vector3 origin, Vector3 target)
+    {
+        Vector3 delta = target - origin;
+        return new Vector2(delta.x, delta.z).magnitude;
+    }
+
+    private static float ResolveRadarRangeMeters(float farthestMeters)
+    {
+        if (farthestMeters > 1000f)
+        {
+            return 5000f;
+        }
+
+        if (farthestMeters > 250f)
+        {
+            return 1000f;
+        }
+
+        return farthestMeters > 0.01f ? 250f : 1000f;
+    }
+
+    private static string FormatRadarRangeLabel(float rangeMeters)
+    {
+        if (rangeMeters >= 1000f)
+        {
+            return "Range " + (rangeMeters / 1000f).ToString("0.#") + " km";
+        }
+
+        return "Range " + rangeMeters.ToString("0") + " m";
     }
 
     private static PrototypePlayerCombatSnapshot BuildCombat(PrototypeWeaponComputer weaponComputer)
@@ -1096,6 +1545,7 @@ public static class PrototypePlayerHudSnapshotBuilder
             case PrototypeTurretFireBlockReason.MissingImportedMarker:
             case PrototypeTurretFireBlockReason.SafetyDataMissing:
             case PrototypeTurretFireBlockReason.SafetyUnsafe:
+            case PrototypeTurretFireBlockReason.LineBlocked:
                 return PrototypePlayerHudSeverity.Danger;
             case PrototypeTurretFireBlockReason.None:
                 return PrototypePlayerHudSeverity.Info;
@@ -1897,7 +2347,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
         ApplyObjectivePanel(snapshot.Arena);
         ApplyContext(snapshot);
-        radarText.text = "Range 1 km";
+        radarText.text = snapshot.Radar.RangeLabel;
         if (helpText != null && helpPanel != null && helpPanel.activeSelf)
         {
             FlightControlMode activeMode = controller != null ? controller.ControlMode : FlightControlMode.Normal;
@@ -2870,33 +3320,26 @@ public sealed class PrototypePlayerHudRadarGraphic : MaskableGraphic
         DrawLine(vh, center - heading * 9f - right * 7f, center - heading * 9f + right * 7f, Color.white, 1.5f);
         DrawLine(vh, center - heading * 9f + right * 7f, center + heading * 13f, Color.white, 1.5f);
 
-        if (snapshot.NavigationTargetWorldPosition.HasValue)
+        DrawRadarPath(vh, center, radius, snapshot.Radar, snapshot.Radar.RouteWorldPoints, PrototypeModuleColorPalette.Target, 1f, false);
+        DrawRadarPath(vh, center, radius, snapshot.Radar, snapshot.Radar.TrajectoryPreviewWorldPoints, new Color(1f, 0.72f, 0.22f, 0.82f), 1.1f, true);
+
+        if (snapshot.Radar.HasAvoidanceWaypoint)
         {
-            Vector2 target = ClampRadarPoint(center, radius, snapshot.ShipWorldPosition, snapshot.NavigationTargetWorldPosition.Value);
-            DrawLine(vh, center, target, PrototypeModuleColorPalette.Target, 1f);
-            DrawBlip(vh, target, PrototypeModuleColorPalette.Target);
+            Vector2 avoidance = ClampRadarPoint(center, radius, snapshot.Radar, snapshot.Radar.AvoidanceWorldPosition);
+            DrawHazardBlip(vh, avoidance, PrototypeUiStyle.WarningColor, 5f);
         }
 
-        Vector3[] route = snapshot.Navigation.RouteWorldPoints;
-        if (route != null && route.Length > 1)
+        PrototypePlayerRadarBlip[] blips = snapshot.Radar.Blips;
+        for (int i = 0; i < blips.Length; i++)
         {
-            Vector2 previous = ClampRadarPoint(center, radius, snapshot.ShipWorldPosition, route[0]);
-            for (int i = 1; i < route.Length; i++)
+            PrototypePlayerRadarBlip blip = blips[i];
+            Vector2 point = ClampRadarPoint(center, radius, snapshot.Radar, blip.WorldPosition);
+            if (blip.Kind == PrototypePlayerRadarBlipKind.SelectedNavigation)
             {
-                Vector2 next = ClampRadarPoint(center, radius, snapshot.ShipWorldPosition, route[i]);
-                DrawLine(vh, previous, next, PrototypeModuleColorPalette.Target, 1f);
-                previous = next;
+                DrawLine(vh, center, point, ColorForRadarBlip(blip.Kind), 0.9f);
             }
-        }
 
-        if (snapshot.Navigation.HasAvoidanceCue)
-        {
-            DrawBlip(vh, ClampRadarPoint(center, radius, snapshot.ShipWorldPosition, snapshot.Navigation.AvoidanceWorldPosition), PrototypeUiStyle.WarningColor);
-        }
-
-        if (snapshot.CombatTargetWorldPosition.HasValue)
-        {
-            DrawBlip(vh, ClampRadarPoint(center, radius, snapshot.ShipWorldPosition, snapshot.CombatTargetWorldPosition.Value), PrototypeModuleColorPalette.Gun);
+            DrawRadarBlip(vh, point, blip);
         }
     }
 
@@ -2906,10 +3349,135 @@ public sealed class PrototypePlayerHudRadarGraphic : MaskableGraphic
         DrawLine(vh, point + Vector2.up * 4f, point + Vector2.down * 4f, color, 2f);
     }
 
-    private static Vector2 ClampRadarPoint(Vector2 center, float radius, Vector3 origin, Vector3 target)
+    private static void DrawRadarPath(
+        VertexHelper vh,
+        Vector2 center,
+        float radius,
+        PrototypePlayerRadarSnapshot radar,
+        Vector3[] worldPoints,
+        Color color,
+        float thickness,
+        bool dashed)
     {
-        Vector3 delta = target - origin;
-        Vector2 flat = new Vector2(delta.x, delta.z) / 1000f * radius;
+        if (worldPoints == null || worldPoints.Length <= 1)
+        {
+            return;
+        }
+
+        Vector2 previous = ClampRadarPoint(center, radius, radar, worldPoints[0]);
+        for (int i = 1; i < worldPoints.Length; i++)
+        {
+            Vector2 next = ClampRadarPoint(center, radius, radar, worldPoints[i]);
+            if (!dashed || (i % 2) == 1)
+            {
+                DrawLine(vh, previous, next, color, thickness);
+            }
+
+            previous = next;
+        }
+    }
+
+    private static void DrawRadarBlip(VertexHelper vh, Vector2 point, PrototypePlayerRadarBlip blip)
+    {
+        Color color = ColorForRadarBlip(blip.Kind);
+        switch (blip.Kind)
+        {
+            case PrototypePlayerRadarBlipKind.SelectedNavigation:
+                DrawDiamondBlip(vh, point, color, 6f, 1.8f);
+                DrawBlip(vh, point, color);
+                break;
+            case PrototypePlayerRadarBlipKind.Navigation:
+                DrawDiamondBlip(vh, point, color, 4.5f, 1.2f);
+                break;
+            case PrototypePlayerRadarBlipKind.SelectedCombat:
+                DrawCombatBlip(vh, point, color, 7f);
+                break;
+            case PrototypePlayerRadarBlipKind.Combat:
+                DrawBlip(vh, point, color);
+                break;
+            case PrototypePlayerRadarBlipKind.Objective:
+                DrawDiamondBlip(vh, point, color, 5.5f, 1.6f);
+                break;
+            case PrototypePlayerRadarBlipKind.Docking:
+                DrawSquareBlip(vh, point, color, 5.5f);
+                break;
+            case PrototypePlayerRadarBlipKind.Hazard:
+                DrawHazardBlip(vh, point, color, 5f);
+                break;
+            default:
+                DrawBlip(vh, point, color);
+                break;
+        }
+    }
+
+    private static void DrawDiamondBlip(VertexHelper vh, Vector2 point, Color color, float size, float thickness)
+    {
+        DrawLine(vh, point + Vector2.up * size, point + Vector2.right * size, color, thickness);
+        DrawLine(vh, point + Vector2.right * size, point + Vector2.down * size, color, thickness);
+        DrawLine(vh, point + Vector2.down * size, point + Vector2.left * size, color, thickness);
+        DrawLine(vh, point + Vector2.left * size, point + Vector2.up * size, color, thickness);
+    }
+
+    private static void DrawSquareBlip(VertexHelper vh, Vector2 point, Color color, float size)
+    {
+        Vector2 topLeft = point + new Vector2(-size, size);
+        Vector2 topRight = point + new Vector2(size, size);
+        Vector2 bottomRight = point + new Vector2(size, -size);
+        Vector2 bottomLeft = point + new Vector2(-size, -size);
+        DrawLine(vh, topLeft, topRight, color, 1.5f);
+        DrawLine(vh, topRight, bottomRight, color, 1.5f);
+        DrawLine(vh, bottomRight, bottomLeft, color, 1.5f);
+        DrawLine(vh, bottomLeft, topLeft, color, 1.5f);
+    }
+
+    private static void DrawCombatBlip(VertexHelper vh, Vector2 point, Color color, float size)
+    {
+        DrawLine(vh, point + new Vector2(-size, -size), point + new Vector2(-size * 0.35f, -size), color, 1.8f);
+        DrawLine(vh, point + new Vector2(-size, -size), point + new Vector2(-size, -size * 0.35f), color, 1.8f);
+        DrawLine(vh, point + new Vector2(size, -size), point + new Vector2(size * 0.35f, -size), color, 1.8f);
+        DrawLine(vh, point + new Vector2(size, -size), point + new Vector2(size, -size * 0.35f), color, 1.8f);
+        DrawLine(vh, point + new Vector2(-size, size), point + new Vector2(-size * 0.35f, size), color, 1.8f);
+        DrawLine(vh, point + new Vector2(-size, size), point + new Vector2(-size, size * 0.35f), color, 1.8f);
+        DrawLine(vh, point + new Vector2(size, size), point + new Vector2(size * 0.35f, size), color, 1.8f);
+        DrawLine(vh, point + new Vector2(size, size), point + new Vector2(size, size * 0.35f), color, 1.8f);
+    }
+
+    private static void DrawHazardBlip(VertexHelper vh, Vector2 point, Color color, float size)
+    {
+        DrawLine(vh, point + Vector2.up * size, point + new Vector2(size, -size), color, 1.6f);
+        DrawLine(vh, point + new Vector2(size, -size), point + new Vector2(-size, -size), color, 1.6f);
+        DrawLine(vh, point + new Vector2(-size, -size), point + Vector2.up * size, color, 1.6f);
+    }
+
+    private static Color ColorForRadarBlip(PrototypePlayerRadarBlipKind kind)
+    {
+        switch (kind)
+        {
+            case PrototypePlayerRadarBlipKind.Combat:
+            case PrototypePlayerRadarBlipKind.SelectedCombat:
+                return PrototypeModuleColorPalette.Gun;
+            case PrototypePlayerRadarBlipKind.Objective:
+                return PrototypeUiStyle.WarningColor;
+            case PrototypePlayerRadarBlipKind.Docking:
+                return PrototypeUiStyle.ActiveColor;
+            case PrototypePlayerRadarBlipKind.Beacon:
+                return new Color(0.95f, 0.55f, 1f, 0.95f);
+            case PrototypePlayerRadarBlipKind.Gate:
+                return new Color(0.4f, 1f, 0.7f, 0.95f);
+            case PrototypePlayerRadarBlipKind.Station:
+                return new Color(0.66f, 0.72f, 0.82f, 0.95f);
+            case PrototypePlayerRadarBlipKind.Hazard:
+                return new Color(1f, 0.55f, 0.18f, 0.95f);
+            default:
+                return PrototypeModuleColorPalette.Target;
+        }
+    }
+
+    private static Vector2 ClampRadarPoint(Vector2 center, float radius, PrototypePlayerRadarSnapshot radar, Vector3 target)
+    {
+        Vector3 delta = target - radar.ShipWorldPosition;
+        float rangeMeters = Mathf.Max(1f, radar.RangeMeters);
+        Vector2 flat = new Vector2(delta.x, delta.z) / rangeMeters * radius;
         return center + Vector2.ClampMagnitude(flat, radius);
     }
 

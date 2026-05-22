@@ -122,6 +122,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private PrototypeTrajectoryPlanner trajectoryPlanner;
 
     public PrototypeWaypointAutopilotState CurrentState { get; private set; } = PrototypeWaypointAutopilotState.Idle;
+    public PrototypeWaypointManager WaypointManager => waypointManager;
     public PrototypeNavigationTarget CurrentTarget => currentTarget;
     public PrototypeWaypointAutopilotMetrics LastMetrics { get; private set; }
     public PrototypeWaypointFuelEstimate LastFuelEstimate { get; private set; }
