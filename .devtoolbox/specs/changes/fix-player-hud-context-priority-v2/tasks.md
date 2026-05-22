@@ -18,4 +18,4 @@
 - [x] Run focused dotnet/Unity validation for the modified scripts and HUD tests.
 - [x] Capture fresh Unity screenshot evidence for the player HUD context/layout.
 - [x] Document verification under this change's `tests/` folder.
-- [ ] Commit and push relevant changes without staging unrelated dirty workspace files.
+- [x] Commit and push relevant changes without staging unrelated dirty workspace files.

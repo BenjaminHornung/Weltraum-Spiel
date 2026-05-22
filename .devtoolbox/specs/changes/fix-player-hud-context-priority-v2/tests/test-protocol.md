@@ -16,6 +16,9 @@
 - Screenshot evidence:
   - `tests/screenshots/player-hud-context-priority-v2.png`: first visual check caught Objective title/body overlap.
   - `tests/screenshots/player-hud-context-priority-v2-fixed.png`: fixed visual check; Docking no longer dominates, Objective is separate, Ship Systems contains only ship state, and visible panels do not overlap.
+- Git evidence:
+  - Implementation commit: `89e810c #PLAYER-HUD-V2 fix HUD context priority`
+  - Follow-up metadata commit records the final task toggle.
 
 ## Notes
 - The workspace contained unrelated dirty/untracked Flight/RCS/recoil files before this change. They were not reverted.
