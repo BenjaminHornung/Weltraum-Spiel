@@ -14,9 +14,23 @@ using Object = UnityEngine.Object;
 public class PrototypeFlightControlMovementEvidenceTests
 {
     private const string ScenePath = "Assets/Scenes/PrototypeBootstrapHost.unity";
-    private const string ChangeName = "fix-flight-control-jitter-regression-v1";
+    private const string ChangeName = "fix-flight-control-wasd-rcs-jitter-regression-v2";
     private const int LongHoldFrames = 60;
     private const int ShortHoldFrames = 30;
+    private const float IdleHoldSeconds = 3f;
+
+    public static void RunPrototypeBootstrapHostImportedShipMovementEvidenceNowForMcp()
+    {
+        if (!Application.isPlaying)
+        {
+            throw new InvalidOperationException("Movement evidence must run while Unity is in Play Mode.");
+        }
+
+        using (EvidenceRunner runner = EvidenceRunner.Create())
+        {
+            runner.RunAll();
+        }
+    }
 
     [UnityTest]
     [Timeout(90000)]
@@ -195,6 +209,7 @@ public class PrototypeFlightControlMovementEvidenceTests
             WriteHeaders();
             WriteSetup();
 
+            RunIdleStability();
             RunTranslationTests();
             RunAttitudeTests();
             RunSasComparison();
@@ -216,7 +231,7 @@ public class PrototypeFlightControlMovementEvidenceTests
 
         private void WriteHeaders()
         {
-            csv.WriteLine("time,visualMode,controlMode,sasEnabled,rcsEnabled,hasExternalAssist,externalAssistSource,rcsTranslationCommand.x,rcsTranslationCommand.y,rcsTranslationCommand.z,rcsAttitudeCommand.x,rcsAttitudeCommand.y,rcsAttitudeCommand.z,linearVelocity.x,linearVelocity.y,linearVelocity.z,angularVelocity.x,angularVelocity.y,angularVelocity.z,lastDesiredForce.x,lastDesiredForce.y,lastDesiredForce.z,lastActualForce.x,lastActualForce.y,lastActualForce.z,lastResidualForce.x,lastResidualForce.y,lastResidualForce.z,lastDesiredTorque.x,lastDesiredTorque.y,lastDesiredTorque.z,lastActualTorque.x,lastActualTorque.y,lastActualTorque.z,lastResidualTorque.x,lastResidualTorque.y,lastResidualTorque.z,allocatorStatus,activeNozzleCount,installedNozzleCount,cameraFocusSource,cameraAnchorError,visualBoundsRefreshCount,nozzleRefreshCount");
+            csv.WriteLine("time,visualMode,controlMode,sasEnabled,rcsEnabled,hasExternalAssist,externalAssistSource,rcsTranslationCommand.x,rcsTranslationCommand.y,rcsTranslationCommand.z,rcsAttitudeCommand.x,rcsAttitudeCommand.y,rcsAttitudeCommand.z,linearVelocity.x,linearVelocity.y,linearVelocity.z,angularVelocity.x,angularVelocity.y,angularVelocity.z,desiredForce.x,desiredForce.y,desiredForce.z,actualForce.x,actualForce.y,actualForce.z,residualForce.x,residualForce.y,residualForce.z,desiredTorque.x,desiredTorque.y,desiredTorque.z,actualTorque.x,actualTorque.y,actualTorque.z,residualTorque.x,residualTorque.y,residualTorque.z,allocatorStatus,activeNozzleCount,installedNozzleCount,mainThrottle,mainThrustCommand,cameraAnchorError,visualBoundsRefreshCount,nozzleRefreshCount");
 
             protocol.WriteLine("# Unity PlayMode Movement Evidence");
             protocol.WriteLine();
@@ -225,10 +240,12 @@ public class PrototypeFlightControlMovementEvidenceTests
             protocol.WriteLine("- Unity: " + Application.unityVersion);
             protocol.WriteLine("- fixedDeltaTime: " + F(fixedDeltaTime));
             protocol.WriteLine("- Evidence root: " + evidenceRoot);
-            protocol.WriteLine("- Log artifact: " + Path.Combine(evidenceRoot, "logs", "unity-playmode-movement.log"));
-            protocol.WriteLine("- CSV artifact: " + Path.Combine(evidenceRoot, "performance", "movement-diagnostics.csv"));
+            protocol.WriteLine("- Log artifact: " + Path.Combine(evidenceRoot, "logs", "unity-playmode-flight-control.log"));
+            protocol.WriteLine("- CSV artifact: " + Path.Combine(evidenceRoot, "performance", "flight-control-diagnostics.csv"));
+            protocol.WriteLine("- Screenshot artifacts: idle-sas-on.png, translation-forward.png, translation-left-right.png, normal-attitude-sas-on.png, imported-ship-translation.png");
             protocol.WriteLine("- Driver: live Unity PlayMode scene with PlayerShipController, RcsThrusterController, ShipPhysicsCore and SimpleFollowCamera.");
             protocol.WriteLine("- Input: simulated through PlayerShipController test hooks; physics is stepped in Unity PlayMode for deterministic evidence.");
+            protocol.WriteLine("- Evidence checks include HasExternalFlightAssistRequest, LastExternalFlightAssistRequest.source, LastFlightAssistRequest.source, LastFlightAssistRequest.forceWorld, LastFlightAssistRequest.torqueLocal, WeaponStabilizationActive, LastWeaponStabilizationStatus.");
             protocol.WriteLine();
         }
 
@@ -254,12 +271,34 @@ public class PrototypeFlightControlMovementEvidenceTests
 
         private void RunTranslationTests()
         {
-            RunTranslationDirection("A-Translation-W-forward", true, false, false, false, false, false, false, false, ship.transform.forward, "translation-mode-imported-ship.png");
+            switcher.SelectVisualMode(PrototypeShipVisualMode.ImportedDemoScout);
+            Mark("Translation checks use imported/default visual", switcher.SelectedVisualMode == PrototypeShipVisualMode.ImportedDemoScout, "visual=" + switcher.SelectedVisualMode);
+
+            RunTranslationDirection("A-Translation-W-forward", true, false, false, false, false, false, false, false, ship.transform.forward, "translation-forward.png");
             RunTranslationDirection("A-Translation-S-back", false, true, false, false, false, false, false, false, -ship.transform.forward, null);
-            RunTranslationDirection("A-Translation-A-left", false, false, true, false, false, false, false, false, -ship.transform.right, null);
+            RunTranslationDirection("A-Translation-A-left", false, false, true, false, false, false, false, false, -ship.transform.right, "translation-left-right.png");
             RunTranslationDirection("A-Translation-D-right", false, false, false, true, false, false, false, false, ship.transform.right, null);
             RunTranslationDirection("A-Translation-H-up", false, false, false, false, false, false, true, false, ship.transform.up, null);
             RunTranslationDirection("A-Translation-N-down", false, false, false, false, false, false, false, true, -ship.transform.up, null);
+            switcher.SelectVisualMode(PrototypeShipVisualMode.ImportedDemoScout);
+            CaptureScreenshot("imported-ship-translation.png");
+        }
+
+        private void RunIdleStability()
+        {
+            ResetFlight(true, FlightControlMode.Translation);
+            int holdFrames = Mathf.Max(1, Mathf.CeilToInt(IdleHoldSeconds / fixedDeltaTime));
+            RunInput("A-idle-stability", false, false, false, false, false, false, false, false, false, false, holdFrames);
+
+            Mark("Idle linear velocity near-zero", rigidbody.linearVelocity.magnitude < 0.05f, "linear=" + F(rigidbody.linearVelocity.magnitude));
+            Mark("Idle angular velocity near-zero", rigidbody.angularVelocity.magnitude < 0.05f, "angular=" + F(rigidbody.angularVelocity.magnitude));
+            Mark("Idle RCS desired force bounded", controller.LastRcsDesiredForceWorld.magnitude < 10f, "desiredForce=" + F(controller.LastRcsDesiredForceWorld.magnitude));
+            Mark("Idle RCS actual force bounded", controller.LastRcsActualForceWorld.magnitude < 10f, "actualForce=" + F(controller.LastRcsActualForceWorld.magnitude));
+            Mark("Idle RCS residual force bounded", controller.LastRcsResidualForceWorld.magnitude < 10f, "residualForce=" + F(controller.LastRcsResidualForceWorld.magnitude));
+            Mark("Idle RCS actual torque bounded", controller.LastRcsActualTorqueWorld.magnitude < 2f, "actualTorque=" + F(controller.LastRcsActualTorqueWorld.magnitude));
+            Mark("Idle RCS residual torque bounded", controller.LastRcsResidualTorqueWorld.magnitude < 2f, "residualTorque=" + F(controller.LastRcsResidualTorqueWorld.magnitude));
+            Mark("Idle camera anchor error bounded", followCamera.AnchorError < 0.5f, "anchorError=" + F(followCamera.AnchorError));
+            CaptureScreenshot("idle-sas-on.png");
         }
 
         private void RunTranslationDirection(
@@ -348,7 +387,6 @@ public class PrototypeFlightControlMovementEvidenceTests
 
             Mark("D-main-thruster accelerates forward", Vector3.Dot(rigidbody.linearVelocity, ship.transform.forward) > 0.5f, "velocity=" + rigidbody.linearVelocity);
             Mark("D-main-thruster no unexpected spin", rigidbody.angularVelocity.magnitude < 5f, "angularVelocity=" + F(rigidbody.angularVelocity.magnitude));
-            CaptureScreenshot("main-thrust-imported-ship.png");
         }
 
         private void RunVisualSwitchTest()
@@ -375,7 +413,6 @@ public class PrototypeFlightControlMovementEvidenceTests
             Mark("E-F6 keeps RCS", ship.GetComponent<RcsThrusterController>() != null, "rcs=" + (ship.GetComponent<RcsThrusterController>() != null));
             Mark("E-F6 keeps Camera binding", Camera.main != null && Camera.main.GetComponent<SimpleFollowCamera>() != null, "camera=" + (Camera.main != null));
             Mark("E-F6 no stale external assist", !controller.HasExternalFlightAssistRequest, "source=" + ExternalSource());
-            CaptureScreenshot("f6-switch-after-movement.png");
         }
 
         private void RunExternalAssistPriorityTest()
@@ -473,7 +510,8 @@ public class PrototypeFlightControlMovementEvidenceTests
                 + controller.LastRcsAllocatorStatus + ","
                 + controller.ActiveRcsNozzleCount + ","
                 + controller.InstalledRcsNozzleCount + ","
-                + followCamera.CameraFocusSource + ","
+                + F(controller.MainThrottle) + ","
+                + F(controller.MainThrustCommand) + ","
                 + F(followCamera.AnchorError) + ","
                 + followCamera.VisualBoundsRefreshCount + ","
                 + rcs.NozzleRefreshCount);
@@ -496,6 +534,13 @@ public class PrototypeFlightControlMovementEvidenceTests
                 + " desiredT=" + controller.LastRcsDesiredTorqueWorld
                 + " actualT=" + controller.LastRcsActualTorqueWorld
                 + " residualT=" + controller.LastRcsResidualTorqueWorld
+                + " hasExt=" + controller.HasExternalFlightAssistRequest
+                + " lastExternalSource=" + source
+                + " lastFlightAssistSource=" + controller.LastFlightAssistRequest.source
+                + " lastFlightAssistForce=" + controller.LastFlightAssistRequest.forceWorld
+                + " lastFlightAssistTorque=" + controller.LastFlightAssistRequest.torqueLocal
+                + " weaponStabActive=" + controller.WeaponStabilizationActive
+                + " weaponStabStatus=" + controller.LastWeaponStabilizationStatus
                 + " status=" + controller.LastRcsAllocatorStatus
                 + " nozzles=" + controller.ActiveRcsNozzleCount + "/" + controller.InstalledRcsNozzleCount
                 + " camera=" + followCamera.CameraFocusSource
@@ -555,22 +600,29 @@ public class PrototypeFlightControlMovementEvidenceTests
             protocol.WriteLine("## Summary");
             protocol.WriteLine("- Final visual mode: " + switcher.SelectedVisualMode);
             protocol.WriteLine("- Final allocator status: " + controller.LastRcsAllocatorStatus);
-            protocol.WriteLine("- Allocator status note: com-translation-fallback is expected for imported visual translation; translation is applied at center of mass to avoid imported socket torque coupling, while torque requests remain allocator-driven.");
+            protocol.WriteLine("- Allocator status note: stable-prototype is expected for default live flight; translation is applied at center of mass and attitude/SAS torque is applied directly through ShipPhysicsCore.");
             protocol.WriteLine("- Final active/installed nozzles: " + controller.ActiveRcsNozzleCount + "/" + controller.InstalledRcsNozzleCount);
             protocol.WriteLine("- Nozzle count note: 4 active of 20 is expected for a one-axis RCS sample; installed count must remain stable at 20.");
             protocol.WriteLine("- Movement tolerances: translation velocityDot > 0.25, forceDot > 1000, residual force ratio < 0.1, pure-attitude residual torque < 25, pure-attitude linear force < 50.");
             protocol.WriteLine("- Final camera focus source: " + followCamera.CameraFocusSource);
             protocol.WriteLine("- Visual bounds refresh count: " + followCamera.VisualBoundsRefreshCount);
             protocol.WriteLine("- RCS nozzle refresh count: " + rcs.NozzleRefreshCount);
+            protocol.WriteLine("- HasExternalFlightAssistRequest: " + controller.HasExternalFlightAssistRequest);
+            protocol.WriteLine("- LastExternalFlightAssistRequest.source: " + ExternalSource());
+            protocol.WriteLine("- LastFlightAssistRequest.source: " + controller.LastFlightAssistRequest.source);
+            protocol.WriteLine("- LastFlightAssistRequest.forceWorld: " + controller.LastFlightAssistRequest.forceWorld);
+            protocol.WriteLine("- LastFlightAssistRequest.torqueLocal: " + controller.LastFlightAssistRequest.torqueLocal);
+            protocol.WriteLine("- WeaponStabilizationActive: " + controller.WeaponStabilizationActive);
+            protocol.WriteLine("- LastWeaponStabilizationStatus: " + controller.LastWeaponStabilizationStatus);
             protocol.WriteLine("- Final verdict: " + (passed ? "PASS" : "FAIL"));
         }
 
         private void WriteEvidenceArtifacts()
         {
-            string logPath = Path.Combine(evidenceRoot, "logs", "unity-playmode-movement.log");
-            string csvPath = Path.Combine(evidenceRoot, "performance", "movement-diagnostics.csv");
-            string mirrorLogPath = Path.Combine(mirrorRoot, "logs", "unity-playmode-movement.log");
-            string mirrorCsvPath = Path.Combine(mirrorRoot, "performance", "movement-diagnostics.csv");
+            string logPath = Path.Combine(evidenceRoot, "logs", "unity-playmode-flight-control.log");
+            string csvPath = Path.Combine(evidenceRoot, "performance", "flight-control-diagnostics.csv");
+            string mirrorLogPath = Path.Combine(mirrorRoot, "logs", "unity-playmode-flight-control.log");
+            string mirrorCsvPath = Path.Combine(mirrorRoot, "performance", "flight-control-diagnostics.csv");
 
             File.WriteAllText(logPath, log.ToString());
             File.WriteAllText(csvPath, csv.ToString());

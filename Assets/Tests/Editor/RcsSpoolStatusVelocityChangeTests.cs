@@ -29,6 +29,7 @@ public class RcsSpoolStatusVelocityChangeTests
     {
         using (PhysicsValidationProbe.GeneratedShipFixture fixture = PhysicsValidationProbe.CreateGeneratedShip())
         {
+            fixture.Rcs.SetSolverMode(RcsSolverMode.ExperimentalPhysicalNozzles);
             SetPrivateFloat(fixture.Rcs, "nozzleSpoolUpRate", 0f);
             SetPrivateFloat(fixture.Rcs, "nozzleSpoolDownRate", 2f);
 
@@ -74,6 +75,7 @@ public class RcsSpoolStatusVelocityChangeTests
     {
         using (PhysicsValidationProbe.GeneratedShipFixture fixture = PhysicsValidationProbe.CreateGeneratedShip())
         {
+            fixture.Rcs.SetSolverMode(RcsSolverMode.ExperimentalPhysicalNozzles);
             SetPrivateFloat(fixture.Rcs, "translationForce", 9000f);
             RcsThrusterBlock[] blocks = fixture.Ship.GetComponentsInChildren<RcsThrusterBlock>();
             for (int i = 0; i < blocks.Length; i++)

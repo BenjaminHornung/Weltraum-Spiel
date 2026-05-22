@@ -169,6 +169,10 @@ public class PlayerShipController : MonoBehaviour
     private float pendingDebugMainThrottlePulse;
     private PrototypeMomentumAssist momentumAssist;
     private PrototypeWaypointAutopilot waypointAutopilot;
+    private const float MassPropertiesRefreshInterval = 0.25f;
+    private const float MassPropertiesFuelDeltaThreshold = 0.25f;
+    private float nextMassPropertiesRefreshTime;
+    private float lastMassPropertiesFuelKg = -1f;
     public float MainThrottle => mainThrottle;
     public float MainThrottlePercent => mainThrottle * 100f;
     public float MainThrustCommand { get; private set; }
@@ -340,6 +344,12 @@ public class PlayerShipController : MonoBehaviour
         ResolveReferences();
         ConfigureRigidbody();
         ApplyRcsEnabledState();
+        RefreshMassProperties(force: true);
+    }
+
+    private void Start()
+    {
+        RefreshMassProperties(force: true);
     }
 
     private void ResolveReferences()
@@ -416,6 +426,27 @@ public class PlayerShipController : MonoBehaviour
         shipRigidbody.interpolation = RigidbodyInterpolation.Interpolate;
     }
 
+    private void RefreshMassProperties(bool force)
+    {
+        if (shipRigidbody == null || shipStats == null)
+        {
+            return;
+        }
+
+        bool timeExpired = Time.time >= nextMassPropertiesRefreshTime;
+        bool significantFuelDelta = lastMassPropertiesFuelKg < 0f
+            || Mathf.Abs(shipStats.CurrentFuelKg - lastMassPropertiesFuelKg) >= MassPropertiesFuelDeltaThreshold;
+
+        if (!force && !timeExpired && !significantFuelDelta)
+        {
+            return;
+        }
+
+        shipStats.ApplyMassProperties(shipRigidbody);
+        lastMassPropertiesFuelKg = shipStats.CurrentFuelKg;
+        nextMassPropertiesRefreshTime = Time.time + MassPropertiesRefreshInterval;
+    }
+
     private void Update()
     {
         if (shipRigidbody == null || shipStats == null || gunModule == null || engineVfx == null || mainThruster == null || rcsThrusters == null)
@@ -457,7 +488,7 @@ public class PlayerShipController : MonoBehaviour
             }
         }
 
-        shipStats.ApplyMassProperties(shipRigidbody);
+        RefreshMassProperties(force: false);
 
         if (physicsCore != null)
         {
@@ -520,7 +551,6 @@ public class PlayerShipController : MonoBehaviour
         if (mainThruster != null)
         {
             appliedThrust = mainThruster.Fire(MainThrustCommand, GimbalYawCommand, gimbalPitchCommand, Time.fixedDeltaTime);
-            shipStats.ApplyMassProperties(shipRigidbody);
         }
 
         float forwardSpeed = Vector3.Dot(shipRigidbody.linearVelocity, transform.forward);
@@ -690,7 +720,7 @@ public class PlayerShipController : MonoBehaviour
 
         if (debugRefuel)
         {
-            shipStats.RefillFuelFull();
+            RefuelFull();
         }
     }
 
@@ -1129,6 +1159,7 @@ public class PlayerShipController : MonoBehaviour
         if (shipStats != null)
         {
             shipStats.RefillFuelFull();
+            RefreshMassProperties(force: true);
         }
     }
 
@@ -1187,6 +1218,8 @@ public class PlayerShipController : MonoBehaviour
         {
             followCamera.SnapNextFrame();
         }
+
+        RefreshMassProperties(force: true);
     }
 
     public void ResetStartupFlightControls(Vector3 position, Quaternion rotation)

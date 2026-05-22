@@ -1,14 +1,23 @@
 # Player-Facing UI Concept v0
 
 **Zielpfad im Repository:** `.devtoolbox/specs/drafts/player-facing-ui-concept-v0.md`  
-**Status:** Draft / Konzept, keine Implementierung, keine Task-Toggles  
-**Basis:** GitHub-Repository `BenjaminHornung/Weltraum-Spiel`, Branch `main`, gelesen über die verfügbare GitHub-Anbindung. DevToolbox- und Unity-MCP-Tools waren in dieser Umgebung nicht als ausführbare Workspace-Tools verfügbar; deshalb wurde diese Datei lokal als Draft-Artefakt erstellt und nicht in das Remote-Repository geschrieben oder validiert.
+**Status:** Konzept mit umgesetztem Player-HUD-v0-Checkpoint
+**Basis:** Lokaler Unity-Workspace `E:\Unity\Weltraum Spiel\Weltraum Spiel`, Branch `main`, mit Unity-MCP- und EditMode-Abgleich validiert.
 
 ## Executive Summary
 
 Das aktuelle Projekt hat bereits eine ungewöhnlich gute Grundlage für ein späteres echtes Player-HUD: Viele spielrelevante Informationen sind nicht nur als Debug-Text vorhanden, sondern liegen bereits in ViewModel-/Snapshot-ähnlichen Strukturen, Controller-Diagnosen und klaren Gameplay-Komponenten vor. Besonders wiederverwendbar sind `PrototypeUiViewModels.cs`, `PlayerShipController.FlightControlDiagnostics`, `PrototypeWaypointAutopilot`, `PrototypeMomentumAssist`, `DockingPort`, `PrototypeWeaponComputer` und `ShipStats`.
 
-Die vorhandene UI ist aber noch keine finale Spieler-UI. Sie ist überwiegend IMGUI, draggable, testfreundlich und für Prototyp-Diagnose gedacht. Die README beschreibt `PrototypeFlightHud`, `PrototypeDebugOverlay`, `PrototypeFlightDebugConsole`, `PrototypeKeybindOverlay` und `PrototypeMinimapOverlay` ausdrücklich als temporäre IMGUI-Prototypflächen und nicht als finale HUD-Art. Das UI-Konzept sollte deshalb nicht „mehr IMGUI hübscher machen“, sondern die vorhandenen Daten in eine klar getrennte Player-UI-Architektur überführen.
+Die vorhandene UI ist noch keine finale Spieler-UI, aber der erste spielbare Player-HUD-Checkpoint ist umgesetzt: `PrototypePlayerHudRenderer` rendert die normale Basic-Ansicht als uGUI-HUD mit Flugstatus, Warn-/Assist-Chips, Radar, Kontextpanel, Kill-Momentum-Button und F1-Player-Hilfe. Die alten IMGUI-Flächen `PrototypeFlightHud`, `PrototypeDebugOverlay`, `PrototypeFlightDebugConsole`, `PrototypeKeybindOverlay` und `PrototypeMinimapOverlay` bleiben bewusst als Developer-/Prototype-Layer erhalten und sind nicht die Default-Player-View.
+
+Aktueller Checkpoint:
+
+- Basic/Player View: F1 öffnet nur die Player-Hilfe.
+- Debug/Prototype Presets: F1 kann weiterhin das alte Keybind-Overlay steuern.
+- Radar: im Player-HUD nur einmal über das uGUI-`RadarPanel`; kein zweiter IMGUI-Radarpfad im Player-HUD.
+- Layout: HUD-Panels werden bei 16:9, 4:3, Ultrawide und Hochformat rechnerisch gegen Überlappung geprüft.
+- Kill Momentum: Button aktiviert Idle/Complete/Aborted, bricht während Active ab und ist bei NoAuthority/FuelInsufficient deaktiviert.
+- EventSystem: bestehende EventSystems bekommen ein kompatibles `InputSystemUIInputModule`, statt ein zweites Eingabesystem daneben zu erzeugen.
 
 Der zentrale Vorschlag lautet:
 
@@ -107,7 +116,7 @@ Quelle: `PrototypeFlightDebugConsole` zeigt Debug Actions, UI Presets, Calibrati
 
 #### `Assets/Scripts/Prototype/PrototypeKeybindOverlay.cs` und `PrototypeInputBindingCatalog.cs`
 
-Das Keybind Overlay ist prototype-facing, aber näher an echter Player-UI als DebugOverlay/Console. Der InputBindingCatalog bildet bereits Common Sections und die drei Flight-Modes Cruise/Precision/Translation ab. Für ein echtes Spiel braucht daraus ein Pause-/Settings-/Help-System, aber v0 kann die Inhalte weiterverwenden.
+Das alte Keybind Overlay ist prototype-facing und bleibt Developer-Layer. Der InputBindingCatalog bildet bereits Common Sections und die drei Flight-Modes Cruise/Precision/Translation ab. Für Basic/Player View wird daraus eine gefilterte Player-Hilfe im uGUI-HUD gebaut: keine Debug Console, kein F6-Visual-Cycle, kein Refuel/Reset und keine DES/ACT/RES-Diagnose.
 
 Wiederverwendbar:
 
@@ -124,9 +133,11 @@ Ausbauen:
 
 Quelle: `PrototypeInputBindingCatalog` trennt Common Controls, mode-spezifische Cruise/Precision/Translation-Bindings und Debug-only Einträge; `PrototypeKeybindOverlay` rendert daraus eine scrollbare Hilfe. fileciteturn12file0 fileciteturn68file0
 
+Checkpoint-Hinweis: `PrototypePlayerHudSnapshotBuilder.BuildPlayerHelpText(...)` erzeugt die Basic-Player-Hilfe aus denselben Bindings, filtert aber Debug-/Prototype-Zeilen heraus. `PrototypeKeybindOverlay` bleibt die scrollbare Debug-Hilfe.
+
 #### `Assets/Scripts/Prototype/PrototypeMinimapOverlay.cs`
 
-Die Minimap ist ein guter v0-Radar-/Situational-Awareness-Prototyp. Sie zeichnet ship-zentrierte XZ-Darstellung, Range Rings, Ship Heading, Velocity Vector, Targets, Beacons, Gates, Station, Obstacles und Autopilot-Route inkl. Avoidance/Predicted Route. Die vielen Filter und Labels sind prototype/debug-lastig, aber die Kernidee ist spielbar.
+Die Minimap ist ein guter v0-Radar-/Situational-Awareness-Prototyp. In der aktuellen Player View wird diese Kernidee aber nur einmal im uGUI-`RadarPanel` gezeigt: ship-zentrierte XZ-Darstellung, Range Rings, Heading/Velocity, Targets, Station/Beacons/Gates/Obstacles und Autopilot-Route inkl. Avoidance/Predicted Route. Die alte IMGUI-Minimap bleibt Diagnosefläche, damit sich im normalen Spielbild keine zwei Radare überdecken.
 
 Wiederverwendbar:
 
@@ -138,7 +149,7 @@ Wiederverwendbar:
 
 Nicht final übernehmen:
 
-- draggable IMGUI window.
+- zweiter gleichzeitiger Player-Radar über das draggable IMGUI window.
 - sichtbare Debug-Filter als Default.
 - zu viele Weltlabels.
 - direkte Plan-/Obstacle-Debugwerte im normalen Radar.
@@ -168,7 +179,7 @@ Quelle: `PrototypeWeaponComputerPanel` rendert Auto Fire, Priority, Target List,
 
 #### `Assets/Scripts/Prototype/PrototypeUiLayoutManager.cs` und `PrototypeUiStyle.cs`
 
-`PrototypeUiLayoutManager` ist eine gute Test- und Übergangsschicht, aber nicht finaler UI-Stack. Es verwaltet Window States, Presets und F1/F2/F3/F4/F5/F7-Toggles. Es zeigt, welche Ebenen bereits getrennt sind: Keybinds, Diagnostics, Console, HUD/Navball, Minimap, Weapon Computer. `PrototypeUiStyle` ist eine einfache IMGUI-Palette.
+`PrototypeUiLayoutManager` ist eine gute Test- und Übergangsschicht, aber nicht finaler UI-Stack. Es verwaltet Window States, Presets und F1/F2/F3/F4/F5/F7-Toggles. Basic reserviert F1 für die Player-HUD-Hilfe; FlightTest/RcsTest/FullDiagnostics dürfen F1 weiter an das Debug-Keybind-Overlay routen. Es zeigt, welche Ebenen bereits getrennt sind: Player HUD, Keybinds, Diagnostics, Console, HUD/Navball, Minimap, Weapon Computer. `PrototypeUiStyle` ist eine einfache IMGUI-Palette.
 
 Wiederverwendbar als Konzept:
 
@@ -498,11 +509,12 @@ Die Tests unterstützen die spätere Player-UI-Architektur: `PrototypeUiArchitec
 - `PrototypeInputBindingCatalog`.
 - `PrototypeKeybindViewModelBuilder`.
 - `PrototypeKeybindOverlay`.
+- `PrototypePlayerHudSnapshotBuilder.BuildPlayerHelpText(...)`.
 
 **v0 Umfang:**
 
-- player help overlay derived from InputBindingCatalog.
-- Debug-only keybinds klar getrennt.
+- player help overlay derived from InputBindingCatalog and rendered in the uGUI Player HUD.
+- Debug-only keybinds klar getrennt; F6, Debug Console, Refuel/Reset und DES/ACT/RES erscheinen nicht in Basic-Player-Hilfe.
 - current mode explanations.
 
 **Spätere Erweiterungen:**
@@ -514,7 +526,7 @@ Die Tests unterstützen die spätere Player-UI-Architektur: `PrototypeUiArchitec
 
 **Nicht anzeigen:**
 
-- Debug-only controls in player help unless in Dev Mode.
+- Debug-only controls in Basic player help.
 
 ---
 
@@ -535,6 +547,7 @@ Die Tests unterstützen die spätere Player-UI-Architektur: `PrototypeUiArchitec
 - Warnings: LOW FUEL, NO RCS, AUTOPILOT ABORTED, NO AUTHORITY, OBSTACLE, DOCKING TOO FAST, OUT OF ARC.
 - Active assist: Autopilot, Momentum Assist, Docking Soft Capture, AutoFire.
 - Use one primary warning and up to two chips; overflow goes into status panel.
+- Do not echo the same assist label in the top strip and assist chips when no warnings are active.
 
 **Bottom center / Flight Status Bar**
 
@@ -563,11 +576,13 @@ Die Tests unterstützen die spätere Player-UI-Architektur: `PrototypeUiArchitec
 
 - compact ship-centered radar.
 - range rings and essential target/route icons.
+- one player radar only; legacy IMGUI minimap/radar stays developer/prototype-only unless explicitly enabled.
 - expanded map is not v0.
 
 **Pause / Help Layer**
 
-- keybind overlay from catalog.
+- F1 player help from catalog in Basic.
+- legacy keybind overlay from catalog only in prototype/debug presets.
 - settings/remap deferred.
 
 ### 4.2 Pflichtanzeigen
@@ -630,12 +645,12 @@ Use current action basis, not direct DebugConsole coupling:
 
 - `G`: Autopilot toggle.
 - `Tab` / `B`: next/previous nav target.
-- HUD button: Kill Momentum → `PrototypeMomentumAssist.ActivateFromUi()`.
+- HUD button: Kill Momentum → `PrototypeMomentumAssist.ActivateFromUi()` when idle/complete/aborted; aborts with `PrototypeMomentumAssist.Abort("button")` while active; disabled for no authority or no fuel.
 - `Caps Lock`: cycle Cruise/Precision/Translation.
 - `T`: SAS.
 - `R`: RCS.
 - `Space`: fire.
-- F1 help; F2/F3/F7 remain dev/prototype layers, not player default.
+- F1 player help in Basic; F2/F3/F7 remain dev/prototype layers, not player default.
 
 Controller support should be designed as actions first. Current code has keyboard-centric InputSystem polling; controller mappings should not be claimed as verified until implemented/tested.
 
@@ -1328,12 +1343,12 @@ These are next Spec proposals, not completed tasks.
 
 ---
 
-## Draft-Ablage / Validierungsstatus
+## Validierungsstatus
 
-Dieser Draft wurde lokal erstellt und ist dafür gedacht, im Repository unter folgendem Pfad abgelegt zu werden:
+Dieses Dokument beschreibt weiterhin die Zielarchitektur, aber der Player-HUD-v0-Checkpoint ist im Repository umgesetzt. Die aktuelle Abnahme bezieht sich auf `PrototypePlayerHudRenderer`, `PrototypePlayerHudSnapshotBuilder`, `PrototypeUiLayoutManager` und die zugehörigen EditMode-/MCP-Prüfungen:
 
-```text
-.devtoolbox/specs/drafts/player-facing-ui-concept-v0.md
-```
-
-In dieser Umgebung waren keine DevToolbox-Workspace-Tools und keine Unity-MCP-Instanz über die verfügbare Toolliste erreichbar. Deshalb wurden weder `specs_validate` noch Unity-Scene-/PlayMode-Inspection ausgeführt. Es wurden keine Implementierungen gestartet, keine bestehenden Debug-Features geändert oder gelöscht und keine Tasks als erledigt markiert.
+- Basic default: Player-HUD sichtbar, alte Debug-/Prototype-Fenster getrennt.
+- F1-Konflikt: Player-Hilfe in Basic, altes Keybind-Overlay nur in Debug-/Prototype-Presets.
+- Radar: ein uGUI-Player-Radar, kein zweiter IMGUI-Radarpfad im Player-HUD.
+- Layout: Panel-Überlappungen werden für 16:9, 4:3, Ultrawide und Hochformat geprüft.
+- Kill Momentum, Warn-/Assist-Chips und EventSystem-Kompatibilität sind durch fokussierte Tests abgesichert.

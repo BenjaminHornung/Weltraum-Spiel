@@ -95,7 +95,7 @@ public class PrototypeKeybindOverlay : MonoBehaviour
             windowState.Collapsed = !windowState.Collapsed;
         }
 
-        GUILayout.Label("F1 hides this help", labelStyle);
+        GUILayout.Label("F1 hides this debug help", labelStyle);
         GUILayout.EndHorizontal();
 
         if (!windowState.Collapsed)

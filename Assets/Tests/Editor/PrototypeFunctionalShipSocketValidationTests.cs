@@ -1,5 +1,7 @@
 #if UNITY_EDITOR
+using System.IO;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -159,6 +161,72 @@ public class PrototypeFunctionalShipSocketValidationTests
     }
 
     [Test]
+    public void HardpointBinderReportsImportedHardpointsIdempotently()
+    {
+        GameObject source = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.fbx");
+        Assert.NotNull(source);
+
+        GameObject instance = Object.Instantiate(source);
+        instance.name = "FunctionalSocketImportedTestRoot";
+        var importedBinder = instance.AddComponent<PrototypeImportedShipBinder>();
+
+        PrototypeImportedShipBinder.BindReport first = importedBinder.BindNow();
+        PrototypeImportedShipBinder.BindReport second = importedBinder.BindNow();
+        PrototypeShipHardpoint[] hardpoints = instance.GetComponentsInChildren<PrototypeShipHardpoint>(true);
+
+        Assert.That(first.foundHardpoints, Is.GreaterThan(0));
+        Assert.That(first.boundHardpoints, Is.GreaterThan(0));
+        Assert.That(first.createdHardpointBindings, Is.EqualTo(first.boundHardpoints));
+        Assert.That(second.boundHardpoints, Is.EqualTo(first.boundHardpoints));
+        Assert.That(second.createdHardpointBindings, Is.EqualTo(0));
+        Assert.That(hardpoints.Length, Is.EqualTo(first.boundHardpoints));
+        Assert.True(AllHardpointsHaveStableIds(hardpoints));
+
+        Object.DestroyImmediate(instance);
+    }
+
+    [Test]
+    public void GeneratedFallbackCreatesBoundHardpointsWithoutDisablingFallback()
+    {
+        GameObject host = new GameObject("PrototypeBootstrapTestHost");
+        PrototypeBootstrap bootstrap = host.AddComponent<PrototypeBootstrap>();
+        SetPrivateField(bootstrap, "spawnTestTarget", false);
+        SetPrivateField(bootstrap, "buildTestEnvironment", false);
+        SetPrivateField(bootstrap, "buildOnStart", false);
+        bootstrap.SetBuildMode(PrototypeShipBuildMode.GeneratedPrimitiveFallback, false);
+
+        bootstrap.BuildPrototype(PrototypeShipVariant.Baseline());
+
+        GameObject ship = GameObject.Find("PrototypeShip");
+        Assert.NotNull(ship);
+        Assert.That(bootstrap.BuildMode, Is.EqualTo(PrototypeShipBuildMode.GeneratedPrimitiveFallback));
+        Assert.NotNull(ship.transform.Find(PrototypeShipHardpointBinder.GeneratedHardpointRigName));
+
+        PrototypeShipHardpointBinder binder = ship.GetComponent<PrototypeShipHardpointBinder>();
+        Assert.NotNull(binder);
+        Assert.NotNull(binder.LastReport);
+        Assert.That(binder.LastReport.boundHardpoints, Is.GreaterThanOrEqualTo(6));
+        int firstCount = ship.GetComponentsInChildren<PrototypeShipHardpoint>(true).Length;
+
+        PrototypeShipHardpointBinder.BindReport second = binder.BindNow();
+        int secondCount = ship.GetComponentsInChildren<PrototypeShipHardpoint>(true).Length;
+
+        Assert.That(second.createdHardpointBindings, Is.EqualTo(0));
+        Assert.That(secondCount, Is.EqualTo(firstCount));
+        Assert.NotNull(ship.transform.Find("RCS_Top"));
+        Assert.False(ship.GetComponent<RcsThrusterController>().UseImportedFunctionalSockets);
+        Assert.True(ship.GetComponent<EngineVfxController>().AllowFallbackNozzle);
+    }
+
+    [Test]
+    public void HardpointBinderDoesNotHardcodeDemoShipHierarchyPaths()
+    {
+        string source = File.ReadAllText(Path.Combine(Application.dataPath, "Scripts", "Prototype", "PrototypeShipHardpointBinder.cs"));
+
+        Assert.False(Regex.IsMatch(source, "demo_scout|demo_cargo|ImportedDemo|DEMO_Scout|DEMO_Cargo"));
+    }
+
+    [Test]
     public void FunctionalBinderUsesImportedDemoScoutAsRuntimeRootWithoutFallbacks()
     {
         AssetDatabase.ImportAsset("Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.fbx", ImportAssetOptions.ForceUpdate);
@@ -177,6 +245,8 @@ public class PrototypeFunctionalShipSocketValidationTests
         Assert.That(report.boundMainThrusters, Is.GreaterThanOrEqualTo(1));
         Assert.That(report.boundRcsNozzles, Is.GreaterThanOrEqualTo(8));
         Assert.That(report.boundTurretWeapons, Is.GreaterThanOrEqualTo(1));
+        Assert.That(report.unsafeFunctionalSocketScaleCount, Is.EqualTo(0), report.firstUnsafeFunctionalSocketName);
+        Assert.That(report.bestMainNozzleForwardDot, Is.GreaterThanOrEqualTo(0.9f), report.bestMainNozzleForwardName);
 
         EngineVfxController engine = root.GetComponent<EngineVfxController>();
         RcsThrusterController rcs = root.GetComponent<RcsThrusterController>();
@@ -186,6 +256,8 @@ public class PrototypeFunctionalShipSocketValidationTests
         Assert.NotNull(engine);
         Assert.NotNull(engine.Nozzle);
         Assert.That(engine.Nozzle.name, Does.Contain("THRUST_NOZZLE_MAIN"));
+        AssertSafeFunctionalSocketScale(engine.Nozzle);
+        Assert.That(Vector3.Dot(engine.Nozzle.forward, root.transform.forward), Is.GreaterThanOrEqualTo(0.9f));
         Assert.False(engine.AllowFallbackNozzle);
         Assert.NotNull(rcs);
         Assert.True(rcs.UseImportedFunctionalSockets);
@@ -193,6 +265,7 @@ public class PrototypeFunctionalShipSocketValidationTests
         Assert.False(gun.AllowMuzzleFallback);
         Assert.NotNull(gun.MuzzleTransform);
         Assert.That(gun.MuzzleTransform.name, Does.StartWith(PrototypeShipSocketUtility.WeaponMuzzlePrefix));
+        AssertSafeFunctionalSocketScale(gun.MuzzleTransform);
         Assert.NotNull(weapon);
         Assert.AreSame(gun.MuzzleTransform, weapon.Muzzle);
         Assert.Null(root.transform.Find("Muzzle"));
@@ -225,11 +298,14 @@ public class PrototypeFunctionalShipSocketValidationTests
 
         Assert.NotNull(engine);
         Assert.That(engine.Nozzle.name, Does.Contain("THRUST_NOZZLE_MAIN"));
+        AssertSafeFunctionalSocketScale(engine.Nozzle);
+        Assert.That(Vector3.Dot(engine.Nozzle.forward, ship.transform.forward), Is.GreaterThanOrEqualTo(0.9f));
         Assert.NotNull(rcs);
         Assert.True(rcs.UseImportedFunctionalSockets);
         Assert.That(rcs.InstalledNozzleCount, Is.GreaterThanOrEqualTo(8));
         Assert.NotNull(gun);
         Assert.That(gun.MuzzleTransform.name, Does.StartWith(PrototypeShipSocketUtility.WeaponMuzzlePrefix));
+        AssertSafeFunctionalSocketScale(gun.MuzzleTransform);
         Assert.NotNull(weapon);
         Assert.NotNull(weapon.Mount);
         Assert.NotNull(weapon.Mount.YawPivot);
@@ -241,6 +317,15 @@ public class PrototypeFunctionalShipSocketValidationTests
         Assert.NotNull(yawMesh);
         Assert.True(barrel.IsChildOf(weapon.Mount.PitchPivot), barrel.parent != null ? barrel.parent.name : "no parent");
         Assert.True(yawMesh.IsChildOf(weapon.Mount.YawPivot), yawMesh.parent != null ? yawMesh.parent.name : "no parent");
+    }
+
+    private static void AssertSafeFunctionalSocketScale(Transform socket)
+    {
+        Assert.NotNull(socket);
+        Vector3 scale = socket.lossyScale;
+        Assert.That(scale.x, Is.EqualTo(1f).Within(0.02f), socket.name);
+        Assert.That(scale.y, Is.EqualTo(1f).Within(0.02f), socket.name);
+        Assert.That(scale.z, Is.EqualTo(1f).Within(0.02f), socket.name);
     }
 
     private static void AssertImportedShipBinds(string assetPath, bool requiresMuzzle)
@@ -310,6 +395,19 @@ public class PrototypeFunctionalShipSocketValidationTests
         }
 
         return null;
+    }
+
+    private static bool AllHardpointsHaveStableIds(PrototypeShipHardpoint[] hardpoints)
+    {
+        for (int i = 0; i < hardpoints.Length; i++)
+        {
+            if (hardpoints[i] == null || string.IsNullOrWhiteSpace(hardpoints[i].HardpointId))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private static void SetPrivateField(object target, string fieldName, object value)

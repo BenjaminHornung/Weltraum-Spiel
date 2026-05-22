@@ -121,7 +121,7 @@ public static class PrototypeUiLayoutManager
 
         hotkeyFrame = Time.frameCount;
 
-        if (keyboard.f1Key.wasPressedThisFrame && keybinds != null)
+        if (keyboard.f1Key.wasPressedThisFrame && keybinds != null && ShouldRouteF1ToPrototypeKeybindOverlay(CurrentPreset))
         {
             keybinds.SetWindowVisible(!keybinds.IsWindowVisible);
         }
@@ -236,6 +236,11 @@ public static class PrototypeUiLayoutManager
     }
 
     public static IReadOnlyCollection<PrototypeUiWindowState> WindowsForTests => Windows.Values;
+
+    public static bool ShouldRouteF1ToPrototypeKeybindOverlay(PrototypeUiPreset preset)
+    {
+        return preset != PrototypeUiPreset.Basic;
+    }
 
     public static Rect ResolveDefaultRectForTests(string id, Rect fallback, Rect screenBounds)
     {

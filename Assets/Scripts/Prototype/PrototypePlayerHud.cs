@@ -67,6 +67,7 @@ public readonly struct PrototypePlayerNavigationSnapshot
     public PrototypePlayerNavigationSnapshot(
         bool visible,
         string targetName,
+        string targetTypeLabel,
         float distanceMeters,
         float relativeSpeed,
         float closingSpeed,
@@ -74,10 +75,16 @@ public readonly struct PrototypePlayerNavigationSnapshot
         string etaLabel,
         string stateLabel,
         string phaseLabel,
-        string[] warningLabels)
+        string[] warningLabels,
+        Vector3[] routeWorldPoints,
+        PrototypeTrajectoryPreviewSnapshot trajectoryPreview,
+        bool hasAvoidanceCue,
+        Vector3 avoidanceWorldPosition,
+        string avoidanceLabel)
     {
         Visible = visible;
         TargetName = string.IsNullOrWhiteSpace(targetName) ? "No target" : targetName;
+        TargetTypeLabel = string.IsNullOrWhiteSpace(targetTypeLabel) ? "Waypoint" : targetTypeLabel;
         DistanceMeters = Mathf.Max(0f, distanceMeters);
         RelativeSpeed = Mathf.Max(0f, relativeSpeed);
         ClosingSpeed = closingSpeed;
@@ -86,10 +93,16 @@ public readonly struct PrototypePlayerNavigationSnapshot
         StateLabel = string.IsNullOrWhiteSpace(stateLabel) ? "Bereit" : stateLabel;
         PhaseLabel = string.IsNullOrWhiteSpace(phaseLabel) ? "Direkter Kurs" : phaseLabel;
         WarningLabels = warningLabels ?? System.Array.Empty<string>();
+        RouteWorldPoints = routeWorldPoints ?? System.Array.Empty<Vector3>();
+        TrajectoryPreview = trajectoryPreview;
+        HasAvoidanceCue = hasAvoidanceCue;
+        AvoidanceWorldPosition = avoidanceWorldPosition;
+        AvoidanceLabel = string.IsNullOrWhiteSpace(avoidanceLabel) ? string.Empty : avoidanceLabel;
     }
 
     public bool Visible { get; }
     public string TargetName { get; }
+    public string TargetTypeLabel { get; }
     public float DistanceMeters { get; }
     public float RelativeSpeed { get; }
     public float ClosingSpeed { get; }
@@ -98,6 +111,11 @@ public readonly struct PrototypePlayerNavigationSnapshot
     public string StateLabel { get; }
     public string PhaseLabel { get; }
     public string[] WarningLabels { get; }
+    public Vector3[] RouteWorldPoints { get; }
+    public PrototypeTrajectoryPreviewSnapshot TrajectoryPreview { get; }
+    public bool HasAvoidanceCue { get; }
+    public Vector3 AvoidanceWorldPosition { get; }
+    public string AvoidanceLabel { get; }
 }
 
 public readonly struct PrototypePlayerCombatSnapshot
@@ -147,7 +165,14 @@ public readonly struct PrototypePlayerDockingSnapshot
         Vector2 lateralOffsetMeters,
         string statusLabel,
         PrototypePlayerHudSeverity statusSeverity,
-        string hardLockLabel)
+        string hardLockLabel,
+        bool softCaptureRequested,
+        string softCaptureLabel,
+        bool softCaptureAssistanceRouted,
+        string softCaptureAssistLabel,
+        float distanceRatio,
+        float angleRatio,
+        float speedRatio)
     {
         Visible = visible;
         TargetName = string.IsNullOrWhiteSpace(targetName) ? "Docking port" : targetName;
@@ -159,6 +184,13 @@ public readonly struct PrototypePlayerDockingSnapshot
         StatusLabel = string.IsNullOrWhiteSpace(statusLabel) ? "Docking n/a" : statusLabel;
         StatusSeverity = statusSeverity;
         HardLockLabel = string.IsNullOrWhiteSpace(hardLockLabel) ? "Prototype: Hard Lock noch nicht verbunden" : hardLockLabel;
+        SoftCaptureRequested = softCaptureRequested;
+        SoftCaptureLabel = string.IsNullOrWhiteSpace(softCaptureLabel) ? string.Empty : softCaptureLabel;
+        SoftCaptureAssistanceRouted = softCaptureAssistanceRouted;
+        SoftCaptureAssistLabel = string.IsNullOrWhiteSpace(softCaptureAssistLabel) ? "Assist inaktiv" : softCaptureAssistLabel;
+        DistanceRatio = Mathf.Clamp01(distanceRatio);
+        AngleRatio = Mathf.Clamp01(angleRatio);
+        SpeedRatio = Mathf.Clamp01(speedRatio);
     }
 
     public bool Visible { get; }
@@ -171,6 +203,13 @@ public readonly struct PrototypePlayerDockingSnapshot
     public string StatusLabel { get; }
     public PrototypePlayerHudSeverity StatusSeverity { get; }
     public string HardLockLabel { get; }
+    public bool SoftCaptureRequested { get; }
+    public string SoftCaptureLabel { get; }
+    public bool SoftCaptureAssistanceRouted { get; }
+    public string SoftCaptureAssistLabel { get; }
+    public float DistanceRatio { get; }
+    public float AngleRatio { get; }
+    public float SpeedRatio { get; }
 }
 
 public readonly struct PrototypePlayerShipStatusSnapshot
@@ -205,6 +244,7 @@ public readonly struct PrototypePlayerHudSnapshot
         PrototypePlayerFlightSnapshot flight,
         PrototypePlayerNavigationSnapshot navigation,
         PrototypePlayerCombatSnapshot combat,
+        PrototypePveArenaSnapshot arena,
         PrototypePlayerDockingSnapshot docking,
         PrototypePlayerShipStatusSnapshot shipStatus,
         PrototypePlayerHudChip[] warnings,
@@ -218,6 +258,7 @@ public readonly struct PrototypePlayerHudSnapshot
         Flight = flight;
         Navigation = navigation;
         Combat = combat;
+        Arena = arena;
         Docking = docking;
         ShipStatus = shipStatus;
         Warnings = warnings ?? System.Array.Empty<PrototypePlayerHudChip>();
@@ -232,6 +273,7 @@ public readonly struct PrototypePlayerHudSnapshot
     public PrototypePlayerFlightSnapshot Flight { get; }
     public PrototypePlayerNavigationSnapshot Navigation { get; }
     public PrototypePlayerCombatSnapshot Combat { get; }
+    public PrototypePveArenaSnapshot Arena { get; }
     public PrototypePlayerDockingSnapshot Docking { get; }
     public PrototypePlayerShipStatusSnapshot ShipStatus { get; }
     public PrototypePlayerHudChip[] Warnings { get; }
@@ -254,7 +296,10 @@ public static class PrototypePlayerHudSnapshotBuilder
         PrototypeMomentumAssist momentumAssist,
         PrototypeWeaponComputer weaponComputer,
         DockingPort sourceDockingPort,
-        DockingPort targetDockingPort)
+        DockingPort targetDockingPort,
+        PrototypePveArenaLoop arenaLoop = null,
+        PrototypeDockingApproachAssist dockingApproachAssist = null,
+        PrototypeTrajectoryPreviewNavMap trajectoryPreview = null)
     {
         Transform navTarget = autopilot != null && autopilot.CurrentTarget != null
             ? autopilot.CurrentTarget.transform
@@ -277,17 +322,19 @@ public static class PrototypePlayerHudSnapshotBuilder
                 : PrototypeFlightHud.HudMode.World);
 
         PrototypePlayerFlightSnapshot flight = BuildFlight(shipRigidbody, stats, controller);
-        PrototypePlayerNavigationSnapshot navigation = BuildNavigation(autopilot);
+        PrototypePlayerNavigationSnapshot navigation = BuildNavigation(autopilot, trajectoryPreview);
         PrototypePlayerCombatSnapshot combat = BuildCombat(weaponComputer);
-        PrototypePlayerDockingSnapshot docking = BuildDocking(sourceDockingPort, targetDockingPort, shipRigidbody);
+        PrototypePveArenaSnapshot arena = arenaLoop != null ? arenaLoop.Snapshot : default;
+        PrototypePlayerDockingSnapshot docking = BuildDocking(sourceDockingPort, targetDockingPort, shipRigidbody, dockingApproachAssist);
         PrototypePlayerShipStatusSnapshot shipStatus = BuildShipStatus(stats, controller, weaponComputer);
         PrototypePlayerHudChip[] warnings = BuildWarningChips(stats, controller, autopilot, momentumAssist, combat, docking);
-        PrototypePlayerHudChip[] assists = BuildAssistChips(autopilot, momentumAssist, combat, docking);
+        PrototypePlayerHudChip[] assists = BuildAssistChips(autopilot, momentumAssist, navigation, combat, docking, arena);
 
         return new PrototypePlayerHudSnapshot(
             flight,
             navigation,
             combat,
+            arena,
             docking,
             shipStatus,
             warnings,
@@ -322,15 +369,15 @@ public static class PrototypePlayerHudSnapshotBuilder
             case PrototypeWaypointAutopilotState.HoldPosition:
                 return "Position halten";
             case PrototypeWaypointAutopilotState.Complete:
-                return "Ankunft";
+                return "Angekommen";
             case PrototypeWaypointAutopilotState.Aborted:
                 return "Abgebrochen";
             case PrototypeWaypointAutopilotState.FuelInsufficient:
                 return "Zu wenig Treibstoff";
             case PrototypeWaypointAutopilotState.Failed:
-                return "Fehler";
+                return "Autopilot nicht moeglich";
             default:
-                return "Bereit";
+                return "Autopilot aus";
         }
     }
 
@@ -394,6 +441,11 @@ public static class PrototypePlayerHudSnapshotBuilder
             case "AUTOPILOT ABORTED":
             case "Aborted":
                 return "Autopilot abgebrochen";
+            case "No Target":
+            case "NO TARGET":
+                return "Kein Navigationsziel";
+            case "No Authority":
+                return "Keine Steuerautoritaet";
             case "LimitedRcsAuthority":
             case "Limited RCS":
                 return "RCS limitiert";
@@ -440,7 +492,14 @@ public static class PrototypePlayerHudSnapshotBuilder
             case "hard-lock-eligible":
                 return "Lock-Kriterien erfuellt";
             case "hard-lock-placeholder":
+            case "hard-lock-joint-not-yet-implemented":
                 return "Prototype: Hard Lock noch nicht verbunden";
+            case "soft-capture-requested":
+                return "Soft Capture bereit";
+            case "soft-capture-zero-request":
+                return "Soft Capture wartet";
+            case "soft-capture-not-eligible":
+                return "Soft Capture nicht bereit";
             default:
                 return string.IsNullOrWhiteSpace(diagnostic) ? string.Empty : diagnostic;
         }
@@ -480,11 +539,20 @@ public static class PrototypePlayerHudSnapshotBuilder
         var lines = new List<string>();
         lines.Add("Modus: " + PrototypeInputBindingCatalog.GetModeLabel(activeMode));
         lines.AddRange(PrototypeInputBindingCatalog.BuildDifference(activeMode));
+        if (!includeDebugControls)
+        {
+            lines.Add("F1: player help");
+        }
 
         PrototypeInputBindingSection[] sections = PrototypeInputBindingCatalog.GlobalSections;
         for (int i = 0; i < sections.Length; i++)
         {
             PrototypeInputBindingSection section = sections[i];
+            if (!includeDebugControls && section.Title == "UI")
+            {
+                continue;
+            }
+
             if (section.DebugOnly && !includeDebugControls)
             {
                 continue;
@@ -516,7 +584,11 @@ public static class PrototypePlayerHudSnapshotBuilder
         return lower.Contains("debug")
             || lower.Contains("diagnostics")
             || lower.Contains("refill")
-            || lower.Contains("des/act/res");
+            || lower.Contains("des/act/res")
+            || lower.Contains("cycle generated/imported")
+            || lower.Contains("weapon computer")
+            || lower.Contains("hud/navball")
+            || lower.Contains("minimap/radar");
     }
 
     private static PrototypePlayerFlightSnapshot BuildFlight(
@@ -560,24 +632,33 @@ public static class PrototypePlayerHudSnapshotBuilder
             sas);
     }
 
-    private static PrototypePlayerNavigationSnapshot BuildNavigation(PrototypeWaypointAutopilot autopilot)
+    private static PrototypePlayerNavigationSnapshot BuildNavigation(PrototypeWaypointAutopilot autopilot, PrototypeTrajectoryPreviewNavMap trajectoryPreview)
     {
+        PrototypeTrajectoryPreviewSnapshot preview = trajectoryPreview != null
+            ? trajectoryPreview.RefreshPreview()
+            : PrototypeTrajectoryPreviewSnapshot.Unavailable("Trajectory Preview", 0, 0f);
         if (autopilot == null || autopilot.CurrentTarget == null)
         {
             return new PrototypePlayerNavigationSnapshot(
-                false,
-                "No target",
+                preview.HasRenderablePoints,
+                preview.HasRenderablePoints ? "Trajectory Preview" : "No target",
+                preview.HasRenderablePoints ? "Nav Map" : "Waypoint",
                 0f,
                 0f,
                 0f,
                 0f,
                 "--",
                 "Bereit",
-                "Direkter Kurs",
-                System.Array.Empty<string>());
+                preview.HasRenderablePoints ? preview.SourceLabel : "Direkter Kurs",
+                System.Array.Empty<string>(),
+                System.Array.Empty<Vector3>(),
+                preview,
+                false,
+                Vector3.zero,
+                string.Empty);
         }
 
-        string eta = FormatEta(autopilot.EtaSeconds);
+        string eta = FormatNavigationEta(autopilot.EtaSeconds, autopilot.ClosingSpeed);
         string[] sourceWarnings = autopilot.BuildNavigationWarningChips();
         string[] warnings = new string[sourceWarnings.Length];
         for (int i = 0; i < sourceWarnings.Length; i++)
@@ -585,10 +666,13 @@ public static class PrototypePlayerHudSnapshotBuilder
             warnings[i] = TranslateWarning(sourceWarnings[i]);
         }
 
+        Vector3[] routePoints = CopyRoutePoints(autopilot.PredictedRoute, 8);
+        bool hasAvoidanceCue = autopilot.AvoidanceActive || autopilot.NavigationObstacleDetected;
         bool visible = autopilot.CurrentTarget != null || autopilot.AutopilotEngaged;
         return new PrototypePlayerNavigationSnapshot(
             visible,
             autopilot.TargetName,
+            ResolveNavigationTargetType(autopilot.CurrentTarget),
             autopilot.DistanceToTarget,
             autopilot.LastMetrics.relativeSpeed,
             autopilot.ClosingSpeed,
@@ -596,7 +680,12 @@ public static class PrototypePlayerHudSnapshotBuilder
             eta,
             TranslateNavigationState(autopilot.CurrentState),
             TranslateNavigationPhase(autopilot.NavigationPhase),
-            warnings);
+            warnings,
+            routePoints,
+            preview,
+            hasAvoidanceCue,
+            autopilot.AvoidanceWaypoint,
+            hasAvoidanceCue ? BuildAvoidanceLabel(autopilot) : string.Empty);
     }
 
     private static PrototypePlayerCombatSnapshot BuildCombat(PrototypeWeaponComputer weaponComputer)
@@ -638,7 +727,11 @@ public static class PrototypePlayerHudSnapshotBuilder
             weaponComputer.PriorityMode.ToString());
     }
 
-    private static PrototypePlayerDockingSnapshot BuildDocking(DockingPort source, DockingPort target, Rigidbody sourceRigidbody)
+    private static PrototypePlayerDockingSnapshot BuildDocking(
+        DockingPort source,
+        DockingPort target,
+        Rigidbody sourceRigidbody,
+        PrototypeDockingApproachAssist dockingApproachAssist)
     {
         if (source == null || target == null)
         {
@@ -652,7 +745,14 @@ public static class PrototypePlayerHudSnapshotBuilder
                 Vector2.zero,
                 "Docking n/a",
                 PrototypePlayerHudSeverity.Disabled,
-                "Prototype: Hard Lock noch nicht verbunden");
+                "Prototype: Hard Lock noch nicht verbunden",
+                false,
+                string.Empty,
+                false,
+                "Assist inaktiv",
+                0f,
+                0f,
+                0f);
         }
 
         Rigidbody targetRigidbody = target.GetComponentInParent<Rigidbody>();
@@ -668,17 +768,35 @@ public static class PrototypePlayerHudSnapshotBuilder
                 Vector2.zero,
                 TranslateDockingDiagnostic(state.diagnostic),
                 PrototypePlayerHudSeverity.Warning,
-                "Prototype: Hard Lock noch nicht verbunden");
+                "Prototype: Hard Lock noch nicht verbunden",
+                false,
+                string.Empty,
+                false,
+                "Assist inaktiv",
+                0f,
+                0f,
+                0f);
         }
 
         DockingEligibility eligibility = source.EvaluateEligibility(target, state);
+        DockingSoftCaptureRequest softCapture = source.BuildSoftCaptureRequest(target, state, eligibility);
         DockingHardLockResult hardLock = source.BuildHardLockPrototype(target, eligibility);
         string hardLockLabel = hardLock.lockRequested && !hardLock.jointCreated
             ? TranslateDockingDiagnostic(hardLock.diagnostic)
             : TranslateDockingDiagnostic(eligibility.diagnostic);
+        string softCaptureLabel = softCapture.requested
+            ? "Soft Capture bereit"
+            : TranslateDockingDiagnostic(softCapture.diagnostic);
+        bool assistRouted = dockingApproachAssist != null
+            && dockingApproachAssist.IsAssistanceRouted
+            && dockingApproachAssist.TargetDockingPort == target;
+        string assistLabel = assistRouted ? "Soft Capture Assist aktiv" : "Soft Capture Assist inaktiv";
         PrototypePlayerHudSeverity severity = eligibility.canSoftCapture || eligibility.canHardLock
             ? PrototypePlayerHudSeverity.Info
             : PrototypePlayerHudSeverity.Warning;
+        float captureRadius = Mathf.Max(0.001f, Mathf.Min(source.CaptureRadius, target.CaptureRadius));
+        float softAngle = Mathf.Max(0.001f, Mathf.Min(source.SoftCaptureAngleDegrees, target.SoftCaptureAngleDegrees));
+        float softVelocity = Mathf.Max(0.001f, Mathf.Min(source.SoftCaptureMaxRelativeVelocity, target.SoftCaptureMaxRelativeVelocity));
 
         return new PrototypePlayerDockingSnapshot(
             true,
@@ -690,7 +808,14 @@ public static class PrototypePlayerHudSnapshotBuilder
             new Vector2(state.offsetLocal.x, state.offsetLocal.y),
             TranslateDockingDiagnostic(eligibility.diagnostic),
             severity,
-            hardLockLabel);
+            hardLockLabel,
+            softCapture.requested,
+            softCaptureLabel,
+            assistRouted,
+            assistLabel,
+            state.distance / captureRadius,
+            state.angleErrorDegrees / softAngle,
+            state.relativeSpeed / softVelocity);
     }
 
     private static PrototypePlayerShipStatusSnapshot BuildShipStatus(
@@ -715,11 +840,77 @@ public static class PrototypePlayerHudSnapshotBuilder
             bool idleWithoutTarget = weaponComputer.ActiveTarget == null && !weaponComputer.AutoFireEnabled && !fireStatus.hasSelectedTarget;
             weapon = idleWithoutTarget ? "Weapon standby" : TranslateFireStatus(fireStatus);
         }
-        string damage = controller != null && controller.HasDamageStates()
-            ? "Modules damaged"
-            : "Modules nominal";
+        string damage = BuildDamageSummary(controller);
 
         return new PrototypePlayerShipStatusSnapshot(fuel, main, rcs, sas, weapon, damage);
+    }
+
+    private static string BuildDamageSummary(PlayerShipController controller)
+    {
+        if (controller == null)
+        {
+            return "Modules nominal";
+        }
+
+        PrototypeModuleDamageState[] states = controller.GetComponentsInChildren<PrototypeModuleDamageState>(true);
+        if (states == null || states.Length == 0)
+        {
+            return "Modules nominal";
+        }
+
+        int damagedCount = 0;
+        PrototypeModuleDamageState worst = null;
+        float worstIntegrity = 1f;
+        for (int i = 0; i < states.Length; i++)
+        {
+            PrototypeModuleDamageState state = states[i];
+            if (state == null)
+            {
+                continue;
+            }
+
+            if (state.IsDamaged)
+            {
+                damagedCount++;
+            }
+
+            if (worst == null || state.IntegrityFraction < worstIntegrity)
+            {
+                worst = state;
+                worstIntegrity = state.IntegrityFraction;
+            }
+        }
+
+        if (damagedCount == 0 || worst == null)
+        {
+            return "Modules nominal";
+        }
+
+        bool rcsReduced = false;
+        RcsThrusterBlock[] rcsBlocks = controller.GetComponentsInChildren<RcsThrusterBlock>(true);
+        for (int i = 0; i < rcsBlocks.Length; i++)
+        {
+            RcsThrusterBlock block = rcsBlocks[i];
+            if (block != null && block.DamageState != null && block.DamageState.IsDamaged && block.DamageCapabilityMultiplier < 0.999f)
+            {
+                rcsReduced = true;
+                break;
+            }
+        }
+
+        string label = damagedCount.ToString() + " modules damaged | "
+            + worst.ModuleName + " " + (worst.IntegrityFraction * 100f).ToString("0") + "%";
+        if (worst.IntegrityFraction <= 0.25f)
+        {
+            label += " | Module critical";
+        }
+
+        if (rcsReduced)
+        {
+            label += " | RCS thrust reduced";
+        }
+
+        return label;
     }
 
     private static PrototypePlayerHudChip[] BuildWarningChips(
@@ -736,81 +927,98 @@ public static class PrototypePlayerHudSnapshotBuilder
             float fuelPercent = stats.CurrentFuelKg / Mathf.Max(0.01f, stats.MaxFuelKg);
             if (fuelPercent <= 0.001f)
             {
-                chips.Add(new PrototypePlayerHudChip("Treibstoff leer", PrototypePlayerHudSeverity.Danger));
+                AddOrPromoteUnique(chips, "Treibstoff leer", PrototypePlayerHudSeverity.Danger);
             }
             else if (fuelPercent <= 0.1f)
             {
-                chips.Add(new PrototypePlayerHudChip("Treibstoff niedrig", PrototypePlayerHudSeverity.Warning));
+                AddOrPromoteUnique(chips, "Treibstoff niedrig", PrototypePlayerHudSeverity.Warning);
             }
         }
 
         if (controller != null && !controller.HasRcs && controller.ControlMode != FlightControlMode.Normal)
         {
-            chips.Add(new PrototypePlayerHudChip("RCS nicht verfuegbar", PrototypePlayerHudSeverity.Danger));
+            AddOrPromoteUnique(chips, "RCS nicht verfuegbar", PrototypePlayerHudSeverity.Danger);
         }
 
         if (autopilot != null)
         {
             if (autopilot.AutopilotEngaged && !autopilot.FuelFeasible)
             {
-                chips.Add(new PrototypePlayerHudChip("Autopilot: zu wenig Treibstoff", PrototypePlayerHudSeverity.Warning));
+                AddOrPromoteUnique(chips, "Autopilot: zu wenig Treibstoff", PrototypePlayerHudSeverity.Warning);
             }
 
             if (autopilot.CurrentState == PrototypeWaypointAutopilotState.Aborted || autopilot.CurrentState == PrototypeWaypointAutopilotState.Failed)
             {
-                chips.Add(new PrototypePlayerHudChip("Autopilot abgebrochen", PrototypePlayerHudSeverity.Warning));
+                AddOrPromoteUnique(chips, "Autopilot abgebrochen", PrototypePlayerHudSeverity.Warning);
             }
 
             string[] navWarnings = autopilot.BuildNavigationWarningChips();
             for (int i = 0; i < navWarnings.Length; i++)
             {
-                AddUnique(chips, TranslateWarning(navWarnings[i]), PrototypePlayerHudSeverity.Warning);
+                string translatedWarning = TranslateWarning(navWarnings[i]);
+                AddOrPromoteUnique(chips, translatedWarning, SeverityForWarning(navWarnings[i], translatedWarning));
             }
         }
 
         if (momentumAssist != null && momentumAssist.CurrentState == PrototypeMomentumAssistState.NoAuthority)
         {
-            chips.Add(new PrototypePlayerHudChip("Keine Steuerautoritaet", PrototypePlayerHudSeverity.Danger));
+            AddOrPromoteUnique(chips, "Keine Steuerautoritaet", PrototypePlayerHudSeverity.Danger);
         }
 
         if (combat.Visible && combat.FireSeverity != PrototypePlayerHudSeverity.Info && combat.FireSeverity != PrototypePlayerHudSeverity.Normal)
         {
-            chips.Add(new PrototypePlayerHudChip(combat.FireStatusLabel, combat.FireSeverity));
+            AddOrPromoteUnique(chips, combat.FireStatusLabel, combat.FireSeverity);
         }
 
         if (docking.Visible && docking.StatusSeverity == PrototypePlayerHudSeverity.Warning)
         {
-            chips.Add(new PrototypePlayerHudChip(docking.StatusLabel, PrototypePlayerHudSeverity.Warning));
+            AddOrPromoteUnique(chips, docking.StatusLabel, PrototypePlayerHudSeverity.Warning);
         }
 
+        SortChipsBySeverity(chips);
         return chips.ToArray();
     }
 
     private static PrototypePlayerHudChip[] BuildAssistChips(
         PrototypeWaypointAutopilot autopilot,
         PrototypeMomentumAssist momentumAssist,
+        PrototypePlayerNavigationSnapshot navigation,
         PrototypePlayerCombatSnapshot combat,
-        PrototypePlayerDockingSnapshot docking)
+        PrototypePlayerDockingSnapshot docking,
+        PrototypePveArenaSnapshot arena)
     {
         var chips = new List<PrototypePlayerHudChip>();
         if (autopilot != null && autopilot.AutopilotEngaged)
         {
-            chips.Add(new PrototypePlayerHudChip("Autopilot: " + TranslateNavigationState(autopilot.CurrentState), PrototypePlayerHudSeverity.Info));
+            AddOrPromoteUnique(chips, "Autopilot: " + TranslateNavigationState(autopilot.CurrentState), PrototypePlayerHudSeverity.Info);
         }
 
         if (momentumAssist != null && momentumAssist.IsActive)
         {
-            chips.Add(new PrototypePlayerHudChip("Kill Momentum: " + TranslateMomentumState(momentumAssist.CurrentState), PrototypePlayerHudSeverity.Info));
+            AddOrPromoteUnique(chips, "Kill Momentum: " + TranslateMomentumState(momentumAssist.CurrentState), PrototypePlayerHudSeverity.Info);
+        }
+
+        if (navigation.TrajectoryPreview.Enabled && navigation.TrajectoryPreview.IsAvailable)
+        {
+            AddOrPromoteUnique(chips, navigation.TrajectoryPreview.StatusLabel, navigation.TrajectoryPreview.HasRenderablePoints ? PrototypePlayerHudSeverity.Info : PrototypePlayerHudSeverity.Disabled);
         }
 
         if (docking.Visible && docking.StatusSeverity == PrototypePlayerHudSeverity.Info)
         {
-            chips.Add(new PrototypePlayerHudChip(docking.StatusLabel, PrototypePlayerHudSeverity.Info));
+            AddOrPromoteUnique(chips, docking.SoftCaptureAssistanceRouted ? docking.SoftCaptureAssistLabel : (docking.SoftCaptureRequested ? docking.SoftCaptureLabel : docking.StatusLabel), PrototypePlayerHudSeverity.Info);
         }
 
         if (combat.Visible && combat.AutoFireLabel.Contains("Armed"))
         {
-            chips.Add(new PrototypePlayerHudChip("Auto Fire", PrototypePlayerHudSeverity.Info));
+            AddOrPromoteUnique(chips, "Auto Fire", PrototypePlayerHudSeverity.Info);
+        }
+
+        if (arena.IsVisible)
+        {
+            AddOrPromoteUnique(
+                chips,
+                arena.Completed ? arena.RewardStubLabel : "Arena " + arena.ProgressLabel,
+                arena.Completed ? PrototypePlayerHudSeverity.Info : PrototypePlayerHudSeverity.Normal);
         }
 
         return chips.ToArray();
@@ -873,7 +1081,7 @@ public static class PrototypePlayerHudSnapshotBuilder
         }
     }
 
-    private static void AddUnique(List<PrototypePlayerHudChip> chips, string label, PrototypePlayerHudSeverity severity)
+    private static void AddOrPromoteUnique(List<PrototypePlayerHudChip> chips, string label, PrototypePlayerHudSeverity severity)
     {
         if (string.IsNullOrWhiteSpace(label))
         {
@@ -884,11 +1092,57 @@ public static class PrototypePlayerHudSnapshotBuilder
         {
             if (chips[i].Label == label)
             {
+                if (SeverityRank(severity) < SeverityRank(chips[i].Severity))
+                {
+                    chips[i] = new PrototypePlayerHudChip(label, severity);
+                }
+
                 return;
             }
         }
 
         chips.Add(new PrototypePlayerHudChip(label, severity));
+    }
+
+    private static PrototypePlayerHudSeverity SeverityForWarning(string sourceWarning, string translatedWarning)
+    {
+        string source = string.IsNullOrWhiteSpace(sourceWarning) ? string.Empty : sourceWarning.ToLowerInvariant();
+        string translated = string.IsNullOrWhiteSpace(translatedWarning) ? string.Empty : translatedWarning.ToLowerInvariant();
+        if (source.Contains("authority") || translated.Contains("autoritaet") || translated.Contains("nicht verfuegbar"))
+        {
+            return PrototypePlayerHudSeverity.Danger;
+        }
+
+        if (source.Contains("aborted") || source.Contains("failed"))
+        {
+            return PrototypePlayerHudSeverity.Warning;
+        }
+
+        return PrototypePlayerHudSeverity.Warning;
+    }
+
+    private static void SortChipsBySeverity(List<PrototypePlayerHudChip> chips)
+    {
+        chips.Sort((left, right) => SeverityRank(left.Severity).CompareTo(SeverityRank(right.Severity)));
+    }
+
+    private static int SeverityRank(PrototypePlayerHudSeverity severity)
+    {
+        switch (severity)
+        {
+            case PrototypePlayerHudSeverity.Danger:
+                return 0;
+            case PrototypePlayerHudSeverity.Warning:
+                return 1;
+            case PrototypePlayerHudSeverity.Info:
+                return 2;
+            case PrototypePlayerHudSeverity.Normal:
+                return 3;
+            case PrototypePlayerHudSeverity.Disabled:
+                return 4;
+            default:
+                return 5;
+        }
     }
 
     private static string FormatEta(float eta)
@@ -906,6 +1160,93 @@ public static class PrototypePlayerHudSnapshotBuilder
         }
 
         return eta.ToString("0") + "s";
+    }
+
+    private static string FormatNavigationEta(float eta, float closingSpeed)
+    {
+        if ((float.IsNaN(eta) || float.IsInfinity(eta) || eta <= 0f) && closingSpeed <= 0.05f)
+        {
+            return "nicht auf Kurs";
+        }
+
+        return FormatEta(eta);
+    }
+
+    private static Vector3[] CopyRoutePoints(Vector3[] source, int maxPoints)
+    {
+        if (source == null || source.Length == 0 || maxPoints <= 0)
+        {
+            return System.Array.Empty<Vector3>();
+        }
+
+        int count = Mathf.Min(source.Length, maxPoints);
+        var points = new Vector3[count];
+        for (int i = 0; i < count; i++)
+        {
+            points[i] = source[i];
+        }
+
+        return points;
+    }
+
+    private static string BuildAvoidanceLabel(PrototypeWaypointAutopilot autopilot)
+    {
+        if (autopilot == null)
+        {
+            return string.Empty;
+        }
+
+        if (autopilot.AvoidanceActive)
+        {
+            return "Ausweichkurs: " + autopilot.AvoidanceTargetName;
+        }
+
+        if (autopilot.NavigationObstacleDetected)
+        {
+            return "Hindernis: " + autopilot.AvoidanceTargetName;
+        }
+
+        return string.Empty;
+    }
+
+    private static string ResolveNavigationTargetType(PrototypeNavigationTarget target)
+    {
+        if (target == null)
+        {
+            return "Waypoint";
+        }
+
+        Transform root = target.transform;
+        if (root.GetComponentInParent<DockingPort>() != null || root.GetComponentInChildren<DockingPort>() != null)
+        {
+            return "Docking";
+        }
+
+        if (root.GetComponentInParent<PrototypeModuleDamageState>() != null
+            || root.GetComponentInChildren<PrototypeModuleDamageState>() != null
+            || root.GetComponentInParent<PrototypeTargetDummy>() != null
+            || root.GetComponentInChildren<PrototypeTargetDummy>() != null)
+        {
+            return "Combat";
+        }
+
+        string lowerName = target.DisplayName.ToLowerInvariant();
+        if (lowerName.Contains("station"))
+        {
+            return "Station";
+        }
+
+        if (lowerName.Contains("beacon"))
+        {
+            return "Beacon";
+        }
+
+        if (lowerName.Contains("gate"))
+        {
+            return "Gate";
+        }
+
+        return "Waypoint";
     }
 
     private static Transform ResolveFallbackTarget(Transform shipRoot, PrototypeWeaponComputer weaponComputer)
@@ -939,14 +1280,23 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     [SerializeField] private PrototypeWaypointAutopilot autopilot;
     [SerializeField] private PrototypeMomentumAssist momentumAssist;
     [SerializeField] private PrototypeWeaponComputer weaponComputer;
+    [SerializeField] private PrototypePveArenaLoop arenaLoop;
+    [SerializeField] private PrototypeDockingApproachAssist dockingApproachAssist;
+    [SerializeField] private PrototypeTrajectoryPreviewNavMap trajectoryPreview;
     [SerializeField] private DockingPort sourceDockingPort;
     [SerializeField] private DockingPort targetDockingPort;
     [SerializeField] private bool showPlayerHud = true;
     [SerializeField] private bool includeDebugHelp;
 
     private Canvas canvas;
+    private CanvasScaler canvasScaler;
     private PrototypePlayerHudOverlayGraphic overlayGraphic;
     private PrototypePlayerHudRadarGraphic radarGraphic;
+    private RectTransform topStripRect;
+    private RectTransform bottomBarRect;
+    private RectTransform systemPanelRect;
+    private RectTransform contextPanelRect;
+    private RectTransform radarPanelRect;
     private Text topWarningText;
     private readonly List<Text> assistTexts = new List<Text>();
     private Text speedText;
@@ -955,19 +1305,30 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private Image throttleFill;
     private Image fuelFill;
     private Text modeText;
+    private Text modeHintText;
     private Text rcsText;
     private Text sasText;
     private Text systemText;
     private Text contextTitleText;
     private Text contextBodyText;
+    private readonly List<Image> contextGaugeFills = new List<Image>();
+    private readonly List<Text> contextGaugeLabels = new List<Text>();
     private Text radarText;
     private Text helpText;
     private GameObject helpPanel;
     private Button killMomentumButton;
+    private Text killMomentumButtonText;
     private readonly List<Text> markerLabels = new List<Text>();
     private PrototypePlayerHudSnapshot lastSnapshot;
+    private int lastLayoutWidth = -1;
+    private int lastLayoutHeight = -1;
+    private FlightControlMode cachedHelpMode;
+    private bool cachedHelpIncludesDebug;
+    private string cachedHelpText;
+    private bool hasCachedHelpText;
 
     public bool ShowPlayerHud => showPlayerHud;
+    public PrototypeTrajectoryPreviewNavMap TrajectoryPreview => trajectoryPreview;
     public PrototypePlayerHudSnapshot LastSnapshot => lastSnapshot;
 
     private void Awake()
@@ -993,16 +1354,6 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         RefreshNow();
     }
 
-    private void OnGUI()
-    {
-        if (!showPlayerHud || !Application.isPlaying)
-        {
-            return;
-        }
-
-        DrawRadarGui(new Rect(Screen.width - 196f, 26f, 170f, 170f), lastSnapshot);
-    }
-
     public void Bind(Transform root, ShipStats stats, Rigidbody body)
     {
         shipRoot = root != null ? root : shipRoot;
@@ -1016,6 +1367,12 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     public void SetTargetDockingPort(DockingPort dockingPort)
     {
         targetDockingPort = dockingPort;
+    }
+
+    public void BindTrajectoryPreview(PrototypeTrajectoryPreviewNavMap preview)
+    {
+        trajectoryPreview = preview != null ? preview : trajectoryPreview;
+        RefreshNow();
     }
 
     public void SetPlayerHudVisible(bool visible)
@@ -1040,7 +1397,10 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             momentumAssist,
             weaponComputer,
             sourceDockingPort,
-            targetDockingPort);
+            targetDockingPort,
+            arenaLoop,
+            dockingApproachAssist,
+            trajectoryPreview);
         ApplySnapshot(lastSnapshot);
     }
 
@@ -1078,6 +1438,21 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
                 weaponComputer = shipRoot.GetComponent<PrototypeWeaponComputer>();
             }
 
+            if (arenaLoop == null)
+            {
+                arenaLoop = UnityEngine.Object.FindAnyObjectByType<PrototypePveArenaLoop>();
+            }
+
+            if (dockingApproachAssist == null)
+            {
+                dockingApproachAssist = shipRoot.GetComponent<PrototypeDockingApproachAssist>();
+            }
+
+            if (trajectoryPreview == null)
+            {
+                trajectoryPreview = shipRoot.GetComponent<PrototypeTrajectoryPreviewNavMap>();
+            }
+
             if (sourceDockingPort == null)
             {
                 sourceDockingPort = shipRoot.GetComponentInChildren<DockingPort>();
@@ -1094,6 +1469,17 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     {
         if (canvas != null)
         {
+            if (canvasScaler == null)
+            {
+                canvasScaler = canvas.GetComponent<CanvasScaler>();
+            }
+
+            return;
+        }
+
+        if (TryBindExistingUi())
+        {
+            canvas.enabled = showPlayerHud;
             return;
         }
 
@@ -1104,10 +1490,10 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         canvas.sortingOrder = 30;
         canvas.enabled = showPlayerHud;
 
-        CanvasScaler scaler = canvasObject.AddComponent<CanvasScaler>();
-        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        scaler.referenceResolution = new Vector2(CanvasReferenceWidth, CanvasReferenceHeight);
-        scaler.matchWidthOrHeight = 0.5f;
+        canvasScaler = canvasObject.AddComponent<CanvasScaler>();
+        canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        canvasScaler.referenceResolution = new Vector2(CanvasReferenceWidth, CanvasReferenceHeight);
+        canvasScaler.matchWidthOrHeight = 0.5f;
         canvasObject.AddComponent<GraphicRaycaster>();
 
         EnsureEventSystem();
@@ -1125,10 +1511,215 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         CreateHelpPanel(canvasObject.transform);
     }
 
+    private bool TryBindExistingUi()
+    {
+        Canvas existingCanvas = null;
+        int playerHudCanvasCount = 0;
+        Canvas[] canvases = GetComponentsInChildren<Canvas>(true);
+        for (int i = 0; i < canvases.Length; i++)
+        {
+            if (canvases[i] != null && canvases[i].gameObject.name == "PrototypePlayerHudCanvas")
+            {
+                existingCanvas = canvases[i];
+                playerHudCanvasCount++;
+            }
+        }
+
+        if (playerHudCanvasCount == 0)
+        {
+            return false;
+        }
+
+        if (playerHudCanvasCount > 1)
+        {
+            DestroyExistingPlayerHudCanvases();
+            return false;
+        }
+
+        canvas = existingCanvas;
+        canvasScaler = canvas.GetComponent<CanvasScaler>();
+        overlayGraphic = FindHudComponent<PrototypePlayerHudOverlayGraphic>("FlightMarkers");
+        radarGraphic = FindHudComponent<PrototypePlayerHudRadarGraphic>("RadarGraphic");
+        topStripRect = FindHudComponent<RectTransform>("AlertAssistStrip");
+        bottomBarRect = FindHudComponent<RectTransform>("FlightStatusBar");
+        systemPanelRect = FindHudComponent<RectTransform>("ShipSystems");
+        contextPanelRect = FindHudComponent<RectTransform>("ContextPanel");
+        radarPanelRect = FindHudComponent<RectTransform>("RadarPanel");
+        topWarningText = FindHudComponent<Text>("PrimaryWarning");
+        speedText = FindHudComponent<Text>("Speed");
+        throttleText = FindHudComponent<Text>("Throttle");
+        fuelText = FindHudComponent<Text>("Fuel");
+        throttleFill = FindHudComponent<Image>("ThrottleBarFill");
+        fuelFill = FindHudComponent<Image>("FuelBarFill");
+        modeText = FindHudComponent<Text>("Mode");
+        modeHintText = FindHudComponent<Text>("ModeHint");
+        rcsText = FindHudComponent<Text>("Rcs");
+        sasText = FindHudComponent<Text>("Sas");
+        systemText = FindHudComponent<Text>("SystemsText");
+        contextTitleText = FindHudComponent<Text>("ContextTitle");
+        contextBodyText = FindHudComponent<Text>("ContextBody");
+        radarText = FindHudComponent<Text>("RadarText");
+        helpText = FindHudComponent<Text>("HelpText");
+        helpPanel = helpText != null ? helpText.transform.parent.gameObject : null;
+        killMomentumButton = FindHudComponent<Button>("KillMomentum");
+        killMomentumButtonText = FindHudComponent<Text>("KillMomentumText");
+
+        assistTexts.Clear();
+        for (int i = 0; i < 3; i++)
+        {
+            Text chip = FindHudComponent<Text>("AssistChip" + (i + 1));
+            if (chip != null)
+            {
+                assistTexts.Add(chip);
+            }
+        }
+
+        contextGaugeLabels.Clear();
+        contextGaugeFills.Clear();
+        for (int i = 0; i < 3; i++)
+        {
+            Text label = FindHudComponent<Text>("GaugeLabel" + i);
+            Image fill = FindHudComponent<Image>("GaugeFill" + i);
+            if (label != null && fill != null)
+            {
+                contextGaugeLabels.Add(label);
+                contextGaugeFills.Add(fill);
+            }
+        }
+
+        markerLabels.Clear();
+        string[] labels = { "FWD", "PRO", "RET", "TGT" };
+        for (int i = 0; i < labels.Length; i++)
+        {
+            Text label = FindHudComponent<Text>("Marker_" + labels[i]);
+            if (label != null)
+            {
+                markerLabels.Add(label);
+            }
+        }
+
+        bool complete = canvasScaler != null
+            && overlayGraphic != null
+            && radarGraphic != null
+            && topStripRect != null
+            && bottomBarRect != null
+            && systemPanelRect != null
+            && contextPanelRect != null
+            && radarPanelRect != null
+            && topWarningText != null
+            && speedText != null
+            && throttleText != null
+            && fuelText != null
+            && throttleFill != null
+            && fuelFill != null
+            && modeText != null
+            && modeHintText != null
+            && rcsText != null
+            && sasText != null
+            && systemText != null
+            && contextTitleText != null
+            && contextBodyText != null
+            && radarText != null
+            && helpText != null
+            && helpPanel != null
+            && killMomentumButton != null
+            && killMomentumButtonText != null
+            && assistTexts.Count == 3
+            && contextGaugeLabels.Count == 3
+            && contextGaugeFills.Count == 3
+            && markerLabels.Count == 4;
+
+        if (!complete)
+        {
+            DestroyExistingPlayerHudCanvases();
+            ClearUiReferences();
+            return false;
+        }
+
+        return true;
+    }
+
+    private T FindHudComponent<T>(string objectName) where T : Component
+    {
+        T[] components = GetComponentsInChildren<T>(true);
+        for (int i = 0; i < components.Length; i++)
+        {
+            if (components[i] != null && components[i].gameObject.name == objectName)
+            {
+                return components[i];
+            }
+        }
+
+        return null;
+    }
+
+    private void DestroyExistingPlayerHudCanvases()
+    {
+        Canvas[] canvases = GetComponentsInChildren<Canvas>(true);
+        for (int i = 0; i < canvases.Length; i++)
+        {
+            if (canvases[i] != null && canvases[i].gameObject.name == "PrototypePlayerHudCanvas")
+            {
+                DestroyGeneratedObject(canvases[i].gameObject);
+            }
+        }
+    }
+
+    private void ClearUiReferences()
+    {
+        canvas = null;
+        canvasScaler = null;
+        overlayGraphic = null;
+        radarGraphic = null;
+        topStripRect = null;
+        bottomBarRect = null;
+        systemPanelRect = null;
+        contextPanelRect = null;
+        radarPanelRect = null;
+        topWarningText = null;
+        assistTexts.Clear();
+        speedText = null;
+        throttleText = null;
+        fuelText = null;
+        throttleFill = null;
+        fuelFill = null;
+        modeText = null;
+        modeHintText = null;
+        rcsText = null;
+        sasText = null;
+        systemText = null;
+        contextTitleText = null;
+        contextBodyText = null;
+        contextGaugeFills.Clear();
+        contextGaugeLabels.Clear();
+        radarText = null;
+        helpText = null;
+        helpPanel = null;
+        killMomentumButton = null;
+        killMomentumButtonText = null;
+        markerLabels.Clear();
+        hasCachedHelpText = false;
+    }
+
+    private static void DestroyGeneratedObject(GameObject target)
+    {
+        if (target == null)
+        {
+            return;
+        }
+
+#if UNITY_EDITOR
+        DestroyImmediate(target);
+#else
+        Destroy(target);
+#endif
+    }
+
     private void CreateTopStrip(Transform parent)
     {
         RectTransform strip = CreatePanel("AlertAssistStrip", parent, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(620f, 42f), new Vector2(0f, -24f));
-        topWarningText = CreateText("PrimaryWarning", strip, 15, TextAnchor.MiddleCenter, Color.white, StretchFull(10f, 5f));
+        topStripRect = strip;
+        topWarningText = CreateText("PrimaryWarning", strip, 13, TextAnchor.MiddleCenter, Color.white, new RectPreset(new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(-20f, 18f), new Vector2(0f, -2f)));
         for (int i = 0; i < 3; i++)
         {
             Text chip = CreateText("AssistChip" + (i + 1), strip, 11, TextAnchor.MiddleCenter, PrototypeUiStyle.ActiveColor, new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(160f, 18f), new Vector2(14f + (i * 166f), 3f)));
@@ -1139,33 +1730,61 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private void CreateBottomBar(Transform parent)
     {
         RectTransform bar = CreatePanel("FlightStatusBar", parent, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(760f, 76f), new Vector2(0f, 36f));
+        bottomBarRect = bar;
         speedText = CreateText("Speed", bar, 19, TextAnchor.MiddleLeft, Color.white, new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 1f), new Vector2(0f, 0.5f), new Vector2(138f, -12f), new Vector2(16f, 0f)));
         throttleText = CreateText("Throttle", bar, 12, TextAnchor.UpperLeft, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(160f, 30f), new Vector2(158f, 12f)));
         fuelText = CreateText("Fuel", bar, 12, TextAnchor.UpperLeft, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(160f, 30f), new Vector2(338f, 12f)));
         throttleFill = CreateBar("ThrottleBar", bar, new Vector2(158f, -14f));
         fuelFill = CreateBar("FuelBar", bar, new Vector2(338f, -14f));
         modeText = CreateText("Mode", bar, 14, TextAnchor.MiddleCenter, Color.white, new RectPreset(new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(132f, 28f), new Vector2(-188f, 14f)));
+        modeHintText = CreateText("ModeHint", bar, 10, TextAnchor.MiddleCenter, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(220f, 18f), new Vector2(-170f, -36f)));
         rcsText = CreateText("Rcs", bar, 12, TextAnchor.MiddleCenter, PrototypeUiStyle.ActiveColor, new RectPreset(new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(104f, 22f), new Vector2(-194f, -16f)));
         sasText = CreateText("Sas", bar, 12, TextAnchor.MiddleCenter, PrototypeUiStyle.ActiveColor, new RectPreset(new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(104f, 22f), new Vector2(-82f, -16f)));
         killMomentumButton = CreateButton("KillMomentum", bar, "Kill Momentum", new RectPreset(new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(124f, 24f), new Vector2(-72f, 16f)));
+        killMomentumButtonText = killMomentumButton.GetComponentInChildren<Text>(true);
     }
 
     private void CreateSystemPanel(Transform parent)
     {
         RectTransform panel = CreatePanel("ShipSystems", parent, new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(248f, 128f), new Vector2(24f, 24f));
+        systemPanelRect = panel;
         systemText = CreateText("SystemsText", panel, 12, TextAnchor.UpperLeft, Color.white, StretchFull(12f, 10f));
     }
 
     private void CreateContextPanel(Transform parent)
     {
-        RectTransform panel = CreatePanel("ContextPanel", parent, new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(334f, 166f), new Vector2(-24f, 24f));
+        RectTransform panel = CreatePanel("ContextPanel", parent, new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(356f, 194f), new Vector2(-24f, 24f));
+        contextPanelRect = panel;
         contextTitleText = CreateText("ContextTitle", panel, 14, TextAnchor.UpperLeft, Color.white, new RectPreset(new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(-22f, 26f), new Vector2(0f, -16f)));
-        contextBodyText = CreateText("ContextBody", panel, 12, TextAnchor.UpperLeft, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-22f, -48f), new Vector2(0f, -28f)));
+        contextBodyText = CreateText("ContextBody", panel, 12, TextAnchor.UpperLeft, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-22f, -112f), new Vector2(0f, 6f)));
+        CreateContextGaugePanel(panel);
+    }
+
+    private void CreateContextGaugePanel(Transform parent)
+    {
+        RectTransform panel = CreateRect("ContextGauges", parent, new RectPreset(new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-22f, 58f), new Vector2(0f, 12f)));
+        for (int i = 0; i < 3; i++)
+        {
+            CreateContextGaugeRow(panel, i);
+        }
+    }
+
+    private void CreateContextGaugeRow(Transform parent, int index)
+    {
+        float y = 42f - (index * 18f);
+        Text label = CreateText("GaugeLabel" + index, parent, 10, TextAnchor.MiddleLeft, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0.5f), new Vector2(92f, 16f), new Vector2(0f, y)));
+        RectTransform background = CreatePanel("GaugeBar" + index, parent, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0.5f), new Vector2(-108f, 6f), new Vector2(54f, y));
+        background.GetComponent<Image>().color = new Color(0.08f, 0.1f, 0.13f, 0.95f);
+        Image fill = CreateGraphic<Image>("GaugeFill" + index, background, StretchFull());
+        fill.color = PrototypeUiStyle.ActiveColor;
+        contextGaugeLabels.Add(label);
+        contextGaugeFills.Add(fill);
     }
 
     private void CreateRadarPanel(Transform parent)
     {
         RectTransform panel = CreatePanel("RadarPanel", parent, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(170f, 170f), new Vector2(-24f, -24f));
+        radarPanelRect = panel;
         radarGraphic = CreateGraphic<PrototypePlayerHudRadarGraphic>("RadarGraphic", panel, StretchFull(8f, 8f));
         radarGraphic.raycastTarget = false;
         radarText = CreateText("RadarText", panel, 10, TextAnchor.LowerCenter, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-12f, 18f), new Vector2(0f, 10f)));
@@ -1201,6 +1820,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             return;
         }
 
+        ApplyResponsiveLayout();
         topWarningText.text = BuildWarningStrip(snapshot);
         for (int i = 0; i < assistTexts.Count; i++)
         {
@@ -1219,6 +1839,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         SetBar(throttleFill, snapshot.Flight.ThrottlePercent / 100f, PrototypeModuleColorPalette.MainThruster);
         SetBar(fuelFill, snapshot.Flight.FuelPercent, snapshot.Flight.FuelPercent <= 0.1f ? PrototypeUiStyle.WarningColor : PrototypeModuleColorPalette.FuelTankCue);
         modeText.text = snapshot.Flight.ControlModeLabel;
+        modeHintText.text = snapshot.Flight.ControlModeHint;
         rcsText.text = snapshot.Flight.RcsLabel;
         sasText.text = snapshot.Flight.SasLabel;
 
@@ -1228,22 +1849,26 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             + snapshot.ShipStatus.RcsLabel + "\n"
             + snapshot.ShipStatus.SasLabel + "\n"
             + snapshot.ShipStatus.WeaponLabel + "\n"
-            + snapshot.ShipStatus.DamageLabel;
+            + snapshot.ShipStatus.DamageLabel
+            + BuildArenaSystemLine(snapshot.Arena);
 
         ApplyContext(snapshot);
         radarText.text = "Range 1 km";
-        if (helpText != null)
+        if (helpText != null && helpPanel != null && helpPanel.activeSelf)
         {
             FlightControlMode activeMode = controller != null ? controller.ControlMode : FlightControlMode.Normal;
-            helpText.text = PrototypePlayerHudSnapshotBuilder.BuildPlayerHelpText(activeMode, includeDebugHelp);
+            if (!hasCachedHelpText || cachedHelpMode != activeMode || cachedHelpIncludesDebug != includeDebugHelp)
+            {
+                cachedHelpMode = activeMode;
+                cachedHelpIncludesDebug = includeDebugHelp;
+                cachedHelpText = PrototypePlayerHudSnapshotBuilder.BuildPlayerHelpText(activeMode, includeDebugHelp);
+                hasCachedHelpText = true;
+            }
+
+            helpText.text = cachedHelpText;
         }
 
-        if (killMomentumButton != null)
-        {
-            killMomentumButton.onClick.RemoveAllListeners();
-            killMomentumButton.onClick.AddListener(() => momentumAssist?.ActivateFromUi());
-            killMomentumButton.interactable = momentumAssist != null;
-        }
+        ConfigureKillMomentumButton();
 
         overlayGraphic.SetSnapshot(snapshot);
         if (radarGraphic != null)
@@ -1253,8 +1878,274 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         UpdateMarkerLabels(snapshot);
     }
 
+    private void ConfigureKillMomentumButton()
+    {
+        if (killMomentumButton == null)
+        {
+            return;
+        }
+
+        killMomentumButton.onClick.RemoveAllListeners();
+        if (momentumAssist == null)
+        {
+            SetKillMomentumButtonState("Assist n/a", false);
+            return;
+        }
+
+        if (momentumAssist.IsActive)
+        {
+            SetKillMomentumButtonState("Abort Assist", true);
+            killMomentumButton.onClick.AddListener(() => momentumAssist.Abort("button"));
+            return;
+        }
+
+        if (momentumAssist.CurrentState == PrototypeMomentumAssistState.NoAuthority)
+        {
+            SetKillMomentumButtonState("No Authority", false);
+            return;
+        }
+
+        if (momentumAssist.CurrentState == PrototypeMomentumAssistState.FuelInsufficient)
+        {
+            SetKillMomentumButtonState("No Fuel", false);
+            return;
+        }
+
+        SetKillMomentumButtonState("Kill Momentum", true);
+        killMomentumButton.onClick.AddListener(() => momentumAssist.ActivateFromUi());
+    }
+
+    private void SetKillMomentumButtonState(string label, bool interactable)
+    {
+        if (killMomentumButtonText != null)
+        {
+            killMomentumButtonText.text = label;
+        }
+
+        killMomentumButton.interactable = interactable;
+    }
+
+    public void ApplyResponsiveLayoutForTests(int width, int height)
+    {
+        ApplyResponsiveLayout(width, height, true);
+    }
+
+    private void ApplyResponsiveLayout()
+    {
+        float match = ApplyCanvasScalePolicy(Screen.width, Screen.height);
+        float scale = CalculateCanvasScaleFactor(Screen.width, Screen.height, match);
+        int width = Mathf.RoundToInt(Screen.width / scale);
+        int height = Mathf.RoundToInt(Screen.height / scale);
+        ApplyResponsiveLayout(width, height, false);
+    }
+
+    private void ApplyResponsiveLayout(int width, int height, bool force)
+    {
+        if (topStripRect == null || bottomBarRect == null || systemPanelRect == null || contextPanelRect == null || radarPanelRect == null)
+        {
+            return;
+        }
+
+        if (force && canvas != null)
+        {
+            if (canvasScaler != null)
+            {
+                canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ConstantPixelSize;
+                canvasScaler.scaleFactor = 1f;
+            }
+
+            RectTransform canvasRect = canvas.GetComponent<RectTransform>();
+            if (canvasRect != null)
+            {
+                canvasRect.anchorMin = Vector2.zero;
+                canvasRect.anchorMax = Vector2.zero;
+                canvasRect.pivot = Vector2.zero;
+                canvasRect.sizeDelta = new Vector2(width, height);
+                canvasRect.anchoredPosition = Vector2.zero;
+            }
+        }
+
+        if (!force && width == lastLayoutWidth && height == lastLayoutHeight)
+        {
+            return;
+        }
+
+        lastLayoutWidth = width;
+        lastLayoutHeight = height;
+
+        float safeWidth = Mathf.Max(640f, width);
+        float safeHeight = Mathf.Max(480f, height);
+        bool narrow = safeWidth < 980f;
+        bool shortScreen = safeHeight < 620f;
+        float margin = narrow ? 16f : 24f;
+        float gap = narrow ? 12f : 16f;
+        float bottomHeight = narrow ? 82f : 76f;
+        float bottomOffset = narrow ? 26f : 36f;
+        float bottomWidth = Mathf.Clamp(safeWidth - (margin * 2f), 608f, 760f);
+        float sideBottom = bottomOffset + bottomHeight + (shortScreen ? 10f : gap);
+        float systemHeight = shortScreen ? 112f : 128f;
+        float contextHeight = shortScreen ? 160f : 194f;
+        float radarSize = narrow ? (shortScreen ? 112f : 144f) : 170f;
+        float availableRadarHeight = safeHeight - margin - (sideBottom + contextHeight) - gap;
+        if (availableRadarHeight < radarSize)
+        {
+            radarSize = Mathf.Clamp(availableRadarHeight, 96f, radarSize);
+        }
+
+        float sideAvailableWidth = safeWidth - (margin * 2f) - gap;
+        float systemWidth = narrow ? 220f : 248f;
+        float contextWidth = narrow ? 306f : 356f;
+        if (systemWidth + contextWidth > sideAvailableWidth)
+        {
+            systemWidth = Mathf.Clamp(sideAvailableWidth * 0.42f, 156f, systemWidth);
+            contextWidth = Mathf.Clamp(sideAvailableWidth - systemWidth - gap, 220f, contextWidth);
+        }
+
+        float radarLeft = safeWidth - margin - radarSize;
+        bool dockTopLeft = safeWidth < 1040f || shortScreen;
+        float topWidth = dockTopLeft
+            ? Mathf.Clamp(radarLeft - margin - gap, 300f, 620f)
+            : Mathf.Clamp(safeWidth - 360f, 420f, 620f);
+
+        if (dockTopLeft)
+        {
+            ApplyRect(topStripRect, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(topWidth, 42f), new Vector2(margin, -margin));
+        }
+        else
+        {
+            ApplyRect(topStripRect, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(topWidth, 42f), new Vector2(0f, -margin));
+        }
+
+        ApplyAssistChipLayout(topWidth);
+        ApplyRect(bottomBarRect, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(bottomWidth, bottomHeight), new Vector2(0f, bottomOffset));
+        ApplyBottomBarChildLayout(bottomWidth, narrow);
+        ApplyRect(systemPanelRect, new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(systemWidth, systemHeight), new Vector2(margin, sideBottom));
+        ApplyRect(contextPanelRect, new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(contextWidth, contextHeight), new Vector2(-margin, sideBottom));
+        ApplyRect(radarPanelRect, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(radarSize, radarSize), new Vector2(-margin, -margin));
+    }
+
+    private float ApplyCanvasScalePolicy(int screenWidth, int screenHeight)
+    {
+        float aspect = screenHeight > 0 ? screenWidth / (float)screenHeight : CanvasReferenceWidth / CanvasReferenceHeight;
+        float match = 0.5f;
+        if (aspect < 1.55f)
+        {
+            match = 0f;
+        }
+        else if (aspect > 2.15f)
+        {
+            match = 1f;
+        }
+
+        if (canvasScaler != null)
+        {
+            canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            canvasScaler.referenceResolution = new Vector2(CanvasReferenceWidth, CanvasReferenceHeight);
+            canvasScaler.matchWidthOrHeight = match;
+        }
+
+        return match;
+    }
+
+    private static float CalculateCanvasScaleFactor(int screenWidth, int screenHeight, float matchWidthOrHeight)
+    {
+        float widthScale = Mathf.Max(0.001f, screenWidth / CanvasReferenceWidth);
+        float heightScale = Mathf.Max(0.001f, screenHeight / CanvasReferenceHeight);
+        float logWidth = Mathf.Log(widthScale, 2f);
+        float logHeight = Mathf.Log(heightScale, 2f);
+        return Mathf.Pow(2f, Mathf.Lerp(logWidth, logHeight, Mathf.Clamp01(matchWidthOrHeight)));
+    }
+
+    private void ApplyAssistChipLayout(float topWidth)
+    {
+        float chipGap = 8f;
+        float chipWidth = Mathf.Clamp((topWidth - 28f - (chipGap * 2f)) / 3f, 86f, 160f);
+        for (int i = 0; i < assistTexts.Count; i++)
+        {
+            RectTransform rect = assistTexts[i].rectTransform;
+            ApplyRect(rect, new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(chipWidth, 18f), new Vector2(14f + (i * (chipWidth + chipGap)), 3f));
+            assistTexts[i].fontSize = chipWidth < 118f ? 9 : 11;
+        }
+    }
+
+    private void ApplyBottomBarChildLayout(float bottomWidth, bool narrow)
+    {
+        bool compact = narrow || bottomWidth < 700f;
+        RectTransform throttleBar = throttleFill != null ? throttleFill.transform.parent as RectTransform : null;
+        RectTransform fuelBar = fuelFill != null ? fuelFill.transform.parent as RectTransform : null;
+        RectTransform buttonRect = killMomentumButton != null ? killMomentumButton.GetComponent<RectTransform>() : null;
+
+        if (compact)
+        {
+            speedText.fontSize = 16;
+            throttleText.fontSize = 10;
+            fuelText.fontSize = 10;
+            modeText.fontSize = 12;
+            modeHintText.fontSize = 9;
+            rcsText.fontSize = 10;
+            sasText.fontSize = 10;
+            ApplyRect(speedText.rectTransform, new Vector2(0f, 0f), new Vector2(0f, 1f), new Vector2(0f, 0.5f), new Vector2(96f, -12f), new Vector2(12f, 0f));
+            ApplyRect(throttleText.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(112f, 24f), new Vector2(118f, 12f));
+            ApplyRect(fuelText.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(104f, 24f), new Vector2(240f, 12f));
+            ApplyRect(throttleBar, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(104f, 6f), new Vector2(118f, -14f));
+            ApplyRect(fuelBar, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(96f, 6f), new Vector2(240f, -14f));
+            ApplyRect(modeText.rectTransform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(92f, 24f), new Vector2(-110f, 16f));
+            ApplyRect(modeHintText.rectTransform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(156f, 16f), new Vector2(-126f, -36f));
+            ApplyRect(rcsText.rectTransform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(66f, 20f), new Vector2(-176f, -14f));
+            ApplyRect(sasText.rectTransform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(66f, 20f), new Vector2(-102f, -14f));
+            ApplyRect(buttonRect, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(92f, 24f), new Vector2(-10f, 16f));
+            return;
+        }
+
+        speedText.fontSize = 19;
+        throttleText.fontSize = 12;
+        fuelText.fontSize = 12;
+        modeText.fontSize = 14;
+        modeHintText.fontSize = 10;
+        rcsText.fontSize = 12;
+        sasText.fontSize = 12;
+        ApplyRect(speedText.rectTransform, new Vector2(0f, 0f), new Vector2(0f, 1f), new Vector2(0f, 0.5f), new Vector2(132f, -12f), new Vector2(16f, 0f));
+        ApplyRect(throttleText.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(144f, 30f), new Vector2(158f, 12f));
+        ApplyRect(fuelText.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(144f, 30f), new Vector2(314f, 12f));
+        ApplyRect(throttleBar, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(134f, 6f), new Vector2(158f, -14f));
+        ApplyRect(fuelBar, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(134f, 6f), new Vector2(314f, -14f));
+        ApplyRect(modeText.rectTransform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(132f, 28f), new Vector2(-152f, 14f));
+        ApplyRect(modeHintText.rectTransform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(260f, 18f), new Vector2(-152f, -36f));
+        ApplyRect(rcsText.rectTransform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(104f, 22f), new Vector2(-180f, -16f));
+        ApplyRect(sasText.rectTransform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(104f, 22f), new Vector2(-70f, -16f));
+        ApplyRect(buttonRect, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(124f, 24f), new Vector2(-16f, 16f));
+    }
+
+    private static void ApplyRect(RectTransform rect, Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot, Vector2 sizeDelta, Vector2 anchoredPosition)
+    {
+        if (rect == null)
+        {
+            return;
+        }
+
+        rect.anchorMin = anchorMin;
+        rect.anchorMax = anchorMax;
+        rect.pivot = pivot;
+        rect.sizeDelta = sizeDelta;
+        rect.anchoredPosition = anchoredPosition;
+    }
+
     private void ApplyContext(PrototypePlayerHudSnapshot snapshot)
     {
+        if (snapshot.Arena.Completed)
+        {
+            contextTitleText.text = "Arena: " + snapshot.Arena.ObjectiveName;
+            contextBodyText.text =
+                snapshot.Arena.StatusLabel + " | Targets " + snapshot.Arena.ProgressLabel + "\n"
+                + snapshot.Arena.RewardStubLabel + "\n"
+                + "Reset arena to replay";
+            contextBodyText.color = PrototypeUiStyle.ActiveColor;
+            SetContextGauge(0, "Objective", snapshot.Arena.ProgressFraction, PrototypeUiStyle.ActiveColor, true);
+            SetContextGauge(1, string.Empty, 0f, Color.white, false);
+            SetContextGauge(2, string.Empty, 0f, Color.white, false);
+            return;
+        }
+
         if (snapshot.Docking.Visible)
         {
             contextTitleText.text = "Docking: " + snapshot.Docking.TargetName;
@@ -1262,9 +2153,13 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
                 "Dist " + FormatDistance(snapshot.Docking.DistanceMeters) + " | Angle " + snapshot.Docking.AngleErrorDegrees.ToString("0.0") + " deg\n"
                 + "Rel " + snapshot.Docking.RelativeSpeed.ToString("0.0") + " m/s | Closing " + snapshot.Docking.ClosingSpeed.ToString("0.0") + " m/s\n"
                 + "Offset " + snapshot.Docking.LateralOffsetMeters.x.ToString("0.0") + " / " + snapshot.Docking.LateralOffsetMeters.y.ToString("0.0") + " m\n"
-                + snapshot.Docking.StatusLabel + "\n"
+                + (snapshot.Docking.SoftCaptureRequested ? snapshot.Docking.SoftCaptureLabel : snapshot.Docking.StatusLabel) + "\n"
+                + snapshot.Docking.SoftCaptureAssistLabel + "\n"
                 + snapshot.Docking.HardLockLabel;
             contextBodyText.color = ColorForSeverity(snapshot.Docking.StatusSeverity);
+            SetContextGauge(0, "Distance", 1f - snapshot.Docking.DistanceRatio, ColorForSeverity(snapshot.Docking.StatusSeverity), true);
+            SetContextGauge(1, "Align", 1f - snapshot.Docking.AngleRatio, ColorForSeverity(snapshot.Docking.StatusSeverity), true);
+            SetContextGauge(2, "Speed", 1f - snapshot.Docking.SpeedRatio, ColorForSeverity(snapshot.Docking.StatusSeverity), true);
             return;
         }
 
@@ -1277,6 +2172,9 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
                 + snapshot.Combat.AutoFireLabel + "\n"
                 + "Priority " + snapshot.Combat.PriorityLabel;
             contextBodyText.color = ColorForSeverity(snapshot.Combat.FireSeverity);
+            SetContextGauge(0, "Integrity", snapshot.Combat.HealthPercent, ColorForSeverity(snapshot.Combat.FireSeverity), true);
+            SetContextGauge(1, string.Empty, 0f, Color.white, false);
+            SetContextGauge(2, string.Empty, 0f, Color.white, false);
             return;
         }
 
@@ -1284,17 +2182,60 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         {
             contextTitleText.text = "Navigation: " + snapshot.Navigation.TargetName;
             contextBodyText.text =
-                "Dist " + FormatDistance(snapshot.Navigation.DistanceMeters) + " | ETA " + snapshot.Navigation.EtaLabel + "\n"
+                snapshot.Navigation.TargetTypeLabel + " | Dist " + FormatDistance(snapshot.Navigation.DistanceMeters) + " | ETA " + snapshot.Navigation.EtaLabel + "\n"
                 + "Closing " + snapshot.Navigation.ClosingSpeed.ToString("0.0") + " m/s | Lateral " + snapshot.Navigation.LateralSpeed.ToString("0.0") + " m/s\n"
                 + snapshot.Navigation.StateLabel + "\n"
-                + snapshot.Navigation.PhaseLabel;
+                + snapshot.Navigation.PhaseLabel
+                + (string.IsNullOrWhiteSpace(snapshot.Navigation.AvoidanceLabel) ? string.Empty : "\n" + snapshot.Navigation.AvoidanceLabel)
+                + (snapshot.Navigation.TrajectoryPreview.Enabled ? "\n" + snapshot.Navigation.TrajectoryPreview.StatusLabel : string.Empty);
             contextBodyText.color = PrototypeUiStyle.MutedColor;
+            SetContextGauge(0, snapshot.Navigation.RouteWorldPoints.Length > 1 ? "Route" : string.Empty, snapshot.Navigation.RouteWorldPoints.Length > 1 ? 1f : 0f, PrototypeModuleColorPalette.Target, snapshot.Navigation.RouteWorldPoints.Length > 1);
+            SetContextGauge(1, snapshot.Navigation.HasAvoidanceCue ? "Avoid" : string.Empty, snapshot.Navigation.HasAvoidanceCue ? 1f : 0f, PrototypeUiStyle.WarningColor, snapshot.Navigation.HasAvoidanceCue);
+            SetContextGauge(2, snapshot.Navigation.TrajectoryPreview.HasRenderablePoints ? "Preview" : string.Empty, snapshot.Navigation.TrajectoryPreview.HasRenderablePoints ? 1f : 0f, new Color(1f, 0.72f, 0.22f, 0.95f), snapshot.Navigation.TrajectoryPreview.HasRenderablePoints);
             return;
         }
 
         contextTitleText.text = "Navigation";
-        contextBodyText.text = "No target\nTab next target | B previous target\nG Autopilot | Space fire";
+        contextBodyText.text = "Kein Navigationsziel";
         contextBodyText.color = PrototypeUiStyle.MutedColor;
+        HideContextGauges();
+    }
+
+    private static string BuildArenaSystemLine(PrototypePveArenaSnapshot arena)
+    {
+        if (!arena.IsVisible)
+        {
+            return string.Empty;
+        }
+
+        string line = "\nArena: " + arena.ObjectiveName + " " + arena.ProgressLabel + " " + arena.StatusLabel;
+        return arena.Completed ? line + " | " + arena.RewardStubLabel : line;
+    }
+
+    private void HideContextGauges()
+    {
+        for (int i = 0; i < contextGaugeFills.Count; i++)
+        {
+            SetContextGauge(i, string.Empty, 0f, Color.white, false);
+        }
+    }
+
+    private void SetContextGauge(int index, string label, float normalized, Color color, bool visible)
+    {
+        if (index < 0 || index >= contextGaugeFills.Count || index >= contextGaugeLabels.Count)
+        {
+            return;
+        }
+
+        contextGaugeLabels[index].gameObject.SetActive(visible);
+        contextGaugeFills[index].transform.parent.gameObject.SetActive(visible);
+        if (!visible)
+        {
+            return;
+        }
+
+        contextGaugeLabels[index].text = label;
+        SetBar(contextGaugeFills[index], normalized, color);
     }
 
     private void UpdateMarkerLabels(PrototypePlayerHudSnapshot snapshot)
@@ -1323,7 +2264,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     {
         if (snapshot.Warnings.Length == 0)
         {
-            return snapshot.AssistChips.Length > 0 ? snapshot.AssistChips[0].Label : "Flight nominal";
+            return "Flight nominal";
         }
 
         int chipCount = Mathf.Min(3, snapshot.Warnings.Length);
@@ -1423,12 +2364,23 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         EventSystem[] eventSystems = UnityEngine.Object.FindObjectsByType<EventSystem>(FindObjectsInactive.Exclude);
         if (eventSystems != null && eventSystems.Length > 0)
         {
+            EnsureCompatibleInputModule(eventSystems[0]);
             return;
         }
 
         GameObject eventSystemObject = new GameObject("PrototypePlayerHudEventSystem");
         eventSystemObject.AddComponent<EventSystem>();
         eventSystemObject.AddComponent<InputSystemUIInputModule>();
+    }
+
+    private static void EnsureCompatibleInputModule(EventSystem eventSystem)
+    {
+        if (eventSystem == null || eventSystem.GetComponent<InputSystemUIInputModule>() != null)
+        {
+            return;
+        }
+
+        eventSystem.gameObject.AddComponent<InputSystemUIInputModule>();
     }
 
     private void SetHelpVisible(bool visible)
@@ -1504,6 +2456,36 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             Vector2 target = WorldToRadarGui(center, radius, snapshot.ShipWorldPosition, snapshot.NavigationTargetWorldPosition.Value);
             DrawLineGui(center, target, PrototypeModuleColorPalette.Target, 1f);
             DrawBlipGui(target, PrototypeModuleColorPalette.Target);
+        }
+
+        Vector3[] route = snapshot.Navigation.RouteWorldPoints;
+        if (route != null && route.Length > 1)
+        {
+            Vector2 previous = WorldToRadarGui(center, radius, snapshot.ShipWorldPosition, route[0]);
+            for (int i = 1; i < route.Length; i++)
+            {
+                Vector2 next = WorldToRadarGui(center, radius, snapshot.ShipWorldPosition, route[i]);
+                DrawLineGui(previous, next, PrototypeModuleColorPalette.Target, 1f);
+                previous = next;
+            }
+        }
+
+        Vector3[] previewRoute = snapshot.Navigation.TrajectoryPreview.Points;
+        if (snapshot.Navigation.TrajectoryPreview.HasRenderablePoints && previewRoute != null && previewRoute.Length > 1)
+        {
+            Color previewColor = new Color(1f, 0.72f, 0.22f, 0.95f);
+            Vector2 previous = WorldToRadarGui(center, radius, snapshot.ShipWorldPosition, previewRoute[0]);
+            for (int i = 1; i < previewRoute.Length; i++)
+            {
+                Vector2 next = WorldToRadarGui(center, radius, snapshot.ShipWorldPosition, previewRoute[i]);
+                DrawLineGui(previous, next, previewColor, 1.3f);
+                previous = next;
+            }
+        }
+
+        if (snapshot.Navigation.HasAvoidanceCue)
+        {
+            DrawBlipGui(WorldToRadarGui(center, radius, snapshot.ShipWorldPosition, snapshot.Navigation.AvoidanceWorldPosition), PrototypeUiStyle.WarningColor);
         }
 
         if (snapshot.CombatTargetWorldPosition.HasValue)
@@ -1660,6 +2642,36 @@ public sealed class PrototypePlayerHudOverlayGraphic : MaskableGraphic
             DrawLine(vh, radarCenter, ClampRadarPoint(radarCenter, radius, value.ShipWorldPosition, value.NavigationTargetWorldPosition.Value), PrototypeModuleColorPalette.Target, 1f);
         }
 
+        Vector3[] route = value.Navigation.RouteWorldPoints;
+        if (route != null && route.Length > 1)
+        {
+            Vector2 previous = ClampRadarPoint(radarCenter, radius, value.ShipWorldPosition, route[0]);
+            for (int i = 1; i < route.Length; i++)
+            {
+                Vector2 next = ClampRadarPoint(radarCenter, radius, value.ShipWorldPosition, route[i]);
+                DrawLine(vh, previous, next, PrototypeModuleColorPalette.Target, 1f);
+                previous = next;
+            }
+        }
+
+        Vector3[] previewRoute = value.Navigation.TrajectoryPreview.Points;
+        if (value.Navigation.TrajectoryPreview.HasRenderablePoints && previewRoute != null && previewRoute.Length > 1)
+        {
+            Color previewColor = new Color(1f, 0.72f, 0.22f, 0.95f);
+            Vector2 previous = ClampRadarPoint(radarCenter, radius, value.ShipWorldPosition, previewRoute[0]);
+            for (int i = 1; i < previewRoute.Length; i++)
+            {
+                Vector2 next = ClampRadarPoint(radarCenter, radius, value.ShipWorldPosition, previewRoute[i]);
+                DrawLine(vh, previous, next, previewColor, 1.2f);
+                previous = next;
+            }
+        }
+
+        if (value.Navigation.HasAvoidanceCue)
+        {
+            DrawRadarBlip(vh, radarCenter, radius, value.ShipWorldPosition, value.Navigation.AvoidanceWorldPosition, PrototypeUiStyle.WarningColor);
+        }
+
         if (value.CombatTargetWorldPosition.HasValue)
         {
             DrawRadarBlip(vh, radarCenter, radius, value.ShipWorldPosition, value.CombatTargetWorldPosition.Value, PrototypeModuleColorPalette.Gun);
@@ -1781,6 +2793,23 @@ public sealed class PrototypePlayerHudRadarGraphic : MaskableGraphic
             Vector2 target = ClampRadarPoint(center, radius, snapshot.ShipWorldPosition, snapshot.NavigationTargetWorldPosition.Value);
             DrawLine(vh, center, target, PrototypeModuleColorPalette.Target, 1f);
             DrawBlip(vh, target, PrototypeModuleColorPalette.Target);
+        }
+
+        Vector3[] route = snapshot.Navigation.RouteWorldPoints;
+        if (route != null && route.Length > 1)
+        {
+            Vector2 previous = ClampRadarPoint(center, radius, snapshot.ShipWorldPosition, route[0]);
+            for (int i = 1; i < route.Length; i++)
+            {
+                Vector2 next = ClampRadarPoint(center, radius, snapshot.ShipWorldPosition, route[i]);
+                DrawLine(vh, previous, next, PrototypeModuleColorPalette.Target, 1f);
+                previous = next;
+            }
+        }
+
+        if (snapshot.Navigation.HasAvoidanceCue)
+        {
+            DrawBlip(vh, ClampRadarPoint(center, radius, snapshot.ShipWorldPosition, snapshot.Navigation.AvoidanceWorldPosition), PrototypeUiStyle.WarningColor);
         }
 
         if (snapshot.CombatTargetWorldPosition.HasValue)

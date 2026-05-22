@@ -113,6 +113,19 @@ public class ShipPhysicsCore : MonoBehaviour
         return true;
     }
 
+    public bool ApplyTorque(Vector3 torque, ForceMode mode = ForceMode.Force)
+    {
+        ResolveReferences();
+        if (shipRigidbody == null || torque.sqrMagnitude <= 0.0001f)
+        {
+            return false;
+        }
+
+        shipRigidbody.AddTorque(torque, mode);
+        RecordAppliedWrench(Vector3.zero, torque, mode);
+        return true;
+    }
+
     public ShipWrench EstimateForceAtPosition(Vector3 force, Vector3 position)
     {
         ResolveReferences();

@@ -106,6 +106,7 @@ public class PrototypePhysicsValidationTests
     {
         using (PhysicsValidationProbe.GeneratedShipFixture fixture = PhysicsValidationProbe.CreateGeneratedShip())
         {
+            fixture.Rcs.SetSolverMode(RcsSolverMode.ExperimentalPhysicalNozzles);
             PhysicsValidationProbe.RcsResult translation = PhysicsValidationProbe.RunRcs(fixture, Vector3.right, Vector3.zero);
             Assert.That(translation.force.x, Is.GreaterThan(8000f));
             Assert.That(Vector3.Distance(translation.force, translation.actualForce), Is.LessThan(PhysicsValidationProbe.ForceTolerance));
@@ -134,6 +135,7 @@ public class PrototypePhysicsValidationTests
     {
         using (PhysicsValidationProbe.GeneratedShipFixture fixture = PhysicsValidationProbe.CreateGeneratedShip())
         {
+            fixture.Rcs.SetSolverMode(RcsSolverMode.ExperimentalPhysicalNozzles);
             PhysicsValidationProbe.RcsResult result = PhysicsValidationProbe.RunRcs(fixture, Vector3.right, Vector3.up);
             float expectedFuel = 0.6f * result.allocatedThrottleTotal * 0.02f;
 

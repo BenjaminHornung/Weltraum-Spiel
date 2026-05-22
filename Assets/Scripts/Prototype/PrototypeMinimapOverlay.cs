@@ -9,6 +9,7 @@ public class PrototypeMinimapOverlay : MonoBehaviour
     [SerializeField] private Rigidbody targetRigidbody;
     [SerializeField] private PrototypeTestEnvironment environment;
     [SerializeField] private PrototypeWaypointAutopilot navigationAutopilot;
+    [SerializeField] private PrototypeTrajectoryPreviewNavMap trajectoryPreview;
     [SerializeField] private bool showLabels;
     [SerializeField] private bool showTargets = true;
     [SerializeField] private bool showBeacons = true;
@@ -27,9 +28,11 @@ public class PrototypeMinimapOverlay : MonoBehaviour
     public Transform Target => target;
     public PrototypeTestEnvironment Environment => environment;
     public PrototypeWaypointAutopilot NavigationAutopilot => navigationAutopilot;
+    public PrototypeTrajectoryPreviewNavMap TrajectoryPreview => trajectoryPreview;
     public bool ShowLabels => showLabels;
     public float CurrentZoomMeters => ZoomLevels[Mathf.Clamp(zoomIndex, 0, ZoomLevels.Length - 1)];
     public bool LastRouteUsedAvoidance { get; private set; }
+    public PrototypeTrajectoryPreviewStatus LastTrajectoryPreviewStatus { get; private set; } = PrototypeTrajectoryPreviewStatus.Disabled;
 
     private void Start()
     {
@@ -63,12 +66,26 @@ public class PrototypeMinimapOverlay : MonoBehaviour
         targetRigidbody = body != null ? body : (trackTarget != null ? trackTarget.GetComponent<Rigidbody>() : null);
         environment = sourceEnvironment != null ? sourceEnvironment : environment;
         navigationAutopilot = trackTarget != null ? trackTarget.GetComponent<PrototypeWaypointAutopilot>() : navigationAutopilot;
+        trajectoryPreview = trackTarget != null ? trackTarget.GetComponent<PrototypeTrajectoryPreviewNavMap>() : trajectoryPreview;
         ResolveReferences();
     }
 
     public void BindNavigationAutopilot(PrototypeWaypointAutopilot autopilot)
     {
         navigationAutopilot = autopilot;
+    }
+
+    public void BindTrajectoryPreview(PrototypeTrajectoryPreviewNavMap preview)
+    {
+        trajectoryPreview = preview != null ? preview : trajectoryPreview;
+    }
+
+    public void SetTrajectoryPreviewVisible(bool visible)
+    {
+        if (trajectoryPreview != null)
+        {
+            trajectoryPreview.SetPreviewEnabled(visible);
+        }
     }
 
     public void SetWindowVisible(bool visible)
@@ -116,6 +133,11 @@ public class PrototypeMinimapOverlay : MonoBehaviour
         if (target != null && navigationAutopilot == null)
         {
             navigationAutopilot = target.GetComponent<PrototypeWaypointAutopilot>();
+        }
+
+        if (target != null && trajectoryPreview == null)
+        {
+            trajectoryPreview = target.GetComponent<PrototypeTrajectoryPreviewNavMap>();
         }
 
         if (environment == null)
@@ -200,6 +222,19 @@ public class PrototypeMinimapOverlay : MonoBehaviour
         showStation = GUILayout.Toggle(showStation, "Station");
         showObstacles = GUILayout.Toggle(showObstacles, "Obstacles");
         GUILayout.EndHorizontal();
+
+        if (trajectoryPreview != null)
+        {
+            GUILayout.BeginHorizontal();
+            bool nextPreview = GUILayout.Toggle(trajectoryPreview.PreviewEnabled, "Trajectory");
+            if (nextPreview != trajectoryPreview.PreviewEnabled)
+            {
+                trajectoryPreview.SetPreviewEnabled(nextPreview);
+            }
+
+            GUILayout.Label(trajectoryPreview.LastSnapshot.StatusLabel, smallLabelStyle);
+            GUILayout.EndHorizontal();
+        }
     }
 
     private bool ShouldRenderPoint(PrototypeEnvironmentPointKind kind)
@@ -236,6 +271,7 @@ public class PrototypeMinimapOverlay : MonoBehaviour
         DrawRangeRings(center, radius);
         DrawEnvironmentPoints(mapRect, center, radius);
         DrawNavigationRoute(mapRect, center, radius);
+        DrawTrajectoryPreview(mapRect, center, radius);
         DrawShip(center, radius);
 
         GUI.Label(new Rect(mapRect.x + 8f, mapRect.yMax - 22f, mapRect.width - 16f, 18f), "XZ radar centered on ship", smallLabelStyle);
@@ -345,13 +381,35 @@ public class PrototypeMinimapOverlay : MonoBehaviour
 
     private void DrawPredictedRoute(Rect mapRect, Vector2 center, float radius, Vector3[] route)
     {
-        Color predictedColor = new Color(0.75f, 1f, 0.45f, 0.82f);
+        DrawPredictedRoute(mapRect, center, radius, route, new Color(0.75f, 1f, 0.45f, 0.82f));
+    }
+
+    private void DrawPredictedRoute(Rect mapRect, Vector2 center, float radius, Vector3[] route, Color predictedColor)
+    {
         for (int i = 1; i < route.Length; i++)
         {
             Vector2 previous = WorldToMap(route[i - 1], center, radius);
             Vector2 next = WorldToMap(route[i], center, radius);
             DrawClippedRouteSegment(mapRect, previous, next, predictedColor);
         }
+    }
+
+    private void DrawTrajectoryPreview(Rect mapRect, Vector2 center, float radius)
+    {
+        if (trajectoryPreview == null)
+        {
+            LastTrajectoryPreviewStatus = PrototypeTrajectoryPreviewStatus.Unavailable;
+            return;
+        }
+
+        PrototypeTrajectoryPreviewSnapshot snapshot = trajectoryPreview.RefreshPreview();
+        LastTrajectoryPreviewStatus = snapshot.Status;
+        if (!snapshot.HasRenderablePoints)
+        {
+            return;
+        }
+
+        DrawPredictedRoute(mapRect, center, radius, snapshot.Points, new Color(1f, 0.72f, 0.22f, 0.95f));
     }
 
     private void DrawObstacleClearance(Rect mapRect, Vector2 center, float radius, PrototypeTrajectoryPlan plan)

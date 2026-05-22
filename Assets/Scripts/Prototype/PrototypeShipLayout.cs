@@ -39,6 +39,21 @@ public sealed class PrototypeShipLayout
         return new PrototypeShipLayout();
     }
 
+    public static PrototypeShipLayout FromEntries(
+        PrototypeModuleLayoutEntry[] moduleEntries,
+        PrototypeMainThrusterLayoutEntry[] mainThrusterEntries,
+        PrototypeRcsBlockLayoutEntry[] rcsBlockEntries,
+        PrototypeGunLayoutEntry[] gunEntries)
+    {
+        return new PrototypeShipLayout
+        {
+            modules = moduleEntries ?? Array.Empty<PrototypeModuleLayoutEntry>(),
+            mainThrusters = mainThrusterEntries ?? Array.Empty<PrototypeMainThrusterLayoutEntry>(),
+            rcsBlocks = rcsBlockEntries ?? Array.Empty<PrototypeRcsBlockLayoutEntry>(),
+            guns = gunEntries ?? Array.Empty<PrototypeGunLayoutEntry>()
+        };
+    }
+
     public static PrototypeShipLayout DualMainThruster()
     {
         return new PrototypeShipLayout
@@ -136,14 +151,19 @@ public struct PrototypeModuleLayoutEntry
     }
 
     public PrototypeModuleLayoutEntry(string moduleId, Vector3 localPosition, Vector3 localScale, PrototypeModuleMassRole massRole, float dryMassKg)
+        : this(moduleId, localPosition, Vector3.zero, localScale, massRole, dryMassKg, massRole == PrototypeModuleMassRole.FuelTank)
+    {
+    }
+
+    public PrototypeModuleLayoutEntry(string moduleId, Vector3 localPosition, Vector3 localEulerAngles, Vector3 localScale, PrototypeModuleMassRole massRole, float dryMassKg, bool usesCurrentShipFuel)
     {
         this.moduleId = moduleId;
         this.massRole = massRole;
         this.localPosition = localPosition;
-        localEulerAngles = Vector3.zero;
+        this.localEulerAngles = localEulerAngles;
         this.localScale = localScale;
         massBoxSize = localScale;
-        usesCurrentShipFuel = massRole == PrototypeModuleMassRole.FuelTank;
+        this.usesCurrentShipFuel = usesCurrentShipFuel;
         this.dryMassKg = Mathf.Max(0f, dryMassKg);
     }
 
@@ -167,6 +187,7 @@ public struct PrototypeMainThrusterLayoutEntry
     [SerializeField] private Vector3 nozzleLocalPosition;
     [SerializeField] private Vector3 nozzleLocalEulerAngles;
     [SerializeField] private PrototypeMainThrusterSettings settings;
+    [SerializeField] private float dryMassKg;
 
     public string ModuleId => string.IsNullOrWhiteSpace(moduleId) ? "MainThrusterGimbal" : moduleId;
     public string NozzleId => string.IsNullOrWhiteSpace(nozzleId) ? "MainThrusterNozzle" : nozzleId;
@@ -176,17 +197,33 @@ public struct PrototypeMainThrusterLayoutEntry
     public Vector3 NozzleLocalPosition => nozzleLocalPosition;
     public Vector3 NozzleLocalEulerAngles => nozzleLocalEulerAngles;
     public PrototypeMainThrusterSettings Settings => settings.thrustForce > 0f ? settings : PrototypeMainThrusterSettings.Default;
+    public float DryMassKg => Mathf.Max(0f, dryMassKg);
+    public bool HasDryMassOverride => dryMassKg > 0f;
 
     public PrototypeMainThrusterLayoutEntry(string moduleId, string nozzleId, Vector3 localPosition, Vector3 localScale, Vector3 nozzleLocalPosition)
+        : this(moduleId, nozzleId, localPosition, Vector3.zero, localScale, nozzleLocalPosition, Vector3.zero, 0f)
+    {
+    }
+
+    public PrototypeMainThrusterLayoutEntry(
+        string moduleId,
+        string nozzleId,
+        Vector3 localPosition,
+        Vector3 localEulerAngles,
+        Vector3 localScale,
+        Vector3 nozzleLocalPosition,
+        Vector3 nozzleLocalEulerAngles,
+        float dryMassKg)
     {
         this.moduleId = moduleId;
         this.nozzleId = nozzleId;
         this.localPosition = localPosition;
-        localEulerAngles = Vector3.zero;
+        this.localEulerAngles = localEulerAngles;
         this.localScale = localScale;
         this.nozzleLocalPosition = nozzleLocalPosition;
-        nozzleLocalEulerAngles = Vector3.zero;
+        this.nozzleLocalEulerAngles = nozzleLocalEulerAngles;
         settings = PrototypeMainThrusterSettings.Default;
+        this.dryMassKg = Mathf.Max(0f, dryMassKg);
     }
 
     private static Vector3 ClampVector(Vector3 value, float minimum)
@@ -207,6 +244,7 @@ public struct PrototypeRcsBlockLayoutEntry
     [SerializeField] private Vector3 localScale;
     [SerializeField] private Vector3 blockedLocalDirection;
     [SerializeField] private PrototypeRcsSettings settings;
+    [SerializeField] private float dryMassKg;
 
     public string BlockId => string.IsNullOrWhiteSpace(blockId) ? "RCS_Block" : blockId;
     public Vector3 LocalPosition => localPosition;
@@ -214,15 +252,23 @@ public struct PrototypeRcsBlockLayoutEntry
     public Vector3 LocalScale => ClampVector(localScale, 0.01f);
     public Vector3 BlockedLocalDirection => blockedLocalDirection == Vector3.zero ? Vector3.down : blockedLocalDirection.normalized;
     public PrototypeRcsSettings Settings => settings.blockThrust > 0f ? settings : PrototypeRcsSettings.Default;
+    public float DryMassKg => Mathf.Max(0f, dryMassKg);
+    public bool HasDryMassOverride => dryMassKg > 0f;
 
     public PrototypeRcsBlockLayoutEntry(string blockId, Vector3 localPosition, Vector3 localScale, Vector3 blockedLocalDirection)
+        : this(blockId, localPosition, Vector3.zero, localScale, blockedLocalDirection, 0f)
+    {
+    }
+
+    public PrototypeRcsBlockLayoutEntry(string blockId, Vector3 localPosition, Vector3 localEulerAngles, Vector3 localScale, Vector3 blockedLocalDirection, float dryMassKg)
     {
         this.blockId = blockId;
         this.localPosition = localPosition;
-        localEulerAngles = Vector3.zero;
+        this.localEulerAngles = localEulerAngles;
         this.localScale = localScale;
         this.blockedLocalDirection = blockedLocalDirection;
         settings = PrototypeRcsSettings.Default;
+        this.dryMassKg = Mathf.Max(0f, dryMassKg);
     }
 
     private static Vector3 ClampVector(Vector3 value, float minimum)
@@ -245,6 +291,7 @@ public struct PrototypeGunLayoutEntry
     [SerializeField] private Vector3 muzzleLocalPosition;
     [SerializeField] private Vector3 muzzleLocalEulerAngles;
     [SerializeField] private PrototypeGunSettings settings;
+    [SerializeField] private float dryMassKg;
 
     public string ModuleId => string.IsNullOrWhiteSpace(moduleId) ? "Gun" : moduleId;
     public Vector3 LocalPosition => localPosition;
@@ -254,17 +301,33 @@ public struct PrototypeGunLayoutEntry
     public Vector3 MuzzleLocalPosition => muzzleLocalPosition;
     public Vector3 MuzzleLocalEulerAngles => muzzleLocalEulerAngles;
     public PrototypeGunSettings Settings => settings.projectileSpeed > 0f ? settings : PrototypeGunSettings.Default;
+    public float DryMassKg => Mathf.Max(0f, dryMassKg);
+    public bool HasDryMassOverride => dryMassKg > 0f;
 
     public PrototypeGunLayoutEntry(string moduleId, Vector3 localPosition, Vector3 localScale, string muzzleId, Vector3 muzzleLocalPosition)
+        : this(moduleId, localPosition, Vector3.zero, localScale, muzzleId, muzzleLocalPosition, Vector3.zero, 0f)
+    {
+    }
+
+    public PrototypeGunLayoutEntry(
+        string moduleId,
+        Vector3 localPosition,
+        Vector3 localEulerAngles,
+        Vector3 localScale,
+        string muzzleId,
+        Vector3 muzzleLocalPosition,
+        Vector3 muzzleLocalEulerAngles,
+        float dryMassKg)
     {
         this.moduleId = moduleId;
         this.localPosition = localPosition;
-        localEulerAngles = Vector3.zero;
+        this.localEulerAngles = localEulerAngles;
         this.localScale = localScale;
         this.muzzleId = muzzleId;
         this.muzzleLocalPosition = muzzleLocalPosition;
-        muzzleLocalEulerAngles = Vector3.zero;
+        this.muzzleLocalEulerAngles = muzzleLocalEulerAngles;
         settings = PrototypeGunSettings.Default;
+        this.dryMassKg = Mathf.Max(0f, dryMassKg);
     }
 
     private static Vector3 ClampVector(Vector3 value, float minimum)

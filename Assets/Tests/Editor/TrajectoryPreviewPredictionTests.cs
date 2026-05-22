@@ -114,6 +114,181 @@ public class TrajectoryPreviewPredictionTests
     }
 
     [Test]
+    public void NavMapPreviewSourcePredictsBoundedFiniteRouteWithBurnPlan()
+    {
+        using (PhysicsValidationProbe.GeneratedShipFixture fixture = PhysicsValidationProbe.CreateGeneratedShip())
+        {
+            GameObject gravityBody = CreateGravityBody(new Vector3(30f, 0f, 0f));
+            try
+            {
+                fixture.Rigidbody.linearVelocity = Vector3.forward * 4f;
+                fixture.PhysicsCore.ConfigureCentralGravity(gravityBody.transform, 650f, true);
+
+                PrototypeTrajectoryPreviewNavMap preview = fixture.Ship.AddComponent<PrototypeTrajectoryPreviewNavMap>();
+                preview.Bind(fixture.Ship.transform, fixture.Rigidbody, fixture.Stats, fixture.PhysicsCore, null);
+                preview.ConfigureForTests(true, 6, 32, 0.05f, true, false);
+
+                PrototypeTrajectoryPreviewSnapshot snapshot = preview.RefreshPreview();
+
+                Assert.That(snapshot.Status, Is.EqualTo(PrototypeTrajectoryPreviewStatus.Truncated));
+                Assert.That(snapshot.Points.Length, Is.EqualTo(6));
+                Assert.That(snapshot.StepLimit, Is.EqualTo(32));
+                Assert.That(snapshot.HorizonSeconds, Is.EqualTo(1.6f).Within(0.0001f));
+                Assert.True(snapshot.UsedPredictor);
+                Assert.True(snapshot.UsedCentralGravity);
+                Assert.True(snapshot.UsedBurnPlan);
+                Assert.True(snapshot.BurnPlan.HasBurn);
+                Assert.False(snapshot.NonFiniteDetected);
+                for (int i = 0; i < snapshot.Points.Length; i++)
+                {
+                    Assert.True(TrajectoryPredictionMath.IsFinite(snapshot.Points[i]), "preview point " + i + " should be finite");
+                }
+            }
+            finally
+            {
+                Object.DestroyImmediate(gravityBody);
+            }
+        }
+    }
+
+    [Test]
+    public void NavMapPreviewFiltersNonFiniteRoutesAndSupportsDeterministicToggle()
+    {
+        Vector3[] route =
+        {
+            Vector3.zero,
+            Vector3.forward * 20f,
+            new Vector3(float.NaN, 0f, 40f),
+            Vector3.forward * 60f
+        };
+
+        PrototypeTrajectoryPreviewSnapshot snapshot = PrototypeTrajectoryPreviewNavMap.BuildSnapshotFromRoute(
+            route,
+            true,
+            4,
+            "test route",
+            route.Length,
+            12,
+            1.2f,
+            usedAutopilotRoute: true,
+            usedPredictor: false,
+            usedCentralGravity: false,
+            usedBurnPlan: true,
+            burnPlan: TrajectoryBurnPlan.Estimate(Vector3.forward, 1f, 0.5f, 1000f, 0.5f, 1f, 100f));
+
+        Assert.That(snapshot.Status, Is.EqualTo(PrototypeTrajectoryPreviewStatus.Truncated));
+        Assert.That(snapshot.Points.Length, Is.EqualTo(2));
+        Assert.True(snapshot.NonFiniteDetected);
+        Assert.True(snapshot.UsedAutopilotRoute);
+        Assert.True(snapshot.UsedBurnPlan);
+        for (int i = 0; i < snapshot.Points.Length; i++)
+        {
+            Assert.True(TrajectoryPredictionMath.IsFinite(snapshot.Points[i]));
+        }
+
+        PrototypeTrajectoryPreviewSnapshot disabled = PrototypeTrajectoryPreviewNavMap.BuildSnapshotFromRoute(
+            route,
+            false,
+            4,
+            "test route",
+            route.Length,
+            12,
+            1.2f,
+            usedAutopilotRoute: true,
+            usedPredictor: false,
+            usedCentralGravity: false,
+            usedBurnPlan: false,
+            burnPlan: TrajectoryBurnPlan.None);
+
+        Assert.That(disabled.Status, Is.EqualTo(PrototypeTrajectoryPreviewStatus.Disabled));
+        Assert.That(disabled.Points.Length, Is.EqualTo(0));
+    }
+
+    [Test]
+    public void PlayerHudSnapshotExposesTrajectoryPreviewRouteAndDisabledState()
+    {
+        using (PhysicsValidationProbe.GeneratedShipFixture fixture = PhysicsValidationProbe.CreateGeneratedShip())
+        {
+            fixture.Rigidbody.linearVelocity = Vector3.forward * 5f;
+            PrototypeTrajectoryPreviewNavMap preview = fixture.Ship.AddComponent<PrototypeTrajectoryPreviewNavMap>();
+            preview.Bind(fixture.Ship.transform, fixture.Rigidbody, fixture.Stats, fixture.PhysicsCore, null);
+            preview.ConfigureForTests(true, 5, 16, 0.05f, true, false);
+
+            PrototypePlayerHudSnapshot enabled = PrototypePlayerHudSnapshotBuilder.Build(
+                fixture.Ship.transform,
+                fixture.Rigidbody,
+                fixture.Stats,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                preview);
+
+            Assert.True(enabled.Navigation.Visible);
+            Assert.That(enabled.Navigation.TargetName, Is.EqualTo("Trajectory Preview"));
+            Assert.True(enabled.Navigation.TrajectoryPreview.HasRenderablePoints);
+            Assert.That(enabled.Navigation.TrajectoryPreview.Points.Length, Is.EqualTo(5));
+            Assert.That(string.Join(" | ", Labels(enabled.AssistChips)), Does.Contain("Trajectory Preview"));
+
+            preview.SetPreviewEnabled(false);
+            PrototypePlayerHudSnapshot disabled = PrototypePlayerHudSnapshotBuilder.Build(
+                fixture.Ship.transform,
+                fixture.Rigidbody,
+                fixture.Stats,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                preview);
+
+            Assert.False(disabled.Navigation.Visible);
+            Assert.That(disabled.Navigation.TrajectoryPreview.Status, Is.EqualTo(PrototypeTrajectoryPreviewStatus.Disabled));
+            Assert.That(disabled.Navigation.TrajectoryPreview.Points.Length, Is.EqualTo(0));
+        }
+    }
+
+    [Test]
+    public void BootstrapBindsTrajectoryPreviewToHudAndMinimap()
+    {
+        GameObject host = new GameObject("TrajectoryPreviewBootstrapHost");
+        try
+        {
+            PrototypeBootstrap bootstrap = host.AddComponent<PrototypeBootstrap>();
+            bootstrap.BuildBuiltInVariant(0);
+
+            PrototypeTrajectoryPreviewNavMap preview = Object.FindAnyObjectByType<PrototypeTrajectoryPreviewNavMap>();
+            PrototypePlayerHudRenderer hud = Camera.main != null ? Camera.main.GetComponent<PrototypePlayerHudRenderer>() : null;
+            PrototypeMinimapOverlay minimap = Camera.main != null ? Camera.main.GetComponent<PrototypeMinimapOverlay>() : null;
+
+            Assert.NotNull(preview);
+            Assert.NotNull(hud);
+            Assert.NotNull(minimap);
+            Assert.AreSame(preview, hud.TrajectoryPreview);
+            Assert.AreSame(preview, minimap.TrajectoryPreview);
+            Assert.True(preview.RefreshPreview().HasRenderablePoints);
+        }
+        finally
+        {
+            DestroyNamed("TrajectoryPreviewBootstrapHost");
+            DestroyNamed("PrototypeBootstrap");
+            DestroyNamed("PrototypeShip");
+            DestroyNamed("PrototypeDockingApproachTarget");
+            DestroyNamed("Main Camera");
+            DestroyNamed("Directional Light");
+            DestroyNamed("EventSystem");
+            DestroyNamed("PrototypePlayerHudEventSystem");
+        }
+    }
+
+    [Test]
     public void BurnPlanEstimatesDirectionDurationThrottleFuelAndDeltaV()
     {
         TrajectoryBurnPlan plan = TrajectoryBurnPlan.Estimate(
@@ -141,6 +316,29 @@ public class TrajectoryPreviewPredictionTests
         var gravityBody = new GameObject("TrajectoryPredictionGravityBody");
         gravityBody.transform.position = position;
         return gravityBody;
+    }
+
+    private static string[] Labels(PrototypePlayerHudChip[] chips)
+    {
+        string[] labels = new string[chips.Length];
+        for (int i = 0; i < chips.Length; i++)
+        {
+            labels[i] = chips[i].Label;
+        }
+
+        return labels;
+    }
+
+    private static void DestroyNamed(string name)
+    {
+        GameObject[] objects = Object.FindObjectsByType<GameObject>(FindObjectsInactive.Include);
+        for (int i = 0; i < objects.Length; i++)
+        {
+            if (objects[i] != null && objects[i].name == name)
+            {
+                Object.DestroyImmediate(objects[i]);
+            }
+        }
     }
 }
 #endif

@@ -252,6 +252,14 @@ public class PrototypeUiArchitectureValidationTests
         Assert.True(minimap.ShowLabels);
     }
 
+    [Test]
+    public void BasicPresetKeepsF1ReservedForPlayerHudHelp()
+    {
+        Assert.False(PrototypeUiLayoutManager.ShouldRouteF1ToPrototypeKeybindOverlay(PrototypeUiPreset.Basic));
+        Assert.True(PrototypeUiLayoutManager.ShouldRouteF1ToPrototypeKeybindOverlay(PrototypeUiPreset.FlightTest));
+        Assert.True(PrototypeUiLayoutManager.ShouldRouteF1ToPrototypeKeybindOverlay(PrototypeUiPreset.FullDiagnostics));
+    }
+
     private static void AssertModeContains(PrototypeKeybindViewModel viewModel, FlightControlMode mode, string expectedLine)
     {
         foreach (PrototypeKeybindModeBindingViewModel binding in viewModel.ModeBindings)

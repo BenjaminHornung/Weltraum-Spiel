@@ -11,11 +11,14 @@ public class PrototypeBootstrap : MonoBehaviour
     [SerializeField] private bool addOrientationMarkers = false;
     [SerializeField] private Vector3 shipStartPosition = new Vector3(0f, 0.5f, 0f);
     [SerializeField] private bool spawnTestTarget = true;
+    [SerializeField] private bool buildPveArena = true;
     [SerializeField] private Vector3 testTargetPosition = new Vector3(0f, 0.5f, 42f);
     [SerializeField] private Vector3 testTargetScale = new Vector3(4f, 4f, 0.6f);
     [SerializeField] private bool buildTestEnvironment = true;
 
     private const string PrototypeRootName = "PrototypeShip";
+    private const string PrototypeDockingApproachTargetName = "PrototypeDockingApproachTarget";
+    private const float PrototypeDockingApproachTargetDistance = 2.2f;
     private const float DefaultRcsBlockThrust = 6500f;
     private const float DirectionalLightMinIntensity = 1.0f;
     private const float DirectionalLightMaxIntensity = 1.45f;
@@ -145,6 +148,10 @@ public class PrototypeBootstrap : MonoBehaviour
             var weaponBinder = GetOrAddComponent<PrototypeShipKitWeaponBinder>(ship);
             weaponBinder.Configure(ship.transform, ship.transform, true, true);
             weaponBinder.BindNow();
+            PrototypeShipHardpointBinder.EnsureGeneratedFallbackHardpoints(ship.transform);
+            var hardpointBinder = GetOrAddComponent<PrototypeShipHardpointBinder>(ship);
+            hardpointBinder.Configure(ship.transform, true, true);
+            hardpointBinder.BindNow();
         }
 
         stats.ApplyMassProperties(shipRigidbody);
@@ -209,6 +216,7 @@ public class PrototypeBootstrap : MonoBehaviour
         controller.ResetStartupFlightControls(shipStartPosition, Quaternion.identity);
         waypointAutopilot.ResetForBootstrap();
         momentumAssist.ResetForBootstrap();
+        DockingPort dockingApproachTargetPort = ConfigureDockingApproachAssist(ship, controller, shipRigidbody);
 
         if (gun == null || engine == null)
         {
@@ -229,8 +237,13 @@ public class PrototypeBootstrap : MonoBehaviour
             SpawnTestTarget();
         }
 
+        if (buildPveArena)
+        {
+            EnsurePveArena();
+        }
+
         PrototypeTestEnvironment testEnvironment = buildTestEnvironment ? EnsureTestEnvironment() : null;
-        SetupMainCamera(ship.transform, stats, shipRigidbody, testEnvironment);
+        SetupMainCamera(ship.transform, stats, shipRigidbody, testEnvironment, dockingApproachTargetPort);
         EnsureSceneDirectionalLight();
     }
 
@@ -294,6 +307,11 @@ public class PrototypeBootstrap : MonoBehaviour
     public void RebuildTestEnvironment()
     {
         EnsureTestEnvironment();
+    }
+
+    public void ResetPveArena()
+    {
+        EnsurePveArena().ResetArena();
     }
 
     private void EnsureRuntimeVariants()
@@ -807,7 +825,116 @@ public class PrototypeBootstrap : MonoBehaviour
         ApplyMaterialColor(mark, color, false);
     }
 
-    private static void SetupMainCamera(Transform target, ShipStats stats, Rigidbody body, PrototypeTestEnvironment testEnvironment)
+    private static DockingPort ConfigureDockingApproachAssist(
+        GameObject ship,
+        PlayerShipController controller,
+        Rigidbody shipRigidbody)
+    {
+        DockingPort sourceDockingPort = ResolveSourceDockingPort(ship);
+        DockingPort targetDockingPort = ResolveDockingApproachTargetPort(ship, sourceDockingPort);
+        DockingPort[] targetCandidates = ResolveDockingTargetCandidates(sourceDockingPort);
+
+        var dockingApproachAssist = GetOrAddComponent<PrototypeDockingApproachAssist>(ship);
+        dockingApproachAssist.Bind(controller, shipRigidbody, sourceDockingPort, targetDockingPort, targetCandidates);
+        dockingApproachAssist.SetAssistEnabled(true);
+        dockingApproachAssist.ResetForBootstrap();
+        return targetDockingPort;
+    }
+
+    private static DockingPort ResolveSourceDockingPort(GameObject ship)
+    {
+        if (ship == null)
+        {
+            return null;
+        }
+
+        DockingPort sourceDockingPort = ship.GetComponentInChildren<DockingPort>();
+        if (sourceDockingPort != null)
+        {
+            return sourceDockingPort;
+        }
+
+        sourceDockingPort = GetOrAddComponent<DockingPort>(ship);
+        sourceDockingPort.Configure(Vector3.zero, Vector3.forward, 3f, 10f, 1.5f);
+        return sourceDockingPort;
+    }
+
+    private static DockingPort ResolveDockingApproachTargetPort(GameObject sourceShip, DockingPort sourcePort)
+    {
+        DockingPort[] ports = Object.FindObjectsByType<DockingPort>(FindObjectsInactive.Exclude);
+        for (int i = 0; i < ports.Length; i++)
+        {
+            DockingPort candidate = ports[i];
+            if (candidate != null && candidate != sourcePort && (sourceShip == null || !candidate.transform.IsChildOf(sourceShip.transform)))
+            {
+                return candidate;
+            }
+        }
+
+        return EnsureDockingApproachTarget(sourceShip, sourcePort);
+    }
+
+    private static DockingPort EnsureDockingApproachTarget(GameObject sourceShip, DockingPort sourcePort)
+    {
+        if (sourceShip == null)
+        {
+            return null;
+        }
+
+        var targetObject = GetOrCreateDockingTargetObject(sourceShip);
+        var targetBody = GetOrAddComponent<Rigidbody>(targetObject);
+        targetBody.useGravity = false;
+        targetBody.isKinematic = true;
+        targetBody.linearDamping = 0f;
+        targetBody.angularDamping = 0f;
+        targetBody.interpolation = RigidbodyInterpolation.Interpolate;
+
+        DockingPort targetPort = GetOrAddComponent<DockingPort>(targetObject);
+        targetPort.Configure(Vector3.zero, Vector3.forward, 3f, 10f, 1.5f);
+        return targetPort;
+    }
+
+    private static GameObject GetOrCreateDockingTargetObject(GameObject sourceShip)
+    {
+        if (sourceShip == null)
+        {
+            return null;
+        }
+
+        var sourceTransform = sourceShip.transform;
+        Vector3 forward = sourceTransform != null ? sourceTransform.forward : Vector3.forward;
+        Vector3 up = sourceTransform != null ? sourceTransform.up : Vector3.up;
+        Vector3 position = (sourceTransform != null ? sourceTransform.position : Vector3.zero) + (forward * PrototypeDockingApproachTargetDistance);
+
+        var targetObject = new GameObject(PrototypeDockingApproachTargetName)
+        {
+            transform =
+            {
+                position = position,
+                rotation = Quaternion.LookRotation(-forward, up)
+            }
+        };
+
+        return targetObject;
+    }
+
+    private static DockingPort[] ResolveDockingTargetCandidates(DockingPort sourcePort)
+    {
+        var allPorts = Object.FindObjectsByType<DockingPort>(FindObjectsInactive.Exclude);
+        var candidates = new List<DockingPort>(allPorts.Length);
+        for (int i = 0; i < allPorts.Length; i++)
+        {
+            DockingPort port = allPorts[i];
+            if (port != null && port != sourcePort && (sourcePort == null || !port.transform.IsChildOf(sourcePort.transform.root)))
+            {
+                candidates.Add(port);
+            }
+        }
+
+        return candidates.ToArray();
+    }
+
+    private static void SetupMainCamera(Transform target, ShipStats stats, Rigidbody body, PrototypeTestEnvironment testEnvironment, DockingPort dockingTargetPort = null)
     {
         var camera = ResolveSingleMainCamera();
         if (camera == null)
@@ -864,6 +991,24 @@ public class PrototypeBootstrap : MonoBehaviour
         }
         minimap.Bind(target, body, testEnvironment);
 
+        PrototypeTrajectoryPreviewNavMap trajectoryPreview = null;
+        if (target != null)
+        {
+            trajectoryPreview = target.GetComponent<PrototypeTrajectoryPreviewNavMap>();
+            if (trajectoryPreview == null)
+            {
+                trajectoryPreview = target.gameObject.AddComponent<PrototypeTrajectoryPreviewNavMap>();
+            }
+
+            trajectoryPreview.Bind(
+                target,
+                body,
+                stats,
+                target.GetComponent<ShipPhysicsCore>(),
+                target.GetComponent<PrototypeWaypointAutopilot>());
+            minimap.BindTrajectoryPreview(trajectoryPreview);
+        }
+
         var debugConsole = camera.gameObject.GetComponent<PrototypeFlightDebugConsole>();
         if (debugConsole == null)
         {
@@ -886,6 +1031,11 @@ public class PrototypeBootstrap : MonoBehaviour
             playerHud = camera.gameObject.AddComponent<PrototypePlayerHudRenderer>();
         }
         playerHud.Bind(target, stats, body);
+        playerHud.BindTrajectoryPreview(trajectoryPreview);
+        if (dockingTargetPort != null)
+        {
+            playerHud.SetTargetDockingPort(dockingTargetPort);
+        }
 
         PrototypeUiLayoutManager.ApplyPreset(
             PrototypeUiLayoutManager.CurrentPreset,
@@ -972,6 +1122,13 @@ public class PrototypeBootstrap : MonoBehaviour
         var environment = GetOrAddComponent<PrototypeTestEnvironment>(gameObject);
         environment.Rebuild();
         return environment;
+    }
+
+    private PrototypePveArenaLoop EnsurePveArena()
+    {
+        var arena = GetOrAddComponent<PrototypePveArenaLoop>(gameObject);
+        arena.StartOrResetArena();
+        return arena;
     }
 
     private static void EnsureSceneDirectionalLight()

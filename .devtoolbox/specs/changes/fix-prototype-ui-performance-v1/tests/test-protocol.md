@@ -36,3 +36,17 @@ Prototype IMGUI performance containment for HUD, Debug Overlay, Debug Console, K
 ## Deferred Evidence
 
 Unity Profiler before/after CPU hierarchy was not captured in this pass because the workspace had unrelated compile errors in untracked PlayMode tests. A follow-up profiler capture should compare `GUI.Repaint`, `GC Alloc`, and PlayerPrefs activity with Flight Test versus Full Diagnostics once the unrelated PlayMode test file compiles.
+
+## Player HUD v1 Checkpoint Evidence
+
+Date: 2026-05-22
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| C# project build | Passed | `dotnet build ".\Weltraum Spiel.sln" --no-restore` completed with 0 errors and existing Unity/MSBuild warnings only. |
+| Unity script validation | Passed | Unity MCP `validate_script` reported 0 errors for `PrototypePlayerHud.cs`, `PrototypeUiLayoutManager.cs`, `PrototypeKeybindOverlay.cs`, `PrototypePlayerHudValidationTests.cs`, and `PrototypeUiArchitectureValidationTests.cs`. `PrototypePlayerHud.cs` keeps the existing heuristic warnings for Rigidbody/Update string usage. |
+| Focused Unity UI suites | Passed | Unity MCP test job `0e82cb1199384024887c2d6895f33c2d`: `PrototypePlayerHudValidationTests`, `PrototypeUiArchitectureValidationTests`, and `PrototypeFlightHudValidationTests` passed 29/29. After the final top-strip layout tweak, direct MCP/NUnit invocation of the same 29 test methods also passed 29/29 because the Unity TestRunner had a stale 1-test job. |
+| Dotnet test smoke | Passed | `dotnet test ".\Weltraum Spiel.sln" --no-build` exited 0. |
+| Play Mode Basic HUD probe | Passed | Unity MCP Play Mode probe at `1812x703` reported `ScaleWithScreenSize`, `match=1`, all legacy IMGUI windows hidden in Basic, F1 routed away from the debug keybind overlay in Basic, one player radar graphic, one EventSystem with `InputSystemUIInputModule`, `Flight nominal` primary warning, and `overlaps=none`. |
+| Console after Play Mode probe | Passed | Unity MCP console read returned 0 errors and 0 warnings after the Play Mode probe. |
+| Screenshot evidence | Captured | `.devtoolbox/specs/changes/fix-prototype-ui-performance-v1/tests/screenshots/player-hud-v1-basic-clean-1812x703-fixed.png` shows the Basic Player HUD with no overlapping legacy windows. |

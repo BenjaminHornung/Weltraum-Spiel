@@ -66,7 +66,7 @@ public sealed class PrototypeShipVariant
 
     public static PrototypeShipVariant[] BuiltIns()
     {
-        return new[]
+        PrototypeShipVariant[] variants =
         {
             Baseline(),
             DualMainThruster(),
@@ -75,6 +75,31 @@ public sealed class PrototypeShipVariant
             HeavyCargo(),
             NoRcs()
         };
+
+        PrototypeShipVariant[] blueprintVariants = PrototypeShipBlueprintCatalog.BuiltInVariants();
+        if (blueprintVariants == null || blueprintVariants.Length == 0)
+        {
+            return variants;
+        }
+
+        var combined = new PrototypeShipVariant[variants.Length + blueprintVariants.Length];
+        Array.Copy(variants, combined, variants.Length);
+        Array.Copy(blueprintVariants, 0, combined, variants.Length, blueprintVariants.Length);
+        return combined;
+    }
+
+    public static PrototypeShipVariant FromBlueprint(
+        string id,
+        string name,
+        PrototypeShipLayout shipLayout,
+        PrototypeMainThrusterSettings mainSettings,
+        PrototypeRcsSettings rcsSettings,
+        PrototypeGunSettings gunSettings,
+        PrototypeCameraSettings cameraSettings,
+        PrototypeShipMassSettings massSettings,
+        PrototypeShipFuelSettings fuelSettings)
+    {
+        return Create(id, name, shipLayout, mainSettings, rcsSettings, gunSettings, cameraSettings, massSettings, fuelSettings);
     }
 
     private static PrototypeShipVariant Create(

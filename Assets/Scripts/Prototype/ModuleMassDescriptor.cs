@@ -229,21 +229,39 @@ public static class PrototypeModuleMassLayout
         for (int i = 0; i < mainThrusters.Length; i++)
         {
             PrototypeMainThrusterLayoutEntry thruster = mainThrusters[i];
-            ConfigureDescriptor(ship.Find(thruster.ModuleId), "Engine", stats.EngineMass, 0f, false, thruster.LocalScale);
+            ConfigureDescriptor(
+                ship.Find(thruster.ModuleId),
+                thruster.ModuleId,
+                thruster.HasDryMassOverride ? thruster.DryMassKg : stats.EngineMass,
+                0f,
+                false,
+                thruster.LocalScale);
         }
 
         PrototypeGunLayoutEntry[] guns = layout.Guns;
         for (int i = 0; i < guns.Length; i++)
         {
             PrototypeGunLayoutEntry gun = guns[i];
-            ConfigureDescriptor(ship.Find(gun.ModuleId), gun.ModuleId, stats.GunMass, 0f, false, gun.LocalScale);
+            ConfigureDescriptor(
+                ship.Find(gun.ModuleId),
+                gun.ModuleId,
+                gun.HasDryMassOverride ? gun.DryMassKg : stats.GunMass,
+                0f,
+                false,
+                gun.LocalScale);
         }
 
         PrototypeRcsBlockLayoutEntry[] rcsBlocks = layout.RcsBlocks;
         for (int i = 0; i < rcsBlocks.Length; i++)
         {
             PrototypeRcsBlockLayoutEntry block = rcsBlocks[i];
-            ConfigureDescriptor(ship.Find(block.BlockId), block.BlockId, stats.RcsBlockMass, 0f, false, block.LocalScale);
+            ConfigureDescriptor(
+                ship.Find(block.BlockId),
+                block.BlockId,
+                block.HasDryMassOverride ? block.DryMassKg : stats.RcsBlockMass,
+                0f,
+                false,
+                block.LocalScale);
         }
     }
 

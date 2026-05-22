@@ -50,10 +50,12 @@ public sealed class PrototypeImportedShipBinder : MonoBehaviour
         List<PrototypeShipSocket> gimbalPivots = FilterSockets(sockets, PrototypeShipSocketType.MainThrusterGimbalPivot);
         List<PrototypeShipSocket> rcsNozzles = FilterSockets(sockets, PrototypeShipSocketType.RcsNozzle);
         List<PrototypeShipSocket> muzzles = FilterSockets(sockets, PrototypeShipSocketType.WeaponMuzzle);
+        List<PrototypeShipSocket> hardpoints = FilterSockets(sockets, PrototypeShipSocketType.Hardpoint);
         report.foundMainNozzles = mainNozzles.Count;
         report.foundGimbalPivots = gimbalPivots.Count;
         report.foundRcsNozzles = rcsNozzles.Count;
         report.foundMuzzles = muzzles.Count;
+        report.foundHardpoints = hardpoints.Count;
 
         Rigidbody shipRigidbody = GetOrAddComponent<Rigidbody>(gameObject, createMissingRuntimeComponents);
         ShipStats shipStats = GetOrAddComponent<ShipStats>(gameObject, createMissingRuntimeComponents);
@@ -67,6 +69,7 @@ public sealed class PrototypeImportedShipBinder : MonoBehaviour
         BindMainThrusters(mainNozzles, gimbalPivots, shipRigidbody, shipStats, physicsCore, thermalModule, report);
         BindRcsNozzles(rcsNozzles, shipRigidbody, physicsCore, report);
         BindGun(muzzles, report);
+        BindHardpoints(root, report);
 
         if (report.foundMainNozzles == 0)
         {
@@ -81,6 +84,11 @@ public sealed class PrototypeImportedShipBinder : MonoBehaviour
         if (report.foundMuzzles == 0)
         {
             report.warnings.Add("No weapon muzzle socket found; guns will use their normal fallback if fired.");
+        }
+
+        if (report.foundHardpoints == 0)
+        {
+            report.warnings.Add("No builder hardpoint sockets found under " + root.name + ".");
         }
 
         LastReport = report;
@@ -189,6 +197,23 @@ public sealed class PrototypeImportedShipBinder : MonoBehaviour
         {
             report.warnings.Add("Multiple weapon muzzles found; using first muzzle " + muzzles[0].name + " for prototype primary gun.");
         }
+    }
+
+    private void BindHardpoints(Transform root, BindReport report)
+    {
+        PrototypeShipHardpointBinder hardpointBinder = GetOrAddComponent<PrototypeShipHardpointBinder>(gameObject, createMissingRuntimeComponents);
+        if (hardpointBinder == null)
+        {
+            report.warnings.Add("Hardpoint binder component is missing and creation is disabled.");
+            return;
+        }
+
+        hardpointBinder.Configure(root, false, true);
+        PrototypeShipHardpointBinder.BindReport hardpointReport = hardpointBinder.BindNow();
+        report.boundHardpoints = hardpointReport.boundHardpoints;
+        report.createdHardpointBindings = hardpointReport.createdHardpointBindings;
+        report.duplicateHardpointsSkipped = hardpointReport.duplicateHardpointsSkipped;
+        report.warnings.AddRange(hardpointReport.warnings);
     }
 
     private void EnsureRcsBlock(Transform nozzle)
@@ -379,10 +404,14 @@ public sealed class PrototypeImportedShipBinder : MonoBehaviour
         public int foundGimbalPivots;
         public int foundRcsNozzles;
         public int foundMuzzles;
+        public int foundHardpoints;
         public int boundMainThrusters;
         public int boundRcsNozzles;
         public int boundGuns;
+        public int boundHardpoints;
         public int createdRcsVfxChildren;
+        public int createdHardpointBindings;
+        public int duplicateHardpointsSkipped;
         public bool gimbalSupported;
         public string boundMuzzleName;
         public List<string> gimbalPivotNames = new List<string>();

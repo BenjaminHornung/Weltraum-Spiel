@@ -1,6 +1,12 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+public enum RcsSolverMode
+{
+    StablePrototype,
+    ExperimentalPhysicalNozzles
+}
+
 [RequireComponent(typeof(Rigidbody))]
 public class RcsThrusterController : MonoBehaviour
 {
@@ -33,6 +39,7 @@ public class RcsThrusterController : MonoBehaviour
     [SerializeField] private float attitudeForce = 6500f;
     [SerializeField] private float sasAuthority = 1.8f;
     [SerializeField] private float minSelectionDot = 0.25f;
+    [SerializeField] private RcsSolverMode rcsSolverMode = RcsSolverMode.StablePrototype;
 
     [Header("RCS Response")]
     [SerializeField] private float nozzleSpoolUpRate;
@@ -82,6 +89,7 @@ public class RcsThrusterController : MonoBehaviour
     private const string AllocatorStatusNoSolution = "no solution";
     private const string AllocatorStatusFuelStarved = "no fuel";
     private const string AllocatorStatusComTranslationFallback = "com-translation-fallback";
+    private const string AllocatorStatusStablePrototype = "stable-prototype";
     private const float AllocatorResidualForceTolerance = 0.5f;
     private const float AllocatorResidualTorqueTolerance = 0.5f;
     private const float AllocatorResidualLimitRatio = 0.05f;
@@ -99,6 +107,7 @@ public class RcsThrusterController : MonoBehaviour
     public float MinSelectionDot => Mathf.Clamp(minSelectionDot, 0f, 0.95f);
     public float NozzleSpoolUpRate => Mathf.Max(0f, nozzleSpoolUpRate);
     public float NozzleSpoolDownRate => Mathf.Max(0f, nozzleSpoolDownRate);
+    public RcsSolverMode SolverMode => rcsSolverMode;
     public bool UseImportedFunctionalSockets { get; private set; }
     public int NozzleRefreshCount => nozzleRefreshCount;
     public bool RcsEnabled { get; private set; } = true;
@@ -219,6 +228,14 @@ public class RcsThrusterController : MonoBehaviour
             ResetNozzleRuntimeState();
             ClearNozzleVfx();
         }
+    }
+
+    public void SetSolverMode(RcsSolverMode mode)
+    {
+        rcsSolverMode = mode;
+        ClearRuntimeForces();
+        ResetNozzleRuntimeState();
+        ClearNozzleVfx();
     }
 
     private void ResolveReferences()
@@ -1080,6 +1097,12 @@ public class RcsThrusterController : MonoBehaviour
 
     private void AllocateAndApplyRcs(Vector3 desiredForceWorld, Vector3 desiredTorqueWorld, Vector3 manualAttitude, float deltaTime)
     {
+        if (rcsSolverMode == RcsSolverMode.StablePrototype)
+        {
+            ApplyStablePrototypeRcs(desiredForceWorld, desiredTorqueWorld, manualAttitude, deltaTime);
+            return;
+        }
+
         Vector3 diagnosticDesiredForceWorld = desiredForceWorld;
         Vector3 allocationDesiredForceWorld = desiredForceWorld;
         bool splitImportedTranslation = TryApplyImportedTranslationAtCenterOfMass(diagnosticDesiredForceWorld, deltaTime);
@@ -1121,6 +1144,115 @@ public class RcsThrusterController : MonoBehaviour
         GetAllocatorWeights(allocationScratch, allocationCount, allocationDesiredForceWorld, desiredTorqueWorld, out forceWeight, out torqueWeight);
         AllocateThrottleGreedy(allocationScratch, allocationCount, allocationDesiredForceWorld, desiredTorqueWorld, forceWeight, torqueWeight);
         ApplyAllocatedForces(allocationScratch, allocationCount, diagnosticDesiredForceWorld, desiredTorqueWorld, manualAttitude, deltaTime);
+    }
+
+    private void ApplyStablePrototypeRcs(Vector3 desiredForceWorld, Vector3 desiredTorqueWorld, Vector3 manualAttitude, float deltaTime)
+    {
+        bool hasDesiredForce = desiredForceWorld.sqrMagnitude > 0.0001f;
+        bool hasDesiredTorque = desiredTorqueWorld.sqrMagnitude > 0.0001f;
+        bool recordYaw = Mathf.Abs(manualAttitude.y) > ManualCommandDeadZone || Mathf.Abs(LastSasCommand.y) > SasCommandDeadZone;
+        LastDesiredRcsForceWorld = desiredForceWorld;
+        LastDesiredRcsTorqueWorld = desiredTorqueWorld;
+
+        LastActualRcsForceWorld = Vector3.zero;
+        LastActualRcsTorqueWorld = Vector3.zero;
+        LastTorque = Vector3.zero;
+        LastTranslationForce = Vector3.zero;
+        LastForceAtPositionTotal = Vector3.zero;
+        LastResidualRcsForceWorld = desiredForceWorld;
+        LastResidualRcsTorqueWorld = desiredTorqueWorld;
+        LastNozzleApplicationCount = 0;
+        LastSaturatedNozzleCount = 0;
+
+        ResetNozzleRuntimeState();
+        if (hasDesiredForce)
+        {
+            MarkVisualNozzlesForTranslation(desiredForceWorld, 1f);
+        }
+
+        if (hasDesiredTorque)
+        {
+            MarkVisualNozzlesForTorque(desiredTorqueWorld, 1f);
+        }
+
+        if (!hasDesiredForce && !hasDesiredTorque)
+        {
+            LastAllocatorStatus = AllocatorStatusIdle;
+            LastAllocatedNozzleThrottleTotal = 0f;
+            LastFuelRequestedKg = 0f;
+            LastFuelConsumedKg = 0f;
+            LastAppliedFuelFraction = 1f;
+            return;
+        }
+
+        float translationThrottleEquivalent = hasDesiredForce
+            ? desiredForceWorld.magnitude / Mathf.Max(0.0001f, TranslationForce)
+            : 0f;
+        float torqueThrottleEquivalent = hasDesiredTorque
+            ? desiredTorqueWorld.magnitude / Mathf.Max(0.0001f, GetTorqueAuthority())
+            : 0f;
+
+        float requestedThrottleTotal = Mathf.Abs(translationThrottleEquivalent) + Mathf.Abs(torqueThrottleEquivalent);
+        float fuelFraction = ConsumeFuelForAllocatedThrottle(requestedThrottleTotal, deltaTime);
+        if (fuelFraction <= 0f)
+        {
+            LastAllocatorStatus = AllocatorStatusFuelStarved;
+            LastAllocatedNozzleThrottleTotal = 0f;
+            ResetNozzleRuntimeState();
+            return;
+        }
+
+        LastAllocatedNozzleThrottleTotal = requestedThrottleTotal * fuelFraction;
+        if (hasDesiredForce)
+        {
+            Vector3 desiredForceDelta = desiredForceWorld * fuelFraction;
+            if (physicsCore != null && physicsCore.ApplyForceAtCenterOfMass(desiredForceDelta, ForceMode.Force))
+            {
+                LastActualRcsForceWorld += desiredForceDelta;
+                LastTranslationForce = LastActualRcsForceWorld;
+                LastForceAtPositionTotal += desiredForceDelta;
+            }
+        }
+
+        if (hasDesiredTorque)
+        {
+            Vector3 desiredTorqueDelta = desiredTorqueWorld * fuelFraction;
+            if (physicsCore != null && physicsCore.ApplyTorque(desiredTorqueDelta, ForceMode.Force))
+            {
+                LastActualRcsTorqueWorld += desiredTorqueDelta;
+                LastTorque += desiredTorqueDelta;
+                if (recordYaw)
+                {
+                    LastYawTorqueEstimate += desiredTorqueDelta;
+                }
+            }
+        }
+
+        LastResidualRcsForceWorld = desiredForceWorld - LastActualRcsForceWorld;
+        LastResidualRcsTorqueWorld = desiredTorqueWorld - LastActualRcsTorqueWorld;
+
+        bool residualForceExists = HasResidualOutsideTolerance(
+            desiredForceWorld,
+            LastResidualRcsForceWorld,
+            AllocatorResidualForceTolerance);
+        bool residualTorqueExists = HasResidualOutsideTolerance(
+            desiredTorqueWorld,
+            LastResidualRcsTorqueWorld,
+            AllocatorResidualTorqueTolerance);
+        LastAllocatorStatus = residualForceExists || residualTorqueExists
+            ? AllocatorStatusResidual
+            : AllocatorStatusStablePrototype;
+
+        LastMaxNozzleThrottle = 0f;
+        if (translationThrottleEquivalent > 0f)
+        {
+            LastMaxNozzleThrottle = Mathf.Clamp01(translationThrottleEquivalent * fuelFraction);
+        }
+
+        if (torqueThrottleEquivalent > LastMaxNozzleThrottle)
+        {
+            LastMaxNozzleThrottle = Mathf.Clamp01(torqueThrottleEquivalent * fuelFraction);
+        }
     }
 
 
@@ -1465,6 +1597,42 @@ public class RcsThrusterController : MonoBehaviour
             }
 
             float alignment = Vector3.Dot(GetNozzleForceDirection(nozzle.transform), desiredDirection);
+            if (alignment <= selectionDot)
+            {
+                continue;
+            }
+
+            nozzle.active = true;
+            nozzle.actualThrottle = Mathf.Max(nozzle.actualThrottle, Mathf.Clamp01(throttle * alignment));
+            LastMaxNozzleThrottle = Mathf.Max(LastMaxNozzleThrottle, nozzle.actualThrottle);
+        }
+    }
+
+    private void MarkVisualNozzlesForTorque(Vector3 desiredTorqueWorld, float throttle)
+    {
+        if (shipRigidbody == null || desiredTorqueWorld.sqrMagnitude <= 0.0001f || throttle <= 0.0001f)
+        {
+            return;
+        }
+
+        Vector3 desiredDirection = desiredTorqueWorld.normalized;
+        float selectionDot = Mathf.Clamp(minSelectionDot, 0f, 0.95f);
+        for (int i = 0; i < nozzles.Count; i++)
+        {
+            RcsNozzle nozzle = nozzles[i];
+            if (!IsActiveNozzleTransform(nozzle.transform))
+            {
+                continue;
+            }
+
+            Vector3 forceDirection = GetNozzleForceDirection(nozzle.transform);
+            Vector3 torqueAxis = Vector3.Cross(nozzle.transform.position - shipRigidbody.worldCenterOfMass, forceDirection);
+            if (torqueAxis.sqrMagnitude <= 0.0001f)
+            {
+                continue;
+            }
+
+            float alignment = Vector3.Dot(torqueAxis.normalized, desiredDirection);
             if (alignment <= selectionDot)
             {
                 continue;
