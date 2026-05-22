@@ -148,6 +148,39 @@ public class PrototypePhysicsValidationTests
     }
 
     [Test]
+    public void StablePrototypeRcsAppliesTranslationAtComAndAttitudeAsTorque()
+    {
+        using (PhysicsValidationProbe.GeneratedShipFixture fixture = PhysicsValidationProbe.CreateGeneratedShip())
+        {
+            PhysicsValidationProbe.RcsResult translation = PhysicsValidationProbe.RunRcs(fixture, Vector3.right, Vector3.zero);
+
+            Assert.That(fixture.Rcs.SolverMode, Is.EqualTo(RcsSolverMode.StablePrototype));
+            Assert.That(translation.desiredForce.x, Is.EqualTo(9000f).Within(PhysicsValidationProbe.ForceTolerance));
+            Assert.That(translation.actualForce.x, Is.EqualTo(9000f).Within(PhysicsValidationProbe.ForceTolerance));
+            Assert.That(Vector3.Distance(translation.force, translation.actualForce), Is.LessThan(PhysicsValidationProbe.ForceTolerance));
+            Assert.That(translation.residualForce.magnitude, Is.EqualTo(0f).Within(PhysicsValidationProbe.ForceTolerance));
+            Assert.That(translation.torque.magnitude, Is.EqualTo(0f).Within(PhysicsValidationProbe.TorqueTolerance));
+            Assert.That(translation.applications, Is.EqualTo(0));
+            Assert.That(fixture.Rcs.LastAllocatorStatus, Is.EqualTo("stable-prototype"));
+        }
+
+        using (PhysicsValidationProbe.GeneratedShipFixture fixture = PhysicsValidationProbe.CreateGeneratedShip())
+        {
+            PhysicsValidationProbe.RcsResult yaw = PhysicsValidationProbe.RunRcs(fixture, Vector3.zero, Vector3.up);
+
+            Assert.That(fixture.Rcs.SolverMode, Is.EqualTo(RcsSolverMode.StablePrototype));
+            Assert.That(yaw.force.magnitude, Is.EqualTo(0f).Within(PhysicsValidationProbe.ForceTolerance));
+            Assert.That(yaw.actualForce.magnitude, Is.EqualTo(0f).Within(PhysicsValidationProbe.ForceTolerance));
+            Assert.That(yaw.residualForce.magnitude, Is.EqualTo(0f).Within(PhysicsValidationProbe.ForceTolerance));
+            Assert.That(yaw.desiredTorque.y, Is.GreaterThan(1000f));
+            Assert.That(Vector3.Distance(yaw.torque, yaw.actualTorque), Is.LessThan(PhysicsValidationProbe.TorqueTolerance));
+            Assert.That(yaw.residualTorque.magnitude, Is.EqualTo(0f).Within(PhysicsValidationProbe.TorqueTolerance));
+            Assert.That(yaw.applications, Is.EqualTo(0));
+            Assert.That(fixture.Rcs.LastAllocatorStatus, Is.EqualTo("stable-prototype"));
+        }
+    }
+
+    [Test]
     public void RcsNozzleSnapshotIsStableUntilCacheRefresh()
     {
         using (PhysicsValidationProbe.GeneratedShipFixture fixture = PhysicsValidationProbe.CreateGeneratedShip())

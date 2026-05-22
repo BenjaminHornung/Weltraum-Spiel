@@ -400,6 +400,7 @@ public static class PhysicsValidationProbe
     {
         using (GeneratedShipFixture fixture = CreateGeneratedShip())
         {
+            fixture.Rcs.SetSolverMode(RcsSolverMode.ExperimentalPhysicalNozzles);
             SetPrivateFloat(fixture.Rcs, "nozzleSpoolUpRate", spoolRate);
             SetPrivateFloat(fixture.Rcs, "nozzleSpoolDownRate", spoolRate);
             fixture.PhysicsCore.BeginPhysicsStep();
