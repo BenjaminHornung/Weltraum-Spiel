@@ -2213,15 +2213,15 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
         EnsureEventSystem();
 
+        overlayGraphic = CreateGraphic<PrototypePlayerHudOverlayGraphic>("FlightMarkers", canvasObject.transform, StretchFull());
+        overlayGraphic.raycastTarget = false;
+
         CreateTopStrip(canvasObject.transform);
         CreateBottomBar(canvasObject.transform);
         CreateSystemPanel(canvasObject.transform);
         CreateObjectivePanel(canvasObject.transform);
         CreateContextPanel(canvasObject.transform);
         CreateRadarPanel(canvasObject.transform);
-
-        overlayGraphic = CreateGraphic<PrototypePlayerHudOverlayGraphic>("FlightMarkers", canvasObject.transform, StretchFull());
-        overlayGraphic.raycastTarget = false;
 
         CreateMarkerLabels(canvasObject.transform);
         CreateTargetIndicatorLabels(canvasObject.transform);
@@ -3134,7 +3134,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         float gap = narrow ? 12f : 16f;
         float leftReserve = narrow ? margin + 76f : margin + 270f + gap;
         float rightReserve = narrow ? margin + 96f : margin + 356f + gap;
-        float topReserve = margin + (shortScreen ? 54f : 68f);
+        float topReserve = margin + (shortScreen ? 96f : 112f);
         float bottomReserve = margin + (shortScreen ? 104f : 128f);
         Rect safe = new Rect(
             (-width * 0.5f) + leftReserve,
@@ -3314,7 +3314,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     {
         RectTransform rect = CreateRect(name, parent, new RectPreset(anchorMin, anchorMax, pivot, size, anchoredPosition));
         Image image = rect.gameObject.AddComponent<Image>();
-        image.color = new Color(0.022f, 0.027f, 0.039f, 0.76f);
+        image.color = new Color(0.022f, 0.027f, 0.039f, 1f);
         return rect;
     }
 

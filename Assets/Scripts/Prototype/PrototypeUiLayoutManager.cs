@@ -205,7 +205,7 @@ public static class PrototypeUiLayoutManager
 
         if (weaponComputer != null)
         {
-            weaponComputer.SetWindowVisible(true);
+            weaponComputer.SetWindowVisible(preset != PrototypeUiPreset.Basic);
             weaponComputer.SetWindowCollapsed(preset != PrototypeUiPreset.FullDiagnostics);
         }
 

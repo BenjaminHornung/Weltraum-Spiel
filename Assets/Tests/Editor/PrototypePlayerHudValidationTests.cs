@@ -347,6 +347,16 @@ public class PrototypePlayerHudValidationTests
                 PrototypePlayerHudSeverity.Warning,
                 0f,
                 true,
+                true),
+            new PrototypePlayerTargetIndicator(
+                PrototypePlayerTargetIndicatorKind.Objective,
+                "High Objective",
+                "Objective",
+                new Vector3(0f, 500f, 120f),
+                514f,
+                PrototypePlayerHudSeverity.Info,
+                0f,
+                false,
                 true)
         });
 
@@ -361,12 +371,14 @@ public class PrototypePlayerHudValidationTests
 
         PrototypePlayerProjectedTargetIndicator[] projected = playerHud.ProjectTargetIndicatorsForTests(1280, 720, snapshot);
 
-        Assert.That(projected.Length, Is.EqualTo(3));
+        Assert.That(projected.Length, Is.EqualTo(4));
         Assert.False(projected[0].Offscreen);
         Assert.True(projected[0].LabelVisible);
         Assert.True(projected[1].Offscreen);
         Assert.True(projected[2].Offscreen);
         Assert.That(projected[1].CanvasPosition.x, Is.LessThanOrEqualTo(244.5f));
+        Assert.True(projected[3].Offscreen);
+        Assert.That(projected[3].CanvasPosition.y, Is.LessThanOrEqualTo(224.5f));
 
         PrototypePlayerProjectedTargetIndicator[] tinyProjected = playerHud.ProjectTargetIndicatorsForTests(640, 480, snapshot);
         Assert.False(tinyProjected[0].LabelVisible);
@@ -632,6 +644,32 @@ public class PrototypePlayerHudValidationTests
         AssertNoPanelOverlap(playerHud, 900, 1600);
         AssertNoPanelOverlap(playerHud, 800, 600);
         AssertNoPanelOverlap(playerHud, 640, 480);
+    }
+
+    [Test]
+    public void RuntimeOverlayRendersBelowFixedHudPanels()
+    {
+        GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+        cameraObject.AddComponent<Camera>();
+        PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+        playerHud.RefreshNow();
+
+        RectTransform overlay = FindRect(playerHud, "FlightMarkers");
+        string[] fixedPanels =
+        {
+            "AlertAssistStrip",
+            "FlightStatusBar",
+            "ShipSystems",
+            "ObjectivePanel",
+            "ContextPanel",
+            "RadarPanel"
+        };
+
+        for (int i = 0; i < fixedPanels.Length; i++)
+        {
+            RectTransform panel = FindRect(playerHud, fixedPanels[i]);
+            Assert.That(overlay.GetSiblingIndex(), Is.LessThan(panel.GetSiblingIndex()), fixedPanels[i] + " should render above target overlay");
+        }
     }
 
     [Test]

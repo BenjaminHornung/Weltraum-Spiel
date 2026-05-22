@@ -225,7 +225,7 @@ public class PrototypeUiArchitectureValidationTests
     }
 
     [Test]
-    public void FlightTestPresetKeepsDebugConsoleClosedAndWeaponComputerCollapsed()
+    public void PresetsKeepWeaponComputerOutOfBasicAndCollapsedUntilFullDiagnostics()
     {
         GameObject cameraObject = new GameObject("UiArchitectureCamera");
         cameraObject.AddComponent<Camera>();
@@ -235,6 +235,15 @@ public class PrototypeUiArchitectureValidationTests
         var keybinds = cameraObject.AddComponent<PrototypeKeybindOverlay>();
         var minimap = cameraObject.AddComponent<PrototypeMinimapOverlay>();
         var weaponComputer = cameraObject.AddComponent<PrototypeWeaponComputerPanel>();
+
+        PrototypeUiLayoutManager.ApplyPreset(PrototypeUiPreset.Basic, diagnostics, console, hud, keybinds, minimap, weaponComputer);
+
+        Assert.False(diagnostics.IsWindowVisible);
+        Assert.False(hud.ShowHud);
+        Assert.False(minimap.IsWindowVisible);
+        Assert.False(console.IsConsoleVisible);
+        Assert.False(weaponComputer.IsWindowVisible);
+        Assert.True(weaponComputer.IsWindowCollapsed);
 
         PrototypeUiLayoutManager.ApplyPreset(PrototypeUiPreset.FlightTest, diagnostics, console, hud, keybinds, minimap, weaponComputer);
 
