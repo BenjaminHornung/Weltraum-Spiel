@@ -225,8 +225,13 @@ Additional 2026-05-22 manual Game View probe:
 
 ## Additional Local Checks
 
+- `specs_validate --change fix-functional-blender-ship-vfx-turret-v1`: PASS after the 2026-05-22 protocol/evidence update.
+- Scene serialization verified with `rg`:
+  - `buildMode: 0`
+  - `allowGeneratedFallbackWhenImportedAssetMissing: 0`
 - `dotnet build "Weltraum Spiel.sln" --no-restore`: BLOCKED by a stale project-file reference to missing source `Assets\Tests\Editor\PrototypeImportedBlenderJitterEvidenceTests.cs`.
 - Unity MCP script validation and focused Unity EditMode/PlayMode tests above compile and run successfully despite that stale external project-file reference.
+- After the scene-only fallback flag correction, Unity MCP `refresh_unity` timed out and subsequent bridge pings did not answer, while the Unity editor process itself was still responding. No extra PlayMode rerun was claimed after that scene-only serialization correction.
 
 ## Open Limits
 
