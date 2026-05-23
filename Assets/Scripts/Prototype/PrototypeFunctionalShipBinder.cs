@@ -81,6 +81,7 @@ public sealed class PrototypeFunctionalShipBinder : MonoBehaviour
         PrototypeShipSocketUtility.EnsureSocketsInHierarchy(functionalSocketRig);
         AttachVisibleTurretGeometryToProxy(importedInstance.transform, functionalSocketRig, report);
         report.functionalSocketRig = functionalSocketRig;
+        UpdateImportedVisibilityReport(importedInstance.transform, report);
 
         if (!ValidateFunctionalSocketScales(functionalSocketRig, report))
         {
@@ -115,7 +116,7 @@ public sealed class PrototypeFunctionalShipBinder : MonoBehaviour
             report.createdRcsVfxChildren = importedReport.createdRcsVfxChildren;
             report.createdHardpointBindings = importedReport.createdHardpointBindings;
             report.duplicateHardpointsSkipped = importedReport.duplicateHardpointsSkipped;
-            report.missingRequiredSockets.AddRange(importedReport.missingRequiredSockets);
+            AddImportedMissingSockets(report, importedReport.missingRequiredSockets);
             report.warnings.AddRange(importedReport.warnings);
         }
 
@@ -135,11 +136,12 @@ public sealed class PrototypeFunctionalShipBinder : MonoBehaviour
             report.visibleTurretPitchRenderers = weaponReport.visiblePitchRenderers;
             report.boundGunModules = Mathf.Max(report.boundGunModules, weaponReport.boundGunModules);
             report.boundMuzzleName = string.IsNullOrEmpty(report.boundMuzzleName) ? weaponReport.boundMuzzleName : report.boundMuzzleName;
-            report.missingRequiredSockets.AddRange(weaponReport.missingRequiredMarkers);
+            report.missingWeaponSockets.AddRange(weaponReport.missingRequiredMarkers);
             report.warnings.AddRange(weaponReport.warnings);
         }
 
         ApplyStrictRuntimeFallbackPolicy(report);
+        UpdateImportedVisibilityReport(report.importedShipInstance, report);
         ValidateRequiredRuntimeSockets(report);
         LastReport = report;
         return report;
@@ -327,9 +329,27 @@ public sealed class PrototypeFunctionalShipBinder : MonoBehaviour
             }
 
             string visualName = OriginalStaticTurretVisualName(child.name);
-            GameObject clone = Object.Instantiate(child.gameObject, proxyPivot, true);
+            GameObject clone = null;
+            try
+            {
+                clone = Object.Instantiate(child.gameObject, proxyPivot, true);
+            }
+            catch (System.Exception exception)
+            {
+                report.warnings.Add("Could not clone turret visual '" + child.name + "' into functional proxy: " + exception.Message);
+                continue;
+            }
+
             clone.name = visualName;
+            clone.SetActive(true);
             SetRenderersEnabled(clone.transform, true);
+            if (CountEnabledRenderers(clone.transform, requireActiveInHierarchy: false) <= 0)
+            {
+                report.warnings.Add("Turret visual clone '" + visualName + "' has no enabled renderer; keeping original visible.");
+                DestroyGameObject(clone);
+                continue;
+            }
+
             if (!child.name.StartsWith(HiddenStaticTurretVisualPrefix, System.StringComparison.Ordinal))
             {
                 child.name = HiddenStaticTurretVisualPrefix + child.name;
@@ -367,6 +387,48 @@ public sealed class PrototypeFunctionalShipBinder : MonoBehaviour
                 renderers[i].enabled = enabled;
             }
         }
+    }
+
+    private static int CountRenderers(Transform root)
+    {
+        return root != null ? root.GetComponentsInChildren<Renderer>(true).Length : 0;
+    }
+
+    private static int CountEnabledRenderers(Transform root, bool requireActiveInHierarchy)
+    {
+        if (root == null)
+        {
+            return 0;
+        }
+
+        Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
+        int count = 0;
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            Renderer renderer = renderers[i];
+            if (renderer != null
+                && renderer.enabled
+                && (!requireActiveInHierarchy || renderer.gameObject.activeInHierarchy))
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    private static void UpdateImportedVisibilityReport(Transform importedInstance, BindReport report)
+    {
+        if (report == null)
+        {
+            return;
+        }
+
+        report.importedRendererCount = CountRenderers(importedInstance);
+        report.importedEnabledRendererCount = CountEnabledRenderers(importedInstance, true);
+        report.hasVisibleImportedShip = importedInstance != null
+            && importedInstance.gameObject.activeInHierarchy
+            && report.importedEnabledRendererCount > 0;
     }
 
     private static Transform FindFirstDescendant(Transform root, System.Predicate<string> namePredicate)
@@ -564,7 +626,7 @@ public sealed class PrototypeFunctionalShipBinder : MonoBehaviour
             gun.SetAllowMuzzleFallback(false);
             if (gun.MuzzleTransform == null || !gun.MuzzleTransform.name.ToUpperInvariant().StartsWith(PrototypeShipSocketUtility.WeaponMuzzlePrefix, System.StringComparison.Ordinal))
             {
-                report.missingRequiredSockets.Add(PrototypeShipSocketUtility.WeaponMuzzlePrefix + "*");
+                report.missingWeaponSockets.Add(PrototypeShipSocketUtility.WeaponMuzzlePrefix + "*");
             }
         }
 
@@ -580,9 +642,23 @@ public sealed class PrototypeFunctionalShipBinder : MonoBehaviour
 
     private void ValidateRequiredRuntimeSockets(BindReport report)
     {
+        bool hasMainNozzle = report.foundMainNozzles > 0;
+        bool hasRcsNozzle = report.foundRcsNozzles > 0;
+        bool hasMainBinding = report.boundMainThrusters > 0;
+        bool hasRcsBinding = report.boundRcsNozzles > 0;
+        bool hasWeaponMuzzle = report.foundWeaponMuzzleMarkers > 0 || report.foundMuzzles > 0;
+        bool hasTurretBinding = report.boundTurretWeapons > 0;
+        bool hasYawVisual = report.visibleTurretYawRenderers > 0;
+        bool hasPitchVisual = report.visibleTurretPitchRenderers > 0;
+
         if (report.foundMainNozzles <= 0)
         {
             report.missingRequiredSockets.Add("THRUST_NOZZLE_MAIN*");
+        }
+
+        if (report.boundMainThrusters <= 0)
+        {
+            report.missingRequiredSockets.Add("bound main thruster module");
         }
 
         if (report.foundRcsNozzles <= 0)
@@ -590,35 +666,70 @@ public sealed class PrototypeFunctionalShipBinder : MonoBehaviour
             report.missingRequiredSockets.Add("RCS_NOZZLE_*");
         }
 
+        if (report.boundRcsNozzles <= 0)
+        {
+            report.missingRequiredSockets.Add("bound RCS nozzles");
+        }
+
         if (report.foundWeaponMuzzleMarkers <= 0 && report.foundMuzzles <= 0)
         {
-            report.missingRequiredSockets.Add(PrototypeShipSocketUtility.WeaponMuzzlePrefix + "*");
+            report.missingWeaponSockets.Add(PrototypeShipSocketUtility.WeaponMuzzlePrefix + "*");
         }
 
         if (report.boundTurretWeapons <= 0)
         {
-            report.missingRequiredSockets.Add("WEAPON_TURRET_* hierarchy");
+            report.missingWeaponSockets.Add("WEAPON_TURRET_* hierarchy");
         }
 
         if (report.visibleTurretYawRenderers <= 0)
         {
-            report.missingRequiredSockets.Add("visible yaw renderer under WEAPON_TURRET_YAW_*");
+            report.missingVisibleWeaponRenderers.Add("visible yaw renderer under WEAPON_TURRET_YAW_*");
+            report.warnings.Add("Imported weapon turret has no visible yaw renderer; weapon visuals are degraded but flight binding remains valid.");
         }
 
         if (report.visibleTurretPitchRenderers <= 0)
         {
-            report.missingRequiredSockets.Add("visible pitch renderer under WEAPON_TURRET_PITCH_*");
+            report.missingVisibleWeaponRenderers.Add("visible pitch renderer under WEAPON_TURRET_PITCH_*");
+            report.warnings.Add("Imported weapon turret has no visible pitch renderer; weapon visuals are degraded but flight binding remains valid.");
         }
 
-        report.hasRequiredFunctionalSockets =
-            report.foundMainNozzles > 0
-            && report.foundRcsNozzles > 0
-            && (report.foundWeaponMuzzleMarkers > 0 || report.foundMuzzles > 0)
-            && report.boundMainThrusters > 0
-            && report.boundRcsNozzles > 0
-            && report.boundTurretWeapons > 0
-            && report.visibleTurretYawRenderers > 0
-            && report.visibleTurretPitchRenderers > 0;
+        report.hasRequiredFlightSockets = hasMainNozzle && hasRcsNozzle && hasMainBinding && hasRcsBinding;
+        report.hasRequiredWeaponSockets = hasWeaponMuzzle && hasTurretBinding;
+        report.hasRequiredVisibleWeaponRenderers = hasYawVisual && hasPitchVisual;
+        report.hasRequiredFunctionalSockets = report.hasRequiredFlightSockets;
+    }
+
+    private static void AddImportedMissingSockets(BindReport report, List<string> missingSockets)
+    {
+        if (report == null || missingSockets == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < missingSockets.Count; i++)
+        {
+            string missing = missingSockets[i];
+            if (IsFlightRequiredMissingSocket(missing))
+            {
+                report.missingRequiredSockets.Add(missing);
+            }
+            else
+            {
+                report.missingWeaponSockets.Add(missing);
+            }
+        }
+    }
+
+    private static bool IsFlightRequiredMissingSocket(string missingSocket)
+    {
+        if (string.IsNullOrEmpty(missingSocket))
+        {
+            return false;
+        }
+
+        return missingSocket.IndexOf("MAIN", System.StringComparison.OrdinalIgnoreCase) >= 0
+            || missingSocket.IndexOf("THRUST", System.StringComparison.OrdinalIgnoreCase) >= 0
+            || missingSocket.IndexOf("RCS", System.StringComparison.OrdinalIgnoreCase) >= 0;
     }
 
     private GameObject ResolvePrefab(PrototypeShipBuildMode mode, BindReport report)
@@ -788,8 +899,14 @@ public sealed class PrototypeFunctionalShipBinder : MonoBehaviour
         public Transform functionalSocketRig;
         public bool createdImportedInstance;
         public bool hasRequiredFunctionalSockets;
+        public bool hasRequiredFlightSockets;
+        public bool hasRequiredWeaponSockets;
+        public bool hasRequiredVisibleWeaponRenderers;
+        public bool hasVisibleImportedShip;
         public int createdFunctionalSocketProxies;
         public int reparentedVisibleTurretChildren;
+        public int importedRendererCount;
+        public int importedEnabledRendererCount;
         public int foundMainNozzles;
         public int foundRcsNozzles;
         public int foundMuzzles;
@@ -820,6 +937,8 @@ public sealed class PrototypeFunctionalShipBinder : MonoBehaviour
         public string bestMainNozzleForwardName;
         public Vector3 firstUnsafeFunctionalSocketLossyScale;
         public List<string> missingRequiredSockets = new List<string>();
+        public List<string> missingWeaponSockets = new List<string>();
+        public List<string> missingVisibleWeaponRenderers = new List<string>();
         public List<string> warnings = new List<string>();
     }
 }

@@ -111,6 +111,7 @@ public class PrototypeBootstrap : MonoBehaviour
         physicsCore.Configure(shipRigidbody);
 
         bool useGeneratedFallback = buildMode == PrototypeShipBuildMode.GeneratedPrimitiveFallback;
+        bool useGeneratedFallbackBeforeVisibilityPolicy = useGeneratedFallback;
         MainThrusterModule[] mainThrusterModules = new MainThrusterModule[0];
         Transform primaryMainNozzle = null;
         PrototypeFunctionalShipBinder.BindReport functionalBindReport = null;
@@ -120,7 +121,8 @@ public class PrototypeBootstrap : MonoBehaviour
             PrototypeFunctionalShipBinder functionalBinder = GetOrAddComponent<PrototypeFunctionalShipBinder>(ship);
             functionalBinder.Configure(buildMode);
             functionalBindReport = functionalBinder.BindNow();
-            useGeneratedFallback = functionalBindReport == null || !functionalBindReport.hasRequiredFunctionalSockets;
+            useGeneratedFallback = functionalBindReport == null || !functionalBindReport.hasRequiredFlightSockets;
+            useGeneratedFallbackBeforeVisibilityPolicy = useGeneratedFallback;
             if (useGeneratedFallback)
             {
                 string warning = functionalBindReport != null && functionalBindReport.missingRequiredSockets.Count > 0
@@ -129,12 +131,19 @@ public class PrototypeBootstrap : MonoBehaviour
                 Debug.LogWarning("Imported functional ship binding failed (" + warning + ").");
                 if (!allowGeneratedFallbackWhenImportedAssetMissing)
                 {
-                    useGeneratedFallback = false;
+                    Debug.LogWarning("Generated fallback is disabled in scene settings, but imported flight binding failed; building generated fallback to keep the ship visible.");
                 }
-                else
-                {
-                    ClearGeneratedShipChildren(ship.transform);
-                }
+
+                ClearGeneratedShipChildren(ship.transform);
+            }
+            else if (functionalBindReport != null
+                && (!functionalBindReport.hasRequiredWeaponSockets || !functionalBindReport.hasRequiredVisibleWeaponRenderers))
+            {
+                Debug.LogWarning(
+                    "Imported functional ship has degraded weapon binding. Missing weapon sockets: "
+                    + string.Join(", ", functionalBindReport.missingWeaponSockets)
+                    + " Missing weapon visuals: "
+                    + string.Join(", ", functionalBindReport.missingVisibleWeaponRenderers));
             }
         }
 
@@ -249,6 +258,12 @@ public class PrototypeBootstrap : MonoBehaviour
         PrototypeTestEnvironment testEnvironment = buildTestEnvironment ? EnsureTestEnvironment() : null;
         SetupMainCamera(ship.transform, stats, shipRigidbody, testEnvironment, dockingApproachTargetPort);
         EnsureSceneDirectionalLight();
+        LogBootstrapVisibilityDiagnostics(
+            ship.transform,
+            functionalBindReport,
+            allowGeneratedFallbackWhenImportedAssetMissing,
+            useGeneratedFallbackBeforeVisibilityPolicy,
+            useGeneratedFallback);
     }
 
     public void SelectVariant(int index)
@@ -368,6 +383,114 @@ public class PrototypeBootstrap : MonoBehaviour
         {
             DestroyComponentImmediate(existingThrusters[i]);
         }
+    }
+
+    private static void LogBootstrapVisibilityDiagnostics(
+        Transform ship,
+        PrototypeFunctionalShipBinder.BindReport report,
+        bool allowGeneratedFallback,
+        bool useGeneratedFallbackBeforePolicy,
+        bool useGeneratedFallbackAfterPolicy)
+    {
+        if (ship == null)
+        {
+            return;
+        }
+
+        Transform importedVisualRoot = ship.Find(PrototypeFunctionalShipBinder.ImportedVisualRootName);
+        Transform importedShipInstance = importedVisualRoot != null && importedVisualRoot.childCount > 0
+            ? importedVisualRoot.GetChild(0)
+            : null;
+        Transform functionalRig = ship.Find(PrototypeFunctionalShipBinder.FunctionalSocketRigName);
+        int importedRendererCount = CountRenderers(importedVisualRoot, false);
+        int importedEnabledRendererCount = CountRenderers(importedVisualRoot, true);
+        int generatedRendererCount = CountGeneratedRenderers(ship, false);
+        int generatedEnabledRendererCount = CountGeneratedRenderers(ship, true);
+        Camera mainCamera = Camera.main;
+        float cameraDistance = mainCamera != null
+            ? Vector3.Distance(mainCamera.transform.position, ship.position)
+            : -1f;
+
+        var builder = new System.Text.StringBuilder(512);
+        builder.Append("PrototypeBootstrap visibility diagnostics: ");
+        builder.Append("buildMode=").Append(report != null ? report.requestedBuildMode.ToString() : "GeneratedPrimitiveFallback");
+        builder.Append(" allowGeneratedFallbackWhenImportedAssetMissing=").Append(allowGeneratedFallback);
+        builder.Append(" useGeneratedFallbackBeforePolicy=").Append(useGeneratedFallbackBeforePolicy);
+        builder.Append(" useGeneratedFallbackAfterPolicy=").Append(useGeneratedFallbackAfterPolicy);
+        builder.Append(" hasRequiredFlightSockets=").Append(report != null && report.hasRequiredFlightSockets);
+        builder.Append(" hasRequiredWeaponSockets=").Append(report != null && report.hasRequiredWeaponSockets);
+        builder.Append(" hasRequiredVisibleWeaponRenderers=").Append(report != null && report.hasRequiredVisibleWeaponRenderers);
+        builder.Append(" hasVisibleImportedShip=").Append(report != null && report.hasVisibleImportedShip);
+        builder.Append(" missingRequiredSockets=").Append(report != null ? string.Join("|", report.missingRequiredSockets) : string.Empty);
+        builder.Append(" missingWeaponSockets=").Append(report != null ? string.Join("|", report.missingWeaponSockets) : string.Empty);
+        builder.Append(" missingVisibleWeaponRenderers=").Append(report != null ? string.Join("|", report.missingVisibleWeaponRenderers) : string.Empty);
+        builder.Append(" importedVisualRoot=").Append(importedVisualRoot != null);
+        builder.Append(" importedVisualRootActive=").Append(importedVisualRoot != null && importedVisualRoot.gameObject.activeInHierarchy);
+        builder.Append(" importedShipInstance=").Append(importedShipInstance != null ? importedShipInstance.name : "<none>");
+        builder.Append(" importedShipInstanceActive=").Append(importedShipInstance != null && importedShipInstance.gameObject.activeInHierarchy);
+        builder.Append(" functionalSocketRig=").Append(functionalRig != null);
+        builder.Append(" importedRendererCount=").Append(importedRendererCount);
+        builder.Append(" importedEnabledRendererCount=").Append(importedEnabledRendererCount);
+        builder.Append(" generatedRendererCount=").Append(generatedRendererCount);
+        builder.Append(" generatedEnabledRendererCount=").Append(generatedEnabledRendererCount);
+        builder.Append(" cameraTargetDistance=").Append(cameraDistance.ToString("0.0"));
+        Debug.Log(builder.ToString());
+    }
+
+    private static int CountRenderers(Transform root, bool enabledOnly)
+    {
+        if (root == null)
+        {
+            return 0;
+        }
+
+        Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
+        int count = 0;
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            Renderer renderer = renderers[i];
+            if (renderer == null)
+            {
+                continue;
+            }
+
+            if (!enabledOnly || (renderer.enabled && renderer.gameObject.activeInHierarchy))
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    private static int CountGeneratedRenderers(Transform ship, bool enabledOnly)
+    {
+        if (ship == null)
+        {
+            return 0;
+        }
+
+        Transform importedRoot = ship.Find(PrototypeFunctionalShipBinder.ImportedVisualRootName);
+        Transform functionalRig = ship.Find(PrototypeFunctionalShipBinder.FunctionalSocketRigName);
+        Renderer[] renderers = ship.GetComponentsInChildren<Renderer>(true);
+        int count = 0;
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            Renderer renderer = renderers[i];
+            if (renderer == null
+                || (importedRoot != null && renderer.transform.IsChildOf(importedRoot))
+                || (functionalRig != null && renderer.transform.IsChildOf(functionalRig)))
+            {
+                continue;
+            }
+
+            if (!enabledOnly || (renderer.enabled && renderer.gameObject.activeInHierarchy))
+            {
+                count++;
+            }
+        }
+
+        return count;
     }
 
     private static void RemoveRootFallbackChild(Transform parent, string childName)

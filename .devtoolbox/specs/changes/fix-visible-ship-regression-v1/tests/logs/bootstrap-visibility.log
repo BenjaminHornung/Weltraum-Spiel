@@ -1,0 +1,54 @@
+Unity: 6000.4.7f1
+Scene: Assets/Scenes/PrototypeBootstrapHost.unity
+Date: 2026-05-23
+
+Root-cause diagnosis:
+- The visible-ship regression fits the Functional Blender / weapon binder path, not the camera jitter/performance path.
+- The scene had serialized allowGeneratedFallbackWhenImportedAssetMissing = 0 while PrototypeBootstrap could suppress generated fallback after an imported binding failure.
+- PrototypeFunctionalShipBinder treated visible turret yaw/pitch renderer failures as missing required functional sockets for the whole ship.
+- PrototypeShipVisualSwitcher hid generated primitives before proving that the imported visual had an active enabled renderer.
+
+Implemented visibility policy:
+- PrototypeBootstrapHost.unity: allowGeneratedFallbackWhenImportedAssetMissing = 1.
+- Bootstrap now treats imported flight socket failure as a visible-ship safety fallback even if the old scene flag is false.
+- Functional binder now reports:
+  - hasRequiredFlightSockets
+  - hasRequiredWeaponSockets
+  - hasRequiredVisibleWeaponRenderers
+  - hasVisibleImportedShip
+- Missing visible turret renderers degrade weapon visuals only; they no longer fail the whole ship spawn.
+- Visual clone safety now validates clone renderers before hiding original turret visuals.
+- VisualSwitcher now hides generated primitives only after the imported visual has an active enabled renderer.
+
+Focused EditMode test job:
+job_id=0d48b44e121944e1bd31549e15494e1a
+result=PASS 6/6
+tests:
+- PrototypeFunctionalShipSocketValidationTests.FunctionalBinderUsesImportedDemoScoutAsRuntimeRootWithoutFallbacks
+- PrototypeFunctionalShipSocketValidationTests.FunctionalBinderTreatsMissingTurretRenderersAsWeaponVisualDegradationOnly
+- PrototypeFunctionalShipSocketValidationTests.FunctionalBinderCloneVisualChildrenLeavesOriginalVisibleWhenCloneHasNoRenderer
+- PrototypeFunctionalShipSocketValidationTests.PrototypeBootstrapHostSceneAllowsGeneratedFallbackForVisibleShipSafety
+- PrototypeShipVisualSwitcherValidationTests.ImportedVisualSwitcherKeepsGeneratedVisibleWhenImportedHasNoEnabledRenderers
+- PrototypeShipVisualSwitcherValidationTests.ImportedScoutVisualKeepsGameplayRigAndCanReturnToGeneratedPrimitives
+
+Focused PlayMode test job:
+job_id=025f4e5ac89149049defedae38802e23
+result=PASS 2/2
+tests:
+- PrototypeFunctionalBlenderRuntimePlayModeTests.BootstrapPlayModeKeepsImportedScoutVisibleAndPlayableForTenSeconds
+- PrototypeFunctionalBlenderRuntimePlayModeTests.BootstrapPlayModeRegistersDefaultTargetForWeaponComputer
+
+PlayMode bootstrap visibility diagnostic from test output:
+PrototypeBootstrap visibility diagnostics: buildMode=ImportedDemoScoutFunctionalDefault allowGeneratedFallbackWhenImportedAssetMissing=False useGeneratedFallbackBeforePolicy=False useGeneratedFallbackAfterPolicy=False hasRequiredFlightSockets=True hasRequiredWeaponSockets=True hasRequiredVisibleWeaponRenderers=True hasVisibleImportedShip=True missingRequiredSockets= missingWeaponSockets= missingVisibleWeaponRenderers= importedVisualRoot=True importedVisualRootActive=True importedShipInstance=ImportedDemoScoutVisual importedShipInstanceActive=True functionalSocketRig=True importedRendererCount=126 importedEnabledRendererCount=81 generatedRendererCount=0 generatedEnabledRendererCount=0 cameraTargetDistance=19.0
+
+Manual Game View evidence:
+- Pressed Play in Assets/Scenes/PrototypeBootstrapHost.unity through Unity MCP.
+- Hierarchy contained PrototypeShip, ImportedShipVisual, ImportedDemoScoutVisual, and FunctionalSocketRig.
+- ImportedShipVisual activeInHierarchy=True.
+- ImportedDemoScoutVisual activeInHierarchy=True.
+- Screenshot: tests/screenshots/ship-visible-playmode.png.
+
+Verification notes:
+- dotnet build "Weltraum Spiel.sln" --no-restore: PASS with known Unity/MCP assembly conflict warnings.
+- Unity validate_script: 0 errors for changed runtime scripts and focused test files.
+- Unity console also contains unrelated Unity Asset Manager SerializeReference messages from currently dirty package changes.

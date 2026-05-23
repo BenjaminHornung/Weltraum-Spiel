@@ -16,6 +16,7 @@ public class PrototypeFunctionalShipSocketValidationTests
         DestroyNamed("FunctionalSocketFunctionalRoot");
         DestroyNamed("PrototypeBootstrapTestHost");
         DestroyNamed("PrototypeShip");
+        DestroyNamed("InvisibleWeaponPrefab");
         DestroyNamed("Main Camera");
         DestroyNamed("Directional Light");
         DestroyNamed("PrototypeProjectile");
@@ -277,6 +278,64 @@ public class PrototypeFunctionalShipSocketValidationTests
     }
 
     [Test]
+    public void FunctionalBinderTreatsMissingTurretRenderersAsWeaponVisualDegradationOnly()
+    {
+        GameObject root = CreateRuntimeRoot();
+        root.name = "FunctionalSocketFunctionalRoot";
+        GameObject prefab = CreateMinimalImportedFlightWeaponPrefab(includeVisibleTurretRenderers: false);
+
+        var binder = root.AddComponent<PrototypeFunctionalShipBinder>();
+        binder.Configure(PrototypeShipBuildMode.ImportedDemoScoutFunctionalDefault, prefab);
+
+        PrototypeFunctionalShipBinder.BindReport report = binder.BindNow();
+
+        Assert.True(report.hasRequiredFlightSockets, string.Join(", ", report.missingRequiredSockets));
+        Assert.True(report.hasRequiredFunctionalSockets, string.Join(", ", report.missingRequiredSockets));
+        Assert.True(report.hasRequiredWeaponSockets, string.Join(", ", report.missingWeaponSockets));
+        Assert.False(report.hasRequiredVisibleWeaponRenderers);
+        Assert.That(report.missingRequiredSockets, Does.Not.Contain("visible yaw renderer under WEAPON_TURRET_YAW_*"));
+        Assert.That(report.missingRequiredSockets, Does.Not.Contain("visible pitch renderer under WEAPON_TURRET_PITCH_*"));
+        Assert.That(report.missingVisibleWeaponRenderers, Does.Contain("visible yaw renderer under WEAPON_TURRET_YAW_*"));
+        Assert.That(report.missingVisibleWeaponRenderers, Does.Contain("visible pitch renderer under WEAPON_TURRET_PITCH_*"));
+        Assert.NotNull(root.GetComponent<MainThrusterModule>());
+        Assert.True(root.GetComponent<RcsThrusterController>().UseImportedFunctionalSockets);
+
+        Object.DestroyImmediate(prefab);
+    }
+
+    [Test]
+    public void FunctionalBinderCloneVisualChildrenLeavesOriginalVisibleWhenCloneHasNoRenderer()
+    {
+        GameObject source = new GameObject("FunctionalSocketImportedTestRoot");
+        Transform sourceYaw = CreateChild(source.transform, "WEAPON_TURRET_YAW_PRIMARY", Vector3.zero, Quaternion.identity);
+        Transform emptyVisual = CreateChild(sourceYaw, "EmptyTurretVisualContainer", Vector3.zero, Quaternion.identity);
+        GameObject proxy = new GameObject("FunctionalSocketFunctionalRoot");
+        Transform proxyYaw = CreateChild(proxy.transform, "WEAPON_TURRET_YAW_PRIMARY", Vector3.zero, Quaternion.identity);
+        var report = new PrototypeFunctionalShipBinder.BindReport();
+
+        MethodInfo cloneMethod = typeof(PrototypeFunctionalShipBinder).GetMethod(
+            "CloneVisualChildrenToProxy",
+            BindingFlags.Static | BindingFlags.NonPublic);
+        Assert.NotNull(cloneMethod);
+
+        cloneMethod.Invoke(null, new object[] { sourceYaw, proxyYaw, report });
+
+        Assert.That(emptyVisual.name, Is.EqualTo("EmptyTurretVisualContainer"));
+        Assert.That(proxyYaw.childCount, Is.EqualTo(0));
+        Assert.That(report.reparentedVisibleTurretChildren, Is.EqualTo(0));
+        Assert.That(report.warnings, Has.Some.Contains("no enabled renderer"));
+    }
+
+    [Test]
+    public void PrototypeBootstrapHostSceneAllowsGeneratedFallbackForVisibleShipSafety()
+    {
+        string scenePath = Path.Combine(Application.dataPath, "Scenes", "PrototypeBootstrapHost.unity");
+        string sceneText = File.ReadAllText(scenePath);
+
+        Assert.That(sceneText, Does.Contain("allowGeneratedFallbackWhenImportedAssetMissing: 1"));
+    }
+
+    [Test]
     public void BootstrapDefaultBuildsImportedFunctionalScoutWithVisibleTurretHierarchy()
     {
         AssetDatabase.ImportAsset("Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.fbx", ImportAssetOptions.ForceUpdate);
@@ -370,6 +429,43 @@ public class PrototypeFunctionalShipSocketValidationTests
         var physicsCore = root.AddComponent<ShipPhysicsCore>();
         physicsCore.Configure(rigidbody);
         return root;
+    }
+
+    private static GameObject CreateMinimalImportedFlightWeaponPrefab(bool includeVisibleTurretRenderers)
+    {
+        GameObject prefab = new GameObject("InvisibleWeaponPrefab");
+        CreateChild(prefab.transform, "THRUST_NOZZLE_MAIN_PRIMARY", new Vector3(0f, 0f, -2f), Quaternion.identity);
+        CreateChild(prefab.transform, "RCS_NOZZLE_UP_PRIMARY", new Vector3(1f, 0f, 0f), Quaternion.LookRotation(Vector3.up, Vector3.forward));
+        Transform weaponBase = CreateChild(prefab.transform, "WEAPON_TURRET_BASE_PRIMARY", new Vector3(0f, 0.5f, 0.5f), Quaternion.identity);
+        Transform yaw = CreateChild(weaponBase, "WEAPON_TURRET_YAW_PRIMARY", Vector3.zero, Quaternion.identity);
+        Transform pitch = CreateChild(yaw, "WEAPON_TURRET_PITCH_PRIMARY", Vector3.zero, Quaternion.identity);
+        CreateChild(pitch, "WEAPON_MUZZLE_PRIMARY", new Vector3(0f, 0f, 1f), Quaternion.identity);
+
+        if (includeVisibleTurretRenderers)
+        {
+            GameObject yawMesh = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            yawMesh.name = "VisibleYawMesh";
+            yawMesh.transform.SetParent(yaw, false);
+            yawMesh.transform.localScale = Vector3.one * 0.2f;
+
+            GameObject pitchMesh = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            pitchMesh.name = "VisiblePitchMesh";
+            pitchMesh.transform.SetParent(pitch, false);
+            pitchMesh.transform.localScale = new Vector3(0.1f, 0.1f, 0.8f);
+        }
+
+        PrototypeShipSocketUtility.EnsureSocketsInHierarchy(prefab.transform);
+        return prefab;
+    }
+
+    private static Transform CreateChild(Transform parent, string name, Vector3 localPosition, Quaternion localRotation)
+    {
+        Transform child = new GameObject(name).transform;
+        child.SetParent(parent, false);
+        child.localPosition = localPosition;
+        child.localRotation = localRotation;
+        child.localScale = Vector3.one;
+        return child;
     }
 
     private static int CountDescendantNames(Transform root, string exactName)

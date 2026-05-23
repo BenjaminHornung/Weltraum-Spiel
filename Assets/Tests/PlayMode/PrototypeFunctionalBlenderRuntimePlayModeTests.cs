@@ -85,7 +85,7 @@ public class PrototypeFunctionalBlenderRuntimePlayModeTests
             Assert.NotNull(computer);
             Assert.NotNull(weapon);
             Assert.NotNull(weaponPanel);
-            Assert.True(weaponPanel.IsWindowVisible);
+            Assert.False(weaponPanel.IsWindowVisible);
             Assert.True(weaponPanel.IsWindowCollapsed);
             Assert.NotNull(weapon.Muzzle);
             Assert.That(weapon.Muzzle.name, Does.StartWith(PrototypeShipSocketUtility.WeaponMuzzlePrefix));

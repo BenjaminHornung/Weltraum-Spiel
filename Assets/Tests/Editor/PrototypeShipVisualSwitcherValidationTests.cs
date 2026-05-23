@@ -18,6 +18,7 @@ public class PrototypeShipVisualSwitcherValidationTests
         DestroyNamed("GameplaySwitcherHost");
         DestroyNamed("StaleCameraTarget");
         DestroyNamed("OldMainCamera");
+        DestroyNamed("InvisibleImportedVisual");
     }
 
     [Test]
@@ -179,6 +180,27 @@ public class PrototypeShipVisualSwitcherValidationTests
         Assert.True(firstScout.gameObject.activeSelf);
         Assert.False(cargo.gameObject.activeSelf);
         Assert.That(CountDirectChildrenNamed(ship.transform, "ImportedShipVisual"), Is.EqualTo(1));
+    }
+
+    [Test]
+    public void ImportedVisualSwitcherKeepsGeneratedVisibleWhenImportedHasNoEnabledRenderers()
+    {
+        GameObject ship = BuildBaselineShip();
+        Transform hullKitRoot = ship.transform.Find("Hull").Find(PrototypeShipPartVisualFactory.VisualRootName);
+        Assert.NotNull(hullKitRoot);
+        Assert.True(AllRenderersEnabled(hullKitRoot));
+
+        var switcher = CreateSwitcher();
+        GameObject invisiblePrefab = new GameObject("InvisibleImportedVisual");
+        SetPrivateField(switcher, "importedDemoScoutVisualPrefab", invisiblePrefab);
+
+        switcher.SelectVisualMode(PrototypeShipVisualMode.ImportedDemoScout);
+
+        Transform importedRoot = ship.transform.Find("ImportedShipVisual");
+        Assert.NotNull(importedRoot);
+        Assert.True(importedRoot.gameObject.activeSelf);
+        Assert.That(CollectRenderers(importedRoot).Length, Is.EqualTo(0));
+        Assert.True(AllRenderersEnabled(hullKitRoot), "Generated visuals must remain visible until imported visual has enabled renderers.");
     }
 
     [Test]
@@ -467,6 +489,13 @@ public class PrototypeShipVisualSwitcherValidationTests
         MethodInfo lateUpdate = typeof(SimpleFollowCamera).GetMethod("LateUpdate", BindingFlags.Instance | BindingFlags.NonPublic);
         Assert.NotNull(lateUpdate, "SimpleFollowCamera LateUpdate method should exist for test update.");
         lateUpdate.Invoke(camera, null);
+    }
+
+    private static void SetPrivateField(object target, string fieldName, object value)
+    {
+        FieldInfo field = target.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(field, fieldName);
+        field.SetValue(target, value);
     }
 
     private static void AssertVector(Vector3 actual, Vector3 expected, float tolerance)

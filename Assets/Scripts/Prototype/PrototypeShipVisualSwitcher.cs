@@ -179,13 +179,22 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
             Debug.LogWarning($"Prototype ship visual '{SelectedVisualModeName}' could not be bound functionally. Missing: {string.Join(", ", report.missingRequiredSockets)}");
         }
 
-        SetGeneratedPrototypeVisualsVisible(ship, layout, !hideGeneratedPrototypePrimitivesWithImportedVisual);
         if (activeImportedVisual == null)
         {
             activeImportedVisual = EnsureImportedVisualInstance(ship, visualMode, ResolveImportedShipVisualPrefab(visualMode));
         }
 
         SetImportedVisualActive(activeImportedVisual);
+        bool importedVisualHasEnabledRenderers = HasEnabledRenderer(activeImportedVisual);
+        if (!importedVisualHasEnabledRenderers)
+        {
+            Debug.LogWarning($"Prototype ship visual '{SelectedVisualModeName}' has no active enabled renderers; keeping generated ship visuals visible.");
+        }
+
+        SetGeneratedPrototypeVisualsVisible(
+            ship,
+            layout,
+            !hideGeneratedPrototypePrimitivesWithImportedVisual || !importedVisualHasEnabledRenderers);
         appliedMode = visualMode;
         NotifyCachesAfterVisualChange(ship);
     }
@@ -479,6 +488,26 @@ public class PrototypeShipVisualSwitcher : MonoBehaviour
         {
             importedVisualRoot.gameObject.SetActive(activeInstance != null);
         }
+    }
+
+    private static bool HasEnabledRenderer(GameObject root)
+    {
+        if (root == null || !root.activeInHierarchy)
+        {
+            return false;
+        }
+
+        Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            Renderer renderer = renderers[i];
+            if (renderer != null && renderer.enabled && renderer.gameObject.activeInHierarchy)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static GameObject LoadImportedVisualAsset(string assetPath)
