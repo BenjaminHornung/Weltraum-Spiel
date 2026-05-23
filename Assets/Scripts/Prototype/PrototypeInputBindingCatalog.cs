@@ -145,11 +145,11 @@ public static class PrototypeInputBindingCatalog
         switch (mode)
         {
             case FlightControlMode.Precision:
-                return "Precision keeps main thrust / gimbal disabled.";
+                return "Precision: main thrust off; RCS attitude.";
             case FlightControlMode.Translation:
-                return "Translation disables main thrust and interprets W/S and A/D as translation.";
+                return "Translation: main off; W/S + A/D translate.";
             default:
-                return "Cruise uses main thrust and full attitude controls.";
+                return "Cruise: main thrust and full attitude.";
         }
     }
 

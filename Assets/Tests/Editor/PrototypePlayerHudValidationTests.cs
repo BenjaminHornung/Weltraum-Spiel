@@ -69,7 +69,7 @@ public class PrototypePlayerHudValidationTests
 
             Assert.That(snapshot.Flight.SpeedMetersPerSecond, Is.EqualTo(37f).Within(0.01f));
             Assert.That(snapshot.Flight.ControlModeLabel, Is.EqualTo("Translation"));
-            Assert.That(snapshot.Flight.ControlModeHint, Does.Contain("Translation disables main thrust"));
+            Assert.That(snapshot.Flight.ControlModeHint, Is.EqualTo("Translation: main off; W/S + A/D translate."));
             Assert.That(snapshot.Flight.RcsLabel, Does.Contain("RCS"));
             Assert.That(string.Join(" | ", Labels(snapshot.Warnings)), Does.Contain("Treibstoff niedrig"));
             Assert.That(string.Join(" | ", Labels(snapshot.Warnings)), Does.Not.Contain("DES"));
