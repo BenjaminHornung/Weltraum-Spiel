@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
@@ -617,9 +618,9 @@ public class PrototypePlayerHudValidationTests
         var arena = new PrototypePveArenaSnapshot("Clear the Arena", true, false, 3, 1, string.Empty);
         ApplySnapshotForTest(playerHud, CreateHudSnapshot(CreateCombatSnapshot(false), CreateDockingSnapshot(false), CreateNavigationSnapshot(false), arena));
 
-        Text systems = FindText(playerHud, "SystemsText");
-        Text objectiveTitle = FindText(playerHud, "ObjectiveTitle");
-        Text objectiveBody = FindText(playerHud, "ObjectiveBody");
+        TMP_Text systems = FindText(playerHud, "SystemsText");
+        TMP_Text objectiveTitle = FindText(playerHud, "ObjectiveTitle");
+        TMP_Text objectiveBody = FindText(playerHud, "ObjectiveBody");
 
         Assert.That(systems.text, Does.Contain("Fuel"));
         Assert.That(systems.text, Does.Not.Contain("Arena"));
@@ -670,6 +671,32 @@ public class PrototypePlayerHudValidationTests
         {
             RectTransform panel = FindRect(playerHud, fixedPanels[i]);
             Assert.That(overlay.GetSiblingIndex(), Is.LessThan(panel.GetSiblingIndex()), fixedPanels[i] + " should render above target overlay");
+        }
+    }
+
+    [Test]
+    public void GeneratedPlayerHudUsesTextMeshProAndReadableMinimumFontSizes()
+    {
+        GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+        cameraObject.AddComponent<Camera>();
+        PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+        playerHud.RefreshNow();
+
+        Canvas canvas = playerHud.GetComponentInChildren<Canvas>(true);
+        Assert.NotNull(canvas);
+
+        TMP_Text[] tmpTexts = canvas.GetComponentsInChildren<TMP_Text>(true);
+        UnityEngine.UI.Text[] legacyTexts = canvas.GetComponentsInChildren<UnityEngine.UI.Text>(true);
+        Assert.That(tmpTexts.Length, Is.GreaterThanOrEqualTo(24));
+        Assert.That(legacyTexts.Length, Is.EqualTo(0));
+        Assert.That(FindText(playerHud, "Speed"), Is.InstanceOf<TextMeshProUGUI>());
+        Assert.That(FindText(playerHud, "KillMomentumText"), Is.InstanceOf<TextMeshProUGUI>());
+        Assert.That(FindText(playerHud, "TargetIndicatorLabel0"), Is.InstanceOf<TextMeshProUGUI>());
+
+        for (int i = 0; i < tmpTexts.Length; i++)
+        {
+            Assert.That(tmpTexts[i].fontSize, Is.GreaterThanOrEqualTo(10f), tmpTexts[i].gameObject.name + " readable size");
+            Assert.NotNull(tmpTexts[i].font, tmpTexts[i].gameObject.name + " TMP font asset");
         }
     }
 
@@ -845,7 +872,7 @@ public class PrototypePlayerHudValidationTests
             playerHud.RefreshNow();
 
             Button button = FindButton(playerHud, "KillMomentum");
-            Text label = FindText(playerHud, "KillMomentumText");
+            TMP_Text label = FindText(playerHud, "KillMomentumText");
             Assert.True(button.interactable);
             Assert.That(label.text, Is.EqualTo("Kill Momentum"));
 
@@ -1392,9 +1419,9 @@ public class PrototypePlayerHudValidationTests
         return null;
     }
 
-    private static Text FindText(PrototypePlayerHudRenderer playerHud, string objectName)
+    private static TMP_Text FindText(PrototypePlayerHudRenderer playerHud, string objectName)
     {
-        Text[] texts = playerHud.GetComponentsInChildren<Text>(true);
+        TMP_Text[] texts = playerHud.GetComponentsInChildren<TMP_Text>(true);
         for (int i = 0; i < texts.Length; i++)
         {
             if (texts[i].gameObject.name == objectName)

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
@@ -2001,6 +2002,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private const float MarkerRadius = 88f;
     private const float CanvasReferenceWidth = 1280f;
     private const float CanvasReferenceHeight = 720f;
+    private const int MinimumPlayerHudFontSize = 10;
     private const int TargetIndicatorLabelCount = 6;
 
     [SerializeField] private Transform shipRoot;
@@ -2028,50 +2030,51 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private RectTransform objectivePanelRect;
     private RectTransform contextPanelRect;
     private RectTransform radarPanelRect;
-    private Text topWarningText;
-    private readonly List<Text> assistTexts = new List<Text>();
-    private Text speedText;
-    private Text throttleText;
-    private Text fuelText;
+    private TMP_Text topWarningText;
+    private readonly List<TMP_Text> assistTexts = new List<TMP_Text>();
+    private TMP_Text speedText;
+    private TMP_Text throttleText;
+    private TMP_Text fuelText;
     private Image throttleFill;
     private Image fuelFill;
-    private Text modeText;
-    private Text modeHintText;
-    private Text rcsText;
-    private Text sasText;
-    private Text systemText;
-    private Text objectiveTitleText;
-    private Text objectiveBodyText;
-    private Text contextTitleText;
-    private Text contextBodyText;
+    private TMP_Text modeText;
+    private TMP_Text modeHintText;
+    private TMP_Text rcsText;
+    private TMP_Text sasText;
+    private TMP_Text systemText;
+    private TMP_Text objectiveTitleText;
+    private TMP_Text objectiveBodyText;
+    private TMP_Text contextTitleText;
+    private TMP_Text contextBodyText;
     private RectTransform navigationControlRow;
     private Button navPreviousButton;
     private Button navNextButton;
     private Button navAutopilotButton;
     private Button navReplanButton;
     private Button navPreviewButton;
-    private Text navAutopilotButtonText;
-    private Text navPreviewButtonText;
+    private TMP_Text navAutopilotButtonText;
+    private TMP_Text navPreviewButtonText;
     private RectTransform combatControlRow;
     private Button combatPreviousButton;
     private Button combatNextButton;
     private Button combatClearButton;
     private Button combatAutoFireButton;
     private Button combatPriorityButton;
-    private Text combatAutoFireButtonText;
-    private Text combatPriorityButtonText;
+    private TMP_Text combatAutoFireButtonText;
+    private TMP_Text combatPriorityButtonText;
     private RectTransform contextGaugePanelRect;
     private readonly List<Image> contextGaugeFills = new List<Image>();
-    private readonly List<Text> contextGaugeLabels = new List<Text>();
-    private Text radarText;
-    private Text helpText;
+    private readonly List<TMP_Text> contextGaugeLabels = new List<TMP_Text>();
+    private TMP_Text radarText;
+    private TMP_Text helpText;
     private GameObject helpPanel;
     private Button killMomentumButton;
-    private Text killMomentumButtonText;
-    private readonly List<Text> markerLabels = new List<Text>();
-    private readonly List<Text> targetIndicatorLabels = new List<Text>();
+    private TMP_Text killMomentumButtonText;
+    private readonly List<TMP_Text> markerLabels = new List<TMP_Text>();
+    private readonly List<TMP_Text> targetIndicatorLabels = new List<TMP_Text>();
     private PrototypePlayerProjectedTargetIndicator[] projectedTargetIndicators = System.Array.Empty<PrototypePlayerProjectedTargetIndicator>();
     private PrototypePlayerHudSnapshot lastSnapshot;
+    private static TMP_FontAsset runtimeFontAsset;
     private int lastLayoutWidth = -1;
     private int lastLayoutHeight = -1;
     private FlightControlMode cachedHelpMode;
@@ -2300,48 +2303,48 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         objectivePanelRect = FindHudComponent<RectTransform>("ObjectivePanel");
         contextPanelRect = FindHudComponent<RectTransform>("ContextPanel");
         radarPanelRect = FindHudComponent<RectTransform>("RadarPanel");
-        topWarningText = FindHudComponent<Text>("PrimaryWarning");
-        speedText = FindHudComponent<Text>("Speed");
-        throttleText = FindHudComponent<Text>("Throttle");
-        fuelText = FindHudComponent<Text>("Fuel");
+        topWarningText = FindHudComponent<TMP_Text>("PrimaryWarning");
+        speedText = FindHudComponent<TMP_Text>("Speed");
+        throttleText = FindHudComponent<TMP_Text>("Throttle");
+        fuelText = FindHudComponent<TMP_Text>("Fuel");
         throttleFill = FindHudComponent<Image>("ThrottleBarFill");
         fuelFill = FindHudComponent<Image>("FuelBarFill");
-        modeText = FindHudComponent<Text>("Mode");
-        modeHintText = FindHudComponent<Text>("ModeHint");
-        rcsText = FindHudComponent<Text>("Rcs");
-        sasText = FindHudComponent<Text>("Sas");
-        systemText = FindHudComponent<Text>("SystemsText");
-        objectiveTitleText = FindHudComponent<Text>("ObjectiveTitle");
-        objectiveBodyText = FindHudComponent<Text>("ObjectiveBody");
-        contextTitleText = FindHudComponent<Text>("ContextTitle");
-        contextBodyText = FindHudComponent<Text>("ContextBody");
+        modeText = FindHudComponent<TMP_Text>("Mode");
+        modeHintText = FindHudComponent<TMP_Text>("ModeHint");
+        rcsText = FindHudComponent<TMP_Text>("Rcs");
+        sasText = FindHudComponent<TMP_Text>("Sas");
+        systemText = FindHudComponent<TMP_Text>("SystemsText");
+        objectiveTitleText = FindHudComponent<TMP_Text>("ObjectiveTitle");
+        objectiveBodyText = FindHudComponent<TMP_Text>("ObjectiveBody");
+        contextTitleText = FindHudComponent<TMP_Text>("ContextTitle");
+        contextBodyText = FindHudComponent<TMP_Text>("ContextBody");
         navigationControlRow = FindHudComponent<RectTransform>("NavigationControls");
         navPreviousButton = FindHudComponent<Button>("NavPreviousTarget");
         navNextButton = FindHudComponent<Button>("NavNextTarget");
         navAutopilotButton = FindHudComponent<Button>("NavAutopilot");
         navReplanButton = FindHudComponent<Button>("NavReplan");
         navPreviewButton = FindHudComponent<Button>("NavPreview");
-        navAutopilotButtonText = FindHudComponent<Text>("NavAutopilotText");
-        navPreviewButtonText = FindHudComponent<Text>("NavPreviewText");
+        navAutopilotButtonText = FindHudComponent<TMP_Text>("NavAutopilotText");
+        navPreviewButtonText = FindHudComponent<TMP_Text>("NavPreviewText");
         combatControlRow = FindHudComponent<RectTransform>("CombatControls");
         combatPreviousButton = FindHudComponent<Button>("CombatPreviousTarget");
         combatNextButton = FindHudComponent<Button>("CombatNextTarget");
         combatClearButton = FindHudComponent<Button>("CombatClearTarget");
         combatAutoFireButton = FindHudComponent<Button>("CombatAutoFire");
         combatPriorityButton = FindHudComponent<Button>("CombatPriority");
-        combatAutoFireButtonText = FindHudComponent<Text>("CombatAutoFireText");
-        combatPriorityButtonText = FindHudComponent<Text>("CombatPriorityText");
+        combatAutoFireButtonText = FindHudComponent<TMP_Text>("CombatAutoFireText");
+        combatPriorityButtonText = FindHudComponent<TMP_Text>("CombatPriorityText");
         contextGaugePanelRect = FindHudComponent<RectTransform>("ContextGauges");
-        radarText = FindHudComponent<Text>("RadarText");
-        helpText = FindHudComponent<Text>("HelpText");
+        radarText = FindHudComponent<TMP_Text>("RadarText");
+        helpText = FindHudComponent<TMP_Text>("HelpText");
         helpPanel = helpText != null ? helpText.transform.parent.gameObject : null;
         killMomentumButton = FindHudComponent<Button>("KillMomentum");
-        killMomentumButtonText = FindHudComponent<Text>("KillMomentumText");
+        killMomentumButtonText = FindHudComponent<TMP_Text>("KillMomentumText");
 
         assistTexts.Clear();
         for (int i = 0; i < 3; i++)
         {
-            Text chip = FindHudComponent<Text>("AssistChip" + (i + 1));
+            TMP_Text chip = FindHudComponent<TMP_Text>("AssistChip" + (i + 1));
             if (chip != null)
             {
                 assistTexts.Add(chip);
@@ -2352,7 +2355,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         contextGaugeFills.Clear();
         for (int i = 0; i < 3; i++)
         {
-            Text label = FindHudComponent<Text>("GaugeLabel" + i);
+            TMP_Text label = FindHudComponent<TMP_Text>("GaugeLabel" + i);
             Image fill = FindHudComponent<Image>("GaugeFill" + i);
             if (label != null && fill != null)
             {
@@ -2365,7 +2368,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         string[] labels = { "FWD", "PRO", "RET", "TGT" };
         for (int i = 0; i < labels.Length; i++)
         {
-            Text label = FindHudComponent<Text>("Marker_" + labels[i]);
+            TMP_Text label = FindHudComponent<TMP_Text>("Marker_" + labels[i]);
             if (label != null)
             {
                 markerLabels.Add(label);
@@ -2375,7 +2378,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         targetIndicatorLabels.Clear();
         for (int i = 0; i < TargetIndicatorLabelCount; i++)
         {
-            Text label = FindHudComponent<Text>("TargetIndicatorLabel" + i);
+            TMP_Text label = FindHudComponent<TMP_Text>("TargetIndicatorLabel" + i);
             if (label != null)
             {
                 targetIndicatorLabels.Add(label);
@@ -2549,7 +2552,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         topWarningText = CreateText("PrimaryWarning", strip, 13, TextAnchor.MiddleCenter, Color.white, new RectPreset(new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(-20f, 18f), new Vector2(0f, -2f)));
         for (int i = 0; i < 3; i++)
         {
-            Text chip = CreateText("AssistChip" + (i + 1), strip, 11, TextAnchor.MiddleCenter, PrototypeUiStyle.ActiveColor, new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(160f, 18f), new Vector2(14f + (i * 166f), 3f)));
+            TMP_Text chip = CreateText("AssistChip" + (i + 1), strip, 11, TextAnchor.MiddleCenter, PrototypeUiStyle.ActiveColor, new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(160f, 18f), new Vector2(14f + (i * 166f), 3f)));
             assistTexts.Add(chip);
         }
     }
@@ -2568,7 +2571,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         rcsText = CreateText("Rcs", bar, 12, TextAnchor.MiddleCenter, PrototypeUiStyle.ActiveColor, new RectPreset(new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(104f, 22f), new Vector2(-194f, -16f)));
         sasText = CreateText("Sas", bar, 12, TextAnchor.MiddleCenter, PrototypeUiStyle.ActiveColor, new RectPreset(new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(104f, 22f), new Vector2(-82f, -16f)));
         killMomentumButton = CreateButton("KillMomentum", bar, "Kill Momentum", new RectPreset(new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(124f, 24f), new Vector2(-72f, 16f)));
-        killMomentumButtonText = killMomentumButton.GetComponentInChildren<Text>(true);
+        killMomentumButtonText = killMomentumButton.GetComponentInChildren<TMP_Text>(true);
     }
 
     private void CreateSystemPanel(Transform parent)
@@ -2605,8 +2608,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         navAutopilotButton = CreateButton("NavAutopilot", navigationControlRow, "Engage", new RectPreset(new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(64f, 22f), new Vector2(80f, 0f)));
         navReplanButton = CreateButton("NavReplan", navigationControlRow, "Plan", new RectPreset(new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(48f, 22f), new Vector2(148f, 0f)));
         navPreviewButton = CreateButton("NavPreview", navigationControlRow, "Preview", new RectPreset(new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(72f, 22f), new Vector2(0f, 0f)));
-        navAutopilotButtonText = navAutopilotButton.GetComponentInChildren<Text>(true);
-        navPreviewButtonText = navPreviewButton.GetComponentInChildren<Text>(true);
+        navAutopilotButtonText = navAutopilotButton.GetComponentInChildren<TMP_Text>(true);
+        navPreviewButtonText = navPreviewButton.GetComponentInChildren<TMP_Text>(true);
         navigationControlRow.gameObject.SetActive(false);
     }
 
@@ -2618,16 +2621,16 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         combatClearButton = CreateButton("CombatClearTarget", combatControlRow, "Clear", new RectPreset(new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(44f, 22f), new Vector2(80f, 0f)));
         combatAutoFireButton = CreateButton("CombatAutoFire", combatControlRow, "Auto", new RectPreset(new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(72f, 22f), new Vector2(128f, 0f)));
         combatPriorityButton = CreateButton("CombatPriority", combatControlRow, "Prio", new RectPreset(new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(80f, 22f), new Vector2(0f, 0f)));
-        combatAutoFireButtonText = combatAutoFireButton.GetComponentInChildren<Text>(true);
-        combatPriorityButtonText = combatPriorityButton.GetComponentInChildren<Text>(true);
+        combatAutoFireButtonText = combatAutoFireButton.GetComponentInChildren<TMP_Text>(true);
+        combatPriorityButtonText = combatPriorityButton.GetComponentInChildren<TMP_Text>(true);
         if (combatAutoFireButtonText != null)
         {
-            combatAutoFireButtonText.fontSize = 9;
+            combatAutoFireButtonText.fontSize = MinimumPlayerHudFontSize;
         }
 
         if (combatPriorityButtonText != null)
         {
-            combatPriorityButtonText.fontSize = 9;
+            combatPriorityButtonText.fontSize = MinimumPlayerHudFontSize;
         }
 
         combatControlRow.gameObject.SetActive(false);
@@ -2646,7 +2649,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private void CreateContextGaugeRow(Transform parent, int index)
     {
         float y = 42f - (index * 18f);
-        Text label = CreateText("GaugeLabel" + index, parent, 10, TextAnchor.MiddleLeft, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0.5f), new Vector2(92f, 16f), new Vector2(0f, y)));
+        TMP_Text label = CreateText("GaugeLabel" + index, parent, 10, TextAnchor.MiddleLeft, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0.5f), new Vector2(92f, 16f), new Vector2(0f, y)));
         RectTransform background = CreatePanel("GaugeBar" + index, parent, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0.5f), new Vector2(-108f, 6f), new Vector2(54f, y));
         background.GetComponent<Image>().color = new Color(0.08f, 0.1f, 0.13f, 0.95f);
         Image fill = CreateGraphic<Image>("GaugeFill" + index, background, StretchFull());
@@ -2677,7 +2680,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         string[] labels = { "FWD", "PRO", "RET", "TGT" };
         for (int i = 0; i < labels.Length; i++)
         {
-            Text label = CreateText("Marker_" + labels[i], parent, 10, TextAnchor.MiddleCenter, Color.white, new RectPreset(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(44f, 18f), Vector2.zero));
+            TMP_Text label = CreateText("Marker_" + labels[i], parent, 10, TextAnchor.MiddleCenter, Color.white, new RectPreset(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(44f, 18f), Vector2.zero));
             markerLabels.Add(label);
         }
     }
@@ -2686,7 +2689,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     {
         for (int i = 0; i < TargetIndicatorLabelCount; i++)
         {
-            Text label = CreateText("TargetIndicatorLabel" + i, parent, 10, TextAnchor.UpperCenter, Color.white, new RectPreset(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(150f, 34f), Vector2.zero));
+            TMP_Text label = CreateText("TargetIndicatorLabel" + i, parent, 10, TextAnchor.UpperCenter, Color.white, new RectPreset(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(150f, 34f), Vector2.zero));
             label.gameObject.SetActive(false);
             targetIndicatorLabels.Add(label);
         }
@@ -3175,7 +3178,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         {
             RectTransform rect = assistTexts[i].rectTransform;
             ApplyRect(rect, new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(chipWidth, 18f), new Vector2(14f + (i * (chipWidth + chipGap)), 3f));
-            assistTexts[i].fontSize = chipWidth < 118f ? 9 : 11;
+            assistTexts[i].fontSize = chipWidth < 118f ? MinimumPlayerHudFontSize : 11;
         }
     }
 
@@ -3192,7 +3195,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             throttleText.fontSize = 10;
             fuelText.fontSize = 10;
             modeText.fontSize = 12;
-            modeHintText.fontSize = 9;
+            modeHintText.fontSize = MinimumPlayerHudFontSize;
             rcsText.fontSize = 10;
             sasText.fontSize = 10;
             ApplyRect(speedText.rectTransform, new Vector2(0f, 0f), new Vector2(0f, 1f), new Vector2(0f, 0.5f), new Vector2(96f, -12f), new Vector2(12f, 0f));
@@ -3428,7 +3431,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         SetMarkerLabel(markerLabels[3], snapshot.MarkerModel.TargetMarker, snapshot.MarkerModel.HasTargetMarker, PrototypeModuleColorPalette.Target);
     }
 
-    private void SetMarkerLabel(Text label, Vector2 markerOffset, bool visible, Color color)
+    private void SetMarkerLabel(TMP_Text label, Vector2 markerOffset, bool visible, Color color)
     {
         label.gameObject.SetActive(visible);
         label.color = color;
@@ -3580,11 +3583,11 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
                 continue;
             }
 
-            Text label = targetIndicatorLabels[i];
+            TMP_Text label = targetIndicatorLabels[i];
             label.gameObject.SetActive(true);
             label.text = BuildTargetIndicatorLabel(projected.Indicator);
             label.color = ColorForTargetIndicator(projected.Indicator);
-            label.fontSize = projected.Indicator.Kind == PrototypePlayerTargetIndicatorKind.Objective ? 9 : 10;
+            label.fontSize = MinimumPlayerHudFontSize;
             RectTransform rect = label.rectTransform;
             rect.anchoredPosition = position;
             rect.sizeDelta = size;
@@ -3687,17 +3690,71 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         return rect;
     }
 
-    private static Text CreateText(string name, Transform parent, int fontSize, TextAnchor alignment, Color color, RectPreset preset)
+    private static TMP_Text CreateText(string name, Transform parent, int fontSize, TextAnchor alignment, Color color, RectPreset preset)
     {
-        Text text = CreateGraphic<Text>(name, parent, preset);
-        text.font = ResolveRuntimeFont();
-        text.fontSize = fontSize;
-        text.alignment = alignment;
+        TMP_Text text = CreateGraphic<TextMeshProUGUI>(name, parent, preset);
+        TMP_FontAsset fontAsset = ResolveRuntimeFontAsset();
+        if (fontAsset != null)
+        {
+            text.font = fontAsset;
+        }
+
+        text.fontSize = Mathf.Max(MinimumPlayerHudFontSize, fontSize);
+        text.alignment = ToTextAlignmentOptions(alignment);
         text.color = color;
-        text.horizontalOverflow = HorizontalWrapMode.Wrap;
-        text.verticalOverflow = VerticalWrapMode.Truncate;
+        text.fontStyle = FontStyles.Normal;
+        text.textWrappingMode = TextWrappingModes.Normal;
+        text.overflowMode = TextOverflowModes.Truncate;
+        text.margin = Vector4.zero;
         text.raycastTarget = false;
         return text;
+    }
+
+    private static TMP_FontAsset ResolveRuntimeFontAsset()
+    {
+        if (runtimeFontAsset != null)
+        {
+            return runtimeFontAsset;
+        }
+
+        runtimeFontAsset = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
+        if (runtimeFontAsset == null)
+        {
+            TMP_Settings settings = TMP_Settings.instance;
+            if (settings != null)
+            {
+                runtimeFontAsset = TMP_Settings.defaultFontAsset;
+            }
+        }
+
+        return runtimeFontAsset;
+    }
+
+    private static TextAlignmentOptions ToTextAlignmentOptions(TextAnchor alignment)
+    {
+        switch (alignment)
+        {
+            case TextAnchor.UpperLeft:
+                return TextAlignmentOptions.TopLeft;
+            case TextAnchor.UpperCenter:
+                return TextAlignmentOptions.Top;
+            case TextAnchor.UpperRight:
+                return TextAlignmentOptions.TopRight;
+            case TextAnchor.MiddleLeft:
+                return TextAlignmentOptions.Left;
+            case TextAnchor.MiddleCenter:
+                return TextAlignmentOptions.Center;
+            case TextAnchor.MiddleRight:
+                return TextAlignmentOptions.Right;
+            case TextAnchor.LowerLeft:
+                return TextAlignmentOptions.BottomLeft;
+            case TextAnchor.LowerCenter:
+                return TextAlignmentOptions.Bottom;
+            case TextAnchor.LowerRight:
+                return TextAlignmentOptions.BottomRight;
+            default:
+                return TextAlignmentOptions.TopLeft;
+        }
     }
 
     private static T CreateGraphic<T>(string name, Transform parent, RectPreset preset) where T : Graphic
@@ -3792,17 +3849,6 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             default:
                 return Color.white;
         }
-    }
-
-    private static Font ResolveRuntimeFont()
-    {
-        Font font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-        if (font == null)
-        {
-            font = Resources.GetBuiltinResource<Font>("Arial.ttf");
-        }
-
-        return font;
     }
 
     private static void DrawRadarGui(Rect rect, PrototypePlayerHudSnapshot snapshot)
