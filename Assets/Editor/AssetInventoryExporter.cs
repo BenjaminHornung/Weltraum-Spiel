@@ -224,15 +224,15 @@ public static class AssetInventoryExporter
     {
         return new List<UsefulnessMatrixRecord>
         {
-            Matrix("Player-facing UI/HUD", "PrototypePlayerHud.cs; PrototypeFlightHud.cs; PrototypeMinimapOverlay.cs; PrototypeUiStyle.cs; uGUI/UIElements; In-game Debug Console cache", "Reuse the existing HUD snapshot/rendering and minimap model first.", "Test PrimeTween or debug console later for polish/debug builds.", "Avoid replacing the current HUD stack with an imported UI kit before input, scaling, and tests are checked."),
-            Matrix("Space ships / modular ship parts", "Assets/Art/PrototypeShipKit/Parts; DemoShips; prototype_ship_kit_manifest.json; PrototypeShipVisualSwitcher.cs", "Reuse imported FBX/GLB parts and manifest for builder/runtime visual modes.", "Adapt materials, hardpoints, and socket metadata as the builder matures.", "Avoid nature/environment packs for ships; they do not cover hardpoints or ship-scale constraints."),
-            Matrix("Thruster/RCS VFX", "MainThrusterVfx.prefab; RcsThrusterVfx.prefab; PrototypeShipVfxLibrary.asset; Unity Particle Pack cache", "Use existing VFX prefabs directly for current flight evidence.", "Inspect particle packs in a throwaway project for exhaust variants.", "Avoid importing legacy particle content directly until shader/render pipeline compatibility is verified."),
-            Matrix("Weapons/projectiles/combat VFX", "gun_mount_light_mk1; PrototypeTurretWeapon.cs; PrototypeProjectileSimulation.cs; Particle Pack cache", "Reuse weapon binder and projectile runtime systems.", "Adapt particle effects for muzzle flashes, impacts, and trails after test import.", "Avoid imported projectile scripts that overlap the deterministic combat simulation."),
-            Matrix("Space environment/skybox/planets/asteroids", "URP settings; FREE Skybox Extended Shader cache; low-poly nature/environment caches", "Reuse URP settings as the rendering baseline.", "Test skybox shader and low-poly packs as placeholder planet-surface art only.", "Avoid assuming nature packs solve space needs; planets, asteroids, nebulae, and starfields are still missing."),
-            Matrix("Docking/stations/hangars", "connector_hardpoint_mk1; DockingPort.cs; PrototypeDockingApproachAssist.cs; UModeler X cache", "Reuse docking code and connector hardpoint art.", "Use UModeler or simple FBX blockouts in a test project for station/hangar grayboxes.", "Avoid importing broad editor modeling tools before licensing and generated-asset workflow are settled."),
-            Matrix("Ship builder/UI inventory", "PrototypeShipBlueprint.cs; PrototypeShipLayout.cs; PrototypeShipVariant.cs; PrototypeUiViewModels.cs; PrimeTween cache", "Reuse blueprint/layout/view-model code.", "Adapt UI animation tooling only after the builder flow is stable.", "Avoid adding a second inventory framework before the current model is exhausted."),
-            Matrix("Audio/SFX/music", "Unity audio module only; no imported SFX/music assets found", "Use built-in audio support.", "Add thruster, weapon, impact, docking, alert, ambience, and music packs later.", "Avoid wiring a large audio system until actual clips exist."),
-            Matrix("Editor tooling", "MCP for Unity; Test Framework; UModeler X cache; Easy Poly Map Creator cache", "Reuse Unity MCP and tests for iteration and evidence.", "Evaluate modeling/terrain extensions in a throwaway project.", "Avoid editor extensions that change settings or generate assets without a rollback plan."),
+            Matrix("Player-facing UI/HUD", "PrototypePlayerHud.cs; PrototypeFlightHud.cs; PrototypeMinimapOverlay.cs; PrototypeUiStyle.cs; TextMesh Pro assets; 3D Modern Menu UI; PrimeTween; In-game Debug Console", "Reuse the existing HUD snapshot/rendering, minimap model, and TMP text assets first.", "Test SlimUI/PrimeTween/debug console in a throwaway project for menu polish and debug builds.", "Avoid replacing the current HUD stack with an imported UI kit before input, scaling, and tests are checked."),
+            Matrix("Space ships / modular ship parts", "Assets/Art/PrototypeShipKit/Parts; DemoShips; prototype_ship_kit_manifest.json; Sci-Fi Styled Modular Pack", "Reuse imported FBX/GLB parts and manifest for builder/runtime visual modes.", "Inspect the sci-fi modular pack in a throwaway project for alternate hull, station, and hangar pieces.", "Avoid nature/environment packs for ships; they do not cover hardpoints or ship-scale constraints."),
+            Matrix("Thruster/RCS VFX", "MainThrusterVfx.prefab; RcsThrusterVfx.prefab; PrototypeShipVfxLibrary.asset; Particle Pack; Free Quick Effects Vol 1; Weather And Elemental VFX Pack", "Use existing VFX prefabs directly for current flight evidence.", "Inspect particle and quick-effect packs in a throwaway project for exhaust, sparks, trails, and impact variants.", "Avoid importing legacy particle content directly until shader/render pipeline compatibility is verified."),
+            Matrix("Weapons/projectiles/combat VFX", "gun_mount_light_mk1; PrototypeTurretWeapon.cs; PrototypeProjectileSimulation.cs; War FX; Free Quick Effects Vol 1; Particle Pack", "Reuse weapon binder and projectile runtime systems.", "Adapt imported muzzle flashes, impacts, explosions, and projectile trails after test import.", "Avoid imported projectile scripts that overlap the deterministic combat simulation."),
+            Matrix("Space environment/skybox/planets/asteroids", "URP settings; FREE Skybox Extended Shader; Real Stars Skybox Lite; low-poly terrain/tree/environment caches", "Reuse URP settings as the rendering baseline.", "Test skybox shader, Real Stars, terrain, and tree packs as space/planet-surface placeholders.", "Avoid assuming nature packs solve space needs; planets, asteroids, nebulae, and station exteriors are still missing."),
+            Matrix("Docking/stations/hangars", "connector_hardpoint_mk1; DockingPort.cs; PrototypeDockingApproachAssist.cs; Sci-Fi Styled Modular Pack; UModeler X; ProBuilder 2x", "Reuse docking code and connector hardpoint art.", "Use sci-fi modular pieces, ProBuilder, or UModeler in a test project for station/hangar grayboxes.", "Avoid importing broad editor modeling tools before licensing and generated-asset workflow are settled."),
+            Matrix("Ship builder/UI inventory", "PrototypeShipBlueprint.cs; PrototypeShipLayout.cs; PrototypeShipVariant.cs; PrototypeUiViewModels.cs; 3D Modern Menu UI; PrimeTween", "Reuse blueprint/layout/view-model code.", "Adapt UI animation and menu assets only after the builder flow is stable.", "Avoid adding a second inventory framework before the current model is exhausted."),
+            Matrix("Audio/SFX/music", "Unity audio module; FMOD for Unity 202; no discovered SFX/music clip pack", "Use built-in audio support for now.", "Evaluate FMOD in a throwaway project before deciding whether the prototype needs middleware.", "Avoid integrating audio middleware until actual thruster, weapon, impact, docking, alert, ambience, and music clips exist."),
+            Matrix("Editor tooling", "MCP for Unity; Test Framework; UModeler X; ProBuilder 2x; Easy Poly Map Creator; Unity Asset Manager package", "Reuse Unity MCP and tests for iteration and evidence.", "Evaluate modeling/terrain/asset-manager tools in a throwaway project.", "Avoid editor extensions that change settings or generate assets without a rollback plan."),
             Matrix("Performance/optimization", "Burst/Collections transitive packages; PrototypeRuntimeJobSystems.cs; URP", "Reuse current job-system and runtime snapshot architecture.", "Consider Burst only for measured hotspots.", "Avoid optimization packages or import-setting changes without profiler evidence."),
             Matrix("Networking/save/persistence", "Multiplayer Center installed; no Netcode or persistence asset found", "Reuse none yet beyond package discovery.", "Evaluate save-game and networking approaches after gameplay contracts stabilize.", "Avoid importing networking frameworks speculatively.")
         };
@@ -244,22 +244,22 @@ public static class AssetInventoryExporter
         {
             top10AssetsOrPackagesToInspectFirst = new List<string>
             {
-                "Assets/Art/PrototypeShipKit/Parts/*.fbx and *.glb - current modular ship vocabulary.",
-                "Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1 and demo_cargo_mk1 - assembled visual baselines.",
+                "Assets/Art/PrototypeShipKit/Parts plus demo_scout_mk1/demo_cargo_mk1 - current modular ship vocabulary and assembled baselines.",
                 "Assets/Art/PrototypeShipKit/VFX/Prefabs/MainThrusterVfx.prefab and RcsThrusterVfx.prefab - already bound to flight evidence.",
                 "Assets/Art/PrototypeShipKit/prototype_ship_kit_manifest.json - metadata for parts, sockets, and categories.",
                 "PrototypePlayerHud.cs plus PrototypeMinimapOverlay.cs - player-facing HUD and tactical scan surface.",
-                "com.unity.render-pipelines.universal - active rendering path and shader compatibility baseline.",
-                "com.unity.inputsystem - current controls/input action foundation.",
-                "Unity Technologies/Particle Pack.unitypackage - candidate combat and thruster VFX, throwaway import first.",
-                "BOXOPHOBIC/FREE Skybox Extended Shader.unitypackage - candidate skybox tooling, verify URP compatibility first.",
-                "Kyrylo Kuzyk/PrimeTween.unitypackage or yasirkula/In-game Debug Console.unitypackage - optional UI/debug polish after throwaway import."
+                "com.unity.render-pipelines.universal and com.unity.inputsystem - active rendering and control baselines.",
+                "Real Stars Skybox Lite plus FREE Skybox Extended Shader - candidate space backdrop work, verify URP compatibility first.",
+                "War FX, Free Quick Effects Vol 1, Weather And Elemental VFX Pack, and Particle Pack - candidate combat/thruster VFX, throwaway import first.",
+                "Sci-Fi Styled Modular Pack - candidate station, hangar, and alternate modular ship kit pieces.",
+                "3D Modern Menu UI, PrimeTween, and In-game Debug Console - optional UI/debug polish after throwaway import.",
+                "FMOD for Unity 202 - candidate audio middleware only after concrete SFX/music needs are known."
             },
             importIntoThrowawayProjectFirst = new List<string>
             {
-                "All local Asset Store .unitypackage archives, especially Particle Pack, Legacy Particle Pack, UModeler X, PrimeTween, In-game Debug Console, and Skybox Extended Shader.",
+                "All local Asset Store .unitypackage archives, especially VFX packs, skyboxes, Sci-Fi Styled Modular Pack, FMOD, SlimUI, UModeler X, ProBuilder 2x, PrimeTween, and In-game Debug Console.",
                 "Shader or render-pipeline-affecting packages before they touch URP settings.",
-                "Editor extensions that may add project settings, menu items, generated assets, or dependencies.",
+                "Editor extensions and middleware that may add project settings, menu items, generated assets, native plugins, or dependencies.",
                 "Large environment/nature packs because they are mostly planet-surface placeholders and can add many materials/textures."
             },
             safeToUseDirectly = new List<string>
@@ -270,9 +270,10 @@ public static class AssetInventoryExporter
             },
             mayConflictWithProjectSettings = new List<string>
             {
-                "Skybox/shader packages if they assume Built-in Render Pipeline instead of URP 17.4.",
+                "Skybox, post-processing, or shader packages if they assume Built-in Render Pipeline instead of URP 17.4.",
                 "Particle packs that include legacy materials, shaders, or quality settings.",
                 "Runtime debug console or UI packages that bind input, canvases, or EventSystem state.",
+                "FMOD if it introduces native plugin setup, bank generation, or audio initialization outside the current prototype architecture.",
                 "UModeler X or terrain/editor extensions that may add editor settings, generated assets, or paid-license constraints.",
                 "Visual Scripting if used as a parallel gameplay logic path without tests."
             },
@@ -456,10 +457,10 @@ public static class AssetInventoryExporter
         if (text.Contains("test-framework")) return new Guidance("yes", "Project already relies on Unity tests for regression evidence.");
         if (text.Contains("ugui") || text.Contains("uielements") || text.Contains("ui elements")) return new Guidance("yes", "Useful for HUD, menus, debug panels, and ship-builder UI.");
         if (text.Contains("particle system")) return new Guidance("yes", "Directly relevant to thruster, RCS, weapon, and impact VFX.");
-        if (text.Contains("audio")) return new Guidance("yes", "Required for future thruster, weapon, impact, alert, and ambience audio.");
         if (text.Contains("physics")) return new Guidance("yes", "Core to flight, docking, projectile, and collision behavior.");
         if (text.Contains("ai navigation")) return new Guidance("maybe", "Potentially useful for station/interior navigation, less directly useful for free-space flight.");
         if (text.Contains("timeline")) return new Guidance("maybe", "Useful for scripted reveals, tutorials, or evidence captures, not core gameplay yet.");
+        if (text.Contains("audio")) return new Guidance("yes", "Required for future thruster, weapon, impact, alert, and ambience audio.");
         if (text.Contains("multiplayer")) return new Guidance("maybe", "May guide future networking decisions, but no Netcode package is installed.");
         if (text.Contains("burst") || text.Contains("collections") || text.Contains("mathematics")) return new Guidance("maybe", "Useful for measured simulation/performance hotspots; adopt only with profiler evidence.");
         if (text.Contains("visual scripting")) return new Guidance("maybe", "Could support prototyping, but avoid parallel gameplay logic without tests.");
@@ -475,6 +476,7 @@ public static class AssetInventoryExporter
         if (group.topLevelFolder.Equals("Editor", StringComparison.OrdinalIgnoreCase)) return new AssetGuidance("Editor-only inventory/export tooling.", "Keep editor utilities isolated under Assets/Editor and do not ship them in runtime builds.");
         if (group.topLevelFolder.Equals("Tests", StringComparison.OrdinalIgnoreCase)) return new AssetGuidance("Regression and evidence coverage for prototype systems.", "Keep using for verification before asset or package swaps.");
         if (group.topLevelFolder.Equals("Scripts", StringComparison.OrdinalIgnoreCase)) return new AssetGuidance("Project-owned gameplay, HUD, flight, docking, combat, builder, and validation systems.", "Reuse existing systems instead of importing overlapping gameplay frameworks.");
+        if (group.topLevelFolder.Equals("TextMesh Pro", StringComparison.OrdinalIgnoreCase)) return new AssetGuidance("TextMesh Pro font, shader, material, and settings assets for crisp HUD/menu text.", "Reuse directly for player-facing HUD and builder UI text; keep shader/material compatibility in mind.");
         if (text.Contains("prototypeshipkit") && text.Contains("parts")) return new AssetGuidance("Modular ship parts for current ship-builder/runtime visual work.", "Reuse directly and extend metadata before creating duplicate ship-part art.");
         if (text.Contains("demoships")) return new AssetGuidance("Assembled demo ship visuals for scout/cargo baselines.", "Inspect first for player, NPC, and evidence-scene visual baselines.");
         if (group.category == "VFX/particle systems" || text.Contains("/vfx/")) return new AssetGuidance("Thruster/RCS visual effects and material library.", "Reuse directly for flight evidence; adapt for combat variants later.");
@@ -490,31 +492,39 @@ public static class AssetInventoryExporter
     private static string LocalPackageCategory(string text)
     {
         var lower = text.ToLowerInvariant();
-        if (lower.Contains("skybox")) return "Space environment/skybox";
-        if (lower.Contains("particle")) return "Thruster/combat VFX";
-        if (lower.Contains("tween") || lower.Contains("animation")) return "UI/animation polish";
+        if (lower.Contains("fmod")) return "Audio middleware";
+        if (lower.Contains("modern menu") || lower.Contains("slimui")) return "UI/menu";
         if (lower.Contains("debug console")) return "Editor/runtime debug tooling";
-        if (lower.Contains("umodeler") || lower.Contains("modeling")) return "Editor tooling/modeling";
-        if (lower.Contains("nature") || lower.Contains("terrain") || lower.Contains("environment") || lower.Contains("poly map")) return "Planet-surface/environment placeholders";
+        if (lower.Contains("skybox") || lower.Contains("stars")) return "Space environment/skybox";
+        if (lower.Contains("particle")) return "Thruster/combat VFX";
+        if (lower.Contains("war fx") || lower.Contains("quick effects") || lower.Contains("elemental vfx") || lower.Contains("weather")) return "Thruster/combat VFX";
+        if (lower.Contains("tween") || lower.Contains("animation")) return "UI/animation polish";
+        if (lower.Contains("umodeler") || lower.Contains("probuilder") || lower.Contains("modeling")) return "Editor tooling/modeling";
+        if (lower.Contains("sci-fi") || lower.Contains("modular pack")) return "Ships/stations/modular sci-fi";
+        if (lower.Contains("nature") || lower.Contains("terrain") || lower.Contains("environment") || lower.Contains("poly map") || lower.Contains("tree")) return "Planet-surface/environment placeholders";
+        if (lower.Contains("human") || lower.Contains("character")) return "Characters/NPC placeholders";
+        if (lower.Contains("post processing")) return "Rendering/post-processing";
         return "Unknown";
     }
 
     private static string LocalPackageUsefulness(string name, string category)
     {
         var lower = (name + " " + category).ToLowerInvariant();
-        if (lower.Contains("skybox") || lower.Contains("particle") || lower.Contains("debug") || lower.Contains("tween") || lower.Contains("umodeler")) return "maybe";
-        if (lower.Contains("nature") || lower.Contains("terrain") || lower.Contains("medieval") || lower.Contains("planet-surface") || lower.Contains("environment")) return "no/maybe";
+        if (lower.Contains("skybox") || lower.Contains("particle") || lower.Contains("vfx") || lower.Contains("debug") || lower.Contains("tween") || lower.Contains("umodeler") || lower.Contains("probuilder") || lower.Contains("sci-fi") || lower.Contains("modern menu") || lower.Contains("fmod")) return "maybe";
+        if (lower.Contains("nature") || lower.Contains("terrain") || lower.Contains("medieval") || lower.Contains("planet-surface") || lower.Contains("environment") || lower.Contains("tree") || lower.Contains("human") || lower.Contains("character")) return "no/maybe";
         return "maybe";
     }
 
     private static string LocalPackageRisk(string name, string category, string extension)
     {
         var lower = (name + " " + category + " " + extension).ToLowerInvariant();
-        if (lower.Contains("umodeler") || lower.Contains("editor extension") || lower.Contains("modeling")) return "medium/high - editor extension and possible paid-license workflow impact; test outside main first.";
-        if (lower.Contains("shader") || lower.Contains("skybox")) return "medium - verify URP 17.4 shader compatibility first.";
-        if (lower.Contains("legacy") || lower.Contains("particle")) return "medium - may include legacy shaders/materials; import into throwaway first.";
-        if (lower.Contains("debug console") || lower.Contains("tween")) return "medium - runtime code/input/UI dependency; isolate first.";
-        if (lower.Contains("nature") || lower.Contains("terrain") || lower.Contains("environment")) return "low/medium - mostly art, but can add many materials/textures and non-space content.";
+        if (lower.Contains("fmod")) return "medium/high - middleware and native/plugin setup; test bank workflow outside main first.";
+        if (lower.Contains("umodeler") || lower.Contains("probuilder") || lower.Contains("editor extension") || lower.Contains("modeling")) return "medium/high - editor extension and possible generated-asset workflow impact; test outside main first.";
+        if (lower.Contains("post processing") || lower.Contains("shader") || lower.Contains("skybox")) return "medium - verify URP 17.4 shader/rendering compatibility first.";
+        if (lower.Contains("legacy") || lower.Contains("particle") || lower.Contains("vfx") || lower.Contains("war fx") || lower.Contains("quick effects")) return "medium - may include legacy shaders/materials; import into throwaway first.";
+        if (lower.Contains("debug console") || lower.Contains("tween") || lower.Contains("modern menu")) return "medium - runtime code/input/UI dependency; isolate first.";
+        if (lower.Contains("sci-fi") || lower.Contains("modular")) return "medium - art pack may add many materials/prefabs; inspect hierarchy and scale outside main first.";
+        if (lower.Contains("nature") || lower.Contains("terrain") || lower.Contains("environment") || lower.Contains("tree") || lower.Contains("human") || lower.Contains("character")) return "low/medium - mostly placeholder art, but can add many materials/textures and non-space content.";
         return "medium - package archive should be inspected in a throwaway project first.";
     }
 

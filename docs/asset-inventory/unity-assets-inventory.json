@@ -1,5 +1,5 @@
 ﻿{
-  "generatedAtUtc": "2026-05-22T20:31:06.2713735Z",
+  "generatedAtUtc": "2026-05-23T09:33:23.9647455Z",
   "project": {
     "name": "Weltraum Spiel",
     "rootPath": "E:/Unity/Weltraum Spiel/Weltraum Spiel",
@@ -36,6 +36,16 @@
       "reason": "Potentially useful for station/interior navigation, less directly useful for free-space flight."
     },
     {
+      "name": "com.unity.asset-manager-for-unity",
+      "displayName": "Asset Manager",
+      "version": "1.11.0",
+      "source": "Registry",
+      "description": "Asset Manager for Unity is an In-Editor tool that allows you to easily browse, upload and import assets between the Unity Editor and Unity Cloud.  To open the Asset Manager for Unity window once the package is installed, go to the top left menu bar, select <b>Window > Asset Manager</b>.",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.asset-manager-for-unity@71c49222cba8",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Installed package; inspect when its feature area becomes part of the next milestone."
+    },
+    {
       "name": "com.unity.burst",
       "displayName": "Burst",
       "version": "1.8.29",
@@ -64,6 +74,16 @@
       "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.collections@5b6ebd78ccc0",
       "usefulForWeltraumSpiel": "maybe",
       "reason": "Useful for measured simulation/performance hotspots; adopt only with profiler evidence."
+    },
+    {
+      "name": "com.unity.entities",
+      "displayName": "Entities",
+      "version": "6.4.0",
+      "source": "BuiltIn",
+      "description": "The Entities package provides a modern Entity Component System (ECS) implementation with a basic set of systems and components made for Unity.",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.entities@4cadb38c3b3f",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Installed package; inspect when its feature area becomes part of the next milestone."
     },
     {
       "name": "com.unity.ext.nunit",
@@ -506,6 +526,26 @@
       "reason": "Installed package; inspect when its feature area becomes part of the next milestone."
     },
     {
+      "name": "com.unity.physics",
+      "displayName": "Unity Physics",
+      "version": "1.4.6",
+      "source": "Registry",
+      "description": "Unity's C# stateless physics library.  Built on top of the Unity C# ECS framework, Unity Physics is network-ready, completely customizable, and built for performance out of the box. Whether you're building the next mobile hit or a new networked multiplayer console experience, Unity Physics leverages the Burst compiler and Job system to scale across a range of hardware.",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.physics@22d10f355559",
+      "usefulForWeltraumSpiel": "yes",
+      "reason": "Core to flight, docking, projectile, and collision behavior."
+    },
+    {
+      "name": "com.unity.profiling.core",
+      "displayName": "Unity Profiling Core API",
+      "version": "1.0.3",
+      "source": "Registry",
+      "description": "The Unity Profiling Core package provides an API for code instrumentation markup, and for profiling statistic collection.",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.profiling.core@8a49f7027d06",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Installed package; inspect when its feature area becomes part of the next milestone."
+    },
+    {
       "name": "com.unity.render-pipelines.core",
       "displayName": "Scriptable Render Pipeline Core",
       "version": "17.4.0",
@@ -536,12 +576,42 @@
       "reason": "Active rendering pipeline; use as shader and post-processing compatibility baseline."
     },
     {
+      "name": "com.unity.scriptablebuildpipeline",
+      "displayName": "Scriptable Build Pipeline",
+      "version": "2.6.1",
+      "source": "Registry",
+      "description": "The Scriptable Build Pipeline moves the asset bundle build pipeline to C#.  Use the pre-defined build flows, or create your own using the divided up APIs.  This system improves build time, fixes incremental build, and provides greater flexibility.",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.scriptablebuildpipeline@36e3b5898ee2",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Installed package; inspect when its feature area becomes part of the next milestone."
+    },
+    {
       "name": "com.unity.searcher",
       "displayName": "Searcher",
       "version": "4.9.4",
       "source": "Registry",
       "description": "General search window for use in the Editor. First target use is for GraphView node search.",
       "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.searcher@d45a78918735",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Installed package; inspect when its feature area becomes part of the next milestone."
+    },
+    {
+      "name": "com.unity.serialization",
+      "displayName": "Serialization",
+      "version": "3.1.5",
+      "source": "Registry",
+      "description": "Use Unity's Serialization to serialize and deserialize from/to JSON and Binary formats.",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.serialization@c463b52e88d7",
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Installed package; inspect when its feature area becomes part of the next milestone."
+    },
+    {
+      "name": "com.unity.settings-manager",
+      "displayName": "Settings Manager",
+      "version": "2.1.1",
+      "source": "Registry",
+      "description": "A framework for making any serializable field a setting, complete with a pre-built settings interface.",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.settings-manager@0b8638c5ce86",
       "usefulForWeltraumSpiel": "maybe",
       "reason": "Installed package; inspect when its feature area becomes part of the next milestone."
     },
@@ -582,8 +652,8 @@
       "source": "Registry",
       "description": "Use Unity Timeline to create cinematic content, game-play sequences, audio sequences, and complex particle effects.",
       "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.timeline@8cd8509afae5",
-      "usefulForWeltraumSpiel": "yes",
-      "reason": "Required for future thruster, weapon, impact, alert, and ambience audio."
+      "usefulForWeltraumSpiel": "maybe",
+      "reason": "Useful for scripted reveals, tutorials, or evidence captures, not core gameplay yet."
     },
     {
       "name": "com.unity.ugui",
@@ -594,6 +664,16 @@
       "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.ugui@4dc88464a83d",
       "usefulForWeltraumSpiel": "yes",
       "reason": "Useful for HUD, menus, debug panels, and ship-builder UI."
+    },
+    {
+      "name": "com.unity.ui.test-framework",
+      "displayName": "UI Test Framework",
+      "version": "6.4.0",
+      "source": "BuiltIn",
+      "description": "UIToolkit Test framework for running Edit mode and Play mode tests in Unity.",
+      "packagePath": "E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/PackageCache/com.unity.ui.test-framework@73110b71a5b1",
+      "usefulForWeltraumSpiel": "yes",
+      "reason": "Project already relies on Unity tests for regression evidence."
     },
     {
       "name": "com.unity.visualscripting",
@@ -792,6 +872,98 @@
       "recommendation": "Keep using for verification before asset or package swaps."
     },
     {
+      "topLevelFolder": "TextMesh Pro",
+      "category": "configuration/data",
+      "assetCount": 4,
+      "representativeFiles": [
+        "Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset",
+        "Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset",
+        "Assets/TextMesh Pro/Resources/Style Sheets/Default Style Sheet.asset",
+        "Assets/TextMesh Pro/Resources/TMP Settings.asset"
+      ],
+      "likelyPurpose": "TextMesh Pro font, shader, material, and settings assets for crisp HUD/menu text.",
+      "dependenciesIfPractical": [
+        "Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile.shader",
+        "Assets/TextMesh Pro/Fonts/LiberationSans.ttf",
+        "Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset",
+        "Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset",
+        "Assets/TextMesh Pro/Resources/Style Sheets/Default Style Sheet.asset",
+        "Assets/TextMesh Pro/Resources/LineBreaking Leading Characters.txt",
+        "Assets/TextMesh Pro/Resources/LineBreaking Following Characters.txt"
+      ],
+      "componentNames": [],
+      "recommendation": "Reuse directly for player-facing HUD and builder UI text; keep shader/material compatibility in mind."
+    },
+    {
+      "topLevelFolder": "TextMesh Pro",
+      "category": "documentation/readmes",
+      "assetCount": 3,
+      "representativeFiles": [
+        "Assets/TextMesh Pro/Fonts/LiberationSans - OFL.txt",
+        "Assets/TextMesh Pro/Resources/LineBreaking Following Characters.txt",
+        "Assets/TextMesh Pro/Resources/LineBreaking Leading Characters.txt"
+      ],
+      "likelyPurpose": "TextMesh Pro font, shader, material, and settings assets for crisp HUD/menu text.",
+      "dependenciesIfPractical": [],
+      "componentNames": [],
+      "recommendation": "Reuse directly for player-facing HUD and builder UI text; keep shader/material compatibility in mind."
+    },
+    {
+      "topLevelFolder": "TextMesh Pro",
+      "category": "materials",
+      "assetCount": 2,
+      "representativeFiles": [
+        "Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Drop Shadow.mat",
+        "Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Outline.mat"
+      ],
+      "likelyPurpose": "TextMesh Pro font, shader, material, and settings assets for crisp HUD/menu text.",
+      "dependenciesIfPractical": [
+        "Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile.shader",
+        "Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset"
+      ],
+      "componentNames": [],
+      "recommendation": "Reuse directly for player-facing HUD and builder UI text; keep shader/material compatibility in mind."
+    },
+    {
+      "topLevelFolder": "TextMesh Pro",
+      "category": "other",
+      "assetCount": 6,
+      "representativeFiles": [
+        "Assets/TextMesh Pro/Fonts/LiberationSans.ttf",
+        "Assets/TextMesh Pro/Shaders/SDFFunctions.hlsl",
+        "Assets/TextMesh Pro/Shaders/TMPro.cginc",
+        "Assets/TextMesh Pro/Shaders/TMPro_Mobile.cginc",
+        "Assets/TextMesh Pro/Shaders/TMPro_Properties.cginc",
+        "Assets/TextMesh Pro/Shaders/TMPro_Surface.cginc"
+      ],
+      "likelyPurpose": "TextMesh Pro font, shader, material, and settings assets for crisp HUD/menu text.",
+      "dependenciesIfPractical": [],
+      "componentNames": [],
+      "recommendation": "Reuse directly for player-facing HUD and builder UI text; keep shader/material compatibility in mind."
+    },
+    {
+      "topLevelFolder": "TextMesh Pro",
+      "category": "shaders",
+      "assetCount": 18,
+      "representativeFiles": [
+        "Assets/TextMesh Pro/Shaders/TMP_Bitmap-Custom-Atlas.shader",
+        "Assets/TextMesh Pro/Shaders/TMP_Bitmap-Mobile.shader",
+        "Assets/TextMesh Pro/Shaders/TMP_Bitmap.shader",
+        "Assets/TextMesh Pro/Shaders/TMP_SDF Overlay.shader",
+        "Assets/TextMesh Pro/Shaders/TMP_SDF SSD.shader",
+        "Assets/TextMesh Pro/Shaders/TMP_SDF-HDRP LIT.shadergraph",
+        "Assets/TextMesh Pro/Shaders/TMP_SDF-HDRP UNLIT.shadergraph",
+        "Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Masking.shader"
+      ],
+      "likelyPurpose": "TextMesh Pro font, shader, material, and settings assets for crisp HUD/menu text.",
+      "dependenciesIfPractical": [
+        "Assets/TextMesh Pro/Shaders/SDFFunctions.hlsl",
+        "Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset"
+      ],
+      "componentNames": [],
+      "recommendation": "Reuse directly for player-facing HUD and builder UI text; keep shader/material compatibility in mind."
+    },
+    {
       "topLevelFolder": "TutorialInfo",
       "category": "configuration/data",
       "assetCount": 1,
@@ -871,6 +1043,38 @@
   "localDownloadedPackages": [
     {
       "source": "Asset Store cache",
+      "vendorOrPublisherFolder": "AdaKing",
+      "packageOrFolderName": "Free Trees",
+      "rootPath": "C:/Users/benni/AppData/Roaming/Unity/Asset Store-5.x/AdaKing",
+      "availableFiles": [
+        "3D ModelsVegetationTrees/Free Trees.unitypackage"
+      ],
+      "availableFileCount": 1,
+      "sizeBytes": 292172,
+      "looksLike": ".unitypackage",
+      "readmeOrMetadata": [],
+      "categoryGuess": "Planet-surface/environment placeholders",
+      "usefulForWeltraumSpiel": "no/maybe",
+      "importRisk": "low/medium - mostly placeholder art, but can add many materials/textures and non-space content."
+    },
+    {
+      "source": "Asset Store cache",
+      "vendorOrPublisherFolder": "Blink",
+      "packageOrFolderName": "FREE Low Poly Human - RPG Character",
+      "rootPath": "C:/Users/benni/AppData/Roaming/Unity/Asset Store-5.x/Blink",
+      "availableFiles": [
+        "3D ModelsCharactersHumanoidsFantasy/FREE Low Poly Human - RPG Character.unitypackage"
+      ],
+      "availableFileCount": 1,
+      "sizeBytes": 8705653,
+      "looksLike": ".unitypackage",
+      "readmeOrMetadata": [],
+      "categoryGuess": "Characters/NPC placeholders",
+      "usefulForWeltraumSpiel": "no/maybe",
+      "importRisk": "low/medium - mostly placeholder art, but can add many materials/textures and non-space content."
+    },
+    {
+      "source": "Asset Store cache",
       "vendorOrPublisherFolder": "BOXOPHOBIC",
       "packageOrFolderName": "FREE Skybox Extended Shader",
       "rootPath": "C:/Users/benni/AppData/Roaming/Unity/Asset Store-5.x/BOXOPHOBIC",
@@ -883,7 +1087,71 @@
       "readmeOrMetadata": [],
       "categoryGuess": "Space environment/skybox",
       "usefulForWeltraumSpiel": "maybe",
-      "importRisk": "medium - verify URP 17.4 shader compatibility first."
+      "importRisk": "medium - verify URP 17.4 shader/rendering compatibility first."
+    },
+    {
+      "source": "Asset Store cache",
+      "vendorOrPublisherFolder": "Broken Vector",
+      "packageOrFolderName": "Low Poly Tree Pack",
+      "rootPath": "C:/Users/benni/AppData/Roaming/Unity/Asset Store-5.x/Broken Vector",
+      "availableFiles": [
+        "3D ModelsVegetationTrees/Low Poly Tree Pack.unitypackage"
+      ],
+      "availableFileCount": 1,
+      "sizeBytes": 965409,
+      "looksLike": ".unitypackage",
+      "readmeOrMetadata": [],
+      "categoryGuess": "Planet-surface/environment placeholders",
+      "usefulForWeltraumSpiel": "no/maybe",
+      "importRisk": "low/medium - mostly placeholder art, but can add many materials/textures and non-space content."
+    },
+    {
+      "source": "Asset Store cache",
+      "vendorOrPublisherFolder": "Calcatz",
+      "packageOrFolderName": "Weather And Elemental VFX Pack",
+      "rootPath": "C:/Users/benni/AppData/Roaming/Unity/Asset Store-5.x/Calcatz",
+      "availableFiles": [
+        "Particle SystemsWater/Weather And Elemental VFX Pack.unitypackage"
+      ],
+      "availableFileCount": 1,
+      "sizeBytes": 979601,
+      "looksLike": ".unitypackage",
+      "readmeOrMetadata": [],
+      "categoryGuess": "Thruster/combat VFX",
+      "usefulForWeltraumSpiel": "maybe",
+      "importRisk": "medium - may include legacy shaders/materials; import into throwaway first."
+    },
+    {
+      "source": "Asset Store cache",
+      "vendorOrPublisherFolder": "FMOD",
+      "packageOrFolderName": "FMOD for Unity 202",
+      "rootPath": "C:/Users/benni/AppData/Roaming/Unity/Asset Store-5.x/FMOD",
+      "availableFiles": [
+        "Editor ExtensionsAudio/FMOD for Unity 202.unitypackage"
+      ],
+      "availableFileCount": 1,
+      "sizeBytes": 101902708,
+      "looksLike": ".unitypackage",
+      "readmeOrMetadata": [],
+      "categoryGuess": "Audio middleware",
+      "usefulForWeltraumSpiel": "maybe",
+      "importRisk": "medium/high - middleware and native/plugin setup; test bank workflow outside main first."
+    },
+    {
+      "source": "Asset Store cache",
+      "vendorOrPublisherFolder": "Gabriel Aguiar Prod",
+      "packageOrFolderName": "Free Quick Effects Vol 1",
+      "rootPath": "C:/Users/benni/AppData/Roaming/Unity/Asset Store-5.x/Gabriel Aguiar Prod",
+      "availableFiles": [
+        "Particle Systems/Free Quick Effects Vol 1.unitypackage"
+      ],
+      "availableFileCount": 1,
+      "sizeBytes": 20864099,
+      "looksLike": ".unitypackage",
+      "readmeOrMetadata": [],
+      "categoryGuess": "Thruster/combat VFX",
+      "usefulForWeltraumSpiel": "maybe",
+      "importRisk": "medium - may include legacy shaders/materials; import into throwaway first."
     },
     {
       "source": "Asset Store cache",
@@ -899,7 +1167,39 @@
       "readmeOrMetadata": [],
       "categoryGuess": "Planet-surface/environment placeholders",
       "usefulForWeltraumSpiel": "no/maybe",
-      "importRisk": "low/medium - mostly art, but can add many materials/textures and non-space content."
+      "importRisk": "low/medium - mostly placeholder art, but can add many materials/textures and non-space content."
+    },
+    {
+      "source": "Asset Store cache",
+      "vendorOrPublisherFolder": "Geoff Dallimore",
+      "packageOrFolderName": "Real Stars Skybox Lite",
+      "rootPath": "C:/Users/benni/AppData/Roaming/Unity/Asset Store-5.x/Geoff Dallimore",
+      "availableFiles": [
+        "3D ModelsEnvironmentsSci-Fi/Real Stars Skybox Lite.unitypackage"
+      ],
+      "availableFileCount": 1,
+      "sizeBytes": 6381175,
+      "looksLike": ".unitypackage",
+      "readmeOrMetadata": [],
+      "categoryGuess": "Space environment/skybox",
+      "usefulForWeltraumSpiel": "maybe",
+      "importRisk": "medium - verify URP 17.4 shader/rendering compatibility first."
+    },
+    {
+      "source": "Asset Store cache",
+      "vendorOrPublisherFolder": "Jean Moreno",
+      "packageOrFolderName": "War FX",
+      "rootPath": "C:/Users/benni/AppData/Roaming/Unity/Asset Store-5.x/Jean Moreno",
+      "availableFiles": [
+        "Particle Systems/War FX.unitypackage"
+      ],
+      "availableFileCount": 1,
+      "sizeBytes": 9699059,
+      "looksLike": ".unitypackage",
+      "readmeOrMetadata": [],
+      "categoryGuess": "Thruster/combat VFX",
+      "usefulForWeltraumSpiel": "maybe",
+      "importRisk": "medium - may include legacy shaders/materials; import into throwaway first."
     },
     {
       "source": "Asset Store cache",
@@ -915,7 +1215,23 @@
       "readmeOrMetadata": [],
       "categoryGuess": "Planet-surface/environment placeholders",
       "usefulForWeltraumSpiel": "no/maybe",
-      "importRisk": "low/medium - mostly art, but can add many materials/textures and non-space content."
+      "importRisk": "low/medium - mostly placeholder art, but can add many materials/textures and non-space content."
+    },
+    {
+      "source": "Asset Store cache",
+      "vendorOrPublisherFolder": "karboosx",
+      "packageOrFolderName": "Sci-Fi Styled Modular Pack",
+      "rootPath": "C:/Users/benni/AppData/Roaming/Unity/Asset Store-5.x/karboosx",
+      "availableFiles": [
+        "3D ModelsEnvironmentsSci-Fi/Sci-Fi Styled Modular Pack.unitypackage"
+      ],
+      "availableFileCount": 1,
+      "sizeBytes": 8991110,
+      "looksLike": ".unitypackage",
+      "readmeOrMetadata": [],
+      "categoryGuess": "Ships/stations/modular sci-fi",
+      "usefulForWeltraumSpiel": "maybe",
+      "importRisk": "medium - art pack may add many materials/prefabs; inspect hierarchy and scale outside main first."
     },
     {
       "source": "Asset Store cache",
@@ -935,6 +1251,22 @@
     },
     {
       "source": "Asset Store cache",
+      "vendorOrPublisherFolder": "Pinwheel Studio",
+      "packageOrFolderName": "Polaris Basic - Low Poly Terrain Engine",
+      "rootPath": "C:/Users/benni/AppData/Roaming/Unity/Asset Store-5.x/Pinwheel Studio",
+      "availableFiles": [
+        "Editor ExtensionsTerrain/Polaris Basic - Low Poly Terrain Engine.unitypackage"
+      ],
+      "availableFileCount": 1,
+      "sizeBytes": 10629289,
+      "looksLike": ".unitypackage",
+      "readmeOrMetadata": [],
+      "categoryGuess": "Planet-surface/environment placeholders",
+      "usefulForWeltraumSpiel": "no/maybe",
+      "importRisk": "low/medium - mostly placeholder art, but can add many materials/textures and non-space content."
+    },
+    {
+      "source": "Asset Store cache",
       "vendorOrPublisherFolder": "Polytope Studio",
       "packageOrFolderName": "Low Poly Environment - Nature Free - LOWPOLY MEDIEVAL FANTASY SERIES",
       "rootPath": "C:/Users/benni/AppData/Roaming/Unity/Asset Store-5.x/Polytope Studio",
@@ -947,7 +1279,7 @@
       "readmeOrMetadata": [],
       "categoryGuess": "Planet-surface/environment placeholders",
       "usefulForWeltraumSpiel": "no/maybe",
-      "importRisk": "low/medium - mostly art, but can add many materials/textures and non-space content."
+      "importRisk": "low/medium - mostly placeholder art, but can add many materials/textures and non-space content."
     },
     {
       "source": "Asset Store cache",
@@ -963,7 +1295,23 @@
       "readmeOrMetadata": [],
       "categoryGuess": "Planet-surface/environment placeholders",
       "usefulForWeltraumSpiel": "no/maybe",
-      "importRisk": "low/medium - mostly art, but can add many materials/textures and non-space content."
+      "importRisk": "low/medium - mostly placeholder art, but can add many materials/textures and non-space content."
+    },
+    {
+      "source": "Asset Store cache",
+      "vendorOrPublisherFolder": "SlimUI",
+      "packageOrFolderName": "3D Modern Menu UI",
+      "rootPath": "C:/Users/benni/AppData/Roaming/Unity/Asset Store-5.x/SlimUI",
+      "availableFiles": [
+        "ScriptingGUI/3D Modern Menu UI.unitypackage"
+      ],
+      "availableFileCount": 1,
+      "sizeBytes": 14215791,
+      "looksLike": ".unitypackage",
+      "readmeOrMetadata": [],
+      "categoryGuess": "UI/menu",
+      "usefulForWeltraumSpiel": "maybe",
+      "importRisk": "medium - runtime code/input/UI dependency; isolate first."
     },
     {
       "source": "Asset Store cache",
@@ -979,7 +1327,7 @@
       "readmeOrMetadata": [],
       "categoryGuess": "Editor tooling/modeling",
       "usefulForWeltraumSpiel": "maybe",
-      "importRisk": "medium/high - editor extension and possible paid-license workflow impact; test outside main first."
+      "importRisk": "medium/high - editor extension and possible generated-asset workflow impact; test outside main first."
     },
     {
       "source": "Asset Store cache",
@@ -987,10 +1335,12 @@
       "packageOrFolderName": "Legacy Particle Pack",
       "rootPath": "C:/Users/benni/AppData/Roaming/Unity/Asset Store-5.x/Unity Technologies",
       "availableFiles": [
+        "Editor ExtensionsModeling/ProBuilder 2x.unitypackage",
         "Particle Systems/Legacy Particle Pack.unitypackage",
-        "Particle Systems/Particle Pack.unitypackage"
+        "Particle Systems/Particle Pack.unitypackage",
+        "Unity Essentials/Post Processing Stack.unitypackage"
       ],
-      "availableFileCount": 2,
+      "availableFileCount": 4,
       "sizeBytes": 102243447,
       "looksLike": ".unitypackage",
       "readmeOrMetadata": [],
@@ -1004,16 +1354,56 @@
       "packageOrFolderName": "Particle Pack",
       "rootPath": "C:/Users/benni/AppData/Roaming/Unity/Asset Store-5.x/Unity Technologies",
       "availableFiles": [
+        "Editor ExtensionsModeling/ProBuilder 2x.unitypackage",
         "Particle Systems/Legacy Particle Pack.unitypackage",
-        "Particle Systems/Particle Pack.unitypackage"
+        "Particle Systems/Particle Pack.unitypackage",
+        "Unity Essentials/Post Processing Stack.unitypackage"
       ],
-      "availableFileCount": 2,
+      "availableFileCount": 4,
       "sizeBytes": 165078710,
       "looksLike": ".unitypackage",
       "readmeOrMetadata": [],
       "categoryGuess": "Thruster/combat VFX",
       "usefulForWeltraumSpiel": "maybe",
       "importRisk": "medium - may include legacy shaders/materials; import into throwaway first."
+    },
+    {
+      "source": "Asset Store cache",
+      "vendorOrPublisherFolder": "Unity Technologies",
+      "packageOrFolderName": "Post Processing Stack",
+      "rootPath": "C:/Users/benni/AppData/Roaming/Unity/Asset Store-5.x/Unity Technologies",
+      "availableFiles": [
+        "Editor ExtensionsModeling/ProBuilder 2x.unitypackage",
+        "Particle Systems/Legacy Particle Pack.unitypackage",
+        "Particle Systems/Particle Pack.unitypackage",
+        "Unity Essentials/Post Processing Stack.unitypackage"
+      ],
+      "availableFileCount": 4,
+      "sizeBytes": 32597458,
+      "looksLike": ".unitypackage",
+      "readmeOrMetadata": [],
+      "categoryGuess": "Rendering/post-processing",
+      "usefulForWeltraumSpiel": "maybe",
+      "importRisk": "medium - verify URP 17.4 shader/rendering compatibility first."
+    },
+    {
+      "source": "Asset Store cache",
+      "vendorOrPublisherFolder": "Unity Technologies",
+      "packageOrFolderName": "ProBuilder 2x",
+      "rootPath": "C:/Users/benni/AppData/Roaming/Unity/Asset Store-5.x/Unity Technologies",
+      "availableFiles": [
+        "Editor ExtensionsModeling/ProBuilder 2x.unitypackage",
+        "Particle Systems/Legacy Particle Pack.unitypackage",
+        "Particle Systems/Particle Pack.unitypackage",
+        "Unity Essentials/Post Processing Stack.unitypackage"
+      ],
+      "availableFileCount": 4,
+      "sizeBytes": 4377352,
+      "looksLike": ".unitypackage",
+      "readmeOrMetadata": [],
+      "categoryGuess": "Editor tooling/modeling",
+      "usefulForWeltraumSpiel": "maybe",
+      "importRisk": "medium/high - editor extension and possible generated-asset workflow impact; test outside main first."
     },
     {
       "source": "Asset Store cache",
@@ -1035,65 +1425,65 @@
   "usefulnessMatrix": [
     {
       "category": "Player-facing UI/HUD",
-      "candidateAssets": "PrototypePlayerHud.cs; PrototypeFlightHud.cs; PrototypeMinimapOverlay.cs; PrototypeUiStyle.cs; uGUI/UIElements; In-game Debug Console cache",
-      "whatToReuse": "Reuse the existing HUD snapshot/rendering and minimap model first.",
-      "whatToAdapt": "Test PrimeTween or debug console later for polish/debug builds.",
+      "candidateAssets": "PrototypePlayerHud.cs; PrototypeFlightHud.cs; PrototypeMinimapOverlay.cs; PrototypeUiStyle.cs; TextMesh Pro assets; 3D Modern Menu UI; PrimeTween; In-game Debug Console",
+      "whatToReuse": "Reuse the existing HUD snapshot/rendering, minimap model, and TMP text assets first.",
+      "whatToAdapt": "Test SlimUI/PrimeTween/debug console in a throwaway project for menu polish and debug builds.",
       "whatToAvoid": "Avoid replacing the current HUD stack with an imported UI kit before input, scaling, and tests are checked."
     },
     {
       "category": "Space ships / modular ship parts",
-      "candidateAssets": "Assets/Art/PrototypeShipKit/Parts; DemoShips; prototype_ship_kit_manifest.json; PrototypeShipVisualSwitcher.cs",
+      "candidateAssets": "Assets/Art/PrototypeShipKit/Parts; DemoShips; prototype_ship_kit_manifest.json; Sci-Fi Styled Modular Pack",
       "whatToReuse": "Reuse imported FBX/GLB parts and manifest for builder/runtime visual modes.",
-      "whatToAdapt": "Adapt materials, hardpoints, and socket metadata as the builder matures.",
+      "whatToAdapt": "Inspect the sci-fi modular pack in a throwaway project for alternate hull, station, and hangar pieces.",
       "whatToAvoid": "Avoid nature/environment packs for ships; they do not cover hardpoints or ship-scale constraints."
     },
     {
       "category": "Thruster/RCS VFX",
-      "candidateAssets": "MainThrusterVfx.prefab; RcsThrusterVfx.prefab; PrototypeShipVfxLibrary.asset; Unity Particle Pack cache",
+      "candidateAssets": "MainThrusterVfx.prefab; RcsThrusterVfx.prefab; PrototypeShipVfxLibrary.asset; Particle Pack; Free Quick Effects Vol 1; Weather And Elemental VFX Pack",
       "whatToReuse": "Use existing VFX prefabs directly for current flight evidence.",
-      "whatToAdapt": "Inspect particle packs in a throwaway project for exhaust variants.",
+      "whatToAdapt": "Inspect particle and quick-effect packs in a throwaway project for exhaust, sparks, trails, and impact variants.",
       "whatToAvoid": "Avoid importing legacy particle content directly until shader/render pipeline compatibility is verified."
     },
     {
       "category": "Weapons/projectiles/combat VFX",
-      "candidateAssets": "gun_mount_light_mk1; PrototypeTurretWeapon.cs; PrototypeProjectileSimulation.cs; Particle Pack cache",
+      "candidateAssets": "gun_mount_light_mk1; PrototypeTurretWeapon.cs; PrototypeProjectileSimulation.cs; War FX; Free Quick Effects Vol 1; Particle Pack",
       "whatToReuse": "Reuse weapon binder and projectile runtime systems.",
-      "whatToAdapt": "Adapt particle effects for muzzle flashes, impacts, and trails after test import.",
+      "whatToAdapt": "Adapt imported muzzle flashes, impacts, explosions, and projectile trails after test import.",
       "whatToAvoid": "Avoid imported projectile scripts that overlap the deterministic combat simulation."
     },
     {
       "category": "Space environment/skybox/planets/asteroids",
-      "candidateAssets": "URP settings; FREE Skybox Extended Shader cache; low-poly nature/environment caches",
+      "candidateAssets": "URP settings; FREE Skybox Extended Shader; Real Stars Skybox Lite; low-poly terrain/tree/environment caches",
       "whatToReuse": "Reuse URP settings as the rendering baseline.",
-      "whatToAdapt": "Test skybox shader and low-poly packs as placeholder planet-surface art only.",
-      "whatToAvoid": "Avoid assuming nature packs solve space needs; planets, asteroids, nebulae, and starfields are still missing."
+      "whatToAdapt": "Test skybox shader, Real Stars, terrain, and tree packs as space/planet-surface placeholders.",
+      "whatToAvoid": "Avoid assuming nature packs solve space needs; planets, asteroids, nebulae, and station exteriors are still missing."
     },
     {
       "category": "Docking/stations/hangars",
-      "candidateAssets": "connector_hardpoint_mk1; DockingPort.cs; PrototypeDockingApproachAssist.cs; UModeler X cache",
+      "candidateAssets": "connector_hardpoint_mk1; DockingPort.cs; PrototypeDockingApproachAssist.cs; Sci-Fi Styled Modular Pack; UModeler X; ProBuilder 2x",
       "whatToReuse": "Reuse docking code and connector hardpoint art.",
-      "whatToAdapt": "Use UModeler or simple FBX blockouts in a test project for station/hangar grayboxes.",
+      "whatToAdapt": "Use sci-fi modular pieces, ProBuilder, or UModeler in a test project for station/hangar grayboxes.",
       "whatToAvoid": "Avoid importing broad editor modeling tools before licensing and generated-asset workflow are settled."
     },
     {
       "category": "Ship builder/UI inventory",
-      "candidateAssets": "PrototypeShipBlueprint.cs; PrototypeShipLayout.cs; PrototypeShipVariant.cs; PrototypeUiViewModels.cs; PrimeTween cache",
+      "candidateAssets": "PrototypeShipBlueprint.cs; PrototypeShipLayout.cs; PrototypeShipVariant.cs; PrototypeUiViewModels.cs; 3D Modern Menu UI; PrimeTween",
       "whatToReuse": "Reuse blueprint/layout/view-model code.",
-      "whatToAdapt": "Adapt UI animation tooling only after the builder flow is stable.",
+      "whatToAdapt": "Adapt UI animation and menu assets only after the builder flow is stable.",
       "whatToAvoid": "Avoid adding a second inventory framework before the current model is exhausted."
     },
     {
       "category": "Audio/SFX/music",
-      "candidateAssets": "Unity audio module only; no imported SFX/music assets found",
-      "whatToReuse": "Use built-in audio support.",
-      "whatToAdapt": "Add thruster, weapon, impact, docking, alert, ambience, and music packs later.",
-      "whatToAvoid": "Avoid wiring a large audio system until actual clips exist."
+      "candidateAssets": "Unity audio module; FMOD for Unity 202; no discovered SFX/music clip pack",
+      "whatToReuse": "Use built-in audio support for now.",
+      "whatToAdapt": "Evaluate FMOD in a throwaway project before deciding whether the prototype needs middleware.",
+      "whatToAvoid": "Avoid integrating audio middleware until actual thruster, weapon, impact, docking, alert, ambience, and music clips exist."
     },
     {
       "category": "Editor tooling",
-      "candidateAssets": "MCP for Unity; Test Framework; UModeler X cache; Easy Poly Map Creator cache",
+      "candidateAssets": "MCP for Unity; Test Framework; UModeler X; ProBuilder 2x; Easy Poly Map Creator; Unity Asset Manager package",
       "whatToReuse": "Reuse Unity MCP and tests for iteration and evidence.",
-      "whatToAdapt": "Evaluate modeling/terrain extensions in a throwaway project.",
+      "whatToAdapt": "Evaluate modeling/terrain/asset-manager tools in a throwaway project.",
       "whatToAvoid": "Avoid editor extensions that change settings or generate assets without a rollback plan."
     },
     {
@@ -1113,21 +1503,21 @@
   ],
   "finalRecommendations": {
     "top10AssetsOrPackagesToInspectFirst": [
-      "Assets/Art/PrototypeShipKit/Parts/*.fbx and *.glb - current modular ship vocabulary.",
-      "Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1 and demo_cargo_mk1 - assembled visual baselines.",
+      "Assets/Art/PrototypeShipKit/Parts plus demo_scout_mk1/demo_cargo_mk1 - current modular ship vocabulary and assembled baselines.",
       "Assets/Art/PrototypeShipKit/VFX/Prefabs/MainThrusterVfx.prefab and RcsThrusterVfx.prefab - already bound to flight evidence.",
       "Assets/Art/PrototypeShipKit/prototype_ship_kit_manifest.json - metadata for parts, sockets, and categories.",
       "PrototypePlayerHud.cs plus PrototypeMinimapOverlay.cs - player-facing HUD and tactical scan surface.",
-      "com.unity.render-pipelines.universal - active rendering path and shader compatibility baseline.",
-      "com.unity.inputsystem - current controls/input action foundation.",
-      "Unity Technologies/Particle Pack.unitypackage - candidate combat and thruster VFX, throwaway import first.",
-      "BOXOPHOBIC/FREE Skybox Extended Shader.unitypackage - candidate skybox tooling, verify URP compatibility first.",
-      "Kyrylo Kuzyk/PrimeTween.unitypackage or yasirkula/In-game Debug Console.unitypackage - optional UI/debug polish after throwaway import."
+      "com.unity.render-pipelines.universal and com.unity.inputsystem - active rendering and control baselines.",
+      "Real Stars Skybox Lite plus FREE Skybox Extended Shader - candidate space backdrop work, verify URP compatibility first.",
+      "War FX, Free Quick Effects Vol 1, Weather And Elemental VFX Pack, and Particle Pack - candidate combat/thruster VFX, throwaway import first.",
+      "Sci-Fi Styled Modular Pack - candidate station, hangar, and alternate modular ship kit pieces.",
+      "3D Modern Menu UI, PrimeTween, and In-game Debug Console - optional UI/debug polish after throwaway import.",
+      "FMOD for Unity 202 - candidate audio middleware only after concrete SFX/music needs are known."
     ],
     "importIntoThrowawayProjectFirst": [
-      "All local Asset Store .unitypackage archives, especially Particle Pack, Legacy Particle Pack, UModeler X, PrimeTween, In-game Debug Console, and Skybox Extended Shader.",
+      "All local Asset Store .unitypackage archives, especially VFX packs, skyboxes, Sci-Fi Styled Modular Pack, FMOD, SlimUI, UModeler X, ProBuilder 2x, PrimeTween, and In-game Debug Console.",
       "Shader or render-pipeline-affecting packages before they touch URP settings.",
-      "Editor extensions that may add project settings, menu items, generated assets, or dependencies.",
+      "Editor extensions and middleware that may add project settings, menu items, generated assets, native plugins, or dependencies.",
       "Large environment/nature packs because they are mostly planet-surface placeholders and can add many materials/textures."
     ],
     "safeToUseDirectly": [
@@ -1136,9 +1526,10 @@
       "Existing scripts and tests under Assets/Scripts/Prototype and Assets/Tests as project-owned implementation evidence."
     ],
     "mayConflictWithProjectSettings": [
-      "Skybox/shader packages if they assume Built-in Render Pipeline instead of URP 17.4.",
+      "Skybox, post-processing, or shader packages if they assume Built-in Render Pipeline instead of URP 17.4.",
       "Particle packs that include legacy materials, shaders, or quality settings.",
       "Runtime debug console or UI packages that bind input, canvases, or EventSystem state.",
+      "FMOD if it introduces native plugin setup, bank generation, or audio initialization outside the current prototype architecture.",
       "UModeler X or terrain/editor extensions that may add editor settings, generated assets, or paid-license constraints.",
       "Visual Scripting if used as a parallel gameplay logic path without tests."
     ],
