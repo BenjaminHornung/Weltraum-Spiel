@@ -2766,6 +2766,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             radarGraphic.SetSnapshot(snapshot);
         }
         UpdateMarkerLabels(snapshot);
+        ApplyHelpModalVisibility(helpPanel != null && helpPanel.activeSelf);
     }
 
     private void ConfigureKillMomentumButton()
@@ -3135,7 +3136,69 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         ApplyRect(objectivePanelRect, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(objectiveWidth, objectiveHeight), new Vector2(margin, -(margin + 56f)));
         ApplyRect(contextPanelRect, new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(contextWidth, contextHeight), new Vector2(-margin, sideBottom));
         ApplyRect(radarPanelRect, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(radarSize, radarSize), new Vector2(-margin, -margin));
+        ApplyHelpPanelLayout(safeWidth, safeHeight, margin, gap, contextWidth, sideBottom, systemHeight, narrow, shortScreen);
         ApplyContextBodyLayout((navigationControlRow != null && navigationControlRow.gameObject.activeSelf) || (combatControlRow != null && combatControlRow.gameObject.activeSelf));
+    }
+
+    private void ApplyHelpPanelLayout(
+        float safeWidth,
+        float safeHeight,
+        float margin,
+        float gap,
+        float contextWidth,
+        float sideBottom,
+        float systemHeight,
+        bool narrow,
+        bool shortScreen)
+    {
+        if (helpPanel == null)
+        {
+            return;
+        }
+
+        RectTransform helpRect = helpPanel.GetComponent<RectTransform>();
+        if (helpRect == null)
+        {
+            return;
+        }
+
+        bool avoidRightContext = safeWidth < 1180f;
+        float helpWidth = 620f;
+        float helpHeight = shortScreen ? 320f : 390f;
+        if (avoidRightContext)
+        {
+            float contextLeft = safeWidth - margin - contextWidth;
+            float availableLeftWidth = Mathf.Max(280f, contextLeft - margin - gap);
+            helpWidth = Mathf.Clamp(availableLeftWidth, 300f, 620f);
+            helpHeight = Mathf.Clamp(safeHeight - (margin * 2f) - 300f, shortScreen ? 240f : 300f, 320f);
+            float systemTop = sideBottom + systemHeight;
+            float centerY = Mathf.Clamp(
+                systemTop + gap + 96f + (helpHeight * 0.5f),
+                margin + (helpHeight * 0.5f),
+                safeHeight - margin - (helpHeight * 0.5f));
+            ApplyRect(
+                helpRect,
+                new Vector2(0f, 0.5f),
+                new Vector2(0f, 0.5f),
+                new Vector2(0.5f, 0.5f),
+                new Vector2(helpWidth, helpHeight),
+                new Vector2(margin + (helpWidth * 0.5f), centerY - (safeHeight * 0.5f)));
+        }
+        else
+        {
+            ApplyRect(
+                helpRect,
+                new Vector2(0.5f, 0.5f),
+                new Vector2(0.5f, 0.5f),
+                new Vector2(0.5f, 0.5f),
+                new Vector2(helpWidth, helpHeight),
+                Vector2.zero);
+        }
+
+        if (helpText != null)
+        {
+            helpText.fontSize = narrow || avoidRightContext ? 11f : 12f;
+        }
     }
 
     private float ApplyCanvasScalePolicy(int screenWidth, int screenHeight)
@@ -3844,6 +3907,37 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         if (helpPanel != null)
         {
             helpPanel.SetActive(visible);
+        }
+
+        if (visible)
+        {
+            hasCachedHelpText = false;
+        }
+
+        ApplyHelpModalVisibility(visible);
+    }
+
+    private void ApplyHelpModalVisibility(bool helpVisible)
+    {
+        SetGameObjectActive(systemPanelRect, !helpVisible);
+        SetGameObjectActive(objectivePanelRect, !helpVisible);
+        SetGameObjectActive(contextPanelRect, !helpVisible);
+        SetGameObjectActive(radarPanelRect, !helpVisible);
+        SetGameObjectActive(overlayGraphic != null ? overlayGraphic.rectTransform : null, !helpVisible);
+        for (int i = 0; i < targetIndicatorLabels.Count; i++)
+        {
+            if (targetIndicatorLabels[i] != null && helpVisible)
+            {
+                targetIndicatorLabels[i].gameObject.SetActive(false);
+            }
+        }
+    }
+
+    private static void SetGameObjectActive(Component component, bool active)
+    {
+        if (component != null && component.gameObject.activeSelf != active)
+        {
+            component.gameObject.SetActive(active);
         }
     }
 

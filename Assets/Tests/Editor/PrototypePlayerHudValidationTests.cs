@@ -788,6 +788,34 @@ public class PrototypePlayerHudValidationTests
     }
 
     [Test]
+    public void ResponsiveLayoutKeepsHelpPanelClearOfContextAtFourByThree()
+    {
+        GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+        cameraObject.AddComponent<Camera>();
+        PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+        playerHud.RefreshNow();
+        ApplySnapshotForTest(playerHud, CreateHudSnapshot(CreateCombatSnapshot(false), CreateDockingSnapshot(false), CreateNavigationSnapshot(true), default));
+
+        RectTransform help = FindRect(playerHud, "PlayerHelp");
+        SetHelpVisibleForTest(playerHud, true);
+        playerHud.ApplyResponsiveLayoutForTests(1024, 768);
+        Canvas.ForceUpdateCanvases();
+
+        RectTransform context = FindRect(playerHud, "ContextPanel");
+        RectTransform radar = FindRect(playerHud, "RadarPanel");
+        RectTransform bottom = FindRect(playerHud, "FlightStatusBar");
+        RectTransform systems = FindRect(playerHud, "ShipSystems");
+        RectTransform objective = FindRect(playerHud, "ObjectivePanel");
+
+        Assert.True(help.gameObject.activeSelf);
+        Assert.False(context.gameObject.activeSelf);
+        Assert.False(radar.gameObject.activeSelf);
+        Assert.False(systems.gameObject.activeSelf);
+        Assert.False(objective.gameObject.activeSelf);
+        Assert.False(Overlaps(help, bottom), "4:3 help/bottom " + WorldRect(help) + " / " + WorldRect(bottom));
+    }
+
+    [Test]
     public void CombatComputerControlsReuseWeaponComputerApis()
     {
         using (var builder = new PrototypeScenarioBuilder())
@@ -1220,6 +1248,14 @@ public class PrototypePlayerHudValidationTests
         MethodInfo method = typeof(PrototypePlayerHudRenderer).GetMethod("ApplySnapshot", BindingFlags.Instance | BindingFlags.NonPublic);
         Assert.NotNull(method);
         method.Invoke(playerHud, new object[] { snapshot });
+        Canvas.ForceUpdateCanvases();
+    }
+
+    private static void SetHelpVisibleForTest(PrototypePlayerHudRenderer playerHud, bool visible)
+    {
+        MethodInfo method = typeof(PrototypePlayerHudRenderer).GetMethod("SetHelpVisible", BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        method.Invoke(playerHud, new object[] { visible });
         Canvas.ForceUpdateCanvases();
     }
 
