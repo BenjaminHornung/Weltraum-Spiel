@@ -16,6 +16,7 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
     private const string ChangeName = "player-ui-concept-runtime-audit-v1";
     private const string AspectRatioScalingChangeName = "player-hud-live-aspect-ratio-scaling-v1";
     private const string WorldLabelReadabilityChangeName = "player-world-label-readability-v1";
+    private const string LiveEvidenceSymmetryChangeName = "player-ui-live-evidence-symmetry-v1";
     private const BindingFlags NonPublicInstance = BindingFlags.Instance | BindingFlags.NonPublic;
 
     private SimulationMode previousSimulationMode;
@@ -307,6 +308,75 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
             1600);
         Assert.That(HasWarning(helpPortrait, "Treibstoff niedrig"), Is.True, "live portrait help low-fuel warning");
         AssertPanelsSeparated(rig.PlayerHud, true);
+    }
+
+    [Test]
+    [Category("PlayerHudEvidence")]
+    [Timeout(120000)]
+    public void PrototypeBootstrapRuntimePlayerHudEvidenceCapturesFourByThreeCruiseAndNavigation()
+    {
+        Assert.That(Application.isPlaying, Is.True, "This evidence test must run in Unity PlayMode.");
+#if UNITY_EDITOR
+        if (SceneManager.GetActiveScene().path != ScenePath)
+        {
+            EditorSceneManager.LoadSceneInPlayMode(ScenePath, new LoadSceneParameters(LoadSceneMode.Single));
+        }
+#endif
+
+        PrototypeUiLayoutManager.ResetPresetToBasic();
+        GameObject host = new GameObject("PrototypePlayerHudLiveEvidenceHost");
+        PrototypeBootstrap bootstrap = host.AddComponent<PrototypeBootstrap>();
+        SetPrivateField(bootstrap, "buildOnStart", false);
+        SetPrivateField(bootstrap, "spawnTestTarget", true);
+        SetPrivateField(bootstrap, "buildPveArena", true);
+        SetPrivateField(bootstrap, "buildTestEnvironment", true);
+        SetPrivateField(bootstrap, "allowGeneratedFallbackWhenImportedAssetMissing", false);
+        bootstrap.BuildPrototype(PrototypeShipVariant.Baseline());
+
+        LiveHudRig rig = ResolveRig();
+        ConfigureHudCanvasForCameraCapture(rig);
+        RunFrames(rig, 3);
+
+        string screenshotRoot = GetScreenshotRoot(LiveEvidenceSymmetryChangeName);
+        Directory.CreateDirectory(screenshotRoot);
+
+        rig.Autopilot.SelectTarget(null);
+        rig.WeaponComputer.ClearSelection();
+        rig.WeaponComputer.SetAutoFireEnabled(false);
+        rig.PlayerHud.SetTargetDockingPort(null);
+        RunFrames(rig, 3);
+
+        PrototypePlayerHudSnapshot cruiseFourByThree = CaptureLiveState(
+            rig,
+            screenshotRoot,
+            "31-live-cruise-objective-4x3.png",
+            1024,
+            768);
+        Assert.That(cruiseFourByThree.Arena.IsVisible, Is.True, "live 4:3 cruise/objective arena snapshot");
+        Assert.That(cruiseFourByThree.Combat.TargetName, Is.EqualTo("No target"), "live 4:3 cruise/objective should not have an active combat target");
+        Assert.That(cruiseFourByThree.Docking.Visible, Is.False, "live 4:3 cruise/objective should not be docking-preempted");
+        Assert.That(HasIndicator(cruiseFourByThree, PrototypePlayerTargetIndicatorKind.Combat), Is.False, "live 4:3 cruise/objective should not project an active combat target");
+        AssertPanelsSeparated(rig.PlayerHud, false);
+        AssertActiveButtonTextNotOverflowing(rig.PlayerHud);
+
+        PrototypeNavigationTarget navTarget = rig.Autopilot.SelectNextTarget();
+        Assert.NotNull(navTarget, "live 4:3 navigation target");
+        rig.Autopilot.ReplanNow();
+        rig.Autopilot.ToggleAutopilot();
+        RunFrames(rig, 8);
+
+        PrototypePlayerHudSnapshot navigationFourByThree = CaptureLiveState(
+            rig,
+            screenshotRoot,
+            "32-live-navigation-autopilot-4x3.png",
+            1024,
+            768);
+        Assert.That(navigationFourByThree.Navigation.Visible, Is.True, "live 4:3 navigation snapshot");
+        Assert.That(navigationFourByThree.Navigation.TargetCount, Is.GreaterThan(0), "live 4:3 navigation target count");
+        Assert.That(navigationFourByThree.Radar.Blips.Length, Is.GreaterThan(0), "live 4:3 navigation radar blips");
+        Assert.That(HasIndicator(navigationFourByThree, PrototypePlayerTargetIndicatorKind.Navigation), Is.True, "live 4:3 navigation target indicator");
+        AssertPanelsSeparated(rig.PlayerHud, false);
+        AssertActiveButtonTextNotOverflowing(rig.PlayerHud);
     }
 
     [Test]
