@@ -63,6 +63,8 @@ public class PrototypeBootstrap : MonoBehaviour
 
     private void Start()
     {
+        PrototypeUiLayoutManager.ResetPresetToBasic();
+
         if (buildOnStart)
         {
             BuildPrototype();

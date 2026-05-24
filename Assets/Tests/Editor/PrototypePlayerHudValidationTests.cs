@@ -569,6 +569,26 @@ public class PrototypePlayerHudValidationTests
     }
 
     [Test]
+    public void BootstrapStartResetsStalePrototypePresetToBasicPlayerView()
+    {
+        PrototypeUiLayoutManager.ApplyPreset(PrototypeUiPreset.FullDiagnostics, null, null, null, null, null, null);
+
+        GameObject bootstrapObject = new GameObject("PrototypeBootstrap");
+        PrototypeBootstrap bootstrap = bootstrapObject.AddComponent<PrototypeBootstrap>();
+        MethodInfo start = typeof(PrototypeBootstrap).GetMethod("Start", BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(start);
+
+        start.Invoke(bootstrap, null);
+
+        Assert.That(PrototypeUiLayoutManager.CurrentPreset, Is.EqualTo(PrototypeUiPreset.Basic));
+        Assert.NotNull(Camera.main);
+        Assert.False(Camera.main.GetComponent<PrototypeFlightHud>().ShowHud);
+        Assert.False(Camera.main.GetComponent<PrototypeDebugOverlay>().IsWindowVisible);
+        Assert.False(Camera.main.GetComponent<PrototypeMinimapOverlay>().IsWindowVisible);
+        Assert.False(Camera.main.GetComponent<PrototypeWeaponComputerPanel>().IsWindowVisible);
+    }
+
+    [Test]
     public void ContextPriorityShowsCriticalCombatDockingNavigationObjectiveInOrder()
     {
         GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
@@ -605,6 +625,39 @@ public class PrototypePlayerHudValidationTests
 
         ApplySnapshotForTest(playerHud, CreateHudSnapshot(CreateCombatSnapshot(false), CreateDockingSnapshot(false), CreateNavigationSnapshot(false), arena));
         Assert.That(FindText(playerHud, "ContextTitle").text, Is.EqualTo("Objective: Clear the Arena"));
+    }
+
+    [Test]
+    public void CombatNoTargetDoesNotPreemptNavigationOrObjective()
+    {
+        GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+        cameraObject.AddComponent<Camera>();
+        PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+        playerHud.RefreshNow();
+
+        var combatNoTarget = new PrototypePlayerCombatSnapshot(
+            true,
+            "No target",
+            0f,
+            "--",
+            0f,
+            "No target",
+            PrototypePlayerHudSeverity.Disabled,
+            "Auto Fire: Off",
+            "ManualOrder");
+        var arena = new PrototypePveArenaSnapshot("Clear the Arena", true, false, 3, 0, string.Empty);
+
+        ApplySnapshotForTest(playerHud, CreateHudSnapshot(combatNoTarget, CreateDockingSnapshot(false), CreateNavigationSnapshot(true), arena));
+        Assert.That(FindText(playerHud, "ContextTitle").text, Is.EqualTo("Navigation: Nav Beacon"));
+        Assert.False(FindRect(playerHud, "CombatControls").gameObject.activeInHierarchy);
+
+        ApplySnapshotForTest(playerHud, CreateHudSnapshot(combatNoTarget, CreateDockingSnapshot(false), CreateNavigationSnapshot(false), arena));
+        Assert.That(FindText(playerHud, "ContextTitle").text, Is.EqualTo("Objective: Clear the Arena"));
+        Assert.False(FindRect(playerHud, "CombatControls").gameObject.activeInHierarchy);
+
+        ApplySnapshotForTest(playerHud, CreateHudSnapshot(combatNoTarget, CreateDockingSnapshot(false), CreateNavigationSnapshot(false), default));
+        Assert.That(FindText(playerHud, "ContextTitle").text, Is.EqualTo("Combat: No target"));
+        Assert.True(FindRect(playerHud, "CombatControls").gameObject.activeInHierarchy);
     }
 
     [Test]

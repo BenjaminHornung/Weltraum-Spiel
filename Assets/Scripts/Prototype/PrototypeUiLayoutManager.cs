@@ -235,6 +235,12 @@ public static class PrototypeUiLayoutManager
         CurrentPreset = PrototypeUiPreset.Basic;
     }
 
+    public static void ResetPresetToBasic()
+    {
+        CurrentPreset = PrototypeUiPreset.Basic;
+        hotkeyFrame = -1;
+    }
+
     public static IReadOnlyCollection<PrototypeUiWindowState> WindowsForTests => Windows.Values;
 
     public static bool ShouldRouteF1ToPrototypeKeybindOverlay(PrototypeUiPreset preset)

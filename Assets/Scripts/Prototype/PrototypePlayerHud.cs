@@ -3274,20 +3274,10 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             return;
         }
 
-        if (snapshot.Combat.Visible)
+        bool combatActive = IsActiveCombatContext(snapshot.Combat);
+        if (combatActive)
         {
-            ApplyContextBodyLayout(true);
-            ConfigureCombatControls(true);
-            contextTitleText.text = "Combat: " + snapshot.Combat.TargetName;
-            contextBodyText.text =
-                "Health " + snapshot.Combat.HealthLabel + " | Range " + FormatDistance(snapshot.Combat.RangeMeters) + "\n"
-                + snapshot.Combat.FireStatusLabel + "\n"
-                + snapshot.Combat.AutoFireLabel + "\n"
-                + "Priority " + snapshot.Combat.PriorityLabel;
-            contextBodyText.color = ColorForSeverity(snapshot.Combat.FireSeverity);
-            SetContextGauge(0, "Integrity", snapshot.Combat.HealthPercent, ColorForSeverity(snapshot.Combat.FireSeverity), true);
-            SetContextGauge(1, string.Empty, 0f, Color.white, false);
-            SetContextGauge(2, string.Empty, 0f, Color.white, false);
+            ApplyCombatContext(snapshot.Combat);
             return;
         }
 
@@ -3340,10 +3330,43 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             return;
         }
 
+        if (snapshot.Combat.Visible)
+        {
+            ApplyCombatContext(snapshot.Combat);
+            return;
+        }
+
         contextTitleText.text = "Navigation";
         contextBodyText.text = "Kein Navigationsziel";
         contextBodyText.color = PrototypeUiStyle.MutedColor;
         HideContextGauges();
+    }
+
+    private static bool IsActiveCombatContext(PrototypePlayerCombatSnapshot combat)
+    {
+        if (!combat.Visible)
+        {
+            return false;
+        }
+
+        return !string.Equals(combat.TargetName, "No target", System.StringComparison.Ordinal)
+            || !string.Equals(combat.AutoFireLabel, "Auto Fire: Off", System.StringComparison.Ordinal);
+    }
+
+    private void ApplyCombatContext(PrototypePlayerCombatSnapshot combat)
+    {
+        ApplyContextBodyLayout(true);
+        ConfigureCombatControls(true);
+        contextTitleText.text = "Combat: " + combat.TargetName;
+        contextBodyText.text =
+            "Health " + combat.HealthLabel + " | Range " + FormatDistance(combat.RangeMeters) + "\n"
+            + combat.FireStatusLabel + "\n"
+            + combat.AutoFireLabel + "\n"
+            + "Priority " + combat.PriorityLabel;
+        contextBodyText.color = ColorForSeverity(combat.FireSeverity);
+        SetContextGauge(0, "Integrity", combat.HealthPercent, ColorForSeverity(combat.FireSeverity), true);
+        SetContextGauge(1, string.Empty, 0f, Color.white, false);
+        SetContextGauge(2, string.Empty, 0f, Color.white, false);
     }
 
     private void ApplyContextBodyLayout(bool navigationControlsVisible)
