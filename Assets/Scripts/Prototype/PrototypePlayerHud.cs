@@ -2077,6 +2077,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private static TMP_FontAsset runtimeFontAsset;
     private int lastLayoutWidth = -1;
     private int lastLayoutHeight = -1;
+    private bool compactBottomBarLayout;
+    private string currentKillMomentumButtonLabel = "Kill Momentum";
     private FlightControlMode cachedHelpMode;
     private bool cachedHelpIncludesDebug;
     private string cachedHelpText;
@@ -2808,12 +2810,39 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
     private void SetKillMomentumButtonState(string label, bool interactable)
     {
-        if (killMomentumButtonText != null)
-        {
-            killMomentumButtonText.text = label;
-        }
+        currentKillMomentumButtonLabel = label;
+        ApplyKillMomentumButtonLabel();
 
         killMomentumButton.interactable = interactable;
+    }
+
+    private void ApplyKillMomentumButtonLabel()
+    {
+        if (killMomentumButtonText == null)
+        {
+            return;
+        }
+
+        killMomentumButtonText.text = compactBottomBarLayout
+            ? CompactKillMomentumLabel(currentKillMomentumButtonLabel)
+            : currentKillMomentumButtonLabel;
+    }
+
+    private static string CompactKillMomentumLabel(string label)
+    {
+        switch (label)
+        {
+            case "Kill Momentum":
+                return "Kill";
+            case "Abort Assist":
+                return "Abort";
+            case "No Authority":
+                return "No Auth";
+            case "Assist n/a":
+                return "No Assist";
+            default:
+                return label;
+        }
     }
 
     private void ConfigureNavigationControls(bool visible)
@@ -3248,6 +3277,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private void ApplyBottomBarChildLayout(float bottomWidth, bool narrow)
     {
         bool compact = narrow || bottomWidth < 700f;
+        compactBottomBarLayout = compact;
         RectTransform throttleBar = throttleFill != null ? throttleFill.transform.parent as RectTransform : null;
         RectTransform fuelBar = fuelFill != null ? fuelFill.transform.parent as RectTransform : null;
         RectTransform buttonRect = killMomentumButton != null ? killMomentumButton.GetComponent<RectTransform>() : null;
@@ -3271,6 +3301,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             ApplyRect(rcsText.rectTransform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(66f, 20f), new Vector2(-176f, -14f));
             ApplyRect(sasText.rectTransform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(66f, 20f), new Vector2(-102f, -14f));
             ApplyRect(buttonRect, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(92f, 24f), new Vector2(-10f, 16f));
+            ApplyKillMomentumButtonLabel();
             return;
         }
 
@@ -3291,6 +3322,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         ApplyRect(rcsText.rectTransform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(104f, 22f), new Vector2(-180f, -16f));
         ApplyRect(sasText.rectTransform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(104f, 22f), new Vector2(-70f, -16f));
         ApplyRect(buttonRect, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(124f, 24f), new Vector2(-16f, 16f));
+        ApplyKillMomentumButtonLabel();
     }
 
     private static void ApplyRect(RectTransform rect, Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot, Vector2 sizeDelta, Vector2 anchoredPosition)
@@ -3789,6 +3821,9 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         text.alignment = ToTextAlignmentOptions(alignment);
         text.color = color;
         text.fontStyle = FontStyles.Normal;
+        text.enableAutoSizing = true;
+        text.fontSizeMin = MinimumPlayerHudFontSize;
+        text.fontSizeMax = Mathf.Max(MinimumPlayerHudFontSize, fontSize);
         text.textWrappingMode = TextWrappingModes.Normal;
         text.overflowMode = TextOverflowModes.Truncate;
         text.margin = Vector4.zero;

@@ -5,6 +5,7 @@ using NUnit.Framework;
 #if UNITY_EDITOR
 using UnityEditor.SceneManagement;
 #endif
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
@@ -13,6 +14,7 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
 {
     private const string ScenePath = "Assets/Scenes/PrototypeBootstrapHost.unity";
     private const string ChangeName = "player-ui-concept-runtime-audit-v1";
+    private const string AspectRatioScalingChangeName = "player-hud-live-aspect-ratio-scaling-v1";
     private const BindingFlags NonPublicInstance = BindingFlags.Instance | BindingFlags.NonPublic;
 
     private SimulationMode previousSimulationMode;
@@ -178,6 +180,132 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
             768);
         Assert.That(dockingFourByThree.Docking.Visible, Is.True, "live 4:3 docking snapshot");
         AssertPanelsSeparated(rig.PlayerHud, false);
+    }
+
+    [Test]
+    [Category("PlayerHudEvidence")]
+    [Timeout(120000)]
+    public void PrototypeBootstrapRuntimePlayerHudEvidenceCapturesAspectRatioMatrix()
+    {
+        Assert.That(Application.isPlaying, Is.True, "This evidence test must run in Unity PlayMode.");
+#if UNITY_EDITOR
+        if (SceneManager.GetActiveScene().path != ScenePath)
+        {
+            EditorSceneManager.LoadSceneInPlayMode(ScenePath, new LoadSceneParameters(LoadSceneMode.Single));
+        }
+#endif
+
+        PrototypeUiLayoutManager.ResetPresetToBasic();
+        GameObject host = new GameObject("PrototypePlayerHudLiveEvidenceHost");
+        PrototypeBootstrap bootstrap = host.AddComponent<PrototypeBootstrap>();
+        SetPrivateField(bootstrap, "buildOnStart", false);
+        SetPrivateField(bootstrap, "spawnTestTarget", true);
+        SetPrivateField(bootstrap, "buildPveArena", true);
+        SetPrivateField(bootstrap, "buildTestEnvironment", true);
+        SetPrivateField(bootstrap, "allowGeneratedFallbackWhenImportedAssetMissing", false);
+        bootstrap.BuildPrototype(PrototypeShipVariant.Baseline());
+
+        LiveHudRig rig = ResolveRig();
+        ConfigureHudCanvasForCameraCapture(rig);
+        RunFrames(rig, 3);
+
+        string screenshotRoot = GetScreenshotRoot(AspectRatioScalingChangeName);
+        Directory.CreateDirectory(screenshotRoot);
+
+        rig.Autopilot.SelectTarget(null);
+        rig.WeaponComputer.ClearSelection();
+        rig.WeaponComputer.SetAutoFireEnabled(false);
+        rig.PlayerHud.SetTargetDockingPort(null);
+        RunFrames(rig, 3);
+
+        PrototypePlayerHudSnapshot cruiseUltrawide = CaptureLiveState(
+            rig,
+            screenshotRoot,
+            "20-live-cruise-ultrawide-2560x1080.png",
+            2560,
+            1080);
+        Assert.That(cruiseUltrawide.Arena.IsVisible, Is.True, "live ultrawide cruise/objective arena snapshot");
+        AssertPanelsSeparated(rig.PlayerHud, false);
+
+        PrototypePlayerHudSnapshot cruiseSixteenTen = CaptureLiveState(
+            rig,
+            screenshotRoot,
+            "21-live-cruise-16x10-1440x900.png",
+            1440,
+            900);
+        Assert.That(cruiseSixteenTen.Arena.IsVisible, Is.True, "live 16:10 cruise/objective arena snapshot");
+        AssertPanelsSeparated(rig.PlayerHud, false);
+
+        PrototypePlayerHudSnapshot cruisePortrait = CaptureLiveState(
+            rig,
+            screenshotRoot,
+            "22-live-cruise-portrait-900x1600.png",
+            900,
+            1600);
+        Assert.That(cruisePortrait.Arena.IsVisible, Is.True, "live portrait cruise/objective arena snapshot");
+        AssertPanelsSeparated(rig.PlayerHud, false);
+
+        PrototypePlayerHudSnapshot cruiseMinimum = CaptureLiveState(
+            rig,
+            screenshotRoot,
+            "23-live-cruise-minimum-640x480.png",
+            640,
+            480);
+        Assert.That(cruiseMinimum.Arena.IsVisible, Is.True, "live minimum cruise/objective arena snapshot");
+        AssertPanelsSeparated(rig.PlayerHud, false);
+        AssertActiveButtonTextNotOverflowing(rig.PlayerHud);
+
+        PrototypeNavigationTarget navTarget = rig.Autopilot.SelectNextTarget();
+        Assert.NotNull(navTarget, "live aspect navigation target");
+        rig.Autopilot.ReplanNow();
+        rig.Autopilot.ToggleAutopilot();
+        RunFrames(rig, 8);
+        PrototypePlayerHudSnapshot navigationPortrait = CaptureLiveState(
+            rig,
+            screenshotRoot,
+            "24-live-navigation-portrait-900x1600.png",
+            900,
+            1600);
+        Assert.That(navigationPortrait.Navigation.Visible, Is.True, "live portrait navigation snapshot");
+        AssertPanelsSeparated(rig.PlayerHud, false);
+        AssertActiveButtonTextNotOverflowing(rig.PlayerHud);
+
+        PrototypePlayerHudSnapshot navigationUltrawide = CaptureLiveState(
+            rig,
+            screenshotRoot,
+            "25-live-navigation-ultrawide-2560x1080.png",
+            2560,
+            1080);
+        Assert.That(navigationUltrawide.Navigation.Visible, Is.True, "live ultrawide navigation snapshot");
+        AssertPanelsSeparated(rig.PlayerHud, false);
+        AssertActiveButtonTextNotOverflowing(rig.PlayerHud);
+
+        rig.Autopilot.Abort("aspect ratio evidence combat");
+        rig.WeaponComputer.RefreshTargets();
+        Assert.That(rig.WeaponComputer.SelectNextTarget(), Is.True, "live aspect combat target selection");
+        rig.WeaponComputer.SetAutoFireEnabled(true);
+        RunFrames(rig, 6);
+        PrototypePlayerHudSnapshot combatMinimum = CaptureLiveState(
+            rig,
+            screenshotRoot,
+            "26-live-combat-minimum-640x480.png",
+            640,
+            480);
+        Assert.That(combatMinimum.Combat.Visible, Is.True, "live minimum combat snapshot");
+        AssertPanelsSeparated(rig.PlayerHud, false);
+        AssertActiveButtonTextNotOverflowing(rig.PlayerHud);
+
+        SetPrivateField(rig.Stats, "currentFuelKg", rig.Stats.MaxFuelKg * 0.04f);
+        SetHelpVisible(rig.PlayerHud, true);
+        RunFrames(rig, 3);
+        PrototypePlayerHudSnapshot helpPortrait = CaptureLiveState(
+            rig,
+            screenshotRoot,
+            "27-live-help-portrait-900x1600.png",
+            900,
+            1600);
+        Assert.That(HasWarning(helpPortrait, "Treibstoff niedrig"), Is.True, "live portrait help low-fuel warning");
+        AssertPanelsSeparated(rig.PlayerHud, true);
     }
 
     private static LiveHudRig ResolveRig()
@@ -356,6 +484,7 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
         if (helpVisible)
         {
             AssertHelpModal(playerHud);
+            AssertActiveHudRectsInsideCanvas(playerHud);
             return;
         }
 
@@ -373,6 +502,102 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
         Assert.That(Overlaps(context, radar), Is.False, "context/radar overlap");
         Assert.That(Overlaps(context, bottom), Is.False, "context/bottom overlap");
         Assert.That(Overlaps(radar, bottom), Is.False, "radar/bottom overlap");
+        AssertActiveHudRectsInsideCanvas(playerHud);
+        AssertActiveControlRowsInsideContext(playerHud);
+    }
+
+    private static void AssertActiveHudRectsInsideCanvas(PrototypePlayerHudRenderer playerHud)
+    {
+        Canvas canvas = playerHud.GetComponentInChildren<Canvas>(true);
+        Assert.NotNull(canvas, "PrototypePlayerHudCanvas");
+        RectTransform canvasRect = canvas.GetComponent<RectTransform>();
+        Assert.NotNull(canvasRect, "canvas rect");
+        Rect canvasWorldRect = ToWorldRect(canvasRect);
+
+        string[] fixedRects =
+        {
+            "AlertAssistStrip",
+            "FlightStatusBar",
+            "ShipSystems",
+            "ObjectivePanel",
+            "ContextPanel",
+            "RadarPanel",
+            "PlayerHelp",
+            "TargetIndicatorLabel0",
+            "TargetIndicatorLabel1",
+            "TargetIndicatorLabel2",
+            "TargetIndicatorLabel3",
+            "TargetIndicatorLabel4",
+            "TargetIndicatorLabel5"
+        };
+
+        for (int i = 0; i < fixedRects.Length; i++)
+        {
+            RectTransform rect = FindRect(playerHud, fixedRects[i]);
+            if (rect == null || !rect.gameObject.activeInHierarchy)
+            {
+                continue;
+            }
+
+            AssertRectContains(canvasWorldRect, ToWorldRect(rect), fixedRects[i] + " inside canvas");
+        }
+    }
+
+    private static void AssertActiveControlRowsInsideContext(PrototypePlayerHudRenderer playerHud)
+    {
+        RectTransform context = FindRect(playerHud, "ContextPanel");
+        Rect contextRect = ToWorldRect(context);
+        string[] rows = { "NavigationControls", "CombatControls" };
+
+        for (int i = 0; i < rows.Length; i++)
+        {
+            RectTransform row = FindRect(playerHud, rows[i]);
+            if (row == null || !row.gameObject.activeInHierarchy)
+            {
+                continue;
+            }
+
+            AssertRectContains(contextRect, ToWorldRect(row), rows[i] + " inside context panel");
+        }
+    }
+
+    private static void AssertActiveButtonTextNotOverflowing(PrototypePlayerHudRenderer playerHud)
+    {
+        string[] buttonTextNames =
+        {
+            "KillMomentumText",
+            "NavPreviousTargetText",
+            "NavNextTargetText",
+            "NavAutopilotText",
+            "NavReplanText",
+            "NavPreviewText",
+            "CombatPreviousTargetText",
+            "CombatNextTargetText",
+            "CombatClearTargetText",
+            "CombatAutoFireText",
+            "CombatPriorityText"
+        };
+
+        for (int i = 0; i < buttonTextNames.Length; i++)
+        {
+            TMP_Text text = FindText(playerHud, buttonTextNames[i]);
+            if (text == null || !text.gameObject.activeInHierarchy)
+            {
+                continue;
+            }
+
+            text.ForceMeshUpdate();
+            Assert.That(text.isTextOverflowing, Is.False, buttonTextNames[i] + " overflow");
+        }
+    }
+
+    private static void AssertRectContains(Rect outer, Rect inner, string message)
+    {
+        const float tolerance = 1.5f;
+        Assert.That(inner.xMin, Is.GreaterThanOrEqualTo(outer.xMin - tolerance), message + " left");
+        Assert.That(inner.yMin, Is.GreaterThanOrEqualTo(outer.yMin - tolerance), message + " bottom");
+        Assert.That(inner.xMax, Is.LessThanOrEqualTo(outer.xMax + tolerance), message + " right");
+        Assert.That(inner.yMax, Is.LessThanOrEqualTo(outer.yMax + tolerance), message + " top");
     }
 
     private static bool HasIndicator(PrototypePlayerHudSnapshot snapshot, PrototypePlayerTargetIndicatorKind kind)
@@ -466,6 +691,21 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
         return null;
     }
 
+    private static TMP_Text FindText(Component root, string objectName)
+    {
+        TMP_Text[] texts = root.GetComponentsInChildren<TMP_Text>(true);
+        for (int i = 0; i < texts.Length; i++)
+        {
+            if (texts[i] != null && texts[i].gameObject.name == objectName)
+            {
+                return texts[i];
+            }
+        }
+
+        Assert.Fail("Missing TMP_Text: " + objectName);
+        return null;
+    }
+
     private static bool Overlaps(RectTransform first, RectTransform second)
     {
         if (first == null || second == null || !first.gameObject.activeSelf || !second.gameObject.activeSelf)
@@ -489,6 +729,11 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
 
     private static string GetScreenshotRoot()
     {
+        return GetScreenshotRoot(ChangeName);
+    }
+
+    private static string GetScreenshotRoot(string changeName)
+    {
         string projectRoot = Directory.GetCurrentDirectory();
         if (!Directory.Exists(Path.Combine(projectRoot, "Assets")))
         {
@@ -500,7 +745,7 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
             ".devtoolbox",
             "specs",
             "changes",
-            ChangeName,
+            changeName,
             "tests",
             "screenshots");
     }
