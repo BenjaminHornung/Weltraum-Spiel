@@ -9,7 +9,7 @@ This slice is evidence-only. It does not change runtime HUD behavior.
 ## Evidence Inventory
 
 - Manifest: `.devtoolbox/specs/changes/player-ui-evidence-manifest-v1/tests/player-ui-evidence-manifest.json`
-- Screenshot entries: 26
+- Screenshot entries: 27
 - Capture kinds covered: `unity-rendered-exporter`, `live-playmode`, `live-aspect`
 - Aspect coverage includes 16:9, 4:3, 16:10, ultrawide, portrait, and 640x480 minimum captures.
 
@@ -18,8 +18,8 @@ This slice is evidence-only. It does not change runtime HUD behavior.
 - Claude plan review: attempted for this evidence-manifest slice before final Unity verification; the wrapper timed out after 120s and produced no actionable findings.
 - Unity MCP custom tools/resource preflight: active instance `Weltraum Spiel@49c909b3e97ba6e8`, Unity `6000.4.7f1`.
 - Unity MCP `validate_script` for `Assets/Tests/Editor/PrototypePlayerHudEvidenceManifestValidationTests.cs`: PASS, 0 errors, 0 warnings.
-- Unity MCP focused EditMode test `PrototypePlayerHudEvidenceManifestValidationTests.PlayerUiEvidenceManifestScreenshotsExistAndMatchPngHeaders`: PASS, job `229d43e59bba46a58de222705feb6b05`, 1/1.
-- `dotnet build 'Weltraum Spiel.sln' --no-restore`: PASS, 0 errors, 5 known warnings from Unity package/reference conflicts and existing obsolete API use.
+- Unity MCP focused EditMode test `PrototypePlayerHudEvidenceManifestValidationTests.PlayerUiEvidenceManifestScreenshotsExistAndMatchPngHeaders`: PASS, latest job `cb7a081b7f12476fb4ed4a2c1c010ba0`, 1/1. The manifest now also includes the `player-target-indicators-v1` live Basic HUD screenshot.
+- `dotnet build 'Weltraum Spiel.sln' --no-restore`: PASS, 0 errors, 22 known warnings from Unity package/reference conflicts, existing obsolete API use, and current project warning state.
 - DevToolbox `specs_validate` for `player-ui-evidence-manifest-v1`: PASS.
 - DevToolbox `verify_run` for execution `df8d6b1082c94458ab468abd30e7940a`: Specs PASS; generic Build/Test/Lint FAIL because root-level `dotnet build`, `dotnet test`, and `dotnet format` cannot choose between multiple project/solution files (`MSB1011` / multiple MSBuild project files).
 

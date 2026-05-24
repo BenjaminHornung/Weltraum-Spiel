@@ -129,6 +129,15 @@
       "state": "combat target 4x3"
     },
     {
+      "id": "target-indicators-live-basic-1280x720",
+      "path": ".devtoolbox/specs/changes/player-target-indicators-v1/tests/screenshots/player-target-indicators-v1-gameview.png",
+      "width": 1280,
+      "height": 720,
+      "minBytes": 4096,
+      "captureKind": "live-playmode",
+      "state": "target indicators live basic 16x9"
+    },
+    {
       "id": "18-live-docking-assist-4x3",
       "path": ".devtoolbox/specs/changes/player-ui-concept-runtime-audit-v1/tests/screenshots/18-live-docking-assist-4x3.png",
       "width": 1024,

@@ -17,6 +17,7 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
     private const string AspectRatioScalingChangeName = "player-hud-live-aspect-ratio-scaling-v1";
     private const string WorldLabelReadabilityChangeName = "player-world-label-readability-v1";
     private const string LiveEvidenceSymmetryChangeName = "player-ui-live-evidence-symmetry-v1";
+    private const string TargetIndicatorsChangeName = "player-target-indicators-v1";
     private const BindingFlags NonPublicInstance = BindingFlags.Instance | BindingFlags.NonPublic;
 
     private SimulationMode previousSimulationMode;
@@ -375,6 +376,61 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
         Assert.That(navigationFourByThree.Navigation.TargetCount, Is.GreaterThan(0), "live 4:3 navigation target count");
         Assert.That(navigationFourByThree.Radar.Blips.Length, Is.GreaterThan(0), "live 4:3 navigation radar blips");
         Assert.That(HasIndicator(navigationFourByThree, PrototypePlayerTargetIndicatorKind.Navigation), Is.True, "live 4:3 navigation target indicator");
+        AssertPanelsSeparated(rig.PlayerHud, false);
+        AssertActiveButtonTextNotOverflowing(rig.PlayerHud);
+    }
+
+    [Test]
+    [Category("PlayerHudEvidence")]
+    [Timeout(120000)]
+    public void PrototypeBootstrapRuntimePlayerHudEvidenceCapturesTargetIndicators()
+    {
+        Assert.That(Application.isPlaying, Is.True, "This evidence test must run in Unity PlayMode.");
+#if UNITY_EDITOR
+        if (SceneManager.GetActiveScene().path != ScenePath)
+        {
+            EditorSceneManager.LoadSceneInPlayMode(ScenePath, new LoadSceneParameters(LoadSceneMode.Single));
+        }
+#endif
+
+        PrototypeUiLayoutManager.ResetPresetToBasic();
+        GameObject host = new GameObject("PrototypePlayerHudLiveEvidenceHost");
+        PrototypeBootstrap bootstrap = host.AddComponent<PrototypeBootstrap>();
+        SetPrivateField(bootstrap, "buildOnStart", false);
+        SetPrivateField(bootstrap, "spawnTestTarget", true);
+        SetPrivateField(bootstrap, "buildPveArena", true);
+        SetPrivateField(bootstrap, "buildTestEnvironment", true);
+        SetPrivateField(bootstrap, "allowGeneratedFallbackWhenImportedAssetMissing", false);
+        bootstrap.BuildPrototype(PrototypeShipVariant.Baseline());
+
+        LiveHudRig rig = ResolveRig();
+        ConfigureHudCanvasForCameraCapture(rig);
+        RunFrames(rig, 3);
+
+        string screenshotRoot = GetScreenshotRoot(TargetIndicatorsChangeName);
+        Directory.CreateDirectory(screenshotRoot);
+
+        rig.PlayerHud.SetTargetDockingPort(null);
+        PrototypeNavigationTarget navTarget = rig.Autopilot.SelectNextTarget();
+        Assert.NotNull(navTarget, "target-indicator navigation target");
+        rig.Autopilot.ReplanNow();
+        rig.WeaponComputer.RefreshTargets();
+        Assert.That(rig.WeaponComputer.SelectNextTarget(), Is.True, "target-indicator combat target selection");
+        rig.WeaponComputer.SetAutoFireEnabled(false);
+        RunFrames(rig, 8);
+
+        PrototypePlayerHudSnapshot snapshot = CaptureLiveState(
+            rig,
+            screenshotRoot,
+            "player-target-indicators-v1-gameview.png",
+            1280,
+            720);
+        Assert.That(snapshot.Navigation.Visible, Is.True, "target-indicator navigation context");
+        Assert.That(snapshot.Combat.Visible, Is.True, "target-indicator combat context");
+        Assert.That(snapshot.Docking.Visible, Is.False, "target-indicator evidence should not show docking context");
+        Assert.That(HasIndicator(snapshot, PrototypePlayerTargetIndicatorKind.Navigation), Is.True, "target-indicator navigation marker");
+        Assert.That(HasIndicator(snapshot, PrototypePlayerTargetIndicatorKind.Combat), Is.True, "target-indicator combat marker");
+        Assert.That(HasIndicator(snapshot, PrototypePlayerTargetIndicatorKind.Objective), Is.True, "target-indicator objective marker");
         AssertPanelsSeparated(rig.PlayerHud, false);
         AssertActiveButtonTextNotOverflowing(rig.PlayerHud);
     }

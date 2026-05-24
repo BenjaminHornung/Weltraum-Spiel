@@ -30,3 +30,20 @@ But Unity MCP routed commands failed:
 - Local compile remained green after the final label-collision change.
 - The new projection test asserts clamping and active label non-overlap through `AssertTargetIndicatorLabelsDoNotOverlap`.
 - Final live GameView screenshot remains pending until the MCP session is healthy again.
+
+## 2026-05-24 MCP Recovery Evidence
+
+Unity MCP is healthy again for this slice. A fresh focused PlayMode run passed:
+
+- Job: `6bdb608ac102409aa0c988e796e639fd`
+- Test: `PrototypePlayerHudLiveRuntimeEvidencePlayModeTests.PrototypeBootstrapRuntimePlayerHudEvidenceCapturesTargetIndicators`
+- Result: 1/1 passed
+- Screenshot: `.devtoolbox/specs/changes/player-target-indicators-v1/tests/screenshots/player-target-indicators-v1-gameview.png`
+
+The new screenshot is a real Bootstrap runtime capture in Basic Player HUD state and replaces the previous unsuitable untracked capture that showed a debug Weapon Computer IMGUI window.
+
+Follow-up verification on the same slice:
+
+- `dotnet build 'Weltraum Spiel.sln' --no-restore`: PASS, 0 errors, 22 existing Unity/project warnings.
+- DevToolbox `verify_run` execution `4a35aa6cd4014130ade573c0339da087`: Specs PASS, generic root Build/Test/Lint blocked by `MSB1011` / multiple MSBuild project files.
+- DevToolbox task completion preflight for source line 7: BLOCKED by the generic linked verification failure, so the task remains unchecked.

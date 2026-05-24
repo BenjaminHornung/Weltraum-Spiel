@@ -8,7 +8,7 @@ public class PrototypePlayerHudEvidenceManifestValidationTests
 {
     private const string ManifestPath = ".devtoolbox/specs/changes/player-ui-evidence-manifest-v1/tests/player-ui-evidence-manifest.json";
     private const string DevToolboxChangesPath = ".devtoolbox/specs/changes";
-    private const int MinimumManifestCount = 26;
+    private const int MinimumManifestCount = 27;
 
     [Test]
     public void PlayerUiEvidenceManifestScreenshotsExistAndMatchPngHeaders()
