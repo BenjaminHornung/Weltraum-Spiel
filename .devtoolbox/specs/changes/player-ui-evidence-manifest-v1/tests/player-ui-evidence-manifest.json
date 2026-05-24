@@ -1,0 +1,240 @@
+{
+  "manifestVersion": 1,
+  "sourceDocument": "docs/player-facing-ui-concept-v0.md",
+  "screenshots": [
+    {
+      "id": "04-basic-player-nav-context-final",
+      "path": ".devtoolbox/specs/changes/player-ui-concept-runtime-audit-v1/tests/screenshots/04-basic-player-nav-context-final.png",
+      "width": 1811,
+      "height": 931,
+      "minBytes": 4096,
+      "captureKind": "unity-rendered-exporter",
+      "state": "basic player navigation context"
+    },
+    {
+      "id": "05-active-combat-target-gameview",
+      "path": ".devtoolbox/specs/changes/player-ui-concept-runtime-audit-v1/tests/screenshots/05-active-combat-target-gameview.png",
+      "width": 1280,
+      "height": 720,
+      "minBytes": 4096,
+      "captureKind": "unity-rendered-exporter",
+      "state": "active combat target"
+    },
+    {
+      "id": "06-active-docking-gameview",
+      "path": ".devtoolbox/specs/changes/player-ui-concept-runtime-audit-v1/tests/screenshots/06-active-docking-gameview.png",
+      "width": 1280,
+      "height": 720,
+      "minBytes": 4096,
+      "captureKind": "unity-rendered-exporter",
+      "state": "active docking context"
+    },
+    {
+      "id": "07-warning-help-4x3-gameview",
+      "path": ".devtoolbox/specs/changes/player-ui-concept-runtime-audit-v1/tests/screenshots/07-warning-help-4x3-gameview.png",
+      "width": 1024,
+      "height": 768,
+      "minBytes": 4096,
+      "captureKind": "unity-rendered-exporter",
+      "state": "warning help modal 4x3"
+    },
+    {
+      "id": "08-active-combat-target-4x3-gameview",
+      "path": ".devtoolbox/specs/changes/player-ui-concept-runtime-audit-v1/tests/screenshots/08-active-combat-target-4x3-gameview.png",
+      "width": 1024,
+      "height": 768,
+      "minBytes": 4096,
+      "captureKind": "unity-rendered-exporter",
+      "state": "active combat target 4x3"
+    },
+    {
+      "id": "09-active-docking-4x3-gameview",
+      "path": ".devtoolbox/specs/changes/player-ui-concept-runtime-audit-v1/tests/screenshots/09-active-docking-4x3-gameview.png",
+      "width": 1024,
+      "height": 768,
+      "minBytes": 4096,
+      "captureKind": "unity-rendered-exporter",
+      "state": "active docking context 4x3"
+    },
+    {
+      "id": "10-warning-help-16x9-gameview",
+      "path": ".devtoolbox/specs/changes/player-ui-concept-runtime-audit-v1/tests/screenshots/10-warning-help-16x9-gameview.png",
+      "width": 1280,
+      "height": 720,
+      "minBytes": 4096,
+      "captureKind": "unity-rendered-exporter",
+      "state": "warning help modal 16x9"
+    },
+    {
+      "id": "11-warning-combat-4x3-gameview",
+      "path": ".devtoolbox/specs/changes/player-ui-concept-runtime-audit-v1/tests/screenshots/11-warning-combat-4x3-gameview.png",
+      "width": 1024,
+      "height": 768,
+      "minBytes": 4096,
+      "captureKind": "unity-rendered-exporter",
+      "state": "warning combat 4x3"
+    },
+    {
+      "id": "12-live-cruise-objective-16x9",
+      "path": ".devtoolbox/specs/changes/player-ui-concept-runtime-audit-v1/tests/screenshots/12-live-cruise-objective-16x9.png",
+      "width": 1280,
+      "height": 720,
+      "minBytes": 4096,
+      "captureKind": "live-playmode",
+      "state": "cruise objective 16x9"
+    },
+    {
+      "id": "13-live-navigation-autopilot-16x9",
+      "path": ".devtoolbox/specs/changes/player-ui-concept-runtime-audit-v1/tests/screenshots/13-live-navigation-autopilot-16x9.png",
+      "width": 1280,
+      "height": 720,
+      "minBytes": 4096,
+      "captureKind": "live-playmode",
+      "state": "navigation autopilot 16x9"
+    },
+    {
+      "id": "14-live-combat-target-16x9",
+      "path": ".devtoolbox/specs/changes/player-ui-concept-runtime-audit-v1/tests/screenshots/14-live-combat-target-16x9.png",
+      "width": 1280,
+      "height": 720,
+      "minBytes": 4096,
+      "captureKind": "live-playmode",
+      "state": "combat target 16x9"
+    },
+    {
+      "id": "15-live-docking-assist-16x9",
+      "path": ".devtoolbox/specs/changes/player-ui-concept-runtime-audit-v1/tests/screenshots/15-live-docking-assist-16x9.png",
+      "width": 1280,
+      "height": 720,
+      "minBytes": 4096,
+      "captureKind": "live-playmode",
+      "state": "docking assist 16x9"
+    },
+    {
+      "id": "16-live-warning-help-4x3",
+      "path": ".devtoolbox/specs/changes/player-ui-concept-runtime-audit-v1/tests/screenshots/16-live-warning-help-4x3.png",
+      "width": 1024,
+      "height": 768,
+      "minBytes": 4096,
+      "captureKind": "live-playmode",
+      "state": "warning help 4x3"
+    },
+    {
+      "id": "17-live-combat-target-4x3",
+      "path": ".devtoolbox/specs/changes/player-ui-concept-runtime-audit-v1/tests/screenshots/17-live-combat-target-4x3.png",
+      "width": 1024,
+      "height": 768,
+      "minBytes": 4096,
+      "captureKind": "live-playmode",
+      "state": "combat target 4x3"
+    },
+    {
+      "id": "18-live-docking-assist-4x3",
+      "path": ".devtoolbox/specs/changes/player-ui-concept-runtime-audit-v1/tests/screenshots/18-live-docking-assist-4x3.png",
+      "width": 1024,
+      "height": 768,
+      "minBytes": 4096,
+      "captureKind": "live-playmode",
+      "state": "docking assist 4x3"
+    },
+    {
+      "id": "20-live-cruise-ultrawide-2560x1080",
+      "path": ".devtoolbox/specs/changes/player-hud-live-aspect-ratio-scaling-v1/tests/screenshots/20-live-cruise-ultrawide-2560x1080.png",
+      "width": 2560,
+      "height": 1080,
+      "minBytes": 4096,
+      "captureKind": "live-aspect",
+      "state": "cruise ultrawide"
+    },
+    {
+      "id": "21-live-cruise-16x10-1440x900",
+      "path": ".devtoolbox/specs/changes/player-hud-live-aspect-ratio-scaling-v1/tests/screenshots/21-live-cruise-16x10-1440x900.png",
+      "width": 1440,
+      "height": 900,
+      "minBytes": 4096,
+      "captureKind": "live-aspect",
+      "state": "cruise 16x10"
+    },
+    {
+      "id": "22-live-cruise-portrait-900x1600",
+      "path": ".devtoolbox/specs/changes/player-hud-live-aspect-ratio-scaling-v1/tests/screenshots/22-live-cruise-portrait-900x1600.png",
+      "width": 900,
+      "height": 1600,
+      "minBytes": 4096,
+      "captureKind": "live-aspect",
+      "state": "cruise portrait"
+    },
+    {
+      "id": "23-live-cruise-minimum-640x480",
+      "path": ".devtoolbox/specs/changes/player-hud-live-aspect-ratio-scaling-v1/tests/screenshots/23-live-cruise-minimum-640x480.png",
+      "width": 640,
+      "height": 480,
+      "minBytes": 4096,
+      "captureKind": "live-aspect",
+      "state": "cruise minimum"
+    },
+    {
+      "id": "24-live-navigation-portrait-900x1600",
+      "path": ".devtoolbox/specs/changes/player-hud-live-aspect-ratio-scaling-v1/tests/screenshots/24-live-navigation-portrait-900x1600.png",
+      "width": 900,
+      "height": 1600,
+      "minBytes": 4096,
+      "captureKind": "live-aspect",
+      "state": "navigation portrait"
+    },
+    {
+      "id": "25-live-navigation-ultrawide-2560x1080",
+      "path": ".devtoolbox/specs/changes/player-hud-live-aspect-ratio-scaling-v1/tests/screenshots/25-live-navigation-ultrawide-2560x1080.png",
+      "width": 2560,
+      "height": 1080,
+      "minBytes": 4096,
+      "captureKind": "live-aspect",
+      "state": "navigation ultrawide"
+    },
+    {
+      "id": "26-live-combat-minimum-640x480",
+      "path": ".devtoolbox/specs/changes/player-hud-live-aspect-ratio-scaling-v1/tests/screenshots/26-live-combat-minimum-640x480.png",
+      "width": 640,
+      "height": 480,
+      "minBytes": 4096,
+      "captureKind": "live-aspect",
+      "state": "combat minimum"
+    },
+    {
+      "id": "27-live-help-portrait-900x1600",
+      "path": ".devtoolbox/specs/changes/player-hud-live-aspect-ratio-scaling-v1/tests/screenshots/27-live-help-portrait-900x1600.png",
+      "width": 900,
+      "height": 1600,
+      "minBytes": 4096,
+      "captureKind": "live-aspect",
+      "state": "help portrait"
+    },
+    {
+      "id": "30-live-cruise-no-origin-label-1280x720",
+      "path": ".devtoolbox/specs/changes/player-world-label-readability-v1/tests/screenshots/30-live-cruise-no-origin-label-1280x720.png",
+      "width": 1280,
+      "height": 720,
+      "minBytes": 4096,
+      "captureKind": "live-playmode",
+      "state": "cruise no origin label"
+    },
+    {
+      "id": "31-live-cruise-objective-4x3",
+      "path": ".devtoolbox/specs/changes/player-ui-live-evidence-symmetry-v1/tests/screenshots/31-live-cruise-objective-4x3.png",
+      "width": 1024,
+      "height": 768,
+      "minBytes": 4096,
+      "captureKind": "live-playmode",
+      "state": "cruise objective 4x3"
+    },
+    {
+      "id": "32-live-navigation-autopilot-4x3",
+      "path": ".devtoolbox/specs/changes/player-ui-live-evidence-symmetry-v1/tests/screenshots/32-live-navigation-autopilot-4x3.png",
+      "width": 1024,
+      "height": 768,
+      "minBytes": 4096,
+      "captureKind": "live-playmode",
+      "state": "navigation autopilot 4x3"
+    }
+  ]
+}
