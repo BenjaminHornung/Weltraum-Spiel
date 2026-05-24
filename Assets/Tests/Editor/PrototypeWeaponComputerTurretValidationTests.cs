@@ -11,6 +11,7 @@ public class PrototypeWeaponComputerTurretValidationTests
 {
     private const float AngleTolerance = 0.25f;
     private const float DistanceTolerance = 0.001f;
+    private const int IsolatedProjectileTestHitMask = 1 << 2;
 
     [TearDown]
     public void TearDown()
@@ -292,7 +293,7 @@ public class PrototypeWeaponComputerTurretValidationTests
         request.origin = Vector3.zero;
         request.muzzleTransform = null;
         request.emitMuzzleVisual = false;
-        request.hitMask = Physics.DefaultRaycastLayers;
+        request.hitMask = IsolatedProjectileTestHitMask;
 
         bool fired = simulation.Fire(request).fired;
         Assert.That(fired, Is.True);
@@ -418,6 +419,7 @@ public class PrototypeWeaponComputerTurretValidationTests
             10);
         request.origin = Vector3.zero;
         request.emitMuzzleVisual = false;
+        request.hitMask = IsolatedProjectileTestHitMask;
 
         for (int i = 0; i < 60; i++)
         {

@@ -55,6 +55,7 @@ Editor:
 - Job `b351c663a4c34730bf90ad1ace5e510a`: PASS 1/1.
 - Job `dd1be10680704c9681cfe8b6bed9cf45`: PASS 4/4.
 - Final job `7e9d168408604ddc99b00d5df4cff351`: PASS 4/4.
+- Follow-up audit job `9499447c69054a2cb2a7c00081e3bb1f`: PASS 60/60.
 
 PlayMode:
 
@@ -62,12 +63,16 @@ PlayMode:
 - Job `3d2eabedc06c46a19e9022b97f32fc4b`: PASS 2/2.
 - Final functional Blender job `e74c6762e0574a199afba7df4c513037`: PASS 2/2.
 - Final navigation job `3012a658a615488ea29afd82adfd8925`: PASS 2/2.
+- Follow-up functional Blender job `69a335995aa24523936b87626c62211e`: PASS 2/2.
+- Follow-up navigation job `f3f538f89c1c43479cadffa23f9440c2`: PASS 6/6.
 
 Coverage notes:
 
-- `PrototypeFunctionalBlenderRuntimePlayModeTests.BootstrapPlayModeKeepsImportedScoutVisibleAndPlayableForTenSeconds` now asserts imported visual scale, real ship mesh renderer count, visual bounds radius, camera effective distance, and projected viewport area.
-- The same PlayMode test still covers main thruster force/VFX, RCS pulse/VFX, bounded angular velocity, target selection, turret yaw/pitch motion, visible yaw/barrel hierarchy, line-of-fire block, auto-fire, muzzle flash/projectile origin, and muzzle-forward projectile direction.
+- `PrototypeFunctionalBlenderRuntimePlayModeTests.BootstrapPlayModeKeepsImportedScoutVisibleAndPlayableForTenSeconds` now asserts imported visual scale, real ship mesh renderer count, visual bounds radius, camera effective distance, and projected viewport area before and after active main-thrust/RCS/weapon phases.
+- The same PlayMode test still covers main thruster force/VFX, RCS pulse/VFX, bounded angular velocity, target selection, turret yaw/pitch motion, visible yaw/barrel hierarchy, line-of-fire block, auto-fire, muzzle flash/projectile origin, muzzle-forward projectile direction, and imported runtime out-of-arc yaw clamping.
 - `PrototypeAutopilotNavigationPlayModeTests` covers navigation/no-obstacle and obstacle-avoidance movement.
+- `PrototypeSimpleFollowCameraValidationTests.ImportedVisualBoundsHandleRealScoutRendererNames` characterizes the imported Scout body-bounds filter with real-style `DEMO_Scout_Mk1_GEO_*`, `THRUST_NOZZLE_MAIN`, `RCS_NOZZLE_*`, and `CONN_*` names.
+- `PrototypeWeaponComputerTurretValidationTests` now isolates low-level projectile hit masks from the currently loaded editor scene so projectile snapshot/visual-pool tests no longer depend on accidental scene colliders.
 
 Intermediate failure that caught the threshold:
 
@@ -105,3 +110,4 @@ Result: PASS.
 - Unity MCP `execute_code` remains unusable in this environment due a `filename or extension is too long` Mono invocation failure, so runtime state was gathered through Unity MCP hierarchy/resources, console, tests, and screenshots.
 - Unity MCP SceneView framing did not reliably focus `PrototypeShip`; GameView screenshots are the primary player-facing evidence.
 - Claude plan-review was attempted with the GameView screenshot path as requested. The wrapper timed out after local context submission, so no Claude findings were available to apply.
+- Claude plan-review was attempted again after the follow-up audit hardening; the wrapper timed out again after 120 seconds.

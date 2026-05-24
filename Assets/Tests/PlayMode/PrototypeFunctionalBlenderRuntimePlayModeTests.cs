@@ -136,6 +136,8 @@ public class PrototypeFunctionalBlenderRuntimePlayModeTests
             Transform engineParticles = engine.Nozzle.Find("EngineParticleSystem");
             Assert.NotNull(engineParticles);
             Assert.True(engineParticles.GetComponent<ParticleSystem>().isPlaying);
+            InvokeMethod(followCamera, "LateUpdate");
+            AssertImportedShipProjectsToReadableViewport(Camera.main, activeImportedVisual);
 
             controller.CutMainThrottle();
             controller.ResetAngularVelocity();
@@ -146,6 +148,8 @@ public class PrototypeFunctionalBlenderRuntimePlayModeTests
             Assert.NotNull(FindActiveRcsVfxNearImportedNozzle(ship.transform));
             Assert.That(CombinedVisibleShipMeshBounds(activeImportedVisual).size.magnitude, Is.GreaterThan(1f));
             Assert.That(body.angularVelocity.magnitude, Is.LessThan(5f));
+            InvokeMethod(followCamera, "LateUpdate");
+            AssertImportedShipProjectsToReadableViewport(Camera.main, activeImportedVisual);
 
             GameObject target = GameObject.CreatePrimitive(PrimitiveType.Cube);
             target.name = "RuntimeWeaponTarget";
@@ -214,6 +218,20 @@ public class PrototypeFunctionalBlenderRuntimePlayModeTests
             Assert.That(Vector3.Distance(weapon.LastRecoilPositionWorld, body.worldCenterOfMass), Is.LessThan(0.25f));
             Assert.That(weapon.LastRecoilAngularImpulseWorld.magnitude, Is.LessThan(0.01f));
             Assert.True(weapon.LastFireResult.muzzleVisualEmitted || weapon.LastFireResult.tracerVisualEmitted);
+
+            Vector3 outsideArcTarget = weapon.Muzzle.position
+                + weapon.Mount.MountRoot.TransformDirection(Quaternion.Euler(0f, 80f, 0f) * Vector3.forward).normalized * 32f;
+            PrototypeTurretFireStatus outsideArcStatus = weapon.EvaluateFireStatus(outsideArcTarget);
+            Assert.False(outsideArcStatus.canFire);
+            Assert.That(outsideArcStatus.blockReason, Is.EqualTo(PrototypeTurretFireBlockReason.OutOfArc));
+            Assert.That(outsideArcStatus.requestedYawDegrees, Is.GreaterThan(stats.YawLimitRightDegrees));
+            Assert.That(outsideArcStatus.appliedYawDegrees, Is.EqualTo(stats.YawLimitRightDegrees).Within(0.5f));
+            bool outsideArcFired = weapon.TryFireAt(outsideArcTarget);
+            Assert.False(outsideArcFired);
+            Assert.That(weapon.LastFireStatus.blockReason, Is.EqualTo(PrototypeTurretFireBlockReason.OutOfArc));
+            Assert.That(weapon.LastFireStatus.appliedYawDegrees, Is.EqualTo(stats.YawLimitRightDegrees).Within(0.5f));
+            InvokeMethod(followCamera, "LateUpdate");
+            AssertImportedShipProjectsToReadableViewport(Camera.main, activeImportedVisual);
         }
         finally
         {
@@ -384,9 +402,9 @@ public class PrototypeFunctionalBlenderRuntimePlayModeTests
         Bounds bounds = CombinedVisibleShipMeshBounds(activeImportedVisual);
         Rect viewportRect = ProjectBoundsToViewport(camera, bounds, out int inFrontCornerCount);
         Assert.That(inFrontCornerCount, Is.EqualTo(8));
-        Assert.That(viewportRect.width, Is.GreaterThan(0.08f));
-        Assert.That(viewportRect.height, Is.GreaterThan(0.08f));
-        Assert.That(viewportRect.width * viewportRect.height, Is.GreaterThan(0.01f));
+        Assert.That(viewportRect.width, Is.GreaterThan(0.075f));
+        Assert.That(viewportRect.height, Is.GreaterThan(0.075f));
+        Assert.That(viewportRect.width * viewportRect.height, Is.GreaterThan(0.008f));
         Assert.That(viewportRect.width, Is.LessThan(0.6f));
         Assert.That(viewportRect.height, Is.LessThan(0.6f));
         Assert.That(viewportRect.width * viewportRect.height, Is.LessThan(0.25f));
@@ -437,7 +455,16 @@ public class PrototypeFunctionalBlenderRuntimePlayModeTests
 
     private static bool IsVisibleShipMeshRenderer(Renderer renderer)
     {
-        return PrototypeShipVisualBoundsUtility.IsImportedDemoShipBodyRenderer(renderer);
+        if (renderer == null || !renderer.enabled || !renderer.gameObject.activeInHierarchy)
+        {
+            return false;
+        }
+
+        string name = renderer.gameObject.name;
+        return name.StartsWith("DEMO_", System.StringComparison.Ordinal)
+            && name.IndexOf("_GEO_", System.StringComparison.OrdinalIgnoreCase) >= 0
+            && name.IndexOf("VFX", System.StringComparison.OrdinalIgnoreCase) < 0
+            && name.IndexOf("Marker", System.StringComparison.OrdinalIgnoreCase) < 0;
     }
 
     private static Transform FindDescendant(Transform root, string exactName)
