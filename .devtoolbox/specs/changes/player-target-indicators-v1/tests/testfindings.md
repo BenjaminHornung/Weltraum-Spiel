@@ -11,9 +11,10 @@ The target-indicator slice now has final Unity MCP visual proof from the real Bo
 - PASS: Selected/contextual labels are pooled, compact, suppressed on small viewports, and collision-checked so active target text does not overlap other target labels.
 - PASS: Geometry is drawn through the existing `PrototypePlayerHudOverlayGraphic`, avoiding a second IMGUI or windowed indicator path.
 - PASS: Fresh PlayMode screenshot evidence now shows Basic Player HUD target indicators without the debug Weapon Computer IMGUI window.
+- PASS: Dedicated live target-indicator aspect evidence now covers 1024x768, 2560x1080, and 900x1600, with runtime assertions that active target labels avoid other target labels and fixed HUD panels.
 - PASS: Explicit solution build completed with 0 errors after the screenshot and manifest updates.
 
 ## Residual Risk
 
 - DevToolbox task completion remains blocked by the generic root Build/Test/Lint preset (`MSB1011` / multiple project files), so the task checkbox is intentionally left open despite scoped Unity verification passing.
-- The screenshot proves the representative Basic 16:9 live state. Wider aspect coverage for the same HUD system is covered by the separate `player-hud-live-aspect-ratio-scaling-v1` evidence matrix and by responsive no-overlap tests.
+- Current target-indicator screenshots prove Basic 16:9, 4:3, ultrawide, and portrait live states. Minimum 640x480 HUD coverage remains in the separate `player-hud-live-aspect-ratio-scaling-v1` matrix and in focused responsive no-overlap tests.

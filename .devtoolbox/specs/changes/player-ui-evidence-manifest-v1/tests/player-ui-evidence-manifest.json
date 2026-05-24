@@ -138,6 +138,33 @@
       "state": "target indicators live basic 16x9"
     },
     {
+      "id": "target-indicators-live-basic-1024x768",
+      "path": ".devtoolbox/specs/changes/player-target-indicators-v1/tests/screenshots/player-target-indicators-v1-4x3-1024x768.png",
+      "width": 1024,
+      "height": 768,
+      "minBytes": 4096,
+      "captureKind": "live-playmode",
+      "state": "target indicators live basic 4x3"
+    },
+    {
+      "id": "target-indicators-live-basic-2560x1080",
+      "path": ".devtoolbox/specs/changes/player-target-indicators-v1/tests/screenshots/player-target-indicators-v1-ultrawide-2560x1080.png",
+      "width": 2560,
+      "height": 1080,
+      "minBytes": 4096,
+      "captureKind": "live-playmode",
+      "state": "target indicators live basic ultrawide"
+    },
+    {
+      "id": "target-indicators-live-basic-900x1600",
+      "path": ".devtoolbox/specs/changes/player-target-indicators-v1/tests/screenshots/player-target-indicators-v1-portrait-900x1600.png",
+      "width": 900,
+      "height": 1600,
+      "minBytes": 4096,
+      "captureKind": "live-playmode",
+      "state": "target indicators live basic portrait"
+    },
+    {
       "id": "18-live-docking-assist-4x3",
       "path": ".devtoolbox/specs/changes/player-ui-concept-runtime-audit-v1/tests/screenshots/18-live-docking-assist-4x3.png",
       "width": 1024,

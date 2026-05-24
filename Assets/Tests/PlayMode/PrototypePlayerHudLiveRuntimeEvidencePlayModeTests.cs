@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
@@ -433,6 +434,72 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
         Assert.That(HasIndicator(snapshot, PrototypePlayerTargetIndicatorKind.Objective), Is.True, "target-indicator objective marker");
         AssertPanelsSeparated(rig.PlayerHud, false);
         AssertActiveButtonTextNotOverflowing(rig.PlayerHud);
+        AssertTargetIndicatorLabelsSeparated(rig.PlayerHud);
+    }
+
+    [Test]
+    [Category("PlayerHudEvidence")]
+    [Timeout(120000)]
+    public void PrototypeBootstrapRuntimePlayerHudEvidenceCapturesTargetIndicatorAspectMatrix()
+    {
+        Assert.That(Application.isPlaying, Is.True, "This evidence test must run in Unity PlayMode.");
+#if UNITY_EDITOR
+        if (SceneManager.GetActiveScene().path != ScenePath)
+        {
+            EditorSceneManager.LoadSceneInPlayMode(ScenePath, new LoadSceneParameters(LoadSceneMode.Single));
+        }
+#endif
+
+        PrototypeUiLayoutManager.ResetPresetToBasic();
+        GameObject host = new GameObject("PrototypePlayerHudLiveEvidenceHost");
+        PrototypeBootstrap bootstrap = host.AddComponent<PrototypeBootstrap>();
+        SetPrivateField(bootstrap, "buildOnStart", false);
+        SetPrivateField(bootstrap, "spawnTestTarget", true);
+        SetPrivateField(bootstrap, "buildPveArena", true);
+        SetPrivateField(bootstrap, "buildTestEnvironment", true);
+        SetPrivateField(bootstrap, "allowGeneratedFallbackWhenImportedAssetMissing", false);
+        bootstrap.BuildPrototype(PrototypeShipVariant.Baseline());
+
+        LiveHudRig rig = ResolveRig();
+        ConfigureHudCanvasForCameraCapture(rig);
+        RunFrames(rig, 3);
+
+        string screenshotRoot = GetScreenshotRoot(TargetIndicatorsChangeName);
+        Directory.CreateDirectory(screenshotRoot);
+
+        rig.PlayerHud.SetTargetDockingPort(null);
+        PrototypeNavigationTarget navTarget = rig.Autopilot.SelectNextTarget();
+        Assert.NotNull(navTarget, "target-indicator aspect navigation target");
+        rig.Autopilot.ReplanNow();
+        rig.WeaponComputer.RefreshTargets();
+        Assert.That(rig.WeaponComputer.SelectNextTarget(), Is.True, "target-indicator aspect combat target selection");
+        rig.WeaponComputer.SetAutoFireEnabled(false);
+        RunFrames(rig, 8);
+
+        string[] fileNames =
+        {
+            "player-target-indicators-v1-4x3-1024x768.png",
+            "player-target-indicators-v1-ultrawide-2560x1080.png",
+            "player-target-indicators-v1-portrait-900x1600.png"
+        };
+
+        int[] widths = { 1024, 2560, 900 };
+        int[] heights = { 768, 1080, 1600 };
+
+        for (int i = 0; i < fileNames.Length; i++)
+        {
+            PrototypePlayerHudSnapshot snapshot = CaptureLiveState(
+                rig,
+                screenshotRoot,
+                fileNames[i],
+                widths[i],
+                heights[i]);
+
+            AssertTargetIndicatorEvidenceSnapshot(snapshot, widths[i] + "x" + heights[i]);
+            AssertPanelsSeparated(rig.PlayerHud, false);
+            AssertActiveButtonTextNotOverflowing(rig.PlayerHud);
+            AssertTargetIndicatorLabelsSeparated(rig.PlayerHud);
+        }
     }
 
     [Test]
@@ -761,6 +828,57 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
 
             text.ForceMeshUpdate();
             Assert.That(text.isTextOverflowing, Is.False, buttonTextNames[i] + " overflow");
+        }
+    }
+
+    private static void AssertTargetIndicatorEvidenceSnapshot(PrototypePlayerHudSnapshot snapshot, string label)
+    {
+        Assert.That(snapshot.Navigation.Visible, Is.True, label + " target-indicator navigation context");
+        Assert.That(snapshot.Combat.Visible, Is.True, label + " target-indicator combat context");
+        Assert.That(snapshot.Docking.Visible, Is.False, label + " target-indicator docking context hidden");
+        Assert.That(HasIndicator(snapshot, PrototypePlayerTargetIndicatorKind.Navigation), Is.True, label + " target-indicator navigation marker");
+        Assert.That(HasIndicator(snapshot, PrototypePlayerTargetIndicatorKind.Combat), Is.True, label + " target-indicator combat marker");
+        Assert.That(HasIndicator(snapshot, PrototypePlayerTargetIndicatorKind.Objective), Is.True, label + " target-indicator objective marker");
+        Assert.That(HasIndicator(snapshot, PrototypePlayerTargetIndicatorKind.Docking), Is.False, label + " target-indicator docking marker hidden");
+    }
+
+    private static void AssertTargetIndicatorLabelsSeparated(PrototypePlayerHudRenderer playerHud)
+    {
+        var visibleLabels = new List<RectTransform>();
+        for (int i = 0; i < 6; i++)
+        {
+            RectTransform rect = FindRect(playerHud, "TargetIndicatorLabel" + i);
+            if (rect != null && rect.gameObject.activeInHierarchy)
+            {
+                visibleLabels.Add(rect);
+            }
+        }
+
+        string[] fixedPanelNames =
+        {
+            "AlertAssistStrip",
+            "FlightStatusBar",
+            "ShipSystems",
+            "ObjectivePanel",
+            "ContextPanel",
+            "RadarPanel"
+        };
+
+        for (int i = 0; i < visibleLabels.Count; i++)
+        {
+            for (int j = i + 1; j < visibleLabels.Count; j++)
+            {
+                Assert.That(Overlaps(visibleLabels[i], visibleLabels[j]), Is.False, "target indicator label overlap " + i + "/" + j);
+            }
+
+            for (int panelIndex = 0; panelIndex < fixedPanelNames.Length; panelIndex++)
+            {
+                RectTransform panel = FindRect(playerHud, fixedPanelNames[panelIndex]);
+                if (panel != null && panel.gameObject.activeInHierarchy)
+                {
+                    Assert.That(Overlaps(visibleLabels[i], panel), Is.False, "target indicator label overlaps " + fixedPanelNames[panelIndex]);
+                }
+            }
         }
     }
 

@@ -164,13 +164,26 @@ Verified visually and by assertions:
 - The real docking-assist context remains readable at 1024x768.
 - Warning strip, objective panel, radar, ship systems, docking gauges, and bottom bar remain separated.
 
+Additional target-indicator aspect evidence lives under `player-target-indicators-v1`:
+
+- `tests/screenshots/player-target-indicators-v1-gameview.png`
+- `tests/screenshots/player-target-indicators-v1-4x3-1024x768.png`
+- `tests/screenshots/player-target-indicators-v1-ultrawide-2560x1080.png`
+- `tests/screenshots/player-target-indicators-v1-portrait-900x1600.png`
+
+Verified visually and by assertions:
+
+- The real Bootstrap runtime has navigation, combat, and objective indicators in Basic Player HUD.
+- Docking indicators stay hidden when no docking context is active.
+- Target labels stay inside the canvas and do not overlap each other or fixed HUD panels at 16:9, 4:3, ultrawide, and portrait.
+
 ## Tooling Limitations Observed
 
 - Unity MCP `execute_code` still fails immediately with `Error running ... mono.exe: The filename or extension is too long`, even for a short code snippet. The audit bypasses that route with the checked-in Editor menu exporter.
-- Screenshots `05` through `11` remain Unity-rendered exporter snapshots against the real `PrototypePlayerHudRenderer`; screenshots `12` through `18` are live PlayMode captures driven through real runtime components. Both paths use RenderTexture capture, not a human manual playthrough recording.
+- Screenshots `05` through `11` remain Unity-rendered exporter snapshots against the real `PrototypePlayerHudRenderer`; screenshots `12` through `18`, the later `31`/`32`, and the dedicated target-indicator aspect screenshots are live PlayMode captures driven through real runtime components. Both paths use RenderTexture capture, not a human manual playthrough recording.
 - One Unity MCP test job (`c4389dfbd577470d86ae22348e8551e3`) failed to initialize after 120 seconds before the final successful rerun. The follow-up `PrototypePlayerHudValidationTests` run succeeded 31/31, so the failed job is recorded as tooling noise rather than an implementation failure.
 - Generic DevToolbox verifier commands are expected to remain limited in this Unity workspace when they invoke root-level unscoped `dotnet build/test/format`; explicit solution build and Unity MCP checks are the authoritative evidence here.
 
 ## Current Acceptance Judgement
 
-This slice proves the current Basic runtime view, context priority, active Combat, active Docking, Warning/Help, combined Warning+Combat, 4:3 and 16:9 layout behavior, script validity, focused HUD tests, live PlayMode subsystem evidence, and solution build. The screenshot matrix now includes both exporter-rendered HUD snapshots and live Bootstrap/runtime captures. Remaining non-player-HUD concept items are deferred by the concept itself or belong to broader future mission/builder/remapping work, not this v0 runtime HUD audit.
+This slice proves the current Basic runtime view, context priority, active Combat, active Docking, target indicators, Warning/Help, combined Warning+Combat, 4:3, 16:9, ultrawide, portrait, and minimum representative layout behavior, script validity, focused HUD tests, live PlayMode subsystem evidence, and solution build. The screenshot matrix now includes both exporter-rendered HUD snapshots and live Bootstrap/runtime captures. Remaining non-player-HUD concept items are deferred by the concept itself or belong to broader future mission/builder/remapping work, not this v0 runtime HUD audit.

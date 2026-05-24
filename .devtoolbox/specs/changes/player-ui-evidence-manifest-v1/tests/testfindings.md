@@ -6,11 +6,11 @@ The Player UI evidence manifest validates successfully against the current scree
 
 ## Confirmed
 
-- 27 Player UI screenshot artifacts are listed in a machine-checkable manifest.
+- 30 Player UI screenshot artifacts are listed in a machine-checkable manifest.
 - The manifest points only under `.devtoolbox/specs/changes`.
 - PNG signatures and recorded dimensions match the real file headers.
 - The manifest covers renderer-exported states, real PlayMode states, and aspect-ratio evidence.
-- The manifest includes a dedicated live Basic HUD target-indicator screenshot from `player-target-indicators-v1`.
+- The manifest includes dedicated live Basic HUD target-indicator screenshots for 16:9, 4:3, ultrawide, and portrait from `player-target-indicators-v1`.
 - Focused Unity MCP EditMode verification passes.
 - The explicit Unity solution build passes.
 

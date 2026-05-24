@@ -47,3 +47,16 @@ Follow-up verification on the same slice:
 - `dotnet build 'Weltraum Spiel.sln' --no-restore`: PASS, 0 errors, 22 existing Unity/project warnings.
 - DevToolbox `verify_run` execution `4a35aa6cd4014130ade573c0339da087`: Specs PASS, generic root Build/Test/Lint blocked by `MSB1011` / multiple MSBuild project files.
 - DevToolbox task completion preflight for source line 7: BLOCKED by the generic linked verification failure, so the task remains unchecked.
+
+## 2026-05-24 Target Aspect Evidence
+
+A focused target-indicator aspect matrix was added after the first live screenshot so the slice directly covers resize/scaling concerns:
+
+- First MCP job: `6329839ea8204ae0a3b8aa792739c3af` generated screenshots and Unity wrote `TestResults.xml` with 1/1 passed, but MCP later reported failed initialization.
+- Rerun MCP job: `0f8c988b3b714c3a947e7c65ef1fcb86`, 1/1 passed.
+- Test: `PrototypePlayerHudLiveRuntimeEvidencePlayModeTests.PrototypeBootstrapRuntimePlayerHudEvidenceCapturesTargetIndicatorAspectMatrix`.
+- Screenshots:
+  - `.devtoolbox/specs/changes/player-target-indicators-v1/tests/screenshots/player-target-indicators-v1-4x3-1024x768.png`
+  - `.devtoolbox/specs/changes/player-target-indicators-v1/tests/screenshots/player-target-indicators-v1-ultrawide-2560x1080.png`
+  - `.devtoolbox/specs/changes/player-target-indicators-v1/tests/screenshots/player-target-indicators-v1-portrait-900x1600.png`
+- The test checks navigation/combat/objective indicators, no inactive docking marker, fixed panel separation, active button text overflow, target label-to-label overlap, and target label overlap with fixed HUD panels.
