@@ -75,6 +75,24 @@ public class PrototypeTestEnvironmentValidationTests
     }
 
     [Test]
+    public void Rebuild_TrainingEnvironmentHidesDebugWorldLabelsButKeepsPointData()
+    {
+        GameObject host = new GameObject("EnvironmentValidationHost");
+        PrototypeTestEnvironment environment = host.AddComponent<PrototypeTestEnvironment>();
+
+        environment.Rebuild();
+
+        Assert.IsNull(GameObject.Find("PrototypeEnvironment/Origin/Label_ORIGIN"));
+        Assert.IsNull(GameObject.Find("PrototypeEnvironment/Station_Hangar/Label_Station"));
+        Assert.NotNull(GameObject.Find("PrototypeEnvironment/Targets/Label_Target_Close"));
+        Assert.IsNull(GameObject.Find("PrototypeEnvironment/Targets/Label_Target_Far"));
+        Assert.NotNull(GameObject.Find("PrototypeEnvironment/Navigation_Beacons/Label_Beacon_Alpha"));
+        Assert.IsNull(GameObject.Find("PrototypeEnvironment/Navigation_Beacons/Label_Beacon_Beta"));
+        Assert.That(Count(environment, PrototypeEnvironmentPointKind.Origin), Is.GreaterThanOrEqualTo(1));
+        Assert.That(Count(environment, PrototypeEnvironmentPointKind.Station), Is.GreaterThanOrEqualTo(1));
+    }
+
+    [Test]
     public void Rebuild_MinimalEnvironmentHidesWorldAxesVisuals()
     {
         GameObject host = new GameObject("EnvironmentValidationHost");
@@ -84,6 +102,10 @@ public class PrototypeTestEnvironmentValidationTests
         environment.Rebuild();
 
         Assert.IsNull(GameObject.Find("PrototypeEnvironment/World_Axes"));
+        Assert.IsNull(GameObject.Find("PrototypeEnvironment/Origin/Label_ORIGIN"));
+        Assert.IsNull(GameObject.Find("PrototypeEnvironment/Station_Hangar/Label_Station"));
+        Assert.IsNull(GameObject.Find("PrototypeEnvironment/Targets/Label_Target_Close"));
+        Assert.IsNull(GameObject.Find("PrototypeEnvironment/Navigation_Beacons/Label_Beacon_Alpha"));
         Assert.That(Count(environment, PrototypeEnvironmentPointKind.Axis), Is.GreaterThanOrEqualTo(3));
     }
 
@@ -97,6 +119,10 @@ public class PrototypeTestEnvironmentValidationTests
         environment.Rebuild();
 
         Assert.NotNull(GameObject.Find("PrototypeEnvironment/World_Axes"));
+        Assert.NotNull(GameObject.Find("PrototypeEnvironment/Origin/Label_ORIGIN"));
+        Assert.NotNull(GameObject.Find("PrototypeEnvironment/Station_Hangar/Label_Station"));
+        Assert.NotNull(GameObject.Find("PrototypeEnvironment/Targets/Label_Target_Far"));
+        Assert.NotNull(GameObject.Find("PrototypeEnvironment/Navigation_Beacons/Label_Beacon_Beta"));
         Assert.That(Count(environment, PrototypeEnvironmentPointKind.Axis), Is.GreaterThanOrEqualTo(3));
     }
 
@@ -108,7 +134,7 @@ public class PrototypeTestEnvironmentValidationTests
 
         environment.Rebuild();
 
-        PrototypeNavigationObstacle[] obstacles = Object.FindObjectsOfType<PrototypeNavigationObstacle>();
+        PrototypeNavigationObstacle[] obstacles = Object.FindObjectsByType<PrototypeNavigationObstacle>(FindObjectsInactive.Exclude);
         Assert.That(obstacles.Length, Is.GreaterThanOrEqualTo(5));
         for (int i = 0; i < obstacles.Length; i++)
         {
@@ -217,7 +243,7 @@ public class PrototypeTestEnvironmentValidationTests
     private static int CountNamed(string objectName)
     {
         int count = 0;
-        Transform[] transforms = Object.FindObjectsByType<Transform>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        Transform[] transforms = Object.FindObjectsByType<Transform>(FindObjectsInactive.Include);
         for (int i = 0; i < transforms.Length; i++)
         {
             if (transforms[i] != null && transforms[i].name == objectName)

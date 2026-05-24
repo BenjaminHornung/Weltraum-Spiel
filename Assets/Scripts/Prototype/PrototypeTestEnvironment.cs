@@ -369,11 +369,6 @@ public class PrototypeTestEnvironment : MonoBehaviour
 
         if (environmentDisplayMode == PrototypeEnvironmentDisplayMode.Training)
         {
-            if (kind == PrototypeEnvironmentPointKind.Origin || kind == PrototypeEnvironmentPointKind.Station)
-            {
-                return true;
-            }
-
             if (kind == PrototypeEnvironmentPointKind.Target)
             {
                 return orderIndex < 1;

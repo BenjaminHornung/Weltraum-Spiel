@@ -15,6 +15,7 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
     private const string ScenePath = "Assets/Scenes/PrototypeBootstrapHost.unity";
     private const string ChangeName = "player-ui-concept-runtime-audit-v1";
     private const string AspectRatioScalingChangeName = "player-hud-live-aspect-ratio-scaling-v1";
+    private const string WorldLabelReadabilityChangeName = "player-world-label-readability-v1";
     private const BindingFlags NonPublicInstance = BindingFlags.Instance | BindingFlags.NonPublic;
 
     private SimulationMode previousSimulationMode;
@@ -306,6 +307,52 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
             1600);
         Assert.That(HasWarning(helpPortrait, "Treibstoff niedrig"), Is.True, "live portrait help low-fuel warning");
         AssertPanelsSeparated(rig.PlayerHud, true);
+    }
+
+    [Test]
+    [Category("PlayerWorldLabelEvidence")]
+    [Timeout(120000)]
+    public void PrototypeBootstrapRuntimePlayerHudEvidenceHidesDebugWorldLabelsInTraining()
+    {
+        Assert.That(Application.isPlaying, Is.True, "This evidence test must run in Unity PlayMode.");
+#if UNITY_EDITOR
+        if (SceneManager.GetActiveScene().path != ScenePath)
+        {
+            EditorSceneManager.LoadSceneInPlayMode(ScenePath, new LoadSceneParameters(LoadSceneMode.Single));
+        }
+#endif
+
+        PrototypeUiLayoutManager.ResetPresetToBasic();
+        GameObject host = new GameObject("PrototypePlayerHudLiveEvidenceHost");
+        PrototypeBootstrap bootstrap = host.AddComponent<PrototypeBootstrap>();
+        SetPrivateField(bootstrap, "buildOnStart", false);
+        SetPrivateField(bootstrap, "spawnTestTarget", true);
+        SetPrivateField(bootstrap, "buildPveArena", true);
+        SetPrivateField(bootstrap, "buildTestEnvironment", true);
+        SetPrivateField(bootstrap, "allowGeneratedFallbackWhenImportedAssetMissing", false);
+        bootstrap.BuildPrototype(PrototypeShipVariant.Baseline());
+
+        LiveHudRig rig = ResolveRig();
+        ConfigureHudCanvasForCameraCapture(rig);
+        rig.Autopilot.SelectTarget(null);
+        rig.WeaponComputer.ClearSelection();
+        rig.WeaponComputer.SetAutoFireEnabled(false);
+        rig.PlayerHud.SetTargetDockingPort(null);
+        RunFrames(rig, 3);
+
+        AssertNoWorldLabelText("ORIGIN");
+        AssertNoWorldLabelText("STATION / HANGAR");
+
+        string screenshotRoot = GetScreenshotRoot(WorldLabelReadabilityChangeName);
+        Directory.CreateDirectory(screenshotRoot);
+        PrototypePlayerHudSnapshot snapshot = CaptureLiveState(
+            rig,
+            screenshotRoot,
+            "30-live-cruise-no-origin-label-1280x720.png",
+            1280,
+            720);
+        Assert.That(snapshot.Arena.IsVisible, Is.True, "world-label readability cruise/objective snapshot");
+        AssertPanelsSeparated(rig.PlayerHud, false);
     }
 
     private static LiveHudRig ResolveRig()
@@ -640,6 +687,18 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
         }
 
         return false;
+    }
+
+    private static void AssertNoWorldLabelText(string text)
+    {
+        TextMesh[] labels = Object.FindObjectsByType<TextMesh>(FindObjectsInactive.Include);
+        for (int i = 0; i < labels.Length; i++)
+        {
+            if (labels[i] != null && labels[i].text == text)
+            {
+                Assert.Fail("Unexpected world label text in player evidence: " + text);
+            }
+        }
     }
 
     private static void InvokeIfExists(object target, string methodName)

@@ -28,7 +28,7 @@ No HUD window overlap was observed in the reviewed captures. The 640x480 Combat 
 
 ## Residual Risk
 
-- The world/test-environment `ORIGIN` label is visually large and can dominate the center of portrait and minimum captures. This is not a HUD window overlap, but it should be handled in a later world-label readability pass.
+- The world/test-environment `ORIGIN` label was visually large in these captures. This was not a HUD window overlap and is addressed by the later `player-world-label-readability-v1` slice.
 - Builder, full mission reward screens, and input remapping remain deferred by the concept because the corresponding gameplay/menu systems are not implemented yet.
 - DevToolbox generic root verification may still fail on `MSB1011` because the workspace contains multiple project/solution files; explicit solution build is the reliable build command for this Unity project.
 - DevToolbox `verify_run` did fail only on those generic root commands in execution `a3b87f66eace4c21b494120a1d21fe23`; the scoped Unity MCP checks and explicit solution build passed.
