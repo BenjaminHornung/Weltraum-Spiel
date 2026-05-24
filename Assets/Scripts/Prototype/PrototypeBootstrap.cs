@@ -406,6 +406,8 @@ public class PrototypeBootstrap : MonoBehaviour
         Transform functionalRig = ship.Find(PrototypeFunctionalShipBinder.FunctionalSocketRigName);
         int importedRendererCount = CountRenderers(importedVisualRoot, false);
         int importedEnabledRendererCount = CountRenderers(importedVisualRoot, true);
+        int importedVisibleMeshRendererCount = CountVisibleShipMeshRenderers(importedShipInstance);
+        Vector3 importedVisibleMeshBoundsSize = CombinedVisibleShipMeshBounds(importedShipInstance).size;
         int generatedRendererCount = CountGeneratedRenderers(ship, false);
         int generatedEnabledRendererCount = CountGeneratedRenderers(ship, true);
         Camera mainCamera = Camera.main;
@@ -430,9 +432,12 @@ public class PrototypeBootstrap : MonoBehaviour
         builder.Append(" importedVisualRootActive=").Append(importedVisualRoot != null && importedVisualRoot.gameObject.activeInHierarchy);
         builder.Append(" importedShipInstance=").Append(importedShipInstance != null ? importedShipInstance.name : "<none>");
         builder.Append(" importedShipInstanceActive=").Append(importedShipInstance != null && importedShipInstance.gameObject.activeInHierarchy);
+        builder.Append(" importedShipInstanceLocalScale=").Append(importedShipInstance != null ? importedShipInstance.localScale.ToString("0.0") : "<none>");
         builder.Append(" functionalSocketRig=").Append(functionalRig != null);
         builder.Append(" importedRendererCount=").Append(importedRendererCount);
         builder.Append(" importedEnabledRendererCount=").Append(importedEnabledRendererCount);
+        builder.Append(" importedVisibleMeshRendererCount=").Append(importedVisibleMeshRendererCount);
+        builder.Append(" importedVisibleMeshBoundsSize=").Append(importedVisibleMeshBoundsSize.ToString("0.00"));
         builder.Append(" generatedRendererCount=").Append(generatedRendererCount);
         builder.Append(" generatedEnabledRendererCount=").Append(generatedEnabledRendererCount);
         builder.Append(" cameraTargetDistance=").Append(cameraDistance.ToString("0.0"));
@@ -463,6 +468,62 @@ public class PrototypeBootstrap : MonoBehaviour
         }
 
         return count;
+    }
+
+    private static int CountVisibleShipMeshRenderers(Transform root)
+    {
+        Renderer[] renderers = root != null ? root.GetComponentsInChildren<Renderer>(true) : new Renderer[0];
+        int count = 0;
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            if (IsVisibleShipMeshRenderer(renderers[i]))
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    private static Bounds CombinedVisibleShipMeshBounds(Transform root)
+    {
+        Renderer[] renderers = root != null ? root.GetComponentsInChildren<Renderer>(true) : new Renderer[0];
+        Bounds bounds = new Bounds(root != null ? root.position : Vector3.zero, Vector3.zero);
+        bool hasBounds = false;
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            Renderer renderer = renderers[i];
+            if (!IsVisibleShipMeshRenderer(renderer))
+            {
+                continue;
+            }
+
+            if (!hasBounds)
+            {
+                bounds = renderer.bounds;
+                hasBounds = true;
+            }
+            else
+            {
+                bounds.Encapsulate(renderer.bounds);
+            }
+        }
+
+        return bounds;
+    }
+
+    private static bool IsVisibleShipMeshRenderer(Renderer renderer)
+    {
+        if (renderer == null || !renderer.enabled || !renderer.gameObject.activeInHierarchy)
+        {
+            return false;
+        }
+
+        string name = renderer.gameObject.name;
+        return name.StartsWith("DEMO_", System.StringComparison.Ordinal)
+            && name.IndexOf("VFX", System.StringComparison.OrdinalIgnoreCase) < 0
+            && name.IndexOf("NOZZLE", System.StringComparison.OrdinalIgnoreCase) < 0
+            && name.IndexOf("MUZZLE_FLASH", System.StringComparison.OrdinalIgnoreCase) < 0;
     }
 
     private static int CountGeneratedRenderers(Transform ship, bool enabledOnly)

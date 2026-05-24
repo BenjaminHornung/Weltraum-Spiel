@@ -1,0 +1,56 @@
+2026-05-24 fix-visible-ship-regression-v2
+
+Symptom:
+RCS effects visible, imported Blender Scout ship mesh effectively missing in Game View.
+
+Root cause:
+ImportedDemoScoutVisual was instantiated by PrototypeFunctionalShipBinder with localScale=(1,1,1).
+FBX mesh bounds at that scale were tiny. Example runtime MeshRenderer bounds for DEMO_Scout_Mk1_GEO_Hull_Core_Faceted were approximately (0.014, 0.010, 0.020) Unity units.
+
+Fix:
+PrototypeFunctionalShipBinder now scales the visible FBX instance to 100 while keeping FunctionalSocketRig and functional sockets at scale 1.
+
+Post-fix runtime diagnostic:
+PrototypeBootstrap visibility diagnostics: buildMode=ImportedDemoScoutFunctionalDefault allowGeneratedFallbackWhenImportedAssetMissing=True useGeneratedFallbackBeforePolicy=False useGeneratedFallbackAfterPolicy=False hasRequiredFlightSockets=True hasRequiredWeaponSockets=True hasRequiredVisibleWeaponRenderers=True hasVisibleImportedShip=True missingRequiredSockets= missingWeaponSockets= missingVisibleWeaponRenderers= importedVisualRoot=True importedVisualRootActive=True importedShipInstance=ImportedDemoScoutVisual importedShipInstanceActive=True importedShipInstanceLocalScale=(100.0, 100.0, 100.0) functionalSocketRig=True importedRendererCount=126 importedEnabledRendererCount=81 importedVisibleMeshRendererCount=47 importedVisibleMeshBoundsSize=(2.42, 1.60, 4.39) generatedRendererCount=0 generatedEnabledRendererCount=0 cameraTargetDistance=19.0
+
+Build:
+dotnet build "Weltraum Spiel.sln" --no-restore
+Result: PASS with known Unity/MCP assembly binding warnings.
+
+Unity validate_script:
+PrototypeFunctionalShipBinder.cs: 0 errors
+PrototypeBootstrap.cs: 0 errors
+PrototypeFunctionalShipSocketValidationTests.cs: 0 errors
+PrototypeFunctionalBlenderRuntimePlayModeTests.cs: 0 errors
+
+Unity Test Framework:
+EditMode job 28e3449346044e9b8baeca14b0ab7295: PASS 1/1
+EditMode job 0d43a11e6731473b975ac5153a71b76b: PASS 4/4
+PlayMode job 6524f07d61e247d990224f255bc02006: PASS 2/2
+PlayMode navigation job a797290ba5ed474a95761d3f546d9a4d: status succeeded, progress 2/2
+Fresh Unity MCP EditMode job e27bded0ac3641c6906d179eb1b59b50: PASS 5/5
+Fresh Unity MCP PlayMode job 18fd91ecf14246a5b9c002b887def3d4: PASS 2/2
+Fresh Unity MCP PlayMode navigation job 2847e37b79db45d3b15cb3ffc0829ab9: PASS 2/2
+
+Blender CLI validation:
+Command: "C:\Program Files\Blender Foundation\Blender 5.1\blender.exe" --background "art\blender\prototype_modular_ship_kit_v0.blend" --python "art\blender\validate_ship_kit_meshes.py"
+Result: PASS
+Object count: 475
+Mesh count: 266
+Missing Demo Scout functional markers: 0
+Demo Scout turret hierarchy issues: 0
+Meshes missing materials: 0
+Non-opaque materials: 0
+Negative scale objects: 0
+
+Screenshots:
+.devtoolbox/specs/changes/fix-visible-ship-regression-v2/tests/screenshots/runtime-start-gameview.png
+.devtoolbox/specs/changes/fix-visible-ship-regression-v2/tests/screenshots/runtime-start-gameview-scaled-ship.png
+.devtoolbox/specs/changes/fix-visible-ship-regression-v2/tests/screenshots/runtime-sceneview-prototypeship.png
+.devtoolbox/specs/changes/fix-visible-ship-regression-v2/tests/screenshots/runtime-start-gameview-scaled-ship-fresh.png
+.devtoolbox/specs/changes/fix-visible-ship-regression-v2/tests/screenshots/runtime-sceneview-prototypeship-fresh.png
+
+Tooling limitations:
+Blender MCP scene call aborted, so Blender CLI was used.
+claude-plan-review timed out after 120 seconds, including a fresh checkpoint with the Unity MCP screenshot paths.
+Unity MCP execute_code was unavailable/unreliable; Unity Test Framework and screenshots were used instead.

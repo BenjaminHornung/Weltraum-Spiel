@@ -58,6 +58,11 @@ public class PrototypeFunctionalBlenderRuntimePlayModeTests
             Transform importedVisual = ship.transform.Find(PrototypeFunctionalShipBinder.ImportedVisualRootName);
             Assert.NotNull(importedVisual);
             Assert.True(importedVisual.gameObject.activeInHierarchy);
+            Transform activeImportedVisual = FindActiveImportedVisual(importedVisual);
+            Assert.NotNull(activeImportedVisual);
+            Assert.That(activeImportedVisual.localScale.x, Is.GreaterThanOrEqualTo(50f));
+            Assert.That(CountVisibleShipMeshRenderers(activeImportedVisual), Is.GreaterThan(20));
+            Assert.That(CombinedVisibleShipMeshBounds(activeImportedVisual).size.magnitude, Is.GreaterThan(1f));
             Assert.Null(ship.transform.Find("Muzzle"));
             Assert.Null(ship.transform.Find("EngineNozzle"));
 
@@ -113,6 +118,7 @@ public class PrototypeFunctionalBlenderRuntimePlayModeTests
                 Assert.That(bootstrap.BuildMode, Is.EqualTo(PrototypeShipBuildMode.ImportedDemoScoutFunctionalDefault));
                 Assert.That(switcher.SelectedVisualMode, Is.EqualTo(PrototypeShipVisualMode.ImportedDemoScout));
                 Assert.True(importedVisual.gameObject.activeInHierarchy);
+                Assert.That(CountVisibleShipMeshRenderers(activeImportedVisual), Is.GreaterThan(20));
             }
 
             float finalForwardSpeed = Vector3.Dot(body.linearVelocity, ship.transform.forward);
@@ -131,6 +137,7 @@ public class PrototypeFunctionalBlenderRuntimePlayModeTests
             Physics.Simulate(Time.fixedDeltaTime);
             Assert.That(rcs.ActiveNozzleCount, Is.GreaterThan(0));
             Assert.NotNull(FindActiveRcsVfxNearImportedNozzle(ship.transform));
+            Assert.That(CombinedVisibleShipMeshBounds(activeImportedVisual).size.magnitude, Is.GreaterThan(1f));
             Assert.That(body.angularVelocity.magnitude, Is.LessThan(5f));
 
             GameObject target = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -305,6 +312,77 @@ public class PrototypeFunctionalBlenderRuntimePlayModeTests
         }
 
         Assert.Fail("Runtime target was not discovered by the weapon computer.");
+    }
+
+    private static Transform FindActiveImportedVisual(Transform importedVisualRoot)
+    {
+        Assert.NotNull(importedVisualRoot);
+        for (int i = 0; i < importedVisualRoot.childCount; i++)
+        {
+            Transform child = importedVisualRoot.GetChild(i);
+            if (child != null && child.gameObject.activeInHierarchy)
+            {
+                return child;
+            }
+        }
+
+        return null;
+    }
+
+    private static int CountVisibleShipMeshRenderers(Transform root)
+    {
+        Renderer[] renderers = root != null ? root.GetComponentsInChildren<Renderer>(true) : new Renderer[0];
+        int count = 0;
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            if (IsVisibleShipMeshRenderer(renderers[i]))
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    private static Bounds CombinedVisibleShipMeshBounds(Transform root)
+    {
+        Renderer[] renderers = root != null ? root.GetComponentsInChildren<Renderer>(true) : new Renderer[0];
+        Bounds bounds = new Bounds(root != null ? root.position : Vector3.zero, Vector3.zero);
+        bool hasBounds = false;
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            Renderer renderer = renderers[i];
+            if (!IsVisibleShipMeshRenderer(renderer))
+            {
+                continue;
+            }
+
+            if (!hasBounds)
+            {
+                bounds = renderer.bounds;
+                hasBounds = true;
+            }
+            else
+            {
+                bounds.Encapsulate(renderer.bounds);
+            }
+        }
+
+        return bounds;
+    }
+
+    private static bool IsVisibleShipMeshRenderer(Renderer renderer)
+    {
+        if (renderer == null || !renderer.enabled || !renderer.gameObject.activeInHierarchy)
+        {
+            return false;
+        }
+
+        string name = renderer.gameObject.name;
+        return name.StartsWith("DEMO_", System.StringComparison.Ordinal)
+            && name.IndexOf("VFX", System.StringComparison.OrdinalIgnoreCase) < 0
+            && name.IndexOf("NOZZLE", System.StringComparison.OrdinalIgnoreCase) < 0
+            && name.IndexOf("MUZZLE_FLASH", System.StringComparison.OrdinalIgnoreCase) < 0;
     }
 
     private static Transform FindDescendant(Transform root, string exactName)

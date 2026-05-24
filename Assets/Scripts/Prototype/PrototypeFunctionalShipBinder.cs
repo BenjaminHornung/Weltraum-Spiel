@@ -13,7 +13,8 @@ public sealed class PrototypeFunctionalShipBinder : MonoBehaviour
     private const string HiddenStaticTurretVisualPrefix = "PrototypeStaticHidden_";
 
     private static readonly Vector3 ImportedShipLocalEulerAngles = new Vector3(-90f, 180f, 0f);
-    private const float ImportedShipLocalScale = 1f;
+    // The FBX is authored in centimeter-scale units; physics binds to the unscaled proxy rig below.
+    private const float ImportedShipLocalScale = 100f;
     private const float FunctionalSocketScaleTolerance = 0.02f;
     private const float MainNozzleForwardDotMinimum = 0.9f;
 

@@ -242,6 +242,9 @@ public class PrototypeFunctionalShipSocketValidationTests
         Assert.True(report.hasRequiredFunctionalSockets, string.Join(", ", report.missingRequiredSockets));
         Assert.NotNull(report.importedVisualRoot);
         Assert.NotNull(report.importedShipInstance);
+        Assert.That(report.importedShipInstance.localScale.x, Is.GreaterThanOrEqualTo(50f));
+        Assert.That(CountVisibleShipMeshRenderers(report.importedShipInstance), Is.GreaterThan(20));
+        Assert.That(CombinedVisibleShipMeshBounds(report.importedShipInstance).size.magnitude, Is.GreaterThan(1f));
         Assert.That(report.foundMainNozzles, Is.GreaterThanOrEqualTo(1));
         Assert.That(report.foundRcsNozzles, Is.GreaterThanOrEqualTo(8));
         Assert.That(report.foundWeaponMuzzleMarkers, Is.GreaterThanOrEqualTo(1));
@@ -466,6 +469,62 @@ public class PrototypeFunctionalShipSocketValidationTests
         child.localRotation = localRotation;
         child.localScale = Vector3.one;
         return child;
+    }
+
+    private static int CountVisibleShipMeshRenderers(Transform root)
+    {
+        Renderer[] renderers = root != null ? root.GetComponentsInChildren<Renderer>(true) : new Renderer[0];
+        int count = 0;
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            if (IsVisibleShipMeshRenderer(renderers[i]))
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    private static Bounds CombinedVisibleShipMeshBounds(Transform root)
+    {
+        Renderer[] renderers = root != null ? root.GetComponentsInChildren<Renderer>(true) : new Renderer[0];
+        Bounds bounds = new Bounds(root != null ? root.position : Vector3.zero, Vector3.zero);
+        bool hasBounds = false;
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            Renderer renderer = renderers[i];
+            if (!IsVisibleShipMeshRenderer(renderer))
+            {
+                continue;
+            }
+
+            if (!hasBounds)
+            {
+                bounds = renderer.bounds;
+                hasBounds = true;
+            }
+            else
+            {
+                bounds.Encapsulate(renderer.bounds);
+            }
+        }
+
+        return bounds;
+    }
+
+    private static bool IsVisibleShipMeshRenderer(Renderer renderer)
+    {
+        if (renderer == null || !renderer.enabled || !renderer.gameObject.activeInHierarchy)
+        {
+            return false;
+        }
+
+        string name = renderer.gameObject.name;
+        return name.StartsWith("DEMO_", System.StringComparison.Ordinal)
+            && name.IndexOf("VFX", System.StringComparison.OrdinalIgnoreCase) < 0
+            && name.IndexOf("NOZZLE", System.StringComparison.OrdinalIgnoreCase) < 0
+            && name.IndexOf("MUZZLE_FLASH", System.StringComparison.OrdinalIgnoreCase) < 0;
     }
 
     private static int CountDescendantNames(Transform root, string exactName)
