@@ -63,6 +63,13 @@ public class PrototypeFunctionalBlenderRuntimePlayModeTests
             Assert.That(activeImportedVisual.localScale.x, Is.GreaterThanOrEqualTo(50f));
             Assert.That(CountVisibleShipMeshRenderers(activeImportedVisual), Is.GreaterThan(20));
             Assert.That(CombinedVisibleShipMeshBounds(activeImportedVisual).size.magnitude, Is.GreaterThan(1f));
+            SimpleFollowCamera followCamera = Camera.main != null ? Camera.main.GetComponent<SimpleFollowCamera>() : null;
+            Assert.NotNull(followCamera);
+            InvokeMethod(followCamera, "LateUpdate");
+            Assert.That(followCamera.VisualBoundsRadius, Is.LessThan(6f));
+            Assert.That(followCamera.VisualBoundsRendererCount, Is.InRange(20, 70));
+            Assert.That(followCamera.EffectiveDistance, Is.LessThan(30f));
+            AssertImportedShipProjectsToReadableViewport(Camera.main, activeImportedVisual);
             Assert.Null(ship.transform.Find("Muzzle"));
             Assert.Null(ship.transform.Find("EngineNozzle"));
 
@@ -371,18 +378,66 @@ public class PrototypeFunctionalBlenderRuntimePlayModeTests
         return bounds;
     }
 
-    private static bool IsVisibleShipMeshRenderer(Renderer renderer)
+    private static void AssertImportedShipProjectsToReadableViewport(Camera camera, Transform activeImportedVisual)
     {
-        if (renderer == null || !renderer.enabled || !renderer.gameObject.activeInHierarchy)
+        Assert.NotNull(camera);
+        Bounds bounds = CombinedVisibleShipMeshBounds(activeImportedVisual);
+        Rect viewportRect = ProjectBoundsToViewport(camera, bounds, out int inFrontCornerCount);
+        Assert.That(inFrontCornerCount, Is.EqualTo(8));
+        Assert.That(viewportRect.width, Is.GreaterThan(0.08f));
+        Assert.That(viewportRect.height, Is.GreaterThan(0.08f));
+        Assert.That(viewportRect.width * viewportRect.height, Is.GreaterThan(0.01f));
+        Assert.That(viewportRect.width, Is.LessThan(0.6f));
+        Assert.That(viewportRect.height, Is.LessThan(0.6f));
+        Assert.That(viewportRect.width * viewportRect.height, Is.LessThan(0.25f));
+        Assert.That(viewportRect.center.x, Is.InRange(0.3f, 0.7f));
+        Assert.That(viewportRect.center.y, Is.InRange(0.25f, 0.75f));
+    }
+
+    private static Rect ProjectBoundsToViewport(Camera camera, Bounds bounds, out int inFrontCornerCount)
+    {
+        Vector3 min = bounds.min;
+        Vector3 max = bounds.max;
+        Vector3[] corners =
         {
-            return false;
+            new Vector3(min.x, min.y, min.z),
+            new Vector3(min.x, min.y, max.z),
+            new Vector3(min.x, max.y, min.z),
+            new Vector3(min.x, max.y, max.z),
+            new Vector3(max.x, min.y, min.z),
+            new Vector3(max.x, min.y, max.z),
+            new Vector3(max.x, max.y, min.z),
+            new Vector3(max.x, max.y, max.z)
+        };
+
+        float minX = 1f;
+        float minY = 1f;
+        float maxX = 0f;
+        float maxY = 0f;
+        inFrontCornerCount = 0;
+        for (int i = 0; i < corners.Length; i++)
+        {
+            Vector3 viewport = camera.WorldToViewportPoint(corners[i]);
+            if (viewport.z <= 0f)
+            {
+                continue;
+            }
+
+            inFrontCornerCount++;
+            minX = Mathf.Min(minX, Mathf.Clamp01(viewport.x));
+            minY = Mathf.Min(minY, Mathf.Clamp01(viewport.y));
+            maxX = Mathf.Max(maxX, Mathf.Clamp01(viewport.x));
+            maxY = Mathf.Max(maxY, Mathf.Clamp01(viewport.y));
         }
 
-        string name = renderer.gameObject.name;
-        return name.StartsWith("DEMO_", System.StringComparison.Ordinal)
-            && name.IndexOf("VFX", System.StringComparison.OrdinalIgnoreCase) < 0
-            && name.IndexOf("NOZZLE", System.StringComparison.OrdinalIgnoreCase) < 0
-            && name.IndexOf("MUZZLE_FLASH", System.StringComparison.OrdinalIgnoreCase) < 0;
+        return inFrontCornerCount > 0
+            ? Rect.MinMaxRect(minX, minY, maxX, maxY)
+            : Rect.zero;
+    }
+
+    private static bool IsVisibleShipMeshRenderer(Renderer renderer)
+    {
+        return PrototypeShipVisualBoundsUtility.IsImportedDemoShipBodyRenderer(renderer);
     }
 
     private static Transform FindDescendant(Transform root, string exactName)

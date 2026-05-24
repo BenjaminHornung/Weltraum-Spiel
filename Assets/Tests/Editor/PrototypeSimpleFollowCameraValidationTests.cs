@@ -306,6 +306,31 @@ public class PrototypeSimpleFollowCameraValidationTests
     }
 
     [Test]
+    public void ImportedVisualBoundsPreferDemoShipMeshesOverSocketMarkers()
+    {
+        GameObject ship = new GameObject("SimpleFollowCameraTestShip");
+        ShipStats stats = ship.AddComponent<ShipStats>();
+        SimpleFollowCamera camera = BuildCamera(ship);
+        GameObject importedRoot = new GameObject(PrototypeFunctionalShipBinder.ImportedVisualRootName);
+        importedRoot.transform.SetParent(ship.transform, false);
+        GameObject importedVisual = new GameObject("ImportedDemoScoutVisual");
+        importedVisual.transform.SetParent(importedRoot.transform, false);
+        GameObject hull = BuildVisualChild(importedVisual, "DEMO_Scout_Mk1_GEO_Hull_Core_Faceted", new Vector3(2f, 1f, 4f));
+        GameObject socketMarker = BuildVisualChild(importedVisual, "DEMO_Scout_Mk1_SOCKET_CAMERA_BOUNDS_SENTINEL", Vector3.one);
+        socketMarker.transform.localPosition = new Vector3(0f, 0f, 60f);
+        GameObject connectorMarker = BuildVisualChild(importedVisual, "DEMO_Scout_Mk1_VIS_PART_Wing_CONN_PORT", Vector3.one);
+        connectorMarker.transform.localPosition = new Vector3(0f, 0f, -60f);
+
+        camera.BindTarget(ship.transform, stats);
+        InvokeLateUpdate(camera);
+
+        Assert.True(camera.HasVisualBounds);
+        Assert.That(camera.VisualBoundsRendererCount, Is.EqualTo(1));
+        Assert.That(camera.VisualBoundsRadius, Is.LessThan(3f));
+        AssertVector(camera.VisualBoundsCenter, hull.GetComponent<Renderer>().bounds.center, 0.001f);
+    }
+
+    [Test]
     public void VisualBoundsReframeChangesBaseDistanceWithinConfiguredClamps()
     {
         GameObject ship = new GameObject("SimpleFollowCameraTestShip");

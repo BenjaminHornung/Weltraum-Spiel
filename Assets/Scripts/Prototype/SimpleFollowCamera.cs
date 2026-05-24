@@ -676,6 +676,11 @@ public class SimpleFollowCamera : MonoBehaviour
             return;
         }
 
+        if (TryRefreshImportedShipVisualBounds())
+        {
+            return;
+        }
+
         visualBoundsRenderers.Clear();
         target.GetComponentsInChildren(true, visualBoundsRenderers);
         bool hasBounds = false;
@@ -718,6 +723,54 @@ public class SimpleFollowCamera : MonoBehaviour
 
         visualBoundsIncludedRendererCount = includedRendererCount;
         UpdateCachedVisualBoundsWorldSpace();
+    }
+
+    private bool TryRefreshImportedShipVisualBounds()
+    {
+        Transform importedVisualRoot = target.Find(PrototypeFunctionalShipBinder.ImportedVisualRootName);
+        if (importedVisualRoot == null || !importedVisualRoot.gameObject.activeInHierarchy)
+        {
+            return false;
+        }
+
+        visualBoundsRenderers.Clear();
+        importedVisualRoot.GetComponentsInChildren(true, visualBoundsRenderers);
+        bool hasBounds = false;
+        int includedRendererCount = 0;
+        Bounds combined = new Bounds(target.position, Vector3.zero);
+
+        for (int i = 0; i < visualBoundsRenderers.Count; i++)
+        {
+            Renderer renderer = visualBoundsRenderers[i];
+            if (!PrototypeShipVisualBoundsUtility.IsImportedDemoShipBodyRenderer(renderer))
+            {
+                continue;
+            }
+
+            includedRendererCount++;
+            if (!hasBounds)
+            {
+                combined = renderer.bounds;
+                hasBounds = true;
+            }
+            else
+            {
+                combined.Encapsulate(renderer.bounds);
+            }
+        }
+
+        if (!hasBounds)
+        {
+            return false;
+        }
+
+        hasVisualBounds = true;
+        visualBoundsCenter = combined.center;
+        visualBoundsCenterLocal = target.InverseTransformPoint(combined.center);
+        visualBoundsRadius = combined.extents.magnitude;
+        visualBoundsIncludedRendererCount = includedRendererCount;
+        UpdateCachedVisualBoundsWorldSpace();
+        return true;
     }
 
     private void UpdateVisualBoundsSnapshot()

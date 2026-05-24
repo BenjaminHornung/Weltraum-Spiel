@@ -514,16 +514,7 @@ public class PrototypeBootstrap : MonoBehaviour
 
     private static bool IsVisibleShipMeshRenderer(Renderer renderer)
     {
-        if (renderer == null || !renderer.enabled || !renderer.gameObject.activeInHierarchy)
-        {
-            return false;
-        }
-
-        string name = renderer.gameObject.name;
-        return name.StartsWith("DEMO_", System.StringComparison.Ordinal)
-            && name.IndexOf("VFX", System.StringComparison.OrdinalIgnoreCase) < 0
-            && name.IndexOf("NOZZLE", System.StringComparison.OrdinalIgnoreCase) < 0
-            && name.IndexOf("MUZZLE_FLASH", System.StringComparison.OrdinalIgnoreCase) < 0;
+        return PrototypeShipVisualBoundsUtility.IsImportedDemoShipBodyRenderer(renderer);
     }
 
     private static int CountGeneratedRenderers(Transform ship, bool enabledOnly)

@@ -1,0 +1,55 @@
+2026-05-24 fix-functional-blender-runtime-v3
+
+Symptom:
+RCS/marker effects visible, imported Blender Scout body effectively missing in the player Game View.
+
+Root cause:
+SimpleFollowCamera visual bounds included non-ship imported/socket/marker renderers under PrototypeShip.
+Before fix:
+- VisualBoundsRadius=22.21
+- EffectiveDistance=59.30
+- VisualBoundsRendererCount=84
+- Imported Scout body bounds were only about 2.42 x 1.60 x 4.39.
+
+Fix:
+SimpleFollowCamera now prefers ImportedShipVisual when it is active and only uses real DEMO_* ship mesh renderers for imported-ship camera bounds.
+The imported body-renderer filter is centralized in PrototypeShipVisualBoundsUtility and excludes sockets, CONN_* connector markers, hardpoints, nozzles, muzzles, turret markers, VFX, rings, labels, debug, and marker renderers.
+Generated/fallback ships still use the previous general bounds path.
+
+After fix:
+- VisualBoundsRadius=2.63
+- EffectiveDistance=18.00
+- VisualBoundsRendererCount=43
+- GameView screenshot shows the imported Scout body centered and readable.
+
+Evidence screenshots:
+.devtoolbox/specs/changes/fix-functional-blender-runtime-v3/tests/screenshots/current-repro-gameview.png
+.devtoolbox/specs/changes/fix-functional-blender-runtime-v3/tests/screenshots/current-repro-sceneview.png
+.devtoolbox/specs/changes/fix-functional-blender-runtime-v3/tests/screenshots/after-camera-bounds-fix-gameview.png
+.devtoolbox/specs/changes/fix-functional-blender-runtime-v3/tests/screenshots/after-camera-bounds-fix-sceneview.png
+.devtoolbox/specs/changes/fix-functional-blender-runtime-v3/tests/screenshots/after-connector-filter-gameview.png
+
+Unity validate_script:
+PrototypeShipVisualBoundsUtility.cs: 0 errors.
+SimpleFollowCamera.cs: 0 errors, 2 existing heuristic warnings.
+PrototypeBootstrap.cs: 0 errors.
+PrototypeSimpleFollowCameraValidationTests.cs: 0 errors.
+PrototypeFunctionalBlenderRuntimePlayModeTests.cs: 0 errors.
+
+Unity Test Framework:
+EditMode job b351c663a4c34730bf90ad1ace5e510a: PASS 1/1.
+EditMode job dd1be10680704c9681cfe8b6bed9cf45: PASS 4/4.
+EditMode final job 7e9d168408604ddc99b00d5df4cff351: PASS 4/4.
+PlayMode job d0c68bb650934f43850b51b6b5904605: PASS 2/2.
+PlayMode navigation job 3d2eabedc06c46a19e9022b97f32fc4b: PASS 2/2.
+PlayMode functional Blender final job e74c6762e0574a199afba7df4c513037: PASS 2/2.
+PlayMode navigation final job 3012a658a615488ea29afd82adfd8925: PASS 2/2.
+
+Build:
+dotnet build "Weltraum Spiel.sln" --no-restore: PASS, 25 warnings, 0 errors.
+
+Blender CLI validation:
+"C:\Program Files\Blender Foundation\Blender 5.1\blender.exe" --background "art\blender\prototype_modular_ship_kit_v0.blend" --python "art\blender\validate_ship_kit_meshes.py": PASS.
+
+Claude plan-review:
+Attempted with the final GameView screenshot path; wrapper timed out before returning findings.
