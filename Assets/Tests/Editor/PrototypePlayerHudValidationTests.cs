@@ -116,6 +116,8 @@ public class PrototypePlayerHudValidationTests
             Assert.That(snapshot.Navigation.TargetTypeLabel, Is.EqualTo("Waypoint"));
             Assert.That(snapshot.Navigation.DistanceMeters, Is.GreaterThan(100f));
             Assert.That(snapshot.Navigation.PhaseLabel, Is.EqualTo("Direkter Kurs"));
+            Assert.That(snapshot.Navigation.RouteModeLabel, Is.EqualTo("Route: Ausweichkurs"));
+            Assert.That(snapshot.Navigation.ManeuverIntentLabel, Is.EqualTo("Manoever: Ausweichkurs geplant"));
             Assert.That(snapshot.Navigation.RouteWorldPoints.Length, Is.EqualTo(3));
             Assert.True(snapshot.Navigation.HasAvoidanceCue);
             Assert.That(snapshot.Navigation.AvoidanceLabel, Does.Contain("Asteroid"));
@@ -125,6 +127,52 @@ public class PrototypePlayerHudValidationTests
             Assert.That(PrototypePlayerHudSnapshotBuilder.TranslateNavigationState(PrototypeWaypointAutopilotState.FinalApproach), Is.EqualTo("Endanflug"));
             Assert.That(PrototypePlayerHudSnapshotBuilder.TranslateNavigationState(PrototypeWaypointAutopilotState.Complete), Is.EqualTo("Angekommen"));
             Assert.That(PrototypePlayerHudSnapshotBuilder.TranslateNavigationState(PrototypeWaypointAutopilotState.Failed), Is.EqualTo("Autopilot nicht moeglich"));
+        }
+    }
+
+    [Test]
+    public void NavigationSnapshotDescribesFlipAndMainDecelBurnIntent()
+    {
+        using (var builder = new PrototypeScenarioBuilder())
+        {
+            PrototypeAutopilotRig rig = builder.CreateAutopilotRig(targetPosition: Vector3.forward * 150f);
+            rig.Ship.Body.linearVelocity = Vector3.forward * 45f;
+            rig.Autopilot.ToggleAutopilot();
+
+            InvokeFixedUpdate(rig.Autopilot);
+
+            PrototypePlayerHudSnapshot flipSnapshot = PrototypePlayerHudSnapshotBuilder.Build(
+                rig.Ship.Ship.transform,
+                rig.Ship.Body,
+                rig.Ship.Stats,
+                rig.Ship.Controller,
+                rig.Autopilot,
+                null,
+                null,
+                null,
+                null);
+
+            Assert.That(flipSnapshot.Navigation.ManeuverIntentLabel, Is.EqualTo("Manoever: Zum Bremsen drehen"));
+            Assert.That(flipSnapshot.Navigation.StoppingDistanceMeters, Is.GreaterThan(0f));
+            Assert.That(flipSnapshot.Navigation.RequiredBurnSeconds, Is.GreaterThan(0f));
+            Assert.That(rig.Ship.Controller.LastExternalFlightAssistRequest.mainThrottle, Is.EqualTo(0f).Within(0.0001f));
+
+            rig.Ship.Ship.transform.rotation = Quaternion.LookRotation(Vector3.back, Vector3.up);
+            InvokeFixedUpdate(rig.Autopilot);
+
+            PrototypePlayerHudSnapshot brakeSnapshot = PrototypePlayerHudSnapshotBuilder.Build(
+                rig.Ship.Ship.transform,
+                rig.Ship.Body,
+                rig.Ship.Stats,
+                rig.Ship.Controller,
+                rig.Autopilot,
+                null,
+                null,
+                null,
+                null);
+
+            Assert.That(brakeSnapshot.Navigation.ManeuverIntentLabel, Is.EqualTo("Manoever: Main-Decel-Burn"));
+            Assert.That(rig.Ship.Controller.LastExternalFlightAssistRequest.mainThrottle, Is.GreaterThan(0.5f));
         }
     }
 
@@ -393,6 +441,60 @@ public class PrototypePlayerHudValidationTests
             Assert.That(snapshot.Radar.RouteWorldPoints[0], Is.EqualTo(rig.Ship.transform.position));
             Assert.That(snapshot.Radar.RouteWorldPoints[1], Is.EqualTo(target.Position));
         }
+    }
+
+    [Test]
+    public void RadarWorldToLayerPointExpandsCloseContactsForMidRangeImageLayer()
+    {
+        var radar = new PrototypePlayerRadarSnapshot(
+            2500f,
+            "Range 2.5 km",
+            Vector3.zero,
+            Vector3.forward,
+            new PrototypePlayerRadarBlip[0],
+            new Vector3[0],
+            new Vector3[0],
+            false,
+            Vector3.zero);
+
+        MethodInfo method = typeof(PrototypePlayerHudRenderer).GetMethod(
+            "RadarWorldToLayerPoint",
+            BindingFlags.Static | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+
+        Vector2 nearContact = (Vector2)method.Invoke(null, new object[] { radar, new Vector3(100f, 0f, 0f), 100f });
+        Vector2 edgeContact = (Vector2)method.Invoke(null, new object[] { radar, new Vector3(2500f, 0f, 0f), 100f });
+
+        Assert.That(nearContact.magnitude, Is.GreaterThan(10f), "close contact should be visibly separated from center");
+        Assert.That(edgeContact.magnitude, Is.InRange(99.9f, 100f), "range edge should still map to panel edge");
+        Assert.That(nearContact.magnitude, Is.LessThan(edgeContact.magnitude), "close points must remain inside edge distance");
+    }
+
+    [Test]
+    public void RadarGraphicClampRadarPointExpandsCloseContactsForMidRange()
+    {
+        var radar = new PrototypePlayerRadarSnapshot(
+            2500f,
+            "Range 2.5 km",
+            Vector3.zero,
+            Vector3.forward,
+            new PrototypePlayerRadarBlip[0],
+            new Vector3[0],
+            new Vector3[0],
+            false,
+            Vector3.zero);
+
+        MethodInfo method = typeof(PrototypePlayerHudRadarGraphic).GetMethod(
+            "ClampRadarPoint",
+            BindingFlags.Static | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+
+        Vector2 nearContact = (Vector2)method.Invoke(null, new object[] { Vector2.zero, 100f, radar, new Vector3(100f, 0f, 0f) });
+        Vector2 edgeContact = (Vector2)method.Invoke(null, new object[] { Vector2.zero, 100f, radar, new Vector3(2500f, 0f, 0f) });
+
+        Assert.That(nearContact.magnitude, Is.GreaterThan(10f), "close contact should be visibly separated from center");
+        Assert.That(edgeContact.magnitude, Is.InRange(99.9f, 100f), "range edge should still map to panel edge");
+        Assert.That(nearContact.magnitude, Is.LessThan(edgeContact.magnitude), "close points must remain inside edge distance");
     }
 
     [Test]
@@ -1313,6 +1415,10 @@ public class PrototypePlayerHudValidationTests
             Assert.False(FindRect(playerHud, "RadarPanel").gameObject.activeSelf);
             Assert.That(FindText(playerHud, "NavigationPlannerTitle").text, Is.EqualTo("Navigation Planner"));
             Assert.That(FindText(playerHud, "NavigationPlannerBody").text, Does.Contain("Target 1/"));
+            Assert.That(FindText(playerHud, "NavigationPlannerBody").text, Does.Contain("Manoever:"));
+            Assert.That(FindText(playerHud, "NavigationPlannerBody").text, Does.Contain("Route:"));
+            Assert.That(FindText(playerHud, "NavigationPlannerBody").text, Does.Contain("Burn req"));
+            Assert.That(FindText(playerHud, "NavigationPlannerBody").text, Does.Contain("Stop "));
             Assert.True(FindRect(playerHud, "NavigationPlannerMapPanel").gameObject.activeSelf);
             Assert.True(FindRect(playerHud, "NavigationPlannerMapLayer").gameObject.activeInHierarchy);
             Assert.True(FindRect(playerHud, "NavigationPlannerMapGridSegment0").gameObject.activeInHierarchy);
@@ -1525,6 +1631,11 @@ public class PrototypePlayerHudValidationTests
             "--",
             "Ziel gewaehlt",
             "Direkter Kurs",
+            visible ? "Route: Direkt" : "Route: Kein Ziel",
+            visible ? "Manoever: Direkt-Burn bereit" : "Manoever: Kein Ziel",
+            visible ? 140f : 0f,
+            visible ? 12f : 0f,
+            visible ? 60f : 0f,
             new string[0],
             new Vector3[0],
             PrototypeTrajectoryPreviewSnapshot.Unavailable("Trajectory Preview", 0, 0f),
@@ -1658,6 +1769,13 @@ public class PrototypePlayerHudValidationTests
         FieldInfo field = target.GetType().GetField("<" + propertyName + ">k__BackingField", BindingFlags.Instance | BindingFlags.NonPublic);
         Assert.NotNull(field, propertyName);
         field.SetValue(target, value);
+    }
+
+    private static void InvokeFixedUpdate(object target)
+    {
+        MethodInfo method = target.GetType().GetMethod("FixedUpdate", BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        method.Invoke(target, null);
     }
 
     private static void AssertNoPanelOverlap(PrototypePlayerHudRenderer playerHud, int width, int height)

@@ -6,6 +6,16 @@ Player UI regression controls, minimap evidence, navigation/combat popups, Kill 
 
 ## Evidence
 
+- Latest minimap Sqrt-Projection slice:
+  - Update: `PrototypePlayerHud.cs` and `PrototypePlayerHudValidationTests.cs` were extended with nonlinear radar projection and corresponding tests.
+  - Unity MCP `validate_script`:
+    - `Assets/Scripts/Prototype/PrototypePlayerHud.cs`: PASS, 0 errors, existing warnings only.
+    - `Assets/Tests/Editor/PrototypePlayerHudValidationTests.cs`: PASS, 0 errors, existing warnings only.
+    - `Assets/Tests/PlayMode/PrototypePlayerHudRuntimeEvidenceExporter.cs`: PASS, 0 errors, existing warnings only.
+  - `dotnet build "Weltraum Spiel.sln" --no-restore`: PASS, 0 errors, 22 existing Unity/generated assembly warnings.
+  - Unity MCP PlayMode test `PrototypePlayerHudLiveRuntimeEvidencePlayModeTests.PrototypeBootstrapRuntimePlayerHudEvidenceCapturesPlayerComputerPopups`: PASS 1/1 (executed before the projection patch).
+  - Manual Unity MCP GameView screenshot after patch: `tests/screenshots/minimap-live-sqrt-projection-after.png`.
+  - Focused EditMode test run status: blocked by stale MCP job `8325a59ff4554e9caaf9a3729d36a45e` (`tests_running`), so new focused tests have not been re-run yet.
 - Latest live minimap readability follow-up:
   - Live MCP screenshot before the patch showed the top-right radar was technically populated (`31 contacts`) but still read as empty because the panel was too small and the contact cluster was visually weak.
   - Fix: enlarge the compact radar, increase grid/route/preview/blip contrast and size, raise the uGUI blip pool from 36 to 64 contacts, and sort radar contacts so selected navigation/combat blips render above lower-priority map contacts.

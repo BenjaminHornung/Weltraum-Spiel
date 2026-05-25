@@ -339,6 +339,11 @@ public static class PrototypePlayerHudRuntimeEvidenceExporter
             visible ? "ETA nicht auf Kurs" : "--",
             visible ? "Ziel gewaehlt" : "Bereit",
             visible ? "Direkter Kurs" : "Kein Kurs",
+            visible ? "Route: Direkt" : "Route: Kein Ziel",
+            visible ? "Manoever: Direkt-Burn bereit" : "Manoever: Kein Ziel",
+            visible ? 180f : 0f,
+            visible ? 8f : 0f,
+            visible ? 24f : 0f,
             visible ? new[] { "Limited RCS" } : new string[0],
             new[] { Vector3.zero, new Vector3(0f, 0f, 24f), new Vector3(0f, 1.8f, 54f) },
             new PrototypeTrajectoryPreviewSnapshot(

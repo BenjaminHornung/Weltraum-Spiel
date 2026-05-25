@@ -76,6 +76,11 @@ public readonly struct PrototypePlayerNavigationSnapshot
         string etaLabel,
         string stateLabel,
         string phaseLabel,
+        string routeModeLabel,
+        string maneuverIntentLabel,
+        float stoppingDistanceMeters,
+        float requiredBurnSeconds,
+        float availableBurnSeconds,
         string[] warningLabels,
         Vector3[] routeWorldPoints,
         PrototypeTrajectoryPreviewSnapshot trajectoryPreview,
@@ -95,6 +100,11 @@ public readonly struct PrototypePlayerNavigationSnapshot
         EtaLabel = string.IsNullOrWhiteSpace(etaLabel) ? "--" : etaLabel;
         StateLabel = string.IsNullOrWhiteSpace(stateLabel) ? "Bereit" : stateLabel;
         PhaseLabel = string.IsNullOrWhiteSpace(phaseLabel) ? "Direkter Kurs" : phaseLabel;
+        RouteModeLabel = string.IsNullOrWhiteSpace(routeModeLabel) ? "Route: Direkt" : routeModeLabel;
+        ManeuverIntentLabel = string.IsNullOrWhiteSpace(maneuverIntentLabel) ? StateLabel : maneuverIntentLabel;
+        StoppingDistanceMeters = Mathf.Max(0f, stoppingDistanceMeters);
+        RequiredBurnSeconds = Mathf.Max(0f, requiredBurnSeconds);
+        AvailableBurnSeconds = availableBurnSeconds;
         WarningLabels = warningLabels ?? System.Array.Empty<string>();
         RouteWorldPoints = routeWorldPoints ?? System.Array.Empty<Vector3>();
         TrajectoryPreview = trajectoryPreview;
@@ -115,6 +125,11 @@ public readonly struct PrototypePlayerNavigationSnapshot
     public string EtaLabel { get; }
     public string StateLabel { get; }
     public string PhaseLabel { get; }
+    public string RouteModeLabel { get; }
+    public string ManeuverIntentLabel { get; }
+    public float StoppingDistanceMeters { get; }
+    public float RequiredBurnSeconds { get; }
+    public float AvailableBurnSeconds { get; }
     public string[] WarningLabels { get; }
     public Vector3[] RouteWorldPoints { get; }
     public PrototypeTrajectoryPreviewSnapshot TrajectoryPreview { get; }
@@ -849,6 +864,11 @@ public static class PrototypePlayerHudSnapshotBuilder
                 "--",
                 "Bereit",
                 preview.HasRenderablePoints ? preview.SourceLabel : "Direkter Kurs",
+                preview.HasRenderablePoints ? "Route: Vorschau" : "Route: Kein Ziel",
+                preview.HasRenderablePoints ? "Manoever: Vorschau" : "Manoever: Kein Ziel",
+                0f,
+                0f,
+                0f,
                 System.Array.Empty<string>(),
                 System.Array.Empty<Vector3>(),
                 preview,
@@ -883,6 +903,11 @@ public static class PrototypePlayerHudSnapshotBuilder
             eta,
             TranslateNavigationState(autopilot.CurrentState),
             TranslateNavigationPhase(autopilot.NavigationPhase),
+            BuildNavigationRouteModeLabel(routePoints, hasAvoidanceCue),
+            BuildNavigationManeuverIntentLabel(autopilot),
+            autopilot.StoppingDistance,
+            autopilot.RequiredBurnSeconds,
+            autopilot.AvailableBurnSeconds,
             warnings,
             routePoints,
             preview,
@@ -2063,6 +2088,75 @@ public static class PrototypePlayerHudSnapshotBuilder
         }
 
         return string.Empty;
+    }
+
+    private static string BuildNavigationRouteModeLabel(Vector3[] routePoints, bool hasAvoidanceCue)
+    {
+        if (hasAvoidanceCue)
+        {
+            return "Route: Ausweichkurs";
+        }
+
+        if (routePoints != null && routePoints.Length > 2)
+        {
+            return "Route: Geplant";
+        }
+
+        if (routePoints != null && routePoints.Length > 1)
+        {
+            return "Route: Direkt";
+        }
+
+        return "Route: Kein Plan";
+    }
+
+    private static string BuildNavigationManeuverIntentLabel(PrototypeWaypointAutopilot autopilot)
+    {
+        if (autopilot == null || autopilot.CurrentTarget == null)
+        {
+            return "Manoever: Kein Ziel";
+        }
+
+        if (!autopilot.AutopilotEngaged)
+        {
+            if (autopilot.AvoidanceActive || autopilot.NavigationObstacleDetected)
+            {
+                return "Manoever: Ausweichkurs geplant";
+            }
+
+            if (autopilot.LastMetrics.shouldBrake)
+            {
+                return "Manoever: Zum Bremsen drehen";
+            }
+
+            return "Manoever: Direkt-Burn bereit";
+        }
+
+        switch (autopilot.CurrentState)
+        {
+            case PrototypeWaypointAutopilotState.ObstacleAvoidance:
+                return "Manoever: Ausweich-Burn";
+            case PrototypeWaypointAutopilotState.FlipForBrake:
+                return "Manoever: Zum Bremsen drehen";
+            case PrototypeWaypointAutopilotState.Brake:
+                return "Manoever: Main-Decel-Burn";
+            case PrototypeWaypointAutopilotState.AlignForBurn:
+                return "Manoever: Zum Burn ausrichten";
+            case PrototypeWaypointAutopilotState.Accelerate:
+                return "Manoever: Main-Transfer-Burn";
+            case PrototypeWaypointAutopilotState.FinalApproach:
+                return "Manoever: Endanflug trimmen";
+            case PrototypeWaypointAutopilotState.HoldPosition:
+                return "Manoever: Position halten";
+            case PrototypeWaypointAutopilotState.Complete:
+                return "Manoever: Ziel erreicht";
+            case PrototypeWaypointAutopilotState.FuelInsufficient:
+                return "Manoever: Zu wenig Treibstoff";
+            case PrototypeWaypointAutopilotState.Failed:
+                return "Manoever: Nicht moeglich";
+            default:
+                return "Manoever: " + TranslateNavigationState(autopilot.CurrentState);
+        }
     }
 
     private static string ResolveNavigationTargetType(PrototypeNavigationTarget target)
@@ -3373,9 +3467,22 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private static Vector2 RadarWorldToLayerPoint(PrototypePlayerRadarSnapshot radar, Vector3 target, float radius)
     {
         Vector3 delta = target - radar.ShipWorldPosition;
-        float rangeMeters = Mathf.Max(1f, radar.RangeMeters);
-        Vector2 flat = new Vector2(delta.x, delta.z) / rangeMeters * radius;
-        return Vector2.ClampMagnitude(flat, radius);
+        Vector2 flat = new Vector2(delta.x, delta.z);
+        return ProjectRadarOffset(flat, radar.RangeMeters, radius);
+    }
+
+    private static Vector2 ProjectRadarOffset(Vector2 flatOffset, float rangeMeters, float radius)
+    {
+        float range = Mathf.Max(1f, rangeMeters);
+        float rawDistance = flatOffset.magnitude;
+        if (rawDistance <= 0.0001f)
+        {
+            return Vector2.zero;
+        }
+
+        float normalizedDistance = Mathf.Clamp01(rawDistance / range);
+        float easedDistance = Mathf.Sqrt(normalizedDistance);
+        return flatOffset.normalized * (easedDistance * radius);
     }
 
     private static void ApplyRadarLine(Image image, Vector2 start, Vector2 end, Color color, float thickness)
@@ -3756,10 +3863,14 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             ? navigation.TrajectoryPreview.StatusLabel
             : "Preview off";
         string avoidanceLabel = navigation.HasAvoidanceCue ? navigation.AvoidanceLabel : "No obstacle cue";
+        string burnLabel = "Burn req " + FormatBurnSeconds(navigation.RequiredBurnSeconds)
+            + " / avail " + FormatBurnSeconds(navigation.AvailableBurnSeconds);
 
         return navigation.TargetName + " | " + navigation.TargetListLabel + "\n"
             + navigation.TargetTypeLabel + " | Dist " + FormatDistance(navigation.DistanceMeters) + " | ETA " + navigation.EtaLabel + "\n"
             + "Closing " + navigation.ClosingSpeed.ToString("0.0") + " m/s | Lateral " + navigation.LateralSpeed.ToString("0.0") + " m/s\n"
+            + navigation.ManeuverIntentLabel + " | " + navigation.RouteModeLabel + "\n"
+            + "Stop " + FormatDistance(navigation.StoppingDistanceMeters) + " | " + burnLabel + "\n"
             + navigation.StateLabel + " | " + navigation.PhaseLabel + "\n"
             + routeLabel + " | " + previewLabel + "\n"
             + avoidanceLabel;
@@ -4620,6 +4731,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             contextBodyText.text =
                 snapshot.Navigation.TargetTypeLabel + " | " + snapshot.Navigation.TargetListLabel + " | Dist " + FormatDistance(snapshot.Navigation.DistanceMeters) + " | ETA " + snapshot.Navigation.EtaLabel + "\n"
                 + "Closing " + snapshot.Navigation.ClosingSpeed.ToString("0.0") + " m/s | Lateral " + snapshot.Navigation.LateralSpeed.ToString("0.0") + " m/s\n"
+                + snapshot.Navigation.ManeuverIntentLabel + "\n"
+                + "Stop " + FormatDistance(snapshot.Navigation.StoppingDistanceMeters) + " | " + snapshot.Navigation.RouteModeLabel + "\n"
                 + snapshot.Navigation.StateLabel + "\n"
                 + snapshot.Navigation.PhaseLabel
                 + (string.IsNullOrWhiteSpace(snapshot.Navigation.AvoidanceLabel) ? string.Empty : "\n" + snapshot.Navigation.AvoidanceLabel)
@@ -5215,6 +5328,21 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         }
 
         return meters.ToString("0") + " m";
+    }
+
+    private static string FormatBurnSeconds(float seconds)
+    {
+        if (float.IsInfinity(seconds))
+        {
+            return "unlimited";
+        }
+
+        if (float.IsNaN(seconds) || seconds <= 0f)
+        {
+            return "--";
+        }
+
+        return seconds.ToString("0.0") + "s";
     }
 
     private static Color ColorForSeverity(PrototypePlayerHudSeverity severity)
@@ -5854,9 +5982,22 @@ public sealed class PrototypePlayerHudRadarGraphic : MaskableGraphic
     private static Vector2 ClampRadarPoint(Vector2 center, float radius, PrototypePlayerRadarSnapshot radar, Vector3 target)
     {
         Vector3 delta = target - radar.ShipWorldPosition;
-        float rangeMeters = Mathf.Max(1f, radar.RangeMeters);
-        Vector2 flat = new Vector2(delta.x, delta.z) / rangeMeters * radius;
-        return center + Vector2.ClampMagnitude(flat, radius);
+        Vector2 flat = new Vector2(delta.x, delta.z);
+        return center + ProjectRadarOffsetPrototypeGraphic(flat, radar.RangeMeters, radius);
+    }
+
+    private static Vector2 ProjectRadarOffsetPrototypeGraphic(Vector2 flatOffset, float rangeMeters, float radius)
+    {
+        float range = Mathf.Max(1f, rangeMeters);
+        float rawDistance = flatOffset.magnitude;
+        if (rawDistance <= 0.0001f)
+        {
+            return Vector2.zero;
+        }
+
+        float normalizedDistance = Mathf.Clamp01(rawDistance / range);
+        float easedDistance = Mathf.Sqrt(normalizedDistance);
+        return flatOffset.normalized * (easedDistance * radius);
     }
 
     private static void DrawCircle(VertexHelper vh, Vector2 center, float radius, Color color, float thickness, int segments)
