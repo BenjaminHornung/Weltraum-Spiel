@@ -2237,6 +2237,12 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         }
 
         if (keyboard != null
+            && keyboard.cKey.wasPressedThisFrame)
+        {
+            HandleCombatTargetCycle();
+        }
+
+        if (keyboard != null
             && keyboard.f5Key.wasPressedThisFrame)
         {
             SetNavigationPlannerVisible(navigationPlannerPanelRect == null || !navigationPlannerPanelRect.gameObject.activeSelf);
@@ -3467,6 +3473,16 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         }
 
         momentumAssist.ActivateFromUi();
+    }
+
+    private void HandleCombatTargetCycle()
+    {
+        if (weaponComputer == null)
+        {
+            return;
+        }
+
+        weaponComputer.SelectNextTarget();
     }
 
     private void SetKillMomentumButtonState(string label, bool interactable)

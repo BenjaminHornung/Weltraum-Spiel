@@ -684,6 +684,7 @@ public class PrototypePlayerHudValidationTests
         Assert.That(help, Does.Contain("F7: combat computer"));
         Assert.That(help, Does.Contain("P navigation planner"));
         Assert.That(help, Does.Contain("M Kill Momentum"));
+        Assert.That(help, Does.Contain("C cycle combat target"));
         Assert.That(help, Does.Not.Contain("Debug Console"));
         Assert.That(help, Does.Not.Contain("Flight Diagnostics"));
         Assert.That(help, Does.Not.Contain("DES/ACT/RES"));
@@ -1194,6 +1195,8 @@ public class PrototypePlayerHudValidationTests
         Assert.That(source, Does.Contain("HandleKillMomentumAction(\"keybind\")"));
         Assert.That(source, Does.Contain("keyboard.f5Key.wasPressedThisFrame"));
         Assert.That(source, Does.Contain("SetNavigationPlannerVisible"));
+        Assert.That(source, Does.Contain("keyboard.cKey.wasPressedThisFrame"));
+        Assert.That(source, Does.Contain("HandleCombatTargetCycle"));
     }
 
     [Test]

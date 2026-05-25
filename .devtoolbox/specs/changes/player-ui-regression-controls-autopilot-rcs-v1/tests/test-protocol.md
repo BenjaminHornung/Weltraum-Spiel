@@ -6,6 +6,20 @@ Player UI regression controls, minimap evidence, navigation/combat popups, Kill 
 
 ## Evidence
 
+- Latest player combat-control keybind pass:
+  - Fix: the player HUD now routes `C` to the next combat target through the existing `PrototypeWeaponComputer` API, so Basic Player view can select targets without opening the legacy IMGUI Weapon Computer.
+  - Fix: player help/catalog now documents `C cycle combat target` alongside `F7: combat computer`. The earlier reviewed `Shift+C` idea was dropped because it conflicts with the existing Shift throttle-up binding.
+  - Test hardening: the PlayMode radar screenshot marker check now maps the `RadarPanel` through the HUD canvas rect into the rendered screenshot, avoiding false negatives when the camera renders into a test RenderTexture.
+  - Unity MCP `validate_script`:
+    - `Assets/Scripts/Prototype/PrototypePlayerHud.cs`: PASS, 0 errors, existing warnings only.
+    - `Assets/Scripts/Prototype/PrototypeInputBindingCatalog.cs`: PASS, 0 errors.
+    - `Assets/Tests/Editor/PrototypePlayerHudValidationTests.cs`: PASS, 0 errors.
+    - `Assets/Tests/PlayMode/PrototypePlayerHudLiveRuntimeEvidencePlayModeTests.cs`: PASS, 0 errors, existing warnings only.
+  - Unity MCP EditMode focused HUD controls job `9abea7c223dd4874b322e796e1f452dd`: 5/5 passed.
+  - Unity MCP PlayMode screenshot job `952bded41bbe40bfb6724827742e90f3`: 1/1 passed.
+  - Screenshot: `tests/screenshots/player-ui-regression-radar-normal-1280x720.png`
+  - Screenshot: `tests/screenshots/player-ui-regression-nav-planner-1280x720.png`
+  - Screenshot: `tests/screenshots/player-ui-regression-combat-computer-1280x720.png`
 - Latest minimap non-empty clarity pass:
   - Root cause: the compact player radar could be technically populated but still read as empty because the status label only showed range and the uGUI layer did not draw a direct selected-target route when no autopilot route had been generated yet.
   - Fix: the compact radar now shows the contact count in its status label and draws a direct route line from the ship to the selected navigation target when route planning has not produced a multi-point route.
@@ -73,5 +87,7 @@ Player UI regression controls, minimap evidence, navigation/combat popups, Kill 
 - Combat Computer popup is centered above the bottom bar and hides fixed context/radar panels while open.
 
 ## External Review
+
+`claude-plan-review` was invoked for the player combat-control keybind slice with the touched file list and screenshot paths. The review flagged `Shift+C` as a conflict with the existing Shift throttle-up binding; that shortcut was removed before final verification, leaving the lower-conflict `C` next-combat-target binding and the existing uGUI popup buttons for previous/auto/prio controls.
 
 `claude-plan-review` was invoked with the empty-minimap fix context and screenshot paths after the latest PlayMode evidence; the local wrapper timed out after 120 seconds. It was also invoked before the latest planner-map slice and timed out after 120 seconds. For the minimap/radar readability slice, a PNG-backed review failed with a local `charmap` encoding error and the follow-up path-only review timed out after 120 seconds. No actionable review feedback was returned.

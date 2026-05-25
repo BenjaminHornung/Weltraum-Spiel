@@ -56,6 +56,7 @@ public static class PrototypeInputBindingCatalog
         new PrototypeInputBindingSection("Weapons", new[]
         {
             "Space: fire",
+            "C cycle combat target",
             "Weapon Computer: multi-select targets, choose priority, toggle Auto Fire"
         }),
         new PrototypeInputBindingSection("Debug", new[]

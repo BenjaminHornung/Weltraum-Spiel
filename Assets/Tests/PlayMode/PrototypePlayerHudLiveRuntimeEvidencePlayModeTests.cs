@@ -784,8 +784,10 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
         {
             Assert.That(texture.LoadImage(File.ReadAllBytes(screenshotPath)), Is.True, "radar screenshot can be decoded");
             RectTransform radarPanel = FindRect(playerHud, "RadarPanel");
-            Camera camera = playerHud.GetComponent<Camera>();
-            Assert.NotNull(camera, "player HUD camera");
+            Canvas canvas = playerHud.GetComponentInChildren<Canvas>(true);
+            Assert.NotNull(canvas, "PrototypePlayerHudCanvas");
+            RectTransform canvasRect = canvas.GetComponent<RectTransform>();
+            Assert.NotNull(canvasRect, "canvas rect");
 
             Vector3[] corners = new Vector3[4];
             radarPanel.GetWorldCorners(corners);
@@ -793,9 +795,9 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
             Vector2 max = new Vector2(float.MinValue, float.MinValue);
             for (int i = 0; i < corners.Length; i++)
             {
-                Vector3 screen = camera.WorldToScreenPoint(corners[i]);
-                min = Vector2.Min(min, screen);
-                max = Vector2.Max(max, screen);
+                Vector2 screenshot = CanvasWorldToScreenshotPoint(canvasRect, corners[i], width, height);
+                min = Vector2.Min(min, screenshot);
+                max = Vector2.Max(max, screenshot);
             }
 
             int centerX = Mathf.Clamp(Mathf.RoundToInt((min.x + max.x) * 0.5f), 0, width - 1);
@@ -824,6 +826,15 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
         {
             Object.DestroyImmediate(texture);
         }
+    }
+
+    private static Vector2 CanvasWorldToScreenshotPoint(RectTransform canvasRect, Vector3 worldPosition, int width, int height)
+    {
+        Vector2 local = canvasRect.InverseTransformPoint(worldPosition);
+        Rect rect = canvasRect.rect;
+        float x = Mathf.InverseLerp(rect.xMin, rect.xMax, local.x) * width;
+        float y = Mathf.InverseLerp(rect.yMin, rect.yMax, local.y) * height;
+        return new Vector2(x, y);
     }
 
     private static void AssertRenderablePixels(Texture2D texture, string label)
