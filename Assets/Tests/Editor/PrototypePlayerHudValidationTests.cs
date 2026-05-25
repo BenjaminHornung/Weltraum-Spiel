@@ -1146,6 +1146,10 @@ public class PrototypePlayerHudValidationTests
             Assert.False(FindRect(playerHud, "RadarPanel").gameObject.activeSelf);
             Assert.That(FindText(playerHud, "NavigationPlannerTitle").text, Is.EqualTo("Navigation Planner"));
             Assert.That(FindText(playerHud, "NavigationPlannerBody").text, Does.Contain("Target 1/"));
+            Assert.True(FindRect(playerHud, "NavigationPlannerMapPanel").gameObject.activeSelf);
+            Assert.True(FindRect(playerHud, "NavigationPlannerMapLayer").gameObject.activeInHierarchy);
+            Assert.True(FindRect(playerHud, "NavigationPlannerMapGridSegment0").gameObject.activeInHierarchy);
+            Assert.That(FindText(playerHud, "NavigationPlannerMapText").text, Does.Contain("Range "));
 
             Button next = FindButton(playerHud, "NavPlannerNextTarget");
             Button engage = FindButton(playerHud, "NavPlannerEngage");

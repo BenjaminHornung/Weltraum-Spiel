@@ -562,6 +562,10 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
             720);
         Assert.That(navSnapshot.Navigation.Visible, Is.True, "navigation planner snapshot");
         Assert.That(FindRect(rig.PlayerHud, "NavigationPlannerPanel").gameObject.activeSelf, Is.True, "navigation planner active");
+        Assert.That(FindRect(rig.PlayerHud, "NavigationPlannerMapPanel").gameObject.activeInHierarchy, Is.True, "navigation planner map active");
+        Assert.That(FindRect(rig.PlayerHud, "NavigationPlannerMapLayer").rect.width, Is.GreaterThan(90f), "navigation planner map width");
+        Assert.That(FindRect(rig.PlayerHud, "NavigationPlannerMapGridSegment0").gameObject.activeInHierarchy, Is.True, "navigation planner map grid");
+        Assert.That(FindText(rig.PlayerHud, "NavigationPlannerMapText").text, Does.Contain("Range "), "navigation planner map range label");
         Assert.That(FindRect(rig.PlayerHud, "ContextPanel").gameObject.activeSelf, Is.False, "navigation planner hides context");
         AssertActiveHudRectsInsideCanvas(rig.PlayerHud);
         AssertActiveButtonTextNotOverflowing(rig.PlayerHud);
