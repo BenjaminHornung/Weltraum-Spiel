@@ -124,6 +124,20 @@ Player UI regression controls, minimap evidence, navigation/combat popups, Kill 
 - Navigation Planner popup is centered above the bottom bar, hides fixed context/radar panels while open, and now includes an embedded player map layer with grid, blips, route/preview counts, and range label.
 - Combat Computer popup is centered above the bottom bar and hides fixed context/radar panels while open.
 
+## Latest: minimap combat fallback discovery slice
+
+- Change: `PrototypePlayerHud.cs` now adds a guarded fallback in `AddCombatRadarBlips` that invokes
+  `PrototypeWeaponTarget.DiscoverInto(..., includeDebugFallback: true)` only when `weaponComputer.AvailableTargets`
+  plus registry-derived combat sources add zero combat blips.
+- Unity MCP `validate_script`:
+  - `Assets/Scripts/Prototype/PrototypePlayerHud.cs`: PASS, 0 errors (2 existing analyzer warnings).
+  - `Assets/Tests/Editor/PrototypePlayerHudValidationTests.cs`: PASS, 0 errors.
+- Unity MCP EditMode job `7cf8a086444e438ab94031cf4418d7fb`: `PrototypePlayerHudValidationTests.RadarSnapshotFallsBackToCombatTargetDiscoveryWhenWeaponSourcesAreEmpty` PASS 1/1.
+- Unity MCP EditMode job `70309e478e2248859d30d76aabb66c3a`: adjacent radar regressions PASS 4/4.
+- `dotnet build "Weltraum Spiel.sln" --no-restore`: PASS, 0 errors, 22 existing Unity/generated assembly warnings.
+- Manual Unity MCP GameView screenshot after patch: `tests/screenshots/minimap-combat-fallback-live-after.png`.
+- Note: combined first attempt `d574a6844dc44a7bb807bbf799c992b6` failed to initialize in the Unity test runner; the single fallback run and adjacent radar regression run above passed afterward.
+
 ## External Review
 
 `claude-plan-review` was invoked for the player combat-control keybind slice with the touched file list and screenshot paths. The review flagged `Shift+C` as a conflict with the existing Shift throttle-up binding; that shortcut was removed before final verification, leaving the lower-conflict `C` next-combat-target binding and the existing uGUI popup buttons for previous/auto/prio controls.

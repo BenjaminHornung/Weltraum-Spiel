@@ -1324,6 +1324,7 @@ public static class PrototypePlayerHudSnapshotBuilder
     {
         var seenTargetIds = new HashSet<int>();
         Transform selectedTarget = weaponComputer != null ? weaponComputer.ActiveTargetTransform : null;
+        int prePrimaryCombatBlipCount = blips != null ? blips.Count : 0;
         if (weaponComputer != null && weaponComputer.AvailableTargets != null)
         {
             IReadOnlyList<PrototypeWeaponTarget> availableTargets = weaponComputer.AvailableTargets;
@@ -1374,6 +1375,50 @@ public static class PrototypePlayerHudSnapshotBuilder
                     : PrototypePlayerRadarBlipKind.Combat,
                 target != null ? target.Label : targetTransform.name,
                 targetTransform.position,
+                6f);
+        }
+
+        if (blips == null || blips.Count == prePrimaryCombatBlipCount)
+        {
+            AddCombatRadarBlipsFallback(
+                blips,
+                keys,
+                seenTargetIds,
+                shipRoot,
+                selectedTarget);
+        }
+    }
+
+    private static void AddCombatRadarBlipsFallback(
+        List<PrototypePlayerRadarBlip> blips,
+        HashSet<string> keys,
+        HashSet<int> seenTargetIds,
+        Transform shipRoot,
+        Transform selectedTarget)
+    {
+        var fallbackTargets = new List<PrototypeWeaponTarget>();
+        PrototypeWeaponTarget.DiscoverInto(shipRoot, fallbackTargets, includeDebugFallback: true);
+        for (int i = 0; i < fallbackTargets.Count; i++)
+        {
+            PrototypeWeaponTarget target = fallbackTargets[i];
+            if (target == null || !target.IsValid || IsSameHierarchy(shipRoot, target.TargetTransform))
+            {
+                continue;
+            }
+
+            if (!seenTargetIds.Add(target.StableId))
+            {
+                continue;
+            }
+
+            AddRadarBlip(
+                blips,
+                keys,
+                IsSameHierarchy(selectedTarget, target.TargetTransform)
+                    ? PrototypePlayerRadarBlipKind.SelectedCombat
+                    : PrototypePlayerRadarBlipKind.Combat,
+                target.Label,
+                target.Position,
                 6f);
         }
     }

@@ -303,6 +303,36 @@ public class PrototypePlayerHudValidationTests
     }
 
     [Test]
+    public void RadarSnapshotFallsBackToCombatTargetDiscoveryWhenWeaponSourcesAreEmpty()
+    {
+        using (var builder = new PrototypeScenarioBuilder())
+        {
+            PrototypeCombatRig combatRig = builder.CreateCombatRig("PlayerHudRadarCombatFallbackShip");
+            builder.CreateWeaponTarget("PlayerHudRadarFallbackCombatTarget", new Vector3(80f, 0f, 190f));
+
+            PrototypeWeaponTargetRegistry.ClearForTests();
+            combatRig.Computer.RefreshTargets();
+
+            Assert.That(PrototypeWeaponTargetRegistry.RegisteredCount, Is.EqualTo(0), "registry forced empty");
+            Assert.That(combatRig.Computer.AvailableTargets.Count, Is.EqualTo(0), "weapon computer sources empty");
+
+            PrototypePlayerHudSnapshot snapshot = PrototypePlayerHudSnapshotBuilder.Build(
+                combatRig.Ship.Ship.transform,
+                combatRig.Ship.Body,
+                combatRig.Ship.Stats,
+                combatRig.Ship.Controller,
+                null,
+                null,
+                combatRig.Computer,
+                null,
+                null);
+
+            Assert.That(snapshot.Radar.Blips.Length, Is.GreaterThan(0), "fallback combat discovery populated");
+            AssertRadarContains(snapshot.Radar, PrototypePlayerRadarBlipKind.Combat, "PlayerHudRadarFallbackCombatTarget");
+        }
+    }
+
+    [Test]
     public void NavigationPlannerMapShowsRadarContactsWithoutActiveRoute()
     {
         GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
