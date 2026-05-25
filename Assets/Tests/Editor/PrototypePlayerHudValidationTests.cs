@@ -292,7 +292,7 @@ public class PrototypePlayerHudValidationTests
     }
 
     [Test]
-    public void RadarTextUsesSnapshotAutoRangeLabel()
+    public void RadarTextUsesSnapshotAutoRangeLabelAndContactCount()
     {
         GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
         cameraObject.AddComponent<Camera>();
@@ -321,6 +321,35 @@ public class PrototypePlayerHudValidationTests
                 radar));
 
         Assert.That(FindText(playerHud, "RadarText").text, Is.EqualTo("Range 250 m"));
+
+        radar = new PrototypePlayerRadarSnapshot(
+            250f,
+            "Range 250 m",
+            Vector3.zero,
+            Vector3.forward,
+            new[]
+            {
+                new PrototypePlayerRadarBlip(
+                    PrototypePlayerRadarBlipKind.Navigation,
+                    "Nearest waypoint",
+                    new Vector3(0f, 0f, 120f))
+            },
+            new Vector3[0],
+            new Vector3[0],
+            false,
+            Vector3.zero);
+
+        ApplySnapshotForTest(
+            playerHud,
+            CreateHudSnapshot(
+                CreateCombatSnapshot(false),
+                CreateDockingSnapshot(false),
+                CreateNavigationSnapshot(false),
+                default,
+                null,
+                radar));
+
+        Assert.That(FindText(playerHud, "RadarText").text, Is.EqualTo("Range 250 m | 1 contact"));
     }
 
     [Test]
@@ -352,6 +381,9 @@ public class PrototypePlayerHudValidationTests
             Assert.That(snapshot.Navigation.TargetName, Is.EqualTo("Medium Nav Target"));
             Assert.That(snapshot.Radar.RangeMeters, Is.EqualTo(2500f));
             Assert.That(snapshot.Radar.RangeLabel, Is.EqualTo("Range 2.5 km"));
+            Assert.That(snapshot.Radar.RouteWorldPoints.Length, Is.EqualTo(2), "direct selected-target route line");
+            Assert.That(snapshot.Radar.RouteWorldPoints[0], Is.EqualTo(rig.Ship.transform.position));
+            Assert.That(snapshot.Radar.RouteWorldPoints[1], Is.EqualTo(target.Position));
         }
     }
 

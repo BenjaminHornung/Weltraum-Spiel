@@ -6,6 +6,17 @@ Player UI regression controls, minimap evidence, navigation/combat popups, Kill 
 
 ## Evidence
 
+- Latest minimap non-empty clarity pass:
+  - Root cause: the compact player radar could be technically populated but still read as empty because the status label only showed range and the uGUI layer did not draw a direct selected-target route when no autopilot route had been generated yet.
+  - Fix: the compact radar now shows the contact count in its status label and draws a direct route line from the ship to the selected navigation target when route planning has not produced a multi-point route.
+  - Unity MCP `validate_script`:
+    - `Assets/Scripts/Prototype/PrototypePlayerHud.cs`: PASS, 0 errors, existing warnings only.
+    - `Assets/Tests/Editor/PrototypePlayerHudValidationTests.cs`: PASS, 0 errors.
+  - Unity MCP EditMode focused radar/planner job `2d88ed1dd1444e6cb24dba04845b14f9`: 5/5 passed, including direct-route fallback and `Range 250 m | 1 contact` label coverage.
+  - Unity MCP PlayMode screenshot job `d2e47450d9684324815b78d28ac3b83a`: 1/1 passed.
+  - Screenshot: `tests/screenshots/player-ui-regression-radar-normal-1280x720.png`
+  - Screenshot: `tests/screenshots/player-ui-regression-nav-planner-1280x720.png`
+  - Visual check: normal Basic Player HUD radar shows grid, visible blips, selected-route line, and `Range 1 km | 34 contacts`; no legacy IMGUI windows overlap the Basic screenshot.
 - Latest empty-minimap fix:
   - Root cause: existing generated HUD canvases could be accepted as complete while missing the newer Navigation Planner map objects, and scene navigation targets were not added when the autopilot manager was missing or stale.
   - Fix: bind/validate Navigation Planner map pools during existing-canvas reuse, rebuild stale HUD canvases, keep the planner map visible for radar contacts even without an active route, and add a scene-target fallback for radar blips.

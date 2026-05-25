@@ -913,7 +913,7 @@ public static class PrototypePlayerHudSnapshotBuilder
         AddEnvironmentRadarBlips(blips, keys);
         AddNavigationObstacleRadarBlips(blips, keys);
 
-        Vector3[] route = navigation.RouteWorldPoints ?? System.Array.Empty<Vector3>();
+        Vector3[] route = ResolveRadarRoutePoints(origin, autopilot, navigation);
         Vector3[] preview = navigation.TrajectoryPreview.HasRenderablePoints
             ? CopyRoutePoints(navigation.TrajectoryPreview.Points, 16)
             : System.Array.Empty<Vector3>();
@@ -966,6 +966,26 @@ public static class PrototypePlayerHudSnapshotBuilder
             default:
                 return false;
         }
+    }
+
+    private static Vector3[] ResolveRadarRoutePoints(
+        Vector3 origin,
+        PrototypeWaypointAutopilot autopilot,
+        PrototypePlayerNavigationSnapshot navigation)
+    {
+        Vector3[] route = navigation.RouteWorldPoints ?? System.Array.Empty<Vector3>();
+        if (route.Length > 1)
+        {
+            return route;
+        }
+
+        PrototypeNavigationTarget selected = autopilot != null ? autopilot.CurrentTarget : null;
+        if (selected == null)
+        {
+            return route;
+        }
+
+        return new[] { origin, selected.Position };
     }
 
     private static PrototypePlayerTargetIndicatorSnapshot BuildTargetIndicators(
@@ -3116,7 +3136,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         ApplyContext(snapshot);
         ConfigureNavigationPlannerPanel(snapshot);
         ConfigureCombatComputerPanel(snapshot);
-        radarText.text = snapshot.Radar.RangeLabel;
+        radarText.text = BuildRadarStatusLabel(snapshot.Radar);
         if (helpText != null && helpPanel != null && helpPanel.activeSelf)
         {
             FlightControlMode activeMode = controller != null ? controller.ControlMode : FlightControlMode.Normal;
@@ -3691,6 +3711,20 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             : snapshot.Navigation.Visible ? snapshot.Navigation.TrajectoryPreview.StatusLabel : "Preview off";
 
         return range + " | " + contacts + " | " + route + " | " + preview;
+    }
+
+    private static string BuildRadarStatusLabel(PrototypePlayerRadarSnapshot radar)
+    {
+        string range = !string.IsNullOrWhiteSpace(radar.RangeLabel)
+            ? radar.RangeLabel
+            : "Range --";
+        int contactCount = radar.Blips != null ? radar.Blips.Length : 0;
+        if (contactCount <= 0)
+        {
+            return range;
+        }
+
+        return range + " | " + contactCount.ToString() + (contactCount == 1 ? " contact" : " contacts");
     }
 
     private static bool HasRadarMapContent(PrototypePlayerRadarSnapshot radar)
