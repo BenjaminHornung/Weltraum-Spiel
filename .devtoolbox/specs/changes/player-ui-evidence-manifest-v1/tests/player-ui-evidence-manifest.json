@@ -271,6 +271,33 @@
       "minBytes": 4096,
       "captureKind": "live-playmode",
       "state": "navigation autopilot 4x3"
+    },
+    {
+      "id": "regression-radar-normal-1280x720",
+      "path": ".devtoolbox/specs/changes/player-ui-regression-controls-autopilot-rcs-v1/tests/screenshots/player-ui-regression-radar-normal-1280x720.png",
+      "width": 1280,
+      "height": 720,
+      "minBytes": 4096,
+      "captureKind": "live-playmode",
+      "state": "post-regression visible minimap grid and blips"
+    },
+    {
+      "id": "regression-navigation-planner-1280x720",
+      "path": ".devtoolbox/specs/changes/player-ui-regression-controls-autopilot-rcs-v1/tests/screenshots/player-ui-regression-nav-planner-1280x720.png",
+      "width": 1280,
+      "height": 720,
+      "minBytes": 4096,
+      "captureKind": "live-playmode",
+      "state": "post-regression navigation planner popup"
+    },
+    {
+      "id": "regression-combat-computer-1280x720",
+      "path": ".devtoolbox/specs/changes/player-ui-regression-controls-autopilot-rcs-v1/tests/screenshots/player-ui-regression-combat-computer-1280x720.png",
+      "width": 1280,
+      "height": 720,
+      "minBytes": 4096,
+      "captureKind": "live-playmode",
+      "state": "post-regression combat computer popup"
     }
   ]
 }
