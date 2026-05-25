@@ -852,8 +852,20 @@ public class PrototypePlayerHudValidationTests
     }
 
     [Test]
-    public void BasicPresetDoesNotRouteF5OrF7ToLegacyPrototypeWindows()
+    public void BasicPresetBlocksLegacyF2F3F4F5F7PresetRouting()
     {
+        Assert.False(PrototypeUiLayoutManager.ShouldRouteF2ToPrototypeDebugOverlay(PrototypeUiPreset.Basic));
+        Assert.True(PrototypeUiLayoutManager.ShouldRouteF2ToPrototypeDebugOverlay(PrototypeUiPreset.FlightTest));
+        Assert.True(PrototypeUiLayoutManager.ShouldRouteF2ToPrototypeDebugOverlay(PrototypeUiPreset.RcsTest));
+        Assert.True(PrototypeUiLayoutManager.ShouldRouteF2ToPrototypeDebugOverlay(PrototypeUiPreset.FullDiagnostics));
+        Assert.False(PrototypeUiLayoutManager.ShouldRouteF3ToPrototypeFlightDebugConsole(PrototypeUiPreset.Basic));
+        Assert.True(PrototypeUiLayoutManager.ShouldRouteF3ToPrototypeFlightDebugConsole(PrototypeUiPreset.FlightTest));
+        Assert.True(PrototypeUiLayoutManager.ShouldRouteF3ToPrototypeFlightDebugConsole(PrototypeUiPreset.RcsTest));
+        Assert.True(PrototypeUiLayoutManager.ShouldRouteF3ToPrototypeFlightDebugConsole(PrototypeUiPreset.FullDiagnostics));
+        Assert.False(PrototypeUiLayoutManager.ShouldRouteF4ToPrototypeFlightHud(PrototypeUiPreset.Basic));
+        Assert.True(PrototypeUiLayoutManager.ShouldRouteF4ToPrototypeFlightHud(PrototypeUiPreset.FlightTest));
+        Assert.True(PrototypeUiLayoutManager.ShouldRouteF4ToPrototypeFlightHud(PrototypeUiPreset.RcsTest));
+        Assert.True(PrototypeUiLayoutManager.ShouldRouteF4ToPrototypeFlightHud(PrototypeUiPreset.FullDiagnostics));
         Assert.False(PrototypeUiLayoutManager.ShouldRouteF5ToPrototypeMinimap(PrototypeUiPreset.Basic));
         Assert.True(PrototypeUiLayoutManager.ShouldRouteF5ToPrototypeMinimap(PrototypeUiPreset.FlightTest));
         Assert.True(PrototypeUiLayoutManager.ShouldRouteF5ToPrototypeMinimap(PrototypeUiPreset.RcsTest));

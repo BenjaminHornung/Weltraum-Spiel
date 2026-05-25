@@ -126,17 +126,23 @@ public static class PrototypeUiLayoutManager
             keybinds.SetWindowVisible(!keybinds.IsWindowVisible);
         }
 
-        if (keyboard.f2Key.wasPressedThisFrame && diagnostics != null)
+        if (keyboard.f2Key.wasPressedThisFrame
+            && diagnostics != null
+            && ShouldRouteF2ToPrototypeDebugOverlay(CurrentPreset))
         {
             diagnostics.SetWindowVisible(!diagnostics.IsWindowVisible);
         }
 
-        if (keyboard.f3Key.wasPressedThisFrame && console != null)
+        if (keyboard.f3Key.wasPressedThisFrame
+            && console != null
+            && ShouldRouteF3ToPrototypeFlightDebugConsole(CurrentPreset))
         {
             console.SetConsoleVisible(!console.IsConsoleVisible);
         }
 
-        if (keyboard.f4Key.wasPressedThisFrame && hud != null)
+        if (keyboard.f4Key.wasPressedThisFrame
+            && hud != null
+            && ShouldRouteF4ToPrototypeFlightHud(CurrentPreset))
         {
             hud.SetHudVisible(!hud.ShowHud);
         }
@@ -248,6 +254,21 @@ public static class PrototypeUiLayoutManager
     public static IReadOnlyCollection<PrototypeUiWindowState> WindowsForTests => Windows.Values;
 
     public static bool ShouldRouteF1ToPrototypeKeybindOverlay(PrototypeUiPreset preset)
+    {
+        return preset != PrototypeUiPreset.Basic;
+    }
+
+    public static bool ShouldRouteF3ToPrototypeFlightDebugConsole(PrototypeUiPreset preset)
+    {
+        return preset != PrototypeUiPreset.Basic;
+    }
+
+    public static bool ShouldRouteF2ToPrototypeDebugOverlay(PrototypeUiPreset preset)
+    {
+        return preset != PrototypeUiPreset.Basic;
+    }
+
+    public static bool ShouldRouteF4ToPrototypeFlightHud(PrototypeUiPreset preset)
     {
         return preset != PrototypeUiPreset.Basic;
     }
