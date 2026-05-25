@@ -739,6 +739,7 @@ public static class PrototypePlayerHudSnapshotBuilder
         if (!includeDebugControls)
         {
             lines.Add("F1: player help");
+            lines.Add("F5: navigation map");
             lines.Add("F7: combat computer");
         }
 
@@ -917,19 +918,29 @@ public static class PrototypePlayerHudSnapshotBuilder
             ? CopyRoutePoints(navigation.TrajectoryPreview.Points, 16)
             : System.Array.Empty<Vector3>();
         float farthestMeters = 0f;
+        float farthestActionableMeters = 0f;
         for (int i = 0; i < blips.Count; i++)
         {
-            farthestMeters = Mathf.Max(farthestMeters, FlatDistance(origin, blips[i].WorldPosition));
+            float distance = FlatDistance(origin, blips[i].WorldPosition);
+            farthestMeters = Mathf.Max(farthestMeters, distance);
+            if (ShouldUseBlipForRadarAutoRange(blips[i].Kind))
+            {
+                farthestActionableMeters = Mathf.Max(farthestActionableMeters, distance);
+            }
         }
 
         farthestMeters = MaxFlatDistance(origin, route, farthestMeters);
+        farthestActionableMeters = MaxFlatDistance(origin, route, farthestActionableMeters);
         farthestMeters = MaxFlatDistance(origin, preview, farthestMeters);
+        farthestActionableMeters = MaxFlatDistance(origin, preview, farthestActionableMeters);
         if (navigation.HasAvoidanceCue)
         {
-            farthestMeters = Mathf.Max(farthestMeters, FlatDistance(origin, navigation.AvoidanceWorldPosition));
+            float avoidanceDistance = FlatDistance(origin, navigation.AvoidanceWorldPosition);
+            farthestMeters = Mathf.Max(farthestMeters, avoidanceDistance);
+            farthestActionableMeters = Mathf.Max(farthestActionableMeters, avoidanceDistance);
         }
 
-        float rangeMeters = ResolveRadarRangeMeters(farthestMeters);
+        float rangeMeters = ResolveRadarRangeMeters(farthestActionableMeters > 0.01f ? farthestActionableMeters : farthestMeters);
         return new PrototypePlayerRadarSnapshot(
             rangeMeters,
             FormatRadarRangeLabel(rangeMeters),
@@ -940,6 +951,21 @@ public static class PrototypePlayerHudSnapshotBuilder
             preview,
             navigation.HasAvoidanceCue,
             navigation.AvoidanceWorldPosition);
+    }
+
+    private static bool ShouldUseBlipForRadarAutoRange(PrototypePlayerRadarBlipKind kind)
+    {
+        switch (kind)
+        {
+            case PrototypePlayerRadarBlipKind.SelectedNavigation:
+            case PrototypePlayerRadarBlipKind.Combat:
+            case PrototypePlayerRadarBlipKind.SelectedCombat:
+            case PrototypePlayerRadarBlipKind.Objective:
+            case PrototypePlayerRadarBlipKind.Docking:
+                return true;
+            default:
+                return false;
+        }
     }
 
     private static PrototypePlayerTargetIndicatorSnapshot BuildTargetIndicators(
@@ -1385,9 +1411,14 @@ public static class PrototypePlayerHudSnapshotBuilder
 
     private static float ResolveRadarRangeMeters(float farthestMeters)
     {
-        if (farthestMeters > 1000f)
+        if (farthestMeters > 3500f)
         {
             return 5000f;
+        }
+
+        if (farthestMeters > 1000f)
+        {
+            return 2500f;
         }
 
         if (farthestMeters > 250f)
@@ -2155,6 +2186,12 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             && keyboard.mKey.wasPressedThisFrame)
         {
             HandleKillMomentumAction("keybind");
+        }
+
+        if (keyboard != null
+            && keyboard.f5Key.wasPressedThisFrame)
+        {
+            SetNavigationPlannerVisible(navigationPlannerPanelRect == null || !navigationPlannerPanelRect.gameObject.activeSelf);
         }
 
         if (keyboard != null
@@ -3067,8 +3104,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
         Vector3[] routePoints = snapshot.Radar.RouteWorldPoints ?? System.Array.Empty<Vector3>();
         Vector3[] previewPoints = snapshot.Radar.TrajectoryPreviewWorldPoints ?? System.Array.Empty<Vector3>();
-        ConfigureRadarSegmentPool(routeSegments, snapshot.Radar, routePoints, radius, PrototypeModuleColorPalette.Target, 1.8f, false);
-        ConfigureRadarSegmentPool(previewSegments, snapshot.Radar, previewPoints, radius, new Color(1f, 0.72f, 0.22f, 0.94f), 2.1f, true);
+        ConfigureRadarSegmentPool(routeSegments, snapshot.Radar, routePoints, radius, PrototypeModuleColorPalette.Target, 2.4f, false);
+        ConfigureRadarSegmentPool(previewSegments, snapshot.Radar, previewPoints, radius, new Color(1f, 0.72f, 0.22f, 0.94f), 2.4f, true);
 
         if (snapshot.Radar.HasAvoidanceWaypoint)
         {
@@ -3200,15 +3237,19 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         switch (kind)
         {
             case PrototypePlayerRadarBlipKind.SelectedCombat:
-                return new Vector2(10f, 10f);
+                return new Vector2(13f, 13f);
             case PrototypePlayerRadarBlipKind.SelectedNavigation:
+                return new Vector2(12f, 12f);
+            case PrototypePlayerRadarBlipKind.Objective:
+                return new Vector2(10f, 10f);
+            case PrototypePlayerRadarBlipKind.Combat:
                 return new Vector2(9f, 9f);
             case PrototypePlayerRadarBlipKind.Docking:
-                return new Vector2(9f, 7f);
+                return new Vector2(11f, 9f);
             case PrototypePlayerRadarBlipKind.Hazard:
-                return new Vector2(9f, 9f);
+                return new Vector2(11f, 11f);
             default:
-                return new Vector2(7f, 7f);
+                return new Vector2(8f, 8f);
         }
     }
 
@@ -5434,8 +5475,8 @@ public sealed class PrototypePlayerHudRadarGraphic : MaskableGraphic
 
         Vector3[] routePoints = snapshot.Radar.RouteWorldPoints ?? EmptyRoute;
         Vector3[] previewPoints = snapshot.Radar.TrajectoryPreviewWorldPoints ?? EmptyRoute;
-        DrawRadarPath(vh, center, radius, snapshot.Radar, routePoints, PrototypeModuleColorPalette.Target, 1f, false);
-        DrawRadarPath(vh, center, radius, snapshot.Radar, previewPoints, new Color(1f, 0.72f, 0.22f, 0.82f), 1.1f, true);
+        DrawRadarPath(vh, center, radius, snapshot.Radar, routePoints, PrototypeModuleColorPalette.Target, 1.6f, false);
+        DrawRadarPath(vh, center, radius, snapshot.Radar, previewPoints, new Color(1f, 0.72f, 0.22f, 0.82f), 1.6f, true);
 
         if (snapshot.Radar.HasAvoidanceWaypoint)
         {
@@ -5450,7 +5491,7 @@ public sealed class PrototypePlayerHudRadarGraphic : MaskableGraphic
             Vector2 point = ClampRadarPoint(center, radius, snapshot.Radar, blip.WorldPosition);
             if (blip.Kind == PrototypePlayerRadarBlipKind.SelectedNavigation)
             {
-                DrawLine(vh, center, point, ColorForRadarBlip(blip.Kind), 0.9f);
+                DrawLine(vh, center, point, ColorForRadarBlip(blip.Kind), 1.4f);
             }
 
             DrawRadarBlip(vh, point, blip);
@@ -5497,26 +5538,26 @@ public sealed class PrototypePlayerHudRadarGraphic : MaskableGraphic
         switch (blip.Kind)
         {
             case PrototypePlayerRadarBlipKind.SelectedNavigation:
-                DrawDiamondBlip(vh, point, color, 6f, 1.8f);
+                DrawDiamondBlip(vh, point, color, 8f, 2.2f);
                 DrawBlip(vh, point, color);
                 break;
             case PrototypePlayerRadarBlipKind.Navigation:
-                DrawDiamondBlip(vh, point, color, 4.5f, 1.2f);
+                DrawDiamondBlip(vh, point, color, 5.5f, 1.4f);
                 break;
             case PrototypePlayerRadarBlipKind.SelectedCombat:
-                DrawCombatBlip(vh, point, color, 7f);
+                DrawCombatBlip(vh, point, color, 9f);
                 break;
             case PrototypePlayerRadarBlipKind.Combat:
                 DrawBlip(vh, point, color);
                 break;
             case PrototypePlayerRadarBlipKind.Objective:
-                DrawDiamondBlip(vh, point, color, 5.5f, 1.6f);
+                DrawDiamondBlip(vh, point, color, 7f, 1.9f);
                 break;
             case PrototypePlayerRadarBlipKind.Docking:
-                DrawSquareBlip(vh, point, color, 5.5f);
+                DrawSquareBlip(vh, point, color, 7f);
                 break;
             case PrototypePlayerRadarBlipKind.Hazard:
-                DrawHazardBlip(vh, point, color, 5f);
+                DrawHazardBlip(vh, point, color, 6.5f);
                 break;
             default:
                 DrawBlip(vh, point, color);

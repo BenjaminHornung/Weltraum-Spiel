@@ -141,7 +141,9 @@ public static class PrototypeUiLayoutManager
             hud.SetHudVisible(!hud.ShowHud);
         }
 
-        if (keyboard.f5Key.wasPressedThisFrame && minimap != null)
+        if (keyboard.f5Key.wasPressedThisFrame
+            && minimap != null
+            && ShouldRouteF5ToPrototypeMinimap(CurrentPreset))
         {
             minimap.SetWindowVisible(!minimap.IsWindowVisible);
         }
@@ -246,6 +248,11 @@ public static class PrototypeUiLayoutManager
     public static IReadOnlyCollection<PrototypeUiWindowState> WindowsForTests => Windows.Values;
 
     public static bool ShouldRouteF1ToPrototypeKeybindOverlay(PrototypeUiPreset preset)
+    {
+        return preset != PrototypeUiPreset.Basic;
+    }
+
+    public static bool ShouldRouteF5ToPrototypeMinimap(PrototypeUiPreset preset)
     {
         return preset != PrototypeUiPreset.Basic;
     }

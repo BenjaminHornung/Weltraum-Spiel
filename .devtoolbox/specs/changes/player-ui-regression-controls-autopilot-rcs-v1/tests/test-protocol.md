@@ -6,6 +6,16 @@ Player UI regression controls, minimap evidence, navigation/combat popups, Kill 
 
 ## Evidence
 
+- Latest minimap/radar readability slice:
+  - Unity MCP `validate_script`:
+    - `Assets/Scripts/Prototype/PrototypePlayerHud.cs`: PASS, 0 errors, existing warnings only.
+    - `Assets/Scripts/Prototype/PrototypeUiLayoutManager.cs`: PASS, 0 errors.
+    - `Assets/Tests/Editor/PrototypePlayerHudValidationTests.cs`: PASS, 0 errors.
+  - Unity MCP EditMode focused radar/F5 regression job `8f441ed025534b9f91f98f4b1edfb805`: 7/7 passed.
+  - Unity MCP PlayMode screenshot job `b1ecb528066e4e789e76a6e87f265adb`: 1/1 passed.
+  - Screenshot: `tests/screenshots/player-ui-regression-radar-normal-1280x720.png`
+  - Screenshot: `tests/screenshots/player-ui-regression-nav-planner-1280x720.png`
+  - Visual check: the top-right radar now shows visible gameplay blips/route at `Range 1 km`; the Navigation Planner popup shows the same map layer and remains centered above the bottom bar.
 - Latest navigation-planner map slice:
   - Unity MCP `validate_script`:
     - `Assets/Scripts/Prototype/PrototypePlayerHud.cs`: PASS, 0 errors, existing warnings only.
@@ -41,4 +51,4 @@ Player UI regression controls, minimap evidence, navigation/combat popups, Kill 
 
 ## External Review
 
-`claude-plan-review` was invoked with the implementation context and screenshot paths before the latest planner-map slice, but the local wrapper timed out after 120 seconds. No actionable review feedback was returned.
+`claude-plan-review` was invoked with the implementation context and screenshot paths before the latest planner-map slice, but the local wrapper timed out after 120 seconds. For the minimap/radar readability slice, a PNG-backed review failed with a local `charmap` encoding error and the follow-up path-only review timed out after 120 seconds. No actionable review feedback was returned.

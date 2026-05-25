@@ -27,6 +27,8 @@ public class PrototypePlayerHudValidationTests
         DestroyNamed("PlayerHudRadarArena");
         DestroyNamed("PlayerHudRadarDockTarget");
         DestroyNamed("PlayerHudRadarEnvironment");
+        DestroyNamed("PlayerHudRadarMidZoomTarget");
+        DestroyNamed("PlayerHudRadarMidZoomWaypointManager");
         DestroyNamed("PlayerHudRadarWaypointManager");
         DestroyNamed("PlayerHudNavManager");
         DestroyNamed("PlayerHudIndicatorShip");
@@ -137,7 +139,7 @@ public class PrototypePlayerHudValidationTests
 
             PrototypeWaypointAutopilot autopilot = combatRig.Ship.Ship.AddComponent<PrototypeWaypointAutopilot>();
             autopilot.Bind(manager, combatRig.Ship.Controller, combatRig.Ship.Stats, combatRig.Ship.Body);
-            autopilot.SelectTarget(manager.SelectedTarget);
+            autopilot.SelectTarget(FindNavigationTargetByName(manager, "Nav Waypoint 1"));
 
             PrototypeTrajectoryPlan plan = PrototypeTrajectoryPlan.Clear(Vector3.forward);
             plan.predictedPath = new[]
@@ -190,8 +192,8 @@ public class PrototypePlayerHudValidationTests
                 null,
                 preview);
 
-            Assert.That(snapshot.Radar.RangeMeters, Is.EqualTo(5000f));
-            Assert.That(snapshot.Radar.RangeLabel, Is.EqualTo("Range 5 km"));
+            Assert.That(snapshot.Radar.RangeMeters, Is.EqualTo(1000f));
+            Assert.That(snapshot.Radar.RangeLabel, Is.EqualTo("Range 1 km"));
             Assert.That(snapshot.Radar.RouteWorldPoints.Length, Is.EqualTo(3));
             Assert.That(snapshot.Radar.TrajectoryPreviewWorldPoints.Length, Is.GreaterThan(1));
             Assert.True(snapshot.Radar.HasAvoidanceWaypoint);
@@ -237,6 +239,38 @@ public class PrototypePlayerHudValidationTests
                 radar));
 
         Assert.That(FindText(playerHud, "RadarText").text, Is.EqualTo("Range 250 m"));
+    }
+
+    [Test]
+    public void RadarAutoRangeUsesMidZoomForMediumDistanceNavigationTarget()
+    {
+        using (var builder = new PrototypeScenarioBuilder())
+        {
+            PrototypeShipRig rig = builder.CreateShip("PlayerHudRadarMidZoomShip");
+            GameObject targetObject = new GameObject("PlayerHudRadarMidZoomTarget");
+            targetObject.transform.position = new Vector3(0f, 0f, 1900f);
+            PrototypeNavigationTarget target = targetObject.AddComponent<PrototypeNavigationTarget>();
+            target.Configure("Medium Nav Target", 10f);
+
+            PrototypeWaypointAutopilot autopilot = rig.Ship.AddComponent<PrototypeWaypointAutopilot>();
+            autopilot.Bind(null, rig.Controller, rig.Stats, rig.Body);
+            autopilot.SelectTarget(target);
+
+            PrototypePlayerHudSnapshot snapshot = PrototypePlayerHudSnapshotBuilder.Build(
+                rig.Ship.transform,
+                rig.Body,
+                rig.Stats,
+                rig.Controller,
+                autopilot,
+                null,
+                null,
+                null,
+                null);
+
+            Assert.That(snapshot.Navigation.TargetName, Is.EqualTo("Medium Nav Target"));
+            Assert.That(snapshot.Radar.RangeMeters, Is.EqualTo(2500f));
+            Assert.That(snapshot.Radar.RangeLabel, Is.EqualTo("Range 2.5 km"));
+        }
     }
 
     [Test]
@@ -532,6 +566,7 @@ public class PrototypePlayerHudValidationTests
         Assert.That(help, Does.Contain("W/S: translate forward/back"));
         Assert.That(help, Does.Contain("Space: fire"));
         Assert.That(help, Does.Contain("F1: player help"));
+        Assert.That(help, Does.Contain("F5: navigation map"));
         Assert.That(help, Does.Contain("F7: combat computer"));
         Assert.That(help, Does.Contain("P navigation planner"));
         Assert.That(help, Does.Contain("M Kill Momentum"));
@@ -592,8 +627,12 @@ public class PrototypePlayerHudValidationTests
     }
 
     [Test]
-    public void BasicPresetDoesNotRouteF7ToLegacyWeaponComputerWindow()
+    public void BasicPresetDoesNotRouteF5OrF7ToLegacyPrototypeWindows()
     {
+        Assert.False(PrototypeUiLayoutManager.ShouldRouteF5ToPrototypeMinimap(PrototypeUiPreset.Basic));
+        Assert.True(PrototypeUiLayoutManager.ShouldRouteF5ToPrototypeMinimap(PrototypeUiPreset.FlightTest));
+        Assert.True(PrototypeUiLayoutManager.ShouldRouteF5ToPrototypeMinimap(PrototypeUiPreset.RcsTest));
+        Assert.True(PrototypeUiLayoutManager.ShouldRouteF5ToPrototypeMinimap(PrototypeUiPreset.FullDiagnostics));
         Assert.False(PrototypeUiLayoutManager.ShouldRouteF7ToPrototypeWeaponComputer(PrototypeUiPreset.Basic));
         Assert.True(PrototypeUiLayoutManager.ShouldRouteF7ToPrototypeWeaponComputer(PrototypeUiPreset.FlightTest));
         Assert.True(PrototypeUiLayoutManager.ShouldRouteF7ToPrototypeWeaponComputer(PrototypeUiPreset.RcsTest));
@@ -1036,8 +1075,11 @@ public class PrototypePlayerHudValidationTests
         string source = File.ReadAllText(Path.Combine(Application.dataPath, "Scripts", "Prototype", "PrototypePlayerHud.cs"));
 
         Assert.That(help, Does.Contain("M Kill Momentum"));
+        Assert.That(help, Does.Contain("F5: navigation map"));
         Assert.That(source, Does.Contain("keyboard.mKey.wasPressedThisFrame"));
         Assert.That(source, Does.Contain("HandleKillMomentumAction(\"keybind\")"));
+        Assert.That(source, Does.Contain("keyboard.f5Key.wasPressedThisFrame"));
+        Assert.That(source, Does.Contain("SetNavigationPlannerVisible"));
     }
 
     [Test]
@@ -1415,6 +1457,22 @@ public class PrototypePlayerHudValidationTests
         }
 
         Assert.Fail("Missing radar blip " + kind + " containing " + labelPart);
+    }
+
+    private static PrototypeNavigationTarget FindNavigationTargetByName(PrototypeWaypointManager manager, string displayName)
+    {
+        Assert.NotNull(manager);
+        PrototypeNavigationTarget[] targets = manager.NavigationTargets;
+        for (int i = 0; i < targets.Length; i++)
+        {
+            if (targets[i] != null && targets[i].DisplayName == displayName)
+            {
+                return targets[i];
+            }
+        }
+
+        Assert.Fail("Missing navigation target " + displayName);
+        return null;
     }
 
     private static int CountRadarKind(PrototypePlayerRadarSnapshot radar, PrototypePlayerRadarBlipKind kind)
