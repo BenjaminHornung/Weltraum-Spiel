@@ -249,7 +249,7 @@ public sealed class PrototypeImportedShipBinder : MonoBehaviour
             : GameObject.CreatePrimitive(PrimitiveType.Cube);
         instance.name = "VFX";
         instance.transform.SetParent(nozzle, false);
-        instance.transform.localPosition = Vector3.zero;
+        instance.transform.localPosition = Vector3.back * 0.18f;
         instance.transform.localRotation = Quaternion.Euler(0f, 180f, 0f);
         instance.transform.localScale = Vector3.one * 0.18f;
 

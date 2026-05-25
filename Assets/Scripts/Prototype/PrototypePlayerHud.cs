@@ -739,7 +739,7 @@ public static class PrototypePlayerHudSnapshotBuilder
         if (!includeDebugControls)
         {
             lines.Add("F1: player help");
-            lines.Add("F7 Weapon Computer");
+            lines.Add("F7: combat computer");
         }
 
         PrototypeInputBindingSection[] sections = PrototypeInputBindingCatalog.GlobalSections;
@@ -2004,6 +2004,10 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private const float CanvasReferenceHeight = 720f;
     private const int MinimumPlayerHudFontSize = 10;
     private const int TargetIndicatorLabelCount = 6;
+    private const int MaxRadarGridSegments = 6;
+    private const int MaxRadarRouteSegments = 28;
+    private const int MaxRadarPreviewSegments = 28;
+    private const int MaxRadarBlips = 36;
 
     [SerializeField] private Transform shipRoot;
     [SerializeField] private Rigidbody shipRigidbody;
@@ -2054,6 +2058,17 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private Button navPreviewButton;
     private TMP_Text navAutopilotButtonText;
     private TMP_Text navPreviewButtonText;
+    private RectTransform navigationPlannerPanelRect;
+    private TMP_Text navigationPlannerTitleText;
+    private TMP_Text navigationPlannerBodyText;
+    private Button navPlannerPreviousButton;
+    private Button navPlannerNextButton;
+    private Button navPlannerEngageButton;
+    private Button navPlannerReplanButton;
+    private Button navPlannerPreviewButton;
+    private Button navPlannerCloseButton;
+    private TMP_Text navPlannerEngageButtonText;
+    private TMP_Text navPlannerPreviewButtonText;
     private RectTransform combatControlRow;
     private Button combatPreviousButton;
     private Button combatNextButton;
@@ -2062,9 +2077,27 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private Button combatPriorityButton;
     private TMP_Text combatAutoFireButtonText;
     private TMP_Text combatPriorityButtonText;
+    private RectTransform combatComputerPanelRect;
+    private TMP_Text combatComputerTitleText;
+    private TMP_Text combatComputerBodyText;
+    private Button combatComputerPreviousButton;
+    private Button combatComputerNextButton;
+    private Button combatComputerClearButton;
+    private Button combatComputerAutoFireButton;
+    private Button combatComputerPriorityButton;
+    private Button combatComputerCloseButton;
+    private TMP_Text combatComputerAutoFireButtonText;
+    private TMP_Text combatComputerPriorityButtonText;
     private RectTransform contextGaugePanelRect;
     private readonly List<Image> contextGaugeFills = new List<Image>();
     private readonly List<TMP_Text> contextGaugeLabels = new List<TMP_Text>();
+    private RectTransform radarLayerRect;
+    private Image radarHeadingImage;
+    private Image radarAvoidanceImage;
+    private readonly List<Image> radarGridSegments = new List<Image>();
+    private readonly List<Image> radarRouteSegments = new List<Image>();
+    private readonly List<Image> radarPreviewSegments = new List<Image>();
+    private readonly List<Image> radarBlipImages = new List<Image>();
     private TMP_Text radarText;
     private TMP_Text helpText;
     private GameObject helpPanel;
@@ -2102,10 +2135,30 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
     private void Update()
     {
-        if (UnityEngine.InputSystem.Keyboard.current != null
-            && UnityEngine.InputSystem.Keyboard.current.f1Key.wasPressedThisFrame)
+        UnityEngine.InputSystem.Keyboard keyboard = UnityEngine.InputSystem.Keyboard.current;
+        if (keyboard != null
+            && keyboard.f1Key.wasPressedThisFrame)
         {
             SetHelpVisible(helpPanel == null || !helpPanel.activeSelf);
+        }
+
+        if (keyboard != null
+            && keyboard.mKey.wasPressedThisFrame)
+        {
+            HandleKillMomentumAction("keybind");
+        }
+
+        if (keyboard != null
+            && keyboard.pKey.wasPressedThisFrame)
+        {
+            SetNavigationPlannerVisible(navigationPlannerPanelRect == null || !navigationPlannerPanelRect.gameObject.activeSelf);
+        }
+
+        if (keyboard != null
+            && keyboard.f7Key.wasPressedThisFrame
+            && PrototypeUiLayoutManager.CurrentPreset == PrototypeUiPreset.Basic)
+        {
+            SetCombatComputerVisible(combatComputerPanelRect == null || !combatComputerPanelRect.gameObject.activeSelf);
         }
 
         RefreshNow();
@@ -2236,6 +2289,16 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
         if (TryBindExistingUi())
         {
+            if (navigationPlannerPanelRect == null)
+            {
+                CreateNavigationPlannerPanel(canvas.transform);
+            }
+
+            if (combatComputerPanelRect == null)
+            {
+                CreateCombatComputerPanel(canvas.transform);
+            }
+
             canvas.enabled = showPlayerHud;
             return;
         }
@@ -2264,6 +2327,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         CreateObjectivePanel(canvasObject.transform);
         CreateContextPanel(canvasObject.transform);
         CreateRadarPanel(canvasObject.transform);
+        CreateNavigationPlannerPanel(canvasObject.transform);
+        CreateCombatComputerPanel(canvasObject.transform);
 
         CreateMarkerLabels(canvasObject.transform);
         CreateTargetIndicatorLabels(canvasObject.transform);
@@ -2305,6 +2370,13 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         objectivePanelRect = FindHudComponent<RectTransform>("ObjectivePanel");
         contextPanelRect = FindHudComponent<RectTransform>("ContextPanel");
         radarPanelRect = FindHudComponent<RectTransform>("RadarPanel");
+        radarLayerRect = FindHudComponent<RectTransform>("RadarLayer");
+        radarHeadingImage = FindHudComponent<Image>("RadarHeading");
+        radarAvoidanceImage = FindHudComponent<Image>("RadarAvoidance");
+        LoadHudImagePool(radarGridSegments, "RadarGridSegment", MaxRadarGridSegments);
+        LoadHudImagePool(radarRouteSegments, "RadarRouteSegment", MaxRadarRouteSegments);
+        LoadHudImagePool(radarPreviewSegments, "RadarPreviewSegment", MaxRadarPreviewSegments);
+        LoadHudImagePool(radarBlipImages, "RadarBlip", MaxRadarBlips);
         topWarningText = FindHudComponent<TMP_Text>("PrimaryWarning");
         speedText = FindHudComponent<TMP_Text>("Speed");
         throttleText = FindHudComponent<TMP_Text>("Throttle");
@@ -2328,6 +2400,17 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         navPreviewButton = FindHudComponent<Button>("NavPreview");
         navAutopilotButtonText = FindHudComponent<TMP_Text>("NavAutopilotText");
         navPreviewButtonText = FindHudComponent<TMP_Text>("NavPreviewText");
+        navigationPlannerPanelRect = FindHudComponent<RectTransform>("NavigationPlannerPanel");
+        navigationPlannerTitleText = FindHudComponent<TMP_Text>("NavigationPlannerTitle");
+        navigationPlannerBodyText = FindHudComponent<TMP_Text>("NavigationPlannerBody");
+        navPlannerPreviousButton = FindHudComponent<Button>("NavPlannerPreviousTarget");
+        navPlannerNextButton = FindHudComponent<Button>("NavPlannerNextTarget");
+        navPlannerEngageButton = FindHudComponent<Button>("NavPlannerEngage");
+        navPlannerReplanButton = FindHudComponent<Button>("NavPlannerReplan");
+        navPlannerPreviewButton = FindHudComponent<Button>("NavPlannerPreview");
+        navPlannerCloseButton = FindHudComponent<Button>("NavPlannerClose");
+        navPlannerEngageButtonText = FindHudComponent<TMP_Text>("NavPlannerEngageText");
+        navPlannerPreviewButtonText = FindHudComponent<TMP_Text>("NavPlannerPreviewText");
         combatControlRow = FindHudComponent<RectTransform>("CombatControls");
         combatPreviousButton = FindHudComponent<Button>("CombatPreviousTarget");
         combatNextButton = FindHudComponent<Button>("CombatNextTarget");
@@ -2336,6 +2419,17 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         combatPriorityButton = FindHudComponent<Button>("CombatPriority");
         combatAutoFireButtonText = FindHudComponent<TMP_Text>("CombatAutoFireText");
         combatPriorityButtonText = FindHudComponent<TMP_Text>("CombatPriorityText");
+        combatComputerPanelRect = FindHudComponent<RectTransform>("CombatComputerPanel");
+        combatComputerTitleText = FindHudComponent<TMP_Text>("CombatComputerTitle");
+        combatComputerBodyText = FindHudComponent<TMP_Text>("CombatComputerBody");
+        combatComputerPreviousButton = FindHudComponent<Button>("CombatComputerPreviousTarget");
+        combatComputerNextButton = FindHudComponent<Button>("CombatComputerNextTarget");
+        combatComputerClearButton = FindHudComponent<Button>("CombatComputerClearTarget");
+        combatComputerAutoFireButton = FindHudComponent<Button>("CombatComputerAutoFire");
+        combatComputerPriorityButton = FindHudComponent<Button>("CombatComputerPriority");
+        combatComputerCloseButton = FindHudComponent<Button>("CombatComputerClose");
+        combatComputerAutoFireButtonText = FindHudComponent<TMP_Text>("CombatComputerAutoFireText");
+        combatComputerPriorityButtonText = FindHudComponent<TMP_Text>("CombatComputerPriorityText");
         contextGaugePanelRect = FindHudComponent<RectTransform>("ContextGauges");
         radarText = FindHudComponent<TMP_Text>("RadarText");
         helpText = FindHudComponent<TMP_Text>("HelpText");
@@ -2428,6 +2522,13 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             && combatAutoFireButtonText != null
             && combatPriorityButtonText != null
             && contextGaugePanelRect != null
+            && radarLayerRect != null
+            && radarHeadingImage != null
+            && radarAvoidanceImage != null
+            && radarGridSegments.Count == MaxRadarGridSegments
+            && radarRouteSegments.Count == MaxRadarRouteSegments
+            && radarPreviewSegments.Count == MaxRadarPreviewSegments
+            && radarBlipImages.Count == MaxRadarBlips
             && radarText != null
             && helpText != null
             && helpPanel != null
@@ -2461,6 +2562,19 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         }
 
         return null;
+    }
+
+    private void LoadHudImagePool(List<Image> images, string namePrefix, int expectedCount)
+    {
+        images.Clear();
+        for (int i = 0; i < expectedCount; i++)
+        {
+            Image image = FindHudComponent<Image>(namePrefix + i);
+            if (image != null)
+            {
+                images.Add(image);
+            }
+        }
     }
 
     private void DestroyExistingPlayerHudCanvases()
@@ -2522,6 +2636,13 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         contextGaugePanelRect = null;
         contextGaugeFills.Clear();
         contextGaugeLabels.Clear();
+        radarLayerRect = null;
+        radarHeadingImage = null;
+        radarAvoidanceImage = null;
+        radarGridSegments.Clear();
+        radarRouteSegments.Clear();
+        radarPreviewSegments.Clear();
+        radarBlipImages.Clear();
         radarText = null;
         helpText = null;
         helpPanel = null;
@@ -2664,9 +2785,78 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     {
         RectTransform panel = CreatePanel("RadarPanel", parent, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(170f, 170f), new Vector2(-24f, -24f));
         radarPanelRect = panel;
-        radarGraphic = CreateGraphic<PrototypePlayerHudRadarGraphic>("RadarGraphic", panel, StretchFull(8f, 8f));
+        radarGraphic = CreateGraphic<PrototypePlayerHudRadarGraphic>("RadarGraphic", panel, new RectPreset(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(154f, 154f), Vector2.zero));
+        radarGraphic.color = Color.white;
         radarGraphic.raycastTarget = false;
+        CreateRadarLayer(panel);
         radarText = CreateText("RadarText", panel, 10, TextAnchor.LowerCenter, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-12f, 18f), new Vector2(0f, 10f)));
+    }
+
+    private void CreateRadarLayer(Transform parent)
+    {
+        radarLayerRect = CreateRect("RadarLayer", parent, new RectPreset(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(154f, 154f), Vector2.zero));
+        radarHeadingImage = CreateRadarVisual("RadarHeading", radarLayerRect, new Vector2(10f, 14f), Color.white);
+        radarAvoidanceImage = CreateRadarVisual("RadarAvoidance", radarLayerRect, new Vector2(9f, 9f), PrototypeUiStyle.WarningColor);
+
+        radarGridSegments.Clear();
+        for (int i = 0; i < MaxRadarGridSegments; i++)
+        {
+            radarGridSegments.Add(CreateRadarVisual("RadarGridSegment" + i, radarLayerRect, new Vector2(8f, 1.5f), new Color(0.25f, 0.85f, 1f, 0.52f)));
+        }
+
+        radarRouteSegments.Clear();
+        for (int i = 0; i < MaxRadarRouteSegments; i++)
+        {
+            radarRouteSegments.Add(CreateRadarVisual("RadarRouteSegment" + i, radarLayerRect, new Vector2(8f, 2f), PrototypeModuleColorPalette.Target));
+        }
+
+        radarPreviewSegments.Clear();
+        for (int i = 0; i < MaxRadarPreviewSegments; i++)
+        {
+            radarPreviewSegments.Add(CreateRadarVisual("RadarPreviewSegment" + i, radarLayerRect, new Vector2(8f, 2f), new Color(1f, 0.72f, 0.22f, 0.9f)));
+        }
+
+        radarBlipImages.Clear();
+        for (int i = 0; i < MaxRadarBlips; i++)
+        {
+            radarBlipImages.Add(CreateRadarVisual("RadarBlip" + i, radarLayerRect, new Vector2(7f, 7f), PrototypeModuleColorPalette.Target));
+        }
+    }
+
+    private void CreateNavigationPlannerPanel(Transform parent)
+    {
+        RectTransform panel = CreatePanel("NavigationPlannerPanel", parent, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(540f, 318f), Vector2.zero);
+        navigationPlannerPanelRect = panel;
+        navigationPlannerTitleText = CreateText("NavigationPlannerTitle", panel, 15, TextAnchor.UpperLeft, Color.white, new RectPreset(new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(-24f, 28f), new Vector2(0f, -16f)));
+        navigationPlannerBodyText = CreateText("NavigationPlannerBody", panel, 12, TextAnchor.UpperLeft, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-24f, -116f), new Vector2(0f, 22f)));
+
+        navPlannerPreviousButton = CreateButton("NavPlannerPreviousTarget", panel, "Prev", new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(48f, 22f), new Vector2(12f, 54f)));
+        navPlannerNextButton = CreateButton("NavPlannerNextTarget", panel, "Next", new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(48f, 22f), new Vector2(66f, 54f)));
+        navPlannerEngageButton = CreateButton("NavPlannerEngage", panel, "Engage", new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(74f, 22f), new Vector2(120f, 54f)));
+        navPlannerReplanButton = CreateButton("NavPlannerReplan", panel, "Replan", new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(70f, 22f), new Vector2(200f, 54f)));
+        navPlannerPreviewButton = CreateButton("NavPlannerPreview", panel, "Preview", new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(92f, 22f), new Vector2(12f, 18f)));
+        navPlannerCloseButton = CreateButton("NavPlannerClose", panel, "Close", new RectPreset(new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(62f, 22f), new Vector2(-74f, 18f)));
+        navPlannerEngageButtonText = navPlannerEngageButton.GetComponentInChildren<TMP_Text>(true);
+        navPlannerPreviewButtonText = navPlannerPreviewButton.GetComponentInChildren<TMP_Text>(true);
+        panel.gameObject.SetActive(false);
+    }
+
+    private void CreateCombatComputerPanel(Transform parent)
+    {
+        RectTransform panel = CreatePanel("CombatComputerPanel", parent, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(520f, 300f), Vector2.zero);
+        combatComputerPanelRect = panel;
+        combatComputerTitleText = CreateText("CombatComputerTitle", panel, 15, TextAnchor.UpperLeft, Color.white, new RectPreset(new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(-24f, 28f), new Vector2(0f, -16f)));
+        combatComputerBodyText = CreateText("CombatComputerBody", panel, 12, TextAnchor.UpperLeft, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-24f, -116f), new Vector2(0f, 22f)));
+
+        combatComputerPreviousButton = CreateButton("CombatComputerPreviousTarget", panel, "Prev", new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(48f, 22f), new Vector2(12f, 54f)));
+        combatComputerNextButton = CreateButton("CombatComputerNextTarget", panel, "Next", new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(48f, 22f), new Vector2(66f, 54f)));
+        combatComputerClearButton = CreateButton("CombatComputerClearTarget", panel, "Clear", new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(58f, 22f), new Vector2(120f, 54f)));
+        combatComputerAutoFireButton = CreateButton("CombatComputerAutoFire", panel, "Auto", new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(78f, 22f), new Vector2(184f, 54f)));
+        combatComputerPriorityButton = CreateButton("CombatComputerPriority", panel, "Prio", new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(92f, 22f), new Vector2(12f, 18f)));
+        combatComputerCloseButton = CreateButton("CombatComputerClose", panel, "Close", new RectPreset(new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(62f, 22f), new Vector2(-74f, 18f)));
+        combatComputerAutoFireButtonText = combatComputerAutoFireButton.GetComponentInChildren<TMP_Text>(true);
+        combatComputerPriorityButtonText = combatComputerPriorityButton.GetComponentInChildren<TMP_Text>(true);
+        panel.gameObject.SetActive(false);
     }
 
     private void CreateHelpPanel(Transform parent)
@@ -2742,6 +2932,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
         ApplyObjectivePanel(snapshot.Arena);
         ApplyContext(snapshot);
+        ConfigureNavigationPlannerPanel(snapshot);
+        ConfigureCombatComputerPanel(snapshot);
         radarText.text = snapshot.Radar.RangeLabel;
         if (helpText != null && helpPanel != null && helpPanel.activeSelf)
         {
@@ -2767,8 +2959,210 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         {
             radarGraphic.SetSnapshot(snapshot);
         }
+
+        ConfigureRadarLayer(snapshot);
         UpdateMarkerLabels(snapshot);
-        ApplyHelpModalVisibility(helpPanel != null && helpPanel.activeSelf);
+        ApplyModalVisibility(IsAnyPlayerHudModalVisible());
+    }
+
+    private void ConfigureRadarLayer(PrototypePlayerHudSnapshot snapshot)
+    {
+        if (radarLayerRect == null)
+        {
+            return;
+        }
+
+        Rect rect = radarLayerRect.rect;
+        float radius = Mathf.Min(rect.width, rect.height) * 0.42f;
+        ConfigureRadarGrid(radius);
+
+        Vector2 heading = new Vector2(snapshot.ShipForward.x, snapshot.ShipForward.z);
+        if (heading.sqrMagnitude <= 0.001f)
+        {
+            heading = Vector2.up;
+        }
+
+        heading.Normalize();
+        ApplyRadarLine(radarHeadingImage, -heading * 9f, heading * 14f, Color.white, 2.5f);
+
+        Vector3[] routePoints = snapshot.Radar.RouteWorldPoints ?? System.Array.Empty<Vector3>();
+        Vector3[] previewPoints = snapshot.Radar.TrajectoryPreviewWorldPoints ?? System.Array.Empty<Vector3>();
+        ConfigureRadarSegmentPool(radarRouteSegments, snapshot.Radar, routePoints, radius, PrototypeModuleColorPalette.Target, 1.8f, false);
+        ConfigureRadarSegmentPool(radarPreviewSegments, snapshot.Radar, previewPoints, radius, new Color(1f, 0.72f, 0.22f, 0.94f), 2.1f, true);
+
+        if (snapshot.Radar.HasAvoidanceWaypoint)
+        {
+            Vector2 point = RadarWorldToLayerPoint(snapshot.Radar, snapshot.Radar.AvoidanceWorldPosition, radius);
+            ApplyRadarBlip(radarAvoidanceImage, point, PrototypeUiStyle.WarningColor, new Vector2(9f, 9f), 45f);
+        }
+        else if (radarAvoidanceImage != null)
+        {
+            radarAvoidanceImage.gameObject.SetActive(false);
+        }
+
+        PrototypePlayerRadarBlip[] blips = snapshot.Radar.Blips ?? System.Array.Empty<PrototypePlayerRadarBlip>();
+        int blipCount = Mathf.Min(blips.Length, radarBlipImages.Count);
+        for (int i = 0; i < blipCount; i++)
+        {
+            PrototypePlayerRadarBlip blip = blips[i];
+            Vector2 point = RadarWorldToLayerPoint(snapshot.Radar, blip.WorldPosition, radius);
+            Vector2 size = RadarBlipSize(blip.Kind);
+            float rotation = RadarBlipRotation(blip.Kind);
+            ApplyRadarBlip(radarBlipImages[i], point, ColorForRadarBlipKind(blip.Kind), size, rotation);
+        }
+
+        for (int i = blipCount; i < radarBlipImages.Count; i++)
+        {
+            radarBlipImages[i].gameObject.SetActive(false);
+        }
+    }
+
+    private void ConfigureRadarGrid(float radius)
+    {
+        if (radarGridSegments.Count < MaxRadarGridSegments)
+        {
+            return;
+        }
+
+        Color gridColor = new Color(0.25f, 0.85f, 1f, 0.52f);
+        ApplyRadarLine(radarGridSegments[0], new Vector2(-radius, 0f), new Vector2(radius, 0f), gridColor, 1.4f);
+        ApplyRadarLine(radarGridSegments[1], new Vector2(0f, -radius), new Vector2(0f, radius), gridColor, 1.4f);
+        ApplyRadarLine(radarGridSegments[2], new Vector2(-radius, radius), new Vector2(radius, radius), gridColor, 1.2f);
+        ApplyRadarLine(radarGridSegments[3], new Vector2(radius, radius), new Vector2(radius, -radius), gridColor, 1.2f);
+        ApplyRadarLine(radarGridSegments[4], new Vector2(radius, -radius), new Vector2(-radius, -radius), gridColor, 1.2f);
+        ApplyRadarLine(radarGridSegments[5], new Vector2(-radius, -radius), new Vector2(-radius, radius), gridColor, 1.2f);
+    }
+
+    private void ConfigureRadarSegmentPool(
+        List<Image> pool,
+        PrototypePlayerRadarSnapshot radar,
+        Vector3[] worldPoints,
+        float radius,
+        Color color,
+        float thickness,
+        bool dashed)
+    {
+        int segmentCount = 0;
+        if (worldPoints != null && worldPoints.Length > 1)
+        {
+            Vector2 previous = RadarWorldToLayerPoint(radar, worldPoints[0], radius);
+            for (int i = 1; i < worldPoints.Length && segmentCount < pool.Count; i++)
+            {
+                Vector2 next = RadarWorldToLayerPoint(radar, worldPoints[i], radius);
+                if (!dashed || (i % 2) == 1)
+                {
+                    ApplyRadarLine(pool[segmentCount], previous, next, color, thickness);
+                    segmentCount++;
+                }
+
+                previous = next;
+            }
+        }
+
+        for (int i = segmentCount; i < pool.Count; i++)
+        {
+            pool[i].gameObject.SetActive(false);
+        }
+    }
+
+    private static Vector2 RadarWorldToLayerPoint(PrototypePlayerRadarSnapshot radar, Vector3 target, float radius)
+    {
+        Vector3 delta = target - radar.ShipWorldPosition;
+        float rangeMeters = Mathf.Max(1f, radar.RangeMeters);
+        Vector2 flat = new Vector2(delta.x, delta.z) / rangeMeters * radius;
+        return Vector2.ClampMagnitude(flat, radius);
+    }
+
+    private static void ApplyRadarLine(Image image, Vector2 start, Vector2 end, Color color, float thickness)
+    {
+        if (image == null)
+        {
+            return;
+        }
+
+        Vector2 delta = end - start;
+        if (delta.sqrMagnitude < 0.001f)
+        {
+            image.gameObject.SetActive(false);
+            return;
+        }
+
+        RectTransform rect = image.rectTransform;
+        image.color = color;
+        rect.sizeDelta = new Vector2(delta.magnitude, thickness);
+        rect.anchoredPosition = (start + end) * 0.5f;
+        rect.localRotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(delta.y, delta.x) * Mathf.Rad2Deg);
+        image.gameObject.SetActive(true);
+    }
+
+    private static void ApplyRadarBlip(Image image, Vector2 point, Color color, Vector2 size, float rotationDegrees)
+    {
+        if (image == null)
+        {
+            return;
+        }
+
+        RectTransform rect = image.rectTransform;
+        image.color = color;
+        rect.sizeDelta = size;
+        rect.anchoredPosition = point;
+        rect.localRotation = Quaternion.Euler(0f, 0f, rotationDegrees);
+        image.gameObject.SetActive(true);
+    }
+
+    private static Vector2 RadarBlipSize(PrototypePlayerRadarBlipKind kind)
+    {
+        switch (kind)
+        {
+            case PrototypePlayerRadarBlipKind.SelectedCombat:
+                return new Vector2(10f, 10f);
+            case PrototypePlayerRadarBlipKind.SelectedNavigation:
+                return new Vector2(9f, 9f);
+            case PrototypePlayerRadarBlipKind.Docking:
+                return new Vector2(9f, 7f);
+            case PrototypePlayerRadarBlipKind.Hazard:
+                return new Vector2(9f, 9f);
+            default:
+                return new Vector2(7f, 7f);
+        }
+    }
+
+    private static float RadarBlipRotation(PrototypePlayerRadarBlipKind kind)
+    {
+        switch (kind)
+        {
+            case PrototypePlayerRadarBlipKind.SelectedNavigation:
+            case PrototypePlayerRadarBlipKind.Navigation:
+            case PrototypePlayerRadarBlipKind.Objective:
+            case PrototypePlayerRadarBlipKind.Hazard:
+                return 45f;
+            default:
+                return 0f;
+        }
+    }
+
+    private static Color ColorForRadarBlipKind(PrototypePlayerRadarBlipKind kind)
+    {
+        switch (kind)
+        {
+            case PrototypePlayerRadarBlipKind.Combat:
+            case PrototypePlayerRadarBlipKind.SelectedCombat:
+                return PrototypeModuleColorPalette.Gun;
+            case PrototypePlayerRadarBlipKind.Objective:
+                return PrototypeUiStyle.WarningColor;
+            case PrototypePlayerRadarBlipKind.Docking:
+                return PrototypeUiStyle.ActiveColor;
+            case PrototypePlayerRadarBlipKind.Beacon:
+                return new Color(0.95f, 0.55f, 1f, 0.95f);
+            case PrototypePlayerRadarBlipKind.Gate:
+                return new Color(0.4f, 1f, 0.7f, 0.95f);
+            case PrototypePlayerRadarBlipKind.Station:
+                return new Color(0.66f, 0.72f, 0.82f, 0.95f);
+            case PrototypePlayerRadarBlipKind.Hazard:
+                return new Color(1f, 0.55f, 0.18f, 0.95f);
+            default:
+                return PrototypeModuleColorPalette.Target;
+        }
     }
 
     private void ConfigureKillMomentumButton()
@@ -2805,7 +3199,29 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         }
 
         SetKillMomentumButtonState("Kill Momentum", true);
-        killMomentumButton.onClick.AddListener(() => momentumAssist.ActivateFromUi());
+        killMomentumButton.onClick.AddListener(() => HandleKillMomentumAction("button"));
+    }
+
+    private void HandleKillMomentumAction(string source)
+    {
+        if (momentumAssist == null)
+        {
+            return;
+        }
+
+        if (momentumAssist.IsActive)
+        {
+            momentumAssist.Abort(source);
+            return;
+        }
+
+        if (momentumAssist.CurrentState == PrototypeMomentumAssistState.NoAuthority
+            || momentumAssist.CurrentState == PrototypeMomentumAssistState.FuelInsufficient)
+        {
+            return;
+        }
+
+        momentumAssist.ActivateFromUi();
     }
 
     private void SetKillMomentumButtonState(string label, bool interactable)
@@ -2888,6 +3304,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         });
         SetNavigationButtonState(navReplanButton, hasAutopilot && hasTarget, () =>
         {
+            SetNavigationPlannerVisible(true);
             autopilot.ReplanNow();
             RefreshNow();
         });
@@ -2903,6 +3320,110 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             trajectoryPreview.TogglePreview();
             RefreshNow();
         });
+    }
+
+    private void ConfigureNavigationPlannerPanel(PrototypePlayerHudSnapshot snapshot)
+    {
+        if (navigationPlannerPanelRect == null)
+        {
+            return;
+        }
+
+        if (!navigationPlannerPanelRect.gameObject.activeSelf)
+        {
+            RemoveNavigationPlannerButtonListeners();
+            return;
+        }
+
+        if (navigationPlannerTitleText != null)
+        {
+            navigationPlannerTitleText.text = "Navigation Planner";
+        }
+
+        if (navigationPlannerBodyText != null)
+        {
+            navigationPlannerBodyText.text = BuildNavigationPlannerBody(snapshot.Navigation);
+            navigationPlannerBodyText.color = snapshot.Navigation.Visible ? PrototypeUiStyle.MutedColor : PrototypeUiStyle.DisabledColor;
+        }
+
+        bool hasAutopilot = autopilot != null;
+        bool hasTarget = hasAutopilot && autopilot.CurrentTarget != null;
+        int targetCount = hasAutopilot && autopilot.WaypointManager != null ? autopilot.WaypointManager.TargetCount : (hasTarget ? 1 : 0);
+
+        SetNavigationButtonState(navPlannerPreviousButton, hasAutopilot && targetCount > 1, () =>
+        {
+            autopilot.SelectPreviousTarget();
+            autopilot.ReplanNow();
+            RefreshNow();
+        });
+        SetNavigationButtonState(navPlannerNextButton, hasAutopilot && targetCount > 1, () =>
+        {
+            autopilot.SelectNextTarget();
+            autopilot.ReplanNow();
+            RefreshNow();
+        });
+
+        if (navPlannerEngageButtonText != null)
+        {
+            navPlannerEngageButtonText.text = !hasAutopilot ? "AP n/a" : autopilot.AutopilotEngaged ? "Abort AP" : "Engage";
+        }
+
+        SetNavigationButtonState(navPlannerEngageButton, hasAutopilot && (hasTarget || autopilot.AutopilotEngaged), () =>
+        {
+            autopilot.ToggleAutopilot();
+            RefreshNow();
+        });
+        SetNavigationButtonState(navPlannerReplanButton, hasAutopilot && hasTarget, () =>
+        {
+            autopilot.ReplanNow();
+            RefreshNow();
+        });
+
+        bool hasPreview = trajectoryPreview != null;
+        if (navPlannerPreviewButtonText != null)
+        {
+            navPlannerPreviewButtonText.text = !hasPreview ? "Preview n/a" : trajectoryPreview.PreviewEnabled ? "Preview On" : "Preview Off";
+        }
+
+        SetNavigationButtonState(navPlannerPreviewButton, hasPreview, () =>
+        {
+            trajectoryPreview.TogglePreview();
+            RefreshNow();
+        });
+        SetNavigationButtonState(navPlannerCloseButton, true, () => SetNavigationPlannerVisible(false));
+    }
+
+    private void RemoveNavigationPlannerButtonListeners()
+    {
+        RemoveButtonListeners(navPlannerPreviousButton);
+        RemoveButtonListeners(navPlannerNextButton);
+        RemoveButtonListeners(navPlannerEngageButton);
+        RemoveButtonListeners(navPlannerReplanButton);
+        RemoveButtonListeners(navPlannerPreviewButton);
+        RemoveButtonListeners(navPlannerCloseButton);
+    }
+
+    private static string BuildNavigationPlannerBody(PrototypePlayerNavigationSnapshot navigation)
+    {
+        if (!navigation.Visible)
+        {
+            return "No navigation target selected";
+        }
+
+        string routeLabel = navigation.RouteWorldPoints.Length > 1
+            ? "Route " + navigation.RouteWorldPoints.Length.ToString() + " points"
+            : "Route direct";
+        string previewLabel = navigation.TrajectoryPreview.Enabled
+            ? navigation.TrajectoryPreview.StatusLabel
+            : "Preview off";
+        string avoidanceLabel = navigation.HasAvoidanceCue ? navigation.AvoidanceLabel : "No obstacle cue";
+
+        return navigation.TargetName + " | " + navigation.TargetListLabel + "\n"
+            + navigation.TargetTypeLabel + " | Dist " + FormatDistance(navigation.DistanceMeters) + " | ETA " + navigation.EtaLabel + "\n"
+            + "Closing " + navigation.ClosingSpeed.ToString("0.0") + " m/s | Lateral " + navigation.LateralSpeed.ToString("0.0") + " m/s\n"
+            + navigation.StateLabel + " | " + navigation.PhaseLabel + "\n"
+            + routeLabel + " | " + previewLabel + "\n"
+            + avoidanceLabel;
     }
 
     private void RemoveNavigationButtonListeners()
@@ -2991,6 +3512,99 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         });
     }
 
+    private void ConfigureCombatComputerPanel(PrototypePlayerHudSnapshot snapshot)
+    {
+        if (combatComputerPanelRect == null)
+        {
+            return;
+        }
+
+        if (!combatComputerPanelRect.gameObject.activeSelf)
+        {
+            RemoveCombatComputerButtonListeners();
+            return;
+        }
+
+        if (combatComputerTitleText != null)
+        {
+            combatComputerTitleText.text = "Combat Computer";
+        }
+
+        if (combatComputerBodyText != null)
+        {
+            combatComputerBodyText.text = BuildCombatComputerBody(snapshot.Combat);
+            combatComputerBodyText.color = ColorForSeverity(snapshot.Combat.FireSeverity);
+        }
+
+        bool hasComputer = weaponComputer != null;
+        int targetCount = hasComputer ? weaponComputer.AvailableTargets.Count : 0;
+        bool hasSelection = hasComputer && weaponComputer.SelectedTargetCount > 0;
+
+        SetNavigationButtonState(combatComputerPreviousButton, hasComputer && targetCount > 0, () =>
+        {
+            weaponComputer.SelectPreviousTarget();
+            RefreshNow();
+        });
+        SetNavigationButtonState(combatComputerNextButton, hasComputer && targetCount > 0, () =>
+        {
+            weaponComputer.SelectNextTarget();
+            RefreshNow();
+        });
+        SetNavigationButtonState(combatComputerClearButton, hasSelection, () =>
+        {
+            weaponComputer.ClearSelection();
+            RefreshNow();
+        });
+
+        if (combatComputerAutoFireButtonText != null)
+        {
+            combatComputerAutoFireButtonText.text = !hasComputer ? "Auto n/a" : weaponComputer.AutoFireEnabled ? "Auto On" : "Auto Off";
+        }
+
+        SetNavigationButtonState(combatComputerAutoFireButton, hasComputer, () =>
+        {
+            weaponComputer.SetAutoFireEnabled(!weaponComputer.AutoFireEnabled);
+            weaponComputer.UpdateActiveTargetAndStatus();
+            RefreshNow();
+        });
+
+        if (combatComputerPriorityButtonText != null)
+        {
+            combatComputerPriorityButtonText.text = !hasComputer ? "Prio n/a" : "Prio " + CompactPriorityLabel(weaponComputer.PriorityMode);
+        }
+
+        SetNavigationButtonState(combatComputerPriorityButton, hasComputer, () =>
+        {
+            weaponComputer.CyclePriorityMode();
+            RefreshNow();
+        });
+        SetNavigationButtonState(combatComputerCloseButton, true, () => SetCombatComputerVisible(false));
+    }
+
+    private void RemoveCombatComputerButtonListeners()
+    {
+        RemoveButtonListeners(combatComputerPreviousButton);
+        RemoveButtonListeners(combatComputerNextButton);
+        RemoveButtonListeners(combatComputerClearButton);
+        RemoveButtonListeners(combatComputerAutoFireButton);
+        RemoveButtonListeners(combatComputerPriorityButton);
+        RemoveButtonListeners(combatComputerCloseButton);
+    }
+
+    private static string BuildCombatComputerBody(PrototypePlayerCombatSnapshot combat)
+    {
+        if (!combat.Visible)
+        {
+            return "No weapon computer available";
+        }
+
+        return "Target " + combat.TargetName + " | Range " + FormatDistance(combat.RangeMeters) + "\n"
+            + "Health " + combat.HealthLabel + "\n"
+            + combat.FireStatusLabel + "\n"
+            + combat.AutoFireLabel + "\n"
+            + "Priority " + combat.PriorityLabel;
+    }
+
     private void RemoveCombatButtonListeners()
     {
         if (combatPreviousButton != null)
@@ -3047,6 +3661,72 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         {
             button.onClick.AddListener(action);
         }
+    }
+
+    private static void RemoveButtonListeners(Button button)
+    {
+        if (button != null)
+        {
+            button.onClick.RemoveAllListeners();
+        }
+    }
+
+    private void SetNavigationPlannerVisible(bool visible)
+    {
+        if (navigationPlannerPanelRect == null)
+        {
+            return;
+        }
+
+        navigationPlannerPanelRect.gameObject.SetActive(visible);
+        if (visible)
+        {
+            SetCombatComputerVisible(false);
+            if (helpPanel != null)
+            {
+                helpPanel.SetActive(false);
+            }
+
+            if (autopilot != null && autopilot.CurrentTarget != null)
+            {
+                autopilot.ReplanNow();
+            }
+        }
+
+        RefreshNow();
+    }
+
+    private void SetCombatComputerVisible(bool visible)
+    {
+        if (combatComputerPanelRect == null)
+        {
+            return;
+        }
+
+        combatComputerPanelRect.gameObject.SetActive(visible);
+        if (visible)
+        {
+            SetNavigationPlannerVisible(false);
+            if (helpPanel != null)
+            {
+                helpPanel.SetActive(false);
+            }
+
+            if (weaponComputer != null)
+            {
+                weaponComputer.RefreshTargets();
+                weaponComputer.UpdateActiveTargetAndStatus();
+            }
+        }
+
+        RefreshNow();
+    }
+
+    private bool IsAnyPlayerHudModalVisible()
+    {
+        return (helpPanel != null && helpPanel.activeSelf)
+            || (navigationPlannerPanelRect != null && navigationPlannerPanelRect.gameObject.activeSelf)
+            || (combatComputerPanelRect != null && combatComputerPanelRect.gameObject.activeSelf);
     }
 
     public void ApplyResponsiveLayoutForTests(int width, int height)
@@ -3165,7 +3845,17 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         ApplyRect(objectivePanelRect, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(objectiveWidth, objectiveHeight), new Vector2(margin, -(margin + 56f)));
         ApplyRect(contextPanelRect, new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(contextWidth, contextHeight), new Vector2(-margin, sideBottom));
         ApplyRect(radarPanelRect, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(radarSize, radarSize), new Vector2(-margin, -margin));
+        if (radarGraphic != null)
+        {
+            float radarGraphicSize = Mathf.Max(76f, radarSize - 16f);
+            ApplyRect(radarGraphic.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(radarGraphicSize, radarGraphicSize), Vector2.zero);
+            radarGraphic.SetAllDirty();
+            ApplyRect(radarLayerRect, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(radarGraphicSize, radarGraphicSize), Vector2.zero);
+        }
+
         ApplyHelpPanelLayout(safeWidth, safeHeight, margin, gap, contextWidth, sideBottom, systemHeight, narrow, shortScreen);
+        ApplyPlayerComputerPanelLayout(navigationPlannerPanelRect, navigationPlannerBodyText, safeWidth, safeHeight, margin, gap, bottomOffset, bottomHeight, narrow, shortScreen);
+        ApplyPlayerComputerPanelLayout(combatComputerPanelRect, combatComputerBodyText, safeWidth, safeHeight, margin, gap, bottomOffset, bottomHeight, narrow, shortScreen);
         ApplyContextBodyLayout((navigationControlRow != null && navigationControlRow.gameObject.activeSelf) || (combatControlRow != null && combatControlRow.gameObject.activeSelf));
     }
 
@@ -3227,6 +3917,46 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         if (helpText != null)
         {
             helpText.fontSize = narrow || avoidRightContext ? 11f : 12f;
+        }
+    }
+
+    private void ApplyPlayerComputerPanelLayout(
+        RectTransform panel,
+        TMP_Text bodyText,
+        float safeWidth,
+        float safeHeight,
+        float margin,
+        float gap,
+        float bottomOffset,
+        float bottomHeight,
+        bool narrow,
+        bool shortScreen)
+    {
+        if (panel == null)
+        {
+            return;
+        }
+
+        float width = Mathf.Clamp(safeWidth - (margin * 2f), 320f, narrow ? 500f : 560f);
+        float availableHeight = safeHeight - (margin * 2f) - bottomOffset - bottomHeight - gap;
+        float height = Mathf.Clamp(availableHeight, 220f, shortScreen ? 280f : 330f);
+        float bottomClearanceTop = bottomOffset + bottomHeight + gap;
+        float centerY = Mathf.Clamp(
+            bottomClearanceTop + (height * 0.5f),
+            margin + (height * 0.5f),
+            safeHeight - margin - (height * 0.5f));
+
+        ApplyRect(
+            panel,
+            new Vector2(0.5f, 0f),
+            new Vector2(0.5f, 0f),
+            new Vector2(0.5f, 0.5f),
+            new Vector2(width, height),
+            new Vector2(0f, centerY));
+
+        if (bodyText != null)
+        {
+            bodyText.fontSize = narrow || shortScreen ? 11f : 12f;
         }
     }
 
@@ -3884,6 +4614,18 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         return rect.gameObject.AddComponent<T>();
     }
 
+    private static Image CreateRadarVisual(string name, Transform parent, Vector2 size, Color color)
+    {
+        Image image = CreateGraphic<Image>(
+            name,
+            parent,
+            new RectPreset(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), size, Vector2.zero));
+        image.color = color;
+        image.raycastTarget = false;
+        image.gameObject.SetActive(false);
+        return image;
+    }
+
     private static RectTransform CreateRect(string name, Transform parent, RectPreset preset)
     {
         GameObject go = new GameObject(name);
@@ -3949,19 +4691,19 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             hasCachedHelpText = false;
         }
 
-        ApplyHelpModalVisibility(visible);
+        ApplyModalVisibility(IsAnyPlayerHudModalVisible());
     }
 
-    private void ApplyHelpModalVisibility(bool helpVisible)
+    private void ApplyModalVisibility(bool modalVisible)
     {
-        SetGameObjectActive(systemPanelRect, !helpVisible);
-        SetGameObjectActive(objectivePanelRect, !helpVisible);
-        SetGameObjectActive(contextPanelRect, !helpVisible);
-        SetGameObjectActive(radarPanelRect, !helpVisible);
-        SetGameObjectActive(overlayGraphic != null ? overlayGraphic.rectTransform : null, !helpVisible);
+        SetGameObjectActive(systemPanelRect, !modalVisible);
+        SetGameObjectActive(objectivePanelRect, !modalVisible);
+        SetGameObjectActive(contextPanelRect, !modalVisible);
+        SetGameObjectActive(radarPanelRect, !modalVisible);
+        SetGameObjectActive(overlayGraphic != null ? overlayGraphic.rectTransform : null, !modalVisible);
         for (int i = 0; i < targetIndicatorLabels.Count; i++)
         {
-            if (targetIndicatorLabels[i] != null && helpVisible)
+            if (targetIndicatorLabels[i] != null && modalVisible)
             {
                 targetIndicatorLabels[i].gameObject.SetActive(false);
             }
@@ -4429,12 +5171,15 @@ public sealed class PrototypePlayerHudOverlayGraphic : MaskableGraphic
 
 public sealed class PrototypePlayerHudRadarGraphic : MaskableGraphic
 {
+    private static readonly PrototypePlayerRadarBlip[] EmptyBlips = System.Array.Empty<PrototypePlayerRadarBlip>();
+    private static readonly Vector3[] EmptyRoute = System.Array.Empty<Vector3>();
     private PrototypePlayerHudSnapshot snapshot;
 
     public void SetSnapshot(PrototypePlayerHudSnapshot value)
     {
         snapshot = value;
-        SetVerticesDirty();
+        color = Color.white;
+        SetAllDirty();
     }
 
     protected override void OnPopulateMesh(VertexHelper vh)
@@ -4462,8 +5207,10 @@ public sealed class PrototypePlayerHudRadarGraphic : MaskableGraphic
         DrawLine(vh, center - heading * 9f - right * 7f, center - heading * 9f + right * 7f, Color.white, 1.5f);
         DrawLine(vh, center - heading * 9f + right * 7f, center + heading * 13f, Color.white, 1.5f);
 
-        DrawRadarPath(vh, center, radius, snapshot.Radar, snapshot.Radar.RouteWorldPoints, PrototypeModuleColorPalette.Target, 1f, false);
-        DrawRadarPath(vh, center, radius, snapshot.Radar, snapshot.Radar.TrajectoryPreviewWorldPoints, new Color(1f, 0.72f, 0.22f, 0.82f), 1.1f, true);
+        Vector3[] routePoints = snapshot.Radar.RouteWorldPoints ?? EmptyRoute;
+        Vector3[] previewPoints = snapshot.Radar.TrajectoryPreviewWorldPoints ?? EmptyRoute;
+        DrawRadarPath(vh, center, radius, snapshot.Radar, routePoints, PrototypeModuleColorPalette.Target, 1f, false);
+        DrawRadarPath(vh, center, radius, snapshot.Radar, previewPoints, new Color(1f, 0.72f, 0.22f, 0.82f), 1.1f, true);
 
         if (snapshot.Radar.HasAvoidanceWaypoint)
         {
@@ -4471,7 +5218,7 @@ public sealed class PrototypePlayerHudRadarGraphic : MaskableGraphic
             DrawHazardBlip(vh, avoidance, PrototypeUiStyle.WarningColor, 5f);
         }
 
-        PrototypePlayerRadarBlip[] blips = snapshot.Radar.Blips;
+        PrototypePlayerRadarBlip[] blips = snapshot.Radar.Blips ?? EmptyBlips;
         for (int i = 0; i < blips.Length; i++)
         {
             PrototypePlayerRadarBlip blip = blips[i];

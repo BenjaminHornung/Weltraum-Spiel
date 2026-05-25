@@ -346,8 +346,7 @@ public void ResetForBootstrap()
             && shipController.HasMainThruster
             && shipController.MainThrottleScale > 0.0001f
             && !shipController.MainThermalOverheated;
-        bool mainAllowed = shipController != null && !shipController.RcsManeuverMode;
-        hasAuthorityForMainBrake = mainReady && mainAllowed;
+        hasAuthorityForMainBrake = mainReady;
 
         bool fuelFree = shipStats == null || shipStats.FuelConsumptionKgPerSecond <= 0f;
         CanUseMainBrake = hasAuthorityForMainBrake && (fuelFree || shipStats.HasFuel);

@@ -19,6 +19,7 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
     private const string WorldLabelReadabilityChangeName = "player-world-label-readability-v1";
     private const string LiveEvidenceSymmetryChangeName = "player-ui-live-evidence-symmetry-v1";
     private const string TargetIndicatorsChangeName = "player-target-indicators-v1";
+    private const string PlayerUiRegressionControlsChangeName = "player-ui-regression-controls-autopilot-rcs-v1";
     private const BindingFlags NonPublicInstance = BindingFlags.Instance | BindingFlags.NonPublic;
 
     private SimulationMode previousSimulationMode;
@@ -503,6 +504,88 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
     }
 
     [Test]
+    [Category("PlayerHudEvidence")]
+    [Timeout(120000)]
+    public void PrototypeBootstrapRuntimePlayerHudEvidenceCapturesPlayerComputerPopups()
+    {
+        Assert.That(Application.isPlaying, Is.True, "This evidence test must run in Unity PlayMode.");
+#if UNITY_EDITOR
+        if (SceneManager.GetActiveScene().path != ScenePath)
+        {
+            EditorSceneManager.LoadSceneInPlayMode(ScenePath, new LoadSceneParameters(LoadSceneMode.Single));
+        }
+#endif
+
+        PrototypeUiLayoutManager.ResetPresetToBasic();
+        GameObject host = new GameObject("PrototypePlayerHudLiveEvidenceHost");
+        PrototypeBootstrap bootstrap = host.AddComponent<PrototypeBootstrap>();
+        SetPrivateField(bootstrap, "buildOnStart", false);
+        SetPrivateField(bootstrap, "spawnTestTarget", true);
+        SetPrivateField(bootstrap, "buildPveArena", true);
+        SetPrivateField(bootstrap, "buildTestEnvironment", true);
+        SetPrivateField(bootstrap, "allowGeneratedFallbackWhenImportedAssetMissing", false);
+        bootstrap.BuildPrototype(PrototypeShipVariant.Baseline());
+
+        LiveHudRig rig = ResolveRig();
+        ConfigureHudCanvasForCameraCapture(rig);
+        RunFrames(rig, 3);
+
+        string screenshotRoot = GetScreenshotRoot(PlayerUiRegressionControlsChangeName);
+        Directory.CreateDirectory(screenshotRoot);
+
+        rig.PlayerHud.SetTargetDockingPort(null);
+        PrototypeNavigationTarget navTarget = rig.Autopilot.SelectNextTarget();
+        Assert.NotNull(navTarget, "popup navigation target");
+        rig.Autopilot.ReplanNow();
+        RunFrames(rig, 3);
+        const string radarEvidenceFileName = "player-ui-regression-radar-normal-1280x720.png";
+        PrototypePlayerHudSnapshot radarSnapshot = CaptureLiveState(
+            rig,
+            screenshotRoot,
+            radarEvidenceFileName,
+            1280,
+            720);
+        Assert.That(radarSnapshot.Radar.Blips.Length, Is.GreaterThan(0), "normal player radar blips");
+        Assert.That(FindRect(rig.PlayerHud, "RadarPanel").gameObject.activeSelf, Is.True, "normal player radar panel visible");
+        AssertRadarGraphicVisible(rig.PlayerHud);
+        AssertRadarLayerVisible(rig.PlayerHud);
+        AssertRadarScreenshotHasRenderableMarkers(Path.Combine(screenshotRoot, radarEvidenceFileName), rig.PlayerHud, 1280, 720);
+
+        SetPlayerHudModalVisible(rig.PlayerHud, "SetNavigationPlannerVisible", true);
+        RunFrames(rig, 3);
+
+        PrototypePlayerHudSnapshot navSnapshot = CaptureLiveState(
+            rig,
+            screenshotRoot,
+            "player-ui-regression-nav-planner-1280x720.png",
+            1280,
+            720);
+        Assert.That(navSnapshot.Navigation.Visible, Is.True, "navigation planner snapshot");
+        Assert.That(FindRect(rig.PlayerHud, "NavigationPlannerPanel").gameObject.activeSelf, Is.True, "navigation planner active");
+        Assert.That(FindRect(rig.PlayerHud, "ContextPanel").gameObject.activeSelf, Is.False, "navigation planner hides context");
+        AssertActiveHudRectsInsideCanvas(rig.PlayerHud);
+        AssertActiveButtonTextNotOverflowing(rig.PlayerHud);
+
+        SetPlayerHudModalVisible(rig.PlayerHud, "SetNavigationPlannerVisible", false);
+        rig.WeaponComputer.RefreshTargets();
+        Assert.That(rig.WeaponComputer.SelectNextTarget(), Is.True, "popup combat target selection");
+        SetPlayerHudModalVisible(rig.PlayerHud, "SetCombatComputerVisible", true);
+        RunFrames(rig, 3);
+
+        PrototypePlayerHudSnapshot combatSnapshot = CaptureLiveState(
+            rig,
+            screenshotRoot,
+            "player-ui-regression-combat-computer-1280x720.png",
+            1280,
+            720);
+        Assert.That(combatSnapshot.Combat.Visible, Is.True, "combat computer snapshot");
+        Assert.That(FindRect(rig.PlayerHud, "CombatComputerPanel").gameObject.activeSelf, Is.True, "combat computer active");
+        Assert.That(FindRect(rig.PlayerHud, "RadarPanel").gameObject.activeSelf, Is.False, "combat computer hides radar");
+        AssertActiveHudRectsInsideCanvas(rig.PlayerHud);
+        AssertActiveButtonTextNotOverflowing(rig.PlayerHud);
+    }
+
+    [Test]
     [Category("PlayerWorldLabelEvidence")]
     [Timeout(120000)]
     public void PrototypeBootstrapRuntimePlayerHudEvidenceHidesDebugWorldLabelsInTraining()
@@ -653,6 +736,92 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
         return path;
     }
 
+    private static void AssertRadarGraphicVisible(PrototypePlayerHudRenderer playerHud)
+    {
+        var radarGraphic = playerHud.GetComponentInChildren<PrototypePlayerHudRadarGraphic>(true);
+        Assert.NotNull(radarGraphic, "RadarGraphic component");
+        Assert.That(radarGraphic.gameObject.activeInHierarchy, Is.True, "RadarGraphic active");
+        Rect radarRect = radarGraphic.rectTransform.rect;
+        Assert.That(radarRect.width, Is.GreaterThan(70f), "RadarGraphic width");
+        Assert.That(radarRect.height, Is.GreaterThan(70f), "RadarGraphic height");
+    }
+
+    private static void AssertRadarLayerVisible(PrototypePlayerHudRenderer playerHud)
+    {
+        RectTransform radarLayer = FindRect(playerHud, "RadarLayer");
+        Assert.NotNull(radarLayer, "RadarLayer");
+        Assert.That(radarLayer.gameObject.activeInHierarchy, Is.True, "RadarLayer active");
+        Assert.That(radarLayer.rect.width, Is.GreaterThan(70f), "RadarLayer width");
+        Assert.That(radarLayer.rect.height, Is.GreaterThan(70f), "RadarLayer height");
+
+        int activeGridSegments = 0;
+        for (int i = 0; i < 6; i++)
+        {
+            RectTransform gridSegment = FindRect(playerHud, "RadarGridSegment" + i);
+            Assert.NotNull(gridSegment, "RadarGridSegment" + i);
+            if (gridSegment.gameObject.activeInHierarchy)
+            {
+                activeGridSegments++;
+            }
+        }
+
+        Assert.That(activeGridSegments, Is.EqualTo(6), "active radar grid segments");
+    }
+
+    private static void AssertRadarScreenshotHasRenderableMarkers(
+        string screenshotPath,
+        PrototypePlayerHudRenderer playerHud,
+        int width,
+        int height)
+    {
+        Assert.That(File.Exists(screenshotPath), Is.True, "radar screenshot exists");
+        Texture2D texture = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+        try
+        {
+            Assert.That(texture.LoadImage(File.ReadAllBytes(screenshotPath)), Is.True, "radar screenshot can be decoded");
+            RectTransform radarPanel = FindRect(playerHud, "RadarPanel");
+            Camera camera = playerHud.GetComponent<Camera>();
+            Assert.NotNull(camera, "player HUD camera");
+
+            Vector3[] corners = new Vector3[4];
+            radarPanel.GetWorldCorners(corners);
+            Vector2 min = new Vector2(float.MaxValue, float.MaxValue);
+            Vector2 max = new Vector2(float.MinValue, float.MinValue);
+            for (int i = 0; i < corners.Length; i++)
+            {
+                Vector3 screen = camera.WorldToScreenPoint(corners[i]);
+                min = Vector2.Min(min, screen);
+                max = Vector2.Max(max, screen);
+            }
+
+            int centerX = Mathf.Clamp(Mathf.RoundToInt((min.x + max.x) * 0.5f), 0, width - 1);
+            int centerY = Mathf.Clamp(Mathf.RoundToInt((min.y + max.y) * 0.5f), 0, height - 1);
+            int radius = Mathf.Clamp(Mathf.RoundToInt(Mathf.Min(max.x - min.x, max.y - min.y) * 0.34f), 18, 72);
+            int markerPixels = 0;
+
+            for (int y = Mathf.Max(0, centerY - radius); y <= Mathf.Min(height - 1, centerY + radius); y++)
+            {
+                for (int x = Mathf.Max(0, centerX - radius); x <= Mathf.Min(width - 1, centerX + radius); x++)
+                {
+                    Color32 pixel = texture.GetPixel(x, y);
+                    bool cyan = pixel.g > 130 && pixel.b > 130 && pixel.r < 130;
+                    bool amber = pixel.r > 160 && pixel.g > 100 && pixel.b < 110;
+                    bool white = pixel.r > 170 && pixel.g > 170 && pixel.b > 170;
+                    if (cyan || amber || white)
+                    {
+                        markerPixels++;
+                    }
+                }
+            }
+
+            Assert.That(markerPixels, Is.GreaterThan(24), "radar screenshot marker pixels inside panel");
+        }
+        finally
+        {
+            Object.DestroyImmediate(texture);
+        }
+    }
+
     private static void AssertRenderablePixels(Texture2D texture, string label)
     {
         Color32[] pixels = texture.GetPixels32();
@@ -762,6 +931,8 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
             "ObjectivePanel",
             "ContextPanel",
             "RadarPanel",
+            "NavigationPlannerPanel",
+            "CombatComputerPanel",
             "PlayerHelp",
             "TargetIndicatorLabel0",
             "TargetIndicatorLabel1",
@@ -815,7 +986,19 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
             "CombatNextTargetText",
             "CombatClearTargetText",
             "CombatAutoFireText",
-            "CombatPriorityText"
+            "CombatPriorityText",
+            "NavPlannerPreviousTargetText",
+            "NavPlannerNextTargetText",
+            "NavPlannerEngageText",
+            "NavPlannerReplanText",
+            "NavPlannerPreviewText",
+            "NavPlannerCloseText",
+            "CombatComputerPreviousTargetText",
+            "CombatComputerNextTargetText",
+            "CombatComputerClearTargetText",
+            "CombatComputerAutoFireText",
+            "CombatComputerPriorityText",
+            "CombatComputerCloseText"
         };
 
         for (int i = 0; i < buttonTextNames.Length; i++)
@@ -957,6 +1140,14 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
         {
             method.Invoke(target, null);
         }
+    }
+
+    private static void SetPlayerHudModalVisible(PrototypePlayerHudRenderer playerHud, string methodName, bool visible)
+    {
+        MethodInfo method = typeof(PrototypePlayerHudRenderer).GetMethod(methodName, NonPublicInstance);
+        Assert.NotNull(method, methodName);
+        method.Invoke(playerHud, new object[] { visible });
+        Canvas.ForceUpdateCanvases();
     }
 
     private static void SetPrivateField(object target, string fieldName, object value)

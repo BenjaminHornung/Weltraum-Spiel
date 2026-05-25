@@ -159,6 +159,10 @@ public class PrototypeFunctionalShipSocketValidationTests
         Assert.That(first.boundRcsNozzles, Is.EqualTo(1));
         Assert.That(first.boundGuns, Is.EqualTo(1));
         Assert.That(firstVfxCount, Is.EqualTo(1));
+        Transform rcsVfx = rcsNozzle.transform.Find("VFX");
+        Assert.NotNull(rcsVfx);
+        Assert.That(Vector3.Dot(rcsVfx.localPosition.normalized, Vector3.back), Is.GreaterThan(0.99f));
+        Assert.That(Vector3.Dot(rcsVfx.forward, -rcsNozzle.transform.forward), Is.GreaterThan(0.99f));
         Assert.That(secondVfxCount, Is.EqualTo(firstVfxCount));
         Assert.That(second.createdRcsVfxChildren, Is.EqualTo(0));
     }

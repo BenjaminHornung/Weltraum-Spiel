@@ -91,6 +91,12 @@ public class PrototypeShipKitImportVfxValidationTests
         Assert.That(secondBind.CreatedInstances, Is.EqualTo(0));
         Assert.That(CountDescendantNamesContaining(instance.transform, PrototypeShipKitVfxBinder.MainThrusterVfxChildName), Is.EqualTo(firstBind.MainThrusterBindings));
         Assert.That(CountDescendantNamesContaining(instance.transform, PrototypeShipKitVfxBinder.RcsThrusterVfxChildName), Is.EqualTo(firstBind.RcsThrusterBindings));
+
+        Transform rcsVfx = FindDescendantNameContaining(instance.transform, PrototypeShipKitVfxBinder.RcsThrusterVfxChildName);
+        Assert.NotNull(rcsVfx);
+        Assert.NotNull(rcsVfx.parent);
+        Assert.That(Vector3.Dot(rcsVfx.localPosition.normalized, Vector3.back), Is.GreaterThan(0.99f));
+        Assert.That(Vector3.Dot(rcsVfx.forward, -rcsVfx.parent.forward), Is.GreaterThan(0.99f));
     }
 
     [Test]
@@ -124,6 +130,20 @@ public class PrototypeShipKitImportVfxValidationTests
         }
 
         return count;
+    }
+
+    private static Transform FindDescendantNameContaining(Transform root, string namePart)
+    {
+        Transform[] transforms = root.GetComponentsInChildren<Transform>(true);
+        for (int i = 0; i < transforms.Length; i++)
+        {
+            if (transforms[i].name.Contains(namePart))
+            {
+                return transforms[i];
+            }
+        }
+
+        return null;
     }
 
     private static void DestroyNamed(string objectName)

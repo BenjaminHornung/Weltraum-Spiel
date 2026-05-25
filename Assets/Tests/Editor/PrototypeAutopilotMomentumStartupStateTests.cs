@@ -138,7 +138,7 @@ public class PrototypeAutopilotMomentumStartupStateTests
     }
 
     [Test]
-    public void MomentumAssistUsesMainBrakeOnlyInNormalMode()
+    public void MomentumAssistUsesAssistOwnedMainBrakeInTranslationMode()
     {
         PrototypeBootstrap bootstrap = CreateBootstrap();
         bootstrap.BuildBuiltInVariant(0);
@@ -160,10 +160,12 @@ public class PrototypeAutopilotMomentumStartupStateTests
         controller.SetControlMode(FlightControlMode.Translation);
         momentum.ActivateFromUi();
         InvokeFixedUpdate(momentum);
+        InvokeFixedUpdate(controller);
 
-        Assert.That(momentum.LastMainThrottleRequest, Is.EqualTo(0f).Within(0.0001f));
-        Assert.That(momentum.CurrentState, Is.EqualTo(PrototypeMomentumAssistState.RcsDamp));
-        Assert.True(controller.HasExternalFlightAssistRequest || momentum.CurrentState == PrototypeMomentumAssistState.NoAuthority || momentum.CurrentState == PrototypeMomentumAssistState.FuelInsufficient);
+        Assert.That(momentum.CurrentState, Is.EqualTo(PrototypeMomentumAssistState.MainBrake));
+        Assert.That(momentum.LastMainThrottleRequest, Is.GreaterThan(0f));
+        Assert.That(controller.MainThrustCommand, Is.GreaterThan(0f));
+        Assert.True(controller.RcsManeuverMode);
     }
 
     [Test]

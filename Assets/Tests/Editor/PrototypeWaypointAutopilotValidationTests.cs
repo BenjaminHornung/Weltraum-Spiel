@@ -203,6 +203,28 @@ public class PrototypeWaypointAutopilotValidationTests
     }
 
     [Test]
+    public void AutopilotFastApproachFlipsBeforeMainDecelBurn()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 150f;
+        rig.Body.linearVelocity = Vector3.forward * 45f;
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+
+        InvokeFixedUpdate(rig.Autopilot);
+
+        Assert.That(rig.Autopilot.ArrivalPhase, Is.EqualTo(PrototypeWaypointAutopilotArrivalPhase.Brake));
+        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.FlipForBrake));
+        Assert.That(rig.Controller.LastExternalFlightAssistRequest.mainThrottle, Is.EqualTo(0f).Within(0.0001f));
+
+        rig.Ship.transform.rotation = Quaternion.LookRotation(Vector3.back, Vector3.up);
+        InvokeFixedUpdate(rig.Autopilot);
+
+        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.Brake));
+        Assert.That(rig.Controller.LastExternalFlightAssistRequest.mainThrottle, Is.GreaterThan(0.5f));
+    }
+
+    [Test]
     public void AutopilotLateralVelocityRequestsCorrection()
     {
         var rig = CreateAutopilotRig();

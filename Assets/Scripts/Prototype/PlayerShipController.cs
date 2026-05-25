@@ -555,10 +555,11 @@ public class PlayerShipController : MonoBehaviour
             }
         }
 
-        float assistMainThrottle = CanAssistRequestMainThrottle(LastFlightAssistRequest)
-            ? LastFlightAssistRequest.mainThrottle
-            : 0f;
-        MainThrustCommand = MainThrusterAllowed ? Mathf.Clamp01(Mathf.Max(mainThrottle, mainThrottlePulse, assistMainThrottle)) : 0f;
+        bool assistOwnsMainThrottle = CanAssistRequestMainThrottle(LastFlightAssistRequest)
+            && LastFlightAssistRequest.mainThrottle > 0.0001f;
+        float assistMainThrottle = assistOwnsMainThrottle ? LastFlightAssistRequest.mainThrottle : 0f;
+        bool canFireMainThruster = MainThrusterAllowed || assistOwnsMainThrottle;
+        MainThrustCommand = canFireMainThruster ? Mathf.Clamp01(Mathf.Max(mainThrottle, mainThrottlePulse, assistMainThrottle)) : 0f;
         Vector3 desiredGimbalCommand = GetGimbalAssistCommand();
         GimbalYawCommand = desiredGimbalCommand.y;
         float gimbalPitchCommand = desiredGimbalCommand.x;

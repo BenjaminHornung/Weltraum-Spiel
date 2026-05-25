@@ -146,7 +146,9 @@ public static class PrototypeUiLayoutManager
             minimap.SetWindowVisible(!minimap.IsWindowVisible);
         }
 
-        if (keyboard.f7Key.wasPressedThisFrame && weaponComputer != null)
+        if (keyboard.f7Key.wasPressedThisFrame
+            && weaponComputer != null
+            && ShouldRouteF7ToPrototypeWeaponComputer(CurrentPreset))
         {
             weaponComputer.SetWindowVisible(!weaponComputer.IsWindowVisible);
         }
@@ -244,6 +246,11 @@ public static class PrototypeUiLayoutManager
     public static IReadOnlyCollection<PrototypeUiWindowState> WindowsForTests => Windows.Values;
 
     public static bool ShouldRouteF1ToPrototypeKeybindOverlay(PrototypeUiPreset preset)
+    {
+        return preset != PrototypeUiPreset.Basic;
+    }
+
+    public static bool ShouldRouteF7ToPrototypeWeaponComputer(PrototypeUiPreset preset)
     {
         return preset != PrototypeUiPreset.Basic;
     }

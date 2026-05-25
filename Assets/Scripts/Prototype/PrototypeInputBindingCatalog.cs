@@ -31,10 +31,12 @@ public static class PrototypeInputBindingCatalog
             "Tab next target",
             "B previous target",
             "G toggle Autopilot",
+            "P navigation planner",
             "Debug Console also has Explicit Autopilot controls"
         }),
         new PrototypeInputBindingSection("Momentum Assist", new[]
         {
+            "M Kill Momentum",
             "HUD button Kill Momentum",
             "Debug Console Engage/Abort Momentum Assist"
         }),

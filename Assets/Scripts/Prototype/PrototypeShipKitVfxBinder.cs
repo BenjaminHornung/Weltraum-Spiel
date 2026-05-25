@@ -126,7 +126,7 @@ public sealed class PrototypeShipKitVfxBinder : MonoBehaviour
 
         GameObject instance = Instantiate(prefab, nozzle, false);
         instance.name = childName;
-        instance.transform.localPosition = Vector3.zero;
+        instance.transform.localPosition = childName == RcsThrusterVfxChildName ? Vector3.back * 0.18f : Vector3.zero;
         instance.transform.localRotation = Quaternion.Euler(0f, 180f, 0f);
         instance.transform.localScale = Vector3.one;
         ApplyPreviewState(instance, previewActive);

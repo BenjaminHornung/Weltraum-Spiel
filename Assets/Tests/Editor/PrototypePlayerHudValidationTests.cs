@@ -532,13 +532,16 @@ public class PrototypePlayerHudValidationTests
         Assert.That(help, Does.Contain("W/S: translate forward/back"));
         Assert.That(help, Does.Contain("Space: fire"));
         Assert.That(help, Does.Contain("F1: player help"));
-        Assert.That(help, Does.Contain("F7 Weapon Computer"));
+        Assert.That(help, Does.Contain("F7: combat computer"));
+        Assert.That(help, Does.Contain("P navigation planner"));
+        Assert.That(help, Does.Contain("M Kill Momentum"));
         Assert.That(help, Does.Not.Contain("Debug Console"));
         Assert.That(help, Does.Not.Contain("Flight Diagnostics"));
         Assert.That(help, Does.Not.Contain("DES/ACT/RES"));
         Assert.That(help, Does.Not.Contain("Backspace: refill fuel"));
         Assert.That(help, Does.Not.Contain("F6"));
         Assert.That(help, Does.Not.Contain("Keybinds"));
+        Assert.That(help, Does.Not.Contain("F7 Weapon Computer"));
     }
 
     [Test]
@@ -586,6 +589,15 @@ public class PrototypePlayerHudValidationTests
         Assert.False(Camera.main.GetComponent<PrototypeDebugOverlay>().IsWindowVisible);
         Assert.False(Camera.main.GetComponent<PrototypeMinimapOverlay>().IsWindowVisible);
         Assert.False(Camera.main.GetComponent<PrototypeWeaponComputerPanel>().IsWindowVisible);
+    }
+
+    [Test]
+    public void BasicPresetDoesNotRouteF7ToLegacyWeaponComputerWindow()
+    {
+        Assert.False(PrototypeUiLayoutManager.ShouldRouteF7ToPrototypeWeaponComputer(PrototypeUiPreset.Basic));
+        Assert.True(PrototypeUiLayoutManager.ShouldRouteF7ToPrototypeWeaponComputer(PrototypeUiPreset.FlightTest));
+        Assert.True(PrototypeUiLayoutManager.ShouldRouteF7ToPrototypeWeaponComputer(PrototypeUiPreset.RcsTest));
+        Assert.True(PrototypeUiLayoutManager.ShouldRouteF7ToPrototypeWeaponComputer(PrototypeUiPreset.FullDiagnostics));
     }
 
     [Test]
@@ -871,6 +883,48 @@ public class PrototypePlayerHudValidationTests
     }
 
     [Test]
+    public void CombatComputerPopupUsesPlayerHudUguiControls()
+    {
+        using (var builder = new PrototypeScenarioBuilder())
+        {
+            PrototypeCombatRig combatRig = builder.CreateCombatRig("PlayerHudCombatPopupShip");
+            builder.CreateWeaponTarget("PlayerHudCombatPopupTargetA", combatRig.Muzzle.position + Vector3.forward * 40f);
+            builder.CreateWeaponTarget("PlayerHudCombatPopupTargetB", combatRig.Muzzle.position + Vector3.forward * 70f);
+            combatRig.Computer.RefreshTargets();
+
+            GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+            cameraObject.AddComponent<Camera>();
+            PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+            playerHud.Bind(combatRig.Ship.Ship.transform, combatRig.Ship.Stats, combatRig.Ship.Body);
+            SetCombatComputerVisibleForTest(playerHud, true);
+
+            RectTransform panel = FindRect(playerHud, "CombatComputerPanel");
+            Assert.True(panel.gameObject.activeSelf);
+            Assert.False(FindRect(playerHud, "ContextPanel").gameObject.activeSelf);
+            Assert.False(FindRect(playerHud, "RadarPanel").gameObject.activeSelf);
+            Assert.That(FindText(playerHud, "CombatComputerTitle").text, Is.EqualTo("Combat Computer"));
+            Assert.That(FindText(playerHud, "CombatComputerBody").text, Does.Contain("Target No target"));
+
+            Button next = FindButton(playerHud, "CombatComputerNextTarget");
+            Button autoFire = FindButton(playerHud, "CombatComputerAutoFire");
+            Button priority = FindButton(playerHud, "CombatComputerPriority");
+
+            Assert.True(next.interactable);
+            next.onClick.Invoke();
+            Assert.NotNull(combatRig.Computer.ActiveTarget);
+            Assert.That(FindText(playerHud, "CombatComputerBody").text, Does.Contain(combatRig.Computer.ActiveTarget.Label));
+
+            autoFire.onClick.Invoke();
+            Assert.True(combatRig.Computer.AutoFireEnabled);
+            Assert.That(FindText(playerHud, "CombatComputerAutoFireText").text, Is.EqualTo("Auto On"));
+
+            priority.onClick.Invoke();
+            Assert.That(combatRig.Computer.PriorityMode, Is.EqualTo(PrototypeWeaponTargetPriorityMode.Nearest));
+            Assert.That(FindText(playerHud, "CombatComputerPriorityText").text, Is.EqualTo("Prio Near"));
+        }
+    }
+
+    [Test]
     public void CombatComputerControlsHideOutsideCombatContext()
     {
         GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
@@ -976,6 +1030,17 @@ public class PrototypePlayerHudValidationTests
     }
 
     [Test]
+    public void KillMomentumKeybindIsDocumentedAndRoutedInPlayerHud()
+    {
+        string help = PrototypePlayerHudSnapshotBuilder.BuildPlayerHelpText(FlightControlMode.Normal, false);
+        string source = File.ReadAllText(Path.Combine(Application.dataPath, "Scripts", "Prototype", "PrototypePlayerHud.cs"));
+
+        Assert.That(help, Does.Contain("M Kill Momentum"));
+        Assert.That(source, Does.Contain("keyboard.mKey.wasPressedThisFrame"));
+        Assert.That(source, Does.Contain("HandleKillMomentumAction(\"keybind\")"));
+    }
+
+    [Test]
     public void NavigationComputerControlsReuseAutopilotAndPreviewApis()
     {
         using (var builder = new PrototypeScenarioBuilder())
@@ -1041,6 +1106,62 @@ public class PrototypePlayerHudValidationTests
 
             replan.onClick.Invoke();
             Assert.NotNull(autopilot.CurrentTarget);
+        }
+    }
+
+    [Test]
+    public void NavigationPlannerPopupUsesAutopilotAndPreviewApis()
+    {
+        using (var builder = new PrototypeScenarioBuilder())
+        {
+            PrototypeShipRig rig = builder.CreateShip("PlayerHudNavPlannerShip");
+            GameObject managerObject = new GameObject("PlayerHudNavPlannerManager");
+            PrototypeWaypointManager manager = managerObject.AddComponent<PrototypeWaypointManager>();
+            manager.EnsureDefaultWaypoints();
+
+            PrototypeWaypointAutopilot autopilot = rig.Ship.GetComponent<PrototypeWaypointAutopilot>();
+            if (autopilot == null)
+            {
+                autopilot = rig.Ship.AddComponent<PrototypeWaypointAutopilot>();
+            }
+
+            autopilot.Bind(manager, rig.Controller, rig.Stats, rig.Body);
+            autopilot.SelectTarget(manager.SelectedTarget);
+
+            PrototypeTrajectoryPreviewNavMap preview = rig.Ship.AddComponent<PrototypeTrajectoryPreviewNavMap>();
+            preview.Bind(rig.Ship.transform, rig.Body, rig.Stats, rig.PhysicsCore, autopilot);
+            preview.ConfigureForTests(true, 8, 12, 0.1f, false, true);
+
+            GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+            cameraObject.AddComponent<Camera>();
+            PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+            playerHud.Bind(rig.Ship.transform, rig.Stats, rig.Body);
+            playerHud.RefreshNow();
+
+            FindButton(playerHud, "NavReplan").onClick.Invoke();
+
+            RectTransform panel = FindRect(playerHud, "NavigationPlannerPanel");
+            Assert.True(panel.gameObject.activeSelf);
+            Assert.False(FindRect(playerHud, "ContextPanel").gameObject.activeSelf);
+            Assert.False(FindRect(playerHud, "RadarPanel").gameObject.activeSelf);
+            Assert.That(FindText(playerHud, "NavigationPlannerTitle").text, Is.EqualTo("Navigation Planner"));
+            Assert.That(FindText(playerHud, "NavigationPlannerBody").text, Does.Contain("Target 1/"));
+
+            Button next = FindButton(playerHud, "NavPlannerNextTarget");
+            Button engage = FindButton(playerHud, "NavPlannerEngage");
+            Button previewButton = FindButton(playerHud, "NavPlannerPreview");
+
+            Assert.True(next.interactable);
+            next.onClick.Invoke();
+            Assert.That(FindText(playerHud, "NavigationPlannerBody").text, Does.Contain("Target " + (manager.SelectedIndex + 1) + "/" + manager.TargetCount));
+
+            previewButton.onClick.Invoke();
+            Assert.False(preview.PreviewEnabled);
+            Assert.That(FindText(playerHud, "NavPlannerPreviewText").text, Is.EqualTo("Preview Off"));
+
+            engage.onClick.Invoke();
+            Assert.True(autopilot.AutopilotEngaged);
+            Assert.That(FindText(playerHud, "NavPlannerEngageText").text, Is.EqualTo("Abort AP"));
         }
     }
 
@@ -1254,6 +1375,14 @@ public class PrototypePlayerHudValidationTests
     private static void SetHelpVisibleForTest(PrototypePlayerHudRenderer playerHud, bool visible)
     {
         MethodInfo method = typeof(PrototypePlayerHudRenderer).GetMethod("SetHelpVisible", BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        method.Invoke(playerHud, new object[] { visible });
+        Canvas.ForceUpdateCanvases();
+    }
+
+    private static void SetCombatComputerVisibleForTest(PrototypePlayerHudRenderer playerHud, bool visible)
+    {
+        MethodInfo method = typeof(PrototypePlayerHudRenderer).GetMethod("SetCombatComputerVisible", BindingFlags.Instance | BindingFlags.NonPublic);
         Assert.NotNull(method);
         method.Invoke(playerHud, new object[] { visible });
         Canvas.ForceUpdateCanvases();
