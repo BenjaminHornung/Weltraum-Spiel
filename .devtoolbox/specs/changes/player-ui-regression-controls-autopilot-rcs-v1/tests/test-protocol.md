@@ -6,6 +6,20 @@ Player UI regression controls, minimap evidence, navigation/combat popups, Kill 
 
 ## Evidence
 
+- Latest live minimap readability follow-up:
+  - Live MCP screenshot before the patch showed the top-right radar was technically populated (`31 contacts`) but still read as empty because the panel was too small and the contact cluster was visually weak.
+  - Fix: enlarge the compact radar, increase grid/route/preview/blip contrast and size, raise the uGUI blip pool from 36 to 64 contacts, and sort radar contacts so selected navigation/combat blips render above lower-priority map contacts.
+  - Unity MCP `validate_script`:
+    - `Assets/Scripts/Prototype/PrototypePlayerHud.cs`: PASS, 0 errors, existing warnings only.
+    - `Assets/Tests/Editor/PrototypePlayerHudValidationTests.cs`: PASS, 0 errors.
+  - Unity MCP EditMode radar data job `5b268d58d423458684feeb1b994ba952`: 4/4 passed.
+  - Unity MCP EditMode responsive layout job `a2043a2afa754a4da5b0a3d34ad59415`: 3/3 passed.
+  - Unity MCP PlayMode screenshot job `baa19a6323d44cf4b5f7df007220be60`: 1/1 passed.
+  - `dotnet build "Weltraum Spiel.sln" --no-restore`: PASS, 0 errors, 22 existing Unity/generated assembly warnings.
+  - Screenshot before patch: `tests/screenshots/minimap-live-empty-diagnostic-1280x720.png`
+  - Screenshot after patch: `tests/screenshots/player-ui-regression-radar-normal-1280x720.png`
+  - Live MCP screenshot after patch: `tests/screenshots/minimap-live-readable-diagnostic-1280x720.png`
+  - Visual check: the top-right radar is now a larger readable map with strong grid lines, visible selected/actionable contact blips, route/preview cues, and `Range 2.5 km | 34 contacts` without overlapping the top strip, context panel, or bottom bar.
 - Latest player combat-control keybind pass:
   - Fix: the player HUD now routes `C` to the next combat target through the existing `PrototypeWeaponComputer` API, so Basic Player view can select targets without opening the legacy IMGUI Weapon Computer.
   - Fix: player help/catalog now documents `C cycle combat target` alongside `F7: combat computer`. The earlier reviewed `Shift+C` idea was dropped because it conflicts with the existing Shift throttle-up binding.
@@ -89,5 +103,7 @@ Player UI regression controls, minimap evidence, navigation/combat popups, Kill 
 ## External Review
 
 `claude-plan-review` was invoked for the player combat-control keybind slice with the touched file list and screenshot paths. The review flagged `Shift+C` as a conflict with the existing Shift throttle-up binding; that shortcut was removed before final verification, leaving the lower-conflict `C` next-combat-target binding and the existing uGUI popup buttons for previous/auto/prio controls.
+
+`claude-plan-review` was invoked for the live minimap readability follow-up with before/after screenshot paths. Direct PNG attachment failed with the local `charmap` binary-encoding issue; the path-only retry timed out after 120 seconds, so no actionable Claude feedback was returned for this slice.
 
 `claude-plan-review` was invoked with the empty-minimap fix context and screenshot paths after the latest PlayMode evidence; the local wrapper timed out after 120 seconds. It was also invoked before the latest planner-map slice and timed out after 120 seconds. For the minimap/radar readability slice, a PNG-backed review failed with a local `charmap` encoding error and the follow-up path-only review timed out after 120 seconds. No actionable review feedback was returned.

@@ -941,6 +941,7 @@ public static class PrototypePlayerHudSnapshotBuilder
         }
 
         float rangeMeters = ResolveRadarRangeMeters(farthestActionableMeters > 0.01f ? farthestActionableMeters : farthestMeters);
+        SortRadarBlipsForDisplay(blips);
         return new PrototypePlayerRadarSnapshot(
             rangeMeters,
             FormatRadarRangeLabel(rangeMeters),
@@ -951,6 +952,52 @@ public static class PrototypePlayerHudSnapshotBuilder
             preview,
             navigation.HasAvoidanceCue,
             navigation.AvoidanceWorldPosition);
+    }
+
+    private static void SortRadarBlipsForDisplay(List<PrototypePlayerRadarBlip> blips)
+    {
+        if (blips == null || blips.Count < 2)
+        {
+            return;
+        }
+
+        blips.Sort((left, right) =>
+        {
+            int priority = RadarBlipDrawPriority(left.Kind).CompareTo(RadarBlipDrawPriority(right.Kind));
+            if (priority != 0)
+            {
+                return priority;
+            }
+
+            return string.Compare(left.Label, right.Label, System.StringComparison.Ordinal);
+        });
+    }
+
+    private static int RadarBlipDrawPriority(PrototypePlayerRadarBlipKind kind)
+    {
+        switch (kind)
+        {
+            case PrototypePlayerRadarBlipKind.Beacon:
+            case PrototypePlayerRadarBlipKind.Gate:
+            case PrototypePlayerRadarBlipKind.Station:
+                return 10;
+            case PrototypePlayerRadarBlipKind.Navigation:
+                return 20;
+            case PrototypePlayerRadarBlipKind.Hazard:
+                return 30;
+            case PrototypePlayerRadarBlipKind.Docking:
+                return 40;
+            case PrototypePlayerRadarBlipKind.Objective:
+                return 50;
+            case PrototypePlayerRadarBlipKind.Combat:
+                return 60;
+            case PrototypePlayerRadarBlipKind.SelectedNavigation:
+                return 80;
+            case PrototypePlayerRadarBlipKind.SelectedCombat:
+                return 90;
+            default:
+                return 0;
+        }
     }
 
     private static bool ShouldUseBlipForRadarAutoRange(PrototypePlayerRadarBlipKind kind)
@@ -2086,7 +2133,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private const int MaxRadarGridSegments = 6;
     private const int MaxRadarRouteSegments = 28;
     private const int MaxRadarPreviewSegments = 28;
-    private const int MaxRadarBlips = 36;
+    private const int MaxRadarBlips = 64;
 
     [SerializeField] private Transform shipRoot;
     [SerializeField] private Rigidbody shipRigidbody;
@@ -2954,43 +3001,43 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
     private void CreateRadarPanel(Transform parent)
     {
-        RectTransform panel = CreatePanel("RadarPanel", parent, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(170f, 170f), new Vector2(-24f, -24f));
+        RectTransform panel = CreatePanel("RadarPanel", parent, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(220f, 220f), new Vector2(-24f, -24f));
         radarPanelRect = panel;
-        radarGraphic = CreateGraphic<PrototypePlayerHudRadarGraphic>("RadarGraphic", panel, new RectPreset(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(154f, 154f), Vector2.zero));
+        radarGraphic = CreateGraphic<PrototypePlayerHudRadarGraphic>("RadarGraphic", panel, new RectPreset(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(200f, 200f), Vector2.zero));
         radarGraphic.color = Color.white;
         radarGraphic.raycastTarget = false;
         CreateRadarLayer(panel);
-        radarText = CreateText("RadarText", panel, 10, TextAnchor.LowerCenter, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-12f, 18f), new Vector2(0f, 10f)));
+        radarText = CreateText("RadarText", panel, 11, TextAnchor.LowerCenter, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-12f, 22f), new Vector2(0f, 11f)));
     }
 
     private void CreateRadarLayer(Transform parent)
     {
-        radarLayerRect = CreateRect("RadarLayer", parent, new RectPreset(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(154f, 154f), Vector2.zero));
+        radarLayerRect = CreateRect("RadarLayer", parent, new RectPreset(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(200f, 200f), Vector2.zero));
         radarHeadingImage = CreateRadarVisual("RadarHeading", radarLayerRect, new Vector2(10f, 14f), Color.white);
         radarAvoidanceImage = CreateRadarVisual("RadarAvoidance", radarLayerRect, new Vector2(9f, 9f), PrototypeUiStyle.WarningColor);
 
         radarGridSegments.Clear();
         for (int i = 0; i < MaxRadarGridSegments; i++)
         {
-            radarGridSegments.Add(CreateRadarVisual("RadarGridSegment" + i, radarLayerRect, new Vector2(8f, 1.5f), new Color(0.25f, 0.85f, 1f, 0.52f)));
+            radarGridSegments.Add(CreateRadarVisual("RadarGridSegment" + i, radarLayerRect, new Vector2(8f, 1.8f), new Color(0.25f, 0.85f, 1f, 0.72f)));
         }
 
         radarRouteSegments.Clear();
         for (int i = 0; i < MaxRadarRouteSegments; i++)
         {
-            radarRouteSegments.Add(CreateRadarVisual("RadarRouteSegment" + i, radarLayerRect, new Vector2(8f, 2f), PrototypeModuleColorPalette.Target));
+            radarRouteSegments.Add(CreateRadarVisual("RadarRouteSegment" + i, radarLayerRect, new Vector2(8f, 3f), PrototypeModuleColorPalette.Target));
         }
 
         radarPreviewSegments.Clear();
         for (int i = 0; i < MaxRadarPreviewSegments; i++)
         {
-            radarPreviewSegments.Add(CreateRadarVisual("RadarPreviewSegment" + i, radarLayerRect, new Vector2(8f, 2f), new Color(1f, 0.72f, 0.22f, 0.9f)));
+            radarPreviewSegments.Add(CreateRadarVisual("RadarPreviewSegment" + i, radarLayerRect, new Vector2(8f, 3f), new Color(1f, 0.72f, 0.22f, 0.94f)));
         }
 
         radarBlipImages.Clear();
         for (int i = 0; i < MaxRadarBlips; i++)
         {
-            radarBlipImages.Add(CreateRadarVisual("RadarBlip" + i, radarLayerRect, new Vector2(7f, 7f), PrototypeModuleColorPalette.Target));
+            radarBlipImages.Add(CreateRadarVisual("RadarBlip" + i, radarLayerRect, new Vector2(10f, 10f), PrototypeModuleColorPalette.Target));
         }
     }
 
@@ -2998,30 +3045,30 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     {
         navigationPlannerMapLayerRect = CreateRect("NavigationPlannerMapLayer", parent, new RectPreset(new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(158f, 158f), new Vector2(-22f, 42f)));
         navigationPlannerMapHeadingImage = CreateRadarVisual("NavigationPlannerMapHeading", navigationPlannerMapLayerRect, new Vector2(10f, 14f), Color.white);
-        navigationPlannerMapAvoidanceImage = CreateRadarVisual("NavigationPlannerMapAvoidance", navigationPlannerMapLayerRect, new Vector2(9f, 9f), PrototypeUiStyle.WarningColor);
+        navigationPlannerMapAvoidanceImage = CreateRadarVisual("NavigationPlannerMapAvoidance", navigationPlannerMapLayerRect, new Vector2(12f, 12f), PrototypeUiStyle.WarningColor);
 
         navigationPlannerMapGridSegments.Clear();
         for (int i = 0; i < MaxRadarGridSegments; i++)
         {
-            navigationPlannerMapGridSegments.Add(CreateRadarVisual("NavigationPlannerMapGridSegment" + i, navigationPlannerMapLayerRect, new Vector2(8f, 1.5f), new Color(0.25f, 0.85f, 1f, 0.52f)));
+            navigationPlannerMapGridSegments.Add(CreateRadarVisual("NavigationPlannerMapGridSegment" + i, navigationPlannerMapLayerRect, new Vector2(8f, 1.8f), new Color(0.25f, 0.85f, 1f, 0.72f)));
         }
 
         navigationPlannerMapRouteSegments.Clear();
         for (int i = 0; i < MaxRadarRouteSegments; i++)
         {
-            navigationPlannerMapRouteSegments.Add(CreateRadarVisual("NavigationPlannerMapRouteSegment" + i, navigationPlannerMapLayerRect, new Vector2(8f, 2f), PrototypeModuleColorPalette.Target));
+            navigationPlannerMapRouteSegments.Add(CreateRadarVisual("NavigationPlannerMapRouteSegment" + i, navigationPlannerMapLayerRect, new Vector2(8f, 3f), PrototypeModuleColorPalette.Target));
         }
 
         navigationPlannerMapPreviewSegments.Clear();
         for (int i = 0; i < MaxRadarPreviewSegments; i++)
         {
-            navigationPlannerMapPreviewSegments.Add(CreateRadarVisual("NavigationPlannerMapPreviewSegment" + i, navigationPlannerMapLayerRect, new Vector2(8f, 2f), new Color(1f, 0.72f, 0.22f, 0.9f)));
+            navigationPlannerMapPreviewSegments.Add(CreateRadarVisual("NavigationPlannerMapPreviewSegment" + i, navigationPlannerMapLayerRect, new Vector2(8f, 3f), new Color(1f, 0.72f, 0.22f, 0.94f)));
         }
 
         navigationPlannerMapBlipImages.Clear();
         for (int i = 0; i < MaxRadarBlips; i++)
         {
-            navigationPlannerMapBlipImages.Add(CreateRadarVisual("NavigationPlannerMapBlip" + i, navigationPlannerMapLayerRect, new Vector2(7f, 7f), PrototypeModuleColorPalette.Target));
+            navigationPlannerMapBlipImages.Add(CreateRadarVisual("NavigationPlannerMapBlip" + i, navigationPlannerMapLayerRect, new Vector2(10f, 10f), PrototypeModuleColorPalette.Target));
         }
     }
 
@@ -3229,13 +3276,13 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
         Vector3[] routePoints = snapshot.Radar.RouteWorldPoints ?? System.Array.Empty<Vector3>();
         Vector3[] previewPoints = snapshot.Radar.TrajectoryPreviewWorldPoints ?? System.Array.Empty<Vector3>();
-        ConfigureRadarSegmentPool(routeSegments, snapshot.Radar, routePoints, radius, PrototypeModuleColorPalette.Target, 2.4f, false);
-        ConfigureRadarSegmentPool(previewSegments, snapshot.Radar, previewPoints, radius, new Color(1f, 0.72f, 0.22f, 0.94f), 2.4f, true);
+        ConfigureRadarSegmentPool(routeSegments, snapshot.Radar, routePoints, radius, PrototypeModuleColorPalette.Target, 3.2f, false);
+        ConfigureRadarSegmentPool(previewSegments, snapshot.Radar, previewPoints, radius, new Color(1f, 0.72f, 0.22f, 0.94f), 3f, true);
 
         if (snapshot.Radar.HasAvoidanceWaypoint)
         {
             Vector2 point = RadarWorldToLayerPoint(snapshot.Radar, snapshot.Radar.AvoidanceWorldPosition, radius);
-            ApplyRadarBlip(avoidanceImage, point, PrototypeUiStyle.WarningColor, new Vector2(9f, 9f), 45f);
+            ApplyRadarBlip(avoidanceImage, point, PrototypeUiStyle.WarningColor, new Vector2(12f, 12f), 45f);
         }
         else if (avoidanceImage != null)
         {
@@ -3244,9 +3291,10 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
         PrototypePlayerRadarBlip[] blips = snapshot.Radar.Blips ?? System.Array.Empty<PrototypePlayerRadarBlip>();
         int blipCount = Mathf.Min(blips.Length, blipImages.Count);
+        int blipStart = RadarBlipStartIndex(blips.Length, blipImages.Count);
         for (int i = 0; i < blipCount; i++)
         {
-            PrototypePlayerRadarBlip blip = blips[i];
+            PrototypePlayerRadarBlip blip = blips[blipStart + i];
             Vector2 point = RadarWorldToLayerPoint(snapshot.Radar, blip.WorldPosition, radius);
             Vector2 size = RadarBlipSize(blip.Kind);
             float rotation = RadarBlipRotation(blip.Kind);
@@ -3259,6 +3307,16 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         }
     }
 
+    private static int RadarBlipStartIndex(int totalBlips, int imageCapacity)
+    {
+        if (totalBlips <= 0 || imageCapacity <= 0 || totalBlips <= imageCapacity)
+        {
+            return 0;
+        }
+
+        return totalBlips - imageCapacity;
+    }
+
     private void ConfigureRadarGrid(List<Image> gridSegments, float radius)
     {
         if (gridSegments == null || gridSegments.Count < MaxRadarGridSegments)
@@ -3266,13 +3324,13 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             return;
         }
 
-        Color gridColor = new Color(0.25f, 0.85f, 1f, 0.52f);
-        ApplyRadarLine(gridSegments[0], new Vector2(-radius, 0f), new Vector2(radius, 0f), gridColor, 1.4f);
-        ApplyRadarLine(gridSegments[1], new Vector2(0f, -radius), new Vector2(0f, radius), gridColor, 1.4f);
-        ApplyRadarLine(gridSegments[2], new Vector2(-radius, radius), new Vector2(radius, radius), gridColor, 1.2f);
-        ApplyRadarLine(gridSegments[3], new Vector2(radius, radius), new Vector2(radius, -radius), gridColor, 1.2f);
-        ApplyRadarLine(gridSegments[4], new Vector2(radius, -radius), new Vector2(-radius, -radius), gridColor, 1.2f);
-        ApplyRadarLine(gridSegments[5], new Vector2(-radius, -radius), new Vector2(-radius, radius), gridColor, 1.2f);
+        Color gridColor = new Color(0.25f, 0.85f, 1f, 0.72f);
+        ApplyRadarLine(gridSegments[0], new Vector2(-radius, 0f), new Vector2(radius, 0f), gridColor, 1.8f);
+        ApplyRadarLine(gridSegments[1], new Vector2(0f, -radius), new Vector2(0f, radius), gridColor, 1.8f);
+        ApplyRadarLine(gridSegments[2], new Vector2(-radius, radius), new Vector2(radius, radius), gridColor, 1.5f);
+        ApplyRadarLine(gridSegments[3], new Vector2(radius, radius), new Vector2(radius, -radius), gridColor, 1.5f);
+        ApplyRadarLine(gridSegments[4], new Vector2(radius, -radius), new Vector2(-radius, -radius), gridColor, 1.5f);
+        ApplyRadarLine(gridSegments[5], new Vector2(-radius, -radius), new Vector2(-radius, radius), gridColor, 1.5f);
     }
 
     private void ConfigureRadarSegmentPool(
@@ -3362,19 +3420,19 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         switch (kind)
         {
             case PrototypePlayerRadarBlipKind.SelectedCombat:
-                return new Vector2(13f, 13f);
+                return new Vector2(17f, 17f);
             case PrototypePlayerRadarBlipKind.SelectedNavigation:
-                return new Vector2(12f, 12f);
+                return new Vector2(16f, 16f);
             case PrototypePlayerRadarBlipKind.Objective:
-                return new Vector2(10f, 10f);
+                return new Vector2(13f, 13f);
             case PrototypePlayerRadarBlipKind.Combat:
-                return new Vector2(9f, 9f);
+                return new Vector2(12f, 12f);
             case PrototypePlayerRadarBlipKind.Docking:
-                return new Vector2(11f, 9f);
+                return new Vector2(14f, 12f);
             case PrototypePlayerRadarBlipKind.Hazard:
-                return new Vector2(11f, 11f);
+                return new Vector2(14f, 14f);
             default:
-                return new Vector2(8f, 8f);
+                return new Vector2(11f, 11f);
         }
     }
 
@@ -4129,11 +4187,11 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         float sideBottom = bottomOffset + bottomHeight + (shortScreen ? 10f : gap);
         float systemHeight = shortScreen ? 112f : 128f;
         float contextHeight = shortScreen ? 160f : 194f;
-        float radarSize = narrow ? (shortScreen ? 112f : 144f) : 170f;
+        float radarSize = narrow ? (shortScreen ? 128f : 168f) : 220f;
         float availableRadarHeight = safeHeight - margin - (sideBottom + contextHeight) - gap;
         if (availableRadarHeight < radarSize)
         {
-            radarSize = Mathf.Clamp(availableRadarHeight, 96f, radarSize);
+            radarSize = Mathf.Clamp(availableRadarHeight, 112f, radarSize);
         }
 
         float sideAvailableWidth = safeWidth - (margin * 2f) - gap;
@@ -4176,6 +4234,11 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             ApplyRect(radarGraphic.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(radarGraphicSize, radarGraphicSize), Vector2.zero);
             radarGraphic.SetAllDirty();
             ApplyRect(radarLayerRect, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(radarGraphicSize, radarGraphicSize), Vector2.zero);
+        }
+
+        if (radarText != null)
+        {
+            radarText.fontSize = shortScreen ? 9f : narrow ? 10f : 11f;
         }
 
         ApplyHelpPanelLayout(safeWidth, safeHeight, margin, gap, contextWidth, sideBottom, systemHeight, narrow, shortScreen);
@@ -5616,10 +5679,10 @@ public sealed class PrototypePlayerHudRadarGraphic : MaskableGraphic
         float radius = Mathf.Min(rect.width, rect.height) * 0.42f;
         Color ringColor = new Color(0.25f, 0.85f, 1f, 0.95f);
 
-        DrawCircle(vh, center, radius, ringColor, 1.8f, 48);
-        DrawCircle(vh, center, radius * 0.5f, ringColor, 1.2f, 48);
-        DrawLine(vh, center + Vector2.left * radius, center + Vector2.right * radius, ringColor, 1.1f);
-        DrawLine(vh, center + Vector2.up * radius, center + Vector2.down * radius, ringColor, 1.1f);
+        DrawCircle(vh, center, radius, ringColor, 2.2f, 48);
+        DrawCircle(vh, center, radius * 0.5f, ringColor, 1.6f, 48);
+        DrawLine(vh, center + Vector2.left * radius, center + Vector2.right * radius, ringColor, 1.5f);
+        DrawLine(vh, center + Vector2.up * radius, center + Vector2.down * radius, ringColor, 1.5f);
 
         Vector2 heading = new Vector2(snapshot.ShipForward.x, snapshot.ShipForward.z);
         if (heading.sqrMagnitude <= 0.001f)
@@ -5629,19 +5692,19 @@ public sealed class PrototypePlayerHudRadarGraphic : MaskableGraphic
 
         heading.Normalize();
         Vector2 right = new Vector2(heading.y, -heading.x);
-        DrawLine(vh, center + heading * 13f, center - heading * 9f - right * 7f, Color.white, 1.5f);
-        DrawLine(vh, center - heading * 9f - right * 7f, center - heading * 9f + right * 7f, Color.white, 1.5f);
-        DrawLine(vh, center - heading * 9f + right * 7f, center + heading * 13f, Color.white, 1.5f);
+        DrawLine(vh, center + heading * 16f, center - heading * 11f - right * 8f, Color.white, 1.9f);
+        DrawLine(vh, center - heading * 11f - right * 8f, center - heading * 11f + right * 8f, Color.white, 1.9f);
+        DrawLine(vh, center - heading * 11f + right * 8f, center + heading * 16f, Color.white, 1.9f);
 
         Vector3[] routePoints = snapshot.Radar.RouteWorldPoints ?? EmptyRoute;
         Vector3[] previewPoints = snapshot.Radar.TrajectoryPreviewWorldPoints ?? EmptyRoute;
-        DrawRadarPath(vh, center, radius, snapshot.Radar, routePoints, PrototypeModuleColorPalette.Target, 1.6f, false);
-        DrawRadarPath(vh, center, radius, snapshot.Radar, previewPoints, new Color(1f, 0.72f, 0.22f, 0.82f), 1.6f, true);
+        DrawRadarPath(vh, center, radius, snapshot.Radar, routePoints, PrototypeModuleColorPalette.Target, 2.2f, false);
+        DrawRadarPath(vh, center, radius, snapshot.Radar, previewPoints, new Color(1f, 0.72f, 0.22f, 0.82f), 2f, true);
 
         if (snapshot.Radar.HasAvoidanceWaypoint)
         {
             Vector2 avoidance = ClampRadarPoint(center, radius, snapshot.Radar, snapshot.Radar.AvoidanceWorldPosition);
-            DrawHazardBlip(vh, avoidance, PrototypeUiStyle.WarningColor, 5f);
+            DrawHazardBlip(vh, avoidance, PrototypeUiStyle.WarningColor, 7f);
         }
 
         PrototypePlayerRadarBlip[] blips = snapshot.Radar.Blips ?? EmptyBlips;
@@ -5651,7 +5714,7 @@ public sealed class PrototypePlayerHudRadarGraphic : MaskableGraphic
             Vector2 point = ClampRadarPoint(center, radius, snapshot.Radar, blip.WorldPosition);
             if (blip.Kind == PrototypePlayerRadarBlipKind.SelectedNavigation)
             {
-                DrawLine(vh, center, point, ColorForRadarBlip(blip.Kind), 1.4f);
+                DrawLine(vh, center, point, ColorForRadarBlip(blip.Kind), 2f);
             }
 
             DrawRadarBlip(vh, point, blip);
@@ -5660,8 +5723,8 @@ public sealed class PrototypePlayerHudRadarGraphic : MaskableGraphic
 
     private static void DrawBlip(VertexHelper vh, Vector2 point, Color color)
     {
-        DrawLine(vh, point + Vector2.left * 4f, point + Vector2.right * 4f, color, 2f);
-        DrawLine(vh, point + Vector2.up * 4f, point + Vector2.down * 4f, color, 2f);
+        DrawLine(vh, point + Vector2.left * 5f, point + Vector2.right * 5f, color, 2.4f);
+        DrawLine(vh, point + Vector2.up * 5f, point + Vector2.down * 5f, color, 2.4f);
     }
 
     private static void DrawRadarPath(
@@ -5698,26 +5761,26 @@ public sealed class PrototypePlayerHudRadarGraphic : MaskableGraphic
         switch (blip.Kind)
         {
             case PrototypePlayerRadarBlipKind.SelectedNavigation:
-                DrawDiamondBlip(vh, point, color, 8f, 2.2f);
+                DrawDiamondBlip(vh, point, color, 10f, 2.7f);
                 DrawBlip(vh, point, color);
                 break;
             case PrototypePlayerRadarBlipKind.Navigation:
-                DrawDiamondBlip(vh, point, color, 5.5f, 1.4f);
+                DrawDiamondBlip(vh, point, color, 7f, 1.8f);
                 break;
             case PrototypePlayerRadarBlipKind.SelectedCombat:
-                DrawCombatBlip(vh, point, color, 9f);
+                DrawCombatBlip(vh, point, color, 11f);
                 break;
             case PrototypePlayerRadarBlipKind.Combat:
                 DrawBlip(vh, point, color);
                 break;
             case PrototypePlayerRadarBlipKind.Objective:
-                DrawDiamondBlip(vh, point, color, 7f, 1.9f);
+                DrawDiamondBlip(vh, point, color, 9f, 2.3f);
                 break;
             case PrototypePlayerRadarBlipKind.Docking:
-                DrawSquareBlip(vh, point, color, 7f);
+                DrawSquareBlip(vh, point, color, 9f);
                 break;
             case PrototypePlayerRadarBlipKind.Hazard:
-                DrawHazardBlip(vh, point, color, 6.5f);
+                DrawHazardBlip(vh, point, color, 8f);
                 break;
             default:
                 DrawBlip(vh, point, color);

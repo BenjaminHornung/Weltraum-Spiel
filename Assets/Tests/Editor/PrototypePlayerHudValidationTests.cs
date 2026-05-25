@@ -207,6 +207,14 @@ public class PrototypePlayerHudValidationTests
             AssertRadarContains(snapshot.Radar, PrototypePlayerRadarBlipKind.Gate, "Gate");
             AssertRadarContains(snapshot.Radar, PrototypePlayerRadarBlipKind.Station, "Station");
             Assert.That(CountRadarKind(snapshot.Radar, PrototypePlayerRadarBlipKind.Hazard), Is.GreaterThan(0));
+            Assert.That(
+                snapshot.Radar.Blips[snapshot.Radar.Blips.Length - 2].Kind,
+                Is.EqualTo(PrototypePlayerRadarBlipKind.SelectedNavigation),
+                "selected navigation blip is drawn above lower-priority map contacts");
+            Assert.That(
+                snapshot.Radar.Blips[snapshot.Radar.Blips.Length - 1].Kind,
+                Is.EqualTo(PrototypePlayerRadarBlipKind.SelectedCombat),
+                "selected combat blip is drawn last so the minimap cannot hide it under the contact cluster");
         }
     }
 
