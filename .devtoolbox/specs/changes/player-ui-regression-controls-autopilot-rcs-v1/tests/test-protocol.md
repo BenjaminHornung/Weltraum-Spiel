@@ -6,6 +6,18 @@ Player UI regression controls, minimap evidence, navigation/combat popups, Kill 
 
 ## Evidence
 
+- Latest empty-minimap fix:
+  - Root cause: existing generated HUD canvases could be accepted as complete while missing the newer Navigation Planner map objects, and scene navigation targets were not added when the autopilot manager was missing or stale.
+  - Fix: bind/validate Navigation Planner map pools during existing-canvas reuse, rebuild stale HUD canvases, keep the planner map visible for radar contacts even without an active route, and add a scene-target fallback for radar blips.
+  - Unity MCP `validate_script`:
+    - `Assets/Scripts/Prototype/PrototypePlayerHud.cs`: PASS, 0 errors, existing warnings only.
+    - `Assets/Tests/Editor/PrototypePlayerHudValidationTests.cs`: PASS, 0 errors.
+  - Unity MCP EditMode focused radar/planner job `1d8c0e1cd04b4cce8a8b0c98da2dfb6a`: 5/5 passed.
+  - Unity MCP PlayMode screenshot job `3a17d7aa50bb4583b256bb60189eb645`: 1/1 passed.
+  - `dotnet build "Weltraum Spiel.sln" --no-restore`: PASS, 0 errors, 22 existing Unity/generated assembly warnings.
+  - Screenshot: `tests/screenshots/player-ui-regression-radar-normal-1280x720.png`
+  - Screenshot: `tests/screenshots/player-ui-regression-nav-planner-1280x720.png`
+  - Visual check: normal radar shows visible grid/blips in the top-right minimap; Navigation Planner popup shows a populated embedded map with 34 contacts, route points, preview points, and no bottom-bar overlap at 1280x720.
 - Latest minimap/radar readability slice:
   - Unity MCP `validate_script`:
     - `Assets/Scripts/Prototype/PrototypePlayerHud.cs`: PASS, 0 errors, existing warnings only.
@@ -51,4 +63,4 @@ Player UI regression controls, minimap evidence, navigation/combat popups, Kill 
 
 ## External Review
 
-`claude-plan-review` was invoked with the implementation context and screenshot paths before the latest planner-map slice, but the local wrapper timed out after 120 seconds. For the minimap/radar readability slice, a PNG-backed review failed with a local `charmap` encoding error and the follow-up path-only review timed out after 120 seconds. No actionable review feedback was returned.
+`claude-plan-review` was invoked with the empty-minimap fix context and screenshot paths after the latest PlayMode evidence; the local wrapper timed out after 120 seconds. It was also invoked before the latest planner-map slice and timed out after 120 seconds. For the minimap/radar readability slice, a PNG-backed review failed with a local `charmap` encoding error and the follow-up path-only review timed out after 120 seconds. No actionable review feedback was returned.

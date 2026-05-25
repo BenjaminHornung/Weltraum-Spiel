@@ -29,6 +29,7 @@ public class PrototypePlayerHudValidationTests
         DestroyNamed("PlayerHudRadarEnvironment");
         DestroyNamed("PlayerHudRadarMidZoomTarget");
         DestroyNamed("PlayerHudRadarMidZoomWaypointManager");
+        DestroyNamed("PlayerHudRadarSceneWaypoint");
         DestroyNamed("PlayerHudRadarWaypointManager");
         DestroyNamed("PlayerHudNavManager");
         DestroyNamed("PlayerHudIndicatorShip");
@@ -207,6 +208,87 @@ public class PrototypePlayerHudValidationTests
             AssertRadarContains(snapshot.Radar, PrototypePlayerRadarBlipKind.Station, "Station");
             Assert.That(CountRadarKind(snapshot.Radar, PrototypePlayerRadarBlipKind.Hazard), Is.GreaterThan(0));
         }
+    }
+
+    [Test]
+    public void RadarSnapshotFallsBackToSceneNavigationTargetsWhenAutopilotManagerIsMissing()
+    {
+        using (var builder = new PrototypeScenarioBuilder())
+        {
+            PrototypeShipRig rig = builder.CreateShip("PlayerHudRadarFallbackShip");
+            PrototypeWaypointAutopilot autopilot = rig.Ship.GetComponent<PrototypeWaypointAutopilot>();
+            if (autopilot == null)
+            {
+                autopilot = rig.Ship.AddComponent<PrototypeWaypointAutopilot>();
+            }
+
+            GameObject waypointObject = new GameObject("PlayerHudRadarSceneWaypoint");
+            waypointObject.transform.position = new Vector3(125f, 0f, 420f);
+            PrototypeNavigationTarget waypoint = waypointObject.AddComponent<PrototypeNavigationTarget>();
+            waypoint.Configure("Loose Scene Waypoint", 10f);
+
+            PrototypePlayerHudSnapshot snapshot = PrototypePlayerHudSnapshotBuilder.Build(
+                rig.Ship.transform,
+                rig.Body,
+                rig.Stats,
+                rig.Controller,
+                autopilot,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+
+            Assert.That(snapshot.Radar.Blips.Length, Is.GreaterThan(0), "scene navigation radar contacts");
+            AssertRadarContains(snapshot.Radar, PrototypePlayerRadarBlipKind.Navigation, "Loose Scene Waypoint");
+        }
+    }
+
+    [Test]
+    public void NavigationPlannerMapShowsRadarContactsWithoutActiveRoute()
+    {
+        GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+        cameraObject.AddComponent<Camera>();
+        PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+        playerHud.RefreshNow();
+
+        var radar = new PrototypePlayerRadarSnapshot(
+            1000f,
+            "Range 1 km",
+            Vector3.zero,
+            Vector3.forward,
+            new[]
+            {
+                new PrototypePlayerRadarBlip(
+                    PrototypePlayerRadarBlipKind.Navigation,
+                    "Loose Scene Waypoint",
+                    new Vector3(125f, 0f, 420f),
+                    10f)
+            },
+            new Vector3[0],
+            new Vector3[0],
+            false,
+            Vector3.zero);
+
+        FindRect(playerHud, "NavigationPlannerPanel").gameObject.SetActive(true);
+        ApplySnapshotForTest(
+            playerHud,
+            CreateHudSnapshot(
+                CreateCombatSnapshot(false),
+                CreateDockingSnapshot(false),
+                CreateNavigationSnapshot(false),
+                default,
+                null,
+                radar));
+
+        Assert.True(FindRect(playerHud, "NavigationPlannerMapPanel").gameObject.activeSelf);
+        Assert.True(FindRect(playerHud, "NavigationPlannerMapLayer").gameObject.activeInHierarchy);
+        Assert.True(FindRect(playerHud, "NavigationPlannerMapGridSegment0").gameObject.activeInHierarchy);
+        Assert.True(FindRect(playerHud, "NavigationPlannerMapBlip0").gameObject.activeInHierarchy);
+        Assert.That(FindText(playerHud, "NavigationPlannerMapText").text, Does.Contain("1 contact"));
+        Assert.False(FindRect(playerHud, "RadarPanel").gameObject.activeSelf);
     }
 
     [Test]

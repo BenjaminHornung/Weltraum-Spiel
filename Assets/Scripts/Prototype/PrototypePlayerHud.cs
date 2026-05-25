@@ -1127,10 +1127,6 @@ public static class PrototypePlayerHudSnapshotBuilder
     {
         PrototypeNavigationTarget selected = autopilot != null ? autopilot.CurrentTarget : null;
         PrototypeWaypointManager manager = autopilot != null ? autopilot.WaypointManager : null;
-        if (manager == null && selected == null)
-        {
-            return;
-        }
 
         if (manager != null)
         {
@@ -1164,6 +1160,38 @@ public static class PrototypePlayerHudSnapshotBuilder
                 selected.DisplayName,
                 selected.Position,
                 selected.ArrivalRadius);
+        }
+
+        AddSceneNavigationRadarBlips(blips, keys, selected);
+    }
+
+    private static void AddSceneNavigationRadarBlips(
+        List<PrototypePlayerRadarBlip> blips,
+        HashSet<string> keys,
+        PrototypeNavigationTarget selected)
+    {
+        PrototypeNavigationTarget[] targets = UnityEngine.Object.FindObjectsByType<PrototypeNavigationTarget>(FindObjectsInactive.Exclude);
+        if (targets == null || targets.Length == 0)
+        {
+            targets = Resources.FindObjectsOfTypeAll<PrototypeNavigationTarget>();
+        }
+
+        for (int i = 0; i < targets.Length; i++)
+        {
+            PrototypeNavigationTarget target = targets[i];
+            if (target == null || !target.gameObject.scene.IsValid() || !target.isActiveAndEnabled)
+            {
+                continue;
+            }
+
+            bool isSelected = selected != null && target == selected;
+            AddRadarBlip(
+                blips,
+                keys,
+                isSelected ? PrototypePlayerRadarBlipKind.SelectedNavigation : PrototypePlayerRadarBlipKind.Navigation,
+                target.DisplayName,
+                target.Position,
+                target.ArrivalRadius);
         }
     }
 
@@ -2449,6 +2477,15 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         navigationPlannerPanelRect = FindHudComponent<RectTransform>("NavigationPlannerPanel");
         navigationPlannerTitleText = FindHudComponent<TMP_Text>("NavigationPlannerTitle");
         navigationPlannerBodyText = FindHudComponent<TMP_Text>("NavigationPlannerBody");
+        navigationPlannerMapPanelRect = FindHudComponent<RectTransform>("NavigationPlannerMapPanel");
+        navigationPlannerMapLayerRect = FindHudComponent<RectTransform>("NavigationPlannerMapLayer");
+        navigationPlannerMapHeadingImage = FindHudComponent<Image>("NavigationPlannerMapHeading");
+        navigationPlannerMapAvoidanceImage = FindHudComponent<Image>("NavigationPlannerMapAvoidance");
+        navigationPlannerMapText = FindHudComponent<TMP_Text>("NavigationPlannerMapText");
+        LoadHudImagePool(navigationPlannerMapGridSegments, "NavigationPlannerMapGridSegment", MaxRadarGridSegments);
+        LoadHudImagePool(navigationPlannerMapRouteSegments, "NavigationPlannerMapRouteSegment", MaxRadarRouteSegments);
+        LoadHudImagePool(navigationPlannerMapPreviewSegments, "NavigationPlannerMapPreviewSegment", MaxRadarPreviewSegments);
+        LoadHudImagePool(navigationPlannerMapBlipImages, "NavigationPlannerMapBlip", MaxRadarBlips);
         navPlannerPreviousButton = FindHudComponent<Button>("NavPlannerPreviousTarget");
         navPlannerNextButton = FindHudComponent<Button>("NavPlannerNextTarget");
         navPlannerEngageButton = FindHudComponent<Button>("NavPlannerEngage");
@@ -2559,6 +2596,26 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             && navPreviewButton != null
             && navAutopilotButtonText != null
             && navPreviewButtonText != null
+            && navigationPlannerPanelRect != null
+            && navigationPlannerTitleText != null
+            && navigationPlannerBodyText != null
+            && navigationPlannerMapPanelRect != null
+            && navigationPlannerMapLayerRect != null
+            && navigationPlannerMapHeadingImage != null
+            && navigationPlannerMapAvoidanceImage != null
+            && navigationPlannerMapText != null
+            && navigationPlannerMapGridSegments.Count == MaxRadarGridSegments
+            && navigationPlannerMapRouteSegments.Count == MaxRadarRouteSegments
+            && navigationPlannerMapPreviewSegments.Count == MaxRadarPreviewSegments
+            && navigationPlannerMapBlipImages.Count == MaxRadarBlips
+            && navPlannerPreviousButton != null
+            && navPlannerNextButton != null
+            && navPlannerEngageButton != null
+            && navPlannerReplanButton != null
+            && navPlannerPreviewButton != null
+            && navPlannerCloseButton != null
+            && navPlannerEngageButtonText != null
+            && navPlannerPreviewButtonText != null
             && combatControlRow != null
             && combatPreviousButton != null
             && combatNextButton != null
@@ -2567,6 +2624,17 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             && combatPriorityButton != null
             && combatAutoFireButtonText != null
             && combatPriorityButtonText != null
+            && combatComputerPanelRect != null
+            && combatComputerTitleText != null
+            && combatComputerBodyText != null
+            && combatComputerPreviousButton != null
+            && combatComputerNextButton != null
+            && combatComputerClearButton != null
+            && combatComputerAutoFireButton != null
+            && combatComputerPriorityButton != null
+            && combatComputerCloseButton != null
+            && combatComputerAutoFireButtonText != null
+            && combatComputerPriorityButtonText != null
             && contextGaugePanelRect != null
             && radarLayerRect != null
             && radarHeadingImage != null
@@ -2671,6 +2739,26 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         navPreviewButton = null;
         navAutopilotButtonText = null;
         navPreviewButtonText = null;
+        navigationPlannerPanelRect = null;
+        navigationPlannerTitleText = null;
+        navigationPlannerBodyText = null;
+        navigationPlannerMapPanelRect = null;
+        navigationPlannerMapLayerRect = null;
+        navigationPlannerMapHeadingImage = null;
+        navigationPlannerMapAvoidanceImage = null;
+        navigationPlannerMapText = null;
+        navigationPlannerMapGridSegments.Clear();
+        navigationPlannerMapRouteSegments.Clear();
+        navigationPlannerMapPreviewSegments.Clear();
+        navigationPlannerMapBlipImages.Clear();
+        navPlannerPreviousButton = null;
+        navPlannerNextButton = null;
+        navPlannerEngageButton = null;
+        navPlannerReplanButton = null;
+        navPlannerPreviewButton = null;
+        navPlannerCloseButton = null;
+        navPlannerEngageButtonText = null;
+        navPlannerPreviewButtonText = null;
         combatControlRow = null;
         combatPreviousButton = null;
         combatNextButton = null;
@@ -2679,6 +2767,17 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         combatPriorityButton = null;
         combatAutoFireButtonText = null;
         combatPriorityButtonText = null;
+        combatComputerPanelRect = null;
+        combatComputerTitleText = null;
+        combatComputerBodyText = null;
+        combatComputerPreviousButton = null;
+        combatComputerNextButton = null;
+        combatComputerClearButton = null;
+        combatComputerAutoFireButton = null;
+        combatComputerPriorityButton = null;
+        combatComputerCloseButton = null;
+        combatComputerAutoFireButtonText = null;
+        combatComputerPriorityButtonText = null;
         contextGaugePanelRect = null;
         contextGaugeFills.Clear();
         contextGaugeLabels.Clear();
@@ -3472,21 +3571,22 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             navigationPlannerBodyText.color = snapshot.Navigation.Visible ? PrototypeUiStyle.MutedColor : PrototypeUiStyle.DisabledColor;
         }
 
+        bool mapVisible = HasRadarMapContent(snapshot.Radar);
         if (navigationPlannerMapPanelRect != null)
         {
-            navigationPlannerMapPanelRect.gameObject.SetActive(snapshot.Navigation.Visible);
+            navigationPlannerMapPanelRect.gameObject.SetActive(mapVisible);
         }
 
         if (navigationPlannerMapLayerRect != null)
         {
-            navigationPlannerMapLayerRect.gameObject.SetActive(snapshot.Navigation.Visible);
+            navigationPlannerMapLayerRect.gameObject.SetActive(mapVisible);
         }
 
         if (navigationPlannerMapText != null)
         {
-            navigationPlannerMapText.gameObject.SetActive(snapshot.Navigation.Visible);
+            navigationPlannerMapText.gameObject.SetActive(mapVisible);
             navigationPlannerMapText.text = BuildNavigationPlannerMapLabel(snapshot);
-            navigationPlannerMapText.color = snapshot.Navigation.Visible ? PrototypeUiStyle.MutedColor : PrototypeUiStyle.DisabledColor;
+            navigationPlannerMapText.color = mapVisible ? PrototypeUiStyle.MutedColor : PrototypeUiStyle.DisabledColor;
         }
 
         ConfigureNavigationPlannerMapLayer(snapshot);
@@ -3573,7 +3673,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
     private static string BuildNavigationPlannerMapLabel(PrototypePlayerHudSnapshot snapshot)
     {
-        if (!snapshot.Navigation.Visible)
+        if (!snapshot.Navigation.Visible && !HasRadarMapContent(snapshot.Radar))
         {
             return "No route";
         }
@@ -3581,14 +3681,24 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         string range = !string.IsNullOrEmpty(snapshot.Radar.RangeLabel)
             ? snapshot.Radar.RangeLabel
             : "Range auto";
+        int contactCount = snapshot.Radar.Blips != null ? snapshot.Radar.Blips.Length : 0;
+        string contacts = contactCount == 1 ? "1 contact" : contactCount.ToString() + " contacts";
         string route = snapshot.Radar.RouteWorldPoints != null && snapshot.Radar.RouteWorldPoints.Length > 1
             ? snapshot.Radar.RouteWorldPoints.Length.ToString() + " route pts"
-            : "Direct route";
+            : snapshot.Navigation.Visible ? "Direct route" : "No route";
         string preview = snapshot.Radar.TrajectoryPreviewWorldPoints != null && snapshot.Radar.TrajectoryPreviewWorldPoints.Length > 1
             ? snapshot.Radar.TrajectoryPreviewWorldPoints.Length.ToString() + " preview pts"
-            : snapshot.Navigation.TrajectoryPreview.StatusLabel;
+            : snapshot.Navigation.Visible ? snapshot.Navigation.TrajectoryPreview.StatusLabel : "Preview off";
 
-        return range + " | " + route + " | " + preview;
+        return range + " | " + contacts + " | " + route + " | " + preview;
+    }
+
+    private static bool HasRadarMapContent(PrototypePlayerRadarSnapshot radar)
+    {
+        return (radar.Blips != null && radar.Blips.Length > 0)
+            || (radar.RouteWorldPoints != null && radar.RouteWorldPoints.Length > 1)
+            || (radar.TrajectoryPreviewWorldPoints != null && radar.TrajectoryPreviewWorldPoints.Length > 1)
+            || radar.HasAvoidanceWaypoint;
     }
 
     private void RemoveNavigationButtonListeners()
