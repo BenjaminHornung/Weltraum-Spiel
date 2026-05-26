@@ -157,6 +157,56 @@ public class PrototypeAutopilotNavigationPlayModeTests
     }
 
     [Test]
+    public void PlayMode_Autopilot_NearTargetOffAxisVelocity_DampsLaterallyWithoutMainThrottle()
+    {
+        AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 12f);
+        rig.Body.linearVelocity = Vector3.right * 3f;
+        rig.Ship.transform.rotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
+        rig.Autopilot.ToggleAutopilot();
+
+        StepSimulation(rig);
+
+        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.FinalApproach));
+        Assert.That(rig.Autopilot.ArrivalPhase, Is.EqualTo(PrototypeWaypointAutopilotArrivalPhase.LateralCorrection));
+        Assert.That(rig.Autopilot.ActiveSegmentType, Is.EqualTo(PrototypeTrajectorySegmentType.FinalApproach));
+        Assert.That(rig.Autopilot.RequestedMainThrottle, Is.LessThanOrEqualTo(0.01f));
+        Assert.True(rig.Controller.HasExternalFlightAssistRequest);
+        Assert.That(rig.Controller.LastExternalFlightAssistRequest.mainThrottle, Is.LessThanOrEqualTo(0.01f));
+        Assert.That(rig.Autopilot.RequestedRcsForce.magnitude, Is.GreaterThan(1f));
+        Assert.That(Vector3.Dot(rig.Autopilot.RequestedRcsForce, rig.Body.linearVelocity), Is.LessThan(-0.01f));
+    }
+
+    [Test]
+    public void PlayMode_Autopilot_NearTargetHighMassLowRcs_DetectsLimitedLateralAuthority()
+    {
+        AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 12f);
+        rig.Body.mass = 4200f;
+        SetPrivateFloat(rig.Rcs, "translationForce", 15f);
+        rig.Body.linearVelocity = Vector3.right * 4f;
+        rig.Autopilot.ToggleAutopilot();
+
+        for (int i = 0; i < 30; i++)
+        {
+            StepSimulation(rig);
+            if (rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.FinalApproach
+                && rig.Autopilot.ArrivalPhase == PrototypeWaypointAutopilotArrivalPhase.LateralCorrection)
+            {
+                break;
+            }
+        }
+
+        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.FinalApproach));
+        Assert.That(rig.Autopilot.ArrivalPhase, Is.EqualTo(PrototypeWaypointAutopilotArrivalPhase.LateralCorrection));
+        Assert.That(rig.Controller.HasExternalFlightAssistRequest, Is.True);
+        Assert.That(rig.Autopilot.RequestedMainThrottle, Is.LessThanOrEqualTo(0.01f));
+        Assert.That(rig.Controller.LastExternalFlightAssistRequest.mainThrottle, Is.LessThanOrEqualTo(0.01f));
+        Assert.True(
+            rig.Autopilot.CurrentPlan.limitedRcsAuthority
+            || rig.Autopilot.ArrivalFailureReason == "LimitedRcsAuthority",
+            $"state={rig.Autopilot.CurrentState} reason={rig.Autopilot.ArrivalFailureReason} limited={rig.Autopilot.CurrentPlan.limitedRcsAuthority}");
+    }
+
+    [Test]
     public void PlayMode_Autopilot_ManualOverride_AbortsAndClearsRequests()
     {
         AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 70f);
