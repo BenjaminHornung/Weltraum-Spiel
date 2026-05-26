@@ -568,7 +568,7 @@ public class PrototypePlayerHudValidationTests
         Assert.That(IndexOfBlipKind(filteredBlips, PrototypePlayerRadarBlipKind.Objective), Is.EqualTo(filteredBlips.Length - 1));
         Assert.That(IndexOfBlipKind(filteredBlips, PrototypePlayerRadarBlipKind.SelectedNavigation), Is.EqualTo(filteredBlips.Length - 3));
         Assert.That(IndexOfBlipKind(filteredBlips, PrototypePlayerRadarBlipKind.SelectedCombat), Is.EqualTo(filteredBlips.Length - 2));
-        Assert.That(filteredBlips.Length, Is.EqualTo(8), "lowest-priority actionable contact capped");
+        Assert.That(filteredBlips.Length, Is.EqualTo(6), "lowest-priority actionable contact capped");
         Assert.That(filteredBlips[filteredBlips.Length - 1].Label, Is.Not.EqualTo("Very Far Route"));
 
         PrototypePlayerHudSnapshot withoutTargetSnapshot = CreateHudSnapshot(
@@ -2636,6 +2636,7 @@ public class PrototypePlayerHudValidationTests
         RectTransform mapPanel = FindRect(playerHud, "NavigationPlannerMapPanel");
         RectTransform mapLayer = FindRect(playerHud, "NavigationPlannerMapLayer");
         RectTransform mapText = FindRect(playerHud, "NavigationPlannerMapText");
+        TMP_Text mapLabelText = FindText(playerHud, "NavigationPlannerMapText");
         RectTransform[] rangeButtons =
         {
             FindRect(playerHud, "NavPlannerRangeMinus"),
@@ -2660,6 +2661,17 @@ public class PrototypePlayerHudValidationTests
         Assert.False(Overlaps(mapLayer, mapText), width + "x" + height + " planner map layer/text overlap");
         Assert.False(Overlaps(mapLayer, body), width + "x" + height + " planner map layer/body overlap");
         Assert.False(Overlaps(mapText, body), width + "x" + height + " planner map text/body overlap");
+        Assert.True(Contains(WorldRect(mapPanel), WorldRect(mapLayer)), width + "x" + height + " planner map panel/layer containment");
+        Assert.True(Contains(WorldRect(mapPanel), WorldRect(mapText)), width + "x" + height + " planner map panel/text containment");
+        Assert.That(mapLabelText.fontSize, Is.GreaterThanOrEqualTo(10f), width + "x" + height + " planner map label font size");
+        if (width >= 860)
+        {
+            Assert.That(mapLayer.rect.width, Is.GreaterThan(220f), width + "x" + height + " planner map layer footprint");
+        }
+        else
+        {
+            Assert.That(mapLayer.rect.width, Is.LessThanOrEqualTo(170f), width + "x" + height + " stacked planner map layer footprint");
+        }
 
         foreach (RectTransform button in plannerButtons)
         {

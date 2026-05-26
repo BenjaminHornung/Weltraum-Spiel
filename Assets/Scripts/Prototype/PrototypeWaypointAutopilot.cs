@@ -64,6 +64,7 @@ public struct PrototypeWaypointFuelEstimate
 }
 
 [DisallowMultipleComponent]
+[DefaultExecutionOrder(-200)]
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(ShipStats))]
 [RequireComponent(typeof(PlayerShipController))]
@@ -976,14 +977,21 @@ private Vector3 ComputeLateralCorrectionForceWorld()
             return Vector3.zero;
         }
 
-        Vector3 localCommand = new Vector3(-localDirection.y, localDirection.x, 0f);
-        if (localCommand.sqrMagnitude <= 0.0004f && localDirection.z < 0f)
+        Vector3 turnAxisLocal = Vector3.Cross(Vector3.forward, localDirection.normalized);
+        if (turnAxisLocal.sqrMagnitude <= 0.0004f && localDirection.z < 0f)
         {
             // Retrograde is an unstable reference in this projection; prefer a deterministic pitch-axis command.
             return Vector3.right;
         }
 
-        return Vector3.ClampMagnitude(localCommand, 1f);
+        if (turnAxisLocal.sqrMagnitude <= 0.000001f)
+        {
+            return Vector3.zero;
+        }
+
+        float angleDegrees = Vector3.Angle(Vector3.forward, localDirection);
+        float commandMagnitude = Mathf.Clamp01(angleDegrees / 45f);
+        return Vector3.ClampMagnitude(turnAxisLocal.normalized * commandMagnitude, 1f);
     }
 
     private Vector3 ComputeAttitudeTorqueLocal(Vector3 desiredDirection)

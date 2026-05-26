@@ -232,6 +232,74 @@ public class PrototypeWaypointAutopilotValidationTests
     }
 
     [Test]
+    public void AutopilotClosedLoopApproachBrakesWithoutManualAlignment()
+    {
+        SimulationMode previousSimulationMode = Physics.simulationMode;
+        Physics.simulationMode = SimulationMode.Script;
+        try
+        {
+            var rig = CreateAutopilotRig();
+            rig.Target.transform.position = Vector3.forward * 150f;
+            rig.Body.linearVelocity = Vector3.forward * 45f;
+            rig.Body.angularVelocity = Vector3.zero;
+            rig.Autopilot.SelectTarget(rig.Target);
+            rig.Autopilot.ToggleAutopilot();
+
+            float initialRetrogradeAngle = Vector3.Angle(rig.Ship.transform.forward, -rig.Body.linearVelocity.normalized);
+            float minRetrogradeAngle = initialRetrogradeAngle;
+            bool sawRcsTorque = false;
+            bool sawMainThrottleApplication = false;
+            bool sawBrakeForceOpposingVelocity = false;
+            bool mainCommandAfterAlignment = false;
+
+            for (int i = 0; i < 300; i++)
+            {
+                InvokeFixedUpdate(rig.Autopilot);
+                InvokeFixedUpdate(rig.Controller);
+                Physics.Simulate(Time.fixedDeltaTime);
+
+                if (rig.Body.linearVelocity.sqrMagnitude > 0.0001f)
+                {
+                    float retrogradeAngle = Vector3.Angle(rig.Ship.transform.forward, -rig.Body.linearVelocity.normalized);
+                    minRetrogradeAngle = Mathf.Min(minRetrogradeAngle, retrogradeAngle);
+                }
+
+                if (rig.Controller.LastRcsActualTorqueWorld.magnitude > 100f)
+                {
+                    sawRcsTorque = true;
+                }
+
+                if (Vector3.Dot(rig.Controller.LastMainForceWorld, rig.Body.linearVelocity) < -0.01f)
+                {
+                    sawBrakeForceOpposingVelocity = true;
+                }
+
+                if (rig.Controller.MainThrustCommand > 0.05f)
+                {
+                    sawMainThrottleApplication = true;
+                    float angleToRetrograde = rig.Body.linearVelocity.sqrMagnitude > 0.0001f
+                        ? Vector3.Angle(rig.Ship.transform.forward, -rig.Body.linearVelocity.normalized)
+                        : minRetrogradeAngle;
+                    if (!mainCommandAfterAlignment && angleToRetrograde <= 30f)
+                    {
+                        mainCommandAfterAlignment = true;
+                    }
+                }
+            }
+
+            Assert.That(minRetrogradeAngle, Is.LessThan(initialRetrogradeAngle - 45f), "ship should visibly rotate toward retrograde under autopilot RCS torque");
+            Assert.True(sawRcsTorque, "autopilot should produce actual RCS torque in the closed-loop simulation");
+            Assert.True(mainCommandAfterAlignment, "main thruster should only become active after the ship is near retrograde alignment");
+            Assert.True(sawBrakeForceOpposingVelocity, "main thruster force should oppose the approach velocity during the deceleration burn");
+            Assert.True(sawMainThrottleApplication, "autopilot should eventually command main throttle for the deceleration burn");
+        }
+        finally
+        {
+            Physics.simulationMode = previousSimulationMode;
+        }
+    }
+
+    [Test]
     public void ToggleAutopilotForcesSasKillRotationBeforeBrakeWhenHoldAttitudeWasActive()
     {
         var rig = CreateAutopilotRig();

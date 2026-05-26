@@ -223,3 +223,39 @@ Player UI regression controls, minimap evidence, navigation/combat popups, Kill 
 `claude-plan-review` was invoked with the empty-minimap fix context and screenshot paths after the latest PlayMode evidence; the local wrapper timed out after 120 seconds. It was also invoked before the latest planner-map slice and timed out after 120 seconds. For the minimap/radar readability slice, a PNG-backed review failed with a local `charmap` encoding error and the follow-up path-only review timed out after 120 seconds. No actionable review feedback was returned.
 
 `claude-plan-review` was invoked again for the combined minimap range-control / Autopilot Planner / flip-main-decel plan with the touched file list. The local wrapper timed out after 120 seconds, so no actionable Claude feedback was returned for this checkpoint.
+
+## Latest: planner popup zoom and closed-loop autopilot deceleration follow-up
+
+- Change set:
+  - `Assets/Scripts/Prototype/PrototypePlayerHud.cs`
+  - `Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs`
+  - `Assets/Tests/Editor/PrototypePlayerHudValidationTests.cs`
+  - `Assets/Tests/Editor/PrototypeWaypointAutopilotValidationTests.cs`
+  - `tests/screenshots/player-ui-regression-radar-normal-1280x720.png`
+  - `tests/screenshots/player-ui-regression-nav-planner-1280x720.png`
+  - `tests/screenshots/player-ui-regression-combat-computer-1280x720.png`
+- Planner popup fixes:
+  - Planner map now uses the shared minimap zoom/range state but renders a larger planner-specific map area.
+  - Planner-only contact density is capped at 6 blips; representative navigation, docking and combat blips are preserved before selected navigation, selected combat and objective draw layers.
+  - Planner route/preview strokes are thicker than compact radar strokes.
+  - Planner map label font is at least 10, and layout tests verify no body/map/text/button overlap at 1280x720 and 800x1400.
+- Autopilot fix:
+  - `PrototypeWaypointAutopilot` now has `[DefaultExecutionOrder(-200)]`, matching the assist-controller pattern so waypoint assist requests are written before `PlayerShipController.FixedUpdate`.
+  - Autopilot attitude steering now uses a local turn-axis command with full authority for large off-axis/retrograde turns instead of the previous weak local projection.
+  - New closed-loop regression `AutopilotClosedLoopApproachBrakesWithoutManualAlignment` steps autopilot, controller and `Physics.Simulate` without manually setting ship rotation; it verifies retrograde rotation, actual RCS torque, main-thruster command after alignment and braking force opposing velocity.
+- Unity MCP `validate_script`:
+  - `Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs`: PASS, 0 errors (existing analyzer warning only).
+  - `Assets/Scripts/Prototype/PrototypePlayerHud.cs`: PASS, 0 errors (existing analyzer warnings only).
+  - `Assets/Tests/Editor/PrototypeWaypointAutopilotValidationTests.cs`: PASS, 0 errors (existing analyzer warnings only).
+- Unity MCP EditMode job `c61772e93e364bab8801a7d7d89d07a4`: focused planner/autopilot regression tests PASS 4/4.
+- Unity MCP EditMode job `fadb2ecb308447a981e4dd55099ddfb9`: `PrototypePlayerHudValidationTests` plus `PrototypeWaypointAutopilotValidationTests` PASS 82/82.
+- Unity MCP PlayMode job `79a103b289f64e77aea8fa383f4cb3aa`: `PrototypeBootstrapRuntimePlayerHudEvidenceCapturesPlayerComputerPopups` PASS 1/1.
+- `dotnet build "Weltraum Spiel.sln" --no-restore`: PASS, 0 errors, 22 existing Unity/generated assembly warnings.
+- Screenshot evidence refreshed:
+  - `tests/screenshots/player-ui-regression-radar-normal-1280x720.png`
+  - `tests/screenshots/player-ui-regression-nav-planner-1280x720.png`
+  - `tests/screenshots/player-ui-regression-combat-computer-1280x720.png`
+- Visual check:
+  - `player-ui-regression-nav-planner-1280x720.png` shows the planner popup with a larger map, fewer planner blips, visible route/preview line, readable range/route/preview/contact label and no overlap with the bottom HUD.
+- Review note:
+  - `claude-plan-review` was invoked with text file context and the screenshot path in `current_state`; the local wrapper timed out after 120 seconds, so no actionable Claude feedback was returned for this checkpoint.

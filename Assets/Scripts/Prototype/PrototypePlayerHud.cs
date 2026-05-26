@@ -2283,7 +2283,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private const int MaxRadarRouteSegments = 28;
     private const int MaxRadarPreviewSegments = 28;
     private const int MaxRadarBlips = 64;
-    private const int MaxNavigationPlannerMapBlips = 8;
+    private const int MaxNavigationPlannerMapBlips = 6;
     private const int MaxCompactRadarGenericBlips = 8;
     private const int MinimapRangeModeAuto = 0;
     private const int MinimapRangeModeCount = 5;
@@ -3332,7 +3332,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
     private void CreateNavigationPlannerMapLayer(Transform parent)
     {
-        navigationPlannerMapLayerRect = CreateRect("NavigationPlannerMapLayer", parent, new RectPreset(new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(158f, 158f), new Vector2(-22f, 42f)));
+        navigationPlannerMapLayerRect = CreateRect("NavigationPlannerMapLayer", parent, new RectPreset(new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(186f, 186f), new Vector2(-22f, 40f)));
         navigationPlannerMapHeadingImage = CreateRadarVisual("NavigationPlannerMapHeading", navigationPlannerMapLayerRect, new Vector2(10f, 14f), Color.white);
         navigationPlannerMapAvoidanceImage = CreateRadarVisual("NavigationPlannerMapAvoidance", navigationPlannerMapLayerRect, new Vector2(12f, 12f), PrototypeUiStyle.WarningColor);
         navPlannerRangeMinusButton = CreateButton("NavPlannerRangeMinus", navigationPlannerMapLayerRect, "-", new RectPreset(new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(22f, 22f), new Vector2(-44f, -12f)));
@@ -3348,13 +3348,13 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         navigationPlannerMapRouteSegments.Clear();
         for (int i = 0; i < MaxRadarRouteSegments; i++)
         {
-            navigationPlannerMapRouteSegments.Add(CreateRadarVisual("NavigationPlannerMapRouteSegment" + i, navigationPlannerMapLayerRect, new Vector2(8f, 3f), PrototypeModuleColorPalette.Target));
+            navigationPlannerMapRouteSegments.Add(CreateRadarVisual("NavigationPlannerMapRouteSegment" + i, navigationPlannerMapLayerRect, new Vector2(8f, 3.4f), PrototypeModuleColorPalette.Target));
         }
 
         navigationPlannerMapPreviewSegments.Clear();
         for (int i = 0; i < MaxRadarPreviewSegments; i++)
         {
-            navigationPlannerMapPreviewSegments.Add(CreateRadarVisual("NavigationPlannerMapPreviewSegment" + i, navigationPlannerMapLayerRect, new Vector2(8f, 3f), new Color(1f, 0.72f, 0.22f, 0.94f)));
+            navigationPlannerMapPreviewSegments.Add(CreateRadarVisual("NavigationPlannerMapPreviewSegment" + i, navigationPlannerMapLayerRect, new Vector2(8f, 3.2f), new Color(1f, 0.72f, 0.22f, 0.94f)));
         }
 
         navigationPlannerMapBlipImages.Clear();
@@ -3370,9 +3370,9 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         navigationPlannerPanelRect = panel;
         navigationPlannerTitleText = CreateText("NavigationPlannerTitle", panel, 15, TextAnchor.UpperLeft, Color.white, new RectPreset(new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(-24f, 28f), new Vector2(0f, -16f)));
         navigationPlannerBodyText = CreateText("NavigationPlannerBody", panel, 12, TextAnchor.UpperLeft, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-224f, -116f), new Vector2(-100f, 22f)));
-        navigationPlannerMapPanelRect = CreatePanel("NavigationPlannerMapPanel", panel, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(174f, 198f), new Vector2(-12f, 34f));
+        navigationPlannerMapPanelRect = CreatePanel("NavigationPlannerMapPanel", panel, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(198f, 228f), new Vector2(-12f, 34f));
         CreateNavigationPlannerMapLayer(panel);
-        navigationPlannerMapText = CreateText("NavigationPlannerMapText", panel, 9, TextAnchor.LowerCenter, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(174f, 30f), new Vector2(-12f, -66f)));
+        navigationPlannerMapText = CreateText("NavigationPlannerMapText", panel, 10, TextAnchor.LowerCenter, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(198f, 30f), new Vector2(-12f, -66f)));
 
         navPlannerPreviousButton = CreateButton("NavPlannerPreviousTarget", panel, "Prev", new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(48f, 22f), new Vector2(12f, 54f)));
         navPlannerNextButton = CreateButton("NavPlannerNextTarget", panel, "Next", new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(48f, 22f), new Vector2(66f, 54f)));
@@ -3537,7 +3537,9 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             navigationPlannerMapRouteSegments,
             navigationPlannerMapPreviewSegments,
             navigationPlannerMapBlipImages,
-            true);
+            true,
+            3.8f,
+            3.4f);
     }
 
     private void ConfigureRadarLayer(
@@ -3549,7 +3551,9 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         List<Image> routeSegments,
         List<Image> previewSegments,
         List<Image> blipImages,
-        bool usePlannerMapBlips = false)
+        bool usePlannerMapBlips = false,
+        float routeThickness = 3.2f,
+        float previewThickness = 3f)
     {
         if (layerRect == null)
         {
@@ -3571,8 +3575,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
         Vector3[] routePoints = snapshot.Radar.RouteWorldPoints ?? System.Array.Empty<Vector3>();
         Vector3[] previewPoints = snapshot.Radar.TrajectoryPreviewWorldPoints ?? System.Array.Empty<Vector3>();
-        ConfigureRadarSegmentPool(routeSegments, snapshot.Radar, routePoints, radius, PrototypeModuleColorPalette.Target, 3.2f, false);
-        ConfigureRadarSegmentPool(previewSegments, snapshot.Radar, previewPoints, radius, new Color(1f, 0.72f, 0.22f, 0.94f), 3f, true);
+        ConfigureRadarSegmentPool(routeSegments, snapshot.Radar, routePoints, radius, PrototypeModuleColorPalette.Target, routeThickness, false);
+        ConfigureRadarSegmentPool(previewSegments, snapshot.Radar, previewPoints, radius, new Color(1f, 0.72f, 0.22f, 0.94f), previewThickness, true);
 
         if (snapshot.Radar.HasAvoidanceWaypoint)
         {
@@ -3657,7 +3661,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         PrototypePlayerHudSnapshotBuilder.SortRadarBlipsForDisplay(objective);
 
         var prioritized = new List<PrototypePlayerRadarBlip>(source.Length);
-        prioritized.AddRange(lowerPriority);
+        int lowerPriorityLimit = Mathf.Max(0, MaxNavigationPlannerMapBlips - selectedNavigation.Count - selectedCombat.Count - objective.Count);
+        prioritized.AddRange(SelectNavigationPlannerLowerPriorityBlips(lowerPriority, lowerPriorityLimit));
         prioritized.AddRange(selectedNavigation);
         prioritized.AddRange(selectedCombat);
         prioritized.AddRange(objective);
@@ -3669,6 +3674,65 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         }
 
         return prioritized.ToArray();
+    }
+
+    private static PrototypePlayerRadarBlip[] SelectNavigationPlannerLowerPriorityBlips(
+        List<PrototypePlayerRadarBlip> source,
+        int maxCount)
+    {
+        if (source == null || source.Count == 0 || maxCount <= 0)
+        {
+            return System.Array.Empty<PrototypePlayerRadarBlip>();
+        }
+
+        var selected = new List<PrototypePlayerRadarBlip>(Mathf.Min(maxCount, source.Count));
+        AddFirstPlannerBlipKind(source, selected, PrototypePlayerRadarBlipKind.Navigation, maxCount);
+        AddFirstPlannerBlipKind(source, selected, PrototypePlayerRadarBlipKind.Docking, maxCount);
+        AddFirstPlannerBlipKind(source, selected, PrototypePlayerRadarBlipKind.Combat, maxCount);
+        for (int i = 0; i < source.Count && selected.Count < maxCount; i++)
+        {
+            AddPlannerBlipIfMissing(selected, source[i], maxCount);
+        }
+
+        PrototypePlayerHudSnapshotBuilder.SortRadarBlipsForDisplay(selected);
+        return selected.ToArray();
+    }
+
+    private static void AddFirstPlannerBlipKind(
+        List<PrototypePlayerRadarBlip> source,
+        List<PrototypePlayerRadarBlip> selected,
+        PrototypePlayerRadarBlipKind kind,
+        int maxCount)
+    {
+        for (int i = 0; i < source.Count; i++)
+        {
+            if (source[i].Kind == kind)
+            {
+                AddPlannerBlipIfMissing(selected, source[i], maxCount);
+                return;
+            }
+        }
+    }
+
+    private static void AddPlannerBlipIfMissing(
+        List<PrototypePlayerRadarBlip> selected,
+        PrototypePlayerRadarBlip blip,
+        int maxCount)
+    {
+        if (selected.Count >= maxCount)
+        {
+            return;
+        }
+
+        for (int i = 0; i < selected.Count; i++)
+        {
+            if (selected[i].Kind == blip.Kind && string.Equals(selected[i].Label, blip.Label, System.StringComparison.Ordinal))
+            {
+                return;
+            }
+        }
+
+        selected.Add(blip);
     }
 
     private static PrototypePlayerRadarBlip[] GetCompactRadarBlips(PrototypePlayerHudSnapshot snapshot)
@@ -4906,8 +4970,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
                 new Vector2(1f, 1f),
                 new Vector2(1f, 1f),
                 new Vector2(1f, 1f),
-                new Vector2(mapSize + 18f, mapSize + 46f),
-                new Vector2(-12f, -54f - (mapSize * 0.55f)));
+                new Vector2(mapSize + 18f, mapSize + 56f),
+                new Vector2(-12f, -42f));
             ApplyRect(
                 navigationPlannerBodyText.rectTransform,
                 new Vector2(0f, 0f),
@@ -4933,13 +4997,13 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         }
         else
         {
-            float mapSize = Mathf.Clamp(contentHeight - 8f, 220f, 240f);
+            float mapSize = Mathf.Clamp(contentHeight + 8f, 230f, 270f);
             ApplyRect(
                 navigationPlannerMapPanelRect,
                 new Vector2(1f, 0.5f),
                 new Vector2(1f, 0.5f),
                 new Vector2(1f, 0.5f),
-                new Vector2(mapSize + 20f, mapSize + 38f),
+                new Vector2(mapSize + 20f, mapSize + 44f),
                 new Vector2(-12f, 22f));
             ApplyRect(
                 navigationPlannerBodyText.rectTransform,
@@ -4954,7 +5018,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
                 new Vector2(1f, 0.5f),
                 new Vector2(1f, 0.5f),
                 new Vector2(mapSize, mapSize),
-                new Vector2(-22f, 42f));
+                new Vector2(-22f, 40f));
             ApplyRect(
                 navigationPlannerMapText.rectTransform,
                 new Vector2(1f, 0.5f),
