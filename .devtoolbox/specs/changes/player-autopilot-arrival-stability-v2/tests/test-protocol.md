@@ -20,6 +20,9 @@ Stabilize waypoint autopilot arrival behavior so the ship commits to a brake/dec
   - Dampened brake attitude commands based on full local angular velocity and bounded over-speed output without making the flip too sluggish for the decel burn.
   - Added terminal lateral correction as a real RCS-only damping phase with no main-throttle request.
   - Added brake throttle shaping near the arrival completion envelope.
+  - Replaced the brake/flip attitude command with a bounded angular-velocity/acceleration planner that converts through the ship inertia tensor before requesting RCS torque.
+  - Expanded the terminal capture range so an already captured arrival cannot drift back into transfer acceleration near the target.
+  - Scoped fine-approach control to the terminal/capture window so post-overshoot reacquire can return to direct acceleration instead of crawling in distant FinalApproach.
   - Added low-but-nonzero RCS authority detection for terminal lateral correction.
   - Added low-but-nonzero RCS authority detection for Hold damping.
   - Prevented no-RCS approach from entering Hold before a real brake commit.
@@ -34,8 +37,43 @@ Stabilize waypoint autopilot arrival behavior so the ship commits to a brake/dec
   - Added `PlayMode_Autopilot_SelectTargetClearsArrivalBrakeAndHoldHysteresis`.
   - Added `PlayMode_Autopilot_NearTargetOffAxisVelocity_DampsLaterallyWithoutMainThrottle`.
   - Added `PlayMode_Autopilot_NearTargetHighMassLowRcs_DetectsLimitedLateralAuthority`.
+  - Added `PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap` to cover a near-target lateral overshoot with initial angular velocity, no useful closing speed, bounded integrated brake rotation, no main throttle while flipping, and no terminal transfer-accelerate after capture.
 
 ## Verification
+
+- Unity MCP validate_script follow-up after PD brake-flip planner
+  - `Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs`: success, 0 errors, 1 existing GC warning.
+  - `Assets/Tests/PlayMode/PrototypeAutopilotNavigationPlayModeTests.cs`: success, 0 errors, 0 warnings.
+- Unity MCP PlayMode PD brake-flip focused regression
+  - Tests:
+    - `PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap`
+  - Result: `Passed`, total `1`, passed `1`, failed `0`.
+- Unity MCP PlayMode PD brake-flip terminal regression
+  - Tests:
+    - `PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_Arrival_NoBrakeAccelerateFlap_ReachesCompletionDeadzone`
+    - `PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalOvershootBrakesAndHoldsWithoutReaccelerating`
+    - `PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_NearTargetLateralOvershoot_NoTerminalAccelerateOrSpin`
+    - `PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap`
+    - `PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_LongRangeBrakeCommitDoesNotActivateTerminalCaptureBeforeEnvelope`
+    - `PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_BrakeDirectionUsesRetrogradeOutsideTerminalRangeEvenWithCaptureLatch`
+    - `PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalAvoidanceStillWinsOverCommittedBrakeLatch`
+    - `PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalOvershootWithoutRcsDoesNotEnterHold`
+  - Result: `Passed`, total `8`, passed `8`, failed `0`.
+- Unity MCP PlayMode suite PD brake-flip follow-up
+  - Test filter: `PrototypeAutopilotNavigationPlayModeTests`
+  - Result: `Passed`, total `20`, passed `20`, failed `0`.
+- Unity MCP EditMode suite PD brake-flip follow-up
+  - Tests:
+    - `PrototypeWaypointAutopilotValidationTests`
+    - `PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_HoldRequiresStableVelocityWindow`
+    - `PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_NoAuthorityDoesNotFakeComplete`
+  - Result: `Passed`, total `34`, passed `34`, failed `0`.
+- `.NET` build PD brake-flip follow-up
+  - Command: `dotnet build "Weltraum Spiel.sln" --no-restore`
+  - Result: exit code `0`, `0 Error(s)`, `22 Warning(s)` from the same existing Unity/.NET assembly reference conflicts and analyzer warnings.
+- Claude plan review
+  - Requested for the PD brake-flip/terminal-capture plan with `PrototypeWaypointAutopilot.cs`, `PrototypeAutopilotNavigationPlayModeTests.cs`, and this protocol as context.
+  - Result: timed out after 120 seconds; no Claude findings were available.
 
 - Unity MCP validate_script follow-up after terminal capture latch
   - `Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs`: success, 0 errors, 1 existing GC warning.

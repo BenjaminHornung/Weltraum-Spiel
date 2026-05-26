@@ -596,6 +596,125 @@ public class PrototypeAutopilotNavigationPlayModeTests
     }
 
     [Test]
+    public void PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap()
+    {
+        AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 32f);
+        rig.Body.position = Vector3.forward * 18f + Vector3.right * 2f;
+        rig.Body.linearVelocity = Vector3.back * 0.4f + Vector3.right * 7.2f;
+        rig.Body.angularVelocity = Vector3.up * 1.1f + Vector3.right * 0.7f;
+        rig.Ship.transform.rotation = Quaternion.Euler(18f, 95f, 8f);
+        Physics.SyncTransforms();
+        rig.Autopilot.ToggleAutopilot();
+
+        bool sawTerminalBrakeCommit = false;
+        bool sawHoldOrComplete = false;
+        int accelerateFramesAfterCommit = 0;
+        int brakeToAccelerateTransitionsAfterCommit = 0;
+        int throttleWhileFlipFrames = 0;
+        float integratedBrakeRotationRadians = 0f;
+        float maxFlipAngularSpeed = 0f;
+        float finalDistance = rig.Autopilot.DistanceToTarget;
+        float maxCommittedBrakeDirectionDelta = 0f;
+        Vector3 previousCommittedBrakeDirection = Vector3.zero;
+        PrototypeWaypointAutopilotState previousState = rig.Autopilot.CurrentState;
+        List<string> stepTrace = new List<string>();
+
+        for (int i = 0; i < 3200; i++)
+        {
+            StepClosedLoopPhysics(rig);
+            finalDistance = Vector3.Distance(rig.Body.position, rig.Target.Position);
+            bool inTerminalEnvelope = finalDistance <= rig.Target.ArrivalRadius + 10f;
+            bool terminalBrakeCommitted = inTerminalEnvelope && GetPrivateBool(rig.Autopilot, "arrivalTerminalCaptureActive");
+            sawTerminalBrakeCommit |= terminalBrakeCommitted;
+
+            PrototypeWaypointAutopilotState currentState = rig.Autopilot.CurrentState;
+            if (sawTerminalBrakeCommit && inTerminalEnvelope && currentState == PrototypeWaypointAutopilotState.Accelerate)
+            {
+                accelerateFramesAfterCommit++;
+            }
+
+            if (sawTerminalBrakeCommit
+                && inTerminalEnvelope
+                && (previousState == PrototypeWaypointAutopilotState.Brake || previousState == PrototypeWaypointAutopilotState.FlipForBrake)
+                && currentState == PrototypeWaypointAutopilotState.Accelerate)
+            {
+                brakeToAccelerateTransitionsAfterCommit++;
+            }
+
+            if (currentState == PrototypeWaypointAutopilotState.Brake || currentState == PrototypeWaypointAutopilotState.FlipForBrake)
+            {
+                integratedBrakeRotationRadians += rig.Body.angularVelocity.magnitude * Time.fixedDeltaTime;
+            }
+
+            if (currentState == PrototypeWaypointAutopilotState.FlipForBrake)
+            {
+                maxFlipAngularSpeed = Mathf.Max(maxFlipAngularSpeed, rig.Body.angularVelocity.magnitude);
+                if (rig.Autopilot.RequestedMainThrottle > 0.05f)
+                {
+                    throttleWhileFlipFrames++;
+                }
+            }
+
+            Vector3 committedBrakeDirection = GetPrivateVector3(rig.Autopilot, "committedBrakeDirection");
+            if (terminalBrakeCommitted
+                && (currentState == PrototypeWaypointAutopilotState.Brake || currentState == PrototypeWaypointAutopilotState.FlipForBrake)
+                && committedBrakeDirection.sqrMagnitude > 0.0001f)
+            {
+                if (previousCommittedBrakeDirection.sqrMagnitude > 0.0001f)
+                {
+                    maxCommittedBrakeDirectionDelta = Mathf.Max(
+                        maxCommittedBrakeDirectionDelta,
+                        Vector3.Angle(previousCommittedBrakeDirection.normalized, committedBrakeDirection.normalized));
+                }
+
+                previousCommittedBrakeDirection = committedBrakeDirection;
+            }
+
+            sawHoldOrComplete |= currentState == PrototypeWaypointAutopilotState.HoldPosition
+                || currentState == PrototypeWaypointAutopilotState.Complete;
+            previousState = currentState;
+
+            if (currentState == PrototypeWaypointAutopilotState.Complete
+                || currentState == PrototypeWaypointAutopilotState.Aborted
+                || currentState == PrototypeWaypointAutopilotState.Failed
+                || currentState == PrototypeWaypointAutopilotState.FuelInsufficient)
+            {
+                break;
+            }
+
+            stepTrace.Add(
+                $"i={i} dist={finalDistance:0.00} rel={rig.Body.linearVelocity.magnitude:0.00} closing={rig.Autopilot.ClosingSpeed:0.00} "
+                + $"lat={rig.Autopilot.LateralSpeed:0.00} ang={rig.Body.angularVelocity.magnitude:0.00} "
+                + $"state={currentState} phase={rig.Autopilot.NavigationPhase} main={rig.Autopilot.RequestedMainThrottle:0.00}");
+        }
+
+        string diagnostics = BuildTerminalOvershootDiagnostics(
+            rig,
+            finalDistance,
+            accelerateFramesAfterCommit,
+            throttleWhileFlipFrames,
+            maxFlipAngularSpeed,
+            stepTrace)
+            + $"\nbrakeToAccelerateTransitionsAfterCommit={brakeToAccelerateTransitionsAfterCommit}"
+            + $" integratedBrakeRotationRadians={integratedBrakeRotationRadians:0.00}"
+            + $" maxCommittedBrakeDirectionDelta={maxCommittedBrakeDirectionDelta:0.00}";
+
+        Assert.True(sawTerminalBrakeCommit, "terminal arrival should commit to a planned brake/decel path.\n" + diagnostics);
+        Assert.True(sawHoldOrComplete, "terminal deadzone should capture HoldPosition or Complete instead of circling.\n" + diagnostics);
+        Assert.That(
+            rig.Autopilot.CurrentState,
+            Is.EqualTo(PrototypeWaypointAutopilotState.Complete).Or.EqualTo(PrototypeWaypointAutopilotState.HoldPosition),
+            diagnostics);
+        Assert.That(accelerateFramesAfterCommit, Is.EqualTo(0), "terminal brake commit must not fall back to transfer Accelerate.\n" + diagnostics);
+        Assert.That(brakeToAccelerateTransitionsAfterCommit, Is.EqualTo(0), "brake/decel should not flap after terminal commit.\n" + diagnostics);
+        Assert.That(throttleWhileFlipFrames, Is.EqualTo(0), "main throttle must stay gated while flipping for brake.\n" + diagnostics);
+        Assert.That(integratedBrakeRotationRadians, Is.LessThanOrEqualTo(Mathf.PI * 1.35f), "terminal brake flip should not accumulate a full extra rotation.\n" + diagnostics);
+        Assert.That(maxFlipAngularSpeed, Is.LessThanOrEqualTo(2.8f), "terminal brake flip should stay visually calm.\n" + diagnostics);
+        Assert.That(rig.Body.angularVelocity.magnitude, Is.LessThanOrEqualTo(0.75f), "terminal deadzone should settle angular velocity.\n" + diagnostics);
+        Assert.That(finalDistance, Is.LessThanOrEqualTo(rig.Target.ArrivalRadius + 6f), diagnostics);
+    }
+
+    [Test]
     public void PlayMode_Autopilot_TerminalOvershootWithoutRcsDoesNotEnterHold()
     {
         AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 30f);
