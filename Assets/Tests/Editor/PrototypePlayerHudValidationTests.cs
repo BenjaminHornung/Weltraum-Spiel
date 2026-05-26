@@ -131,6 +131,138 @@ public class PrototypePlayerHudValidationTests
     }
 
     [Test]
+    public void NavigationSnapshotFallsBackToDirectRouteWhenPredictedRouteIsEmpty()
+    {
+        using (var builder = new PrototypeScenarioBuilder())
+        {
+            PrototypeAutopilotRig rig = builder.CreateAutopilotRig(targetPosition: Vector3.forward * 220f);
+
+            PrototypeTrajectoryPlan plan = PrototypeTrajectoryPlan.Clear(Vector3.forward);
+            plan.predictedPath = new Vector3[0];
+            SetAutoProperty(rig.Autopilot, "LastTrajectoryPlan", plan);
+
+            PrototypePlayerHudSnapshot snapshot = PrototypePlayerHudSnapshotBuilder.Build(
+                rig.Ship.Ship.transform,
+                rig.Ship.Body,
+                rig.Ship.Stats,
+                rig.Ship.Controller,
+                rig.Autopilot,
+                null,
+                null,
+                null,
+                null);
+
+            Assert.True(snapshot.Navigation.Visible);
+            Assert.That(snapshot.Navigation.RouteWorldPoints.Length, Is.EqualTo(2), "direct route fallback points");
+            Assert.That(snapshot.Navigation.RouteWorldPoints[0], Is.EqualTo(rig.Ship.Ship.transform.position));
+            Assert.That(snapshot.Navigation.RouteWorldPoints[1], Is.EqualTo(rig.Autopilot.CurrentTarget.Position));
+            Assert.That(snapshot.Navigation.RouteModeLabel, Is.EqualTo("Route: Direkt"));
+
+            MethodInfo bodyMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
+                "BuildNavigationPlannerBody",
+                BindingFlags.Static | BindingFlags.NonPublic);
+            Assert.NotNull(bodyMethod);
+            string body = (string)bodyMethod.Invoke(null, new object[] { snapshot.Navigation });
+            Assert.That(body, Does.Contain("Route: Direkt 2 pts"));
+
+            MethodInfo mapLabelMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
+                "BuildNavigationPlannerMapLabel",
+                BindingFlags.Static | BindingFlags.NonPublic);
+            Assert.NotNull(mapLabelMethod);
+            string mapLabel = (string)mapLabelMethod.Invoke(null, new object[] { snapshot });
+            Assert.That(mapLabel, Does.Contain("DR2p"));
+        }
+    }
+
+    [Test]
+    public void NavigationPlannerMapLabelUsesNoRouteWhenRouteIsMissing()
+    {
+        MethodInfo bodyMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
+            "BuildNavigationPlannerBody",
+            BindingFlags.Static | BindingFlags.NonPublic);
+        MethodInfo mapLabelMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
+            "BuildNavigationPlannerMapLabel",
+            BindingFlags.Static | BindingFlags.NonPublic);
+        Assert.NotNull(bodyMethod);
+        Assert.NotNull(mapLabelMethod);
+
+        var radar = new PrototypePlayerRadarSnapshot(
+            1000f,
+            "Range 1 km",
+            Vector3.zero,
+            Vector3.forward,
+            new[]
+            {
+                new PrototypePlayerRadarBlip(
+                    PrototypePlayerRadarBlipKind.Navigation,
+                    "Waypoint",
+                    new Vector3(20f, 0f, 120f)),
+            },
+            new Vector3[0],
+            new Vector3[0],
+            false,
+            Vector3.zero);
+
+        var noRouteNavigation = new PrototypePlayerNavigationSnapshot(
+            true,
+            "No target",
+            "Waypoint",
+            0f,
+            0f,
+            0f,
+            0f,
+            "--",
+            "Ziel gewaehlt",
+            "Direkter Kurs",
+            "Route: Direkt",
+            "Manoever: Kein Ziel",
+            0f,
+            0f,
+            0f,
+            new string[0],
+            new Vector3[0],
+            PrototypeTrajectoryPreviewSnapshot.Unavailable("Trajectory Preview", 0, 0f),
+            false,
+            Vector3.zero,
+            string.Empty,
+            0,
+            0);
+
+        PrototypePlayerHudSnapshot baseSnapshot = CreateHudSnapshot(
+            CreateCombatSnapshot(false),
+            CreateDockingSnapshot(false),
+            CreateNavigationSnapshot(true),
+            default,
+            null,
+            radar);
+
+        PrototypePlayerHudSnapshot navigationMissingRouteSnapshot = new PrototypePlayerHudSnapshot(
+            baseSnapshot.Flight,
+            noRouteNavigation,
+            baseSnapshot.Combat,
+            baseSnapshot.Arena,
+            baseSnapshot.Docking,
+            baseSnapshot.ShipStatus,
+            baseSnapshot.Warnings,
+            baseSnapshot.AssistChips,
+            baseSnapshot.MarkerModel,
+            baseSnapshot.Radar,
+            baseSnapshot.TargetIndicators,
+            baseSnapshot.ShipWorldPosition,
+            baseSnapshot.ShipForward,
+            baseSnapshot.NavigationTargetWorldPosition,
+            baseSnapshot.CombatTargetWorldPosition);
+
+        string body = (string)bodyMethod.Invoke(null, new object[] { navigationMissingRouteSnapshot.Navigation });
+        string mapLabel = (string)mapLabelMethod.Invoke(null, new object[] { navigationMissingRouteSnapshot });
+
+        Assert.That(body, Does.Contain("No route"));
+        Assert.That(body, Does.Not.Contain("Direkte Route"));
+        Assert.That(mapLabel, Does.Contain("No route"));
+        Assert.That(mapLabel, Does.Not.Contain("Direkte Route"));
+    }
+
+    [Test]
     public void NavigationSnapshotDescribesFlipAndMainDecelBurnIntent()
     {
         using (var builder = new PrototypeScenarioBuilder())
@@ -373,8 +505,131 @@ public class PrototypePlayerHudValidationTests
         Assert.True(FindRect(playerHud, "NavigationPlannerMapLayer").gameObject.activeInHierarchy);
         Assert.True(FindRect(playerHud, "NavigationPlannerMapGridSegment0").gameObject.activeInHierarchy);
         Assert.True(FindRect(playerHud, "NavigationPlannerMapBlip0").gameObject.activeInHierarchy);
-        Assert.That(FindText(playerHud, "NavigationPlannerMapText").text, Does.Contain("1 contact"));
+        Assert.That(FindText(playerHud, "NavigationPlannerMapText").text, Does.Contain("1c"));
         Assert.False(FindRect(playerHud, "RadarPanel").gameObject.activeSelf);
+    }
+
+    [Test]
+    public void NavigationPlannerMapFiltersGenericBlipsWhenNavigationIsVisible()
+    {
+        var radar = new PrototypePlayerRadarSnapshot(
+            1000f,
+            "Range 1 km",
+            Vector3.zero,
+            Vector3.forward,
+            new[]
+            {
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Navigation, "Waypoint", new Vector3(20f, 0f, 120f)),
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.SelectedNavigation, "Selected Waypoint", new Vector3(30f, 0f, 130f)),
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Combat, "Bandit", new Vector3(40f, 0f, 180f)),
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.SelectedCombat, "Selected Bandit", new Vector3(50f, 0f, 160f)),
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Objective, "Objective", new Vector3(60f, 0f, 200f)),
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Beacon, "Beacon", new Vector3(70f, 0f, 220f)),
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Gate, "Gate", new Vector3(80f, 0f, 240f)),
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Station, "Station", new Vector3(90f, 0f, 260f))
+            },
+            new Vector3[0],
+            new Vector3[0],
+            false,
+            Vector3.zero);
+
+        MethodInfo mapBlipMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
+            "GetNavigationPlannerMapBlips",
+            BindingFlags.Static | BindingFlags.NonPublic);
+        Assert.NotNull(mapBlipMethod);
+
+        PrototypePlayerHudSnapshot withTargetSnapshot = CreateHudSnapshot(
+            CreateCombatSnapshot(false),
+            CreateDockingSnapshot(false),
+            CreateNavigationSnapshot(true),
+            default,
+            null,
+            radar);
+
+        PrototypePlayerRadarBlip[] filteredBlips = (PrototypePlayerRadarBlip[])mapBlipMethod.Invoke(
+            null,
+            new object[] { withTargetSnapshot });
+        Assert.That(filteredBlips.Length, Is.EqualTo(5), "only actionable kinds kept for planner map layer");
+        Assert.That(GetBlipLabel(filteredBlips, PrototypePlayerRadarBlipKind.Navigation), Is.EqualTo("Waypoint"));
+        Assert.That(GetBlipLabel(filteredBlips, PrototypePlayerRadarBlipKind.SelectedNavigation), Is.EqualTo("Selected Waypoint"));
+        Assert.That(GetBlipLabel(filteredBlips, PrototypePlayerRadarBlipKind.Combat), Is.EqualTo("Bandit"));
+        Assert.That(GetBlipLabel(filteredBlips, PrototypePlayerRadarBlipKind.SelectedCombat), Is.EqualTo("Selected Bandit"));
+        Assert.That(GetBlipLabel(filteredBlips, PrototypePlayerRadarBlipKind.Objective), Is.EqualTo("Objective"));
+        Assert.That(GetBlipLabel(filteredBlips, PrototypePlayerRadarBlipKind.Beacon), Is.Null);
+        Assert.That(GetBlipLabel(filteredBlips, PrototypePlayerRadarBlipKind.Gate), Is.Null);
+        Assert.That(GetBlipLabel(filteredBlips, PrototypePlayerRadarBlipKind.Station), Is.Null);
+
+        PrototypePlayerHudSnapshot withoutTargetSnapshot = CreateHudSnapshot(
+            CreateCombatSnapshot(false),
+            CreateDockingSnapshot(false),
+            CreateNavigationSnapshot(false),
+            default,
+            null,
+            radar);
+        PrototypePlayerRadarBlip[] unfilteredBlips = (PrototypePlayerRadarBlip[])mapBlipMethod.Invoke(
+            null,
+            new object[] { withoutTargetSnapshot });
+        Assert.That(unfilteredBlips.Length, Is.EqualTo(radar.Blips.Length), "no filter when planner has no navigation target");
+    }
+
+    [Test]
+    public void CompactRadarFiltersAndOrdersGenericContactsBeforeActionable()
+    {
+        var radar = new PrototypePlayerRadarSnapshot(
+            1000f,
+            "Range 1 km",
+            Vector3.zero,
+            Vector3.forward,
+            new[]
+            {
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Beacon, "Generic 0", new Vector3(10f, 0f, 10f)),
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Beacon, "Generic 1", new Vector3(20f, 0f, 20f)),
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Beacon, "Generic 2", new Vector3(30f, 0f, 30f)),
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Beacon, "Generic 3", new Vector3(40f, 0f, 40f)),
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Beacon, "Generic 4", new Vector3(50f, 0f, 50f)),
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Beacon, "Generic 5", new Vector3(60f, 0f, 60f)),
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Beacon, "Generic 6", new Vector3(70f, 0f, 70f)),
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Beacon, "Generic 7", new Vector3(80f, 0f, 80f)),
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Beacon, "Generic 8", new Vector3(90f, 0f, 90f)),
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Beacon, "Generic 9", new Vector3(100f, 0f, 100f)),
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.SelectedNavigation, "SelNav", new Vector3(120f, 0f, 120f)),
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.SelectedCombat, "SelCombat", new Vector3(130f, 0f, 130f)),
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Objective, "Objective", new Vector3(140f, 0f, 140f)),
+            },
+            new Vector3[0],
+            new Vector3[0],
+            false,
+            Vector3.zero);
+
+        MethodInfo compactBlipMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
+            "GetCompactRadarBlips",
+            BindingFlags.Static | BindingFlags.NonPublic);
+        Assert.NotNull(compactBlipMethod);
+
+        PrototypePlayerHudSnapshot withTargetSnapshot = CreateHudSnapshot(
+            CreateCombatSnapshot(false),
+            CreateDockingSnapshot(false),
+            CreateNavigationSnapshot(true),
+            default,
+            null,
+            radar);
+
+        PrototypePlayerRadarBlip[] filteredBlips = (PrototypePlayerRadarBlip[])compactBlipMethod.Invoke(
+            null,
+            new object[] { withTargetSnapshot });
+
+        Assert.That(filteredBlips.Length, Is.EqualTo(8), "compact limit enforces clipped contacts");
+        Assert.That(filteredBlips[0].Label, Is.EqualTo("Generic 0"));
+        Assert.That(filteredBlips[1].Label, Is.EqualTo("Generic 1"));
+        Assert.That(filteredBlips[2].Label, Is.EqualTo("Generic 2"));
+        Assert.That(filteredBlips[3].Label, Is.EqualTo("Generic 3"));
+        Assert.That(filteredBlips[4].Label, Is.EqualTo("Generic 4"));
+        Assert.That(filteredBlips[5].Label, Is.EqualTo("SelNav"));
+        Assert.That(filteredBlips[6].Label, Is.EqualTo("SelCombat"));
+        Assert.That(filteredBlips[7].Label, Is.EqualTo("Objective"));
+        Assert.That(IndexOfBlipKind(filteredBlips, PrototypePlayerRadarBlipKind.Objective), Is.EqualTo(7), "selected/actionable remains visible at highest layer");
+        Assert.That(IndexOfBlipKind(filteredBlips, PrototypePlayerRadarBlipKind.SelectedCombat), Is.EqualTo(6), "selected combat remains on top");
+        Assert.That(IndexOfBlipKind(filteredBlips, PrototypePlayerRadarBlipKind.SelectedNavigation), Is.EqualTo(5), "selected navigation remains on top");
     }
 
     [Test]
@@ -436,6 +691,374 @@ public class PrototypePlayerHudValidationTests
                 radar));
 
         Assert.That(FindText(playerHud, "RadarText").text, Is.EqualTo("Range 250 m | 1 contact"));
+    }
+
+    [Test]
+    public void RadarRangeModeDefaultsToAutoAndCanBeSetToManual()
+    {
+        GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+        cameraObject.AddComponent<Camera>();
+        PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+        playerHud.RefreshNow();
+
+        var radar = new PrototypePlayerRadarSnapshot(
+            1000f,
+            "Range AUTO TEST",
+            Vector3.zero,
+            Vector3.forward,
+            new PrototypePlayerRadarBlip[0],
+            new Vector3[0],
+            new Vector3[0],
+            false,
+            Vector3.zero);
+
+        ApplySnapshotForTest(
+            playerHud,
+            CreateHudSnapshot(
+                CreateCombatSnapshot(false),
+                CreateDockingSnapshot(false),
+                CreateNavigationSnapshot(false),
+                default,
+                null,
+                radar));
+
+        Assert.That(FindText(playerHud, "RadarText").text, Is.EqualTo("Range AUTO TEST"));
+
+        MethodInfo setModeMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
+            "SetMinimapRangeMode",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(setModeMethod);
+
+        setModeMethod.Invoke(playerHud, new object[] { 1 });
+        PrototypePlayerHudSnapshot manualRangeSnapshot = ApplyMinimapRangeOverrideForTest(
+            playerHud,
+            CreateHudSnapshot(
+                CreateCombatSnapshot(false),
+                CreateDockingSnapshot(false),
+                CreateNavigationSnapshot(false),
+                default,
+                null,
+                radar));
+        ApplySnapshotForTest(
+            playerHud,
+            manualRangeSnapshot);
+
+        Assert.That(FindText(playerHud, "RadarText").text, Is.EqualTo("Range 250 m"));
+    }
+
+    [Test]
+    public void RadarRangeModeCyclesAndClamps()
+    {
+        GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+        cameraObject.AddComponent<Camera>();
+        PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+        playerHud.RefreshNow();
+
+        var radar = new PrototypePlayerRadarSnapshot(
+            1000f,
+            "Range AUTO TEST",
+            Vector3.zero,
+            Vector3.forward,
+            new PrototypePlayerRadarBlip[0],
+            new Vector3[0],
+            new Vector3[0],
+            false,
+            Vector3.zero);
+
+        MethodInfo setModeMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
+            "SetMinimapRangeMode",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        MethodInfo stepModeMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
+            "StepMinimapRangeMode",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(setModeMethod);
+        Assert.NotNull(stepModeMethod);
+
+        setModeMethod.Invoke(playerHud, new object[] { 4 });
+        PrototypePlayerHudSnapshot snapshot = ApplyMinimapRangeOverrideForTest(
+            playerHud,
+            CreateHudSnapshot(
+                CreateCombatSnapshot(false),
+                CreateDockingSnapshot(false),
+                CreateNavigationSnapshot(false),
+                default,
+                null,
+                radar));
+        ApplySnapshotForTest(
+            playerHud,
+            snapshot);
+        Assert.That(FindText(playerHud, "RadarText").text, Is.EqualTo("Range 5 km"));
+
+        stepModeMethod.Invoke(playerHud, new object[] { 1 });
+        snapshot = ApplyMinimapRangeOverrideForTest(
+            playerHud,
+            CreateHudSnapshot(
+                CreateCombatSnapshot(false),
+                CreateDockingSnapshot(false),
+                CreateNavigationSnapshot(false),
+                default,
+                null,
+                radar));
+        ApplySnapshotForTest(
+            playerHud,
+            snapshot);
+        Assert.That(FindText(playerHud, "RadarText").text, Is.EqualTo("Range 5 km"));
+
+        setModeMethod.Invoke(playerHud, new object[] { 1 });
+        snapshot = ApplyMinimapRangeOverrideForTest(
+            playerHud,
+            CreateHudSnapshot(
+                CreateCombatSnapshot(false),
+                CreateDockingSnapshot(false),
+                CreateNavigationSnapshot(false),
+                default,
+                null,
+                radar));
+        ApplySnapshotForTest(
+            playerHud,
+            snapshot);
+        Assert.That(FindText(playerHud, "RadarText").text, Is.EqualTo("Range 250 m"));
+
+        stepModeMethod.Invoke(playerHud, new object[] { -1 });
+        snapshot = ApplyMinimapRangeOverrideForTest(
+            playerHud,
+            CreateHudSnapshot(
+                CreateCombatSnapshot(false),
+                CreateDockingSnapshot(false),
+                CreateNavigationSnapshot(false),
+                default,
+                null,
+                radar));
+        ApplySnapshotForTest(
+            playerHud,
+            snapshot);
+        Assert.That(FindText(playerHud, "RadarText").text, Is.EqualTo("Range AUTO TEST"));
+
+        stepModeMethod.Invoke(playerHud, new object[] { -1 });
+        snapshot = ApplyMinimapRangeOverrideForTest(
+            playerHud,
+            CreateHudSnapshot(
+                CreateCombatSnapshot(false),
+                CreateDockingSnapshot(false),
+                CreateNavigationSnapshot(false),
+                default,
+                null,
+                radar));
+        ApplySnapshotForTest(
+            playerHud,
+            snapshot);
+        Assert.That(FindText(playerHud, "RadarText").text, Is.EqualTo("Range AUTO TEST"));
+    }
+
+    [Test]
+    public void RadarRangeModeOverridesNavigationPlannerMapLabel()
+    {
+        GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+        cameraObject.AddComponent<Camera>();
+        PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+        playerHud.RefreshNow();
+        FindRect(playerHud, "NavigationPlannerPanel").gameObject.SetActive(true);
+
+        var radar = new PrototypePlayerRadarSnapshot(
+            1000f,
+            "Range 1 km",
+            Vector3.zero,
+            Vector3.forward,
+            new[]
+            {
+                new PrototypePlayerRadarBlip(
+                    PrototypePlayerRadarBlipKind.Navigation,
+                    "Waypoint",
+                    new Vector3(20f, 0f, 120f))
+            },
+            new Vector3[0],
+            new Vector3[0],
+            false,
+            Vector3.zero);
+
+        ApplySnapshotForTest(
+            playerHud,
+            CreateHudSnapshot(
+                CreateCombatSnapshot(false),
+                CreateDockingSnapshot(false),
+                CreateNavigationSnapshot(true),
+                default,
+                null,
+                radar));
+
+        Assert.That(FindText(playerHud, "RadarText").text, Is.EqualTo("Range 1 km | 1 contact"));
+        Assert.That(FindText(playerHud, "NavigationPlannerMapText").text, Does.Contain("R 1 km"));
+
+        MethodInfo setModeMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
+            "SetMinimapRangeMode",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(setModeMethod);
+        setModeMethod.Invoke(playerHud, new object[] { 4 });
+
+        PrototypePlayerHudSnapshot plannerSnapshot = ApplyMinimapRangeOverrideForTest(
+            playerHud,
+            CreateHudSnapshot(
+                CreateCombatSnapshot(false),
+                CreateDockingSnapshot(false),
+                CreateNavigationSnapshot(true),
+                default,
+                null,
+                radar));
+        ApplySnapshotForTest(
+            playerHud,
+            plannerSnapshot);
+
+        Assert.That(FindText(playerHud, "RadarText").text, Is.EqualTo("Range 5 km | 1 contact"));
+        Assert.That(FindText(playerHud, "NavigationPlannerMapText").text, Does.Contain("R 5 km"));
+    }
+
+    [Test]
+    public void ManualRangeModeFiltersOutFarGenericRadarContactsButKeepsActionableBlips()
+    {
+        GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+        cameraObject.AddComponent<Camera>();
+        PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+        playerHud.RefreshNow();
+
+        MethodInfo setModeMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
+            "SetMinimapRangeMode",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(setModeMethod);
+        setModeMethod.Invoke(playerHud, new object[] { 1 });
+
+        var radar = new PrototypePlayerRadarSnapshot(
+            1000f,
+            "Range 1 km",
+            Vector3.zero,
+            Vector3.forward,
+            new[]
+            {
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Beacon, "BeaconNear", new Vector3(30f, 0f, 80f)),
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Beacon, "BeaconFar", new Vector3(420f, 0f, 0f)),
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Beacon, "BeaconVeryFar", new Vector3(2800f, 0f, 0f)),
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Navigation, "NavFar", new Vector3(4200f, 0f, 0f)),
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Objective, "Objective", new Vector3(1800f, 0f, 0f)),
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.SelectedCombat, "SelCombat", new Vector3(2400f, 0f, 0f)),
+            },
+            new Vector3[0],
+            new Vector3[0],
+            false,
+            Vector3.zero);
+
+        MethodInfo compactBlipMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
+            "GetCompactRadarBlips",
+            BindingFlags.Static | BindingFlags.NonPublic);
+        Assert.NotNull(compactBlipMethod);
+
+        PrototypePlayerHudSnapshot manualRangeSnapshot = ApplyMinimapRangeOverrideForTest(
+            playerHud,
+            CreateHudSnapshot(
+                CreateCombatSnapshot(false),
+                CreateDockingSnapshot(false),
+                CreateNavigationSnapshot(false),
+                default,
+                null,
+                radar));
+
+        ApplySnapshotForTest(
+            playerHud,
+            manualRangeSnapshot);
+
+        Assert.That(FindText(playerHud, "RadarText").text, Is.EqualTo("Range 250 m | 4 contacts"));
+
+        bool hasNearGeneric = false;
+        bool hasFarGeneric = false;
+        bool hasActionableNav = false;
+        PrototypePlayerRadarBlip[] compactBlips = (PrototypePlayerRadarBlip[])compactBlipMethod.Invoke(
+            null,
+            new object[] { manualRangeSnapshot });
+        for (int i = 0; i < compactBlips.Length; i++)
+        {
+            if (compactBlips[i].Label == "BeaconNear")
+            {
+                hasNearGeneric = true;
+            }
+
+            if (compactBlips[i].Label == "BeaconFar" || compactBlips[i].Label == "BeaconVeryFar")
+            {
+                hasFarGeneric = true;
+            }
+
+            if (compactBlips[i].Kind == PrototypePlayerRadarBlipKind.Navigation)
+            {
+                hasActionableNav = true;
+            }
+        }
+
+        Assert.True(hasNearGeneric, "near generic contact kept");
+        Assert.False(hasFarGeneric, "far generic contact removed");
+        Assert.True(hasActionableNav, "actionable contact kept");
+        Assert.That(manualRangeSnapshot.Radar.Blips.Length, Is.EqualTo(4));
+    }
+
+    [Test]
+    public void NavigationPlannerRangeButtonsUseSharedMinimapRangeState()
+    {
+        using (var builder = new PrototypeScenarioBuilder())
+        {
+            PrototypeShipRig rig = builder.CreateShip("PlayerHudNavPlannerRangeSyncShip");
+
+            GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+            cameraObject.AddComponent<Camera>();
+            PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+            playerHud.Bind(rig.Ship.transform, rig.Stats, rig.Body);
+            playerHud.RefreshNow();
+            FindRect(playerHud, "NavigationPlannerPanel").gameObject.SetActive(true);
+
+            MethodInfo setModeMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
+                "SetMinimapRangeMode",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.NotNull(setModeMethod);
+
+            var radar = new PrototypePlayerRadarSnapshot(
+                1000f,
+                "Range 1 km",
+                Vector3.zero,
+                Vector3.forward,
+                new[]
+                {
+                    new PrototypePlayerRadarBlip(
+                        PrototypePlayerRadarBlipKind.Navigation,
+                        "Planner Nav Waypoint",
+                        new Vector3(20f, 0f, 120f))
+                },
+                new Vector3[0],
+                new Vector3[0],
+                false,
+                Vector3.zero);
+
+            PrototypePlayerHudSnapshot withTargetSnapshot = CreateHudSnapshot(
+                CreateCombatSnapshot(false),
+                CreateDockingSnapshot(false),
+                CreateNavigationSnapshot(true),
+                default,
+                null,
+                radar);
+
+            setModeMethod.Invoke(playerHud, new object[] { 3 });
+            PrototypePlayerHudSnapshot snapshot = ApplyMinimapRangeOverrideForTest(playerHud, withTargetSnapshot);
+            ApplySnapshotForTest(playerHud, snapshot);
+
+            string radarRange = FindText(playerHud, "RadarText").text.Split('|')[0].Trim();
+            string plannerRange = FindText(playerHud, "NavigationPlannerMapText").text.Split('|')[0].Trim();
+            Assert.That(radarRange, Is.EqualTo("Range 2.5 km"));
+            Assert.That(plannerRange, Is.EqualTo("R 2.5 km"));
+
+            Button plannerPlus = FindButton(playerHud, "NavPlannerRangePlus");
+            plannerPlus.onClick.Invoke();
+
+            snapshot = ApplyMinimapRangeOverrideForTest(playerHud, withTargetSnapshot);
+            ApplySnapshotForTest(playerHud, snapshot);
+            radarRange = FindText(playerHud, "RadarText").text.Split('|')[0].Trim();
+            plannerRange = FindText(playerHud, "NavigationPlannerMapText").text.Split('|')[0].Trim();
+            Assert.That(radarRange, Is.EqualTo("Range 5 km"));
+            Assert.That(plannerRange, Is.EqualTo("R 5 km"));
+        }
     }
 
     [Test]
@@ -1464,7 +2087,7 @@ public class PrototypePlayerHudValidationTests
             Assert.True(FindRect(playerHud, "NavigationPlannerMapPanel").gameObject.activeSelf);
             Assert.True(FindRect(playerHud, "NavigationPlannerMapLayer").gameObject.activeInHierarchy);
             Assert.True(FindRect(playerHud, "NavigationPlannerMapGridSegment0").gameObject.activeInHierarchy);
-            Assert.That(FindText(playerHud, "NavigationPlannerMapText").text, Does.Contain("Range "));
+            Assert.That(FindText(playerHud, "NavigationPlannerMapText").text, Does.Contain("R "));
 
             Button next = FindButton(playerHud, "NavPlannerNextTarget");
             Button engage = FindButton(playerHud, "NavPlannerEngage");
@@ -1696,6 +2319,17 @@ public class PrototypePlayerHudValidationTests
         Canvas.ForceUpdateCanvases();
     }
 
+    private static PrototypePlayerHudSnapshot ApplyMinimapRangeOverrideForTest(
+        PrototypePlayerHudRenderer playerHud,
+        PrototypePlayerHudSnapshot snapshot)
+    {
+        MethodInfo method = typeof(PrototypePlayerHudRenderer).GetMethod(
+            "ApplyMinimapRangeOverride",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        return (PrototypePlayerHudSnapshot)method.Invoke(playerHud, new object[] { snapshot });
+    }
+
     private static void SetHelpVisibleForTest(PrototypePlayerHudRenderer playerHud, bool visible)
     {
         MethodInfo method = typeof(PrototypePlayerHudRenderer).GetMethod("SetHelpVisible", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -1721,6 +2355,32 @@ public class PrototypePlayerHudValidationTests
         }
 
         return labels;
+    }
+
+    private static string GetBlipLabel(PrototypePlayerRadarBlip[] blips, PrototypePlayerRadarBlipKind kind)
+    {
+        for (int i = 0; i < blips.Length; i++)
+        {
+            if (blips[i].Kind == kind)
+            {
+                return blips[i].Label;
+            }
+        }
+
+        return null;
+    }
+
+    private static int IndexOfBlipKind(PrototypePlayerRadarBlip[] blips, PrototypePlayerRadarBlipKind kind)
+    {
+        for (int i = 0; i < blips.Length; i++)
+        {
+            if (blips[i].Kind == kind)
+            {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
     private static void AssertRadarContains(PrototypePlayerRadarSnapshot radar, PrototypePlayerRadarBlipKind kind, string labelPart)

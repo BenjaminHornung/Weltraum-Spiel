@@ -216,12 +216,19 @@ public class PrototypeWaypointAutopilotValidationTests
         Assert.That(rig.Autopilot.ArrivalPhase, Is.EqualTo(PrototypeWaypointAutopilotArrivalPhase.Brake));
         Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.FlipForBrake));
         Assert.That(rig.Controller.LastExternalFlightAssistRequest.mainThrottle, Is.EqualTo(0f).Within(0.0001f));
+        Assert.That(rig.Controller.LastExternalFlightAssistRequest.torqueLocal.magnitude, Is.GreaterThan(1000f));
+
+        InvokeFixedUpdate(rig.Controller);
+        Assert.That(rig.Controller.LastRcsDesiredTorqueWorld.magnitude, Is.GreaterThan(1000f));
+        Assert.That(rig.Controller.MainThrustCommand, Is.EqualTo(0f).Within(0.0001f));
 
         rig.Ship.transform.rotation = Quaternion.LookRotation(Vector3.back, Vector3.up);
         InvokeFixedUpdate(rig.Autopilot);
 
         Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.Brake));
         Assert.That(rig.Controller.LastExternalFlightAssistRequest.mainThrottle, Is.GreaterThan(0.5f));
+        InvokeFixedUpdate(rig.Controller);
+        Assert.That(rig.Controller.MainThrustCommand, Is.GreaterThan(0.5f));
     }
 
     [Test]
@@ -333,6 +340,34 @@ public class PrototypeWaypointAutopilotValidationTests
         Assert.That(rig.Autopilot.FailureReason, Is.EqualTo(rig.Autopilot.ArrivalFailureReason));
         Assert.That(rig.Controller.LastExternalFlightAssistRequest.source, Is.EqualTo(FlightAssistRequestSource.WaypointAutopilot));
         Assert.False(rig.Controller.LastExternalFlightAssistRequest.debugOnlyNonPhysical);
+    }
+
+    [Test]
+    public void UrgentBrakeWithDirectObstacleKeepsObstacleDiagnosticsAndRequestsRetrograde()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 150f;
+        rig.Body.linearVelocity = Vector3.forward * 45f;
+        CreateObstacle("WaypointAutopilotValidationObstacle", Vector3.forward * 55f, 8f);
+        Physics.SyncTransforms();
+
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+        InvokeFixedUpdate(rig.Autopilot);
+
+        Assert.True(rig.Autopilot.NavigationObstacleDetected);
+        Assert.True(rig.Autopilot.CurrentPlan.avoidanceActive);
+        Assert.That(rig.Autopilot.ArrivalPhase, Is.EqualTo(PrototypeWaypointAutopilotArrivalPhase.Brake));
+        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.FlipForBrake));
+        Assert.That(rig.Autopilot.DesiredBurnDirection.z, Is.LessThan(-0.98f));
+        Assert.That(rig.Controller.LastExternalFlightAssistRequest.torqueLocal.magnitude, Is.GreaterThan(1000f));
+        Assert.That(rig.Controller.LastExternalFlightAssistRequest.mainThrottle, Is.EqualTo(0f).Within(0.0001f));
+
+        rig.Ship.transform.rotation = Quaternion.LookRotation(Vector3.back, Vector3.up);
+        InvokeFixedUpdate(rig.Autopilot);
+
+        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.Brake));
+        Assert.That(rig.Controller.LastExternalFlightAssistRequest.mainThrottle, Is.GreaterThan(0.5f));
     }
 
     [Test]

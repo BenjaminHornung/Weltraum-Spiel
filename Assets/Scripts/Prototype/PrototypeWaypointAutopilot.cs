@@ -621,6 +621,12 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             || navigationPhaseV2 == PrototypeWaypointAutopilotNavigationPhase.Avoiding;
         bool isReacquiring = !currentlyAvoiding && hasStableAvoidance && Time.time <= reacquireDirectPathUntilTime;
 
+        if (LastMetrics.shouldBrake)
+        {
+            ApplyBrakeRequest();
+            return;
+        }
+
         if (currentlyAvoiding)
         {
             hasStableAvoidance = true;
@@ -682,15 +688,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         if ((LastMetrics.shouldBrake || (LastMetrics.distance <= GetArrivalDistance() && !requestedFineApproach))
             && LastMetrics.distance <= Mathf.Max(finalApproachDistanceMeters, GetArrivalDistance() * 2f))
         {
-            arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.Brake;
-            limitedFinalApproachCapability = false;
-            Vector3 brakeDirection = shipRigidbody.linearVelocity.sqrMagnitude > 0.0001f
-                ? -shipRigidbody.linearVelocity.normalized
-                : -LastMetrics.directionToTarget;
-            float angle = Vector3.Angle(transform.forward, brakeDirection);
-            navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.Brake;
-            SetState(angle > alignmentAngleDegrees ? PrototypeWaypointAutopilotState.FlipForBrake : PrototypeWaypointAutopilotState.Brake, "braking");
-            ApplyAutopilotRequest(brakeDirection, 1f);
+            ApplyBrakeRequest();
             return;
         }
 
@@ -710,19 +708,6 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
                 LastMetrics.closingSpeed > arrivalSpeedMetersPerSecond ? -shipRigidbody.linearVelocity : LastMetrics.directionToTarget,
                 finalApproachThrottle,
                 true);
-            return;
-        }
-
-        if (LastMetrics.shouldBrake)
-        {
-            arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.Brake;
-            Vector3 brakeDirection = shipRigidbody.linearVelocity.sqrMagnitude > 0.0001f
-                ? -shipRigidbody.linearVelocity.normalized
-                : -LastMetrics.directionToTarget;
-            float angle = Vector3.Angle(transform.forward, brakeDirection);
-            navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.Brake;
-            SetState(angle > alignmentAngleDegrees ? PrototypeWaypointAutopilotState.FlipForBrake : PrototypeWaypointAutopilotState.Brake, "braking");
-            ApplyAutopilotRequest(brakeDirection, 1f);
             return;
         }
 
@@ -756,6 +741,19 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         ApplyAutopilotRequest(LastMetrics.directionToTarget, 1f);
     }
 
+    private void ApplyBrakeRequest()
+    {
+        arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.Brake;
+        limitedFinalApproachCapability = false;
+        Vector3 brakeDirection = shipRigidbody != null && shipRigidbody.linearVelocity.sqrMagnitude > 0.0001f
+            ? -shipRigidbody.linearVelocity.normalized
+            : -LastMetrics.directionToTarget;
+        float angle = Vector3.Angle(transform.forward, brakeDirection);
+        navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.Brake;
+        SetState(angle > alignmentAngleDegrees ? PrototypeWaypointAutopilotState.FlipForBrake : PrototypeWaypointAutopilotState.Brake, "braking");
+        ApplyAutopilotRequest(brakeDirection, 1f);
+    }
+
     private Vector3 ResolveAvoidanceRequestDirection()
     {
         if (hasStableAvoidance && stableAvoidanceDirection.sqrMagnitude > 0.0001f)
@@ -774,7 +772,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return;
         }
 
-        Vector3 attitudeCommand = Vector3.zero;
+        Vector3 attitudeTorqueLocal = Vector3.zero;
         Vector3 desiredRcsForceWorld = LastTrajectoryPlan.requestedRcsForceWorld;
         if (desiredRcsForceWorld.sqrMagnitude > 0.0001f)
         {
@@ -791,7 +789,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         if (desiredDirection.sqrMagnitude > 0.0001f)
         {
             desiredDirectionNormalized = desiredDirection.normalized;
-            attitudeCommand = ComputeAttitudeCommand(desiredDirectionNormalized);
+            attitudeTorqueLocal = ComputeAttitudeTorqueLocal(desiredDirectionNormalized);
             desiredBurnDirection = desiredDirectionNormalized;
             float angle = Vector3.Angle(transform.forward, desiredDirectionNormalized);
             if (angle <= alignmentAngleDegrees && CanUseMainThrottle())
@@ -844,7 +842,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             FlightAssistMode.AssistedFlight,
             FlightAssistRequestSource.WaypointAutopilot,
             assistForceWorld,
-            attitudeCommand,
+            attitudeTorqueLocal,
             requestedMainThrottle,
             false));
     }
@@ -972,7 +970,42 @@ private Vector3 ComputeLateralCorrectionForceWorld()
     private Vector3 ComputeAttitudeCommand(Vector3 desiredDirection)
     {
         Vector3 localDirection = transform.InverseTransformDirection(desiredDirection.normalized);
-        return Vector3.ClampMagnitude(new Vector3(-localDirection.y, localDirection.x, 0f), 1f);
+        if (localDirection.sqrMagnitude <= 0.000001f)
+        {
+            return Vector3.zero;
+        }
+
+        Vector3 localCommand = new Vector3(-localDirection.y, localDirection.x, 0f);
+        if (localCommand.sqrMagnitude <= 0.0004f && localDirection.z < 0f)
+        {
+            // Retrograde is an unstable reference in this projection; prefer a deterministic pitch-axis command.
+            return Vector3.right;
+        }
+
+        return Vector3.ClampMagnitude(localCommand, 1f);
+    }
+
+    private Vector3 ComputeAttitudeTorqueLocal(Vector3 desiredDirection)
+    {
+        Vector3 attitudeCommand = ComputeAttitudeCommand(desiredDirection);
+        float torqueAuthority = GetRcsAttitudeTorqueAuthority();
+        return torqueAuthority > 0.0001f ? attitudeCommand * torqueAuthority : Vector3.zero;
+    }
+
+    private float GetRcsAttitudeTorqueAuthority()
+    {
+        if (shipController != null && !shipController.RcsEnabled)
+        {
+            return 0f;
+        }
+
+        RcsThrusterController rcsThrusters = shipController != null ? shipController.GetComponent<RcsThrusterController>() : GetComponent<RcsThrusterController>();
+        if (rcsThrusters == null || !rcsThrusters.RcsEnabled)
+        {
+            return 0f;
+        }
+
+        return Mathf.Max(0f, rcsThrusters.ComputeEffectiveTorqueAuthorityForDiagnostics());
     }
 
     private void RefreshDiagnostics()

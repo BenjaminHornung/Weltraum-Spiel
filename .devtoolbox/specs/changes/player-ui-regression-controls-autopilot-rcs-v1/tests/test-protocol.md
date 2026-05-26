@@ -118,6 +118,50 @@ Player UI regression controls, minimap evidence, navigation/combat popups, Kill 
   - `dotnet build "Weltraum Spiel.sln" --no-restore`
   - Result: passed, 0 errors, existing Unity/generated assembly warnings only.
 
+## Latest: minimap range-control, planner scale and autopilot decel slice
+
+- Change set:
+  - `Assets/Scripts/Prototype/PrototypePlayerHud.cs`
+  - `Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs`
+  - `Assets/Tests/Editor/PrototypePlayerHudValidationTests.cs`
+  - `Assets/Tests/Editor/PrototypeWaypointAutopilotValidationTests.cs`
+  - `Assets/Tests/PlayMode/PrototypePlayerHudLiveRuntimeEvidencePlayModeTests.cs`
+  - `docs/player-hud-minimap-design-guidelines.md`
+- UX/design research:
+  - `docs/player-hud-minimap-design-guidelines.md` records the minimap convention from web research: compact radar is a glance tool, explicit range modes are required, planner map is route-first/selected-target-first, and route/decel/avoidance visuals should not be buried under generic contacts.
+- UI fixes:
+  - Manual minimap range modes now filter generic out-of-range contacts instead of only changing labels/clamping edge markers.
+  - Compact radar and Navigation Planner share the same range modes: Auto, 250 m, 1 km, 2.5 km and 5 km.
+  - Navigation Planner popup has local `- / A / +` range buttons.
+  - Planner map labels are compact (`R 2.5 km | 16c | R8p | Pv16p`) and no longer wrap over the map/close controls.
+  - Planner map reports `No route` instead of a fake direct route when no route points exist.
+  - Existing HUD rebinding now requires the new planner range buttons, forcing stale canvases to rebuild instead of silently hiding the controls.
+- Autopilot fixes:
+  - Urgent braking now preempts obstacle-avoidance steering, while obstacle diagnostics remain visible.
+  - Flip/decel attitude requests now send real RCS torque authority through `FlightAssistRequest.torqueLocal` instead of a unit vector.
+  - Exact retrograde targets now get a deterministic pitch-axis flip command instead of the old zero-vector singularity.
+  - Once aligned retrograde, the autopilot authorizes main-thruster deceleration.
+- Unity MCP `validate_script`:
+  - `Assets/Scripts/Prototype/PrototypePlayerHud.cs`: PASS, 0 errors (existing analyzer warnings only).
+  - `Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs`: PASS, 0 errors (existing analyzer warning only).
+  - `Assets/Tests/Editor/PrototypePlayerHudValidationTests.cs`: PASS, 0 errors.
+  - `Assets/Tests/Editor/PrototypeWaypointAutopilotValidationTests.cs`: PASS, 0 errors (existing analyzer warnings only).
+  - `Assets/Tests/PlayMode/PrototypePlayerHudLiveRuntimeEvidencePlayModeTests.cs`: PASS, 0 errors (existing analyzer warnings only).
+- Unity MCP EditMode job `f513a744137a4867acff4ab5cbbcd7d8`: HUD/planner range regression suite PASS 9/9.
+- Unity MCP EditMode job `e5ff27e001154bc4bb6bab161255d485`: autopilot flip/main-decel/avoidance suite PASS 6/6.
+- Unity MCP PlayMode job `306bfc272e9f43e59e1e6fe6ddabfa99`: Bootstrap computer popup evidence PASS 1/1.
+- `dotnet build "Weltraum Spiel.sln" --no-restore`: PASS, 0 errors, 22 existing Unity/generated assembly warnings.
+- Screenshot evidence:
+  - `tests/screenshots/player-ui-regression-radar-normal-1280x720.png`
+  - `tests/screenshots/player-ui-regression-nav-planner-1280x720.png`
+  - `tests/screenshots/player-ui-regression-combat-computer-1280x720.png`
+- Visual check:
+  - Navigation Planner popup at 1280x720 shows the map, route/preview blips, visible `- / A / +` range buttons, and a one-line compact map label.
+  - The planner popup stays centered above the bottom bar; the range buttons do not overlap the map label or Close button.
+  - Top-level HUD panels do not overlap in the captured scene.
+- Note:
+  - PlayMode job `a1fafd9b84824f8eb75ca87db06a9178` initially failed to initialize because of a compile error in `BuildNavigationPlannerMapRangeLabel`; after fixing `System.StringComparison`, Unity console returned to 0 project errors and the PlayMode evidence job passed.
+
 ## Screenshot Review
 
 - Radar screenshot shows the player minimap in the top-right panel with visible grid and blips.
@@ -145,3 +189,5 @@ Player UI regression controls, minimap evidence, navigation/combat popups, Kill 
 `claude-plan-review` was invoked for the live minimap readability follow-up with before/after screenshot paths. Direct PNG attachment failed with the local `charmap` binary-encoding issue; the path-only retry timed out after 120 seconds, so no actionable Claude feedback was returned for this slice.
 
 `claude-plan-review` was invoked with the empty-minimap fix context and screenshot paths after the latest PlayMode evidence; the local wrapper timed out after 120 seconds. It was also invoked before the latest planner-map slice and timed out after 120 seconds. For the minimap/radar readability slice, a PNG-backed review failed with a local `charmap` encoding error and the follow-up path-only review timed out after 120 seconds. No actionable review feedback was returned.
+
+`claude-plan-review` was invoked again for the combined minimap range-control / Autopilot Planner / flip-main-decel plan with the touched file list. The local wrapper timed out after 120 seconds, so no actionable Claude feedback was returned for this checkpoint.
