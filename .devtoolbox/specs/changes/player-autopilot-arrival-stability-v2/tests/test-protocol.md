@@ -137,6 +137,21 @@ Stabilize waypoint autopilot arrival behavior so the ship commits to a brake/dec
 - Unity MCP EditMode suite final follow-up
   - Test filter: `PrototypeWaypointAutopilotValidationTests`
   - Result: `Passed`, total `31`, passed `31`, failed `0`.
+- Unity MCP PlayMode terminal capture follow-up
+  - Tests:
+    - `PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalBrakeDirectionDoesNotChaseLateralVelocity`
+    - `PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_Arrival_NoBrakeAccelerateFlap_ReachesCompletionDeadzone`
+    - `PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalOvershootBrakesAndHoldsWithoutReaccelerating`
+    - `PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_NearTargetLateralOvershoot_NoTerminalAccelerateOrSpin`
+    - `PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalAvoidanceStillWinsOverCommittedBrakeLatch`
+    - `PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_LongRangeBrakeCommitDoesNotActivateTerminalCaptureBeforeEnvelope`
+  - Result: `Passed`, total `6`, passed `6`, failed `0`.
+- Unity MCP PlayMode suite terminal capture follow-up
+  - Test filter: `PrototypeAutopilotNavigationPlayModeTests`
+  - Result: `Passed`, total `19`, passed `19`, failed `0`.
+- Unity MCP EditMode suite terminal capture follow-up
+  - Test filter: `PrototypeWaypointAutopilotValidationTests`
+  - Result: `Passed`, total `32`, passed `32`, failed `0`.
 - Unity MCP console check
   - Result: no Unity console errors after the focused/full autopilot test runs; console only showed test runner setup/result log entries.
 - `.NET` build
@@ -144,6 +159,7 @@ Stabilize waypoint autopilot arrival behavior so the ship commits to a brake/dec
   - Result: exit code `0`, `0 Error(s)`, `22 Warning(s)` from existing Unity/.NET assembly reference conflicts and pre-existing Unity analyzer warnings.
   - Follow-up result: exit code `0`, `0 Error(s)`, `22 Warning(s)` from the same existing Unity/.NET warnings.
   - Final follow-up result: exit code `0`, `0 Error(s)`, `22 Warning(s)` from the same existing Unity/.NET warnings.
+  - Terminal capture follow-up result: exit code `0`, `0 Error(s)`, `22 Warning(s)` from the same existing Unity/.NET warnings.
 
 ## Iteration Notes
 
@@ -159,13 +175,17 @@ Stabilize waypoint autopilot arrival behavior so the ship commits to a brake/dec
 - Terminal brake direction smoothing now only applies in terminal/captured arrival contexts; long-range brake commits continue using the current retrograde direction and are covered by `PlayMode_Autopilot_LongRangeBrakeCommitDoesNotActivateTerminalCaptureBeforeEnvelope`.
 - Reviewer follow-up tightened the brake-direction smoothing gate so the capture latch alone cannot keep smoothing alive after leaving terminal range, and added `PlayMode_Autopilot_BrakeDirectionUsesRetrogradeOutsideTerminalRangeEvenWithCaptureLatch` to prove recovery uses the actual retrograde vector outside terminal range.
 - The terminal avoidance regression now also sets `arrivalTerminalCaptureActive`, pinning ObstacleAvoidance against the new latch as well as the older brake commit latch.
+- The terminal capture follow-up treats full relative velocity, not only positive closing speed, as a reason to hold Brake inside the terminal range. `HoldPosition` is latched only inside the finished deadzone so the ship does not re-enter transfer `Accelerate` after settling, while the wider terminal range can still prepare the brake/decel plan.
+- Terminal committed brake direction now rotates toward the observed retrograde vector at `36 deg/s`, which is intentionally slower than the previous `45 deg/s` chase rate but still fast enough to complete the existing closed-loop arrival scenarios.
 
 ## Known Tooling Notes
 
 - After the final PlayMode pass, Unity MCP test-job polling stayed stale even though Unity wrote the passing XML result to AppData and the copied evidence file.
 - A follow-up closed-loop brake rerun was blocked by Unity MCP returning `tests_running` despite the editor being idle.
 - Claude plan review was attempted for the autopilot patch context and timed out after 120 seconds; no Claude findings were available for this slice.
+- Claude plan review was attempted again for the terminal capture follow-up and timed out after 120 seconds; no Claude findings were available for this follow-up.
 - DevToolbox `verify_run` was executed on execution `0cc8a590b50f4c7b85b7a3660b4cffc2`; `Specs` passed, but the generic `Build`, `Test`, and `Lint` presets failed because they invoke `dotnet build`, `dotnet test`, and `dotnet format --verify-no-changes` without specifying `Weltraum Spiel.sln` in a folder containing multiple MSBuild files. The targeted Unity/.NET verification above is the authoritative result for this slice.
 - DevToolbox `verify_run` was executed again on execution `65fad3b13b444ea2b7f8d25ad0f03d20`; it reproduced the same tooling issue: `Specs` passed, while generic `Build`, `Test`, and `Lint` failed on MSB1011 / multiple workspace files. Targeted Unity MCP tests and `dotnet build "Weltraum Spiel.sln" --no-restore` remain the authoritative verification.
 - DevToolbox `verify_run` was executed again on execution `c887d815c1d94e10ae9bff20d7bd15a3`; it reproduced the same tooling issue: `Specs` passed, while generic `Build`, `Test`, and `Lint` failed because the presets run bare `dotnet build`, `dotnet test`, and `dotnet format --verify-no-changes` in a folder with multiple MSBuild files. Targeted Unity MCP tests and `dotnet build "Weltraum Spiel.sln" --no-restore` remain the authoritative verification.
 - DevToolbox `verify_run` was executed again on execution `8221c4a8f13e4de083011a89b5ab8493`; it reproduced the same tooling issue: `Specs` passed, while generic `Build`, `Test`, and `Lint` failed because the presets run bare `dotnet build`, `dotnet test`, and `dotnet format --verify-no-changes` in a folder with multiple MSBuild files. Targeted Unity MCP tests and `dotnet build "Weltraum Spiel.sln" --no-restore` remain the authoritative verification.
+- DevToolbox `verify_run` was executed again on execution `e22aabd979ac44a4a48be7efd07b44d1`; it reproduced the same tooling issue: `Specs` passed, while generic `Build`, `Test`, and `Lint` failed because the presets run bare `dotnet build`, `dotnet test`, and `dotnet format --verify-no-changes` in a folder with multiple MSBuild files. Targeted Unity MCP tests and `dotnet build "Weltraum Spiel.sln" --no-restore` remain the authoritative verification.

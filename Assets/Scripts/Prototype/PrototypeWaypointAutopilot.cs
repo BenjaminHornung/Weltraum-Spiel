@@ -85,7 +85,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private const float TerminalOvershootBrakeRelativeSpeedMultiplier = 1.35f;
     private const float BrakeDirectionMinimumSpeedMetersPerSecond = 0.35f;
     private const float BrakeCommandSpinSoftLimitMultiplier = 0.72f;
-    private const float TerminalBrakeDirectionRotateDegreesPerSecond = 45f;
+    private const float TerminalBrakeDirectionRotateDegreesPerSecond = 36f;
     [Header("Navigation")]
     [SerializeField] private PrototypeWaypointManager waypointManager;
     [SerializeField] private PrototypeNavigationTarget currentTarget;
@@ -330,7 +330,11 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             arrivalFailureReason = string.Empty;
         }
 
-        if ((ShouldCaptureArrivalHold() || ShouldCaptureArrivalHoldNearArrival() || ShouldCaptureTerminalOvershootHold()) && TryEnterHoldPosition())
+        if ((ShouldMaintainArrivalHold()
+                || ShouldCaptureArrivalHold()
+                || ShouldCaptureArrivalHoldNearArrival()
+                || ShouldCaptureTerminalOvershootHold())
+            && TryEnterHoldPosition())
         {
             return;
         }
@@ -714,11 +718,13 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             || navigationPhaseV2 == PrototypeWaypointAutopilotNavigationPhase.Avoiding;
         bool isReacquiring = !currentlyAvoiding && hasStableAvoidance && Time.time <= reacquireDirectPathUntilTime;
         bool hasLowLateralSpeed = LastMetrics.lateralSpeed <= Mathf.Max(0.05f, finalApproachLateralToleranceMetersPerSecond);
+        bool shouldUseTerminalVelocityBrake = ShouldUseTerminalVelocityBrake();
         bool shouldActivateArrivalTerminalCapture = ShouldActivateArrivalTerminalCapture();
         arrivalTerminalCaptureActive = arrivalTerminalCaptureActive || shouldActivateArrivalTerminalCapture;
         if (ShouldReleaseArrivalTerminalCapture())
         {
             arrivalTerminalCaptureActive = false;
+            shouldUseTerminalVelocityBrake = false;
         }
 
         bool requestBrake = ShouldRequestBrake();
@@ -804,7 +810,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return;
         }
 
-        bool terminalBrakeCommitFallback = arrivalBrakeCommitted
+        bool terminalBrakeCommitFallback = (arrivalBrakeCommitted || shouldUseTerminalVelocityBrake)
             && !shouldUseTerminalLateralCorrection
             && IsWithinArrivalTerminalRange()
             && !IsInArrivalCompletionWindow()
@@ -909,6 +915,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
                 || LastMetrics.lateralSpeed > GetArrivalCompletionLateralTolerance()
                 || arrivalBrakeCommitted
                 || brakeHoldActive
+                || ShouldUseTerminalVelocityBrake()
                 || ShouldKeepTerminalBrakeCommitted()
                 || ShouldCaptureArrivalHold()
                 || ShouldCaptureArrivalHoldNearArrival()
@@ -949,6 +956,18 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
         if (!LastMetrics.shouldBrake)
         {
+            if (ShouldUseTerminalVelocityBrake())
+            {
+                if (!brakeHoldActive)
+                {
+                    brakeHoldActive = true;
+                    brakeHoldStartTime = autopilotElapsedSeconds;
+                }
+
+                arrivalBrakeCommitted = true;
+                return true;
+            }
+
             if (ShouldKeepTerminalBrakeCommitted())
             {
                 if (!brakeHoldActive)
@@ -1023,6 +1042,43 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         }
 
         return true;
+    }
+
+    private bool ShouldUseTerminalVelocityBrake()
+    {
+        if (currentTarget == null || shipRigidbody == null || !CanUseMainThrottle())
+        {
+            return false;
+        }
+
+        if (!IsWithinArrivalTerminalRange())
+        {
+            return false;
+        }
+
+        if (ShouldCaptureArrivalHold() || ShouldCaptureArrivalHoldNearArrival() || ShouldCaptureTerminalOvershootHold())
+        {
+            return false;
+        }
+
+        float completionSpeed = GetArrivalCompletionSpeedLimit();
+        if (LastMetrics.relativeSpeed <= completionSpeed * TerminalOvershootBrakeRelativeSpeedMultiplier)
+        {
+            return false;
+        }
+
+        float maxDeceleration = GetMaxDeceleration();
+        if (maxDeceleration <= 0.0001f)
+        {
+            return false;
+        }
+
+        float fullVelocityStoppingDistance = (LastMetrics.relativeSpeed * LastMetrics.relativeSpeed) / (2f * maxDeceleration);
+        float captureBuffer = GetArrivalDistance() + BrakeArrivalHoldDistanceMarginMeters;
+        bool plannedStopReachesCaptureZone = fullVelocityStoppingDistance + captureBuffer >= LastMetrics.distance;
+        bool terminalBrakeAlreadyCaptured = arrivalBrakeCommitted || arrivalTerminalCaptureActive || brakeHoldActive;
+        bool closeEnoughToCommit = LastMetrics.distance <= GetArrivalCompletionDistance() + BrakeArrivalHoldDistanceMarginMeters;
+        return terminalBrakeAlreadyCaptured || plannedStopReachesCaptureZone || closeEnoughToCommit;
     }
 
     private bool ShouldReleaseBrakeHoldForSettledOvershoot()
@@ -1172,6 +1228,11 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return false;
         }
 
+        if (LastMetrics.distance > GetArrivalFinishedDistance())
+        {
+            return false;
+        }
+
         float completionSpeed = GetArrivalCompletionSpeedLimit();
         return LastMetrics.relativeSpeed <= completionSpeed * TerminalOvershootHoldRelativeSpeedMultiplier;
     }
@@ -1179,7 +1240,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private float GetArrivalTerminalRangeDistance()
     {
         return Mathf.Max(
-            GetArrivalDistance() + BrakeArrivalHoldDistanceMarginMeters * 0.8f,
+            GetArrivalDistance() + BrakeArrivalHoldDistanceMarginMeters * 1.5f,
             GetArrivalCompletionDistance() + BrakeArrivalHoldDistanceMarginMeters * 0.5f);
     }
 
@@ -1201,6 +1262,11 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         }
 
         if (ShouldKeepTerminalBrakeCommitted())
+        {
+            return false;
+        }
+
+        if (ShouldUseTerminalVelocityBrake())
         {
             return false;
         }
@@ -1962,7 +2028,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return false;
         }
 
-        if (LastMetrics.distance > GetArrivalTerminalRangeDistance())
+        if (LastMetrics.distance > GetArrivalFinishedDistance())
         {
             return false;
         }
@@ -1974,6 +2040,29 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         float completionSpeed = GetArrivalCompletionSpeedLimit();
         return LastMetrics.relativeSpeed <= completionSpeed * BrakeArrivalHoldRelativeSpeedMultiplier
             && LastMetrics.lateralSpeed <= completionLateralTolerance;
+    }
+
+    private bool ShouldMaintainArrivalHold()
+    {
+        if (CurrentState != PrototypeWaypointAutopilotState.HoldPosition)
+        {
+            return false;
+        }
+
+        if (currentTarget == null || shipRigidbody == null || !CanUseRcsTranslation())
+        {
+            return false;
+        }
+
+        if (LastMetrics.distance > GetArrivalFinishedDistance())
+        {
+            return false;
+        }
+
+        float holdSpeedLimit = Mathf.Max(
+            lateralCorrectionSpeed,
+            GetArrivalCompletionSpeedLimit() * TerminalOvershootHoldRelativeSpeedMultiplier);
+        return LastMetrics.relativeSpeed <= holdSpeedLimit;
     }
 
     private bool ShouldCaptureArrivalHoldNearArrival()

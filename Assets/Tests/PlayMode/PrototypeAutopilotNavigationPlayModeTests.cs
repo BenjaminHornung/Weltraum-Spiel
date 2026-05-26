@@ -699,6 +699,26 @@ public class PrototypeAutopilotNavigationPlayModeTests
     }
 
     [Test]
+    public void PlayMode_Autopilot_TerminalBrakeDirectionDoesNotChaseLateralVelocity()
+    {
+        AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 30f);
+        rig.Body.position = Vector3.forward * 18f;
+        rig.Body.linearVelocity = Vector3.right * 6f;
+        Physics.SyncTransforms();
+
+        InvokeFixedUpdate(rig.Autopilot);
+        SetPrivateBool(rig.Autopilot, "arrivalBrakeCommitted", true);
+        SetPrivateBool(rig.Autopilot, "arrivalTerminalCaptureActive", true);
+        SetPrivateVector3(rig.Autopilot, "committedBrakeDirection", Vector3.back);
+
+        Vector3 brakeDirection = InvokePrivateVector3Method(rig.Autopilot, "ResolveBrakeDirection").normalized;
+
+        Assert.That(Vector3.Distance(rig.Body.position, rig.Target.Position), Is.LessThanOrEqualTo(rig.Target.ArrivalRadius + 8f));
+        Assert.That(Vector3.Angle(Vector3.back, brakeDirection), Is.LessThanOrEqualTo(0.8f));
+        Assert.That(Vector3.Angle(brakeDirection, -rig.Body.linearVelocity.normalized), Is.GreaterThan(80f));
+    }
+
+    [Test]
     public void PlayMode_Autopilot_SelectTargetClearsArrivalBrakeAndHoldHysteresis()
     {
         AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 120f);
