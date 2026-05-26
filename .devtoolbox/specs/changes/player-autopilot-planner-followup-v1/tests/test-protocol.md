@@ -56,6 +56,28 @@
   - Generic Build/Test/Lint: BLOCKED by the known Unity-root `MSB1011` failure because the runner invokes `dotnet build`, `dotnet test`, and `dotnet format --verify-no-changes` without naming `Weltraum Spiel.sln` in a directory with multiple MSBuild files.
   - Replacement evidence: explicit solution build plus Unity MCP EditMode/PlayMode jobs listed above.
   - Completion preflight was run and blocked on the generic failed verify metadata, so task checkboxes remain intentionally unchecked.
+- 2026-05-26 follow-up after live feedback on aggressive flip / orbiting before target:
+  - Claude plan-review: timed out after 120 seconds on text-only context pack.
+  - Diagnostic Unity MCP PlayMode jobs `88b4d1053b94438b9d5d16e07188bc82`, `bc42a6a690244adfae3ffd4ca46abb50`, `1f7d3f4ab3b94e4b814c419e1773ce0a`, and `c82add9f0a5c420faa782324e1d9f440` failed while isolating brake-hold/orbit behavior. They showed the autopilot stuck in FlipForBrake/Brake/FinalApproach after overshoot instead of reaching terminal completion.
+  - Unity MCP PlayMode job `271f98105e7349209b3447cccad61246`
+    - Test: `PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_Arrival_NoBrakeAccelerateFlap_ReachesCompletionDeadzone`
+    - Result: 1/1 PASS.
+    - Covered high-speed overshoot, reacquire, deadzone capture, and final `Complete` state instead of orbiting.
+  - Unity MCP PlayMode job `2547af8dcc114e97a5230a5dc2c08df6`
+    - Tests: arrival deadzone, closed-loop brake/main-thruster decel, manual override stale-input grace.
+    - Result: 3/3 PASS.
+  - Unity MCP PlayMode job `21e13f404f2a4e2ca363c52639f90a16`
+    - Fixture: `PrototypeAutopilotNavigationPlayModeTests`
+    - Result: 9/9 PASS.
+  - Unity MCP EditMode job `efb3430e390041669dc821a9d3ad2d1a`
+    - Fixtures: `PrototypeWaypointAutopilotValidationTests`, `PrototypePlayerHudValidationTests`
+    - Result: 86/86 PASS.
+  - Unity MCP PlayMode job `f47b3d61a5654570937bb078d20284ca`
+    - Test: `PrototypePlayerHudLiveRuntimeEvidencePlayModeTests.PrototypeBootstrapRuntimePlayerHudEvidenceCapturesPlayerComputerPopups`
+    - Result: 1/1 PASS.
+    - Refreshed the planner popup screenshot copied below.
+  - `dotnet build "Weltraum Spiel.sln" --no-restore`
+    - Result: PASS, 0 errors, 22 existing warnings.
 
 ## Screenshots
 

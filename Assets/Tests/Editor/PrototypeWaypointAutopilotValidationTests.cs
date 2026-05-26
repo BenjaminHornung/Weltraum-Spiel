@@ -300,7 +300,7 @@ public class PrototypeWaypointAutopilotValidationTests
     }
 
     [Test]
-    public void ToggleAutopilotTargetsRetrogradeSasBeforeBrakeWhenHoldAttitudeWasActive()
+    public void ToggleAutopilotUsesExternalAssistTorqueBeforeBrakeWhenHoldAttitudeWasActive()
     {
         var rig = CreateAutopilotRig();
         rig.Target.transform.position = Vector3.forward * 150f;
@@ -314,10 +314,8 @@ public class PrototypeWaypointAutopilotValidationTests
         InvokeFixedUpdate(rig.Autopilot);
         InvokeFixedUpdate(rig.Controller);
 
-        Assert.That(rig.Controller.SasMode, Is.EqualTo(SasControlMode.HoldAttitude));
-        Assert.That(rcsController.LastSasMode, Is.EqualTo(SasControlMode.HoldAttitude));
-        Assert.True(rig.Controller.HasSasTargetRotation);
-        Assert.That(Vector3.Angle(rig.Controller.SasTargetRotation * Vector3.forward, -rig.Body.linearVelocity.normalized), Is.LessThan(1f));
+        Assert.That(rig.Controller.SasMode, Is.EqualTo(SasControlMode.KillRotation));
+        Assert.That(rcsController.LastSasMode, Is.EqualTo(SasControlMode.KillRotation));
         Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.FlipForBrake));
         Assert.That(rig.Controller.LastExternalFlightAssistRequest.mainThrottle, Is.EqualTo(0f).Within(0.0001f));
         Assert.That(rig.Controller.LastExternalFlightAssistRequest.torqueLocal.magnitude, Is.GreaterThan(1000f));
@@ -349,7 +347,7 @@ public class PrototypeWaypointAutopilotValidationTests
 
         Assert.True(rig.Controller.RcsEnabled, "waypoint autopilot should keep RCS available while it owns the brake flip");
         Assert.True(rig.Controller.EffectiveSasEnabled, "waypoint autopilot should keep SAS available while it owns the brake flip");
-        Assert.That(rig.Controller.SasMode, Is.EqualTo(SasControlMode.HoldAttitude));
+        Assert.That(rig.Controller.SasMode, Is.EqualTo(SasControlMode.KillRotation));
         Assert.That(rig.Controller.LastExternalFlightAssistRequest.torqueLocal.magnitude, Is.GreaterThan(1000f));
         Assert.That(rig.Controller.LastRcsActualTorqueWorld.magnitude, Is.GreaterThan(1000f));
         Assert.That(rig.Controller.LastExternalFlightAssistRequest.mainThrottle, Is.EqualTo(0f).Within(0.0001f));

@@ -170,14 +170,12 @@ public class PrototypePlayerHudValidationTests
                 BindingFlags.Static | BindingFlags.NonPublic);
             Assert.NotNull(mapLabelMethod);
             string mapLabel = (string)mapLabelMethod.Invoke(null, new object[] { snapshot });
-            Assert.That(mapLabel, Does.StartWith("R "));
-            Assert.That(mapLabel, Does.Contain("| DR2p"));
-            int routeIndex = mapLabel.IndexOf("| DR2p");
-            int previewIndex = mapLabel.IndexOf("| Pv");
-            int contactsIndex = mapLabel.IndexOf("| ", previewIndex + 1);
-            Assert.That(routeIndex, Is.GreaterThan(mapLabel.IndexOf("R ")));
-            Assert.That(previewIndex, Is.GreaterThan(routeIndex), "preview appears after route");
-            Assert.That(contactsIndex, Is.GreaterThan(previewIndex), "contacts appears after route and preview");
+            string[] mapLabelParts = mapLabel.Split(new[] { " | " }, System.StringSplitOptions.None);
+            Assert.That(mapLabelParts.Length, Is.GreaterThanOrEqualTo(4));
+            Assert.That(mapLabelParts[0], Is.EqualTo("DR2p"));
+            Assert.That(mapLabelParts[1], Does.StartWith("Pv"));
+            Assert.That(mapLabelParts[2], Does.StartWith("R "));
+            Assert.That(mapLabelParts[3], Does.EndWith("c"));
         }
     }
 
@@ -262,13 +260,16 @@ public class PrototypePlayerHudValidationTests
 
         string body = (string)bodyMethod.Invoke(null, new object[] { navigationMissingRouteSnapshot.Navigation });
         string mapLabel = (string)mapLabelMethod.Invoke(null, new object[] { navigationMissingRouteSnapshot });
+        string[] mapLabelParts = mapLabel.Split(new[] { " | " }, System.StringSplitOptions.None);
 
         Assert.That(body, Does.Contain("No route"));
         Assert.That(body, Does.Not.Contain("Direkte Route"));
-        Assert.That(mapLabel, Does.StartWith("R 1 km | No route"));
-        Assert.That(mapLabel.IndexOf("| No route"), Is.GreaterThanOrEqualTo(0));
-        Assert.That(mapLabel.IndexOf("| No route"), Is.LessThan(mapLabel.IndexOf("| Pv")));
-        Assert.That(mapLabel.IndexOf("| Pv"), Is.LessThan(mapLabel.IndexOf("| 1c")));
+        Assert.That(mapLabel, Does.StartWith("No route"));
+        Assert.That(mapLabelParts.Length, Is.GreaterThanOrEqualTo(4));
+        Assert.That(mapLabelParts[0], Is.EqualTo("No route"));
+        Assert.That(mapLabelParts[1], Does.StartWith("Pv"));
+        Assert.That(mapLabelParts[2], Is.EqualTo("R 1 km"));
+        Assert.That(mapLabelParts[3], Is.EqualTo("1c"));
         Assert.That(mapLabel, Does.Not.Contain("Direkte Route"));
     }
 
@@ -1021,6 +1022,13 @@ public class PrototypePlayerHudValidationTests
     {
         using (var builder = new PrototypeScenarioBuilder())
         {
+            string GetPlannerRangeFromMapLabel(string mapLabel)
+            {
+                string[] mapParts = mapLabel.Split(new[] { " | " }, System.StringSplitOptions.None);
+                Assert.That(mapParts.Length, Is.GreaterThanOrEqualTo(3), "planner map label should include route, preview, range tokens");
+                return mapParts[2].Trim();
+            }
+
             PrototypeShipRig rig = builder.CreateShip("PlayerHudNavPlannerRangeSyncShip");
 
             GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
@@ -1065,7 +1073,7 @@ public class PrototypePlayerHudValidationTests
             ApplySnapshotForTest(playerHud, snapshot);
 
             string radarRange = FindText(playerHud, "RadarText").text.Split('|')[0].Trim();
-            string plannerRange = FindText(playerHud, "NavigationPlannerMapText").text.Split('|')[0].Trim();
+            string plannerRange = GetPlannerRangeFromMapLabel(FindText(playerHud, "NavigationPlannerMapText").text);
             Assert.That(radarRange, Is.EqualTo("Range 2.5 km"));
             Assert.That(plannerRange, Is.EqualTo("R 2.5 km"));
 
@@ -1076,7 +1084,7 @@ public class PrototypePlayerHudValidationTests
             snapshot = ApplyMinimapRangeOverrideForTest(playerHud, withTargetSnapshot);
             ApplySnapshotForTest(playerHud, snapshot);
             radarRange = FindText(playerHud, "RadarText").text.Split('|')[0].Trim();
-            plannerRange = FindText(playerHud, "NavigationPlannerMapText").text.Split('|')[0].Trim();
+            plannerRange = GetPlannerRangeFromMapLabel(FindText(playerHud, "NavigationPlannerMapText").text);
             Assert.That(radarRange, Is.EqualTo("Range 1 km"));
             Assert.That(plannerRange, Is.EqualTo("R 1 km"));
 
@@ -1085,7 +1093,7 @@ public class PrototypePlayerHudValidationTests
             snapshot = ApplyMinimapRangeOverrideForTest(playerHud, withTargetSnapshot);
             ApplySnapshotForTest(playerHud, snapshot);
             radarRange = FindText(playerHud, "RadarText").text.Split('|')[0].Trim();
-            plannerRange = FindText(playerHud, "NavigationPlannerMapText").text.Split('|')[0].Trim();
+            plannerRange = GetPlannerRangeFromMapLabel(FindText(playerHud, "NavigationPlannerMapText").text);
             Assert.That(radarRange, Is.EqualTo("Range 2.5 km"));
             Assert.That(plannerRange, Is.EqualTo("R 2.5 km"));
 
@@ -1094,7 +1102,7 @@ public class PrototypePlayerHudValidationTests
             snapshot = ApplyMinimapRangeOverrideForTest(playerHud, withTargetSnapshot);
             ApplySnapshotForTest(playerHud, snapshot);
             radarRange = FindText(playerHud, "RadarText").text.Split('|')[0].Trim();
-            plannerRange = FindText(playerHud, "NavigationPlannerMapText").text.Split('|')[0].Trim();
+            plannerRange = GetPlannerRangeFromMapLabel(FindText(playerHud, "NavigationPlannerMapText").text);
             Assert.That(radarRange, Is.EqualTo("Range 5 km"));
             Assert.That(plannerRange, Is.EqualTo("R 5 km"));
         }

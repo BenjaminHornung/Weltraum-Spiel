@@ -4398,7 +4398,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             contacts = BuildNavigationPlannerMapContactLabel(contactCount);
         }
 
-        return string.Join(" | ", new[] { range, route, preview, contacts });
+        return string.Join(" | ", new[] { route, preview, range, contacts });
     }
 
     private static string BuildNavigationPlannerMapRangeLabel(string rangeLabel)
