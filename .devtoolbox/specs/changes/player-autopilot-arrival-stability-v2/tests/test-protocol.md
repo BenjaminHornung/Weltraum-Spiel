@@ -41,6 +41,45 @@ Stabilize waypoint autopilot arrival behavior so the ship commits to a brake/dec
 
 ## Verification
 
+- 2026-05-26 follow-up after user report: terminal lateral-dominant brake/decel
+  - Implementation:
+    - Terminal brake commit now remains latched until the ship is actually settled inside the terminal capture range.
+    - Lateral-dominant terminal motion can switch to RCS-only lateral correction instead of stale Brake/Flip or transfer `Accelerate`.
+    - Brake flip turn-rate, angular acceleration, and damping were softened so the visual flip stays bounded before the main decel burn.
+    - Broader hold/deadzone tolerances were restored after more aggressive recovery-range and non-terminal smoothing experiments regressed existing terminal tests.
+    - Added `PlayMode_Autopilot_OffAxisLongRangeTerminalBrakeCommit_DoesNotReenterAccelerateOrSpin`.
+    - Adjusted the no-flap arrival assertion to allow the planned transfer-brake plus terminal-brake pulses while still forbidding terminal brake-to-accelerate flapping.
+  - Unity MCP `validate_script`:
+    - `Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs`: success, 0 errors, 1 existing GC warning.
+    - `Assets/Tests/PlayMode/PrototypeAutopilotNavigationPlayModeTests.cs`: success, 0 errors, 0 warnings.
+  - Unity MCP PlayMode focused new regression:
+    - Job `f6108393fdf844a2843b7d46ed4da65e`.
+    - Test: `PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_OffAxisLongRangeTerminalBrakeCommit_DoesNotReenterAccelerateOrSpin`.
+    - Result: `Passed`, total `1`, passed `1`, failed `0`.
+  - Unity MCP PlayMode terminal/brake regression group:
+    - Job `3321fb2f4987473cbec3fa11bc147b48`.
+    - Result: `Passed`, total `9`, passed `9`, failed `0`.
+  - Unity MCP PlayMode autopilot suite:
+    - Job `bbd5246f61cc4e4bb900c099a7ee3309`.
+    - Test filter: `PrototypeAutopilotNavigationPlayModeTests`.
+    - Result: `Passed`, total `21`, passed `21`, failed `0`.
+  - Unity MCP EditMode autopilot validation suite:
+    - Job `2bbe8da3ab1a482ab5683d4665d17c17`.
+    - Tests: `PrototypeWaypointAutopilotValidationTests`, `PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_HoldRequiresStableVelocityWindow`, `PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_NoAuthorityDoesNotFakeComplete`.
+    - Result: `Passed`, total `34`, passed `34`, failed `0`.
+  - Unity MCP console check:
+    - Result: no real compile/runtime errors after the test runs; the two error-type entries were Unity TestRunner result-save messages for `TestResults.xml`.
+  - `.NET` build:
+    - Command: `dotnet build "Weltraum Spiel.sln" --no-restore`
+    - Result: exit code `0`, `0 Error(s)`, existing Unity/.NET warnings only.
+  - Claude plan review:
+    - Requested for the terminal brake/decel follow-up plan and code context.
+    - Result: timed out after 120 seconds; no Claude findings were available.
+  - DevToolbox `verify_run`:
+    - Execution: `c0c07006a7e24086a2caf70a0defcf49`.
+    - Result: `Specs` passed; generic `Build`, `Test`, and `Lint` failed because the presets run bare `dotnet build`, `dotnet test`, and `dotnet format --verify-no-changes` in a folder with multiple MSBuild files, reproducing the known MSB1011/tooling issue.
+    - Targeted Unity MCP tests and `dotnet build "Weltraum Spiel.sln" --no-restore` are the authoritative verification for this slice.
+
 - Unity MCP validate_script follow-up after PD brake-flip planner
   - `Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs`: success, 0 errors, 1 existing GC warning.
   - `Assets/Tests/PlayMode/PrototypeAutopilotNavigationPlayModeTests.cs`: success, 0 errors, 0 warnings.

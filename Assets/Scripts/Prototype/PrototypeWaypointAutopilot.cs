@@ -84,9 +84,9 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private const float TerminalOvershootBrakeRelativeSpeedMultiplier = 1.35f;
     private const float BrakeDirectionMinimumSpeedMetersPerSecond = 0.35f;
     private const float TerminalBrakeDirectionRotateDegreesPerSecond = 24f;
-    private const float BrakeFlipMaxTurnRateDegreesPerSecond = 58f;
-    private const float BrakeFlipMaxAngularAccelerationRadPerSecondSquared = 2.1f;
-    private const float BrakeFlipDampingTimeSeconds = 0.45f;
+    private const float BrakeFlipMaxTurnRateDegreesPerSecond = 46f;
+    private const float BrakeFlipMaxAngularAccelerationRadPerSecondSquared = 1.7f;
+    private const float BrakeFlipDampingTimeSeconds = 0.55f;
     private const float BrakeAlignedTorqueDeadbandDegrees = 2.5f;
     [Header("Navigation")]
     [SerializeField] private PrototypeWaypointManager waypointManager;
@@ -734,8 +734,9 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         }
 
         bool requestBrake = ShouldRequestBrake();
+        bool holdBrakeCommitUntilSettled = ShouldHoldTerminalBrakeCommitUntilSettled();
 
-        if (requestBrake && (!currentlyAvoiding || LastMetrics.shouldBrake))
+        if ((requestBrake || holdBrakeCommitUntilSettled) && (!currentlyAvoiding || LastMetrics.shouldBrake))
         {
             ApplyBrakeRequest();
             return;
@@ -1218,21 +1219,57 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return false;
         }
 
-        float holdCaptureDistance = Mathf.Max(
-            GetArrivalTerminalRangeDistance(),
-            GetArrivalDistance() + BrakeArrivalHoldDistanceMarginMeters * 2f);
-        if (LastMetrics.distance > holdCaptureDistance)
+        if (!IsWithinArrivalTerminalCaptureRange())
         {
             return false;
         }
 
         float completionSpeed = GetArrivalCompletionSpeedLimit();
-        if (LastMetrics.relativeSpeed <= completionSpeed * TerminalOvershootBrakeRelativeSpeedMultiplier)
+        if (LastMetrics.relativeSpeed <= completionSpeed
+            && LastMetrics.lateralSpeed <= GetArrivalCompletionLateralTolerance()
+            && LastMetrics.closingSpeed <= BrakeHoldReleaseZeroSpeed
+            && arrivalBrakeCommitted)
         {
             return false;
         }
 
-        return arrivalBrakeCommitted || LastMetrics.distance <= GetArrivalCompletionDistance() + BrakeArrivalHoldDistanceMarginMeters;
+        if (ShouldCaptureArrivalHold() || ShouldCaptureArrivalHoldNearArrival() || ShouldCaptureTerminalOvershootHold())
+        {
+            return false;
+        }
+
+        return arrivalBrakeCommitted
+            || LastMetrics.distance <= GetArrivalCompletionDistance() + BrakeArrivalHoldDistanceMarginMeters;
+    }
+
+    private bool ShouldHoldTerminalBrakeCommitUntilSettled()
+    {
+        if (!arrivalBrakeCommitted || currentTarget == null || shipRigidbody == null || !CanUseMainThrottle())
+        {
+            return false;
+        }
+
+        if (!IsWithinArrivalTerminalCaptureRange() || IsInArrivalCompletionWindow())
+        {
+            return false;
+        }
+
+        if (ShouldCaptureArrivalHold() || ShouldCaptureArrivalHoldNearArrival() || ShouldCaptureTerminalOvershootHold())
+        {
+            return false;
+        }
+
+        if (ShouldUseTerminalLateralCorrection())
+        {
+            return false;
+        }
+
+        float completionSpeed = GetArrivalCompletionSpeedLimit();
+        float completionLateralTolerance = GetArrivalCompletionLateralTolerance();
+
+        return LastMetrics.closingSpeed > BrakeHoldReleaseZeroSpeed
+            || LastMetrics.relativeSpeed > completionSpeed
+            || LastMetrics.lateralSpeed > completionLateralTolerance;
     }
 
     private bool ShouldCaptureTerminalOvershootHold()
@@ -1285,6 +1322,19 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return false;
         }
 
+        float terminalSpeedLimit = Mathf.Max(lateralCorrectionSpeed, GetArrivalCompletionSpeedLimit() * 2f);
+        float lateralDominanceThreshold = Mathf.Max(
+            GetArrivalCompletionLateralTolerance() * 2f,
+            Mathf.Abs(LastMetrics.closingSpeed) * 1.2f);
+        bool lateralDominatesTerminalMotion = arrivalBrakeCommitted
+            && LastMetrics.lateralSpeed >= lateralDominanceThreshold
+            && LastMetrics.closingSpeed <= Mathf.Max(BrakeHoldReleaseZeroSpeed, GetArrivalCompletionSpeedLimit() * 0.5f)
+            && LastMetrics.relativeSpeed <= Mathf.Max(terminalSpeedLimit, lateralCorrectionSpeed * 2f);
+        if (lateralDominatesTerminalMotion)
+        {
+            return true;
+        }
+
         if (ShouldKeepTerminalBrakeCommitted())
         {
             return false;
@@ -1295,7 +1345,6 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return false;
         }
 
-        float terminalSpeedLimit = Mathf.Max(lateralCorrectionSpeed, GetArrivalCompletionSpeedLimit() * 2f);
         return LastMetrics.relativeSpeed <= terminalSpeedLimit;
     }
 
@@ -1319,7 +1368,8 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         Vector3 fallback = LastMetrics.directionToTarget.sqrMagnitude > 0.0001f
             ? -LastMetrics.directionToTarget
             : -transform.forward;
-        bool useSmoothing = ShouldUseTerminalBrakeDirectionSmoothing();
+        bool useTerminalSmoothing = ShouldUseTerminalBrakeDirectionSmoothing();
+        bool useSmoothing = useTerminalSmoothing;
 
         if (shipRigidbody == null)
         {
@@ -1357,7 +1407,10 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return committedBrakeDirection;
         }
 
-        float maxRotateRadians = Mathf.Deg2Rad * TerminalBrakeDirectionRotateDegreesPerSecond * Mathf.Max(Time.fixedDeltaTime, 0.02f);
+        float directionRotateDegreesPerSecond = useTerminalSmoothing
+            ? TerminalBrakeDirectionRotateDegreesPerSecond
+            : BrakeFlipMaxTurnRateDegreesPerSecond * 0.8f;
+        float maxRotateRadians = Mathf.Deg2Rad * directionRotateDegreesPerSecond * Mathf.Max(Time.fixedDeltaTime, 0.02f);
         committedBrakeDirection = Vector3.RotateTowards(
             committedBrakeDirection.normalized,
             observedBrakeDirection,
@@ -1796,7 +1849,8 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return Vector3.zero;
         }
 
-        float maxTurnRate = Mathf.Deg2Rad * BrakeFlipMaxTurnRateDegreesPerSecond;
+        float flipTurnRateScale = CurrentState == PrototypeWaypointAutopilotState.FlipForBrake ? 0.85f : 1f;
+        float maxTurnRate = Mathf.Deg2Rad * BrakeFlipMaxTurnRateDegreesPerSecond * flipTurnRateScale;
         Vector3 desiredAngularVelocityLocal = Vector3.ClampMagnitude(
             angularErrorLocal / Mathf.Max(0.05f, BrakeFlipDampingTimeSeconds),
             maxTurnRate);
@@ -2098,7 +2152,12 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return false;
         }
 
-        if (LastMetrics.distance > GetArrivalFinishedDistance())
+        if (!IsWithinArrivalTerminalCaptureRange())
+        {
+            return false;
+        }
+
+        if (LastMetrics.distance > GetArrivalCompletionDistance() + BrakeArrivalHoldDistanceMarginMeters)
         {
             return false;
         }
@@ -2142,16 +2201,19 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return false;
         }
 
+        if (!IsWithinArrivalTerminalCaptureRange())
+        {
+            return false;
+        }
+
         if (currentTarget == null || shipRigidbody == null)
         {
             return false;
         }
 
-        float arrivalCompletionDistance = Mathf.Max(
-            GetArrivalDistance(),
-            GetArrivalCompletionDistance());
+        float arrivalCompletionDistance = GetArrivalCompletionDistance() + BrakeArrivalHoldDistanceMarginMeters;
         float completionSpeed = GetArrivalCompletionSpeedLimit();
-        float completionLateralTolerance = GetArrivalCompletionLateralTolerance();
+        float completionLateralTolerance = GetArrivalCompletionLateralTolerance() * 1.1f;
 
         return LastMetrics.distance <= arrivalCompletionDistance
             && LastMetrics.relativeSpeed <= completionSpeed
