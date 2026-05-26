@@ -168,6 +168,38 @@ Player UI regression controls, minimap evidence, navigation/combat popups, Kill 
 - Navigation Planner popup is centered above the bottom bar, hides fixed context/radar panels while open, and now includes an embedded player map layer with grid, blips, route/preview counts, and range label.
 - Combat Computer popup is centered above the bottom bar and hides fixed context/radar panels while open.
 
+## Latest: navigation planner popup scale and SAS brake-flip follow-up
+
+- Change set:
+  - `Assets/Scripts/Prototype/PrototypePlayerHud.cs`
+  - `Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs`
+  - `Assets/Tests/Editor/PrototypePlayerHudValidationTests.cs`
+  - `Assets/Tests/Editor/PrototypeWaypointAutopilotValidationTests.cs`
+  - `tests/screenshots/player-ui-regression-nav-planner-1280x720.png`
+- Planner popup fixes:
+  - Navigation Planner map is larger in the popup and now prioritizes route/preview readability before body text density.
+  - Planner map label order is route-first: range, route, preview, contacts.
+  - Planner map blips are capped at 8 when navigation context is active; selected navigation, selected combat and objective contacts remain at the top draw layer by reusing the existing radar blip display priority.
+  - Planner range buttons were moved upward inside the map area so `- / A / +` no longer overlap the map label at 1280x720.
+- Autopilot fix:
+  - `PrototypeWaypointAutopilot.ToggleAutopilot()` now normalizes the controller to `SasControlMode.KillRotation` before enabling SAS, preventing an old HoldAttitude target from fighting the retrograde flip.
+  - Regression coverage now steps the controller/RCS path: HoldAttitude is replaced by KillRotation, RCS sees KillRotation, flip requests torque with no main throttle before alignment, and the main thrust command becomes positive after retrograde alignment.
+- Unity MCP `validate_script`:
+  - `Assets/Scripts/Prototype/PrototypePlayerHud.cs`: PASS, 0 errors (existing analyzer warnings only).
+  - `Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs`: PASS, 0 errors (existing analyzer warning only).
+  - `Assets/Tests/Editor/PrototypePlayerHudValidationTests.cs`: PASS, 0 errors.
+  - `Assets/Tests/Editor/PrototypeWaypointAutopilotValidationTests.cs`: PASS, 0 errors (existing analyzer warnings only).
+- Unity MCP EditMode job `0b4e2e0d5d8f4e178c7ecac2582389e7`: `PrototypePlayerHudValidationTests` plus `PrototypeWaypointAutopilotValidationTests` PASS 81/81.
+- Unity MCP PlayMode job `b0c018b121894d32889597234c1f4bdd`: `PrototypeBootstrapRuntimePlayerHudEvidenceCapturesPlayerComputerPopups` PASS 1/1.
+- `dotnet build "Weltraum Spiel.sln" --no-restore`: PASS, 0 errors, 22 existing Unity/generated assembly warnings.
+- Screenshot evidence:
+  - `tests/screenshots/player-ui-regression-nav-planner-1280x720.png`
+- Visual check:
+  - Navigation Planner popup at 1280x720 shows a larger embedded map, visible route line, route/preview/contact label `R 1 km | R8p | Pv16p | 8c`, and range buttons inside the map without overlapping the label or bottom controls.
+- Review notes:
+  - Local reviewer flagged inverted uGUI draw priority and an over-strict background-panel overlap assertion; both were fixed before the final green test run.
+  - `claude-plan-review` was invoked with the screenshot path. Direct PNG inclusion failed with the local `charmap` encoding issue; the path-only retry timed out after 120 seconds, so no actionable Claude feedback was returned for this checkpoint.
+
 ## Latest: minimap combat fallback discovery slice
 
 - Change: `PrototypePlayerHud.cs` now adds a guarded fallback in `AddCombatRadarBlips` that invokes

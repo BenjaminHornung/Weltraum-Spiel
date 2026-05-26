@@ -355,6 +355,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         shipController.ClearExternalFlightAssistRequest();
         shipController.SetControlMode(FlightControlMode.Normal);
         shipController.SetRcsEnabled(true);
+        shipController.SetSasMode(SasControlMode.KillRotation);
         shipController.SetSasEnabled(true);
         shipController.CaptureSasTargetRotation();
         shipController.SetMainThrottle(0f);

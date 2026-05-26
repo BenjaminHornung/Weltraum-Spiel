@@ -232,6 +232,38 @@ public class PrototypeWaypointAutopilotValidationTests
     }
 
     [Test]
+    public void ToggleAutopilotForcesSasKillRotationBeforeBrakeWhenHoldAttitudeWasActive()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 150f;
+        rig.Body.linearVelocity = Vector3.forward * 45f;
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Controller.SetSasMode(SasControlMode.HoldAttitude);
+        var rcsController = rig.Ship.GetComponent<RcsThrusterController>();
+        Assert.NotNull(rcsController);
+
+        rig.Autopilot.ToggleAutopilot();
+        InvokeFixedUpdate(rig.Autopilot);
+        InvokeFixedUpdate(rig.Controller);
+
+        Assert.That(rig.Controller.SasMode, Is.EqualTo(SasControlMode.KillRotation));
+        Assert.That(rcsController.LastSasMode, Is.EqualTo(SasControlMode.KillRotation));
+        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.FlipForBrake));
+        Assert.That(rig.Controller.LastExternalFlightAssistRequest.mainThrottle, Is.EqualTo(0f).Within(0.0001f));
+        Assert.That(rig.Controller.LastExternalFlightAssistRequest.torqueLocal.magnitude, Is.GreaterThan(1000f));
+        Assert.That(rig.Controller.MainThrottle, Is.EqualTo(0f).Within(0.0001f));
+        Assert.That(rig.Controller.MainThrustCommand, Is.EqualTo(0f).Within(0.0001f));
+
+        rig.Ship.transform.rotation = Quaternion.LookRotation(Vector3.back, Vector3.up);
+        InvokeFixedUpdate(rig.Autopilot);
+        InvokeFixedUpdate(rig.Controller);
+
+        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.Brake));
+        Assert.That(rig.Controller.LastExternalFlightAssistRequest.mainThrottle, Is.GreaterThan(0.5f));
+        Assert.That(rig.Controller.MainThrustCommand, Is.GreaterThan(0.5f));
+    }
+
+    [Test]
     public void AutopilotLateralVelocityRequestsCorrection()
     {
         var rig = CreateAutopilotRig();

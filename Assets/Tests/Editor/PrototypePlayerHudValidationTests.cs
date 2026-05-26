@@ -170,7 +170,9 @@ public class PrototypePlayerHudValidationTests
                 BindingFlags.Static | BindingFlags.NonPublic);
             Assert.NotNull(mapLabelMethod);
             string mapLabel = (string)mapLabelMethod.Invoke(null, new object[] { snapshot });
-            Assert.That(mapLabel, Does.Contain("DR2p"));
+            Assert.That(mapLabel, Does.StartWith("R "));
+            Assert.That(mapLabel, Does.Contain("| DR2p"));
+            Assert.That(mapLabel.IndexOf("| DR2p"), Is.GreaterThan(mapLabel.IndexOf("R ")));
         }
     }
 
@@ -258,7 +260,7 @@ public class PrototypePlayerHudValidationTests
 
         Assert.That(body, Does.Contain("No route"));
         Assert.That(body, Does.Not.Contain("Direkte Route"));
-        Assert.That(mapLabel, Does.Contain("No route"));
+        Assert.That(mapLabel, Does.StartWith("R 1 km | No route"));
         Assert.That(mapLabel, Does.Not.Contain("Direkte Route"));
     }
 
@@ -524,6 +526,10 @@ public class PrototypePlayerHudValidationTests
                 new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Combat, "Bandit", new Vector3(40f, 0f, 180f)),
                 new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.SelectedCombat, "Selected Bandit", new Vector3(50f, 0f, 160f)),
                 new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Objective, "Objective", new Vector3(60f, 0f, 200f)),
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Docking, "Docked Outpost", new Vector3(65f, 0f, 230f)),
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Navigation, "Far Route", new Vector3(70f, 0f, 280f)),
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Combat, "Distant Bandit", new Vector3(75f, 0f, 320f)),
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Navigation, "Very Far Route", new Vector3(85f, 0f, 420f)),
                 new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Beacon, "Beacon", new Vector3(70f, 0f, 220f)),
                 new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Gate, "Gate", new Vector3(80f, 0f, 240f)),
                 new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Station, "Station", new Vector3(90f, 0f, 260f))
@@ -549,15 +555,21 @@ public class PrototypePlayerHudValidationTests
         PrototypePlayerRadarBlip[] filteredBlips = (PrototypePlayerRadarBlip[])mapBlipMethod.Invoke(
             null,
             new object[] { withTargetSnapshot });
-        Assert.That(filteredBlips.Length, Is.EqualTo(5), "only actionable kinds kept for planner map layer");
-        Assert.That(GetBlipLabel(filteredBlips, PrototypePlayerRadarBlipKind.Navigation), Is.EqualTo("Waypoint"));
         Assert.That(GetBlipLabel(filteredBlips, PrototypePlayerRadarBlipKind.SelectedNavigation), Is.EqualTo("Selected Waypoint"));
-        Assert.That(GetBlipLabel(filteredBlips, PrototypePlayerRadarBlipKind.Combat), Is.EqualTo("Bandit"));
         Assert.That(GetBlipLabel(filteredBlips, PrototypePlayerRadarBlipKind.SelectedCombat), Is.EqualTo("Selected Bandit"));
         Assert.That(GetBlipLabel(filteredBlips, PrototypePlayerRadarBlipKind.Objective), Is.EqualTo("Objective"));
+        Assert.That(IndexOfBlipKind(filteredBlips, PrototypePlayerRadarBlipKind.Navigation), Is.GreaterThanOrEqualTo(0), "navigation remains present");
+        Assert.That(filteredBlips[filteredBlips.Length - 3].Kind, Is.EqualTo(PrototypePlayerRadarBlipKind.SelectedNavigation), "selected navigation remains on top");
+        Assert.That(filteredBlips[filteredBlips.Length - 2].Kind, Is.EqualTo(PrototypePlayerRadarBlipKind.SelectedCombat), "selected combat remains on top");
+        Assert.That(filteredBlips[filteredBlips.Length - 1].Label, Is.EqualTo("Objective"), "objective remains on top");
         Assert.That(GetBlipLabel(filteredBlips, PrototypePlayerRadarBlipKind.Beacon), Is.Null);
         Assert.That(GetBlipLabel(filteredBlips, PrototypePlayerRadarBlipKind.Gate), Is.Null);
         Assert.That(GetBlipLabel(filteredBlips, PrototypePlayerRadarBlipKind.Station), Is.Null);
+        Assert.That(IndexOfBlipKind(filteredBlips, PrototypePlayerRadarBlipKind.Objective), Is.EqualTo(filteredBlips.Length - 1));
+        Assert.That(IndexOfBlipKind(filteredBlips, PrototypePlayerRadarBlipKind.SelectedNavigation), Is.EqualTo(filteredBlips.Length - 3));
+        Assert.That(IndexOfBlipKind(filteredBlips, PrototypePlayerRadarBlipKind.SelectedCombat), Is.EqualTo(filteredBlips.Length - 2));
+        Assert.That(filteredBlips.Length, Is.EqualTo(8), "lowest-priority actionable contact capped");
+        Assert.That(filteredBlips[filteredBlips.Length - 1].Label, Is.Not.EqualTo("Very Far Route"));
 
         PrototypePlayerHudSnapshot withoutTargetSnapshot = CreateHudSnapshot(
             CreateCombatSnapshot(false),
@@ -1712,6 +1724,39 @@ public class PrototypePlayerHudValidationTests
     }
 
     [Test]
+    public void ResponsiveLayoutKeepsNavigationPlannerMapElementsSeparated()
+    {
+        GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+        cameraObject.AddComponent<Camera>();
+        PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+        playerHud.RefreshNow();
+        FindRect(playerHud, "NavigationPlannerPanel").gameObject.SetActive(true);
+        var radarSnapshot = new PrototypePlayerRadarSnapshot(
+            1000f,
+            "Range 1 km",
+            Vector3.zero,
+            Vector3.forward,
+            new[] { new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Navigation, "Nav Beacon", new Vector3(20f, 0f, 80f)) },
+            new[] { Vector3.zero, new Vector3(0f, 0f, 80f) },
+            new Vector3[0],
+            false,
+            Vector3.zero);
+
+        ApplySnapshotForTest(
+            playerHud,
+            CreateHudSnapshot(
+                CreateCombatSnapshot(false),
+                CreateDockingSnapshot(false),
+                CreateNavigationSnapshot(true),
+                default,
+                null,
+                radarSnapshot));
+
+        AssertNavigationPlannerMapLayoutSeparated(playerHud, 1280, 720);
+        AssertNavigationPlannerMapLayoutSeparated(playerHud, 800, 1400);
+    }
+
+    [Test]
     public void ResponsiveLayoutKeepsCombatComputerControlsSeparated()
     {
         GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
@@ -2578,6 +2623,64 @@ public class PrototypePlayerHudValidationTests
             {
                 Assert.False(Overlaps(buttons[i], buttons[j]), width + "x" + height + " nav button overlap " + i + "/" + j);
             }
+        }
+    }
+
+    private static void AssertNavigationPlannerMapLayoutSeparated(PrototypePlayerHudRenderer playerHud, int width, int height)
+    {
+        playerHud.ApplyResponsiveLayoutForTests(width, height);
+        Canvas.ForceUpdateCanvases();
+
+        RectTransform panel = FindRect(playerHud, "NavigationPlannerPanel");
+        RectTransform body = FindRect(playerHud, "NavigationPlannerBody");
+        RectTransform mapPanel = FindRect(playerHud, "NavigationPlannerMapPanel");
+        RectTransform mapLayer = FindRect(playerHud, "NavigationPlannerMapLayer");
+        RectTransform mapText = FindRect(playerHud, "NavigationPlannerMapText");
+        RectTransform[] rangeButtons =
+        {
+            FindRect(playerHud, "NavPlannerRangeMinus"),
+            FindRect(playerHud, "NavPlannerRangeAuto"),
+            FindRect(playerHud, "NavPlannerRangePlus")
+        };
+        RectTransform[] plannerButtons =
+        {
+            FindRect(playerHud, "NavPlannerPreviousTarget"),
+            FindRect(playerHud, "NavPlannerNextTarget"),
+            FindRect(playerHud, "NavPlannerEngage"),
+            FindRect(playerHud, "NavPlannerReplan"),
+            FindRect(playerHud, "NavPlannerPreview"),
+            FindRect(playerHud, "NavPlannerClose")
+        };
+
+        Assert.True(panel.gameObject.activeInHierarchy, width + "x" + height + " planner hidden");
+        Assert.True(mapPanel.gameObject.activeInHierarchy, width + "x" + height + " planner map hidden");
+        Assert.True(mapLayer.gameObject.activeInHierarchy, width + "x" + height + " planner map layer hidden");
+
+        Assert.False(Overlaps(mapPanel, body), width + "x" + height + " planner map panel/body overlap");
+        Assert.False(Overlaps(mapLayer, mapText), width + "x" + height + " planner map layer/text overlap");
+        Assert.False(Overlaps(mapLayer, body), width + "x" + height + " planner map layer/body overlap");
+        Assert.False(Overlaps(mapText, body), width + "x" + height + " planner map text/body overlap");
+
+        foreach (RectTransform button in plannerButtons)
+        {
+            Assert.False(Overlaps(button, body), width + "x" + height + " planner button/body overlap " + button.gameObject.name);
+            Assert.False(Overlaps(button, mapText), width + "x" + height + " planner button/map text overlap " + button.gameObject.name);
+        }
+
+        for (int i = 0; i < plannerButtons.Length; i++)
+        {
+            for (int j = i + 1; j < plannerButtons.Length; j++)
+            {
+                Assert.False(
+                    Overlaps(plannerButtons[i], plannerButtons[j]),
+                    width + "x" + height + " planner bottom buttons overlap " + plannerButtons[i].gameObject.name + " / " + plannerButtons[j].gameObject.name);
+            }
+        }
+
+        for (int i = 0; i < rangeButtons.Length; i++)
+        {
+            Assert.False(Overlaps(rangeButtons[i], body), width + "x" + height + " planner range/button overlap " + rangeButtons[i].gameObject.name);
+            Assert.False(Overlaps(rangeButtons[i], mapText), width + "x" + height + " planner range/button map text overlap " + rangeButtons[i].gameObject.name);
         }
     }
 

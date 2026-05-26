@@ -981,7 +981,7 @@ public static class PrototypePlayerHudSnapshotBuilder
             navigation.AvoidanceWorldPosition);
     }
 
-    private static void SortRadarBlipsForDisplay(List<PrototypePlayerRadarBlip> blips)
+    internal static void SortRadarBlipsForDisplay(List<PrototypePlayerRadarBlip> blips)
     {
         if (blips == null || blips.Count < 2)
         {
@@ -1000,7 +1000,7 @@ public static class PrototypePlayerHudSnapshotBuilder
         });
     }
 
-    private static int RadarBlipDrawPriority(PrototypePlayerRadarBlipKind kind)
+    internal static int RadarBlipDrawPriority(PrototypePlayerRadarBlipKind kind)
     {
         switch (kind)
         {
@@ -2283,6 +2283,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private const int MaxRadarRouteSegments = 28;
     private const int MaxRadarPreviewSegments = 28;
     private const int MaxRadarBlips = 64;
+    private const int MaxNavigationPlannerMapBlips = 8;
     private const int MaxCompactRadarGenericBlips = 8;
     private const int MinimapRangeModeAuto = 0;
     private const int MinimapRangeModeCount = 5;
@@ -3621,21 +3622,53 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             return System.Array.Empty<PrototypePlayerRadarBlip>();
         }
 
-        var filtered = new List<PrototypePlayerRadarBlip>(source.Length);
+        var objective = new List<PrototypePlayerRadarBlip>(source.Length);
+        var lowerPriority = new List<PrototypePlayerRadarBlip>(source.Length);
+        var selectedCombat = new List<PrototypePlayerRadarBlip>(source.Length);
+        var selectedNavigation = new List<PrototypePlayerRadarBlip>(source.Length);
         for (int i = 0; i < source.Length; i++)
         {
-            if (IsActionableNavigationPlannerMapBlip(source[i].Kind))
+            PrototypePlayerRadarBlip blip = source[i];
+            if (!IsActionableNavigationPlannerMapBlip(blip.Kind))
             {
-                filtered.Add(source[i]);
+                continue;
+            }
+
+            switch (blip.Kind)
+            {
+                case PrototypePlayerRadarBlipKind.SelectedCombat:
+                    selectedCombat.Add(blip);
+                    break;
+                case PrototypePlayerRadarBlipKind.SelectedNavigation:
+                    selectedNavigation.Add(blip);
+                    break;
+                case PrototypePlayerRadarBlipKind.Objective:
+                    objective.Add(blip);
+                    break;
+                default:
+                    lowerPriority.Add(blip);
+                    break;
             }
         }
 
-        if (filtered.Count == source.Length)
+        PrototypePlayerHudSnapshotBuilder.SortRadarBlipsForDisplay(lowerPriority);
+        PrototypePlayerHudSnapshotBuilder.SortRadarBlipsForDisplay(selectedNavigation);
+        PrototypePlayerHudSnapshotBuilder.SortRadarBlipsForDisplay(selectedCombat);
+        PrototypePlayerHudSnapshotBuilder.SortRadarBlipsForDisplay(objective);
+
+        var prioritized = new List<PrototypePlayerRadarBlip>(source.Length);
+        prioritized.AddRange(lowerPriority);
+        prioritized.AddRange(selectedNavigation);
+        prioritized.AddRange(selectedCombat);
+        prioritized.AddRange(objective);
+
+        if (prioritized.Count > MaxNavigationPlannerMapBlips)
         {
-            return source;
+            int startIndex = prioritized.Count - MaxNavigationPlannerMapBlips;
+            return prioritized.GetRange(startIndex, MaxNavigationPlannerMapBlips).ToArray();
         }
 
-        return filtered.ToArray();
+        return prioritized.ToArray();
     }
 
     private static PrototypePlayerRadarBlip[] GetCompactRadarBlips(PrototypePlayerHudSnapshot snapshot)
@@ -4224,7 +4257,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             contacts = BuildNavigationPlannerMapContactLabel(contactCount);
         }
 
-        return range + " | " + contacts + " | " + route + " | " + preview;
+        return string.Join(" | ", new[] { range, route, preview, contacts });
     }
 
     private static string BuildNavigationPlannerMapRangeLabel(string rangeLabel)
@@ -4821,7 +4854,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
         float width = Mathf.Clamp(safeWidth - (margin * 2f), 320f, narrow ? 500f : 560f);
         float availableHeight = safeHeight - (margin * 2f) - bottomOffset - bottomHeight - gap;
-        float height = Mathf.Clamp(availableHeight, 220f, shortScreen ? 280f : 330f);
+        float height = Mathf.Clamp(availableHeight, 220f, shortScreen ? 280f : 390f);
         float bottomClearanceTop = bottomOffset + bottomHeight + gap;
         float centerY = Mathf.Clamp(
             bottomClearanceTop + (height * 0.5f),
@@ -4867,14 +4900,14 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
         if (stacked)
         {
-            float mapSize = Mathf.Clamp(contentHeight * 0.48f, 92f, 126f);
+            float mapSize = Mathf.Clamp(contentHeight * 0.56f, 130f, 160f);
             ApplyRect(
                 navigationPlannerMapPanelRect,
                 new Vector2(1f, 1f),
                 new Vector2(1f, 1f),
                 new Vector2(1f, 1f),
-                new Vector2(mapSize + 18f, mapSize + 34f),
-                new Vector2(-12f, -46f - (mapSize * 0.5f)));
+                new Vector2(mapSize + 18f, mapSize + 46f),
+                new Vector2(-12f, -54f - (mapSize * 0.55f)));
             ApplyRect(
                 navigationPlannerBodyText.rectTransform,
                 new Vector2(0f, 0f),
@@ -4895,12 +4928,12 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
                 new Vector2(1f, 1f),
                 new Vector2(1f, 1f),
                 new Vector2(mapSize + 18f, 30f),
-                new Vector2(-12f, -(mapSize + 50f)));
+                new Vector2(-12f, -(mapSize + 62f)));
             navigationPlannerBodyText.fontSize = shortScreen ? 10f : 11f;
         }
         else
         {
-            float mapSize = Mathf.Clamp(contentHeight, 148f, 190f);
+            float mapSize = Mathf.Clamp(contentHeight - 8f, 220f, 240f);
             ApplyRect(
                 navigationPlannerMapPanelRect,
                 new Vector2(1f, 0.5f),
@@ -4928,12 +4961,12 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
                 new Vector2(1f, 0.5f),
                 new Vector2(1f, 0.5f),
                 new Vector2(mapSize + 20f, 30f),
-                new Vector2(-12f, 28f - (mapSize * 0.5f)));
+                new Vector2(-12f, 24f - (mapSize * 0.5f)));
         }
 
         if (navigationPlannerMapText != null)
         {
-            navigationPlannerMapText.fontSize = shortScreen ? 8f : 9f;
+            navigationPlannerMapText.fontSize = MinimumPlayerHudFontSize;
         }
 
         for (int i = 0; i < navigationPlannerMapGridSegments.Count; i++)
@@ -4954,7 +4987,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         }
 
         const float buttonSize = 22f;
-        const float buttonY = -12f;
+        const float buttonY = 4f;
         ApplyRect(
             navPlannerRangeMinusButton.GetComponent<RectTransform>(),
             new Vector2(0.5f, 0f),
