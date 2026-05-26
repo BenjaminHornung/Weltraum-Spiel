@@ -1955,7 +1955,7 @@ public static class PrototypePlayerHudSnapshotBuilder
         {
             AddOrPromoteUnique(
                 chips,
-                arena.Completed ? arena.RewardStubLabel : "Arena " + arena.ProgressLabel,
+                arena.Completed ? "Mission complete" : "Arena " + arena.ProgressLabel,
                 arena.Completed ? PrototypePlayerHudSeverity.Info : PrototypePlayerHudSeverity.Normal);
         }
 
@@ -5281,9 +5281,22 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         }
 
         objectiveTitleText.text = arena.ObjectiveName;
-        objectiveBodyText.text = "Targets " + arena.ProgressLabel + " | " + arena.StatusLabel
-            + (arena.Completed ? "\n" + arena.RewardStubLabel : string.Empty);
+        objectiveBodyText.text = "Targets " + arena.ProgressLabel + " | " + arena.StatusLabel;
+        if (arena.Completed)
+        {
+            objectiveBodyText.text += "\nReward: " + BuildArenaRewardLabel(arena.RewardStubLabel);
+        }
         objectiveBodyText.color = arena.Completed ? PrototypeUiStyle.ActiveColor : PrototypeUiStyle.MutedColor;
+    }
+
+    private static string BuildArenaRewardLabel(string rewardStubLabel)
+    {
+        if (string.IsNullOrWhiteSpace(rewardStubLabel))
+        {
+            return "Reward pending";
+        }
+
+        return rewardStubLabel;
     }
 
     private void ApplyContext(PrototypePlayerHudSnapshot snapshot)
@@ -5347,7 +5360,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             contextTitleText.text = "Objective: " + snapshot.Arena.ObjectiveName;
             contextBodyText.text =
                 snapshot.Arena.StatusLabel + " | Targets " + snapshot.Arena.ProgressLabel
-                + (snapshot.Arena.Completed ? "\n" + snapshot.Arena.RewardStubLabel : "\nComplete the marked targets");
+                + (snapshot.Arena.Completed ? string.Empty : "\nComplete the marked targets");
             contextBodyText.color = snapshot.Arena.Completed ? PrototypeUiStyle.ActiveColor : PrototypeUiStyle.MutedColor;
             SetContextGauge(0, "Objective", snapshot.Arena.ProgressFraction, PrototypeUiStyle.ActiveColor, true);
             SetContextGauge(1, string.Empty, 0f, Color.white, false);

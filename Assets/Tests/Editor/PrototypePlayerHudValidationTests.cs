@@ -1758,6 +1758,44 @@ public class PrototypePlayerHudValidationTests
         Assert.That(objectiveTitle.transform.parent.gameObject.activeSelf, Is.True);
         Assert.That(objectiveTitle.text, Is.EqualTo("Clear the Arena"));
         Assert.That(objectiveBody.text, Does.Contain("Targets 1/3"));
+        Assert.That(objectiveBody.text, Does.Not.Contain("Reward:"));
+    }
+
+    [Test]
+    public void ObjectivePanelShowsRewardOnArenaCompletionAndStaysCompactWhenIncomplete()
+    {
+        GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+        cameraObject.AddComponent<Camera>();
+        PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+        playerHud.RefreshNow();
+
+        var activeArena = new PrototypePveArenaSnapshot("Clear the Arena", true, false, 3, 1, "Reward queued: test salvage");
+        ApplySnapshotForTest(playerHud, CreateHudSnapshot(CreateCombatSnapshot(false), CreateDockingSnapshot(false), CreateNavigationSnapshot(false), activeArena));
+
+        TMP_Text objectiveBody = FindText(playerHud, "ObjectiveBody");
+        Assert.That(objectiveBody.text, Does.Not.Contain("Reward:"));
+
+        var completedArena = new PrototypePveArenaSnapshot("Clear the Arena", true, true, 3, 3, "Reward queued: test salvage");
+        ApplySnapshotForTest(playerHud, CreateHudSnapshot(CreateCombatSnapshot(false), CreateDockingSnapshot(false), CreateNavigationSnapshot(false), completedArena));
+
+        Assert.That(objectiveBody.text, Does.Contain("Targets 3/3"));
+        Assert.That(objectiveBody.text, Does.Contain("Reward: Reward queued: test salvage"));
+    }
+
+    [Test]
+    public void ObjectivePanelShowsRewardPendingOnCompletedArenaWithoutRewardStub()
+    {
+        GameObject cameraObject = new GameObject("PrototypePlayerHudCameraRewardPending");
+        cameraObject.AddComponent<Camera>();
+        PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+        playerHud.RefreshNow();
+
+        var completedArena = new PrototypePveArenaSnapshot("Clear the Arena", true, true, 3, 3, string.Empty);
+        ApplySnapshotForTest(playerHud, CreateHudSnapshot(CreateCombatSnapshot(false), CreateDockingSnapshot(false), CreateNavigationSnapshot(false), completedArena));
+
+        TMP_Text objectiveBody = FindText(playerHud, "ObjectiveBody");
+        Assert.That(objectiveBody.text, Does.Contain("Reward: Reward pending"));
+        Assert.That(objectiveBody.text, Does.Not.Contain("Reward queued"));
     }
 
     [Test]

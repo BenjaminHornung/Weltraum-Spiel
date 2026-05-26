@@ -146,7 +146,9 @@ public class PrototypePveArenaLoopValidationTests
         Assert.True(activeSnapshot.Arena.Active);
         Assert.That(activeSnapshot.Arena.ObjectiveName, Is.EqualTo("Clear Test Arena"));
         Assert.That(activeSnapshot.Arena.ProgressLabel, Is.EqualTo("0/3"));
+        Assert.That(activeSnapshot.Arena.RewardStubLabel, Does.Not.Contain("Reward queued: test salvage"));
         Assert.That(string.Join(" | ", activeSnapshot.AssistChips.Select(chip => chip.Label)), Does.Contain("Arena 0/3"));
+        Assert.That(string.Join(" | ", activeSnapshot.AssistChips.Select(chip => chip.Label)), Does.Not.Contain("Reward queued: test salvage"));
 
         for (int i = 0; i < arena.Targets.Count; i++)
         {
@@ -168,7 +170,8 @@ public class PrototypePveArenaLoopValidationTests
 
         Assert.True(completedSnapshot.Arena.Completed);
         Assert.That(completedSnapshot.Arena.RewardStubLabel, Is.EqualTo("Reward queued: test salvage"));
-        Assert.That(string.Join(" | ", completedSnapshot.AssistChips.Select(chip => chip.Label)), Does.Contain("Reward queued: test salvage"));
+        Assert.That(string.Join(" | ", completedSnapshot.AssistChips.Select(chip => chip.Label)), Does.Contain("Mission complete"));
+        Assert.That(string.Join(" | ", completedSnapshot.AssistChips.Select(chip => chip.Label)), Does.Not.Contain("Reward queued: test salvage"));
     }
 
     [Test]
