@@ -10,14 +10,17 @@ Stabilize waypoint autopilot arrival behavior so the ship commits to a brake/dec
   - Added an arrival brake commit latch.
   - Added post-brake settle logic inside the near-target window.
   - Added a wider arrival hold capture deadzone based on distance, relative speed, and lateral speed.
+  - Added a terminal post-brake fallback so committed arrivals cannot fall back to `Accelerate`/`LongRangeBurn` inside terminal range.
+  - Added a shared hold-entry path that captures true near-arrival/settled cases without bypassing hold confirmation.
   - Added an angular-rate gate before main-thruster brake burns.
-  - Dampened brake attitude commands based on current angular velocity.
+  - Dampened brake attitude commands based on full local angular velocity and stronger over-speed clamping.
   - Added terminal lateral correction as a real RCS-only damping phase with no main-throttle request.
   - Added brake throttle shaping near the arrival completion envelope.
   - Added low-but-nonzero RCS authority detection for terminal lateral correction.
   - Prevented no-RCS approach from entering Hold before a real brake commit.
 - `Assets/Tests/PlayMode/PrototypeAutopilotNavigationPlayModeTests.cs`
   - Strengthened `PlayMode_Autopilot_Arrival_NoBrakeAccelerateFlap_ReachesCompletionDeadzone` with off-axis position, lateral velocity, initial angular velocity, state-transition counters, flip-throttle guard, and final angular-speed assertions.
+  - Added a terminal brake-to-accelerate transition counter and assertion so committed terminal arrival cannot flap back to `Accelerate`.
   - Added `PlayMode_Autopilot_NearTargetOffAxisVelocity_DampsLaterallyWithoutMainThrottle`.
   - Added `PlayMode_Autopilot_NearTargetHighMassLowRcs_DetectsLimitedLateralAuthority`.
 
@@ -26,6 +29,14 @@ Stabilize waypoint autopilot arrival behavior so the ship commits to a brake/dec
 - Unity MCP `validate_script`
   - `Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs`: success, 0 errors, 1 existing GC warning.
   - `Assets/Tests/PlayMode/PrototypeAutopilotNavigationPlayModeTests.cs`: success, 0 errors, 0 warnings.
+- Unity MCP EditMode focused follow-up regression
+  - Tests:
+    - `PrototypeWaypointAutopilotValidationTests.AutopilotFastApproachFlipsBeforeMainDecelBurn`
+    - `PrototypeWaypointAutopilotValidationTests.AutopilotClosedLoopApproachBrakesWithoutManualAlignment`
+    - `PrototypeWaypointAutopilotValidationTests.MetricsComputeClosingLateralAndStoppingDistance`
+    - `PrototypeWaypointAutopilotValidationTests.AutopilotNoRcsAllowsCoarseBurnAndReportsLimitedApproach`
+    - `PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_HoldRequiresStableVelocityWindow`
+  - Result: `Passed`, total `5`, passed `5`, failed `0`.
 - Unity MCP EditMode focused regression
   - Test: `PrototypeWaypointAutopilotValidationTests.AutopilotNoRcsAllowsCoarseBurnAndReportsLimitedApproach`
   - Result: `Passed`, total `1`, passed `1`, failed `0`.
@@ -38,6 +49,12 @@ Stabilize waypoint autopilot arrival behavior so the ship commits to a brake/dec
   - Result: `Passed`, total `1`, passed `1`, failed `0`.
   - Timestamp: `2026-05-26 12:10:36Z` to `2026-05-26 12:10:37Z`.
 - Unity MCP PlayMode focused regression
+  - Tests:
+    - `PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_Arrival_NoBrakeAccelerateFlap_ReachesCompletionDeadzone`
+    - `PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_NoRcs_DoesNotFakePrecisionComplete`
+    - `PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_ClosedLoopBrake_RotatesAndUsesMainThrusterWithoutHarnessRotation`
+  - Result: `Passed`, total `3`, passed `3`, failed `0`.
+- Unity MCP PlayMode terminal/authority regression
   - Tests:
     - `PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_Arrival_NoBrakeAccelerateFlap_ReachesCompletionDeadzone`
     - `PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_NearTargetOffAxisVelocity_DampsLaterallyWithoutMainThrottle`
@@ -56,6 +73,8 @@ Stabilize waypoint autopilot arrival behavior so the ship commits to a brake/dec
 - The passing version keeps at most one brake-to-accelerate and one accelerate-to-brake transition, forbids main-throttle requests during `FlipForBrake`, and accepts final `Complete` or `HoldPosition` inside the arrival deadzone.
 - A focused review found that low-but-nonzero RCS could hide insufficient terminal lateral authority; the final patch now compares desired lateral correction force with the clamped request and reports `LimitedRcsAuthority`.
 - A full EditMode rerun initially caught an over-broad Hold capture in the no-RCS approach case; the final patch now keeps no-RCS approach in `FinalApproach`/`LimitedRcsAuthority` unless a real brake commit already happened.
+- A follow-up user report showed the brake flip still overshot and terminal approach could spin or flap. The follow-up patch keeps terminal arrivals out of `Accelerate` after brake commit, damps brake attitude against full local angular velocity, and allows true completion-window cases to enter `HoldPosition` without faking `Complete`.
+- Unity initially kept running the stale pre-refresh assembly for `Autopilot_HoldRequiresStableVelocityWindow`; after forcing `Assets/Refresh`, the single test passed and the focused EditMode group passed.
 
 ## Known Tooling Notes
 
@@ -63,3 +82,4 @@ Stabilize waypoint autopilot arrival behavior so the ship commits to a brake/dec
 - A follow-up closed-loop brake rerun was blocked by Unity MCP returning `tests_running` despite the editor being idle.
 - Claude plan review was attempted for the autopilot patch context and timed out after 120 seconds; no Claude findings were available for this slice.
 - DevToolbox `verify_run` was executed on execution `0cc8a590b50f4c7b85b7a3660b4cffc2`; `Specs` passed, but the generic `Build`, `Test`, and `Lint` presets failed because they invoke `dotnet build`, `dotnet test`, and `dotnet format --verify-no-changes` without specifying `Weltraum Spiel.sln` in a folder containing multiple MSBuild files. The targeted Unity/.NET verification above is the authoritative result for this slice.
+- DevToolbox `verify_run` was executed again on execution `65fad3b13b444ea2b7f8d25ad0f03d20`; it reproduced the same tooling issue: `Specs` passed, while generic `Build`, `Test`, and `Lint` failed on MSB1011 / multiple workspace files. Targeted Unity MCP tests and `dotnet build "Weltraum Spiel.sln" --no-restore` remain the authoritative verification.

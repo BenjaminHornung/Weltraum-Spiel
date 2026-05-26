@@ -250,6 +250,7 @@ public class PrototypeAutopilotNavigationPlayModeTests
         bool seenArrivalComplete = false;
         float minimumDistance = rig.Autopilot.DistanceToTarget;
         int brakeToAccelerateTransitions = 0;
+        int terminalBrakeToAccelerateTransitions = 0;
         int accelerateToBrakeTransitions = 0;
         int throttleWhileFlipFrames = 0;
         bool sawBrakeApproachWindow = false;
@@ -288,6 +289,10 @@ public class PrototypeAutopilotNavigationPlayModeTests
                     if (currentState == PrototypeWaypointAutopilotState.Accelerate)
                     {
                         brakeToAccelerateTransitions++;
+                        if (isInCompletionEnvelope || enteredCompletionWindow)
+                        {
+                            terminalBrakeToAccelerateTransitions++;
+                        }
                     }
                 }
                 else if (previousState == PrototypeWaypointAutopilotState.Accelerate
@@ -343,6 +348,7 @@ public class PrototypeAutopilotNavigationPlayModeTests
                 maxBrakeAngularSpeed,
                 finalAngularSpeed,
                 brakeToAccelerateTransitions,
+                terminalBrakeToAccelerateTransitions,
                 accelerateToBrakeTransitions,
                 throttleWhileFlipFrames,
                 leftCompletionEnvelope,
@@ -352,15 +358,16 @@ public class PrototypeAutopilotNavigationPlayModeTests
         }
 
         string diagnostics = BuildArrivalDeadzoneFailureDiagnostics(
-            rig,
-            minimumDistance,
-            maxBrakeAngularSpeed,
-            finalAngularSpeed,
-            brakeToAccelerateTransitions,
-            accelerateToBrakeTransitions,
-            throttleWhileFlipFrames,
-            leftCompletionEnvelope,
-            stepTrace);
+                rig,
+                minimumDistance,
+                maxBrakeAngularSpeed,
+                finalAngularSpeed,
+                brakeToAccelerateTransitions,
+                terminalBrakeToAccelerateTransitions,
+                accelerateToBrakeTransitions,
+                throttleWhileFlipFrames,
+                leftCompletionEnvelope,
+                stepTrace);
 
         Assert.True(seenArrivalComplete, "Autopilot should enter HoldPosition or Complete near the arrival deadzone.\n" + diagnostics);
         Assert.True(
@@ -371,10 +378,11 @@ public class PrototypeAutopilotNavigationPlayModeTests
         Assert.That(minimumDistance, Is.LessThanOrEqualTo(rig.Target.ArrivalRadius + 3f), diagnostics);
         Assert.That(finalDistance, Is.LessThanOrEqualTo(rig.Target.ArrivalRadius + 5f), diagnostics);
         Assert.That(brakeToAccelerateTransitions, Is.LessThanOrEqualTo(1), "brake -> accelerate should not flap repeatedly in one arrival run.\n" + diagnostics);
+        Assert.That(terminalBrakeToAccelerateTransitions, Is.EqualTo(0), "arrival should not return to Accelerate after terminal commit-and-brake.\n" + diagnostics);
         Assert.That(accelerateToBrakeTransitions, Is.LessThanOrEqualTo(1), "arrival should not toggle into too many repeated brake pulses.\n" + diagnostics);
         Assert.That(throttleWhileFlipFrames, Is.EqualTo(0), "main throttle should never be requested in FlipForBrake.\n" + diagnostics);
         Assert.True(sawBrakeApproachWindow, "arrival run should include a Brake or FlipForBrake segment before completion.\n" + diagnostics);
-        Assert.That(maxBrakeAngularSpeed, Is.LessThanOrEqualTo(6f), "brake approach should stay rotationally bounded to reduce flip overshoot.\n" + diagnostics);
+        Assert.That(maxBrakeAngularSpeed, Is.LessThanOrEqualTo(5.5f), "brake approach should stay rotationally bounded to reduce flip overshoot.\n" + diagnostics);
         Assert.That(finalAngularSpeed, Is.LessThanOrEqualTo(3f), "arrival should settle near zero angular velocity.\n" + diagnostics);
     }
 
@@ -384,6 +392,7 @@ public class PrototypeAutopilotNavigationPlayModeTests
         float maxBrakeAngularSpeed,
         float finalAngularSpeed,
         int brakeToAccelerateTransitions,
+        int terminalBrakeToAccelerateTransitions,
         int accelerateToBrakeTransitions,
         int throttleWhileFlipFrames,
         bool leftCompletionEnvelope,
@@ -411,7 +420,8 @@ public class PrototypeAutopilotNavigationPlayModeTests
             + $"distance={distance:0.00} minDistance={minimumDistance:0.00} maxBrakeAngularSpeed={maxBrakeAngularSpeed:0.00} finalAngularSpeed={finalAngularSpeed:0.00}\n"
             + $"currentDistanceToTarget={distance:0.00} arrivalRadius={rig.Target.ArrivalRadius:0.00}\n"
             + $"leftCompletionEnvelope={leftCompletionEnvelope}\n"
-            + $"brakeToAccelerateTransitions={brakeToAccelerateTransitions} accelerateToBrakeTransitions={accelerateToBrakeTransitions} throttleWhileFlipFrames={throttleWhileFlipFrames}\n"
+            + $"brakeToAccelerateTransitions={brakeToAccelerateTransitions} terminalBrakeToAccelerateTransitions={terminalBrakeToAccelerateTransitions} "
+            + $"accelerateToBrakeTransitions={accelerateToBrakeTransitions} throttleWhileFlipFrames={throttleWhileFlipFrames}\n"
             + $"ArrivalFailureReason={rig.Autopilot.ArrivalFailureReason}\n"
             + $"last5Samples:\n{lastSamples}";
     }
