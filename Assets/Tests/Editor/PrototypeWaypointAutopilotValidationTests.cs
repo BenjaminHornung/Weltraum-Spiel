@@ -232,6 +232,35 @@ public class PrototypeWaypointAutopilotValidationTests
     }
 
     [Test]
+    public void AutopilotAlignedBrakeDampsResidualSpinBeforeMainDecelBurn()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 150f;
+        rig.Body.linearVelocity = Vector3.forward * 45f;
+        rig.Body.angularVelocity = Vector3.up * 0.35f;
+        rig.Ship.transform.rotation = Quaternion.LookRotation(Vector3.back, Vector3.up);
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+
+        InvokeFixedUpdate(rig.Autopilot);
+
+        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.Brake));
+        Assert.That(
+            rig.Controller.LastExternalFlightAssistRequest.mainThrottle,
+            Is.EqualTo(0f).Within(0.0001f),
+            "main decel should wait while the ship is still visibly rotating through retrograde");
+        Assert.That(
+            rig.Controller.LastExternalFlightAssistRequest.torqueLocal.magnitude,
+            Is.GreaterThan(0.01f),
+            "aligned brake attitude should still damp residual angular velocity inside the angle deadband");
+
+        rig.Body.angularVelocity = Vector3.up * Mathf.Deg2Rad * 3f;
+        InvokeFixedUpdate(rig.Autopilot);
+
+        Assert.That(rig.Controller.LastExternalFlightAssistRequest.mainThrottle, Is.GreaterThan(0.5f));
+    }
+
+    [Test]
     public void AutopilotClosedLoopApproachBrakesWithoutManualAlignment()
     {
         SimulationMode previousSimulationMode = Physics.simulationMode;

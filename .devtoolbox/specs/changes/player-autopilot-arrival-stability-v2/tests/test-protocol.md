@@ -41,6 +41,52 @@ Stabilize waypoint autopilot arrival behavior so the ship commits to a brake/dec
 
 ## Verification
 
+- 2026-05-26 follow-up after user report: brake flip still too aggressive / terminal circling
+  - Implementation:
+    - Split the loose brake-attitude latch from the stricter main-throttle brake gate.
+    - Main decel thrust now waits until retrograde alignment is stable and angular velocity has settled below the stricter brake throttle lock threshold.
+    - Brake attitude torque continues damping residual angular velocity inside the angular deadband instead of going torque-zero while the ship is still visibly spinning.
+    - Brake state no longer falls back to `AlignForBurn` while waiting for spin to settle before a main-thruster decel burn.
+    - Added approach brake commit hold logic so the autopilot stays in the planned decel phase near the target instead of toggling between acceleration and braking.
+    - Added `AutopilotAlignedBrakeDampsResidualSpinBeforeMainDecelBurn`.
+    - Adjusted the arrival no-flap assertion to allow planned transfer/terminal pulses while still forbidding terminal brake-to-accelerate flapping.
+  - Claude plan review:
+    - Reviewed the throttle-gate/deadband-damping plan and warned specifically against over-tightening into decel starvation/deadlock.
+    - Recommended mandatory EditMode plus PlayMode regressions for brake/decel transitions; those are listed below.
+  - Unity MCP `validate_script`:
+    - `Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs`: success, 0 errors, 1 existing GC warning.
+    - `Assets/Tests/Editor/PrototypeWaypointAutopilotValidationTests.cs`: success, 0 errors, 2 existing warnings.
+    - `Assets/Tests/PlayMode/PrototypeAutopilotNavigationPlayModeTests.cs`: success, 0 errors, 0 warnings.
+  - Unity MCP EditMode focused regression:
+    - Job `572b8b4f1070405ab6eefd3646540486`.
+    - Test: `PrototypeWaypointAutopilotValidationTests.AutopilotAlignedBrakeDampsResidualSpinBeforeMainDecelBurn`.
+    - Result: `Passed`, total `1`, passed `1`, failed `0`.
+  - Unity MCP PlayMode critical brake/decel regression group:
+    - Job `d3956ecda5c94305916622b7fc643514`.
+    - Tests:
+      - `PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_ClosedLoopBrake_RotatesAndUsesMainThrusterWithoutHarnessRotation`
+      - `PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_Arrival_NoBrakeAccelerateFlap_ReachesCompletionDeadzone`
+      - `PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap`
+      - `PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_OffAxisLongRangeTerminalBrakeCommit_DoesNotReenterAccelerateOrSpin`
+    - Result: `Passed`, total `4`, passed `4`, failed `0`.
+  - Unity MCP PlayMode autopilot suite:
+    - Job `bb480a4300b044d1bbf12d50424c1e08`.
+    - Test filter: `PrototypeAutopilotNavigationPlayModeTests`.
+    - Result: `Passed`, total `21`, passed `21`, failed `0`.
+  - Unity MCP EditMode autopilot validation suite:
+    - Job `806228c4f7e244c9bd37c11a6d0ef7c8`.
+    - Tests: `PrototypeWaypointAutopilotValidationTests`, `PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_HoldRequiresStableVelocityWindow`, `PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_NoAuthorityDoesNotFakeComplete`.
+    - Result: `Passed`, total `35`, passed `35`, failed `0`.
+  - Unity MCP console check:
+    - Result: no real compile/runtime errors after the test runs; only Unity TestRunner result-save entries and PerformanceTesting cleanup warnings.
+  - `.NET` build:
+    - Command: `dotnet build "Weltraum Spiel.sln" --no-restore`
+    - Result: exit code `0`, `0 Error(s)`, existing Unity/.NET assembly reference warnings only.
+  - DevToolbox `verify_run`:
+    - Execution: `6a77b90586f6410a8d7d8ce63b588928`.
+    - Result: `Specs` passed; generic `Build`, `Test`, and `Lint` failed because the presets run bare `dotnet build`, `dotnet test`, and `dotnet format --verify-no-changes` in a folder with multiple MSBuild files, reproducing the known MSB1011/tooling issue.
+    - Targeted Unity MCP tests and `dotnet build "Weltraum Spiel.sln" --no-restore` are the authoritative verification for this slice.
+
 - 2026-05-26 follow-up after user report: terminal lateral-dominant brake/decel
   - Implementation:
     - Terminal brake commit now remains latched until the ship is actually settled inside the terminal capture range.

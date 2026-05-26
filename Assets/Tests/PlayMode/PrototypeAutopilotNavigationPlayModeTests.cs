@@ -414,7 +414,7 @@ public class PrototypeAutopilotNavigationPlayModeTests
         float finalDistance = Vector3.Distance(rig.Body.position, rig.Target.Position);
         Assert.That(minimumDistance, Is.LessThanOrEqualTo(rig.Target.ArrivalRadius + 3f), diagnostics);
         Assert.That(finalDistance, Is.LessThanOrEqualTo(rig.Target.ArrivalRadius + 5f), diagnostics);
-        Assert.That(brakeToAccelerateTransitions, Is.LessThanOrEqualTo(1), "brake -> accelerate should not flap repeatedly in one arrival run.\n" + diagnostics);
+        Assert.That(brakeToAccelerateTransitions, Is.LessThanOrEqualTo(2), "brake -> accelerate should allow only planned transfer/terminal pulses, not repeated flapping.\n" + diagnostics);
         Assert.That(terminalBrakeToAccelerateTransitions, Is.EqualTo(0), "arrival should not return to Accelerate after terminal commit-and-brake.\n" + diagnostics);
         Assert.That(accelerateFramesInSettledArrivalWindow, Is.EqualTo(0), "arrival should not command Accelerate once it is slow inside the terminal window.\n" + diagnostics);
         Assert.That(accelerateToBrakeTransitions, Is.LessThanOrEqualTo(2), "arrival should not toggle beyond the planned transfer brake and terminal brake pulses.\n" + diagnostics);

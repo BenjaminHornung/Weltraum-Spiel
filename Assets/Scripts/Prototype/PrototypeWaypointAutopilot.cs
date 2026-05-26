@@ -76,6 +76,9 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private const float BrakeHoldReleaseZeroSpeed = 0.05f;
     private const float BrakeHoldReleaseLateralRatio = 1.75f;
     private const float BrakeAlignmentAngularSpeedLimitDegreesPerSecond = 35f;
+    private const float BrakeMainThrottleAngularSpeedLockDegreesPerSecond = 16f;
+    private const float BrakeMainThrottleAngularSpeedReleaseDegreesPerSecond = 24f;
+    private const float BrakeSettledAngularSpeedLimitDegreesPerSecond = 4f;
     private const float BrakeArrivalHoldDistanceMarginMeters = 6f;
     private const float BrakeArrivalHoldLateralSpeedMultiplier = 6f;
     private const float BrakeArrivalHoldMinimumLateralTolerance = 1.2f;
@@ -127,6 +130,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private bool arrivalBrakeCommitted;
     private float autopilotElapsedSeconds;
     private bool brakeAlignmentLocked;
+    private bool brakeMainThrottleAlignmentLocked;
     private Vector3 committedBrakeDirection;
     private bool arrivalTerminalCaptureActive;
     private PrototypeWaypointAutopilotArrivalPhase arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.Hold;
@@ -440,6 +444,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         avoidanceHoldExpireTime = 0f;
         reacquireDirectPathUntilTime = 0f;
         brakeAlignmentLocked = false;
+        brakeMainThrottleAlignmentLocked = false;
         committedBrakeDirection = Vector3.zero;
         brakeHoldStartTime = 0f;
         arrivalBrakeCommitted = false;
@@ -489,6 +494,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
         RefreshDiagnostics();
         brakeAlignmentLocked = false;
+        brakeMainThrottleAlignmentLocked = false;
         committedBrakeDirection = Vector3.zero;
         arrivalBrakeCommitted = false;
         arrivalTerminalCaptureActive = false;
@@ -734,9 +740,10 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         }
 
         bool requestBrake = ShouldRequestBrake();
+        bool holdApproachBrakeCommit = ShouldHoldApproachBrakeCommit();
         bool holdBrakeCommitUntilSettled = ShouldHoldTerminalBrakeCommitUntilSettled();
 
-        if ((requestBrake || holdBrakeCommitUntilSettled) && (!currentlyAvoiding || LastMetrics.shouldBrake))
+        if ((requestBrake || holdApproachBrakeCommit || holdBrakeCommitUntilSettled) && (!currentlyAvoiding || LastMetrics.shouldBrake))
         {
             ApplyBrakeRequest();
             return;
@@ -914,6 +921,11 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.Brake;
         bool brakeAlignmentReady = UpdateBrakeAlignmentLock(angle, angularSpeed);
         SetState(brakeAlignmentReady ? PrototypeWaypointAutopilotState.Brake : PrototypeWaypointAutopilotState.FlipForBrake, "braking");
+        if (!brakeAlignmentReady)
+        {
+            brakeMainThrottleAlignmentLocked = false;
+        }
+
         ApplyAutopilotRequest(brakeDirection, 1f, false, brakeAlignmentReady);
     }
 
@@ -1176,6 +1188,12 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
                 || angularSpeedRadiansPerSecond > Mathf.Deg2Rad * BrakeAlignmentAngularSpeedLimitDegreesPerSecond * 1.35f))
         {
             brakeAlignmentLocked = false;
+            brakeMainThrottleAlignmentLocked = false;
+        }
+
+        if (!brakeAlignmentLocked)
+        {
+            brakeMainThrottleAlignmentLocked = false;
         }
 
         return angularRateReady && (brakeAlignmentLocked || angle <= alignmentAngleDegrees);
@@ -1192,9 +1210,40 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         return UpdateBrakeAlignmentLock(angle, GetAngularSpeedRadiansPerSecond());
     }
 
+    private bool IsBrakeMainThrottleGateReady(float angle, float angularSpeedRadiansPerSecond, bool brakeAlignmentReady)
+    {
+        if (!brakeAlignmentReady)
+        {
+            brakeMainThrottleAlignmentLocked = false;
+            return false;
+        }
+
+        float lockLimit = Mathf.Deg2Rad * BrakeMainThrottleAngularSpeedLockDegreesPerSecond;
+        float releaseLimit = Mathf.Deg2Rad * BrakeMainThrottleAngularSpeedReleaseDegreesPerSecond;
+        if (!brakeMainThrottleAlignmentLocked
+            && angle <= alignmentAngleDegrees
+            && angularSpeedRadiansPerSecond <= lockLimit)
+        {
+            brakeMainThrottleAlignmentLocked = true;
+        }
+        else if (brakeMainThrottleAlignmentLocked
+            && (angle >= alignmentAngleDegrees + BrakeAlignmentHysteresisDegrees
+                || angularSpeedRadiansPerSecond > releaseLimit))
+        {
+            brakeMainThrottleAlignmentLocked = false;
+        }
+
+        return brakeMainThrottleAlignmentLocked && angularSpeedRadiansPerSecond <= releaseLimit;
+    }
+
     private bool IsBrakeAttitudeRateWithinMainThrottleGate(float angularSpeedRadiansPerSecond)
     {
         return angularSpeedRadiansPerSecond <= Mathf.Deg2Rad * BrakeAlignmentAngularSpeedLimitDegreesPerSecond;
+    }
+
+    private bool IsBrakeAngularVelocitySettled(float angularSpeedRadiansPerSecond)
+    {
+        return angularSpeedRadiansPerSecond <= Mathf.Deg2Rad * BrakeSettledAngularSpeedLimitDegreesPerSecond;
     }
 
     private float GetAngularSpeedRadiansPerSecond()
@@ -1270,6 +1319,40 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         return LastMetrics.closingSpeed > BrakeHoldReleaseZeroSpeed
             || LastMetrics.relativeSpeed > completionSpeed
             || LastMetrics.lateralSpeed > completionLateralTolerance;
+    }
+
+    private bool ShouldHoldApproachBrakeCommit()
+    {
+        if (!arrivalBrakeCommitted || currentTarget == null || shipRigidbody == null || !CanUseMainThrottle())
+        {
+            return false;
+        }
+
+        if (IsWithinArrivalTerminalCaptureRange() || ShouldCaptureArrivalHold() || ShouldCaptureArrivalHoldNearArrival())
+        {
+            return false;
+        }
+
+        float approachBrakeWindow = Mathf.Max(finalApproachDistanceMeters, GetArrivalDistance() * 4f);
+        if (LastMetrics.distance > approachBrakeWindow)
+        {
+            return false;
+        }
+
+        float minimumClosingSpeed = Mathf.Max(BrakeHoldReleaseZeroSpeed, arrivalSpeedMetersPerSecond * 0.5f);
+        if (LastMetrics.closingSpeed <= minimumClosingSpeed)
+        {
+            return false;
+        }
+
+        float completionSpeed = GetArrivalCompletionSpeedLimit();
+        if (LastMetrics.relativeSpeed <= completionSpeed)
+        {
+            return false;
+        }
+
+        float plannedStopReach = LastMetrics.stoppingDistance + GetArrivalDistance() + BrakeArrivalHoldDistanceMarginMeters;
+        return plannedStopReach >= LastMetrics.distance;
     }
 
     private bool ShouldCaptureTerminalOvershootHold()
@@ -1461,12 +1544,15 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             bool isBrakeState = CurrentState == PrototypeWaypointAutopilotState.Brake;
             bool isFlipForBrakeState = CurrentState == PrototypeWaypointAutopilotState.FlipForBrake;
             float angularSpeed = GetAngularSpeedRadiansPerSecond();
+            bool brakeAlignmentReady = !isBrakeState
+                || (brakeAlignmentReadyOverride ?? IsBrakeAlignmentLockedForMainThrottle(angle));
+            bool brakeMainThrottleReady = !isBrakeState
+                || IsBrakeMainThrottleGateReady(angle, angularSpeed, brakeAlignmentReady);
             bool canApplyMainThrottle = CanUseMainThrottle()
                 && !isFlipForBrakeState
                 && (!isBrakeState
                     ? angle <= alignmentAngleDegrees
-                    : (brakeAlignmentReadyOverride ?? IsBrakeAlignmentLockedForMainThrottle(angle))
-                        && IsBrakeAttitudeRateWithinMainThrottleGate(angularSpeed));
+                    : brakeMainThrottleReady);
 
             if (canApplyMainThrottle)
             {
@@ -1484,6 +1570,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
                 }
 
                 if (CurrentState != PrototypeWaypointAutopilotState.FinalApproach
+                    && CurrentState != PrototypeWaypointAutopilotState.Brake
                     && CurrentState != PrototypeWaypointAutopilotState.FlipForBrake
                     && CurrentState != PrototypeWaypointAutopilotState.ObstacleAvoidance)
                 {
@@ -1844,7 +1931,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         float angleDegrees = angularErrorLocal.magnitude * Mathf.Rad2Deg;
         if (CurrentState == PrototypeWaypointAutopilotState.Brake
             && angleDegrees <= BrakeAlignedTorqueDeadbandDegrees
-            && IsBrakeAttitudeRateWithinMainThrottleGate(angularVelocityLocal.magnitude))
+            && IsBrakeAngularVelocitySettled(angularVelocityLocal.magnitude))
         {
             return Vector3.zero;
         }
@@ -2390,6 +2477,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         requestedRcsTranslation = Vector3.zero;
         desiredBurnDirection = Vector3.zero;
         brakeAlignmentLocked = false;
+        brakeMainThrottleAlignmentLocked = false;
         committedBrakeDirection = Vector3.zero;
         brakeHoldStartTime = 0f;
         brakeHoldActive = false;
