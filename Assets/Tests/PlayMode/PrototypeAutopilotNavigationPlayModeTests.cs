@@ -59,6 +59,25 @@ public class PrototypeAutopilotNavigationPlayModeTests
     }
 
     [Test]
+    public void PlayMode_Autopilot_PhysicsAvoidsObstacleWithoutHarnessMotion()
+    {
+        AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 118f);
+        PrototypeNavigationObstacle obstacle = CreateObstacle(Vector3.forward * 42f, 8f);
+        SetPrivateFloat(rig.Autopilot, "avoidanceLockSeconds", 4f);
+        rig.Autopilot.ToggleAutopilot();
+
+        AutopilotRunResult result = RunClosedLoopPhysics(rig, 760, obstacle);
+
+        Assert.NotNull(result);
+        Assert.True(result.SawAvoidance, "Autopilot should enter obstacle avoidance from real detector data.");
+        Assert.True(result.SawActualRcsAvoidanceForce, "Closed-loop avoidance must apply real lateral RCS force through PlayerShipController.");
+        Assert.True(result.PassedObstacle, "Ship should physically pass the obstacle instead of only planning a waypoint.");
+        Assert.That(result.FinalDistance, Is.LessThan(result.InitialDistance), "Ship should make real progress toward the selected target.");
+        Assert.That(result.MaximumLateralOffset, Is.GreaterThan(obstacle.Radius + 0.5f), "Ship should build enough lateral offset to route around the obstacle.");
+        Assert.That(result.MinimumObstacleClearance, Is.GreaterThan(0.25f), "Ship should keep physical clearance outside the obstacle radius.");
+    }
+
+    [Test]
     public void PlayMode_Autopilot_StartsWithLateralVelocity_ReachesHold()
     {
         AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 64f);
@@ -169,12 +188,117 @@ public class PrototypeAutopilotNavigationPlayModeTests
         return result;
     }
 
+    private static AutopilotRunResult RunClosedLoopPhysics(
+        AutopilotPlayModeRig rig,
+        int maxSteps,
+        PrototypeNavigationObstacle obstacle)
+    {
+        var result = new AutopilotRunResult
+        {
+            InitialDistance = rig.Autopilot.DistanceToTarget,
+            InitialLateralSpeed = rig.Autopilot.LastMetrics.lateralSpeed,
+            MinimumObstacleClearance = float.PositiveInfinity
+        };
+
+        bool sawAvoidance = false;
+        for (int i = 0; i < maxSteps; i++)
+        {
+            StepClosedLoopPhysics(rig);
+            CaptureStep(rig, result, obstacle, sawAvoidance);
+            CaptureClosedLoopObstacleProgress(rig, result, obstacle);
+            sawAvoidance |= rig.Autopilot.AvoidanceActive
+                || rig.Autopilot.NavigationPhase == PrototypeWaypointAutopilotNavigationPhase.AvoidancePlanning
+                || rig.Autopilot.NavigationPhase == PrototypeWaypointAutopilotNavigationPhase.Avoiding;
+
+            if (rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Complete
+                || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Aborted
+                || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.FuelInsufficient
+                || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Failed)
+            {
+                break;
+            }
+        }
+
+        result.FinalDistance = Vector3.Distance(rig.Body.position, rig.Target.Position);
+        result.FinalLateralSpeed = ComputeLateralSpeed(rig.Body, rig.Target.Position);
+        Debug.Log(
+            $"AutopilotPlayModeV2 closed-loop avoidance state={rig.Autopilot.CurrentState} phase={rig.Autopilot.NavigationPhase} "
+            + $"position={rig.Body.position.x:0.00},{rig.Body.position.y:0.00},{rig.Body.position.z:0.00} "
+            + $"distance={result.FinalDistance:0.00} lateral={result.FinalLateralSpeed:0.00} "
+            + $"sawAvoidance={result.SawAvoidance} passedObstacle={result.PassedObstacle} "
+            + $"maxLateralOffset={result.MaximumLateralOffset:0.00} minClearance={result.MinimumObstacleClearance:0.00} "
+            + $"actualRcsAvoidance={result.SawActualRcsAvoidanceForce} maxRcsForce={result.MaximumActualRcsForce:0.00} "
+            + $"maxRcsTorque={result.MaximumActualRcsTorque:0.00} maxMain={result.MaximumMainThrottle:0.00} "
+            + $"maxRequestedRcs={result.MaximumRequestedRcsForce:0.00} maxAssistForce={result.MaximumAssistForce:0.00} "
+            + $"maxAssistTorque={result.MaximumAssistTorque:0.00} "
+            + $"forward={rig.Ship.transform.forward.x:0.00},{rig.Ship.transform.forward.y:0.00},{rig.Ship.transform.forward.z:0.00} "
+            + $"candidate={rig.Autopilot.SelectedCandidate}");
+        return result;
+    }
+
     private static void StepSimulation(AutopilotPlayModeRig rig)
     {
         SetPrivateBool(rig.Autopilot, "navigationPlanDirty", true);
         InvokeUpdate(rig.Autopilot);
         InvokeFixedUpdate(rig.Autopilot);
         Physics.SyncTransforms();
+    }
+
+    private static void StepClosedLoopPhysics(AutopilotPlayModeRig rig)
+    {
+        SetPrivateBool(rig.Autopilot, "navigationPlanDirty", true);
+        InvokeUpdate(rig.Autopilot);
+        InvokeFixedUpdate(rig.Autopilot);
+        InvokeFixedUpdate(rig.Controller);
+        Physics.Simulate(Time.fixedDeltaTime);
+        Physics.SyncTransforms();
+    }
+
+    private static void CaptureClosedLoopObstacleProgress(
+        AutopilotPlayModeRig rig,
+        AutopilotRunResult result,
+        PrototypeNavigationObstacle obstacle)
+    {
+        if (obstacle == null)
+        {
+            return;
+        }
+
+        Vector3 axis = rig.Target.Position;
+        axis.y = 0f;
+        if (axis.sqrMagnitude <= 0.0001f)
+        {
+            axis = Vector3.forward;
+        }
+
+        axis.Normalize();
+        Vector3 fromObstacle = rig.Body.position - obstacle.WorldPosition;
+        Vector3 flatFromObstacle = new Vector3(fromObstacle.x, 0f, fromObstacle.z);
+        float forwardOffset = Vector3.Dot(flatFromObstacle, axis);
+        Vector3 lateralOffset = flatFromObstacle - axis * forwardOffset;
+        result.MaximumLateralOffset = Mathf.Max(result.MaximumLateralOffset, lateralOffset.magnitude);
+        result.PassedObstacle |= forwardOffset > obstacle.Radius + 1f;
+
+        Vector3 rcsForce = rig.Controller.LastRcsActualForceWorld;
+        result.MaximumRequestedRcsForce = Mathf.Max(result.MaximumRequestedRcsForce, rig.Autopilot.RequestedRcsForce.magnitude);
+        result.MaximumAssistForce = Mathf.Max(result.MaximumAssistForce, rig.Controller.LastFlightAssistRequest.forceWorld.magnitude);
+        result.MaximumAssistTorque = Mathf.Max(result.MaximumAssistTorque, rig.Controller.LastFlightAssistRequest.torqueLocal.magnitude);
+        result.MaximumActualRcsForce = Mathf.Max(result.MaximumActualRcsForce, rcsForce.magnitude);
+        result.MaximumActualRcsTorque = Mathf.Max(result.MaximumActualRcsTorque, rig.Controller.LastRcsActualTorqueWorld.magnitude);
+        result.MaximumMainThrottle = Mathf.Max(result.MaximumMainThrottle, rig.Controller.MainThrustCommand);
+        Vector3 directToTarget = rig.Target.Position - rig.Body.position;
+        directToTarget.y = 0f;
+        if (directToTarget.sqrMagnitude <= 0.0001f)
+        {
+            directToTarget = axis;
+        }
+
+        directToTarget.Normalize();
+        Vector3 lateralRcsForce = rcsForce - directToTarget * Vector3.Dot(rcsForce, directToTarget);
+        if (lateralRcsForce.magnitude > 50f)
+        {
+            result.SawActualRcsAvoidanceForce = true;
+        }
     }
 
     private static void ApplyHarnessMotion(AutopilotPlayModeRig rig, PrototypeNavigationObstacle obstacle, AutopilotRunResult result)
@@ -403,12 +527,12 @@ public class PrototypeAutopilotNavigationPlayModeTests
 
     private static void ConfigureRcsNozzles(Transform shipTransform, RcsThrusterController rcs, Rigidbody body, ShipPhysicsCore physicsCore)
     {
-        Transform up = CreateNozzle(shipTransform, "AutopilotPlayModeV2RcsUp", Vector3.up);
-        Transform down = CreateNozzle(shipTransform, "AutopilotPlayModeV2RcsDown", Vector3.down);
-        Transform left = CreateNozzle(shipTransform, "AutopilotPlayModeV2RcsLeft", Vector3.left);
-        Transform right = CreateNozzle(shipTransform, "AutopilotPlayModeV2RcsRight", Vector3.right);
-        Transform forward = CreateNozzle(shipTransform, "AutopilotPlayModeV2RcsForward", Vector3.forward);
-        Transform back = CreateNozzle(shipTransform, "AutopilotPlayModeV2RcsBack", Vector3.back);
+        Transform up = CreateNozzle(shipTransform, "RCS_Nozzle_AutopilotPlayModeV2Up", Vector3.up);
+        Transform down = CreateNozzle(shipTransform, "RCS_Nozzle_AutopilotPlayModeV2Down", Vector3.down);
+        Transform left = CreateNozzle(shipTransform, "RCS_Nozzle_AutopilotPlayModeV2Left", Vector3.left);
+        Transform right = CreateNozzle(shipTransform, "RCS_Nozzle_AutopilotPlayModeV2Right", Vector3.right);
+        Transform forward = CreateNozzle(shipTransform, "RCS_Nozzle_AutopilotPlayModeV2Forward", Vector3.forward);
+        Transform back = CreateNozzle(shipTransform, "RCS_Nozzle_AutopilotPlayModeV2Back", Vector3.back);
         rcs.ConfigureThrusters(up, down, left, right, forward, back, body, physicsCore);
     }
 
@@ -506,6 +630,15 @@ public class PrototypeAutopilotNavigationPlayModeTests
         public bool SawAvoidance;
         public bool SawReacquire;
         public bool SawDirectAfterAvoidance;
+        public bool SawActualRcsAvoidanceForce;
+        public bool PassedObstacle;
+        public float MaximumLateralOffset;
+        public float MaximumActualRcsForce;
+        public float MaximumActualRcsTorque;
+        public float MaximumMainThrottle;
+        public float MaximumRequestedRcsForce;
+        public float MaximumAssistForce;
+        public float MaximumAssistTorque;
         public Vector3 AvoidanceSide;
     }
 

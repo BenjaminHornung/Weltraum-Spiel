@@ -311,3 +311,27 @@ Player UI regression controls, minimap evidence, navigation/combat popups, Kill 
   - `tests/screenshots/player-ui-regression-combat-computer-1280x720.png`
 - Review note:
   - `claude-plan-review` was invoked with the current plan and touched file list; the local wrapper timed out after 120 seconds, so no actionable Claude feedback was returned for this checkpoint.
+
+## Latest: closed-loop autopilot obstacle avoidance evidence follow-up
+
+- Change set:
+  - `Assets/Tests/PlayMode/PrototypeAutopilotNavigationPlayModeTests.cs`
+- Root cause caught by the new regression:
+  - The existing PlayMode obstacle-avoidance harness moved the ship kinematically after planner/controller ticks, so it proved planner intent but not that the real ship could apply RCS/main-thruster authority through Unity physics.
+  - The PlayMode rig's synthetic RCS nozzle names did not use the runtime-recognized `RCS_Nozzle_` prefix, so the closed-loop controller initially had zero active RCS nozzles.
+- Fix:
+  - The PlayMode rig now names its synthetic RCS nozzles with the runtime `RCS_Nozzle_` prefix.
+  - Added `PlayMode_Autopilot_PhysicsAvoidsObstacleWithoutHarnessMotion`, which does not call the old kinematic `ApplyHarnessMotion` helper. It ticks the waypoint autopilot, the player ship controller, and `Physics.Simulate(Time.fixedDeltaTime)`.
+- New acceptance checks:
+  - Autopilot enters avoidance from real obstacle detector data.
+  - PlayerShipController applies real lateral RCS force.
+  - The ship physically passes the obstacle.
+  - The ship makes progress toward the target.
+  - The ship builds lateral offset beyond obstacle radius and keeps positive clearance.
+- Unity MCP PlayMode job `4a244c7b1c3e43ba88ec298ee2bd4142`: new closed-loop avoidance regression failed before the rig correction because real lateral RCS force stayed at zero.
+- Unity MCP PlayMode job `5283d90eedc449bda10ad6ebabfb2985`: new closed-loop avoidance regression PASS 1/1 after the RCS nozzle naming fix.
+- Unity MCP PlayMode job `bcf5e6342a654e1b85ab6b031c89672f`: full `PrototypeAutopilotNavigationPlayModeTests` PASS 7/7.
+- Unity MCP EditMode job `f80f5a71284d4ade9551e591a715901f`: `PrototypeWaypointAutopilotValidationTests` PASS 29/29.
+- `dotnet build "Weltraum Spiel.sln" --no-restore`: PASS, 0 errors, 22 existing Unity/generated assembly warnings.
+- Review note:
+  - `claude-plan-review` was invoked with the closed-loop avoidance plan, touched files and Unity MCP job ids; the local wrapper timed out after 120 seconds, so no actionable Claude feedback was returned for this checkpoint.
