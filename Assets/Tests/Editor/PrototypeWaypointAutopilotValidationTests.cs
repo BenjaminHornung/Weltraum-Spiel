@@ -743,6 +743,38 @@ public class PrototypeWaypointAutopilotValidationTests
     }
 
     [Test]
+    public void AutopilotSelectTargetClearsArrivalTerminalCaptureLatch()
+    {
+        var rig = CreateAutopilotRig();
+        var secondTarget = new GameObject($"{AutopilotRigTargetPrefix}_{autopilotRigTargetCounter++}");
+        secondTarget.transform.position = Vector3.right * 50f;
+        var secondNavigationTarget = secondTarget.AddComponent<PrototypeNavigationTarget>();
+        secondNavigationTarget.Configure("TerminalCaptureLatchTarget", 10f);
+
+        SetPrivateField(rig.Autopilot, "arrivalBrakeCommitted", true);
+        SetPrivateField(rig.Autopilot, "arrivalTerminalCaptureActive", true);
+        SetPrivateField(rig.Autopilot, "brakeAlignmentLocked", true);
+        SetPrivateField(rig.Autopilot, "brakeHoldActive", true);
+        SetPrivateFloat(rig.Autopilot, "brakeHoldStartTime", 12f);
+        SetPrivateField(rig.Autopilot, "committedBrakeDirection", Vector3.back);
+
+        rig.Autopilot.SelectTarget(secondNavigationTarget);
+
+        FieldInfo arrivalBrakeCommitted = rig.Autopilot.GetType().GetField("arrivalBrakeCommitted", PrivateInstance);
+        FieldInfo arrivalTerminalCaptureActive = rig.Autopilot.GetType().GetField("arrivalTerminalCaptureActive", PrivateInstance);
+        FieldInfo brakeAlignmentLocked = rig.Autopilot.GetType().GetField("brakeAlignmentLocked", PrivateInstance);
+        FieldInfo brakeHoldActive = rig.Autopilot.GetType().GetField("brakeHoldActive", PrivateInstance);
+        Assert.NotNull(arrivalBrakeCommitted);
+        Assert.NotNull(arrivalTerminalCaptureActive);
+        Assert.NotNull(brakeAlignmentLocked);
+        Assert.NotNull(brakeHoldActive);
+        Assert.False((bool)arrivalBrakeCommitted.GetValue(rig.Autopilot));
+        Assert.False((bool)arrivalTerminalCaptureActive.GetValue(rig.Autopilot));
+        Assert.False((bool)brakeAlignmentLocked.GetValue(rig.Autopilot));
+        Assert.False((bool)brakeHoldActive.GetValue(rig.Autopilot));
+    }
+
+    [Test]
     public void FuelEstimateRejectsFarTargetWithLowFuelButAllowsFuelFreeThrust()
     {
         GameObject ship = new GameObject("WaypointAutopilotValidationShip");
