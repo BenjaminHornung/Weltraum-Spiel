@@ -166,9 +166,15 @@ public class PrototypeAutopilotNavigationPlayModeTests
 
         StepSimulation(rig);
 
-        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.FinalApproach));
-        Assert.That(rig.Autopilot.ArrivalPhase, Is.EqualTo(PrototypeWaypointAutopilotArrivalPhase.LateralCorrection));
-        Assert.That(rig.Autopilot.ActiveSegmentType, Is.EqualTo(PrototypeTrajectorySegmentType.FinalApproach));
+        Assert.That(
+            rig.Autopilot.CurrentState,
+            Is.EqualTo(PrototypeWaypointAutopilotState.FinalApproach).Or.EqualTo(PrototypeWaypointAutopilotState.HoldPosition));
+        Assert.That(
+            rig.Autopilot.ArrivalPhase,
+            Is.EqualTo(PrototypeWaypointAutopilotArrivalPhase.LateralCorrection).Or.EqualTo(PrototypeWaypointAutopilotArrivalPhase.Hold));
+        Assert.That(
+            rig.Autopilot.ActiveSegmentType,
+            Is.EqualTo(PrototypeTrajectorySegmentType.FinalApproach).Or.EqualTo(PrototypeTrajectorySegmentType.Hold));
         Assert.That(rig.Autopilot.RequestedMainThrottle, Is.LessThanOrEqualTo(0.01f));
         Assert.True(rig.Controller.HasExternalFlightAssistRequest);
         Assert.That(rig.Controller.LastExternalFlightAssistRequest.mainThrottle, Is.LessThanOrEqualTo(0.01f));
@@ -188,22 +194,30 @@ public class PrototypeAutopilotNavigationPlayModeTests
         for (int i = 0; i < 30; i++)
         {
             StepSimulation(rig);
-            if (rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.FinalApproach
-                && rig.Autopilot.ArrivalPhase == PrototypeWaypointAutopilotArrivalPhase.LateralCorrection)
+            if ((rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.FinalApproach
+                    && rig.Autopilot.ArrivalPhase == PrototypeWaypointAutopilotArrivalPhase.LateralCorrection)
+                || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.HoldPosition)
             {
                 break;
             }
         }
 
-        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.FinalApproach));
-        Assert.That(rig.Autopilot.ArrivalPhase, Is.EqualTo(PrototypeWaypointAutopilotArrivalPhase.LateralCorrection));
+        Assert.That(
+            rig.Autopilot.CurrentState,
+            Is.EqualTo(PrototypeWaypointAutopilotState.FinalApproach).Or.EqualTo(PrototypeWaypointAutopilotState.HoldPosition));
+        Assert.That(
+            rig.Autopilot.ArrivalPhase,
+            Is.EqualTo(PrototypeWaypointAutopilotArrivalPhase.LateralCorrection).Or.EqualTo(PrototypeWaypointAutopilotArrivalPhase.Hold));
         Assert.That(rig.Controller.HasExternalFlightAssistRequest, Is.True);
         Assert.That(rig.Autopilot.RequestedMainThrottle, Is.LessThanOrEqualTo(0.01f));
         Assert.That(rig.Controller.LastExternalFlightAssistRequest.mainThrottle, Is.LessThanOrEqualTo(0.01f));
         Assert.True(
             rig.Autopilot.CurrentPlan.limitedRcsAuthority
-            || rig.Autopilot.ArrivalFailureReason == "LimitedRcsAuthority",
-            $"state={rig.Autopilot.CurrentState} reason={rig.Autopilot.ArrivalFailureReason} limited={rig.Autopilot.CurrentPlan.limitedRcsAuthority}");
+            || rig.Autopilot.CurrentPlan.limitedHoldAuthority
+            || rig.Autopilot.ArrivalFailureReason == "LimitedRcsAuthority"
+            || rig.Autopilot.ArrivalFailureReason == "LimitedHoldAuthority",
+            $"state={rig.Autopilot.CurrentState} reason={rig.Autopilot.ArrivalFailureReason} "
+            + $"limitedRcs={rig.Autopilot.CurrentPlan.limitedRcsAuthority} limitedHold={rig.Autopilot.CurrentPlan.limitedHoldAuthority}");
     }
 
     [Test]
@@ -255,7 +269,9 @@ public class PrototypeAutopilotNavigationPlayModeTests
         int throttleWhileFlipFrames = 0;
         bool sawBrakeApproachWindow = false;
         float maxBrakeAngularSpeed = 0f;
+        float maxFlipAngularSpeed = 0f;
         float finalAngularSpeed = 0f;
+        string firstCompletionWindowSample = string.Empty;
         List<string> stepTrace = new List<string>();
         PrototypeWaypointAutopilotState previousState = rig.Autopilot.CurrentState;
 
@@ -269,6 +285,13 @@ public class PrototypeAutopilotNavigationPlayModeTests
             if (distance <= rig.Target.ArrivalRadius + 8f && rig.Body.linearVelocity.magnitude <= 4f)
             {
                 enteredCompletionWindow = true;
+                if (string.IsNullOrEmpty(firstCompletionWindowSample))
+                {
+                    firstCompletionWindowSample =
+                        $"i={i} dist={distance:0.00} metricDist={rig.Autopilot.DistanceToTarget:0.00} "
+                        + $"speed={rig.Body.linearVelocity.magnitude:0.00} closing={rig.Autopilot.ClosingSpeed:0.00} "
+                        + $"lat={rig.Autopilot.LateralSpeed:0.00} state={rig.Autopilot.CurrentState} phase={rig.Autopilot.NavigationPhase}";
+                }
             }
 
             if (isInCompletionEnvelope)
@@ -317,6 +340,10 @@ public class PrototypeAutopilotNavigationPlayModeTests
                 sawBrakeApproachWindow = true;
                 maxBrakeAngularSpeed = Mathf.Max(maxBrakeAngularSpeed, angularSpeed);
             }
+            if (currentState == PrototypeWaypointAutopilotState.FlipForBrake)
+            {
+                maxFlipAngularSpeed = Mathf.Max(maxFlipAngularSpeed, angularSpeed);
+            }
 
             if (currentState == PrototypeWaypointAutopilotState.HoldPosition)
             {
@@ -346,12 +373,14 @@ public class PrototypeAutopilotNavigationPlayModeTests
                 rig,
                 minimumDistance,
                 maxBrakeAngularSpeed,
+                maxFlipAngularSpeed,
                 finalAngularSpeed,
                 brakeToAccelerateTransitions,
                 terminalBrakeToAccelerateTransitions,
                 accelerateToBrakeTransitions,
                 throttleWhileFlipFrames,
                 leftCompletionEnvelope,
+                firstCompletionWindowSample,
                 stepTrace);
             Debug.LogError(failureMessage);
             Assert.Fail(failureMessage);
@@ -361,12 +390,14 @@ public class PrototypeAutopilotNavigationPlayModeTests
                 rig,
                 minimumDistance,
                 maxBrakeAngularSpeed,
+                maxFlipAngularSpeed,
                 finalAngularSpeed,
                 brakeToAccelerateTransitions,
                 terminalBrakeToAccelerateTransitions,
                 accelerateToBrakeTransitions,
                 throttleWhileFlipFrames,
                 leftCompletionEnvelope,
+                firstCompletionWindowSample,
                 stepTrace);
 
         Assert.True(seenArrivalComplete, "Autopilot should enter HoldPosition or Complete near the arrival deadzone.\n" + diagnostics);
@@ -383,19 +414,176 @@ public class PrototypeAutopilotNavigationPlayModeTests
         Assert.That(throttleWhileFlipFrames, Is.EqualTo(0), "main throttle should never be requested in FlipForBrake.\n" + diagnostics);
         Assert.True(sawBrakeApproachWindow, "arrival run should include a Brake or FlipForBrake segment before completion.\n" + diagnostics);
         Assert.That(maxBrakeAngularSpeed, Is.LessThanOrEqualTo(5.5f), "brake approach should stay rotationally bounded to reduce flip overshoot.\n" + diagnostics);
+        Assert.That(maxFlipAngularSpeed, Is.LessThanOrEqualTo(4.25f), "brake flip should stay rotationally bounded before main decel burn.\n" + diagnostics);
         Assert.That(finalAngularSpeed, Is.LessThanOrEqualTo(3f), "arrival should settle near zero angular velocity.\n" + diagnostics);
+    }
+
+    [Test]
+    public void PlayMode_Autopilot_TerminalOvershootBrakesAndHoldsWithoutReaccelerating()
+    {
+        AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 30f);
+        rig.Body.position = Vector3.forward * 18f;
+        rig.Body.linearVelocity = Vector3.back * 5f + Vector3.right * 8f;
+        rig.Body.angularVelocity = Vector3.up * 1.2f + Vector3.right * 0.7f;
+        rig.Ship.transform.rotation = Quaternion.Euler(0f, 60f, 0f);
+        Physics.SyncTransforms();
+        rig.Autopilot.ToggleAutopilot();
+
+        bool sawBrake = false;
+        bool sawMainBrake = false;
+        bool sawHoldOrComplete = false;
+        int accelerateFramesInTerminalEnvelope = 0;
+        int throttleWhileFlipFrames = 0;
+        float maxFlipAngularSpeed = 0f;
+        float finalDistance = rig.Autopilot.DistanceToTarget;
+        List<string> stepTrace = new List<string>();
+
+        for (int i = 0; i < 1800; i++)
+        {
+            StepClosedLoopPhysics(rig);
+            finalDistance = Vector3.Distance(rig.Body.position, rig.Target.Position);
+            bool inTerminalEnvelope = finalDistance <= rig.Target.ArrivalRadius + 8f;
+            PrototypeWaypointAutopilotState currentState = rig.Autopilot.CurrentState;
+
+            if (inTerminalEnvelope && currentState == PrototypeWaypointAutopilotState.Accelerate)
+            {
+                accelerateFramesInTerminalEnvelope++;
+            }
+
+            if (currentState == PrototypeWaypointAutopilotState.Brake || currentState == PrototypeWaypointAutopilotState.FlipForBrake)
+            {
+                sawBrake = true;
+            }
+
+            if (currentState == PrototypeWaypointAutopilotState.FlipForBrake)
+            {
+                maxFlipAngularSpeed = Mathf.Max(maxFlipAngularSpeed, rig.Body.angularVelocity.magnitude);
+                if (rig.Autopilot.RequestedMainThrottle > 0.05f)
+                {
+                    throttleWhileFlipFrames++;
+                }
+            }
+
+            sawMainBrake |= Vector3.Dot(rig.Controller.LastMainForceWorld, rig.Body.linearVelocity) < -0.01f;
+            sawHoldOrComplete |= currentState == PrototypeWaypointAutopilotState.HoldPosition
+                || currentState == PrototypeWaypointAutopilotState.Complete;
+
+            if (currentState == PrototypeWaypointAutopilotState.Complete
+                || currentState == PrototypeWaypointAutopilotState.Aborted
+                || currentState == PrototypeWaypointAutopilotState.Failed
+                || currentState == PrototypeWaypointAutopilotState.FuelInsufficient)
+            {
+                break;
+            }
+
+            stepTrace.Add(
+                $"i={i} dist={finalDistance:0.00} rel={rig.Body.linearVelocity.magnitude:0.00} closing={rig.Autopilot.ClosingSpeed:0.00} "
+                + $"lat={rig.Autopilot.LateralSpeed:0.00} state={currentState} phase={rig.Autopilot.NavigationPhase} "
+                + $"main={rig.Autopilot.RequestedMainThrottle:0.00} rcs={rig.Autopilot.RequestedRcsForce.magnitude:0.00}");
+        }
+
+        string diagnostics = BuildTerminalOvershootDiagnostics(
+            rig,
+            finalDistance,
+            accelerateFramesInTerminalEnvelope,
+            throttleWhileFlipFrames,
+            maxFlipAngularSpeed,
+            stepTrace);
+
+        Assert.True(sawBrake, "terminal overshoot should use the brake path before settling.\n" + diagnostics);
+        Assert.True(sawMainBrake, "terminal overshoot should use the main thruster to remove high residual velocity.\n" + diagnostics);
+        Assert.True(sawHoldOrComplete, "terminal overshoot should settle into HoldPosition or Complete.\n" + diagnostics);
+        Assert.That(
+            rig.Autopilot.CurrentState,
+            Is.EqualTo(PrototypeWaypointAutopilotState.Complete).Or.EqualTo(PrototypeWaypointAutopilotState.HoldPosition),
+            diagnostics);
+        Assert.That(accelerateFramesInTerminalEnvelope, Is.EqualTo(0), "terminal overshoot must not re-enter transfer acceleration inside the arrival envelope.\n" + diagnostics);
+        Assert.That(throttleWhileFlipFrames, Is.EqualTo(0), "main throttle should stay gated while flipping for terminal brake.\n" + diagnostics);
+        Assert.That(maxFlipAngularSpeed, Is.LessThanOrEqualTo(4.25f), "terminal brake flip should remain visually bounded.\n" + diagnostics);
+        Assert.That(finalDistance, Is.LessThanOrEqualTo(rig.Target.ArrivalRadius + 6f), diagnostics);
+    }
+
+    [Test]
+    public void PlayMode_Autopilot_TerminalOvershootWithoutRcsDoesNotEnterHold()
+    {
+        AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 30f);
+        SetPrivateFloat(rig.Rcs, "translationForce", 0f);
+        rig.Body.position = Vector3.forward * 18f;
+        rig.Body.linearVelocity = Vector3.back * 1.5f + Vector3.right * 2f;
+        Physics.SyncTransforms();
+        rig.Autopilot.ToggleAutopilot();
+        SetPrivateBool(rig.Autopilot, "arrivalBrakeCommitted", true);
+
+        StepSimulation(rig);
+
+        Assert.That(rig.Autopilot.CurrentState, Is.Not.EqualTo(PrototypeWaypointAutopilotState.HoldPosition));
+        Assert.That(rig.Autopilot.CurrentState, Is.Not.EqualTo(PrototypeWaypointAutopilotState.Complete));
+        Assert.That(rig.Autopilot.RequestedRcsForce.magnitude, Is.EqualTo(0f).Within(0.0001f));
+    }
+
+    [Test]
+    public void PlayMode_Autopilot_TerminalAvoidanceStillWinsOverCommittedBrakeLatch()
+    {
+        AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 40f);
+        rig.Body.position = Vector3.forward * 20f;
+        rig.Body.linearVelocity = Vector3.right * 3f;
+        PrototypeNavigationObstacle obstacle = CreateObstacle(Vector3.forward * 30f, 7f);
+        Physics.SyncTransforms();
+        rig.Autopilot.ToggleAutopilot();
+        SetPrivateBool(rig.Autopilot, "arrivalBrakeCommitted", true);
+
+        StepSimulation(rig);
+
+        Assert.NotNull(obstacle);
+        Assert.That(rig.Autopilot.NavigationObstacleDetected, Is.True);
+        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.ObstacleAvoidance));
+        Assert.That(
+            rig.Autopilot.NavigationPhase,
+            Is.EqualTo(PrototypeWaypointAutopilotNavigationPhase.AvoidancePlanning).Or.EqualTo(PrototypeWaypointAutopilotNavigationPhase.Avoiding));
+        Assert.That(rig.Autopilot.CurrentState, Is.Not.EqualTo(PrototypeWaypointAutopilotState.Brake));
+        Assert.That(rig.Autopilot.CurrentState, Is.Not.EqualTo(PrototypeWaypointAutopilotState.FlipForBrake));
+    }
+
+    [Test]
+    public void PlayMode_Autopilot_SelectTargetClearsArrivalBrakeAndHoldHysteresis()
+    {
+        AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 120f);
+        GameObject secondTargetObject = new GameObject("AutopilotPlayModeV2SecondTarget");
+        secondTargetObject.transform.position = Vector3.right * 80f;
+        PrototypeNavigationTarget secondTarget = secondTargetObject.AddComponent<PrototypeNavigationTarget>();
+        secondTarget.Configure("SecondTarget", 10f);
+
+        SetPrivateBool(rig.Autopilot, "arrivalBrakeCommitted", true);
+        SetPrivateBool(rig.Autopilot, "brakeAlignmentLocked", true);
+        SetPrivateBool(rig.Autopilot, "brakeHoldActive", true);
+        SetPrivateFloat(rig.Autopilot, "brakeHoldStartTime", 12f);
+        SetPrivateBool(rig.Autopilot, "holdConfirmStarted", true);
+        SetPrivateFloat(rig.Autopilot, "holdConfirmUntilTime", 12f);
+        SetPrivateVector3(rig.Autopilot, "committedBrakeDirection", Vector3.back);
+
+        rig.Autopilot.SelectTarget(secondTarget);
+
+        Assert.False(GetPrivateBool(rig.Autopilot, "arrivalBrakeCommitted"));
+        Assert.False(GetPrivateBool(rig.Autopilot, "brakeAlignmentLocked"));
+        Assert.False(GetPrivateBool(rig.Autopilot, "brakeHoldActive"));
+        Assert.False(GetPrivateBool(rig.Autopilot, "holdConfirmStarted"));
+        Assert.That(GetPrivateFloat(rig.Autopilot, "brakeHoldStartTime"), Is.EqualTo(0f).Within(0.0001f));
+        Assert.That(GetPrivateFloat(rig.Autopilot, "holdConfirmUntilTime"), Is.EqualTo(0f).Within(0.0001f));
+        Assert.That(GetPrivateVector3(rig.Autopilot, "committedBrakeDirection"), Is.EqualTo(Vector3.zero));
     }
 
     private static string BuildArrivalDeadzoneFailureDiagnostics(
         AutopilotPlayModeRig rig,
         float minimumDistance,
         float maxBrakeAngularSpeed,
+        float maxFlipAngularSpeed,
         float finalAngularSpeed,
         int brakeToAccelerateTransitions,
         int terminalBrakeToAccelerateTransitions,
         int accelerateToBrakeTransitions,
         int throttleWhileFlipFrames,
         bool leftCompletionEnvelope,
+        string firstCompletionWindowSample,
         List<string> stepTrace)
     {
         float distance = Vector3.Distance(rig.Body.position, rig.Target.Position);
@@ -417,11 +605,37 @@ public class PrototypeAutopilotNavigationPlayModeTests
             + $"finalPos={rig.Body.position.x:0.00},{rig.Body.position.y:0.00},{rig.Body.position.z:0.00}\n"
             + $"finalVel={rig.Body.linearVelocity.x:0.00},{rig.Body.linearVelocity.y:0.00},{rig.Body.linearVelocity.z:0.00}\n"
             + $"finalAngularVel={rig.Body.angularVelocity.x:0.00},{rig.Body.angularVelocity.y:0.00},{rig.Body.angularVelocity.z:0.00}\n"
-            + $"distance={distance:0.00} minDistance={minimumDistance:0.00} maxBrakeAngularSpeed={maxBrakeAngularSpeed:0.00} finalAngularSpeed={finalAngularSpeed:0.00}\n"
+            + $"distance={distance:0.00} minDistance={minimumDistance:0.00} maxBrakeAngularSpeed={maxBrakeAngularSpeed:0.00} maxFlipAngularSpeed={maxFlipAngularSpeed:0.00} finalAngularSpeed={finalAngularSpeed:0.00}\n"
             + $"currentDistanceToTarget={distance:0.00} arrivalRadius={rig.Target.ArrivalRadius:0.00}\n"
             + $"leftCompletionEnvelope={leftCompletionEnvelope}\n"
+            + $"firstCompletionWindowSample={firstCompletionWindowSample}\n"
             + $"brakeToAccelerateTransitions={brakeToAccelerateTransitions} terminalBrakeToAccelerateTransitions={terminalBrakeToAccelerateTransitions} "
             + $"accelerateToBrakeTransitions={accelerateToBrakeTransitions} throttleWhileFlipFrames={throttleWhileFlipFrames}\n"
+            + $"ArrivalFailureReason={rig.Autopilot.ArrivalFailureReason}\n"
+            + $"last5Samples:\n{lastSamples}";
+    }
+
+    private static string BuildTerminalOvershootDiagnostics(
+        AutopilotPlayModeRig rig,
+        float finalDistance,
+        int accelerateFramesInTerminalEnvelope,
+        int throttleWhileFlipFrames,
+        float maxFlipAngularSpeed,
+        List<string> stepTrace)
+    {
+        string lastSamples = string.Empty;
+        int start = Mathf.Max(0, stepTrace.Count - 5);
+        for (int i = start; i < stepTrace.Count; i++)
+        {
+            lastSamples += stepTrace[i] + (i + 1 < stepTrace.Count ? "\n" : string.Empty);
+        }
+
+        return
+            $"finalState={rig.Autopilot.CurrentState} phase={rig.Autopilot.NavigationPhase}\n"
+            + $"finalDistance={finalDistance:0.00} finalSpeed={rig.Body.linearVelocity.magnitude:0.00} "
+            + $"finalAngularSpeed={rig.Body.angularVelocity.magnitude:0.00}\n"
+            + $"accelerateFramesInTerminalEnvelope={accelerateFramesInTerminalEnvelope} "
+            + $"throttleWhileFlipFrames={throttleWhileFlipFrames} maxFlipAngularSpeed={maxFlipAngularSpeed:0.00}\n"
             + $"ArrivalFailureReason={rig.Autopilot.ArrivalFailureReason}\n"
             + $"last5Samples:\n{lastSamples}";
     }
@@ -955,7 +1169,28 @@ public class PrototypeAutopilotNavigationPlayModeTests
         return (float)field.GetValue(target);
     }
 
+    private static bool GetPrivateBool(object target, string fieldName)
+    {
+        FieldInfo field = target.GetType().GetField(fieldName, PrivateInstance);
+        Assert.NotNull(field, fieldName);
+        return (bool)field.GetValue(target);
+    }
+
+    private static Vector3 GetPrivateVector3(object target, string fieldName)
+    {
+        FieldInfo field = target.GetType().GetField(fieldName, PrivateInstance);
+        Assert.NotNull(field, fieldName);
+        return (Vector3)field.GetValue(target);
+    }
+
     private static void SetPrivateBool(object target, string fieldName, bool value)
+    {
+        FieldInfo field = target.GetType().GetField(fieldName, PrivateInstance);
+        Assert.NotNull(field, fieldName);
+        field.SetValue(target, value);
+    }
+
+    private static void SetPrivateVector3(object target, string fieldName, Vector3 value)
     {
         FieldInfo field = target.GetType().GetField(fieldName, PrivateInstance);
         Assert.NotNull(field, fieldName);
