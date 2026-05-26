@@ -627,7 +627,8 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
         Assert.That(FindRect(rig.PlayerHud, "NavigationPlannerMapPanel").gameObject.activeInHierarchy, Is.True, "navigation planner map active");
         Assert.That(FindRect(rig.PlayerHud, "NavigationPlannerMapLayer").rect.width, Is.GreaterThan(250f), "navigation planner map width");
         Assert.That(FindRect(rig.PlayerHud, "NavigationPlannerMapGridSegment0").gameObject.activeInHierarchy, Is.True, "navigation planner map grid");
-        Assert.That(FindText(rig.PlayerHud, "NavigationPlannerMapText").text, Does.Contain("R "), "navigation planner map range label");
+        Assert.That(FindText(rig.PlayerHud, "NavigationPlannerMapText").text, Does.Contain(" km"), "navigation planner map range label");
+        Assert.That(FindText(rig.PlayerHud, "NavigationPlannerMapText").text, Does.Not.Contain("R "), "navigation planner map range label is player-readable");
         Assert.That(FindRect(rig.PlayerHud, "ContextPanel").gameObject.activeSelf, Is.False, "navigation planner hides context");
         AssertActiveHudRectsInsideCanvas(rig.PlayerHud);
         AssertActiveButtonTextNotOverflowing(rig.PlayerHud);

@@ -3549,7 +3549,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             navigationPlannerMapBlipImages,
             true,
             6.6f,
-            5.2f);
+            5.2f,
+            true);
     }
 
     private void ConfigureRadarLayer(
@@ -3563,7 +3564,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         List<Image> blipImages,
         bool usePlannerMapBlips = false,
         float routeThickness = 3.2f,
-        float previewThickness = 3f)
+        float previewThickness = 3f,
+        bool dimPlannerGrid = false)
     {
         if (layerRect == null)
         {
@@ -3572,7 +3574,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
         Rect rect = layerRect.rect;
         float radius = Mathf.Min(rect.width, rect.height) * (usePlannerMapBlips ? 0.5f : 0.42f);
-        ConfigureRadarGrid(gridSegments, radius);
+        ConfigureRadarGrid(gridSegments, radius, dimPlannerGrid);
 
         Vector2 heading = new Vector2(snapshot.ShipForward.x, snapshot.ShipForward.z);
         if (heading.sqrMagnitude <= 0.001f)
@@ -3617,8 +3619,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             Color color = ColorForRadarBlipKind(blip.Kind);
             if (usePlannerMapBlips && !IsPrimaryNavigationPlannerMapBlip(blip.Kind))
             {
-                color.a *= 0.45f;
-                size *= 0.76f;
+                color.a *= 0.4f;
+                size *= 0.72f;
             }
 
             ApplyRadarBlip(blipImages[i], point, color, size, rotation);
@@ -3886,20 +3888,24 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         return totalBlips - imageCapacity;
     }
 
-    private void ConfigureRadarGrid(List<Image> gridSegments, float radius)
+    private void ConfigureRadarGrid(List<Image> gridSegments, float radius, bool dimForPlannerMap = false)
     {
         if (gridSegments == null || gridSegments.Count < MaxRadarGridSegments)
         {
             return;
         }
 
-        Color gridColor = new Color(0.25f, 0.85f, 1f, 0.72f);
-        ApplyRadarLine(gridSegments[0], new Vector2(-radius, 0f), new Vector2(radius, 0f), gridColor, 1.8f);
-        ApplyRadarLine(gridSegments[1], new Vector2(0f, -radius), new Vector2(0f, radius), gridColor, 1.8f);
-        ApplyRadarLine(gridSegments[2], new Vector2(-radius, radius), new Vector2(radius, radius), gridColor, 1.5f);
-        ApplyRadarLine(gridSegments[3], new Vector2(radius, radius), new Vector2(radius, -radius), gridColor, 1.5f);
-        ApplyRadarLine(gridSegments[4], new Vector2(radius, -radius), new Vector2(-radius, -radius), gridColor, 1.5f);
-        ApplyRadarLine(gridSegments[5], new Vector2(-radius, -radius), new Vector2(-radius, radius), gridColor, 1.5f);
+        Color gridColor = dimForPlannerMap
+            ? new Color(0.25f, 0.85f, 1f, 0.45f)
+            : new Color(0.25f, 0.85f, 1f, 0.72f);
+        float majorThickness = dimForPlannerMap ? 1.4f : 1.8f;
+        float minorThickness = dimForPlannerMap ? 1.15f : 1.5f;
+        ApplyRadarLine(gridSegments[0], new Vector2(-radius, 0f), new Vector2(radius, 0f), gridColor, majorThickness);
+        ApplyRadarLine(gridSegments[1], new Vector2(0f, -radius), new Vector2(0f, radius), gridColor, majorThickness);
+        ApplyRadarLine(gridSegments[2], new Vector2(-radius, radius), new Vector2(radius, radius), gridColor, minorThickness);
+        ApplyRadarLine(gridSegments[3], new Vector2(radius, radius), new Vector2(radius, -radius), gridColor, minorThickness);
+        ApplyRadarLine(gridSegments[4], new Vector2(radius, -radius), new Vector2(-radius, -radius), gridColor, minorThickness);
+        ApplyRadarLine(gridSegments[5], new Vector2(-radius, -radius), new Vector2(-radius, radius), gridColor, minorThickness);
     }
 
     private void ConfigureRadarSegmentPool(
@@ -4410,7 +4416,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
         if (rangeLabel.StartsWith("Range ", System.StringComparison.OrdinalIgnoreCase))
         {
-            return "R " + rangeLabel.Substring("Range ".Length);
+            return rangeLabel.Substring("Range ".Length);
         }
 
         return rangeLabel;
@@ -4418,7 +4424,12 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
     private static string BuildNavigationPlannerMapContactLabel(int contactCount)
     {
-        return contactCount <= 0 ? "0c" : contactCount.ToString() + "c";
+        if (contactCount <= 0)
+        {
+            return "No contacts";
+        }
+
+        return contactCount + (contactCount == 1 ? " contact" : " contacts");
     }
 
     private static string BuildNavigationPlannerMapRouteLabel(PrototypePlayerNavigationSnapshot navigation)
@@ -4429,25 +4440,30 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             return "No route";
         }
 
-        if (routePointCount > 2)
+        if (routePointCount <= 2)
         {
-            return "R" + routePointCount + "p";
+            return "Direct " + routePointCount;
         }
 
-        return "DR" + routePointCount + "p";
+        return "Route " + routePointCount;
     }
 
     private static string BuildNavigationPlannerMapPreviewLabel(PrototypePlayerHudSnapshot snapshot)
     {
         if (!snapshot.Navigation.Visible || !snapshot.Navigation.TrajectoryPreview.Enabled)
         {
-            return "Pv-";
+            return "Preview off";
         }
 
         int previewPointCount = snapshot.Radar.TrajectoryPreviewWorldPoints != null
             ? snapshot.Radar.TrajectoryPreviewWorldPoints.Length
             : 0;
-        return "Pv" + previewPointCount + "p";
+        if (previewPointCount <= 0)
+        {
+            return "No preview";
+        }
+
+        return "Preview " + previewPointCount;
     }
 
     private static string BuildRadarStatusLabel(PrototypePlayerRadarSnapshot radar)

@@ -172,10 +172,11 @@ public class PrototypePlayerHudValidationTests
             string mapLabel = (string)mapLabelMethod.Invoke(null, new object[] { snapshot });
             string[] mapLabelParts = mapLabel.Split(new[] { " | " }, System.StringSplitOptions.None);
             Assert.That(mapLabelParts.Length, Is.GreaterThanOrEqualTo(4));
-            Assert.That(mapLabelParts[0], Is.EqualTo("DR2p"));
-            Assert.That(mapLabelParts[1], Does.StartWith("Pv"));
-            Assert.That(mapLabelParts[2], Does.StartWith("R "));
-            Assert.That(mapLabelParts[3], Does.EndWith("c"));
+            Assert.That(mapLabelParts[0], Is.EqualTo("Direct 2"));
+            Assert.That(mapLabelParts[1], Is.EqualTo("No preview"));
+            Assert.That(mapLabelParts[2], Does.Match("^(250 m|1 km|2\\.5 km|5 km)$"));
+            Assert.That(mapLabelParts[2], Does.Not.StartWith("R "));
+            Assert.That(mapLabelParts[3], Does.Contain("contact"));
         }
     }
 
@@ -267,9 +268,9 @@ public class PrototypePlayerHudValidationTests
         Assert.That(mapLabel, Does.StartWith("No route"));
         Assert.That(mapLabelParts.Length, Is.GreaterThanOrEqualTo(4));
         Assert.That(mapLabelParts[0], Is.EqualTo("No route"));
-        Assert.That(mapLabelParts[1], Does.StartWith("Pv"));
-        Assert.That(mapLabelParts[2], Is.EqualTo("R 1 km"));
-        Assert.That(mapLabelParts[3], Is.EqualTo("1c"));
+        Assert.That(mapLabelParts[1], Is.EqualTo("No preview"));
+        Assert.That(mapLabelParts[2], Is.EqualTo("1 km"));
+        Assert.That(mapLabelParts[3], Is.EqualTo("1 contact"));
         Assert.That(mapLabel, Does.Not.Contain("Direkte Route"));
     }
 
@@ -516,8 +517,63 @@ public class PrototypePlayerHudValidationTests
         Assert.True(FindRect(playerHud, "NavigationPlannerMapLayer").gameObject.activeInHierarchy);
         Assert.True(FindRect(playerHud, "NavigationPlannerMapGridSegment0").gameObject.activeInHierarchy);
         Assert.True(FindRect(playerHud, "NavigationPlannerMapBlip0").gameObject.activeInHierarchy);
-        Assert.That(FindText(playerHud, "NavigationPlannerMapText").text, Does.Contain("1c"));
+        Assert.That(FindText(playerHud, "NavigationPlannerMapText").text, Does.Contain("1 contact"));
         Assert.False(FindRect(playerHud, "RadarPanel").gameObject.activeSelf);
+    }
+
+    [Test]
+    public void NavigationPlannerMapGridUsesDimmerAlphaThanCompactRadarGrid()
+    {
+        GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+        cameraObject.AddComponent<Camera>();
+        PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+        playerHud.RefreshNow();
+
+        var radar = new PrototypePlayerRadarSnapshot(
+            1000f,
+            "Range 1 km",
+            Vector3.zero,
+            Vector3.forward,
+            new[]
+            {
+                new PrototypePlayerRadarBlip(
+                    PrototypePlayerRadarBlipKind.Navigation,
+                    "Waypoint",
+                    new Vector3(20f, 0f, 120f))
+            },
+            new Vector3[0],
+            new Vector3[0],
+            false,
+            Vector3.zero);
+
+        ApplySnapshotForTest(
+            playerHud,
+            CreateHudSnapshot(
+                CreateCombatSnapshot(false),
+                CreateDockingSnapshot(false),
+                CreateNavigationSnapshot(false),
+                default,
+                null,
+                radar));
+
+        float compactGridAlphaBefore = FindImage(playerHud, "RadarGridSegment0").color.a;
+
+        FindRect(playerHud, "NavigationPlannerPanel").gameObject.SetActive(true);
+        ApplySnapshotForTest(
+            playerHud,
+            CreateHudSnapshot(
+                CreateCombatSnapshot(false),
+                CreateDockingSnapshot(false),
+                CreateNavigationSnapshot(true),
+                default,
+                null,
+                radar));
+
+        float compactGridAlphaAfter = FindImage(playerHud, "RadarGridSegment0").color.a;
+        float plannerGridAlpha = FindImage(playerHud, "NavigationPlannerMapGridSegment0").color.a;
+
+        Assert.That(compactGridAlphaAfter, Is.EqualTo(compactGridAlphaBefore).Within(0.0001f));
+        Assert.That(plannerGridAlpha, Is.LessThan(compactGridAlphaAfter));
     }
 
     [Test]
@@ -908,7 +964,7 @@ public class PrototypePlayerHudValidationTests
                 radar));
 
         Assert.That(FindText(playerHud, "RadarText").text, Is.EqualTo("Range 1 km | 1 contact"));
-        Assert.That(FindText(playerHud, "NavigationPlannerMapText").text, Does.Contain("R 1 km"));
+        Assert.That(FindText(playerHud, "NavigationPlannerMapText").text, Does.Contain("1 km"));
 
         MethodInfo setModeMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
             "SetMinimapRangeMode",
@@ -930,7 +986,7 @@ public class PrototypePlayerHudValidationTests
             plannerSnapshot);
 
         Assert.That(FindText(playerHud, "RadarText").text, Is.EqualTo("Range 5 km | 1 contact"));
-        Assert.That(FindText(playerHud, "NavigationPlannerMapText").text, Does.Contain("R 5 km"));
+        Assert.That(FindText(playerHud, "NavigationPlannerMapText").text, Does.Contain("5 km"));
     }
 
     [Test]
@@ -1075,7 +1131,7 @@ public class PrototypePlayerHudValidationTests
             string radarRange = FindText(playerHud, "RadarText").text.Split('|')[0].Trim();
             string plannerRange = GetPlannerRangeFromMapLabel(FindText(playerHud, "NavigationPlannerMapText").text);
             Assert.That(radarRange, Is.EqualTo("Range 2.5 km"));
-            Assert.That(plannerRange, Is.EqualTo("R 2.5 km"));
+            Assert.That(plannerRange, Is.EqualTo("2.5 km"));
 
             Button plannerMinus = FindButton(playerHud, "NavPlannerRangeMinus");
             Button plannerPlus = FindButton(playerHud, "NavPlannerRangePlus");
@@ -1086,7 +1142,7 @@ public class PrototypePlayerHudValidationTests
             radarRange = FindText(playerHud, "RadarText").text.Split('|')[0].Trim();
             plannerRange = GetPlannerRangeFromMapLabel(FindText(playerHud, "NavigationPlannerMapText").text);
             Assert.That(radarRange, Is.EqualTo("Range 1 km"));
-            Assert.That(plannerRange, Is.EqualTo("R 1 km"));
+            Assert.That(plannerRange, Is.EqualTo("1 km"));
 
             plannerPlus.onClick.Invoke();
 
@@ -1095,7 +1151,7 @@ public class PrototypePlayerHudValidationTests
             radarRange = FindText(playerHud, "RadarText").text.Split('|')[0].Trim();
             plannerRange = GetPlannerRangeFromMapLabel(FindText(playerHud, "NavigationPlannerMapText").text);
             Assert.That(radarRange, Is.EqualTo("Range 2.5 km"));
-            Assert.That(plannerRange, Is.EqualTo("R 2.5 km"));
+            Assert.That(plannerRange, Is.EqualTo("2.5 km"));
 
             plannerPlus.onClick.Invoke();
 
@@ -1104,7 +1160,7 @@ public class PrototypePlayerHudValidationTests
             radarRange = FindText(playerHud, "RadarText").text.Split('|')[0].Trim();
             plannerRange = GetPlannerRangeFromMapLabel(FindText(playerHud, "NavigationPlannerMapText").text);
             Assert.That(radarRange, Is.EqualTo("Range 5 km"));
-            Assert.That(plannerRange, Is.EqualTo("R 5 km"));
+            Assert.That(plannerRange, Is.EqualTo("5 km"));
         }
     }
 
@@ -1144,8 +1200,11 @@ public class PrototypePlayerHudValidationTests
 
         Image secondaryBlip = FindImage(playerHud, "NavigationPlannerMapBlip0");
         Image primaryBlip = FindImage(playerHud, "NavigationPlannerMapBlip1");
+        Assert.That(primaryBlip.rectTransform.sizeDelta.x, Is.GreaterThan(secondaryBlip.rectTransform.sizeDelta.x));
+        Assert.That(primaryBlip.rectTransform.sizeDelta.y, Is.GreaterThan(secondaryBlip.rectTransform.sizeDelta.y));
         Assert.That(primaryBlip.color.a, Is.GreaterThan(secondaryBlip.color.a), "primary blip should remain visually stronger");
-        Assert.That(secondaryBlip.color.a, Is.LessThan(0.6f), "secondary blip should be clearly muted");
+        Assert.That(secondaryBlip.color.a, Is.LessThan(0.55f), "secondary blip should be clearly muted");
+        Assert.That(primaryBlip.color.a - secondaryBlip.color.a, Is.GreaterThan(0.4f), "primary vs secondary alpha gap should be strong");
         Assert.That(primaryBlip.color.a, Is.GreaterThan(0.8f), "primary blip should stay prominent");
     }
 
@@ -2294,7 +2353,7 @@ public class PrototypePlayerHudValidationTests
             Assert.True(FindRect(playerHud, "NavigationPlannerMapPanel").gameObject.activeSelf);
             Assert.True(FindRect(playerHud, "NavigationPlannerMapLayer").gameObject.activeInHierarchy);
             Assert.True(FindRect(playerHud, "NavigationPlannerMapGridSegment0").gameObject.activeInHierarchy);
-            Assert.That(FindText(playerHud, "NavigationPlannerMapText").text, Does.Contain("R "));
+            Assert.That(FindText(playerHud, "NavigationPlannerMapText").text, Does.Contain(" km"));
 
             Button next = FindButton(playerHud, "NavPlannerNextTarget");
             Button engage = FindButton(playerHud, "NavPlannerEngage");

@@ -11,6 +11,45 @@
 
 ## Evidence
 
+- 2026-05-26 follow-up: Navigation Planner map readable labels and planner-only hierarchy
+  - Implementation:
+    - Replaced code-like planner map labels (`DR2p`, `R8p`, `Pv16p`, `3c`) with short player-facing labels (`Direct 2`, `Route 8`, `Preview 16`, `No preview`, `2.5 km`, `3 contacts`).
+    - Kept compact radar range text unchanged while making the planner range label readable.
+    - Added planner-only grid dimming so the route/preview strokes dominate the map instead of the frame.
+    - Muted non-primary planner blips more strongly while leaving selected navigation, selected combat, and objective blips prominent.
+    - Added regression coverage for dimmer planner grid alpha, readable route/range/contact labels, and primary-vs-secondary blip prominence.
+  - Claude plan review:
+    - Attempted with local plan and file context.
+    - Result: timed out after 120 seconds; no Claude findings were available for this slice.
+  - Unity MCP `validate_script`:
+    - `Assets/Scripts/Prototype/PrototypePlayerHud.cs`: PASS, 0 errors, 2 existing warnings.
+    - `Assets/Tests/Editor/PrototypePlayerHudValidationTests.cs`: PASS, 0 errors, 0 warnings.
+    - `Assets/Tests/PlayMode/PrototypePlayerHudLiveRuntimeEvidencePlayModeTests.cs`: PASS, 0 errors, 3 existing warnings.
+  - Unity MCP EditMode focused planner regression:
+    - Job `614e4f72fd8849e49bf3e2695824dc69`.
+    - Tests: readable planner labels, planner grid dimming, planner blip filtering/de-emphasis, shared range controls, selected-target route extension, responsive map separation, and planner popup API wiring.
+    - Result: 11/11 PASS.
+  - Unity MCP EditMode full HUD validation:
+    - Job `5f4b4c7fe6134686b9b9649c42bcbb6e`.
+    - Fixture: `PrototypePlayerHudValidationTests`.
+    - Result: 58/58 PASS.
+  - Unity MCP PlayMode real GameView popup evidence:
+    - Job `04892902d0df4d89ab7fb7756271c989`.
+    - Test: `PrototypePlayerHudLiveRuntimeEvidencePlayModeTests.PrototypeBootstrapRuntimePlayerHudEvidenceCapturesPlayerComputerPopups`.
+    - Result: 1/1 PASS.
+    - Refreshed runtime screenshot source: `.devtoolbox/specs/changes/player-ui-regression-controls-autopilot-rcs-v1/tests/screenshots/player-ui-regression-nav-planner-1280x720.png`.
+    - Copied evidence screenshot: `.devtoolbox/specs/changes/player-autopilot-planner-followup-v1/tests/screenshots/player-autopilot-planner-followup-nav-planner-1280x720.png`.
+    - Visual check: planner popup shows `Route 8 | Preview 16 | 2.5 km | 3 contacts`; route/preview are visible and there is no obvious map/body/button overlap at 1280x720.
+  - Unity MCP console check:
+    - Result: no real compile/runtime errors; console only showed Unity TestRunner result-save entry and a PerformanceTesting cleanup warning.
+  - `.NET` build:
+    - Command: `dotnet build "Weltraum Spiel.sln" --no-restore`.
+    - Result: PASS, 0 errors, 22 existing warnings.
+  - DevToolbox `verify_run`:
+    - Execution: `5bd5887e96d2408ca135dee804617f93`.
+    - Result: `Specs` passed; generic `Build`, `Test`, and `Lint` failed because the presets run bare `dotnet build`, `dotnet test`, and `dotnet format --verify-no-changes` in a folder with multiple MSBuild files, reproducing the known MSB1011/tooling issue.
+    - Targeted Unity MCP tests and `dotnet build "Weltraum Spiel.sln" --no-restore` are the authoritative verification for this slice.
+
 - `dotnet build "Weltraum Spiel.sln" --no-restore`
   - Result: PASS, 0 errors, 22 existing warnings.
 - Unity MCP `validate_script`
