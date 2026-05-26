@@ -76,6 +76,11 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private const float BrakeAttitudeDampingGain = 0.18f;
     private const float BrakeHoldReleaseZeroSpeed = 0.05f;
     private const float BrakeHoldReleaseLateralRatio = 1.75f;
+    private const float BrakeAlignmentAngularSpeedLimitDegreesPerSecond = 60f;
+    private const float BrakeArrivalHoldDistanceMarginMeters = 6f;
+    private const float BrakeArrivalHoldLateralSpeedMultiplier = 6f;
+    private const float BrakeArrivalHoldMinimumLateralTolerance = 1.2f;
+    private const float BrakeArrivalHoldRelativeSpeedMultiplier = 1.8f;
     [Header("Navigation")]
     [SerializeField] private PrototypeWaypointManager waypointManager;
     [SerializeField] private PrototypeNavigationTarget currentTarget;
@@ -112,6 +117,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private bool suppressManualInputReleaseCheckThisFrame;
     private bool brakeHoldActive;
     private float brakeHoldStartTime;
+    private bool arrivalBrakeCommitted;
     private float autopilotElapsedSeconds;
     private bool brakeAlignmentLocked;
     private PrototypeWaypointAutopilotArrivalPhase arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.Hold;
@@ -417,6 +423,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         reacquireDirectPathUntilTime = 0f;
         brakeAlignmentLocked = false;
         brakeHoldStartTime = 0f;
+        arrivalBrakeCommitted = false;
         holdConfirmUntilTime = 0f;
         navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.Direct;
         LastObstacleDetection = PrototypeObstacleDetectionResult.Clear(GetObstacleClearanceRadius());
@@ -670,9 +677,16 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         bool settledFineApproachReacquire = inFinalApproachWindow
             && LastMetrics.closingSpeed <= BrakeHoldReleaseZeroSpeed
             && LastMetrics.relativeSpeed <= GetArrivalCompletionSpeedLimit();
-        bool requestedFineApproach = inFinalApproachWindow
-            && (!LastMetrics.shouldBrake || settledFineApproachReacquire)
+        bool nearArrivalSettleWindow = LastMetrics.distance <= Mathf.Max(
+            finalApproachWindowMeters,
+            GetArrivalCompletionDistance() + BrakeArrivalHoldDistanceMarginMeters);
+        bool shouldSettleAfterBrakeCommit = arrivalBrakeCommitted
+            && nearArrivalSettleWindow
             && LastMetrics.relativeSpeed <= GetArrivalCompletionSpeedLimit();
+        bool requestedFineApproach = inFinalApproachWindow
+            && (!LastMetrics.shouldBrake || settledFineApproachReacquire || shouldSettleAfterBrakeCommit)
+            && LastMetrics.relativeSpeed <= GetArrivalCompletionSpeedLimit();
+        requestedFineApproach |= shouldSettleAfterBrakeCommit;
         bool hasLowLateralSpeed = LastMetrics.lateralSpeed <= Mathf.Max(0.05f, finalApproachLateralToleranceMetersPerSecond);
         bool requestBrake = ShouldRequestBrake();
         bool currentlyAvoiding = LastTrajectoryPlan.RequiresAvoidance && LastTrajectoryPlan.obstacleDetected;
@@ -804,6 +818,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     {
         arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.Brake;
         limitedFinalApproachCapability = false;
+        arrivalBrakeCommitted = true;
         Vector3 brakeDirection = shipRigidbody != null && shipRigidbody.linearVelocity.sqrMagnitude > 0.0001f
             ? -shipRigidbody.linearVelocity.normalized
             : -LastMetrics.directionToTarget;
@@ -827,8 +842,22 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return false;
         }
 
+        if (brakeHoldActive
+            && arrivalBrakeCommitted
+            && LastMetrics.relativeSpeed <= GetArrivalCompletionSpeedLimit()
+            && LastMetrics.distance <= GetArrivalCompletionDistance() + BrakeArrivalHoldDistanceMarginMeters)
+        {
+            ReleaseBrakeHold();
+            return false;
+        }
+
         if (!LastMetrics.shouldBrake)
         {
+            if (brakeHoldActive && LastMetrics.relativeSpeed > GetArrivalCompletionSpeedLimit())
+            {
+                return true;
+            }
+
             if (brakeHoldActive)
             {
                 ReleaseBrakeHold();
@@ -841,6 +870,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         {
             brakeHoldActive = true;
             brakeHoldStartTime = autopilotElapsedSeconds;
+            arrivalBrakeCommitted = true;
         }
 
         return true;
@@ -934,6 +964,11 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         return UpdateBrakeAlignmentLock(angle);
     }
 
+    private bool IsBrakeAttitudeRateWithinMainThrottleGate(float angularSpeedRadiansPerSecond)
+    {
+        return angularSpeedRadiansPerSecond <= Mathf.Deg2Rad * BrakeAlignmentAngularSpeedLimitDegreesPerSecond;
+    }
+
     private Vector3 ResolveAvoidanceRequestDirection()
     {
         if (hasStableAvoidance && stableAvoidanceDirection.sqrMagnitude > 0.0001f)
@@ -973,9 +1008,15 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             attitudeTorqueLocal = ComputeAttitudeTorqueLocal(desiredDirectionNormalized);
             desiredBurnDirection = desiredDirectionNormalized;
             float angle = Vector3.Angle(transform.forward, desiredDirectionNormalized);
-            if ((CurrentState == PrototypeWaypointAutopilotState.Brake || CurrentState == PrototypeWaypointAutopilotState.FlipForBrake)
-                ? (brakeAlignmentReadyOverride ?? IsBrakeAlignmentLockedForMainThrottle(angle)) && CanUseMainThrottle()
-                : angle <= alignmentAngleDegrees && CanUseMainThrottle())
+            bool canApplyMainThrottle = CanUseMainThrottle()
+                && (CurrentState != PrototypeWaypointAutopilotState.Brake
+                    && CurrentState != PrototypeWaypointAutopilotState.FlipForBrake
+                    ? angle <= alignmentAngleDegrees
+                    : (brakeAlignmentReadyOverride ?? IsBrakeAlignmentLockedForMainThrottle(angle))
+                        && IsBrakeAttitudeRateWithinMainThrottleGate(
+                            shipRigidbody != null ? transform.InverseTransformDirection(shipRigidbody.angularVelocity).magnitude : 0f));
+
+            if (canApplyMainThrottle)
             {
                 requestedMainThrottle = Mathf.Clamp01(throttle);
             }
@@ -1272,7 +1313,14 @@ private Vector3 ComputeLateralCorrectionForceWorld()
             return attitudeCommand;
         }
 
-        Vector3 dampedCommand = attitudeCommand - angularVelocityLocal * BrakeAttitudeDampingGain;
+        float angularSpeed = angularVelocityLocal.magnitude;
+        float spinRate = Mathf.InverseLerp(
+            0f,
+            Mathf.Deg2Rad * BrakeAlignmentAngularSpeedLimitDegreesPerSecond,
+            angularSpeed);
+        float commandScale = Mathf.Lerp(1f, 0.55f, spinRate);
+        Vector3 spinAlignedDamping = Vector3.Project(angularVelocityLocal, attitudeCommand) * BrakeAttitudeDampingGain;
+        Vector3 dampedCommand = attitudeCommand * commandScale - spinAlignedDamping;
         return Vector3.ClampMagnitude(dampedCommand, 1f);
     }
 
@@ -1483,14 +1531,43 @@ private Vector3 ComputeLateralCorrectionForceWorld()
     {
         return currentTarget != null
             && shipRigidbody != null
-            && LastMetrics.distance <= GetArrivalDistance() + 2f
+            && LastMetrics.distance <= GetArrivalFinishedDistance()
             && LastMetrics.relativeSpeed <= Mathf.Max(arrivalSpeedMetersPerSecond, holdCompletionSpeedMetersPerSecond * 4f)
             && LastMetrics.lateralSpeed <= Mathf.Max(0.1f, finalApproachLateralToleranceMetersPerSecond * 1.25f);
     }
 
+    private float GetArrivalFinishedDistance()
+    {
+        return Mathf.Max(
+            GetArrivalDistance() + 2f,
+            GetArrivalCompletionDistance() + BrakeArrivalHoldDistanceMarginMeters * 0.5f);
+    }
+
     private bool ShouldCaptureArrivalHold()
     {
-        return IsInArrivalCompletionWindow();
+        if (IsInArrivalCompletionWindow())
+        {
+            return true;
+        }
+
+        if (currentTarget == null || shipRigidbody == null)
+        {
+            return false;
+        }
+
+        float completionDistance = GetArrivalCompletionDistance();
+        if (LastMetrics.distance > completionDistance + BrakeArrivalHoldDistanceMarginMeters)
+        {
+            return false;
+        }
+
+        float completionLateralTolerance = Mathf.Max(
+            BrakeArrivalHoldMinimumLateralTolerance,
+            GetArrivalCompletionLateralTolerance() * BrakeArrivalHoldLateralSpeedMultiplier);
+
+        float completionSpeed = GetArrivalCompletionSpeedLimit();
+        return LastMetrics.relativeSpeed <= completionSpeed * BrakeArrivalHoldRelativeSpeedMultiplier
+            && LastMetrics.lateralSpeed <= completionLateralTolerance;
     }
 
     private void UpdateHoldStatus()
@@ -1665,6 +1742,7 @@ private Vector3 ComputeLateralCorrectionForceWorld()
         brakeAlignmentLocked = false;
         brakeHoldStartTime = 0f;
         brakeHoldActive = false;
+        arrivalBrakeCommitted = false;
         holdConfirmStarted = false;
         holdConfirmUntilTime = 0f;
         LastTrajectoryPlan = PrototypeTrajectoryPlan.Clear(LastMetrics.directionToTarget.sqrMagnitude > 0.0001f ? LastMetrics.directionToTarget : Vector3.forward);
