@@ -662,6 +662,27 @@ public class PrototypeWaypointAutopilotValidationTests
     }
 
     [Test]
+    public void AutopilotBrakeFailsWhenRcsAttitudeAuthorityMissing()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 150f;
+        rig.Body.linearVelocity = Vector3.forward * 45f;
+        SetPrivateFloat(rig.Ship.GetComponent<RcsThrusterController>(), "attitudeForce", 0f);
+        SetPrivateFloat(rig.Ship.GetComponent<RcsThrusterController>(), "maxStablePrototypeTorqueNm", 0f);
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+
+        InvokeFixedUpdate(rig.Autopilot);
+
+        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.Failed));
+        Assert.That(rig.Autopilot.ArrivalFailureReason, Is.EqualTo("NoAttitudeAuthority"));
+        CollectionAssert.Contains(rig.Autopilot.BuildNavigationWarningChips(), "NO ATTITUDE");
+        Assert.False(rig.Autopilot.AutopilotEngaged);
+        Assert.That(rig.Autopilot.RequestedMainThrottle, Is.EqualTo(0f).Within(0.0001f));
+        Assert.False(rig.Controller.HasExternalFlightAssistRequest);
+    }
+
+    [Test]
     public void AutopilotTooCloseAndFastRequestsBrake()
     {
         var rig = CreateAutopilotRig();

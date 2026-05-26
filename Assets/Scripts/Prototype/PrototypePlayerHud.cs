@@ -644,6 +644,9 @@ public static class PrototypePlayerHudSnapshotBuilder
                 return "RCS nicht verfuegbar";
             case "NO AUTHORITY":
                 return "Keine Steuerautoritaet";
+            case "NO ATTITUDE":
+            case "NoAttitudeAuthority":
+                return "Autopilot: keine Dreh-Autoritaet";
             case "AUTOPILOT FUEL":
             case "FuelInsufficient":
             case "Fuel Insufficient":
@@ -2174,6 +2177,13 @@ public static class PrototypePlayerHudSnapshotBuilder
 
         if (!autopilot.AutopilotEngaged)
         {
+            if (autopilot.CurrentState == PrototypeWaypointAutopilotState.Failed)
+            {
+                return string.Equals(autopilot.ArrivalFailureReason, "NoAttitudeAuthority", System.StringComparison.OrdinalIgnoreCase)
+                    ? "Manoever: Keine Dreh-Autoritaet"
+                    : "Manoever: Nicht moeglich";
+            }
+
             if (autopilot.AvoidanceActive || autopilot.NavigationObstacleDetected)
             {
                 return "Manoever: Ausweichkurs geplant";
@@ -2283,7 +2293,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private const int MaxRadarRouteSegments = 28;
     private const int MaxRadarPreviewSegments = 28;
     private const int MaxRadarBlips = 64;
-    private const int MaxNavigationPlannerMapBlips = 4;
+    private const int MaxNavigationPlannerMapBlips = 3;
     private const int MaxCompactRadarGenericBlips = 8;
     private const int MinimapRangeModeAuto = 0;
     private const int MinimapRangeModeCount = 5;
@@ -3538,8 +3548,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             navigationPlannerMapPreviewSegments,
             navigationPlannerMapBlipImages,
             true,
-            6.2f,
-            4.8f);
+            6.6f,
+            5.2f);
     }
 
     private void ConfigureRadarLayer(
@@ -3561,7 +3571,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         }
 
         Rect rect = layerRect.rect;
-        float radius = Mathf.Min(rect.width, rect.height) * (usePlannerMapBlips ? 0.46f : 0.42f);
+        float radius = Mathf.Min(rect.width, rect.height) * (usePlannerMapBlips ? 0.5f : 0.42f);
         ConfigureRadarGrid(gridSegments, radius);
 
         Vector2 heading = new Vector2(snapshot.ShipForward.x, snapshot.ShipForward.z);
@@ -3574,6 +3584,11 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         ApplyRadarLine(headingImage, -heading * 9f, heading * 14f, Color.white, 2.5f);
 
         Vector3[] routePoints = snapshot.Radar.RouteWorldPoints ?? System.Array.Empty<Vector3>();
+        if (usePlannerMapBlips)
+        {
+            routePoints = BuildNavigationPlannerRouteWorldPoints(snapshot, routePoints);
+        }
+
         Vector3[] previewPoints = snapshot.Radar.TrajectoryPreviewWorldPoints ?? System.Array.Empty<Vector3>();
         ConfigureRadarSegmentPool(routeSegments, snapshot.Radar, routePoints, radius, PrototypeModuleColorPalette.Target, routeThickness, false);
         ConfigureRadarSegmentPool(previewSegments, snapshot.Radar, previewPoints, radius, new Color(1f, 0.72f, 0.22f, 0.94f), previewThickness, true);
@@ -3602,8 +3617,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             Color color = ColorForRadarBlipKind(blip.Kind);
             if (usePlannerMapBlips && !IsPrimaryNavigationPlannerMapBlip(blip.Kind))
             {
-                color.a *= 0.58f;
-                size *= 0.82f;
+                color.a *= 0.45f;
+                size *= 0.76f;
             }
 
             ApplyRadarBlip(blipImages[i], point, color, size, rotation);
@@ -3624,6 +3639,49 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         }
 
         return FilterNavigationPlannerMapBlips(source);
+    }
+
+    private static Vector3[] BuildNavigationPlannerRouteWorldPoints(PrototypePlayerHudSnapshot snapshot, Vector3[] routePoints)
+    {
+        Vector3[] route = routePoints ?? System.Array.Empty<Vector3>();
+        PrototypePlayerRadarBlip selectedNavigation;
+        if (!snapshot.Navigation.Visible || !TryFindPlannerRadarBlip(snapshot.Radar, PrototypePlayerRadarBlipKind.SelectedNavigation, out selectedNavigation))
+        {
+            return route;
+        }
+
+        if (route.Length == 0)
+        {
+            return new[] { snapshot.Radar.ShipWorldPosition, selectedNavigation.WorldPosition };
+        }
+
+        Vector3 lastPoint = route[route.Length - 1];
+        float targetTolerance = Mathf.Max(1f, selectedNavigation.RadiusMeters);
+        if ((lastPoint - selectedNavigation.WorldPosition).sqrMagnitude <= targetTolerance * targetTolerance)
+        {
+            return route;
+        }
+
+        Vector3[] extended = new Vector3[route.Length + 1];
+        System.Array.Copy(route, extended, route.Length);
+        extended[extended.Length - 1] = selectedNavigation.WorldPosition;
+        return extended;
+    }
+
+    private static bool TryFindPlannerRadarBlip(PrototypePlayerRadarSnapshot radar, PrototypePlayerRadarBlipKind kind, out PrototypePlayerRadarBlip result)
+    {
+        PrototypePlayerRadarBlip[] blips = radar.Blips ?? System.Array.Empty<PrototypePlayerRadarBlip>();
+        for (int i = 0; i < blips.Length; i++)
+        {
+            if (blips[i].Kind == kind)
+            {
+                result = blips[i];
+                return true;
+            }
+        }
+
+        result = default;
+        return false;
     }
 
     private static PrototypePlayerRadarBlip[] FilterNavigationPlannerMapBlips(PrototypePlayerRadarBlip[] source)
@@ -5018,7 +5076,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         }
         else
         {
-            float mapSize = Mathf.Clamp(contentHeight + 16f, 260f, 332f);
+            float mapSize = Mathf.Clamp(contentHeight + 16f, 280f, 352f);
             ApplyRect(
                 navigationPlannerMapPanelRect,
                 new Vector2(1f, 0.5f),

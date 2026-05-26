@@ -172,7 +172,12 @@ public class PrototypePlayerHudValidationTests
             string mapLabel = (string)mapLabelMethod.Invoke(null, new object[] { snapshot });
             Assert.That(mapLabel, Does.StartWith("R "));
             Assert.That(mapLabel, Does.Contain("| DR2p"));
-            Assert.That(mapLabel.IndexOf("| DR2p"), Is.GreaterThan(mapLabel.IndexOf("R ")));
+            int routeIndex = mapLabel.IndexOf("| DR2p");
+            int previewIndex = mapLabel.IndexOf("| Pv");
+            int contactsIndex = mapLabel.IndexOf("| ", previewIndex + 1);
+            Assert.That(routeIndex, Is.GreaterThan(mapLabel.IndexOf("R ")));
+            Assert.That(previewIndex, Is.GreaterThan(routeIndex), "preview appears after route");
+            Assert.That(contactsIndex, Is.GreaterThan(previewIndex), "contacts appears after route and preview");
         }
     }
 
@@ -261,6 +266,9 @@ public class PrototypePlayerHudValidationTests
         Assert.That(body, Does.Contain("No route"));
         Assert.That(body, Does.Not.Contain("Direkte Route"));
         Assert.That(mapLabel, Does.StartWith("R 1 km | No route"));
+        Assert.That(mapLabel.IndexOf("| No route"), Is.GreaterThanOrEqualTo(0));
+        Assert.That(mapLabel.IndexOf("| No route"), Is.LessThan(mapLabel.IndexOf("| Pv")));
+        Assert.That(mapLabel.IndexOf("| Pv"), Is.LessThan(mapLabel.IndexOf("| 1c")));
         Assert.That(mapLabel, Does.Not.Contain("Direkte Route"));
     }
 
@@ -558,8 +566,8 @@ public class PrototypePlayerHudValidationTests
         Assert.That(GetBlipLabel(filteredBlips, PrototypePlayerRadarBlipKind.SelectedNavigation), Is.EqualTo("Selected Waypoint"));
         Assert.That(GetBlipLabel(filteredBlips, PrototypePlayerRadarBlipKind.SelectedCombat), Is.EqualTo("Selected Bandit"));
         Assert.That(GetBlipLabel(filteredBlips, PrototypePlayerRadarBlipKind.Objective), Is.EqualTo("Objective"));
-        Assert.That(IndexOfBlipKind(filteredBlips, PrototypePlayerRadarBlipKind.Navigation), Is.GreaterThanOrEqualTo(0), "navigation remains present");
-        Assert.That(filteredBlips[filteredBlips.Length - 3].Kind, Is.EqualTo(PrototypePlayerRadarBlipKind.SelectedNavigation), "selected navigation remains on top");
+        Assert.That(GetBlipLabel(filteredBlips, PrototypePlayerRadarBlipKind.Navigation), Is.Null, "lowest-priority generic navigation is not shown with capped planner contacts");
+        Assert.That(filteredBlips[filteredBlips.Length - 3].Kind, Is.EqualTo(PrototypePlayerRadarBlipKind.SelectedNavigation), "selected navigation remains first");
         Assert.That(filteredBlips[filteredBlips.Length - 2].Kind, Is.EqualTo(PrototypePlayerRadarBlipKind.SelectedCombat), "selected combat remains on top");
         Assert.That(filteredBlips[filteredBlips.Length - 1].Label, Is.EqualTo("Objective"), "objective remains on top");
         Assert.That(GetBlipLabel(filteredBlips, PrototypePlayerRadarBlipKind.Beacon), Is.Null);
@@ -568,7 +576,7 @@ public class PrototypePlayerHudValidationTests
         Assert.That(IndexOfBlipKind(filteredBlips, PrototypePlayerRadarBlipKind.Objective), Is.EqualTo(filteredBlips.Length - 1));
         Assert.That(IndexOfBlipKind(filteredBlips, PrototypePlayerRadarBlipKind.SelectedNavigation), Is.EqualTo(filteredBlips.Length - 3));
         Assert.That(IndexOfBlipKind(filteredBlips, PrototypePlayerRadarBlipKind.SelectedCombat), Is.EqualTo(filteredBlips.Length - 2));
-        Assert.That(filteredBlips.Length, Is.EqualTo(4), "lowest-priority actionable contact capped");
+        Assert.That(filteredBlips.Length, Is.EqualTo(3), "lower-priority actionable contacts are clipped for planner clarity");
         Assert.That(filteredBlips[filteredBlips.Length - 1].Label, Is.Not.EqualTo("Very Far Route"));
 
         PrototypePlayerHudSnapshot withoutTargetSnapshot = CreateHudSnapshot(
@@ -1061,7 +1069,26 @@ public class PrototypePlayerHudValidationTests
             Assert.That(radarRange, Is.EqualTo("Range 2.5 km"));
             Assert.That(plannerRange, Is.EqualTo("R 2.5 km"));
 
+            Button plannerMinus = FindButton(playerHud, "NavPlannerRangeMinus");
             Button plannerPlus = FindButton(playerHud, "NavPlannerRangePlus");
+            plannerMinus.onClick.Invoke();
+
+            snapshot = ApplyMinimapRangeOverrideForTest(playerHud, withTargetSnapshot);
+            ApplySnapshotForTest(playerHud, snapshot);
+            radarRange = FindText(playerHud, "RadarText").text.Split('|')[0].Trim();
+            plannerRange = FindText(playerHud, "NavigationPlannerMapText").text.Split('|')[0].Trim();
+            Assert.That(radarRange, Is.EqualTo("Range 1 km"));
+            Assert.That(plannerRange, Is.EqualTo("R 1 km"));
+
+            plannerPlus.onClick.Invoke();
+
+            snapshot = ApplyMinimapRangeOverrideForTest(playerHud, withTargetSnapshot);
+            ApplySnapshotForTest(playerHud, snapshot);
+            radarRange = FindText(playerHud, "RadarText").text.Split('|')[0].Trim();
+            plannerRange = FindText(playerHud, "NavigationPlannerMapText").text.Split('|')[0].Trim();
+            Assert.That(radarRange, Is.EqualTo("Range 2.5 km"));
+            Assert.That(plannerRange, Is.EqualTo("R 2.5 km"));
+
             plannerPlus.onClick.Invoke();
 
             snapshot = ApplyMinimapRangeOverrideForTest(playerHud, withTargetSnapshot);
@@ -1071,6 +1098,95 @@ public class PrototypePlayerHudValidationTests
             Assert.That(radarRange, Is.EqualTo("Range 5 km"));
             Assert.That(plannerRange, Is.EqualTo("R 5 km"));
         }
+    }
+
+    [Test]
+    public void NavigationPlannerMapRenderDeemphasizesSecondaryBlips()
+    {
+        var radar = new PrototypePlayerRadarSnapshot(
+            1000f,
+            "Range 1 km",
+            Vector3.zero,
+            Vector3.forward,
+            new[]
+            {
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.Navigation, "Secondary waypoint", new Vector3(40f, 0f, 170f)),
+                new PrototypePlayerRadarBlip(PrototypePlayerRadarBlipKind.SelectedNavigation, "Primary waypoint", new Vector3(20f, 0f, 120f))
+            },
+            new Vector3[0],
+            new Vector3[0],
+            false,
+            Vector3.zero);
+
+        GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+        cameraObject.AddComponent<Camera>();
+        PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+        playerHud.RefreshNow();
+        FindRect(playerHud, "NavigationPlannerPanel").gameObject.SetActive(true);
+
+        ApplySnapshotForTest(
+            playerHud,
+            CreateHudSnapshot(
+                CreateCombatSnapshot(false),
+                CreateDockingSnapshot(false),
+                CreateNavigationSnapshot(true),
+                default,
+                null,
+                radar));
+
+        Image secondaryBlip = FindImage(playerHud, "NavigationPlannerMapBlip0");
+        Image primaryBlip = FindImage(playerHud, "NavigationPlannerMapBlip1");
+        Assert.That(primaryBlip.color.a, Is.GreaterThan(secondaryBlip.color.a), "primary blip should remain visually stronger");
+        Assert.That(secondaryBlip.color.a, Is.LessThan(0.6f), "secondary blip should be clearly muted");
+        Assert.That(primaryBlip.color.a, Is.GreaterThan(0.8f), "primary blip should stay prominent");
+    }
+
+    [Test]
+    public void NavigationPlannerMapExtendsClusteredRouteToSelectedTarget()
+    {
+        Vector3 shipPosition = Vector3.zero;
+        Vector3 selectedTarget = new Vector3(0f, 0f, 1900f);
+        var radar = new PrototypePlayerRadarSnapshot(
+            2500f,
+            "Range 2.5 km",
+            shipPosition,
+            Vector3.forward,
+            new[]
+            {
+                new PrototypePlayerRadarBlip(
+                    PrototypePlayerRadarBlipKind.SelectedNavigation,
+                    "Nav Waypoint 2",
+                    selectedTarget,
+                    10f)
+            },
+            new[]
+            {
+                shipPosition,
+                new Vector3(0f, 0f, 28f),
+                new Vector3(0f, 0f, 44f)
+            },
+            new Vector3[0],
+            false,
+            Vector3.zero);
+
+        PrototypePlayerHudSnapshot snapshot = CreateHudSnapshot(
+            CreateCombatSnapshot(false),
+            CreateDockingSnapshot(false),
+            CreateNavigationSnapshot(true),
+            default,
+            null,
+            radar);
+
+        MethodInfo routeMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
+            "BuildNavigationPlannerRouteWorldPoints",
+            BindingFlags.Static | BindingFlags.NonPublic);
+        Assert.NotNull(routeMethod);
+
+        Vector3[] route = (Vector3[])routeMethod.Invoke(null, new object[] { snapshot, radar.RouteWorldPoints });
+
+        Assert.That(route.Length, Is.EqualTo(4));
+        Assert.That(route[0], Is.EqualTo(shipPosition));
+        Assert.That(route[route.Length - 1], Is.EqualTo(selectedTarget));
     }
 
     [Test]
@@ -2666,7 +2782,7 @@ public class PrototypePlayerHudValidationTests
         Assert.That(mapLabelText.fontSize, Is.GreaterThanOrEqualTo(10f), width + "x" + height + " planner map label font size");
         if (width >= 860)
         {
-            Assert.That(mapLayer.rect.width, Is.GreaterThan(250f), width + "x" + height + " planner map layer footprint");
+            Assert.That(mapLayer.rect.width, Is.GreaterThanOrEqualTo(280f), width + "x" + height + " planner map layer footprint");
         }
         else
         {
@@ -2756,6 +2872,21 @@ public class PrototypePlayerHudValidationTests
         }
 
         Assert.Fail("Missing button " + objectName);
+        return null;
+    }
+
+    private static Image FindImage(PrototypePlayerHudRenderer playerHud, string objectName)
+    {
+        Image[] images = playerHud.GetComponentsInChildren<Image>(true);
+        for (int i = 0; i < images.Length; i++)
+        {
+            if (images[i].gameObject.name == objectName)
+            {
+                return images[i];
+            }
+        }
+
+        Assert.Fail("Missing image " + objectName);
         return null;
     }
 

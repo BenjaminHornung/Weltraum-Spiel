@@ -70,6 +70,7 @@ public struct PrototypeWaypointFuelEstimate
 [RequireComponent(typeof(PlayerShipController))]
 public class PrototypeWaypointAutopilot : MonoBehaviour
 {
+    private const float RcsAuthorityEpsilon = 0.0001f;
     [Header("Navigation")]
     [SerializeField] private PrototypeWaypointManager waypointManager;
     [SerializeField] private PrototypeNavigationTarget currentTarget;
@@ -481,6 +482,11 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             chips[count++] = "NO AUTHORITY";
         }
 
+        if (string.Equals(ArrivalFailureReason, "NoAttitudeAuthority", System.StringComparison.OrdinalIgnoreCase))
+        {
+            chips[count++] = "NO ATTITUDE";
+        }
+
         if (!FuelFeasible || string.Equals(ArrivalFailureReason, "FuelInsufficient", System.StringComparison.OrdinalIgnoreCase))
         {
             chips[count++] = "FUEL INSUFFICIENT";
@@ -802,6 +808,15 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             }
             else
             {
+                if (CurrentState == PrototypeWaypointAutopilotState.FlipForBrake && !CanUseRcsAttitude())
+                {
+                    arrivalFailureReason = "NoAttitudeAuthority";
+                    ClearCommands();
+                    autopilotEngaged = false;
+                    SetState(PrototypeWaypointAutopilotState.Failed, "NoAttitudeAuthority");
+                    return;
+                }
+
                 if (CurrentState != PrototypeWaypointAutopilotState.FinalApproach
                     && CurrentState != PrototypeWaypointAutopilotState.FlipForBrake
                     && CurrentState != PrototypeWaypointAutopilotState.ObstacleAvoidance)
@@ -1312,6 +1327,11 @@ private Vector3 ComputeLateralCorrectionForceWorld()
         return rcsThrusters.InstalledNozzleCount > 0 && rcsThrusters.TranslationForce > 0.0001f
             ? rcsThrusters.TranslationForce
             : 0f;
+    }
+
+    private bool CanUseRcsAttitude()
+    {
+        return GetRcsAttitudeTorqueAuthority() > RcsAuthorityEpsilon;
     }
 
     private float GetObstacleClearanceRadius()

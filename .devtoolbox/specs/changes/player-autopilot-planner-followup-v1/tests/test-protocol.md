@@ -13,6 +13,25 @@
 
 - `dotnet build "Weltraum Spiel.sln" --no-restore`
   - Result: PASS, 0 errors, 22 existing warnings.
+- Unity MCP `validate_script`
+  - `Assets/Scripts/Prototype/PrototypePlayerHud.cs`: PASS, 0 errors, 2 existing warnings.
+  - `Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs`: PASS, 0 errors, 1 existing warning.
+- Unity MCP EditMode job `92409bac5e5b45bdb39c04eca2d0de30`
+  - Fixture: `PrototypePlayerHudValidationTests`
+  - Result: 55/55 PASS.
+  - Covered planner route-to-selected-target extension, shared range controls, capped/faded planner contacts, and responsive no-overlap layout.
+- Unity MCP EditMode job `c65ae9b9b61a47ce81d162048a5a660f`
+  - Fixtures: `PrototypeWaypointAutopilotValidationTests`, `PrototypeAutopilotMomentumStartupStateTests.BootstrapAutopilotFlipsAndMainBrakesWithoutManualAlignment`
+  - Result: 32/32 PASS.
+  - Covered NoAttitudeAuthority fail-fast diagnostics, successful brake flip/main-thruster decel, and the bootstrap/runtime ship brake path.
+- Unity MCP PlayMode job `598537fbdbb74e488a5850eae755e9d3`
+  - Fixture: `PrototypeAutopilotNavigationPlayModeTests`
+  - Result: 8/8 PASS.
+  - Covered real closed-loop avoidance, retrograde rotation, RCS brake torque, main-thruster decel after alignment, and force opposing velocity.
+- Unity MCP PlayMode job `867cdb347c0a4f1080fe9db5280f1647`
+  - Test: `PrototypePlayerHudLiveRuntimeEvidencePlayModeTests.PrototypeBootstrapRuntimePlayerHudEvidenceCapturesPlayerComputerPopups`
+  - Result: 1/1 PASS.
+  - Refreshed real GameView planner popup screenshot.
 - Unity MCP PlayMode job `f7772f85660f45769b5c4005de125cfb`
   - Test: `PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_ClosedLoopBrake_RotatesAndUsesMainThrusterWithoutHarnessRotation`
   - Result: 1/1 PASS.
@@ -42,11 +61,11 @@
 
 - `tests/screenshots/player-autopilot-planner-followup-nav-planner-1280x720.png`
   - Source: copied from the refreshed runtime screenshot `player-ui-regression-nav-planner-1280x720.png` after the PlayMode popup evidence test.
-  - Visual check: Navigation Planner popup is route-first, shows thick cyan route and amber preview with 4 planner contacts, and no obvious map/body/button overlap at 1280x720.
+  - Visual check: Navigation Planner popup is route-first, shows a thick cyan route extended to the selected target, keeps amber preview visible, caps planner contacts to 3, and has no obvious map/body/button overlap at 1280x720.
 
 ## Notes
 
 - Claude plan-review attempts:
   - Including the PNG in `file_paths` failed because the wrapper tried to treat binary screenshot data as text.
-  - Text-only attempts with the screenshot path in the prompt timed out after 120 seconds.
+  - Text-only attempts with the screenshot path in the prompt timed out after 120 seconds, including the post-screenshot review attempt for this follow-up patch.
   - The final decision is therefore based on local code review plus Unity MCP runtime/test evidence.
