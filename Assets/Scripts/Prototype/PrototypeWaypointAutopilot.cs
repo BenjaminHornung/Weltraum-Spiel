@@ -263,6 +263,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return;
         }
 
+        ReassertAutopilotActuators();
         if (!HasAnyNavigationAuthority())
         {
             arrivalFailureReason = "NoAuthority";
@@ -959,6 +960,7 @@ private Vector3 ComputeLateralCorrectionForceWorld()
             return;
         }
 
+        ReassertAutopilotActuators();
         Vector3 forward = desiredDirection.normalized;
         Vector3 up = Vector3.ProjectOnPlane(transform.up, forward);
         if (up.sqrMagnitude <= 0.0001f)
@@ -984,6 +986,17 @@ private Vector3 ComputeLateralCorrectionForceWorld()
 
         shipController.SetSasMode(SasControlMode.HoldAttitude);
         shipController.SetSasTargetRotation(targetRotation);
+    }
+
+    private void ReassertAutopilotActuators()
+    {
+        if (shipController == null)
+        {
+            return;
+        }
+
+        shipController.SetRcsEnabled(true);
+        shipController.SetSasEnabled(true);
     }
 
     private Vector3 ComputeVelocityDampingForceWorld(Vector3 velocity)

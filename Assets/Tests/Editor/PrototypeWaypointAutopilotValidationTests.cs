@@ -334,6 +334,43 @@ public class PrototypeWaypointAutopilotValidationTests
     }
 
     [Test]
+    public void AutopilotBrakeAlignmentReassertsRcsAndSasAuthority()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 150f;
+        rig.Body.linearVelocity = Vector3.forward * 45f;
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+
+        rig.Controller.SetRcsEnabled(false);
+        rig.Controller.SetSasEnabled(false);
+        InvokeFixedUpdate(rig.Autopilot);
+        InvokeFixedUpdate(rig.Controller);
+
+        Assert.True(rig.Controller.RcsEnabled, "waypoint autopilot should keep RCS available while it owns the brake flip");
+        Assert.True(rig.Controller.EffectiveSasEnabled, "waypoint autopilot should keep SAS available while it owns the brake flip");
+        Assert.That(rig.Controller.SasMode, Is.EqualTo(SasControlMode.HoldAttitude));
+        Assert.That(rig.Controller.LastExternalFlightAssistRequest.torqueLocal.magnitude, Is.GreaterThan(1000f));
+        Assert.That(rig.Controller.LastRcsActualTorqueWorld.magnitude, Is.GreaterThan(1000f));
+        Assert.That(rig.Controller.LastExternalFlightAssistRequest.mainThrottle, Is.EqualTo(0f).Within(0.0001f));
+
+        var rcsOnlyRig = CreateAutopilotRig();
+        UnityEngine.Object.DestroyImmediate(rcsOnlyRig.Ship.GetComponent<MainThrusterModule>());
+        SetPrivateField(rcsOnlyRig.Ship.GetComponent<MainThrusterBank>(), "thrusters", new MainThrusterModule[0]);
+        rcsOnlyRig.Target.transform.position = Vector3.forward * 80f;
+        rcsOnlyRig.Autopilot.SelectTarget(rcsOnlyRig.Target);
+        rcsOnlyRig.Autopilot.ToggleAutopilot();
+        rcsOnlyRig.Controller.SetRcsEnabled(false);
+        rcsOnlyRig.Controller.SetSasEnabled(false);
+        InvokeFixedUpdate(rcsOnlyRig.Autopilot);
+
+        Assert.True(rcsOnlyRig.Autopilot.AutopilotEngaged, "RCS-only waypoint autopilot should re-enable RCS before the authority gate");
+        Assert.True(rcsOnlyRig.Controller.RcsEnabled);
+        Assert.True(rcsOnlyRig.Controller.EffectiveSasEnabled);
+        Assert.That(rcsOnlyRig.Autopilot.ArrivalFailureReason, Is.Not.EqualTo("NoAuthority"));
+    }
+
+    [Test]
     public void AutopilotLateralVelocityRequestsCorrection()
     {
         var rig = CreateAutopilotRig();

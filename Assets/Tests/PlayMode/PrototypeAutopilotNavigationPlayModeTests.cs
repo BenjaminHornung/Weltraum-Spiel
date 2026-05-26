@@ -78,6 +78,31 @@ public class PrototypeAutopilotNavigationPlayModeTests
     }
 
     [Test]
+    public void PlayMode_Autopilot_ClosedLoopBrake_RotatesAndUsesMainThrusterWithoutHarnessRotation()
+    {
+        AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 150f);
+        rig.Body.linearVelocity = Vector3.forward * 45f;
+        rig.Body.angularVelocity = Vector3.zero;
+        rig.Autopilot.ToggleAutopilot();
+        rig.Controller.SetRcsEnabled(false);
+        rig.Controller.SetSasEnabled(false);
+
+        AutopilotRunResult result = RunClosedLoopBrakePhysics(rig, 760);
+
+        Assert.NotNull(result);
+        Assert.That(result.MinimumRetrogradeAngle, Is.LessThan(result.InitialRetrogradeAngle - 45f), "autopilot should visibly rotate toward retrograde under real physics");
+        Assert.True(result.SawActualRcsBrakeTorque, "closed-loop brake must apply real RCS torque through PlayerShipController");
+        Assert.False(
+            result.SawPrematureMainThrottle,
+            $"main thruster should remain gated until near-retrograde alignment "
+            + $"step={result.PrematureMainThrottleStep} angle={result.PrematureMainThrottleRetrogradeAngle:0.0} "
+            + $"state={result.PrematureMainThrottleState} phase={result.PrematureMainThrottlePhase}");
+        Assert.True(result.SawMainThrottleAfterAlignment, "main thruster should engage only after the ship is near retrograde alignment");
+        Assert.True(result.SawBrakeForceOpposingVelocity, "main thruster force should oppose velocity during the deceleration burn");
+        Assert.That(result.MaximumMainThrottle, Is.GreaterThan(0.05f));
+    }
+
+    [Test]
     public void PlayMode_Autopilot_StartsWithLateralVelocity_ReachesHold()
     {
         AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 64f);
@@ -236,6 +261,48 @@ public class PrototypeAutopilotNavigationPlayModeTests
         return result;
     }
 
+    private static AutopilotRunResult RunClosedLoopBrakePhysics(
+        AutopilotPlayModeRig rig,
+        int maxSteps)
+    {
+        var result = new AutopilotRunResult
+        {
+            InitialDistance = rig.Autopilot.DistanceToTarget,
+            InitialLateralSpeed = rig.Autopilot.LastMetrics.lateralSpeed,
+            InitialRetrogradeAngle = rig.Body.linearVelocity.sqrMagnitude > 0.0001f
+                ? Vector3.Angle(rig.Ship.transform.forward, -rig.Body.linearVelocity.normalized)
+                : 180f,
+            MinimumRetrogradeAngle = 180f
+        };
+
+        for (int i = 0; i < maxSteps; i++)
+        {
+            result.CurrentStepIndex = i;
+            StepClosedLoopBrakePhysics(rig, result);
+            CaptureStep(rig, result, null, false);
+
+            if ((rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Complete
+                    || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Aborted
+                    || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.FuelInsufficient
+                    || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Failed)
+                && result.SawMainThrottleAfterAlignment)
+            {
+                break;
+            }
+        }
+
+        result.FinalDistance = Vector3.Distance(rig.Body.position, rig.Target.Position);
+        result.FinalLateralSpeed = ComputeLateralSpeed(rig.Body, rig.Target.Position);
+        Debug.Log(
+            $"AutopilotPlayModeV2 closed-loop brake state={rig.Autopilot.CurrentState} phase={rig.Autopilot.NavigationPhase} "
+            + $"initialRetro={result.InitialRetrogradeAngle:0.0} minRetro={result.MinimumRetrogradeAngle:0.0} "
+            + $"maxMain={result.MaximumMainThrottle:0.00} sawTorque={result.SawActualRcsBrakeTorque} "
+            + $"mainAfterAlign={result.SawMainThrottleAfterAlignment} brakeForce={result.SawBrakeForceOpposingVelocity} "
+            + $"position={rig.Body.position.x:0.00},{rig.Body.position.y:0.00},{rig.Body.position.z:0.00} "
+            + $"velocity={rig.Body.linearVelocity.x:0.00},{rig.Body.linearVelocity.y:0.00},{rig.Body.linearVelocity.z:0.00}");
+        return result;
+    }
+
     private static void StepSimulation(AutopilotPlayModeRig rig)
     {
         SetPrivateBool(rig.Autopilot, "navigationPlanDirty", true);
@@ -252,6 +319,18 @@ public class PrototypeAutopilotNavigationPlayModeTests
         InvokeFixedUpdate(rig.Controller);
         Physics.Simulate(Time.fixedDeltaTime);
         Physics.SyncTransforms();
+    }
+
+    private static void StepClosedLoopBrakePhysics(AutopilotPlayModeRig rig, AutopilotRunResult result)
+    {
+        SetPrivateBool(rig.Autopilot, "navigationPlanDirty", true);
+        InvokeUpdate(rig.Autopilot);
+        InvokeFixedUpdate(rig.Autopilot);
+        CaptureClosedLoopBrakeCommandGate(rig, result);
+        InvokeFixedUpdate(rig.Controller);
+        Physics.Simulate(Time.fixedDeltaTime);
+        Physics.SyncTransforms();
+        CaptureClosedLoopBrakeProgress(rig, result);
     }
 
     private static void CaptureClosedLoopObstacleProgress(
@@ -298,6 +377,60 @@ public class PrototypeAutopilotNavigationPlayModeTests
         if (lateralRcsForce.magnitude > 50f)
         {
             result.SawActualRcsAvoidanceForce = true;
+        }
+    }
+
+    private static void CaptureClosedLoopBrakeProgress(
+        AutopilotPlayModeRig rig,
+        AutopilotRunResult result)
+    {
+        if (rig.Body.linearVelocity.sqrMagnitude > 0.0001f)
+        {
+            float retrogradeAngle = Vector3.Angle(rig.Ship.transform.forward, -rig.Body.linearVelocity.normalized);
+            result.MinimumRetrogradeAngle = Mathf.Min(result.MinimumRetrogradeAngle, retrogradeAngle);
+        }
+
+        result.MaximumActualRcsTorque = Mathf.Max(result.MaximumActualRcsTorque, rig.Controller.LastRcsActualTorqueWorld.magnitude);
+        result.MaximumAssistTorque = Mathf.Max(result.MaximumAssistTorque, rig.Controller.LastFlightAssistRequest.torqueLocal.magnitude);
+        result.MaximumMainThrottle = Mathf.Max(result.MaximumMainThrottle, rig.Controller.MainThrustCommand);
+        result.SawActualRcsBrakeTorque |= rig.Controller.LastRcsActualTorqueWorld.magnitude > 100f;
+        result.SawBrakeForceOpposingVelocity |= Vector3.Dot(rig.Controller.LastMainForceWorld, rig.Body.linearVelocity) < -0.01f;
+    }
+
+    private static void CaptureClosedLoopBrakeCommandGate(
+        AutopilotPlayModeRig rig,
+        AutopilotRunResult result)
+    {
+        if (result.SawMainThrottleAfterAlignment)
+        {
+            return;
+        }
+
+        if (rig.Body.linearVelocity.sqrMagnitude <= 0.0001f)
+        {
+            return;
+        }
+
+        float retrogradeAngle = Vector3.Angle(rig.Ship.transform.forward, -rig.Body.linearVelocity.normalized);
+        float requestedMainThrottle = rig.Controller.HasExternalFlightAssistRequest
+            ? rig.Controller.LastExternalFlightAssistRequest.mainThrottle
+            : 0f;
+        if (requestedMainThrottle <= 0.05f)
+        {
+            return;
+        }
+
+        if (retrogradeAngle <= 30f)
+        {
+            result.SawMainThrottleAfterAlignment = true;
+        }
+        else
+        {
+            result.SawPrematureMainThrottle = true;
+            result.PrematureMainThrottleStep = result.CurrentStepIndex;
+            result.PrematureMainThrottleRetrogradeAngle = retrogradeAngle;
+            result.PrematureMainThrottleState = rig.Autopilot.CurrentState.ToString();
+            result.PrematureMainThrottlePhase = rig.Autopilot.NavigationPhase.ToString();
         }
     }
 
@@ -639,6 +772,17 @@ public class PrototypeAutopilotNavigationPlayModeTests
         public float MaximumRequestedRcsForce;
         public float MaximumAssistForce;
         public float MaximumAssistTorque;
+        public float InitialRetrogradeAngle;
+        public float MinimumRetrogradeAngle;
+        public bool SawActualRcsBrakeTorque;
+        public bool SawPrematureMainThrottle;
+        public bool SawMainThrottleAfterAlignment;
+        public bool SawBrakeForceOpposingVelocity;
+        public int CurrentStepIndex;
+        public int PrematureMainThrottleStep = -1;
+        public float PrematureMainThrottleRetrogradeAngle;
+        public string PrematureMainThrottleState;
+        public string PrematureMainThrottlePhase;
         public Vector3 AvoidanceSide;
     }
 

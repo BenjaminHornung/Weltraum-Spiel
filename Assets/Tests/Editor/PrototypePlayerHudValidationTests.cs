@@ -568,7 +568,7 @@ public class PrototypePlayerHudValidationTests
         Assert.That(IndexOfBlipKind(filteredBlips, PrototypePlayerRadarBlipKind.Objective), Is.EqualTo(filteredBlips.Length - 1));
         Assert.That(IndexOfBlipKind(filteredBlips, PrototypePlayerRadarBlipKind.SelectedNavigation), Is.EqualTo(filteredBlips.Length - 3));
         Assert.That(IndexOfBlipKind(filteredBlips, PrototypePlayerRadarBlipKind.SelectedCombat), Is.EqualTo(filteredBlips.Length - 2));
-        Assert.That(filteredBlips.Length, Is.EqualTo(6), "lowest-priority actionable contact capped");
+        Assert.That(filteredBlips.Length, Is.EqualTo(4), "lowest-priority actionable contact capped");
         Assert.That(filteredBlips[filteredBlips.Length - 1].Label, Is.Not.EqualTo("Very Far Route"));
 
         PrototypePlayerHudSnapshot withoutTargetSnapshot = CreateHudSnapshot(
@@ -2126,8 +2126,8 @@ public class PrototypePlayerHudValidationTests
             Assert.That(FindText(playerHud, "NavigationPlannerTitle").text, Is.EqualTo("Navigation Planner"));
             Assert.That(FindText(playerHud, "NavigationPlannerBody").text, Does.Contain("Target 1/"));
             Assert.That(FindText(playerHud, "NavigationPlannerBody").text, Does.Contain("Manoever:"));
-            Assert.That(FindText(playerHud, "NavigationPlannerBody").text, Does.Contain("Route:"));
-            Assert.That(FindText(playerHud, "NavigationPlannerBody").text, Does.Contain("Burn req"));
+            Assert.That(FindText(playerHud, "NavigationPlannerBody").text, Does.Contain("Path:"));
+            Assert.That(FindText(playerHud, "NavigationPlannerBody").text, Does.Contain("Burn "));
             Assert.That(FindText(playerHud, "NavigationPlannerBody").text, Does.Contain("Stop "));
             Assert.True(FindRect(playerHud, "NavigationPlannerMapPanel").gameObject.activeSelf);
             Assert.True(FindRect(playerHud, "NavigationPlannerMapLayer").gameObject.activeInHierarchy);

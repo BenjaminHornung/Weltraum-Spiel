@@ -2283,7 +2283,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private const int MaxRadarRouteSegments = 28;
     private const int MaxRadarPreviewSegments = 28;
     private const int MaxRadarBlips = 64;
-    private const int MaxNavigationPlannerMapBlips = 6;
+    private const int MaxNavigationPlannerMapBlips = 4;
     private const int MaxCompactRadarGenericBlips = 8;
     private const int MinimapRangeModeAuto = 0;
     private const int MinimapRangeModeCount = 5;
@@ -3538,8 +3538,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             navigationPlannerMapPreviewSegments,
             navigationPlannerMapBlipImages,
             true,
-            3.8f,
-            3.4f);
+            6.2f,
+            4.8f);
     }
 
     private void ConfigureRadarLayer(
@@ -3561,7 +3561,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         }
 
         Rect rect = layerRect.rect;
-        float radius = Mathf.Min(rect.width, rect.height) * 0.42f;
+        float radius = Mathf.Min(rect.width, rect.height) * (usePlannerMapBlips ? 0.46f : 0.42f);
         ConfigureRadarGrid(gridSegments, radius);
 
         Vector2 heading = new Vector2(snapshot.ShipForward.x, snapshot.ShipForward.z);
@@ -3599,7 +3599,14 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             Vector2 point = RadarWorldToLayerPoint(snapshot.Radar, blip.WorldPosition, radius);
             Vector2 size = RadarBlipSize(blip.Kind);
             float rotation = RadarBlipRotation(blip.Kind);
-            ApplyRadarBlip(blipImages[i], point, ColorForRadarBlipKind(blip.Kind), size, rotation);
+            Color color = ColorForRadarBlipKind(blip.Kind);
+            if (usePlannerMapBlips && !IsPrimaryNavigationPlannerMapBlip(blip.Kind))
+            {
+                color.a *= 0.58f;
+                size *= 0.82f;
+            }
+
+            ApplyRadarBlip(blipImages[i], point, color, size, rotation);
         }
 
         for (int i = blipCount; i < blipImages.Count; i++)
@@ -3792,6 +3799,19 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             case PrototypePlayerRadarBlipKind.Docking:
             case PrototypePlayerRadarBlipKind.Combat:
             case PrototypePlayerRadarBlipKind.SelectedCombat:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private static bool IsPrimaryNavigationPlannerMapBlip(PrototypePlayerRadarBlipKind kind)
+    {
+        switch (kind)
+        {
+            case PrototypePlayerRadarBlipKind.SelectedNavigation:
+            case PrototypePlayerRadarBlipKind.SelectedCombat:
+            case PrototypePlayerRadarBlipKind.Objective:
                 return true;
             default:
                 return false;
@@ -4288,16 +4308,15 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             ? navigation.TrajectoryPreview.StatusLabel
             : "Preview off";
         string avoidanceLabel = navigation.HasAvoidanceCue ? navigation.AvoidanceLabel : "No obstacle cue";
-        string burnLabel = "Burn req " + FormatBurnSeconds(navigation.RequiredBurnSeconds)
+        string burnLabel = "Burn " + FormatBurnSeconds(navigation.RequiredBurnSeconds)
             + " / avail " + FormatBurnSeconds(navigation.AvailableBurnSeconds);
 
         return navigation.TargetName + " | " + navigation.TargetListLabel + "\n"
-            + navigation.TargetTypeLabel + " | Dist " + FormatDistance(navigation.DistanceMeters) + " | ETA " + navigation.EtaLabel + "\n"
-            + "Closing " + navigation.ClosingSpeed.ToString("0.0") + " m/s | Lateral " + navigation.LateralSpeed.ToString("0.0") + " m/s\n"
-            + navigation.ManeuverIntentLabel + " | " + navigation.RouteModeLabel + "\n"
-            + "Stop " + FormatDistance(navigation.StoppingDistanceMeters) + " | " + burnLabel + "\n"
-            + navigation.StateLabel + " | " + navigation.PhaseLabel + "\n"
-            + routeLabel + " | " + previewLabel + "\n"
+            + "Dist " + FormatDistance(navigation.DistanceMeters) + " | ETA " + navigation.EtaLabel
+            + " | Closing " + navigation.ClosingSpeed.ToString("0.0") + " m/s\n"
+            + "Path: " + routeLabel + " | " + previewLabel + "\n"
+            + navigation.ManeuverIntentLabel + " | Stop " + FormatDistance(navigation.StoppingDistanceMeters) + "\n"
+            + burnLabel + " | " + navigation.PhaseLabel + "\n"
             + avoidanceLabel;
     }
 
