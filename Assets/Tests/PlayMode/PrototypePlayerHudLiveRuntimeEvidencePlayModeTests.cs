@@ -20,6 +20,7 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
     private const string LiveEvidenceSymmetryChangeName = "player-ui-live-evidence-symmetry-v1";
     private const string TargetIndicatorsChangeName = "player-target-indicators-v1";
     private const string PlayerUiRegressionControlsChangeName = "player-ui-regression-controls-autopilot-rcs-v1";
+    private const string MissionRewardChangeName = "player-mission-reward-ui-v1";
     private const BindingFlags NonPublicInstance = BindingFlags.Instance | BindingFlags.NonPublic;
 
     private SimulationMode previousSimulationMode;
@@ -184,6 +185,67 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
             1024,
             768);
         Assert.That(dockingFourByThree.Docking.Visible, Is.True, "live 4:3 docking snapshot");
+        AssertPanelsSeparated(rig.PlayerHud, false);
+    }
+
+    [Test]
+    [Category("PlayerHudEvidence")]
+    [Timeout(120000)]
+    public void PrototypeBootstrapRuntimePlayerHudEvidenceCapturesMissionRewardCompleted()
+    {
+        Assert.That(Application.isPlaying, Is.True, "This evidence test must run in Unity PlayMode.");
+#if UNITY_EDITOR
+        if (SceneManager.GetActiveScene().path != ScenePath)
+        {
+            EditorSceneManager.LoadSceneInPlayMode(ScenePath, new LoadSceneParameters(LoadSceneMode.Single));
+        }
+#endif
+
+        PrototypeUiLayoutManager.ResetPresetToBasic();
+        GameObject host = new GameObject("PrototypePlayerHudLiveEvidenceHost");
+        PrototypeBootstrap bootstrap = host.AddComponent<PrototypeBootstrap>();
+        SetPrivateField(bootstrap, "buildOnStart", false);
+        SetPrivateField(bootstrap, "spawnTestTarget", true);
+        SetPrivateField(bootstrap, "buildPveArena", true);
+        SetPrivateField(bootstrap, "buildTestEnvironment", true);
+        SetPrivateField(bootstrap, "allowGeneratedFallbackWhenImportedAssetMissing", false);
+        bootstrap.BuildPrototype(PrototypeShipVariant.Baseline());
+
+        LiveHudRig rig = ResolveRig();
+        ConfigureHudCanvasForCameraCapture(rig);
+        DisableLegacyImGuiOverlays(rig.Camera);
+        RunFrames(rig, 3);
+
+        Assert.NotNull(rig.ArenaLoop, "PrototypePveArenaLoop");
+        Assert.That(rig.ArenaLoop.Targets.Count, Is.GreaterThan(0), "arena target count");
+        for (int i = 0; i < rig.ArenaLoop.Targets.Count; i++)
+        {
+            PrototypePveArenaTarget target = rig.ArenaLoop.Targets[i];
+            Assert.NotNull(target, "arena target " + i);
+            Assert.NotNull(target.DamageState, "arena target damage state " + i);
+            target.DamageState.SetIntegrityFraction(0f);
+        }
+
+        rig.Autopilot.SelectTarget(null);
+        rig.WeaponComputer.ClearSelection();
+        rig.WeaponComputer.SetAutoFireEnabled(false);
+        rig.PlayerHud.SetTargetDockingPort(null);
+        RunFrames(rig, 6);
+
+        string screenshotRoot = GetScreenshotRoot(MissionRewardChangeName);
+        Directory.CreateDirectory(screenshotRoot);
+        PrototypePlayerHudSnapshot completed = CaptureLiveState(
+            rig,
+            screenshotRoot,
+            "mission-reward-completed-gameview-1280x720.png",
+            1280,
+            720);
+
+        Assert.That(completed.Arena.Completed, Is.True, "mission objective completed");
+        Assert.That(completed.Arena.IsVisible, Is.True, "mission objective visible");
+        Assert.That(completed.Arena.ProgressLabel, Is.EqualTo("3/3"), "mission objective progress");
+        TMP_Text objectiveBody = FindText(rig.PlayerHud, "ObjectiveBody");
+        Assert.That(objectiveBody.text, Does.Contain("Reward:"), "mission reward text visible");
         AssertPanelsSeparated(rig.PlayerHud, false);
     }
 
@@ -677,6 +739,50 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
         canvas.worldCamera = rig.Camera;
         canvas.planeDistance = 1f;
         Canvas.ForceUpdateCanvases();
+    }
+
+    private static void DisableLegacyImGuiOverlays(Camera camera)
+    {
+        if (camera == null)
+        {
+            return;
+        }
+
+        PrototypeFlightHud hud = camera.GetComponent<PrototypeFlightHud>();
+        if (hud != null)
+        {
+            hud.enabled = false;
+        }
+
+        PrototypeDebugOverlay debugOverlay = camera.GetComponent<PrototypeDebugOverlay>();
+        if (debugOverlay != null)
+        {
+            debugOverlay.enabled = false;
+        }
+
+        PrototypeKeybindOverlay keybinds = camera.GetComponent<PrototypeKeybindOverlay>();
+        if (keybinds != null)
+        {
+            keybinds.enabled = false;
+        }
+
+        PrototypeMinimapOverlay minimap = camera.GetComponent<PrototypeMinimapOverlay>();
+        if (minimap != null)
+        {
+            minimap.enabled = false;
+        }
+
+        PrototypeFlightDebugConsole debugConsole = camera.GetComponent<PrototypeFlightDebugConsole>();
+        if (debugConsole != null)
+        {
+            debugConsole.enabled = false;
+        }
+
+        PrototypeWeaponComputerPanel weaponComputerPanel = camera.GetComponent<PrototypeWeaponComputerPanel>();
+        if (weaponComputerPanel != null)
+        {
+            weaponComputerPanel.enabled = false;
+        }
     }
 
     private static PrototypePlayerHudSnapshot CaptureLiveState(
