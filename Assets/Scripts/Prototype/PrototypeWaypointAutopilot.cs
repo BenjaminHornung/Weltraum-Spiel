@@ -791,6 +791,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         if (desiredDirection.sqrMagnitude > 0.0001f)
         {
             desiredDirectionNormalized = desiredDirection.normalized;
+            ApplyAutopilotAttitudeTarget(desiredDirectionNormalized);
             attitudeTorqueLocal = ComputeAttitudeTorqueLocal(desiredDirectionNormalized);
             desiredBurnDirection = desiredDirectionNormalized;
             float angle = Vector3.Angle(transform.forward, desiredDirectionNormalized);
@@ -949,6 +950,40 @@ private Vector3 ComputeLateralCorrectionForceWorld()
             Vector3.zero,
             0f,
             false));
+    }
+
+    private void ApplyAutopilotAttitudeTarget(Vector3 desiredDirection)
+    {
+        if (shipController == null || desiredDirection.sqrMagnitude <= 0.0001f)
+        {
+            return;
+        }
+
+        Vector3 forward = desiredDirection.normalized;
+        Vector3 up = Vector3.ProjectOnPlane(transform.up, forward);
+        if (up.sqrMagnitude <= 0.0001f)
+        {
+            up = Vector3.ProjectOnPlane(Vector3.up, forward);
+        }
+
+        if (up.sqrMagnitude <= 0.0001f)
+        {
+            up = Vector3.ProjectOnPlane(transform.right, forward);
+        }
+
+        if (up.sqrMagnitude <= 0.0001f)
+        {
+            return;
+        }
+
+        Quaternion targetRotation = Quaternion.LookRotation(forward, up.normalized);
+        if (!TrajectoryPredictionMath.IsFinite(targetRotation))
+        {
+            return;
+        }
+
+        shipController.SetSasMode(SasControlMode.HoldAttitude);
+        shipController.SetSasTargetRotation(targetRotation);
     }
 
     private Vector3 ComputeVelocityDampingForceWorld(Vector3 velocity)
@@ -1307,6 +1342,7 @@ private void ClearCommands()
         {
             shipController.SetMainThrottle(0f);
             shipController.ClearExternalFlightAssistRequest();
+            shipController.SetSasMode(SasControlMode.KillRotation);
         }
 
         requestedMainThrottle = 0f;

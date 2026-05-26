@@ -44,7 +44,7 @@ public class PrototypeMomentumAssistValidationTests
         Rigidbody shipRigidbody = ship.GetComponent<Rigidbody>();
 
         controller.SetControlMode(FlightControlMode.Translation);
-        shipRigidbody.linearVelocity = transformRight(ship) * 3.9f;
+        shipRigidbody.linearVelocity = transformRight(ship) * 1.9f;
         momentum.Activate();
 
         float initialSpeed = shipRigidbody.linearVelocity.magnitude;
@@ -77,7 +77,7 @@ public class PrototypeMomentumAssistValidationTests
         PrototypeMomentumAssist momentum = ship.GetComponent<PrototypeMomentumAssist>();
         Rigidbody shipRigidbody = ship.GetComponent<Rigidbody>();
 
-        Vector3 initialVelocity = transformForward(ship) * 6.8f;
+        Vector3 initialVelocity = transformForward(ship) * 1.8f;
         controller.SetControlMode(FlightControlMode.Translation);
         shipRigidbody.linearVelocity = initialVelocity;
         momentum.Activate();
@@ -114,6 +114,57 @@ public class PrototypeMomentumAssistValidationTests
         Assert.That(controller.LastExternalFlightAssistRequest.source, Is.EqualTo(FlightAssistRequestSource.MomentumAssist));
         Assert.That(controller.LastExternalFlightAssistRequest.mainThrottle, Is.GreaterThan(0f));
         Assert.That(controller.LastFlightAssistRequest.mainThrottle, Is.EqualTo(controller.LastExternalFlightAssistRequest.mainThrottle));
+    }
+
+    [Test]
+    public void MomentumAssist_ExactRetrogradeFlipUsesRcsThenMainBrake()
+    {
+        SimulationMode previousSimulationMode = Physics.simulationMode;
+        Physics.simulationMode = SimulationMode.Script;
+        try
+        {
+            GameObject ship = CreateGeneratedShip();
+            PlayerShipController controller = ship.GetComponent<PlayerShipController>();
+            PrototypeMomentumAssist momentum = ship.GetComponent<PrototypeMomentumAssist>();
+            Rigidbody shipRigidbody = ship.GetComponent<Rigidbody>();
+
+            controller.SetControlMode(FlightControlMode.Normal);
+            shipRigidbody.linearVelocity = transformForward(ship) * 10f;
+            shipRigidbody.angularVelocity = Vector3.zero;
+            momentum.ActivateFromUi();
+
+            float initialRetrogradeAngle = Vector3.Angle(ship.transform.forward, -shipRigidbody.linearVelocity.normalized);
+            float minRetrogradeAngle = initialRetrogradeAngle;
+            bool sawRcsTorque = false;
+            bool sawMainThrottle = false;
+            bool sawBrakeForceOpposingVelocity = false;
+
+            for (int i = 0; i < 600; i++)
+            {
+                InvokeMomentumFixedUpdate(momentum);
+                InvokeFixedUpdate(controller);
+                Physics.Simulate(Time.fixedDeltaTime);
+
+                if (shipRigidbody.linearVelocity.sqrMagnitude > 0.0001f)
+                {
+                    float retrogradeAngle = Vector3.Angle(ship.transform.forward, -shipRigidbody.linearVelocity.normalized);
+                    minRetrogradeAngle = Mathf.Min(minRetrogradeAngle, retrogradeAngle);
+                }
+
+                sawRcsTorque |= controller.LastRcsActualTorqueWorld.magnitude > 100f;
+                sawMainThrottle |= controller.MainThrustCommand > 0.05f;
+                sawBrakeForceOpposingVelocity |= Vector3.Dot(controller.LastMainForceWorld, shipRigidbody.linearVelocity) < -0.01f;
+            }
+
+            Assert.That(minRetrogradeAngle, Is.LessThan(initialRetrogradeAngle - 45f), "exact retrograde should not stall the alignment torque");
+            Assert.True(sawRcsTorque, "momentum assist should rotate the ship toward the main-brake attitude with RCS");
+            Assert.True(sawMainThrottle, "momentum assist should eventually request main throttle after alignment");
+            Assert.True(sawBrakeForceOpposingVelocity, "main thruster force should oppose velocity during momentum kill");
+        }
+        finally
+        {
+            Physics.simulationMode = previousSimulationMode;
+        }
     }
 
     private static GameObject CreateGeneratedShip()

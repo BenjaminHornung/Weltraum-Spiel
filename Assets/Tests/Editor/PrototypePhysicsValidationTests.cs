@@ -131,6 +131,27 @@ public class PrototypePhysicsValidationTests
     }
 
     [Test]
+    public void RcsNozzleVfxFacesOppositePhysicsForceDirection()
+    {
+        using (PhysicsValidationProbe.GeneratedShipFixture fixture = PhysicsValidationProbe.CreateGeneratedShip())
+        {
+            Transform nozzle = fixture.Ship.transform.Find("RCS_Right/RCS_Nozzle_RCS_Right_Right");
+            Assert.NotNull(nozzle);
+            Transform vfx = nozzle.Find("VFX");
+            Assert.NotNull(vfx);
+
+            Assert.That(Vector3.Dot(nozzle.forward.normalized, Vector3.right), Is.GreaterThan(0.98f));
+            Assert.That(Vector3.Dot(vfx.forward.normalized, -nozzle.forward.normalized), Is.GreaterThan(0.98f));
+
+            fixture.Rcs.SetSolverMode(RcsSolverMode.ExperimentalPhysicalNozzles);
+            PhysicsValidationProbe.RcsResult result = PhysicsValidationProbe.RunRcs(fixture, Vector3.right, Vector3.zero);
+
+            Assert.That(result.actualForce.x, Is.GreaterThan(8000f));
+            Assert.That(Vector3.Dot(result.actualForce.normalized, nozzle.forward.normalized), Is.GreaterThan(0.98f));
+        }
+    }
+
+    [Test]
     public void RcsFuelUseFollowsFinalCombinedAllocatorOutput()
     {
         using (PhysicsValidationProbe.GeneratedShipFixture fixture = PhysicsValidationProbe.CreateGeneratedShip())

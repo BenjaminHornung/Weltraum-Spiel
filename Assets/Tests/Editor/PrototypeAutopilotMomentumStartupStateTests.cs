@@ -169,6 +169,66 @@ public class PrototypeAutopilotMomentumStartupStateTests
     }
 
     [Test]
+    public void BootstrapAutopilotFlipsAndMainBrakesWithoutManualAlignment()
+    {
+        SimulationMode previousSimulationMode = Physics.simulationMode;
+        Physics.simulationMode = SimulationMode.Script;
+        try
+        {
+            PrototypeBootstrap bootstrap = CreateBootstrap();
+            bootstrap.BuildBuiltInVariant(0);
+            GameObject ship = GameObject.Find("PrototypeShip");
+            Rigidbody body = ship.GetComponent<Rigidbody>();
+            PlayerShipController controller = ship.GetComponent<PlayerShipController>();
+            PrototypeWaypointAutopilot autopilot = ship.GetComponent<PrototypeWaypointAutopilot>();
+            PrototypeNavigationTarget target = autopilot.CurrentTarget;
+
+            Assert.NotNull(target);
+            ship.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+            body.position = Vector3.zero;
+            target.transform.position = Vector3.forward * 150f;
+            body.linearVelocity = Vector3.forward * 45f;
+            body.angularVelocity = Vector3.zero;
+            Physics.SyncTransforms();
+
+            autopilot.SelectTarget(target);
+            autopilot.ToggleAutopilot();
+
+            float initialRetrogradeAngle = Vector3.Angle(ship.transform.forward, -body.linearVelocity.normalized);
+            float minRetrogradeAngle = initialRetrogradeAngle;
+            bool sawRcsTorque = false;
+            bool sawMainThrottle = false;
+            bool sawBrakeForceOpposingVelocity = false;
+
+            for (int i = 0; i < 600; i++)
+            {
+                InvokeFixedUpdate(autopilot);
+                InvokeFixedUpdate(controller);
+                Physics.Simulate(Time.fixedDeltaTime);
+
+                if (body.linearVelocity.sqrMagnitude > 0.0001f)
+                {
+                    float retrogradeAngle = Vector3.Angle(ship.transform.forward, -body.linearVelocity.normalized);
+                    minRetrogradeAngle = Mathf.Min(minRetrogradeAngle, retrogradeAngle);
+                }
+
+                sawRcsTorque |= controller.LastRcsActualTorqueWorld.magnitude > 100f;
+                sawMainThrottle |= controller.MainThrustCommand > 0.05f;
+                sawBrakeForceOpposingVelocity |= Vector3.Dot(controller.LastMainForceWorld, body.linearVelocity) < -0.01f;
+            }
+
+            Assert.That(minRetrogradeAngle, Is.LessThan(initialRetrogradeAngle - 45f), "bootstrap ship should rotate toward retrograde without a test manually setting rotation");
+            Assert.True(sawRcsTorque, "bootstrap ship should receive actual RCS torque from waypoint autopilot");
+            Assert.True(sawMainThrottle, "bootstrap ship should eventually request the main thruster for deceleration");
+            Assert.True(sawBrakeForceOpposingVelocity, "bootstrap main thruster force should oppose the approach velocity during decel");
+        }
+        finally
+        {
+            Physics.simulationMode = previousSimulationMode;
+        }
+    }
+
+    [Test]
     public void MainThrusterDefaultsUseCalmerGimbalTuning()
     {
         PrototypeMainThrusterSettings defaults = PrototypeMainThrusterSettings.Default;

@@ -832,6 +832,17 @@ public class PlayerShipController : MonoBehaviour
         sasTargetRotationValid = true;
     }
 
+    public void SetSasTargetRotation(Quaternion targetRotation)
+    {
+        if (!TrajectoryPredictionMath.IsFinite(targetRotation))
+        {
+            return;
+        }
+
+        sasTargetRotation = targetRotation;
+        sasTargetRotationValid = true;
+    }
+
     private void UpdateSasTargetRotation(Vector3 manualAttitudeCommand)
     {
         if (sasMode != SasControlMode.HoldAttitude)

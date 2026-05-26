@@ -4832,7 +4832,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         }
 
         ApplyHelpPanelLayout(safeWidth, safeHeight, margin, gap, contextWidth, sideBottom, systemHeight, narrow, shortScreen);
-        ApplyPlayerComputerPanelLayout(navigationPlannerPanelRect, navigationPlannerBodyText, safeWidth, safeHeight, margin, gap, bottomOffset, bottomHeight, narrow, shortScreen);
+        ApplyPlayerComputerPanelLayout(navigationPlannerPanelRect, navigationPlannerBodyText, safeWidth, safeHeight, margin, gap, bottomOffset, bottomHeight, narrow, shortScreen, 760f, 480f);
         ApplyNavigationPlannerMapLayout(safeWidth, safeHeight, narrow, shortScreen);
         ApplyPlayerComputerPanelLayout(combatComputerPanelRect, combatComputerBodyText, safeWidth, safeHeight, margin, gap, bottomOffset, bottomHeight, narrow, shortScreen);
         ApplyContextBodyLayout((navigationControlRow != null && navigationControlRow.gameObject.activeSelf) || (combatControlRow != null && combatControlRow.gameObject.activeSelf));
@@ -4909,16 +4909,18 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         float bottomOffset,
         float bottomHeight,
         bool narrow,
-        bool shortScreen)
+        bool shortScreen,
+        float wideMaxWidth = 560f,
+        float wideMaxHeight = 390f)
     {
         if (panel == null)
         {
             return;
         }
 
-        float width = Mathf.Clamp(safeWidth - (margin * 2f), 320f, narrow ? 500f : 560f);
+        float width = Mathf.Clamp(safeWidth - (margin * 2f), 320f, narrow ? 500f : wideMaxWidth);
         float availableHeight = safeHeight - (margin * 2f) - bottomOffset - bottomHeight - gap;
-        float height = Mathf.Clamp(availableHeight, 220f, shortScreen ? 280f : 390f);
+        float height = Mathf.Clamp(availableHeight, 220f, shortScreen ? 320f : wideMaxHeight);
         float bottomClearanceTop = bottomOffset + bottomHeight + gap;
         float centerY = Mathf.Clamp(
             bottomClearanceTop + (height * 0.5f),
@@ -4997,7 +4999,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         }
         else
         {
-            float mapSize = Mathf.Clamp(contentHeight + 8f, 230f, 270f);
+            float mapSize = Mathf.Clamp(contentHeight + 16f, 260f, 332f);
             ApplyRect(
                 navigationPlannerMapPanelRect,
                 new Vector2(1f, 0.5f),

@@ -2666,7 +2666,7 @@ public class PrototypePlayerHudValidationTests
         Assert.That(mapLabelText.fontSize, Is.GreaterThanOrEqualTo(10f), width + "x" + height + " planner map label font size");
         if (width >= 860)
         {
-            Assert.That(mapLayer.rect.width, Is.GreaterThan(220f), width + "x" + height + " planner map layer footprint");
+            Assert.That(mapLayer.rect.width, Is.GreaterThan(250f), width + "x" + height + " planner map layer footprint");
         }
         else
         {

@@ -23,7 +23,7 @@ public class PrototypeMomentumAssist : MonoBehaviour
     [SerializeField] private float holdLinearSpeedMetersPerSecond = 0.18f;
     [SerializeField] private float holdAngularSpeedRadPerSecond = 0.08f;
     [SerializeField] private float holdConfirmSeconds = 0.22f;
-    [SerializeField] private float alignForMainAngleDegrees = 7f;
+    [SerializeField] private float alignForMainAngleDegrees = 12f;
     [SerializeField] private float mainBrakeEntrySpeedMetersPerSecond = 2.8f;
     [SerializeField] private float mainBrakeMaxSpeedForMinThrottle = 32f;
     [SerializeField] private float mainBrakeMinThrottle = 0.22f;
@@ -138,6 +138,7 @@ public class PrototypeMomentumAssist : MonoBehaviour
         {
             shipController.SetMainThrottle(0f);
             shipController.ClearExternalFlightAssistRequest();
+            shipController.SetSasMode(SasControlMode.KillRotation);
         }
 
         isActive = false;
@@ -199,6 +200,7 @@ public void ActivateFromUi()
     {
         shipController?.SetMainThrottle(0f);
         shipController?.ClearExternalFlightAssistRequest();
+        shipController?.SetSasMode(SasControlMode.KillRotation);
         LastRequestedForceWorld = Vector3.zero;
         LastRequestedTorqueLocal = Vector3.zero;
         LastMainThrottleRequest = 0f;
@@ -211,6 +213,7 @@ public void ResetForBootstrap()
     {
         shipController?.SetMainThrottle(0f);
         shipController?.ClearExternalFlightAssistRequest();
+        shipController?.SetSasMode(SasControlMode.KillRotation);
         LastRequestedForceWorld = Vector3.zero;
         LastRequestedTorqueLocal = Vector3.zero;
         LastMainThrottleRequest = 0f;
@@ -240,8 +243,9 @@ public void ResetForBootstrap()
         LastBrakeDirectionWorld = desiredBrakeDirection;
         if (desiredBrakeDirection.sqrMagnitude > 0.0001f)
         {
+            ApplyBrakeAttitudeTarget(desiredBrakeDirection);
             Vector3 desiredDirectionLocal = transform.InverseTransformDirection(desiredBrakeDirection);
-            Vector3 alignTorqueLocal = Vector3.Cross(Vector3.forward, desiredDirectionLocal) * alignTorqueGain;
+            Vector3 alignTorqueLocal = ComputeBrakeAlignmentTorqueLocal(desiredDirectionLocal);
             requestedTorqueLocal += alignTorqueLocal;
             requestedTorqueLocal = Vector3.ClampMagnitude(requestedTorqueLocal, GetMaxRcsTorque());
         }
@@ -262,12 +266,12 @@ public void ResetForBootstrap()
                 false);
         }
 
-        if (CanUseMainBrake)
+        if (CanUseMainBrake && SpeedMetersPerSecond >= mainBrakeEntrySpeedMetersPerSecond)
         {
             LastMainThrottleRequest = 0f;
             shipController.SetMainThrottle(0f);
             SetState(PrototypeMomentumAssistState.AlignForBrake, "align for brake");
-            return new FlightAssistRequest(FlightAssistMode.AssistedFlight, FlightAssistRequestSource.MomentumAssist, dampLinearWorld, requestedTorqueLocal, false);
+            return new FlightAssistRequest(FlightAssistMode.AssistedFlight, FlightAssistRequestSource.MomentumAssist, Vector3.zero, requestedTorqueLocal, false);
         }
 
         LastMainThrottleRequest = 0f;
@@ -299,10 +303,70 @@ public void ResetForBootstrap()
         return Vector3.ClampMagnitude(-angularVelocityLocal * maxTorque * angularDampGain, maxTorque);
     }
 
+    private Vector3 ComputeBrakeAlignmentTorqueLocal(Vector3 desiredDirectionLocal)
+    {
+        if (desiredDirectionLocal.sqrMagnitude <= 0.000001f)
+        {
+            return Vector3.zero;
+        }
+
+        Vector3 normalizedDirection = desiredDirectionLocal.normalized;
+        Vector3 turnAxisLocal = Vector3.Cross(Vector3.forward, normalizedDirection);
+        if (turnAxisLocal.sqrMagnitude <= 0.0004f && normalizedDirection.z < 0f)
+        {
+            turnAxisLocal = Vector3.right;
+        }
+
+        if (turnAxisLocal.sqrMagnitude <= 0.000001f)
+        {
+            return Vector3.zero;
+        }
+
+        float angleDegrees = Vector3.Angle(Vector3.forward, normalizedDirection);
+        float commandMagnitude = Mathf.Clamp01(angleDegrees / 45f);
+        float authorityScale = Mathf.Clamp01(alignTorqueGain / 4f);
+        return turnAxisLocal.normalized * GetMaxRcsTorque() * authorityScale * commandMagnitude;
+    }
+
+    private void ApplyBrakeAttitudeTarget(Vector3 desiredBrakeDirection)
+    {
+        if (shipController == null || desiredBrakeDirection.sqrMagnitude <= 0.0001f)
+        {
+            return;
+        }
+
+        Vector3 forward = desiredBrakeDirection.normalized;
+        Vector3 up = Vector3.ProjectOnPlane(transform.up, forward);
+        if (up.sqrMagnitude <= 0.0001f)
+        {
+            up = Vector3.ProjectOnPlane(Vector3.up, forward);
+        }
+
+        if (up.sqrMagnitude <= 0.0001f)
+        {
+            up = Vector3.ProjectOnPlane(transform.right, forward);
+        }
+
+        if (up.sqrMagnitude <= 0.0001f)
+        {
+            return;
+        }
+
+        Quaternion targetRotation = Quaternion.LookRotation(forward, up.normalized);
+        if (!TrajectoryPredictionMath.IsFinite(targetRotation))
+        {
+            return;
+        }
+
+        shipController.SetSasMode(SasControlMode.HoldAttitude);
+        shipController.SetSasTargetRotation(targetRotation);
+    }
+
     private void HandleHold()
     {
         shipController.SetMainThrottle(0f);
         shipController.ClearExternalFlightAssistRequest();
+        shipController.SetSasMode(SasControlMode.KillRotation);
         LastRequestedForceWorld = Vector3.zero;
         LastRequestedTorqueLocal = Vector3.zero;
         LastMainThrottleRequest = 0f;

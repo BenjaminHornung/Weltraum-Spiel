@@ -259,3 +259,55 @@ Player UI regression controls, minimap evidence, navigation/combat popups, Kill 
   - `player-ui-regression-nav-planner-1280x720.png` shows the planner popup with a larger map, fewer planner blips, visible route/preview line, readable range/route/preview/contact label and no overlap with the bottom HUD.
 - Review note:
   - `claude-plan-review` was invoked with text file context and the screenshot path in `current_state`; the local wrapper timed out after 120 seconds, so no actionable Claude feedback was returned for this checkpoint.
+
+## Latest: planner popup scale, autopilot SAS target, Kill Momentum main-brake, and RCS VFX direction follow-up
+
+- Change set:
+  - `Assets/Scripts/Prototype/PrototypePlayerHud.cs`
+  - `Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs`
+  - `Assets/Scripts/Prototype/PlayerShipController.cs`
+  - `Assets/Scripts/Prototype/PrototypeMomentumAssist.cs`
+  - `Assets/Scripts/Prototype/RcsThrusterController.cs`
+  - `Assets/Tests/Editor/PrototypeWaypointAutopilotValidationTests.cs`
+  - `Assets/Tests/Editor/PrototypeAutopilotMomentumStartupStateTests.cs`
+  - `Assets/Tests/Editor/PrototypeMomentumAssistValidationTests.cs`
+  - `Assets/Tests/Editor/PrototypePhysicsValidationTests.cs`
+  - `Assets/Tests/Editor/PrototypePlayerHudValidationTests.cs`
+  - `Assets/Tests/PlayMode/PrototypePlayerHudLiveRuntimeEvidencePlayModeTests.cs`
+  - `tests/screenshots/player-ui-regression-radar-normal-1280x720.png`
+  - `tests/screenshots/player-ui-regression-nav-planner-1280x720.png`
+  - `tests/screenshots/player-ui-regression-combat-computer-1280x720.png`
+- Planner popup fixes:
+  - Navigation Planner now uses a wider/taller desktop modal cap than the Combat Computer and increases the non-stacked map from the prior 230-270 range to 260-332.
+  - Layout regression now requires the planner map layer to be wider than 250 px on desktop and still checks map/body/text/button separation.
+  - PlayMode evidence now asserts the live planner popup map width is greater than 250 px before accepting the screenshot.
+- Autopilot fixes:
+  - `PlayerShipController.SetSasTargetRotation(...)` exposes a validated autopilot-owned SAS target.
+  - `PrototypeWaypointAutopilot` now sets `SasControlMode.HoldAttitude` to the current burn/brake vector while preserving the physical RCS torque request and main-throttle alignment gate.
+  - Autopilot clear/abort/failure paths reset SAS back to `KillRotation` so no stale hold-attitude target is left behind.
+  - Bootstrap imported-ship closed-loop coverage verifies physical retrograde rotation and main-thruster brake force without manually setting ship rotation.
+- Kill Momentum fixes:
+  - Exact retrograde alignment uses real RCS torque authority and an autopilot-style SAS target instead of the old zero-vector singularity.
+  - High-speed, main-capable Kill Momentum aligns first without spending the velocity through RCS linear damping, then uses the main thruster once aligned.
+  - Low-speed/no-main cases still use RCS linear damping.
+- RCS VFX fix:
+  - `RcsThrusterController.RefreshNozzles()` normalizes direct-child VFX local rotation so visible plumes face opposite `nozzle.forward`, while physics force remains along `nozzle.forward`.
+  - Regression coverage ties VFX direction and physical force direction together in one fixture.
+- Unity MCP `validate_script`:
+  - `Assets/Scripts/Prototype/PlayerShipController.cs`: PASS, 0 errors (existing analyzer warning only).
+  - `Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs`: PASS, 0 errors (existing analyzer warning only).
+  - `Assets/Scripts/Prototype/PrototypePlayerHud.cs`: PASS, 0 errors (existing analyzer warnings only).
+  - `Assets/Scripts/Prototype/PrototypeMomentumAssist.cs`: PASS, 0 errors (existing analyzer warning only).
+  - `Assets/Scripts/Prototype/RcsThrusterController.cs`: PASS, 0 errors.
+  - Changed editor/playmode tests: PASS, 0 errors.
+- Unity MCP EditMode job `77399943aa564d2db9149edd02a7b74d`: focused planner/autopilot regression tests PASS 8/8.
+- Unity MCP EditMode job `59449eefc6a9447b9c312655214d02e3`: focused Momentum/RCS VFX regressions PASS 4/4 after catching and fixing the old pre-main RCS damping behavior.
+- Unity MCP EditMode job `21937a0bf9f549fea7c1f64295d606c7`: affected autopilot, momentum, physics and planner regressions PASS 47/47.
+- Unity MCP PlayMode job `7ca0cfb2c829465289101020e4a50417`: `PrototypeBootstrapRuntimePlayerHudEvidenceCapturesPlayerComputerPopups` PASS 1/1.
+- `dotnet build "Weltraum Spiel.sln" --no-restore`: PASS, 0 errors, 22 existing Unity/generated assembly warnings.
+- Screenshot evidence refreshed:
+  - `tests/screenshots/player-ui-regression-radar-normal-1280x720.png`
+  - `tests/screenshots/player-ui-regression-nav-planner-1280x720.png`
+  - `tests/screenshots/player-ui-regression-combat-computer-1280x720.png`
+- Review note:
+  - `claude-plan-review` was invoked with the current plan and touched file list; the local wrapper timed out after 120 seconds, so no actionable Claude feedback was returned for this checkpoint.

@@ -316,6 +316,7 @@ public class RcsThrusterController : MonoBehaviour
             }
 
             GameObject nozzleVfx = FindNozzleVfx(child);
+            NormalizeNozzleVfxTransform(child, nozzleVfx);
             Vector3 vfxScale = nozzleVfx != null ? nozzleVfx.transform.localScale : Vector3.one;
             Color vfxColor = Color.white;
             if (nozzleVfx != null)
@@ -429,6 +430,17 @@ public class RcsThrusterController : MonoBehaviour
 
         return null;
     }
+
+    private static void NormalizeNozzleVfxTransform(Transform nozzle, GameObject nozzleVfx)
+    {
+        if (nozzle == null || nozzleVfx == null || nozzleVfx.transform.parent != nozzle)
+        {
+            return;
+        }
+
+        nozzleVfx.transform.localRotation = Quaternion.Euler(0f, 180f, 0f);
+    }
+
     private static string BuildNozzleDedupeKey(Transform nozzle)
     {
         PrototypeShipSocket socket = nozzle != null ? nozzle.GetComponent<PrototypeShipSocket>() : null;
