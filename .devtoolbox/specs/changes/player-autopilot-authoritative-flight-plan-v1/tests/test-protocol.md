@@ -224,3 +224,46 @@ DevToolbox:
 - `verify_run 2c62d8272f6f4eb0afd04a9691bb8289`: MIXED/EXPECTED.
   - Specs step passed.
   - Bare `dotnet build`, `dotnet test`, and `dotnet format --verify-no-changes` failed with MSB1011/multiple-workspace selection, matching the known generic DevToolbox limitation in this Unity repository.
+
+## Executable Flight Plan Emission
+
+Date: 2026-05-27
+
+Scope:
+
+- Extended `PrototypeTrajectoryPlan` with an embedded `PrototypeFlightPlan` while preserving legacy diagnostic fields (`segments`, `predictedPath`, candidate scores, requested throttle/RCS, ETA/status labels).
+- Extended `PrototypeTrajectoryPlanner.Plan(...)` overloads so existing callers still work and runtime callers can pass a real `PrototypeShipPlanningSnapshot`.
+- Added conversion from legacy trajectory segments to executable maneuver segments:
+  - explicit burn alignment when needed;
+  - main burn, avoidance burn, coast, flip-to-retrograde, retrograde brake burn, final approach, and hold phases;
+  - predicted samples generated from `TrajectoryPredictor` using fixed-step physics, real mass, thrust, fuel rate, RCS force, current fuel, and captured pose/velocity from the planning snapshot;
+  - no-op zero-duration brake segments are skipped so a plan does not display an unnecessary flip when there is no brake burn.
+- `PrototypeWaypointAutopilot.RefreshNavigationPlan()` now builds a real ship planning snapshot from the active ship and passes it into the planner.
+- Navigation Planner HUD rows now prefer the emitted `PrototypeFlightPlan` when present:
+  - route points come from predicted flight-plan samples;
+  - rows show flight-plan segment labels/timing/actuator/fuel;
+  - authority label says `Flight plan emitted | executor pending`, so the UI does not claim the runtime executor is active yet.
+
+Unity MCP:
+
+- `validate_script Assets/Scripts/Prototype/PrototypeTrajectoryPlanner.cs`: PASS, 0 warnings, 0 errors.
+- `validate_script Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs`: PASS, 0 errors, 1 existing analyzer warning.
+- `validate_script Assets/Scripts/Prototype/PrototypePlayerHud.cs`: PASS, 0 errors, 2 existing analyzer warnings.
+- `validate_script Assets/Tests/Editor/PrototypeAutopilotNavigationComputerV2ValidationTests.cs`: PASS, 0 warnings, 0 errors.
+- `validate_script Assets/Tests/Editor/PrototypePlayerHudValidationTests.cs`: PASS, 0 warnings, 0 errors.
+- EditMode job `231374e18e7346ba890f8b402d918a39`: `PrototypeAutopilotNavigationComputerV2ValidationTests` PASS 21/21.
+- EditMode job `a0289a3fc70f47bc86a7bbf17bbd833c`: `PrototypePlayerHudValidationTests` PASS 59/59.
+- PlayMode job `895b3659e84d4e778789af608418e9d1`: `PrototypeAutopilotNavigationPlayModeTests` PASS 26/26.
+
+.NET:
+
+- `dotnet build "Weltraum Spiel.sln" --no-restore`: PASS, 0 errors, 22 existing Unity-generated warnings.
+- `dotnet test "Weltraum Spiel.sln" --no-build`: PASS, no output.
+- `git diff --check` for changed line-5 files: PASS; only expected LF-to-CRLF working-copy warnings.
+
+DevToolbox:
+
+- `specs_validate player-autopilot-authoritative-flight-plan-v1`: PASS.
+- `verify_run cb800ce3bfc14f2facb801fc26801928`: MIXED/EXPECTED.
+  - Specs step passed.
+  - Bare `dotnet build`, `dotnet test`, and `dotnet format --verify-no-changes` failed with MSB1011/multiple-workspace selection, matching the known generic DevToolbox limitation in this Unity repository.

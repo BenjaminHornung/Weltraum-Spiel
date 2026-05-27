@@ -182,6 +182,10 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     public bool NavigationObstacleDetected => LastObstacleDetection.detected;
     public string NavigationPlanStatus => string.IsNullOrWhiteSpace(LastTrajectoryPlan.status) ? "clear" : LastTrajectoryPlan.status;
     public PrototypeTrajectoryPlan CurrentPlan => LastTrajectoryPlan;
+    public PrototypeFlightPlan CurrentFlightPlan => LastTrajectoryPlan.flightPlan;
+    public bool HasExecutableFlightPlan => CurrentFlightPlan.IsValid;
+    public PrototypeManeuverSegment[] FlightPlanSegments => CurrentFlightPlan.segments ?? System.Array.Empty<PrototypeManeuverSegment>();
+    public PrototypeTrajectoryPredictedSample[] FlightPlanSamples => CurrentFlightPlan.predictedSamples ?? System.Array.Empty<PrototypeTrajectoryPredictedSample>();
     public string ObstacleStatus => LastObstacleDetection.hasObstacle
         ? $"{LastTrajectoryPlan.obstacleLabel} @ {LastObstacleDetection.hitDistance:0.0}m"
         : "clear";
@@ -2394,6 +2398,14 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             ? obstacleDetector.DetectDirectPath(shipRigidbody, currentTarget.Position, clearance)
             : PrototypeObstacleDetectionResult.Clear(clearance);
         bool keepStableAvoidance = hasStableAvoidance && Time.time < avoidanceHoldExpireTime;
+        PrototypeShipPlanningSnapshot shipPlanningSnapshot = PrototypeShipPlanningSnapshotBuilder.Build(
+            transform,
+            shipRigidbody,
+            shipStats,
+            shipController,
+            GetComponent<ShipPhysicsCore>(),
+            GetComponent<MainThrusterBank>(),
+            GetComponent<RcsThrusterController>());
         PrototypeTrajectoryPlan plan = trajectoryPlanner.Plan(
             new PrototypeTrajectorySnapshot(
                 shipRigidbody.worldCenterOfMass,
@@ -2411,6 +2423,9 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
                 arrivalSpeedMetersPerSecond,
                 finalApproachLateralToleranceMetersPerSecond),
             LastObstacleDetection,
+            shipPlanningSnapshot,
+            Time.time,
+            Time.fixedDeltaTime,
             keepStableAvoidance,
             stableAvoidanceWaypoint,
             keepStableAvoidance ? "stable" : string.Empty);

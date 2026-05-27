@@ -161,6 +161,7 @@ public struct PrototypeTrajectoryPlan
     public PrototypeTrajectoryCandidateScore[] candidateScores;
     public TrajectoryBurnPlan burnPlan;
     public Vector3[] predictedPath;
+    public PrototypeFlightPlan flightPlan;
     public Vector3 desiredBurnDirection;
     public Vector3 desiredBurnDirectionWorld;
     public Vector3 desiredAccelerationWorld;
@@ -209,6 +210,12 @@ public struct PrototypeTrajectoryPlan
             candidateScores = Array.Empty<PrototypeTrajectoryCandidateScore>(),
             burnPlan = burn,
             predictedPath = Array.Empty<Vector3>(),
+            flightPlan = PrototypeFlightPlan.CreateInvalid(
+                "legacy-clear",
+                0,
+                direction,
+                PrototypeFlightPlanAbortReplanReason.NonExecutable,
+                "Legacy clear plan only"),
             desiredBurnDirection = direction,
             desiredBurnDirectionWorld = direction,
             desiredAccelerationWorld = direction,
@@ -248,11 +255,39 @@ public class PrototypeTrajectoryPlanner
     private const float AvoidanceBlend = 1.35f;
     private const float CandidateHorizonSeconds = 5f;
     private const float CandidateStepSeconds = 0.25f;
+    private const float MinimumAttitudeSegmentSeconds = 0.2f;
+    private const float MaximumAttitudeSegmentSeconds = 6f;
     private readonly List<PrototypeTrajectoryCandidateScore> candidateBuffer = new List<PrototypeTrajectoryCandidateScore>(10);
 
     public PrototypeTrajectoryPlan Plan(PrototypeTrajectorySnapshot snapshot, PrototypeObstacleDetectionResult detection)
     {
-        return Plan(snapshot, detection, false, Vector3.zero, string.Empty);
+        return Plan(
+            snapshot,
+            detection,
+            CreatePlanningSnapshot(snapshot),
+            0f,
+            TrajectoryPredictor.DefaultFixedDeltaTime,
+            false,
+            Vector3.zero,
+            string.Empty);
+    }
+
+    public PrototypeTrajectoryPlan Plan(
+        PrototypeTrajectorySnapshot snapshot,
+        PrototypeObstacleDetectionResult detection,
+        PrototypeShipPlanningSnapshot shipSnapshot,
+        float createdAtTimeSeconds = 0f,
+        float fixedDeltaTimeSeconds = TrajectoryPredictor.DefaultFixedDeltaTime)
+    {
+        return Plan(
+            snapshot,
+            detection,
+            shipSnapshot,
+            createdAtTimeSeconds,
+            fixedDeltaTimeSeconds,
+            false,
+            Vector3.zero,
+            string.Empty);
     }
 
     public PrototypeTrajectoryPlan Plan(
@@ -262,12 +297,34 @@ public class PrototypeTrajectoryPlanner
         Vector3 stableAvoidanceWaypoint,
         string preferredCandidateName)
     {
+        return Plan(
+            snapshot,
+            detection,
+            CreatePlanningSnapshot(snapshot),
+            0f,
+            TrajectoryPredictor.DefaultFixedDeltaTime,
+            keepAvoidanceWaypoint,
+            stableAvoidanceWaypoint,
+            preferredCandidateName);
+    }
+
+    public PrototypeTrajectoryPlan Plan(
+        PrototypeTrajectorySnapshot snapshot,
+        PrototypeObstacleDetectionResult detection,
+        PrototypeShipPlanningSnapshot shipSnapshot,
+        float createdAtTimeSeconds,
+        float fixedDeltaTimeSeconds,
+        bool keepAvoidanceWaypoint,
+        Vector3 stableAvoidanceWaypoint,
+        string preferredCandidateName)
+    {
+        PrototypeShipPlanningSnapshot resolvedShipSnapshot = ResolvePlanningSnapshot(snapshot, shipSnapshot);
         Vector3 targetDirection = snapshot.DirectionToTarget;
         bool hasBlockingObstacle = detection.detected && detection.obstacle != null;
         if (!hasBlockingObstacle && !keepAvoidanceWaypoint)
         {
             PrototypeTrajectoryPlan clearPlan = PrototypeTrajectoryPlan.Clear(targetDirection);
-            FillDirectDiagnostics(ref clearPlan, snapshot);
+            FillDirectDiagnostics(ref clearPlan, snapshot, resolvedShipSnapshot, createdAtTimeSeconds, fixedDeltaTimeSeconds);
             return clearPlan;
         }
 
@@ -301,6 +358,16 @@ public class PrototypeTrajectoryPlanner
         bool fuelInsufficient = selected.fuelInsufficient || (burnPlan.requestedFuelKg > burnPlan.estimatedFuelKg + 0.0001f);
         PrototypeTrajectorySegment[] segments = BuildSegments(snapshot, selectedDirection, requestedThrottle, burnPlan, avoidance, selected);
         Vector3[] predictedPath = PredictCandidatePath(snapshot, selectedDirection, requestedRcsForce, requestedThrottle);
+        PrototypeFlightPlan flightPlan = BuildFlightPlan(
+            snapshot,
+            resolvedShipSnapshot,
+            createdAtTimeSeconds,
+            fixedDeltaTimeSeconds,
+            segments,
+            requestedRcsForce,
+            fuelInsufficient,
+            fuelInsufficient ? PrototypeFlightPlanAbortReplanReason.FuelStarved : PrototypeFlightPlanAbortReplanReason.None,
+            fuelInsufficient ? "Fuel insufficient" : (avoidance ? "Executable avoidance plan" : "Executable direct plan"));
 
         return new PrototypeTrajectoryPlan
         {
@@ -312,6 +379,7 @@ public class PrototypeTrajectoryPlanner
             candidateScores = candidateBuffer.ToArray(),
             burnPlan = burnPlan,
             predictedPath = predictedPath,
+            flightPlan = flightPlan,
             desiredBurnDirection = selectedDirection,
             desiredBurnDirectionWorld = selectedDirection,
             desiredAccelerationWorld = selectedDirection * snapshot.maxMainAcceleration * requestedThrottle,
@@ -345,7 +413,12 @@ public class PrototypeTrajectoryPlanner
         };
     }
 
-    private static void FillDirectDiagnostics(ref PrototypeTrajectoryPlan clearPlan, PrototypeTrajectorySnapshot snapshot)
+    private static void FillDirectDiagnostics(
+        ref PrototypeTrajectoryPlan clearPlan,
+        PrototypeTrajectorySnapshot snapshot,
+        PrototypeShipPlanningSnapshot shipSnapshot,
+        float createdAtTimeSeconds,
+        float fixedDeltaTimeSeconds)
     {
         clearPlan.plannedStoppingDistance = EstimateStoppingDistance(snapshot);
         clearPlan.plannedEtaSeconds = EstimateEta(snapshot);
@@ -355,6 +428,16 @@ public class PrototypeTrajectoryPlanner
         clearPlan.activeSegment = clearPlan.segments.Length > 0 ? clearPlan.segments[0] : default;
         clearPlan.activeSegmentType = clearPlan.activeSegment.type;
         clearPlan.predictedPath = PredictCandidatePath(snapshot, clearPlan.desiredBurnDirection, Vector3.zero, 1f);
+        clearPlan.flightPlan = BuildFlightPlan(
+            snapshot,
+            shipSnapshot,
+            createdAtTimeSeconds,
+            fixedDeltaTimeSeconds,
+            clearPlan.segments,
+            Vector3.zero,
+            false,
+            PrototypeFlightPlanAbortReplanReason.None,
+            "Executable direct plan");
         clearPlan.candidateScores = new[]
         {
             BuildClearDirectCandidate(snapshot, clearPlan.desiredBurnDirection, clearPlan.burnPlan)
@@ -621,6 +704,647 @@ public class PrototypeTrajectoryPlanner
         }
 
         return points;
+    }
+
+    private static PrototypeFlightPlan BuildFlightPlan(
+        PrototypeTrajectorySnapshot trajectorySnapshot,
+        PrototypeShipPlanningSnapshot shipSnapshot,
+        float createdAtTimeSeconds,
+        float fixedDeltaTimeSeconds,
+        PrototypeTrajectorySegment[] legacySegments,
+        Vector3 requestedRcsForceWorld,
+        bool forceNonExecutable,
+        PrototypeFlightPlanAbortReplanReason forcedReason,
+        string statusLabel)
+    {
+        PrototypeTrajectorySegment[] sourceSegments = legacySegments ?? Array.Empty<PrototypeTrajectorySegment>();
+        if (sourceSegments.Length == 0)
+        {
+            return PrototypeFlightPlan.CreateInvalid(
+                BuildPlanId(trajectorySnapshot, "empty"),
+                0,
+                trajectorySnapshot.targetPosition,
+                PrototypeFlightPlanAbortReplanReason.NonExecutable,
+                "No maneuver segments");
+        }
+
+        float fixedDelta = fixedDeltaTimeSeconds > 0f && TrajectoryPredictionMath.IsFinite(fixedDeltaTimeSeconds)
+            ? fixedDeltaTimeSeconds
+            : TrajectoryPredictor.DefaultFixedDeltaTime;
+        var maneuvers = new List<PrototypeManeuverSegment>(sourceSegments.Length + 2);
+        var samples = new List<PrototypeTrajectoryPredictedSample>(64);
+        TrajectoryPredictionState current = CreateInitialPredictionState(trajectorySnapshot, shipSnapshot);
+        float cursorSeconds = 0f;
+        float mainAcceleration = ResolveMainAcceleration(trajectorySnapshot, shipSnapshot);
+        float mainFuelRate = ResolveMainFuelRate(trajectorySnapshot, shipSnapshot);
+        PrototypeFlightPlanTolerance tolerance = CreateFlightPlanTolerance(trajectorySnapshot);
+
+        AddPredictedSample(samples, current, -1, PrototypeManeuverPhase.None, 0f, Vector3.zero);
+        for (int i = 0; i < sourceSegments.Length; i++)
+        {
+            PrototypeTrajectorySegment legacy = sourceSegments[i];
+            if (IsNoOpLegacySegment(legacy))
+            {
+                continue;
+            }
+
+            Vector3 direction = legacy.directionWorld.sqrMagnitude > 0.0001f
+                ? legacy.directionWorld.normalized
+                : trajectorySnapshot.DirectionToTarget;
+
+            if ((legacy.type == PrototypeTrajectorySegmentType.Burn || legacy.type == PrototypeTrajectorySegmentType.AvoidanceBurn)
+                && maneuvers.Count == 0)
+            {
+                float alignSeconds = EstimateAttitudeSegmentSeconds(current.rotation, direction, shipSnapshot);
+                AddManeuverSegment(
+                    maneuvers,
+                    samples,
+                    ref current,
+                    ref cursorSeconds,
+                    PrototypeManeuverPhase.AlignForBurn,
+                    PrototypeManeuverCommandMode.AttitudeOnly,
+                    alignSeconds,
+                    direction,
+                    0f,
+                    0f,
+                    Vector3.zero,
+                    0f,
+                    0f,
+                    0f,
+                    tolerance,
+                    "Align burn",
+                    shipSnapshot,
+                    fixedDelta,
+                    mainAcceleration,
+                    mainFuelRate,
+                    true);
+            }
+
+            if (legacy.type == PrototypeTrajectorySegmentType.Brake)
+            {
+                float flipSeconds = EstimateAttitudeSegmentSeconds(current.rotation, direction, shipSnapshot);
+                AddManeuverSegment(
+                    maneuvers,
+                    samples,
+                    ref current,
+                    ref cursorSeconds,
+                    PrototypeManeuverPhase.FlipToRetrograde,
+                    PrototypeManeuverCommandMode.AttitudeOnly,
+                    flipSeconds,
+                    direction,
+                    0f,
+                    0f,
+                    Vector3.zero,
+                    0f,
+                    0f,
+                    0f,
+                    tolerance,
+                    "Flip retrograde",
+                    shipSnapshot,
+                    fixedDelta,
+                    mainAcceleration,
+                    mainFuelRate,
+                    true);
+            }
+
+            PrototypeManeuverPhase phase = MapManeuverPhase(legacy.type);
+            PrototypeManeuverCommandMode mode = MapCommandMode(legacy.type, legacy.throttle, requestedRcsForceWorld);
+            Vector3 rcsForce = UsesRcsTranslation(mode) ? requestedRcsForceWorld : Vector3.zero;
+            float rcsScale = ResolveRcsTranslationScale(rcsForce, shipSnapshot);
+            float mainFuel = ResolveExpectedMainFuel(legacy, mode, mainFuelRate);
+            AddManeuverSegment(
+                maneuvers,
+                samples,
+                ref current,
+                ref cursorSeconds,
+                phase,
+                mode,
+                legacy.durationSeconds,
+                direction,
+                legacy.throttle,
+                rcsScale,
+                rcsForce,
+                legacy.expectedDeltaV,
+                mainFuel,
+                0f,
+                tolerance,
+                BuildManeuverLabel(legacy.type),
+                shipSnapshot,
+                fixedDelta,
+                mainAcceleration,
+                mainFuelRate,
+                mode == PrototypeManeuverCommandMode.RcsAttitude);
+
+        }
+
+        if (maneuvers.Count == 0)
+        {
+            return PrototypeFlightPlan.CreateInvalid(
+                BuildPlanId(trajectorySnapshot, "empty"),
+                0,
+                trajectorySnapshot.targetPosition,
+                PrototypeFlightPlanAbortReplanReason.NonExecutable,
+                "No executable maneuvers");
+        }
+
+        PrototypeFlightPlanAbortReplanReason reasons = forcedReason | BuildAuthorityReasons(shipSnapshot, maneuvers);
+        bool executable = !forceNonExecutable && reasons == PrototypeFlightPlanAbortReplanReason.None;
+        return new PrototypeFlightPlan(
+            BuildPlanId(trajectorySnapshot, sourceSegments[0].type.ToString()),
+            0,
+            createdAtTimeSeconds,
+            fixedDelta,
+            trajectorySnapshot.targetPosition,
+            trajectorySnapshot.arrivalRadius,
+            trajectorySnapshot.arrivalSpeed,
+            shipSnapshot,
+            maneuvers.ToArray(),
+            samples.ToArray(),
+            executable,
+            reasons,
+            statusLabel);
+    }
+
+    private static void AddManeuverSegment(
+        List<PrototypeManeuverSegment> maneuvers,
+        List<PrototypeTrajectoryPredictedSample> samples,
+        ref TrajectoryPredictionState current,
+        ref float cursorSeconds,
+        PrototypeManeuverPhase phase,
+        PrototypeManeuverCommandMode mode,
+        float durationSeconds,
+        Vector3 direction,
+        float mainThrottle,
+        float rcsTranslationScale,
+        Vector3 rcsForceWorld,
+        float expectedDeltaV,
+        float expectedMainFuelKg,
+        float expectedRcsFuelKg,
+        PrototypeFlightPlanTolerance tolerance,
+        string label,
+        PrototypeShipPlanningSnapshot shipSnapshot,
+        float fixedDeltaTimeSeconds,
+        float mainAccelerationMetersPerSecondSquared,
+        float mainFuelKgPerSecond,
+        bool rotateToDirection)
+    {
+        float duration = Mathf.Max(0f, durationSeconds);
+        int index = maneuvers.Count;
+        Quaternion startRotation = current.rotation;
+        Quaternion endRotation = rotateToDirection
+            ? ResolveLookRotation(direction, startRotation)
+            : startRotation;
+        if (duration <= 0f && mode == PrototypeManeuverCommandMode.AttitudeOnly)
+        {
+            current = new TrajectoryPredictionState(
+                current.position,
+                current.velocity,
+                endRotation,
+                Vector3.zero,
+                cursorSeconds,
+                current.remainingFuelKg);
+            return;
+        }
+
+        Vector3 startAngularVelocity = current.angularVelocity;
+        Vector3 endAngularVelocity = rotateToDirection ? Vector3.zero : current.angularVelocity;
+        TrajectoryPredictionState start = new TrajectoryPredictionState(
+            current.position,
+            current.velocity,
+            startRotation,
+            current.angularVelocity,
+            cursorSeconds,
+            current.remainingFuelKg);
+        TrajectoryPredictionState end = PredictManeuverEnd(
+            start,
+            duration,
+            fixedDeltaTimeSeconds,
+            direction,
+            mainThrottle,
+            UsesMainThrottle(mode) ? mainAccelerationMetersPerSecondSquared : 0f,
+            UsesRcsTranslation(mode) ? rcsForceWorld : Vector3.zero,
+            ResolvePlanMass(shipSnapshot),
+            UsesMainThrottle(mode) ? mainFuelKgPerSecond : 0f,
+            out TrajectoryPredictionState[] states);
+        end = new TrajectoryPredictionState(
+            end.position,
+            end.velocity,
+            endRotation,
+            endAngularVelocity,
+            cursorSeconds + duration,
+            end.remainingFuelKg);
+
+        var segment = new PrototypeManeuverSegment(
+            index,
+            phase,
+            mode,
+            cursorSeconds,
+            duration,
+            direction,
+            start.position,
+            end.position,
+            start.velocity,
+            end.velocity,
+            startRotation,
+            endRotation,
+            startAngularVelocity,
+            endAngularVelocity,
+            UsesMainThrottle(mode) ? mainThrottle : 0f,
+            rcsTranslationScale,
+            expectedDeltaV,
+            expectedMainFuelKg,
+            expectedRcsFuelKg,
+            tolerance,
+            PrototypeManeuverSegment.DefaultReplanReasons,
+            label);
+        maneuvers.Add(segment);
+
+        for (int i = 1; i < states.Length; i++)
+        {
+            float progress = duration > 0f ? Mathf.Clamp01((states[i].elapsedTime - cursorSeconds) / duration) : 1f;
+            Quaternion sampleRotation = Quaternion.Slerp(startRotation, endRotation, progress);
+            AddPredictedSample(
+                samples,
+                new TrajectoryPredictionState(
+                    states[i].position,
+                    states[i].velocity,
+                    sampleRotation,
+                    Vector3.Lerp(startAngularVelocity, endAngularVelocity, progress),
+                    states[i].elapsedTime,
+                    states[i].remainingFuelKg),
+                index,
+                phase,
+                UsesMainThrottle(mode) ? mainThrottle : 0f,
+                UsesRcsTranslation(mode) ? rcsForceWorld : Vector3.zero);
+        }
+
+        current = end;
+        cursorSeconds = segment.endTimeSeconds;
+    }
+
+    private static TrajectoryPredictionState PredictManeuverEnd(
+        TrajectoryPredictionState start,
+        float durationSeconds,
+        float fixedDeltaTimeSeconds,
+        Vector3 direction,
+        float throttle,
+        float mainAccelerationMetersPerSecondSquared,
+        Vector3 rcsForceWorld,
+        float massKg,
+        float mainFuelKgPerSecond,
+        out TrajectoryPredictionState[] states)
+    {
+        if (durationSeconds <= 0f)
+        {
+            states = new[] { start };
+            return start;
+        }
+
+        int steps = Mathf.Clamp(Mathf.CeilToInt(durationSeconds / Mathf.Max(0.0001f, fixedDeltaTimeSeconds)), 1, TrajectoryPredictor.MaxStepCount);
+        float stepSeconds = durationSeconds / steps;
+        Vector3 rcsAcceleration = massKg > 0.0001f ? rcsForceWorld / massKg : Vector3.zero;
+        var settings = new TrajectoryPredictionSettings(
+            steps,
+            stepSeconds,
+            false,
+            direction,
+            Mathf.Max(0f, mainAccelerationMetersPerSecondSquared) * Mathf.Clamp01(throttle),
+            rcsAcceleration,
+            Mathf.Max(0f, mainFuelKgPerSecond) * Mathf.Clamp01(throttle));
+        states = TrajectoryPredictor.Predict(start, null, settings);
+        return states.Length > 0 ? states[states.Length - 1] : start;
+    }
+
+    private static void AddPredictedSample(
+        List<PrototypeTrajectoryPredictedSample> samples,
+        TrajectoryPredictionState state,
+        int segmentIndex,
+        PrototypeManeuverPhase phase,
+        float mainThrottle,
+        Vector3 rcsForceWorld)
+    {
+        samples.Add(new PrototypeTrajectoryPredictedSample(
+            state.elapsedTime,
+            segmentIndex,
+            phase,
+            state.position,
+            state.velocity,
+            state.rotation,
+            state.angularVelocity,
+            state.remainingFuelKg,
+            mainThrottle,
+            rcsForceWorld));
+    }
+
+    private static PrototypeShipPlanningSnapshot CreatePlanningSnapshot(PrototypeTrajectorySnapshot snapshot)
+    {
+        float mainThrust = snapshot.mainThrustNewtons > 0f
+            ? snapshot.mainThrustNewtons
+            : snapshot.maxMainAcceleration * snapshot.massKg;
+        return new PrototypeShipPlanningSnapshot(
+            new TrajectoryPredictionState(
+                snapshot.position,
+                snapshot.velocity,
+                Quaternion.LookRotation(snapshot.forward.sqrMagnitude > 0.0001f ? snapshot.forward : Vector3.forward),
+                Vector3.zero,
+                0f,
+                snapshot.availableFuelKg),
+            snapshot.position,
+            Vector3.zero,
+            Vector3.one,
+            Quaternion.identity,
+            snapshot.massKg,
+            snapshot.availableFuelKg,
+            snapshot.availableFuelKg,
+            mainThrust,
+            snapshot.fuelKgPerSecond,
+            0.35f,
+            0f,
+            0f,
+            0f,
+            0f,
+            snapshot.maxRcsForce,
+            snapshot.maxRcsForce,
+            0f,
+            0f,
+            false,
+            false,
+            false,
+            false,
+            false,
+            mainThrust > 0f ? 1 : 0,
+            snapshot.maxRcsForce > 0f ? 1 : 0,
+            0);
+    }
+
+    private static PrototypeShipPlanningSnapshot ResolvePlanningSnapshot(
+        PrototypeTrajectorySnapshot trajectorySnapshot,
+        PrototypeShipPlanningSnapshot shipSnapshot)
+    {
+        return shipSnapshot.IsFinite && shipSnapshot.rigidbodyMassKg > 0.0001f
+            ? shipSnapshot
+            : CreatePlanningSnapshot(trajectorySnapshot);
+    }
+
+    private static TrajectoryPredictionState CreateInitialPredictionState(
+        PrototypeTrajectorySnapshot trajectorySnapshot,
+        PrototypeShipPlanningSnapshot shipSnapshot)
+    {
+        if (shipSnapshot.initialState.IsFinite && shipSnapshot.rigidbodyMassKg > 0.0001f)
+        {
+            return new TrajectoryPredictionState(
+                shipSnapshot.initialState.position,
+                shipSnapshot.initialState.velocity,
+                shipSnapshot.initialState.rotation,
+                shipSnapshot.initialState.angularVelocity,
+                0f,
+                shipSnapshot.currentFuelKg);
+        }
+
+        return new TrajectoryPredictionState(
+            trajectorySnapshot.position,
+            trajectorySnapshot.velocity,
+            Quaternion.LookRotation(trajectorySnapshot.forward.sqrMagnitude > 0.0001f ? trajectorySnapshot.forward : Vector3.forward),
+            Vector3.zero,
+            0f,
+            trajectorySnapshot.availableFuelKg);
+    }
+
+    private static float ResolvePlanMass(PrototypeShipPlanningSnapshot shipSnapshot)
+    {
+        return Mathf.Max(0.01f, shipSnapshot.rigidbodyMassKg);
+    }
+
+    private static float ResolveMainAcceleration(PrototypeTrajectorySnapshot trajectorySnapshot, PrototypeShipPlanningSnapshot shipSnapshot)
+    {
+        float mass = ResolvePlanMass(shipSnapshot);
+        return shipSnapshot.mainThrustNewtons > 0f
+            ? shipSnapshot.mainThrustNewtons / mass
+            : Mathf.Max(0f, trajectorySnapshot.maxMainAcceleration);
+    }
+
+    private static float ResolveMainFuelRate(PrototypeTrajectorySnapshot trajectorySnapshot, PrototypeShipPlanningSnapshot shipSnapshot)
+    {
+        return shipSnapshot.mainFuelKgPerSecond > 0f
+            ? shipSnapshot.mainFuelKgPerSecond
+            : Mathf.Max(0f, trajectorySnapshot.fuelKgPerSecond);
+    }
+
+    private static float ResolveExpectedMainFuel(PrototypeTrajectorySegment segment, PrototypeManeuverCommandMode mode, float mainFuelRate)
+    {
+        if (!UsesMainThrottle(mode))
+        {
+            return 0f;
+        }
+
+        float estimated = mainFuelRate * Mathf.Clamp01(segment.throttle) * Mathf.Max(0f, segment.durationSeconds);
+        return Mathf.Max(segment.expectedFuelKg, estimated);
+    }
+
+    private static float ResolveRcsTranslationScale(Vector3 rcsForceWorld, PrototypeShipPlanningSnapshot shipSnapshot)
+    {
+        if (shipSnapshot.rcsTranslationForceNewtons <= 0.0001f)
+        {
+            return rcsForceWorld.sqrMagnitude > 0.0001f ? 1f : 0f;
+        }
+
+        return Mathf.Clamp01(rcsForceWorld.magnitude / shipSnapshot.rcsTranslationForceNewtons);
+    }
+
+    private static float EstimateAttitudeSegmentSeconds(
+        Quaternion currentRotation,
+        Vector3 desiredForward,
+        PrototypeShipPlanningSnapshot shipSnapshot)
+    {
+        if (desiredForward.sqrMagnitude <= 0.0001f)
+        {
+            return 0f;
+        }
+
+        Vector3 currentForward = currentRotation * Vector3.forward;
+        float angle = Vector3.Angle(currentForward, desiredForward);
+        if (angle <= 1f)
+        {
+            return 0f;
+        }
+
+        float inertia = Mathf.Max(
+            Mathf.Max(shipSnapshot.inertiaTensor.x, shipSnapshot.inertiaTensor.y),
+            shipSnapshot.inertiaTensor.z);
+        inertia = Mathf.Max(0.25f, inertia);
+        if (shipSnapshot.rcsAttitudeForceNewtons <= 0.0001f)
+        {
+            return Mathf.Clamp(angle / 90f, MinimumAttitudeSegmentSeconds, MaximumAttitudeSegmentSeconds);
+        }
+
+        float angularAcceleration = Mathf.Max(0.05f, shipSnapshot.rcsAttitudeForceNewtons / inertia);
+        float turnSeconds = Mathf.Sqrt((2f * angle * Mathf.Deg2Rad) / angularAcceleration) + 0.2f;
+        return Mathf.Clamp(turnSeconds, MinimumAttitudeSegmentSeconds, MaximumAttitudeSegmentSeconds);
+    }
+
+    private static Quaternion ResolveLookRotation(Vector3 forward, Quaternion fallback)
+    {
+        if (forward.sqrMagnitude <= 0.0001f)
+        {
+            return fallback;
+        }
+
+        Vector3 up = Vector3.up;
+        if (Mathf.Abs(Vector3.Dot(forward.normalized, up)) > 0.98f)
+        {
+            up = Vector3.right;
+        }
+
+        return Quaternion.LookRotation(forward.normalized, up);
+    }
+
+    private static PrototypeFlightPlanTolerance CreateFlightPlanTolerance(PrototypeTrajectorySnapshot trajectorySnapshot)
+    {
+        return new PrototypeFlightPlanTolerance(
+            Mathf.Max(PrototypeFlightPlanTolerance.Default.positionMeters, trajectorySnapshot.arrivalRadius * 0.5f),
+            Mathf.Max(PrototypeFlightPlanTolerance.Default.velocityMetersPerSecond, trajectorySnapshot.arrivalSpeed),
+            PrototypeFlightPlanTolerance.Default.attitudeDegrees,
+            PrototypeFlightPlanTolerance.Default.angularVelocityRadiansPerSecond,
+            PrototypeFlightPlanTolerance.Default.timingSeconds,
+            PrototypeFlightPlanTolerance.Default.fuelKg,
+            Mathf.Max(PrototypeFlightPlanTolerance.Default.obstacleClearanceMeters, trajectorySnapshot.clearanceRadius));
+    }
+
+    private static PrototypeManeuverPhase MapManeuverPhase(PrototypeTrajectorySegmentType type)
+    {
+        switch (type)
+        {
+            case PrototypeTrajectorySegmentType.Align:
+                return PrototypeManeuverPhase.AlignForBurn;
+            case PrototypeTrajectorySegmentType.Burn:
+                return PrototypeManeuverPhase.ProgradeBurn;
+            case PrototypeTrajectorySegmentType.Coast:
+                return PrototypeManeuverPhase.Coast;
+            case PrototypeTrajectorySegmentType.AvoidanceBurn:
+                return PrototypeManeuverPhase.AvoidanceBurn;
+            case PrototypeTrajectorySegmentType.Brake:
+                return PrototypeManeuverPhase.RetrogradeBurn;
+            case PrototypeTrajectorySegmentType.FinalApproach:
+                return PrototypeManeuverPhase.FinalApproach;
+            case PrototypeTrajectorySegmentType.Hold:
+                return PrototypeManeuverPhase.Hold;
+            default:
+                return PrototypeManeuverPhase.None;
+        }
+    }
+
+    private static PrototypeManeuverCommandMode MapCommandMode(
+        PrototypeTrajectorySegmentType type,
+        float throttle,
+        Vector3 requestedRcsForceWorld)
+    {
+        switch (type)
+        {
+            case PrototypeTrajectorySegmentType.Align:
+                return PrototypeManeuverCommandMode.AttitudeOnly;
+            case PrototypeTrajectorySegmentType.Burn:
+            case PrototypeTrajectorySegmentType.Brake:
+                return PrototypeManeuverCommandMode.MainThrottle;
+            case PrototypeTrajectorySegmentType.AvoidanceBurn:
+                return requestedRcsForceWorld.sqrMagnitude > 0.0001f
+                    ? PrototypeManeuverCommandMode.CombinedMainAndRcs
+                    : PrototypeManeuverCommandMode.MainThrottle;
+            case PrototypeTrajectorySegmentType.Coast:
+                return PrototypeManeuverCommandMode.RcsAttitude;
+            case PrototypeTrajectorySegmentType.FinalApproach:
+                return throttle > 0.01f
+                    ? PrototypeManeuverCommandMode.MainThrottle
+                    : PrototypeManeuverCommandMode.RcsTranslation;
+            case PrototypeTrajectorySegmentType.Hold:
+                return PrototypeManeuverCommandMode.RcsTranslation;
+            default:
+                return PrototypeManeuverCommandMode.None;
+        }
+    }
+
+    private static bool UsesMainThrottle(PrototypeManeuverCommandMode mode)
+    {
+        return mode == PrototypeManeuverCommandMode.MainThrottle
+            || mode == PrototypeManeuverCommandMode.CombinedMainAndRcs;
+    }
+
+    private static bool UsesRcsTranslation(PrototypeManeuverCommandMode mode)
+    {
+        return mode == PrototypeManeuverCommandMode.RcsTranslation
+            || mode == PrototypeManeuverCommandMode.CombinedMainAndRcs;
+    }
+
+    private static PrototypeFlightPlanAbortReplanReason BuildAuthorityReasons(
+        PrototypeShipPlanningSnapshot shipSnapshot,
+        List<PrototypeManeuverSegment> segments)
+    {
+        PrototypeFlightPlanAbortReplanReason reasons = PrototypeFlightPlanAbortReplanReason.None;
+        if (!shipSnapshot.IsFinite)
+        {
+            reasons |= PrototypeFlightPlanAbortReplanReason.NonFiniteState;
+        }
+
+        bool needsMain = false;
+        bool needsRcs = false;
+        for (int i = 0; i < segments.Count; i++)
+        {
+            needsMain |= UsesMainThrottle(segments[i].commandMode);
+            needsRcs |= segments[i].commandMode == PrototypeManeuverCommandMode.AttitudeOnly
+                || segments[i].commandMode == PrototypeManeuverCommandMode.RcsAttitude
+                || segments[i].commandMode == PrototypeManeuverCommandMode.RcsTranslation
+                || segments[i].commandMode == PrototypeManeuverCommandMode.CombinedMainAndRcs;
+        }
+
+        if (needsMain && shipSnapshot.mainThrustNewtons <= 0.0001f)
+        {
+            reasons |= PrototypeFlightPlanAbortReplanReason.NoMainThrustAuthority;
+        }
+
+        if (needsRcs
+            && shipSnapshot.rcsTranslationForceNewtons <= 0.0001f
+            && shipSnapshot.rcsAttitudeForceNewtons <= 0.0001f)
+        {
+            reasons |= PrototypeFlightPlanAbortReplanReason.NoRcsAuthority;
+        }
+
+        return reasons;
+    }
+
+    private static bool IsNoOpLegacySegment(PrototypeTrajectorySegment segment)
+    {
+        return segment.durationSeconds <= 0.0001f
+            && segment.expectedDeltaV <= 0.0001f
+            && segment.expectedFuelKg <= 0.0001f;
+    }
+
+    private static string BuildManeuverLabel(PrototypeTrajectorySegmentType type)
+    {
+        switch (type)
+        {
+            case PrototypeTrajectorySegmentType.Burn:
+                return "Main burn";
+            case PrototypeTrajectorySegmentType.AvoidanceBurn:
+                return "Avoidance burn";
+            case PrototypeTrajectorySegmentType.Coast:
+                return "Coast";
+            case PrototypeTrajectorySegmentType.Brake:
+                return "Brake burn";
+            case PrototypeTrajectorySegmentType.FinalApproach:
+                return "Final approach";
+            case PrototypeTrajectorySegmentType.Hold:
+                return "Hold";
+            default:
+                return type.ToString();
+        }
+    }
+
+    private static string BuildPlanId(PrototypeTrajectorySnapshot snapshot, string suffix)
+    {
+        return "trajectory-"
+            + Mathf.RoundToInt(snapshot.targetPosition.x) + "-"
+            + Mathf.RoundToInt(snapshot.targetPosition.y) + "-"
+            + Mathf.RoundToInt(snapshot.targetPosition.z) + "-"
+            + suffix;
     }
 
     private static float EstimateCandidateClearance(PrototypeTrajectorySnapshot snapshot, PrototypeObstacleDetectionResult detection, Vector3 direction)

@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using TMPro;
@@ -176,6 +177,71 @@ public class PrototypePlayerHudValidationTests
             Assert.That(PrototypePlayerHudSnapshotBuilder.TranslateNavigationState(PrototypeWaypointAutopilotState.FinalApproach), Is.EqualTo("Endanflug"));
             Assert.That(PrototypePlayerHudSnapshotBuilder.TranslateNavigationState(PrototypeWaypointAutopilotState.Complete), Is.EqualTo("Angekommen"));
             Assert.That(PrototypePlayerHudSnapshotBuilder.TranslateNavigationState(PrototypeWaypointAutopilotState.Failed), Is.EqualTo("Autopilot nicht moeglich"));
+        }
+    }
+
+    [Test]
+    public void NavigationSnapshotUsesEmittedFlightPlanForPlannerScheduleRows()
+    {
+        using (var builder = new PrototypeScenarioBuilder())
+        {
+            PrototypeAutopilotRig rig = builder.CreateAutopilotRig(targetPosition: Vector3.forward * 260f);
+            rig.Ship.Body.linearVelocity = Vector3.forward * 14f;
+            rig.Autopilot.EvaluateMetrics();
+
+            PrototypeShipPlanningSnapshot shipSnapshot = PrototypeShipPlanningSnapshotBuilder.Build(rig.Ship.Ship.transform);
+            PrototypeTrajectoryPlan plan = new PrototypeTrajectoryPlanner().Plan(
+                new PrototypeTrajectorySnapshot(
+                    rig.Ship.Body.worldCenterOfMass,
+                    rig.Ship.Body.linearVelocity,
+                    rig.Autopilot.CurrentTarget.Position,
+                    rig.Ship.Ship.transform.forward,
+                    rig.Ship.Body.mass,
+                    8f,
+                    rig.Ship.Rcs.TranslationForce,
+                    8f,
+                    shipSnapshot.mainThrustNewtons,
+                    shipSnapshot.mainFuelKgPerSecond,
+                    shipSnapshot.currentFuelKg,
+                    10f,
+                    1f,
+                    0.2f),
+                PrototypeObstacleDetectionResult.Clear(8f),
+                shipSnapshot,
+                3f,
+                0.02f);
+            SetAutoProperty(rig.Autopilot, "LastTrajectoryPlan", plan);
+
+            PrototypePlayerHudSnapshot snapshot = PrototypePlayerHudSnapshotBuilder.Build(
+                rig.Ship.Ship.transform,
+                rig.Ship.Body,
+                rig.Ship.Stats,
+                rig.Ship.Controller,
+                rig.Autopilot,
+                null,
+                null,
+                null,
+                null);
+
+            Assert.True(plan.flightPlan.IsValid);
+            Assert.That(snapshot.Navigation.PlanAuthorityLabel, Does.Contain("Flight plan emitted"));
+            Assert.That(snapshot.Navigation.PlanAuthorityLabel, Does.Contain("executor pending"));
+            Assert.That(snapshot.Navigation.TotalPlanDurationSeconds, Is.EqualTo(plan.flightPlan.totalDurationSeconds).Within(0.001f));
+            Assert.That(snapshot.Navigation.TotalPlanFuelKg, Is.EqualTo(plan.flightPlan.totalExpectedFuelKg).Within(0.001f));
+            Assert.That(snapshot.Navigation.RouteWorldPoints.Length, Is.GreaterThan(3));
+            Assert.That(snapshot.Navigation.ManeuverStepRows.Any(row => row.Contains("Main burn")), Is.True);
+            Assert.That(snapshot.Navigation.ManeuverStepRows.Any(row => row.Contains("Flip retrograde")), Is.True);
+            Assert.That(snapshot.Navigation.ManeuverStepRows.Any(row => row.Contains("Brake burn")), Is.True);
+
+            MethodInfo bodyMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
+                "BuildNavigationPlannerBody",
+                BindingFlags.Static | BindingFlags.NonPublic);
+            Assert.NotNull(bodyMethod);
+            string body = (string)bodyMethod.Invoke(null, new object[] { snapshot.Navigation });
+            Assert.That(body, Does.Contain("Authority: Flight plan emitted"));
+            Assert.That(body, Does.Contain("Steps:"));
+            Assert.That(body, Does.Contain("Flip retrograde"));
+            Assert.That(body, Does.Not.Contain("diagnostic preview only"));
         }
     }
 

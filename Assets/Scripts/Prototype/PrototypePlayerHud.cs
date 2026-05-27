@@ -916,7 +916,11 @@ public static class PrototypePlayerHudSnapshotBuilder
             warnings[i] = TranslateWarning(sourceWarnings[i]);
         }
 
-        Vector3[] routePoints = CopyRoutePoints(autopilot.PredictedRoute, 8);
+        PrototypeFlightPlan flightPlan = autopilot.CurrentFlightPlan;
+        bool hasFlightPlan = flightPlan.HasSegments;
+        Vector3[] routePoints = hasFlightPlan
+            ? CopyFlightPlanRoutePoints(flightPlan.predictedSamples, 8)
+            : CopyRoutePoints(autopilot.PredictedRoute, 8);
         Vector3 autopilotOrigin = autopilot.transform != null ? autopilot.transform.position : Vector3.zero;
         routePoints = ResolveNavigationRoutePoints(autopilotOrigin, autopilot, routePoints);
         bool hasAvoidanceCue = autopilot.AvoidanceActive || autopilot.NavigationObstacleDetected;
@@ -924,8 +928,8 @@ public static class PrototypePlayerHudSnapshotBuilder
         int targetCount = autopilot.WaypointManager != null ? autopilot.WaypointManager.TargetCount : (autopilot.CurrentTarget != null ? 1 : 0);
         int targetIndex = autopilot.WaypointManager != null && targetCount > 0 ? autopilot.WaypointManager.SelectedIndex + 1 : (autopilot.CurrentTarget != null ? 1 : 0);
         PrototypeTrajectorySegment[] planSegments = autopilot.PlanSegments;
-        float totalPlanDuration = SumNavigationPlanDuration(planSegments);
-        float totalPlanFuel = SumNavigationPlanFuel(planSegments);
+        float totalPlanDuration = hasFlightPlan ? flightPlan.totalDurationSeconds : SumNavigationPlanDuration(planSegments);
+        float totalPlanFuel = hasFlightPlan ? flightPlan.totalExpectedFuelKg : SumNavigationPlanFuel(planSegments);
         return new PrototypePlayerNavigationSnapshot(
             visible,
             autopilot.TargetName,
@@ -950,12 +954,12 @@ public static class PrototypePlayerHudSnapshotBuilder
             hasAvoidanceCue ? BuildAvoidanceLabel(autopilot) : string.Empty,
             targetIndex,
             targetCount,
-            "Authority: Legacy live gates",
-            "Active: " + TranslateTrajectorySegmentType(autopilot.ActiveSegmentType),
-            BuildNavigationReplanStatusLabel(autopilot),
+            BuildNavigationPlanAuthorityLabel(flightPlan),
+            hasFlightPlan ? BuildNavigationFlightPlanActiveSegmentLabel(flightPlan) : "Active: " + TranslateTrajectorySegmentType(autopilot.ActiveSegmentType),
+            BuildNavigationReplanStatusLabel(autopilot, flightPlan),
             totalPlanDuration,
             totalPlanFuel,
-            BuildNavigationManeuverRows(planSegments),
+            hasFlightPlan ? BuildNavigationManeuverRows(flightPlan.segments) : BuildNavigationManeuverRows(planSegments),
             PrototypeNavigationObstacleRegistry.Count,
             BuildNavigationObstacleSummaryLabel(autopilot, hasAvoidanceCue));
     }
@@ -996,6 +1000,38 @@ public static class PrototypePlayerHudSnapshotBuilder
             + " | fuel " + segment.expectedFuelKg.ToString("0.00") + "kg";
     }
 
+    private static string[] BuildNavigationManeuverRows(PrototypeManeuverSegment[] segments)
+    {
+        if (segments == null || segments.Length == 0)
+        {
+            return System.Array.Empty<string>();
+        }
+
+        const int maxRows = 7;
+        int rowCount = Mathf.Min(maxRows, segments.Length);
+        string[] rows = new string[rowCount + (segments.Length > maxRows ? 1 : 0)];
+        for (int i = 0; i < rowCount; i++)
+        {
+            rows[i] = BuildNavigationManeuverRow(segments[i]);
+        }
+
+        if (segments.Length > maxRows)
+        {
+            rows[rows.Length - 1] = "... +" + (segments.Length - maxRows) + " steps";
+        }
+
+        return rows;
+    }
+
+    private static string BuildNavigationManeuverRow(PrototypeManeuverSegment segment)
+    {
+        return (segment.index + 1) + " T+" + FormatPlannerSeconds(segment.startTimeSeconds) + "-" + FormatPlannerSeconds(segment.endTimeSeconds)
+            + " " + segment.label
+            + " | " + BuildNavigationSegmentActuatorLabel(segment)
+            + " | dV " + segment.expectedDeltaV.ToString("0.0")
+            + " | fuel " + segment.ExpectedFuelKg.ToString("0.00") + "kg";
+    }
+
     private static string BuildNavigationSegmentActuatorLabel(PrototypeTrajectorySegment segment)
     {
         switch (segment.type)
@@ -1018,6 +1054,24 @@ public static class PrototypePlayerHudSnapshotBuilder
                 return "COAST";
             case PrototypeTrajectorySegmentType.Hold:
                 return "HOLD RCS";
+            default:
+                return "AUTO";
+        }
+    }
+
+    private static string BuildNavigationSegmentActuatorLabel(PrototypeManeuverSegment segment)
+    {
+        switch (segment.commandMode)
+        {
+            case PrototypeManeuverCommandMode.AttitudeOnly:
+            case PrototypeManeuverCommandMode.RcsAttitude:
+                return "ATT/RCS";
+            case PrototypeManeuverCommandMode.MainThrottle:
+                return "MAIN " + Mathf.RoundToInt(segment.mainThrottle * 100f) + "%";
+            case PrototypeManeuverCommandMode.RcsTranslation:
+                return "RCS " + Mathf.RoundToInt(segment.rcsTranslationScale * 100f) + "%";
+            case PrototypeManeuverCommandMode.CombinedMainAndRcs:
+                return "MAIN " + Mathf.RoundToInt(segment.mainThrottle * 100f) + "% + RCS " + Mathf.RoundToInt(segment.rcsTranslationScale * 100f) + "%";
             default:
                 return "AUTO";
         }
@@ -1055,11 +1109,16 @@ public static class PrototypePlayerHudSnapshotBuilder
         return total;
     }
 
-    private static string BuildNavigationReplanStatusLabel(PrototypeWaypointAutopilot autopilot)
+    private static string BuildNavigationReplanStatusLabel(PrototypeWaypointAutopilot autopilot, PrototypeFlightPlan flightPlan)
     {
         if (autopilot == null)
         {
             return "Replan: no autopilot";
+        }
+
+        if (flightPlan.HasSegments && !flightPlan.isExecutable)
+        {
+            return "Replan: plan blocked " + flightPlan.nonExecutableReasons;
         }
 
         PrototypeTrajectoryPlan plan = autopilot.CurrentPlan;
@@ -1084,6 +1143,33 @@ public static class PrototypePlayerHudSnapshotBuilder
         }
 
         return "Replan: none";
+    }
+
+    private static string BuildNavigationPlanAuthorityLabel(PrototypeFlightPlan flightPlan)
+    {
+        if (!flightPlan.HasSegments)
+        {
+            return "Authority: Legacy live gates";
+        }
+
+        return flightPlan.isExecutable
+            ? "Authority: Flight plan emitted | executor pending"
+            : "Authority: Flight plan blocked | legacy gates";
+    }
+
+    private static string BuildNavigationFlightPlanActiveSegmentLabel(PrototypeFlightPlan flightPlan)
+    {
+        if (!flightPlan.HasSegments)
+        {
+            return "Planned: none";
+        }
+
+        if (flightPlan.TryGetActiveSegment(0f, out PrototypeManeuverSegment segment))
+        {
+            return "Planned: " + segment.label;
+        }
+
+        return "Planned: " + flightPlan.segments[0].label;
     }
 
     private static string BuildNavigationObstacleSummaryLabel(PrototypeWaypointAutopilot autopilot, bool hasAvoidanceCue)
@@ -2337,6 +2423,30 @@ public static class PrototypePlayerHudSnapshotBuilder
         for (int i = 0; i < count; i++)
         {
             points[i] = source[i];
+        }
+
+        return points;
+    }
+
+    private static Vector3[] CopyFlightPlanRoutePoints(PrototypeTrajectoryPredictedSample[] source, int maxPoints)
+    {
+        if (source == null || source.Length == 0 || maxPoints <= 0)
+        {
+            return System.Array.Empty<Vector3>();
+        }
+
+        int count = Mathf.Min(source.Length, maxPoints);
+        var points = new Vector3[count];
+        if (count == 1)
+        {
+            points[0] = source[0].position;
+            return points;
+        }
+
+        for (int i = 0; i < count; i++)
+        {
+            int sourceIndex = Mathf.RoundToInt((source.Length - 1) * (i / (float)(count - 1)));
+            points[i] = source[Mathf.Clamp(sourceIndex, 0, source.Length - 1)].position;
         }
 
         return points;
@@ -4595,7 +4705,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         return navigation.TargetName + " | " + navigation.TargetListLabel + "\n"
             + "Dist " + FormatDistance(navigation.DistanceMeters) + " | ETA " + navigation.EtaLabel
             + " | Closing " + navigation.ClosingSpeed.ToString("0.0") + " m/s\n"
-            + navigation.PlanAuthorityLabel + " | diagnostic preview only\n"
+            + navigation.PlanAuthorityLabel + "\n"
             + "Path: " + routeLabel + " | " + previewLabel + "\n"
             + navigation.ManeuverIntentLabel + " | Stop " + FormatDistance(navigation.StoppingDistanceMeters) + "\n"
             + burnLabel + " | " + totalPlanLabel + "\n"

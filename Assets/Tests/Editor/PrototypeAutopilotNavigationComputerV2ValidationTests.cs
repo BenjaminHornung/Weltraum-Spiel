@@ -150,6 +150,76 @@ public class PrototypeAutopilotNavigationComputerV2ValidationTests
     }
 
     [Test]
+    public void Planner_EmitsExecutableFlightPlanWithoutDroppingLegacyDiagnostics()
+    {
+        PrototypeTrajectorySnapshot snapshot = CreateSnapshot(
+            Vector3.zero,
+            Vector3.forward * 12f,
+            Vector3.forward * 250f,
+            fuelKgPerSecond: 0.8f,
+            availableFuelKg: 20f);
+
+        PrototypeTrajectoryPlan plan = new PrototypeTrajectoryPlanner().Plan(
+            snapshot,
+            PrototypeObstacleDetectionResult.Clear(8f));
+
+        Assert.True(plan.isValid);
+        Assert.That(plan.segments.Any(segment => segment.type == PrototypeTrajectorySegmentType.Burn), Is.True);
+        Assert.That(plan.predictedPath.Length, Is.GreaterThan(3));
+        Assert.True(plan.flightPlan.IsValid);
+        Assert.True(plan.flightPlan.isExecutable);
+        Assert.That(plan.flightPlan.totalDurationSeconds, Is.GreaterThan(plan.burnPlan.durationSeconds));
+        Assert.That(plan.flightPlan.totalExpectedFuelKg, Is.GreaterThan(0f));
+        Assert.That(plan.flightPlan.predictedSamples.Length, Is.GreaterThan(plan.flightPlan.SegmentCount));
+        Assert.That(plan.flightPlan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.ProgradeBurn), Is.True);
+        Assert.That(plan.flightPlan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.FlipToRetrograde), Is.True);
+        Assert.That(plan.flightPlan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.RetrogradeBurn), Is.True);
+    }
+
+    [Test]
+    public void Planner_EmittedFlightPlanUsesRealShipPlanningSnapshot()
+    {
+        using (var builder = new PrototypeScenarioBuilder())
+        {
+            PrototypeShipRig ship = builder.CreateShip("AutopilotV2ValidationPlanningShip");
+            ship.Ship.transform.position = new Vector3(4f, 0f, -3f);
+            ship.Body.linearVelocity = new Vector3(0f, 0f, 9f);
+            ship.Stats.ApplyMassProperties(ship.Body);
+            PrototypeShipPlanningSnapshot shipSnapshot = PrototypeShipPlanningSnapshotBuilder.Build(ship.Ship.transform);
+            PrototypeTrajectorySnapshot trajectorySnapshot = new PrototypeTrajectorySnapshot(
+                ship.Body.worldCenterOfMass,
+                ship.Body.linearVelocity,
+                ship.Body.worldCenterOfMass + Vector3.forward * 220f,
+                ship.Ship.transform.forward,
+                ship.Body.mass,
+                8f,
+                ship.Rcs.TranslationForce,
+                8f,
+                shipSnapshot.mainThrustNewtons,
+                shipSnapshot.mainFuelKgPerSecond,
+                shipSnapshot.currentFuelKg,
+                10f,
+                1f,
+                0.2f);
+
+            PrototypeTrajectoryPlan plan = new PrototypeTrajectoryPlanner().Plan(
+                trajectorySnapshot,
+                PrototypeObstacleDetectionResult.Clear(8f),
+                shipSnapshot,
+                12f,
+                0.02f);
+
+            Assert.True(plan.flightPlan.IsValid);
+            Assert.That(plan.flightPlan.createdAtTimeSeconds, Is.EqualTo(12f).Within(0.0001f));
+            Assert.That(plan.flightPlan.shipSnapshot.rigidbodyMassKg, Is.EqualTo(ship.Body.mass).Within(0.0001f));
+            Assert.That(plan.flightPlan.shipSnapshot.currentFuelKg, Is.EqualTo(ship.Stats.CurrentFuelKg).Within(0.0001f));
+            Assert.That(plan.flightPlan.shipSnapshot.mainThrustNewtons, Is.EqualTo(shipSnapshot.mainThrustNewtons).Within(0.0001f));
+            Assert.That(plan.flightPlan.shipSnapshot.rcsTranslationForceNewtons, Is.EqualTo(ship.Rcs.TranslationForce).Within(0.0001f));
+            Assert.That(plan.flightPlan.predictedSamples[0].position, Is.EqualTo(ship.Body.worldCenterOfMass));
+        }
+    }
+
+    [Test]
     public void Planner_HeavyShipNeedsMoreRcsForce()
     {
         PrototypeObstacleDetectionResult detection = CreateBlockingDetection();
