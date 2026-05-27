@@ -210,6 +210,14 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     public Vector3[] PredictedRoute => LastTrajectoryPlan.predictedPath ?? System.Array.Empty<Vector3>();
     public string SelectedCandidate => string.IsNullOrWhiteSpace(LastTrajectoryPlan.selectedCandidate) ? "direct" : LastTrajectoryPlan.selectedCandidate;
     public string SelectedCandidateReason => string.IsNullOrWhiteSpace(LastTrajectoryPlan.selectedCandidateReason) ? NavigationPlanStatus : LastTrajectoryPlan.selectedCandidateReason;
+    public bool TerminalRcsOnlyCorrectionActive => currentTarget != null
+        && shipRigidbody != null
+        && CurrentState != PrototypeWaypointAutopilotState.ObstacleAvoidance
+        && IsWithinArrivalTerminalCaptureRange()
+        && LastMetrics.relativeSpeed <= TerminalRcsOnlySpeedLimit;
+    public float TerminalRcsOnlySpeedLimit => Mathf.Max(
+        lateralCorrectionSpeed,
+        GetArrivalCompletionSpeedLimit() * TerminalOvershootHoldRelativeSpeedMultiplier);
     public int NavigationPlanRefreshCount { get; private set; }
     public bool NavigationDebugPlanningActive => navigationDebugPlanningActive;
     public float NavigationPlanIntervalSeconds => Mathf.Clamp(navigationPlanIntervalSeconds, 0.1f, 0.25f);
@@ -1633,6 +1641,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         }
 
         Vector3 attitudeTorqueLocal = Vector3.zero;
+        bool suppressMainThrottle = TerminalRcsOnlyCorrectionActive;
         Vector3 desiredRcsForceWorld = LastTrajectoryPlan.requestedRcsForceWorld;
         if (desiredRcsForceWorld.sqrMagnitude > 0.0001f)
         {
@@ -1640,9 +1649,14 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             desiredRcsForceWorld = Vector3.ClampMagnitude(desiredRcsForceWorld * Mathf.Clamp01(mass / Mathf.Max(0.01f, mass)), GetRcsTranslationForceScale());
         }
 
-        Vector3 assistForceWorld = CombineRcsForces(ComputeLateralCorrectionForceWorld(), desiredRcsForceWorld);
-        bool limitedRcsAuthority = desiredRcsForceWorld.sqrMagnitude > 0.0001f
-            && assistForceWorld.magnitude + 0.001f < desiredRcsForceWorld.magnitude;
+        Vector3 desiredCorrectionForceWorld;
+        Vector3 correctionForceWorld = suppressMainThrottle
+            ? ComputeTerminalRcsCorrectionForceWorld(out desiredCorrectionForceWorld)
+            : ComputeLateralCorrectionForceWorld(out desiredCorrectionForceWorld);
+        Vector3 desiredCombinedRcsForceWorld = desiredCorrectionForceWorld + desiredRcsForceWorld;
+        Vector3 assistForceWorld = CombineRcsForces(correctionForceWorld, desiredRcsForceWorld);
+        bool limitedRcsAuthority = desiredCombinedRcsForceWorld.sqrMagnitude > 0.0001f
+            && assistForceWorld.magnitude + 0.001f < desiredCombinedRcsForceWorld.magnitude;
         float requestedMainThrottle = 0f;
         Vector3 desiredDirectionNormalized = Vector3.zero;
 
@@ -1677,7 +1691,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
                     ? angle <= finalApproachAlignmentAngle && finalApproachMainThrottleReady
                     : brakeMainThrottleReady && brakeVelocityAlignmentReady);
 
-            if (canApplyMainThrottle)
+            if (canApplyMainThrottle && !suppressMainThrottle)
             {
                 requestedMainThrottle = ShapeMainThrottleForState(Mathf.Clamp01(throttle));
             }
@@ -1745,6 +1759,11 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private float ShapeMainThrottleForState(float throttle)
     {
         if (CurrentState == PrototypeWaypointAutopilotState.FlipForBrake)
+        {
+            return 0f;
+        }
+
+        if (TerminalRcsOnlyCorrectionActive)
         {
             return 0f;
         }
@@ -1845,6 +1864,46 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         float shapedForce = mass * desiredAcceleration * Mathf.Clamp01(LastMetrics.lateralSpeed / Mathf.Max(0.1f, lateralCorrectionSpeed));
         desiredForceWorld = correctionWorld.normalized * shapedForce;
         return Vector3.ClampMagnitude(desiredForceWorld, rcsTranslationScale);
+    }
+
+    private Vector3 ComputeTerminalRcsCorrectionForceWorld(out Vector3 desiredForceWorld)
+    {
+        desiredForceWorld = Vector3.zero;
+        if (shipRigidbody == null)
+        {
+            return Vector3.zero;
+        }
+
+        Vector3 velocityDampingForce = Vector3.zero;
+        if (shipRigidbody.linearVelocity.sqrMagnitude > 0.0001f)
+        {
+            Vector3 velocity = shipRigidbody.linearVelocity;
+            float desiredVelocityForce = GetShipMassKg() * (velocity.magnitude / Mathf.Max(0.1f, lateralCorrectionDampingSeconds));
+            velocityDampingForce = -velocity.normalized * desiredVelocityForce;
+        }
+
+        desiredForceWorld = velocityDampingForce + ComputeTerminalRcsPositionCorrectionForceWorld();
+        return ClampRcsForceWorld(desiredForceWorld);
+    }
+
+    private Vector3 ComputeTerminalRcsPositionCorrectionForceWorld()
+    {
+        if (currentTarget == null || LastMetrics.directionToTarget.sqrMagnitude <= 0.0001f)
+        {
+            return Vector3.zero;
+        }
+
+        float correctionStartDistance = GetArrivalDistance() + BrakeArrivalHoldDistanceMarginMeters;
+        float excessDistance = LastMetrics.distance - correctionStartDistance;
+        if (excessDistance <= 0.01f)
+        {
+            return Vector3.zero;
+        }
+
+        float dampingSeconds = Mathf.Max(0.1f, lateralCorrectionDampingSeconds);
+        float desiredApproachSpeed = Mathf.Min(GetArrivalCompletionSpeedLimit(), excessDistance / dampingSeconds);
+        float desiredAcceleration = desiredApproachSpeed / dampingSeconds;
+        return LastMetrics.directionToTarget.normalized * GetShipMassKg() * desiredAcceleration;
     }
 
     private Vector3 CombineRcsForces(Vector3 primaryForceWorld, Vector3 plannedForceWorld)

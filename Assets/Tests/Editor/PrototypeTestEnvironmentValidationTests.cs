@@ -44,6 +44,25 @@ public class PrototypeTestEnvironmentValidationTests
     }
 
     [Test]
+    public void Rebuild_PreservesManualChildrenAndRecreatesGeneratedLaunchCorridor()
+    {
+        GameObject preexistingRoot = new GameObject(PrototypeTestEnvironment.RootName);
+        GameObject manualObstacle = new GameObject("Manual_Navigation_Obstacle");
+        manualObstacle.transform.SetParent(preexistingRoot.transform, false);
+        manualObstacle.AddComponent<PrototypeNavigationObstacle>();
+
+        GameObject host = new GameObject("EnvironmentValidationHost");
+        PrototypeTestEnvironment environment = host.AddComponent<PrototypeTestEnvironment>();
+
+        environment.Rebuild();
+
+        Assert.That(CountNamed(PrototypeTestEnvironment.RootName), Is.EqualTo(1));
+        Assert.NotNull(GameObject.Find(PrototypeTestEnvironment.RootName + "/Manual_Navigation_Obstacle"));
+        Assert.NotNull(GameObject.Find(PrototypeTestEnvironment.RootName + "/Manual_Navigation_Obstacle").GetComponent<PrototypeNavigationObstacle>());
+        Assert.NotNull(GameObject.Find("PrototypeEnvironment/Launch_Corridor_Obstacles"));
+    }
+
+    [Test]
     public void Rebuild_MarksAsteroidsAsNavigationObstacles()
     {
         GameObject host = new GameObject("EnvironmentValidationHost");

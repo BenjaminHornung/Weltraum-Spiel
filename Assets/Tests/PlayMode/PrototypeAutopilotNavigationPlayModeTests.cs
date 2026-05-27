@@ -658,6 +658,30 @@ public class PrototypeAutopilotNavigationPlayModeTests
     }
 
     [Test]
+    public void PlayMode_Autopilot_TerminalLowDeltaVBrakeUsesRcsOnly()
+    {
+        AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 30f);
+        rig.Body.position = Vector3.forward * 9f;
+        rig.Body.linearVelocity = Vector3.forward * 3f + Vector3.right * 0.1f;
+        rig.Ship.transform.rotation = Quaternion.LookRotation(-rig.Body.linearVelocity.normalized, Vector3.up);
+        Physics.SyncTransforms();
+        rig.Autopilot.ToggleAutopilot();
+
+        StepSimulation(rig);
+
+        Assert.That(
+            rig.Autopilot.CurrentState,
+            Is.EqualTo(PrototypeWaypointAutopilotState.Brake).Or.EqualTo(PrototypeWaypointAutopilotState.FinalApproach));
+        Assert.That(rig.Autopilot.DistanceToTarget, Is.LessThanOrEqualTo(rig.Target.ArrivalRadius + 12f));
+        Assert.That(rig.Body.linearVelocity.magnitude, Is.LessThanOrEqualTo(6.6f));
+        Assert.That(rig.Autopilot.RequestedMainThrottle, Is.LessThanOrEqualTo(0.01f));
+        Assert.True(rig.Controller.HasExternalFlightAssistRequest);
+        Assert.That(rig.Controller.LastExternalFlightAssistRequest.mainThrottle, Is.LessThanOrEqualTo(0.01f));
+        Assert.That(rig.Autopilot.RequestedRcsForce.magnitude, Is.GreaterThan(1f));
+        Assert.That(Vector3.Dot(rig.Autopilot.RequestedRcsForce, rig.Body.linearVelocity), Is.LessThan(-0.01f));
+    }
+
+    [Test]
     public void PlayMode_Autopilot_NearTargetLateralOvershoot_NoTerminalAccelerateOrSpin()
     {
         AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 30f);

@@ -522,6 +522,7 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
         GUILayout.Label($"Arrival phase: {waypointAutopilot.ArrivalPhase}", labelStyle);
         PrototypeTrajectoryPlan plan = waypointAutopilot.CurrentPlan;
         GUILayout.Label($"Plan: {plan.statusLabel} nav {waypointAutopilot.NavigationPhase} phase {plan.phase} valid {(plan.isValid ? "yes" : "no")}", labelStyle);
+        GUILayout.Label("Runtime plan source: legacy live gates (PrototypeFlightPlan executor pending)", labelStyle);
         GUILayout.Label($"Active segment: {waypointAutopilot.ActiveSegmentLabel} | candidate {waypointAutopilot.SelectedCandidate} | {waypointAutopilot.SelectedCandidateReason}", labelStyle);
         GUILayout.Label($"Plan refreshes: {waypointAutopilot.NavigationPlanRefreshCount} @ {waypointAutopilot.NavigationPlanIntervalSeconds:0.00}s", labelStyle);
         GUILayout.Label($"Predicted route points: {waypointAutopilot.PredictedRoute.Length}", labelStyle);
@@ -540,6 +541,7 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
         GUILayout.Label($"Avoidance waypoint: {FormatVector(waypointAutopilot.AvoidanceWaypoint)}", labelStyle);
         GUILayout.Label($"Plan stop/ETA: {FormatCompact(waypointAutopilot.PlannedStoppingDistance)} m / {FormatFuel(waypointAutopilot.PlannedEta)} s", labelStyle);
         GUILayout.Label($"Arrival envelope: dist <= {FormatCompact(waypointAutopilot.LastMetrics.distance)} m, speed {FormatCompact(waypointAutopilot.LastMetrics.relativeSpeed)} m/s, lateral {FormatCompact(waypointAutopilot.LastMetrics.lateralSpeed)} m/s", labelStyle);
+        GUILayout.Label($"Terminal RCS-only: {(waypointAutopilot.TerminalRcsOnlyCorrectionActive ? "active" : "standby")} <= {FormatCompact(waypointAutopilot.TerminalRcsOnlySpeedLimit)} m/s, main gated", labelStyle);
 
         GUILayout.Label("Fuel/Burn Estimate", labelStyle);
         GUILayout.Label($"Fuel available/required: {FormatFuel(waypointAutopilot.AvailableBurnSeconds)} / {FormatFuel(waypointAutopilot.RequiredBurnSeconds)} s", labelStyle);

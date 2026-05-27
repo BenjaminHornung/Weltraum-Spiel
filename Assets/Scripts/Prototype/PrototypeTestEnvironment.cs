@@ -41,6 +41,19 @@ public sealed class PrototypeEnvironmentPoint
 [DisallowMultipleComponent]
 public class PrototypeTestEnvironment : MonoBehaviour
 {
+    private static readonly string[] GeneratedGroupNames =
+    {
+        "Origin",
+        "World_Axes",
+        "Range_Rings",
+        "Targets",
+        "Navigation_Beacons",
+        "Approach_Gates",
+        "Launch_Corridor_Obstacles",
+        "Station_Hangar",
+        "Asteroid_Field_Visual"
+    };
+
     [SerializeField] private PrototypeEnvironmentDisplayMode environmentDisplayMode = PrototypeEnvironmentDisplayMode.Training;
     private const float NonFullDebugOriginScale = 0.12f;
     public const string RootName = "PrototypeEnvironment";
@@ -64,10 +77,15 @@ public class PrototypeTestEnvironment : MonoBehaviour
 
     public void Rebuild()
     {
-        Clear();
+        points.Clear();
 
-        GameObject rootObject = new GameObject(RootName);
+        GameObject rootObject = GameObject.Find(RootName);
+        if (rootObject == null)
+        {
+            rootObject = new GameObject(RootName);
+        }
         root = rootObject.transform;
+        ClearGeneratedGroups();
         root.position = Vector3.zero;
         root.rotation = Quaternion.identity;
 
@@ -93,6 +111,23 @@ public class PrototypeTestEnvironment : MonoBehaviour
         }
 
         root = null;
+    }
+
+    private void ClearGeneratedGroups()
+    {
+        if (root == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < GeneratedGroupNames.Length; i++)
+        {
+            Transform group = root.Find(GeneratedGroupNames[i]);
+            if (group != null)
+            {
+                DestroyObject(group.gameObject);
+            }
+        }
     }
 
     public PrototypeEnvironmentPoint[] GetPointsSnapshot()
@@ -648,6 +683,7 @@ public class PrototypeTestEnvironment : MonoBehaviour
 
         if (Application.isPlaying)
         {
+            target.SetActive(false);
             target.name = target.name + "_Clearing";
             Destroy(target);
         }
