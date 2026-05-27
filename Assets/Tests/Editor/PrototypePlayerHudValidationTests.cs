@@ -98,6 +98,37 @@ public class PrototypePlayerHudValidationTests
             plan.avoidanceActive = true;
             plan.avoidanceWaypoint = rig.Ship.Ship.transform.position + new Vector3(25f, 0f, 80f);
             plan.obstacleLabel = "Asteroid";
+            plan.activeSegmentType = PrototypeTrajectorySegmentType.AvoidanceBurn;
+            plan.segments = new[]
+            {
+                new PrototypeTrajectorySegment(
+                    PrototypeTrajectorySegmentType.AvoidanceBurn,
+                    6f,
+                    Vector3.forward,
+                    0.65f,
+                    9.5f,
+                    0.22f,
+                    18f,
+                    120f),
+                new PrototypeTrajectorySegment(
+                    PrototypeTrajectorySegmentType.Brake,
+                    3.5f,
+                    Vector3.back,
+                    1f,
+                    7f,
+                    0.18f,
+                    18f,
+                    10f),
+                new PrototypeTrajectorySegment(
+                    PrototypeTrajectorySegmentType.Hold,
+                    1f,
+                    Vector3.zero,
+                    0f,
+                    0f,
+                    0f,
+                    18f,
+                    0f)
+            };
             SetAutoProperty(rig.Autopilot, "LastTrajectoryPlan", plan);
 
             PrototypePlayerHudSnapshot snapshot = PrototypePlayerHudSnapshotBuilder.Build(
@@ -121,6 +152,24 @@ public class PrototypePlayerHudValidationTests
             Assert.That(snapshot.Navigation.RouteWorldPoints.Length, Is.EqualTo(3));
             Assert.True(snapshot.Navigation.HasAvoidanceCue);
             Assert.That(snapshot.Navigation.AvoidanceLabel, Does.Contain("Asteroid"));
+            Assert.That(snapshot.Navigation.PlanAuthorityLabel, Does.Contain("Legacy live gates"));
+            Assert.That(snapshot.Navigation.ActiveSegmentLabel, Does.Contain("Avoid"));
+            Assert.That(snapshot.Navigation.TotalPlanDurationSeconds, Is.EqualTo(10.5f).Within(0.001f));
+            Assert.That(snapshot.Navigation.TotalPlanFuelKg, Is.EqualTo(0.40f).Within(0.001f));
+            Assert.That(snapshot.Navigation.ManeuverStepRows.Length, Is.GreaterThanOrEqualTo(3));
+            Assert.That(snapshot.Navigation.ManeuverStepRows[0], Does.Contain("T+0.0s"));
+            Assert.That(snapshot.Navigation.ManeuverStepRows[0], Does.Contain("Avoid"));
+            Assert.That(snapshot.Navigation.ManeuverStepRows[0], Does.Contain("MAIN 65%"));
+            Assert.That(snapshot.Navigation.ManeuverStepRows[0], Does.Contain("fuel 0.22kg"));
+            MethodInfo bodyMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
+                "BuildNavigationPlannerBody",
+                BindingFlags.Static | BindingFlags.NonPublic);
+            Assert.NotNull(bodyMethod);
+            string body = (string)bodyMethod.Invoke(null, new object[] { snapshot.Navigation });
+            Assert.That(body, Does.Contain("Authority: Legacy live gates"));
+            Assert.That(body, Does.Contain("Schedule 10.5s"));
+            Assert.That(body, Does.Contain("Steps:"));
+            Assert.That(body, Does.Contain("1 T+0.0s-6.0s Avoid | MAIN 65%"));
             Assert.That(snapshot.Navigation.StateLabel, Is.Not.Contains("Candidate"));
             Assert.That(snapshot.Navigation.StateLabel, Is.Not.Contains("requested"));
             Assert.That(PrototypePlayerHudSnapshotBuilder.TranslateNavigationState(PrototypeWaypointAutopilotState.AlignForBurn), Is.EqualTo("Zum Schub ausrichten"));
@@ -136,6 +185,7 @@ public class PrototypePlayerHudValidationTests
         using (var builder = new PrototypeScenarioBuilder())
         {
             PrototypeAutopilotRig rig = builder.CreateAutopilotRig(targetPosition: Vector3.forward * 220f);
+            builder.CreateObstacle("PlayerHudNonBlockingObstacle", new Vector3(80f, 0f, 120f), 8f);
 
             PrototypeTrajectoryPlan plan = PrototypeTrajectoryPlan.Clear(Vector3.forward);
             plan.predictedPath = new Vector3[0];
@@ -157,6 +207,9 @@ public class PrototypePlayerHudValidationTests
             Assert.That(snapshot.Navigation.RouteWorldPoints[0], Is.EqualTo(rig.Ship.Ship.transform.position));
             Assert.That(snapshot.Navigation.RouteWorldPoints[1], Is.EqualTo(rig.Autopilot.CurrentTarget.Position));
             Assert.That(snapshot.Navigation.RouteModeLabel, Is.EqualTo("Route: Direkt"));
+            Assert.That(snapshot.Navigation.ActiveObstacleCount, Is.GreaterThanOrEqualTo(1));
+            Assert.That(snapshot.Navigation.ObstacleSummaryLabel, Does.Contain("active"));
+            Assert.That(snapshot.Navigation.ObstacleSummaryLabel, Does.Contain("no blocking cue"));
 
             MethodInfo bodyMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
                 "BuildNavigationPlannerBody",
@@ -164,6 +217,8 @@ public class PrototypePlayerHudValidationTests
             Assert.NotNull(bodyMethod);
             string body = (string)bodyMethod.Invoke(null, new object[] { snapshot.Navigation });
             Assert.That(body, Does.Contain("Route: Direkt 2 pts"));
+            Assert.That(body, Does.Contain("Obstacles:"));
+            Assert.That(body, Does.Contain("no blocking cue"));
 
             MethodInfo mapLabelMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
                 "BuildNavigationPlannerMapLabel",

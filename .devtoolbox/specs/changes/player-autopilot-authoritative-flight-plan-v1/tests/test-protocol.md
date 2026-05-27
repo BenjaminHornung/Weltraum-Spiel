@@ -135,3 +135,53 @@ DevToolbox:
 - `verify_run 4b721d3dd5a441699c51d8b15474dfbf`: MIXED/EXPECTED.
   - Specs step passed.
   - Bare `dotnet build`, `dotnet test`, and `dotnet format --verify-no-changes` failed with MSB1011/multiple-workspace selection, matching the known generic DevToolbox limitation in this Unity repository.
+
+## Navigation Planner Maneuver Schedule and Obstacle Visibility
+
+Date: 2026-05-27
+
+Scope:
+
+- Extended `PrototypePlayerNavigationSnapshot` and the Navigation Planner popup with player-facing maneuver schedule data:
+  - plan authority label;
+  - total planned duration and fuel;
+  - active trajectory segment;
+  - replan/status reason;
+  - obstacle summary/count;
+  - compact step rows in `T+start-end | actuator | dV | fuel` form.
+- The HUD deliberately labels this as `Authority: Legacy live gates | diagnostic preview only`; it does not claim the authoritative `PrototypeFlightPlan` executor is active yet.
+- The step rows are sourced from the current `PrototypeTrajectorySegment[]` diagnostic plan until the executable flight-plan tasks land.
+- Added HUD validation coverage for schedule totals, fuel, active segment, compact rows, obstacle count, and no-blocking-cue fallback.
+
+Obstacle runtime evidence:
+
+- Loaded `Assets/Scenes/SampleScene.unity` and entered Play Mode via Unity MCP.
+- `find_gameobjects by_component PrototypeNavigationObstacle`: 12 active obstacle objects after bootstrap.
+- Rechecked after an additional 4 seconds in Play Mode: still 12 active obstacle objects.
+- Scene hierarchy evidence:
+  - `PrototypeEnvironment/Launch_Corridor_Obstacles`: 3 children.
+  - `PrototypeEnvironment/Asteroid_Field_Visual`: 9 children.
+- Screenshot captured at `tests/screenshots/navigation-planner-schedule-before-engage.png`; the normal HUD map showed route/preview/contact data while the popup opening itself was not forced through MCP because runtime GameObject mutation is blocked during Play Mode.
+
+Unity MCP:
+
+- `validate_script Assets/Scripts/Prototype/PrototypePlayerHud.cs`: PASS, 0 errors, 2 existing analyzer warnings.
+- `validate_script Assets/Tests/Editor/PrototypePlayerHudValidationTests.cs`: PASS, 0 warnings, 0 errors.
+- Focused HUD EditMode job `482d4b8b15294b6591b7ce084f37ba34`: PASS 2/2.
+- Full HUD EditMode job `4a818c1387824ead95550904149b6142`: failed to initialize before tests started; treated as Unity runner initialization noise.
+- Full HUD EditMode retry `63b99b9d311643d0bb09c2c4aa73bee5`: PASS 58/58.
+- Environment EditMode job `b448071693864738b9d93aca5f4084a9`: PASS 2/2 for generated launch corridor and manual-child preservation.
+- Launch-corridor PlayMode job `b546d411852e4e2095323aa4112175e4`: PASS 1/1.
+- Unity console still reports existing AssetManager SerializeReference warnings; no script validation errors were reported.
+
+.NET:
+
+- `dotnet build "Weltraum Spiel.sln" --no-restore`: PASS, 0 errors, 22 existing Unity-generated warnings.
+- `dotnet test "Weltraum Spiel.sln" --no-build`: PASS, no output.
+
+DevToolbox:
+
+- `specs_validate player-autopilot-authoritative-flight-plan-v1`: PASS.
+- `verify_run a5f9d5ced4d346bea851d9866db89753`: MIXED/EXPECTED.
+  - Specs step passed.
+  - Bare `dotnet build`, `dotnet test`, and `dotnet format --verify-no-changes` failed with MSB1011/multiple-workspace selection, matching the known generic DevToolbox limitation in this Unity repository.
