@@ -341,3 +341,26 @@ Stabilize waypoint autopilot arrival behavior so the ship commits to a brake/dec
 - DevToolbox `verify_run` was executed again on execution `c887d815c1d94e10ae9bff20d7bd15a3`; it reproduced the same tooling issue: `Specs` passed, while generic `Build`, `Test`, and `Lint` failed because the presets run bare `dotnet build`, `dotnet test`, and `dotnet format --verify-no-changes` in a folder with multiple MSBuild files. Targeted Unity MCP tests and `dotnet build "Weltraum Spiel.sln" --no-restore` remain the authoritative verification.
 - DevToolbox `verify_run` was executed again on execution `8221c4a8f13e4de083011a89b5ab8493`; it reproduced the same tooling issue: `Specs` passed, while generic `Build`, `Test`, and `Lint` failed because the presets run bare `dotnet build`, `dotnet test`, and `dotnet format --verify-no-changes` in a folder with multiple MSBuild files. Targeted Unity MCP tests and `dotnet build "Weltraum Spiel.sln" --no-restore` remain the authoritative verification.
 - DevToolbox `verify_run` was executed again on execution `e22aabd979ac44a4a48be7efd07b44d1`; it reproduced the same tooling issue: `Specs` passed, while generic `Build`, `Test`, and `Lint` failed because the presets run bare `dotnet build`, `dotnet test`, and `dotnet format --verify-no-changes` in a folder with multiple MSBuild files. Targeted Unity MCP tests and `dotnet build "Weltraum Spiel.sln" --no-restore` remain the authoritative verification.
+- DevToolbox `verify_run` was executed again on execution `a73db3d5923d421c8c66557f4ef5092a`; it reproduced the same tooling issue: `Specs` passed, while generic `Build`, `Test`, and `Lint` failed because the presets run bare `dotnet build`, `dotnet test`, and `dotnet format --verify-no-changes` in a folder with multiple MSBuild files. Targeted Unity MCP tests and `dotnet build "Weltraum Spiel.sln" --no-restore` remain the authoritative verification.
+
+## Follow-up Evidence 2026-05-27 - Arrival/Flip/Decel Stability
+
+- Unity MCP readiness
+  - Editor was checked before PlayMode runs: play mode not active, no compilation, `ready_for_tools` true.
+- Unity MCP validation
+  - `Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs`: `0` errors, `1` existing warning (`String concatenation in Update() can cause garbage collection issues`).
+  - `Assets/Tests/PlayMode/PrototypeAutopilotNavigationPlayModeTests.cs`: `0` errors, `0` warnings.
+- Unity MCP focused PlayMode reproduction before the final patch
+  - Test: `PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_Arrival_NoBrakeAccelerateFlap_ReachesCompletionDeadzone`
+  - Result: failed at `distance=15.4079027f` with expected `<=15f`, while already in `HoldPosition`/`Hold` with no terminal brake-to-accelerate flap. This confirmed a remaining hold-convergence gap instead of a terminal brake latch regression.
+- Unity MCP focused PlayMode follow-up
+  - Test: `PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_Arrival_NoBrakeAccelerateFlap_ReachesCompletionDeadzone`
+  - Result: `Passed`, total `1`, passed `1`, failed `0`.
+- Unity MCP regression pass after latch/gate fixes
+  - Test filter: `PrototypeAutopilotNavigationPlayModeTests`
+  - Result: `Passed`, total `23`, passed `23`, failed `0`.
+- Unity MCP console check
+  - Result: no Unity console errors after the focused/full autopilot test runs; console showed only test result save and `IPostBuildCleanup` warning/log entries.
+- `.NET` build
+  - Command: `dotnet build "Weltraum Spiel.sln" --no-restore`
+  - Result: exit code `0`, `0 Error(s)`, `22 Warning(s)` from existing Unity/.NET assembly reference conflicts and pre-existing Unity analyzer warnings.

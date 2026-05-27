@@ -311,6 +311,15 @@ public class PrototypeAutopilotNavigationPlayModeTests
         float finalAngularSpeed = 0f;
         string firstCompletionWindowSample = string.Empty;
         List<string> stepTrace = new List<string>();
+        bool sawArrivalBrakeCommitted = false;
+        bool sawBrakeHoldActive = false;
+        bool sawArrivalTerminalCaptureActive = false;
+        bool previousArrivalBrakeCommitted = false;
+        bool previousBrakeHoldActive = false;
+        bool previousArrivalTerminalCaptureActive = false;
+        string firstArrivalBrakeCommitSample = string.Empty;
+        string firstBrakeHoldSample = string.Empty;
+        string firstArrivalTerminalCaptureSample = string.Empty;
         PrototypeWaypointAutopilotState previousState = rig.Autopilot.CurrentState;
 
         for (int i = 0; i < 2400; i++)
@@ -376,6 +385,34 @@ public class PrototypeAutopilotNavigationPlayModeTests
                 throttleWhileFlipFrames++;
             }
 
+            bool currentArrivalBrakeCommitted = GetPrivateBool(rig.Autopilot, "arrivalBrakeCommitted");
+            bool currentBrakeHoldActive = GetPrivateBool(rig.Autopilot, "brakeHoldActive");
+            bool currentArrivalTerminalCaptureActive = GetPrivateBool(rig.Autopilot, "arrivalTerminalCaptureActive");
+            sawArrivalBrakeCommitted |= currentArrivalBrakeCommitted;
+            sawBrakeHoldActive |= currentBrakeHoldActive;
+            sawArrivalTerminalCaptureActive |= currentArrivalTerminalCaptureActive;
+            if (currentArrivalBrakeCommitted && !previousArrivalBrakeCommitted && string.IsNullOrEmpty(firstArrivalBrakeCommitSample))
+            {
+                firstArrivalBrakeCommitSample =
+                    $"i={i} dist={distance:0.00} rel={rig.Body.linearVelocity.magnitude:0.00} closing={rig.Autopilot.ClosingSpeed:0.00} "
+                    + $"lat={rig.Autopilot.LateralSpeed:0.00} state={currentState} phase={rig.Autopilot.NavigationPhase}";
+            }
+            if (currentBrakeHoldActive && !previousBrakeHoldActive && string.IsNullOrEmpty(firstBrakeHoldSample))
+            {
+                firstBrakeHoldSample =
+                    $"i={i} dist={distance:0.00} rel={rig.Body.linearVelocity.magnitude:0.00} closing={rig.Autopilot.ClosingSpeed:0.00} "
+                    + $"lat={rig.Autopilot.LateralSpeed:0.00} state={currentState} phase={rig.Autopilot.NavigationPhase}";
+            }
+            if (currentArrivalTerminalCaptureActive && !previousArrivalTerminalCaptureActive && string.IsNullOrEmpty(firstArrivalTerminalCaptureSample))
+            {
+                firstArrivalTerminalCaptureSample =
+                    $"i={i} dist={distance:0.00} rel={rig.Body.linearVelocity.magnitude:0.00} closing={rig.Autopilot.ClosingSpeed:0.00} "
+                    + $"lat={rig.Autopilot.LateralSpeed:0.00} state={currentState} phase={rig.Autopilot.NavigationPhase}";
+            }
+            previousArrivalBrakeCommitted = currentArrivalBrakeCommitted;
+            previousBrakeHoldActive = currentBrakeHoldActive;
+            previousArrivalTerminalCaptureActive = currentArrivalTerminalCaptureActive;
+
             float angularSpeed = rig.Body.angularVelocity.magnitude;
             finalAngularSpeed = angularSpeed;
             if (currentState == PrototypeWaypointAutopilotState.Brake || currentState == PrototypeWaypointAutopilotState.FlipForBrake)
@@ -424,7 +461,13 @@ public class PrototypeAutopilotNavigationPlayModeTests
                 throttleWhileFlipFrames,
                 leftCompletionEnvelope,
                 firstCompletionWindowSample,
-                stepTrace);
+                stepTrace)
+                + $"\neverArrivalBrakeCommitted={sawArrivalBrakeCommitted}"
+                + $" everBrakeHoldActive={sawBrakeHoldActive}"
+                + $" everArrivalTerminalCaptureActive={sawArrivalTerminalCaptureActive}"
+                + $" finalArrivalBrakeCommitted={GetPrivateBool(rig.Autopilot, "arrivalBrakeCommitted")}"
+                + $" finalBrakeHoldActive={GetPrivateBool(rig.Autopilot, "brakeHoldActive")}"
+                + $" finalArrivalTerminalCaptureActive={GetPrivateBool(rig.Autopilot, "arrivalTerminalCaptureActive")}";
             Debug.LogError(failureMessage);
             Assert.Fail(failureMessage);
         }
@@ -441,7 +484,13 @@ public class PrototypeAutopilotNavigationPlayModeTests
                 throttleWhileFlipFrames,
                 leftCompletionEnvelope,
                 firstCompletionWindowSample,
-                stepTrace);
+                stepTrace)
+            + $"\neverArrivalBrakeCommitted={sawArrivalBrakeCommitted}"
+            + $" everBrakeHoldActive={sawBrakeHoldActive}"
+            + $" everArrivalTerminalCaptureActive={sawArrivalTerminalCaptureActive}"
+            + $" finalArrivalBrakeCommitted={GetPrivateBool(rig.Autopilot, "arrivalBrakeCommitted")}"
+            + $" finalBrakeHoldActive={GetPrivateBool(rig.Autopilot, "brakeHoldActive")}"
+            + $" finalArrivalTerminalCaptureActive={GetPrivateBool(rig.Autopilot, "arrivalTerminalCaptureActive")}";
 
         Assert.True(seenArrivalComplete, "Autopilot should enter HoldPosition or Complete near the arrival deadzone.\n" + diagnostics);
         Assert.True(
@@ -481,6 +530,16 @@ public class PrototypeAutopilotNavigationPlayModeTests
         float maxFlipAngularSpeed = 0f;
         float finalDistance = rig.Autopilot.DistanceToTarget;
         List<string> stepTrace = new List<string>();
+        bool sawArrivalBrakeCommitted = false;
+        bool sawBrakeHoldActive = false;
+        bool sawArrivalTerminalCaptureActive = false;
+        bool previousArrivalBrakeCommitted = false;
+        bool previousBrakeHoldActive = false;
+        bool previousArrivalTerminalCaptureActive = false;
+        string firstArrivalBrakeCommitSample = string.Empty;
+        string firstBrakeHoldSample = string.Empty;
+        string firstArrivalTerminalCaptureSample = string.Empty;
+        string firstMainBrakeSample = string.Empty;
 
         for (int i = 0; i < 1800; i++)
         {
@@ -508,7 +567,41 @@ public class PrototypeAutopilotNavigationPlayModeTests
                 }
             }
 
-            sawMainBrake |= Vector3.Dot(rig.Controller.LastMainForceWorld, rig.Body.linearVelocity) < -0.01f;
+            bool currentArrivalBrakeCommitted = GetPrivateBool(rig.Autopilot, "arrivalBrakeCommitted");
+            bool currentBrakeHoldActive = GetPrivateBool(rig.Autopilot, "brakeHoldActive");
+            bool currentArrivalTerminalCaptureActive = GetPrivateBool(rig.Autopilot, "arrivalTerminalCaptureActive");
+            sawArrivalBrakeCommitted |= currentArrivalBrakeCommitted;
+            sawBrakeHoldActive |= currentBrakeHoldActive;
+            sawArrivalTerminalCaptureActive |= currentArrivalTerminalCaptureActive;
+            if (currentArrivalBrakeCommitted && !previousArrivalBrakeCommitted && string.IsNullOrEmpty(firstArrivalBrakeCommitSample))
+            {
+                firstArrivalBrakeCommitSample =
+                    $"i={i} dist={finalDistance:0.00} rel={rig.Body.linearVelocity.magnitude:0.00} closing={rig.Autopilot.ClosingSpeed:0.00} "
+                    + $"lat={rig.Autopilot.LateralSpeed:0.00} state={currentState} phase={rig.Autopilot.NavigationPhase}";
+            }
+            if (currentBrakeHoldActive && !previousBrakeHoldActive && string.IsNullOrEmpty(firstBrakeHoldSample))
+            {
+                firstBrakeHoldSample =
+                    $"i={i} dist={finalDistance:0.00} rel={rig.Body.linearVelocity.magnitude:0.00} closing={rig.Autopilot.ClosingSpeed:0.00} "
+                    + $"lat={rig.Autopilot.LateralSpeed:0.00} state={currentState} phase={rig.Autopilot.NavigationPhase}";
+            }
+            if (currentArrivalTerminalCaptureActive && !previousArrivalTerminalCaptureActive && string.IsNullOrEmpty(firstArrivalTerminalCaptureSample))
+            {
+                firstArrivalTerminalCaptureSample =
+                    $"i={i} dist={finalDistance:0.00} rel={rig.Body.linearVelocity.magnitude:0.00} closing={rig.Autopilot.ClosingSpeed:0.00} "
+                    + $"lat={rig.Autopilot.LateralSpeed:0.00} state={currentState} phase={rig.Autopilot.NavigationPhase}";
+            }
+            previousArrivalBrakeCommitted = currentArrivalBrakeCommitted;
+            previousBrakeHoldActive = currentBrakeHoldActive;
+            previousArrivalTerminalCaptureActive = currentArrivalTerminalCaptureActive;
+            bool currentMainBrake = Vector3.Dot(rig.Controller.LastMainForceWorld, rig.Body.linearVelocity) < -0.01f;
+            sawMainBrake |= currentMainBrake;
+            if (currentMainBrake && string.IsNullOrEmpty(firstMainBrakeSample))
+            {
+                firstMainBrakeSample =
+                    $"i={i} dist={finalDistance:0.00} rel={rig.Body.linearVelocity.magnitude:0.00} closing={rig.Autopilot.ClosingSpeed:0.00} "
+                    + $"lat={rig.Autopilot.LateralSpeed:0.00} state={currentState} phase={rig.Autopilot.NavigationPhase}";
+            }
             sawHoldOrComplete |= currentState == PrototypeWaypointAutopilotState.HoldPosition
                 || currentState == PrototypeWaypointAutopilotState.Complete;
 
@@ -532,7 +625,24 @@ public class PrototypeAutopilotNavigationPlayModeTests
             accelerateFramesInTerminalEnvelope,
             throttleWhileFlipFrames,
             maxFlipAngularSpeed,
-            stepTrace);
+            stepTrace)
+            + $"\neverArrivalBrakeCommitted={sawArrivalBrakeCommitted}"
+            + $" everBrakeHoldActive={sawBrakeHoldActive}"
+            + $" everArrivalTerminalCaptureActive={sawArrivalTerminalCaptureActive}"
+            + $" finalArrivalBrakeCommitted={GetPrivateBool(rig.Autopilot, "arrivalBrakeCommitted")}"
+            + $" finalBrakeHoldActive={GetPrivateBool(rig.Autopilot, "brakeHoldActive")}"
+            + $" finalArrivalTerminalCaptureActive={GetPrivateBool(rig.Autopilot, "arrivalTerminalCaptureActive")}"
+            + $"\nfirstArrivalBrakeCommitSample={firstArrivalBrakeCommitSample}"
+            + $" firstBrakeHoldSample={firstBrakeHoldSample}"
+            + $" firstArrivalTerminalCaptureSample={firstArrivalTerminalCaptureSample}"
+            + $"\nfirstMainBrakeSample={firstMainBrakeSample}"
+            + $"\nshouldUseTerminalVelocityBrake={InvokePrivateBoolMethod(rig.Autopilot, "ShouldUseTerminalVelocityBrake")}"
+            + $" shouldKeepTerminalBrakeCommitted={InvokePrivateBoolMethod(rig.Autopilot, "ShouldKeepTerminalBrakeCommitted")}"
+            + $" shouldHoldTerminalBrakeCommitUntilSettled={InvokePrivateBoolMethod(rig.Autopilot, "ShouldHoldTerminalBrakeCommitUntilSettled")}"
+            + $" shouldCaptureAnyArrivalHold={InvokePrivateBoolMethod(rig.Autopilot, "ShouldCaptureAnyArrivalHold")}"
+            + $" shouldUseTerminalLateralCorrection={InvokePrivateBoolMethod(rig.Autopilot, "ShouldUseTerminalLateralCorrection")}"
+            + $" isWithinArrivalTerminalRange={InvokePrivateBoolMethod(rig.Autopilot, "IsWithinArrivalTerminalRange")}"
+            + $" isWithinArrivalTerminalCaptureRange={InvokePrivateBoolMethod(rig.Autopilot, "IsWithinArrivalTerminalCaptureRange")}";
 
         Assert.True(sawBrake, "terminal overshoot should use the brake path before settling.\n" + diagnostics);
         Assert.True(sawMainBrake, "terminal overshoot should use the main thruster to remove high residual velocity.\n" + diagnostics);
@@ -1783,6 +1893,13 @@ public class PrototypeAutopilotNavigationPlayModeTests
         MethodInfo method = target.GetType().GetMethod(methodName, PrivateInstance);
         Assert.NotNull(method, methodName);
         return (Vector3)method.Invoke(target, null);
+    }
+
+    private static bool InvokePrivateBoolMethod(object target, string methodName)
+    {
+        MethodInfo method = target.GetType().GetMethod(methodName, PrivateInstance);
+        Assert.NotNull(method, methodName);
+        return (bool)method.Invoke(target, null);
     }
 
     private static void SetPrivateProperty<T>(object target, string propertyName, T value)
