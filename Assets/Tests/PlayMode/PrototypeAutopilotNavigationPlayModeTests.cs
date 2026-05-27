@@ -13,6 +13,9 @@ public class PrototypeAutopilotNavigationPlayModeTests
     public void SetUp()
     {
         DestroyByPrefix("AutopilotPlayModeV2");
+        DestroyByPrefix("PrototypeBootstrap");
+        DestroyByPrefix("PrototypeShip");
+        DestroyByPrefix("PrototypeShipVisualSwitcher");
         DestroyByPrefix("PrototypeEnvironment");
         PrototypeNavigationObstacleRegistry.ClearForTests();
         previousSimulationMode = Physics.simulationMode;
@@ -24,6 +27,9 @@ public class PrototypeAutopilotNavigationPlayModeTests
     public void TearDown()
     {
         DestroyByPrefix("AutopilotPlayModeV2");
+        DestroyByPrefix("PrototypeBootstrap");
+        DestroyByPrefix("PrototypeShip");
+        DestroyByPrefix("PrototypeShipVisualSwitcher");
         DestroyByPrefix("PrototypeEnvironment");
         PrototypeNavigationObstacleRegistry.ClearForTests();
         Physics.simulationMode = previousSimulationMode;
@@ -112,6 +118,65 @@ public class PrototypeAutopilotNavigationPlayModeTests
             Is.EqualTo(PrototypeWaypointAutopilotState.Complete).Or.EqualTo(PrototypeWaypointAutopilotState.HoldPosition));
         Assert.That(result.FinalDistance, Is.LessThanOrEqualTo(rig.Target.ArrivalRadius + 1.5f));
         Assert.That(result.MinimumObstacleClearance, Is.GreaterThan(0.25f));
+    }
+
+    [Test]
+    public void PlayMode_Autopilot_ImportedFunctionalScoutDoesNotFlipBeforePlannedBrakeSegment()
+    {
+        AutopilotPlayModeRig rig = CreateImportedFunctionalRig(Vector3.forward * 250f);
+        SetPrivateFloat(rig.Autopilot, "navigationPlanIntervalSeconds", 999f);
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(true);
+        rig.Body.linearVelocity = Vector3.forward * 12f;
+        rig.Body.angularVelocity = Vector3.zero;
+        rig.Ship.transform.rotation = Quaternion.identity;
+        Physics.SyncTransforms();
+        rig.Autopilot.ToggleAutopilot();
+
+        StepClosedLoopPhysicsWithoutForcedReplan(rig);
+
+        Assert.True(rig.Rcs.UseImportedFunctionalSockets);
+        Assert.That(rig.Rcs.InstalledNozzleCount, Is.GreaterThanOrEqualTo(8));
+        Assert.True(rig.Autopilot.HasExecutableFlightPlan);
+        Assert.True(rig.Autopilot.FlightPlanExecutorActive);
+        PrototypeManeuverSegment flipSegment = FindRequiredFlightPlanSegment(rig.Autopilot, PrototypeManeuverPhase.FlipToRetrograde);
+        Assert.That(flipSegment.startTimeSeconds, Is.GreaterThan(rig.Autopilot.FlightPlanExecutorElapsedSeconds));
+
+        int samplesBeforeFlip = 0;
+        float lastElapsed = rig.Autopilot.FlightPlanExecutorElapsedSeconds;
+        List<string> trace = new List<string>();
+        while (rig.Autopilot.AutopilotEngaged
+            && rig.Autopilot.FlightPlanExecutorElapsedSeconds < flipSegment.startTimeSeconds - Time.fixedDeltaTime
+            && samplesBeforeFlip < 220)
+        {
+            bool visibleSafetyReason = rig.Autopilot.NavigationObstacleDetected
+                || rig.Autopilot.AvoidanceActive
+                || rig.Autopilot.NavigationPhase == PrototypeWaypointAutopilotNavigationPhase.AvoidancePlanning
+                || rig.Autopilot.NavigationPhase == PrototypeWaypointAutopilotNavigationPhase.Avoiding;
+            bool enteredBrakeBeforePlan = rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.FlipForBrake
+                || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Brake;
+            Assert.False(
+                enteredBrakeBeforePlan && !visibleSafetyReason,
+                "Imported functional runtime entered brake/flip before the planned segment without a visible safety reason.\n"
+                + BuildImportedFlightPlanTrace(rig, flipSegment, trace));
+
+            Assert.That(
+                rig.Autopilot.CurrentFlightPlanExecutionState.activePhase,
+                Is.Not.EqualTo(PrototypeManeuverPhase.FlipToRetrograde).And.Not.EqualTo(PrototypeManeuverPhase.RetrogradeBurn),
+                BuildImportedFlightPlanTrace(rig, flipSegment, trace));
+
+            trace.Add(
+                $"i={samplesBeforeFlip} elapsed={rig.Autopilot.FlightPlanExecutorElapsedSeconds:0.00}/{flipSegment.startTimeSeconds:0.00} "
+                + $"state={rig.Autopilot.CurrentState} phase={rig.Autopilot.CurrentFlightPlanExecutionState.activePhase} "
+                + $"nav={rig.Autopilot.NavigationPhase} main={rig.Autopilot.RequestedMainThrottle:0.00} "
+                + $"dist={Vector3.Distance(rig.Body.position, rig.Target.Position):0.00}");
+            lastElapsed = rig.Autopilot.FlightPlanExecutorElapsedSeconds;
+            StepClosedLoopPhysicsWithoutForcedReplan(rig);
+            samplesBeforeFlip++;
+        }
+
+        Assert.That(samplesBeforeFlip, Is.GreaterThan(8));
+        Assert.That(lastElapsed, Is.LessThan(flipSegment.startTimeSeconds));
+        Assert.False(rig.Autopilot.NavigationObstacleDetected);
     }
 
     [Test]
@@ -1514,6 +1579,15 @@ public class PrototypeAutopilotNavigationPlayModeTests
         Physics.SyncTransforms();
     }
 
+    private static void StepClosedLoopPhysicsWithoutForcedReplan(AutopilotPlayModeRig rig)
+    {
+        InvokeUpdate(rig.Autopilot);
+        InvokeFixedUpdate(rig.Autopilot);
+        InvokeFixedUpdate(rig.Controller);
+        Physics.Simulate(Time.fixedDeltaTime);
+        Physics.SyncTransforms();
+    }
+
     private static void StepClosedLoopBrakePhysics(AutopilotPlayModeRig rig, AutopilotRunResult result)
     {
         SetPrivateBool(rig.Autopilot, "navigationPlanDirty", true);
@@ -1861,6 +1935,134 @@ public class PrototypeAutopilotNavigationPlayModeTests
         };
     }
 
+    private static AutopilotPlayModeRig CreateImportedFunctionalRig(Vector3 targetPosition)
+    {
+        DestroyByPrefix("PrototypeBootstrap");
+        DestroyByPrefix("PrototypeShip");
+        DestroyByPrefix("PrototypeShipVisualSwitcher");
+        GameObject host = new GameObject("PrototypeBootstrapAutopilotPlayModeV2");
+        PrototypeBootstrap bootstrap = host.AddComponent<PrototypeBootstrap>();
+        SetPrivateField(bootstrap, "buildOnStart", false);
+        SetPrivateField(bootstrap, "spawnTestTarget", false);
+        SetPrivateField(bootstrap, "buildTestEnvironment", false);
+        SetPrivateField(bootstrap, "allowGeneratedFallbackWhenImportedAssetMissing", false);
+        bootstrap.SetBuildMode(PrototypeShipBuildMode.ImportedDemoScoutFunctionalDefault, false);
+        bootstrap.BuildPrototype(PrototypeShipVariant.Baseline());
+
+        GameObject ship = GameObject.Find("PrototypeShip");
+        Assert.NotNull(ship);
+        ship.name = "AutopilotPlayModeV2ImportedFunctionalShip";
+        Rigidbody body = ship.GetComponent<Rigidbody>();
+        ShipStats stats = ship.GetComponent<ShipStats>();
+        PlayerShipController controller = ship.GetComponent<PlayerShipController>();
+        RcsThrusterController rcs = ship.GetComponent<RcsThrusterController>();
+        PrototypeWaypointAutopilot autopilot = ship.GetComponent<PrototypeWaypointAutopilot>();
+        PrototypeObstacleDetector detector = ship.GetComponent<PrototypeObstacleDetector>();
+        Assert.NotNull(body);
+        Assert.NotNull(stats);
+        Assert.NotNull(controller);
+        Assert.NotNull(rcs);
+        Assert.NotNull(autopilot);
+        Assert.NotNull(detector);
+
+        Transform visualRoot = ship.transform.Find(PrototypeFunctionalShipBinder.ImportedVisualRootName);
+        Assert.NotNull(visualRoot);
+        Transform activeImportedVisual = FindActiveImportedVisual(visualRoot);
+        Assert.NotNull(activeImportedVisual);
+        Assert.That(CountVisibleShipMeshRenderers(activeImportedVisual), Is.GreaterThan(20));
+        Assert.True(rcs.UseImportedFunctionalSockets);
+
+        GameObject targetObject = new GameObject("AutopilotPlayModeV2ImportedFunctionalTarget");
+        targetObject.transform.position = targetPosition;
+        PrototypeNavigationTarget target = targetObject.AddComponent<PrototypeNavigationTarget>();
+        target.Configure("ImportedFunctionalTarget", 10f);
+        detector.SetIncludeNavigationObstacleComponentsWithoutCollider(true);
+        autopilot.SelectTarget(target);
+        body.useGravity = false;
+        body.linearDamping = 0f;
+        body.angularDamping = 0f;
+        body.position = Vector3.zero;
+        body.linearVelocity = Vector3.zero;
+        body.angularVelocity = Vector3.zero;
+        Physics.SyncTransforms();
+
+        return new AutopilotPlayModeRig
+        {
+            Ship = ship,
+            Body = body,
+            Stats = stats,
+            Controller = controller,
+            Rcs = rcs,
+            Autopilot = autopilot,
+            Target = target
+        };
+    }
+
+    private static PrototypeManeuverSegment FindRequiredFlightPlanSegment(
+        PrototypeWaypointAutopilot autopilot,
+        PrototypeManeuverPhase phase)
+    {
+        PrototypeManeuverSegment[] segments = autopilot.FlightPlanSegments;
+        for (int i = 0; i < segments.Length; i++)
+        {
+            if (segments[i].phase == phase)
+            {
+                Assert.That(segments[i].durationSeconds, Is.GreaterThan(0f));
+                return segments[i];
+            }
+        }
+
+        Assert.Fail("Missing flight-plan segment " + phase + ".");
+        return default;
+    }
+
+    private static string BuildImportedFlightPlanTrace(
+        AutopilotPlayModeRig rig,
+        PrototypeManeuverSegment flipSegment,
+        List<string> trace)
+    {
+        int start = Mathf.Max(0, trace.Count - 8);
+        string tail = string.Join("\n", trace.GetRange(start, trace.Count - start));
+        return "elapsed=" + rig.Autopilot.FlightPlanExecutorElapsedSeconds.ToString("0.00")
+            + " flipStart=" + flipSegment.startTimeSeconds.ToString("0.00")
+            + " state=" + rig.Autopilot.CurrentState
+            + " nav=" + rig.Autopilot.NavigationPhase
+            + " activePhase=" + rig.Autopilot.CurrentFlightPlanExecutionState.activePhase
+            + " obstacle=" + rig.Autopilot.ObstacleStatus
+            + "\nlast samples:\n" + tail;
+    }
+
+    private static Transform FindActiveImportedVisual(Transform importedVisualRoot)
+    {
+        Assert.NotNull(importedVisualRoot);
+        for (int i = 0; i < importedVisualRoot.childCount; i++)
+        {
+            Transform child = importedVisualRoot.GetChild(i);
+            if (child != null && child.gameObject.activeInHierarchy)
+            {
+                return child;
+            }
+        }
+
+        return null;
+    }
+
+    private static int CountVisibleShipMeshRenderers(Transform root)
+    {
+        Renderer[] renderers = root != null ? root.GetComponentsInChildren<Renderer>(true) : new Renderer[0];
+        int count = 0;
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            Renderer renderer = renderers[i];
+            if (renderer != null && renderer.enabled && renderer.gameObject.activeInHierarchy)
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
     private static PrototypeNavigationObstacle CreateObstacle(Vector3 position, float radius)
     {
         GameObject obstacle = GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -1953,6 +2155,13 @@ public class PrototypeAutopilotNavigationPlayModeTests
     }
 
     private static void SetPrivateVector3(object target, string fieldName, Vector3 value)
+    {
+        FieldInfo field = target.GetType().GetField(fieldName, PrivateInstance);
+        Assert.NotNull(field, fieldName);
+        field.SetValue(target, value);
+    }
+
+    private static void SetPrivateField(object target, string fieldName, object value)
     {
         FieldInfo field = target.GetType().GetField(fieldName, PrivateInstance);
         Assert.NotNull(field, fieldName);

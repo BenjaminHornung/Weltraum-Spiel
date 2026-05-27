@@ -316,3 +316,34 @@ DevToolbox:
 - `verify_run 063f4f8bc31f479589b970d031ba654a`: MIXED/EXPECTED.
   - Specs step passed.
   - Bare `dotnet build`, `dotnet test`, and `dotnet format --verify-no-changes` failed with MSB1011/multiple-workspace selection, matching the known generic DevToolbox limitation in this Unity repository.
+
+## Imported Functional Executor Regression
+
+Date: 2026-05-27
+
+Scope:
+
+- Added a PlayMode regression that builds the imported-functional scout through `PrototypeBootstrap` using `ImportedDemoScoutFunctionalDefault` with generated fallback disabled.
+- The regression verifies the active imported visual root has visible mesh renderers and that RCS uses imported functional sockets with at least eight installed nozzles.
+- The runtime executor is enabled and the navigation plan interval is stretched so the test follows the original precomputed plan instead of forcing a fresh plan every physics step.
+- With an inbound 12 m/s imported-functional ship, the test locates the planned `FlipToRetrograde` segment and samples closed-loop physics before that segment starts.
+- Before the planned flip start, the test fails if runtime enters `FlipForBrake` or `Brake`, or if the active execution phase becomes `FlipToRetrograde`/`RetrogradeBurn`, unless a visible obstacle/avoidance safety reason is present.
+
+Unity MCP:
+
+- `validate_script Assets/Tests/PlayMode/PrototypeAutopilotNavigationPlayModeTests.cs`: PASS, 0 warnings, 0 errors.
+- Focused PlayMode job `24e6eaee40064e23afe9f90790317cb0`: `PlayMode_Autopilot_ImportedFunctionalScoutDoesNotFlipBeforePlannedBrakeSegment` PASS 1/1.
+- Full PlayMode job `b0bebb34b9a1486a9d11e842642446ec`: `PrototypeAutopilotNavigationPlayModeTests` PASS 27/27.
+
+.NET:
+
+- `dotnet build "Weltraum Spiel.sln" --no-restore`: PASS, 0 errors, 2 existing Unity-generated warning groups.
+- `dotnet test "Weltraum Spiel.sln" --no-build`: PASS, no output.
+- `git diff --check -- Assets/Tests/PlayMode/PrototypeAutopilotNavigationPlayModeTests.cs`: PASS; only expected LF-to-CRLF working-copy warning.
+
+DevToolbox:
+
+- `specs_validate player-autopilot-authoritative-flight-plan-v1`: PASS.
+- `verify_run 81556f6d1dec44b4bcfd23ef85d4a19d`: MIXED/EXPECTED.
+  - Specs step passed.
+  - Bare `dotnet build`, `dotnet test`, and `dotnet format --verify-no-changes` failed with MSB1011/multiple-workspace selection, matching the known generic DevToolbox limitation in this Unity repository.
