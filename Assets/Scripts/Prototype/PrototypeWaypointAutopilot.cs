@@ -210,14 +210,41 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     public Vector3[] PredictedRoute => LastTrajectoryPlan.predictedPath ?? System.Array.Empty<Vector3>();
     public string SelectedCandidate => string.IsNullOrWhiteSpace(LastTrajectoryPlan.selectedCandidate) ? "direct" : LastTrajectoryPlan.selectedCandidate;
     public string SelectedCandidateReason => string.IsNullOrWhiteSpace(LastTrajectoryPlan.selectedCandidateReason) ? NavigationPlanStatus : LastTrajectoryPlan.selectedCandidateReason;
-    public bool TerminalRcsOnlyCorrectionActive => currentTarget != null
-        && shipRigidbody != null
-        && CurrentState != PrototypeWaypointAutopilotState.ObstacleAvoidance
-        && IsWithinArrivalTerminalCaptureRange()
-        && LastMetrics.relativeSpeed <= TerminalRcsOnlySpeedLimit;
-    public float TerminalRcsOnlySpeedLimit => Mathf.Max(
-        lateralCorrectionSpeed,
-        GetArrivalCompletionSpeedLimit() * TerminalOvershootHoldRelativeSpeedMultiplier);
+    public bool TerminalRcsOnlyCorrectionActive
+    {
+        get
+        {
+            if (currentTarget == null || shipRigidbody == null)
+            {
+                return false;
+            }
+
+            if (CurrentState == PrototypeWaypointAutopilotState.ObstacleAvoidance)
+            {
+                return false;
+            }
+
+            if (!IsWithinArrivalTerminalCaptureRange())
+            {
+                return false;
+            }
+
+            return LastMetrics.distance <= GetFineArrivalRcsOnlyDistanceLimit()
+                && LastMetrics.relativeSpeed <= TerminalRcsOnlySpeedLimit
+                && Mathf.Abs(LastMetrics.closingSpeed) <= GetFineArrivalRcsOnlyClosingSpeedLimit()
+                && LastMetrics.lateralSpeed <= GetFineArrivalRcsOnlyLateralSpeedLimit();
+        }
+    }
+
+    public float TerminalRcsOnlySpeedLimit
+    {
+        get
+        {
+            return Mathf.Min(
+                GetArrivalCompletionSpeedLimit(),
+                Mathf.Max(0.75f, arrivalSpeedMetersPerSecond * 1.25f));
+        }
+    }
     public int NavigationPlanRefreshCount { get; private set; }
     public bool NavigationDebugPlanningActive => navigationDebugPlanningActive;
     public float NavigationPlanIntervalSeconds => Mathf.Clamp(navigationPlanIntervalSeconds, 0.1f, 0.25f);
@@ -1228,6 +1255,25 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private float GetArrivalCompletionLateralTolerance()
     {
         return Mathf.Max(0.05f, finalApproachLateralToleranceMetersPerSecond * 1.5f);
+    }
+
+    private float GetFineArrivalRcsOnlyDistanceLimit()
+    {
+        return GetArrivalCompletionDistance() + BrakeArrivalHoldDistanceMarginMeters;
+    }
+
+    private float GetFineArrivalRcsOnlyClosingSpeedLimit()
+    {
+        return Mathf.Max(0.35f, arrivalSpeedMetersPerSecond * 0.75f);
+    }
+
+    private float GetFineArrivalRcsOnlyLateralSpeedLimit()
+    {
+        return Mathf.Min(
+            TerminalRcsOnlySpeedLimit,
+            Mathf.Max(
+                BrakeArrivalHoldMinimumLateralTolerance,
+                GetArrivalCompletionLateralTolerance() * BrakeArrivalHoldLateralSpeedMultiplier));
     }
 
     private bool IsInArrivalCompletionWindow()

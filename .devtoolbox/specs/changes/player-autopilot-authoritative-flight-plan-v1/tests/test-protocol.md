@@ -96,3 +96,42 @@ DevToolbox:
 Ask-Pro:
 
 - Session `2026-05-27T131607-return-final-markdown-only-do-not-answer-with-a-` was submitted to ChatGPT with the focused architecture question and is still `WAITING`; harvest reported `action: wait`.
+
+## Fine-Arrival RCS-only Guard Follow-up
+
+Date: 2026-05-27
+
+Scope:
+
+- Tightened `PrototypeWaypointAutopilot.TerminalRcsOnlyCorrectionActive` from the previous broad `6.6 m/s` terminal envelope to the Ask-Pro-derived fine-arrival envelope.
+- Default fine-arrival main-throttle suppression now requires:
+  - distance within `GetArrivalCompletionDistance() + 6m`;
+  - relative speed `<= min(completionSpeed, max(0.75, arrivalSpeed * 1.25))`, default `1.25 m/s`;
+  - absolute closing speed `<= max(0.35, arrivalSpeed * 0.75)`, default `0.75 m/s`;
+  - lateral speed within the same fine low-delta-v cap.
+- The central actuator funnel still suppresses main throttle in `ApplyAutopilotRequest()` without clearing the brake latch, so a committed low-delta-v brake latch may remain stateful while publishing RCS-only output.
+- Added PlayMode coverage for:
+  - low-delta-v fine terminal correction uses RCS only below the threshold;
+  - committed low-delta-v brake latch does not publish main throttle;
+  - high-delta-v terminal brake remains outside the fine window and can still publish main throttle.
+
+Unity MCP:
+
+- `validate_script Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs`: PASS, 0 errors, existing GC warning.
+- `validate_script Assets/Tests/PlayMode/PrototypeAutopilotNavigationPlayModeTests.cs`: PASS, 0 warnings, 0 errors.
+- Initial focused PlayMode job `63d180f1300a49c6a65a676361ea14b0`: failed to initialize before any tests started; treated as Unity runner initialization noise.
+- Focused PlayMode retry `2061fd9917c14c3f95dc0b07d93e1562`: PASS 3/3.
+- Full PlayMode job `2b1ef8b1fa524f7396993e64a2759d7d`: `PrototypeAutopilotNavigationPlayModeTests` PASS 26/26.
+
+.NET:
+
+- `dotnet build "Weltraum Spiel.sln" --no-restore`: PASS, 0 errors, 22 existing Unity-generated warnings.
+- `dotnet test "Weltraum Spiel.sln" --no-build`: PASS, no output.
+- `git diff --check -- Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs Assets/Tests/PlayMode/PrototypeAutopilotNavigationPlayModeTests.cs`: PASS; only expected LF-to-CRLF working-copy warnings.
+
+DevToolbox:
+
+- `specs_validate player-autopilot-authoritative-flight-plan-v1`: PASS.
+- `verify_run 4b721d3dd5a441699c51d8b15474dfbf`: MIXED/EXPECTED.
+  - Specs step passed.
+  - Bare `dotnet build`, `dotnet test`, and `dotnet format --verify-no-changes` failed with MSB1011/multiple-workspace selection, matching the known generic DevToolbox limitation in this Unity repository.

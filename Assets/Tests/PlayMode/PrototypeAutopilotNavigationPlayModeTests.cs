@@ -658,12 +658,12 @@ public class PrototypeAutopilotNavigationPlayModeTests
     }
 
     [Test]
-    public void PlayMode_Autopilot_TerminalLowDeltaVBrakeUsesRcsOnly()
+    public void PlayMode_Autopilot_FineTerminalCorrectionUsesRcsOnlyBelowLowDeltaVThreshold()
     {
         AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 30f);
-        rig.Body.position = Vector3.forward * 9f;
-        rig.Body.linearVelocity = Vector3.forward * 3f + Vector3.right * 0.1f;
-        rig.Ship.transform.rotation = Quaternion.LookRotation(-rig.Body.linearVelocity.normalized, Vector3.up);
+        rig.Body.position = Vector3.forward * 15f;
+        rig.Body.linearVelocity = Vector3.right * 0.9f;
+        rig.Ship.transform.rotation = Quaternion.Euler(0f, 150f, 0f);
         Physics.SyncTransforms();
         rig.Autopilot.ToggleAutopilot();
 
@@ -671,14 +671,61 @@ public class PrototypeAutopilotNavigationPlayModeTests
 
         Assert.That(
             rig.Autopilot.CurrentState,
-            Is.EqualTo(PrototypeWaypointAutopilotState.Brake).Or.EqualTo(PrototypeWaypointAutopilotState.FinalApproach));
-        Assert.That(rig.Autopilot.DistanceToTarget, Is.LessThanOrEqualTo(rig.Target.ArrivalRadius + 12f));
-        Assert.That(rig.Body.linearVelocity.magnitude, Is.LessThanOrEqualTo(6.6f));
+            Is.EqualTo(PrototypeWaypointAutopilotState.FinalApproach).Or.EqualTo(PrototypeWaypointAutopilotState.HoldPosition));
+        Assert.That(rig.Autopilot.DistanceToTarget, Is.LessThanOrEqualTo(rig.Target.ArrivalRadius + 6f));
+        Assert.That(rig.Body.linearVelocity.magnitude, Is.LessThanOrEqualTo(1.25f));
+        Assert.That(rig.Autopilot.TerminalRcsOnlyCorrectionActive, Is.True);
+        Assert.That(rig.Autopilot.TerminalRcsOnlySpeedLimit, Is.EqualTo(1.25f).Within(0.01f));
         Assert.That(rig.Autopilot.RequestedMainThrottle, Is.LessThanOrEqualTo(0.01f));
         Assert.True(rig.Controller.HasExternalFlightAssistRequest);
         Assert.That(rig.Controller.LastExternalFlightAssistRequest.mainThrottle, Is.LessThanOrEqualTo(0.01f));
         Assert.That(rig.Autopilot.RequestedRcsForce.magnitude, Is.GreaterThan(1f));
         Assert.That(Vector3.Dot(rig.Autopilot.RequestedRcsForce, rig.Body.linearVelocity), Is.LessThan(-0.01f));
+    }
+
+    [Test]
+    public void PlayMode_Autopilot_FineTerminalCommittedBrakeLatchDoesNotPublishMainThrottle()
+    {
+        AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 30f);
+        rig.Body.position = Vector3.forward * 15f;
+        rig.Body.linearVelocity = Vector3.back * 0.35f + Vector3.right * 0.65f;
+        rig.Ship.transform.rotation = Quaternion.Euler(0f, 170f, 0f);
+        Physics.SyncTransforms();
+        rig.Autopilot.ToggleAutopilot();
+        SetPrivateBool(rig.Autopilot, "arrivalBrakeCommitted", true);
+        SetPrivateBool(rig.Autopilot, "arrivalTerminalCaptureActive", true);
+        SetPrivateVector3(rig.Autopilot, "committedBrakeDirection", Vector3.back);
+
+        StepSimulation(rig);
+
+        Assert.That(GetPrivateBool(rig.Autopilot, "arrivalBrakeCommitted"), Is.True);
+        Assert.That(rig.Autopilot.TerminalRcsOnlyCorrectionActive, Is.True);
+        Assert.That(rig.Autopilot.RequestedMainThrottle, Is.LessThanOrEqualTo(0.01f));
+        Assert.True(rig.Controller.HasExternalFlightAssistRequest);
+        Assert.That(rig.Controller.LastExternalFlightAssistRequest.mainThrottle, Is.LessThanOrEqualTo(0.01f));
+        Assert.That(rig.Autopilot.RequestedRcsForce.magnitude, Is.GreaterThan(1f));
+        Assert.That(Vector3.Dot(rig.Autopilot.RequestedRcsForce, rig.Body.linearVelocity), Is.LessThan(-0.01f));
+    }
+
+    [Test]
+    public void PlayMode_Autopilot_HighDeltaVTerminalBrakeStillAllowsMainThrottle()
+    {
+        AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 30f);
+        rig.Body.position = Vector3.forward * 12f;
+        rig.Body.linearVelocity = Vector3.forward * 8f;
+        rig.Ship.transform.rotation = Quaternion.LookRotation(-rig.Body.linearVelocity.normalized, Vector3.up);
+        Physics.SyncTransforms();
+        rig.Autopilot.ToggleAutopilot();
+
+        StepSimulation(rig);
+
+        Assert.That(rig.Autopilot.TerminalRcsOnlyCorrectionActive, Is.False);
+        Assert.That(
+            rig.Autopilot.CurrentState,
+            Is.EqualTo(PrototypeWaypointAutopilotState.Brake).Or.EqualTo(PrototypeWaypointAutopilotState.FlipForBrake));
+        Assert.That(rig.Autopilot.RequestedMainThrottle, Is.GreaterThan(0.05f));
+        Assert.True(rig.Controller.HasExternalFlightAssistRequest);
+        Assert.That(rig.Controller.LastExternalFlightAssistRequest.mainThrottle, Is.GreaterThan(0.05f));
     }
 
     [Test]
