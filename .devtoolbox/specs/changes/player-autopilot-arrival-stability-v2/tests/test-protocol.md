@@ -41,6 +41,35 @@ Stabilize waypoint autopilot arrival behavior so the ship commits to a brake/dec
 
 ## Verification
 
+- 2026-05-27 terminal brake-latch release follow-up
+  - Implementation:
+    - Tightened the terminal brake commit latch so `ShouldKeepTerminalBrakeCommitted()` releases once the ship is low-speed and outside the smaller completion buffer, instead of holding the whole capture band open.
+    - Narrowed `ShouldRequestBrake()` so terminal capture no longer forces Brake forever and can hand control back to the existing `requestedFineApproach` path.
+    - Fixed the terminal lateral-correction distance gate so it uses the completion envelope instead of the larger terminal-range envelope.
+    - Allowed the final-approach main-throttle gate to engage only once the ship is already slow enough to make the gentle terminal burn safe.
+    - Removed temporary debug logging from `PrototypeWaypointAutopilot.cs` after the regression was isolated.
+  - Unity MCP validate_script:
+    - `Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs`: success, 0 errors, 1 existing GC warning.
+    - `Assets/Tests/PlayMode/PrototypeAutopilotNavigationPlayModeTests.cs`: success, 0 errors, 0 warnings.
+  - Unity MCP PlayMode regression:
+    - Job `28e177b3e51b4875ba9c4bf0f175f947`.
+    - Test: `PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_OffAxisTerminalDeadzoneWithRealisticAuthority_LatchesHoldWithoutAccelerateFlap`.
+    - Result: `Passed`, total `1`, passed `1`, failed `0`.
+  - Unity MCP EditMode regression:
+    - Job `bba64a39372a459694df1a02c22f9cbe`.
+    - Test: `PrototypeAutopilotMomentumStartupStateTests.FinalApproachLateralSpeedCreatesExternalForceRequest`.
+    - Result: `Passed`, total `1`, passed `1`, failed `0`.
+  - `.NET` build:
+    - Command: `dotnet build "Weltraum Spiel.sln" --no-restore`
+    - Result: exit code `0`, `0 Error(s)`, existing Unity/.NET assembly reference warnings only.
+  - Unity MCP screenshot evidence:
+    - File: `.devtoolbox/specs/changes/player-autopilot-arrival-stability-v2/tests/logs/autopilot-arrival-stability-v2-evidence.png`
+    - Captured in Play Mode from `Main Camera` after the targeted arrival-stability verification run.
+  - DevToolbox `verify_run`:
+    - Execution: `0ff3b9d7915b49c492f9a15a18b69f2e`.
+    - Result: `Specs` passed; generic `Build`, `Test`, and `Lint` failed because the presets invoke bare `dotnet build`, `dotnet test`, and `dotnet format --verify-no-changes` in a folder with multiple MSBuild files, reproducing the known MSB1011/tooling issue.
+    - Targeted Unity MCP tests and `dotnet build "Weltraum Spiel.sln" --no-restore` are the authoritative verification for this slice.
+
 - 2026-05-26 follow-up after user report: brake flip still too aggressive / terminal circling
   - Implementation:
     - Split the loose brake-attitude latch from the stricter main-throttle brake gate.
