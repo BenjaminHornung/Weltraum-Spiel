@@ -267,3 +267,52 @@ DevToolbox:
 - `verify_run cb800ce3bfc14f2facb801fc26801928`: MIXED/EXPECTED.
   - Specs step passed.
   - Bare `dotnet build`, `dotnet test`, and `dotnet format --verify-no-changes` failed with MSB1011/multiple-workspace selection, matching the known generic DevToolbox limitation in this Unity repository.
+
+## Flight Plan Executor
+
+Date: 2026-05-27
+
+Scope:
+
+- Added the `PrototypeWaypointAutopilot` flight-plan executor behind the `useFlightPlanExecutor` migration flag.
+- Runtime `FixedUpdate()` now tries the active executable `PrototypeFlightPlan` before the legacy live gates:
+  - active plan id/revision and elapsed time are tracked per plan;
+  - align, prograde burn, avoidance burn, coast, flip-to-retrograde, retrograde burn, final approach, lateral correction, and hold segments are mapped to existing actuator request helpers;
+  - main throttle remains gated during planned flip segments;
+  - the migration flag can disable the executor and leave legacy fallback active.
+- Tightened the planner/executor boundary so the runtime no longer invents normal burn/flip/brake sequencing on the fly:
+  - direct overspeed routes can emit a brake-first plan when stopping distance plus brake margin consumes the arrival distance;
+  - terminal lateral delta-v emits a brake segment using the velocity-opposing brake direction;
+  - active obstacle avoidance remains ahead of brake-first sequencing as a visible safety reason;
+  - expired terminal plans settle into hold capture instead of falling back to legacy brake;
+  - terminal capture suppresses stale transfer-burn segments so committed arrivals do not re-enter `Accelerate`.
+- Strengthened hold-position correction so a near-stopped ship outside the completion deadzone uses RCS position correction instead of freezing outside the target radius.
+- Added Editor regression coverage for:
+  - emitted flight plans starting with Brake when stopping distance consumes the arrival;
+  - executor does not flip/brake before the planned `FlipToRetrograde` segment;
+  - executor enters `FlipForBrake` only at the planned flip segment and keeps main throttle at zero;
+  - migration flag off leaves the executor inactive.
+
+Unity MCP:
+
+- `validate_script Assets/Scripts/Prototype/PrototypeTrajectoryPlanner.cs`: PASS, 0 warnings, 0 errors.
+- `validate_script Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs`: PASS, 0 errors, 1 existing analyzer warning.
+- `validate_script Assets/Tests/Editor/PrototypeAutopilotNavigationComputerV2ValidationTests.cs`: PASS, 0 warnings, 0 errors.
+- Focused EditMode executor/planner job `a253bbf102f1456680fe5673ebc3c601`: PASS 3/3 before the brake-first planner extension.
+- Full EditMode job `8884016960b44489861089b5abd9e477`: PASS 25/25 after the brake-first planner extension.
+- Focused PlayMode regression job `e64cf89faef44666809d13abfc2af710`: PASS 3/3 for the previously failing terminal deadzone/capture cases.
+- Focused PlayMode obstacle safety job `3ec0d579d69d46d3a8173ad90faa4778`: PASS 1/1 for terminal avoidance over committed brake latch.
+- Full PlayMode job `0fb56071bdf942bf8f97ee7f66fa0418`: PASS 26/26.
+
+.NET:
+
+- `dotnet build "Weltraum Spiel.sln" --no-restore`: PASS, 0 errors, 22 existing Unity-generated warnings.
+- `dotnet test "Weltraum Spiel.sln" --no-build`: PASS, no output.
+- `git diff --check` for changed line-7 files: PASS; only expected LF-to-CRLF working-copy warnings.
+
+DevToolbox:
+
+- `specs_validate player-autopilot-authoritative-flight-plan-v1`: PASS.
+- `verify_run 063f4f8bc31f479589b970d031ba654a`: MIXED/EXPECTED.
+  - Specs step passed.
+  - Bare `dotnet build`, `dotnet test`, and `dotnet format --verify-no-changes` failed with MSB1011/multiple-workspace selection, matching the known generic DevToolbox limitation in this Unity repository.

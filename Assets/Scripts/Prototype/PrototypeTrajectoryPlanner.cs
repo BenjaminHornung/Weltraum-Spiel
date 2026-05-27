@@ -661,6 +661,17 @@ public class PrototypeTrajectoryPlanner
             ? Vector3.Distance(selected.waypoint, snapshot.targetPosition)
             : 0f;
         float closestObstacle = selected.clearanceMeters;
+        var coast = new PrototypeTrajectorySegment(PrototypeTrajectorySegmentType.Coast, 1f, direction, 0f, 0f, 0f, closestObstacle, missDistance);
+        Vector3 brakeDirection = ResolveBrakeDirection(snapshot);
+        float brakeDeltaV = ResolveBrakeDeltaV(snapshot);
+        var brake = new PrototypeTrajectorySegment(PrototypeTrajectorySegmentType.Brake, EstimateBrakeSeconds(snapshot), brakeDirection, 1f, brakeDeltaV, 0f, closestObstacle, snapshot.arrivalRadius);
+        var final = new PrototypeTrajectorySegment(PrototypeTrajectorySegmentType.FinalApproach, 1f, snapshot.DirectionToTarget, 0.25f, snapshot.arrivalSpeed, 0f, closestObstacle, snapshot.arrivalRadius);
+        var hold = new PrototypeTrajectorySegment(PrototypeTrajectorySegmentType.Hold, 0.75f, Vector3.zero, 0f, 0f, 0f, closestObstacle, 0f);
+        if (ShouldUseFinalOnlySegments(snapshot))
+        {
+            return new[] { final, hold };
+        }
+
         var burnSegment = new PrototypeTrajectorySegment(
             avoidance ? PrototypeTrajectorySegmentType.AvoidanceBurn : PrototypeTrajectorySegmentType.Burn,
             burnPlan.durationSeconds,
@@ -670,13 +681,64 @@ public class PrototypeTrajectoryPlanner
             burnPlan.estimatedFuelKg,
             closestObstacle,
             missDistance);
-        var coast = new PrototypeTrajectorySegment(PrototypeTrajectorySegmentType.Coast, 1f, direction, 0f, 0f, 0f, closestObstacle, missDistance);
-        var brake = new PrototypeTrajectorySegment(PrototypeTrajectorySegmentType.Brake, EstimateBrakeSeconds(snapshot), -snapshot.DirectionToTarget, 1f, Mathf.Max(0f, Vector3.Dot(snapshot.velocity, snapshot.DirectionToTarget)), 0f, closestObstacle, snapshot.arrivalRadius);
-        var final = new PrototypeTrajectorySegment(PrototypeTrajectorySegmentType.FinalApproach, 1f, snapshot.DirectionToTarget, 0.25f, snapshot.arrivalSpeed, 0f, closestObstacle, snapshot.arrivalRadius);
-        var hold = new PrototypeTrajectorySegment(PrototypeTrajectorySegmentType.Hold, 0.75f, Vector3.zero, 0f, 0f, 0f, closestObstacle, 0f);
+        if (!avoidance && ShouldStartWithBrakeSegment(snapshot))
+        {
+            return new[] { brake, final, hold };
+        }
+
         return avoidance
             ? new[] { burnSegment, coast, brake, final, hold }
             : new[] { burnSegment, coast, brake, final, hold };
+    }
+
+    private static bool ShouldUseFinalOnlySegments(PrototypeTrajectorySnapshot snapshot)
+    {
+        float finalDistance = snapshot.arrivalRadius + Mathf.Max(snapshot.arrivalRadius * 0.8f, snapshot.arrivalSpeed * 4f);
+        float finalSpeed = Mathf.Max(0.95f, snapshot.arrivalSpeed * 2.2f);
+        return snapshot.DistanceToTarget <= finalDistance
+            && snapshot.velocity.magnitude <= finalSpeed;
+    }
+
+    private static bool ShouldStartWithBrakeSegment(PrototypeTrajectorySnapshot snapshot)
+    {
+        float closingSpeed = Mathf.Max(0f, Vector3.Dot(snapshot.velocity, snapshot.DirectionToTarget));
+        float brakeSpeed = Mathf.Max(0.35f, snapshot.arrivalSpeed * 1.35f);
+        float relativeSpeed = snapshot.velocity.magnitude;
+        float terminalBrakeDistance = snapshot.arrivalRadius + Mathf.Max(snapshot.arrivalRadius * 2f, snapshot.arrivalSpeed * 8f);
+        bool terminalHighDeltaV = snapshot.DistanceToTarget <= terminalBrakeDistance
+            && relativeSpeed > Mathf.Max(0.95f, snapshot.arrivalSpeed * 2.2f);
+        if (closingSpeed <= brakeSpeed && !terminalHighDeltaV)
+        {
+            return false;
+        }
+
+        float distanceToArrival = Mathf.Max(0f, snapshot.DistanceToTarget - snapshot.arrivalRadius);
+        float brakeCommitMargin = Mathf.Max(snapshot.arrivalRadius * 1.5f, closingSpeed * 1.25f);
+        return terminalHighDeltaV
+            || snapshot.DistanceToTarget <= snapshot.arrivalRadius + brakeCommitMargin
+            || EstimateStoppingDistance(snapshot) + brakeCommitMargin >= distanceToArrival;
+    }
+
+    private static Vector3 ResolveBrakeDirection(PrototypeTrajectorySnapshot snapshot)
+    {
+        float closingSpeed = Vector3.Dot(snapshot.velocity, snapshot.DirectionToTarget);
+        Vector3 lateralVelocity = snapshot.velocity - snapshot.DirectionToTarget * closingSpeed;
+        if (snapshot.velocity.sqrMagnitude > 0.0001f
+            && (closingSpeed <= 0f || lateralVelocity.magnitude > Mathf.Max(0.35f, closingSpeed)))
+        {
+            return -snapshot.velocity.normalized;
+        }
+
+        return -snapshot.DirectionToTarget;
+    }
+
+    private static float ResolveBrakeDeltaV(PrototypeTrajectorySnapshot snapshot)
+    {
+        float closingSpeed = Mathf.Max(0f, Vector3.Dot(snapshot.velocity, snapshot.DirectionToTarget));
+        float relativeSpeed = snapshot.velocity.magnitude;
+        bool terminalHighDeltaV = snapshot.DistanceToTarget <= snapshot.arrivalRadius + Mathf.Max(snapshot.arrivalRadius * 2f, snapshot.arrivalSpeed * 8f)
+            && relativeSpeed > Mathf.Max(0.95f, snapshot.arrivalSpeed * 2.2f);
+        return terminalHighDeltaV ? relativeSpeed : closingSpeed;
     }
 
     private static Vector3[] PredictCandidatePath(PrototypeTrajectorySnapshot snapshot, Vector3 direction, Vector3 rcsForce, float throttle)
@@ -1452,7 +1514,7 @@ public class PrototypeTrajectoryPlanner
     private static float EstimateBrakeSeconds(PrototypeTrajectorySnapshot snapshot)
     {
         return snapshot.maxMainAcceleration > 0.0001f
-            ? Mathf.Max(0f, Vector3.Dot(snapshot.velocity, snapshot.DirectionToTarget)) / snapshot.maxMainAcceleration
+            ? ResolveBrakeDeltaV(snapshot) / snapshot.maxMainAcceleration
             : 0f;
     }
 

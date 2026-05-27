@@ -220,6 +220,20 @@ public class PrototypeAutopilotNavigationComputerV2ValidationTests
     }
 
     [Test]
+    public void Planner_EmittedFlightPlanStartsWithBrakeWhenStoppingDistanceConsumesArrival()
+    {
+        PrototypeTrajectoryPlan plan = new PrototypeTrajectoryPlanner().Plan(
+            CreateSnapshot(Vector3.zero, Vector3.forward * 45f, Vector3.forward * 150f),
+            PrototypeObstacleDetectionResult.Clear(8f));
+
+        Assert.True(plan.flightPlan.IsValid);
+        Assert.That(plan.segments[0].type, Is.EqualTo(PrototypeTrajectorySegmentType.Brake));
+        Assert.That(plan.flightPlan.segments[0].phase, Is.EqualTo(PrototypeManeuverPhase.FlipToRetrograde));
+        Assert.That(plan.flightPlan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.ProgradeBurn), Is.False);
+        Assert.That(plan.flightPlan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.RetrogradeBurn), Is.True);
+    }
+
+    [Test]
     public void Planner_HeavyShipNeedsMoreRcsForce()
     {
         PrototypeObstacleDetectionResult detection = CreateBlockingDetection();
@@ -276,6 +290,67 @@ public class PrototypeAutopilotNavigationComputerV2ValidationTests
         Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.FuelInsufficient));
         Assert.False(rig.Autopilot.AutopilotEngaged);
         Assert.False(rig.Controller.HasExternalFlightAssistRequest);
+    }
+
+    [Test]
+    public void Autopilot_FlightPlanExecutorDoesNotFlipBeforePlannedBrakeSegment()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 250f;
+        rig.Body.linearVelocity = Vector3.forward * 12f;
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(true);
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+
+        InvokeFixedUpdate(rig.Autopilot);
+
+        PrototypeManeuverSegment flipSegment = FindRequiredSegment(rig.Autopilot, PrototypeManeuverPhase.FlipToRetrograde);
+        Assert.True(rig.Autopilot.HasExecutableFlightPlan);
+        Assert.True(rig.Autopilot.FlightPlanExecutorActive);
+        Assert.That(rig.Autopilot.FlightPlanExecutorElapsedSeconds, Is.LessThan(flipSegment.startTimeSeconds));
+        Assert.False(rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.FlipForBrake
+            || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Brake);
+        Assert.That(
+            rig.Autopilot.CurrentFlightPlanExecutionState.activePhase,
+            Is.EqualTo(PrototypeManeuverPhase.AlignForBurn).Or.EqualTo(PrototypeManeuverPhase.ProgradeBurn));
+    }
+
+    [Test]
+    public void Autopilot_FlightPlanExecutorEntersFlipOnlyAtPlannedSegment()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 250f;
+        rig.Body.linearVelocity = Vector3.forward * 12f;
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(true);
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+        InvokeFixedUpdate(rig.Autopilot);
+
+        PrototypeManeuverSegment flipSegment = FindRequiredSegment(rig.Autopilot, PrototypeManeuverPhase.FlipToRetrograde);
+        SetPrivateFloat(rig.Autopilot, "flightPlanElapsedSeconds", flipSegment.startTimeSeconds + 0.01f);
+        InvokeFixedUpdate(rig.Autopilot);
+
+        Assert.True(rig.Autopilot.FlightPlanExecutorActive);
+        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.FlipForBrake));
+        Assert.That(rig.Autopilot.CurrentFlightPlanExecutionState.activePhase, Is.EqualTo(PrototypeManeuverPhase.FlipToRetrograde));
+        Assert.That(rig.Autopilot.RequestedMainThrottle, Is.LessThanOrEqualTo(0.001f));
+        Assert.That(rig.Controller.LastExternalFlightAssistRequest.mainThrottle, Is.LessThanOrEqualTo(0.001f));
+    }
+
+    [Test]
+    public void Autopilot_FlightPlanExecutorFlagOffUsesLegacyFallback()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 250f;
+        rig.Body.linearVelocity = Vector3.forward * 12f;
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(false);
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+
+        InvokeFixedUpdate(rig.Autopilot);
+
+        Assert.False(rig.Autopilot.FlightPlanExecutorActive);
+        Assert.False(rig.Autopilot.CurrentFlightPlanExecutionState.hasActiveSegment);
     }
 
     [Test]
@@ -552,6 +627,16 @@ public class PrototypeAutopilotNavigationComputerV2ValidationTests
         FieldInfo field = target.GetType().GetField(fieldName, PrivateInstance);
         Assert.NotNull(field, fieldName);
         field.SetValue(target, value);
+    }
+
+    private static PrototypeManeuverSegment FindRequiredSegment(
+        PrototypeWaypointAutopilot autopilot,
+        PrototypeManeuverPhase phase)
+    {
+        PrototypeManeuverSegment segment = autopilot.FlightPlanSegments.FirstOrDefault(candidate => candidate.phase == phase);
+        Assert.That(segment.phase, Is.EqualTo(phase));
+        Assert.That(segment.durationSeconds, Is.GreaterThan(0f));
+        return segment;
     }
 
     private static void WriteSyntheticEvidenceImage(string path, Color accent, bool obstacle, bool avoidance)
