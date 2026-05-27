@@ -78,6 +78,7 @@ public class PrototypeTestEnvironment : MonoBehaviour
         BuildTargets();
         BuildNavigationBeacons();
         BuildApproachGates();
+        BuildNavigationObstacleCourse();
         BuildStationPlaceholder();
         BuildAsteroidField();
     }
@@ -231,6 +232,51 @@ public class PrototypeTestEnvironment : MonoBehaviour
             }
 
             AddPoint(label, PrototypeEnvironmentPointKind.Gate, position, GateColor, 38f);
+        }
+    }
+
+    private void BuildNavigationObstacleCourse()
+    {
+        Transform group = CreateGroup("Launch_Corridor_Obstacles");
+        Vector3[] positions =
+        {
+            new Vector3(0f, 0.5f, 14f),
+            new Vector3(4.5f, 0.5f, 24f),
+            new Vector3(-4.25f, 0.5f, 34f)
+        };
+
+        float[] radii =
+        {
+            4.25f,
+            5f,
+            4.5f
+        };
+
+        for (int i = 0; i < positions.Length; i++)
+        {
+            Vector3 position = positions[i];
+            float radius = radii[i];
+            GameObject obstacle = CreatePrimitive(
+                "Launch_Obstacle_" + (i + 1),
+                PrimitiveType.Sphere,
+                position,
+                Vector3.one * radius * 2f,
+                group);
+            obstacle.transform.rotation = Quaternion.Euler(11f * i, 19f * (i + 1), 7f * (i + 2));
+            ApplyMaterial(obstacle, Color.Lerp(ObstacleColor, Color.white, 0.05f * i), false);
+            ConfigureNavigationObstacle(obstacle, radius, "Launch Obstacle " + (i + 1));
+            AddPoint("Launch Obstacle " + (i + 1), PrototypeEnvironmentPointKind.Obstacle, position, ObstacleColor, radius);
+        }
+
+        if (ShouldCreateEnvironmentLabel(PrototypeEnvironmentPointKind.Obstacle, 0))
+        {
+            CreateLabel(
+                "Label_Launch_Corridor_Obstacles",
+                "LAUNCH CORRIDOR OBSTACLES",
+                new Vector3(0f, 78f, 24f),
+                ObstacleColor,
+                group,
+                7f);
         }
     }
 

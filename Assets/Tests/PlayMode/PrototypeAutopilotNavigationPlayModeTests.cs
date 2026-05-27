@@ -13,6 +13,7 @@ public class PrototypeAutopilotNavigationPlayModeTests
     public void SetUp()
     {
         DestroyByPrefix("AutopilotPlayModeV2");
+        DestroyByPrefix("PrototypeEnvironment");
         PrototypeNavigationObstacleRegistry.ClearForTests();
         previousSimulationMode = Physics.simulationMode;
         Physics.simulationMode = SimulationMode.Script;
@@ -23,6 +24,7 @@ public class PrototypeAutopilotNavigationPlayModeTests
     public void TearDown()
     {
         DestroyByPrefix("AutopilotPlayModeV2");
+        DestroyByPrefix("PrototypeEnvironment");
         PrototypeNavigationObstacleRegistry.ClearForTests();
         Physics.simulationMode = previousSimulationMode;
     }
@@ -75,6 +77,41 @@ public class PrototypeAutopilotNavigationPlayModeTests
         Assert.That(result.FinalDistance, Is.LessThan(result.InitialDistance), "Ship should make real progress toward the selected target.");
         Assert.That(result.MaximumLateralOffset, Is.GreaterThan(obstacle.Radius + 0.5f), "Ship should build enough lateral offset to route around the obstacle.");
         Assert.That(result.MinimumObstacleClearance, Is.GreaterThan(0.25f), "Ship should keep physical clearance outside the obstacle radius.");
+    }
+
+    [Test]
+    public void PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget()
+    {
+        GameObject environmentHost = new GameObject("AutopilotPlayModeV2LaunchCorridorEnvironmentHost");
+        PrototypeTestEnvironment environment = environmentHost.AddComponent<PrototypeTestEnvironment>();
+        environment.Rebuild();
+        Physics.SyncTransforms();
+
+        PrototypeNavigationObstacle[] launchObstacles = GetLaunchCorridorObstacles();
+        Assert.That(launchObstacles.Length, Is.EqualTo(3));
+
+        AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 96f);
+        rig.Autopilot.ToggleAutopilot();
+
+        StepSimulation(rig);
+
+        Assert.True(rig.Autopilot.CurrentPlan.avoidanceActive, "preflight plan should commit to avoidance before the ship moves.");
+        Assert.That(rig.Autopilot.SelectedCandidate, Is.Not.EqualTo("direct"));
+        Assert.That(rig.Autopilot.PlanSegments.Length, Is.GreaterThanOrEqualTo(3));
+        Assert.That(rig.Autopilot.PredictedRoute.Length, Is.GreaterThan(0));
+        Assert.That(rig.Autopilot.AvoidanceWaypoint.sqrMagnitude, Is.GreaterThan(0.0001f));
+        Assert.That(rig.Autopilot.CurrentPlan.directPathBlocked, Is.True);
+
+        AutopilotRunResult result = RunClosedLoopPhysics(rig, 860, launchObstacles);
+
+        Assert.NotNull(result);
+        Assert.True(result.SawAvoidance, "launch corridor should force avoidance before the ship reaches the obstacle course.");
+        Assert.True(result.SawReacquire || result.SawDirectAfterAvoidance, "autopilot should rejoin the direct path once the launch corridor clears.");
+        Assert.That(
+            rig.Autopilot.CurrentState,
+            Is.EqualTo(PrototypeWaypointAutopilotState.Complete).Or.EqualTo(PrototypeWaypointAutopilotState.HoldPosition));
+        Assert.That(result.FinalDistance, Is.LessThanOrEqualTo(rig.Target.ArrivalRadius + 1.5f));
+        Assert.That(result.MinimumObstacleClearance, Is.GreaterThan(0.25f));
     }
 
     [Test]
@@ -1189,7 +1226,7 @@ public class PrototypeAutopilotNavigationPlayModeTests
     private static AutopilotRunResult RunClosedLoopPhysics(
         AutopilotPlayModeRig rig,
         int maxSteps,
-        PrototypeNavigationObstacle obstacle)
+        params PrototypeNavigationObstacle[] obstacles)
     {
         var result = new AutopilotRunResult
         {
@@ -1198,12 +1235,14 @@ public class PrototypeAutopilotNavigationPlayModeTests
             MinimumObstacleClearance = float.PositiveInfinity
         };
 
+        PrototypeNavigationObstacle[] obstacleSet = obstacles ?? System.Array.Empty<PrototypeNavigationObstacle>();
+
         bool sawAvoidance = false;
         for (int i = 0; i < maxSteps; i++)
         {
             StepClosedLoopPhysics(rig);
-            CaptureStep(rig, result, obstacle, sawAvoidance);
-            CaptureClosedLoopObstacleProgress(rig, result, obstacle);
+            CaptureStep(rig, result, obstacleSet.Length > 0 ? obstacleSet[0] : null, sawAvoidance);
+            CaptureClosedLoopObstacleProgress(rig, result, obstacleSet);
             sawAvoidance |= rig.Autopilot.AvoidanceActive
                 || rig.Autopilot.NavigationPhase == PrototypeWaypointAutopilotNavigationPhase.AvoidancePlanning
                 || rig.Autopilot.NavigationPhase == PrototypeWaypointAutopilotNavigationPhase.Avoiding;
@@ -1309,9 +1348,9 @@ public class PrototypeAutopilotNavigationPlayModeTests
     private static void CaptureClosedLoopObstacleProgress(
         AutopilotPlayModeRig rig,
         AutopilotRunResult result,
-        PrototypeNavigationObstacle obstacle)
+        params PrototypeNavigationObstacle[] obstacles)
     {
-        if (obstacle == null)
+        if (obstacles == null || obstacles.Length == 0)
         {
             return;
         }
@@ -1324,12 +1363,30 @@ public class PrototypeAutopilotNavigationPlayModeTests
         }
 
         axis.Normalize();
-        Vector3 fromObstacle = rig.Body.position - obstacle.WorldPosition;
-        Vector3 flatFromObstacle = new Vector3(fromObstacle.x, 0f, fromObstacle.z);
-        float forwardOffset = Vector3.Dot(flatFromObstacle, axis);
-        Vector3 lateralOffset = flatFromObstacle - axis * forwardOffset;
-        result.MaximumLateralOffset = Mathf.Max(result.MaximumLateralOffset, lateralOffset.magnitude);
-        result.PassedObstacle |= forwardOffset > obstacle.Radius + 1f;
+        float minimumClearance = float.PositiveInfinity;
+        float maximumLateralOffset = result.MaximumLateralOffset;
+        bool passedObstacle = result.PassedObstacle;
+
+        for (int i = 0; i < obstacles.Length; i++)
+        {
+            PrototypeNavigationObstacle obstacle = obstacles[i];
+            if (obstacle == null)
+            {
+                continue;
+            }
+
+            Vector3 fromObstacle = rig.Body.position - obstacle.WorldPosition;
+            Vector3 flatFromObstacle = new Vector3(fromObstacle.x, 0f, fromObstacle.z);
+            float forwardOffset = Vector3.Dot(flatFromObstacle, axis);
+            Vector3 lateralOffset = flatFromObstacle - axis * forwardOffset;
+            maximumLateralOffset = Mathf.Max(maximumLateralOffset, lateralOffset.magnitude);
+            passedObstacle |= forwardOffset > obstacle.Radius + 1f;
+            minimumClearance = Mathf.Min(minimumClearance, Vector3.Distance(rig.Body.position, obstacle.WorldPosition) - obstacle.Radius);
+        }
+
+        result.MaximumLateralOffset = Mathf.Max(result.MaximumLateralOffset, maximumLateralOffset);
+        result.PassedObstacle |= passedObstacle;
+        result.MinimumObstacleClearance = Mathf.Min(result.MinimumObstacleClearance, minimumClearance);
 
         Vector3 rcsForce = rig.Controller.LastRcsActualForceWorld;
         result.MaximumRequestedRcsForce = Mathf.Max(result.MaximumRequestedRcsForce, rig.Autopilot.RequestedRcsForce.magnitude);
@@ -1634,6 +1691,22 @@ public class PrototypeAutopilotNavigationPlayModeTests
         PrototypeNavigationObstacle navigationObstacle = obstacle.AddComponent<PrototypeNavigationObstacle>();
         navigationObstacle.Configure(radius, 8f, true);
         return navigationObstacle;
+    }
+
+    private static PrototypeNavigationObstacle[] GetLaunchCorridorObstacles()
+    {
+        PrototypeNavigationObstacle[] obstacles = Object.FindObjectsByType<PrototypeNavigationObstacle>(FindObjectsInactive.Exclude);
+        List<PrototypeNavigationObstacle> launchObstacles = new List<PrototypeNavigationObstacle>(3);
+        for (int i = 0; i < obstacles.Length; i++)
+        {
+            PrototypeNavigationObstacle obstacle = obstacles[i];
+            if (obstacle != null && obstacle.Label.StartsWith("Launch Obstacle"))
+            {
+                launchObstacles.Add(obstacle);
+            }
+        }
+
+        return launchObstacles.ToArray();
     }
 
     private static void ConfigureRcsNozzles(Transform shipTransform, RcsThrusterController rcs, Rigidbody body, ShipPhysicsCore physicsCore)

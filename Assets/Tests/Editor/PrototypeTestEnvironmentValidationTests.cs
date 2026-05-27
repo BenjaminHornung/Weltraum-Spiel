@@ -145,6 +145,41 @@ public class PrototypeTestEnvironmentValidationTests
     }
 
     [Test]
+    public void Rebuild_AddsLaunchCorridorObstacleCourseOnDirectApproachLine()
+    {
+        GameObject host = new GameObject("EnvironmentValidationHost");
+        PrototypeTestEnvironment environment = host.AddComponent<PrototypeTestEnvironment>();
+
+        environment.Rebuild();
+
+        GameObject obstacleGroup = GameObject.Find("PrototypeEnvironment/Launch_Corridor_Obstacles");
+        Assert.NotNull(obstacleGroup);
+
+        PrototypeNavigationObstacle[] obstacles = Object.FindObjectsByType<PrototypeNavigationObstacle>(FindObjectsInactive.Exclude);
+        int launchObstacleCount = 0;
+        for (int i = 0; i < obstacles.Length; i++)
+        {
+            PrototypeNavigationObstacle obstacle = obstacles[i];
+            if (obstacle == null || !obstacle.Label.StartsWith("Launch Obstacle"))
+            {
+                continue;
+            }
+
+            launchObstacleCount++;
+            Collider obstacleCollider = obstacle.GetComponent<Collider>();
+            Assert.NotNull(obstacleCollider);
+            Assert.True(obstacleCollider.isTrigger);
+            Assert.True(obstacle.BlocksAutopilotNavigation);
+            Assert.That(obstacle.ClearanceRadiusMeters, Is.GreaterThan(obstacle.Radius));
+            Assert.That(obstacle.WorldPosition.y, Is.EqualTo(0.5f).Within(0.1f));
+            Assert.That(obstacle.WorldPosition.x, Is.InRange(-6f, 6f));
+            Assert.That(obstacle.WorldPosition.z, Is.InRange(10f, 40f));
+        }
+
+        Assert.That(launchObstacleCount, Is.EqualTo(3));
+    }
+
+    [Test]
     public void BootstrapBindsGeneratedEnvironmentAndMinimapToMainCamera()
     {
         GameObject host = new GameObject("BootstrapEnvironmentValidationHost");
