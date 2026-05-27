@@ -185,3 +185,42 @@ DevToolbox:
 - `verify_run a5f9d5ced4d346bea851d9866db89753`: MIXED/EXPECTED.
   - Specs step passed.
   - Bare `dotnet build`, `dotnet test`, and `dotnet format --verify-no-changes` failed with MSB1011/multiple-workspace selection, matching the known generic DevToolbox limitation in this Unity repository.
+
+## Real Ship Planning Snapshot Builder
+
+Date: 2026-05-27
+
+Scope:
+
+- Added `PrototypeShipPlanningSnapshotBuilder` to capture `PrototypeShipPlanningSnapshot` from real runtime ship components:
+  - `Rigidbody` pose, velocity, angular velocity, center of mass, inertia, and mass.
+  - `ShipStats` current/max fuel, per-module thrust, reverse thrust multiplier, and fuel flow.
+  - `MainThrusterBank`/`MainThrusterModule` count, throttle scale, spool rates, gimbal limit, gimbal slew, and physical nozzle-force mode.
+  - `RcsThrusterController` force settings, nozzle count, spool rates, imported functional socket mode, and physical RCS solver mode.
+  - `ShipPhysicsCore` central-gravity and active-atmosphere settings.
+  - `ModuleMassDescriptor` count as imported/generated mass evidence.
+- Builder supports both root-based lookup and explicit component injection, so later planner/executor slices can call it without duplicating component discovery.
+- Added Editor validation for:
+  - generated runtime `PrototypeScenarioBuilder` ship captures actual fuel/thrust/RCS/COM/inertia fields;
+  - imported functional default scout captures imported socket evidence, imported mass descriptors, main nozzle count, RCS nozzle count, and live `Rigidbody`/`ShipStats` values.
+
+Unity MCP:
+
+- `validate_script Assets/Scripts/Prototype/PrototypeShipPlanningSnapshotBuilder.cs`: PASS, 0 warnings, 0 errors.
+- `validate_script Assets/Tests/Editor/PrototypeFlightPlanValidationTests.cs`: PASS, 0 warnings, 0 errors.
+- Focused EditMode job `12fc8bf10adf4ba8914d4d7594b142cc`: builder generated/imported tests PASS 2/2.
+- Full EditMode job `7e031513851d4936b33d34183180a2a1`: `PrototypeFlightPlanValidationTests` PASS 9/9.
+
+.NET:
+
+- Initial `dotnet build "Weltraum Spiel.sln" --no-restore`: failed because Unity had not regenerated project files for the new C# script yet.
+- After Unity `refresh_unity scope=all mode=force compile=request`, `dotnet build "Weltraum Spiel.sln" --no-restore`: PASS, 0 errors, 22 existing Unity-generated warnings.
+- `dotnet test "Weltraum Spiel.sln" --no-build`: PASS, no output.
+- `git diff --check` for the changed builder/test files: PASS; only expected LF-to-CRLF working-copy warning for the edited test file.
+
+DevToolbox:
+
+- `specs_validate player-autopilot-authoritative-flight-plan-v1`: PASS.
+- `verify_run 2c62d8272f6f4eb0afd04a9691bb8289`: MIXED/EXPECTED.
+  - Specs step passed.
+  - Bare `dotnet build`, `dotnet test`, and `dotnet format --verify-no-changes` failed with MSB1011/multiple-workspace selection, matching the known generic DevToolbox limitation in this Unity repository.

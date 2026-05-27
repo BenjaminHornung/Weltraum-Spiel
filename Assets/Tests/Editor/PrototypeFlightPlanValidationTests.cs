@@ -1,9 +1,18 @@
 #if UNITY_EDITOR
+using System.Reflection;
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
 
 public class PrototypeFlightPlanValidationTests
 {
+    [TearDown]
+    public void TearDown()
+    {
+        DestroyNamed("PrototypeBootstrapTestHost");
+        DestroyNamed("PrototypeShip");
+    }
+
     [Test]
     public void FlightPlanComputesOrderedTotalsFromSegments()
     {
@@ -146,6 +155,83 @@ public class PrototypeFlightPlanValidationTests
         Assert.That(snapshot.massDescriptorCount, Is.EqualTo(5));
     }
 
+    [Test]
+    public void ShipPlanningSnapshotBuilderCapturesGeneratedRuntimeShipAuthority()
+    {
+        using (var builder = new PrototypeScenarioBuilder())
+        {
+            PrototypeShipRig rig = builder.CreateShip("GeneratedPlanningSnapshotShip");
+            rig.Ship.transform.position = new Vector3(3f, 1.5f, -4f);
+            rig.Body.linearVelocity = new Vector3(1.25f, -0.5f, 3f);
+            rig.Body.angularVelocity = new Vector3(0.1f, 0.2f, -0.3f);
+            rig.Stats.ApplyMassProperties(rig.Body);
+
+            PrototypeShipPlanningSnapshot snapshot = PrototypeShipPlanningSnapshotBuilder.Build(rig.Ship.transform);
+
+            Assert.True(snapshot.IsFinite);
+            Assert.False(snapshot.usesImportedFunctionalSockets);
+            Assert.False(snapshot.usesPhysicalMainNozzleForces);
+            Assert.False(snapshot.usesExperimentalPhysicalRcsNozzles);
+            Assert.That(snapshot.initialState.velocity, Is.EqualTo(rig.Body.linearVelocity));
+            Assert.That(snapshot.initialState.angularVelocity, Is.EqualTo(rig.Body.angularVelocity));
+            Assert.That(snapshot.worldCenterOfMass, Is.EqualTo(rig.Body.worldCenterOfMass));
+            Assert.That(snapshot.localCenterOfMass, Is.EqualTo(rig.Body.centerOfMass));
+            Assert.That(snapshot.rigidbodyMassKg, Is.EqualTo(rig.Body.mass).Within(0.0001f));
+            Assert.That(snapshot.currentFuelKg, Is.EqualTo(rig.Stats.CurrentFuelKg).Within(0.0001f));
+            Assert.That(snapshot.maxFuelKg, Is.EqualTo(rig.Stats.MaxFuelKg).Within(0.0001f));
+            Assert.That(snapshot.mainNozzleCount, Is.EqualTo(1));
+            Assert.That(snapshot.rcsNozzleCount, Is.EqualTo(6));
+            Assert.That(snapshot.mainThrustNewtons, Is.EqualTo(rig.Stats.Thrust * rig.MainThruster.ThrottleScale).Within(0.0001f));
+            Assert.That(snapshot.mainFuelKgPerSecond, Is.EqualTo(rig.Stats.FuelConsumptionKgPerSecond * rig.MainThruster.ThrottleScale).Within(0.0001f));
+            Assert.That(snapshot.reverseThrustMultiplier, Is.EqualTo(rig.Stats.ReverseThrustMultiplier).Within(0.0001f));
+            Assert.That(snapshot.mainGimbalLimitDegrees, Is.EqualTo(rig.MainThruster.GimbalLimitDegrees).Within(0.0001f));
+            Assert.That(snapshot.rcsTranslationForceNewtons, Is.EqualTo(rig.Rcs.TranslationForce).Within(0.0001f));
+            Assert.That(snapshot.rcsAttitudeForceNewtons, Is.EqualTo(rig.Rcs.AttitudeForce).Within(0.0001f));
+        }
+    }
+
+    [Test]
+    public void ShipPlanningSnapshotBuilderCapturesImportedFunctionalSocketEvidence()
+    {
+        AssetDatabase.ImportAsset("Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.fbx", ImportAssetOptions.ForceUpdate);
+        GameObject host = new GameObject("PrototypeBootstrapTestHost");
+        PrototypeBootstrap bootstrap = host.AddComponent<PrototypeBootstrap>();
+        SetPrivateField(bootstrap, "spawnTestTarget", false);
+        SetPrivateField(bootstrap, "buildTestEnvironment", false);
+        SetPrivateField(bootstrap, "buildOnStart", false);
+
+        bootstrap.BuildPrototype(PrototypeShipVariant.Baseline());
+
+        GameObject ship = GameObject.Find("PrototypeShip");
+        Assert.NotNull(ship);
+        Assert.That(bootstrap.BuildMode, Is.EqualTo(PrototypeShipBuildMode.ImportedDemoScoutFunctionalDefault));
+        Assert.NotNull(ship.transform.Find(PrototypeFunctionalShipBinder.ImportedVisualRootName));
+
+        ShipStats stats = ship.GetComponent<ShipStats>();
+        Rigidbody body = ship.GetComponent<Rigidbody>();
+        RcsThrusterController rcs = ship.GetComponent<RcsThrusterController>();
+        MainThrusterBank mainThruster = ship.GetComponent<MainThrusterBank>();
+
+        PrototypeShipPlanningSnapshot snapshot = PrototypeShipPlanningSnapshotBuilder.Build(ship.transform);
+
+        Assert.True(snapshot.IsFinite);
+        Assert.True(snapshot.usesImportedFunctionalSockets);
+        Assert.NotNull(stats);
+        Assert.NotNull(body);
+        Assert.NotNull(rcs);
+        Assert.NotNull(mainThruster);
+        Assert.That(snapshot.rigidbodyMassKg, Is.EqualTo(body.mass).Within(0.0001f));
+        Assert.That(snapshot.currentFuelKg, Is.EqualTo(stats.CurrentFuelKg).Within(0.0001f));
+        Assert.That(snapshot.maxFuelKg, Is.EqualTo(stats.MaxFuelKg).Within(0.0001f));
+        Assert.That(snapshot.mainNozzleCount, Is.GreaterThanOrEqualTo(1));
+        Assert.That(snapshot.rcsNozzleCount, Is.GreaterThanOrEqualTo(8));
+        Assert.That(snapshot.massDescriptorCount, Is.GreaterThanOrEqualTo(5));
+        Assert.That(snapshot.mainThrustNewtons, Is.GreaterThan(0f));
+        Assert.That(snapshot.mainFuelKgPerSecond, Is.GreaterThan(0f));
+        Assert.That(snapshot.rcsTranslationForceNewtons, Is.GreaterThan(0f));
+        Assert.That(snapshot.rcsAttitudeForceNewtons, Is.GreaterThan(0f));
+    }
+
     private static PrototypeFlightPlan CreatePlan(PrototypeManeuverSegment[] segments)
     {
         return new PrototypeFlightPlan(
@@ -232,6 +318,22 @@ public class PrototypeFlightPlanValidationTests
             2,
             12,
             5);
+    }
+
+    private static void SetPrivateField(object target, string fieldName, object value)
+    {
+        FieldInfo field = target.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(field, fieldName);
+        field.SetValue(target, value);
+    }
+
+    private static void DestroyNamed(string objectName)
+    {
+        GameObject target = GameObject.Find(objectName);
+        if (target != null)
+        {
+            Object.DestroyImmediate(target);
+        }
     }
 }
 #endif
