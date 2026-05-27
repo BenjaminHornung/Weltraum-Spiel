@@ -92,6 +92,9 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private const float BrakeFlipMaxAngularAccelerationRadPerSecondSquared = 3f;
     private const float BrakeFlipDampingTimeSeconds = 0.4f;
     private const float BrakeAlignedTorqueDeadbandDegrees = 2.5f;
+    private const float FlightPlanDivergenceConfirmSeconds = 0.3f;
+    private const float FlightPlanDivergenceReplanCooldownSeconds = 0.45f;
+    private const float FlightPlanDivergenceStatusHoldSeconds = 2f;
     [Header("Navigation")]
     [SerializeField] private PrototypeWaypointManager waypointManager;
     [SerializeField] private PrototypeNavigationTarget currentTarget;
@@ -157,6 +160,13 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private float flightPlanElapsedSeconds;
     private bool flightPlanExecutorActive;
     private PrototypeFlightPlanExecutionState lastFlightPlanExecutionState;
+    private PrototypeFlightPlanDivergenceReport lastFlightPlanDivergenceReport = PrototypeFlightPlanDivergenceReport.Clear;
+    private float flightPlanDivergenceStartedAtTime = -1f;
+    private float lastFlightPlanDivergenceAtTime = -1000f;
+    private float lastFlightPlanSafetyReplanAtTime = -1000f;
+    private int flightPlanRevisionCounter;
+    private string lastAssignedFlightPlanId = string.Empty;
+    private bool forceNextFlightPlanRevision;
     private PrototypeMomentumAssist momentumAssist;
     private PrototypeTrajectoryPlanner trajectoryPlanner;
 
@@ -196,6 +206,13 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     public bool FlightPlanExecutorActive => flightPlanExecutorActive;
     public float FlightPlanExecutorElapsedSeconds => flightPlanElapsedSeconds;
     public PrototypeFlightPlanExecutionState CurrentFlightPlanExecutionState => lastFlightPlanExecutionState;
+    public PrototypeFlightPlanDivergenceReport CurrentFlightPlanDivergenceReport => IsFlightPlanDivergenceStatusVisible()
+        ? lastFlightPlanDivergenceReport
+        : PrototypeFlightPlanDivergenceReport.Clear;
+    public PrototypeFlightPlanAbortReplanReason FlightPlanDivergenceReasons => CurrentFlightPlanDivergenceReport.reasons;
+    public bool FlightPlanRequiresReplan => CurrentFlightPlanDivergenceReport.requiresReplan;
+    public bool FlightPlanRequiresAbort => CurrentFlightPlanDivergenceReport.requiresAbort;
+    public string FlightPlanDivergenceStatusLabel => CurrentFlightPlanDivergenceReport.statusLabel;
     public string ObstacleStatus => LastObstacleDetection.hasObstacle
         ? $"{LastTrajectoryPlan.obstacleLabel} @ {LastObstacleDetection.hitDistance:0.0}m"
         : "clear";
@@ -497,6 +514,9 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         desiredBurnDirection = Vector3.zero;
         autopilotElapsedSeconds = 0f;
         ResetFlightPlanExecutorClock();
+        flightPlanRevisionCounter = 0;
+        lastAssignedFlightPlanId = string.Empty;
+        forceNextFlightPlanRevision = true;
         hasStableAvoidance = false;
         stableAvoidanceWaypoint = Vector3.zero;
         stableAvoidanceDirection = Vector3.zero;
@@ -560,6 +580,9 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         arrivalBrakeCommitted = false;
         arrivalTerminalCaptureActive = false;
         ResetFlightPlanExecutorClock();
+        flightPlanRevisionCounter = 0;
+        lastAssignedFlightPlanId = string.Empty;
+        forceNextFlightPlanRevision = true;
         ReleaseBrakeHold();
         holdConfirmStarted = false;
         holdConfirmUntilTime = 0f;
@@ -602,6 +625,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     {
         ResolveReferences();
         RefreshDiagnostics();
+        forceNextFlightPlanRevision = true;
         MarkNavigationPlanDirty();
         RefreshNavigationPlan();
     }
@@ -622,7 +646,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
     public string[] BuildNavigationWarningChips()
     {
-        string[] chips = new string[8];
+        string[] chips = new string[10];
         int count = 0;
         if (currentTarget == null)
         {
@@ -647,6 +671,15 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         if (NavigationObstacleDetected || LastTrajectoryPlan.directPathBlocked)
         {
             chips[count++] = "OBSTACLE";
+        }
+
+        if (FlightPlanRequiresAbort)
+        {
+            chips[count++] = "PLAN ABORT";
+        }
+        else if (FlightPlanRequiresReplan)
+        {
+            chips[count++] = "REPLAN";
         }
 
         if (AvoidanceActive || navigationPhaseV2 == PrototypeWaypointAutopilotNavigationPhase.Avoiding)
@@ -781,25 +814,33 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return false;
         }
 
+        PrototypeObstacleDetectionResult liveObstacle = DetectFlightPlanObstacle(plan);
+        if (liveObstacle.hasObstacle)
+        {
+            LastObstacleDetection = liveObstacle;
+        }
+
         TrackActiveFlightPlan(plan);
         if (!plan.TryGetActiveSegment(flightPlanElapsedSeconds, out PrototypeManeuverSegment segment))
         {
             if (flightPlanElapsedSeconds > plan.totalDurationSeconds && TryRunExpiredFlightPlanTerminalHold())
             {
                 flightPlanExecutorActive = true;
-                lastFlightPlanExecutionState = PrototypeFlightPlanExecutionState.FromPlan(
-                    plan,
-                    Mathf.Min(flightPlanElapsedSeconds, plan.totalDurationSeconds),
-                    shipRigidbody.worldCenterOfMass,
-                    shipRigidbody.linearVelocity,
-                    shipRigidbody.rotation,
-                    shipRigidbody.angularVelocity,
-                    shipStats != null ? shipStats.CurrentFuelKg : 0f);
+                lastFlightPlanExecutionState = BuildFlightPlanExecutionState(plan, Mathf.Min(flightPlanElapsedSeconds, plan.totalDurationSeconds));
                 flightPlanElapsedSeconds += Mathf.Max(Time.fixedDeltaTime, 0.02f);
                 return true;
             }
 
-            return false;
+            PrototypeFlightPlanExecutionState expiredState = BuildFlightPlanExecutionState(plan, flightPlanElapsedSeconds);
+            PrototypeFlightPlanDivergenceReport expiredReport = EvaluateFlightPlanDivergence(plan, expiredState, liveObstacle, default, true);
+            return TryHandleFlightPlanDivergence(plan, expiredState, expiredReport);
+        }
+
+        PrototypeFlightPlanExecutionState executionState = BuildFlightPlanExecutionState(plan, flightPlanElapsedSeconds);
+        PrototypeFlightPlanDivergenceReport divergenceReport = EvaluateFlightPlanDivergence(plan, executionState, liveObstacle, segment, false);
+        if (TryHandleFlightPlanDivergence(plan, executionState, divergenceReport))
+        {
+            return true;
         }
 
         if (!ApplyFlightPlanSegment(segment))
@@ -808,16 +849,235 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         }
 
         flightPlanExecutorActive = true;
-        lastFlightPlanExecutionState = PrototypeFlightPlanExecutionState.FromPlan(
-            plan,
-            flightPlanElapsedSeconds,
-            shipRigidbody.worldCenterOfMass,
-            shipRigidbody.linearVelocity,
-            shipRigidbody.rotation,
-            shipRigidbody.angularVelocity,
-            shipStats != null ? shipStats.CurrentFuelKg : 0f);
+        lastFlightPlanExecutionState = executionState;
         flightPlanElapsedSeconds += Mathf.Max(Time.fixedDeltaTime, 0.02f);
         return true;
+    }
+
+    private PrototypeFlightPlanExecutionState BuildFlightPlanExecutionState(PrototypeFlightPlan plan, float elapsedSeconds)
+    {
+        return PrototypeFlightPlanExecutionState.FromPlan(
+            plan,
+            elapsedSeconds,
+            shipRigidbody != null ? shipRigidbody.worldCenterOfMass : Vector3.zero,
+            shipRigidbody != null ? shipRigidbody.linearVelocity : Vector3.zero,
+            shipRigidbody != null ? shipRigidbody.rotation : Quaternion.identity,
+            shipRigidbody != null ? shipRigidbody.angularVelocity : Vector3.zero,
+            shipStats != null ? shipStats.CurrentFuelKg : 0f);
+    }
+
+    private PrototypeFlightPlanDivergenceReport EvaluateFlightPlanDivergence(
+        PrototypeFlightPlan plan,
+        PrototypeFlightPlanExecutionState executionState,
+        PrototypeObstacleDetectionResult liveObstacle,
+        PrototypeManeuverSegment activeSegment,
+        bool planExpired)
+    {
+        bool missingDependency = shipRigidbody == null || shipStats == null || shipController == null || currentTarget == null;
+        bool nonFiniteState = !LastMetrics.isFinite
+            || (shipRigidbody != null
+                && (!IsFinite(shipRigidbody.worldCenterOfMass)
+                    || !IsFinite(shipRigidbody.linearVelocity)
+                    || !IsFinite(shipRigidbody.angularVelocity)));
+        bool segmentNeedsMain = FlightPlanSegmentNeedsMainThrottle(activeSegment);
+        bool segmentNeedsRcsTranslation = FlightPlanSegmentNeedsRcsTranslation(activeSegment);
+        bool segmentNeedsRcsAttitude = FlightPlanSegmentNeedsRcsAttitude(activeSegment);
+        bool noMainAuthority = segmentNeedsMain && !CanUseMainThrottle();
+        bool noRcsAuthority = (segmentNeedsRcsTranslation && !CanUseRcsTranslation()) || (segmentNeedsRcsAttitude && !CanUseRcsAttitude());
+        bool actuatorLimited = noMainAuthority || noRcsAuthority;
+        bool fuelStarved = shipStats != null
+            && !shipStats.HasFuel
+            && segmentNeedsMain
+            && activeSegment.mainThrottle > 0.01f;
+        bool unplannedObstacle = liveObstacle.detected && !LastTrajectoryPlan.RequiresAvoidance;
+        float targetMoveTolerance = Mathf.Max(0.75f, plan.targetArrivalRadiusMeters * 0.25f);
+        return PrototypeFlightPlanDivergenceMonitor.Evaluate(
+            plan,
+            executionState,
+            currentTarget != null ? currentTarget.Position : plan.targetPositionWorld,
+            unplannedObstacle,
+            unplannedObstacle || (LastTrajectoryPlan.directPathBlocked && !LastTrajectoryPlan.RequiresAvoidance),
+            missingDependency,
+            nonFiniteState,
+            fuelStarved,
+            actuatorLimited,
+            noMainAuthority,
+            noRcsAuthority,
+            planExpired,
+            targetMoveTolerance);
+    }
+
+    private bool TryHandleFlightPlanDivergence(
+        PrototypeFlightPlan plan,
+        PrototypeFlightPlanExecutionState executionState,
+        PrototypeFlightPlanDivergenceReport report)
+    {
+        SetFlightPlanDivergenceReport(report);
+        if (report.HasDivergence)
+        {
+            executionState.replanReasons |= report.reasons;
+            executionState.requiresReplan = report.RequiresAction;
+            executionState.statusLabel = report.statusLabel;
+            lastFlightPlanExecutionState = executionState;
+        }
+
+        if (!report.RequiresAction)
+        {
+            return false;
+        }
+
+        if (!IsImmediateFlightPlanDivergence(report.reasons))
+        {
+            return false;
+        }
+
+        if (!IsFlightPlanDivergenceConfirmed(report))
+        {
+            return false;
+        }
+
+        if (report.requiresAbort)
+        {
+            Abort("flight plan abort: " + PrototypeFlightPlanDivergenceMonitor.FormatReasons(report.reasons));
+            return true;
+        }
+
+        if (Time.time < lastFlightPlanSafetyReplanAtTime + FlightPlanDivergenceReplanCooldownSeconds)
+        {
+            ClearFlightPlanActuatorOutput("flight plan replan cooldown");
+            return true;
+        }
+
+        lastFlightPlanSafetyReplanAtTime = Time.time;
+        arrivalFailureReason = "FlightPlanReplan:" + PrototypeFlightPlanDivergenceMonitor.FormatReasons(report.reasons);
+        ClearFlightPlanActuatorOutput("flight plan replan");
+        forceNextFlightPlanRevision = true;
+        MarkNavigationPlanDirty();
+        RefreshNavigationPlan();
+        flightPlanExecutorActive = false;
+        return true;
+    }
+
+    private void SetFlightPlanDivergenceReport(PrototypeFlightPlanDivergenceReport report)
+    {
+        if (!report.HasDivergence)
+        {
+            flightPlanDivergenceStartedAtTime = -1f;
+            if (!IsFlightPlanDivergenceStatusVisible())
+            {
+                lastFlightPlanDivergenceReport = PrototypeFlightPlanDivergenceReport.Clear;
+            }
+
+            return;
+        }
+
+        if (report.reasons != lastFlightPlanDivergenceReport.reasons)
+        {
+            flightPlanDivergenceStartedAtTime = Time.time;
+        }
+
+        lastFlightPlanDivergenceReport = report;
+        lastFlightPlanDivergenceAtTime = Time.time;
+
+        PrototypeTrajectoryPlan updatedPlan = LastTrajectoryPlan;
+        updatedPlan.warningStatus = report.statusLabel;
+        updatedPlan.status = report.requiresAbort ? "flight plan abort" : "flight plan replan";
+        updatedPlan.statusLabel = report.statusLabel;
+        LastTrajectoryPlan = updatedPlan;
+    }
+
+    private bool IsFlightPlanDivergenceStatusVisible()
+    {
+        return lastFlightPlanDivergenceReport.HasDivergence
+            && Time.time <= lastFlightPlanDivergenceAtTime + FlightPlanDivergenceStatusHoldSeconds;
+    }
+
+    private bool IsFlightPlanDivergenceConfirmed(PrototypeFlightPlanDivergenceReport report)
+    {
+        if (IsImmediateFlightPlanDivergence(report.reasons))
+        {
+            return true;
+        }
+
+        if (flightPlanDivergenceStartedAtTime < 0f)
+        {
+            flightPlanDivergenceStartedAtTime = Time.time;
+        }
+
+        return Time.time >= flightPlanDivergenceStartedAtTime + FlightPlanDivergenceConfirmSeconds;
+    }
+
+    private static bool IsImmediateFlightPlanDivergence(PrototypeFlightPlanAbortReplanReason reasons)
+    {
+        const PrototypeFlightPlanAbortReplanReason immediateReasons =
+            PrototypeFlightPlanAbortReplanReason.MissingDependency
+            | PrototypeFlightPlanAbortReplanReason.NonFiniteState
+            | PrototypeFlightPlanAbortReplanReason.TargetMoved
+            | PrototypeFlightPlanAbortReplanReason.ObstacleDetected
+            | PrototypeFlightPlanAbortReplanReason.CollisionPredicted
+            | PrototypeFlightPlanAbortReplanReason.FuelStarved
+            | PrototypeFlightPlanAbortReplanReason.ActuatorLimited
+            | PrototypeFlightPlanAbortReplanReason.NoMainThrustAuthority
+            | PrototypeFlightPlanAbortReplanReason.NoRcsAuthority;
+        return (reasons & immediateReasons) != 0;
+    }
+
+    private PrototypeObstacleDetectionResult DetectFlightPlanObstacle(PrototypeFlightPlan plan)
+    {
+        if (obstacleDetector == null || shipRigidbody == null || currentTarget == null)
+        {
+            return PrototypeObstacleDetectionResult.Clear(GetObstacleClearanceRadius());
+        }
+
+        return obstacleDetector.DetectDirectPath(shipRigidbody, currentTarget.Position, GetObstacleClearanceRadius());
+    }
+
+    private static bool FlightPlanSegmentNeedsMainThrottle(PrototypeManeuverSegment segment)
+    {
+        return segment.mainThrottle > 0.01f
+            || segment.commandMode == PrototypeManeuverCommandMode.MainThrottle
+            || segment.commandMode == PrototypeManeuverCommandMode.CombinedMainAndRcs;
+    }
+
+    private static bool FlightPlanSegmentNeedsRcsTranslation(PrototypeManeuverSegment segment)
+    {
+        return segment.rcsTranslationScale > 0.01f
+            || segment.commandMode == PrototypeManeuverCommandMode.RcsTranslation
+            || segment.commandMode == PrototypeManeuverCommandMode.CombinedMainAndRcs;
+    }
+
+    private static bool FlightPlanSegmentNeedsRcsAttitude(PrototypeManeuverSegment segment)
+    {
+        return segment.commandMode == PrototypeManeuverCommandMode.AttitudeOnly
+            || segment.commandMode == PrototypeManeuverCommandMode.RcsAttitude
+            || segment.phase == PrototypeManeuverPhase.AlignForBurn
+            || segment.phase == PrototypeManeuverPhase.FlipToRetrograde;
+    }
+
+    private void ClearFlightPlanActuatorOutput(string status)
+    {
+        requestedMainThrottle = 0f;
+        requestedRcsTranslation = Vector3.zero;
+        desiredBurnDirection = Vector3.zero;
+        flightPlanExecutorActive = false;
+        navigationPhaseV2 = LastTrajectoryPlan.RequiresAvoidance
+            ? PrototypeWaypointAutopilotNavigationPhase.Avoiding
+            : PrototypeWaypointAutopilotNavigationPhase.Direct;
+        SetState(PrototypeWaypointAutopilotState.AlignForBurn, status);
+        if (shipController == null)
+        {
+            return;
+        }
+
+        shipController.SetMainThrottle(0f);
+        shipController.SetSasMode(SasControlMode.KillRotation);
+        shipController.SetExternalFlightAssistRequest(new FlightAssistRequest(
+            FlightAssistMode.AssistedFlight,
+            FlightAssistRequestSource.WaypointAutopilot,
+            Vector3.zero,
+            Vector3.zero,
+            0f,
+            false));
     }
 
     private bool TryRunExpiredFlightPlanTerminalHold()
@@ -838,8 +1098,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
     private void TrackActiveFlightPlan(PrototypeFlightPlan plan)
     {
-        if (string.Equals(activeFlightPlanId, plan.planId, System.StringComparison.Ordinal)
-            && activeFlightPlanRevision == plan.revision)
+        if (activeFlightPlanRevision >= 0 && activeFlightPlanRevision == plan.revision)
         {
             return;
         }
@@ -857,6 +1116,9 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         flightPlanElapsedSeconds = 0f;
         flightPlanExecutorActive = false;
         lastFlightPlanExecutionState = default;
+        lastFlightPlanDivergenceReport = PrototypeFlightPlanDivergenceReport.Clear;
+        flightPlanDivergenceStartedAtTime = -1f;
+        lastFlightPlanDivergenceAtTime = -1000f;
     }
 
     private bool ShouldDeferFlightPlanExecutorToLegacyFallback()
@@ -868,6 +1130,14 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         }
 
         bool currentlyAvoiding = IsAvoidancePlanActive();
+        if (currentlyAvoiding)
+        {
+            navigationPhaseV2 = LastTrajectoryPlan.navigationPhase == PrototypeAutopilotNavigationPhase.AvoidancePlanning
+                ? PrototypeWaypointAutopilotNavigationPhase.AvoidancePlanning
+                : PrototypeWaypointAutopilotNavigationPhase.Avoiding;
+            return true;
+        }
+
         if (!currentlyAvoiding
             && hasStableAvoidance
             && Time.time <= avoidanceHoldExpireTime + avoidReacquireTimeoutSeconds)
@@ -2820,6 +3090,12 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             trajectoryPlanner = new PrototypeTrajectoryPlanner();
         }
 
+        bool requestedReplan = forceNextFlightPlanRevision;
+        bool preserveActiveFlightPlan = autopilotEngaged
+            && useFlightPlanExecutor
+            && LastTrajectoryPlan.flightPlan.IsValid
+            && !requestedReplan;
+        PrototypeFlightPlan preservedFlightPlan = LastTrajectoryPlan.flightPlan;
         if (shipRigidbody == null || currentTarget == null)
         {
             LastObstacleDetection = PrototypeObstacleDetectionResult.Clear(GetObstacleClearanceRadius());
@@ -2874,8 +3150,37 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             plan.navigationPhase = PrototypeAutopilotNavigationPhase.Avoiding;
         }
 
+        if (preserveActiveFlightPlan)
+        {
+            plan.flightPlan = preservedFlightPlan;
+        }
+        else
+        {
+            plan = AssignFlightPlanRevision(plan, requestedReplan);
+        }
+
         LastTrajectoryPlan = plan;
         CompleteNavigationPlanRefresh();
+    }
+
+    private PrototypeTrajectoryPlan AssignFlightPlanRevision(PrototypeTrajectoryPlan plan, bool requestedReplan)
+    {
+        if (!plan.flightPlan.HasSegments)
+        {
+            return plan;
+        }
+
+        PrototypeFlightPlan flightPlan = plan.flightPlan;
+        if (flightPlanRevisionCounter <= 0 || requestedReplan)
+        {
+            flightPlanRevisionCounter++;
+        }
+
+        lastAssignedFlightPlanId = flightPlan.planId;
+        flightPlan.revision = Mathf.Max(1, flightPlanRevisionCounter);
+        plan.flightPlan = flightPlan;
+        forceNextFlightPlanRevision = false;
+        return plan;
     }
 
     private bool ShouldRefreshNavigationPlanThisTick()
@@ -2888,6 +3193,11 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         if (navigationPlanDirty)
         {
             return true;
+        }
+
+        if (autopilotEngaged && useFlightPlanExecutor && CurrentFlightPlan.IsValid)
+        {
+            return false;
         }
 
         return Time.time >= nextNavigationPlanTime;

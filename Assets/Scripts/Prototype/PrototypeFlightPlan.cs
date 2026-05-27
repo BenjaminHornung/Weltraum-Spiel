@@ -903,3 +903,173 @@ public struct PrototypeFlightPlanExecutionState
         }
     }
 }
+
+[Serializable]
+public struct PrototypeFlightPlanDivergenceReport
+{
+    public PrototypeFlightPlanAbortReplanReason reasons;
+    public bool requiresReplan;
+    public bool requiresAbort;
+    public string statusLabel;
+
+    public PrototypeFlightPlanDivergenceReport(
+        PrototypeFlightPlanAbortReplanReason reasons,
+        bool requiresReplan,
+        bool requiresAbort,
+        string statusLabel)
+    {
+        this.reasons = reasons;
+        this.requiresAbort = requiresAbort;
+        this.requiresReplan = requiresReplan && !requiresAbort;
+        this.statusLabel = string.IsNullOrEmpty(statusLabel) ? "Replan: none" : statusLabel;
+    }
+
+    public bool HasDivergence => reasons != PrototypeFlightPlanAbortReplanReason.None;
+    public bool RequiresAction => requiresReplan || requiresAbort;
+
+    public static PrototypeFlightPlanDivergenceReport Clear => new PrototypeFlightPlanDivergenceReport(
+        PrototypeFlightPlanAbortReplanReason.None,
+        false,
+        false,
+        "Replan: none");
+}
+
+public static class PrototypeFlightPlanDivergenceMonitor
+{
+    public static PrototypeFlightPlanDivergenceReport Evaluate(
+        PrototypeFlightPlan plan,
+        PrototypeFlightPlanExecutionState executionState,
+        Vector3 currentTargetPosition,
+        bool obstacleDetected,
+        bool collisionPredicted,
+        bool missingDependency,
+        bool nonFiniteState,
+        bool fuelStarved,
+        bool actuatorLimited,
+        bool noMainThrustAuthority,
+        bool noRcsAuthority,
+        bool planExpired,
+        float targetMoveToleranceMeters)
+    {
+        PrototypeFlightPlanAbortReplanReason reasons = executionState.replanReasons;
+        if (missingDependency)
+        {
+            reasons |= PrototypeFlightPlanAbortReplanReason.MissingDependency;
+        }
+
+        if (nonFiniteState || !plan.IsValid || !executionState.IsFinite)
+        {
+            reasons |= PrototypeFlightPlanAbortReplanReason.NonFiniteState;
+        }
+
+        if (plan.HasSegments && TrajectoryPredictionMath.IsFinite(currentTargetPosition))
+        {
+            float targetTolerance = Mathf.Max(0.5f, targetMoveToleranceMeters);
+            if (Vector3.Distance(plan.targetPositionWorld, currentTargetPosition) > targetTolerance)
+            {
+                reasons |= PrototypeFlightPlanAbortReplanReason.TargetMoved;
+            }
+        }
+
+        if (obstacleDetected)
+        {
+            reasons |= PrototypeFlightPlanAbortReplanReason.ObstacleDetected;
+        }
+
+        if (collisionPredicted)
+        {
+            reasons |= PrototypeFlightPlanAbortReplanReason.CollisionPredicted;
+        }
+
+        if (fuelStarved)
+        {
+            reasons |= PrototypeFlightPlanAbortReplanReason.FuelStarved;
+        }
+
+        if (actuatorLimited)
+        {
+            reasons |= PrototypeFlightPlanAbortReplanReason.ActuatorLimited;
+        }
+
+        if (noMainThrustAuthority)
+        {
+            reasons |= PrototypeFlightPlanAbortReplanReason.NoMainThrustAuthority;
+        }
+
+        if (noRcsAuthority)
+        {
+            reasons |= PrototypeFlightPlanAbortReplanReason.NoRcsAuthority;
+        }
+
+        if (planExpired)
+        {
+            reasons |= PrototypeFlightPlanAbortReplanReason.PlanExpired;
+        }
+
+        bool requiresAbort = HasAnyReason(
+            reasons,
+            PrototypeFlightPlanAbortReplanReason.MissingDependency
+                | PrototypeFlightPlanAbortReplanReason.NonFiniteState
+                | PrototypeFlightPlanAbortReplanReason.FuelStarved
+                | PrototypeFlightPlanAbortReplanReason.NoMainThrustAuthority
+                | PrototypeFlightPlanAbortReplanReason.NoRcsAuthority);
+        bool requiresReplan = reasons != PrototypeFlightPlanAbortReplanReason.None && !requiresAbort;
+        string prefix = requiresAbort ? "Abort: " : requiresReplan ? "Replan: " : "Replan: none";
+        string reasonLabel = FormatReasons(reasons);
+        return new PrototypeFlightPlanDivergenceReport(
+            reasons,
+            requiresReplan,
+            requiresAbort,
+            reasons == PrototypeFlightPlanAbortReplanReason.None ? prefix : prefix + reasonLabel);
+    }
+
+    public static string FormatReasons(PrototypeFlightPlanAbortReplanReason reasons)
+    {
+        if (reasons == PrototypeFlightPlanAbortReplanReason.None)
+        {
+            return "none";
+        }
+
+        string label = string.Empty;
+        AppendReason(ref label, reasons, PrototypeFlightPlanAbortReplanReason.ManualOverride, "ManualOverride");
+        AppendReason(ref label, reasons, PrototypeFlightPlanAbortReplanReason.MissingDependency, "MissingDependency");
+        AppendReason(ref label, reasons, PrototypeFlightPlanAbortReplanReason.NonFiniteState, "NonFiniteState");
+        AppendReason(ref label, reasons, PrototypeFlightPlanAbortReplanReason.TargetMoved, "TargetMoved");
+        AppendReason(ref label, reasons, PrototypeFlightPlanAbortReplanReason.ObstacleDetected, "ObstacleDetected");
+        AppendReason(ref label, reasons, PrototypeFlightPlanAbortReplanReason.CollisionPredicted, "CollisionPredicted");
+        AppendReason(ref label, reasons, PrototypeFlightPlanAbortReplanReason.PositionDivergence, "PositionDivergence");
+        AppendReason(ref label, reasons, PrototypeFlightPlanAbortReplanReason.VelocityDivergence, "VelocityDivergence");
+        AppendReason(ref label, reasons, PrototypeFlightPlanAbortReplanReason.AttitudeDivergence, "AttitudeDivergence");
+        AppendReason(ref label, reasons, PrototypeFlightPlanAbortReplanReason.TimeSlip, "TimeSlip");
+        AppendReason(ref label, reasons, PrototypeFlightPlanAbortReplanReason.FuelMismatch, "FuelMismatch");
+        AppendReason(ref label, reasons, PrototypeFlightPlanAbortReplanReason.FuelStarved, "FuelStarved");
+        AppendReason(ref label, reasons, PrototypeFlightPlanAbortReplanReason.ActuatorLimited, "ActuatorLimited");
+        AppendReason(ref label, reasons, PrototypeFlightPlanAbortReplanReason.RcsAllocatorResidual, "RcsAllocatorResidual");
+        AppendReason(ref label, reasons, PrototypeFlightPlanAbortReplanReason.NoMainThrustAuthority, "NoMainThrustAuthority");
+        AppendReason(ref label, reasons, PrototypeFlightPlanAbortReplanReason.NoRcsAuthority, "NoRcsAuthority");
+        AppendReason(ref label, reasons, PrototypeFlightPlanAbortReplanReason.PlanExpired, "PlanExpired");
+        AppendReason(ref label, reasons, PrototypeFlightPlanAbortReplanReason.NonExecutable, "NonExecutable");
+        return string.IsNullOrEmpty(label) ? reasons.ToString() : label;
+    }
+
+    private static bool HasAnyReason(
+        PrototypeFlightPlanAbortReplanReason reasons,
+        PrototypeFlightPlanAbortReplanReason mask)
+    {
+        return (reasons & mask) != 0;
+    }
+
+    private static void AppendReason(
+        ref string label,
+        PrototypeFlightPlanAbortReplanReason reasons,
+        PrototypeFlightPlanAbortReplanReason reason,
+        string text)
+    {
+        if ((reasons & reason) == 0)
+        {
+            return;
+        }
+
+        label = string.IsNullOrEmpty(label) ? text : label + "," + text;
+    }
+}

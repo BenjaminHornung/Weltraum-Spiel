@@ -136,6 +136,90 @@ public class PrototypeFlightPlanValidationTests
     }
 
     [Test]
+    public void DivergenceMonitorFlagsTargetAndObstacleForReplan()
+    {
+        PrototypeManeuverSegment[] segments =
+        {
+            CreateSegment(0, PrototypeManeuverPhase.ProgradeBurn, PrototypeManeuverCommandMode.MainThrottle, 0f, 2f, 1f, 0f)
+        };
+        PrototypeFlightPlan plan = CreatePlan(segments);
+        Vector3 expectedPosition = Vector3.Lerp(segments[0].expectedStartPosition, segments[0].expectedEndPosition, 0.25f);
+        Vector3 expectedVelocity = Vector3.Lerp(segments[0].expectedStartVelocity, segments[0].expectedEndVelocity, 0.25f);
+        Quaternion expectedRotation = Quaternion.Slerp(segments[0].expectedStartRotation, segments[0].expectedEndRotation, 0.25f);
+        PrototypeFlightPlanExecutionState state = PrototypeFlightPlanExecutionState.FromPlan(
+            plan,
+            0.5f,
+            expectedPosition,
+            expectedVelocity,
+            expectedRotation,
+            segments[0].expectedStartAngularVelocity,
+            plan.ExpectedFuelAt(0.5f));
+
+        PrototypeFlightPlanDivergenceReport report = PrototypeFlightPlanDivergenceMonitor.Evaluate(
+            plan,
+            state,
+            plan.targetPositionWorld + Vector3.right * 4f,
+            true,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            1f);
+
+        Assert.True(report.requiresReplan);
+        Assert.False(report.requiresAbort);
+        Assert.True((report.reasons & PrototypeFlightPlanAbortReplanReason.TargetMoved) != 0);
+        Assert.True((report.reasons & PrototypeFlightPlanAbortReplanReason.ObstacleDetected) != 0);
+        Assert.That(report.statusLabel, Does.Contain("TargetMoved"));
+    }
+
+    [Test]
+    public void DivergenceMonitorFlagsMissingActuatorForAbort()
+    {
+        PrototypeManeuverSegment[] segments =
+        {
+            CreateSegment(0, PrototypeManeuverPhase.ProgradeBurn, PrototypeManeuverCommandMode.MainThrottle, 0f, 2f, 1f, 0f)
+        };
+        PrototypeFlightPlan plan = CreatePlan(segments);
+        Vector3 expectedPosition = Vector3.Lerp(segments[0].expectedStartPosition, segments[0].expectedEndPosition, 0.25f);
+        Vector3 expectedVelocity = Vector3.Lerp(segments[0].expectedStartVelocity, segments[0].expectedEndVelocity, 0.25f);
+        Quaternion expectedRotation = Quaternion.Slerp(segments[0].expectedStartRotation, segments[0].expectedEndRotation, 0.25f);
+        PrototypeFlightPlanExecutionState state = PrototypeFlightPlanExecutionState.FromPlan(
+            plan,
+            0.5f,
+            expectedPosition,
+            expectedVelocity,
+            expectedRotation,
+            segments[0].expectedStartAngularVelocity,
+            plan.ExpectedFuelAt(0.5f));
+
+        PrototypeFlightPlanDivergenceReport report = PrototypeFlightPlanDivergenceMonitor.Evaluate(
+            plan,
+            state,
+            plan.targetPositionWorld,
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            true,
+            false,
+            false,
+            1f);
+
+        Assert.True(report.requiresAbort);
+        Assert.False(report.requiresReplan);
+        Assert.True((report.reasons & PrototypeFlightPlanAbortReplanReason.ActuatorLimited) != 0);
+        Assert.True((report.reasons & PrototypeFlightPlanAbortReplanReason.NoMainThrustAuthority) != 0);
+        Assert.That(report.statusLabel, Does.Contain("Abort"));
+    }
+
+    [Test]
     public void ShipPlanningSnapshotPreservesRealAuthorityFields()
     {
         PrototypeShipPlanningSnapshot snapshot = CreateSnapshot();

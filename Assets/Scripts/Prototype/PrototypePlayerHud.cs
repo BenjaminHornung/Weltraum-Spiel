@@ -954,8 +954,8 @@ public static class PrototypePlayerHudSnapshotBuilder
             hasAvoidanceCue ? BuildAvoidanceLabel(autopilot) : string.Empty,
             targetIndex,
             targetCount,
-            BuildNavigationPlanAuthorityLabel(flightPlan),
-            hasFlightPlan ? BuildNavigationFlightPlanActiveSegmentLabel(flightPlan) : "Active: " + TranslateTrajectorySegmentType(autopilot.ActiveSegmentType),
+            BuildNavigationPlanAuthorityLabel(autopilot, flightPlan),
+            hasFlightPlan ? BuildNavigationFlightPlanActiveSegmentLabel(autopilot, flightPlan) : "Active: " + TranslateTrajectorySegmentType(autopilot.ActiveSegmentType),
             BuildNavigationReplanStatusLabel(autopilot, flightPlan),
             totalPlanDuration,
             totalPlanFuel,
@@ -1121,6 +1121,11 @@ public static class PrototypePlayerHudSnapshotBuilder
             return "Replan: plan blocked " + flightPlan.nonExecutableReasons;
         }
 
+        if (autopilot.FlightPlanDivergenceReasons != PrototypeFlightPlanAbortReplanReason.None)
+        {
+            return autopilot.FlightPlanDivergenceStatusLabel;
+        }
+
         PrototypeTrajectoryPlan plan = autopilot.CurrentPlan;
         if (plan.fuelInsufficient)
         {
@@ -1145,26 +1150,50 @@ public static class PrototypePlayerHudSnapshotBuilder
         return "Replan: none";
     }
 
-    private static string BuildNavigationPlanAuthorityLabel(PrototypeFlightPlan flightPlan)
+    private static string BuildNavigationPlanAuthorityLabel(PrototypeWaypointAutopilot autopilot, PrototypeFlightPlan flightPlan)
     {
         if (!flightPlan.HasSegments)
         {
             return "Authority: Legacy live gates";
         }
 
-        return flightPlan.isExecutable
-            ? "Authority: Flight plan emitted | executor pending"
-            : "Authority: Flight plan blocked | legacy gates";
+        if (!flightPlan.isExecutable)
+        {
+            return "Authority: Flight plan blocked | legacy gates";
+        }
+
+        string revision = "rev " + flightPlan.revision;
+        if (autopilot != null && autopilot.FlightPlanExecutorActive)
+        {
+            return "Authority: Flight plan executor active | " + revision;
+        }
+
+        return "Authority: Flight plan emitted | executor pending | " + revision;
     }
 
-    private static string BuildNavigationFlightPlanActiveSegmentLabel(PrototypeFlightPlan flightPlan)
+    private static string BuildNavigationFlightPlanActiveSegmentLabel(PrototypeWaypointAutopilot autopilot, PrototypeFlightPlan flightPlan)
     {
         if (!flightPlan.HasSegments)
         {
             return "Planned: none";
         }
 
-        if (flightPlan.TryGetActiveSegment(0f, out PrototypeManeuverSegment segment))
+        PrototypeFlightPlanExecutionState executionState = autopilot != null
+            ? autopilot.CurrentFlightPlanExecutionState
+            : default;
+        if (executionState.hasActiveSegment
+            && executionState.activeSegmentIndex >= 0
+            && executionState.activeSegmentIndex < flightPlan.SegmentCount)
+        {
+            PrototypeManeuverSegment active = flightPlan.segments[executionState.activeSegmentIndex];
+            return "Active: " + (executionState.activeSegmentIndex + 1) + "/" + flightPlan.SegmentCount
+                + " " + active.label
+                + " " + FormatPlannerSeconds(executionState.activeElapsedSeconds)
+                + "/" + FormatPlannerSeconds(active.durationSeconds);
+        }
+
+        float elapsed = autopilot != null ? autopilot.FlightPlanExecutorElapsedSeconds : 0f;
+        if (flightPlan.TryGetActiveSegment(elapsed, out PrototypeManeuverSegment segment))
         {
             return "Planned: " + segment.label;
         }

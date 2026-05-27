@@ -354,6 +354,58 @@ public class PrototypeAutopilotNavigationComputerV2ValidationTests
     }
 
     [Test]
+    public void Autopilot_FlightPlanDivergenceTargetMoveReplansWithVisibleReason()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 250f;
+        rig.Body.linearVelocity = Vector3.forward * 12f;
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(true);
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+        InvokeFixedUpdate(rig.Autopilot);
+
+        int firstRevision = rig.Autopilot.CurrentFlightPlan.revision;
+        Assert.True(rig.Autopilot.HasExecutableFlightPlan);
+        Assert.That(firstRevision, Is.GreaterThan(0));
+
+        rig.Target.transform.position += Vector3.right * 24f;
+        Physics.SyncTransforms();
+        InvokeFixedUpdate(rig.Autopilot);
+
+        Assert.True(rig.Autopilot.FlightPlanRequiresReplan);
+        Assert.False(rig.Autopilot.FlightPlanRequiresAbort);
+        Assert.True((rig.Autopilot.FlightPlanDivergenceReasons & PrototypeFlightPlanAbortReplanReason.TargetMoved) != 0);
+        Assert.That(rig.Autopilot.FlightPlanDivergenceStatusLabel, Does.Contain("TargetMoved"));
+        Assert.That(rig.Autopilot.CurrentFlightPlan.revision, Is.GreaterThan(firstRevision));
+        Assert.That(rig.Autopilot.CurrentFlightPlan.targetPositionWorld.x, Is.EqualTo(rig.Target.transform.position.x).Within(0.001f));
+        Assert.That(rig.Autopilot.RequestedMainThrottle, Is.LessThanOrEqualTo(0.001f));
+    }
+
+    [Test]
+    public void Autopilot_FlightPlanDivergenceNewObstacleReplansWithVisibleReason()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 250f;
+        rig.Body.linearVelocity = Vector3.forward * 8f;
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(true);
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+        InvokeFixedUpdate(rig.Autopilot);
+
+        int firstRevision = rig.Autopilot.CurrentFlightPlan.revision;
+        CreateObstacle("AutopilotV2ValidationLateObstacle", Vector3.forward * 60f, 7f, true, true);
+        Physics.SyncTransforms();
+        InvokeFixedUpdate(rig.Autopilot);
+
+        Assert.True(rig.Autopilot.FlightPlanRequiresReplan);
+        Assert.True((rig.Autopilot.FlightPlanDivergenceReasons & PrototypeFlightPlanAbortReplanReason.ObstacleDetected) != 0);
+        Assert.That(rig.Autopilot.FlightPlanDivergenceStatusLabel, Does.Contain("ObstacleDetected"));
+        Assert.True(rig.Autopilot.NavigationObstacleDetected);
+        Assert.That(rig.Autopilot.CurrentFlightPlan.revision, Is.GreaterThan(firstRevision));
+        Assert.That(rig.Autopilot.RequestedMainThrottle, Is.LessThanOrEqualTo(0.001f));
+    }
+
+    [Test]
     public void Autopilot_HoldRequiresStableVelocityWindow()
     {
         var rig = CreateAutopilotRig();
