@@ -406,11 +406,66 @@ public class PrototypeAutopilotNavigationComputerV2ValidationTests
     }
 
     [Test]
+    public void Autopilot_FlightPlanExpiredReplansInsteadOfLegacyLiveBrake()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 250f;
+        rig.Body.linearVelocity = Vector3.forward * 12f;
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(true);
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+        InvokeFixedUpdate(rig.Autopilot);
+
+        int firstRevision = rig.Autopilot.CurrentFlightPlan.revision;
+        SetPrivateFloat(
+            rig.Autopilot,
+            "flightPlanElapsedSeconds",
+            rig.Autopilot.CurrentFlightPlan.totalDurationSeconds + 1f);
+        InvokeFixedUpdate(rig.Autopilot);
+
+        Assert.True(rig.Autopilot.FlightPlanRequiresReplan);
+        Assert.True((rig.Autopilot.FlightPlanDivergenceReasons & PrototypeFlightPlanAbortReplanReason.PlanExpired) != 0);
+        Assert.That(rig.Autopilot.FlightPlanDivergenceStatusLabel, Does.Contain("PlanExpired"));
+        Assert.That(rig.Autopilot.CurrentFlightPlan.revision, Is.GreaterThan(firstRevision));
+        Assert.That(
+            rig.Autopilot.CurrentState,
+            Is.Not.EqualTo(PrototypeWaypointAutopilotState.Accelerate)
+                .And.Not.EqualTo(PrototypeWaypointAutopilotState.FlipForBrake)
+                .And.Not.EqualTo(PrototypeWaypointAutopilotState.Brake));
+        Assert.That(rig.Autopilot.RequestedMainThrottle, Is.LessThanOrEqualTo(0.001f));
+    }
+
+    [Test]
+    public void Autopilot_FlightPlanHoldWithoutRcsAbortsInsteadOfLegacyHoldGate()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 250f;
+        rig.Body.linearVelocity = Vector3.forward * 8f;
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(true);
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+        InvokeFixedUpdate(rig.Autopilot);
+
+        PrototypeManeuverSegment holdSegment = FindRequiredSegment(rig.Autopilot, PrototypeManeuverPhase.Hold);
+        SetPrivateFloat(rig.Rcs, "translationForce", 0f);
+        SetPrivateFloat(rig.Autopilot, "flightPlanElapsedSeconds", holdSegment.startTimeSeconds + 0.01f);
+        InvokeFixedUpdate(rig.Autopilot);
+
+        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.Aborted));
+        Assert.True(rig.Autopilot.FlightPlanRequiresAbort);
+        Assert.True((rig.Autopilot.FlightPlanDivergenceReasons & PrototypeFlightPlanAbortReplanReason.NoRcsAuthority) != 0);
+        Assert.That(rig.Autopilot.FlightPlanDivergenceStatusLabel, Does.Contain("NoRcsAuthority"));
+        Assert.That(rig.Autopilot.RequestedMainThrottle, Is.LessThanOrEqualTo(0.001f));
+        Assert.False(rig.Controller.HasExternalFlightAssistRequest);
+    }
+
+    [Test]
     public void Autopilot_HoldRequiresStableVelocityWindow()
     {
         var rig = CreateAutopilotRig();
         rig.Target.transform.position = Vector3.forward * 2f;
         rig.Body.linearVelocity = Vector3.zero;
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(false);
         rig.Autopilot.SelectTarget(rig.Target);
         rig.Autopilot.ToggleAutopilot();
         InvokeFixedUpdate(rig.Autopilot);

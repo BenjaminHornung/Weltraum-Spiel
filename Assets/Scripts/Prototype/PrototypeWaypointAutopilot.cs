@@ -415,6 +415,11 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return;
         }
 
+        if (TryBlockLegacyLiveGatesForActiveFlightPlan())
+        {
+            return;
+        }
+
         RunAutopilotStep();
     }
 
@@ -823,17 +828,30 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         TrackActiveFlightPlan(plan);
         if (!plan.TryGetActiveSegment(flightPlanElapsedSeconds, out PrototypeManeuverSegment segment))
         {
-            if (flightPlanElapsedSeconds > plan.totalDurationSeconds && TryRunExpiredFlightPlanTerminalHold())
+            PrototypeFlightPlanExecutionState expiredState = BuildFlightPlanExecutionState(plan, flightPlanElapsedSeconds);
+            PrototypeFlightPlanDivergenceReport expiredReport = EvaluateFlightPlanDivergence(plan, expiredState, liveObstacle, default, true);
+            if (TryHandleFlightPlanDivergence(plan, expiredState, expiredReport))
+            {
+                return true;
+            }
+
+            if (flightPlanElapsedSeconds > plan.totalDurationSeconds && TryRunFlightPlanTerminalSafety())
             {
                 flightPlanExecutorActive = true;
-                lastFlightPlanExecutionState = BuildFlightPlanExecutionState(plan, Mathf.Min(flightPlanElapsedSeconds, plan.totalDurationSeconds));
+                lastFlightPlanExecutionState = expiredState;
                 flightPlanElapsedSeconds += Mathf.Max(Time.fixedDeltaTime, 0.02f);
                 return true;
             }
 
-            PrototypeFlightPlanExecutionState expiredState = BuildFlightPlanExecutionState(plan, flightPlanElapsedSeconds);
-            PrototypeFlightPlanDivergenceReport expiredReport = EvaluateFlightPlanDivergence(plan, expiredState, liveObstacle, default, true);
-            return TryHandleFlightPlanDivergence(plan, expiredState, expiredReport);
+            if (expiredReport.RequiresAction)
+            {
+                return ForceFlightPlanSafetyReplan(expiredReport, "flight plan expired");
+            }
+
+            return BlockFlightPlanLegacyFallback(
+                expiredState,
+                PrototypeFlightPlanAbortReplanReason.PlanExpired,
+                "flight plan expired");
         }
 
         PrototypeFlightPlanExecutionState executionState = BuildFlightPlanExecutionState(plan, flightPlanElapsedSeconds);
@@ -845,7 +863,10 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
         if (!ApplyFlightPlanSegment(segment))
         {
-            return false;
+            return BlockFlightPlanLegacyFallback(
+                executionState,
+                PrototypeFlightPlanAbortReplanReason.NonExecutable,
+                "flight plan segment blocked");
         }
 
         flightPlanExecutorActive = true;
@@ -891,7 +912,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             && activeSegment.mainThrottle > 0.01f;
         bool unplannedObstacle = liveObstacle.detected && !LastTrajectoryPlan.RequiresAvoidance;
         float targetMoveTolerance = Mathf.Max(0.75f, plan.targetArrivalRadiusMeters * 0.25f);
-        return PrototypeFlightPlanDivergenceMonitor.Evaluate(
+        PrototypeFlightPlanDivergenceReport report = PrototypeFlightPlanDivergenceMonitor.Evaluate(
             plan,
             executionState,
             currentTarget != null ? currentTarget.Position : plan.targetPositionWorld,
@@ -905,6 +926,19 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             noRcsAuthority,
             planExpired,
             targetMoveTolerance);
+        if (ShouldFlagFlightPlanBrakeTimingDivergence(activeSegment))
+        {
+            PrototypeFlightPlanAbortReplanReason reasons =
+                report.reasons | PrototypeFlightPlanAbortReplanReason.VelocityDivergence;
+            report = new PrototypeFlightPlanDivergenceReport(
+                reasons,
+                !report.requiresAbort,
+                report.requiresAbort,
+                (report.requiresAbort ? "Abort: " : "Replan: ")
+                    + PrototypeFlightPlanDivergenceMonitor.FormatReasons(reasons));
+        }
+
+        return report;
     }
 
     private bool TryHandleFlightPlanDivergence(
@@ -921,12 +955,19 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             lastFlightPlanExecutionState = executionState;
         }
 
+        if (ShouldUseFlightPlanTerminalSafetyForDivergence(report.reasons)
+            && TryRunFlightPlanTerminalSafety())
+        {
+            return true;
+        }
+
         if (!report.RequiresAction)
         {
             return false;
         }
 
-        if (!IsImmediateFlightPlanDivergence(report.reasons))
+        if (!IsImmediateFlightPlanDivergence(report.reasons)
+            && report.reasons == PrototypeFlightPlanAbortReplanReason.PlanExpired)
         {
             return false;
         }
@@ -938,19 +979,27 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
         if (report.requiresAbort)
         {
+            PrototypeFlightPlanDivergenceReport abortReport = report;
             Abort("flight plan abort: " + PrototypeFlightPlanDivergenceMonitor.FormatReasons(report.reasons));
+            lastFlightPlanDivergenceReport = abortReport;
+            lastFlightPlanDivergenceAtTime = Time.time;
             return true;
         }
 
+        return ForceFlightPlanSafetyReplan(report, "flight plan replan");
+    }
+
+    private bool ForceFlightPlanSafetyReplan(PrototypeFlightPlanDivergenceReport report, string status)
+    {
         if (Time.time < lastFlightPlanSafetyReplanAtTime + FlightPlanDivergenceReplanCooldownSeconds)
         {
-            ClearFlightPlanActuatorOutput("flight plan replan cooldown");
+            ClearFlightPlanActuatorOutput(status + " cooldown");
             return true;
         }
 
         lastFlightPlanSafetyReplanAtTime = Time.time;
         arrivalFailureReason = "FlightPlanReplan:" + PrototypeFlightPlanDivergenceMonitor.FormatReasons(report.reasons);
-        ClearFlightPlanActuatorOutput("flight plan replan");
+        ClearFlightPlanActuatorOutput(status);
         forceNextFlightPlanRevision = true;
         MarkNavigationPlanDirty();
         RefreshNavigationPlan();
@@ -1022,6 +1071,17 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         return (reasons & immediateReasons) != 0;
     }
 
+    private static bool ShouldUseFlightPlanTerminalSafetyForDivergence(PrototypeFlightPlanAbortReplanReason reasons)
+    {
+        const PrototypeFlightPlanAbortReplanReason terminalSafetyReasons =
+            PrototypeFlightPlanAbortReplanReason.PositionDivergence
+            | PrototypeFlightPlanAbortReplanReason.VelocityDivergence
+            | PrototypeFlightPlanAbortReplanReason.AttitudeDivergence
+            | PrototypeFlightPlanAbortReplanReason.TimeSlip
+            | PrototypeFlightPlanAbortReplanReason.PlanExpired;
+        return (reasons & terminalSafetyReasons) != 0;
+    }
+
     private PrototypeObstacleDetectionResult DetectFlightPlanObstacle(PrototypeFlightPlan plan)
     {
         if (obstacleDetector == null || shipRigidbody == null || currentTarget == null)
@@ -1054,6 +1114,44 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             || segment.phase == PrototypeManeuverPhase.FlipToRetrograde;
     }
 
+    private bool ShouldFlagFlightPlanBrakeTimingDivergence(PrototypeManeuverSegment segment)
+    {
+        if (!ShouldUseConservativeFlightPlanBrakeSafety())
+        {
+            return false;
+        }
+
+        return segment.phase != PrototypeManeuverPhase.FlipToRetrograde
+            && segment.phase != PrototypeManeuverPhase.RetrogradeBurn;
+    }
+
+    private bool ShouldUseConservativeFlightPlanBrakeSafety()
+    {
+        if (shipRigidbody == null || LastMetrics.closingSpeed <= BrakeDirectionMinimumSpeedMetersPerSecond)
+        {
+            return false;
+        }
+
+        if (LastMetrics.shouldBrake)
+        {
+            return true;
+        }
+
+        float conservativeDeceleration = GetMaxDeceleration() * 0.45f;
+        if (conservativeDeceleration <= 0.0001f)
+        {
+            return false;
+        }
+
+        float relativeSpeed = Mathf.Max(0f, LastMetrics.relativeSpeed);
+        float stoppingDistance = (relativeSpeed * relativeSpeed) / (2f * conservativeDeceleration);
+        float alignmentLead = EstimateAlignmentLeadDistance(
+            shipRigidbody.linearVelocity,
+            Mathf.Max(0f, LastMetrics.closingSpeed));
+        float captureBuffer = GetArrivalDistance() + BrakeArrivalHoldDistanceMarginMeters * 2f;
+        return stoppingDistance + alignmentLead + captureBuffer >= LastMetrics.distance;
+    }
+
     private void ClearFlightPlanActuatorOutput(string status)
     {
         requestedMainThrottle = 0f;
@@ -1080,6 +1178,65 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             false));
     }
 
+    private bool TryBlockLegacyLiveGatesForActiveFlightPlan()
+    {
+        if (!ShouldUseFlightPlanAsPrimaryAuthority())
+        {
+            return false;
+        }
+
+        if (!LastMetrics.isFinite)
+        {
+            SetState(PrototypeWaypointAutopilotState.Failed, "non-finite metrics");
+            arrivalFailureReason = "non-finite metrics";
+            ClearCommands();
+            autopilotEngaged = false;
+            return true;
+        }
+
+        PrototypeFlightPlan plan = CurrentFlightPlan;
+        PrototypeFlightPlanExecutionState state = BuildFlightPlanExecutionState(plan, flightPlanElapsedSeconds);
+        return BlockFlightPlanLegacyFallback(
+            state,
+            PrototypeFlightPlanAbortReplanReason.NonExecutable,
+            "flight plan legacy blocked");
+    }
+
+    private bool BlockFlightPlanLegacyFallback(
+        PrototypeFlightPlanExecutionState executionState,
+        PrototypeFlightPlanAbortReplanReason reason,
+        string status)
+    {
+        PrototypeFlightPlanDivergenceReport report = new PrototypeFlightPlanDivergenceReport(
+            reason,
+            true,
+            false,
+            "Replan: " + PrototypeFlightPlanDivergenceMonitor.FormatReasons(reason));
+        SetFlightPlanDivergenceReport(report);
+        executionState.replanReasons |= reason;
+        executionState.requiresReplan = true;
+        executionState.statusLabel = report.statusLabel;
+        lastFlightPlanExecutionState = executionState;
+        return ForceFlightPlanSafetyReplan(report, status);
+    }
+
+    private bool IsVisibleLegacySafetyFallbackActive()
+    {
+        if (IsAvoidancePlanActive())
+        {
+            return true;
+        }
+
+        return hasStableAvoidance && Time.time <= avoidanceHoldExpireTime + avoidReacquireTimeoutSeconds;
+    }
+
+    private bool ShouldUseFlightPlanAsPrimaryAuthority()
+    {
+        return useFlightPlanExecutor
+            && CurrentFlightPlan.IsValid
+            && !IsVisibleLegacySafetyFallbackActive();
+    }
+
     private bool TryRunExpiredFlightPlanTerminalHold()
     {
         if (currentTarget == null || shipRigidbody == null || !CanUseRcsTranslation())
@@ -1094,6 +1251,55 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
         arrivalTerminalCaptureActive = true;
         return TryEnterHoldPosition();
+    }
+
+    private bool TryRunFlightPlanTerminalSafety()
+    {
+        if (currentTarget == null || shipRigidbody == null)
+        {
+            return false;
+        }
+
+        if (TryRunExpiredFlightPlanTerminalHold())
+        {
+            return true;
+        }
+
+        if (arrivalBrakeCommitted
+            && !IsWithinArrivalTerminalCaptureRange()
+            && LastMetrics.relativeSpeed <= GetArrivalCompletionSpeedLimit() * BrakeArrivalHoldRelativeSpeedMultiplier)
+        {
+            ReleaseBrakeHold();
+            arrivalBrakeCommitted = false;
+            arrivalTerminalCaptureActive = false;
+            return false;
+        }
+
+        bool shouldUseSafetyBrakeRange = ShouldUseConservativeFlightPlanBrakeSafety();
+        if (!arrivalBrakeCommitted && !IsWithinArrivalTerminalCaptureRange() && !shouldUseSafetyBrakeRange)
+        {
+            return false;
+        }
+
+        arrivalTerminalCaptureActive = arrivalTerminalCaptureActive || IsWithinArrivalTerminalCaptureRange();
+        if (ShouldUseTerminalLateralCorrection())
+        {
+            SetState(PrototypeWaypointAutopilotState.FinalApproach, "flight plan expired lateral");
+            navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.FinalApproach;
+            arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.LateralCorrection;
+            limitedFinalApproachCapability = !CanUseRcsTranslation();
+            arrivalFailureReason = limitedFinalApproachCapability ? "LimitedRcsAuthority" : string.Empty;
+            ApplyLateralCorrection();
+            return true;
+        }
+
+        if (arrivalBrakeCommitted || shouldUseSafetyBrakeRange || ShouldUseTerminalVelocityBrake() || ShouldRequestBrake())
+        {
+            ApplyBrakeRequest();
+            return true;
+        }
+
+        return false;
     }
 
     private void TrackActiveFlightPlan(PrototypeFlightPlan plan)
@@ -1123,12 +1329,6 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
     private bool ShouldDeferFlightPlanExecutorToLegacyFallback()
     {
-        if (!CanUseRcsTranslation()
-            && LastMetrics.distance <= Mathf.Max(finalApproachDistanceMeters, GetArrivalDistance() * 3f))
-        {
-            return true;
-        }
-
         bool currentlyAvoiding = IsAvoidancePlanActive();
         if (currentlyAvoiding)
         {
@@ -2345,11 +2545,15 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return committedBrakeDirection;
         }
 
+        bool settledForBrakeDirectionFreeze =
+            LastMetrics.relativeSpeed <= GetArrivalCompletionSpeedLimit() * BrakeArrivalHoldRelativeSpeedMultiplier
+            && Mathf.Abs(LastMetrics.closingSpeed) <= Mathf.Max(
+                GetArrivalCompletionSpeedLimit(),
+                arrivalSpeedMetersPerSecond * BrakeArrivalHoldRelativeSpeedMultiplier);
         bool shouldFreezeBrakeDirection = IsWithinArrivalTerminalCaptureRange()
-            && (arrivalTerminalCaptureActive
-                || brakeHoldActive
-                || arrivalBrakeCommitted
-                || ShouldCaptureAnyArrivalHold());
+            && (brakeHoldActive
+                || ShouldCaptureAnyArrivalHold()
+                || ((arrivalTerminalCaptureActive || arrivalBrakeCommitted) && settledForBrakeDirectionFreeze));
         if (useTerminalSmoothing
             && shouldFreezeBrakeDirection
             && committedBrakeDirection.sqrMagnitude > 0.0001f)

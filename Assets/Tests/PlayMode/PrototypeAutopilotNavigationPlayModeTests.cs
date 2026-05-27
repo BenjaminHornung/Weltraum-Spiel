@@ -150,6 +150,8 @@ public class PrototypeAutopilotNavigationPlayModeTests
         {
             bool visibleSafetyReason = rig.Autopilot.NavigationObstacleDetected
                 || rig.Autopilot.AvoidanceActive
+                || rig.Autopilot.FlightPlanRequiresReplan
+                || rig.Autopilot.FlightPlanRequiresAbort
                 || rig.Autopilot.NavigationPhase == PrototypeWaypointAutopilotNavigationPhase.AvoidancePlanning
                 || rig.Autopilot.NavigationPhase == PrototypeWaypointAutopilotNavigationPhase.Avoiding;
             bool enteredBrakeBeforePlan = rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.FlipForBrake

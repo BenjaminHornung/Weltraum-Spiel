@@ -387,3 +387,42 @@ DevToolbox:
 - `verify_run 81b0bb9e51f74437973729e35f917620`: MIXED/EXPECTED.
   - Specs step passed.
   - Bare `dotnet build`, `dotnet test`, and `dotnet format --verify-no-changes` failed with MSB1011/multiple-workspace selection, matching the known generic DevToolbox limitation in this Unity repository.
+
+## Legacy Live Gate Quarantine
+
+Date: 2026-05-27
+
+Scope:
+
+- Quarantined active-flight-plan fallthrough so an executable `PrototypeFlightPlan` cannot silently drop into legacy `RunAutopilotStep()` accelerate/brake/flip/final/hold gates.
+- Legacy fallback remains allowed when the executor flag is disabled, no executable plan exists, or avoidance/reacquire is already the visible safety path.
+- Segment application failure, expired plans, and active-plan legacy fallthrough now publish explicit `NonExecutable`, `PlanExpired`, or divergence replan reasons and clear actuator output or force a new plan revision instead of running hidden live gates.
+- Confirmed non-immediate state divergence can now trigger a bounded replan; pure plan expiry is still handled through a dedicated expired-plan path to avoid blind loops.
+- Terminal safety is still allowed as a visible flight-plan safety path: confirmed plan/physics divergence can brake or lateral-correct when conservative stopping physics says the capture window is at risk.
+- Brake direction freeze now waits for low-speed/settled terminal conditions, so high-speed safety brake can keep tracking true retrograde instead of getting stuck on an old frozen vector.
+- If safety brake stops outside capture range, the brake commit is released and a new flight plan revision is generated back to the target instead of staying in `Brake` forever.
+- Imported-functional early-flip regression now treats visible flight-plan replan/abort as a valid safety reason, alongside obstacle/avoidance.
+
+Unity MCP:
+
+- `validate_script Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs`: PASS, 0 errors, 1 existing analyzer warning.
+- `validate_script Assets/Tests/Editor/PrototypeAutopilotNavigationComputerV2ValidationTests.cs`: PASS, 0 warnings, 0 errors.
+- `validate_script Assets/Tests/PlayMode/PrototypeAutopilotNavigationPlayModeTests.cs`: PASS, 0 warnings, 0 errors.
+- Focused line-10 EditMode job `5d6f0b1c36e540ae91ed9d71d2940a97`: PASS 2/2.
+- Navigation computer EditMode job `10391fb70e944f16875d19dc5441c130`: PASS 29/29.
+- Focused Arrival deadzone PlayMode job `1f85beda982548ddbad4b19bc311872f`: PASS 1/1.
+- Critical PlayMode job `d06166fab16d449789214ad535931b27`: PASS 4/4.
+- Full PlayMode job `6373c6cfb9e8457e8cc22ff2dcc627b6`: PASS 27/27.
+
+.NET:
+
+- `dotnet build "Weltraum Spiel.sln" --no-restore`: PASS, 0 errors, 22 existing Unity-generated warnings.
+- `dotnet test "Weltraum Spiel.sln" --no-build`: PASS, no output.
+- `git diff --check` for changed line-10 files: PASS; only expected LF-to-CRLF working-copy warnings.
+
+DevToolbox:
+
+- `specs_validate player-autopilot-authoritative-flight-plan-v1`: PASS.
+- `verify_run 683e0d51eea44dc8b48654e8de56ebbb`: MIXED/EXPECTED.
+  - Specs step passed.
+  - Bare `dotnet build`, `dotnet test`, and `dotnet format --verify-no-changes` failed with MSB1011/multiple-workspace selection, matching the known generic DevToolbox limitation in this Unity repository.
