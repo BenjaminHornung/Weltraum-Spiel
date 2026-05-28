@@ -12,14 +12,19 @@ Wichtigste Grundregel:
 
 > **Timewarp beschleunigt niemals die gesamte Game-Time. Timewarp gilt nur fuer das jeweilige Schiff, die jeweilige Drohne oder einen klar definierten autonomen Flugverband.**
 
+Zweite Grundregel:
+
+> **Die Logik darf nicht server-only sein. Singleplayer und Multiplayer nutzen denselben Warp-Codepfad, aber eine andere Simulationsautoritaet.**
+
 Kurz gesagt:
 
-- Das Universum, andere Spieler, Basen, Planetenrotationen, Wirtschaft, Wetter und normale NPCs laufen in normaler Serverzeit weiter.
+- Das Universum, andere Spieler, Basen, Planetenrotationen, Wirtschaft, Wetter und normale NPCs laufen in normaler Spielzeit weiter.
 - Ein Schiff im Warp bekommt eine objektgebundene beschleunigte Missionszeit.
 - Das Schiff fliegt nicht physikalisch schneller; es fuehrt seine reale Flugbahn nur schneller aus.
 - Der Geschwindigkeitsvektor des Schiffes bleibt realistisch und wird beim Beenden des Warps nicht mit dem Warp-Faktor multipliziert.
 - Timewarp ist jederzeit abbrechbar, solange ein sauberer, validierter Zustandsuebergang moeglich ist.
-- Im Multiplayer entscheidet der Server, ob Warp erlaubt ist, wann er endet und ob ein Intercept ausgeloest wird.
+- Im Singleplayer entscheidet eine lokale Simulationsautoritaet im laufenden Spielprozess.
+- Im Multiplayer entscheidet eine Server-/Host-Autoritaet, ob Warp erlaubt ist, wann er endet und ob ein Intercept ausgeloest wird.
 - Kein Schiff, keine Drohne und kein PvE-Gegner darf mit 100x-Warp als Kollisionswaffe in einen Spieler, eine Basis oder einen Planeten rasen.
 
 ## 2. Designphilosophie
@@ -30,8 +35,9 @@ Das System soll einen schmalen Grat treffen:
 2. **Raumfahrt soll weiter real wirken.** Treibstoff, Masse, Bremswege, Gravitation, Transferfenster und Navigation bleiben wichtig.
 3. **Warp ist kein Cheat-Speed.** Er komprimiert Wartezeit, aber veraendert nicht die technischen Faehigkeiten eines Schiffes.
 4. **Interaktion hat Vorrang.** Sobald andere Spieler, Basen, Stationen, Planeten, grosse Asteroiden, Kampfereignisse oder Intercept-Risiken relevant werden, wird Warp reduziert oder beendet.
-5. **Multiplayer braucht Serverautoritaet.** Clients duerfen Timewarp nicht lokal entscheiden, weil sonst Kollisionen, Desync und unfairer PvP-Vorteil entstehen.
-6. **Drohnen und Spielerschiffe nutzen dieselbe Logik.** Eine Drohne darf autonom warpen, auch wenn der Besitzer gerade auf einem Planeten steht. Ein Spieler darf in seinem eigenen Schiff warpen, wenn keine Interaktionsgefahr besteht.
+5. **Singleplayer darf kein Sonderfall-Hack sein.** Die lokale Singleplayer-Simulation muss dieselben Safety-, Physik- und Exit-Regeln verwenden wie Multiplayer.
+6. **Multiplayer braucht Netzwerkautoritaet.** Clients duerfen Timewarp nicht lokal entscheiden, weil sonst Kollisionen, Desync und unfairer PvP-Vorteil entstehen.
+7. **Drohnen und Spielerschiffe nutzen dieselbe Logik.** Eine Drohne darf autonom warpen, auch wenn der Besitzer gerade auf einem Planeten steht. Ein Spieler darf in seinem eigenen Schiff warpen, wenn keine Interaktionsgefahr besteht.
 
 ## 3. Begriffe
 
@@ -39,9 +45,10 @@ Das System soll einen schmalen Grat treffen:
 | --- | --- |
 | Autopilot-Plan | Eine vorab berechnete Flugsequenz aus Ausrichten, Burn, Coast, Kurskorrektur, Bremsen und Final Approach. |
 | Warp-Faktor | Multiplikator fuer die lokale Missionszeit des warpenden Objekts, z. B. 5x, 20x oder 100x. |
-| Lokale Missionszeit | Die Zeit, die nur fuer das warpendende Schiff schneller ablaeuft. Globale Serverzeit bleibt unveraendert. |
+| Lokale Missionszeit | Die Zeit, die nur fuer das warpendende Schiff schneller ablaeuft. Globale Spielzeit bleibt unveraendert. |
 | Realzeit-Zustand | Normal simulierter Zustand eines Schiffes: Position, Geschwindigkeit, Rotation, Treibstoff, Temperatur, Schaden, Cargo. |
-| Warp-Zustand | Beschleunigte, serverautorisierte Simulation eines Schiffes entlang eines validierten Plans. |
+| Warp-Zustand | Beschleunigte, autorisierte Simulation eines Schiffes entlang eines validierten Plans. |
+| Simulationsautoritaet | System, das Warp erlaubt, reduziert, beendet und den finalen Realzeit-Zustand bestimmt. Im Singleplayer lokal, im Multiplayer Server/Host. |
 | Safety Bubble | Sicherheitsbereich um Spieler, Basen, Planeten, Monde, Stationen, aktive Kampfzonen und Intercept-Punkte. |
 | Intercept | Geplanter oder zufaellig entstehender Schnittpunkt, an dem ein anderes Schiff oder eine Drohne ein warpendes Objekt abfangen kann. |
 
@@ -51,14 +58,14 @@ Timewarp ist kein globaler Spielmodus. Jedes Schiff kann separat in einen beschl
 
 ### 4.1 Was normal weiterlaeuft
 
-Folgende Dinge bleiben immer in normaler Serverzeit:
+Folgende Dinge bleiben immer in normaler Spielzeit:
 
 - Spieler zu Fuss oder in Fahrzeugen auf Planeten.
 - Andere Schiffe, die nicht im Warp sind.
 - Andere Drohnen, die nicht im Warp sind.
 - Basen, Stationen, Dockingbereiche und Hangars.
 - Planeten, Monde, Asteroiden und ihre Ephemeriden.
-- Multiplayer-Kommunikation, Kampf, Handel und Weltzustand.
+- Kommunikation, Kampf, Handel und Weltzustand.
 
 ### 4.2 Was fuer ein warpendes Schiff beschleunigt wird
 
@@ -75,7 +82,7 @@ Nur das warpendende Objekt bekommt eine beschleunigte lokale Missionszeit:
 Beispiel:
 
 - Der Spieler steht auf Hestia am Boden.
-- Eine Bergbaudrohne startet Richtung Asteroidengürtel.
+- Eine Bergbaudrohne startet Richtung Asteroidenguertel.
 - Die Welt auf Hestia laeuft normal weiter.
 - Nur die Drohne fuehrt ihren Autopilot-Plan mit z. B. 50x lokaler Missionszeit aus.
 - Wenn die Drohne in die Naehe eines anderen Spielers, einer Basis oder eines massiven Koerpers kommt, verlaesst sie den Warp und wird wieder normal simuliert.
@@ -102,7 +109,7 @@ Der Autopilot berechnet vor dem Warp eine Flugbahn. Diese Flugbahn ist keine sta
 
 ### 6.1 Vorberechnung
 
-Vor dem Start prueft der Server:
+Vor dem Start prueft die zustaendige Simulationsautoritaet:
 
 - Reicht der Treibstoff fuer geplanten Burn und Bremsung?
 - Ist das Schiff strukturell und thermisch warpfaehig?
@@ -112,14 +119,17 @@ Vor dem Start prueft der Server:
 - Gibt es eine geplante Bremse vor dem Ziel?
 - Gibt es sichere Exit-Punkte vor jeder kritischen Zone?
 
+Im Singleplayer ist diese Autoritaet ein lokaler Manager im Spielprozess. Im Multiplayer ist sie der Server oder Host. Die Prueflogik soll trotzdem dieselbe bleiben.
+
 ### 6.2 Ausfuehrung
 
 Wenn Warp aktiv ist:
 
-- Der Server integriert das Schiff mit `deltaTime * warpFactor` oder entlang eines vorvalidierten Bahnsegments.
+- Die Simulationsautoritaet integriert das Schiff mit `deltaTime * warpFactor` oder entlang eines vorvalidierten Bahnsegments.
 - Die physikalischen Groessen bleiben real: Position, Geschwindigkeit, Beschleunigung, Treibstoff und Masse werden korrekt fortgeschrieben.
 - Fuer grosse Zeitschritte muss Substepping oder analytische Bahnfortschreibung genutzt werden, damit Gravitation, Burns und Kollisionen nicht uebersprungen werden.
-- Der Client zeigt die Bewegung beschleunigt an, darf den Zustand aber nicht autoritativ bestimmen.
+- Im Singleplayer kann der lokale Client den Zustand direkt simulieren, muss aber dieselben Validierungsregeln anwenden.
+- Im Multiplayer zeigt der Client die Bewegung beschleunigt an, darf den Zustand aber nicht autoritativ bestimmen.
 - Bei jedem Segmentende wird der Plan neu validiert.
 
 ### 6.3 Kein Velocity-Multiplikator
@@ -135,7 +145,7 @@ velocity = velocity * 100
 Richtig:
 
 ```text
-shipLocalDeltaTime = serverDeltaTime * warpFactor
+shipLocalDeltaTime = gameDeltaTime * warpFactor
 integrateShipPhysics(shipLocalDeltaTime)
 ```
 
@@ -159,7 +169,7 @@ Warp-Faktoren sollten dynamisch erlaubt werden, nicht pauschal.
 | Niedriger Orbit / Landeanflug / Docking | 1x | Zu viele Naehe- und Bremsereignisse |
 | Hoher Orbit ohne aktive Naehekontakte | 5x-10x | Kontrollierter, aber noch reaktiver Bereich |
 | Interplanetare Coast-Phase im leeren Raum | 50x-200x | Hauptnutzen des Systems |
-| Unbemannte Drohne weit ausserhalb aktiver Spielerzonen | 100x-500x | Server kann stark abstrahieren, solange keine Interaktion droht |
+| Unbemannte Drohne weit ausserhalb aktiver Spielerzonen | 100x-500x | Starke Abstraktion moeglich, solange keine Interaktion droht |
 | Offline-/Map-only-Simulation fuer sehr entfernte Drohnen | optional hoeher | Nur wenn keine Echtzeit-Interaktion moeglich ist |
 
 Konkrete Werte sind Balancing-Zahlen. Wichtig ist das Prinzip: Je naeher ein Schiff an Interaktion kommt, desto kleiner wird der erlaubte Faktor.
@@ -179,7 +189,7 @@ Warp muss sofort enden bei:
 - Naehe zu einer aktiven Drohne, wenn Interaktion realistisch moeglich ist.
 - Waffenlock, Scanlock, Interdict-/Intercept-Ereignis oder Kollisionsprognose.
 - Autopilot-Plan wird ungueltig: zu wenig Treibstoff, falscher Kurs, unerwartete Masseaenderung, Schaden, Steuerverlust.
-- Server-Desync oder fehlende sichere Prognose.
+- Desync, widerspruechliche Zustandsdaten oder fehlende sichere Prognose.
 
 ### 8.2 Weiche Reduktionsgruende
 
@@ -201,15 +211,39 @@ Beispielsequenz:
 1x   Final Approach, Docking, Landeanflug oder Spielerinteraktion
 ```
 
-## 9. Multiplayer-Regeln
+## 9. Autoritaetsmodell fuer Singleplayer und Multiplayer
+
+Die Warp-Logik soll ueber eine gemeinsame Schnittstelle laufen, nicht ueber getrennte Sonderloesungen.
+
+```text
+IWarpAuthority
+  - LocalWarpAuthority        // Singleplayer
+  - HostWarpAuthority         // Koop/Listen-Server optional
+  - ServerWarpAuthority       // Dedicated Multiplayer
+```
+
+### 9.1 Singleplayer
+
+Im Singleplayer gibt es keinen externen Server, aber es braucht trotzdem eine klare Autoritaet. Diese Rolle uebernimmt `LocalWarpAuthority`.
+
+Sie entscheidet lokal:
+
+- ob Warp gestartet werden darf,
+- welcher Faktor erlaubt ist,
+- wann Warp reduziert wird,
+- wann Warp endet,
+- ob ein PvE-/Drohnen-Intercept-Fenster entsteht,
+- welcher Zustand beim Exit gilt.
+
+Wichtig: Singleplayer darf grosszuegiger rechnen, aber nicht andere Regeln verwenden. Ein Savegame, eine Replay-Funktion oder ein spaeterer Wechsel zu Koop/Multiplayer sollen nicht daran scheitern, dass Singleplayer physikalisch andere Pfade erzeugt.
+
+### 9.2 Multiplayer
 
 Multiplayer ist der schwierigste Teil des Systems. Die wichtigste Regel lautet:
 
 > **Warp ist erlaubt, solange kein anderer Spieler dadurch eine faire Interaktionsmoeglichkeit verliert oder in Kollisionsgefahr gebracht wird.**
 
-### 9.1 Serverautoritaet
-
-Der Server entscheidet:
+Im Multiplayer entscheidet `ServerWarpAuthority` oder ein Host:
 
 - ob Warp gestartet werden darf,
 - welcher Faktor erlaubt ist,
@@ -224,7 +258,7 @@ Clients duerfen nur anfragen:
 RequestWarp(shipId, desiredFactor, autopilotPlanId)
 ```
 
-Der Server antwortet z. B.:
+Die Autoritaet antwortet z. B.:
 
 ```text
 WarpApproved(factor=50, reason="Clear interplanetary corridor")
@@ -233,7 +267,26 @@ WarpReduced(factor=10, reason="Approaching target SOI")
 WarpExited(reason="Possible intercept by player ship")
 ```
 
-### 9.2 Spieler in verschiedenen Rollen
+### 9.3 Gemeinsamer Codepfad
+
+Singleplayer und Multiplayer sollen dieselben Kernklassen verwenden:
+
+- `AutopilotPlan`
+- `TrajectoryPredictor`
+- `SafetyBubbleRegistry`
+- `InterceptSolver`
+- `WarpController`
+- `IWarpAuthority`
+
+Der Unterschied liegt nur darin, wer autoritativ entscheidet:
+
+| Modus | Autoritaet | Client darf Zustand bestimmen? | Safety-Regeln |
+| --- | --- | --- | --- |
+| Singleplayer | lokaler Spielprozess | ja, weil lokal autoritativ | identisch |
+| Koop/Host | Host/Listen-Server | nur Host | identisch |
+| Dedicated Multiplayer | Server | nein | identisch, strenger bei Spielern |
+
+### 9.4 Spieler in verschiedenen Rollen
 
 Das System muss drei Grundsituationen koennen:
 
@@ -246,14 +299,16 @@ Das System muss drei Grundsituationen koennen:
 3. **Spieler kontrolliert mehrere autonome Schiffe.**  
    Jedes Schiff hat eigenen Warp-Zustand. Ein Schiff im Warp beeinflusst nicht die Zeit anderer Schiffe.
 
-### 9.3 Kein globaler Timewarp im Multiplayer
+### 9.5 Kein globaler Timewarp im Multiplayer
 
 Globaler Timewarp ist im Multiplayer verboten, weil er alle Spieler zwingen wuerde, dieselbe Zeitbeschleunigung zu erleben. Das passt nicht zu Basenbau, Bodenspiel, Docking, Handel, Kampf und Drohnensteuerung.
+
+Im Singleplayer kann ein zusaetzlicher globaler Komfort-Timewarp spaeter optional diskutiert werden, aber fuer dieses System ist er nicht die Basis. Die Basis bleibt objektgebundener Warp, damit Drohnen, Schiffe und spaeter Koop/Multiplayer konsistent bleiben.
 
 Erlaubt ist nur:
 
 - objektgebundener Warp,
-- serverautorisierte lokale Missionszeit,
+- autorisierte lokale Missionszeit,
 - geplante Autopilot-Ausfuehrung,
 - sofortiger Rueckfall in Realzeit bei Interaktionsgefahr.
 
@@ -269,7 +324,7 @@ Ablauf:
 
 1. Schiff A ist im Warp auf Autopilot-Kurs.
 2. Schiff B, Drohne B oder PvE-Gegner B berechnet eine moegliche Abfangbahn.
-3. Der Server prueft, ob die Abfangbahn realistisch ist: Delta-v, Zeit, Sensorreichweite, Zielprognose, Treibstoff.
+3. Die Simulationsautoritaet prueft, ob die Abfangbahn realistisch ist: Delta-v, Zeit, Sensorreichweite, Zielprognose, Treibstoff.
 4. Wenn ja, wird ein Intercept-Fenster gesetzt.
 5. Schiff A wird vor dem Intercept aus Warp geholt.
 6. Schiff B wird ebenfalls auf Realzeit gezwungen, falls es im Warp war.
@@ -285,7 +340,7 @@ Voraussetzungen:
 - Abfangschiff hat genug Delta-v.
 - Abfangschiff kann den Intercept-Punkt zeitlich erreichen.
 - Sensor-/Kommunikationsverzoegerung und Zielunsicherheit koennen spaeter dazukommen.
-- Der Server kann eine plausible Begegnung in Realzeit herstellen.
+- Die Simulationsautoritaet kann eine plausible Begegnung in Realzeit herstellen.
 
 ### 10.3 Intercept-Sicherheitsradius
 
@@ -311,9 +366,11 @@ Regeln:
 
 - Kollisionsprognose hat Prioritaet vor Komfort.
 - Ein Warp-Schiff darf niemals durch eine aktive Multiplayer-Interaktionszone tunneln.
-- Continuous Collision Detection allein reicht bei hohen Warp-Faktoren nicht; der Server braucht Bahnsegment-Pruefungen.
+- Continuous Collision Detection allein reicht bei hohen Warp-Faktoren nicht; die Simulationsautoritaet braucht Bahnsegment-Pruefungen.
 - Bei unklarer Prognose wird Warp vorsichtshalber beendet.
 - Rammen im Warp ist nicht erlaubt. Wer rammen will, muss in Realzeit nahe genug kommen.
+
+Im Singleplayer gelten diese Regeln ebenfalls fuer Planeten, Basen, Stationen, Drohnen, PvE-Gegner und eigene Schiffe. Es soll keine Situation geben, in der ein lokaler Timewarp durch Objekte tunnelt und danach einen kaputten Spielzustand erzeugt.
 
 ## 12. Drohnen und unbemannte Schiffe
 
@@ -327,7 +384,7 @@ Eine Drohne darf warpen, wenn:
 - sie nicht in einer Safety Bubble startet,
 - sie nicht in eine Safety Bubble eintritt,
 - keine realistische Interaktion bevorsteht,
-- der Server den Pfad validieren kann.
+- die Simulationsautoritaet den Pfad validieren kann.
 
 ### 12.2 Drohnenstatus fuer den Besitzer
 
@@ -358,6 +415,8 @@ Risk: Clear corridor
 
 Wenn eine Drohne durch von Spielern kontrollierten Raum fliegt, soll sie abfangbar sein. Warp endet vor Interaktion. Danach gelten normale Sensor-, Kampf-, Flucht- und Autopilotregeln.
 
+Im Singleplayer bedeutet das: Auch PvE-Fraktionen und eigene Verteidigungsdrohnen koennen ein Intercept-Fenster ausloesen, wenn sie physikalisch dazu in der Lage sind.
+
 ## 13. PvE und KI-Gegner
 
 PvE-Gegner muessen dieselben Regeln befolgen wie Spieler und Drohnen.
@@ -377,11 +436,13 @@ Empfohlene spaetere Komponenten:
 | Komponente | Aufgabe |
 | --- | --- |
 | `AutopilotPlan` | Datenmodell fuer Route, Segmente, Burns, Exit-Punkte und Safety-Pruefungen. |
-| `WarpController` | Verwaltet Warp-Zustand, Faktor, Start/Stop, lokale Missionszeit und Serverfreigabe. |
+| `WarpController` | Verwaltet Warp-Zustand, Faktor, Start/Stop, lokale Missionszeit und Autoritaetsfreigabe. |
 | `TrajectoryPredictor` | Berechnet Position, Geschwindigkeit und Risiken entlang der Route. |
 | `SafetyBubbleRegistry` | Kennt Spieler, Basen, Stationen, Planeten, Monde, aktive Kampfzonen und Sperrzonen. |
 | `InterceptSolver` | Prueft, ob andere Objekte realistisch in die Route eingreifen koennen. |
-| `WarpAuthorityServer` | Serverlogik fuer Approval, Reduktion, Exit und Reconciliation. |
+| `IWarpAuthority` | Gemeinsame Schnittstelle fuer Singleplayer, Host und Server. |
+| `LocalWarpAuthority` | Singleplayer-Implementierung im lokalen Spielprozess. |
+| `ServerWarpAuthority` | Multiplayer-Implementierung mit Netzwerkautoritaet und Reconciliation. |
 | `WarpTelemetry` | UI-/Debugdaten: Faktor, ETA, naechster Exit, Grund fuer Reduktion, Risiko. |
 
 ### 14.2 Zustandsmaschine
@@ -389,7 +450,7 @@ Empfohlene spaetere Komponenten:
 ```text
 Idle
   -> Planning
-  -> AwaitingServerApproval
+  -> AwaitingAuthorityApproval
   -> WarpActive
   -> WarpReducing
   -> WarpExitPending
@@ -400,7 +461,7 @@ Idle
 Wichtige Zustaende:
 
 - `Planning`: Autopilot baut Route.
-- `AwaitingServerApproval`: Client fragt Warp an, Server prueft Safety.
+- `AwaitingAuthorityApproval`: WarpController fragt lokale oder Netzwerk-Autoritaet.
 - `WarpActive`: objektgebundene beschleunigte Simulation.
 - `WarpReducing`: Faktor wird wegen Naehe/Risiko reduziert.
 - `WarpExitPending`: sauberer Rueckfall an definiertem Zustand.
@@ -409,7 +470,7 @@ Wichtige Zustaende:
 
 ### 14.3 Daten, die beim Exit konsistent sein muessen
 
-Beim Warp-Exit muss der Server einen vollstaendigen Realzeit-Zustand liefern:
+Beim Warp-Exit muss die Autoritaet einen vollstaendigen Realzeit-Zustand liefern:
 
 - Weltposition oder lokaler Referenzframe,
 - Geschwindigkeit relativ zum aktuellen gravitativen Frame,
@@ -444,10 +505,13 @@ Fuer den Anfang reicht ein stark vereinfachtes Modell:
 1. Nur Autopilot-Coast-Segmente duerfen warpen.
 2. Keine Warp-Nutzung bei Docking, Landung, Atmosphaere oder niedrigem Orbit.
 3. Harte Safety Bubble um Spieler, Zielstationen, Planeten und grosse Asteroiden.
-4. Server- oder Singleplayer-Simulationsautoritaet prueft alle 1-2 Sekunden Realzeit den naechsten Bahnabschnitt.
-5. Beim Risiko sofortiger Exit auf 1x.
-6. Drohnen bekommen dieselbe Logik wie Spielerschiffe.
-7. Intercept-Prototyp zuerst nur als vorhergesagte Naehe zu einem anderen Schiff, spaeter mit echtem Delta-v-Solver.
+4. `IWarpAuthority` wird von Anfang an eingefuehrt.
+5. Im Singleplayer wird zuerst `LocalWarpAuthority` implementiert.
+6. Im Multiplayer kann spaeter `ServerWarpAuthority` dieselbe Schnittstelle uebernehmen.
+7. Die Simulationsautoritaet prueft alle 1-2 Sekunden Realzeit den naechsten Bahnabschnitt.
+8. Beim Risiko sofortiger Exit auf 1x.
+9. Drohnen bekommen dieselbe Logik wie Spielerschiffe.
+10. Intercept-Prototyp zuerst nur als vorhergesagte Naehe zu einem anderen Schiff, spaeter mit echtem Delta-v-Solver.
 
 ## 17. Offene Designfragen
 
@@ -458,7 +522,8 @@ Fuer den Anfang reicht ein stark vereinfachtes Modell:
 - Sollen Drohnen im Offline-/nicht sichtbaren Zustand hoeher warpen duerfen als bemannte Schiffe?
 - Wie werden Kommunikationsverzoegerungen zwischen Planeten spaeter behandelt?
 - Wird Warp in Lore als Bordcomputer-Zeitkompression erklaert oder bleibt es rein als Gameplay-Komfortsystem sichtbar?
+- Soll ein optionaler globaler Singleplayer-Komfort-Timewarp spaeter existieren, oder bleibt alles strikt objektgebunden?
 
 ## 18. Kurzfazit
 
-Das geplante Navigationssystem nutzt keinen globalen Timewarp. Stattdessen bekommt jedes Schiff oder jede Drohne einen eigenen serverautorisierten Warp-Zustand. Der Autopilot plant eine physikalisch gueltige Route, und nur die lokale Missionszeit dieses Objekts wird beschleunigt. Sobald Interaktion relevant wird, endet Warp automatisch. Dadurch bleiben lange Distanzen spielbar, waehrend Realismus, Multiplayer-Fairness, Intercepts, Kollisionen und physikalische Zustandskontinuitaet erhalten bleiben.
+Das geplante Navigationssystem nutzt als Basis keinen globalen Timewarp. Stattdessen bekommt jedes Schiff oder jede Drohne einen eigenen autorisierten Warp-Zustand. Der Autopilot plant eine physikalisch gueltige Route, und nur die lokale Missionszeit dieses Objekts wird beschleunigt. Im Singleplayer uebernimmt eine lokale `LocalWarpAuthority` diese Entscheidungen, im Multiplayer eine Server-/Host-Autoritaet. Sobald Interaktion relevant wird, endet Warp automatisch. Dadurch bleiben lange Distanzen spielbar, waehrend Realismus, Multiplayer-Fairness, Intercepts, Kollisionen und physikalische Zustandskontinuitaet erhalten bleiben.
