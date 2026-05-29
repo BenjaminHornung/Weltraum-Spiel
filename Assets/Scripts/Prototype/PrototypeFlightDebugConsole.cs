@@ -496,6 +496,24 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
             waypointAutopilot.ReplanNow();
         }
 
+        if (GUILayout.Button(waypointAutopilot.FlightPlanExecutorEnabled ? "Executor Off" : "Executor On"))
+        {
+            waypointAutopilot.SetFlightPlanExecutorEnabledForTests(!waypointAutopilot.FlightPlanExecutorEnabled);
+            waypointAutopilot.ReplanNow();
+        }
+
+        if (GUILayout.Button(waypointAutopilot.StrictFlightPlanExecution ? "Strict Off" : "Strict On"))
+        {
+            waypointAutopilot.SetStrictFlightPlanExecutionForTests(!waypointAutopilot.StrictFlightPlanExecution);
+        }
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("Clear Active Plan"))
+        {
+            waypointAutopilot.ClearActiveFlightPlanForDebug();
+        }
+
         if (GUILayout.Button("Toggle obstacle debug gizmos"))
         {
             ToggleObstacleDebugGizmos();
@@ -522,7 +540,18 @@ public class PrototypeFlightDebugConsole : MonoBehaviour
         GUILayout.Label($"Arrival phase: {waypointAutopilot.ArrivalPhase}", labelStyle);
         PrototypeTrajectoryPlan plan = waypointAutopilot.CurrentPlan;
         GUILayout.Label($"Plan: {plan.statusLabel} nav {waypointAutopilot.NavigationPhase} phase {plan.phase} valid {(plan.isValid ? "yes" : "no")}", labelStyle);
-        GUILayout.Label("Runtime plan source: legacy live gates (PrototypeFlightPlan executor pending)", labelStyle);
+        PrototypeFlightPlan flightPlan = waypointAutopilot.CurrentFlightPlan;
+        PrototypeFlightPlanExecutionState executionState = waypointAutopilot.CurrentFlightPlanExecutionState;
+        PrototypeFlightPlanTrackingCommand trackingCommand = waypointAutopilot.CurrentFlightPlanTrackingCommand;
+        PrototypeFlightPlanTrackingError trackingError = waypointAutopilot.CurrentFlightPlanTrackingError;
+        int activeSegmentDisplay = executionState.hasActiveSegment ? executionState.activeSegmentIndex + 1 : 0;
+        int activeSampleDisplay = trackingError.hasReferenceSample ? trackingError.activeSampleIndex + 1 : 0;
+        GUILayout.Label($"Runtime plan source: {(waypointAutopilot.FlightPlanExecutorEnabled ? "PrototypeFlightPlan" : "legacy live gates")} | strict {(waypointAutopilot.StrictFlightPlanExecution ? "on" : "off")} | active {(waypointAutopilot.FlightPlanExecutorActive ? "yes" : "no")}", labelStyle);
+        GUILayout.Label($"FlightPlan: {flightPlan.planId} rev {flightPlan.revision} executable {(flightPlan.IsValid ? "yes" : "no")} samples {waypointAutopilot.FlightPlanSamples.Length} segments {waypointAutopilot.FlightPlanSegments.Length}", labelStyle);
+        GUILayout.Label($"Executor segment/sample: {activeSegmentDisplay}/{flightPlan.SegmentCount} sample {activeSampleDisplay} elapsed {FormatFuel(waypointAutopilot.FlightPlanExecutorElapsedSeconds)} s | {waypointAutopilot.FlightPlanTrackingStatusLabel}", labelStyle);
+        GUILayout.Label($"Tracking error: pos {FormatCompact(trackingError.positionErrorMeters)} m | cross {FormatCompact(trackingError.crossTrackErrorMeters)} m | along {FormatCompact(trackingError.alongTrackErrorMeters)} m | vel {FormatCompact(trackingError.velocityErrorMetersPerSecond)} m/s", labelStyle);
+        GUILayout.Label($"Tracking command: accel {FormatVector(trackingCommand.desiredAccelerationWorld)} | main {trackingCommand.mainThrottle:0.00} dir {FormatVector(trackingCommand.mainDirectionWorld)} | RCS {FormatVector(trackingCommand.rcsForceWorld)}", labelStyle);
+        GUILayout.Label($"Tracking dots/replan: tangent {trackingCommand.accelerationDotPlannedTangent:0.00} brake {trackingCommand.mainDirectionDotVelocityBrake:0.00} | {waypointAutopilot.FlightPlanDivergenceStatusLabel}", labelStyle);
         GUILayout.Label($"Active segment: {waypointAutopilot.ActiveSegmentLabel} | candidate {waypointAutopilot.SelectedCandidate} | {waypointAutopilot.SelectedCandidateReason}", labelStyle);
         GUILayout.Label($"Plan refreshes: {waypointAutopilot.NavigationPlanRefreshCount} @ {waypointAutopilot.NavigationPlanIntervalSeconds:0.00}s", labelStyle);
         GUILayout.Label($"Predicted route points: {waypointAutopilot.PredictedRoute.Length}", labelStyle);

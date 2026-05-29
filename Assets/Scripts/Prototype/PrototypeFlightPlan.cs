@@ -51,7 +51,10 @@ public enum PrototypeFlightPlanAbortReplanReason
     NoMainThrustAuthority = 1 << 14,
     NoRcsAuthority = 1 << 15,
     PlanExpired = 1 << 16,
-    NonExecutable = 1 << 17
+    NonExecutable = 1 << 17,
+    InvalidPlanDirection = 1 << 18,
+    TrackingDiverged = 1 << 19,
+    PlanUnstable = 1 << 20
 }
 
 [Serializable]
@@ -905,6 +908,724 @@ public struct PrototypeFlightPlanExecutionState
 }
 
 [Serializable]
+public struct PrototypeFlightPlanTrackerSettings
+{
+    public float positionKp;
+    public float velocityKd;
+    public float maxTrackingAccelerationMetersPerSecondSquared;
+    public float maxRcsAccelerationMetersPerSecondSquared;
+    public float progradeTangentDotMinimum;
+    public float directTargetDotMinimum;
+    public float brakeVelocityDotMinimum;
+    public float errorToleranceMultiplier;
+
+    public PrototypeFlightPlanTrackerSettings(
+        float positionKp,
+        float velocityKd,
+        float maxTrackingAccelerationMetersPerSecondSquared,
+        float maxRcsAccelerationMetersPerSecondSquared,
+        float progradeTangentDotMinimum,
+        float directTargetDotMinimum,
+        float brakeVelocityDotMinimum,
+        float errorToleranceMultiplier)
+    {
+        this.positionKp = Mathf.Max(0f, positionKp);
+        this.velocityKd = Mathf.Max(0f, velocityKd);
+        this.maxTrackingAccelerationMetersPerSecondSquared = Mathf.Max(0f, maxTrackingAccelerationMetersPerSecondSquared);
+        this.maxRcsAccelerationMetersPerSecondSquared = Mathf.Max(0f, maxRcsAccelerationMetersPerSecondSquared);
+        this.progradeTangentDotMinimum = Mathf.Clamp(progradeTangentDotMinimum, -1f, 1f);
+        this.directTargetDotMinimum = Mathf.Clamp(directTargetDotMinimum, -1f, 1f);
+        this.brakeVelocityDotMinimum = Mathf.Clamp(brakeVelocityDotMinimum, -1f, 1f);
+        this.errorToleranceMultiplier = Mathf.Max(0.1f, errorToleranceMultiplier);
+    }
+
+    public static PrototypeFlightPlanTrackerSettings Default => new PrototypeFlightPlanTrackerSettings(
+        0.10f,
+        0.65f,
+        18f,
+        3.5f,
+        0.05f,
+        0.35f,
+        0.55f,
+        3f);
+}
+
+[Serializable]
+public struct PrototypeFlightPlanTrackingError
+{
+    public string planId;
+    public int revision;
+    public bool hasReferenceSample;
+    public int activeSegmentIndex;
+    public int activeSampleIndex;
+    public PrototypeManeuverPhase activePhase;
+    public float elapsedSeconds;
+    public float referenceTimeSeconds;
+    public Vector3 referencePosition;
+    public Vector3 referenceVelocity;
+    public Quaternion referenceRotation;
+    public Vector3 referenceAngularVelocity;
+    public Vector3 positionErrorWorld;
+    public Vector3 velocityErrorWorld;
+    public float positionErrorMeters;
+    public float velocityErrorMetersPerSecond;
+    public float crossTrackErrorMeters;
+    public float alongTrackErrorMeters;
+    public float speedErrorMetersPerSecond;
+    public float attitudeErrorDegrees;
+    public float angularVelocityErrorRadiansPerSecond;
+    public float fuelErrorKg;
+    public Vector3 plannedTangentWorld;
+    public float plannedTangentDotToTarget;
+    public PrototypeFlightPlanAbortReplanReason replanReasons;
+    public bool requiresReplan;
+    public string statusLabel;
+
+    public PrototypeFlightPlanTrackingError(
+        string planId,
+        int revision,
+        bool hasReferenceSample,
+        int activeSegmentIndex,
+        int activeSampleIndex,
+        PrototypeManeuverPhase activePhase,
+        float elapsedSeconds,
+        float referenceTimeSeconds,
+        Vector3 referencePosition,
+        Vector3 referenceVelocity,
+        Quaternion referenceRotation,
+        Vector3 referenceAngularVelocity,
+        Vector3 positionErrorWorld,
+        Vector3 velocityErrorWorld,
+        float crossTrackErrorMeters,
+        float alongTrackErrorMeters,
+        float speedErrorMetersPerSecond,
+        float attitudeErrorDegrees,
+        float angularVelocityErrorRadiansPerSecond,
+        float fuelErrorKg,
+        Vector3 plannedTangentWorld,
+        float plannedTangentDotToTarget,
+        PrototypeFlightPlanAbortReplanReason replanReasons,
+        bool requiresReplan,
+        string statusLabel)
+    {
+        this.planId = string.IsNullOrEmpty(planId) ? "flight-plan" : planId;
+        this.revision = Mathf.Max(0, revision);
+        this.hasReferenceSample = hasReferenceSample;
+        this.activeSegmentIndex = activeSegmentIndex;
+        this.activeSampleIndex = activeSampleIndex;
+        this.activePhase = activePhase;
+        this.elapsedSeconds = Mathf.Max(0f, elapsedSeconds);
+        this.referenceTimeSeconds = Mathf.Max(0f, referenceTimeSeconds);
+        this.referencePosition = referencePosition;
+        this.referenceVelocity = referenceVelocity;
+        this.referenceRotation = referenceRotation;
+        this.referenceAngularVelocity = referenceAngularVelocity;
+        this.positionErrorWorld = positionErrorWorld;
+        this.velocityErrorWorld = velocityErrorWorld;
+        this.positionErrorMeters = positionErrorWorld.magnitude;
+        this.velocityErrorMetersPerSecond = velocityErrorWorld.magnitude;
+        this.crossTrackErrorMeters = Mathf.Abs(crossTrackErrorMeters);
+        this.alongTrackErrorMeters = alongTrackErrorMeters;
+        this.speedErrorMetersPerSecond = speedErrorMetersPerSecond;
+        this.attitudeErrorDegrees = Mathf.Max(0f, attitudeErrorDegrees);
+        this.angularVelocityErrorRadiansPerSecond = Mathf.Max(0f, angularVelocityErrorRadiansPerSecond);
+        this.fuelErrorKg = Mathf.Abs(fuelErrorKg);
+        this.plannedTangentWorld = NormalizeOrZero(plannedTangentWorld);
+        this.plannedTangentDotToTarget = Mathf.Clamp(plannedTangentDotToTarget, -1f, 1f);
+        this.replanReasons = replanReasons;
+        this.requiresReplan = requiresReplan || replanReasons != PrototypeFlightPlanAbortReplanReason.None;
+        this.statusLabel = string.IsNullOrEmpty(statusLabel) ? "Tracking" : statusLabel;
+    }
+
+    public bool IsFinite => TrajectoryPredictionMath.IsFinite(elapsedSeconds)
+        && TrajectoryPredictionMath.IsFinite(referenceTimeSeconds)
+        && TrajectoryPredictionMath.IsFinite(referencePosition)
+        && TrajectoryPredictionMath.IsFinite(referenceVelocity)
+        && TrajectoryPredictionMath.IsFinite(referenceRotation)
+        && TrajectoryPredictionMath.IsFinite(referenceAngularVelocity)
+        && TrajectoryPredictionMath.IsFinite(positionErrorWorld)
+        && TrajectoryPredictionMath.IsFinite(velocityErrorWorld)
+        && TrajectoryPredictionMath.IsFinite(positionErrorMeters)
+        && TrajectoryPredictionMath.IsFinite(velocityErrorMetersPerSecond)
+        && TrajectoryPredictionMath.IsFinite(crossTrackErrorMeters)
+        && TrajectoryPredictionMath.IsFinite(alongTrackErrorMeters)
+        && TrajectoryPredictionMath.IsFinite(speedErrorMetersPerSecond)
+        && TrajectoryPredictionMath.IsFinite(attitudeErrorDegrees)
+        && TrajectoryPredictionMath.IsFinite(angularVelocityErrorRadiansPerSecond)
+        && TrajectoryPredictionMath.IsFinite(fuelErrorKg)
+        && TrajectoryPredictionMath.IsFinite(plannedTangentWorld)
+        && TrajectoryPredictionMath.IsFinite(plannedTangentDotToTarget);
+
+    private static Vector3 NormalizeOrZero(Vector3 value)
+    {
+        return TrajectoryPredictionMath.IsFinite(value) && value.sqrMagnitude > 0.0001f
+            ? value.normalized
+            : Vector3.zero;
+    }
+}
+
+[Serializable]
+public struct PrototypeFlightPlanTrackingCommand
+{
+    public PrototypeFlightPlanTrackingError error;
+    public bool hasCommand;
+    public bool mainThrottleAllowed;
+    public Vector3 desiredAccelerationWorld;
+    public Vector3 mainDirectionWorld;
+    public float mainThrottle;
+    public Vector3 rcsAccelerationWorld;
+    public Vector3 rcsForceWorld;
+    public float accelerationDotPlannedTangent;
+    public float mainDirectionDotVelocityBrake;
+    public PrototypeFlightPlanAbortReplanReason replanReasons;
+    public bool requiresReplan;
+    public string statusLabel;
+
+    public PrototypeFlightPlanTrackingCommand(
+        PrototypeFlightPlanTrackingError error,
+        bool hasCommand,
+        bool mainThrottleAllowed,
+        Vector3 desiredAccelerationWorld,
+        Vector3 mainDirectionWorld,
+        float mainThrottle,
+        Vector3 rcsAccelerationWorld,
+        Vector3 rcsForceWorld,
+        float accelerationDotPlannedTangent,
+        float mainDirectionDotVelocityBrake,
+        PrototypeFlightPlanAbortReplanReason replanReasons,
+        bool requiresReplan,
+        string statusLabel)
+    {
+        this.error = error;
+        this.hasCommand = hasCommand;
+        this.mainThrottleAllowed = mainThrottleAllowed;
+        this.desiredAccelerationWorld = desiredAccelerationWorld;
+        this.mainDirectionWorld = NormalizeOrZero(mainDirectionWorld);
+        this.mainThrottle = Mathf.Clamp01(mainThrottle);
+        this.rcsAccelerationWorld = rcsAccelerationWorld;
+        this.rcsForceWorld = rcsForceWorld;
+        this.accelerationDotPlannedTangent = Mathf.Clamp(accelerationDotPlannedTangent, -1f, 1f);
+        this.mainDirectionDotVelocityBrake = Mathf.Clamp(mainDirectionDotVelocityBrake, -1f, 1f);
+        this.replanReasons = replanReasons;
+        this.requiresReplan = requiresReplan || replanReasons != PrototypeFlightPlanAbortReplanReason.None || error.requiresReplan;
+        this.statusLabel = string.IsNullOrEmpty(statusLabel) ? error.statusLabel : statusLabel;
+    }
+
+    public bool IsFinite => error.IsFinite
+        && TrajectoryPredictionMath.IsFinite(desiredAccelerationWorld)
+        && TrajectoryPredictionMath.IsFinite(mainDirectionWorld)
+        && TrajectoryPredictionMath.IsFinite(mainThrottle)
+        && TrajectoryPredictionMath.IsFinite(rcsAccelerationWorld)
+        && TrajectoryPredictionMath.IsFinite(rcsForceWorld)
+        && TrajectoryPredictionMath.IsFinite(accelerationDotPlannedTangent)
+        && TrajectoryPredictionMath.IsFinite(mainDirectionDotVelocityBrake);
+
+    public static PrototypeFlightPlanTrackingCommand Blocked(
+        PrototypeFlightPlan plan,
+        float elapsedSeconds,
+        PrototypeFlightPlanAbortReplanReason reasons,
+        string statusLabel)
+    {
+        var error = new PrototypeFlightPlanTrackingError(
+            plan.planId,
+            plan.revision,
+            false,
+            -1,
+            -1,
+            PrototypeManeuverPhase.None,
+            elapsedSeconds,
+            elapsedSeconds,
+            Vector3.zero,
+            Vector3.zero,
+            Quaternion.identity,
+            Vector3.zero,
+            Vector3.zero,
+            Vector3.zero,
+            0f,
+            0f,
+            0f,
+            0f,
+            0f,
+            0f,
+            Vector3.zero,
+            0f,
+            reasons,
+            true,
+            statusLabel);
+        return new PrototypeFlightPlanTrackingCommand(
+            error,
+            false,
+            false,
+            Vector3.zero,
+            Vector3.zero,
+            0f,
+            Vector3.zero,
+            Vector3.zero,
+            0f,
+            0f,
+            reasons,
+            true,
+            statusLabel);
+    }
+
+    private static Vector3 NormalizeOrZero(Vector3 value)
+    {
+        return TrajectoryPredictionMath.IsFinite(value) && value.sqrMagnitude > 0.0001f
+            ? value.normalized
+            : Vector3.zero;
+    }
+}
+
+public static class PrototypeFlightPlanTracker
+{
+    private const float DirectionEpsilon = 0.0001f;
+
+    public static bool TryInterpolateSample(
+        PrototypeFlightPlan plan,
+        float elapsedSeconds,
+        out PrototypeTrajectoryPredictedSample sample,
+        out int sampleIndex,
+        out float sampleBlend01)
+    {
+        sample = default;
+        sampleIndex = -1;
+        sampleBlend01 = 0f;
+        PrototypeTrajectoryPredictedSample[] samples = plan.predictedSamples;
+        if (samples == null || samples.Length == 0 || !TrajectoryPredictionMath.IsFinite(elapsedSeconds))
+        {
+            return false;
+        }
+
+        if (elapsedSeconds <= samples[0].elapsedTimeSeconds)
+        {
+            sample = samples[0];
+            sampleIndex = 0;
+            return sample.IsFinite;
+        }
+
+        int lastIndex = samples.Length - 1;
+        if (elapsedSeconds >= samples[lastIndex].elapsedTimeSeconds)
+        {
+            sample = samples[lastIndex];
+            sampleIndex = lastIndex;
+            return sample.IsFinite;
+        }
+
+        for (int i = 1; i < samples.Length; i++)
+        {
+            PrototypeTrajectoryPredictedSample next = samples[i];
+            if (elapsedSeconds > next.elapsedTimeSeconds)
+            {
+                continue;
+            }
+
+            PrototypeTrajectoryPredictedSample previous = samples[i - 1];
+            float span = Mathf.Max(0.0001f, next.elapsedTimeSeconds - previous.elapsedTimeSeconds);
+            sampleBlend01 = Mathf.Clamp01((elapsedSeconds - previous.elapsedTimeSeconds) / span);
+            sample = new PrototypeTrajectoryPredictedSample(
+                elapsedSeconds,
+                sampleBlend01 >= 0.5f ? next.segmentIndex : previous.segmentIndex,
+                sampleBlend01 >= 0.5f ? next.phase : previous.phase,
+                Vector3.Lerp(previous.position, next.position, sampleBlend01),
+                Vector3.Lerp(previous.velocity, next.velocity, sampleBlend01),
+                Quaternion.Slerp(previous.rotation, next.rotation, sampleBlend01),
+                Vector3.Lerp(previous.angularVelocity, next.angularVelocity, sampleBlend01),
+                Mathf.Lerp(previous.remainingFuelKg, next.remainingFuelKg, sampleBlend01),
+                Mathf.Lerp(previous.expectedMainThrottle, next.expectedMainThrottle, sampleBlend01),
+                Vector3.Lerp(previous.expectedRcsForceWorld, next.expectedRcsForceWorld, sampleBlend01));
+            sampleIndex = i - 1;
+            return sample.IsFinite;
+        }
+
+        return false;
+    }
+
+    public static PrototypeFlightPlanTrackingCommand Track(
+        PrototypeFlightPlan plan,
+        float elapsedSeconds,
+        Vector3 actualPosition,
+        Vector3 actualVelocity,
+        Quaternion actualRotation,
+        Vector3 actualAngularVelocity,
+        float actualFuelKg,
+        Vector3 currentTargetPosition,
+        float mainAccelerationMetersPerSecondSquared,
+        float rcsAccelerationMetersPerSecondSquared,
+        float massKg)
+    {
+        return Track(
+            plan,
+            elapsedSeconds,
+            actualPosition,
+            actualVelocity,
+            actualRotation,
+            actualAngularVelocity,
+            actualFuelKg,
+            currentTargetPosition,
+            mainAccelerationMetersPerSecondSquared,
+            rcsAccelerationMetersPerSecondSquared,
+            massKg,
+            PrototypeFlightPlanTrackerSettings.Default);
+    }
+
+    public static PrototypeFlightPlanTrackingCommand Track(
+        PrototypeFlightPlan plan,
+        float elapsedSeconds,
+        Vector3 actualPosition,
+        Vector3 actualVelocity,
+        Quaternion actualRotation,
+        Vector3 actualAngularVelocity,
+        float actualFuelKg,
+        Vector3 currentTargetPosition,
+        float mainAccelerationMetersPerSecondSquared,
+        float rcsAccelerationMetersPerSecondSquared,
+        float massKg,
+        PrototypeFlightPlanTrackerSettings settings)
+    {
+        if (!plan.IsValid)
+        {
+            return PrototypeFlightPlanTrackingCommand.Blocked(
+                plan,
+                elapsedSeconds,
+                PrototypeFlightPlanAbortReplanReason.NonExecutable | plan.nonExecutableReasons,
+                "PlanInvalid");
+        }
+
+        if (!TryInterpolateSample(plan, elapsedSeconds, out PrototypeTrajectoryPredictedSample reference, out int sampleIndex, out _))
+        {
+            return PrototypeFlightPlanTrackingCommand.Blocked(
+                plan,
+                elapsedSeconds,
+                PrototypeFlightPlanAbortReplanReason.NonExecutable,
+                "PlanInvalid: no samples");
+        }
+
+        bool hasActiveSegment = plan.TryGetActiveSegment(elapsedSeconds, out PrototypeManeuverSegment activeSegment);
+        if (!hasActiveSegment && reference.segmentIndex >= 0 && reference.segmentIndex < plan.SegmentCount)
+        {
+            activeSegment = plan.segments[reference.segmentIndex];
+            hasActiveSegment = true;
+        }
+
+        PrototypeManeuverPhase activePhase = hasActiveSegment ? activeSegment.phase : reference.phase;
+        Vector3 tangent = ResolvePlannedTangent(plan, sampleIndex, reference, hasActiveSegment ? activeSegment : default, currentTargetPosition, actualPosition);
+        Vector3 targetDirection = NormalizeOrZero(currentTargetPosition - actualPosition);
+        float tangentDotTarget = tangent.sqrMagnitude > DirectionEpsilon && targetDirection.sqrMagnitude > DirectionEpsilon
+            ? Vector3.Dot(tangent, targetDirection)
+            : 0f;
+
+        Vector3 positionErrorWorld = reference.position - actualPosition;
+        Vector3 velocityErrorWorld = reference.velocity - actualVelocity;
+        float alongTrackError = tangent.sqrMagnitude > DirectionEpsilon ? Vector3.Dot(positionErrorWorld, tangent) : 0f;
+        Vector3 crossTrackError = tangent.sqrMagnitude > DirectionEpsilon
+            ? positionErrorWorld - tangent * alongTrackError
+            : positionErrorWorld;
+        float attitudeError = Quaternion.Angle(actualRotation, reference.rotation);
+        float angularVelocityError = Vector3.Distance(actualAngularVelocity, reference.angularVelocity);
+        float speedError = reference.velocity.magnitude - actualVelocity.magnitude;
+        float fuelError = Mathf.Abs(Mathf.Max(0f, actualFuelKg) - reference.remainingFuelKg);
+
+        PrototypeFlightPlanAbortReplanReason reasons = PrototypeFlightPlanAbortReplanReason.None;
+        PrototypeFlightPlanTolerance tolerance = hasActiveSegment ? activeSegment.tolerance : PrototypeFlightPlanTolerance.Default;
+        float positionTolerance = Mathf.Max(0.25f, tolerance.positionMeters * settings.errorToleranceMultiplier);
+        float velocityTolerance = Mathf.Max(0.1f, tolerance.velocityMetersPerSecond * settings.errorToleranceMultiplier);
+        if (positionErrorWorld.magnitude > positionTolerance)
+        {
+            reasons |= PrototypeFlightPlanAbortReplanReason.PositionDivergence | PrototypeFlightPlanAbortReplanReason.TrackingDiverged;
+        }
+
+        if (velocityErrorWorld.magnitude > velocityTolerance)
+        {
+            reasons |= PrototypeFlightPlanAbortReplanReason.VelocityDivergence | PrototypeFlightPlanAbortReplanReason.TrackingDiverged;
+        }
+
+        Vector3 feedForwardAcceleration = EstimateFeedForwardAcceleration(
+            plan,
+            sampleIndex,
+            reference,
+            hasActiveSegment ? activeSegment : default,
+            mainAccelerationMetersPerSecondSquared,
+            massKg);
+        Vector3 desiredAcceleration = feedForwardAcceleration
+            + positionErrorWorld * settings.positionKp
+            + velocityErrorWorld * settings.velocityKd;
+        float maxAcceleration = Mathf.Max(
+            0f,
+            settings.maxTrackingAccelerationMetersPerSecondSquared,
+            mainAccelerationMetersPerSecondSquared + rcsAccelerationMetersPerSecondSquared);
+        desiredAcceleration = ClampMagnitude(desiredAcceleration, maxAcceleration);
+
+        Vector3 mainDirection = ResolveMainDirection(activePhase, hasActiveSegment ? activeSegment : default, tangent, actualVelocity, targetDirection);
+        float accelerationDotTangent = desiredAcceleration.sqrMagnitude > DirectionEpsilon && tangent.sqrMagnitude > DirectionEpsilon
+            ? Vector3.Dot(desiredAcceleration.normalized, tangent)
+            : 0f;
+        float brakeDot = mainDirection.sqrMagnitude > DirectionEpsilon && actualVelocity.sqrMagnitude > DirectionEpsilon
+            ? Vector3.Dot(mainDirection, -actualVelocity.normalized)
+            : 1f;
+
+        bool mainAllowed = CanUseMainForPhase(activePhase, hasActiveSegment ? activeSegment.commandMode : PrototypeManeuverCommandMode.None);
+        if (activePhase == PrototypeManeuverPhase.ProgradeBurn || activePhase == PrototypeManeuverPhase.ReacquireRoute)
+        {
+            float mainDirectionDotTangent = mainDirection.sqrMagnitude > DirectionEpsilon && tangent.sqrMagnitude > DirectionEpsilon
+                ? Vector3.Dot(mainDirection, tangent)
+                : 1f;
+            if (mainAllowed && mainDirectionDotTangent < settings.progradeTangentDotMinimum)
+            {
+                reasons |= PrototypeFlightPlanAbortReplanReason.InvalidPlanDirection;
+                mainAllowed = false;
+            }
+
+            if (desiredAcceleration.sqrMagnitude > DirectionEpsilon && accelerationDotTangent < settings.progradeTangentDotMinimum)
+            {
+                reasons |= PrototypeFlightPlanAbortReplanReason.InvalidPlanDirection;
+                mainAllowed = false;
+            }
+
+            if (targetDirection.sqrMagnitude > DirectionEpsilon && tangentDotTarget < settings.directTargetDotMinimum)
+            {
+                reasons |= PrototypeFlightPlanAbortReplanReason.InvalidPlanDirection;
+                mainAllowed = false;
+            }
+        }
+        else if (activePhase == PrototypeManeuverPhase.RetrogradeBurn)
+        {
+            if (actualVelocity.sqrMagnitude > 0.01f && brakeDot < settings.brakeVelocityDotMinimum)
+            {
+                reasons |= PrototypeFlightPlanAbortReplanReason.InvalidPlanDirection;
+                mainAllowed = false;
+            }
+        }
+        else if (activePhase == PrototypeManeuverPhase.Hold
+            || activePhase == PrototypeManeuverPhase.LateralCorrection)
+        {
+            mainAllowed = false;
+        }
+
+        float mainAcceleration = Mathf.Max(0.0001f, mainAccelerationMetersPerSecondSquared);
+        float mainComponent = mainAllowed && mainDirection.sqrMagnitude > DirectionEpsilon
+            ? Mathf.Max(0f, Vector3.Dot(desiredAcceleration, mainDirection))
+            : 0f;
+        float mainThrottle = mainAllowed ? Mathf.Clamp01(mainComponent / mainAcceleration) : 0f;
+        if (mainAllowed
+            && activePhase == PrototypeManeuverPhase.RetrogradeBurn
+            && hasActiveSegment
+            && actualVelocity.magnitude > Mathf.Max(0.1f, plan.targetArrivalSpeedMetersPerSecond))
+        {
+            mainThrottle = Mathf.Max(mainThrottle, activeSegment.mainThrottle);
+        }
+
+        Vector3 mainAccelerationWorld = mainDirection * (mainThrottle * mainAcceleration);
+        Vector3 rcsAccelerationWorld = desiredAcceleration - mainAccelerationWorld;
+        float rcsLimit = Mathf.Max(
+            0f,
+            rcsAccelerationMetersPerSecondSquared > 0f
+                ? rcsAccelerationMetersPerSecondSquared
+                : settings.maxRcsAccelerationMetersPerSecondSquared);
+        rcsAccelerationWorld = ClampMagnitude(rcsAccelerationWorld, rcsLimit);
+        Vector3 rcsForceWorld = rcsAccelerationWorld * Mathf.Max(0f, massKg);
+
+        bool expired = elapsedSeconds > plan.totalDurationSeconds + Mathf.Max(0.05f, tolerance.timingSeconds);
+        if (expired)
+        {
+            reasons |= PrototypeFlightPlanAbortReplanReason.PlanExpired;
+        }
+
+        bool requiresReplan = reasons != PrototypeFlightPlanAbortReplanReason.None;
+        string statusLabel = requiresReplan
+            ? "Replan: " + PrototypeFlightPlanDivergenceMonitor.FormatReasons(reasons)
+            : "Tracking";
+        var error = new PrototypeFlightPlanTrackingError(
+            plan.planId,
+            plan.revision,
+            true,
+            hasActiveSegment ? activeSegment.index : -1,
+            sampleIndex,
+            activePhase,
+            elapsedSeconds,
+            reference.elapsedTimeSeconds,
+            reference.position,
+            reference.velocity,
+            reference.rotation,
+            reference.angularVelocity,
+            positionErrorWorld,
+            velocityErrorWorld,
+            crossTrackError.magnitude,
+            alongTrackError,
+            speedError,
+            attitudeError,
+            angularVelocityError,
+            fuelError,
+            tangent,
+            tangentDotTarget,
+            reasons,
+            requiresReplan,
+            statusLabel);
+        return new PrototypeFlightPlanTrackingCommand(
+            error,
+            true,
+            mainAllowed,
+            desiredAcceleration,
+            mainDirection,
+            mainThrottle,
+            rcsAccelerationWorld,
+            rcsForceWorld,
+            accelerationDotTangent,
+            brakeDot,
+            reasons,
+            requiresReplan,
+            statusLabel);
+    }
+
+    private static Vector3 ResolvePlannedTangent(
+        PrototypeFlightPlan plan,
+        int sampleIndex,
+        PrototypeTrajectoryPredictedSample reference,
+        PrototypeManeuverSegment segment,
+        Vector3 currentTargetPosition,
+        Vector3 actualPosition)
+    {
+        PrototypeTrajectoryPredictedSample[] samples = plan.predictedSamples;
+        if (samples != null && samples.Length > 1)
+        {
+            int previousIndex = Mathf.Clamp(sampleIndex, 0, samples.Length - 1);
+            int nextIndex = Mathf.Clamp(sampleIndex + 1, 0, samples.Length - 1);
+            Vector3 delta = samples[nextIndex].position - samples[previousIndex].position;
+            if (delta.sqrMagnitude > DirectionEpsilon)
+            {
+                return delta.normalized;
+            }
+        }
+
+        if (reference.velocity.sqrMagnitude > DirectionEpsilon)
+        {
+            return reference.velocity.normalized;
+        }
+
+        if (segment.primaryDirectionWorld.sqrMagnitude > DirectionEpsilon)
+        {
+            return segment.primaryDirectionWorld.normalized;
+        }
+
+        return NormalizeOrZero(currentTargetPosition - actualPosition);
+    }
+
+    private static Vector3 EstimateFeedForwardAcceleration(
+        PrototypeFlightPlan plan,
+        int sampleIndex,
+        PrototypeTrajectoryPredictedSample reference,
+        PrototypeManeuverSegment segment,
+        float mainAccelerationMetersPerSecondSquared,
+        float massKg)
+    {
+        Vector3 segmentFeedForward = EstimateSegmentFeedForwardAcceleration(
+            reference,
+            segment,
+            mainAccelerationMetersPerSecondSquared,
+            massKg);
+        PrototypeTrajectoryPredictedSample[] samples = plan.predictedSamples;
+        if (samples != null && samples.Length > 1)
+        {
+            int previousIndex = Mathf.Clamp(sampleIndex, 0, samples.Length - 1);
+            int nextIndex = Mathf.Clamp(sampleIndex + 1, 0, samples.Length - 1);
+            float dt = samples[nextIndex].elapsedTimeSeconds - samples[previousIndex].elapsedTimeSeconds;
+            if (dt > 0.0001f)
+            {
+                Vector3 sampleAcceleration = (samples[nextIndex].velocity - samples[previousIndex].velocity) / dt;
+                return sampleAcceleration.sqrMagnitude > DirectionEpsilon || segmentFeedForward.sqrMagnitude <= DirectionEpsilon
+                    ? sampleAcceleration
+                    : segmentFeedForward;
+            }
+        }
+
+        return segmentFeedForward;
+    }
+
+    private static Vector3 EstimateSegmentFeedForwardAcceleration(
+        PrototypeTrajectoryPredictedSample reference,
+        PrototypeManeuverSegment segment,
+        float mainAccelerationMetersPerSecondSquared,
+        float massKg)
+    {
+        float plannedMainThrottle = segment.phase == PrototypeManeuverPhase.RetrogradeBurn
+            ? Mathf.Max(reference.expectedMainThrottle, segment.mainThrottle)
+            : reference.expectedMainThrottle;
+        Vector3 main = segment.primaryDirectionWorld.sqrMagnitude > DirectionEpsilon
+            ? segment.primaryDirectionWorld.normalized * Mathf.Max(0f, mainAccelerationMetersPerSecondSquared) * plannedMainThrottle
+            : Vector3.zero;
+        Vector3 rcs = massKg > 0.0001f ? reference.expectedRcsForceWorld / massKg : Vector3.zero;
+        return main + rcs;
+    }
+
+    private static Vector3 ResolveMainDirection(
+        PrototypeManeuverPhase phase,
+        PrototypeManeuverSegment segment,
+        Vector3 plannedTangent,
+        Vector3 actualVelocity,
+        Vector3 targetDirection)
+    {
+        if (phase == PrototypeManeuverPhase.RetrogradeBurn || phase == PrototypeManeuverPhase.FlipToRetrograde)
+        {
+            if (actualVelocity.sqrMagnitude > DirectionEpsilon)
+            {
+                return -actualVelocity.normalized;
+            }
+
+            if (segment.primaryDirectionWorld.sqrMagnitude > DirectionEpsilon)
+            {
+                return segment.primaryDirectionWorld.normalized;
+            }
+
+            return -plannedTangent;
+        }
+
+        if (segment.primaryDirectionWorld.sqrMagnitude > DirectionEpsilon)
+        {
+            return segment.primaryDirectionWorld.normalized;
+        }
+
+        if (plannedTangent.sqrMagnitude > DirectionEpsilon)
+        {
+            return plannedTangent.normalized;
+        }
+
+        return targetDirection.sqrMagnitude > DirectionEpsilon ? targetDirection.normalized : Vector3.forward;
+    }
+
+    private static bool CanUseMainForPhase(PrototypeManeuverPhase phase, PrototypeManeuverCommandMode mode)
+    {
+        if (mode != PrototypeManeuverCommandMode.MainThrottle
+            && mode != PrototypeManeuverCommandMode.CombinedMainAndRcs)
+        {
+            return false;
+        }
+
+        return phase == PrototypeManeuverPhase.ProgradeBurn
+            || phase == PrototypeManeuverPhase.AvoidanceBurn
+            || phase == PrototypeManeuverPhase.ReacquireRoute
+            || phase == PrototypeManeuverPhase.RetrogradeBurn;
+    }
+
+    private static Vector3 ClampMagnitude(Vector3 value, float maxMagnitude)
+    {
+        if (maxMagnitude <= 0f)
+        {
+            return Vector3.zero;
+        }
+
+        return value.sqrMagnitude > maxMagnitude * maxMagnitude
+            ? value.normalized * maxMagnitude
+            : value;
+    }
+
+    private static Vector3 NormalizeOrZero(Vector3 value)
+    {
+        return TrajectoryPredictionMath.IsFinite(value) && value.sqrMagnitude > DirectionEpsilon
+            ? value.normalized
+            : Vector3.zero;
+    }
+}
+
+[Serializable]
 public struct PrototypeFlightPlanDivergenceReport
 {
     public PrototypeFlightPlanAbortReplanReason reasons;
@@ -1049,6 +1770,9 @@ public static class PrototypeFlightPlanDivergenceMonitor
         AppendReason(ref label, reasons, PrototypeFlightPlanAbortReplanReason.NoRcsAuthority, "NoRcsAuthority");
         AppendReason(ref label, reasons, PrototypeFlightPlanAbortReplanReason.PlanExpired, "PlanExpired");
         AppendReason(ref label, reasons, PrototypeFlightPlanAbortReplanReason.NonExecutable, "NonExecutable");
+        AppendReason(ref label, reasons, PrototypeFlightPlanAbortReplanReason.InvalidPlanDirection, "InvalidPlanDirection");
+        AppendReason(ref label, reasons, PrototypeFlightPlanAbortReplanReason.TrackingDiverged, "TrackingDiverged");
+        AppendReason(ref label, reasons, PrototypeFlightPlanAbortReplanReason.PlanUnstable, "PlanUnstable");
         return string.IsNullOrEmpty(label) ? reasons.ToString() : label;
     }
 

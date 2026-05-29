@@ -1,0 +1,42 @@
+{
+  "success": true,
+  "message": "Test job status retrieved.",
+  "error": null,
+  "data": {
+    "job_id": "8a826c7b0e3c4e28aa85a976898fdebd",
+    "status": "failed",
+    "mode": "PlayMode",
+    "started_unix_ms": 1780034476581,
+    "finished_unix_ms": 1780034487574,
+    "last_update_unix_ms": 1780034487574,
+    "progress": {
+      "completed": 4,
+      "total": 4,
+      "current_test_full_name": null,
+      "current_test_started_unix_ms": 1780034487043,
+      "last_finished_test_full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalOvershootBrakesAndHoldsWithoutReaccelerating",
+      "last_finished_unix_ms": 1780034487540,
+      "stuck_suspected": false,
+      "editor_is_focused": true,
+      "blocked_reason": null,
+      "failures_so_far": [
+        {
+          "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget",
+          "message": "  Expected: Complete or HoldPosition\r\n  But was:  Brake\r\n"
+        },
+        {
+          "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_OffAxisLongRangeTerminalBrakeCommit_DoesNotReenterAccelerateOrSpin",
+          "message": "  terminal capture latch should activate before completion in long-range off-axis scenarios.\nfinalState=AlignForBurn phase=Direct\nfinalDistance=2798.11 finalSpeed=35.92 finalAngularSpeed=0.00\naccelerateFramesInTerminalEnvelope=0 throttleWhileFlipFrames=0 maxFlipAngularSpeed=0.58\nArrivalFailureReason=none\nlast5Samples:\ni=4195 dist=2795.24 rel=35.92 closing=-35.92 lat=0.15 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=4196 dist=2795.96 rel=35.92 closing=-35.92 lat=0.15 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=4197 dist=2796.68 rel=35.92 closing=-35.92 lat=0.15 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=4198 dist=2797.39 rel=35.92 closing=-35.92 lat=0.15 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=4199 dist=2798.11 rel=35.92 closing=-35.92 lat=0.15 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 sawTerminalCapture=False brakeToAccelerateTransitionsAfterCommit=0 integratedFlipRotationRadians=1.24\r\n  Expected: True\r\n  But was:  False\r\n"
+        },
+        {
+          "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalOvershootBrakesAndHoldsWithoutReaccelerating",
+          "message": "  terminal overshoot should use the main thruster to remove high residual velocity.\nfinalState=Complete phase=Hold\nfinalDistance=7.79 finalSpeed=0.12 finalAngularSpeed=0.00\naccelerateFramesInTerminalEnvelope=0 throttleWhileFlipFrames=0 maxFlipAngularSpeed=1.37\nArrivalFailureReason=none\nlast5Samples:\ni=992 dist=7.80 rel=0.12 closing=0.11 lat=0.07 state=HoldPosition phase=Hold main=0.00 rcs=235.87\ni=993 dist=7.79 rel=0.12 closing=0.10 lat=0.07 state=HoldPosition phase=Hold main=0.00 rcs=233.51\ni=994 dist=7.79 rel=0.12 closing=0.10 lat=0.07 state=HoldPosition phase=Hold main=0.00 rcs=231.17\ni=995 dist=7.79 rel=0.12 closing=0.10 lat=0.07 state=HoldPosition phase=Hold main=0.00 rcs=228.86\ni=996 dist=7.79 rel=0.12 closing=0.10 lat=0.07 state=HoldPosition phase=Hold main=0.00 rcs=226.57\neverArrivalBrakeCommitted=True everBrakeHoldActive=False everArrivalTerminalCaptureActive=True finalArrivalBrakeCommitted=False finalBrakeHoldActive=False finalArrivalTerminalCaptureActive=False\nfirstArrivalBrakeCommitSample=i=0 dist=12.10 rel=9.37 closing=-5.00 lat=8.00 state=FlipForBrake phase=Brake firstBrakeHoldSample= firstArrivalTerminalCaptureSample=i=504 dist=28.32 rel=5.72 closing=5.48 lat=1.67 state=FlipForBrake phase=Brake\nfirstMainBrakeSample=\nshouldUseTerminalVelocityBrake=False shouldKeepTerminalBrakeCommitted=False shouldHoldTerminalBrakeCommitUntilSettled=False shouldCaptureAnyArrivalHold=True shouldUseTerminalLateralCorrection=False isWithinArrivalTerminalRange=True isWithinArrivalTerminalCaptureRange=True\r\n  Expected: True\r\n  But was:  False\r\n"
+        }
+      ],
+      "failures_capped": false
+    },
+    "error": null,
+    "result": null
+  },
+  "hint": null
+}

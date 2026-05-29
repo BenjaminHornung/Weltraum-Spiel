@@ -1,0 +1,79 @@
+{
+  "jsonrpc": "2.0",
+  "id": 21,
+  "result": {
+    "_meta": {
+      "fastmcp": {
+        "wrap_result": true
+      }
+    },
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"message\":\"Test job status retrieved.\",\"error\":null,\"data\":{\"job_id\":\"738f609649f540ea92ae9d4bad5a57fe\",\"status\":\"succeeded\",\"mode\":\"PlayMode\",\"started_unix_ms\":1780040017084,\"finished_unix_ms\":1780040020451,\"last_update_unix_ms\":1780040020451,\"progress\":{\"completed\":2,\"total\":2,\"current_test_full_name\":null,\"current_test_started_unix_ms\":1780040019980,\"last_finished_test_full_name\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap\",\"last_finished_unix_ms\":1780040020420,\"stuck_suspected\":false,\"editor_is_focused\":true,\"blocked_reason\":null,\"failures_so_far\":[],\"failures_capped\":false},\"error\":null,\"result\":{\"mode\":\"PlayMode\",\"summary\":{\"total\":2,\"passed\":2,\"failed\":0,\"skipped\":0,\"durationSeconds\":1.1666014,\"resultState\":\"Passed\"},\"results\":[{\"name\":\"PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget\",\"fullName\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget\",\"state\":\"Passed\",\"durationSeconds\":0.6792734,\"message\":null,\"stackTrace\":null,\"output\":\"AutopilotPlayModeV2 closed-loop avoidance state=HoldPosition phase=Hold position=0.00,-6.20,104.58 distance=10.59 lateral=0.15 sawAvoidance=True passedObstacle=True maxLateralOffset=4.50 minClearance=8.67 actualRcsAvoidance=True maxRcsForce=20000.00 maxRcsTorque=12000.00 maxMain=1.00 maxRequestedRcs=20000.00 maxAssistForce=20000.00 maxAssistTorque=12000.00 forward=0.00,-0.97,-0.23 candidate=direct\\r\\n\"},{\"name\":\"PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap\",\"fullName\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap\",\"state\":\"Passed\",\"durationSeconds\":0.4395075,\"message\":null,\"stackTrace\":null,\"output\":\"\"}]}},\"hint\":null}"
+      }
+    ],
+    "structuredContent": {
+      "result": {
+        "success": true,
+        "message": "Test job status retrieved.",
+        "error": null,
+        "data": {
+          "job_id": "738f609649f540ea92ae9d4bad5a57fe",
+          "status": "succeeded",
+          "mode": "PlayMode",
+          "started_unix_ms": 1780040017084,
+          "finished_unix_ms": 1780040020451,
+          "last_update_unix_ms": 1780040020451,
+          "progress": {
+            "completed": 2,
+            "total": 2,
+            "current_test_full_name": null,
+            "current_test_started_unix_ms": 1780040019980,
+            "last_finished_test_full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap",
+            "last_finished_unix_ms": 1780040020420,
+            "stuck_suspected": false,
+            "editor_is_focused": true,
+            "blocked_reason": null,
+            "failures_so_far": [],
+            "failures_capped": false
+          },
+          "error": null,
+          "result": {
+            "mode": "PlayMode",
+            "summary": {
+              "total": 2,
+              "passed": 2,
+              "failed": 0,
+              "skipped": 0,
+              "durationSeconds": 1.1666014,
+              "resultState": "Passed"
+            },
+            "results": [
+              {
+                "name": "PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget",
+                "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget",
+                "state": "Passed",
+                "durationSeconds": 0.6792734,
+                "message": null,
+                "stackTrace": null,
+                "output": "AutopilotPlayModeV2 closed-loop avoidance state=HoldPosition phase=Hold position=0.00,-6.20,104.58 distance=10.59 lateral=0.15 sawAvoidance=True passedObstacle=True maxLateralOffset=4.50 minClearance=8.67 actualRcsAvoidance=True maxRcsForce=20000.00 maxRcsTorque=12000.00 maxMain=1.00 maxRequestedRcs=20000.00 maxAssistForce=20000.00 maxAssistTorque=12000.00 forward=0.00,-0.97,-0.23 candidate=direct\r\n"
+              },
+              {
+                "name": "PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap",
+                "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap",
+                "state": "Passed",
+                "durationSeconds": 0.4395075,
+                "message": null,
+                "stackTrace": null,
+                "output": ""
+              }
+            ]
+          }
+        },
+        "hint": null
+      }
+    },
+    "isError": false
+  }
+}

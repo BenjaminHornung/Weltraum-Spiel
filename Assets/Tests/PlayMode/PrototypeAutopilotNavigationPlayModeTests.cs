@@ -108,14 +108,18 @@ public class PrototypeAutopilotNavigationPlayModeTests
         Assert.That(rig.Autopilot.AvoidanceWaypoint.sqrMagnitude, Is.GreaterThan(0.0001f));
         Assert.That(rig.Autopilot.CurrentPlan.directPathBlocked, Is.True);
 
-        AutopilotRunResult result = RunClosedLoopPhysics(rig, 860, launchObstacles);
+        AutopilotRunResult result = RunClosedLoopPhysics(rig, 1200, launchObstacles);
 
         Assert.NotNull(result);
         Assert.True(result.SawAvoidance, "launch corridor should force avoidance before the ship reaches the obstacle course.");
         Assert.True(result.SawReacquire || result.SawDirectAfterAvoidance, "autopilot should rejoin the direct path once the launch corridor clears.");
         Assert.That(
             rig.Autopilot.CurrentState,
-            Is.EqualTo(PrototypeWaypointAutopilotState.Complete).Or.EqualTo(PrototypeWaypointAutopilotState.HoldPosition));
+            Is.EqualTo(PrototypeWaypointAutopilotState.Complete).Or.EqualTo(PrototypeWaypointAutopilotState.HoldPosition),
+            $"distance={result.FinalDistance:0.00} speed={rig.Body.linearVelocity.magnitude:0.00} lateral={result.FinalLateralSpeed:0.00} "
+            + $"phase={rig.Autopilot.NavigationPhase} segment={rig.Autopilot.ActiveSegmentLabel} "
+            + $"candidate={rig.Autopilot.SelectedCandidate} reason={rig.Autopilot.SelectedCandidateReason}\n"
+            + BuildStepSnapshotTail(result, 8));
         Assert.That(result.FinalDistance, Is.LessThanOrEqualTo(rig.Target.ArrivalRadius + 1.5f));
         Assert.That(result.MinimumObstacleClearance, Is.GreaterThan(0.25f));
     }
@@ -179,6 +183,96 @@ public class PrototypeAutopilotNavigationPlayModeTests
         Assert.That(samplesBeforeFlip, Is.GreaterThan(8));
         Assert.That(lastElapsed, Is.LessThan(flipSegment.startTimeSeconds));
         Assert.False(rig.Autopilot.NavigationObstacleDetected);
+    }
+
+    [Test]
+    public void PlayMode_FlightPlanExecutor_PreviewAndExecutionUseSamePlan()
+    {
+        AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 120f);
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(true);
+        rig.Autopilot.SetStrictFlightPlanExecutionForTests(true);
+        rig.Autopilot.ToggleAutopilot();
+
+        StepClosedLoopPhysicsWithoutForcedReplan(rig);
+
+        PrototypeFlightPlan plan = rig.Autopilot.CurrentFlightPlan;
+        PrototypeFlightPlanTrackingCommand command = rig.Autopilot.CurrentFlightPlanTrackingCommand;
+        Assert.True(rig.Autopilot.FlightPlanExecutorEnabled);
+        Assert.True(rig.Autopilot.StrictFlightPlanExecution);
+        Assert.True(rig.Autopilot.FlightPlanExecutorActive);
+        Assert.True(plan.IsValid, plan.statusLabel + " " + plan.nonExecutableReasons);
+        Assert.That(plan.predictedSamples.Length, Is.GreaterThan(1));
+        Assert.That(rig.Autopilot.PredictedRoute.Length, Is.GreaterThan(1));
+        Assert.True(command.error.hasReferenceSample);
+        Assert.That(command.error.planId, Is.EqualTo(plan.planId));
+        Assert.That(command.error.revision, Is.EqualTo(plan.revision));
+        Assert.That(rig.Autopilot.FlightPlanSamples.Length, Is.EqualTo(plan.predictedSamples.Length));
+    }
+
+    [Test]
+    public void PlayMode_FlightPlanExecutor_DirectRoute_TracksPredictedPathAndDoesNotBurnAway()
+    {
+        AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 150f);
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(true);
+        rig.Autopilot.SetStrictFlightPlanExecutionForTests(true);
+        rig.Autopilot.ToggleAutopilot();
+
+        StepClosedLoopPhysicsWithoutForcedReplan(rig);
+        float initialDistance = Vector3.Distance(rig.Body.position, rig.Target.Position);
+        float maxCrossTrack = 0f;
+        int progradeSamples = 0;
+        int awayAccelerationSamples = 0;
+        var trace = new List<string>();
+
+        for (int i = 0; i < 180; i++)
+        {
+            StepClosedLoopPhysicsWithoutForcedReplan(rig);
+            PrototypeFlightPlanTrackingCommand command = rig.Autopilot.CurrentFlightPlanTrackingCommand;
+            PrototypeFlightPlanTrackingError error = command.error;
+            if (error.hasReferenceSample)
+            {
+                maxCrossTrack = Mathf.Max(maxCrossTrack, error.crossTrackErrorMeters);
+            }
+
+            bool prograde = error.activePhase == PrototypeManeuverPhase.ProgradeBurn
+                || error.activePhase == PrototypeManeuverPhase.ReacquireRoute;
+            if (prograde && command.hasCommand)
+            {
+                progradeSamples++;
+                if (command.desiredAccelerationWorld.sqrMagnitude > 0.0001f
+                    && error.plannedTangentWorld.sqrMagnitude > 0.0001f
+                    && Vector3.Dot(command.desiredAccelerationWorld.normalized, error.plannedTangentWorld) < -0.05f)
+                {
+                    awayAccelerationSamples++;
+                }
+            }
+
+            if (i % 20 == 0)
+            {
+                trace.Add(
+                    $"i={i} dist={Vector3.Distance(rig.Body.position, rig.Target.Position):0.0} "
+                    + $"phase={error.activePhase} state={rig.Autopilot.CurrentState} "
+                    + $"x={error.crossTrackErrorMeters:0.0} velErr={error.velocityErrorMetersPerSecond:0.0} "
+                    + $"dot={command.accelerationDotPlannedTangent:0.00} main={command.mainThrottle:0.00} "
+                    + $"replan={command.replanReasons}");
+            }
+
+            if (rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Complete
+                || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Aborted
+                || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Failed
+                || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.FuelInsufficient)
+            {
+                break;
+            }
+        }
+
+        float finalDistance = Vector3.Distance(rig.Body.position, rig.Target.Position);
+        string diagnostics = string.Join("\n", trace);
+        Assert.That(finalDistance, Is.LessThan(initialDistance - 0.5f), diagnostics);
+        Assert.That(maxCrossTrack, Is.LessThan(35f), diagnostics);
+        Assert.That(progradeSamples, Is.GreaterThan(0), diagnostics);
+        Assert.That(awayAccelerationSamples, Is.EqualTo(0), diagnostics);
+        Assert.That(rig.Autopilot.CurrentState, Is.Not.EqualTo(PrototypeWaypointAutopilotState.Failed), diagnostics);
     }
 
     [Test]
@@ -683,7 +777,8 @@ public class PrototypeAutopilotNavigationPlayModeTests
             stepTrace.Add(
                 $"i={i} dist={finalDistance:0.00} rel={rig.Body.linearVelocity.magnitude:0.00} closing={rig.Autopilot.ClosingSpeed:0.00} "
                 + $"lat={rig.Autopilot.LateralSpeed:0.00} state={currentState} phase={rig.Autopilot.NavigationPhase} "
-                + $"main={rig.Autopilot.RequestedMainThrottle:0.00} rcs={rig.Autopilot.RequestedRcsForce.magnitude:0.00}");
+                + $"main={rig.Autopilot.RequestedMainThrottle:0.00} rcs={rig.Autopilot.RequestedRcsForce.magnitude:0.00} "
+                + BuildBrakeAlignmentDiagnostics(rig));
         }
 
         string diagnostics = BuildTerminalOvershootDiagnostics(
@@ -856,7 +951,8 @@ public class PrototypeAutopilotNavigationPlayModeTests
             stepTrace.Add(
                 $"i={i} dist={finalDistance:0.00} rel={rig.Body.linearVelocity.magnitude:0.00} closing={rig.Autopilot.ClosingSpeed:0.00} "
                 + $"lat={rig.Autopilot.LateralSpeed:0.00} state={currentState} phase={rig.Autopilot.NavigationPhase} "
-                + $"main={rig.Autopilot.RequestedMainThrottle:0.00} rcs={rig.Autopilot.RequestedRcsForce.magnitude:0.00}");
+                + $"main={rig.Autopilot.RequestedMainThrottle:0.00} rcs={rig.Autopilot.RequestedRcsForce.magnitude:0.00} "
+                + BuildBrakeAlignmentDiagnostics(rig));
         }
 
         string diagnostics = BuildTerminalOvershootDiagnostics(
@@ -1080,7 +1176,8 @@ public class PrototypeAutopilotNavigationPlayModeTests
             stepTrace.Add(
                 $"i={i} dist={finalDistance:0.00} rel={rig.Body.linearVelocity.magnitude:0.00} closing={rig.Autopilot.ClosingSpeed:0.00} "
                 + $"lat={rig.Autopilot.LateralSpeed:0.00} state={currentState} phase={rig.Autopilot.NavigationPhase} "
-                + $"main={rig.Autopilot.RequestedMainThrottle:0.00} rcs={rig.Autopilot.RequestedRcsForce.magnitude:0.00}");
+                + $"main={rig.Autopilot.RequestedMainThrottle:0.00} rcs={rig.Autopilot.RequestedRcsForce.magnitude:0.00} "
+                + BuildBrakeAlignmentDiagnostics(rig));
         }
 
         string diagnostics = BuildTerminalOvershootDiagnostics(
@@ -1427,6 +1524,41 @@ public class PrototypeAutopilotNavigationPlayModeTests
             + $"throttleWhileFlipFrames={throttleWhileFlipFrames} maxFlipAngularSpeed={maxFlipAngularSpeed:0.00}\n"
             + $"ArrivalFailureReason={rig.Autopilot.ArrivalFailureReason}\n"
             + $"last5Samples:\n{lastSamples}";
+    }
+
+    private static string BuildBrakeAlignmentDiagnostics(AutopilotPlayModeRig rig)
+    {
+        Vector3 desired = rig.Autopilot.DesiredBurnDirection;
+        float desiredAngle = desired.sqrMagnitude > 0.0001f
+            ? Vector3.Angle(rig.Ship.transform.forward, desired.normalized)
+            : -1f;
+        float retrogradeAngle = rig.Body.linearVelocity.sqrMagnitude > 0.0001f
+            ? Vector3.Angle(rig.Ship.transform.forward, -rig.Body.linearVelocity.normalized)
+            : -1f;
+        return $"desiredAngle={desiredAngle:0.0} retroAngle={retrogradeAngle:0.0}";
+    }
+
+    private static string BuildStepSnapshotTail(AutopilotRunResult result, int count)
+    {
+        if (result == null || result.Snapshots.Count == 0)
+        {
+            return "lastSamples=none";
+        }
+
+        int start = Mathf.Max(0, result.Snapshots.Count - Mathf.Max(1, count));
+        string text = "lastSamples:";
+        for (int i = start; i < result.Snapshots.Count; i++)
+        {
+            AutopilotStepSnapshot sample = result.Snapshots[i];
+            text += "\n"
+                + $"i={i} dist={sample.distance:0.00} rel={sample.relativeSpeed:0.00} lat={sample.lateralSpeed:0.00} "
+                + $"state={sample.state} phase={sample.phase} seg={sample.segment} "
+                + $"main={sample.mainThrottle:0.00} cmdMain={sample.commandMainThrottle:0.00} rcs={sample.rcsForce:0.00} "
+                + $"desiredAngle={sample.desiredAngle:0.0} retroAngle={sample.retrogradeAngle:0.0} "
+                + $"angDeg={sample.angularSpeedDegreesPerSecond:0.0}";
+        }
+
+        return text;
     }
 
     private static AutopilotRunResult RunHarness(
@@ -1840,6 +1972,7 @@ public class PrototypeAutopilotNavigationPlayModeTests
     {
         float distance = Vector3.Distance(rig.Body.position, rig.Target.Position);
         float lateralSpeed = ComputeLateralSpeed(rig.Body, rig.Target.Position);
+        PrototypeFlightPlanTrackingCommand trackingCommand = rig.Autopilot.CurrentFlightPlanTrackingCommand;
         result.Snapshots.Add(new AutopilotStepSnapshot
         {
             distance = distance,
@@ -1849,8 +1982,16 @@ public class PrototypeAutopilotNavigationPlayModeTests
             phase = rig.Autopilot.NavigationPhase.ToString(),
             obstacleStatus = rig.Autopilot.ObstacleStatus,
             mainThrottle = rig.Autopilot.RequestedMainThrottle,
+            commandMainThrottle = trackingCommand.mainThrottle,
             rcsForce = rig.Autopilot.RequestedRcsForce.magnitude,
-            segment = rig.Autopilot.ActiveSegmentLabel
+            segment = rig.Autopilot.ActiveSegmentLabel,
+            desiredAngle = rig.Autopilot.DesiredBurnDirection.sqrMagnitude > 0.0001f
+                ? Vector3.Angle(rig.Ship.transform.forward, rig.Autopilot.DesiredBurnDirection.normalized)
+                : -1f,
+            retrogradeAngle = rig.Body.linearVelocity.sqrMagnitude > 0.0001f
+                ? Vector3.Angle(rig.Ship.transform.forward, -rig.Body.linearVelocity.normalized)
+                : -1f,
+            angularSpeedDegreesPerSecond = rig.Body.angularVelocity.magnitude * Mathf.Rad2Deg
         });
 
         result.SawAvoidance |= rig.Autopilot.AvoidanceActive
@@ -2273,7 +2414,11 @@ public class PrototypeAutopilotNavigationPlayModeTests
         public string phase;
         public string obstacleStatus;
         public float mainThrottle;
+        public float commandMainThrottle;
         public float rcsForce;
         public string segment;
+        public float desiredAngle;
+        public float retrogradeAngle;
+        public float angularSpeedDegreesPerSecond;
     }
 }

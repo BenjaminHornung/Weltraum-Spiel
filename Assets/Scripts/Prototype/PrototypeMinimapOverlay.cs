@@ -19,10 +19,14 @@ public class PrototypeMinimapOverlay : MonoBehaviour
     [SerializeField] private int zoomIndex = 2;
 
     private const int MaxRelevantMapLabels = 3;
+    private const int MaxActualPathPoints = 160;
+    private const float ActualPathSampleIntervalSeconds = 0.25f;
     private GUIStyle labelStyle;
     private GUIStyle smallLabelStyle;
     private PrototypeUiWindowState windowState;
     private readonly HashSet<PrototypeEnvironmentPoint> labeledPoints = new HashSet<PrototypeEnvironmentPoint>();
+    private readonly List<Vector3> actualPathWorldPoints = new List<Vector3>(MaxActualPathPoints);
+    private float nextActualPathSampleTime;
 
     public bool IsWindowVisible => ResolveWindowState().Visible;
     public Transform Target => target;
@@ -53,6 +57,7 @@ public class PrototypeMinimapOverlay : MonoBehaviour
             return;
         }
 
+        UpdateActualPathHistory();
         EnsureStyles();
         windowState.SetSize(320f, windowState.Collapsed ? 58f : 384f);
         windowState.Rect = GUI.Window(windowState.WindowId, windowState.Rect, DrawWindow, "Minimap / Radar");
@@ -272,6 +277,7 @@ public class PrototypeMinimapOverlay : MonoBehaviour
         DrawEnvironmentPoints(mapRect, center, radius);
         DrawNavigationRoute(mapRect, center, radius);
         DrawTrajectoryPreview(mapRect, center, radius);
+        DrawActualPathHistory(mapRect, center, radius);
         DrawShip(center, radius);
 
         GUI.Label(new Rect(mapRect.x + 8f, mapRect.yMax - 22f, mapRect.width - 16f, 18f), "XZ radar centered on ship", smallLabelStyle);
@@ -391,6 +397,51 @@ public class PrototypeMinimapOverlay : MonoBehaviour
             Vector2 previous = WorldToMap(route[i - 1], center, radius);
             Vector2 next = WorldToMap(route[i], center, radius);
             DrawClippedRouteSegment(mapRect, previous, next, predictedColor);
+        }
+    }
+
+    private void DrawActualPathHistory(Rect mapRect, Vector2 center, float radius)
+    {
+        if (actualPathWorldPoints.Count < 2)
+        {
+            return;
+        }
+
+        Color pathColor = new Color(0.3f, 0.65f, 1f, 0.72f);
+        for (int i = 1; i < actualPathWorldPoints.Count; i++)
+        {
+            Vector2 previous = WorldToMap(actualPathWorldPoints[i - 1], center, radius);
+            Vector2 next = WorldToMap(actualPathWorldPoints[i], center, radius);
+            DrawClippedRouteSegment(mapRect, previous, next, pathColor);
+        }
+    }
+
+    private void UpdateActualPathHistory()
+    {
+        if (target == null)
+        {
+            actualPathWorldPoints.Clear();
+            return;
+        }
+
+        if (Time.time < nextActualPathSampleTime
+            && actualPathWorldPoints.Count > 0)
+        {
+            return;
+        }
+
+        nextActualPathSampleTime = Time.time + ActualPathSampleIntervalSeconds;
+        Vector3 position = target.position;
+        if (actualPathWorldPoints.Count > 0
+            && (actualPathWorldPoints[actualPathWorldPoints.Count - 1] - position).sqrMagnitude < 1f)
+        {
+            return;
+        }
+
+        actualPathWorldPoints.Add(position);
+        if (actualPathWorldPoints.Count > MaxActualPathPoints)
+        {
+            actualPathWorldPoints.RemoveAt(0);
         }
     }
 

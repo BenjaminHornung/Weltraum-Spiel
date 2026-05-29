@@ -1,0 +1,58 @@
+{
+  "jsonrpc": "2.0",
+  "id": 21,
+  "result": {
+    "_meta": {
+      "fastmcp": {
+        "wrap_result": true
+      }
+    },
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"message\":\"Test job status retrieved.\",\"error\":null,\"data\":{\"job_id\":\"2581e3fa4a4a4cc1be191e23de6f7675\",\"status\":\"failed\",\"mode\":\"PlayMode\",\"started_unix_ms\":1780039066042,\"finished_unix_ms\":1780039069420,\"last_update_unix_ms\":1780039069420,\"progress\":{\"completed\":2,\"total\":2,\"current_test_full_name\":null,\"current_test_started_unix_ms\":1780039068941,\"last_finished_test_full_name\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap\",\"last_finished_unix_ms\":1780039069386,\"stuck_suspected\":false,\"editor_is_focused\":true,\"blocked_reason\":null,\"failures_so_far\":[{\"full_name\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget\",\"message\":\"  distance=18.01 speed=9.72 lateral=4.12 phase=Brake segment=Brake candidate=direct reason=direct path clear\\r\\n  Expected: Complete or HoldPosition\\r\\n  But was:  FlipForBrake\\r\\n\"},{\"full_name\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap\",\"message\":\"  terminal brake flip should not accumulate a full extra rotation.\\nfinalState=Complete phase=Hold\\nfinalDistance=8.40 finalSpeed=0.12 finalAngularSpeed=0.00\\naccelerateFramesInTerminalEnvelope=0 throttleWhileFlipFrames=0 maxFlipAngularSpeed=1.28\\nArrivalFailureReason=none\\nlast5Samples:\\ni=1010 dist=8.41 rel=0.12 closing=0.07 lat=0.10 ang=0.00 state=HoldPosition phase=Hold main=0.00\\ni=1011 dist=8.41 rel=0.12 closing=0.07 lat=0.10 ang=0.00 state=HoldPosition phase=Hold main=0.00\\ni=1012 dist=8.40 rel=0.12 closing=0.07 lat=0.10 ang=0.00 state=HoldPosition phase=Hold main=0.00\\ni=1013 dist=8.40 rel=0.12 closing=0.07 lat=0.10 ang=0.00 state=HoldPosition phase=Hold main=0.00\\ni=1014 dist=8.40 rel=0.12 closing=0.07 lat=0.10 ang=0.00 state=HoldPosition phase=Hold main=0.00\\nbrakeToAccelerateTransitionsAfterCommit=0 integratedBrakeRotationRadians=4.27 maxCommittedBrakeDirectionDelta=0.61\\r\\n  Expected: less than or equal to 4.24115038f\\r\\n  But was:  4.27329683f\\r\\n\"}],\"failures_capped\":false},\"error\":null,\"result\":null},\"hint\":null}"
+      }
+    ],
+    "structuredContent": {
+      "result": {
+        "success": true,
+        "message": "Test job status retrieved.",
+        "error": null,
+        "data": {
+          "job_id": "2581e3fa4a4a4cc1be191e23de6f7675",
+          "status": "failed",
+          "mode": "PlayMode",
+          "started_unix_ms": 1780039066042,
+          "finished_unix_ms": 1780039069420,
+          "last_update_unix_ms": 1780039069420,
+          "progress": {
+            "completed": 2,
+            "total": 2,
+            "current_test_full_name": null,
+            "current_test_started_unix_ms": 1780039068941,
+            "last_finished_test_full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap",
+            "last_finished_unix_ms": 1780039069386,
+            "stuck_suspected": false,
+            "editor_is_focused": true,
+            "blocked_reason": null,
+            "failures_so_far": [
+              {
+                "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget",
+                "message": "  distance=18.01 speed=9.72 lateral=4.12 phase=Brake segment=Brake candidate=direct reason=direct path clear\r\n  Expected: Complete or HoldPosition\r\n  But was:  FlipForBrake\r\n"
+              },
+              {
+                "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap",
+                "message": "  terminal brake flip should not accumulate a full extra rotation.\nfinalState=Complete phase=Hold\nfinalDistance=8.40 finalSpeed=0.12 finalAngularSpeed=0.00\naccelerateFramesInTerminalEnvelope=0 throttleWhileFlipFrames=0 maxFlipAngularSpeed=1.28\nArrivalFailureReason=none\nlast5Samples:\ni=1010 dist=8.41 rel=0.12 closing=0.07 lat=0.10 ang=0.00 state=HoldPosition phase=Hold main=0.00\ni=1011 dist=8.41 rel=0.12 closing=0.07 lat=0.10 ang=0.00 state=HoldPosition phase=Hold main=0.00\ni=1012 dist=8.40 rel=0.12 closing=0.07 lat=0.10 ang=0.00 state=HoldPosition phase=Hold main=0.00\ni=1013 dist=8.40 rel=0.12 closing=0.07 lat=0.10 ang=0.00 state=HoldPosition phase=Hold main=0.00\ni=1014 dist=8.40 rel=0.12 closing=0.07 lat=0.10 ang=0.00 state=HoldPosition phase=Hold main=0.00\nbrakeToAccelerateTransitionsAfterCommit=0 integratedBrakeRotationRadians=4.27 maxCommittedBrakeDirectionDelta=0.61\r\n  Expected: less than or equal to 4.24115038f\r\n  But was:  4.27329683f\r\n"
+              }
+            ],
+            "failures_capped": false
+          },
+          "error": null,
+          "result": null
+        },
+        "hint": null
+      }
+    },
+    "isError": false
+  }
+}

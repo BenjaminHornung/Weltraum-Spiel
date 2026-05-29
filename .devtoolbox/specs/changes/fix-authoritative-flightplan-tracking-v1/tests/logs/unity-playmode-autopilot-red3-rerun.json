@@ -1,0 +1,105 @@
+{
+  "job_id": "79f96e302ec244628c8ca1bf8d185c33",
+  "tests": [
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_AvoidsObstacle_ThenReachesWaypoint",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalBrakeDirectionDoesNotChaseLateralVelocity"
+  ],
+  "refresh": {
+    "jsonrpc": "2.0",
+    "id": 2,
+    "result": {
+      "_meta": {
+        "fastmcp": {
+          "wrap_result": true
+        }
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"message\":\"Refresh requested.\",\"error\":null,\"data\":{\"refresh_triggered\":false,\"compile_requested\":true,\"resulting_state\":\"compiling\",\"hint\":\"If Unity enters compilation/domain reload, poll editor_state until ready_for_tools is true.\"},\"hint\":null}"
+        }
+      ],
+      "structuredContent": {
+        "result": {
+          "success": true,
+          "message": "Refresh requested.",
+          "error": null,
+          "data": {
+            "refresh_triggered": false,
+            "compile_requested": true,
+            "resulting_state": "compiling",
+            "hint": "If Unity enters compilation/domain reload, poll editor_state until ready_for_tools is true."
+          },
+          "hint": null
+        }
+      },
+      "isError": false
+    }
+  },
+  "start": {
+    "jsonrpc": "2.0",
+    "id": 3,
+    "result": {
+      "_meta": {
+        "fastmcp": {
+          "wrap_result": true
+        }
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"message\":\"Test job started.\",\"error\":null,\"data\":{\"job_id\":\"79f96e302ec244628c8ca1bf8d185c33\",\"status\":\"running\",\"mode\":\"PlayMode\",\"include_details\":true,\"include_failed_tests\":true},\"hint\":null}"
+        }
+      ],
+      "structuredContent": {
+        "result": {
+          "success": true,
+          "message": "Test job started.",
+          "error": null,
+          "data": {
+            "job_id": "79f96e302ec244628c8ca1bf8d185c33",
+            "status": "running",
+            "mode": "PlayMode",
+            "include_details": true,
+            "include_failed_tests": true
+          },
+          "hint": null
+        }
+      },
+      "isError": false
+    }
+  },
+  "final": {
+    "job_id": "79f96e302ec244628c8ca1bf8d185c33",
+    "status": "failed",
+    "mode": "PlayMode",
+    "started_unix_ms": 1780037989289,
+    "finished_unix_ms": 1780037992216,
+    "last_update_unix_ms": 1780037992216,
+    "progress": {
+      "completed": 3,
+      "total": 3,
+      "current_test_full_name": null,
+      "current_test_started_unix_ms": 1780037992171,
+      "last_finished_test_full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalBrakeDirectionDoesNotChaseLateralVelocity",
+      "last_finished_unix_ms": 1780037992176,
+      "stuck_suspected": false,
+      "editor_is_focused": true,
+      "blocked_reason": null,
+      "failures_so_far": [
+        {
+          "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_AvoidsObstacle_ThenReachesWaypoint",
+          "message": "  Autopilot should leave avoidance once the direct path clears.\r\n  Expected: True\r\n  But was:  False\r\n"
+        },
+        {
+          "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap",
+          "message": "  terminal brake flip should not accumulate a full extra rotation.\nfinalState=Complete phase=Hold\nfinalDistance=8.40 finalSpeed=0.12 finalAngularSpeed=0.00\naccelerateFramesInTerminalEnvelope=0 throttleWhileFlipFrames=0 maxFlipAngularSpeed=1.28\nArrivalFailureReason=none\nlast5Samples:\ni=1010 dist=8.41 rel=0.12 closing=0.07 lat=0.10 ang=0.00 state=HoldPosition phase=Hold main=0.00\ni=1011 dist=8.41 rel=0.12 closing=0.07 lat=0.10 ang=0.00 state=HoldPosition phase=Hold main=0.00\ni=1012 dist=8.40 rel=0.12 closing=0.07 lat=0.10 ang=0.00 state=HoldPosition phase=Hold main=0.00\ni=1013 dist=8.40 rel=0.12 closing=0.07 lat=0.10 ang=0.00 state=HoldPosition phase=Hold main=0.00\ni=1014 dist=8.40 rel=0.12 closing=0.07 lat=0.10 ang=0.00 state=HoldPosition phase=Hold main=0.00\nbrakeToAccelerateTransitionsAfterCommit=0 integratedBrakeRotationRadians=4.27 maxCommittedBrakeDirectionDelta=0.61\r\n  Expected: less than or equal to 4.24115038f\r\n  But was:  4.27329683f\r\n"
+        }
+      ],
+      "failures_capped": false
+    },
+    "error": null,
+    "result": null
+  }
+}

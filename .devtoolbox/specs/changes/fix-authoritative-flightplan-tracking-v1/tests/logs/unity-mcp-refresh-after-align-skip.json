@@ -1,0 +1,9 @@
+{
+  "success": true,
+  "message": "Refresh recovered after Unity disconnect/retry; editor is ready.",
+  "error": null,
+  "data": {
+    "recovered_from_disconnect": true
+  },
+  "hint": null
+}

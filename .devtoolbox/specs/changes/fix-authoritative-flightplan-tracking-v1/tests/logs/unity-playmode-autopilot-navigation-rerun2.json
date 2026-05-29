@@ -1,0 +1,494 @@
+[
+  {
+    "label": "refresh_unity",
+    "parsed": {
+      "success": true,
+      "message": "Refresh recovered after Unity disconnect/retry; editor is ready.",
+      "error": null,
+      "data": {
+        "recovered_from_disconnect": true
+      },
+      "hint": null
+    },
+    "raw": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "result": {
+        "_meta": {
+          "fastmcp": {
+            "wrap_result": true
+          }
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"message\":\"Refresh recovered after Unity disconnect/retry; editor is ready.\",\"error\":null,\"data\":{\"recovered_from_disconnect\":true},\"hint\":null}"
+          }
+        ],
+        "structuredContent": {
+          "result": {
+            "success": true,
+            "message": "Refresh recovered after Unity disconnect/retry; editor is ready.",
+            "error": null,
+            "data": {
+              "recovered_from_disconnect": true
+            },
+            "hint": null
+          }
+        },
+        "isError": false
+      }
+    }
+  },
+  {
+    "label": "state-0",
+    "parsed": {
+      "success": true,
+      "message": "Retrieved editor state.",
+      "error": null,
+      "data": {
+        "schema_version": "unity-mcp/editor_state@2",
+        "observed_at_unix_ms": 1780032924545,
+        "sequence": 3,
+        "unity": {
+          "instance_id": "Weltraum Spiel@49c909b3e97ba6e8",
+          "unity_version": "6000.4.7f1",
+          "project_id": null,
+          "platform": "WindowsEditor",
+          "is_batch_mode": false
+        },
+        "editor": {
+          "is_focused": false,
+          "play_mode": {
+            "is_playing": false,
+            "is_paused": false,
+            "is_changing": false
+          },
+          "active_scene": {
+            "path": null,
+            "guid": null,
+            "name": ""
+          }
+        },
+        "activity": {
+          "phase": "idle",
+          "since_unix_ms": 1780032922710,
+          "reasons": [
+            "tick"
+          ]
+        },
+        "compilation": {
+          "is_compiling": false,
+          "is_domain_reload_pending": false,
+          "last_compile_started_unix_ms": null,
+          "last_compile_finished_unix_ms": null,
+          "last_domain_reload_before_unix_ms": null,
+          "last_domain_reload_after_unix_ms": 1780032922239
+        },
+        "assets": {
+          "is_updating": false,
+          "external_changes_dirty": false,
+          "external_changes_last_seen_unix_ms": 1780032923633,
+          "external_changes_dirty_since_unix_ms": null,
+          "external_changes_last_cleared_unix_ms": 1780032923652,
+          "refresh": {
+            "is_refresh_in_progress": false,
+            "last_refresh_requested_unix_ms": null,
+            "last_refresh_finished_unix_ms": null
+          }
+        },
+        "tests": {
+          "is_running": false,
+          "mode": null,
+          "current_job_id": null,
+          "started_unix_ms": null,
+          "started_by": "unknown",
+          "last_run": null
+        },
+        "transport": {
+          "unity_bridge_connected": null,
+          "last_message_unix_ms": null
+        },
+        "settings": {
+          "batch_execute_max_commands": 25
+        },
+        "advice": {
+          "ready_for_tools": true,
+          "blocking_reasons": [],
+          "recommended_retry_after_ms": 0,
+          "recommended_next_action": "none"
+        },
+        "staleness": {
+          "age_ms": 6,
+          "is_stale": false
+        }
+      },
+      "hint": null
+    },
+    "raw": {
+      "jsonrpc": "2.0",
+      "id": 100,
+      "result": {
+        "contents": [
+          {
+            "uri": "mcpforunity://editor/state",
+            "mimeType": "text/plain",
+            "text": "{\"success\":true,\"message\":\"Retrieved editor state.\",\"error\":null,\"data\":{\"schema_version\":\"unity-mcp/editor_state@2\",\"observed_at_unix_ms\":1780032924545,\"sequence\":3,\"unity\":{\"instance_id\":\"Weltraum Spiel@49c909b3e97ba6e8\",\"unity_version\":\"6000.4.7f1\",\"project_id\":null,\"platform\":\"WindowsEditor\",\"is_batch_mode\":false},\"editor\":{\"is_focused\":false,\"play_mode\":{\"is_playing\":false,\"is_paused\":false,\"is_changing\":false},\"active_scene\":{\"path\":null,\"guid\":null,\"name\":\"\"}},\"activity\":{\"phase\":\"idle\",\"since_unix_ms\":1780032922710,\"reasons\":[\"tick\"]},\"compilation\":{\"is_compiling\":false,\"is_domain_reload_pending\":false,\"last_compile_started_unix_ms\":null,\"last_compile_finished_unix_ms\":null,\"last_domain_reload_before_unix_ms\":null,\"last_domain_reload_after_unix_ms\":1780032922239},\"assets\":{\"is_updating\":false,\"external_changes_dirty\":false,\"external_changes_last_seen_unix_ms\":1780032923633,\"external_changes_dirty_since_unix_ms\":null,\"external_changes_last_cleared_unix_ms\":1780032923652,\"refresh\":{\"is_refresh_in_progress\":false,\"last_refresh_requested_unix_ms\":null,\"last_refresh_finished_unix_ms\":null}},\"tests\":{\"is_running\":false,\"mode\":null,\"current_job_id\":null,\"started_unix_ms\":null,\"started_by\":\"unknown\",\"last_run\":null},\"transport\":{\"unity_bridge_connected\":null,\"last_message_unix_ms\":null},\"settings\":{\"batch_execute_max_commands\":25},\"advice\":{\"ready_for_tools\":true,\"blocking_reasons\":[],\"recommended_retry_after_ms\":0,\"recommended_next_action\":\"none\"},\"staleness\":{\"age_ms\":6,\"is_stale\":false}},\"hint\":null}"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "label": "state-ready-0",
+    "parsed": {
+      "success": true,
+      "message": "Retrieved editor state.",
+      "error": null,
+      "data": {
+        "schema_version": "unity-mcp/editor_state@2",
+        "observed_at_unix_ms": 1780032924545,
+        "sequence": 3,
+        "unity": {
+          "instance_id": "Weltraum Spiel@49c909b3e97ba6e8",
+          "unity_version": "6000.4.7f1",
+          "project_id": null,
+          "platform": "WindowsEditor",
+          "is_batch_mode": false
+        },
+        "editor": {
+          "is_focused": false,
+          "play_mode": {
+            "is_playing": false,
+            "is_paused": false,
+            "is_changing": false
+          },
+          "active_scene": {
+            "path": null,
+            "guid": null,
+            "name": ""
+          }
+        },
+        "activity": {
+          "phase": "idle",
+          "since_unix_ms": 1780032922710,
+          "reasons": [
+            "tick"
+          ]
+        },
+        "compilation": {
+          "is_compiling": false,
+          "is_domain_reload_pending": false,
+          "last_compile_started_unix_ms": null,
+          "last_compile_finished_unix_ms": null,
+          "last_domain_reload_before_unix_ms": null,
+          "last_domain_reload_after_unix_ms": 1780032922239
+        },
+        "assets": {
+          "is_updating": false,
+          "external_changes_dirty": false,
+          "external_changes_last_seen_unix_ms": 1780032923633,
+          "external_changes_dirty_since_unix_ms": null,
+          "external_changes_last_cleared_unix_ms": 1780032923652,
+          "refresh": {
+            "is_refresh_in_progress": false,
+            "last_refresh_requested_unix_ms": null,
+            "last_refresh_finished_unix_ms": null
+          }
+        },
+        "tests": {
+          "is_running": false,
+          "mode": null,
+          "current_job_id": null,
+          "started_unix_ms": null,
+          "started_by": "unknown",
+          "last_run": null
+        },
+        "transport": {
+          "unity_bridge_connected": null,
+          "last_message_unix_ms": null
+        },
+        "settings": {
+          "batch_execute_max_commands": 25
+        },
+        "advice": {
+          "ready_for_tools": true,
+          "blocking_reasons": [],
+          "recommended_retry_after_ms": 0,
+          "recommended_next_action": "none"
+        },
+        "staleness": {
+          "age_ms": 6,
+          "is_stale": false
+        }
+      },
+      "hint": null
+    },
+    "raw": {
+      "jsonrpc": "2.0",
+      "id": 100,
+      "result": {
+        "contents": [
+          {
+            "uri": "mcpforunity://editor/state",
+            "mimeType": "text/plain",
+            "text": "{\"success\":true,\"message\":\"Retrieved editor state.\",\"error\":null,\"data\":{\"schema_version\":\"unity-mcp/editor_state@2\",\"observed_at_unix_ms\":1780032924545,\"sequence\":3,\"unity\":{\"instance_id\":\"Weltraum Spiel@49c909b3e97ba6e8\",\"unity_version\":\"6000.4.7f1\",\"project_id\":null,\"platform\":\"WindowsEditor\",\"is_batch_mode\":false},\"editor\":{\"is_focused\":false,\"play_mode\":{\"is_playing\":false,\"is_paused\":false,\"is_changing\":false},\"active_scene\":{\"path\":null,\"guid\":null,\"name\":\"\"}},\"activity\":{\"phase\":\"idle\",\"since_unix_ms\":1780032922710,\"reasons\":[\"tick\"]},\"compilation\":{\"is_compiling\":false,\"is_domain_reload_pending\":false,\"last_compile_started_unix_ms\":null,\"last_compile_finished_unix_ms\":null,\"last_domain_reload_before_unix_ms\":null,\"last_domain_reload_after_unix_ms\":1780032922239},\"assets\":{\"is_updating\":false,\"external_changes_dirty\":false,\"external_changes_last_seen_unix_ms\":1780032923633,\"external_changes_dirty_since_unix_ms\":null,\"external_changes_last_cleared_unix_ms\":1780032923652,\"refresh\":{\"is_refresh_in_progress\":false,\"last_refresh_requested_unix_ms\":null,\"last_refresh_finished_unix_ms\":null}},\"tests\":{\"is_running\":false,\"mode\":null,\"current_job_id\":null,\"started_unix_ms\":null,\"started_by\":\"unknown\",\"last_run\":null},\"transport\":{\"unity_bridge_connected\":null,\"last_message_unix_ms\":null},\"settings\":{\"batch_execute_max_commands\":25},\"advice\":{\"ready_for_tools\":true,\"blocking_reasons\":[],\"recommended_retry_after_ms\":0,\"recommended_next_action\":\"none\"},\"staleness\":{\"age_ms\":6,\"is_stale\":false}},\"hint\":null}"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "label": "run_tests",
+    "parsed": {
+      "success": true,
+      "message": "Test job started.",
+      "error": null,
+      "data": {
+        "job_id": "ece1176065ba4e79b240a77f4e5773c4",
+        "status": "running",
+        "mode": "PlayMode",
+        "include_details": false,
+        "include_failed_tests": true
+      },
+      "hint": null
+    },
+    "raw": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "result": {
+        "_meta": {
+          "fastmcp": {
+            "wrap_result": true
+          }
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"message\":\"Test job started.\",\"error\":null,\"data\":{\"job_id\":\"ece1176065ba4e79b240a77f4e5773c4\",\"status\":\"running\",\"mode\":\"PlayMode\",\"include_details\":false,\"include_failed_tests\":true},\"hint\":null}"
+          }
+        ],
+        "structuredContent": {
+          "result": {
+            "success": true,
+            "message": "Test job started.",
+            "error": null,
+            "data": {
+              "job_id": "ece1176065ba4e79b240a77f4e5773c4",
+              "status": "running",
+              "mode": "PlayMode",
+              "include_details": false,
+              "include_failed_tests": true
+            },
+            "hint": null
+          }
+        },
+        "isError": false
+      }
+    }
+  },
+  {
+    "label": "poll-0",
+    "parsed": {
+      "success": true,
+      "message": "Test job status retrieved.",
+      "error": null,
+      "data": {
+        "job_id": "ece1176065ba4e79b240a77f4e5773c4",
+        "status": "running",
+        "mode": "PlayMode",
+        "started_unix_ms": 1780032924949,
+        "finished_unix_ms": null,
+        "last_update_unix_ms": 1780032924949,
+        "progress": {
+          "completed": 0,
+          "total": null,
+          "current_test_full_name": null,
+          "current_test_started_unix_ms": null,
+          "last_finished_test_full_name": null,
+          "last_finished_unix_ms": null,
+          "stuck_suspected": false,
+          "editor_is_focused": false,
+          "blocked_reason": null,
+          "failures_so_far": [],
+          "failures_capped": false
+        },
+        "error": null,
+        "result": null
+      },
+      "hint": null
+    },
+    "raw": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "result": {
+        "_meta": {
+          "fastmcp": {
+            "wrap_result": true
+          }
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"message\":\"Test job status retrieved.\",\"error\":null,\"data\":{\"job_id\":\"ece1176065ba4e79b240a77f4e5773c4\",\"status\":\"running\",\"mode\":\"PlayMode\",\"started_unix_ms\":1780032924949,\"finished_unix_ms\":null,\"last_update_unix_ms\":1780032924949,\"progress\":{\"completed\":0,\"total\":null,\"current_test_full_name\":null,\"current_test_started_unix_ms\":null,\"last_finished_test_full_name\":null,\"last_finished_unix_ms\":null,\"stuck_suspected\":false,\"editor_is_focused\":false,\"blocked_reason\":null,\"failures_so_far\":[],\"failures_capped\":false},\"error\":null,\"result\":null},\"hint\":null}"
+          }
+        ],
+        "structuredContent": {
+          "result": {
+            "success": true,
+            "message": "Test job status retrieved.",
+            "error": null,
+            "data": {
+              "job_id": "ece1176065ba4e79b240a77f4e5773c4",
+              "status": "running",
+              "mode": "PlayMode",
+              "started_unix_ms": 1780032924949,
+              "finished_unix_ms": null,
+              "last_update_unix_ms": 1780032924949,
+              "progress": {
+                "completed": 0,
+                "total": null,
+                "current_test_full_name": null,
+                "current_test_started_unix_ms": null,
+                "last_finished_test_full_name": null,
+                "last_finished_unix_ms": null,
+                "stuck_suspected": false,
+                "editor_is_focused": false,
+                "blocked_reason": null,
+                "failures_so_far": [],
+                "failures_capped": false
+              },
+              "error": null,
+              "result": null
+            },
+            "hint": null
+          }
+        },
+        "isError": false
+      }
+    }
+  },
+  {
+    "label": "poll-1",
+    "parsed": {
+      "success": true,
+      "message": "Test job status retrieved.",
+      "error": null,
+      "data": {
+        "job_id": "ece1176065ba4e79b240a77f4e5773c4",
+        "status": "failed",
+        "mode": "PlayMode",
+        "started_unix_ms": 1780032924949,
+        "finished_unix_ms": 1780032940460,
+        "last_update_unix_ms": 1780032940460,
+        "progress": {
+          "completed": 29,
+          "total": 29,
+          "current_test_full_name": null,
+          "current_test_started_unix_ms": 1780032940417,
+          "last_finished_test_full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_FlightPlanExecutor_PreviewAndExecutionUseSamePlan",
+          "last_finished_unix_ms": 1780032940419,
+          "stuck_suspected": false,
+          "editor_is_focused": false,
+          "blocked_reason": null,
+          "failures_so_far": [
+            {
+              "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_Arrival_NoBrakeAccelerateFlap_ReachesCompletionDeadzone",
+              "message": "Autopilot should enter completion deadzone near target before terminal state.\nfinalState=AlignForBurn\nfinalPhase=Direct\nfinalPos=8.06,-2.19,420.25\nfinalVel=0.14,-0.04,3.98\nfinalAngularVel=0.00,0.00,0.00\ndistance=250.39 minDistance=6.67 maxBrakeAngularSpeed=0.99 maxFlipAngularSpeed=0.99 finalAngularSpeed=0.00\ncurrentDistanceToTarget=250.39 arrivalRadius=10.00\nleftCompletionEnvelope=True\nfirstCompletionWindowSample=\nbrakeToAccelerateTransitions=0 terminalBrakeToAccelerateTransitions=0 accelerateToBrakeTransitions=0 throttleWhileFlipFrames=0\nArrivalFailureReason=none\nlast5Samples:\ni=2395 z=419.93 dist=250.07 rel=-3.98/3.98 lat=0.01 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 reason=none\ni=2396 z=420.01 dist=250.15 rel=-3.98/3.98 lat=0.01 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 reason=none\ni=2397 z=420.09 dist=250.23 rel=-3.98/3.98 lat=0.01 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 reason=none\ni=2398 z=420.17 dist=250.31 rel=-3.98/3.98 lat=0.01 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 reason=none\ni=2399 z=420.25 dist=250.39 rel=-3.98/3.98 lat=0.01 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 reason=none\neverArrivalBrakeCommitted=True everBrakeHoldActive=False everArrivalTerminalCaptureActive=True finalArrivalBrakeCommitted=False finalBrakeHoldActive=False finalArrivalTerminalCaptureActive=False"
+            },
+            {
+              "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget",
+              "message": "  Expected: Complete or HoldPosition\r\n  But was:  AlignForBurn\r\n"
+            },
+            {
+              "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_OffAxisLongRangeTerminalBrakeCommit_DoesNotReenterAccelerateOrSpin",
+              "message": "  terminal capture latch should activate before completion in long-range off-axis scenarios.\nfinalState=AlignForBurn phase=Direct\nfinalDistance=1402.67 finalSpeed=12.26 finalAngularSpeed=0.00\naccelerateFramesInTerminalEnvelope=0 throttleWhileFlipFrames=0 maxFlipAngularSpeed=0.58\nArrivalFailureReason=none\nlast5Samples:\ni=4195 dist=1401.69 rel=12.26 closing=-12.26 lat=0.28 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=4196 dist=1401.94 rel=12.26 closing=-12.26 lat=0.28 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=4197 dist=1402.18 rel=12.26 closing=-12.26 lat=0.28 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=4198 dist=1402.43 rel=12.26 closing=-12.26 lat=0.28 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=4199 dist=1402.67 rel=12.26 closing=-12.26 lat=0.28 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 sawTerminalCapture=False brakeToAccelerateTransitionsAfterCommit=0 integratedFlipRotationRadians=1.87\r\n  Expected: True\r\n  But was:  False\r\n"
+            },
+            {
+              "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_PhysicsAvoidsObstacleWithoutHarnessMotion",
+              "message": "  Ship should make real progress toward the selected target.\r\n  Expected: less than 118.0f\r\n  But was:  132.396835f\r\n"
+            },
+            {
+              "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalOvershootBrakesAndHoldsWithoutReaccelerating",
+              "message": "  terminal overshoot should settle into HoldPosition or Complete.\nfinalState=AlignForBurn phase=Direct\nfinalDistance=177.22 finalSpeed=4.12 finalAngularSpeed=0.00\naccelerateFramesInTerminalEnvelope=0 throttleWhileFlipFrames=0 maxFlipAngularSpeed=1.37\nArrivalFailureReason=none\nlast5Samples:\ni=1795 dist=176.89 rel=4.12 closing=-4.11 lat=0.27 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=1796 dist=176.97 rel=4.12 closing=-4.11 lat=0.27 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=1797 dist=177.05 rel=4.12 closing=-4.11 lat=0.27 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=1798 dist=177.14 rel=4.12 closing=-4.11 lat=0.27 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=1799 dist=177.22 rel=4.12 closing=-4.11 lat=0.27 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\neverArrivalBrakeCommitted=True everBrakeHoldActive=False everArrivalTerminalCaptureActive=True finalArrivalBrakeCommitted=False finalBrakeHoldActive=False finalArrivalTerminalCaptureActive=False\nfirstArrivalBrakeCommitSample=i=0 dist=12.10 rel=9.37 closing=-5.00 lat=8.00 state=FlipForBrake phase=Brake firstBrakeHoldSample= firstArrivalTerminalCaptureSample=i=4 dist=12.52 rel=9.12 closing=-5.39 lat=7.43 state=FlipForBrake phase=Brake\nfirstMainBrakeSample=i=268 dist=51.19 rel=7.40 closing=-7.60 lat=0.73 state=Brake phase=Brake\nshouldUseTerminalVelocityBrake=False shouldKeepTerminalBrakeCommitted=False shouldHoldTerminalBrakeCommitUntilSettled=False shouldCaptureAnyArrivalHold=False shouldUseTerminalLateralCorrection=False isWithinArrivalTerminalRange=False isWithinArrivalTerminalCaptureRange=False\r\n  Expected: True\r\n  But was:  False\r\n"
+            }
+          ],
+          "failures_capped": false
+        },
+        "error": null,
+        "result": null
+      },
+      "hint": null
+    },
+    "raw": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "result": {
+        "_meta": {
+          "fastmcp": {
+            "wrap_result": true
+          }
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"message\":\"Test job status retrieved.\",\"error\":null,\"data\":{\"job_id\":\"ece1176065ba4e79b240a77f4e5773c4\",\"status\":\"failed\",\"mode\":\"PlayMode\",\"started_unix_ms\":1780032924949,\"finished_unix_ms\":1780032940460,\"last_update_unix_ms\":1780032940460,\"progress\":{\"completed\":29,\"total\":29,\"current_test_full_name\":null,\"current_test_started_unix_ms\":1780032940417,\"last_finished_test_full_name\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_FlightPlanExecutor_PreviewAndExecutionUseSamePlan\",\"last_finished_unix_ms\":1780032940419,\"stuck_suspected\":false,\"editor_is_focused\":false,\"blocked_reason\":null,\"failures_so_far\":[{\"full_name\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_Arrival_NoBrakeAccelerateFlap_ReachesCompletionDeadzone\",\"message\":\"Autopilot should enter completion deadzone near target before terminal state.\\nfinalState=AlignForBurn\\nfinalPhase=Direct\\nfinalPos=8.06,-2.19,420.25\\nfinalVel=0.14,-0.04,3.98\\nfinalAngularVel=0.00,0.00,0.00\\ndistance=250.39 minDistance=6.67 maxBrakeAngularSpeed=0.99 maxFlipAngularSpeed=0.99 finalAngularSpeed=0.00\\ncurrentDistanceToTarget=250.39 arrivalRadius=10.00\\nleftCompletionEnvelope=True\\nfirstCompletionWindowSample=\\nbrakeToAccelerateTransitions=0 terminalBrakeToAccelerateTransitions=0 accelerateToBrakeTransitions=0 throttleWhileFlipFrames=0\\nArrivalFailureReason=none\\nlast5Samples:\\ni=2395 z=419.93 dist=250.07 rel=-3.98/3.98 lat=0.01 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 reason=none\\ni=2396 z=420.01 dist=250.15 rel=-3.98/3.98 lat=0.01 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 reason=none\\ni=2397 z=420.09 dist=250.23 rel=-3.98/3.98 lat=0.01 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 reason=none\\ni=2398 z=420.17 dist=250.31 rel=-3.98/3.98 lat=0.01 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 reason=none\\ni=2399 z=420.25 dist=250.39 rel=-3.98/3.98 lat=0.01 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 reason=none\\neverArrivalBrakeCommitted=True everBrakeHoldActive=False everArrivalTerminalCaptureActive=True finalArrivalBrakeCommitted=False finalBrakeHoldActive=False finalArrivalTerminalCaptureActive=False\"},{\"full_name\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget\",\"message\":\"  Expected: Complete or HoldPosition\\r\\n  But was:  AlignForBurn\\r\\n\"},{\"full_name\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_OffAxisLongRangeTerminalBrakeCommit_DoesNotReenterAccelerateOrSpin\",\"message\":\"  terminal capture latch should activate before completion in long-range off-axis scenarios.\\nfinalState=AlignForBurn phase=Direct\\nfinalDistance=1402.67 finalSpeed=12.26 finalAngularSpeed=0.00\\naccelerateFramesInTerminalEnvelope=0 throttleWhileFlipFrames=0 maxFlipAngularSpeed=0.58\\nArrivalFailureReason=none\\nlast5Samples:\\ni=4195 dist=1401.69 rel=12.26 closing=-12.26 lat=0.28 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\\ni=4196 dist=1401.94 rel=12.26 closing=-12.26 lat=0.28 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\\ni=4197 dist=1402.18 rel=12.26 closing=-12.26 lat=0.28 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\\ni=4198 dist=1402.43 rel=12.26 closing=-12.26 lat=0.28 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\\ni=4199 dist=1402.67 rel=12.26 closing=-12.26 lat=0.28 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 sawTerminalCapture=False brakeToAccelerateTransitionsAfterCommit=0 integratedFlipRotationRadians=1.87\\r\\n  Expected: True\\r\\n  But was:  False\\r\\n\"},{\"full_name\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_PhysicsAvoidsObstacleWithoutHarnessMotion\",\"message\":\"  Ship should make real progress toward the selected target.\\r\\n  Expected: less than 118.0f\\r\\n  But was:  132.396835f\\r\\n\"},{\"full_name\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalOvershootBrakesAndHoldsWithoutReaccelerating\",\"message\":\"  terminal overshoot should settle into HoldPosition or Complete.\\nfinalState=AlignForBurn phase=Direct\\nfinalDistance=177.22 finalSpeed=4.12 finalAngularSpeed=0.00\\naccelerateFramesInTerminalEnvelope=0 throttleWhileFlipFrames=0 maxFlipAngularSpeed=1.37\\nArrivalFailureReason=none\\nlast5Samples:\\ni=1795 dist=176.89 rel=4.12 closing=-4.11 lat=0.27 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\\ni=1796 dist=176.97 rel=4.12 closing=-4.11 lat=0.27 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\\ni=1797 dist=177.05 rel=4.12 closing=-4.11 lat=0.27 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\\ni=1798 dist=177.14 rel=4.12 closing=-4.11 lat=0.27 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\\ni=1799 dist=177.22 rel=4.12 closing=-4.11 lat=0.27 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\\neverArrivalBrakeCommitted=True everBrakeHoldActive=False everArrivalTerminalCaptureActive=True finalArrivalBrakeCommitted=False finalBrakeHoldActive=False finalArrivalTerminalCaptureActive=False\\nfirstArrivalBrakeCommitSample=i=0 dist=12.10 rel=9.37 closing=-5.00 lat=8.00 state=FlipForBrake phase=Brake firstBrakeHoldSample= firstArrivalTerminalCaptureSample=i=4 dist=12.52 rel=9.12 closing=-5.39 lat=7.43 state=FlipForBrake phase=Brake\\nfirstMainBrakeSample=i=268 dist=51.19 rel=7.40 closing=-7.60 lat=0.73 state=Brake phase=Brake\\nshouldUseTerminalVelocityBrake=False shouldKeepTerminalBrakeCommitted=False shouldHoldTerminalBrakeCommitUntilSettled=False shouldCaptureAnyArrivalHold=False shouldUseTerminalLateralCorrection=False isWithinArrivalTerminalRange=False isWithinArrivalTerminalCaptureRange=False\\r\\n  Expected: True\\r\\n  But was:  False\\r\\n\"}],\"failures_capped\":false},\"error\":null,\"result\":null},\"hint\":null}"
+          }
+        ],
+        "structuredContent": {
+          "result": {
+            "success": true,
+            "message": "Test job status retrieved.",
+            "error": null,
+            "data": {
+              "job_id": "ece1176065ba4e79b240a77f4e5773c4",
+              "status": "failed",
+              "mode": "PlayMode",
+              "started_unix_ms": 1780032924949,
+              "finished_unix_ms": 1780032940460,
+              "last_update_unix_ms": 1780032940460,
+              "progress": {
+                "completed": 29,
+                "total": 29,
+                "current_test_full_name": null,
+                "current_test_started_unix_ms": 1780032940417,
+                "last_finished_test_full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_FlightPlanExecutor_PreviewAndExecutionUseSamePlan",
+                "last_finished_unix_ms": 1780032940419,
+                "stuck_suspected": false,
+                "editor_is_focused": false,
+                "blocked_reason": null,
+                "failures_so_far": [
+                  {
+                    "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_Arrival_NoBrakeAccelerateFlap_ReachesCompletionDeadzone",
+                    "message": "Autopilot should enter completion deadzone near target before terminal state.\nfinalState=AlignForBurn\nfinalPhase=Direct\nfinalPos=8.06,-2.19,420.25\nfinalVel=0.14,-0.04,3.98\nfinalAngularVel=0.00,0.00,0.00\ndistance=250.39 minDistance=6.67 maxBrakeAngularSpeed=0.99 maxFlipAngularSpeed=0.99 finalAngularSpeed=0.00\ncurrentDistanceToTarget=250.39 arrivalRadius=10.00\nleftCompletionEnvelope=True\nfirstCompletionWindowSample=\nbrakeToAccelerateTransitions=0 terminalBrakeToAccelerateTransitions=0 accelerateToBrakeTransitions=0 throttleWhileFlipFrames=0\nArrivalFailureReason=none\nlast5Samples:\ni=2395 z=419.93 dist=250.07 rel=-3.98/3.98 lat=0.01 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 reason=none\ni=2396 z=420.01 dist=250.15 rel=-3.98/3.98 lat=0.01 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 reason=none\ni=2397 z=420.09 dist=250.23 rel=-3.98/3.98 lat=0.01 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 reason=none\ni=2398 z=420.17 dist=250.31 rel=-3.98/3.98 lat=0.01 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 reason=none\ni=2399 z=420.25 dist=250.39 rel=-3.98/3.98 lat=0.01 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 reason=none\neverArrivalBrakeCommitted=True everBrakeHoldActive=False everArrivalTerminalCaptureActive=True finalArrivalBrakeCommitted=False finalBrakeHoldActive=False finalArrivalTerminalCaptureActive=False"
+                  },
+                  {
+                    "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget",
+                    "message": "  Expected: Complete or HoldPosition\r\n  But was:  AlignForBurn\r\n"
+                  },
+                  {
+                    "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_OffAxisLongRangeTerminalBrakeCommit_DoesNotReenterAccelerateOrSpin",
+                    "message": "  terminal capture latch should activate before completion in long-range off-axis scenarios.\nfinalState=AlignForBurn phase=Direct\nfinalDistance=1402.67 finalSpeed=12.26 finalAngularSpeed=0.00\naccelerateFramesInTerminalEnvelope=0 throttleWhileFlipFrames=0 maxFlipAngularSpeed=0.58\nArrivalFailureReason=none\nlast5Samples:\ni=4195 dist=1401.69 rel=12.26 closing=-12.26 lat=0.28 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=4196 dist=1401.94 rel=12.26 closing=-12.26 lat=0.28 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=4197 dist=1402.18 rel=12.26 closing=-12.26 lat=0.28 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=4198 dist=1402.43 rel=12.26 closing=-12.26 lat=0.28 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=4199 dist=1402.67 rel=12.26 closing=-12.26 lat=0.28 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 sawTerminalCapture=False brakeToAccelerateTransitionsAfterCommit=0 integratedFlipRotationRadians=1.87\r\n  Expected: True\r\n  But was:  False\r\n"
+                  },
+                  {
+                    "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_PhysicsAvoidsObstacleWithoutHarnessMotion",
+                    "message": "  Ship should make real progress toward the selected target.\r\n  Expected: less than 118.0f\r\n  But was:  132.396835f\r\n"
+                  },
+                  {
+                    "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalOvershootBrakesAndHoldsWithoutReaccelerating",
+                    "message": "  terminal overshoot should settle into HoldPosition or Complete.\nfinalState=AlignForBurn phase=Direct\nfinalDistance=177.22 finalSpeed=4.12 finalAngularSpeed=0.00\naccelerateFramesInTerminalEnvelope=0 throttleWhileFlipFrames=0 maxFlipAngularSpeed=1.37\nArrivalFailureReason=none\nlast5Samples:\ni=1795 dist=176.89 rel=4.12 closing=-4.11 lat=0.27 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=1796 dist=176.97 rel=4.12 closing=-4.11 lat=0.27 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=1797 dist=177.05 rel=4.12 closing=-4.11 lat=0.27 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=1798 dist=177.14 rel=4.12 closing=-4.11 lat=0.27 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=1799 dist=177.22 rel=4.12 closing=-4.11 lat=0.27 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\neverArrivalBrakeCommitted=True everBrakeHoldActive=False everArrivalTerminalCaptureActive=True finalArrivalBrakeCommitted=False finalBrakeHoldActive=False finalArrivalTerminalCaptureActive=False\nfirstArrivalBrakeCommitSample=i=0 dist=12.10 rel=9.37 closing=-5.00 lat=8.00 state=FlipForBrake phase=Brake firstBrakeHoldSample= firstArrivalTerminalCaptureSample=i=4 dist=12.52 rel=9.12 closing=-5.39 lat=7.43 state=FlipForBrake phase=Brake\nfirstMainBrakeSample=i=268 dist=51.19 rel=7.40 closing=-7.60 lat=0.73 state=Brake phase=Brake\nshouldUseTerminalVelocityBrake=False shouldKeepTerminalBrakeCommitted=False shouldHoldTerminalBrakeCommitUntilSettled=False shouldCaptureAnyArrivalHold=False shouldUseTerminalLateralCorrection=False isWithinArrivalTerminalRange=False isWithinArrivalTerminalCaptureRange=False\r\n  Expected: True\r\n  But was:  False\r\n"
+                  }
+                ],
+                "failures_capped": false
+              },
+              "error": null,
+              "result": null
+            },
+            "hint": null
+          }
+        },
+        "isError": false
+      }
+    }
+  }
+]

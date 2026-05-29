@@ -1,0 +1,225 @@
+{
+  "job_id": "d50c5096d2df42f48ae67bddc6ddd109",
+  "editorState": {
+    "jsonrpc": "2.0",
+    "id": 2,
+    "result": {
+      "contents": [
+        {
+          "uri": "mcpforunity://editor/state",
+          "mimeType": "text/plain",
+          "text": "{\"success\":true,\"message\":\"Retrieved editor state.\",\"error\":null,\"data\":{\"schema_version\":\"unity-mcp/editor_state@2\",\"observed_at_unix_ms\":1780036904123,\"sequence\":11,\"unity\":{\"instance_id\":\"Weltraum Spiel@49c909b3e97ba6e8\",\"unity_version\":\"6000.4.7f1\",\"project_id\":null,\"platform\":\"WindowsEditor\",\"is_batch_mode\":false},\"editor\":{\"is_focused\":true,\"play_mode\":{\"is_playing\":false,\"is_paused\":false,\"is_changing\":false},\"active_scene\":{\"path\":\"Assets/InitTestSceneeddf73b2-278d-4020-84b3-62a0d4d68df8.unity\",\"guid\":\"cd1b508b6413e4c4bb0e2bd777188e4b\",\"name\":\"InitTestSceneeddf73b2-278d-4020-84b3-62a0d4d68df8\"}},\"activity\":{\"phase\":\"idle\",\"since_unix_ms\":1780036904123,\"reasons\":[\"tick\"]},\"compilation\":{\"is_compiling\":false,\"is_domain_reload_pending\":false,\"last_compile_started_unix_ms\":null,\"last_compile_finished_unix_ms\":null,\"last_domain_reload_before_unix_ms\":null,\"last_domain_reload_after_unix_ms\":1780036897071},\"assets\":{\"is_updating\":false,\"external_changes_dirty\":false,\"external_changes_last_seen_unix_ms\":1780036898314,\"external_changes_dirty_since_unix_ms\":null,\"external_changes_last_cleared_unix_ms\":1780036898333,\"refresh\":{\"is_refresh_in_progress\":false,\"last_refresh_requested_unix_ms\":null,\"last_refresh_finished_unix_ms\":null}},\"tests\":{\"is_running\":false,\"mode\":null,\"current_job_id\":null,\"started_unix_ms\":1780036898373,\"started_by\":\"unknown\",\"last_run\":{\"finished_unix_ms\":1780036903078,\"result\":\"unknown\",\"counts\":null}},\"transport\":{\"unity_bridge_connected\":null,\"last_message_unix_ms\":null},\"settings\":{\"batch_execute_max_commands\":25},\"advice\":{\"ready_for_tools\":false,\"blocking_reasons\":[\"stale_status\"],\"recommended_retry_after_ms\":500,\"recommended_next_action\":\"retry_later\"},\"staleness\":{\"age_ms\":27174,\"is_stale\":true}},\"hint\":null}"
+        }
+      ]
+    }
+  },
+  "refresh": {
+    "jsonrpc": "2.0",
+    "id": 3,
+    "result": {
+      "_meta": {
+        "fastmcp": {
+          "wrap_result": true
+        }
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"message\":\"Refresh requested.\",\"error\":null,\"data\":{\"refresh_triggered\":false,\"compile_requested\":true,\"resulting_state\":\"compiling\",\"hint\":\"If Unity enters compilation/domain reload, poll editor_state until ready_for_tools is true.\"},\"hint\":null}"
+        }
+      ],
+      "structuredContent": {
+        "result": {
+          "success": true,
+          "message": "Refresh requested.",
+          "error": null,
+          "data": {
+            "refresh_triggered": false,
+            "compile_requested": true,
+            "resulting_state": "compiling",
+            "hint": "If Unity enters compilation/domain reload, poll editor_state until ready_for_tools is true."
+          },
+          "hint": null
+        }
+      },
+      "isError": false
+    }
+  },
+  "start": {
+    "jsonrpc": "2.0",
+    "id": 4,
+    "result": {
+      "_meta": {
+        "fastmcp": {
+          "wrap_result": true
+        }
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"message\":\"Test job started.\",\"error\":null,\"data\":{\"job_id\":\"d50c5096d2df42f48ae67bddc6ddd109\",\"status\":\"running\",\"mode\":\"PlayMode\",\"include_details\":true,\"include_failed_tests\":true},\"hint\":null}"
+        }
+      ],
+      "structuredContent": {
+        "result": {
+          "success": true,
+          "message": "Test job started.",
+          "error": null,
+          "data": {
+            "job_id": "d50c5096d2df42f48ae67bddc6ddd109",
+            "status": "running",
+            "mode": "PlayMode",
+            "include_details": true,
+            "include_failed_tests": true
+          },
+          "hint": null
+        }
+      },
+      "isError": false
+    }
+  },
+  "final": {
+    "job_id": "d50c5096d2df42f48ae67bddc6ddd109",
+    "status": "succeeded",
+    "mode": "PlayMode",
+    "started_unix_ms": 1780036937553,
+    "finished_unix_ms": 1780036942129,
+    "last_update_unix_ms": 1780036942129,
+    "progress": {
+      "completed": 4,
+      "total": 4,
+      "current_test_full_name": null,
+      "current_test_started_unix_ms": 1780036941611,
+      "last_finished_test_full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalOvershootBrakesAndHoldsWithoutReaccelerating",
+      "last_finished_unix_ms": 1780036942087,
+      "stuck_suspected": false,
+      "editor_is_focused": true,
+      "blocked_reason": null,
+      "failures_so_far": [],
+      "failures_capped": false
+    },
+    "error": null,
+    "result": {
+      "mode": "PlayMode",
+      "summary": {
+        "total": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0,
+        "durationSeconds": 2.4070451,
+        "resultState": "Passed"
+      },
+      "results": [
+        {
+          "name": "PlayMode_Autopilot_Arrival_NoBrakeAccelerateFlap_ReachesCompletionDeadzone",
+          "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_Arrival_NoBrakeAccelerateFlap_ReachesCompletionDeadzone",
+          "state": "Passed",
+          "durationSeconds": 0.9966427,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget",
+          "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget",
+          "state": "Passed",
+          "durationSeconds": 0.5269378,
+          "message": null,
+          "stackTrace": null,
+          "output": "AutopilotPlayModeV2 closed-loop avoidance state=HoldPosition phase=Hold position=0.00,-4.74,101.74 distance=7.45 lateral=0.60 sawAvoidance=True passedObstacle=True maxLateralOffset=4.50 minClearance=8.67 actualRcsAvoidance=True maxRcsForce=18098.21 maxRcsTorque=12000.00 maxMain=1.00 maxRequestedRcs=18098.21 maxAssistForce=18098.21 maxAssistTorque=12000.00 forward=0.00,-0.71,-0.70 candidate=direct\r\n"
+        },
+        {
+          "name": "PlayMode_Autopilot_OffAxisLongRangeTerminalBrakeCommit_DoesNotReenterAccelerateOrSpin",
+          "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_OffAxisLongRangeTerminalBrakeCommit_DoesNotReenterAccelerateOrSpin",
+          "state": "Passed",
+          "durationSeconds": 0.3660777,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "PlayMode_Autopilot_TerminalOvershootBrakesAndHoldsWithoutReaccelerating",
+          "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalOvershootBrakesAndHoldsWithoutReaccelerating",
+          "state": "Passed",
+          "durationSeconds": 0.4756244,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        }
+      ]
+    }
+  },
+  "polls": [
+    {
+      "job_id": "d50c5096d2df42f48ae67bddc6ddd109",
+      "status": "succeeded",
+      "mode": "PlayMode",
+      "started_unix_ms": 1780036937553,
+      "finished_unix_ms": 1780036942129,
+      "last_update_unix_ms": 1780036942129,
+      "progress": {
+        "completed": 4,
+        "total": 4,
+        "current_test_full_name": null,
+        "current_test_started_unix_ms": 1780036941611,
+        "last_finished_test_full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalOvershootBrakesAndHoldsWithoutReaccelerating",
+        "last_finished_unix_ms": 1780036942087,
+        "stuck_suspected": false,
+        "editor_is_focused": true,
+        "blocked_reason": null,
+        "failures_so_far": [],
+        "failures_capped": false
+      },
+      "error": null,
+      "result": {
+        "mode": "PlayMode",
+        "summary": {
+          "total": 4,
+          "passed": 4,
+          "failed": 0,
+          "skipped": 0,
+          "durationSeconds": 2.4070451,
+          "resultState": "Passed"
+        },
+        "results": [
+          {
+            "name": "PlayMode_Autopilot_Arrival_NoBrakeAccelerateFlap_ReachesCompletionDeadzone",
+            "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_Arrival_NoBrakeAccelerateFlap_ReachesCompletionDeadzone",
+            "state": "Passed",
+            "durationSeconds": 0.9966427,
+            "message": null,
+            "stackTrace": null,
+            "output": ""
+          },
+          {
+            "name": "PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget",
+            "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget",
+            "state": "Passed",
+            "durationSeconds": 0.5269378,
+            "message": null,
+            "stackTrace": null,
+            "output": "AutopilotPlayModeV2 closed-loop avoidance state=HoldPosition phase=Hold position=0.00,-4.74,101.74 distance=7.45 lateral=0.60 sawAvoidance=True passedObstacle=True maxLateralOffset=4.50 minClearance=8.67 actualRcsAvoidance=True maxRcsForce=18098.21 maxRcsTorque=12000.00 maxMain=1.00 maxRequestedRcs=18098.21 maxAssistForce=18098.21 maxAssistTorque=12000.00 forward=0.00,-0.71,-0.70 candidate=direct\r\n"
+          },
+          {
+            "name": "PlayMode_Autopilot_OffAxisLongRangeTerminalBrakeCommit_DoesNotReenterAccelerateOrSpin",
+            "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_OffAxisLongRangeTerminalBrakeCommit_DoesNotReenterAccelerateOrSpin",
+            "state": "Passed",
+            "durationSeconds": 0.3660777,
+            "message": null,
+            "stackTrace": null,
+            "output": ""
+          },
+          {
+            "name": "PlayMode_Autopilot_TerminalOvershootBrakesAndHoldsWithoutReaccelerating",
+            "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalOvershootBrakesAndHoldsWithoutReaccelerating",
+            "state": "Passed",
+            "durationSeconds": 0.4756244,
+            "message": null,
+            "stackTrace": null,
+            "output": ""
+          }
+        ]
+      }
+    }
+  ]
+}

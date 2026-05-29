@@ -1,0 +1,150 @@
+{
+  "job_id": "43bd36bee3564ee482498cbbccf919e7",
+  "tests": [
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_AvoidanceWaypointPersistsAcrossFrames",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_FlightPlanDivergenceNewObstacleReplansWithVisibleReason",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_FlightPlanDivergenceTargetMoveReplansWithVisibleReason",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_FlightPlanExecutorDoesNotFlipBeforePlannedBrakeSegment",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_FlightPlanExecutorEntersFlipOnlyAtPlannedSegment",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_FlightPlanExecutorFlagOffUsesLegacyFallback",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_FlightPlanExpiredReplansInsteadOfLegacyLiveBrake",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_FlightPlanHoldWithoutRcsAbortsInsteadOfLegacyHoldGate",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_FuelInsufficientBeforeBurn",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_HoldRequiresStableVelocityWindow",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_NoAuthorityDoesNotFakeComplete",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_ReacquiresDirectPathAfterAvoidance",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.NavigationComputerHud_BuildsStructuredPanelAndWarningChips",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.NavigationComputerSources_RenderStructuredDebugAndMinimapEvidence",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.NavigationComputerV2SyntheticEvidence_WritesMarkedHeadlessPngs",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.ObstacleDetector_MultipleObstacles_SelectsNearestBlocking",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.ObstacleDetector_NonBlockingObstacle_IsIgnored",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.ObstacleDetector_OverlapAtStart_IsDetected",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.ObstacleDetector_TriggersAreDetected",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_AvoidanceCandidateWinsWhenDirectBlocked",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_CandidateScorePenalizesCollision",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_CandidateScorePenalizesImpossibleBrake",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_DirectCandidateWinsWhenClear",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_EmitsExecutableFlightPlanWithoutDroppingLegacyDiagnostics",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_EmittedFlightPlanStartsWithBrakeWhenStoppingDistanceConsumesArrival",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_EmittedFlightPlanUsesRealShipPlanningSnapshot",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_HeavyShipNeedsMoreRcsForce",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_LimitedRcsReportsLimitedAuthority",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_UsesBurnPlanFuelAndDeltaV",
+    "PrototypeFlightPlanValidationTests.DivergenceMonitorFlagsMissingActuatorForAbort",
+    "PrototypeFlightPlanValidationTests.DivergenceMonitorFlagsTargetAndObstacleForReplan",
+    "PrototypeFlightPlanValidationTests.ExecutionStateFlagsDivergenceAgainstSegmentTolerance",
+    "PrototypeFlightPlanValidationTests.ExecutionStateReportsActiveSegmentProgress",
+    "PrototypeFlightPlanValidationTests.FlightPlanComputesOrderedTotalsFromSegments",
+    "PrototypeFlightPlanValidationTests.FlightPlanCreateInvalidPreservesReasonAndStatus",
+    "PrototypeFlightPlanValidationTests.FlightPlanRejectsFuelStarvedRoute",
+    "PrototypeFlightPlanValidationTests.FlightPlanRejectsOverlappingSegments",
+    "PrototypeFlightPlanValidationTests.FlightPlanTracker_BrakeAccelerationOpposesVelocity",
+    "PrototypeFlightPlanValidationTests.FlightPlanTracker_ComputesCrossTrackAndAlongTrackError",
+    "PrototypeFlightPlanValidationTests.FlightPlanTracker_ComputesVelocityError",
+    "PrototypeFlightPlanValidationTests.FlightPlanTracker_InterpolatesSamples",
+    "PrototypeFlightPlanValidationTests.FlightPlanTracker_InvalidPlanWithoutSamples",
+    "PrototypeFlightPlanValidationTests.FlightPlanTracker_InvalidProgradeSegmentDirectionRequiresReplanBeforeThrottle",
+    "PrototypeFlightPlanValidationTests.FlightPlanTracker_OutputAccelerationPointsTowardPlannedPath",
+    "PrototypeFlightPlanValidationTests.FlightPlanTracker_ReplanWhenInitialStateMismatch",
+    "PrototypeFlightPlanValidationTests.ShipPlanningSnapshotBuilderCapturesGeneratedRuntimeShipAuthority",
+    "PrototypeFlightPlanValidationTests.ShipPlanningSnapshotBuilderCapturesImportedFunctionalSocketEvidence",
+    "PrototypeFlightPlanValidationTests.ShipPlanningSnapshotPreservesRealAuthorityFields",
+    "PrototypePlayerHudValidationTests.NavigationComputerControlsReuseAutopilotAndPreviewApis",
+    "PrototypePlayerHudValidationTests.NavigationPlannerPopupUsesAutopilotAndPreviewApis",
+    "PrototypePlayerHudValidationTests.NavigationSnapshotDescribesFlipAndMainDecelBurnIntent",
+    "PrototypePlayerHudValidationTests.NavigationSnapshotUsesEmittedFlightPlanForPlannerScheduleRows"
+  ],
+  "refresh": {
+    "jsonrpc": "2.0",
+    "id": 2,
+    "result": {
+      "_meta": {
+        "fastmcp": {
+          "wrap_result": true
+        }
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"message\":\"Refresh requested.\",\"error\":null,\"data\":{\"refresh_triggered\":false,\"compile_requested\":true,\"resulting_state\":\"compiling\",\"hint\":\"If Unity enters compilation/domain reload, poll editor_state until ready_for_tools is true.\"},\"hint\":null}"
+        }
+      ],
+      "structuredContent": {
+        "result": {
+          "success": true,
+          "message": "Refresh requested.",
+          "error": null,
+          "data": {
+            "refresh_triggered": false,
+            "compile_requested": true,
+            "resulting_state": "compiling",
+            "hint": "If Unity enters compilation/domain reload, poll editor_state until ready_for_tools is true."
+          },
+          "hint": null
+        }
+      },
+      "isError": false
+    }
+  },
+  "start": {
+    "jsonrpc": "2.0",
+    "id": 3,
+    "result": {
+      "_meta": {
+        "fastmcp": {
+          "wrap_result": true
+        }
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"message\":\"Test job started.\",\"error\":null,\"data\":{\"job_id\":\"43bd36bee3564ee482498cbbccf919e7\",\"status\":\"running\",\"mode\":\"EditMode\",\"include_details\":true,\"include_failed_tests\":true},\"hint\":null}"
+        }
+      ],
+      "structuredContent": {
+        "result": {
+          "success": true,
+          "message": "Test job started.",
+          "error": null,
+          "data": {
+            "job_id": "43bd36bee3564ee482498cbbccf919e7",
+            "status": "running",
+            "mode": "EditMode",
+            "include_details": true,
+            "include_failed_tests": true
+          },
+          "hint": null
+        }
+      },
+      "isError": false
+    }
+  },
+  "final": {
+    "job_id": "43bd36bee3564ee482498cbbccf919e7",
+    "status": "failed",
+    "mode": "EditMode",
+    "started_unix_ms": 1780037081160,
+    "finished_unix_ms": 1780037083023,
+    "last_update_unix_ms": 1780037083023,
+    "progress": {
+      "completed": 52,
+      "total": 52,
+      "current_test_full_name": null,
+      "current_test_started_unix_ms": 1780037082974,
+      "last_finished_test_full_name": "PrototypePlayerHudValidationTests.NavigationSnapshotUsesEmittedFlightPlanForPlannerScheduleRows",
+      "last_finished_unix_ms": 1780037082978,
+      "stuck_suspected": false,
+      "editor_is_focused": true,
+      "blocked_reason": null,
+      "failures_so_far": [
+        {
+          "full_name": "PrototypePlayerHudValidationTests.NavigationSnapshotDescribesFlipAndMainDecelBurnIntent",
+          "message": "  Expected: greater than 0.5f\r\n  But was:  0.0f\r\n"
+        }
+      ],
+      "failures_capped": false
+    },
+    "error": null,
+    "result": null
+  }
+}

@@ -713,10 +713,11 @@ public class PrototypeTrajectoryPlanner
         }
 
         float distanceToArrival = Mathf.Max(0f, snapshot.DistanceToTarget - snapshot.arrivalRadius);
+        float alignmentLeadDistance = EstimateBrakeAlignmentLeadDistance(snapshot, ResolveBrakeDirection(snapshot));
         float brakeCommitMargin = Mathf.Max(snapshot.arrivalRadius * 1.5f, closingSpeed * 1.25f);
         return terminalHighDeltaV
             || snapshot.DistanceToTarget <= snapshot.arrivalRadius + brakeCommitMargin
-            || EstimateStoppingDistance(snapshot) + brakeCommitMargin >= distanceToArrival;
+            || EstimateStoppingDistance(snapshot) + alignmentLeadDistance + brakeCommitMargin >= distanceToArrival;
     }
 
     private static Vector3 ResolveBrakeDirection(PrototypeTrajectorySnapshot snapshot)
@@ -869,7 +870,12 @@ public class PrototypeTrajectoryPlanner
                     true);
             }
 
-            PrototypeManeuverPhase phase = MapManeuverPhase(legacy.type);
+            bool isReacquireAfterAvoidance = legacy.type == PrototypeTrajectorySegmentType.Coast
+                && i > 0
+                && sourceSegments[i - 1].type == PrototypeTrajectorySegmentType.AvoidanceBurn;
+            PrototypeManeuverPhase phase = isReacquireAfterAvoidance
+                ? PrototypeManeuverPhase.ReacquireRoute
+                : MapManeuverPhase(legacy.type);
             PrototypeManeuverCommandMode mode = MapCommandMode(legacy.type, legacy.throttle, requestedRcsForceWorld);
             Vector3 rcsForce = UsesRcsTranslation(mode) ? requestedRcsForceWorld : Vector3.zero;
             float rcsScale = ResolveRcsTranslationScale(rcsForce, shipSnapshot);
@@ -890,7 +896,7 @@ public class PrototypeTrajectoryPlanner
                 mainFuel,
                 0f,
                 tolerance,
-                BuildManeuverLabel(legacy.type),
+                isReacquireAfterAvoidance ? "Reacquire route" : BuildManeuverLabel(legacy.type),
                 shipSnapshot,
                 fixedDelta,
                 mainAcceleration,
@@ -1434,7 +1440,35 @@ public class PrototypeTrajectoryPlanner
     private static bool CanBrakeBeforeTarget(PrototypeTrajectorySnapshot snapshot)
     {
         float remainingDistance = Mathf.Max(0f, snapshot.DistanceToTarget - snapshot.arrivalRadius);
-        return EstimateStoppingDistance(snapshot) <= remainingDistance;
+        return EstimateStoppingDistance(snapshot)
+            + EstimateBrakeAlignmentLeadDistance(snapshot, ResolveBrakeDirection(snapshot))
+            <= remainingDistance;
+    }
+
+    private static float EstimateBrakeAlignmentLeadDistance(PrototypeTrajectorySnapshot snapshot, Vector3 brakeDirection)
+    {
+        if (snapshot.velocity.sqrMagnitude <= 0.0001f || brakeDirection.sqrMagnitude <= 0.0001f)
+        {
+            return 0f;
+        }
+
+        float speedTowardBrake = Mathf.Max(
+            Mathf.Max(0f, Vector3.Dot(snapshot.velocity, snapshot.DirectionToTarget)),
+            snapshot.velocity.magnitude * 0.35f);
+        if (speedTowardBrake <= 0.0001f)
+        {
+            return 0f;
+        }
+
+        float neededAngle = Vector3.Angle(snapshot.forward, brakeDirection.normalized);
+        if (neededAngle <= 2f)
+        {
+            return 0f;
+        }
+
+        float normalizedAngle = Mathf.Clamp01(neededAngle / 180f);
+        float turnLeadSeconds = Mathf.Lerp(0.6f, 3.8f, normalizedAngle);
+        return Mathf.Clamp(speedTowardBrake * turnLeadSeconds, 0f, snapshot.arrivalRadius * 8f);
     }
 
     private static float EstimateRcsAuthorityMargin(PrototypeTrajectorySnapshot snapshot, Vector3 direction)

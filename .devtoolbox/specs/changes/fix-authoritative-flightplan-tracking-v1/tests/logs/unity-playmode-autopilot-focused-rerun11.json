@@ -1,0 +1,38 @@
+{
+  "success": true,
+  "message": "Test job status retrieved.",
+  "error": null,
+  "data": {
+    "job_id": "b0cbbbdfd4cc48a58049146b66c759eb",
+    "status": "failed",
+    "mode": "PlayMode",
+    "started_unix_ms": 1780035001319,
+    "finished_unix_ms": 1780035012168,
+    "last_update_unix_ms": 1780035012168,
+    "progress": {
+      "completed": 4,
+      "total": 4,
+      "current_test_full_name": null,
+      "current_test_started_unix_ms": 1780035011552,
+      "last_finished_test_full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalOvershootBrakesAndHoldsWithoutReaccelerating",
+      "last_finished_unix_ms": 1780035012123,
+      "stuck_suspected": false,
+      "editor_is_focused": false,
+      "blocked_reason": null,
+      "failures_so_far": [
+        {
+          "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_OffAxisLongRangeTerminalBrakeCommit_DoesNotReenterAccelerateOrSpin",
+          "message": "  terminal capture latch should activate before completion in long-range off-axis scenarios.\nfinalState=AlignForBurn phase=Direct\nfinalDistance=2830.24 finalSpeed=36.31 finalAngularSpeed=0.00\naccelerateFramesInTerminalEnvelope=0 throttleWhileFlipFrames=0 maxFlipAngularSpeed=0.58\nArrivalFailureReason=none\nlast5Samples:\ni=4195 dist=2827.33 rel=36.31 closing=-36.31 lat=0.15 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=4196 dist=2828.06 rel=36.31 closing=-36.31 lat=0.15 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=4197 dist=2828.78 rel=36.31 closing=-36.31 lat=0.15 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=4198 dist=2829.51 rel=36.31 closing=-36.31 lat=0.15 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=4199 dist=2830.24 rel=36.31 closing=-36.31 lat=0.15 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 sawTerminalCapture=False brakeToAccelerateTransitionsAfterCommit=0 integratedFlipRotationRadians=1.23\r\n  Expected: True\r\n  But was:  False\r\n"
+        },
+        {
+          "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalOvershootBrakesAndHoldsWithoutReaccelerating",
+          "message": "  terminal overshoot should use the main thruster to remove high residual velocity.\nfinalState=Complete phase=Hold\nfinalDistance=6.66 finalSpeed=0.12 finalAngularSpeed=0.00\naccelerateFramesInTerminalEnvelope=0 throttleWhileFlipFrames=0 maxFlipAngularSpeed=1.37\nArrivalFailureReason=none\nlast5Samples:\ni=1017 dist=6.67 rel=0.12 closing=0.10 lat=0.07 state=HoldPosition phase=Hold main=0.00 rcs=236.33\ni=1018 dist=6.66 rel=0.12 closing=0.10 lat=0.07 state=HoldPosition phase=Hold main=0.00 rcs=233.96\ni=1019 dist=6.66 rel=0.12 closing=0.10 lat=0.07 state=HoldPosition phase=Hold main=0.00 rcs=231.62\ni=1020 dist=6.66 rel=0.12 closing=0.10 lat=0.07 state=HoldPosition phase=Hold main=0.00 rcs=229.31\ni=1021 dist=6.66 rel=0.12 closing=0.10 lat=0.07 state=HoldPosition phase=Hold main=0.00 rcs=227.01\neverArrivalBrakeCommitted=True everBrakeHoldActive=False everArrivalTerminalCaptureActive=True finalArrivalBrakeCommitted=False finalBrakeHoldActive=False finalArrivalTerminalCaptureActive=False\nfirstArrivalBrakeCommitSample=i=0 dist=12.10 rel=9.43 closing=-5.00 lat=8.00 state=FlipForBrake phase=Brake firstBrakeHoldSample= firstArrivalTerminalCaptureSample=i=530 dist=28.65 rel=6.35 closing=6.16 lat=1.57 state=FlipForBrake phase=Brake\nfirstMainBrakeSample=\nshouldUseTerminalVelocityBrake=False shouldKeepTerminalBrakeCommitted=False shouldHoldTerminalBrakeCommitUntilSettled=False shouldCaptureAnyArrivalHold=True shouldUseTerminalLateralCorrection=False isWithinArrivalTerminalRange=True isWithinArrivalTerminalCaptureRange=True\r\n  Expected: True\r\n  But was:  False\r\n"
+        }
+      ],
+      "failures_capped": false
+    },
+    "error": null,
+    "result": null
+  },
+  "hint": null
+}

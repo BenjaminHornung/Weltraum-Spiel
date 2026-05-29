@@ -1,0 +1,54 @@
+{
+  "jsonrpc": "2.0",
+  "id": 21,
+  "result": {
+    "_meta": {
+      "fastmcp": {
+        "wrap_result": true
+      }
+    },
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"message\":\"Test job status retrieved.\",\"error\":null,\"data\":{\"job_id\":\"5db708b7ecd04838b0fbacff84d33b7e\",\"status\":\"failed\",\"mode\":\"PlayMode\",\"started_unix_ms\":1780039962106,\"finished_unix_ms\":1780039965896,\"last_update_unix_ms\":1780039965896,\"progress\":{\"completed\":2,\"total\":2,\"current_test_full_name\":null,\"current_test_started_unix_ms\":1780039965425,\"last_finished_test_full_name\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap\",\"last_finished_unix_ms\":1780039965863,\"stuck_suspected\":false,\"editor_is_focused\":true,\"blocked_reason\":null,\"failures_so_far\":[{\"full_name\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget\",\"message\":\"  distance=17.22 speed=7.15 lateral=3.05 phase=Brake segment=Brake candidate=direct reason=direct path clear\\nlastSamples:\\ni=852 dist=18.19 rel=8.38 lat=3.54 state=Brake phase=Brake seg=Brake main=1.00 cmdMain=1.00 rcs=15912.51 desiredAngle=26.0 retroAngle=26.2 angDeg=26.6\\ni=853 dist=18.04 rel=8.21 lat=3.47 state=Brake phase=Brake seg=Brake main=1.00 cmdMain=1.00 rcs=16074.74 desiredAngle=25.7 retroAngle=25.9 angDeg=26.3\\ni=854 dist=17.90 rel=8.03 lat=3.40 state=Brake phase=Brake seg=Brake main=1.00 cmdMain=1.00 rcs=16232.31 desiredAngle=25.4 retroAngle=25.6 angDeg=26.1\\ni=855 dist=17.75 rel=7.86 lat=3.33 state=Brake phase=Brake seg=Brake main=1.00 cmdMain=1.00 rcs=16385.33 desiredAngle=25.0 retroAngle=25.2 angDeg=25.9\\ni=856 dist=17.61 rel=7.68 lat=3.26 state=Brake phase=Brake seg=Brake main=1.00 cmdMain=1.00 rcs=16533.94 desiredAngle=24.7 retroAngle=24.9 angDeg=25.7\\ni=857 dist=17.48 rel=7.51 lat=3.19 state=Brake phase=Brake seg=Brake main=1.00 cmdMain=1.00 rcs=16678.14 desiredAngle=24.4 retroAngle=24.5 angDeg=25.5\\ni=858 dist=17.35 rel=7.33 lat=3.12 state=Brake phase=Brake seg=Brake main=1.00 cmdMain=1.00 rcs=16818.17 desiredAngle=24.0 retroAngle=24.2 angDeg=25.4\\ni=859 dist=17.22 rel=7.15 lat=3.05 state=Brake phase=Brake seg=Brake main=1.00 cmdMain=1.00 rcs=16954.04 desiredAngle=23.7 retroAngle=23.8 angDeg=25.2\\r\\n  Expected: Complete or HoldPosition\\r\\n  But was:  Brake\\r\\n\"}],\"failures_capped\":false},\"error\":null,\"result\":null},\"hint\":null}"
+      }
+    ],
+    "structuredContent": {
+      "result": {
+        "success": true,
+        "message": "Test job status retrieved.",
+        "error": null,
+        "data": {
+          "job_id": "5db708b7ecd04838b0fbacff84d33b7e",
+          "status": "failed",
+          "mode": "PlayMode",
+          "started_unix_ms": 1780039962106,
+          "finished_unix_ms": 1780039965896,
+          "last_update_unix_ms": 1780039965896,
+          "progress": {
+            "completed": 2,
+            "total": 2,
+            "current_test_full_name": null,
+            "current_test_started_unix_ms": 1780039965425,
+            "last_finished_test_full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap",
+            "last_finished_unix_ms": 1780039965863,
+            "stuck_suspected": false,
+            "editor_is_focused": true,
+            "blocked_reason": null,
+            "failures_so_far": [
+              {
+                "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget",
+                "message": "  distance=17.22 speed=7.15 lateral=3.05 phase=Brake segment=Brake candidate=direct reason=direct path clear\nlastSamples:\ni=852 dist=18.19 rel=8.38 lat=3.54 state=Brake phase=Brake seg=Brake main=1.00 cmdMain=1.00 rcs=15912.51 desiredAngle=26.0 retroAngle=26.2 angDeg=26.6\ni=853 dist=18.04 rel=8.21 lat=3.47 state=Brake phase=Brake seg=Brake main=1.00 cmdMain=1.00 rcs=16074.74 desiredAngle=25.7 retroAngle=25.9 angDeg=26.3\ni=854 dist=17.90 rel=8.03 lat=3.40 state=Brake phase=Brake seg=Brake main=1.00 cmdMain=1.00 rcs=16232.31 desiredAngle=25.4 retroAngle=25.6 angDeg=26.1\ni=855 dist=17.75 rel=7.86 lat=3.33 state=Brake phase=Brake seg=Brake main=1.00 cmdMain=1.00 rcs=16385.33 desiredAngle=25.0 retroAngle=25.2 angDeg=25.9\ni=856 dist=17.61 rel=7.68 lat=3.26 state=Brake phase=Brake seg=Brake main=1.00 cmdMain=1.00 rcs=16533.94 desiredAngle=24.7 retroAngle=24.9 angDeg=25.7\ni=857 dist=17.48 rel=7.51 lat=3.19 state=Brake phase=Brake seg=Brake main=1.00 cmdMain=1.00 rcs=16678.14 desiredAngle=24.4 retroAngle=24.5 angDeg=25.5\ni=858 dist=17.35 rel=7.33 lat=3.12 state=Brake phase=Brake seg=Brake main=1.00 cmdMain=1.00 rcs=16818.17 desiredAngle=24.0 retroAngle=24.2 angDeg=25.4\ni=859 dist=17.22 rel=7.15 lat=3.05 state=Brake phase=Brake seg=Brake main=1.00 cmdMain=1.00 rcs=16954.04 desiredAngle=23.7 retroAngle=23.8 angDeg=25.2\r\n  Expected: Complete or HoldPosition\r\n  But was:  Brake\r\n"
+              }
+            ],
+            "failures_capped": false
+          },
+          "error": null,
+          "result": null
+        },
+        "hint": null
+      }
+    },
+    "isError": false
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "jsonrpc": "2.0",
+  "id": 21,
+  "result": {
+    "_meta": {
+      "fastmcp": {
+        "wrap_result": true
+      }
+    },
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"message\":\"Test job status retrieved.\",\"error\":null,\"data\":{\"job_id\":\"5a39862a4ca84e6facc818b1758c39a4\",\"status\":\"failed\",\"mode\":\"PlayMode\",\"started_unix_ms\":1780039290753,\"finished_unix_ms\":1780039293579,\"last_update_unix_ms\":1780039293579,\"progress\":{\"completed\":1,\"total\":1,\"current_test_full_name\":null,\"current_test_started_unix_ms\":1780039292894,\"last_finished_test_full_name\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget\",\"last_finished_unix_ms\":1780039293539,\"stuck_suspected\":false,\"editor_is_focused\":true,\"blocked_reason\":null,\"failures_so_far\":[{\"full_name\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget\",\"message\":\"  distance=16.86 speed=9.70 lateral=4.30 phase=Brake segment=Brake candidate=direct reason=direct path clear\\nlastSamples:\\ni=852 dist=18.09 rel=9.70 lat=4.17 state=FlipForBrake phase=Brake seg=Brake main=0.00 rcs=4893.41\\ni=853 dist=17.91 rel=9.70 lat=4.19 state=FlipForBrake phase=Brake seg=Brake main=0.00 rcs=4928.03\\ni=854 dist=17.74 rel=9.70 lat=4.21 state=FlipForBrake phase=Brake seg=Brake main=0.00 rcs=4963.49\\ni=855 dist=17.56 rel=9.70 lat=4.22 state=FlipForBrake phase=Brake seg=Brake main=0.00 rcs=4999.81\\ni=856 dist=17.39 rel=9.70 lat=4.24 state=FlipForBrake phase=Brake seg=Brake main=0.00 rcs=5037.02\\ni=857 dist=17.21 rel=9.70 lat=4.26 state=FlipForBrake phase=Brake seg=Brake main=0.00 rcs=5075.13\\ni=858 dist=17.04 rel=9.70 lat=4.28 state=FlipForBrake phase=Brake seg=Brake main=0.00 rcs=5114.18\\ni=859 dist=16.86 rel=9.70 lat=4.30 state=FlipForBrake phase=Brake seg=Brake main=0.00 rcs=5154.18\\r\\n  Expected: Complete or HoldPosition\\r\\n  But was:  FlipForBrake\\r\\n\"}],\"failures_capped\":false},\"error\":null,\"result\":null},\"hint\":null}"
+      }
+    ],
+    "structuredContent": {
+      "result": {
+        "success": true,
+        "message": "Test job status retrieved.",
+        "error": null,
+        "data": {
+          "job_id": "5a39862a4ca84e6facc818b1758c39a4",
+          "status": "failed",
+          "mode": "PlayMode",
+          "started_unix_ms": 1780039290753,
+          "finished_unix_ms": 1780039293579,
+          "last_update_unix_ms": 1780039293579,
+          "progress": {
+            "completed": 1,
+            "total": 1,
+            "current_test_full_name": null,
+            "current_test_started_unix_ms": 1780039292894,
+            "last_finished_test_full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget",
+            "last_finished_unix_ms": 1780039293539,
+            "stuck_suspected": false,
+            "editor_is_focused": true,
+            "blocked_reason": null,
+            "failures_so_far": [
+              {
+                "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget",
+                "message": "  distance=16.86 speed=9.70 lateral=4.30 phase=Brake segment=Brake candidate=direct reason=direct path clear\nlastSamples:\ni=852 dist=18.09 rel=9.70 lat=4.17 state=FlipForBrake phase=Brake seg=Brake main=0.00 rcs=4893.41\ni=853 dist=17.91 rel=9.70 lat=4.19 state=FlipForBrake phase=Brake seg=Brake main=0.00 rcs=4928.03\ni=854 dist=17.74 rel=9.70 lat=4.21 state=FlipForBrake phase=Brake seg=Brake main=0.00 rcs=4963.49\ni=855 dist=17.56 rel=9.70 lat=4.22 state=FlipForBrake phase=Brake seg=Brake main=0.00 rcs=4999.81\ni=856 dist=17.39 rel=9.70 lat=4.24 state=FlipForBrake phase=Brake seg=Brake main=0.00 rcs=5037.02\ni=857 dist=17.21 rel=9.70 lat=4.26 state=FlipForBrake phase=Brake seg=Brake main=0.00 rcs=5075.13\ni=858 dist=17.04 rel=9.70 lat=4.28 state=FlipForBrake phase=Brake seg=Brake main=0.00 rcs=5114.18\ni=859 dist=16.86 rel=9.70 lat=4.30 state=FlipForBrake phase=Brake seg=Brake main=0.00 rcs=5154.18\r\n  Expected: Complete or HoldPosition\r\n  But was:  FlipForBrake\r\n"
+              }
+            ],
+            "failures_capped": false
+          },
+          "error": null,
+          "result": null
+        },
+        "hint": null
+      }
+    },
+    "isError": false
+  }
+}

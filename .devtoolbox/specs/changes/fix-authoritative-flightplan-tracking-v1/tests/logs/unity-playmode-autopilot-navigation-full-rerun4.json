@@ -1,0 +1,322 @@
+{
+  "jsonrpc": "2.0",
+  "id": 21,
+  "result": {
+    "_meta": {
+      "fastmcp": {
+        "wrap_result": true
+      }
+    },
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"message\":\"Test job status retrieved.\",\"error\":null,\"data\":{\"job_id\":\"b04d028a0bb44c77856fee810843a265\",\"status\":\"succeeded\",\"mode\":\"PlayMode\",\"started_unix_ms\":1780040275321,\"finished_unix_ms\":1780040283192,\"last_update_unix_ms\":1780040283192,\"progress\":{\"completed\":29,\"total\":29,\"current_test_full_name\":null,\"current_test_started_unix_ms\":1780040283143,\"last_finished_test_full_name\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_FlightPlanExecutor_PreviewAndExecutionUseSamePlan\",\"last_finished_unix_ms\":1780040283146,\"stuck_suspected\":false,\"editor_is_focused\":true,\"blocked_reason\":null,\"failures_so_far\":[],\"failures_capped\":false},\"error\":null,\"result\":{\"mode\":\"PlayMode\",\"summary\":{\"total\":29,\"passed\":29,\"failed\":0,\"skipped\":0,\"durationSeconds\":5.5406165,\"resultState\":\"Passed\"},\"results\":[{\"name\":\"PlayMode_Autopilot_Arrival_NoBrakeAccelerateFlap_ReachesCompletionDeadzone\",\"fullName\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_Arrival_NoBrakeAccelerateFlap_ReachesCompletionDeadzone\",\"state\":\"Passed\",\"durationSeconds\":1.1006721,\"message\":null,\"stackTrace\":null,\"output\":\"\"},{\"name\":\"PlayMode_Autopilot_AvoidsObstacle_ThenReachesWaypoint\",\"fullName\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_AvoidsObstacle_ThenReachesWaypoint\",\"state\":\"Passed\",\"durationSeconds\":0.2522415,\"message\":null,\"stackTrace\":null,\"output\":\"AutopilotPlayModeV2 result state=Complete phase=Hold position=-3.57,0.00,86.98 com=-3.57,0.00,86.98 distance=9.70 lateral=0.00 sawAvoidance=True sawReacquire=True sawDirectAfterAvoidance=False minClearance=10.63 candidate=direct reason=direct path clear\\r\\n\"},{\"name\":\"PlayMode_Autopilot_BrakeDirectionUsesRetrogradeOutsideTerminalRangeEvenWithCaptureLatch\",\"fullName\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_BrakeDirectionUsesRetrogradeOutsideTerminalRangeEvenWithCaptureLatch\",\"state\":\"Passed\",\"durationSeconds\":0.0026162,\"message\":null,\"stackTrace\":null,\"output\":\"\"},{\"name\":\"PlayMode_Autopilot_ClosedLoopBrake_RotatesAndUsesMainThrusterWithoutHarnessRotation\",\"fullName\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_ClosedLoopBrake_RotatesAndUsesMainThrusterWithoutHarnessRotation\",\"state\":\"Passed\",\"durationSeconds\":0.457375,\"message\":null,\"stackTrace\":null,\"output\":\"AutopilotPlayModeV2 closed-loop brake state=FlipForBrake phase=Brake initialRetro=180.0 minRetro=0.8 maxMain=1.00 sawTorque=True mainAfterAlign=True brakeForce=True position=4.42,-8.16,337.68 velocity=0.89,1.71,-20.26\\r\\n\"},{\"name\":\"PlayMode_Autopilot_FineTerminalCommittedBrakeLatchDoesNotPublishMainThrottle\",\"fullName\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_FineTerminalCommittedBrakeLatchDoesNotPublishMainThrottle\",\"state\":\"Passed\",\"durationSeconds\":0.0027333,\"message\":null,\"stackTrace\":null,\"output\":\"\"},{\"name\":\"PlayMode_Autopilot_FineTerminalCorrectionUsesRcsOnlyBelowLowDeltaVThreshold\",\"fullName\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_FineTerminalCorrectionUsesRcsOnlyBelowLowDeltaVThreshold\",\"state\":\"Passed\",\"durationSeconds\":0.0034749,\"message\":null,\"stackTrace\":null,\"output\":\"\"},{\"name\":\"PlayMode_Autopilot_HeavyCargo_ReportsLimitedOrCompletesWithinRelaxedEnvelope\",\"fullName\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_HeavyCargo_ReportsLimitedOrCompletesWithinRelaxedEnvelope\",\"state\":\"Passed\",\"durationSeconds\":0.0978716,\"message\":null,\"stackTrace\":null,\"output\":\"AutopilotPlayModeV2 result state=Complete phase=Hold position=0.13,0.00,68.26 com=0.13,0.00,68.26 distance=9.74 lateral=0.00 sawAvoidance=False sawReacquire=False sawDirectAfterAvoidance=False minClearance=Infinity candidate=direct reason=direct path clear\\r\\n\"},{\"name\":\"PlayMode_Autopilot_HighDeltaVTerminalBrakeStillAllowsMainThrottle\",\"fullName\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_HighDeltaVTerminalBrakeStillAllowsMainThrottle\",\"state\":\"Passed\",\"durationSeconds\":0.0023361,\"message\":null,\"stackTrace\":null,\"output\":\"\"},{\"name\":\"PlayMode_Autopilot_ImportedFunctionalScoutDoesNotFlipBeforePlannedBrakeSegment\",\"fullName\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_ImportedFunctionalScoutDoesNotFlipBeforePlannedBrakeSegment\",\"state\":\"Passed\",\"durationSeconds\":0.0911125,\"message\":null,\"stackTrace\":null,\"output\":\"PrototypeBootstrap visibility diagnostics: buildMode=ImportedDemoScoutFunctionalDefault allowGeneratedFallbackWhenImportedAssetMissing=False useGeneratedFallbackBeforePolicy=False useGeneratedFallbackAfterPolicy=False hasRequiredFlightSockets=True hasRequiredWeaponSockets=True hasRequiredVisibleWeaponRenderers=True hasVisibleImportedShip=True missingRequiredSockets= missingWeaponSockets= missingVisibleWeaponRenderers= importedVisualRoot=True importedVisualRootActive=True importedShipInstance=ImportedDemoScoutVisual importedShipInstanceActive=True importedShipInstanceLocalScale=(100.0, 100.0, 100.0) functionalSocketRig=True importedRendererCount=126 importedEnabledRendererCount=81 importedVisibleMeshRendererCount=29 importedVisibleMeshBoundsSize=(2.42, 1.56, 4.39) generatedRendererCount=0 generatedEnabledRendererCount=0 cameraTargetDistance=19.0\\r\\n\"},{\"name\":\"PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget\",\"fullName\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget\",\"state\":\"Passed\",\"durationSeconds\":0.6476295,\"message\":null,\"stackTrace\":null,\"output\":\"AutopilotPlayModeV2 closed-loop avoidance state=HoldPosition phase=Hold position=0.00,-6.20,104.58 distance=10.59 lateral=0.15 sawAvoidance=True passedObstacle=True maxLateralOffset=4.50 minClearance=8.67 actualRcsAvoidance=True maxRcsForce=20000.00 maxRcsTorque=12000.00 maxMain=1.00 maxRequestedRcs=20000.00 maxAssistForce=20000.00 maxAssistTorque=12000.00 forward=0.00,-0.97,-0.23 candidate=direct\\r\\n\"},{\"name\":\"PlayMode_Autopilot_LongRangeBrakeCommitDoesNotActivateTerminalCaptureBeforeEnvelope\",\"fullName\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_LongRangeBrakeCommitDoesNotActivateTerminalCaptureBeforeEnvelope\",\"state\":\"Passed\",\"durationSeconds\":0.1646238,\"message\":null,\"stackTrace\":null,\"output\":\"\"},{\"name\":\"PlayMode_Autopilot_ManualOverride_AbortsAndClearsRequests\",\"fullName\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_ManualOverride_AbortsAndClearsRequests\",\"state\":\"Passed\",\"durationSeconds\":0.0035356,\"message\":null,\"stackTrace\":null,\"output\":\"\"},{\"name\":\"PlayMode_Autopilot_NearTargetHighMassLowRcs_DetectsLimitedLateralAuthority\",\"fullName\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_NearTargetHighMassLowRcs_DetectsLimitedLateralAuthority\",\"state\":\"Passed\",\"durationSeconds\":0.0032094,\"message\":null,\"stackTrace\":null,\"output\":\"\"},{\"name\":\"PlayMode_Autopilot_NearTargetLateralOvershoot_NoTerminalAccelerateOrSpin\",\"fullName\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_NearTargetLateralOvershoot_NoTerminalAccelerateOrSpin\",\"state\":\"Passed\",\"durationSeconds\":0.3650711,\"message\":null,\"stackTrace\":null,\"output\":\"\"},{\"name\":\"PlayMode_Autopilot_NearTargetOffAxisVelocity_DampsLaterallyWithoutMainThrottle\",\"fullName\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_NearTargetOffAxisVelocity_DampsLaterallyWithoutMainThrottle\",\"state\":\"Passed\",\"durationSeconds\":0.0021875,\"message\":null,\"stackTrace\":null,\"output\":\"\"},{\"name\":\"PlayMode_Autopilot_NoRcs_DoesNotFakePrecisionComplete\",\"fullName\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_NoRcs_DoesNotFakePrecisionComplete\",\"state\":\"Passed\",\"durationSeconds\":0.0562375,\"message\":null,\"stackTrace\":null,\"output\":\"AutopilotPlayModeV2 result state=FlipForBrake phase=Brake position=7.20,0.00,0.00 com=7.20,0.00,0.00 distance=11.53 lateral=3.12 sawAvoidance=False sawReacquire=False sawDirectAfterAvoidance=False minClearance=Infinity candidate=direct reason=direct path clear\\r\\n\"},{\"name\":\"PlayMode_Autopilot_OffAxisLongRangeTerminalBrakeCommit_DoesNotReenterAccelerateOrSpin\",\"fullName\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_OffAxisLongRangeTerminalBrakeCommit_DoesNotReenterAccelerateOrSpin\",\"state\":\"Passed\",\"durationSeconds\":0.2938324,\"message\":null,\"stackTrace\":null,\"output\":\"\"},{\"name\":\"PlayMode_Autopilot_OffAxisTerminalDeadzoneWithRealisticAuthority_LatchesHoldWithoutAccelerateFlap\",\"fullName\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_OffAxisTerminalDeadzoneWithRealisticAuthority_LatchesHoldWithoutAccelerateFlap\",\"state\":\"Passed\",\"durationSeconds\":0.2816588,\"message\":null,\"stackTrace\":null,\"output\":\"\"},{\"name\":\"PlayMode_Autopilot_PhysicsAvoidsObstacleWithoutHarnessMotion\",\"fullName\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_PhysicsAvoidsObstacleWithoutHarnessMotion\",\"state\":\"Passed\",\"durationSeconds\":0.4961451,\"message\":null,\"stackTrace\":null,\"output\":\"AutopilotPlayModeV2 closed-loop avoidance state=FlipForBrake phase=Brake position=-41.22,41.06,103.44 distance=59.97 lateral=1.84 sawAvoidance=True passedObstacle=True maxLateralOffset=54.14 minClearance=28.59 actualRcsAvoidance=True maxRcsForce=20000.00 maxRcsTorque=12000.00 maxMain=1.00 maxRequestedRcs=20000.00 maxAssistForce=20000.00 maxAssistTorque=12000.00 forward=0.68,-0.59,-0.43 candidate=direct\\r\\n\"},{\"name\":\"PlayMode_Autopilot_ReachesWaypoint_NoObstacle\",\"fullName\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_ReachesWaypoint_NoObstacle\",\"state\":\"Passed\",\"durationSeconds\":0.0907013,\"message\":null,\"stackTrace\":null,\"output\":\"AutopilotPlayModeV2 result state=Complete phase=Hold position=0.00,0.00,62.26 com=0.00,0.00,62.26 distance=9.74 lateral=0.00 sawAvoidance=False sawReacquire=False sawDirectAfterAvoidance=False minClearance=Infinity candidate=direct reason=direct path clear\\r\\n\"},{\"name\":\"PlayMode_Autopilot_SelectTargetClearsArrivalBrakeAndHoldHysteresis\",\"fullName\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_SelectTargetClearsArrivalBrakeAndHoldHysteresis\",\"state\":\"Passed\",\"durationSeconds\":0.0032312,\"message\":null,\"stackTrace\":null,\"output\":\"\"},{\"name\":\"PlayMode_Autopilot_StartsWithLateralVelocity_ReachesHold\",\"fullName\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_StartsWithLateralVelocity_ReachesHold\",\"state\":\"Passed\",\"durationSeconds\":0.0794618,\"message\":null,\"stackTrace\":null,\"output\":\"AutopilotPlayModeV2 result state=Complete phase=Hold position=0.19,0.00,54.31 com=0.19,0.00,54.31 distance=9.70 lateral=0.00 sawAvoidance=False sawReacquire=False sawDirectAfterAvoidance=False minClearance=Infinity candidate=direct reason=direct path clear\\r\\n\"},{\"name\":\"PlayMode_Autopilot_TerminalAvoidanceStillWinsOverCommittedBrakeLatch\",\"fullName\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalAvoidanceStillWinsOverCommittedBrakeLatch\",\"state\":\"Passed\",\"durationSeconds\":0.0026567,\"message\":null,\"stackTrace\":null,\"output\":\"\"},{\"name\":\"PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap\",\"fullName\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap\",\"state\":\"Passed\",\"durationSeconds\":0.4708947,\"message\":null,\"stackTrace\":null,\"output\":\"\"},{\"name\":\"PlayMode_Autopilot_TerminalBrakeDirectionDoesNotChaseLateralVelocity\",\"fullName\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalBrakeDirectionDoesNotChaseLateralVelocity\",\"state\":\"Passed\",\"durationSeconds\":0.0023404,\"message\":null,\"stackTrace\":null,\"output\":\"\"},{\"name\":\"PlayMode_Autopilot_TerminalOvershootBrakesAndHoldsWithoutReaccelerating\",\"fullName\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalOvershootBrakesAndHoldsWithoutReaccelerating\",\"state\":\"Passed\",\"durationSeconds\":0.4546245,\"message\":null,\"stackTrace\":null,\"output\":\"\"},{\"name\":\"PlayMode_Autopilot_TerminalOvershootWithoutRcsDoesNotEnterHold\",\"fullName\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalOvershootWithoutRcsDoesNotEnterHold\",\"state\":\"Passed\",\"durationSeconds\":0.0025076,\"message\":null,\"stackTrace\":null,\"output\":\"\"},{\"name\":\"PlayMode_FlightPlanExecutor_DirectRoute_TracksPredictedPathAndDoesNotBurnAway\",\"fullName\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_FlightPlanExecutor_DirectRoute_TracksPredictedPathAndDoesNotBurnAway\",\"state\":\"Passed\",\"durationSeconds\":0.0529966,\"message\":null,\"stackTrace\":null,\"output\":\"\"},{\"name\":\"PlayMode_FlightPlanExecutor_PreviewAndExecutionUseSamePlan\",\"fullName\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_FlightPlanExecutor_PreviewAndExecutionUseSamePlan\",\"state\":\"Passed\",\"durationSeconds\":0.0029522,\"message\":null,\"stackTrace\":null,\"output\":\"\"}]}},\"hint\":null}"
+      }
+    ],
+    "structuredContent": {
+      "result": {
+        "success": true,
+        "message": "Test job status retrieved.",
+        "error": null,
+        "data": {
+          "job_id": "b04d028a0bb44c77856fee810843a265",
+          "status": "succeeded",
+          "mode": "PlayMode",
+          "started_unix_ms": 1780040275321,
+          "finished_unix_ms": 1780040283192,
+          "last_update_unix_ms": 1780040283192,
+          "progress": {
+            "completed": 29,
+            "total": 29,
+            "current_test_full_name": null,
+            "current_test_started_unix_ms": 1780040283143,
+            "last_finished_test_full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_FlightPlanExecutor_PreviewAndExecutionUseSamePlan",
+            "last_finished_unix_ms": 1780040283146,
+            "stuck_suspected": false,
+            "editor_is_focused": true,
+            "blocked_reason": null,
+            "failures_so_far": [],
+            "failures_capped": false
+          },
+          "error": null,
+          "result": {
+            "mode": "PlayMode",
+            "summary": {
+              "total": 29,
+              "passed": 29,
+              "failed": 0,
+              "skipped": 0,
+              "durationSeconds": 5.5406165,
+              "resultState": "Passed"
+            },
+            "results": [
+              {
+                "name": "PlayMode_Autopilot_Arrival_NoBrakeAccelerateFlap_ReachesCompletionDeadzone",
+                "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_Arrival_NoBrakeAccelerateFlap_ReachesCompletionDeadzone",
+                "state": "Passed",
+                "durationSeconds": 1.1006721,
+                "message": null,
+                "stackTrace": null,
+                "output": ""
+              },
+              {
+                "name": "PlayMode_Autopilot_AvoidsObstacle_ThenReachesWaypoint",
+                "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_AvoidsObstacle_ThenReachesWaypoint",
+                "state": "Passed",
+                "durationSeconds": 0.2522415,
+                "message": null,
+                "stackTrace": null,
+                "output": "AutopilotPlayModeV2 result state=Complete phase=Hold position=-3.57,0.00,86.98 com=-3.57,0.00,86.98 distance=9.70 lateral=0.00 sawAvoidance=True sawReacquire=True sawDirectAfterAvoidance=False minClearance=10.63 candidate=direct reason=direct path clear\r\n"
+              },
+              {
+                "name": "PlayMode_Autopilot_BrakeDirectionUsesRetrogradeOutsideTerminalRangeEvenWithCaptureLatch",
+                "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_BrakeDirectionUsesRetrogradeOutsideTerminalRangeEvenWithCaptureLatch",
+                "state": "Passed",
+                "durationSeconds": 0.0026162,
+                "message": null,
+                "stackTrace": null,
+                "output": ""
+              },
+              {
+                "name": "PlayMode_Autopilot_ClosedLoopBrake_RotatesAndUsesMainThrusterWithoutHarnessRotation",
+                "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_ClosedLoopBrake_RotatesAndUsesMainThrusterWithoutHarnessRotation",
+                "state": "Passed",
+                "durationSeconds": 0.457375,
+                "message": null,
+                "stackTrace": null,
+                "output": "AutopilotPlayModeV2 closed-loop brake state=FlipForBrake phase=Brake initialRetro=180.0 minRetro=0.8 maxMain=1.00 sawTorque=True mainAfterAlign=True brakeForce=True position=4.42,-8.16,337.68 velocity=0.89,1.71,-20.26\r\n"
+              },
+              {
+                "name": "PlayMode_Autopilot_FineTerminalCommittedBrakeLatchDoesNotPublishMainThrottle",
+                "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_FineTerminalCommittedBrakeLatchDoesNotPublishMainThrottle",
+                "state": "Passed",
+                "durationSeconds": 0.0027333,
+                "message": null,
+                "stackTrace": null,
+                "output": ""
+              },
+              {
+                "name": "PlayMode_Autopilot_FineTerminalCorrectionUsesRcsOnlyBelowLowDeltaVThreshold",
+                "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_FineTerminalCorrectionUsesRcsOnlyBelowLowDeltaVThreshold",
+                "state": "Passed",
+                "durationSeconds": 0.0034749,
+                "message": null,
+                "stackTrace": null,
+                "output": ""
+              },
+              {
+                "name": "PlayMode_Autopilot_HeavyCargo_ReportsLimitedOrCompletesWithinRelaxedEnvelope",
+                "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_HeavyCargo_ReportsLimitedOrCompletesWithinRelaxedEnvelope",
+                "state": "Passed",
+                "durationSeconds": 0.0978716,
+                "message": null,
+                "stackTrace": null,
+                "output": "AutopilotPlayModeV2 result state=Complete phase=Hold position=0.13,0.00,68.26 com=0.13,0.00,68.26 distance=9.74 lateral=0.00 sawAvoidance=False sawReacquire=False sawDirectAfterAvoidance=False minClearance=Infinity candidate=direct reason=direct path clear\r\n"
+              },
+              {
+                "name": "PlayMode_Autopilot_HighDeltaVTerminalBrakeStillAllowsMainThrottle",
+                "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_HighDeltaVTerminalBrakeStillAllowsMainThrottle",
+                "state": "Passed",
+                "durationSeconds": 0.0023361,
+                "message": null,
+                "stackTrace": null,
+                "output": ""
+              },
+              {
+                "name": "PlayMode_Autopilot_ImportedFunctionalScoutDoesNotFlipBeforePlannedBrakeSegment",
+                "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_ImportedFunctionalScoutDoesNotFlipBeforePlannedBrakeSegment",
+                "state": "Passed",
+                "durationSeconds": 0.0911125,
+                "message": null,
+                "stackTrace": null,
+                "output": "PrototypeBootstrap visibility diagnostics: buildMode=ImportedDemoScoutFunctionalDefault allowGeneratedFallbackWhenImportedAssetMissing=False useGeneratedFallbackBeforePolicy=False useGeneratedFallbackAfterPolicy=False hasRequiredFlightSockets=True hasRequiredWeaponSockets=True hasRequiredVisibleWeaponRenderers=True hasVisibleImportedShip=True missingRequiredSockets= missingWeaponSockets= missingVisibleWeaponRenderers= importedVisualRoot=True importedVisualRootActive=True importedShipInstance=ImportedDemoScoutVisual importedShipInstanceActive=True importedShipInstanceLocalScale=(100.0, 100.0, 100.0) functionalSocketRig=True importedRendererCount=126 importedEnabledRendererCount=81 importedVisibleMeshRendererCount=29 importedVisibleMeshBoundsSize=(2.42, 1.56, 4.39) generatedRendererCount=0 generatedEnabledRendererCount=0 cameraTargetDistance=19.0\r\n"
+              },
+              {
+                "name": "PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget",
+                "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget",
+                "state": "Passed",
+                "durationSeconds": 0.6476295,
+                "message": null,
+                "stackTrace": null,
+                "output": "AutopilotPlayModeV2 closed-loop avoidance state=HoldPosition phase=Hold position=0.00,-6.20,104.58 distance=10.59 lateral=0.15 sawAvoidance=True passedObstacle=True maxLateralOffset=4.50 minClearance=8.67 actualRcsAvoidance=True maxRcsForce=20000.00 maxRcsTorque=12000.00 maxMain=1.00 maxRequestedRcs=20000.00 maxAssistForce=20000.00 maxAssistTorque=12000.00 forward=0.00,-0.97,-0.23 candidate=direct\r\n"
+              },
+              {
+                "name": "PlayMode_Autopilot_LongRangeBrakeCommitDoesNotActivateTerminalCaptureBeforeEnvelope",
+                "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_LongRangeBrakeCommitDoesNotActivateTerminalCaptureBeforeEnvelope",
+                "state": "Passed",
+                "durationSeconds": 0.1646238,
+                "message": null,
+                "stackTrace": null,
+                "output": ""
+              },
+              {
+                "name": "PlayMode_Autopilot_ManualOverride_AbortsAndClearsRequests",
+                "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_ManualOverride_AbortsAndClearsRequests",
+                "state": "Passed",
+                "durationSeconds": 0.0035356,
+                "message": null,
+                "stackTrace": null,
+                "output": ""
+              },
+              {
+                "name": "PlayMode_Autopilot_NearTargetHighMassLowRcs_DetectsLimitedLateralAuthority",
+                "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_NearTargetHighMassLowRcs_DetectsLimitedLateralAuthority",
+                "state": "Passed",
+                "durationSeconds": 0.0032094,
+                "message": null,
+                "stackTrace": null,
+                "output": ""
+              },
+              {
+                "name": "PlayMode_Autopilot_NearTargetLateralOvershoot_NoTerminalAccelerateOrSpin",
+                "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_NearTargetLateralOvershoot_NoTerminalAccelerateOrSpin",
+                "state": "Passed",
+                "durationSeconds": 0.3650711,
+                "message": null,
+                "stackTrace": null,
+                "output": ""
+              },
+              {
+                "name": "PlayMode_Autopilot_NearTargetOffAxisVelocity_DampsLaterallyWithoutMainThrottle",
+                "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_NearTargetOffAxisVelocity_DampsLaterallyWithoutMainThrottle",
+                "state": "Passed",
+                "durationSeconds": 0.0021875,
+                "message": null,
+                "stackTrace": null,
+                "output": ""
+              },
+              {
+                "name": "PlayMode_Autopilot_NoRcs_DoesNotFakePrecisionComplete",
+                "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_NoRcs_DoesNotFakePrecisionComplete",
+                "state": "Passed",
+                "durationSeconds": 0.0562375,
+                "message": null,
+                "stackTrace": null,
+                "output": "AutopilotPlayModeV2 result state=FlipForBrake phase=Brake position=7.20,0.00,0.00 com=7.20,0.00,0.00 distance=11.53 lateral=3.12 sawAvoidance=False sawReacquire=False sawDirectAfterAvoidance=False minClearance=Infinity candidate=direct reason=direct path clear\r\n"
+              },
+              {
+                "name": "PlayMode_Autopilot_OffAxisLongRangeTerminalBrakeCommit_DoesNotReenterAccelerateOrSpin",
+                "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_OffAxisLongRangeTerminalBrakeCommit_DoesNotReenterAccelerateOrSpin",
+                "state": "Passed",
+                "durationSeconds": 0.2938324,
+                "message": null,
+                "stackTrace": null,
+                "output": ""
+              },
+              {
+                "name": "PlayMode_Autopilot_OffAxisTerminalDeadzoneWithRealisticAuthority_LatchesHoldWithoutAccelerateFlap",
+                "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_OffAxisTerminalDeadzoneWithRealisticAuthority_LatchesHoldWithoutAccelerateFlap",
+                "state": "Passed",
+                "durationSeconds": 0.2816588,
+                "message": null,
+                "stackTrace": null,
+                "output": ""
+              },
+              {
+                "name": "PlayMode_Autopilot_PhysicsAvoidsObstacleWithoutHarnessMotion",
+                "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_PhysicsAvoidsObstacleWithoutHarnessMotion",
+                "state": "Passed",
+                "durationSeconds": 0.4961451,
+                "message": null,
+                "stackTrace": null,
+                "output": "AutopilotPlayModeV2 closed-loop avoidance state=FlipForBrake phase=Brake position=-41.22,41.06,103.44 distance=59.97 lateral=1.84 sawAvoidance=True passedObstacle=True maxLateralOffset=54.14 minClearance=28.59 actualRcsAvoidance=True maxRcsForce=20000.00 maxRcsTorque=12000.00 maxMain=1.00 maxRequestedRcs=20000.00 maxAssistForce=20000.00 maxAssistTorque=12000.00 forward=0.68,-0.59,-0.43 candidate=direct\r\n"
+              },
+              {
+                "name": "PlayMode_Autopilot_ReachesWaypoint_NoObstacle",
+                "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_ReachesWaypoint_NoObstacle",
+                "state": "Passed",
+                "durationSeconds": 0.0907013,
+                "message": null,
+                "stackTrace": null,
+                "output": "AutopilotPlayModeV2 result state=Complete phase=Hold position=0.00,0.00,62.26 com=0.00,0.00,62.26 distance=9.74 lateral=0.00 sawAvoidance=False sawReacquire=False sawDirectAfterAvoidance=False minClearance=Infinity candidate=direct reason=direct path clear\r\n"
+              },
+              {
+                "name": "PlayMode_Autopilot_SelectTargetClearsArrivalBrakeAndHoldHysteresis",
+                "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_SelectTargetClearsArrivalBrakeAndHoldHysteresis",
+                "state": "Passed",
+                "durationSeconds": 0.0032312,
+                "message": null,
+                "stackTrace": null,
+                "output": ""
+              },
+              {
+                "name": "PlayMode_Autopilot_StartsWithLateralVelocity_ReachesHold",
+                "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_StartsWithLateralVelocity_ReachesHold",
+                "state": "Passed",
+                "durationSeconds": 0.0794618,
+                "message": null,
+                "stackTrace": null,
+                "output": "AutopilotPlayModeV2 result state=Complete phase=Hold position=0.19,0.00,54.31 com=0.19,0.00,54.31 distance=9.70 lateral=0.00 sawAvoidance=False sawReacquire=False sawDirectAfterAvoidance=False minClearance=Infinity candidate=direct reason=direct path clear\r\n"
+              },
+              {
+                "name": "PlayMode_Autopilot_TerminalAvoidanceStillWinsOverCommittedBrakeLatch",
+                "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalAvoidanceStillWinsOverCommittedBrakeLatch",
+                "state": "Passed",
+                "durationSeconds": 0.0026567,
+                "message": null,
+                "stackTrace": null,
+                "output": ""
+              },
+              {
+                "name": "PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap",
+                "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap",
+                "state": "Passed",
+                "durationSeconds": 0.4708947,
+                "message": null,
+                "stackTrace": null,
+                "output": ""
+              },
+              {
+                "name": "PlayMode_Autopilot_TerminalBrakeDirectionDoesNotChaseLateralVelocity",
+                "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalBrakeDirectionDoesNotChaseLateralVelocity",
+                "state": "Passed",
+                "durationSeconds": 0.0023404,
+                "message": null,
+                "stackTrace": null,
+                "output": ""
+              },
+              {
+                "name": "PlayMode_Autopilot_TerminalOvershootBrakesAndHoldsWithoutReaccelerating",
+                "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalOvershootBrakesAndHoldsWithoutReaccelerating",
+                "state": "Passed",
+                "durationSeconds": 0.4546245,
+                "message": null,
+                "stackTrace": null,
+                "output": ""
+              },
+              {
+                "name": "PlayMode_Autopilot_TerminalOvershootWithoutRcsDoesNotEnterHold",
+                "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalOvershootWithoutRcsDoesNotEnterHold",
+                "state": "Passed",
+                "durationSeconds": 0.0025076,
+                "message": null,
+                "stackTrace": null,
+                "output": ""
+              },
+              {
+                "name": "PlayMode_FlightPlanExecutor_DirectRoute_TracksPredictedPathAndDoesNotBurnAway",
+                "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_FlightPlanExecutor_DirectRoute_TracksPredictedPathAndDoesNotBurnAway",
+                "state": "Passed",
+                "durationSeconds": 0.0529966,
+                "message": null,
+                "stackTrace": null,
+                "output": ""
+              },
+              {
+                "name": "PlayMode_FlightPlanExecutor_PreviewAndExecutionUseSamePlan",
+                "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_FlightPlanExecutor_PreviewAndExecutionUseSamePlan",
+                "state": "Passed",
+                "durationSeconds": 0.0029522,
+                "message": null,
+                "stackTrace": null,
+                "output": ""
+              }
+            ]
+          }
+        },
+        "hint": null
+      }
+    },
+    "isError": false
+  }
+}

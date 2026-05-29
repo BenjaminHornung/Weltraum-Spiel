@@ -327,6 +327,7 @@ public class PrototypeAutopilotNavigationComputerV2ValidationTests
         InvokeFixedUpdate(rig.Autopilot);
 
         PrototypeManeuverSegment flipSegment = FindRequiredSegment(rig.Autopilot, PrototypeManeuverPhase.FlipToRetrograde);
+        MoveRigidbodyToSegmentStart(rig.Body, flipSegment);
         SetPrivateFloat(rig.Autopilot, "flightPlanElapsedSeconds", flipSegment.startTimeSeconds + 0.01f);
         InvokeFixedUpdate(rig.Autopilot);
 
@@ -447,6 +448,7 @@ public class PrototypeAutopilotNavigationComputerV2ValidationTests
         InvokeFixedUpdate(rig.Autopilot);
 
         PrototypeManeuverSegment holdSegment = FindRequiredSegment(rig.Autopilot, PrototypeManeuverPhase.Hold);
+        MoveRigidbodyToSegmentStart(rig.Body, holdSegment);
         SetPrivateFloat(rig.Rcs, "translationForce", 0f);
         SetPrivateFloat(rig.Autopilot, "flightPlanElapsedSeconds", holdSegment.startTimeSeconds + 0.01f);
         InvokeFixedUpdate(rig.Autopilot);
@@ -744,6 +746,16 @@ public class PrototypeAutopilotNavigationComputerV2ValidationTests
         Assert.That(segment.phase, Is.EqualTo(phase));
         Assert.That(segment.durationSeconds, Is.GreaterThan(0f));
         return segment;
+    }
+
+    private static void MoveRigidbodyToSegmentStart(Rigidbody body, PrototypeManeuverSegment segment)
+    {
+        Assert.NotNull(body);
+        body.position = segment.expectedStartPosition;
+        body.rotation = segment.expectedStartRotation;
+        body.linearVelocity = segment.expectedStartVelocity;
+        body.angularVelocity = segment.expectedStartAngularVelocity;
+        Physics.SyncTransforms();
     }
 
     private static void WriteSyntheticEvidenceImage(string path, Color accent, bool obstacle, bool avoidance)

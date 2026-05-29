@@ -1,0 +1,474 @@
+[
+  {
+    "label": "refresh_unity",
+    "parsed": {
+      "success": true,
+      "message": "Refresh recovered after Unity disconnect/retry; editor is ready.",
+      "error": null,
+      "data": {
+        "recovered_from_disconnect": true
+      },
+      "hint": null
+    },
+    "raw": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "result": {
+        "_meta": {
+          "fastmcp": {
+            "wrap_result": true
+          }
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"message\":\"Refresh recovered after Unity disconnect/retry; editor is ready.\",\"error\":null,\"data\":{\"recovered_from_disconnect\":true},\"hint\":null}"
+          }
+        ],
+        "structuredContent": {
+          "result": {
+            "success": true,
+            "message": "Refresh recovered after Unity disconnect/retry; editor is ready.",
+            "error": null,
+            "data": {
+              "recovered_from_disconnect": true
+            },
+            "hint": null
+          }
+        },
+        "isError": false
+      }
+    }
+  },
+  {
+    "label": "state-0",
+    "parsed": {
+      "success": true,
+      "message": "Retrieved editor state.",
+      "error": null,
+      "data": {
+        "schema_version": "unity-mcp/editor_state@2",
+        "observed_at_unix_ms": 1780032681194,
+        "sequence": 3,
+        "unity": {
+          "instance_id": "Weltraum Spiel@49c909b3e97ba6e8",
+          "unity_version": "6000.4.7f1",
+          "project_id": null,
+          "platform": "WindowsEditor",
+          "is_batch_mode": false
+        },
+        "editor": {
+          "is_focused": false,
+          "play_mode": {
+            "is_playing": false,
+            "is_paused": false,
+            "is_changing": false
+          },
+          "active_scene": {
+            "path": null,
+            "guid": null,
+            "name": ""
+          }
+        },
+        "activity": {
+          "phase": "idle",
+          "since_unix_ms": 1780032679358,
+          "reasons": [
+            "tick"
+          ]
+        },
+        "compilation": {
+          "is_compiling": false,
+          "is_domain_reload_pending": false,
+          "last_compile_started_unix_ms": null,
+          "last_compile_finished_unix_ms": null,
+          "last_domain_reload_before_unix_ms": null,
+          "last_domain_reload_after_unix_ms": 1780032678808
+        },
+        "assets": {
+          "is_updating": false,
+          "external_changes_dirty": false,
+          "external_changes_last_seen_unix_ms": 1779999938848,
+          "external_changes_dirty_since_unix_ms": null,
+          "external_changes_last_cleared_unix_ms": 1780032680396,
+          "refresh": {
+            "is_refresh_in_progress": false,
+            "last_refresh_requested_unix_ms": null,
+            "last_refresh_finished_unix_ms": null
+          }
+        },
+        "tests": {
+          "is_running": false,
+          "mode": null,
+          "current_job_id": null,
+          "started_unix_ms": null,
+          "started_by": "unknown",
+          "last_run": null
+        },
+        "transport": {
+          "unity_bridge_connected": null,
+          "last_message_unix_ms": null
+        },
+        "settings": {
+          "batch_execute_max_commands": 25
+        },
+        "advice": {
+          "ready_for_tools": true,
+          "blocking_reasons": [],
+          "recommended_retry_after_ms": 0,
+          "recommended_next_action": "none"
+        },
+        "staleness": {
+          "age_ms": 97,
+          "is_stale": false
+        }
+      },
+      "hint": null
+    },
+    "raw": {
+      "jsonrpc": "2.0",
+      "id": 100,
+      "result": {
+        "contents": [
+          {
+            "uri": "mcpforunity://editor/state",
+            "mimeType": "text/plain",
+            "text": "{\"success\":true,\"message\":\"Retrieved editor state.\",\"error\":null,\"data\":{\"schema_version\":\"unity-mcp/editor_state@2\",\"observed_at_unix_ms\":1780032681194,\"sequence\":3,\"unity\":{\"instance_id\":\"Weltraum Spiel@49c909b3e97ba6e8\",\"unity_version\":\"6000.4.7f1\",\"project_id\":null,\"platform\":\"WindowsEditor\",\"is_batch_mode\":false},\"editor\":{\"is_focused\":false,\"play_mode\":{\"is_playing\":false,\"is_paused\":false,\"is_changing\":false},\"active_scene\":{\"path\":null,\"guid\":null,\"name\":\"\"}},\"activity\":{\"phase\":\"idle\",\"since_unix_ms\":1780032679358,\"reasons\":[\"tick\"]},\"compilation\":{\"is_compiling\":false,\"is_domain_reload_pending\":false,\"last_compile_started_unix_ms\":null,\"last_compile_finished_unix_ms\":null,\"last_domain_reload_before_unix_ms\":null,\"last_domain_reload_after_unix_ms\":1780032678808},\"assets\":{\"is_updating\":false,\"external_changes_dirty\":false,\"external_changes_last_seen_unix_ms\":1779999938848,\"external_changes_dirty_since_unix_ms\":null,\"external_changes_last_cleared_unix_ms\":1780032680396,\"refresh\":{\"is_refresh_in_progress\":false,\"last_refresh_requested_unix_ms\":null,\"last_refresh_finished_unix_ms\":null}},\"tests\":{\"is_running\":false,\"mode\":null,\"current_job_id\":null,\"started_unix_ms\":null,\"started_by\":\"unknown\",\"last_run\":null},\"transport\":{\"unity_bridge_connected\":null,\"last_message_unix_ms\":null},\"settings\":{\"batch_execute_max_commands\":25},\"advice\":{\"ready_for_tools\":true,\"blocking_reasons\":[],\"recommended_retry_after_ms\":0,\"recommended_next_action\":\"none\"},\"staleness\":{\"age_ms\":97,\"is_stale\":false}},\"hint\":null}"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "label": "state-ready-0",
+    "parsed": {
+      "success": true,
+      "message": "Retrieved editor state.",
+      "error": null,
+      "data": {
+        "schema_version": "unity-mcp/editor_state@2",
+        "observed_at_unix_ms": 1780032681194,
+        "sequence": 3,
+        "unity": {
+          "instance_id": "Weltraum Spiel@49c909b3e97ba6e8",
+          "unity_version": "6000.4.7f1",
+          "project_id": null,
+          "platform": "WindowsEditor",
+          "is_batch_mode": false
+        },
+        "editor": {
+          "is_focused": false,
+          "play_mode": {
+            "is_playing": false,
+            "is_paused": false,
+            "is_changing": false
+          },
+          "active_scene": {
+            "path": null,
+            "guid": null,
+            "name": ""
+          }
+        },
+        "activity": {
+          "phase": "idle",
+          "since_unix_ms": 1780032679358,
+          "reasons": [
+            "tick"
+          ]
+        },
+        "compilation": {
+          "is_compiling": false,
+          "is_domain_reload_pending": false,
+          "last_compile_started_unix_ms": null,
+          "last_compile_finished_unix_ms": null,
+          "last_domain_reload_before_unix_ms": null,
+          "last_domain_reload_after_unix_ms": 1780032678808
+        },
+        "assets": {
+          "is_updating": false,
+          "external_changes_dirty": false,
+          "external_changes_last_seen_unix_ms": 1779999938848,
+          "external_changes_dirty_since_unix_ms": null,
+          "external_changes_last_cleared_unix_ms": 1780032680396,
+          "refresh": {
+            "is_refresh_in_progress": false,
+            "last_refresh_requested_unix_ms": null,
+            "last_refresh_finished_unix_ms": null
+          }
+        },
+        "tests": {
+          "is_running": false,
+          "mode": null,
+          "current_job_id": null,
+          "started_unix_ms": null,
+          "started_by": "unknown",
+          "last_run": null
+        },
+        "transport": {
+          "unity_bridge_connected": null,
+          "last_message_unix_ms": null
+        },
+        "settings": {
+          "batch_execute_max_commands": 25
+        },
+        "advice": {
+          "ready_for_tools": true,
+          "blocking_reasons": [],
+          "recommended_retry_after_ms": 0,
+          "recommended_next_action": "none"
+        },
+        "staleness": {
+          "age_ms": 97,
+          "is_stale": false
+        }
+      },
+      "hint": null
+    },
+    "raw": {
+      "jsonrpc": "2.0",
+      "id": 100,
+      "result": {
+        "contents": [
+          {
+            "uri": "mcpforunity://editor/state",
+            "mimeType": "text/plain",
+            "text": "{\"success\":true,\"message\":\"Retrieved editor state.\",\"error\":null,\"data\":{\"schema_version\":\"unity-mcp/editor_state@2\",\"observed_at_unix_ms\":1780032681194,\"sequence\":3,\"unity\":{\"instance_id\":\"Weltraum Spiel@49c909b3e97ba6e8\",\"unity_version\":\"6000.4.7f1\",\"project_id\":null,\"platform\":\"WindowsEditor\",\"is_batch_mode\":false},\"editor\":{\"is_focused\":false,\"play_mode\":{\"is_playing\":false,\"is_paused\":false,\"is_changing\":false},\"active_scene\":{\"path\":null,\"guid\":null,\"name\":\"\"}},\"activity\":{\"phase\":\"idle\",\"since_unix_ms\":1780032679358,\"reasons\":[\"tick\"]},\"compilation\":{\"is_compiling\":false,\"is_domain_reload_pending\":false,\"last_compile_started_unix_ms\":null,\"last_compile_finished_unix_ms\":null,\"last_domain_reload_before_unix_ms\":null,\"last_domain_reload_after_unix_ms\":1780032678808},\"assets\":{\"is_updating\":false,\"external_changes_dirty\":false,\"external_changes_last_seen_unix_ms\":1779999938848,\"external_changes_dirty_since_unix_ms\":null,\"external_changes_last_cleared_unix_ms\":1780032680396,\"refresh\":{\"is_refresh_in_progress\":false,\"last_refresh_requested_unix_ms\":null,\"last_refresh_finished_unix_ms\":null}},\"tests\":{\"is_running\":false,\"mode\":null,\"current_job_id\":null,\"started_unix_ms\":null,\"started_by\":\"unknown\",\"last_run\":null},\"transport\":{\"unity_bridge_connected\":null,\"last_message_unix_ms\":null},\"settings\":{\"batch_execute_max_commands\":25},\"advice\":{\"ready_for_tools\":true,\"blocking_reasons\":[],\"recommended_retry_after_ms\":0,\"recommended_next_action\":\"none\"},\"staleness\":{\"age_ms\":97,\"is_stale\":false}},\"hint\":null}"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "label": "run_tests",
+    "parsed": {
+      "success": true,
+      "message": "Test job started.",
+      "error": null,
+      "data": {
+        "job_id": "33cf3874d3344ed88d943b2c70a4c03a",
+        "status": "running",
+        "mode": "EditMode",
+        "include_details": false,
+        "include_failed_tests": true
+      },
+      "hint": null
+    },
+    "raw": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "result": {
+        "_meta": {
+          "fastmcp": {
+            "wrap_result": true
+          }
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"message\":\"Test job started.\",\"error\":null,\"data\":{\"job_id\":\"33cf3874d3344ed88d943b2c70a4c03a\",\"status\":\"running\",\"mode\":\"EditMode\",\"include_details\":false,\"include_failed_tests\":true},\"hint\":null}"
+          }
+        ],
+        "structuredContent": {
+          "result": {
+            "success": true,
+            "message": "Test job started.",
+            "error": null,
+            "data": {
+              "job_id": "33cf3874d3344ed88d943b2c70a4c03a",
+              "status": "running",
+              "mode": "EditMode",
+              "include_details": false,
+              "include_failed_tests": true
+            },
+            "hint": null
+          }
+        },
+        "isError": false
+      }
+    }
+  },
+  {
+    "label": "poll-0",
+    "parsed": {
+      "success": true,
+      "message": "Test job status retrieved.",
+      "error": null,
+      "data": {
+        "job_id": "33cf3874d3344ed88d943b2c70a4c03a",
+        "status": "running",
+        "mode": "EditMode",
+        "started_unix_ms": 1780032681695,
+        "finished_unix_ms": null,
+        "last_update_unix_ms": 1780032681695,
+        "progress": {
+          "completed": 0,
+          "total": null,
+          "current_test_full_name": null,
+          "current_test_started_unix_ms": null,
+          "last_finished_test_full_name": null,
+          "last_finished_unix_ms": null,
+          "stuck_suspected": false,
+          "editor_is_focused": false,
+          "blocked_reason": null,
+          "failures_so_far": [],
+          "failures_capped": false
+        },
+        "error": null,
+        "result": null
+      },
+      "hint": null
+    },
+    "raw": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "result": {
+        "_meta": {
+          "fastmcp": {
+            "wrap_result": true
+          }
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"message\":\"Test job status retrieved.\",\"error\":null,\"data\":{\"job_id\":\"33cf3874d3344ed88d943b2c70a4c03a\",\"status\":\"running\",\"mode\":\"EditMode\",\"started_unix_ms\":1780032681695,\"finished_unix_ms\":null,\"last_update_unix_ms\":1780032681695,\"progress\":{\"completed\":0,\"total\":null,\"current_test_full_name\":null,\"current_test_started_unix_ms\":null,\"last_finished_test_full_name\":null,\"last_finished_unix_ms\":null,\"stuck_suspected\":false,\"editor_is_focused\":false,\"blocked_reason\":null,\"failures_so_far\":[],\"failures_capped\":false},\"error\":null,\"result\":null},\"hint\":null}"
+          }
+        ],
+        "structuredContent": {
+          "result": {
+            "success": true,
+            "message": "Test job status retrieved.",
+            "error": null,
+            "data": {
+              "job_id": "33cf3874d3344ed88d943b2c70a4c03a",
+              "status": "running",
+              "mode": "EditMode",
+              "started_unix_ms": 1780032681695,
+              "finished_unix_ms": null,
+              "last_update_unix_ms": 1780032681695,
+              "progress": {
+                "completed": 0,
+                "total": null,
+                "current_test_full_name": null,
+                "current_test_started_unix_ms": null,
+                "last_finished_test_full_name": null,
+                "last_finished_unix_ms": null,
+                "stuck_suspected": false,
+                "editor_is_focused": false,
+                "blocked_reason": null,
+                "failures_so_far": [],
+                "failures_capped": false
+              },
+              "error": null,
+              "result": null
+            },
+            "hint": null
+          }
+        },
+        "isError": false
+      }
+    }
+  },
+  {
+    "label": "poll-1",
+    "parsed": {
+      "success": true,
+      "message": "Test job status retrieved.",
+      "error": null,
+      "data": {
+        "job_id": "33cf3874d3344ed88d943b2c70a4c03a",
+        "status": "succeeded",
+        "mode": "EditMode",
+        "started_unix_ms": 1780032681695,
+        "finished_unix_ms": 1780032687446,
+        "last_update_unix_ms": 1780032687446,
+        "progress": {
+          "completed": 48,
+          "total": 48,
+          "current_test_full_name": null,
+          "current_test_started_unix_ms": 1780032687367,
+          "last_finished_test_full_name": "PrototypeFlightPlanValidationTests.ShipPlanningSnapshotPreservesRealAuthorityFields",
+          "last_finished_unix_ms": 1780032687367,
+          "stuck_suspected": false,
+          "editor_is_focused": false,
+          "blocked_reason": null,
+          "failures_so_far": [],
+          "failures_capped": false
+        },
+        "error": null,
+        "result": {
+          "mode": "EditMode",
+          "summary": {
+            "total": 48,
+            "passed": 48,
+            "failed": 0,
+            "skipped": 0,
+            "durationSeconds": 1.1286185,
+            "resultState": "Passed"
+          },
+          "results": []
+        }
+      },
+      "hint": null
+    },
+    "raw": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "result": {
+        "_meta": {
+          "fastmcp": {
+            "wrap_result": true
+          }
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"success\":true,\"message\":\"Test job status retrieved.\",\"error\":null,\"data\":{\"job_id\":\"33cf3874d3344ed88d943b2c70a4c03a\",\"status\":\"succeeded\",\"mode\":\"EditMode\",\"started_unix_ms\":1780032681695,\"finished_unix_ms\":1780032687446,\"last_update_unix_ms\":1780032687446,\"progress\":{\"completed\":48,\"total\":48,\"current_test_full_name\":null,\"current_test_started_unix_ms\":1780032687367,\"last_finished_test_full_name\":\"PrototypeFlightPlanValidationTests.ShipPlanningSnapshotPreservesRealAuthorityFields\",\"last_finished_unix_ms\":1780032687367,\"stuck_suspected\":false,\"editor_is_focused\":false,\"blocked_reason\":null,\"failures_so_far\":[],\"failures_capped\":false},\"error\":null,\"result\":{\"mode\":\"EditMode\",\"summary\":{\"total\":48,\"passed\":48,\"failed\":0,\"skipped\":0,\"durationSeconds\":1.1286185,\"resultState\":\"Passed\"},\"results\":[]}},\"hint\":null}"
+          }
+        ],
+        "structuredContent": {
+          "result": {
+            "success": true,
+            "message": "Test job status retrieved.",
+            "error": null,
+            "data": {
+              "job_id": "33cf3874d3344ed88d943b2c70a4c03a",
+              "status": "succeeded",
+              "mode": "EditMode",
+              "started_unix_ms": 1780032681695,
+              "finished_unix_ms": 1780032687446,
+              "last_update_unix_ms": 1780032687446,
+              "progress": {
+                "completed": 48,
+                "total": 48,
+                "current_test_full_name": null,
+                "current_test_started_unix_ms": 1780032687367,
+                "last_finished_test_full_name": "PrototypeFlightPlanValidationTests.ShipPlanningSnapshotPreservesRealAuthorityFields",
+                "last_finished_unix_ms": 1780032687367,
+                "stuck_suspected": false,
+                "editor_is_focused": false,
+                "blocked_reason": null,
+                "failures_so_far": [],
+                "failures_capped": false
+              },
+              "error": null,
+              "result": {
+                "mode": "EditMode",
+                "summary": {
+                  "total": 48,
+                  "passed": 48,
+                  "failed": 0,
+                  "skipped": 0,
+                  "durationSeconds": 1.1286185,
+                  "resultState": "Passed"
+                },
+                "results": []
+              }
+            },
+            "hint": null
+          }
+        },
+        "isError": false
+      }
+    }
+  }
+]

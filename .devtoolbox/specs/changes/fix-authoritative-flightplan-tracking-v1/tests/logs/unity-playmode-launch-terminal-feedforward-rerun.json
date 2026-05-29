@@ -1,0 +1,54 @@
+{
+  "jsonrpc": "2.0",
+  "id": 21,
+  "result": {
+    "_meta": {
+      "fastmcp": {
+        "wrap_result": true
+      }
+    },
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"message\":\"Test job status retrieved.\",\"error\":null,\"data\":{\"job_id\":\"3992c134cffd4d6f8511044b8b5e1b1e\",\"status\":\"failed\",\"mode\":\"PlayMode\",\"started_unix_ms\":1780038818067,\"finished_unix_ms\":1780038820014,\"last_update_unix_ms\":1780038820014,\"progress\":{\"completed\":2,\"total\":2,\"current_test_full_name\":null,\"current_test_started_unix_ms\":1780038819533,\"last_finished_test_full_name\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap\",\"last_finished_unix_ms\":1780038820003,\"stuck_suspected\":false,\"editor_is_focused\":true,\"blocked_reason\":null,\"failures_so_far\":[{\"full_name\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget\",\"message\":\"  distance=16.86 speed=9.70 lateral=4.30 phase=Brake segment=Brake candidate=direct reason=direct path clear\\r\\n  Expected: Complete or HoldPosition\\r\\n  But was:  FlipForBrake\\r\\n\"}],\"failures_capped\":false},\"error\":null,\"result\":null},\"hint\":null}"
+      }
+    ],
+    "structuredContent": {
+      "result": {
+        "success": true,
+        "message": "Test job status retrieved.",
+        "error": null,
+        "data": {
+          "job_id": "3992c134cffd4d6f8511044b8b5e1b1e",
+          "status": "failed",
+          "mode": "PlayMode",
+          "started_unix_ms": 1780038818067,
+          "finished_unix_ms": 1780038820014,
+          "last_update_unix_ms": 1780038820014,
+          "progress": {
+            "completed": 2,
+            "total": 2,
+            "current_test_full_name": null,
+            "current_test_started_unix_ms": 1780038819533,
+            "last_finished_test_full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap",
+            "last_finished_unix_ms": 1780038820003,
+            "stuck_suspected": false,
+            "editor_is_focused": true,
+            "blocked_reason": null,
+            "failures_so_far": [
+              {
+                "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget",
+                "message": "  distance=16.86 speed=9.70 lateral=4.30 phase=Brake segment=Brake candidate=direct reason=direct path clear\r\n  Expected: Complete or HoldPosition\r\n  But was:  FlipForBrake\r\n"
+              }
+            ],
+            "failures_capped": false
+          },
+          "error": null,
+          "result": null
+        },
+        "hint": null
+      }
+    },
+    "isError": false
+  }
+}

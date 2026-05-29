@@ -76,25 +76,26 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private const float BrakeHoldReleaseZeroSpeed = 0.05f;
     private const float BrakeHoldReleaseLateralRatio = 1.75f;
     private const float BrakeAlignmentAngularSpeedLimitDegreesPerSecond = 35f;
-    private const float BrakeMainThrottleAngularSpeedLockDegreesPerSecond = 16f;
-    private const float BrakeMainThrottleAngularSpeedReleaseDegreesPerSecond = 24f;
-    private const float BrakeMainThrottleRetrogradeAlignmentDegrees = 45f;
+    private const float BrakeMainThrottleAngularSpeedLockDegreesPerSecond = 20f;
+    private const float BrakeMainThrottleAngularSpeedReleaseDegreesPerSecond = 30f;
+    private const float BrakeMainThrottleRetrogradeAlignmentDegrees = 30f;
     private const float BrakeSettledAngularSpeedLimitDegreesPerSecond = 4f;
     private const float BrakeArrivalHoldDistanceMarginMeters = 6f;
     private const float BrakeArrivalHoldLateralSpeedMultiplier = 6f;
     private const float BrakeArrivalHoldMinimumLateralTolerance = 1.2f;
     private const float BrakeArrivalHoldRelativeSpeedMultiplier = 1.8f;
-    private const float TerminalOvershootHoldRelativeSpeedMultiplier = 3f;
+    private const float TerminalOvershootHoldRelativeSpeedMultiplier = 1.25f;
     private const float TerminalOvershootBrakeRelativeSpeedMultiplier = 1.35f;
     private const float BrakeDirectionMinimumSpeedMetersPerSecond = 0.35f;
-    private const float TerminalBrakeDirectionRotateDegreesPerSecond = 48f;
-    private const float BrakeFlipMaxTurnRateDegreesPerSecond = 60f;
+    private const float TerminalBrakeDirectionRotateDegreesPerSecond = 36f;
+    private const float BrakeFlipMaxTurnRateDegreesPerSecond = 58f;
     private const float BrakeFlipMaxAngularAccelerationRadPerSecondSquared = 3f;
     private const float BrakeFlipDampingTimeSeconds = 0.4f;
     private const float BrakeAlignedTorqueDeadbandDegrees = 2.5f;
     private const float FlightPlanDivergenceConfirmSeconds = 0.3f;
     private const float FlightPlanDivergenceReplanCooldownSeconds = 0.45f;
     private const float FlightPlanDivergenceStatusHoldSeconds = 2f;
+    private const float FlightPlanSafetyRefreshIntervalSeconds = 0.75f;
     [Header("Navigation")]
     [SerializeField] private PrototypeWaypointManager waypointManager;
     [SerializeField] private PrototypeNavigationTarget currentTarget;
@@ -116,6 +117,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     [SerializeField] private float avoidReacquireTimeoutSeconds = 2.5f;
     [SerializeField] private float holdConfirmSeconds = 1.5f;
     [SerializeField] private bool useFlightPlanExecutor = true;
+    [SerializeField] private bool strictFlightPlanExecution = true;
 
     [Header("Runtime")]
     [SerializeField] private Rigidbody shipRigidbody;
@@ -164,9 +166,11 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private float flightPlanDivergenceStartedAtTime = -1f;
     private float lastFlightPlanDivergenceAtTime = -1000f;
     private float lastFlightPlanSafetyReplanAtTime = -1000f;
+    private float nextFlightPlanSafetyRefreshTime;
     private int flightPlanRevisionCounter;
     private string lastAssignedFlightPlanId = string.Empty;
     private bool forceNextFlightPlanRevision;
+    private PrototypeFlightPlanTrackingCommand lastFlightPlanTrackingCommand;
     private PrototypeMomentumAssist momentumAssist;
     private PrototypeTrajectoryPlanner trajectoryPlanner;
 
@@ -203,9 +207,15 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     public PrototypeManeuverSegment[] FlightPlanSegments => CurrentFlightPlan.segments ?? System.Array.Empty<PrototypeManeuverSegment>();
     public PrototypeTrajectoryPredictedSample[] FlightPlanSamples => CurrentFlightPlan.predictedSamples ?? System.Array.Empty<PrototypeTrajectoryPredictedSample>();
     public bool FlightPlanExecutorEnabled => useFlightPlanExecutor;
+    public bool StrictFlightPlanExecution => strictFlightPlanExecution;
     public bool FlightPlanExecutorActive => flightPlanExecutorActive;
     public float FlightPlanExecutorElapsedSeconds => flightPlanElapsedSeconds;
     public PrototypeFlightPlanExecutionState CurrentFlightPlanExecutionState => lastFlightPlanExecutionState;
+    public PrototypeFlightPlanTrackingCommand CurrentFlightPlanTrackingCommand => lastFlightPlanTrackingCommand;
+    public PrototypeFlightPlanTrackingError CurrentFlightPlanTrackingError => lastFlightPlanTrackingCommand.error;
+    public string FlightPlanTrackingStatusLabel => string.IsNullOrWhiteSpace(lastFlightPlanTrackingCommand.statusLabel)
+        ? "Tracking: idle"
+        : lastFlightPlanTrackingCommand.statusLabel;
     public PrototypeFlightPlanDivergenceReport CurrentFlightPlanDivergenceReport => IsFlightPlanDivergenceStatusVisible()
         ? lastFlightPlanDivergenceReport
         : PrototypeFlightPlanDivergenceReport.Clear;
@@ -238,7 +248,9 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     public string ActiveSegmentLabel => LastTrajectoryPlan.activeSegmentType.ToString();
     public PrototypeTrajectoryCandidateScore[] CandidateScores => LastTrajectoryPlan.candidateScores ?? System.Array.Empty<PrototypeTrajectoryCandidateScore>();
     public PrototypeTrajectorySegment[] PlanSegments => LastTrajectoryPlan.segments ?? System.Array.Empty<PrototypeTrajectorySegment>();
-    public Vector3[] PredictedRoute => LastTrajectoryPlan.predictedPath ?? System.Array.Empty<Vector3>();
+    public Vector3[] PredictedRoute => CurrentFlightPlan.predictedSamples != null && CurrentFlightPlan.predictedSamples.Length > 0
+        ? CopyFlightPlanSamplePositions(CurrentFlightPlan.predictedSamples, 96)
+        : (LastTrajectoryPlan.predictedPath ?? System.Array.Empty<Vector3>());
     public string SelectedCandidate => string.IsNullOrWhiteSpace(LastTrajectoryPlan.selectedCandidate) ? "direct" : LastTrajectoryPlan.selectedCandidate;
     public string SelectedCandidateReason => string.IsNullOrWhiteSpace(LastTrajectoryPlan.selectedCandidateReason) ? NavigationPlanStatus : LastTrajectoryPlan.selectedCandidateReason;
     public bool TerminalRcsOnlyCorrectionActive
@@ -626,6 +638,13 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         ResetFlightPlanExecutorClock();
     }
 
+    public void SetStrictFlightPlanExecutionForTests(bool enabled)
+    {
+        strictFlightPlanExecution = enabled;
+        ResetFlightPlanExecutorClock();
+        MarkNavigationPlanDirty();
+    }
+
     public void ReplanNow()
     {
         ResolveReferences();
@@ -633,6 +652,18 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         forceNextFlightPlanRevision = true;
         MarkNavigationPlanDirty();
         RefreshNavigationPlan();
+    }
+
+    public void ClearActiveFlightPlanForDebug()
+    {
+        ResetFlightPlanExecutorClock();
+        lastAssignedFlightPlanId = string.Empty;
+        forceNextFlightPlanRevision = true;
+        ClearFlightPlanActuatorOutput("FlightPlan cleared by debug console");
+        LastTrajectoryPlan = PrototypeTrajectoryPlan.Clear(LastMetrics.directionToTarget.sqrMagnitude > 0.0001f
+            ? LastMetrics.directionToTarget
+            : Vector3.forward);
+        MarkNavigationPlanDirty();
     }
 
     public void SetNavigationDebugPlanningActive(bool active)
@@ -694,6 +725,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
         if (LimitedFinalApproachCapability
             || LastTrajectoryPlan.limitedRcsAuthority
+            || (FlightPlanDivergenceReasons & PrototypeFlightPlanAbortReplanReason.NoRcsAuthority) != 0
             || string.Equals(ArrivalFailureReason, "LimitedRcsAuthority", System.StringComparison.OrdinalIgnoreCase))
         {
             chips[count++] = "LIMITED RCS";
@@ -731,6 +763,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     {
         navigationPlanDirty = true;
         nextNavigationPlanTime = 0f;
+        nextFlightPlanSafetyRefreshTime = 0f;
     }
 
     public static PrototypeWaypointAutopilotMetrics CalculateMetrics(
@@ -816,6 +849,24 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         PrototypeFlightPlan plan = CurrentFlightPlan;
         if (!plan.IsValid)
         {
+            if (strictFlightPlanExecution && plan.HasSegments)
+            {
+                PrototypeFlightPlanAbortReplanReason reasons = plan.nonExecutableReasons == PrototypeFlightPlanAbortReplanReason.None
+                    ? PrototypeFlightPlanAbortReplanReason.NonExecutable
+                    : plan.nonExecutableReasons;
+                var report = new PrototypeFlightPlanDivergenceReport(
+                    reasons,
+                    true,
+                    false,
+                    "Replan: " + PrototypeFlightPlanDivergenceMonitor.FormatReasons(reasons));
+                PrototypeFlightPlanExecutionState invalidState = BuildFlightPlanExecutionState(plan, flightPlanElapsedSeconds);
+                invalidState.replanReasons |= reasons;
+                invalidState.requiresReplan = true;
+                invalidState.statusLabel = report.statusLabel;
+                lastFlightPlanExecutionState = invalidState;
+                return ForceFlightPlanSafetyReplan(report, "flight plan invalid");
+            }
+
             return false;
         }
 
@@ -855,13 +906,24 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         }
 
         PrototypeFlightPlanExecutionState executionState = BuildFlightPlanExecutionState(plan, flightPlanElapsedSeconds);
+        PrototypeFlightPlanTrackingCommand trackingCommand = BuildFlightPlanTrackingCommand(plan);
+        lastFlightPlanTrackingCommand = trackingCommand;
+        ApplyTrackingErrorToExecutionState(trackingCommand, ref executionState);
+        if (trackingCommand.requiresReplan)
+        {
+            if (HandleFlightPlanTrackingReplan(trackingCommand, executionState))
+            {
+                return true;
+            }
+        }
+
         PrototypeFlightPlanDivergenceReport divergenceReport = EvaluateFlightPlanDivergence(plan, executionState, liveObstacle, segment, false);
         if (TryHandleFlightPlanDivergence(plan, executionState, divergenceReport))
         {
             return true;
         }
 
-        if (!ApplyFlightPlanSegment(segment))
+        if (!ApplyFlightPlanSegment(segment, trackingCommand))
         {
             return BlockFlightPlanLegacyFallback(
                 executionState,
@@ -885,6 +947,102 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             shipRigidbody != null ? shipRigidbody.rotation : Quaternion.identity,
             shipRigidbody != null ? shipRigidbody.angularVelocity : Vector3.zero,
             shipStats != null ? shipStats.CurrentFuelKg : 0f);
+    }
+
+    private PrototypeFlightPlanTrackingCommand BuildFlightPlanTrackingCommand(PrototypeFlightPlan plan)
+    {
+        float massKg = GetShipMassKg();
+        float rcsAcceleration = massKg > 0.0001f ? GetRcsTranslationForceScale() / massKg : 0f;
+        PrototypeFlightPlanTrackerSettings settings = BuildRuntimeFlightPlanTrackerSettings(massKg, rcsAcceleration);
+        return PrototypeFlightPlanTracker.Track(
+            plan,
+            flightPlanElapsedSeconds,
+            shipRigidbody != null ? shipRigidbody.worldCenterOfMass : Vector3.zero,
+            shipRigidbody != null ? shipRigidbody.linearVelocity : Vector3.zero,
+            shipRigidbody != null ? shipRigidbody.rotation : Quaternion.identity,
+            shipRigidbody != null ? shipRigidbody.angularVelocity : Vector3.zero,
+            shipStats != null ? shipStats.CurrentFuelKg : 0f,
+            currentTarget != null ? currentTarget.Position : plan.targetPositionWorld,
+            GetMaxAcceleration(),
+            rcsAcceleration,
+            massKg,
+            settings);
+    }
+
+    private PrototypeFlightPlanTrackerSettings BuildRuntimeFlightPlanTrackerSettings(float massKg, float rcsAcceleration)
+    {
+        PrototypeFlightPlanTrackerSettings settings = PrototypeFlightPlanTrackerSettings.Default;
+        settings.maxTrackingAccelerationMetersPerSecondSquared = Mathf.Max(
+            settings.maxTrackingAccelerationMetersPerSecondSquared,
+            GetMaxAcceleration() + rcsAcceleration);
+        settings.maxRcsAccelerationMetersPerSecondSquared = Mathf.Max(
+            settings.maxRcsAccelerationMetersPerSecondSquared,
+            rcsAcceleration);
+        settings.errorToleranceMultiplier = Mathf.Max(settings.errorToleranceMultiplier, 20f);
+        return settings;
+    }
+
+    private static void ApplyTrackingErrorToExecutionState(
+        PrototypeFlightPlanTrackingCommand trackingCommand,
+        ref PrototypeFlightPlanExecutionState executionState)
+    {
+        if (!trackingCommand.error.hasReferenceSample)
+        {
+            return;
+        }
+
+        executionState.positionErrorMeters = trackingCommand.error.positionErrorMeters;
+        executionState.velocityErrorMetersPerSecond = trackingCommand.error.velocityErrorMetersPerSecond;
+        executionState.attitudeErrorDegrees = trackingCommand.error.attitudeErrorDegrees;
+        executionState.angularVelocityErrorRadiansPerSecond = trackingCommand.error.angularVelocityErrorRadiansPerSecond;
+        executionState.fuelErrorKg = trackingCommand.error.fuelErrorKg;
+        if (!trackingCommand.requiresReplan)
+        {
+            const PrototypeFlightPlanAbortReplanReason softTrackingReasons =
+                PrototypeFlightPlanAbortReplanReason.PositionDivergence
+                | PrototypeFlightPlanAbortReplanReason.VelocityDivergence
+                | PrototypeFlightPlanAbortReplanReason.AttitudeDivergence
+                | PrototypeFlightPlanAbortReplanReason.TrackingDiverged;
+            executionState.replanReasons &= ~softTrackingReasons;
+            executionState.requiresReplan = executionState.replanReasons != PrototypeFlightPlanAbortReplanReason.None;
+            if (!executionState.requiresReplan)
+            {
+                executionState.statusLabel = trackingCommand.statusLabel;
+            }
+        }
+
+        executionState.replanReasons |= trackingCommand.replanReasons;
+        executionState.requiresReplan = executionState.requiresReplan || trackingCommand.requiresReplan;
+        if (trackingCommand.requiresReplan)
+        {
+            executionState.statusLabel = trackingCommand.statusLabel;
+        }
+    }
+
+    private bool HandleFlightPlanTrackingReplan(
+        PrototypeFlightPlanTrackingCommand trackingCommand,
+        PrototypeFlightPlanExecutionState executionState)
+    {
+        PrototypeFlightPlanAbortReplanReason reasons = trackingCommand.replanReasons != PrototypeFlightPlanAbortReplanReason.None
+            ? trackingCommand.replanReasons
+            : PrototypeFlightPlanAbortReplanReason.TrackingDiverged;
+        var report = new PrototypeFlightPlanDivergenceReport(
+            reasons,
+            true,
+            false,
+            "Replan: " + PrototypeFlightPlanDivergenceMonitor.FormatReasons(reasons));
+        SetFlightPlanDivergenceReport(report);
+        executionState.replanReasons |= reasons;
+        executionState.requiresReplan = true;
+        executionState.statusLabel = report.statusLabel;
+        lastFlightPlanExecutionState = executionState;
+
+        if (!IsImmediateFlightPlanDivergence(reasons) && !IsFlightPlanDivergenceConfirmed(report))
+        {
+            return false;
+        }
+
+        return ForceFlightPlanSafetyReplan(report, "flight plan tracking replan");
     }
 
     private PrototypeFlightPlanDivergenceReport EvaluateFlightPlanDivergence(
@@ -955,15 +1113,29 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             lastFlightPlanExecutionState = executionState;
         }
 
+        if (!report.RequiresAction)
+        {
+            return false;
+        }
+
+        if (report.requiresAbort)
+        {
+            if (!IsFlightPlanDivergenceConfirmed(report))
+            {
+                return false;
+            }
+
+            PrototypeFlightPlanDivergenceReport abortReport = report;
+            Abort("flight plan abort: " + PrototypeFlightPlanDivergenceMonitor.FormatReasons(report.reasons));
+            lastFlightPlanDivergenceReport = abortReport;
+            lastFlightPlanDivergenceAtTime = Time.time;
+            return true;
+        }
+
         if (ShouldUseFlightPlanTerminalSafetyForDivergence(report.reasons)
             && TryRunFlightPlanTerminalSafety())
         {
             return true;
-        }
-
-        if (!report.RequiresAction)
-        {
-            return false;
         }
 
         if (!IsImmediateFlightPlanDivergence(report.reasons)
@@ -977,21 +1149,18 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return false;
         }
 
-        if (report.requiresAbort)
-        {
-            PrototypeFlightPlanDivergenceReport abortReport = report;
-            Abort("flight plan abort: " + PrototypeFlightPlanDivergenceMonitor.FormatReasons(report.reasons));
-            lastFlightPlanDivergenceReport = abortReport;
-            lastFlightPlanDivergenceAtTime = Time.time;
-            return true;
-        }
-
         return ForceFlightPlanSafetyReplan(report, "flight plan replan");
     }
 
     private bool ForceFlightPlanSafetyReplan(PrototypeFlightPlanDivergenceReport report, string status)
     {
-        if (Time.time < lastFlightPlanSafetyReplanAtTime + FlightPlanDivergenceReplanCooldownSeconds)
+        bool bypassCooldown = (report.reasons
+            & (PrototypeFlightPlanAbortReplanReason.PlanExpired
+                | PrototypeFlightPlanAbortReplanReason.InvalidPlanDirection
+                | PrototypeFlightPlanAbortReplanReason.TargetMoved
+                | PrototypeFlightPlanAbortReplanReason.ObstacleDetected
+                | PrototypeFlightPlanAbortReplanReason.CollisionPredicted)) != 0;
+        if (!bypassCooldown && Time.time < lastFlightPlanSafetyReplanAtTime + FlightPlanDivergenceReplanCooldownSeconds)
         {
             ClearFlightPlanActuatorOutput(status + " cooldown");
             return true;
@@ -1067,7 +1236,11 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             | PrototypeFlightPlanAbortReplanReason.FuelStarved
             | PrototypeFlightPlanAbortReplanReason.ActuatorLimited
             | PrototypeFlightPlanAbortReplanReason.NoMainThrustAuthority
-            | PrototypeFlightPlanAbortReplanReason.NoRcsAuthority;
+            | PrototypeFlightPlanAbortReplanReason.NoRcsAuthority
+            | PrototypeFlightPlanAbortReplanReason.InvalidPlanDirection
+            | PrototypeFlightPlanAbortReplanReason.PlanUnstable
+            | PrototypeFlightPlanAbortReplanReason.PlanExpired
+            | PrototypeFlightPlanAbortReplanReason.NonExecutable;
         return (reasons & immediateReasons) != 0;
     }
 
@@ -1103,7 +1276,10 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     {
         return segment.rcsTranslationScale > 0.01f
             || segment.commandMode == PrototypeManeuverCommandMode.RcsTranslation
-            || segment.commandMode == PrototypeManeuverCommandMode.CombinedMainAndRcs;
+            || segment.commandMode == PrototypeManeuverCommandMode.CombinedMainAndRcs
+            || segment.phase == PrototypeManeuverPhase.LateralCorrection
+            || segment.phase == PrototypeManeuverPhase.FinalApproach
+            || segment.phase == PrototypeManeuverPhase.Hold;
     }
 
     private static bool FlightPlanSegmentNeedsRcsAttitude(PrototypeManeuverSegment segment)
@@ -1232,6 +1408,12 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
     private bool ShouldUseFlightPlanAsPrimaryAuthority()
     {
+        if (strictFlightPlanExecution)
+        {
+            return useFlightPlanExecutor
+                && autopilotEngaged;
+        }
+
         return useFlightPlanExecutor
             && CurrentFlightPlan.IsValid
             && !IsVisibleLegacySafetyFallbackActive();
@@ -1313,6 +1495,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         activeFlightPlanRevision = plan.revision;
         flightPlanElapsedSeconds = 0f;
         lastFlightPlanExecutionState = default;
+        lastFlightPlanTrackingCommand = default;
     }
 
     private void ResetFlightPlanExecutorClock()
@@ -1322,6 +1505,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         flightPlanElapsedSeconds = 0f;
         flightPlanExecutorActive = false;
         lastFlightPlanExecutionState = default;
+        lastFlightPlanTrackingCommand = default;
         lastFlightPlanDivergenceReport = PrototypeFlightPlanDivergenceReport.Clear;
         flightPlanDivergenceStartedAtTime = -1f;
         lastFlightPlanDivergenceAtTime = -1000f;
@@ -1329,6 +1513,11 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
     private bool ShouldDeferFlightPlanExecutorToLegacyFallback()
     {
+        if (strictFlightPlanExecution)
+        {
+            return false;
+        }
+
         bool currentlyAvoiding = IsAvoidancePlanActive();
         if (currentlyAvoiding)
         {
@@ -1353,10 +1542,12 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         return false;
     }
 
-    private bool ApplyFlightPlanSegment(PrototypeManeuverSegment segment)
+    private bool ApplyFlightPlanSegment(PrototypeManeuverSegment segment, PrototypeFlightPlanTrackingCommand trackingCommand)
     {
-        Vector3 direction = ResolveFlightPlanSegmentDirection(segment);
-        UpdateFlightPlanSegmentDiagnostics(segment, direction);
+        Vector3 direction = trackingCommand.mainDirectionWorld.sqrMagnitude > 0.0001f
+            ? trackingCommand.mainDirectionWorld.normalized
+            : ResolveFlightPlanSegmentDirection(segment);
+        UpdateFlightPlanSegmentDiagnostics(segment, direction, trackingCommand);
         if (ShouldSuppressFlightPlanTransferBurnInTerminalCapture(segment.phase))
         {
             if (ShouldSettleFlightPlanBrakeSegment() || ShouldCaptureAnyArrivalHold())
@@ -1373,13 +1564,38 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return true;
         }
 
+        if (ShouldRedirectFlightPlanBrakeToTerminalRcs(segment.phase))
+        {
+            if (ShouldCaptureAnyArrivalHold())
+            {
+                return TryEnterHoldPosition();
+            }
+
+            SetState(PrototypeWaypointAutopilotState.FinalApproach, "flight plan terminal lateral correction");
+            navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.FinalApproach;
+            arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.LateralCorrection;
+            limitedFinalApproachCapability = !CanUseRcsTranslation();
+            arrivalFailureReason = limitedFinalApproachCapability ? "LimitedRcsAuthority" : string.Empty;
+            ApplyLateralCorrection();
+            return true;
+        }
+
         switch (segment.phase)
         {
             case PrototypeManeuverPhase.AlignForBurn:
+                if (TrySkipCompletedFlightPlanAlignSegment(segment, direction))
+                {
+                    return true;
+                }
+
                 arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.LongRangeBurn;
-                navigationPhaseV2 = LastTrajectoryPlan.RequiresAvoidance
-                    ? PrototypeWaypointAutopilotNavigationPhase.AvoidancePlanning
-                    : PrototypeWaypointAutopilotNavigationPhase.Direct;
+                bool alignReacquireWindow = reacquireDirectPathUntilTime > 0f && Time.time <= reacquireDirectPathUntilTime;
+                navigationPhaseV2 = LastTrajectoryPlan.navigationPhase == PrototypeAutopilotNavigationPhase.ReacquireDirectPath
+                    || alignReacquireWindow
+                    ? PrototypeWaypointAutopilotNavigationPhase.ReacquireDirectPath
+                    : LastTrajectoryPlan.RequiresAvoidance
+                        ? PrototypeWaypointAutopilotNavigationPhase.AvoidancePlanning
+                        : PrototypeWaypointAutopilotNavigationPhase.Direct;
                 if (LastTrajectoryPlan.RequiresAvoidance)
                 {
                     hasStableAvoidance = true;
@@ -1397,17 +1613,34 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
                         ? PrototypeWaypointAutopilotState.ObstacleAvoidance
                         : PrototypeWaypointAutopilotState.AlignForBurn,
                     LastTrajectoryPlan.RequiresAvoidance ? "flight plan avoidance align" : "flight plan align");
-                ApplyAutopilotRequest(direction, 0f);
+                ApplyAutopilotRequest(
+                    direction,
+                    0f,
+                    false,
+                    null,
+                    trackingCommand.rcsForceWorld,
+                    true);
                 return true;
 
             case PrototypeManeuverPhase.ProgradeBurn:
             case PrototypeManeuverPhase.ReacquireRoute:
                 arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.LongRangeBurn;
-                navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.Direct;
+                bool burnReacquireWindow = reacquireDirectPathUntilTime > 0f && Time.time <= reacquireDirectPathUntilTime;
+                navigationPhaseV2 = segment.phase == PrototypeManeuverPhase.ReacquireRoute
+                    || LastTrajectoryPlan.navigationPhase == PrototypeAutopilotNavigationPhase.ReacquireDirectPath
+                    || burnReacquireWindow
+                        ? PrototypeWaypointAutopilotNavigationPhase.ReacquireDirectPath
+                        : PrototypeWaypointAutopilotNavigationPhase.Direct;
                 limitedFinalApproachCapability = false;
                 arrivalFailureReason = string.Empty;
                 SetState(PrototypeWaypointAutopilotState.Accelerate, "flight plan burn");
-                ApplyAutopilotRequest(direction, segment.mainThrottle);
+                ApplyAutopilotRequest(
+                    direction,
+                    trackingCommand.mainThrottle,
+                    false,
+                    null,
+                    trackingCommand.rcsForceWorld,
+                    true);
                 return true;
 
             case PrototypeManeuverPhase.AvoidanceBurn:
@@ -1420,7 +1653,13 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
                 limitedFinalApproachCapability = false;
                 arrivalFailureReason = string.Empty;
                 SetState(PrototypeWaypointAutopilotState.ObstacleAvoidance, "flight plan avoidance");
-                ApplyAutopilotRequest(direction, segment.mainThrottle);
+                ApplyAutopilotRequest(
+                    direction,
+                    trackingCommand.mainThrottle,
+                    false,
+                    null,
+                    trackingCommand.rcsForceWorld,
+                    true);
                 return true;
 
             case PrototypeManeuverPhase.Coast:
@@ -1428,15 +1667,26 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
                 limitedFinalApproachCapability = false;
                 arrivalFailureReason = string.Empty;
                 SetState(PrototypeWaypointAutopilotState.AlignForBurn, "flight plan coast");
-                ApplyAutopilotRequest(direction, 0f);
+                ApplyAutopilotRequest(
+                    direction,
+                    0f,
+                    false,
+                    null,
+                    trackingCommand.rcsForceWorld,
+                    true);
                 return true;
 
             case PrototypeManeuverPhase.FlipToRetrograde:
-                ApplyFlightPlanBrakeSegment(segment, direction, false);
+                if (TrySkipCompletedFlightPlanBrakeFlipSegment(segment, direction))
+                {
+                    return true;
+                }
+
+                ApplyFlightPlanBrakeSegment(segment, direction, false, trackingCommand);
                 return true;
 
             case PrototypeManeuverPhase.RetrogradeBurn:
-                ApplyFlightPlanBrakeSegment(segment, direction, true);
+                ApplyFlightPlanBrakeSegment(segment, direction, true, trackingCommand);
                 return true;
 
             case PrototypeManeuverPhase.LateralCorrection:
@@ -1445,7 +1695,13 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
                 arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.LateralCorrection;
                 limitedFinalApproachCapability = !CanUseRcsTranslation();
                 arrivalFailureReason = limitedFinalApproachCapability ? "LimitedRcsAuthority" : string.Empty;
-                ApplyLateralCorrection();
+                ApplyAutopilotRequest(
+                    direction,
+                    0f,
+                    true,
+                    null,
+                    trackingCommand.rcsForceWorld,
+                    true);
                 return true;
 
             case PrototypeManeuverPhase.FinalApproach:
@@ -1454,13 +1710,25 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
                 arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.FinalApproach;
                 limitedFinalApproachCapability = !CanUseRcsTranslation();
                 arrivalFailureReason = limitedFinalApproachCapability ? "LimitedRcsAuthority" : string.Empty;
-                if (segment.commandMode == PrototypeManeuverCommandMode.RcsTranslation && segment.mainThrottle <= 0.01f)
+                if (trackingCommand.mainThrottle <= 0.01f)
                 {
-                    ApplyLateralCorrection();
+                    ApplyAutopilotRequest(
+                        direction,
+                        0f,
+                        true,
+                        null,
+                        trackingCommand.rcsForceWorld,
+                        true);
                 }
                 else
                 {
-                    ApplyAutopilotRequest(direction, segment.mainThrottle, true);
+                    ApplyAutopilotRequest(
+                        direction,
+                        trackingCommand.mainThrottle,
+                        true,
+                        null,
+                        trackingCommand.rcsForceWorld,
+                        true);
                 }
 
                 return true;
@@ -1471,6 +1739,71 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             default:
                 return false;
         }
+    }
+
+    private bool TrySkipCompletedFlightPlanAlignSegment(PrototypeManeuverSegment segment, Vector3 direction)
+    {
+        if (segment.phase != PrototypeManeuverPhase.AlignForBurn
+            || !CurrentFlightPlan.IsValid
+            || shipRigidbody == null)
+        {
+            return false;
+        }
+
+        float angle = direction.sqrMagnitude > 0.0001f ? Vector3.Angle(transform.forward, direction) : 180f;
+        float angularSpeed = GetAngularSpeedRadiansPerSecond();
+        float angularSpeedLimit = Mathf.Deg2Rad * BrakeAlignmentAngularSpeedLimitDegreesPerSecond;
+        if (angle > Mathf.Max(2f, alignmentAngleDegrees) || angularSpeed > angularSpeedLimit)
+        {
+            return false;
+        }
+
+        float nextElapsed = Mathf.Max(flightPlanElapsedSeconds, segment.endTimeSeconds + 0.001f);
+        if (!CurrentFlightPlan.TryGetActiveSegment(nextElapsed, out PrototypeManeuverSegment nextSegment)
+            || nextSegment.index == segment.index)
+        {
+            return false;
+        }
+
+        flightPlanElapsedSeconds = nextElapsed;
+        PrototypeFlightPlanTrackingCommand nextCommand = BuildFlightPlanTrackingCommand(CurrentFlightPlan);
+        lastFlightPlanTrackingCommand = nextCommand;
+        return ApplyFlightPlanSegment(nextSegment, nextCommand);
+    }
+
+    private bool TrySkipCompletedFlightPlanBrakeFlipSegment(PrototypeManeuverSegment segment, Vector3 direction)
+    {
+        if (segment.phase != PrototypeManeuverPhase.FlipToRetrograde
+            || !CurrentFlightPlan.IsValid
+            || shipRigidbody == null)
+        {
+            return false;
+        }
+
+        float angle = direction.sqrMagnitude > 0.0001f ? Vector3.Angle(transform.forward, direction) : 180f;
+        float angularSpeed = GetAngularSpeedRadiansPerSecond();
+        if (angle > BrakeMainThrottleRetrogradeAlignmentDegrees
+            || !IsBrakeAttitudeRateWithinMainThrottleGate(angularSpeed))
+        {
+            return false;
+        }
+
+        return TryAdvanceToNextFlightPlanSegment(segment);
+    }
+
+    private bool TryAdvanceToNextFlightPlanSegment(PrototypeManeuverSegment segment)
+    {
+        float nextElapsed = Mathf.Max(flightPlanElapsedSeconds, segment.endTimeSeconds + 0.001f);
+        if (!CurrentFlightPlan.TryGetActiveSegment(nextElapsed, out PrototypeManeuverSegment nextSegment)
+            || nextSegment.index == segment.index)
+        {
+            return false;
+        }
+
+        flightPlanElapsedSeconds = nextElapsed;
+        PrototypeFlightPlanTrackingCommand nextCommand = BuildFlightPlanTrackingCommand(CurrentFlightPlan);
+        lastFlightPlanTrackingCommand = nextCommand;
+        return ApplyFlightPlanSegment(nextSegment, nextCommand);
     }
 
     private bool ShouldSuppressFlightPlanTransferBurnInTerminalCapture(PrototypeManeuverPhase phase)
@@ -1486,7 +1819,22 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             || phase == PrototypeManeuverPhase.ReacquireRoute;
     }
 
-    private void ApplyFlightPlanBrakeSegment(PrototypeManeuverSegment segment, Vector3 direction, bool allowMainThrottle)
+    private bool ShouldRedirectFlightPlanBrakeToTerminalRcs(PrototypeManeuverPhase phase)
+    {
+        if (phase != PrototypeManeuverPhase.FlipToRetrograde
+            && phase != PrototypeManeuverPhase.RetrogradeBurn)
+        {
+            return false;
+        }
+
+        return ShouldUseTerminalLateralCorrection();
+    }
+
+    private void ApplyFlightPlanBrakeSegment(
+        PrototypeManeuverSegment segment,
+        Vector3 direction,
+        bool allowMainThrottle,
+        PrototypeFlightPlanTrackingCommand trackingCommand)
     {
         arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.Brake;
         limitedFinalApproachCapability = false;
@@ -1508,7 +1856,64 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             brakeMainThrottleAlignmentLocked = false;
         }
 
-        ApplyAutopilotRequest(direction, allowMainThrottle ? segment.mainThrottle : 0f, false, brakeAlignmentReady);
+        Vector3 brakeRcsForceWorld = FilterFlightPlanBrakeRcsForce(
+            segment,
+            direction,
+            trackingCommand.rcsForceWorld,
+            allowMainThrottle,
+            brakeAlignmentReady);
+        ApplyAutopilotRequest(
+            direction,
+            allowMainThrottle ? trackingCommand.mainThrottle : 0f,
+            false,
+            brakeAlignmentReady,
+            brakeRcsForceWorld,
+            true);
+    }
+
+    private Vector3 FilterFlightPlanBrakeRcsForce(
+        PrototypeManeuverSegment segment,
+        Vector3 brakeDirection,
+        Vector3 requestedForceWorld,
+        bool allowMainThrottle,
+        bool brakeAlignmentReady)
+    {
+        if (requestedForceWorld.sqrMagnitude <= 0.0001f
+            || brakeDirection.sqrMagnitude <= 0.0001f
+            || LastMetrics.relativeSpeed <= GetArrivalCompletionSpeedLimit() * 1.25f)
+        {
+            return requestedForceWorld;
+        }
+
+        if (segment.phase != PrototypeManeuverPhase.FlipToRetrograde
+            && segment.phase != PrototypeManeuverPhase.RetrogradeBurn)
+        {
+            return requestedForceWorld;
+        }
+
+        Vector3 normalizedBrakeDirection = brakeDirection.normalized;
+        Vector3 filteredForce = requestedForceWorld;
+        float alongBrakeForce = Vector3.Dot(filteredForce, normalizedBrakeDirection);
+        if (alongBrakeForce > 0f)
+        {
+            filteredForce -= normalizedBrakeDirection * alongBrakeForce;
+        }
+
+        if (!brakeAlignmentReady
+            && shipRigidbody != null
+            && shipRigidbody.linearVelocity.sqrMagnitude > 0.0001f)
+        {
+            Vector3 velocityDirection = shipRigidbody.linearVelocity.normalized;
+            float alongVelocityForce = Vector3.Dot(filteredForce, velocityDirection);
+            if (alongVelocityForce < 0f)
+            {
+                filteredForce -= velocityDirection * alongVelocityForce;
+            }
+        }
+
+        return allowMainThrottle && brakeAlignmentReady
+            ? filteredForce
+            : Vector3.ClampMagnitude(filteredForce, GetRcsTranslationForceScale() * 0.75f);
     }
 
     private bool ShouldSettleFlightPlanBrakeSegment()
@@ -1518,7 +1923,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return false;
         }
 
-        float settleDistance = Mathf.Max(finalApproachDistanceMeters, GetArrivalTerminalRangeDistance());
+        float settleDistance = Mathf.Max(GetArrivalFinishedDistance(), GetArrivalTerminalRangeDistance());
         if (LastMetrics.distance > settleDistance)
         {
             return false;
@@ -1544,7 +1949,10 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         return transform.forward.sqrMagnitude > 0.0001f ? transform.forward.normalized : Vector3.forward;
     }
 
-    private void UpdateFlightPlanSegmentDiagnostics(PrototypeManeuverSegment segment, Vector3 direction)
+    private void UpdateFlightPlanSegmentDiagnostics(
+        PrototypeManeuverSegment segment,
+        Vector3 direction,
+        PrototypeFlightPlanTrackingCommand trackingCommand)
     {
         PrototypeTrajectoryPlan updatedPlan = LastTrajectoryPlan;
         updatedPlan.phase = MapFlightPlanPhase(segment.phase);
@@ -1554,13 +1962,28 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             updatedPlan.activeSegmentType,
             segment.durationSeconds,
             direction,
-            segment.mainThrottle,
+            trackingCommand.mainThrottle,
             segment.expectedDeltaV,
             segment.ExpectedFuelKg,
             updatedPlan.predictedClosestObstacleDistance,
             updatedPlan.predictedMissDistanceToTarget);
+        updatedPlan.requestedMainThrottle = trackingCommand.mainThrottle;
+        updatedPlan.requestedRcsForceWorld = trackingCommand.rcsForceWorld;
+        updatedPlan.desiredBurnDirectionWorld = direction;
+        updatedPlan.desiredBurnDirection = direction;
+        updatedPlan.desiredAccelerationWorld = trackingCommand.desiredAccelerationWorld;
         updatedPlan.status = "flight plan";
-        updatedPlan.statusLabel = "flight plan " + segment.label;
+        updatedPlan.statusLabel = trackingCommand.requiresReplan
+            ? trackingCommand.statusLabel
+            : "flight plan " + segment.label
+                + " | track "
+                + trackingCommand.error.crossTrackErrorMeters.ToString("0.0")
+                + "m";
+        if (trackingCommand.requiresReplan)
+        {
+            updatedPlan.warningStatus = trackingCommand.statusLabel;
+        }
+
         LastTrajectoryPlan = updatedPlan;
     }
 
@@ -2093,6 +2516,11 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return false;
         }
 
+        if (ShouldPreferTerminalLateralCorrectionOverBrake(completionSpeed))
+        {
+            return false;
+        }
+
         float maxDeceleration = GetMaxDeceleration();
         if (maxDeceleration <= 0.0001f)
         {
@@ -2105,6 +2533,31 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         bool terminalBrakeAlreadyCaptured = arrivalBrakeCommitted || arrivalTerminalCaptureActive || brakeHoldActive;
         bool closeEnoughToCommit = LastMetrics.distance <= GetArrivalCompletionDistance() + BrakeArrivalHoldDistanceMarginMeters;
         return terminalBrakeAlreadyCaptured || plannedStopReachesCaptureZone || closeEnoughToCommit;
+    }
+
+    private bool ShouldPreferTerminalLateralCorrectionOverBrake(float completionSpeed)
+    {
+        if (!CanUseRcsTranslation())
+        {
+            return false;
+        }
+
+        float closingLimit = Mathf.Max(BrakeHoldReleaseZeroSpeed, completionSpeed * 0.5f);
+        if (LastMetrics.closingSpeed > closingLimit)
+        {
+            return false;
+        }
+
+        float lateralDominanceThreshold = Mathf.Max(
+            GetArrivalCompletionLateralTolerance() * 2f,
+            Mathf.Abs(LastMetrics.closingSpeed) * 1.2f);
+        if (LastMetrics.lateralSpeed < lateralDominanceThreshold)
+        {
+            return false;
+        }
+
+        float rcsOnlySpeedLimit = Mathf.Max(lateralCorrectionSpeed, completionSpeed * 2f);
+        return LastMetrics.relativeSpeed <= rcsOnlySpeedLimit;
     }
 
     private bool ShouldReleaseBrakeHoldForSettledOvershoot()
@@ -2431,11 +2884,6 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return false;
         }
 
-        if (LastMetrics.distance <= GetArrivalCompletionDistance() + BrakeArrivalHoldDistanceMarginMeters)
-        {
-            return false;
-        }
-
         float terminalSpeedLimit = Mathf.Max(lateralCorrectionSpeed, GetArrivalCompletionSpeedLimit() * 2f);
         float lateralDominanceThreshold = Mathf.Max(
             GetArrivalCompletionLateralTolerance() * 2f,
@@ -2589,7 +3037,13 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         return LastTrajectoryPlan.desiredBurnDirection;
     }
 
-    private void ApplyAutopilotRequest(Vector3 desiredDirection, float throttle, bool finalApproach = false, bool? brakeAlignmentReadyOverride = null)
+    private void ApplyAutopilotRequest(
+        Vector3 desiredDirection,
+        float throttle,
+        bool finalApproach = false,
+        bool? brakeAlignmentReadyOverride = null,
+        Vector3 trackedRcsForceWorld = default,
+        bool useTrackedRcsForce = false)
     {
         if (shipController == null)
         {
@@ -2599,7 +3053,9 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
         Vector3 attitudeTorqueLocal = Vector3.zero;
         bool suppressMainThrottle = TerminalRcsOnlyCorrectionActive;
-        Vector3 desiredRcsForceWorld = LastTrajectoryPlan.requestedRcsForceWorld;
+        Vector3 desiredRcsForceWorld = useTrackedRcsForce
+            ? trackedRcsForceWorld
+            : LastTrajectoryPlan.requestedRcsForceWorld;
         if (desiredRcsForceWorld.sqrMagnitude > 0.0001f)
         {
             float mass = GetShipMassKg();
@@ -2679,6 +3135,10 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         }
 
         requestedMainThrottle = Mathf.Clamp01(requestedMainThrottle);
+        assistForceWorld = FilterHighDeltaVBrakeAssistForce(
+            assistForceWorld,
+            desiredDirectionNormalized,
+            requestedMainThrottle);
         this.requestedMainThrottle = requestedMainThrottle;
         this.requestedRcsTranslation = assistForceWorld;
         PrototypeTrajectoryPlan updatedPlan = LastTrajectoryPlan;
@@ -2711,6 +3171,43 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             attitudeTorqueLocal,
             requestedMainThrottle,
             false));
+    }
+
+    private Vector3 FilterHighDeltaVBrakeAssistForce(
+        Vector3 assistForceWorld,
+        Vector3 desiredDirectionNormalized,
+        float mainThrottle)
+    {
+        bool brakeState = CurrentState == PrototypeWaypointAutopilotState.Brake
+            || CurrentState == PrototypeWaypointAutopilotState.FlipForBrake;
+        if (!brakeState
+            || assistForceWorld.sqrMagnitude <= 0.0001f
+            || shipRigidbody == null
+            || shipRigidbody.linearVelocity.sqrMagnitude <= 0.0001f
+            || LastMetrics.relativeSpeed <= GetArrivalCompletionSpeedLimit() * 1.25f
+            || mainThrottle > 0.01f)
+        {
+            return assistForceWorld;
+        }
+
+        Vector3 filteredForce = assistForceWorld;
+        if (desiredDirectionNormalized.sqrMagnitude > 0.0001f)
+        {
+            float alongBrakeForce = Vector3.Dot(filteredForce, desiredDirectionNormalized.normalized);
+            if (alongBrakeForce > 0f)
+            {
+                filteredForce -= desiredDirectionNormalized.normalized * alongBrakeForce;
+            }
+        }
+
+        Vector3 velocityDirection = shipRigidbody.linearVelocity.normalized;
+        float alongVelocityForce = Vector3.Dot(filteredForce, velocityDirection);
+        if (alongVelocityForce < 0f)
+        {
+            filteredForce -= velocityDirection * alongVelocityForce;
+        }
+
+        return Vector3.ClampMagnitude(filteredForce, GetRcsTranslationForceScale() * 0.75f);
     }
 
     private float ShapeMainThrottleForState(float throttle)
@@ -2942,7 +3439,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return Vector3.zero;
         }
 
-        float holdCorrectionDistance = GetArrivalDistance() + 4f;
+        float holdCorrectionDistance = GetArrivalDistance() + 1.5f;
         if (LastMetrics.distance <= holdCorrectionDistance)
         {
             return Vector3.zero;
@@ -2960,9 +3457,10 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         float correctionScale = Mathf.Clamp01(excessDistance / 5f);
         float dampingSeconds = Mathf.Max(0.1f, lateralCorrectionDampingSeconds);
         float desiredPositionForce = GetShipMassKg() * (excessDistance / (dampingSeconds * dampingSeconds));
+        float minimumCorrectionForce = GetRcsTranslationForceScale() * 0.08f;
         float correctionMagnitude = Mathf.Min(
-            Mathf.Max(dampingForceMagnitude * 0.45f, desiredPositionForce * 0.3f),
-            GetRcsTranslationForceScale() * 0.3f) * correctionScale;
+            Mathf.Max(dampingForceMagnitude * 0.55f, desiredPositionForce * 0.5f, minimumCorrectionForce),
+            GetRcsTranslationForceScale() * 0.45f) * correctionScale;
         if (correctionMagnitude <= 0.00001f)
         {
             return Vector3.zero;
@@ -3295,11 +3793,8 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         }
 
         bool requestedReplan = forceNextFlightPlanRevision;
-        bool preserveActiveFlightPlan = autopilotEngaged
-            && useFlightPlanExecutor
-            && LastTrajectoryPlan.flightPlan.IsValid
-            && !requestedReplan;
         PrototypeFlightPlan preservedFlightPlan = LastTrajectoryPlan.flightPlan;
+        bool preserveActiveFlightPlan = ShouldPreserveActiveFlightPlan(preservedFlightPlan, requestedReplan);
         if (shipRigidbody == null || currentTarget == null)
         {
             LastObstacleDetection = PrototypeObstacleDetectionResult.Clear(GetObstacleClearanceRadius());
@@ -3309,10 +3804,26 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         }
 
         float clearance = GetObstacleClearanceRadius();
+        bool reacquireWindowActive = reacquireDirectPathUntilTime > 0f && Time.time <= reacquireDirectPathUntilTime;
+        bool wasAvoidanceRoute = reacquireWindowActive
+            || hasStableAvoidance
+            || LastTrajectoryPlan.RequiresAvoidance
+            || LastTrajectoryPlan.navigationPhase == PrototypeAutopilotNavigationPhase.AvoidancePlanning
+            || LastTrajectoryPlan.navigationPhase == PrototypeAutopilotNavigationPhase.Avoiding
+            || navigationPhaseV2 == PrototypeWaypointAutopilotNavigationPhase.AvoidancePlanning
+            || navigationPhaseV2 == PrototypeWaypointAutopilotNavigationPhase.Avoiding;
         LastObstacleDetection = obstacleDetector != null
             ? obstacleDetector.DetectDirectPath(shipRigidbody, currentTarget.Position, clearance)
             : PrototypeObstacleDetectionResult.Clear(clearance);
-        bool keepStableAvoidance = hasStableAvoidance && Time.time < avoidanceHoldExpireTime;
+        bool releasedAvoidanceRoute = wasAvoidanceRoute && !LastObstacleDetection.hasObstacle;
+        bool keepStableAvoidance = hasStableAvoidance
+            && Time.time < avoidanceHoldExpireTime
+            && LastObstacleDetection.hasObstacle;
+        if (releasedAvoidanceRoute || (reacquireWindowActive && !LastObstacleDetection.hasObstacle))
+        {
+            reacquireDirectPathUntilTime = Time.time + avoidReacquireTimeoutSeconds;
+            navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.ReacquireDirectPath;
+        }
         PrototypeShipPlanningSnapshot shipPlanningSnapshot = PrototypeShipPlanningSnapshotBuilder.Build(
             transform,
             shipRigidbody,
@@ -3353,6 +3864,21 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             plan.selectedCandidateReason = "locked avoidance waypoint";
             plan.navigationPhase = PrototypeAutopilotNavigationPhase.Avoiding;
         }
+        else if (!plan.RequiresAvoidance
+            && (releasedAvoidanceRoute
+                || (reacquireWindowActive && !LastObstacleDetection.hasObstacle)
+                || (keepStableAvoidance
+                    && (navigationPhaseV2 == PrototypeWaypointAutopilotNavigationPhase.AvoidancePlanning
+                        || navigationPhaseV2 == PrototypeWaypointAutopilotNavigationPhase.Avoiding))))
+        {
+            plan.navigationPhase = PrototypeAutopilotNavigationPhase.ReacquireDirectPath;
+        }
+
+        if (releasedAvoidanceRoute)
+        {
+            preserveActiveFlightPlan = false;
+            requestedReplan = true;
+        }
 
         if (preserveActiveFlightPlan)
         {
@@ -3364,7 +3890,79 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         }
 
         LastTrajectoryPlan = plan;
+        if (releasedAvoidanceRoute && !LastTrajectoryPlan.RequiresAvoidance)
+        {
+            navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.ReacquireDirectPath;
+            PrototypeTrajectoryPlan reacquirePlan = LastTrajectoryPlan;
+            reacquirePlan.navigationPhase = PrototypeAutopilotNavigationPhase.ReacquireDirectPath;
+            LastTrajectoryPlan = reacquirePlan;
+        }
+
         CompleteNavigationPlanRefresh();
+    }
+
+    private bool ShouldPreserveActiveFlightPlan(PrototypeFlightPlan preservedFlightPlan, bool requestedReplan)
+    {
+        if (!autopilotEngaged
+            || !useFlightPlanExecutor
+            || !preservedFlightPlan.IsValid
+            || requestedReplan)
+        {
+            return false;
+        }
+
+        if (!strictFlightPlanExecution)
+        {
+            return true;
+        }
+
+        if (currentTarget == null || shipRigidbody == null)
+        {
+            return false;
+        }
+
+        float targetTolerance = Mathf.Max(0.75f, preservedFlightPlan.targetArrivalRadiusMeters * 0.25f);
+        if (Vector3.Distance(preservedFlightPlan.targetPositionWorld, currentTarget.Position) > targetTolerance)
+        {
+            return false;
+        }
+
+        float massKg = GetShipMassKg();
+        float rcsAcceleration = massKg > 0.0001f ? GetRcsTranslationForceScale() / massKg : 0f;
+        PrototypeFlightPlanTrackerSettings settings = BuildRuntimeFlightPlanTrackerSettings(massKg, rcsAcceleration);
+        PrototypeFlightPlanTrackingCommand trackingCommand = PrototypeFlightPlanTracker.Track(
+            preservedFlightPlan,
+            flightPlanElapsedSeconds,
+            shipRigidbody.worldCenterOfMass,
+            shipRigidbody.linearVelocity,
+            shipRigidbody.rotation,
+            shipRigidbody.angularVelocity,
+            shipStats != null ? shipStats.CurrentFuelKg : 0f,
+            currentTarget.Position,
+            GetMaxAcceleration(),
+            rcsAcceleration,
+            massKg,
+            settings);
+        const PrototypeFlightPlanAbortReplanReason nonPreservableReasons =
+            PrototypeFlightPlanAbortReplanReason.MissingDependency
+            | PrototypeFlightPlanAbortReplanReason.NonFiniteState
+            | PrototypeFlightPlanAbortReplanReason.TargetMoved
+            | PrototypeFlightPlanAbortReplanReason.ObstacleDetected
+            | PrototypeFlightPlanAbortReplanReason.CollisionPredicted
+            | PrototypeFlightPlanAbortReplanReason.FuelStarved
+            | PrototypeFlightPlanAbortReplanReason.ActuatorLimited
+            | PrototypeFlightPlanAbortReplanReason.NoMainThrustAuthority
+            | PrototypeFlightPlanAbortReplanReason.NoRcsAuthority
+            | PrototypeFlightPlanAbortReplanReason.InvalidPlanDirection
+            | PrototypeFlightPlanAbortReplanReason.PlanUnstable
+            | PrototypeFlightPlanAbortReplanReason.PlanExpired
+            | PrototypeFlightPlanAbortReplanReason.NonExecutable;
+        if ((trackingCommand.replanReasons & nonPreservableReasons) != 0)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     private PrototypeTrajectoryPlan AssignFlightPlanRevision(PrototypeTrajectoryPlan plan, bool requestedReplan)
@@ -3375,10 +3973,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         }
 
         PrototypeFlightPlan flightPlan = plan.flightPlan;
-        if (flightPlanRevisionCounter <= 0 || requestedReplan)
-        {
-            flightPlanRevisionCounter++;
-        }
+        flightPlanRevisionCounter++;
 
         lastAssignedFlightPlanId = flightPlan.planId;
         flightPlan.revision = Mathf.Max(1, flightPlanRevisionCounter);
@@ -3401,7 +3996,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
         if (autopilotEngaged && useFlightPlanExecutor && CurrentFlightPlan.IsValid)
         {
-            return false;
+            return strictFlightPlanExecution && Time.time >= nextFlightPlanSafetyRefreshTime;
         }
 
         return Time.time >= nextNavigationPlanTime;
@@ -3433,6 +4028,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         NavigationPlanRefreshCount++;
         navigationPlanDirty = false;
         nextNavigationPlanTime = Time.time + NavigationPlanIntervalSeconds;
+        nextFlightPlanSafetyRefreshTime = Time.time + FlightPlanSafetyRefreshIntervalSeconds;
     }
 
     private bool HasArrived()
@@ -3803,6 +4399,30 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private static bool IsFinite(Vector3 value)
     {
         return IsFinite(value.x) && IsFinite(value.y) && IsFinite(value.z);
+    }
+
+    private static Vector3[] CopyFlightPlanSamplePositions(PrototypeTrajectoryPredictedSample[] samples, int maxPoints)
+    {
+        if (samples == null || samples.Length == 0 || maxPoints <= 0)
+        {
+            return System.Array.Empty<Vector3>();
+        }
+
+        int count = Mathf.Min(samples.Length, maxPoints);
+        var points = new Vector3[count];
+        if (count == 1)
+        {
+            points[0] = samples[0].position;
+            return points;
+        }
+
+        for (int i = 0; i < count; i++)
+        {
+            int sampleIndex = Mathf.RoundToInt((samples.Length - 1) * (i / (float)(count - 1)));
+            points[i] = samples[Mathf.Clamp(sampleIndex, 0, samples.Length - 1)].position;
+        }
+
+        return points;
     }
 
     private static bool IsFinite(float value)

@@ -1,0 +1,143 @@
+{
+  "job_id": "91813be2fde54c72a065aa5498385c89",
+  "tests": [
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_Arrival_NoBrakeAccelerateFlap_ReachesCompletionDeadzone",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_AvoidsObstacle_ThenReachesWaypoint",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_BrakeDirectionUsesRetrogradeOutsideTerminalRangeEvenWithCaptureLatch",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_ClosedLoopBrake_RotatesAndUsesMainThrusterWithoutHarnessRotation",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_FineTerminalCommittedBrakeLatchDoesNotPublishMainThrottle",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_FineTerminalCorrectionUsesRcsOnlyBelowLowDeltaVThreshold",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_HeavyCargo_ReportsLimitedOrCompletesWithinRelaxedEnvelope",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_HighDeltaVTerminalBrakeStillAllowsMainThrottle",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_ImportedFunctionalScoutDoesNotFlipBeforePlannedBrakeSegment",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_LongRangeBrakeCommitDoesNotActivateTerminalCaptureBeforeEnvelope",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_ManualOverride_AbortsAndClearsRequests",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_NearTargetHighMassLowRcs_DetectsLimitedLateralAuthority",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_NearTargetLateralOvershoot_NoTerminalAccelerateOrSpin",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_NearTargetOffAxisVelocity_DampsLaterallyWithoutMainThrottle",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_NoRcs_DoesNotFakePrecisionComplete",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_OffAxisLongRangeTerminalBrakeCommit_DoesNotReenterAccelerateOrSpin",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_OffAxisTerminalDeadzoneWithRealisticAuthority_LatchesHoldWithoutAccelerateFlap",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_PhysicsAvoidsObstacleWithoutHarnessMotion",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_ReachesWaypoint_NoObstacle",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_SelectTargetClearsArrivalBrakeAndHoldHysteresis",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_StartsWithLateralVelocity_ReachesHold",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalAvoidanceStillWinsOverCommittedBrakeLatch",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalBrakeDirectionDoesNotChaseLateralVelocity",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalOvershootBrakesAndHoldsWithoutReaccelerating",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalOvershootWithoutRcsDoesNotEnterHold",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_FlightPlanExecutor_DirectRoute_TracksPredictedPathAndDoesNotBurnAway",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_FlightPlanExecutor_PreviewAndExecutionUseSamePlan"
+  ],
+  "refresh": {
+    "jsonrpc": "2.0",
+    "id": 2,
+    "result": {
+      "_meta": {
+        "fastmcp": {
+          "wrap_result": true
+        }
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"message\":\"Refresh requested.\",\"error\":null,\"data\":{\"refresh_triggered\":false,\"compile_requested\":true,\"resulting_state\":\"compiling\",\"hint\":\"If Unity enters compilation/domain reload, poll editor_state until ready_for_tools is true.\"},\"hint\":null}"
+        }
+      ],
+      "structuredContent": {
+        "result": {
+          "success": true,
+          "message": "Refresh requested.",
+          "error": null,
+          "data": {
+            "refresh_triggered": false,
+            "compile_requested": true,
+            "resulting_state": "compiling",
+            "hint": "If Unity enters compilation/domain reload, poll editor_state until ready_for_tools is true."
+          },
+          "hint": null
+        }
+      },
+      "isError": false
+    }
+  },
+  "start": {
+    "jsonrpc": "2.0",
+    "id": 3,
+    "result": {
+      "_meta": {
+        "fastmcp": {
+          "wrap_result": true
+        }
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"message\":\"Test job started.\",\"error\":null,\"data\":{\"job_id\":\"91813be2fde54c72a065aa5498385c89\",\"status\":\"running\",\"mode\":\"PlayMode\",\"include_details\":true,\"include_failed_tests\":true},\"hint\":null}"
+        }
+      ],
+      "structuredContent": {
+        "result": {
+          "success": true,
+          "message": "Test job started.",
+          "error": null,
+          "data": {
+            "job_id": "91813be2fde54c72a065aa5498385c89",
+            "status": "running",
+            "mode": "PlayMode",
+            "include_details": true,
+            "include_failed_tests": true
+          },
+          "hint": null
+        }
+      },
+      "isError": false
+    }
+  },
+  "final": {
+    "job_id": "91813be2fde54c72a065aa5498385c89",
+    "status": "failed",
+    "mode": "PlayMode",
+    "started_unix_ms": 1780037599703,
+    "finished_unix_ms": 1780037608435,
+    "last_update_unix_ms": 1780037608435,
+    "progress": {
+      "completed": 29,
+      "total": 29,
+      "current_test_full_name": null,
+      "current_test_started_unix_ms": 1780037608397,
+      "last_finished_test_full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_FlightPlanExecutor_PreviewAndExecutionUseSamePlan",
+      "last_finished_unix_ms": 1780037608400,
+      "stuck_suspected": false,
+      "editor_is_focused": true,
+      "blocked_reason": null,
+      "failures_so_far": [
+        {
+          "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_AvoidsObstacle_ThenReachesWaypoint",
+          "message": "  Autopilot should leave avoidance once the direct path clears.\r\n  Expected: True\r\n  But was:  False\r\n"
+        },
+        {
+          "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_NearTargetHighMassLowRcs_DetectsLimitedLateralAuthority",
+          "message": "  Expected: FinalApproach or HoldPosition\r\n  But was:  FlipForBrake\r\n"
+        },
+        {
+          "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_NearTargetOffAxisVelocity_DampsLaterallyWithoutMainThrottle",
+          "message": "  Expected: FinalApproach or HoldPosition\r\n  But was:  FlipForBrake\r\n"
+        },
+        {
+          "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap",
+          "message": "  terminal brake flip should not accumulate a full extra rotation.\nfinalState=Complete phase=Hold\nfinalDistance=8.38 finalSpeed=0.12 finalAngularSpeed=0.00\naccelerateFramesInTerminalEnvelope=0 throttleWhileFlipFrames=0 maxFlipAngularSpeed=1.28\nArrivalFailureReason=none\nlast5Samples:\ni=1050 dist=8.39 rel=0.12 closing=0.10 lat=0.07 ang=0.00 state=HoldPosition phase=Hold main=0.00\ni=1051 dist=8.39 rel=0.12 closing=0.10 lat=0.07 ang=0.00 state=HoldPosition phase=Hold main=0.00\ni=1052 dist=8.39 rel=0.12 closing=0.10 lat=0.07 ang=0.00 state=HoldPosition phase=Hold main=0.00\ni=1053 dist=8.39 rel=0.12 closing=0.10 lat=0.07 ang=0.00 state=HoldPosition phase=Hold main=0.00\ni=1054 dist=8.38 rel=0.12 closing=0.10 lat=0.07 ang=0.00 state=HoldPosition phase=Hold main=0.00\nbrakeToAccelerateTransitionsAfterCommit=0 integratedBrakeRotationRadians=5.11 maxCommittedBrakeDirectionDelta=0.62\r\n  Expected: less than or equal to 4.24115038f\r\n  But was:  5.10616636f\r\n"
+        },
+        {
+          "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalBrakeDirectionDoesNotChaseLateralVelocity",
+          "message": "  Expected: less than or equal to 0.800000012f\r\n  But was:  0.960015416f\r\n"
+        }
+      ],
+      "failures_capped": false
+    },
+    "error": null,
+    "result": null
+  }
+}

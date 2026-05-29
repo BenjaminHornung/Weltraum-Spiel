@@ -1,0 +1,34 @@
+{
+  "success": true,
+  "message": "Test job status retrieved.",
+  "error": null,
+  "data": {
+    "job_id": "fdca61b5ab4e48719c3406d07731cb90",
+    "status": "failed",
+    "mode": "PlayMode",
+    "started_unix_ms": 1780035640217,
+    "finished_unix_ms": 1780035647323,
+    "last_update_unix_ms": 1780035647323,
+    "progress": {
+      "completed": 4,
+      "total": 4,
+      "current_test_full_name": null,
+      "current_test_started_unix_ms": 1780035646796,
+      "last_finished_test_full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalOvershootBrakesAndHoldsWithoutReaccelerating",
+      "last_finished_unix_ms": 1780035647286,
+      "stuck_suspected": false,
+      "editor_is_focused": true,
+      "blocked_reason": null,
+      "failures_so_far": [
+        {
+          "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_OffAxisLongRangeTerminalBrakeCommit_DoesNotReenterAccelerateOrSpin",
+          "message": "  terminal capture latch should activate before completion in long-range off-axis scenarios.\nfinalState=AlignForBurn phase=Direct\nfinalDistance=2830.24 finalSpeed=36.31 finalAngularSpeed=0.00\naccelerateFramesInTerminalEnvelope=0 throttleWhileFlipFrames=0 maxFlipAngularSpeed=0.58\nArrivalFailureReason=none\nlast5Samples:\ni=4195 dist=2827.33 rel=36.31 closing=-36.31 lat=0.15 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=4196 dist=2828.06 rel=36.31 closing=-36.31 lat=0.15 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=4197 dist=2828.78 rel=36.31 closing=-36.31 lat=0.15 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=4198 dist=2829.51 rel=36.31 closing=-36.31 lat=0.15 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=4199 dist=2830.24 rel=36.31 closing=-36.31 lat=0.15 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 sawTerminalCapture=False brakeToAccelerateTransitionsAfterCommit=0 integratedFlipRotationRadians=1.23\r\n  Expected: True\r\n  But was:  False\r\n"
+        }
+      ],
+      "failures_capped": false
+    },
+    "error": null,
+    "result": null
+  },
+  "hint": null
+}

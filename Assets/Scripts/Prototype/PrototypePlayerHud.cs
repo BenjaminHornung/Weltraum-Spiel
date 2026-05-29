@@ -92,6 +92,9 @@ public readonly struct PrototypePlayerNavigationSnapshot
         string planAuthorityLabel = null,
         string activeSegmentLabel = null,
         string replanStatusLabel = null,
+        string planIdentityLabel = null,
+        string trackingErrorLabel = null,
+        string trackingCommandLabel = null,
         float totalPlanDurationSeconds = 0f,
         float totalPlanFuelKg = 0f,
         string[] maneuverStepRows = null,
@@ -124,6 +127,9 @@ public readonly struct PrototypePlayerNavigationSnapshot
         PlanAuthorityLabel = string.IsNullOrWhiteSpace(planAuthorityLabel) ? "Authority: Legacy live gates" : planAuthorityLabel;
         ActiveSegmentLabel = string.IsNullOrWhiteSpace(activeSegmentLabel) ? "Active: " + PhaseLabel : activeSegmentLabel;
         ReplanStatusLabel = string.IsNullOrWhiteSpace(replanStatusLabel) ? "Replan: none" : replanStatusLabel;
+        PlanIdentityLabel = string.IsNullOrWhiteSpace(planIdentityLabel) ? "Plan: none" : planIdentityLabel;
+        TrackingErrorLabel = string.IsNullOrWhiteSpace(trackingErrorLabel) ? "Track: --" : trackingErrorLabel;
+        TrackingCommandLabel = string.IsNullOrWhiteSpace(trackingCommandLabel) ? "Cmd: --" : trackingCommandLabel;
         TotalPlanDurationSeconds = Mathf.Max(0f, totalPlanDurationSeconds);
         TotalPlanFuelKg = Mathf.Max(0f, totalPlanFuelKg);
         ManeuverStepRows = maneuverStepRows ?? System.Array.Empty<string>();
@@ -159,6 +165,9 @@ public readonly struct PrototypePlayerNavigationSnapshot
     public string PlanAuthorityLabel { get; }
     public string ActiveSegmentLabel { get; }
     public string ReplanStatusLabel { get; }
+    public string PlanIdentityLabel { get; }
+    public string TrackingErrorLabel { get; }
+    public string TrackingCommandLabel { get; }
     public float TotalPlanDurationSeconds { get; }
     public float TotalPlanFuelKg { get; }
     public string[] ManeuverStepRows { get; }
@@ -957,6 +966,9 @@ public static class PrototypePlayerHudSnapshotBuilder
             BuildNavigationPlanAuthorityLabel(autopilot, flightPlan),
             hasFlightPlan ? BuildNavigationFlightPlanActiveSegmentLabel(autopilot, flightPlan) : "Active: " + TranslateTrajectorySegmentType(autopilot.ActiveSegmentType),
             BuildNavigationReplanStatusLabel(autopilot, flightPlan),
+            BuildNavigationPlanIdentityLabel(autopilot, flightPlan),
+            BuildNavigationTrackingErrorLabel(autopilot),
+            BuildNavigationTrackingCommandLabel(autopilot),
             totalPlanDuration,
             totalPlanFuel,
             hasFlightPlan ? BuildNavigationManeuverRows(flightPlan.segments) : BuildNavigationManeuverRows(planSegments),
@@ -1150,22 +1162,84 @@ public static class PrototypePlayerHudSnapshotBuilder
         return "Replan: none";
     }
 
+    private static string BuildNavigationPlanIdentityLabel(PrototypeWaypointAutopilot autopilot, PrototypeFlightPlan flightPlan)
+    {
+        if (!flightPlan.HasSegments)
+        {
+            return "Plan: none | Preview: legacy";
+        }
+
+        string executorPlan = autopilot != null && autopilot.FlightPlanExecutorActive
+            ? flightPlan.planId
+            : "pending";
+        int sampleCount = flightPlan.predictedSamples != null ? flightPlan.predictedSamples.Length : 0;
+        return "Plan: " + flightPlan.planId
+            + " rev " + flightPlan.revision
+            + " | Preview=Executor " + (autopilot != null && autopilot.FlightPlanExecutorActive ? "yes" : "pending")
+            + " | Exec " + executorPlan
+            + " | Samples " + sampleCount;
+    }
+
+    private static string BuildNavigationTrackingErrorLabel(PrototypeWaypointAutopilot autopilot)
+    {
+        if (autopilot == null || !autopilot.FlightPlanExecutorEnabled)
+        {
+            return "Track: executor off";
+        }
+
+        PrototypeFlightPlanTrackingError error = autopilot.CurrentFlightPlanTrackingError;
+        if (!error.hasReferenceSample)
+        {
+            return autopilot.FlightPlanTrackingStatusLabel;
+        }
+
+        return "Track: pos " + error.positionErrorMeters.ToString("0.0") + "m"
+            + " | cross " + error.crossTrackErrorMeters.ToString("0.0") + "m"
+            + " | vel " + error.velocityErrorMetersPerSecond.ToString("0.0") + "m/s"
+            + " | sample " + (error.activeSampleIndex + 1);
+    }
+
+    private static string BuildNavigationTrackingCommandLabel(PrototypeWaypointAutopilot autopilot)
+    {
+        if (autopilot == null || !autopilot.FlightPlanExecutorEnabled)
+        {
+            return "Cmd: executor off";
+        }
+
+        PrototypeFlightPlanTrackingCommand command = autopilot.CurrentFlightPlanTrackingCommand;
+        if (!command.hasCommand)
+        {
+            return "Cmd: waiting | strict " + (autopilot.StrictFlightPlanExecution ? "on" : "off");
+        }
+
+        return "Cmd: accel " + command.desiredAccelerationWorld.magnitude.ToString("0.00") + "m/s2"
+            + " | main " + Mathf.RoundToInt(command.mainThrottle * 100f) + "%"
+            + " | RCS " + command.rcsForceWorld.magnitude.ToString("0.0") + "N"
+            + " | dot " + command.accelerationDotPlannedTangent.ToString("0.00");
+    }
+
     private static string BuildNavigationPlanAuthorityLabel(PrototypeWaypointAutopilot autopilot, PrototypeFlightPlan flightPlan)
     {
         if (!flightPlan.HasSegments)
         {
-            return "Authority: Legacy live gates";
+            return autopilot != null && autopilot.StrictFlightPlanExecution
+                ? "Authority: Strict flight plan | waiting for plan"
+                : "Authority: Legacy live gates";
         }
 
         if (!flightPlan.isExecutable)
         {
-            return "Authority: Flight plan blocked | legacy gates";
+            return autopilot != null && autopilot.StrictFlightPlanExecution
+                ? "Authority: Flight plan blocked | strict replan"
+                : "Authority: Flight plan blocked | legacy gates";
         }
 
         string revision = "rev " + flightPlan.revision;
         if (autopilot != null && autopilot.FlightPlanExecutorActive)
         {
-            return "Authority: Flight plan executor active | " + revision;
+            return autopilot.StrictFlightPlanExecution
+                ? "Authority: Strict flight plan tracking active | " + revision
+                : "Authority: Flight plan executor active | " + revision;
         }
 
         return "Authority: Flight plan emitted | executor pending | " + revision;
@@ -1189,7 +1263,8 @@ public static class PrototypePlayerHudSnapshotBuilder
             return "Active: " + (executionState.activeSegmentIndex + 1) + "/" + flightPlan.SegmentCount
                 + " " + active.label
                 + " " + FormatPlannerSeconds(executionState.activeElapsedSeconds)
-                + "/" + FormatPlannerSeconds(active.durationSeconds);
+                + "/" + FormatPlannerSeconds(active.durationSeconds)
+                + BuildNavigationActiveSampleSuffix(autopilot);
         }
 
         float elapsed = autopilot != null ? autopilot.FlightPlanExecutorElapsedSeconds : 0f;
@@ -1199,6 +1274,23 @@ public static class PrototypePlayerHudSnapshotBuilder
         }
 
         return "Planned: " + flightPlan.segments[0].label;
+    }
+
+    private static string BuildNavigationActiveSampleSuffix(PrototypeWaypointAutopilot autopilot)
+    {
+        if (autopilot == null)
+        {
+            return string.Empty;
+        }
+
+        PrototypeFlightPlanTrackingError error = autopilot.CurrentFlightPlanTrackingError;
+        if (!error.hasReferenceSample)
+        {
+            return string.Empty;
+        }
+
+        return " | sample " + (error.activeSampleIndex + 1)
+            + " | x " + error.crossTrackErrorMeters.ToString("0.0") + "m";
     }
 
     private static string BuildNavigationObstacleSummaryLabel(PrototypeWaypointAutopilot autopilot, bool hasAvoidanceCue)
@@ -4738,6 +4830,9 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             + "Path: " + routeLabel + " | " + previewLabel + "\n"
             + navigation.ManeuverIntentLabel + " | Stop " + FormatDistance(navigation.StoppingDistanceMeters) + "\n"
             + burnLabel + " | " + totalPlanLabel + "\n"
+            + navigation.PlanIdentityLabel + "\n"
+            + navigation.TrackingErrorLabel + "\n"
+            + navigation.TrackingCommandLabel + "\n"
             + navigation.ReplanStatusLabel + " | Obstacles: " + navigation.ObstacleSummaryLabel + "\n"
             + BuildNavigationPlannerStepRows(navigation.ManeuverStepRows, avoidanceLabel);
     }

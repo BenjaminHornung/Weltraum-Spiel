@@ -1,0 +1,625 @@
+{
+  "job_id": "12ca6038af884807b7c67ffb346238bf",
+  "tests": [
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_AvoidanceWaypointPersistsAcrossFrames",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_FlightPlanDivergenceNewObstacleReplansWithVisibleReason",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_FlightPlanDivergenceTargetMoveReplansWithVisibleReason",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_FlightPlanExecutorDoesNotFlipBeforePlannedBrakeSegment",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_FlightPlanExecutorEntersFlipOnlyAtPlannedSegment",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_FlightPlanExecutorFlagOffUsesLegacyFallback",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_FlightPlanExpiredReplansInsteadOfLegacyLiveBrake",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_FlightPlanHoldWithoutRcsAbortsInsteadOfLegacyHoldGate",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_FuelInsufficientBeforeBurn",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_HoldRequiresStableVelocityWindow",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_NoAuthorityDoesNotFakeComplete",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_ReacquiresDirectPathAfterAvoidance",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.NavigationComputerHud_BuildsStructuredPanelAndWarningChips",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.NavigationComputerSources_RenderStructuredDebugAndMinimapEvidence",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.NavigationComputerV2SyntheticEvidence_WritesMarkedHeadlessPngs",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.ObstacleDetector_MultipleObstacles_SelectsNearestBlocking",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.ObstacleDetector_NonBlockingObstacle_IsIgnored",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.ObstacleDetector_OverlapAtStart_IsDetected",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.ObstacleDetector_TriggersAreDetected",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_AvoidanceCandidateWinsWhenDirectBlocked",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_CandidateScorePenalizesCollision",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_CandidateScorePenalizesImpossibleBrake",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_DirectCandidateWinsWhenClear",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_EmitsExecutableFlightPlanWithoutDroppingLegacyDiagnostics",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_EmittedFlightPlanStartsWithBrakeWhenStoppingDistanceConsumesArrival",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_EmittedFlightPlanUsesRealShipPlanningSnapshot",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_HeavyShipNeedsMoreRcsForce",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_LimitedRcsReportsLimitedAuthority",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_UsesBurnPlanFuelAndDeltaV",
+    "PrototypeFlightPlanValidationTests.DivergenceMonitorFlagsMissingActuatorForAbort",
+    "PrototypeFlightPlanValidationTests.DivergenceMonitorFlagsTargetAndObstacleForReplan",
+    "PrototypeFlightPlanValidationTests.ExecutionStateFlagsDivergenceAgainstSegmentTolerance",
+    "PrototypeFlightPlanValidationTests.ExecutionStateReportsActiveSegmentProgress",
+    "PrototypeFlightPlanValidationTests.FlightPlanComputesOrderedTotalsFromSegments",
+    "PrototypeFlightPlanValidationTests.FlightPlanCreateInvalidPreservesReasonAndStatus",
+    "PrototypeFlightPlanValidationTests.FlightPlanRejectsFuelStarvedRoute",
+    "PrototypeFlightPlanValidationTests.FlightPlanRejectsOverlappingSegments",
+    "PrototypeFlightPlanValidationTests.FlightPlanTracker_BrakeAccelerationOpposesVelocity",
+    "PrototypeFlightPlanValidationTests.FlightPlanTracker_ComputesCrossTrackAndAlongTrackError",
+    "PrototypeFlightPlanValidationTests.FlightPlanTracker_ComputesVelocityError",
+    "PrototypeFlightPlanValidationTests.FlightPlanTracker_InterpolatesSamples",
+    "PrototypeFlightPlanValidationTests.FlightPlanTracker_InvalidPlanWithoutSamples",
+    "PrototypeFlightPlanValidationTests.FlightPlanTracker_InvalidProgradeSegmentDirectionRequiresReplanBeforeThrottle",
+    "PrototypeFlightPlanValidationTests.FlightPlanTracker_OutputAccelerationPointsTowardPlannedPath",
+    "PrototypeFlightPlanValidationTests.FlightPlanTracker_ReplanWhenInitialStateMismatch",
+    "PrototypeFlightPlanValidationTests.ShipPlanningSnapshotBuilderCapturesGeneratedRuntimeShipAuthority",
+    "PrototypeFlightPlanValidationTests.ShipPlanningSnapshotBuilderCapturesImportedFunctionalSocketEvidence",
+    "PrototypeFlightPlanValidationTests.ShipPlanningSnapshotPreservesRealAuthorityFields",
+    "PrototypePlayerHudValidationTests.NavigationComputerControlsReuseAutopilotAndPreviewApis",
+    "PrototypePlayerHudValidationTests.NavigationPlannerPopupUsesAutopilotAndPreviewApis",
+    "PrototypePlayerHudValidationTests.NavigationSnapshotDescribesFlipAndMainDecelBurnIntent",
+    "PrototypePlayerHudValidationTests.NavigationSnapshotUsesEmittedFlightPlanForPlannerScheduleRows"
+  ],
+  "refresh": {
+    "jsonrpc": "2.0",
+    "id": 2,
+    "result": {
+      "_meta": {
+        "fastmcp": {
+          "wrap_result": true
+        }
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"message\":\"Refresh requested.\",\"error\":null,\"data\":{\"refresh_triggered\":false,\"compile_requested\":true,\"resulting_state\":\"compiling\",\"hint\":\"If Unity enters compilation/domain reload, poll editor_state until ready_for_tools is true.\"},\"hint\":null}"
+        }
+      ],
+      "structuredContent": {
+        "result": {
+          "success": true,
+          "message": "Refresh requested.",
+          "error": null,
+          "data": {
+            "refresh_triggered": false,
+            "compile_requested": true,
+            "resulting_state": "compiling",
+            "hint": "If Unity enters compilation/domain reload, poll editor_state until ready_for_tools is true."
+          },
+          "hint": null
+        }
+      },
+      "isError": false
+    }
+  },
+  "start": {
+    "jsonrpc": "2.0",
+    "id": 3,
+    "result": {
+      "_meta": {
+        "fastmcp": {
+          "wrap_result": true
+        }
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"message\":\"Test job started.\",\"error\":null,\"data\":{\"job_id\":\"12ca6038af884807b7c67ffb346238bf\",\"status\":\"running\",\"mode\":\"EditMode\",\"include_details\":true,\"include_failed_tests\":true},\"hint\":null}"
+        }
+      ],
+      "structuredContent": {
+        "result": {
+          "success": true,
+          "message": "Test job started.",
+          "error": null,
+          "data": {
+            "job_id": "12ca6038af884807b7c67ffb346238bf",
+            "status": "running",
+            "mode": "EditMode",
+            "include_details": true,
+            "include_failed_tests": true
+          },
+          "hint": null
+        }
+      },
+      "isError": false
+    }
+  },
+  "final": {
+    "job_id": "12ca6038af884807b7c67ffb346238bf",
+    "status": "succeeded",
+    "mode": "EditMode",
+    "started_unix_ms": 1780037565275,
+    "finished_unix_ms": 1780037567104,
+    "last_update_unix_ms": 1780037567104,
+    "progress": {
+      "completed": 52,
+      "total": 52,
+      "current_test_full_name": null,
+      "current_test_started_unix_ms": 1780037567059,
+      "last_finished_test_full_name": "PrototypePlayerHudValidationTests.NavigationSnapshotUsesEmittedFlightPlanForPlannerScheduleRows",
+      "last_finished_unix_ms": 1780037567062,
+      "stuck_suspected": false,
+      "editor_is_focused": true,
+      "blocked_reason": null,
+      "failures_so_far": [],
+      "failures_capped": false
+    },
+    "error": null,
+    "result": {
+      "mode": "EditMode",
+      "summary": {
+        "total": 52,
+        "passed": 52,
+        "failed": 0,
+        "skipped": 0,
+        "durationSeconds": 0.9746318,
+        "resultState": "Passed"
+      },
+      "results": [
+        {
+          "name": "Autopilot_AvoidanceWaypointPersistsAcrossFrames",
+          "fullName": "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_AvoidanceWaypointPersistsAcrossFrames",
+          "state": "Passed",
+          "durationSeconds": 0.0767115,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "Autopilot_FlightPlanDivergenceNewObstacleReplansWithVisibleReason",
+          "fullName": "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_FlightPlanDivergenceNewObstacleReplansWithVisibleReason",
+          "state": "Passed",
+          "durationSeconds": 0.0081087,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "Autopilot_FlightPlanDivergenceTargetMoveReplansWithVisibleReason",
+          "fullName": "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_FlightPlanDivergenceTargetMoveReplansWithVisibleReason",
+          "state": "Passed",
+          "durationSeconds": 0.0038811,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "Autopilot_FlightPlanExecutorDoesNotFlipBeforePlannedBrakeSegment",
+          "fullName": "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_FlightPlanExecutorDoesNotFlipBeforePlannedBrakeSegment",
+          "state": "Passed",
+          "durationSeconds": 0.0031063,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "Autopilot_FlightPlanExecutorEntersFlipOnlyAtPlannedSegment",
+          "fullName": "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_FlightPlanExecutorEntersFlipOnlyAtPlannedSegment",
+          "state": "Passed",
+          "durationSeconds": 0.0046857,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "Autopilot_FlightPlanExecutorFlagOffUsesLegacyFallback",
+          "fullName": "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_FlightPlanExecutorFlagOffUsesLegacyFallback",
+          "state": "Passed",
+          "durationSeconds": 0.0047766,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "Autopilot_FlightPlanExpiredReplansInsteadOfLegacyLiveBrake",
+          "fullName": "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_FlightPlanExpiredReplansInsteadOfLegacyLiveBrake",
+          "state": "Passed",
+          "durationSeconds": 0.0030768,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "Autopilot_FlightPlanHoldWithoutRcsAbortsInsteadOfLegacyHoldGate",
+          "fullName": "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_FlightPlanHoldWithoutRcsAbortsInsteadOfLegacyHoldGate",
+          "state": "Passed",
+          "durationSeconds": 0.0018753,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "Autopilot_FuelInsufficientBeforeBurn",
+          "fullName": "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_FuelInsufficientBeforeBurn",
+          "state": "Passed",
+          "durationSeconds": 0.0008961,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "Autopilot_HoldRequiresStableVelocityWindow",
+          "fullName": "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_HoldRequiresStableVelocityWindow",
+          "state": "Passed",
+          "durationSeconds": 0.0029563,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "Autopilot_NoAuthorityDoesNotFakeComplete",
+          "fullName": "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_NoAuthorityDoesNotFakeComplete",
+          "state": "Passed",
+          "durationSeconds": 0.0013927,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "Autopilot_ReacquiresDirectPathAfterAvoidance",
+          "fullName": "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_ReacquiresDirectPathAfterAvoidance",
+          "state": "Passed",
+          "durationSeconds": 0.0018647,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "NavigationComputerHud_BuildsStructuredPanelAndWarningChips",
+          "fullName": "PrototypeAutopilotNavigationComputerV2ValidationTests.NavigationComputerHud_BuildsStructuredPanelAndWarningChips",
+          "state": "Passed",
+          "durationSeconds": 0.0046779,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "NavigationComputerSources_RenderStructuredDebugAndMinimapEvidence",
+          "fullName": "PrototypeAutopilotNavigationComputerV2ValidationTests.NavigationComputerSources_RenderStructuredDebugAndMinimapEvidence",
+          "state": "Passed",
+          "durationSeconds": 0.0014763,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "NavigationComputerV2SyntheticEvidence_WritesMarkedHeadlessPngs",
+          "fullName": "PrototypeAutopilotNavigationComputerV2ValidationTests.NavigationComputerV2SyntheticEvidence_WritesMarkedHeadlessPngs",
+          "state": "Passed",
+          "durationSeconds": 0.1884105,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "ObstacleDetector_MultipleObstacles_SelectsNearestBlocking",
+          "fullName": "PrototypeAutopilotNavigationComputerV2ValidationTests.ObstacleDetector_MultipleObstacles_SelectsNearestBlocking",
+          "state": "Passed",
+          "durationSeconds": 0.0015428,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "ObstacleDetector_NonBlockingObstacle_IsIgnored",
+          "fullName": "PrototypeAutopilotNavigationComputerV2ValidationTests.ObstacleDetector_NonBlockingObstacle_IsIgnored",
+          "state": "Passed",
+          "durationSeconds": 0.0007428,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "ObstacleDetector_OverlapAtStart_IsDetected",
+          "fullName": "PrototypeAutopilotNavigationComputerV2ValidationTests.ObstacleDetector_OverlapAtStart_IsDetected",
+          "state": "Passed",
+          "durationSeconds": 0.0014132,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "ObstacleDetector_TriggersAreDetected",
+          "fullName": "PrototypeAutopilotNavigationComputerV2ValidationTests.ObstacleDetector_TriggersAreDetected",
+          "state": "Passed",
+          "durationSeconds": 0.00081,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "Planner_AvoidanceCandidateWinsWhenDirectBlocked",
+          "fullName": "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_AvoidanceCandidateWinsWhenDirectBlocked",
+          "state": "Passed",
+          "durationSeconds": 0.001707,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "Planner_CandidateScorePenalizesCollision",
+          "fullName": "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_CandidateScorePenalizesCollision",
+          "state": "Passed",
+          "durationSeconds": 0.0019601,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "Planner_CandidateScorePenalizesImpossibleBrake",
+          "fullName": "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_CandidateScorePenalizesImpossibleBrake",
+          "state": "Passed",
+          "durationSeconds": 0.0011807,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "Planner_DirectCandidateWinsWhenClear",
+          "fullName": "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_DirectCandidateWinsWhenClear",
+          "state": "Passed",
+          "durationSeconds": 0.0006958,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "Planner_EmitsExecutableFlightPlanWithoutDroppingLegacyDiagnostics",
+          "fullName": "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_EmitsExecutableFlightPlanWithoutDroppingLegacyDiagnostics",
+          "state": "Passed",
+          "durationSeconds": 0.0018665,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "Planner_EmittedFlightPlanStartsWithBrakeWhenStoppingDistanceConsumesArrival",
+          "fullName": "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_EmittedFlightPlanStartsWithBrakeWhenStoppingDistanceConsumesArrival",
+          "state": "Passed",
+          "durationSeconds": 0.0007937,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "Planner_EmittedFlightPlanUsesRealShipPlanningSnapshot",
+          "fullName": "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_EmittedFlightPlanUsesRealShipPlanningSnapshot",
+          "state": "Passed",
+          "durationSeconds": 0.0060621,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "Planner_HeavyShipNeedsMoreRcsForce",
+          "fullName": "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_HeavyShipNeedsMoreRcsForce",
+          "state": "Passed",
+          "durationSeconds": 0.0012378,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "Planner_LimitedRcsReportsLimitedAuthority",
+          "fullName": "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_LimitedRcsReportsLimitedAuthority",
+          "state": "Passed",
+          "durationSeconds": 0.0011182,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "Planner_UsesBurnPlanFuelAndDeltaV",
+          "fullName": "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_UsesBurnPlanFuelAndDeltaV",
+          "state": "Passed",
+          "durationSeconds": 0.0005584,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "DivergenceMonitorFlagsMissingActuatorForAbort",
+          "fullName": "PrototypeFlightPlanValidationTests.DivergenceMonitorFlagsMissingActuatorForAbort",
+          "state": "Passed",
+          "durationSeconds": 0.0015787,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "DivergenceMonitorFlagsTargetAndObstacleForReplan",
+          "fullName": "PrototypeFlightPlanValidationTests.DivergenceMonitorFlagsTargetAndObstacleForReplan",
+          "state": "Passed",
+          "durationSeconds": 0.0003714,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "ExecutionStateFlagsDivergenceAgainstSegmentTolerance",
+          "fullName": "PrototypeFlightPlanValidationTests.ExecutionStateFlagsDivergenceAgainstSegmentTolerance",
+          "state": "Passed",
+          "durationSeconds": 0.000195,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "ExecutionStateReportsActiveSegmentProgress",
+          "fullName": "PrototypeFlightPlanValidationTests.ExecutionStateReportsActiveSegmentProgress",
+          "state": "Passed",
+          "durationSeconds": 0.0004315,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "FlightPlanComputesOrderedTotalsFromSegments",
+          "fullName": "PrototypeFlightPlanValidationTests.FlightPlanComputesOrderedTotalsFromSegments",
+          "state": "Passed",
+          "durationSeconds": 0.0003177,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "FlightPlanCreateInvalidPreservesReasonAndStatus",
+          "fullName": "PrototypeFlightPlanValidationTests.FlightPlanCreateInvalidPreservesReasonAndStatus",
+          "state": "Passed",
+          "durationSeconds": 0.0001812,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "FlightPlanRejectsFuelStarvedRoute",
+          "fullName": "PrototypeFlightPlanValidationTests.FlightPlanRejectsFuelStarvedRoute",
+          "state": "Passed",
+          "durationSeconds": 0.0001388,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "FlightPlanRejectsOverlappingSegments",
+          "fullName": "PrototypeFlightPlanValidationTests.FlightPlanRejectsOverlappingSegments",
+          "state": "Passed",
+          "durationSeconds": 0.0001483,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "FlightPlanTracker_BrakeAccelerationOpposesVelocity",
+          "fullName": "PrototypeFlightPlanValidationTests.FlightPlanTracker_BrakeAccelerationOpposesVelocity",
+          "state": "Passed",
+          "durationSeconds": 0.0006502,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "FlightPlanTracker_ComputesCrossTrackAndAlongTrackError",
+          "fullName": "PrototypeFlightPlanValidationTests.FlightPlanTracker_ComputesCrossTrackAndAlongTrackError",
+          "state": "Passed",
+          "durationSeconds": 0.000357,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "FlightPlanTracker_ComputesVelocityError",
+          "fullName": "PrototypeFlightPlanValidationTests.FlightPlanTracker_ComputesVelocityError",
+          "state": "Passed",
+          "durationSeconds": 0.0003504,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "FlightPlanTracker_InterpolatesSamples",
+          "fullName": "PrototypeFlightPlanValidationTests.FlightPlanTracker_InterpolatesSamples",
+          "state": "Passed",
+          "durationSeconds": 0.0003105,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "FlightPlanTracker_InvalidPlanWithoutSamples",
+          "fullName": "PrototypeFlightPlanValidationTests.FlightPlanTracker_InvalidPlanWithoutSamples",
+          "state": "Passed",
+          "durationSeconds": 0.0003585,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "FlightPlanTracker_InvalidProgradeSegmentDirectionRequiresReplanBeforeThrottle",
+          "fullName": "PrototypeFlightPlanValidationTests.FlightPlanTracker_InvalidProgradeSegmentDirectionRequiresReplanBeforeThrottle",
+          "state": "Passed",
+          "durationSeconds": 0.0003036,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "FlightPlanTracker_OutputAccelerationPointsTowardPlannedPath",
+          "fullName": "PrototypeFlightPlanValidationTests.FlightPlanTracker_OutputAccelerationPointsTowardPlannedPath",
+          "state": "Passed",
+          "durationSeconds": 0.0003534,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "FlightPlanTracker_ReplanWhenInitialStateMismatch",
+          "fullName": "PrototypeFlightPlanValidationTests.FlightPlanTracker_ReplanWhenInitialStateMismatch",
+          "state": "Passed",
+          "durationSeconds": 0.0002484,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "ShipPlanningSnapshotBuilderCapturesGeneratedRuntimeShipAuthority",
+          "fullName": "PrototypeFlightPlanValidationTests.ShipPlanningSnapshotBuilderCapturesGeneratedRuntimeShipAuthority",
+          "state": "Passed",
+          "durationSeconds": 0.0011413,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "ShipPlanningSnapshotBuilderCapturesImportedFunctionalSocketEvidence",
+          "fullName": "PrototypeFlightPlanValidationTests.ShipPlanningSnapshotBuilderCapturesImportedFunctionalSocketEvidence",
+          "state": "Passed",
+          "durationSeconds": 0.3955684,
+          "message": null,
+          "stackTrace": null,
+          "output": "PrototypeBootstrap visibility diagnostics: buildMode=ImportedDemoScoutFunctionalDefault allowGeneratedFallbackWhenImportedAssetMissing=True useGeneratedFallbackBeforePolicy=False useGeneratedFallbackAfterPolicy=False hasRequiredFlightSockets=True hasRequiredWeaponSockets=True hasRequiredVisibleWeaponRenderers=True hasVisibleImportedShip=True missingRequiredSockets= missingWeaponSockets= missingVisibleWeaponRenderers= importedVisualRoot=True importedVisualRootActive=True importedShipInstance=ImportedDemoScoutVisual importedShipInstanceActive=True importedShipInstanceLocalScale=(100.0, 100.0, 100.0) functionalSocketRig=True importedRendererCount=124 importedEnabledRendererCount=80 importedVisibleMeshRendererCount=29 importedVisibleMeshBoundsSize=(2.42, 1.56, 4.39) generatedRendererCount=0 generatedEnabledRendererCount=0 cameraTargetDistance=19.0\r\n"
+        },
+        {
+          "name": "ShipPlanningSnapshotPreservesRealAuthorityFields",
+          "fullName": "PrototypeFlightPlanValidationTests.ShipPlanningSnapshotPreservesRealAuthorityFields",
+          "state": "Passed",
+          "durationSeconds": 0.0004289,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "NavigationComputerControlsReuseAutopilotAndPreviewApis",
+          "fullName": "PrototypePlayerHudValidationTests.NavigationComputerControlsReuseAutopilotAndPreviewApis",
+          "state": "Passed",
+          "durationSeconds": 0.050282,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "NavigationPlannerPopupUsesAutopilotAndPreviewApis",
+          "fullName": "PrototypePlayerHudValidationTests.NavigationPlannerPopupUsesAutopilotAndPreviewApis",
+          "state": "Passed",
+          "durationSeconds": 0.0292299,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "NavigationSnapshotDescribesFlipAndMainDecelBurnIntent",
+          "fullName": "PrototypePlayerHudValidationTests.NavigationSnapshotDescribesFlipAndMainDecelBurnIntent",
+          "state": "Passed",
+          "durationSeconds": 0.0039751,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        },
+        {
+          "name": "NavigationSnapshotUsesEmittedFlightPlanForPlannerScheduleRows",
+          "fullName": "PrototypePlayerHudValidationTests.NavigationSnapshotUsesEmittedFlightPlanForPlannerScheduleRows",
+          "state": "Passed",
+          "durationSeconds": 0.0026793,
+          "message": null,
+          "stackTrace": null,
+          "output": ""
+        }
+      ]
+    }
+  }
+}

@@ -234,7 +234,19 @@ The prototype names three modes:
 
 ## Navigation Computer And Camera Focus
 
-`PrototypeWaypointAutopilot` delegates trajectory decisions to `PrototypeTrajectoryPlanner` instead of treating every fixed step as a direct-target burn/brake reaction. Navigation Computer v2 separates the high-level autopilot phase from the active trajectory segment. Runtime phases are:
+`PrototypeWaypointAutopilot` delegates trajectory decisions to `PrototypeTrajectoryPlanner` instead of treating every fixed step as a direct-target burn/brake reaction. The planner emits an executable `PrototypeFlightPlan` with predicted samples and maneuver segments, and strict flight-plan execution is the normal path. The preview route, Navigation Planner schedule, minimap route, and executor all read that same plan id/revision. In strict mode the autopilot does not silently fall back to a legacy direct burn; invalid plans, invalid segment directions, expired plans, target drift, obstacle changes, or tracking divergence force an explicit replan from the current Rigidbody state.
+
+Execution is closed-loop against the plan samples rather than open-loop segment thrust. Each fixed step interpolates the active predicted sample, reads the real Rigidbody center of mass, velocity, rotation, and angular velocity, then computes:
+
+```text
+positionError = plannedPosition - actualPosition
+velocityError = plannedVelocity - actualVelocity
+desiredAcceleration = plannedFeedforward + Kp * positionError + Kd * velocityError
+```
+
+Main thrust is only allowed along a valid plan or brake direction. RCS handles cross-track, lateral, terminal, and hold correction. The tracker records active segment/sample, cross-track error, along-track error, velocity error, attitude error, desired acceleration, main component, RCS component, and replan reason for HUD/debug display. Moderate velocity catch-up stays a tracking correction; hard position/velocity divergence still requests a new plan.
+
+Navigation Computer v2 separates the high-level autopilot phase from the active trajectory segment. Runtime phases are:
 
 - `Direct`
 - `AvoidancePlanning`
@@ -261,6 +273,8 @@ Plans are reported as segments for diagnostics and UI:
 - `Hold`
 
 Each segment carries duration, direction, throttle, expected delta-v, expected fuel, predicted closest obstacle distance, and predicted miss distance to target. Main thrust is reserved for meaningful delta-v along the planned burn direction; if the ship is not aligned, main throttle stays at zero and the request is attitude/RCS-only. RCS is used for lateral correction, avoidance sidestep, final approach, and hold damping. RCS requests remain mass-based and are clamped to available translation authority; insufficient authority reports `LimitedRcsAuthority`, `HoldNoAuthority`, or `LimitedHoldAuthority`.
+
+The player-facing Navigation Planner lists the executable maneuver chain as a compact schedule with `T+start-end`, actuator mode, expected delta-v, and fuel per step. `FinalApproach` and `Hold` suppress normal main-throttle correction and use RCS for small residual drift. Preview and execution share `PrototypeFlightPlan.predictedSamples`; when replanning replaces the plan, both the drawn route and executor route change together.
 
 RCS requests are mass-based force requests:
 

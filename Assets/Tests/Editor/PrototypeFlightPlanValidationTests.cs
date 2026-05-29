@@ -220,6 +220,257 @@ public class PrototypeFlightPlanValidationTests
     }
 
     [Test]
+    public void FlightPlanTracker_InterpolatesSamples()
+    {
+        PrototypeFlightPlan plan = CreatePlan(
+            new[]
+            {
+                CreateSegmentWithDirection(0, PrototypeManeuverPhase.ProgradeBurn, PrototypeManeuverCommandMode.MainThrottle, 0f, 2f, Vector3.forward)
+            },
+            new[]
+            {
+                CreateSample(0f, 0, PrototypeManeuverPhase.ProgradeBurn, Vector3.zero, Vector3.forward),
+                CreateSample(2f, 0, PrototypeManeuverPhase.ProgradeBurn, Vector3.forward * 10f, Vector3.forward * 3f)
+            });
+
+        bool ok = PrototypeFlightPlanTracker.TryInterpolateSample(
+            plan,
+            1f,
+            out PrototypeTrajectoryPredictedSample sample,
+            out int sampleIndex,
+            out float blend);
+
+        Assert.True(ok);
+        Assert.That(sampleIndex, Is.EqualTo(0));
+        Assert.That(blend, Is.EqualTo(0.5f).Within(0.0001f));
+        Assert.That(sample.position, Is.EqualTo(Vector3.forward * 5f));
+        Assert.That(sample.velocity, Is.EqualTo(Vector3.forward * 2f));
+    }
+
+    [Test]
+    public void FlightPlanTracker_ComputesCrossTrackAndAlongTrackError()
+    {
+        PrototypeFlightPlan plan = CreatePlan(
+            new[]
+            {
+                CreateSegmentWithDirection(0, PrototypeManeuverPhase.ProgradeBurn, PrototypeManeuverCommandMode.MainThrottle, 0f, 2f, Vector3.forward)
+            },
+            new[]
+            {
+                CreateSample(0f, 0, PrototypeManeuverPhase.ProgradeBurn, Vector3.zero, Vector3.forward),
+                CreateSample(2f, 0, PrototypeManeuverPhase.ProgradeBurn, Vector3.forward * 10f, Vector3.forward)
+            });
+
+        PrototypeFlightPlanTrackingCommand command = PrototypeFlightPlanTracker.Track(
+            plan,
+            1f,
+            Vector3.forward * 5f + Vector3.right * 3f,
+            Vector3.forward,
+            Quaternion.identity,
+            Vector3.zero,
+            plan.ExpectedFuelAt(1f),
+            Vector3.forward * 100f,
+            8f,
+            2f,
+            100f);
+
+        Assert.True(command.hasCommand);
+        Assert.That(command.error.crossTrackErrorMeters, Is.EqualTo(3f).Within(0.05f));
+        Assert.That(command.error.alongTrackErrorMeters, Is.EqualTo(0f).Within(0.05f));
+        Assert.That(command.error.velocityErrorMetersPerSecond, Is.EqualTo(0f).Within(0.05f));
+    }
+
+    [Test]
+    public void FlightPlanTracker_ComputesVelocityError()
+    {
+        PrototypeFlightPlan plan = CreatePlan(
+            new[]
+            {
+                CreateSegmentWithDirection(0, PrototypeManeuverPhase.ProgradeBurn, PrototypeManeuverCommandMode.MainThrottle, 0f, 2f, Vector3.forward)
+            },
+            new[]
+            {
+                CreateSample(0f, 0, PrototypeManeuverPhase.ProgradeBurn, Vector3.zero, Vector3.forward),
+                CreateSample(2f, 0, PrototypeManeuverPhase.ProgradeBurn, Vector3.forward * 10f, Vector3.forward * 3f)
+            });
+
+        PrototypeFlightPlanTrackingCommand command = PrototypeFlightPlanTracker.Track(
+            plan,
+            1f,
+            Vector3.forward * 5f,
+            Vector3.forward * 0.5f,
+            Quaternion.identity,
+            Vector3.zero,
+            plan.ExpectedFuelAt(1f),
+            Vector3.forward * 100f,
+            8f,
+            2f,
+            100f);
+
+        Assert.True(command.hasCommand);
+        Assert.That(command.error.velocityErrorWorld, Is.EqualTo(Vector3.forward * 1.5f));
+        Assert.That(command.error.velocityErrorMetersPerSecond, Is.EqualTo(1.5f).Within(0.05f));
+    }
+
+    [Test]
+    public void FlightPlanTracker_OutputAccelerationPointsTowardPlannedPath()
+    {
+        PrototypeFlightPlan plan = CreatePlan(
+            new[]
+            {
+                CreateSegmentWithDirection(0, PrototypeManeuverPhase.ProgradeBurn, PrototypeManeuverCommandMode.MainThrottle, 0f, 2f, Vector3.forward)
+            },
+            new[]
+            {
+                CreateSample(0f, 0, PrototypeManeuverPhase.ProgradeBurn, Vector3.zero, Vector3.forward),
+                CreateSample(2f, 0, PrototypeManeuverPhase.ProgradeBurn, Vector3.forward * 10f, Vector3.forward * 3f)
+            });
+
+        PrototypeFlightPlanTrackingCommand command = PrototypeFlightPlanTracker.Track(
+            plan,
+            1f,
+            Vector3.forward * 5f,
+            Vector3.zero,
+            Quaternion.identity,
+            Vector3.zero,
+            plan.ExpectedFuelAt(1f),
+            Vector3.forward * 100f,
+            8f,
+            2f,
+            100f);
+
+        Assert.True(command.hasCommand);
+        Assert.False(command.requiresReplan);
+        Assert.That(Vector3.Dot(command.desiredAccelerationWorld.normalized, Vector3.forward), Is.GreaterThan(0.7f));
+        Assert.That(command.mainThrottle, Is.GreaterThan(0f));
+    }
+
+    [Test]
+    public void FlightPlanTracker_InvalidProgradeSegmentDirectionRequiresReplanBeforeThrottle()
+    {
+        PrototypeFlightPlan plan = CreatePlan(
+            new[]
+            {
+                CreateSegmentWithDirection(0, PrototypeManeuverPhase.ProgradeBurn, PrototypeManeuverCommandMode.MainThrottle, 0f, 2f, Vector3.back)
+            },
+            new[]
+            {
+                CreateSample(0f, 0, PrototypeManeuverPhase.ProgradeBurn, Vector3.zero, Vector3.forward),
+                CreateSample(2f, 0, PrototypeManeuverPhase.ProgradeBurn, Vector3.forward * 10f, Vector3.forward * 3f)
+            });
+
+        PrototypeFlightPlanTrackingCommand command = PrototypeFlightPlanTracker.Track(
+            plan,
+            1f,
+            Vector3.forward * 5f,
+            Vector3.zero,
+            Quaternion.identity,
+            Vector3.zero,
+            plan.ExpectedFuelAt(1f),
+            Vector3.forward * 100f,
+            8f,
+            2f,
+            100f);
+
+        Assert.True(command.requiresReplan);
+        Assert.False(command.mainThrottleAllowed);
+        Assert.That(command.mainThrottle, Is.EqualTo(0f));
+        Assert.True((command.replanReasons & PrototypeFlightPlanAbortReplanReason.InvalidPlanDirection) != 0);
+    }
+
+    [Test]
+    public void FlightPlanTracker_BrakeAccelerationOpposesVelocity()
+    {
+        PrototypeFlightPlan plan = CreatePlan(
+            new[]
+            {
+                CreateSegmentWithDirection(0, PrototypeManeuverPhase.RetrogradeBurn, PrototypeManeuverCommandMode.MainThrottle, 0f, 2f, Vector3.back)
+            },
+            new[]
+            {
+                CreateSample(0f, 0, PrototypeManeuverPhase.RetrogradeBurn, Vector3.zero, Vector3.forward * 4f),
+                CreateSample(2f, 0, PrototypeManeuverPhase.RetrogradeBurn, Vector3.forward * 6f, Vector3.forward * 1f)
+            });
+
+        PrototypeFlightPlanTrackingCommand command = PrototypeFlightPlanTracker.Track(
+            plan,
+            1f,
+            Vector3.forward * 3f,
+            Vector3.forward * 4f,
+            Quaternion.identity,
+            Vector3.zero,
+            plan.ExpectedFuelAt(1f),
+            Vector3.forward * 100f,
+            8f,
+            2f,
+            100f);
+
+        Assert.True(command.hasCommand);
+        Assert.False((command.replanReasons & PrototypeFlightPlanAbortReplanReason.InvalidPlanDirection) != 0);
+        Assert.That(command.mainDirectionDotVelocityBrake, Is.GreaterThan(0.55f));
+        Assert.That(Vector3.Dot(command.mainDirectionWorld, -Vector3.forward), Is.GreaterThan(0.95f));
+    }
+
+    [Test]
+    public void FlightPlanTracker_InvalidPlanWithoutSamples()
+    {
+        PrototypeFlightPlan plan = CreatePlan(new[]
+        {
+            CreateSegmentWithDirection(0, PrototypeManeuverPhase.ProgradeBurn, PrototypeManeuverCommandMode.MainThrottle, 0f, 2f, Vector3.forward)
+        });
+
+        PrototypeFlightPlanTrackingCommand command = PrototypeFlightPlanTracker.Track(
+            plan,
+            1f,
+            Vector3.zero,
+            Vector3.zero,
+            Quaternion.identity,
+            Vector3.zero,
+            20f,
+            Vector3.forward * 100f,
+            8f,
+            2f,
+            100f);
+
+        Assert.True(command.requiresReplan);
+        Assert.False(command.hasCommand);
+        Assert.True((command.replanReasons & PrototypeFlightPlanAbortReplanReason.NonExecutable) != 0);
+        Assert.That(command.statusLabel, Does.Contain("no samples"));
+    }
+
+    [Test]
+    public void FlightPlanTracker_ReplanWhenInitialStateMismatch()
+    {
+        PrototypeFlightPlan plan = CreatePlan(
+            new[]
+            {
+                CreateSegmentWithDirection(0, PrototypeManeuverPhase.ProgradeBurn, PrototypeManeuverCommandMode.MainThrottle, 0f, 2f, Vector3.forward)
+            },
+            new[]
+            {
+                CreateSample(0f, 0, PrototypeManeuverPhase.ProgradeBurn, Vector3.zero, Vector3.forward),
+                CreateSample(2f, 0, PrototypeManeuverPhase.ProgradeBurn, Vector3.forward * 10f, Vector3.forward)
+            });
+
+        PrototypeFlightPlanTrackingCommand command = PrototypeFlightPlanTracker.Track(
+            plan,
+            0f,
+            Vector3.right * 25f,
+            Vector3.forward,
+            Quaternion.identity,
+            Vector3.zero,
+            plan.ExpectedFuelAt(0f),
+            Vector3.forward * 100f,
+            8f,
+            2f,
+            100f);
+
+        Assert.True(command.requiresReplan);
+        Assert.True((command.replanReasons & PrototypeFlightPlanAbortReplanReason.PositionDivergence) != 0);
+        Assert.True((command.replanReasons & PrototypeFlightPlanAbortReplanReason.TrackingDiverged) != 0);
+    }
+
+    [Test]
     public void ShipPlanningSnapshotPreservesRealAuthorityFields()
     {
         PrototypeShipPlanningSnapshot snapshot = CreateSnapshot();
@@ -318,6 +569,13 @@ public class PrototypeFlightPlanValidationTests
 
     private static PrototypeFlightPlan CreatePlan(PrototypeManeuverSegment[] segments)
     {
+        return CreatePlan(segments, System.Array.Empty<PrototypeTrajectoryPredictedSample>());
+    }
+
+    private static PrototypeFlightPlan CreatePlan(
+        PrototypeManeuverSegment[] segments,
+        PrototypeTrajectoryPredictedSample[] samples)
+    {
         return new PrototypeFlightPlan(
             "test-plan",
             2,
@@ -328,7 +586,7 @@ public class PrototypeFlightPlanValidationTests
             0.5f,
             CreateSnapshot(),
             segments,
-            System.Array.Empty<PrototypeTrajectoryPredictedSample>());
+            samples);
     }
 
     private static PrototypeManeuverSegment CreateSegment(
@@ -340,17 +598,30 @@ public class PrototypeFlightPlanValidationTests
         float mainFuel,
         float rcsFuel)
     {
+        return CreateSegmentWithDirection(index, phase, mode, startTime, duration, Vector3.forward, mainFuel, rcsFuel);
+    }
+
+    private static PrototypeManeuverSegment CreateSegmentWithDirection(
+        int index,
+        PrototypeManeuverPhase phase,
+        PrototypeManeuverCommandMode mode,
+        float startTime,
+        float duration,
+        Vector3 direction,
+        float mainFuel = 0f,
+        float rcsFuel = 0f)
+    {
         return new PrototypeManeuverSegment(
             index,
             phase,
             mode,
             startTime,
             duration,
-            Vector3.forward,
-            Vector3.forward * startTime,
-            Vector3.forward * (startTime + duration),
-            Vector3.forward,
-            Vector3.forward,
+            direction,
+            direction.normalized * startTime,
+            direction.normalized * (startTime + duration),
+            direction.normalized,
+            direction.normalized,
             Quaternion.identity,
             Quaternion.identity,
             Vector3.zero,
@@ -364,6 +635,26 @@ public class PrototypeFlightPlanValidationTests
             PrototypeFlightPlanAbortReplanReason.PositionDivergence
                 | PrototypeFlightPlanAbortReplanReason.VelocityDivergence
                 | PrototypeFlightPlanAbortReplanReason.FuelMismatch);
+    }
+
+    private static PrototypeTrajectoryPredictedSample CreateSample(
+        float time,
+        int segmentIndex,
+        PrototypeManeuverPhase phase,
+        Vector3 position,
+        Vector3 velocity)
+    {
+        return new PrototypeTrajectoryPredictedSample(
+            time,
+            segmentIndex,
+            phase,
+            position,
+            velocity,
+            Quaternion.identity,
+            Vector3.zero,
+            Mathf.Max(0f, 20f - time),
+            phase == PrototypeManeuverPhase.ProgradeBurn || phase == PrototypeManeuverPhase.RetrogradeBurn ? 1f : 0f,
+            Vector3.zero);
     }
 
     private static PrototypeShipPlanningSnapshot CreateSnapshot()

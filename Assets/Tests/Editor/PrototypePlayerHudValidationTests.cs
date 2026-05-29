@@ -153,7 +153,7 @@ public class PrototypePlayerHudValidationTests
             Assert.That(snapshot.Navigation.RouteWorldPoints.Length, Is.EqualTo(3));
             Assert.True(snapshot.Navigation.HasAvoidanceCue);
             Assert.That(snapshot.Navigation.AvoidanceLabel, Does.Contain("Asteroid"));
-            Assert.That(snapshot.Navigation.PlanAuthorityLabel, Does.Contain("Legacy live gates"));
+            Assert.That(snapshot.Navigation.PlanAuthorityLabel, Does.Contain("Strict flight plan"));
             Assert.That(snapshot.Navigation.ActiveSegmentLabel, Does.Contain("Avoid"));
             Assert.That(snapshot.Navigation.TotalPlanDurationSeconds, Is.EqualTo(10.5f).Within(0.001f));
             Assert.That(snapshot.Navigation.TotalPlanFuelKg, Is.EqualTo(0.40f).Within(0.001f));
@@ -167,7 +167,7 @@ public class PrototypePlayerHudValidationTests
                 BindingFlags.Static | BindingFlags.NonPublic);
             Assert.NotNull(bodyMethod);
             string body = (string)bodyMethod.Invoke(null, new object[] { snapshot.Navigation });
-            Assert.That(body, Does.Contain("Authority: Legacy live gates"));
+            Assert.That(body, Does.Contain("Authority: Strict flight plan"));
             Assert.That(body, Does.Contain("Schedule 10.5s"));
             Assert.That(body, Does.Contain("Steps:"));
             Assert.That(body, Does.Contain("1 T+0.0s-6.0s Avoid | MAIN 65%"));

@@ -1,0 +1,66 @@
+{
+  "success": true,
+  "message": "Test job status retrieved.",
+  "error": null,
+  "data": {
+    "job_id": "789a7e9a8a9f4c1994f080ce8c4af0a1",
+    "status": "failed",
+    "mode": "PlayMode",
+    "started_unix_ms": 1780033560977,
+    "finished_unix_ms": 1780033582414,
+    "last_update_unix_ms": 1780033582414,
+    "progress": {
+      "completed": 51,
+      "total": 51,
+      "current_test_full_name": null,
+      "current_test_started_unix_ms": 1780033582266,
+      "last_finished_test_full_name": "PrototypePlayerHudLiveRuntimeEvidencePlayModeTests.PrototypeBootstrapRuntimePlayerHudEvidenceHidesDebugWorldLabelsInTraining",
+      "last_finished_unix_ms": 1780033582359,
+      "stuck_suspected": false,
+      "editor_is_focused": false,
+      "blocked_reason": null,
+      "failures_so_far": [
+        {
+          "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_Arrival_NoBrakeAccelerateFlap_ReachesCompletionDeadzone",
+          "message": "Autopilot should enter completion deadzone near target before terminal state.\nfinalState=AlignForBurn\nfinalPhase=Direct\nfinalPos=313.46,-21.18,1091.80\nfinalVel=4.95,-0.54,13.39\nfinalAngularVel=0.00,0.00,0.00\ndistance=973.87 minDistance=27.41 maxBrakeAngularSpeed=0.99 maxFlipAngularSpeed=0.99 finalAngularSpeed=0.00\ncurrentDistanceToTarget=973.87 arrivalRadius=10.00\nleftCompletionEnvelope=False\nfirstCompletionWindowSample=\nbrakeToAccelerateTransitions=0 terminalBrakeToAccelerateTransitions=0 accelerateToBrakeTransitions=0 throttleWhileFlipFrames=0\nArrivalFailureReason=none\nlast5Samples:\ni=2395 z=1090.72 dist=972.72 rel=-14.28/14.29 lat=0.44 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 reason=none\ni=2396 z=1090.99 dist=973.01 rel=-14.28/14.29 lat=0.44 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 reason=none\ni=2397 z=1091.26 dist=973.30 rel=-14.28/14.29 lat=0.44 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 reason=none\ni=2398 z=1091.53 dist=973.58 rel=-14.28/14.29 lat=0.44 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 reason=none\ni=2399 z=1091.80 dist=973.87 rel=-14.28/14.29 lat=0.44 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 reason=none\neverArrivalBrakeCommitted=True everBrakeHoldActive=False everArrivalTerminalCaptureActive=False finalArrivalBrakeCommitted=True finalBrakeHoldActive=False finalArrivalTerminalCaptureActive=False"
+        },
+        {
+          "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_ClosedLoopBrake_RotatesAndUsesMainThrusterWithoutHarnessRotation",
+          "message": "  main thruster should remain gated until near-retrograde alignment step=694 angle=43.4 state=Brake phase=Brake\r\n  Expected: False\r\n  But was:  True\r\n"
+        },
+        {
+          "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget",
+          "message": "  Expected: Complete or HoldPosition\r\n  But was:  AlignForBurn\r\n"
+        },
+        {
+          "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_NearTargetLateralOvershoot_NoTerminalAccelerateOrSpin",
+          "message": "  finalState=AlignForBurn phase=Direct\nfinalDistance=70.51 finalSpeed=1.16 finalAngularSpeed=0.00\naccelerateFramesInTerminalEnvelope=0 throttleWhileFlipFrames=0 maxFlipAngularSpeed=1.59\nArrivalFailureReason=none\nlast5Samples:\ni=2595 dist=70.42 rel=1.16 closing=-1.14 lat=0.23 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=2596 dist=70.44 rel=1.16 closing=-1.14 lat=0.23 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=2597 dist=70.46 rel=1.16 closing=-1.14 lat=0.23 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=2598 dist=70.49 rel=1.16 closing=-1.14 lat=0.23 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=2599 dist=70.51 rel=1.16 closing=-1.14 lat=0.23 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\r\n  Expected: Complete or HoldPosition\r\n  But was:  AlignForBurn\r\n"
+        },
+        {
+          "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_OffAxisLongRangeTerminalBrakeCommit_DoesNotReenterAccelerateOrSpin",
+          "message": "  off-axis long-range terminal run should settle to HoldPosition or Complete.\nfinalState=Accelerate phase=Direct\nfinalDistance=542.11 finalSpeed=33.47 finalAngularSpeed=0.00\naccelerateFramesInTerminalEnvelope=0 throttleWhileFlipFrames=0 maxFlipAngularSpeed=0.58\nArrivalFailureReason=none\nlast5Samples:\ni=4195 dist=544.75 rel=32.51 closing=32.25 lat=1.09 state=Accelerate phase=Direct main=1.00 rcs=714.12\ni=4196 dist=544.10 rel=32.75 closing=32.49 lat=1.10 state=Accelerate phase=Direct main=1.00 rcs=715.30\ni=4197 dist=543.44 rel=32.99 closing=32.73 lat=1.10 state=Accelerate phase=Direct main=1.00 rcs=716.45\ni=4198 dist=542.78 rel=33.23 closing=32.97 lat=1.10 state=Accelerate phase=Direct main=1.00 rcs=717.59\ni=4199 dist=542.11 rel=33.47 closing=33.21 lat=1.10 state=Accelerate phase=Direct main=1.00 rcs=718.70 sawTerminalCapture=True brakeToAccelerateTransitionsAfterCommit=0 integratedFlipRotationRadians=1.56\r\n  Expected: True\r\n  But was:  False\r\n"
+        },
+        {
+          "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_OffAxisTerminalDeadzoneWithRealisticAuthority_LatchesHoldWithoutAccelerateFlap",
+          "message": "  finalState=AlignForBurn phase=Direct\nfinalDistance=78.77 finalSpeed=1.36 finalAngularSpeed=0.00\naccelerateFramesInTerminalEnvelope=0 throttleWhileFlipFrames=0 maxFlipAngularSpeed=0.00\nArrivalFailureReason=none\nlast5Samples:\ni=3595 dist=78.88 rel=1.36 closing=1.36 lat=0.07 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=3596 dist=78.85 rel=1.36 closing=1.36 lat=0.07 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=3597 dist=78.83 rel=1.36 closing=1.36 lat=0.07 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=3598 dist=78.80 rel=1.36 closing=1.36 lat=0.07 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=3599 dist=78.77 rel=1.36 closing=1.36 lat=0.07 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 maxCommittedBrakeDirectionDelta=0.00\r\n  Expected: Complete or HoldPosition\r\n  But was:  AlignForBurn\r\n"
+        },
+        {
+          "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_PhysicsAvoidsObstacleWithoutHarnessMotion",
+          "message": "  Ship should make real progress toward the selected target.\r\n  Expected: less than 118.0f\r\n  But was:  144.50145f\r\n"
+        },
+        {
+          "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap",
+          "message": "  finalState=AlignForBurn phase=Direct\nfinalDistance=40.89 finalSpeed=10.56 finalAngularSpeed=0.00\naccelerateFramesInTerminalEnvelope=0 throttleWhileFlipFrames=0 maxFlipAngularSpeed=1.28\nArrivalFailureReason=none\nlast5Samples:\ni=3195 dist=41.73 rel=10.56 closing=10.47 lat=1.34 ang=0.01 state=AlignForBurn phase=Direct main=0.00\ni=3196 dist=41.52 rel=10.56 closing=10.47 lat=1.35 ang=0.00 state=AlignForBurn phase=Direct main=0.00\ni=3197 dist=41.31 rel=10.56 closing=10.47 lat=1.36 ang=0.00 state=AlignForBurn phase=Direct main=0.00\ni=3198 dist=41.10 rel=10.56 closing=10.47 lat=1.36 ang=0.00 state=AlignForBurn phase=Direct main=0.00\ni=3199 dist=40.89 rel=10.56 closing=10.47 lat=1.37 ang=0.00 state=AlignForBurn phase=Direct main=0.00\nbrakeToAccelerateTransitionsAfterCommit=0 integratedBrakeRotationRadians=0.77 maxCommittedBrakeDirectionDelta=0.00\r\n  Expected: Complete or HoldPosition\r\n  But was:  AlignForBurn\r\n"
+        },
+        {
+          "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalOvershootBrakesAndHoldsWithoutReaccelerating",
+          "message": "  terminal overshoot should settle into HoldPosition or Complete.\nfinalState=AlignForBurn phase=Direct\nfinalDistance=246.20 finalSpeed=5.07 finalAngularSpeed=0.00\naccelerateFramesInTerminalEnvelope=0 throttleWhileFlipFrames=0 maxFlipAngularSpeed=1.37\nArrivalFailureReason=none\nlast5Samples:\ni=1795 dist=245.80 rel=5.07 closing=-4.96 lat=1.08 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=1796 dist=245.90 rel=5.07 closing=-4.96 lat=1.08 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=1797 dist=246.00 rel=5.07 closing=-4.96 lat=1.08 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=1798 dist=246.10 rel=5.07 closing=-4.96 lat=1.08 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=1799 dist=246.20 rel=5.07 closing=-4.96 lat=1.08 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\neverArrivalBrakeCommitted=True everBrakeHoldActive=False everArrivalTerminalCaptureActive=True finalArrivalBrakeCommitted=True finalBrakeHoldActive=False finalArrivalTerminalCaptureActive=True\nfirstArrivalBrakeCommitSample=i=0 dist=12.10 rel=9.37 closing=-5.00 lat=8.00 state=FlipForBrake phase=Brake firstBrakeHoldSample= firstArrivalTerminalCaptureSample=i=4 dist=12.52 rel=9.12 closing=-5.39 lat=7.43 state=FlipForBrake phase=Brake\nfirstMainBrakeSample=i=1074 dist=174.72 rel=7.47 closing=-7.67 lat=0.27 state=Brake phase=Brake\nshouldUseTerminalVelocityBrake=False shouldKeepTerminalBrakeCommitted=False shouldHoldTerminalBrakeCommitUntilSettled=False shouldCaptureAnyArrivalHold=False shouldUseTerminalLateralCorrection=False isWithinArrivalTerminalRange=False isWithinArrivalTerminalCaptureRange=False\r\n  Expected: True\r\n  But was:  False\r\n"
+        }
+      ],
+      "failures_capped": false
+    },
+    "error": null,
+    "result": null
+  },
+  "hint": null
+}

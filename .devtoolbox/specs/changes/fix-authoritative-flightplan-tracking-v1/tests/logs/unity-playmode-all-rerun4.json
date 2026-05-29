@@ -1,0 +1,62 @@
+{
+  "success": true,
+  "message": "Test job status retrieved.",
+  "error": null,
+  "data": {
+    "job_id": "aec177a1433c432880949e368600369d",
+    "status": "failed",
+    "mode": "PlayMode",
+    "started_unix_ms": 1780033277417,
+    "finished_unix_ms": 1780033295602,
+    "last_update_unix_ms": 1780033295602,
+    "progress": {
+      "completed": 51,
+      "total": 51,
+      "current_test_full_name": null,
+      "current_test_started_unix_ms": 1780033295417,
+      "last_finished_test_full_name": "PrototypePlayerHudLiveRuntimeEvidencePlayModeTests.PrototypeBootstrapRuntimePlayerHudEvidenceHidesDebugWorldLabelsInTraining",
+      "last_finished_unix_ms": 1780033295563,
+      "stuck_suspected": false,
+      "editor_is_focused": false,
+      "blocked_reason": null,
+      "failures_so_far": [
+        {
+          "full_name": "PrototypeAutopilotFlipChaseCameraEvidencePlayModeTests.PrototypeBootstrapHostAutopilotFlipChaseCameraEvidence",
+          "message": "  Assist should return to inactive in the recovery segment.\r\n  Expected: greater than 25\r\n  But was:  -1\r\n"
+        },
+        {
+          "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_Arrival_NoBrakeAccelerateFlap_ReachesCompletionDeadzone",
+          "message": "Autopilot should enter completion deadzone near target before terminal state.\nfinalState=AlignForBurn\nfinalPhase=Direct\nfinalPos=7.79,-2.12,409.86\nfinalVel=0.13,-0.04,3.70\nfinalAngularVel=0.00,0.00,0.00\ndistance=240.00 minDistance=6.67 maxBrakeAngularSpeed=0.99 maxFlipAngularSpeed=0.99 finalAngularSpeed=0.00\ncurrentDistanceToTarget=240.00 arrivalRadius=10.00\nleftCompletionEnvelope=True\nfirstCompletionWindowSample=\nbrakeToAccelerateTransitions=1 terminalBrakeToAccelerateTransitions=0 accelerateToBrakeTransitions=0 throttleWhileFlipFrames=0\nArrivalFailureReason=none\nlast5Samples:\ni=2395 z=409.57 dist=239.70 rel=-3.71/3.71 lat=0.01 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 reason=none\ni=2396 z=409.64 dist=239.78 rel=-3.71/3.71 lat=0.01 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 reason=none\ni=2397 z=409.71 dist=239.85 rel=-3.71/3.71 lat=0.01 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 reason=none\ni=2398 z=409.79 dist=239.92 rel=-3.71/3.71 lat=0.01 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 reason=none\ni=2399 z=409.86 dist=240.00 rel=-3.71/3.71 lat=0.01 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 reason=none\neverArrivalBrakeCommitted=True everBrakeHoldActive=False everArrivalTerminalCaptureActive=True finalArrivalBrakeCommitted=False finalBrakeHoldActive=False finalArrivalTerminalCaptureActive=False"
+        },
+        {
+          "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget",
+          "message": "  Expected: Complete or HoldPosition\r\n  But was:  AlignForBurn\r\n"
+        },
+        {
+          "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_OffAxisLongRangeTerminalBrakeCommit_DoesNotReenterAccelerateOrSpin",
+          "message": "  terminal capture latch should activate before completion in long-range off-axis scenarios.\nfinalState=AlignForBurn phase=Direct\nfinalDistance=2777.55 finalSpeed=35.67 finalAngularSpeed=0.00\naccelerateFramesInTerminalEnvelope=0 throttleWhileFlipFrames=0 maxFlipAngularSpeed=0.58\nArrivalFailureReason=none\nlast5Samples:\ni=4195 dist=2774.69 rel=35.67 closing=-35.67 lat=0.10 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=4196 dist=2775.41 rel=35.67 closing=-35.67 lat=0.10 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=4197 dist=2776.12 rel=35.67 closing=-35.67 lat=0.10 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=4198 dist=2776.83 rel=35.67 closing=-35.67 lat=0.10 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=4199 dist=2777.55 rel=35.67 closing=-35.67 lat=0.10 state=AlignForBurn phase=Direct main=0.00 rcs=0.00 sawTerminalCapture=False brakeToAccelerateTransitionsAfterCommit=0 integratedFlipRotationRadians=1.87\r\n  Expected: True\r\n  But was:  False\r\n"
+        },
+        {
+          "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_PhysicsAvoidsObstacleWithoutHarnessMotion",
+          "message": "  Ship should make real progress toward the selected target.\r\n  Expected: less than 118.0f\r\n  But was:  141.239639f\r\n"
+        },
+        {
+          "full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalOvershootBrakesAndHoldsWithoutReaccelerating",
+          "message": "  terminal overshoot should settle into HoldPosition or Complete.\nfinalState=AlignForBurn phase=Direct\nfinalDistance=152.45 finalSpeed=3.28 finalAngularSpeed=0.00\naccelerateFramesInTerminalEnvelope=0 throttleWhileFlipFrames=0 maxFlipAngularSpeed=1.37\nArrivalFailureReason=none\nlast5Samples:\ni=1795 dist=152.19 rel=3.28 closing=-3.27 lat=0.31 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=1796 dist=152.25 rel=3.28 closing=-3.27 lat=0.31 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=1797 dist=152.32 rel=3.28 closing=-3.27 lat=0.31 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=1798 dist=152.38 rel=3.28 closing=-3.27 lat=0.31 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\ni=1799 dist=152.45 rel=3.28 closing=-3.27 lat=0.31 state=AlignForBurn phase=Direct main=0.00 rcs=0.00\neverArrivalBrakeCommitted=True everBrakeHoldActive=False everArrivalTerminalCaptureActive=True finalArrivalBrakeCommitted=False finalBrakeHoldActive=False finalArrivalTerminalCaptureActive=False\nfirstArrivalBrakeCommitSample=i=0 dist=12.10 rel=9.37 closing=-5.00 lat=8.00 state=FlipForBrake phase=Brake firstBrakeHoldSample= firstArrivalTerminalCaptureSample=i=4 dist=12.52 rel=9.12 closing=-5.39 lat=7.43 state=FlipForBrake phase=Brake\nfirstMainBrakeSample=i=268 dist=51.19 rel=7.40 closing=-7.60 lat=0.73 state=Brake phase=Brake\nshouldUseTerminalVelocityBrake=False shouldKeepTerminalBrakeCommitted=False shouldHoldTerminalBrakeCommitUntilSettled=False shouldCaptureAnyArrivalHold=False shouldUseTerminalLateralCorrection=False isWithinArrivalTerminalRange=False isWithinArrivalTerminalCaptureRange=False\r\n  Expected: True\r\n  But was:  False\r\n"
+        },
+        {
+          "full_name": "PrototypePlayerHudLiveRuntimeEvidencePlayModeTests.PrototypeBootstrapRuntimePlayerHudEvidenceCapturesMissionRewardCompleted",
+          "message": "  mission objective completed\r\n  Expected: True\r\n  But was:  False\r\n"
+        },
+        {
+          "full_name": "PrototypePlayerHudLiveRuntimeEvidencePlayModeTests.PrototypeBootstrapRuntimePlayerHudEvidenceCapturesTargetIndicatorAspectMatrix",
+          "message": "  1024x768 target-indicator objective marker\r\n  Expected: True\r\n  But was:  False\r\n"
+        }
+      ],
+      "failures_capped": false
+    },
+    "error": null,
+    "result": null
+  },
+  "hint": null
+}
