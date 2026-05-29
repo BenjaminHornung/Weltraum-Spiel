@@ -1,0 +1,5 @@
+﻿event: message
+data: {"method":"notifications/message","params":{"level":"info","data":{"msg":"Processing validate_script: Assets/Tests/Editor/PrototypeBootstrapRuntimeGuardValidationTests.cs (unity_instance=Weltraum Spiel@49c909b3e97ba6e8)","extra":null}},"jsonrpc":"2.0"}
+
+event: message
+data: {"jsonrpc":"2.0","id":403,"result":{"content":[{"type":"text","text":"{\"success\":true,\"data\":{\"warnings\":0,\"errors\":0}}"}],"structuredContent":{"success":true,"data":{"warnings":0,"errors":0}},"isError":false}}

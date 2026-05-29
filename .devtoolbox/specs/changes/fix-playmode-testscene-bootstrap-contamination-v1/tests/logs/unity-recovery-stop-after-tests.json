@@ -1,0 +1,2 @@
+event: message
+data: {"jsonrpc":"2.0","id":301,"result":{"content":[{"type":"text","text":"{\"success\":true,\"message\":\"Already stopped (not in play mode).\",\"data\":null}"}],"structuredContent":{"success":true,"message":"Already stopped (not in play mode).","data":null},"isError":false}}

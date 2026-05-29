@@ -1,0 +1,84 @@
+{
+  "validations": [
+    {
+      "script": "Assets/Scripts/Prototype/PrototypeBootstrap.cs",
+      "success": true,
+      "warnings": 0,
+      "errors": 0
+    },
+    {
+      "script": "Assets/Tests/Editor/PrototypeBootstrapRuntimeGuardValidationTests.cs",
+      "success": true,
+      "warnings": 0,
+      "errors": 0
+    },
+    {
+      "script": "Assets/Tests/PlayMode/PrototypeRuntimeHudCameraBootstrapPlayModeTests.cs",
+      "success": true,
+      "warnings": 0,
+      "errors": 0
+    }
+  ],
+  "tests": [
+    {
+      "mode": "EditMode",
+      "test": "PrototypeBootstrapRuntimeGuardValidationTests.DetectsUnityTestRunnerSceneNames",
+      "jobId": "4887522296c3408b89c1ba1901aebbd7",
+      "total": null,
+      "passed": null,
+      "failed": null,
+      "skipped": null,
+      "state": null
+    },
+    {
+      "mode": "EditMode",
+      "test": "PrototypeBootstrapRuntimeGuardValidationTests.EditModeBuildDoesNotArmRuntimeIntegrityWatchdog",
+      "jobId": "1708f00bc5864372a69e12c36a51d955",
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "state": "Passed"
+    },
+    {
+      "mode": "EditMode",
+      "test": "PrototypeBootstrapRuntimeGuardValidationTests.RuntimeIntegrityRepairRestoresMissingRootsAndDoesNotRebuildCleanState",
+      "jobId": "dd216c2f25f042f8bb8a0be3dcbdaad9",
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "state": "Passed"
+    },
+    {
+      "mode": "PlayMode",
+      "test": "PrototypeRuntimeHudCameraBootstrapPlayModeTests.PlayMode_BootstrapShowsBoundHudShipAndDefaultNavigationTarget",
+      "jobId": "863798f0d2a445649b66278321d5c0ab",
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "state": "Passed"
+    },
+    {
+      "mode": "PlayMode",
+      "test": "PrototypeRuntimeHudCameraBootstrapPlayModeTests.PlayMode_TestRunnerSceneDoesNotArmRuntimeIntegrityWatchdog",
+      "jobId": "7f05cae4a1da486aab162d729c4686e7",
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "state": "Passed"
+    },
+    {
+      "mode": "PlayMode",
+      "test": "PrototypeRuntimeHudCameraBootstrapPlayModeTests.PlayMode_ForcedRuntimeIntegrityRepairRestoresMissingRootsOnce",
+      "jobId": "c592dd9187dc47a38a49ecd5b5c9e9fb",
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "state": "Passed"
+    }
+  ]
+}

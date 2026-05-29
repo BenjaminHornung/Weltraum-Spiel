@@ -2,6 +2,7 @@
 using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PrototypeRuntimeHudCameraBootstrapPlayModeTests
 {
@@ -10,13 +11,17 @@ public class PrototypeRuntimeHudCameraBootstrapPlayModeTests
     [SetUp]
     public void SetUp()
     {
-        CleanupRuntimeObjects();
+        PrototypeBootstrap.ResetRuntimeBootstrapSessionForTests();
+        CleanupTestOwnedObjects();
     }
 
     [TearDown]
     public void TearDown()
     {
-        CleanupRuntimeObjects();
+        if (!PrototypeBootstrap.IsUnityTestRunnerContextActive())
+        {
+            CleanupRuntimeObjects();
+        }
     }
 
     [Test]
@@ -64,6 +69,52 @@ public class PrototypeRuntimeHudCameraBootstrapPlayModeTests
         Assert.That(arena.Snapshot.TotalTargets, Is.EqualTo(3));
     }
 
+    [Test]
+    [Timeout(60000)]
+    public void PlayMode_TestRunnerSceneDoesNotArmRuntimeIntegrityWatchdog()
+    {
+        Assert.That(Application.isPlaying, Is.True, "This regression must run in Unity PlayMode.");
+        Assert.True(
+            PrototypeBootstrap.IsUnityTestRunnerContextActive(),
+            "Unity PlayMode tests should execute in a TestRunner context.");
+
+        GameObject host = new GameObject("RuntimeHudCameraBootstrapTestHost");
+        PrototypeBootstrap bootstrap = host.AddComponent<PrototypeBootstrap>();
+        SetPrivateField(bootstrap, "buildOnStart", false);
+
+        bootstrap.BuildPrototype();
+
+        Assert.False(bootstrap.RuntimeIntegrityWatchdogActive, "TestRunner scenes must not arm the gameplay watchdog.");
+        Assert.True(PrototypeBootstrap.IsUnityTestRunnerScene(SceneManager.GetActiveScene().path));
+    }
+
+    [Test]
+    [Timeout(60000)]
+    public void PlayMode_ForcedRuntimeIntegrityRepairRestoresMissingRootsOnce()
+    {
+        Assert.That(Application.isPlaying, Is.True, "This regression must run in Unity PlayMode.");
+
+        GameObject host = new GameObject("RuntimeHudCameraBootstrapTestHost");
+        PrototypeBootstrap bootstrap = host.AddComponent<PrototypeBootstrap>();
+        SetPrivateField(bootstrap, "buildOnStart", false);
+
+        bootstrap.BuildPrototype();
+        DestroyNamedImmediate("PrototypeShip");
+        DestroyNamedImmediate("PrototypeEnvironment");
+
+        Assert.False(bootstrap.TryGetRuntimeRootIntegrityReport(out string missingBeforeRepair, out _));
+        Assert.That(missingBeforeRepair, Does.Contain("PrototypeShip"));
+        Assert.That(missingBeforeRepair, Does.Contain("PrototypeEnvironment"));
+
+        Assert.True(bootstrap.RunRuntimeIntegrityRepairForTests("SimulatedRootRemoval", true));
+        Assert.True(bootstrap.TryGetRuntimeRootIntegrityReport(out string missingAfterRepair, out _), missingAfterRepair);
+        Assert.NotNull(GameObject.Find("PrototypeShip"));
+        Assert.NotNull(GameObject.Find("PrototypeEnvironment"));
+        Assert.NotNull(Object.FindAnyObjectByType<PrototypePveArenaLoop>());
+
+        Assert.False(bootstrap.RunRuntimeIntegrityRepairForTests("SecondCleanCheck", true), "Clean roots should not trigger another rebuild.");
+    }
+
     private static void SetPrivateField(object target, string fieldName, object value)
     {
         FieldInfo field = target.GetType().GetField(fieldName, PrivateInstance);
@@ -89,6 +140,7 @@ public class PrototypeRuntimeHudCameraBootstrapPlayModeTests
 
     private static void CleanupRuntimeObjects()
     {
+        CleanupTestOwnedObjects();
         DestroyNamed("RuntimeHudCameraBootstrapTestHost");
         DestroyNamed("PrototypeBootstrap");
         DestroyNamed("PrototypeShip");
@@ -102,9 +154,27 @@ public class PrototypeRuntimeHudCameraBootstrapPlayModeTests
         DestroyNamed("PrototypePlayerHudEventSystem");
     }
 
+    private static void CleanupTestOwnedObjects()
+    {
+        DestroyNamedImmediate("RuntimeHudCameraBootstrapTestHost");
+    }
+
     private static void DestroyNamed(string name)
     {
-        GameObject[] objects = Object.FindObjectsByType<GameObject>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        GameObject[] objects = Object.FindObjectsByType<GameObject>(FindObjectsInactive.Include);
+        for (int i = objects.Length - 1; i >= 0; i--)
+        {
+            GameObject candidate = objects[i];
+            if (candidate != null && candidate.name == name)
+            {
+                Object.DestroyImmediate(candidate);
+            }
+        }
+    }
+
+    private static void DestroyNamedImmediate(string name)
+    {
+        GameObject[] objects = Object.FindObjectsByType<GameObject>(FindObjectsInactive.Include);
         for (int i = objects.Length - 1; i >= 0; i--)
         {
             GameObject candidate = objects[i];

@@ -1,0 +1,2 @@
+event: message
+data: {"jsonrpc":"2.0","id":302,"result":{"content":[{"type":"text","text":"{\"success\":true,\"message\":\"Scene 'Assets/Scenes/SampleScene.unity' loaded successfully.\",\"data\":{\"path\":\"Assets/Scenes/SampleScene.unity\",\"name\":\"SampleScene\"}}"}],"structuredContent":{"success":true,"message":"Scene 'Assets/Scenes/SampleScene.unity' loaded successfully.","data":{"path":"Assets/Scenes/SampleScene.unity","name":"SampleScene"}},"isError":false}}

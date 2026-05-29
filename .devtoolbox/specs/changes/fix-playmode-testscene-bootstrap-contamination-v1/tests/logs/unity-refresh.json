@@ -1,0 +1,4 @@
+﻿: ping - 2026-05-29 16:19:26.363290+00:00
+
+event: message
+data: {"jsonrpc":"2.0","id":11,"result":{"_meta":{"fastmcp":{"wrap_result":true}},"content":[{"type":"text","text":"{\"success\":true,\"message\":\"Refresh requested.\",\"error\":null,\"data\":{\"refresh_triggered\":false,\"compile_requested\":true,\"resulting_state\":\"compiling\",\"hint\":\"If Unity enters compilation/domain reload, poll editor_state until ready_for_tools is true.\"},\"hint\":null}"}],"structuredContent":{"result":{"success":true,"message":"Refresh requested.","error":null,"data":{"refresh_triggered":false,"compile_requested":true,"resulting_state":"compiling","hint":"If Unity enters compilation/domain reload, poll editor_state until ready_for_tools is true."},"hint":null}},"isError":false}}

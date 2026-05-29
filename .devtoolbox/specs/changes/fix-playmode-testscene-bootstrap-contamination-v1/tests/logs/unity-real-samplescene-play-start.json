@@ -1,0 +1,2 @@
+event: message
+data: {"jsonrpc":"2.0","id":304,"result":{"content":[{"type":"text","text":"{\"success\":true,\"message\":\"Entered play mode.\",\"data\":null}"}],"structuredContent":{"success":true,"message":"Entered play mode.","data":null},"isError":false}}

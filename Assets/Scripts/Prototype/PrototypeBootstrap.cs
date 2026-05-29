@@ -1,5 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PrototypeBootstrap : MonoBehaviour
 {
@@ -22,14 +24,19 @@ public class PrototypeBootstrap : MonoBehaviour
     private const float DefaultRcsBlockThrust = 6500f;
     private const float DirectionalLightMinIntensity = 1.0f;
     private const float DirectionalLightMaxIntensity = 1.45f;
+    private const int RuntimeIntegrityWatchdogFrameDelay = 2;
     private static readonly Color MainThrusterColor = PrototypeModuleColorPalette.MainThruster;
     private static readonly Color MainThrusterRingColor = PrototypeModuleColorPalette.MainThrusterNozzleRing;
     private static readonly Color RcsBlockColor = PrototypeModuleColorPalette.RcsBlock;
     private static readonly Color GunColor = PrototypeModuleColorPalette.Gun;
     private static readonly Color RcsVfxColor = PrototypeModuleColorPalette.RcsVfx;
     private static readonly Color FuelTankCueColor = PrototypeModuleColorPalette.FuelTankCue;
+    private static int runtimeIntegrityWatchdogSequence;
+    private static bool runtimeIntegrityWatchdogRepairAttempted;
 
     private PrototypeShipVariant[] runtimeVariants;
+    private bool runtimeIntegrityWatchdogActive;
+    private string lastRuntimeIntegrityWatchdogReason = string.Empty;
 
     public PrototypeShipVariant[] BuiltInVariants
     {
@@ -44,12 +51,27 @@ public class PrototypeBootstrap : MonoBehaviour
     public PrototypeShipVariant SelectedVariant => BuiltInVariants.Length > 0 ? BuiltInVariants[SelectedVariantIndex] : PrototypeShipVariant.Baseline();
     public string SelectedVariantName => SelectedVariant != null ? SelectedVariant.DisplayName : "Baseline Balanced";
     public PrototypeShipBuildMode BuildMode => buildMode;
+    public bool RuntimeIntegrityWatchdogActive => runtimeIntegrityWatchdogActive;
+    public string LastRuntimeIntegrityWatchdogReason => lastRuntimeIntegrityWatchdogReason;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetRuntimeBootstrapSession()
+    {
+        runtimeIntegrityWatchdogSequence = 0;
+        runtimeIntegrityWatchdogRepairAttempted = false;
+    }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void RuntimeBootstrap()
     {
         if (!Application.isPlaying)
         {
+            return;
+        }
+
+        if (IsUnityTestRunnerContextActive())
+        {
+            Debug.Log("PrototypeBootstrap skipped runtime auto-bootstrap in Unity TestRunner scene: " + DescribeActiveScene());
             return;
         }
 
@@ -267,6 +289,7 @@ public class PrototypeBootstrap : MonoBehaviour
             allowGeneratedFallbackWhenImportedAssetMissing,
             useGeneratedFallbackBeforeVisibilityPolicy,
             useGeneratedFallback);
+        StartRuntimeIntegrityWatchdog("BuildPrototype");
     }
 
     public void SelectVariant(int index)
@@ -442,6 +465,9 @@ public class PrototypeBootstrap : MonoBehaviour
         builder.Append(" generatedRendererCount=").Append(generatedRendererCount);
         builder.Append(" generatedEnabledRendererCount=").Append(generatedEnabledRendererCount);
         builder.Append(" cameraTargetDistance=").Append(cameraDistance.ToString("0.0"));
+        builder.Append(" activeScene=").Append(DescribeActiveScene());
+        builder.Append(" unityTestRunnerContext=").Append(IsUnityTestRunnerContextActive());
+        builder.Append(" activeSceneRootCount=").Append(SceneManager.GetActiveScene().rootCount);
         Debug.Log(builder.ToString());
     }
 
@@ -1254,6 +1280,180 @@ public class PrototypeBootstrap : MonoBehaviour
         {
             waypointAutopilot.SelectTarget(waypointManager.SelectedTarget);
         }
+    }
+
+    public static bool IsUnityTestRunnerContextActive()
+    {
+        Scene activeScene = SceneManager.GetActiveScene();
+        if (IsUnityTestRunnerScene(activeScene.name) || IsUnityTestRunnerScene(activeScene.path))
+        {
+            return true;
+        }
+
+        MonoBehaviour[] behaviours = Object.FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include);
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            MonoBehaviour behaviour = behaviours[i];
+            if (behaviour != null && behaviour.GetType().Name == "PlaymodeTestsController")
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static bool IsUnityTestRunnerScene(string sceneNameOrPath)
+    {
+        if (string.IsNullOrEmpty(sceneNameOrPath))
+        {
+            return false;
+        }
+
+        string normalized = sceneNameOrPath.Replace('\\', '/');
+        int slashIndex = normalized.LastIndexOf('/');
+        string fileName = slashIndex >= 0 ? normalized.Substring(slashIndex + 1) : normalized;
+        if (fileName.EndsWith(".unity", System.StringComparison.OrdinalIgnoreCase))
+        {
+            fileName = fileName.Substring(0, fileName.Length - ".unity".Length);
+        }
+
+        return fileName.StartsWith("InitTestScene", System.StringComparison.OrdinalIgnoreCase);
+    }
+
+    public static string DescribeActiveScene()
+    {
+        Scene scene = SceneManager.GetActiveScene();
+        return string.IsNullOrEmpty(scene.path) ? scene.name : scene.path;
+    }
+
+    public bool TryGetRuntimeRootIntegrityReport(out string missingRoots, out int activeRootCount)
+    {
+        return HasRequiredRuntimeRoots(out missingRoots, out activeRootCount);
+    }
+
+#if UNITY_EDITOR || UNITY_INCLUDE_TESTS
+    public static void ResetRuntimeBootstrapSessionForTests()
+    {
+        ResetRuntimeBootstrapSession();
+    }
+
+    public bool RunRuntimeIntegrityRepairForTests(string reason, bool ignoreTestRunnerContext)
+    {
+        return RunRuntimeIntegrityRepair(reason, ignoreTestRunnerContext);
+    }
+#endif
+
+    private void StartRuntimeIntegrityWatchdog(string reason)
+    {
+        if (!Application.isPlaying || IsUnityTestRunnerContextActive())
+        {
+            runtimeIntegrityWatchdogActive = false;
+            return;
+        }
+
+        runtimeIntegrityWatchdogActive = true;
+        lastRuntimeIntegrityWatchdogReason = string.IsNullOrWhiteSpace(reason) ? "BuildPrototype" : reason;
+        int sequence = ++runtimeIntegrityWatchdogSequence;
+        StartCoroutine(RuntimeIntegrityWatchdogCoroutine(sequence, lastRuntimeIntegrityWatchdogReason));
+    }
+
+    private IEnumerator RuntimeIntegrityWatchdogCoroutine(int sequence, string reason)
+    {
+        for (int i = 0; i < RuntimeIntegrityWatchdogFrameDelay; i++)
+        {
+            yield return null;
+            if (sequence != runtimeIntegrityWatchdogSequence)
+            {
+                yield break;
+            }
+        }
+
+        if (sequence == runtimeIntegrityWatchdogSequence)
+        {
+            RunRuntimeIntegrityRepair(reason, false);
+        }
+
+        if (sequence == runtimeIntegrityWatchdogSequence)
+        {
+            runtimeIntegrityWatchdogActive = false;
+        }
+    }
+
+    private bool RunRuntimeIntegrityRepair(string reason, bool ignoreTestRunnerContext)
+    {
+        lastRuntimeIntegrityWatchdogReason = string.IsNullOrWhiteSpace(reason) ? "RuntimeIntegrityWatchdog" : reason;
+        if (!ignoreTestRunnerContext && IsUnityTestRunnerContextActive())
+        {
+            runtimeIntegrityWatchdogActive = false;
+            Debug.Log("PrototypeBootstrap runtime integrity watchdog skipped in Unity TestRunner scene: " + DescribeActiveScene());
+            return false;
+        }
+
+        if (HasRequiredRuntimeRoots(out string missingRoots, out int activeRootCount))
+        {
+            Debug.Log("PrototypeBootstrap runtime integrity watchdog passed: scene=" + DescribeActiveScene() + " rootCount=" + activeRootCount);
+            return false;
+        }
+
+        if (runtimeIntegrityWatchdogRepairAttempted)
+        {
+            Debug.LogError(
+                "PrototypeBootstrap runtime integrity watchdog found missing roots after repair attempt: scene="
+                + DescribeActiveScene()
+                + " missing="
+                + missingRoots
+                + " rootCount="
+                + activeRootCount);
+            return false;
+        }
+
+        runtimeIntegrityWatchdogRepairAttempted = true;
+        Debug.LogWarning(
+            "PrototypeBootstrap runtime integrity watchdog rebuilding missing roots: scene="
+            + DescribeActiveScene()
+            + " reason="
+            + lastRuntimeIntegrityWatchdogReason
+            + " missing="
+            + missingRoots
+            + " rootCount="
+            + activeRootCount);
+        BuildPrototype(SelectedVariant);
+        return true;
+    }
+
+    private static bool HasRequiredRuntimeRoots(out string missingRoots, out int activeRootCount)
+    {
+        activeRootCount = SceneManager.GetActiveScene().rootCount;
+        List<string> missing = new List<string>();
+
+        if (GameObject.Find(PrototypeRootName) == null)
+        {
+            missing.Add(PrototypeRootName);
+        }
+
+        if (Camera.main == null || GameObject.Find("Main Camera") == null)
+        {
+            missing.Add("Main Camera");
+        }
+
+        if (GameObject.Find("PrototypeNavigationWaypoints") == null)
+        {
+            missing.Add("PrototypeNavigationWaypoints");
+        }
+
+        if (GameObject.Find(PrototypeTestEnvironment.RootName) == null)
+        {
+            missing.Add(PrototypeTestEnvironment.RootName);
+        }
+
+        if (Object.FindAnyObjectByType<PrototypePveArenaLoop>() == null)
+        {
+            missing.Add("PrototypePveArenaLoop");
+        }
+
+        missingRoots = string.Join(", ", missing);
+        return missing.Count == 0;
     }
 
     private static T GetOrAddSingleCameraComponent<T>(GameObject cameraObject) where T : Component

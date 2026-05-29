@@ -1,0 +1,28 @@
+{
+  "realPlayRoots": [
+    {
+      "name": "PrototypeBootstrap",
+      "count": 0
+    },
+    {
+      "name": "PrototypeShip",
+      "count": 1
+    },
+    {
+      "name": "PrototypeEnvironment",
+      "count": 1
+    },
+    {
+      "name": "PrototypeNavigationWaypoints",
+      "count": 1
+    },
+    {
+      "name": "Main Camera",
+      "count": 1
+    },
+    {
+      "name": "PrototypePveArena",
+      "count": 1
+    }
+  ]
+}

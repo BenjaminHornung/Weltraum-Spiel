@@ -1,0 +1,20 @@
+[
+  {
+    "script": "Assets/Scripts/Prototype/PrototypeBootstrap.cs",
+    "success": true,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "script": "Assets/Tests/Editor/PrototypeBootstrapRuntimeGuardValidationTests.cs",
+    "success": true,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "script": "Assets/Tests/PlayMode/PrototypeRuntimeHudCameraBootstrapPlayModeTests.cs",
+    "success": true,
+    "warnings": 0,
+    "errors": 0
+  }
+]
