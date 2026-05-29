@@ -230,6 +230,7 @@ public class PrototypeBootstrap : MonoBehaviour
         weaponComputer.Bind(ship.transform, stats, turretWeapon);
         controller.ResetStartupFlightControls(shipStartPosition, Quaternion.identity);
         waypointAutopilot.ResetForBootstrap();
+        EnsureDefaultNavigationTarget(waypointManager, waypointAutopilot);
         momentumAssist.ResetForBootstrap();
         DockingPort dockingApproachTargetPort = ConfigureDockingApproachAssist(ship, controller, shipRigidbody);
 
@@ -1135,41 +1136,21 @@ public class PrototypeBootstrap : MonoBehaviour
         camTransform.position = target.position - (target.forward * 18f) + (Vector3.up * 6f);
         camTransform.LookAt(target.position + target.forward * 1.5f);
 
-        var follow = camera.gameObject.GetComponent<SimpleFollowCamera>();
-        if (follow == null)
-        {
-            follow = camera.gameObject.AddComponent<SimpleFollowCamera>();
-        }
+        var follow = GetOrAddSingleCameraComponent<SimpleFollowCamera>(camera.gameObject);
         follow.BindTarget(target, stats);
         follow.ReframeToTargetVisualBounds();
         follow.SnapNextFrame();
 
-        var overlay = camera.gameObject.GetComponent<PrototypeDebugOverlay>();
-        if (overlay == null)
-        {
-            overlay = camera.gameObject.AddComponent<PrototypeDebugOverlay>();
-        }
+        var overlay = GetOrAddSingleCameraComponent<PrototypeDebugOverlay>(camera.gameObject);
         overlay.Bind(target, stats, body);
 
-        var hud = camera.gameObject.GetComponent<PrototypeFlightHud>();
-        if (hud == null)
-        {
-            hud = camera.gameObject.AddComponent<PrototypeFlightHud>();
-        }
+        var hud = GetOrAddSingleCameraComponent<PrototypeFlightHud>(camera.gameObject);
         hud.Bind(target, stats, body);
 
-        var keybinds = camera.gameObject.GetComponent<PrototypeKeybindOverlay>();
-        if (keybinds == null)
-        {
-            keybinds = camera.gameObject.AddComponent<PrototypeKeybindOverlay>();
-        }
+        var keybinds = GetOrAddSingleCameraComponent<PrototypeKeybindOverlay>(camera.gameObject);
         keybinds.Bind(target);
 
-        var minimap = camera.gameObject.GetComponent<PrototypeMinimapOverlay>();
-        if (minimap == null)
-        {
-            minimap = camera.gameObject.AddComponent<PrototypeMinimapOverlay>();
-        }
+        var minimap = GetOrAddSingleCameraComponent<PrototypeMinimapOverlay>(camera.gameObject);
         minimap.Bind(target, body, testEnvironment);
 
         PrototypeTrajectoryPreviewNavMap trajectoryPreview = null;
@@ -1190,27 +1171,15 @@ public class PrototypeBootstrap : MonoBehaviour
             minimap.BindTrajectoryPreview(trajectoryPreview);
         }
 
-        var debugConsole = camera.gameObject.GetComponent<PrototypeFlightDebugConsole>();
-        if (debugConsole == null)
-        {
-            debugConsole = camera.gameObject.AddComponent<PrototypeFlightDebugConsole>();
-        }
+        var debugConsole = GetOrAddSingleCameraComponent<PrototypeFlightDebugConsole>(camera.gameObject);
         debugConsole.Bind(target, stats, body, Object.FindAnyObjectByType<PrototypeBootstrap>());
 
         var weaponComputer = target != null ? target.GetComponent<PrototypeWeaponComputer>() : null;
         var turretWeapon = target != null ? target.GetComponentInChildren<PrototypeTurretWeapon>() : null;
-        var weaponComputerPanel = camera.gameObject.GetComponent<PrototypeWeaponComputerPanel>();
-        if (weaponComputerPanel == null)
-        {
-            weaponComputerPanel = camera.gameObject.AddComponent<PrototypeWeaponComputerPanel>();
-        }
+        var weaponComputerPanel = GetOrAddSingleCameraComponent<PrototypeWeaponComputerPanel>(camera.gameObject);
         weaponComputerPanel.Bind(target, stats, weaponComputer, turretWeapon);
 
-        var playerHud = camera.gameObject.GetComponent<PrototypePlayerHudRenderer>();
-        if (playerHud == null)
-        {
-            playerHud = camera.gameObject.AddComponent<PrototypePlayerHudRenderer>();
-        }
+        var playerHud = GetOrAddSingleCameraComponent<PrototypePlayerHudRenderer>(camera.gameObject);
         playerHud.Bind(target, stats, body);
         playerHud.BindTrajectoryPreview(trajectoryPreview);
 
@@ -1271,6 +1240,49 @@ public class PrototypeBootstrap : MonoBehaviour
         }
 
         return selected;
+    }
+
+    private static void EnsureDefaultNavigationTarget(PrototypeWaypointManager waypointManager, PrototypeWaypointAutopilot waypointAutopilot)
+    {
+        if (waypointManager == null || waypointAutopilot == null)
+        {
+            return;
+        }
+
+        waypointManager.EnsureDefaultWaypoints();
+        if (waypointAutopilot.CurrentTarget == null && waypointManager.SelectedTarget != null)
+        {
+            waypointAutopilot.SelectTarget(waypointManager.SelectedTarget);
+        }
+    }
+
+    private static T GetOrAddSingleCameraComponent<T>(GameObject cameraObject) where T : Component
+    {
+        T selected = null;
+        T[] components = cameraObject.GetComponents<T>();
+        for (int i = 0; i < components.Length; i++)
+        {
+            T component = components[i];
+            if (component == null)
+            {
+                continue;
+            }
+
+            if (selected == null)
+            {
+                selected = component;
+                continue;
+            }
+
+            if (component is Behaviour behaviour)
+            {
+                behaviour.enabled = false;
+            }
+
+            DestroyComponent(component);
+        }
+
+        return selected != null ? selected : cameraObject.AddComponent<T>();
     }
 
     private static void EnsureCameraAnchor(Transform ship, Rigidbody shipRigidbody)

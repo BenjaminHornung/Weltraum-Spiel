@@ -1,0 +1,11 @@
+2026-05-29 Runtime HUD/Camera Bootstrap Regression
+
+ServiceRunner MCP attempts:
+- workspace_discover: Transport closed
+- specs_get_status: Transport closed
+- specs_list_changes: Transport closed
+- mcp_transport_session_status: Transport closed
+
+Fallback:
+- DevToolbox change artifacts were written directly under .devtoolbox/specs/changes/fix-runtime-hud-camera-bootstrap-regression-v1.
+- Verification evidence will be added to tests/test-protocol.md and tests/logs/.

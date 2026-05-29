@@ -1,0 +1,82 @@
+{
+  "validations": [
+    {
+      "script": "Assets/Scripts/Prototype/PrototypeBootstrap.cs",
+      "success": true,
+      "warnings": 0,
+      "errors": 0
+    },
+    {
+      "script": "Assets/Scripts/Prototype/PrototypePlayerHud.cs",
+      "success": true,
+      "warnings": 0,
+      "errors": 0
+    },
+    {
+      "script": "Assets/Scripts/Prototype/SimpleFollowCamera.cs",
+      "success": true,
+      "warnings": 0,
+      "errors": 0
+    },
+    {
+      "script": "Assets/Tests/Editor/PrototypePlayerHudValidationTests.cs",
+      "success": true,
+      "warnings": 0,
+      "errors": 0
+    },
+    {
+      "script": "Assets/Tests/Editor/PrototypeSimpleFollowCameraValidationTests.cs",
+      "success": true,
+      "warnings": 0,
+      "errors": 0
+    },
+    {
+      "script": "Assets/Tests/PlayMode/PrototypeRuntimeHudCameraBootstrapPlayModeTests.cs",
+      "success": true,
+      "warnings": 0,
+      "errors": 0
+    }
+  ],
+  "tests": [
+    {
+      "mode": "EditMode",
+      "test": "PrototypePlayerHudValidationTests.BootstrapBindsPlayerHudCanvasSeparateFromPrototypeWindows",
+      "jobId": "4458c5504394426794847de42c88674e",
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "state": "Passed"
+    },
+    {
+      "mode": "EditMode",
+      "test": "PrototypePlayerHudValidationTests.PlayerHudRefreshSelfBindsActivePrototypeShipWhenCreatedUnbound",
+      "jobId": "919ce2d149394161a036ade03cebcb06",
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "state": "Passed"
+    },
+    {
+      "mode": "EditMode",
+      "test": "PrototypeSimpleFollowCameraValidationTests.ChaseLockedDoesNotEnterAutopilotFlipAssistFromIdleAngularVelocity",
+      "jobId": "6d33e9fb6b214fcb8ed8ba984153fa3f",
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "state": "Passed"
+    },
+    {
+      "mode": "PlayMode",
+      "test": "PrototypeRuntimeHudCameraBootstrapPlayModeTests.PlayMode_BootstrapShowsBoundHudShipAndDefaultNavigationTarget",
+      "jobId": "a5d68f898f3e4fbd835430f2244bff84",
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "state": "Passed"
+    }
+  ]
+}

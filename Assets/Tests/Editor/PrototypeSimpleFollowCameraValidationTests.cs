@@ -436,6 +436,25 @@ public class PrototypeSimpleFollowCameraValidationTests
     }
 
     [Test]
+    public void ChaseLockedDoesNotEnterAutopilotFlipAssistFromIdleAngularVelocity()
+    {
+        GameObject ship = new GameObject("SimpleFollowCameraTestShip");
+        ShipStats stats = ship.AddComponent<ShipStats>();
+        Rigidbody body = ship.AddComponent<Rigidbody>();
+        body.useGravity = false;
+        body.angularVelocity = Vector3.up * 8f;
+        ship.AddComponent<PrototypeWaypointAutopilot>();
+        SimpleFollowCamera camera = BuildCamera(ship);
+        camera.BindTarget(ship.transform, stats);
+
+        InvokeLateUpdate(camera);
+
+        Assert.False(camera.IsAutopilotFlipCameraAssistActive, "Idle/cruise spin must not activate brake-flip chase framing.");
+        Assert.That(camera.CameraAutopilotState, Is.EqualTo(PrototypeWaypointAutopilotState.Idle));
+        Assert.That(camera.CameraChaseBlendMode, Is.Not.EqualTo("AutopilotFlipAssist"));
+    }
+
+    [Test]
     public void ResetFramingReturnsToChaseLockedAndDefaultOffsets()
     {
         GameObject ship = new GameObject("SimpleFollowCameraTestShip");

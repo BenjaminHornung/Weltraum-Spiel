@@ -1,0 +1,11 @@
+ServiceRunner MCP calls attempted on 2026-05-29 during fix-runtime-hud-camera-bootstrap-regression-v1:
+- specs_get_status: Transport closed
+- tasks_load: Transport closed
+- mcp_transport_session_status: Transport closed
+- execution_create: Transport closed
+- specs_validate: Transport closed
+
+Fallback used:
+- DevToolbox change artifacts were maintained directly in repository.
+- Verification used Unity MCP over its local HTTP endpoint plus local dotnet build/test.
+- No verify_run execution id could be created because execution_create failed before verification.

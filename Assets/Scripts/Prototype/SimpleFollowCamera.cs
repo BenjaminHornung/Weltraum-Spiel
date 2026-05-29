@@ -13,6 +13,13 @@ public class SimpleFollowCamera : MonoBehaviour
         FreeInspect = 3
     }
 
+    public enum AutopilotFlipChaseReferenceMode
+    {
+        ShipForward,
+        VelocityOrPrevious,
+        AutopilotDesiredBurnDirection
+    }
+
     private static readonly string[] VisualBoundsNameFilters =
     {
         "VFX",
@@ -38,6 +45,17 @@ public class SimpleFollowCamera : MonoBehaviour
     [SerializeField] private float chaseLockedPositionSmooth = 16f;
     [SerializeField] private float chaseLockedRotationSmooth = 18f;
     [SerializeField] private float chaseLockedFocusSmooth = 20f;
+    [SerializeField] private float autopilotFlipAngularVelocityThreshold = 1.5f;
+    [SerializeField] private float autopilotFlipReferenceSpeedThreshold = 0.75f;
+    [SerializeField] private float chaseLockedPositionSmoothFlipAssist = 80f;
+    [SerializeField] private float chaseLockedRotationFlipAssist = 100f;
+    [SerializeField] private float chaseLockedFocusSmoothFlipAssist = 0f;
+    [SerializeField] private float autopilotFlipAssistReleaseDelay = 0.35f;
+    [SerializeField] private float chaseViewportSafeXMin = 0.15f;
+    [SerializeField] private float chaseViewportSafeXMax = 0.85f;
+    [SerializeField] private float chaseViewportSafeYMin = 0.15f;
+    [SerializeField] private float chaseViewportSafeYMax = 0.85f;
+    [SerializeField] private AutopilotFlipChaseReferenceMode autopilotFlipChaseReferenceMode = AutopilotFlipChaseReferenceMode.VelocityOrPrevious;
     [SerializeField] private float mouseOrbitSensitivity = 0.18f;
     [SerializeField] private float mouseWheelSensitivity = 1.1f;
     [SerializeField] private float minPitch = -20f;
@@ -72,6 +90,7 @@ public class SimpleFollowCamera : MonoBehaviour
     private Vector3 focusPoint;
     private string focusSourceLabel = "TargetPosition";
     private Rigidbody targetRigidbody;
+    private PrototypeWaypointAutopilot targetAutopilot;
     private PrototypeCameraAnchor targetAnchor;
     private Transform namedFocusAnchor;
     private string namedFocusAnchorLabel = "TargetPosition";
@@ -89,6 +108,18 @@ public class SimpleFollowCamera : MonoBehaviour
     private Vector3 rawFocusPoint;
     private float lastFocusPointDelta;
     private bool lastChaseLockedSnap;
+    private bool isAutopilotFlipCameraAssistActive;
+    private float cameraAngularVelocityMagnitude;
+    private bool hasPreviousChaseReferenceForward;
+    private Vector3 previousChaseReferenceForward;
+    private bool hasStableChaseUp;
+    private Vector3 stableChaseUp = Vector3.up;
+    private string cameraChaseBlendMode = "Normal";
+    private Vector3 viewportTargetPosition = Vector3.zero;
+    private Vector3 lastViewportPoint = Vector3.zero;
+    private string lastViewportSafetyStatus = "NoViewportEval";
+    private bool pendingViewportSafetySnap;
+    private float autopilotFlipAssistReleaseTimer;
 
     public int CameraMode => (int)cameraMode;
     public string CameraModeName => GetCameraModeName(cameraMode);
@@ -117,6 +148,13 @@ public class SimpleFollowCamera : MonoBehaviour
     public CameraVisualBoundsData VisualBoundsSnapshot => cachedVisualBoundsSnapshot;
     public string TargetName => target != null ? target.name : string.Empty;
     public bool HasVisualBounds => hasVisualBounds;
+    public bool IsAutopilotFlipCameraAssistActive => isAutopilotFlipCameraAssistActive;
+    public float CameraAngularVelocityMagnitude => cameraAngularVelocityMagnitude;
+    public PrototypeWaypointAutopilotState CameraAutopilotState => targetAutopilot != null ? targetAutopilot.CurrentState : PrototypeWaypointAutopilotState.Idle;
+    public string CameraChaseBlendMode => cameraChaseBlendMode;
+    public Vector3 ViewportTargetPosition => viewportTargetPosition;
+    public Vector3 LastViewportPoint => lastViewportPoint;
+    public string LastViewportSafetyStatus => lastViewportSafetyStatus;
 
     public void BindTarget(Transform newTarget, ShipStats stats)
     {
@@ -124,6 +162,12 @@ public class SimpleFollowCamera : MonoBehaviour
         target = newTarget;
         targetStats = stats;
         ResolveTargetHierarchyReferences();
+        hasPreviousChaseReferenceForward = false;
+        previousChaseReferenceForward = Vector3.zero;
+        hasStableChaseUp = false;
+        stableChaseUp = Vector3.up;
+        autopilotFlipAssistReleaseTimer = 0f;
+        isAutopilotFlipCameraAssistActive = false;
         MarkVisualBoundsDirty();
         freeInspectLookTarget = Vector3.zero;
         hasFreeInspectLookTarget = false;
@@ -282,6 +326,10 @@ public class SimpleFollowCamera : MonoBehaviour
         {
             anchorError = 0f;
             hasPreviousFocusPoint = false;
+            isAutopilotFlipCameraAssistActive = false;
+            cameraAngularVelocityMagnitude = 0f;
+            cameraChaseBlendMode = "NoTarget";
+            lastViewportSafetyStatus = "NoTarget";
             return;
         }
 
@@ -289,31 +337,63 @@ public class SimpleFollowCamera : MonoBehaviour
         UpdateCachedVisualBoundsWorldSpace();
         RefreshFocusPoint();
         UpdateVisualBoundsSnapshot();
+        UpdateAutopilotFlipAssistState();
         bool focusJumped = HasLargeFocusDiscontinuity();
-        bool shouldSnapThisFrame = snapNextFrame || focusJumped || Time.deltaTime <= Mathf.Epsilon;
+        bool shouldSnapThisFrame = snapNextFrame || focusJumped || pendingViewportSafetySnap || Time.deltaTime <= Mathf.Epsilon;
+        pendingViewportSafetySnap = false;
 
         float followHeight = targetStats != null ? targetStats.FollowHeight : height;
         float baseDistance = ResolveBaseDistance(followHeight);
         Vector3 lookTarget = GetLookTargetFromMode(cameraMode);
         if (cameraMode == CameraViewMode.ChaseLocked)
         {
-            lookTarget = ResolveChaseLockedLookTarget(lookTarget, shouldSnapThisFrame);
+            float effectiveChaseFocusSmooth = isAutopilotFlipCameraAssistActive
+                ? chaseLockedFocusSmoothFlipAssist
+                : chaseLockedFocusSmooth;
+            lookTarget = ResolveChaseLockedLookTarget(lookTarget, shouldSnapThisFrame, effectiveChaseFocusSmooth);
         }
 
         Vector3 viewDirection = GetViewDirectionFromPivot(cameraMode, followHeight, baseDistance);
         float followDistance = ResolveEffectiveDistance(baseDistance, lookTarget, viewDirection);
         Vector3 desiredPosition = lookTarget + viewDirection * followDistance;
+        UpdateViewportSafetyDiagnostics(lookTarget, isAutopilotFlipCameraAssistActive);
+        if (isAutopilotFlipCameraAssistActive && !lastViewportSafetyStatus.Equals("Safe", StringComparison.Ordinal))
+        {
+            pendingViewportSafetySnap = true;
+        }
 
         if (cameraMode == CameraViewMode.ChaseLocked)
         {
-            Quaternion desiredRotation = GetDesiredRotation(desiredPosition, lookTarget);
-            float chasePositionBlend = shouldSnapThisFrame ? 1f : 1f - Mathf.Exp(-chaseLockedPositionSmooth * Time.deltaTime);
+            Quaternion desiredRotation = GetDesiredRotation(desiredPosition, lookTarget, GetChaseUpReference());
+            float chasePositionBlendRate = isAutopilotFlipCameraAssistActive
+                ? chaseLockedPositionSmoothFlipAssist
+                : chaseLockedPositionSmooth;
+            float chaseRotationBlendRate = isAutopilotFlipCameraAssistActive
+                ? chaseLockedRotationFlipAssist
+                : chaseLockedRotationSmooth;
+            float chasePositionBlend = shouldSnapThisFrame ? 1f : 1f - Mathf.Exp(-chasePositionBlendRate * Time.deltaTime);
             transform.position = Vector3.Lerp(transform.position, desiredPosition, chasePositionBlend);
-            float chaseRotationBlend = shouldSnapThisFrame ? 1f : 1f - Mathf.Exp(-chaseLockedRotationSmooth * Time.deltaTime);
+            float chaseRotationBlend = shouldSnapThisFrame ? 1f : 1f - Mathf.Exp(-chaseRotationBlendRate * Time.deltaTime);
             transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, chaseRotationBlend);
             anchorError = Vector3.Distance(transform.position, desiredPosition);
             lastChaseLockedSnap = shouldSnapThisFrame;
             snapNextFrame = false;
+            if (isAutopilotFlipCameraAssistActive)
+            {
+                CacheChaseAssistState();
+                Vector3 referenceForward = ResolveChaseReferenceForward();
+                if (referenceForward.sqrMagnitude > 0.0001f)
+                {
+                    previousChaseReferenceForward = referenceForward;
+                    hasPreviousChaseReferenceForward = true;
+                }
+            }
+            else
+            {
+                hasStableChaseUp = false;
+            }
+
+            cameraChaseBlendMode = isAutopilotFlipCameraAssistActive ? "AutopilotFlipAssist" : "ChaseLocked";
             RememberFocusPointForNextFrame();
             return;
         }
@@ -331,6 +411,7 @@ public class SimpleFollowCamera : MonoBehaviour
 
         anchorError = Vector3.Distance(transform.position, desiredPosition);
         lastChaseLockedSnap = false;
+        cameraChaseBlendMode = "OrbitOrOther";
         snapNextFrame = false;
         RememberFocusPointForNextFrame();
     }
@@ -497,7 +578,8 @@ public class SimpleFollowCamera : MonoBehaviour
         float distanceForAngle = Mathf.Max(1f, baseDistance);
         if (mode == CameraViewMode.ChaseLocked)
         {
-            return (target.rotation * new Vector3(0f, followHeight, -distanceForAngle)).normalized;
+            Quaternion chaseReferenceRotation = ResolveChaseReferenceRotation();
+            return (chaseReferenceRotation * new Vector3(0f, followHeight, -distanceForAngle)).normalized;
         }
 
         Quaternion orbitRotation = Quaternion.AngleAxis(orbitYaw, Vector3.up) * Quaternion.AngleAxis(orbitPitch, Vector3.right);
@@ -580,18 +662,28 @@ public class SimpleFollowCamera : MonoBehaviour
         return cameraMode == CameraViewMode.ChaseLocked ? target.up : Vector3.up;
     }
 
-    private Quaternion GetDesiredRotation(Vector3 cameraPosition, Vector3 targetFocusPoint)
+    private Vector3 GetChaseUpReference()
+    {
+        if (!isAutopilotFlipCameraAssistActive || target == null)
+        {
+            return target != null ? target.up : Vector3.up;
+        }
+
+        return hasStableChaseUp ? stableChaseUp : Vector3.up;
+    }
+
+    private Quaternion GetDesiredRotation(Vector3 cameraPosition, Vector3 targetFocusPoint, Vector3 lookUp)
     {
         float lookYaw = Mathf.Clamp(orbitYaw, -anchoredLookYawLimit, anchoredLookYawLimit);
         float lookPitch = Mathf.Clamp(orbitPitch, -anchoredLookPitchLimit, anchoredLookPitchLimit);
         Vector3 direction = targetFocusPoint - cameraPosition;
         Quaternion anchorRotation = direction.sqrMagnitude > 0.01f
-            ? Quaternion.LookRotation(direction, target.up)
+            ? Quaternion.LookRotation(direction, lookUp)
             : target.rotation;
         return anchorRotation * Quaternion.Euler(lookPitch, lookYaw, 0f);
     }
 
-    private Vector3 ResolveChaseLockedLookTarget(Vector3 rawLookTarget, bool shouldSnapThisFrame)
+    private Vector3 ResolveChaseLockedLookTarget(Vector3 rawLookTarget, bool shouldSnapThisFrame, float focusBlendRate)
     {
         rawFocusPoint = rawLookTarget;
         if (!hasChaseLockedSmoothedFocusPoint || shouldSnapThisFrame)
@@ -605,7 +697,7 @@ public class SimpleFollowCamera : MonoBehaviour
         }
 
         Vector3 before = chaseLockedSmoothedFocusPoint;
-        float focusBlend = 1f - Mathf.Exp(-chaseLockedFocusSmooth * Time.deltaTime);
+        float focusBlend = focusBlendRate <= Mathf.Epsilon ? 1f : 1f - Mathf.Exp(-focusBlendRate * Time.deltaTime);
         chaseLockedSmoothedFocusPoint = Vector3.Lerp(chaseLockedSmoothedFocusPoint, rawLookTarget, focusBlend);
         lastFocusPointDelta = Vector3.Distance(before, chaseLockedSmoothedFocusPoint);
         return chaseLockedSmoothedFocusPoint;
@@ -926,13 +1018,40 @@ public class SimpleFollowCamera : MonoBehaviour
         if (target == null)
         {
             targetRigidbody = null;
+            targetAutopilot = null;
             targetAnchor = null;
             namedFocusAnchor = null;
             namedFocusAnchorLabel = "TargetPosition";
+            autopilotFlipAssistReleaseTimer = 0f;
+            isAutopilotFlipCameraAssistActive = false;
+            hasPreviousChaseReferenceForward = false;
+            previousChaseReferenceForward = Vector3.zero;
+            hasStableChaseUp = false;
+            stableChaseUp = Vector3.up;
             return;
         }
 
         targetRigidbody = target.GetComponent<Rigidbody>();
+        if (targetRigidbody == null)
+        {
+            targetRigidbody = target.GetComponentInParent<Rigidbody>();
+        }
+
+        if (targetRigidbody == null)
+        {
+            targetRigidbody = target.GetComponentInChildren<Rigidbody>(true);
+        }
+
+        targetAutopilot = target.GetComponent<PrototypeWaypointAutopilot>();
+        if (targetAutopilot == null)
+        {
+            targetAutopilot = target.GetComponentInParent<PrototypeWaypointAutopilot>();
+        }
+
+        if (targetAutopilot == null)
+        {
+            targetAutopilot = target.GetComponentInChildren<PrototypeWaypointAutopilot>(true);
+        }
         targetAnchor = ResolveHighestPriorityAnchor();
         namedFocusAnchor = null;
         namedFocusAnchorLabel = "TargetPosition";
@@ -1015,5 +1134,175 @@ public class SimpleFollowCamera : MonoBehaviour
             default:
                 return "Unknown";
         }
+    }
+
+    private void UpdateAutopilotFlipAssistState()
+    {
+        if (cameraMode != CameraViewMode.ChaseLocked)
+        {
+            autopilotFlipAssistReleaseTimer = 0f;
+            isAutopilotFlipCameraAssistActive = false;
+            lastViewportSafetyStatus = "NoAssist";
+            cameraChaseBlendMode = "ChaseLocked";
+            cameraAngularVelocityMagnitude = targetRigidbody != null ? targetRigidbody.angularVelocity.magnitude : 0f;
+            return;
+        }
+
+        bool wasAutopilotFlipAssistActive = isAutopilotFlipCameraAssistActive;
+        float previousAutopilotFlipReleaseTimer = autopilotFlipAssistReleaseTimer;
+
+        if (targetRigidbody == null)
+        {
+            cameraAngularVelocityMagnitude = 0f;
+        }
+        else
+        {
+            cameraAngularVelocityMagnitude = targetRigidbody.angularVelocity.magnitude;
+        }
+
+        bool autopilotEngaged = targetAutopilot != null && targetAutopilot.AutopilotEngaged;
+        bool isFlipForBrake = targetAutopilot != null && targetAutopilot.CurrentState == PrototypeWaypointAutopilotState.FlipForBrake;
+        bool isBrake = targetAutopilot != null && targetAutopilot.CurrentState == PrototypeWaypointAutopilotState.Brake;
+        bool hasHighAngularVelocity = cameraAngularVelocityMagnitude > autopilotFlipAngularVelocityThreshold;
+        bool hasRawAutopilotFlipAssist = autopilotEngaged && (isFlipForBrake || (isBrake && hasHighAngularVelocity));
+
+        if (hasRawAutopilotFlipAssist)
+        {
+            autopilotFlipAssistReleaseTimer = autopilotFlipAssistReleaseDelay;
+        }
+        else
+        {
+            autopilotFlipAssistReleaseTimer = Mathf.Max(0f, autopilotFlipAssistReleaseTimer - Time.deltaTime);
+        }
+
+        bool nextAutopilotFlipCameraAssistActive = hasRawAutopilotFlipAssist || autopilotFlipAssistReleaseTimer > 0f;
+        bool didFlipAssistExpire = wasAutopilotFlipAssistActive && !nextAutopilotFlipCameraAssistActive && previousAutopilotFlipReleaseTimer > 0f;
+        if (didFlipAssistExpire)
+        {
+            pendingViewportSafetySnap = true;
+        }
+
+        isAutopilotFlipCameraAssistActive = nextAutopilotFlipCameraAssistActive;
+
+        if (!isAutopilotFlipCameraAssistActive)
+        {
+            lastViewportSafetyStatus = "NoAssist";
+            cameraChaseBlendMode = "Normal";
+        }
+    }
+
+    private void UpdateViewportSafetyDiagnostics(Vector3 lookTarget, bool isAssistActive)
+    {
+        viewportTargetPosition = lookTarget;
+
+        if (!isAssistActive)
+        {
+            lastViewportPoint = Vector3.zero;
+            lastViewportSafetyStatus = "NoAssist";
+            return;
+        }
+
+        if (attachedCamera == null)
+        {
+            lastViewportPoint = Vector3.zero;
+            lastViewportSafetyStatus = "NoCamera";
+            return;
+        }
+
+        Vector3 viewportPoint = attachedCamera.WorldToViewportPoint(lookTarget);
+        lastViewportPoint = viewportPoint;
+
+        float safeXMin = Mathf.Clamp01(chaseViewportSafeXMin);
+        float safeXMax = Mathf.Clamp01(chaseViewportSafeXMax);
+        float safeYMin = Mathf.Clamp01(chaseViewportSafeYMin);
+        float safeYMax = Mathf.Clamp01(chaseViewportSafeYMax);
+
+        if (safeXMax < safeXMin)
+        {
+            float safeXSwap = safeXMin;
+            safeXMin = safeXMax;
+            safeXMax = safeXSwap;
+        }
+
+        if (safeYMax < safeYMin)
+        {
+            float safeYSwap = safeYMin;
+            safeYMin = safeYMax;
+            safeYMax = safeYSwap;
+        }
+
+        bool safeX = viewportPoint.x >= safeXMin && viewportPoint.x <= safeXMax;
+        bool safeY = viewportPoint.y >= safeYMin && viewportPoint.y <= safeYMax;
+        bool safeZ = viewportPoint.z > 0f;
+
+        lastViewportSafetyStatus = (safeX && safeY && safeZ) ? "Safe" : "Unsafe";
+    }
+
+    private Quaternion ResolveChaseReferenceRotation()
+    {
+        if (target == null)
+        {
+            return Quaternion.identity;
+        }
+
+        Vector3 referenceForward = ResolveChaseReferenceForward();
+        Vector3 chaseUp = GetChaseUpReference();
+        if (referenceForward.sqrMagnitude <= 0.0001f)
+        {
+            referenceForward = target.forward;
+        }
+
+        if (Vector3.Cross(referenceForward, chaseUp).sqrMagnitude <= 0.0001f)
+        {
+            chaseUp = Vector3.up;
+        }
+
+        return Quaternion.LookRotation(referenceForward, chaseUp);
+    }
+
+    private Vector3 ResolveChaseReferenceForward()
+    {
+        if (target == null)
+        {
+            return Vector3.forward;
+        }
+
+        if (!isAutopilotFlipCameraAssistActive)
+        {
+            return target.forward;
+        }
+
+        switch (autopilotFlipChaseReferenceMode)
+        {
+            case AutopilotFlipChaseReferenceMode.ShipForward:
+                return target.forward;
+            case AutopilotFlipChaseReferenceMode.AutopilotDesiredBurnDirection:
+                if (targetAutopilot != null && targetAutopilot.DesiredBurnDirection.sqrMagnitude > 0.0001f)
+                {
+                    return targetAutopilot.DesiredBurnDirection.normalized;
+                }
+                break;
+            case AutopilotFlipChaseReferenceMode.VelocityOrPrevious:
+            default:
+                if (targetRigidbody != null
+                    && targetRigidbody.linearVelocity.sqrMagnitude >= autopilotFlipReferenceSpeedThreshold * autopilotFlipReferenceSpeedThreshold)
+                {
+                    return -targetRigidbody.linearVelocity.normalized;
+                }
+                break;
+        }
+
+        if (hasPreviousChaseReferenceForward)
+        {
+            return previousChaseReferenceForward;
+        }
+
+        return target.forward;
+    }
+
+    private void CacheChaseAssistState()
+    {
+        stableChaseUp = hasPreviousChaseReferenceForward ? transform.up : Vector3.up;
+        hasStableChaseUp = true;
     }
 }

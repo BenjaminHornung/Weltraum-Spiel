@@ -1,0 +1,38 @@
+[
+  {
+    "script": "Assets/Scripts/Prototype/PrototypeBootstrap.cs",
+    "success": true,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "script": "Assets/Scripts/Prototype/PrototypePlayerHud.cs",
+    "success": true,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "script": "Assets/Scripts/Prototype/SimpleFollowCamera.cs",
+    "success": true,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "script": "Assets/Tests/Editor/PrototypePlayerHudValidationTests.cs",
+    "success": true,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "script": "Assets/Tests/Editor/PrototypeSimpleFollowCameraValidationTests.cs",
+    "success": true,
+    "warnings": 0,
+    "errors": 0
+  },
+  {
+    "script": "Assets/Tests/PlayMode/PrototypeRuntimeHudCameraBootstrapPlayModeTests.cs",
+    "success": true,
+    "warnings": 0,
+    "errors": 0
+  }
+]

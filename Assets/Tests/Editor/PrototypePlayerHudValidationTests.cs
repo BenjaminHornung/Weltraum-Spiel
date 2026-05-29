@@ -1776,6 +1776,12 @@ public class PrototypePlayerHudValidationTests
     [Test]
     public void BootstrapBindsPlayerHudCanvasSeparateFromPrototypeWindows()
     {
+        GameObject staleCameraObject = new GameObject("Main Camera");
+        staleCameraObject.tag = "MainCamera";
+        staleCameraObject.AddComponent<Camera>();
+        staleCameraObject.AddComponent<PrototypePlayerHudRenderer>();
+        staleCameraObject.AddComponent<PrototypePlayerHudRenderer>();
+
         GameObject bootstrapObject = new GameObject("PrototypeBootstrap");
         PrototypeBootstrap bootstrap = bootstrapObject.AddComponent<PrototypeBootstrap>();
 
@@ -1784,6 +1790,7 @@ public class PrototypePlayerHudValidationTests
         Assert.NotNull(Camera.main);
         PrototypePlayerHudRenderer playerHud = Camera.main.GetComponent<PrototypePlayerHudRenderer>();
         Assert.NotNull(playerHud);
+        Assert.That(Camera.main.GetComponents<PrototypePlayerHudRenderer>().Length, Is.EqualTo(1));
         Assert.NotNull(playerHud.GetComponentInChildren<Canvas>(true));
         Assert.NotNull(Camera.main.GetComponent<PrototypeFlightHud>());
         Assert.NotNull(Camera.main.GetComponent<PrototypeDebugOverlay>());
@@ -1795,9 +1802,46 @@ public class PrototypePlayerHudValidationTests
 
         Assert.That(playerHud.LastSnapshot.Flight.FuelMaxKg, Is.GreaterThan(0f));
         Assert.That(playerHud.LastSnapshot.Flight.ControlModeLabel, Is.EqualTo("Cruise"));
+        Assert.True(playerHud.LastSnapshot.Navigation.Visible);
+        Assert.That(playerHud.LastSnapshot.Navigation.TargetName, Does.Contain("Nav Waypoint"));
         Assert.False(playerHud.LastSnapshot.Docking.Visible);
         Assert.That(Labels(playerHud.LastSnapshot.Warnings), Does.Not.Contain("Ausser Docking-Reichweite"));
         Assert.That(Labels(playerHud.LastSnapshot.Warnings), Does.Not.Contain("Docking n/a"));
+    }
+
+    [Test]
+    public void PlayerHudRefreshSelfBindsActivePrototypeShipWhenCreatedUnbound()
+    {
+        using (var builder = new PrototypeScenarioBuilder())
+        {
+            PrototypeShipRig rig = builder.CreateShip("PrototypeShip");
+            PrototypeWaypointManager manager = rig.Ship.AddComponent<PrototypeWaypointManager>();
+            manager.EnsureDefaultWaypoints();
+            PrototypeWaypointAutopilot autopilot = rig.Ship.AddComponent<PrototypeWaypointAutopilot>();
+            autopilot.Bind(manager, rig.Controller, rig.Stats, rig.Body);
+            autopilot.SelectTarget(manager.SelectedTarget);
+            PrototypeMomentumAssist momentumAssist = rig.Ship.AddComponent<PrototypeMomentumAssist>();
+            momentumAssist.Bind(rig.Controller, rig.Body, rig.Stats);
+            PrototypeWeaponComputer weaponComputer = rig.Ship.AddComponent<PrototypeWeaponComputer>();
+            weaponComputer.Bind(rig.Ship.transform, rig.Stats, null);
+
+            GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+            cameraObject.tag = "MainCamera";
+            cameraObject.AddComponent<Camera>();
+            PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+
+            playerHud.RefreshNow();
+
+            Assert.True(playerHud.HasBoundRuntimeShip);
+            Assert.True(playerHud.HasBoundNavigationComputer);
+            Assert.True(playerHud.HasBoundMomentumAssist);
+            Assert.True(playerHud.HasBoundWeaponComputer);
+            Assert.That(playerHud.BoundShipName, Is.EqualTo("PrototypeShip"));
+            Assert.That(playerHud.LastSnapshot.ShipStatus.FuelLabel, Does.StartWith("Fuel "));
+            Assert.That(playerHud.LastSnapshot.ShipStatus.FuelLabel, Does.Not.Contain("n/a"));
+            Assert.True(playerHud.LastSnapshot.Navigation.Visible);
+            Assert.That(playerHud.LastSnapshot.Navigation.TargetName, Does.Contain("Nav Waypoint"));
+        }
     }
 
     [Test]

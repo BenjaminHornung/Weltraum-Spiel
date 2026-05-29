@@ -2182,6 +2182,17 @@ public static class PrototypePlayerHudSnapshotBuilder
         PlayerShipController controller,
         PrototypeWeaponComputer weaponComputer)
     {
+        if (stats == null && controller == null)
+        {
+            return new PrototypePlayerShipStatusSnapshot(
+                "HUD unbound",
+                "Camera target missing",
+                "No ship controller",
+                "SAS n/a",
+                weaponComputer != null ? "Weapon standby" : "Weapon n/a",
+                "Modules n/a");
+        }
+
         string fuel = stats != null
             ? "Fuel " + (stats.CurrentFuelKg / Mathf.Max(0.01f, stats.MaxFuelKg) * 100f).ToString("0") + "%"
             : "Fuel n/a";
@@ -2878,6 +2889,11 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     public bool ShowPlayerHud => showPlayerHud;
     public PrototypeTrajectoryPreviewNavMap TrajectoryPreview => trajectoryPreview;
     public PrototypePlayerHudSnapshot LastSnapshot => lastSnapshot;
+    public string BoundShipName => shipRoot != null ? shipRoot.name : string.Empty;
+    public bool HasBoundRuntimeShip => shipRoot != null && shipStats != null && shipRigidbody != null && controller != null;
+    public bool HasBoundNavigationComputer => autopilot != null;
+    public bool HasBoundMomentumAssist => momentumAssist != null;
+    public bool HasBoundWeaponComputer => weaponComputer != null;
 
     private void Awake()
     {
@@ -3086,6 +3102,11 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
     private void ResolveReferences()
     {
+        if (!HasCompletePlayerBinding())
+        {
+            TryResolveRuntimeShipBinding();
+        }
+
         if (shipRoot != null)
         {
             if (shipRigidbody == null)
@@ -3143,6 +3164,88 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         {
             weaponComputer.UpdateActiveTargetAndStatus();
         }
+    }
+
+    private bool HasCompletePlayerBinding()
+    {
+        return shipRoot != null
+            && shipStats != null
+            && shipRigidbody != null
+            && controller != null
+            && autopilot != null
+            && momentumAssist != null
+            && weaponComputer != null;
+    }
+
+    private void TryResolveRuntimeShipBinding()
+    {
+        Transform resolvedRoot = ResolveRuntimeShipRoot();
+        if (resolvedRoot == null)
+        {
+            return;
+        }
+
+        if (resolvedRoot != shipRoot || !HasCompletePlayerBinding())
+        {
+            BindResolvedRuntimeShip(resolvedRoot);
+        }
+    }
+
+    private Transform ResolveRuntimeShipRoot()
+    {
+        if (IsViableRuntimeShipRoot(shipRoot))
+        {
+            return shipRoot;
+        }
+
+        GameObject namedPrototypeShip = GameObject.Find("PrototypeShip");
+        if (namedPrototypeShip != null && IsViableRuntimeShipRoot(namedPrototypeShip.transform))
+        {
+            return namedPrototypeShip.transform;
+        }
+
+        PlayerShipController[] controllers = UnityEngine.Object.FindObjectsByType<PlayerShipController>(FindObjectsInactive.Exclude);
+        Transform fallback = null;
+        for (int i = 0; i < controllers.Length; i++)
+        {
+            PlayerShipController candidateController = controllers[i];
+            if (candidateController == null || !IsViableRuntimeShipRoot(candidateController.transform))
+            {
+                continue;
+            }
+
+            if (candidateController.gameObject.name == "PrototypeShip")
+            {
+                return candidateController.transform;
+            }
+
+            fallback = fallback == null ? candidateController.transform : fallback;
+        }
+
+        return fallback;
+    }
+
+    private static bool IsViableRuntimeShipRoot(Transform root)
+    {
+        return root != null
+            && root.GetComponent<ShipStats>() != null
+            && root.GetComponent<Rigidbody>() != null
+            && root.GetComponent<PlayerShipController>() != null
+            && root.GetComponent<PrototypeWaypointAutopilot>() != null;
+    }
+
+    private void BindResolvedRuntimeShip(Transform resolvedRoot)
+    {
+        shipRoot = resolvedRoot;
+        shipRigidbody = resolvedRoot.GetComponent<Rigidbody>();
+        shipStats = resolvedRoot.GetComponent<ShipStats>();
+        controller = resolvedRoot.GetComponent<PlayerShipController>();
+        autopilot = resolvedRoot.GetComponent<PrototypeWaypointAutopilot>();
+        momentumAssist = resolvedRoot.GetComponent<PrototypeMomentumAssist>();
+        weaponComputer = resolvedRoot.GetComponent<PrototypeWeaponComputer>();
+        dockingApproachAssist = resolvedRoot.GetComponent<PrototypeDockingApproachAssist>();
+        trajectoryPreview = resolvedRoot.GetComponent<PrototypeTrajectoryPreviewNavMap>();
+        sourceDockingPort = resolvedRoot.GetComponentInChildren<DockingPort>();
     }
 
     private void EnsureUi()
