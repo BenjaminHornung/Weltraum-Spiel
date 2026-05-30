@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="2" result="Passed" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-05-28 19:28:22Z" end-time="2026-05-28 19:28:22Z" duration="0.3011305">
+  <test-suite type="TestSuite" id="1061" name="Weltraum Spiel" fullname="Weltraum Spiel" runstate="Runnable" testcasecount="48" result="Passed" start-time="2026-05-28 19:28:22Z" end-time="2026-05-28 19:28:22Z" duration="0.301131" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1056" name="Assembly-CSharp.dll" fullname="E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/ScriptAssemblies/Assembly-CSharp.dll" runstate="Runnable" testcasecount="48" result="Passed" start-time="2026-05-28 19:28:22Z" end-time="2026-05-28 19:28:22Z" duration="0.289308" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="81992" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1042" name="PrototypeFunctionalBlenderRuntimePlayModeTests" fullname="PrototypeFunctionalBlenderRuntimePlayModeTests" classname="PrototypeFunctionalBlenderRuntimePlayModeTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-05-28 19:28:22Z" end-time="2026-05-28 19:28:22Z" duration="0.283322" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1043" name="BootstrapPlayModeKeepsImportedScoutVisibleAndPlayableForTenSeconds" fullname="PrototypeFunctionalBlenderRuntimePlayModeTests.BootstrapPlayModeKeepsImportedScoutVisibleAndPlayableForTenSeconds" methodname="BootstrapPlayModeKeepsImportedScoutVisibleAndPlayableForTenSeconds" classname="PrototypeFunctionalBlenderRuntimePlayModeTests" runstate="Runnable" seed="1356457883" result="Passed" start-time="2026-05-28 19:28:22Z" end-time="2026-05-28 19:28:22Z" duration="0.225301" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[PrototypeBootstrap visibility diagnostics: buildMode=ImportedDemoScoutFunctionalDefault allowGeneratedFallbackWhenImportedAssetMissing=False useGeneratedFallbackBeforePolicy=False useGeneratedFallbackAfterPolicy=False hasRequiredFlightSockets=True hasRequiredWeaponSockets=True hasRequiredVisibleWeaponRenderers=True hasVisibleImportedShip=True missingRequiredSockets= missingWeaponSockets= missingVisibleWeaponRenderers= importedVisualRoot=True importedVisualRootActive=True importedShipInstance=ImportedDemoScoutVisual importedShipInstanceActive=True importedShipInstanceLocalScale=(100.0, 100.0, 100.0) functionalSocketRig=True importedRendererCount=126 importedEnabledRendererCount=81 importedVisibleMeshRendererCount=29 importedVisibleMeshBoundsSize=(2.42, 1.56, 4.39) generatedRendererCount=0 generatedEnabledRendererCount=0 cameraTargetDistance=19.0
+]]></output>
+        </test-case>
+        <test-case id="1044" name="BootstrapPlayModeRegistersDefaultTargetForWeaponComputer" fullname="PrototypeFunctionalBlenderRuntimePlayModeTests.BootstrapPlayModeRegistersDefaultTargetForWeaponComputer" methodname="BootstrapPlayModeRegistersDefaultTargetForWeaponComputer" classname="PrototypeFunctionalBlenderRuntimePlayModeTests" runstate="Runnable" seed="608626991" result="Passed" start-time="2026-05-28 19:28:22Z" end-time="2026-05-28 19:28:22Z" duration="0.040918" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[PrototypeBootstrap visibility diagnostics: buildMode=ImportedDemoScoutFunctionalDefault allowGeneratedFallbackWhenImportedAssetMissing=False useGeneratedFallbackBeforePolicy=False useGeneratedFallbackAfterPolicy=False hasRequiredFlightSockets=True hasRequiredWeaponSockets=True hasRequiredVisibleWeaponRenderers=True hasVisibleImportedShip=True missingRequiredSockets= missingWeaponSockets= missingVisibleWeaponRenderers= importedVisualRoot=True importedVisualRootActive=True importedShipInstance=ImportedDemoScoutVisual importedShipInstanceActive=True importedShipInstanceLocalScale=(100.0, 100.0, 100.0) functionalSocketRig=True importedRendererCount=126 importedEnabledRendererCount=81 importedVisibleMeshRendererCount=29 importedVisibleMeshBoundsSize=(2.42, 1.56, 4.39) generatedRendererCount=0 generatedEnabledRendererCount=0 cameraTargetDistance=19.0
+<b><color=#2EA3FF>MCP-FOR-UNITY</color></b>: [TestRunnerNoThrottle] Restored Interaction Mode after test run.
+Saving results to: C:/Users/benni/AppData/LocalLow/DefaultCompany/Weltraum Spiel\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

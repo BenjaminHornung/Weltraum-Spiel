@@ -103,8 +103,8 @@
 - PASS: E-F6 no stale external assist (source=None)
 - PASS: F-external source waypoint set (source=WaypointAutopilot)
 - PASS: F-manual input clears stale external assist (source=None)
-- PASS: Log artifact written (E:\Unity\Weltraum Spiel\Weltraum Spiel\.devtoolbox\specs\changes\fix-imported-functional-ship-spin-root-cause-v1\tests\logs\flight-spin-root-cause.log bytes=97316)
-- PASS: CSV artifact written (E:\Unity\Weltraum Spiel\Weltraum Spiel\.devtoolbox\specs\changes\fix-imported-functional-ship-spin-root-cause-v1\tests\performance\flight-control-spin-diagnostics.csv bytes=47732)
+- PASS: Log artifact written (E:\Unity\Weltraum Spiel\Weltraum Spiel\.devtoolbox\specs\changes\fix-imported-functional-ship-spin-root-cause-v1\tests\logs\flight-spin-root-cause.log bytes=98040)
+- PASS: CSV artifact written (E:\Unity\Weltraum Spiel\Weltraum Spiel\.devtoolbox\specs\changes\fix-imported-functional-ship-spin-root-cause-v1\tests\performance\flight-control-spin-diagnostics.csv bytes=48456)
 
 ## Summary
 - Final visual mode: ImportedDemoScout
@@ -131,9 +131,3 @@
 - WeaponStabilizationActive: False
 - LastWeaponStabilizationStatus: idle
 - Final verdict: PASS
-
-## Review Notes
-- Claude plan review completed after implementation. It agreed the patch targets the root cause: imported functional mass/inertia, stable RCS torque decoupled from nozzle lever arms, and center-of-mass-safe weapon recoil by default.
-- Review follow-ups checked locally: `ShipStats.ApplyMassProperties` explicitly disables `automaticCenterOfMass` and `automaticInertiaTensor`; the imported functional sanity PlayMode test asserts both flags are false.
-- Remaining non-blocking hardening ideas: add a dedicated safe-box fallback test, add an `ExperimentalPhysicalNozzles` guard test, and avoid using `PrototypeShipPhysicsSanity.Capture` as a per-frame gameplay path because it intentionally uses Unity hierarchy reads for evidence diagnostics only.
-- Unity MCP note: the final evidence UnityTest wrote a passing XML result and all artifacts, but the MCP test job remained stale as `tests_running` after completion. The authoritative result used here is Unity's generated `TestResults.xml` plus the written protocol/log/CSV/screenshots.

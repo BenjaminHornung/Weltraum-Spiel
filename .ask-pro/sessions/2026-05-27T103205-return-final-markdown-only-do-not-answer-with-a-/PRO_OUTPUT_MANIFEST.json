@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "responseZip": {
+    "status": "not_requested",
+    "actualFileName": null,
+    "downloadPath": null,
+    "extractPath": null,
+    "requiredFilesPresent": false,
+    "notes": [
+      "Response zip harvesting was not requested for this inline-answer session."
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "status": "completed",
+  "agentId": null,
+  "profileDir": "C:\\Users\\benni\\.agents\\skills\\ask-pro\\browser-profile",
+  "model": "gpt-5.5",
+  "thinkingTime": "heavy",
+  "temporary": false,
+  "url": "https://chatgpt.com/",
+  "acceptLanguage": "en-US,en",
+  "chromeMode": "launched",
+  "runtime": {
+    "chromePid": 106632,
+    "chromePort": 59070,
+    "chromeHost": "127.0.0.1",
+    "userDataDir": "C:\\Users\\benni\\.agents\\skills\\ask-pro\\browser-profile",
+    "chromeTargetId": "EAA8BFA5297AA29D93F3AD4196F545D3",
+    "tabUrl": "https://chatgpt.com/c/6a16c861-5258-83eb-8849-cd44dc7c8348",
+    "controllerPid": 103596
+  }
+}

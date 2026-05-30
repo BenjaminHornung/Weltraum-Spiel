@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="19" result="Passed" total="19" passed="19" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-05-28 19:27:22Z" end-time="2026-05-28 19:27:22Z" duration="0.084955">
+  <test-suite type="TestSuite" id="1000" name="Weltraum Spiel" fullname="Weltraum Spiel" runstate="Runnable" testcasecount="361" result="Passed" start-time="2026-05-28 19:27:22Z" end-time="2026-05-28 19:27:22Z" duration="0.084955" total="19" passed="19" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1397" name="Assembly-CSharp-Editor.dll" fullname="E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="361" result="Passed" start-time="2026-05-28 19:27:22Z" end-time="2026-05-28 19:27:22Z" duration="0.074140" total="19" passed="19" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="122936" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestFixture" id="1266" name="PrototypeSimpleFollowCameraValidationTests" fullname="PrototypeSimpleFollowCameraValidationTests" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" testcasecount="19" result="Passed" start-time="2026-05-28 19:27:22Z" end-time="2026-05-28 19:27:22Z" duration="0.069787" total="19" passed="19" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1279" name="CameraBoundsIgnoreVfxMarkersAndExplicitIgnoreComponents" fullname="PrototypeSimpleFollowCameraValidationTests.CameraBoundsIgnoreVfxMarkersAndExplicitIgnoreComponents" methodname="CameraBoundsIgnoreVfxMarkersAndExplicitIgnoreComponents" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" seed="346180799" result="Passed" start-time="2026-05-28 19:27:22Z" end-time="2026-05-28 19:27:22Z" duration="0.030916" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1277" name="CameraModeCycleReframesWithoutForcingVisualBoundsRefresh" fullname="PrototypeSimpleFollowCameraValidationTests.CameraModeCycleReframesWithoutForcingVisualBoundsRefresh" methodname="CameraModeCycleReframesWithoutForcingVisualBoundsRefresh" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" seed="446641663" result="Passed" start-time="2026-05-28 19:27:22Z" end-time="2026-05-28 19:27:22Z" duration="0.003534" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1267" name="CameraModeCycleVisitsFreeInspectAndWraps" fullname="PrototypeSimpleFollowCameraValidationTests.CameraModeCycleVisitsFreeInspectAndWraps" methodname="CameraModeCycleVisitsFreeInspectAndWraps" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" seed="1259833618" result="Passed" start-time="2026-05-28 19:27:22Z" end-time="2026-05-28 19:27:22Z" duration="0.000766" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1283" name="ChaseLockedAimsAtShipFocusWhenVisualBoundsAreOffset" fullname="PrototypeSimpleFollowCameraValidationTests.ChaseLockedAimsAtShipFocusWhenVisualBoundsAreOffset" methodname="ChaseLockedAimsAtShipFocusWhenVisualBoundsAreOffset" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" seed="2112683173" result="Passed" start-time="2026-05-28 19:27:22Z" end-time="2026-05-28 19:27:22Z" duration="0.001129" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1275" name="DiagnosticsReportTargetFocusVisualBoundsAndDistance" fullname="PrototypeSimpleFollowCameraValidationTests.DiagnosticsReportTargetFocusVisualBoundsAndDistance" methodname="DiagnosticsReportTargetFocusVisualBoundsAndDistance" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" seed="1157912295" result="Passed" start-time="2026-05-28 19:27:22Z" end-time="2026-05-28 19:27:22Z" duration="0.002510" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1271" name="HighestPriorityCameraAnchorWinsOverVisualBoundsForFocus" fullname="PrototypeSimpleFollowCameraValidationTests.HighestPriorityCameraAnchorWinsOverVisualBoundsForFocus" methodname="HighestPriorityCameraAnchorWinsOverVisualBoundsForFocus" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" seed="1483009188" result="Passed" start-time="2026-05-28 19:27:22Z" end-time="2026-05-28 19:27:22Z" duration="0.001172" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1281" name="ImportedVisualBoundsHandleRealScoutRendererNames" fullname="PrototypeSimpleFollowCameraValidationTests.ImportedVisualBoundsHandleRealScoutRendererNames" methodname="ImportedVisualBoundsHandleRealScoutRendererNames" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" seed="1046181596" result="Passed" start-time="2026-05-28 19:27:22Z" end-time="2026-05-28 19:27:22Z" duration="0.001304" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1280" name="ImportedVisualBoundsPreferDemoShipMeshesOverSocketMarkers" fullname="PrototypeSimpleFollowCameraValidationTests.ImportedVisualBoundsPreferDemoShipMeshesOverSocketMarkers" methodname="ImportedVisualBoundsPreferDemoShipMeshesOverSocketMarkers" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" seed="2009619470" result="Passed" start-time="2026-05-28 19:27:22Z" end-time="2026-05-28 19:27:22Z" duration="0.000620" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1270" name="OrbitZoomPreservesViewRayToVisualPivot" fullname="PrototypeSimpleFollowCameraValidationTests.OrbitZoomPreservesViewRayToVisualPivot" methodname="OrbitZoomPreservesViewRayToVisualPivot" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" seed="586942498" result="Passed" start-time="2026-05-28 19:27:22Z" end-time="2026-05-28 19:27:22Z" duration="0.000970" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1274" name="OrbitZoomPreservesViewRayToVisualPivotWhenAnchorExists" fullname="PrototypeSimpleFollowCameraValidationTests.OrbitZoomPreservesViewRayToVisualPivotWhenAnchorExists" methodname="OrbitZoomPreservesViewRayToVisualPivotWhenAnchorExists" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" seed="2548465" result="Passed" start-time="2026-05-28 19:27:22Z" end-time="2026-05-28 19:27:22Z" duration="0.000942" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1285" name="ResetFramingReturnsToChaseLockedAndDefaultOffsets" fullname="PrototypeSimpleFollowCameraValidationTests.ResetFramingReturnsToChaseLockedAndDefaultOffsets" methodname="ResetFramingReturnsToChaseLockedAndDefaultOffsets" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" seed="1096997015" result="Passed" start-time="2026-05-28 19:27:22Z" end-time="2026-05-28 19:27:22Z" duration="0.001235" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1272" name="RigidbodyCenterOfMassWinsWhenNoCameraAnchorExists" fullname="PrototypeSimpleFollowCameraValidationTests.RigidbodyCenterOfMassWinsWhenNoCameraAnchorExists" methodname="RigidbodyCenterOfMassWinsWhenNoCameraAnchorExists" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" seed="1346393496" result="Passed" start-time="2026-05-28 19:27:22Z" end-time="2026-05-28 19:27:22Z" duration="0.001395" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1284" name="VisualBoundsAnchorFollowsMovingTarget" fullname="PrototypeSimpleFollowCameraValidationTests.VisualBoundsAnchorFollowsMovingTarget" methodname="VisualBoundsAnchorFollowsMovingTarget" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" seed="494486553" result="Passed" start-time="2026-05-28 19:27:22Z" end-time="2026-05-28 19:27:22Z" duration="0.000820" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1276" name="VisualBoundsCacheDoesNotRefreshUntilMarkedDirty" fullname="PrototypeSimpleFollowCameraValidationTests.VisualBoundsCacheDoesNotRefreshUntilMarkedDirty" methodname="VisualBoundsCacheDoesNotRefreshUntilMarkedDirty" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" seed="168724401" result="Passed" start-time="2026-05-28 19:27:22Z" end-time="2026-05-28 19:27:22Z" duration="0.000761" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1273" name="VisualBoundsDriveDistanceWithoutMovingAnchorFocus" fullname="PrototypeSimpleFollowCameraValidationTests.VisualBoundsDriveDistanceWithoutMovingAnchorFocus" methodname="VisualBoundsDriveDistanceWithoutMovingAnchorFocus" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" seed="1468615801" result="Passed" start-time="2026-05-28 19:27:22Z" end-time="2026-05-28 19:27:22Z" duration="0.000598" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1282" name="VisualBoundsReframeChangesBaseDistanceWithinConfiguredClamps" fullname="PrototypeSimpleFollowCameraValidationTests.VisualBoundsReframeChangesBaseDistanceWithinConfiguredClamps" methodname="VisualBoundsReframeChangesBaseDistanceWithinConfiguredClamps" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" seed="250116059" result="Passed" start-time="2026-05-28 19:27:22Z" end-time="2026-05-28 19:27:22Z" duration="0.001241" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1278" name="VisualBoundsSnapshotIsStableInSteadyStateAndUpdatesOnlyOnDirtyRefresh" fullname="PrototypeSimpleFollowCameraValidationTests.VisualBoundsSnapshotIsStableInSteadyStateAndUpdatesOnlyOnDirtyRefresh" methodname="VisualBoundsSnapshotIsStableInSteadyStateAndUpdatesOnlyOnDirtyRefresh" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" seed="592494952" result="Passed" start-time="2026-05-28 19:27:22Z" end-time="2026-05-28 19:27:22Z" duration="0.001430" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1268" name="ZoomAdjustsEffectiveDistanceWithoutMutatingShipStatsFollowDistance" fullname="PrototypeSimpleFollowCameraValidationTests.ZoomAdjustsEffectiveDistanceWithoutMutatingShipStatsFollowDistance" methodname="ZoomAdjustsEffectiveDistanceWithoutMutatingShipStatsFollowDistance" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" seed="1540055387" result="Passed" start-time="2026-05-28 19:27:22Z" end-time="2026-05-28 19:27:22Z" duration="0.000735" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1269" name="ZoomInCannotPassThroughLargeVisualBounds" fullname="PrototypeSimpleFollowCameraValidationTests.ZoomInCannotPassThroughLargeVisualBounds" methodname="ZoomInCannotPassThroughLargeVisualBounds" classname="PrototypeSimpleFollowCameraValidationTests" runstate="Runnable" seed="734922195" result="Passed" start-time="2026-05-28 19:27:22Z" end-time="2026-05-28 19:27:22Z" duration="0.000627" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[<b><color=#2EA3FF>MCP-FOR-UNITY</color></b>: [TestRunnerNoThrottle] Restored Interaction Mode after test run.
+Saving results to: C:/Users/benni/AppData/LocalLow/DefaultCompany/Weltraum Spiel\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

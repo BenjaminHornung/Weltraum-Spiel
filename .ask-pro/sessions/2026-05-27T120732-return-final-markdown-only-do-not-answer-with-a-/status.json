@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "sessionId": "2026-05-27T120732-return-final-markdown-only-do-not-answer-with-a-",
+  "status": "HARVESTED",
+  "createdAt": "2026-05-27T12:07:32.172Z",
+  "updatedAt": "2026-05-27T12:14:58.672Z",
+  "resumeCommand": "\"C:\\Users\\benni\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe\" \"C:\\Users\\benni\\.codex\\plugins\\cache\\ask-pro\\ask-pro\\0.1.0\\scripts\\run-cached-cli.mjs\" -- --cwd \"E:\\Unity\\Weltraum Spiel\\Weltraum Spiel\" --model \"gpt-5.5\" --thinking heavy --no-temporary --resume 2026-05-27T120732-return-final-markdown-only-do-not-answer-with-a-",
+  "harvestCommand": "\"C:\\Users\\benni\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\node\\bin\\node.exe\" \"C:\\Users\\benni\\.codex\\plugins\\cache\\ask-pro\\ask-pro\\0.1.0\\scripts\\run-cached-cli.mjs\" -- --cwd \"E:\\Unity\\Weltraum Spiel\\Weltraum Spiel\" --harvest 2026-05-27T120732-return-final-markdown-only-do-not-answer-with-a-",
+  "dryRun": false,
+  "artifacts": false,
+  "model": "gpt-5.5",
+  "thinkingTime": "heavy",
+  "temporary": false
+}

@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "sessionId": "2026-05-27T103205-return-final-markdown-only-do-not-answer-with-a-",
+  "question": "Return final markdown only. Do not answer with a preamble. Do not produce an implementation package. Treat the attached bundle as authoritative. Call out uncertainty.\n\nWe are in E:\\Unity\\Weltraum Spiel\\Weltraum Spiel on branch main. Goal: stabilize the player autopilot arrival/terminal path so it does not flap between Brake and Accelerate and does not fall back to AlignForBurn after a terminal brake commit. Please review only the attached files and the current failure signatures.\n\nAttached files:\n- Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs\n- Assets/Tests/PlayMode/PrototypeAutopilotNavigationPlayModeTests.cs\n- .devtoolbox/specs/changes/player-autopilot-arrival-stability-v2/specs/autopilot/spec.md\n\nWhat changed in PrototypeWaypointAutopilot.cs:\n- BrakeMainThrottleRetrogradeAlignmentDegrees was raised from 30 to 35.\n- BrakeFlipMaxAngularAccelerationRadPerSecondSquared was raised from 2 to 3.\n- BrakeFlipDampingTimeSeconds was lowered from 0.5 to 0.4.\n- shouldSettleAfterBrakeCommit now requires closingSpeed > BrakeHoldReleaseZeroSpeed.\n- requestedFineApproach was recently relaxed again to remove the extra closing-speed gate.\n- There is now an early return to ApplyBrakeRequest() if arrivalBrakeCommitted || brakeHoldActive || arrivalTerminalCaptureActive before the final Accelerate fallback.\n- ShouldKeepTerminalBrakeCommitted no longer drops out because ShouldCaptureAnyArrivalHold() is true.\n- ResolveBrakeDirection now prefers directionToTarget when closingSpeed <= 0 and only freezes once capture/hold is active.\n- ApplyAutopilotRequest now lets brakeVelocityAlignmentReady pass when closingSpeed <= 0 and the ship is already aligned to the brake angle.\n- ShapeMainThrottleForState no longer hard-zeros throttle at low speed; it now relies on the distance/speed scale.\n\nLatest PlayMode failures from the three target tests:\n1. Arrival_NoBrakeAccelerateFlap_ReachesCompletionDeadzone\n- finalState=Brake\n- finalPhase=Brake\n- distance=105.11\n- everArrivalBrakeCommitted=True\n- everBrakeHoldActive=True\n- finalArrivalBrakeCommitted=True\n- finalBrakeHoldActive=False\n- finalArrivalTerminalCaptureActive=False\n- It never entered the completion window.\n\n2. TerminalOvershootBrakesAndHoldsWithoutReaccelerating\n- finalState=Brake\n- finalDistance=40.47\n- everArrivalBrakeCommitted=True\n- everBrakeHoldActive=True\n- finalArrivalBrakeCommitted=True\n- finalBrakeHoldActive=False\n- finalArrivalTerminalCaptureActive=False\n- firstMainBrakeSample occurred at distance=43.10, then it never settled.\n\n3. NearTargetLateralOvershoot_NoTerminalAccelerateOrSpin\n- finalState=Brake\n- finalDistance=125.14\n- finalSpeed=0.26\n- finalAngularSpeed=0.00\n- It still does not settle into HoldPosition or Complete.\n\nQuestion:\nWhat is the single most likely root cause now, and what is the smallest safe code change to get these three tests passing without reintroducing brake/accelerate flapping or throttle during FlipForBrake?\n\nPlease rank the likely fix options by confidence and explicitly say if any of the current changes should be reverted.",
+  "includedFiles": [
+    {
+      "path": ".devtoolbox/specs/changes/player-autopilot-arrival-stability-v2/specs/autopilot/spec.md",
+      "reason": "Matched by --files pattern."
+    },
+    {
+      "path": "Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs",
+      "reason": "Matched by --files pattern."
+    },
+    {
+      "path": "Assets/Tests/PlayMode/PrototypeAutopilotNavigationPlayModeTests.cs",
+      "reason": "Matched by --files pattern."
+    }
+  ],
+  "excludedFiles": [
+    {
+      "path": ".ask-pro/**",
+      "reason": "Default safety exclude."
+    },
+    {
+      "path": ".env",
+      "reason": "Default safety exclude."
+    },
+    {
+      "path": ".env.*",
+      "reason": "Default safety exclude."
+    },
+    {
+      "path": "**/*.pem",
+      "reason": "Default safety exclude."
+    },
+    {
+      "path": "**/*.key",
+      "reason": "Default safety exclude."
+    },
+    {
+      "path": "node_modules/**",
+      "reason": "Default safety exclude."
+    },
+    {
+      "path": "dist/**",
+      "reason": "Default safety exclude."
+    },
+    {
+      "path": "build/**",
+      "reason": "Default safety exclude."
+    },
+    {
+      "path": ".next/**",
+      "reason": "Default safety exclude."
+    },
+    {
+      "path": "target/**",
+      "reason": "Default safety exclude."
+    },
+    {
+      "path": "vendor/**",
+      "reason": "Default safety exclude."
+    },
+    {
+      "path": ".git/**",
+      "reason": "Default safety exclude."
+    }
+  ],
+  "redaction": {
+    "mode": "best_effort",
+    "findings": []
+  }
+}
