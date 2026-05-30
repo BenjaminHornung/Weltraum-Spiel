@@ -177,6 +177,42 @@ public class PrototypeAutopilotNavigationComputerV2ValidationTests
     }
 
     [Test]
+    public void Planner_DirectFastTransfer_RejectsHighLateralWithoutRcsHeadroom()
+    {
+        PrototypeTrajectoryPlan plan = new PrototypeTrajectoryPlanner().Plan(
+            CreateSnapshot(
+                Vector3.zero,
+                Vector3.right * 160f,
+                Vector3.forward * 220f,
+                maxRcsForce: 100f),
+            PrototypeObstacleDetectionResult.Clear(8f));
+
+        Assert.That(plan.flightPlan.IsDirectFastTransfer, Is.False, "High lateral drift with weak RCS authority should fall back to legacy plan.");
+        Assert.That(plan.flightPlan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.Coast), Is.True, "Fallback route should include coast.");
+        Assert.That(plan.flightPlan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.ProgradeBurn), Is.True);
+        Assert.False(plan.flightPlan.segments.Any(segment => segment.profile == PrototypeManeuverProfile.DirectFastTransfer), "No segment should carry DirectFastTransfer profile when infeasible.");
+    }
+
+    [Test]
+    public void Planner_DirectFastTransfer_AllowsHigherLateralWhenRcsFeasible()
+    {
+        PrototypeTrajectoryPlan plan = new PrototypeTrajectoryPlanner().Plan(
+            CreateSnapshot(
+                Vector3.zero,
+                Vector3.right * 160f,
+                Vector3.forward * 220f,
+                maxRcsForce: 20000f),
+            PrototypeObstacleDetectionResult.Clear(8f));
+
+        Assert.That(plan.flightPlan.IsDirectFastTransfer, Is.True, "High lateral drift should be accepted when lateral correction is feasible.");
+        Assert.That(plan.flightPlan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.ProgradeBurn), Is.True);
+        Assert.That(plan.flightPlan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.RetrogradeBurn), Is.True);
+        Assert.That(plan.flightPlan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.FlipToRetrograde), Is.True);
+        Assert.That(plan.flightPlan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.Hold), Is.True);
+        Assert.That(plan.flightPlan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.Coast), Is.False, "Direct-fast mode should not include legacy coast.");
+    }
+
+    [Test]
     public void Planner_EmittedFlightPlanUsesRealShipPlanningSnapshot()
     {
         using (var builder = new PrototypeScenarioBuilder())

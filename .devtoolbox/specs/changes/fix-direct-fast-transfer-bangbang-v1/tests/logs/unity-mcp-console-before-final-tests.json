@@ -1,0 +1,20 @@
+{
+  "success": "True",
+  "message": "Retrieved 2 log entries.",
+  "data": [
+    {
+      "type": "Exception",
+      "message": "Saving results to: C:/Users/benni/AppData/LocalLow/DefaultCompany/Weltraum Spiel\\TestResults.xml",
+      "file": "C:\\build\\output\\unity\\unity\\Runtime\\Export\\Debug\\Debug.bindings.h",
+      "line": "39",
+      "stackTrace": "None"
+    },
+    {
+      "type": "Warning",
+      "message": "Executing IPostBuildCleanup for: Unity.PerformanceTesting.Editor.TestRunBuilder.",
+      "file": "./Library/PackageCache/com.unity.test-framework@76560ee600cb/UnityEditor.TestRunner/TestRun/Tasks/BuildActionTaskBase.cs",
+      "line": "48",
+      "stackTrace": "UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()"
+    }
+  ]
+}

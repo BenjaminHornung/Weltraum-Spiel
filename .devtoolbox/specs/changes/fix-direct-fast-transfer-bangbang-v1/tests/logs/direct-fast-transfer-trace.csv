@@ -1,0 +1,6 @@
+"source","mode","scenario","total","passed","failed","result","evidence","notes"
+"dotnet","build","Weltraum Spiel.sln --no-restore","","","0","Passed","tests/logs/dotnet-build.log","0 errors; Unity reference warnings only"
+"unity-mcp","script-validation","changed scripts and tests","5","5","0","Passed","tests/logs/unity-mcp-validate-scripts.json","PrototypeWaypointAutopilot reports one pre-existing GC warning; 0 errors"
+"unity-mcp","EditMode","PrototypeAutopilotNavigationComputerV2ValidationTests","31","31","0","Passed","tests/logs/unity-mcp-editmode-navigation-computer-v2-final.json","Full focused EditMode class"
+"unity-mcp","PlayMode","PrototypeAutopilotNavigationPlayModeTests","30","30","0","Passed","tests/logs/unity-mcp-playmode-autopilot-navigation-final.json","Full focused PlayMode class in running Unity Editor via MCP"
+"unity-mcp","scene-view","MCP screenshot availability","1","1","0","Captured","tests/screenshots/direct-fast-transfer-unity-mcp-scene-view.png","SceneView evidence, not phase-specific flight screenshot"

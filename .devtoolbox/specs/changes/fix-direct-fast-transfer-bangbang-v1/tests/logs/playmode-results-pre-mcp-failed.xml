@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="30" result="Failed(Child)" total="30" passed="28" failed="2" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-05-30 17:59:27Z" end-time="2026-05-30 17:59:34Z" duration="7.6082922">
+  <test-suite type="TestSuite" id="1069" name="Weltraum Spiel" fullname="Weltraum Spiel" runstate="Runnable" testcasecount="55" result="Failed" site="Child" start-time="2026-05-30 17:59:27Z" end-time="2026-05-30 17:59:34Z" duration="7.608292" total="30" passed="28" failed="2" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1064" name="Assembly-CSharp.dll" fullname="E:/Unity/Weltraum Spiel/Weltraum Spiel/Library/ScriptAssemblies/Assembly-CSharp.dll" runstate="Runnable" testcasecount="55" result="Failed" site="Child" start-time="2026-05-30 17:59:27Z" end-time="2026-05-30 17:59:34Z" duration="7.600649" total="30" passed="28" failed="2" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="43408" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestFixture" id="1004" name="PrototypeAutopilotNavigationPlayModeTests" fullname="PrototypeAutopilotNavigationPlayModeTests" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" testcasecount="30" result="Failed" site="Child" start-time="2026-05-30 17:59:27Z" end-time="2026-05-30 17:59:34Z" duration="7.597613" total="30" passed="28" failed="2" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-case id="1020" name="PlayMode_Autopilot_Arrival_NoBrakeAccelerateFlap_ReachesCompletionDeadzone" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_Arrival_NoBrakeAccelerateFlap_ReachesCompletionDeadzone" methodname="PlayMode_Autopilot_Arrival_NoBrakeAccelerateFlap_ReachesCompletionDeadzone" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="2038818893" result="Passed" start-time="2026-05-30 17:59:27Z" end-time="2026-05-30 17:59:28Z" duration="1.608250" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1006" name="PlayMode_Autopilot_AvoidsObstacle_ThenReachesWaypoint" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_AvoidsObstacle_ThenReachesWaypoint" methodname="PlayMode_Autopilot_AvoidsObstacle_ThenReachesWaypoint" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="1837779562" result="Passed" start-time="2026-05-30 17:59:28Z" end-time="2026-05-30 17:59:29Z" duration="0.220653" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[AutopilotPlayModeV2 result state=Complete phase=Hold position=-3.57,0.00,86.98 com=-3.57,0.00,86.98 distance=9.70 lateral=0.00 sawAvoidance=True sawReacquire=True sawDirectAfterAvoidance=False minClearance=10.63 candidate=direct reason=direct path clear
+]]></output>
+        </test-case>
+        <test-case id="1032" name="PlayMode_Autopilot_BrakeDirectionUsesRetrogradeOutsideTerminalRangeEvenWithCaptureLatch" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_BrakeDirectionUsesRetrogradeOutsideTerminalRangeEvenWithCaptureLatch" methodname="PlayMode_Autopilot_BrakeDirectionUsesRetrogradeOutsideTerminalRangeEvenWithCaptureLatch" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="1375547569" result="Passed" start-time="2026-05-30 17:59:29Z" end-time="2026-05-30 17:59:29Z" duration="0.002801" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1013" name="PlayMode_Autopilot_ClosedLoopBrake_RotatesAndUsesMainThrusterWithoutHarnessRotation" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_ClosedLoopBrake_RotatesAndUsesMainThrusterWithoutHarnessRotation" methodname="PlayMode_Autopilot_ClosedLoopBrake_RotatesAndUsesMainThrusterWithoutHarnessRotation" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="1805085395" result="Passed" start-time="2026-05-30 17:59:29Z" end-time="2026-05-30 17:59:29Z" duration="0.560239" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[AutopilotPlayModeV2 closed-loop brake state=Brake phase=Brake initialRetro=180.0 minRetro=0.4 maxMain=1.00 sawTorque=True mainAfterAlign=True brakeForce=True position=0.00,-16.87,270.56 velocity=0.00,2.09,-5.03
+]]></output>
+        </test-case>
+        <test-case id="1023" name="PlayMode_Autopilot_FineTerminalCommittedBrakeLatchDoesNotPublishMainThrottle" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_FineTerminalCommittedBrakeLatchDoesNotPublishMainThrottle" methodname="PlayMode_Autopilot_FineTerminalCommittedBrakeLatchDoesNotPublishMainThrottle" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="1673259500" result="Passed" start-time="2026-05-30 17:59:29Z" end-time="2026-05-30 17:59:29Z" duration="0.001804" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1022" name="PlayMode_Autopilot_FineTerminalCorrectionUsesRcsOnlyBelowLowDeltaVThreshold" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_FineTerminalCorrectionUsesRcsOnlyBelowLowDeltaVThreshold" methodname="PlayMode_Autopilot_FineTerminalCorrectionUsesRcsOnlyBelowLowDeltaVThreshold" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="870327927" result="Passed" start-time="2026-05-30 17:59:29Z" end-time="2026-05-30 17:59:29Z" duration="0.002363" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1015" name="PlayMode_Autopilot_HeavyCargo_ReportsLimitedOrCompletesWithinRelaxedEnvelope" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_HeavyCargo_ReportsLimitedOrCompletesWithinRelaxedEnvelope" methodname="PlayMode_Autopilot_HeavyCargo_ReportsLimitedOrCompletesWithinRelaxedEnvelope" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="841137596" result="Passed" start-time="2026-05-30 17:59:29Z" end-time="2026-05-30 17:59:29Z" duration="0.083580" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[AutopilotPlayModeV2 result state=Complete phase=Hold position=0.13,0.00,68.26 com=0.13,0.00,68.26 distance=9.74 lateral=0.00 sawAvoidance=False sawReacquire=False sawDirectAfterAvoidance=False minClearance=Infinity candidate=direct reason=direct path clear
+]]></output>
+        </test-case>
+        <test-case id="1024" name="PlayMode_Autopilot_HighDeltaVTerminalBrakeStillAllowsMainThrottle" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_HighDeltaVTerminalBrakeStillAllowsMainThrottle" methodname="PlayMode_Autopilot_HighDeltaVTerminalBrakeStillAllowsMainThrottle" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="1022079825" result="Passed" start-time="2026-05-30 17:59:29Z" end-time="2026-05-30 17:59:29Z" duration="0.001785" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1009" name="PlayMode_Autopilot_ImportedFunctionalScoutDoesNotFlipBeforePlannedBrakeSegment" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_ImportedFunctionalScoutDoesNotFlipBeforePlannedBrakeSegment" methodname="PlayMode_Autopilot_ImportedFunctionalScoutDoesNotFlipBeforePlannedBrakeSegment" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="256697922" result="Passed" start-time="2026-05-30 17:59:29Z" end-time="2026-05-30 17:59:30Z" duration="0.364877" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[PrototypeBootstrap visibility diagnostics: buildMode=ImportedDemoScoutFunctionalDefault allowGeneratedFallbackWhenImportedAssetMissing=False useGeneratedFallbackBeforePolicy=False useGeneratedFallbackAfterPolicy=False hasRequiredFlightSockets=True hasRequiredWeaponSockets=True hasRequiredVisibleWeaponRenderers=True hasVisibleImportedShip=True missingRequiredSockets= missingWeaponSockets= missingVisibleWeaponRenderers= importedVisualRoot=True importedVisualRootActive=True importedShipInstance=ImportedDemoScoutVisual importedShipInstanceActive=True importedShipInstanceLocalScale=(100.0, 100.0, 100.0) functionalSocketRig=True importedRendererCount=126 importedEnabledRendererCount=81 importedVisibleMeshRendererCount=29 importedVisibleMeshBoundsSize=(2.42, 1.56, 4.39) generatedRendererCount=0 generatedEnabledRendererCount=0 cameraTargetDistance=19.0 activeScene=Assets/InitTestScenec98e5b51-8100-4e11-b38a-50c5456ac47e.unity unityTestRunnerContext=True activeSceneRootCount=8
+]]></output>
+        </test-case>
+        <test-case id="1008" name="PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget" methodname="PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="1389416821" result="Failed" start-time="2026-05-30 17:59:30Z" end-time="2026-05-30 17:59:31Z" duration="1.375072" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[  distance=68.59 speed=0.33 lateral=0.31 phase=ReacquireDirectPath segment=Burn candidate=direct reason=direct path clear
+lastSamples:
+i=1192 dist=68.61 rel=0.33 lat=0.31 state=AlignForBurn phase=ReacquireDirectPath seg=Burn main=0.00 cmdMain=0.00 rcs=0.00 desiredAngle=-1.0 retroAngle=107.7 angDeg=0.1
+i=1193 dist=68.61 rel=0.33 lat=0.31 state=AlignForBurn phase=ReacquireDirectPath seg=Burn main=0.00 cmdMain=0.00 rcs=0.00 desiredAngle=-1.0 retroAngle=107.7 angDeg=0.0
+i=1194 dist=68.60 rel=0.33 lat=0.31 state=AlignForBurn phase=ReacquireDirectPath seg=Burn main=0.00 cmdMain=0.00 rcs=0.00 desiredAngle=-1.0 retroAngle=107.7 angDeg=0.0
+i=1195 dist=68.60 rel=0.33 lat=0.31 state=AlignForBurn phase=ReacquireDirectPath seg=Burn main=0.00 cmdMain=0.00 rcs=0.00 desiredAngle=-1.0 retroAngle=107.7 angDeg=0.0
+i=1196 dist=68.60 rel=0.33 lat=0.31 state=AlignForBurn phase=ReacquireDirectPath seg=Burn main=0.00 cmdMain=0.00 rcs=0.00 desiredAngle=-1.0 retroAngle=107.7 angDeg=0.0
+i=1197 dist=68.60 rel=0.33 lat=0.31 state=AlignForBurn phase=ReacquireDirectPath seg=Burn main=0.00 cmdMain=0.00 rcs=0.00 desiredAngle=-1.0 retroAngle=107.7 angDeg=0.0
+i=1198 dist=68.60 rel=0.33 lat=0.31 state=AlignForBurn phase=ReacquireDirectPath seg=Burn main=0.00 cmdMain=0.00 rcs=0.00 desiredAngle=-1.0 retroAngle=107.7 angDeg=0.0
+i=1199 dist=68.59 rel=0.33 lat=0.31 state=AlignForBurn phase=ReacquireDirectPath seg=Burn main=0.00 cmdMain=0.00 rcs=0.00 desiredAngle=-1.0 retroAngle=107.7 angDeg=0.0
+  Expected: Complete or HoldPosition
+  But was:  AlignForBurn
+]]></message>
+            <stack-trace><![CDATA[at PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget () [0x00168] in E:\Unity\Weltraum Spiel\Weltraum Spiel\Assets\Tests\PlayMode\PrototypeAutopilotNavigationPlayModeTests.cs:117
+]]></stack-trace>
+          </failure>
+          <output><![CDATA[AutopilotPlayModeV2 closed-loop avoidance state=AlignForBurn phase=ReacquireDirectPath position=0.00,-67.55,84.07 distance=68.59 lateral=0.31 sawAvoidance=True passedObstacle=True maxLateralOffset=4.50 minClearance=8.67 actualRcsAvoidance=True maxRcsForce=20000.00 maxRcsTorque=12000.00 maxMain=1.00 maxRequestedRcs=20000.00 maxAssistForce=20000.00 maxAssistTorque=12000.00 forward=0.00,0.98,0.17 candidate=direct
+]]></output>
+        </test-case>
+        <test-case id="1030" name="PlayMode_Autopilot_LongRangeBrakeCommitDoesNotActivateTerminalCaptureBeforeEnvelope" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_LongRangeBrakeCommitDoesNotActivateTerminalCaptureBeforeEnvelope" methodname="PlayMode_Autopilot_LongRangeBrakeCommitDoesNotActivateTerminalCaptureBeforeEnvelope" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="2071650662" result="Passed" start-time="2026-05-30 17:59:31Z" end-time="2026-05-30 17:59:31Z" duration="0.126812" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1019" name="PlayMode_Autopilot_ManualOverride_AbortsAndClearsRequests" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_ManualOverride_AbortsAndClearsRequests" methodname="PlayMode_Autopilot_ManualOverride_AbortsAndClearsRequests" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="1496431867" result="Passed" start-time="2026-05-30 17:59:31Z" end-time="2026-05-30 17:59:31Z" duration="0.003968" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1018" name="PlayMode_Autopilot_NearTargetHighMassLowRcs_DetectsLimitedLateralAuthority" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_NearTargetHighMassLowRcs_DetectsLimitedLateralAuthority" methodname="PlayMode_Autopilot_NearTargetHighMassLowRcs_DetectsLimitedLateralAuthority" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="1041459379" result="Passed" start-time="2026-05-30 17:59:31Z" end-time="2026-05-30 17:59:31Z" duration="0.003009" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1025" name="PlayMode_Autopilot_NearTargetLateralOvershoot_NoTerminalAccelerateOrSpin" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_NearTargetLateralOvershoot_NoTerminalAccelerateOrSpin" methodname="PlayMode_Autopilot_NearTargetLateralOvershoot_NoTerminalAccelerateOrSpin" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="1673109884" result="Passed" start-time="2026-05-30 17:59:31Z" end-time="2026-05-30 17:59:32Z" duration="0.572498" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1017" name="PlayMode_Autopilot_NearTargetOffAxisVelocity_DampsLaterallyWithoutMainThrottle" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_NearTargetOffAxisVelocity_DampsLaterallyWithoutMainThrottle" methodname="PlayMode_Autopilot_NearTargetOffAxisVelocity_DampsLaterallyWithoutMainThrottle" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="541222514" result="Failed" start-time="2026-05-30 17:59:32Z" end-time="2026-05-30 17:59:32Z" duration="0.003293" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <failure>
+            <message><![CDATA[  Expected: FinalApproach or HoldPosition
+  But was:  AlignForBurn
+]]></message>
+            <stack-trace><![CDATA[at PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_NearTargetOffAxisVelocity_DampsLaterallyWithoutMainThrottle () [0x0006e] in E:\Unity\Weltraum Spiel\Weltraum Spiel\Assets\Tests\PlayMode\PrototypeAutopilotNavigationPlayModeTests.cs:392
+]]></stack-trace>
+          </failure>
+        </test-case>
+        <test-case id="1016" name="PlayMode_Autopilot_NoRcs_DoesNotFakePrecisionComplete" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_NoRcs_DoesNotFakePrecisionComplete" methodname="PlayMode_Autopilot_NoRcs_DoesNotFakePrecisionComplete" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="1277005126" result="Passed" start-time="2026-05-30 17:59:32Z" end-time="2026-05-30 17:59:32Z" duration="0.032830" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[AutopilotPlayModeV2 result state=FlipForBrake phase=Brake position=7.20,0.00,0.00 com=7.20,0.00,0.00 distance=11.53 lateral=3.12 sawAvoidance=False sawReacquire=False sawDirectAfterAvoidance=False minClearance=Infinity candidate=direct reason=direct path clear
+]]></output>
+        </test-case>
+        <test-case id="1031" name="PlayMode_Autopilot_OffAxisLongRangeTerminalBrakeCommit_DoesNotReenterAccelerateOrSpin" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_OffAxisLongRangeTerminalBrakeCommit_DoesNotReenterAccelerateOrSpin" methodname="PlayMode_Autopilot_OffAxisLongRangeTerminalBrakeCommit_DoesNotReenterAccelerateOrSpin" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="1653678281" result="Passed" start-time="2026-05-30 17:59:32Z" end-time="2026-05-30 17:59:32Z" duration="0.316680" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1027" name="PlayMode_Autopilot_OffAxisTerminalDeadzoneWithRealisticAuthority_LatchesHoldWithoutAccelerateFlap" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_OffAxisTerminalDeadzoneWithRealisticAuthority_LatchesHoldWithoutAccelerateFlap" methodname="PlayMode_Autopilot_OffAxisTerminalDeadzoneWithRealisticAuthority_LatchesHoldWithoutAccelerateFlap" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="1391882449" result="Passed" start-time="2026-05-30 17:59:32Z" end-time="2026-05-30 17:59:32Z" duration="0.330833" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1007" name="PlayMode_Autopilot_PhysicsAvoidsObstacleWithoutHarnessMotion" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_PhysicsAvoidsObstacleWithoutHarnessMotion" methodname="PlayMode_Autopilot_PhysicsAvoidsObstacleWithoutHarnessMotion" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="1874091884" result="Passed" start-time="2026-05-30 17:59:32Z" end-time="2026-05-30 17:59:33Z" duration="0.553035" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[AutopilotPlayModeV2 closed-loop avoidance state=FlipForBrake phase=Brake position=-54.67,48.05,75.62 distance=84.23 lateral=0.33 sawAvoidance=True passedObstacle=True maxLateralOffset=55.48 minClearance=28.59 actualRcsAvoidance=True maxRcsForce=20000.00 maxRcsTorque=12000.00 maxMain=1.00 maxRequestedRcs=20000.00 maxAssistForce=20000.00 maxAssistTorque=12000.00 forward=0.14,0.18,0.97 candidate=direct
+]]></output>
+        </test-case>
+        <test-case id="1005" name="PlayMode_Autopilot_ReachesWaypoint_NoObstacle" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_ReachesWaypoint_NoObstacle" methodname="PlayMode_Autopilot_ReachesWaypoint_NoObstacle" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="1133246565" result="Passed" start-time="2026-05-30 17:59:33Z" end-time="2026-05-30 17:59:33Z" duration="0.073608" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[AutopilotPlayModeV2 result state=Complete phase=Hold position=0.00,0.00,62.26 com=0.00,0.00,62.26 distance=9.74 lateral=0.00 sawAvoidance=False sawReacquire=False sawDirectAfterAvoidance=False minClearance=Infinity candidate=direct reason=direct path clear
+]]></output>
+        </test-case>
+        <test-case id="1034" name="PlayMode_Autopilot_SelectTargetClearsArrivalBrakeAndHoldHysteresis" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_SelectTargetClearsArrivalBrakeAndHoldHysteresis" methodname="PlayMode_Autopilot_SelectTargetClearsArrivalBrakeAndHoldHysteresis" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="1963362916" result="Passed" start-time="2026-05-30 17:59:33Z" end-time="2026-05-30 17:59:33Z" duration="0.002623" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1014" name="PlayMode_Autopilot_StartsWithLateralVelocity_ReachesHold" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_StartsWithLateralVelocity_ReachesHold" methodname="PlayMode_Autopilot_StartsWithLateralVelocity_ReachesHold" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="2094297086" result="Passed" start-time="2026-05-30 17:59:33Z" end-time="2026-05-30 17:59:33Z" duration="0.073322" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[AutopilotPlayModeV2 result state=Complete phase=Hold position=0.19,0.00,54.31 com=0.19,0.00,54.31 distance=9.70 lateral=0.00 sawAvoidance=False sawReacquire=False sawDirectAfterAvoidance=False minClearance=Infinity candidate=direct reason=direct path clear
+]]></output>
+        </test-case>
+        <test-case id="1029" name="PlayMode_Autopilot_TerminalAvoidanceStillWinsOverCommittedBrakeLatch" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalAvoidanceStillWinsOverCommittedBrakeLatch" methodname="PlayMode_Autopilot_TerminalAvoidanceStillWinsOverCommittedBrakeLatch" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="60925817" result="Passed" start-time="2026-05-30 17:59:33Z" end-time="2026-05-30 17:59:33Z" duration="0.003072" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1026" name="PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap" methodname="PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="1171046840" result="Passed" start-time="2026-05-30 17:59:33Z" end-time="2026-05-30 17:59:34Z" duration="0.629767" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1033" name="PlayMode_Autopilot_TerminalBrakeDirectionDoesNotChaseLateralVelocity" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalBrakeDirectionDoesNotChaseLateralVelocity" methodname="PlayMode_Autopilot_TerminalBrakeDirectionDoesNotChaseLateralVelocity" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="1415802619" result="Passed" start-time="2026-05-30 17:59:34Z" end-time="2026-05-30 17:59:34Z" duration="0.002064" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1021" name="PlayMode_Autopilot_TerminalOvershootBrakesAndHoldsWithoutReaccelerating" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalOvershootBrakesAndHoldsWithoutReaccelerating" methodname="PlayMode_Autopilot_TerminalOvershootBrakesAndHoldsWithoutReaccelerating" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="405713715" result="Passed" start-time="2026-05-30 17:59:34Z" end-time="2026-05-30 17:59:34Z" duration="0.579262" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1028" name="PlayMode_Autopilot_TerminalOvershootWithoutRcsDoesNotEnterHold" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_TerminalOvershootWithoutRcsDoesNotEnterHold" methodname="PlayMode_Autopilot_TerminalOvershootWithoutRcsDoesNotEnterHold" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="1169099761" result="Passed" start-time="2026-05-30 17:59:34Z" end-time="2026-05-30 17:59:34Z" duration="0.002188" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1012" name="PlayMode_FlightPlanExecutor_DirectRoute_HasDirectFastTransferShapeWithoutLegacyCoast" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_FlightPlanExecutor_DirectRoute_HasDirectFastTransferShapeWithoutLegacyCoast" methodname="PlayMode_FlightPlanExecutor_DirectRoute_HasDirectFastTransferShapeWithoutLegacyCoast" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="1021467100" result="Passed" start-time="2026-05-30 17:59:34Z" end-time="2026-05-30 17:59:34Z" duration="0.003411" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1011" name="PlayMode_FlightPlanExecutor_DirectRoute_TracksPredictedPathAndDoesNotBurnAway" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_FlightPlanExecutor_DirectRoute_TracksPredictedPathAndDoesNotBurnAway" methodname="PlayMode_FlightPlanExecutor_DirectRoute_TracksPredictedPathAndDoesNotBurnAway" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="403216416" result="Passed" start-time="2026-05-30 17:59:34Z" end-time="2026-05-30 17:59:34Z" duration="0.042884" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1010" name="PlayMode_FlightPlanExecutor_PreviewAndExecutionUseSamePlan" fullname="PrototypeAutopilotNavigationPlayModeTests.PlayMode_FlightPlanExecutor_PreviewAndExecutionUseSamePlan" methodname="PlayMode_FlightPlanExecutor_PreviewAndExecutionUseSamePlan" classname="PrototypeAutopilotNavigationPlayModeTests" runstate="Runnable" seed="413753658" result="Passed" start-time="2026-05-30 17:59:34Z" end-time="2026-05-30 17:59:34Z" duration="0.002778" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[<b><color=#2EA3FF>MCP-FOR-UNITY</color></b>: [TestRunnerNoThrottle] Restored Interaction Mode after test run.
+Saving results to: C:/Users/benni/AppData/LocalLow/DefaultCompany/Weltraum Spiel\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

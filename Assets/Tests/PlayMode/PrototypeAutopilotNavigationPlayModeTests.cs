@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
@@ -273,6 +274,30 @@ public class PrototypeAutopilotNavigationPlayModeTests
         Assert.That(progradeSamples, Is.GreaterThan(0), diagnostics);
         Assert.That(awayAccelerationSamples, Is.EqualTo(0), diagnostics);
         Assert.That(rig.Autopilot.CurrentState, Is.Not.EqualTo(PrototypeWaypointAutopilotState.Failed), diagnostics);
+    }
+
+    [Test]
+    public void PlayMode_FlightPlanExecutor_DirectRoute_HasDirectFastTransferShapeWithoutLegacyCoast()
+    {
+        AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 220f);
+        rig.Ship.transform.rotation = Quaternion.Euler(0f, 90f, 0f);
+        rig.Body.rotation = rig.Ship.transform.rotation;
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(true);
+        rig.Autopilot.ToggleAutopilot();
+        StepSimulation(rig);
+
+        PrototypeFlightPlan plan = rig.Autopilot.CurrentFlightPlan;
+        Assert.True(plan.IsValid, plan.statusLabel);
+        Assert.True(plan.IsDirectFastTransfer);
+        Assert.That(plan.segments.Any(segment => segment.profile == PrototypeManeuverProfile.DirectFastTransfer), Is.True);
+        Assert.False(
+            plan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.Coast),
+            "Direct fast transfer plan should not emit legacy coast.");
+        Assert.That(plan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.AlignForBurn), Is.True);
+        Assert.That(plan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.ProgradeBurn), Is.True);
+        Assert.That(plan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.FlipToRetrograde), Is.True);
+        Assert.That(plan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.RetrogradeBurn), Is.True);
+        Assert.That(plan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.Hold), Is.True);
     }
 
     [Test]

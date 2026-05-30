@@ -1,0 +1,74 @@
+[
+  {
+    "script": "Assets/Scripts/Prototype/PrototypeFlightPlan.cs",
+    "result": {
+      "success": "True",
+      "data": {
+        "diagnostics": [],
+        "summary": {
+          "warnings": "0",
+          "errors": "0"
+        }
+      }
+    }
+  },
+  {
+    "script": "Assets/Scripts/Prototype/PrototypeTrajectoryPlanner.cs",
+    "result": {
+      "success": "True",
+      "data": {
+        "diagnostics": [],
+        "summary": {
+          "warnings": "0",
+          "errors": "0"
+        }
+      }
+    }
+  },
+  {
+    "script": "Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs",
+    "result": {
+      "success": "True",
+      "data": {
+        "diagnostics": [
+          {
+            "line": "0",
+            "col": "0",
+            "severity": "warning",
+            "message": "String concatenation in Update() can cause garbage collection issues"
+          }
+        ],
+        "summary": {
+          "warnings": "1",
+          "errors": "0"
+        }
+      }
+    }
+  },
+  {
+    "script": "Assets/Tests/Editor/PrototypeAutopilotNavigationComputerV2ValidationTests.cs",
+    "result": {
+      "success": "True",
+      "data": {
+        "diagnostics": [],
+        "summary": {
+          "warnings": "0",
+          "errors": "0"
+        }
+      }
+    }
+  },
+  {
+    "script": "Assets/Tests/PlayMode/PrototypeAutopilotNavigationPlayModeTests.cs",
+    "result": {
+      "success": "True",
+      "data": {
+        "diagnostics": [],
+        "summary": {
+          "warnings": "0",
+          "errors": "0"
+        }
+      }
+    }
+  }
+]

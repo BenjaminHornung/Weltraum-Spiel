@@ -1,0 +1,42 @@
+{
+  "result": {
+    "success": "True",
+    "message": "Test job status retrieved.",
+    "error": "None",
+    "data": {
+      "job_id": "5be9c9ff031344c58a72df1b33b16459",
+      "status": "succeeded",
+      "mode": "EditMode",
+      "started_unix_ms": "1780165388156",
+      "finished_unix_ms": "1780165392761",
+      "last_update_unix_ms": "1780165392761",
+      "progress": {
+        "completed": "31",
+        "total": "31",
+        "current_test_full_name": "None",
+        "current_test_started_unix_ms": "1780165392643",
+        "last_finished_test_full_name": "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_UsesBurnPlanFuelAndDeltaV",
+        "last_finished_unix_ms": "1780165392643",
+        "stuck_suspected": "False",
+        "editor_is_focused": "False",
+        "blocked_reason": "None",
+        "failures_so_far": [],
+        "failures_capped": "False"
+      },
+      "error": "None",
+      "result": {
+        "mode": "EditMode",
+        "summary": {
+          "total": "31",
+          "passed": "31",
+          "failed": "0",
+          "skipped": "0",
+          "durationSeconds": "0.5811532",
+          "resultState": "Passed"
+        },
+        "results": []
+      }
+    },
+    "hint": "None"
+  }
+}

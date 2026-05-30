@@ -1,0 +1,42 @@
+{
+  "result": {
+    "success": "True",
+    "message": "Test job status retrieved.",
+    "error": "None",
+    "data": {
+      "job_id": "500227bdb36d4ca787cf2d401e66b136",
+      "status": "succeeded",
+      "mode": "PlayMode",
+      "started_unix_ms": "1780165394829",
+      "finished_unix_ms": "1780165406713",
+      "last_update_unix_ms": "1780165406713",
+      "progress": {
+        "completed": "30",
+        "total": "30",
+        "current_test_full_name": "None",
+        "current_test_started_unix_ms": "1780165406695",
+        "last_finished_test_full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_FlightPlanExecutor_PreviewAndExecutionUseSamePlan",
+        "last_finished_unix_ms": "1780165406697",
+        "stuck_suspected": "False",
+        "editor_is_focused": "False",
+        "blocked_reason": "None",
+        "failures_so_far": [],
+        "failures_capped": "False"
+      },
+      "error": "None",
+      "result": {
+        "mode": "PlayMode",
+        "summary": {
+          "total": "30",
+          "passed": "30",
+          "failed": "0",
+          "skipped": "0",
+          "durationSeconds": "6.8684112",
+          "resultState": "Passed"
+        },
+        "results": []
+      }
+    },
+    "hint": "None"
+  }
+}

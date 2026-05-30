@@ -262,7 +262,7 @@ Obstacle detection is handled by `PrototypeObstacleDetector`. Collider-backed ob
 
 When direct line of sight is blocked, the planner builds scored candidates: direct, left, right, up, down, and diagonal variants where useful. Candidate scoring combines collision clearance, estimated delta-v, heading change, lateral velocity reduction, fuel feasibility, braking feasibility, and RCS authority margin. The chosen candidate records its score and reason, emits an avoidance waypoint, and keeps the desired burn direction out of the obstacle corridor. The autopilot keeps a stable avoidance waypoint during the lock window so it does not oscillate between sides, then transitions through `ReacquireDirectPath` once clearance and line of sight are available.
 
-Plans are reported as segments for diagnostics and UI:
+Plans are reported as segments for diagnostics and UI. A direct profile may use an analytic DirectFastTransfer chain when lateral drift and RCS limits make it safe; otherwise the planner remains on legacy `Coast`/`RetrogradeBurn` flow.
 
 - `Align`
 - `Burn`
@@ -271,8 +271,9 @@ Plans are reported as segments for diagnostics and UI:
 - `Brake`
 - `FinalApproach`
 - `Hold`
+- `DirectFastTransfer` profile marker (same phase families, now used on `Burn`, `Brake`, and `Hold` when analytic transfer is active)
 
-Each segment carries duration, direction, throttle, expected delta-v, expected fuel, predicted closest obstacle distance, and predicted miss distance to target. Main thrust is reserved for meaningful delta-v along the planned burn direction; if the ship is not aligned, main throttle stays at zero and the request is attitude/RCS-only. RCS is used for lateral correction, avoidance sidestep, final approach, and hold damping. RCS requests remain mass-based and are clamped to available translation authority; insufficient authority reports `LimitedRcsAuthority`, `HoldNoAuthority`, or `LimitedHoldAuthority`.
+Each segment carries duration, direction, throttle, expected delta-v, expected fuel, predicted closest obstacle distance, predicted miss distance to target, and `plannedSwitchDistanceMeters`. The switch distance is currently treated as a diagnostic trace value and is not yet used as a hard plan-switching threshold. Main thrust is reserved for meaningful delta-v along the planned burn direction; if the ship is not aligned, main throttle stays at zero and the request is attitude/RCS-only. RCS is used for lateral correction, avoidance sidestep, final approach, and hold damping. RCS requests remain mass-based and are clamped to available translation authority; insufficient authority reports `LimitedRcsAuthority`, `HoldNoAuthority`, or `LimitedHoldAuthority`.
 
 The player-facing Navigation Planner lists the executable maneuver chain as a compact schedule with `T+start-end`, actuator mode, expected delta-v, and fuel per step. `FinalApproach` and `Hold` suppress normal main-throttle correction and use RCS for small residual drift. Preview and execution share `PrototypeFlightPlan.predictedSamples`; when replanning replaces the plan, both the drawn route and executor route change together.
 

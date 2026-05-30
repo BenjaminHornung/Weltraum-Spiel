@@ -29,6 +29,13 @@ public enum PrototypeManeuverCommandMode
     CombinedMainAndRcs = 50
 }
 
+[Serializable]
+public enum PrototypeManeuverProfile
+{
+    Default = 0,
+    DirectFastTransfer = 10
+}
+
 [Flags]
 [Serializable]
 public enum PrototypeFlightPlanAbortReplanReason
@@ -323,6 +330,8 @@ public struct PrototypeManeuverSegment
     public PrototypeFlightPlanTolerance tolerance;
     public PrototypeFlightPlanAbortReplanReason replanOn;
     public string label;
+    public PrototypeManeuverProfile profile;
+    public float plannedSwitchDistanceMeters;
 
     public PrototypeManeuverSegment(
         int index,
@@ -346,7 +355,9 @@ public struct PrototypeManeuverSegment
         float expectedRcsFuelKg,
         PrototypeFlightPlanTolerance tolerance,
         PrototypeFlightPlanAbortReplanReason replanOn,
-        string label = null)
+        string label = null,
+        PrototypeManeuverProfile profile = PrototypeManeuverProfile.Default,
+        float plannedSwitchDistanceMeters = 0f)
     {
         float clampedStartTime = Mathf.Max(0f, startTimeSeconds);
         float clampedDuration = Mathf.Max(0f, durationSeconds);
@@ -376,6 +387,8 @@ public struct PrototypeManeuverSegment
             ? DefaultReplanReasons
             : replanOn;
         this.label = string.IsNullOrEmpty(label) ? phase.ToString() : label;
+        this.profile = profile;
+        this.plannedSwitchDistanceMeters = Mathf.Max(0f, plannedSwitchDistanceMeters);
     }
 
     public float ExpectedFuelKg => expectedMainFuelKg + expectedRcsFuelKg;
@@ -412,6 +425,7 @@ public struct PrototypeManeuverSegment
         && TrajectoryPredictionMath.IsFinite(expectedDeltaV)
         && TrajectoryPredictionMath.IsFinite(expectedMainFuelKg)
         && TrajectoryPredictionMath.IsFinite(expectedRcsFuelKg)
+        && TrajectoryPredictionMath.IsFinite(plannedSwitchDistanceMeters)
         && tolerance.IsFinite;
 
     public bool ContainsTime(float elapsedSeconds)
@@ -447,6 +461,7 @@ public struct PrototypeFlightPlan
     public float createdAtTimeSeconds;
     public float fixedDeltaTimeSeconds;
     public Vector3 targetPositionWorld;
+    public Vector3 arrivalPointWorld;
     public float targetArrivalRadiusMeters;
     public float targetArrivalSpeedMetersPerSecond;
     public PrototypeShipPlanningSnapshot shipSnapshot;
@@ -458,6 +473,7 @@ public struct PrototypeFlightPlan
     public bool isExecutable;
     public PrototypeFlightPlanAbortReplanReason nonExecutableReasons;
     public string statusLabel;
+    public PrototypeManeuverProfile profile;
 
     public PrototypeFlightPlan(
         string planId,
@@ -472,13 +488,16 @@ public struct PrototypeFlightPlan
         PrototypeTrajectoryPredictedSample[] predictedSamples,
         bool isExecutable = true,
         PrototypeFlightPlanAbortReplanReason nonExecutableReasons = PrototypeFlightPlanAbortReplanReason.None,
-        string statusLabel = null)
+        string statusLabel = null,
+        Vector3? arrivalPointWorld = null,
+        PrototypeManeuverProfile profile = PrototypeManeuverProfile.Default)
     {
         this.planId = string.IsNullOrEmpty(planId) ? "flight-plan" : planId;
         this.revision = Mathf.Max(0, revision);
         this.createdAtTimeSeconds = Mathf.Max(0f, createdAtTimeSeconds);
         this.fixedDeltaTimeSeconds = Mathf.Max(0f, fixedDeltaTimeSeconds);
         this.targetPositionWorld = targetPositionWorld;
+        this.arrivalPointWorld = arrivalPointWorld.HasValue ? arrivalPointWorld.Value : targetPositionWorld;
         this.targetArrivalRadiusMeters = Mathf.Max(0f, targetArrivalRadiusMeters);
         this.targetArrivalSpeedMetersPerSecond = Mathf.Max(0f, targetArrivalSpeedMetersPerSecond);
         this.shipSnapshot = shipSnapshot;
@@ -508,6 +527,7 @@ public struct PrototypeFlightPlan
         this.statusLabel = string.IsNullOrEmpty(statusLabel)
             ? (this.isExecutable ? "Executable" : "Not executable")
             : statusLabel;
+        this.profile = profile;
     }
 
     public int SegmentCount => segments != null ? segments.Length : 0;
@@ -517,9 +537,11 @@ public struct PrototypeFlightPlan
         && HasSegments
         && shipSnapshot.IsFinite
         && TrajectoryPredictionMath.IsFinite(targetPositionWorld)
+        && TrajectoryPredictionMath.IsFinite(arrivalPointWorld)
         && TrajectoryPredictionMath.IsFinite(totalDurationSeconds)
         && TrajectoryPredictionMath.IsFinite(totalExpectedFuelKg)
         && TrajectoryPredictionMath.IsFinite(expectedRemainingFuelKg);
+    public bool IsDirectFastTransfer => profile == PrototypeManeuverProfile.DirectFastTransfer;
 
     public bool TryGetActiveSegment(float elapsedSeconds, out PrototypeManeuverSegment activeSegment)
     {
@@ -1364,6 +1386,9 @@ public static class PrototypeFlightPlanTracker
             : 1f;
 
         bool mainAllowed = CanUseMainForPhase(activePhase, hasActiveSegment ? activeSegment.commandMode : PrototypeManeuverCommandMode.None);
+        bool directFastTransferMain = hasActiveSegment
+            && activeSegment.profile == PrototypeManeuverProfile.DirectFastTransfer
+            && (activePhase == PrototypeManeuverPhase.ProgradeBurn || activePhase == PrototypeManeuverPhase.RetrogradeBurn);
         if (activePhase == PrototypeManeuverPhase.ProgradeBurn || activePhase == PrototypeManeuverPhase.ReacquireRoute)
         {
             float mainDirectionDotTangent = mainDirection.sqrMagnitude > DirectionEpsilon && tangent.sqrMagnitude > DirectionEpsilon
@@ -1375,7 +1400,9 @@ public static class PrototypeFlightPlanTracker
                 mainAllowed = false;
             }
 
-            if (desiredAcceleration.sqrMagnitude > DirectionEpsilon && accelerationDotTangent < settings.progradeTangentDotMinimum)
+            if (!directFastTransferMain
+                && desiredAcceleration.sqrMagnitude > DirectionEpsilon
+                && accelerationDotTangent < settings.progradeTangentDotMinimum)
             {
                 reasons |= PrototypeFlightPlanAbortReplanReason.InvalidPlanDirection;
                 mainAllowed = false;
@@ -1406,6 +1433,11 @@ public static class PrototypeFlightPlanTracker
             ? Mathf.Max(0f, Vector3.Dot(desiredAcceleration, mainDirection))
             : 0f;
         float mainThrottle = mainAllowed ? Mathf.Clamp01(mainComponent / mainAcceleration) : 0f;
+        if (mainAllowed && directFastTransferMain)
+        {
+            mainThrottle = Mathf.Clamp01(activeSegment.mainThrottle);
+        }
+
         if (mainAllowed
             && activePhase == PrototypeManeuverPhase.RetrogradeBurn
             && hasActiveSegment

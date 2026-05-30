@@ -50,6 +50,8 @@ public struct PrototypeTrajectorySegment
     public float expectedFuelKg;
     public float predictedClosestObstacleDistance;
     public float predictedMissDistanceToTarget;
+    public PrototypeManeuverProfile profile;
+    public float plannedSwitchDistanceMeters;
 
     public PrototypeTrajectorySegment(
         PrototypeTrajectorySegmentType type,
@@ -59,7 +61,9 @@ public struct PrototypeTrajectorySegment
         float expectedDeltaV,
         float expectedFuelKg,
         float predictedClosestObstacleDistance,
-        float predictedMissDistanceToTarget)
+        float predictedMissDistanceToTarget,
+        PrototypeManeuverProfile profile = PrototypeManeuverProfile.Default,
+        float plannedSwitchDistanceMeters = 0f)
     {
         this.type = type;
         this.durationSeconds = Mathf.Max(0f, durationSeconds);
@@ -69,7 +73,30 @@ public struct PrototypeTrajectorySegment
         this.expectedFuelKg = Mathf.Max(0f, expectedFuelKg);
         this.predictedClosestObstacleDistance = predictedClosestObstacleDistance;
         this.predictedMissDistanceToTarget = Mathf.Max(0f, predictedMissDistanceToTarget);
+        this.profile = profile;
+        this.plannedSwitchDistanceMeters = Mathf.Max(0f, plannedSwitchDistanceMeters);
     }
+}
+
+public struct PrototypeDirectFastTransferSolution
+{
+    public bool isValid;
+    public bool brakeImmediately;
+    public Vector3 routeDirectionWorld;
+    public Vector3 lateralVelocityWorld;
+    public float distanceMeters;
+    public float vAlong0MetersPerSecond;
+    public float vLat0MetersPerSecond;
+    public float burnAccelerationMetersPerSecondSquared;
+    public float brakeAccelerationMetersPerSecondSquared;
+    public float flipTimeSeconds;
+    public float flipDriftMeters;
+    public float effectiveDistanceMeters;
+    public float vPeakSquared;
+    public float tBurnSeconds;
+    public float sBurnMeters;
+    public float tBrakeSeconds;
+    public float sBrakeMeters;
 }
 
 public struct PrototypeTrajectoryCandidateScore
@@ -257,6 +284,8 @@ public class PrototypeTrajectoryPlanner
     private const float CandidateStepSeconds = 0.25f;
     private const float MinimumAttitudeSegmentSeconds = 0.2f;
     private const float MaximumAttitudeSegmentSeconds = 6f;
+    private const float DirectFastTransferMinimumMainSeconds = 0.2f;
+    private const float DirectFastTransferMinimumDistanceMeters = 1.5f;
     private readonly List<PrototypeTrajectoryCandidateScore> candidateBuffer = new List<PrototypeTrajectoryCandidateScore>(10);
 
     public PrototypeTrajectoryPlan Plan(PrototypeTrajectorySnapshot snapshot, PrototypeObstacleDetectionResult detection)
@@ -316,7 +345,8 @@ public class PrototypeTrajectoryPlanner
         float fixedDeltaTimeSeconds,
         bool keepAvoidanceWaypoint,
         Vector3 stableAvoidanceWaypoint,
-        string preferredCandidateName)
+        string preferredCandidateName,
+        bool suppressDirectFastTransfer = false)
     {
         PrototypeShipPlanningSnapshot resolvedShipSnapshot = ResolvePlanningSnapshot(snapshot, shipSnapshot);
         Vector3 targetDirection = snapshot.DirectionToTarget;
@@ -324,7 +354,7 @@ public class PrototypeTrajectoryPlanner
         if (!hasBlockingObstacle && !keepAvoidanceWaypoint)
         {
             PrototypeTrajectoryPlan clearPlan = PrototypeTrajectoryPlan.Clear(targetDirection);
-            FillDirectDiagnostics(ref clearPlan, snapshot, resolvedShipSnapshot, createdAtTimeSeconds, fixedDeltaTimeSeconds);
+            FillDirectDiagnostics(ref clearPlan, snapshot, resolvedShipSnapshot, createdAtTimeSeconds, fixedDeltaTimeSeconds, suppressDirectFastTransfer);
             return clearPlan;
         }
 
@@ -355,8 +385,9 @@ public class PrototypeTrajectoryPlanner
         Vector3 requestedRcsForce = ComputeRcsRequest(snapshot, avoidanceDirection, out bool limitedRcsAuthority);
         float closestObstacleDistance = selected.clearanceMeters;
         TrajectoryBurnPlan burnPlan = BuildBurnPlan(snapshot, selectedDirection, requestedThrottle);
-        bool fuelInsufficient = selected.fuelInsufficient || (burnPlan.requestedFuelKg > burnPlan.estimatedFuelKg + 0.0001f);
-        PrototypeTrajectorySegment[] segments = BuildSegments(snapshot, selectedDirection, requestedThrottle, burnPlan, avoidance, selected);
+        PrototypeTrajectorySegment[] segments = BuildSegments(snapshot, resolvedShipSnapshot, selectedDirection, requestedThrottle, burnPlan, avoidance, selected, suppressDirectFastTransfer);
+        burnPlan = ResolvePrimaryBurnPlan(snapshot, segments, burnPlan);
+        bool fuelInsufficient = selected.fuelInsufficient || SegmentsRequireMoreFuelThanAvailable(segments, snapshot.fuelKgPerSecond, snapshot.availableFuelKg);
         Vector3[] predictedPath = PredictCandidatePath(snapshot, selectedDirection, requestedRcsForce, requestedThrottle);
         PrototypeFlightPlan flightPlan = BuildFlightPlan(
             snapshot,
@@ -418,13 +449,15 @@ public class PrototypeTrajectoryPlanner
         PrototypeTrajectorySnapshot snapshot,
         PrototypeShipPlanningSnapshot shipSnapshot,
         float createdAtTimeSeconds,
-        float fixedDeltaTimeSeconds)
+        float fixedDeltaTimeSeconds,
+        bool suppressDirectFastTransfer)
     {
         clearPlan.plannedStoppingDistance = EstimateStoppingDistance(snapshot);
         clearPlan.plannedEtaSeconds = EstimateEta(snapshot);
         clearPlan.desiredAccelerationWorld = clearPlan.desiredBurnDirection * snapshot.maxMainAcceleration;
         clearPlan.burnPlan = BuildBurnPlan(snapshot, clearPlan.desiredBurnDirection, 1f);
-        clearPlan.segments = BuildSegments(snapshot, clearPlan.desiredBurnDirection, 1f, clearPlan.burnPlan, false, default);
+        clearPlan.segments = BuildSegments(snapshot, shipSnapshot, clearPlan.desiredBurnDirection, 1f, clearPlan.burnPlan, false, default, suppressDirectFastTransfer);
+        clearPlan.burnPlan = ResolvePrimaryBurnPlan(snapshot, clearPlan.segments, clearPlan.burnPlan);
         clearPlan.activeSegment = clearPlan.segments.Length > 0 ? clearPlan.segments[0] : default;
         clearPlan.activeSegmentType = clearPlan.activeSegment.type;
         clearPlan.predictedPath = PredictCandidatePath(snapshot, clearPlan.desiredBurnDirection, Vector3.zero, 1f);
@@ -649,18 +682,261 @@ public class PrototypeTrajectoryPlanner
         return TrajectoryBurnPlan.Estimate(direction, duration, throttle, thrust, snapshot.fuelKgPerSecond, snapshot.availableFuelKg, snapshot.massKg);
     }
 
+    private static bool SolveDirectFastTransfer(
+        PrototypeTrajectorySnapshot snapshot,
+        PrototypeShipPlanningSnapshot shipSnapshot,
+        out PrototypeDirectFastTransferSolution solution)
+    {
+        solution = default;
+        Vector3 route = snapshot.targetPosition - snapshot.position;
+        float distance = route.magnitude;
+        if (distance <= Mathf.Max(DirectFastTransferMinimumDistanceMeters, snapshot.arrivalRadius * 0.5f)
+            || ShouldUseFinalOnlySegments(snapshot))
+        {
+            return false;
+        }
+
+        Vector3 routeDirection = route / distance;
+        float mass = ResolvePlanMass(shipSnapshot);
+        float thrust = shipSnapshot.mainThrustNewtons > 0f
+            ? shipSnapshot.mainThrustNewtons
+            : snapshot.mainThrustNewtons > 0f
+                ? snapshot.mainThrustNewtons
+                : snapshot.maxMainAcceleration * mass;
+        float burnAcceleration = mass > 0.0001f ? thrust / mass : 0f;
+        float brakeAcceleration = burnAcceleration;
+        if (burnAcceleration <= 0.0001f || brakeAcceleration <= 0.0001f)
+        {
+            return false;
+        }
+
+        float vAlong0 = Vector3.Dot(snapshot.velocity, routeDirection);
+        Vector3 lateralVelocity = snapshot.velocity - routeDirection * vAlong0;
+        float vLat0 = lateralVelocity.magnitude;
+        Quaternion burnRotation = ResolveLookRotation(routeDirection, shipSnapshot.initialState.rotation);
+        float flipTime = EstimateAttitudeSegmentSeconds(burnRotation, -routeDirection, shipSnapshot);
+        float effectiveDistance = distance;
+        float vPeakSquared = 0f;
+        float vPeak = Mathf.Max(0f, vAlong0);
+        float flipDrift = 0f;
+
+        for (int i = 0; i < 3; i++)
+        {
+            float numerator = (2f * burnAcceleration * brakeAcceleration * effectiveDistance)
+                + brakeAcceleration * vAlong0 * vAlong0;
+            vPeakSquared = Mathf.Max(0f, numerator / (burnAcceleration + brakeAcceleration));
+            vPeak = Mathf.Sqrt(vPeakSquared);
+            flipDrift = Mathf.Max(0f, vPeak) * flipTime;
+            effectiveDistance = Mathf.Max(0f, distance - flipDrift);
+        }
+
+        float stoppingDistanceNow = vAlong0 > 0f
+            ? (vAlong0 * vAlong0) / (2f * brakeAcceleration) + Mathf.Max(0f, vAlong0) * flipTime
+            : 0f;
+        bool brakeImmediately = vAlong0 > snapshot.arrivalSpeed
+            && (stoppingDistanceNow >= distance || vPeak <= vAlong0 + 0.01f);
+
+        float tBurn = brakeImmediately ? 0f : Mathf.Max(0f, (vPeak - vAlong0) / burnAcceleration);
+        float sBurn = brakeImmediately ? 0f : Mathf.Max(0f, (vPeakSquared - vAlong0 * vAlong0) / (2f * burnAcceleration));
+        float brakeSpeed = brakeImmediately
+            ? Mathf.Max(0f, snapshot.velocity.magnitude)
+            : vPeak;
+        float tBrake = brakeSpeed / brakeAcceleration;
+        float sBrake = brakeImmediately
+            ? (brakeSpeed * brakeSpeed) / (2f * brakeAcceleration)
+            : vPeakSquared / (2f * brakeAcceleration);
+
+        bool hasMainWork = brakeImmediately
+            ? tBrake >= DirectFastTransferMinimumMainSeconds
+            : tBurn >= DirectFastTransferMinimumMainSeconds && tBrake >= DirectFastTransferMinimumMainSeconds;
+        if (!hasMainWork)
+        {
+            return false;
+        }
+
+        float totalTransferSeconds = Mathf.Max(0f, tBurn) + Mathf.Max(0f, flipTime) + Mathf.Max(0f, tBrake);
+        if (!IsDirectFastTransferLateralFeasible(snapshot, shipSnapshot, vLat0, totalTransferSeconds))
+        {
+            return false;
+        }
+
+        solution = new PrototypeDirectFastTransferSolution
+        {
+            isValid = true,
+            brakeImmediately = brakeImmediately,
+            routeDirectionWorld = routeDirection,
+            lateralVelocityWorld = lateralVelocity,
+            distanceMeters = distance,
+            vAlong0MetersPerSecond = vAlong0,
+            vLat0MetersPerSecond = vLat0,
+            burnAccelerationMetersPerSecondSquared = burnAcceleration,
+            brakeAccelerationMetersPerSecondSquared = brakeAcceleration,
+            flipTimeSeconds = flipTime,
+            flipDriftMeters = flipDrift,
+            effectiveDistanceMeters = effectiveDistance,
+            vPeakSquared = vPeakSquared,
+            tBurnSeconds = tBurn,
+            sBurnMeters = sBurn,
+            tBrakeSeconds = tBrake,
+            sBrakeMeters = sBrake
+        };
+        return true;
+    }
+
+    private static bool IsDirectFastTransferLateralFeasible(
+        PrototypeTrajectorySnapshot snapshot,
+        PrototypeShipPlanningSnapshot shipSnapshot,
+        float lateralSpeedMetersPerSecond,
+        float totalTransferSeconds)
+    {
+        float speedTolerance = Mathf.Max(0.25f, snapshot.arrivalSpeed * 1.25f, snapshot.lateralTolerance * 2f);
+        if (lateralSpeedMetersPerSecond <= speedTolerance)
+        {
+            return true;
+        }
+
+        float correctionWindow = Mathf.Max(0f, totalTransferSeconds);
+        if (correctionWindow <= 0.0001f)
+        {
+            return false;
+        }
+
+        float lateralForce = shipSnapshot.rcsTranslationForceNewtons > 0.0001f
+            ? shipSnapshot.rcsTranslationForceNewtons
+            : snapshot.maxRcsForce;
+        float mass = ResolvePlanMass(shipSnapshot);
+        float lateralAcceleration = mass > 0.0001f ? lateralForce / mass : 0f;
+        float driftTolerance = Mathf.Max(
+            snapshot.arrivalRadius * 0.8f,
+            speedTolerance * Mathf.Max(0.5f, correctionWindow * 0.25f));
+
+        if (lateralAcceleration <= 0.0001f)
+        {
+            float uncorrectedDrift = lateralSpeedMetersPerSecond * correctionWindow;
+            return uncorrectedDrift <= driftTolerance
+                && lateralSpeedMetersPerSecond <= speedTolerance * 1.5f;
+        }
+
+        float stopTime = lateralSpeedMetersPerSecond / lateralAcceleration;
+        float stopDrift = (lateralSpeedMetersPerSecond * lateralSpeedMetersPerSecond) / (2f * lateralAcceleration);
+        float returnToRouteTime = (1f + Mathf.Sqrt(2f)) * stopTime;
+        if (returnToRouteTime <= correctionWindow)
+        {
+            return true;
+        }
+
+        return stopTime <= correctionWindow * 0.85f
+            && stopDrift <= driftTolerance;
+    }
+
+    private static bool TryBuildDirectFastTransferSegments(
+        PrototypeTrajectorySnapshot snapshot,
+        PrototypeShipPlanningSnapshot shipSnapshot,
+        float closestObstacle,
+        float missDistance,
+        out PrototypeTrajectorySegment[] segments)
+    {
+        segments = null;
+        if (!SolveDirectFastTransfer(snapshot, shipSnapshot, out PrototypeDirectFastTransferSolution solution)
+            || !solution.isValid)
+        {
+            return false;
+        }
+
+        float thrust = shipSnapshot.mainThrustNewtons > 0f
+            ? shipSnapshot.mainThrustNewtons
+            : snapshot.mainThrustNewtons > 0f
+                ? snapshot.mainThrustNewtons
+                : snapshot.maxMainAcceleration * snapshot.massKg;
+        TrajectoryBurnPlan burnPlan = solution.tBurnSeconds > 0f
+            ? TrajectoryBurnPlan.Estimate(
+                solution.routeDirectionWorld,
+                solution.tBurnSeconds,
+                1f,
+                thrust,
+                snapshot.fuelKgPerSecond,
+                snapshot.availableFuelKg,
+                snapshot.massKg)
+            : TrajectoryBurnPlan.None;
+        float fuelAfterBurn = Mathf.Max(0f, snapshot.availableFuelKg - burnPlan.estimatedFuelKg);
+        Vector3 brakeDirection = solution.brakeImmediately && snapshot.velocity.sqrMagnitude > 0.0001f
+            ? -snapshot.velocity.normalized
+            : -solution.routeDirectionWorld;
+        TrajectoryBurnPlan brakePlan = TrajectoryBurnPlan.Estimate(
+            brakeDirection,
+            solution.tBrakeSeconds,
+            1f,
+            thrust,
+            snapshot.fuelKgPerSecond,
+            fuelAfterBurn,
+            snapshot.massKg);
+        var brake = new PrototypeTrajectorySegment(
+            PrototypeTrajectorySegmentType.Brake,
+            solution.tBrakeSeconds,
+            brakeDirection,
+            1f,
+            brakePlan.estimatedDeltaV,
+            brakePlan.estimatedFuelKg,
+            closestObstacle,
+            snapshot.arrivalRadius,
+            PrototypeManeuverProfile.DirectFastTransfer,
+            solution.sBurnMeters);
+        var hold = new PrototypeTrajectorySegment(
+            PrototypeTrajectorySegmentType.Hold,
+            0.75f,
+            Vector3.zero,
+            0f,
+            0f,
+            0f,
+            closestObstacle,
+            0f,
+            PrototypeManeuverProfile.DirectFastTransfer,
+            solution.distanceMeters);
+
+        if (solution.brakeImmediately)
+        {
+            segments = new[] { brake, hold };
+            return true;
+        }
+
+        var burn = new PrototypeTrajectorySegment(
+            PrototypeTrajectorySegmentType.Burn,
+            solution.tBurnSeconds,
+            solution.routeDirectionWorld,
+            1f,
+            burnPlan.estimatedDeltaV,
+            burnPlan.estimatedFuelKg,
+            closestObstacle,
+            missDistance,
+            PrototypeManeuverProfile.DirectFastTransfer,
+            solution.sBurnMeters);
+        segments = new[] { burn, brake, hold };
+        return true;
+    }
+
     private static PrototypeTrajectorySegment[] BuildSegments(
         PrototypeTrajectorySnapshot snapshot,
+        PrototypeShipPlanningSnapshot shipSnapshot,
         Vector3 direction,
         float throttle,
         TrajectoryBurnPlan burnPlan,
         bool avoidance,
-        PrototypeTrajectoryCandidateScore selected)
+        PrototypeTrajectoryCandidateScore selected,
+        bool suppressDirectFastTransfer)
     {
         float missDistance = selected.waypoint.sqrMagnitude > 0.0001f
             ? Vector3.Distance(selected.waypoint, snapshot.targetPosition)
             : 0f;
-        float closestObstacle = selected.clearanceMeters;
+        float closestObstacle = selected.clearanceMeters > 0f
+            ? selected.clearanceMeters
+            : float.PositiveInfinity;
+        if (!avoidance
+            && !suppressDirectFastTransfer
+            && TryBuildDirectFastTransferSegments(snapshot, shipSnapshot, closestObstacle, missDistance, out PrototypeTrajectorySegment[] directSegments))
+        {
+            return directSegments;
+        }
+
         var coast = new PrototypeTrajectorySegment(PrototypeTrajectorySegmentType.Coast, 1f, direction, 0f, 0f, 0f, closestObstacle, missDistance);
         Vector3 brakeDirection = ResolveBrakeDirection(snapshot);
         float brakeDeltaV = ResolveBrakeDeltaV(snapshot);
@@ -691,12 +967,89 @@ public class PrototypeTrajectoryPlanner
             : new[] { burnSegment, coast, brake, final, hold };
     }
 
+    private static TrajectoryBurnPlan ResolvePrimaryBurnPlan(
+        PrototypeTrajectorySnapshot snapshot,
+        PrototypeTrajectorySegment[] segments,
+        TrajectoryBurnPlan fallback)
+    {
+        if (segments == null)
+        {
+            return fallback;
+        }
+
+        for (int i = 0; i < segments.Length; i++)
+        {
+            PrototypeTrajectorySegment segment = segments[i];
+            if (segment.type != PrototypeTrajectorySegmentType.Burn
+                && segment.type != PrototypeTrajectorySegmentType.AvoidanceBurn)
+            {
+                continue;
+            }
+
+            float thrust = snapshot.mainThrustNewtons > 0f
+                ? snapshot.mainThrustNewtons
+                : snapshot.maxMainAcceleration * snapshot.massKg;
+            return TrajectoryBurnPlan.Estimate(
+                segment.directionWorld,
+                segment.durationSeconds,
+                segment.throttle,
+                thrust,
+                snapshot.fuelKgPerSecond,
+                snapshot.availableFuelKg,
+                snapshot.massKg);
+        }
+
+        return fallback;
+    }
+
+    private static bool SegmentsRequireMoreFuelThanAvailable(
+        PrototypeTrajectorySegment[] segments,
+        float fuelKgPerSecond,
+        float availableFuelKg)
+    {
+        if (segments == null || segments.Length == 0 || fuelKgPerSecond <= 0f)
+        {
+            return false;
+        }
+
+        float requestedFuel = 0f;
+        for (int i = 0; i < segments.Length; i++)
+        {
+            PrototypeTrajectorySegment segment = segments[i];
+            if (segment.type != PrototypeTrajectorySegmentType.Burn
+                && segment.type != PrototypeTrajectorySegmentType.AvoidanceBurn
+                && segment.type != PrototypeTrajectorySegmentType.Brake
+                && segment.type != PrototypeTrajectorySegmentType.FinalApproach)
+            {
+                continue;
+            }
+
+            requestedFuel += fuelKgPerSecond * Mathf.Clamp01(segment.throttle) * Mathf.Max(0f, segment.durationSeconds);
+        }
+
+        return requestedFuel > Mathf.Max(0f, availableFuelKg) + 0.0001f;
+    }
+
     private static bool ShouldUseFinalOnlySegments(PrototypeTrajectorySnapshot snapshot)
     {
         float finalDistance = snapshot.arrivalRadius + Mathf.Max(snapshot.arrivalRadius * 0.8f, snapshot.arrivalSpeed * 4f);
         float finalSpeed = Mathf.Max(0.95f, snapshot.arrivalSpeed * 2.2f);
-        return snapshot.DistanceToTarget <= finalDistance
-            && snapshot.velocity.magnitude <= finalSpeed;
+        if (snapshot.DistanceToTarget > finalDistance)
+        {
+            return false;
+        }
+
+        if (snapshot.velocity.magnitude <= finalSpeed)
+        {
+            return true;
+        }
+
+        Vector3 direction = snapshot.DirectionToTarget;
+        float closingSpeed = Vector3.Dot(snapshot.velocity, direction);
+        Vector3 lateralVelocity = snapshot.velocity - direction * closingSpeed;
+        float lateralCorrectionSpeed = Mathf.Max(snapshot.arrivalSpeed * 6f, snapshot.lateralTolerance * 12f);
+        return Mathf.Abs(closingSpeed) <= Mathf.Max(0.75f, snapshot.arrivalSpeed * 1.25f)
+            && lateralVelocity.magnitude <= lateralCorrectionSpeed;
     }
 
     private static bool ShouldStartWithBrakeSegment(PrototypeTrajectorySnapshot snapshot)
@@ -801,6 +1154,7 @@ public class PrototypeTrajectoryPlanner
         float mainAcceleration = ResolveMainAcceleration(trajectorySnapshot, shipSnapshot);
         float mainFuelRate = ResolveMainFuelRate(trajectorySnapshot, shipSnapshot);
         PrototypeFlightPlanTolerance tolerance = CreateFlightPlanTolerance(trajectorySnapshot);
+        bool isDirectFastTransfer = IsDirectFastTransferPlan(sourceSegments);
 
         AddPredictedSample(samples, current, -1, PrototypeManeuverPhase.None, 0f, Vector3.zero);
         for (int i = 0; i < sourceSegments.Length; i++)
@@ -840,7 +1194,9 @@ public class PrototypeTrajectoryPlanner
                     fixedDelta,
                     mainAcceleration,
                     mainFuelRate,
-                    true);
+                    true,
+                    legacy.profile,
+                    legacy.plannedSwitchDistanceMeters);
             }
 
             if (legacy.type == PrototypeTrajectorySegmentType.Brake)
@@ -867,7 +1223,9 @@ public class PrototypeTrajectoryPlanner
                     fixedDelta,
                     mainAcceleration,
                     mainFuelRate,
-                    true);
+                    true,
+                    legacy.profile,
+                    legacy.plannedSwitchDistanceMeters);
             }
 
             bool isReacquireAfterAvoidance = legacy.type == PrototypeTrajectorySegmentType.Coast
@@ -896,12 +1254,14 @@ public class PrototypeTrajectoryPlanner
                 mainFuel,
                 0f,
                 tolerance,
-                isReacquireAfterAvoidance ? "Reacquire route" : BuildManeuverLabel(legacy.type),
+                isReacquireAfterAvoidance ? "Reacquire route" : BuildManeuverLabel(legacy.type, legacy.profile),
                 shipSnapshot,
                 fixedDelta,
                 mainAcceleration,
                 mainFuelRate,
-                mode == PrototypeManeuverCommandMode.RcsAttitude);
+                mode == PrototypeManeuverCommandMode.RcsAttitude,
+                legacy.profile,
+                legacy.plannedSwitchDistanceMeters);
 
         }
 
@@ -930,7 +1290,9 @@ public class PrototypeTrajectoryPlanner
             samples.ToArray(),
             executable,
             reasons,
-            statusLabel);
+            statusLabel,
+            trajectorySnapshot.targetPosition,
+            isDirectFastTransfer ? PrototypeManeuverProfile.DirectFastTransfer : PrototypeManeuverProfile.Default);
     }
 
     private static void AddManeuverSegment(
@@ -954,7 +1316,9 @@ public class PrototypeTrajectoryPlanner
         float fixedDeltaTimeSeconds,
         float mainAccelerationMetersPerSecondSquared,
         float mainFuelKgPerSecond,
-        bool rotateToDirection)
+        bool rotateToDirection,
+        PrototypeManeuverProfile profile = PrototypeManeuverProfile.Default,
+        float plannedSwitchDistanceMeters = 0f)
     {
         float duration = Mathf.Max(0f, durationSeconds);
         int index = maneuvers.Count;
@@ -1024,7 +1388,9 @@ public class PrototypeTrajectoryPlanner
             expectedRcsFuelKg,
             tolerance,
             PrototypeManeuverSegment.DefaultReplanReasons,
-            label);
+            label,
+            profile,
+            plannedSwitchDistanceMeters);
         maneuvers.Add(segment);
 
         for (int i = 1; i < states.Length; i++)
@@ -1385,8 +1751,46 @@ public class PrototypeTrajectoryPlanner
             && segment.expectedFuelKg <= 0.0001f;
     }
 
-    private static string BuildManeuverLabel(PrototypeTrajectorySegmentType type)
+    private static bool IsDirectFastTransferPlan(PrototypeTrajectorySegment[] segments)
     {
+        if (segments == null || segments.Length == 0)
+        {
+            return false;
+        }
+
+        bool hasDirectFastTransferSegment = false;
+        for (int i = 0; i < segments.Length; i++)
+        {
+            if (segments[i].profile == PrototypeManeuverProfile.DirectFastTransfer)
+            {
+                hasDirectFastTransferSegment = true;
+                continue;
+            }
+
+            if (segments[i].type != PrototypeTrajectorySegmentType.Hold)
+            {
+                return false;
+            }
+        }
+
+        return hasDirectFastTransferSegment;
+    }
+
+    private static string BuildManeuverLabel(PrototypeTrajectorySegmentType type, PrototypeManeuverProfile profile)
+    {
+        if (profile == PrototypeManeuverProfile.DirectFastTransfer)
+        {
+            switch (type)
+            {
+                case PrototypeTrajectorySegmentType.Burn:
+                    return "Direct fast burn";
+                case PrototypeTrajectorySegmentType.Brake:
+                    return "Direct fast brake";
+                case PrototypeTrajectorySegmentType.Hold:
+                    return "RCS final hold";
+            }
+        }
+
         switch (type)
         {
             case PrototypeTrajectorySegmentType.Burn:
