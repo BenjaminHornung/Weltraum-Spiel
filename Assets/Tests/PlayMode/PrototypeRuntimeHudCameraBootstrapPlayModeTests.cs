@@ -71,6 +71,40 @@ public class PrototypeRuntimeHudCameraBootstrapPlayModeTests
 
     [Test]
     [Timeout(60000)]
+    public void PlayMode_BootstrapAddsVisibleOrbitMapDebugWindowWithCatalogSnapshot()
+    {
+        Assert.That(Application.isPlaying, Is.True, "This regression must run in Unity PlayMode.");
+
+        GameObject host = new GameObject("RuntimeHudCameraBootstrapTestHost");
+        PrototypeBootstrap bootstrap = host.AddComponent<PrototypeBootstrap>();
+        SetPrivateField(bootstrap, "buildOnStart", false);
+
+        bootstrap.BuildPrototype();
+
+        Camera camera = Camera.main;
+        Assert.NotNull(camera, "main camera");
+
+        PrototypeOrbitMapDebugWindow orbitMap = camera.GetComponent<PrototypeOrbitMapDebugWindow>();
+        Assert.NotNull(orbitMap, "orbit map debug window");
+        Assert.That(camera.GetComponents<PrototypeOrbitMapDebugWindow>().Length, Is.EqualTo(1), "single orbit map debug window on camera");
+
+        InvokePrivateMethod(orbitMap, "BuildSnapshotLines");
+        CelestialOrbitMapSnapshot snapshot = GetPrivateField<CelestialOrbitMapSnapshot>(orbitMap, "snapshot");
+        string[] readoutLines = GetPrivateField<string[]>(orbitMap, "readoutLines");
+
+        Assert.NotNull(snapshot, "catalog-backed orbit map snapshot");
+        Assert.That(snapshot.Bodies.Count, Is.GreaterThanOrEqualTo(4), "starter body count");
+        Assert.True(HasBody(snapshot, "star.aurelia"), "Aurelia in snapshot");
+        Assert.True(HasBody(snapshot, "planet.hestia"), "Hestia in snapshot");
+        Assert.True(HasBody(snapshot, "moon.hestia.luma"), "Luma in snapshot");
+        Assert.True(HasBody(snapshot, "asteroid.eber"), "Eber in snapshot");
+        Assert.That(readoutLines, Is.Not.Null.And.Not.Empty, "debug readout lines");
+        Assert.True(HasReadoutLine(readoutLines, "star.aurelia"), "Aurelia readout");
+        Assert.True(HasReadoutLine(readoutLines, "planet.hestia"), "Hestia readout");
+    }
+
+    [Test]
+    [Timeout(60000)]
     public void PlayMode_TestRunnerSceneDoesNotArmRuntimeIntegrityWatchdog()
     {
         Assert.That(Application.isPlaying, Is.True, "This regression must run in Unity PlayMode.");
@@ -120,6 +154,46 @@ public class PrototypeRuntimeHudCameraBootstrapPlayModeTests
         FieldInfo field = target.GetType().GetField(fieldName, PrivateInstance);
         Assert.NotNull(field, fieldName);
         field.SetValue(target, value);
+    }
+
+    private static T GetPrivateField<T>(object target, string fieldName)
+    {
+        FieldInfo field = target.GetType().GetField(fieldName, PrivateInstance);
+        Assert.NotNull(field, fieldName);
+        return (T)field.GetValue(target);
+    }
+
+    private static void InvokePrivateMethod(object target, string methodName)
+    {
+        MethodInfo method = target.GetType().GetMethod(methodName, PrivateInstance);
+        Assert.NotNull(method, methodName);
+        method.Invoke(target, null);
+    }
+
+    private static bool HasBody(CelestialOrbitMapSnapshot snapshot, string bodyId)
+    {
+        for (int i = 0; i < snapshot.Bodies.Count; i++)
+        {
+            if (snapshot.Bodies[i] != null && snapshot.Bodies[i].BodyId == bodyId)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool HasReadoutLine(string[] readoutLines, string bodyId)
+    {
+        for (int i = 0; i < readoutLines.Length; i++)
+        {
+            if (!string.IsNullOrEmpty(readoutLines[i]) && readoutLines[i].Contains(bodyId))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static int CountVisibleEnabledRenderers(GameObject root)

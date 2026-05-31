@@ -1209,6 +1209,8 @@ public class PrototypeBootstrap : MonoBehaviour
         playerHud.Bind(target, stats, body);
         playerHud.BindTrajectoryPreview(trajectoryPreview);
 
+        GetOrAddSingleCameraComponent<PrototypeOrbitMapDebugWindow>(camera.gameObject);
+
         PrototypeUiLayoutManager.ApplyPreset(
             PrototypeUiLayoutManager.CurrentPreset,
             overlay,
