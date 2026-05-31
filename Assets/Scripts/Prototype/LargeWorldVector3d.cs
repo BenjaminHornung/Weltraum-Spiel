@@ -18,6 +18,16 @@ public struct LargeWorldVector3d : IEquatable<LargeWorldVector3d>
     public static LargeWorldVector3d Zero => new LargeWorldVector3d(0d, 0d, 0d);
 
     public double SqrMagnitude => x * x + y * y + z * z;
+    public double Magnitude => Math.Sqrt(SqrMagnitude);
+
+    public LargeWorldVector3d Normalized
+    {
+        get
+        {
+            double magnitude = Magnitude;
+            return magnitude > double.Epsilon ? this / magnitude : Zero;
+        }
+    }
 
     public Vector3 ToVector3()
     {
@@ -73,5 +83,25 @@ public struct LargeWorldVector3d : IEquatable<LargeWorldVector3d>
     public static LargeWorldVector3d operator -(LargeWorldVector3d left, Vector3 right)
     {
         return new LargeWorldVector3d(left.x - right.x, left.y - right.y, left.z - right.z);
+    }
+
+    public static LargeWorldVector3d operator *(LargeWorldVector3d value, double scalar)
+    {
+        return new LargeWorldVector3d(value.x * scalar, value.y * scalar, value.z * scalar);
+    }
+
+    public static LargeWorldVector3d operator *(double scalar, LargeWorldVector3d value)
+    {
+        return value * scalar;
+    }
+
+    public static LargeWorldVector3d operator /(LargeWorldVector3d value, double scalar)
+    {
+        return new LargeWorldVector3d(value.x / scalar, value.y / scalar, value.z / scalar);
+    }
+
+    public static double Distance(LargeWorldVector3d left, LargeWorldVector3d right)
+    {
+        return (left - right).Magnitude;
     }
 }
