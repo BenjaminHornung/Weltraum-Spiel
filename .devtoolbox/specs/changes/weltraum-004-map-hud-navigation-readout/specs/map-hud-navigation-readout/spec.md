@@ -10,7 +10,8 @@ The prototype SHALL display read-only celestial navigation context in existing H
 
 - GIVEN the prototype is running with the Aurelia catalog available
 - WHEN the HUD/map readout refreshes
-- THEN it shows a target body ID, parent body ID, body type, real-meter distance context, and map-scale context without requiring final System Map UX
+- THEN it shows a pilot-facing target body display name, parent display name, body type, real-meter distance context, and map-scale context without requiring final System Map UX
+- AND raw body IDs remain debug-only on debug surfaces and are not shown in pilot-facing context text
 
 ### Requirement: Readout data reuses orbit-map contracts
 

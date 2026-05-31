@@ -105,6 +105,34 @@ public class PrototypeRuntimeHudCameraBootstrapPlayModeTests
 
     [Test]
     [Timeout(60000)]
+    public void PlayMode_BootstrapAppliesCatalogFallbackToNavigationReadout()
+    {
+        Assert.That(Application.isPlaying, Is.True, "This regression must run in Unity PlayMode.");
+
+        GameObject host = new GameObject("RuntimeHudCameraBootstrapTestHost");
+        PrototypeBootstrap bootstrap = host.AddComponent<PrototypeBootstrap>();
+        SetPrivateField(bootstrap, "buildOnStart", false);
+        FieldInfo catalogField = bootstrap.GetType().GetField("celestialBodyCatalog", PrivateInstance);
+        Assert.NotNull(catalogField, "private catalog field");
+        catalogField.SetValue(bootstrap, null);
+
+        bootstrap.BuildPrototype();
+
+        Camera camera = Camera.main;
+        Assert.NotNull(camera, "main camera");
+
+        PrototypePlayerHudRenderer playerHud = camera.GetComponent<PrototypePlayerHudRenderer>();
+        Assert.NotNull(playerHud, "player HUD");
+        playerHud.RefreshNow();
+        Assert.True(playerHud.HasBoundRuntimeShip, "HUD ship binding");
+        Assert.True(playerHud.HasBoundNavigationComputer, "HUD navigation binding");
+        Assert.True(playerHud.LastSnapshot.Navigation.CelestialContext.HasContext, "bootstrap must resolve catalog-backed navigation context");
+        Assert.That(playerHud.LastSnapshot.Navigation.CelestialContext.PilotContextLabel, Does.StartWith("Near "));
+        Assert.That(playerHud.LastSnapshot.Navigation.CelestialContext.PilotContextLabel, Does.Contain(playerHud.LastSnapshot.Navigation.CelestialContext.DistanceLabel));
+    }
+
+    [Test]
+    [Timeout(60000)]
     public void PlayMode_TestRunnerSceneDoesNotArmRuntimeIntegrityWatchdog()
     {
         Assert.That(Application.isPlaying, Is.True, "This regression must run in Unity PlayMode.");

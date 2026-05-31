@@ -17,6 +17,7 @@ public class PrototypeBootstrap : MonoBehaviour
     [SerializeField] private Vector3 testTargetPosition = new Vector3(0f, 0.5f, 42f);
     [SerializeField] private Vector3 testTargetScale = new Vector3(4f, 4f, 0.6f);
     [SerializeField] private bool buildTestEnvironment = true;
+    [SerializeField] private CelestialBodyCatalog celestialBodyCatalog;
 
     private const string PrototypeRootName = "PrototypeShip";
     private const string PrototypeDockingApproachTargetName = "PrototypeDockingApproachTarget";
@@ -281,7 +282,13 @@ public class PrototypeBootstrap : MonoBehaviour
         }
 
         PrototypeTestEnvironment testEnvironment = buildTestEnvironment ? EnsureTestEnvironment() : null;
-        SetupMainCamera(ship.transform, stats, shipRigidbody, testEnvironment, dockingApproachTargetPort);
+        SetupMainCamera(
+            ship.transform,
+            stats,
+            shipRigidbody,
+            testEnvironment,
+            dockingApproachTargetPort,
+            celestialBodyCatalog);
         EnsureSceneDirectionalLight();
         LogBootstrapVisibilityDiagnostics(
             ship.transform,
@@ -1142,7 +1149,13 @@ public class PrototypeBootstrap : MonoBehaviour
         return candidates.ToArray();
     }
 
-    private static void SetupMainCamera(Transform target, ShipStats stats, Rigidbody body, PrototypeTestEnvironment testEnvironment, DockingPort dockingTargetPort = null)
+    private static void SetupMainCamera(
+        Transform target,
+        ShipStats stats,
+        Rigidbody body,
+        PrototypeTestEnvironment testEnvironment,
+        DockingPort dockingTargetPort = null,
+        CelestialBodyCatalog hudCatalog = null)
     {
         var camera = ResolveSingleMainCamera();
         if (camera == null)
@@ -1205,8 +1218,11 @@ public class PrototypeBootstrap : MonoBehaviour
         var weaponComputerPanel = GetOrAddSingleCameraComponent<PrototypeWeaponComputerPanel>(camera.gameObject);
         weaponComputerPanel.Bind(target, stats, weaponComputer, turretWeapon);
 
+        CelestialBodyCatalog playerHudCatalog = hudCatalog != null
+            ? hudCatalog
+            : Resources.Load<CelestialBodyCatalog>(CelestialBodyCatalog.ResourcePath);
         var playerHud = GetOrAddSingleCameraComponent<PrototypePlayerHudRenderer>(camera.gameObject);
-        playerHud.Bind(target, stats, body);
+        playerHud.Bind(target, stats, body, playerHudCatalog);
         playerHud.BindTrajectoryPreview(trajectoryPreview);
 
         GetOrAddSingleCameraComponent<PrototypeOrbitMapDebugWindow>(camera.gameObject);

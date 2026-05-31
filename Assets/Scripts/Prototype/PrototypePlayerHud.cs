@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -13,7 +13,6 @@ public enum PrototypePlayerHudSeverity
     Danger,
     Disabled
 }
-
 public readonly struct PrototypePlayerHudChip
 {
     public PrototypePlayerHudChip(string label, PrototypePlayerHudSeverity severity)
@@ -63,6 +62,38 @@ public readonly struct PrototypePlayerFlightSnapshot
     public string SasLabel { get; }
 }
 
+    public readonly struct PrototypePlayerNavigationCelestialContext
+{
+    public PrototypePlayerNavigationCelestialContext(
+        bool hasContext,
+        string bodyDisplayName,
+        string parentBodyDisplayName,
+        string distanceLabel,
+        string pilotContextLabel,
+        string debugBodyId = null,
+        string debugParentBodyId = null,
+        string debugMapScaleLabel = null)
+    {
+        HasContext = hasContext;
+        BodyDisplayName = string.IsNullOrWhiteSpace(bodyDisplayName) ? "Unknown body" : bodyDisplayName;
+        ParentBodyDisplayName = string.IsNullOrWhiteSpace(parentBodyDisplayName) ? "Unknown body" : parentBodyDisplayName;
+        DistanceLabel = string.IsNullOrWhiteSpace(distanceLabel) ? "--" : distanceLabel;
+        PilotContextLabel = string.IsNullOrWhiteSpace(pilotContextLabel) ? "No body context" : pilotContextLabel;
+        DebugBodyId = debugBodyId;
+        DebugParentBodyId = debugParentBodyId;
+        DebugMapScaleLabel = debugMapScaleLabel;
+    }
+
+    public bool HasContext { get; }
+    public string BodyDisplayName { get; }
+    public string ParentBodyDisplayName { get; }
+    public string DistanceLabel { get; }
+    public string PilotContextLabel { get; }
+    public string DebugBodyId { get; }
+    public string DebugParentBodyId { get; }
+    public string DebugMapScaleLabel { get; }
+}
+
 public readonly struct PrototypePlayerNavigationSnapshot
 {
     public PrototypePlayerNavigationSnapshot(
@@ -99,7 +130,8 @@ public readonly struct PrototypePlayerNavigationSnapshot
         float totalPlanFuelKg = 0f,
         string[] maneuverStepRows = null,
         int activeObstacleCount = 0,
-        string obstacleSummaryLabel = null)
+        string obstacleSummaryLabel = null,
+        PrototypePlayerNavigationCelestialContext celestialContext = default)
     {
         Visible = visible;
         TargetName = string.IsNullOrWhiteSpace(targetName) ? "No target" : targetName;
@@ -137,6 +169,7 @@ public readonly struct PrototypePlayerNavigationSnapshot
         ObstacleSummaryLabel = string.IsNullOrWhiteSpace(obstacleSummaryLabel)
             ? (ActiveObstacleCount > 0 ? ActiveObstacleCount + " active | no blocking cue" : "0 active | no obstacle cue")
             : obstacleSummaryLabel;
+        CelestialContext = celestialContext;
     }
 
     public bool Visible { get; }
@@ -173,6 +206,7 @@ public readonly struct PrototypePlayerNavigationSnapshot
     public string[] ManeuverStepRows { get; }
     public int ActiveObstacleCount { get; }
     public string ObstacleSummaryLabel { get; }
+    public PrototypePlayerNavigationCelestialContext CelestialContext { get; }
     public string TargetListLabel => TargetIndex > 0 && TargetCount > 0
         ? "Target " + TargetIndex + "/" + TargetCount
         : "Target --";
@@ -511,7 +545,8 @@ public static class PrototypePlayerHudSnapshotBuilder
         DockingPort targetDockingPort,
         PrototypePveArenaLoop arenaLoop = null,
         PrototypeDockingApproachAssist dockingApproachAssist = null,
-        PrototypeTrajectoryPreviewNavMap trajectoryPreview = null)
+        PrototypeTrajectoryPreviewNavMap trajectoryPreview = null,
+        CelestialBodyCatalog catalog = null)
     {
         Transform navTarget = autopilot != null && autopilot.CurrentTarget != null
             ? autopilot.CurrentTarget.transform
@@ -529,7 +564,7 @@ public static class PrototypePlayerHudSnapshotBuilder
         }
 
         PrototypePlayerFlightSnapshot flight = BuildFlight(shipRigidbody, stats, controller);
-        PrototypePlayerNavigationSnapshot navigation = BuildNavigation(autopilot, trajectoryPreview);
+        PrototypePlayerNavigationSnapshot navigation = BuildNavigation(autopilot, trajectoryPreview, catalog);
         PrototypePlayerCombatSnapshot combat = BuildCombat(weaponComputer);
         PrototypePveArenaSnapshot arena = arenaLoop != null ? arenaLoop.Snapshot : default;
         PrototypePlayerDockingSnapshot docking = BuildDocking(
@@ -884,17 +919,24 @@ public static class PrototypePlayerHudSnapshotBuilder
             sas);
     }
 
-    private static PrototypePlayerNavigationSnapshot BuildNavigation(PrototypeWaypointAutopilot autopilot, PrototypeTrajectoryPreviewNavMap trajectoryPreview)
+    private static PrototypePlayerNavigationSnapshot BuildNavigation(
+        PrototypeWaypointAutopilot autopilot,
+        PrototypeTrajectoryPreviewNavMap trajectoryPreview,
+        CelestialBodyCatalog celestialBodyCatalog)
     {
         PrototypeTrajectoryPreviewSnapshot preview = trajectoryPreview != null
             ? trajectoryPreview.RefreshPreview()
             : PrototypeTrajectoryPreviewSnapshot.Unavailable("Trajectory Preview", 0, 0f);
         if (autopilot == null || autopilot.CurrentTarget == null)
         {
-            return new PrototypePlayerNavigationSnapshot(
-                preview.HasRenderablePoints,
-                preview.HasRenderablePoints ? "Trajectory Preview" : "No target",
-                preview.HasRenderablePoints ? "Nav Map" : "Waypoint",
+            PrototypePlayerNavigationCelestialContext noTargetContext = BuildNavigationCelestialContext(
+                autopilot,
+                Vector3.zero,
+                celestialBodyCatalog);
+        return new PrototypePlayerNavigationSnapshot(
+            preview.HasRenderablePoints,
+            preview.HasRenderablePoints ? "Trajectory Preview" : "No target",
+            preview.HasRenderablePoints ? "Nav Map" : "Waypoint",
                 0f,
                 0f,
                 0f,
@@ -909,13 +951,20 @@ public static class PrototypePlayerHudSnapshotBuilder
                 0f,
                 System.Array.Empty<string>(),
                 System.Array.Empty<Vector3>(),
-                preview,
-                false,
-                Vector3.zero,
-                string.Empty,
-                0,
-                0);
+            preview,
+            false,
+            Vector3.zero,
+            string.Empty,
+            0,
+            0,
+            obstacleSummaryLabel: null,
+            celestialContext: noTargetContext);
         }
+
+        PrototypePlayerNavigationCelestialContext navigationCelestialContext = BuildNavigationCelestialContext(
+            autopilot,
+            autopilot.CurrentTarget.Position,
+            celestialBodyCatalog);
 
         string eta = FormatNavigationEta(autopilot.EtaSeconds, autopilot.ClosingSpeed);
         string[] sourceWarnings = autopilot.BuildNavigationWarningChips();
@@ -973,7 +1022,184 @@ public static class PrototypePlayerHudSnapshotBuilder
             totalPlanFuel,
             hasFlightPlan ? BuildNavigationManeuverRows(flightPlan.segments) : BuildNavigationManeuverRows(planSegments),
             PrototypeNavigationObstacleRegistry.Count,
-            BuildNavigationObstacleSummaryLabel(autopilot, hasAvoidanceCue));
+            BuildNavigationObstacleSummaryLabel(autopilot, hasAvoidanceCue),
+            navigationCelestialContext);
+    }
+
+    private static PrototypePlayerNavigationCelestialContext BuildNavigationCelestialContext(
+        PrototypeWaypointAutopilot autopilot,
+        Vector3 targetPosition,
+        CelestialBodyCatalog catalog)
+    {
+        if (autopilot == null || catalog == null || !IsFiniteVector3(targetPosition))
+        {
+            return default;
+        }
+
+        if (!CelestialOrbitMapSnapshotBuilder.TryBuildSnapshot(catalog, Time.timeAsDouble, out CelestialOrbitMapSnapshot orbitSnapshot))
+        {
+            return default;
+        }
+
+        if (orbitSnapshot == null || orbitSnapshot.Bodies == null || orbitSnapshot.Bodies.Count == 0)
+        {
+            return default;
+        }
+
+        string targetName = autopilot.TargetName;
+        string targetGameObjectName = autopilot.CurrentTarget != null && autopilot.CurrentTarget.gameObject != null
+            ? autopilot.CurrentTarget.gameObject.name
+            : string.Empty;
+
+        CelestialOrbitMapBodySnapshot matchedBody = ResolveNavigationCelestialTarget(
+            orbitSnapshot,
+            targetName,
+            targetGameObjectName,
+            targetPosition);
+
+        if (matchedBody == null)
+        {
+            return default;
+        }
+
+        string bodyDisplayName = GetSafeDisplayName(matchedBody.DisplayName, matchedBody.BodyId);
+        string parentDisplayName = GetSafeDisplayName(
+            ResolveParentDisplayName(orbitSnapshot, matchedBody.ParentBodyId),
+            matchedBody.ParentBodyId);
+        float bodyDistance = Vector3.Distance(matchedBody.AbsolutePositionMeters.ToVector3(), targetPosition);
+        string distanceLabel = FormatCelestialContextDistance(bodyDistance);
+        bool hasUsableParent = !string.IsNullOrWhiteSpace(parentDisplayName)
+            && !string.Equals(parentDisplayName, "Unknown body", System.StringComparison.Ordinal);
+        string parentSuffix = hasUsableParent ? " around " + parentDisplayName : string.Empty;
+        string contextLabel = "Near " + bodyDisplayName + parentSuffix + " | " + distanceLabel;
+
+        return new PrototypePlayerNavigationCelestialContext(
+            true,
+            bodyDisplayName,
+            parentDisplayName,
+            distanceLabel,
+            contextLabel,
+            matchedBody.BodyId,
+            matchedBody.ParentBodyId,
+            matchedBody.VisualMapScale.ToString("0.###"));
+    }
+
+    private static string FormatCelestialContextDistance(float meters)
+    {
+        float safeMeters = Mathf.Max(0f, meters);
+        if (safeMeters >= 1_000_000_000f)
+        {
+            return (safeMeters / 149597870700f).ToString("0.00") + " AU";
+        }
+
+        if (safeMeters >= 1_000_000f)
+        {
+            return (safeMeters / 1_000_000f).ToString("0.0") + " Mkm";
+        }
+
+        if (safeMeters >= 1000f)
+        {
+            return (safeMeters / 1000f).ToString("0.0") + " km";
+        }
+
+        return safeMeters.ToString("0") + " m";
+    }
+
+    private static CelestialOrbitMapBodySnapshot ResolveNavigationCelestialTarget(
+        CelestialOrbitMapSnapshot orbitSnapshot,
+        string targetName,
+        string targetGameObjectName,
+        Vector3 targetPosition)
+    {
+        if (orbitSnapshot == null || orbitSnapshot.Bodies == null)
+        {
+            return null;
+        }
+
+        for (int i = 0; i < orbitSnapshot.Bodies.Count; i++)
+        {
+            CelestialOrbitMapBodySnapshot body = orbitSnapshot.Bodies[i];
+            if (body == null)
+            {
+                continue;
+            }
+
+            if (!string.IsNullOrWhiteSpace(targetName)
+                && (string.Equals(body.DisplayName, targetName, System.StringComparison.Ordinal)
+                    || string.Equals(body.BodyId, targetName, System.StringComparison.Ordinal)))
+            {
+                return body;
+            }
+
+            if (!string.IsNullOrWhiteSpace(targetGameObjectName)
+                && string.Equals(body.DisplayName, targetGameObjectName, System.StringComparison.Ordinal))
+            {
+                return body;
+            }
+        }
+
+        CelestialOrbitMapBodySnapshot nearest = null;
+        float nearestDistanceSq = float.MaxValue;
+        for (int i = 0; i < orbitSnapshot.Bodies.Count; i++)
+        {
+            CelestialOrbitMapBodySnapshot body = orbitSnapshot.Bodies[i];
+            if (body == null)
+            {
+                continue;
+            }
+
+            Vector3 bodyPosition = body.AbsolutePositionMeters.ToVector3();
+            float distanceSq = (bodyPosition - targetPosition).sqrMagnitude;
+            if (distanceSq < nearestDistanceSq)
+            {
+                nearestDistanceSq = distanceSq;
+                nearest = body;
+            }
+        }
+
+        return nearest;
+    }
+
+    private static string ResolveParentDisplayName(CelestialOrbitMapSnapshot orbitSnapshot, string parentBodyId)
+    {
+        if (string.IsNullOrWhiteSpace(parentBodyId) || orbitSnapshot == null || orbitSnapshot.Bodies == null)
+        {
+            return string.Empty;
+        }
+
+        for (int i = 0; i < orbitSnapshot.Bodies.Count; i++)
+        {
+            CelestialOrbitMapBodySnapshot body = orbitSnapshot.Bodies[i];
+            if (body != null && string.Equals(body.BodyId, parentBodyId, System.StringComparison.Ordinal))
+            {
+                return body.DisplayName;
+            }
+        }
+
+        return string.Empty;
+    }
+
+    private static string GetSafeDisplayName(string displayName, string fallbackId)
+    {
+        if (!string.IsNullOrWhiteSpace(displayName))
+        {
+            return displayName;
+        }
+
+        return "Unknown body";
+    }
+
+    private static bool IsFiniteVector3(Vector3 value)
+    {
+        return !float.IsNaN(value.x)
+            && !float.IsNaN(value.y)
+            && !float.IsNaN(value.z)
+            && !float.IsInfinity(value.x)
+            && !float.IsInfinity(value.y)
+            && !float.IsInfinity(value.z)
+            && Mathf.Abs(value.x) < float.MaxValue
+            && Mathf.Abs(value.y) < float.MaxValue
+            && Mathf.Abs(value.z) < float.MaxValue;
     }
 
     private static string[] BuildNavigationManeuverRows(PrototypeTrajectorySegment[] segments)
@@ -2774,6 +3000,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     [SerializeField] private PrototypeTrajectoryPreviewNavMap trajectoryPreview;
     [SerializeField] private DockingPort sourceDockingPort;
     [SerializeField] private DockingPort targetDockingPort;
+    [SerializeField] private CelestialBodyCatalog celestialBodyCatalog;
     [SerializeField] private bool showPlayerHud = true;
     [SerializeField] private bool includeDebugHelp;
 
@@ -2950,11 +3177,20 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         RefreshNow();
     }
 
-    public void Bind(Transform root, ShipStats stats, Rigidbody body)
+    public void Bind(
+        Transform root,
+        ShipStats stats,
+        Rigidbody body,
+        CelestialBodyCatalog catalog = null)
     {
         shipRoot = root != null ? root : shipRoot;
         shipStats = stats != null ? stats : shipStats;
         shipRigidbody = body != null ? body : shipRigidbody;
+        if (catalog != null)
+        {
+            celestialBodyCatalog = catalog;
+        }
+
         ResolveReferences();
         EnsureUi();
         RefreshNow();
@@ -2984,6 +3220,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     {
         ResolveReferences();
         EnsureUi();
+        ResolveCelestialBodyCatalogReference();
         PrototypePlayerHudSnapshot snapshot = PrototypePlayerHudSnapshotBuilder.Build(
             shipRoot,
             shipRigidbody,
@@ -2996,9 +3233,20 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             targetDockingPort,
             arenaLoop,
             dockingApproachAssist,
-            trajectoryPreview);
+            trajectoryPreview,
+            celestialBodyCatalog);
         lastSnapshot = ApplyMinimapRangeOverride(snapshot);
         ApplySnapshot(lastSnapshot);
+    }
+
+    private void ResolveCelestialBodyCatalogReference()
+    {
+        if (celestialBodyCatalog != null)
+        {
+            return;
+        }
+
+        celestialBodyCatalog = Resources.Load<CelestialBodyCatalog>(CelestialBodyCatalog.ResourcePath);
     }
 
     private PrototypePlayerHudSnapshot ApplyMinimapRangeOverride(PrototypePlayerHudSnapshot snapshot)
@@ -4920,6 +5168,9 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             ? navigation.TrajectoryPreview.StatusLabel
             : "Preview off";
         string avoidanceLabel = navigation.HasAvoidanceCue ? navigation.AvoidanceLabel : "No obstacle cue";
+        string contextLine = navigation.CelestialContext.HasContext
+            ? BuildCompactContextLineWithCelestialContext(navigation)
+            : navigation.ReplanStatusLabel + " | Obstacles: " + navigation.ObstacleSummaryLabel;
         string burnLabel = "Burn " + FormatBurnSeconds(navigation.RequiredBurnSeconds)
             + " / avail " + FormatBurnSeconds(navigation.AvailableBurnSeconds);
         string totalPlanLabel = "Schedule " + FormatBurnSeconds(navigation.TotalPlanDurationSeconds)
@@ -4936,10 +5187,20 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             + navigation.PlanIdentityLabel + "\n"
             + navigation.TrackingErrorLabel + "\n"
             + navigation.TrackingCommandLabel + "\n"
-            + navigation.ReplanStatusLabel + " | Obstacles: " + navigation.ObstacleSummaryLabel + "\n"
+            + contextLine + "\n"
             + BuildNavigationPlannerStepRows(navigation.ManeuverStepRows, avoidanceLabel);
     }
 
+    private static string BuildCompactContextLineWithCelestialContext(PrototypePlayerNavigationSnapshot navigation)
+    {
+        bool hasActiveObstacleDiagnostics = navigation.ActiveObstacleCount > 0
+            || !string.Equals(navigation.ObstacleSummaryLabel, "0 active | no obstacle cue", System.StringComparison.Ordinal)
+            || !string.Equals(navigation.ReplanStatusLabel, "Replan: none", System.StringComparison.Ordinal);
+
+        return hasActiveObstacleDiagnostics
+            ? navigation.CelestialContext.PilotContextLabel + " | " + navigation.ReplanStatusLabel + " | Obstacles: " + navigation.ObstacleSummaryLabel
+            : navigation.CelestialContext.PilotContextLabel;
+    }
     private static string BuildNavigationPlannerStepRows(string[] rows, string fallback)
     {
         if (rows == null || rows.Length == 0)

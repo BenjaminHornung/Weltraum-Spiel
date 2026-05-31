@@ -302,6 +302,219 @@ public class PrototypePlayerHudValidationTests
     }
 
     [Test]
+    public void NavigationSnapshotUsesCelestialContextWithCatalog()
+    {
+        using (var builder = new PrototypeScenarioBuilder())
+        {
+            PrototypeAutopilotRig rig = builder.CreateAutopilotRig(targetPosition: Vector3.forward * 220f);
+            CelestialBodyCatalog catalog = Resources.Load<CelestialBodyCatalog>(CelestialBodyCatalog.ResourcePath);
+            Assert.NotNull(catalog, $"Expected catalog at {CelestialBodyCatalog.ResourcePath}");
+
+            PrototypePlayerHudSnapshot snapshot = PrototypePlayerHudSnapshotBuilder.Build(
+                rig.Ship.Ship.transform,
+                rig.Ship.Body,
+                rig.Ship.Stats,
+                rig.Ship.Controller,
+                rig.Autopilot,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                catalog: catalog);
+
+            Assert.True(snapshot.Navigation.Visible, "navigation snapshot must stay visible with catalog");
+            Assert.True(snapshot.Navigation.CelestialContext.HasContext, "celestial context should be present with catalog");
+            Assert.That(snapshot.Navigation.CelestialContext.PilotContextLabel, Does.StartWith("Near "));
+            Assert.That(snapshot.Navigation.CelestialContext.PilotContextLabel, Does.Contain(snapshot.Navigation.CelestialContext.DistanceLabel));
+
+            MethodInfo bodyMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
+                "BuildNavigationPlannerBody",
+                BindingFlags.Static | BindingFlags.NonPublic);
+            Assert.NotNull(bodyMethod);
+            string body = (string)bodyMethod.Invoke(null, new object[] { snapshot.Navigation });
+            Assert.That(body, Does.Contain(snapshot.Navigation.CelestialContext.PilotContextLabel));
+            if (!string.IsNullOrWhiteSpace(snapshot.Navigation.CelestialContext.DebugBodyId))
+            {
+                Assert.That(body, Does.Not.Contain(snapshot.Navigation.CelestialContext.DebugBodyId));
+            }
+            if (!string.IsNullOrWhiteSpace(snapshot.Navigation.CelestialContext.DebugParentBodyId))
+            {
+                Assert.That(body, Does.Not.Contain(snapshot.Navigation.CelestialContext.DebugParentBodyId));
+            }
+        }
+    }
+
+    [Test]
+    public void NavigationPlannerBodyShowsCelestialContextWithActiveObstacleDiagnostics()
+    {
+        MethodInfo bodyMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
+            "BuildNavigationPlannerBody",
+            BindingFlags.Static | BindingFlags.NonPublic);
+        Assert.NotNull(bodyMethod);
+
+        var context = new PrototypePlayerNavigationCelestialContext(
+            true,
+            "Helios",
+            "Sol",
+            "250 m",
+            "Near Helios | 250 m",
+            "",
+            "",
+            "1x");
+
+        var navigation = new PrototypePlayerNavigationSnapshot(
+            true,
+            "Test target",
+            "Waypoint",
+            1200f,
+            10f,
+            -8f,
+            2f,
+            "ETA 0",
+            "Bereit",
+            "Direkter Kurs",
+            "Route: Direkt",
+            "Maneuver: Direkt",
+            10f,
+            0f,
+            0f,
+            System.Array.Empty<string>(),
+            System.Array.Empty<Vector3>(),
+            default,
+            false,
+            Vector3.zero,
+            string.Empty,
+            1,
+            1,
+            "Authority: Legacy live gates",
+            "Active: Direkter Kurs",
+            "Replan: obstacle cue",
+            "Plan: none",
+            "Track: --",
+            "Cmd: --",
+            0f,
+            0f,
+            System.Array.Empty<string>(),
+            2,
+            "2 active | cue Asteroid",
+            context);
+
+        string body = (string)bodyMethod.Invoke(null, new object[] { navigation });
+        Assert.That(body, Does.Contain(context.PilotContextLabel));
+        Assert.That(body, Does.Contain("Replan: obstacle cue"));
+        Assert.That(body, Does.Contain("Obstacles:"));
+        Assert.That(body, Does.Contain("2 active | cue Asteroid"));
+        Assert.That(
+            body,
+            Does.Contain(context.PilotContextLabel + " | Replan: obstacle cue | Obstacles: 2 active | cue Asteroid"));
+    }
+
+    [Test]
+    public void NavigationPlannerBodySkipsDebugBodyAndParentIdsForMissingCelestialDisplayNames()
+    {
+        MethodInfo bodyMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
+            "BuildNavigationPlannerBody",
+            BindingFlags.Static | BindingFlags.NonPublic);
+        Assert.NotNull(bodyMethod);
+
+        var fallbackContext = new PrototypePlayerNavigationCelestialContext(
+            true,
+            string.Empty,
+            string.Empty,
+            "250 m",
+            "Near Unknown body | 250 m",
+            "RAW_BODY_42",
+            "RAW_PARENT_42",
+            "1x");
+
+        var navigation = new PrototypePlayerNavigationSnapshot(
+            true,
+            "Fallback target",
+            "Waypoint",
+            1200f,
+            10f,
+            -8f,
+            2f,
+            "ETA 0",
+            "Bereit",
+            "Direkter Kurs",
+            "Route: Direkt",
+            "Maneuver: Direkt",
+            10f,
+            0f,
+            0f,
+            System.Array.Empty<string>(),
+            System.Array.Empty<Vector3>(),
+            default,
+            false,
+            Vector3.zero,
+            string.Empty,
+            1,
+            1,
+            celestialContext: fallbackContext);
+
+        string body = (string)bodyMethod.Invoke(null, new object[] { navigation });
+        Assert.That(body, Does.Not.Contain(fallbackContext.DebugBodyId));
+        Assert.That(body, Does.Not.Contain(fallbackContext.DebugParentBodyId));
+        Assert.That(body, Does.Not.Contain("around"));
+        Assert.That(body, Does.Contain(fallbackContext.BodyDisplayName));
+        Assert.That(body, Does.Contain(fallbackContext.PilotContextLabel));
+    }
+
+    [Test]
+    public void CelestialContextDistanceFormattingUsesMkmOrAuForLargeDistances()
+    {
+        MethodInfo formatMethod = typeof(PrototypePlayerHudSnapshotBuilder).GetMethod(
+            "FormatCelestialContextDistance",
+            BindingFlags.Static | BindingFlags.NonPublic);
+        Assert.NotNull(formatMethod);
+
+        string kmLabel = (string)formatMethod.Invoke(null, new object[] { 999_999f });
+        string mkmLabel = (string)formatMethod.Invoke(null, new object[] { 1_500_000f });
+        string auBoundaryLabel = (string)formatMethod.Invoke(null, new object[] { 1_000_000f });
+        string auLabel = (string)formatMethod.Invoke(null, new object[] { 149_597_870_700f });
+
+        Assert.That(kmLabel, Is.EqualTo("1000.0 km"));
+        Assert.That(auBoundaryLabel, Is.EqualTo("1.0 Mkm"));
+        Assert.That(mkmLabel, Does.Contain("Mkm"));
+        Assert.That(auLabel, Does.Contain("AU"));
+        Assert.That(auLabel, Is.EqualTo("1.00 AU"));
+    }
+
+    [Test]
+    public void NavigationSnapshotSkipsCelestialContextWithoutCatalog()
+    {
+        using (var builder = new PrototypeScenarioBuilder())
+        {
+            PrototypeAutopilotRig rig = builder.CreateAutopilotRig(targetPosition: Vector3.forward * 220f);
+
+            PrototypePlayerHudSnapshot snapshot = PrototypePlayerHudSnapshotBuilder.Build(
+                rig.Ship.Ship.transform,
+                rig.Ship.Body,
+                rig.Ship.Stats,
+                rig.Ship.Controller,
+                rig.Autopilot,
+                null,
+                null,
+                null,
+                null);
+
+            Assert.True(snapshot.Navigation.Visible, "navigation snapshot must stay visible without catalog");
+            Assert.False(snapshot.Navigation.CelestialContext.HasContext, "celestial context should remain absent without catalog");
+
+            MethodInfo bodyMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
+                "BuildNavigationPlannerBody",
+                BindingFlags.Static | BindingFlags.NonPublic);
+            Assert.NotNull(bodyMethod);
+            string body = (string)bodyMethod.Invoke(null, new object[] { snapshot.Navigation });
+            Assert.That(body, Does.Contain(snapshot.Navigation.ReplanStatusLabel + " | Obstacles:"));
+            Assert.That(body, Does.Not.Contain("Near "));
+        }
+    }
+
+    [Test]
     public void NavigationPlannerMapLabelUsesNoRouteWhenRouteIsMissing()
     {
         MethodInfo bodyMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
