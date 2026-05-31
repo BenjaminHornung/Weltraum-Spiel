@@ -7,6 +7,13 @@ using UnityEngine;
 public class PrototypeAutopilotNavigationPlayModeTests
 {
     private const BindingFlags PrivateInstance = BindingFlags.Instance | BindingFlags.NonPublic;
+    private enum DirectFastTransferTrackingInjectionMode
+    {
+        None = 0,
+        Burn = 10,
+        Brake = 20,
+        ConsecutiveBurnCorrections = 30
+    }
 
     private SimulationMode previousSimulationMode;
 
@@ -309,13 +316,13 @@ public class PrototypeAutopilotNavigationPlayModeTests
         rig.Autopilot.SetStrictFlightPlanExecutionForTests(true);
         rig.Autopilot.ToggleAutopilot();
 
-        DirectFastTransferTrace trace = RunDirectFastTransferTrace(rig, 900);
+        DirectFastTransferTrace trace = RunDirectFastTransferTrace(
+            rig,
+            900,
+            DirectFastTransferTrackingInjectionMode.None);
 
         Assert.True(rig.Autopilot.CurrentFlightPlan.IsDirectFastTransfer, BuildDirectFastTransferTraceDiagnostics(trace));
-        Assert.That(trace.BurnLatchedSamples, Is.GreaterThan(8), BuildDirectFastTransferTraceDiagnostics(trace));
-        Assert.That(trace.ReplanFrames, Is.EqualTo(0), BuildDirectFastTransferTraceDiagnostics(trace));
-        Assert.That(trace.ReplanStatusFrames, Is.EqualTo(0), BuildDirectFastTransferTraceDiagnostics(trace));
-        Assert.That(trace.PlanRevisionChanges, Is.EqualTo(0), BuildDirectFastTransferTraceDiagnostics(trace));
+        AssertDirectFastTransferNominalInvariants(trace, minBurnSamples: 8);
     }
 
     [Test]
@@ -327,10 +334,12 @@ public class PrototypeAutopilotNavigationPlayModeTests
         rig.Autopilot.SetStrictFlightPlanExecutionForTests(true);
         rig.Autopilot.ToggleAutopilot();
 
-        DirectFastTransferTrace trace = RunDirectFastTransferTrace(rig, 900);
+        DirectFastTransferTrace trace = RunDirectFastTransferTrace(
+            rig,
+            900,
+            DirectFastTransferTrackingInjectionMode.None);
 
-        Assert.That(trace.BurnLatchedSamples, Is.GreaterThan(8), BuildDirectFastTransferTraceDiagnostics(trace));
-        Assert.That(trace.LowBurnThrottleFrames, Is.EqualTo(0), BuildDirectFastTransferTraceDiagnostics(trace));
+        AssertDirectFastTransferNominalInvariants(trace, minBurnSamples: 8);
     }
 
     [Test]
@@ -342,14 +351,34 @@ public class PrototypeAutopilotNavigationPlayModeTests
         rig.Autopilot.SetStrictFlightPlanExecutionForTests(true);
         rig.Autopilot.ToggleAutopilot();
 
-        DirectFastTransferTrace trace = RunDirectFastTransferTrace(rig, 1400);
+        DirectFastTransferTrace trace = RunDirectFastTransferTrace(
+            rig,
+            1400,
+            DirectFastTransferTrackingInjectionMode.None);
 
-        Assert.That(trace.BrakeLatchedSamples, Is.GreaterThan(8), BuildDirectFastTransferTraceDiagnostics(trace));
-        Assert.That(trace.LowBrakeThrottleFrames, Is.EqualTo(0), BuildDirectFastTransferTraceDiagnostics(trace));
+        AssertDirectFastTransferNominalInvariants(trace, minBurnSamples: 4, minBrakeSamples: 8);
     }
 
     [Test]
-    public void PlayMode_DirectFastTransfer_SoftTrackingErrorDoesNotClearActuatorOutput()
+    public void PlayMode_DirectFastTransfer_BurnToBrakeTransition_DoesNotPulseMainThrottle()
+    {
+        AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 220f);
+        SetPrivateFloat(rig.Autopilot, "navigationPlanIntervalSeconds", 999f);
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(true);
+        rig.Autopilot.SetStrictFlightPlanExecutionForTests(true);
+        rig.Autopilot.ToggleAutopilot();
+
+        DirectFastTransferTrace trace = RunDirectFastTransferTrace(
+            rig,
+            1400,
+            DirectFastTransferTrackingInjectionMode.None);
+
+        AssertDirectFastTransferNominalInvariants(trace, minBurnSamples: 4, minBrakeSamples: 8);
+        Assert.That(trace.BurnToBrakeLowThrottleFrames, Is.EqualTo(0), BuildDirectFastTransferTraceDiagnostics(trace));
+    }
+
+    [Test]
+    public void PlayMode_DirectFastTransfer_SoftTrackingDuringBurnDoesNotClearActuatorOutput()
     {
         AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 240f);
         SetPrivateFloat(rig.Autopilot, "navigationPlanIntervalSeconds", 999f);
@@ -357,13 +386,62 @@ public class PrototypeAutopilotNavigationPlayModeTests
         rig.Autopilot.SetStrictFlightPlanExecutionForTests(true);
         rig.Autopilot.ToggleAutopilot();
 
-        DirectFastTransferTrace trace = RunDirectFastTransferTrace(rig, 900, true);
+        DirectFastTransferTrace trace = RunDirectFastTransferTrace(
+            rig,
+            1400,
+            DirectFastTransferTrackingInjectionMode.Burn);
 
+        Assert.That(trace.SoftTrackingInjectionCount, Is.EqualTo(1), BuildDirectFastTransferTraceDiagnostics(trace));
         Assert.True(trace.SoftErrorInjected, BuildDirectFastTransferTraceDiagnostics(trace));
         Assert.That(trace.AfterSoftBurnFrames, Is.GreaterThan(2), BuildDirectFastTransferTraceDiagnostics(trace));
         Assert.That(trace.AfterSoftReplanFrames, Is.EqualTo(0), BuildDirectFastTransferTraceDiagnostics(trace));
         Assert.That(trace.MinimumMainAfterSoftError, Is.GreaterThanOrEqualTo(0.95f), BuildDirectFastTransferTraceDiagnostics(trace));
-        Assert.That(trace.PlanRevisionChanges, Is.EqualTo(0), BuildDirectFastTransferTraceDiagnostics(trace));
+        AssertDirectFastTransferNominalInvariants(trace, minBurnSamples: 4);
+    }
+
+    [Test]
+    public void PlayMode_DirectFastTransfer_SoftTrackingDuringBrakeDoesNotClearActuatorOutput()
+    {
+        AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 240f);
+        SetPrivateFloat(rig.Autopilot, "navigationPlanIntervalSeconds", 999f);
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(true);
+        rig.Autopilot.SetStrictFlightPlanExecutionForTests(true);
+        rig.Autopilot.ToggleAutopilot();
+
+        DirectFastTransferTrace trace = RunDirectFastTransferTrace(
+            rig,
+            1400,
+            DirectFastTransferTrackingInjectionMode.Brake);
+
+        Assert.That(trace.SoftTrackingInjectionCount, Is.EqualTo(1), BuildDirectFastTransferTraceDiagnostics(trace));
+        Assert.True(trace.SoftErrorInjected, BuildDirectFastTransferTraceDiagnostics(trace));
+        Assert.That(trace.AfterSoftBurnFrames, Is.GreaterThan(2), BuildDirectFastTransferTraceDiagnostics(trace));
+        Assert.That(trace.AfterSoftReplanFrames, Is.EqualTo(0), BuildDirectFastTransferTraceDiagnostics(trace));
+        Assert.That(trace.MinimumMainAfterSoftError, Is.GreaterThanOrEqualTo(0.95f), BuildDirectFastTransferTraceDiagnostics(trace));
+        AssertDirectFastTransferNominalInvariants(trace, minBurnSamples: 4, minBrakeSamples: 8);
+    }
+
+    [Test]
+    public void PlayMode_DirectFastTransfer_ConsecutiveSoftTrackingCorrectionsDoNotReplan()
+    {
+        AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 240f);
+        SetPrivateFloat(rig.Autopilot, "navigationPlanIntervalSeconds", 999f);
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(true);
+        rig.Autopilot.SetStrictFlightPlanExecutionForTests(true);
+        rig.Autopilot.ToggleAutopilot();
+
+        DirectFastTransferTrace trace = RunDirectFastTransferTrace(
+            rig,
+            1200,
+            DirectFastTransferTrackingInjectionMode.ConsecutiveBurnCorrections);
+
+        Assert.That(trace.SoftTrackingInjectionCount, Is.EqualTo(2), BuildDirectFastTransferTraceDiagnostics(trace));
+        Assert.That(trace.SoftTrackingInjectionFrames.Count, Is.EqualTo(2), BuildDirectFastTransferTraceDiagnostics(trace));
+        Assert.That(
+            trace.SoftTrackingInjectionFrames[1] - trace.SoftTrackingInjectionFrames[0],
+            Is.GreaterThanOrEqualTo(25).And.LessThanOrEqualTo(40),
+            BuildDirectFastTransferTraceDiagnostics(trace));
+        AssertDirectFastTransferNominalInvariants(trace, minBurnSamples: 4);
     }
 
     [Test]
@@ -378,13 +456,56 @@ public class PrototypeAutopilotNavigationPlayModeTests
         Physics.SyncTransforms();
         rig.Autopilot.ToggleAutopilot();
 
-        DirectFastTransferTrace trace = RunDirectFastTransferTrace(rig, 1200);
+        DirectFastTransferTrace trace = RunDirectFastTransferTrace(
+            rig,
+            1200,
+            DirectFastTransferTrackingInjectionMode.None);
 
         Assert.True(rig.Autopilot.CurrentFlightPlan.IsDirectFastTransfer, BuildDirectFastTransferTraceDiagnostics(trace));
-        Assert.That(trace.BurnLatchedSamples, Is.GreaterThan(4), BuildDirectFastTransferTraceDiagnostics(trace));
-        Assert.That(trace.ReplanFrames, Is.EqualTo(0), BuildDirectFastTransferTraceDiagnostics(trace));
-        Assert.That(trace.ReplanStatusFrames, Is.EqualTo(0), BuildDirectFastTransferTraceDiagnostics(trace));
-        Assert.That(trace.PlanRevisionChanges, Is.EqualTo(0), BuildDirectFastTransferTraceDiagnostics(trace));
+        AssertDirectFastTransferNominalInvariants(trace, minBurnSamples: 4);
+    }
+
+    [Test]
+    public void PlayMode_DirectFastTransfer_StartRotation135deg_NoReplanFlap()
+    {
+        AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 220f);
+        rig.Ship.transform.rotation = Quaternion.Euler(0f, 135f, 0f);
+        rig.Body.rotation = rig.Ship.transform.rotation;
+        SetPrivateFloat(rig.Autopilot, "navigationPlanIntervalSeconds", 999f);
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(true);
+        rig.Autopilot.SetStrictFlightPlanExecutionForTests(true);
+        Physics.SyncTransforms();
+        rig.Autopilot.ToggleAutopilot();
+
+        DirectFastTransferTrace trace = RunDirectFastTransferTrace(
+            rig,
+            1400,
+            DirectFastTransferTrackingInjectionMode.None);
+
+        Assert.True(rig.Autopilot.CurrentFlightPlan.IsDirectFastTransfer, BuildDirectFastTransferTraceDiagnostics(trace));
+        AssertDirectFastTransferNominalInvariants(trace, minBurnSamples: 4);
+    }
+
+    [Test]
+    public void PlayMode_DirectFastTransfer_InitialAngularVelocity_DelaysLatchWithoutThrottlePulse()
+    {
+        AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 220f);
+        rig.Ship.transform.rotation = Quaternion.Euler(0f, 25f, 0f);
+        rig.Body.rotation = rig.Ship.transform.rotation;
+        rig.Body.angularVelocity = Vector3.up * Mathf.Deg2Rad * 12f;
+        SetPrivateFloat(rig.Autopilot, "navigationPlanIntervalSeconds", 999f);
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(true);
+        rig.Autopilot.SetStrictFlightPlanExecutionForTests(true);
+        Physics.SyncTransforms();
+        rig.Autopilot.ToggleAutopilot();
+
+        DirectFastTransferTrace trace = RunDirectFastTransferTrace(
+            rig,
+            700,
+            DirectFastTransferTrackingInjectionMode.None);
+
+        Assert.That(trace.FirstBurnLatchedFrame, Is.GreaterThan(0), BuildDirectFastTransferTraceDiagnostics(trace));
+        AssertDirectFastTransferNominalInvariants(trace, minBurnSamples: 3);
     }
 
     [Test]
@@ -1676,17 +1797,25 @@ public class PrototypeAutopilotNavigationPlayModeTests
     private static DirectFastTransferTrace RunDirectFastTransferTrace(
         AutopilotPlayModeRig rig,
         int maxSteps,
-        bool injectSoftTrackingError = false)
+        DirectFastTransferTrackingInjectionMode trackingInjectionMode = DirectFastTransferTrackingInjectionMode.None)
     {
         var trace = new DirectFastTransferTrace
         {
             FirstPlanRevision = -1,
             LastPlanRevision = -1,
+            InjectionMode = trackingInjectionMode,
+            FirstPlanId = string.Empty,
+            LastPlanId = string.Empty,
+            FirstBurnLatchedFrame = -1,
+            FirstBrakeLatchedFrame = -1,
+            MaxBrakeDesiredAngle = -1f,
             MinimumMainAfterSoftError = 1f
         };
         bool burnLatched = false;
         bool brakeLatched = false;
-        bool countAfterSoft = false;
+        bool sawRetrogradeBurnPhase = false;
+        int nextConsecutiveInjectionFrame = -1;
+        int softMonitorFramesRemaining = 0;
 
         for (int i = 0; i < maxSteps; i++)
         {
@@ -1697,6 +1826,31 @@ public class PrototypeAutopilotNavigationPlayModeTests
             PrototypeFlightPlanTrackingCommand command = rig.Autopilot.CurrentFlightPlanTrackingCommand;
             float requestedMain = rig.Autopilot.RequestedMainThrottle;
             string divergenceStatus = rig.Autopilot.FlightPlanDivergenceStatusLabel ?? string.Empty;
+            string arrivalReason = rig.Autopilot.ArrivalFailureReason ?? string.Empty;
+            bool inProgradeBurn = state.activePhase == PrototypeManeuverPhase.ProgradeBurn;
+            bool inRetrogradeBurn = state.activePhase == PrototypeManeuverPhase.RetrogradeBurn;
+            bool inFlip = state.activePhase == PrototypeManeuverPhase.FlipToRetrograde;
+            bool requiresReplan = rig.Autopilot.FlightPlanRequiresReplan
+                || arrivalReason.Contains("FlightPlanReplan");
+            string planIdentity = GetStableFlightPlanIdentity(plan, state);
+            float desiredAngle = rig.Autopilot.DesiredBurnDirection.sqrMagnitude > 0.0001f
+                ? Vector3.Angle(rig.Ship.transform.forward, rig.Autopilot.DesiredBurnDirection.normalized)
+                : -1f;
+
+            if (!string.IsNullOrEmpty(planIdentity))
+            {
+                if (string.IsNullOrEmpty(trace.FirstPlanId))
+                {
+                    trace.FirstPlanId = planIdentity;
+                }
+                else if (!string.IsNullOrEmpty(trace.LastPlanId) && planIdentity != trace.LastPlanId)
+                {
+                    trace.FlightPlanIdChanges++;
+                    trace.Events.Add($"planId i={i} from={trace.LastPlanId} to={planIdentity} status={divergenceStatus}");
+                }
+
+                trace.LastPlanId = planIdentity;
+            }
 
             if (plan.revision > 0)
             {
@@ -1704,20 +1858,50 @@ public class PrototypeAutopilotNavigationPlayModeTests
                 {
                     trace.FirstPlanRevision = plan.revision;
                 }
-                else if (plan.revision != trace.LastPlanRevision && trace.LastPlanRevision > 0)
+
+                if (trace.LastPlanRevision > 0 && plan.revision != trace.LastPlanRevision)
                 {
-                    trace.PlanRevisionChanges++;
-                    trace.Events.Add($"revision i={i} from={trace.LastPlanRevision} to={plan.revision} status={divergenceStatus} reason={rig.Autopilot.ArrivalFailureReason}");
+                    if (plan.revision < trace.LastPlanRevision)
+                    {
+                        trace.RevisionResetFrames++;
+                        trace.Events.Add(
+                            $"revisionReset i={i} from={trace.LastPlanRevision} to={plan.revision} "
+                            + $"status={divergenceStatus} reason={arrivalReason}");
+                    }
+                    else
+                    {
+                        trace.PlanRevisionChanges++;
+                        trace.Events.Add(
+                            $"revision i={i} from={trace.LastPlanRevision} to={plan.revision} "
+                            + $"status={divergenceStatus} reason={arrivalReason} planId={planIdentity}");
+                    }
                 }
 
                 trace.LastPlanRevision = plan.revision;
             }
+            else if (trace.LastPlanRevision > 0)
+            {
+                trace.RevisionResetFrames++;
+                trace.Events.Add(
+                    $"revisionReset i={i} from={trace.LastPlanRevision} to={plan.revision} "
+                    + $"status={divergenceStatus} reason={arrivalReason}");
+                trace.LastPlanRevision = plan.revision;
+            }
 
-            if (rig.Autopilot.FlightPlanRequiresReplan
-                || rig.Autopilot.ArrivalFailureReason.Contains("FlightPlanReplan"))
+            if (requiresReplan)
             {
                 trace.ReplanFrames++;
-                trace.Events.Add($"replan i={i} rev={plan.revision} phase={state.activePhase} state={rig.Autopilot.CurrentState} status={divergenceStatus} reason={rig.Autopilot.ArrivalFailureReason} stateReasons={state.replanReasons} cmdReasons={command.replanReasons}");
+                if (burnLatched)
+                {
+                    trace.ReplanWhileBurnLatchedFrames++;
+                }
+
+                if (brakeLatched)
+                {
+                    trace.ReplanWhileBrakeLatchedFrames++;
+                }
+
+                trace.Events.Add($"replan i={i} rev={plan.revision} phase={state.activePhase} state={rig.Autopilot.CurrentState} status={divergenceStatus} reason={arrivalReason} stateReasons={state.replanReasons} cmdReasons={command.replanReasons}");
             }
 
             if (divergenceStatus.StartsWith("Replan:")
@@ -1727,11 +1911,15 @@ public class PrototypeAutopilotNavigationPlayModeTests
                 trace.Events.Add($"status i={i} rev={plan.revision} phase={state.activePhase} state={rig.Autopilot.CurrentState} status={divergenceStatus} stateReasons={state.replanReasons} cmdReasons={command.replanReasons}");
             }
 
-            if (state.activePhase == PrototypeManeuverPhase.ProgradeBurn)
+            if (inProgradeBurn)
             {
                 if (requestedMain >= 0.95f)
                 {
                     burnLatched = true;
+                    if (trace.FirstBurnLatchedFrame < 0)
+                    {
+                        trace.FirstBurnLatchedFrame = i;
+                    }
                 }
 
                 if (burnLatched)
@@ -1742,37 +1930,18 @@ public class PrototypeAutopilotNavigationPlayModeTests
                         trace.LowBurnThrottleFrames++;
                     }
                 }
-
-                if (injectSoftTrackingError && burnLatched && !trace.SoftErrorInjected)
-                {
-                    rig.Body.position += Vector3.right * 18f;
-                    Physics.SyncTransforms();
-                    trace.SoftErrorInjected = true;
-                    countAfterSoft = true;
-                    injectedThisFrame = true;
-                }
             }
 
-            if (countAfterSoft && !injectedThisFrame && state.activePhase == PrototypeManeuverPhase.ProgradeBurn)
-            {
-                trace.AfterSoftBurnFrames++;
-                trace.MinimumMainAfterSoftError = Mathf.Min(trace.MinimumMainAfterSoftError, requestedMain);
-                if (rig.Autopilot.FlightPlanRequiresReplan)
-                {
-                    trace.AfterSoftReplanFrames++;
-                }
-
-                if (trace.AfterSoftBurnFrames >= 8)
-                {
-                    countAfterSoft = false;
-                }
-            }
-
-            if (state.activePhase == PrototypeManeuverPhase.RetrogradeBurn)
+            if (inRetrogradeBurn)
             {
                 if (requestedMain >= 0.95f)
                 {
                     brakeLatched = true;
+                    sawRetrogradeBurnPhase = true;
+                    if (trace.FirstBrakeLatchedFrame < 0)
+                    {
+                        trace.FirstBrakeLatchedFrame = i;
+                    }
                 }
 
                 bool beforeBrakeEndEnvelope = rig.Autopilot.FlightPlanExecutorElapsedSeconds < state.elapsedSeconds
@@ -1785,31 +1954,166 @@ public class PrototypeAutopilotNavigationPlayModeTests
                         trace.LowBrakeThrottleFrames++;
                     }
                 }
+
+                if (desiredAngle > trace.MaxBrakeDesiredAngle)
+                {
+                    trace.MaxBrakeDesiredAngle = desiredAngle;
+                }
             }
 
-            trace.LastDesiredAngle = rig.Autopilot.DesiredBurnDirection.sqrMagnitude > 0.0001f
-                ? Vector3.Angle(rig.Ship.transform.forward, rig.Autopilot.DesiredBurnDirection.normalized)
-                : -1f;
+            bool transitionMainCommanded = burnLatched
+                && brakeLatched
+                && inRetrogradeBurn
+                && !inProgradeBurn
+                && !inFlip
+                && (rig.Autopilot.FlightPlanExecutorElapsedSeconds < state.elapsedSeconds
+                    || state.activeProgress01 < 0.92f)
+                && command.mainThrottleAllowed
+                && command.mainThrottle >= 0.95f;
+            if (transitionMainCommanded && requestedMain < 0.95f)
+            {
+                trace.BurnToBrakeLowThrottleFrames++;
+                trace.Events.Add(
+                    $"brakeTransitionLowMain i={i} rev={plan.revision} phase={state.activePhase} "
+                    + $"state={rig.Autopilot.CurrentState} requested={requestedMain:0.00} "
+                    + $"cmd={command.mainThrottle:0.00} status={divergenceStatus}");
+            }
+
+            if ((inFlip || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.FlipForBrake)
+                && requestedMain > 0.001f)
+            {
+                trace.FlipThrottleFrames++;
+            }
+
+            bool injectBurnNow = (trackingInjectionMode == DirectFastTransferTrackingInjectionMode.Burn && !trace.SoftErrorInjected)
+                || (trackingInjectionMode == DirectFastTransferTrackingInjectionMode.ConsecutiveBurnCorrections
+                    && trace.SoftTrackingInjectionCount == 0)
+                || (trackingInjectionMode == DirectFastTransferTrackingInjectionMode.ConsecutiveBurnCorrections
+                    && trace.SoftTrackingInjectionCount == 1
+                    && i >= nextConsecutiveInjectionFrame);
+            if (inProgradeBurn && burnLatched && injectBurnNow)
+            {
+                rig.Body.position += Vector3.right * 18f;
+                Physics.SyncTransforms();
+                trace.SoftErrorInjected = true;
+                trace.SoftTrackingInjectionCount++;
+                trace.SoftTrackingInjectionFrames.Add(i);
+                injectedThisFrame = true;
+                softMonitorFramesRemaining = 8;
+                trace.Events.Add($"softInject i={i} phase={state.activePhase} mode={trackingInjectionMode} rev={plan.revision}");
+                if (trackingInjectionMode == DirectFastTransferTrackingInjectionMode.ConsecutiveBurnCorrections
+                    && trace.SoftTrackingInjectionCount == 1)
+                {
+                    nextConsecutiveInjectionFrame = i + 30;
+                }
+            }
+
+            if (trackingInjectionMode == DirectFastTransferTrackingInjectionMode.Brake
+                && inRetrogradeBurn
+                && brakeLatched
+                && !trace.SoftErrorInjected)
+            {
+                rig.Body.position += Vector3.up * 7f;
+                Physics.SyncTransforms();
+                trace.SoftErrorInjected = true;
+                trace.SoftTrackingInjectionCount++;
+                trace.SoftTrackingInjectionFrames.Add(i);
+                injectedThisFrame = true;
+                softMonitorFramesRemaining = 8;
+                trace.Events.Add($"softInject i={i} phase={state.activePhase} mode={trackingInjectionMode} rev={plan.revision}");
+            }
+
+            if (softMonitorFramesRemaining > 0 && !injectedThisFrame && (inProgradeBurn || inRetrogradeBurn || inFlip))
+            {
+                trace.AfterSoftBurnFrames++;
+                trace.MinimumMainAfterSoftError = Mathf.Min(trace.MinimumMainAfterSoftError, requestedMain);
+                if (rig.Autopilot.FlightPlanRequiresReplan)
+                {
+                    trace.AfterSoftReplanFrames++;
+                }
+
+                softMonitorFramesRemaining--;
+            }
+
+            trace.LastDesiredAngle = desiredAngle;
 
             if (i % 20 == 0)
             {
                 trace.Samples.Add(
                     $"i={i} rev={plan.revision} phase={state.activePhase} state={rig.Autopilot.CurrentState} "
-                    + $"main={requestedMain:0.00} cmd={command.mainThrottle:0.00} "
+                    + $"main={requestedMain:0.00} cmd={command.mainThrottle:0.00} allowed={command.mainThrottleAllowed} "
                     + $"replan={rig.Autopilot.FlightPlanRequiresReplan} reasons={state.replanReasons} "
-                    + $"status={divergenceStatus} angle={trace.LastDesiredAngle:0.0}");
+                    + $"status={divergenceStatus} angle={trace.LastDesiredAngle:0.0} "
+                    + $"planId={planIdentity} maxBrakeAngle={trace.MaxBrakeDesiredAngle:0.0}");
             }
 
-            if (rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Complete
+            bool terminalState = rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Complete
                 || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Aborted
                 || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Failed
-                || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.FuelInsufficient)
+                || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.FuelInsufficient;
+            if (terminalState)
             {
+                trace.TraceEndedInTerminalState = true;
+                trace.CompletedBeforeBrakeObserved = !sawRetrogradeBurnPhase;
                 break;
             }
         }
 
         return trace;
+    }
+
+    private static string GetStableFlightPlanIdentity(PrototypeFlightPlan plan, PrototypeFlightPlanExecutionState state)
+    {
+        string planId = plan.planId;
+        if (!string.IsNullOrWhiteSpace(planId) && planId != "flight-plan")
+        {
+            return "plan:" + planId;
+        }
+
+        if (!string.IsNullOrWhiteSpace(state.planId) && state.planId != "flight-plan")
+        {
+            return "state:" + state.planId;
+        }
+
+        if (plan.revision > 0)
+        {
+            return "rev:" + plan.revision;
+        }
+
+        if (state.revision > 0)
+        {
+            return "rev:" + state.revision;
+        }
+
+        return string.Empty;
+    }
+
+    private static void AssertDirectFastTransferNominalInvariants(
+        DirectFastTransferTrace trace,
+        int minBurnSamples = 0,
+        int minBrakeSamples = 0)
+    {
+        string diagnostics = BuildDirectFastTransferTraceDiagnostics(trace);
+        Assert.That(trace.PlanRevisionChanges, Is.EqualTo(0), diagnostics);
+        Assert.That(trace.RevisionResetFrames, Is.EqualTo(0), diagnostics);
+        Assert.That(trace.FlightPlanIdChanges, Is.EqualTo(0), diagnostics);
+        Assert.That(trace.ReplanFrames, Is.EqualTo(0), diagnostics);
+        Assert.That(trace.ReplanStatusFrames, Is.EqualTo(0), diagnostics);
+        Assert.That(trace.ReplanWhileBurnLatchedFrames, Is.EqualTo(0), diagnostics);
+        Assert.That(trace.ReplanWhileBrakeLatchedFrames, Is.EqualTo(0), diagnostics);
+        Assert.That(trace.LowBurnThrottleFrames, Is.EqualTo(0), diagnostics);
+        Assert.That(trace.LowBrakeThrottleFrames, Is.EqualTo(0), diagnostics);
+        Assert.That(trace.BurnToBrakeLowThrottleFrames, Is.EqualTo(0), diagnostics);
+        Assert.That(trace.FlipThrottleFrames, Is.EqualTo(0), diagnostics);
+        if (minBurnSamples > 0)
+        {
+            Assert.That(trace.BurnLatchedSamples, Is.GreaterThan(minBurnSamples), diagnostics);
+        }
+
+        if (minBrakeSamples > 0)
+        {
+            Assert.That(trace.BrakeLatchedSamples, Is.GreaterThan(minBrakeSamples), diagnostics);
+        }
     }
 
     private static string BuildDirectFastTransferTraceDiagnostics(DirectFastTransferTrace trace)
@@ -1824,10 +2128,17 @@ public class PrototypeAutopilotNavigationPlayModeTests
         int eventStart = Mathf.Max(0, trace.Events.Count - 12);
         string events = string.Join("\n", trace.Events.GetRange(eventStart, trace.Events.Count - eventStart));
         return $"firstRev={trace.FirstPlanRevision} lastRev={trace.LastPlanRevision} revChanges={trace.PlanRevisionChanges} "
-            + $"replanFrames={trace.ReplanFrames} replanStatusFrames={trace.ReplanStatusFrames} "
-            + $"burnSamples={trace.BurnLatchedSamples} lowBurn={trace.LowBurnThrottleFrames} "
-            + $"brakeSamples={trace.BrakeLatchedSamples} lowBrake={trace.LowBrakeThrottleFrames} "
-            + $"softInjected={trace.SoftErrorInjected} afterSoftFrames={trace.AfterSoftBurnFrames} "
+            + $"planIdChanges={trace.FlightPlanIdChanges} firstPlanId={trace.FirstPlanId} lastPlanId={trace.LastPlanId} "
+            + $"revResetFrames={trace.RevisionResetFrames} replanFrames={trace.ReplanFrames} "
+            + $"replanStatusFrames={trace.ReplanStatusFrames} replanBurn={trace.ReplanWhileBurnLatchedFrames} "
+            + $"replanBrake={trace.ReplanWhileBrakeLatchedFrames} traceEnded={trace.TraceEndedInTerminalState} "
+            + $"completedBeforeBrake={trace.CompletedBeforeBrakeObserved} "
+            + $"burnSamples={trace.BurnLatchedSamples} lowBurn={trace.LowBurnThrottleFrames} firstBurnLatched={trace.FirstBurnLatchedFrame} "
+            + $"brakeSamples={trace.BrakeLatchedSamples} lowBrake={trace.LowBrakeThrottleFrames} firstBrakeLatched={trace.FirstBrakeLatchedFrame} "
+            + $"flipThrottleFrames={trace.FlipThrottleFrames} burnToBrakeLowThrottle={trace.BurnToBrakeLowThrottleFrames} "
+            + $"maxBrakeAngle={trace.MaxBrakeDesiredAngle:0.0} softInjected={trace.SoftErrorInjected} afterSoftFrames={trace.AfterSoftBurnFrames} "
+            + $"softInjectionCount={trace.SoftTrackingInjectionCount} softInjectionMode={trace.InjectionMode} "
+            + $"softInjectionFrames={string.Join(",", trace.SoftTrackingInjectionFrames.ToArray())} "
             + $"minAfterSoft={trace.MinimumMainAfterSoftError:0.00}\nevents:\n{events}\nsamples:\n{tail}";
     }
 
@@ -2682,17 +2993,33 @@ public class PrototypeAutopilotNavigationPlayModeTests
         public int FirstPlanRevision;
         public int LastPlanRevision;
         public int PlanRevisionChanges;
+        public string FirstPlanId;
+        public string LastPlanId;
+        public int FlightPlanIdChanges;
+        public int RevisionResetFrames;
         public int ReplanFrames;
         public int ReplanStatusFrames;
+        public int ReplanWhileBurnLatchedFrames;
+        public int ReplanWhileBrakeLatchedFrames;
         public int BurnLatchedSamples;
         public int LowBurnThrottleFrames;
+        public int FirstBurnLatchedFrame;
         public int BrakeLatchedSamples;
         public int LowBrakeThrottleFrames;
+        public int FirstBrakeLatchedFrame;
+        public int BurnToBrakeLowThrottleFrames;
+        public int FlipThrottleFrames;
+        public float MaxBrakeDesiredAngle;
+        public bool TraceEndedInTerminalState;
+        public bool CompletedBeforeBrakeObserved;
         public bool SoftErrorInjected;
         public int AfterSoftBurnFrames;
         public int AfterSoftReplanFrames;
         public float MinimumMainAfterSoftError;
         public float LastDesiredAngle;
+        public DirectFastTransferTrackingInjectionMode InjectionMode;
+        public int SoftTrackingInjectionCount;
+        public readonly List<int> SoftTrackingInjectionFrames = new List<int>();
     }
 
     private struct AutopilotStepSnapshot
