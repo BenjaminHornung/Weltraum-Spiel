@@ -1416,7 +1416,13 @@ public static class PrototypeFlightPlanTracker
         }
         else if (activePhase == PrototypeManeuverPhase.RetrogradeBurn)
         {
-            if (actualVelocity.sqrMagnitude > 0.01f && brakeDot < settings.brakeVelocityDotMinimum)
+            bool directFastBrakeDirectionDiverged = directFastTransferMain
+                && actualVelocity.magnitude > Mathf.Max(2f, plan.targetArrivalSpeedMetersPerSecond * 2f)
+                && brakeDot < 0.7071f;
+            bool defaultBrakeDirectionDiverged = !directFastTransferMain
+                && actualVelocity.sqrMagnitude > 0.01f
+                && brakeDot < settings.brakeVelocityDotMinimum;
+            if (directFastBrakeDirectionDiverged || defaultBrakeDirectionDiverged)
             {
                 reasons |= PrototypeFlightPlanAbortReplanReason.InvalidPlanDirection;
                 mainAllowed = false;
@@ -1597,6 +1603,12 @@ public static class PrototypeFlightPlanTracker
     {
         if (phase == PrototypeManeuverPhase.RetrogradeBurn || phase == PrototypeManeuverPhase.FlipToRetrograde)
         {
+            if (segment.profile == PrototypeManeuverProfile.DirectFastTransfer
+                && segment.primaryDirectionWorld.sqrMagnitude > DirectionEpsilon)
+            {
+                return segment.primaryDirectionWorld.normalized;
+            }
+
             if (actualVelocity.sqrMagnitude > DirectionEpsilon)
             {
                 return -actualVelocity.normalized;

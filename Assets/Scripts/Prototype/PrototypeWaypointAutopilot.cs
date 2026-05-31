@@ -97,6 +97,21 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private const float FlightPlanDivergenceStatusHoldSeconds = 2f;
     private const float FlightPlanSafetyRefreshIntervalSeconds = 0.75f;
     private const float DirectFastTransferMainAuthorityBlockedTimeoutSeconds = 6f;
+    private const float DirectFastTransferBurnLatchEngageDegrees = 8f;
+    private const float DirectFastTransferBurnLatchKeepDegrees = 18f;
+    private const float DirectFastTransferBurnLatchReleaseDegrees = 22f;
+    private const float DirectFastTransferBrakeLatchEngageDegrees = 12f;
+    private const float DirectFastTransferBrakeLatchKeepDegrees = 30f;
+    private const float DirectFastTransferBrakeLatchReleaseDegrees = 36f;
+    private const float DirectFastTransferMainLatchEngageAngularSpeedDegreesPerSecond = 20f;
+    private const float DirectFastTransferMainLatchKeepAngularSpeedDegreesPerSecond = 45f;
+    private const float DirectFastTransferMainLatchReleaseAngularSpeedDegreesPerSecond = 60f;
+    private const PrototypeFlightPlanAbortReplanReason DirectFastTransferNominalExecutionReasons =
+        PrototypeFlightPlanAbortReplanReason.PositionDivergence
+        | PrototypeFlightPlanAbortReplanReason.VelocityDivergence
+        | PrototypeFlightPlanAbortReplanReason.AttitudeDivergence
+        | PrototypeFlightPlanAbortReplanReason.TrackingDiverged
+        | PrototypeFlightPlanAbortReplanReason.FuelMismatch;
     [Header("Navigation")]
     [SerializeField] private PrototypeWaypointManager waypointManager;
     [SerializeField] private PrototypeNavigationTarget currentTarget;
@@ -175,6 +190,10 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private int directFastTransferAuthorityBlockedPlanRevision = -1;
     private int directFastTransferAuthorityBlockedSegmentIndex = -1;
     private float directFastTransferAuthorityBlockedSeconds;
+    private bool directFastMainThrottleLatched;
+    private int directFastMainLatchPlanRevision = -1;
+    private int directFastMainLatchSegmentIndex = -1;
+    private string directFastMainThrottleLatchStatus = string.Empty;
     private PrototypeMomentumAssist momentumAssist;
     private PrototypeTrajectoryPlanner trajectoryPlanner;
 
@@ -887,16 +906,27 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         {
             PrototypeFlightPlanExecutionState expiredState = BuildFlightPlanExecutionState(plan, flightPlanElapsedSeconds);
             PrototypeFlightPlanDivergenceReport expiredReport = EvaluateFlightPlanDivergence(plan, expiredState, liveObstacle, default, true);
-            if (TryHandleFlightPlanDivergence(plan, expiredState, expiredReport))
-            {
-                return true;
-            }
-
             if (flightPlanElapsedSeconds > plan.totalDurationSeconds && TryRunFlightPlanTerminalSafety())
             {
                 flightPlanExecutorActive = true;
                 lastFlightPlanExecutionState = expiredState;
                 flightPlanElapsedSeconds += Mathf.Max(Time.fixedDeltaTime, 0.02f);
+                return true;
+            }
+
+            if (plan.IsDirectFastTransfer
+                && flightPlanElapsedSeconds > plan.totalDurationSeconds
+                && expiredReport.reasons == PrototypeFlightPlanAbortReplanReason.PlanExpired)
+            {
+                SetFlightPlanDivergenceReport(PrototypeFlightPlanDivergenceReport.Clear);
+                flightPlanExecutorActive = true;
+                lastFlightPlanExecutionState = expiredState;
+                arrivalFailureReason = string.Empty;
+                return TryEnterHoldPosition();
+            }
+
+            if (TryHandleFlightPlanDivergence(plan, expiredState, expiredReport))
+            {
                 return true;
             }
 
@@ -915,7 +945,15 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         PrototypeFlightPlanTrackingCommand trackingCommand = BuildFlightPlanTrackingCommand(plan);
         lastFlightPlanTrackingCommand = trackingCommand;
         ApplyTrackingErrorToExecutionState(trackingCommand, ref executionState);
-        if (trackingCommand.requiresReplan)
+        bool handledSoftTrackingCorrection = TryHandleDirectFastTransferSoftTrackingCorrection(
+            segment,
+            ref trackingCommand,
+            ref executionState);
+        if (handledSoftTrackingCorrection)
+        {
+            lastFlightPlanTrackingCommand = trackingCommand;
+        }
+        else if (trackingCommand.requiresReplan)
         {
             if (HandleFlightPlanTrackingReplan(trackingCommand, executionState))
             {
@@ -940,10 +978,16 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         flightPlanExecutorActive = true;
         lastFlightPlanExecutionState = executionState;
         float flightPlanTickSeconds = Mathf.Max(Time.fixedDeltaTime, 0.02f);
-        if (ShouldHoldDirectFastTransferMainSegmentClock(segment, trackingCommand))
+        if (ShouldHoldDirectFastTransferSegmentClock(segment, trackingCommand, out string holdStatus, out bool useAuthorityTimeout))
         {
-            lastFlightPlanExecutionState.statusLabel = "Tracking: waiting direct main authority";
-            if (TryTimeoutDirectFastTransferMainAuthorityBlock(segment, ref executionState, flightPlanTickSeconds))
+            lastFlightPlanExecutionState.statusLabel = holdStatus;
+            if (!useAuthorityTimeout)
+            {
+                ResetDirectFastTransferMainAuthorityBlock();
+            }
+
+            if (useAuthorityTimeout
+                && TryTimeoutDirectFastTransferMainAuthorityBlock(segment, ref executionState, flightPlanTickSeconds))
             {
                 return true;
             }
@@ -1065,6 +1109,41 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         return ForceFlightPlanSafetyReplan(report, "flight plan tracking replan");
     }
 
+    private bool TryHandleDirectFastTransferSoftTrackingCorrection(
+        PrototypeManeuverSegment segment,
+        ref PrototypeFlightPlanTrackingCommand trackingCommand,
+        ref PrototypeFlightPlanExecutionState executionState)
+    {
+        PrototypeFlightPlanAbortReplanReason reasons = executionState.replanReasons | trackingCommand.replanReasons;
+        if (!IsDirectFastTransferSoftTrackingOnly(segment, reasons))
+        {
+            return false;
+        }
+
+        var report = new PrototypeFlightPlanDivergenceReport(
+            reasons,
+            false,
+            false,
+            "Tracking correction: " + PrototypeFlightPlanDivergenceMonitor.FormatReasons(reasons));
+        SetFlightPlanDivergenceReport(report);
+
+        executionState.replanReasons &= ~DirectFastTransferNominalExecutionReasons;
+        executionState.requiresReplan = executionState.replanReasons != PrototypeFlightPlanAbortReplanReason.None;
+        executionState.statusLabel = report.statusLabel;
+        lastFlightPlanExecutionState = executionState;
+
+        PrototypeFlightPlanTrackingError error = trackingCommand.error;
+        error.replanReasons &= ~DirectFastTransferNominalExecutionReasons;
+        error.requiresReplan = error.replanReasons != PrototypeFlightPlanAbortReplanReason.None;
+        error.statusLabel = report.statusLabel;
+        trackingCommand.error = error;
+        trackingCommand.replanReasons &= ~DirectFastTransferNominalExecutionReasons;
+        trackingCommand.requiresReplan = trackingCommand.replanReasons != PrototypeFlightPlanAbortReplanReason.None
+            || trackingCommand.error.requiresReplan;
+        trackingCommand.statusLabel = report.statusLabel;
+        return true;
+    }
+
     private PrototypeFlightPlanDivergenceReport EvaluateFlightPlanDivergence(
         PrototypeFlightPlan plan,
         PrototypeFlightPlanExecutionState executionState,
@@ -1182,13 +1261,29 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
                 | PrototypeFlightPlanAbortReplanReason.CollisionPredicted)) != 0;
         if (!bypassCooldown && Time.time < lastFlightPlanSafetyReplanAtTime + FlightPlanDivergenceReplanCooldownSeconds)
         {
-            ClearFlightPlanActuatorOutput(status + " cooldown");
+            if (ShouldClearActuatorOutputForSafetyReplan(report.reasons))
+            {
+                ClearFlightPlanActuatorOutput(status + " cooldown");
+            }
+            else
+            {
+                HoldFlightPlanActuatorOutputForReplan(status + " cooldown");
+            }
+
             return true;
         }
 
         lastFlightPlanSafetyReplanAtTime = Time.time;
         arrivalFailureReason = "FlightPlanReplan:" + PrototypeFlightPlanDivergenceMonitor.FormatReasons(report.reasons);
-        ClearFlightPlanActuatorOutput(status);
+        if (ShouldClearActuatorOutputForSafetyReplan(report.reasons))
+        {
+            ClearFlightPlanActuatorOutput(status);
+        }
+        else
+        {
+            HoldFlightPlanActuatorOutputForReplan(status);
+        }
+
         forceNextFlightPlanRevision = true;
         MarkNavigationPlanDirty();
         RefreshNavigationPlan();
@@ -1219,7 +1314,11 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
         PrototypeTrajectoryPlan updatedPlan = LastTrajectoryPlan;
         updatedPlan.warningStatus = report.statusLabel;
-        updatedPlan.status = report.requiresAbort ? "flight plan abort" : "flight plan replan";
+        updatedPlan.status = report.requiresAbort
+            ? "flight plan abort"
+            : report.requiresReplan
+                ? "flight plan replan"
+                : "flight plan tracking";
         updatedPlan.statusLabel = report.statusLabel;
         LastTrajectoryPlan = updatedPlan;
     }
@@ -1312,6 +1411,11 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
     private bool ShouldFlagFlightPlanBrakeTimingDivergence(PrototypeManeuverSegment segment)
     {
+        if (IsDirectFastTransferSegment(segment))
+        {
+            return false;
+        }
+
         if (!ShouldUseConservativeFlightPlanBrakeSafety())
         {
             return false;
@@ -1354,6 +1458,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         requestedRcsTranslation = Vector3.zero;
         desiredBurnDirection = Vector3.zero;
         flightPlanExecutorActive = false;
+        ResetDirectFastTransferMainThrottleLatch();
         navigationPhaseV2 = LastTrajectoryPlan.RequiresAvoidance
             ? PrototypeWaypointAutopilotNavigationPhase.Avoiding
             : PrototypeWaypointAutopilotNavigationPhase.Direct;
@@ -1372,6 +1477,27 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             Vector3.zero,
             0f,
             false));
+    }
+
+    private void HoldFlightPlanActuatorOutputForReplan(string status)
+    {
+        flightPlanExecutorActive = false;
+        navigationPhaseV2 = LastTrajectoryPlan.RequiresAvoidance
+            ? PrototypeWaypointAutopilotNavigationPhase.Avoiding
+            : PrototypeWaypointAutopilotNavigationPhase.Direct;
+        SetState(PrototypeWaypointAutopilotState.AlignForBurn, status);
+    }
+
+    private static bool ShouldClearActuatorOutputForSafetyReplan(PrototypeFlightPlanAbortReplanReason reasons)
+    {
+        const PrototypeFlightPlanAbortReplanReason clearReasons =
+            PrototypeFlightPlanAbortReplanReason.MissingDependency
+            | PrototypeFlightPlanAbortReplanReason.NonFiniteState
+            | PrototypeFlightPlanAbortReplanReason.FuelStarved
+            | PrototypeFlightPlanAbortReplanReason.ActuatorLimited
+            | PrototypeFlightPlanAbortReplanReason.NoMainThrustAuthority
+            | PrototypeFlightPlanAbortReplanReason.NoRcsAuthority;
+        return (reasons & clearReasons) != 0;
     }
 
     private bool TryBlockLegacyLiveGatesForActiveFlightPlan()
@@ -1516,6 +1642,14 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         flightPlanElapsedSeconds = 0f;
         lastFlightPlanExecutionState = default;
         lastFlightPlanTrackingCommand = default;
+        lastFlightPlanDivergenceReport = PrototypeFlightPlanDivergenceReport.Clear;
+        flightPlanDivergenceStartedAtTime = -1f;
+        lastFlightPlanDivergenceAtTime = -1000f;
+        if (arrivalFailureReason.StartsWith("FlightPlanReplan", System.StringComparison.Ordinal))
+        {
+            arrivalFailureReason = string.Empty;
+        }
+
         ResetDirectFastTransferMainAuthorityBlock();
     }
 
@@ -1722,7 +1856,8 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
                     null,
                     trackingCommand.rcsForceWorld,
                     true,
-                    IsDirectFastTransferSegment(segment));
+                    IsDirectFastTransferSegment(segment),
+                    segment);
                 return true;
 
             case PrototypeManeuverPhase.AvoidanceBurn:
@@ -1896,6 +2031,22 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         return segment.profile == PrototypeManeuverProfile.DirectFastTransfer;
     }
 
+    private static bool IsDirectFastTransferSoftTrackingOnly(
+        PrototypeManeuverSegment segment,
+        PrototypeFlightPlanAbortReplanReason reasons)
+    {
+        return IsDirectFastTransferSegment(segment)
+            && reasons != PrototypeFlightPlanAbortReplanReason.None
+            && (reasons & ~DirectFastTransferNominalExecutionReasons) == PrototypeFlightPlanAbortReplanReason.None;
+    }
+
+    private static bool IsDirectFastTransferMainThrottleSegment(PrototypeManeuverSegment segment)
+    {
+        return IsDirectFastTransferSegment(segment)
+            && (segment.phase == PrototypeManeuverPhase.ProgradeBurn
+                || segment.phase == PrototypeManeuverPhase.RetrogradeBurn);
+    }
+
     private bool ShouldHoldDirectFastTransferMainSegmentClock(
         PrototypeManeuverSegment segment,
         PrototypeFlightPlanTrackingCommand trackingCommand)
@@ -1916,6 +2067,133 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         }
 
         return requestedMainThrottle <= Mathf.Max(0.01f, plannedThrottle * 0.1f);
+    }
+
+    private bool ShouldHoldDirectFastTransferSegmentClock(
+        PrototypeManeuverSegment segment,
+        PrototypeFlightPlanTrackingCommand trackingCommand,
+        out string status,
+        out bool useAuthorityTimeout)
+    {
+        status = string.Empty;
+        useAuthorityTimeout = false;
+        if (!IsDirectFastTransferSegment(segment))
+        {
+            return false;
+        }
+
+        if (ShouldHoldDirectFastTransferAttitudeSegmentClock(segment, out status))
+        {
+            return true;
+        }
+
+        if (ShouldHoldDirectFastTransferMainSegmentClock(segment, trackingCommand))
+        {
+            status = GetDirectFastTransferMainHoldStatus(segment);
+            useAuthorityTimeout = true;
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool ShouldHoldDirectFastTransferAttitudeSegmentClock(
+        PrototypeManeuverSegment segment,
+        out string status)
+    {
+        status = string.Empty;
+        bool align = segment.phase == PrototypeManeuverPhase.AlignForBurn;
+        bool flip = segment.phase == PrototypeManeuverPhase.FlipToRetrograde;
+        if (!align && !flip)
+        {
+            return false;
+        }
+
+        Vector3 direction = ResolveFlightPlanSegmentDirection(segment);
+        if (direction.sqrMagnitude <= 0.0001f)
+        {
+            return false;
+        }
+
+        float angle = Vector3.Angle(transform.forward, direction.normalized);
+        float angularSpeedDegrees = GetAngularSpeedRadiansPerSecond() * Mathf.Rad2Deg;
+        float angleLimit = align
+            ? DirectFastTransferBurnLatchEngageDegrees
+            : DirectFastTransferBrakeLatchEngageDegrees;
+        float angularSpeedLimit = DirectFastTransferMainLatchEngageAngularSpeedDegreesPerSecond;
+        bool waiting = angle > angleLimit || angularSpeedDegrees > angularSpeedLimit;
+        if (waiting)
+        {
+            status = align ? "Aligning for planned burn" : "Brake latch waiting";
+        }
+
+        return waiting;
+    }
+
+    private bool UpdateDirectFastTransferMainThrottleLatch(
+        PrototypeManeuverSegment segment,
+        float angleDegrees,
+        float angularSpeedRadiansPerSecond,
+        out string status)
+    {
+        bool brake = segment.phase == PrototypeManeuverPhase.RetrogradeBurn;
+        status = brake ? "Brake latch waiting" : "Aligning for planned burn";
+        int planRevision = CurrentFlightPlan.revision;
+        if (directFastMainLatchPlanRevision != planRevision
+            || directFastMainLatchSegmentIndex != segment.index)
+        {
+            directFastMainThrottleLatched = false;
+            directFastMainLatchPlanRevision = planRevision;
+            directFastMainLatchSegmentIndex = segment.index;
+        }
+
+        float angularSpeedDegrees = angularSpeedRadiansPerSecond * Mathf.Rad2Deg;
+        float engageAngle = brake ? DirectFastTransferBrakeLatchEngageDegrees : DirectFastTransferBurnLatchEngageDegrees;
+        float keepAngle = brake ? DirectFastTransferBrakeLatchKeepDegrees : DirectFastTransferBurnLatchKeepDegrees;
+        float releaseAngle = brake ? DirectFastTransferBrakeLatchReleaseDegrees : DirectFastTransferBurnLatchReleaseDegrees;
+        if (!directFastMainThrottleLatched)
+        {
+            directFastMainThrottleLatched = angleDegrees <= engageAngle
+                && angularSpeedDegrees <= DirectFastTransferMainLatchEngageAngularSpeedDegreesPerSecond;
+        }
+        else if (angleDegrees > releaseAngle
+            || angularSpeedDegrees > DirectFastTransferMainLatchReleaseAngularSpeedDegreesPerSecond)
+        {
+            directFastMainThrottleLatched = false;
+        }
+
+        if (directFastMainThrottleLatched
+            && angleDegrees <= keepAngle
+            && angularSpeedDegrees <= DirectFastTransferMainLatchKeepAngularSpeedDegreesPerSecond)
+        {
+            status = brake ? "Full brake" : "Full burn";
+            directFastMainThrottleLatchStatus = status;
+            return true;
+        }
+
+        if (directFastMainThrottleLatched
+            && angleDegrees <= releaseAngle
+            && angularSpeedDegrees <= DirectFastTransferMainLatchReleaseAngularSpeedDegreesPerSecond)
+        {
+            status = brake ? "Full brake" : "Full burn";
+            directFastMainThrottleLatchStatus = status;
+            return true;
+        }
+
+        directFastMainThrottleLatchStatus = status;
+        return false;
+    }
+
+    private string GetDirectFastTransferMainHoldStatus(PrototypeManeuverSegment segment)
+    {
+        if (!string.IsNullOrEmpty(directFastMainThrottleLatchStatus))
+        {
+            return directFastMainThrottleLatchStatus;
+        }
+
+        return segment.phase == PrototypeManeuverPhase.RetrogradeBurn
+            ? "Brake latch waiting"
+            : "Aligning for planned burn";
     }
 
     private bool TryTimeoutDirectFastTransferMainAuthorityBlock(
@@ -1953,6 +2231,14 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         directFastTransferAuthorityBlockedPlanRevision = -1;
         directFastTransferAuthorityBlockedSegmentIndex = -1;
         directFastTransferAuthorityBlockedSeconds = 0f;
+    }
+
+    private void ResetDirectFastTransferMainThrottleLatch()
+    {
+        directFastMainThrottleLatched = false;
+        directFastMainLatchPlanRevision = -1;
+        directFastMainLatchSegmentIndex = -1;
+        directFastMainThrottleLatchStatus = string.Empty;
     }
 
     private bool ShouldProtectDirectFastTransferBrakeSegmentFromTerminalHold()
@@ -2055,7 +2341,8 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             brakeAlignmentReady,
             brakeRcsForceWorld,
             true,
-            IsDirectFastTransferSegment(segment));
+            IsDirectFastTransferSegment(segment),
+            segment);
     }
 
     private Vector3 FilterFlightPlanBrakeRcsForce(
@@ -3241,7 +3528,8 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         bool? brakeAlignmentReadyOverride = null,
         Vector3 trackedRcsForceWorld = default,
         bool useTrackedRcsForce = false,
-        bool forcePlannedMainThrottle = false)
+        bool forcePlannedMainThrottle = false,
+        PrototypeManeuverSegment plannedMainSegment = default)
     {
         if (shipController == null)
         {
@@ -3270,6 +3558,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             && assistForceWorld.magnitude + 0.001f < desiredCombinedRcsForceWorld.magnitude;
         float requestedMainThrottle = 0f;
         Vector3 desiredDirectionNormalized = Vector3.zero;
+        string directFastLatchStatus = string.Empty;
 
         if (desiredDirection.sqrMagnitude > 0.0001f)
         {
@@ -3301,6 +3590,19 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
                 && (!isBrakeState
                     ? angle <= finalApproachAlignmentAngle && finalApproachMainThrottleReady
                     : brakeMainThrottleReady && brakeVelocityAlignmentReady);
+            bool directFastPlannedMainThrottle = forcePlannedMainThrottle
+                && IsDirectFastTransferMainThrottleSegment(plannedMainSegment)
+                && throttle > 0.01f;
+            if (directFastPlannedMainThrottle)
+            {
+                canApplyMainThrottle = CanUseMainThrottle()
+                    && !isFlipForBrakeState
+                    && UpdateDirectFastTransferMainThrottleLatch(
+                        plannedMainSegment,
+                        angle,
+                        angularSpeed,
+                        out directFastLatchStatus);
+            }
 
             if (canApplyMainThrottle && !suppressMainThrottle)
             {
@@ -3324,7 +3626,11 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
                     && CurrentState != PrototypeWaypointAutopilotState.FlipForBrake
                     && CurrentState != PrototypeWaypointAutopilotState.ObstacleAvoidance)
                 {
-                    SetState(PrototypeWaypointAutopilotState.AlignForBurn, "aligning");
+                    SetState(PrototypeWaypointAutopilotState.AlignForBurn, string.IsNullOrEmpty(directFastLatchStatus) ? "aligning" : directFastLatchStatus);
+                }
+                else if (!string.IsNullOrEmpty(directFastLatchStatus))
+                {
+                    SetState(CurrentState, directFastLatchStatus);
                 }
             }
         }
@@ -3356,6 +3662,12 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         if (assistForceWorld.sqrMagnitude > 0.0001f)
         {
             updatedPlan.desiredAccelerationWorld += assistForceWorld / GetShipMassKg();
+        }
+
+        if (!string.IsNullOrEmpty(directFastLatchStatus))
+        {
+            updatedPlan.status = "flight plan";
+            updatedPlan.statusLabel = directFastLatchStatus;
         }
 
         LastTrajectoryPlan = updatedPlan;

@@ -1,0 +1,6 @@
+test,planRevisionChanges,replanFrames,replanStatusFrames,lowBurnThrottleFrames,lowBrakeThrottleFrames,softErrorInjected,result
+PlayMode_DirectFastTransfer_NoNominalReplanDuringFullBurn,0,0,0,0,0,false,Passed
+PlayMode_DirectFastTransfer_MainThrottleContinuousDuringBurn,0,0,0,0,0,false,Passed
+PlayMode_DirectFastTransfer_MainThrottleContinuousDuringBrakeAfterLatch,0,0,0,0,0,false,Passed
+PlayMode_DirectFastTransfer_SoftTrackingErrorDoesNotClearActuatorOutput,0,0,0,0,0,true,Passed
+PlayMode_DirectFastTransfer_StartRotation90deg_NoReplanFlap,0,0,0,0,0,false,Passed

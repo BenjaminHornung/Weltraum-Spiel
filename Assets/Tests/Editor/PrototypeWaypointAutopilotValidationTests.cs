@@ -849,6 +849,40 @@ public class PrototypeWaypointAutopilotValidationTests
     }
 
     [Test]
+    public void DirectFastTransfer_ConservativeBrakeSafetyDoesNotFlagVelocityDivergence()
+    {
+        var rig = CreateAutopilotRig();
+        PrototypeManeuverSegment segment = CreateDirectFastTransferSegment(PrototypeManeuverPhase.ProgradeBurn);
+        MethodInfo method = typeof(PrototypeWaypointAutopilot).GetMethod("ShouldFlagFlightPlanBrakeTimingDivergence", PrivateInstance);
+        Assert.NotNull(method);
+
+        bool result = (bool)method.Invoke(rig.Autopilot, new object[] { segment });
+
+        Assert.False(result);
+    }
+
+    [Test]
+    public void DirectFastTransfer_SoftTrackingDivergenceIsTrackingCorrection()
+    {
+        PrototypeManeuverSegment segment = CreateDirectFastTransferSegment(PrototypeManeuverPhase.ProgradeBurn);
+        MethodInfo method = typeof(PrototypeWaypointAutopilot).GetMethod(
+            "IsDirectFastTransferSoftTrackingOnly",
+            BindingFlags.Static | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        PrototypeFlightPlanAbortReplanReason softReasons =
+            PrototypeFlightPlanAbortReplanReason.PositionDivergence
+            | PrototypeFlightPlanAbortReplanReason.VelocityDivergence
+            | PrototypeFlightPlanAbortReplanReason.TrackingDiverged;
+        PrototypeFlightPlanAbortReplanReason hardReasons = softReasons | PrototypeFlightPlanAbortReplanReason.InvalidPlanDirection;
+
+        bool soft = (bool)method.Invoke(null, new object[] { segment, softReasons });
+        bool hard = (bool)method.Invoke(null, new object[] { segment, hardReasons });
+
+        Assert.True(soft);
+        Assert.False(hard);
+    }
+
+    [Test]
     public void AutopilotSourceDoesNotAssignRigidbodyMotionStateDirectly()
     {
         string sourceFile = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "Scripts", "Prototype", "PrototypeWaypointAutopilot.cs");
@@ -905,6 +939,37 @@ public class PrototypeWaypointAutopilotValidationTests
             Controller = controller,
             Body = body
         };
+    }
+
+    private static PrototypeManeuverSegment CreateDirectFastTransferSegment(PrototypeManeuverPhase phase)
+    {
+        Vector3 direction = phase == PrototypeManeuverPhase.RetrogradeBurn ? Vector3.back : Vector3.forward;
+        return new PrototypeManeuverSegment(
+            0,
+            phase,
+            phase == PrototypeManeuverPhase.ProgradeBurn || phase == PrototypeManeuverPhase.RetrogradeBurn
+                ? PrototypeManeuverCommandMode.MainThrottle
+                : PrototypeManeuverCommandMode.AttitudeOnly,
+            0f,
+            2f,
+            direction,
+            Vector3.zero,
+            direction * 4f,
+            direction,
+            direction,
+            Quaternion.identity,
+            Quaternion.identity,
+            Vector3.zero,
+            Vector3.zero,
+            1f,
+            0f,
+            2f,
+            0.2f,
+            0f,
+            PrototypeFlightPlanTolerance.Default,
+            PrototypeManeuverSegment.DefaultReplanReasons,
+            "DirectFastTransfer test",
+            PrototypeManeuverProfile.DirectFastTransfer);
     }
 
     private static void SetPrivateFloat(object target, string fieldName, float value)

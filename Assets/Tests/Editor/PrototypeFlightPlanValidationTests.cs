@@ -412,6 +412,85 @@ public class PrototypeFlightPlanValidationTests
     }
 
     [Test]
+    public void DirectFastTransfer_BrakeDirectionPrefersSegmentDirection()
+    {
+        Vector3 actualVelocity = (Vector3.forward + Vector3.right * 0.35f).normalized * 12f;
+        PrototypeFlightPlan plan = CreatePlan(
+            new[]
+            {
+                CreateSegmentWithDirection(
+                    0,
+                    PrototypeManeuverPhase.RetrogradeBurn,
+                    PrototypeManeuverCommandMode.MainThrottle,
+                    0f,
+                    2f,
+                    Vector3.back,
+                    profile: PrototypeManeuverProfile.DirectFastTransfer)
+            },
+            new[]
+            {
+                CreateSample(0f, 0, PrototypeManeuverPhase.RetrogradeBurn, Vector3.zero, actualVelocity),
+                CreateSample(2f, 0, PrototypeManeuverPhase.RetrogradeBurn, Vector3.forward * 6f, Vector3.forward)
+            });
+
+        PrototypeFlightPlanTrackingCommand command = PrototypeFlightPlanTracker.Track(
+            plan,
+            1f,
+            Vector3.forward * 3f,
+            actualVelocity,
+            Quaternion.identity,
+            Vector3.zero,
+            plan.ExpectedFuelAt(1f),
+            Vector3.forward * 100f,
+            8f,
+            2f,
+            100f);
+
+        Assert.True(command.hasCommand);
+        Assert.False((command.replanReasons & PrototypeFlightPlanAbortReplanReason.InvalidPlanDirection) != 0);
+        Assert.That(Vector3.Dot(command.mainDirectionWorld, Vector3.back), Is.GreaterThan(0.99f));
+    }
+
+    [Test]
+    public void DirectFastTransfer_HardInvalidDirectionStillReplans()
+    {
+        PrototypeFlightPlan plan = CreatePlan(
+            new[]
+            {
+                CreateSegmentWithDirection(
+                    0,
+                    PrototypeManeuverPhase.ProgradeBurn,
+                    PrototypeManeuverCommandMode.MainThrottle,
+                    0f,
+                    2f,
+                    Vector3.back,
+                    profile: PrototypeManeuverProfile.DirectFastTransfer)
+            },
+            new[]
+            {
+                CreateSample(0f, 0, PrototypeManeuverPhase.ProgradeBurn, Vector3.zero, Vector3.forward),
+                CreateSample(2f, 0, PrototypeManeuverPhase.ProgradeBurn, Vector3.forward * 10f, Vector3.forward * 3f)
+            });
+
+        PrototypeFlightPlanTrackingCommand command = PrototypeFlightPlanTracker.Track(
+            plan,
+            1f,
+            Vector3.forward * 5f,
+            Vector3.zero,
+            Quaternion.identity,
+            Vector3.zero,
+            plan.ExpectedFuelAt(1f),
+            Vector3.forward * 100f,
+            8f,
+            2f,
+            100f);
+
+        Assert.True(command.requiresReplan);
+        Assert.False(command.mainThrottleAllowed);
+        Assert.True((command.replanReasons & PrototypeFlightPlanAbortReplanReason.InvalidPlanDirection) != 0);
+    }
+
+    [Test]
     public void FlightPlanTracker_InvalidPlanWithoutSamples()
     {
         PrototypeFlightPlan plan = CreatePlan(new[]
@@ -609,7 +688,8 @@ public class PrototypeFlightPlanValidationTests
         float duration,
         Vector3 direction,
         float mainFuel = 0f,
-        float rcsFuel = 0f)
+        float rcsFuel = 0f,
+        PrototypeManeuverProfile profile = PrototypeManeuverProfile.Default)
     {
         return new PrototypeManeuverSegment(
             index,
@@ -634,7 +714,8 @@ public class PrototypeFlightPlanValidationTests
             new PrototypeFlightPlanTolerance(4f, 1f, 10f, 0.5f, 0.2f, 0.05f, 5f),
             PrototypeFlightPlanAbortReplanReason.PositionDivergence
                 | PrototypeFlightPlanAbortReplanReason.VelocityDivergence
-                | PrototypeFlightPlanAbortReplanReason.FuelMismatch);
+                | PrototypeFlightPlanAbortReplanReason.FuelMismatch,
+            profile: profile);
     }
 
     private static PrototypeTrajectoryPredictedSample CreateSample(

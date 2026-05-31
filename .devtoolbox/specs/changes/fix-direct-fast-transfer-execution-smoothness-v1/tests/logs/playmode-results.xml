@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="unity-mcp-5a50860df3504352a0646a3ccecbb5a4" mode="PlayMode" total="7" passed="7" failed="0" skipped="0" result="Passed" durationSeconds="1.3665632">
+  <test-case name="PrototypeAutopilotNavigationPlayModeTests.PlayMode_DirectFastTransfer_MainThrottleContinuousDuringBrakeAfterLatch" result="Passed" />
+  <test-case name="PrototypeAutopilotNavigationPlayModeTests.PlayMode_DirectFastTransfer_MainThrottleContinuousDuringBurn" result="Passed" />
+  <test-case name="PrototypeAutopilotNavigationPlayModeTests.PlayMode_DirectFastTransfer_NoNominalReplanDuringFullBurn" result="Passed" />
+  <test-case name="PrototypeAutopilotNavigationPlayModeTests.PlayMode_DirectFastTransfer_SoftTrackingErrorDoesNotClearActuatorOutput" result="Passed" />
+  <test-case name="PrototypeAutopilotNavigationPlayModeTests.PlayMode_DirectFastTransfer_StartRotation90deg_NoReplanFlap" result="Passed" />
+  <test-case name="PrototypeAutopilotNavigationPlayModeTests.PlayMode_FlightPlanExecutor_DirectRoute_HasDirectFastTransferShapeWithoutLegacyCoast" result="Passed" />
+  <test-case name="PrototypeAutopilotNavigationPlayModeTests.PlayMode_FlightPlanExecutor_DirectRoute_TracksPredictedPathAndDoesNotBurnAway" result="Passed" />
+</test-run>

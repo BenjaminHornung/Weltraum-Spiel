@@ -84,6 +84,8 @@ public struct PrototypeDirectFastTransferSolution
     public bool brakeImmediately;
     public Vector3 routeDirectionWorld;
     public Vector3 lateralVelocityWorld;
+    public float alignTimeSeconds;
+    public float alignDriftMeters;
     public float distanceMeters;
     public float vAlong0MetersPerSecond;
     public float vLat0MetersPerSecond;
@@ -710,6 +712,22 @@ public class PrototypeTrajectoryPlanner
             return false;
         }
 
+        float alignTime = 0f;
+        Vector3 alignedPosition = snapshot.position;
+        for (int i = 0; i < 3; i++)
+        {
+            alignTime = EstimateAttitudeSegmentSeconds(shipSnapshot.initialState.rotation, routeDirection, shipSnapshot);
+            alignedPosition = snapshot.position + snapshot.velocity * alignTime;
+            route = snapshot.targetPosition - alignedPosition;
+            distance = route.magnitude;
+            if (distance <= Mathf.Max(DirectFastTransferMinimumDistanceMeters, snapshot.arrivalRadius * 0.5f))
+            {
+                return false;
+            }
+
+            routeDirection = route / distance;
+        }
+
         float vAlong0 = Vector3.Dot(snapshot.velocity, routeDirection);
         Vector3 lateralVelocity = snapshot.velocity - routeDirection * vAlong0;
         float vLat0 = lateralVelocity.magnitude;
@@ -754,7 +772,7 @@ public class PrototypeTrajectoryPlanner
             return false;
         }
 
-        float totalTransferSeconds = Mathf.Max(0f, tBurn) + Mathf.Max(0f, flipTime) + Mathf.Max(0f, tBrake);
+        float totalTransferSeconds = Mathf.Max(0f, alignTime) + Mathf.Max(0f, tBurn) + Mathf.Max(0f, flipTime) + Mathf.Max(0f, tBrake);
         if (!IsDirectFastTransferLateralFeasible(snapshot, shipSnapshot, vLat0, totalTransferSeconds))
         {
             return false;
@@ -766,6 +784,8 @@ public class PrototypeTrajectoryPlanner
             brakeImmediately = brakeImmediately,
             routeDirectionWorld = routeDirection,
             lateralVelocityWorld = lateralVelocity,
+            alignTimeSeconds = alignTime,
+            alignDriftMeters = Vector3.Distance(snapshot.position, alignedPosition),
             distanceMeters = distance,
             vAlong0MetersPerSecond = vAlong0,
             vLat0MetersPerSecond = vLat0,
@@ -1366,6 +1386,7 @@ public class PrototypeTrajectoryPlanner
             cursorSeconds + duration,
             end.remainingFuelKg);
 
+        PrototypeFlightPlanAbortReplanReason replanOn = ResolveManeuverReplanReasons(profile);
         var segment = new PrototypeManeuverSegment(
             index,
             phase,
@@ -1387,7 +1408,7 @@ public class PrototypeTrajectoryPlanner
             expectedMainFuelKg,
             expectedRcsFuelKg,
             tolerance,
-            PrototypeManeuverSegment.DefaultReplanReasons,
+            replanOn,
             label,
             profile,
             plannedSwitchDistanceMeters);
@@ -1414,6 +1435,17 @@ public class PrototypeTrajectoryPlanner
 
         current = end;
         cursorSeconds = segment.endTimeSeconds;
+    }
+
+    private static PrototypeFlightPlanAbortReplanReason ResolveManeuverReplanReasons(PrototypeManeuverProfile profile)
+    {
+        PrototypeFlightPlanAbortReplanReason reasons = PrototypeManeuverSegment.DefaultReplanReasons;
+        if (profile == PrototypeManeuverProfile.DirectFastTransfer)
+        {
+            reasons &= ~PrototypeFlightPlanAbortReplanReason.FuelMismatch;
+        }
+
+        return reasons;
     }
 
     private static TrajectoryPredictionState PredictManeuverEnd(

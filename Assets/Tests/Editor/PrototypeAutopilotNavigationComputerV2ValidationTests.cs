@@ -213,6 +213,33 @@ public class PrototypeAutopilotNavigationComputerV2ValidationTests
     }
 
     [Test]
+    public void DirectFastTransfer_SolverAccountsForInitialAlignDrift()
+    {
+        Vector3 target = Vector3.forward * 260f;
+        PrototypeTrajectoryPlan plan = new PrototypeTrajectoryPlanner().Plan(
+            CreateSnapshot(
+                Vector3.zero,
+                Vector3.forward * 18f,
+                target,
+                forward: Vector3.right),
+            PrototypeObstacleDetectionResult.Clear(8f));
+
+        Assert.True(plan.flightPlan.IsDirectFastTransfer, plan.flightPlan.statusLabel);
+        PrototypeManeuverSegment align = plan.flightPlan.segments.Single(segment => segment.phase == PrototypeManeuverPhase.AlignForBurn);
+        PrototypeManeuverSegment burn = plan.flightPlan.segments.Single(segment => segment.phase == PrototypeManeuverPhase.ProgradeBurn);
+        PrototypeManeuverSegment brake = plan.flightPlan.segments.Single(segment => segment.phase == PrototypeManeuverPhase.RetrogradeBurn);
+        float distanceAfterAlign = Vector3.Distance(burn.expectedStartPosition, target);
+        float remainingAtSwitch = Vector3.Distance(burn.expectedEndPosition, target);
+
+        Assert.That(align.durationSeconds, Is.GreaterThan(0.05f));
+        Assert.That(burn.expectedStartPosition.z, Is.EqualTo(18f * align.durationSeconds).Within(0.05f));
+        Assert.That(burn.expectedStartPosition.z, Is.GreaterThan(0.5f), "Align segment should drift with initial velocity before burn starts.");
+        Assert.That(burn.plannedSwitchDistanceMeters, Is.LessThan(distanceAfterAlign), "Switch distance should be solved from the post-align route.");
+        Assert.That(remainingAtSwitch, Is.GreaterThan(distanceAfterAlign * 0.35f), "Burn should leave enough route for the planned brake after align drift.");
+        Assert.That(Vector3.Dot(brake.primaryDirectionWorld, -burn.primaryDirectionWorld), Is.GreaterThan(0.98f));
+    }
+
+    [Test]
     public void Planner_EmittedFlightPlanUsesRealShipPlanningSnapshot()
     {
         using (var builder = new PrototypeScenarioBuilder())
@@ -637,13 +664,14 @@ public class PrototypeAutopilotNavigationComputerV2ValidationTests
         float maxMainAcceleration = 8f,
         float maxRcsForce = 12000f,
         float fuelKgPerSecond = 0.4f,
-        float availableFuelKg = 50f)
+        float availableFuelKg = 50f,
+        Vector3 forward = default)
     {
         return new PrototypeTrajectorySnapshot(
             position,
             velocity,
             target,
-            Vector3.forward,
+            forward.sqrMagnitude > 0.0001f ? forward.normalized : Vector3.forward,
             massKg,
             maxMainAcceleration,
             maxRcsForce,

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="unity-mcp-aebf76a96323462e9fc5f218c657b2c3" mode="EditMode" total="8" passed="8" failed="0" skipped="0" result="Passed" durationSeconds="0.0278325">
+  <test-case name="PrototypeAutopilotNavigationComputerV2ValidationTests.DirectFastTransfer_SolverAccountsForInitialAlignDrift" result="Passed" />
+  <test-case name="PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_DirectFastTransfer_AllowsHigherLateralWhenRcsFeasible" result="Passed" />
+  <test-case name="PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_DirectFastTransfer_RejectsHighLateralWithoutRcsHeadroom" result="Passed" />
+  <test-case name="PrototypeFlightPlanValidationTests.DirectFastTransfer_BrakeDirectionPrefersSegmentDirection" result="Passed" />
+  <test-case name="PrototypeFlightPlanValidationTests.DirectFastTransfer_HardInvalidDirectionStillReplans" result="Passed" />
+  <test-case name="PrototypeFlightPlanValidationTests.FlightPlanTracker_BrakeAccelerationOpposesVelocity" result="Passed" />
+  <test-case name="PrototypeWaypointAutopilotValidationTests.DirectFastTransfer_ConservativeBrakeSafetyDoesNotFlagVelocityDivergence" result="Passed" />
+  <test-case name="PrototypeWaypointAutopilotValidationTests.DirectFastTransfer_SoftTrackingDivergenceIsTrackingCorrection" result="Passed" />
+</test-run>
