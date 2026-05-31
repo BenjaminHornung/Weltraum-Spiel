@@ -1,0 +1,11 @@
+test,mode,job_id,result,flightPlanIdChanges,revisionResetFrames,planRevisionChanges,replanFrames,replanStatusFrames,replanWhileBurnLatchedFrames,replanWhileBrakeLatchedFrames,lowBurnThrottleFrames,lowBrakeThrottleFrames,burnToBrakeLowThrottleFrames,flipThrottleFrames,softTrackingInjectionCount,notes
+PlayMode_DirectFastTransfer_NoNominalReplanDuringFullBurn,PlayMode,9bccd4eb20034be5ba2c90b03f0464bc,passed,0,0,0,0,0,0,0,0,0,0,0,0,shared nominal invariants asserted
+PlayMode_DirectFastTransfer_MainThrottleContinuousDuringBurn,PlayMode,9bccd4eb20034be5ba2c90b03f0464bc,passed,0,0,0,0,0,0,0,0,0,0,0,0,shared nominal invariants asserted
+PlayMode_DirectFastTransfer_MainThrottleContinuousDuringBrakeAfterLatch,PlayMode,9bccd4eb20034be5ba2c90b03f0464bc,passed,0,0,0,0,0,0,0,0,0,0,0,0,brake latch invariants asserted
+PlayMode_DirectFastTransfer_BurnToBrakeTransition_DoesNotPulseMainThrottle,PlayMode,9bccd4eb20034be5ba2c90b03f0464bc,passed,0,0,0,0,0,0,0,0,0,0,0,0,burn-to-brake low throttle asserted after brake latch
+PlayMode_DirectFastTransfer_SoftTrackingDuringBurnDoesNotClearActuatorOutput,PlayMode,9bccd4eb20034be5ba2c90b03f0464bc,passed,0,0,0,0,0,0,0,0,0,0,0,1,burn soft-tracking injection asserted
+PlayMode_DirectFastTransfer_SoftTrackingDuringBrakeDoesNotClearActuatorOutput,PlayMode,9bccd4eb20034be5ba2c90b03f0464bc,passed,0,0,0,0,0,0,0,0,0,0,0,1,brake soft-tracking injection asserted
+PlayMode_DirectFastTransfer_ConsecutiveSoftTrackingCorrectionsDoNotReplan,PlayMode,9bccd4eb20034be5ba2c90b03f0464bc,passed,0,0,0,0,0,0,0,0,0,0,0,2,two burn soft-tracking injections asserted
+PlayMode_DirectFastTransfer_StartRotation90deg_NoReplanFlap,PlayMode,9bccd4eb20034be5ba2c90b03f0464bc,passed,0,0,0,0,0,0,0,0,0,0,0,0,90-degree start rotation no-flap invariants asserted
+PlayMode_DirectFastTransfer_StartRotation135deg_NoReplanFlap,PlayMode,9bccd4eb20034be5ba2c90b03f0464bc,passed,0,0,0,0,0,0,0,0,0,0,0,0,135-degree start rotation no-flap invariants asserted
+PlayMode_DirectFastTransfer_InitialAngularVelocity_DelaysLatchWithoutThrottlePulse,PlayMode,9bccd4eb20034be5ba2c90b03f0464bc,passed,0,0,0,0,0,0,0,0,0,0,0,0,initial angular velocity delayed burn latch asserted

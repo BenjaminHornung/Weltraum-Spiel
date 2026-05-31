@@ -872,6 +872,7 @@ public class PrototypeWaypointAutopilotValidationTests
         PrototypeFlightPlanAbortReplanReason softReasons =
             PrototypeFlightPlanAbortReplanReason.PositionDivergence
             | PrototypeFlightPlanAbortReplanReason.VelocityDivergence
+            | PrototypeFlightPlanAbortReplanReason.AttitudeDivergence
             | PrototypeFlightPlanAbortReplanReason.TrackingDiverged;
         PrototypeFlightPlanAbortReplanReason hardReasons = softReasons | PrototypeFlightPlanAbortReplanReason.InvalidPlanDirection;
 
@@ -880,6 +881,27 @@ public class PrototypeWaypointAutopilotValidationTests
 
         Assert.True(soft);
         Assert.False(hard);
+    }
+
+    [Test]
+    public void DirectFastTransfer_BrakeTimingDivergenceCanBeFlaggedForNonDirectFastTransferSegment()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 150f;
+        rig.Body.linearVelocity = Vector3.forward * 45f;
+        rig.Autopilot.SelectTarget(rig.Target);
+        InvokeFixedUpdate(rig.Autopilot);
+        Assert.True(rig.Autopilot.LastMetrics.shouldBrake, "test should enter conservative brake-safety state");
+
+        PrototypeManeuverSegment segment = CreateDirectFastTransferSegment(
+            PrototypeManeuverPhase.ProgradeBurn,
+            PrototypeManeuverProfile.Default);
+        MethodInfo method = typeof(PrototypeWaypointAutopilot).GetMethod("ShouldFlagFlightPlanBrakeTimingDivergence", PrivateInstance);
+        Assert.NotNull(method);
+
+        bool result = (bool)method.Invoke(rig.Autopilot, new object[] { segment });
+
+        Assert.True(result);
     }
 
     [Test]
@@ -941,7 +963,9 @@ public class PrototypeWaypointAutopilotValidationTests
         };
     }
 
-    private static PrototypeManeuverSegment CreateDirectFastTransferSegment(PrototypeManeuverPhase phase)
+    private static PrototypeManeuverSegment CreateDirectFastTransferSegment(
+        PrototypeManeuverPhase phase,
+        PrototypeManeuverProfile profile = PrototypeManeuverProfile.DirectFastTransfer)
     {
         Vector3 direction = phase == PrototypeManeuverPhase.RetrogradeBurn ? Vector3.back : Vector3.forward;
         return new PrototypeManeuverSegment(
@@ -969,7 +993,7 @@ public class PrototypeWaypointAutopilotValidationTests
             PrototypeFlightPlanTolerance.Default,
             PrototypeManeuverSegment.DefaultReplanReasons,
             "DirectFastTransfer test",
-            PrototypeManeuverProfile.DirectFastTransfer);
+            profile);
     }
 
     private static void SetPrivateFloat(object target, string fieldName, float value)
