@@ -15,6 +15,7 @@ public static class PrototypeUiLayoutManager
     public const string DiagnosticsWindowId = "flight-diagnostics";
     public const string DebugConsoleWindowId = "debug-console";
     public const string HudWindowId = "hud-navball";
+    public const string OrbitMapDebugWindowId = "orbit-map-debug";
     public const string KeybindWindowId = "keybinds";
     public const string MinimapWindowId = "minimap";
     public const string WeaponComputerWindowId = "weapon-computer";
@@ -330,6 +331,10 @@ public static class PrototypeUiLayoutManager
                 rect.x = screenBounds.x + ScreenPadding;
                 rect.y = screenBounds.y + 96f;
                 break;
+            case OrbitMapDebugWindowId:
+                rect.x = screenBounds.x + ScreenPadding;
+                rect.y = screenBounds.y + ScreenPadding;
+                break;
         }
 
         return ClampRect(rect, screenBounds);
@@ -364,6 +369,7 @@ public static class PrototypeUiLayoutManager
             HudWindowId,
             MinimapWindowId,
             DiagnosticsWindowId,
+            OrbitMapDebugWindowId,
             WeaponComputerWindowId,
             KeybindWindowId,
             DebugConsoleWindowId
