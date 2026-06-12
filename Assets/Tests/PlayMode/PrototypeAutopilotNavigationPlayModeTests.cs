@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -6,6 +8,8 @@ using UnityEngine;
 
 public class PrototypeAutopilotNavigationPlayModeTests
 {
+    private const string ChangeName = "fix-autopilot-plan-execution-fidelity-v1";
+    private static readonly CultureInfo CsvCulture = CultureInfo.InvariantCulture;
     private const BindingFlags PrivateInstance = BindingFlags.Instance | BindingFlags.NonPublic;
     private enum DirectFastTransferTrackingInjectionMode
     {
@@ -91,6 +95,106 @@ public class PrototypeAutopilotNavigationPlayModeTests
         Assert.That(result.FinalDistance, Is.LessThan(result.InitialDistance), "Ship should make real progress toward the selected target.");
         Assert.That(result.MaximumLateralOffset, Is.GreaterThan(obstacle.Radius + 0.5f), "Ship should build enough lateral offset to route around the obstacle.");
         Assert.That(result.MinimumObstacleClearance, Is.GreaterThan(0.25f), "Ship should keep physical clearance outside the obstacle radius.");
+    }
+
+    [Test]
+    public void PlayMode_Autopilot_DistantWaypoint_PerFixedUpdateNavigationEvidence()
+    {
+        AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 2000f);
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(true);
+        rig.Autopilot.SetStrictFlightPlanExecutionForTests(true);
+        rig.Autopilot.ToggleAutopilot();
+
+        string evidenceRoot = Path.Combine(
+            Directory.GetCurrentDirectory(),
+            ".devtoolbox",
+            "specs",
+            "changes",
+            ChangeName,
+            "tests");
+        Directory.CreateDirectory(Path.Combine(evidenceRoot, "performance"));
+        string csvPath = Path.Combine(evidenceRoot, "performance", "distant-waypoint-navigation.csv");
+
+        int referenceSampleRows = 0;
+        float maxPlanElapsed = 0f;
+        bool sawProgradeBurn = false;
+        bool sawFlipOrRetrogradeBurn = false;
+
+        using (var writer = new StreamWriter(csvPath, false))
+        {
+            writer.WriteLine(
+                "planElapsed,segmentIndex,phase,activeSampleIndex,referenceTime,hasReferenceSample,"
+                + "desiredPosition.x,desiredPosition.y,desiredPosition.z,"
+                + "desiredVelocity.x,desiredVelocity.y,desiredVelocity.z,"
+                + "actualPosition.x,actualPosition.y,actualPosition.z,"
+                + "actualVelocity.x,actualVelocity.y,actualVelocity.z,"
+                + "requestedMainThrottle,divergenceReasons,forceReplanCounter,flightPlanRequiresReplan");
+
+            for (int step = 0; step < 2600; step++)
+            {
+                StepClosedLoopPhysicsWithoutForcedReplan(rig);
+
+                PrototypeFlightPlanTrackingCommand command = rig.Autopilot.CurrentFlightPlanTrackingCommand;
+                PrototypeFlightPlanTrackingError error = command.error;
+                if (error.hasReferenceSample)
+                {
+                    referenceSampleRows++;
+                }
+
+                maxPlanElapsed = Mathf.Max(maxPlanElapsed, rig.Autopilot.FlightPlanExecutorElapsedSeconds);
+                sawProgradeBurn |= error.activePhase == PrototypeManeuverPhase.ProgradeBurn;
+                sawFlipOrRetrogradeBurn |= error.activePhase == PrototypeManeuverPhase.FlipToRetrograde
+                    || error.activePhase == PrototypeManeuverPhase.RetrogradeBurn;
+
+                Vector3 desiredPosition = error.referencePosition;
+                Vector3 desiredVelocity = error.referenceVelocity;
+                Vector3 actualPosition = rig.Body.position;
+                Vector3 actualVelocity = rig.Body.linearVelocity;
+
+                writer.WriteLine(
+                    FormatFloat(rig.Autopilot.FlightPlanExecutorElapsedSeconds) + ","
+                    + error.activeSegmentIndex + ","
+                    + CsvEscape(error.activePhase.ToString()) + ","
+                    + error.activeSampleIndex + ","
+                    + FormatFloat(error.referenceTimeSeconds) + ","
+                    + error.hasReferenceSample + ","
+                    + FormatFloat(desiredPosition.x) + ","
+                    + FormatFloat(desiredPosition.y) + ","
+                    + FormatFloat(desiredPosition.z) + ","
+                    + FormatFloat(desiredVelocity.x) + ","
+                    + FormatFloat(desiredVelocity.y) + ","
+                    + FormatFloat(desiredVelocity.z) + ","
+                    + FormatFloat(actualPosition.x) + ","
+                    + FormatFloat(actualPosition.y) + ","
+                    + FormatFloat(actualPosition.z) + ","
+                    + FormatFloat(actualVelocity.x) + ","
+                    + FormatFloat(actualVelocity.y) + ","
+                    + FormatFloat(actualVelocity.z) + ","
+                    + FormatFloat(rig.Autopilot.RequestedMainThrottle) + ","
+                    + CsvEscape(rig.Autopilot.FlightPlanDivergenceReasons.ToString()) + ","
+                    + rig.Autopilot.FlightPlanSafetyReplanCount + ","
+                    + rig.Autopilot.FlightPlanRequiresReplan);
+
+                if (rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Complete
+                    || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Aborted
+                    || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.FuelInsufficient
+                    || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Failed)
+                {
+                    break;
+                }
+            }
+        }
+
+        Assert.That(new FileInfo(csvPath).Length, Is.GreaterThan(0));
+        string csvText = File.ReadAllText(csvPath);
+        string[] lines = csvText.Split(new[] {'\n'}, System.StringSplitOptions.RemoveEmptyEntries);
+        Assert.That(lines.Length, Is.GreaterThan(1), "Expected CSV header plus at least one sample row.");
+        Assert.That(referenceSampleRows, Is.GreaterThan(0), "Expected at least one sample-backed tracking reference row.");
+        Assert.That(maxPlanElapsed, Is.GreaterThan(1f), "Expected the diagnostic run to advance the flight-plan clock.");
+        Assert.That(sawProgradeBurn, Is.True, "Expected the diagnostic run to cover the planned burn segment.");
+        Assert.That(sawFlipOrRetrogradeBurn, Is.True, "Expected the diagnostic run to reach the flip or brake window.");
+        Assert.That(csvText, Does.Contain("planElapsed"));
+        Assert.That(csvText, Does.Contain("forceReplanCounter"));
     }
 
     [Test]
@@ -3016,6 +3120,27 @@ public class PrototypeAutopilotNavigationPlayModeTests
         }
 
         return count;
+    }
+
+    private static string FormatFloat(float value)
+    {
+        return value.ToString("0.######", CsvCulture);
+    }
+
+    private static string CsvEscape(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return string.Empty;
+        }
+
+        string escaped = value.Replace("\"", "\"\"");
+        if (escaped.Contains(",") || escaped.Contains("\"") || escaped.Contains("\r") || escaped.Contains("\n"))
+        {
+            return $"\"{escaped}\"";
+        }
+
+        return escaped;
     }
 
     private static PrototypeNavigationObstacle CreateObstacle(Vector3 position, float radius)

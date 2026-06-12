@@ -185,6 +185,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private float lastFlightPlanSafetyReplanAtTime = -1000f;
     private float nextFlightPlanSafetyRefreshTime;
     private int flightPlanRevisionCounter;
+    private int flightPlanSafetyReplanCount;
     private string lastAssignedFlightPlanId = string.Empty;
     private bool forceNextFlightPlanRevision;
     private PrototypeFlightPlanTrackingCommand lastFlightPlanTrackingCommand;
@@ -251,6 +252,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     public bool FlightPlanRequiresReplan => CurrentFlightPlanDivergenceReport.requiresReplan;
     public bool FlightPlanRequiresAbort => CurrentFlightPlanDivergenceReport.requiresAbort;
     public string FlightPlanDivergenceStatusLabel => CurrentFlightPlanDivergenceReport.statusLabel;
+    public int FlightPlanSafetyReplanCount => flightPlanSafetyReplanCount;
     public string ObstacleStatus => LastObstacleDetection.hasObstacle
         ? $"{LastTrajectoryPlan.obstacleLabel} @ {LastObstacleDetection.hitDistance:0.0}m"
         : "clear";
@@ -573,6 +575,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         autopilotElapsedSeconds = 0f;
         ResetFlightPlanExecutorClock();
         flightPlanRevisionCounter = 0;
+        flightPlanSafetyReplanCount = 0;
         lastAssignedFlightPlanId = string.Empty;
         forceNextFlightPlanRevision = true;
         hasStableAvoidance = false;
@@ -641,6 +644,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         ResetDirectFastTransferTerminalOwnership();
         ResetFlightPlanExecutorClock();
         flightPlanRevisionCounter = 0;
+        flightPlanSafetyReplanCount = 0;
         lastAssignedFlightPlanId = string.Empty;
         forceNextFlightPlanRevision = true;
         ReleaseBrakeHold();
@@ -1407,6 +1411,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         }
 
         lastFlightPlanSafetyReplanAtTime = Time.time;
+        flightPlanSafetyReplanCount++;
         arrivalFailureReason = "FlightPlanReplan:" + PrototypeFlightPlanDivergenceMonitor.FormatReasons(report.reasons);
         if (ShouldClearActuatorOutputForSafetyReplan(report.reasons))
         {
