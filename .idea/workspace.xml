@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="23307a3b-d529-481d-b4f2-72dce30117ef" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.devtoolbox/specs/changes/fix-imported-functional-ship-spin-root-cause-v1/tests/performance/flight-control-spin-diagnostics.csv" beforeDir="false" afterPath="$PROJECT_DIR$/.devtoolbox/specs/changes/fix-imported-functional-ship-spin-root-cause-v1/tests/performance/flight-control-spin-diagnostics.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.devtoolbox/specs/changes/fix-imported-functional-ship-spin-root-cause-v1/tests/screenshots/normal-attitude-sas-on.png" beforeDir="false" afterPath="$PROJECT_DIR$/.devtoolbox/specs/changes/fix-imported-functional-ship-spin-root-cause-v1/tests/screenshots/normal-attitude-sas-on.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.devtoolbox/specs/changes/fix-imported-functional-ship-spin-root-cause-v1/tests/screenshots/translation-forward.png" beforeDir="false" afterPath="$PROJECT_DIR$/.devtoolbox/specs/changes/fix-imported-functional-ship-spin-root-cause-v1/tests/screenshots/translation-forward.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.devtoolbox/specs/changes/fix-imported-functional-ship-spin-root-cause-v1/tests/screenshots/translation-left-right.png" beforeDir="false" afterPath="$PROJECT_DIR$/.devtoolbox/specs/changes/fix-imported-functional-ship-spin-root-cause-v1/tests/screenshots/translation-left-right.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.devtoolbox/specs/changes/fix-imported-functional-ship-spin-root-cause-v1/tests/test-protocol.md" beforeDir="false" afterPath="$PROJECT_DIR$/.devtoolbox/specs/changes/fix-imported-functional-ship-spin-root-cause-v1/tests/test-protocol.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.devtoolbox/specs/changes/performance-job-system-runtime-phases-v2/tests/performance/runtime-job-benchmark.csv" beforeDir="false" afterPath="$PROJECT_DIR$/.devtoolbox/specs/changes/performance-job-system-runtime-phases-v2/tests/performance/runtime-job-benchmark.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.devtoolbox/specs/changes/performance-job-system-runtime-phases-v2/tests/performance/runtime-job-benchmark.md" beforeDir="false" afterPath="$PROJECT_DIR$/.devtoolbox/specs/changes/performance-job-system-runtime-phases-v2/tests/performance/runtime-job-benchmark.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.devtoolbox/specs/changes/performance-stability-hotpath-cleanup-v1/tests/performance/playmode-performance-smoke.md" beforeDir="false" afterPath="$PROJECT_DIR$/.devtoolbox/specs/changes/performance-stability-hotpath-cleanup-v1/tests/performance/playmode-performance-smoke.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.devtoolbox/specs/changes/performance-stability-hotpath-cleanup-v1/tests/screenshots/playmode-performance-final.png" beforeDir="false" afterPath="$PROJECT_DIR$/.devtoolbox/specs/changes/performance-stability-hotpath-cleanup-v1/tests/screenshots/playmode-performance-final.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Art/PrototypeShipKit/VFX/Materials/MAT_VFX_RCS.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Art/PrototypeShipKit/VFX/Materials/MAT_VFX_RCS.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Tests/PlayMode/PrototypeAutopilotNavigationPlayModeTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Tests/PlayMode/PrototypeAutopilotNavigationPlayModeTests.cs" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 1,
+  "fromUser": false
+}]]></component>
+  <component name="ProjectId" id="3F3AcWn0G8fBL1wzE4s5rAV5PTJ" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-31caf2ab9e3c-JavaScript-WS-261.23567.141" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="23307a3b-d529-481d-b4f2-72dce30117ef" name="Changes" comment="" />
+      <created>1781293459454</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1781293459454</updated>
+      <workItem from="1781293460794" duration="6000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

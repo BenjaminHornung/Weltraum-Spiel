@@ -106,6 +106,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private const float DirectFastTransferMainLatchEngageAngularSpeedDegreesPerSecond = 20f;
     private const float DirectFastTransferMainLatchKeepAngularSpeedDegreesPerSecond = 45f;
     private const float DirectFastTransferMainLatchReleaseAngularSpeedDegreesPerSecond = 60f;
+    private const float DirectFastTransferTerminalReacquireTimeoutSeconds = 45f;
     private const PrototypeFlightPlanAbortReplanReason DirectFastTransferNominalExecutionReasons =
         PrototypeFlightPlanAbortReplanReason.PositionDivergence
         | PrototypeFlightPlanAbortReplanReason.VelocityDivergence
@@ -194,6 +195,10 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private int directFastMainLatchPlanRevision = -1;
     private int directFastMainLatchSegmentIndex = -1;
     private string directFastMainThrottleLatchStatus = string.Empty;
+    private bool directFastTransferBrakeCommitted;
+    private bool directFastTransferTerminalCaptureActive;
+    private bool directFastTransferTerminalReacquireActive;
+    private float directFastTransferTerminalReacquireStartedAtTime = -1f;
     private PrototypeMomentumAssist momentumAssist;
     private PrototypeTrajectoryPlanner trajectoryPlanner;
 
@@ -438,7 +443,9 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             arrivalFailureReason = string.Empty;
         }
 
-        if (!ShouldProtectDirectFastTransferBrakeSegmentFromTerminalHold()
+        bool strictDirectFastTransferActive = IsStrictDirectFastTransferExecutionActive();
+        if (!strictDirectFastTransferActive
+            && !ShouldProtectDirectFastTransferBrakeSegmentFromTerminalHold()
             && (ShouldMaintainArrivalHold()
                 || (ShouldCaptureAnyArrivalHold() && !IsAvoidancePlanActive()))
             && TryEnterHoldPosition())
@@ -453,6 +460,16 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
         if (TryBlockLegacyLiveGatesForActiveFlightPlan())
         {
+            return;
+        }
+
+        if (strictDirectFastTransferActive)
+        {
+            PrototypeFlightPlanExecutionState state = BuildFlightPlanExecutionState(CurrentFlightPlan, flightPlanElapsedSeconds);
+            FailStrictDirectFastTransferExecution(
+                state,
+                PrototypeFlightPlanAbortReplanReason.NonExecutable,
+                "direct fast transfer executor unavailable");
             return;
         }
 
@@ -569,6 +586,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         brakeHoldStartTime = 0f;
         arrivalBrakeCommitted = false;
         arrivalTerminalCaptureActive = false;
+        ResetDirectFastTransferTerminalOwnership();
         holdConfirmUntilTime = 0f;
         navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.Direct;
         LastObstacleDetection = PrototypeObstacleDetectionResult.Clear(GetObstacleClearanceRadius());
@@ -620,6 +638,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         committedBrakeDirection = Vector3.zero;
         arrivalBrakeCommitted = false;
         arrivalTerminalCaptureActive = false;
+        ResetDirectFastTransferTerminalOwnership();
         ResetFlightPlanExecutorClock();
         flightPlanRevisionCounter = 0;
         lastAssignedFlightPlanId = string.Empty;
@@ -889,6 +908,14 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
                 invalidState.requiresReplan = true;
                 invalidState.statusLabel = report.statusLabel;
                 lastFlightPlanExecutionState = invalidState;
+                if (IsStrictDirectFastTransferPlan(plan))
+                {
+                    return FailStrictDirectFastTransferExecution(
+                        invalidState,
+                        reasons,
+                        "direct fast transfer plan invalid");
+                }
+
                 return ForceFlightPlanSafetyReplan(report, "flight plan invalid");
             }
 
@@ -906,7 +933,23 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         {
             PrototypeFlightPlanExecutionState expiredState = BuildFlightPlanExecutionState(plan, flightPlanElapsedSeconds);
             PrototypeFlightPlanDivergenceReport expiredReport = EvaluateFlightPlanDivergence(plan, expiredState, liveObstacle, default, true);
-            if (flightPlanElapsedSeconds > plan.totalDurationSeconds && TryRunFlightPlanTerminalSafety())
+            bool strictDirectFastTransfer = IsStrictDirectFastTransferPlan(plan);
+            if (strictDirectFastTransfer
+                && flightPlanElapsedSeconds > plan.totalDurationSeconds
+                && TryRunDirectFastTransferTerminalCaptureOrReacquire())
+            {
+                flightPlanExecutorActive = true;
+                expiredState.requiresReplan = false;
+                expiredState.replanReasons &= ~PrototypeFlightPlanAbortReplanReason.PlanExpired;
+                expiredState.statusLabel = directFastTransferTerminalReacquireActive ? "Reacquire" : "Terminal capture";
+                lastFlightPlanExecutionState = expiredState;
+                flightPlanElapsedSeconds += Mathf.Max(Time.fixedDeltaTime, 0.02f);
+                return true;
+            }
+
+            if (!strictDirectFastTransfer
+                && flightPlanElapsedSeconds > plan.totalDurationSeconds
+                && TryRunFlightPlanTerminalSafety())
             {
                 flightPlanExecutorActive = true;
                 lastFlightPlanExecutionState = expiredState;
@@ -1095,15 +1138,43 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             true,
             false,
             "Replan: " + PrototypeFlightPlanDivergenceMonitor.FormatReasons(reasons));
+        if (IsStrictDirectFastTransferExecutionActive())
+        {
+            report = new PrototypeFlightPlanDivergenceReport(
+                reasons,
+                false,
+                true,
+                "Plan invalidated: " + PrototypeFlightPlanDivergenceMonitor.FormatReasons(reasons));
+        }
+
         SetFlightPlanDivergenceReport(report);
         executionState.replanReasons |= reasons;
-        executionState.requiresReplan = true;
+        executionState.requiresReplan = !IsStrictDirectFastTransferExecutionActive();
         executionState.statusLabel = report.statusLabel;
         lastFlightPlanExecutionState = executionState;
+
+        if (IsStrictDirectFastTransferExecutionActive()
+            && ShouldRecoverStrictDirectFastTransferTerminalDivergence(reasons)
+            && TryRunDirectFastTransferTerminalCaptureOrReacquire())
+        {
+            executionState.replanReasons &= ~reasons;
+            executionState.requiresReplan = false;
+            executionState.statusLabel = directFastTransferTerminalReacquireActive ? "Reacquire" : "Terminal capture";
+            lastFlightPlanExecutionState = executionState;
+            return true;
+        }
 
         if (!IsImmediateFlightPlanDivergence(reasons) && !IsFlightPlanDivergenceConfirmed(report))
         {
             return false;
+        }
+
+        if (IsStrictDirectFastTransferExecutionActive())
+        {
+            return FailStrictDirectFastTransferExecution(
+                executionState,
+                reasons,
+                "direct fast transfer tracking failed");
         }
 
         return ForceFlightPlanSafetyReplan(report, "flight plan tracking replan");
@@ -1203,6 +1274,63 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         PrototypeFlightPlanExecutionState executionState,
         PrototypeFlightPlanDivergenceReport report)
     {
+        if (IsStrictDirectFastTransferPlan(plan) && report.HasDivergence)
+        {
+            if (IsDirectFastTransferNominalExecutionOnly(report.reasons))
+            {
+                var correctionReport = new PrototypeFlightPlanDivergenceReport(
+                    report.reasons,
+                    false,
+                    false,
+                    "Tracking correction: " + PrototypeFlightPlanDivergenceMonitor.FormatReasons(report.reasons));
+                SetFlightPlanDivergenceReport(correctionReport);
+                executionState.replanReasons &= ~DirectFastTransferNominalExecutionReasons;
+                executionState.requiresReplan = false;
+                executionState.statusLabel = correctionReport.statusLabel;
+                lastFlightPlanExecutionState = executionState;
+                return false;
+            }
+
+            if (report.reasons == PrototypeFlightPlanAbortReplanReason.PlanExpired
+                && TryRunDirectFastTransferTerminalCaptureOrReacquire())
+            {
+                ClearFlightPlanDivergenceReportNow();
+                return true;
+            }
+
+            if (ShouldRecoverStrictDirectFastTransferTerminalDivergence(report.reasons)
+                && TryRunDirectFastTransferTerminalCaptureOrReacquire())
+            {
+                ClearFlightPlanDivergenceReportNow();
+                executionState.replanReasons &= ~report.reasons;
+                executionState.requiresReplan = false;
+                executionState.statusLabel = directFastTransferTerminalReacquireActive ? "Reacquire" : "Terminal capture";
+                lastFlightPlanExecutionState = executionState;
+                return true;
+            }
+
+            var invalidatedReport = new PrototypeFlightPlanDivergenceReport(
+                report.reasons,
+                false,
+                true,
+                "Plan invalidated: " + PrototypeFlightPlanDivergenceMonitor.FormatReasons(report.reasons));
+            SetFlightPlanDivergenceReport(invalidatedReport);
+            executionState.replanReasons |= report.reasons;
+            executionState.requiresReplan = false;
+            executionState.statusLabel = invalidatedReport.statusLabel;
+            lastFlightPlanExecutionState = executionState;
+            if (!IsImmediateFlightPlanDivergence(report.reasons)
+                && !IsFlightPlanDivergenceConfirmed(invalidatedReport))
+            {
+                return false;
+            }
+
+            return FailStrictDirectFastTransferExecution(
+                executionState,
+                report.reasons,
+                "direct fast transfer failed");
+        }
+
         SetFlightPlanDivergenceReport(report);
         if (report.HasDivergence)
         {
@@ -1253,6 +1381,11 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
     private bool ForceFlightPlanSafetyReplan(PrototypeFlightPlanDivergenceReport report, string status)
     {
+        if (CurrentFlightPlan.IsDirectFastTransfer)
+        {
+            ResetDirectFastTransferTerminalOwnership();
+        }
+
         bool bypassCooldown = (report.reasons
             & (PrototypeFlightPlanAbortReplanReason.PlanExpired
                 | PrototypeFlightPlanAbortReplanReason.InvalidPlanDirection
@@ -1289,6 +1422,54 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         RefreshNavigationPlan();
         flightPlanExecutorActive = false;
         return true;
+    }
+
+    private bool FailStrictDirectFastTransferExecution(
+        PrototypeFlightPlanExecutionState executionState,
+        PrototypeFlightPlanAbortReplanReason reasons,
+        string status)
+    {
+        if (reasons == PrototypeFlightPlanAbortReplanReason.None)
+        {
+            reasons = PrototypeFlightPlanAbortReplanReason.NonExecutable;
+        }
+
+        string reasonLabel = PrototypeFlightPlanDivergenceMonitor.FormatReasons(reasons);
+        var report = new PrototypeFlightPlanDivergenceReport(
+            reasons,
+            false,
+            true,
+            "Plan invalidated: " + reasonLabel);
+        SetFlightPlanDivergenceReport(report);
+        executionState.replanReasons |= reasons;
+        executionState.requiresReplan = false;
+        executionState.statusLabel = report.statusLabel;
+        lastFlightPlanExecutionState = executionState;
+
+        arrivalFailureReason = "FlightPlanInvalidated:" + reasonLabel;
+        requestedMainThrottle = 0f;
+        requestedRcsTranslation = Vector3.zero;
+        desiredBurnDirection = Vector3.zero;
+        flightPlanExecutorActive = false;
+        ResetDirectFastTransferMainThrottleLatch();
+        ResetDirectFastTransferTerminalOwnership();
+        if (shipController != null)
+        {
+            shipController.SetMainThrottle(0f);
+            shipController.ClearExternalFlightAssistRequest();
+            shipController.SetSasMode(SasControlMode.KillRotation);
+        }
+
+        SetState(PrototypeWaypointAutopilotState.Failed, string.IsNullOrWhiteSpace(status) ? "direct fast transfer failed" : status);
+        autopilotEngaged = false;
+        return true;
+    }
+
+    private void ClearFlightPlanDivergenceReportNow()
+    {
+        flightPlanDivergenceStartedAtTime = -1f;
+        lastFlightPlanDivergenceReport = PrototypeFlightPlanDivergenceReport.Clear;
+        lastFlightPlanDivergenceAtTime = -1000f;
     }
 
     private void SetFlightPlanDivergenceReport(PrototypeFlightPlanDivergenceReport report)
@@ -1518,6 +1699,14 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
         PrototypeFlightPlan plan = CurrentFlightPlan;
         PrototypeFlightPlanExecutionState state = BuildFlightPlanExecutionState(plan, flightPlanElapsedSeconds);
+        if (IsStrictDirectFastTransferExecutionActive())
+        {
+            return FailStrictDirectFastTransferExecution(
+                state,
+                PrototypeFlightPlanAbortReplanReason.NonExecutable,
+                "direct fast transfer legacy fallback blocked");
+        }
+
         return BlockFlightPlanLegacyFallback(
             state,
             PrototypeFlightPlanAbortReplanReason.NonExecutable,
@@ -1588,6 +1777,11 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return false;
         }
 
+        if (IsStrictDirectFastTransferExecutionActive())
+        {
+            return TryRunDirectFastTransferTerminalCaptureOrReacquire();
+        }
+
         if (TryRunExpiredFlightPlanTerminalHold())
         {
             return true;
@@ -1630,6 +1824,183 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         return false;
     }
 
+    private bool TryRunDirectFastTransferTerminalCaptureOrReacquire()
+    {
+        if (!IsStrictDirectFastTransferExecutionActive() || currentTarget == null || shipRigidbody == null)
+        {
+            return false;
+        }
+
+        ClearFlightPlanDivergenceReportNow();
+        arrivalFailureReason = string.Empty;
+
+        if (arrivalTerminalCaptureActive
+            && LastMetrics.distance <= GetArrivalTerminalRangeDistance() + BrakeArrivalHoldDistanceMarginMeters * 2f
+            && LastMetrics.closingSpeed <= BrakeHoldReleaseZeroSpeed)
+        {
+            directFastTransferTerminalCaptureActive = true;
+            directFastTransferTerminalReacquireActive = false;
+            directFastTransferTerminalReacquireStartedAtTime = -1f;
+            if (ShouldCaptureAnyArrivalHold() || IsInArrivalCompletionWindow())
+            {
+                SetDirectFastTransferExecutionStatus("flight plan terminal capture", "Terminal capture");
+                return TryEnterHoldPosition();
+            }
+
+            SetState(PrototypeWaypointAutopilotState.FinalApproach, "Terminal capture");
+            navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.FinalApproach;
+            arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.FinalApproach;
+            limitedFinalApproachCapability = !CanUseRcsTranslation();
+            ApplyHoldDamping();
+            SetDirectFastTransferExecutionStatus("flight plan terminal capture", "Terminal capture");
+            return true;
+        }
+
+        if (IsWithinArrivalTerminalCaptureRange())
+        {
+            directFastTransferTerminalCaptureActive = true;
+            arrivalTerminalCaptureActive = true;
+            directFastTransferTerminalReacquireActive = false;
+            directFastTransferTerminalReacquireStartedAtTime = -1f;
+            float terminalBrakeSpeedLimit = GetArrivalCompletionSpeedLimit() * BrakeArrivalHoldRelativeSpeedMultiplier;
+            if (!ShouldCaptureAnyArrivalHold()
+                && !IsInArrivalCompletionWindow()
+                && LastMetrics.closingSpeed > BrakeHoldReleaseZeroSpeed
+                && LastMetrics.relativeSpeed > terminalBrakeSpeedLimit)
+            {
+                ApplyDirectFastTransferTerminalBrake();
+                return true;
+            }
+
+            directFastTransferBrakeCommitted = false;
+            if (ShouldCaptureAnyArrivalHold() || IsInArrivalCompletionWindow())
+            {
+                SetDirectFastTransferExecutionStatus("flight plan terminal capture", "Terminal capture");
+                return TryEnterHoldPosition();
+            }
+
+            SetState(PrototypeWaypointAutopilotState.FinalApproach, "Terminal capture");
+            navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.FinalApproach;
+            arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.FinalApproach;
+            limitedFinalApproachCapability = !CanUseRcsTranslation();
+            if (ShouldUseTerminalLateralCorrection())
+            {
+                arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.LateralCorrection;
+                ApplyLateralCorrection();
+            }
+            else
+            {
+                ApplyHoldDamping();
+            }
+
+            SetDirectFastTransferExecutionStatus("flight plan terminal capture", "Terminal capture");
+            return true;
+        }
+
+        directFastTransferTerminalCaptureActive = false;
+        directFastTransferBrakeCommitted = false;
+        if (!directFastTransferTerminalReacquireActive)
+        {
+            directFastTransferTerminalReacquireStartedAtTime = autopilotElapsedSeconds;
+        }
+
+        directFastTransferTerminalReacquireActive = true;
+        arrivalTerminalCaptureActive = false;
+        ReleaseBrakeHold();
+        if (ShouldFailDirectFastTransferTerminalReacquire())
+        {
+            PrototypeFlightPlanExecutionState state = BuildFlightPlanExecutionState(CurrentFlightPlan, flightPlanElapsedSeconds);
+            return FailStrictDirectFastTransferExecution(
+                state,
+                PrototypeFlightPlanAbortReplanReason.TimeSlip,
+                "direct fast transfer terminal reacquire timeout");
+        }
+
+        ApplyDirectFastTransferTerminalReacquire();
+        return true;
+    }
+
+    private void ApplyDirectFastTransferTerminalReacquire()
+    {
+        Vector3 direction = LastMetrics.directionToTarget.sqrMagnitude > 0.0001f
+            ? LastMetrics.directionToTarget.normalized
+            : transform.forward;
+        SetState(PrototypeWaypointAutopilotState.Accelerate, "Reacquire");
+        navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.ReacquireDirectPath;
+        arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.LongRangeBurn;
+        limitedFinalApproachCapability = false;
+        arrivalFailureReason = string.Empty;
+        float reacquireSpeedLimit = GetArrivalCompletionSpeedLimit() * BrakeArrivalHoldRelativeSpeedMultiplier;
+        float reacquireCruiseSpeed = Mathf.Max(reacquireSpeedLimit * 1.75f, arrivalSpeedMetersPerSecond * 6f);
+        float reacquireThrottle = LastMetrics.closingSpeed < reacquireCruiseSpeed * 0.75f
+            && LastMetrics.relativeSpeed < reacquireCruiseSpeed * 0.95f
+                ? 0.65f
+                : 0f;
+        ApplyAutopilotRequest(direction, reacquireThrottle, false, null, Vector3.zero, true);
+        SetDirectFastTransferExecutionStatus("flight plan reacquire", "Reacquire");
+    }
+
+    private bool ShouldFailDirectFastTransferTerminalReacquire()
+    {
+        if (!directFastTransferTerminalReacquireActive
+            || directFastTransferTerminalReacquireStartedAtTime < 0f)
+        {
+            return false;
+        }
+
+        if (LastMetrics.distance <= GetArrivalTerminalRangeDistance() + BrakeArrivalHoldDistanceMarginMeters)
+        {
+            return false;
+        }
+
+        return autopilotElapsedSeconds >= directFastTransferTerminalReacquireStartedAtTime + DirectFastTransferTerminalReacquireTimeoutSeconds;
+    }
+
+    private void ApplyDirectFastTransferTerminalBrake()
+    {
+        directFastTransferBrakeCommitted = true;
+        directFastTransferTerminalReacquireActive = false;
+        directFastTransferTerminalReacquireStartedAtTime = -1f;
+        navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.Brake;
+        arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.Brake;
+        limitedFinalApproachCapability = false;
+        arrivalFailureReason = string.Empty;
+        Vector3 brakeDirection = ResolveBrakeDirection();
+        if (shipRigidbody != null
+            && shipRigidbody.linearVelocity.sqrMagnitude > BrakeDirectionMinimumSpeedMetersPerSecond * BrakeDirectionMinimumSpeedMetersPerSecond
+            && Vector3.Dot(brakeDirection.normalized, shipRigidbody.linearVelocity.normalized) > 0.15f)
+        {
+            committedBrakeDirection = -shipRigidbody.linearVelocity.normalized;
+            brakeDirection = committedBrakeDirection;
+        }
+
+        float angle = Vector3.Angle(transform.forward, brakeDirection);
+        float angularSpeed = GetAngularSpeedRadiansPerSecond();
+        bool brakeAlignmentReady = UpdateBrakeAlignmentLock(angle, angularSpeed);
+        SetState(brakeAlignmentReady ? PrototypeWaypointAutopilotState.Brake : PrototypeWaypointAutopilotState.FlipForBrake, "Terminal capture");
+        if (!brakeAlignmentReady)
+        {
+            brakeMainThrottleAlignmentLocked = false;
+        }
+
+        ApplyAutopilotRequest(brakeDirection, 1f, false, brakeAlignmentReady);
+        SetDirectFastTransferExecutionStatus("flight plan terminal capture", "Terminal capture");
+    }
+
+    private void SetDirectFastTransferExecutionStatus(string status, string statusLabel)
+    {
+        PrototypeTrajectoryPlan updatedPlan = LastTrajectoryPlan;
+        updatedPlan.status = status;
+        updatedPlan.statusLabel = statusLabel;
+        if (string.Equals(updatedPlan.warningStatus, "Replan: none", System.StringComparison.Ordinal)
+            || (updatedPlan.warningStatus != null && updatedPlan.warningStatus.StartsWith("Replan:", System.StringComparison.Ordinal)))
+        {
+            updatedPlan.warningStatus = string.Empty;
+        }
+
+        LastTrajectoryPlan = updatedPlan;
+    }
+
     private void TrackActiveFlightPlan(PrototypeFlightPlan plan)
     {
         if (activeFlightPlanRevision >= 0 && activeFlightPlanRevision == plan.revision)
@@ -1650,6 +2021,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             arrivalFailureReason = string.Empty;
         }
 
+        ResetDirectFastTransferTerminalOwnership();
         ResetDirectFastTransferMainAuthorityBlock();
     }
 
@@ -1664,7 +2036,16 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         lastFlightPlanDivergenceReport = PrototypeFlightPlanDivergenceReport.Clear;
         flightPlanDivergenceStartedAtTime = -1f;
         lastFlightPlanDivergenceAtTime = -1000f;
+        ResetDirectFastTransferTerminalOwnership();
         ResetDirectFastTransferMainAuthorityBlock();
+    }
+
+    private void ResetDirectFastTransferTerminalOwnership()
+    {
+        directFastTransferBrakeCommitted = false;
+        directFastTransferTerminalCaptureActive = false;
+        directFastTransferTerminalReacquireActive = false;
+        directFastTransferTerminalReacquireStartedAtTime = -1f;
     }
 
     private bool ShouldDeferFlightPlanExecutorToLegacyFallback()
@@ -1752,17 +2133,6 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             ? trackingCommand.mainDirectionWorld.normalized
             : ResolveFlightPlanSegmentDirection(segment);
         UpdateFlightPlanSegmentDiagnostics(segment, direction, trackingCommand);
-        if (IsDirectFastTransferSegment(segment)
-            && arrivalBrakeCommitted
-            && (segment.phase == PrototypeManeuverPhase.AlignForBurn
-                || segment.phase == PrototypeManeuverPhase.ProgradeBurn
-                || segment.phase == PrototypeManeuverPhase.AvoidanceBurn
-                || segment.phase == PrototypeManeuverPhase.ReacquireRoute))
-        {
-            ApplyBrakeRequest();
-            return true;
-        }
-
         if (ShouldSuppressFlightPlanTransferBurnInTerminalCapture(segment))
         {
             if (ShouldSettleFlightPlanBrakeSegment() || ShouldCaptureAnyArrivalHold())
@@ -1954,6 +2324,11 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
                 return true;
 
             case PrototypeManeuverPhase.Hold:
+                if (IsStrictDirectFastTransferExecutionActive() && IsDirectFastTransferSegment(segment))
+                {
+                    return TryRunDirectFastTransferTerminalCaptureOrReacquire();
+                }
+
                 return TryEnterHoldPosition();
 
             default:
@@ -2031,13 +2406,93 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         return segment.profile == PrototypeManeuverProfile.DirectFastTransfer;
     }
 
+    private bool IsStrictDirectFastTransferExecutionActive()
+    {
+        PrototypeFlightPlan plan = CurrentFlightPlan;
+        return autopilotEngaged
+            && strictFlightPlanExecution
+            && useFlightPlanExecutor
+            && plan.IsDirectFastTransfer
+            && plan.HasSegments
+            && activeFlightPlanRevision == plan.revision;
+    }
+
+    private bool IsStrictDirectFastTransferPlan(PrototypeFlightPlan plan)
+    {
+        return autopilotEngaged
+            && strictFlightPlanExecution
+            && useFlightPlanExecutor
+            && plan.IsDirectFastTransfer
+            && plan.HasSegments;
+    }
+
+    private static bool IsDirectFastTransferNominalExecutionOnly(PrototypeFlightPlanAbortReplanReason reasons)
+    {
+        return reasons != PrototypeFlightPlanAbortReplanReason.None
+            && (reasons & ~DirectFastTransferNominalExecutionReasons) == PrototypeFlightPlanAbortReplanReason.None;
+    }
+
+    private bool ShouldRecoverStrictDirectFastTransferTerminalDivergence(PrototypeFlightPlanAbortReplanReason reasons)
+    {
+        const PrototypeFlightPlanAbortReplanReason terminalRecoverableReasons =
+            PrototypeFlightPlanAbortReplanReason.PlanExpired
+            | PrototypeFlightPlanAbortReplanReason.PositionDivergence
+            | PrototypeFlightPlanAbortReplanReason.VelocityDivergence
+            | PrototypeFlightPlanAbortReplanReason.AttitudeDivergence
+            | PrototypeFlightPlanAbortReplanReason.TimeSlip
+            | PrototypeFlightPlanAbortReplanReason.TrackingDiverged;
+        bool hasInvalidPlanDirection = (reasons & PrototypeFlightPlanAbortReplanReason.InvalidPlanDirection) != 0;
+        PrototypeFlightPlanAbortReplanReason recoverableMask = hasInvalidPlanDirection
+            ? terminalRecoverableReasons | PrototypeFlightPlanAbortReplanReason.InvalidPlanDirection
+            : terminalRecoverableReasons;
+        if (reasons == PrototypeFlightPlanAbortReplanReason.None
+            || (reasons & ~recoverableMask) != PrototypeFlightPlanAbortReplanReason.None)
+        {
+            return false;
+        }
+
+        if (hasInvalidPlanDirection && !directFastTransferTerminalReacquireActive)
+        {
+            bool terminalCaptureCanOwnInvalidDirection = IsWithinArrivalTerminalCaptureRange();
+            bool brakeSettledCanHandOffToReacquire = directFastTransferBrakeCommitted
+                && LastMetrics.closingSpeed <= BrakeHoldReleaseZeroSpeed;
+            bool slowOvershootCanHandOffToReacquire = LastMetrics.closingSpeed <= BrakeHoldReleaseZeroSpeed
+                && LastMetrics.relativeSpeed <= GetArrivalCompletionSpeedLimit() * BrakeArrivalHoldRelativeSpeedMultiplier;
+            if (!terminalCaptureCanOwnInvalidDirection
+                && !brakeSettledCanHandOffToReacquire
+                && !slowOvershootCanHandOffToReacquire)
+            {
+                return false;
+            }
+        }
+
+        if (directFastTransferBrakeCommitted
+            || directFastTransferTerminalCaptureActive
+            || directFastTransferTerminalReacquireActive
+            || IsWithinArrivalTerminalCaptureRange())
+        {
+            return true;
+        }
+
+        PrototypeFlightPlan plan = CurrentFlightPlan;
+        float terminalLeadSeconds = Mathf.Max(Time.fixedDeltaTime, 0.02f) * 2f;
+        if (plan.IsDirectFastTransfer
+            && plan.totalDurationSeconds > 0f
+            && flightPlanElapsedSeconds >= plan.totalDurationSeconds - terminalLeadSeconds)
+        {
+            return true;
+        }
+
+        float reacquireSpeedLimit = GetArrivalCompletionSpeedLimit() * BrakeArrivalHoldRelativeSpeedMultiplier;
+        return LastMetrics.relativeSpeed <= reacquireSpeedLimit;
+    }
+
     private static bool IsDirectFastTransferSoftTrackingOnly(
         PrototypeManeuverSegment segment,
         PrototypeFlightPlanAbortReplanReason reasons)
     {
         return IsDirectFastTransferSegment(segment)
-            && reasons != PrototypeFlightPlanAbortReplanReason.None
-            && (reasons & ~DirectFastTransferNominalExecutionReasons) == PrototypeFlightPlanAbortReplanReason.None;
+            && IsDirectFastTransferNominalExecutionOnly(reasons);
     }
 
     private static bool IsDirectFastTransferMainThrottleSegment(PrototypeManeuverSegment segment)
@@ -2220,6 +2675,14 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             ? PrototypeFlightPlanAbortReplanReason.ActuatorLimited
             : PrototypeFlightPlanAbortReplanReason.AttitudeDivergence;
         ResetDirectFastTransferMainAuthorityBlock();
+        if (IsStrictDirectFastTransferExecutionActive())
+        {
+            return FailStrictDirectFastTransferExecution(
+                executionState,
+                reason,
+                "direct fast transfer main authority timeout");
+        }
+
         return BlockFlightPlanLegacyFallback(
             executionState,
             reason,
@@ -2310,9 +2773,37 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     {
         arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.Brake;
         limitedFinalApproachCapability = false;
-        arrivalBrakeCommitted = true;
+        bool directFastTransferSegment = IsDirectFastTransferSegment(segment);
+        if (directFastTransferSegment)
+        {
+            directFastTransferBrakeCommitted = true;
+            directFastTransferTerminalReacquireActive = false;
+            if (allowMainThrottle && direction.sqrMagnitude > 0.0001f && committedBrakeDirection.sqrMagnitude <= 0.0001f)
+            {
+                committedBrakeDirection = direction.normalized;
+            }
+        }
+        else
+        {
+            arrivalBrakeCommitted = true;
+        }
+
+        if (directFastTransferSegment
+            && IsStrictDirectFastTransferExecutionActive()
+            && ShouldCaptureDirectFastTransferBrakeTerminalHandoff())
+        {
+            TryRunDirectFastTransferTerminalCaptureOrReacquire();
+            return;
+        }
+
         if (ShouldSettleFlightPlanBrakeSegment())
         {
+            if (directFastTransferSegment && IsStrictDirectFastTransferExecutionActive())
+            {
+                TryRunDirectFastTransferTerminalCaptureOrReacquire();
+                return;
+            }
+
             arrivalTerminalCaptureActive = true;
             TryEnterHoldPosition();
             return;
@@ -2341,7 +2832,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             brakeAlignmentReady,
             brakeRcsForceWorld,
             true,
-            IsDirectFastTransferSegment(segment),
+            directFastTransferSegment,
             segment);
     }
 
@@ -2411,6 +2902,26 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         float completionSpeed = GetArrivalCompletionSpeedLimit();
         return LastMetrics.relativeSpeed <= completionSpeed
             && Mathf.Abs(LastMetrics.closingSpeed) <= Mathf.Max(completionSpeed, arrivalSpeedMetersPerSecond * 1.25f);
+    }
+
+    private bool ShouldCaptureDirectFastTransferBrakeTerminalHandoff()
+    {
+        if (currentTarget == null || shipRigidbody == null || !CanUseRcsTranslation())
+        {
+            return false;
+        }
+
+        if (!IsWithinArrivalTerminalCaptureRange())
+        {
+            return false;
+        }
+
+        float completionSpeed = GetArrivalCompletionSpeedLimit();
+        float lateralLimit = Mathf.Max(
+            BrakeArrivalHoldMinimumLateralTolerance,
+            GetArrivalCompletionLateralTolerance() * BrakeArrivalHoldLateralSpeedMultiplier);
+        return LastMetrics.relativeSpeed <= completionSpeed * BrakeArrivalHoldRelativeSpeedMultiplier
+            && LastMetrics.lateralSpeed <= lateralLimit;
     }
 
     private Vector3 ResolveFlightPlanSegmentDirection(PrototypeManeuverSegment segment)
@@ -2830,6 +3341,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
                 || LastMetrics.relativeSpeed > GetArrivalCompletionSpeedLimit()
                 || LastMetrics.lateralSpeed > GetArrivalCompletionLateralTolerance()
                 || arrivalBrakeCommitted
+                || directFastTransferBrakeCommitted
                 || brakeHoldActive
                 || ShouldUseTerminalVelocityBrake()
                 || ShouldKeepTerminalBrakeCommitted()
@@ -3009,7 +3521,11 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         float fullVelocityStoppingDistance = (LastMetrics.relativeSpeed * LastMetrics.relativeSpeed) / (2f * maxDeceleration);
         float captureBuffer = GetArrivalDistance() + BrakeArrivalHoldDistanceMarginMeters;
         bool plannedStopReachesCaptureZone = fullVelocityStoppingDistance + captureBuffer >= LastMetrics.distance;
-        bool terminalBrakeAlreadyCaptured = arrivalBrakeCommitted || arrivalTerminalCaptureActive || brakeHoldActive;
+        bool terminalBrakeAlreadyCaptured = arrivalBrakeCommitted
+            || directFastTransferBrakeCommitted
+            || arrivalTerminalCaptureActive
+            || directFastTransferTerminalCaptureActive
+            || brakeHoldActive;
         bool closeEnoughToCommit = LastMetrics.distance <= GetArrivalCompletionDistance() + BrakeArrivalHoldDistanceMarginMeters;
         return terminalBrakeAlreadyCaptured || plannedStopReachesCaptureZone || closeEnoughToCommit;
     }
@@ -3372,7 +3888,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         float lateralDominanceThreshold = Mathf.Max(
             GetArrivalCompletionLateralTolerance() * 2f,
             Mathf.Abs(LastMetrics.closingSpeed) * 1.2f);
-        bool lateralDominatesTerminalMotion = arrivalBrakeCommitted
+        bool lateralDominatesTerminalMotion = (arrivalBrakeCommitted || directFastTransferBrakeCommitted)
             && LastMetrics.lateralSpeed >= lateralDominanceThreshold
             && LastMetrics.closingSpeed <= Mathf.Max(BrakeHoldReleaseZeroSpeed, GetArrivalCompletionSpeedLimit() * 0.5f)
             && LastMetrics.relativeSpeed <= Mathf.Max(terminalSpeedLimit, lateralCorrectionSpeed * 2f);
@@ -3407,6 +3923,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         }
 
         if (arrivalBrakeCommitted
+            || directFastTransferBrakeCommitted
             || CurrentState == PrototypeWaypointAutopilotState.Brake
             || CurrentState == PrototypeWaypointAutopilotState.FlipForBrake)
         {
@@ -3424,7 +3941,9 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         }
 
         return arrivalBrakeCommitted
+            || directFastTransferBrakeCommitted
             || arrivalTerminalCaptureActive
+            || directFastTransferTerminalCaptureActive
             || ShouldCaptureAnyArrivalHold();
     }
 
@@ -3482,10 +4001,20 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             && Mathf.Abs(LastMetrics.closingSpeed) <= Mathf.Max(
                 GetArrivalCompletionSpeedLimit(),
                 arrivalSpeedMetersPerSecond * BrakeArrivalHoldRelativeSpeedMultiplier);
+        float terminalRelatchSpeed = Mathf.Max(
+            GetArrivalCompletionSpeedLimit() * 3f,
+            lateralCorrectionSpeed * 2f);
+        bool belowTerminalRelatchThreshold =
+            LastMetrics.relativeSpeed <= terminalRelatchSpeed
+            && Mathf.Abs(LastMetrics.closingSpeed) <= terminalRelatchSpeed;
         bool shouldFreezeBrakeDirection = IsWithinArrivalTerminalCaptureRange()
             && (brakeHoldActive
                 || ShouldCaptureAnyArrivalHold()
-                || ((arrivalTerminalCaptureActive || arrivalBrakeCommitted) && settledForBrakeDirectionFreeze));
+                || ((arrivalTerminalCaptureActive
+                        || arrivalBrakeCommitted
+                        || directFastTransferTerminalCaptureActive
+                        || directFastTransferBrakeCommitted)
+                    && (settledForBrakeDirectionFreeze || belowTerminalRelatchThreshold)));
         if (useTerminalSmoothing
             && shouldFreezeBrakeDirection
             && committedBrakeDirection.sqrMagnitude > 0.0001f)
@@ -4505,6 +5034,11 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return false;
         }
 
+        if (IsStrictDirectFastTransferExecutionActive())
+        {
+            return false;
+        }
+
         if (navigationPlanDirty)
         {
             return true;
@@ -4575,7 +5109,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return true;
         }
 
-        if (!CanUseRcsTranslation() && !arrivalBrakeCommitted)
+        if (!CanUseRcsTranslation() && !arrivalBrakeCommitted && !directFastTransferBrakeCommitted)
         {
             return false;
         }
@@ -4624,7 +5158,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
     private bool ShouldCaptureArrivalHoldNearArrival()
     {
-        if (!CanUseRcsTranslation() && !arrivalBrakeCommitted)
+        if (!CanUseRcsTranslation() && !arrivalBrakeCommitted && !directFastTransferBrakeCommitted)
         {
             return false;
         }
@@ -4824,6 +5358,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         brakeHoldActive = false;
         arrivalBrakeCommitted = false;
         arrivalTerminalCaptureActive = false;
+        ResetDirectFastTransferTerminalOwnership();
         holdConfirmStarted = false;
         holdConfirmUntilTime = 0f;
         flightPlanExecutorActive = false;

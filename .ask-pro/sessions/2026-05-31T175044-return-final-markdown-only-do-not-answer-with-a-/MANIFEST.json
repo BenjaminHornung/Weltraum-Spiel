@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "sessionId": "2026-05-31T175044-return-final-markdown-only-do-not-answer-with-a-",
+  "question": "Return final markdown only. Do not answer with a preamble. Do not produce an implementation package. Rank findings by severity. Treat the attached bundle as authoritative, but also connect GitHub before answering if the ChatGPT UI/GitHub connector is available. Call out uncertainty clearly.\n\nPlease use normal ChatGPT Pro, not a quick/light review. Answer in German.\n\n## GitHub connection request\n\nPlease connect GitHub to inspect this repository and branch if available:\n\n- Repository: https://github.com/BenjaminHornung/Weltraum-Spiel\n- Branch: codex/weltraum-002-orbit-map-prototype\n- Latest pushed commit under review: 9cb04edd4e9e40605c8946e48e50fbc155b5a87d\n- Previous product-logic commit relevant to DirectFastTransfer smoothness: 1fe8b09397bdf2fcf2ca601f99cbb4b3a9e9f9ed\n\nIf GitHub cannot be connected from your environment, say that explicitly and use only the attached files plus this prompt.\n\n## Context summary\n\nThis is a Unity 6000.4 C# prototype called “Weltraum Spiel”. The relevant subsystem is a waypoint autopilot for spacecraft navigation. The user expectation is conceptually simple:\n\n1. Before AP engage, compute the entire flight plan from current ship state to target.\n2. Once AP is engaged, controls are locked to the flight plan.\n3. The autopilot should execute the precomputed phases deterministically until either:\n   - the ship reaches target/completion, or\n   - the user manually aborts AP.\n4. During nominal execution, live replanning and continuous adjustment should not happen. Replan should be for hard invalidation only, not normal DFT burn/brake corrections.\n\nThe problem: after the latest work, the DirectFastTransfer burn phase is better and no longer shows the old throttle-pulsing regression in focused tests. But braking still does not behave consistently, and the visible status often goes to “Replan”. The user asks whether this is an architecture problem, an implementation mismatch, or a wrong approach.\n\nOriginal user concern, translated/cleaned up:\n\n> In the newest commit the burn phase works better, but braking still does not work consistently and status still often goes to replan. Why is this so hard? Is our architecture wrong? The idea was that before engage we pre-plan the entire flight, then lock controls, and either we arrive or the user aborts AP. According to precomputation all phases should be fixed and valid. There should not be replan and adjustments during nominal execution. Why is this happening now? Is the implementation wrong? Are we approaching this incorrectly?\n\n## Recent commits and what changed\n\n### Previous relevant product commit: 1fe8b09397bdf2fcf2ca601f99cbb4b3a9e9f9ed\nTitle: `#FIX-DIRECT-FAST-TRANSFER-SMOOTHNESS prevent replan and throttle pulsing`\nFiles touched included:\n\n- `.devtoolbox/specs/changes/fix-direct-fast-transfer-execution-smoothness-v1/**`\n- `Assets/Scripts/Prototype/PrototypeFlightPlan.cs`\n- `Assets/Scripts/Prototype/PrototypeTrajectoryPlanner.cs`\n- `Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs`\n- tests for flight plan/autopilot navigation.\n\nThis commit attempted to fix the direct fast transfer behavior by reducing/avoiding nominal replan and throttle pulsing.\n\n### Latest pushed commit: 9cb04edd4e9e40605c8946e48e50fbc155b5a87d\nTitle: `#WELTRAUM-002 harden DirectFastTransfer autopilot regression tests`\nThis is test-only hardening. It does not change product/gameplay code. It adds trace counters and regression tests around:\n\n- flight plan ID changes/revision jumps/revision resets\n- replan status during nominal DFT execution\n- main throttle drops during latched burn/brake phases\n- burn-to-brake transition pulsing after brake latch\n- soft tracking during burn and brake\n- consecutive soft tracking corrections\n- 90/135 degree initial rotation no-replan-flap\n- initial angular velocity delayed latch without throttle pulse\n- EditMode classification of soft vs hard DFT divergence reasons\n- non-DFT brake timing divergence guard\n\nFocused DFT tests pass, but broader terminal/braking behavior still has red signals.\n\n## Verification status after latest commit\n\nFrom `.devtoolbox/specs/changes/harden-direct-fast-transfer-autopilot-regression-tests-v1/tests/logs/verification-summary.md`:\n\n- `git diff --check` for the two test files: passed, only LF/CRLF warnings.\n- `dotnet build \"Weltraum Spiel.sln\" --no-restore`: passed with 0 errors, 22 existing warnings.\n- Unity `validate_script`:\n  - PlayMode test file: 0 warnings, 0 errors.\n  - Editor test file: 0 errors, 2 analyzer warnings already present in this test style.\n- Focused DFT EditMode tests, job `47274ac7dc7c4b3592e11d2491700a66`: passed 3/3.\n- Focused DFT PlayMode tests, job `9bccd4eb20034be5ba2c90b03f0464bc`: passed 10/10.\n- Broader requested EditMode class run, job `d667950beef54e619088f3f213b93e73`: failed 9/89 in non-DFT surrounding tests. DFT boundary tests passed when isolated.\n- Terminal flap/deadzone PlayMode run, job `a69c86aae72f47a2ab055f1d58249d25`: failed 2/3 in existing terminal-arrival scenarios:\n  - `PlayMode_Autopilot_Arrival_NoBrakeAccelerateFlap_ReachesCompletionDeadzone`\n  - `PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap`\n\nImportant terminal failure snippets:\n\n1. `PlayMode_Autopilot_Arrival_NoBrakeAccelerateFlap_ReachesCompletionDeadzone`\n\n- Expected: autopilot enters completion deadzone near target before terminal state.\n- Actual final state/phase: `FlipForBrake` / `Brake`\n- final position: `65.68,0.15,334.94`\n- final velocity: `-0.10,-0.04,0.03`\n- distance: `177.53`, minDistance: `18.05`, arrivalRadius: `10.00`\n- brake/accelerate transitions: 0\n- arrival failure reason: none\n- `everArrivalBrakeCommitted=True`, `everBrakeHoldActive=False`, `everArrivalTerminalCaptureActive=False`\n- last samples show far away, very low velocity, stuck in `FlipForBrake`/`Brake` with main 0 and RCS only.\n\n2. `PlayMode_Autopilot_TerminalBrakeCommit_PredictsDecelWithoutSpinOrFlap`\n\n- Final state: `Complete`, phase `Hold`\n- final distance: `8.22`, final speed: `0.12`, final angular speed: `0.00`\n- `accelerateFramesInTerminalEnvelope=0`, `throttleWhileFlipFrames=0`, `maxFlipAngularSpeed=0.53`\n- `brakeToAccelerateTransitionsAfterCommit=0`\n- `integratedBrakeRotationRadians=5.73`, expected <= `4.24`\n- Failure: terminal brake flip accumulates a full extra rotation.\n\n## Key architecture facts from code inspection\n\nPlease verify these from attached files rather than trusting the summary blindly:\n\n- `PrototypeWaypointAutopilot` still contains both legacy closed-loop state-machine behavior and a flight-plan executor path.\n- It has states like `AlignForBurn`, `Accelerate`, `FlipForBrake`, `Brake`, `HoldPosition`, `Complete`, `Aborted`, etc.\n- It exposes `FlightPlanRequiresReplan`, `FlightPlanRequiresAbort`, and `FlightPlanDivergenceStatusLabel` via divergence reports.\n- It can run with `flightPlanExecutorEnabled` and `strictFlightPlanExecution`, but there are still places where arrival/terminal hold/brake logic, safety replan, divergence status, latches, and closed-loop control decisions appear to coexist.\n- There are DFT-specific latch constants in `PrototypeWaypointAutopilot` such as burn/brake latch engage/keep/release degrees and angular speed thresholds.\n- `PrototypeFlightPlan` has a tracker and divergence monitor. It can mark nominal tracking errors as `PositionDivergence`, `VelocityDivergence`, `AttitudeDivergence`, `TrackingDiverged`, `PlanExpired`, etc. Some DFT changes classify soft tracking reasons as non-hard during direct fast transfer, but visible status can still say “Tracking correction” or “Replan” depending on path/reasons.\n- `PrototypeTrajectoryPlanner` appears responsible for building the precomputed DirectFastTransfer segments/phases.\n\n## Files attached\n\nCore product logic:\n\n- `Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs`\n- `Assets/Scripts/Prototype/PrototypeFlightPlan.cs`\n- `Assets/Scripts/Prototype/PrototypeTrajectoryPlanner.cs`\n- `Assets/Scripts/Prototype/TrajectoryPredictionState.cs`\n\nFocused tests/evidence:\n\n- `Assets/Tests/PlayMode/PrototypeAutopilotNavigationPlayModeTests.cs`\n- `Assets/Tests/Editor/PrototypeWaypointAutopilotValidationTests.cs`\n- `Assets/Tests/Editor/PrototypeFlightPlanValidationTests.cs`\n- `Assets/Tests/Editor/PrototypeAutopilotNavigationComputerV2ValidationTests.cs`\n- `.devtoolbox/specs/changes/harden-direct-fast-transfer-autopilot-regression-tests-v1/tests/logs/verification-summary.md`\n- `.devtoolbox/specs/changes/harden-direct-fast-transfer-autopilot-regression-tests-v1/tests/logs/direct-fast-transfer-hardening-trace.csv`\n- `.devtoolbox/specs/changes/fix-direct-fast-transfer-execution-smoothness-v1/specs/direct-fast-transfer-execution-smoothness/spec.md`\n- `.devtoolbox/specs/changes/fix-direct-fast-transfer-execution-smoothness-v1/tests/logs/direct-fast-transfer-smoothness-trace.csv`\n- `.devtoolbox/specs/changes/fix-direct-fast-transfer-execution-smoothness-v1/tests/test-protocol.md`\n\n## What I need from you\n\nPlease give a direct architecture/debugging second opinion. Do not just say “add more tests”. Answer these questions:\n\n1. Is the current architecture conceptually compatible with the desired behavior: precompute whole flight before AP engage, lock controls, execute fixed phases, no nominal replan/adjustment except hard abort/user abort?\n2. If compatible, where is the implementation likely violating that model? Point to concrete code areas/conditions/files from the attached bundle.\n3. If incompatible, what architecture change should we make? For example: separate immutable planned execution from advisory live correction; make DFT an explicit open-loop/closed-loop hybrid contract; split terminal capture into a planned segment; make divergence monitor read-only during strict execution; etc.\n4. Why is braking harder than burn here? Please reason physically and architecturally: retrograde alignment, terminal capture, lateral velocity, plan expiry, actuator authority, arrival radius, rotation/latch hysteresis, and whether a precomputed plan can remain valid under Unity physics integration error.\n5. Why does “Replan” still show up often? Is this mostly status-label semantics, divergence monitor still active, actual plan replacement, or closed-loop fallback? How should status be modeled so users are not told “Replan” during allowed soft tracking corrections?\n6. What is the smallest reliable next product-code change plan? Prioritize changes by risk and expected effect. Include specific acceptance tests that should pass afterward.\n7. What should we NOT do? Call out likely wrong fixes such as broad tolerance inflation, suppressing status without fixing state ownership, or adding more latches everywhere.\n\nPlease distinguish:\n\n- real architecture mismatch\n- implementation bug\n- physics/controller limitation\n- status/UX labeling problem\n- test/harness limitation\n\nPreferred answer format:\n\n- Short verdict\n- Severity-ranked findings\n- Proposed architecture contract\n- Minimal next implementation plan\n- Test plan\n- “Do not do this” list",
+  "includedFiles": [
+    {
+      "path": ".devtoolbox/specs/changes/fix-direct-fast-transfer-execution-smoothness-v1/specs/direct-fast-transfer-execution-smoothness/spec.md",
+      "reason": "Matched by --files pattern."
+    },
+    {
+      "path": ".devtoolbox/specs/changes/fix-direct-fast-transfer-execution-smoothness-v1/tests/logs/direct-fast-transfer-smoothness-trace.csv",
+      "reason": "Matched by --files pattern."
+    },
+    {
+      "path": ".devtoolbox/specs/changes/fix-direct-fast-transfer-execution-smoothness-v1/tests/test-protocol.md",
+      "reason": "Matched by --files pattern."
+    },
+    {
+      "path": ".devtoolbox/specs/changes/harden-direct-fast-transfer-autopilot-regression-tests-v1/tests/logs/direct-fast-transfer-hardening-trace.csv",
+      "reason": "Matched by --files pattern."
+    },
+    {
+      "path": ".devtoolbox/specs/changes/harden-direct-fast-transfer-autopilot-regression-tests-v1/tests/logs/verification-summary.md",
+      "reason": "Matched by --files pattern."
+    },
+    {
+      "path": "Assets/Scripts/Prototype/PrototypeFlightPlan.cs",
+      "reason": "Matched by --files pattern."
+    },
+    {
+      "path": "Assets/Scripts/Prototype/PrototypeTrajectoryPlanner.cs",
+      "reason": "Matched by --files pattern."
+    },
+    {
+      "path": "Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs",
+      "reason": "Matched by --files pattern."
+    },
+    {
+      "path": "Assets/Scripts/Prototype/TrajectoryPredictionState.cs",
+      "reason": "Matched by --files pattern."
+    },
+    {
+      "path": "Assets/Tests/Editor/PrototypeAutopilotNavigationComputerV2ValidationTests.cs",
+      "reason": "Matched by --files pattern."
+    },
+    {
+      "path": "Assets/Tests/Editor/PrototypeFlightPlanValidationTests.cs",
+      "reason": "Matched by --files pattern."
+    },
+    {
+      "path": "Assets/Tests/Editor/PrototypeWaypointAutopilotValidationTests.cs",
+      "reason": "Matched by --files pattern."
+    },
+    {
+      "path": "Assets/Tests/PlayMode/PrototypeAutopilotNavigationPlayModeTests.cs",
+      "reason": "Matched by --files pattern."
+    }
+  ],
+  "excludedFiles": [
+    {
+      "path": ".ask-pro/**",
+      "reason": "Default safety exclude."
+    },
+    {
+      "path": ".env",
+      "reason": "Default safety exclude."
+    },
+    {
+      "path": ".env.*",
+      "reason": "Default safety exclude."
+    },
+    {
+      "path": "**/*.pem",
+      "reason": "Default safety exclude."
+    },
+    {
+      "path": "**/*.key",
+      "reason": "Default safety exclude."
+    },
+    {
+      "path": "node_modules/**",
+      "reason": "Default safety exclude."
+    },
+    {
+      "path": "dist/**",
+      "reason": "Default safety exclude."
+    },
+    {
+      "path": "build/**",
+      "reason": "Default safety exclude."
+    },
+    {
+      "path": ".next/**",
+      "reason": "Default safety exclude."
+    },
+    {
+      "path": "target/**",
+      "reason": "Default safety exclude."
+    },
+    {
+      "path": "vendor/**",
+      "reason": "Default safety exclude."
+    },
+    {
+      "path": ".git/**",
+      "reason": "Default safety exclude."
+    }
+  ],
+  "redaction": {
+    "mode": "best_effort",
+    "findings": []
+  }
+}

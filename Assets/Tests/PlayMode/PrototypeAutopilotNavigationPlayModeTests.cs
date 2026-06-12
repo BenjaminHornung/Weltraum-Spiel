@@ -509,6 +509,219 @@ public class PrototypeAutopilotNavigationPlayModeTests
     }
 
     [Test]
+    public void PlayMode_DirectFastTransfer_StrictExecutionIgnoresLegacyBrakeCommitFlagDuringBurn()
+    {
+        AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 220f);
+        SetPrivateFloat(rig.Autopilot, "navigationPlanIntervalSeconds", 999f);
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(true);
+        rig.Autopilot.SetStrictFlightPlanExecutionForTests(true);
+        rig.Autopilot.ToggleAutopilot();
+        StepClosedLoopPhysicsWithoutForcedReplan(rig);
+
+        PrototypeFlightPlan plan = rig.Autopilot.CurrentFlightPlan;
+        Assert.True(plan.IsDirectFastTransfer);
+        PrototypeManeuverSegment burnSegment = plan.segments.First(segment => segment.phase == PrototypeManeuverPhase.ProgradeBurn);
+        SetPrivateFloat(rig.Autopilot, "flightPlanElapsedSeconds", burnSegment.startTimeSeconds + Time.fixedDeltaTime * 2f);
+        SetPrivateBool(rig.Autopilot, "arrivalBrakeCommitted", true);
+        SetPrivateBool(rig.Autopilot, "directFastTransferBrakeCommitted", false);
+
+        StepClosedLoopPhysicsWithoutForcedReplan(rig);
+
+        string status = rig.Autopilot.FlightPlanDivergenceStatusLabel ?? string.Empty;
+        Assert.That(rig.Autopilot.CurrentFlightPlanExecutionState.activePhase, Is.EqualTo(PrototypeManeuverPhase.ProgradeBurn));
+        Assert.That(rig.Autopilot.CurrentState, Is.Not.EqualTo(PrototypeWaypointAutopilotState.Brake));
+        Assert.That(rig.Autopilot.CurrentState, Is.Not.EqualTo(PrototypeWaypointAutopilotState.FlipForBrake));
+        Assert.That(rig.Autopilot.RequestedMainThrottle, Is.GreaterThanOrEqualTo(0.95f));
+        Assert.False(rig.Autopilot.FlightPlanRequiresReplan, status);
+        Assert.False(status.StartsWith("Replan:") && status != "Replan: none", status);
+    }
+
+    [Test]
+    public void PlayMode_DirectFastTransfer_SlowButFarAfterBrakeReacquiresWithoutLegacyBrakeLoop()
+    {
+        AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 220f);
+        SetPrivateFloat(rig.Autopilot, "navigationPlanIntervalSeconds", 999f);
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(true);
+        rig.Autopilot.SetStrictFlightPlanExecutionForTests(true);
+        rig.Autopilot.ToggleAutopilot();
+        StepClosedLoopPhysicsWithoutForcedReplan(rig);
+
+        PrototypeFlightPlan plan = rig.Autopilot.CurrentFlightPlan;
+        Assert.True(plan.IsDirectFastTransfer);
+        SetPrivateFloat(rig.Autopilot, "flightPlanElapsedSeconds", plan.totalDurationSeconds + Time.fixedDeltaTime);
+        SetPrivateBool(rig.Autopilot, "directFastTransferBrakeCommitted", true);
+        SetPrivateBool(rig.Autopilot, "arrivalBrakeCommitted", true);
+        rig.Body.position = Vector3.forward * 70f;
+        rig.Body.linearVelocity = Vector3.zero;
+        rig.Body.angularVelocity = Vector3.zero;
+        rig.Ship.transform.rotation = Quaternion.identity;
+        rig.Body.rotation = Quaternion.identity;
+        Physics.SyncTransforms();
+
+        StepClosedLoopPhysicsWithoutForcedReplan(rig);
+
+        string status = rig.Autopilot.FlightPlanDivergenceStatusLabel ?? string.Empty;
+        Assert.That(rig.Autopilot.NavigationPhase, Is.EqualTo(PrototypeWaypointAutopilotNavigationPhase.ReacquireDirectPath));
+        Assert.True(GetPrivateBool(rig.Autopilot, "directFastTransferTerminalReacquireActive"));
+        Assert.That(rig.Autopilot.CurrentState, Is.Not.EqualTo(PrototypeWaypointAutopilotState.Brake));
+        Assert.That(rig.Autopilot.CurrentState, Is.Not.EqualTo(PrototypeWaypointAutopilotState.FlipForBrake));
+        Assert.False(rig.Autopilot.FlightPlanRequiresReplan, status);
+        Assert.False(status.StartsWith("Replan:") && status != "Replan: none", status);
+    }
+
+    [Test]
+    public void PlayMode_DirectFastTransfer_HardInvalidationFailsWithoutAutomaticReplan()
+    {
+        AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 220f);
+        SetPrivateFloat(rig.Autopilot, "navigationPlanIntervalSeconds", 999f);
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(true);
+        rig.Autopilot.SetStrictFlightPlanExecutionForTests(true);
+        rig.Autopilot.ToggleAutopilot();
+        StepClosedLoopPhysicsWithoutForcedReplan(rig);
+
+        PrototypeFlightPlan initialPlan = rig.Autopilot.CurrentFlightPlan;
+        Assert.True(initialPlan.IsDirectFastTransfer);
+        rig.Target.transform.position += Vector3.right * 80f;
+        Physics.SyncTransforms();
+
+        StepClosedLoopPhysicsWithoutForcedReplan(rig);
+
+        string status = rig.Autopilot.FlightPlanDivergenceStatusLabel ?? string.Empty;
+        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.Failed));
+        Assert.False(rig.Autopilot.AutopilotEngaged);
+        Assert.False(rig.Autopilot.FlightPlanRequiresReplan, status);
+        Assert.True(rig.Autopilot.FlightPlanRequiresAbort, status);
+        Assert.False(status.StartsWith("Replan:") && status != "Replan: none", status);
+        Assert.That(rig.Autopilot.CurrentFlightPlan.revision, Is.EqualTo(initialPlan.revision));
+        Assert.That(rig.Autopilot.CurrentFlightPlan.planId, Is.EqualTo(initialPlan.planId));
+    }
+
+    [Test]
+    public void PlayMode_DirectFastTransfer_MainAuthorityTimeoutFailsWithoutAutomaticReplan()
+    {
+        AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 220f);
+        SetPrivateFloat(rig.Autopilot, "navigationPlanIntervalSeconds", 999f);
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(true);
+        rig.Autopilot.SetStrictFlightPlanExecutionForTests(true);
+        rig.Autopilot.ToggleAutopilot();
+        StepClosedLoopPhysicsWithoutForcedReplan(rig);
+
+        PrototypeFlightPlan initialPlan = rig.Autopilot.CurrentFlightPlan;
+        Assert.True(initialPlan.IsDirectFastTransfer);
+        PrototypeManeuverSegment burnSegment = initialPlan.segments.First(segment => segment.phase == PrototypeManeuverPhase.ProgradeBurn);
+        SetPrivateFloat(rig.Autopilot, "flightPlanElapsedSeconds", burnSegment.startTimeSeconds + Time.fixedDeltaTime * 2f);
+        SetPrivateField(rig.Autopilot, "directFastTransferAuthorityBlockedPlanRevision", initialPlan.revision);
+        SetPrivateField(rig.Autopilot, "directFastTransferAuthorityBlockedSegmentIndex", burnSegment.index);
+        SetPrivateFloat(rig.Autopilot, "directFastTransferAuthorityBlockedSeconds", 5.99f);
+        rig.Ship.transform.rotation = Quaternion.LookRotation(Vector3.back, Vector3.up);
+        rig.Body.rotation = rig.Ship.transform.rotation;
+        rig.Body.angularVelocity = Vector3.zero;
+        Physics.SyncTransforms();
+
+        StepClosedLoopPhysicsWithoutForcedReplan(rig);
+
+        string status = rig.Autopilot.FlightPlanDivergenceStatusLabel ?? string.Empty;
+        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.Failed));
+        Assert.False(rig.Autopilot.AutopilotEngaged);
+        Assert.False(rig.Autopilot.FlightPlanRequiresReplan, status);
+        Assert.True(rig.Autopilot.FlightPlanRequiresAbort, status);
+        Assert.False(status.StartsWith("Replan:") && status != "Replan: none", status);
+        Assert.That(rig.Autopilot.CurrentFlightPlan.revision, Is.EqualTo(initialPlan.revision));
+        Assert.That(rig.Autopilot.CurrentFlightPlan.planId, Is.EqualTo(initialPlan.planId));
+    }
+
+    [Test]
+    public void PlayMode_DirectFastTransfer_InvalidPlanDirectionDoesNotRecoverBeforeTerminalOwnership()
+    {
+        AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 1000f);
+        SetPrivateFloat(rig.Autopilot, "navigationPlanIntervalSeconds", 999f);
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(true);
+        rig.Autopilot.SetStrictFlightPlanExecutionForTests(true);
+        rig.Autopilot.ToggleAutopilot();
+        StepClosedLoopPhysicsWithoutForcedReplan(rig);
+
+        PrototypeFlightPlan initialPlan = rig.Autopilot.CurrentFlightPlan;
+        Assert.True(initialPlan.IsDirectFastTransfer);
+        PrototypeFlightPlanAbortReplanReason reasons =
+            PrototypeFlightPlanAbortReplanReason.PositionDivergence
+            | PrototypeFlightPlanAbortReplanReason.InvalidPlanDirection
+            | PrototypeFlightPlanAbortReplanReason.TrackingDiverged;
+        rig.Body.linearVelocity = Vector3.forward * 20f;
+        Physics.SyncTransforms();
+        rig.Autopilot.EvaluateMetrics();
+        SetPrivateBool(rig.Autopilot, "directFastTransferBrakeCommitted", true);
+        SetPrivateBool(rig.Autopilot, "directFastTransferTerminalCaptureActive", true);
+        SetPrivateBool(rig.Autopilot, "directFastTransferTerminalReacquireActive", false);
+
+        bool recoverWithoutReacquire = InvokePrivateBoolMethod(
+            rig.Autopilot,
+            "ShouldRecoverStrictDirectFastTransferTerminalDivergence",
+            reasons);
+        SetPrivateBool(rig.Autopilot, "directFastTransferTerminalReacquireActive", true);
+        bool recoverDuringReacquire = InvokePrivateBoolMethod(
+            rig.Autopilot,
+            "ShouldRecoverStrictDirectFastTransferTerminalDivergence",
+            reasons);
+
+        Assert.False(recoverWithoutReacquire, "InvalidPlanDirection should stay hard before terminal ownership or slow overshoot.");
+        Assert.True(recoverDuringReacquire, "Executor-owned Reacquire may keep correcting its intentional off-plan path.");
+    }
+
+    [Test]
+    public void PlayMode_DirectFastTransfer_ReacquireTimeoutFailsWithoutAutomaticReplan()
+    {
+        AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 220f);
+        SetPrivateFloat(rig.Autopilot, "navigationPlanIntervalSeconds", 999f);
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(true);
+        rig.Autopilot.SetStrictFlightPlanExecutionForTests(true);
+        rig.Autopilot.ToggleAutopilot();
+        StepClosedLoopPhysicsWithoutForcedReplan(rig);
+
+        PrototypeFlightPlan initialPlan = rig.Autopilot.CurrentFlightPlan;
+        Assert.True(initialPlan.IsDirectFastTransfer);
+        SetPrivateFloat(rig.Autopilot, "flightPlanElapsedSeconds", initialPlan.totalDurationSeconds + Time.fixedDeltaTime);
+        SetPrivateBool(rig.Autopilot, "directFastTransferTerminalReacquireActive", true);
+        SetPrivateFloat(
+            rig.Autopilot,
+            "directFastTransferTerminalReacquireStartedAtTime",
+            54f);
+        SetPrivateFloat(rig.Autopilot, "autopilotElapsedSeconds", 100f);
+        rig.Body.position = Vector3.forward * 70f;
+        rig.Body.linearVelocity = Vector3.right * 3f;
+        rig.Body.angularVelocity = Vector3.zero;
+        Physics.SyncTransforms();
+
+        StepClosedLoopPhysicsWithoutForcedReplan(rig);
+
+        string status = rig.Autopilot.FlightPlanDivergenceStatusLabel ?? string.Empty;
+        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.Failed));
+        Assert.False(rig.Autopilot.AutopilotEngaged);
+        Assert.False(rig.Autopilot.FlightPlanRequiresReplan, status);
+        Assert.True(rig.Autopilot.FlightPlanRequiresAbort, status);
+        Assert.False(status.StartsWith("Replan:") && status != "Replan: none", status);
+        Assert.That(rig.Autopilot.CurrentFlightPlan.revision, Is.EqualTo(initialPlan.revision));
+        Assert.That(rig.Autopilot.CurrentFlightPlan.planId, Is.EqualTo(initialPlan.planId));
+    }
+
+    [Test]
+    public void PlayMode_DirectFastTransfer_TerminalBrakeRejectsProgradeCommittedDirection()
+    {
+        AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 80f);
+        rig.Body.position = Vector3.forward * 45f;
+        rig.Body.linearVelocity = Vector3.forward * 5f;
+        rig.Body.angularVelocity = Vector3.zero;
+        Physics.SyncTransforms();
+        InvokeFixedUpdate(rig.Autopilot);
+        SetPrivateBool(rig.Autopilot, "directFastTransferTerminalCaptureActive", true);
+        SetPrivateVector3(rig.Autopilot, "committedBrakeDirection", Vector3.forward);
+
+        InvokePrivateVoidMethod(rig.Autopilot, "ApplyDirectFastTransferTerminalBrake");
+
+        Assert.That(Vector3.Dot(rig.Autopilot.DesiredBurnDirection.normalized, rig.Body.linearVelocity.normalized), Is.LessThan(-0.9f));
+        Assert.That(Vector3.Dot(GetPrivateVector3(rig.Autopilot, "committedBrakeDirection").normalized, rig.Body.linearVelocity.normalized), Is.LessThan(-0.9f));
+    }
+
+    [Test]
     public void PlayMode_Autopilot_ClosedLoopBrake_RotatesAndUsesMainThrusterWithoutHarnessRotation()
     {
         AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 150f);
@@ -714,6 +927,7 @@ public class PrototypeAutopilotNavigationPlayModeTests
         string firstArrivalBrakeCommitSample = string.Empty;
         string firstBrakeHoldSample = string.Empty;
         string firstArrivalTerminalCaptureSample = string.Empty;
+        List<string> stateTransitions = new List<string>();
         PrototypeWaypointAutopilotState previousState = rig.Autopilot.CurrentState;
 
         for (int i = 0; i < 2400; i++)
@@ -752,6 +966,19 @@ public class PrototypeAutopilotNavigationPlayModeTests
 
             if (currentState != previousState)
             {
+                if (stateTransitions.Count < 64)
+                {
+                    stateTransitions.Add(
+                        $"i={i} {previousState}->{currentState} dist={distance:0.00} rel={rig.Body.linearVelocity.magnitude:0.00} "
+                        + $"closing={rig.Autopilot.ClosingSpeed:0.00} lat={rig.Autopilot.LateralSpeed:0.00} "
+                        + $"phase={rig.Autopilot.NavigationPhase} main={rig.Autopilot.RequestedMainThrottle:0.00} "
+                        + $"arrivalBrake={GetPrivateBool(rig.Autopilot, "arrivalBrakeCommitted")} "
+                        + $"arrivalCapture={GetPrivateBool(rig.Autopilot, "arrivalTerminalCaptureActive")} "
+                        + $"dftBrake={GetPrivateBool(rig.Autopilot, "directFastTransferBrakeCommitted")} "
+                        + $"dftCapture={GetPrivateBool(rig.Autopilot, "directFastTransferTerminalCaptureActive")} "
+                        + $"dftReacquire={GetPrivateBool(rig.Autopilot, "directFastTransferTerminalReacquireActive")}");
+                }
+
                 if (previousState == PrototypeWaypointAutopilotState.Brake
                     || previousState == PrototypeWaypointAutopilotState.FlipForBrake)
                 {
@@ -861,7 +1088,9 @@ public class PrototypeAutopilotNavigationPlayModeTests
                 + $" everArrivalTerminalCaptureActive={sawArrivalTerminalCaptureActive}"
                 + $" finalArrivalBrakeCommitted={GetPrivateBool(rig.Autopilot, "arrivalBrakeCommitted")}"
                 + $" finalBrakeHoldActive={GetPrivateBool(rig.Autopilot, "brakeHoldActive")}"
-                + $" finalArrivalTerminalCaptureActive={GetPrivateBool(rig.Autopilot, "arrivalTerminalCaptureActive")}";
+                + $" finalArrivalTerminalCaptureActive={GetPrivateBool(rig.Autopilot, "arrivalTerminalCaptureActive")}"
+                + "\nstateTransitions:\n"
+                + (stateTransitions.Count > 0 ? string.Join("\n", stateTransitions) : "none");
             Debug.LogError(failureMessage);
             Assert.Fail(failureMessage);
         }
@@ -884,7 +1113,9 @@ public class PrototypeAutopilotNavigationPlayModeTests
             + $" everArrivalTerminalCaptureActive={sawArrivalTerminalCaptureActive}"
             + $" finalArrivalBrakeCommitted={GetPrivateBool(rig.Autopilot, "arrivalBrakeCommitted")}"
             + $" finalBrakeHoldActive={GetPrivateBool(rig.Autopilot, "brakeHoldActive")}"
-            + $" finalArrivalTerminalCaptureActive={GetPrivateBool(rig.Autopilot, "arrivalTerminalCaptureActive")}";
+            + $" finalArrivalTerminalCaptureActive={GetPrivateBool(rig.Autopilot, "arrivalTerminalCaptureActive")}"
+            + "\nstateTransitions:\n"
+            + (stateTransitions.Count > 0 ? string.Join("\n", stateTransitions) : "none");
 
         Assert.True(seenArrivalComplete, "Autopilot should enter HoldPosition or Complete near the arrival deadzone.\n" + diagnostics);
         Assert.True(
@@ -2904,6 +3135,20 @@ public class PrototypeAutopilotNavigationPlayModeTests
         MethodInfo method = target.GetType().GetMethod(methodName, PrivateInstance);
         Assert.NotNull(method, methodName);
         return (bool)method.Invoke(target, null);
+    }
+
+    private static bool InvokePrivateBoolMethod(object target, string methodName, params object[] args)
+    {
+        MethodInfo method = target.GetType().GetMethod(methodName, PrivateInstance);
+        Assert.NotNull(method, methodName);
+        return (bool)method.Invoke(target, args);
+    }
+
+    private static void InvokePrivateVoidMethod(object target, string methodName, params object[] args)
+    {
+        MethodInfo method = target.GetType().GetMethod(methodName, PrivateInstance);
+        Assert.NotNull(method, methodName);
+        method.Invoke(target, args);
     }
 
     private static void SetPrivateProperty<T>(object target, string propertyName, T value)

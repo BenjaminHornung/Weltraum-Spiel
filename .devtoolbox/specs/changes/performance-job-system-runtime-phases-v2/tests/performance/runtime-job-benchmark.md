@@ -6,12 +6,12 @@
 
 | Phase | Items | Work units | Scalar median ms | Job median ms | Speedup |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| Phase2.ProjectileIntegration | 262144 | 262144 | 17.0589 | 0.3231 | 52.80x |
-| Phase3.TargetScoring | 262144 | 262144 | 69.5148 | 0.4743 | 146.56x |
-| Phase4.TrajectoryEvaluation | 32768 | 3145728 | 185.5860 | 0.3534 | 525.14x |
-| Phase5.SensorFiltering | 262144 | 262144 | 59.4778 | 0.3035 | 195.97x |
-| Phase6.RcsNozzleScoring | 262144 | 262144 | 64.0925 | 0.5386 | 119.00x |
+| Phase2.ProjectileIntegration | 262144 | 262144 | 17.4659 | 0.2190 | 79.75x |
+| Phase3.TargetScoring | 262144 | 262144 | 68.1544 | 0.6337 | 107.55x |
+| Phase4.TrajectoryEvaluation | 32768 | 3145728 | 193.4290 | 0.2370 | 816.16x |
+| Phase5.SensorFiltering | 262144 | 262144 | 62.7147 | 0.2201 | 284.94x |
+| Phase6.RcsNozzleScoring | 262144 | 262144 | 64.3160 | 0.5918 | 108.68x |
 
-- Aggregate scalar median: 395.7300 ms
-- Aggregate job median: 1.9929 ms
-- Aggregate speedup: 198.57x
+- Aggregate scalar median: 406.0800 ms
+- Aggregate job median: 1.9016 ms
+- Aggregate speedup: 213.55x

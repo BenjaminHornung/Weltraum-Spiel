@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "sessionId": "2026-05-31T175044-return-final-markdown-only-do-not-answer-with-a-",
+  "status": "HARVESTED",
+  "createdAt": "2026-05-31T17:50:44.848Z",
+  "updatedAt": "2026-05-31T18:01:20.272Z",
+  "resumeCommand": "\"C:\\Program Files\\nodejs\\node.exe\" \"C:\\Users\\benni\\.codex\\plugins\\cache\\ask-pro\\ask-pro\\0.1.0\\scripts\\run-cached-cli.mjs\" -- --cwd \"E:\\Unity\\Weltraum Spiel\\Weltraum Spiel\" --no-temporary --resume 2026-05-31T175044-return-final-markdown-only-do-not-answer-with-a-",
+  "harvestCommand": "\"C:\\Program Files\\nodejs\\node.exe\" \"C:\\Users\\benni\\.codex\\plugins\\cache\\ask-pro\\ask-pro\\0.1.0\\scripts\\run-cached-cli.mjs\" -- --cwd \"E:\\Unity\\Weltraum Spiel\\Weltraum Spiel\" --harvest 2026-05-31T175044-return-final-markdown-only-do-not-answer-with-a-",
+  "dryRun": false,
+  "artifacts": false,
+  "temporary": false
+}
