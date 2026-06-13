@@ -16,7 +16,7 @@ Referenz: `design.md` (Befunde mit Datei:Zeile, Stand Commit `a68333b`). Jedes I
 
 ## Housekeeping
 - [x] **Item 8:** `Assets/_Recovery/` loeschen (Inhalt vorher kurz sichten); `.gitignore` ergaenzen: `.idea/`, `UpgradeLog.htm`, `Assets/_Recovery/`, `artifacts/`.
-- [ ] **Item 9:** Find*-Audit-Tabelle aus design.md abarbeiten: Frequenz je Stelle pruefen, nur bestaetigte Pro-Frame-Faelle fixen, Ergebnis je Zeile dokumentieren.
+- [x] **Item 9:** Find*-Audit-Tabelle aus design.md abarbeiten: Frequenz je Stelle pruefen, nur bestaetigte Pro-Frame-Faelle fixen, Ergebnis je Zeile dokumentieren.
 
 ## Abnahme
 - [ ] EditMode-Suite gruen; PlayMode-Smoke gruen (falls Harness vorhanden: `tools/run-tests.ps1 -Suite Smoke`).

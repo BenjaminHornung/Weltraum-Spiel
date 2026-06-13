@@ -532,9 +532,22 @@ public readonly struct PrototypePlayerHudSnapshot
 public static class PrototypePlayerHudSnapshotBuilder
 {
     private const float DockingGuidanceRadiusMeters = 120f;
+    private const float FallbackSceneScanIntervalSeconds = 1f;
     private const float NavigationRadarFallbackScanIntervalSeconds = 1f;
+    private static readonly PrototypeUiSampleGate EnvironmentRadarFallbackScanGate = new PrototypeUiSampleGate(FallbackSceneScanIntervalSeconds);
+    private static readonly PrototypeUiSampleGate TargetDummyFallbackScanGate = new PrototypeUiSampleGate(FallbackSceneScanIntervalSeconds);
     private static readonly PrototypeUiSampleGate NavigationRadarFallbackScanGate = new PrototypeUiSampleGate(NavigationRadarFallbackScanIntervalSeconds);
+    private static PrototypeTestEnvironment cachedEnvironmentRadarSource;
+    private static PrototypeTargetDummy cachedFallbackTargetDummy;
     private static PrototypeNavigationTarget[] cachedFallbackNavigationTargets = System.Array.Empty<PrototypeNavigationTarget>();
+
+    public static void InvalidateFallbackFindCaches()
+    {
+        cachedEnvironmentRadarSource = null;
+        cachedFallbackTargetDummy = null;
+        EnvironmentRadarFallbackScanGate.Invalidate();
+        TargetDummyFallbackScanGate.Invalidate();
+    }
 
     public static PrototypePlayerHudSnapshot Build(
         Transform shipRoot,
@@ -2111,7 +2124,7 @@ public static class PrototypePlayerHudSnapshotBuilder
 
     private static void AddEnvironmentRadarBlips(List<PrototypePlayerRadarBlip> blips, HashSet<string> keys)
     {
-        PrototypeTestEnvironment environment = UnityEngine.Object.FindAnyObjectByType<PrototypeTestEnvironment>();
+        PrototypeTestEnvironment environment = ResolveEnvironmentRadarSource();
         if (environment == null)
         {
             return;
@@ -2128,6 +2141,21 @@ public static class PrototypePlayerHudSnapshotBuilder
 
             AddRadarBlip(blips, keys, blipKind, point.Label, point.Position, point.Radius);
         }
+    }
+
+    private static PrototypeTestEnvironment ResolveEnvironmentRadarSource()
+    {
+        if (cachedEnvironmentRadarSource != null)
+        {
+            return cachedEnvironmentRadarSource;
+        }
+
+        if (EnvironmentRadarFallbackScanGate.ShouldSample(Time.unscaledTime))
+        {
+            cachedEnvironmentRadarSource = UnityEngine.Object.FindAnyObjectByType<PrototypeTestEnvironment>();
+        }
+
+        return cachedEnvironmentRadarSource;
     }
 
     private static void AddNavigationObstacleRadarBlips(List<PrototypePlayerRadarBlip> blips, HashSet<string> keys)
@@ -2960,13 +2988,28 @@ public static class PrototypePlayerHudSnapshotBuilder
             return weaponComputer.ActiveTargetTransform;
         }
 
-        PrototypeTargetDummy dummy = UnityEngine.Object.FindAnyObjectByType<PrototypeTargetDummy>();
+        PrototypeTargetDummy dummy = ResolveFallbackTargetDummy();
         if (dummy != null && (shipRoot == null || !dummy.transform.IsChildOf(shipRoot)))
         {
             return dummy.transform;
         }
 
         return null;
+    }
+
+    private static PrototypeTargetDummy ResolveFallbackTargetDummy()
+    {
+        if (cachedFallbackTargetDummy != null)
+        {
+            return cachedFallbackTargetDummy;
+        }
+
+        if (TargetDummyFallbackScanGate.ShouldSample(Time.unscaledTime))
+        {
+            cachedFallbackTargetDummy = UnityEngine.Object.FindAnyObjectByType<PrototypeTargetDummy>();
+        }
+
+        return cachedFallbackTargetDummy;
     }
 }
 
@@ -2986,6 +3029,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private const int MaxCompactRadarGenericBlips = 8;
     private const int MinimapRangeModeAuto = 0;
     private const int MinimapRangeModeCount = 5;
+    private const float FallbackSceneScanIntervalSeconds = 1f;
     private static readonly float[] MinimapRangeMeters = new[] { 250f, 1000f, 2500f, 5000f };
     private static readonly string[] MinimapRangeLabels = new[]
     {
@@ -3114,6 +3158,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private int lastLayoutHeight = -1;
     private bool compactBottomBarLayout;
     private string currentKillMomentumButtonLabel = "Kill Momentum";
+    private readonly PrototypeUiSampleGate arenaLoopFallbackScanGate = new PrototypeUiSampleGate(FallbackSceneScanIntervalSeconds);
+    private readonly PrototypeUiSampleGate runtimeShipFallbackScanGate = new PrototypeUiSampleGate(FallbackSceneScanIntervalSeconds);
     private FlightControlMode cachedHelpMode;
     private bool cachedHelpIncludesDebug;
     private string cachedHelpText;
@@ -3200,6 +3246,9 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         }
 
         celestialCatalogLoadAttempted = false;
+        arenaLoopFallbackScanGate.Invalidate();
+        runtimeShipFallbackScanGate.Invalidate();
+        PrototypePlayerHudSnapshotBuilder.InvalidateFallbackFindCaches();
         ResolveReferences();
         EnsureUi();
         RefreshNow();
@@ -3404,7 +3453,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
             if (arenaLoop == null)
             {
-                arenaLoop = UnityEngine.Object.FindAnyObjectByType<PrototypePveArenaLoop>();
+                ResolveArenaLoopReference();
             }
 
             if (dockingApproachAssist == null)
@@ -3461,6 +3510,11 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             return shipRoot;
         }
 
+        if (!runtimeShipFallbackScanGate.ShouldSample(Time.unscaledTime))
+        {
+            return null;
+        }
+
         GameObject namedPrototypeShip = GameObject.Find("PrototypeShip");
         if (namedPrototypeShip != null && IsViableRuntimeShipRoot(namedPrototypeShip.transform))
         {
@@ -3486,6 +3540,16 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         }
 
         return fallback;
+    }
+
+    private void ResolveArenaLoopReference()
+    {
+        if (!arenaLoopFallbackScanGate.ShouldSample(Time.unscaledTime))
+        {
+            return;
+        }
+
+        arenaLoop = UnityEngine.Object.FindAnyObjectByType<PrototypePveArenaLoop>();
     }
 
     private static bool IsViableRuntimeShipRoot(Transform root)
