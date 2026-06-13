@@ -9,7 +9,7 @@ Referenz: `design.md` (Zeilennummern = Commit `a68333b`).
 - [x] Gemeinsame Turn-Limits: Konstanten `BrakeFlipMaxTurnRateDegreesPerSecond`, `BrakeFlipMaxAngularAccelerationRadPerSecondSquared`, `BrakeFlipDampingTimeSeconds` aus `PrototypeWaypointAutopilot.cs:91-93` in gemeinsame Konfig (statische Klasse oder `PrototypeShipPlanningSnapshot`) verschieben.
 - [x] `EstimateAttitudeSegmentSeconds` (`:1620`) durch Trapezprofil-Modell mit diesen Limits + Latch-Marge ersetzen; `MaximumAttitudeSegmentSeconds` anheben (z. B. 12 s).
 - [x] Spool-Up/Down in `SolveDirectFastTransfer` (`:687`) und `PredictManeuverEnd` (`:1451`) modellieren (Snapshot-Felder `mainThrottleSpoolUpRate/DownRate` nutzen); gilt fuer Burn UND Brake.
-- [ ] vPeak-/Distanzbilanz (`:741-758`) mit Spool-Verlusten und neuer Flipzeit korrigieren.
+- [x] vPeak-/Distanzbilanz (`:741-758`) mit Spool-Verlusten und neuer Flipzeit korrigieren.
 - [ ] Brake-Ende auf `arrivalSpeed` am Arrival-Radius auslegen statt v=0 vor dem Ziel.
 
 ## Phase 2 — Zeitbasis (`PrototypeWaypointAutopilot.cs`)

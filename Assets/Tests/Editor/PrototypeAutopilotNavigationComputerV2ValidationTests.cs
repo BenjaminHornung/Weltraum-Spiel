@@ -270,9 +270,34 @@ public class PrototypeAutopilotNavigationComputerV2ValidationTests
         PrototypeManeuverSegment instantBrake = instant.flightPlan.segments.Single(segment => segment.phase == PrototypeManeuverPhase.RetrogradeBurn);
         PrototypeManeuverSegment slowBurn = slow.flightPlan.segments.Single(segment => segment.phase == PrototypeManeuverPhase.ProgradeBurn);
         PrototypeManeuverSegment slowBrake = slow.flightPlan.segments.Single(segment => segment.phase == PrototypeManeuverPhase.RetrogradeBurn);
+        DirectFastTransferGeometry instantGeometry = MeasureDirectFastTransferGeometry(instant.flightPlan.segments, snapshot.targetPosition);
+        DirectFastTransferGeometry slowGeometry = MeasureDirectFastTransferGeometry(slow.flightPlan.segments, snapshot.targetPosition);
 
         Assert.That(slowBurn.durationSeconds, Is.GreaterThan(instantBurn.durationSeconds + 1f));
         Assert.That(slowBrake.durationSeconds, Is.GreaterThan(instantBrake.durationSeconds + 1f));
+        Assert.That(
+            slowBurn.plannedSwitchDistanceMeters,
+            Is.GreaterThan(instantBurn.plannedSwitchDistanceMeters + 0.5f),
+            "Slow spool should push the actual burn switch farther down-route because ramp losses extend the commanded burn.");
+        Assert.That(
+            slowGeometry.remainingAtSwitchMeters,
+            Is.LessThan(instantGeometry.remainingAtSwitchMeters - 0.5f),
+            "Slow spool should leave less post-switch route after the longer ramped burn, not merely move the switch in any direction.");
+        Assert.That(slowGeometry.burnMeters, Is.GreaterThan(0f));
+        Assert.That(slowGeometry.flipDriftMeters, Is.GreaterThan(0f));
+        Assert.That(slowGeometry.brakeMeters, Is.GreaterThan(0f));
+        Assert.That(
+            slowGeometry.remainingAtSwitchMeters,
+            Is.EqualTo(slowGeometry.flipDriftMeters + slowGeometry.brakeMeters + slowGeometry.remainingAfterBrakeMeters).Within(1.5f),
+            "After the slow-spool burn switch, the emitted flip drift plus brake travel should balance the remaining route distance.");
+        Assert.That(
+            slowGeometry.consumedRouteMeters + slowGeometry.remainingAfterBrakeMeters,
+            Is.EqualTo(slowGeometry.postAlignRouteMeters).Within(1.5f),
+            "Slow-spool emitted segment geometry should consume the post-align route distance without double-counting spool or flip distance.");
+        Assert.That(
+            slowBrake.expectedEndVelocity.magnitude,
+            Is.LessThanOrEqualTo(snapshot.arrivalSpeed + 0.25f),
+            "DirectFastTransfer brake should still solve to a near full stop.");
         Assert.That(slowBurn.expectedMainFuelKg, Is.LessThan(slowBurn.durationSeconds * snapshot.fuelKgPerSecond));
         Assert.That(slowBrake.expectedMainFuelKg, Is.LessThan(slowBrake.durationSeconds * snapshot.fuelKgPerSecond));
     }
@@ -786,6 +811,42 @@ public class PrototypeAutopilotNavigationComputerV2ValidationTests
             mainThrust > 0f ? 1 : 0,
             snapshot.maxRcsForce > 0f ? 1 : 0,
             0);
+    }
+
+    private struct DirectFastTransferGeometry
+    {
+        public float postAlignRouteMeters;
+        public float burnMeters;
+        public float flipDriftMeters;
+        public float brakeMeters;
+        public float consumedRouteMeters;
+        public float remainingAtSwitchMeters;
+        public float remainingAfterBrakeMeters;
+    }
+
+    private static DirectFastTransferGeometry MeasureDirectFastTransferGeometry(
+        PrototypeManeuverSegment[] segments,
+        Vector3 targetPosition)
+    {
+        PrototypeManeuverSegment burn = segments.Single(segment => segment.phase == PrototypeManeuverPhase.ProgradeBurn);
+        PrototypeManeuverSegment flip = segments.Single(segment => segment.phase == PrototypeManeuverPhase.FlipToRetrograde);
+        PrototypeManeuverSegment brake = segments.Single(segment => segment.phase == PrototypeManeuverPhase.RetrogradeBurn);
+        Vector3 route = targetPosition - burn.expectedStartPosition;
+        Vector3 routeDirection = route.sqrMagnitude > 0.0001f ? route.normalized : Vector3.forward;
+        float burnMeters = Vector3.Dot(burn.expectedEndPosition - burn.expectedStartPosition, routeDirection);
+        float flipDriftMeters = Vector3.Dot(flip.expectedEndPosition - flip.expectedStartPosition, routeDirection);
+        float brakeMeters = Vector3.Dot(brake.expectedEndPosition - brake.expectedStartPosition, routeDirection);
+
+        return new DirectFastTransferGeometry
+        {
+            postAlignRouteMeters = Vector3.Dot(targetPosition - burn.expectedStartPosition, routeDirection),
+            burnMeters = burnMeters,
+            flipDriftMeters = flipDriftMeters,
+            brakeMeters = brakeMeters,
+            consumedRouteMeters = burnMeters + flipDriftMeters + brakeMeters,
+            remainingAtSwitchMeters = Vector3.Dot(targetPosition - burn.expectedEndPosition, routeDirection),
+            remainingAfterBrakeMeters = Vector3.Dot(targetPosition - brake.expectedEndPosition, routeDirection)
+        };
     }
 
     private static PrototypeObstacleDetectionResult CreateBlockingDetection()
