@@ -1589,6 +1589,7 @@ public class PrototypeTrajectoryPlanner
             end.remainingFuelKg);
 
         PrototypeFlightPlanAbortReplanReason replanOn = ResolveManeuverReplanReasons(profile);
+        PrototypeFlightPlanTolerance segmentTolerance = CreateFlightPlanTolerance(tolerance, start.velocity, end.velocity);
         var segment = new PrototypeManeuverSegment(
             index,
             phase,
@@ -1609,7 +1610,7 @@ public class PrototypeTrajectoryPlanner
             expectedDeltaV,
             expectedMainFuelKg,
             expectedRcsFuelKg,
-            tolerance,
+            segmentTolerance,
             replanOn,
             label,
             profile,
@@ -2115,6 +2116,27 @@ public class PrototypeTrajectoryPlanner
             PrototypeFlightPlanTolerance.Default.timingSeconds,
             PrototypeFlightPlanTolerance.Default.fuelKg,
             Mathf.Max(PrototypeFlightPlanTolerance.Default.obstacleClearanceMeters, trajectorySnapshot.clearanceRadius));
+    }
+
+    private static PrototypeFlightPlanTolerance CreateFlightPlanTolerance(
+        PrototypeFlightPlanTolerance baseTolerance,
+        Vector3 expectedStartVelocity,
+        Vector3 expectedEndVelocity)
+    {
+        float plannedSpeed = Mathf.Max(expectedStartVelocity.magnitude, expectedEndVelocity.magnitude);
+        if (!TrajectoryPredictionMath.IsFinite(plannedSpeed))
+        {
+            plannedSpeed = 0f;
+        }
+
+        return new PrototypeFlightPlanTolerance(
+            Mathf.Max(baseTolerance.positionMeters, plannedSpeed * 0.5f),
+            Mathf.Max(baseTolerance.velocityMetersPerSecond, plannedSpeed * 0.05f),
+            baseTolerance.attitudeDegrees,
+            baseTolerance.angularVelocityRadiansPerSecond,
+            baseTolerance.timingSeconds,
+            baseTolerance.fuelKg,
+            baseTolerance.obstacleClearanceMeters);
     }
 
     private static PrototypeManeuverPhase MapManeuverPhase(PrototypeTrajectorySegmentType type)

@@ -333,6 +333,39 @@ public class PrototypeAutopilotNavigationComputerV2ValidationTests
     }
 
     [Test]
+    public void Planner_DirectFastTransferScalesSegmentToleranceWithPlannedSpeed()
+    {
+        var planner = new PrototypeTrajectoryPlanner();
+        PrototypeTrajectorySnapshot slowSnapshot = CreateSnapshot(Vector3.zero, Vector3.zero, Vector3.forward * 220f);
+        PrototypeTrajectorySnapshot fastSnapshot = CreateSnapshot(Vector3.zero, Vector3.zero, Vector3.forward * 900f);
+
+        PrototypeTrajectoryPlan slow = planner.Plan(slowSnapshot, PrototypeObstacleDetectionResult.Clear(8f));
+        PrototypeTrajectoryPlan fast = planner.Plan(fastSnapshot, PrototypeObstacleDetectionResult.Clear(8f));
+
+        Assert.True(slow.flightPlan.IsDirectFastTransfer, slow.flightPlan.statusLabel);
+        Assert.True(fast.flightPlan.IsDirectFastTransfer, fast.flightPlan.statusLabel);
+        PrototypeManeuverSegment slowBurn = slow.flightPlan.segments.Single(segment => segment.phase == PrototypeManeuverPhase.ProgradeBurn);
+        PrototypeManeuverSegment fastBurn = fast.flightPlan.segments.Single(segment => segment.phase == PrototypeManeuverPhase.ProgradeBurn);
+        float slowPlannedSpeed = GetPlannedSpeed(slowBurn);
+        float fastPlannedSpeed = GetPlannedSpeed(fastBurn);
+        float basePositionTolerance = Mathf.Max(PrototypeFlightPlanTolerance.Default.positionMeters, slowSnapshot.arrivalRadius * 0.5f);
+        float baseVelocityTolerance = Mathf.Max(PrototypeFlightPlanTolerance.Default.velocityMetersPerSecond, slowSnapshot.arrivalSpeed);
+
+        Assert.That(fastPlannedSpeed, Is.GreaterThan(slowPlannedSpeed));
+        Assert.That(fastBurn.tolerance.positionMeters, Is.GreaterThan(slowBurn.tolerance.positionMeters));
+        Assert.That(fastBurn.tolerance.velocityMetersPerSecond, Is.GreaterThan(slowBurn.tolerance.velocityMetersPerSecond));
+        Assert.That(slowBurn.tolerance.positionMeters, Is.EqualTo(Mathf.Max(basePositionTolerance, slowPlannedSpeed * 0.5f)).Within(0.001f));
+        Assert.That(slowBurn.tolerance.velocityMetersPerSecond, Is.EqualTo(Mathf.Max(baseVelocityTolerance, slowPlannedSpeed * 0.05f)).Within(0.001f));
+        Assert.That(fastBurn.tolerance.positionMeters, Is.EqualTo(Mathf.Max(basePositionTolerance, fastPlannedSpeed * 0.5f)).Within(0.001f));
+        Assert.That(fastBurn.tolerance.velocityMetersPerSecond, Is.EqualTo(Mathf.Max(baseVelocityTolerance, fastPlannedSpeed * 0.05f)).Within(0.001f));
+        Assert.That(fastBurn.tolerance.attitudeDegrees, Is.EqualTo(PrototypeFlightPlanTolerance.Default.attitudeDegrees).Within(0.0001f));
+        Assert.That(fastBurn.tolerance.angularVelocityRadiansPerSecond, Is.EqualTo(PrototypeFlightPlanTolerance.Default.angularVelocityRadiansPerSecond).Within(0.0001f));
+        Assert.That(fastBurn.tolerance.timingSeconds, Is.EqualTo(PrototypeFlightPlanTolerance.Default.timingSeconds).Within(0.0001f));
+        Assert.That(fastBurn.tolerance.fuelKg, Is.EqualTo(PrototypeFlightPlanTolerance.Default.fuelKg).Within(0.0001f));
+        Assert.That(fastBurn.tolerance.obstacleClearanceMeters, Is.EqualTo(Mathf.Max(PrototypeFlightPlanTolerance.Default.obstacleClearanceMeters, fastSnapshot.clearanceRadius)).Within(0.0001f));
+    }
+
+    [Test]
     public void Planner_EmittedFlightPlanUsesRealShipPlanningSnapshot()
     {
         using (var builder = new PrototypeScenarioBuilder())
@@ -902,6 +935,11 @@ public class PrototypeAutopilotNavigationComputerV2ValidationTests
             remainingAfterBrakeMeters = Vector3.Distance(targetPosition, brake.expectedEndPosition),
             endSpeedMetersPerSecond = brake.expectedEndVelocity.magnitude
         };
+    }
+
+    private static float GetPlannedSpeed(PrototypeManeuverSegment segment)
+    {
+        return Mathf.Max(segment.expectedStartVelocity.magnitude, segment.expectedEndVelocity.magnitude);
     }
 
     private static PrototypeObstacleDetectionResult CreateBlockingDetection()
