@@ -14,7 +14,7 @@ Referenz: `design.md` (Zeilennummern = Commit `a68333b`).
 
 ## Phase 2 — Zeitbasis (`PrototypeWaypointAutopilot.cs`)
 - [x] `TrySkipCompletedFlightPlanAlignSegment` (`:2339`) + `TrySkipCompletedFlightPlanBrakeFlipSegment` (`:2369`) + `TryAdvanceToNextFlightPlanSegment` (`:2389`) entfernen; Aufrufer in `ApplyFlightPlanSegment` (`:2171`, `:2268`) bereinigen.
-- [ ] Clock-Hold-Pfad entfernen: `ShouldHoldDirectFastTransferSegmentClock` (`:2527`) und Hold-Zweig in `TryRunFlightPlanExecutor` (`:1024-1042`); Uhr laeuft immer. Throttle-Latches bleiben als Aktuator-Gate; Authority-Timeout (`:2654`) bleibt.
+- [x] Clock-Hold-Pfad entfernen: `ShouldHoldDirectFastTransferSegmentClock` (`:2527`) und Hold-Zweig in `TryRunFlightPlanExecutor` (`:1024-1042`); Uhr laeuft immer. Throttle-Latches bleiben als Aktuator-Gate; Authority-Timeout (`:2654`) bleibt.
 - [ ] Geschwindigkeitsabhaengige Toleranzen in `CreateFlightPlanTolerance` (Planner `:1667`) bzw. pro Segment.
 
 ## Phase 3 — Brems-Metriken

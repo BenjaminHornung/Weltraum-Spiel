@@ -1,0 +1,119 @@
+{
+  "generatedAt": "2026-06-13T11:39:42.7040617+02:00",
+  "task": "Task 8 remove flight plan clock holds",
+  "mode": "PlayMode",
+  "requestedTests": [
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_DirectFastTransfer_MainThrottleContinuousDuringBrakeAfterLatch",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_DirectFastTransfer_BurnToBrakeTransition_DoesNotPulseMainThrottle",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_DirectFastTransfer_SoftTrackingDuringBrakeDoesNotClearActuatorOutput",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_DirectFastTransfer_MainAuthorityTimeoutFailsWithoutAutomaticReplan",
+    "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_ImportedFunctionalScoutDoesNotFlipBeforePlannedBrakeSegment"
+  ],
+  "sessionId": "a58f16cd157a4d12a073a932b63dcb6a",
+  "editorBefore": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Unknown tool: 'editor_state'"
+        }
+      ],
+      "isError": true
+    }
+  },
+  "runTests": {
+    "jsonrpc": "2.0",
+    "id": 2,
+    "result": {
+      "_meta": {
+        "fastmcp": {
+          "wrap_result": true
+        }
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"message\":\"Test job started.\",\"error\":null,\"data\":{\"job_id\":\"7ea36086a7d3418aa6671875bf85de8e\",\"status\":\"running\",\"mode\":\"PlayMode\",\"include_details\":true,\"include_failed_tests\":true},\"hint\":null}"
+        }
+      ],
+      "structuredContent": {
+        "result": {
+          "success": true,
+          "message": "Test job started.",
+          "error": null,
+          "data": {
+            "job_id": "7ea36086a7d3418aa6671875bf85de8e",
+            "status": "running",
+            "mode": "PlayMode",
+            "include_details": true,
+            "include_failed_tests": true
+          },
+          "hint": null
+        }
+      },
+      "isError": false
+    }
+  },
+  "finalResult": {
+    "jsonrpc": "2.0",
+    "id": 3,
+    "result": {
+      "_meta": {
+        "fastmcp": {
+          "wrap_result": true
+        }
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"message\":\"Test job status retrieved.\",\"error\":null,\"data\":{\"job_id\":\"7ea36086a7d3418aa6671875bf85de8e\",\"status\":\"succeeded\",\"mode\":\"PlayMode\",\"started_unix_ms\":1781343580423,\"finished_unix_ms\":1781343581972,\"last_update_unix_ms\":1781343581972,\"progress\":{\"completed\":5,\"total\":5,\"current_test_full_name\":null,\"current_test_started_unix_ms\":1781343581700,\"last_finished_test_full_name\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_DirectFastTransfer_SoftTrackingDuringBrakeDoesNotClearActuatorOutput\",\"last_finished_unix_ms\":1781343581963,\"stuck_suspected\":false,\"editor_is_focused\":true,\"blocked_reason\":null,\"failures_so_far\":[],\"failures_capped\":false},\"error\":null,\"result\":{\"mode\":\"PlayMode\",\"summary\":{\"total\":5,\"passed\":5,\"failed\":0,\"skipped\":0,\"durationSeconds\":0.7719849,\"resultState\":\"Passed\"},\"results\":null}},\"hint\":null}"
+        }
+      ],
+      "structuredContent": {
+        "result": {
+          "success": true,
+          "message": "Test job status retrieved.",
+          "error": null,
+          "data": {
+            "job_id": "7ea36086a7d3418aa6671875bf85de8e",
+            "status": "succeeded",
+            "mode": "PlayMode",
+            "started_unix_ms": 1781343580423,
+            "finished_unix_ms": 1781343581972,
+            "last_update_unix_ms": 1781343581972,
+            "progress": {
+              "completed": 5,
+              "total": 5,
+              "current_test_full_name": null,
+              "current_test_started_unix_ms": 1781343581700,
+              "last_finished_test_full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_DirectFastTransfer_SoftTrackingDuringBrakeDoesNotClearActuatorOutput",
+              "last_finished_unix_ms": 1781343581963,
+              "stuck_suspected": false,
+              "editor_is_focused": true,
+              "blocked_reason": null,
+              "failures_so_far": [],
+              "failures_capped": false
+            },
+            "error": null,
+            "result": {
+              "mode": "PlayMode",
+              "summary": {
+                "total": 5,
+                "passed": 5,
+                "failed": 0,
+                "skipped": 0,
+                "durationSeconds": 0.7719849,
+                "resultState": "Passed"
+              },
+              "results": null
+            }
+          },
+          "hint": null
+        }
+      },
+      "isError": false
+    }
+  }
+}

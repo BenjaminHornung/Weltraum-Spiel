@@ -1064,24 +1064,22 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         flightPlanExecutorActive = true;
         lastFlightPlanExecutionState = executionState;
         float flightPlanTickSeconds = AutopilotTickSeconds;
-        if (ShouldHoldDirectFastTransferSegmentClock(segment, trackingCommand, out string holdStatus, out bool useAuthorityTimeout))
+        bool mainAuthorityBlocked = IsDirectFastTransferMainAuthorityBlocked(segment, trackingCommand);
+        if (mainAuthorityBlocked)
         {
-            lastFlightPlanExecutionState.statusLabel = holdStatus;
-            if (!useAuthorityTimeout)
-            {
-                ResetDirectFastTransferMainAuthorityBlock();
-            }
-
-            if (useAuthorityTimeout
-                && TryTimeoutDirectFastTransferMainAuthorityBlock(segment, ref executionState, flightPlanTickSeconds))
-            {
-                return true;
-            }
+            executionState.statusLabel = GetDirectFastTransferMainAuthorityBlockStatus(segment);
+            lastFlightPlanExecutionState = executionState;
         }
         else
         {
             ResetDirectFastTransferMainAuthorityBlock();
-            flightPlanElapsedSeconds += flightPlanTickSeconds;
+        }
+
+        flightPlanElapsedSeconds += flightPlanTickSeconds;
+        if (mainAuthorityBlocked
+            && TryTimeoutDirectFastTransferMainAuthorityBlock(segment, ref executionState, flightPlanTickSeconds))
+        {
+            return true;
         }
 
         return true;
@@ -2471,13 +2469,11 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
                 || segment.phase == PrototypeManeuverPhase.RetrogradeBurn);
     }
 
-    private bool ShouldHoldDirectFastTransferMainSegmentClock(
+    private bool IsDirectFastTransferMainAuthorityBlocked(
         PrototypeManeuverSegment segment,
         PrototypeFlightPlanTrackingCommand trackingCommand)
     {
-        if (!IsDirectFastTransferSegment(segment)
-            || (segment.phase != PrototypeManeuverPhase.ProgradeBurn
-                && segment.phase != PrototypeManeuverPhase.RetrogradeBurn))
+        if (!IsDirectFastTransferMainThrottleSegment(segment))
         {
             return false;
         }
@@ -2491,67 +2487,6 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         }
 
         return requestedMainThrottle <= Mathf.Max(0.01f, plannedThrottle * 0.1f);
-    }
-
-    private bool ShouldHoldDirectFastTransferSegmentClock(
-        PrototypeManeuverSegment segment,
-        PrototypeFlightPlanTrackingCommand trackingCommand,
-        out string status,
-        out bool useAuthorityTimeout)
-    {
-        status = string.Empty;
-        useAuthorityTimeout = false;
-        if (!IsDirectFastTransferSegment(segment))
-        {
-            return false;
-        }
-
-        if (ShouldHoldDirectFastTransferAttitudeSegmentClock(segment, out status))
-        {
-            return true;
-        }
-
-        if (ShouldHoldDirectFastTransferMainSegmentClock(segment, trackingCommand))
-        {
-            status = GetDirectFastTransferMainHoldStatus(segment);
-            useAuthorityTimeout = true;
-            return true;
-        }
-
-        return false;
-    }
-
-    private bool ShouldHoldDirectFastTransferAttitudeSegmentClock(
-        PrototypeManeuverSegment segment,
-        out string status)
-    {
-        status = string.Empty;
-        bool align = segment.phase == PrototypeManeuverPhase.AlignForBurn;
-        bool flip = segment.phase == PrototypeManeuverPhase.FlipToRetrograde;
-        if (!align && !flip)
-        {
-            return false;
-        }
-
-        Vector3 direction = ResolveFlightPlanSegmentDirection(segment);
-        if (direction.sqrMagnitude <= 0.0001f)
-        {
-            return false;
-        }
-
-        float angle = Vector3.Angle(transform.forward, direction.normalized);
-        float angularSpeedDegrees = GetAngularSpeedRadiansPerSecond() * Mathf.Rad2Deg;
-        float angleLimit = align
-            ? DirectFastTransferBurnLatchEngageDegrees
-            : DirectFastTransferBrakeLatchEngageDegrees;
-        float angularSpeedLimit = DirectFastTransferMainLatchEngageAngularSpeedDegreesPerSecond;
-        bool waiting = angle > angleLimit || angularSpeedDegrees > angularSpeedLimit;
-        if (waiting)
-        {
-            status = align ? "Aligning for planned burn" : "Brake latch waiting";
-        }
-
-        return waiting;
     }
 
     private bool UpdateDirectFastTransferMainThrottleLatch(
@@ -2608,7 +2543,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         return false;
     }
 
-    private string GetDirectFastTransferMainHoldStatus(PrototypeManeuverSegment segment)
+    private string GetDirectFastTransferMainAuthorityBlockStatus(PrototypeManeuverSegment segment)
     {
         if (!string.IsNullOrEmpty(directFastMainThrottleLatchStatus))
         {
