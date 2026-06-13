@@ -3111,6 +3111,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private bool cachedHelpIncludesDebug;
     private string cachedHelpText;
     private bool hasCachedHelpText;
+    private bool celestialCatalogLoadAttempted;
     private int minimapRangeMode = MinimapRangeModeAuto;
 
     public bool ShowPlayerHud => showPlayerHud;
@@ -3191,6 +3192,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             celestialBodyCatalog = catalog;
         }
 
+        celestialCatalogLoadAttempted = false;
         ResolveReferences();
         EnsureUi();
         RefreshNow();
@@ -3246,6 +3248,12 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             return;
         }
 
+        if (celestialCatalogLoadAttempted)
+        {
+            return;
+        }
+
+        celestialCatalogLoadAttempted = true;
         celestialBodyCatalog = Resources.Load<CelestialBodyCatalog>(CelestialBodyCatalog.ResourcePath);
     }
 
