@@ -24,7 +24,7 @@ Referenz: `design.md` (Zeilennummern = Commit `a68333b`).
 ## Phase 4 — Replan-Hygiene
 - [x] `FlightPlanDivergenceReplanCooldownSeconds` 0,45 → 2,0 s; Confirm-Fenster fuer weiche Gruende 0,5 s.
 - [x] Planner: Align-/Flip-Segment entfaellt, wenn Startrotation bereits passt (kein Doppel-Flip nach Replan); nach `directFastTransferBrakeCommitted` nur Brake/Hold-Replaene.
-- [ ] `ToggleAutopilot` (`:575-577`): frischen gueltigen Plan vom Plan-Knopf uebernehmen statt erzwungener Neuplanung.
+- [x] `ToggleAutopilot` (`:575-577`): frischen gueltigen Plan vom Plan-Knopf uebernehmen statt erzwungener Neuplanung.
 
 ## Phase 5 — UI-Status
 - [ ] `BuildNavigationWarningChips` (`:726`): REPLAN-Chip nur bei realem erzwungenem Replan; Tracking-Korrektur als eigener Status.

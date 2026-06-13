@@ -1,0 +1,27 @@
+{
+  "task": 14,
+  "tool": "mcp__unityMCP.run_tests",
+  "timestamp_local": "2026-06-13T15:05:29+02:00",
+  "mode": "EditMode",
+  "job_id": "7bb47898101440d2bd5bda1c9fd72821",
+  "status": "succeeded",
+  "summary": {
+    "total": 9,
+    "passed": 9,
+    "failed": 0,
+    "skipped": 0,
+    "durationSeconds": 0.277363
+  },
+  "test_names": [
+    "PrototypeWaypointAutopilotValidationTests.ReplanNowRefreshesNavigationPlanWhileDisengaged",
+    "PrototypeWaypointAutopilotValidationTests.ToggleAutopilotAdoptsFreshPlanFromReplanNow",
+    "PrototypeWaypointAutopilotValidationTests.ToggleAutopilotWithoutFreshPlanKeepsForcedReplanPath",
+    "PrototypeWaypointAutopilotValidationTests.ToggleAutopilotRejectsStalePreviewPlan",
+    "PrototypeWaypointAutopilotValidationTests.ToggleAutopilotRejectsPreviewPlanAfterFuelDrift",
+    "PrototypeWaypointAutopilotValidationTests.ToggleAutopilotRejectsPreviewPlanAfterAttitudeDrift",
+    "PrototypeWaypointAutopilotValidationTests.ToggleAutopilotRejectsPreviewPlanAfterPositionDrift",
+    "PrototypeWaypointAutopilotValidationTests.ToggleAutopilotRejectsPreviewPlanAfterTargetArrivalRadiusChanges",
+    "PrototypeWaypointAutopilotValidationTests.EngagedAutopilotThrottlesNavigationPlanRefreshesInsideInterval"
+  ],
+  "failures_so_far": []
+}

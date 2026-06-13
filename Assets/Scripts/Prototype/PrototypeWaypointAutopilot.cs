@@ -93,6 +93,9 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private const float FlightPlanDivergenceReplanCooldownSeconds = 2f;
     private const float FlightPlanDivergenceStatusHoldSeconds = 2f;
     private const float FlightPlanSafetyRefreshIntervalSeconds = 0.75f;
+    private const float FreshUserFlightPlanAdoptionSeconds = 8f;
+    private const float FreshUserFlightPlanPositionToleranceMeters = 0.5f;
+    private const float FreshUserFlightPlanVelocityToleranceMetersPerSecond = 0.25f;
     private const float DirectFastTransferMainAuthorityBlockedTimeoutSeconds = 6f;
     private const float DirectFastTransferBurnLatchEngageDegrees = 8f;
     private const float DirectFastTransferBurnLatchKeepDegrees = PrototypeFlightPlanExecutionConfig.DirectFastTransferBurnLatchKeepDegrees;
@@ -189,6 +192,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private float flightPlanDivergenceStartedAtTime = -1f;
     private float lastFlightPlanDivergenceAtTime = -1000f;
     private float lastFlightPlanSafetyReplanAtTime = -1000f;
+    private float lastUserFlightPlanRequestedAtTime = -1000f;
     private float nextFlightPlanSafetyRefreshTime;
     private int flightPlanRevisionCounter;
     private int flightPlanSafetyReplanCount;
@@ -573,6 +577,8 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             arrivalFailureReason = string.Empty;
         }
 
+        bool adoptFreshUserFlightPlan = TryGetFreshUserFlightPlanForEngage(out PrototypeFlightPlan adoptedFlightPlan);
+
         // Waypoint autopilot is a system controller: normalize ship controls before it asks for actuators.
         momentumAssist?.Abort("autopilot engaged");
         shipController.ClearExternalFlightAssistRequest();
@@ -596,10 +602,10 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         desiredBurnDirection = Vector3.zero;
         autopilotElapsedSeconds = 0f;
         ResetFlightPlanExecutorClock();
-        flightPlanRevisionCounter = 0;
+        flightPlanRevisionCounter = adoptFreshUserFlightPlan ? Mathf.Max(0, adoptedFlightPlan.revision) : 0;
         flightPlanSafetyReplanCount = 0;
-        lastAssignedFlightPlanId = string.Empty;
-        forceNextFlightPlanRevision = true;
+        lastAssignedFlightPlanId = adoptFreshUserFlightPlan ? adoptedFlightPlan.planId : string.Empty;
+        forceNextFlightPlanRevision = !adoptFreshUserFlightPlan;
         hasStableAvoidance = false;
         stableAvoidanceWaypoint = Vector3.zero;
         stableAvoidanceDirection = Vector3.zero;
@@ -615,8 +621,18 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         holdConfirmUntilTime = 0f;
         navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.Direct;
         LastObstacleDetection = PrototypeObstacleDetectionResult.Clear(GetObstacleClearanceRadius());
-        LastTrajectoryPlan = PrototypeTrajectoryPlan.Clear(LastMetrics.directionToTarget.sqrMagnitude > 0.0001f ? LastMetrics.directionToTarget : transform.forward);
-        MarkNavigationPlanDirty();
+        if (adoptFreshUserFlightPlan)
+        {
+            navigationPlanDirty = false;
+            nextNavigationPlanTime = Time.time + NavigationPlanIntervalSeconds;
+            nextFlightPlanSafetyRefreshTime = Time.time + FlightPlanSafetyRefreshIntervalSeconds;
+            lastUserFlightPlanRequestedAtTime = -1000f;
+        }
+        else
+        {
+            LastTrajectoryPlan = PrototypeTrajectoryPlan.Clear(LastMetrics.directionToTarget.sqrMagnitude > 0.0001f ? LastMetrics.directionToTarget : transform.forward);
+            MarkNavigationPlanDirty();
+        }
     }
 
     public void Abort(string reason = "aborted")
@@ -718,6 +734,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     {
         ResolveReferences();
         RefreshDiagnostics();
+        lastUserFlightPlanRequestedAtTime = Time.time;
         forceNextFlightPlanRevision = true;
         MarkNavigationPlanDirty();
         RefreshNavigationPlan();
@@ -4973,6 +4990,118 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         }
 
         return true;
+    }
+
+    private bool TryGetFreshUserFlightPlanForEngage(out PrototypeFlightPlan flightPlan)
+    {
+        flightPlan = CurrentFlightPlan;
+        if (!useFlightPlanExecutor
+            || !flightPlan.IsValid
+            || currentTarget == null
+            || shipRigidbody == null)
+        {
+            return false;
+        }
+
+        float planAgeSeconds = Time.time - lastUserFlightPlanRequestedAtTime;
+        if (!IsFinite(planAgeSeconds)
+            || planAgeSeconds < 0f
+            || planAgeSeconds > FreshUserFlightPlanAdoptionSeconds)
+        {
+            return false;
+        }
+
+        float targetTolerance = Mathf.Max(0.75f, flightPlan.targetArrivalRadiusMeters * 0.25f);
+        if (Vector3.Distance(flightPlan.targetPositionWorld, currentTarget.Position) > targetTolerance
+            || Vector3.Distance(flightPlan.arrivalPointWorld, currentTarget.Position) > targetTolerance)
+        {
+            return false;
+        }
+
+        if (Mathf.Abs(flightPlan.targetArrivalRadiusMeters - GetArrivalDistance()) > 0.01f
+            || Mathf.Abs(flightPlan.targetArrivalSpeedMetersPerSecond - arrivalSpeedMetersPerSecond) > 0.01f)
+        {
+            return false;
+        }
+
+        PrototypeShipPlanningSnapshot currentSnapshot = PrototypeShipPlanningSnapshotBuilder.Build(
+            transform,
+            shipRigidbody,
+            shipStats,
+            shipController,
+            GetComponent<ShipPhysicsCore>(),
+            GetCachedMainThrusterBank(),
+            GetCachedRcsThrusters());
+
+        return DoesCurrentSnapshotMatchFreshUserFlightPlan(flightPlan.shipSnapshot, currentSnapshot);
+    }
+
+    private static bool DoesCurrentSnapshotMatchFreshUserFlightPlan(
+        PrototypeShipPlanningSnapshot planSnapshot,
+        PrototypeShipPlanningSnapshot currentSnapshot)
+    {
+        if (!planSnapshot.IsFinite || !currentSnapshot.IsFinite)
+        {
+            return false;
+        }
+
+        PrototypeFlightPlanTolerance tolerance = PrototypeFlightPlanTolerance.Default;
+        if (!VectorWithin(planSnapshot.initialState.position, currentSnapshot.initialState.position, FreshUserFlightPlanPositionToleranceMeters)
+            || !VectorWithin(planSnapshot.initialState.velocity, currentSnapshot.initialState.velocity, FreshUserFlightPlanVelocityToleranceMetersPerSecond)
+            || Quaternion.Angle(planSnapshot.initialState.rotation, currentSnapshot.initialState.rotation) > tolerance.attitudeDegrees
+            || !VectorWithin(planSnapshot.initialState.angularVelocity, currentSnapshot.initialState.angularVelocity, tolerance.angularVelocityRadiansPerSecond)
+            || !VectorWithin(planSnapshot.worldCenterOfMass, currentSnapshot.worldCenterOfMass, FreshUserFlightPlanPositionToleranceMeters)
+            || !VectorWithin(planSnapshot.localCenterOfMass, currentSnapshot.localCenterOfMass, 0.001f)
+            || !VectorWithin(planSnapshot.inertiaTensor, currentSnapshot.inertiaTensor, 0.001f)
+            || Quaternion.Angle(planSnapshot.inertiaTensorRotation, currentSnapshot.inertiaTensorRotation) > 0.1f)
+        {
+            return false;
+        }
+
+        if (!FloatWithin(planSnapshot.rigidbodyMassKg, currentSnapshot.rigidbodyMassKg, 0.01f)
+            || !FloatWithin(planSnapshot.currentFuelKg, currentSnapshot.currentFuelKg, tolerance.fuelKg)
+            || !FloatWithin(planSnapshot.maxFuelKg, currentSnapshot.maxFuelKg, tolerance.fuelKg)
+            || !FloatWithin(planSnapshot.mainThrustNewtons, currentSnapshot.mainThrustNewtons, 0.01f)
+            || !FloatWithin(planSnapshot.mainFuelKgPerSecond, currentSnapshot.mainFuelKgPerSecond, 0.001f)
+            || !FloatWithin(planSnapshot.reverseThrustMultiplier, currentSnapshot.reverseThrustMultiplier, 0.001f)
+            || !FloatWithin(planSnapshot.mainThrottleSpoolUpRate, currentSnapshot.mainThrottleSpoolUpRate, 0.001f)
+            || !FloatWithin(planSnapshot.mainThrottleSpoolDownRate, currentSnapshot.mainThrottleSpoolDownRate, 0.001f)
+            || !FloatWithin(planSnapshot.mainGimbalLimitDegrees, currentSnapshot.mainGimbalLimitDegrees, 0.001f)
+            || !FloatWithin(planSnapshot.mainGimbalSlewRateDegreesPerSecond, currentSnapshot.mainGimbalSlewRateDegreesPerSecond, 0.001f)
+            || !FloatWithin(planSnapshot.rcsTranslationForceNewtons, currentSnapshot.rcsTranslationForceNewtons, 0.01f)
+            || !FloatWithin(planSnapshot.rcsAttitudeForceNewtons, currentSnapshot.rcsAttitudeForceNewtons, 0.01f)
+            || !FloatWithin(planSnapshot.rcsNozzleSpoolUpRate, currentSnapshot.rcsNozzleSpoolUpRate, 0.001f)
+            || !FloatWithin(planSnapshot.rcsNozzleSpoolDownRate, currentSnapshot.rcsNozzleSpoolDownRate, 0.001f))
+        {
+            return false;
+        }
+
+        return planSnapshot.usesImportedFunctionalSockets == currentSnapshot.usesImportedFunctionalSockets
+            && planSnapshot.usesPhysicalMainNozzleForces == currentSnapshot.usesPhysicalMainNozzleForces
+            && planSnapshot.usesExperimentalPhysicalRcsNozzles == currentSnapshot.usesExperimentalPhysicalRcsNozzles
+            && planSnapshot.centralGravityEnabled == currentSnapshot.centralGravityEnabled
+            && planSnapshot.atmosphereEnabled == currentSnapshot.atmosphereEnabled
+            && planSnapshot.mainNozzleCount == currentSnapshot.mainNozzleCount
+            && planSnapshot.rcsNozzleCount == currentSnapshot.rcsNozzleCount
+            && planSnapshot.massDescriptorCount == currentSnapshot.massDescriptorCount;
+    }
+
+    private static bool VectorWithin(Vector3 expected, Vector3 actual, float tolerance)
+    {
+        return IsFinite(expected)
+            && IsFinite(actual)
+            && Vector3.Distance(expected, actual) <= Mathf.Max(0f, tolerance);
+    }
+
+    private static bool FloatWithin(float expected, float actual, float absoluteTolerance)
+    {
+        if (!IsFinite(expected) || !IsFinite(actual))
+        {
+            return false;
+        }
+
+        float relativeTolerance = Mathf.Abs(expected) * 0.001f;
+        return Mathf.Abs(expected - actual) <= Mathf.Max(Mathf.Max(0f, absoluteTolerance), relativeTolerance);
     }
 
     private PrototypeTrajectoryPlan AssignFlightPlanRevision(PrototypeTrajectoryPlan plan, bool requestedReplan)

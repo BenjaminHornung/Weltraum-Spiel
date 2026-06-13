@@ -626,6 +626,146 @@ public class PrototypeWaypointAutopilotValidationTests
     }
 
     [Test]
+    public void ToggleAutopilotAdoptsFreshPlanFromReplanNow()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 500f;
+        rig.Body.linearVelocity = Vector3.zero;
+        Physics.SyncTransforms();
+
+        rig.Autopilot.ReplanNow();
+        PrototypeFlightPlan previewPlan = rig.Autopilot.CurrentFlightPlan;
+        int refreshesAfterPreview = rig.Autopilot.NavigationPlanRefreshCount;
+        Assert.True(previewPlan.IsValid, previewPlan.statusLabel);
+        Assert.False(rig.Autopilot.AutopilotEngaged);
+        SetPrivateFloat(rig.Autopilot, "lastUserFlightPlanRequestedAtTime", Time.time - 2f);
+
+        rig.Autopilot.ToggleAutopilot();
+
+        Assert.True(rig.Autopilot.AutopilotEngaged);
+        Assert.That(rig.Autopilot.NavigationPlanRefreshCount, Is.EqualTo(refreshesAfterPreview));
+        Assert.That(rig.Autopilot.CurrentFlightPlan.planId, Is.EqualTo(previewPlan.planId));
+        Assert.That(rig.Autopilot.CurrentFlightPlan.revision, Is.EqualTo(previewPlan.revision));
+        Assert.That(GetPrivateField<bool>(rig.Autopilot, "forceNextFlightPlanRevision"), Is.False);
+        Assert.That(GetPrivateField<string>(rig.Autopilot, "lastAssignedFlightPlanId"), Is.EqualTo(previewPlan.planId));
+        Assert.That(GetPrivateField<int>(rig.Autopilot, "flightPlanRevisionCounter"), Is.EqualTo(previewPlan.revision));
+
+        InvokeFixedUpdate(rig.Autopilot);
+
+        Assert.That(rig.Autopilot.NavigationPlanRefreshCount, Is.EqualTo(refreshesAfterPreview));
+        Assert.That(GetPrivateField<int>(rig.Autopilot, "activeFlightPlanRevision"), Is.EqualTo(previewPlan.revision));
+    }
+
+    [Test]
+    public void ToggleAutopilotWithoutFreshPlanKeepsForcedReplanPath()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 500f;
+        Physics.SyncTransforms();
+
+        rig.Autopilot.ToggleAutopilot();
+
+        Assert.True(rig.Autopilot.AutopilotEngaged);
+        Assert.True(GetPrivateField<bool>(rig.Autopilot, "forceNextFlightPlanRevision"));
+        Assert.False(rig.Autopilot.CurrentFlightPlan.HasSegments);
+    }
+
+    [Test]
+    public void ToggleAutopilotRejectsStalePreviewPlan()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 500f;
+        Physics.SyncTransforms();
+
+        rig.Autopilot.ReplanNow();
+        Assert.True(rig.Autopilot.CurrentFlightPlan.IsValid, rig.Autopilot.CurrentFlightPlan.statusLabel);
+        SetPrivateFloat(rig.Autopilot, "lastUserFlightPlanRequestedAtTime", Time.time - 10f);
+
+        rig.Autopilot.ToggleAutopilot();
+
+        Assert.True(rig.Autopilot.AutopilotEngaged);
+        Assert.True(GetPrivateField<bool>(rig.Autopilot, "forceNextFlightPlanRevision"));
+        Assert.False(rig.Autopilot.CurrentFlightPlan.HasSegments);
+    }
+
+    [Test]
+    public void ToggleAutopilotRejectsPreviewPlanAfterFuelDrift()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 500f;
+        Physics.SyncTransforms();
+
+        rig.Autopilot.ReplanNow();
+        Assert.True(rig.Autopilot.CurrentFlightPlan.IsValid, rig.Autopilot.CurrentFlightPlan.statusLabel);
+        SetPrivateFloat(rig.Ship.GetComponent<ShipStats>(), "currentFuelKg", rig.Autopilot.CurrentFlightPlan.shipSnapshot.currentFuelKg - 1f);
+
+        rig.Autopilot.ToggleAutopilot();
+
+        Assert.True(rig.Autopilot.AutopilotEngaged);
+        Assert.True(GetPrivateField<bool>(rig.Autopilot, "forceNextFlightPlanRevision"));
+        Assert.False(rig.Autopilot.CurrentFlightPlan.HasSegments);
+    }
+
+    [Test]
+    public void ToggleAutopilotRejectsPreviewPlanAfterAttitudeDrift()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 500f;
+        Physics.SyncTransforms();
+
+        rig.Autopilot.ReplanNow();
+        Assert.True(rig.Autopilot.CurrentFlightPlan.IsValid, rig.Autopilot.CurrentFlightPlan.statusLabel);
+        Quaternion rotated = Quaternion.LookRotation(Vector3.right, Vector3.up);
+        rig.Ship.transform.rotation = rotated;
+        rig.Body.rotation = rotated;
+        Physics.SyncTransforms();
+
+        rig.Autopilot.ToggleAutopilot();
+
+        Assert.True(rig.Autopilot.AutopilotEngaged);
+        Assert.True(GetPrivateField<bool>(rig.Autopilot, "forceNextFlightPlanRevision"));
+        Assert.False(rig.Autopilot.CurrentFlightPlan.HasSegments);
+    }
+
+    [Test]
+    public void ToggleAutopilotRejectsPreviewPlanAfterPositionDrift()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 500f;
+        Physics.SyncTransforms();
+
+        rig.Autopilot.ReplanNow();
+        Assert.True(rig.Autopilot.CurrentFlightPlan.IsValid, rig.Autopilot.CurrentFlightPlan.statusLabel);
+        rig.Ship.transform.position = Vector3.right;
+        rig.Body.position = Vector3.right;
+        Physics.SyncTransforms();
+
+        rig.Autopilot.ToggleAutopilot();
+
+        Assert.True(rig.Autopilot.AutopilotEngaged);
+        Assert.True(GetPrivateField<bool>(rig.Autopilot, "forceNextFlightPlanRevision"));
+        Assert.False(rig.Autopilot.CurrentFlightPlan.HasSegments);
+    }
+
+    [Test]
+    public void ToggleAutopilotRejectsPreviewPlanAfterTargetArrivalRadiusChanges()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 500f;
+        Physics.SyncTransforms();
+
+        rig.Autopilot.ReplanNow();
+        Assert.True(rig.Autopilot.CurrentFlightPlan.IsValid, rig.Autopilot.CurrentFlightPlan.statusLabel);
+        rig.Target.Configure("ValidationTarget", 25f);
+
+        rig.Autopilot.ToggleAutopilot();
+
+        Assert.True(rig.Autopilot.AutopilotEngaged);
+        Assert.True(GetPrivateField<bool>(rig.Autopilot, "forceNextFlightPlanRevision"));
+        Assert.False(rig.Autopilot.CurrentFlightPlan.HasSegments);
+    }
+
+    [Test]
     public void EngagedAutopilotThrottlesNavigationPlanRefreshesInsideInterval()
     {
         var rig = CreateAutopilotRig();
