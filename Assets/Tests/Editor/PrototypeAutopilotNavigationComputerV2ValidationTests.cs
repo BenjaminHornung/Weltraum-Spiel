@@ -295,9 +295,17 @@ public class PrototypeAutopilotNavigationComputerV2ValidationTests
             Is.EqualTo(slowGeometry.postAlignRouteMeters).Within(1.5f),
             "Slow-spool emitted segment geometry should consume the post-align route distance without double-counting spool or flip distance.");
         Assert.That(
+            slowGeometry.consumedRouteMeters,
+            Is.EqualTo(slowGeometry.postAlignRouteMeters - snapshot.arrivalRadius).Within(1.5f),
+            "DirectFastTransfer should leave the terminal arrival radius for capture instead of braking all the way to target center.");
+        Assert.That(
+            slowGeometry.remainingAfterBrakeMeters,
+            Is.EqualTo(snapshot.arrivalRadius).Within(1.5f),
+            "DirectFastTransfer brake should end at about the arrival radius.");
+        Assert.That(
             slowBrake.expectedEndVelocity.magnitude,
-            Is.LessThanOrEqualTo(snapshot.arrivalSpeed + 0.25f),
-            "DirectFastTransfer brake should still solve to a near full stop.");
+            Is.EqualTo(snapshot.arrivalSpeed).Within(0.25f),
+            "DirectFastTransfer brake should hand terminal capture roughly arrivalSpeed, not a full stop.");
         Assert.That(slowBurn.expectedMainFuelKg, Is.LessThan(slowBurn.durationSeconds * snapshot.fuelKgPerSecond));
         Assert.That(slowBrake.expectedMainFuelKg, Is.LessThan(slowBrake.durationSeconds * snapshot.fuelKgPerSecond));
     }
@@ -368,17 +376,46 @@ public class PrototypeAutopilotNavigationComputerV2ValidationTests
     }
 
     [Test]
-    public void Planner_EmittedFlightPlanStartsWithBrakeWhenStoppingDistanceConsumesArrival()
+    public void Planner_DirectFastTransferRejectsImpossibleCloseHighSpeedImmediateBrake()
     {
         PrototypeTrajectoryPlan plan = new PrototypeTrajectoryPlanner().Plan(
             CreateSnapshot(Vector3.zero, Vector3.forward * 45f, Vector3.forward * 150f),
             PrototypeObstacleDetectionResult.Clear(8f));
 
         Assert.True(plan.flightPlan.IsValid);
+        Assert.That(plan.flightPlan.IsDirectFastTransfer, Is.False);
+        Assert.False(plan.flightPlan.segments.Any(segment => segment.profile == PrototypeManeuverProfile.DirectFastTransfer));
+    }
+
+    [Test]
+    public void Planner_EmittedFlightPlanStartsWithBrakeWhenStoppingDistanceConsumesArrival()
+    {
+        const float speed = 45f;
+        float flipSeconds = Mathf.PI / (PrototypeFlightPlanExecutionConfig.BrakeFlipMaxTurnRateDegreesPerSecond * Mathf.Deg2Rad)
+            + ((PrototypeFlightPlanExecutionConfig.BrakeFlipMaxTurnRateDegreesPerSecond * Mathf.Deg2Rad)
+                / PrototypeFlightPlanExecutionConfig.BrakeFlipMaxAngularAccelerationRadPerSecondSquared)
+            + PrototypeFlightPlanExecutionConfig.BrakeFlipDampingTimeSeconds
+            + 0.4f;
+        float brakeMeters = ((speed * speed) - 1f) / (2f * 8f);
+        float targetDistance = (speed * flipSeconds) + brakeMeters + 10f;
+        PrototypeTrajectorySnapshot snapshot = CreateSnapshot(
+            Vector3.zero,
+            Vector3.forward * speed,
+            Vector3.forward * targetDistance);
+
+        PrototypeTrajectoryPlan plan = new PrototypeTrajectoryPlanner().Plan(
+            snapshot,
+            PrototypeObstacleDetectionResult.Clear(8f));
+        ImmediateBrakeGeometry geometry = MeasureImmediateBrakeGeometry(plan.flightPlan.segments, snapshot.targetPosition);
+
+        Assert.True(plan.flightPlan.IsValid);
+        Assert.That(plan.flightPlan.IsDirectFastTransfer, Is.True);
         Assert.That(plan.segments[0].type, Is.EqualTo(PrototypeTrajectorySegmentType.Brake));
         Assert.That(plan.flightPlan.segments[0].phase, Is.EqualTo(PrototypeManeuverPhase.FlipToRetrograde));
         Assert.That(plan.flightPlan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.ProgradeBurn), Is.False);
         Assert.That(plan.flightPlan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.RetrogradeBurn), Is.True);
+        Assert.That(geometry.remainingAfterBrakeMeters, Is.EqualTo(snapshot.arrivalRadius).Within(1.0f));
+        Assert.That(geometry.endSpeedMetersPerSecond, Is.EqualTo(snapshot.arrivalSpeed).Within(0.25f));
     }
 
     [Test]
@@ -824,6 +861,12 @@ public class PrototypeAutopilotNavigationComputerV2ValidationTests
         public float remainingAfterBrakeMeters;
     }
 
+    private struct ImmediateBrakeGeometry
+    {
+        public float remainingAfterBrakeMeters;
+        public float endSpeedMetersPerSecond;
+    }
+
     private static DirectFastTransferGeometry MeasureDirectFastTransferGeometry(
         PrototypeManeuverSegment[] segments,
         Vector3 targetPosition)
@@ -846,6 +889,18 @@ public class PrototypeAutopilotNavigationComputerV2ValidationTests
             consumedRouteMeters = burnMeters + flipDriftMeters + brakeMeters,
             remainingAtSwitchMeters = Vector3.Dot(targetPosition - burn.expectedEndPosition, routeDirection),
             remainingAfterBrakeMeters = Vector3.Dot(targetPosition - brake.expectedEndPosition, routeDirection)
+        };
+    }
+
+    private static ImmediateBrakeGeometry MeasureImmediateBrakeGeometry(
+        PrototypeManeuverSegment[] segments,
+        Vector3 targetPosition)
+    {
+        PrototypeManeuverSegment brake = segments.Single(segment => segment.phase == PrototypeManeuverPhase.RetrogradeBurn);
+        return new ImmediateBrakeGeometry
+        {
+            remainingAfterBrakeMeters = Vector3.Distance(targetPosition, brake.expectedEndPosition),
+            endSpeedMetersPerSecond = brake.expectedEndVelocity.magnitude
         };
     }
 

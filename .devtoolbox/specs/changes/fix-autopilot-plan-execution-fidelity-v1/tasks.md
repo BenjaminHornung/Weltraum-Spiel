@@ -10,7 +10,7 @@ Referenz: `design.md` (Zeilennummern = Commit `a68333b`).
 - [x] `EstimateAttitudeSegmentSeconds` (`:1620`) durch Trapezprofil-Modell mit diesen Limits + Latch-Marge ersetzen; `MaximumAttitudeSegmentSeconds` anheben (z. B. 12 s).
 - [x] Spool-Up/Down in `SolveDirectFastTransfer` (`:687`) und `PredictManeuverEnd` (`:1451`) modellieren (Snapshot-Felder `mainThrottleSpoolUpRate/DownRate` nutzen); gilt fuer Burn UND Brake.
 - [x] vPeak-/Distanzbilanz (`:741-758`) mit Spool-Verlusten und neuer Flipzeit korrigieren.
-- [ ] Brake-Ende auf `arrivalSpeed` am Arrival-Radius auslegen statt v=0 vor dem Ziel.
+- [x] Brake-Ende auf `arrivalSpeed` am Arrival-Radius auslegen statt v=0 vor dem Ziel.
 
 ## Phase 2 — Zeitbasis (`PrototypeWaypointAutopilot.cs`)
 - [ ] `TrySkipCompletedFlightPlanAlignSegment` (`:2339`) + `TrySkipCompletedFlightPlanBrakeFlipSegment` (`:2369`) + `TryAdvanceToNextFlightPlanSegment` (`:2389`) entfernen; Aufrufer in `ApplyFlightPlanSegment` (`:2171`, `:2268`) bereinigen.

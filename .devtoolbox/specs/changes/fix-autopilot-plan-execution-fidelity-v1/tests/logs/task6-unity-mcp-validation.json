@@ -1,0 +1,85 @@
+{
+  "sessionId": "048330028b8b4a00a2dbaaff87a54c0b",
+  "planner": {
+    "jsonrpc": "2.0",
+    "id": 2,
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"data\":{\"diagnostics\":[],\"summary\":{\"warnings\":0,\"errors\":0}}}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "data": {
+          "diagnostics": [],
+          "summary": {
+            "warnings": 0,
+            "errors": 0
+          }
+        }
+      },
+      "isError": false
+    }
+  },
+  "tests": {
+    "jsonrpc": "2.0",
+    "id": 3,
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"data\":{\"diagnostics\":[],\"summary\":{\"warnings\":0,\"errors\":0}}}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "data": {
+          "diagnostics": [],
+          "summary": {
+            "warnings": 0,
+            "errors": 0
+          }
+        }
+      },
+      "isError": false
+    }
+  },
+  "consoleErrorsPlanner": {
+    "jsonrpc": "2.0",
+    "id": 4,
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"message\":\"Retrieved 0 log entries.\",\"data\":[]}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "message": "Retrieved 0 log entries.",
+        "data": []
+      },
+      "isError": false
+    }
+  },
+  "consoleErrorsTests": {
+    "jsonrpc": "2.0",
+    "id": 5,
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"message\":\"Retrieved 0 log entries.\",\"data\":[]}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "message": "Retrieved 0 log entries.",
+        "data": []
+      },
+      "isError": false
+    }
+  }
+}

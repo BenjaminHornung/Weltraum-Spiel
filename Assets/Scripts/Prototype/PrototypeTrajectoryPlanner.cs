@@ -738,9 +738,17 @@ public class PrototypeTrajectoryPlanner
         float vPeak = Mathf.Max(0f, vAlong0);
         float flipDrift = 0f;
         float effectiveDistance = 0f;
+        float arrivalSpeed = Mathf.Max(0f, snapshot.arrivalSpeed);
+        float plannedRouteDistance = Mathf.Max(0f, distance - snapshot.arrivalRadius);
+        if (plannedRouteDistance <= 0.01f)
+        {
+            return false;
+        }
+
         if (!TrySolveDirectFastTransferPeakSpeed(
-            distance,
+            plannedRouteDistance,
             vAlong0,
+            arrivalSpeed,
             burnAcceleration,
             brakeAcceleration,
             flipTime,
@@ -753,22 +761,27 @@ public class PrototypeTrajectoryPlanner
             return false;
         }
 
-        float idealStoppingSecondsNow = vAlong0 > 0f ? vAlong0 / brakeAcceleration : 0f;
+        float initialBrakeSpeed = Mathf.Max(0f, vAlong0);
+        float idealStoppingSecondsNow = initialBrakeSpeed > arrivalSpeed
+            ? (initialBrakeSpeed - arrivalSpeed) / brakeAcceleration
+            : 0f;
         float commandedStoppingSecondsNow = EstimateCommandedThrottleDurationForEquivalentSeconds(idealStoppingSecondsNow, 1f, shipSnapshot);
-        float spooledStoppingDistanceNow = vAlong0 > 0f
-            ? Mathf.Max(0f, EstimateLinearThrottleProfileDistance(vAlong0, commandedStoppingSecondsNow, 1f, brakeAcceleration, true, shipSnapshot))
+        float spooledStoppingDistanceNow = initialBrakeSpeed > arrivalSpeed
+            ? Mathf.Max(0f, EstimateLinearThrottleProfileDistance(initialBrakeSpeed, commandedStoppingSecondsNow, 1f, brakeAcceleration, true, shipSnapshot))
             : 0f;
-        float stoppingDistanceNow = vAlong0 > 0f
-            ? spooledStoppingDistanceNow + Mathf.Max(0f, vAlong0) * flipTime
+        float stoppingDistanceNow = initialBrakeSpeed > arrivalSpeed
+            ? spooledStoppingDistanceNow
             : 0f;
-        bool brakeImmediately = vAlong0 > snapshot.arrivalSpeed
-            && (stoppingDistanceNow >= distance || vPeak <= vAlong0 + 0.01f);
+        bool brakeImmediately = vAlong0 > arrivalSpeed
+            && (stoppingDistanceNow >= plannedRouteDistance || vPeak <= vAlong0 + 0.01f);
 
         float idealBurnSeconds = brakeImmediately ? 0f : Mathf.Max(0f, (vPeak - vAlong0) / burnAcceleration);
         float brakeSpeed = brakeImmediately
             ? Mathf.Max(0f, snapshot.velocity.magnitude)
             : vPeak;
-        float idealBrakeSeconds = brakeSpeed / brakeAcceleration;
+        float idealBrakeSeconds = brakeSpeed > arrivalSpeed
+            ? (brakeSpeed - arrivalSpeed) / brakeAcceleration
+            : 0f;
         float tBurn = EstimateCommandedThrottleDurationForEquivalentSeconds(idealBurnSeconds, 1f, shipSnapshot);
         float tBrake = EstimateCommandedThrottleDurationForEquivalentSeconds(idealBrakeSeconds, 1f, shipSnapshot);
         float sBurn = brakeImmediately
@@ -862,8 +875,9 @@ public class PrototypeTrajectoryPlanner
     }
 
     private static bool TrySolveDirectFastTransferPeakSpeed(
-        float distanceMeters,
+        float plannedRouteDistanceMeters,
         float initialAlongSpeedMetersPerSecond,
+        float arrivalSpeedMetersPerSecond,
         float burnAccelerationMetersPerSecondSquared,
         float brakeAccelerationMetersPerSecondSquared,
         float flipTimeSeconds,
@@ -878,17 +892,19 @@ public class PrototypeTrajectoryPlanner
         flipDriftMeters = 0f;
         effectiveDistanceMeters = 0f;
 
-        if (distanceMeters <= 0f
+        if (plannedRouteDistanceMeters <= 0f
             || burnAccelerationMetersPerSecondSquared <= 0.0001f
             || brakeAccelerationMetersPerSecondSquared <= 0.0001f)
         {
             return false;
         }
 
+        float arrivalSpeed = Mathf.Max(0f, arrivalSpeedMetersPerSecond);
         float lower = Mathf.Max(0f, initialAlongSpeedMetersPerSecond);
         float lowerDistance = EstimateDirectFastTransferRouteDistanceForPeakSpeed(
             lower,
             initialAlongSpeedMetersPerSecond,
+            arrivalSpeed,
             burnAccelerationMetersPerSecondSquared,
             brakeAccelerationMetersPerSecondSquared,
             flipTimeSeconds,
@@ -900,24 +916,26 @@ public class PrototypeTrajectoryPlanner
 
         float upper = Mathf.Max(
             lower + 1f,
-            Mathf.Sqrt(2f * Mathf.Max(burnAccelerationMetersPerSecondSquared, brakeAccelerationMetersPerSecondSquared) * distanceMeters)
+            Mathf.Sqrt(2f * Mathf.Max(burnAccelerationMetersPerSecondSquared, brakeAccelerationMetersPerSecondSquared) * plannedRouteDistanceMeters)
                 + Mathf.Abs(initialAlongSpeedMetersPerSecond));
         float upperDistance = EstimateDirectFastTransferRouteDistanceForPeakSpeed(
             upper,
             initialAlongSpeedMetersPerSecond,
+            arrivalSpeed,
             burnAccelerationMetersPerSecondSquared,
             brakeAccelerationMetersPerSecondSquared,
             flipTimeSeconds,
             shipSnapshot);
         int expandCount = 0;
         while (TrajectoryPredictionMath.IsFinite(upperDistance)
-            && upperDistance < distanceMeters
+            && upperDistance < plannedRouteDistanceMeters
             && expandCount < 24)
         {
             upper *= 2f;
             upperDistance = EstimateDirectFastTransferRouteDistanceForPeakSpeed(
                 upper,
                 initialAlongSpeedMetersPerSecond,
+                arrivalSpeed,
                 burnAccelerationMetersPerSecondSquared,
                 brakeAccelerationMetersPerSecondSquared,
                 flipTimeSeconds,
@@ -930,11 +948,17 @@ public class PrototypeTrajectoryPlanner
             return false;
         }
 
-        if (lowerDistance >= distanceMeters)
+        float distanceToleranceMeters = Mathf.Max(0.05f, plannedRouteDistanceMeters * 0.001f);
+        if (lowerDistance > plannedRouteDistanceMeters + distanceToleranceMeters)
+        {
+            return false;
+        }
+
+        if (lowerDistance >= plannedRouteDistanceMeters - distanceToleranceMeters)
         {
             peakSpeedMetersPerSecond = lower;
         }
-        else if (upperDistance < distanceMeters)
+        else if (upperDistance < plannedRouteDistanceMeters)
         {
             return false;
         }
@@ -946,6 +970,7 @@ public class PrototypeTrajectoryPlanner
                 float midpointDistance = EstimateDirectFastTransferRouteDistanceForPeakSpeed(
                     midpoint,
                     initialAlongSpeedMetersPerSecond,
+                    arrivalSpeed,
                     burnAccelerationMetersPerSecondSquared,
                     brakeAccelerationMetersPerSecondSquared,
                     flipTimeSeconds,
@@ -955,7 +980,7 @@ public class PrototypeTrajectoryPlanner
                     return false;
                 }
 
-                if (midpointDistance < distanceMeters)
+                if (midpointDistance < plannedRouteDistanceMeters)
                 {
                     lower = midpoint;
                 }
@@ -974,7 +999,10 @@ public class PrototypeTrajectoryPlanner
             0f,
             (peakSpeedSquared - (initialAlongSpeedMetersPerSecond * initialAlongSpeedMetersPerSecond))
                 / (2f * burnAccelerationMetersPerSecondSquared));
-        float idealBrakeMeters = peakSpeedSquared / (2f * brakeAccelerationMetersPerSecondSquared);
+        float arrivalSpeedSquared = arrivalSpeed * arrivalSpeed;
+        float idealBrakeMeters = Mathf.Max(
+            0f,
+            (peakSpeedSquared - arrivalSpeedSquared) / (2f * brakeAccelerationMetersPerSecondSquared));
         effectiveDistanceMeters = Mathf.Max(0f, idealBurnMeters + idealBrakeMeters);
         return true;
     }
@@ -982,6 +1010,7 @@ public class PrototypeTrajectoryPlanner
     private static float EstimateDirectFastTransferRouteDistanceForPeakSpeed(
         float peakSpeedMetersPerSecond,
         float initialAlongSpeedMetersPerSecond,
+        float arrivalSpeedMetersPerSecond,
         float burnAccelerationMetersPerSecondSquared,
         float brakeAccelerationMetersPerSecondSquared,
         float flipTimeSeconds,
@@ -1000,7 +1029,10 @@ public class PrototypeTrajectoryPlanner
             false,
             shipSnapshot);
 
-        float idealBrakeSeconds = Mathf.Max(0f, peakSpeedMetersPerSecond / brakeAccelerationMetersPerSecondSquared);
+        float arrivalSpeed = Mathf.Max(0f, arrivalSpeedMetersPerSecond);
+        float idealBrakeSeconds = peakSpeedMetersPerSecond > arrivalSpeed
+            ? (peakSpeedMetersPerSecond - arrivalSpeed) / brakeAccelerationMetersPerSecondSquared
+            : 0f;
         float commandedBrakeSeconds = EstimateCommandedThrottleDurationForEquivalentSeconds(idealBrakeSeconds, 1f, shipSnapshot);
         float brakeMeters = EstimateLinearThrottleProfileDistance(
             peakSpeedMetersPerSecond,
