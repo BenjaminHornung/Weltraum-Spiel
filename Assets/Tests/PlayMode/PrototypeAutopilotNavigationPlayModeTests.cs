@@ -198,6 +198,122 @@ public class PrototypeAutopilotNavigationPlayModeTests
     }
 
     [Test]
+    public void PlayMode_DistantWaypoint_PlanExecution_FidelityRegression()
+    {
+        const float distantDistanceMeters = 2400f;
+        AutopilotPlayModeRig rig = CreateRig(Vector3.forward * distantDistanceMeters);
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(true);
+        rig.Autopilot.SetStrictFlightPlanExecutionForTests(true);
+        rig.Autopilot.ToggleAutopilot();
+
+        StepClosedLoopPhysicsWithoutForcedReplan(rig);
+
+        PrototypeFlightPlan initialPlan = rig.Autopilot.CurrentFlightPlan;
+        Assert.True(initialPlan.IsValid, initialPlan.statusLabel);
+        Assert.True(initialPlan.IsDirectFastTransfer, initialPlan.statusLabel);
+        float planTotalDurationSeconds = initialPlan.totalDurationSeconds;
+        float retrogradeBurnTargetElapsedSeconds = initialPlan.segments
+            .Where(segment => segment.phase == PrototypeManeuverPhase.RetrogradeBurn)
+            .Select(segment => segment.endTimeSeconds)
+            .LastOrDefault();
+        Assert.That(planTotalDurationSeconds, Is.GreaterThan(1f), "Expected flight plan total duration to be meaningful.");
+        Assert.That(retrogradeBurnTargetElapsedSeconds, Is.GreaterThan(1f), "Expected retrograde-burn phase to have a meaningful planned end.");
+        float arrivalSpeed = initialPlan.targetArrivalSpeedMetersPerSecond;
+
+        float maxPlanElapsedSeconds = planTotalDurationSeconds * 1.35f;
+        int maxSteps = Mathf.CeilToInt(maxPlanElapsedSeconds / Time.fixedDeltaTime);
+        maxSteps = Mathf.Clamp(maxSteps, 25, 20000);
+
+        string evidenceRoot = Path.Combine(
+            Directory.GetCurrentDirectory(),
+            ".devtoolbox",
+            "specs",
+            "changes",
+            ChangeName,
+            "tests",
+            "performance");
+        Directory.CreateDirectory(evidenceRoot);
+        string csvPath = Path.Combine(evidenceRoot, "distant-waypoint-plan-execution-regression.csv");
+
+        int flipToRetrogradeEntries = 0;
+        bool previousWasFlip = false;
+        float finalDistance = rig.Target.ArrivalRadius + 1f;
+        float finalRelativeSpeed = float.PositiveInfinity;
+        bool hadRequiresReplan = false;
+        int firstHoldPositionStep = -1;
+        const int holdPositionSettlingSteps = 120;
+
+        using (var writer = new StreamWriter(csvPath, false))
+        {
+            writer.WriteLine(
+                "step,time,planElapsed,planTotalDuration,expectedMinDuration,expectedMaxDuration,phase,state,distance,relativeSpeed,mainThrottle,flightPlanSafetyReplanCount,flightPlanRequiresReplan");
+
+            for (int step = 0; step < maxSteps; step++)
+            {
+                StepClosedLoopPhysicsWithoutForcedReplan(rig);
+                PrototypeFlightPlanTrackingCommand command = rig.Autopilot.CurrentFlightPlanTrackingCommand;
+                PrototypeFlightPlanTrackingError error = command.error;
+                finalDistance = Vector3.Distance(rig.Body.position, rig.Target.Position);
+                finalRelativeSpeed = rig.Body.linearVelocity.magnitude;
+                hadRequiresReplan |= rig.Autopilot.FlightPlanRequiresReplan;
+
+                if (error.activePhase == PrototypeManeuverPhase.FlipToRetrograde && !previousWasFlip)
+                {
+                    flipToRetrogradeEntries++;
+                }
+
+                previousWasFlip = error.activePhase == PrototypeManeuverPhase.FlipToRetrograde;
+
+                writer.WriteLine(
+                    step + ","
+                    + FormatFloat(step * Time.fixedDeltaTime) + ","
+                    + FormatFloat(rig.Autopilot.FlightPlanExecutorElapsedSeconds) + ","
+                    + FormatFloat(planTotalDurationSeconds) + ","
+                    + FormatFloat(planTotalDurationSeconds * 0.85f) + ","
+                    + FormatFloat(planTotalDurationSeconds * 1.15f) + ","
+                    + CsvEscape(error.activePhase.ToString()) + ","
+                    + CsvEscape(rig.Autopilot.CurrentState.ToString()) + ","
+                    + FormatFloat(finalDistance) + ","
+                    + FormatFloat(finalRelativeSpeed) + ","
+                    + FormatFloat(rig.Autopilot.RequestedMainThrottle) + ","
+                    + rig.Autopilot.FlightPlanSafetyReplanCount + ","
+                    + rig.Autopilot.FlightPlanRequiresReplan);
+
+                if (rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.HoldPosition && firstHoldPositionStep < 0)
+                {
+                    firstHoldPositionStep = step;
+                }
+
+                if (rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Complete
+                    || (firstHoldPositionStep >= 0 && step - firstHoldPositionStep >= holdPositionSettlingSteps)
+                    || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Aborted
+                    || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Failed
+                    || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.FuelInsufficient)
+                {
+                    break;
+                }
+            }
+        }
+
+        float actualElapsedSeconds = rig.Autopilot.FlightPlanExecutorElapsedSeconds;
+        float arrivalRadius = rig.Target.ArrivalRadius;
+        float expectedMin = planTotalDurationSeconds * 0.85f;
+        float expectedMax = planTotalDurationSeconds * 1.15f;
+
+        Assert.That(new FileInfo(csvPath).Length, Is.GreaterThan(0));
+        Assert.True(
+            rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Complete
+            || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.HoldPosition,
+            "Expected terminal arrival state but was " + rig.Autopilot.CurrentState);
+        Assert.That(flipToRetrogradeEntries, Is.EqualTo(1), "Expected exactly one FlipToRetrograde phase entry.");
+        Assert.That(rig.Autopilot.FlightPlanSafetyReplanCount, Is.EqualTo(0), "Expected no safety-replan events under strict executor mode.");
+        Assert.False(hadRequiresReplan, "Expected strict execution to avoid runtime replan requests.");
+        Assert.That(finalDistance, Is.LessThanOrEqualTo(arrivalRadius + 0.01f));
+        Assert.That(finalRelativeSpeed, Is.LessThanOrEqualTo(arrivalSpeed * 1.5f));
+        Assert.That(actualElapsedSeconds, Is.InRange(expectedMin, expectedMax));
+    }
+
+    [Test]
     public void PlayMode_Autopilot_LaunchCorridorObstacleCourse_PrecomputesAvoidanceBeforeFlightAndReachesTarget()
     {
         GameObject environmentHost = new GameObject("AutopilotPlayModeV2LaunchCorridorEnvironmentHost");
@@ -2149,6 +2265,7 @@ public class PrototypeAutopilotNavigationPlayModeTests
         bool burnLatched = false;
         bool brakeLatched = false;
         bool sawRetrogradeBurnPhase = false;
+        bool wasInFlipPhase = false;
         int nextConsecutiveInjectionFrame = -1;
         int softMonitorFramesRemaining = 0;
 
@@ -2296,11 +2413,26 @@ public class PrototypeAutopilotNavigationPlayModeTests
                 }
             }
 
+            if (inFlip)
+            {
+                trace.FlipPhaseSamples++;
+                if (!wasInFlipPhase)
+                {
+                    trace.FlipPhaseEntries++;
+                    trace.Events.Add(
+                        $"flipPhaseEntry i={i} state={rig.Autopilot.CurrentState} status={divergenceStatus} reasons={state.replanReasons}");
+                }
+            }
+
+            bool terminalHandoffState = rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.FinalApproach
+                || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.HoldPosition
+                || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Complete;
             bool transitionMainCommanded = burnLatched
                 && brakeLatched
                 && inRetrogradeBurn
                 && !inProgradeBurn
                 && !inFlip
+                && !terminalHandoffState
                 && (rig.Autopilot.FlightPlanExecutorElapsedSeconds < state.elapsedSeconds
                     || state.activeProgress01 < 0.92f)
                 && command.mainThrottleAllowed
@@ -2372,6 +2504,8 @@ public class PrototypeAutopilotNavigationPlayModeTests
 
             trace.LastDesiredAngle = desiredAngle;
 
+            wasInFlipPhase = inFlip;
+
             if (i % 20 == 0)
             {
                 trace.Samples.Add(
@@ -2383,6 +2517,7 @@ public class PrototypeAutopilotNavigationPlayModeTests
             }
 
             bool terminalState = rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Complete
+                || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.HoldPosition
                 || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Aborted
                 || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Failed
                 || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.FuelInsufficient;
@@ -2470,7 +2605,8 @@ public class PrototypeAutopilotNavigationPlayModeTests
             + $"completedBeforeBrake={trace.CompletedBeforeBrakeObserved} "
             + $"burnSamples={trace.BurnLatchedSamples} lowBurn={trace.LowBurnThrottleFrames} firstBurnLatched={trace.FirstBurnLatchedFrame} "
             + $"brakeSamples={trace.BrakeLatchedSamples} lowBrake={trace.LowBrakeThrottleFrames} firstBrakeLatched={trace.FirstBrakeLatchedFrame} "
-            + $"flipThrottleFrames={trace.FlipThrottleFrames} burnToBrakeLowThrottle={trace.BurnToBrakeLowThrottleFrames} "
+            + $"flipPhaseEntries={trace.FlipPhaseEntries} flipSamples={trace.FlipPhaseSamples} flipThrottleFrames={trace.FlipThrottleFrames} "
+            + $"burnToBrakeLowThrottle={trace.BurnToBrakeLowThrottleFrames} "
             + $"maxBrakeAngle={trace.MaxBrakeDesiredAngle:0.0} softInjected={trace.SoftErrorInjected} afterSoftFrames={trace.AfterSoftBurnFrames} "
             + $"softInjectionCount={trace.SoftTrackingInjectionCount} softInjectionMode={trace.InjectionMode} "
             + $"softInjectionFrames={string.Join(",", trace.SoftTrackingInjectionFrames.ToArray())} "
@@ -3379,6 +3515,8 @@ public class PrototypeAutopilotNavigationPlayModeTests
         public int FirstBrakeLatchedFrame;
         public int BurnToBrakeLowThrottleFrames;
         public int FlipThrottleFrames;
+        public int FlipPhaseEntries;
+        public int FlipPhaseSamples;
         public float MaxBrakeDesiredAngle;
         public bool TraceEndedInTerminalState;
         public bool CompletedBeforeBrakeObserved;

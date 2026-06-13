@@ -1,0 +1,45 @@
+{
+  "task": "Phase 6 - Tests & Evidence",
+  "build": {
+    "command": "dotnet build 'Weltraum Spiel.sln' --no-restore",
+    "result": "passed",
+    "errors": 0,
+    "warnings": 5,
+    "log": "tests/task16-dotnet-build.log"
+  },
+  "validate_script": {
+    "PrototypeWaypointAutopilot.cs": {
+      "errors": 0,
+      "warnings": 1,
+      "known_warning": "String concatenation in Update() can cause garbage collection issues"
+    },
+    "PrototypeFlightPlan.cs": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "PrototypeTrajectoryPlanner.cs": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.cs": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "PrototypeFlightPlanValidationTests.cs": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "PrototypeWaypointAutopilotValidationTests.cs": {
+      "errors": 0,
+      "warnings": 2,
+      "known_warnings": [
+        "GameObject.Find in Update() can cause performance issues",
+        "String concatenation in Update() can cause garbage collection issues"
+      ]
+    },
+    "PrototypeAutopilotNavigationPlayModeTests.cs": {
+      "errors": 0,
+      "warnings": 0
+    }
+  }
+}

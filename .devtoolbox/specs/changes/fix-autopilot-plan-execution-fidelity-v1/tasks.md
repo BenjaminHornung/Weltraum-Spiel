@@ -30,10 +30,10 @@ Referenz: `design.md` (Zeilennummern = Commit `a68333b`).
 - [x] `BuildNavigationWarningChips` (`:726`): REPLAN-Chip nur bei realem erzwungenem Replan; Tracking-Korrektur als eigener Status.
 
 ## Phase 6 — Tests & Evidence
-- [ ] EditMode: Turn-Modell, Spool-Solver, Toleranzskalierung.
-- [ ] PlayMode-Regression: 1 Flip, 0 erzwungene Replans, Ankunft in Radius/Speed, Dauer ≈ Plan ± 15 %.
-- [ ] Bestehende DFT-/Navigations-Tests (u. a. `Assets/Tests/PlayMode/PrototypeAutopilotNavigationPlayModeTests.cs`, Haertungstests aus `harden-direct-fast-transfer-autopilot-regression-tests-v1`) an neues Verhalten anpassen.
-- [ ] Evidence (CSV, Screenshots, Protokoll) unter `tests/` dieses Changes.
+- [x] EditMode: Turn-Modell, Spool-Solver, Toleranzskalierung.
+- [x] PlayMode-Regression: 1 Flip, 0 erzwungene Replans, Ankunft in Radius/Speed, Dauer ≈ Plan ± 15 %.
+- [x] Bestehende DFT-/Navigations-Tests (u. a. `Assets/Tests/PlayMode/PrototypeAutopilotNavigationPlayModeTests.cs`, Haertungstests aus `harden-direct-fast-transfer-autopilot-regression-tests-v1`) an neues Verhalten anpassen.
+- [x] Evidence (CSV, Screenshots, Protokoll) unter `tests/` dieses Changes.
 
 ## Phase 7 (optional, separater Change)
 - [ ] Executor in `PrototypeFlightPlanExecutor` extrahieren, DFT-Sonderpfade reduzieren, Legacy-Pfad eingrenzen.

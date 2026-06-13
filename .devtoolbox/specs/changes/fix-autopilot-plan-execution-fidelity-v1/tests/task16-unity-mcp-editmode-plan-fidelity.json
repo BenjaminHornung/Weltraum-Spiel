@@ -1,0 +1,20 @@
+{
+  "job_ids": [
+    "d051373267e044479fe9028d6a6d54ee",
+    "ebeff33d087f4444992167285798d0e5",
+    "6f2ba50451c54839b0d9c23dead14ce8",
+    "4747a5cdf72f483392968111d864ff32"
+  ],
+  "mode": "EditMode",
+  "result": "Passed",
+  "total_executions": 41,
+  "passed_executions": 41,
+  "unique_targeted_tests": 36,
+  "failed_executions": 0,
+  "skipped_executions": 0,
+  "notes": [
+    "Split into focused jobs to avoid unrelated full-suite state leakage.",
+    "Includes direct EstimateBrakeFlipSegmentSeconds coverage plus turn-model, spool-solver, and tolerance-scaling coverage required by Phase 6.",
+    "Also includes DFT brake-commit, expiry, terminal/replan, UI chip, and nominal brake-timing hardening tests."
+  ]
+}

@@ -755,7 +755,7 @@ public class PrototypeTrajectoryPlanner
         Vector3 lateralVelocity = snapshot.velocity - routeDirection * vAlong0;
         float vLat0 = lateralVelocity.magnitude;
         Quaternion burnRotation = ResolveLookRotation(routeDirection, shipSnapshot.initialState.rotation);
-        float flipTime = EstimateAttitudeSegmentSeconds(burnRotation, -routeDirection, shipSnapshot);
+        float flipTime = EstimateBrakeFlipSegmentSeconds(burnRotation, -routeDirection, shipSnapshot);
         float vPeakSquared = 0f;
         float vPeak = Mathf.Max(0f, vAlong0);
         float flipDrift = 0f;
@@ -1550,7 +1550,7 @@ public class PrototypeTrajectoryPlanner
             {
                 if (!ShouldOmitInitialDirectFastTransferBrakeFlip(legacy, current.rotation, direction, maneuvers.Count))
                 {
-                    float flipSeconds = EstimateAttitudeSegmentSeconds(current.rotation, direction, shipSnapshot);
+                    float flipSeconds = EstimateBrakeFlipSegmentSeconds(current.rotation, direction, shipSnapshot);
                     AddManeuverSegment(
                         maneuvers,
                         samples,
@@ -2241,6 +2241,39 @@ public class PrototypeTrajectoryPlanner
         Vector3 desiredForward,
         PrototypeShipPlanningSnapshot shipSnapshot)
     {
+        return EstimateAttitudeSegmentSeconds(currentRotation, desiredForward, shipSnapshot, PrototypeFlightPlanExecutionConfig.BrakeFlipMaxTurnRateDegreesPerSecond, 0f);
+    }
+
+    private static float EstimateBrakeFlipSegmentSeconds(
+        Quaternion currentRotation,
+        Vector3 desiredForward,
+        PrototypeShipPlanningSnapshot shipSnapshot)
+    {
+        if (desiredForward.sqrMagnitude <= 0.0001f)
+        {
+            return 0f;
+        }
+
+        Vector3 currentForward = currentRotation * Vector3.forward;
+        float angle = Vector3.Angle(currentForward, desiredForward);
+        float rateDegPerSecond = PrototypeFlightPlanExecutionConfig.BrakeFlipMaxTurnRateDegreesPerSecond
+            * PrototypeFlightPlanExecutionConfig.BrakeFlipRuntimeTurnRateScale;
+        float extraSafetySeconds = Mathf.Max(0f, rateDegPerSecond - PrototypeFlightPlanExecutionConfig.DirectFastTransferMainLatchEngageAngularSpeedDegreesPerSecond)
+            / Mathf.Max(0.0001f, PrototypeFlightPlanExecutionConfig.BrakeFlipMaxAngularAccelerationRadPerSecondSquared * Mathf.Rad2Deg);
+        extraSafetySeconds += angle > PrototypeFlightPlanExecutionConfig.DirectFastTransferBrakeLatchEngageDegrees
+            ? PrototypeFlightPlanExecutionConfig.BrakeFlipDampingTimeSeconds * PrototypeFlightPlanExecutionConfig.DirectFastTransferBrakeLatchDampingCycles
+            : 0f;
+
+        return EstimateAttitudeSegmentSeconds(currentRotation, desiredForward, shipSnapshot, rateDegPerSecond, extraSafetySeconds);
+    }
+
+    private static float EstimateAttitudeSegmentSeconds(
+        Quaternion currentRotation,
+        Vector3 desiredForward,
+        PrototypeShipPlanningSnapshot shipSnapshot,
+        float maxTurnRateDegreesPerSecond,
+        float extraSafetySeconds)
+    {
         if (desiredForward.sqrMagnitude <= 0.0001f)
         {
             return 0f;
@@ -2254,7 +2287,7 @@ public class PrototypeTrajectoryPlanner
         }
 
         float angleRad = angle * Mathf.Deg2Rad;
-        float rateRad = PrototypeFlightPlanExecutionConfig.BrakeFlipMaxTurnRateDegreesPerSecond * Mathf.Deg2Rad;
+        float rateRad = maxTurnRateDegreesPerSecond * Mathf.Deg2Rad;
         float accel = PrototypeFlightPlanExecutionConfig.BrakeFlipMaxAngularAccelerationRadPerSecondSquared;
         float seconds;
         if (rateRad > 0.0001f && accel > 0.0001f)
@@ -2269,7 +2302,7 @@ public class PrototypeTrajectoryPlanner
             seconds = angle / 90f;
         }
 
-        seconds += PrototypeFlightPlanExecutionConfig.BrakeFlipDampingTimeSeconds + AttitudeLatchMarginSeconds;
+        seconds += PrototypeFlightPlanExecutionConfig.BrakeFlipDampingTimeSeconds + extraSafetySeconds + AttitudeLatchMarginSeconds;
         return Mathf.Clamp(seconds, MinimumAttitudeSegmentSeconds, MaximumAttitudeSegmentSeconds);
     }
 

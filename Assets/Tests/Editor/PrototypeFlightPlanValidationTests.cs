@@ -98,6 +98,19 @@ public class PrototypeFlightPlanValidationTests
     }
 
     [Test]
+    public void TrajectoryPlanner_BrakeFlipEstimateUsesRuntimeLatchSettlingForHalfTurn()
+    {
+        float angleDegrees = 180f;
+        Vector3 desiredForward = DirectionAtYaw(angleDegrees);
+        float defaultAttitudeSeconds = InvokeEstimateAttitudeSegmentSeconds(Quaternion.identity, desiredForward);
+        float brakeFlipSeconds = InvokeEstimateBrakeFlipSegmentSeconds(Quaternion.identity, desiredForward);
+        float expected = ExpectedBrakeFlipSegmentSeconds(angleDegrees);
+
+        Assert.That(brakeFlipSeconds, Is.EqualTo(expected).Within(0.001f));
+        Assert.That(brakeFlipSeconds, Is.GreaterThanOrEqualTo(defaultAttitudeSeconds));
+    }
+
+    [Test]
     public void TrajectoryPlanner_AttitudeEstimateUsesTriangleProfileForSmallTurn()
     {
         float angleDegrees = 10f;
@@ -787,7 +800,22 @@ public class PrototypeFlightPlanValidationTests
     {
         MethodInfo method = typeof(PrototypeTrajectoryPlanner).GetMethod(
             "EstimateAttitudeSegmentSeconds",
-            BindingFlags.Static | BindingFlags.NonPublic);
+            BindingFlags.Static | BindingFlags.NonPublic,
+            null,
+            new[] { typeof(Quaternion), typeof(Vector3), typeof(PrototypeShipPlanningSnapshot) },
+            null);
+        Assert.NotNull(method);
+        return (float)method.Invoke(null, new object[] { currentRotation, desiredForward, CreateSnapshot() });
+    }
+
+    private static float InvokeEstimateBrakeFlipSegmentSeconds(Quaternion currentRotation, Vector3 desiredForward)
+    {
+        MethodInfo method = typeof(PrototypeTrajectoryPlanner).GetMethod(
+            "EstimateBrakeFlipSegmentSeconds",
+            BindingFlags.Static | BindingFlags.NonPublic,
+            null,
+            new[] { typeof(Quaternion), typeof(Vector3), typeof(PrototypeShipPlanningSnapshot) },
+            null);
         Assert.NotNull(method);
         return (float)method.Invoke(null, new object[] { currentRotation, desiredForward, CreateSnapshot() });
     }
@@ -799,14 +827,41 @@ public class PrototypeFlightPlanValidationTests
 
     private static float ExpectedAttitudeSegmentSeconds(float angleDegrees)
     {
+        return ExpectedAttitudeSegmentSeconds(
+            angleDegrees,
+            PrototypeFlightPlanExecutionConfig.BrakeFlipMaxTurnRateDegreesPerSecond,
+            0f);
+    }
+
+    private static float ExpectedBrakeFlipSegmentSeconds(float angleDegrees)
+    {
+        float rateDeg = PrototypeFlightPlanExecutionConfig.BrakeFlipMaxTurnRateDegreesPerSecond
+            * PrototypeFlightPlanExecutionConfig.BrakeFlipRuntimeTurnRateScale;
+        float extraSafetySeconds = Mathf.Max(0f, rateDeg - PrototypeFlightPlanExecutionConfig.DirectFastTransferMainLatchEngageAngularSpeedDegreesPerSecond)
+            / Mathf.Max(0.0001f, PrototypeFlightPlanExecutionConfig.BrakeFlipMaxAngularAccelerationRadPerSecondSquared * Mathf.Rad2Deg);
+        extraSafetySeconds += angleDegrees > PrototypeFlightPlanExecutionConfig.DirectFastTransferBrakeLatchEngageDegrees
+            ? PrototypeFlightPlanExecutionConfig.BrakeFlipDampingTimeSeconds * PrototypeFlightPlanExecutionConfig.DirectFastTransferBrakeLatchDampingCycles
+            : 0f;
+
+        return ExpectedAttitudeSegmentSeconds(
+            angleDegrees,
+            rateDeg,
+            extraSafetySeconds);
+    }
+
+    private static float ExpectedAttitudeSegmentSeconds(
+        float angleDegrees,
+        float maxTurnRateDegreesPerSecond,
+        float extraSafetySeconds)
+    {
         float angleRad = angleDegrees * Mathf.Deg2Rad;
-        float rateRad = PrototypeFlightPlanExecutionConfig.BrakeFlipMaxTurnRateDegreesPerSecond * Mathf.Deg2Rad;
+        float rateRad = maxTurnRateDegreesPerSecond * Mathf.Deg2Rad;
         float accel = PrototypeFlightPlanExecutionConfig.BrakeFlipMaxAngularAccelerationRadPerSecondSquared;
         float threshold = (rateRad * rateRad) / accel;
         float seconds = angleRad <= threshold
             ? 2f * Mathf.Sqrt(angleRad / accel)
             : (angleRad / rateRad) + (rateRad / accel);
-        seconds += PrototypeFlightPlanExecutionConfig.BrakeFlipDampingTimeSeconds + 0.4f;
+        seconds += PrototypeFlightPlanExecutionConfig.BrakeFlipDampingTimeSeconds + extraSafetySeconds + 0.4f;
         return Mathf.Clamp(seconds, 0.2f, 12f);
     }
 

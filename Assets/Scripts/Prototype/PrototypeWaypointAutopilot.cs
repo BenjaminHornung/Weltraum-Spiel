@@ -84,6 +84,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private const float BrakeArrivalHoldLateralSpeedMultiplier = 6f;
     private const float BrakeArrivalHoldMinimumLateralTolerance = 1.2f;
     private const float BrakeArrivalHoldRelativeSpeedMultiplier = 1.8f;
+    private const float DirectFastTransferTerminalHoldArrivalSpeedMultiplier = 1.5f;
     private const float TerminalOvershootHoldRelativeSpeedMultiplier = 1.25f;
     private const float TerminalOvershootBrakeRelativeSpeedMultiplier = 1.35f;
     private const float BrakeDirectionMinimumSpeedMetersPerSecond = 0.35f;
@@ -100,10 +101,10 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private const float DirectFastTransferBurnLatchEngageDegrees = 8f;
     private const float DirectFastTransferBurnLatchKeepDegrees = PrototypeFlightPlanExecutionConfig.DirectFastTransferBurnLatchKeepDegrees;
     private const float DirectFastTransferBurnLatchReleaseDegrees = 22f;
-    private const float DirectFastTransferBrakeLatchEngageDegrees = 12f;
+    private const float DirectFastTransferBrakeLatchEngageDegrees = PrototypeFlightPlanExecutionConfig.DirectFastTransferBrakeLatchEngageDegrees;
     private const float DirectFastTransferBrakeLatchKeepDegrees = PrototypeFlightPlanExecutionConfig.DirectFastTransferBrakeLatchKeepDegrees;
     private const float DirectFastTransferBrakeLatchReleaseDegrees = 36f;
-    private const float DirectFastTransferMainLatchEngageAngularSpeedDegreesPerSecond = 20f;
+    private const float DirectFastTransferMainLatchEngageAngularSpeedDegreesPerSecond = PrototypeFlightPlanExecutionConfig.DirectFastTransferMainLatchEngageAngularSpeedDegreesPerSecond;
     private const float DirectFastTransferMainLatchKeepAngularSpeedDegreesPerSecond = 45f;
     private const float DirectFastTransferMainLatchReleaseAngularSpeedDegreesPerSecond = 60f;
     private const float DirectFastTransferTerminalReacquireTimeoutSeconds = 45f;
@@ -1020,6 +1021,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             bool strictDirectFastTransfer = IsStrictDirectFastTransferPlan(plan);
             if (strictDirectFastTransfer
                 && flightPlanElapsedSeconds > plan.totalDurationSeconds
+                && ShouldRecoverExpiredDirectFastTransferInTerminalEnvelope()
                 && TryRunDirectFastTransferTerminalCaptureOrReacquire())
             {
                 flightPlanExecutorActive = true;
@@ -1043,13 +1045,21 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
             if (plan.IsDirectFastTransfer
                 && flightPlanElapsedSeconds > plan.totalDurationSeconds
-                && expiredReport.reasons == PrototypeFlightPlanAbortReplanReason.PlanExpired)
+                && expiredReport.reasons == PrototypeFlightPlanAbortReplanReason.PlanExpired
+                && ShouldRecoverExpiredDirectFastTransferInTerminalEnvelope())
             {
                 SetFlightPlanDivergenceReport(PrototypeFlightPlanDivergenceReport.Clear);
                 flightPlanExecutorActive = true;
                 lastFlightPlanExecutionState = expiredState;
                 arrivalFailureReason = string.Empty;
                 return TryEnterHoldPosition();
+            }
+
+            if (strictDirectFastTransfer
+                && flightPlanElapsedSeconds > plan.totalDurationSeconds
+                && expiredReport.reasons == PrototypeFlightPlanAbortReplanReason.PlanExpired)
+            {
+                return ForceFlightPlanSafetyReplan(expiredReport, "flight plan expired");
             }
 
             if (TryHandleFlightPlanDivergence(plan, expiredState, expiredReport))
@@ -1374,6 +1384,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             }
 
             if (report.reasons == PrototypeFlightPlanAbortReplanReason.PlanExpired
+                && ShouldRecoverExpiredDirectFastTransferInTerminalEnvelope()
                 && TryRunDirectFastTransferTerminalCaptureOrReacquire())
             {
                 ClearFlightPlanDivergenceReportNow();
@@ -1813,6 +1824,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             | PrototypeFlightPlanAbortReplanReason.NonFiniteState
             | PrototypeFlightPlanAbortReplanReason.FuelStarved
             | PrototypeFlightPlanAbortReplanReason.ActuatorLimited
+            | PrototypeFlightPlanAbortReplanReason.PlanExpired
             | PrototypeFlightPlanAbortReplanReason.NoMainThrustAuthority
             | PrototypeFlightPlanAbortReplanReason.NoRcsAuthority;
         return (reasons & clearReasons) != 0;
@@ -1978,7 +1990,8 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             directFastTransferTerminalCaptureActive = true;
             directFastTransferTerminalReacquireActive = false;
             directFastTransferTerminalReacquireStartedAtTime = -1f;
-            if (ShouldCaptureAnyArrivalHold() || IsInArrivalCompletionWindow())
+            bool terminalHoldSpeedSettled = IsDirectFastTransferTerminalHoldSpeedSettled();
+            if (terminalHoldSpeedSettled && (ShouldCaptureAnyArrivalHold() || IsInArrivalCompletionWindow()))
             {
                 SetDirectFastTransferExecutionStatus("flight plan terminal capture", "Terminal capture");
                 return TryEnterHoldPosition();
@@ -1999,9 +2012,10 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             arrivalTerminalCaptureActive = true;
             directFastTransferTerminalReacquireActive = false;
             directFastTransferTerminalReacquireStartedAtTime = -1f;
-            float terminalBrakeSpeedLimit = GetArrivalCompletionSpeedLimit() * BrakeArrivalHoldRelativeSpeedMultiplier;
+            bool terminalHoldSpeedSettled = IsDirectFastTransferTerminalHoldSpeedSettled();
+            float terminalBrakeSpeedLimit = GetActiveDirectFastTransferTerminalHoldSpeedLimit();
             if (!ShouldCaptureAnyArrivalHold()
-                && !IsInArrivalCompletionWindow()
+                && (!IsInArrivalCompletionWindow() || !terminalHoldSpeedSettled)
                 && LastMetrics.closingSpeed > BrakeHoldReleaseZeroSpeed
                 && LastMetrics.relativeSpeed > terminalBrakeSpeedLimit)
             {
@@ -2010,7 +2024,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             }
 
             directFastTransferBrakeCommitted = false;
-            if (ShouldCaptureAnyArrivalHold() || IsInArrivalCompletionWindow())
+            if (terminalHoldSpeedSettled && (ShouldCaptureAnyArrivalHold() || IsInArrivalCompletionWindow()))
             {
                 SetDirectFastTransferExecutionStatus("flight plan terminal capture", "Terminal capture");
                 return TryEnterHoldPosition();
@@ -2055,6 +2069,17 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
         ApplyDirectFastTransferTerminalReacquire();
         return true;
+    }
+
+    private bool ShouldRecoverExpiredDirectFastTransferInTerminalEnvelope()
+    {
+        return directFastTransferTerminalCaptureActive
+            || directFastTransferTerminalReacquireActive
+            || directFastTransferBrakeCommitted
+            || arrivalBrakeCommitted
+            || arrivalTerminalCaptureActive
+            || IsWithinArrivalTerminalCaptureRange()
+            || LastMetrics.distance <= GetArrivalTerminalRangeDistance() + BrakeArrivalHoldDistanceMarginMeters * 2f;
     }
 
     private void ApplyDirectFastTransferTerminalReacquire()
@@ -2728,9 +2753,14 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return false;
         }
 
-        return CurrentFlightPlan.TryGetActiveSegment(flightPlanElapsedSeconds, out PrototypeManeuverSegment segment)
-            && IsDirectFastTransferBrakeSegment(segment)
-            && !IsWithinDirectFastTransferBrakeEndEnvelope(segment);
+        if (!CurrentFlightPlan.TryGetActiveSegment(flightPlanElapsedSeconds, out PrototypeManeuverSegment segment)
+            || !IsDirectFastTransferBrakeSegment(segment))
+        {
+            return false;
+        }
+
+        return !IsWithinDirectFastTransferBrakeEndEnvelope(segment)
+            || !IsDirectFastTransferTerminalHoldSpeedSettled();
     }
 
     private static bool IsDirectFastTransferBrakeSegment(PrototypeManeuverSegment segment)
@@ -2933,11 +2963,11 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return false;
         }
 
-        float completionSpeed = GetArrivalCompletionSpeedLimit();
+        float completionSpeed = GetActiveDirectFastTransferTerminalHoldSpeedLimit();
         float lateralLimit = Mathf.Max(
             BrakeArrivalHoldMinimumLateralTolerance,
             GetArrivalCompletionLateralTolerance() * BrakeArrivalHoldLateralSpeedMultiplier);
-        return LastMetrics.relativeSpeed <= completionSpeed * BrakeArrivalHoldRelativeSpeedMultiplier
+        return LastMetrics.relativeSpeed <= completionSpeed
             && LastMetrics.lateralSpeed <= lateralLimit;
     }
 
@@ -3622,6 +3652,28 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private float GetArrivalCompletionSpeedLimit()
     {
         return Mathf.Max(arrivalSpeedMetersPerSecond * 2.2f, 0.95f);
+    }
+
+    private float GetActiveDirectFastTransferTerminalHoldSpeedLimit()
+    {
+        float terminalHoldSpeedLimit = GetArrivalCompletionSpeedLimit() * BrakeArrivalHoldRelativeSpeedMultiplier;
+        if (!CurrentFlightPlan.IsValid || !CurrentFlightPlan.IsDirectFastTransfer)
+        {
+            return terminalHoldSpeedLimit;
+        }
+
+        float plannedArrivalSpeed = Mathf.Max(0f, CurrentFlightPlan.targetArrivalSpeedMetersPerSecond);
+        float plannedHoldSpeedLimit = Mathf.Max(
+            0.05f,
+            plannedArrivalSpeed * DirectFastTransferTerminalHoldArrivalSpeedMultiplier);
+        return Mathf.Min(terminalHoldSpeedLimit, plannedHoldSpeedLimit);
+    }
+
+    private bool IsDirectFastTransferTerminalHoldSpeedSettled()
+    {
+        return !CurrentFlightPlan.IsValid
+            || !CurrentFlightPlan.IsDirectFastTransfer
+            || LastMetrics.relativeSpeed <= GetActiveDirectFastTransferTerminalHoldSpeedLimit();
     }
 
     private float GetArrivalCompletionLateralTolerance()
@@ -4668,7 +4720,9 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return Vector3.zero;
         }
 
-        float flipTurnRateScale = CurrentState == PrototypeWaypointAutopilotState.FlipForBrake ? 0.9f : 0.7f;
+        float flipTurnRateScale = CurrentState == PrototypeWaypointAutopilotState.FlipForBrake
+            ? PrototypeFlightPlanExecutionConfig.BrakeFlipRuntimeTurnRateScale
+            : 0.7f;
         float maxTurnRate = Mathf.Deg2Rad * PrototypeFlightPlanExecutionConfig.BrakeFlipMaxTurnRateDegreesPerSecond * flipTurnRateScale;
         Vector3 desiredAngularVelocityLocal = Vector3.ClampMagnitude(
             angularErrorLocal / Mathf.Max(0.05f, PrototypeFlightPlanExecutionConfig.BrakeFlipDampingTimeSeconds),

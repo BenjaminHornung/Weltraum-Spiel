@@ -333,6 +333,65 @@ public class PrototypeAutopilotNavigationComputerV2ValidationTests
     }
 
     [Test]
+    public void DirectFastTransfer_SlowMainThrottleSpoolRampsPredictedSamplesMatchSegmentEndpoints()
+    {
+        PrototypeTrajectorySnapshot snapshot = CreateSnapshot(Vector3.zero, Vector3.zero, Vector3.forward * 500f);
+        PrototypeTrajectoryPlan plan = new PrototypeTrajectoryPlanner().Plan(
+            snapshot,
+            PrototypeObstacleDetectionResult.Clear(8f),
+            CreatePlanningSnapshot(snapshot, 0.25f, 0.25f),
+            fixedDeltaTimeSeconds: 0.5f);
+
+        Assert.True(plan.flightPlan.IsDirectFastTransfer, plan.flightPlan.statusLabel);
+        PrototypeManeuverSegment burn = plan.flightPlan.segments.Single(segment => segment.phase == PrototypeManeuverPhase.ProgradeBurn);
+        PrototypeManeuverSegment brake = plan.flightPlan.segments.Single(segment => segment.phase == PrototypeManeuverPhase.RetrogradeBurn);
+        PrototypeTrajectoryPredictedSample[] burnSamples = plan.flightPlan.predictedSamples
+            .Where(sample => sample.segmentIndex == burn.index)
+            .ToArray();
+        PrototypeTrajectoryPredictedSample[] brakeSamples = plan.flightPlan.predictedSamples
+            .Where(sample => sample.segmentIndex == brake.index)
+            .ToArray();
+
+        Assert.That(burnSamples.Length, Is.GreaterThan(2), "Burn should emit sample rows with integrated kinematics.");
+        Assert.That(brakeSamples.Length, Is.GreaterThan(1), "Brake should emit sample rows with integrated kinematics.");
+        AssertSamplesStayInsideSegment(burn, burnSamples);
+        AssertSamplesStayInsideSegment(brake, brakeSamples);
+        Assert.That(burnSamples.First().elapsedTimeSeconds, Is.GreaterThan(burn.startTimeSeconds));
+        Assert.That(brakeSamples.First().elapsedTimeSeconds, Is.GreaterThan(brake.startTimeSeconds));
+        Assert.That(burnSamples.Last().elapsedTimeSeconds, Is.EqualTo(burn.endTimeSeconds).Within(0.001f));
+        Assert.That(brakeSamples.Last().elapsedTimeSeconds, Is.EqualTo(brake.endTimeSeconds).Within(0.001f));
+        Assert.That(burnSamples.Last().position, Is.EqualTo(burn.expectedEndPosition).Within(0.05f));
+        Assert.That(burnSamples.Last().velocity, Is.EqualTo(burn.expectedEndVelocity).Within(0.05f));
+        Assert.That(brakeSamples.Last().position, Is.EqualTo(brake.expectedEndPosition).Within(0.05f));
+        Assert.That(brakeSamples.Last().velocity, Is.EqualTo(brake.expectedEndVelocity).Within(0.05f));
+
+        static void AssertSamplesStayInsideSegment(
+            PrototypeManeuverSegment segment,
+            PrototypeTrajectoryPredictedSample[] samples)
+        {
+            Vector3 segmentDelta = segment.expectedEndPosition - segment.expectedStartPosition;
+            float segmentDistance = segmentDelta.magnitude;
+            Vector3 segmentDirection = segmentDistance > 0.0001f ? segmentDelta / segmentDistance : Vector3.zero;
+
+            foreach (PrototypeTrajectoryPredictedSample sample in samples)
+            {
+                Assert.That(sample.phase, Is.EqualTo(segment.phase));
+                Assert.That(sample.elapsedTimeSeconds, Is.InRange(segment.startTimeSeconds, segment.endTimeSeconds + 0.001f));
+                if (segmentDistance <= 0.0001f)
+                {
+                    continue;
+                }
+
+                Vector3 offset = sample.position - segment.expectedStartPosition;
+                float projectedDistance = Vector3.Dot(offset, segmentDirection);
+                float lateralDistance = Vector3.Cross(segmentDirection, offset).magnitude;
+                Assert.That(projectedDistance, Is.InRange(-0.05f, segmentDistance + 0.05f));
+                Assert.That(lateralDistance, Is.LessThanOrEqualTo(0.05f));
+            }
+        }
+    }
+
+    [Test]
     public void Planner_DirectFastTransferScalesSegmentToleranceWithPlannedSpeed()
     {
         var planner = new PrototypeTrajectoryPlanner();
@@ -424,11 +483,7 @@ public class PrototypeAutopilotNavigationComputerV2ValidationTests
     public void Planner_EmittedFlightPlanStartsWithBrakeWhenStoppingDistanceConsumesArrival()
     {
         const float speed = 45f;
-        float flipSeconds = Mathf.PI / (PrototypeFlightPlanExecutionConfig.BrakeFlipMaxTurnRateDegreesPerSecond * Mathf.Deg2Rad)
-            + ((PrototypeFlightPlanExecutionConfig.BrakeFlipMaxTurnRateDegreesPerSecond * Mathf.Deg2Rad)
-                / PrototypeFlightPlanExecutionConfig.BrakeFlipMaxAngularAccelerationRadPerSecondSquared)
-            + PrototypeFlightPlanExecutionConfig.BrakeFlipDampingTimeSeconds
-            + 0.4f;
+        float flipSeconds = EstimateBrakeToRetrogradeSegmentSeconds();
         float brakeMeters = ((speed * speed) - 1f) / (2f * 8f);
         float targetDistance = (speed * flipSeconds) + brakeMeters + 10f;
         PrototypeTrajectorySnapshot snapshot = CreateSnapshot(
@@ -1089,6 +1144,37 @@ public class PrototypeAutopilotNavigationComputerV2ValidationTests
     {
         public float remainingAfterBrakeMeters;
         public float endSpeedMetersPerSecond;
+    }
+
+    private static float EstimateBrakeToRetrogradeSegmentSeconds()
+    {
+        const float retrogradeFlipAngleRadians = Mathf.PI;
+
+        float rateDeg = PrototypeFlightPlanExecutionConfig.BrakeFlipMaxTurnRateDegreesPerSecond
+            * PrototypeFlightPlanExecutionConfig.BrakeFlipRuntimeTurnRateScale;
+        float rateRad = rateDeg * Mathf.Deg2Rad;
+        float accel = PrototypeFlightPlanExecutionConfig.BrakeFlipMaxAngularAccelerationRadPerSecondSquared;
+
+        float threshold = (rateRad * rateRad) / accel;
+        float seconds = retrogradeFlipAngleRadians <= threshold
+            ? 2f * Mathf.Sqrt(retrogradeFlipAngleRadians / accel)
+            : (retrogradeFlipAngleRadians / rateRad) + (rateRad / accel);
+
+        float brakeLatchReadinessSeconds = Mathf.Max(0f, rateDeg - PrototypeFlightPlanExecutionConfig.DirectFastTransferMainLatchEngageAngularSpeedDegreesPerSecond)
+            / Mathf.Max(0.0001f, accel * Mathf.Rad2Deg);
+        if (retrogradeFlipAngleRadians > PrototypeFlightPlanExecutionConfig.DirectFastTransferBrakeLatchEngageDegrees * Mathf.Deg2Rad)
+        {
+            brakeLatchReadinessSeconds += PrototypeFlightPlanExecutionConfig.BrakeFlipDampingTimeSeconds
+                * PrototypeFlightPlanExecutionConfig.DirectFastTransferBrakeLatchDampingCycles;
+        }
+
+        return Mathf.Clamp(
+            seconds
+            + brakeLatchReadinessSeconds
+            + PrototypeFlightPlanExecutionConfig.BrakeFlipDampingTimeSeconds
+            + 0.4f,
+            0.2f,
+            12f);
     }
 
     private static DirectFastTransferGeometry MeasureDirectFastTransferGeometry(

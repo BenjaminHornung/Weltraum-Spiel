@@ -1271,7 +1271,7 @@ public class PrototypeWaypointAutopilotValidationTests
         Assert.True(throttledHandled);
         Assert.That(rig.Autopilot.FlightPlanSafetyReplanCount, Is.EqualTo(initialCount));
 
-        SetPrivateFloat(rig.Autopilot, "lastFlightPlanSafetyReplanAtTime", Time.time - 2f);
+        SetPrivateFloat(rig.Autopilot, "lastFlightPlanSafetyReplanAtTime", Time.time - 2.1f);
         bool allowedHandled = (bool)method.Invoke(rig.Autopilot, new object[] { report, "test soft replan" });
 
         Assert.True(allowedHandled);
