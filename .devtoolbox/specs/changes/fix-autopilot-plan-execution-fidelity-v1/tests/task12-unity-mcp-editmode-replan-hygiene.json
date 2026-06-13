@@ -1,0 +1,22 @@
+{
+  "task": 12,
+  "tool": "mcp__unityMCP.run_tests",
+  "timestamp_local": "2026-06-13T13:47:00+02:00",
+  "mode": "EditMode",
+  "job_id": "07ec51bff0364270be5ddfe66b3797fb",
+  "status": "succeeded",
+  "summary": {
+    "total": 5,
+    "passed": 5,
+    "failed": 0,
+    "skipped": 0
+  },
+  "test_names": [
+    "PrototypeWaypointAutopilotValidationTests.FlightPlanSoftDivergenceRequiresHalfSecondConfirmation",
+    "PrototypeWaypointAutopilotValidationTests.FlightPlanSafetyReplanCooldownBlocksSoftRepeatUntilTwoSeconds",
+    "PrototypeWaypointAutopilotValidationTests.FlightPlanHardDivergenceBypassesConfirmationAndCooldown",
+    "PrototypeWaypointAutopilotValidationTests.FlightPlanSafetyReplanCooldownThrottlesSoftReplanIntegration",
+    "PrototypeWaypointAutopilotValidationTests.FlightPlanSafetyReplanMixedHardReasonBypassesCooldownIntegration"
+  ],
+  "failures_so_far": []
+}

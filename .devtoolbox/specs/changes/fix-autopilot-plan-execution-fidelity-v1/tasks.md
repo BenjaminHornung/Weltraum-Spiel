@@ -22,7 +22,7 @@ Referenz: `design.md` (Zeilennummern = Commit `a68333b`).
 - [x] Hold-/Terminal-Gates (`FixedUpdate` `:447-454`, `ShouldUseConservativeFlightPlanBrakeSafety` `:1609`) waehrend nominaler Planausfuehrung deaktivieren.
 
 ## Phase 4 — Replan-Hygiene
-- [ ] `FlightPlanDivergenceReplanCooldownSeconds` 0,45 → 2,0 s; Confirm-Fenster fuer weiche Gruende 0,5 s.
+- [x] `FlightPlanDivergenceReplanCooldownSeconds` 0,45 → 2,0 s; Confirm-Fenster fuer weiche Gruende 0,5 s.
 - [ ] Planner: Align-/Flip-Segment entfaellt, wenn Startrotation bereits passt (kein Doppel-Flip nach Replan); nach `directFastTransferBrakeCommitted` nur Brake/Hold-Replaene.
 - [ ] `ToggleAutopilot` (`:575-577`): frischen gueltigen Plan vom Plan-Knopf uebernehmen statt erzwungener Neuplanung.
 

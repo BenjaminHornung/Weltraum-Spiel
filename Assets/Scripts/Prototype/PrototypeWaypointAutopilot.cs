@@ -89,8 +89,8 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private const float BrakeDirectionMinimumSpeedMetersPerSecond = 0.35f;
     private const float TerminalBrakeDirectionRotateDegreesPerSecond = 36f;
     private const float BrakeAlignedTorqueDeadbandDegrees = 2.5f;
-    private const float FlightPlanDivergenceConfirmSeconds = 0.3f;
-    private const float FlightPlanDivergenceReplanCooldownSeconds = 0.45f;
+    private const float FlightPlanDivergenceConfirmSeconds = 0.5f;
+    private const float FlightPlanDivergenceReplanCooldownSeconds = 2f;
     private const float FlightPlanDivergenceStatusHoldSeconds = 2f;
     private const float FlightPlanSafetyRefreshIntervalSeconds = 0.75f;
     private const float DirectFastTransferMainAuthorityBlockedTimeoutSeconds = 6f;
@@ -1429,13 +1429,10 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             ResetDirectFastTransferTerminalOwnership();
         }
 
-        bool bypassCooldown = (report.reasons
-            & (PrototypeFlightPlanAbortReplanReason.PlanExpired
-                | PrototypeFlightPlanAbortReplanReason.InvalidPlanDirection
-                | PrototypeFlightPlanAbortReplanReason.TargetMoved
-                | PrototypeFlightPlanAbortReplanReason.ObstacleDetected
-                | PrototypeFlightPlanAbortReplanReason.CollisionPredicted)) != 0;
-        if (!bypassCooldown && Time.time < lastFlightPlanSafetyReplanAtTime + FlightPlanDivergenceReplanCooldownSeconds)
+        if (ShouldThrottleFlightPlanSafetyReplan(
+            report.reasons,
+            lastFlightPlanSafetyReplanAtTime,
+            Time.time))
         {
             if (ShouldClearActuatorOutputForSafetyReplan(report.reasons))
             {
@@ -1566,7 +1563,28 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             flightPlanDivergenceStartedAtTime = Time.time;
         }
 
-        return Time.time >= flightPlanDivergenceStartedAtTime + FlightPlanDivergenceConfirmSeconds;
+        return IsFlightPlanDivergenceConfirmedAtTime(
+            report.reasons,
+            flightPlanDivergenceStartedAtTime,
+            Time.time);
+    }
+
+    private static bool IsFlightPlanDivergenceConfirmedAtTime(
+        PrototypeFlightPlanAbortReplanReason reasons,
+        float startedAtTime,
+        float currentTime)
+    {
+        return IsImmediateFlightPlanDivergence(reasons)
+            || currentTime >= startedAtTime + FlightPlanDivergenceConfirmSeconds;
+    }
+
+    private static bool ShouldThrottleFlightPlanSafetyReplan(
+        PrototypeFlightPlanAbortReplanReason reasons,
+        float lastReplanAtTime,
+        float currentTime)
+    {
+        return !IsImmediateFlightPlanDivergence(reasons)
+            && currentTime < lastReplanAtTime + FlightPlanDivergenceReplanCooldownSeconds;
     }
 
     private static bool IsImmediateFlightPlanDivergence(PrototypeFlightPlanAbortReplanReason reasons)

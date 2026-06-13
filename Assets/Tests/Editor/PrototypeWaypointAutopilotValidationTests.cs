@@ -940,6 +940,134 @@ public class PrototypeWaypointAutopilotValidationTests
     }
 
     [Test]
+    public void FlightPlanSoftDivergenceRequiresHalfSecondConfirmation()
+    {
+        MethodInfo method = typeof(PrototypeWaypointAutopilot).GetMethod(
+            "IsFlightPlanDivergenceConfirmedAtTime",
+            PrivateStatic);
+        Assert.NotNull(method);
+
+        bool beforeWindow = (bool)method.Invoke(
+            null,
+            new object[] { PrototypeFlightPlanAbortReplanReason.PositionDivergence, 10f, 10.49f });
+        bool afterWindow = (bool)method.Invoke(
+            null,
+            new object[] { PrototypeFlightPlanAbortReplanReason.PositionDivergence, 10f, 10.5f });
+
+        Assert.False(beforeWindow);
+        Assert.True(afterWindow);
+    }
+
+    [Test]
+    public void FlightPlanSafetyReplanCooldownBlocksSoftRepeatUntilTwoSeconds()
+    {
+        MethodInfo method = typeof(PrototypeWaypointAutopilot).GetMethod(
+            "ShouldThrottleFlightPlanSafetyReplan",
+            PrivateStatic);
+        Assert.NotNull(method);
+
+        bool beforeCooldownExpires = (bool)method.Invoke(
+            null,
+            new object[] { PrototypeFlightPlanAbortReplanReason.VelocityDivergence, 10f, 11.99f });
+        bool atCooldownBoundary = (bool)method.Invoke(
+            null,
+            new object[] { PrototypeFlightPlanAbortReplanReason.VelocityDivergence, 10f, 12f });
+
+        Assert.True(beforeCooldownExpires);
+        Assert.False(atCooldownBoundary);
+    }
+
+    [Test]
+    public void FlightPlanHardDivergenceBypassesConfirmationAndCooldown()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Autopilot.SelectTarget(rig.Target);
+        var report = new PrototypeFlightPlanDivergenceReport(
+            PrototypeFlightPlanAbortReplanReason.NoRcsAuthority,
+            true,
+            false,
+            "Replan: NoRcsAuthority");
+        MethodInfo confirmMethod = typeof(PrototypeWaypointAutopilot).GetMethod(
+            "IsFlightPlanDivergenceConfirmed",
+            PrivateInstance);
+        MethodInfo cooldownMethod = typeof(PrototypeWaypointAutopilot).GetMethod(
+            "ShouldThrottleFlightPlanSafetyReplan",
+            PrivateStatic);
+        Assert.NotNull(confirmMethod);
+        Assert.NotNull(cooldownMethod);
+
+        SetPrivateFloat(rig.Autopilot, "flightPlanDivergenceStartedAtTime", Time.time);
+        bool confirmed = (bool)confirmMethod.Invoke(rig.Autopilot, new object[] { report });
+        bool throttled = (bool)cooldownMethod.Invoke(
+            null,
+            new object[] { PrototypeFlightPlanAbortReplanReason.NoRcsAuthority, 10f, 10.01f });
+
+        Assert.True(confirmed);
+        Assert.False(throttled);
+    }
+
+    [Test]
+    public void FlightPlanSafetyReplanCooldownThrottlesSoftReplanIntegration()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 150f;
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+        Assert.True(rig.Autopilot.AutopilotEngaged, "test setup should engage autopilot before forcing replans");
+
+        MethodInfo method = typeof(PrototypeWaypointAutopilot).GetMethod(
+            "ForceFlightPlanSafetyReplan",
+            PrivateInstance);
+        Assert.NotNull(method);
+        var report = new PrototypeFlightPlanDivergenceReport(
+            PrototypeFlightPlanAbortReplanReason.PositionDivergence,
+            true,
+            false,
+            "Replan: PositionDivergence");
+
+        SetPrivateFloat(rig.Autopilot, "lastFlightPlanSafetyReplanAtTime", Time.time - 1f);
+        int initialCount = rig.Autopilot.FlightPlanSafetyReplanCount;
+        bool throttledHandled = (bool)method.Invoke(rig.Autopilot, new object[] { report, "test soft replan" });
+
+        Assert.True(throttledHandled);
+        Assert.That(rig.Autopilot.FlightPlanSafetyReplanCount, Is.EqualTo(initialCount));
+
+        SetPrivateFloat(rig.Autopilot, "lastFlightPlanSafetyReplanAtTime", Time.time - 2f);
+        bool allowedHandled = (bool)method.Invoke(rig.Autopilot, new object[] { report, "test soft replan" });
+
+        Assert.True(allowedHandled);
+        Assert.That(rig.Autopilot.FlightPlanSafetyReplanCount, Is.EqualTo(initialCount + 1));
+    }
+
+    [Test]
+    public void FlightPlanSafetyReplanMixedHardReasonBypassesCooldownIntegration()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 150f;
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+        Assert.True(rig.Autopilot.AutopilotEngaged, "test setup should engage autopilot before forcing replans");
+
+        MethodInfo method = typeof(PrototypeWaypointAutopilot).GetMethod(
+            "ForceFlightPlanSafetyReplan",
+            PrivateInstance);
+        Assert.NotNull(method);
+        var report = new PrototypeFlightPlanDivergenceReport(
+            PrototypeFlightPlanAbortReplanReason.PositionDivergence
+                | PrototypeFlightPlanAbortReplanReason.NoRcsAuthority,
+            true,
+            false,
+            "Replan: PositionDivergence|NoRcsAuthority");
+
+        SetPrivateFloat(rig.Autopilot, "lastFlightPlanSafetyReplanAtTime", Time.time);
+        int initialCount = rig.Autopilot.FlightPlanSafetyReplanCount;
+        bool handled = (bool)method.Invoke(rig.Autopilot, new object[] { report, "test hard replan" });
+
+        Assert.True(handled);
+        Assert.That(rig.Autopilot.FlightPlanSafetyReplanCount, Is.EqualTo(initialCount + 1));
+    }
+
+    [Test]
     public void DirectFastTransfer_BrakeTimingDivergenceCanBeFlaggedForNonDirectFastTransferSegment()
     {
         var rig = CreateAutopilotRig();
