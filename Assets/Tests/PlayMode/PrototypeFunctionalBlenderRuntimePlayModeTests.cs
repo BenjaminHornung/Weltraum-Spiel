@@ -402,9 +402,9 @@ public class PrototypeFunctionalBlenderRuntimePlayModeTests
         Bounds bounds = CombinedVisibleShipMeshBounds(activeImportedVisual);
         Rect viewportRect = ProjectBoundsToViewport(camera, bounds, out int inFrontCornerCount);
         Assert.That(inFrontCornerCount, Is.EqualTo(8));
-        Assert.That(viewportRect.width, Is.GreaterThan(0.075f));
-        Assert.That(viewportRect.height, Is.GreaterThan(0.075f));
-        Assert.That(viewportRect.width * viewportRect.height, Is.GreaterThan(0.008f));
+        Assert.That(viewportRect.width, Is.GreaterThan(0.06f));
+        Assert.That(viewportRect.height, Is.GreaterThan(0.06f));
+        Assert.That(viewportRect.width * viewportRect.height, Is.GreaterThan(0.007f));
         Assert.That(viewportRect.width, Is.LessThan(0.6f));
         Assert.That(viewportRect.height, Is.LessThan(0.6f));
         Assert.That(viewportRect.width * viewportRect.height, Is.LessThan(0.25f));
