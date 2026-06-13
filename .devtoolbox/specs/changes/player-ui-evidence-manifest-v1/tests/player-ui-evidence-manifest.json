@@ -274,7 +274,7 @@
     },
     {
       "id": "regression-radar-normal-1280x720",
-      "path": ".devtoolbox/specs/changes/player-ui-regression-controls-autopilot-rcs-v1/tests/screenshots/player-ui-regression-radar-normal-1280x720.png",
+      "path": ".devtoolbox/specs/changes/archive/2026-06-12-player-ui-regression-controls-autopilot-rcs-v1/tests/screenshots/player-ui-regression-radar-normal-1280x720.png",
       "width": 1280,
       "height": 720,
       "minBytes": 4096,
@@ -283,7 +283,7 @@
     },
     {
       "id": "regression-navigation-planner-1280x720",
-      "path": ".devtoolbox/specs/changes/player-ui-regression-controls-autopilot-rcs-v1/tests/screenshots/player-ui-regression-nav-planner-1280x720.png",
+      "path": ".devtoolbox/specs/changes/archive/2026-06-12-player-ui-regression-controls-autopilot-rcs-v1/tests/screenshots/player-ui-regression-nav-planner-1280x720.png",
       "width": 1280,
       "height": 720,
       "minBytes": 4096,
@@ -292,7 +292,7 @@
     },
     {
       "id": "regression-combat-computer-1280x720",
-      "path": ".devtoolbox/specs/changes/player-ui-regression-controls-autopilot-rcs-v1/tests/screenshots/player-ui-regression-combat-computer-1280x720.png",
+      "path": ".devtoolbox/specs/changes/archive/2026-06-12-player-ui-regression-controls-autopilot-rcs-v1/tests/screenshots/player-ui-regression-combat-computer-1280x720.png",
       "width": 1280,
       "height": 720,
       "minBytes": 4096,

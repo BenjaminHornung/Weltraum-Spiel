@@ -18,10 +18,11 @@ This slice is evidence-only. It does not change runtime HUD behavior.
 - Claude plan review: attempted for the post-regression evidence-manifest update. The full concept context failed on local `charmap` encoding for a citation glyph, the screenshot-file context failed on binary PNG encoding, and the final text-only context timed out after 120s. No actionable findings were returned.
 - Unity MCP custom tools/resource preflight: active instance `Weltraum Spiel@49c909b3e97ba6e8`, Unity `6000.4.7f1`.
 - Unity MCP `validate_script` for `Assets/Tests/Editor/PrototypePlayerHudEvidenceManifestValidationTests.cs`: PASS, 0 errors, 0 warnings.
-- Unity MCP focused EditMode test `PrototypePlayerHudEvidenceManifestValidationTests.PlayerUiEvidenceManifestScreenshotsExistAndMatchPngHeaders`: PASS, latest job `990673b372ac43fa9761f15e9cfa5592`, 1/1. The manifest includes the `player-target-indicators-v1` live Basic HUD screenshot and dedicated 4:3, ultrawide, and portrait target-indicator screenshots.
+- Unity MCP focused EditMode test `PrototypePlayerHudEvidenceManifestValidationTests.PlayerUiEvidenceManifestScreenshotsExistAndMatchPngHeaders`: PASS, latest job `a53bbb5f14b04ee388096a077834a71e`, 1/1.
 - Post-regression manifest update: adds `player-ui-regression-controls-autopilot-rcs-v1` live PlayMode evidence for visible minimap grid/blips, Navigation Planner popup, and Combat Computer popup.
-- `dotnet build 'Weltraum Spiel.sln' --no-restore`: PASS, 0 errors, 22 known warnings from Unity package/reference conflicts, existing obsolete API use, and current project warning state.
-- DevToolbox `specs_validate` for `player-ui-evidence-manifest-v1`: PASS.
+- Manifest path repair: the three `player-ui-regression-controls-autopilot-rcs-v1` screenshot entries now point at their archived evidence under `.devtoolbox/specs/changes/archive/2026-06-12-player-ui-regression-controls-autopilot-rcs-v1/tests/screenshots/`; a direct manifest sweep found 33 screenshots and 0 missing files.
+- `dotnet build 'Weltraum Spiel.sln' --no-restore`: PASS, 0 errors, 2 known MSB3277 warning groups from Unity package/reference conflicts.
+- DevToolbox `specs_validate` for `player-ui-evidence-manifest-v1`: PASS, 4 task items parsed.
 - DevToolbox `verify_run` for execution `df8d6b1082c94458ab468abd30e7940a`: Specs PASS; generic Build/Test/Lint FAIL because root-level `dotnet build`, `dotnet test`, and `dotnet format` cannot choose between multiple project/solution files (`MSB1011` / multiple MSBuild project files).
 
 ## Notes
