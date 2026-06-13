@@ -143,6 +143,11 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     [SerializeField] private PrototypeObstacleDetector obstacleDetector;
     [SerializeField] private FloatingOriginManager floatingOriginManager;
 
+    private bool thrusterComponentCacheInitialized;
+    private PlayerShipController cachedThrusterLookupController;
+    private GameObject cachedThrusterLookupGameObject;
+    private RcsThrusterController cachedRcsThrusters;
+    private MainThrusterBank cachedMainThrusterBank;
     private bool autopilotEngaged;
     private bool togglePressedLastFrame;
     private bool nextPressedLastFrame;
@@ -361,7 +366,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         shipController = controller != null ? controller : shipController;
         shipStats = stats != null ? stats : shipStats;
         shipRigidbody = body != null ? body : shipRigidbody;
-        ResolveReferences();
+        ResolveReferences(forceThrusterComponentCacheRefresh: true);
         if (currentTarget == null && waypointManager != null)
         {
             SelectTarget(waypointManager.SelectedTarget);
@@ -4772,7 +4777,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return 0f;
         }
 
-        RcsThrusterController rcsThrusters = shipController != null ? shipController.GetComponent<RcsThrusterController>() : GetComponent<RcsThrusterController>();
+        RcsThrusterController rcsThrusters = GetCachedRcsThrusters();
         if (rcsThrusters == null || !rcsThrusters.RcsEnabled)
         {
             return 0f;
@@ -4913,8 +4918,8 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             shipStats,
             shipController,
             GetComponent<ShipPhysicsCore>(),
-            GetComponent<MainThrusterBank>(),
-            GetComponent<RcsThrusterController>());
+            GetCachedMainThrusterBank(),
+            GetCachedRcsThrusters());
         PrototypeTrajectoryPlan plan = trajectoryPlanner.Plan(
             new PrototypeTrajectorySnapshot(
                 shipRigidbody.worldCenterOfMass,
@@ -5327,7 +5332,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return shipController.RcsTranslationForceSetting;
         }
 
-        RcsThrusterController rcsThrusters = shipController != null ? shipController.GetComponent<RcsThrusterController>() : GetComponent<RcsThrusterController>();
+        RcsThrusterController rcsThrusters = GetCachedRcsThrusters();
         if (rcsThrusters == null || !rcsThrusters.RcsEnabled)
         {
             return 0f;
@@ -5374,7 +5379,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return true;
         }
 
-        MainThrusterBank mainThrusterBank = shipController != null ? shipController.GetComponent<MainThrusterBank>() : GetComponent<MainThrusterBank>();
+        MainThrusterBank mainThrusterBank = GetCachedMainThrusterBank();
         return mainThrusterBank != null && mainThrusterBank.ThrusterCount > 0;
     }
 
@@ -5446,7 +5451,37 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         ArrivalStatus = string.IsNullOrWhiteSpace(status) ? state.ToString() : status;
     }
 
-    private void ResolveReferences()
+    private RcsThrusterController GetCachedRcsThrusters()
+    {
+        RefreshThrusterComponentCache();
+        return cachedRcsThrusters;
+    }
+
+    private MainThrusterBank GetCachedMainThrusterBank()
+    {
+        RefreshThrusterComponentCache();
+        return cachedMainThrusterBank;
+    }
+
+    private void RefreshThrusterComponentCache(bool forceRefresh = false)
+    {
+        GameObject lookupGameObject = shipController != null ? shipController.gameObject : gameObject;
+        if (!forceRefresh
+            && thrusterComponentCacheInitialized
+            && cachedThrusterLookupController == shipController
+            && cachedThrusterLookupGameObject == lookupGameObject)
+        {
+            return;
+        }
+
+        thrusterComponentCacheInitialized = true;
+        cachedThrusterLookupController = shipController;
+        cachedThrusterLookupGameObject = lookupGameObject;
+        cachedRcsThrusters = lookupGameObject != null ? lookupGameObject.GetComponent<RcsThrusterController>() : null;
+        cachedMainThrusterBank = lookupGameObject != null ? lookupGameObject.GetComponent<MainThrusterBank>() : null;
+    }
+
+    private void ResolveReferences(bool forceThrusterComponentCacheRefresh = false)
     {
         if (shipRigidbody == null)
         {
@@ -5486,6 +5521,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             waypointManager = GetComponent<PrototypeWaypointManager>();
         }
 
+        RefreshThrusterComponentCache(forceThrusterComponentCacheRefresh);
         ResolveFloatingOriginManagerSubscription();
     }
 

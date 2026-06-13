@@ -11,7 +11,7 @@ Referenz: `design.md` (Befunde mit Datei:Zeile, Stand Commit `a68333b`). Jedes I
 ## Performance
 - [x] **Item 5:** HUD-Radar-Ziele aus `PrototypeWaypointManager` statt `FindObjectsByType` pro Frame (`PrototypePlayerHud.cs:1925`); `Resources.FindObjectsOfTypeAll`-Fallback (`:1928`) entfernen; Fallback-Scan nur ohne Manager, 1-Hz-Gate.
 - [ ] **Item 6:** Snapshot-/Text-Refresh in `PrototypePlayerHud.Update` (`:3177`) per `PrototypeUiSampleGate` auf 10 Hz; Marker-/Blip-Positionen in leichten Pro-Frame-Pfad trennen; `SetTextIfChanged`-Helfer vor allen TMP-Zuweisungen; Force-Refresh bei Panel-Toggles/Bind.
-- [ ] **Item 7:** `RcsThrusterController`/`MainThrusterBank` im Autopilot cachen (`:4741`, `:5296`, `:5343`), Invalidierung bei Controller-Wechsel in `ResolveReferences()`.
+- [x] **Item 7:** `RcsThrusterController`/`MainThrusterBank` im Autopilot cachen (`:4741`, `:5296`, `:5343`), Invalidierung bei Controller-Wechsel in `ResolveReferences()`.
 - [ ] Profiler-Evidence vorher/nachher (1 min Flug, Planner offen) unter `tests/` ablegen.
 
 ## Housekeeping
