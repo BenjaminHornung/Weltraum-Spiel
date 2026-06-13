@@ -1,0 +1,103 @@
+{
+  "generatedAt": "2026-06-13T11:21:57.5124546+02:00",
+  "task": "Task 7 remove flight plan skip helpers",
+  "mode": "EditMode",
+  "requestedTests": [
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_FlightPlanExecutorDoesNotFlipBeforePlannedBrakeSegment",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_FlightPlanExecutorEntersFlipOnlyAtPlannedSegment"
+  ],
+  "sessionId": "38aeafb2139e49d5a2f86bc1af10510c",
+  "runTests": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "result": {
+      "_meta": {
+        "fastmcp": {
+          "wrap_result": true
+        }
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"message\":\"Test job started.\",\"error\":null,\"data\":{\"job_id\":\"74ce05790f014d8caf2592bce768dffc\",\"status\":\"running\",\"mode\":\"EditMode\",\"include_details\":true,\"include_failed_tests\":true},\"hint\":null}"
+        }
+      ],
+      "structuredContent": {
+        "result": {
+          "success": true,
+          "message": "Test job started.",
+          "error": null,
+          "data": {
+            "job_id": "74ce05790f014d8caf2592bce768dffc",
+            "status": "running",
+            "mode": "EditMode",
+            "include_details": true,
+            "include_failed_tests": true
+          },
+          "hint": null
+        }
+      },
+      "isError": false
+    }
+  },
+  "finalResult": {
+    "jsonrpc": "2.0",
+    "id": 2,
+    "result": {
+      "_meta": {
+        "fastmcp": {
+          "wrap_result": true
+        }
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"message\":\"Test job status retrieved.\",\"error\":null,\"data\":{\"job_id\":\"74ce05790f014d8caf2592bce768dffc\",\"status\":\"succeeded\",\"mode\":\"EditMode\",\"started_unix_ms\":1781342515358,\"finished_unix_ms\":1781342516120,\"last_update_unix_ms\":1781342516120,\"progress\":{\"completed\":2,\"total\":2,\"current_test_full_name\":null,\"current_test_started_unix_ms\":1781342516077,\"last_finished_test_full_name\":\"PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_FlightPlanExecutorEntersFlipOnlyAtPlannedSegment\",\"last_finished_unix_ms\":1781342516081,\"stuck_suspected\":false,\"editor_is_focused\":true,\"blocked_reason\":null,\"failures_so_far\":[],\"failures_capped\":false},\"error\":null,\"result\":{\"mode\":\"EditMode\",\"summary\":{\"total\":2,\"passed\":2,\"failed\":0,\"skipped\":0,\"durationSeconds\":0.1019595,\"resultState\":\"Passed\"},\"results\":null}},\"hint\":null}"
+        }
+      ],
+      "structuredContent": {
+        "result": {
+          "success": true,
+          "message": "Test job status retrieved.",
+          "error": null,
+          "data": {
+            "job_id": "74ce05790f014d8caf2592bce768dffc",
+            "status": "succeeded",
+            "mode": "EditMode",
+            "started_unix_ms": 1781342515358,
+            "finished_unix_ms": 1781342516120,
+            "last_update_unix_ms": 1781342516120,
+            "progress": {
+              "completed": 2,
+              "total": 2,
+              "current_test_full_name": null,
+              "current_test_started_unix_ms": 1781342516077,
+              "last_finished_test_full_name": "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_FlightPlanExecutorEntersFlipOnlyAtPlannedSegment",
+              "last_finished_unix_ms": 1781342516081,
+              "stuck_suspected": false,
+              "editor_is_focused": true,
+              "blocked_reason": null,
+              "failures_so_far": [],
+              "failures_capped": false
+            },
+            "error": null,
+            "result": {
+              "mode": "EditMode",
+              "summary": {
+                "total": 2,
+                "passed": 2,
+                "failed": 0,
+                "skipped": 0,
+                "durationSeconds": 0.1019595,
+                "resultState": "Passed"
+              },
+              "results": null
+            }
+          },
+          "hint": null
+        }
+      },
+      "isError": false
+    }
+  }
+}

@@ -2212,11 +2212,6 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         switch (segment.phase)
         {
             case PrototypeManeuverPhase.AlignForBurn:
-                if (TrySkipCompletedFlightPlanAlignSegment(segment, direction))
-                {
-                    return true;
-                }
-
                 arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.LongRangeBurn;
                 bool alignReacquireWindow = reacquireDirectPathUntilTime > 0f && Time.time <= reacquireDirectPathUntilTime;
                 navigationPhaseV2 = LastTrajectoryPlan.navigationPhase == PrototypeAutopilotNavigationPhase.ReacquireDirectPath
@@ -2309,11 +2304,6 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
                 return true;
 
             case PrototypeManeuverPhase.FlipToRetrograde:
-                if (TrySkipCompletedFlightPlanBrakeFlipSegment(segment, direction))
-                {
-                    return true;
-                }
-
                 ApplyFlightPlanBrakeSegment(segment, direction, false, trackingCommand);
                 return true;
 
@@ -2378,71 +2368,6 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             default:
                 return false;
         }
-    }
-
-    private bool TrySkipCompletedFlightPlanAlignSegment(PrototypeManeuverSegment segment, Vector3 direction)
-    {
-        if (segment.phase != PrototypeManeuverPhase.AlignForBurn
-            || !CurrentFlightPlan.IsValid
-            || shipRigidbody == null)
-        {
-            return false;
-        }
-
-        float angle = direction.sqrMagnitude > 0.0001f ? Vector3.Angle(transform.forward, direction) : 180f;
-        float angularSpeed = GetAngularSpeedRadiansPerSecond();
-        float angularSpeedLimit = Mathf.Deg2Rad * BrakeAlignmentAngularSpeedLimitDegreesPerSecond;
-        if (angle > Mathf.Max(2f, alignmentAngleDegrees) || angularSpeed > angularSpeedLimit)
-        {
-            return false;
-        }
-
-        float nextElapsed = Mathf.Max(flightPlanElapsedSeconds, segment.endTimeSeconds + 0.001f);
-        if (!CurrentFlightPlan.TryGetActiveSegment(nextElapsed, out PrototypeManeuverSegment nextSegment)
-            || nextSegment.index == segment.index)
-        {
-            return false;
-        }
-
-        flightPlanElapsedSeconds = nextElapsed;
-        PrototypeFlightPlanTrackingCommand nextCommand = BuildFlightPlanTrackingCommand(CurrentFlightPlan);
-        lastFlightPlanTrackingCommand = nextCommand;
-        return ApplyFlightPlanSegment(nextSegment, nextCommand);
-    }
-
-    private bool TrySkipCompletedFlightPlanBrakeFlipSegment(PrototypeManeuverSegment segment, Vector3 direction)
-    {
-        if (segment.phase != PrototypeManeuverPhase.FlipToRetrograde
-            || !CurrentFlightPlan.IsValid
-            || shipRigidbody == null)
-        {
-            return false;
-        }
-
-        float angle = direction.sqrMagnitude > 0.0001f ? Vector3.Angle(transform.forward, direction) : 180f;
-        float angularSpeed = GetAngularSpeedRadiansPerSecond();
-        if (angle > BrakeMainThrottleRetrogradeAlignmentDegrees
-            || !IsBrakeAttitudeRateWithinMainThrottleGate(angularSpeed))
-        {
-            return false;
-        }
-
-        return TryAdvanceToNextFlightPlanSegment(segment);
-    }
-
-    private bool TryAdvanceToNextFlightPlanSegment(PrototypeManeuverSegment segment)
-    {
-        float nextElapsed = Mathf.Max(flightPlanElapsedSeconds, segment.endTimeSeconds + 0.001f);
-        if (!CurrentFlightPlan.TryGetActiveSegment(nextElapsed, out PrototypeManeuverSegment nextSegment)
-            || nextSegment.index == segment.index)
-        {
-            return false;
-        }
-
-        flightPlanElapsedSeconds = nextElapsed;
-        PrototypeFlightPlanTrackingCommand nextCommand = BuildFlightPlanTrackingCommand(CurrentFlightPlan);
-        lastFlightPlanTrackingCommand = nextCommand;
-        return ApplyFlightPlanSegment(nextSegment, nextCommand);
     }
 
     private static bool IsDirectFastTransferSegment(PrototypeManeuverSegment segment)
