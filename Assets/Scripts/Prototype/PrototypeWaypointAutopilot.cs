@@ -95,10 +95,10 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private const float FlightPlanSafetyRefreshIntervalSeconds = 0.75f;
     private const float DirectFastTransferMainAuthorityBlockedTimeoutSeconds = 6f;
     private const float DirectFastTransferBurnLatchEngageDegrees = 8f;
-    private const float DirectFastTransferBurnLatchKeepDegrees = 18f;
+    private const float DirectFastTransferBurnLatchKeepDegrees = PrototypeFlightPlanExecutionConfig.DirectFastTransferBurnLatchKeepDegrees;
     private const float DirectFastTransferBurnLatchReleaseDegrees = 22f;
     private const float DirectFastTransferBrakeLatchEngageDegrees = 12f;
-    private const float DirectFastTransferBrakeLatchKeepDegrees = 30f;
+    private const float DirectFastTransferBrakeLatchKeepDegrees = PrototypeFlightPlanExecutionConfig.DirectFastTransferBrakeLatchKeepDegrees;
     private const float DirectFastTransferBrakeLatchReleaseDegrees = 36f;
     private const float DirectFastTransferMainLatchEngageAngularSpeedDegreesPerSecond = 20f;
     private const float DirectFastTransferMainLatchKeepAngularSpeedDegreesPerSecond = 45f;
@@ -203,6 +203,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private int directFastMainLatchSegmentIndex = -1;
     private string directFastMainThrottleLatchStatus = string.Empty;
     private bool directFastTransferBrakeCommitted;
+    private bool directFastTransferBrakeCommitReplanRequested;
     private bool directFastTransferTerminalCaptureActive;
     private bool directFastTransferTerminalReacquireActive;
     private float directFastTransferTerminalReacquireStartedAtTime = -1f;
@@ -1424,9 +1425,15 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
     private bool ForceFlightPlanSafetyReplan(PrototypeFlightPlanDivergenceReport report, string status)
     {
+        bool preserveDirectFastTransferBrakeCommit = CurrentFlightPlan.IsDirectFastTransfer
+            && directFastTransferBrakeCommitted;
         if (CurrentFlightPlan.IsDirectFastTransfer)
         {
             ResetDirectFastTransferTerminalOwnership();
+            if (preserveDirectFastTransferBrakeCommit)
+            {
+                directFastTransferBrakeCommitted = true;
+            }
         }
 
         if (ShouldThrottleFlightPlanSafetyReplan(
@@ -1460,7 +1467,16 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
         forceNextFlightPlanRevision = true;
         MarkNavigationPlanDirty();
-        RefreshNavigationPlan();
+        directFastTransferBrakeCommitReplanRequested = preserveDirectFastTransferBrakeCommit;
+        try
+        {
+            RefreshNavigationPlan();
+        }
+        finally
+        {
+            directFastTransferBrakeCommitReplanRequested = false;
+        }
+
         flightPlanExecutorActive = false;
         return true;
     }
@@ -4811,8 +4827,11 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.ReacquireDirectPath;
         }
 
+        bool forceDirectFastTransferBrakeHold = directFastTransferBrakeCommitted
+            || directFastTransferBrakeCommitReplanRequested;
         bool suppressDirectFastTransferForReacquire = releasedAvoidanceRoute
-            || (reacquireWindowActive && !LastObstacleDetection.hasObstacle);
+            || (reacquireWindowActive && !LastObstacleDetection.hasObstacle)
+            || forceDirectFastTransferBrakeHold;
         PrototypeShipPlanningSnapshot shipPlanningSnapshot = PrototypeShipPlanningSnapshotBuilder.Build(
             transform,
             shipRigidbody,
@@ -4844,7 +4863,8 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             keepStableAvoidance,
             stableAvoidanceWaypoint,
             keepStableAvoidance ? "stable" : string.Empty,
-            suppressDirectFastTransferForReacquire);
+            suppressDirectFastTransferForReacquire,
+            forceDirectFastTransferBrakeHold);
         plan.navigationPhase = ConvertNavigationPhase(navigationPhaseV2);
         if (plan.RequiresAvoidance && keepStableAvoidance && stableAvoidanceWaypoint.sqrMagnitude > 0.0001f)
         {

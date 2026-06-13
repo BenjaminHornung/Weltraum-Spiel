@@ -1,0 +1,25 @@
+{
+  "task": 13,
+  "tool": "mcp__unityMCP.run_tests",
+  "timestamp_local": "2026-06-13T14:33:58+02:00",
+  "mode": "EditMode",
+  "job_id": "ebc6ae9494914bf3858f3102bbfe92dc",
+  "status": "succeeded",
+  "summary": {
+    "total": 7,
+    "passed": 7,
+    "failed": 0,
+    "skipped": 0,
+    "durationSeconds": 0.2365333
+  },
+  "test_names": [
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_EmittedFlightPlanStartsWithBrakeWhenStoppingDistanceConsumesArrival",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_DirectFastTransferImmediateBrakeAlreadyRetrogradeOmitsInitialFlip",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_DirectFastTransferBurnAlignedWithinLatchOmitsInitialAlign",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Planner_DirectFastTransferMisalignedFreshPlanKeepsAlignAndFlip",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_DirectFastTransferBrakeCommittedReplanBuildsBrakeHoldOnly",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_DirectFastTransferBrakeCommittedForcedReplanPreservesBrakeHoldIntent",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.Autopilot_DirectFastTransferBrakeCommittedForcedReplanSkipsFlipWhenMisaligned"
+  ],
+  "failures_so_far": []
+}

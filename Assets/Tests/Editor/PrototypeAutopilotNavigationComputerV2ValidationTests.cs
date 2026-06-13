@@ -452,6 +452,197 @@ public class PrototypeAutopilotNavigationComputerV2ValidationTests
     }
 
     [Test]
+    public void Planner_DirectFastTransferImmediateBrakeAlreadyRetrogradeOmitsInitialFlip()
+    {
+        const float speed = 45f;
+        float brakeMeters = ((speed * speed) - 1f) / (2f * 8f);
+        PrototypeTrajectorySnapshot snapshot = CreateSnapshot(
+            Vector3.zero,
+            Vector3.forward * speed,
+            Vector3.forward * (brakeMeters + 10f),
+            forward: Vector3.back);
+
+        PrototypeTrajectoryPlan plan = new PrototypeTrajectoryPlanner().Plan(
+            snapshot,
+            PrototypeObstacleDetectionResult.Clear(8f),
+            CreatePlanningSnapshot(snapshot, 0f, 0f));
+
+        Assert.True(plan.flightPlan.IsValid, plan.flightPlan.statusLabel);
+        Assert.That(plan.flightPlan.IsDirectFastTransfer, Is.True);
+        Assert.That(plan.segments[0].type, Is.EqualTo(PrototypeTrajectorySegmentType.Brake));
+        Assert.That(plan.flightPlan.segments[0].phase, Is.EqualTo(PrototypeManeuverPhase.RetrogradeBurn));
+        Assert.That(plan.flightPlan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.AlignForBurn), Is.False);
+        Assert.That(plan.flightPlan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.FlipToRetrograde), Is.False);
+        Assert.That(plan.flightPlan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.ProgradeBurn), Is.False);
+        Assert.That(plan.flightPlan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.Hold), Is.True);
+    }
+
+    [Test]
+    public void Planner_DirectFastTransferBurnAlignedWithinLatchOmitsInitialAlign()
+    {
+        Vector3 forwardWithinLatch = Quaternion.Euler(0f, 10f, 0f) * Vector3.forward;
+        PrototypeTrajectorySnapshot snapshot = CreateSnapshot(
+            Vector3.zero,
+            Vector3.zero,
+            Vector3.forward * 500f,
+            forward: forwardWithinLatch);
+
+        PrototypeTrajectoryPlan plan = new PrototypeTrajectoryPlanner().Plan(
+            snapshot,
+            PrototypeObstacleDetectionResult.Clear(8f),
+            CreatePlanningSnapshot(snapshot, 0f, 0f));
+
+        Assert.True(plan.flightPlan.IsValid, plan.flightPlan.statusLabel);
+        Assert.That(plan.flightPlan.IsDirectFastTransfer, Is.True);
+        Assert.That(plan.flightPlan.segments[0].phase, Is.EqualTo(PrototypeManeuverPhase.ProgradeBurn));
+        Assert.That(plan.flightPlan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.AlignForBurn), Is.False);
+        Assert.That(plan.flightPlan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.FlipToRetrograde), Is.True);
+        Assert.That(plan.flightPlan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.RetrogradeBurn), Is.True);
+    }
+
+    [Test]
+    public void Planner_DirectFastTransferMisalignedFreshPlanKeepsAlignAndFlip()
+    {
+        PrototypeTrajectorySnapshot snapshot = CreateSnapshot(
+            Vector3.zero,
+            Vector3.zero,
+            Vector3.forward * 500f,
+            forward: Vector3.right);
+
+        PrototypeTrajectoryPlan plan = new PrototypeTrajectoryPlanner().Plan(
+            snapshot,
+            PrototypeObstacleDetectionResult.Clear(8f),
+            CreatePlanningSnapshot(snapshot, 0f, 0f));
+
+        Assert.True(plan.flightPlan.IsValid, plan.flightPlan.statusLabel);
+        Assert.That(plan.flightPlan.IsDirectFastTransfer, Is.True);
+        Assert.That(plan.flightPlan.segments[0].phase, Is.EqualTo(PrototypeManeuverPhase.AlignForBurn));
+        Assert.That(plan.flightPlan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.ProgradeBurn), Is.True);
+        Assert.That(plan.flightPlan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.FlipToRetrograde), Is.True);
+        Assert.That(plan.flightPlan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.RetrogradeBurn), Is.True);
+    }
+
+    [Test]
+    public void Autopilot_DirectFastTransferBrakeCommittedReplanBuildsBrakeHoldOnly()
+    {
+        const float speed = 45f;
+        float brakeMeters = ((speed * speed) - 1f) / (2f * 8f);
+        var rig = CreateAutopilotRig();
+        Quaternion retrogradeRotation = Quaternion.LookRotation(Vector3.back);
+        rig.Ship.transform.position = Vector3.zero;
+        rig.Ship.transform.rotation = retrogradeRotation;
+        rig.Body.position = Vector3.zero;
+        rig.Body.rotation = retrogradeRotation;
+        rig.Body.linearVelocity = Vector3.forward * speed;
+        rig.Target.transform.position = Vector3.forward * (brakeMeters + 10f);
+        Physics.SyncTransforms();
+        rig.Autopilot.SelectTarget(rig.Target);
+        SetPrivateBool(rig.Autopilot, "directFastTransferBrakeCommitted", true);
+
+        InvokePrivateVoid(rig.Autopilot, "RefreshNavigationPlan");
+
+        PrototypeFlightPlan plan = rig.Autopilot.CurrentFlightPlan;
+        Assert.True(plan.IsValid, plan.statusLabel);
+        Assert.That(plan.IsDirectFastTransfer, Is.True);
+        Assert.That(plan.segments.Select(segment => segment.phase), Is.EquivalentTo(new[]
+        {
+            PrototypeManeuverPhase.RetrogradeBurn,
+            PrototypeManeuverPhase.Hold
+        }));
+        Assert.That(plan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.ProgradeBurn), Is.False);
+        Assert.That(plan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.FlipToRetrograde), Is.False);
+        Assert.That(rig.Autopilot.LastTrajectoryPlan.segments.All(segment => segment.type == PrototypeTrajectorySegmentType.Brake || segment.type == PrototypeTrajectorySegmentType.Hold), Is.True);
+    }
+
+    [Test]
+    public void Autopilot_DirectFastTransferBrakeCommittedForcedReplanPreservesBrakeHoldIntent()
+    {
+        const float speed = 45f;
+        var rig = CreateAutopilotRig();
+        Quaternion retrogradeRotation = Quaternion.LookRotation(Vector3.back);
+        rig.Ship.transform.position = Vector3.zero;
+        rig.Ship.transform.rotation = retrogradeRotation;
+        rig.Body.position = Vector3.zero;
+        rig.Body.rotation = retrogradeRotation;
+        rig.Body.linearVelocity = Vector3.forward * speed;
+        rig.Target.transform.position = Vector3.forward * 500f;
+        Physics.SyncTransforms();
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(true);
+        rig.Autopilot.SelectTarget(rig.Target);
+        SetPrivateBool(rig.Autopilot, "directFastTransferBrakeCommitted", true);
+        InvokePrivateVoid(rig.Autopilot, "RefreshNavigationPlan");
+        Assert.That(rig.Autopilot.CurrentFlightPlan.IsDirectFastTransfer, Is.True, rig.Autopilot.CurrentFlightPlan.statusLabel);
+        Assert.That(rig.Autopilot.LastTrajectoryPlan.segments.All(segment => segment.type == PrototypeTrajectorySegmentType.Brake || segment.type == PrototypeTrajectorySegmentType.Hold), Is.True);
+        var report = new PrototypeFlightPlanDivergenceReport(
+            PrototypeFlightPlanAbortReplanReason.PositionDivergence,
+            true,
+            false,
+            "test forced brake replan");
+
+        bool handled = InvokePrivateBool(
+            rig.Autopilot,
+            "ForceFlightPlanSafetyReplan",
+            report,
+            "test forced brake replan");
+
+        PrototypeFlightPlan plan = rig.Autopilot.CurrentFlightPlan;
+        Assert.True(handled);
+        Assert.True(plan.IsValid, plan.statusLabel);
+        Assert.That(plan.IsDirectFastTransfer, Is.True);
+        Assert.That(plan.segments.Select(segment => segment.phase), Is.EqualTo(new[]
+        {
+            PrototypeManeuverPhase.RetrogradeBurn,
+            PrototypeManeuverPhase.Hold
+        }));
+        Assert.That(plan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.AlignForBurn), Is.False);
+        Assert.That(plan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.ProgradeBurn), Is.False);
+        Assert.That(plan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.FlipToRetrograde), Is.False);
+        Assert.That(plan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.Coast), Is.False);
+    }
+
+    [Test]
+    public void Autopilot_DirectFastTransferBrakeCommittedForcedReplanSkipsFlipWhenMisaligned()
+    {
+        const float speed = 45f;
+        var rig = CreateAutopilotRig();
+        Quaternion misalignedRotation = Quaternion.LookRotation(Vector3.right);
+        rig.Ship.transform.position = Vector3.zero;
+        rig.Ship.transform.rotation = misalignedRotation;
+        rig.Body.position = Vector3.zero;
+        rig.Body.rotation = misalignedRotation;
+        rig.Body.linearVelocity = Vector3.forward * speed;
+        rig.Target.transform.position = Vector3.forward * 500f;
+        Physics.SyncTransforms();
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(true);
+        rig.Autopilot.SelectTarget(rig.Target);
+        SetPrivateBool(rig.Autopilot, "directFastTransferBrakeCommitted", true);
+        InvokePrivateVoid(rig.Autopilot, "RefreshNavigationPlan");
+        Assert.That(rig.Autopilot.CurrentFlightPlan.IsDirectFastTransfer, Is.True, rig.Autopilot.CurrentFlightPlan.statusLabel);
+
+        var report = new PrototypeFlightPlanDivergenceReport(
+            PrototypeFlightPlanAbortReplanReason.PositionDivergence,
+            true,
+            false,
+            "test forced misaligned brake replan");
+        bool handled = InvokePrivateBool(
+            rig.Autopilot,
+            "ForceFlightPlanSafetyReplan",
+            report,
+            "test forced misaligned brake replan");
+
+        PrototypeFlightPlan plan = rig.Autopilot.CurrentFlightPlan;
+        Assert.True(handled);
+        Assert.That(plan.segments.Select(segment => segment.phase), Is.EqualTo(new[]
+        {
+            PrototypeManeuverPhase.RetrogradeBurn,
+            PrototypeManeuverPhase.Hold
+        }));
+        Assert.That(plan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.FlipToRetrograde), Is.False);
+        Assert.That(plan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.AlignForBurn), Is.False);
+        Assert.That(plan.segments.Any(segment => segment.phase == PrototypeManeuverPhase.ProgradeBurn), Is.False);
+    }
+
+    [Test]
     public void Planner_HeavyShipNeedsMoreRcsForce()
     {
         PrototypeObstacleDetectionResult detection = CreateBlockingDetection();
@@ -1053,6 +1244,13 @@ public class PrototypeAutopilotNavigationComputerV2ValidationTests
         field.SetValue(target, value);
     }
 
+    private static void SetPrivateBool(object target, string fieldName, bool value)
+    {
+        FieldInfo field = target.GetType().GetField(fieldName, PrivateInstance);
+        Assert.NotNull(field, fieldName);
+        field.SetValue(target, value);
+    }
+
     private static void SetPrivateField(object target, string fieldName, object value)
     {
         FieldInfo field = target.GetType().GetField(fieldName, PrivateInstance);
@@ -1163,6 +1361,20 @@ public class PrototypeAutopilotNavigationComputerV2ValidationTests
         MethodInfo fixedUpdate = target.GetType().GetMethod("FixedUpdate", PrivateInstance);
         Assert.NotNull(fixedUpdate);
         fixedUpdate.Invoke(target, null);
+    }
+
+    private static void InvokePrivateVoid(object target, string methodName)
+    {
+        MethodInfo method = target.GetType().GetMethod(methodName, PrivateInstance);
+        Assert.NotNull(method, methodName);
+        method.Invoke(target, null);
+    }
+
+    private static bool InvokePrivateBool(object target, string methodName, params object[] args)
+    {
+        MethodInfo method = target.GetType().GetMethod(methodName, PrivateInstance);
+        Assert.NotNull(method, methodName);
+        return (bool)method.Invoke(target, args);
     }
 
     private static void DestroyByPrefix(string prefix)

@@ -1,0 +1,50 @@
+{
+  "task": 13,
+  "tool": "mcp__unityMCP.validate_script",
+  "timestamp_local": "2026-06-13T14:33:58+02:00",
+  "files": [
+    {
+      "uri": "Assets/Scripts/Prototype/PrototypeFlightPlan.cs",
+      "success": true,
+      "summary": {
+        "errors": 0,
+        "warnings": 0
+      },
+      "diagnostics": []
+    },
+    {
+      "uri": "Assets/Scripts/Prototype/PrototypeTrajectoryPlanner.cs",
+      "success": true,
+      "summary": {
+        "errors": 0,
+        "warnings": 0
+      },
+      "diagnostics": []
+    },
+    {
+      "uri": "Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs",
+      "success": true,
+      "summary": {
+        "errors": 0,
+        "warnings": 1
+      },
+      "diagnostics": [
+        {
+          "line": 0,
+          "col": 0,
+          "severity": "warning",
+          "message": "String concatenation in Update() can cause garbage collection issues"
+        }
+      ]
+    },
+    {
+      "uri": "Assets/Tests/Editor/PrototypeAutopilotNavigationComputerV2ValidationTests.cs",
+      "success": true,
+      "summary": {
+        "errors": 0,
+        "warnings": 0
+      },
+      "diagnostics": []
+    }
+  ]
+}

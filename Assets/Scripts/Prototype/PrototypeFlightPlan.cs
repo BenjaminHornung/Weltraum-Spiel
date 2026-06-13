@@ -6,6 +6,8 @@ public static class PrototypeFlightPlanExecutionConfig
     public const float BrakeFlipMaxTurnRateDegreesPerSecond = 58f;
     public const float BrakeFlipMaxAngularAccelerationRadPerSecondSquared = 3f;
     public const float BrakeFlipDampingTimeSeconds = 0.4f;
+    public const float DirectFastTransferBurnLatchKeepDegrees = 18f;
+    public const float DirectFastTransferBrakeLatchKeepDegrees = 30f;
 }
 
 [Serializable]

@@ -52,6 +52,7 @@ public struct PrototypeTrajectorySegment
     public float predictedMissDistanceToTarget;
     public PrototypeManeuverProfile profile;
     public float plannedSwitchDistanceMeters;
+    public bool omitInitialAttitudeSegment;
 
     public PrototypeTrajectorySegment(
         PrototypeTrajectorySegmentType type,
@@ -63,7 +64,8 @@ public struct PrototypeTrajectorySegment
         float predictedClosestObstacleDistance,
         float predictedMissDistanceToTarget,
         PrototypeManeuverProfile profile = PrototypeManeuverProfile.Default,
-        float plannedSwitchDistanceMeters = 0f)
+        float plannedSwitchDistanceMeters = 0f,
+        bool omitInitialAttitudeSegment = false)
     {
         this.type = type;
         this.durationSeconds = Mathf.Max(0f, durationSeconds);
@@ -75,6 +77,7 @@ public struct PrototypeTrajectorySegment
         this.predictedMissDistanceToTarget = Mathf.Max(0f, predictedMissDistanceToTarget);
         this.profile = profile;
         this.plannedSwitchDistanceMeters = Mathf.Max(0f, plannedSwitchDistanceMeters);
+        this.omitInitialAttitudeSegment = omitInitialAttitudeSegment;
     }
 }
 
@@ -349,7 +352,8 @@ public class PrototypeTrajectoryPlanner
         bool keepAvoidanceWaypoint,
         Vector3 stableAvoidanceWaypoint,
         string preferredCandidateName,
-        bool suppressDirectFastTransfer = false)
+        bool suppressDirectFastTransfer = false,
+        bool forceDirectFastTransferBrakeHold = false)
     {
         PrototypeShipPlanningSnapshot resolvedShipSnapshot = ResolvePlanningSnapshot(snapshot, shipSnapshot);
         Vector3 targetDirection = snapshot.DirectionToTarget;
@@ -357,7 +361,7 @@ public class PrototypeTrajectoryPlanner
         if (!hasBlockingObstacle && !keepAvoidanceWaypoint)
         {
             PrototypeTrajectoryPlan clearPlan = PrototypeTrajectoryPlan.Clear(targetDirection);
-            FillDirectDiagnostics(ref clearPlan, snapshot, resolvedShipSnapshot, createdAtTimeSeconds, fixedDeltaTimeSeconds, suppressDirectFastTransfer);
+            FillDirectDiagnostics(ref clearPlan, snapshot, resolvedShipSnapshot, createdAtTimeSeconds, fixedDeltaTimeSeconds, suppressDirectFastTransfer, forceDirectFastTransferBrakeHold);
             return clearPlan;
         }
 
@@ -388,7 +392,7 @@ public class PrototypeTrajectoryPlanner
         Vector3 requestedRcsForce = ComputeRcsRequest(snapshot, avoidanceDirection, out bool limitedRcsAuthority);
         float closestObstacleDistance = selected.clearanceMeters;
         TrajectoryBurnPlan burnPlan = BuildBurnPlan(snapshot, selectedDirection, requestedThrottle);
-        PrototypeTrajectorySegment[] segments = BuildSegments(snapshot, resolvedShipSnapshot, selectedDirection, requestedThrottle, burnPlan, avoidance, selected, suppressDirectFastTransfer);
+        PrototypeTrajectorySegment[] segments = BuildSegments(snapshot, resolvedShipSnapshot, selectedDirection, requestedThrottle, burnPlan, avoidance, selected, suppressDirectFastTransfer, forceDirectFastTransferBrakeHold);
         burnPlan = ResolvePrimaryBurnPlan(snapshot, segments, burnPlan, resolvedShipSnapshot);
         bool fuelInsufficient = selected.fuelInsufficient || SegmentsRequireMoreFuelThanAvailable(segments, snapshot.fuelKgPerSecond, snapshot.availableFuelKg, resolvedShipSnapshot);
         Vector3[] predictedPath = PredictCandidatePath(snapshot, selectedDirection, requestedRcsForce, requestedThrottle);
@@ -453,13 +457,14 @@ public class PrototypeTrajectoryPlanner
         PrototypeShipPlanningSnapshot shipSnapshot,
         float createdAtTimeSeconds,
         float fixedDeltaTimeSeconds,
-        bool suppressDirectFastTransfer)
+        bool suppressDirectFastTransfer,
+        bool forceDirectFastTransferBrakeHold)
     {
         clearPlan.plannedStoppingDistance = EstimateStoppingDistance(snapshot);
         clearPlan.plannedEtaSeconds = EstimateEta(snapshot);
         clearPlan.desiredAccelerationWorld = clearPlan.desiredBurnDirection * snapshot.maxMainAcceleration;
         clearPlan.burnPlan = BuildBurnPlan(snapshot, clearPlan.desiredBurnDirection, 1f);
-        clearPlan.segments = BuildSegments(snapshot, shipSnapshot, clearPlan.desiredBurnDirection, 1f, clearPlan.burnPlan, false, default, suppressDirectFastTransfer);
+        clearPlan.segments = BuildSegments(snapshot, shipSnapshot, clearPlan.desiredBurnDirection, 1f, clearPlan.burnPlan, false, default, suppressDirectFastTransfer, forceDirectFastTransferBrakeHold);
         clearPlan.burnPlan = ResolvePrimaryBurnPlan(snapshot, clearPlan.segments, clearPlan.burnPlan, shipSnapshot);
         clearPlan.activeSegment = clearPlan.segments.Length > 0 ? clearPlan.segments[0] : default;
         clearPlan.activeSegmentType = clearPlan.activeSegment.type;
@@ -713,11 +718,28 @@ public class PrototypeTrajectoryPlanner
             return false;
         }
 
+        if (TrySolveAlignedImmediateBrakeDirectFastTransfer(
+            snapshot,
+            shipSnapshot,
+            routeDirection,
+            distance,
+            burnAcceleration,
+            brakeAcceleration,
+            out solution))
+        {
+            return true;
+        }
+
         float alignTime = 0f;
         Vector3 alignedPosition = snapshot.position;
         for (int i = 0; i < 3; i++)
         {
-            alignTime = EstimateAttitudeSegmentSeconds(shipSnapshot.initialState.rotation, routeDirection, shipSnapshot);
+            alignTime = IsRotationWithinAngle(
+                    shipSnapshot.initialState.rotation,
+                    routeDirection,
+                    PrototypeFlightPlanExecutionConfig.DirectFastTransferBurnLatchKeepDegrees)
+                ? 0f
+                : EstimateAttitudeSegmentSeconds(shipSnapshot.initialState.rotation, routeDirection, shipSnapshot);
             alignedPosition = snapshot.position + snapshot.velocity * alignTime;
             route = snapshot.targetPosition - alignedPosition;
             distance = route.magnitude;
@@ -822,6 +844,83 @@ public class PrototypeTrajectoryPlanner
             vPeakSquared = vPeakSquared,
             tBurnSeconds = tBurn,
             sBurnMeters = sBurn,
+            tBrakeSeconds = tBrake,
+            sBrakeMeters = sBrake
+        };
+        return true;
+    }
+
+    private static bool TrySolveAlignedImmediateBrakeDirectFastTransfer(
+        PrototypeTrajectorySnapshot snapshot,
+        PrototypeShipPlanningSnapshot shipSnapshot,
+        Vector3 routeDirection,
+        float distance,
+        float burnAcceleration,
+        float brakeAcceleration,
+        out PrototypeDirectFastTransferSolution solution)
+    {
+        solution = default;
+        float plannedRouteDistance = Mathf.Max(0f, distance - snapshot.arrivalRadius);
+        if (plannedRouteDistance <= 0.01f || snapshot.velocity.sqrMagnitude <= 0.0001f)
+        {
+            return false;
+        }
+
+        float arrivalSpeed = Mathf.Max(0f, snapshot.arrivalSpeed);
+        float vAlong0 = Vector3.Dot(snapshot.velocity, routeDirection);
+        if (vAlong0 <= arrivalSpeed)
+        {
+            return false;
+        }
+
+        Vector3 brakeDirection = -snapshot.velocity.normalized;
+        if (!IsRotationWithinAngle(shipSnapshot.initialState.rotation, brakeDirection, PrototypeFlightPlanExecutionConfig.DirectFastTransferBrakeLatchKeepDegrees))
+        {
+            return false;
+        }
+
+        float initialBrakeSpeed = snapshot.velocity.magnitude;
+        float idealBrakeSeconds = initialBrakeSpeed > arrivalSpeed
+            ? (initialBrakeSpeed - arrivalSpeed) / brakeAcceleration
+            : 0f;
+        float tBrake = EstimateCommandedThrottleDurationForEquivalentSeconds(idealBrakeSeconds, 1f, shipSnapshot);
+        float sBrake = Mathf.Max(0f, EstimateLinearThrottleProfileDistance(initialBrakeSpeed, tBrake, 1f, brakeAcceleration, true, shipSnapshot));
+        if (sBrake + 0.5f < plannedRouteDistance)
+        {
+            return false;
+        }
+
+        if (tBrake < DirectFastTransferMinimumMainSeconds)
+        {
+            return false;
+        }
+
+        Vector3 lateralVelocity = snapshot.velocity - routeDirection * vAlong0;
+        float vLat0 = lateralVelocity.magnitude;
+        if (!IsDirectFastTransferLateralFeasible(snapshot, shipSnapshot, vLat0, tBrake))
+        {
+            return false;
+        }
+
+        solution = new PrototypeDirectFastTransferSolution
+        {
+            isValid = true,
+            brakeImmediately = true,
+            routeDirectionWorld = routeDirection,
+            lateralVelocityWorld = lateralVelocity,
+            alignTimeSeconds = 0f,
+            alignDriftMeters = 0f,
+            distanceMeters = distance,
+            vAlong0MetersPerSecond = vAlong0,
+            vLat0MetersPerSecond = vLat0,
+            burnAccelerationMetersPerSecondSquared = burnAcceleration,
+            brakeAccelerationMetersPerSecondSquared = brakeAcceleration,
+            flipTimeSeconds = 0f,
+            flipDriftMeters = 0f,
+            effectiveDistanceMeters = plannedRouteDistance,
+            vPeakSquared = vAlong0 * vAlong0,
+            tBurnSeconds = 0f,
+            sBurnMeters = 0f,
             tBrakeSeconds = tBrake,
             sBrakeMeters = sBrake
         };
@@ -1140,7 +1239,8 @@ public class PrototypeTrajectoryPlanner
         TrajectoryBurnPlan burnPlan,
         bool avoidance,
         PrototypeTrajectoryCandidateScore selected,
-        bool suppressDirectFastTransfer)
+        bool suppressDirectFastTransfer,
+        bool forceDirectFastTransferBrakeHold)
     {
         float missDistance = selected.waypoint.sqrMagnitude > 0.0001f
             ? Vector3.Distance(selected.waypoint, snapshot.targetPosition)
@@ -1148,6 +1248,35 @@ public class PrototypeTrajectoryPlanner
         float closestObstacle = selected.clearanceMeters > 0f
             ? selected.clearanceMeters
             : float.PositiveInfinity;
+        Vector3 brakeDirection = ResolveBrakeDirection(snapshot);
+        float brakeDeltaV = ResolveBrakeDeltaV(snapshot);
+        var brake = new PrototypeTrajectorySegment(
+            PrototypeTrajectorySegmentType.Brake,
+            EstimateBrakeSeconds(snapshot),
+            brakeDirection,
+            1f,
+            brakeDeltaV,
+            0f,
+            closestObstacle,
+            snapshot.arrivalRadius,
+            forceDirectFastTransferBrakeHold ? PrototypeManeuverProfile.DirectFastTransfer : PrototypeManeuverProfile.Default,
+            0f,
+            forceDirectFastTransferBrakeHold);
+        var hold = new PrototypeTrajectorySegment(
+            PrototypeTrajectorySegmentType.Hold,
+            0.75f,
+            Vector3.zero,
+            0f,
+            0f,
+            0f,
+            closestObstacle,
+            0f,
+            forceDirectFastTransferBrakeHold ? PrototypeManeuverProfile.DirectFastTransfer : PrototypeManeuverProfile.Default);
+        if (forceDirectFastTransferBrakeHold)
+        {
+            return new[] { brake, hold };
+        }
+
         if (!avoidance
             && !suppressDirectFastTransfer
             && TryBuildDirectFastTransferSegments(snapshot, shipSnapshot, closestObstacle, missDistance, out PrototypeTrajectorySegment[] directSegments))
@@ -1156,11 +1285,7 @@ public class PrototypeTrajectoryPlanner
         }
 
         var coast = new PrototypeTrajectorySegment(PrototypeTrajectorySegmentType.Coast, 1f, direction, 0f, 0f, 0f, closestObstacle, missDistance);
-        Vector3 brakeDirection = ResolveBrakeDirection(snapshot);
-        float brakeDeltaV = ResolveBrakeDeltaV(snapshot);
-        var brake = new PrototypeTrajectorySegment(PrototypeTrajectorySegmentType.Brake, EstimateBrakeSeconds(snapshot), brakeDirection, 1f, brakeDeltaV, 0f, closestObstacle, snapshot.arrivalRadius);
         var final = new PrototypeTrajectorySegment(PrototypeTrajectorySegmentType.FinalApproach, 1f, snapshot.DirectionToTarget, 0.25f, snapshot.arrivalSpeed, 0f, closestObstacle, snapshot.arrivalRadius);
-        var hold = new PrototypeTrajectorySegment(PrototypeTrajectorySegmentType.Hold, 0.75f, Vector3.zero, 0f, 0f, 0f, closestObstacle, 0f);
         if (ShouldUseFinalOnlySegments(snapshot))
         {
             return new[] { final, hold };
@@ -1391,60 +1516,66 @@ public class PrototypeTrajectoryPlanner
             if ((legacy.type == PrototypeTrajectorySegmentType.Burn || legacy.type == PrototypeTrajectorySegmentType.AvoidanceBurn)
                 && maneuvers.Count == 0)
             {
-                float alignSeconds = EstimateAttitudeSegmentSeconds(current.rotation, direction, shipSnapshot);
-                AddManeuverSegment(
-                    maneuvers,
-                    samples,
-                    ref current,
-                    ref cursorSeconds,
-                    PrototypeManeuverPhase.AlignForBurn,
-                    PrototypeManeuverCommandMode.AttitudeOnly,
-                    alignSeconds,
-                    direction,
-                    0f,
-                    0f,
-                    Vector3.zero,
-                    0f,
-                    0f,
-                    0f,
-                    tolerance,
-                    "Align burn",
-                    shipSnapshot,
-                    fixedDelta,
-                    mainAcceleration,
-                    mainFuelRate,
-                    true,
-                    legacy.profile,
-                    legacy.plannedSwitchDistanceMeters);
+                if (!ShouldOmitInitialDirectFastTransferBurnAlign(legacy, current.rotation, direction))
+                {
+                    float alignSeconds = EstimateAttitudeSegmentSeconds(current.rotation, direction, shipSnapshot);
+                    AddManeuverSegment(
+                        maneuvers,
+                        samples,
+                        ref current,
+                        ref cursorSeconds,
+                        PrototypeManeuverPhase.AlignForBurn,
+                        PrototypeManeuverCommandMode.AttitudeOnly,
+                        alignSeconds,
+                        direction,
+                        0f,
+                        0f,
+                        Vector3.zero,
+                        0f,
+                        0f,
+                        0f,
+                        tolerance,
+                        "Align burn",
+                        shipSnapshot,
+                        fixedDelta,
+                        mainAcceleration,
+                        mainFuelRate,
+                        true,
+                        legacy.profile,
+                        legacy.plannedSwitchDistanceMeters);
+                }
             }
 
             if (legacy.type == PrototypeTrajectorySegmentType.Brake)
             {
-                float flipSeconds = EstimateAttitudeSegmentSeconds(current.rotation, direction, shipSnapshot);
-                AddManeuverSegment(
-                    maneuvers,
-                    samples,
-                    ref current,
-                    ref cursorSeconds,
-                    PrototypeManeuverPhase.FlipToRetrograde,
-                    PrototypeManeuverCommandMode.AttitudeOnly,
-                    flipSeconds,
-                    direction,
-                    0f,
-                    0f,
-                    Vector3.zero,
-                    0f,
-                    0f,
-                    0f,
-                    tolerance,
-                    "Flip retrograde",
-                    shipSnapshot,
-                    fixedDelta,
-                    mainAcceleration,
-                    mainFuelRate,
-                    true,
-                    legacy.profile,
-                    legacy.plannedSwitchDistanceMeters);
+                if (!ShouldOmitInitialDirectFastTransferBrakeFlip(legacy, current.rotation, direction, maneuvers.Count))
+                {
+                    float flipSeconds = EstimateAttitudeSegmentSeconds(current.rotation, direction, shipSnapshot);
+                    AddManeuverSegment(
+                        maneuvers,
+                        samples,
+                        ref current,
+                        ref cursorSeconds,
+                        PrototypeManeuverPhase.FlipToRetrograde,
+                        PrototypeManeuverCommandMode.AttitudeOnly,
+                        flipSeconds,
+                        direction,
+                        0f,
+                        0f,
+                        Vector3.zero,
+                        0f,
+                        0f,
+                        0f,
+                        tolerance,
+                        "Flip retrograde",
+                        shipSnapshot,
+                        fixedDelta,
+                        mainAcceleration,
+                        mainFuelRate,
+                        true,
+                        legacy.profile,
+                        legacy.plannedSwitchDistanceMeters);
+                }
             }
 
             bool isReacquireAfterAvoidance = legacy.type == PrototypeTrajectorySegmentType.Coast
@@ -1638,6 +1769,58 @@ public class PrototypeTrajectoryPlanner
 
         current = end;
         cursorSeconds = segment.endTimeSeconds;
+    }
+
+    private static bool ShouldOmitInitialDirectFastTransferBurnAlign(
+        PrototypeTrajectorySegment legacy,
+        Quaternion currentRotation,
+        Vector3 burnDirection)
+    {
+        if (legacy.profile != PrototypeManeuverProfile.DirectFastTransfer
+            || legacy.type != PrototypeTrajectorySegmentType.Burn
+            || burnDirection.sqrMagnitude <= 0.0001f)
+        {
+            return false;
+        }
+
+        return IsRotationWithinAngle(
+            currentRotation,
+            burnDirection,
+            PrototypeFlightPlanExecutionConfig.DirectFastTransferBurnLatchKeepDegrees);
+    }
+
+    private static bool ShouldOmitInitialDirectFastTransferBrakeFlip(
+        PrototypeTrajectorySegment legacy,
+        Quaternion currentRotation,
+        Vector3 brakeDirection,
+        int maneuverCount)
+    {
+        if (maneuverCount != 0
+            || legacy.type != PrototypeTrajectorySegmentType.Brake
+            || legacy.profile != PrototypeManeuverProfile.DirectFastTransfer
+            || brakeDirection.sqrMagnitude <= 0.0001f)
+        {
+            return false;
+        }
+
+        if (legacy.omitInitialAttitudeSegment)
+        {
+            return true;
+        }
+
+        return IsRotationWithinAngle(currentRotation, brakeDirection, PrototypeFlightPlanExecutionConfig.DirectFastTransferBrakeLatchKeepDegrees);
+    }
+
+    private static bool IsRotationWithinAngle(Quaternion rotation, Vector3 desiredForward, float maxAngleDegrees)
+    {
+        if (desiredForward.sqrMagnitude <= 0.0001f)
+        {
+            return false;
+        }
+
+        Vector3 currentForward = rotation * Vector3.forward;
+        float angle = Vector3.Angle(currentForward, desiredForward);
+        return angle <= Mathf.Max(0f, maxAngleDegrees);
     }
 
     private static PrototypeFlightPlanAbortReplanReason ResolveManeuverReplanReasons(PrototypeManeuverProfile profile)
