@@ -250,6 +250,56 @@ public class PrototypeAutopilotNavigationComputerV2ValidationTests
     }
 
     [Test]
+    public void DirectFastTransfer_SlowMainThrottleSpoolExtendsBurnAndBrakeDurations()
+    {
+        PrototypeTrajectorySnapshot snapshot = CreateSnapshot(Vector3.zero, Vector3.zero, Vector3.forward * 500f);
+        var planner = new PrototypeTrajectoryPlanner();
+
+        PrototypeTrajectoryPlan instant = planner.Plan(
+            snapshot,
+            PrototypeObstacleDetectionResult.Clear(8f),
+            CreatePlanningSnapshot(snapshot, 0f, 0f));
+        PrototypeTrajectoryPlan slow = planner.Plan(
+            snapshot,
+            PrototypeObstacleDetectionResult.Clear(8f),
+            CreatePlanningSnapshot(snapshot, 0.2f, 0.2f));
+
+        Assert.True(instant.flightPlan.IsDirectFastTransfer, instant.flightPlan.statusLabel);
+        Assert.True(slow.flightPlan.IsDirectFastTransfer, slow.flightPlan.statusLabel);
+        PrototypeManeuverSegment instantBurn = instant.flightPlan.segments.Single(segment => segment.phase == PrototypeManeuverPhase.ProgradeBurn);
+        PrototypeManeuverSegment instantBrake = instant.flightPlan.segments.Single(segment => segment.phase == PrototypeManeuverPhase.RetrogradeBurn);
+        PrototypeManeuverSegment slowBurn = slow.flightPlan.segments.Single(segment => segment.phase == PrototypeManeuverPhase.ProgradeBurn);
+        PrototypeManeuverSegment slowBrake = slow.flightPlan.segments.Single(segment => segment.phase == PrototypeManeuverPhase.RetrogradeBurn);
+
+        Assert.That(slowBurn.durationSeconds, Is.GreaterThan(instantBurn.durationSeconds + 1f));
+        Assert.That(slowBrake.durationSeconds, Is.GreaterThan(instantBrake.durationSeconds + 1f));
+        Assert.That(slowBurn.expectedMainFuelKg, Is.LessThan(slowBurn.durationSeconds * snapshot.fuelKgPerSecond));
+        Assert.That(slowBrake.expectedMainFuelKg, Is.LessThan(slowBrake.durationSeconds * snapshot.fuelKgPerSecond));
+    }
+
+    [Test]
+    public void DirectFastTransfer_SlowMainThrottleSpoolRampsPredictedSamples()
+    {
+        PrototypeTrajectorySnapshot snapshot = CreateSnapshot(Vector3.zero, Vector3.zero, Vector3.forward * 500f);
+        PrototypeTrajectoryPlan plan = new PrototypeTrajectoryPlanner().Plan(
+            snapshot,
+            PrototypeObstacleDetectionResult.Clear(8f),
+            CreatePlanningSnapshot(snapshot, 0.25f, 0.25f),
+            fixedDeltaTimeSeconds: 0.5f);
+
+        Assert.True(plan.flightPlan.IsDirectFastTransfer, plan.flightPlan.statusLabel);
+        PrototypeManeuverSegment burn = plan.flightPlan.segments.Single(segment => segment.phase == PrototypeManeuverPhase.ProgradeBurn);
+        PrototypeTrajectoryPredictedSample[] burnSamples = plan.flightPlan.predictedSamples
+            .Where(sample => sample.segmentIndex == burn.index)
+            .ToArray();
+
+        Assert.That(burnSamples.Length, Is.GreaterThan(4));
+        Assert.That(burnSamples.First().expectedMainThrottle, Is.LessThan(0.2f));
+        Assert.That(burnSamples.Any(sample => sample.expectedMainThrottle > 0.9f), Is.True);
+        Assert.That(burnSamples.Last().expectedMainThrottle, Is.LessThan(0.2f));
+    }
+
+    [Test]
     public void Planner_EmittedFlightPlanUsesRealShipPlanningSnapshot()
     {
         using (var builder = new PrototypeScenarioBuilder())
@@ -692,6 +742,50 @@ public class PrototypeAutopilotNavigationComputerV2ValidationTests
             10f,
             1f,
             0.2f);
+    }
+
+    private static PrototypeShipPlanningSnapshot CreatePlanningSnapshot(
+        PrototypeTrajectorySnapshot snapshot,
+        float mainThrottleSpoolUpRate,
+        float mainThrottleSpoolDownRate)
+    {
+        float mainThrust = snapshot.mainThrustNewtons > 0f
+            ? snapshot.mainThrustNewtons
+            : snapshot.maxMainAcceleration * snapshot.massKg;
+        return new PrototypeShipPlanningSnapshot(
+            new TrajectoryPredictionState(
+                snapshot.position,
+                snapshot.velocity,
+                Quaternion.LookRotation(snapshot.forward.sqrMagnitude > 0.0001f ? snapshot.forward : Vector3.forward),
+                Vector3.zero,
+                0f,
+                snapshot.availableFuelKg),
+            snapshot.position,
+            Vector3.zero,
+            Vector3.one,
+            Quaternion.identity,
+            snapshot.massKg,
+            snapshot.availableFuelKg,
+            snapshot.availableFuelKg,
+            mainThrust,
+            snapshot.fuelKgPerSecond,
+            0.35f,
+            mainThrottleSpoolUpRate,
+            mainThrottleSpoolDownRate,
+            0f,
+            0f,
+            snapshot.maxRcsForce,
+            snapshot.maxRcsForce,
+            0f,
+            0f,
+            false,
+            false,
+            false,
+            false,
+            false,
+            mainThrust > 0f ? 1 : 0,
+            snapshot.maxRcsForce > 0f ? 1 : 0,
+            0);
     }
 
     private static PrototypeObstacleDetectionResult CreateBlockingDetection()

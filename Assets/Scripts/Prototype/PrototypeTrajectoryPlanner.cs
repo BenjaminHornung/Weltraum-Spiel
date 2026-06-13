@@ -389,8 +389,8 @@ public class PrototypeTrajectoryPlanner
         float closestObstacleDistance = selected.clearanceMeters;
         TrajectoryBurnPlan burnPlan = BuildBurnPlan(snapshot, selectedDirection, requestedThrottle);
         PrototypeTrajectorySegment[] segments = BuildSegments(snapshot, resolvedShipSnapshot, selectedDirection, requestedThrottle, burnPlan, avoidance, selected, suppressDirectFastTransfer);
-        burnPlan = ResolvePrimaryBurnPlan(snapshot, segments, burnPlan);
-        bool fuelInsufficient = selected.fuelInsufficient || SegmentsRequireMoreFuelThanAvailable(segments, snapshot.fuelKgPerSecond, snapshot.availableFuelKg);
+        burnPlan = ResolvePrimaryBurnPlan(snapshot, segments, burnPlan, resolvedShipSnapshot);
+        bool fuelInsufficient = selected.fuelInsufficient || SegmentsRequireMoreFuelThanAvailable(segments, snapshot.fuelKgPerSecond, snapshot.availableFuelKg, resolvedShipSnapshot);
         Vector3[] predictedPath = PredictCandidatePath(snapshot, selectedDirection, requestedRcsForce, requestedThrottle);
         PrototypeFlightPlan flightPlan = BuildFlightPlan(
             snapshot,
@@ -460,7 +460,7 @@ public class PrototypeTrajectoryPlanner
         clearPlan.desiredAccelerationWorld = clearPlan.desiredBurnDirection * snapshot.maxMainAcceleration;
         clearPlan.burnPlan = BuildBurnPlan(snapshot, clearPlan.desiredBurnDirection, 1f);
         clearPlan.segments = BuildSegments(snapshot, shipSnapshot, clearPlan.desiredBurnDirection, 1f, clearPlan.burnPlan, false, default, suppressDirectFastTransfer);
-        clearPlan.burnPlan = ResolvePrimaryBurnPlan(snapshot, clearPlan.segments, clearPlan.burnPlan);
+        clearPlan.burnPlan = ResolvePrimaryBurnPlan(snapshot, clearPlan.segments, clearPlan.burnPlan, shipSnapshot);
         clearPlan.activeSegment = clearPlan.segments.Length > 0 ? clearPlan.segments[0] : default;
         clearPlan.activeSegmentType = clearPlan.activeSegment.type;
         clearPlan.predictedPath = PredictCandidatePath(snapshot, clearPlan.desiredBurnDirection, Vector3.zero, 1f);
@@ -755,12 +755,14 @@ public class PrototypeTrajectoryPlanner
         bool brakeImmediately = vAlong0 > snapshot.arrivalSpeed
             && (stoppingDistanceNow >= distance || vPeak <= vAlong0 + 0.01f);
 
-        float tBurn = brakeImmediately ? 0f : Mathf.Max(0f, (vPeak - vAlong0) / burnAcceleration);
+        float idealBurnSeconds = brakeImmediately ? 0f : Mathf.Max(0f, (vPeak - vAlong0) / burnAcceleration);
         float sBurn = brakeImmediately ? 0f : Mathf.Max(0f, (vPeakSquared - vAlong0 * vAlong0) / (2f * burnAcceleration));
         float brakeSpeed = brakeImmediately
             ? Mathf.Max(0f, snapshot.velocity.magnitude)
             : vPeak;
-        float tBrake = brakeSpeed / brakeAcceleration;
+        float idealBrakeSeconds = brakeSpeed / brakeAcceleration;
+        float tBurn = EstimateCommandedThrottleDurationForEquivalentSeconds(idealBurnSeconds, 1f, shipSnapshot);
+        float tBrake = EstimateCommandedThrottleDurationForEquivalentSeconds(idealBrakeSeconds, 1f, shipSnapshot);
         float sBrake = brakeImmediately
             ? (brakeSpeed * brakeSpeed) / (2f * brakeAcceleration)
             : vPeakSquared / (2f * brakeAcceleration);
@@ -869,11 +871,12 @@ public class PrototypeTrajectoryPlanner
             : snapshot.mainThrustNewtons > 0f
                 ? snapshot.mainThrustNewtons
                 : snapshot.maxMainAcceleration * snapshot.massKg;
+        float burnEffectiveThrottle = EstimateAverageThrottleOverDuration(solution.tBurnSeconds, 1f, shipSnapshot);
         TrajectoryBurnPlan burnPlan = solution.tBurnSeconds > 0f
             ? TrajectoryBurnPlan.Estimate(
                 solution.routeDirectionWorld,
                 solution.tBurnSeconds,
-                1f,
+                burnEffectiveThrottle,
                 thrust,
                 snapshot.fuelKgPerSecond,
                 snapshot.availableFuelKg,
@@ -883,10 +886,11 @@ public class PrototypeTrajectoryPlanner
         Vector3 brakeDirection = solution.brakeImmediately && snapshot.velocity.sqrMagnitude > 0.0001f
             ? -snapshot.velocity.normalized
             : -solution.routeDirectionWorld;
+        float brakeEffectiveThrottle = EstimateAverageThrottleOverDuration(solution.tBrakeSeconds, 1f, shipSnapshot);
         TrajectoryBurnPlan brakePlan = TrajectoryBurnPlan.Estimate(
             brakeDirection,
             solution.tBrakeSeconds,
-            1f,
+            brakeEffectiveThrottle,
             thrust,
             snapshot.fuelKgPerSecond,
             fuelAfterBurn,
@@ -989,7 +993,8 @@ public class PrototypeTrajectoryPlanner
     private static TrajectoryBurnPlan ResolvePrimaryBurnPlan(
         PrototypeTrajectorySnapshot snapshot,
         PrototypeTrajectorySegment[] segments,
-        TrajectoryBurnPlan fallback)
+        TrajectoryBurnPlan fallback,
+        PrototypeShipPlanningSnapshot shipSnapshot)
     {
         if (segments == null)
         {
@@ -1008,10 +1013,11 @@ public class PrototypeTrajectoryPlanner
             float thrust = snapshot.mainThrustNewtons > 0f
                 ? snapshot.mainThrustNewtons
                 : snapshot.maxMainAcceleration * snapshot.massKg;
+            float effectiveThrottle = EstimateAverageThrottleOverDuration(segment.durationSeconds, segment.throttle, shipSnapshot);
             return TrajectoryBurnPlan.Estimate(
                 segment.directionWorld,
                 segment.durationSeconds,
-                segment.throttle,
+                effectiveThrottle,
                 thrust,
                 snapshot.fuelKgPerSecond,
                 snapshot.availableFuelKg,
@@ -1024,7 +1030,8 @@ public class PrototypeTrajectoryPlanner
     private static bool SegmentsRequireMoreFuelThanAvailable(
         PrototypeTrajectorySegment[] segments,
         float fuelKgPerSecond,
-        float availableFuelKg)
+        float availableFuelKg,
+        PrototypeShipPlanningSnapshot shipSnapshot)
     {
         if (segments == null || segments.Length == 0 || fuelKgPerSecond <= 0f)
         {
@@ -1043,7 +1050,7 @@ public class PrototypeTrajectoryPlanner
                 continue;
             }
 
-            requestedFuel += fuelKgPerSecond * Mathf.Clamp01(segment.throttle) * Mathf.Max(0f, segment.durationSeconds);
+            requestedFuel += fuelKgPerSecond * EstimateThrottleEquivalentSeconds(segment.durationSeconds, segment.throttle, shipSnapshot);
         }
 
         return requestedFuel > Mathf.Max(0f, availableFuelKg) + 0.0001f;
@@ -1256,7 +1263,7 @@ public class PrototypeTrajectoryPlanner
             PrototypeManeuverCommandMode mode = MapCommandMode(legacy.type, legacy.throttle, requestedRcsForceWorld);
             Vector3 rcsForce = UsesRcsTranslation(mode) ? requestedRcsForceWorld : Vector3.zero;
             float rcsScale = ResolveRcsTranslationScale(rcsForce, shipSnapshot);
-            float mainFuel = ResolveExpectedMainFuel(legacy, mode, mainFuelRate);
+            float mainFuel = ResolveExpectedMainFuel(legacy, mode, mainFuelRate, shipSnapshot);
             AddManeuverSegment(
                 maneuvers,
                 samples,
@@ -1376,6 +1383,9 @@ public class PrototypeTrajectoryPlanner
             UsesRcsTranslation(mode) ? rcsForceWorld : Vector3.zero,
             ResolvePlanMass(shipSnapshot),
             UsesMainThrottle(mode) ? mainFuelKgPerSecond : 0f,
+            shipSnapshot,
+            UsesMainThrottle(mode),
+            out float[] mainThrottleSamples,
             out TrajectoryPredictionState[] states);
         end = new TrajectoryPredictionState(
             end.position,
@@ -1428,8 +1438,8 @@ public class PrototypeTrajectoryPlanner
                     states[i].remainingFuelKg),
                 index,
                 phase,
-                UsesMainThrottle(mode) ? mainThrottle : 0f,
-                UsesRcsTranslation(mode) ? rcsForceWorld : Vector3.zero);
+                    UsesMainThrottle(mode) && mainThrottleSamples != null && i < mainThrottleSamples.Length ? mainThrottleSamples[i] : 0f,
+                    UsesRcsTranslation(mode) ? rcsForceWorld : Vector3.zero);
         }
 
         current = end;
@@ -1457,10 +1467,14 @@ public class PrototypeTrajectoryPlanner
         Vector3 rcsForceWorld,
         float massKg,
         float mainFuelKgPerSecond,
+        PrototypeShipPlanningSnapshot shipSnapshot,
+        bool useMainThrottle,
+        out float[] mainThrottleSamples,
         out TrajectoryPredictionState[] states)
     {
         if (durationSeconds <= 0f)
         {
+            mainThrottleSamples = new[] { 0f };
             states = new[] { start };
             return start;
         }
@@ -1468,15 +1482,50 @@ public class PrototypeTrajectoryPlanner
         int steps = Mathf.Clamp(Mathf.CeilToInt(durationSeconds / Mathf.Max(0.0001f, fixedDeltaTimeSeconds)), 1, TrajectoryPredictor.MaxStepCount);
         float stepSeconds = durationSeconds / steps;
         Vector3 rcsAcceleration = massKg > 0.0001f ? rcsForceWorld / massKg : Vector3.zero;
-        var settings = new TrajectoryPredictionSettings(
-            steps,
-            stepSeconds,
-            false,
-            direction,
-            Mathf.Max(0f, mainAccelerationMetersPerSecondSquared) * Mathf.Clamp01(throttle),
-            rcsAcceleration,
-            Mathf.Max(0f, mainFuelKgPerSecond) * Mathf.Clamp01(throttle));
-        states = TrajectoryPredictor.Predict(start, null, settings);
+        states = new TrajectoryPredictionState[steps + 1];
+        mainThrottleSamples = new float[steps + 1];
+        states[0] = start;
+        mainThrottleSamples[0] = useMainThrottle ? EstimateThrottleAtElapsed(0f, durationSeconds, throttle, shipSnapshot) : 0f;
+
+        TrajectoryPredictionState current = start;
+        Vector3 mainDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector3.zero;
+        for (int i = 1; i < states.Length; i++)
+        {
+            float elapsed = i * stepSeconds;
+            float sampleThrottle = useMainThrottle ? EstimateThrottleAtElapsed(elapsed, durationSeconds, throttle, shipSnapshot) : 0f;
+            float effectiveThrottle = useMainThrottle ? EstimateThrottleAtElapsed(elapsed - (stepSeconds * 0.5f), durationSeconds, throttle, shipSnapshot) : 0f;
+            Vector3 acceleration = rcsAcceleration;
+            if (effectiveThrottle > 0f
+                && mainDirection.sqrMagnitude > 0.0001f
+                && (mainFuelKgPerSecond <= 0f || current.remainingFuelKg > 0f))
+            {
+                acceleration += mainDirection * (Mathf.Max(0f, mainAccelerationMetersPerSecondSquared) * effectiveThrottle);
+            }
+
+            float remainingFuel = mainFuelKgPerSecond > 0f
+                ? Mathf.Max(0f, current.remainingFuelKg - Mathf.Max(0f, mainFuelKgPerSecond) * effectiveThrottle * stepSeconds)
+                : current.remainingFuelKg;
+            Vector3 velocity = current.velocity + acceleration * stepSeconds;
+            Vector3 position = current.position + velocity * stepSeconds;
+            var next = new TrajectoryPredictionState(
+                position,
+                velocity,
+                current.rotation,
+                current.angularVelocity,
+                current.elapsedTime + stepSeconds,
+                remainingFuel);
+            if (!next.IsFinite)
+            {
+                Array.Resize(ref states, i);
+                Array.Resize(ref mainThrottleSamples, i);
+                return states.Length > 0 ? states[states.Length - 1] : start;
+            }
+
+            states[i] = next;
+            mainThrottleSamples[i] = sampleThrottle;
+            current = next;
+        }
+
         return states.Length > 0 ? states[states.Length - 1] : start;
     }
 
@@ -1595,14 +1644,140 @@ public class PrototypeTrajectoryPlanner
             : Mathf.Max(0f, trajectorySnapshot.fuelKgPerSecond);
     }
 
-    private static float ResolveExpectedMainFuel(PrototypeTrajectorySegment segment, PrototypeManeuverCommandMode mode, float mainFuelRate)
+    private static float EstimateCommandedThrottleDurationForEquivalentSeconds(
+        float fullThrottleEquivalentSeconds,
+        float targetThrottle,
+        PrototypeShipPlanningSnapshot shipSnapshot)
+    {
+        float requestedArea = Mathf.Max(0f, fullThrottleEquivalentSeconds);
+        float target = Mathf.Clamp01(targetThrottle);
+        if (requestedArea <= 0f || target <= 0f || !HasFiniteThrottleSpoolRates(shipSnapshot))
+        {
+            return target > 0f ? requestedArea / Mathf.Max(0.0001f, target) : 0f;
+        }
+
+        float inverseRateSum = (1f / shipSnapshot.mainThrottleSpoolUpRate) + (1f / shipSnapshot.mainThrottleSpoolDownRate);
+        float rampAreaAtTarget = 0.5f * target * target * inverseRateSum;
+        if (requestedArea >= rampAreaAtTarget)
+        {
+            return (requestedArea / target) + (0.5f * target * inverseRateSum);
+        }
+
+        float peakThrottle = Mathf.Sqrt((2f * requestedArea) / inverseRateSum);
+        return peakThrottle * inverseRateSum;
+    }
+
+    private static float EstimateAverageThrottleOverDuration(
+        float durationSeconds,
+        float targetThrottle,
+        PrototypeShipPlanningSnapshot shipSnapshot)
+    {
+        float duration = Mathf.Max(0f, durationSeconds);
+        if (duration <= 0f)
+        {
+            return 0f;
+        }
+
+        return Mathf.Clamp01(EstimateThrottleEquivalentSeconds(duration, targetThrottle, shipSnapshot) / duration);
+    }
+
+    private static float EstimateThrottleEquivalentSeconds(
+        float durationSeconds,
+        float targetThrottle,
+        PrototypeShipPlanningSnapshot shipSnapshot)
+    {
+        float duration = Mathf.Max(0f, durationSeconds);
+        float target = Mathf.Clamp01(targetThrottle);
+        if (duration <= 0f || target <= 0f)
+        {
+            return 0f;
+        }
+
+        if (!HasFiniteThrottleSpoolRates(shipSnapshot))
+        {
+            return duration * target;
+        }
+
+        float inverseRateSum = (1f / shipSnapshot.mainThrottleSpoolUpRate) + (1f / shipSnapshot.mainThrottleSpoolDownRate);
+        float fullRampDuration = target * inverseRateSum;
+        if (duration >= fullRampDuration)
+        {
+            float rampArea = 0.5f * target * fullRampDuration;
+            return rampArea + (duration - fullRampDuration) * target;
+        }
+
+        float peakThrottle = duration / inverseRateSum;
+        return 0.5f * peakThrottle * duration;
+    }
+
+    private static float EstimateThrottleAtElapsed(
+        float elapsedSeconds,
+        float durationSeconds,
+        float targetThrottle,
+        PrototypeShipPlanningSnapshot shipSnapshot)
+    {
+        float duration = Mathf.Max(0f, durationSeconds);
+        float target = Mathf.Clamp01(targetThrottle);
+        if (duration <= 0f || target <= 0f)
+        {
+            return 0f;
+        }
+
+        if (!HasFiniteThrottleSpoolRates(shipSnapshot))
+        {
+            return target;
+        }
+
+        float elapsed = Mathf.Clamp(elapsedSeconds, 0f, duration);
+        float upTime = target / shipSnapshot.mainThrottleSpoolUpRate;
+        float downTime = target / shipSnapshot.mainThrottleSpoolDownRate;
+        if (duration >= upTime + downTime)
+        {
+            if (elapsed <= upTime)
+            {
+                return Mathf.Clamp01(shipSnapshot.mainThrottleSpoolUpRate * elapsed);
+            }
+
+            float downStart = duration - downTime;
+            if (elapsed >= downStart)
+            {
+                return Mathf.Clamp01(shipSnapshot.mainThrottleSpoolDownRate * (duration - elapsed));
+            }
+
+            return target;
+        }
+
+        float inverseRateSum = (1f / shipSnapshot.mainThrottleSpoolUpRate) + (1f / shipSnapshot.mainThrottleSpoolDownRate);
+        float peakThrottle = Mathf.Clamp01(duration / inverseRateSum);
+        float peakTime = peakThrottle / shipSnapshot.mainThrottleSpoolUpRate;
+        if (elapsed <= peakTime)
+        {
+            return Mathf.Clamp01(shipSnapshot.mainThrottleSpoolUpRate * elapsed);
+        }
+
+        return Mathf.Clamp01(shipSnapshot.mainThrottleSpoolDownRate * (duration - elapsed));
+    }
+
+    private static bool HasFiniteThrottleSpoolRates(PrototypeShipPlanningSnapshot shipSnapshot)
+    {
+        return shipSnapshot.mainThrottleSpoolUpRate > 0.0001f
+            && shipSnapshot.mainThrottleSpoolDownRate > 0.0001f
+            && TrajectoryPredictionMath.IsFinite(shipSnapshot.mainThrottleSpoolUpRate)
+            && TrajectoryPredictionMath.IsFinite(shipSnapshot.mainThrottleSpoolDownRate);
+    }
+
+    private static float ResolveExpectedMainFuel(
+        PrototypeTrajectorySegment segment,
+        PrototypeManeuverCommandMode mode,
+        float mainFuelRate,
+        PrototypeShipPlanningSnapshot shipSnapshot)
     {
         if (!UsesMainThrottle(mode))
         {
             return 0f;
         }
 
-        float estimated = mainFuelRate * Mathf.Clamp01(segment.throttle) * Mathf.Max(0f, segment.durationSeconds);
+        float estimated = mainFuelRate * EstimateThrottleEquivalentSeconds(segment.durationSeconds, segment.throttle, shipSnapshot);
         return Mathf.Max(segment.expectedFuelKg, estimated);
     }
 

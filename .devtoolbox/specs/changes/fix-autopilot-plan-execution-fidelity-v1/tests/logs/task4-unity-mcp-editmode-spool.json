@@ -1,0 +1,81 @@
+{
+  "sessionId": "6fd076ab6e274513b82a8c1118d310be",
+  "testNames": [
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.DirectFastTransfer_SlowMainThrottleSpoolExtendsBurnAndBrakeDurations",
+    "PrototypeAutopilotNavigationComputerV2ValidationTests.DirectFastTransfer_SlowMainThrottleSpoolRampsPredictedSamples"
+  ],
+  "start": {
+    "_meta": {
+      "fastmcp": {
+        "wrap_result": true
+      }
+    },
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"message\":\"Test job started.\",\"error\":null,\"data\":{\"job_id\":\"0170128438784b4a9ad8b724b601c625\",\"status\":\"running\",\"mode\":\"EditMode\",\"include_details\":true,\"include_failed_tests\":true},\"hint\":null}"
+      }
+    ],
+    "structuredContent": {
+      "result": {
+        "success": true,
+        "message": "Test job started.",
+        "error": null,
+        "data": {
+          "job_id": "0170128438784b4a9ad8b724b601c625",
+          "status": "running",
+          "mode": "EditMode",
+          "include_details": true,
+          "include_failed_tests": true
+        },
+        "hint": null
+      }
+    },
+    "isError": false
+  },
+  "final": {
+    "_meta": {
+      "fastmcp": {
+        "wrap_result": true
+      }
+    },
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"message\":\"Test job status retrieved.\",\"error\":null,\"data\":{\"job_id\":\"0170128438784b4a9ad8b724b601c625\",\"status\":\"succeeded\",\"mode\":\"EditMode\",\"started_unix_ms\":1781337255273,\"finished_unix_ms\":1781337255798,\"last_update_unix_ms\":1781337255798,\"progress\":{\"completed\":2,\"total\":2,\"current_test_full_name\":null,\"current_test_started_unix_ms\":1781337255788,\"last_finished_test_full_name\":\"PrototypeAutopilotNavigationComputerV2ValidationTests.DirectFastTransfer_SlowMainThrottleSpoolRampsPredictedSamples\",\"last_finished_unix_ms\":1781337255788,\"stuck_suspected\":false,\"editor_is_focused\":true,\"blocked_reason\":null,\"failures_so_far\":[],\"failures_capped\":false},\"error\":null,\"result\":null},\"hint\":null}"
+      }
+    ],
+    "structuredContent": {
+      "result": {
+        "success": true,
+        "message": "Test job status retrieved.",
+        "error": null,
+        "data": {
+          "job_id": "0170128438784b4a9ad8b724b601c625",
+          "status": "succeeded",
+          "mode": "EditMode",
+          "started_unix_ms": 1781337255273,
+          "finished_unix_ms": 1781337255798,
+          "last_update_unix_ms": 1781337255798,
+          "progress": {
+            "completed": 2,
+            "total": 2,
+            "current_test_full_name": null,
+            "current_test_started_unix_ms": 1781337255788,
+            "last_finished_test_full_name": "PrototypeAutopilotNavigationComputerV2ValidationTests.DirectFastTransfer_SlowMainThrottleSpoolRampsPredictedSamples",
+            "last_finished_unix_ms": 1781337255788,
+            "stuck_suspected": false,
+            "editor_is_focused": true,
+            "blocked_reason": null,
+            "failures_so_far": [],
+            "failures_capped": false
+          },
+          "error": null,
+          "result": null
+        },
+        "hint": null
+      }
+    },
+    "isError": false
+  }
+}
