@@ -1,0 +1,157 @@
+{
+  "generatedAt": "2026-06-13T12:21:36.7953062+02:00",
+  "task": "Task 10 effective brake diagnostics",
+  "sessionId": "77b0439a17f3439d8caf70ad9afbc272",
+  "refreshUnity": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "result": {
+      "_meta": {
+        "fastmcp": {
+          "wrap_result": true
+        }
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"message\":\"Refresh requested.\",\"error\":null,\"data\":{\"refresh_triggered\":false,\"compile_requested\":true,\"resulting_state\":\"compiling\",\"hint\":\"If Unity enters compilation/domain reload, poll editor_state until ready_for_tools is true.\"},\"hint\":null}"
+        }
+      ],
+      "structuredContent": {
+        "result": {
+          "success": true,
+          "message": "Refresh requested.",
+          "error": null,
+          "data": {
+            "refresh_triggered": false,
+            "compile_requested": true,
+            "resulting_state": "compiling",
+            "hint": "If Unity enters compilation/domain reload, poll editor_state until ready_for_tools is true."
+          },
+          "hint": null
+        }
+      },
+      "isError": false
+    }
+  },
+  "validateAutopilot": {
+    "jsonrpc": "2.0",
+    "id": 2,
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"data\":{\"diagnostics\":[{\"line\":0,\"col\":0,\"severity\":\"warning\",\"message\":\"String concatenation in Update() can cause garbage collection issues\"}],\"summary\":{\"warnings\":1,\"errors\":0}}}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "data": {
+          "diagnostics": [
+            {
+              "line": 0,
+              "col": 0,
+              "severity": "warning",
+              "message": "String concatenation in Update() can cause garbage collection issues"
+            }
+          ],
+          "summary": {
+            "warnings": 1,
+            "errors": 0
+          }
+        }
+      },
+      "isError": false
+    }
+  },
+  "validateTests": {
+    "jsonrpc": "2.0",
+    "id": 3,
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"data\":{\"diagnostics\":[{\"line\":0,\"col\":0,\"severity\":\"warning\",\"message\":\"GameObject.Find in Update() can cause performance issues\"},{\"line\":0,\"col\":0,\"severity\":\"warning\",\"message\":\"String concatenation in Update() can cause garbage collection issues\"}],\"summary\":{\"warnings\":2,\"errors\":0}}}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "data": {
+          "diagnostics": [
+            {
+              "line": 0,
+              "col": 0,
+              "severity": "warning",
+              "message": "GameObject.Find in Update() can cause performance issues"
+            },
+            {
+              "line": 0,
+              "col": 0,
+              "severity": "warning",
+              "message": "String concatenation in Update() can cause garbage collection issues"
+            }
+          ],
+          "summary": {
+            "warnings": 2,
+            "errors": 0
+          }
+        }
+      },
+      "isError": false
+    }
+  },
+  "consoleErrorsFilteredToAutopilot": {
+    "jsonrpc": "2.0",
+    "id": 4,
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"message\":\"Retrieved 0 log entries.\",\"data\":[]}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "message": "Retrieved 0 log entries.",
+        "data": []
+      },
+      "isError": false
+    }
+  },
+  "consoleErrorsFilteredToTests": {
+    "jsonrpc": "2.0",
+    "id": 5,
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"message\":\"Retrieved 0 log entries.\",\"data\":[]}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "message": "Retrieved 0 log entries.",
+        "data": []
+      },
+      "isError": false
+    }
+  },
+  "consoleCompileErrors": {
+    "jsonrpc": "2.0",
+    "id": 6,
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"success\":true,\"message\":\"Retrieved 0 log entries.\",\"data\":[]}"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "message": "Retrieved 0 log entries.",
+        "data": []
+      },
+      "isError": false
+    }
+  }
+}

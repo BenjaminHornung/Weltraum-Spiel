@@ -1,0 +1,21 @@
+{
+  "task": 10,
+  "executionId": "c6aed91a5651408794a0f08bfead90c6",
+  "tool": "unityMCP.run_tests",
+  "mode": "EditMode",
+  "tests": [
+    "PrototypeWaypointAutopilotValidationTests.DiagnosticsUseFullMainDecelerationWhenFlightPlanBrakeIsPlanned",
+    "PrototypeWaypointAutopilotValidationTests.DiagnosticsUseLegacyReverseDecelerationWhenNoFlightPlanBrakeIsPlanned"
+  ],
+  "result": {
+    "total": 2,
+    "passed": 2,
+    "failed": 0,
+    "skipped": 0,
+    "resultState": "Passed"
+  },
+  "notes": [
+    "Focused diagnostics coverage confirms planned FlipToRetrograde/RetrogradeBurn uses full main acceleration.",
+    "No planned brake segment preserves legacy ReverseThrustMultiplier deceleration."
+  ]
+}

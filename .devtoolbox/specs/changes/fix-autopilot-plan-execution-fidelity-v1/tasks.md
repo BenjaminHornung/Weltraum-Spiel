@@ -18,7 +18,7 @@ Referenz: `design.md` (Zeilennummern = Commit `a68333b`).
 - [x] Geschwindigkeitsabhaengige Toleranzen in `CreateFlightPlanTolerance` (Planner `:1667`) bzw. pro Segment.
 
 ## Phase 3 — Brems-Metriken
-- [ ] `GetEffectiveBrakeDeceleration()` einfuehren; `RefreshDiagnostics` (`:4764`) nutzt vollen Hauptschub, wenn Flip-Brake geplant ist (statt `GetMaxDeceleration()` mit ReverseThrustMultiplier `:5266`).
+- [x] `GetEffectiveBrakeDeceleration()` einfuehren; `RefreshDiagnostics` (`:4764`) nutzt vollen Hauptschub, wenn Flip-Brake geplant ist (statt `GetMaxDeceleration()` mit ReverseThrustMultiplier `:5266`).
 - [ ] Hold-/Terminal-Gates (`FixedUpdate` `:447-454`, `ShouldUseConservativeFlightPlanBrakeSafety` `:1609`) waehrend nominaler Planausfuehrung deaktivieren.
 
 ## Phase 4 — Replan-Hygiene

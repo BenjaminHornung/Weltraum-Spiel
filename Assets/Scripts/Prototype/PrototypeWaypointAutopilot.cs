@@ -4669,7 +4669,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             shipPosition,
             shipVelocity,
             currentTarget.Position,
-            GetMaxDeceleration(),
+            GetEffectiveBrakeDeceleration(),
             safetyMargin);
         if (!LastMetrics.isFinite)
         {
@@ -5167,11 +5167,76 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         return shipStats.CurrentMass > 0f ? (shipStats.Thrust * throttleScale) / shipStats.CurrentMass : 0f;
     }
 
+    private float GetEffectiveBrakeDeceleration()
+    {
+        return HasActiveOrUpcomingFlightPlanBrakeSegment()
+            ? GetMaxAcceleration()
+            : GetMaxDeceleration();
+    }
+
     private float GetMaxDeceleration()
     {
         float acceleration = GetMaxAcceleration();
         float reverseScalar = shipStats != null ? Mathf.Clamp(shipStats.ReverseThrustMultiplier, 0.1f, 1f) : 0.35f;
         return acceleration * reverseScalar;
+    }
+
+    private bool HasActiveOrUpcomingFlightPlanBrakeSegment()
+    {
+        PrototypeFlightPlan plan = CurrentFlightPlan;
+        PrototypeManeuverSegment[] segments = plan.segments;
+        if (!plan.IsValid || segments == null || segments.Length == 0)
+        {
+            return false;
+        }
+
+        float elapsedSeconds = Mathf.Max(0f, flightPlanElapsedSeconds);
+        int startIndex = FindFlightPlanBrakeScanStartIndex(plan, segments, elapsedSeconds);
+        if (startIndex < 0)
+        {
+            return false;
+        }
+
+        for (int i = startIndex; i < segments.Length; i++)
+        {
+            PrototypeManeuverPhase phase = segments[i].phase;
+            if (phase == PrototypeManeuverPhase.FlipToRetrograde
+                || phase == PrototypeManeuverPhase.RetrogradeBurn)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static int FindFlightPlanBrakeScanStartIndex(
+        PrototypeFlightPlan plan,
+        PrototypeManeuverSegment[] segments,
+        float elapsedSeconds)
+    {
+        if (plan.TryGetActiveSegment(elapsedSeconds, out PrototypeManeuverSegment activeSegment))
+        {
+            for (int i = 0; i < segments.Length; i++)
+            {
+                if (segments[i].index == activeSegment.index
+                    && segments[i].phase == activeSegment.phase
+                    && Mathf.Abs(segments[i].startTimeSeconds - activeSegment.startTimeSeconds) <= 0.0001f)
+                {
+                    return i;
+                }
+            }
+        }
+
+        for (int i = 0; i < segments.Length; i++)
+        {
+            if (segments[i].endTimeSeconds + 0.0001f >= elapsedSeconds)
+            {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
     private bool CanUseRcsTranslation()

@@ -163,6 +163,61 @@ public class PrototypeWaypointAutopilotValidationTests
     }
 
     [Test]
+    public void DiagnosticsUseFullMainDecelerationWhenFlightPlanBrakeIsPlanned()
+    {
+        var rig = CreateAutopilotRig();
+        ShipStats stats = rig.Ship.GetComponent<ShipStats>();
+        SetPrivateFloat(stats, "reverseThrustMultiplier", 0.25f);
+        rig.Body.linearVelocity = Vector3.forward * 20f;
+        rig.Target.transform.position = Vector3.forward * 150f;
+        rig.Autopilot.SelectTarget(rig.Target);
+
+        SetPrivateProperty(
+            rig.Autopilot,
+            "LastTrajectoryPlan",
+            BuildTrajectoryPlanWithFlightPlan(new[]
+            {
+                CreateBrakeDiagnosticSegment(0, PrototypeManeuverPhase.ProgradeBurn, 0f, 2f),
+                CreateBrakeDiagnosticSegment(1, PrototypeManeuverPhase.FlipToRetrograde, 3f, 2f),
+                CreateBrakeDiagnosticSegment(2, PrototypeManeuverPhase.RetrogradeBurn, 5f, 2f)
+            }));
+        SetPrivateFloat(rig.Autopilot, "flightPlanElapsedSeconds", 0.5f);
+
+        InvokeRefreshDiagnostics(rig.Autopilot);
+
+        float expectedMainAcceleration = stats.Thrust / stats.CurrentMass;
+        float legacyReverseDeceleration = expectedMainAcceleration * 0.25f;
+        Assert.That(rig.Autopilot.LastMetrics.maxDeceleration, Is.EqualTo(expectedMainAcceleration).Within(0.0001f));
+        Assert.That(rig.Autopilot.LastMetrics.maxDeceleration, Is.GreaterThan(legacyReverseDeceleration));
+    }
+
+    [Test]
+    public void DiagnosticsUseLegacyReverseDecelerationWhenNoFlightPlanBrakeIsPlanned()
+    {
+        var rig = CreateAutopilotRig();
+        ShipStats stats = rig.Ship.GetComponent<ShipStats>();
+        SetPrivateFloat(stats, "reverseThrustMultiplier", 0.25f);
+        rig.Body.linearVelocity = Vector3.forward * 20f;
+        rig.Target.transform.position = Vector3.forward * 150f;
+        rig.Autopilot.SelectTarget(rig.Target);
+
+        SetPrivateProperty(
+            rig.Autopilot,
+            "LastTrajectoryPlan",
+            BuildTrajectoryPlanWithFlightPlan(new[]
+            {
+                CreateBrakeDiagnosticSegment(0, PrototypeManeuverPhase.ProgradeBurn, 0f, 2f),
+                CreateBrakeDiagnosticSegment(1, PrototypeManeuverPhase.Coast, 2f, 3f)
+            }));
+        SetPrivateFloat(rig.Autopilot, "flightPlanElapsedSeconds", 0.5f);
+
+        InvokeRefreshDiagnostics(rig.Autopilot);
+
+        float expectedMainAcceleration = stats.Thrust / stats.CurrentMass;
+        Assert.That(rig.Autopilot.LastMetrics.maxDeceleration, Is.EqualTo(expectedMainAcceleration * 0.25f).Within(0.0001f));
+    }
+
+    [Test]
     public void AutopilotRestTargetAheadRequestsLongRangeBurn()
     {
         var rig = CreateAutopilotRig();
@@ -1059,6 +1114,70 @@ public class PrototypeWaypointAutopilotValidationTests
             profile);
     }
 
+    private static PrototypeTrajectoryPlan BuildTrajectoryPlanWithFlightPlan(PrototypeManeuverSegment[] segments)
+    {
+        PrototypeShipPlanningSnapshot snapshot = PrototypeShipPlanningSnapshot.Empty;
+        snapshot.currentFuelKg = 100f;
+        snapshot.maxFuelKg = 100f;
+        PrototypeFlightPlan flightPlan = new PrototypeFlightPlan(
+            "diagnostic-brake-plan",
+            1,
+            0f,
+            0.02f,
+            Vector3.forward * 150f,
+            10f,
+            1f,
+            snapshot,
+            segments,
+            Array.Empty<PrototypeTrajectoryPredictedSample>(),
+            true,
+            PrototypeFlightPlanAbortReplanReason.None,
+            "Diagnostics test",
+            Vector3.forward * 150f,
+            PrototypeManeuverProfile.DirectFastTransfer);
+
+        PrototypeTrajectoryPlan plan = PrototypeTrajectoryPlan.Clear(Vector3.forward);
+        plan.flightPlan = flightPlan;
+        return plan;
+    }
+
+    private static PrototypeManeuverSegment CreateBrakeDiagnosticSegment(
+        int index,
+        PrototypeManeuverPhase phase,
+        float startTimeSeconds,
+        float durationSeconds)
+    {
+        Vector3 direction = phase == PrototypeManeuverPhase.RetrogradeBurn ? Vector3.back : Vector3.forward;
+        PrototypeManeuverCommandMode commandMode = phase == PrototypeManeuverPhase.ProgradeBurn
+            || phase == PrototypeManeuverPhase.RetrogradeBurn
+                ? PrototypeManeuverCommandMode.MainThrottle
+                : PrototypeManeuverCommandMode.AttitudeOnly;
+        return new PrototypeManeuverSegment(
+            index,
+            phase,
+            commandMode,
+            startTimeSeconds,
+            durationSeconds,
+            direction,
+            Vector3.zero,
+            direction * 4f,
+            direction,
+            direction,
+            Quaternion.identity,
+            Quaternion.identity,
+            Vector3.zero,
+            Vector3.zero,
+            commandMode == PrototypeManeuverCommandMode.MainThrottle ? 1f : 0f,
+            0f,
+            2f,
+            0f,
+            0f,
+            PrototypeFlightPlanTolerance.Default,
+            PrototypeManeuverSegment.DefaultReplanReasons,
+            "Brake diagnostic test",
+            PrototypeManeuverProfile.DirectFastTransfer);
+    }
+
     private static void SetPrivateFloat(object target, string fieldName, float value)
     {
         FieldInfo field = target.GetType().GetField(fieldName, PrivateInstance);
@@ -1087,6 +1206,13 @@ public class PrototypeWaypointAutopilotValidationTests
         MethodInfo setter = property.GetSetMethod(true);
         Assert.NotNull(setter, $"{propertyName} has no set method");
         setter.Invoke(target, new object[] { value });
+    }
+
+    private static void InvokeRefreshDiagnostics(PrototypeWaypointAutopilot autopilot)
+    {
+        MethodInfo method = typeof(PrototypeWaypointAutopilot).GetMethod("RefreshDiagnostics", PrivateInstance);
+        Assert.NotNull(method);
+        method.Invoke(autopilot, null);
     }
 
     private static string StripComments(string line)
