@@ -982,9 +982,7 @@ public class PrototypeTrajectoryPlanner
             return new[] { brake, final, hold };
         }
 
-        return avoidance
-            ? new[] { burnSegment, coast, brake, final, hold }
-            : new[] { burnSegment, coast, brake, final, hold };
+        return new[] { burnSegment, coast, brake, final, hold };
     }
 
     private static TrajectoryBurnPlan ResolvePrimaryBurnPlan(

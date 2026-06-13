@@ -105,6 +105,16 @@ public class PrototypeAutopilotNavigationComputerV2ValidationTests
         Assert.That(plan.selectedCandidate, Is.Not.EqualTo("direct"));
         Assert.That(plan.navigationPhase, Is.EqualTo(PrototypeAutopilotNavigationPhase.AvoidancePlanning));
         Assert.That(plan.avoidanceWaypoint.sqrMagnitude, Is.GreaterThan(0.1f));
+        Assert.That(
+            plan.segments.Select(segment => segment.type).ToArray(),
+            Is.EqualTo(new[]
+            {
+                PrototypeTrajectorySegmentType.AvoidanceBurn,
+                PrototypeTrajectorySegmentType.Coast,
+                PrototypeTrajectorySegmentType.Brake,
+                PrototypeTrajectorySegmentType.FinalApproach,
+                PrototypeTrajectorySegmentType.Hold
+            }));
     }
 
     [Test]
