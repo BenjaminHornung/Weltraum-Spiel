@@ -12,7 +12,7 @@ Referenz: `design.md` (Befunde mit Datei:Zeile, Stand Commit `a68333b`). Jedes I
 - [x] **Item 5:** HUD-Radar-Ziele aus `PrototypeWaypointManager` statt `FindObjectsByType` pro Frame (`PrototypePlayerHud.cs:1925`); `Resources.FindObjectsOfTypeAll`-Fallback (`:1928`) entfernen; Fallback-Scan nur ohne Manager, 1-Hz-Gate.
 - [x] **Item 6:** Snapshot-/Text-Refresh in `PrototypePlayerHud.Update` (`:3177`) per `PrototypeUiSampleGate` auf 10 Hz; Marker-/Blip-Positionen in leichten Pro-Frame-Pfad trennen; `SetTextIfChanged`-Helfer vor allen TMP-Zuweisungen; Force-Refresh bei Panel-Toggles/Bind.
 - [x] **Item 7:** `RcsThrusterController`/`MainThrusterBank` im Autopilot cachen (`:4741`, `:5296`, `:5343`), Invalidierung bei Controller-Wechsel in `ResolveReferences()`.
-- [ ] Profiler-Evidence vorher/nachher (1 min Flug, Planner offen) unter `tests/` ablegen.
+- [x] Profiler-Evidence vorher/nachher (1 min Flug, Planner offen) unter `tests/` ablegen.
 
 ## Housekeeping
 - [x] **Item 8:** `Assets/_Recovery/` loeschen (Inhalt vorher kurz sichten); `.gitignore` ergaenzen: `.idea/`, `UpgradeLog.htm`, `Assets/_Recovery/`, `artifacts/`.
@@ -20,4 +20,4 @@ Referenz: `design.md` (Befunde mit Datei:Zeile, Stand Commit `a68333b`). Jedes I
 
 ## Abnahme
 - [ ] EditMode-Suite gruen; PlayMode-Smoke gruen (falls Harness vorhanden: `tools/run-tests.ps1 -Suite Smoke`).
-- [ ] Kurzprotokoll: pro Item 1-2 Saetze Ergebnis + Commit-Hash unter `tests/`.
+- [x] Kurzprotokoll: pro Item 1-2 Saetze Ergebnis + Commit-Hash unter `tests/`.
