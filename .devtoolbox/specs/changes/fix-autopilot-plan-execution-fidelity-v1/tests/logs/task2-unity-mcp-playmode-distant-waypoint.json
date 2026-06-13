@@ -1,0 +1,99 @@
+{
+  "sessionId": "f5503311f47b41d7bf1f1fc8f87e9b25",
+  "testName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_DistantWaypoint_PerFixedUpdateNavigationEvidence",
+  "start": {
+    "_meta": {
+      "fastmcp": {
+        "wrap_result": true
+      }
+    },
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"message\":\"Test job started.\",\"error\":null,\"data\":{\"job_id\":\"4775db92c1fc42dabd6a10e69b9cc97c\",\"status\":\"running\",\"mode\":\"PlayMode\",\"include_details\":true,\"include_failed_tests\":true},\"hint\":null}"
+      }
+    ],
+    "structuredContent": {
+      "result": {
+        "success": true,
+        "message": "Test job started.",
+        "error": null,
+        "data": {
+          "job_id": "4775db92c1fc42dabd6a10e69b9cc97c",
+          "status": "running",
+          "mode": "PlayMode",
+          "include_details": true,
+          "include_failed_tests": true
+        },
+        "hint": null
+      }
+    },
+    "isError": false
+  },
+  "final": {
+    "_meta": {
+      "fastmcp": {
+        "wrap_result": true
+      }
+    },
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"message\":\"Test job status retrieved.\",\"error\":null,\"data\":{\"job_id\":\"4775db92c1fc42dabd6a10e69b9cc97c\",\"status\":\"succeeded\",\"mode\":\"PlayMode\",\"started_unix_ms\":1781333853170,\"finished_unix_ms\":1781333859063,\"last_update_unix_ms\":1781333859063,\"progress\":{\"completed\":1,\"total\":1,\"current_test_full_name\":null,\"current_test_started_unix_ms\":1781333858387,\"last_finished_test_full_name\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_DistantWaypoint_PerFixedUpdateNavigationEvidence\",\"last_finished_unix_ms\":1781333859053,\"stuck_suspected\":false,\"editor_is_focused\":true,\"blocked_reason\":null,\"failures_so_far\":[],\"failures_capped\":false},\"error\":null,\"result\":{\"mode\":\"PlayMode\",\"summary\":{\"total\":1,\"passed\":1,\"failed\":0,\"skipped\":0,\"durationSeconds\":0.6725695,\"resultState\":\"Passed\"},\"results\":[{\"name\":\"PlayMode_Autopilot_DistantWaypoint_PerFixedUpdateNavigationEvidence\",\"fullName\":\"PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_DistantWaypoint_PerFixedUpdateNavigationEvidence\",\"state\":\"Passed\",\"durationSeconds\":0.6657922,\"message\":null,\"stackTrace\":null,\"output\":\"\"}]}},\"hint\":null}"
+      }
+    ],
+    "structuredContent": {
+      "result": {
+        "success": true,
+        "message": "Test job status retrieved.",
+        "error": null,
+        "data": {
+          "job_id": "4775db92c1fc42dabd6a10e69b9cc97c",
+          "status": "succeeded",
+          "mode": "PlayMode",
+          "started_unix_ms": 1781333853170,
+          "finished_unix_ms": 1781333859063,
+          "last_update_unix_ms": 1781333859063,
+          "progress": {
+            "completed": 1,
+            "total": 1,
+            "current_test_full_name": null,
+            "current_test_started_unix_ms": 1781333858387,
+            "last_finished_test_full_name": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_DistantWaypoint_PerFixedUpdateNavigationEvidence",
+            "last_finished_unix_ms": 1781333859053,
+            "stuck_suspected": false,
+            "editor_is_focused": true,
+            "blocked_reason": null,
+            "failures_so_far": [],
+            "failures_capped": false
+          },
+          "error": null,
+          "result": {
+            "mode": "PlayMode",
+            "summary": {
+              "total": 1,
+              "passed": 1,
+              "failed": 0,
+              "skipped": 0,
+              "durationSeconds": 0.6725695,
+              "resultState": "Passed"
+            },
+            "results": [
+              {
+                "name": "PlayMode_Autopilot_DistantWaypoint_PerFixedUpdateNavigationEvidence",
+                "fullName": "PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_DistantWaypoint_PerFixedUpdateNavigationEvidence",
+                "state": "Passed",
+                "durationSeconds": 0.6657922,
+                "message": null,
+                "stackTrace": null,
+                "output": ""
+              }
+            ]
+          }
+        },
+        "hint": null
+      }
+    },
+    "isError": false
+  }
+}

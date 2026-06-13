@@ -6,7 +6,7 @@ Referenz: `design.md` (Zeilennummern = Commit `a68333b`).
 - [x] PlayMode-Diagnosetest: entfernter Wegpunkt, CSV-Log pro FixedUpdate (planElapsed, Segment/Phase, Soll-Pos/Vel aus Samples, Ist-Pos/Vel, requestedMainThrottle, DivergenceReasons, ForceReplan-Zaehler). Beleg fuer Befund 2.1/2.3 ablegen unter `tests/performance/`.
 
 ## Phase 1 — Physikgetreue Planung (`PrototypeTrajectoryPlanner.cs`)
-- [ ] Gemeinsame Turn-Limits: Konstanten `BrakeFlipMaxTurnRateDegreesPerSecond`, `BrakeFlipMaxAngularAccelerationRadPerSecondSquared`, `BrakeFlipDampingTimeSeconds` aus `PrototypeWaypointAutopilot.cs:91-93` in gemeinsame Konfig (statische Klasse oder `PrototypeShipPlanningSnapshot`) verschieben.
+- [x] Gemeinsame Turn-Limits: Konstanten `BrakeFlipMaxTurnRateDegreesPerSecond`, `BrakeFlipMaxAngularAccelerationRadPerSecondSquared`, `BrakeFlipDampingTimeSeconds` aus `PrototypeWaypointAutopilot.cs:91-93` in gemeinsame Konfig (statische Klasse oder `PrototypeShipPlanningSnapshot`) verschieben.
 - [ ] `EstimateAttitudeSegmentSeconds` (`:1620`) durch Trapezprofil-Modell mit diesen Limits + Latch-Marge ersetzen; `MaximumAttitudeSegmentSeconds` anheben (z. B. 12 s).
 - [ ] Spool-Up/Down in `SolveDirectFastTransfer` (`:687`) und `PredictManeuverEnd` (`:1451`) modellieren (Snapshot-Felder `mainThrottleSpoolUpRate/DownRate` nutzen); gilt fuer Burn UND Brake.
 - [ ] vPeak-/Distanzbilanz (`:741-758`) mit Spool-Verlusten und neuer Flipzeit korrigieren.

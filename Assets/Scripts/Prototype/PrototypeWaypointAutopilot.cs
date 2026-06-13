@@ -88,9 +88,6 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private const float TerminalOvershootBrakeRelativeSpeedMultiplier = 1.35f;
     private const float BrakeDirectionMinimumSpeedMetersPerSecond = 0.35f;
     private const float TerminalBrakeDirectionRotateDegreesPerSecond = 36f;
-    private const float BrakeFlipMaxTurnRateDegreesPerSecond = 58f;
-    private const float BrakeFlipMaxAngularAccelerationRadPerSecondSquared = 3f;
-    private const float BrakeFlipDampingTimeSeconds = 0.4f;
     private const float BrakeAlignedTorqueDeadbandDegrees = 2.5f;
     private const float FlightPlanDivergenceConfirmSeconds = 0.3f;
     private const float FlightPlanDivergenceReplanCooldownSeconds = 0.45f;
@@ -115,6 +112,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         | PrototypeFlightPlanAbortReplanReason.FuelMismatch;
 
     private static float AutopilotTickSeconds => Time.fixedDeltaTime > 0f ? Time.fixedDeltaTime : 0.02f;
+
     [Header("Navigation")]
     [SerializeField] private PrototypeWaypointManager waypointManager;
     [SerializeField] private PrototypeNavigationTarget currentTarget;
@@ -143,6 +141,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     [SerializeField] private ShipStats shipStats;
     [SerializeField] private PlayerShipController shipController;
     [SerializeField] private PrototypeObstacleDetector obstacleDetector;
+    [SerializeField] private FloatingOriginManager floatingOriginManager;
 
     private bool autopilotEngaged;
     private bool togglePressedLastFrame;
@@ -204,6 +203,8 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private float directFastTransferTerminalReacquireStartedAtTime = -1f;
     private PrototypeMomentumAssist momentumAssist;
     private PrototypeTrajectoryPlanner trajectoryPlanner;
+    private FloatingOriginManager subscribedFloatingOriginManager;
+    private bool floatingOriginManagerLookupAttempted;
 
     public PrototypeWaypointAutopilotState CurrentState { get; private set; } = PrototypeWaypointAutopilotState.Idle;
     public PrototypeWaypointManager WaypointManager => waypointManager;
@@ -327,6 +328,17 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private void Awake()
     {
         ResolveReferences();
+    }
+
+    private void OnEnable()
+    {
+        floatingOriginManagerLookupAttempted = false;
+        ResolveFloatingOriginManagerSubscription();
+    }
+
+    private void OnDisable()
+    {
+        UnsubscribeFromFloatingOriginShift();
     }
 
     private void Start()
@@ -814,6 +826,26 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         navigationPlanDirty = true;
         nextNavigationPlanTime = 0f;
         nextFlightPlanSafetyRefreshTime = 0f;
+    }
+
+    private void HandleOriginShifted(FloatingOriginShift shift)
+    {
+        if (shift.LocalShift.sqrMagnitude <= 0.000001f)
+        {
+            return;
+        }
+
+        forceNextFlightPlanRevision = true;
+        hasStableAvoidance = false;
+        stableAvoidanceWaypoint = Vector3.zero;
+        stableAvoidanceDirection = Vector3.zero;
+        avoidanceHoldExpireTime = 0f;
+        reacquireDirectPathUntilTime = 0f;
+        ResetFlightPlanExecutorClock();
+        LastTrajectoryPlan = PrototypeTrajectoryPlan.Clear(LastMetrics.directionToTarget.sqrMagnitude > 0.0001f
+            ? LastMetrics.directionToTarget
+            : transform.forward);
+        MarkNavigationPlanDirty();
     }
 
     public static PrototypeWaypointAutopilotMetrics CalculateMetrics(
@@ -4037,7 +4069,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
         float directionRotateDegreesPerSecond = useTerminalSmoothing
             ? TerminalBrakeDirectionRotateDegreesPerSecond
-            : BrakeFlipMaxTurnRateDegreesPerSecond * 0.8f;
+            : PrototypeFlightPlanExecutionConfig.BrakeFlipMaxTurnRateDegreesPerSecond * 0.8f;
         float maxRotateRadians = Mathf.Deg2Rad * directionRotateDegreesPerSecond * AutopilotTickSeconds;
         committedBrakeDirection = Vector3.RotateTowards(
             committedBrakeDirection.normalized,
@@ -4659,15 +4691,15 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         }
 
         float flipTurnRateScale = CurrentState == PrototypeWaypointAutopilotState.FlipForBrake ? 0.9f : 0.7f;
-        float maxTurnRate = Mathf.Deg2Rad * BrakeFlipMaxTurnRateDegreesPerSecond * flipTurnRateScale;
+        float maxTurnRate = Mathf.Deg2Rad * PrototypeFlightPlanExecutionConfig.BrakeFlipMaxTurnRateDegreesPerSecond * flipTurnRateScale;
         Vector3 desiredAngularVelocityLocal = Vector3.ClampMagnitude(
-            angularErrorLocal / Mathf.Max(0.05f, BrakeFlipDampingTimeSeconds),
+            angularErrorLocal / Mathf.Max(0.05f, PrototypeFlightPlanExecutionConfig.BrakeFlipDampingTimeSeconds),
             maxTurnRate);
         Vector3 desiredAngularAccelerationLocal = (desiredAngularVelocityLocal - angularVelocityLocal)
-            / Mathf.Max(0.05f, BrakeFlipDampingTimeSeconds);
+            / Mathf.Max(0.05f, PrototypeFlightPlanExecutionConfig.BrakeFlipDampingTimeSeconds);
         desiredAngularAccelerationLocal = Vector3.ClampMagnitude(
             desiredAngularAccelerationLocal,
-            BrakeFlipMaxAngularAccelerationRadPerSecondSquared);
+            PrototypeFlightPlanExecutionConfig.BrakeFlipMaxAngularAccelerationRadPerSecondSquared);
         Vector3 desiredTorqueLocal = TransformLocalAngularAccelerationToTorque(desiredAngularAccelerationLocal);
         return Vector3.ClampMagnitude(desiredTorqueLocal, torqueAuthority);
     }
@@ -5453,6 +5485,42 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         {
             waypointManager = GetComponent<PrototypeWaypointManager>();
         }
+
+        ResolveFloatingOriginManagerSubscription();
+    }
+
+    private void ResolveFloatingOriginManagerSubscription()
+    {
+        if (floatingOriginManager == null && !floatingOriginManagerLookupAttempted)
+        {
+            floatingOriginManager = FindAnyObjectByType<FloatingOriginManager>();
+            floatingOriginManagerLookupAttempted = true;
+        }
+
+        if (subscribedFloatingOriginManager == floatingOriginManager)
+        {
+            return;
+        }
+
+        UnsubscribeFromFloatingOriginShift();
+        if (floatingOriginManager == null)
+        {
+            return;
+        }
+
+        floatingOriginManager.OriginShifted += HandleOriginShifted;
+        subscribedFloatingOriginManager = floatingOriginManager;
+    }
+
+    private void UnsubscribeFromFloatingOriginShift()
+    {
+        if (subscribedFloatingOriginManager == null)
+        {
+            return;
+        }
+
+        subscribedFloatingOriginManager.OriginShifted -= HandleOriginShifted;
+        subscribedFloatingOriginManager = null;
     }
 
     private static bool IsFinite(Vector3 value)
