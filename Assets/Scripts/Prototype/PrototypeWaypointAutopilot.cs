@@ -468,7 +468,9 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         if (!strictDirectFastTransferActive
             && !ShouldProtectDirectFastTransferBrakeSegmentFromTerminalHold()
             && (ShouldMaintainArrivalHold()
-                || (ShouldCaptureAnyArrivalHold() && !IsAvoidancePlanActive()))
+                || (ShouldCaptureAnyArrivalHold()
+                    && !IsFlightPlanExecutingNominalSegment()
+                    && !IsAvoidancePlanActive()))
             && TryEnterHoldPosition())
         {
             return;
@@ -1639,6 +1641,11 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return false;
         }
 
+        if (IsFlightPlanExecutingNominalSegment())
+        {
+            return false;
+        }
+
         if (!ShouldUseConservativeFlightPlanBrakeSafety())
         {
             return false;
@@ -2382,6 +2389,22 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             && plan.IsDirectFastTransfer
             && plan.HasSegments
             && activeFlightPlanRevision == plan.revision;
+    }
+
+    private bool IsFlightPlanExecutingNominalSegment()
+    {
+        if (!useFlightPlanExecutor || !CurrentFlightPlan.IsValid)
+        {
+            return false;
+        }
+
+        if (ShouldDeferFlightPlanExecutorToLegacyFallback())
+        {
+            return false;
+        }
+
+        return CurrentFlightPlan.TryGetActiveSegment(flightPlanElapsedSeconds, out _)
+            && flightPlanElapsedSeconds <= CurrentFlightPlan.totalDurationSeconds;
     }
 
     private bool IsStrictDirectFastTransferPlan(PrototypeFlightPlan plan)

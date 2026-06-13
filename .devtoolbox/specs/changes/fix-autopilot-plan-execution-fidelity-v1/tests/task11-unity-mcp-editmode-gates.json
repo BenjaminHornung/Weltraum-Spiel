@@ -1,0 +1,25 @@
+{
+  "task": 11,
+  "tool": "mcp__unityMCP.run_tests",
+  "timestamp_local": "2026-06-13T13:25:00+02:00",
+  "mode": "EditMode",
+  "job_id": "c43000733ad941a99e6f66b98398737a",
+  "status": "succeeded",
+  "summary": {
+    "total": 4,
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0
+  },
+  "test_names": [
+    "PrototypeWaypointAutopilotValidationTests.FlightPlanBrakeTimingDivergenceSuppressedDuringNominalActiveSegment",
+    "PrototypeWaypointAutopilotValidationTests.FlightPlanBrakeTimingDivergenceStillFlagsAfterPlanExpiry",
+    "PrototypeWaypointAutopilotValidationTests.FixedUpdateDoesNotCaptureArrivalHoldDuringNominalActiveSegment",
+    "PrototypeWaypointAutopilotValidationTests.FixedUpdateUsesTerminalSafetyAfterFlightPlanExpiry"
+  ],
+  "failures_so_far": [],
+  "notes": [
+    "Earlier full EditMode verification exposed the Task 11 first-tick hold-capture failure; unrelated legacy tests also failed in that full-suite run.",
+    "Focused rerun after the Task 11 fix executed the four gate tests and passed 4/4."
+  ]
+}

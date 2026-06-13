@@ -960,6 +960,139 @@ public class PrototypeWaypointAutopilotValidationTests
         Assert.True(result);
     }
 
+    [Test]
+    public void FlightPlanBrakeTimingDivergenceSuppressedDuringNominalActiveSegment()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 150f;
+        rig.Body.linearVelocity = Vector3.forward * 45f;
+        rig.Autopilot.SelectTarget(rig.Target);
+        InvokeFixedUpdate(rig.Autopilot);
+        Assert.True(rig.Autopilot.LastMetrics.shouldBrake, "test should enter conservative brake-safety state");
+
+        PrototypeManeuverSegment segment = CreateDirectFastTransferSegment(
+            PrototypeManeuverPhase.ProgradeBurn,
+            PrototypeManeuverProfile.Default);
+        PrototypeTrajectoryPlan plan = BuildTrajectoryPlanWithFlightPlan(new[] { segment });
+        SetPrivateProperty(rig.Autopilot, "LastTrajectoryPlan", plan);
+        SetPrivateField(rig.Autopilot, "activeFlightPlanRevision", plan.flightPlan.revision);
+        SetPrivateFloat(rig.Autopilot, "flightPlanElapsedSeconds", segment.startTimeSeconds + 0.5f);
+
+        MethodInfo method = typeof(PrototypeWaypointAutopilot).GetMethod("ShouldFlagFlightPlanBrakeTimingDivergence", PrivateInstance);
+        Assert.NotNull(method);
+        bool result = (bool)method.Invoke(rig.Autopilot, new object[] { segment });
+
+        Assert.False(result);
+    }
+
+    [Test]
+    public void FlightPlanBrakeTimingDivergenceStillFlagsAfterPlanExpiry()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 150f;
+        rig.Body.linearVelocity = Vector3.forward * 45f;
+        rig.Autopilot.SelectTarget(rig.Target);
+        InvokeFixedUpdate(rig.Autopilot);
+        Assert.True(rig.Autopilot.LastMetrics.shouldBrake, "test should enter conservative brake-safety state");
+
+        PrototypeManeuverSegment segment = CreateDirectFastTransferSegment(
+            PrototypeManeuverPhase.ProgradeBurn,
+            PrototypeManeuverProfile.Default);
+        PrototypeTrajectoryPlan plan = BuildTrajectoryPlanWithFlightPlan(new[] { segment });
+        SetPrivateProperty(rig.Autopilot, "LastTrajectoryPlan", plan);
+        SetPrivateField(rig.Autopilot, "activeFlightPlanRevision", plan.flightPlan.revision);
+        SetPrivateFloat(rig.Autopilot, "flightPlanElapsedSeconds", segment.endTimeSeconds + 0.1f);
+
+        MethodInfo method = typeof(PrototypeWaypointAutopilot).GetMethod("ShouldFlagFlightPlanBrakeTimingDivergence", PrivateInstance);
+        Assert.NotNull(method);
+        bool result = (bool)method.Invoke(rig.Autopilot, new object[] { segment });
+
+        Assert.True(result);
+    }
+
+    [Test]
+    public void FixedUpdateDoesNotCaptureArrivalHoldDuringNominalActiveSegment()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 250f;
+        rig.Body.linearVelocity = Vector3.zero;
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(true);
+        rig.Autopilot.SetStrictFlightPlanExecutionForTests(false);
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+        if (!rig.Autopilot.AutopilotEngaged)
+        {
+            Assert.Fail($"test setup should engage autopilot before injecting a nominal flight plan; state={rig.Autopilot.CurrentState}");
+        }
+
+        rig.Target.transform.position = Vector3.forward * 2f;
+        Physics.SyncTransforms();
+        PrototypeManeuverSegment segment = CreateBrakeDiagnosticSegment(0, PrototypeManeuverPhase.FinalApproach, 0f, 2f);
+        PrototypeTrajectoryPredictedSample[] samples =
+        {
+            CreateFlightPlanSample(0f, segment, Vector3.zero, Vector3.zero),
+            CreateFlightPlanSample(2f, segment, Vector3.zero, Vector3.zero)
+        };
+        PrototypeTrajectoryPlan plan = BuildTrajectoryPlanWithFlightPlan(new[] { segment }, rig.Target.Position, samples);
+        SetPrivateProperty(rig.Autopilot, "LastTrajectoryPlan", plan);
+        SetPrivateField(rig.Autopilot, "activeFlightPlanRevision", -1);
+        SetPrivateField(rig.Autopilot, "navigationPlanDirty", false);
+        SetPrivateFloat(rig.Autopilot, "flightPlanElapsedSeconds", segment.startTimeSeconds + 0.5f);
+        InvokeRefreshDiagnostics(rig.Autopilot);
+        Assert.True(InvokePrivateBool(rig.Autopilot, "ShouldCaptureAnyArrivalHold"), "test should enter the arrival-hold capture window");
+        Assert.True(InvokePrivateBool(rig.Autopilot, "IsFlightPlanExecutingNominalSegment"), "new flight plan revisions should be protected before the first executor tick");
+
+        InvokeFixedUpdate(rig.Autopilot);
+
+        Assert.True(rig.Autopilot.FlightPlanExecutorActive, "nominal active segment should be executed after bypassing the live hold gate");
+        Assert.That(GetPrivateField<int>(rig.Autopilot, "activeFlightPlanRevision"), Is.EqualTo(plan.flightPlan.revision));
+        Assert.That(rig.Autopilot.CurrentState, Is.Not.EqualTo(PrototypeWaypointAutopilotState.HoldPosition));
+    }
+
+    [Test]
+    public void FixedUpdateUsesTerminalSafetyAfterFlightPlanExpiry()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Target.transform.position = Vector3.forward * 150f;
+        rig.Body.linearVelocity = Vector3.forward * 45f;
+        SetPrivateFloat(rig.Ship.GetComponent<ShipStats>(), "currentFuelKg", 1000f);
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(true);
+        rig.Autopilot.SetStrictFlightPlanExecutionForTests(false);
+        rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.ToggleAutopilot();
+        if (!rig.Autopilot.AutopilotEngaged)
+        {
+            Assert.Fail($"test setup should engage autopilot before injecting an expired flight plan; state={rig.Autopilot.CurrentState}");
+        }
+
+        PrototypeManeuverSegment segment = CreateDirectFastTransferSegment(
+            PrototypeManeuverPhase.ProgradeBurn,
+            PrototypeManeuverProfile.Default);
+        PrototypeTrajectoryPlan plan = BuildTrajectoryPlanWithFlightPlan(
+            new[] { segment },
+            rig.Target.Position,
+            profile: PrototypeManeuverProfile.Default);
+        SetPrivateProperty(rig.Autopilot, "LastTrajectoryPlan", plan);
+        SetPrivateField(rig.Autopilot, "activeFlightPlanRevision", plan.flightPlan.revision);
+        SetPrivateField(rig.Autopilot, "navigationPlanDirty", false);
+        SetPrivateField(rig.Autopilot, "arrivalBrakeCommitted", true);
+        SetPrivateFloat(rig.Autopilot, "nextNavigationPlanTime", 999f);
+        SetPrivateFloat(rig.Autopilot, "flightPlanElapsedSeconds", plan.flightPlan.totalDurationSeconds + 0.1f);
+        InvokeRefreshDiagnostics(rig.Autopilot);
+        Assert.False(InvokePrivateBool(rig.Autopilot, "ShouldCaptureAnyArrivalHold"), "test should reach terminal safety through expiry, not the live hold gate");
+        Assert.False(InvokePrivateBool(rig.Autopilot, "IsFlightPlanExecutingNominalSegment"), "expired plans must not be treated as nominal");
+
+        InvokeFixedUpdate(rig.Autopilot);
+
+        if (!rig.Autopilot.FlightPlanExecutorActive)
+        {
+            Assert.Fail($"expired flight plan should be handled by executor terminal safety; state={rig.Autopilot.CurrentState}");
+        }
+        Assert.That(
+            rig.Autopilot.CurrentState,
+            Is.EqualTo(PrototypeWaypointAutopilotState.Brake).Or.EqualTo(PrototypeWaypointAutopilotState.FlipForBrake));
+    }
+
     [TestCase(0.01f)]
     [TestCase(0.02f)]
     [TestCase(0.04f)]
@@ -1114,8 +1247,13 @@ public class PrototypeWaypointAutopilotValidationTests
             profile);
     }
 
-    private static PrototypeTrajectoryPlan BuildTrajectoryPlanWithFlightPlan(PrototypeManeuverSegment[] segments)
+    private static PrototypeTrajectoryPlan BuildTrajectoryPlanWithFlightPlan(
+        PrototypeManeuverSegment[] segments,
+        Vector3? targetPosition = null,
+        PrototypeTrajectoryPredictedSample[] samples = null,
+        PrototypeManeuverProfile profile = PrototypeManeuverProfile.DirectFastTransfer)
     {
+        Vector3 target = targetPosition ?? Vector3.forward * 150f;
         PrototypeShipPlanningSnapshot snapshot = PrototypeShipPlanningSnapshot.Empty;
         snapshot.currentFuelKg = 100f;
         snapshot.maxFuelKg = 100f;
@@ -1124,21 +1262,40 @@ public class PrototypeWaypointAutopilotValidationTests
             1,
             0f,
             0.02f,
-            Vector3.forward * 150f,
+            target,
             10f,
             1f,
             snapshot,
             segments,
-            Array.Empty<PrototypeTrajectoryPredictedSample>(),
+            samples ?? Array.Empty<PrototypeTrajectoryPredictedSample>(),
             true,
             PrototypeFlightPlanAbortReplanReason.None,
             "Diagnostics test",
-            Vector3.forward * 150f,
-            PrototypeManeuverProfile.DirectFastTransfer);
+            target,
+            profile);
 
         PrototypeTrajectoryPlan plan = PrototypeTrajectoryPlan.Clear(Vector3.forward);
         plan.flightPlan = flightPlan;
         return plan;
+    }
+
+    private static PrototypeTrajectoryPredictedSample CreateFlightPlanSample(
+        float elapsedSeconds,
+        PrototypeManeuverSegment segment,
+        Vector3 position,
+        Vector3 velocity)
+    {
+        return new PrototypeTrajectoryPredictedSample(
+            elapsedSeconds,
+            segment.index,
+            segment.phase,
+            position,
+            velocity,
+            Quaternion.identity,
+            Vector3.zero,
+            100f,
+            segment.mainThrottle,
+            Vector3.zero);
     }
 
     private static PrototypeManeuverSegment CreateBrakeDiagnosticSegment(
@@ -1213,6 +1370,13 @@ public class PrototypeWaypointAutopilotValidationTests
         MethodInfo method = typeof(PrototypeWaypointAutopilot).GetMethod("RefreshDiagnostics", PrivateInstance);
         Assert.NotNull(method);
         method.Invoke(autopilot, null);
+    }
+
+    private static bool InvokePrivateBool(object target, string methodName)
+    {
+        MethodInfo method = target.GetType().GetMethod(methodName, PrivateInstance);
+        Assert.NotNull(method, methodName);
+        return (bool)method.Invoke(target, null);
     }
 
     private static string StripComments(string line)

@@ -19,7 +19,7 @@ Referenz: `design.md` (Zeilennummern = Commit `a68333b`).
 
 ## Phase 3 — Brems-Metriken
 - [x] `GetEffectiveBrakeDeceleration()` einfuehren; `RefreshDiagnostics` (`:4764`) nutzt vollen Hauptschub, wenn Flip-Brake geplant ist (statt `GetMaxDeceleration()` mit ReverseThrustMultiplier `:5266`).
-- [ ] Hold-/Terminal-Gates (`FixedUpdate` `:447-454`, `ShouldUseConservativeFlightPlanBrakeSafety` `:1609`) waehrend nominaler Planausfuehrung deaktivieren.
+- [x] Hold-/Terminal-Gates (`FixedUpdate` `:447-454`, `ShouldUseConservativeFlightPlanBrakeSafety` `:1609`) waehrend nominaler Planausfuehrung deaktivieren.
 
 ## Phase 4 — Replan-Hygiene
 - [ ] `FlightPlanDivergenceReplanCooldownSeconds` 0,45 → 2,0 s; Confirm-Fenster fuer weiche Gruende 0,5 s.
