@@ -74,6 +74,47 @@ public class FloatingOriginValidationTests
     }
 
     [Test]
+    public void OriginShiftedEventFiresAfterStateUpdatesForNonZeroShift()
+    {
+        var managerObject = new GameObject("FloatingOriginEventProbe");
+
+        try
+        {
+            var manager = managerObject.AddComponent<FloatingOriginManager>();
+            Vector3 eventShift = Vector3.zero;
+            LargeWorldVector3d eventOrigin = LargeWorldVector3d.Zero;
+            int eventShiftCount = 0;
+            int eventCount = 0;
+            manager.OriginShifted += shift =>
+            {
+                eventShift = shift.LocalShift;
+                eventOrigin = shift.Origin;
+                eventShiftCount = shift.ShiftCount;
+                eventCount++;
+                Assert.That(manager.ShiftCount, Is.EqualTo(shift.ShiftCount));
+                Assert.That(manager.Origin.x, Is.EqualTo(shift.Origin.x).Within(0.001d));
+            };
+
+            manager.ShiftOriginBy(Vector3.zero);
+            Assert.That(eventCount, Is.EqualTo(0));
+
+            Vector3 localShift = new Vector3(12f, -3f, 4f);
+            manager.ShiftOriginBy(localShift);
+
+            Assert.That(eventCount, Is.EqualTo(1));
+            Assert.That(Vector3.Distance(eventShift, localShift), Is.LessThan(0.001f));
+            Assert.That(eventOrigin.x, Is.EqualTo(12d).Within(0.001d));
+            Assert.That(eventOrigin.y, Is.EqualTo(-3d).Within(0.001d));
+            Assert.That(eventOrigin.z, Is.EqualTo(4d).Within(0.001d));
+            Assert.That(eventShiftCount, Is.EqualTo(1));
+        }
+        finally
+        {
+            Object.DestroyImmediate(managerObject);
+        }
+    }
+
+    [Test]
     public void DisabledFloatingOriginLeavesPrototypeLocalPositionUntouched()
     {
         var managerObject = new GameObject("DisabledFloatingOriginManagerProbe");

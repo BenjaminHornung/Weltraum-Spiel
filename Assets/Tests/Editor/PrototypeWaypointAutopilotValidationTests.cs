@@ -928,6 +928,46 @@ public class PrototypeWaypointAutopilotValidationTests
     }
 
     [Test]
+    public void AutopilotOriginShiftClearsStableAvoidanceAndForcesReplan()
+    {
+        var managerObject = new GameObject("WaypointAutopilotValidationFloatingOriginManager");
+
+        try
+        {
+            var manager = managerObject.AddComponent<FloatingOriginManager>();
+            var rig = CreateAutopilotRig();
+            rig.Target.transform.position = Vector3.forward * 180f;
+            rig.Autopilot.SelectTarget(rig.Target);
+            rig.Autopilot.ToggleAutopilot();
+            InvokeFixedUpdate(rig.Autopilot);
+
+            SetPrivateField(rig.Autopilot, "hasStableAvoidance", true);
+            SetPrivateField(rig.Autopilot, "stableAvoidanceWaypoint", new Vector3(25f, 0f, 40f));
+            SetPrivateField(rig.Autopilot, "stableAvoidanceDirection", Vector3.right);
+            SetPrivateFloat(rig.Autopilot, "avoidanceHoldExpireTime", 999f);
+            SetPrivateFloat(rig.Autopilot, "reacquireDirectPathUntilTime", 999f);
+            SetPrivateField(rig.Autopilot, "navigationPlanDirty", false);
+            SetPrivateField(rig.Autopilot, "forceNextFlightPlanRevision", false);
+
+            manager.ShiftOriginBy(new Vector3(1000f, 0f, 0f));
+
+            Assert.False(GetPrivateField<bool>(rig.Autopilot, "hasStableAvoidance"));
+            Assert.That(GetPrivateField<Vector3>(rig.Autopilot, "stableAvoidanceWaypoint"), Is.EqualTo(Vector3.zero));
+            Assert.That(GetPrivateField<Vector3>(rig.Autopilot, "stableAvoidanceDirection"), Is.EqualTo(Vector3.zero));
+            Assert.That(GetPrivateField<float>(rig.Autopilot, "avoidanceHoldExpireTime"), Is.EqualTo(0f).Within(0.0001f));
+            Assert.That(GetPrivateField<float>(rig.Autopilot, "reacquireDirectPathUntilTime"), Is.EqualTo(0f).Within(0.0001f));
+            Assert.True(GetPrivateField<bool>(rig.Autopilot, "navigationPlanDirty"));
+            Assert.True(GetPrivateField<bool>(rig.Autopilot, "forceNextFlightPlanRevision"));
+            Assert.False(GetPrivateField<bool>(rig.Autopilot, "flightPlanExecutorActive"));
+            Assert.False(rig.Autopilot.CurrentFlightPlan.HasSegments);
+        }
+        finally
+        {
+            UnityEngine.Object.DestroyImmediate(managerObject);
+        }
+    }
+
+    [Test]
     public void AutopilotSourceDoesNotAssignRigidbodyMotionStateDirectly()
     {
         string sourceFile = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "Scripts", "Prototype", "PrototypeWaypointAutopilot.cs");
@@ -1031,6 +1071,13 @@ public class PrototypeWaypointAutopilotValidationTests
         FieldInfo field = target.GetType().GetField(fieldName, PrivateInstance);
         Assert.NotNull(field, fieldName);
         field.SetValue(target, value);
+    }
+
+    private static T GetPrivateField<T>(object target, string fieldName)
+    {
+        FieldInfo field = target.GetType().GetField(fieldName, PrivateInstance);
+        Assert.NotNull(field, fieldName);
+        return (T)field.GetValue(target);
     }
 
     private static void SetPrivateProperty<T>(object target, string propertyName, T value)

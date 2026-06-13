@@ -1,6 +1,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public struct FloatingOriginShift
+{
+    public FloatingOriginShift(Vector3 localShift, LargeWorldVector3d origin, int shiftCount)
+    {
+        LocalShift = localShift;
+        Origin = origin;
+        ShiftCount = shiftCount;
+    }
+
+    public Vector3 LocalShift { get; }
+    public LargeWorldVector3d Origin { get; }
+    public int ShiftCount { get; }
+}
+
 [DisallowMultipleComponent]
 public class FloatingOriginManager : MonoBehaviour
 {
@@ -10,6 +24,8 @@ public class FloatingOriginManager : MonoBehaviour
     [SerializeField] private LargeWorldVector3d origin;
 
     private readonly List<FloatingOriginBody> registeredBodies = new List<FloatingOriginBody>();
+
+    public event System.Action<FloatingOriginShift> OriginShifted;
 
     public bool FloatingOriginEnabled => floatingOriginEnabled;
     public float ShiftThreshold => Mathf.Max(1f, shiftThreshold);
@@ -96,5 +112,6 @@ public class FloatingOriginManager : MonoBehaviour
 
         LastShiftLocal = localShift;
         ShiftCount++;
+        OriginShifted?.Invoke(new FloatingOriginShift(localShift, origin, ShiftCount));
     }
 }
