@@ -1,0 +1,17 @@
+{
+  "jsonrpc": "2.0",
+  "id": "7e7269ebb6b4444eb99fe08d89c5cb7a",
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"message\":\"Console cleared successfully.\"}"
+      }
+    ],
+    "structuredContent": {
+      "success": true,
+      "message": "Console cleared successfully."
+    },
+    "isError": false
+  }
+}

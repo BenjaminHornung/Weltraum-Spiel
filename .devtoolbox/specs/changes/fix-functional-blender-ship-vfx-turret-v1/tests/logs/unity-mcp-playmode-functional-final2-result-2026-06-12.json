@@ -1,0 +1,13 @@
+{
+  "jsonrpc": "2.0",
+  "id": "62f38be81980467d8e3f960df14a7bd0",
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "1 validation error for call[get_test_job]\njob_id\n  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]\n    For further information visit https://errors.pydantic.dev/2.13/v/string_type"
+      }
+    ],
+    "isError": true
+  }
+}

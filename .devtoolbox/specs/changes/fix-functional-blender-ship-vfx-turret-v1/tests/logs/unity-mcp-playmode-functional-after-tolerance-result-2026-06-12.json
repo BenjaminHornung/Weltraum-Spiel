@@ -1,0 +1,54 @@
+{
+  "jsonrpc": "2.0",
+  "id": "e56dc20af9e643c5872063e429ac7ab9",
+  "result": {
+    "_meta": {
+      "fastmcp": {
+        "wrap_result": true
+      }
+    },
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"message\":\"Test job status retrieved.\",\"error\":null,\"data\":{\"job_id\":\"6724c7524cc1437d9d12b4a1e18d7c8f\",\"status\":\"failed\",\"mode\":\"PlayMode\",\"started_unix_ms\":1781297601334,\"finished_unix_ms\":1781297606995,\"last_update_unix_ms\":1781297606995,\"progress\":{\"completed\":2,\"total\":2,\"current_test_full_name\":null,\"current_test_started_unix_ms\":1781297606923,\"last_finished_test_full_name\":\"PrototypeFunctionalBlenderRuntimePlayModeTests.BootstrapPlayModeRegistersDefaultTargetForWeaponComputer\",\"last_finished_unix_ms\":1781297606980,\"stuck_suspected\":false,\"editor_is_focused\":false,\"blocked_reason\":null,\"failures_so_far\":[{\"full_name\":\"PrototypeFunctionalBlenderRuntimePlayModeTests.BootstrapPlayModeKeepsImportedScoutVisibleAndPlayableForTenSeconds\",\"message\":\"  Expected: greater than 0.0700000003f\\r\\n  But was:  0.0621294975f\\r\\n\"}],\"failures_capped\":false},\"error\":null,\"result\":null},\"hint\":null}"
+      }
+    ],
+    "structuredContent": {
+      "result": {
+        "success": true,
+        "message": "Test job status retrieved.",
+        "error": null,
+        "data": {
+          "job_id": "6724c7524cc1437d9d12b4a1e18d7c8f",
+          "status": "failed",
+          "mode": "PlayMode",
+          "started_unix_ms": 1781297601334,
+          "finished_unix_ms": 1781297606995,
+          "last_update_unix_ms": 1781297606995,
+          "progress": {
+            "completed": 2,
+            "total": 2,
+            "current_test_full_name": null,
+            "current_test_started_unix_ms": 1781297606923,
+            "last_finished_test_full_name": "PrototypeFunctionalBlenderRuntimePlayModeTests.BootstrapPlayModeRegistersDefaultTargetForWeaponComputer",
+            "last_finished_unix_ms": 1781297606980,
+            "stuck_suspected": false,
+            "editor_is_focused": false,
+            "blocked_reason": null,
+            "failures_so_far": [
+              {
+                "full_name": "PrototypeFunctionalBlenderRuntimePlayModeTests.BootstrapPlayModeKeepsImportedScoutVisibleAndPlayableForTenSeconds",
+                "message": "  Expected: greater than 0.0700000003f\r\n  But was:  0.0621294975f\r\n"
+              }
+            ],
+            "failures_capped": false
+          },
+          "error": null,
+          "result": null
+        },
+        "hint": null
+      }
+    },
+    "isError": false
+  }
+}

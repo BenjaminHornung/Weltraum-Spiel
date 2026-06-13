@@ -1,6 +1,6 @@
 phase,item_count,work_units,scalar_median_ms,job_median_ms,speedup
-Phase2.ProjectileIntegration,262144,262144,17.4659,0.2190,79.753
-Phase3.TargetScoring,262144,262144,68.1544,0.6337,107.550
-Phase4.TrajectoryEvaluation,32768,3145728,193.4290,0.2370,816.156
-Phase5.SensorFiltering,262144,262144,62.7147,0.2201,284.937
-Phase6.RcsNozzleScoring,262144,262144,64.3160,0.5918,108.679
+Phase2.ProjectileIntegration,262144,262144,18.7610,0.3575,52.478
+Phase3.TargetScoring,262144,262144,69.9070,0.5036,138.815
+Phase4.TrajectoryEvaluation,32768,3145728,182.0464,0.5996,303.613
+Phase5.SensorFiltering,262144,262144,59.1370,0.2666,221.819
+Phase6.RcsNozzleScoring,262144,262144,62.8830,0.5323,118.135

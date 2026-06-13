@@ -1,0 +1,21 @@
+{
+  "jsonrpc": "2.0",
+  "id": 130,
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"message\":\"Scene 'Assets/Scenes/PrototypeBootstrapHost.unity' loaded successfully.\",\"data\":{\"path\":\"Assets/Scenes/PrototypeBootstrapHost.unity\",\"name\":\"PrototypeBootstrapHost\"}}"
+      }
+    ],
+    "structuredContent": {
+      "success": true,
+      "message": "Scene 'Assets/Scenes/PrototypeBootstrapHost.unity' loaded successfully.",
+      "data": {
+        "path": "Assets/Scenes/PrototypeBootstrapHost.unity",
+        "name": "PrototypeBootstrapHost"
+      }
+    },
+    "isError": false
+  }
+}

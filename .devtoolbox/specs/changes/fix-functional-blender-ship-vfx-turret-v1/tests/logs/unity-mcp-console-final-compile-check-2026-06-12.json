@@ -1,0 +1,306 @@
+{
+  "jsonrpc": "2.0",
+  "id": "c583c9d0a3a3482fb965e693e874d5ca",
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"message\":\"Retrieved 41 log entries.\",\"data\":[{\"type\":\"Warning\",\"message\":\"Assets\\\\Tests\\\\PlayMode\\\\PrototypeAutopilotNavigationPlayModeTests.cs(3304,32): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'\",\"file\":\"Assets\\\\Tests\\\\PlayMode\\\\PrototypeAutopilotNavigationPlayModeTests.cs\",\"line\":3304,\"stackTrace\":null},{\"type\":\"Warning\",\"message\":\"Assets\\\\Tests\\\\Editor\\\\PrototypeAutopilotNavigationComputerV2ValidationTests.cs(922,32): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'\",\"file\":\"Assets\\\\Tests\\\\Editor\\\\PrototypeAutopilotNavigationComputerV2ValidationTests.cs\",\"line\":922,\"stackTrace\":null},{\"type\":\"Warning\",\"message\":\"Assets\\\\Tests\\\\Editor\\\\PrototypeWaypointAutopilotValidationTests.cs(1086,47): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'\",\"file\":\"Assets\\\\Tests\\\\Editor\\\\PrototypeWaypointAutopilotValidationTests.cs\",\"line\":1086,\"stackTrace\":null},{\"type\":\"Warning\",\"message\":\"Assets\\\\Tests\\\\Editor\\\\PrototypeWaypointAutopilotValidationTests.cs(1109,32): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'\",\"file\":\"Assets\\\\Tests\\\\Editor\\\\PrototypeWaypointAutopilotValidationTests.cs\",\"line\":1109,\"stackTrace\":null},{\"type\":\"Warning\",\"message\":\"<b><color=#cc7a00>MCP-FOR-UNITY</color></b>: [WebSocket] Unexpected receive error: WebSocket is not initialised\",\"file\":\"./Library/PackageCache/com.coplaydev.unity-mcp@1c35e6bd3ab3/Editor/Helpers/McpLog.cs\",\"line\":45,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.IOProxy is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.ApplicationProxy is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.AssetOperationManager is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.DownloadManager is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.ImportedAssetsTracker is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.AssetsSdkProvider is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseSdkService is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseSdkService or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.AssetDataManager is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.Upload.Editor Unity.AssetManager.Upload.Editor.UploadManager is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.CachePathHelper is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.AssetManagerSettingsManager is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.CacheEvictionManager is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.ThumbnailDownloader is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.UnityConnectProxy is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.MessageManager is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.AssetDataCacheManager is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.AssetDataCacheSyncService is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.ProjectIconDownloader is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.AssetDatabaseProxy is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.PersistenceManager is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.FileUtility is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.EditorUtilityProxy is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.AssetImportResolver is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.AssetImporter is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.UIPreferences is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.DragAndDropProjectBrowserProxy is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.SavedAssetSearchFilterManager is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.PackageVersionService is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.InlineEditService is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.UI.Editor Unity.AssetManager.UI.Editor.StateManager is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.UI.Editor Unity.AssetManager.UI.Editor.PageManager is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.UI.Editor Unity.AssetManager.UI.Editor.LinksProxy is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.UI.Editor Unity.AssetManager.UI.Editor.PopupManager is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.DialogManager is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.UI.Editor Unity.AssetManager.UI.Editor.ContextMenuBuilder is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.UI.Editor Unity.AssetManager.UI.Editor.ProjectWindowProxy is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null},{\"type\":\"Exception\",\"message\":\"The type Unity.AssetManager.UI.Editor Unity.AssetManager.UI.Editor.ProjectWindowIconOverlay is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].\",\"file\":\"C:\\\\build\\\\output\\\\unity\\\\unity\\\\Runtime\\\\Scripting\\\\ManagedReference\\\\SerializableAttributeManager.cpp\",\"line\":138,\"stackTrace\":null}]}"
+      }
+    ],
+    "structuredContent": {
+      "success": true,
+      "message": "Retrieved 41 log entries.",
+      "data": [
+        {
+          "type": "Warning",
+          "message": "Assets\\Tests\\PlayMode\\PrototypeAutopilotNavigationPlayModeTests.cs(3304,32): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'",
+          "file": "Assets\\Tests\\PlayMode\\PrototypeAutopilotNavigationPlayModeTests.cs",
+          "line": 3304,
+          "stackTrace": null
+        },
+        {
+          "type": "Warning",
+          "message": "Assets\\Tests\\Editor\\PrototypeAutopilotNavigationComputerV2ValidationTests.cs(922,32): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'",
+          "file": "Assets\\Tests\\Editor\\PrototypeAutopilotNavigationComputerV2ValidationTests.cs",
+          "line": 922,
+          "stackTrace": null
+        },
+        {
+          "type": "Warning",
+          "message": "Assets\\Tests\\Editor\\PrototypeWaypointAutopilotValidationTests.cs(1086,47): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'",
+          "file": "Assets\\Tests\\Editor\\PrototypeWaypointAutopilotValidationTests.cs",
+          "line": 1086,
+          "stackTrace": null
+        },
+        {
+          "type": "Warning",
+          "message": "Assets\\Tests\\Editor\\PrototypeWaypointAutopilotValidationTests.cs(1109,32): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'",
+          "file": "Assets\\Tests\\Editor\\PrototypeWaypointAutopilotValidationTests.cs",
+          "line": 1109,
+          "stackTrace": null
+        },
+        {
+          "type": "Warning",
+          "message": "<b><color=#cc7a00>MCP-FOR-UNITY</color></b>: [WebSocket] Unexpected receive error: WebSocket is not initialised",
+          "file": "./Library/PackageCache/com.coplaydev.unity-mcp@1c35e6bd3ab3/Editor/Helpers/McpLog.cs",
+          "line": 45,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.IOProxy is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.ApplicationProxy is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.AssetOperationManager is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.DownloadManager is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.ImportedAssetsTracker is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.AssetsSdkProvider is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseSdkService is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseSdkService or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.AssetDataManager is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.Upload.Editor Unity.AssetManager.Upload.Editor.UploadManager is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.CachePathHelper is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.AssetManagerSettingsManager is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.CacheEvictionManager is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.ThumbnailDownloader is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.UnityConnectProxy is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.MessageManager is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.AssetDataCacheManager is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.AssetDataCacheSyncService is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.ProjectIconDownloader is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.AssetDatabaseProxy is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.PersistenceManager is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.FileUtility is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.EditorUtilityProxy is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.AssetImportResolver is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.AssetImporter is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.UIPreferences is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.DragAndDropProjectBrowserProxy is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.SavedAssetSearchFilterManager is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.PackageVersionService is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.InlineEditService is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.UI.Editor Unity.AssetManager.UI.Editor.StateManager is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.UI.Editor Unity.AssetManager.UI.Editor.PageManager is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.UI.Editor Unity.AssetManager.UI.Editor.LinksProxy is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.UI.Editor Unity.AssetManager.UI.Editor.PopupManager is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.DialogManager is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.UI.Editor Unity.AssetManager.UI.Editor.ContextMenuBuilder is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.UI.Editor Unity.AssetManager.UI.Editor.ProjectWindowProxy is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        },
+        {
+          "type": "Exception",
+          "message": "The type Unity.AssetManager.UI.Editor Unity.AssetManager.UI.Editor.ProjectWindowIconOverlay is being serialized by [SerializeReference], but its parent type Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 is missing the [Serializable] attribute. To suppress this warning add [Serializable] to Unity.AssetManager.Core.Editor Unity.AssetManager.Core.Editor.BaseService`1 or use [MakeSerializable].",
+          "file": "C:\\build\\output\\unity\\unity\\Runtime\\Scripting\\ManagedReference\\SerializableAttributeManager.cpp",
+          "line": 138,
+          "stackTrace": null
+        }
+      ]
+    },
+    "isError": false
+  }
+}

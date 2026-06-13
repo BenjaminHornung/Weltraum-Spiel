@@ -1,0 +1,30 @@
+{
+  "jsonrpc": "2.0",
+  "id": "e417053dcd53497284f3549394a248c1",
+  "result": {
+    "_meta": {
+      "fastmcp": {
+        "wrap_result": true
+      }
+    },
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":false,\"message\":null,\"error\":\"tests_running\",\"data\":{\"reason\":\"tests_running\",\"retry_after_ms\":5000},\"hint\":null}"
+      }
+    ],
+    "structuredContent": {
+      "result": {
+        "success": false,
+        "message": null,
+        "error": "tests_running",
+        "data": {
+          "reason": "tests_running",
+          "retry_after_ms": 5000
+        },
+        "hint": null
+      }
+    },
+    "isError": false
+  }
+}

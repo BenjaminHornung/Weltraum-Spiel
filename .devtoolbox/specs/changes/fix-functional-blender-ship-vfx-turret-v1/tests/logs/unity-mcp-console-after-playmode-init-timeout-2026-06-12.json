@@ -1,0 +1,33 @@
+{
+  "jsonrpc": "2.0",
+  "id": "bf698ba832944a4295f5c53ebc9228d9",
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"message\":\"Retrieved 2 log entries.\",\"data\":[{\"type\":\"Error\",\"message\":\"Assets\\\\Scripts\\\\Prototype\\\\PrototypePlayerHud.cs(209,17): error CS0103: The name 'TranslateNavigationPlanState' does not exist in the current context\",\"file\":\"Assets\\\\Scripts\\\\Prototype\\\\PrototypePlayerHud.cs\",\"line\":209,\"stackTrace\":null},{\"type\":\"Warning\",\"message\":\"Assets\\\\Tests\\\\PlayMode\\\\PrototypeAutopilotNavigationPlayModeTests.cs(3304,32): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'\",\"file\":\"Assets\\\\Tests\\\\PlayMode\\\\PrototypeAutopilotNavigationPlayModeTests.cs\",\"line\":3304,\"stackTrace\":null}]}"
+      }
+    ],
+    "structuredContent": {
+      "success": true,
+      "message": "Retrieved 2 log entries.",
+      "data": [
+        {
+          "type": "Error",
+          "message": "Assets\\Scripts\\Prototype\\PrototypePlayerHud.cs(209,17): error CS0103: The name 'TranslateNavigationPlanState' does not exist in the current context",
+          "file": "Assets\\Scripts\\Prototype\\PrototypePlayerHud.cs",
+          "line": 209,
+          "stackTrace": null
+        },
+        {
+          "type": "Warning",
+          "message": "Assets\\Tests\\PlayMode\\PrototypeAutopilotNavigationPlayModeTests.cs(3304,32): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'",
+          "file": "Assets\\Tests\\PlayMode\\PrototypeAutopilotNavigationPlayModeTests.cs",
+          "line": 3304,
+          "stackTrace": null
+        }
+      ]
+    },
+    "isError": false
+  }
+}

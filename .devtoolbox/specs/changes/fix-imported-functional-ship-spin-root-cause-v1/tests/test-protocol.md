@@ -103,8 +103,8 @@
 - PASS: E-F6 no stale external assist (source=None)
 - PASS: F-external source waypoint set (source=WaypointAutopilot)
 - PASS: F-manual input clears stale external assist (source=None)
-- PASS: Log artifact written (E:\Unity\Weltraum Spiel\Weltraum Spiel\.devtoolbox\specs\changes\fix-imported-functional-ship-spin-root-cause-v1\tests\logs\flight-spin-root-cause.log bytes=98045)
-- PASS: CSV artifact written (E:\Unity\Weltraum Spiel\Weltraum Spiel\.devtoolbox\specs\changes\fix-imported-functional-ship-spin-root-cause-v1\tests\performance\flight-control-spin-diagnostics.csv bytes=48461)
+- PASS: Log artifact written (E:\Unity\Weltraum Spiel\Weltraum Spiel\.devtoolbox\specs\changes\fix-imported-functional-ship-spin-root-cause-v1\tests\logs\flight-spin-root-cause.log bytes=98043)
+- PASS: CSV artifact written (E:\Unity\Weltraum Spiel\Weltraum Spiel\.devtoolbox\specs\changes\fix-imported-functional-ship-spin-root-cause-v1\tests\performance\flight-control-spin-diagnostics.csv bytes=48459)
 
 ## Summary
 - Final visual mode: ImportedDemoScout

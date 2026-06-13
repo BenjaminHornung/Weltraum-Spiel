@@ -1,0 +1,33 @@
+{
+  "jsonrpc": "2.0",
+  "id": "81b1cd1db8c1443e8530740fb1932c49",
+  "result": {
+    "_meta": {
+      "fastmcp": {
+        "wrap_result": true
+      }
+    },
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"message\":\"Test job started.\",\"error\":null,\"data\":{\"job_id\":\"420cb27a77614eac978c81c2042352af\",\"status\":\"running\",\"mode\":\"PlayMode\",\"include_details\":true,\"include_failed_tests\":true},\"hint\":null}"
+      }
+    ],
+    "structuredContent": {
+      "result": {
+        "success": true,
+        "message": "Test job started.",
+        "error": null,
+        "data": {
+          "job_id": "420cb27a77614eac978c81c2042352af",
+          "status": "running",
+          "mode": "PlayMode",
+          "include_details": true,
+          "include_failed_tests": true
+        },
+        "hint": null
+      }
+    },
+    "isError": false
+  }
+}

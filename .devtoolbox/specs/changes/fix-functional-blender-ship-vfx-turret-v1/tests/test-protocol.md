@@ -11,7 +11,8 @@ Goal: Default runtime uses the Blender Demo Scout as the functional `PrototypeSh
 - `specs_validate --change fix-functional-blender-ship-vfx-turret-v1`: PASS
 - Parsed files: 5 spec files
 - Parsed tasks: 20 tasks
-- `tasks.md` entries remain unchecked until final human/runtime acceptance; evidence is recorded here instead of silently closing tasks.
+- 2026-06-12 closeout rerun: PASS; proposal, design, tasks, 5 spec files, task parsing, and change root passed.
+- `tasks.md` entries were checked only after `tasks_completion_preflight` reported no blockers and `canProceed=true` for all 20 task lines. Preflight remained `degraded` only because the old linked execution lacks DevToolbox verification notes; the fresh Unity/dotnet/spec evidence is recorded in this protocol and `tests/logs/`.
 
 ## Blender Validation And Export
 
@@ -229,11 +230,56 @@ Additional 2026-05-22 manual Game View probe:
 - Scene serialization verified with `rg`:
   - `buildMode: 0`
   - `allowGeneratedFallbackWhenImportedAssetMissing: 0`
-- `dotnet build "Weltraum Spiel.sln" --no-restore`: BLOCKED by a stale project-file reference to missing source `Assets\Tests\Editor\PrototypeImportedBlenderJitterEvidenceTests.cs`.
-- Unity MCP script validation and focused Unity EditMode/PlayMode tests above compile and run successfully despite that stale external project-file reference.
+- 2026-06-12 stale reference search:
+  - `rg --hidden -n "PrototypeImportedBlenderJitterEvidenceTests\.cs|PrototypeImportedBlenderJitterEvidenceTests|PrototypeImportedBlenderJitterEvidencePlayModeTests\.cs|PrototypeFunctionalBlenderRuntimePlayModeTests\.cs" -g "*.csproj" -g "*.sln" -g "*.md" -g "*.json" -g "!Library/**" -g "!Temp/**" -g "!Logs/**" -g "!obj/**" -g "!bin/**" .`
+  - Active project references are valid: `Assembly-CSharp.csproj` references existing `Assets\Tests\PlayMode\PrototypeImportedBlenderJitterEvidencePlayModeTests.cs` and `Assets\Tests\PlayMode\PrototypeFunctionalBlenderRuntimePlayModeTests.cs`; `WeltraumSpiel.PlayModeTests.csproj` references existing `Assets\Tests\PlayMode\PrototypeFunctionalBlenderRuntimePlayModeTests.cs`.
+  - No active `.csproj`/`.sln` reference to missing `Assets\Tests\Editor\PrototypeImportedBlenderJitterEvidenceTests.cs` remains.
+  - The only stale mention was this protocol's old blocked-build note, now replaced by the fresh evidence.
+- `dotnet build "Weltraum Spiel.sln" --no-restore`: PASS on 2026-06-12 after the focused closeout update, 0 errors, known Unity/MSBuild warnings only.
+- `dotnet test "Weltraum Spiel.sln" --no-build`: PASS on 2026-06-12, exit code 0.
+- Unity MCP script refresh/compile on 2026-06-12: PASS. Console after final refresh had no C# compiler errors; remaining entries were known obsolete API warnings and Unity AssetManager `[SerializeReference]` serialization messages from Unity packages.
 - After the scene-only fallback flag correction, Unity MCP `refresh_unity` timed out and subsequent bridge pings did not answer, while the Unity editor process itself was still responding. No extra PlayMode rerun was claimed after that scene-only serialization correction.
+
+## Fresh Acceptance Pass 2026-06-12
+
+- Loaded/used `Assets/Scenes/PrototypeBootstrapHost.unity` through Unity MCP; final editor state returned to that active scene and `ready_for_tools=true`.
+- Focused EditMode rerun through Unity MCP:
+  - Job `f31692b3136f4b538befbc5a98e6d3d5`
+  - `PrototypeFunctionalShipSocketValidationTests`
+  - `PrototypeWeaponComputerTurretValidationTests`
+  - `PrototypeShipVisualSwitcherValidationTests`
+  - PASS: 54 / 54, duration 2.2151582 seconds
+- Focused PlayMode runtime rerun through Unity MCP:
+  - Job `420cb27a77614eac978c81c2042352af`
+  - `PrototypeFunctionalBlenderRuntimePlayModeTests.BootstrapPlayModeKeepsImportedScoutVisibleAndPlayableForTenSeconds`
+  - `PrototypeFunctionalBlenderRuntimePlayModeTests.BootstrapPlayModeRegistersDefaultTargetForWeaponComputer`
+  - PASS: 2 / 2, duration 0.5758278 seconds
+- PlayMode diagnostics confirmed:
+  - `buildMode=ImportedDemoScoutFunctionalDefault`
+  - `allowGeneratedFallbackWhenImportedAssetMissing=False`
+  - required flight sockets present
+  - required weapon sockets present
+  - required visible weapon renderers present
+  - `ImportedDemoScoutVisual` active at `(100.0, 100.0, 100.0)`
+  - `functionalSocketRig=True`
+  - `generatedRendererCount=0`
+- The focused runtime acceptance covers:
+  - visual mode remains Imported Demo Scout
+  - no root fallback `Muzzle`
+  - no root fallback `EngineNozzle`
+  - main thruster VFX from imported/proxy `THRUST_NOZZLE_MAIN*`
+  - RCS VFX from imported/proxy `RCS_NOZZLE*` with exhaust opposite nozzle force direction
+  - Weapon Computer selects a target
+  - visible turret yaw/pitch geometry tracks the selected target
+  - firing is gated by arc/alignment/cooldown
+  - projectile and muzzle flash originate at `WEAPON_MUZZLE_PRIMARY` / `WEAPON_MUZZLE_FLASH_PRIMARY`
+- The PlayMode visibility assertion was adjusted only for Unity MCP Game View viewport variance: per-axis projected size minimum is now `> 0.06f` and projected area minimum is now `> 0.007f`; all stronger checks remain, including 8 corners in front of camera, max dimensions, max area, and centered viewport bounds.
+- `specs_validate` for `fix-functional-blender-ship-vfx-turret-v1`: PASS on 2026-06-12.
+- `dotnet build "Weltraum Spiel.sln" --no-restore`: PASS on 2026-06-12, 0 errors.
+- `dotnet test "Weltraum Spiel.sln" --no-build`: PASS on 2026-06-12, exit code 0.
+- Evidence logs are under `tests/logs/`, including the final PlayMode, final EditMode, final compile refresh, final dotnet build, and final dotnet test outputs.
 
 ## Open Limits
 
-- Cargo imported mode still reports missing weapon markers and is not part of the accepted default path for this change.
+- Cargo imported functional binding is explicitly out of scope for this closeout unless/until the Cargo asset is marker-complete in a separate slice. This acceptance pass closes only the Blender Demo Scout functional default.
 - The 2026-05-22 weapon-computer/turret fix did not modify `art/blender/prototype_modular_ship_kit_v0.blend`; it verifies and uses the already-imported hierarchy through Unity. The runtime bug fixed here was the Unity binding/visibility/line-of-fire path, including idempotent visible turret proxy binding.

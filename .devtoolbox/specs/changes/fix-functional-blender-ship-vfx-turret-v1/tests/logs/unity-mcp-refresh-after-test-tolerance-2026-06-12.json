@@ -1,0 +1,29 @@
+{
+  "jsonrpc": "2.0",
+  "id": 260,
+  "result": {
+    "_meta": {
+      "fastmcp": {
+        "wrap_result": true
+      }
+    },
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"message\":\"Refresh recovered after Unity disconnect/retry; editor is ready.\",\"error\":null,\"data\":{\"recovered_from_disconnect\":true},\"hint\":null}"
+      }
+    ],
+    "structuredContent": {
+      "result": {
+        "success": true,
+        "message": "Refresh recovered after Unity disconnect/retry; editor is ready.",
+        "error": null,
+        "data": {
+          "recovered_from_disconnect": true
+        },
+        "hint": null
+      }
+    },
+    "isError": false
+  }
+}
