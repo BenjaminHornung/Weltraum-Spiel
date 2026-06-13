@@ -1080,6 +1080,105 @@ public class PrototypeWaypointAutopilotValidationTests
     }
 
     [Test]
+    public void NavigationWarningChipsShowTrackingCorrectionWithoutReplan()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Autopilot.SelectTarget(rig.Target);
+        var report = new PrototypeFlightPlanDivergenceReport(
+            PrototypeFlightPlanAbortReplanReason.PositionDivergence
+                | PrototypeFlightPlanAbortReplanReason.TrackingDiverged,
+            false,
+            false,
+            "Tracking correction: PositionDivergence|TrackingDiverged");
+
+        SetPrivateField(rig.Autopilot, "lastFlightPlanDivergenceReport", report);
+        SetPrivateFloat(rig.Autopilot, "lastFlightPlanDivergenceAtTime", Time.time);
+
+        string[] chips = rig.Autopilot.BuildNavigationWarningChips();
+
+        Assert.That(chips, Does.Contain("TRACKING CORRECTION"));
+        Assert.That(chips, Does.Not.Contain("REPLAN"));
+        Assert.False(rig.Autopilot.FlightPlanRequiresReplan);
+    }
+
+    [Test]
+    public void NavigationWarningChipsShowReplanOnlyAfterForcedSafetyReplan()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Autopilot.SelectTarget(rig.Target);
+        var report = new PrototypeFlightPlanDivergenceReport(
+            PrototypeFlightPlanAbortReplanReason.PositionDivergence,
+            true,
+            false,
+            "Replan: PositionDivergence");
+
+        SetPrivateField(rig.Autopilot, "lastFlightPlanDivergenceReport", report);
+        SetPrivateFloat(rig.Autopilot, "lastFlightPlanDivergenceAtTime", Time.time);
+        SetPrivateFloat(rig.Autopilot, "lastFlightPlanSafetyReplanAtTime", Time.time - 3f);
+
+        Assert.That(rig.Autopilot.BuildNavigationWarningChips(), Does.Not.Contain("REPLAN"));
+
+        SetPrivateFloat(rig.Autopilot, "lastFlightPlanSafetyReplanAtTime", Time.time);
+
+        Assert.That(rig.Autopilot.BuildNavigationWarningChips(), Does.Not.Contain("REPLAN"));
+
+        SetPrivateField(rig.Autopilot, "lastFlightPlanDivergenceReportForcedSafetyReplan", true);
+        SetPrivateFloat(rig.Autopilot, "lastFlightPlanSafetyReplanAtTime", Time.time - 3f);
+
+        Assert.That(rig.Autopilot.BuildNavigationWarningChips(), Does.Not.Contain("REPLAN"));
+
+        SetPrivateFloat(rig.Autopilot, "lastFlightPlanSafetyReplanAtTime", Time.time);
+
+        string[] replanChips = rig.Autopilot.BuildNavigationWarningChips();
+        Assert.That(replanChips, Does.Contain("REPLAN"));
+        Assert.That(replanChips, Does.Not.Contain("TRACKING CORRECTION"));
+
+        var abortReport = new PrototypeFlightPlanDivergenceReport(
+            PrototypeFlightPlanAbortReplanReason.NoRcsAuthority,
+            true,
+            true,
+            "Abort: NoRcsAuthority");
+        SetPrivateField(rig.Autopilot, "lastFlightPlanDivergenceReport", abortReport);
+
+        string[] abortChips = rig.Autopilot.BuildNavigationWarningChips();
+        Assert.That(abortChips, Does.Contain("PLAN ABORT"));
+        Assert.That(abortChips, Does.Not.Contain("REPLAN"));
+    }
+
+    [Test]
+    public void NavigationWarningChipsClearReplanProofForNewDivergenceReport()
+    {
+        var rig = CreateAutopilotRig();
+        rig.Autopilot.SelectTarget(rig.Target);
+        var report = new PrototypeFlightPlanDivergenceReport(
+            PrototypeFlightPlanAbortReplanReason.PositionDivergence,
+            true,
+            false,
+            "Replan: PositionDivergence");
+
+        SetPrivateField(rig.Autopilot, "lastFlightPlanDivergenceReport", report);
+        SetPrivateField(rig.Autopilot, "lastFlightPlanDivergenceReportForcedSafetyReplan", true);
+        SetPrivateFloat(rig.Autopilot, "lastFlightPlanDivergenceAtTime", Time.time);
+        SetPrivateFloat(rig.Autopilot, "lastFlightPlanSafetyReplanAtTime", Time.time);
+        Assert.That(rig.Autopilot.BuildNavigationWarningChips(), Does.Contain("REPLAN"));
+
+        MethodInfo resetMethod = typeof(PrototypeWaypointAutopilot).GetMethod(
+            "ResetFlightPlanExecutorClock",
+            PrivateInstance);
+        MethodInfo setReportMethod = typeof(PrototypeWaypointAutopilot).GetMethod(
+            "SetFlightPlanDivergenceReport",
+            PrivateInstance);
+        Assert.NotNull(resetMethod);
+        Assert.NotNull(setReportMethod);
+
+        resetMethod.Invoke(rig.Autopilot, null);
+        setReportMethod.Invoke(rig.Autopilot, new object[] { report });
+
+        Assert.True(rig.Autopilot.FlightPlanRequiresReplan);
+        Assert.That(rig.Autopilot.BuildNavigationWarningChips(), Does.Not.Contain("REPLAN"));
+    }
+
+    [Test]
     public void FlightPlanSoftDivergenceRequiresHalfSecondConfirmation()
     {
         MethodInfo method = typeof(PrototypeWaypointAutopilot).GetMethod(

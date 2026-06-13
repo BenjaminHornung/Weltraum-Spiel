@@ -27,7 +27,7 @@ Referenz: `design.md` (Zeilennummern = Commit `a68333b`).
 - [x] `ToggleAutopilot` (`:575-577`): frischen gueltigen Plan vom Plan-Knopf uebernehmen statt erzwungener Neuplanung.
 
 ## Phase 5 — UI-Status
-- [ ] `BuildNavigationWarningChips` (`:726`): REPLAN-Chip nur bei realem erzwungenem Replan; Tracking-Korrektur als eigener Status.
+- [x] `BuildNavigationWarningChips` (`:726`): REPLAN-Chip nur bei realem erzwungenem Replan; Tracking-Korrektur als eigener Status.
 
 ## Phase 6 — Tests & Evidence
 - [ ] EditMode: Turn-Modell, Spool-Solver, Toleranzskalierung.

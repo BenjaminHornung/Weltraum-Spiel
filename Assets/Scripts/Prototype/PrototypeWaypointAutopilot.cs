@@ -189,6 +189,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private bool flightPlanExecutorActive;
     private PrototypeFlightPlanExecutionState lastFlightPlanExecutionState;
     private PrototypeFlightPlanDivergenceReport lastFlightPlanDivergenceReport = PrototypeFlightPlanDivergenceReport.Clear;
+    private bool lastFlightPlanDivergenceReportForcedSafetyReplan;
     private float flightPlanDivergenceStartedAtTime = -1f;
     private float lastFlightPlanDivergenceAtTime = -1000f;
     private float lastFlightPlanSafetyReplanAtTime = -1000f;
@@ -768,7 +769,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
     public string[] BuildNavigationWarningChips()
     {
-        string[] chips = new string[10];
+        string[] chips = new string[12];
         int count = 0;
         if (currentTarget == null)
         {
@@ -799,9 +800,13 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         {
             chips[count++] = "PLAN ABORT";
         }
-        else if (FlightPlanRequiresReplan)
+        else if (FlightPlanRequiresReplan && IsRecentFlightPlanSafetyReplanVisible())
         {
             chips[count++] = "REPLAN";
+        }
+        else if (IsTrackingCorrectionStatusVisible())
+        {
+            chips[count++] = "TRACKING CORRECTION";
         }
 
         if (AvoidanceActive || navigationPhaseV2 == PrototypeWaypointAutopilotNavigationPhase.Avoiding)
@@ -844,6 +849,22 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         }
 
         return trimmed;
+    }
+
+    private bool IsRecentFlightPlanSafetyReplanVisible()
+    {
+        return lastFlightPlanDivergenceReportForcedSafetyReplan
+            && Time.time <= lastFlightPlanSafetyReplanAtTime + FlightPlanDivergenceStatusHoldSeconds;
+    }
+
+    private bool IsTrackingCorrectionStatusVisible()
+    {
+        PrototypeFlightPlanDivergenceReport report = CurrentFlightPlanDivergenceReport;
+        return report.HasDivergence
+            && !report.requiresReplan
+            && !report.requiresAbort
+            && !string.IsNullOrWhiteSpace(report.statusLabel)
+            && report.statusLabel.StartsWith("Tracking correction:", System.StringComparison.Ordinal);
     }
 
     public void MarkNavigationPlanDirty()
@@ -1471,6 +1492,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         }
 
         lastFlightPlanSafetyReplanAtTime = Time.time;
+        MarkFlightPlanDivergenceReportForcedSafetyReplan(report);
         flightPlanSafetyReplanCount++;
         arrivalFailureReason = "FlightPlanReplan:" + PrototypeFlightPlanDivergenceMonitor.FormatReasons(report.reasons);
         if (ShouldClearActuatorOutputForSafetyReplan(report.reasons))
@@ -1543,11 +1565,13 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     {
         flightPlanDivergenceStartedAtTime = -1f;
         lastFlightPlanDivergenceReport = PrototypeFlightPlanDivergenceReport.Clear;
+        lastFlightPlanDivergenceReportForcedSafetyReplan = false;
         lastFlightPlanDivergenceAtTime = -1000f;
     }
 
     private void SetFlightPlanDivergenceReport(PrototypeFlightPlanDivergenceReport report)
     {
+        lastFlightPlanDivergenceReportForcedSafetyReplan = false;
         if (!report.HasDivergence)
         {
             flightPlanDivergenceStartedAtTime = -1f;
@@ -1576,6 +1600,19 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
                 : "flight plan tracking";
         updatedPlan.statusLabel = report.statusLabel;
         LastTrajectoryPlan = updatedPlan;
+    }
+
+    private void MarkFlightPlanDivergenceReportForcedSafetyReplan(PrototypeFlightPlanDivergenceReport report)
+    {
+        if (!report.HasDivergence || !report.requiresReplan || report.requiresAbort)
+        {
+            lastFlightPlanDivergenceReportForcedSafetyReplan = false;
+            return;
+        }
+
+        lastFlightPlanDivergenceReport = report;
+        lastFlightPlanDivergenceAtTime = Time.time;
+        lastFlightPlanDivergenceReportForcedSafetyReplan = true;
     }
 
     private bool IsFlightPlanDivergenceStatusVisible()
@@ -2114,6 +2151,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         lastFlightPlanExecutionState = default;
         lastFlightPlanTrackingCommand = default;
         lastFlightPlanDivergenceReport = PrototypeFlightPlanDivergenceReport.Clear;
+        lastFlightPlanDivergenceReportForcedSafetyReplan = false;
         flightPlanDivergenceStartedAtTime = -1f;
         lastFlightPlanDivergenceAtTime = -1000f;
         if (arrivalFailureReason.StartsWith("FlightPlanReplan", System.StringComparison.Ordinal))
@@ -2134,6 +2172,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         lastFlightPlanExecutionState = default;
         lastFlightPlanTrackingCommand = default;
         lastFlightPlanDivergenceReport = PrototypeFlightPlanDivergenceReport.Clear;
+        lastFlightPlanDivergenceReportForcedSafetyReplan = false;
         flightPlanDivergenceStartedAtTime = -1f;
         lastFlightPlanDivergenceAtTime = -1000f;
         ResetDirectFastTransferTerminalOwnership();

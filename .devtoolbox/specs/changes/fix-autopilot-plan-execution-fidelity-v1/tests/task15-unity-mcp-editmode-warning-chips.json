@@ -1,0 +1,42 @@
+{
+  "date": "2026-06-13",
+  "change": "fix-autopilot-plan-execution-fidelity-v1",
+  "task": "Phase 5 UI status",
+  "job_id": "962fc588def4478f915a7f55ae595f15",
+  "mode": "EditMode",
+  "status": "succeeded",
+  "summary": {
+    "total": 4,
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0,
+    "durationSeconds": 0.1929418,
+    "resultState": "Passed"
+  },
+  "tests": [
+    {
+      "name": "DirectFastTransfer_SoftTrackingDivergenceIsTrackingCorrection",
+      "fullName": "PrototypeWaypointAutopilotValidationTests.DirectFastTransfer_SoftTrackingDivergenceIsTrackingCorrection",
+      "state": "Passed",
+      "durationSeconds": 0.0117244
+    },
+    {
+      "name": "NavigationWarningChipsClearReplanProofForNewDivergenceReport",
+      "fullName": "PrototypeWaypointAutopilotValidationTests.NavigationWarningChipsClearReplanProofForNewDivergenceReport",
+      "state": "Passed",
+      "durationSeconds": 0.0453563
+    },
+    {
+      "name": "NavigationWarningChipsShowReplanOnlyAfterForcedSafetyReplan",
+      "fullName": "PrototypeWaypointAutopilotValidationTests.NavigationWarningChipsShowReplanOnlyAfterForcedSafetyReplan",
+      "state": "Passed",
+      "durationSeconds": 0.0016472
+    },
+    {
+      "name": "NavigationWarningChipsShowTrackingCorrectionWithoutReplan",
+      "fullName": "PrototypeWaypointAutopilotValidationTests.NavigationWarningChipsShowTrackingCorrectionWithoutReplan",
+      "state": "Passed",
+      "durationSeconds": 0.0010066
+    }
+  ]
+}
