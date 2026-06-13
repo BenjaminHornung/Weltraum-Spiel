@@ -9,6 +9,7 @@ using UnityEngine;
 public class PrototypeWaypointAutopilotValidationTests
 {
     private const BindingFlags PrivateInstance = BindingFlags.Instance | BindingFlags.NonPublic;
+    private const BindingFlags PrivateStatic = BindingFlags.Static | BindingFlags.NonPublic;
     private const string AutopilotRigTargetPrefix = "AutopilotRigTarget";
     private const string AutopilotRigTargetRootName = "WaypointAutopilotValidationTarget";
     private static int autopilotRigTargetCounter;
@@ -902,6 +903,28 @@ public class PrototypeWaypointAutopilotValidationTests
         bool result = (bool)method.Invoke(rig.Autopilot, new object[] { segment });
 
         Assert.True(result);
+    }
+
+    [TestCase(0.01f)]
+    [TestCase(0.02f)]
+    [TestCase(0.04f)]
+    public void AutopilotTickSecondsUsesConfiguredPositiveFixedDeltaTime(float fixedDeltaTime)
+    {
+        PropertyInfo property = typeof(PrototypeWaypointAutopilot).GetProperty("AutopilotTickSeconds", PrivateStatic);
+        Assert.NotNull(property);
+        float originalFixedDeltaTime = Time.fixedDeltaTime;
+        try
+        {
+            Time.fixedDeltaTime = fixedDeltaTime;
+
+            float tickSeconds = (float)property.GetValue(null, null);
+
+            Assert.That(tickSeconds, Is.EqualTo(fixedDeltaTime).Within(0.0001f));
+        }
+        finally
+        {
+            Time.fixedDeltaTime = originalFixedDeltaTime;
+        }
     }
 
     [Test]

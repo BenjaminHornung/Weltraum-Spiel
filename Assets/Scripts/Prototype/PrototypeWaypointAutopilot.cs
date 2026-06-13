@@ -113,6 +113,8 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         | PrototypeFlightPlanAbortReplanReason.AttitudeDivergence
         | PrototypeFlightPlanAbortReplanReason.TrackingDiverged
         | PrototypeFlightPlanAbortReplanReason.FuelMismatch;
+
+    private static float AutopilotTickSeconds => Time.fixedDeltaTime > 0f ? Time.fixedDeltaTime : 0.02f;
     [Header("Navigation")]
     [SerializeField] private PrototypeWaypointManager waypointManager;
     [SerializeField] private PrototypeNavigationTarget currentTarget;
@@ -399,7 +401,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return;
         }
 
-        autopilotElapsedSeconds += Mathf.Max(Time.fixedDeltaTime, 0.02f);
+        autopilotElapsedSeconds += AutopilotTickSeconds;
 
         if (momentumAssist != null && momentumAssist.IsActive)
         {
@@ -947,7 +949,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
                 expiredState.replanReasons &= ~PrototypeFlightPlanAbortReplanReason.PlanExpired;
                 expiredState.statusLabel = directFastTransferTerminalReacquireActive ? "Reacquire" : "Terminal capture";
                 lastFlightPlanExecutionState = expiredState;
-                flightPlanElapsedSeconds += Mathf.Max(Time.fixedDeltaTime, 0.02f);
+                flightPlanElapsedSeconds += AutopilotTickSeconds;
                 return true;
             }
 
@@ -957,7 +959,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             {
                 flightPlanExecutorActive = true;
                 lastFlightPlanExecutionState = expiredState;
-                flightPlanElapsedSeconds += Mathf.Max(Time.fixedDeltaTime, 0.02f);
+                flightPlanElapsedSeconds += AutopilotTickSeconds;
                 return true;
             }
 
@@ -1024,7 +1026,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
         flightPlanExecutorActive = true;
         lastFlightPlanExecutionState = executionState;
-        float flightPlanTickSeconds = Mathf.Max(Time.fixedDeltaTime, 0.02f);
+        float flightPlanTickSeconds = AutopilotTickSeconds;
         if (ShouldHoldDirectFastTransferSegmentClock(segment, trackingCommand, out string holdStatus, out bool useAuthorityTimeout))
         {
             lastFlightPlanExecutionState.statusLabel = holdStatus;
@@ -2097,7 +2099,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         }
 
         if (activeFlightPlanRevision == CurrentFlightPlan.revision
-            && flightPlanElapsedSeconds > Mathf.Max(Time.fixedDeltaTime, 0.02f) * 2f)
+            && flightPlanElapsedSeconds > AutopilotTickSeconds * 2f)
         {
             return false;
         }
@@ -2480,7 +2482,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         }
 
         PrototypeFlightPlan plan = CurrentFlightPlan;
-        float terminalLeadSeconds = Mathf.Max(Time.fixedDeltaTime, 0.02f) * 2f;
+        float terminalLeadSeconds = AutopilotTickSeconds * 2f;
         if (plan.IsDirectFastTransfer
             && plan.totalDurationSeconds > 0f
             && flightPlanElapsedSeconds >= plan.totalDurationSeconds - terminalLeadSeconds)
@@ -2730,7 +2732,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
     private bool IsWithinDirectFastTransferBrakeEndEnvelope(PrototypeManeuverSegment segment)
     {
-        float endEnvelopeSeconds = Mathf.Max(Mathf.Max(Time.fixedDeltaTime, 0.02f) * 2f, 0.08f);
+        float endEnvelopeSeconds = Mathf.Max(AutopilotTickSeconds * 2f, 0.08f);
         return flightPlanElapsedSeconds >= segment.endTimeSeconds - endEnvelopeSeconds;
     }
 
@@ -4036,7 +4038,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         float directionRotateDegreesPerSecond = useTerminalSmoothing
             ? TerminalBrakeDirectionRotateDegreesPerSecond
             : BrakeFlipMaxTurnRateDegreesPerSecond * 0.8f;
-        float maxRotateRadians = Mathf.Deg2Rad * directionRotateDegreesPerSecond * Mathf.Max(Time.fixedDeltaTime, 0.02f);
+        float maxRotateRadians = Mathf.Deg2Rad * directionRotateDegreesPerSecond * AutopilotTickSeconds;
         committedBrakeDirection = Vector3.RotateTowards(
             committedBrakeDirection.normalized,
             observedBrakeDirection,

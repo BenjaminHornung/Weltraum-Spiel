@@ -3,7 +3,7 @@
 Referenz: `design.md` (Befunde mit Datei:Zeile, Stand Commit `a68333b`). Jedes Item = eigener fokussierter Commit. Items 1, 2, 7 VOR dem Autopilot-Fidelity-Fix landen (gleiche Dateien).
 
 ## Latente Bugs
-- [ ] **Item 1:** `AutopilotTickSeconds`-Getter einfuehren und alle 8 `Mathf.Max(Time.fixedDeltaTime, 0.02f)`-Stellen in `PrototypeWaypointAutopilot.cs` ersetzen (`:400`, `:946`, `:956`, `:1023`, `:2095`, `:2478`, `:2728`, +1 per Grep verifizieren). EditMode-Test fuer 0.01/0.02/0.04.
+- [x] **Item 1:** `AutopilotTickSeconds`-Getter einfuehren und alle 8 `Mathf.Max(Time.fixedDeltaTime, 0.02f)`-Stellen in `PrototypeWaypointAutopilot.cs` ersetzen (`:400`, `:946`, `:956`, `:1023`, `:2095`, `:2478`, `:2728`, +1 per Grep verifizieren). EditMode-Test fuer 0.01/0.02/0.04.
 - [x] **Item 2:** Duplizierte Ternary in `PrototypeTrajectoryPlanner.BuildSegments` (`:985-987`) aufloesen; vorher Spec `add-autopilot-obstacle-avoidance-v1` gegenlesen, ob ein Avoidance-Unterschied beabsichtigt war; Avoidance-Tests muessen gruen bleiben.
 - [ ] **Item 3:** `Resources.Load`-Wiederholung in `PrototypePlayerHud.ResolveCelestialBodyCatalogReference` (`:3242`) mit Attempted-Flag stoppen.
 - [ ] **Item 4:** `FloatingOriginManager.OriginShifted`-Event (Ende von `ShiftOriginBy`, `FloatingOriginManager.cs:71`); Autopilot abonniert (OnEnable/OnDisable) und erzwingt Replan + korrigiert/verwirft `stableAvoidanceWaypoint`; HUD-Cache pruefen. EditMode-Tests fuer Event + Handler. PlayMode-Abdeckung via Harness-Szenario `floating-origin-shift-during-autopilot` (prototype-regression-test-harness-v1, Phase 5) — dort nicht doppeln.
