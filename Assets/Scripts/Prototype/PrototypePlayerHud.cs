@@ -532,6 +532,9 @@ public readonly struct PrototypePlayerHudSnapshot
 public static class PrototypePlayerHudSnapshotBuilder
 {
     private const float DockingGuidanceRadiusMeters = 120f;
+    private const float NavigationRadarFallbackScanIntervalSeconds = 1f;
+    private static readonly PrototypeUiSampleGate NavigationRadarFallbackScanGate = new PrototypeUiSampleGate(NavigationRadarFallbackScanIntervalSeconds);
+    private static PrototypeNavigationTarget[] cachedFallbackNavigationTargets = System.Array.Empty<PrototypeNavigationTarget>();
 
     public static PrototypePlayerHudSnapshot Build(
         Transform shipRoot,
@@ -1882,7 +1885,6 @@ public static class PrototypePlayerHudSnapshotBuilder
 
         if (manager != null)
         {
-            manager.RefreshTargets();
             PrototypeNavigationTarget[] targets = manager.NavigationTargets;
             for (int i = 0; i < targets.Length; i++)
             {
@@ -1914,6 +1916,11 @@ public static class PrototypePlayerHudSnapshotBuilder
                 selected.ArrivalRadius);
         }
 
+        if (manager != null)
+        {
+            return;
+        }
+
         AddSceneNavigationRadarBlips(blips, keys, selected);
     }
 
@@ -1922,12 +1929,12 @@ public static class PrototypePlayerHudSnapshotBuilder
         HashSet<string> keys,
         PrototypeNavigationTarget selected)
     {
-        PrototypeNavigationTarget[] targets = UnityEngine.Object.FindObjectsByType<PrototypeNavigationTarget>(FindObjectsInactive.Exclude);
-        if (targets == null || targets.Length == 0)
+        if (NavigationRadarFallbackScanGate.ShouldSample(Time.unscaledTime))
         {
-            targets = Resources.FindObjectsOfTypeAll<PrototypeNavigationTarget>();
+            cachedFallbackNavigationTargets = UnityEngine.Object.FindObjectsByType<PrototypeNavigationTarget>(FindObjectsInactive.Exclude);
         }
 
+        PrototypeNavigationTarget[] targets = cachedFallbackNavigationTargets;
         for (int i = 0; i < targets.Length; i++)
         {
             PrototypeNavigationTarget target = targets[i];
