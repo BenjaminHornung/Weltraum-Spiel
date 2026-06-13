@@ -3030,6 +3030,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private const int MinimapRangeModeAuto = 0;
     private const int MinimapRangeModeCount = 5;
     private const float FallbackSceneScanIntervalSeconds = 1f;
+    private const float SnapshotTextRefreshIntervalSeconds = 0.1f;
     private static readonly float[] MinimapRangeMeters = new[] { 250f, 1000f, 2500f, 5000f };
     private static readonly string[] MinimapRangeLabels = new[]
     {
@@ -3160,6 +3161,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private string currentKillMomentumButtonLabel = "Kill Momentum";
     private readonly PrototypeUiSampleGate arenaLoopFallbackScanGate = new PrototypeUiSampleGate(FallbackSceneScanIntervalSeconds);
     private readonly PrototypeUiSampleGate runtimeShipFallbackScanGate = new PrototypeUiSampleGate(FallbackSceneScanIntervalSeconds);
+    private readonly PrototypeUiSampleGate snapshotTextRefreshGate = new PrototypeUiSampleGate(SnapshotTextRefreshIntervalSeconds);
     private FlightControlMode cachedHelpMode;
     private bool cachedHelpIncludesDebug;
     private string cachedHelpText;
@@ -3185,7 +3187,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private void Start()
     {
         ResolveReferences();
-        RefreshNow();
+        ForceRefreshNow();
     }
 
     private void Update()
@@ -3228,7 +3230,12 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             SetCombatComputerVisible(combatComputerPanelRect == null || !combatComputerPanelRect.gameObject.activeSelf);
         }
 
-        RefreshNow();
+        if (snapshotTextRefreshGate.ShouldSample(Time.unscaledTime))
+        {
+            RefreshNow();
+        }
+
+        RefreshDynamicHudPositions(lastSnapshot);
     }
 
     public void Bind(
@@ -3251,7 +3258,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         PrototypePlayerHudSnapshotBuilder.InvalidateFallbackFindCaches();
         ResolveReferences();
         EnsureUi();
-        RefreshNow();
+        ForceRefreshNow();
     }
 
     public void SetTargetDockingPort(DockingPort dockingPort)
@@ -3262,7 +3269,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     public void BindTrajectoryPreview(PrototypeTrajectoryPreviewNavMap preview)
     {
         trajectoryPreview = preview != null ? preview : trajectoryPreview;
-        RefreshNow();
+        ForceRefreshNow();
     }
 
     public void SetPlayerHudVisible(bool visible)
@@ -3272,6 +3279,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         {
             canvas.enabled = visible;
         }
+
+        ForceRefreshNow();
     }
 
     public void RefreshNow()
@@ -3295,6 +3304,15 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             celestialBodyCatalog);
         lastSnapshot = ApplyMinimapRangeOverride(snapshot);
         ApplySnapshot(lastSnapshot);
+    }
+
+    private void ForceRefreshNow()
+    {
+        snapshotTextRefreshGate.Invalidate();
+        if (snapshotTextRefreshGate.ShouldSample(Time.unscaledTime, true))
+        {
+            RefreshNow();
+        }
     }
 
     private void ResolveCelestialBodyCatalogReference()
@@ -3355,6 +3373,58 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             snapshot.CombatTargetWorldPosition);
     }
 
+    private PrototypePlayerHudSnapshot BuildDynamicPositionSnapshot(PrototypePlayerHudSnapshot snapshot)
+    {
+        Transform navTarget = autopilot != null && autopilot.CurrentTarget != null
+            ? autopilot.CurrentTarget.transform
+            : null;
+        PrototypeHudViewModel markerModel = PrototypeHudViewModelBuilder.Build(
+            shipRoot,
+            shipRigidbody,
+            controller,
+            shipStats,
+            navTarget,
+            autopilot,
+            momentumAssist,
+            false,
+            false,
+            MarkerRadius,
+            0.05f,
+            9000f,
+            snapshot.Docking.Visible
+                ? PrototypeFlightHud.HudMode.Docking
+                : PrototypeFlightHud.HudMode.World);
+        Vector3 shipWorldPosition = shipRoot != null ? shipRoot.position : snapshot.ShipWorldPosition;
+        Vector3 shipForward = shipRoot != null ? shipRoot.forward : snapshot.ShipForward;
+        PrototypePlayerRadarSnapshot radar = new PrototypePlayerRadarSnapshot(
+            snapshot.Radar.RangeMeters,
+            snapshot.Radar.RangeLabel,
+            shipWorldPosition,
+            shipForward,
+            snapshot.Radar.Blips,
+            snapshot.Radar.RouteWorldPoints,
+            snapshot.Radar.TrajectoryPreviewWorldPoints,
+            snapshot.Radar.HasAvoidanceWaypoint,
+            snapshot.Radar.AvoidanceWorldPosition);
+
+        return new PrototypePlayerHudSnapshot(
+            snapshot.Flight,
+            snapshot.Navigation,
+            snapshot.Combat,
+            snapshot.Arena,
+            snapshot.Docking,
+            snapshot.ShipStatus,
+            snapshot.Warnings,
+            snapshot.AssistChips,
+            markerModel,
+            radar,
+            snapshot.TargetIndicators,
+            shipWorldPosition,
+            shipForward,
+            autopilot != null && autopilot.CurrentTarget != null ? autopilot.CurrentTarget.Position : snapshot.NavigationTargetWorldPosition,
+            weaponComputer != null && weaponComputer.ActiveTargetTransform != null ? weaponComputer.ActiveTargetTransform.position : snapshot.CombatTargetWorldPosition);
+    }
+
     private static PrototypePlayerRadarBlip[] FilterRadarBlipsByRange(
         PrototypePlayerRadarBlip[] source,
         Vector3 shipWorldPosition,
@@ -3403,13 +3473,13 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private void StepMinimapRangeMode(int delta)
     {
         SetMinimapRangeMode(minimapRangeMode + delta);
-        RefreshNow();
+        ForceRefreshNow();
     }
 
     private void SetMinimapRangeModeAuto()
     {
         minimapRangeMode = MinimapRangeModeAuto;
-        RefreshNow();
+        ForceRefreshNow();
     }
 
     private void ResolveReferences()
@@ -4332,41 +4402,41 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         }
 
         ApplyResponsiveLayout();
-        topWarningText.text = BuildWarningStrip(snapshot);
+        SetTextIfChanged(topWarningText, BuildWarningStrip(snapshot));
         for (int i = 0; i < assistTexts.Count; i++)
         {
             bool visible = i < snapshot.AssistChips.Length && !snapshot.AssistChips[i].IsEmpty;
             assistTexts[i].gameObject.SetActive(visible);
             if (visible)
             {
-                assistTexts[i].text = snapshot.AssistChips[i].Label;
+                SetTextIfChanged(assistTexts[i], snapshot.AssistChips[i].Label);
                 assistTexts[i].color = ColorForSeverity(snapshot.AssistChips[i].Severity);
             }
         }
 
-        speedText.text = snapshot.Flight.SpeedMetersPerSecond.ToString("0") + " m/s";
-        throttleText.text = "Throttle " + snapshot.Flight.ThrottlePercent.ToString("0") + "%";
-        fuelText.text = "Fuel " + (snapshot.Flight.FuelPercent * 100f).ToString("0") + "%";
+        SetTextIfChanged(speedText, snapshot.Flight.SpeedMetersPerSecond.ToString("0") + " m/s");
+        SetTextIfChanged(throttleText, "Throttle " + snapshot.Flight.ThrottlePercent.ToString("0") + "%");
+        SetTextIfChanged(fuelText, "Fuel " + (snapshot.Flight.FuelPercent * 100f).ToString("0") + "%");
         SetBar(throttleFill, snapshot.Flight.ThrottlePercent / 100f, PrototypeModuleColorPalette.MainThruster);
         SetBar(fuelFill, snapshot.Flight.FuelPercent, snapshot.Flight.FuelPercent <= 0.1f ? PrototypeUiStyle.WarningColor : PrototypeModuleColorPalette.FuelTankCue);
-        modeText.text = snapshot.Flight.ControlModeLabel;
-        modeHintText.text = snapshot.Flight.ControlModeHint;
-        rcsText.text = snapshot.Flight.RcsLabel;
-        sasText.text = snapshot.Flight.SasLabel;
+        SetTextIfChanged(modeText, snapshot.Flight.ControlModeLabel);
+        SetTextIfChanged(modeHintText, snapshot.Flight.ControlModeHint);
+        SetTextIfChanged(rcsText, snapshot.Flight.RcsLabel);
+        SetTextIfChanged(sasText, snapshot.Flight.SasLabel);
 
-        systemText.text =
+        SetTextIfChanged(systemText,
             snapshot.ShipStatus.FuelLabel + "\n"
             + snapshot.ShipStatus.MainEngineLabel + "\n"
             + snapshot.ShipStatus.RcsLabel + "\n"
             + snapshot.ShipStatus.SasLabel + "\n"
             + snapshot.ShipStatus.WeaponLabel + "\n"
-            + snapshot.ShipStatus.DamageLabel;
+            + snapshot.ShipStatus.DamageLabel);
 
         ApplyObjectivePanel(snapshot.Arena);
         ApplyContext(snapshot);
         ConfigureNavigationPlannerPanel(snapshot);
         ConfigureCombatComputerPanel(snapshot);
-        radarText.text = BuildRadarStatusLabel(snapshot.Radar);
+        SetTextIfChanged(radarText, BuildRadarStatusLabel(snapshot.Radar));
         ConfigureRadarRangeControls();
         if (helpText != null && helpPanel != null && helpPanel.activeSelf)
         {
@@ -4379,22 +4449,48 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
                 hasCachedHelpText = true;
             }
 
-            helpText.text = cachedHelpText;
+            SetTextIfChanged(helpText, cachedHelpText);
         }
 
         ConfigureKillMomentumButton();
 
-        projectedTargetIndicators = ProjectTargetIndicators(snapshot, GetComponent<Camera>(), GetCanvasSize());
-        UpdateTargetIndicatorLabels(projectedTargetIndicators);
-        overlayGraphic.SetSnapshot(snapshot);
-        overlayGraphic.SetProjectedTargetIndicators(projectedTargetIndicators);
-        if (radarGraphic != null)
+        RefreshDynamicHudPositions(snapshot, true);
+        ApplyModalVisibility(IsAnyPlayerHudModalVisible());
+    }
+
+    private void RefreshDynamicHudPositions(PrototypePlayerHudSnapshot snapshot, bool refreshText = false)
+    {
+        if (canvas != null)
         {
-            radarGraphic.SetSnapshot(snapshot);
+            canvas.enabled = showPlayerHud;
         }
 
-        ConfigureRadarLayer(snapshot);
-        UpdateMarkerLabels(snapshot);
+        if (!showPlayerHud)
+        {
+            return;
+        }
+
+        PrototypePlayerHudSnapshot dynamicSnapshot = BuildDynamicPositionSnapshot(snapshot);
+        projectedTargetIndicators = ProjectTargetIndicators(dynamicSnapshot, GetComponent<Camera>(), GetCanvasSize());
+        UpdateTargetIndicatorLabels(projectedTargetIndicators, refreshText);
+        if (overlayGraphic != null)
+        {
+            overlayGraphic.SetSnapshot(dynamicSnapshot);
+            overlayGraphic.SetProjectedTargetIndicators(projectedTargetIndicators);
+        }
+
+        if (radarGraphic != null)
+        {
+            radarGraphic.SetSnapshot(dynamicSnapshot);
+        }
+
+        ConfigureRadarLayer(dynamicSnapshot);
+        if (navigationPlannerPanelRect != null && navigationPlannerPanelRect.gameObject.activeSelf)
+        {
+            ConfigureNavigationPlannerMapLayer(dynamicSnapshot);
+        }
+
+        UpdateMarkerLabels(dynamicSnapshot);
         ApplyModalVisibility(IsAnyPlayerHudModalVisible());
     }
 
@@ -5021,9 +5117,11 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             return;
         }
 
-        killMomentumButtonText.text = compactBottomBarLayout
-            ? CompactKillMomentumLabel(currentKillMomentumButtonLabel)
-            : currentKillMomentumButtonLabel;
+        SetTextIfChanged(
+            killMomentumButtonText,
+            compactBottomBarLayout
+                ? CompactKillMomentumLabel(currentKillMomentumButtonLabel)
+                : currentKillMomentumButtonLabel);
     }
 
     private static string CompactKillMomentumLabel(string label)
@@ -5065,42 +5163,42 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         {
             autopilot.SelectPreviousTarget();
             autopilot.ReplanNow();
-            RefreshNow();
+            ForceRefreshNow();
         });
         SetNavigationButtonState(navNextButton, hasAutopilot && targetCount > 1, () =>
         {
             autopilot.SelectNextTarget();
             autopilot.ReplanNow();
-            RefreshNow();
+            ForceRefreshNow();
         });
 
         if (navAutopilotButtonText != null)
         {
-            navAutopilotButtonText.text = !hasAutopilot ? "AP n/a" : autopilot.AutopilotEngaged ? "Abort AP" : "Engage";
+            SetTextIfChanged(navAutopilotButtonText, !hasAutopilot ? "AP n/a" : autopilot.AutopilotEngaged ? "Abort AP" : "Engage");
         }
 
         SetNavigationButtonState(navAutopilotButton, hasAutopilot && (hasTarget || autopilot.AutopilotEngaged), () =>
         {
             autopilot.ToggleAutopilot();
-            RefreshNow();
+            ForceRefreshNow();
         });
         SetNavigationButtonState(navReplanButton, hasAutopilot && hasTarget, () =>
         {
             SetNavigationPlannerVisible(true);
             autopilot.ReplanNow();
-            RefreshNow();
+            ForceRefreshNow();
         });
 
         bool hasPreview = trajectoryPreview != null;
         if (navPreviewButtonText != null)
         {
-            navPreviewButtonText.text = !hasPreview ? "Preview n/a" : trajectoryPreview.PreviewEnabled ? "Preview On" : "Preview Off";
+            SetTextIfChanged(navPreviewButtonText, !hasPreview ? "Preview n/a" : trajectoryPreview.PreviewEnabled ? "Preview On" : "Preview Off");
         }
 
         SetNavigationButtonState(navPreviewButton, hasPreview, () =>
         {
             trajectoryPreview.TogglePreview();
-            RefreshNow();
+            ForceRefreshNow();
         });
     }
 
@@ -5131,12 +5229,12 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
         if (navigationPlannerTitleText != null)
         {
-            navigationPlannerTitleText.text = "Navigation Planner";
+            SetTextIfChanged(navigationPlannerTitleText, "Navigation Planner");
         }
 
         if (navigationPlannerBodyText != null)
         {
-            navigationPlannerBodyText.text = BuildNavigationPlannerBody(snapshot.Navigation);
+            SetTextIfChanged(navigationPlannerBodyText, BuildNavigationPlannerBody(snapshot.Navigation));
             navigationPlannerBodyText.color = snapshot.Navigation.Visible ? PrototypeUiStyle.MutedColor : PrototypeUiStyle.DisabledColor;
         }
 
@@ -5154,7 +5252,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         if (navigationPlannerMapText != null)
         {
             navigationPlannerMapText.gameObject.SetActive(mapVisible);
-            navigationPlannerMapText.text = BuildNavigationPlannerMapLabel(snapshot);
+            SetTextIfChanged(navigationPlannerMapText, BuildNavigationPlannerMapLabel(snapshot));
             navigationPlannerMapText.color = mapVisible ? PrototypeUiStyle.MutedColor : PrototypeUiStyle.DisabledColor;
         }
 
@@ -5169,41 +5267,41 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         {
             autopilot.SelectPreviousTarget();
             autopilot.ReplanNow();
-            RefreshNow();
+            ForceRefreshNow();
         });
         SetNavigationButtonState(navPlannerNextButton, hasAutopilot && targetCount > 1, () =>
         {
             autopilot.SelectNextTarget();
             autopilot.ReplanNow();
-            RefreshNow();
+            ForceRefreshNow();
         });
 
         if (navPlannerEngageButtonText != null)
         {
-            navPlannerEngageButtonText.text = !hasAutopilot ? "AP n/a" : autopilot.AutopilotEngaged ? "Abort AP" : "Engage";
+            SetTextIfChanged(navPlannerEngageButtonText, !hasAutopilot ? "AP n/a" : autopilot.AutopilotEngaged ? "Abort AP" : "Engage");
         }
 
         SetNavigationButtonState(navPlannerEngageButton, hasAutopilot && (hasTarget || autopilot.AutopilotEngaged), () =>
         {
             autopilot.ToggleAutopilot();
-            RefreshNow();
+            ForceRefreshNow();
         });
         SetNavigationButtonState(navPlannerReplanButton, hasAutopilot && hasTarget, () =>
         {
             autopilot.ReplanNow();
-            RefreshNow();
+            ForceRefreshNow();
         });
 
         bool hasPreview = trajectoryPreview != null;
         if (navPlannerPreviewButtonText != null)
         {
-            navPlannerPreviewButtonText.text = !hasPreview ? "Preview n/a" : trajectoryPreview.PreviewEnabled ? "Preview On" : "Preview Off";
+            SetTextIfChanged(navPlannerPreviewButtonText, !hasPreview ? "Preview n/a" : trajectoryPreview.PreviewEnabled ? "Preview On" : "Preview Off");
         }
 
         SetNavigationButtonState(navPlannerPreviewButton, hasPreview, () =>
         {
             trajectoryPreview.TogglePreview();
-            RefreshNow();
+            ForceRefreshNow();
         });
         SetNavigationButtonState(navPlannerCloseButton, true, () => SetNavigationPlannerVisible(false));
     }
@@ -5456,40 +5554,40 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         SetNavigationButtonState(combatPreviousButton, hasComputer && targetCount > 0, () =>
         {
             weaponComputer.SelectPreviousTarget();
-            RefreshNow();
+            ForceRefreshNow();
         });
         SetNavigationButtonState(combatNextButton, hasComputer && targetCount > 0, () =>
         {
             weaponComputer.SelectNextTarget();
-            RefreshNow();
+            ForceRefreshNow();
         });
         SetNavigationButtonState(combatClearButton, hasSelection, () =>
         {
             weaponComputer.ClearSelection();
-            RefreshNow();
+            ForceRefreshNow();
         });
 
         if (combatAutoFireButtonText != null)
         {
-            combatAutoFireButtonText.text = !hasComputer ? "Auto n/a" : weaponComputer.AutoFireEnabled ? "Auto On" : "Auto Off";
+            SetTextIfChanged(combatAutoFireButtonText, !hasComputer ? "Auto n/a" : weaponComputer.AutoFireEnabled ? "Auto On" : "Auto Off");
         }
 
         SetNavigationButtonState(combatAutoFireButton, hasComputer, () =>
         {
             weaponComputer.SetAutoFireEnabled(!weaponComputer.AutoFireEnabled);
             weaponComputer.UpdateActiveTargetAndStatus();
-            RefreshNow();
+            ForceRefreshNow();
         });
 
         if (combatPriorityButtonText != null)
         {
-            combatPriorityButtonText.text = !hasComputer ? "Prio n/a" : "Prio " + CompactPriorityLabel(weaponComputer.PriorityMode);
+            SetTextIfChanged(combatPriorityButtonText, !hasComputer ? "Prio n/a" : "Prio " + CompactPriorityLabel(weaponComputer.PriorityMode));
         }
 
         SetNavigationButtonState(combatPriorityButton, hasComputer, () =>
         {
             weaponComputer.CyclePriorityMode();
-            RefreshNow();
+            ForceRefreshNow();
         });
     }
 
@@ -5508,12 +5606,12 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
         if (combatComputerTitleText != null)
         {
-            combatComputerTitleText.text = "Combat Computer";
+            SetTextIfChanged(combatComputerTitleText, "Combat Computer");
         }
 
         if (combatComputerBodyText != null)
         {
-            combatComputerBodyText.text = BuildCombatComputerBody(snapshot.Combat);
+            SetTextIfChanged(combatComputerBodyText, BuildCombatComputerBody(snapshot.Combat));
             combatComputerBodyText.color = ColorForSeverity(snapshot.Combat.FireSeverity);
         }
 
@@ -5524,40 +5622,40 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         SetNavigationButtonState(combatComputerPreviousButton, hasComputer && targetCount > 0, () =>
         {
             weaponComputer.SelectPreviousTarget();
-            RefreshNow();
+            ForceRefreshNow();
         });
         SetNavigationButtonState(combatComputerNextButton, hasComputer && targetCount > 0, () =>
         {
             weaponComputer.SelectNextTarget();
-            RefreshNow();
+            ForceRefreshNow();
         });
         SetNavigationButtonState(combatComputerClearButton, hasSelection, () =>
         {
             weaponComputer.ClearSelection();
-            RefreshNow();
+            ForceRefreshNow();
         });
 
         if (combatComputerAutoFireButtonText != null)
         {
-            combatComputerAutoFireButtonText.text = !hasComputer ? "Auto n/a" : weaponComputer.AutoFireEnabled ? "Auto On" : "Auto Off";
+            SetTextIfChanged(combatComputerAutoFireButtonText, !hasComputer ? "Auto n/a" : weaponComputer.AutoFireEnabled ? "Auto On" : "Auto Off");
         }
 
         SetNavigationButtonState(combatComputerAutoFireButton, hasComputer, () =>
         {
             weaponComputer.SetAutoFireEnabled(!weaponComputer.AutoFireEnabled);
             weaponComputer.UpdateActiveTargetAndStatus();
-            RefreshNow();
+            ForceRefreshNow();
         });
 
         if (combatComputerPriorityButtonText != null)
         {
-            combatComputerPriorityButtonText.text = !hasComputer ? "Prio n/a" : "Prio " + CompactPriorityLabel(weaponComputer.PriorityMode);
+            SetTextIfChanged(combatComputerPriorityButtonText, !hasComputer ? "Prio n/a" : "Prio " + CompactPriorityLabel(weaponComputer.PriorityMode));
         }
 
         SetNavigationButtonState(combatComputerPriorityButton, hasComputer, () =>
         {
             weaponComputer.CyclePriorityMode();
-            RefreshNow();
+            ForceRefreshNow();
         });
         SetNavigationButtonState(combatComputerCloseButton, true, () => SetCombatComputerVisible(false));
     }
@@ -5674,7 +5772,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             }
         }
 
-        RefreshNow();
+        ForceRefreshNow();
     }
 
     private void SetCombatComputerVisible(bool visible)
@@ -5700,7 +5798,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             }
         }
 
-        RefreshNow();
+        ForceRefreshNow();
     }
 
     private bool IsAnyPlayerHudModalVisible()
@@ -6211,12 +6309,14 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             return;
         }
 
-        objectiveTitleText.text = arena.ObjectiveName;
-        objectiveBodyText.text = "Targets " + arena.ProgressLabel + " | " + arena.StatusLabel;
+        SetTextIfChanged(objectiveTitleText, arena.ObjectiveName);
+        string objectiveBody = "Targets " + arena.ProgressLabel + " | " + arena.StatusLabel;
         if (arena.Completed)
         {
-            objectiveBodyText.text += "\nReward: " + BuildArenaRewardLabel(arena.RewardStubLabel);
+            objectiveBody += "\nReward: " + BuildArenaRewardLabel(arena.RewardStubLabel);
         }
+
+        SetTextIfChanged(objectiveBodyText, objectiveBody);
         objectiveBodyText.color = arena.Completed ? PrototypeUiStyle.ActiveColor : PrototypeUiStyle.MutedColor;
     }
 
@@ -6250,14 +6350,14 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
         if (snapshot.Docking.Visible)
         {
-            contextTitleText.text = "Docking: " + snapshot.Docking.TargetName;
-            contextBodyText.text =
+            SetTextIfChanged(contextTitleText, "Docking: " + snapshot.Docking.TargetName);
+            SetTextIfChanged(contextBodyText,
                 "Dist " + FormatDistance(snapshot.Docking.DistanceMeters) + " | Angle " + snapshot.Docking.AngleErrorDegrees.ToString("0.0") + " deg\n"
                 + "Rel " + snapshot.Docking.RelativeSpeed.ToString("0.0") + " m/s | Closing " + snapshot.Docking.ClosingSpeed.ToString("0.0") + " m/s\n"
                 + "Offset " + snapshot.Docking.LateralOffsetMeters.x.ToString("0.0") + " / " + snapshot.Docking.LateralOffsetMeters.y.ToString("0.0") + " m\n"
                 + (snapshot.Docking.SoftCaptureRequested ? snapshot.Docking.SoftCaptureLabel : snapshot.Docking.StatusLabel) + "\n"
                 + snapshot.Docking.SoftCaptureAssistLabel + "\n"
-                + snapshot.Docking.HardLockLabel;
+                + snapshot.Docking.HardLockLabel);
             contextBodyText.color = ColorForSeverity(snapshot.Docking.StatusSeverity);
             SetContextGauge(0, "Distance", 1f - snapshot.Docking.DistanceRatio, ColorForSeverity(snapshot.Docking.StatusSeverity), true);
             SetContextGauge(1, "Align", 1f - snapshot.Docking.AngleRatio, ColorForSeverity(snapshot.Docking.StatusSeverity), true);
@@ -6269,8 +6369,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         {
             ApplyContextBodyLayout(true);
             ConfigureNavigationControls(true);
-            contextTitleText.text = "Navigation: " + snapshot.Navigation.TargetName;
-            contextBodyText.text =
+            SetTextIfChanged(contextTitleText, "Navigation: " + snapshot.Navigation.TargetName);
+            SetTextIfChanged(contextBodyText,
                 snapshot.Navigation.TargetTypeLabel + " | " + snapshot.Navigation.TargetListLabel + " | Dist " + FormatDistance(snapshot.Navigation.DistanceMeters) + " | ETA " + snapshot.Navigation.EtaLabel + "\n"
                 + "Closing " + snapshot.Navigation.ClosingSpeed.ToString("0.0") + " m/s | Lateral " + snapshot.Navigation.LateralSpeed.ToString("0.0") + " m/s\n"
                 + snapshot.Navigation.ManeuverIntentLabel + "\n"
@@ -6278,7 +6378,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
                 + snapshot.Navigation.StateLabel + "\n"
                 + snapshot.Navigation.PhaseLabel
                 + (string.IsNullOrWhiteSpace(snapshot.Navigation.AvoidanceLabel) ? string.Empty : "\n" + snapshot.Navigation.AvoidanceLabel)
-                + (snapshot.Navigation.TrajectoryPreview.Enabled ? "\n" + snapshot.Navigation.TrajectoryPreview.StatusLabel : string.Empty);
+                + (snapshot.Navigation.TrajectoryPreview.Enabled ? "\n" + snapshot.Navigation.TrajectoryPreview.StatusLabel : string.Empty));
             contextBodyText.color = PrototypeUiStyle.MutedColor;
             SetContextGauge(0, snapshot.Navigation.RouteWorldPoints.Length > 1 ? "Route" : string.Empty, snapshot.Navigation.RouteWorldPoints.Length > 1 ? 1f : 0f, PrototypeModuleColorPalette.Target, snapshot.Navigation.RouteWorldPoints.Length > 1);
             SetContextGauge(1, snapshot.Navigation.HasAvoidanceCue ? "Avoid" : string.Empty, snapshot.Navigation.HasAvoidanceCue ? 1f : 0f, PrototypeUiStyle.WarningColor, snapshot.Navigation.HasAvoidanceCue);
@@ -6288,10 +6388,10 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
         if (snapshot.Arena.IsVisible)
         {
-            contextTitleText.text = "Objective: " + snapshot.Arena.ObjectiveName;
-            contextBodyText.text =
+            SetTextIfChanged(contextTitleText, "Objective: " + snapshot.Arena.ObjectiveName);
+            SetTextIfChanged(contextBodyText,
                 snapshot.Arena.StatusLabel + " | Targets " + snapshot.Arena.ProgressLabel
-                + (snapshot.Arena.Completed ? string.Empty : "\nComplete the marked targets");
+                + (snapshot.Arena.Completed ? string.Empty : "\nComplete the marked targets"));
             contextBodyText.color = snapshot.Arena.Completed ? PrototypeUiStyle.ActiveColor : PrototypeUiStyle.MutedColor;
             SetContextGauge(0, "Objective", snapshot.Arena.ProgressFraction, PrototypeUiStyle.ActiveColor, true);
             SetContextGauge(1, string.Empty, 0f, Color.white, false);
@@ -6305,8 +6405,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             return;
         }
 
-        contextTitleText.text = "Navigation";
-        contextBodyText.text = "Kein Navigationsziel";
+        SetTextIfChanged(contextTitleText, "Navigation");
+        SetTextIfChanged(contextBodyText, "Kein Navigationsziel");
         contextBodyText.color = PrototypeUiStyle.MutedColor;
         HideContextGauges();
     }
@@ -6326,12 +6426,12 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     {
         ApplyContextBodyLayout(true);
         ConfigureCombatControls(true);
-        contextTitleText.text = "Combat: " + combat.TargetName;
-        contextBodyText.text =
+        SetTextIfChanged(contextTitleText, "Combat: " + combat.TargetName);
+        SetTextIfChanged(contextBodyText,
             "Health " + combat.HealthLabel + " | Range " + FormatDistance(combat.RangeMeters) + "\n"
             + combat.FireStatusLabel + "\n"
             + combat.AutoFireLabel + "\n"
-            + "Priority " + combat.PriorityLabel;
+            + "Priority " + combat.PriorityLabel);
         contextBodyText.color = ColorForSeverity(combat.FireSeverity);
         SetContextGauge(0, "Integrity", combat.HealthPercent, ColorForSeverity(combat.FireSeverity), true);
         SetContextGauge(1, string.Empty, 0f, Color.white, false);
@@ -6373,8 +6473,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         {
             if (snapshot.Warnings[i].Severity == PrototypePlayerHudSeverity.Danger)
             {
-                contextTitleText.text = "Critical";
-                contextBodyText.text = snapshot.Warnings[i].Label;
+                SetTextIfChanged(contextTitleText, "Critical");
+                SetTextIfChanged(contextBodyText, snapshot.Warnings[i].Label);
                 contextBodyText.color = PrototypeUiStyle.DangerColor;
                 HideContextGauges();
                 return true;
@@ -6406,7 +6506,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             return;
         }
 
-        contextGaugeLabels[index].text = label;
+        SetTextIfChanged(contextGaugeLabels[index], label);
         SetBar(contextGaugeFills[index], normalized, color);
     }
 
@@ -6546,7 +6646,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             Mathf.Clamp(value.y, rect.yMin, rect.yMax));
     }
 
-    private void UpdateTargetIndicatorLabels(PrototypePlayerProjectedTargetIndicator[] projectedIndicators)
+    private void UpdateTargetIndicatorLabels(PrototypePlayerProjectedTargetIndicator[] projectedIndicators, bool refreshText)
     {
         for (int i = 0; i < targetIndicatorLabels.Count; i++)
         {
@@ -6577,7 +6677,11 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
             TMP_Text label = targetIndicatorLabels[i];
             label.gameObject.SetActive(true);
-            label.text = BuildTargetIndicatorLabel(projected.Indicator);
+            if (refreshText)
+            {
+                SetTextIfChanged(label, BuildTargetIndicatorLabel(projected.Indicator));
+            }
+
             label.color = ColorForTargetIndicator(projected.Indicator);
             label.fontSize = MinimumPlayerHudFontSize;
             RectTransform rect = label.rectTransform;
@@ -6836,6 +6940,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         }
 
         ApplyModalVisibility(IsAnyPlayerHudModalVisible());
+        ForceRefreshNow();
     }
 
     private void ApplyModalVisibility(bool modalVisible)
@@ -6859,6 +6964,20 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         if (component != null && component.gameObject.activeSelf != active)
         {
             component.gameObject.SetActive(active);
+        }
+    }
+
+    private static void SetTextIfChanged(TMP_Text text, string value)
+    {
+        if (text == null)
+        {
+            return;
+        }
+
+        string resolved = value ?? string.Empty;
+        if (!string.Equals(text.text, resolved, System.StringComparison.Ordinal))
+        {
+            text.text = resolved;
         }
     }
 
