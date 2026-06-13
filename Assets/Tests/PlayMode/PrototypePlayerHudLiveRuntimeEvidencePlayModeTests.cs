@@ -21,6 +21,7 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
     private const string TargetIndicatorsChangeName = "player-target-indicators-v1";
     private const string PlayerUiRegressionControlsChangeName = "player-ui-regression-controls-autopilot-rcs-v1";
     private const string MissionRewardChangeName = "player-mission-reward-ui-v1";
+    private const string NavigationPlannerUiOverhaulChangeName = "player-navigation-planner-ui-overhaul-v1";
     private const BindingFlags NonPublicInstance = BindingFlags.Instance | BindingFlags.NonPublic;
 
     private SimulationMode previousSimulationMode;
@@ -653,6 +654,147 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
     }
 
     [Test]
+    [Category("PlayerHudEvidence")]
+    [Timeout(180000)]
+    public void PrototypeBootstrapRuntimePlayerHudEvidenceCapturesNavigationPlannerPhase8Matrix()
+    {
+        Assert.That(Application.isPlaying, Is.True, "This evidence test must run in Unity PlayMode.");
+#if UNITY_EDITOR
+        if (SceneManager.GetActiveScene().path != ScenePath)
+        {
+            EditorSceneManager.LoadSceneInPlayMode(ScenePath, new LoadSceneParameters(LoadSceneMode.Single));
+        }
+#endif
+
+        PrototypeUiLayoutManager.ResetPresetToBasic();
+        GameObject host = new GameObject("PrototypePlayerHudLiveEvidenceHost");
+        PrototypeBootstrap bootstrap = host.AddComponent<PrototypeBootstrap>();
+        SetPrivateField(bootstrap, "buildOnStart", false);
+        SetPrivateField(bootstrap, "spawnTestTarget", true);
+        SetPrivateField(bootstrap, "buildPveArena", true);
+        SetPrivateField(bootstrap, "buildTestEnvironment", true);
+        SetPrivateField(bootstrap, "allowGeneratedFallbackWhenImportedAssetMissing", false);
+        bootstrap.BuildPrototype(PrototypeShipVariant.Baseline());
+
+        LiveHudRig rig = ResolveRig();
+        ConfigureHudCanvasForCameraCapture(rig);
+        RunFrames(rig, 3);
+
+        string screenshotRoot = GetScreenshotRoot(NavigationPlannerUiOverhaulChangeName);
+        Directory.CreateDirectory(screenshotRoot);
+
+        AssertPhase8HudBindings(rig.PlayerHud);
+
+        rig.Autopilot.SelectTarget(null);
+        rig.WeaponComputer.ClearSelection();
+        rig.WeaponComputer.SetAutoFireEnabled(false);
+        rig.PlayerHud.SetTargetDockingPort(null);
+        SetPlayerHudModalVisible(rig.PlayerHud, "SetNavigationPlannerVisible", false);
+        RunFrames(rig, 3);
+        CapturePhase8MatrixState(
+            rig,
+            screenshotRoot,
+            "no-target",
+            snapshot =>
+            {
+                Assert.That(snapshot.Navigation.PlanStateBadge.State, Is.EqualTo(PrototypeNavigationPlanState.NoTarget), "no-target plan state");
+                Assert.Null(rig.Autopilot.CurrentTarget, "no-target autopilot target");
+                Assert.That(snapshot.Combat.HasActiveTarget, Is.False, "no-target combat inactive");
+                Assert.That(HasIndicator(snapshot, PrototypePlayerTargetIndicatorKind.Combat), Is.False, "no-target combat indicator hidden");
+                Assert.That(snapshot.Docking.Visible, Is.False, "no-target docking hidden");
+                AssertPhase8HudBindings(rig.PlayerHud);
+            });
+
+        PrototypeNavigationTarget navTarget = rig.Autopilot.SelectNextTarget();
+        Assert.NotNull(navTarget, "phase 8 navigation target");
+        rig.Autopilot.ReplanNow();
+        rig.WeaponComputer.ClearSelection();
+        rig.WeaponComputer.SetAutoFireEnabled(false);
+        SetPlayerHudModalVisible(rig.PlayerHud, "SetNavigationPlannerVisible", true);
+        RunFrames(rig, 6);
+        CapturePhase8MatrixState(
+            rig,
+            screenshotRoot,
+            "plan-ready",
+            snapshot =>
+            {
+                Assert.That(snapshot.Navigation.Visible, Is.True, "plan-ready navigation visible");
+                Assert.That(snapshot.Navigation.PlanStateBadge.State, Is.EqualTo(PrototypeNavigationPlanState.PlanReady), "plan-ready state");
+                Assert.That(snapshot.Navigation.TargetCount, Is.GreaterThan(0), "plan-ready target count");
+                Assert.That(snapshot.Navigation.TimelineSegments.Length, Is.GreaterThan(0), "plan-ready timeline segments");
+                Assert.That(snapshot.Navigation.DeltaVRequired, Is.GreaterThan(0f), "plan-ready delta-v required");
+                Assert.That(snapshot.Navigation.DeltaVAvailable, Is.GreaterThan(0f), "plan-ready delta-v available");
+                Assert.That(HasIndicator(snapshot, PrototypePlayerTargetIndicatorKind.Navigation), Is.True, "plan-ready navigation indicator");
+                Assert.That(rig.Autopilot.AutopilotEngaged, Is.False, "plan-ready autopilot not engaged");
+                AssertPhase8NavigationPlannerPopupVisible(rig.PlayerHud, "plan-ready");
+                Assert.That(FindText(rig.PlayerHud, "NavigationPlannerBody").text, Does.Contain("Details ausgeblendet"), "plan-ready details collapsed in Basic preset");
+                AssertPhase8HudBindings(rig.PlayerHud);
+            });
+
+        rig.Autopilot.ToggleAutopilot();
+        RunFrames(rig, 8);
+        ClearFlightPlanReplanVisibleForTests(rig.Autopilot);
+        CapturePhase8MatrixState(
+            rig,
+            screenshotRoot,
+            "execution",
+            snapshot =>
+            {
+                Assert.That(snapshot.Navigation.Visible, Is.True, "execution navigation visible");
+                Assert.That(snapshot.Navigation.PlanStateBadge.State, Is.EqualTo(PrototypeNavigationPlanState.Executing), "execution state");
+                Assert.That(rig.Autopilot.AutopilotEngaged, Is.True, "execution autopilot engaged");
+                Assert.That(snapshot.Navigation.TimelineSegments.Length, Is.GreaterThan(0), "execution timeline segments");
+                Assert.That(snapshot.Navigation.TimelineProgress01, Is.GreaterThanOrEqualTo(0f), "execution timeline progress lower bound");
+                Assert.That(snapshot.Navigation.TimelineProgress01, Is.LessThanOrEqualTo(1f), "execution timeline progress upper bound");
+                Assert.That(HasIndicator(snapshot, PrototypePlayerTargetIndicatorKind.Navigation), Is.True, "execution navigation indicator");
+                AssertPhase8NavigationPlannerPopupVisible(rig.PlayerHud, "execution");
+                Assert.That(FindText(rig.PlayerHud, "NavPlannerEngageText").text, Is.EqualTo("Abbrechen"), "execution planner engage toggles to abort");
+                AssertPhase8HudBindings(rig.PlayerHud);
+            });
+
+        rig.Autopilot.ReplanNow();
+        RunFrames(rig, 2);
+        SetFlightPlanReplanVisibleForTests(rig.Autopilot);
+        CapturePhase8MatrixState(
+            rig,
+            screenshotRoot,
+            "replan",
+            snapshot =>
+            {
+                Assert.That(snapshot.Navigation.Visible, Is.True, "replan navigation visible");
+                Assert.That(snapshot.Navigation.PlanStateBadge.State, Is.EqualTo(PrototypeNavigationPlanState.Replanning), "replan state");
+                Assert.That(rig.Autopilot.AutopilotEngaged, Is.True, "replan autopilot still engaged");
+                Assert.That(snapshot.Navigation.ReplanStatusLabel, Does.Contain("Neuplanung"), "replan status label");
+                Assert.That(snapshot.Navigation.TimelineSegments.Length, Is.GreaterThan(0), "replan timeline segments");
+                AssertPhase8NavigationPlannerPopupVisible(rig.PlayerHud, "replan");
+                AssertPhase8HudBindings(rig.PlayerHud);
+            });
+
+        ClearFlightPlanReplanVisibleForTests(rig.Autopilot);
+        rig.Autopilot.Abort("phase 8 combat evidence");
+        rig.WeaponComputer.RefreshTargets();
+        Assert.That(rig.WeaponComputer.SelectNextTarget(), Is.True, "phase 8 combat target selection");
+        rig.WeaponComputer.SetAutoFireEnabled(true);
+        rig.WeaponComputer.SetPriorityMode(PrototypeWeaponTargetPriorityMode.Nearest);
+        SetPlayerHudModalVisible(rig.PlayerHud, "SetCombatComputerVisible", true);
+        RunFrames(rig, 6);
+        CapturePhase8MatrixState(
+            rig,
+            screenshotRoot,
+            "combat",
+            snapshot =>
+            {
+                Assert.That(snapshot.Combat.Visible, Is.True, "combat panel visible");
+                Assert.That(snapshot.Combat.HasActiveTarget, Is.True, "combat active target");
+                Assert.That(snapshot.Combat.TargetName, Is.Not.EqualTo("No target"), "combat target name");
+                Assert.That(snapshot.Combat.TargetListTotalCount, Is.GreaterThan(0), "combat target count");
+                Assert.That(HasIndicator(snapshot, PrototypePlayerTargetIndicatorKind.Combat), Is.True, "combat target indicator");
+                Assert.That(HasRadarBlip(snapshot, PrototypePlayerRadarBlipKind.SelectedCombat), Is.True, "combat selected radar blip");
+                AssertPhase8HudBindings(rig.PlayerHud);
+            });
+    }
+
+    [Test]
     [Category("PlayerWorldLabelEvidence")]
     [Timeout(120000)]
     public void PrototypeBootstrapRuntimePlayerHudEvidenceHidesDebugWorldLabelsInTraining()
@@ -1033,8 +1175,81 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
         Assert.That(Overlaps(context, radar), Is.False, "context/radar overlap");
         Assert.That(Overlaps(context, bottom), Is.False, "context/bottom overlap");
         Assert.That(Overlaps(radar, bottom), Is.False, "radar/bottom overlap");
+        AssertActivePopupPanelsSeparatedFromHudRects(playerHud);
         AssertActiveHudRectsInsideCanvas(playerHud);
         AssertActiveControlRowsInsideContext(playerHud);
+    }
+
+    private static void AssertActivePopupPanelsSeparatedFromHudRects(PrototypePlayerHudRenderer playerHud)
+    {
+        string[] popupPanelNames =
+        {
+            "NavigationPlannerPanel",
+            "CombatComputerPanel"
+        };
+
+        string[] hudPanelNames =
+        {
+            "AlertAssistStrip",
+            "RadarPanel",
+            "ContextPanel",
+            "FlightStatusBar"
+        };
+
+        Canvas canvas = playerHud.GetComponentInChildren<Canvas>(true);
+        Assert.NotNull(canvas, "PrototypePlayerHudCanvas");
+        float overlapTolerance = GetWorldPixelSize(canvas) * 2f;
+
+        for (int popupIndex = 0; popupIndex < popupPanelNames.Length; popupIndex++)
+        {
+            RectTransform popup = FindRect(playerHud, popupPanelNames[popupIndex]);
+            if (popup == null || !popup.gameObject.activeInHierarchy)
+            {
+                continue;
+            }
+
+            Rect popupRect = ToWorldRect(popup);
+            for (int hudIndex = 0; hudIndex < hudPanelNames.Length; hudIndex++)
+            {
+                RectTransform hudPanel = FindRect(playerHud, hudPanelNames[hudIndex]);
+                if (hudPanel == null || !hudPanel.gameObject.activeInHierarchy)
+                {
+                    continue;
+                }
+
+                Rect hudRect = ToWorldRect(hudPanel);
+                Assert.That(
+                    HasMeaningfulOverlap(popupRect, hudRect, overlapTolerance),
+                    Is.False,
+                    popupPanelNames[popupIndex] + " overlaps " + hudPanelNames[hudIndex]
+                    + " popup=" + FormatRect(popupRect)
+                    + " hud=" + FormatRect(hudRect)
+                    + " overlap=" + FormatVector(GetOverlapSize(popupRect, hudRect))
+                    + " tolerance=" + overlapTolerance.ToString("0.####"));
+            }
+        }
+    }
+
+    private static bool HasMeaningfulOverlap(Rect first, Rect second, float tolerance)
+    {
+        Vector2 overlap = GetOverlapSize(first, second);
+        return overlap.x > tolerance && overlap.y > tolerance;
+    }
+
+    private static Vector2 GetOverlapSize(Rect first, Rect second)
+    {
+        float width = Mathf.Min(first.xMax, second.xMax) - Mathf.Max(first.xMin, second.xMin);
+        float height = Mathf.Min(first.yMax, second.yMax) - Mathf.Max(first.yMin, second.yMin);
+        return new Vector2(Mathf.Max(0f, width), Mathf.Max(0f, height));
+    }
+
+    private static float GetWorldPixelSize(Canvas canvas)
+    {
+        RectTransform canvasRect = canvas.GetComponent<RectTransform>();
+        Assert.NotNull(canvasRect, "canvas rect");
+        Rect canvasWorldRect = ToWorldRect(canvasRect);
+        float pixelHeight = Mathf.Max(1f, canvas.pixelRect.height);
+        return canvasWorldRect.height / pixelHeight;
     }
 
     private static void AssertActiveHudRectsInsideCanvas(PrototypePlayerHudRenderer playerHud)
@@ -1202,6 +1417,21 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
         Assert.That(inner.yMax, Is.LessThanOrEqualTo(outer.yMax + tolerance), message + " top");
     }
 
+    private static string FormatRect(Rect rect)
+    {
+        return string.Format(
+            "({0:0.##},{1:0.##})-({2:0.##},{3:0.##})",
+            rect.xMin,
+            rect.yMin,
+            rect.xMax,
+            rect.yMax);
+    }
+
+    private static string FormatVector(Vector2 vector)
+    {
+        return string.Format("({0:0.####},{1:0.####})", vector.x, vector.y);
+    }
+
     private static bool HasIndicator(PrototypePlayerHudSnapshot snapshot, PrototypePlayerTargetIndicatorKind kind)
     {
         PrototypePlayerTargetIndicator[] indicators = snapshot.TargetIndicators.Indicators;
@@ -1244,6 +1474,133 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
         return false;
     }
 
+    private static void CapturePhase8MatrixState(
+        LiveHudRig rig,
+        string screenshotRoot,
+        string stateSlug,
+        Action<PrototypePlayerHudSnapshot> assertSnapshot)
+    {
+        Phase8CaptureResolution[] resolutions =
+        {
+            new Phase8CaptureResolution("1280x720", 1280, 720),
+            new Phase8CaptureResolution("1024x768", 1024, 768),
+            new Phase8CaptureResolution("2560x1080", 2560, 1080),
+            new Phase8CaptureResolution("portrait-900x1600", 900, 1600)
+        };
+
+        for (int i = 0; i < resolutions.Length; i++)
+        {
+            Phase8CaptureResolution resolution = resolutions[i];
+            PrototypePlayerHudSnapshot snapshot = CaptureLiveState(
+                rig,
+                screenshotRoot,
+                stateSlug + "-" + resolution.FileSuffix + ".png",
+                resolution.Width,
+                resolution.Height);
+
+            assertSnapshot(snapshot);
+            AssertPanelsSeparated(rig.PlayerHud, false);
+            AssertActiveButtonTextNotOverflowing(rig.PlayerHud);
+        }
+    }
+
+    private static void AssertPhase8HudBindings(PrototypePlayerHudRenderer playerHud)
+    {
+        string[] rectNames =
+        {
+            "NavigationPlannerPanel",
+            "NavigationPlannerMapPanel",
+            "NavigationPlannerMapLayer",
+            "NavigationPlannerMapGridSegment0",
+            "NavigationPlannerMapRouteSegment0",
+            "NavigationPlannerMapPreviewSegment0",
+            "NavigationPlannerMapManeuverMarker0",
+            "NavigationPlannerMapArrivalRingSegment0",
+            "NavigationPlannerMapTargetEdge",
+            "CombatComputerPanel",
+            "NavigationControls",
+            "CombatControls",
+            "NavPlannerDetails"
+        };
+
+        for (int i = 0; i < rectNames.Length; i++)
+        {
+            Assert.NotNull(FindRect(playerHud, rectNames[i]), "phase 8 RectTransform binding " + rectNames[i]);
+        }
+
+        string[] textNames =
+        {
+            "NavigationPlannerMapText",
+            "NavigationPlannerMapLegendText",
+            "NavigationPlannerTimelineDetail",
+            "NavPlannerEngageText",
+            "NavPlannerReplanText",
+            "NavPlannerPreviewText",
+            "NavPlannerDetailsText",
+            "CombatComputerBody",
+            "CombatComputerAutoFireText",
+            "CombatComputerPriorityText",
+            "CombatComputerPriorityNearestText",
+            "CombatComputerPriorityHighHealthText",
+            "CombatComputerPriorityLowHealthText"
+        };
+
+        for (int i = 0; i < textNames.Length; i++)
+        {
+            Assert.NotNull(FindText(playerHud, textNames[i]), "phase 8 text binding " + textNames[i]);
+        }
+    }
+
+    private static void AssertPhase8NavigationPlannerPopupVisible(PrototypePlayerHudRenderer playerHud, string label)
+    {
+        RectTransform body = FindRect(playerHud, "NavigationPlannerBody");
+        RectTransform mapPanel = FindRect(playerHud, "NavigationPlannerMapPanel");
+        RectTransform mapLayer = FindRect(playerHud, "NavigationPlannerMapLayer");
+        RectTransform timeline = FindRect(playerHud, "NavigationPlannerTimeline");
+        RectTransform timelineDetail = FindRect(playerHud, "NavigationPlannerTimelineDetail");
+        RectTransform rangeMinus = FindRect(playerHud, "NavPlannerRangeMinus");
+        RectTransform rangeAuto = FindRect(playerHud, "NavPlannerRangeAuto");
+        RectTransform rangePlus = FindRect(playerHud, "NavPlannerRangePlus");
+
+        Assert.That(FindRect(playerHud, "NavigationPlannerPanel").gameObject.activeSelf, Is.True, label + " planner popup active");
+        Assert.That(FindText(playerHud, "NavigationPlannerBody").gameObject.activeInHierarchy, Is.True, label + " planner body visible");
+        Assert.That(mapPanel.gameObject.activeInHierarchy, Is.True, label + " planner map panel visible");
+        Assert.That(mapLayer.gameObject.activeInHierarchy, Is.True, label + " planner map layer visible");
+        Assert.That(timeline.gameObject.activeInHierarchy, Is.True, label + " planner timeline visible");
+        Assert.That(FindText(playerHud, "NavigationPlannerTimelineDetail").gameObject.activeInHierarchy, Is.True, label + " planner timeline detail visible");
+        Assert.That(FindText(playerHud, "NavigationPlannerMapText").text, Is.Not.Empty, label + " planner map label populated");
+        Assert.That(FindText(playerHud, "NavigationPlannerMapLegendText").text, Is.Not.Empty, label + " planner map legend populated");
+        Assert.That(Overlaps(body, timeline), Is.False, label + " planner body/timeline overlap");
+        Assert.That(Overlaps(body, timelineDetail), Is.False, label + " planner body/timeline detail overlap");
+        Assert.That(Overlaps(timeline, timelineDetail), Is.False, label + " planner timeline/detail overlap");
+        Assert.That(Overlaps(mapLayer, body), Is.False, label + " planner map layer/body overlap");
+        Assert.That(Overlaps(mapLayer, timeline), Is.False, label + " planner map layer/timeline overlap");
+        Assert.That(Overlaps(mapLayer, timelineDetail), Is.False, label + " planner map layer/timeline detail overlap");
+        Assert.That(rangeMinus.parent, Is.EqualTo(mapPanel), label + " planner range minus parent");
+        Assert.That(rangeAuto.parent, Is.EqualTo(mapPanel), label + " planner range auto parent");
+        Assert.That(rangePlus.parent, Is.EqualTo(mapPanel), label + " planner range plus parent");
+        Assert.That(Overlaps(rangeMinus, mapLayer), Is.False, label + " planner range minus/map layer overlap");
+        Assert.That(Overlaps(rangeAuto, mapLayer), Is.False, label + " planner range auto/map layer overlap");
+        Assert.That(Overlaps(rangePlus, mapLayer), Is.False, label + " planner range plus/map layer overlap");
+    }
+
+    private static void SetFlightPlanReplanVisibleForTests(PrototypeWaypointAutopilot autopilot)
+    {
+        var report = new PrototypeFlightPlanDivergenceReport(
+            PrototypeFlightPlanAbortReplanReason.TrackingDiverged,
+            true,
+            false,
+            "Replan: TrackingDiverged");
+        InvokePrivate(autopilot, "SetFlightPlanDivergenceReport", report);
+    }
+
+    private static void ClearFlightPlanReplanVisibleForTests(PrototypeWaypointAutopilot autopilot)
+    {
+        SetPrivateField(autopilot, "lastFlightPlanDivergenceReport", PrototypeFlightPlanDivergenceReport.Clear);
+        SetPrivateField(autopilot, "lastFlightPlanDivergenceAtTime", -1000f);
+        SetPrivateField(autopilot, "flightPlanDivergenceStartedAtTime", -1f);
+    }
+
     private static void AssertNoWorldLabelText(string text)
     {
         TextMesh[] labels = Object.FindObjectsByType<TextMesh>(FindObjectsInactive.Include);
@@ -1254,6 +1611,14 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
                 Assert.Fail("Unexpected world label text in player evidence: " + text);
             }
         }
+    }
+
+    private static object InvokePrivate(object target, string methodName, params object[] args)
+    {
+        Assert.NotNull(target, methodName + " target");
+        MethodInfo method = target.GetType().GetMethod(methodName, NonPublicInstance);
+        Assert.NotNull(method, methodName);
+        return method.Invoke(target, args);
     }
 
     private static void InvokeIfExists(object target, string methodName)
@@ -1412,5 +1777,19 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
         public PrototypeWeaponComputer WeaponComputer;
         public PrototypePveArenaLoop ArenaLoop;
         public PrototypeDockingApproachAssist DockingAssist;
+    }
+
+    private readonly struct Phase8CaptureResolution
+    {
+        public Phase8CaptureResolution(string fileSuffix, int width, int height)
+        {
+            FileSuffix = fileSuffix;
+            Width = width;
+            Height = height;
+        }
+
+        public string FileSuffix { get; }
+        public int Width { get; }
+        public int Height { get; }
     }
 }

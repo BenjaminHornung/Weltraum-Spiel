@@ -13,6 +13,66 @@ public enum PrototypePlayerHudSeverity
     Danger,
     Disabled
 }
+
+public enum PrototypeNavigationPlanState
+{
+    NoTarget,
+    TargetSelected,
+    Planning,
+    PlanReady,
+    PlanRejected,
+    AwaitingAutopilot,
+    Executing,
+    Monitoring,
+    Replanning,
+    Complete,
+    Aborted,
+    NotPossible
+}
+
+public readonly struct PrototypeNavigationPlanStateBadge
+{
+    public PrototypeNavigationPlanStateBadge(
+        PrototypeNavigationPlanState state,
+        string text,
+        PrototypePlayerHudSeverity severity)
+    {
+        State = state;
+        Text = string.IsNullOrWhiteSpace(text) ? "Kein Ziel" : text;
+        Severity = severity;
+    }
+
+    public PrototypeNavigationPlanState State { get; }
+    public string Text { get; }
+    public PrototypePlayerHudSeverity Severity { get; }
+}
+
+public readonly struct PrototypeNavigationTimelineSegment
+{
+    public PrototypeNavigationTimelineSegment(
+        float startSeconds,
+        float durationSeconds,
+        PrototypeManeuverPhase phase,
+        float mainThrottle,
+        float deltaV,
+        string label)
+    {
+        StartSeconds = Mathf.Max(0f, startSeconds);
+        DurationSeconds = Mathf.Max(0f, durationSeconds);
+        Phase = phase;
+        MainThrottle = Mathf.Clamp01(mainThrottle);
+        DeltaV = Mathf.Max(0f, deltaV);
+        Label = string.IsNullOrWhiteSpace(label) ? phase.ToString() : label;
+    }
+
+    public float StartSeconds { get; }
+    public float DurationSeconds { get; }
+    public PrototypeManeuverPhase Phase { get; }
+    public float MainThrottle { get; }
+    public float DeltaV { get; }
+    public string Label { get; }
+}
+
 public readonly struct PrototypePlayerHudChip
 {
     public PrototypePlayerHudChip(string label, PrototypePlayerHudSeverity severity)
@@ -131,8 +191,26 @@ public readonly struct PrototypePlayerNavigationSnapshot
         string[] maneuverStepRows = null,
         int activeObstacleCount = 0,
         string obstacleSummaryLabel = null,
-        PrototypePlayerNavigationCelestialContext celestialContext = default)
+        PrototypePlayerNavigationCelestialContext celestialContext = default,
+        PrototypeNavigationPlanStateBadge planStateBadge = default,
+        float deltaVRequired = 0f,
+        float deltaVAvailable = 0f,
+        float fuelAfterArrivalFraction = 0f,
+        bool fuelAfterArrivalAvailable = false,
+        bool brakeReserveOk = true,
+        PrototypeNavigationTimelineSegment[] timelineSegments = null,
+        float timelineProgress01 = 0f,
+        int activeSegmentIndex = -1,
+        Vector3[] maneuverMarkersWorld = null,
+        bool closingTowardsTarget = false)
     {
+        PrototypeNavigationPlanStateBadge resolvedPlanStateBadge = string.IsNullOrWhiteSpace(planStateBadge.Text)
+            ? new PrototypeNavigationPlanStateBadge(
+                PrototypeNavigationPlanState.NoTarget,
+                "Kein Ziel",
+                PrototypePlayerHudSeverity.Disabled)
+            : planStateBadge;
+
         Visible = visible;
         TargetName = string.IsNullOrWhiteSpace(targetName) ? "No target" : targetName;
         TargetTypeLabel = string.IsNullOrWhiteSpace(targetTypeLabel) ? "Waypoint" : targetTypeLabel;
@@ -141,10 +219,10 @@ public readonly struct PrototypePlayerNavigationSnapshot
         ClosingSpeed = closingSpeed;
         LateralSpeed = Mathf.Max(0f, lateralSpeed);
         EtaLabel = string.IsNullOrWhiteSpace(etaLabel) ? "--" : etaLabel;
-        StateLabel = string.IsNullOrWhiteSpace(stateLabel) ? "Bereit" : stateLabel;
+        StateLabel = resolvedPlanStateBadge.Text;
         PhaseLabel = string.IsNullOrWhiteSpace(phaseLabel) ? "Direkter Kurs" : phaseLabel;
         RouteModeLabel = string.IsNullOrWhiteSpace(routeModeLabel) ? "Route: Direkt" : routeModeLabel;
-        ManeuverIntentLabel = string.IsNullOrWhiteSpace(maneuverIntentLabel) ? StateLabel : maneuverIntentLabel;
+        ManeuverIntentLabel = string.IsNullOrWhiteSpace(maneuverIntentLabel) ? "Manoever: " + resolvedPlanStateBadge.Text : maneuverIntentLabel;
         StoppingDistanceMeters = Mathf.Max(0f, stoppingDistanceMeters);
         RequiredBurnSeconds = Mathf.Max(0f, requiredBurnSeconds);
         AvailableBurnSeconds = availableBurnSeconds;
@@ -158,7 +236,7 @@ public readonly struct PrototypePlayerNavigationSnapshot
         TargetCount = Mathf.Max(0, targetCount);
         PlanAuthorityLabel = string.IsNullOrWhiteSpace(planAuthorityLabel) ? "Authority: Legacy live gates" : planAuthorityLabel;
         ActiveSegmentLabel = string.IsNullOrWhiteSpace(activeSegmentLabel) ? "Active: " + PhaseLabel : activeSegmentLabel;
-        ReplanStatusLabel = string.IsNullOrWhiteSpace(replanStatusLabel) ? "Replan: none" : replanStatusLabel;
+        ReplanStatusLabel = string.IsNullOrWhiteSpace(replanStatusLabel) ? "Neuplanung: keine" : replanStatusLabel;
         PlanIdentityLabel = string.IsNullOrWhiteSpace(planIdentityLabel) ? "Plan: none" : planIdentityLabel;
         TrackingErrorLabel = string.IsNullOrWhiteSpace(trackingErrorLabel) ? "Track: --" : trackingErrorLabel;
         TrackingCommandLabel = string.IsNullOrWhiteSpace(trackingCommandLabel) ? "Cmd: --" : trackingCommandLabel;
@@ -167,9 +245,20 @@ public readonly struct PrototypePlayerNavigationSnapshot
         ManeuverStepRows = maneuverStepRows ?? System.Array.Empty<string>();
         ActiveObstacleCount = Mathf.Max(0, activeObstacleCount);
         ObstacleSummaryLabel = string.IsNullOrWhiteSpace(obstacleSummaryLabel)
-            ? (ActiveObstacleCount > 0 ? ActiveObstacleCount + " active | no blocking cue" : "0 active | no obstacle cue")
+            ? (ActiveObstacleCount > 0 ? ActiveObstacleCount + " aktiv | kein blockierender Hinweis" : "0 aktiv | kein Hindernis-Hinweis")
             : obstacleSummaryLabel;
         CelestialContext = celestialContext;
+        PlanStateBadge = resolvedPlanStateBadge;
+        DeltaVRequired = Mathf.Max(0f, deltaVRequired);
+        DeltaVAvailable = Mathf.Max(0f, deltaVAvailable);
+        FuelAfterArrivalFraction = Mathf.Clamp01(fuelAfterArrivalFraction);
+        FuelAfterArrivalAvailable = fuelAfterArrivalAvailable;
+        BrakeReserveOk = brakeReserveOk;
+        TimelineSegments = timelineSegments ?? System.Array.Empty<PrototypeNavigationTimelineSegment>();
+        TimelineProgress01 = Mathf.Clamp01(timelineProgress01);
+        ActiveSegmentIndex = activeSegmentIndex;
+        ManeuverMarkersWorld = maneuverMarkersWorld ?? System.Array.Empty<Vector3>();
+        ClosingTowardsTarget = closingTowardsTarget;
     }
 
     public bool Visible { get; }
@@ -207,9 +296,43 @@ public readonly struct PrototypePlayerNavigationSnapshot
     public int ActiveObstacleCount { get; }
     public string ObstacleSummaryLabel { get; }
     public PrototypePlayerNavigationCelestialContext CelestialContext { get; }
+    public PrototypeNavigationPlanStateBadge PlanStateBadge { get; }
+    public float DeltaVRequired { get; }
+    public float DeltaVAvailable { get; }
+    public float FuelAfterArrivalFraction { get; }
+    public bool FuelAfterArrivalAvailable { get; }
+    public bool BrakeReserveOk { get; }
+    public PrototypeNavigationTimelineSegment[] TimelineSegments { get; }
+    public float TimelineProgress01 { get; }
+    public int ActiveSegmentIndex { get; }
+    public Vector3[] ManeuverMarkersWorld { get; }
+    public bool ClosingTowardsTarget { get; }
     public string TargetListLabel => TargetIndex > 0 && TargetCount > 0
         ? "Target " + TargetIndex + "/" + TargetCount
         : "Target --";
+}
+
+public readonly struct PrototypePlayerCombatTargetSnapshot
+{
+    public PrototypePlayerCombatTargetSnapshot(
+        string targetName,
+        float rangeMeters,
+        string healthLabel,
+        bool selected,
+        bool active)
+    {
+        TargetName = string.IsNullOrWhiteSpace(targetName) ? "Target" : targetName;
+        RangeMeters = Mathf.Max(0f, rangeMeters);
+        HealthLabel = string.IsNullOrWhiteSpace(healthLabel) ? "--" : healthLabel;
+        Selected = selected;
+        Active = active;
+    }
+
+    public string TargetName { get; }
+    public float RangeMeters { get; }
+    public string HealthLabel { get; }
+    public bool Selected { get; }
+    public bool Active { get; }
 }
 
 public readonly struct PrototypePlayerCombatSnapshot
@@ -223,7 +346,11 @@ public readonly struct PrototypePlayerCombatSnapshot
         string fireStatusLabel,
         PrototypePlayerHudSeverity fireSeverity,
         string autoFireLabel,
-        string priorityLabel)
+        string priorityLabel,
+        PrototypeWeaponTargetPriorityMode priorityMode = PrototypeWeaponTargetPriorityMode.ManualOrder,
+        PrototypePlayerCombatTargetSnapshot[] targetList = null,
+        int targetListTotalCount = 0,
+        bool hasActiveTarget = false)
     {
         Visible = visible;
         TargetName = string.IsNullOrWhiteSpace(targetName) ? "No target" : targetName;
@@ -234,6 +361,10 @@ public readonly struct PrototypePlayerCombatSnapshot
         FireSeverity = fireSeverity;
         AutoFireLabel = string.IsNullOrWhiteSpace(autoFireLabel) ? "Auto Fire: Off" : autoFireLabel;
         PriorityLabel = string.IsNullOrWhiteSpace(priorityLabel) ? "ManualOrder" : priorityLabel;
+        PriorityMode = priorityMode;
+        TargetList = targetList ?? System.Array.Empty<PrototypePlayerCombatTargetSnapshot>();
+        TargetListTotalCount = Mathf.Max(TargetList.Length, targetListTotalCount);
+        HasActiveTarget = hasActiveTarget || !string.Equals(TargetName, "No target", System.StringComparison.Ordinal);
     }
 
     public bool Visible { get; }
@@ -245,6 +376,10 @@ public readonly struct PrototypePlayerCombatSnapshot
     public PrototypePlayerHudSeverity FireSeverity { get; }
     public string AutoFireLabel { get; }
     public string PriorityLabel { get; }
+    public PrototypeWeaponTargetPriorityMode PriorityMode { get; }
+    public PrototypePlayerCombatTargetSnapshot[] TargetList { get; }
+    public int TargetListTotalCount { get; }
+    public bool HasActiveTarget { get; }
 }
 
 public readonly struct PrototypePlayerDockingSnapshot
@@ -532,6 +667,7 @@ public readonly struct PrototypePlayerHudSnapshot
 public static class PrototypePlayerHudSnapshotBuilder
 {
     private const float DockingGuidanceRadiusMeters = 120f;
+    private const int CombatTargetListCap = 4;
     private const float FallbackSceneScanIntervalSeconds = 1f;
     private const float NavigationRadarFallbackScanIntervalSeconds = 1f;
     private static readonly PrototypeUiSampleGate EnvironmentRadarFallbackScanGate = new PrototypeUiSampleGate(FallbackSceneScanIntervalSeconds);
@@ -582,8 +718,8 @@ public static class PrototypePlayerHudSnapshotBuilder
         }
 
         PrototypePlayerFlightSnapshot flight = BuildFlight(shipRigidbody, stats, controller);
-        PrototypePlayerNavigationSnapshot navigation = BuildNavigation(autopilot, trajectoryPreview, catalog);
-        PrototypePlayerCombatSnapshot combat = BuildCombat(weaponComputer);
+        PrototypePlayerNavigationSnapshot navigation = BuildNavigation(autopilot, controller, trajectoryPreview, catalog);
+        PrototypePlayerCombatSnapshot combat = BuildCombat(weaponComputer, shipRoot);
         PrototypePveArenaSnapshot arena = arenaLoop != null ? arenaLoop.Snapshot : default;
         PrototypePlayerDockingSnapshot docking = BuildDocking(
             effectiveSourceDockingPort,
@@ -609,7 +745,7 @@ public static class PrototypePlayerHudSnapshotBuilder
                 : PrototypeFlightHud.HudMode.World);
 
         PrototypePlayerShipStatusSnapshot shipStatus = BuildShipStatus(stats, controller, weaponComputer);
-        PrototypePlayerHudChip[] warnings = BuildWarningChips(stats, controller, autopilot, momentumAssist, combat, docking);
+        PrototypePlayerHudChip[] warnings = BuildWarningChips(stats, controller, autopilot, momentumAssist, navigation, combat, docking);
         PrototypePlayerHudChip[] assists = BuildAssistChips(autopilot, momentumAssist, navigation, combat, docking, arena);
         PrototypePlayerRadarSnapshot radar = BuildRadar(
             shipRoot,
@@ -676,6 +812,37 @@ public static class PrototypePlayerHudSnapshotBuilder
                 return "Autopilot nicht moeglich";
             default:
                 return "Autopilot aus";
+        }
+    }
+
+    public static string TranslateNavigationPlanState(PrototypeNavigationPlanState state)
+    {
+        switch (state)
+        {
+            case PrototypeNavigationPlanState.TargetSelected:
+                return "Ziel gewaehlt";
+            case PrototypeNavigationPlanState.Planning:
+                return "Plane...";
+            case PrototypeNavigationPlanState.PlanReady:
+                return "Plan bereit";
+            case PrototypeNavigationPlanState.PlanRejected:
+                return "Plan blockiert";
+            case PrototypeNavigationPlanState.AwaitingAutopilot:
+                return "Warte auf Autopilot";
+            case PrototypeNavigationPlanState.Executing:
+                return "Ausfuehrung";
+            case PrototypeNavigationPlanState.Monitoring:
+                return "Ueberwache";
+            case PrototypeNavigationPlanState.Replanning:
+                return "Neuplanung";
+            case PrototypeNavigationPlanState.Complete:
+                return "Angekommen";
+            case PrototypeNavigationPlanState.Aborted:
+                return "Abgebrochen";
+            case PrototypeNavigationPlanState.NotPossible:
+                return "Nicht moeglich";
+            default:
+                return "Kein Ziel";
         }
     }
 
@@ -817,11 +984,10 @@ public static class PrototypePlayerHudSnapshotBuilder
         {
             case PrototypeTurretFireBlockReason.NoMuzzle:
             case PrototypeTurretFireBlockReason.MissingImportedMarker:
-                return "Waffe offline";
             case PrototypeTurretFireBlockReason.NoAuthority:
             case PrototypeTurretFireBlockReason.SafetyDataMissing:
             case PrototypeTurretFireBlockReason.SafetyUnsafe:
-                return "Keine Waffenautoritaet";
+                return "Waffe offline";
             case PrototypeTurretFireBlockReason.LineBlocked:
                 return "Schusslinie blockiert";
             case PrototypeTurretFireBlockReason.OutOfArc:
@@ -939,6 +1105,7 @@ public static class PrototypePlayerHudSnapshotBuilder
 
     private static PrototypePlayerNavigationSnapshot BuildNavigation(
         PrototypeWaypointAutopilot autopilot,
+        PlayerShipController controller,
         PrototypeTrajectoryPreviewNavMap trajectoryPreview,
         CelestialBodyCatalog celestialBodyCatalog)
     {
@@ -976,7 +1143,8 @@ public static class PrototypePlayerHudSnapshotBuilder
             0,
             0,
             obstacleSummaryLabel: null,
-            celestialContext: noTargetContext);
+            celestialContext: noTargetContext,
+            planStateBadge: BuildNavigationPlanStateBadge(null, default, false));
         }
 
         PrototypePlayerNavigationCelestialContext navigationCelestialContext = BuildNavigationCelestialContext(
@@ -985,15 +1153,12 @@ public static class PrototypePlayerHudSnapshotBuilder
             celestialBodyCatalog);
 
         string eta = FormatNavigationEta(autopilot.EtaSeconds, autopilot.ClosingSpeed);
-        string[] sourceWarnings = autopilot.BuildNavigationWarningChips();
-        string[] warnings = new string[sourceWarnings.Length];
-        for (int i = 0; i < sourceWarnings.Length; i++)
-        {
-            warnings[i] = TranslateWarning(sourceWarnings[i]);
-        }
-
         PrototypeFlightPlan flightPlan = autopilot.CurrentFlightPlan;
         bool hasFlightPlan = flightPlan.HasSegments;
+        PrototypeNavigationPlanStateBadge planStateBadge = BuildNavigationPlanStateBadge(autopilot, flightPlan, hasFlightPlan);
+        string[] sourceWarnings = autopilot.BuildNavigationWarningChips();
+        string[] warnings = BuildNavigationWarningLabels(sourceWarnings, planStateBadge);
+
         Vector3[] routePoints = hasFlightPlan
             ? CopyFlightPlanRoutePoints(flightPlan.predictedSamples, 8)
             : CopyRoutePoints(autopilot.PredictedRoute, 8);
@@ -1006,6 +1171,19 @@ public static class PrototypePlayerHudSnapshotBuilder
         PrototypeTrajectorySegment[] planSegments = autopilot.PlanSegments;
         float totalPlanDuration = hasFlightPlan ? flightPlan.totalDurationSeconds : SumNavigationPlanDuration(planSegments);
         float totalPlanFuel = hasFlightPlan ? flightPlan.totalExpectedFuelKg : SumNavigationPlanFuel(planSegments);
+        float deltaVRequired = hasFlightPlan ? SumNavigationDeltaV(flightPlan.segments) : SumNavigationDeltaV(planSegments);
+        float deltaVAvailable = hasFlightPlan
+            ? EstimateFlightPlanAvailableDeltaV(deltaVRequired, flightPlan)
+            : EstimateAvailableDeltaV(deltaVRequired, autopilot.RequiredBurnSeconds, autopilot.AvailableBurnSeconds);
+        float fuelAfterArrivalFraction = hasFlightPlan ? BuildFuelAfterArrivalFraction(flightPlan) : 0f;
+        bool brakeReserveOk = BuildBrakeReserveOk(autopilot, flightPlan, hasFlightPlan);
+        PrototypeNavigationTimelineSegment[] timelineSegments = hasFlightPlan
+            ? BuildNavigationTimelineSegments(flightPlan.segments)
+            : System.Array.Empty<PrototypeNavigationTimelineSegment>();
+        PrototypeFlightPlanExecutionState executionState = autopilot.CurrentFlightPlanExecutionState;
+        float timelineProgress = hasFlightPlan ? BuildNavigationTimelineProgress(flightPlan, executionState, autopilot.FlightPlanExecutorElapsedSeconds) : 0f;
+        int activeSegmentIndex = hasFlightPlan ? BuildNavigationActiveSegmentIndex(flightPlan, executionState, autopilot.FlightPlanExecutorElapsedSeconds) : -1;
+        Vector3[] maneuverMarkers = hasFlightPlan ? BuildNavigationManeuverMarkers(flightPlan.segments) : System.Array.Empty<Vector3>();
         return new PrototypePlayerNavigationSnapshot(
             visible,
             autopilot.TargetName,
@@ -1015,10 +1193,10 @@ public static class PrototypePlayerHudSnapshotBuilder
             autopilot.ClosingSpeed,
             autopilot.LateralSpeed,
             eta,
-            TranslateNavigationState(autopilot.CurrentState),
+            planStateBadge.Text,
             TranslateNavigationPhase(autopilot.NavigationPhase),
             BuildNavigationRouteModeLabel(routePoints, hasAvoidanceCue),
-            BuildNavigationManeuverIntentLabel(autopilot),
+            BuildNavigationManeuverIntentLabel(autopilot, controller),
             autopilot.StoppingDistance,
             autopilot.RequiredBurnSeconds,
             autopilot.AvailableBurnSeconds,
@@ -1041,7 +1219,348 @@ public static class PrototypePlayerHudSnapshotBuilder
             hasFlightPlan ? BuildNavigationManeuverRows(flightPlan.segments) : BuildNavigationManeuverRows(planSegments),
             PrototypeNavigationObstacleRegistry.Count,
             BuildNavigationObstacleSummaryLabel(autopilot, hasAvoidanceCue),
-            navigationCelestialContext);
+            navigationCelestialContext,
+            planStateBadge,
+            deltaVRequired,
+            deltaVAvailable,
+            fuelAfterArrivalFraction,
+            hasFlightPlan,
+            brakeReserveOk,
+            timelineSegments,
+            timelineProgress,
+            activeSegmentIndex,
+            maneuverMarkers,
+            autopilot.ClosingSpeed > 0f);
+    }
+
+    private static PrototypeNavigationPlanStateBadge BuildNavigationPlanStateBadge(
+        PrototypeWaypointAutopilot autopilot,
+        PrototypeFlightPlan flightPlan,
+        bool hasFlightPlan)
+    {
+        PrototypeNavigationPlanState state = ResolveNavigationPlanState(autopilot, flightPlan, hasFlightPlan);
+        return new PrototypeNavigationPlanStateBadge(
+            state,
+            BuildNavigationPlanStateText(autopilot, state),
+            SeverityForNavigationPlanState(state));
+    }
+
+    private static string BuildNavigationPlanStateText(
+        PrototypeWaypointAutopilot autopilot,
+        PrototypeNavigationPlanState state)
+    {
+        if (state != PrototypeNavigationPlanState.NotPossible || autopilot == null)
+        {
+            return TranslateNavigationPlanState(state);
+        }
+
+        if (autopilot.CurrentState == PrototypeWaypointAutopilotState.FuelInsufficient
+            || string.Equals(autopilot.ArrivalFailureReason, "FuelInsufficient", System.StringComparison.OrdinalIgnoreCase))
+        {
+            return TranslateNavigationPlanState(state) + ": zu wenig Treibstoff";
+        }
+
+        if (string.Equals(autopilot.ArrivalFailureReason, "NoAttitudeAuthority", System.StringComparison.OrdinalIgnoreCase)
+            || string.Equals(autopilot.ArrivalFailureReason, "NoAuthority", System.StringComparison.OrdinalIgnoreCase))
+        {
+            return TranslateNavigationPlanState(state) + ": keine Dreh-Autoritaet";
+        }
+
+        return TranslateNavigationPlanState(state);
+    }
+
+    private static PrototypeNavigationPlanState ResolveNavigationPlanState(
+        PrototypeWaypointAutopilot autopilot,
+        PrototypeFlightPlan flightPlan,
+        bool hasFlightPlan)
+    {
+        if (autopilot == null || autopilot.CurrentTarget == null)
+        {
+            return PrototypeNavigationPlanState.NoTarget;
+        }
+
+        if (autopilot.CurrentState == PrototypeWaypointAutopilotState.Aborted)
+        {
+            return PrototypeNavigationPlanState.Aborted;
+        }
+
+        if (autopilot.CurrentState == PrototypeWaypointAutopilotState.Failed
+            || autopilot.CurrentState == PrototypeWaypointAutopilotState.FuelInsufficient)
+        {
+            return PrototypeNavigationPlanState.NotPossible;
+        }
+
+        if (autopilot.CurrentState == PrototypeWaypointAutopilotState.Complete)
+        {
+            return PrototypeNavigationPlanState.Complete;
+        }
+
+        if (hasFlightPlan && !flightPlan.isExecutable)
+        {
+            return PrototypeNavigationPlanState.PlanRejected;
+        }
+
+        if (autopilot.FlightPlanRequiresReplan)
+        {
+            return PrototypeNavigationPlanState.Replanning;
+        }
+
+        if (!hasFlightPlan && autopilot.CurrentState == PrototypeWaypointAutopilotState.FuelCheck)
+        {
+            return PrototypeNavigationPlanState.Planning;
+        }
+
+        if (!autopilot.AutopilotEngaged
+            && autopilot.CurrentState != PrototypeWaypointAutopilotState.Idle
+            && autopilot.CurrentState != PrototypeWaypointAutopilotState.TargetSelected)
+        {
+            return PrototypeNavigationPlanState.AwaitingAutopilot;
+        }
+
+        if (autopilot.AutopilotEngaged)
+        {
+            if (autopilot.CurrentState == PrototypeWaypointAutopilotState.HoldPosition)
+            {
+                return PrototypeNavigationPlanState.Monitoring;
+            }
+
+            return PrototypeNavigationPlanState.Executing;
+        }
+
+        if (!hasFlightPlan)
+        {
+            return PrototypeNavigationPlanState.TargetSelected;
+        }
+
+        return autopilot.FlightPlanExecutorActive
+            ? PrototypeNavigationPlanState.Monitoring
+            : PrototypeNavigationPlanState.PlanReady;
+    }
+
+    private static PrototypePlayerHudSeverity SeverityForNavigationPlanState(PrototypeNavigationPlanState state)
+    {
+        switch (state)
+        {
+            case PrototypeNavigationPlanState.NoTarget:
+                return PrototypePlayerHudSeverity.Disabled;
+            case PrototypeNavigationPlanState.PlanRejected:
+            case PrototypeNavigationPlanState.Replanning:
+            case PrototypeNavigationPlanState.Aborted:
+                return PrototypePlayerHudSeverity.Warning;
+            case PrototypeNavigationPlanState.NotPossible:
+                return PrototypePlayerHudSeverity.Danger;
+            case PrototypeNavigationPlanState.TargetSelected:
+            case PrototypeNavigationPlanState.Monitoring:
+                return PrototypePlayerHudSeverity.Normal;
+            default:
+                return PrototypePlayerHudSeverity.Info;
+        }
+    }
+
+    private static float SumNavigationDeltaV(PrototypeManeuverSegment[] segments)
+    {
+        if (segments == null)
+        {
+            return 0f;
+        }
+
+        float total = 0f;
+        for (int i = 0; i < segments.Length; i++)
+        {
+            total += Mathf.Max(0f, segments[i].expectedDeltaV);
+        }
+
+        return total;
+    }
+
+    private static float SumNavigationDeltaV(PrototypeTrajectorySegment[] segments)
+    {
+        if (segments == null)
+        {
+            return 0f;
+        }
+
+        float total = 0f;
+        for (int i = 0; i < segments.Length; i++)
+        {
+            total += Mathf.Max(0f, segments[i].expectedDeltaV);
+        }
+
+        return total;
+    }
+
+    private static float EstimateAvailableDeltaV(float requiredDeltaV, float requiredBurnSeconds, float availableBurnSeconds)
+    {
+        if (requiredDeltaV <= 0f || requiredBurnSeconds <= 0.001f)
+        {
+            return requiredDeltaV;
+        }
+
+        return Mathf.Max(0f, requiredDeltaV * Mathf.Max(0f, availableBurnSeconds) / requiredBurnSeconds);
+    }
+
+    private static float EstimateFlightPlanAvailableDeltaV(float requiredDeltaV, PrototypeFlightPlan flightPlan)
+    {
+        if (requiredDeltaV <= 0f)
+        {
+            return 0f;
+        }
+
+        if (flightPlan.totalExpectedFuelKg <= 0.001f)
+        {
+            return requiredDeltaV;
+        }
+
+        return Mathf.Max(0f, requiredDeltaV * flightPlan.shipSnapshot.currentFuelKg / flightPlan.totalExpectedFuelKg);
+    }
+
+    private static float BuildFuelAfterArrivalFraction(PrototypeFlightPlan flightPlan)
+    {
+        float maxFuel = flightPlan.shipSnapshot.maxFuelKg;
+        if (maxFuel <= 0.001f)
+        {
+            return 0f;
+        }
+
+        return Mathf.Clamp01(flightPlan.expectedRemainingFuelKg / maxFuel);
+    }
+
+    private static bool BuildBrakeReserveOk(
+        PrototypeWaypointAutopilot autopilot,
+        PrototypeFlightPlan flightPlan,
+        bool hasFlightPlan)
+    {
+        if (!hasFlightPlan)
+        {
+            return autopilot == null || autopilot.AvailableBurnSeconds >= autopilot.RequiredBurnSeconds;
+        }
+
+        return flightPlan.isExecutable
+            && flightPlan.expectedRemainingFuelKg >= 0f
+            && flightPlan.totalExpectedFuelKg <= flightPlan.shipSnapshot.currentFuelKg + PrototypeFlightPlanTolerance.Default.fuelKg;
+    }
+
+    private static PrototypeNavigationTimelineSegment[] BuildNavigationTimelineSegments(PrototypeManeuverSegment[] segments)
+    {
+        if (segments == null || segments.Length == 0)
+        {
+            return System.Array.Empty<PrototypeNavigationTimelineSegment>();
+        }
+
+        var timeline = new PrototypeNavigationTimelineSegment[segments.Length];
+        for (int i = 0; i < segments.Length; i++)
+        {
+            PrototypeManeuverSegment segment = segments[i];
+            timeline[i] = new PrototypeNavigationTimelineSegment(
+                segment.startTimeSeconds,
+                segment.durationSeconds,
+                segment.phase,
+                segment.mainThrottle,
+                segment.expectedDeltaV,
+                string.IsNullOrWhiteSpace(segment.label) ? TranslateNavigationManeuverPhase(segment.phase) : segment.label);
+        }
+
+        return timeline;
+    }
+
+    private static float BuildNavigationTimelineProgress(
+        PrototypeFlightPlan flightPlan,
+        PrototypeFlightPlanExecutionState executionState,
+        float fallbackElapsedSeconds)
+    {
+        if (!flightPlan.HasSegments || flightPlan.totalDurationSeconds <= 0.001f)
+        {
+            return 0f;
+        }
+
+        float elapsed = executionState.IsFinite && (executionState.hasActiveSegment || executionState.elapsedSeconds > 0f)
+            ? executionState.elapsedSeconds
+            : fallbackElapsedSeconds;
+        return Mathf.Clamp01(elapsed / flightPlan.totalDurationSeconds);
+    }
+
+    private static int BuildNavigationActiveSegmentIndex(
+        PrototypeFlightPlan flightPlan,
+        PrototypeFlightPlanExecutionState executionState,
+        float fallbackElapsedSeconds)
+    {
+        if (!flightPlan.HasSegments)
+        {
+            return -1;
+        }
+
+        if (executionState.hasActiveSegment
+            && executionState.activeSegmentIndex >= 0
+            && executionState.activeSegmentIndex < flightPlan.SegmentCount)
+        {
+            return executionState.activeSegmentIndex;
+        }
+
+        return flightPlan.TryGetActiveSegment(fallbackElapsedSeconds, out PrototypeManeuverSegment segment)
+            ? segment.index
+            : -1;
+    }
+
+    private static Vector3[] BuildNavigationManeuverMarkers(PrototypeManeuverSegment[] segments)
+    {
+        if (segments == null || segments.Length == 0)
+        {
+            return System.Array.Empty<Vector3>();
+        }
+
+        var markers = new List<Vector3>();
+        for (int i = 0; i < segments.Length; i++)
+        {
+            PrototypeManeuverSegment segment = segments[i];
+            if (!ShouldExposeNavigationManeuverMarker(segment.phase) || !IsFiniteVector3(segment.expectedStartPosition))
+            {
+                continue;
+            }
+
+            markers.Add(segment.expectedStartPosition);
+        }
+
+        return markers.ToArray();
+    }
+
+    private static bool ShouldExposeNavigationManeuverMarker(PrototypeManeuverPhase phase)
+    {
+        return phase == PrototypeManeuverPhase.ProgradeBurn
+            || phase == PrototypeManeuverPhase.AvoidanceBurn
+            || phase == PrototypeManeuverPhase.ReacquireRoute
+            || phase == PrototypeManeuverPhase.FlipToRetrograde
+            || phase == PrototypeManeuverPhase.RetrogradeBurn;
+    }
+
+    private static string TranslateNavigationManeuverPhase(PrototypeManeuverPhase phase)
+    {
+        switch (phase)
+        {
+            case PrototypeManeuverPhase.AlignForBurn:
+                return "Ausrichten";
+            case PrototypeManeuverPhase.ProgradeBurn:
+                return "Hauptburn";
+            case PrototypeManeuverPhase.Coast:
+                return "Drift";
+            case PrototypeManeuverPhase.FlipToRetrograde:
+                return "Bremsdrehung";
+            case PrototypeManeuverPhase.RetrogradeBurn:
+                return "Bremsburn";
+            case PrototypeManeuverPhase.LateralCorrection:
+                return "Seitendrift";
+            case PrototypeManeuverPhase.AvoidanceBurn:
+                return "Ausweichburn";
+            case PrototypeManeuverPhase.ReacquireRoute:
+                return "Route aufnehmen";
+            case PrototypeManeuverPhase.FinalApproach:
+                return "Endanflug";
+            case PrototypeManeuverPhase.Hold:
+                return "Halten";
+            case PrototypeManeuverPhase.Abort:
+                return "Abbruch";
+            default:
+                return "Warten";
+        }
     }
 
     private static PrototypePlayerNavigationCelestialContext BuildNavigationCelestialContext(
@@ -1264,28 +1783,123 @@ public static class PrototypePlayerHudSnapshotBuilder
         }
 
         const int maxRows = 7;
-        int rowCount = Mathf.Min(maxRows, segments.Length);
-        string[] rows = new string[rowCount + (segments.Length > maxRows ? 1 : 0)];
-        for (int i = 0; i < rowCount; i++)
+        int[] rowIndexes = BuildNavigationManeuverRowIndexes(segments, maxRows);
+        string[] rows = new string[rowIndexes.Length + (segments.Length > rowIndexes.Length ? 1 : 0)];
+        for (int i = 0; i < rowIndexes.Length; i++)
         {
-            rows[i] = BuildNavigationManeuverRow(segments[i]);
+            rows[i] = BuildNavigationManeuverRow(segments[rowIndexes[i]]);
         }
 
-        if (segments.Length > maxRows)
+        if (segments.Length > rowIndexes.Length)
         {
-            rows[rows.Length - 1] = "... +" + (segments.Length - maxRows) + " steps";
+            rows[rows.Length - 1] = "... +" + (segments.Length - rowIndexes.Length) + " steps";
         }
 
         return rows;
     }
 
+    private static int[] BuildNavigationManeuverRowIndexes(PrototypeManeuverSegment[] segments, int maxRows)
+    {
+        var indexes = new List<int>(Mathf.Min(maxRows, segments.Length));
+        for (int i = 0; i < segments.Length && indexes.Count < maxRows; i++)
+        {
+            indexes.Add(i);
+        }
+
+        EnsureNavigationManeuverRowPhase(indexes, segments, PrototypeManeuverPhase.ProgradeBurn, maxRows);
+        EnsureNavigationManeuverRowPhase(indexes, segments, PrototypeManeuverPhase.FlipToRetrograde, maxRows);
+        EnsureNavigationManeuverRowPhase(indexes, segments, PrototypeManeuverPhase.RetrogradeBurn, maxRows);
+        indexes.Sort();
+        return indexes.ToArray();
+    }
+
+    private static void EnsureNavigationManeuverRowPhase(
+        List<int> indexes,
+        PrototypeManeuverSegment[] segments,
+        PrototypeManeuverPhase phase,
+        int maxRows)
+    {
+        int phaseIndex = -1;
+        for (int i = 0; i < segments.Length; i++)
+        {
+            if (segments[i].phase == phase)
+            {
+                phaseIndex = i;
+                break;
+            }
+        }
+
+        if (phaseIndex < 0 || indexes.Contains(phaseIndex))
+        {
+            return;
+        }
+
+        if (indexes.Count < maxRows)
+        {
+            indexes.Add(phaseIndex);
+            return;
+        }
+
+        for (int i = indexes.Count - 1; i >= 0; i--)
+        {
+            PrototypeManeuverPhase indexedPhase = segments[indexes[i]].phase;
+            if (!IsNavigationManeuverRowRequiredPhase(indexedPhase)
+                || CountNavigationManeuverRowPhase(indexes, segments, indexedPhase) > 1)
+            {
+                indexes[i] = phaseIndex;
+                return;
+            }
+        }
+    }
+
+    private static bool IsNavigationManeuverRowRequiredPhase(PrototypeManeuverPhase phase)
+    {
+        return phase == PrototypeManeuverPhase.ProgradeBurn
+            || phase == PrototypeManeuverPhase.FlipToRetrograde
+            || phase == PrototypeManeuverPhase.RetrogradeBurn;
+    }
+
+    private static int CountNavigationManeuverRowPhase(
+        List<int> indexes,
+        PrototypeManeuverSegment[] segments,
+        PrototypeManeuverPhase phase)
+    {
+        int count = 0;
+        for (int i = 0; i < indexes.Count; i++)
+        {
+            if (segments[indexes[i]].phase == phase)
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
     private static string BuildNavigationManeuverRow(PrototypeManeuverSegment segment)
     {
         return (segment.index + 1) + " T+" + FormatPlannerSeconds(segment.startTimeSeconds) + "-" + FormatPlannerSeconds(segment.endTimeSeconds)
-            + " " + segment.label
+            + " " + BuildNavigationManeuverRowLabel(segment)
             + " | " + BuildNavigationSegmentActuatorLabel(segment)
             + " | dV " + segment.expectedDeltaV.ToString("0.0")
             + " | fuel " + segment.ExpectedFuelKg.ToString("0.00") + "kg";
+    }
+
+    private static string BuildNavigationManeuverRowLabel(PrototypeManeuverSegment segment)
+    {
+        switch (segment.phase)
+        {
+            case PrototypeManeuverPhase.ProgradeBurn:
+                return "Main burn";
+            case PrototypeManeuverPhase.FlipToRetrograde:
+                return "Flip retrograde";
+            case PrototypeManeuverPhase.RetrogradeBurn:
+                return "Brake burn";
+        }
+
+        return string.IsNullOrWhiteSpace(segment.label)
+            ? TranslateNavigationManeuverPhase(segment.phase)
+            : segment.label;
     }
 
     private static string BuildNavigationSegmentActuatorLabel(PrototypeTrajectorySegment segment)
@@ -1369,41 +1983,44 @@ public static class PrototypePlayerHudSnapshotBuilder
     {
         if (autopilot == null)
         {
-            return "Replan: no autopilot";
+            return "Neuplanung: kein Autopilot";
         }
 
         if (flightPlan.HasSegments && !flightPlan.isExecutable)
         {
-            return "Replan: plan blocked " + flightPlan.nonExecutableReasons;
+            return "Neuplanung: Plan blockiert " + flightPlan.nonExecutableReasons;
         }
 
         if (autopilot.FlightPlanDivergenceReasons != PrototypeFlightPlanAbortReplanReason.None)
         {
-            return autopilot.FlightPlanDivergenceStatusLabel;
+            string divergenceStatus = autopilot.FlightPlanDivergenceStatusLabel;
+            return divergenceStatus != null && divergenceStatus.StartsWith("Replan:", System.StringComparison.Ordinal)
+                ? "Neuplanung:" + divergenceStatus.Substring("Replan:".Length)
+                : divergenceStatus;
         }
 
         PrototypeTrajectoryPlan plan = autopilot.CurrentPlan;
         if (plan.fuelInsufficient)
         {
-            return "Replan: fuel insufficient";
+            return "Neuplanung: zu wenig Treibstoff";
         }
 
         if (plan.directPathBlocked || plan.obstacleDetected || autopilot.NavigationObstacleDetected)
         {
-            return "Replan: obstacle cue";
+            return "Neuplanung: Hindernis-Hinweis";
         }
 
         if (plan.limitedRcsAuthority || plan.holdNoAuthority || plan.limitedHoldAuthority)
         {
-            return "Replan: authority limited";
+            return "Neuplanung: Autoritaet begrenzt";
         }
 
         if (!string.IsNullOrWhiteSpace(plan.warningStatus))
         {
-            return "Replan: " + plan.warningStatus;
+            return "Neuplanung: " + plan.warningStatus;
         }
 
-        return "Replan: none";
+        return "Neuplanung: keine";
     }
 
     private static string BuildNavigationPlanIdentityLabel(PrototypeWaypointAutopilot autopilot, PrototypeFlightPlan flightPlan)
@@ -1542,12 +2159,12 @@ public static class PrototypePlayerHudSnapshotBuilder
         int obstacleCount = PrototypeNavigationObstacleRegistry.Count;
         if (hasAvoidanceCue && autopilot != null)
         {
-            return obstacleCount + " active | cue " + BuildAvoidanceLabel(autopilot);
+            return obstacleCount + " aktiv | Hinweis " + BuildAvoidanceLabel(autopilot);
         }
 
         return obstacleCount > 0
-            ? obstacleCount + " active | no blocking cue"
-            : "0 active | no obstacle cue";
+            ? obstacleCount + " aktiv | kein blockierender Hinweis"
+            : "0 aktiv | kein Hindernis-Hinweis";
     }
 
     private static string TranslateTrajectorySegmentType(PrototypeTrajectorySegmentType type)
@@ -1792,10 +2409,10 @@ public static class PrototypePlayerHudSnapshotBuilder
                 keys,
                 PrototypePlayerTargetIndicatorKind.Navigation,
                 navigation.TargetName,
-                navigation.StateLabel,
+                navigation.PlanStateBadge.Text,
                 selectedNavigation.WorldPosition,
                 navigation.DistanceMeters,
-                PrototypePlayerHudSeverity.Info,
+                navigation.PlanStateBadge.Severity,
                 0f,
                 selected: true,
                 showLabel: true);
@@ -2301,7 +2918,7 @@ public static class PrototypePlayerHudSnapshotBuilder
         return "Range " + rangeMeters.ToString("0") + " m";
     }
 
-    private static PrototypePlayerCombatSnapshot BuildCombat(PrototypeWeaponComputer weaponComputer)
+    private static PrototypePlayerCombatSnapshot BuildCombat(PrototypeWeaponComputer weaponComputer, Transform shipRoot)
     {
         if (weaponComputer == null)
         {
@@ -2321,10 +2938,14 @@ public static class PrototypePlayerHudSnapshotBuilder
         PrototypeTurretFireStatus fireStatus = weaponComputer.LastTurretStatus;
         bool hasTarget = target != null && target.IsValid;
         int availableTargetCount = weaponComputer.AvailableTargets != null ? weaponComputer.AvailableTargets.Count : 0;
+        Vector3 origin = ResolveCombatRangeOrigin(weaponComputer, shipRoot);
         float healthPercent = hasTarget ? target.CurrentHealth / Mathf.Max(1f, target.MaxHealth) : 0f;
         string health = hasTarget ? target.CurrentHealth.ToString("0") + "/" + target.MaxHealth.ToString("0") : "--";
         string autoFire = BuildAutoFireLabel(weaponComputer.AutoFireEnabled, hasTarget, fireStatus);
         string fireLabel = hasTarget ? TranslateFireStatus(fireStatus) : "No target";
+        float rangeMeters = hasTarget
+            ? (fireStatus.distanceMeters > 0.01f ? fireStatus.distanceMeters : Vector3.Distance(origin, target.Position))
+            : 0f;
         PrototypePlayerHudSeverity severity = fireStatus.canFire
             ? PrototypePlayerHudSeverity.Info
             : !hasTarget && weaponComputer.AutoFireEnabled
@@ -2332,17 +2953,97 @@ public static class PrototypePlayerHudSnapshotBuilder
                 : !hasTarget
                     ? PrototypePlayerHudSeverity.Disabled
                     : FireBlockSeverity(fireStatus.blockReason);
+        PrototypePlayerCombatTargetSnapshot[] targetList = BuildCombatTargetList(weaponComputer, origin);
 
         return new PrototypePlayerCombatSnapshot(
             hasTarget || weaponComputer.AutoFireEnabled || availableTargetCount > 0,
             hasTarget ? target.Label : "No target",
             healthPercent,
             health,
-            fireStatus.distanceMeters,
+            rangeMeters,
             fireLabel,
             severity,
             autoFire,
-            weaponComputer.PriorityMode.ToString());
+            PlayerPriorityLabel(weaponComputer.PriorityMode),
+            weaponComputer.PriorityMode,
+            targetList,
+            availableTargetCount,
+            hasTarget);
+    }
+
+    private static Vector3 ResolveCombatRangeOrigin(PrototypeWeaponComputer weaponComputer, Transform shipRoot)
+    {
+        PrototypeTurretWeapon turret = weaponComputer != null ? weaponComputer.TurretWeapon : null;
+        if (turret != null)
+        {
+            return turret.transform.position;
+        }
+
+        if (shipRoot != null)
+        {
+            return shipRoot.position;
+        }
+
+        return weaponComputer != null ? weaponComputer.transform.position : Vector3.zero;
+    }
+
+    private static PrototypePlayerCombatTargetSnapshot[] BuildCombatTargetList(PrototypeWeaponComputer weaponComputer, Vector3 origin)
+    {
+        if (weaponComputer == null || weaponComputer.AvailableTargets == null || weaponComputer.AvailableTargets.Count == 0)
+        {
+            return System.Array.Empty<PrototypePlayerCombatTargetSnapshot>();
+        }
+
+        var targets = new List<PrototypeWeaponTarget>(weaponComputer.AvailableTargets.Count);
+        for (int i = 0; i < weaponComputer.AvailableTargets.Count; i++)
+        {
+            PrototypeWeaponTarget target = weaponComputer.AvailableTargets[i];
+            if (target != null && target.IsValid)
+            {
+                targets.Add(target);
+            }
+        }
+
+        SortCombatTargetsForPriority(targets, origin, weaponComputer.PriorityMode);
+        int count = Mathf.Min(CombatTargetListCap, targets.Count);
+        var rows = new PrototypePlayerCombatTargetSnapshot[count];
+        PrototypeWeaponTarget activeTarget = weaponComputer.ActiveTarget;
+        for (int i = 0; i < count; i++)
+        {
+            PrototypeWeaponTarget target = targets[i];
+            rows[i] = new PrototypePlayerCombatTargetSnapshot(
+                target.Label,
+                Vector3.Distance(origin, target.Position),
+                target.CurrentHealth.ToString("0") + "/" + target.MaxHealth.ToString("0"),
+                weaponComputer.IsSelected(target),
+                activeTarget != null && target.StableId == activeTarget.StableId);
+        }
+
+        return rows;
+    }
+
+    private static void SortCombatTargetsForPriority(List<PrototypeWeaponTarget> targets, Vector3 origin, PrototypeWeaponTargetPriorityMode priorityMode)
+    {
+        if (targets == null)
+        {
+            return;
+        }
+
+        switch (priorityMode)
+        {
+            case PrototypeWeaponTargetPriorityMode.Nearest:
+                targets.Sort((left, right) => Vector3.SqrMagnitude(left.Position - origin).CompareTo(Vector3.SqrMagnitude(right.Position - origin)));
+                break;
+            case PrototypeWeaponTargetPriorityMode.HighestHealth:
+                targets.Sort((left, right) => right.CurrentHealth.CompareTo(left.CurrentHealth));
+                break;
+            case PrototypeWeaponTargetPriorityMode.LowestHealth:
+                targets.Sort((left, right) => left.CurrentHealth.CompareTo(right.CurrentHealth));
+                break;
+            default:
+                targets.Sort((left, right) => left.StableId.CompareTo(right.StableId));
+                break;
+        }
     }
 
     private static PrototypePlayerDockingSnapshot BuildDocking(
@@ -2551,6 +3252,7 @@ public static class PrototypePlayerHudSnapshotBuilder
         PlayerShipController controller,
         PrototypeWaypointAutopilot autopilot,
         PrototypeMomentumAssist momentumAssist,
+        PrototypePlayerNavigationSnapshot navigation,
         PrototypePlayerCombatSnapshot combat,
         PrototypePlayerDockingSnapshot docking)
     {
@@ -2588,6 +3290,11 @@ public static class PrototypePlayerHudSnapshotBuilder
             string[] navWarnings = autopilot.BuildNavigationWarningChips();
             for (int i = 0; i < navWarnings.Length; i++)
             {
+                if (TryAddNavigationStatusBadge(chips, navWarnings[i], navigation))
+                {
+                    continue;
+                }
+
                 string translatedWarning = TranslateWarning(navWarnings[i]);
                 AddOrPromoteUnique(chips, translatedWarning, SeverityForWarning(navWarnings[i], translatedWarning));
             }
@@ -2612,6 +3319,74 @@ public static class PrototypePlayerHudSnapshotBuilder
         return chips.ToArray();
     }
 
+    private static string[] BuildNavigationWarningLabels(
+        string[] sourceWarnings,
+        PrototypeNavigationPlanStateBadge planStateBadge)
+    {
+        if (sourceWarnings == null || sourceWarnings.Length == 0)
+        {
+            return System.Array.Empty<string>();
+        }
+
+        var labels = new List<string>(sourceWarnings.Length);
+        for (int i = 0; i < sourceWarnings.Length; i++)
+        {
+            if (IsNavigationStatusWarning(sourceWarnings[i]))
+            {
+                AddUniqueLabel(labels, planStateBadge.Text);
+                continue;
+            }
+
+            AddUniqueLabel(labels, TranslateWarning(sourceWarnings[i]));
+        }
+
+        return labels.ToArray();
+    }
+
+    private static bool TryAddNavigationStatusBadge(
+        List<PrototypePlayerHudChip> chips,
+        string sourceWarning,
+        PrototypePlayerNavigationSnapshot navigation)
+    {
+        if (!IsNavigationStatusWarning(sourceWarning))
+        {
+            return false;
+        }
+
+        AddOrPromoteUnique(chips, navigation.PlanStateBadge.Text, navigation.PlanStateBadge.Severity);
+        return true;
+    }
+
+    private static bool IsNavigationStatusWarning(string warning)
+    {
+        if (string.IsNullOrWhiteSpace(warning))
+        {
+            return false;
+        }
+
+        string normalized = warning.Trim();
+        return string.Equals(normalized, "NO TARGET", System.StringComparison.OrdinalIgnoreCase)
+            || string.Equals(normalized, "HOLDING", System.StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static void AddUniqueLabel(List<string> labels, string label)
+    {
+        if (string.IsNullOrWhiteSpace(label))
+        {
+            return;
+        }
+
+        for (int i = 0; i < labels.Count; i++)
+        {
+            if (labels[i] == label)
+            {
+                return;
+            }
+        }
+
+        labels.Add(label);
+    }
+
     private static PrototypePlayerHudChip[] BuildAssistChips(
         PrototypeWaypointAutopilot autopilot,
         PrototypeMomentumAssist momentumAssist,
@@ -2623,7 +3398,7 @@ public static class PrototypePlayerHudSnapshotBuilder
         var chips = new List<PrototypePlayerHudChip>();
         if (autopilot != null && autopilot.AutopilotEngaged)
         {
-            AddOrPromoteUnique(chips, "Autopilot: " + TranslateNavigationState(autopilot.CurrentState), PrototypePlayerHudSeverity.Info);
+            AddOrPromoteUnique(chips, "Autopilot: " + navigation.PlanStateBadge.Text, navigation.PlanStateBadge.Severity);
         }
 
         if (momentumAssist != null && momentumAssist.IsActive)
@@ -2695,6 +3470,21 @@ public static class PrototypePlayerHudSnapshotBuilder
         return status.canFire
             ? "Auto Fire: Armed"
             : "Auto Fire: Waiting - " + TranslateFireStatus(status);
+    }
+
+    private static string PlayerPriorityLabel(PrototypeWeaponTargetPriorityMode mode)
+    {
+        switch (mode)
+        {
+            case PrototypeWeaponTargetPriorityMode.Nearest:
+                return "Nearest";
+            case PrototypeWeaponTargetPriorityMode.HighestHealth:
+                return "HighestHealth";
+            case PrototypeWeaponTargetPriorityMode.LowestHealth:
+                return "LowestHealth";
+            default:
+                return "ManualOrder";
+        }
     }
 
     private static PrototypePlayerHudSeverity FireBlockSeverity(PrototypeTurretFireBlockReason reason)
@@ -2887,11 +3677,16 @@ public static class PrototypePlayerHudSnapshotBuilder
         return "Route: Kein Plan";
     }
 
-    private static string BuildNavigationManeuverIntentLabel(PrototypeWaypointAutopilot autopilot)
+    private static string BuildNavigationManeuverIntentLabel(PrototypeWaypointAutopilot autopilot, PlayerShipController controller)
     {
         if (autopilot == null || autopilot.CurrentTarget == null)
         {
             return "Manoever: Kein Ziel";
+        }
+
+        if (HasSignificantMainDecelBurnRequest(autopilot, controller))
+        {
+            return "Manoever: Main-Decel-Burn";
         }
 
         if (!autopilot.AutopilotEngaged)
@@ -2941,6 +3736,59 @@ public static class PrototypePlayerHudSnapshotBuilder
             default:
                 return "Manoever: " + TranslateNavigationState(autopilot.CurrentState);
         }
+    }
+
+    private static bool HasSignificantMainDecelBurnRequest(PrototypeWaypointAutopilot autopilot, PlayerShipController controller)
+    {
+        if (controller != null)
+        {
+            FlightAssistRequest request = controller.LastExternalFlightAssistRequest;
+            if (request.mainThrottle > 0.5f
+                && (autopilot == null || autopilot.LastMetrics.shouldBrake || IsBrakeBurnIntent(autopilot)))
+            {
+                return true;
+            }
+        }
+
+        if (!IsBrakeBurnIntent(autopilot))
+        {
+            return false;
+        }
+
+        if (autopilot == null)
+        {
+            return false;
+        }
+
+        if (autopilot.LastTrajectoryPlan.requestedMainThrottle > 0.5f
+            && (autopilot.LastMetrics.shouldBrake
+                || autopilot.CurrentState == PrototypeWaypointAutopilotState.FlipForBrake
+                || autopilot.CurrentState == PrototypeWaypointAutopilotState.Brake))
+        {
+            return true;
+        }
+
+        if (autopilot.RequestedMainThrottle > 0.5f)
+        {
+            return true;
+        }
+
+        PrototypeFlightPlanTrackingCommand command = autopilot.CurrentFlightPlanTrackingCommand;
+        return command.hasCommand
+            && command.mainThrottleAllowed
+            && command.mainThrottle > 0.5f;
+    }
+
+    private static bool IsBrakeBurnIntent(PrototypeWaypointAutopilot autopilot)
+    {
+        if (autopilot == null)
+        {
+            return false;
+        }
+
+        return autopilot.CurrentState == PrototypeWaypointAutopilotState.Brake
+            || autopilot.CurrentState == PrototypeWaypointAutopilotState.FlipForBrake
+            || autopilot.ActiveSegmentType == PrototypeTrajectorySegmentType.Brake;
     }
 
     private static string ResolveNavigationTargetType(PrototypeNavigationTarget target)
@@ -3028,6 +3876,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private const int MaxRadarPreviewSegments = 28;
     private const int MaxRadarBlips = 64;
     private const int MaxNavigationPlannerMapBlips = 3;
+    private const int MaxNavigationPlannerManeuverMarkers = 6;
+    private const int NavigationPlannerArrivalRingSegments = 8;
     private const int MaxCompactRadarGenericBlips = 8;
     private const int MinimapRangeModeAuto = 0;
     private const int MinimapRangeModeCount = 5;
@@ -3084,6 +3934,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private TMP_Text objectiveBodyText;
     private TMP_Text contextTitleText;
     private TMP_Text contextBodyText;
+    private PrototypeNavigationTimelineGraphic contextNavigationTimelineGraphic;
     private RectTransform navigationControlRow;
     private Button navPreviousButton;
     private Button navNextButton;
@@ -3091,30 +3942,42 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private Button navReplanButton;
     private Button navPreviewButton;
     private TMP_Text navAutopilotButtonText;
+    private TMP_Text navReplanButtonText;
     private TMP_Text navPreviewButtonText;
+    private TMP_Text navActionHintText;
     private RectTransform navigationPlannerPanelRect;
     private TMP_Text navigationPlannerTitleText;
     private TMP_Text navigationPlannerBodyText;
+    private PrototypeNavigationTimelineGraphic navigationPlannerTimelineGraphic;
+    private TMP_Text navigationPlannerTimelineDetailText;
     private RectTransform navigationPlannerMapPanelRect;
     private RectTransform navigationPlannerMapLayerRect;
     private Image navigationPlannerMapHeadingImage;
     private Image navigationPlannerMapAvoidanceImage;
+    private Image navigationPlannerMapTargetEdgeImage;
     private TMP_Text navigationPlannerMapText;
+    private TMP_Text navigationPlannerMapLegendText;
     private readonly List<Image> navigationPlannerMapGridSegments = new List<Image>();
     private readonly List<Image> navigationPlannerMapRouteSegments = new List<Image>();
     private readonly List<Image> navigationPlannerMapPreviewSegments = new List<Image>();
     private readonly List<Image> navigationPlannerMapBlipImages = new List<Image>();
+    private readonly List<Image> navigationPlannerMapManeuverMarkerImages = new List<Image>();
+    private readonly List<Image> navigationPlannerMapArrivalRingSegments = new List<Image>();
     private Button navPlannerPreviousButton;
     private Button navPlannerNextButton;
     private Button navPlannerEngageButton;
     private Button navPlannerReplanButton;
     private Button navPlannerPreviewButton;
+    private Button navPlannerDetailsButton;
     private Button navPlannerRangeMinusButton;
     private Button navPlannerRangeAutoButton;
     private Button navPlannerRangePlusButton;
     private Button navPlannerCloseButton;
     private TMP_Text navPlannerEngageButtonText;
+    private TMP_Text navPlannerReplanButtonText;
     private TMP_Text navPlannerPreviewButtonText;
+    private TMP_Text navPlannerDetailsButtonText;
+    private TMP_Text navPlannerActionHintText;
     private RectTransform combatControlRow;
     private Button combatPreviousButton;
     private Button combatNextButton;
@@ -3131,9 +3994,15 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private Button combatComputerClearButton;
     private Button combatComputerAutoFireButton;
     private Button combatComputerPriorityButton;
+    private Button combatComputerPriorityNearestButton;
+    private Button combatComputerPriorityHighHealthButton;
+    private Button combatComputerPriorityLowHealthButton;
     private Button combatComputerCloseButton;
     private TMP_Text combatComputerAutoFireButtonText;
     private TMP_Text combatComputerPriorityButtonText;
+    private TMP_Text combatComputerPriorityNearestButtonText;
+    private TMP_Text combatComputerPriorityHighHealthButtonText;
+    private TMP_Text combatComputerPriorityLowHealthButtonText;
     private RectTransform contextGaugePanelRect;
     private readonly List<Image> contextGaugeFills = new List<Image>();
     private readonly List<TMP_Text> contextGaugeLabels = new List<TMP_Text>();
@@ -3156,10 +4025,12 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private readonly List<TMP_Text> targetIndicatorLabels = new List<TMP_Text>();
     private PrototypePlayerProjectedTargetIndicator[] projectedTargetIndicators = System.Array.Empty<PrototypePlayerProjectedTargetIndicator>();
     private PrototypePlayerHudSnapshot lastSnapshot;
+    private float navigationPlanningBusyUntilRealtime = -1f;
     private static TMP_FontAsset runtimeFontAsset;
     private int lastLayoutWidth = -1;
     private int lastLayoutHeight = -1;
     private bool compactBottomBarLayout;
+    private bool navigationPlannerDetailsExpanded;
     private string currentKillMomentumButtonLabel = "Kill Momentum";
     private readonly PrototypeUiSampleGate arenaLoopFallbackScanGate = new PrototypeUiSampleGate(FallbackSceneScanIntervalSeconds);
     private readonly PrototypeUiSampleGate runtimeShipFallbackScanGate = new PrototypeUiSampleGate(FallbackSceneScanIntervalSeconds);
@@ -3173,6 +4044,20 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
     public bool ShowPlayerHud => showPlayerHud;
     public PrototypeTrajectoryPreviewNavMap TrajectoryPreview => trajectoryPreview;
+
+    private readonly struct NavigationPlannerMapFrame
+    {
+        public NavigationPlannerMapFrame(Vector3 centerWorldPosition, float rangeMeters, bool manualRangeOverride)
+        {
+            CenterWorldPosition = centerWorldPosition;
+            RangeMeters = Mathf.Max(1f, rangeMeters);
+            ManualRangeOverride = manualRangeOverride;
+        }
+
+        public Vector3 CenterWorldPosition { get; }
+        public float RangeMeters { get; }
+        public bool ManualRangeOverride { get; }
+    }
     public PrototypePlayerHudSnapshot LastSnapshot => lastSnapshot;
     public string BoundShipName => shipRoot != null ? shipRoot.name : string.Empty;
     public bool HasBoundRuntimeShip => shipRoot != null && shipStats != null && shipRigidbody != null && controller != null;
@@ -3767,6 +4652,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         objectiveBodyText = FindHudComponent<TMP_Text>("ObjectiveBody");
         contextTitleText = FindHudComponent<TMP_Text>("ContextTitle");
         contextBodyText = FindHudComponent<TMP_Text>("ContextBody");
+        contextNavigationTimelineGraphic = FindHudComponent<PrototypeNavigationTimelineGraphic>("ContextNavigationTimeline");
         navigationControlRow = FindHudComponent<RectTransform>("NavigationControls");
         navPreviousButton = FindHudComponent<Button>("NavPreviousTarget");
         navNextButton = FindHudComponent<Button>("NavNextTarget");
@@ -3774,30 +4660,42 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         navReplanButton = FindHudComponent<Button>("NavReplan");
         navPreviewButton = FindHudComponent<Button>("NavPreview");
         navAutopilotButtonText = FindHudComponent<TMP_Text>("NavAutopilotText");
+        navReplanButtonText = FindHudComponent<TMP_Text>("NavReplanText");
         navPreviewButtonText = FindHudComponent<TMP_Text>("NavPreviewText");
+        navActionHintText = FindHudComponent<TMP_Text>("NavActionHint");
         navigationPlannerPanelRect = FindHudComponent<RectTransform>("NavigationPlannerPanel");
         navigationPlannerTitleText = FindHudComponent<TMP_Text>("NavigationPlannerTitle");
         navigationPlannerBodyText = FindHudComponent<TMP_Text>("NavigationPlannerBody");
+        navigationPlannerTimelineGraphic = FindHudComponent<PrototypeNavigationTimelineGraphic>("NavigationPlannerTimeline");
+        navigationPlannerTimelineDetailText = FindHudComponent<TMP_Text>("NavigationPlannerTimelineDetail");
         navigationPlannerMapPanelRect = FindHudComponent<RectTransform>("NavigationPlannerMapPanel");
         navigationPlannerMapLayerRect = FindHudComponent<RectTransform>("NavigationPlannerMapLayer");
         navigationPlannerMapHeadingImage = FindHudComponent<Image>("NavigationPlannerMapHeading");
         navigationPlannerMapAvoidanceImage = FindHudComponent<Image>("NavigationPlannerMapAvoidance");
+        navigationPlannerMapTargetEdgeImage = FindHudComponent<Image>("NavigationPlannerMapTargetEdge");
         navigationPlannerMapText = FindHudComponent<TMP_Text>("NavigationPlannerMapText");
+        navigationPlannerMapLegendText = FindHudComponent<TMP_Text>("NavigationPlannerMapLegendText");
         LoadHudImagePool(navigationPlannerMapGridSegments, "NavigationPlannerMapGridSegment", MaxRadarGridSegments);
         LoadHudImagePool(navigationPlannerMapRouteSegments, "NavigationPlannerMapRouteSegment", MaxRadarRouteSegments);
         LoadHudImagePool(navigationPlannerMapPreviewSegments, "NavigationPlannerMapPreviewSegment", MaxRadarPreviewSegments);
         LoadHudImagePool(navigationPlannerMapBlipImages, "NavigationPlannerMapBlip", MaxRadarBlips);
+        LoadHudImagePool(navigationPlannerMapManeuverMarkerImages, "NavigationPlannerMapManeuverMarker", MaxNavigationPlannerManeuverMarkers);
+        LoadHudImagePool(navigationPlannerMapArrivalRingSegments, "NavigationPlannerMapArrivalRingSegment", NavigationPlannerArrivalRingSegments);
         navPlannerPreviousButton = FindHudComponent<Button>("NavPlannerPreviousTarget");
         navPlannerNextButton = FindHudComponent<Button>("NavPlannerNextTarget");
         navPlannerEngageButton = FindHudComponent<Button>("NavPlannerEngage");
         navPlannerReplanButton = FindHudComponent<Button>("NavPlannerReplan");
         navPlannerPreviewButton = FindHudComponent<Button>("NavPlannerPreview");
+        navPlannerDetailsButton = FindHudComponent<Button>("NavPlannerDetails");
         navPlannerRangeMinusButton = FindHudComponent<Button>("NavPlannerRangeMinus");
         navPlannerRangeAutoButton = FindHudComponent<Button>("NavPlannerRangeAuto");
         navPlannerRangePlusButton = FindHudComponent<Button>("NavPlannerRangePlus");
         navPlannerCloseButton = FindHudComponent<Button>("NavPlannerClose");
         navPlannerEngageButtonText = FindHudComponent<TMP_Text>("NavPlannerEngageText");
+        navPlannerReplanButtonText = FindHudComponent<TMP_Text>("NavPlannerReplanText");
         navPlannerPreviewButtonText = FindHudComponent<TMP_Text>("NavPlannerPreviewText");
+        navPlannerDetailsButtonText = FindHudComponent<TMP_Text>("NavPlannerDetailsText");
+        navPlannerActionHintText = FindHudComponent<TMP_Text>("NavPlannerActionHint");
         combatControlRow = FindHudComponent<RectTransform>("CombatControls");
         combatPreviousButton = FindHudComponent<Button>("CombatPreviousTarget");
         combatNextButton = FindHudComponent<Button>("CombatNextTarget");
@@ -3814,9 +4712,15 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         combatComputerClearButton = FindHudComponent<Button>("CombatComputerClearTarget");
         combatComputerAutoFireButton = FindHudComponent<Button>("CombatComputerAutoFire");
         combatComputerPriorityButton = FindHudComponent<Button>("CombatComputerPriority");
+        combatComputerPriorityNearestButton = FindHudComponent<Button>("CombatComputerPriorityNearest");
+        combatComputerPriorityHighHealthButton = FindHudComponent<Button>("CombatComputerPriorityHighHealth");
+        combatComputerPriorityLowHealthButton = FindHudComponent<Button>("CombatComputerPriorityLowHealth");
         combatComputerCloseButton = FindHudComponent<Button>("CombatComputerClose");
         combatComputerAutoFireButtonText = FindHudComponent<TMP_Text>("CombatComputerAutoFireText");
         combatComputerPriorityButtonText = FindHudComponent<TMP_Text>("CombatComputerPriorityText");
+        combatComputerPriorityNearestButtonText = FindHudComponent<TMP_Text>("CombatComputerPriorityNearestText");
+        combatComputerPriorityHighHealthButtonText = FindHudComponent<TMP_Text>("CombatComputerPriorityHighHealthText");
+        combatComputerPriorityLowHealthButtonText = FindHudComponent<TMP_Text>("CombatComputerPriorityLowHealthText");
         contextGaugePanelRect = FindHudComponent<RectTransform>("ContextGauges");
         radarText = FindHudComponent<TMP_Text>("RadarText");
         helpText = FindHudComponent<TMP_Text>("HelpText");
@@ -3892,6 +4796,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             && objectiveBodyText != null
             && contextTitleText != null
             && contextBodyText != null
+            && contextNavigationTimelineGraphic != null
             && navigationControlRow != null
             && navPreviousButton != null
             && navNextButton != null
@@ -3899,30 +4804,42 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             && navReplanButton != null
             && navPreviewButton != null
             && navAutopilotButtonText != null
+            && navReplanButtonText != null
             && navPreviewButtonText != null
+            && navActionHintText != null
             && navigationPlannerPanelRect != null
             && navigationPlannerTitleText != null
             && navigationPlannerBodyText != null
+            && navigationPlannerTimelineGraphic != null
+            && navigationPlannerTimelineDetailText != null
             && navigationPlannerMapPanelRect != null
             && navigationPlannerMapLayerRect != null
             && navigationPlannerMapHeadingImage != null
             && navigationPlannerMapAvoidanceImage != null
+            && navigationPlannerMapTargetEdgeImage != null
             && navigationPlannerMapText != null
+            && navigationPlannerMapLegendText != null
             && navigationPlannerMapGridSegments.Count == MaxRadarGridSegments
             && navigationPlannerMapRouteSegments.Count == MaxRadarRouteSegments
             && navigationPlannerMapPreviewSegments.Count == MaxRadarPreviewSegments
             && navigationPlannerMapBlipImages.Count == MaxRadarBlips
+            && navigationPlannerMapManeuverMarkerImages.Count == MaxNavigationPlannerManeuverMarkers
+            && navigationPlannerMapArrivalRingSegments.Count == NavigationPlannerArrivalRingSegments
             && navPlannerPreviousButton != null
             && navPlannerNextButton != null
             && navPlannerEngageButton != null
             && navPlannerReplanButton != null
             && navPlannerPreviewButton != null
+            && navPlannerDetailsButton != null
             && navPlannerRangeMinusButton != null
             && navPlannerRangeAutoButton != null
             && navPlannerRangePlusButton != null
             && navPlannerCloseButton != null
             && navPlannerEngageButtonText != null
+            && navPlannerReplanButtonText != null
             && navPlannerPreviewButtonText != null
+            && navPlannerDetailsButtonText != null
+            && navPlannerActionHintText != null
             && combatControlRow != null
             && combatPreviousButton != null
             && combatNextButton != null
@@ -3939,9 +4856,15 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             && combatComputerClearButton != null
             && combatComputerAutoFireButton != null
             && combatComputerPriorityButton != null
+            && combatComputerPriorityNearestButton != null
+            && combatComputerPriorityHighHealthButton != null
+            && combatComputerPriorityLowHealthButton != null
             && combatComputerCloseButton != null
             && combatComputerAutoFireButtonText != null
             && combatComputerPriorityButtonText != null
+            && combatComputerPriorityNearestButtonText != null
+            && combatComputerPriorityHighHealthButtonText != null
+            && combatComputerPriorityLowHealthButtonText != null
             && contextGaugePanelRect != null
             && radarLayerRect != null
             && radarHeadingImage != null
@@ -4041,6 +4964,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         objectiveBodyText = null;
         contextTitleText = null;
         contextBodyText = null;
+        contextNavigationTimelineGraphic = null;
         navigationControlRow = null;
         navPreviousButton = null;
         navNextButton = null;
@@ -4048,30 +4972,42 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         navReplanButton = null;
         navPreviewButton = null;
         navAutopilotButtonText = null;
+        navReplanButtonText = null;
         navPreviewButtonText = null;
+        navActionHintText = null;
         navigationPlannerPanelRect = null;
         navigationPlannerTitleText = null;
         navigationPlannerBodyText = null;
+        navigationPlannerTimelineGraphic = null;
+        navigationPlannerTimelineDetailText = null;
         navigationPlannerMapPanelRect = null;
         navigationPlannerMapLayerRect = null;
         navigationPlannerMapHeadingImage = null;
         navigationPlannerMapAvoidanceImage = null;
+        navigationPlannerMapTargetEdgeImage = null;
         navigationPlannerMapText = null;
+        navigationPlannerMapLegendText = null;
         navigationPlannerMapGridSegments.Clear();
         navigationPlannerMapRouteSegments.Clear();
         navigationPlannerMapPreviewSegments.Clear();
         navigationPlannerMapBlipImages.Clear();
+        navigationPlannerMapManeuverMarkerImages.Clear();
+        navigationPlannerMapArrivalRingSegments.Clear();
         navPlannerPreviousButton = null;
         navPlannerNextButton = null;
         navPlannerEngageButton = null;
         navPlannerReplanButton = null;
         navPlannerPreviewButton = null;
+        navPlannerDetailsButton = null;
         navPlannerRangeMinusButton = null;
         navPlannerRangeAutoButton = null;
         navPlannerRangePlusButton = null;
         navPlannerCloseButton = null;
         navPlannerEngageButtonText = null;
+        navPlannerReplanButtonText = null;
         navPlannerPreviewButtonText = null;
+        navPlannerDetailsButtonText = null;
+        navPlannerActionHintText = null;
         combatControlRow = null;
         combatPreviousButton = null;
         combatNextButton = null;
@@ -4088,9 +5024,15 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         combatComputerClearButton = null;
         combatComputerAutoFireButton = null;
         combatComputerPriorityButton = null;
+        combatComputerPriorityNearestButton = null;
+        combatComputerPriorityHighHealthButton = null;
+        combatComputerPriorityLowHealthButton = null;
         combatComputerCloseButton = null;
         combatComputerAutoFireButtonText = null;
         combatComputerPriorityButtonText = null;
+        combatComputerPriorityNearestButtonText = null;
+        combatComputerPriorityHighHealthButtonText = null;
+        combatComputerPriorityLowHealthButtonText = null;
         contextGaugePanelRect = null;
         contextGaugeFills.Clear();
         contextGaugeLabels.Clear();
@@ -4179,6 +5121,9 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         contextPanelRect = panel;
         contextTitleText = CreateText("ContextTitle", panel, 14, TextAnchor.UpperLeft, Color.white, new RectPreset(new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(-22f, 26f), new Vector2(0f, -16f)));
         contextBodyText = CreateText("ContextBody", panel, 12, TextAnchor.UpperLeft, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-22f, -112f), new Vector2(0f, 6f)));
+        contextNavigationTimelineGraphic = CreateGraphic<PrototypeNavigationTimelineGraphic>("ContextNavigationTimeline", panel, new RectPreset(new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-22f, 22f), new Vector2(0f, 52f)));
+        contextNavigationTimelineGraphic.raycastTarget = false;
+        contextNavigationTimelineGraphic.gameObject.SetActive(false);
         CreateContextGaugePanel(panel);
         CreateNavigationControls(panel);
         CreateCombatControls(panel);
@@ -4190,10 +5135,14 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         navPreviousButton = CreateButton("NavPreviousTarget", navigationControlRow, "Prev", new RectPreset(new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(36f, 22f), new Vector2(0f, 0f)));
         navNextButton = CreateButton("NavNextTarget", navigationControlRow, "Next", new RectPreset(new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(36f, 22f), new Vector2(40f, 0f)));
         navAutopilotButton = CreateButton("NavAutopilot", navigationControlRow, "Engage", new RectPreset(new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(64f, 22f), new Vector2(80f, 0f)));
-        navReplanButton = CreateButton("NavReplan", navigationControlRow, "Plan", new RectPreset(new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(48f, 22f), new Vector2(148f, 0f)));
+        navReplanButton = CreateButton("NavReplan", navigationControlRow, "Neu planen", new RectPreset(new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(78f, 22f), new Vector2(148f, 0f)));
         navPreviewButton = CreateButton("NavPreview", navigationControlRow, "Preview", new RectPreset(new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(72f, 22f), new Vector2(0f, 0f)));
         navAutopilotButtonText = navAutopilotButton.GetComponentInChildren<TMP_Text>(true);
+        navReplanButtonText = navReplanButton.GetComponentInChildren<TMP_Text>(true);
         navPreviewButtonText = navPreviewButton.GetComponentInChildren<TMP_Text>(true);
+        navActionHintText = CreateText("NavActionHint", navigationControlRow, 10, TextAnchor.MiddleRight, PrototypeUiStyle.DisabledColor, new RectPreset(new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(136f, 22f), new Vector2(0f, 0f)));
+        navReplanButton.gameObject.SetActive(false);
+        navPreviewButton.gameObject.SetActive(false);
         navigationControlRow.gameObject.SetActive(false);
     }
 
@@ -4251,9 +5200,9 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         radarGraphic.raycastTarget = false;
         CreateRadarLayer(panel);
         radarText = CreateText("RadarText", panel, 11, TextAnchor.LowerCenter, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-12f, 22f), new Vector2(0f, 11f)));
-        radarRangeMinusButton = CreateButton("RadarRangeMinus", panel, "-", new RectPreset(new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(24f, 22f), new Vector2(-46f, 34f)));
-        radarRangeAutoButton = CreateButton("RadarRangeAuto", panel, "A", new RectPreset(new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(20f, 22f), new Vector2(-20f, 34f)));
-        radarRangePlusButton = CreateButton("RadarRangePlus", panel, "+", new RectPreset(new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(24f, 22f), new Vector2(4f, 34f)));
+        radarRangeMinusButton = CreateButton("RadarRangeMinus", panel, "-", new RectPreset(new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(24f, 24f), new Vector2(-50f, 34f)));
+        radarRangeAutoButton = CreateButton("RadarRangeAuto", panel, "A", new RectPreset(new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(24f, 24f), new Vector2(-20f, 34f)));
+        radarRangePlusButton = CreateButton("RadarRangePlus", panel, "+", new RectPreset(new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(24f, 24f), new Vector2(10f, 34f)));
     }
 
     private void CreateRadarLayer(Transform parent)
@@ -4292,9 +5241,11 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         navigationPlannerMapLayerRect = CreateRect("NavigationPlannerMapLayer", parent, new RectPreset(new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(186f, 186f), new Vector2(-22f, 40f)));
         navigationPlannerMapHeadingImage = CreateRadarVisual("NavigationPlannerMapHeading", navigationPlannerMapLayerRect, new Vector2(10f, 14f), Color.white);
         navigationPlannerMapAvoidanceImage = CreateRadarVisual("NavigationPlannerMapAvoidance", navigationPlannerMapLayerRect, new Vector2(12f, 12f), PrototypeUiStyle.WarningColor);
-        navPlannerRangeMinusButton = CreateButton("NavPlannerRangeMinus", navigationPlannerMapLayerRect, "-", new RectPreset(new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(22f, 22f), new Vector2(-44f, -12f)));
-        navPlannerRangeAutoButton = CreateButton("NavPlannerRangeAuto", navigationPlannerMapLayerRect, "A", new RectPreset(new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(22f, 22f), new Vector2(-14f, -12f)));
-        navPlannerRangePlusButton = CreateButton("NavPlannerRangePlus", navigationPlannerMapLayerRect, "+", new RectPreset(new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(22f, 22f), new Vector2(16f, -12f)));
+        navigationPlannerMapTargetEdgeImage = CreateRadarVisual("NavigationPlannerMapTargetEdge", navigationPlannerMapLayerRect, new Vector2(16f, 16f), PrototypeModuleColorPalette.Target);
+        Transform rangeControlParent = navigationPlannerMapPanelRect != null ? navigationPlannerMapPanelRect : parent;
+        navPlannerRangeMinusButton = CreateButton("NavPlannerRangeMinus", rangeControlParent, "-", new RectPreset(new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(24f, 24f), new Vector2(-50f, -24f)));
+        navPlannerRangeAutoButton = CreateButton("NavPlannerRangeAuto", rangeControlParent, "A", new RectPreset(new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(24f, 24f), new Vector2(-18f, -24f)));
+        navPlannerRangePlusButton = CreateButton("NavPlannerRangePlus", rangeControlParent, "+", new RectPreset(new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(24f, 24f), new Vector2(14f, -24f)));
 
         navigationPlannerMapGridSegments.Clear();
         for (int i = 0; i < MaxRadarGridSegments; i++)
@@ -4319,6 +5270,18 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         {
             navigationPlannerMapBlipImages.Add(CreateRadarVisual("NavigationPlannerMapBlip" + i, navigationPlannerMapLayerRect, new Vector2(10f, 10f), PrototypeModuleColorPalette.Target));
         }
+
+        navigationPlannerMapManeuverMarkerImages.Clear();
+        for (int i = 0; i < MaxNavigationPlannerManeuverMarkers; i++)
+        {
+            navigationPlannerMapManeuverMarkerImages.Add(CreateRadarVisual("NavigationPlannerMapManeuverMarker" + i, navigationPlannerMapLayerRect, new Vector2(9f, 9f), PrototypeUiStyle.ActiveColor));
+        }
+
+        navigationPlannerMapArrivalRingSegments.Clear();
+        for (int i = 0; i < NavigationPlannerArrivalRingSegments; i++)
+        {
+            navigationPlannerMapArrivalRingSegments.Add(CreateRadarVisual("NavigationPlannerMapArrivalRingSegment" + i, navigationPlannerMapLayerRect, new Vector2(8f, 1.6f), new Color(0.35f, 0.95f, 1f, 0.6f)));
+        }
     }
 
     private void CreateNavigationPlannerPanel(Transform parent)
@@ -4326,40 +5289,55 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         RectTransform panel = CreatePanel("NavigationPlannerPanel", parent, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(540f, 318f), Vector2.zero);
         navigationPlannerPanelRect = panel;
         navigationPlannerTitleText = CreateText("NavigationPlannerTitle", panel, 15, TextAnchor.UpperLeft, Color.white, new RectPreset(new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(-24f, 28f), new Vector2(0f, -16f)));
-        navigationPlannerBodyText = CreateText("NavigationPlannerBody", panel, 12, TextAnchor.UpperLeft, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-224f, -116f), new Vector2(-100f, 22f)));
+        navigationPlannerBodyText = CreateText("NavigationPlannerBody", panel, 12, TextAnchor.UpperLeft, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-224f, -146f), new Vector2(-100f, 8f)));
+        navigationPlannerTimelineGraphic = CreateGraphic<PrototypeNavigationTimelineGraphic>("NavigationPlannerTimeline", panel, new RectPreset(new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(-224f, 28f), new Vector2(-100f, -90f)));
+        navigationPlannerTimelineGraphic.raycastTarget = false;
+        navigationPlannerTimelineDetailText = CreateText("NavigationPlannerTimelineDetail", panel, 11, TextAnchor.UpperLeft, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(-224f, 22f), new Vector2(-100f, -118f)));
         navigationPlannerMapPanelRect = CreatePanel("NavigationPlannerMapPanel", panel, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(198f, 228f), new Vector2(-12f, 34f));
         CreateNavigationPlannerMapLayer(panel);
+        navigationPlannerMapLegendText = CreateText("NavigationPlannerMapLegendText", panel, 10, TextAnchor.LowerCenter, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(198f, 18f), new Vector2(-12f, -48f)));
         navigationPlannerMapText = CreateText("NavigationPlannerMapText", panel, 10, TextAnchor.LowerCenter, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(198f, 30f), new Vector2(-12f, -66f)));
 
         navPlannerPreviousButton = CreateButton("NavPlannerPreviousTarget", panel, "Prev", new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(48f, 22f), new Vector2(12f, 54f)));
         navPlannerNextButton = CreateButton("NavPlannerNextTarget", panel, "Next", new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(48f, 22f), new Vector2(66f, 54f)));
         navPlannerEngageButton = CreateButton("NavPlannerEngage", panel, "Engage", new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(74f, 22f), new Vector2(120f, 54f)));
-        navPlannerReplanButton = CreateButton("NavPlannerReplan", panel, "Replan", new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(70f, 22f), new Vector2(200f, 54f)));
+        navPlannerReplanButton = CreateButton("NavPlannerReplan", panel, "Neu planen", new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(86f, 22f), new Vector2(200f, 54f)));
         navPlannerPreviewButton = CreateButton("NavPlannerPreview", panel, "Preview", new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(92f, 22f), new Vector2(12f, 18f)));
+        navPlannerDetailsButton = CreateButton("NavPlannerDetails", panel, "Details", new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(88f, 22f), new Vector2(110f, 18f)));
         navPlannerCloseButton = CreateButton("NavPlannerClose", panel, "Close", new RectPreset(new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(62f, 22f), new Vector2(-74f, 18f)));
         navPlannerEngageButtonText = navPlannerEngageButton.GetComponentInChildren<TMP_Text>(true);
+        navPlannerReplanButtonText = navPlannerReplanButton.GetComponentInChildren<TMP_Text>(true);
         navPlannerPreviewButtonText = navPlannerPreviewButton.GetComponentInChildren<TMP_Text>(true);
+        navPlannerDetailsButtonText = navPlannerDetailsButton.GetComponentInChildren<TMP_Text>(true);
+        navPlannerActionHintText = CreateText("NavPlannerActionHint", panel, 10, TextAnchor.MiddleLeft, PrototypeUiStyle.DisabledColor, new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(190f, 22f), new Vector2(294f, 54f)));
         navigationPlannerMapPanelRect.gameObject.SetActive(false);
         navigationPlannerMapLayerRect.gameObject.SetActive(false);
+        navigationPlannerMapLegendText.gameObject.SetActive(false);
         navigationPlannerMapText.gameObject.SetActive(false);
         panel.gameObject.SetActive(false);
     }
 
     private void CreateCombatComputerPanel(Transform parent)
     {
-        RectTransform panel = CreatePanel("CombatComputerPanel", parent, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(520f, 300f), Vector2.zero);
+        RectTransform panel = CreatePanel("CombatComputerPanel", parent, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(560f, 330f), Vector2.zero);
         combatComputerPanelRect = panel;
         combatComputerTitleText = CreateText("CombatComputerTitle", panel, 15, TextAnchor.UpperLeft, Color.white, new RectPreset(new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(-24f, 28f), new Vector2(0f, -16f)));
-        combatComputerBodyText = CreateText("CombatComputerBody", panel, 12, TextAnchor.UpperLeft, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-24f, -116f), new Vector2(0f, 22f)));
+        combatComputerBodyText = CreateText("CombatComputerBody", panel, 12, TextAnchor.UpperLeft, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-24f, -132f), new Vector2(0f, 22f)));
 
         combatComputerPreviousButton = CreateButton("CombatComputerPreviousTarget", panel, "Prev", new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(48f, 22f), new Vector2(12f, 54f)));
         combatComputerNextButton = CreateButton("CombatComputerNextTarget", panel, "Next", new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(48f, 22f), new Vector2(66f, 54f)));
         combatComputerClearButton = CreateButton("CombatComputerClearTarget", panel, "Clear", new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(58f, 22f), new Vector2(120f, 54f)));
         combatComputerAutoFireButton = CreateButton("CombatComputerAutoFire", panel, "Auto", new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(78f, 22f), new Vector2(184f, 54f)));
-        combatComputerPriorityButton = CreateButton("CombatComputerPriority", panel, "Prio", new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(92f, 22f), new Vector2(12f, 18f)));
+        combatComputerPriorityButton = CreateButton("CombatComputerPriority", panel, "Manual", new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(72f, 22f), new Vector2(12f, 18f)));
+        combatComputerPriorityNearestButton = CreateButton("CombatComputerPriorityNearest", panel, "Nearest", new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(72f, 22f), new Vector2(88f, 18f)));
+        combatComputerPriorityHighHealthButton = CreateButton("CombatComputerPriorityHighHealth", panel, "High HP", new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(76f, 22f), new Vector2(164f, 18f)));
+        combatComputerPriorityLowHealthButton = CreateButton("CombatComputerPriorityLowHealth", panel, "Low HP", new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(76f, 22f), new Vector2(244f, 18f)));
         combatComputerCloseButton = CreateButton("CombatComputerClose", panel, "Close", new RectPreset(new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(62f, 22f), new Vector2(-74f, 18f)));
         combatComputerAutoFireButtonText = combatComputerAutoFireButton.GetComponentInChildren<TMP_Text>(true);
         combatComputerPriorityButtonText = combatComputerPriorityButton.GetComponentInChildren<TMP_Text>(true);
+        combatComputerPriorityNearestButtonText = combatComputerPriorityNearestButton.GetComponentInChildren<TMP_Text>(true);
+        combatComputerPriorityHighHealthButtonText = combatComputerPriorityHighHealthButton.GetComponentInChildren<TMP_Text>(true);
+        combatComputerPriorityLowHealthButtonText = combatComputerPriorityLowHealthButton.GetComponentInChildren<TMP_Text>(true);
         panel.gameObject.SetActive(false);
     }
 
@@ -4393,6 +5371,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
     private void ApplySnapshot(PrototypePlayerHudSnapshot snapshot)
     {
+        lastSnapshot = snapshot;
         if (canvas != null)
         {
             canvas.enabled = showPlayerHud;
@@ -4511,6 +5490,12 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
     private void ConfigureNavigationPlannerMapLayer(PrototypePlayerHudSnapshot snapshot)
     {
+        NavigationPlannerMapFrame plannerFrame = ResolveNavigationPlannerMapFrame(snapshot, minimapRangeMode != MinimapRangeModeAuto);
+        ConfigureNavigationPlannerMapLayer(snapshot, plannerFrame);
+    }
+
+    private void ConfigureNavigationPlannerMapLayer(PrototypePlayerHudSnapshot snapshot, NavigationPlannerMapFrame plannerFrame)
+    {
         ConfigureRadarLayer(
             snapshot,
             navigationPlannerMapLayerRect,
@@ -4523,7 +5508,9 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             true,
             6.6f,
             5.2f,
-            true);
+            true,
+            plannerFrame);
+        ConfigureNavigationPlannerMapAnnotations(snapshot, plannerFrame);
     }
 
     private void ConfigureRadarLayer(
@@ -4538,7 +5525,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         bool usePlannerMapBlips = false,
         float routeThickness = 3.2f,
         float previewThickness = 3f,
-        bool dimPlannerGrid = false)
+        bool dimPlannerGrid = false,
+        NavigationPlannerMapFrame? plannerFrame = null)
     {
         if (layerRect == null)
         {
@@ -4565,12 +5553,12 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         }
 
         Vector3[] previewPoints = snapshot.Radar.TrajectoryPreviewWorldPoints ?? System.Array.Empty<Vector3>();
-        ConfigureRadarSegmentPool(routeSegments, snapshot.Radar, routePoints, radius, PrototypeModuleColorPalette.Target, routeThickness, false);
-        ConfigureRadarSegmentPool(previewSegments, snapshot.Radar, previewPoints, radius, new Color(1f, 0.72f, 0.22f, 0.94f), previewThickness, true);
+        ConfigureRadarSegmentPool(routeSegments, snapshot.Radar, routePoints, radius, PrototypeModuleColorPalette.Target, routeThickness, false, plannerFrame);
+        ConfigureRadarSegmentPool(previewSegments, snapshot.Radar, previewPoints, radius, new Color(1f, 0.72f, 0.22f, 0.94f), previewThickness, true, plannerFrame);
 
         if (snapshot.Radar.HasAvoidanceWaypoint)
         {
-            Vector2 point = RadarWorldToLayerPoint(snapshot.Radar, snapshot.Radar.AvoidanceWorldPosition, radius);
+            Vector2 point = RadarWorldToLayerPointWithPlannerFrame(snapshot.Radar, snapshot.Radar.AvoidanceWorldPosition, radius, plannerFrame);
             ApplyRadarBlip(avoidanceImage, point, PrototypeUiStyle.WarningColor, new Vector2(12f, 12f), 45f);
         }
         else if (avoidanceImage != null)
@@ -4586,7 +5574,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         for (int i = 0; i < blipCount; i++)
         {
             PrototypePlayerRadarBlip blip = blips[blipStart + i];
-            Vector2 point = RadarWorldToLayerPoint(snapshot.Radar, blip.WorldPosition, radius);
+            Vector2 point = RadarWorldToLayerPointWithPlannerFrame(snapshot.Radar, blip.WorldPosition, radius, plannerFrame);
             Vector2 size = RadarBlipSize(blip.Kind);
             float rotation = RadarBlipRotation(blip.Kind);
             Color color = ColorForRadarBlipKind(blip.Kind);
@@ -4641,6 +5629,88 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         System.Array.Copy(route, extended, route.Length);
         extended[extended.Length - 1] = selectedNavigation.WorldPosition;
         return extended;
+    }
+
+    private static NavigationPlannerMapFrame ResolveNavigationPlannerMapFrame(PrototypePlayerHudSnapshot snapshot, bool manualRangeOverride)
+    {
+        Vector3[] routePoints = BuildNavigationPlannerRouteWorldPoints(
+            snapshot,
+            snapshot.Radar.RouteWorldPoints ?? System.Array.Empty<Vector3>());
+        var points = new List<Vector3>();
+        AddNavigationPlannerFramePoint(points, snapshot.Radar.ShipWorldPosition);
+        AddNavigationPlannerFramePoints(points, routePoints);
+
+        PrototypePlayerRadarBlip selectedNavigation;
+        float targetRadius = 0f;
+        if (TryFindPlannerRadarBlip(snapshot.Radar, PrototypePlayerRadarBlipKind.SelectedNavigation, out selectedNavigation))
+        {
+            AddNavigationPlannerFramePoint(points, selectedNavigation.WorldPosition);
+            targetRadius = Mathf.Max(0f, selectedNavigation.RadiusMeters);
+        }
+
+        if (snapshot.Radar.HasAvoidanceWaypoint)
+        {
+            AddNavigationPlannerFramePoint(points, snapshot.Radar.AvoidanceWorldPosition);
+        }
+
+        if (points.Count == 0)
+        {
+            return new NavigationPlannerMapFrame(snapshot.Radar.ShipWorldPosition, snapshot.Radar.RangeMeters, manualRangeOverride);
+        }
+
+        float minX = points[0].x;
+        float maxX = points[0].x;
+        float minZ = points[0].z;
+        float maxZ = points[0].z;
+        for (int i = 1; i < points.Count; i++)
+        {
+            minX = Mathf.Min(minX, points[i].x);
+            maxX = Mathf.Max(maxX, points[i].x);
+            minZ = Mathf.Min(minZ, points[i].z);
+            maxZ = Mathf.Max(maxZ, points[i].z);
+        }
+
+        Vector3 center = new Vector3((minX + maxX) * 0.5f, snapshot.Radar.ShipWorldPosition.y, (minZ + maxZ) * 0.5f);
+        float routeHalfExtent = Mathf.Max(maxX - minX, maxZ - minZ) * 0.5f;
+        float fittedRange = Mathf.Max(50f, (routeHalfExtent + targetRadius) * 1.18f);
+        float range = manualRangeOverride
+            ? Mathf.Max(1f, snapshot.Radar.RangeMeters)
+            : Mathf.Max(fittedRange, 1f);
+        return new NavigationPlannerMapFrame(center, range, manualRangeOverride);
+    }
+
+    private static void AddNavigationPlannerFramePoints(List<Vector3> points, Vector3[] source)
+    {
+        if (source == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < source.Length; i++)
+        {
+            AddNavigationPlannerFramePoint(points, source[i]);
+        }
+    }
+
+    private static void AddNavigationPlannerFramePoint(List<Vector3> points, Vector3 point)
+    {
+        if (points != null && IsFinitePlannerMapPoint(point))
+        {
+            points.Add(point);
+        }
+    }
+
+    private static bool IsFinitePlannerMapPoint(Vector3 value)
+    {
+        return !float.IsNaN(value.x)
+            && !float.IsNaN(value.y)
+            && !float.IsNaN(value.z)
+            && !float.IsInfinity(value.x)
+            && !float.IsInfinity(value.y)
+            && !float.IsInfinity(value.z)
+            && Mathf.Abs(value.x) < float.MaxValue
+            && Mathf.Abs(value.y) < float.MaxValue
+            && Mathf.Abs(value.z) < float.MaxValue;
     }
 
     private static bool TryFindPlannerRadarBlip(PrototypePlayerRadarSnapshot radar, PrototypePlayerRadarBlipKind kind, out PrototypePlayerRadarBlip result)
@@ -4888,7 +5958,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         float radius,
         Color color,
         float thickness,
-        bool dashed)
+        bool dashed,
+        NavigationPlannerMapFrame? plannerFrame = null)
     {
         if (pool == null)
         {
@@ -4898,10 +5969,10 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         int segmentCount = 0;
         if (worldPoints != null && worldPoints.Length > 1)
         {
-            Vector2 previous = RadarWorldToLayerPoint(radar, worldPoints[0], radius);
+            Vector2 previous = RadarWorldToLayerPointWithPlannerFrame(radar, worldPoints[0], radius, plannerFrame);
             for (int i = 1; i < worldPoints.Length && segmentCount < pool.Count; i++)
             {
-                Vector2 next = RadarWorldToLayerPoint(radar, worldPoints[i], radius);
+                Vector2 next = RadarWorldToLayerPointWithPlannerFrame(radar, worldPoints[i], radius, plannerFrame);
                 if (!dashed || (i % 2) == 1)
                 {
                     ApplyRadarLine(pool[segmentCount], previous, next, color, thickness);
@@ -4923,6 +5994,29 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         Vector3 delta = target - radar.ShipWorldPosition;
         Vector2 flat = new Vector2(delta.x, delta.z);
         return ProjectRadarOffset(flat, radar.RangeMeters, radius);
+    }
+
+    private static Vector2 RadarWorldToLayerPointWithPlannerFrame(PrototypePlayerRadarSnapshot radar, Vector3 target, float radius, NavigationPlannerMapFrame? plannerFrame)
+    {
+        if (plannerFrame.HasValue)
+        {
+            return NavigationPlannerWorldToLayerPoint(target, plannerFrame.Value, radius);
+        }
+        return RadarWorldToLayerPoint(radar, target, radius);
+    }
+
+    private static Vector2 NavigationPlannerWorldToLayerPoint(Vector3 target, NavigationPlannerMapFrame frame, float radius)
+    {
+        Vector3 delta = target - frame.CenterWorldPosition;
+        Vector2 flat = new Vector2(delta.x, delta.z);
+        return ProjectRadarOffset(flat, frame.RangeMeters, radius);
+    }
+
+    private static bool IsNavigationPlannerPointInsideFrame(Vector3 target, NavigationPlannerMapFrame frame)
+    {
+        Vector3 delta = target - frame.CenterWorldPosition;
+        Vector2 flat = new Vector2(delta.x, delta.z);
+        return flat.magnitude <= frame.RangeMeters + 0.01f;
     }
 
     private static Vector2 ProjectRadarOffset(Vector2 flatOffset, float rangeMeters, float radius)
@@ -5160,48 +6254,139 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         bool hasAutopilot = autopilot != null;
         bool hasTarget = hasAutopilot && autopilot.CurrentTarget != null;
         int targetCount = hasAutopilot && autopilot.WaypointManager != null ? autopilot.WaypointManager.TargetCount : (hasTarget ? 1 : 0);
+        bool planningBusy = IsNavigationPlanningBusy();
+        string engageDisabledReason = BuildNavigationEngageDisabledReason(autopilot, hasAutopilot, hasTarget, planningBusy);
 
         SetNavigationButtonState(navPreviousButton, hasAutopilot && targetCount > 1, () =>
         {
             autopilot.SelectPreviousTarget();
+            MarkNavigationPlanningBusy();
             autopilot.ReplanNow();
             ForceRefreshNow();
         });
         SetNavigationButtonState(navNextButton, hasAutopilot && targetCount > 1, () =>
         {
             autopilot.SelectNextTarget();
+            MarkNavigationPlanningBusy();
             autopilot.ReplanNow();
             ForceRefreshNow();
         });
 
         if (navAutopilotButtonText != null)
         {
-            SetTextIfChanged(navAutopilotButtonText, !hasAutopilot ? "AP n/a" : autopilot.AutopilotEngaged ? "Abort AP" : "Engage");
+            SetTextIfChanged(navAutopilotButtonText, BuildNavigationEngageButtonLabel(autopilot, hasAutopilot, planningBusy));
         }
 
-        SetNavigationButtonState(navAutopilotButton, hasAutopilot && (hasTarget || autopilot.AutopilotEngaged), () =>
+        SetNavigationButtonState(navAutopilotButton, string.IsNullOrEmpty(engageDisabledReason), () =>
         {
             autopilot.ToggleAutopilot();
             ForceRefreshNow();
         });
-        SetNavigationButtonState(navReplanButton, hasAutopilot && hasTarget, () =>
-        {
-            SetNavigationPlannerVisible(true);
-            autopilot.ReplanNow();
-            ForceRefreshNow();
-        });
 
-        bool hasPreview = trajectoryPreview != null;
-        if (navPreviewButtonText != null)
+        SetCompactNavigationPlannerOnlyButton(navReplanButton, navReplanButtonText, planningBusy ? "Plane..." : "Neu planen");
+        SetCompactNavigationPlannerOnlyButton(navPreviewButton, navPreviewButtonText, trajectoryPreview == null ? "Preview n/a" : trajectoryPreview.PreviewEnabled ? "Preview On" : "Preview Off");
+        SetNavigationActionHint(navActionHintText, engageDisabledReason);
+    }
+
+    private void SetCompactNavigationPlannerOnlyButton(Button button, TMP_Text label, string text)
+    {
+        if (label != null)
         {
-            SetTextIfChanged(navPreviewButtonText, !hasPreview ? "Preview n/a" : trajectoryPreview.PreviewEnabled ? "Preview On" : "Preview Off");
+            SetTextIfChanged(label, text);
         }
 
-        SetNavigationButtonState(navPreviewButton, hasPreview, () =>
+        if (button == null)
         {
-            trajectoryPreview.TogglePreview();
-            ForceRefreshNow();
-        });
+            return;
+        }
+
+        RemoveButtonListeners(button);
+        button.interactable = false;
+        button.gameObject.SetActive(false);
+    }
+
+    private bool IsNavigationPlanningBusy()
+    {
+        return Time.unscaledTime < navigationPlanningBusyUntilRealtime
+            || (autopilot != null && autopilot.NavigationDebugPlanningActive);
+    }
+
+    private void MarkNavigationPlanningBusy()
+    {
+        navigationPlanningBusyUntilRealtime = Mathf.Max(navigationPlanningBusyUntilRealtime, Time.unscaledTime + 0.12f);
+    }
+
+    private static string BuildNavigationEngageButtonLabel(
+        PrototypeWaypointAutopilot currentAutopilot,
+        bool hasAutopilot,
+        bool planningBusy)
+    {
+        if (!hasAutopilot)
+        {
+            return "AP n/a";
+        }
+
+        if (currentAutopilot.AutopilotEngaged)
+        {
+            return "Abbrechen";
+        }
+
+        return "Engage";
+    }
+
+    private static string BuildNavigationEngageDisabledReason(
+        PrototypeWaypointAutopilot currentAutopilot,
+        bool hasAutopilot,
+        bool hasTarget,
+        bool planningBusy)
+    {
+        if (!hasAutopilot)
+        {
+            return "Autopilot nicht verfuegbar";
+        }
+
+        if (currentAutopilot.AutopilotEngaged)
+        {
+            return string.Empty;
+        }
+
+        if (planningBusy)
+        {
+            return "Plane...";
+        }
+
+        if (!hasTarget)
+        {
+            return "Kein Ziel";
+        }
+
+        if (currentAutopilot.CurrentState == PrototypeWaypointAutopilotState.FuelInsufficient
+            || string.Equals(currentAutopilot.ArrivalFailureReason, "FuelInsufficient", System.StringComparison.OrdinalIgnoreCase))
+        {
+            return "Treibstoff reicht nicht";
+        }
+
+        if (currentAutopilot.CurrentState == PrototypeWaypointAutopilotState.Failed
+            || currentAutopilot.FlightPlanRequiresAbort)
+        {
+            return "Plan blockiert";
+        }
+
+        return string.Empty;
+    }
+
+    private static void SetNavigationActionHint(TMP_Text text, string reason)
+    {
+        if (text == null)
+        {
+            return;
+        }
+
+        text.gameObject.SetActive(!string.IsNullOrEmpty(reason));
+        SetTextIfChanged(text, reason ?? string.Empty);
+        text.color = string.Equals(reason, "Plane...", System.StringComparison.Ordinal)
+            ? PrototypeUiStyle.ActiveColor
+            : PrototypeUiStyle.DisabledColor;
     }
 
     private void ConfigureRadarRangeControls()
@@ -5236,9 +6421,16 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
         if (navigationPlannerBodyText != null)
         {
-            SetTextIfChanged(navigationPlannerBodyText, BuildNavigationPlannerBody(snapshot.Navigation));
+            SetTextIfChanged(navigationPlannerBodyText, BuildNavigationPlannerBodyCore(snapshot.Navigation, navigationPlannerDetailsExpanded));
             navigationPlannerBodyText.color = snapshot.Navigation.Visible ? PrototypeUiStyle.MutedColor : PrototypeUiStyle.DisabledColor;
         }
+
+        ApplyNavigationTimeline(
+            navigationPlannerTimelineGraphic,
+            navigationPlannerTimelineDetailText,
+            snapshot.Navigation,
+            false,
+            navigationPlannerPanelRect.gameObject.activeSelf);
 
         bool mapVisible = HasRadarMapContent(snapshot.Radar);
         if (navigationPlannerMapPanelRect != null)
@@ -5251,48 +6443,68 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             navigationPlannerMapLayerRect.gameObject.SetActive(mapVisible);
         }
 
+        NavigationPlannerMapFrame plannerFrame = ResolveNavigationPlannerMapFrame(snapshot, minimapRangeMode != MinimapRangeModeAuto);
         if (navigationPlannerMapText != null)
         {
             navigationPlannerMapText.gameObject.SetActive(mapVisible);
-            SetTextIfChanged(navigationPlannerMapText, BuildNavigationPlannerMapLabel(snapshot));
+            SetTextIfChanged(navigationPlannerMapText, BuildNavigationPlannerMapLabelForFrame(snapshot, plannerFrame));
             navigationPlannerMapText.color = mapVisible ? PrototypeUiStyle.MutedColor : PrototypeUiStyle.DisabledColor;
         }
 
-        ConfigureNavigationPlannerMapLayer(snapshot);
+        if (navigationPlannerMapLegendText != null)
+        {
+            navigationPlannerMapLegendText.gameObject.SetActive(mapVisible);
+            SetTextIfChanged(navigationPlannerMapLegendText, BuildNavigationPlannerMapLegendLabel(snapshot));
+            navigationPlannerMapLegendText.color = mapVisible ? PrototypeUiStyle.MutedColor : PrototypeUiStyle.DisabledColor;
+        }
+
+        ConfigureNavigationPlannerMapLayer(snapshot, plannerFrame);
         ConfigureNavigationPlannerRangeControls();
 
         bool hasAutopilot = autopilot != null;
         bool hasTarget = hasAutopilot && autopilot.CurrentTarget != null;
         int targetCount = hasAutopilot && autopilot.WaypointManager != null ? autopilot.WaypointManager.TargetCount : (hasTarget ? 1 : 0);
+        bool planningBusy = IsNavigationPlanningBusy();
+        string engageDisabledReason = BuildNavigationEngageDisabledReason(autopilot, hasAutopilot, hasTarget, planningBusy);
 
         SetNavigationButtonState(navPlannerPreviousButton, hasAutopilot && targetCount > 1, () =>
         {
             autopilot.SelectPreviousTarget();
+            MarkNavigationPlanningBusy();
             autopilot.ReplanNow();
             ForceRefreshNow();
         });
         SetNavigationButtonState(navPlannerNextButton, hasAutopilot && targetCount > 1, () =>
         {
             autopilot.SelectNextTarget();
+            MarkNavigationPlanningBusy();
             autopilot.ReplanNow();
             ForceRefreshNow();
         });
 
         if (navPlannerEngageButtonText != null)
         {
-            SetTextIfChanged(navPlannerEngageButtonText, !hasAutopilot ? "AP n/a" : autopilot.AutopilotEngaged ? "Abort AP" : "Engage");
+            SetTextIfChanged(navPlannerEngageButtonText, BuildNavigationEngageButtonLabel(autopilot, hasAutopilot, planningBusy));
         }
 
-        SetNavigationButtonState(navPlannerEngageButton, hasAutopilot && (hasTarget || autopilot.AutopilotEngaged), () =>
+        SetNavigationButtonState(navPlannerEngageButton, string.IsNullOrEmpty(engageDisabledReason), () =>
         {
             autopilot.ToggleAutopilot();
             ForceRefreshNow();
         });
+
+        if (navPlannerReplanButtonText != null)
+        {
+            SetTextIfChanged(navPlannerReplanButtonText, planningBusy ? "Plane..." : "Neu planen");
+        }
+
         SetNavigationButtonState(navPlannerReplanButton, hasAutopilot && hasTarget, () =>
         {
+            MarkNavigationPlanningBusy();
             autopilot.ReplanNow();
             ForceRefreshNow();
         });
+        SetNavigationActionHint(navPlannerActionHintText, engageDisabledReason);
 
         bool hasPreview = trajectoryPreview != null;
         if (navPlannerPreviewButtonText != null)
@@ -5305,6 +6517,16 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             trajectoryPreview.TogglePreview();
             ForceRefreshNow();
         });
+        if (navPlannerDetailsButtonText != null)
+        {
+            SetTextIfChanged(navPlannerDetailsButtonText, navigationPlannerDetailsExpanded ? "Details -" : "Details +");
+        }
+
+        SetNavigationButtonState(navPlannerDetailsButton, true, () =>
+        {
+            navigationPlannerDetailsExpanded = !navigationPlannerDetailsExpanded;
+            ForceRefreshNow();
+        });
         SetNavigationButtonState(navPlannerCloseButton, true, () => SetNavigationPlannerVisible(false));
     }
 
@@ -5315,6 +6537,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         RemoveButtonListeners(navPlannerEngageButton);
         RemoveButtonListeners(navPlannerReplanButton);
         RemoveButtonListeners(navPlannerPreviewButton);
+        RemoveButtonListeners(navPlannerDetailsButton);
         RemoveButtonListeners(navPlannerRangeMinusButton);
         RemoveButtonListeners(navPlannerRangeAutoButton);
         RemoveButtonListeners(navPlannerRangePlusButton);
@@ -5335,49 +6558,144 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
     private static string BuildNavigationPlannerBody(PrototypePlayerNavigationSnapshot navigation)
     {
+        return BuildNavigationPlannerBodyCore(navigation, false);
+    }
+
+    private static string BuildNavigationPlannerBodyCore(PrototypePlayerNavigationSnapshot navigation, bool showDetails)
+    {
         if (!navigation.Visible)
         {
-            return "No navigation target selected";
+            return "Kein Navigationsziel gewaehlt";
         }
 
         string routeLabel = navigation.RouteWorldPoints.Length > 1
             ? navigation.RouteModeLabel + " " + navigation.RouteWorldPoints.Length + " pts"
-            : "No route";
+            : "Keine Route";
         string previewLabel = navigation.TrajectoryPreview.Enabled
             ? navigation.TrajectoryPreview.StatusLabel
-            : "Preview off";
-        string avoidanceLabel = navigation.HasAvoidanceCue ? navigation.AvoidanceLabel : "No obstacle cue";
+            : "Vorschau aus";
+        string avoidanceLabel = navigation.HasAvoidanceCue ? navigation.AvoidanceLabel : "Kein Hindernis-Hinweis";
         string contextLine = navigation.CelestialContext.HasContext
             ? BuildCompactContextLineWithCelestialContext(navigation)
-            : navigation.ReplanStatusLabel + " | Obstacles: " + navigation.ObstacleSummaryLabel;
-        string burnLabel = "Burn " + FormatBurnSeconds(navigation.RequiredBurnSeconds)
-            + " / avail " + FormatBurnSeconds(navigation.AvailableBurnSeconds);
-        string totalPlanLabel = "Schedule " + FormatBurnSeconds(navigation.TotalPlanDurationSeconds)
-            + " | fuel " + navigation.TotalPlanFuelKg.ToString("0.00") + "kg"
-            + " | " + navigation.ActiveSegmentLabel;
+            : navigation.ReplanStatusLabel + " | Hindernisse: " + navigation.ObstacleSummaryLabel;
+        string closingLabel = BuildNavigationPlannerClosingLabel(navigation);
+        string deltaVLabel = BuildNavigationPlannerDeltaVMarginLabel(navigation);
+        string fuelAfterArrivalLabel = navigation.FuelAfterArrivalAvailable
+            ? "Treibstoff nach Ankunft " + (navigation.FuelAfterArrivalFraction * 100f).ToString("0") + "%"
+            : "Treibstoff nach Ankunft --";
+        string brakeReserveLabel = "Bremsreserve " + (navigation.BrakeReserveOk ? "OK" : "niedrig");
+        string planDurationLabel = "Plandauer " + FormatBurnSeconds(navigation.TotalPlanDurationSeconds);
+        string largestBurnLabel = "Groesster Burn " + BuildNavigationPlannerLargestBurnLabel(navigation);
+        string availableBurnLabel = "Verfuegbare Brennzeit " + FormatBurnSeconds(navigation.AvailableBurnSeconds);
 
-        return navigation.TargetName + " | " + navigation.TargetListLabel + "\n"
-            + "Dist " + FormatDistance(navigation.DistanceMeters) + " | ETA " + navigation.EtaLabel
-            + " | Closing " + navigation.ClosingSpeed.ToString("0.0") + " m/s\n"
+        string body = navigation.TargetName + " | " + navigation.TargetListLabel + " | Status: " + navigation.PlanStateBadge.Text + "\n"
+            + "Distanz " + FormatDistance(navigation.DistanceMeters) + " | ETA " + navigation.EtaLabel
+            + " | " + closingLabel + "\n"
+            + "Reserve: " + deltaVLabel + "\n"
+            + fuelAfterArrivalLabel + " | " + brakeReserveLabel + "\n"
+            + planDurationLabel + " | " + largestBurnLabel + " | " + availableBurnLabel + "\n"
+            + "Kurs: " + routeLabel + " | " + previewLabel + "\n"
+            + navigation.ManeuverIntentLabel + " | Stoppdistanz " + FormatDistance(navigation.StoppingDistanceMeters) + "\n"
+            + contextLine;
+
+        if (!showDetails)
+        {
+            return body + "\nDetails ausgeblendet";
+        }
+
+        return body + "\n"
+            + "Details:\n"
             + navigation.PlanAuthorityLabel + "\n"
-            + "Path: " + routeLabel + " | " + previewLabel + "\n"
-            + navigation.ManeuverIntentLabel + " | Stop " + FormatDistance(navigation.StoppingDistanceMeters) + "\n"
-            + burnLabel + " | " + totalPlanLabel + "\n"
             + navigation.PlanIdentityLabel + "\n"
             + navigation.TrackingErrorLabel + "\n"
             + navigation.TrackingCommandLabel + "\n"
-            + contextLine + "\n"
             + BuildNavigationPlannerStepRows(navigation.ManeuverStepRows, avoidanceLabel);
+    }
+
+    private static string BuildNavigationTimelineDetailLine(PrototypePlayerNavigationSnapshot navigation)
+    {
+        PrototypeNavigationTimelineSegment[] segments = navigation.TimelineSegments;
+        if (!navigation.Visible || segments == null || segments.Length == 0)
+        {
+            return "Timeline --";
+        }
+
+        int index = navigation.ActiveSegmentIndex >= 0 && navigation.ActiveSegmentIndex < segments.Length
+            ? navigation.ActiveSegmentIndex
+            : 0;
+        PrototypeNavigationTimelineSegment segment = segments[index];
+        string throttle = segment.MainThrottle > 0.001f
+            ? (segment.MainThrottle * 100f).ToString("0") + "% Schub"
+            : "Coast";
+        string deltaV = segment.DeltaV > 0.001f
+            ? ", DeltaV " + segment.DeltaV.ToString("0.0") + " m/s"
+            : string.Empty;
+        return segment.Label + " - " + throttle + ", " + FormatBurnSeconds(segment.DurationSeconds) + deltaV;
+    }
+
+    private static string BuildNavigationPlannerClosingLabel(PrototypePlayerNavigationSnapshot navigation)
+    {
+        if (Mathf.Abs(navigation.ClosingSpeed) <= 0.05f)
+        {
+            return "Annaeherung -> stabil 0.0 m/s";
+        }
+
+        string direction = navigation.ClosingTowardsTarget ? "auf Ziel" : "entfernt sich";
+        string arrow = navigation.ClosingTowardsTarget ? "->" : "<-";
+        return "Annaeherung " + arrow + " " + direction + " " + Mathf.Abs(navigation.ClosingSpeed).ToString("0.0") + " m/s";
+    }
+
+    private static string BuildNavigationPlannerDeltaVMarginLabel(PrototypePlayerNavigationSnapshot navigation)
+    {
+        return "DeltaV " + navigation.DeltaVRequired.ToString("0.0") + " benoetigt / "
+            + navigation.DeltaVAvailable.ToString("0.0") + " verfuegbar";
+    }
+
+    private static string BuildNavigationPlannerLargestBurnLabel(PrototypePlayerNavigationSnapshot navigation)
+    {
+        float largestDuration = 0f;
+        float largestDeltaV = 0f;
+        string largestLabel = string.Empty;
+        PrototypeNavigationTimelineSegment[] segments = navigation.TimelineSegments;
+        for (int i = 0; i < segments.Length; i++)
+        {
+            if (segments[i].MainThrottle <= 0.001f && segments[i].DeltaV <= 0.001f)
+            {
+                continue;
+            }
+
+            if (segments[i].DurationSeconds > largestDuration || segments[i].DeltaV > largestDeltaV)
+            {
+                largestDuration = segments[i].DurationSeconds;
+                largestDeltaV = segments[i].DeltaV;
+                largestLabel = segments[i].Label;
+            }
+        }
+
+        if (largestDuration <= 0.001f && navigation.RequiredBurnSeconds > 0.001f)
+        {
+            largestDuration = navigation.RequiredBurnSeconds;
+        }
+
+        if (largestDuration <= 0.001f)
+        {
+            return "--";
+        }
+
+        string label = largestDeltaV > 0.001f
+            ? (string.IsNullOrWhiteSpace(largestLabel) ? "Burn" : largestLabel) + " " + FormatBurnSeconds(largestDuration) + " / " + largestDeltaV.ToString("0.0") + " m/s"
+            : FormatBurnSeconds(largestDuration);
+        return label;
     }
 
     private static string BuildCompactContextLineWithCelestialContext(PrototypePlayerNavigationSnapshot navigation)
     {
         bool hasActiveObstacleDiagnostics = navigation.ActiveObstacleCount > 0
-            || !string.Equals(navigation.ObstacleSummaryLabel, "0 active | no obstacle cue", System.StringComparison.Ordinal)
-            || !string.Equals(navigation.ReplanStatusLabel, "Replan: none", System.StringComparison.Ordinal);
+            || !string.Equals(navigation.ObstacleSummaryLabel, "0 aktiv | kein Hindernis-Hinweis", System.StringComparison.Ordinal)
+            || !string.Equals(navigation.ReplanStatusLabel, "Neuplanung: keine", System.StringComparison.Ordinal);
 
         return hasActiveObstacleDiagnostics
-            ? navigation.CelestialContext.PilotContextLabel + " | " + navigation.ReplanStatusLabel + " | Obstacles: " + navigation.ObstacleSummaryLabel
+            ? navigation.CelestialContext.PilotContextLabel + " | " + navigation.ReplanStatusLabel + " | Hindernisse: " + navigation.ObstacleSummaryLabel
             : navigation.CelestialContext.PilotContextLabel;
     }
     private static string BuildNavigationPlannerStepRows(string[] rows, string fallback)
@@ -5401,16 +6719,21 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
     private static string BuildNavigationPlannerMapLabel(PrototypePlayerHudSnapshot snapshot)
     {
+        NavigationPlannerMapFrame frame = ResolveNavigationPlannerMapFrame(snapshot, false);
+        return BuildNavigationPlannerMapLabelForFrame(snapshot, frame);
+    }
+
+    private static string BuildNavigationPlannerMapLabelForFrame(PrototypePlayerHudSnapshot snapshot, NavigationPlannerMapFrame frame)
+    {
         if (!snapshot.Navigation.Visible && !HasRadarMapContent(snapshot.Radar))
         {
             return "No route";
         }
 
-        string range = BuildNavigationPlannerMapRangeLabel(snapshot.Radar.RangeLabel);
+        string range = BuildNavigationPlannerMapRangeLabel(frame, snapshot.Radar.RangeLabel);
         int contactCount = snapshot.Radar.Blips != null ? snapshot.Radar.Blips.Length : 0;
         string contacts = BuildNavigationPlannerMapContactLabel(contactCount);
         string route = BuildNavigationPlannerMapRouteLabel(snapshot.Navigation);
-        string preview = BuildNavigationPlannerMapPreviewLabel(snapshot);
 
         if (snapshot.Navigation.Visible)
         {
@@ -5419,7 +6742,16 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             contacts = BuildNavigationPlannerMapContactLabel(contactCount);
         }
 
-        return string.Join(" | ", new[] { route, preview, range, contacts });
+        return string.Join(" | ", new[] { route, "Range " + range, contacts });
+    }
+
+    private static string BuildNavigationPlannerMapLegendLabel(PrototypePlayerHudSnapshot snapshot)
+    {
+        string preview = BuildNavigationPlannerMapPreviewLabel(snapshot);
+        string avoidance = snapshot.Navigation.HasAvoidanceCue || snapshot.Radar.HasAvoidanceWaypoint
+            ? "Avoidance"
+            : "Avoidance idle";
+        return "Route solid  " + preview + " dashed  " + avoidance;
     }
 
     private static string BuildNavigationPlannerMapRangeLabel(string rangeLabel)
@@ -5435,6 +6767,26 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         }
 
         return rangeLabel;
+    }
+
+    private static string BuildNavigationPlannerMapRangeLabel(NavigationPlannerMapFrame frame, string radarRangeLabel)
+    {
+        if (frame.ManualRangeOverride)
+        {
+            return BuildNavigationPlannerMapRangeLabel(radarRangeLabel);
+        }
+
+        return FormatNavigationPlannerMapRangeLabel(frame.RangeMeters);
+    }
+
+    private static string FormatNavigationPlannerMapRangeLabel(float rangeMeters)
+    {
+        if (rangeMeters >= 1000f)
+        {
+            return (rangeMeters / 1000f).ToString("0.#") + " km";
+        }
+
+        return rangeMeters.ToString("0") + " m";
     }
 
     private static string BuildNavigationPlannerMapContactLabel(int contactCount)
@@ -5649,17 +7001,52 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             ForceRefreshNow();
         });
 
-        if (combatComputerPriorityButtonText != null)
+        ConfigureCombatPrioritySegment(
+            combatComputerPriorityButton,
+            combatComputerPriorityButtonText,
+            PrototypeWeaponTargetPriorityMode.ManualOrder,
+            "Manual",
+            hasComputer);
+        ConfigureCombatPrioritySegment(
+            combatComputerPriorityNearestButton,
+            combatComputerPriorityNearestButtonText,
+            PrototypeWeaponTargetPriorityMode.Nearest,
+            "Nearest",
+            hasComputer);
+        ConfigureCombatPrioritySegment(
+            combatComputerPriorityHighHealthButton,
+            combatComputerPriorityHighHealthButtonText,
+            PrototypeWeaponTargetPriorityMode.HighestHealth,
+            "High HP",
+            hasComputer);
+        ConfigureCombatPrioritySegment(
+            combatComputerPriorityLowHealthButton,
+            combatComputerPriorityLowHealthButtonText,
+            PrototypeWeaponTargetPriorityMode.LowestHealth,
+            "Low HP",
+            hasComputer);
+        SetNavigationButtonState(combatComputerCloseButton, true, () => SetCombatComputerVisible(false));
+    }
+
+    private void ConfigureCombatPrioritySegment(
+        Button button,
+        TMP_Text text,
+        PrototypeWeaponTargetPriorityMode mode,
+        string label,
+        bool hasComputer)
+    {
+        if (text != null)
         {
-            SetTextIfChanged(combatComputerPriorityButtonText, !hasComputer ? "Prio n/a" : "Prio " + CompactPriorityLabel(weaponComputer.PriorityMode));
+            bool active = hasComputer && weaponComputer != null && weaponComputer.PriorityMode == mode;
+            SetTextIfChanged(text, active ? "[" + label + "]" : label);
+            text.color = active ? PrototypeUiStyle.ActiveColor : PrototypeUiStyle.MutedColor;
         }
 
-        SetNavigationButtonState(combatComputerPriorityButton, hasComputer, () =>
+        SetNavigationButtonState(button, hasComputer, () =>
         {
-            weaponComputer.CyclePriorityMode();
+            weaponComputer.SetPriorityMode(mode);
             ForceRefreshNow();
         });
-        SetNavigationButtonState(combatComputerCloseButton, true, () => SetCombatComputerVisible(false));
     }
 
     private void RemoveCombatComputerButtonListeners()
@@ -5669,6 +7056,9 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         RemoveButtonListeners(combatComputerClearButton);
         RemoveButtonListeners(combatComputerAutoFireButton);
         RemoveButtonListeners(combatComputerPriorityButton);
+        RemoveButtonListeners(combatComputerPriorityNearestButton);
+        RemoveButtonListeners(combatComputerPriorityHighHealthButton);
+        RemoveButtonListeners(combatComputerPriorityLowHealthButton);
         RemoveButtonListeners(combatComputerCloseButton);
     }
 
@@ -5681,9 +7071,29 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
         return "Target " + combat.TargetName + " | Range " + FormatDistance(combat.RangeMeters) + "\n"
             + "Health " + combat.HealthLabel + "\n"
-            + combat.FireStatusLabel + "\n"
+            + "Status " + combat.FireStatusLabel + "\n"
             + combat.AutoFireLabel + "\n"
-            + "Priority " + combat.PriorityLabel;
+            + "Priority " + combat.PriorityLabel + "\n"
+            + BuildCombatTargetListLabel(combat);
+    }
+
+    private static string BuildCombatTargetListLabel(PrototypePlayerCombatSnapshot combat)
+    {
+        if (combat.TargetList == null || combat.TargetList.Length == 0)
+        {
+            return "Targets --";
+        }
+
+        var lines = new List<string>();
+        lines.Add("Targets " + combat.TargetList.Length + "/" + combat.TargetListTotalCount);
+        for (int i = 0; i < combat.TargetList.Length; i++)
+        {
+            PrototypePlayerCombatTargetSnapshot target = combat.TargetList[i];
+            string marker = target.Active ? "> " : target.Selected ? "* " : "- ";
+            lines.Add(marker + target.TargetName + " | " + FormatDistance(target.RangeMeters) + " | " + target.HealthLabel);
+        }
+
+        return string.Join("\n", lines);
     }
 
     private void RemoveCombatButtonListeners()
@@ -5762,6 +7172,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         navigationPlannerPanelRect.gameObject.SetActive(visible);
         if (visible)
         {
+            navigationPlannerDetailsExpanded = PrototypeUiLayoutManager.CurrentPreset != PrototypeUiPreset.Basic;
             SetCombatComputerVisible(false);
             if (helpPanel != null)
             {
@@ -5813,6 +7224,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     public void ApplyResponsiveLayoutForTests(int width, int height)
     {
         ApplyResponsiveLayout(width, height, true);
+        RefreshDynamicHudPositions(lastSnapshot);
     }
 
     public PrototypePlayerProjectedTargetIndicator[] ProjectTargetIndicatorsForTests(
@@ -5940,7 +7352,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         }
 
         ApplyHelpPanelLayout(safeWidth, safeHeight, margin, gap, contextWidth, sideBottom, systemHeight, narrow, shortScreen);
-        ApplyPlayerComputerPanelLayout(navigationPlannerPanelRect, navigationPlannerBodyText, safeWidth, safeHeight, margin, gap, bottomOffset, bottomHeight, narrow, shortScreen, 760f, 480f);
+        ApplyPlayerComputerPanelLayout(navigationPlannerPanelRect, navigationPlannerBodyText, safeWidth, safeHeight, margin, gap, bottomOffset, bottomHeight, narrow, shortScreen, 760f, 620f);
         ApplyNavigationPlannerMapLayout(safeWidth, safeHeight, narrow, shortScreen);
         ApplyPlayerComputerPanelLayout(combatComputerPanelRect, combatComputerBodyText, safeWidth, safeHeight, margin, gap, bottomOffset, bottomHeight, narrow, shortScreen);
         ApplyContextBodyLayout((navigationControlRow != null && navigationControlRow.gameObject.activeSelf) || (combatControlRow != null && combatControlRow.gameObject.activeSelf));
@@ -6026,14 +7438,14 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             return;
         }
 
-        float width = Mathf.Clamp(safeWidth - (margin * 2f), 320f, narrow ? 500f : wideMaxWidth);
-        float availableHeight = safeHeight - (margin * 2f) - bottomOffset - bottomHeight - gap;
-        float height = Mathf.Clamp(availableHeight, 220f, shortScreen ? 320f : wideMaxHeight);
         float bottomClearanceTop = bottomOffset + bottomHeight + gap;
-        float centerY = Mathf.Clamp(
-            bottomClearanceTop + (height * 0.5f),
-            margin + (height * 0.5f),
-            safeHeight - margin - (height * 0.5f));
+        float topStripHeight = topStripRect != null && topStripRect.rect.height > 0f ? topStripRect.rect.height : 42f;
+        float topClearanceBottom = safeHeight - margin - topStripHeight - gap;
+        float availableHeight = Mathf.Max(1f, topClearanceBottom - bottomClearanceTop);
+        float width = Mathf.Clamp(safeWidth - (margin * 2f), 320f, narrow ? 500f : wideMaxWidth);
+        float minimumHeight = Mathf.Min(220f, availableHeight);
+        float height = Mathf.Clamp(availableHeight, minimumHeight, shortScreen ? 320f : wideMaxHeight);
+        float centerY = bottomClearanceTop + (height * 0.5f);
 
         ApplyRect(
             panel,
@@ -6055,7 +7467,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             || navigationPlannerBodyText == null
             || navigationPlannerMapPanelRect == null
             || navigationPlannerMapLayerRect == null
-            || navigationPlannerMapText == null)
+            || navigationPlannerMapText == null
+            || navigationPlannerMapLegendText == null)
         {
             return;
         }
@@ -6067,14 +7480,103 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             return;
         }
 
-        bool stacked = narrow || safeWidth < 860f || panelHeight < 270f;
+        bool portraitStacked = safeHeight > safeWidth && safeWidth < 1040f;
+        bool stacked = narrow || safeWidth < 860f || panelHeight < 270f || portraitStacked;
         float buttonReserve = shortScreen ? 86f : 96f;
         float titleReserve = 62f;
+        float bodyTimelineGap = shortScreen ? 5f : 7f;
+        float timelineHeight = shortScreen ? 20f : 24f;
+        float detailHeight = shortScreen ? 26f : 32f;
         float contentHeight = Mathf.Max(96f, panelHeight - buttonReserve - titleReserve);
 
-        if (stacked)
+        if (portraitStacked)
         {
+            const float portraitStackGap = 14f;
+            const float portraitBodyMapGap = 150f;
+            float mapSize = Mathf.Clamp(contentHeight * 0.08f, 32f, 38f);
+            float mapPanelHeight = mapSize + 58f;
+            float textWidth = Mathf.Max(120f, panelWidth - 28f);
+            float preferredBodyHeight = navigationPlannerBodyText != null
+                ? navigationPlannerBodyText.GetPreferredValues(navigationPlannerBodyText.text, textWidth, Mathf.Infinity).y
+                : 132f;
+            float preferredDetailHeight = navigationPlannerTimelineDetailText != null
+                ? navigationPlannerTimelineDetailText.GetPreferredValues(navigationPlannerTimelineDetailText.text, textWidth, Mathf.Infinity).y
+                : detailHeight;
+            float maxBodyHeight = Mathf.Max(
+                164f,
+                contentHeight - mapPanelHeight - timelineHeight - Mathf.Max(detailHeight, preferredDetailHeight) - (portraitStackGap * 3f) - portraitBodyMapGap);
+            float bodyHeight = Mathf.Clamp(Mathf.Ceil(preferredBodyHeight) + 32f, 164f, maxBodyHeight);
+            float resolvedDetailHeight = Mathf.Max(detailHeight, Mathf.Ceil(preferredDetailHeight) + 14f);
+            float timelineTop = titleReserve + bodyHeight + portraitStackGap;
+            float detailTop = timelineTop + timelineHeight + portraitStackGap;
+            float mapTop = detailTop + resolvedDetailHeight + portraitBodyMapGap;
+            float mapPanelWidth = Mathf.Min(panelWidth - 28f, mapSize + 132f);
+            ApplyRect(
+                navigationPlannerBodyText.rectTransform,
+                new Vector2(0f, 1f),
+                new Vector2(1f, 1f),
+                new Vector2(0.5f, 1f),
+                new Vector2(-28f, bodyHeight),
+                new Vector2(0f, -titleReserve));
+            ApplyNavigationPlannerTimelineLayout(
+                28f,
+                0f,
+                timelineTop,
+                timelineHeight,
+                resolvedDetailHeight,
+                portraitStackGap);
+            if (navigationPlannerTimelineDetailText != null)
+            {
+                float detailDisplayHeight = Mathf.Min(resolvedDetailHeight, 24f);
+                float detailDisplayTop = detailTop;
+                navigationPlannerTimelineDetailText.alignment = TextAlignmentOptions.Top;
+                ApplyRect(
+                    navigationPlannerTimelineDetailText.rectTransform,
+                    new Vector2(0.5f, 1f),
+                    new Vector2(0.5f, 1f),
+                    new Vector2(0.5f, 1f),
+                    new Vector2(mapPanelWidth, detailDisplayHeight),
+                    new Vector2(0f, -detailDisplayTop));
+            }
+            ApplyRect(
+                navigationPlannerMapPanelRect,
+                new Vector2(0.5f, 1f),
+                new Vector2(0.5f, 1f),
+                new Vector2(0.5f, 1f),
+                new Vector2(mapPanelWidth, mapPanelHeight),
+                new Vector2(0f, -mapTop));
+            ApplyRect(
+                navigationPlannerMapLayerRect,
+                new Vector2(0.5f, 1f),
+                new Vector2(0.5f, 1f),
+                new Vector2(0.5f, 1f),
+                new Vector2(mapSize, mapSize),
+                new Vector2(0f, -(mapTop + 8f)));
+            ApplyRect(
+                navigationPlannerMapLegendText.rectTransform,
+                new Vector2(0.5f, 1f),
+                new Vector2(0.5f, 1f),
+                new Vector2(0.5f, 1f),
+                new Vector2(mapPanelWidth, 18f),
+                new Vector2(0f, -(mapTop + mapSize + 10f)));
+            ApplyRect(
+                navigationPlannerMapText.rectTransform,
+                new Vector2(0.5f, 1f),
+                new Vector2(0.5f, 1f),
+                new Vector2(0.5f, 1f),
+                new Vector2(mapPanelWidth, 30f),
+                new Vector2(0f, -(mapTop + mapSize + 28f)));
+            navigationPlannerBodyText.fontSize = 10f;
+        }
+        else if (stacked)
+        {
+            if (navigationPlannerTimelineDetailText != null)
+            {
+                navigationPlannerTimelineDetailText.alignment = TextAlignmentOptions.TopLeft;
+            }
+
             float mapSize = Mathf.Clamp(contentHeight * 0.56f, 130f, 160f);
+            float bodyHeight = Mathf.Max(42f, contentHeight - timelineHeight - detailHeight - (bodyTimelineGap * 2f));
             ApplyRect(
                 navigationPlannerMapPanelRect,
                 new Vector2(1f, 1f),
@@ -6084,11 +7586,18 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
                 new Vector2(-12f, -42f));
             ApplyRect(
                 navigationPlannerBodyText.rectTransform,
-                new Vector2(0f, 0f),
+                new Vector2(0f, 1f),
                 new Vector2(1f, 1f),
-                new Vector2(0.5f, 0.5f),
-                new Vector2(-(mapSize + 54f), -(buttonReserve + titleReserve + 4f)),
-                new Vector2(-((mapSize + 18f) * 0.5f), (buttonReserve * 0.5f) - 4f));
+                new Vector2(0.5f, 1f),
+                new Vector2(-(mapSize + 54f), bodyHeight),
+                new Vector2(-((mapSize + 18f) * 0.5f), -titleReserve));
+            ApplyNavigationPlannerTimelineLayout(
+                mapSize + 54f,
+                (mapSize + 18f) * 0.5f,
+                titleReserve + bodyHeight + bodyTimelineGap,
+                timelineHeight,
+                detailHeight,
+                bodyTimelineGap);
             ApplyRect(
                 navigationPlannerMapLayerRect,
                 new Vector2(1f, 1f),
@@ -6097,17 +7606,30 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
                 new Vector2(mapSize, mapSize),
                 new Vector2(-21f, -46f));
             ApplyRect(
+                navigationPlannerMapLegendText.rectTransform,
+                new Vector2(1f, 1f),
+                new Vector2(1f, 1f),
+                new Vector2(1f, 1f),
+                new Vector2(mapSize + 18f, 18f),
+                new Vector2(-12f, -(mapSize + 48f)));
+            ApplyRect(
                 navigationPlannerMapText.rectTransform,
                 new Vector2(1f, 1f),
                 new Vector2(1f, 1f),
                 new Vector2(1f, 1f),
                 new Vector2(mapSize + 18f, 30f),
-                new Vector2(-12f, -(mapSize + 62f)));
+                new Vector2(-12f, -(mapSize + 66f)));
             navigationPlannerBodyText.fontSize = shortScreen ? 10f : 11f;
         }
         else
         {
+            if (navigationPlannerTimelineDetailText != null)
+            {
+                navigationPlannerTimelineDetailText.alignment = TextAlignmentOptions.TopLeft;
+            }
+
             float mapSize = Mathf.Clamp(contentHeight + 16f, 280f, 352f);
+            float bodyHeight = Mathf.Max(88f, contentHeight - timelineHeight - detailHeight - (bodyTimelineGap * 2f));
             ApplyRect(
                 navigationPlannerMapPanelRect,
                 new Vector2(1f, 0.5f),
@@ -6117,11 +7639,18 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
                 new Vector2(-12f, 22f));
             ApplyRect(
                 navigationPlannerBodyText.rectTransform,
-                new Vector2(0f, 0f),
+                new Vector2(0f, 1f),
                 new Vector2(1f, 1f),
-                new Vector2(0.5f, 0.5f),
-                new Vector2(-(mapSize + 60f), -(buttonReserve + titleReserve)),
-                new Vector2(-((mapSize + 28f) * 0.5f), (buttonReserve * 0.5f) - 2f));
+                new Vector2(0.5f, 1f),
+                new Vector2(-(mapSize + 60f), bodyHeight),
+                new Vector2(-((mapSize + 28f) * 0.5f), -titleReserve));
+            ApplyNavigationPlannerTimelineLayout(
+                mapSize + 60f,
+                (mapSize + 28f) * 0.5f,
+                titleReserve + bodyHeight + bodyTimelineGap,
+                timelineHeight,
+                detailHeight,
+                bodyTimelineGap);
             ApplyRect(
                 navigationPlannerMapLayerRect,
                 new Vector2(1f, 0.5f),
@@ -6130,12 +7659,19 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
                 new Vector2(mapSize, mapSize),
                 new Vector2(-22f, 40f));
             ApplyRect(
+                navigationPlannerMapLegendText.rectTransform,
+                new Vector2(1f, 0.5f),
+                new Vector2(1f, 0.5f),
+                new Vector2(1f, 0.5f),
+                new Vector2(mapSize + 20f, 18f),
+                new Vector2(-12f, 42f - (mapSize * 0.5f)));
+            ApplyRect(
                 navigationPlannerMapText.rectTransform,
                 new Vector2(1f, 0.5f),
                 new Vector2(1f, 0.5f),
                 new Vector2(1f, 0.5f),
                 new Vector2(mapSize + 20f, 30f),
-                new Vector2(-12f, 24f - (mapSize * 0.5f)));
+                new Vector2(-12f, 20f - (mapSize * 0.5f)));
         }
 
         if (navigationPlannerMapText != null)
@@ -6143,15 +7679,45 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             navigationPlannerMapText.fontSize = MinimumPlayerHudFontSize;
         }
 
+        if (navigationPlannerMapLegendText != null)
+        {
+            navigationPlannerMapLegendText.fontSize = MinimumPlayerHudFontSize;
+        }
+
         for (int i = 0; i < navigationPlannerMapGridSegments.Count; i++)
         {
             navigationPlannerMapGridSegments[i].SetAllDirty();
         }
 
-        ApplyNavigationPlannerMapRangeButtonLayout();
+        ApplyNavigationPlannerMapRangeButtonLayout(portraitStacked);
+        ApplyNavigationPlannerActionButtonLayout(portraitStacked);
     }
 
-    private void ApplyNavigationPlannerMapRangeButtonLayout()
+    private void ApplyNavigationPlannerTimelineLayout(
+        float rightInset,
+        float xOffset,
+        float timelineTop,
+        float timelineHeight,
+        float detailHeight,
+        float gap)
+    {
+        ApplyRect(
+            navigationPlannerTimelineGraphic != null ? navigationPlannerTimelineGraphic.rectTransform : null,
+            new Vector2(0f, 1f),
+            new Vector2(1f, 1f),
+            new Vector2(0.5f, 1f),
+            new Vector2(-rightInset, timelineHeight),
+            new Vector2(-xOffset, -timelineTop));
+        ApplyRect(
+            navigationPlannerTimelineDetailText != null ? navigationPlannerTimelineDetailText.rectTransform : null,
+            new Vector2(0f, 1f),
+            new Vector2(1f, 1f),
+            new Vector2(0.5f, 1f),
+            new Vector2(-rightInset, detailHeight),
+            new Vector2(-xOffset, -(timelineTop + timelineHeight + gap)));
+    }
+
+    private void ApplyNavigationPlannerMapRangeButtonLayout(bool portraitStacked)
     {
         if (navPlannerRangeMinusButton == null
             || navPlannerRangeAutoButton == null
@@ -6160,33 +7726,95 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             return;
         }
 
-        const float buttonSize = 22f;
-        const float buttonY = 4f;
+        const float buttonSize = 24f;
+        float buttonY = portraitStacked ? -64f : -24f;
         ApplyRect(
             navPlannerRangeMinusButton.GetComponent<RectTransform>(),
             new Vector2(0.5f, 0f),
             new Vector2(0.5f, 0f),
             new Vector2(0.5f, 0f),
             new Vector2(buttonSize, buttonSize),
-            new Vector2(-44f, buttonY));
+            new Vector2(-50f, buttonY));
         ApplyRect(
             navPlannerRangeAutoButton.GetComponent<RectTransform>(),
             new Vector2(0.5f, 0f),
             new Vector2(0.5f, 0f),
             new Vector2(0.5f, 0f),
             new Vector2(buttonSize, buttonSize),
-            new Vector2(-14f, buttonY));
+            new Vector2(-18f, buttonY));
         ApplyRect(
             navPlannerRangePlusButton.GetComponent<RectTransform>(),
             new Vector2(0.5f, 0f),
             new Vector2(0.5f, 0f),
             new Vector2(0.5f, 0f),
             new Vector2(buttonSize, buttonSize),
-            new Vector2(16f, buttonY));
+            new Vector2(14f, buttonY));
 
         navPlannerRangeMinusButton.transform.SetAsLastSibling();
         navPlannerRangeAutoButton.transform.SetAsLastSibling();
         navPlannerRangePlusButton.transform.SetAsLastSibling();
+    }
+
+    private void ApplyNavigationPlannerActionButtonLayout(bool portraitStacked)
+    {
+        float topRowY = portraitStacked ? 32f : 54f;
+        float bottomRowY = portraitStacked ? 8f : 18f;
+        ApplyRect(
+            navPlannerPreviousButton != null ? navPlannerPreviousButton.GetComponent<RectTransform>() : null,
+            new Vector2(0f, 0f),
+            new Vector2(0f, 0f),
+            new Vector2(0f, 0f),
+            new Vector2(48f, 22f),
+            new Vector2(12f, topRowY));
+        ApplyRect(
+            navPlannerNextButton != null ? navPlannerNextButton.GetComponent<RectTransform>() : null,
+            new Vector2(0f, 0f),
+            new Vector2(0f, 0f),
+            new Vector2(0f, 0f),
+            new Vector2(48f, 22f),
+            new Vector2(66f, topRowY));
+        ApplyRect(
+            navPlannerEngageButton != null ? navPlannerEngageButton.GetComponent<RectTransform>() : null,
+            new Vector2(0f, 0f),
+            new Vector2(0f, 0f),
+            new Vector2(0f, 0f),
+            new Vector2(74f, 22f),
+            new Vector2(120f, topRowY));
+        ApplyRect(
+            navPlannerReplanButton != null ? navPlannerReplanButton.GetComponent<RectTransform>() : null,
+            new Vector2(0f, 0f),
+            new Vector2(0f, 0f),
+            new Vector2(0f, 0f),
+            new Vector2(86f, 22f),
+            new Vector2(200f, topRowY));
+        ApplyRect(
+            navPlannerActionHintText != null ? navPlannerActionHintText.rectTransform : null,
+            new Vector2(0f, 0f),
+            new Vector2(0f, 0f),
+            new Vector2(0f, 0f),
+            new Vector2(190f, 22f),
+            new Vector2(294f, topRowY));
+        ApplyRect(
+            navPlannerPreviewButton != null ? navPlannerPreviewButton.GetComponent<RectTransform>() : null,
+            new Vector2(0f, 0f),
+            new Vector2(0f, 0f),
+            new Vector2(0f, 0f),
+            new Vector2(92f, 22f),
+            new Vector2(12f, bottomRowY));
+        ApplyRect(
+            navPlannerDetailsButton != null ? navPlannerDetailsButton.GetComponent<RectTransform>() : null,
+            new Vector2(0f, 0f),
+            new Vector2(0f, 0f),
+            new Vector2(0f, 0f),
+            new Vector2(88f, 22f),
+            new Vector2(110f, bottomRowY));
+        ApplyRect(
+            navPlannerCloseButton != null ? navPlannerCloseButton.GetComponent<RectTransform>() : null,
+            new Vector2(1f, 0f),
+            new Vector2(1f, 0f),
+            new Vector2(1f, 0f),
+            new Vector2(62f, 22f),
+            new Vector2(-74f, bottomRowY));
     }
 
     private float ApplyCanvasScalePolicy(int screenWidth, int screenHeight)
@@ -6332,11 +7960,209 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         return rewardStubLabel;
     }
 
+    private static void ApplyNavigationTimeline(
+        PrototypeNavigationTimelineGraphic timeline,
+        TMP_Text detailText,
+        PrototypePlayerNavigationSnapshot navigation,
+        bool compact,
+        bool visible)
+    {
+        if (timeline != null)
+        {
+            bool hasSegments = visible
+                && navigation.Visible
+                && navigation.TimelineSegments != null
+                && navigation.TimelineSegments.Length > 0;
+            timeline.gameObject.SetActive(hasSegments);
+            timeline.SetTimeline(
+                hasSegments ? navigation.TimelineSegments : System.Array.Empty<PrototypeNavigationTimelineSegment>(),
+                hasSegments ? navigation.TimelineProgress01 : 0f,
+                hasSegments ? navigation.ActiveSegmentIndex : -1,
+                compact);
+        }
+
+        if (detailText != null)
+        {
+            bool hasDetail = visible
+                && navigation.Visible
+                && navigation.TimelineSegments != null
+                && navigation.TimelineSegments.Length > 0;
+            detailText.gameObject.SetActive(hasDetail);
+            if (hasDetail)
+            {
+                SetTextIfChanged(detailText, BuildNavigationTimelineDetailLine(navigation));
+                detailText.color = PrototypeUiStyle.MutedColor;
+            }
+        }
+    }
+
+    private void ConfigureNavigationPlannerMapAnnotations(PrototypePlayerHudSnapshot snapshot, NavigationPlannerMapFrame frame)
+    {
+        if (navigationPlannerMapLayerRect == null)
+        {
+            return;
+        }
+
+        Rect rect = navigationPlannerMapLayerRect.rect;
+        float radius = Mathf.Min(rect.width, rect.height) * 0.5f;
+        ConfigureNavigationPlannerManeuverMarkers(snapshot, frame, radius);
+        ConfigureNavigationPlannerTargetIndicators(snapshot, frame, radius);
+    }
+
+    private void ConfigureNavigationPlannerManeuverMarkers(PrototypePlayerHudSnapshot snapshot, NavigationPlannerMapFrame frame, float radius)
+    {
+        int count = 0;
+        Vector3[] markers = snapshot.Navigation.ManeuverMarkersWorld ?? System.Array.Empty<Vector3>();
+        for (int i = 0; i < markers.Length && count < navigationPlannerMapManeuverMarkerImages.Count; i++)
+        {
+            if (!IsFinitePlannerMapPoint(markers[i]))
+            {
+                continue;
+            }
+
+            Vector2 point = NavigationPlannerWorldToLayerPoint(markers[i], frame, radius);
+            ApplyRadarBlip(
+                navigationPlannerMapManeuverMarkerImages[count],
+                point,
+                NavigationPlannerManeuverMarkerColor(count),
+                new Vector2(9f, 9f),
+                45f);
+            count++;
+        }
+
+        for (int i = count; i < navigationPlannerMapManeuverMarkerImages.Count; i++)
+        {
+            navigationPlannerMapManeuverMarkerImages[i].gameObject.SetActive(false);
+        }
+    }
+
+    private static Color NavigationPlannerManeuverMarkerColor(int markerIndex)
+    {
+        switch (markerIndex)
+        {
+            case 0:
+                return PrototypeUiStyle.ActiveColor;
+            case 1:
+                return PrototypeUiStyle.WarningColor;
+            case 2:
+                return PrototypeUiStyle.DangerColor;
+            default:
+                return new Color(0.72f, 0.9f, 1f, 0.95f);
+        }
+    }
+
+    private void ConfigureNavigationPlannerTargetIndicators(PrototypePlayerHudSnapshot snapshot, NavigationPlannerMapFrame frame, float radius)
+    {
+        PrototypePlayerRadarBlip target;
+        if (!snapshot.Navigation.Visible || !TryFindPlannerRadarBlip(snapshot.Radar, PrototypePlayerRadarBlipKind.SelectedNavigation, out target))
+        {
+            HideNavigationPlannerTargetIndicators();
+            return;
+        }
+
+        bool targetInsideFrame = IsNavigationPlannerPointInsideFrame(target.WorldPosition, frame);
+        if (targetInsideFrame)
+        {
+            ConfigureNavigationPlannerArrivalRing(target.WorldPosition, target.RadiusMeters, frame, radius);
+            if (navigationPlannerMapTargetEdgeImage != null)
+            {
+                navigationPlannerMapTargetEdgeImage.gameObject.SetActive(false);
+            }
+        }
+        else
+        {
+            HideNavigationPlannerArrivalRing();
+            Vector2 targetPoint = NavigationPlannerWorldToLayerPoint(target.WorldPosition, frame, radius);
+            Vector2 edgePoint = Vector2.ClampMagnitude(targetPoint, Mathf.Max(1f, radius - 7f));
+            ApplyRadarBlip(navigationPlannerMapTargetEdgeImage, edgePoint, PrototypeModuleColorPalette.Target, new Vector2(16f, 16f), 45f);
+        }
+    }
+
+    private void ConfigureNavigationPlannerArrivalRing(Vector3 targetWorldPosition, float arrivalRadiusMeters, NavigationPlannerMapFrame frame, float mapRadius)
+    {
+        if (navigationPlannerMapArrivalRingSegments.Count < NavigationPlannerArrivalRingSegments)
+        {
+            return;
+        }
+
+        var ringPoints = new Vector2[NavigationPlannerArrivalRingSegments];
+        if (!TryBuildNavigationPlannerArrivalRingPoints(targetWorldPosition, arrivalRadiusMeters, frame, mapRadius, ringPoints))
+        {
+            HideNavigationPlannerArrivalRing();
+            return;
+        }
+
+        Color ringColor = new Color(0.35f, 0.95f, 1f, 0.62f);
+        for (int i = 0; i < NavigationPlannerArrivalRingSegments; i++)
+        {
+            Vector2 start = ringPoints[i];
+            Vector2 end = ringPoints[(i + 1) % NavigationPlannerArrivalRingSegments];
+            ApplyRadarLine(navigationPlannerMapArrivalRingSegments[i], start, end, ringColor, 1.6f);
+        }
+    }
+
+    private static bool TryBuildNavigationPlannerArrivalRingPoints(
+        Vector3 targetWorldPosition,
+        float arrivalRadiusMeters,
+        NavigationPlannerMapFrame frame,
+        float mapRadius,
+        Vector2[] ringPoints)
+    {
+        if (!IsFinitePlannerMapPoint(targetWorldPosition)
+            || ringPoints == null
+            || ringPoints.Length < NavigationPlannerArrivalRingSegments
+            || arrivalRadiusMeters <= 0f
+            || mapRadius <= 1f)
+        {
+            return false;
+        }
+
+        float safeArrivalRadius = Mathf.Max(1f, arrivalRadiusMeters);
+        float safeMapRadius = Mathf.Max(1f, mapRadius - 1f);
+        for (int i = 0; i < NavigationPlannerArrivalRingSegments; i++)
+        {
+            float angle = (Mathf.PI * 2f * i) / NavigationPlannerArrivalRingSegments;
+            Vector3 sampleWorldPosition = targetWorldPosition + new Vector3(Mathf.Cos(angle) * safeArrivalRadius, 0f, Mathf.Sin(angle) * safeArrivalRadius);
+            if (!IsNavigationPlannerPointInsideFrame(sampleWorldPosition, frame))
+            {
+                return false;
+            }
+
+            Vector2 point = NavigationPlannerWorldToLayerPoint(sampleWorldPosition, frame, mapRadius);
+            if (!IsFinitePlannerMapPoint(new Vector3(point.x, 0f, point.y)) || point.magnitude > safeMapRadius)
+            {
+                return false;
+            }
+
+            ringPoints[i] = point;
+        }
+
+        return true;
+    }
+
+    private void HideNavigationPlannerTargetIndicators()
+    {
+        HideNavigationPlannerArrivalRing();
+        if (navigationPlannerMapTargetEdgeImage != null)
+        {
+            navigationPlannerMapTargetEdgeImage.gameObject.SetActive(false);
+        }
+    }
+
+    private void HideNavigationPlannerArrivalRing()
+    {
+        for (int i = 0; i < navigationPlannerMapArrivalRingSegments.Count; i++)
+        {
+            navigationPlannerMapArrivalRingSegments[i].gameObject.SetActive(false);
+        }
+    }
+
     private void ApplyContext(PrototypePlayerHudSnapshot snapshot)
     {
         ConfigureNavigationControls(false);
         ConfigureCombatControls(false);
         ApplyContextBodyLayout(false);
+        ApplyNavigationTimeline(contextNavigationTimelineGraphic, null, default, true, false);
 
         if (ApplyCriticalContext(snapshot))
         {
@@ -6373,18 +8199,14 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             ConfigureNavigationControls(true);
             SetTextIfChanged(contextTitleText, "Navigation: " + snapshot.Navigation.TargetName);
             SetTextIfChanged(contextBodyText,
-                snapshot.Navigation.TargetTypeLabel + " | " + snapshot.Navigation.TargetListLabel + " | Dist " + FormatDistance(snapshot.Navigation.DistanceMeters) + " | ETA " + snapshot.Navigation.EtaLabel + "\n"
-                + "Closing " + snapshot.Navigation.ClosingSpeed.ToString("0.0") + " m/s | Lateral " + snapshot.Navigation.LateralSpeed.ToString("0.0") + " m/s\n"
-                + snapshot.Navigation.ManeuverIntentLabel + "\n"
-                + "Stop " + FormatDistance(snapshot.Navigation.StoppingDistanceMeters) + " | " + snapshot.Navigation.RouteModeLabel + "\n"
-                + snapshot.Navigation.StateLabel + "\n"
-                + snapshot.Navigation.PhaseLabel
-                + (string.IsNullOrWhiteSpace(snapshot.Navigation.AvoidanceLabel) ? string.Empty : "\n" + snapshot.Navigation.AvoidanceLabel)
-                + (snapshot.Navigation.TrajectoryPreview.Enabled ? "\n" + snapshot.Navigation.TrajectoryPreview.StatusLabel : string.Empty));
+                snapshot.Navigation.TargetTypeLabel + " | " + snapshot.Navigation.TargetListLabel + " | " + snapshot.Navigation.PlanStateBadge.Text + "\n"
+                + "Dist " + FormatDistance(snapshot.Navigation.DistanceMeters) + " | ETA " + snapshot.Navigation.EtaLabel + " | " + BuildNavigationPlannerClosingLabel(snapshot.Navigation) + "\n"
+                + snapshot.Navigation.PhaseLabel);
             contextBodyText.color = PrototypeUiStyle.MutedColor;
-            SetContextGauge(0, snapshot.Navigation.RouteWorldPoints.Length > 1 ? "Route" : string.Empty, snapshot.Navigation.RouteWorldPoints.Length > 1 ? 1f : 0f, PrototypeModuleColorPalette.Target, snapshot.Navigation.RouteWorldPoints.Length > 1);
-            SetContextGauge(1, snapshot.Navigation.HasAvoidanceCue ? "Avoid" : string.Empty, snapshot.Navigation.HasAvoidanceCue ? 1f : 0f, PrototypeUiStyle.WarningColor, snapshot.Navigation.HasAvoidanceCue);
-            SetContextGauge(2, snapshot.Navigation.TrajectoryPreview.HasRenderablePoints ? "Preview" : string.Empty, snapshot.Navigation.TrajectoryPreview.HasRenderablePoints ? 1f : 0f, new Color(1f, 0.72f, 0.22f, 0.95f), snapshot.Navigation.TrajectoryPreview.HasRenderablePoints);
+            ApplyNavigationTimeline(contextNavigationTimelineGraphic, null, snapshot.Navigation, true, true);
+            SetContextGauge(0, snapshot.Navigation.HasAvoidanceCue ? "Avoid" : string.Empty, snapshot.Navigation.HasAvoidanceCue ? 1f : 0f, PrototypeUiStyle.WarningColor, snapshot.Navigation.HasAvoidanceCue);
+            SetContextGauge(1, string.Empty, 0f, Color.white, false);
+            SetContextGauge(2, string.Empty, 0f, Color.white, false);
             return;
         }
 
@@ -6420,8 +8242,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             return false;
         }
 
-        return !string.Equals(combat.TargetName, "No target", System.StringComparison.Ordinal)
-            || !string.Equals(combat.AutoFireLabel, "Auto Fire: Off", System.StringComparison.Ordinal);
+        return combat.HasActiveTarget;
     }
 
     private void ApplyCombatContext(PrototypePlayerCombatSnapshot combat)
@@ -6453,12 +8274,14 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             float gaugeHeight = contextHeight < 180f ? 42f : 50f;
             float gaugeBottom = 10f;
             float rowBottom = gaugeBottom + gaugeHeight + 4f;
-            float bodyBottom = rowBottom + 28f;
+            float timelineBottom = rowBottom + 28f;
+            float bodyBottom = timelineBottom + 28f;
             float bodyHeight = Mathf.Clamp(contextHeight - bodyBottom - 42f, 28f, 60f);
 
             ApplyRect(contextGaugePanelRect, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-22f, gaugeHeight), new Vector2(0f, gaugeBottom));
             ApplyRect(navigationControlRow, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-22f, 24f), new Vector2(0f, rowBottom));
             ApplyRect(combatControlRow, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-22f, 24f), new Vector2(0f, rowBottom));
+            ApplyRect(contextNavigationTimelineGraphic != null ? contextNavigationTimelineGraphic.rectTransform : null, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-22f, 22f), new Vector2(0f, timelineBottom));
             ApplyRect(contextBodyText.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-22f, bodyHeight), new Vector2(0f, bodyBottom));
             return;
         }
@@ -6466,6 +8289,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         ApplyRect(contextGaugePanelRect, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-22f, 58f), new Vector2(0f, 12f));
         ApplyRect(navigationControlRow, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-22f, 24f), new Vector2(0f, 72f));
         ApplyRect(combatControlRow, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-22f, 24f), new Vector2(0f, 72f));
+        ApplyRect(contextNavigationTimelineGraphic != null ? contextNavigationTimelineGraphic.rectTransform : null, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-22f, 22f), new Vector2(0f, 52f));
         ApplyRect(contextBodyText.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-22f, -112f), new Vector2(0f, 6f));
     }
 
@@ -6648,7 +8472,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             Mathf.Clamp(value.y, rect.yMin, rect.yMax));
     }
 
-    private void UpdateTargetIndicatorLabels(PrototypePlayerProjectedTargetIndicator[] projectedIndicators, bool refreshText)
+    private void UpdateTargetIndicatorLabels(PrototypePlayerProjectedTargetIndicator[] projectedIndicators, bool refreshText = false)
     {
         for (int i = 0; i < targetIndicatorLabels.Count; i++)
         {

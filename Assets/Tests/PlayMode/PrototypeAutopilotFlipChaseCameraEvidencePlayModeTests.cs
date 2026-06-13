@@ -82,12 +82,114 @@ public class PrototypeAutopilotFlipChaseCameraEvidencePlayModeTests
         }
     }
 
+    [Test]
+    [Timeout(120000)]
+    public void PrototypeBootstrapHostKillMomentumAssistRotationCameraSmoke()
+    {
+        Assert.That(Application.isPlaying, Is.True, "This smoke test must run in Unity PlayMode.");
+#if UNITY_EDITOR
+        if (SceneManager.GetActiveScene().path != ScenePath)
+        {
+            EditorSceneManager.LoadSceneInPlayMode(ScenePath, new LoadSceneParameters(LoadSceneMode.Single));
+        }
+#endif
+
+        SimulationMode previousSimulationMode = Physics.simulationMode;
+        float previousFixedDeltaTime = Time.fixedDeltaTime;
+        Physics.simulationMode = SimulationMode.Script;
+        Time.fixedDeltaTime = 0.02f;
+        try
+        {
+            GameObject ship = FlipChaseEvidenceRunner.CreateOrFindShip();
+            PlayerShipController controller = ship.GetComponent<PlayerShipController>();
+            PrototypeMomentumAssist momentum = ship.GetComponent<PrototypeMomentumAssist>();
+            Rigidbody body = ship.GetComponent<Rigidbody>();
+            Camera mainCamera = Camera.main;
+            SimpleFollowCamera followCamera = mainCamera != null ? mainCamera.GetComponent<SimpleFollowCamera>() : null;
+
+            Assert.NotNull(controller, "PrototypeShip requires PlayerShipController.");
+            Assert.NotNull(momentum, "PrototypeShip requires PrototypeMomentumAssist.");
+            Assert.NotNull(body, "PrototypeShip requires Rigidbody.");
+            Assert.NotNull(mainCamera, "Scene must include Main Camera.");
+            Assert.NotNull(followCamera, "Main Camera must use SimpleFollowCamera.");
+
+            MethodInfo controllerFixedUpdate = typeof(PlayerShipController).GetMethod("FixedUpdate", NonPublicInstance);
+            MethodInfo momentumFixedUpdate = typeof(PrototypeMomentumAssist).GetMethod("FixedUpdate", NonPublicInstance);
+            MethodInfo cameraLateUpdate = typeof(SimpleFollowCamera).GetMethod("LateUpdate", NonPublicInstance);
+            Assert.NotNull(controllerFixedUpdate);
+            Assert.NotNull(momentumFixedUpdate);
+            Assert.NotNull(cameraLateUpdate);
+
+            controller.ResetFlightState(Vector3.zero, Quaternion.identity, true);
+            controller.SetControlMode(FlightControlMode.Normal);
+            body.linearVelocity = ship.transform.right * 50f;
+            body.angularVelocity = Vector3.zero;
+            followCamera.ResetFraming();
+            followCamera.SnapNextFrame();
+            Physics.SyncTransforms();
+            cameraLateUpdate.Invoke(followCamera, null);
+
+            Vector3 previousCameraPosition = followCamera.transform.position;
+            float maxFrameMove = 0f;
+            int assistFrames = 0;
+            int unsafeFrames = 0;
+            bool immediateAssistUsedVelocityReference = false;
+
+            momentum.ActivateFromUi();
+            for (int i = 0; i < 90; i++)
+            {
+                controllerFixedUpdate.Invoke(controller, null);
+                if (i == 0)
+                {
+                    immediateAssistUsedVelocityReference = controller.IsAssistRotationActive
+                        && controller.HasAssistRotationReferenceDirection
+                        && Vector3.Angle(controller.AssistRotationReferenceDirection, -body.linearVelocity.normalized) < 0.1f;
+                }
+
+                momentumFixedUpdate.Invoke(momentum, null);
+                Physics.Simulate(Time.fixedDeltaTime);
+                Physics.SyncTransforms();
+                cameraLateUpdate.Invoke(followCamera, null);
+
+                maxFrameMove = Mathf.Max(maxFrameMove, Vector3.Distance(previousCameraPosition, followCamera.transform.position));
+                previousCameraPosition = followCamera.transform.position;
+                if (followCamera.IsAutopilotFlipCameraAssistActive)
+                {
+                    assistFrames++;
+                }
+
+                Vector3 shipViewport = mainCamera.WorldToViewportPoint(ship.transform.position);
+                bool viewportSafe = followCamera.LastViewportSafetyStatus == "Safe"
+                    || (shipViewport.z > 0f
+                        && shipViewport.x >= SafeViewportMin
+                        && shipViewport.x <= SafeViewportMax
+                        && shipViewport.y >= SafeViewportMin
+                        && shipViewport.y <= SafeViewportMax);
+                if (!viewportSafe)
+                {
+                    unsafeFrames++;
+                }
+            }
+
+            Assert.True(immediateAssistUsedVelocityReference, "Kill Momentum activation before MomentumAssist.FixedUpdate should use current sideways velocity instead of stale LastBrakeDirectionWorld.");
+            Assert.That(assistFrames, Is.GreaterThan(0), "Kill Momentum align/main-brake should activate the shared assist-rotation camera signal.");
+            Assert.That(unsafeFrames, Is.LessThanOrEqualTo(1), "Kill Momentum camera smoke should keep the ship or viewport target inside the safe viewport band after the first recovery evaluation.");
+            Assert.That(maxFrameMove, Is.LessThanOrEqualTo(followCamera.EffectiveDistance * 1.5f), "Assist rotation should not cause a camera position jump larger than the current chase framing.");
+        }
+        finally
+        {
+            Physics.simulationMode = previousSimulationMode;
+            Time.fixedDeltaTime = previousFixedDeltaTime;
+        }
+    }
+
     private sealed class FlipChaseEvidenceRunner : IDisposable
     {
         private static readonly CultureInfo Invariant = CultureInfo.InvariantCulture;
 
         private readonly GameObject ship;
         private readonly PlayerShipController controller;
+        private readonly PrototypeWaypointAutopilot autopilot;
         private readonly Rigidbody body;
         private readonly SimpleFollowCamera followCamera;
         private readonly Camera mainCamera;
@@ -104,7 +206,6 @@ public class PrototypeAutopilotFlipChaseCameraEvidencePlayModeTests
         private readonly MethodInfo getLookTargetFromMode;
         private readonly MethodInfo resolveEffectiveDistance;
         private readonly Type cameraModeEnumType;
-        private readonly FieldInfo autopilotFlipReferenceModeField;
         private readonly FieldInfo targetStatsField;
 
         private readonly SimulationMode previousSimulationMode;
@@ -146,8 +247,10 @@ public class PrototypeAutopilotFlipChaseCameraEvidencePlayModeTests
 
             ship = CreateOrFindShip(visualMode);
             controller = ship.GetComponent<PlayerShipController>();
+            autopilot = ship.GetComponent<PrototypeWaypointAutopilot>();
             body = ship.GetComponent<Rigidbody>();
             Assert.NotNull(controller, "PlayerShipController on PrototypeShip");
+            Assert.NotNull(autopilot, "PrototypeWaypointAutopilot on PrototypeShip");
             Assert.NotNull(body, "Rigidbody on PrototypeShip");
 
             mainCamera = Camera.main;
@@ -162,7 +265,6 @@ public class PrototypeAutopilotFlipChaseCameraEvidencePlayModeTests
             getLookTargetFromMode = typeof(SimpleFollowCamera).GetMethod("GetLookTargetFromMode", NonPublicInstance);
             resolveEffectiveDistance = typeof(SimpleFollowCamera).GetMethod("ResolveEffectiveDistance", NonPublicInstance);
             cameraModeEnumType = typeof(SimpleFollowCamera).GetNestedType("CameraViewMode", BindingFlags.NonPublic);
-            autopilotFlipReferenceModeField = typeof(SimpleFollowCamera).GetField("autopilotFlipChaseReferenceMode", NonPublicInstance);
             targetStatsField = typeof(SimpleFollowCamera).GetField("targetStats", NonPublicInstance);
 
             Assert.NotNull(fixedUpdate, "PlayerShipController.FixedUpdate reflection hook must exist.");
@@ -172,7 +274,6 @@ public class PrototypeAutopilotFlipChaseCameraEvidencePlayModeTests
             Assert.NotNull(getLookTargetFromMode, "SimpleFollowCamera.GetLookTargetFromMode reflection hook must exist.");
             Assert.NotNull(resolveEffectiveDistance, "SimpleFollowCamera.ResolveEffectiveDistance reflection hook must exist.");
             Assert.NotNull(cameraModeEnumType, "SimpleFollowCamera.CameraViewMode nested type must exist.");
-            Assert.NotNull(autopilotFlipReferenceModeField, "SimpleFollowCamera.autopilotFlipChaseReferenceMode private field must exist.");
             Assert.NotNull(targetStatsField, "SimpleFollowCamera.targetStats private field must exist.");
 
             string root = Directory.GetCurrentDirectory();
@@ -318,9 +419,11 @@ public class PrototypeAutopilotFlipChaseCameraEvidencePlayModeTests
         private void ResetForScenario()
         {
             controller.ResetFlightState(Vector3.zero, Quaternion.identity, true);
+            SetAutopilotAssistState(false, PrototypeWaypointAutopilotState.Idle);
             body.angularVelocity = Vector3.zero;
             body.linearVelocity = Vector3.zero;
             body.inertiaTensor = Vector3.one;
+            followCamera.BindTarget(ship.transform, ship.GetComponent<ShipStats>());
             followCamera.ResetFraming();
             followCamera.SnapNextFrame();
             Physics.SyncTransforms();
@@ -330,6 +433,8 @@ public class PrototypeAutopilotFlipChaseCameraEvidencePlayModeTests
         private void StepFrame(Vector3 angularVelocity, string phase)
         {
             sampleIndex++;
+            bool flipPhase = phase == "flip";
+            SetAutopilotAssistState(flipPhase, flipPhase ? PrototypeWaypointAutopilotState.FlipForBrake : PrototypeWaypointAutopilotState.Idle);
             body.angularVelocity = angularVelocity;
 
             fixedUpdate.Invoke(controller, null);
@@ -383,6 +488,16 @@ public class PrototypeAutopilotFlipChaseCameraEvidencePlayModeTests
             {
                 recoveryCompleteFrame = sampleIndex;
             }
+        }
+
+        private void SetAutopilotAssistState(bool engaged, PrototypeWaypointAutopilotState state)
+        {
+            FieldInfo engagedField = typeof(PrototypeWaypointAutopilot).GetField("autopilotEngaged", NonPublicInstance);
+            PropertyInfo stateProperty = typeof(PrototypeWaypointAutopilot).GetProperty("CurrentState", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            Assert.NotNull(engagedField, "PrototypeWaypointAutopilot.autopilotEngaged field should exist for evidence setup.");
+            Assert.NotNull(stateProperty, "PrototypeWaypointAutopilot.CurrentState property should exist for evidence setup.");
+            engagedField.SetValue(autopilot, engaged);
+            stateProperty.SetValue(autopilot, state);
         }
 
         private FlipChaseSample CaptureSample(string phase)
@@ -460,13 +575,7 @@ public class PrototypeAutopilotFlipChaseCameraEvidencePlayModeTests
 
         private string GetChaseReferenceMode()
         {
-            if (autopilotFlipReferenceModeField == null)
-            {
-                return "Unknown";
-            }
-
-            object value = autopilotFlipReferenceModeField.GetValue(followCamera);
-            return value != null ? value.ToString() : "Unknown";
+            return followCamera.CameraAssistReferenceModeName;
         }
 
         private float ResolveFollowHeight()

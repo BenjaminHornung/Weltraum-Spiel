@@ -45,12 +45,10 @@ public class SimpleFollowCamera : MonoBehaviour
     [SerializeField] private float chaseLockedPositionSmooth = 16f;
     [SerializeField] private float chaseLockedRotationSmooth = 18f;
     [SerializeField] private float chaseLockedFocusSmooth = 20f;
-    [SerializeField] private float autopilotFlipAngularVelocityThreshold = 1.5f;
     [SerializeField] private float autopilotFlipReferenceSpeedThreshold = 0.75f;
     [SerializeField] private float chaseLockedPositionSmoothFlipAssist = 80f;
     [SerializeField] private float chaseLockedRotationFlipAssist = 100f;
     [SerializeField] private float chaseLockedFocusSmoothFlipAssist = 0f;
-    [SerializeField] private float autopilotFlipAssistReleaseDelay = 0.35f;
     [SerializeField] private float chaseViewportSafeXMin = 0.15f;
     [SerializeField] private float chaseViewportSafeXMax = 0.85f;
     [SerializeField] private float chaseViewportSafeYMin = 0.15f;
@@ -91,6 +89,7 @@ public class SimpleFollowCamera : MonoBehaviour
     private string focusSourceLabel = "TargetPosition";
     private Rigidbody targetRigidbody;
     private PrototypeWaypointAutopilot targetAutopilot;
+    private PlayerShipController targetShipController;
     private PrototypeCameraAnchor targetAnchor;
     private Transform namedFocusAnchor;
     private string namedFocusAnchorLabel = "TargetPosition";
@@ -119,7 +118,6 @@ public class SimpleFollowCamera : MonoBehaviour
     private Vector3 lastViewportPoint = Vector3.zero;
     private string lastViewportSafetyStatus = "NoViewportEval";
     private bool pendingViewportSafetySnap;
-    private float autopilotFlipAssistReleaseTimer;
 
     public int CameraMode => (int)cameraMode;
     public string CameraModeName => GetCameraModeName(cameraMode);
@@ -149,6 +147,10 @@ public class SimpleFollowCamera : MonoBehaviour
     public string TargetName => target != null ? target.name : string.Empty;
     public bool HasVisualBounds => hasVisualBounds;
     public bool IsAutopilotFlipCameraAssistActive => isAutopilotFlipCameraAssistActive;
+    public string CameraAssistReferenceModeName => isAutopilotFlipCameraAssistActive && targetShipController != null
+        ? "SharedAssistSignal:" + targetShipController.AssistRotationSourceLabel
+        : "SharedAssistSignal:Inactive";
+    public string DeprecatedAutopilotFlipChaseReferenceModeName => autopilotFlipChaseReferenceMode.ToString();
     public float CameraAngularVelocityMagnitude => cameraAngularVelocityMagnitude;
     public PrototypeWaypointAutopilotState CameraAutopilotState => targetAutopilot != null ? targetAutopilot.CurrentState : PrototypeWaypointAutopilotState.Idle;
     public string CameraChaseBlendMode => cameraChaseBlendMode;
@@ -166,7 +168,6 @@ public class SimpleFollowCamera : MonoBehaviour
         previousChaseReferenceForward = Vector3.zero;
         hasStableChaseUp = false;
         stableChaseUp = Vector3.up;
-        autopilotFlipAssistReleaseTimer = 0f;
         isAutopilotFlipCameraAssistActive = false;
         MarkVisualBoundsDirty();
         freeInspectLookTarget = Vector3.zero;
@@ -391,9 +392,10 @@ public class SimpleFollowCamera : MonoBehaviour
             else
             {
                 hasStableChaseUp = false;
+                CacheStableChaseReference();
             }
 
-            cameraChaseBlendMode = isAutopilotFlipCameraAssistActive ? "AutopilotFlipAssist" : "ChaseLocked";
+            cameraChaseBlendMode = isAutopilotFlipCameraAssistActive ? "AssistRotation" : "ChaseLocked";
             RememberFocusPointForNextFrame();
             return;
         }
@@ -1019,10 +1021,10 @@ public class SimpleFollowCamera : MonoBehaviour
         {
             targetRigidbody = null;
             targetAutopilot = null;
+            targetShipController = null;
             targetAnchor = null;
             namedFocusAnchor = null;
             namedFocusAnchorLabel = "TargetPosition";
-            autopilotFlipAssistReleaseTimer = 0f;
             isAutopilotFlipCameraAssistActive = false;
             hasPreviousChaseReferenceForward = false;
             previousChaseReferenceForward = Vector3.zero;
@@ -1051,6 +1053,17 @@ public class SimpleFollowCamera : MonoBehaviour
         if (targetAutopilot == null)
         {
             targetAutopilot = target.GetComponentInChildren<PrototypeWaypointAutopilot>(true);
+        }
+
+        targetShipController = target.GetComponent<PlayerShipController>();
+        if (targetShipController == null)
+        {
+            targetShipController = target.GetComponentInParent<PlayerShipController>();
+        }
+
+        if (targetShipController == null)
+        {
+            targetShipController = target.GetComponentInChildren<PlayerShipController>(true);
         }
         targetAnchor = ResolveHighestPriorityAnchor();
         namedFocusAnchor = null;
@@ -1140,7 +1153,6 @@ public class SimpleFollowCamera : MonoBehaviour
     {
         if (cameraMode != CameraViewMode.ChaseLocked)
         {
-            autopilotFlipAssistReleaseTimer = 0f;
             isAutopilotFlipCameraAssistActive = false;
             lastViewportSafetyStatus = "NoAssist";
             cameraChaseBlendMode = "ChaseLocked";
@@ -1149,7 +1161,6 @@ public class SimpleFollowCamera : MonoBehaviour
         }
 
         bool wasAutopilotFlipAssistActive = isAutopilotFlipCameraAssistActive;
-        float previousAutopilotFlipReleaseTimer = autopilotFlipAssistReleaseTimer;
 
         if (targetRigidbody == null)
         {
@@ -1160,23 +1171,8 @@ public class SimpleFollowCamera : MonoBehaviour
             cameraAngularVelocityMagnitude = targetRigidbody.angularVelocity.magnitude;
         }
 
-        bool autopilotEngaged = targetAutopilot != null && targetAutopilot.AutopilotEngaged;
-        bool isFlipForBrake = targetAutopilot != null && targetAutopilot.CurrentState == PrototypeWaypointAutopilotState.FlipForBrake;
-        bool isBrake = targetAutopilot != null && targetAutopilot.CurrentState == PrototypeWaypointAutopilotState.Brake;
-        bool hasHighAngularVelocity = cameraAngularVelocityMagnitude > autopilotFlipAngularVelocityThreshold;
-        bool hasRawAutopilotFlipAssist = autopilotEngaged && (isFlipForBrake || (isBrake && hasHighAngularVelocity));
-
-        if (hasRawAutopilotFlipAssist)
-        {
-            autopilotFlipAssistReleaseTimer = autopilotFlipAssistReleaseDelay;
-        }
-        else
-        {
-            autopilotFlipAssistReleaseTimer = Mathf.Max(0f, autopilotFlipAssistReleaseTimer - Time.deltaTime);
-        }
-
-        bool nextAutopilotFlipCameraAssistActive = hasRawAutopilotFlipAssist || autopilotFlipAssistReleaseTimer > 0f;
-        bool didFlipAssistExpire = wasAutopilotFlipAssistActive && !nextAutopilotFlipCameraAssistActive && previousAutopilotFlipReleaseTimer > 0f;
+        bool nextAutopilotFlipCameraAssistActive = targetShipController != null && targetShipController.IsAssistRotationActive;
+        bool didFlipAssistExpire = wasAutopilotFlipAssistActive && !nextAutopilotFlipCameraAssistActive;
         if (didFlipAssistExpire)
         {
             pendingViewportSafetySnap = true;
@@ -1188,6 +1184,7 @@ public class SimpleFollowCamera : MonoBehaviour
         {
             lastViewportSafetyStatus = "NoAssist";
             cameraChaseBlendMode = "Normal";
+            CacheStableChaseReference();
         }
     }
 
@@ -1272,24 +1269,17 @@ public class SimpleFollowCamera : MonoBehaviour
             return target.forward;
         }
 
-        switch (autopilotFlipChaseReferenceMode)
+        if (targetShipController != null
+            && targetShipController.HasAssistRotationReferenceDirection
+            && targetShipController.AssistRotationReferenceDirection.sqrMagnitude > 0.0001f)
         {
-            case AutopilotFlipChaseReferenceMode.ShipForward:
-                return target.forward;
-            case AutopilotFlipChaseReferenceMode.AutopilotDesiredBurnDirection:
-                if (targetAutopilot != null && targetAutopilot.DesiredBurnDirection.sqrMagnitude > 0.0001f)
-                {
-                    return targetAutopilot.DesiredBurnDirection.normalized;
-                }
-                break;
-            case AutopilotFlipChaseReferenceMode.VelocityOrPrevious:
-            default:
-                if (targetRigidbody != null
-                    && targetRigidbody.linearVelocity.sqrMagnitude >= autopilotFlipReferenceSpeedThreshold * autopilotFlipReferenceSpeedThreshold)
-                {
-                    return -targetRigidbody.linearVelocity.normalized;
-                }
-                break;
+            return targetShipController.AssistRotationReferenceDirection.normalized;
+        }
+
+        if (targetRigidbody != null
+            && targetRigidbody.linearVelocity.sqrMagnitude >= autopilotFlipReferenceSpeedThreshold * autopilotFlipReferenceSpeedThreshold)
+        {
+            return -targetRigidbody.linearVelocity.normalized;
         }
 
         if (hasPreviousChaseReferenceForward)
@@ -1297,12 +1287,34 @@ public class SimpleFollowCamera : MonoBehaviour
             return previousChaseReferenceForward;
         }
 
-        return target.forward;
+        return transform.forward.sqrMagnitude > 0.0001f ? transform.forward : target.forward;
     }
 
     private void CacheChaseAssistState()
     {
         stableChaseUp = hasPreviousChaseReferenceForward ? transform.up : Vector3.up;
         hasStableChaseUp = true;
+    }
+
+    private void CacheStableChaseReference()
+    {
+        if (target == null || cameraMode != CameraViewMode.ChaseLocked || isAutopilotFlipCameraAssistActive)
+        {
+            return;
+        }
+
+        Vector3 stableForward = target.forward;
+        if (stableForward.sqrMagnitude <= 0.0001f)
+        {
+            stableForward = transform.forward;
+        }
+
+        if (stableForward.sqrMagnitude <= 0.0001f)
+        {
+            return;
+        }
+
+        previousChaseReferenceForward = stableForward.normalized;
+        hasPreviousChaseReferenceForward = true;
     }
 }

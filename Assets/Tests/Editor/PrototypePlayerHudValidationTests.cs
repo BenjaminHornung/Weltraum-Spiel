@@ -160,10 +160,17 @@ public class PrototypePlayerHudValidationTests
             Assert.That(snapshot.Navigation.RouteWorldPoints.Length, Is.EqualTo(3));
             Assert.True(snapshot.Navigation.HasAvoidanceCue);
             Assert.That(snapshot.Navigation.AvoidanceLabel, Does.Contain("Asteroid"));
+            Assert.That(snapshot.Navigation.PlanStateBadge.State, Is.EqualTo(PrototypeNavigationPlanState.TargetSelected));
+            Assert.That(snapshot.Navigation.PlanStateBadge.Text, Is.EqualTo("Ziel gewaehlt"));
+            Assert.That(snapshot.Navigation.PlanStateBadge.Severity, Is.EqualTo(PrototypePlayerHudSeverity.Normal));
+            Assert.False(snapshot.Navigation.ClosingTowardsTarget);
             Assert.That(snapshot.Navigation.PlanAuthorityLabel, Does.Contain("Strict flight plan"));
             Assert.That(snapshot.Navigation.ActiveSegmentLabel, Does.Contain("Avoid"));
             Assert.That(snapshot.Navigation.TotalPlanDurationSeconds, Is.EqualTo(10.5f).Within(0.001f));
             Assert.That(snapshot.Navigation.TotalPlanFuelKg, Is.EqualTo(0.40f).Within(0.001f));
+            Assert.That(snapshot.Navigation.DeltaVRequired, Is.EqualTo(16.5f).Within(0.001f));
+            Assert.False(snapshot.Navigation.FuelAfterArrivalAvailable, "legacy segment plans do not expose reliable arrival fuel");
+            Assert.That(snapshot.Navigation.TimelineSegments.Length, Is.EqualTo(0));
             Assert.That(snapshot.Navigation.ManeuverStepRows.Length, Is.GreaterThanOrEqualTo(3));
             Assert.That(snapshot.Navigation.ManeuverStepRows[0], Does.Contain("T+0.0s"));
             Assert.That(snapshot.Navigation.ManeuverStepRows[0], Does.Contain("Avoid"));
@@ -174,16 +181,65 @@ public class PrototypePlayerHudValidationTests
                 BindingFlags.Static | BindingFlags.NonPublic);
             Assert.NotNull(bodyMethod);
             string body = (string)bodyMethod.Invoke(null, new object[] { snapshot.Navigation });
-            Assert.That(body, Does.Contain("Authority: Strict flight plan"));
-            Assert.That(body, Does.Contain("Schedule 10.5s"));
-            Assert.That(body, Does.Contain("Steps:"));
-            Assert.That(body, Does.Contain("1 T+0.0s-6.0s Avoid | MAIN 65%"));
+            Assert.That(body, Does.Contain("Status: Ziel gewaehlt"));
+            Assert.That(body, Does.Contain("Reserve: DeltaV 16.5 benoetigt"));
+            Assert.That(body, Does.Contain("Treibstoff nach Ankunft --"));
+            Assert.That(body, Does.Not.Contain("Treibstoff nach Ankunft 0%"));
+            Assert.That(body, Does.Contain("Bremsreserve"));
+            Assert.That(body, Does.Contain("Plandauer 10.5s"));
+            Assert.That(body, Does.Contain("Groesster Burn"));
+            Assert.That(body, Does.Contain("Verfuegbare Brennzeit"));
+            Assert.That(body, Does.Contain("Details ausgeblendet"));
+            Assert.That(body, Does.Not.Contain("Authority: Strict flight plan"));
+            Assert.That(body, Does.Not.Contain("Steps:"));
+            Assert.That(body, Does.Not.Contain("1 T+0.0s-6.0s Avoid | MAIN 65%"));
             Assert.That(snapshot.Navigation.StateLabel, Is.Not.Contains("Candidate"));
             Assert.That(snapshot.Navigation.StateLabel, Is.Not.Contains("requested"));
             Assert.That(PrototypePlayerHudSnapshotBuilder.TranslateNavigationState(PrototypeWaypointAutopilotState.AlignForBurn), Is.EqualTo("Zum Schub ausrichten"));
             Assert.That(PrototypePlayerHudSnapshotBuilder.TranslateNavigationState(PrototypeWaypointAutopilotState.FinalApproach), Is.EqualTo("Endanflug"));
             Assert.That(PrototypePlayerHudSnapshotBuilder.TranslateNavigationState(PrototypeWaypointAutopilotState.Complete), Is.EqualTo("Angekommen"));
             Assert.That(PrototypePlayerHudSnapshotBuilder.TranslateNavigationState(PrototypeWaypointAutopilotState.Failed), Is.EqualTo("Autopilot nicht moeglich"));
+        }
+    }
+
+    [Test]
+    public void NavigationSnapshotMapsLegacyActiveStateToAwaitingInsteadOfTargetSelected()
+    {
+        using (var builder = new PrototypeScenarioBuilder())
+        {
+            PrototypeAutopilotRig rig = builder.CreateAutopilotRig(targetPosition: Vector3.forward * 220f);
+            rig.Autopilot.EvaluateMetrics();
+
+            PrototypeTrajectoryPlan plan = PrototypeTrajectoryPlan.Clear(Vector3.forward);
+            plan.segments = new[]
+            {
+                new PrototypeTrajectorySegment(
+                    PrototypeTrajectorySegmentType.Brake,
+                    3.5f,
+                    Vector3.back,
+                    1f,
+                    7f,
+                    0.18f,
+                    18f,
+                    10f)
+            };
+            SetAutoProperty(rig.Autopilot, "LastTrajectoryPlan", plan);
+            SetAutoProperty(rig.Autopilot, "CurrentState", PrototypeWaypointAutopilotState.AlignForBurn);
+
+            PrototypePlayerNavigationSnapshot snapshot = BuildNavigationSnapshot(rig);
+            MethodInfo bodyMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
+                "BuildNavigationPlannerBody",
+                BindingFlags.Static | BindingFlags.NonPublic);
+            Assert.NotNull(bodyMethod);
+            string body = (string)bodyMethod.Invoke(null, new object[] { snapshot });
+
+            Assert.That(snapshot.PlanStateBadge.State, Is.EqualTo(PrototypeNavigationPlanState.AwaitingAutopilot));
+            Assert.That(snapshot.PlanStateBadge.Text, Is.EqualTo("Warte auf Autopilot"));
+            Assert.That(snapshot.StateLabel, Is.EqualTo(snapshot.PlanStateBadge.Text));
+            Assert.False(snapshot.FuelAfterArrivalAvailable, "legacy segment plans do not expose reliable arrival fuel");
+            Assert.That(body, Does.Contain("Status: Warte auf Autopilot"));
+            Assert.That(body, Does.Not.Contain("Status: Ziel gewaehlt"));
+            Assert.That(body, Does.Contain("Treibstoff nach Ankunft --"));
         }
     }
 
@@ -218,6 +274,17 @@ public class PrototypePlayerHudValidationTests
                 3f,
                 0.02f);
             SetAutoProperty(rig.Autopilot, "LastTrajectoryPlan", plan);
+            PrototypeManeuverSegment activeSegment = plan.flightPlan.segments.First(segment => segment.phase == PrototypeManeuverPhase.ProgradeBurn);
+            float activeElapsed = activeSegment.startTimeSeconds + activeSegment.durationSeconds * 0.5f;
+            PrototypeFlightPlanExecutionState executionState = PrototypeFlightPlanExecutionState.FromPlan(
+                plan.flightPlan,
+                activeElapsed,
+                Vector3.Lerp(activeSegment.expectedStartPosition, activeSegment.expectedEndPosition, 0.5f),
+                Vector3.Lerp(activeSegment.expectedStartVelocity, activeSegment.expectedEndVelocity, 0.5f),
+                Quaternion.Slerp(activeSegment.expectedStartRotation, activeSegment.expectedEndRotation, 0.5f),
+                Vector3.Lerp(activeSegment.expectedStartAngularVelocity, activeSegment.expectedEndAngularVelocity, 0.5f),
+                plan.flightPlan.ExpectedFuelAt(activeElapsed));
+            SetPrivateField(rig.Autopilot, "lastFlightPlanExecutionState", executionState);
 
             PrototypePlayerHudSnapshot snapshot = PrototypePlayerHudSnapshotBuilder.Build(
                 rig.Ship.Ship.transform,
@@ -230,25 +297,198 @@ public class PrototypePlayerHudValidationTests
                 null,
                 null);
 
-            Assert.True(plan.flightPlan.IsValid);
+            Assert.True(plan.flightPlan.IsValid, "flight plan should be valid");
             Assert.That(snapshot.Navigation.PlanAuthorityLabel, Does.Contain("Flight plan emitted"));
             Assert.That(snapshot.Navigation.PlanAuthorityLabel, Does.Contain("executor pending"));
+            Assert.That(snapshot.Navigation.PlanStateBadge.State, Is.EqualTo(PrototypeNavigationPlanState.PlanReady));
+            Assert.That(snapshot.Navigation.PlanStateBadge.Text, Is.EqualTo("Plan bereit"));
+            Assert.That(snapshot.Navigation.PlanStateBadge.Severity, Is.EqualTo(PrototypePlayerHudSeverity.Info));
+            Assert.That(snapshot.Navigation.StateLabel, Is.EqualTo(snapshot.Navigation.PlanStateBadge.Text));
             Assert.That(snapshot.Navigation.TotalPlanDurationSeconds, Is.EqualTo(plan.flightPlan.totalDurationSeconds).Within(0.001f));
             Assert.That(snapshot.Navigation.TotalPlanFuelKg, Is.EqualTo(plan.flightPlan.totalExpectedFuelKg).Within(0.001f));
+            Assert.That(snapshot.Navigation.DeltaVRequired, Is.EqualTo(plan.flightPlan.segments.Sum(segment => segment.expectedDeltaV)).Within(0.001f));
+            Assert.That(snapshot.Navigation.DeltaVAvailable, Is.GreaterThan(snapshot.Navigation.DeltaVRequired));
+            Assert.That(snapshot.Navigation.FuelAfterArrivalFraction, Is.EqualTo(plan.flightPlan.expectedRemainingFuelKg / plan.flightPlan.shipSnapshot.maxFuelKg).Within(0.001f));
+            Assert.True(snapshot.Navigation.FuelAfterArrivalAvailable, "emitted flight plans expose expected remaining fuel");
+            Assert.True(snapshot.Navigation.BrakeReserveOk, "emitted flight plan should report brake reserve ok");
+            Assert.That(snapshot.Navigation.TimelineSegments.Length, Is.EqualTo(plan.flightPlan.segments.Length));
+            Assert.That(snapshot.Navigation.TimelineSegments.Any(segment => segment.Phase == PrototypeManeuverPhase.FlipToRetrograde), Is.True, "timeline should include flip-to-retrograde segment");
+            Assert.That(snapshot.Navigation.TimelineProgress01, Is.EqualTo(activeElapsed / plan.flightPlan.totalDurationSeconds).Within(0.001f));
+            Assert.That(snapshot.Navigation.ActiveSegmentIndex, Is.EqualTo(activeSegment.index));
+            Assert.That(snapshot.Navigation.ManeuverMarkersWorld.Length, Is.GreaterThanOrEqualTo(3));
+            Assert.True(snapshot.Navigation.ClosingTowardsTarget, "closing direction should be positive for the emitted plan");
             Assert.That(snapshot.Navigation.RouteWorldPoints.Length, Is.GreaterThan(3));
-            Assert.That(snapshot.Navigation.ManeuverStepRows.Any(row => row.Contains("Main burn")), Is.True);
-            Assert.That(snapshot.Navigation.ManeuverStepRows.Any(row => row.Contains("Flip retrograde")), Is.True);
-            Assert.That(snapshot.Navigation.ManeuverStepRows.Any(row => row.Contains("Brake burn")), Is.True);
+            Assert.That(snapshot.Navigation.ManeuverStepRows.Any(row => row.Contains("Main burn")), Is.True, "schedule rows should include main burn");
+            Assert.That(snapshot.Navigation.ManeuverStepRows.Any(row => row.Contains("Flip retrograde")), Is.True, "schedule rows should include flip retrograde");
+            Assert.That(snapshot.Navigation.ManeuverStepRows.Any(row => row.Contains("Brake burn")), Is.True, "schedule rows should include brake burn");
 
             MethodInfo bodyMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
-                "BuildNavigationPlannerBody",
+                "BuildNavigationPlannerBodyCore",
                 BindingFlags.Static | BindingFlags.NonPublic);
             Assert.NotNull(bodyMethod);
-            string body = (string)bodyMethod.Invoke(null, new object[] { snapshot.Navigation });
-            Assert.That(body, Does.Contain("Authority: Flight plan emitted"));
+            string body = (string)bodyMethod.Invoke(null, new object[] { snapshot.Navigation, true });
+            Assert.That(body, Does.Contain("Status: Plan bereit"));
+            Assert.That(body, Does.Contain("Distanz "));
+            Assert.That(body, Does.Contain("ETA "));
+            Assert.That(body, Does.Contain("Annaeherung -> auf Ziel"));
+            Assert.That(body, Does.Contain("Reserve: DeltaV "));
+            Assert.That(body, Does.Contain("Treibstoff nach Ankunft"));
+            Assert.That(body, Does.Contain("Bremsreserve OK"));
+            Assert.That(body, Does.Contain("Plandauer "));
+            Assert.That(body, Does.Contain("Groesster Burn "));
+            Assert.That(body, Does.Contain("Verfuegbare Brennzeit "));
+            Assert.That(body, Does.Not.Contain(" / avail "));
+            Assert.That(body, Does.Not.Contain("Schedule "));
+            Assert.That(body, Does.Not.Contain("["));
+            Assert.That(body, Does.Not.Contain("#"));
+            int detailsIndex = body.IndexOf("Details:", System.StringComparison.Ordinal);
+            Assert.That(detailsIndex, Is.GreaterThan(0));
+            string topBody = body.Substring(0, detailsIndex);
+            Assert.That(topBody, Does.Not.Contain("Authority:"));
+            Assert.That(topBody, Does.Not.Contain("Plan:"));
+            Assert.That(topBody, Does.Not.Contain("Tracking:"));
+            Assert.That(topBody, Does.Not.Contain("Cmd:"));
+            string detailsBody = body.Substring(detailsIndex);
+            Assert.That(detailsBody, Does.Contain("Authority: Flight plan emitted"));
+            Assert.That(detailsBody, Does.Contain("Plan:"));
+            Assert.That(detailsBody, Does.Contain("Tracking:"));
+            Assert.That(detailsBody, Does.Contain("Cmd:"));
             Assert.That(body, Does.Contain("Steps:"));
             Assert.That(body, Does.Contain("Flip retrograde"));
             Assert.That(body, Does.Not.Contain("diagnostic preview only"));
+        }
+    }
+
+    [Test]
+    public void NavigationSnapshotDefaultsBadgeAndStateLabelToNoTarget()
+    {
+        var snapshot = new PrototypePlayerNavigationSnapshot(
+            false,
+            null,
+            null,
+            0f,
+            0f,
+            0f,
+            0f,
+            null,
+            "Legacy state should not leak",
+            null,
+            null,
+            null,
+            0f,
+            0f,
+            0f,
+            null,
+            null,
+            default,
+            false,
+            Vector3.zero,
+            null,
+            0,
+            0);
+
+        Assert.That(snapshot.PlanStateBadge.State, Is.EqualTo(PrototypeNavigationPlanState.NoTarget));
+        Assert.That(snapshot.PlanStateBadge.Text, Is.EqualTo("Kein Ziel"));
+        Assert.That(snapshot.PlanStateBadge.Severity, Is.EqualTo(PrototypePlayerHudSeverity.Disabled));
+        Assert.That(snapshot.StateLabel, Is.EqualTo(snapshot.PlanStateBadge.Text));
+        Assert.That(snapshot.ManeuverIntentLabel, Is.EqualTo("Manoever: Kein Ziel"));
+    }
+
+    [Test]
+    public void NavigationSnapshotUsesPlanStateBadgeAsStatusSourceForImportantPlanStates()
+    {
+        using (var builder = new PrototypeScenarioBuilder())
+        {
+            PrototypeAutopilotRig rig = builder.CreateAutopilotRig(targetPosition: Vector3.forward * 260f);
+            rig.Ship.Body.linearVelocity = Vector3.forward * 14f;
+            rig.Autopilot.EvaluateMetrics();
+            PrototypeTrajectoryPlan plan = BuildEmittedPlannerFlightPlan(rig);
+            SetAutoProperty(rig.Autopilot, "LastTrajectoryPlan", plan);
+
+            PrototypePlayerNavigationSnapshot ready = BuildNavigationSnapshot(rig);
+            AssertNavigationPlanState(ready, PrototypeNavigationPlanState.PlanReady, "Plan bereit", PrototypePlayerHudSeverity.Info);
+
+            SetAutoProperty(rig.Autopilot, "CurrentState", PrototypeWaypointAutopilotState.AlignForBurn);
+            PrototypePlayerNavigationSnapshot awaiting = BuildNavigationSnapshot(rig);
+            AssertNavigationPlanState(awaiting, PrototypeNavigationPlanState.AwaitingAutopilot, "Warte auf Autopilot", PrototypePlayerHudSeverity.Info);
+
+            SetPrivateField(rig.Autopilot, "autopilotEngaged", true);
+            PrototypePlayerNavigationSnapshot executing = BuildNavigationSnapshot(rig);
+            AssertNavigationPlanState(executing, PrototypeNavigationPlanState.Executing, "Ausfuehrung", PrototypePlayerHudSeverity.Info);
+
+            SetAutoProperty(rig.Autopilot, "CurrentState", PrototypeWaypointAutopilotState.HoldPosition);
+            PrototypePlayerNavigationSnapshot monitoring = BuildNavigationSnapshot(rig);
+            AssertNavigationPlanState(monitoring, PrototypeNavigationPlanState.Monitoring, "Ueberwache", PrototypePlayerHudSeverity.Normal);
+
+            SetPrivateField(
+                rig.Autopilot,
+                "lastFlightPlanDivergenceReport",
+                new PrototypeFlightPlanDivergenceReport(
+                    PrototypeFlightPlanAbortReplanReason.PositionDivergence,
+                    true,
+                    false,
+                    "Replan: PositionDivergence"));
+            SetPrivateField(rig.Autopilot, "lastFlightPlanDivergenceAtTime", Time.time);
+            PrototypePlayerNavigationSnapshot replanning = BuildNavigationSnapshot(rig);
+            AssertNavigationPlanState(replanning, PrototypeNavigationPlanState.Replanning, "Neuplanung", PrototypePlayerHudSeverity.Warning);
+
+            SetPrivateField(rig.Autopilot, "autopilotEngaged", false);
+            SetAutoProperty(rig.Autopilot, "CurrentState", PrototypeWaypointAutopilotState.FuelInsufficient);
+            SetPrivateField(rig.Autopilot, "arrivalFailureReason", "FuelInsufficient");
+            PrototypePlayerNavigationSnapshot notPossible = BuildNavigationSnapshot(rig);
+            AssertNavigationPlanState(notPossible, PrototypeNavigationPlanState.NotPossible, "Nicht moeglich: zu wenig Treibstoff", PrototypePlayerHudSeverity.Danger);
+        }
+    }
+
+    [Test]
+    public void WarningStripNavigationStatusWarningsUsePlanStateBadgeSource()
+    {
+        using (var builder = new PrototypeScenarioBuilder())
+        {
+            PrototypeAutopilotRig holdingRig = builder.CreateAutopilotRig(targetPosition: Vector3.forward * 260f);
+            holdingRig.Ship.Body.linearVelocity = Vector3.forward * 14f;
+            holdingRig.Autopilot.EvaluateMetrics();
+            PrototypeTrajectoryPlan holdingPlan = BuildEmittedPlannerFlightPlan(holdingRig);
+            SetAutoProperty(holdingRig.Autopilot, "LastTrajectoryPlan", holdingPlan);
+            SetPrivateField(holdingRig.Autopilot, "autopilotEngaged", true);
+            SetAutoProperty(holdingRig.Autopilot, "CurrentState", PrototypeWaypointAutopilotState.HoldPosition);
+
+            PrototypePlayerHudSnapshot holdingSnapshot = BuildHudSnapshot(holdingRig);
+            string holdingWarnings = string.Join(" | ", Labels(holdingSnapshot.Warnings));
+            Assert.That(holdingSnapshot.Navigation.PlanStateBadge.State, Is.EqualTo(PrototypeNavigationPlanState.Monitoring));
+            Assert.That(holdingSnapshot.Navigation.PlanStateBadge.Text, Is.EqualTo("Ueberwache"));
+            Assert.That(holdingWarnings, Does.Contain(holdingSnapshot.Navigation.PlanStateBadge.Text));
+            Assert.That(holdingWarnings, Does.Not.Contain("HOLDING"));
+
+            PrototypeAutopilotRig noTargetRig = builder.CreateAutopilotRig(targetPosition: Vector3.forward * 260f);
+            SetPrivateField(noTargetRig.Autopilot, "currentTarget", null);
+
+            PrototypePlayerHudSnapshot noTargetSnapshot = BuildHudSnapshot(noTargetRig);
+            string noTargetWarnings = string.Join(" | ", Labels(noTargetSnapshot.Warnings));
+            Assert.That(noTargetSnapshot.Navigation.PlanStateBadge.Text, Is.EqualTo("Kein Ziel"));
+            Assert.That(noTargetWarnings, Does.Contain(noTargetSnapshot.Navigation.PlanStateBadge.Text));
+            Assert.That(noTargetWarnings, Does.Not.Contain("NO TARGET"));
+            Assert.That(noTargetWarnings, Does.Not.Contain("Kein Navigationsziel"));
+        }
+    }
+
+    [Test]
+    public void NavigationSnapshotReportsInsufficientFlightPlanMargin()
+    {
+        using (var builder = new PrototypeScenarioBuilder())
+        {
+            PrototypeAutopilotRig rig = builder.CreateAutopilotRig(targetPosition: Vector3.forward * 260f);
+            rig.Ship.Body.linearVelocity = Vector3.forward * 14f;
+            rig.Autopilot.EvaluateMetrics();
+            PrototypeTrajectoryPlan plan = BuildEmittedPlannerFlightPlan(rig);
+            plan.flightPlan.shipSnapshot.currentFuelKg = plan.flightPlan.totalExpectedFuelKg * 0.5f;
+            SetAutoProperty(rig.Autopilot, "LastTrajectoryPlan", plan);
+
+            PrototypePlayerNavigationSnapshot snapshot = BuildNavigationSnapshot(rig);
+
+            Assert.That(snapshot.PlanStateBadge.State, Is.EqualTo(PrototypeNavigationPlanState.PlanReady));
+            Assert.False(snapshot.BrakeReserveOk);
+            Assert.That(snapshot.DeltaVAvailable, Is.LessThan(snapshot.DeltaVRequired));
         }
     }
 
@@ -281,8 +521,8 @@ public class PrototypePlayerHudValidationTests
             Assert.That(snapshot.Navigation.RouteWorldPoints[1], Is.EqualTo(rig.Autopilot.CurrentTarget.Position));
             Assert.That(snapshot.Navigation.RouteModeLabel, Is.EqualTo("Route: Direkt"));
             Assert.That(snapshot.Navigation.ActiveObstacleCount, Is.GreaterThanOrEqualTo(1));
-            Assert.That(snapshot.Navigation.ObstacleSummaryLabel, Does.Contain("active"));
-            Assert.That(snapshot.Navigation.ObstacleSummaryLabel, Does.Contain("no blocking cue"));
+            Assert.That(snapshot.Navigation.ObstacleSummaryLabel, Does.Contain("aktiv"));
+            Assert.That(snapshot.Navigation.ObstacleSummaryLabel, Does.Contain("kein blockierender Hinweis"));
 
             MethodInfo bodyMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
                 "BuildNavigationPlannerBody",
@@ -290,8 +530,8 @@ public class PrototypePlayerHudValidationTests
             Assert.NotNull(bodyMethod);
             string body = (string)bodyMethod.Invoke(null, new object[] { snapshot.Navigation });
             Assert.That(body, Does.Contain("Route: Direkt 2 pts"));
-            Assert.That(body, Does.Contain("Obstacles:"));
-            Assert.That(body, Does.Contain("no blocking cue"));
+            Assert.That(body, Does.Contain("Hindernisse:"));
+            Assert.That(body, Does.Contain("kein blockierender Hinweis"));
 
             MethodInfo mapLabelMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
                 "BuildNavigationPlannerMapLabel",
@@ -299,12 +539,12 @@ public class PrototypePlayerHudValidationTests
             Assert.NotNull(mapLabelMethod);
             string mapLabel = (string)mapLabelMethod.Invoke(null, new object[] { snapshot });
             string[] mapLabelParts = mapLabel.Split(new[] { " | " }, System.StringSplitOptions.None);
-            Assert.That(mapLabelParts.Length, Is.GreaterThanOrEqualTo(4));
+            Assert.That(mapLabelParts.Length, Is.EqualTo(3));
             Assert.That(mapLabelParts[0], Is.EqualTo("Direct 2"));
-            Assert.That(mapLabelParts[1], Is.EqualTo("No preview"));
-            Assert.That(mapLabelParts[2], Does.Match("^(250 m|1 km|2\\.5 km|5 km)$"));
-            Assert.That(mapLabelParts[2], Does.Not.StartWith("R "));
-            Assert.That(mapLabelParts[3], Does.Contain("contact"));
+            Assert.That(mapLabelParts[1], Does.Match("^Range (\\d+ m|\\d+(\\.\\d)? km)$"));
+            Assert.That(mapLabelParts[1], Does.Not.StartWith("R "));
+            Assert.That(mapLabelParts[2], Does.Contain("contact"));
+            Assert.That(mapLabel, Does.Not.Contain("Preview"));
         }
     }
 
@@ -397,7 +637,7 @@ public class PrototypePlayerHudValidationTests
             1,
             "Authority: Legacy live gates",
             "Active: Direkter Kurs",
-            "Replan: obstacle cue",
+            "Neuplanung: Hindernis-Hinweis",
             "Plan: none",
             "Track: --",
             "Cmd: --",
@@ -405,17 +645,17 @@ public class PrototypePlayerHudValidationTests
             0f,
             System.Array.Empty<string>(),
             2,
-            "2 active | cue Asteroid",
+            "2 aktiv | Hinweis Asteroid",
             context);
 
         string body = (string)bodyMethod.Invoke(null, new object[] { navigation });
         Assert.That(body, Does.Contain(context.PilotContextLabel));
-        Assert.That(body, Does.Contain("Replan: obstacle cue"));
-        Assert.That(body, Does.Contain("Obstacles:"));
-        Assert.That(body, Does.Contain("2 active | cue Asteroid"));
+        Assert.That(body, Does.Contain("Neuplanung: Hindernis-Hinweis"));
+        Assert.That(body, Does.Contain("Hindernisse:"));
+        Assert.That(body, Does.Contain("2 aktiv | Hinweis Asteroid"));
         Assert.That(
             body,
-            Does.Contain(context.PilotContextLabel + " | Replan: obstacle cue | Obstacles: 2 active | cue Asteroid"));
+            Does.Contain(context.PilotContextLabel + " | Neuplanung: Hindernis-Hinweis | Hindernisse: 2 aktiv | Hinweis Asteroid"));
     }
 
     [Test]
@@ -516,7 +756,7 @@ public class PrototypePlayerHudValidationTests
                 BindingFlags.Static | BindingFlags.NonPublic);
             Assert.NotNull(bodyMethod);
             string body = (string)bodyMethod.Invoke(null, new object[] { snapshot.Navigation });
-            Assert.That(body, Does.Contain(snapshot.Navigation.ReplanStatusLabel + " | Obstacles:"));
+            Assert.That(body, Does.Contain(snapshot.Navigation.ReplanStatusLabel + " | Hindernisse:"));
             Assert.That(body, Does.Not.Contain("Near "));
         }
     }
@@ -604,15 +844,15 @@ public class PrototypePlayerHudValidationTests
         string mapLabel = (string)mapLabelMethod.Invoke(null, new object[] { navigationMissingRouteSnapshot });
         string[] mapLabelParts = mapLabel.Split(new[] { " | " }, System.StringSplitOptions.None);
 
-        Assert.That(body, Does.Contain("No route"));
+        Assert.That(body, Does.Contain("Keine Route"));
         Assert.That(body, Does.Not.Contain("Direkte Route"));
         Assert.That(mapLabel, Does.StartWith("No route"));
-        Assert.That(mapLabelParts.Length, Is.GreaterThanOrEqualTo(4));
+        Assert.That(mapLabelParts.Length, Is.EqualTo(3));
         Assert.That(mapLabelParts[0], Is.EqualTo("No route"));
-        Assert.That(mapLabelParts[1], Is.EqualTo("No preview"));
-        Assert.That(mapLabelParts[2], Is.EqualTo("1 km"));
-        Assert.That(mapLabelParts[3], Is.EqualTo("1 contact"));
+        Assert.That(mapLabelParts[1], Is.EqualTo("Range 50 m"));
+        Assert.That(mapLabelParts[2], Is.EqualTo("1 contact"));
         Assert.That(mapLabel, Does.Not.Contain("Direkte Route"));
+        Assert.That(mapLabel, Does.Not.Contain("Preview"));
     }
 
     [Test]
@@ -622,6 +862,7 @@ public class PrototypePlayerHudValidationTests
         {
             PrototypeAutopilotRig rig = builder.CreateAutopilotRig(targetPosition: Vector3.forward * 150f);
             rig.Ship.Body.linearVelocity = Vector3.forward * 45f;
+            rig.Autopilot.SetFlightPlanExecutorEnabledForTests(false);
             rig.Autopilot.ToggleAutopilot();
 
             InvokeFixedUpdate(rig.Autopilot);
@@ -643,7 +884,10 @@ public class PrototypePlayerHudValidationTests
             Assert.That(rig.Ship.Controller.LastExternalFlightAssistRequest.mainThrottle, Is.EqualTo(0f).Within(0.0001f));
 
             rig.Ship.Ship.transform.rotation = Quaternion.LookRotation(Vector3.back, Vector3.up);
-            InvokeFixedUpdate(rig.Autopilot);
+            for (int i = 0; i < 4 && rig.Ship.Controller.LastExternalFlightAssistRequest.mainThrottle <= 0.5f; i++)
+            {
+                InvokeFixedUpdate(rig.Autopilot);
+            }
 
             PrototypePlayerHudSnapshot brakeSnapshot = PrototypePlayerHudSnapshotBuilder.Build(
                 rig.Ship.Ship.transform,
@@ -1305,7 +1549,7 @@ public class PrototypePlayerHudValidationTests
                 radar));
 
         Assert.That(FindText(playerHud, "RadarText").text, Is.EqualTo("Range 1 km | 1 contact"));
-        Assert.That(FindText(playerHud, "NavigationPlannerMapText").text, Does.Contain("1 km"));
+        Assert.That(FindText(playerHud, "NavigationPlannerMapText").text, Does.Contain("50 m"));
 
         MethodInfo setModeMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
             "SetMinimapRangeMode",
@@ -1422,8 +1666,11 @@ public class PrototypePlayerHudValidationTests
             string GetPlannerRangeFromMapLabel(string mapLabel)
             {
                 string[] mapParts = mapLabel.Split(new[] { " | " }, System.StringSplitOptions.None);
-                Assert.That(mapParts.Length, Is.GreaterThanOrEqualTo(3), "planner map label should include route, preview, range tokens");
-                return mapParts[2].Trim();
+                Assert.That(mapParts.Length, Is.GreaterThanOrEqualTo(2), "planner map label should include route and range tokens");
+                string range = mapParts[1].Trim();
+                return range.StartsWith("Range ", System.StringComparison.Ordinal)
+                    ? range.Substring("Range ".Length)
+                    : range;
             }
 
             PrototypeShipRig rig = builder.CreateShip("PlayerHudNavPlannerRangeSyncShip");
@@ -1595,6 +1842,277 @@ public class PrototypePlayerHudValidationTests
         Assert.That(route.Length, Is.EqualTo(4));
         Assert.That(route[0], Is.EqualTo(shipPosition));
         Assert.That(route[route.Length - 1], Is.EqualTo(selectedTarget));
+    }
+
+    [Test]
+    public void NavigationPlannerMapFrameFitsRouteShipAndTargetWithoutShipCentering()
+    {
+        Vector3 shipPosition = Vector3.zero;
+        Vector3 selectedTarget = new Vector3(0f, 0f, 1000f);
+        var radar = new PrototypePlayerRadarSnapshot(
+            2500f,
+            "Range 2.5 km",
+            shipPosition,
+            Vector3.forward,
+            new[]
+            {
+                new PrototypePlayerRadarBlip(
+                    PrototypePlayerRadarBlipKind.SelectedNavigation,
+                    "Nav Waypoint 2",
+                    selectedTarget,
+                    25f)
+            },
+            new[]
+            {
+                shipPosition,
+                new Vector3(0f, 0f, 150f),
+                new Vector3(0f, 0f, 420f)
+            },
+            new Vector3[0],
+            false,
+            Vector3.zero);
+
+        PrototypePlayerHudSnapshot snapshot = CreateHudSnapshot(
+            CreateCombatSnapshot(false),
+            CreateDockingSnapshot(false),
+            CreateNavigationSnapshot(true),
+            default,
+            null,
+            radar);
+
+        MethodInfo frameMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
+            "ResolveNavigationPlannerMapFrame",
+            BindingFlags.Static | BindingFlags.NonPublic);
+        MethodInfo pointMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
+            "NavigationPlannerWorldToLayerPoint",
+            BindingFlags.Static | BindingFlags.NonPublic);
+        Assert.NotNull(frameMethod);
+        Assert.NotNull(pointMethod);
+
+        object autoFrame = frameMethod.Invoke(null, new object[] { snapshot, false });
+        Vector3 center = (Vector3)autoFrame.GetType().GetProperty("CenterWorldPosition").GetValue(autoFrame);
+        float range = (float)autoFrame.GetType().GetProperty("RangeMeters").GetValue(autoFrame);
+        bool manual = (bool)autoFrame.GetType().GetProperty("ManualRangeOverride").GetValue(autoFrame);
+        Vector2 shipPoint = (Vector2)pointMethod.Invoke(null, new[] { (object)shipPosition, autoFrame, 100f });
+        Vector2 targetPoint = (Vector2)pointMethod.Invoke(null, new[] { (object)selectedTarget, autoFrame, 100f });
+
+        Assert.False(manual);
+        Assert.That(center.z, Is.GreaterThan(350f), "route-first frame center should move toward the route and target");
+        Assert.That(center.z, Is.LessThan(650f));
+        Assert.That(range, Is.LessThan(radar.RangeMeters), "auto planner frame can zoom to the route instead of inheriting compact radar range");
+        Assert.That(shipPoint.magnitude, Is.GreaterThan(1f), "ship is not forced to the center");
+        Assert.That(shipPoint.magnitude, Is.LessThanOrEqualTo(100f));
+        Assert.That(targetPoint.magnitude, Is.LessThanOrEqualTo(100f));
+
+        object manualFrame = frameMethod.Invoke(null, new object[] { snapshot, true });
+        float manualRange = (float)manualFrame.GetType().GetProperty("RangeMeters").GetValue(manualFrame);
+        bool manualFlag = (bool)manualFrame.GetType().GetProperty("ManualRangeOverride").GetValue(manualFrame);
+        Assert.True(manualFlag);
+        Assert.That(manualRange, Is.EqualTo(radar.RangeMeters), "manual range override keeps the player's selected range");
+    }
+
+    [Test]
+    public void NavigationPlannerMapLabelUsesAutoFitFrameRangeInsteadOfStaleRadarRange()
+    {
+        Vector3 shipPosition = Vector3.zero;
+        Vector3 selectedTarget = new Vector3(0f, 0f, 1000f);
+        var radar = new PrototypePlayerRadarSnapshot(
+            2500f,
+            "Range 2.5 km",
+            shipPosition,
+            Vector3.forward,
+            new[]
+            {
+                new PrototypePlayerRadarBlip(
+                    PrototypePlayerRadarBlipKind.SelectedNavigation,
+                    "Nav Waypoint 2",
+                    selectedTarget,
+                    25f)
+            },
+            new[]
+            {
+                shipPosition,
+                new Vector3(0f, 0f, 420f)
+            },
+            new Vector3[0],
+            false,
+            Vector3.zero);
+
+        PrototypePlayerHudSnapshot snapshot = CreateHudSnapshot(
+            CreateCombatSnapshot(false),
+            CreateDockingSnapshot(false),
+            CreateNavigationSnapshot(true),
+            default,
+            null,
+            radar);
+
+        MethodInfo labelMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
+            "BuildNavigationPlannerMapLabel",
+            BindingFlags.Static | BindingFlags.NonPublic);
+        MethodInfo frameMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
+            "ResolveNavigationPlannerMapFrame",
+            BindingFlags.Static | BindingFlags.NonPublic);
+        MethodInfo formatMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
+            "FormatNavigationPlannerMapRangeLabel",
+            BindingFlags.Static | BindingFlags.NonPublic);
+        Assert.NotNull(labelMethod);
+        Assert.NotNull(frameMethod);
+        Assert.NotNull(formatMethod);
+
+        object autoFrame = frameMethod.Invoke(null, new object[] { snapshot, false });
+        float autoRange = (float)autoFrame.GetType().GetProperty("RangeMeters").GetValue(autoFrame);
+        string expectedRangeToken = (string)formatMethod.Invoke(null, new object[] { autoRange });
+        string mapLabel = (string)labelMethod.Invoke(null, new object[] { snapshot });
+
+        Assert.That(autoRange, Is.LessThan(radar.RangeMeters), "fixture must exercise route-first auto-fit rather than radar range parity");
+        Assert.That(mapLabel, Does.Contain("Range " + expectedRangeToken));
+        Assert.That(mapLabel, Does.Not.Contain("Range 2.5 km"), "auto planner label should not reuse stale compact radar range");
+    }
+
+    [Test]
+    public void NavigationPlannerArrivalRingUsesTargetLocalSamplesAndHidesWhenItWouldSpill()
+    {
+        Vector3 shipPosition = Vector3.zero;
+        Vector3 selectedTarget = new Vector3(0f, 0f, 100f);
+        var radar = new PrototypePlayerRadarSnapshot(
+            1000f,
+            "Range 1 km",
+            shipPosition,
+            Vector3.forward,
+            new[]
+            {
+                new PrototypePlayerRadarBlip(
+                    PrototypePlayerRadarBlipKind.SelectedNavigation,
+                    "Near Nav",
+                    selectedTarget,
+                    20f)
+            },
+            new[] { shipPosition, selectedTarget },
+            new Vector3[0],
+            false,
+            Vector3.zero);
+
+        PrototypePlayerHudSnapshot snapshot = CreateHudSnapshot(
+            CreateCombatSnapshot(false),
+            CreateDockingSnapshot(false),
+            CreateNavigationSnapshot(true),
+            default,
+            null,
+            radar);
+
+        MethodInfo frameMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
+            "ResolveNavigationPlannerMapFrame",
+            BindingFlags.Static | BindingFlags.NonPublic);
+        MethodInfo pointMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
+            "NavigationPlannerWorldToLayerPoint",
+            BindingFlags.Static | BindingFlags.NonPublic);
+        MethodInfo ringMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
+            "TryBuildNavigationPlannerArrivalRingPoints",
+            BindingFlags.Static | BindingFlags.NonPublic);
+        Assert.NotNull(frameMethod);
+        Assert.NotNull(pointMethod);
+        Assert.NotNull(ringMethod);
+
+        object autoFrame = frameMethod.Invoke(null, new object[] { snapshot, false });
+        var ringPoints = new Vector2[8];
+        bool built = (bool)ringMethod.Invoke(null, new object[] { selectedTarget, 20f, autoFrame, 100f, ringPoints });
+        Vector2 targetPoint = (Vector2)pointMethod.Invoke(null, new object[] { selectedTarget, autoFrame, 100f });
+
+        Assert.True(built, "ring should render when every local target-radius sample fits the planner frame");
+        Assert.That(ringPoints.Length, Is.EqualTo(8), "arrival ring should use diagonal samples instead of four square edges");
+        Assert.That(ringPoints.All(point => point.magnitude <= 99.01f), Is.True, "ring samples must remain inside the map radius");
+        Assert.That(Mathf.Abs((ringPoints[1] - targetPoint).x), Is.GreaterThan(0.1f), "diagonal sample should offset locally around target on x");
+        Assert.That(Mathf.Abs((ringPoints[1] - targetPoint).y), Is.GreaterThan(0.1f), "diagonal sample should offset locally around target on y");
+
+        var spillingRingPoints = new Vector2[8];
+        bool spillingBuilt = (bool)ringMethod.Invoke(null, new object[] { selectedTarget, 200f, autoFrame, 100f, spillingRingPoints });
+        Assert.False(spillingBuilt, "ring should hide instead of spilling outside the planner map frame");
+    }
+
+    [Test]
+    public void NavigationPlannerMapRendersMarkersArrivalRingEdgeIndicatorAndLegend()
+    {
+        GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+        cameraObject.AddComponent<Camera>();
+        PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+        playerHud.RefreshNow();
+        FindRect(playerHud, "NavigationPlannerPanel").gameObject.SetActive(true);
+
+        var nearRadar = new PrototypePlayerRadarSnapshot(
+            1000f,
+            "Range 1 km",
+            Vector3.zero,
+            Vector3.forward,
+            new[]
+            {
+                new PrototypePlayerRadarBlip(
+                    PrototypePlayerRadarBlipKind.SelectedNavigation,
+                    "Near Nav",
+                    new Vector3(0f, 0f, 120f),
+                    30f)
+            },
+            new[] { Vector3.zero, new Vector3(0f, 0f, 60f), new Vector3(0f, 0f, 120f) },
+            new[] { Vector3.zero, new Vector3(35f, 0f, 80f), new Vector3(60f, 0f, 140f) },
+            true,
+            new Vector3(24f, 0f, 70f));
+
+        PrototypePlayerHudSnapshot nearSnapshot = CreateHudSnapshot(
+            CreateCombatSnapshot(false),
+            CreateDockingSnapshot(false),
+            CreateNavigationSnapshotWithTimeline(true),
+            default,
+            null,
+            nearRadar);
+        ApplySnapshotForTest(playerHud, nearSnapshot);
+
+        Assert.True(FindImage(playerHud, "NavigationPlannerMapManeuverMarker0").gameObject.activeInHierarchy);
+        Assert.True(FindImage(playerHud, "NavigationPlannerMapManeuverMarker1").gameObject.activeInHierarchy);
+        Assert.True(FindImage(playerHud, "NavigationPlannerMapManeuverMarker2").gameObject.activeInHierarchy);
+        Assert.True(FindImage(playerHud, "NavigationPlannerMapArrivalRingSegment0").gameObject.activeInHierarchy);
+        Assert.False(FindImage(playerHud, "NavigationPlannerMapTargetEdge").gameObject.activeSelf);
+        Assert.That(FindImage(playerHud, "NavigationPlannerMapRouteSegment0").rectTransform.sizeDelta.y, Is.GreaterThan(FindImage(playerHud, "NavigationPlannerMapPreviewSegment0").rectTransform.sizeDelta.y));
+        Assert.That(FindText(playerHud, "NavigationPlannerMapLegendText").text, Does.Contain("Route solid"));
+        Assert.That(FindText(playerHud, "NavigationPlannerMapLegendText").text, Does.Contain("Preview"));
+        Assert.That(FindText(playerHud, "NavigationPlannerMapLegendText").text, Does.Contain("Avoidance"));
+        Assert.That(FindText(playerHud, "NavigationPlannerMapText").text, Does.Contain("Range 106 m"));
+
+        MethodInfo setModeMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
+            "SetMinimapRangeMode",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(setModeMethod);
+        setModeMethod.Invoke(playerHud, new object[] { 1 });
+
+        var farRadar = new PrototypePlayerRadarSnapshot(
+            1000f,
+            "Range 1 km",
+            Vector3.zero,
+            Vector3.forward,
+            new[]
+            {
+                new PrototypePlayerRadarBlip(
+                    PrototypePlayerRadarBlipKind.SelectedNavigation,
+                    "Far Nav",
+                    new Vector3(0f, 0f, 1000f),
+                    30f)
+            },
+            new[] { Vector3.zero, new Vector3(0f, 0f, 1000f) },
+            new Vector3[0],
+            false,
+            Vector3.zero);
+        PrototypePlayerHudSnapshot farSnapshot = ApplyMinimapRangeOverrideForTest(
+            playerHud,
+            CreateHudSnapshot(
+                CreateCombatSnapshot(false),
+                CreateDockingSnapshot(false),
+                CreateNavigationSnapshotWithTimeline(false),
+                default,
+                null,
+                farRadar));
+        ApplySnapshotForTest(playerHud, farSnapshot);
+
+        Assert.True(FindImage(playerHud, "NavigationPlannerMapTargetEdge").gameObject.activeInHierarchy);
+        Assert.False(FindImage(playerHud, "NavigationPlannerMapArrivalRingSegment0").gameObject.activeSelf);
+        Assert.That(FindText(playerHud, "NavigationPlannerMapText").text, Does.Contain("Range 250 m"));
     }
 
     [Test]
@@ -1867,6 +2385,10 @@ public class PrototypePlayerHudValidationTests
         Assert.That(outOfArcLabel, Is.EqualTo("Ausserhalb Feuerwinkel"));
         Assert.That(cooldownLabel, Is.EqualTo("Cooldown 0.4s"));
         Assert.That(lineBlockedLabel, Is.EqualTo("Schusslinie blockiert"));
+        Assert.That(PrototypePlayerHudSnapshotBuilder.TranslateFireStatus(PrototypeTurretFireStatus.Blocked(
+            PrototypeTurretFireBlockReason.NoAuthority,
+            "no authority",
+            hasSelectedTarget: true)), Is.EqualTo("Waffe offline"));
         Assert.That(outOfArcLabel, Does.Not.Contain("Yaw"));
         Assert.That(outOfArcLabel, Does.Not.Contain("Pitch"));
         Assert.That(outOfArcLabel, Does.Not.Contain("Hit"));
@@ -1898,6 +2420,77 @@ public class PrototypePlayerHudValidationTests
         Assert.That(snapshot.Combat.AutoFireLabel, Is.EqualTo("Auto Fire: No target"));
         Assert.That(snapshot.Combat.FireStatusLabel, Does.Not.Contain("HitChance"));
         Assert.That(snapshot.Combat.FireStatusLabel, Does.Not.Contain("Projectile"));
+    }
+
+    [Test]
+    public void CombatSnapshotCapsTargetListWithRangeHealthAndPriorityOrder()
+    {
+        using (var builder = new PrototypeScenarioBuilder())
+        {
+            PrototypeCombatRig combatRig = builder.CreateCombatRig("PlayerHudCombatSnapshotShip");
+            builder.CreateWeaponTarget("PlayerHudCombatFar", combatRig.Muzzle.position + Vector3.forward * 110f, 100f, 0.9f);
+            builder.CreateWeaponTarget("PlayerHudCombatNear", combatRig.Muzzle.position + Vector3.forward * 20f, 100f, 0.4f);
+            builder.CreateWeaponTarget("PlayerHudCombatMidA", combatRig.Muzzle.position + Vector3.forward * 40f, 100f, 0.7f);
+            builder.CreateWeaponTarget("PlayerHudCombatMidB", combatRig.Muzzle.position + Vector3.forward * 55f, 100f, 0.2f);
+            builder.CreateWeaponTarget("PlayerHudCombatMidC", combatRig.Muzzle.position + Vector3.forward * 70f, 100f, 1f);
+            combatRig.Computer.RefreshTargets();
+            for (int i = 0; i < combatRig.Computer.AvailableTargets.Count; i++)
+            {
+                combatRig.Computer.ToggleTarget(combatRig.Computer.AvailableTargets[i]);
+            }
+
+            combatRig.Computer.SetPriorityMode(PrototypeWeaponTargetPriorityMode.Nearest);
+
+            PrototypePlayerHudSnapshot snapshot = PrototypePlayerHudSnapshotBuilder.Build(
+                combatRig.Ship.Ship.transform,
+                combatRig.Ship.Body,
+                combatRig.Ship.Stats,
+                combatRig.Ship.Controller,
+                null,
+                null,
+                combatRig.Computer,
+                null,
+                null);
+
+            Assert.True(snapshot.Combat.HasActiveTarget);
+            Assert.That(snapshot.Combat.PriorityMode, Is.EqualTo(PrototypeWeaponTargetPriorityMode.Nearest));
+            Assert.That(snapshot.Combat.TargetListTotalCount, Is.EqualTo(5));
+            Assert.That(snapshot.Combat.TargetList.Length, Is.EqualTo(4));
+            Assert.That(snapshot.Combat.TargetList[0].TargetName, Is.EqualTo("PlayerHudCombatNear"));
+            Assert.That(snapshot.Combat.TargetList[0].RangeMeters, Is.InRange(19f, 22f));
+            Assert.That(snapshot.Combat.TargetList[0].HealthLabel, Is.EqualTo("40/100"));
+            Assert.True(snapshot.Combat.TargetList[0].Active);
+            Assert.True(snapshot.Combat.TargetList[0].Selected);
+        }
+    }
+
+    [Test]
+    public void CombatSnapshotMapsOfflineStatusSeverityForSelectedTarget()
+    {
+        using (var builder = new PrototypeScenarioBuilder())
+        {
+            PrototypeShipRig ship = builder.CreateShip("PlayerHudCombatOfflineShip");
+            builder.CreateWeaponTarget("PlayerHudCombatOfflineTarget", ship.Ship.transform.position + Vector3.forward * 40f);
+            PrototypeWeaponComputer computer = ship.Ship.AddComponent<PrototypeWeaponComputer>();
+            computer.Bind(ship.Ship.transform, ship.Stats, null);
+            computer.RefreshTargets();
+            Assert.True(computer.SelectNextTarget());
+
+            PrototypePlayerHudSnapshot snapshot = PrototypePlayerHudSnapshotBuilder.Build(
+                ship.Ship.transform,
+                ship.Body,
+                ship.Stats,
+                ship.Controller,
+                null,
+                null,
+                computer,
+                null,
+                null);
+
+            Assert.True(snapshot.Combat.HasActiveTarget);
+            Assert.That(snapshot.Combat.FireStatusLabel, Is.EqualTo("Waffe offline"));
+            Assert.That(snapshot.Combat.FireSeverity, Is.EqualTo(PrototypePlayerHudSeverity.Danger));
+        }
     }
 
     [Test]
@@ -2176,9 +2769,153 @@ public class PrototypePlayerHudValidationTests
         Assert.That(FindText(playerHud, "ContextTitle").text, Is.EqualTo("Objective: Clear the Arena"));
         Assert.False(FindRect(playerHud, "CombatControls").gameObject.activeInHierarchy);
 
+        var autoFireNoTarget = new PrototypePlayerCombatSnapshot(
+            true,
+            "No target",
+            0f,
+            "--",
+            0f,
+            "No target",
+            PrototypePlayerHudSeverity.Warning,
+            "Auto Fire: No target",
+            "ManualOrder");
+
+        ApplySnapshotForTest(playerHud, CreateHudSnapshot(autoFireNoTarget, CreateDockingSnapshot(false), CreateNavigationSnapshot(true), arena));
+        Assert.That(FindText(playerHud, "ContextTitle").text, Is.EqualTo("Navigation: Nav Beacon"));
+        Assert.False(FindRect(playerHud, "CombatControls").gameObject.activeInHierarchy);
+
+        ApplySnapshotForTest(playerHud, CreateHudSnapshot(autoFireNoTarget, CreateDockingSnapshot(false), CreateNavigationSnapshot(false), arena));
+        Assert.That(FindText(playerHud, "ContextTitle").text, Is.EqualTo("Objective: Clear the Arena"));
+        Assert.False(FindRect(playerHud, "CombatControls").gameObject.activeInHierarchy);
+
         ApplySnapshotForTest(playerHud, CreateHudSnapshot(combatNoTarget, CreateDockingSnapshot(false), CreateNavigationSnapshot(false), default));
         Assert.That(FindText(playerHud, "ContextTitle").text, Is.EqualTo("Combat: No target"));
         Assert.True(FindRect(playerHud, "CombatControls").gameObject.activeInHierarchy);
+    }
+
+    [Test]
+    public void NavigationPlannerBindsTimelineAndActiveSegmentDetail()
+    {
+        GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+        cameraObject.AddComponent<Camera>();
+        PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+        playerHud.RefreshNow();
+
+        PrototypePlayerNavigationSnapshot navigation = CreateNavigationSnapshotWithTimeline();
+        FindRect(playerHud, "NavigationPlannerPanel").gameObject.SetActive(true);
+
+        ApplySnapshotForTest(playerHud, CreateHudSnapshot(CreateCombatSnapshot(false), CreateDockingSnapshot(false), navigation, default));
+
+        RectTransform timelineRect = FindRect(playerHud, "NavigationPlannerTimeline");
+        TMP_Text detail = FindText(playerHud, "NavigationPlannerTimelineDetail");
+        TMP_Text body = FindText(playerHud, "NavigationPlannerBody");
+
+        Assert.True(timelineRect.gameObject.activeInHierarchy);
+        Assert.That(timelineRect.GetComponent<PrototypeNavigationTimelineGraphic>(), Is.Not.Null);
+        Assert.True(detail.gameObject.activeInHierarchy);
+        Assert.That(detail.text, Is.EqualTo("Hauptburn - 100% Schub, 2.9s, DeltaV 34.3 m/s"));
+        Assert.That(body.text, Does.Contain("Details ausgeblendet"));
+        Assert.That(body.text, Does.Not.Contain("Authority: test"));
+        Assert.That(body.text, Does.Not.Contain("Steps:"));
+
+        MethodInfo bodyMethod = typeof(PrototypePlayerHudRenderer).GetMethod(
+            "BuildNavigationPlannerBodyCore",
+            BindingFlags.Static | BindingFlags.NonPublic);
+        Assert.NotNull(bodyMethod);
+        string openDetailsBody = (string)bodyMethod.Invoke(null, new object[] { navigation, true });
+        Assert.That(openDetailsBody, Does.Contain("Details:"));
+        Assert.That(openDetailsBody, Does.Contain("Authority: test"));
+        Assert.That(openDetailsBody, Does.Contain("Steps:"));
+        Assert.That(openDetailsBody.IndexOf("Steps:", System.StringComparison.Ordinal), Is.GreaterThan(openDetailsBody.IndexOf("Details:", System.StringComparison.Ordinal)));
+    }
+
+    [Test]
+    public void NavigationTimelineGraphicBuildsProportionalPhaseLayoutAndActiveMarker()
+    {
+        var timelineObject = new GameObject("NavigationTimelineGraphicLayoutTest", typeof(RectTransform));
+        try
+        {
+            var graphic = timelineObject.AddComponent<PrototypeNavigationTimelineGraphic>();
+            var segments = new[]
+            {
+                new PrototypeNavigationTimelineSegment(0f, 1f, PrototypeManeuverPhase.AlignForBurn, 0f, 0f, "Align"),
+                new PrototypeNavigationTimelineSegment(1f, 4f, PrototypeManeuverPhase.ProgradeBurn, 1f, 20f, "Burn"),
+                new PrototypeNavigationTimelineSegment(5f, 2f, PrototypeManeuverPhase.FlipToRetrograde, 0f, 0f, "Flip")
+            };
+
+            graphic.SetTimeline(segments, 0.5f, 1, compactMode: false);
+
+            Rect sourceRect = new Rect(0f, 0f, 150f, 20f);
+            PrototypeNavigationTimelineLayout layout = graphic.BuildLayoutForTests(sourceRect);
+
+            Assert.That(layout.Segments.Length, Is.EqualTo(3));
+            Assert.That(layout.TrackRect.width, Is.EqualTo(142f).Within(0.001f));
+
+            float firstAllocatedWidth = layout.Segments[0].Rect.width + 1f;
+            float secondAllocatedWidth = layout.Segments[1].Rect.width + 1f;
+            float thirdAllocatedWidth = layout.Segments[2].Rect.width + 1f;
+            Assert.That(secondAllocatedWidth, Is.GreaterThan(thirdAllocatedWidth));
+            Assert.That(thirdAllocatedWidth, Is.GreaterThan(firstAllocatedWidth));
+            Assert.That((secondAllocatedWidth - 9f) / (firstAllocatedWidth - 9f), Is.EqualTo(4f).Within(0.02f));
+            Assert.That((thirdAllocatedWidth - 9f) / (firstAllocatedWidth - 9f), Is.EqualTo(2f).Within(0.02f));
+
+            Assert.That(layout.ProgressMarkerRect.center.x, Is.EqualTo(layout.TrackRect.center.x).Within(0.001f));
+            Assert.That(layout.ProgressMarkerRect.width, Is.EqualTo(2.4f).Within(0.001f));
+
+            Assert.False(layout.Segments[0].IsActive);
+            Assert.True(layout.Segments[1].IsActive);
+            Assert.That(layout.Segments[1].ActiveHighlightRect.width, Is.GreaterThan(layout.Segments[1].Rect.width));
+            Assert.That(layout.Segments[1].ActiveHighlightColor.a, Is.EqualTo(0.26f).Within(0.001f));
+
+            AssertColorApproximately(
+                new Color(PrototypeUiStyle.MutedColor.r, PrototypeUiStyle.MutedColor.g, PrototypeUiStyle.MutedColor.b, 0.58f),
+                layout.Segments[0].Color);
+            AssertColorApproximately(
+                Color.Lerp(new Color(PrototypeUiStyle.ActiveColor.r, PrototypeUiStyle.ActiveColor.g, PrototypeUiStyle.ActiveColor.b, 0.92f), Color.white, 0.28f),
+                layout.Segments[1].Color);
+            AssertColorApproximately(
+                new Color(PrototypeUiStyle.WarningColor.r, PrototypeUiStyle.WarningColor.g, PrototypeUiStyle.WarningColor.b, 0.94f),
+                layout.Segments[2].Color);
+        }
+        finally
+        {
+            Object.DestroyImmediate(timelineObject);
+        }
+    }
+
+    [Test]
+    public void NavigationContextUsesMiniTimelineWithoutRouteOrPreviewGaugeLabels()
+    {
+        GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+        cameraObject.AddComponent<Camera>();
+        PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+        playerHud.RefreshNow();
+
+        PrototypePlayerNavigationSnapshot navigation = CreateNavigationSnapshotWithTimeline(hasAvoidanceCue: true);
+        ApplySnapshotForTest(playerHud, CreateHudSnapshot(CreateCombatSnapshot(false), CreateDockingSnapshot(false), navigation, default));
+
+        Assert.That(FindText(playerHud, "ContextTitle").text, Is.EqualTo("Navigation: Nav Beacon"));
+        string contextBody = FindText(playerHud, "ContextBody").text;
+        string[] contextLines = contextBody.Split('\n');
+        Assert.That(contextLines.Length, Is.EqualTo(3));
+        Assert.That(contextLines[0], Is.EqualTo("Waypoint | Target 2/3 | Plan bereit"));
+        Assert.That(contextLines[1], Does.Contain("Dist 840 m | ETA 12s | Annaeherung -> auf Ziel 12.0 m/s"));
+        Assert.That(contextLines[2], Is.EqualTo("Direkter Kurs"));
+        Assert.That(contextBody, Does.Not.Contain("Lateral"));
+        Assert.That(contextBody, Does.Not.Contain("Preview"));
+        RectTransform timelineRect = FindRect(playerHud, "ContextNavigationTimeline");
+        Assert.True(timelineRect.gameObject.activeInHierarchy);
+        Assert.That(timelineRect.GetComponent<PrototypeNavigationTimelineGraphic>(), Is.Not.Null);
+        Assert.True(FindButton(playerHud, "NavPreviousTarget").gameObject.activeInHierarchy);
+        Assert.True(FindButton(playerHud, "NavNextTarget").gameObject.activeInHierarchy);
+        Assert.True(FindButton(playerHud, "NavAutopilot").gameObject.activeInHierarchy);
+        Assert.False(FindButton(playerHud, "NavReplan").gameObject.activeInHierarchy);
+        Assert.False(FindButton(playerHud, "NavPreview").gameObject.activeInHierarchy);
+        Assert.That(FindText(playerHud, "GaugeLabel0").text, Is.EqualTo("Avoid"));
+        Assert.That(FindText(playerHud, "GaugeLabel1").gameObject.activeSelf, Is.False);
+        Assert.That(FindText(playerHud, "GaugeLabel2").gameObject.activeSelf, Is.False);
+        Assert.That(FindText(playerHud, "GaugeLabel0").text, Is.Not.EqualTo("Route"));
+        Assert.That(FindText(playerHud, "GaugeLabel2").text, Is.Not.EqualTo("Preview"));
     }
 
     [Test]
@@ -2358,7 +3095,10 @@ public class PrototypePlayerHudValidationTests
                 null,
                 radarSnapshot));
 
+        AssertNavigationPlannerMapLayoutSeparated(playerHud, 2560, 1080);
         AssertNavigationPlannerMapLayoutSeparated(playerHud, 1280, 720);
+        AssertNavigationPlannerMapLayoutSeparated(playerHud, 1024, 768);
+        AssertNavigationPlannerMapLayoutSeparated(playerHud, 900, 1600);
         AssertNavigationPlannerMapLayoutSeparated(playerHud, 800, 1400);
     }
 
@@ -2484,23 +3224,39 @@ public class PrototypePlayerHudValidationTests
             Assert.False(FindRect(playerHud, "RadarPanel").gameObject.activeSelf);
             Assert.That(FindText(playerHud, "CombatComputerTitle").text, Is.EqualTo("Combat Computer"));
             Assert.That(FindText(playerHud, "CombatComputerBody").text, Does.Contain("Target No target"));
+            Assert.That(FindText(playerHud, "CombatComputerBody").text, Does.Contain("Targets 2/2"));
 
             Button next = FindButton(playerHud, "CombatComputerNextTarget");
             Button autoFire = FindButton(playerHud, "CombatComputerAutoFire");
-            Button priority = FindButton(playerHud, "CombatComputerPriority");
+            Button manualPriority = FindButton(playerHud, "CombatComputerPriority");
+            Button nearestPriority = FindButton(playerHud, "CombatComputerPriorityNearest");
+            Button highHealthPriority = FindButton(playerHud, "CombatComputerPriorityHighHealth");
+            Button lowHealthPriority = FindButton(playerHud, "CombatComputerPriorityLowHealth");
 
             Assert.True(next.interactable);
+            Assert.True(manualPriority.interactable);
+            Assert.True(nearestPriority.interactable);
+            Assert.True(highHealthPriority.interactable);
+            Assert.True(lowHealthPriority.interactable);
+            Assert.That(FindText(playerHud, "CombatComputerPriorityText").text, Is.EqualTo("[Manual]"));
             next.onClick.Invoke();
             Assert.NotNull(combatRig.Computer.ActiveTarget);
             Assert.That(FindText(playerHud, "CombatComputerBody").text, Does.Contain(combatRig.Computer.ActiveTarget.Label));
+            Assert.That(FindText(playerHud, "CombatComputerBody").text, Does.Contain("> " + combatRig.Computer.ActiveTarget.Label));
 
             autoFire.onClick.Invoke();
             Assert.True(combatRig.Computer.AutoFireEnabled);
             Assert.That(FindText(playerHud, "CombatComputerAutoFireText").text, Is.EqualTo("Auto On"));
 
-            priority.onClick.Invoke();
+            nearestPriority.onClick.Invoke();
             Assert.That(combatRig.Computer.PriorityMode, Is.EqualTo(PrototypeWeaponTargetPriorityMode.Nearest));
-            Assert.That(FindText(playerHud, "CombatComputerPriorityText").text, Is.EqualTo("Prio Near"));
+            Assert.That(FindText(playerHud, "CombatComputerPriorityNearestText").text, Is.EqualTo("[Nearest]"));
+            highHealthPriority.onClick.Invoke();
+            Assert.That(combatRig.Computer.PriorityMode, Is.EqualTo(PrototypeWeaponTargetPriorityMode.HighestHealth));
+            Assert.That(FindText(playerHud, "CombatComputerPriorityHighHealthText").text, Is.EqualTo("[High HP]"));
+            lowHealthPriority.onClick.Invoke();
+            Assert.That(combatRig.Computer.PriorityMode, Is.EqualTo(PrototypeWeaponTargetPriorityMode.LowestHealth));
+            Assert.That(FindText(playerHud, "CombatComputerPriorityLowHealthText").text, Is.EqualTo("[Low HP]"));
         }
     }
 
@@ -2661,8 +3417,9 @@ public class PrototypePlayerHudValidationTests
             RectTransform controls = FindRect(playerHud, "NavigationControls");
             Assert.True(controls.gameObject.activeInHierarchy);
             Assert.That(FindText(playerHud, "ContextBody").text, Does.Contain(initialTargetLabel));
+            Assert.That(FindText(playerHud, "ContextBody").text.Split('\n').Length, Is.EqualTo(3));
             Assert.That(FindText(playerHud, "NavAutopilotText").text, Is.EqualTo("Engage"));
-            Assert.That(FindText(playerHud, "NavPreviewText").text, Is.EqualTo("Preview On"));
+            Assert.That(FindText(playerHud, "NavActionHint").gameObject.activeSelf, Is.False);
 
             Button next = FindButton(playerHud, "NavNextTarget");
             Button previous = FindButton(playerHud, "NavPreviousTarget");
@@ -2673,24 +3430,27 @@ public class PrototypePlayerHudValidationTests
             Assert.True(next.interactable);
             Assert.True(previous.interactable);
             Assert.True(autopilotButton.interactable);
-            Assert.True(replan.interactable);
-            Assert.True(previewButton.interactable);
+            Assert.That(FindText(playerHud, "NavReplanText").text, Is.EqualTo("Neu planen"));
+            Assert.False(replan.gameObject.activeInHierarchy);
+            Assert.False(previewButton.gameObject.activeInHierarchy);
+            Assert.False(replan.interactable);
+            Assert.False(previewButton.interactable);
 
             next.onClick.Invoke();
             Assert.NotNull(autopilot.CurrentTarget);
             Assert.That(autopilot.CurrentTarget.DisplayName, Is.Not.EqualTo(initialTargetName));
             Assert.That(FindText(playerHud, "ContextBody").text, Does.Contain("Target " + (manager.SelectedIndex + 1) + "/" + manager.TargetCount));
+            Assert.That(FindText(playerHud, "NavAutopilotText").text, Is.EqualTo("Engage"));
+            Assert.That(FindText(playerHud, "NavReplanText").text, Is.EqualTo("Plane..."));
+            Assert.That(FindText(playerHud, "NavActionHint").text, Is.EqualTo("Plane..."));
+            Assert.True(preview.PreviewEnabled, "Preview remains planner-only and compact Preview does not toggle it");
 
-            previewButton.onClick.Invoke();
-            Assert.False(preview.PreviewEnabled);
-            Assert.That(FindText(playerHud, "NavPreviewText").text, Is.EqualTo("Preview Off"));
+            SetPrivateField(playerHud, "navigationPlanningBusyUntilRealtime", -1f);
+            playerHud.RefreshNow();
 
             autopilotButton.onClick.Invoke();
             Assert.True(autopilot.AutopilotEngaged);
-            Assert.That(FindText(playerHud, "NavAutopilotText").text, Is.EqualTo("Abort AP"));
-
-            replan.onClick.Invoke();
-            Assert.NotNull(autopilot.CurrentTarget);
+            Assert.That(FindText(playerHud, "NavAutopilotText").text, Is.EqualTo("Abbrechen"));
         }
     }
 
@@ -2723,7 +3483,12 @@ public class PrototypePlayerHudValidationTests
             playerHud.Bind(rig.Ship.transform, rig.Stats, rig.Body);
             playerHud.RefreshNow();
 
-            FindButton(playerHud, "NavReplan").onClick.Invoke();
+            MethodInfo setPlannerVisible = typeof(PrototypePlayerHudRenderer).GetMethod(
+                "SetNavigationPlannerVisible",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.NotNull(setPlannerVisible);
+            setPlannerVisible.Invoke(playerHud, new object[] { true });
+            playerHud.RefreshNow();
 
             RectTransform panel = FindRect(playerHud, "NavigationPlannerPanel");
             Assert.True(panel.gameObject.activeSelf);
@@ -2732,29 +3497,125 @@ public class PrototypePlayerHudValidationTests
             Assert.That(FindText(playerHud, "NavigationPlannerTitle").text, Is.EqualTo("Navigation Planner"));
             Assert.That(FindText(playerHud, "NavigationPlannerBody").text, Does.Contain("Target 1/"));
             Assert.That(FindText(playerHud, "NavigationPlannerBody").text, Does.Contain("Manoever:"));
-            Assert.That(FindText(playerHud, "NavigationPlannerBody").text, Does.Contain("Path:"));
-            Assert.That(FindText(playerHud, "NavigationPlannerBody").text, Does.Contain("Burn "));
-            Assert.That(FindText(playerHud, "NavigationPlannerBody").text, Does.Contain("Stop "));
+            Assert.That(FindText(playerHud, "NavigationPlannerBody").text, Does.Contain("Kurs:"));
+            Assert.That(FindText(playerHud, "NavigationPlannerBody").text, Does.Contain("Reserve:"));
+            Assert.That(FindText(playerHud, "NavigationPlannerBody").text, Does.Contain("Plandauer"));
+            Assert.That(FindText(playerHud, "NavigationPlannerBody").text, Does.Contain("Stoppdistanz "));
             Assert.True(FindRect(playerHud, "NavigationPlannerMapPanel").gameObject.activeSelf);
             Assert.True(FindRect(playerHud, "NavigationPlannerMapLayer").gameObject.activeInHierarchy);
             Assert.True(FindRect(playerHud, "NavigationPlannerMapGridSegment0").gameObject.activeInHierarchy);
-            Assert.That(FindText(playerHud, "NavigationPlannerMapText").text, Does.Contain(" km"));
+            string mapLabel = FindText(playerHud, "NavigationPlannerMapText").text;
+            string[] mapLabelParts = mapLabel.Split(new[] { " | " }, System.StringSplitOptions.None);
+            Assert.That(mapLabelParts.Length, Is.EqualTo(3));
+            Assert.That(mapLabelParts[0], Does.Match("^(Route|Direct) \\d+$"));
+            Assert.That(mapLabelParts[1], Does.Match("^Range (\\d+ m|\\d+(\\.\\d)? km)$"));
+            Assert.That(mapLabelParts[2], Does.Match("^\\d+ contacts?$"));
 
             Button next = FindButton(playerHud, "NavPlannerNextTarget");
             Button engage = FindButton(playerHud, "NavPlannerEngage");
+            Button replan = FindButton(playerHud, "NavPlannerReplan");
             Button previewButton = FindButton(playerHud, "NavPlannerPreview");
 
             Assert.True(next.interactable);
+            Assert.True(replan.interactable);
+            Assert.True(previewButton.gameObject.activeInHierarchy);
+            Assert.That(FindText(playerHud, "NavPlannerReplanText").text, Is.EqualTo("Neu planen"));
+            Assert.That(FindText(playerHud, "NavPlannerReplanText").text, Is.Not.EqualTo("Replan"));
             next.onClick.Invoke();
             Assert.That(FindText(playerHud, "NavigationPlannerBody").text, Does.Contain("Target " + (manager.SelectedIndex + 1) + "/" + manager.TargetCount));
+            Assert.That(FindText(playerHud, "NavPlannerEngageText").text, Is.EqualTo("Engage"));
+            Assert.That(FindText(playerHud, "NavPlannerReplanText").text, Is.EqualTo("Plane..."));
+            Assert.That(FindText(playerHud, "NavPlannerActionHint").text, Is.EqualTo("Plane..."));
 
             previewButton.onClick.Invoke();
             Assert.False(preview.PreviewEnabled);
             Assert.That(FindText(playerHud, "NavPlannerPreviewText").text, Is.EqualTo("Preview Off"));
 
+            SetPrivateField(playerHud, "navigationPlanningBusyUntilRealtime", -1f);
+            playerHud.RefreshNow();
             engage.onClick.Invoke();
             Assert.True(autopilot.AutopilotEngaged);
-            Assert.That(FindText(playerHud, "NavPlannerEngageText").text, Is.EqualTo("Abort AP"));
+            Assert.That(FindText(playerHud, "NavPlannerEngageText").text, Is.EqualTo("Abbrechen"));
+        }
+    }
+
+    [Test]
+    public void NavigationPlannerEngageShowsDisabledReasonWhenTargetMissing()
+    {
+        using (var builder = new PrototypeScenarioBuilder())
+        {
+            PrototypeShipRig rig = builder.CreateShip("PlayerHudNavPlannerNoTargetShip");
+            PrototypeWaypointAutopilot autopilot = rig.Ship.GetComponent<PrototypeWaypointAutopilot>();
+            if (autopilot == null)
+            {
+                autopilot = rig.Ship.AddComponent<PrototypeWaypointAutopilot>();
+            }
+
+            autopilot.Bind(null, rig.Controller, rig.Stats, rig.Body);
+
+            GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+            cameraObject.AddComponent<Camera>();
+            PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+            playerHud.Bind(rig.Ship.transform, rig.Stats, rig.Body);
+            playerHud.RefreshNow();
+
+            MethodInfo setPlannerVisible = typeof(PrototypePlayerHudRenderer).GetMethod(
+                "SetNavigationPlannerVisible",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.NotNull(setPlannerVisible);
+            setPlannerVisible.Invoke(playerHud, new object[] { true });
+            playerHud.RefreshNow();
+
+            Assert.False(FindButton(playerHud, "NavPlannerEngage").interactable);
+            Assert.That(FindText(playerHud, "NavPlannerEngageText").text, Is.EqualTo("Engage"));
+            Assert.True(FindText(playerHud, "NavPlannerActionHint").gameObject.activeSelf);
+            Assert.That(FindText(playerHud, "NavPlannerActionHint").text, Is.EqualTo("Kein Ziel"));
+        }
+    }
+
+    [TestCase(PrototypeWaypointAutopilotState.FuelInsufficient, "FuelInsufficient", "Treibstoff reicht nicht")]
+    [TestCase(PrototypeWaypointAutopilotState.Failed, "none", "Plan blockiert")]
+    public void NavigationEngageShowsSpecDisabledReasonsOnCompactHudAndPlanner(
+        PrototypeWaypointAutopilotState state,
+        string arrivalFailureReason,
+        string expectedReason)
+    {
+        using (var builder = new PrototypeScenarioBuilder())
+        {
+            PrototypeShipRig rig = builder.CreateShip("PlayerHudNavDisabledReasonShip");
+            GameObject managerObject = new GameObject("PlayerHudNavDisabledReasonManager");
+            PrototypeWaypointManager manager = managerObject.AddComponent<PrototypeWaypointManager>();
+            manager.EnsureDefaultWaypoints();
+
+            PrototypeWaypointAutopilot autopilot = rig.Ship.GetComponent<PrototypeWaypointAutopilot>();
+            if (autopilot == null)
+            {
+                autopilot = rig.Ship.AddComponent<PrototypeWaypointAutopilot>();
+            }
+
+            autopilot.Bind(manager, rig.Controller, rig.Stats, rig.Body);
+            autopilot.SelectTarget(manager.SelectedTarget);
+            SetAutoProperty(autopilot, "CurrentState", state);
+            SetPrivateField(autopilot, "arrivalFailureReason", arrivalFailureReason);
+
+            GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+            cameraObject.AddComponent<Camera>();
+            PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+            playerHud.Bind(rig.Ship.transform, rig.Stats, rig.Body);
+            playerHud.RefreshNow();
+
+            Assert.False(FindButton(playerHud, "NavAutopilot").interactable);
+            Assert.That(FindText(playerHud, "NavAutopilotText").text, Is.EqualTo("Engage"));
+            Assert.True(FindText(playerHud, "NavActionHint").gameObject.activeSelf);
+            Assert.That(FindText(playerHud, "NavActionHint").text, Is.EqualTo(expectedReason));
+
+            SetNavigationPlannerVisibleForTest(playerHud, true);
+            playerHud.RefreshNow();
+
+            Assert.False(FindButton(playerHud, "NavPlannerEngage").interactable);
+            Assert.That(FindText(playerHud, "NavPlannerEngageText").text, Is.EqualTo("Engage"));
+            Assert.True(FindText(playerHud, "NavPlannerActionHint").gameObject.activeSelf);
+            Assert.That(FindText(playerHud, "NavPlannerActionHint").text, Is.EqualTo(expectedReason));
         }
     }
 
@@ -2805,7 +3666,7 @@ public class PrototypePlayerHudValidationTests
         MethodInfo method = typeof(PrototypePlayerHudSnapshotBuilder).GetMethod("BuildWarningChips", BindingFlags.Static | BindingFlags.NonPublic);
         Assert.NotNull(method);
 
-        var chips = (PrototypePlayerHudChip[])method.Invoke(null, new object[] { null, null, null, null, combat, docking });
+        var chips = (PrototypePlayerHudChip[])method.Invoke(null, new object[] { null, null, null, null, default(PrototypePlayerNavigationSnapshot), combat, docking });
 
         int sharedCount = 0;
         for (int i = 0; i < chips.Length; i++)
@@ -2962,6 +3823,67 @@ public class PrototypePlayerHudValidationTests
             visible ? 3 : 0);
     }
 
+    private static PrototypePlayerNavigationSnapshot CreateNavigationSnapshotWithTimeline(bool hasAvoidanceCue = false)
+    {
+        var timeline = new[]
+        {
+            new PrototypeNavigationTimelineSegment(0f, 0.35f, PrototypeManeuverPhase.AlignForBurn, 0f, 0f, "Ausrichten"),
+            new PrototypeNavigationTimelineSegment(0.35f, 2.9f, PrototypeManeuverPhase.ProgradeBurn, 1f, 34.3f, "Hauptburn"),
+            new PrototypeNavigationTimelineSegment(3.25f, 0.45f, PrototypeManeuverPhase.FlipToRetrograde, 0f, 0f, "Flip"),
+            new PrototypeNavigationTimelineSegment(3.7f, 1.4f, PrototypeManeuverPhase.RetrogradeBurn, 0.72f, 12.1f, "Bremsburn")
+        };
+
+        return new PrototypePlayerNavigationSnapshot(
+            true,
+            "Nav Beacon",
+            "Waypoint",
+            840f,
+            18f,
+            12f,
+            1.5f,
+            "12s",
+            "Plan bereit",
+            "Direkter Kurs",
+            "Route: Geplant",
+            "Manoever: Direkt-Burn bereit",
+            140f,
+            12f,
+            60f,
+            new string[0],
+            new[] { Vector3.zero, Vector3.forward * 40f },
+            PrototypeTrajectoryPreviewSnapshot.Unavailable("Trajectory Preview", 0, 0f),
+            hasAvoidanceCue,
+            new Vector3(12f, 0f, 28f),
+            hasAvoidanceCue ? "Avoid: debris" : string.Empty,
+            2,
+            3,
+            planAuthorityLabel: "Authority: test",
+            activeSegmentLabel: "Active: Hauptburn",
+            replanStatusLabel: "Neuplanung: keine",
+            planIdentityLabel: "Plan: test",
+            trackingErrorLabel: "Track: test",
+            trackingCommandLabel: "Cmd: test",
+            totalPlanDurationSeconds: 5.1f,
+            totalPlanFuelKg: 1.2f,
+            maneuverStepRows: new[] { "1 T+0.4s-3.3s Hauptburn | MAIN 100% | dV 34.3" },
+            planStateBadge: new PrototypeNavigationPlanStateBadge(PrototypeNavigationPlanState.PlanReady, "Plan bereit", PrototypePlayerHudSeverity.Info),
+            deltaVRequired: 46.4f,
+            deltaVAvailable: 120f,
+            fuelAfterArrivalFraction: 0.78f,
+            fuelAfterArrivalAvailable: true,
+            brakeReserveOk: true,
+            timelineSegments: timeline,
+            timelineProgress01: 0.5f,
+            activeSegmentIndex: 1,
+            maneuverMarkersWorld: new[]
+            {
+                new Vector3(0f, 0f, 20f),
+                new Vector3(8f, 0f, 38f),
+                new Vector3(12f, 0f, 48f)
+            },
+            closingTowardsTarget: true);
+    }
+
     private static void ApplySnapshotForTest(PrototypePlayerHudRenderer playerHud, PrototypePlayerHudSnapshot snapshot)
     {
         MethodInfo method = typeof(PrototypePlayerHudRenderer).GetMethod("ApplySnapshot", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -3006,6 +3928,79 @@ public class PrototypePlayerHudValidationTests
         }
 
         return labels;
+    }
+
+    private static PrototypeTrajectoryPlan BuildEmittedPlannerFlightPlan(PrototypeAutopilotRig rig)
+    {
+        PrototypeShipPlanningSnapshot shipSnapshot = PrototypeShipPlanningSnapshotBuilder.Build(rig.Ship.Ship.transform);
+        return new PrototypeTrajectoryPlanner().Plan(
+            new PrototypeTrajectorySnapshot(
+                rig.Ship.Body.worldCenterOfMass,
+                rig.Ship.Body.linearVelocity,
+                rig.Autopilot.CurrentTarget.Position,
+                rig.Ship.Ship.transform.forward,
+                rig.Ship.Body.mass,
+                8f,
+                rig.Ship.Rcs.TranslationForce,
+                8f,
+                shipSnapshot.mainThrustNewtons,
+                shipSnapshot.mainFuelKgPerSecond,
+                shipSnapshot.currentFuelKg,
+                10f,
+                1f,
+                0.2f),
+            PrototypeObstacleDetectionResult.Clear(8f),
+            shipSnapshot,
+            3f,
+            0.02f);
+    }
+
+    private static PrototypePlayerNavigationSnapshot BuildNavigationSnapshot(PrototypeAutopilotRig rig)
+    {
+        return PrototypePlayerHudSnapshotBuilder.Build(
+            rig.Ship.Ship.transform,
+            rig.Ship.Body,
+            rig.Ship.Stats,
+            rig.Ship.Controller,
+            rig.Autopilot,
+            null,
+            null,
+            null,
+            null).Navigation;
+    }
+
+    private static PrototypePlayerHudSnapshot BuildHudSnapshot(PrototypeAutopilotRig rig)
+    {
+        return PrototypePlayerHudSnapshotBuilder.Build(
+            rig.Ship.Ship.transform,
+            rig.Ship.Body,
+            rig.Ship.Stats,
+            rig.Ship.Controller,
+            rig.Autopilot,
+            null,
+            null,
+            null,
+            null);
+    }
+
+    private static void AssertNavigationPlanState(
+        PrototypePlayerNavigationSnapshot snapshot,
+        PrototypeNavigationPlanState state,
+        string text,
+        PrototypePlayerHudSeverity severity)
+    {
+        Assert.That(snapshot.PlanStateBadge.State, Is.EqualTo(state));
+        Assert.That(snapshot.PlanStateBadge.Text, Is.EqualTo(text));
+        Assert.That(snapshot.PlanStateBadge.Severity, Is.EqualTo(severity));
+        Assert.That(snapshot.StateLabel, Is.EqualTo(snapshot.PlanStateBadge.Text));
+    }
+
+    private static void AssertColorApproximately(Color expected, Color actual)
+    {
+        Assert.That(actual.r, Is.EqualTo(expected.r).Within(0.001f));
+        Assert.That(actual.g, Is.EqualTo(expected.g).Within(0.001f));
+        Assert.That(actual.b, Is.EqualTo(expected.b).Within(0.001f));
+        Assert.That(actual.a, Is.EqualTo(expected.a).Within(0.001f));
     }
 
     private static string GetBlipLabel(PrototypePlayerRadarBlip[] blips, PrototypePlayerRadarBlipKind kind)
@@ -3124,6 +4119,15 @@ public class PrototypePlayerHudValidationTests
         field.SetValue(target, value);
     }
 
+    private static void SetNavigationPlannerVisibleForTest(PrototypePlayerHudRenderer playerHud, bool visible)
+    {
+        MethodInfo method = typeof(PrototypePlayerHudRenderer).GetMethod(
+            "SetNavigationPlannerVisible",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        method.Invoke(playerHud, new object[] { visible });
+    }
+
     private static void InvokeFixedUpdate(object target)
     {
         MethodInfo method = target.GetType().GetMethod("FixedUpdate", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -3207,20 +4211,28 @@ public class PrototypePlayerHudValidationTests
         RectTransform row = FindRect(playerHud, "NavigationControls");
         RectTransform body = FindRect(playerHud, "ContextBody");
         RectTransform gauges = FindRect(playerHud, "ContextGauges");
+        RectTransform actionHint = FindRect(playerHud, "NavActionHint");
+        TMP_Text actionHintText = FindText(playerHud, "NavActionHint");
         RectTransform[] buttons =
         {
             FindRect(playerHud, "NavPreviousTarget"),
             FindRect(playerHud, "NavNextTarget"),
-            FindRect(playerHud, "NavAutopilot"),
-            FindRect(playerHud, "NavReplan"),
-            FindRect(playerHud, "NavPreview")
+            FindRect(playerHud, "NavAutopilot")
         };
+        actionHint.gameObject.SetActive(true);
+        actionHintText.text = "Treibstoff reicht nicht";
+        Canvas.ForceUpdateCanvases();
 
         Assert.True(row.gameObject.activeInHierarchy, width + "x" + height + " nav controls hidden");
+        Assert.False(FindRect(playerHud, "NavReplan").gameObject.activeInHierarchy, width + "x" + height + " compact replan should stay planner-only");
+        Assert.False(FindRect(playerHud, "NavPreview").gameObject.activeInHierarchy, width + "x" + height + " compact preview should stay planner-only");
         Assert.False(Overlaps(row, body), width + "x" + height + " nav controls/body");
         Assert.False(Overlaps(row, gauges), width + "x" + height + " nav controls/gauges");
 
         Rect rowRect = WorldRect(row);
+        Rect hintRect = WorldRect(actionHint);
+        Assert.True(Contains(rowRect, hintRect), width + "x" + height + " nav action hint outside row");
+        Assert.False(Overlaps(actionHint, buttons[2]), width + "x" + height + " nav action hint/engage overlap");
         for (int i = 0; i < buttons.Length; i++)
         {
             Rect buttonRect = WorldRect(buttons[i]);
@@ -3239,9 +4251,19 @@ public class PrototypePlayerHudValidationTests
 
         RectTransform panel = FindRect(playerHud, "NavigationPlannerPanel");
         RectTransform body = FindRect(playerHud, "NavigationPlannerBody");
+        RectTransform timeline = FindRect(playerHud, "NavigationPlannerTimeline");
+        RectTransform timelineDetail = FindRect(playerHud, "NavigationPlannerTimelineDetail");
         RectTransform mapPanel = FindRect(playerHud, "NavigationPlannerMapPanel");
         RectTransform mapLayer = FindRect(playerHud, "NavigationPlannerMapLayer");
         RectTransform mapText = FindRect(playerHud, "NavigationPlannerMapText");
+        RectTransform bottomBar = FindRect(playerHud, "FlightStatusBar");
+        Rect mapFrame = UnionActiveWorldRects(
+            FindRect(playerHud, "NavigationPlannerMapGridSegment0"),
+            FindRect(playerHud, "NavigationPlannerMapGridSegment1"),
+            FindRect(playerHud, "NavigationPlannerMapGridSegment2"),
+            FindRect(playerHud, "NavigationPlannerMapGridSegment3"),
+            FindRect(playerHud, "NavigationPlannerMapGridSegment4"),
+            FindRect(playerHud, "NavigationPlannerMapGridSegment5"));
         TMP_Text mapLabelText = FindText(playerHud, "NavigationPlannerMapText");
         RectTransform[] rangeButtons =
         {
@@ -3264,13 +4286,42 @@ public class PrototypePlayerHudValidationTests
         Assert.True(mapLayer.gameObject.activeInHierarchy, width + "x" + height + " planner map layer hidden");
 
         Assert.False(Overlaps(mapPanel, body), width + "x" + height + " planner map panel/body overlap");
+        Assert.False(Overlaps(body, timeline), width + "x" + height + " planner body/timeline overlap");
+        Assert.False(Overlaps(body, timelineDetail), width + "x" + height + " planner body/timeline detail overlap");
+        Assert.False(Overlaps(timeline, timelineDetail), width + "x" + height + " planner timeline/detail overlap");
         Assert.False(Overlaps(mapLayer, mapText), width + "x" + height + " planner map layer/text overlap");
         Assert.False(Overlaps(mapLayer, body), width + "x" + height + " planner map layer/body overlap");
+        Assert.False(Overlaps(mapLayer, timeline), width + "x" + height + " planner map layer/timeline overlap");
+        Assert.False(Overlaps(mapLayer, timelineDetail), width + "x" + height + " planner map layer/timeline detail overlap");
         Assert.False(Overlaps(mapText, body), width + "x" + height + " planner map text/body overlap");
         Assert.True(Contains(WorldRect(mapPanel), WorldRect(mapLayer)), width + "x" + height + " planner map panel/layer containment");
         Assert.True(Contains(WorldRect(mapPanel), WorldRect(mapText)), width + "x" + height + " planner map panel/text containment");
+        if (height > width)
+        {
+            Assert.That(body.rect.width, Is.GreaterThanOrEqualTo(panel.rect.width - 32f), width + "x" + height + " portrait planner body width");
+            Assert.That(WorldRect(mapPanel).yMax, Is.LessThanOrEqualTo(WorldRect(timelineDetail).yMin - 32f), width + "x" + height + " portrait planner map below timeline detail");
+            Assert.That(WorldRect(mapLayer).yMax, Is.LessThanOrEqualTo(WorldRect(timelineDetail).yMin - 40f), width + "x" + height + " portrait planner map layer below timeline detail");
+            Assert.That(WorldRect(mapPanel).yMax, Is.LessThanOrEqualTo(WorldRect(body).yMin - 48f), width + "x" + height + " portrait planner map below body text");
+            Assert.That(WorldRect(mapLayer).yMax, Is.LessThanOrEqualTo(WorldRect(body).yMin - 56f), width + "x" + height + " portrait planner map layer below body text");
+            float controlsTop = WorldRect(bottomBar).yMax;
+            for (int i = 0; i < plannerButtons.Length; i++)
+            {
+                controlsTop = Mathf.Max(controlsTop, WorldRect(plannerButtons[i]).yMax);
+            }
+
+            for (int i = 0; i < rangeButtons.Length; i++)
+            {
+                controlsTop = Mathf.Max(controlsTop, WorldRect(rangeButtons[i]).yMax);
+            }
+
+            Assert.That(
+                mapFrame.yMin,
+                Is.GreaterThanOrEqualTo(controlsTop + 12f),
+                width + "x" + height + " portrait planner visible map frame below controls frame=" + mapFrame + " controlsTop=" + controlsTop);
+        }
+
         Assert.That(mapLabelText.fontSize, Is.GreaterThanOrEqualTo(10f), width + "x" + height + " planner map label font size");
-        if (width >= 860)
+        if (width >= 860 && width >= height)
         {
             Assert.That(mapLayer.rect.width, Is.GreaterThanOrEqualTo(280f), width + "x" + height + " planner map layer footprint");
         }
@@ -3283,6 +4334,11 @@ public class PrototypePlayerHudValidationTests
         {
             Assert.False(Overlaps(button, body), width + "x" + height + " planner button/body overlap " + button.gameObject.name);
             Assert.False(Overlaps(button, mapText), width + "x" + height + " planner button/map text overlap " + button.gameObject.name);
+            if (height > width)
+            {
+                Assert.False(Overlaps(button, mapLayer), width + "x" + height + " portrait planner button/map layer overlap " + button.gameObject.name);
+                Assert.False(Overlaps(button, mapPanel), width + "x" + height + " portrait planner button/map panel overlap " + button.gameObject.name);
+            }
         }
 
         for (int i = 0; i < plannerButtons.Length; i++)
@@ -3297,8 +4353,41 @@ public class PrototypePlayerHudValidationTests
 
         for (int i = 0; i < rangeButtons.Length; i++)
         {
+            Assert.That(rangeButtons[i].parent, Is.EqualTo(mapPanel), width + "x" + height + " planner range parent " + rangeButtons[i].gameObject.name);
+            Assert.False(Overlaps(rangeButtons[i], mapLayer), width + "x" + height + " planner range/map layer overlap " + rangeButtons[i].gameObject.name);
+            if (height > width)
+            {
+                Assert.That(
+                    WorldRect(rangeButtons[i]).yMax,
+                    Is.LessThanOrEqualTo(mapFrame.yMin - 8f),
+                    width + "x" + height + " portrait planner range inside visible map frame "
+                        + rangeButtons[i].gameObject.name
+                        + " range="
+                        + WorldRect(rangeButtons[i])
+                        + " frame="
+                        + mapFrame);
+            }
+
             Assert.False(Overlaps(rangeButtons[i], body), width + "x" + height + " planner range/button overlap " + rangeButtons[i].gameObject.name);
-            Assert.False(Overlaps(rangeButtons[i], mapText), width + "x" + height + " planner range/button map text overlap " + rangeButtons[i].gameObject.name);
+            Assert.False(
+                Overlaps(rangeButtons[i], mapText),
+                width + "x" + height + " planner range/button map text overlap "
+                    + rangeButtons[i].gameObject.name
+                    + " range=" + WorldRect(rangeButtons[i])
+                    + " mapText=" + WorldRect(mapText));
+            for (int j = 0; j < plannerButtons.Length; j++)
+            {
+                Assert.False(
+                    Overlaps(rangeButtons[i], plannerButtons[j]),
+                    width + "x" + height + " planner range/action button overlap "
+                        + rangeButtons[i].gameObject.name
+                        + " / "
+                        + plannerButtons[j].gameObject.name
+                        + " range="
+                        + WorldRect(rangeButtons[i])
+                        + " action="
+                        + WorldRect(plannerButtons[j]));
+            }
         }
     }
 
@@ -3419,6 +4508,32 @@ public class PrototypePlayerHudValidationTests
         Vector3[] corners = new Vector3[4];
         rect.GetWorldCorners(corners);
         return Rect.MinMaxRect(corners[0].x, corners[0].y, corners[2].x, corners[2].y);
+    }
+
+    private static Rect UnionActiveWorldRects(params RectTransform[] rects)
+    {
+        bool hasRect = false;
+        Rect union = default;
+        for (int i = 0; i < rects.Length; i++)
+        {
+            if (rects[i] == null || !rects[i].gameObject.activeInHierarchy)
+            {
+                continue;
+            }
+
+            Rect rect = WorldRect(rects[i]);
+            union = hasRect
+                ? Rect.MinMaxRect(
+                    Mathf.Min(union.xMin, rect.xMin),
+                    Mathf.Min(union.yMin, rect.yMin),
+                    Mathf.Max(union.xMax, rect.xMax),
+                    Mathf.Max(union.yMax, rect.yMax))
+                : rect;
+            hasRect = true;
+        }
+
+        Assert.True(hasRect, "expected at least one active rect");
+        return union;
     }
 
     private static void DestroyNamed(string objectName)

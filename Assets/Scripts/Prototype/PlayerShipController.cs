@@ -127,6 +127,10 @@ public class PlayerShipController : MonoBehaviour
     [SerializeField] private float translationAutoStopSpeedThreshold = 0.05f;
     [SerializeField] private float translationAutoStopGain = 2.8f;
     [SerializeField] private float translationAutoStopMaxForceScale = 1.0f;
+    [SerializeField] private float assistRotationAlignAngleDegrees = 60f;
+    [SerializeField] private float assistRotationAngularVelocityThreshold = 1.5f;
+    [SerializeField] private float assistRotationReferenceSpeedThreshold = 0.75f;
+    [SerializeField] private float assistRotationReleaseDelay = 0.35f;
 
     [Header("Main Throttle")]
     [Range(0f, 1f)]
@@ -178,6 +182,16 @@ public class PlayerShipController : MonoBehaviour
     private bool lastManualTranslationInputHeld;
     private float lastManualInputGraceUntil;
     private float lastTranslationAutoStopBlend;
+    private bool assistRotationActive;
+    private Vector3 assistRotationReferenceDirection;
+    private bool hasAssistRotationReferenceDirection;
+    private float autopilotAssistRotationReleaseTimer;
+    private float momentumAssistRotationReleaseTimer;
+    private Vector3 autopilotAssistRotationReferenceDirection;
+    private Vector3 momentumAssistRotationReferenceDirection;
+    private bool hasAutopilotAssistRotationReferenceDirection;
+    private bool hasMomentumAssistRotationReferenceDirection;
+    private string assistRotationSourceLabel = "None";
     public float MainThrottle => mainThrottle;
     public float MainThrottlePercent => mainThrottle * 100f;
     public float MainThrustCommand { get; private set; }
@@ -245,6 +259,10 @@ public class PlayerShipController : MonoBehaviour
     public Vector3 LastFlightAssistForceWorld => LastFlightAssistRequest.forceWorld;
     public Vector3 LastFlightAssistTorqueLocal => LastFlightAssistRequest.torqueLocal;
     public bool LastFlightAssistDebugOnly => LastFlightAssistRequest.debugOnlyNonPhysical;
+    public bool IsAssistRotationActive => assistRotationActive;
+    public bool HasAssistRotationReferenceDirection => hasAssistRotationReferenceDirection;
+    public Vector3 AssistRotationReferenceDirection => hasAssistRotationReferenceDirection ? assistRotationReferenceDirection : Vector3.zero;
+    public string AssistRotationSourceLabel => assistRotationSourceLabel;
     public Vector3 LastWeaponRecoilImpulseWorld => weaponRecoilStabilizer != null ? weaponRecoilStabilizer.LastWeaponRecoilImpulseWorld : Vector3.zero;
     public Vector3 LastWeaponRecoilPositionWorld => weaponRecoilStabilizer != null ? weaponRecoilStabilizer.LastWeaponRecoilPositionWorld : transform.position;
     public Vector3 LastWeaponRecoilAngularImpulseWorld => weaponRecoilStabilizer != null ? weaponRecoilStabilizer.LastEstimatedRecoilAngularImpulseWorld : Vector3.zero;
@@ -499,6 +517,7 @@ public class PlayerShipController : MonoBehaviour
         }
 
         RefreshMassProperties(force: false);
+        UpdateAssistRotationCameraSignal(Time.fixedDeltaTime);
 
         if (physicsCore != null)
         {
@@ -1014,6 +1033,183 @@ public class PlayerShipController : MonoBehaviour
             || request.source == FlightAssistRequestSource.MomentumAssist;
     }
 
+    public void UpdateAssistRotationCameraSignal(float deltaTime)
+    {
+        if (shipRigidbody == null || waypointAutopilot == null || momentumAssist == null)
+        {
+            ResolveReferences();
+        }
+
+        float safeDeltaTime = Mathf.Max(0f, deltaTime);
+        float releaseDelay = Mathf.Max(0f, assistRotationReleaseDelay);
+        bool rawAutopilotAssist = TryResolveAutopilotAssistRotation(out Vector3 autopilotReference);
+        bool rawMomentumAssist = TryResolveMomentumAssistRotation(out Vector3 momentumReference);
+
+        if (rawAutopilotAssist)
+        {
+            autopilotAssistRotationReleaseTimer = releaseDelay;
+            if (IsUsableDirection(autopilotReference))
+            {
+                autopilotAssistRotationReferenceDirection = autopilotReference.normalized;
+                hasAutopilotAssistRotationReferenceDirection = true;
+            }
+        }
+        else
+        {
+            autopilotAssistRotationReleaseTimer = Mathf.Max(0f, autopilotAssistRotationReleaseTimer - safeDeltaTime);
+        }
+
+        if (rawMomentumAssist)
+        {
+            momentumAssistRotationReleaseTimer = releaseDelay;
+            if (IsUsableDirection(momentumReference))
+            {
+                momentumAssistRotationReferenceDirection = momentumReference.normalized;
+                hasMomentumAssistRotationReferenceDirection = true;
+            }
+        }
+        else
+        {
+            momentumAssistRotationReleaseTimer = Mathf.Max(0f, momentumAssistRotationReleaseTimer - safeDeltaTime);
+        }
+
+        bool angularVelocityReleaseHeld = IsAssistRotationAngularVelocityAboveReleaseThreshold();
+        bool autopilotLatched = rawAutopilotAssist
+            || autopilotAssistRotationReleaseTimer > 0f
+            || (!rawAutopilotAssist && hasAutopilotAssistRotationReferenceDirection && angularVelocityReleaseHeld);
+        bool momentumLatched = rawMomentumAssist
+            || momentumAssistRotationReleaseTimer > 0f
+            || (!rawMomentumAssist && hasMomentumAssistRotationReferenceDirection && angularVelocityReleaseHeld);
+        assistRotationActive = autopilotLatched || momentumLatched;
+
+        if (!assistRotationActive)
+        {
+            assistRotationReferenceDirection = Vector3.zero;
+            hasAssistRotationReferenceDirection = false;
+            assistRotationSourceLabel = "None";
+            return;
+        }
+
+        if (rawMomentumAssist && hasMomentumAssistRotationReferenceDirection)
+        {
+            SetAssistRotationReference(momentumAssistRotationReferenceDirection, "MomentumAssist");
+            return;
+        }
+
+        if (rawAutopilotAssist && hasAutopilotAssistRotationReferenceDirection)
+        {
+            SetAssistRotationReference(autopilotAssistRotationReferenceDirection, "WaypointAutopilot");
+            return;
+        }
+
+        if (autopilotLatched && hasAutopilotAssistRotationReferenceDirection)
+        {
+            SetAssistRotationReference(autopilotAssistRotationReferenceDirection, "WaypointAutopilot");
+            return;
+        }
+
+        if (momentumLatched && hasMomentumAssistRotationReferenceDirection)
+        {
+            SetAssistRotationReference(momentumAssistRotationReferenceDirection, "MomentumAssist");
+            return;
+        }
+
+        assistRotationReferenceDirection = Vector3.zero;
+        hasAssistRotationReferenceDirection = false;
+        assistRotationSourceLabel = autopilotLatched ? "WaypointAutopilot" : "MomentumAssist";
+    }
+
+    private bool TryResolveAutopilotAssistRotation(out Vector3 referenceDirection)
+    {
+        referenceDirection = Vector3.zero;
+        if (waypointAutopilot == null || !waypointAutopilot.AutopilotEngaged)
+        {
+            return false;
+        }
+
+        PrototypeWaypointAutopilotState state = waypointAutopilot.CurrentState;
+        Vector3 desiredBurnDirection = waypointAutopilot.DesiredBurnDirection;
+        bool hasDesiredBurnDirection = IsUsableDirection(desiredBurnDirection);
+        float alignAngle = hasDesiredBurnDirection ? Vector3.Angle(transform.forward, desiredBurnDirection.normalized) : 0f;
+        bool alignForBurnAssist = state == PrototypeWaypointAutopilotState.AlignForBurn
+            && hasDesiredBurnDirection
+            && alignAngle > Mathf.Max(0f, assistRotationAlignAngleDegrees);
+        bool flipForBrakeAssist = state == PrototypeWaypointAutopilotState.FlipForBrake;
+        bool brakeAssist = state == PrototypeWaypointAutopilotState.Brake
+            && shipRigidbody != null
+            && shipRigidbody.angularVelocity.magnitude > Mathf.Max(0f, assistRotationAngularVelocityThreshold);
+
+        if (!alignForBurnAssist && !flipForBrakeAssist && !brakeAssist)
+        {
+            return false;
+        }
+
+        referenceDirection = ResolveAutopilotAssistReferenceDirection(hasDesiredBurnDirection ? desiredBurnDirection.normalized : Vector3.zero);
+        return true;
+    }
+
+    private bool IsAssistRotationAngularVelocityAboveReleaseThreshold()
+    {
+        return shipRigidbody != null
+            && shipRigidbody.angularVelocity.magnitude > Mathf.Max(0f, assistRotationAngularVelocityThreshold);
+    }
+
+    private Vector3 ResolveAutopilotAssistReferenceDirection(Vector3 desiredBurnDirection)
+    {
+        if (IsUsableDirection(desiredBurnDirection))
+        {
+            return desiredBurnDirection.normalized;
+        }
+
+        if (shipRigidbody != null
+            && shipRigidbody.linearVelocity.sqrMagnitude >= assistRotationReferenceSpeedThreshold * assistRotationReferenceSpeedThreshold)
+        {
+            return -shipRigidbody.linearVelocity.normalized;
+        }
+
+        return hasAutopilotAssistRotationReferenceDirection ? autopilotAssistRotationReferenceDirection : Vector3.zero;
+    }
+
+    private bool TryResolveMomentumAssistRotation(out Vector3 referenceDirection)
+    {
+        referenceDirection = Vector3.zero;
+        if (momentumAssist == null || !momentumAssist.IsActive)
+        {
+            return false;
+        }
+
+        PrototypeMomentumAssistState state = momentumAssist.CurrentState;
+        bool active = state == PrototypeMomentumAssistState.AlignForBrake || state == PrototypeMomentumAssistState.MainBrake;
+        if (!active)
+        {
+            return false;
+        }
+
+        if (shipRigidbody != null
+            && shipRigidbody.linearVelocity.sqrMagnitude >= assistRotationReferenceSpeedThreshold * assistRotationReferenceSpeedThreshold)
+        {
+            referenceDirection = -shipRigidbody.linearVelocity.normalized;
+            return true;
+        }
+
+        referenceDirection = IsUsableDirection(momentumAssist.LastBrakeDirectionWorld)
+            ? momentumAssist.LastBrakeDirectionWorld.normalized
+            : hasMomentumAssistRotationReferenceDirection ? momentumAssistRotationReferenceDirection : Vector3.zero;
+        return true;
+    }
+
+    private void SetAssistRotationReference(Vector3 direction, string sourceLabel)
+    {
+        assistRotationReferenceDirection = direction.normalized;
+        hasAssistRotationReferenceDirection = true;
+        assistRotationSourceLabel = sourceLabel;
+    }
+
+    private static bool IsUsableDirection(Vector3 direction)
+    {
+        return TrajectoryPredictionMath.IsFinite(direction) && direction.sqrMagnitude > 0.0001f;
+    }
+
 
     public void SetRcsEnabled(bool enabled)
     {
@@ -1229,6 +1425,7 @@ public class PlayerShipController : MonoBehaviour
         previousForwardSpeed = 0f;
         LastFlightAssistRequest = FlightAssistRequest.None;
         ClearExternalFlightAssistRequest();
+        ClearAssistRotationCameraSignal();
         if (weaponRecoilStabilizer != null)
         {
             weaponRecoilStabilizer.ClearPendingRequest("reset");
@@ -1257,6 +1454,20 @@ public class PlayerShipController : MonoBehaviour
         }
 
         RefreshMassProperties(force: true);
+    }
+
+    private void ClearAssistRotationCameraSignal()
+    {
+        assistRotationActive = false;
+        assistRotationReferenceDirection = Vector3.zero;
+        hasAssistRotationReferenceDirection = false;
+        autopilotAssistRotationReleaseTimer = 0f;
+        momentumAssistRotationReleaseTimer = 0f;
+        autopilotAssistRotationReferenceDirection = Vector3.zero;
+        momentumAssistRotationReferenceDirection = Vector3.zero;
+        hasAutopilotAssistRotationReferenceDirection = false;
+        hasMomentumAssistRotationReferenceDirection = false;
+        assistRotationSourceLabel = "None";
     }
 
     public void ResetStartupFlightControls(Vector3 position, Quaternion rotation)

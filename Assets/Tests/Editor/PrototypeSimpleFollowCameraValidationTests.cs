@@ -455,6 +455,163 @@ public class PrototypeSimpleFollowCameraValidationTests
     }
 
     [Test]
+    public void AssistRotationSignalIncludesMomentumAssistAndCameraConsumesIt()
+    {
+        GameObject ship = BuildAssistRotationShip();
+        ShipStats stats = ship.GetComponent<ShipStats>();
+        PlayerShipController controller = ship.GetComponent<PlayerShipController>();
+        PrototypeMomentumAssist momentum = ship.GetComponent<PrototypeMomentumAssist>();
+        SimpleFollowCamera camera = BuildCamera(ship);
+        camera.BindTarget(ship.transform, stats);
+
+        SetPrivateField(momentum, "isActive", true);
+        SetPrivateField(momentum, "currentState", PrototypeMomentumAssistState.AlignForBrake);
+        SetPrivateProperty(momentum, "LastBrakeDirectionWorld", Vector3.left);
+        controller.UpdateAssistRotationCameraSignal(0.02f);
+        InvokeLateUpdate(camera);
+
+        Assert.True(controller.IsAssistRotationActive, "Momentum assist align/main-brake states should feed the shared camera signal.");
+        Assert.True(camera.IsAutopilotFlipCameraAssistActive, "Camera should consume the shared assist-rotation signal.");
+        Assert.That(camera.CameraChaseBlendMode, Is.EqualTo("AssistRotation"));
+        Assert.That(Vector3.Angle(controller.AssistRotationReferenceDirection, Vector3.left), Is.LessThan(0.1f));
+    }
+
+    [Test]
+    public void MomentumAssistActivationBeforeFixedUpdateUsesCurrentVelocityInsteadOfStaleForward()
+    {
+        GameObject ship = BuildAssistRotationShip();
+        Rigidbody body = ship.GetComponent<Rigidbody>();
+        PlayerShipController controller = ship.GetComponent<PlayerShipController>();
+        PrototypeMomentumAssist momentum = ship.GetComponent<PrototypeMomentumAssist>();
+        Vector3[] velocities =
+        {
+            Vector3.right * 12f,
+            Vector3.forward * 12f
+        };
+
+        for (int i = 0; i < velocities.Length; i++)
+        {
+            body.linearVelocity = velocities[i];
+            SetPrivateField(momentum, "isActive", true);
+            SetPrivateField(momentum, "currentState", PrototypeMomentumAssistState.AlignForBrake);
+            SetPrivateProperty(momentum, "LastBrakeDirectionWorld", Vector3.forward);
+
+            controller.UpdateAssistRotationCameraSignal(0.02f);
+
+            Assert.True(controller.IsAssistRotationActive, "Activation before MomentumAssist.FixedUpdate should still expose a camera assist signal.");
+            Assert.True(controller.HasAssistRotationReferenceDirection, "Sideways/forward velocity should produce a usable brake reference immediately.");
+            Assert.That(Vector3.Angle(controller.AssistRotationReferenceDirection, -velocities[i].normalized), Is.LessThan(0.1f));
+            Assert.That(Vector3.Angle(controller.AssistRotationReferenceDirection, Vector3.forward), Is.GreaterThan(80f), "The default LastBrakeDirectionWorld forward value must not be accepted when current velocity says to brake another way.");
+        }
+    }
+
+    [Test]
+    public void CameraLateUpdateReadsAssistRotationSignalWithoutReleasingControllerHysteresis()
+    {
+        GameObject ship = BuildAssistRotationShip();
+        ShipStats stats = ship.GetComponent<ShipStats>();
+        PlayerShipController controller = ship.GetComponent<PlayerShipController>();
+        PrototypeWaypointAutopilot autopilot = ship.GetComponent<PrototypeWaypointAutopilot>();
+        SimpleFollowCamera camera = BuildCamera(ship);
+        camera.BindTarget(ship.transform, stats);
+
+        SetPrivateField(autopilot, "autopilotEngaged", true);
+        SetPrivateProperty(autopilot, "CurrentState", PrototypeWaypointAutopilotState.FlipForBrake);
+        controller.UpdateAssistRotationCameraSignal(0.02f);
+        Assert.True(controller.IsAssistRotationActive);
+
+        SetPrivateProperty(autopilot, "CurrentState", PrototypeWaypointAutopilotState.Idle);
+        for (int i = 0; i < 8; i++)
+        {
+            InvokeLateUpdate(camera);
+        }
+
+        Assert.True(controller.IsAssistRotationActive, "Camera LateUpdate should be a read-only consumer and must not decrement controller release timers.");
+        Assert.True(camera.IsAutopilotFlipCameraAssistActive, "Camera should continue to report the current controller-owned assist state.");
+
+        controller.UpdateAssistRotationCameraSignal(1f);
+        InvokeLateUpdate(camera);
+        Assert.False(controller.IsAssistRotationActive, "Controller FixedUpdate/test calls should remain the sole owner of release timing.");
+    }
+
+    [Test]
+    public void AssistRotationNearZeroVelocityFallsBackToLastStableChaseDirection()
+    {
+        GameObject ship = BuildAssistRotationShip();
+        ShipStats stats = ship.GetComponent<ShipStats>();
+        Rigidbody body = ship.GetComponent<Rigidbody>();
+        PlayerShipController controller = ship.GetComponent<PlayerShipController>();
+        PrototypeWaypointAutopilot autopilot = ship.GetComponent<PrototypeWaypointAutopilot>();
+        SimpleFollowCamera camera = BuildCamera(ship);
+        camera.BindTarget(ship.transform, stats);
+
+        InvokeLateUpdate(camera);
+        Vector3 stableDirection = ship.transform.forward;
+
+        ship.transform.rotation = Quaternion.LookRotation(Vector3.right, Vector3.up);
+        body.linearVelocity = Vector3.zero;
+        body.angularVelocity = Vector3.up * 5f;
+        SetPrivateField(autopilot, "autopilotEngaged", true);
+        SetPrivateProperty(autopilot, "CurrentState", PrototypeWaypointAutopilotState.Brake);
+
+        controller.UpdateAssistRotationCameraSignal(0.02f);
+        InvokeLateUpdate(camera);
+
+        Vector3 referenceForward = InvokeResolveChaseReferenceForward(camera);
+        Assert.True(camera.IsAutopilotFlipCameraAssistActive, "Brake plus high angular rate should enter assist rotation.");
+        Assert.False(controller.HasAssistRotationReferenceDirection, "Zero velocity with no assist reference should not synthesize a degenerate reference.");
+        Assert.That(Vector3.Angle(referenceForward, stableDirection), Is.LessThan(0.1f), "Near-zero velocity should preserve the last stable camera direction instead of snapping to current ship forward.");
+    }
+
+    [Test]
+    public void AssistRotationHysteresisHoldsAutopilotSourceAcrossBriefStateDrop()
+    {
+        GameObject ship = BuildAssistRotationShip();
+        PlayerShipController controller = ship.GetComponent<PlayerShipController>();
+        PrototypeWaypointAutopilot autopilot = ship.GetComponent<PrototypeWaypointAutopilot>();
+
+        SetPrivateField(autopilot, "autopilotEngaged", true);
+        SetPrivateProperty(autopilot, "CurrentState", PrototypeWaypointAutopilotState.FlipForBrake);
+        controller.UpdateAssistRotationCameraSignal(0.02f);
+        Assert.True(controller.IsAssistRotationActive);
+
+        SetPrivateProperty(autopilot, "CurrentState", PrototypeWaypointAutopilotState.AlignForBurn);
+        SetPrivateField(autopilot, "desiredBurnDirection", ship.transform.forward);
+        controller.UpdateAssistRotationCameraSignal(0.1f);
+        Assert.True(controller.IsAssistRotationActive, "Autopilot assist should hold through a short replan/state gap.");
+
+        controller.UpdateAssistRotationCameraSignal(1f);
+        Assert.False(controller.IsAssistRotationActive, "Autopilot assist should release after the hysteresis window expires.");
+    }
+
+    [Test]
+    public void AssistRotationHysteresisWaitsForAngularVelocityReleaseGate()
+    {
+        GameObject ship = BuildAssistRotationShip();
+        PlayerShipController controller = ship.GetComponent<PlayerShipController>();
+        PrototypeWaypointAutopilot autopilot = ship.GetComponent<PrototypeWaypointAutopilot>();
+        Rigidbody body = ship.GetComponent<Rigidbody>();
+
+        body.linearVelocity = Vector3.forward * 20f;
+        body.angularVelocity = Vector3.up * 8f;
+        SetPrivateField(autopilot, "autopilotEngaged", true);
+        SetPrivateProperty(autopilot, "CurrentState", PrototypeWaypointAutopilotState.FlipForBrake);
+        controller.UpdateAssistRotationCameraSignal(0.02f);
+        Assert.True(controller.IsAssistRotationActive);
+
+        SetPrivateProperty(autopilot, "CurrentState", PrototypeWaypointAutopilotState.AlignForBurn);
+        SetPrivateField(autopilot, "desiredBurnDirection", ship.transform.forward);
+        controller.UpdateAssistRotationCameraSignal(10f);
+        Assert.True(
+            controller.IsAssistRotationActive,
+            "Autopilot assist should stay latched after source drop while angular velocity remains above the release gate.");
+
+        body.angularVelocity = Vector3.zero;
+        controller.UpdateAssistRotationCameraSignal(0.02f);
+        Assert.False(controller.IsAssistRotationActive, "Autopilot assist should release once the delay has elapsed and angular velocity is below the gate.");
+    }
+
+    [Test]
     public void ResetFramingReturnsToChaseLockedAndDefaultOffsets()
     {
         GameObject ship = new GameObject("SimpleFollowCameraTestShip");
@@ -486,6 +643,23 @@ public class PrototypeSimpleFollowCameraValidationTests
         Camera unityCamera = cameraObject.AddComponent<Camera>();
         unityCamera.tag = "MainCamera";
         return cameraObject.AddComponent<SimpleFollowCamera>();
+    }
+
+    private static GameObject BuildAssistRotationShip()
+    {
+        GameObject ship = new GameObject("SimpleFollowCameraTestShip");
+        ship.AddComponent<Rigidbody>().useGravity = false;
+        ship.AddComponent<ShipStats>();
+        ship.AddComponent<MainThrusterBank>();
+        ship.AddComponent<RcsThrusterController>();
+        ship.AddComponent<ShipPhysicsCore>();
+        ship.AddComponent<WeaponRecoilStabilizer>();
+        PlayerShipController controller = ship.AddComponent<PlayerShipController>();
+        PrototypeWaypointAutopilot autopilot = ship.AddComponent<PrototypeWaypointAutopilot>();
+        PrototypeMomentumAssist momentum = ship.AddComponent<PrototypeMomentumAssist>();
+        momentum.Bind(controller, ship.GetComponent<Rigidbody>(), ship.GetComponent<ShipStats>());
+        Assert.NotNull(autopilot);
+        return ship;
     }
 
     private static SimpleFollowCamera BuildCameraWithShip()
@@ -531,11 +705,32 @@ public class PrototypeSimpleFollowCameraValidationTests
         lateUpdate.Invoke(camera, null);
     }
 
+    private static Vector3 InvokeResolveChaseReferenceForward(SimpleFollowCamera camera)
+    {
+        MethodInfo method = typeof(SimpleFollowCamera).GetMethod("ResolveChaseReferenceForward", NonPublicInstance);
+        Assert.NotNull(method, "SimpleFollowCamera ResolveChaseReferenceForward method should exist for reference tests.");
+        return (Vector3)method.Invoke(camera, null);
+    }
+
     private static float GetPrivateFloat(object target, string fieldName)
     {
         FieldInfo field = target.GetType().GetField(fieldName, NonPublicInstance);
         Assert.NotNull(field, fieldName);
         return (float)field.GetValue(target);
+    }
+
+    private static void SetPrivateField(object target, string fieldName, object value)
+    {
+        FieldInfo field = target.GetType().GetField(fieldName, NonPublicInstance);
+        Assert.NotNull(field, fieldName);
+        field.SetValue(target, value);
+    }
+
+    private static void SetPrivateProperty<T>(object target, string propertyName, T value)
+    {
+        PropertyInfo property = target.GetType().GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        Assert.NotNull(property, propertyName);
+        property.SetValue(target, value);
     }
 
     private static void DestroyNamed(string objectName)
