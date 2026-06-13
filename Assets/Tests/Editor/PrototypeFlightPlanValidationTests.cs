@@ -86,6 +86,51 @@ public class PrototypeFlightPlanValidationTests
     }
 
     [Test]
+    public void TrajectoryPlanner_AttitudeEstimateUsesTrapezoidProfileForHalfTurn()
+    {
+        float angleDegrees = 180f;
+        float actual = InvokeEstimateAttitudeSegmentSeconds(Quaternion.identity, DirectionAtYaw(angleDegrees));
+
+        float expected = ExpectedAttitudeSegmentSeconds(angleDegrees);
+
+        Assert.That(actual, Is.EqualTo(expected).Within(0.001f));
+        Assert.That(actual, Is.LessThan(6f));
+    }
+
+    [Test]
+    public void TrajectoryPlanner_AttitudeEstimateUsesTriangleProfileForSmallTurn()
+    {
+        float angleDegrees = 10f;
+        float actual = InvokeEstimateAttitudeSegmentSeconds(Quaternion.identity, DirectionAtYaw(angleDegrees));
+
+        float expected = ExpectedAttitudeSegmentSeconds(angleDegrees);
+
+        Assert.That(actual, Is.EqualTo(expected).Within(0.001f));
+    }
+
+    [Test]
+    public void TrajectoryPlanner_AttitudeEstimateAllowsRealisticMaximumTurnDuration()
+    {
+        FieldInfo field = typeof(PrototypeTrajectoryPlanner).GetField(
+            "MaximumAttitudeSegmentSeconds",
+            BindingFlags.Static | BindingFlags.NonPublic);
+
+        Assert.NotNull(field);
+        Assert.That((float)field.GetValue(null), Is.EqualTo(12f));
+    }
+
+    [Test]
+    public void TrajectoryPlanner_AttitudeEstimateKeepsZeroAndNearZeroNoOp()
+    {
+        Assert.That(
+            InvokeEstimateAttitudeSegmentSeconds(Quaternion.identity, Vector3.zero),
+            Is.EqualTo(0f));
+        Assert.That(
+            InvokeEstimateAttitudeSegmentSeconds(Quaternion.identity, DirectionAtYaw(1f)),
+            Is.EqualTo(0f));
+    }
+
+    [Test]
     public void ExecutionStateReportsActiveSegmentProgress()
     {
         PrototypeManeuverSegment[] segments =
@@ -736,6 +781,33 @@ public class PrototypeFlightPlanValidationTests
             Mathf.Max(0f, 20f - time),
             phase == PrototypeManeuverPhase.ProgradeBurn || phase == PrototypeManeuverPhase.RetrogradeBurn ? 1f : 0f,
             Vector3.zero);
+    }
+
+    private static float InvokeEstimateAttitudeSegmentSeconds(Quaternion currentRotation, Vector3 desiredForward)
+    {
+        MethodInfo method = typeof(PrototypeTrajectoryPlanner).GetMethod(
+            "EstimateAttitudeSegmentSeconds",
+            BindingFlags.Static | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        return (float)method.Invoke(null, new object[] { currentRotation, desiredForward, CreateSnapshot() });
+    }
+
+    private static Vector3 DirectionAtYaw(float angleDegrees)
+    {
+        return Quaternion.AngleAxis(angleDegrees, Vector3.up) * Vector3.forward;
+    }
+
+    private static float ExpectedAttitudeSegmentSeconds(float angleDegrees)
+    {
+        float angleRad = angleDegrees * Mathf.Deg2Rad;
+        float rateRad = PrototypeFlightPlanExecutionConfig.BrakeFlipMaxTurnRateDegreesPerSecond * Mathf.Deg2Rad;
+        float accel = PrototypeFlightPlanExecutionConfig.BrakeFlipMaxAngularAccelerationRadPerSecondSquared;
+        float threshold = (rateRad * rateRad) / accel;
+        float seconds = angleRad <= threshold
+            ? 2f * Mathf.Sqrt(angleRad / accel)
+            : (angleRad / rateRad) + (rateRad / accel);
+        seconds += PrototypeFlightPlanExecutionConfig.BrakeFlipDampingTimeSeconds + 0.4f;
+        return Mathf.Clamp(seconds, 0.2f, 12f);
     }
 
     private static PrototypeShipPlanningSnapshot CreateSnapshot()

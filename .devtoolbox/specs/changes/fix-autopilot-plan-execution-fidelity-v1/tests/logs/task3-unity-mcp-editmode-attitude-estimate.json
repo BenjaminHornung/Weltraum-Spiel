@@ -1,0 +1,131 @@
+{
+  "sessionId": "22b3858feffb4949bfe297adce9e71d2",
+  "testNames": [
+    "PrototypeFlightPlanValidationTests.TrajectoryPlanner_AttitudeEstimateUsesTrapezoidProfileForHalfTurn",
+    "PrototypeFlightPlanValidationTests.TrajectoryPlanner_AttitudeEstimateUsesTriangleProfileForSmallTurn",
+    "PrototypeFlightPlanValidationTests.TrajectoryPlanner_AttitudeEstimateAllowsRealisticMaximumTurnDuration",
+    "PrototypeFlightPlanValidationTests.TrajectoryPlanner_AttitudeEstimateKeepsZeroAndNearZeroNoOp"
+  ],
+  "start": {
+    "_meta": {
+      "fastmcp": {
+        "wrap_result": true
+      }
+    },
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"message\":\"Test job started.\",\"error\":null,\"data\":{\"job_id\":\"879412356c74468b97f38533af7c441e\",\"status\":\"running\",\"mode\":\"EditMode\",\"include_details\":true,\"include_failed_tests\":true},\"hint\":null}"
+      }
+    ],
+    "structuredContent": {
+      "result": {
+        "success": true,
+        "message": "Test job started.",
+        "error": null,
+        "data": {
+          "job_id": "879412356c74468b97f38533af7c441e",
+          "status": "running",
+          "mode": "EditMode",
+          "include_details": true,
+          "include_failed_tests": true
+        },
+        "hint": null
+      }
+    },
+    "isError": false
+  },
+  "final": {
+    "_meta": {
+      "fastmcp": {
+        "wrap_result": true
+      }
+    },
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"message\":\"Test job status retrieved.\",\"error\":null,\"data\":{\"job_id\":\"879412356c74468b97f38533af7c441e\",\"status\":\"succeeded\",\"mode\":\"EditMode\",\"started_unix_ms\":1781335587591,\"finished_unix_ms\":1781335588416,\"last_update_unix_ms\":1781335588416,\"progress\":{\"completed\":4,\"total\":4,\"current_test_full_name\":null,\"current_test_started_unix_ms\":1781335588377,\"last_finished_test_full_name\":\"PrototypeFlightPlanValidationTests.TrajectoryPlanner_AttitudeEstimateUsesTriangleProfileForSmallTurn\",\"last_finished_unix_ms\":1781335588377,\"stuck_suspected\":false,\"editor_is_focused\":true,\"blocked_reason\":null,\"failures_so_far\":[],\"failures_capped\":false},\"error\":null,\"result\":{\"mode\":\"EditMode\",\"summary\":{\"total\":4,\"passed\":4,\"failed\":0,\"skipped\":0,\"durationSeconds\":0.0412032,\"resultState\":\"Passed\"},\"results\":[{\"name\":\"TrajectoryPlanner_AttitudeEstimateAllowsRealisticMaximumTurnDuration\",\"fullName\":\"PrototypeFlightPlanValidationTests.TrajectoryPlanner_AttitudeEstimateAllowsRealisticMaximumTurnDuration\",\"state\":\"Passed\",\"durationSeconds\":0.0121775,\"message\":null,\"stackTrace\":null,\"output\":\"\"},{\"name\":\"TrajectoryPlanner_AttitudeEstimateKeepsZeroAndNearZeroNoOp\",\"fullName\":\"PrototypeFlightPlanValidationTests.TrajectoryPlanner_AttitudeEstimateKeepsZeroAndNearZeroNoOp\",\"state\":\"Passed\",\"durationSeconds\":0.0011813,\"message\":null,\"stackTrace\":null,\"output\":\"\"},{\"name\":\"TrajectoryPlanner_AttitudeEstimateUsesTrapezoidProfileForHalfTurn\",\"fullName\":\"PrototypeFlightPlanValidationTests.TrajectoryPlanner_AttitudeEstimateUsesTrapezoidProfileForHalfTurn\",\"state\":\"Passed\",\"durationSeconds\":0.0025825,\"message\":null,\"stackTrace\":null,\"output\":\"\"},{\"name\":\"TrajectoryPlanner_AttitudeEstimateUsesTriangleProfileForSmallTurn\",\"fullName\":\"PrototypeFlightPlanValidationTests.TrajectoryPlanner_AttitudeEstimateUsesTriangleProfileForSmallTurn\",\"state\":\"Passed\",\"durationSeconds\":0.0001611,\"message\":null,\"stackTrace\":null,\"output\":\"\"}]}},\"hint\":null}"
+      }
+    ],
+    "structuredContent": {
+      "result": {
+        "success": true,
+        "message": "Test job status retrieved.",
+        "error": null,
+        "data": {
+          "job_id": "879412356c74468b97f38533af7c441e",
+          "status": "succeeded",
+          "mode": "EditMode",
+          "started_unix_ms": 1781335587591,
+          "finished_unix_ms": 1781335588416,
+          "last_update_unix_ms": 1781335588416,
+          "progress": {
+            "completed": 4,
+            "total": 4,
+            "current_test_full_name": null,
+            "current_test_started_unix_ms": 1781335588377,
+            "last_finished_test_full_name": "PrototypeFlightPlanValidationTests.TrajectoryPlanner_AttitudeEstimateUsesTriangleProfileForSmallTurn",
+            "last_finished_unix_ms": 1781335588377,
+            "stuck_suspected": false,
+            "editor_is_focused": true,
+            "blocked_reason": null,
+            "failures_so_far": [],
+            "failures_capped": false
+          },
+          "error": null,
+          "result": {
+            "mode": "EditMode",
+            "summary": {
+              "total": 4,
+              "passed": 4,
+              "failed": 0,
+              "skipped": 0,
+              "durationSeconds": 0.0412032,
+              "resultState": "Passed"
+            },
+            "results": [
+              {
+                "name": "TrajectoryPlanner_AttitudeEstimateAllowsRealisticMaximumTurnDuration",
+                "fullName": "PrototypeFlightPlanValidationTests.TrajectoryPlanner_AttitudeEstimateAllowsRealisticMaximumTurnDuration",
+                "state": "Passed",
+                "durationSeconds": 0.0121775,
+                "message": null,
+                "stackTrace": null,
+                "output": ""
+              },
+              {
+                "name": "TrajectoryPlanner_AttitudeEstimateKeepsZeroAndNearZeroNoOp",
+                "fullName": "PrototypeFlightPlanValidationTests.TrajectoryPlanner_AttitudeEstimateKeepsZeroAndNearZeroNoOp",
+                "state": "Passed",
+                "durationSeconds": 0.0011813,
+                "message": null,
+                "stackTrace": null,
+                "output": ""
+              },
+              {
+                "name": "TrajectoryPlanner_AttitudeEstimateUsesTrapezoidProfileForHalfTurn",
+                "fullName": "PrototypeFlightPlanValidationTests.TrajectoryPlanner_AttitudeEstimateUsesTrapezoidProfileForHalfTurn",
+                "state": "Passed",
+                "durationSeconds": 0.0025825,
+                "message": null,
+                "stackTrace": null,
+                "output": ""
+              },
+              {
+                "name": "TrajectoryPlanner_AttitudeEstimateUsesTriangleProfileForSmallTurn",
+                "fullName": "PrototypeFlightPlanValidationTests.TrajectoryPlanner_AttitudeEstimateUsesTriangleProfileForSmallTurn",
+                "state": "Passed",
+                "durationSeconds": 0.0001611,
+                "message": null,
+                "stackTrace": null,
+                "output": ""
+              }
+            ]
+          }
+        },
+        "hint": null
+      }
+    },
+    "isError": false
+  }
+}

@@ -285,7 +285,8 @@ public class PrototypeTrajectoryPlanner
     private const float CandidateHorizonSeconds = 5f;
     private const float CandidateStepSeconds = 0.25f;
     private const float MinimumAttitudeSegmentSeconds = 0.2f;
-    private const float MaximumAttitudeSegmentSeconds = 6f;
+    private const float MaximumAttitudeSegmentSeconds = 12f;
+    private const float AttitudeLatchMarginSeconds = 0.4f;
     private const float DirectFastTransferMinimumMainSeconds = 0.2f;
     private const float DirectFastTransferMinimumDistanceMeters = 1.5f;
     private readonly List<PrototypeTrajectoryCandidateScore> candidateBuffer = new List<PrototypeTrajectoryCandidateScore>(10);
@@ -1632,18 +1633,24 @@ public class PrototypeTrajectoryPlanner
             return 0f;
         }
 
-        float inertia = Mathf.Max(
-            Mathf.Max(shipSnapshot.inertiaTensor.x, shipSnapshot.inertiaTensor.y),
-            shipSnapshot.inertiaTensor.z);
-        inertia = Mathf.Max(0.25f, inertia);
-        if (shipSnapshot.rcsAttitudeForceNewtons <= 0.0001f)
+        float angleRad = angle * Mathf.Deg2Rad;
+        float rateRad = PrototypeFlightPlanExecutionConfig.BrakeFlipMaxTurnRateDegreesPerSecond * Mathf.Deg2Rad;
+        float accel = PrototypeFlightPlanExecutionConfig.BrakeFlipMaxAngularAccelerationRadPerSecondSquared;
+        float seconds;
+        if (rateRad > 0.0001f && accel > 0.0001f)
         {
-            return Mathf.Clamp(angle / 90f, MinimumAttitudeSegmentSeconds, MaximumAttitudeSegmentSeconds);
+            float triangularThreshold = (rateRad * rateRad) / accel;
+            seconds = angleRad <= triangularThreshold
+                ? 2f * Mathf.Sqrt(angleRad / accel)
+                : (angleRad / rateRad) + (rateRad / accel);
+        }
+        else
+        {
+            seconds = angle / 90f;
         }
 
-        float angularAcceleration = Mathf.Max(0.05f, shipSnapshot.rcsAttitudeForceNewtons / inertia);
-        float turnSeconds = Mathf.Sqrt((2f * angle * Mathf.Deg2Rad) / angularAcceleration) + 0.2f;
-        return Mathf.Clamp(turnSeconds, MinimumAttitudeSegmentSeconds, MaximumAttitudeSegmentSeconds);
+        seconds += PrototypeFlightPlanExecutionConfig.BrakeFlipDampingTimeSeconds + AttitudeLatchMarginSeconds;
+        return Mathf.Clamp(seconds, MinimumAttitudeSegmentSeconds, MaximumAttitudeSegmentSeconds);
     }
 
     private static Quaternion ResolveLookRotation(Vector3 forward, Quaternion fallback)

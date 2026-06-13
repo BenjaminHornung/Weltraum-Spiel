@@ -1,0 +1,83 @@
+{
+  "sessionId": "15f618a3b4b848fab7b9dc4c6e486314",
+  "instances": [
+    {
+      "uri": "mcpforunity://instances",
+      "mimeType": "text/plain",
+      "text": "{\"success\": true, \"transport\": \"http\", \"instance_count\": 1, \"instances\": [{\"id\": \"Weltraum Spiel@49c909b3e97ba6e8\", \"name\": \"Weltraum Spiel\", \"hash\": \"49c909b3e97ba6e8\", \"unity_version\": \"6000.4.7f1\", \"connected_at\": \"2026-06-13T07:24:29.769890+00:00\", \"session_id\": \"a43bfe04-22ad-4979-b4d2-861ce67881c9\"}]}"
+    }
+  ],
+  "customTools": [
+    {
+      "uri": "mcpforunity://custom-tools",
+      "mimeType": "text/plain",
+      "text": "{\"success\":true,\"message\":\"Custom tools retrieved successfully.\",\"error\":null,\"data\":{\"project_id\":\"49c909b3e97ba6e8\",\"tool_count\":30,\"tools\":[{\"name\":\"manage_probuilder\",\"description\":\"Tool: manage_probuilder\",\"structured_output\":true,\"requires_polling\":false,\"poll_action\":\"status\",\"max_poll_seconds\":0,\"parameters\":[]},{\"name\":\"read_console\",\"description\":\"Tool: read_console\",\"structured_output\":true,\"requires_polling\":false,\"poll_action\":\"status\",\"max_poll_seconds\":0,\"parameters\":[]},{\"name\":\"manage_camera\",\"description\":\"Tool: manage_camera\",\"structured_output\":true,\"requires_polling\":false,\"poll_action\":\"status\",\"max_poll_seconds\":0,\"parameters\":[]},{\"name\":\"manage_gameobject\",\"description\":\"Tool: manage_gameobject\",\"structured_output\":true,\"requires_polling\":false,\"poll_action\":\"status\",\"max_poll_seconds\":0,\"parameters\":[]},{\"name\":\"manage_graphics\",\"description\":\"Tool: manage_graphics\",\"structured_output\":true,\"requires_polling\":false,\"poll_action\":\"status\",\"max_poll_seconds\":0,\"parameters\":[]},{\"name\":\"manage_editor\",\"description\":\"Tool: manage_editor\",\"structured_output\":true,\"requires_polling\":false,\"poll_action\":\"status\",\"max_poll_seconds\":0,\"parameters\":[]},{\"name\":\"refresh_unity\",\"description\":\"Tool: refresh_unity\",\"structured_output\":true,\"requires_polling\":false,\"poll_action\":\"status\",\"max_poll_seconds\":0,\"parameters\":[]},{\"name\":\"manage_components\",\"description\":\"Tool: manage_components\",\"structured_output\":true,\"requires_polling\":false,\"poll_action\":\"status\",\"max_poll_seconds\":0,\"parameters\":[]},{\"name\":\"execute_code\",\"description\":\"Tool: execute_code\",\"structured_output\":true,\"requires_polling\":false,\"poll_action\":\"status\",\"max_poll_seconds\":0,\"parameters\":[]},{\"name\":\"manage_ui\",\"description\":\"Tool: manage_ui\",\"structured_output\":true,\"requires_polling\":false,\"poll_action\":\"status\",\"max_poll_seconds\":0,\"parameters\":[]},{\"name\":\"manage_packages\",\"description\":\"Tool: manage_packages\",\"structured_output\":true,\"requires_polling\":true,\"poll_action\":\"status\",\"max_poll_seconds\":0,\"parameters\":[]},{\"name\":\"run_tests\",\"description\":\"Tool: run_tests\",\"structured_output\":true,\"requires_polling\":false,\"poll_action\":\"status\",\"max_poll_seconds\":0,\"parameters\":[]},{\"name\":\"get_test_job\",\"description\":\"Tool: get_test_job\",\"structured_output\":true,\"requires_polling\":false,\"poll_action\":\"status\",\"max_poll_seconds\":0,\"parameters\":[]},{\"name\":\"manage_shader\",\"description\":\"Tool: manage_shader\",\"structured_output\":true,\"requires_polling\":false,\"poll_action\":\"status\",\"max_poll_seconds\":0,\"parameters\":[]},{\"name\":\"unity_reflect\",\"description\":\"Tool: unity_reflect\",\"structured_output\":true,\"requires_polling\":false,\"poll_action\":\"status\",\"max_poll_seconds\":0,\"parameters\":[]},{\"name\":\"manage_scriptable_object\",\"description\":\"Tool: manage_scriptable_object\",\"structured_output\":true,\"requires_polling\":false,\"poll_action\":\"status\",\"max_poll_seconds\":0,\"parameters\":[]},{\"name\":\"find_gameobjects\",\"description\":\"Tool: find_gameobjects\",\"structured_output\":true,\"requires_polling\":false,\"poll_action\":\"status\",\"max_poll_seconds\":0,\"parameters\":[]},{\"name\":\"manage_animation\",\"description\":\"Tool: manage_animation\",\"structured_output\":true,\"requires_polling\":false,\"poll_action\":\"status\",\"max_poll_seconds\":0,\"parameters\":[]},{\"name\":\"manage_profiler\",\"description\":\"Tool: manage_profiler\",\"structured_output\":true,\"requires_polling\":false,\"poll_action\":\"status\",\"max_poll_seconds\":0,\"parameters\":[]},{\"name\":\"manage_material\",\"description\":\"Tool: manage_material\",\"structured_output\":true,\"requires_polling\":false,\"poll_action\":\"status\",\"max_poll_seconds\":0,\"parameters\":[]},{\"name\":\"execute_menu_item\",\"description\":\"Tool: execute_menu_item\",\"structured_output\":true,\"requires_polling\":false,\"poll_action\":\"status\",\"max_poll_seconds\":0,\"parameters\":[]},{\"name\":\"batch_execute\",\"description\":\"Tool: batch_execute\",\"structured_output\":true,\"requires_polling\":false,\"poll_action\":\"status\",\"max_poll_seconds\":0,\"parameters\":[]},{\"name\":\"manage_build\",\"description\":\"Tool: manage_build\",\"structured_output\":true,\"requires_polling\":true,\"poll_action\":\"status\",\"max_poll_seconds\":1800,\"parameters\":[]},{\"name\":\"manage_scene\",\"description\":\"Tool: manage_scene\",\"structured_output\":true,\"requires_polling\":false,\"poll_action\":\"status\",\"max_poll_seconds\":0,\"parameters\":[]},{\"name\":\"manage_texture\",\"description\":\"Tool: manage_texture\",\"structured_output\":true,\"requires_polling\":false,\"poll_action\":\"status\",\"max_poll_seconds\":0,\"parameters\":[]},{\"name\":\"manage_physics\",\"description\":\"Tool: manage_physics\",\"structured_output\":true,\"requires_polling\":false,\"poll_action\":\"status\",\"max_poll_seconds\":0,\"parameters\":[]},{\"name\":\"manage_script\",\"description\":\"Tool: manage_script\",\"structured_output\":true,\"requires_polling\":false,\"poll_action\":\"status\",\"max_poll_seconds\":0,\"parameters\":[]},{\"name\":\"manage_asset\",\"description\":\"Tool: manage_asset\",\"structured_output\":true,\"requires_polling\":false,\"poll_action\":\"status\",\"max_poll_seconds\":0,\"parameters\":[]},{\"name\":\"manage_vfx\",\"description\":\"Tool: manage_vfx\",\"structured_output\":true,\"requires_polling\":false,\"poll_action\":\"status\",\"max_poll_seconds\":0,\"parameters\":[]},{\"name\":\"manage_prefabs\",\"description\":\"Tool: manage_prefabs\",\"structured_output\":true,\"requires_polling\":false,\"poll_action\":\"status\",\"max_poll_seconds\":0,\"parameters\":[]}]},\"hint\":null}"
+    }
+  ],
+  "validatePrototypeTrajectoryPlanner": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"data\":{\"diagnostics\":[],\"summary\":{\"warnings\":0,\"errors\":0}}}"
+      }
+    ],
+    "structuredContent": {
+      "success": true,
+      "data": {
+        "diagnostics": [],
+        "summary": {
+          "warnings": 0,
+          "errors": 0
+        }
+      }
+    },
+    "isError": false
+  },
+  "validatePrototypeFlightPlanValidationTests": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"data\":{\"diagnostics\":[],\"summary\":{\"warnings\":0,\"errors\":0}}}"
+      }
+    ],
+    "structuredContent": {
+      "success": true,
+      "data": {
+        "diagnostics": [],
+        "summary": {
+          "warnings": 0,
+          "errors": 0
+        }
+      }
+    },
+    "isError": false
+  },
+  "prototypeTrajectoryPlannerErrors": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"message\":\"Retrieved 0 log entries.\",\"data\":[]}"
+      }
+    ],
+    "structuredContent": {
+      "success": true,
+      "message": "Retrieved 0 log entries.",
+      "data": []
+    },
+    "isError": false
+  },
+  "prototypeFlightPlanValidationTestsErrors": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"message\":\"Retrieved 0 log entries.\",\"data\":[]}"
+      }
+    ],
+    "structuredContent": {
+      "success": true,
+      "message": "Retrieved 0 log entries.",
+      "data": []
+    },
+    "isError": false
+  }
+}
