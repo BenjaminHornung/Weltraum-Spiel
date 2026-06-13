@@ -545,8 +545,10 @@ public static class PrototypePlayerHudSnapshotBuilder
     {
         cachedEnvironmentRadarSource = null;
         cachedFallbackTargetDummy = null;
+        cachedFallbackNavigationTargets = System.Array.Empty<PrototypeNavigationTarget>();
         EnvironmentRadarFallbackScanGate.Invalidate();
         TargetDummyFallbackScanGate.Invalidate();
+        NavigationRadarFallbackScanGate.Invalidate();
     }
 
     public static PrototypePlayerHudSnapshot Build(

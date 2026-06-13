@@ -12,11 +12,18 @@ using UnityEngine.UI;
 
 public class PrototypePlayerHudValidationTests
 {
+    [SetUp]
+    public void SetUp()
+    {
+        PrototypePlayerHudSnapshotBuilder.InvalidateFallbackFindCaches();
+    }
+
     [TearDown]
     public void TearDown()
     {
         PrototypeWeaponTargetRegistry.ClearForTests();
         PrototypeNavigationObstacleRegistry.ClearForTests();
+        PrototypePlayerHudSnapshotBuilder.InvalidateFallbackFindCaches();
         DestroyNamed("PrototypeBootstrap");
         DestroyNamed("PrototypeShip");
         DestroyNamed("PrototypeDockingApproachTarget");
