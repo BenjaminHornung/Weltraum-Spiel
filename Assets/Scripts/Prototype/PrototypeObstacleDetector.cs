@@ -241,7 +241,7 @@ public class PrototypeObstacleDetector : MonoBehaviour
             return false;
         }
 
-        if (ownRoot != null && hitCollider.transform.IsChildOf(ownRoot))
+        if (IsOwnCollider(hitCollider, ownRoot))
         {
             return false;
         }
@@ -332,7 +332,7 @@ public class PrototypeObstacleDetector : MonoBehaviour
             return false;
         }
 
-        if (ownRoot != null && overlapCollider.transform.IsChildOf(ownRoot))
+        if (IsOwnCollider(overlapCollider, ownRoot))
         {
             return false;
         }
@@ -345,6 +345,13 @@ public class PrototypeObstacleDetector : MonoBehaviour
 
         Vector3 toObstacle = obstacle.WorldPosition - origin;
         float projectedDistance = Vector3.Dot(toObstacle, direction);
+        float obstacleBodyRadius = obstacle.EffectiveClearanceRadius + Mathf.Max(0f, shipRadius);
+        bool insideObstacleBody = toObstacle.sqrMagnitude <= obstacleBodyRadius * obstacleBodyRadius;
+        if (projectedDistance < 0f && !insideObstacleBody)
+        {
+            return false;
+        }
+
         float clampedDistance = Mathf.Clamp(projectedDistance, 0f, maxDistance);
         Vector3 closestPointOnPath = origin + direction * clampedDistance;
         Vector3 fromPath = obstacle.WorldPosition - closestPointOnPath;
@@ -423,7 +430,14 @@ public class PrototypeObstacleDetector : MonoBehaviour
             Vector3 toObstacle = obstacle.WorldPosition - origin;
             float projectedDistance = Vector3.Dot(toObstacle, direction);
             float combinedRadius = obstacle.EffectiveClearanceRadius + clearanceRadius + Mathf.Max(0f, shipRadius);
+            float obstacleBodyRadius = obstacle.EffectiveClearanceRadius + Mathf.Max(0f, shipRadius);
+            bool insideObstacleBody = toObstacle.sqrMagnitude <= obstacleBodyRadius * obstacleBodyRadius;
             bool overlapsStart = toObstacle.sqrMagnitude <= combinedRadius * combinedRadius;
+            if (projectedDistance < 0f && !insideObstacleBody)
+            {
+                continue;
+            }
+
             if (!overlapsStart && (projectedDistance < 0f || projectedDistance > maxDistance || projectedDistance >= bestDistance))
             {
                 continue;
@@ -455,6 +469,24 @@ public class PrototypeObstacleDetector : MonoBehaviour
 
         result = PrototypeObstacleDetectionResult.HitFallback(bestObstacle, bestPoint, bestNormal, bestDistance, clearanceRadius);
         return true;
+    }
+
+    private static bool IsOwnCollider(Collider collider, Transform ownRoot)
+    {
+        if (collider == null || ownRoot == null)
+        {
+            return false;
+        }
+
+        if (collider.transform.IsChildOf(ownRoot))
+        {
+            return true;
+        }
+
+        Rigidbody attachedBody = collider.attachedRigidbody;
+        return attachedBody != null
+            && attachedBody.transform != null
+            && attachedBody.transform.IsChildOf(ownRoot);
     }
 
     private void OnValidate()

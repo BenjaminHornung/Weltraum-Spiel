@@ -292,6 +292,7 @@ public class PrototypeTrajectoryPlanner
     private const float AttitudeLatchMarginSeconds = 0.4f;
     private const float DirectFastTransferMinimumMainSeconds = 0.2f;
     private const float DirectFastTransferMinimumDistanceMeters = 1.5f;
+    private const float DirectFastTransferLateralDampingSeconds = 2f;
     private readonly List<PrototypeTrajectoryCandidateScore> candidateBuffer = new List<PrototypeTrajectoryCandidateScore>(10);
 
     public PrototypeTrajectoryPlan Plan(PrototypeTrajectorySnapshot snapshot, PrototypeObstacleDetectionResult detection)
@@ -389,10 +390,23 @@ public class PrototypeTrajectoryPlanner
         }
 
         avoidanceDirection = avoidanceDirection.sqrMagnitude > 0.0001f ? avoidanceDirection.normalized : Vector3.zero;
-        Vector3 requestedRcsForce = ComputeRcsRequest(snapshot, avoidanceDirection, out bool limitedRcsAuthority);
+        bool limitedRcsAuthority;
+        Vector3 requestedRcsForce = avoidance
+            ? ComputeRcsRequest(snapshot, avoidanceDirection, out limitedRcsAuthority)
+            : ComputeDirectLateralRcsRequest(snapshot, targetDirection, out limitedRcsAuthority);
         float closestObstacleDistance = selected.clearanceMeters;
         TrajectoryBurnPlan burnPlan = BuildBurnPlan(snapshot, selectedDirection, requestedThrottle);
-        PrototypeTrajectorySegment[] segments = BuildSegments(snapshot, resolvedShipSnapshot, selectedDirection, requestedThrottle, burnPlan, avoidance, selected, suppressDirectFastTransfer, forceDirectFastTransferBrakeHold);
+        PrototypeTrajectorySegment[] segments = BuildSegments(
+            snapshot,
+            resolvedShipSnapshot,
+            selectedDirection,
+            requestedThrottle,
+            burnPlan,
+            avoidance,
+            selected,
+            suppressDirectFastTransfer,
+            forceDirectFastTransferBrakeHold,
+            false);
         burnPlan = ResolvePrimaryBurnPlan(snapshot, segments, burnPlan, resolvedShipSnapshot);
         bool fuelInsufficient = selected.fuelInsufficient || SegmentsRequireMoreFuelThanAvailable(segments, snapshot.fuelKgPerSecond, snapshot.availableFuelKg, resolvedShipSnapshot);
         Vector3[] predictedPath = PredictCandidatePath(snapshot, selectedDirection, requestedRcsForce, requestedThrottle);
@@ -973,6 +987,33 @@ public class PrototypeTrajectoryPlanner
             && stopDrift <= driftTolerance;
     }
 
+    private static Vector3 ComputeDirectLateralRcsRequest(
+        PrototypeTrajectorySnapshot snapshot,
+        Vector3 routeDirection,
+        out bool limitedRcsAuthority)
+    {
+        limitedRcsAuthority = false;
+        if (snapshot.maxRcsForce <= 0.0001f || routeDirection.sqrMagnitude <= 0.0001f)
+        {
+            limitedRcsAuthority = snapshot.velocity.sqrMagnitude > 0.0001f;
+            return Vector3.zero;
+        }
+
+        Vector3 route = routeDirection.normalized;
+        Vector3 lateralVelocity = snapshot.velocity - route * Vector3.Dot(snapshot.velocity, route);
+        float lateralSpeed = lateralVelocity.magnitude;
+        float speedTolerance = Mathf.Max(0.05f, snapshot.arrivalSpeed, snapshot.lateralTolerance * 2f);
+        if (lateralSpeed <= speedTolerance)
+        {
+            return Vector3.zero;
+        }
+
+        float mass = Mathf.Max(0.01f, snapshot.massKg);
+        float desiredForce = mass * (lateralSpeed / DirectFastTransferLateralDampingSeconds);
+        limitedRcsAuthority = desiredForce > snapshot.maxRcsForce + 0.001f;
+        return -lateralVelocity.normalized * Mathf.Min(desiredForce, snapshot.maxRcsForce);
+    }
+
     private static bool TrySolveDirectFastTransferPeakSpeed(
         float plannedRouteDistanceMeters,
         float initialAlongSpeedMetersPerSecond,
@@ -1149,6 +1190,7 @@ public class PrototypeTrajectoryPlanner
         PrototypeShipPlanningSnapshot shipSnapshot,
         float closestObstacle,
         float missDistance,
+        bool forceInitialLateralCorrection,
         out PrototypeTrajectorySegment[] segments)
     {
         segments = null;
@@ -1163,6 +1205,45 @@ public class PrototypeTrajectoryPlanner
             : snapshot.mainThrustNewtons > 0f
                 ? snapshot.mainThrustNewtons
                 : snapshot.maxMainAcceleration * snapshot.massKg;
+        Vector3 lateralVelocity = snapshot.velocity - solution.routeDirectionWorld * Vector3.Dot(snapshot.velocity, solution.routeDirectionWorld);
+        float lateralSpeed = lateralVelocity.magnitude;
+        bool addInitialLateralCorrection = forceInitialLateralCorrection
+            && lateralSpeed > Mathf.Max(0.25f, snapshot.arrivalSpeed * 1.25f, snapshot.lateralTolerance * 2f)
+            && solution.burnAccelerationMetersPerSecondSquared > 0.0001f;
+        TrajectoryBurnPlan lateralPlan = TrajectoryBurnPlan.None;
+        PrototypeTrajectorySegment lateralCorrection = default;
+        float fuelAfterLateral = snapshot.availableFuelKg;
+        if (addInitialLateralCorrection)
+        {
+            float idealLateralCorrectionSeconds = lateralSpeed / solution.burnAccelerationMetersPerSecondSquared;
+            float lateralCorrectionSeconds = EstimateCommandedThrottleDurationForEquivalentSeconds(
+                idealLateralCorrectionSeconds,
+                1f,
+                shipSnapshot);
+            Vector3 lateralDirection = -lateralVelocity.normalized;
+            float lateralEffectiveThrottle = EstimateAverageThrottleOverDuration(lateralCorrectionSeconds, 1f, shipSnapshot);
+            lateralPlan = TrajectoryBurnPlan.Estimate(
+                lateralDirection,
+                lateralCorrectionSeconds,
+                lateralEffectiveThrottle,
+                thrust,
+                snapshot.fuelKgPerSecond,
+                snapshot.availableFuelKg,
+                snapshot.massKg);
+            fuelAfterLateral = Mathf.Max(0f, snapshot.availableFuelKg - lateralPlan.estimatedFuelKg);
+            lateralCorrection = new PrototypeTrajectorySegment(
+                PrototypeTrajectorySegmentType.Burn,
+                lateralCorrectionSeconds,
+                lateralDirection,
+                1f,
+                lateralPlan.estimatedDeltaV,
+                lateralPlan.estimatedFuelKg,
+                closestObstacle,
+                missDistance,
+                PrototypeManeuverProfile.DirectFastTransfer,
+                0f);
+        }
+
         float burnEffectiveThrottle = EstimateAverageThrottleOverDuration(solution.tBurnSeconds, 1f, shipSnapshot);
         TrajectoryBurnPlan burnPlan = solution.tBurnSeconds > 0f
             ? TrajectoryBurnPlan.Estimate(
@@ -1171,10 +1252,10 @@ public class PrototypeTrajectoryPlanner
                 burnEffectiveThrottle,
                 thrust,
                 snapshot.fuelKgPerSecond,
-                snapshot.availableFuelKg,
+                fuelAfterLateral,
                 snapshot.massKg)
             : TrajectoryBurnPlan.None;
-        float fuelAfterBurn = Mathf.Max(0f, snapshot.availableFuelKg - burnPlan.estimatedFuelKg);
+        float fuelAfterBurn = Mathf.Max(0f, fuelAfterLateral - burnPlan.estimatedFuelKg);
         Vector3 brakeDirection = solution.brakeImmediately && snapshot.velocity.sqrMagnitude > 0.0001f
             ? -snapshot.velocity.normalized
             : -solution.routeDirectionWorld;
@@ -1212,7 +1293,9 @@ public class PrototypeTrajectoryPlanner
 
         if (solution.brakeImmediately)
         {
-            segments = new[] { brake, hold };
+            segments = addInitialLateralCorrection
+                ? new[] { lateralCorrection, brake, hold }
+                : new[] { brake, hold };
             return true;
         }
 
@@ -1227,7 +1310,9 @@ public class PrototypeTrajectoryPlanner
             missDistance,
             PrototypeManeuverProfile.DirectFastTransfer,
             solution.sBurnMeters);
-        segments = new[] { burn, brake, hold };
+        segments = addInitialLateralCorrection
+            ? new[] { lateralCorrection, burn, brake, hold }
+            : new[] { burn, brake, hold };
         return true;
     }
 
@@ -1240,7 +1325,8 @@ public class PrototypeTrajectoryPlanner
         bool avoidance,
         PrototypeTrajectoryCandidateScore selected,
         bool suppressDirectFastTransfer,
-        bool forceDirectFastTransferBrakeHold)
+        bool forceDirectFastTransferBrakeHold,
+        bool directLateralRcsLimited = false)
     {
         float missDistance = selected.waypoint.sqrMagnitude > 0.0001f
             ? Vector3.Distance(selected.waypoint, snapshot.targetPosition)
@@ -1279,7 +1365,13 @@ public class PrototypeTrajectoryPlanner
 
         if (!avoidance
             && !suppressDirectFastTransfer
-            && TryBuildDirectFastTransferSegments(snapshot, shipSnapshot, closestObstacle, missDistance, out PrototypeTrajectorySegment[] directSegments))
+            && TryBuildDirectFastTransferSegments(
+                snapshot,
+                shipSnapshot,
+                closestObstacle,
+                missDistance,
+                directLateralRcsLimited,
+                out PrototypeTrajectorySegment[] directSegments))
         {
             return directSegments;
         }
@@ -1584,7 +1676,7 @@ public class PrototypeTrajectoryPlanner
             PrototypeManeuverPhase phase = isReacquireAfterAvoidance
                 ? PrototypeManeuverPhase.ReacquireRoute
                 : MapManeuverPhase(legacy.type);
-            PrototypeManeuverCommandMode mode = MapCommandMode(legacy.type, legacy.throttle, requestedRcsForceWorld);
+            PrototypeManeuverCommandMode mode = MapCommandMode(legacy, requestedRcsForceWorld);
             Vector3 rcsForce = UsesRcsTranslation(mode) ? requestedRcsForceWorld : Vector3.zero;
             float rcsScale = ResolveRcsTranslationScale(rcsForce, shipSnapshot);
             float mainFuel = ResolveExpectedMainFuel(legacy, mode, mainFuelRate, shipSnapshot);
@@ -2379,16 +2471,21 @@ public class PrototypeTrajectoryPlanner
     }
 
     private static PrototypeManeuverCommandMode MapCommandMode(
-        PrototypeTrajectorySegmentType type,
-        float throttle,
+        PrototypeTrajectorySegment segment,
         Vector3 requestedRcsForceWorld)
     {
-        switch (type)
+        switch (segment.type)
         {
             case PrototypeTrajectorySegmentType.Align:
                 return PrototypeManeuverCommandMode.AttitudeOnly;
             case PrototypeTrajectorySegmentType.Burn:
             case PrototypeTrajectorySegmentType.Brake:
+                if (segment.profile == PrototypeManeuverProfile.DirectFastTransfer
+                    && requestedRcsForceWorld.sqrMagnitude > 0.0001f)
+                {
+                    return PrototypeManeuverCommandMode.CombinedMainAndRcs;
+                }
+
                 return PrototypeManeuverCommandMode.MainThrottle;
             case PrototypeTrajectorySegmentType.AvoidanceBurn:
                 return requestedRcsForceWorld.sqrMagnitude > 0.0001f
@@ -2397,7 +2494,7 @@ public class PrototypeTrajectoryPlanner
             case PrototypeTrajectorySegmentType.Coast:
                 return PrototypeManeuverCommandMode.RcsAttitude;
             case PrototypeTrajectorySegmentType.FinalApproach:
-                return throttle > 0.01f
+                return segment.throttle > 0.01f
                     ? PrototypeManeuverCommandMode.MainThrottle
                     : PrototypeManeuverCommandMode.RcsTranslation;
             case PrototypeTrajectorySegmentType.Hold:

@@ -152,6 +152,139 @@ public class PrototypeWaypointAutopilotArrivalTerminalCaptureTests
     }
 
     [Test]
+    public void StrictArrivalCompletionRejectsLooseRadius()
+    {
+        var autopilot = CreateAutopilot();
+        GameObject targetHost = null;
+        try
+        {
+            targetHost = AttachTargetContext(autopilot, 10f);
+            SetMetrics(autopilot, 11f, 0.03f, 0.02f, 0.01f);
+            var body = autopilot.GetComponent<Rigidbody>();
+            body.angularVelocity = Vector3.zero;
+
+            bool hasArrived = InvokePrivate<bool>(autopilot, "HasArrived");
+
+            Assert.False(hasArrived, "old slack-style arrival windows should not pass strict completion.");
+        }
+        finally
+        {
+            if (targetHost != null)
+            {
+                Object.DestroyImmediate(targetHost);
+            }
+
+            Object.DestroyImmediate(autopilot.gameObject);
+        }
+    }
+
+    [Test]
+    public void StrictArrivalCompletionRejectsTooFast()
+    {
+        var autopilot = CreateAutopilot();
+        GameObject targetHost = null;
+        try
+        {
+            targetHost = AttachTargetContext(autopilot, 10f);
+            SetMetrics(autopilot, 0.7f, 0.2f, 0.05f, 0.02f);
+            var body = autopilot.GetComponent<Rigidbody>();
+            body.angularVelocity = Vector3.zero;
+
+            bool hasArrived = InvokePrivate<bool>(autopilot, "HasArrived");
+
+            Assert.False(hasArrived, "strict completion should reject high-speed cases at near-target distance.");
+        }
+        finally
+        {
+            if (targetHost != null)
+            {
+                Object.DestroyImmediate(targetHost);
+            }
+
+            Object.DestroyImmediate(autopilot.gameObject);
+        }
+    }
+
+    [Test]
+    public void StrictArrivalCompletionRejectsHighAngularRate()
+    {
+        var autopilot = CreateAutopilot();
+        GameObject targetHost = null;
+        try
+        {
+            targetHost = AttachTargetContext(autopilot, 10f);
+            SetMetrics(autopilot, 0.5f, 0.07f, 0.04f, 0.03f);
+            var body = autopilot.GetComponent<Rigidbody>();
+            body.angularVelocity = Vector3.up * 0.2f;
+
+            bool hasArrived = InvokePrivate<bool>(autopilot, "HasArrived");
+
+            Assert.False(hasArrived, "angular rate above the strict envelope should block completion.");
+        }
+        finally
+        {
+            if (targetHost != null)
+            {
+                Object.DestroyImmediate(targetHost);
+            }
+
+            Object.DestroyImmediate(autopilot.gameObject);
+        }
+    }
+
+    [Test]
+    public void StrictArrivalCompletionAcceptsExactSettledState()
+    {
+        var autopilot = CreateAutopilot();
+        GameObject targetHost = null;
+        try
+        {
+            targetHost = AttachTargetContext(autopilot, 10f);
+            SetMetrics(autopilot, 0.74f, 0.1f, 0.05f, 0.02f);
+            var body = autopilot.GetComponent<Rigidbody>();
+            body.angularVelocity = Vector3.up * 0.1f;
+
+            bool hasArrived = InvokePrivate<bool>(autopilot, "HasArrived");
+
+            Assert.True(hasArrived, "exact settled state should pass strict completion.");
+        }
+        finally
+        {
+            if (targetHost != null)
+            {
+                Object.DestroyImmediate(targetHost);
+            }
+
+            Object.DestroyImmediate(autopilot.gameObject);
+        }
+    }
+
+    [Test]
+    public void HoldPositionCorrectionStillTargetsStrictArrivalPoint()
+    {
+        var autopilot = CreateAutopilot();
+        GameObject targetHost = null;
+        try
+        {
+            targetHost = AttachTargetContext(autopilot, 10f);
+            AttachRcsAuthority(autopilot);
+            SetMetrics(autopilot, 8f, 0.2f, 0.2f, 0.2f);
+            Vector3 holdCorrection = InvokePrivate<Vector3>(autopilot, "ComputeHoldPositionCorrectionForceWorld", 0f);
+
+            Assert.That(holdCorrection.magnitude, Is.GreaterThan(0.0001f), "hold damping should keep driving inside loose terminal radius.");
+        }
+        finally
+        {
+            if (targetHost != null)
+            {
+                Object.DestroyImmediate(targetHost);
+            }
+
+            Object.DestroyImmediate(autopilot.gameObject);
+        }
+    }
+
+    [Test]
     public void DirectFastTransferTerminalBrakeTapersInsideCaptureZone()
     {
         var autopilot = CreateAutopilot();
@@ -217,6 +350,167 @@ public class PrototypeWaypointAutopilotArrivalTerminalCaptureTests
         }
     }
 
+    [Test]
+    public void TerminalReacquireWithBrakeOwnershipNoTerminalMomentumKeepsTerminalControl()
+    {
+        var autopilot = CreateAutopilot();
+        try
+        {
+            SetMetrics(autopilot, 60f, 0.06f, 0.01f, 0f);
+            SetPrivateField(autopilot, "arrivalBrakeCommitted", true);
+            SetPrivateField(autopilot, "directFastTransferTerminalReacquireActive", true);
+
+            InvokePrivate<object>(autopilot, "ApplyDirectFastTransferTerminalReacquire");
+
+            Assert.That(autopilot.CurrentState, Is.Not.EqualTo(PrototypeWaypointAutopilotState.Accelerate));
+            Assert.That(autopilot.NavigationPhase, Is.EqualTo(PrototypeWaypointAutopilotNavigationPhase.FinalApproach));
+            Assert.That(autopilot.RequestedMainThrottle, Is.EqualTo(0f).Within(0.0001f));
+            Assert.That(autopilot.NavigationPhase, Is.Not.EqualTo(PrototypeWaypointAutopilotNavigationPhase.ReacquireDirectPath));
+        }
+        finally
+        {
+            Object.DestroyImmediate(autopilot.gameObject);
+        }
+    }
+
+    [Test]
+    public void FarTerminalRecoveryWithoutOwnershipIsRejected()
+    {
+        var autopilot = CreateAutopilot();
+        try
+        {
+            SetMetrics(autopilot, 500f, 0.5f, 0.4f, -0.1f);
+            PrototypeFlightPlanAbortReplanReason reasons =
+                PrototypeFlightPlanAbortReplanReason.PositionDivergence
+                | PrototypeFlightPlanAbortReplanReason.InvalidPlanDirection
+                | PrototypeFlightPlanAbortReplanReason.TrackingDiverged;
+
+            bool canOwnRecovery = InvokePrivate<bool>(
+                autopilot,
+                "CanDirectFastTransferTerminalRecoveryOwnCurrentState");
+            bool shouldRecover = InvokePrivate<bool>(
+                autopilot,
+                "ShouldRecoverStrictDirectFastTransferTerminalDivergence",
+                reasons);
+
+            Assert.False(canOwnRecovery, "far no-obstacle drift should stay in nominal tracking, not terminal recovery.");
+            Assert.False(shouldRecover, "far invalid plan direction must not become a false Reacquire profile.");
+        }
+        finally
+        {
+            Object.DestroyImmediate(autopilot.gameObject);
+        }
+    }
+
+    [Test]
+    public void ExistingTerminalRecoveryRetainsOwnership()
+    {
+        var autopilot = CreateAutopilot();
+        try
+        {
+            SetMetrics(autopilot, 500f, 0.5f, 0.4f, -0.1f);
+            SetPrivateField(autopilot, "directFastTransferTerminalReacquireActive", true);
+            PrototypeFlightPlanAbortReplanReason reasons =
+                PrototypeFlightPlanAbortReplanReason.PositionDivergence
+                | PrototypeFlightPlanAbortReplanReason.InvalidPlanDirection
+                | PrototypeFlightPlanAbortReplanReason.TrackingDiverged;
+
+            bool canOwnRecovery = InvokePrivate<bool>(
+                autopilot,
+                "CanDirectFastTransferTerminalRecoveryOwnCurrentState");
+            bool shouldRecover = InvokePrivate<bool>(
+                autopilot,
+                "ShouldRecoverStrictDirectFastTransferTerminalDivergence",
+                reasons);
+
+            Assert.True(canOwnRecovery, "an explicit terminal recovery should keep control once entered.");
+            Assert.True(shouldRecover, "executor-owned terminal recovery may continue correcting its intentional off-plan path.");
+        }
+        finally
+        {
+            Object.DestroyImmediate(autopilot.gameObject);
+        }
+    }
+
+    [Test]
+    public void FlightPlanHoldFallbackWithBrakeOwnershipStaysFinalApproach()
+    {
+        var autopilot = CreateAutopilot();
+        try
+        {
+            SetMetrics(autopilot, 120f, 0.06f, 0.02f, 0f);
+            SetPrivateField(autopilot, "arrivalBrakeCommitted", true);
+            SetPrivateField(
+                autopilot,
+                "<LastTrajectoryPlan>k__BackingField",
+                PrototypeTrajectoryPlan.Clear(Vector3.forward));
+
+            var holdSegment = new PrototypeManeuverSegment
+            {
+                phase = PrototypeManeuverPhase.Hold,
+                commandMode = PrototypeManeuverCommandMode.MainThrottle,
+                mainThrottle = 0f
+            };
+
+            var trackingCommand = new PrototypeFlightPlanTrackingCommand
+            {
+                hasCommand = true,
+                mainThrottleAllowed = true,
+                mainDirectionWorld = Vector3.forward,
+                mainThrottle = 0f,
+                rcsAccelerationWorld = Vector3.zero,
+                rcsForceWorld = Vector3.zero,
+                accelerationDotPlannedTangent = 1f,
+                mainDirectionDotVelocityBrake = 1f
+            };
+
+            InvokePrivate<bool>(autopilot, "ApplyFlightPlanSegment", holdSegment, trackingCommand);
+
+            Assert.That(autopilot.CurrentState, Is.Not.EqualTo(PrototypeWaypointAutopilotState.Accelerate));
+            Assert.That(autopilot.NavigationPhase, Is.EqualTo(PrototypeWaypointAutopilotNavigationPhase.FinalApproach));
+            Assert.That(autopilot.NavigationPhase, Is.Not.EqualTo(PrototypeWaypointAutopilotNavigationPhase.ReacquireDirectPath));
+            Assert.That(autopilot.RequestedMainThrottle, Is.EqualTo(0f).Within(0.0001f));
+        }
+        finally
+        {
+            Object.DestroyImmediate(autopilot.gameObject);
+        }
+    }
+
+    [Test]
+    public void TerminalControlClearAvoidanceRouteDropsStableAvoidanceAndReacquire()
+    {
+        var autopilot = CreateAutopilot();
+        try
+        {
+            SetMetrics(autopilot, 2f, 0.05f, 0.02f, 0f);
+            SetPrivateField(autopilot, "arrivalTerminalCaptureActive", true);
+            SetPrivateField(autopilot, "hasStableAvoidance", true);
+            SetPrivateField(autopilot, "stableAvoidanceWaypoint", Vector3.right * 20f);
+            SetPrivateField(autopilot, "stableAvoidanceDirection", Vector3.right);
+            SetPrivateField(autopilot, "avoidanceHoldExpireTime", 42f);
+            SetPrivateField(autopilot, "avoidanceClearStartedAtTime", 12f);
+            SetPrivateField(autopilot, "reacquireDirectPathUntilTime", 42f);
+            SetPrivateField(autopilot, "coveredAvoidanceSafetyReplanUntilTime", 42f);
+
+            Assert.True(InvokePrivate<bool>(autopilot, "ShouldTerminalControlClearAvoidanceRoute"));
+
+            InvokePrivate<object>(autopilot, "ClearStableAvoidanceRoute", true);
+
+            Assert.False(GetPrivateField<bool>(autopilot, "hasStableAvoidance"));
+            Assert.That(GetPrivateField<Vector3>(autopilot, "stableAvoidanceWaypoint").sqrMagnitude, Is.EqualTo(0f).Within(0.0001f));
+            Assert.That(GetPrivateField<Vector3>(autopilot, "stableAvoidanceDirection").sqrMagnitude, Is.EqualTo(0f).Within(0.0001f));
+            Assert.That(GetPrivateField<float>(autopilot, "avoidanceHoldExpireTime"), Is.EqualTo(0f).Within(0.0001f));
+            Assert.That(GetPrivateField<float>(autopilot, "avoidanceClearStartedAtTime"), Is.EqualTo(-1f).Within(0.0001f));
+            Assert.That(GetPrivateField<float>(autopilot, "reacquireDirectPathUntilTime"), Is.EqualTo(0f).Within(0.0001f));
+            Assert.That(GetPrivateField<float>(autopilot, "coveredAvoidanceSafetyReplanUntilTime"), Is.EqualTo(0f).Within(0.0001f));
+        }
+        finally
+        {
+            Object.DestroyImmediate(autopilot.gameObject);
+        }
+    }
+
     private static PrototypeWaypointAutopilot CreateAutopilot()
     {
         var host = new GameObject("AutopilotArrivalTerminalCaptureTest");
@@ -243,15 +537,18 @@ public class PrototypeWaypointAutopilotArrivalTerminalCaptureTests
     private static void AttachRcsAuthority(PrototypeWaypointAutopilot autopilot)
     {
         var body = autopilot.GetComponent<Rigidbody>();
-        var physicsCore = autopilot.gameObject.AddComponent<ShipPhysicsCore>();
-        var rcs = autopilot.gameObject.AddComponent<RcsThrusterController>();
-        Transform up = CreateNozzle(autopilot.transform, "RCS_Up", Vector3.up);
-        Transform down = CreateNozzle(autopilot.transform, "RCS_Down", Vector3.down);
-        Transform left = CreateNozzle(autopilot.transform, "RCS_Left", Vector3.left);
-        Transform right = CreateNozzle(autopilot.transform, "RCS_Right", Vector3.right);
-        Transform forward = CreateNozzle(autopilot.transform, "RCS_Forward", Vector3.forward);
-        Transform back = CreateNozzle(autopilot.transform, "RCS_Back", Vector3.back);
+        var physicsCore = autopilot.GetComponent<ShipPhysicsCore>() ?? autopilot.gameObject.AddComponent<ShipPhysicsCore>();
+        var rcs = autopilot.GetComponent<RcsThrusterController>() ?? autopilot.gameObject.AddComponent<RcsThrusterController>();
+        var controller = autopilot.GetComponent<PlayerShipController>() ?? autopilot.gameObject.AddComponent<PlayerShipController>();
+        Transform up = CreateNozzle(autopilot.transform, "RCS_Nozzle_Up", Vector3.up);
+        Transform down = CreateNozzle(autopilot.transform, "RCS_Nozzle_Down", Vector3.down);
+        Transform left = CreateNozzle(autopilot.transform, "RCS_Nozzle_Left", Vector3.left);
+        Transform right = CreateNozzle(autopilot.transform, "RCS_Nozzle_Right", Vector3.right);
+        Transform forward = CreateNozzle(autopilot.transform, "RCS_Nozzle_Forward", Vector3.forward);
+        Transform back = CreateNozzle(autopilot.transform, "RCS_Nozzle_Back", Vector3.back);
         rcs.ConfigureThrusters(up, down, left, right, forward, back, body, physicsCore);
+        controller.SetRcsEnabled(true);
+        SetPrivateField(autopilot, "shipController", controller);
         SetPrivateField(autopilot, "cachedRcsThrusters", rcs);
     }
 
@@ -260,7 +557,51 @@ public class PrototypeWaypointAutopilotArrivalTerminalCaptureTests
         var nozzle = new GameObject(name);
         nozzle.transform.SetParent(parent, false);
         nozzle.transform.localPosition = localPosition;
+        var socket = nozzle.AddComponent<PrototypeShipSocket>();
+        socket.Configure(new PrototypeShipSocketDescriptor
+        {
+            SocketId = name,
+            SocketType = PrototypeShipSocketType.RcsNozzle,
+            LocalAxisRole = PrototypeShipSocketAxisRole.ForceDirection,
+            Direction = InferSocketDirection(localPosition),
+            IsRuntimeSocket = true
+        });
         return nozzle.transform;
+    }
+
+    private static PrototypeShipSocketDirection InferSocketDirection(Vector3 localPosition)
+    {
+        if (localPosition == Vector3.forward)
+        {
+            return PrototypeShipSocketDirection.Forward;
+        }
+
+        if (localPosition == Vector3.back)
+        {
+            return PrototypeShipSocketDirection.Back;
+        }
+
+        if (localPosition == Vector3.left)
+        {
+            return PrototypeShipSocketDirection.Left;
+        }
+
+        if (localPosition == Vector3.right)
+        {
+            return PrototypeShipSocketDirection.Right;
+        }
+
+        if (localPosition == Vector3.up)
+        {
+            return PrototypeShipSocketDirection.Up;
+        }
+
+        if (localPosition == Vector3.down)
+        {
+            return PrototypeShipSocketDirection.Down;
+        }
+
+        return PrototypeShipSocketDirection.Unknown;
     }
 
     private static void SetMetrics(

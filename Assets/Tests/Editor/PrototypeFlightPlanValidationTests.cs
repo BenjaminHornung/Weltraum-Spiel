@@ -549,6 +549,88 @@ public class PrototypeFlightPlanValidationTests
     }
 
     [Test]
+    public void DirectFastTransfer_ProgradeBurnAllowsLateralPlannedTangentWhenMainPointsAtTarget()
+    {
+        PrototypeFlightPlan plan = CreatePlan(
+            new[]
+            {
+                CreateSegmentWithDirection(
+                    0,
+                    PrototypeManeuverPhase.ProgradeBurn,
+                    PrototypeManeuverCommandMode.MainThrottle,
+                    0f,
+                    2f,
+                    Vector3.forward,
+                    profile: PrototypeManeuverProfile.DirectFastTransfer)
+            },
+            new[]
+            {
+                CreateSample(0f, 0, PrototypeManeuverPhase.ProgradeBurn, Vector3.zero, Vector3.right * 18f),
+                CreateSample(2f, 0, PrototypeManeuverPhase.ProgradeBurn, Vector3.right * 36f, Vector3.right * 18f)
+            });
+
+        PrototypeFlightPlanTrackingCommand command = PrototypeFlightPlanTracker.Track(
+            plan,
+            1f,
+            Vector3.right * 18f,
+            Vector3.right * 18f,
+            Quaternion.identity,
+            Vector3.zero,
+            plan.ExpectedFuelAt(1f),
+            Vector3.forward * 100f,
+            8f,
+            2f,
+            100f);
+
+        Assert.True(command.hasCommand);
+        Assert.False(command.requiresReplan, command.statusLabel);
+        Assert.True(command.mainThrottleAllowed);
+        Assert.False((command.replanReasons & PrototypeFlightPlanAbortReplanReason.InvalidPlanDirection) != 0);
+        Assert.That(command.mainThrottle, Is.EqualTo(1f).Within(0.0001f));
+    }
+
+    [Test]
+    public void DirectFastTransfer_ProgradeBurnAllowsPlanTangentWhenMainDoesNotOpposeTarget()
+    {
+        PrototypeFlightPlan plan = CreatePlan(
+            new[]
+            {
+                CreateSegmentWithDirection(
+                    0,
+                    PrototypeManeuverPhase.ProgradeBurn,
+                    PrototypeManeuverCommandMode.MainThrottle,
+                    0f,
+                    2f,
+                    Vector3.forward,
+                    profile: PrototypeManeuverProfile.DirectFastTransfer)
+            },
+            new[]
+            {
+                CreateSample(0f, 0, PrototypeManeuverPhase.ProgradeBurn, Vector3.zero, Vector3.back * 18f),
+                CreateSample(2f, 0, PrototypeManeuverPhase.ProgradeBurn, Vector3.back * 36f, Vector3.back * 18f)
+            });
+
+        PrototypeFlightPlanTrackingCommand command = PrototypeFlightPlanTracker.Track(
+            plan,
+            1f,
+            Vector3.back * 18f,
+            Vector3.back * 18f,
+            Quaternion.identity,
+            Vector3.zero,
+            plan.ExpectedFuelAt(1f),
+            Vector3.forward * 100f,
+            8f,
+            2f,
+            100f);
+
+        Assert.True(command.hasCommand);
+        Assert.False(command.requiresReplan, command.statusLabel);
+        Assert.True(command.mainThrottleAllowed);
+        Assert.False((command.replanReasons & PrototypeFlightPlanAbortReplanReason.InvalidPlanDirection) != 0);
+        Assert.That(command.mainThrottle, Is.EqualTo(1f).Within(0.0001f));
+    }
+
+    [Test]
     public void FlightPlanTracker_InvalidPlanWithoutSamples()
     {
         PrototypeFlightPlan plan = CreatePlan(new[]

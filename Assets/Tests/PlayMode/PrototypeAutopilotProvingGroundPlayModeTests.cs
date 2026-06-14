@@ -293,6 +293,11 @@ public class PrototypeAutopilotProvingGroundPlayModeTests
             planTotalDuration = plan.totalDurationSeconds,
             flightPlanSafetyReplanCount = autopilot.FlightPlanSafetyReplanCount,
             flightPlanRequiresReplan = autopilot.FlightPlanRequiresReplan,
+            flightPlanDivergenceStatus = autopilot.FlightPlanDivergenceStatusLabel,
+            arrivalFailureReason = autopilot.ArrivalFailureReason,
+            executionReplanReasons = execution.replanReasons.ToString(),
+            trackingReplanReasons = tracking.replanReasons.ToString(),
+            trackingStatusLabel = tracking.statusLabel,
             selectedCandidate = autopilot.SelectedCandidate,
             selectedCandidateReason = autopilot.SelectedCandidateReason,
             resolvedPlannerProfile = resolvedPlannerProfile,
@@ -408,6 +413,7 @@ public class PrototypeAutopilotProvingGroundPlayModeTests
             + "requestedMainThrottle,actualMainThrottle,"
             + "requestedRcsForceMagnitude,actualRcsForceMagnitude,requestedRcsTorqueMagnitude,actualRcsTorqueMagnitude,"
             + "planElapsed,planTotalDuration,flightPlanSafetyReplanCount,flightPlanRequiresReplan,"
+            + "flightPlanDivergenceStatus,arrivalFailureReason,executionReplanReasons,trackingReplanReasons,trackingStatusLabel,"
             + "selectedCandidate,selectedCandidateReason,resolvedPlannerProfile,selectedProfileAllowed,disallowedProfileCount,"
             + "obstacleStatus,sawAvoidance,sawReacquire,sawDirectAfterAvoidance,minimumObstacleClearance,"
             + "arrivalBrakeCommitted,directFastTransferBrakeCommitted,arrivalTerminalCaptureActive,"
@@ -442,6 +448,11 @@ public class PrototypeAutopilotProvingGroundPlayModeTests
             + FormatFloat(sample.planTotalDuration) + ","
             + sample.flightPlanSafetyReplanCount + ","
             + sample.flightPlanRequiresReplan + ","
+            + CsvEscape(sample.flightPlanDivergenceStatus) + ","
+            + CsvEscape(sample.arrivalFailureReason) + ","
+            + CsvEscape(sample.executionReplanReasons) + ","
+            + CsvEscape(sample.trackingReplanReasons) + ","
+            + CsvEscape(sample.trackingStatusLabel) + ","
             + CsvEscape(sample.selectedCandidate) + ","
             + CsvEscape(sample.selectedCandidateReason) + ","
             + CsvEscape(sample.resolvedPlannerProfile) + ","
@@ -1114,6 +1125,11 @@ public class PrototypeAutopilotProvingGroundPlayModeTests
         public float planTotalDuration;
         public int flightPlanSafetyReplanCount;
         public bool flightPlanRequiresReplan;
+        public string flightPlanDivergenceStatus;
+        public string arrivalFailureReason;
+        public string executionReplanReasons;
+        public string trackingReplanReasons;
+        public string trackingStatusLabel;
         public string selectedCandidate;
         public string selectedCandidateReason;
         public string resolvedPlannerProfile;

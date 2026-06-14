@@ -230,14 +230,8 @@ public sealed class PrototypeScenarioBuilder : IDisposable
             return;
         }
 
-        if (Application.isPlaying)
-        {
-            UnityEngine.Object.Destroy(target);
-        }
-        else
-        {
-            UnityEngine.Object.DestroyImmediate(target);
-        }
+        UnityEngine.Object.DestroyImmediate(target);
+        Physics.SyncTransforms();
     }
 }
 

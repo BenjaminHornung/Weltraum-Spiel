@@ -889,7 +889,7 @@ public class PrototypeAutopilotNavigationPlayModeTests
     }
 
     [Test]
-    public void PlayMode_DirectFastTransfer_SlowButFarAfterBrakeReacquiresWithoutLegacyBrakeLoop()
+    public void PlayMode_DirectFastTransfer_SlowButFarAfterBrakeDoesNotUseNominalReacquire()
     {
         AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 220f);
         SetPrivateFloat(rig.Autopilot, "navigationPlanIntervalSeconds", 999f);
@@ -913,11 +913,12 @@ public class PrototypeAutopilotNavigationPlayModeTests
         StepClosedLoopPhysicsWithoutForcedReplan(rig);
 
         string status = rig.Autopilot.FlightPlanDivergenceStatusLabel ?? string.Empty;
-        Assert.That(rig.Autopilot.NavigationPhase, Is.EqualTo(PrototypeWaypointAutopilotNavigationPhase.ReacquireDirectPath));
-        Assert.True(GetPrivateBool(rig.Autopilot, "directFastTransferTerminalReacquireActive"));
-        Assert.That(rig.Autopilot.CurrentState, Is.Not.EqualTo(PrototypeWaypointAutopilotState.Brake));
-        Assert.That(rig.Autopilot.CurrentState, Is.Not.EqualTo(PrototypeWaypointAutopilotState.FlipForBrake));
+        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.Failed));
+        Assert.That(rig.Autopilot.NavigationPhase, Is.Not.EqualTo(PrototypeWaypointAutopilotNavigationPhase.ReacquireDirectPath));
+        Assert.False(GetPrivateBool(rig.Autopilot, "directFastTransferTerminalReacquireActive"));
+        Assert.That(rig.Autopilot.RequestedMainThrottle, Is.EqualTo(0f).Within(0.0001f));
         Assert.False(rig.Autopilot.FlightPlanRequiresReplan, status);
+        Assert.True(rig.Autopilot.FlightPlanRequiresAbort, status);
         Assert.False(status.StartsWith("Replan:") && status != "Replan: none", status);
     }
 

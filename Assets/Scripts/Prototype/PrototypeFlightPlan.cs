@@ -1407,7 +1407,20 @@ public static class PrototypeFlightPlanTracker
             float mainDirectionDotTangent = mainDirection.sqrMagnitude > DirectionEpsilon && tangent.sqrMagnitude > DirectionEpsilon
                 ? Vector3.Dot(mainDirection, tangent)
                 : 1f;
-            if (mainAllowed && mainDirectionDotTangent < settings.progradeTangentDotMinimum)
+            bool directFastTransferMainDirectionOpposesTarget = directFastTransferMain
+                && targetDirection.sqrMagnitude > DirectionEpsilon
+                && mainDirection.sqrMagnitude > DirectionEpsilon
+                && Vector3.Dot(mainDirection, targetDirection.normalized) < 0f;
+            if (mainAllowed
+                && directFastTransferMainDirectionOpposesTarget)
+            {
+                reasons |= PrototypeFlightPlanAbortReplanReason.InvalidPlanDirection;
+                mainAllowed = false;
+            }
+
+            if (mainAllowed
+                && !directFastTransferMain
+                && mainDirectionDotTangent < settings.progradeTangentDotMinimum)
             {
                 reasons |= PrototypeFlightPlanAbortReplanReason.InvalidPlanDirection;
                 mainAllowed = false;
@@ -1421,7 +1434,9 @@ public static class PrototypeFlightPlanTracker
                 mainAllowed = false;
             }
 
-            if (targetDirection.sqrMagnitude > DirectionEpsilon && tangentDotTarget < settings.directTargetDotMinimum)
+            if (!directFastTransferMain
+                && targetDirection.sqrMagnitude > DirectionEpsilon
+                && tangentDotTarget < settings.directTargetDotMinimum)
             {
                 reasons |= PrototypeFlightPlanAbortReplanReason.InvalidPlanDirection;
                 mainAllowed = false;
