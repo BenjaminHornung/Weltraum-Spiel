@@ -93,6 +93,7 @@ Current validation caveat: workspace-wide `specs_validate` is still blocked by i
 | `fix-functional-blender-ship-vfx-turret-v1` | Completed/closed for functional default scope | 0 | Tasks are checked off; `tests/test-protocol.md` records Blender validation, compile checks, EditMode/PlayMode evidence, manual scene verification, imported Demo Scout functional default, imported sockets, weapon binders, and no root muzzle/nozzle fallback. | Keep closed; Cargo functional binding remains out of scope unless a separate cargo slice is opened. |
 | `fix-prototype-usability-flight-feel` | Partially completed; much was absorbed by later control/HUD work | 25 | Test protocol has explicit solution build/test and notes generic verify blocker. | Close implemented slices; convert remaining UI/environment/visual polish into a smaller follow-up. |
 | `fix-prototype-ui-performance-v1` | Mostly completed | 1 | EditMode/performance evidence exists; latest old verifier failed on lint. | Manual PlayMode responsiveness note is the only open task; record evidence, then close/archive. |
+| `autopilot-proving-ground-harness-v1` | Implemented and valid enough for fix work | 0 for harness behavior | `tests/test-protocol.md`, `tests/autopilot-proving-ground-summary.json`, and per-scenario CSVs exist. The normal evidence generator is usable; the strict acceptance gate is expected to fail until exact point arrival is fixed. | Treat as the current authority for autopilot quality and use it before claiming future autopilot fixes. The 2026-06-14 DevToolbox audit snapshot still classified this change as active/missing evidence; current harness evidence supersedes that specific audit observation. |
 | `fix-autopilot-plan-execution-fidelity-v1` | Implemented and evidence-backed | 0 | Tasks are checked off through evidence/test coverage; later stabilization docs record terminal-capture and obstacle-replan-chatter verification. | Keep as implemented, but do not treat it as proof of exact live point arrival; see Known Current Regression. |
 | `player-navigation-planner-ui-overhaul-v1` | Implemented and evidenced | 0 | Tasks are checked off; evidence plan includes screenshot matrix, layout/overlap checks, planner timeline/map/radar/HUD controls, combat panel split, and PlayMode/EditMode coverage. | Keep implemented; no supported UI-quality blocker is documented in the required evidence set. Continue using screenshots/layout checks for future polish. |
 | `prototype-ship-blueprint-v0` | Implemented prototype slice | 0 | `tests/ship-builder-v0-verification.md` records script validation, focused EditMode/PlayMode passes, solution build, and screenshots. | Keep as current builder prototype evidence; remaining ship-editor depth belongs in later blueprint/builder slices. |
@@ -102,6 +103,7 @@ Current validation caveat: workspace-wide `specs_validate` is still blocked by i
 - This is not the final ship editor, economy, mission framework, multiplayer mode, or final gameplay architecture.
 - Controller support has compile/play coverage, but physical hardware feel remains manually unverified.
 - Navigation Computer, trajectory preview, and waypoint autopilot are local-space prototype guidance. They are not full orbital navigation, patched conics, SOI planning, maneuver-node planning, or slingshot navigation.
+- Exact point arrival is the current active autopilot blocker. Gravity, orbital, and slingshot navigation remain future research and should not be mixed into the exact-arrival fix.
 - Docking hard lock is a documented placeholder, not an active joint.
 - RCS allocation is bounded prototype logic, not a final optimizer.
 - IMGUI debug windows remain temporary diagnostic surfaces.
@@ -111,19 +113,30 @@ Current validation caveat: workspace-wide `specs_validate` is still blocked by i
 
 Recommended next slices, in order:
 
-1. `autopilot-proving-ground-harness-v1`
-2. `fix-autopilot-exact-point-arrival-v1`
-3. Control-mode/HUD visibility fix, if still reproducible after the autopilot harness and exact-arrival pass
+1. `fix-autopilot-exact-point-arrival-v1`
+2. Control-mode/HUD visibility follow-up
+3. Local large-scale autopilot test range
+4. Gravity-assist research harness
 
-Done state for `autopilot-proving-ground-harness-v1`:
+Done state for `fix-autopilot-exact-point-arrival-v1`:
 
-- A repeatable PlayMode proving ground captures approach, flip/brake, obstacle avoidance, terminal hold, overshoot, wander, and exact-arrival metrics.
-- The harness records enough CSV/screenshot/log evidence to compare behavior before and after autopilot changes.
-- The acceptance criteria distinguish "inside loose arrival radius" from "arrived at the requested point and held there."
-- No further autopilot tuning is treated as complete without proving-ground evidence.
+- The proving-ground harness shows direct no-obstacle arrivals completing at the requested point, not merely inside the old loose radius.
+- Terminal capture remains stable after the ship enters the exact-arrival envelope.
+- Brake/flip/terminal states do not flap back to Accelerate/Reacquire after terminal commitment.
+- No-obstacle scenarios do not select obstacle-reacquire planner profiles.
+- Obstacle corridor scenarios preserve required clearance while reacquiring the direct path.
+- Low-RCS terminal correction avoids excessive replanning and completes with precise final error.
+- No future autopilot tuning is treated as complete without proving-ground evidence.
 
-## Known Current Regression
+## Known Current Autopilot Blocker
 
-- Live waypoint navigation avoids obstacles reasonably, but some scenarios still overshoot or wander after the flip/brake phase.
-- Current automated tests may accept a loose arrival radius rather than proving exact point arrival and stable terminal hold.
-- A new `autopilot-proving-ground-harness-v1` slice is required before further autopilot fixes, so the next tuning pass has repeatable evidence instead of ad hoc scene observation.
+Exact point arrival is the active blocker. The proving-ground harness is implemented and valid enough for fix work, and its strict scenario matrix currently reports expected failures instead of a fixed autopilot:
+
+- Direct no-obstacle runs can report `Complete` while still stopping about 5-6.5 m from the requested target point.
+- Terminal capture can enter the near-target envelope and then lose the target again, as shown by the near-target overshoot scenario.
+- Post-brake behavior can flap back into Accelerate/Reacquire after a brake or terminal commitment.
+- No-obstacle lateral/rotation scenarios can enter disallowed Reacquire planner profiles.
+- The obstacle corridor scenario currently violates obstacle clearance and times out in Brake instead of completing cleanly.
+- Low-RCS terminal correction replans excessively and can complete imprecisely, with the current evidence showing 860 safety replans and about 11.5 m final target error.
+
+Do not mix gravity/orbital/slingshot navigation into this fix. Those systems remain future-work research after local-space exact arrival is stable.
