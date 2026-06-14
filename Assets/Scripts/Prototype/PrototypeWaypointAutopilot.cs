@@ -87,6 +87,9 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private const float DirectFastTransferTerminalHoldArrivalSpeedMultiplier = 1.5f;
     private const float TerminalOvershootHoldRelativeSpeedMultiplier = 1.25f;
     private const float TerminalOvershootBrakeRelativeSpeedMultiplier = 1.35f;
+    private const float TerminalCaptureHoldDistanceSlackMeters = 0.75f;
+    private const float TerminalCaptureEntryStableSeconds = 0.12f;
+    private const float TerminalCaptureReleaseStableSeconds = 0.25f;
     private const float BrakeDirectionMinimumSpeedMetersPerSecond = 0.35f;
     private const float TerminalBrakeDirectionRotateDegreesPerSecond = 36f;
     private const float BrakeAlignedTorqueDeadbandDegrees = 2.5f;
@@ -96,6 +99,8 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private const float FlightPlanSafetyRefreshIntervalSeconds = 0.75f;
     private const float AvoidanceClearDebounceSeconds = 0.4f;
     private const float CoveredAvoidanceSafetyGraceSeconds = 45f;
+    private const float CoveredAvoidancePositionDivergenceEscapeMeters = 120f;
+    private const float CoveredAvoidanceVelocityDivergenceEscapeMetersPerSecond = 40f;
     private const float FreshUserFlightPlanAdoptionSeconds = 8f;
     private const float FreshUserFlightPlanPositionToleranceMeters = 0.5f;
     private const float FreshUserFlightPlanVelocityToleranceMetersPerSecond = 0.25f;
@@ -169,6 +174,8 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     private bool brakeMainThrottleAlignmentLocked;
     private Vector3 committedBrakeDirection;
     private bool arrivalTerminalCaptureActive;
+    private float arrivalTerminalCaptureEntryStartedAtTime = -1f;
+    private float arrivalTerminalCaptureReleaseStartedAtTime = -1f;
     private PrototypeWaypointAutopilotArrivalPhase arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.Hold;
     private string arrivalFailureReason = "none";
     private float requestedMainThrottle;
@@ -631,6 +638,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         brakeHoldStartTime = 0f;
         arrivalBrakeCommitted = false;
         arrivalTerminalCaptureActive = false;
+        ResetArrivalTerminalCaptureStability();
         ResetDirectFastTransferTerminalOwnership();
         holdConfirmUntilTime = 0f;
         navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.Direct;
@@ -662,6 +670,8 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         suppressManualInputReleaseCheckThisFrame = false;
         navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.Direct;
         arrivalFailureReason = reason;
+        arrivalTerminalCaptureActive = false;
+        ResetArrivalTerminalCaptureStability();
         SetState(PrototypeWaypointAutopilotState.Aborted, reason);
     }
 
@@ -678,6 +688,8 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         coveredAvoidanceSafetyReplanUntilTime = 0f;
         holdConfirmUntilTime = 0f;
         navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.Direct;
+        arrivalTerminalCaptureActive = false;
+        ResetArrivalTerminalCaptureStability();
         MarkNavigationPlanDirty();
         SetState(currentTarget != null ? PrototypeWaypointAutopilotState.TargetSelected : PrototypeWaypointAutopilotState.Idle, currentTarget != null ? "target selected" : "idle");
     }
@@ -697,6 +709,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         committedBrakeDirection = Vector3.zero;
         arrivalBrakeCommitted = false;
         arrivalTerminalCaptureActive = false;
+        ResetArrivalTerminalCaptureStability();
         ResetDirectFastTransferTerminalOwnership();
         ResetFlightPlanExecutorClock();
         flightPlanRevisionCounter = 0;
@@ -1096,6 +1109,15 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
                 return TryEnterHoldPosition();
             }
 
+            if (flightPlanElapsedSeconds > plan.totalDurationSeconds
+                && TryRefreshCoveredAvoidanceReacquirePlan(
+                    plan,
+                    default,
+                    PrototypeFlightPlanAbortReplanReason.PlanExpired))
+            {
+                return true;
+            }
+
             if (strictDirectFastTransfer
                 && flightPlanElapsedSeconds > plan.totalDurationSeconds
                 && expiredReport.reasons == PrototypeFlightPlanAbortReplanReason.PlanExpired)
@@ -1220,8 +1242,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
     private bool ShouldAllowHoldPositionCapture()
     {
-        return IsWithinArrivalTerminalCaptureRange()
-            || ShouldCaptureAnyArrivalHold();
+        return ShouldCaptureAnyArrivalHold();
     }
 
     private bool ShouldKeepTerminalCaptureControl()
@@ -1582,14 +1603,15 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
                     + PrototypeFlightPlanDivergenceMonitor.FormatReasons(reasons));
         }
 
-        report = SuppressCoveredAvoidanceFlightPlanDivergence(plan, activeSegment, report);
+        report = SuppressCoveredAvoidanceFlightPlanDivergence(plan, activeSegment, report, executionState);
         return report;
     }
 
     private PrototypeFlightPlanDivergenceReport SuppressCoveredAvoidanceFlightPlanDivergence(
         PrototypeFlightPlan plan,
         PrototypeManeuverSegment activeSegment,
-        PrototypeFlightPlanDivergenceReport report)
+        PrototypeFlightPlanDivergenceReport report,
+        PrototypeFlightPlanExecutionState executionState)
     {
         if (!report.HasDivergence
             || report.requiresAbort
@@ -1603,7 +1625,28 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return report;
         }
 
+        if (ShouldEscapeCoveredAvoidanceDivergenceSuppression(report.reasons, executionState))
+        {
+            return report;
+        }
+
         return PrototypeFlightPlanDivergenceReport.Clear;
+    }
+
+    private static bool ShouldEscapeCoveredAvoidanceDivergenceSuppression(
+        PrototypeFlightPlanAbortReplanReason reasons,
+        PrototypeFlightPlanExecutionState executionState)
+    {
+        if (!executionState.IsFinite)
+        {
+            return false;
+        }
+
+        bool positionDiverged = (reasons & PrototypeFlightPlanAbortReplanReason.PositionDivergence) != 0
+            && executionState.positionErrorMeters >= CoveredAvoidancePositionDivergenceEscapeMeters;
+        bool velocityDiverged = (reasons & PrototypeFlightPlanAbortReplanReason.VelocityDivergence) != 0
+            && executionState.velocityErrorMetersPerSecond >= CoveredAvoidanceVelocityDivergenceEscapeMetersPerSecond;
+        return positionDiverged || velocityDiverged;
     }
 
     private static bool IsCoveredAvoidanceReasonSet(PrototypeFlightPlanAbortReplanReason reasons)
@@ -1637,7 +1680,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             true,
             false,
             "Replan: " + PrototypeFlightPlanDivergenceMonitor.FormatReasons(reasons));
-        return !SuppressCoveredAvoidanceFlightPlanDivergence(plan, activeSegment, report).HasDivergence;
+        return !SuppressCoveredAvoidanceFlightPlanDivergence(plan, activeSegment, report, default).HasDivergence;
     }
 
     private bool IsCoveredAvoidanceExecutionWindow(
@@ -2237,7 +2280,8 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
         return useFlightPlanExecutor
             && CurrentFlightPlan.IsValid
-            && !IsVisibleLegacySafetyFallbackActive();
+            && (!IsVisibleLegacySafetyFallbackActive()
+                || ShouldResumeCoveredAvoidanceHoldWithFlightPlanExecutor());
     }
 
     private bool TryRunExpiredFlightPlanTerminalHold()
@@ -2252,8 +2296,16 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return false;
         }
 
-        arrivalTerminalCaptureActive = true;
-        return TryEnterHoldPosition();
+        if (UpdateArrivalTerminalCaptureEntry(true))
+        {
+            return TryEnterHoldPosition();
+        }
+
+        SetState(PrototypeWaypointAutopilotState.FinalApproach, "terminal hold arming");
+        navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.FinalApproach;
+        arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.FinalApproach;
+        ApplyHoldDamping();
+        return true;
     }
 
     private bool TryRunFlightPlanTerminalSafety()
@@ -2280,6 +2332,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             ReleaseBrakeHold();
             arrivalBrakeCommitted = false;
             arrivalTerminalCaptureActive = false;
+            ResetArrivalTerminalCaptureStability();
             return false;
         }
 
@@ -2289,7 +2342,8 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return false;
         }
 
-        arrivalTerminalCaptureActive = arrivalTerminalCaptureActive || IsWithinArrivalTerminalCaptureRange();
+        UpdateArrivalTerminalCaptureEntry(IsWithinArrivalTerminalCaptureRange());
+        UpdateArrivalTerminalCaptureRelease();
         if (ShouldUseTerminalLateralCorrection())
         {
             SetState(PrototypeWaypointAutopilotState.FinalApproach, "flight plan expired lateral");
@@ -2298,6 +2352,21 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             limitedFinalApproachCapability = !CanUseRcsTranslation();
             arrivalFailureReason = limitedFinalApproachCapability ? "LimitedRcsAuthority" : string.Empty;
             ApplyLateralCorrection();
+            return true;
+        }
+
+        float completionSpeed = GetArrivalCompletionSpeedLimit();
+        float completionLateralTolerance = GetArrivalCompletionLateralTolerance();
+        if (CanUseRcsTranslation()
+            && ShouldReleaseTerminalBrakeForFineApproach(completionSpeed, completionLateralTolerance))
+        {
+            ReleaseBrakeHold();
+            SetState(PrototypeWaypointAutopilotState.FinalApproach, "flight plan expired fine approach");
+            navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.FinalApproach;
+            arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.FinalApproach;
+            limitedFinalApproachCapability = false;
+            arrivalFailureReason = string.Empty;
+            ApplyHoldDamping();
             return true;
         }
 
@@ -2345,12 +2414,32 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
         if (IsWithinArrivalTerminalCaptureRange())
         {
-            directFastTransferTerminalCaptureActive = true;
-            arrivalTerminalCaptureActive = true;
             directFastTransferTerminalReacquireActive = false;
             directFastTransferTerminalReacquireStartedAtTime = -1f;
             bool terminalHoldSpeedSettled = IsDirectFastTransferTerminalHoldSpeedSettled();
             float terminalBrakeSpeedLimit = GetActiveDirectFastTransferTerminalHoldSpeedLimit();
+            bool terminalCaptureStable = UpdateArrivalTerminalCaptureEntry(true);
+            if (!terminalCaptureStable)
+            {
+                directFastTransferTerminalCaptureActive = false;
+                if (LastMetrics.closingSpeed > BrakeHoldReleaseZeroSpeed
+                    && LastMetrics.relativeSpeed > terminalBrakeSpeedLimit)
+                {
+                    ApplyDirectFastTransferTerminalBrake();
+                    return true;
+                }
+
+                SetState(PrototypeWaypointAutopilotState.FinalApproach, "Terminal capture arming");
+                navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.FinalApproach;
+                arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.FinalApproach;
+                limitedFinalApproachCapability = !CanUseRcsTranslation();
+                ApplyHoldDamping();
+                SetDirectFastTransferExecutionStatus("flight plan terminal arming", "Terminal capture arming");
+                return true;
+            }
+
+            directFastTransferTerminalCaptureActive = true;
+            arrivalTerminalCaptureActive = true;
             if (!ShouldCaptureAnyArrivalHold()
                 && (!IsInArrivalCompletionWindow() || !terminalHoldSpeedSettled)
                 && LastMetrics.closingSpeed > BrakeHoldReleaseZeroSpeed
@@ -2385,6 +2474,21 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return true;
         }
 
+        if ((arrivalTerminalCaptureActive || directFastTransferTerminalCaptureActive)
+            && !UpdateArrivalTerminalCaptureRelease())
+        {
+            directFastTransferTerminalCaptureActive = true;
+            directFastTransferTerminalReacquireActive = false;
+            directFastTransferTerminalReacquireStartedAtTime = -1f;
+            SetState(PrototypeWaypointAutopilotState.FinalApproach, "Terminal capture release hold");
+            navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.FinalApproach;
+            arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.FinalApproach;
+            limitedFinalApproachCapability = !CanUseRcsTranslation();
+            ApplyHoldDamping();
+            SetDirectFastTransferExecutionStatus("flight plan terminal release hold", "Terminal capture release hold");
+            return true;
+        }
+
         directFastTransferTerminalCaptureActive = false;
         directFastTransferBrakeCommitted = false;
         if (!directFastTransferTerminalReacquireActive)
@@ -2394,6 +2498,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
         directFastTransferTerminalReacquireActive = true;
         arrivalTerminalCaptureActive = false;
+        ResetArrivalTerminalCaptureStability();
         ReleaseBrakeHold();
         if (ShouldFailDirectFastTransferTerminalReacquire())
         {
@@ -2423,6 +2528,33 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     {
         if (ShouldKeepTerminalCaptureControl())
         {
+            if (!UpdateArrivalTerminalCaptureEntry(true))
+            {
+                directFastTransferTerminalCaptureActive = false;
+                if (ShouldUseDirectFastTransferNearTerminalBrake() || ShouldUseTerminalVelocityBrake())
+                {
+                    ApplyDirectFastTransferTerminalBrake();
+                }
+                else if (ShouldUseTerminalLateralCorrection())
+                {
+                    SetState(PrototypeWaypointAutopilotState.FinalApproach, "Terminal capture arming");
+                    navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.FinalApproach;
+                    arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.LateralCorrection;
+                    limitedFinalApproachCapability = !CanUseRcsTranslation();
+                    ApplyLateralCorrection();
+                }
+                else
+                {
+                    SetState(PrototypeWaypointAutopilotState.FinalApproach, "Terminal capture arming");
+                    navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.FinalApproach;
+                    arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.FinalApproach;
+                    limitedFinalApproachCapability = !CanUseRcsTranslation();
+                    ApplyHoldDamping();
+                }
+
+                return;
+            }
+
             directFastTransferTerminalCaptureActive = true;
             directFastTransferTerminalReacquireActive = false;
             directFastTransferTerminalReacquireStartedAtTime = -1f;
@@ -2616,6 +2748,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         directFastTransferTerminalCaptureActive = false;
         directFastTransferTerminalReacquireActive = false;
         directFastTransferTerminalReacquireStartedAtTime = -1f;
+        ResetArrivalTerminalCaptureStability();
     }
 
     private bool ShouldDeferFlightPlanExecutorToLegacyFallback()
@@ -2633,6 +2766,11 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         bool currentlyAvoiding = IsAvoidancePlanActive();
         if (currentlyAvoiding)
         {
+            if (ShouldResumeCoveredAvoidanceHoldWithFlightPlanExecutor())
+            {
+                return false;
+            }
+
             navigationPhaseV2 = LastTrajectoryPlan.navigationPhase == PrototypeAutopilotNavigationPhase.AvoidancePlanning
                 ? PrototypeWaypointAutopilotNavigationPhase.AvoidancePlanning
                 : PrototypeWaypointAutopilotNavigationPhase.Avoiding;
@@ -2643,6 +2781,11 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             && hasStableAvoidance
             && Time.time <= avoidanceHoldExpireTime + avoidReacquireTimeoutSeconds)
         {
+            if (ShouldResumeCoveredAvoidanceHoldWithFlightPlanExecutor())
+            {
+                return false;
+            }
+
             if (navigationPhaseV2 == PrototypeWaypointAutopilotNavigationPhase.Direct)
             {
                 navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.Avoiding;
@@ -2652,6 +2795,27 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         }
 
         return false;
+    }
+
+    private bool ShouldResumeCoveredAvoidanceHoldWithFlightPlanExecutor()
+    {
+        PrototypeFlightPlan plan = CurrentFlightPlan;
+        if (!useFlightPlanExecutor
+            || !plan.IsValid
+            || ShouldAllowHoldPositionCapture()
+            || !PlanContainsAvoidanceOrReacquireSegment(plan))
+        {
+            return false;
+        }
+
+        if (plan.TryGetActiveSegment(flightPlanElapsedSeconds, out PrototypeManeuverSegment activeSegment))
+        {
+            return activeSegment.phase == PrototypeManeuverPhase.Hold
+                && IsCoveredAvoidanceExecutionWindow(plan, activeSegment);
+        }
+
+        return flightPlanElapsedSeconds > plan.totalDurationSeconds
+            && IsCoveredAvoidanceExecutionWindow(plan, default);
     }
 
     private bool ShouldDeferTerminalNoRcsFlightPlanToLegacyFallback()
@@ -3307,8 +3471,18 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
                 return;
             }
 
-            arrivalTerminalCaptureActive = true;
-            TryEnterHoldPosition();
+            if (UpdateArrivalTerminalCaptureEntry(true))
+            {
+                TryEnterHoldPosition();
+            }
+            else
+            {
+                SetState(PrototypeWaypointAutopilotState.FinalApproach, "flight plan hold arming");
+                navigationPhaseV2 = PrototypeWaypointAutopilotNavigationPhase.FinalApproach;
+                arrivalPhase = PrototypeWaypointAutopilotArrivalPhase.FinalApproach;
+                ApplyHoldDamping();
+            }
+
             return;
         }
 
@@ -3590,10 +3764,9 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         bool hasLowLateralSpeed = LastMetrics.lateralSpeed <= Mathf.Max(0.05f, finalApproachLateralToleranceMetersPerSecond);
         bool shouldUseTerminalVelocityBrake = ShouldUseTerminalVelocityBrake();
         bool shouldActivateArrivalTerminalCapture = ShouldActivateArrivalTerminalCapture();
-        arrivalTerminalCaptureActive = arrivalTerminalCaptureActive || shouldActivateArrivalTerminalCapture;
-        if (ShouldReleaseArrivalTerminalCapture())
+        UpdateArrivalTerminalCaptureEntry(shouldActivateArrivalTerminalCapture);
+        if (UpdateArrivalTerminalCaptureRelease())
         {
-            arrivalTerminalCaptureActive = false;
             shouldUseTerminalVelocityBrake = false;
         }
 
@@ -3742,8 +3915,8 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
         if (!currentlyAvoiding && arrivalBrakeCommitted && IsWithinArrivalTerminalCaptureRange())
         {
-            arrivalTerminalCaptureActive = true;
-            if (ShouldCaptureAnyArrivalHold())
+            bool terminalCaptureStable = UpdateArrivalTerminalCaptureEntry(true);
+            if (terminalCaptureStable && ShouldCaptureAnyArrivalHold())
             {
                 TryEnterHoldPosition();
                 return;
@@ -3855,6 +4028,71 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
                 || ShouldCaptureAnyArrivalHold());
     }
 
+    private bool UpdateArrivalTerminalCaptureEntry(bool shouldActivate)
+    {
+        if (shouldActivate)
+        {
+            arrivalTerminalCaptureReleaseStartedAtTime = -1f;
+            if (arrivalTerminalCaptureActive)
+            {
+                arrivalTerminalCaptureEntryStartedAtTime = -1f;
+                return true;
+            }
+
+            if (arrivalTerminalCaptureEntryStartedAtTime < 0f)
+            {
+                arrivalTerminalCaptureEntryStartedAtTime = autopilotElapsedSeconds;
+            }
+
+            if (autopilotElapsedSeconds >= arrivalTerminalCaptureEntryStartedAtTime + TerminalCaptureEntryStableSeconds)
+            {
+                arrivalTerminalCaptureActive = true;
+                arrivalTerminalCaptureEntryStartedAtTime = -1f;
+                return true;
+            }
+
+            return false;
+        }
+
+        if (!arrivalTerminalCaptureActive)
+        {
+            arrivalTerminalCaptureEntryStartedAtTime = -1f;
+        }
+
+        return arrivalTerminalCaptureActive;
+    }
+
+    private bool UpdateArrivalTerminalCaptureRelease()
+    {
+        if (!ShouldReleaseArrivalTerminalCapture())
+        {
+            arrivalTerminalCaptureReleaseStartedAtTime = -1f;
+            return false;
+        }
+
+        arrivalTerminalCaptureEntryStartedAtTime = -1f;
+        if (arrivalTerminalCaptureReleaseStartedAtTime < 0f)
+        {
+            arrivalTerminalCaptureReleaseStartedAtTime = autopilotElapsedSeconds;
+        }
+
+        if (autopilotElapsedSeconds < arrivalTerminalCaptureReleaseStartedAtTime + TerminalCaptureReleaseStableSeconds)
+        {
+            return false;
+        }
+
+        arrivalTerminalCaptureActive = false;
+        directFastTransferTerminalCaptureActive = false;
+        ResetArrivalTerminalCaptureStability();
+        return true;
+    }
+
+    private void ResetArrivalTerminalCaptureStability()
+    {
+        arrivalTerminalCaptureEntryStartedAtTime = -1f;
+        arrivalTerminalCaptureReleaseStartedAtTime = -1f;
+    }
+
     private bool ShouldReleaseArrivalTerminalCapture()
     {
         if (!arrivalTerminalCaptureActive || IsWithinArrivalTerminalRange())
@@ -3867,6 +4105,16 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
     private bool ShouldRequestBrake()
     {
+        float completionSpeed = GetArrivalCompletionSpeedLimit();
+        float completionDistance = GetArrivalCompletionDistance();
+        float completionLateralTolerance = GetArrivalCompletionLateralTolerance();
+        if (CanUseRcsTranslation()
+            && ShouldReleaseTerminalBrakeForFineApproach(completionSpeed, completionLateralTolerance))
+        {
+            ReleaseBrakeHold();
+            return false;
+        }
+
         if (brakeHoldActive && autopilotElapsedSeconds < brakeHoldStartTime + BrakeHoldMinDurationSeconds)
         {
             return true;
@@ -3878,9 +4126,6 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return false;
         }
 
-        float completionSpeed = GetArrivalCompletionSpeedLimit();
-        float completionDistance = GetArrivalCompletionDistance();
-        float completionLateralTolerance = GetArrivalCompletionLateralTolerance();
         if (brakeHoldActive
             && arrivalBrakeCommitted
             && LastMetrics.relativeSpeed <= completionSpeed
@@ -3989,6 +4234,27 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
         }
 
         return true;
+    }
+
+    private bool ShouldReleaseTerminalBrakeForFineApproach(float completionSpeed, float completionLateralTolerance)
+    {
+        if (!arrivalBrakeCommitted)
+        {
+            return false;
+        }
+
+        if (!IsWithinArrivalTerminalCaptureRange() || ShouldCaptureAnyArrivalHold())
+        {
+            return false;
+        }
+
+        float fineApproachDistance = GetArrivalFinishedDistance() + 1f;
+        float lateralTolerance = Mathf.Max(
+            completionLateralTolerance,
+            finalApproachLateralToleranceMetersPerSecond * 3f);
+        return LastMetrics.distance <= fineApproachDistance
+            && LastMetrics.relativeSpeed <= completionSpeed
+            && LastMetrics.lateralSpeed <= lateralTolerance;
     }
 
     private bool ShouldUseTerminalVelocityBrake()
@@ -4368,7 +4634,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return false;
         }
 
-        if (LastMetrics.distance > GetArrivalCompletionDistance() + BrakeArrivalHoldDistanceMarginMeters)
+        if (LastMetrics.distance > GetArrivalHoldCaptureDistance())
         {
             return false;
         }
@@ -5777,9 +6043,18 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
 
     private float GetArrivalFinishedDistance()
     {
-        return Mathf.Max(
-            GetArrivalDistance() + 2f,
-            GetArrivalCompletionDistance() + BrakeArrivalHoldDistanceMarginMeters * 0.5f);
+        return GetArrivalDistance() + 1.5f;
+    }
+
+    private float GetArrivalHoldCaptureDistance()
+    {
+        float finishedDistance = GetArrivalFinishedDistance();
+        if (directFastTransferTerminalCaptureActive)
+        {
+            return finishedDistance + TerminalCaptureHoldDistanceSlackMeters;
+        }
+
+        return finishedDistance;
     }
 
     private bool ShouldCaptureArrivalHold()
@@ -5804,7 +6079,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return false;
         }
 
-        if (LastMetrics.distance > GetArrivalFinishedDistance())
+        if (LastMetrics.distance > GetArrivalHoldCaptureDistance())
         {
             return false;
         }
@@ -5830,7 +6105,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return false;
         }
 
-        if (LastMetrics.distance > GetArrivalFinishedDistance())
+        if (LastMetrics.distance > GetArrivalHoldCaptureDistance())
         {
             return false;
         }
@@ -5858,7 +6133,7 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
             return false;
         }
 
-        float arrivalCompletionDistance = GetArrivalCompletionDistance() + BrakeArrivalHoldDistanceMarginMeters;
+        float arrivalCompletionDistance = GetArrivalHoldCaptureDistance();
         float completionSpeed = GetArrivalCompletionSpeedLimit();
         float completionLateralTolerance = GetArrivalCompletionLateralTolerance() * 1.1f;
 

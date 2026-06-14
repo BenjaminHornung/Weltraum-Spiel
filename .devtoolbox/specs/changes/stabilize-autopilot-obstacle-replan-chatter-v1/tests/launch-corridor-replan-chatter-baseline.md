@@ -31,7 +31,15 @@ This is a pre-fix measurement harness only and does not claim fixed behavior.
   `Assets/Tests/PlayMode/PrototypeAutopilotNavigationPlayModeTests.cs`.
 - `dotnet build "Weltraum Spiel.sln" --no-restore` passed with 0 errors and
   23 known warnings.
-- Unity MCP PlayMode attempts did not start the test before the runner init
-  timeout, so no baseline CSV was produced yet:
+- Earlier Unity MCP PlayMode attempts did not start the test before the runner
+  init timeout:
   - `ccc06f215e3b421bb31f7161e96d5d82`
   - `89315c4219c34cf8a665d943e846404f`
+- A later baseline CSV was captured at
+  `tests/performance/launch-corridor-replan-chatter-baseline.csv`.
+- Baseline summary:
+  - rows: 1600
+  - max `flightPlanSafetyReplanCount`: 484
+  - final state: `AlignForBurn`
+  - final phase: `ReacquireDirectPath`
+  - final distance: 46.80953 m

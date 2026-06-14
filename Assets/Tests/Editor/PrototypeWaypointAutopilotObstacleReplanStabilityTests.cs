@@ -42,28 +42,29 @@ public class PrototypeWaypointAutopilotObstacleReplanStabilityTests
             {
                 phase = PrototypeManeuverPhase.AvoidanceBurn
             };
-        var invalidDirectionReport = new PrototypeFlightPlanDivergenceReport(
-            PrototypeFlightPlanAbortReplanReason.InvalidPlanDirection,
-            true,
-            false,
-            "Replan: InvalidPlanDirection");
-        var planExpiredReport = new PrototypeFlightPlanDivergenceReport(
-            PrototypeFlightPlanAbortReplanReason.PlanExpired,
-            true,
-            false,
-            "Replan: PlanExpired");
+            var invalidDirectionReport = new PrototypeFlightPlanDivergenceReport(
+                PrototypeFlightPlanAbortReplanReason.InvalidPlanDirection,
+                true,
+                false,
+                "Replan: InvalidPlanDirection");
+            var planExpiredReport = new PrototypeFlightPlanDivergenceReport(
+                PrototypeFlightPlanAbortReplanReason.PlanExpired,
+                true,
+                false,
+                "Replan: PlanExpired");
+            var executionState = default(PrototypeFlightPlanExecutionState);
 
             Assert.NotNull(method);
             var suppressed = (PrototypeFlightPlanDivergenceReport)method.Invoke(
                 autopilot,
-                new object[] { default(PrototypeFlightPlan), avoidanceSegment, invalidDirectionReport });
+                new object[] { default(PrototypeFlightPlan), avoidanceSegment, invalidDirectionReport, executionState });
 
             Assert.False(suppressed.HasDivergence);
             Assert.False(suppressed.requiresReplan);
 
             var expiredSuppressed = (PrototypeFlightPlanDivergenceReport)method.Invoke(
                 autopilot,
-                new object[] { default(PrototypeFlightPlan), avoidanceSegment, planExpiredReport });
+                new object[] { default(PrototypeFlightPlan), avoidanceSegment, planExpiredReport, executionState });
 
             Assert.False(expiredSuppressed.HasDivergence);
             Assert.False(expiredSuppressed.requiresReplan);
@@ -76,11 +77,48 @@ public class PrototypeWaypointAutopilotObstacleReplanStabilityTests
                 "Replan: CollisionPredicted|InvalidPlanDirection");
             var stillImmediate = (PrototypeFlightPlanDivergenceReport)method.Invoke(
                 autopilot,
-                new object[] { default(PrototypeFlightPlan), avoidanceSegment, collisionReport });
+                new object[] { default(PrototypeFlightPlan), avoidanceSegment, collisionReport, executionState });
 
             Assert.True(stillImmediate.HasDivergence);
             Assert.True(stillImmediate.requiresReplan);
             Assert.True((stillImmediate.reasons & PrototypeFlightPlanAbortReplanReason.CollisionPredicted) != 0);
+        }
+        finally
+        {
+            Object.DestroyImmediate(autopilot.gameObject);
+        }
+    }
+
+    [Test]
+    public void CoveredAvoidancePositionDivergenceEscapeKeepsDivergenceActionable()
+    {
+        var autopilot = CreateAutopilot();
+        try
+        {
+            SetStableAvoidance(autopilot, PrototypeAutopilotNavigationPhase.Avoiding);
+            MethodInfo method = typeof(PrototypeWaypointAutopilot)
+                .GetMethod("SuppressCoveredAvoidanceFlightPlanDivergence", PrivateInstance);
+            var avoidanceSegment = new PrototypeManeuverSegment
+            {
+                phase = PrototypeManeuverPhase.AvoidanceBurn
+            };
+            var executionState = new PrototypeFlightPlanExecutionState
+            {
+                positionErrorMeters = 150f
+            };
+            var positionDivergenceReport = new PrototypeFlightPlanDivergenceReport(
+                PrototypeFlightPlanAbortReplanReason.PositionDivergence,
+                true,
+                false,
+                "Replan: PositionDivergence");
+
+            Assert.NotNull(method);
+            var stillActionable = (PrototypeFlightPlanDivergenceReport)method.Invoke(
+                autopilot,
+                new object[] { default(PrototypeFlightPlan), avoidanceSegment, positionDivergenceReport, executionState });
+
+            Assert.True(stillActionable.HasDivergence);
+            Assert.True(stillActionable.requiresReplan);
         }
         finally
         {
