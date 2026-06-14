@@ -12,12 +12,12 @@ This Unity prototype now boots the imported Blender Demo Scout as the default fu
 
 | Key | Action |
 | --- | --- |
-| `F1` | Toggle player HUD help in the default view; the legacy keybind overlay only uses F1 in prototype/debug presets |
-| `F2` | Toggle flight diagnostics / debug overlay |
-| `F3` | Toggle flight debug console |
-| `F4` | Toggle HUD/Navball |
-| `F5` | Toggle minimap/radar |
-| `F6` | Cycle functional imported scout / generated fallback / imported cargo modes |
+| `F1` | Toggle player HUD help in Basic (player-facing) |
+| `F2` | Prototype/dev control: toggle flight diagnostics / debug overlay |
+| `F3` | Prototype/dev control: toggle flight debug console |
+| `F4` | Prototype/dev control: toggle HUD/Navball |
+| `F5` | Prototype/dev control: toggle minimap/radar |
+| `F6` | Prototype/dev control: cycle functional imported scout / generated fallback / imported cargo modes |
 | `W` / `S` | Pitch down / up |
 | `A` / `D` | Yaw left / right |
 | `Q` / `E` | Roll left / right |
@@ -45,7 +45,8 @@ Mouse movement is reserved for the camera. Hold right mouse button to orbit/look
 
 German keyboard note: full throttle accepts both `Y` and `Z` so the control works reliably when those keys are swapped by the active layout.
 
-Control mode is explicit and cycles with `Caps Lock` or the HUD mode button. Cruise Mode is the long-distance mode: W/S pitch, A/D yaw, Q/E roll, Shift/Ctrl adjust persistent main throttle, and the waypoint autopilot uses the main-thruster burn/brake path. Precision Mode forces main thruster and gimbal off, forces RCS available, and keeps W/S pitch, A/D yaw, and Q/E roll for exact attitude control. Translation Mode also forces main/gimbal off and maps W/S to forward/back, A/D to left/right, H/N to up/down, while Q/E remains roll. Left Alt is not used as the primary mode switch.
+Control mode is explicit and cycles with `Caps Lock` (Cruise -> Precision -> Translation -> Cruise) or the HUD mode button. Cruise allows main-thruster throttle (including Shift/Ctrl), and the waypoint autopilot uses the main-thruster burn/brake path. Precision mode forces main thruster and gimbal off and uses RCS for attitude control (W/S pitch, A/D yaw, Q/E roll). Translation mode also forces main/gimbal off and uses RCS translation with W/S forward/back, A/D left/right, H/N up/down, and Q/E roll. Left Alt is not used as the primary mode switch.
+If a mode change does not appear in the HUD, check the HUD mode chip/help first before concluding input mode-switching logic is broken.
 
 ## Controller Status
 
@@ -67,13 +68,14 @@ Camera reset is bound to Backquote. Unity Input System key controls are physical
 
 - The default Basic view is the gameplay-facing uGUI `PrototypePlayerHudRenderer`: flight status, fuel/throttle/RCS/SAS, warning and assist chips, context panel, player radar, Kill Momentum, and F1 player help.
 - `F1` toggles only the player HUD help in Basic. The legacy `PrototypeKeybindOverlay` keeps F1 only in prototype/debug presets; player help omits debug controls such as F6 ship visuals, debug console actions, reset/refuel, and DES/ACT/RES telemetry.
-- `F2`, `F3`, `F4`, `F5`, and `F6` remain prototype/developer controls for flight diagnostics, debug console, legacy HUD/Navball, legacy minimap, and ship visuals without relying on German-keyboard-sensitive punctuation keys.
+- `F2`, `F3`, `F4`, `F5`, and `F6` remain prototype/developer controls (not final player-facing UI) for flight diagnostics, debug console, legacy HUD/Navball, legacy minimap, and ship visuals without relying on German-keyboard-sensitive punctuation keys.
 - Debug Console presets are available for Basic, Flight Test, RCS Test, and Full Diagnostics. Presets only change UI visibility/collapsed state and debug marker visibility; they do not change flight physics or control bindings.
 - `PrototypeFlightHud`, `PrototypeDebugOverlay`, `PrototypeFlightDebugConsole`, `PrototypeKeybindOverlay`, and `PrototypeMinimapOverlay` are still bound for diagnostics after generated ship spawns, but the old IMGUI HUD/Navball and minimap are not the default player view.
 - Player radar is rendered once inside the uGUI `RadarPanel`. The previous IMGUI radar/minimap path remains a prototype diagnostic surface only when explicitly enabled through debug presets.
 - The player HUD shows a center forward marker, velocity prograde/retrograde markers, and a target marker when `PrototypeTargetDummy` exists. SAS and debug force markers remain available in developer layers, but the default marker set stays short.
 - The mode label reserves `WORLD`, `VELOCITY`, `TARGET`, `DOCKING`, and `ORBIT/GRAVITY`, but the visible HUD only prints the active short label such as `Mode: TARGET`.
 - `PrototypeFlightDebugConsole` is a development console for testing. Refuel, reset, damage, spawn target, test pulses, variant selection, debug vector toggles, UI presets, control calibration, gimbal mode tuning, navigation/autopilot controls, and debug assist controls are debug-only actions, not final player-facing gameplay UI.
+- If mode switching is not obvious in play, use the HUD mode chip/help as the first source of truth for active mode.
 - `PrototypeWaypointAutopilot` is backed by Navigation Computer v2. It reports selected target, distance, relative speed, v2 phase, active burn segment, obstacle status, avoidance/reacquire state, planned ETA/stopping distance, requested acceleration, requested RCS force, requested main throttle, fuel estimate, candidate choice, and arrival/hold status.
 - The player HUD context panel includes compact Navigation Computer status for target, distance, relative speed, phase, active segment, autopilot state, obstacle/avoidance state, ETA, and main/RCS request summary. Warning chips surface `NO TARGET`, `NO AUTHORITY`, `FUEL INSUFFICIENT`, `OBSTACLE`, `AVOIDANCE`, `LIMITED RCS`, and `HOLDING` without duplicating assist labels.
 - The debug console has structured Navigation Computer sections for plan summary, candidate scores, current segment, obstacle detection, actuator requests, fuel/burn estimate, and test scenario controls. Test-scenario spawning stays in debug UI only.
@@ -125,7 +127,7 @@ Camera reset is bound to Backquote. Unity Input System key controls are physical
 - Main-thruster mode defaults to `ComSafeSteeringOnly`: straight thrust is applied through center of mass, and only gimbal steering force is applied at the offset nozzle for intentional torque telemetry.
 - `FullyPhysicalNozzleForce` can be selected for experiments; it applies the full gimballed main-engine force at the nozzle position and can create torque from nozzle/COM offsets.
 - Main-thruster gimbal support now defaults to a calmer 10 degree hard limit, 0.14 response scalar, and 30 degrees-per-second slew. `GimbalAssistMode` defaults to `AutopilotOnly`, while Off, Low, Manual, and ExperimentalFull remain available from debug tuning.
-- Control Mode is the gameplay-facing flight model switch. Caps Lock cycles Cruise, Precision, and Translation. Precision and Translation force RCS available, force main thruster/gimbal commands to zero, ignore Shift/Ctrl throttle input, and keep main throttle at zero until the pilot or autopilot explicitly commands Cruise thrust again.
+- Control Mode is the gameplay-facing flight model switch. Cruise allows main-thruster control and throttle input. Precision and Translation force RCS available, force main thruster/gimbal commands to zero, and use RCS attitude (Precision) or RCS translation (Translation). They ignore Shift/Ctrl throttle input and keep main throttle at zero until the pilot or autopilot explicitly commands Cruise thrust again.
 - Each RCS block has five installed nozzle transforms, excluding the side that faces into the ship wall. RCS translation, attitude, and SAS use actual nozzle positions/directions rather than hardcoded slots.
 - Generated module proxies now carry simple damage state. Damaged RCS blocks scale their effective thrust through the existing RCS allocator, so physical authority falls with module integrity.
 - SAS has `KillRotation` and `HoldAttitude` modes. It creates a ship-local PD torque request from angular velocity and optional target attitude, then sends that request through the same RCS nozzle allocator as manual attitude.
