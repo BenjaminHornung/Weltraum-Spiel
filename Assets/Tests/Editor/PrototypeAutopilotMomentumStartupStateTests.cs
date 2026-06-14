@@ -126,6 +126,8 @@ public class PrototypeAutopilotMomentumStartupStateTests
         body.position = ship.transform.position;
         Physics.SyncTransforms();
         body.linearVelocity = Vector3.right * 4f;
+        autopilot.SetStrictFlightPlanExecutionForTests(false);
+        autopilot.SetFlightPlanExecutorEnabledForTests(false);
         autopilot.ToggleAutopilot();
         InvokeFixedUpdate(autopilot);
 

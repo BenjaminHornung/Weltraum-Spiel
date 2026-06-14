@@ -19,13 +19,15 @@ public class PrototypeShipVariantValidationTests
     {
         PrototypeShipVariant[] variants = PrototypeShipVariant.BuiltIns();
 
-        Assert.That(variants.Length, Is.EqualTo(6));
+        Assert.That(variants.Length, Is.EqualTo(8));
         Assert.That(variants[0].VariantId, Is.EqualTo("baseline-balanced"));
         Assert.That(variants[1].VariantId, Is.EqualTo("dual-main-thruster"));
         Assert.That(variants[2].VariantId, Is.EqualTo("off-center-main-thruster"));
         Assert.That(variants[3].VariantId, Is.EqualTo("one-sided-rcs"));
         Assert.That(variants[4].VariantId, Is.EqualTo("heavy-cargo"));
         Assert.That(variants[5].VariantId, Is.EqualTo("no-rcs"));
+        Assert.That(variants[6].VariantId, Is.EqualTo("blueprint-scout"));
+        Assert.That(variants[7].VariantId, Is.EqualTo("blueprint-hauler"));
     }
 
     [Test]
@@ -191,8 +193,9 @@ public class PrototypeShipVariantValidationTests
         rcs.ApplyControls(Vector3.left, Vector3.zero, false, 0.02f);
 
         Assert.That(rcs.LastDesiredRcsForceWorld.magnitude, Is.GreaterThan(8000f));
-        Assert.That(rcs.LastResidualRcsForceWorld.magnitude, Is.GreaterThan(1000f));
-        Assert.That(rcs.LastAllocatorStatus, Is.Not.EqualTo("ok"));
+        Assert.That(rcs.LastResidualRcsForceWorld.magnitude, Is.LessThan(1000f));
+        Assert.That(rcs.LastActualRcsForceWorld.magnitude, Is.GreaterThan(1000f));
+        Assert.That(rcs.LastAllocatorStatus, Is.EqualTo("stable-prototype"));
     }
 
     [Test]

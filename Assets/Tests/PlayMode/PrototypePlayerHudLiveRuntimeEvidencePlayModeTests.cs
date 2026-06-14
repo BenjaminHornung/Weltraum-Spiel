@@ -9,6 +9,7 @@ using UnityEditor.SceneManagement;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
 public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
@@ -792,6 +793,15 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
                 Assert.That(HasRadarBlip(snapshot, PrototypePlayerRadarBlipKind.SelectedCombat), Is.True, "combat selected radar blip");
                 AssertPhase8HudBindings(rig.PlayerHud);
             });
+
+        Assert.NotNull(rig.Autopilot.CurrentTarget, "phase 8 navigation target retained before combat close");
+        FindButton(rig.PlayerHud, "CombatComputerClose").onClick.Invoke();
+        RunFrames(rig, 1);
+
+        Assert.That(rig.WeaponComputer.SelectedTargetCount, Is.EqualTo(0), "combat close clears selected targets");
+        Assert.That(FindRect(rig.PlayerHud, "CombatComputerPanel").gameObject.activeSelf, Is.False, "combat computer closed");
+        Assert.That(FindText(rig.PlayerHud, "ContextTitle").text, Does.StartWith("Navigation: "), "navigation context restored after combat close");
+        Assert.That(FindRect(rig.PlayerHud, "NavigationControls").gameObject.activeInHierarchy, Is.True, "navigation controls restored after combat close");
     }
 
     [Test]
@@ -1690,6 +1700,21 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
         }
 
         Assert.Fail("Missing TMP_Text: " + objectName);
+        return null;
+    }
+
+    private static Button FindButton(Component root, string objectName)
+    {
+        Button[] buttons = root.GetComponentsInChildren<Button>(true);
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            if (buttons[i] != null && buttons[i].gameObject.name == objectName)
+            {
+                return buttons[i];
+            }
+        }
+
+        Assert.Fail("Missing Button: " + objectName);
         return null;
     }
 

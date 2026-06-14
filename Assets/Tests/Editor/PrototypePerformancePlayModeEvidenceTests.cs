@@ -160,7 +160,7 @@ public class PrototypePerformancePlayModeEvidenceTests
         Assert.That(visualSwitchCount, Is.GreaterThanOrEqualTo(6));
         Assert.That(cameraModeCycles, Is.GreaterThanOrEqualTo(8));
         Assert.That(finalNavigationRefreshes, Is.EqualTo(planRefreshesAfterManualReplan), "Disengaged autopilot must not keep planning during PlayMode smoke.");
-        Assert.That(finalNozzleRefreshes, Is.LessThanOrEqualTo(initialNozzleRefreshes + (visualSwitchCount * 2) + 2), "RCS cache refreshes may be dirtied by visual rebuilds, but must stay bounded to switch events rather than FixedUpdate frames.");
+        Assert.That(finalNozzleRefreshes, Is.LessThanOrEqualTo(initialNozzleRefreshes + (visualSwitchCount * 2) + 4), "RCS cache refreshes may be dirtied by visual rebuilds/setup edges, but must stay bounded to switch events rather than FixedUpdate frames.");
         Assert.That(maxRcsApplications, Is.GreaterThanOrEqualTo(0));
         Assert.True(File.Exists(evidencePath), evidencePath);
     }

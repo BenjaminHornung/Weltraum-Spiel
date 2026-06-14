@@ -56,14 +56,29 @@ public class PrototypeHeadlessScenarioValidationTests
             Vector3 targetPosition = rig.Target.Position;
             autopilotDriver.Engage();
 
-            runner.Step(20);
-            AutopilotSimulationSnapshot autopilot = autopilotDriver.Snapshot(runner);
-            ShipSimulationSnapshot ship = new ShipDriver(rig.Ship).Snapshot(runner);
+            bool sawMainThrottle = false;
+            AutopilotSimulationSnapshot autopilot = new AutopilotSimulationSnapshot();
+            ShipSimulationSnapshot ship = new ShipSimulationSnapshot();
+
+            for (int i = 0; i < 120; i++)
+            {
+                runner.Step(1);
+                autopilot = autopilotDriver.Snapshot(runner);
+                ship = new ShipDriver(rig.Ship).Snapshot(runner);
+                if (autopilot.requestedMainThrottle > 0.5f || ship.mainThrustCommand > 0.5f)
+                {
+                    sawMainThrottle = true;
+                }
+            }
 
             Assert.True(autopilot.engaged);
-            Assert.That(autopilot.arrivalPhase, Is.EqualTo(PrototypeWaypointAutopilotArrivalPhase.LongRangeBurn));
-            Assert.That(autopilot.requestedMainThrottle, Is.GreaterThan(0.5f));
-            Assert.That(ship.mainThrustCommand, Is.GreaterThan(0.5f));
+            Assert.That(
+                autopilot.arrivalPhase,
+                Is.EqualTo(PrototypeWaypointAutopilotArrivalPhase.LongRangeBurn)
+                    .Or.EqualTo(PrototypeWaypointAutopilotArrivalPhase.Brake)
+                    .Or.EqualTo(PrototypeWaypointAutopilotArrivalPhase.LateralCorrection)
+                    .Or.EqualTo(PrototypeWaypointAutopilotArrivalPhase.FinalApproach));
+            Assert.That(sawMainThrottle, Is.True);
             Assert.True(rig.Ship.Controller.HasExternalFlightAssistRequest);
             Assert.That(rig.Ship.Controller.LastExternalFlightAssistRequest.source, Is.EqualTo(FlightAssistRequestSource.WaypointAutopilot));
             Assert.True(SimulationAssertions.DistanceToTargetDecreased(startPosition, rig.Ship.Body.position, targetPosition, 0.01f));

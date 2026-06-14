@@ -3261,6 +3261,46 @@ public class PrototypePlayerHudValidationTests
     }
 
     [Test]
+    public void CombatComputerCloseClearsSelectionAndRestoresNavigationContext()
+    {
+        using (var builder = new PrototypeScenarioBuilder())
+        {
+            PrototypeCombatRig combatRig = builder.CreateCombatRig("PlayerHudCombatCloseShip");
+            PrototypeNavigationTarget navigationTarget = builder.CreateTarget(
+                "PlayerHudCombatCloseNavTarget",
+                combatRig.Ship.Ship.transform.position + Vector3.forward * 220f);
+            builder.CreateWeaponTarget("PlayerHudCombatCloseWeaponTarget", combatRig.Muzzle.position + Vector3.forward * 40f);
+
+            PrototypeWaypointAutopilot autopilot = combatRig.Ship.Ship.AddComponent<PrototypeWaypointAutopilot>();
+            autopilot.Bind(null, combatRig.Ship.Controller, combatRig.Ship.Stats, combatRig.Ship.Body);
+            autopilot.SelectTarget(navigationTarget);
+
+            combatRig.Computer.RefreshTargets();
+            Assert.That(combatRig.Computer.SelectNextTarget(), Is.True, "combat target selection");
+
+            GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+            cameraObject.AddComponent<Camera>();
+            PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+            playerHud.Bind(combatRig.Ship.Ship.transform, combatRig.Ship.Stats, combatRig.Ship.Body);
+            playerHud.RefreshNow();
+
+            Assert.That(combatRig.Computer.SelectedTargetCount, Is.EqualTo(1));
+            Assert.That(FindText(playerHud, "ContextTitle").text, Does.StartWith("Combat: PlayerHudCombatCloseWeaponTarget"));
+            Assert.False(FindRect(playerHud, "NavigationControls").gameObject.activeInHierarchy);
+
+            SetCombatComputerVisibleForTest(playerHud, true);
+            FindButton(playerHud, "CombatComputerClose").onClick.Invoke();
+            Canvas.ForceUpdateCanvases();
+
+            Assert.That(combatRig.Computer.SelectedTargetCount, Is.EqualTo(0));
+            Assert.That(FindText(playerHud, "ContextTitle").text, Is.EqualTo("Navigation: PlayerHudCombatCloseNavTarget"));
+            Assert.True(FindRect(playerHud, "NavigationControls").gameObject.activeInHierarchy);
+
+            UnityEngine.Object.DestroyImmediate(cameraObject);
+        }
+    }
+
+    [Test]
     public void CombatComputerControlsHideOutsideCombatContext()
     {
         GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");

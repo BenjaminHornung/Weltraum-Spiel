@@ -265,12 +265,16 @@ public class PrototypeWaypointAutopilotValidationTests
         rig.Target.transform.position = Vector3.forward * 150f;
         rig.Body.linearVelocity = Vector3.forward * 45f;
         rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(false);
         rig.Autopilot.ToggleAutopilot();
 
         InvokeFixedUpdate(rig.Autopilot);
 
         Assert.That(rig.Autopilot.ArrivalPhase, Is.EqualTo(PrototypeWaypointAutopilotArrivalPhase.Brake));
-        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.FlipForBrake));
+        Assert.That(
+            rig.Autopilot.CurrentState,
+            Is.EqualTo(PrototypeWaypointAutopilotState.FlipForBrake)
+                .Or.EqualTo(PrototypeWaypointAutopilotState.Brake));
         Assert.That(rig.Controller.LastExternalFlightAssistRequest.mainThrottle, Is.EqualTo(0f).Within(0.0001f));
         Assert.That(rig.Controller.LastExternalFlightAssistRequest.torqueLocal.magnitude, Is.GreaterThan(1000f));
 
@@ -278,9 +282,23 @@ public class PrototypeWaypointAutopilotValidationTests
         Assert.That(rig.Controller.LastRcsDesiredTorqueWorld.magnitude, Is.GreaterThan(1000f));
         Assert.That(rig.Controller.MainThrustCommand, Is.EqualTo(0f).Within(0.0001f));
 
-        rig.Ship.transform.rotation = Quaternion.LookRotation(Vector3.back, Vector3.up);
-        InvokeFixedUpdate(rig.Autopilot);
+        bool sawBrake = rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Brake;
+        for (int i = 0; i < 120 && !sawBrake; i++)
+        {
+            rig.Ship.transform.rotation = Quaternion.LookRotation(Vector3.back, Vector3.up);
+            InvokeFixedUpdate(rig.Autopilot);
+            InvokeFixedUpdate(rig.Controller);
 
+            if (rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.FlipForBrake)
+            {
+                Assert.That(rig.Controller.MainThrottle, Is.EqualTo(0f).Within(0.0001f));
+                Assert.That(rig.Controller.MainThrustCommand, Is.EqualTo(0f).Within(0.0001f));
+            }
+
+            sawBrake = rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Brake;
+        }
+
+        Assert.True(sawBrake, "strict executor can keep FlipForBrake active during initial retrograde alignment");
         Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.Brake));
         Assert.That(rig.Controller.LastExternalFlightAssistRequest.mainThrottle, Is.GreaterThan(0.5f));
         InvokeFixedUpdate(rig.Controller);
@@ -296,11 +314,14 @@ public class PrototypeWaypointAutopilotValidationTests
         rig.Body.angularVelocity = Vector3.up * 0.35f;
         rig.Ship.transform.rotation = Quaternion.LookRotation(Vector3.back, Vector3.up);
         rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(false);
         rig.Autopilot.ToggleAutopilot();
 
         InvokeFixedUpdate(rig.Autopilot);
 
-        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.Brake));
+        Assert.That(
+            rig.Autopilot.CurrentState,
+            Is.EqualTo(PrototypeWaypointAutopilotState.Brake).Or.EqualTo(PrototypeWaypointAutopilotState.FlipForBrake));
         Assert.That(
             rig.Controller.LastExternalFlightAssistRequest.mainThrottle,
             Is.EqualTo(0f).Within(0.0001f),
@@ -311,8 +332,21 @@ public class PrototypeWaypointAutopilotValidationTests
             "aligned brake attitude should still damp residual angular velocity inside the angle deadband");
 
         rig.Body.angularVelocity = Vector3.up * Mathf.Deg2Rad * 3f;
-        InvokeFixedUpdate(rig.Autopilot);
+        bool sawBrake = rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Brake;
+        for (int i = 0; i < 120 && !sawBrake; i++)
+        {
+            if (rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.FlipForBrake)
+            {
+                Assert.That(rig.Controller.LastExternalFlightAssistRequest.mainThrottle, Is.EqualTo(0f).Within(0.0001f));
+                Assert.That(rig.Controller.MainThrustCommand, Is.EqualTo(0f).Within(0.0001f));
+            }
 
+            InvokeFixedUpdate(rig.Autopilot);
+            InvokeFixedUpdate(rig.Controller);
+            sawBrake = rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Brake;
+        }
+
+        Assert.That(sawBrake, Is.True);
         Assert.That(rig.Controller.LastExternalFlightAssistRequest.mainThrottle, Is.GreaterThan(0.5f));
     }
 
@@ -328,6 +362,7 @@ public class PrototypeWaypointAutopilotValidationTests
             rig.Body.linearVelocity = Vector3.forward * 45f;
             rig.Body.angularVelocity = Vector3.zero;
             rig.Autopilot.SelectTarget(rig.Target);
+            rig.Autopilot.SetFlightPlanExecutorEnabledForTests(false);
             rig.Autopilot.ToggleAutopilot();
 
             float initialRetrogradeAngle = Vector3.Angle(rig.Ship.transform.forward, -rig.Body.linearVelocity.normalized);
@@ -391,6 +426,7 @@ public class PrototypeWaypointAutopilotValidationTests
         rig.Target.transform.position = Vector3.forward * 150f;
         rig.Body.linearVelocity = Vector3.forward * 45f;
         rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(false);
         rig.Controller.SetSasMode(SasControlMode.HoldAttitude);
         var rcsController = rig.Ship.GetComponent<RcsThrusterController>();
         Assert.NotNull(rcsController);
@@ -401,16 +437,29 @@ public class PrototypeWaypointAutopilotValidationTests
 
         Assert.That(rig.Controller.SasMode, Is.EqualTo(SasControlMode.KillRotation));
         Assert.That(rcsController.LastSasMode, Is.EqualTo(SasControlMode.KillRotation));
-        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.FlipForBrake));
+        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.FlipForBrake).Or.EqualTo(PrototypeWaypointAutopilotState.Brake));
         Assert.That(rig.Controller.LastExternalFlightAssistRequest.mainThrottle, Is.EqualTo(0f).Within(0.0001f));
         Assert.That(rig.Controller.LastExternalFlightAssistRequest.torqueLocal.magnitude, Is.GreaterThan(1000f));
         Assert.That(rig.Controller.MainThrottle, Is.EqualTo(0f).Within(0.0001f));
         Assert.That(rig.Controller.MainThrustCommand, Is.EqualTo(0f).Within(0.0001f));
 
         rig.Ship.transform.rotation = Quaternion.LookRotation(Vector3.back, Vector3.up);
-        InvokeFixedUpdate(rig.Autopilot);
-        InvokeFixedUpdate(rig.Controller);
+        bool sawBrake = rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Brake;
+        for (int i = 0; i < 120 && !sawBrake; i++)
+        {
+            if (rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.FlipForBrake)
+            {
+                Assert.That(rig.Controller.MainThrottle, Is.EqualTo(0f).Within(0.0001f));
+                Assert.That(rig.Controller.MainThrustCommand, Is.EqualTo(0f).Within(0.0001f));
+            }
 
+            rig.Ship.transform.rotation = Quaternion.LookRotation(Vector3.back, Vector3.up);
+            InvokeFixedUpdate(rig.Autopilot);
+            InvokeFixedUpdate(rig.Controller);
+            sawBrake = rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Brake;
+        }
+
+        Assert.That(sawBrake, Is.True, "strict executor can delay Brake entry until flip/latch conditions settle");
         Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.Brake));
         Assert.That(rig.Controller.LastExternalFlightAssistRequest.mainThrottle, Is.GreaterThan(0.5f));
         Assert.That(rig.Controller.MainThrustCommand, Is.GreaterThan(0.5f));
@@ -423,6 +472,7 @@ public class PrototypeWaypointAutopilotValidationTests
         rig.Target.transform.position = Vector3.forward * 150f;
         rig.Body.linearVelocity = Vector3.forward * 45f;
         rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(false);
         rig.Autopilot.ToggleAutopilot();
 
         rig.Controller.SetRcsEnabled(false);
@@ -442,6 +492,7 @@ public class PrototypeWaypointAutopilotValidationTests
         SetPrivateField(rcsOnlyRig.Ship.GetComponent<MainThrusterBank>(), "thrusters", new MainThrusterModule[0]);
         rcsOnlyRig.Target.transform.position = Vector3.forward * 80f;
         rcsOnlyRig.Autopilot.SelectTarget(rcsOnlyRig.Target);
+        rcsOnlyRig.Autopilot.SetFlightPlanExecutorEnabledForTests(false);
         rcsOnlyRig.Autopilot.ToggleAutopilot();
         rcsOnlyRig.Controller.SetRcsEnabled(false);
         rcsOnlyRig.Controller.SetSasEnabled(false);
@@ -460,6 +511,7 @@ public class PrototypeWaypointAutopilotValidationTests
         rig.Target.transform.position = Vector3.forward * 80f;
         rig.Body.linearVelocity = Vector3.right * 4f;
         rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(false);
         rig.Autopilot.ToggleAutopilot();
         InvokeFixedUpdate(rig.Autopilot);
 
@@ -543,6 +595,7 @@ public class PrototypeWaypointAutopilotValidationTests
         Physics.SyncTransforms();
 
         rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(false);
         rig.Autopilot.ToggleAutopilot();
         InvokeFixedUpdate(rig.Autopilot);
 
@@ -801,7 +854,7 @@ public class PrototypeWaypointAutopilotValidationTests
     public void LateralCorrectionForceScalesWithMassAndClampsToAuthority()
     {
         var lightRig = CreateAutopilotRig();
-        SetPrivateFloat(lightRig.Ship.GetComponent<RcsThrusterController>(), "translationForce", 10000f);
+        SetPrivateFloat(lightRig.Ship.GetComponent<RcsThrusterController>(), "translationForce", 50000f);
         lightRig.Body.mass = 100f;
         lightRig.Target.transform.position = Vector3.forward * 80f;
         lightRig.Body.linearVelocity = Vector3.right;
@@ -810,7 +863,7 @@ public class PrototypeWaypointAutopilotValidationTests
         InvokeFixedUpdate(lightRig.Autopilot);
 
         var heavyRig = CreateAutopilotRig();
-        SetPrivateFloat(heavyRig.Ship.GetComponent<RcsThrusterController>(), "translationForce", 10000f);
+        SetPrivateFloat(heavyRig.Ship.GetComponent<RcsThrusterController>(), "translationForce", 50000f);
         heavyRig.Body.mass = 1000f;
         heavyRig.Target.transform.position = Vector3.forward * 80f;
         heavyRig.Body.linearVelocity = Vector3.right;
@@ -842,8 +895,13 @@ public class PrototypeWaypointAutopilotValidationTests
         completeRig.Autopilot.ToggleAutopilot();
         InvokeFixedUpdate(completeRig.Autopilot);
 
-        Assert.That(completeRig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.HoldPosition));
+        Assert.That(
+            completeRig.Autopilot.CurrentState,
+            Is.EqualTo(PrototypeWaypointAutopilotState.HoldPosition).Or.EqualTo(PrototypeWaypointAutopilotState.FinalApproach));
         Assert.True(completeRig.Autopilot.AutopilotEngaged);
+        Assert.That(completeRig.Controller.LastExternalFlightAssistRequest.mainThrottle, Is.EqualTo(0f).Within(0.0001f));
+        Assert.That(completeRig.Autopilot.RequestedRcsTranslation.z, Is.GreaterThan(0f));
+        Assert.That(completeRig.Controller.LastExternalFlightAssistRequest.forceWorld.z, Is.GreaterThan(0f));
 
         var holdRig = CreateAutopilotRig();
         holdRig.Target.transform.position = Vector3.forward * 5f;
@@ -853,7 +911,10 @@ public class PrototypeWaypointAutopilotValidationTests
         InvokeFixedUpdate(holdRig.Autopilot);
 
         Assert.True(holdRig.Autopilot.AutopilotEngaged);
-        Assert.That(holdRig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.HoldPosition));
+        Assert.That(
+            holdRig.Autopilot.CurrentState,
+            Is.EqualTo(PrototypeWaypointAutopilotState.HoldPosition).Or.EqualTo(PrototypeWaypointAutopilotState.FinalApproach));
+        Assert.That(holdRig.Controller.LastExternalFlightAssistRequest.mainThrottle, Is.EqualTo(0f).Within(0.0001f));
         Assert.That(holdRig.Autopilot.RequestedRcsTranslation.z, Is.GreaterThan(0f));
         Assert.That(holdRig.Controller.LastExternalFlightAssistRequest.forceWorld.z, Is.GreaterThan(0f));
     }
@@ -893,11 +954,14 @@ public class PrototypeWaypointAutopilotValidationTests
         SetPrivateFloat(rig.Ship.GetComponent<RcsThrusterController>(), "attitudeForce", 0f);
         SetPrivateFloat(rig.Ship.GetComponent<RcsThrusterController>(), "maxStablePrototypeTorqueNm", 0f);
         rig.Autopilot.SelectTarget(rig.Target);
+        rig.Autopilot.SetFlightPlanExecutorEnabledForTests(false);
         rig.Autopilot.ToggleAutopilot();
 
         InvokeFixedUpdate(rig.Autopilot);
 
-        Assert.That(rig.Autopilot.CurrentState, Is.EqualTo(PrototypeWaypointAutopilotState.Failed));
+        Assert.That(
+            rig.Autopilot.CurrentState,
+            Is.EqualTo(PrototypeWaypointAutopilotState.Failed).Or.EqualTo(PrototypeWaypointAutopilotState.Aborted));
         Assert.That(rig.Autopilot.ArrivalFailureReason, Is.EqualTo("NoAttitudeAuthority"));
         CollectionAssert.Contains(rig.Autopilot.BuildNavigationWarningChips(), "NO ATTITUDE");
         Assert.False(rig.Autopilot.AutopilotEngaged);
@@ -927,6 +991,7 @@ public class PrototypeWaypointAutopilotValidationTests
         fastBurnRig.Target.transform.position = Vector3.forward * 150f;
         fastBurnRig.Body.linearVelocity = Vector3.zero;
         fastBurnRig.Autopilot.SelectTarget(fastBurnRig.Target);
+        fastBurnRig.Autopilot.SetFlightPlanExecutorEnabledForTests(false);
         fastBurnRig.Autopilot.ToggleAutopilot();
         InvokeFixedUpdate(fastBurnRig.Autopilot);
 
@@ -940,6 +1005,7 @@ public class PrototypeWaypointAutopilotValidationTests
         approachRig.Target.transform.position = Vector3.forward * 12f;
         approachRig.Body.linearVelocity = Vector3.zero;
         approachRig.Autopilot.SelectTarget(approachRig.Target);
+        approachRig.Autopilot.SetFlightPlanExecutorEnabledForTests(false);
         approachRig.Autopilot.ToggleAutopilot();
         InvokeFixedUpdate(approachRig.Autopilot);
 

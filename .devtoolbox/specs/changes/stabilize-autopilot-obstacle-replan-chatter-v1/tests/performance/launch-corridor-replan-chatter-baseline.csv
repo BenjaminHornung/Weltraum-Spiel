@@ -1,0 +1,1601 @@
+step,time,distance,relativeSpeed,currentState,navigationPhase,selectedCandidate,selectedCandidateReason,obstacleStatus,hasObstacle,flightPlanSafetyReplanCount,activeSegmentLabel,requestedMainThrottle,requestedRcsForceMagnitude
+0,0,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+1,0.02,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+2,0.04,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+3,0.06,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+4,0.08,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+5,0.1,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+6,0.12,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+7,0.14,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+8,0.16,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+9,0.18,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+10,0.2,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+11,0.22,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+12,0.24,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+13,0.26,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+14,0.28,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+15,0.3,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+16,0.32,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+17,0.34,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+18,0.36,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+19,0.38,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+20,0.4,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+21,0.42,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+22,0.44,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+23,0.46,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+24,0.48,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+25,0.5,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+26,0.52,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+27,0.54,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+28,0.56,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+29,0.58,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+30,0.6,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+31,0.62,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+32,0.64,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+33,0.66,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+34,0.68,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+35,0.7,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+36,0.72,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+37,0.74,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+38,0.76,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+39,0.78,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+40,0.8,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+41,0.82,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+42,0.839999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+43,0.859999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+44,0.879999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+45,0.899999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+46,0.919999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+47,0.939999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+48,0.959999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+49,0.979999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+50,0.999999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+51,1.019999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+52,1.039999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+53,1.059999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+54,1.079999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+55,1.099999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+56,1.119999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+57,1.139999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+58,1.159999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+59,1.179999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+60,1.199999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+61,1.219999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+62,1.239999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+63,1.259999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+64,1.279999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+65,1.299999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+66,1.319999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+67,1.339999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+68,1.359999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+69,1.379999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+70,1.399999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+71,1.419999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+72,1.439999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+73,1.459999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+74,1.479999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+75,1.499999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+76,1.519999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+77,1.539999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+78,1.559999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+79,1.579999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+80,1.599999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+81,1.619999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+82,1.639999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+83,1.659999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+84,1.679999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+85,1.699999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+86,1.719999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+87,1.739999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+88,1.759999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+89,1.779999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+90,1.799999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+91,1.819999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+92,1.839999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+93,1.859999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+94,1.879999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+95,1.899999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+96,1.919999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+97,1.939999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+98,1.959999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+99,1.979999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+100,1.999999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+101,2.019999,96,0,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,Align,0,0
+102,2.039999,95.99871,0.202574,ObstacleAvoidance,Avoiding,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,AvoidanceBurn,0.81846,5611.362
+103,2.059999,95.99613,0.404979,ObstacleAvoidance,Avoiding,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,AvoidanceBurn,0.818595,5523.594
+104,2.079998,95.99225,0.607099,ObstacleAvoidance,Avoiding,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,AvoidanceBurn,0.818741,5423.294
+105,2.099998,95.98705,0.808814,ObstacleAvoidance,Avoiding,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.8m,True,0,AvoidanceBurn,0.818892,5311.072
+106,2.119998,95.98054,1.010012,ObstacleAvoidance,Avoiding,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.7m,True,0,AvoidanceBurn,0.819054,5187.892
+107,2.139999,95.97269,1.210594,ObstacleAvoidance,Avoiding,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.7m,True,0,AvoidanceBurn,0.819231,5054.978
+108,2.159999,95.96352,1.41044,ObstacleAvoidance,Avoiding,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.7m,True,0,AvoidanceBurn,0.819427,4913.501
+109,2.179999,95.95299,1.609448,ObstacleAvoidance,Avoiding,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.7m,True,0,AvoidanceBurn,0.819648,4766.067
+110,2.199999,95.9411,1.807518,ObstacleAvoidance,Avoiding,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.7m,True,0,AvoidanceBurn,0.819898,4614.614
+111,2.219999,95.92785,2.004558,ObstacleAvoidance,Avoiding,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.7m,True,0,AvoidanceBurn,0.820182,4461.901
+112,2.239999,95.91322,2.200477,ObstacleAvoidance,Avoiding,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.7m,True,0,AvoidanceBurn,0.820503,4311.176
+113,2.259999,95.89721,2.39519,ObstacleAvoidance,Avoiding,down,down collision clearance -11.8m,Launch Obstacle 1 @ 1.7m,True,0,AvoidanceBurn,0.820867,4166.31
+114,2.279999,95.87979,2.588618,ObstacleAvoidance,Avoiding,down,down collision clearance -11.7m,Launch Obstacle 1 @ 1.7m,True,0,AvoidanceBurn,0.821276,4031.681
+115,2.299999,95.86098,2.780684,ObstacleAvoidance,Avoiding,down,down collision clearance -11.7m,Launch Obstacle 1 @ 1.7m,True,0,AvoidanceBurn,0.821735,3912.319
+116,2.319999,95.84075,2.97132,ObstacleAvoidance,Avoiding,down,down collision clearance -11.7m,Launch Obstacle 1 @ 1.6m,True,0,AvoidanceBurn,0.822247,3813.662
+117,2.339998,95.8191,3.16046,ObstacleAvoidance,Avoiding,down,down collision clearance -11.7m,Launch Obstacle 1 @ 1.6m,True,0,AvoidanceBurn,0.822816,3741.375
+118,2.359998,95.79602,3.348043,ObstacleAvoidance,Avoiding,down,down collision clearance -11.7m,Launch Obstacle 1 @ 1.6m,True,0,AvoidanceBurn,0.823446,3700.993
+119,2.379998,95.7715,3.534014,ObstacleAvoidance,Avoiding,down,down collision clearance -11.7m,Launch Obstacle 1 @ 1.6m,True,0,AvoidanceBurn,0.824139,3697.414
+120,2.399998,95.74552,3.718323,ObstacleAvoidance,Avoiding,down,down collision clearance -11.7m,Launch Obstacle 1 @ 1.6m,True,0,AvoidanceBurn,0.824899,3734.4
+121,2.419998,95.71809,3.900924,ObstacleAvoidance,Avoiding,down,down collision clearance -11.7m,Launch Obstacle 1 @ 1.6m,True,0,AvoidanceBurn,0.825729,3814.169
+122,2.439998,95.68919,4.081777,ObstacleAvoidance,Avoiding,down,down collision clearance -11.6m,Launch Obstacle 1 @ 1.5m,True,0,AvoidanceBurn,0.82663,3937.22
+123,2.459998,95.65883,4.260857,ObstacleAvoidance,Avoiding,down,down collision clearance -11.6m,Launch Obstacle 1 @ 1.5m,True,0,AvoidanceBurn,0.827607,4102.418
+124,2.479998,95.62698,4.438121,ObstacleAvoidance,Avoiding,down,down collision clearance -11.6m,Launch Obstacle 1 @ 1.5m,True,0,AvoidanceBurn,0.82866,4307.071
+125,2.499998,95.59363,4.613543,ObstacleAvoidance,Avoiding,down,down collision clearance -11.6m,Launch Obstacle 1 @ 1.5m,True,0,AvoidanceBurn,0.829793,4548.447
+126,2.519998,95.55878,4.787098,ObstacleAvoidance,Avoiding,down,down collision clearance -11.6m,Launch Obstacle 1 @ 1.4m,True,0,AvoidanceBurn,0.831007,4822.553
+127,2.539998,95.52245,4.95877,ObstacleAvoidance,Avoiding,down,down collision clearance -11.5m,Launch Obstacle 1 @ 1.4m,True,0,AvoidanceBurn,0.832305,5125.617
+128,2.559998,95.4846,5.128544,ObstacleAvoidance,Avoiding,down,down collision clearance -11.5m,Launch Obstacle 1 @ 1.4m,True,0,AvoidanceBurn,0.833687,5454.007
+129,2.579998,95.44524,5.296409,ObstacleAvoidance,Avoiding,down,down collision clearance -11.5m,Launch Obstacle 1 @ 1.4m,True,0,AvoidanceBurn,0.835157,5804.377
+130,2.599998,95.40434,5.462358,ObstacleAvoidance,Avoiding,down,down collision clearance -11.5m,Launch Obstacle 1 @ 1.3m,True,0,AvoidanceBurn,0.836714,6173.729
+131,2.619998,95.36193,5.626391,ObstacleAvoidance,Avoiding,down,down collision clearance -11.5m,Launch Obstacle 1 @ 1.3m,True,0,AvoidanceBurn,0.838361,6559.408
+132,2.639998,95.31799,5.788505,ObstacleAvoidance,Avoiding,down,down collision clearance -11.4m,Launch Obstacle 1 @ 1.3m,True,0,AvoidanceBurn,0.840098,6959.083
+133,2.659998,95.27251,5.948706,ObstacleAvoidance,Avoiding,down,down collision clearance -11.4m,Launch Obstacle 1 @ 1.3m,True,0,AvoidanceBurn,0.841927,7370.732
+134,2.679998,95.22549,6.107,ObstacleAvoidance,Avoiding,down,down collision clearance -11.4m,Launch Obstacle 1 @ 1.2m,True,0,AvoidanceBurn,0.843848,7792.583
+135,2.699998,95.17693,6.263396,ObstacleAvoidance,Avoiding,down,down collision clearance -11.4m,Launch Obstacle 1 @ 1.2m,True,0,AvoidanceBurn,0.845862,8223.102
+136,2.719998,95.12683,6.417908,ObstacleAvoidance,Avoiding,down,down collision clearance -11.4m,Launch Obstacle 1 @ 1.2m,True,0,AvoidanceBurn,0.84797,8660.942
+137,2.739998,95.07517,6.570549,ObstacleAvoidance,Avoiding,down,down collision clearance -11.3m,Launch Obstacle 1 @ 1.2m,True,0,AvoidanceBurn,0.850172,9104.931
+138,2.759998,95.02197,6.721735,ObstacleAvoidance,Avoiding,down,down collision clearance -11.3m,Launch Obstacle 1 @ 1.1m,True,0,AvoidanceBurn,0.852468,9479.207
+139,2.779998,94.96721,6.872321,ObstacleAvoidance,Avoiding,down,down collision clearance -11.3m,Launch Obstacle 1 @ 1.1m,True,0,AvoidanceBurn,0.85484,9699.294
+140,2.799998,94.91089,7.022333,ObstacleAvoidance,Avoiding,down,down collision clearance -11.3m,Launch Obstacle 1 @ 1.1m,True,0,AvoidanceBurn,0.857246,9917.992
+141,2.819998,94.85302,7.171782,ObstacleAvoidance,Avoiding,down,down collision clearance -11.2m,Launch Obstacle 1 @ 1.0m,True,0,AvoidanceBurn,0.859686,10134.67
+142,2.839998,94.79359,7.320683,ObstacleAvoidance,Avoiding,down,down collision clearance -11.2m,Launch Obstacle 1 @ 1.0m,True,0,AvoidanceBurn,0.862159,10350.7
+143,2.859998,94.73261,7.46905,ObstacleAvoidance,Avoiding,down,down collision clearance -11.2m,Launch Obstacle 1 @ 1.0m,True,0,AvoidanceBurn,0.864666,10565.47
+144,2.879998,94.67007,7.616899,ObstacleAvoidance,Avoiding,down,down collision clearance -11.2m,Launch Obstacle 1 @ 1.0m,True,0,AvoidanceBurn,0.867206,10779.04
+145,2.899998,94.60598,7.764247,ObstacleAvoidance,Avoiding,down,down collision clearance -11.1m,Launch Obstacle 1 @ 0.9m,True,0,AvoidanceBurn,0.86978,10991.47
+146,2.919998,94.54034,7.911108,ObstacleAvoidance,Avoiding,down,down collision clearance -11.1m,Launch Obstacle 1 @ 0.9m,True,0,AvoidanceBurn,0.872385,11202.81
+147,2.939998,94.47314,8.057494,ObstacleAvoidance,Avoiding,down,down collision clearance -11.1m,Launch Obstacle 1 @ 0.9m,True,0,AvoidanceBurn,0.875023,11413.16
+148,2.959998,94.40441,8.203422,ObstacleAvoidance,Avoiding,down,down collision clearance -11.1m,Launch Obstacle 1 @ 0.9m,True,0,AvoidanceBurn,0.877694,11622.57
+149,2.979998,94.33413,8.348901,ObstacleAvoidance,Avoiding,down,down collision clearance -11.0m,Launch Obstacle 1 @ 0.9m,True,0,AvoidanceBurn,0.880394,11831.15
+150,2.999998,94.2623,8.493946,ObstacleAvoidance,Avoiding,down,down collision clearance -11.0m,Launch Obstacle 1 @ 0.8m,True,0,AvoidanceBurn,0.883127,12038.94
+151,3.019998,94.18895,8.638568,ObstacleAvoidance,Avoiding,down,down collision clearance -11.0m,Launch Obstacle 1 @ 0.8m,True,0,AvoidanceBurn,0.885892,12246.04
+152,3.039998,94.11406,8.782779,ObstacleAvoidance,Avoiding,down,down collision clearance -11.0m,Launch Obstacle 1 @ 0.8m,True,0,AvoidanceBurn,0.888688,12452.54
+153,3.059998,94.03766,8.926589,ObstacleAvoidance,Avoiding,down,down collision clearance -10.9m,Launch Obstacle 1 @ 0.8m,True,0,AvoidanceBurn,0.891515,12658.5
+154,3.079998,93.95973,9.07002,ObstacleAvoidance,Avoiding,down,down collision clearance -10.9m,Launch Obstacle 1 @ 0.8m,True,0,AvoidanceBurn,0.894373,12864.02
+155,3.099998,93.8803,9.213074,ObstacleAvoidance,Avoiding,down,down collision clearance -10.9m,Launch Obstacle 1 @ 0.8m,True,0,AvoidanceBurn,0.89726,13068.28
+156,3.119998,93.79937,9.355757,ObstacleAvoidance,Avoiding,down,down collision clearance -10.8m,Launch Obstacle 1 @ 0.7m,True,0,AvoidanceBurn,0.900177,13273.18
+157,3.139998,93.71694,9.498076,ObstacleAvoidance,Avoiding,down,down collision clearance -10.8m,Launch Obstacle 1 @ 0.7m,True,0,AvoidanceBurn,0.903125,13477.88
+158,3.159998,93.63303,9.640042,ObstacleAvoidance,Avoiding,down,down collision clearance -10.8m,Launch Obstacle 1 @ 0.7m,True,0,AvoidanceBurn,0.906103,13682.48
+159,3.179998,93.54765,9.781661,ObstacleAvoidance,Avoiding,down,down collision clearance -10.8m,Launch Obstacle 1 @ 0.7m,True,0,AvoidanceBurn,0.90911,13887.05
+160,3.199998,93.4608,9.92294,ObstacleAvoidance,Avoiding,down,down collision clearance -10.7m,Launch Obstacle 1 @ 0.7m,True,0,AvoidanceBurn,0.912147,14091.67
+161,3.219998,93.3725,10.06389,ObstacleAvoidance,Avoiding,down,down collision clearance -10.7m,Launch Obstacle 1 @ 0.7m,True,0,AvoidanceBurn,0.915214,14296.43
+162,3.239998,93.28276,10.20451,ObstacleAvoidance,Avoiding,down,down collision clearance -10.7m,Launch Obstacle 1 @ 0.7m,True,0,AvoidanceBurn,0.91831,14501.4
+163,3.259998,93.19159,10.34481,ObstacleAvoidance,Avoiding,down,down collision clearance -10.6m,Launch Obstacle 1 @ 0.7m,True,0,AvoidanceBurn,0.921435,14706.67
+164,3.279998,93.09901,10.4848,ObstacleAvoidance,Avoiding,down,down collision clearance -10.6m,Launch Obstacle 1 @ 0.8m,True,0,AvoidanceBurn,0.924589,14912.31
+165,3.299998,93.00501,10.62447,ObstacleAvoidance,Avoiding,down,down collision clearance -10.6m,Launch Obstacle 1 @ 0.8m,True,0,AvoidanceBurn,0.927773,15118.38
+166,3.319998,92.90964,10.76385,ObstacleAvoidance,Avoiding,down,down collision clearance -10.5m,Launch Obstacle 1 @ 0.8m,True,0,AvoidanceBurn,0.930985,15324.97
+167,3.339998,92.81289,10.90294,ObstacleAvoidance,Avoiding,down,down collision clearance -10.5m,Launch Obstacle 1 @ 0.8m,True,0,AvoidanceBurn,0.934226,15531.1
+168,3.359998,92.71478,11.04173,ObstacleAvoidance,Avoiding,down,down collision clearance -10.5m,Launch Obstacle 1 @ 0.8m,True,0,AvoidanceBurn,0.937495,15738.94
+169,3.379998,92.61533,11.18023,ObstacleAvoidance,Avoiding,down,down collision clearance -10.4m,Launch Obstacle 1 @ 0.9m,True,0,AvoidanceBurn,0.940793,15947.51
+170,3.399998,92.51456,11.31843,ObstacleAvoidance,Avoiding,down,down collision clearance -10.4m,Launch Obstacle 1 @ 0.9m,True,0,AvoidanceBurn,0.944119,16156.87
+171,3.419998,92.41248,11.45635,ObstacleAvoidance,Avoiding,down,down collision clearance -10.3m,Launch Obstacle 1 @ 1.0m,True,0,AvoidanceBurn,0.947474,16367.07
+172,3.439998,92.30912,11.59398,ObstacleAvoidance,Avoiding,down,down collision clearance -10.3m,Launch Obstacle 1 @ 1.0m,True,0,AvoidanceBurn,0.950857,16578.19
+173,3.459998,92.20448,11.73133,ObstacleAvoidance,Avoiding,down,down collision clearance -10.3m,Launch Obstacle 1 @ 1.1m,True,0,AvoidanceBurn,0.954269,16790.29
+174,3.479998,92.09859,11.8684,ObstacleAvoidance,Avoiding,down,down collision clearance -10.2m,Launch Obstacle 1 @ 1.1m,True,0,AvoidanceBurn,0.957709,17003.41
+175,3.499998,91.99148,12.00529,ObstacleAvoidance,Avoiding,down,down collision clearance -10.2m,Launch Obstacle 1 @ 1.2m,True,0,AvoidanceBurn,0.961178,17196.54
+176,3.519998,91.88316,12.143,ObstacleAvoidance,Avoiding,down,down collision clearance -10.1m,Launch Obstacle 1 @ 1.3m,True,0,AvoidanceBurn,0.964669,17203.37
+177,3.539998,91.77364,12.28152,ObstacleAvoidance,Avoiding,down,down collision clearance -10.1m,Launch Obstacle 1 @ 1.4m,True,0,AvoidanceBurn,0.968131,17212.05
+178,3.559998,91.66296,12.42083,ObstacleAvoidance,Avoiding,down,down collision clearance -10.0m,Launch Obstacle 1 @ 1.5m,True,0,AvoidanceBurn,0.971565,17222.59
+179,3.579998,91.55114,12.56092,ObstacleAvoidance,Avoiding,down,down collision clearance -10.0m,Launch Obstacle 1 @ 1.6m,True,0,AvoidanceBurn,0.97497,17234.88
+180,3.599998,91.4382,12.70177,ObstacleAvoidance,Avoiding,down,down collision clearance -9.9m,Launch Obstacle 1 @ 1.7m,True,0,AvoidanceBurn,0.978348,17248.95
+181,3.619998,91.32417,12.84337,ObstacleAvoidance,Avoiding,down,down collision clearance -9.8m,Launch Obstacle 1 @ 1.8m,True,0,AvoidanceBurn,0.981698,17264.79
+182,3.639997,91.20907,12.98571,ObstacleAvoidance,Avoiding,down,down collision clearance -9.8m,Launch Obstacle 1 @ 2.0m,True,0,AvoidanceBurn,0.98502,17282.36
+183,3.659997,91.09293,13.12879,ObstacleAvoidance,Avoiding,down,down collision clearance -9.7m,Launch Obstacle 1 @ 2.1m,True,0,AvoidanceBurn,0.988316,17301.65
+184,3.679997,90.97577,13.27259,ObstacleAvoidance,Avoiding,down,down collision clearance -9.6m,Launch Obstacle 1 @ 2.3m,True,0,AvoidanceBurn,0.991585,17322.63
+185,3.699997,90.85873,13.28097,Accelerate,ReacquireDirectPath,down,down collision clearance -9.5m,Launch Obstacle 1 @ 2.5m,True,0,Burn,0,4775.383
+186,3.719997,90.74229,13.22759,Accelerate,ReacquireDirectPath,down,down collision clearance -9.4m,Launch Obstacle 1 @ 2.7m,True,0,Burn,0,11333.67
+187,3.739997,90.62645,13.17496,Accelerate,ReacquireDirectPath,down,down collision clearance -9.3m,Launch Obstacle 1 @ 3.0m,True,0,Burn,0,11160.11
+188,3.759997,90.5112,13.12306,Accelerate,ReacquireDirectPath,down,down collision clearance -9.2m,Launch Obstacle 1 @ 3.2m,True,0,Burn,0,10988.48
+189,3.779997,90.39653,13.0719,Accelerate,ReacquireDirectPath,down,down collision clearance -9.1m,Launch Obstacle 1 @ 3.5m,True,0,Burn,0,10818.75
+190,3.799997,90.28248,12.97651,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -9.0m,Launch Obstacle 1 @ 3.9m,True,0,Align,0,20000
+191,3.819997,90.16902,12.88241,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -8.9m,Launch Obstacle 1 @ 4.3m,True,0,Align,0,19739.2
+192,3.839997,90.05615,12.78958,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -8.8m,Launch Obstacle 1 @ 4.7m,True,0,Align,0,19481.01
+193,3.859998,89.94387,12.698,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -8.7m,Launch Obstacle 1 @ 5.2m,True,0,Align,0,19225.43
+194,3.879997,89.83216,12.60767,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -8.6m,Launch Obstacle 1 @ 5.9m,True,0,Align,0,18972.37
+195,3.899997,89.72101,12.51857,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -8.4m,Launch Obstacle 1 @ 6.8m,True,0,Align,0,18721.86
+196,3.919997,89.61042,12.43068,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -8.3m,Launch Obstacle 1 @ 8.6m,True,0,Align,0,18473.86
+197,3.939997,89.50038,12.34399,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -8.2m,Launch Obstacle 1 @ 8.6m,True,0,Align,0,18228.36
+198,3.959997,89.39089,12.25849,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -2.8m,Launch Obstacle 2 @ 13.6m,True,0,Align,0,17985.33
+199,3.979997,89.28193,12.17416,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -2.7m,Launch Obstacle 2 @ 13.9m,True,0,Align,0,17744.76
+200,3.999997,89.1735,12.09099,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -2.7m,Launch Obstacle 2 @ 14.3m,True,0,Align,0,17506.62
+201,4.019997,89.0656,12.00896,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -2.6m,Launch Obstacle 2 @ 14.8m,True,0,Align,0,17270.89
+202,4.039997,88.95821,11.92807,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -2.6m,Launch Obstacle 2 @ 15.4m,True,0,Align,0,17037.56
+203,4.059997,88.85134,11.84829,ObstacleAvoidance,AvoidancePlanning,down,down collision clearance -2.6m,Launch Obstacle 2 @ 16.2m,True,0,Align,0,16806.6
+204,4.079997,88.74498,11.76993,ObstacleAvoidance,AvoidancePlanning,down,down feasible,Launch Obstacle 3 @ 22.7m,True,0,Align,0,16510.04
+205,4.099997,88.63911,11.69333,ObstacleAvoidance,AvoidancePlanning,down,down feasible,Launch Obstacle 3 @ 22.9m,True,0,Align,0,16143.25
+206,4.119997,88.53374,11.61845,ObstacleAvoidance,AvoidancePlanning,down,down feasible,Launch Obstacle 3 @ 23.2m,True,0,Align,0,15784.02
+207,4.139997,88.42886,11.54524,ObstacleAvoidance,AvoidancePlanning,down,down feasible,Launch Obstacle 3 @ 23.5m,True,0,Align,0,15432.22
+208,4.159997,88.32447,11.47367,ObstacleAvoidance,AvoidancePlanning,down,down feasible,Launch Obstacle 3 @ 23.8m,True,0,Align,0,15087.68
+209,4.179997,88.22056,11.4037,ObstacleAvoidance,AvoidancePlanning,down,down feasible,Launch Obstacle 3 @ 24.2m,True,0,Align,0,14750.27
+210,4.199997,88.11713,11.33529,ObstacleAvoidance,AvoidancePlanning,down,down feasible,Launch Obstacle 3 @ 24.7m,True,0,Align,0,14419.84
+211,4.219997,88.01416,11.26841,ObstacleAvoidance,AvoidancePlanning,down,down feasible,Launch Obstacle 3 @ 25.3m,True,0,Align,0,14096.24
+212,4.239997,87.91167,11.20303,ObstacleAvoidance,AvoidancePlanning,down,down feasible,Launch Obstacle 3 @ 26.5m,True,0,Align,0,13779.35
+213,4.259997,87.80962,11.11443,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,18776.83
+214,4.279997,87.70801,11.0267,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,18609.39
+215,4.299997,87.60684,10.93983,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,18444.64
+216,4.319997,87.50609,10.85382,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,18281.28
+217,4.339997,87.40575,10.76865,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,18119.31
+218,4.359997,87.30584,10.68433,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,17958.7
+219,4.379997,87.20633,10.60084,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,17799.46
+220,4.399997,87.10722,10.51819,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,17641.57
+221,4.419997,87.00848,10.43635,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,17485.03
+222,4.439997,86.91015,10.35534,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,17329.82
+223,4.459997,86.81219,10.27513,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,17175.94
+224,4.479997,86.71461,10.19572,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,17023.37
+225,4.499997,86.61739,10.11712,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,16870.96
+226,4.519997,86.52053,10.0393,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,16721
+227,4.539997,86.42403,9.962276,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,16572.33
+228,4.559997,86.32787,9.88603,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,16424.92
+229,4.579997,86.23205,9.810557,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,16278.79
+230,4.599997,86.13658,9.735853,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,16133.9
+231,4.619997,86.04143,9.66191,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,15990.27
+232,4.639997,85.94661,9.588723,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,15847.87
+233,4.659997,85.8521,9.516286,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,15706.7
+234,4.679997,85.75793,9.444593,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,15566.75
+235,4.699997,85.66405,9.373639,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,15428.01
+236,4.719997,85.57048,9.303412,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,15290.47
+237,4.739997,85.47721,9.233918,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,15153.06
+238,4.759997,85.38423,9.165144,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,15017.9
+239,4.779997,85.29155,9.097087,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,14883.91
+240,4.799997,85.19915,9.029739,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,14751.08
+241,4.819997,85.10703,8.963096,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,14619.41
+242,4.839997,85.01518,8.897151,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,14488.88
+243,4.859997,84.92361,8.831899,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,14359.49
+244,4.879997,84.8323,8.767336,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,14231.22
+245,4.899997,84.74126,8.703454,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,14104.07
+246,4.919997,84.65046,8.640249,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,13978.03
+247,4.939997,84.55993,8.577717,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,13853.1
+248,4.959997,84.46964,8.51585,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,13729.25
+249,4.979997,84.3796,8.454639,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,13606.49
+250,4.999997,84.28979,8.394089,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,13483.82
+251,5.019997,84.20023,8.334188,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,13363.21
+252,5.039997,84.1109,8.274933,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,13243.65
+253,5.059997,84.0218,8.216318,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,13125.14
+254,5.079997,83.93291,8.158337,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,13007.67
+255,5.099997,83.84426,8.100985,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,12891.23
+256,5.119997,83.75582,8.044258,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,12775.81
+257,5.139997,83.66759,7.98815,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,12661.41
+258,5.159997,83.57957,7.932656,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,12548.01
+259,5.179996,83.49176,7.877771,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,12435.61
+260,5.199996,83.40416,7.823491,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,12324.2
+261,5.219996,83.31675,7.76981,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,12213.78
+262,5.239996,83.22954,7.716723,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,12104.33
+263,5.259996,83.14252,7.664226,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,11995.84
+264,5.279996,83.05569,7.612313,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,11888.31
+265,5.299996,82.96906,7.56098,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,11781.73
+266,5.319996,82.8826,7.510221,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,11676.09
+267,5.339996,82.79632,7.460033,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,11571.39
+268,5.359996,82.71021,7.41041,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,11467.61
+269,5.379996,82.62428,7.361348,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,11364.76
+270,5.399996,82.53854,7.312997,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,11226.53
+271,5.419996,82.45295,7.265617,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,11026.72
+272,5.439996,82.36752,7.219187,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,10831.61
+273,5.459996,82.28227,7.173676,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,10642.58
+274,5.479996,82.19717,7.129059,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,10458.64
+275,5.499996,82.11224,7.08531,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,10279.61
+276,5.519996,82.02746,7.042406,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,10105.32
+277,5.539996,81.94283,7.000323,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,9935.593
+278,5.559996,81.85835,6.95904,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,9770.274
+279,5.579996,81.77401,6.918534,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,9609.21
+280,5.599996,81.68983,6.878785,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,9452.258
+281,5.619996,81.60578,6.839773,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,9299.272
+282,5.639996,81.52189,6.801479,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,9150.125
+283,5.659996,81.43813,6.763884,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,9004.686
+284,5.679996,81.35451,6.726969,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,8862.829
+285,5.699996,81.27102,6.690718,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,8724.439
+286,5.719996,81.18766,6.655113,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,8589.402
+287,5.739996,81.09966,6.775091,Accelerate,ReacquireDirectPath,direct,direct path clear,clear,False,0,Burn,0.999934,8457.61
+288,5.759996,81.00701,6.899553,Accelerate,ReacquireDirectPath,direct,direct path clear,clear,False,0,Burn,0.999927,8338.892
+289,5.779996,80.90971,7.028393,Accelerate,ReacquireDirectPath,direct,direct path clear,clear,False,0,Burn,0.999992,8213.759
+290,5.799996,80.81253,6.997452,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,8084.058
+291,5.819996,80.71548,6.967048,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,7966.995
+292,5.839996,80.61855,6.937165,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,7852.6
+293,5.859996,80.52174,6.907793,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,7740.79
+294,5.879996,80.42506,6.878918,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,7631.488
+295,5.899996,80.32849,6.850528,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,7524.619
+296,5.919996,80.23204,6.822613,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,7420.109
+297,5.939996,80.1357,6.795161,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,7317.89
+298,5.959996,80.03948,6.768161,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,7217.895
+299,5.979996,79.94337,6.741602,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,7120.06
+300,5.999996,79.84737,6.715475,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,7024.319
+301,6.019996,79.75148,6.689769,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,6930.616
+302,6.039996,79.65571,6.664475,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,6838.891
+303,6.059996,79.56003,6.639582,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,6749.089
+304,6.079996,79.46446,6.615083,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,6660.679
+305,6.099996,79.369,6.590969,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,6574.568
+306,6.119996,79.27364,6.567231,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,6490.223
+307,6.139996,79.17838,6.543861,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,6407.594
+308,6.159996,79.08322,6.52085,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,6326.64
+309,6.179996,78.98817,6.498191,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,6247.308
+310,6.199996,78.89321,6.475876,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,6169.56
+311,6.219996,78.79836,6.453897,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,6093.351
+312,6.239996,78.70358,6.432248,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,6018.642
+313,6.259996,78.60892,6.410922,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,5945.393
+314,6.279996,78.51435,6.389911,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,5873.564
+315,6.299996,78.41987,6.369209,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,5803.119
+316,6.319996,78.32548,6.348809,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,5734.025
+317,6.339996,78.23119,6.328706,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,5666.244
+318,6.359996,78.13699,6.308892,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,5599.744
+319,6.379996,78.04287,6.289363,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,5534.491
+320,6.399996,77.94884,6.270113,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,5470.457
+321,6.419996,77.8549,6.251134,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,5407.608
+322,6.439996,77.76105,6.232423,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,5345.917
+323,6.459996,77.66728,6.213974,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,5285.354
+324,6.479996,77.57361,6.195781,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,5225.894
+325,6.499996,77.48001,6.177838,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,5167.506
+326,6.519996,77.3865,6.160143,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,5109.813
+327,6.539996,77.29307,6.14269,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,5053.5
+328,6.559996,77.19971,6.125474,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,4998.188
+329,6.579996,77.10645,6.10849,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,4943.848
+330,6.599996,77.01327,6.091734,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,4890.46
+331,6.619996,76.92016,6.075202,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,4838.002
+332,6.639996,76.82713,6.058888,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,4786.452
+333,6.659996,76.73418,6.04279,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,4735.79
+334,6.679996,76.64131,6.026903,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,4685.992
+335,6.699996,76.54851,6.011223,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,4637.041
+336,6.719995,76.45579,5.995746,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,4588.918
+337,6.739995,76.36314,5.980468,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,4541.603
+338,6.759995,76.27058,5.965386,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,4495.079
+339,6.779995,76.17808,5.950496,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,4449.327
+340,6.799995,76.08566,5.935794,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,4404.33
+341,6.819995,75.9933,5.921278,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,4360.072
+342,6.839995,75.90103,5.906943,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,4316.536
+343,6.859995,75.80882,5.892787,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,4273.707
+344,6.879995,75.71668,5.878807,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,4231.569
+345,6.899995,75.62462,5.864998,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,4190.108
+346,6.919995,75.53262,5.851359,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,4149.308
+347,6.939995,75.44069,5.837885,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,4109.157
+348,6.959995,75.34883,5.824575,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,4069.639
+349,6.979995,75.25704,5.811425,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,4030.741
+350,6.999995,75.16531,5.798433,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,3992.451
+351,7.019995,75.07366,5.785596,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,3954.756
+352,7.039995,74.98207,5.772911,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,3917.644
+353,7.059995,74.89053,5.760375,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,3881.1
+354,7.079995,74.79908,5.747986,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,3845.117
+355,7.099995,74.70768,5.735742,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,3809.679
+356,7.119995,74.61635,5.723639,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,3774.779
+357,7.139995,74.52509,5.711677,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,3740.402
+358,7.159995,74.43388,5.699852,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,3706.541
+359,7.179995,74.34273,5.688162,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,3673.184
+360,7.199995,74.25165,5.676605,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,3640.321
+361,7.219995,74.16063,5.665178,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,3607.943
+362,7.239995,74.0649,5.84581,Accelerate,ReacquireDirectPath,direct,direct path clear,clear,False,0,Burn,0.999956,3576.051
+363,7.259995,73.96444,6.03104,Accelerate,ReacquireDirectPath,direct,direct path clear,clear,False,0,Burn,0.999952,3537.363
+364,7.279995,73.85926,6.220427,Accelerate,ReacquireDirectPath,direct,direct path clear,clear,False,0,Burn,0.999949,3501.481
+365,7.299995,73.74937,6.413575,Accelerate,ReacquireDirectPath,direct,direct path clear,clear,False,0,Burn,0.999943,3468.357
+366,7.319995,73.63474,6.61013,Accelerate,ReacquireDirectPath,direct,direct path clear,clear,False,0,Burn,0.999939,3437.79
+367,7.339995,73.5154,6.809772,Accelerate,ReacquireDirectPath,direct,direct path clear,clear,False,0,Burn,0.999935,3409.734
+368,7.359995,73.39134,7.012229,Accelerate,ReacquireDirectPath,direct,direct path clear,clear,False,0,Burn,0.999932,3384.037
+369,7.379995,73.26256,7.217244,Accelerate,ReacquireDirectPath,direct,direct path clear,clear,False,0,Burn,0.999996,3360.462
+370,7.399995,73.12905,7.42457,Accelerate,ReacquireDirectPath,direct,direct path clear,clear,False,0,Burn,0.999992,3339.318
+371,7.419995,72.99081,7.633999,Accelerate,ReacquireDirectPath,direct,direct path clear,clear,False,0,Burn,0.999987,3320.33
+372,7.439995,72.84786,7.845344,Accelerate,ReacquireDirectPath,direct,direct path clear,clear,False,0,Burn,0.999984,3303.373
+373,7.459995,72.70496,7.838152,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,3288.417
+374,7.479995,72.56213,7.831027,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,3265.826
+375,7.499995,72.41934,7.823969,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,3243.531
+376,7.519995,72.27661,7.816976,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,3221.527
+377,7.539995,72.13395,7.810047,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,3199.81
+378,7.559995,71.99133,7.803182,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,3178.374
+379,7.579995,71.84877,7.796379,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,3157.215
+380,7.599995,71.70627,7.789638,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,3136.329
+381,7.619995,71.56382,7.782957,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,3115.71
+382,7.639995,71.42143,7.776336,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,3095.354
+383,7.659995,71.27909,7.769774,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,3075.256
+384,7.679995,71.13681,7.763269,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,3055.414
+385,7.699995,70.99458,7.756822,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,3035.822
+386,7.719995,70.8524,7.750431,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,3016.476
+387,7.739995,70.71027,7.744095,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2997.374
+388,7.759995,70.56821,7.737814,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2978.51
+389,7.779995,70.42619,7.731586,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2959.88
+390,7.799995,70.28423,7.725412,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2941.481
+391,7.819995,70.14232,7.71929,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2923.31
+392,7.839995,70.00047,7.713219,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2905.363
+393,7.859995,69.85866,7.707199,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2887.636
+394,7.879995,69.7169,7.701229,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2870.125
+395,7.899995,69.5752,7.695308,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2852.827
+396,7.919995,69.43356,7.689436,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2835.741
+397,7.939995,69.29196,7.683611,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2818.861
+398,7.959995,69.15041,7.677834,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2802.186
+399,7.979995,69.00892,7.672103,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2785.71
+400,7.999995,68.86747,7.666419,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2769.432
+401,8.019995,68.72607,7.660779,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2753.349
+402,8.039994,68.58473,7.655184,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2737.457
+403,8.059995,68.44344,7.649632,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2721.754
+404,8.079994,68.3022,7.644125,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2706.238
+405,8.099995,68.161,7.63866,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2690.904
+406,8.119994,68.01986,7.633238,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2675.751
+407,8.139995,67.87877,7.627857,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2660.776
+408,8.159994,67.73772,7.622517,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2645.976
+409,8.179995,67.59673,7.617218,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2631.349
+410,8.199994,67.45579,7.611958,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2616.893
+411,8.219995,67.31489,7.606738,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2602.603
+412,8.239994,67.17404,7.601556,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2588.479
+413,8.259995,67.03324,7.596414,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2574.517
+414,8.279994,66.89249,7.591309,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2560.717
+415,8.299994,66.75179,7.586241,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2547.075
+416,8.319994,66.61113,7.58121,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2533.59
+417,8.339994,66.47053,7.576215,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2520.258
+418,8.359994,66.32997,7.571257,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2507.078
+419,8.379994,66.18945,7.566333,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2494.047
+420,8.399994,66.049,7.561445,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2481.165
+421,8.419994,65.90858,7.556591,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2468.427
+422,8.439994,65.76821,7.551771,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2455.832
+423,8.459994,65.62789,7.546984,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2443.38
+424,8.479994,65.48762,7.542231,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2431.068
+425,8.499994,65.34739,7.53751,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2418.892
+426,8.519994,65.20721,7.532821,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2406.853
+427,8.539994,65.06708,7.528164,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2394.786
+428,8.559995,64.92699,7.523539,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2383.014
+429,8.579994,64.78695,7.518945,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2371.372
+430,8.599995,64.64695,7.514381,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2359.858
+431,8.619994,64.507,7.509848,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2348.473
+432,8.639995,64.3671,7.505344,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2337.212
+433,8.659994,64.22724,7.50087,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2326.075
+434,8.679995,64.08743,7.496425,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2315.06
+435,8.699994,63.94767,7.492009,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2304.166
+436,8.719995,63.80795,7.487621,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2293.391
+437,8.739994,63.66827,7.483261,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2282.733
+438,8.759995,63.52864,7.478929,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2272.191
+439,8.779994,63.38905,7.474623,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2261.764
+440,8.799994,63.24952,7.470345,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2251.45
+441,8.819994,63.11002,7.466094,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2241.246
+442,8.839994,62.97057,7.461869,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2231.154
+443,8.859994,62.83117,7.457669,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2221.169
+444,8.879994,62.69181,7.453496,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2211.293
+445,8.899994,62.55249,7.449347,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2201.523
+446,8.919994,62.41322,7.445224,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2191.858
+447,8.939994,62.27399,7.441124,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2182.295
+448,8.959994,62.13481,7.43705,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2172.835
+449,8.979994,61.99567,7.433,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2163.476
+450,8.999994,61.85658,7.428973,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2154.217
+451,9.019994,61.71753,7.42497,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2145.056
+452,9.039994,61.57852,7.42099,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2135.993
+453,9.059994,61.43956,7.417033,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2127.025
+454,9.079994,61.30064,7.413098,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2118.154
+455,9.099994,61.16177,7.409186,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2109.376
+456,9.119994,61.02294,7.405296,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2100.692
+457,9.139994,60.88415,7.401428,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2092.098
+458,9.159994,60.74541,7.397582,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2083.595
+459,9.179994,60.60671,7.393756,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2075.182
+460,9.199994,60.46805,7.389952,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2066.858
+461,9.219994,60.32944,7.386168,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2058.622
+462,9.239994,60.19087,7.382405,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,2050.472
+463,9.259994,60.04756,7.604875,Accelerate,ReacquireDirectPath,direct,direct path clear,clear,False,0,Burn,0.999985,2042.407
+464,9.279994,59.89951,7.828222,Accelerate,ReacquireDirectPath,direct,direct path clear,clear,False,0,Burn,0.99998,2041.322
+465,9.299994,59.74673,8.052377,Accelerate,ReacquireDirectPath,direct,direct path clear,clear,False,0,Burn,0.999977,2040.377
+466,9.319994,59.58921,8.277272,Accelerate,ReacquireDirectPath,direct,direct path clear,clear,False,0,Burn,0.999975,2039.627
+467,9.339993,59.42695,8.502852,Accelerate,ReacquireDirectPath,direct,direct path clear,clear,False,0,Burn,0.99997,2039.099
+468,9.359994,59.25996,8.729063,Accelerate,ReacquireDirectPath,direct,direct path clear,clear,False,0,Burn,0.999967,2038.767
+469,9.379993,59.09295,8.72907,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1949.818
+470,9.399994,58.92593,8.729075,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1945.838
+471,9.419993,58.75888,8.729081,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1941.909
+472,9.439994,58.59182,8.729087,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1938.03
+473,9.459993,58.42475,8.729093,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1934.202
+474,9.479994,58.25766,8.729099,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1930.424
+475,9.499993,58.09055,8.729105,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1926.696
+476,9.519994,57.92343,8.729112,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1923.018
+477,9.539993,57.7563,8.729116,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1919.39
+478,9.559994,57.58915,8.729123,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1915.81
+479,9.579993,57.42198,8.729129,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1912.28
+480,9.599994,57.2548,8.729135,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1908.798
+481,9.619993,57.08761,8.72914,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1905.235
+482,9.639994,56.9204,8.729146,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1901.851
+483,9.659993,56.75317,8.729152,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1898.516
+484,9.679994,56.58594,8.729157,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1895.229
+485,9.699993,56.41869,8.729163,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1891.989
+486,9.719994,56.25143,8.729169,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1888.798
+487,9.739993,56.08415,8.729176,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1885.654
+488,9.759994,55.91686,8.72918,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1882.558
+489,9.779993,55.74956,8.729186,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1879.508
+490,9.799994,55.58225,8.729192,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1876.506
+491,9.819993,55.41492,8.729198,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1873.552
+492,9.839993,55.24759,8.729204,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1870.643
+493,9.859993,55.08024,8.729209,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1867.783
+494,9.879993,54.91288,8.729215,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1864.967
+495,9.899993,54.7455,8.72922,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1862.199
+496,9.919993,54.57812,8.729226,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1859.478
+497,9.939993,54.41072,8.729232,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1856.802
+498,9.959993,54.24332,8.729238,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1854.173
+499,9.979993,54.0759,8.729242,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1851.589
+500,9.999993,53.90847,8.729248,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1849.052
+501,10.01999,53.74104,8.729254,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1846.56
+502,10.03999,53.57359,8.729259,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1844.115
+503,10.05999,53.40613,8.729264,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1841.714
+504,10.07999,53.23866,8.72927,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1839.359
+505,10.09999,53.07119,8.729276,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1837.05
+506,10.11999,52.9037,8.729281,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1834.786
+507,10.13999,52.7362,8.729286,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1832.567
+508,10.15999,52.5687,8.729292,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1830.393
+509,10.17999,52.40118,8.729297,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1828.264
+510,10.19999,52.23366,8.729302,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1826.181
+511,10.21999,52.06613,8.729308,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1824.143
+512,10.23999,51.89859,8.729313,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1822.15
+513,10.25999,51.73105,8.729319,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1820.2
+514,10.27999,51.5635,8.729324,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1818.297
+515,10.29999,51.39594,8.729329,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1816.438
+516,10.31999,51.22837,8.729335,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1814.624
+517,10.33999,51.06079,8.729341,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1812.855
+518,10.35999,50.89321,8.729346,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1811.13
+519,10.37999,50.72562,8.729351,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1809.451
+520,10.39999,50.55802,8.729357,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1807.816
+521,10.41999,50.39041,8.729362,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1806.226
+522,10.43999,50.2228,8.729367,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1804.681
+523,10.45999,50.05519,8.729373,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1803.179
+524,10.47999,49.88756,8.729378,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1801.723
+525,10.49999,49.71993,8.729383,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1800.313
+526,10.51999,49.5523,8.729388,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1798.945
+527,10.53999,49.38466,8.729394,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1797.624
+528,10.55999,49.21701,8.729399,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1796.346
+529,10.57999,49.04936,8.729404,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1795.114
+530,10.59999,48.88171,8.729409,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1793.927
+531,10.61999,48.71405,8.729414,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1792.785
+532,10.63999,48.54638,8.72942,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1791.687
+533,10.65999,48.37871,8.729424,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1790.635
+534,10.67999,48.21104,8.729429,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1789.627
+535,10.69999,48.04336,8.729435,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1788.665
+536,10.71999,47.87568,8.72944,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1787.749
+537,10.73999,47.708,8.729445,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1786.877
+538,10.75999,47.54031,8.72945,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1786.05
+539,10.77999,47.37262,8.729455,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1785.269
+540,10.79999,47.20492,8.729461,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1784.534
+541,10.81999,47.03722,8.729465,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1783.844
+542,10.83999,46.86953,8.729471,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1783.2
+543,10.85999,46.70182,8.729476,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1782.602
+544,10.87999,46.53412,8.729481,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1782.049
+545,10.89999,46.36641,8.729486,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1781.543
+546,10.91999,46.1987,8.729491,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1781.083
+547,10.93999,46.03099,8.729497,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1780.669
+548,10.95999,45.86328,8.729502,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1780.303
+549,10.97999,45.69557,8.729506,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1779.981
+550,10.99999,45.52785,8.729512,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1779.708
+551,11.01999,45.36014,8.729517,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1779.481
+552,11.03999,45.19242,8.729522,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1779.301
+553,11.05999,45.0247,8.729527,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1779.168
+554,11.07999,44.85699,8.729532,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1779.083
+555,11.09999,44.68927,8.729537,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1779.045
+556,11.11999,44.52155,8.729542,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1779.055
+557,11.13999,44.35384,8.729548,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1779.112
+558,11.15999,44.18612,8.729552,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1779.219
+559,11.17999,44.01841,8.729557,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1779.373
+560,11.19999,43.85069,8.729562,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1779.576
+561,11.21999,43.68298,8.729568,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1779.828
+562,11.23999,43.51527,8.729572,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1780.13
+563,11.25999,43.34755,8.729578,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1780.481
+564,11.27999,43.17984,8.729583,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1780.881
+565,11.29999,43.01214,8.729588,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1781.331
+566,11.31999,42.84443,8.729593,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1781.831
+567,11.33999,42.67673,8.729598,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1782.381
+568,11.35999,42.50903,8.729603,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1782.981
+569,11.37999,42.34133,8.729609,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1783.633
+570,11.39999,42.17363,8.729613,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1784.336
+571,11.41999,42.00594,8.729619,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1785.091
+572,11.43999,41.83825,8.729624,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1785.897
+573,11.45999,41.67057,8.729629,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1786.754
+574,11.47999,41.50289,8.729634,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1787.665
+575,11.49999,41.33521,8.729639,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1788.629
+576,11.51999,41.16754,8.729645,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1789.645
+577,11.53999,40.99987,8.72965,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1790.716
+578,11.55999,40.83221,8.729655,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1791.839
+579,11.57999,40.66454,8.72966,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1793.016
+580,11.59999,40.49689,8.729666,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1794.25
+581,11.61999,40.32924,8.729671,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1795.537
+582,11.63999,40.1616,8.729675,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1796.88
+583,11.65999,39.99396,8.729681,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1798.278
+584,11.67999,39.82633,8.729687,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1799.734
+585,11.69999,39.6587,8.729692,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1801.245
+586,11.71999,39.49108,8.729697,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1802.815
+587,11.73999,39.32347,8.729703,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1804.441
+588,11.75999,39.15586,8.729709,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1806.124
+589,11.77999,38.98826,8.729713,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1807.867
+590,11.79999,38.82067,8.729718,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1809.669
+591,11.81999,38.65309,8.729724,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1811.53
+592,11.83999,38.48551,8.72973,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1813.451
+593,11.85999,38.31794,8.729735,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1815.433
+594,11.87999,38.15038,8.729741,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1817.476
+595,11.89999,37.98283,8.729746,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1819.58
+596,11.91999,37.81529,8.729752,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1821.747
+597,11.93999,37.64776,8.729757,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1823.854
+598,11.95999,37.48024,8.729762,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1826.146
+599,11.97999,37.31272,8.729768,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1828.502
+600,11.99999,37.14521,8.729774,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1830.923
+601,12.01999,36.97773,8.729779,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1833.41
+602,12.03999,36.81024,8.729784,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1835.961
+603,12.05999,36.64277,8.72979,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1838.58
+604,12.07999,36.47531,8.729795,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1841.265
+605,12.09999,36.30787,8.729801,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1844.018
+606,12.11999,36.14043,8.729807,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1846.84
+607,12.13999,35.973,8.729813,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1849.732
+608,12.15999,35.80559,8.729818,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1852.692
+609,12.17999,35.63819,8.729823,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1855.724
+610,12.19999,35.47081,8.729829,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1858.827
+611,12.21999,35.30343,8.729836,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1862.003
+612,12.23999,35.13607,8.72984,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1865.254
+613,12.25999,34.96872,8.729846,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1868.576
+614,12.27999,34.80138,8.729852,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1871.973
+615,12.29999,34.63407,8.729857,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1875.447
+616,12.31999,34.46677,8.729864,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1878.998
+617,12.33999,34.29948,8.72987,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1882.625
+618,12.35999,34.13221,8.729876,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1886.331
+619,12.37999,33.96495,8.729882,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1890.117
+620,12.39999,33.79771,8.729888,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1893.984
+621,12.41999,33.63048,8.729894,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1897.931
+622,12.43999,33.46328,8.729899,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1901.962
+623,12.45999,33.29609,8.729905,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1906.075
+624,12.47999,33.12891,8.729912,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1910.273
+625,12.49999,32.96175,8.729918,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1914.556
+626,12.51999,32.79462,8.729923,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1918.927
+627,12.53999,32.6275,8.729929,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1923.386
+628,12.55999,32.4604,8.729936,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1927.931
+629,12.57999,32.29332,8.729941,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1932.569
+630,12.59999,32.12626,8.729947,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1937.298
+631,12.61999,31.95922,8.729954,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1942.121
+632,12.63999,31.7922,8.729959,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1947.037
+633,12.65999,31.6252,8.729966,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1952.048
+634,12.67999,31.45822,8.729972,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1957.155
+635,12.69999,31.29127,8.729979,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1962.361
+636,12.71999,31.12434,8.729984,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1967.666
+637,12.73999,30.95743,8.729991,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1973.071
+638,12.75999,30.79054,8.729997,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1978.58
+639,12.77999,30.62368,8.730003,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1984.192
+640,12.79999,30.45684,8.730009,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1989.91
+641,12.81999,30.29002,8.730016,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1995.734
+642,12.83999,30.12323,8.730022,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2001.67
+643,12.85999,29.95647,8.730029,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2007.714
+644,12.87999,29.78973,8.730035,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2013.87
+645,12.89999,29.62301,8.730042,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2020.14
+646,12.91999,29.45633,8.730048,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2026.527
+647,12.93999,29.28967,8.730055,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2033.029
+648,12.95999,29.12303,8.730062,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2039.654
+649,12.97999,28.95643,8.730069,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2046.398
+650,12.99999,28.78986,8.730077,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2053.266
+651,13.01999,28.62332,8.730083,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2060.259
+652,13.03999,28.4568,8.73009,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2067.379
+653,13.05999,28.29032,8.730097,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2074.628
+654,13.07999,28.12387,8.730103,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2082.009
+655,13.09999,27.95744,8.73011,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2089.524
+656,13.11999,27.79106,8.730118,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2097.175
+657,13.13999,27.6247,8.730125,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2104.963
+658,13.15999,27.45837,8.730133,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2112.894
+659,13.17999,27.29209,8.73014,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2120.971
+660,13.19999,27.12584,8.730147,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2129.19
+661,13.21999,26.95962,8.730155,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2137.558
+662,13.23999,26.79343,8.730163,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2146.079
+663,13.25999,26.62729,8.73017,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2154.754
+664,13.27999,26.46118,8.730178,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2163.584
+665,13.29999,26.29511,8.730186,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2172.575
+666,13.31999,26.12908,8.730193,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2181.728
+667,13.33999,25.96309,8.730201,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2191.046
+668,13.35999,25.79714,8.730209,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2200.535
+669,13.37999,25.63123,8.730217,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2210.192
+670,13.39999,25.46537,8.730225,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2220.026
+671,13.41999,25.29954,8.730233,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2230.038
+672,13.43999,25.13376,8.730241,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2240.234
+673,13.45999,24.96803,8.730249,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2250.615
+674,13.47999,24.80234,8.730258,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2261.183
+675,13.49999,24.6367,8.730266,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2271.945
+676,13.51999,24.47111,8.730274,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2282.904
+677,13.53999,24.30556,8.730283,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2294.063
+678,13.55999,24.14006,8.730292,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2305.429
+679,13.57999,23.97461,8.7303,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2317.004
+680,13.59999,23.80921,8.730309,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2328.791
+681,13.61999,23.64387,8.730318,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2340.797
+682,13.63999,23.47857,8.730327,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2353.024
+683,13.65999,23.31333,8.730336,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2365.481
+684,13.67999,23.14814,8.730345,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2378.169
+685,13.69999,22.98301,8.730354,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2391.094
+686,13.71999,22.81794,8.730364,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2404.261
+687,13.73999,22.65293,8.730373,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2417.675
+688,13.75999,22.48797,8.730383,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2431.34
+689,13.77999,22.32308,8.730392,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2445.266
+690,13.79999,22.15825,8.730402,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2459.454
+691,13.81999,21.99349,8.730412,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2473.912
+692,13.83999,21.82878,8.730422,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2488.645
+693,13.85999,21.66415,8.730433,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2503.659
+694,13.87999,21.49958,8.730442,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2518.962
+695,13.89999,21.33507,8.730453,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2534.562
+696,13.91999,21.17064,8.730464,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2550.466
+697,13.93999,21.00628,8.730474,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2566.677
+698,13.95999,20.842,8.730485,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2583.203
+699,13.97999,20.67779,8.730496,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2600.052
+700,13.99999,20.51365,8.730507,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2617.233
+701,14.01999,20.34959,8.730518,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2634.755
+702,14.03999,20.18561,8.73053,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2652.626
+703,14.05999,20.02171,8.730541,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2670.851
+704,14.07999,19.85789,8.730553,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2689.443
+705,14.09999,19.69416,8.730565,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2708.408
+706,14.11999,19.53051,8.730577,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2727.757
+707,14.13999,19.36696,8.730589,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2747.498
+708,14.15999,19.20349,8.730601,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2767.642
+709,14.17999,19.04012,8.730614,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2788.2
+710,14.19999,18.87684,8.730627,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2809.182
+711,14.21999,18.71365,8.730639,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2830.597
+712,14.23999,18.55057,8.730653,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2852.458
+713,14.25999,18.38758,8.730667,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2874.778
+714,14.27999,18.22471,8.73068,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2897.567
+715,14.29999,18.06194,8.730694,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2920.836
+716,14.31999,17.89927,8.730708,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2944.6
+717,14.33999,17.73672,8.730722,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2968.873
+718,14.35999,17.57428,8.730738,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2993.67
+719,14.37999,17.41195,8.730752,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3019
+720,14.39999,17.24975,8.730767,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3044.881
+721,14.41999,17.08766,8.730782,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3071.329
+722,14.43999,16.92571,8.730798,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3098.359
+723,14.45999,16.76388,8.730813,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3125.987
+724,14.47999,16.60218,8.730829,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3154.229
+725,14.49999,16.44062,8.730845,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3183.103
+726,14.51999,16.27919,8.730863,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3212.63
+727,14.53999,16.11791,8.730879,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3242.825
+728,14.55999,15.95677,8.730896,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3273.708
+729,14.57999,15.79578,8.730914,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3305.302
+730,14.59999,15.63494,8.730932,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3337.624
+731,14.61999,15.47426,8.73095,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3370.7
+732,14.63999,15.31374,8.730969,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3404.548
+733,14.65999,15.15339,8.730989,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3439.19
+734,14.67999,14.99321,8.731008,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3474.649
+735,14.69999,14.8332,8.731029,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3510.954
+736,14.71999,14.67337,8.731049,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3548.132
+737,14.73999,14.51373,8.73107,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3586.205
+738,14.75999,14.35428,8.731091,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3625.203
+739,14.77999,14.19502,8.731112,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3665.152
+740,14.79999,14.03597,8.731134,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3706.08
+741,14.81999,13.87712,8.731156,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3748.024
+742,14.83999,13.71848,8.73118,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3791.009
+743,14.85999,13.56007,8.731204,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3835.074
+744,14.87999,13.40188,8.731228,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3880.25
+745,14.89999,13.24392,8.731253,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3926.572
+746,14.91999,13.0862,8.731278,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3974.073
+747,14.93999,12.92874,8.731304,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,4022.799
+748,14.95999,12.77153,8.731331,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,4072.776
+749,14.97999,12.61458,8.731359,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,4124.052
+750,14.99999,12.4579,8.731387,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,4176.667
+751,15.01999,12.30151,8.731416,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,4230.666
+752,15.03999,12.1454,8.731445,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,4286.09
+753,15.05999,11.98959,8.731476,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,4342.986
+754,15.07999,11.8341,8.731507,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,4401.404
+755,15.09999,11.67892,8.73154,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,4461.388
+756,15.11999,11.52408,8.731572,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,4522.985
+757,15.13999,11.36958,8.731606,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,4586.249
+758,15.15999,11.21544,8.731642,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,4651.23
+759,15.17999,11.06166,8.731678,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,4717.67
+760,15.19999,10.90827,8.731715,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,4786.245
+761,15.21999,10.75527,8.731753,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,4856.705
+762,15.23999,10.60269,8.731792,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,4929.101
+763,15.25999,10.45053,8.731833,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,5003.496
+764,15.27999,10.29881,8.731874,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,5079.941
+765,15.29999,10.14755,8.731917,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,5158.498
+766,15.31999,9.996773,8.731961,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,5239.219
+767,15.33999,9.846488,8.732007,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,5322.171
+768,15.35999,9.69672,8.732055,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,5407.412
+769,15.37999,9.547493,8.732103,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,5494.996
+770,15.39999,9.398823,8.732154,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,5584.963
+771,15.41999,9.250736,8.732206,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,5677.384
+772,15.43999,9.103258,8.73226,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,5772.305
+773,15.45999,8.956415,8.732315,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,5869.765
+774,15.47999,8.810236,8.732373,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,5969.804
+775,15.49999,8.664747,8.732432,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,6072.457
+776,15.51999,8.519985,8.732494,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,6177.75
+777,15.53999,8.375978,8.732558,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,6285.685
+778,15.55999,8.232763,8.732624,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,6396.281
+779,15.57999,8.090376,8.732693,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,6509.52
+780,15.59999,7.948859,8.732763,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,6625.384
+781,15.61999,7.808251,8.732837,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,6743.808
+782,15.63999,7.668599,8.732913,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,6864.735
+783,15.65999,7.52995,8.732992,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,6988.058
+784,15.67999,7.392354,8.733073,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,7113.646
+785,15.69999,7.255866,8.733158,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,7241.339
+786,15.71999,7.120545,8.733246,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,7370.907
+787,15.73999,6.98645,8.733337,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,7502.077
+788,15.75999,6.853648,8.733431,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,7634.527
+789,15.77999,6.722209,8.733529,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,7767.858
+790,15.79999,6.592209,8.733629,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,7901.583
+791,15.81999,6.463727,8.733734,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,8035.123
+792,15.83999,6.33685,8.733842,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,8167.792
+793,15.85999,6.211675,8.733951,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,8213.264
+794,15.87999,6.088312,8.734059,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,8218.566
+795,15.89999,5.966874,8.734169,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,8216.781
+796,15.91999,5.847487,8.734278,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,8206.854
+797,15.93999,5.730284,8.734385,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,8187.056
+798,15.95999,5.615407,8.734493,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,8157.198
+799,15.97999,5.503008,8.7346,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,8115.289
+800,15.99999,5.39325,8.734705,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,8059.752
+801,16.01999,5.286307,8.734808,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,7988.875
+802,16.03999,5.182363,8.734908,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,7900.786
+803,16.05999,5.081613,8.735006,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,7793.495
+804,16.07999,4.984266,8.735102,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,7664.864
+805,16.09999,4.890542,8.735192,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,7512.649
+806,16.11999,4.800671,8.735279,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,7334.521
+807,16.13999,4.714894,8.735361,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,7128.091
+808,16.15999,4.633464,8.735438,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,6890.989
+809,16.17999,4.556642,8.735509,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,6620.905
+810,16.19999,4.484694,8.735574,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,6315.655
+811,16.21999,4.417897,8.735631,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,5973.323
+812,16.23999,4.356524,8.735682,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,5592.318
+813,16.25999,4.30085,8.735724,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,5171.534
+814,16.27999,4.251151,8.735761,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,4710.464
+815,16.29999,4.207685,8.735789,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,4209.306
+816,16.31999,4.170709,8.735811,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3669.139
+817,16.33999,4.140456,8.735826,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3091.953
+818,16.35999,4.11714,8.735837,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2480.763
+819,16.37999,4.101065,8.649591,FinalApproach,FinalApproach,direct,direct path clear,clear,False,0,FinalApproach,0,16335.45
+820,16.39999,4.092175,8.563547,FinalApproach,FinalApproach,direct,direct path clear,clear,False,0,FinalApproach,0,16235.48
+821,16.41999,4.090372,8.477994,FinalApproach,FinalApproach,direct,direct path clear,clear,False,0,FinalApproach,0,16108.04
+822,16.43999,4.095525,8.393223,FinalApproach,FinalApproach,direct,direct path clear,clear,False,0,FinalApproach,0,15953.98
+823,16.45999,4.107468,8.309512,FinalApproach,FinalApproach,direct,direct path clear,clear,False,0,FinalApproach,0,15774.57
+824,16.47999,4.126009,8.227123,FinalApproach,FinalApproach,direct,direct path clear,clear,False,0,FinalApproach,0,15571.41
+825,16.49999,4.150932,8.146301,FinalApproach,FinalApproach,direct,direct path clear,clear,False,0,FinalApproach,0,15346.42
+826,16.51999,4.182,8.067264,FinalApproach,FinalApproach,direct,direct path clear,clear,False,0,FinalApproach,0,15101.73
+827,16.53999,4.218956,7.990204,FinalApproach,FinalApproach,direct,direct path clear,clear,False,0,FinalApproach,0,14839.65
+828,16.55999,4.261526,7.915287,FinalApproach,FinalApproach,direct,direct path clear,clear,False,0,FinalApproach,0,14562.58
+829,16.57999,4.309443,7.842645,FinalApproach,FinalApproach,direct,direct path clear,clear,False,0,FinalApproach,0,14272.93
+830,16.59999,4.362426,7.772382,FinalApproach,FinalApproach,direct,direct path clear,clear,False,0,FinalApproach,0,13973.08
+831,16.61999,4.420199,7.704585,FinalApproach,FinalApproach,direct,direct path clear,clear,False,0,FinalApproach,0,13664.41
+832,16.63999,4.482477,7.639302,FinalApproach,FinalApproach,direct,direct path clear,clear,False,0,FinalApproach,0,13350.96
+833,16.65999,4.548994,7.576559,FinalApproach,FinalApproach,direct,direct path clear,clear,False,0,FinalApproach,0,13033.8
+834,16.67999,4.619492,7.516364,FinalApproach,FinalApproach,direct,direct path clear,clear,False,0,FinalApproach,0,12714.78
+835,16.69999,4.693707,7.458704,FinalApproach,FinalApproach,direct,direct path clear,clear,False,0,FinalApproach,0,12395.54
+836,16.71999,4.771396,7.403548,FinalApproach,FinalApproach,direct,direct path clear,clear,False,0,FinalApproach,0,12077.55
+837,16.73999,4.852333,7.350854,FinalApproach,FinalApproach,direct,direct path clear,clear,False,0,FinalApproach,0,11762.09
+838,16.75999,4.936289,7.300566,FinalApproach,FinalApproach,direct,direct path clear,clear,False,0,FinalApproach,0,11450.24
+839,16.77999,5.023063,7.253245,FinalApproach,FinalApproach,direct,direct path clear,clear,False,0,FinalApproach,0,10997.14
+840,16.79999,5.112456,7.209371,FinalApproach,FinalApproach,direct,direct path clear,clear,False,0,FinalApproach,0,10411.88
+841,16.81999,5.204284,7.168703,FinalApproach,FinalApproach,direct,direct path clear,clear,False,0,FinalApproach,0,9858.849
+842,16.83999,5.295167,6.891886,Brake,Brake,direct,direct path clear,clear,False,0,Brake,1,9335.944
+843,16.85999,5.384759,6.620049,Brake,Brake,direct,direct path clear,clear,False,0,Brake,1,8273.65
+844,16.87999,5.472755,6.352557,Brake,Brake,direct,direct path clear,clear,False,0,Brake,1,7325.034
+845,16.89999,5.559083,6.103016,Brake,Brake,direct,direct path clear,clear,False,0,Brake,0.940803,6477.552
+846,16.91999,5.64371,5.870969,Brake,Brake,direct,direct path clear,clear,False,0,Brake,0.881104,5746.249
+847,16.93999,5.729763,5.871003,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3713.401
+848,16.95999,5.817171,5.871035,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3635.698
+849,16.97999,5.905867,5.871065,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3555.543
+850,16.99999,5.995786,5.871094,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3473.588
+851,17.01999,6.086867,5.871122,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3390.415
+852,17.03999,6.179051,5.871148,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3306.54
+853,17.05999,6.272289,5.871173,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3222.416
+854,17.07999,6.366521,5.871197,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3138.437
+855,17.09999,6.461704,5.871219,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,3054.739
+856,17.11999,6.557789,5.87124,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2972.031
+857,17.13999,6.654731,5.87126,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2890.352
+858,17.15999,6.752493,5.871279,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2809.907
+859,17.17999,6.851026,5.871297,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2730.872
+860,17.19999,6.950298,5.871315,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2653.385
+861,17.21999,7.050271,5.87133,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2577.561
+862,17.23999,7.150909,5.871345,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2503.486
+863,17.25999,7.252186,5.871359,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2431.229
+864,17.27999,7.354067,5.871373,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2360.835
+865,17.29999,7.456523,5.871385,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2292.336
+866,17.31999,7.55953,5.871397,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2225.749
+867,17.33999,7.663061,5.871408,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2161.079
+868,17.35999,7.767087,5.871419,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2098.319
+869,17.37999,7.871589,5.871429,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,2037.456
+870,17.39999,7.976544,5.871439,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1978.467
+871,17.41999,8.081933,5.871448,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1921.326
+872,17.43999,8.187735,5.871456,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1866
+873,17.45999,8.293932,5.871464,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1812.452
+874,17.47999,8.400506,5.871471,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1760.643
+875,17.49999,8.507442,5.871478,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1710.529
+876,17.51999,8.614721,5.871485,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1662.068
+877,17.53999,8.722331,5.871491,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1615.213
+878,17.55999,8.830259,5.871497,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1569.918
+879,17.57999,8.938491,5.871503,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1526.138
+880,17.59999,9.047006,5.871508,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1483.824
+881,17.61999,9.155804,5.871512,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1442.929
+882,17.63999,9.264868,5.871517,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1403.409
+883,17.65999,9.374183,5.871521,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1365.217
+884,17.67999,9.483747,5.871526,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1328.307
+885,17.69999,9.593546,5.87153,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1292.636
+886,17.71999,9.703567,5.871533,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1258.161
+887,17.73999,9.813807,5.871537,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1224.837
+888,17.75999,9.924255,5.871541,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1192.626
+889,17.77999,10.0349,5.871544,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1161.488
+890,17.79999,10.14574,5.871547,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1131.381
+891,17.81999,10.25676,5.87155,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1102.269
+892,17.83999,10.36796,5.871552,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1074.117
+893,17.85999,10.47933,5.871555,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1046.888
+894,17.87999,10.59087,5.871558,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,1020.55
+895,17.89999,10.70256,5.87156,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,995.0684
+896,17.91999,10.81441,5.871562,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,970.4117
+897,17.93999,10.9264,5.871565,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,946.5501
+898,17.95999,11.03854,5.871567,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,923.453
+899,17.97999,11.15082,5.871569,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,901.0938
+900,17.99999,11.26322,5.871571,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,879.4432
+901,18.01999,11.37576,5.871572,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,858.4758
+902,18.03999,11.48842,5.871574,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,838.1675
+903,18.05999,11.60119,5.871576,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,818.4932
+904,18.07999,11.71408,5.871577,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,799.4285
+905,18.09999,11.82708,5.871579,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,780.9524
+906,18.11999,11.94019,5.87158,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,763.0432
+907,18.13999,12.0534,5.871582,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,745.6802
+908,18.15999,12.16672,5.871583,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,728.8437
+909,18.17999,12.28013,5.871584,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,712.5139
+910,18.19999,12.39363,5.871585,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,696.6739
+911,18.21999,12.50723,5.871586,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,681.3051
+912,18.23999,12.62091,5.871587,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,666.3901
+913,18.25999,12.73468,5.871588,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,651.9145
+914,18.27999,12.84853,5.871589,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,637.8604
+915,18.29999,12.96245,5.87159,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,624.2139
+916,18.31999,13.07646,5.871591,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,610.961
+917,18.33999,13.19054,5.871592,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,598.0875
+918,18.35999,13.30469,5.871593,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,585.5805
+919,18.37999,13.41892,5.871593,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,573.4279
+920,18.39999,13.53321,5.871594,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,561.6166
+921,18.41999,13.64758,5.871595,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,550.1345
+922,18.43999,13.762,5.871596,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,538.9717
+923,18.45999,13.87649,5.871596,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,528.116
+924,18.47999,13.99104,5.871597,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,517.558
+925,18.49999,14.10565,5.871597,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,507.2872
+926,18.51999,14.22032,5.871598,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,497.2941
+927,18.53999,14.33504,5.871599,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,487.5691
+928,18.55999,14.44981,5.871599,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,478.1032
+929,18.57999,14.56465,5.8716,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,468.8891
+930,18.59999,14.67952,5.8716,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,459.9174
+931,18.61999,14.79445,5.871601,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,451.1797
+932,18.63999,14.90943,5.871601,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,442.6696
+933,18.65999,15.02446,5.871602,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,434.3799
+934,18.67999,15.13953,5.871602,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,426.3024
+935,18.69999,15.25465,5.871602,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,418.4319
+936,18.71999,15.3698,5.871603,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,410.7599
+937,18.73999,15.48501,5.871603,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,403.2813
+938,18.75999,15.60025,5.871603,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,395.99
+939,18.77999,15.71554,5.871603,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,388.8801
+940,18.79999,15.83086,5.871604,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,381.9458
+941,18.81999,15.94622,5.871604,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,375.1815
+942,18.83999,16.06162,5.871604,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,368.5822
+943,18.85999,16.17705,5.871605,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,362.1434
+944,18.87999,16.29253,5.871605,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,355.8594
+945,18.89999,16.40803,5.871605,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,349.7259
+946,18.91999,16.52357,5.871606,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,343.7385
+947,18.93999,16.63914,5.871606,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,337.8923
+948,18.95999,16.75474,5.871606,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,332.1837
+949,18.97999,16.87038,5.871606,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,326.6088
+950,18.99999,16.98605,5.871607,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,321.1635
+951,19.01999,17.10174,5.871607,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,315.8434
+952,19.03999,17.21358,5.673885,Brake,Brake,direct,direct path clear,clear,False,0,Brake,0.825743,315.0037
+953,19.05999,17.32545,5.673885,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,283.4822
+954,19.07999,17.43367,5.487507,Brake,Brake,direct,direct path clear,clear,False,0,Brake,0.778441,282.7249
+955,19.09999,17.53847,5.311816,Brake,Brake,direct,direct path clear,clear,False,0,Brake,0.733853,258.532
+956,19.11999,17.64328,5.311817,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,234.0895
+957,19.13999,17.74486,5.146202,Brake,Brake,direct,direct path clear,clear,False,0,Brake,0.691822,233.4971
+958,19.15999,17.84645,5.146202,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,212.0847
+959,19.17999,17.94499,4.990083,Brake,Brake,direct,direct path clear,clear,False,0,Brake,0.652201,211.4911
+960,19.19999,18.04065,4.842912,Brake,Brake,direct,direct path clear,clear,False,0,Brake,0.614852,194.8212
+961,19.21999,18.13632,4.842912,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,178.0109
+962,19.23999,18.22928,4.704177,Brake,Brake,direct,direct path clear,clear,False,0,Brake,0.579644,177.5275
+963,19.25999,18.32225,4.704177,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,162.6929
+964,19.27999,18.41265,4.573393,Brake,Brake,direct,direct path clear,clear,False,0,Brake,0.546454,162.2389
+965,19.29999,18.50064,4.450102,Brake,Brake,direct,direct path clear,clear,False,0,Brake,0.515166,150.5067
+966,19.31999,18.58864,4.450102,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,138.6826
+967,19.33999,18.67422,4.327421,Brake,Brake,direct,direct path clear,clear,False,0,Brake,0.512662,138.292
+968,19.35999,18.75735,4.201827,Brake,Brake,direct,direct path clear,clear,False,0,Brake,0.524889,128.403
+969,19.37999,18.84048,4.201827,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,117.9656
+970,19.39999,18.92103,4.070563,Brake,Brake,direct,direct path clear,clear,False,0,Brake,0.54864,117.5936
+971,19.41999,19.00159,4.070563,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,107.5758
+972,19.43999,19.07946,3.933806,Brake,Brake,direct,direct path clear,clear,False,0,Brake,0.571656,107.2156
+973,19.45999,19.15734,3.933806,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,97.63985
+974,19.47999,19.2324,3.791341,Brake,Brake,direct,direct path clear,clear,False,0,Brake,0.595454,97.67222
+975,19.49999,19.30748,3.791341,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,88.14106
+976,19.51999,19.38257,3.791341,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,87.31302
+977,19.53999,19.45466,3.639416,Brake,Brake,direct,direct path clear,clear,False,0,Brake,0.635054,87.33195
+978,19.55999,19.52675,3.639416,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,78.1865
+979,19.57999,19.59572,3.480955,Brake,Brake,direct,direct path clear,clear,False,0,Brake,0.662423,78.20128
+980,19.59999,19.6647,3.480955,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,69.49145
+981,19.61999,19.73043,3.316362,Brake,Brake,direct,direct path clear,clear,False,0,Brake,0.688101,69.4991
+982,19.63999,19.79617,3.316362,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,61.25545
+983,19.65999,19.86191,3.316362,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,60.76537
+984,19.67999,19.92424,3.143987,Brake,Brake,direct,direct path clear,clear,False,0,Brake,0.720676,60.77091
+985,19.69999,19.98658,3.143987,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,53.00782
+986,19.71999,20.04892,3.143987,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,52.60998
+987,19.73999,20.10771,2.964415,Brake,Brake,direct,direct path clear,clear,False,0,Brake,0.750801,52.60474
+988,19.75999,20.16651,2.964415,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,45.36206
+989,19.77999,20.22531,2.964415,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,45.0442
+990,19.79999,20.28043,2.778231,Brake,Brake,direct,direct path clear,clear,False,0,Brake,0.77848,45.0361
+991,19.81999,20.33555,2.778231,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,38.32971
+992,19.83999,20.39067,2.778231,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,38.08035
+993,19.85999,20.4458,2.778231,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,37.83328
+994,19.87999,20.49709,2.584404,Brake,Brake,direct,direct path clear,clear,False,0,Brake,0.810466,37.79612
+995,19.89999,20.54838,2.584383,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,31.92056
+996,19.91999,20.59967,2.584362,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,31.72759
+997,19.93999,20.64703,2.3851,Brake,Brake,direct,direct path clear,clear,False,0,Brake,0.83322,31.43659
+998,19.95999,20.69438,2.385083,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,26.08635
+999,19.97999,20.74173,2.385066,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,25.94214
+1000,19.99999,20.78908,2.38505,FlipForBrake,Brake,direct,direct path clear,clear,False,0,Brake,0,25.79906
+1001,20.01999,20.83237,2.179589,Brake,Brake,direct,direct path clear,clear,False,0,Brake,0.859161,25.55597
+1002,20.03999,20.87566,2.179576,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,20.74603
+1003,20.05999,20.91895,2.179563,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,20.64235
+1004,20.07999,20.96223,2.179551,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,20.53943
+1005,20.09999,21.00553,2.179538,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,20.43722
+1006,20.11999,21.04882,2.179525,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,20.3358
+1007,20.13999,21.09212,2.179513,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,20.23507
+1008,20.15999,21.13541,2.1795,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,20.13503
+1009,20.17999,21.17871,2.179488,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,20.03571
+1010,20.19999,21.22201,2.179476,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,19.93705
+1011,20.21999,21.2653,2.179463,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,19.8391
+1012,20.23999,21.3086,2.179451,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,19.74182
+1013,20.25999,21.3519,2.179439,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,19.64519
+1014,20.27999,21.39521,2.179427,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,19.5493
+1015,20.29999,21.43851,2.179415,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,19.45407
+1016,20.31999,21.48182,2.179404,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,19.35947
+1017,20.33999,21.52513,2.179392,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,19.26554
+1018,20.35999,21.56843,2.179381,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,19.17225
+1019,20.37999,21.61174,2.179369,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,19.07958
+1020,20.39999,21.65504,2.179358,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,18.98755
+1021,20.41999,21.69836,2.179347,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,18.89615
+1022,20.43999,21.74167,2.179335,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,18.80543
+1023,20.45999,21.78499,2.179324,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,18.71533
+1024,20.47999,21.8283,2.179313,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,18.62581
+1025,20.49999,21.87162,2.179302,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,18.53692
+1026,20.51999,21.91493,2.179291,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,18.4486
+1027,20.53999,21.95825,2.17928,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,18.3609
+1028,20.55999,22.00156,2.17927,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,18.27377
+1029,20.57999,22.04488,2.179259,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,18.18723
+1030,20.59999,22.0882,2.179248,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,18.10125
+1031,20.61999,22.13153,2.179238,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,18.01589
+1032,20.63999,22.17485,2.179227,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,17.93112
+1033,20.65999,22.21817,2.179217,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,17.8469
+1034,20.67999,22.2615,2.179207,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,17.76326
+1035,20.69999,22.30482,2.179196,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,17.68015
+1036,20.71999,22.34814,2.179186,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,17.59757
+1037,20.73999,22.39147,2.179176,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,17.51557
+1038,20.75999,22.43479,2.179166,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,17.4341
+1039,20.77999,22.47812,2.179156,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,17.35315
+1040,20.79999,22.52146,2.179146,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,17.27279
+1041,20.81999,22.56479,2.179136,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,17.19294
+1042,20.83999,22.60812,2.179127,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,17.11362
+1043,20.85999,22.65145,2.179117,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,17.03481
+1044,20.87999,22.69479,2.179107,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,16.95653
+1045,20.89999,22.73812,2.179098,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,0,Align,0,16.87873
+1046,20.91999,22.78145,2.179088,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,1,Burn,0,16.87873
+1047,20.93999,22.82479,2.179079,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,2,Burn,0,16.87873
+1048,20.95999,22.86813,2.179069,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,3,Burn,0,16.87873
+1049,20.97999,22.91147,2.17906,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,4,Burn,0,16.87873
+1050,20.99999,22.95481,2.17905,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,5,Burn,0,16.87873
+1051,21.01999,22.99815,2.17904,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,6,Burn,0,16.87873
+1052,21.03999,23.04149,2.179031,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,7,Burn,0,16.87873
+1053,21.05999,23.08483,2.179021,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,8,Burn,0,16.87873
+1054,21.07999,23.12818,2.179012,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,9,Burn,0,16.87873
+1055,21.09999,23.17152,2.179002,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,10,Burn,0,16.87873
+1056,21.11999,23.21486,2.178993,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,11,Burn,0,16.87873
+1057,21.13999,23.25821,2.178983,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,12,Burn,0,16.87873
+1058,21.15999,23.30156,2.178974,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,13,Burn,0,16.87873
+1059,21.17999,23.34491,2.178964,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,14,Burn,0,16.87873
+1060,21.19999,23.38825,2.178955,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,15,Burn,0,16.87873
+1061,21.21999,23.4316,2.178945,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Burn,0,16.87873
+1062,21.23999,23.47495,2.178936,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,15.62317
+1063,21.25998,23.5183,2.178928,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,15.55394
+1064,21.27999,23.56165,2.17892,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,15.48515
+1065,21.29999,23.605,2.178911,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,15.41678
+1066,21.31999,23.64835,2.178903,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,15.34884
+1067,21.33998,23.69171,2.178895,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,15.28132
+1068,21.35999,23.73507,2.178887,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,15.21424
+1069,21.37999,23.77843,2.178879,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,15.1476
+1070,21.39999,23.82178,2.178871,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,15.08136
+1071,21.41998,23.86514,2.178863,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,15.01554
+1072,21.43999,23.9085,2.178854,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,14.95011
+1073,21.45999,23.95185,2.178847,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,14.88509
+1074,21.47999,23.99521,2.178839,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,14.82048
+1075,21.49998,24.03857,2.178831,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,14.75624
+1076,21.51999,24.08193,2.178823,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,14.69241
+1077,21.53999,24.12529,2.178815,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,14.62898
+1078,21.55999,24.16866,2.178808,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,14.56597
+1079,21.57998,24.21202,2.1788,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,14.50333
+1080,21.59999,24.25539,2.178793,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,14.44106
+1081,21.61999,24.29876,2.178785,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,14.3792
+1082,21.63999,24.34212,2.178778,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,14.3177
+1083,21.65998,24.38549,2.17877,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,14.25658
+1084,21.67999,24.42885,2.178763,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,14.1958
+1085,21.69999,24.47222,2.178756,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,14.1354
+1086,21.71999,24.51558,2.178748,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,14.07537
+1087,21.73998,24.55896,2.178741,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,14.01569
+1088,21.75998,24.60233,2.178734,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,13.95643
+1089,21.77999,24.6457,2.178727,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,13.8975
+1090,21.79999,24.68908,2.17872,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,13.8389
+1091,21.81998,24.73245,2.178713,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,13.78068
+1092,21.83998,24.77583,2.178705,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,13.72282
+1093,21.85999,24.8192,2.178699,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,13.66526
+1094,21.87999,24.86257,2.178692,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,13.60808
+1095,21.89998,24.90595,2.178685,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,13.55121
+1096,21.91998,24.94932,2.178678,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,13.49468
+1097,21.93999,24.99269,2.178671,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,13.4385
+1098,21.95999,25.03607,2.178664,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,13.38174
+1099,21.97998,25.07945,2.178658,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,13.32621
+1100,21.99998,25.12283,2.178651,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,13.27104
+1101,22.01999,25.16621,2.178645,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,13.21618
+1102,22.03999,25.20959,2.178638,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,13.16167
+1103,22.05998,25.25297,2.178632,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,13.10746
+1104,22.07998,25.29635,2.178625,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,13.05358
+1105,22.09999,25.33974,2.178618,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,12.99998
+1106,22.11999,25.38312,2.178612,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,12.94672
+1107,22.13998,25.4265,2.178606,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,12.89375
+1108,22.15998,25.46988,2.178599,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,12.84111
+1109,22.17999,25.51326,2.178593,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,12.78876
+1110,22.19999,25.55665,2.178586,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,12.73671
+1111,22.21999,25.60004,2.17858,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,12.685
+1112,22.23998,25.64343,2.178574,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,12.63358
+1113,22.25998,25.68682,2.178568,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,12.58246
+1114,22.27999,25.73021,2.178562,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,12.53162
+1115,22.29999,25.77359,2.178556,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,12.48108
+1116,22.31998,25.81698,2.17855,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,12.43082
+1117,22.33998,25.86037,2.178544,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,12.38085
+1118,22.35999,25.90376,2.178538,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,12.33116
+1119,22.37999,25.94715,2.178532,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,16,Align,0,12.28175
+1120,22.39998,25.99054,2.178526,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,17,Burn,0,12.28175
+1121,22.41998,26.03393,2.17852,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,18,Burn,0,12.28175
+1122,22.43999,26.07732,2.178514,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,19,Burn,0,12.28175
+1123,22.45999,26.12072,2.178508,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,20,Burn,0,12.28175
+1124,22.47998,26.16412,2.178502,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,21,Burn,0,12.28175
+1125,22.49998,26.20751,2.178496,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,22,Burn,0,12.28175
+1126,22.51999,26.25091,2.17849,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,23,Burn,0,12.28175
+1127,22.53999,26.29431,2.178484,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,24,Burn,0,12.28175
+1128,22.55998,26.3377,2.178478,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,25,Burn,0,12.28175
+1129,22.57998,26.3811,2.178472,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,26,Burn,0,12.28175
+1130,22.59999,26.42449,2.178466,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,27,Burn,0,12.28175
+1131,22.61999,26.46789,2.17846,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,28,Burn,0,12.28175
+1132,22.63998,26.51129,2.178454,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,29,Burn,0,12.28175
+1133,22.65998,26.55468,2.178448,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,30,Burn,0,12.28175
+1134,22.67999,26.59808,2.178442,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,31,Burn,0,12.28175
+1135,22.69999,26.64148,2.178436,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,32,Burn,0,12.28175
+1136,22.71998,26.68489,2.17843,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,33,Burn,0,12.28175
+1137,22.73998,26.72829,2.178424,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,34,Burn,0,12.28175
+1138,22.75998,26.77169,2.178419,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,35,Burn,0,12.28175
+1139,22.77999,26.81509,2.178413,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,36,Burn,0,12.28175
+1140,22.79998,26.8585,2.178407,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,37,Burn,0,12.28175
+1141,22.81998,26.9019,2.178401,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,38,Burn,0,12.28175
+1142,22.83998,26.9453,2.178395,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,39,Burn,0,12.28175
+1143,22.85999,26.9887,2.178389,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,40,Burn,0,12.28175
+1144,22.87998,27.03211,2.178383,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,41,Burn,0,12.28175
+1145,22.89998,27.07551,2.178377,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,42,Burn,0,12.28175
+1146,22.91998,27.11891,2.178371,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,43,Burn,0,12.28175
+1147,22.93999,27.16232,2.178365,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,44,Burn,0,12.28175
+1148,22.95998,27.20573,2.178359,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,45,Burn,0,12.28175
+1149,22.97998,27.24914,2.178353,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,46,Burn,0,12.28175
+1150,22.99998,27.29255,2.178348,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,47,Burn,0,12.28175
+1151,23.01999,27.33596,2.178342,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,48,Burn,0,12.28175
+1152,23.03998,27.37937,2.178336,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,49,Burn,0,12.28175
+1153,23.05998,27.42278,2.17833,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,50,Burn,0,12.28175
+1154,23.07998,27.46619,2.178324,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,51,Burn,0,12.28175
+1155,23.09999,27.5096,2.178318,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,52,Burn,0,12.28175
+1156,23.11998,27.55301,2.178312,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,53,Burn,0,12.28175
+1157,23.13998,27.59641,2.178306,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,54,Burn,0,12.28175
+1158,23.15998,27.63982,2.1783,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,55,Burn,0,12.28175
+1159,23.17999,27.68324,2.178294,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,56,Burn,0,12.28175
+1160,23.19998,27.72665,2.178288,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,57,Burn,0,12.28175
+1161,23.21998,27.77007,2.178282,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,58,Burn,0,12.28175
+1162,23.23998,27.81348,2.178277,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,59,Burn,0,12.28175
+1163,23.25998,27.8569,2.178271,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,60,Burn,0,12.28175
+1164,23.27998,27.90031,2.178265,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,61,Burn,0,12.28175
+1165,23.29998,27.94373,2.178259,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,62,Burn,0,12.28175
+1166,23.31998,27.98714,2.178253,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,63,Burn,0,12.28175
+1167,23.33998,28.03056,2.178247,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,64,Burn,0,12.28175
+1168,23.35998,28.07397,2.178241,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,65,Burn,0,12.28175
+1169,23.37998,28.11739,2.178236,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,66,Burn,0,12.28175
+1170,23.39998,28.1608,2.17823,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,67,Burn,0,12.28175
+1171,23.41998,28.20422,2.178224,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,68,Burn,0,12.28175
+1172,23.43998,28.24764,2.178218,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,69,Burn,0,12.28175
+1173,23.45998,28.29106,2.178212,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,70,Burn,0,12.28175
+1174,23.47998,28.33448,2.178206,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,71,Burn,0,12.28175
+1175,23.49998,28.3779,2.1782,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,72,Burn,0,12.28175
+1176,23.51998,28.42132,2.178195,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,73,Burn,0,12.28175
+1177,23.53998,28.46474,2.178189,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,74,Burn,0,12.28175
+1178,23.55998,28.50816,2.178183,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,75,Burn,0,12.28175
+1179,23.57998,28.55158,2.178177,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,76,Burn,0,12.28175
+1180,23.59998,28.595,2.178171,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,77,Burn,0,12.28175
+1181,23.61998,28.63842,2.178165,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,78,Burn,0,12.28175
+1182,23.63998,28.68184,2.178159,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,79,Burn,0,12.28175
+1183,23.65998,28.72526,2.178154,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,80,Burn,0,12.28175
+1184,23.67998,28.76869,2.178148,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,81,Burn,0,12.28175
+1185,23.69998,28.81212,2.178142,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,82,Burn,0,12.28175
+1186,23.71998,28.85554,2.178136,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,83,Burn,0,12.28175
+1187,23.73998,28.89897,2.17813,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,84,Burn,0,12.28175
+1188,23.75998,28.94239,2.178124,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,85,Burn,0,12.28175
+1189,23.77998,28.98582,2.178118,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,86,Burn,0,12.28175
+1190,23.79998,29.02925,2.178113,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,87,Burn,0,12.28175
+1191,23.81998,29.07267,2.178107,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,88,Burn,0,12.28175
+1192,23.83998,29.11609,2.178101,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,89,Burn,0,12.28175
+1193,23.85998,29.15952,2.178095,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,90,Burn,0,12.28175
+1194,23.87998,29.20295,2.178089,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,91,Burn,0,12.28175
+1195,23.89998,29.24637,2.178083,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,92,Burn,0,12.28175
+1196,23.91998,29.2898,2.178078,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,93,Burn,0,12.28175
+1197,23.93998,29.33323,2.178072,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,94,Burn,0,12.28175
+1198,23.95998,29.37666,2.178066,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,95,Burn,0,12.28175
+1199,23.97998,29.42009,2.17806,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,96,Burn,0,12.28175
+1200,23.99998,29.46352,2.178054,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,97,Burn,0,12.28175
+1201,24.01998,29.50695,2.178049,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,98,Burn,0,12.28175
+1202,24.03998,29.55038,2.178043,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,99,Burn,0,12.28175
+1203,24.05998,29.59381,2.178037,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,100,Burn,0,12.28175
+1204,24.07998,29.63725,2.178031,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,101,Burn,0,12.28175
+1205,24.09998,29.68068,2.178025,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,102,Burn,0,12.28175
+1206,24.11998,29.7241,2.17802,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,103,Burn,0,12.28175
+1207,24.13998,29.76753,2.178014,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,104,Burn,0,12.28175
+1208,24.15998,29.81097,2.178008,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,105,Burn,0,12.28175
+1209,24.17998,29.8544,2.178002,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,106,Burn,0,12.28175
+1210,24.19998,29.89784,2.177996,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,107,Burn,0,12.28175
+1211,24.21998,29.94128,2.177991,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,108,Burn,0,12.28175
+1212,24.23998,29.98471,2.177985,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,109,Burn,0,12.28175
+1213,24.25998,30.02814,2.177979,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,110,Burn,0,12.28175
+1214,24.27998,30.07158,2.177973,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,111,Burn,0,12.28175
+1215,24.29998,30.11502,2.177968,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,112,Burn,0,12.28175
+1216,24.31998,30.15845,2.177962,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,113,Burn,0,12.28175
+1217,24.33998,30.20188,2.177956,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,114,Burn,0,12.28175
+1218,24.35998,30.24532,2.17795,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,115,Burn,0,12.28175
+1219,24.37998,30.28875,2.177944,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,116,Burn,0,12.28175
+1220,24.39998,30.33218,2.177938,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,117,Burn,0,12.28175
+1221,24.41998,30.37562,2.177933,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,118,Burn,0,12.28175
+1222,24.43998,30.41906,2.177929,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,118,Align,0,8.285064
+1223,24.45998,30.4625,2.177926,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,118,Align,0,8.256944
+1224,24.47998,30.50594,2.177923,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,118,Align,0,8.228969
+1225,24.49998,30.54938,2.17792,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,118,Align,0,8.201122
+1226,24.51998,30.59282,2.177917,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,118,Align,0,8.173431
+1227,24.53998,30.63626,2.177913,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,118,Align,0,8.145844
+1228,24.55998,30.6797,2.17791,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,118,Align,0,8.118397
+1229,24.57998,30.72314,2.177907,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,118,Align,0,8.091093
+1230,24.59998,30.76658,2.177904,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,118,Align,0,8.063908
+1231,24.61998,30.81002,2.177901,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,118,Align,0,8.036844
+1232,24.63998,30.85346,2.177897,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,118,Align,0,8.009928
+1233,24.65998,30.8969,2.177894,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,118,Align,0,7.983119
+1234,24.67998,30.94034,2.177891,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,119,Burn,0,7.983119
+1235,24.69998,30.98378,2.177888,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,120,Burn,0,7.983119
+1236,24.71998,31.02722,2.177885,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,121,Burn,0,7.983119
+1237,24.73998,31.07066,2.177882,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,122,Burn,0,7.983119
+1238,24.75998,31.1141,2.177879,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,123,Burn,0,7.983119
+1239,24.77998,31.15755,2.177876,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,124,Burn,0,7.983119
+1240,24.79998,31.20099,2.177873,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,125,Burn,0,7.983119
+1241,24.81998,31.24444,2.17787,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,126,Burn,0,7.983119
+1242,24.83998,31.28788,2.177867,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,127,Burn,0,7.983119
+1243,24.85998,31.33133,2.177864,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,128,Burn,0,7.983119
+1244,24.87998,31.37477,2.17786,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,129,Burn,0,7.983119
+1245,24.89998,31.41822,2.177857,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,130,Burn,0,7.983119
+1246,24.91998,31.46167,2.177854,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,131,Burn,0,7.983119
+1247,24.93998,31.50511,2.177851,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,132,Burn,0,7.983119
+1248,24.95998,31.54856,2.177848,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,133,Burn,0,7.983119
+1249,24.97998,31.592,2.177845,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,134,Burn,0,7.983119
+1250,24.99998,31.63545,2.177842,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,135,Burn,0,7.983119
+1251,25.01998,31.67889,2.177839,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,136,Burn,0,7.983119
+1252,25.03998,31.72234,2.177836,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,137,Burn,0,7.983119
+1253,25.05998,31.76578,2.177833,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,138,Burn,0,7.983119
+1254,25.07998,31.80923,2.17783,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,139,Burn,0,7.983119
+1255,25.09998,31.85267,2.177827,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,140,Burn,0,7.983119
+1256,25.11998,31.89612,2.177824,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,141,Burn,0,7.983119
+1257,25.13998,31.93957,2.17782,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,142,Burn,0,7.983119
+1258,25.15998,31.98302,2.177817,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,143,Burn,0,7.983119
+1259,25.17998,32.02647,2.177814,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,144,Burn,0,7.983119
+1260,25.19998,32.06992,2.177811,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,145,Burn,0,7.983119
+1261,25.21998,32.11338,2.177808,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,146,Burn,0,7.983119
+1262,25.23998,32.15683,2.177805,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,147,Burn,0,7.983119
+1263,25.25998,32.20028,2.177802,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,148,Burn,0,7.983119
+1264,25.27998,32.24373,2.177799,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,149,Burn,0,7.983119
+1265,25.29998,32.28718,2.177796,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,150,Burn,0,7.983119
+1266,25.31998,32.33063,2.177793,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,151,Burn,0,7.983119
+1267,25.33998,32.37408,2.17779,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,152,Burn,0,7.983119
+1268,25.35998,32.41753,2.177787,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,153,Burn,0,7.983119
+1269,25.37998,32.46098,2.177783,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,154,Burn,0,7.983119
+1270,25.39998,32.50444,2.177781,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,155,Burn,0,7.983119
+1271,25.41998,32.54789,2.177778,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,156,Burn,0,7.983119
+1272,25.43998,32.59134,2.177774,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,157,Burn,0,7.983119
+1273,25.45998,32.63478,2.177771,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,158,Burn,0,7.983119
+1274,25.47998,32.67823,2.177768,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,159,Burn,0,7.983119
+1275,25.49998,32.72169,2.177765,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,160,Burn,0,7.983119
+1276,25.51998,32.76515,2.177762,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,161,Burn,0,7.983119
+1277,25.53998,32.80861,2.177759,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,162,Burn,0,7.983119
+1278,25.55998,32.85206,2.177756,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,163,Burn,0,7.983119
+1279,25.57998,32.89552,2.177753,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,164,Burn,0,7.983119
+1280,25.59998,32.93898,2.17775,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,165,Burn,0,7.983119
+1281,25.61998,32.98243,2.177747,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,166,Burn,0,7.983119
+1282,25.63998,33.02589,2.177744,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,167,Burn,0,7.983119
+1283,25.65998,33.06934,2.177741,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,168,Burn,0,7.983119
+1284,25.67998,33.1128,2.177738,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,169,Burn,0,7.983119
+1285,25.69998,33.15625,2.177735,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,170,Burn,0,7.983119
+1286,25.71998,33.19971,2.177732,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,171,Burn,0,7.983119
+1287,25.73998,33.24317,2.177729,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,172,Burn,0,7.983119
+1288,25.75998,33.28662,2.177726,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,173,Burn,0,7.983119
+1289,25.77998,33.33008,2.177722,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,174,Burn,0,7.983119
+1290,25.79998,33.37353,2.177719,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,175,Burn,0,7.983119
+1291,25.81998,33.41699,2.177716,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,176,Burn,0,7.983119
+1292,25.83998,33.46044,2.177713,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,177,Burn,0,7.983119
+1293,25.85998,33.5039,2.17771,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,178,Burn,0,7.983119
+1294,25.87998,33.54736,2.177707,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,179,Burn,0,7.983119
+1295,25.89998,33.59082,2.177704,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,180,Burn,0,7.983119
+1296,25.91998,33.63428,2.177701,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,181,Burn,0,7.983119
+1297,25.93998,33.67774,2.177698,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,182,Burn,0,7.983119
+1298,25.95998,33.7212,2.177695,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,183,Burn,0,7.983119
+1299,25.97998,33.76466,2.177692,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,184,Burn,0,7.983119
+1300,25.99998,33.80812,2.177689,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,185,Burn,0,7.983119
+1301,26.01998,33.85159,2.177686,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,186,Burn,0,7.983119
+1302,26.03998,33.89505,2.177683,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,187,Burn,0,7.983119
+1303,26.05998,33.93851,2.17768,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,188,Burn,0,7.983119
+1304,26.07998,33.98197,2.177677,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,189,Burn,0,7.983119
+1305,26.09998,34.02543,2.177674,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,190,Burn,0,7.983119
+1306,26.11998,34.06889,2.177671,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,191,Burn,0,7.983119
+1307,26.13998,34.11235,2.177668,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,192,Burn,0,7.983119
+1308,26.15998,34.15581,2.177665,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,193,Burn,0,7.983119
+1309,26.17998,34.19927,2.177662,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,194,Burn,0,7.983119
+1310,26.19998,34.24273,2.177659,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,195,Burn,0,7.983119
+1311,26.21998,34.28619,2.177656,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,196,Burn,0,7.983119
+1312,26.23998,34.32965,2.177653,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,197,Burn,0,7.983119
+1313,26.25998,34.37312,2.177649,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,198,Burn,0,7.983119
+1314,26.27998,34.41658,2.177647,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,199,Burn,0,7.983119
+1315,26.29998,34.46005,2.177644,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,200,Burn,0,7.983119
+1316,26.31998,34.50351,2.17764,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,201,Burn,0,7.983119
+1317,26.33998,34.54698,2.177638,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,202,Burn,0,7.983119
+1318,26.35998,34.59044,2.177634,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,203,Burn,0,7.983119
+1319,26.37998,34.63391,2.177631,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,204,Burn,0,7.983119
+1320,26.39998,34.67737,2.177629,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,205,Burn,0,7.983119
+1321,26.41998,34.72084,2.177625,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,206,Burn,0,7.983119
+1322,26.43998,34.7643,2.177622,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,207,Burn,0,7.983119
+1323,26.45998,34.80777,2.177619,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,208,Burn,0,7.983119
+1324,26.47998,34.85123,2.177616,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,209,Burn,0,7.983119
+1325,26.49998,34.8947,2.177613,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,210,Burn,0,7.983119
+1326,26.51998,34.93816,2.17761,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,211,Burn,0,7.983119
+1327,26.53998,34.98162,2.177607,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,212,Burn,0,7.983119
+1328,26.55998,35.02509,2.177604,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,213,Burn,0,7.983119
+1329,26.57998,35.06855,2.177601,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,214,Burn,0,7.983119
+1330,26.59998,35.11201,2.177598,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,215,Burn,0,7.983119
+1331,26.61998,35.15548,2.177595,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,216,Burn,0,7.983119
+1332,26.63998,35.19895,2.177592,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,217,Burn,0,7.983119
+1333,26.65998,35.24242,2.177589,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,218,Burn,0,7.983119
+1334,26.67998,35.28589,2.177586,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,219,Burn,0,7.983119
+1335,26.69998,35.32936,2.177583,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,220,Burn,0,7.983119
+1336,26.71998,35.37283,2.17758,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,221,Burn,0,7.983119
+1337,26.73998,35.41629,2.177577,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,222,Burn,0,7.983119
+1338,26.75998,35.45976,2.177574,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,223,Burn,0,7.983119
+1339,26.77998,35.50323,2.177571,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,224,Burn,0,7.983119
+1340,26.79998,35.5467,2.177568,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,225,Burn,0,7.983119
+1341,26.81998,35.59017,2.177565,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,226,Burn,0,7.983119
+1342,26.83998,35.63364,2.177562,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,227,Burn,0,7.983119
+1343,26.85998,35.6771,2.177559,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,228,Burn,0,7.983119
+1344,26.87998,35.72057,2.177556,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,229,Burn,0,7.983119
+1345,26.89998,35.76404,2.177553,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,230,Burn,0,7.983119
+1346,26.91998,35.80751,2.17755,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,231,Burn,0,7.983119
+1347,26.93998,35.85097,2.177547,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,232,Burn,0,7.983119
+1348,26.95998,35.89444,2.177544,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,233,Burn,0,7.983119
+1349,26.97998,35.93791,2.177541,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,234,Burn,0,7.983119
+1350,26.99998,35.98138,2.177538,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,235,Burn,0,7.983119
+1351,27.01998,36.02486,2.177535,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,236,Burn,0,7.983119
+1352,27.03998,36.06833,2.177532,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,237,Burn,0,7.983119
+1353,27.05998,36.1118,2.177529,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,238,Burn,0,7.983119
+1354,27.07998,36.15528,2.177526,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,239,Burn,0,7.983119
+1355,27.09998,36.19875,2.177523,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,240,Burn,0,7.983119
+1356,27.11998,36.24222,2.17752,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,241,Burn,0,7.983119
+1357,27.13998,36.28569,2.177517,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,242,Burn,0,7.983119
+1358,27.15998,36.32916,2.177514,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,243,Burn,0,7.983119
+1359,27.17998,36.37263,2.177511,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,244,Burn,0,7.983119
+1360,27.19998,36.41611,2.177508,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,245,Burn,0,7.983119
+1361,27.21998,36.45958,2.177505,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,246,Burn,0,7.983119
+1362,27.23998,36.50305,2.177502,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,247,Burn,0,7.983119
+1363,27.25998,36.54652,2.177499,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,248,Burn,0,7.983119
+1364,27.27998,36.58999,2.177496,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,249,Burn,0,7.983119
+1365,27.29998,36.63346,2.177493,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,250,Burn,0,7.983119
+1366,27.31998,36.67693,2.17749,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,251,Burn,0,7.983119
+1367,27.33998,36.72041,2.177487,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,252,Burn,0,7.983119
+1368,27.35998,36.76389,2.177484,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,253,Burn,0,7.983119
+1369,27.37998,36.80736,2.177481,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,254,Burn,0,7.983119
+1370,27.39998,36.85084,2.177478,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,255,Burn,0,7.983119
+1371,27.41998,36.89431,2.177475,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,256,Burn,0,7.983119
+1372,27.43998,36.93779,2.177472,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,257,Burn,0,7.983119
+1373,27.45998,36.98126,2.177469,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,258,Burn,0,7.983119
+1374,27.47998,37.02474,2.177466,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,259,Burn,0,7.983119
+1375,27.49998,37.06821,2.177464,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,260,Burn,0,7.983119
+1376,27.51998,37.11169,2.17746,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,261,Burn,0,7.983119
+1377,27.53998,37.15516,2.177458,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,262,Burn,0,7.983119
+1378,27.55998,37.19864,2.177454,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,263,Burn,0,7.983119
+1379,27.57998,37.24211,2.177452,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,264,Burn,0,7.983119
+1380,27.59998,37.28559,2.177449,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,265,Burn,0,7.983119
+1381,27.61998,37.32906,2.177446,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,266,Burn,0,7.983119
+1382,27.63998,37.37254,2.177443,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,267,Burn,0,7.983119
+1383,27.65998,37.41601,2.17744,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,268,Burn,0,7.983119
+1384,27.67998,37.45948,2.177437,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,269,Burn,0,7.983119
+1385,27.69998,37.50296,2.177434,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,270,Burn,0,7.983119
+1386,27.71998,37.54643,2.177431,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,271,Burn,0,7.983119
+1387,27.73998,37.5899,2.177428,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,272,Burn,0,7.983119
+1388,27.75998,37.63337,2.177425,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,273,Burn,0,7.983119
+1389,27.77998,37.67685,2.177422,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,274,Burn,0,7.983119
+1390,27.79998,37.72032,2.177419,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,275,Burn,0,7.983119
+1391,27.81998,37.76379,2.177416,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,276,Burn,0,7.983119
+1392,27.83998,37.80726,2.177413,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,277,Burn,0,7.983119
+1393,27.85998,37.85073,2.17741,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,278,Burn,0,7.983119
+1394,27.87998,37.8942,2.177407,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,279,Burn,0,7.983119
+1395,27.89998,37.93769,2.177404,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,280,Burn,0,7.983119
+1396,27.91998,37.98117,2.177401,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,281,Burn,0,7.983119
+1397,27.93998,38.02465,2.177398,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,282,Burn,0,7.983119
+1398,27.95998,38.06814,2.177395,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,283,Burn,0,7.983119
+1399,27.97998,38.11162,2.177392,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,284,Burn,0,7.983119
+1400,27.99998,38.15511,2.177389,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,285,Burn,0,7.983119
+1401,28.01998,38.19859,2.177386,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,286,Burn,0,7.983119
+1402,28.03998,38.24207,2.177383,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,287,Burn,0,7.983119
+1403,28.05998,38.28556,2.177381,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,288,Burn,0,7.983119
+1404,28.07998,38.32904,2.177377,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,289,Burn,0,7.983119
+1405,28.09998,38.37252,2.177375,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,290,Burn,0,7.983119
+1406,28.11998,38.416,2.177372,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,291,Burn,0,7.983119
+1407,28.13998,38.45948,2.177369,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,292,Burn,0,7.983119
+1408,28.15998,38.50296,2.177366,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,293,Burn,0,7.983119
+1409,28.17998,38.54644,2.177363,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,294,Burn,0,7.983119
+1410,28.19998,38.58993,2.17736,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,295,Burn,0,7.983119
+1411,28.21998,38.63341,2.177357,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,296,Burn,0,7.983119
+1412,28.23998,38.67689,2.177354,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,297,Burn,0,7.983119
+1413,28.25998,38.72037,2.177351,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,298,Burn,0,7.983119
+1414,28.27998,38.76385,2.177348,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,299,Burn,0,7.983119
+1415,28.29998,38.80733,2.177345,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,300,Burn,0,7.983119
+1416,28.31998,38.85081,2.177342,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,301,Burn,0,7.983119
+1417,28.33998,38.89429,2.177339,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,302,Burn,0,7.983119
+1418,28.35998,38.93777,2.177336,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,303,Burn,0,7.983119
+1419,28.37998,38.98125,2.177333,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,304,Burn,0,7.983119
+1420,28.39998,39.02473,2.17733,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,305,Burn,0,7.983119
+1421,28.41998,39.0682,2.177327,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,306,Burn,0,7.983119
+1422,28.43998,39.11168,2.177325,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,307,Burn,0,7.983119
+1423,28.45998,39.15516,2.177322,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,308,Burn,0,7.983119
+1424,28.47998,39.19864,2.177319,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,309,Burn,0,7.983119
+1425,28.49998,39.24212,2.177316,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,310,Burn,0,7.983119
+1426,28.51998,39.28559,2.177313,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,311,Burn,0,7.983119
+1427,28.53998,39.32907,2.17731,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,312,Burn,0,7.983119
+1428,28.55998,39.37255,2.177307,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,313,Burn,0,7.983119
+1429,28.57998,39.41602,2.177304,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,314,Burn,0,7.983119
+1430,28.59998,39.4595,2.177301,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,315,Burn,0,7.983119
+1431,28.61998,39.50298,2.177298,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,316,Burn,0,7.983119
+1432,28.63998,39.54647,2.177295,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,317,Burn,0,7.983119
+1433,28.65998,39.58995,2.177292,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,318,Burn,0,7.983119
+1434,28.67998,39.63345,2.177289,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,319,Burn,0,7.983119
+1435,28.69998,39.67693,2.177286,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,320,Burn,0,7.983119
+1436,28.71998,39.72042,2.177284,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,321,Burn,0,7.983119
+1437,28.73998,39.76391,2.17728,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,322,Burn,0,7.983119
+1438,28.75998,39.8074,2.177278,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,323,Burn,0,7.983119
+1439,28.77998,39.85089,2.177275,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,324,Burn,0,7.983119
+1440,28.79998,39.89437,2.177272,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,325,Burn,0,7.983119
+1441,28.81998,39.93786,2.177269,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,326,Burn,0,7.983119
+1442,28.83998,39.98135,2.177266,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,327,Burn,0,7.983119
+1443,28.85998,40.02483,2.177263,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,328,Burn,0,7.983119
+1444,28.87998,40.06832,2.17726,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,329,Burn,0,7.983119
+1445,28.89998,40.1118,2.177257,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,330,Burn,0,7.983119
+1446,28.91998,40.15529,2.177254,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,331,Burn,0,7.983119
+1447,28.93998,40.19878,2.177251,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,332,Burn,0,7.983119
+1448,28.95998,40.24226,2.177248,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,333,Burn,0,7.983119
+1449,28.97998,40.28575,2.177246,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,334,Burn,0,7.983119
+1450,28.99998,40.32924,2.177243,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,335,Burn,0,7.983119
+1451,29.01998,40.37272,2.17724,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,336,Burn,0,7.983119
+1452,29.03998,40.4162,2.177237,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,337,Burn,0,7.983119
+1453,29.05998,40.45969,2.177234,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,338,Burn,0,7.983119
+1454,29.07998,40.50317,2.177231,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,339,Burn,0,7.983119
+1455,29.09998,40.54665,2.177228,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,340,Burn,0,7.983119
+1456,29.11998,40.59014,2.177225,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,341,Burn,0,7.983119
+1457,29.13998,40.63362,2.177222,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,342,Burn,0,7.983119
+1458,29.15998,40.6771,2.177219,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,343,Burn,0,7.983119
+1459,29.17998,40.72059,2.177216,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,344,Burn,0,7.983119
+1460,29.19998,40.76407,2.177213,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,345,Burn,0,7.983119
+1461,29.21998,40.80755,2.177211,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,346,Burn,0,7.983119
+1462,29.23998,40.85104,2.177208,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,347,Burn,0,7.983119
+1463,29.25998,40.89452,2.177205,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,348,Burn,0,7.983119
+1464,29.27998,40.938,2.177202,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,349,Burn,0,7.983119
+1465,29.29998,40.98148,2.177199,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,350,Burn,0,7.983119
+1466,29.31998,41.02496,2.177196,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,351,Burn,0,7.983119
+1467,29.33998,41.06844,2.177193,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,352,Burn,0,7.983119
+1468,29.35998,41.11192,2.17719,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,353,Burn,0,7.983119
+1469,29.37998,41.15541,2.177187,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,354,Burn,0,7.983119
+1470,29.39998,41.19891,2.177185,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,355,Burn,0,7.983119
+1471,29.41998,41.2424,2.177181,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,356,Burn,0,7.983119
+1472,29.43998,41.28589,2.177179,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,357,Burn,0,7.983119
+1473,29.45998,41.32939,2.177176,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,358,Burn,0,7.983119
+1474,29.47998,41.37288,2.177173,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,359,Burn,0,7.983119
+1475,29.49998,41.41637,2.17717,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,360,Burn,0,7.983119
+1476,29.51998,41.45986,2.177167,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,361,Burn,0,7.983119
+1477,29.53998,41.50335,2.177164,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,362,Burn,0,7.983119
+1478,29.55998,41.54684,2.177161,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,363,Burn,0,7.983119
+1479,29.57998,41.59034,2.177158,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,364,Burn,0,7.983119
+1480,29.59998,41.63383,2.177155,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,365,Burn,0,7.983119
+1481,29.61998,41.67731,2.177153,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,366,Burn,0,7.983119
+1482,29.63998,41.72081,2.17715,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,367,Burn,0,7.983119
+1483,29.65998,41.7643,2.177147,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,368,Burn,0,7.983119
+1484,29.67998,41.80779,2.177144,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,369,Burn,0,7.983119
+1485,29.69998,41.85128,2.177141,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,370,Burn,0,7.983119
+1486,29.71998,41.89476,2.177138,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,371,Burn,0,7.983119
+1487,29.73998,41.93825,2.177135,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,372,Burn,0,7.983119
+1488,29.75998,41.98174,2.177132,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,373,Burn,0,7.983119
+1489,29.77998,42.02523,2.17713,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,374,Burn,0,7.983119
+1490,29.79998,42.06872,2.177127,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,375,Burn,0,7.983119
+1491,29.81998,42.11221,2.177124,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,376,Burn,0,7.983119
+1492,29.83998,42.15569,2.177121,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,377,Burn,0,7.983119
+1493,29.85998,42.19918,2.177118,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,378,Burn,0,7.983119
+1494,29.87998,42.24267,2.177115,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,379,Burn,0,7.983119
+1495,29.89998,42.28615,2.177112,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,380,Burn,0,7.983119
+1496,29.91998,42.32964,2.177109,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,381,Burn,0,7.983119
+1497,29.93998,42.37313,2.177107,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,382,Burn,0,7.983119
+1498,29.95998,42.41661,2.177104,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,383,Burn,0,7.983119
+1499,29.97998,42.4601,2.177101,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,384,Burn,0,7.983119
+1500,29.99998,42.50358,2.177098,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,385,Burn,0,7.983119
+1501,30.01998,42.54707,2.177095,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,386,Burn,0,7.983119
+1502,30.03998,42.59055,2.177092,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,387,Burn,0,7.983119
+1503,30.05998,42.63404,2.177089,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,388,Burn,0,7.983119
+1504,30.07998,42.67752,2.177086,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,389,Burn,0,7.983119
+1505,30.09998,42.72102,2.177083,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,390,Burn,0,7.983119
+1506,30.11998,42.76451,2.177081,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,391,Burn,0,7.983119
+1507,30.13998,42.80801,2.177078,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,392,Burn,0,7.983119
+1508,30.15998,42.85151,2.177075,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,393,Burn,0,7.983119
+1509,30.17998,42.895,2.177072,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,394,Burn,0,7.983119
+1510,30.19998,42.9385,2.177069,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,395,Burn,0,7.983119
+1511,30.21998,42.982,2.177066,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,396,Burn,0,7.983119
+1512,30.23998,43.02549,2.177063,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,397,Burn,0,7.983119
+1513,30.25998,43.06898,2.177061,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,398,Burn,0,7.983119
+1514,30.27998,43.11248,2.177058,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,399,Burn,0,7.983119
+1515,30.29998,43.15598,2.177055,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,400,Burn,0,7.983119
+1516,30.31998,43.19947,2.177052,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,401,Burn,0,7.983119
+1517,30.33998,43.24296,2.177049,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,402,Burn,0,7.983119
+1518,30.35998,43.28646,2.177046,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,403,Burn,0,7.983119
+1519,30.37998,43.32995,2.177043,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,404,Burn,0,7.983119
+1520,30.39998,43.37344,2.177041,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,405,Burn,0,7.983119
+1521,30.41998,43.41693,2.177038,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,406,Burn,0,7.983119
+1522,30.43998,43.46043,2.177035,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,407,Burn,0,7.983119
+1523,30.45998,43.50392,2.177032,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,408,Burn,0,7.983119
+1524,30.47998,43.54741,2.177029,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,409,Burn,0,7.983119
+1525,30.49998,43.5909,2.177026,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,410,Burn,0,7.983119
+1526,30.51998,43.6344,2.177023,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,411,Burn,0,7.983119
+1527,30.53998,43.67789,2.177021,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,412,Burn,0,7.983119
+1528,30.55998,43.72138,2.177018,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,413,Burn,0,7.983119
+1529,30.57998,43.76487,2.177015,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,414,Burn,0,7.983119
+1530,30.59998,43.80836,2.177012,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,415,Burn,0,7.983119
+1531,30.61998,43.85185,2.177009,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,416,Burn,0,7.983119
+1532,30.63998,43.89534,2.177006,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,417,Burn,0,7.983119
+1533,30.65998,43.93883,2.177004,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,418,Burn,0,7.983119
+1534,30.67998,43.98232,2.177001,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,419,Burn,0,7.983119
+1535,30.69998,44.02581,2.176998,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,420,Burn,0,7.983119
+1536,30.71998,44.06929,2.176995,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,421,Burn,0,7.983119
+1537,30.73998,44.11278,2.176992,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,422,Burn,0,7.983119
+1538,30.75998,44.15627,2.176989,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,423,Burn,0,7.983119
+1539,30.77998,44.19976,2.176986,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,424,Burn,0,7.983119
+1540,30.79998,44.24325,2.176984,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,425,Burn,0,7.983119
+1541,30.81998,44.28673,2.176981,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,426,Burn,0,7.983119
+1542,30.83998,44.33023,2.176978,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,427,Burn,0,7.983119
+1543,30.85998,44.37373,2.176975,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,428,Burn,0,7.983119
+1544,30.87998,44.41723,2.176972,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,429,Burn,0,7.983119
+1545,30.89998,44.46073,2.17697,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,430,Burn,0,7.983119
+1546,30.91998,44.50423,2.176967,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,431,Burn,0,7.983119
+1547,30.93998,44.54773,2.176964,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,432,Burn,0,7.983119
+1548,30.95998,44.59123,2.176961,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,433,Burn,0,7.983119
+1549,30.97998,44.63473,2.176958,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,434,Burn,0,7.983119
+1550,30.99998,44.67822,2.176955,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,435,Burn,0,7.983119
+1551,31.01998,44.72172,2.176952,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,436,Burn,0,7.983119
+1552,31.03998,44.76522,2.17695,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,437,Burn,0,7.983119
+1553,31.05998,44.80872,2.176947,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,438,Burn,0,7.983119
+1554,31.07998,44.85221,2.176944,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,439,Burn,0,7.983119
+1555,31.09998,44.89571,2.176941,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,440,Burn,0,7.983119
+1556,31.11998,44.93921,2.176938,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,441,Burn,0,7.983119
+1557,31.13998,44.9827,2.176935,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,442,Burn,0,7.983119
+1558,31.15998,45.0262,2.176933,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,443,Burn,0,7.983119
+1559,31.17998,45.06969,2.17693,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,444,Burn,0,7.983119
+1560,31.19998,45.11319,2.176927,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,445,Burn,0,7.983119
+1561,31.21998,45.15668,2.176924,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,446,Burn,0,7.983119
+1562,31.23998,45.20018,2.176921,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,447,Burn,0,7.983119
+1563,31.25998,45.24367,2.176919,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,448,Burn,0,7.983119
+1564,31.27998,45.28716,2.176916,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,449,Burn,0,7.983119
+1565,31.29998,45.33066,2.176913,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,450,Burn,0,7.983119
+1566,31.31998,45.37415,2.17691,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,451,Burn,0,7.983119
+1567,31.33998,45.41764,2.176907,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,452,Burn,0,7.983119
+1568,31.35998,45.46114,2.176904,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,453,Burn,0,7.983119
+1569,31.37998,45.50463,2.176902,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,454,Burn,0,7.983119
+1570,31.39998,45.54812,2.176899,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,455,Burn,0,7.983119
+1571,31.41998,45.59161,2.176896,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,456,Burn,0,7.983119
+1572,31.43998,45.6351,2.176893,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,457,Burn,0,7.983119
+1573,31.45998,45.67859,2.17689,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,458,Burn,0,7.983119
+1574,31.47998,45.72208,2.176888,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,459,Burn,0,7.983119
+1575,31.49998,45.76558,2.176885,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,460,Burn,0,7.983119
+1576,31.51998,45.80906,2.176882,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,461,Burn,0,7.983119
+1577,31.53998,45.85255,2.176879,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,462,Burn,0,7.983119
+1578,31.55998,45.89605,2.176876,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,463,Burn,0,7.983119
+1579,31.57998,45.93954,2.176873,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,464,Burn,0,7.983119
+1580,31.59998,45.98305,2.176871,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,465,Burn,0,7.983119
+1581,31.61998,46.02655,2.176868,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,466,Burn,0,7.983119
+1582,31.63998,46.07005,2.176865,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,467,Burn,0,7.983119
+1583,31.65998,46.11355,2.176862,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,468,Burn,0,7.983119
+1584,31.67998,46.15705,2.176859,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,469,Burn,0,7.983119
+1585,31.69998,46.20055,2.176857,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,470,Burn,0,7.983119
+1586,31.71998,46.24405,2.176854,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,471,Burn,0,7.983119
+1587,31.73998,46.28756,2.176851,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,472,Burn,0,7.983119
+1588,31.75998,46.33105,2.176848,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,473,Burn,0,7.983119
+1589,31.77998,46.37455,2.176846,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,474,Burn,0,7.983119
+1590,31.79998,46.41805,2.176843,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,475,Burn,0,7.983119
+1591,31.81998,46.46155,2.17684,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,476,Burn,0,7.983119
+1592,31.83998,46.50505,2.176837,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,477,Burn,0,7.983119
+1593,31.85998,46.54855,2.176834,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,478,Burn,0,7.983119
+1594,31.87998,46.59205,2.176831,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,479,Burn,0,7.983119
+1595,31.89998,46.63554,2.176829,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,480,Burn,0,7.983119
+1596,31.91998,46.67904,2.176826,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,481,Burn,0,7.983119
+1597,31.93998,46.72254,2.176823,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,482,Burn,0,7.983119
+1598,31.95998,46.76604,2.17682,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,483,Burn,0,7.983119
+1599,31.97998,46.80953,2.176817,AlignForBurn,ReacquireDirectPath,direct,direct path clear,clear,False,484,Burn,0,7.983119

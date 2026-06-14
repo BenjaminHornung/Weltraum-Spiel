@@ -9,6 +9,7 @@ using UnityEngine;
 public class PrototypeAutopilotNavigationPlayModeTests
 {
     private const string ChangeName = "fix-autopilot-plan-execution-fidelity-v1";
+    private const string ReplanChatterChangeName = "stabilize-autopilot-obstacle-replan-chatter-v1";
     private static readonly CultureInfo CsvCulture = CultureInfo.InvariantCulture;
     private const BindingFlags PrivateInstance = BindingFlags.Instance | BindingFlags.NonPublic;
     private enum DirectFastTransferTrackingInjectionMode
@@ -350,6 +351,115 @@ public class PrototypeAutopilotNavigationPlayModeTests
             + BuildStepSnapshotTail(result, 8));
         Assert.That(result.FinalDistance, Is.LessThanOrEqualTo(rig.Target.ArrivalRadius + 1.5f));
         Assert.That(result.MinimumObstacleClearance, Is.GreaterThan(0.25f));
+        Assert.That(
+            rig.Autopilot.FlightPlanSafetyReplanCount,
+            Is.EqualTo(0),
+            "Precomputed launch corridor avoidance should not require runtime safety replans.");
+    }
+
+    [Test]
+    public void PlayMode_Autopilot_LaunchCorridorObstacleCourse_ReplanChatterEvidence()
+    {
+        GameObject environmentHost = new GameObject("AutopilotPlayModeV2LaunchCorridorEnvironmentHost");
+        PrototypeTestEnvironment environment = environmentHost.AddComponent<PrototypeTestEnvironment>();
+        environment.Rebuild();
+        Physics.SyncTransforms();
+
+        PrototypeNavigationObstacle[] launchObstacles = GetLaunchCorridorObstacles();
+        Assert.That(launchObstacles.Length, Is.EqualTo(3));
+
+        AutopilotPlayModeRig rig = CreateRig(Vector3.forward * 96f);
+        rig.Autopilot.ToggleAutopilot();
+
+        StepSimulation(rig);
+
+        string evidenceRoot = Path.Combine(
+            Directory.GetCurrentDirectory(),
+            ".devtoolbox",
+            "specs",
+            "changes",
+            ReplanChatterChangeName,
+            "tests",
+            "performance");
+        Directory.CreateDirectory(evidenceRoot);
+        string csvPath = Path.Combine(evidenceRoot, "launch-corridor-replan-chatter-stabilized.csv");
+
+        var result = new AutopilotRunResult
+        {
+            InitialDistance = rig.Autopilot.DistanceToTarget,
+            InitialLateralSpeed = rig.Autopilot.LastMetrics.lateralSpeed,
+            MinimumObstacleClearance = float.PositiveInfinity
+        };
+
+        bool sawAvoidance = false;
+        const int maxSteps = 1600;
+
+        using (var writer = new StreamWriter(csvPath, false))
+        {
+            writer.WriteLine(
+                "step,time,distance,relativeSpeed,currentState,navigationPhase,selectedCandidate,selectedCandidateReason,obstacleStatus,hasObstacle,flightPlanSafetyReplanCount,coveredAvoidanceSafetyReplanUntilTime,flightPlanDivergenceReasons,flightPlanDivergenceStatus,activeSegmentLabel,requestedMainThrottle,requestedRcsForceMagnitude");
+            for (int step = 0; step < maxSteps; step++)
+            {
+                StepClosedLoopPhysicsWithoutForcedReplan(rig);
+                PrototypeNavigationObstacle firstObstacle = launchObstacles.Length > 0 ? launchObstacles[0] : null;
+                CaptureStep(rig, result, firstObstacle, sawAvoidance);
+                CaptureClosedLoopObstacleProgress(rig, result, launchObstacles);
+                sawAvoidance |= rig.Autopilot.AvoidanceActive
+                    || rig.Autopilot.NavigationPhase == PrototypeWaypointAutopilotNavigationPhase.AvoidancePlanning
+                    || rig.Autopilot.NavigationPhase == PrototypeWaypointAutopilotNavigationPhase.Avoiding;
+
+                bool hasObstacle = !string.Equals(rig.Autopilot.ObstacleStatus, "clear", System.StringComparison.OrdinalIgnoreCase);
+
+                writer.WriteLine(
+                    step + ","
+                    + FormatFloat(step * Time.fixedDeltaTime) + ","
+                    + FormatFloat(Vector3.Distance(rig.Body.position, rig.Target.Position)) + ","
+                    + FormatFloat(rig.Body.linearVelocity.magnitude) + ","
+                    + CsvEscape(rig.Autopilot.CurrentState.ToString()) + ","
+                    + CsvEscape(rig.Autopilot.NavigationPhase.ToString()) + ","
+                    + CsvEscape(rig.Autopilot.SelectedCandidate) + ","
+                    + CsvEscape(rig.Autopilot.SelectedCandidateReason) + ","
+                    + CsvEscape(rig.Autopilot.ObstacleStatus) + ","
+                    + hasObstacle + ","
+                    + rig.Autopilot.FlightPlanSafetyReplanCount + ","
+                    + FormatFloat(GetPrivateFloat(rig.Autopilot, "coveredAvoidanceSafetyReplanUntilTime")) + ","
+                    + CsvEscape(rig.Autopilot.FlightPlanDivergenceReasons.ToString()) + ","
+                    + CsvEscape(rig.Autopilot.FlightPlanDivergenceStatusLabel) + ","
+                    + CsvEscape(rig.Autopilot.ActiveSegmentLabel) + ","
+                    + FormatFloat(rig.Autopilot.RequestedMainThrottle) + ","
+                    + FormatFloat(rig.Autopilot.RequestedRcsForce.magnitude));
+
+                if (rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Complete
+                    || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.HoldPosition
+                    || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Aborted
+                    || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.Failed
+                    || rig.Autopilot.CurrentState == PrototypeWaypointAutopilotState.FuelInsufficient)
+                {
+                    break;
+                }
+            }
+        }
+
+        Assert.That(new FileInfo(csvPath).Length, Is.GreaterThan(0));
+        string[] csvLines = File.ReadAllLines(csvPath);
+        Assert.That(csvLines.Length, Is.GreaterThan(1), "Expected CSV header plus at least one sample row.");
+        Assert.That(result.Snapshots.Count, Is.GreaterThan(0), "Expected at least one simulation sample.");
+        Assert.True(result.SawAvoidance, "launch corridor baseline evidence should observe avoidance engagement.");
+        Assert.True(result.SawReacquire || result.SawDirectAfterAvoidance, "launch corridor evidence should observe direct-path reacquire.");
+        Assert.That(result.MinimumObstacleClearance, Is.GreaterThan(0.25f), "Expected minimum clearance to remain above 0.25m.");
+        Assert.That(
+            rig.Autopilot.FlightPlanSafetyReplanCount,
+            Is.EqualTo(0),
+            "Launch corridor obstacle evidence should complete without safety replan chatter.");
+        Assert.That(
+            rig.Autopilot.CurrentState,
+            Is.EqualTo(PrototypeWaypointAutopilotState.Complete).Or.EqualTo(PrototypeWaypointAutopilotState.HoldPosition),
+            $"state={rig.Autopilot.CurrentState} distance={Vector3.Distance(rig.Body.position, rig.Target.Position):0.00} "
+            + $"speed={rig.Body.linearVelocity.magnitude:0.00} candidate={rig.Autopilot.SelectedCandidate} reason={rig.Autopilot.SelectedCandidateReason}\n"
+            + BuildStepSnapshotTail(result, 8));
+        Assert.That(
+            Vector3.Distance(rig.Body.position, rig.Target.Position),
+            Is.LessThanOrEqualTo(rig.Target.ArrivalRadius + 1.5f));
     }
 
     [Test]

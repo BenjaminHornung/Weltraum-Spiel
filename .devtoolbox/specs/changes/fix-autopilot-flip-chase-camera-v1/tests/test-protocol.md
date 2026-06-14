@@ -1,6 +1,6 @@
 # Autopilot Flip Chase Camera Evidence
 
-- Scene: Assets/InitTestScene5131f16a-3aee-4b70-a38d-54b886ab1c8d.unity
+- Scene: Assets/InitTestScene4857d3bb-5d69-4f96-b3c9-c80a0a9d9e6e.unity
 - Unity: 6000.4.7f1
 - Scenario: ImportedDemoScoutFunctionalDefault / ImportedDemoScout fallback pattern.
 - Goal: verify ChaseLocked assist safety and recovery under FlipForBrake-like angular velocity.
@@ -9,13 +9,14 @@
 - Total samples: 128
 - Total safe samples (ship or anchor viewport safe): 128
 - Total unsafe samples (ship and anchor unsafe): 0
-- Assist active samples: 104
+- Assist active samples: 71
 - Assist active frames during flip: 54
 - Assist starts at sample: 25
-- Assist ends at sample: -1
-- Recovery start sample: not observed
-- Recovery complete sample: not observed
+- Assist ends at sample: 96
+- Recovery start sample: 96
+- Recovery complete sample: 96
 - Max angular velocity magnitude: 4.17 rad/s at sample 25
-- Max camera position error: 0.891443
-- Max anchor error: 0.891443
+- Max camera position error: 0
+- Max anchor error: 0
+- Recovery window (frames): 0
 

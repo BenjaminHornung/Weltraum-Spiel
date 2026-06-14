@@ -4114,7 +4114,14 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             && keyboard.f7Key.wasPressedThisFrame
             && PrototypeUiLayoutManager.CurrentPreset == PrototypeUiPreset.Basic)
         {
-            SetCombatComputerVisible(combatComputerPanelRect == null || !combatComputerPanelRect.gameObject.activeSelf);
+            if (combatComputerPanelRect != null && combatComputerPanelRect.gameObject.activeSelf)
+            {
+                CloseCombatComputerAndReturnToNavigation();
+            }
+            else
+            {
+                SetCombatComputerVisible(true);
+            }
         }
 
         if (snapshotTextRefreshGate.ShouldSample(Time.unscaledTime))
@@ -7025,7 +7032,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             PrototypeWeaponTargetPriorityMode.LowestHealth,
             "Low HP",
             hasComputer);
-        SetNavigationButtonState(combatComputerCloseButton, true, () => SetCombatComputerVisible(false));
+        SetNavigationButtonState(combatComputerCloseButton, true, CloseCombatComputerAndReturnToNavigation);
     }
 
     private void ConfigureCombatPrioritySegment(
@@ -7209,6 +7216,21 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
                 weaponComputer.RefreshTargets();
                 weaponComputer.UpdateActiveTargetAndStatus();
             }
+        }
+
+        ForceRefreshNow();
+    }
+
+    private void CloseCombatComputerAndReturnToNavigation()
+    {
+        if (combatComputerPanelRect != null)
+        {
+            combatComputerPanelRect.gameObject.SetActive(false);
+        }
+
+        if (weaponComputer != null)
+        {
+            weaponComputer.ClearSelection();
         }
 
         ForceRefreshNow();
