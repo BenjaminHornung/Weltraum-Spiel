@@ -18,6 +18,7 @@
 - [x] Define SurfaceLocalFrame planning rules
 - [x] Define background simulation boundaries
 - [x] Define formal requirements for real-scale world architecture
+- [x] Run scoped DevToolbox spec validation
 
 ## Phase 1: Coordinate Math Library Later
 
