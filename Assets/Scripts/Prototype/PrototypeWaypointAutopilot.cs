@@ -250,6 +250,11 @@ public class PrototypeWaypointAutopilot : MonoBehaviour
     public float RequestedMainThrottle => requestedMainThrottle;
     public Vector3 RequestedRcsTranslation => requestedRcsTranslation;
     public Vector3 DesiredBurnDirection => desiredBurnDirection;
+    public bool ArrivalBrakeCommitted => arrivalBrakeCommitted;
+    public bool ArrivalTerminalCaptureActive => arrivalTerminalCaptureActive;
+    public bool DirectFastTransferBrakeCommitted => directFastTransferBrakeCommitted;
+    public bool DirectFastTransferTerminalCaptureActive => directFastTransferTerminalCaptureActive;
+    public bool DirectFastTransferTerminalReacquireActive => directFastTransferTerminalReacquireActive;
     public bool LimitedFinalApproachCapability => limitedFinalApproachCapability;
     public PrototypeObstacleDetectionResult LastObstacleDetection { get; private set; }
     public PrototypeTrajectoryPlan LastTrajectoryPlan { get; private set; }
