@@ -7,7 +7,8 @@ public enum PrototypeUiPreset
     Basic,
     FlightTest,
     RcsTest,
-    FullDiagnostics
+    FullDiagnostics,
+    ShipBuilder
 }
 
 public static class PrototypeUiLayoutManager
@@ -174,7 +175,8 @@ public static class PrototypeUiLayoutManager
     {
         CurrentPreset = preset;
 
-        bool diagnosticsVisible = preset != PrototypeUiPreset.Basic;
+        bool shipBuilderPreset = preset == PrototypeUiPreset.ShipBuilder;
+        bool diagnosticsVisible = preset != PrototypeUiPreset.Basic && !shipBuilderPreset;
         bool fullDiagnostics = preset == PrototypeUiPreset.FullDiagnostics;
         bool rcsDiagnostics = preset == PrototypeUiPreset.RcsTest || preset == PrototypeUiPreset.FullDiagnostics;
         bool consoleVisible = preset == PrototypeUiPreset.RcsTest || preset == PrototypeUiPreset.FullDiagnostics;
@@ -196,7 +198,7 @@ public static class PrototypeUiLayoutManager
 
         if (hud != null)
         {
-            hud.SetHudVisible(preset != PrototypeUiPreset.Basic);
+            hud.SetHudVisible(preset != PrototypeUiPreset.Basic && !shipBuilderPreset);
             hud.SetHudCollapsed(false);
             hud.SetShowDebugForceMarkers(rcsDiagnostics);
         }
@@ -209,14 +211,14 @@ public static class PrototypeUiLayoutManager
 
         if (minimap != null)
         {
-            minimap.SetWindowVisible(preset != PrototypeUiPreset.Basic);
+            minimap.SetWindowVisible(preset != PrototypeUiPreset.Basic && !shipBuilderPreset);
             minimap.SetWindowCollapsed(false);
             minimap.SetLabelsVisible(preset == PrototypeUiPreset.FullDiagnostics);
         }
 
         if (weaponComputer != null)
         {
-            weaponComputer.SetWindowVisible(preset != PrototypeUiPreset.Basic);
+            weaponComputer.SetWindowVisible(preset != PrototypeUiPreset.Basic && !shipBuilderPreset);
             weaponComputer.SetWindowCollapsed(preset != PrototypeUiPreset.FullDiagnostics);
         }
 

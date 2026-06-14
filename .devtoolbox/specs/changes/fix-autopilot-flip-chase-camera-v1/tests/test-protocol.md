@@ -1,6 +1,6 @@
 # Autopilot Flip Chase Camera Evidence
 
-- Scene: Assets/InitTestScene4857d3bb-5d69-4f96-b3c9-c80a0a9d9e6e.unity
+- Scene: Assets/InitTestScene39f7803c-4bde-4bd7-8291-9d8e2a57e20a.unity
 - Unity: 6000.4.7f1
 - Scenario: ImportedDemoScoutFunctionalDefault / ImportedDemoScout fallback pattern.
 - Goal: verify ChaseLocked assist safety and recovery under FlipForBrake-like angular velocity.

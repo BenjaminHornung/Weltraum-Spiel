@@ -185,6 +185,7 @@ public class PrototypePveArenaLoopValidationTests
         SetPrivateField(bootstrap, "buildOnStart", false);
         SetPrivateField(bootstrap, "spawnTestTarget", false);
         SetPrivateField(bootstrap, "buildTestEnvironment", false);
+        SetPrivateField(bootstrap, "allowGeneratedFallbackWhenImportedAssetMissing", true);
         Assert.True(GetPrivateField<bool>(bootstrap, "allowGeneratedFallbackWhenImportedAssetMissing"));
 
         bootstrap.BuildBuiltInVariant(0);

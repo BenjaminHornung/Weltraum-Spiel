@@ -731,7 +731,8 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
                 Assert.That(HasIndicator(snapshot, PrototypePlayerTargetIndicatorKind.Navigation), Is.True, "plan-ready navigation indicator");
                 Assert.That(rig.Autopilot.AutopilotEngaged, Is.False, "plan-ready autopilot not engaged");
                 AssertPhase8NavigationPlannerPopupVisible(rig.PlayerHud, "plan-ready");
-                Assert.That(FindText(rig.PlayerHud, "NavigationPlannerBody").text, Does.Contain("Details ausgeblendet"), "plan-ready details collapsed in Basic preset");
+                Assert.That(FindText(rig.PlayerHud, "NavigationPlannerBody").text, Does.Not.Contain("Details ausgeblendet"), "plan-ready body stays player-facing when details are collapsed");
+                Assert.That(FindText(rig.PlayerHud, "NavPlannerDetailsText").text, Is.EqualTo("Details +"), "plan-ready details button shows collapsed state");
                 AssertPhase8HudBindings(rig.PlayerHud);
             });
 
@@ -794,6 +795,7 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
                 Assert.That(snapshot.Combat.TargetListTotalCount, Is.GreaterThan(0), "combat target count");
                 Assert.That(HasIndicator(snapshot, PrototypePlayerTargetIndicatorKind.Combat), Is.True, "combat target indicator");
                 Assert.That(HasRadarBlip(snapshot, PrototypePlayerRadarBlipKind.SelectedCombat), Is.True, "combat selected radar blip");
+                Assert.That(FindRect(rig.PlayerHud, "CombatComputerHealthBarBackground").gameObject.activeInHierarchy, Is.True, "combat health bar visible");
                 AssertPhase8HudBindings(rig.PlayerHud);
             });
 
@@ -1530,7 +1532,14 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
             "NavigationPlannerMapManeuverMarker0",
             "NavigationPlannerMapArrivalRingSegment0",
             "NavigationPlannerMapTargetEdge",
+            "NavPlannerDeltaVBarBackground",
+            "NavPlannerDeltaVBarFill",
+            "NavPlannerFuelAfterArrivalBarBackground",
+            "NavPlannerFuelAfterArrivalBarFill",
+            "NavPlannerBrakeReserveIndicator",
             "CombatComputerPanel",
+            "CombatComputerHealthBarBackground",
+            "CombatComputerHealthBarFill",
             "NavigationControls",
             "CombatControls",
             "NavPlannerDetails"
@@ -1567,10 +1576,14 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
     private static void AssertPhase8NavigationPlannerPopupVisible(PrototypePlayerHudRenderer playerHud, string label)
     {
         RectTransform body = FindRect(playerHud, "NavigationPlannerBody");
+        TMP_Text bodyText = FindText(playerHud, "NavigationPlannerBody");
         RectTransform mapPanel = FindRect(playerHud, "NavigationPlannerMapPanel");
         RectTransform mapLayer = FindRect(playerHud, "NavigationPlannerMapLayer");
         RectTransform timeline = FindRect(playerHud, "NavigationPlannerTimeline");
         RectTransform timelineDetail = FindRect(playerHud, "NavigationPlannerTimelineDetail");
+        RectTransform deltaVBar = FindRect(playerHud, "NavPlannerDeltaVBarBackground");
+        RectTransform fuelBar = FindRect(playerHud, "NavPlannerFuelAfterArrivalBarBackground");
+        RectTransform brakeIndicator = FindRect(playerHud, "NavPlannerBrakeReserveIndicator");
         RectTransform rangeMinus = FindRect(playerHud, "NavPlannerRangeMinus");
         RectTransform rangeAuto = FindRect(playerHud, "NavPlannerRangeAuto");
         RectTransform rangePlus = FindRect(playerHud, "NavPlannerRangePlus");
@@ -1583,12 +1596,25 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
         Assert.That(FindText(playerHud, "NavigationPlannerTimelineDetail").gameObject.activeInHierarchy, Is.True, label + " planner timeline detail visible");
         Assert.That(FindText(playerHud, "NavigationPlannerMapText").text, Is.Not.Empty, label + " planner map label populated");
         Assert.That(FindText(playerHud, "NavigationPlannerMapLegendText").text, Is.Not.Empty, label + " planner map legend populated");
+        Assert.That(deltaVBar.gameObject.activeInHierarchy, Is.True, label + " delta-v margin bar visible");
+        Assert.That(fuelBar.gameObject.activeInHierarchy, Is.True, label + " fuel-after-arrival bar visible");
+        Assert.That(brakeIndicator.gameObject.activeInHierarchy, Is.True, label + " brake-reserve indicator visible");
         Assert.That(Overlaps(body, timeline), Is.False, label + " planner body/timeline overlap");
         Assert.That(Overlaps(body, timelineDetail), Is.False, label + " planner body/timeline detail overlap");
         Assert.That(Overlaps(timeline, timelineDetail), Is.False, label + " planner timeline/detail overlap");
         Assert.That(Overlaps(mapLayer, body), Is.False, label + " planner map layer/body overlap");
         Assert.That(Overlaps(mapLayer, timeline), Is.False, label + " planner map layer/timeline overlap");
         Assert.That(Overlaps(mapLayer, timelineDetail), Is.False, label + " planner map layer/timeline detail overlap");
+        Rect bodyGlyphs = ToWorldTextBounds(bodyText);
+        Assert.That(ToWorldRect(deltaVBar).Overlaps(bodyGlyphs), Is.False, label + " delta-v bar/body text overlap");
+        Assert.That(ToWorldRect(fuelBar).Overlaps(bodyGlyphs), Is.False, label + " fuel bar/body text overlap");
+        Assert.That(ToWorldRect(brakeIndicator).Overlaps(bodyGlyphs), Is.False, label + " brake indicator/body text overlap");
+        Assert.That(Overlaps(deltaVBar, timeline), Is.False, label + " delta-v bar/timeline overlap");
+        Assert.That(Overlaps(fuelBar, timeline), Is.False, label + " fuel bar/timeline overlap");
+        Assert.That(Overlaps(brakeIndicator, timeline), Is.False, label + " brake indicator/timeline overlap");
+        Assert.That(Overlaps(deltaVBar, mapLayer), Is.False, label + " delta-v bar/map layer overlap");
+        Assert.That(Overlaps(fuelBar, mapLayer), Is.False, label + " fuel bar/map layer overlap");
+        Assert.That(Overlaps(brakeIndicator, mapLayer), Is.False, label + " brake indicator/map layer overlap");
         Assert.That(rangeMinus.parent, Is.EqualTo(mapPanel), label + " planner range minus parent");
         Assert.That(rangeAuto.parent, Is.EqualTo(mapPanel), label + " planner range auto parent");
         Assert.That(rangePlus.parent, Is.EqualTo(mapPanel), label + " planner range plus parent");
@@ -1739,6 +1765,51 @@ public class PrototypePlayerHudLiveRuntimeEvidencePlayModeTests
         float maxX = Mathf.Max(corners[0].x, corners[1].x, corners[2].x, corners[3].x);
         float minY = Mathf.Min(corners[0].y, corners[1].y, corners[2].y, corners[3].y);
         float maxY = Mathf.Max(corners[0].y, corners[1].y, corners[2].y, corners[3].y);
+        return Rect.MinMaxRect(minX, minY, maxX, maxY);
+    }
+
+    private static Rect ToWorldTextBounds(TMP_Text text)
+    {
+        if (text == null || !text.gameObject.activeSelf)
+        {
+            return Rect.zero;
+        }
+
+        text.ForceMeshUpdate();
+        TMP_TextInfo textInfo = text.textInfo;
+        bool hasVisibleCharacter = false;
+        float minX = float.PositiveInfinity;
+        float maxX = float.NegativeInfinity;
+        float minY = float.PositiveInfinity;
+        float maxY = float.NegativeInfinity;
+
+        for (int i = 0; i < textInfo.characterCount; i++)
+        {
+            TMP_CharacterInfo character = textInfo.characterInfo[i];
+            if (!character.isVisible)
+            {
+                continue;
+            }
+
+            Vector3[] vertices = textInfo.meshInfo[character.materialReferenceIndex].vertices;
+            int vertexIndex = character.vertexIndex;
+            for (int j = 0; j < 4; j++)
+            {
+                Vector3 world = text.transform.TransformPoint(vertices[vertexIndex + j]);
+                minX = Mathf.Min(minX, world.x);
+                maxX = Mathf.Max(maxX, world.x);
+                minY = Mathf.Min(minY, world.y);
+                maxY = Mathf.Max(maxY, world.y);
+            }
+
+            hasVisibleCharacter = true;
+        }
+
+        if (!hasVisibleCharacter)
+        {
+            return Rect.zero;
+        }
+
         return Rect.MinMaxRect(minX, minY, maxX, maxY);
     }
 

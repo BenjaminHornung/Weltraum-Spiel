@@ -3948,6 +3948,9 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private RectTransform navigationPlannerPanelRect;
     private TMP_Text navigationPlannerTitleText;
     private TMP_Text navigationPlannerBodyText;
+    private Image navigationPlannerDeltaVFill;
+    private Image navigationPlannerFuelAfterArrivalFill;
+    private Image navigationPlannerBrakeReserveIndicator;
     private PrototypeNavigationTimelineGraphic navigationPlannerTimelineGraphic;
     private TMP_Text navigationPlannerTimelineDetailText;
     private RectTransform navigationPlannerMapPanelRect;
@@ -3989,6 +3992,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     private RectTransform combatComputerPanelRect;
     private TMP_Text combatComputerTitleText;
     private TMP_Text combatComputerBodyText;
+    private Image combatComputerHealthFill;
     private Button combatComputerPreviousButton;
     private Button combatComputerNextButton;
     private Button combatComputerClearButton;
@@ -4079,7 +4083,9 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
     private void Update()
     {
-        UnityEngine.InputSystem.Keyboard keyboard = UnityEngine.InputSystem.Keyboard.current;
+        UnityEngine.InputSystem.Keyboard keyboard = PrototypeShipBuilderMode.IsAnyBuilderActive
+            ? null
+            : UnityEngine.InputSystem.Keyboard.current;
         if (keyboard != null
             && keyboard.f1Key.wasPressedThisFrame)
         {
@@ -4673,6 +4679,9 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         navigationPlannerPanelRect = FindHudComponent<RectTransform>("NavigationPlannerPanel");
         navigationPlannerTitleText = FindHudComponent<TMP_Text>("NavigationPlannerTitle");
         navigationPlannerBodyText = FindHudComponent<TMP_Text>("NavigationPlannerBody");
+        navigationPlannerDeltaVFill = FindHudComponent<Image>("NavPlannerDeltaVBarFill");
+        navigationPlannerFuelAfterArrivalFill = FindHudComponent<Image>("NavPlannerFuelAfterArrivalBarFill");
+        navigationPlannerBrakeReserveIndicator = FindHudComponent<Image>("NavPlannerBrakeReserveIndicator");
         navigationPlannerTimelineGraphic = FindHudComponent<PrototypeNavigationTimelineGraphic>("NavigationPlannerTimeline");
         navigationPlannerTimelineDetailText = FindHudComponent<TMP_Text>("NavigationPlannerTimelineDetail");
         navigationPlannerMapPanelRect = FindHudComponent<RectTransform>("NavigationPlannerMapPanel");
@@ -4714,6 +4723,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         combatComputerPanelRect = FindHudComponent<RectTransform>("CombatComputerPanel");
         combatComputerTitleText = FindHudComponent<TMP_Text>("CombatComputerTitle");
         combatComputerBodyText = FindHudComponent<TMP_Text>("CombatComputerBody");
+        combatComputerHealthFill = FindHudComponent<Image>("CombatComputerHealthBarFill");
         combatComputerPreviousButton = FindHudComponent<Button>("CombatComputerPreviousTarget");
         combatComputerNextButton = FindHudComponent<Button>("CombatComputerNextTarget");
         combatComputerClearButton = FindHudComponent<Button>("CombatComputerClearTarget");
@@ -4817,6 +4827,9 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             && navigationPlannerPanelRect != null
             && navigationPlannerTitleText != null
             && navigationPlannerBodyText != null
+            && navigationPlannerDeltaVFill != null
+            && navigationPlannerFuelAfterArrivalFill != null
+            && navigationPlannerBrakeReserveIndicator != null
             && navigationPlannerTimelineGraphic != null
             && navigationPlannerTimelineDetailText != null
             && navigationPlannerMapPanelRect != null
@@ -4858,6 +4871,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             && combatComputerPanelRect != null
             && combatComputerTitleText != null
             && combatComputerBodyText != null
+            && combatComputerHealthFill != null
             && combatComputerPreviousButton != null
             && combatComputerNextButton != null
             && combatComputerClearButton != null
@@ -4985,6 +4999,9 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         navigationPlannerPanelRect = null;
         navigationPlannerTitleText = null;
         navigationPlannerBodyText = null;
+        navigationPlannerDeltaVFill = null;
+        navigationPlannerFuelAfterArrivalFill = null;
+        navigationPlannerBrakeReserveIndicator = null;
         navigationPlannerTimelineGraphic = null;
         navigationPlannerTimelineDetailText = null;
         navigationPlannerMapPanelRect = null;
@@ -5026,6 +5043,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         combatComputerPanelRect = null;
         combatComputerTitleText = null;
         combatComputerBodyText = null;
+        combatComputerHealthFill = null;
         combatComputerPreviousButton = null;
         combatComputerNextButton = null;
         combatComputerClearButton = null;
@@ -5297,6 +5315,10 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         navigationPlannerPanelRect = panel;
         navigationPlannerTitleText = CreateText("NavigationPlannerTitle", panel, 15, TextAnchor.UpperLeft, Color.white, new RectPreset(new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(-24f, 28f), new Vector2(0f, -16f)));
         navigationPlannerBodyText = CreateText("NavigationPlannerBody", panel, 12, TextAnchor.UpperLeft, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-224f, -146f), new Vector2(-100f, 8f)));
+        navigationPlannerDeltaVFill = CreateBar("NavPlannerDeltaVBar", panel, new Vector2(18f, -72f));
+        navigationPlannerFuelAfterArrivalFill = CreateBar("NavPlannerFuelAfterArrivalBar", panel, new Vector2(18f, -88f));
+        navigationPlannerBrakeReserveIndicator = CreateGraphic<Image>("NavPlannerBrakeReserveIndicator", panel, new RectPreset(new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(12f, 12f), new Vector2(18f, -106f)));
+        navigationPlannerBrakeReserveIndicator.raycastTarget = false;
         navigationPlannerTimelineGraphic = CreateGraphic<PrototypeNavigationTimelineGraphic>("NavigationPlannerTimeline", panel, new RectPreset(new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(-224f, 28f), new Vector2(-100f, -90f)));
         navigationPlannerTimelineGraphic.raycastTarget = false;
         navigationPlannerTimelineDetailText = CreateText("NavigationPlannerTimelineDetail", panel, 11, TextAnchor.UpperLeft, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(-224f, 22f), new Vector2(-100f, -118f)));
@@ -5329,7 +5351,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         RectTransform panel = CreatePanel("CombatComputerPanel", parent, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(560f, 330f), Vector2.zero);
         combatComputerPanelRect = panel;
         combatComputerTitleText = CreateText("CombatComputerTitle", panel, 15, TextAnchor.UpperLeft, Color.white, new RectPreset(new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(-24f, 28f), new Vector2(0f, -16f)));
-        combatComputerBodyText = CreateText("CombatComputerBody", panel, 12, TextAnchor.UpperLeft, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-24f, -132f), new Vector2(0f, 22f)));
+        combatComputerHealthFill = CreateBar("CombatComputerHealthBar", panel, new Vector2(16f, -58f));
+        combatComputerBodyText = CreateText("CombatComputerBody", panel, 12, TextAnchor.UpperLeft, PrototypeUiStyle.MutedColor, new RectPreset(new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), new Vector2(-24f, -150f), new Vector2(0f, 12f)));
 
         combatComputerPreviousButton = CreateButton("CombatComputerPreviousTarget", panel, "Prev", new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(48f, 22f), new Vector2(12f, 54f)));
         combatComputerNextButton = CreateButton("CombatComputerNextTarget", panel, "Next", new RectPreset(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(48f, 22f), new Vector2(66f, 54f)));
@@ -6423,7 +6446,10 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
         if (navigationPlannerTitleText != null)
         {
-            SetTextIfChanged(navigationPlannerTitleText, "Navigation Planner");
+            SetTextIfChanged(navigationPlannerTitleText, BuildNavigationPlannerTitle(snapshot.Navigation));
+            navigationPlannerTitleText.color = snapshot.Navigation.Visible
+                ? ColorForSeverity(snapshot.Navigation.PlanStateBadge.Severity)
+                : PrototypeUiStyle.DisabledColor;
         }
 
         if (navigationPlannerBodyText != null)
@@ -6431,6 +6457,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             SetTextIfChanged(navigationPlannerBodyText, BuildNavigationPlannerBodyCore(snapshot.Navigation, navigationPlannerDetailsExpanded));
             navigationPlannerBodyText.color = snapshot.Navigation.Visible ? PrototypeUiStyle.MutedColor : PrototypeUiStyle.DisabledColor;
         }
+
+        ConfigureNavigationPlannerMarginVisuals(snapshot.Navigation);
 
         ApplyNavigationTimeline(
             navigationPlannerTimelineGraphic,
@@ -6537,6 +6565,35 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         SetNavigationButtonState(navPlannerCloseButton, true, () => SetNavigationPlannerVisible(false));
     }
 
+    private void ConfigureNavigationPlannerMarginVisuals(PrototypePlayerNavigationSnapshot navigation)
+    {
+        bool visible = navigation.Visible;
+        SetBarParentActive(navigationPlannerDeltaVFill, visible);
+        SetBarParentActive(navigationPlannerFuelAfterArrivalFill, visible);
+        if (navigationPlannerBrakeReserveIndicator != null)
+        {
+            navigationPlannerBrakeReserveIndicator.gameObject.SetActive(visible);
+        }
+
+        if (!visible)
+        {
+            return;
+        }
+
+        float deltaVMargin = ResolveNavigationDeltaVMarginFraction(navigation);
+        SetBar(navigationPlannerDeltaVFill, deltaVMargin, ColorForNavigationDeltaVMargin(deltaVMargin));
+
+        float fuelFraction = navigation.FuelAfterArrivalAvailable ? navigation.FuelAfterArrivalFraction : 0f;
+        SetBar(navigationPlannerFuelAfterArrivalFill, fuelFraction, ColorForFuelAfterArrival(navigation));
+
+        if (navigationPlannerBrakeReserveIndicator != null)
+        {
+            navigationPlannerBrakeReserveIndicator.color = navigation.BrakeReserveOk
+                ? PrototypeUiStyle.ActiveColor
+                : PrototypeUiStyle.WarningColor;
+        }
+    }
+
     private void RemoveNavigationPlannerButtonListeners()
     {
         RemoveButtonListeners(navPlannerPreviousButton);
@@ -6568,6 +6625,16 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         return BuildNavigationPlannerBodyCore(navigation, false);
     }
 
+    private static string BuildNavigationPlannerTitle(PrototypePlayerNavigationSnapshot navigation)
+    {
+        if (!navigation.Visible)
+        {
+            return "Navigation Planner | Kein Ziel";
+        }
+
+        return navigation.TargetName + "  " + navigation.TargetListLabel + "  [" + navigation.PlanStateBadge.Text + "]";
+    }
+
     private static string BuildNavigationPlannerBodyCore(PrototypePlayerNavigationSnapshot navigation, bool showDetails)
     {
         if (!navigation.Visible)
@@ -6595,19 +6662,20 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         string largestBurnLabel = "Groesster Burn " + BuildNavigationPlannerLargestBurnLabel(navigation);
         string availableBurnLabel = "Verfuegbare Brennzeit " + FormatBurnSeconds(navigation.AvailableBurnSeconds);
 
-        string body = navigation.TargetName + " | " + navigation.TargetListLabel + " | Status: " + navigation.PlanStateBadge.Text + "\n"
+        string body = navigation.TargetListLabel + " | Status: " + navigation.PlanStateBadge.Text + "\n"
             + "Distanz " + FormatDistance(navigation.DistanceMeters) + " | ETA " + navigation.EtaLabel
             + " | " + closingLabel + "\n"
             + "Reserve: " + deltaVLabel + "\n"
             + fuelAfterArrivalLabel + " | " + brakeReserveLabel + "\n"
-            + planDurationLabel + " | " + largestBurnLabel + " | " + availableBurnLabel + "\n"
+            + planDurationLabel + " | " + largestBurnLabel + "\n"
+            + availableBurnLabel + "\n"
             + "Kurs: " + routeLabel + " | " + previewLabel + "\n"
-            + navigation.ManeuverIntentLabel + " | Stoppdistanz " + FormatDistance(navigation.StoppingDistanceMeters) + "\n"
+            + navigation.ManeuverIntentLabel + " | Stoppdistanz " + FormatDistance(navigation.StoppingDistanceMeters) + "\n\n\n\n\n\n"
             + contextLine;
 
         if (!showDetails)
         {
-            return body + "\nDetails ausgeblendet";
+            return body;
         }
 
         return body + "\n"
@@ -6644,18 +6712,18 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
     {
         if (Mathf.Abs(navigation.ClosingSpeed) <= 0.05f)
         {
-            return "Annaeherung -> stabil 0.0 m/s";
+            return "Annaeherung → stabil 0.0 m/s";
         }
 
         string direction = navigation.ClosingTowardsTarget ? "auf Ziel" : "entfernt sich";
-        string arrow = navigation.ClosingTowardsTarget ? "->" : "<-";
+        string arrow = navigation.ClosingTowardsTarget ? "→" : "←";
         return "Annaeherung " + arrow + " " + direction + " " + Mathf.Abs(navigation.ClosingSpeed).ToString("0.0") + " m/s";
     }
 
     private static string BuildNavigationPlannerDeltaVMarginLabel(PrototypePlayerNavigationSnapshot navigation)
     {
-        return "DeltaV " + navigation.DeltaVRequired.ToString("0.0") + " benoetigt / "
-            + navigation.DeltaVAvailable.ToString("0.0") + " verfuegbar";
+        return "DeltaV " + navigation.DeltaVRequired.ToString("0.0") + " / "
+            + navigation.DeltaVAvailable.ToString("0.0") + " m/s";
     }
 
     private static string BuildNavigationPlannerLargestBurnLabel(PrototypePlayerNavigationSnapshot navigation)
@@ -6690,7 +6758,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         }
 
         string label = largestDeltaV > 0.001f
-            ? (string.IsNullOrWhiteSpace(largestLabel) ? "Burn" : largestLabel) + " " + FormatBurnSeconds(largestDuration) + " / " + largestDeltaV.ToString("0.0") + " m/s"
+            ? (string.IsNullOrWhiteSpace(largestLabel) ? "Burn" : largestLabel) + ": " + FormatBurnSeconds(largestDuration) + " - " + largestDeltaV.ToString("0.0") + " m/s"
             : FormatBurnSeconds(largestDuration);
         return label;
     }
@@ -6976,6 +7044,8 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             combatComputerBodyText.color = ColorForSeverity(snapshot.Combat.FireSeverity);
         }
 
+        ConfigureCombatComputerHealthBar(snapshot.Combat);
+
         bool hasComputer = weaponComputer != null;
         int targetCount = hasComputer ? weaponComputer.AvailableTargets.Count : 0;
         bool hasSelection = hasComputer && weaponComputer.SelectedTargetCount > 0;
@@ -7033,6 +7103,18 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             "Low HP",
             hasComputer);
         SetNavigationButtonState(combatComputerCloseButton, true, CloseCombatComputerAndReturnToNavigation);
+    }
+
+    private void ConfigureCombatComputerHealthBar(PrototypePlayerCombatSnapshot combat)
+    {
+        bool showHealth = combat.Visible && combat.HasActiveTarget;
+        SetBarParentActive(combatComputerHealthFill, showHealth);
+        if (!showHealth)
+        {
+            return;
+        }
+
+        SetBar(combatComputerHealthFill, combat.HealthPercent, ColorForCombatHealth(combat.HealthPercent, combat.FireSeverity));
     }
 
     private void ConfigureCombatPrioritySegment(
@@ -7377,6 +7459,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         ApplyPlayerComputerPanelLayout(navigationPlannerPanelRect, navigationPlannerBodyText, safeWidth, safeHeight, margin, gap, bottomOffset, bottomHeight, narrow, shortScreen, 760f, 620f);
         ApplyNavigationPlannerMapLayout(safeWidth, safeHeight, narrow, shortScreen);
         ApplyPlayerComputerPanelLayout(combatComputerPanelRect, combatComputerBodyText, safeWidth, safeHeight, margin, gap, bottomOffset, bottomHeight, narrow, shortScreen);
+        ApplyCombatComputerSupplementLayout(shortScreen);
         ApplyContextBodyLayout((navigationControlRow != null && navigationControlRow.gameObject.activeSelf) || (combatControlRow != null && combatControlRow.gameObject.activeSelf));
     }
 
@@ -7515,6 +7598,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         {
             const float portraitStackGap = 14f;
             const float portraitBodyMapGap = 150f;
+            const float portraitTimelineExtraGap = 28f;
             float mapSize = Mathf.Clamp(contentHeight * 0.08f, 32f, 38f);
             float mapPanelHeight = mapSize + 58f;
             float textWidth = Mathf.Max(120f, panelWidth - 28f);
@@ -7529,9 +7613,9 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
                 contentHeight - mapPanelHeight - timelineHeight - Mathf.Max(detailHeight, preferredDetailHeight) - (portraitStackGap * 3f) - portraitBodyMapGap);
             float bodyHeight = Mathf.Clamp(Mathf.Ceil(preferredBodyHeight) + 32f, 164f, maxBodyHeight);
             float resolvedDetailHeight = Mathf.Max(detailHeight, Mathf.Ceil(preferredDetailHeight) + 14f);
-            float timelineTop = titleReserve + bodyHeight + portraitStackGap;
+            float timelineTop = titleReserve + bodyHeight + portraitStackGap + portraitTimelineExtraGap;
             float detailTop = timelineTop + timelineHeight + portraitStackGap;
-            float mapTop = detailTop + resolvedDetailHeight + portraitBodyMapGap;
+            float mapTop = detailTop + resolvedDetailHeight + portraitBodyMapGap - portraitTimelineExtraGap;
             float mapPanelWidth = Mathf.Min(panelWidth - 28f, mapSize + 132f);
             ApplyRect(
                 navigationPlannerBodyText.rectTransform,
@@ -7540,6 +7624,7 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
                 new Vector2(0.5f, 1f),
                 new Vector2(-28f, bodyHeight),
                 new Vector2(0f, -titleReserve));
+            ApplyNavigationPlannerMarginVisualLayout(28f, 0f, titleReserve, bodyHeight, 172f, true);
             ApplyNavigationPlannerTimelineLayout(
                 28f,
                 0f,
@@ -7613,6 +7698,11 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
                 new Vector2(0.5f, 1f),
                 new Vector2(-(mapSize + 54f), bodyHeight),
                 new Vector2(-((mapSize + 18f) * 0.5f), -titleReserve));
+            ApplyNavigationPlannerMarginVisualLayout(
+                mapSize + 54f,
+                (mapSize + 18f) * 0.5f,
+                titleReserve,
+                bodyHeight);
             ApplyNavigationPlannerTimelineLayout(
                 mapSize + 54f,
                 (mapSize + 18f) * 0.5f,
@@ -7666,6 +7756,11 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
                 new Vector2(0.5f, 1f),
                 new Vector2(-(mapSize + 60f), bodyHeight),
                 new Vector2(-((mapSize + 28f) * 0.5f), -titleReserve));
+            ApplyNavigationPlannerMarginVisualLayout(
+                mapSize + 60f,
+                (mapSize + 28f) * 0.5f,
+                titleReserve,
+                bodyHeight);
             ApplyNavigationPlannerTimelineLayout(
                 mapSize + 60f,
                 (mapSize + 28f) * 0.5f,
@@ -7713,6 +7808,77 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
 
         ApplyNavigationPlannerMapRangeButtonLayout(portraitStacked);
         ApplyNavigationPlannerActionButtonLayout(portraitStacked);
+    }
+
+    private void ApplyNavigationPlannerMarginVisualLayout(
+        float rightInset,
+        float xOffset,
+        float titleReserve,
+        float bodyHeight,
+        float bodyRelativeTopOverride = -1f,
+        bool compactVisualSpacing = false)
+    {
+        bool compact = bodyHeight < 78f;
+        bool tightSpacing = compact || compactVisualSpacing;
+        float barHeight = tightSpacing ? 4f : 6f;
+        float gap = tightSpacing ? 9f : 14f;
+        float bodyRelativeTop = compact
+            ? 18f
+            : bodyRelativeTopOverride >= 0f
+                ? bodyRelativeTopOverride
+                : Mathf.Max(76f, bodyHeight - 36f);
+        float baseTop = titleReserve + bodyRelativeTop;
+        Vector2 anchorTopLeft = new Vector2(0f, 1f);
+        Vector2 anchorTopRight = new Vector2(1f, 1f);
+        Vector2 pivotTop = new Vector2(0.5f, 1f);
+
+        ApplyRect(
+            BarRoot(navigationPlannerDeltaVFill),
+            anchorTopLeft,
+            anchorTopRight,
+            pivotTop,
+            new Vector2(-rightInset, barHeight),
+            new Vector2(-xOffset, -baseTop));
+        ApplyRect(
+            BarRoot(navigationPlannerFuelAfterArrivalFill),
+            anchorTopLeft,
+            anchorTopRight,
+            pivotTop,
+            new Vector2(-rightInset, barHeight),
+            new Vector2(-xOffset, -(baseTop + gap)));
+        ApplyRect(
+            navigationPlannerBrakeReserveIndicator != null ? navigationPlannerBrakeReserveIndicator.rectTransform : null,
+            anchorTopLeft,
+            anchorTopRight,
+            pivotTop,
+            new Vector2(-rightInset, compact ? 3f : 4f),
+            new Vector2(-xOffset, -(baseTop + (gap * 2f))));
+    }
+
+    private void ApplyCombatComputerSupplementLayout(bool shortScreen)
+    {
+        if (combatComputerPanelRect == null
+            || combatComputerBodyText == null)
+        {
+            return;
+        }
+
+        float healthTop = shortScreen ? 50f : 58f;
+        float bodyTopInset = shortScreen ? 118f : 132f;
+        ApplyRect(
+            BarRoot(combatComputerHealthFill),
+            new Vector2(0f, 1f),
+            new Vector2(1f, 1f),
+            new Vector2(0.5f, 1f),
+            new Vector2(-32f, 8f),
+            new Vector2(0f, -healthTop));
+        ApplyRect(
+            combatComputerBodyText.rectTransform,
+            new Vector2(0f, 0f),
+            new Vector2(1f, 1f),
+            new Vector2(0.5f, 0.5f),
+            new Vector2(-24f, -bodyTopInset),
+            new Vector2(0f, -8f));
     }
 
     private void ApplyNavigationPlannerTimelineLayout(
@@ -7932,6 +8098,11 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         ApplyRect(sasText.rectTransform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(104f, 22f), new Vector2(-70f, -16f));
         ApplyRect(buttonRect, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(124f, 24f), new Vector2(-16f, 16f));
         ApplyKillMomentumButtonLabel();
+    }
+
+    private static RectTransform BarRoot(Image fill)
+    {
+        return fill != null ? fill.transform.parent as RectTransform : null;
     }
 
     private static void ApplyRect(RectTransform rect, Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot, Vector2 sizeDelta, Vector2 anchoredPosition)
@@ -8751,6 +8922,24 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
         rect.offsetMax = Vector2.zero;
     }
 
+    private static void SetBarParentActive(Image fill, bool active)
+    {
+        if (fill == null)
+        {
+            return;
+        }
+
+        Transform parent = fill.transform.parent;
+        if (parent != null)
+        {
+            parent.gameObject.SetActive(active);
+        }
+        else
+        {
+            fill.gameObject.SetActive(active);
+        }
+    }
+
     private static void EnsureEventSystem()
     {
         EventSystem[] eventSystems = UnityEngine.Object.FindObjectsByType<EventSystem>(FindObjectsInactive.Exclude);
@@ -8869,6 +9058,62 @@ public class PrototypePlayerHudRenderer : MonoBehaviour
             default:
                 return Color.white;
         }
+    }
+
+    private static float ResolveNavigationDeltaVMarginFraction(PrototypePlayerNavigationSnapshot navigation)
+    {
+        if (navigation.DeltaVRequired <= 0.001f)
+        {
+            return 1f;
+        }
+
+        return Mathf.Clamp01(navigation.DeltaVAvailable / navigation.DeltaVRequired);
+    }
+
+    private static Color ColorForNavigationDeltaVMargin(float marginFraction)
+    {
+        if (marginFraction >= 1f)
+        {
+            return PrototypeUiStyle.ActiveColor;
+        }
+
+        return marginFraction >= 0.75f
+            ? PrototypeUiStyle.WarningColor
+            : PrototypeUiStyle.DangerColor;
+    }
+
+    private static Color ColorForFuelAfterArrival(PrototypePlayerNavigationSnapshot navigation)
+    {
+        if (!navigation.FuelAfterArrivalAvailable)
+        {
+            return PrototypeUiStyle.DisabledColor;
+        }
+
+        if (navigation.FuelAfterArrivalFraction <= 0.15f)
+        {
+            return PrototypeUiStyle.DangerColor;
+        }
+
+        return navigation.FuelAfterArrivalFraction <= 0.3f
+            ? PrototypeUiStyle.WarningColor
+            : PrototypeModuleColorPalette.FuelTankCue;
+    }
+
+    private static Color ColorForCombatHealth(float healthPercent, PrototypePlayerHudSeverity fallbackSeverity)
+    {
+        if (healthPercent <= 0.25f)
+        {
+            return PrototypeUiStyle.DangerColor;
+        }
+
+        if (healthPercent <= 0.5f)
+        {
+            return PrototypeUiStyle.WarningColor;
+        }
+
+        return fallbackSeverity == PrototypePlayerHudSeverity.Disabled
+            ? PrototypeUiStyle.DisabledColor
+            : PrototypeUiStyle.ActiveColor;
     }
 
     private static void DrawRadarGui(Rect rect, PrototypePlayerHudSnapshot snapshot)

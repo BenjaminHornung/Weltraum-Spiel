@@ -182,14 +182,14 @@ public class PrototypePlayerHudValidationTests
             Assert.NotNull(bodyMethod);
             string body = (string)bodyMethod.Invoke(null, new object[] { snapshot.Navigation });
             Assert.That(body, Does.Contain("Status: Ziel gewaehlt"));
-            Assert.That(body, Does.Contain("Reserve: DeltaV 16.5 benoetigt"));
+            Assert.That(body, Does.Contain("Reserve: DeltaV 16.5 /"));
             Assert.That(body, Does.Contain("Treibstoff nach Ankunft --"));
             Assert.That(body, Does.Not.Contain("Treibstoff nach Ankunft 0%"));
             Assert.That(body, Does.Contain("Bremsreserve"));
             Assert.That(body, Does.Contain("Plandauer 10.5s"));
             Assert.That(body, Does.Contain("Groesster Burn"));
             Assert.That(body, Does.Contain("Verfuegbare Brennzeit"));
-            Assert.That(body, Does.Contain("Details ausgeblendet"));
+            Assert.That(body, Does.Not.Contain("Details ausgeblendet"));
             Assert.That(body, Does.Not.Contain("Authority: Strict flight plan"));
             Assert.That(body, Does.Not.Contain("Steps:"));
             Assert.That(body, Does.Not.Contain("1 T+0.0s-6.0s Avoid | MAIN 65%"));
@@ -330,7 +330,7 @@ public class PrototypePlayerHudValidationTests
             Assert.That(body, Does.Contain("Status: Plan bereit"));
             Assert.That(body, Does.Contain("Distanz "));
             Assert.That(body, Does.Contain("ETA "));
-            Assert.That(body, Does.Contain("Annaeherung -> auf Ziel"));
+            Assert.That(body, Does.Contain("Annaeherung → auf Ziel"));
             Assert.That(body, Does.Contain("Reserve: DeltaV "));
             Assert.That(body, Does.Contain("Treibstoff nach Ankunft"));
             Assert.That(body, Does.Contain("Bremsreserve OK"));
@@ -2814,7 +2814,7 @@ public class PrototypePlayerHudValidationTests
         Assert.That(timelineRect.GetComponent<PrototypeNavigationTimelineGraphic>(), Is.Not.Null);
         Assert.True(detail.gameObject.activeInHierarchy);
         Assert.That(detail.text, Is.EqualTo("Hauptburn - 100% Schub, 2.9s, DeltaV 34.3 m/s"));
-        Assert.That(body.text, Does.Contain("Details ausgeblendet"));
+        Assert.That(body.text, Does.Not.Contain("Details ausgeblendet"));
         Assert.That(body.text, Does.Not.Contain("Authority: test"));
         Assert.That(body.text, Does.Not.Contain("Steps:"));
 
@@ -2827,6 +2827,70 @@ public class PrototypePlayerHudValidationTests
         Assert.That(openDetailsBody, Does.Contain("Authority: test"));
         Assert.That(openDetailsBody, Does.Contain("Steps:"));
         Assert.That(openDetailsBody.IndexOf("Steps:", System.StringComparison.Ordinal), Is.GreaterThan(openDetailsBody.IndexOf("Details:", System.StringComparison.Ordinal)));
+    }
+
+    [Test]
+    public void NavigationPlannerMarginVisualsReflectValuesAndVisibility()
+    {
+        GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+        cameraObject.AddComponent<Camera>();
+        PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+        playerHud.RefreshNow();
+        FindRect(playerHud, "NavigationPlannerPanel").gameObject.SetActive(true);
+
+        ApplySnapshotForTest(
+            playerHud,
+            CreateHudSnapshot(
+                CreateCombatSnapshot(false),
+                CreateDockingSnapshot(false),
+                CreateNavigationSnapshotWithTimeline(deltaVRequired: 0f, deltaVAvailable: 0f),
+                default));
+
+        AssertFill(FindImage(playerHud, "NavPlannerDeltaVBarFill"), 1f, PrototypeUiStyle.ActiveColor);
+        AssertFill(FindImage(playerHud, "NavPlannerFuelAfterArrivalBarFill"), 0.78f, PrototypeModuleColorPalette.FuelTankCue);
+        AssertColorApproximately(PrototypeUiStyle.ActiveColor, FindImage(playerHud, "NavPlannerBrakeReserveIndicator").color);
+
+        ApplySnapshotForTest(
+            playerHud,
+            CreateHudSnapshot(
+                CreateCombatSnapshot(false),
+                CreateDockingSnapshot(false),
+                CreateNavigationSnapshotWithTimeline(
+                    deltaVRequired: 100f,
+                    deltaVAvailable: 50f,
+                    fuelAfterArrivalFraction: 0.1f,
+                    brakeReserveOk: false),
+                default));
+
+        AssertFill(FindImage(playerHud, "NavPlannerDeltaVBarFill"), 0.5f, PrototypeUiStyle.DangerColor);
+        AssertFill(FindImage(playerHud, "NavPlannerFuelAfterArrivalBarFill"), 0.1f, PrototypeUiStyle.DangerColor);
+        AssertColorApproximately(PrototypeUiStyle.WarningColor, FindImage(playerHud, "NavPlannerBrakeReserveIndicator").color);
+
+        ApplySnapshotForTest(
+            playerHud,
+            CreateHudSnapshot(
+                CreateCombatSnapshot(false),
+                CreateDockingSnapshot(false),
+                CreateNavigationSnapshotWithTimeline(
+                    deltaVRequired: 100f,
+                    deltaVAvailable: 80f,
+                    fuelAfterArrivalFraction: 0.2f),
+                default));
+
+        AssertFill(FindImage(playerHud, "NavPlannerDeltaVBarFill"), 0.8f, PrototypeUiStyle.WarningColor);
+        AssertFill(FindImage(playerHud, "NavPlannerFuelAfterArrivalBarFill"), 0.2f, PrototypeUiStyle.WarningColor);
+
+        ApplySnapshotForTest(
+            playerHud,
+            CreateHudSnapshot(
+                CreateCombatSnapshot(false),
+                CreateDockingSnapshot(false),
+                CreateNavigationSnapshot(false),
+                default));
+
+        Assert.False(FindRect(playerHud, "NavPlannerDeltaVBarBackground").gameObject.activeSelf);
+        Assert.False(FindRect(playerHud, "NavPlannerFuelAfterArrivalBarBackground").gameObject.activeSelf);
+        Assert.False(FindRect(playerHud, "NavPlannerBrakeReserveIndicator").gameObject.activeSelf);
     }
 
     [Test]
@@ -2899,7 +2963,7 @@ public class PrototypePlayerHudValidationTests
         string[] contextLines = contextBody.Split('\n');
         Assert.That(contextLines.Length, Is.EqualTo(3));
         Assert.That(contextLines[0], Is.EqualTo("Waypoint | Target 2/3 | Plan bereit"));
-        Assert.That(contextLines[1], Does.Contain("Dist 840 m | ETA 12s | Annaeherung -> auf Ziel 12.0 m/s"));
+        Assert.That(contextLines[1], Does.Contain("Dist 840 m | ETA 12s | Annaeherung → auf Ziel 12.0 m/s"));
         Assert.That(contextLines[2], Is.EqualTo("Direkter Kurs"));
         Assert.That(contextBody, Does.Not.Contain("Lateral"));
         Assert.That(contextBody, Does.Not.Contain("Preview"));
@@ -3225,6 +3289,7 @@ public class PrototypePlayerHudValidationTests
             Assert.That(FindText(playerHud, "CombatComputerTitle").text, Is.EqualTo("Combat Computer"));
             Assert.That(FindText(playerHud, "CombatComputerBody").text, Does.Contain("Target No target"));
             Assert.That(FindText(playerHud, "CombatComputerBody").text, Does.Contain("Targets 2/2"));
+            Assert.False(FindRect(playerHud, "CombatComputerHealthBarBackground").gameObject.activeSelf);
 
             Button next = FindButton(playerHud, "CombatComputerNextTarget");
             Button autoFire = FindButton(playerHud, "CombatComputerAutoFire");
@@ -3243,6 +3308,7 @@ public class PrototypePlayerHudValidationTests
             Assert.NotNull(combatRig.Computer.ActiveTarget);
             Assert.That(FindText(playerHud, "CombatComputerBody").text, Does.Contain(combatRig.Computer.ActiveTarget.Label));
             Assert.That(FindText(playerHud, "CombatComputerBody").text, Does.Contain("> " + combatRig.Computer.ActiveTarget.Label));
+            Assert.True(FindRect(playerHud, "CombatComputerHealthBarBackground").gameObject.activeSelf);
 
             autoFire.onClick.Invoke();
             Assert.True(combatRig.Computer.AutoFireEnabled);
@@ -3258,6 +3324,47 @@ public class PrototypePlayerHudValidationTests
             Assert.That(combatRig.Computer.PriorityMode, Is.EqualTo(PrototypeWeaponTargetPriorityMode.LowestHealth));
             Assert.That(FindText(playerHud, "CombatComputerPriorityLowHealthText").text, Is.EqualTo("[Low HP]"));
         }
+    }
+
+    [Test]
+    public void CombatComputerHealthBarReflectsActiveTargetOnly()
+    {
+        GameObject cameraObject = new GameObject("PrototypePlayerHudCamera");
+        cameraObject.AddComponent<Camera>();
+        PrototypePlayerHudRenderer playerHud = cameraObject.AddComponent<PrototypePlayerHudRenderer>();
+        playerHud.RefreshNow();
+        SetCombatComputerVisibleForTest(playerHud, true);
+
+        ApplySnapshotForTest(
+            playerHud,
+            CreateHudSnapshot(
+                CreateCombatSnapshotNoActiveTarget(),
+                CreateDockingSnapshot(false),
+                CreateNavigationSnapshot(false),
+                default));
+
+        Assert.False(FindRect(playerHud, "CombatComputerHealthBarBackground").gameObject.activeSelf);
+
+        ApplySnapshotForTest(
+            playerHud,
+            CreateHudSnapshot(
+                CreateCombatSnapshotWithHealth(0.4f),
+                CreateDockingSnapshot(false),
+                CreateNavigationSnapshot(false),
+                default));
+
+        Assert.True(FindRect(playerHud, "CombatComputerHealthBarBackground").gameObject.activeSelf);
+        AssertFill(FindImage(playerHud, "CombatComputerHealthBarFill"), 0.4f, PrototypeUiStyle.WarningColor);
+
+        ApplySnapshotForTest(
+            playerHud,
+            CreateHudSnapshot(
+                CreateCombatSnapshotWithHealth(0.2f),
+                CreateDockingSnapshot(false),
+                CreateNavigationSnapshot(false),
+                default));
+
+        AssertFill(FindImage(playerHud, "CombatComputerHealthBarFill"), 0.2f, PrototypeUiStyle.DangerColor);
     }
 
     [Test]
@@ -3534,13 +3641,17 @@ public class PrototypePlayerHudValidationTests
             Assert.True(panel.gameObject.activeSelf);
             Assert.False(FindRect(playerHud, "ContextPanel").gameObject.activeSelf);
             Assert.False(FindRect(playerHud, "RadarPanel").gameObject.activeSelf);
-            Assert.That(FindText(playerHud, "NavigationPlannerTitle").text, Is.EqualTo("Navigation Planner"));
+            Assert.That(FindText(playerHud, "NavigationPlannerTitle").text, Does.Contain("Target 1/"));
+            Assert.That(FindText(playerHud, "NavigationPlannerTitle").text, Does.Contain("["));
             Assert.That(FindText(playerHud, "NavigationPlannerBody").text, Does.Contain("Target 1/"));
             Assert.That(FindText(playerHud, "NavigationPlannerBody").text, Does.Contain("Manoever:"));
             Assert.That(FindText(playerHud, "NavigationPlannerBody").text, Does.Contain("Kurs:"));
             Assert.That(FindText(playerHud, "NavigationPlannerBody").text, Does.Contain("Reserve:"));
             Assert.That(FindText(playerHud, "NavigationPlannerBody").text, Does.Contain("Plandauer"));
             Assert.That(FindText(playerHud, "NavigationPlannerBody").text, Does.Contain("Stoppdistanz "));
+            Assert.True(FindRect(playerHud, "NavPlannerDeltaVBarBackground").gameObject.activeInHierarchy);
+            Assert.True(FindRect(playerHud, "NavPlannerFuelAfterArrivalBarBackground").gameObject.activeInHierarchy);
+            Assert.True(FindRect(playerHud, "NavPlannerBrakeReserveIndicator").gameObject.activeInHierarchy);
             Assert.True(FindRect(playerHud, "NavigationPlannerMapPanel").gameObject.activeSelf);
             Assert.True(FindRect(playerHud, "NavigationPlannerMapLayer").gameObject.activeInHierarchy);
             Assert.True(FindRect(playerHud, "NavigationPlannerMapGridSegment0").gameObject.activeInHierarchy);
@@ -3813,6 +3924,41 @@ public class PrototypePlayerHudValidationTests
             "ManualOrder");
     }
 
+    private static PrototypePlayerCombatSnapshot CreateCombatSnapshotNoActiveTarget()
+    {
+        return new PrototypePlayerCombatSnapshot(
+            true,
+            "No target",
+            0f,
+            "--",
+            0f,
+            "No target",
+            PrototypePlayerHudSeverity.Disabled,
+            "Auto Fire: Armed",
+            "ManualOrder",
+            targetList: new[]
+            {
+                new PrototypePlayerCombatTargetSnapshot("Target A", 90f, "90/100", true, false)
+            },
+            targetListTotalCount: 1,
+            hasActiveTarget: false);
+    }
+
+    private static PrototypePlayerCombatSnapshot CreateCombatSnapshotWithHealth(float healthPercent)
+    {
+        return new PrototypePlayerCombatSnapshot(
+            true,
+            "Arena Target 01",
+            healthPercent,
+            (healthPercent * 100f).ToString("0") + "/100",
+            320f,
+            "Ready",
+            PrototypePlayerHudSeverity.Info,
+            "Auto Fire: Armed",
+            "ManualOrder",
+            hasActiveTarget: true);
+    }
+
     private static PrototypePlayerDockingSnapshot CreateDockingSnapshot(bool visible)
     {
         return new PrototypePlayerDockingSnapshot(
@@ -3863,7 +4009,13 @@ public class PrototypePlayerHudValidationTests
             visible ? 3 : 0);
     }
 
-    private static PrototypePlayerNavigationSnapshot CreateNavigationSnapshotWithTimeline(bool hasAvoidanceCue = false)
+    private static PrototypePlayerNavigationSnapshot CreateNavigationSnapshotWithTimeline(
+        bool hasAvoidanceCue = false,
+        float deltaVRequired = 46.4f,
+        float deltaVAvailable = 120f,
+        float fuelAfterArrivalFraction = 0.78f,
+        bool fuelAfterArrivalAvailable = true,
+        bool brakeReserveOk = true)
     {
         var timeline = new[]
         {
@@ -3907,11 +4059,11 @@ public class PrototypePlayerHudValidationTests
             totalPlanFuelKg: 1.2f,
             maneuverStepRows: new[] { "1 T+0.4s-3.3s Hauptburn | MAIN 100% | dV 34.3" },
             planStateBadge: new PrototypeNavigationPlanStateBadge(PrototypeNavigationPlanState.PlanReady, "Plan bereit", PrototypePlayerHudSeverity.Info),
-            deltaVRequired: 46.4f,
-            deltaVAvailable: 120f,
-            fuelAfterArrivalFraction: 0.78f,
-            fuelAfterArrivalAvailable: true,
-            brakeReserveOk: true,
+            deltaVRequired: deltaVRequired,
+            deltaVAvailable: deltaVAvailable,
+            fuelAfterArrivalFraction: fuelAfterArrivalFraction,
+            fuelAfterArrivalAvailable: fuelAfterArrivalAvailable,
+            brakeReserveOk: brakeReserveOk,
             timelineSegments: timeline,
             timelineProgress01: 0.5f,
             activeSegmentIndex: 1,
@@ -4041,6 +4193,12 @@ public class PrototypePlayerHudValidationTests
         Assert.That(actual.g, Is.EqualTo(expected.g).Within(0.001f));
         Assert.That(actual.b, Is.EqualTo(expected.b).Within(0.001f));
         Assert.That(actual.a, Is.EqualTo(expected.a).Within(0.001f));
+    }
+
+    private static void AssertFill(Image fill, float expectedFraction, Color expectedColor)
+    {
+        Assert.That(fill.rectTransform.anchorMax.x, Is.EqualTo(expectedFraction).Within(0.001f));
+        AssertColorApproximately(expectedColor, fill.color);
     }
 
     private static string GetBlipLabel(PrototypePlayerRadarBlip[] blips, PrototypePlayerRadarBlipKind kind)

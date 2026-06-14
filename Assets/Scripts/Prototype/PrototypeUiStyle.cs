@@ -12,6 +12,20 @@ public static class PrototypeUiStyle
     public static readonly Color DisabledColor = new Color(0.55f, 0.58f, 0.64f, 1f);
     public static readonly Color ActiveColor = new Color(0.45f, 0.78f, 1f, 1f);
     public static readonly Color MutedColor = new Color(0.7f, 0.74f, 0.8f, 1f);
+    public static readonly Color PanelBackground = new Color(0.022f, 0.027f, 0.039f, 0.92f);
+    public static readonly Color PanelBorder = new Color(0.25f, 0.62f, 0.72f, 0.82f);
+    public static readonly Color TextPrimary = new Color(0.92f, 0.96f, 1f, 1f);
+    public static readonly Color TextSecondary = new Color(0.65f, 0.72f, 0.78f, 1f);
+    public static readonly Color Accent = ActiveColor;
+    public static readonly Color GhostValid = new Color(0.52f, 1f, 0.6f, 0.35f);
+    public static readonly Color GhostInvalid = new Color(1f, 0.35f, 0.35f, 0.35f);
+
+    public const int DisplayFontSize = 28;
+    public const int HeadlineFontSize = 20;
+    public const int BodyFontSize = 16;
+    public const int CaptionFontSize = 13;
+    public const int MicroFontSize = 11;
+    public const int MinimumReadableFontSize = 10;
 
     public static GUIStyle CreateLabelStyle(float fontSize = 13, bool wordWrap = false, TextAnchor alignment = TextAnchor.UpperLeft)
     {

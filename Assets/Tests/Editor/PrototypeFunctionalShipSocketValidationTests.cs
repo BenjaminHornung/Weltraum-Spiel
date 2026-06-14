@@ -334,12 +334,46 @@ public class PrototypeFunctionalShipSocketValidationTests
     }
 
     [Test]
-    public void PrototypeBootstrapHostSceneAllowsGeneratedFallbackForVisibleShipSafety()
+    public void PrototypeBootstrapHostSceneDisablesGeneratedFallbackForImportedDefault()
     {
         string scenePath = Path.Combine(Application.dataPath, "Scenes", "PrototypeBootstrapHost.unity");
         string sceneText = File.ReadAllText(scenePath);
 
-        Assert.That(sceneText, Does.Contain("allowGeneratedFallbackWhenImportedAssetMissing: 1"));
+        Assert.That(sceneText, Does.Contain("allowGeneratedFallbackWhenImportedAssetMissing: 0"));
+    }
+
+    [Test]
+    public void BootstrapImportedDefaultDoesNotGenerateFallbackWhenImportedFlightBindingFails()
+    {
+        GameObject preexistingShip = new GameObject("PrototypeShip");
+        var preexistingFunctionalBinder = preexistingShip.AddComponent<PrototypeFunctionalShipBinder>();
+        SetPrivateField(preexistingFunctionalBinder, "createMissingRuntimeComponents", false);
+        GameObject host = new GameObject("PrototypeBootstrapTestHost");
+        PrototypeBootstrap bootstrap = host.AddComponent<PrototypeBootstrap>();
+        SetPrivateField(bootstrap, "spawnTestTarget", false);
+        SetPrivateField(bootstrap, "buildTestEnvironment", false);
+        SetPrivateField(bootstrap, "buildOnStart", false);
+
+        bootstrap.BuildPrototype(PrototypeShipVariant.Baseline());
+
+        GameObject ship = GameObject.Find("PrototypeShip");
+        Assert.NotNull(ship);
+        Assert.That(bootstrap.BuildMode, Is.EqualTo(PrototypeShipBuildMode.ImportedDemoScoutFunctionalDefault));
+        Assert.Null(ship.transform.Find(PrototypeShipHardpointBinder.GeneratedHardpointRigName));
+        Assert.That(ship.GetComponentsInChildren<PrototypeShipHardpoint>(true).Length, Is.EqualTo(0));
+        Assert.Null(ship.transform.Find("Muzzle"));
+        Assert.Null(ship.transform.Find("EngineNozzle"));
+
+        EngineVfxController engine = ship.GetComponent<EngineVfxController>();
+        RcsThrusterController rcs = ship.GetComponent<RcsThrusterController>();
+        GunModule gun = ship.GetComponent<GunModule>();
+
+        Assert.NotNull(engine);
+        Assert.False(engine.AllowFallbackNozzle);
+        Assert.NotNull(rcs);
+        Assert.True(rcs.UseImportedFunctionalSockets);
+        Assert.NotNull(gun);
+        Assert.False(gun.AllowMuzzleFallback);
     }
 
     [Test]

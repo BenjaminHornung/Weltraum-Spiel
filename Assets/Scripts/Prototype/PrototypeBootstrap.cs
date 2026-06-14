@@ -8,7 +8,7 @@ public class PrototypeBootstrap : MonoBehaviour
     [SerializeField] private bool buildOnStart = true;
     [SerializeField] private PrototypeShipConfig shipConfig;
     [SerializeField] private PrototypeShipBuildMode buildMode = PrototypeShipBuildMode.ImportedDemoScoutFunctionalDefault;
-    [SerializeField] private bool allowGeneratedFallbackWhenImportedAssetMissing = true;
+    [SerializeField] private bool allowGeneratedFallbackWhenImportedAssetMissing = false;
     [SerializeField] private int selectedVariantIndex;
     [SerializeField] private bool addOrientationMarkers = false;
     [SerializeField] private Vector3 shipStartPosition = new Vector3(0f, 0.5f, 0f);
@@ -146,9 +146,10 @@ public class PrototypeBootstrap : MonoBehaviour
             PrototypeFunctionalShipBinder functionalBinder = GetOrAddComponent<PrototypeFunctionalShipBinder>(ship);
             functionalBinder.Configure(buildMode);
             functionalBindReport = functionalBinder.BindNow();
-            useGeneratedFallback = functionalBindReport == null || !functionalBindReport.hasRequiredFlightSockets;
-            useGeneratedFallbackBeforeVisibilityPolicy = useGeneratedFallback;
-            if (useGeneratedFallback)
+            bool importedFlightBindingFailed = functionalBindReport == null || !functionalBindReport.hasRequiredFlightSockets;
+            useGeneratedFallbackBeforeVisibilityPolicy = importedFlightBindingFailed;
+            useGeneratedFallback = importedFlightBindingFailed && allowGeneratedFallbackWhenImportedAssetMissing;
+            if (importedFlightBindingFailed)
             {
                 string warning = functionalBindReport != null && functionalBindReport.missingRequiredSockets.Count > 0
                     ? string.Join(", ", functionalBindReport.missingRequiredSockets)
@@ -156,7 +157,7 @@ public class PrototypeBootstrap : MonoBehaviour
                 Debug.LogWarning("Imported functional ship binding failed (" + warning + ").");
                 if (!allowGeneratedFallbackWhenImportedAssetMissing)
                 {
-                    Debug.LogWarning("Generated fallback is disabled in scene settings, but imported flight binding failed; building generated fallback to keep the ship visible.");
+                    Debug.LogWarning("Generated fallback is disabled in scene settings; keeping the imported default strict with degraded/missing functional bindings.");
                 }
 
                 ClearGeneratedShipChildren(ship.transform);
@@ -228,10 +229,10 @@ public class PrototypeBootstrap : MonoBehaviour
             engine.ConfigureNozzle(primaryMainNozzle);
             rcs.SetUseImportedFunctionalSockets(false);
             rcs.ConfigureThrusters(
-                ship.transform.Find("RCS_Top"),
-                ship.transform.Find("RCS_Bottom"),
-                ship.transform.Find("RCS_Left"),
-                ship.transform.Find("RCS_Right"),
+                ResolveGeneratedRcsBlock(ship.transform, layout, Vector3.down, "RCS_Top"),
+                ResolveGeneratedRcsBlock(ship.transform, layout, Vector3.up, "RCS_Bottom"),
+                ResolveGeneratedRcsBlock(ship.transform, layout, Vector3.right, "RCS_Left"),
+                ResolveGeneratedRcsBlock(ship.transform, layout, Vector3.left, "RCS_Right"),
                 null,
                 null,
                 shipRigidbody,
@@ -753,18 +754,42 @@ public class PrototypeBootstrap : MonoBehaviour
         for (int i = 0; i < blocks.Length; i++)
         {
             PrototypeRcsBlockLayoutEntry block = blocks[i];
-            BuildRcsBlock(ship, block.BlockId, block.LocalPosition, block.LocalScale, block.BlockedLocalDirection, settings);
+            BuildRcsBlock(ship, block.BlockId, block.LocalPosition, block.LocalEulerAngles, block.LocalScale, block.BlockedLocalDirection, settings);
         }
     }
 
-    private static void BuildRcsBlock(Transform ship, string blockName, Vector3 localPosition, Vector3 localScale, Vector3 blockedDirection, PrototypeRcsSettings settings)
+    private static Transform ResolveGeneratedRcsBlock(Transform ship, PrototypeShipLayout layout, Vector3 blockedDirection, string legacyName)
+    {
+        if (ship == null)
+        {
+            return null;
+        }
+
+        PrototypeRcsBlockLayoutEntry[] blocks = layout != null ? layout.RcsBlocks : PrototypeShipLayout.Baseline().RcsBlocks;
+        for (int i = 0; i < blocks.Length; i++)
+        {
+            PrototypeRcsBlockLayoutEntry block = blocks[i];
+            if (Vector3.Dot(block.BlockedLocalDirection, blockedDirection.normalized) > 0.95f)
+            {
+                Transform resolved = ship.Find(block.BlockId);
+                if (resolved != null)
+                {
+                    return resolved;
+                }
+            }
+        }
+
+        return ship.Find(legacyName);
+    }
+
+    private static void BuildRcsBlock(Transform ship, string blockName, Vector3 localPosition, Vector3 localEulerAngles, Vector3 localScale, Vector3 blockedDirection, PrototypeRcsSettings settings)
     {
         var block = BuildModulePart(
             ship,
             blockName,
             PrimitiveType.Cube,
             localPosition,
-            Quaternion.identity,
+            Quaternion.Euler(localEulerAngles),
             localScale,
             RcsBlockColor,
             PrototypeModuleMassRole.RcsBlock,
@@ -1224,6 +1249,9 @@ public class PrototypeBootstrap : MonoBehaviour
         var playerHud = GetOrAddSingleCameraComponent<PrototypePlayerHudRenderer>(camera.gameObject);
         playerHud.Bind(target, stats, body, playerHudCatalog);
         playerHud.BindTrajectoryPreview(trajectoryPreview);
+
+        var shipBuilder = GetOrAddSingleCameraComponent<PrototypeShipBuilderMode>(camera.gameObject);
+        shipBuilder.Bind(Object.FindAnyObjectByType<PrototypeBootstrap>(), target, body);
 
         GetOrAddSingleCameraComponent<PrototypeOrbitMapDebugWindow>(camera.gameObject);
 
