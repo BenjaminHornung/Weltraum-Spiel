@@ -1,6 +1,6 @@
 # Current Prototype State
 
-Stand: 2026-06-12
+Stand: 2026-06-14
 
 ## Playable State
 
@@ -29,8 +29,12 @@ Pressing Play from an empty or nearly empty scene is also supported: `PrototypeB
 | `Space` | Fire the current main gun; Weapon Computer target tracking gates turret fire. |
 | `V` | Cycle camera mode: `ChaseLocked -> OrbitInspect -> Side -> FreeInspect -> ChaseLocked`. |
 | RMB + mouse / wheel | Look/orbit and zoom camera. |
-| `F1` | Toggle player HUD help in Basic view. |
-| `F2` / `F3` / `F4` / `F5` / `F6` | Prototype diagnostics, debug console, legacy HUD/Navball, legacy minimap, visual mode cycling. |
+| `F1` | Toggle player-facing HUD help in Basic view. |
+| `F2` | Toggle prototype diagnostics/developer overlay. |
+| `F3` | Toggle prototype debug console. |
+| `F4` | Toggle legacy IMGUI HUD/Navball diagnostic surface. |
+| `F5` | Toggle legacy prototype minimap/test-environment diagnostic surface. |
+| `F6` | Cycle prototype visual/debug display mode. |
 
 Control-mode summary:
 
@@ -41,6 +45,8 @@ Control-mode summary:
 ## HUD And Debug Presets
 
 The default Basic view uses `PrototypePlayerHudRenderer` with flight status, fuel/throttle/RCS/SAS, warning and assist chips, player radar, Kill Momentum, contextual navigation/combat panels, and F1 help.
+
+`F1` is the player-facing help entry point. `F2` through `F6` are intentionally prototype/developer controls for diagnostics, legacy surfaces, and visual debugging; they are not part of the polished player control contract.
 
 Debug Console presets:
 
@@ -84,17 +90,18 @@ Current validation caveat: workspace-wide `specs_validate` is still blocked by i
 | `player-ui-concept-runtime-audit-v1` | Audit/evidence change completed in practice | Check before archive | Test matrix, findings, and screenshots exist. | Archive candidate after review of any remaining task checkboxes. |
 | `player-target-indicators-v1` | Completed in practice | Check before archive | Test protocol, findings, screenshots, and logs exist. | Archive candidate after focused preflight. |
 | `player-hud-live-aspect-ratio-scaling-v1` | Likely completed by later HUD/aspect work | Check remaining tasks | Evidence folder present. | Verify task state, then archive or roll remaining work into a new small follow-up. |
-| `fix-functional-blender-ship-vfx-turret-v1` | Functionality now appears in README/current runtime, but DevToolbox tasks are untouched | 20 | `tests/test-protocol.md` exists; task list still 0/20. | Do short PlayMode acceptance, confirm Cargo remains out of scope, check stale project references, then toggle/close tasks. |
+| `fix-functional-blender-ship-vfx-turret-v1` | Completed/closed for functional default scope | 0 | Tasks are checked off; `tests/test-protocol.md` records Blender validation, compile checks, EditMode/PlayMode evidence, manual scene verification, imported Demo Scout functional default, imported sockets, weapon binders, and no root muzzle/nozzle fallback. | Keep closed; Cargo functional binding remains out of scope unless a separate cargo slice is opened. |
 | `fix-prototype-usability-flight-feel` | Partially completed; much was absorbed by later control/HUD work | 25 | Test protocol has explicit solution build/test and notes generic verify blocker. | Close implemented slices; convert remaining UI/environment/visual polish into a smaller follow-up. |
 | `fix-prototype-ui-performance-v1` | Mostly completed | 1 | EditMode/performance evidence exists; latest old verifier failed on lint. | Manual PlayMode responsiveness note is the only open task; record evidence, then close/archive. |
-| `fix-autopilot-plan-execution-fidelity-v1` | New active work | 20 | No task completion yet. | Keep as current feature/fix slice, but add required spec file before relying on workspace-wide validation. |
-| `player-navigation-planner-ui-overhaul-v1` | Draft only | n/a | Proposal only; tasks/spec missing. | Either complete scaffold or delete/archive as draft if superseded. |
+| `fix-autopilot-plan-execution-fidelity-v1` | Implemented and evidence-backed | 0 | Tasks are checked off through evidence/test coverage; later stabilization docs record terminal-capture and obstacle-replan-chatter verification. | Keep as implemented, but do not treat it as proof of exact live point arrival; see Known Current Regression. |
+| `player-navigation-planner-ui-overhaul-v1` | Implemented and evidenced | 0 | Tasks are checked off; evidence plan includes screenshot matrix, layout/overlap checks, planner timeline/map/radar/HUD controls, combat panel split, and PlayMode/EditMode coverage. | Keep implemented; no supported UI-quality blocker is documented in the required evidence set. Continue using screenshots/layout checks for future polish. |
+| `prototype-ship-blueprint-v0` | Implemented prototype slice | 0 | `tests/ship-builder-v0-verification.md` records script validation, focused EditMode/PlayMode passes, solution build, and screenshots. | Keep as current builder prototype evidence; remaining ship-editor depth belongs in later blueprint/builder slices. |
 
 ## Accepted Limits
 
 - This is not the final ship editor, economy, mission framework, multiplayer mode, or final gameplay architecture.
 - Controller support has compile/play coverage, but physical hardware feel remains manually unverified.
-- Navigation Computer and trajectory preview are local-space prototype guidance, not full orbital navigation, patched conics, SOI planning, or maneuver-node planning.
+- Navigation Computer, trajectory preview, and waypoint autopilot are local-space prototype guidance. They are not full orbital navigation, patched conics, SOI planning, maneuver-node planning, or slingshot navigation.
 - Docking hard lock is a documented placeholder, not an active joint.
 - RCS allocation is bounded prototype logic, not a final optimizer.
 - IMGUI debug windows remain temporary diagnostic surfaces.
@@ -102,14 +109,21 @@ Current validation caveat: workspace-wide `specs_validate` is still blocked by i
 
 ## Next Feature Slice
 
-Recommended next slice: close `fix-functional-blender-ship-vfx-turret-v1` with a short runtime acceptance pass.
+Recommended next slices, in order:
 
-Done state for that slice:
+1. `autopilot-proving-ground-harness-v1`
+2. `fix-autopilot-exact-point-arrival-v1`
+3. Control-mode/HUD visibility fix, if still reproducible after the autopilot harness and exact-arrival pass
 
-- PlayMode boots `PrototypeBootstrapHost.unity` into the imported Demo Scout default.
-- Main thruster and RCS VFX originate from imported sockets.
-- Weapon muzzle/flash origins are imported markers; no root fallback is used.
-- Visible turret tracks a selected target and only fires when alignment/arc/cooldown allow it.
-- Cargo functional binding is explicitly documented as out of scope unless a separate cargo slice is opened.
-- Stale references to moved/renamed Blender project files are checked and either fixed or documented.
-- `dotnet build "Weltraum Spiel.sln" --no-restore` and `dotnet test "Weltraum Spiel.sln" --no-build` pass for the current workspace.
+Done state for `autopilot-proving-ground-harness-v1`:
+
+- A repeatable PlayMode proving ground captures approach, flip/brake, obstacle avoidance, terminal hold, overshoot, wander, and exact-arrival metrics.
+- The harness records enough CSV/screenshot/log evidence to compare behavior before and after autopilot changes.
+- The acceptance criteria distinguish "inside loose arrival radius" from "arrived at the requested point and held there."
+- No further autopilot tuning is treated as complete without proving-ground evidence.
+
+## Known Current Regression
+
+- Live waypoint navigation avoids obstacles reasonably, but some scenarios still overshoot or wander after the flip/brake phase.
+- Current automated tests may accept a loose arrival radius rather than proving exact point arrival and stable terminal hold.
+- A new `autopilot-proving-ground-harness-v1` slice is required before further autopilot fixes, so the next tuning pass has repeatable evidence instead of ad hoc scene observation.
