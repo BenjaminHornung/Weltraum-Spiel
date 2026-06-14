@@ -11,6 +11,42 @@
 
 ## Evidence
 
+- 2026-06-14 closure verification pass:
+  - Workspace guard:
+    - Existing dirty files from other work were left untouched and excluded from this spec closure.
+    - Not included here: `.devtoolbox/specs/changes/stabilize-autopilot-obstacle-replan-chatter-v1/tests/performance/launch-corridor-replan-chatter-stabilized.csv`, `.devtoolbox/specs/changes/fix-autopilot-plan-execution-fidelity-v1/tests/performance/distant-waypoint-navigation.csv`, `Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs`, `Assets/Tests/Editor/PrototypeWaypointAutopilotArrivalTerminalCaptureTests.cs`, and `Assets/Tests/PlayMode/PrototypeAutopilotNavigationPlayModeTests.cs`.
+  - Backend-worker C# coverage check:
+    - Result: no production C# changes required for this spec.
+    - Existing coverage confirms HUD planner shared range, capped/faded contacts, route/preview dominance, 1280x720 plus portrait/tall no-overlap assertions, RCS/SAS reassertion, and closed-loop brake without harness rotation.
+  - `.NET` build:
+    - Command: `dotnet build "Weltraum Spiel.sln" --no-restore`.
+    - Result: PASS, 0 errors, 2 existing MSB3277 warning groups.
+  - Unity MCP EditMode HUD validation:
+    - Job `44f710b2cef4452c95ed3ab6677c04fe`.
+    - Fixture: `PrototypePlayerHudValidationTests`.
+    - Result: 83/83 PASS.
+  - Unity MCP EditMode autopilot authority focus:
+    - Job `628696865a4748509c276090a1e62988`.
+    - Test: `PrototypeWaypointAutopilotValidationTests.AutopilotBrakeAlignmentReassertsRcsAndSasAuthority`.
+    - Result: 1/1 PASS.
+  - Unity MCP PlayMode closed-loop brake focus:
+    - Job `9cb83871a2e8482b95666464eef99a1b`.
+    - Test: `PrototypeAutopilotNavigationPlayModeTests.PlayMode_Autopilot_ClosedLoopBrake_RotatesAndUsesMainThrusterWithoutHarnessRotation`.
+    - Result: 1/1 PASS.
+  - Unity MCP PlayMode real GameView popup evidence:
+    - Initial job `dd3fc3465d664db19274ca3e657d847e` failed because the assertion only allowed kilometer labels while the readable planner label was `Route 8 | Range 602 m | 3 contacts`.
+    - The assertion was narrowed to require route-first text, a readable `Range ...` value in meters or kilometers, a contacts suffix, and no old `R ` shorthand.
+    - Final job `b1babf4db10047789bf8c2e4df3e0a5b`.
+    - Test: `PrototypePlayerHudLiveRuntimeEvidencePlayModeTests.PrototypeBootstrapRuntimePlayerHudEvidenceCapturesPlayerComputerPopups`.
+    - Result: 1/1 PASS.
+    - Refreshed runtime screenshot source: `.devtoolbox/specs/changes/player-ui-regression-controls-autopilot-rcs-v1/tests/screenshots/player-ui-regression-nav-planner-1280x720.png`.
+    - Copied evidence screenshot: `.devtoolbox/specs/changes/player-autopilot-planner-followup-v1/tests/screenshots/player-autopilot-planner-followup-nav-planner-1280x720.png`.
+    - Visual check: planner popup is route-first, route/preview dominate generic contacts, the range label is readable in meters, and no obvious map/body/button overlap is visible at 1280x720.
+  - Unity MCP full autopilot validation blocker:
+    - EditMode fixture `PrototypeWaypointAutopilotValidationTests`, job `65d4989b732146608b16cb4e8c909ed1`, failed 3 unrelated autopilot physics expectations outside this spec's focused RCS/SAS reassertion scenario.
+    - PlayMode fixture `PrototypeAutopilotNavigationPlayModeTests`, job `a2e882133ae24c4c97e8f6e32b68d571`, failed 4 unrelated autopilot behavior tests while the closed-loop brake follow-up test passed.
+    - Because these broad fixtures are blocked in the current dirty workspace, `tasks.md` remains unchecked until those unrelated autopilot failures are resolved or isolated.
+
 - 2026-05-26 follow-up: Navigation Planner map readable labels and planner-only hierarchy
   - Implementation:
     - Replaced code-like planner map labels (`DR2p`, `R8p`, `Pv16p`, `3c`) with short player-facing labels (`Direct 2`, `Route 8`, `Preview 16`, `No preview`, `2.5 km`, `3 contacts`).
