@@ -34,7 +34,7 @@ Active change folders inspected: 54
 | Change | Classification | Evidence state | Archive safety note |
 |---|---|---|---|
 | `add-autopilot-obstacle-avoidance-v1` | Complete but blocked by stale verification metadata | Proposal/tasks/tests present; protocol records implementation and verification, but all 4 tasks remain open. | Unsafe until task metadata is reconciled. |
-| `autopilot-proving-ground-harness-v1` | Active and should remain open | Proposal/tasks present; no `tests/` artifacts; 4 done, 1 verify task open. | Unsafe; verification evidence is missing. |
+| `autopilot-proving-ground-harness-v1` | Active and should remain open | Proposal/tasks present; `tests/test-protocol.md`, `tests/autopilot-proving-ground-summary.json`, and `tests/performance/*.csv` are present; 5/5 tasks checked. | Unsafe; the explicit acceptance gate is still expected to fail until the exact-arrival fix lands. |
 | `fix-authoritative-flightplan-tracking-v1` | Complete and archive candidate | Proposal/tasks/tests present; all tasks checked. | Archive candidate. |
 | `fix-autopilot-flip-chase-camera-v1` | Complete and archive candidate | Proposal/tasks/tests present; all tasks checked. | Archive candidate. |
 | `fix-autopilot-plan-execution-fidelity-v1` | Complete and archive candidate | Rich test evidence; required phases complete; optional Phase 7 remains separate. | Archive candidate. |
