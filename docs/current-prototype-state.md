@@ -18,12 +18,13 @@ Pressing Play from an empty or nearly empty scene is also supported: `PrototypeB
 
 | Input | Current behavior |
 | --- | --- |
-| `W/S`, `A/D`, `Q/E` | Pitch, yaw, roll in Cruise/Precision; translation mappings change in Translation mode. |
+| `W/S`, `A/D`, `Q/E` | Pitch, yaw, roll in Cruise/Precision; Translation maps W/S/A/D to translation and keeps Q/E as roll. |
 | `Left Shift` / `Left Control` | Increase/decrease persistent main throttle in Cruise only. |
 | `X` / `Y` or `Z` | Cut throttle / full throttle. |
-| `R` | Toggle RCS. |
-| `T` | Toggle SAS angular stabilization. |
+| `R` | Toggle RCS force application and VFX. |
+| `T` | Toggle SAS angular stabilization; SAS torque requests route through RCS. |
 | `Caps Lock` | Cycle `Cruise -> Precision -> Translation -> Cruise`. |
+| `H` / `N` | Up/down RCS translation in Translation mode; Precision keeps attitude control only. |
 | `Tab` / `B` | Select next / previous navigation waypoint. |
 | `G` | Toggle waypoint autopilot for the selected target. |
 | `Space` | Fire the current main gun; Weapon Computer target tracking gates turret fire. |
@@ -38,9 +39,11 @@ Pressing Play from an empty or nearly empty scene is also supported: `PrototypeB
 
 Control-mode summary:
 
-- Cruise: main-thruster flight mode; Shift/Ctrl throttle works; waypoint autopilot uses main burn/brake path.
-- Precision: RCS available, main thruster/gimbal forced off, attitude control stays on W/S/A/D/Q/E.
-- Translation: RCS available, main thruster/gimbal forced off, W/S/A/D/H/N map to linear translation while Q/E stays roll.
+- Cruise: main-thruster flight mode; Shift/Ctrl throttle works; waypoint autopilot uses main burn/brake path; RCS and SAS stay available.
+- Precision: RCS available, main thruster/gimbal forced off, attitude control stays on W/S/A/D/Q/E, and SAS continues to stabilize through RCS on released axes.
+- Translation: RCS available, main thruster/gimbal forced off, W/S/A/D/H/N map to linear translation while Q/E stays roll, and SAS continues to route through RCS when enabled.
+
+If the HUD does not clearly show the active mode, treat that as a HUD visibility/UI follow-up rather than missing controller logic.
 
 ## HUD And Debug Presets
 

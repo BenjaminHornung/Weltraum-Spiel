@@ -24,9 +24,9 @@ This Unity prototype now boots the imported Blender Demo Scout as the default fu
 | `Left Shift` / `Left Control` | Increase / decrease persistent main-thruster throttle |
 | `X` / `Y/Z` | Cut throttle / full throttle |
 | `Space` | Fire the current main gun; if the Weapon Computer has a selected target, the turret tracks and fires at that target when aligned |
-| `R` | Toggle RCS on/off |
+| `R` | Toggle RCS force application and VFX |
 | `Caps Lock` | Cycle control mode: Cruise -> Precision -> Translation -> Cruise |
-| `H` / `N` | Normal: legacy RCS forward/back; Precision/Translation: RCS up/down |
+| `H` / `N` | Normal: legacy RCS forward/back; Translation: RCS up/down; Precision keeps attitude only |
 | `I` / `K` | RCS translate down / up |
 | `J` / `L` | RCS translate left / right |
 | `T` | Toggle SAS angular stabilization through the RCS allocator |
@@ -45,8 +45,8 @@ Mouse movement is reserved for the camera. Hold right mouse button to orbit/look
 
 German keyboard note: full throttle accepts both `Y` and `Z` so the control works reliably when those keys are swapped by the active layout.
 
-Control mode is explicit and cycles with `Caps Lock` (Cruise -> Precision -> Translation -> Cruise) or the HUD mode button. Cruise allows main-thruster throttle (including Shift/Ctrl), and the waypoint autopilot uses the main-thruster burn/brake path. Precision mode forces main thruster and gimbal off and uses RCS for attitude control (W/S pitch, A/D yaw, Q/E roll). Translation mode also forces main/gimbal off and uses RCS translation with W/S forward/back, A/D left/right, H/N up/down, and Q/E roll. Left Alt is not used as the primary mode switch.
-If a mode change does not appear in the HUD, check the HUD mode chip/help first before concluding input mode-switching logic is broken.
+Control mode is explicit and cycles with `Caps Lock` (Cruise -> Precision -> Translation -> Cruise) or the HUD mode button. Cruise allows main-thruster throttle (including Shift/Ctrl), and the waypoint autopilot uses the main-thruster burn/brake path. Precision mode forces main thruster and gimbal off and keeps attitude control on RCS (W/S pitch, A/D yaw, Q/E roll). Translation mode also forces main/gimbal off and maps W/S/A/D/H/N to RCS translation while Q/E stays roll. RCS and SAS continue to work through the same RCS allocator: RCS toggle gates physical RCS force and VFX, SAS torque requests route through RCS, and manual pitch/yaw/roll input masks SAS on the same axis while released axes continue to stabilize. Left Alt is not used as the primary mode switch.
+If the HUD does not clearly show the active mode, treat that as a HUD visibility/UI bug rather than proof that controller logic is missing or broken.
 
 ## Controller Status
 
@@ -132,8 +132,8 @@ Camera reset is bound to Backquote. Unity Input System key controls are physical
 - Control Mode is the gameplay-facing flight model switch. Cruise allows main-thruster control and throttle input. Precision and Translation force RCS available, force main thruster/gimbal commands to zero, and use RCS attitude (Precision) or RCS translation (Translation). They ignore Shift/Ctrl throttle input and keep main throttle at zero until the pilot or autopilot explicitly commands Cruise thrust again.
 - Each RCS block has five installed nozzle transforms, excluding the side that faces into the ship wall. RCS translation, attitude, and SAS use actual nozzle positions/directions rather than hardcoded slots.
 - Generated module proxies now carry simple damage state. Damaged RCS blocks scale their effective thrust through the existing RCS allocator, so physical authority falls with module integrity.
-- SAS has `KillRotation` and `HoldAttitude` modes. It creates a ship-local PD torque request from angular velocity and optional target attitude, then sends that request through the same RCS nozzle allocator as manual attitude.
-- SAS exposes proportional and derivative gains on `RcsThrusterController`. Manual pitch, yaw, or roll input masks SAS on that same axis while released axes continue to stabilize.
+- SAS has `KillRotation` and `HoldAttitude` modes. It creates a ship-local PD torque request from angular velocity and optional target attitude, then sends that request through the same RCS nozzle allocator as manual attitude. Manual pitch, yaw, or roll input masks SAS on that same axis while released axes continue to stabilize.
+- SAS exposes proportional and derivative gains on `RcsThrusterController`.
 - Flight assist is an explicit request layer with `Simulation`, `AssistedFlight`, and `DebugAssist` modes. Simulation mode sends no assist force or torque, assisted requests must go through the RCS allocator and `ShipPhysicsCore`, and debug-only requests are labeled so they cannot masquerade as physical flight. Momentum Assist adds a `MomentumAssist` request source for Kill Momentum so braking stays visible and physical.
 - Waypoint navigation creates three visible primitive targets at runtime. `Tab` and `B` cycle them, and `G` toggles a conservative autopilot that normalizes to Cruise mode, sends a `WaypointAutopilot` assist request, and combines main-throttle intent with RCS attitude/lateral correction when available.
 - The waypoint autopilot estimates stopping distance from current closing speed and conservative deceleration. It now evaluates candidate trajectories around detected obstacles, accounts for initial/lateral velocity, and may refuse or limit a route with `FuelInsufficient`, `NoAuthority`, `LimitedRcsAuthority`, `HoldNoAuthority`, or `LimitedHoldAuthority` instead of pretending the ship can arrive.
