@@ -15,12 +15,12 @@
 
 ## Phase 1: Status Snapshot Contract (Later Runtime Change)
 
-- [ ] Define read-only status snapshot structs/interfaces for each authority
+- [x] Define read-only status snapshot structs/interfaces for each authority
   service (Navigation, Cargo, Scanner, Faction/Legal, Ship Authority, Suit/Vitals).
 - [ ] Map AutopilotTelemetry codes to status snapshot fields.
-- [ ] Define warning chip code enum and severity mapping.
-- [ ] Define failure reason code enum and player-action mapping.
-- [ ] Add unit tests: each authority service produces a valid snapshot.
+- [x] Define warning chip code enum and severity mapping.
+- [x] Define failure reason code enum and player-action mapping.
+- [x] Add unit tests: each authority service produces a valid snapshot.
 
 ## Phase 2: HUD ViewModel Integration (Later Runtime Change)
 
