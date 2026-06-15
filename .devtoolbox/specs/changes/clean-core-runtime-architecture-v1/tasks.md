@@ -11,11 +11,11 @@
 
 ## Phase 1: Runtime Skeleton Later
 
-- [ ] Create the `Assets/_Weltraum` folder skeleton in a dedicated runtime
+- [x] Create the `Assets/_Weltraum` folder skeleton in a dedicated runtime
   implementation change.
-- [ ] Add assembly definitions and namespace rules in a dedicated runtime
+- [x] Add assembly definitions and namespace rules in a dedicated runtime
   implementation change.
-- [ ] Add compile/build verification for the new assemblies.
+- [x] Add compile/build verification for the new assemblies.
 
 ## Phase 2: Legacy Boundary Later
 

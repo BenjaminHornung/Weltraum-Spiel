@@ -1,0 +1,16 @@
+{
+  "name": "Weltraum.Simulation",
+  "rootNamespace": "Weltraum.Simulation",
+  "references": [
+    "Weltraum.Core"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
