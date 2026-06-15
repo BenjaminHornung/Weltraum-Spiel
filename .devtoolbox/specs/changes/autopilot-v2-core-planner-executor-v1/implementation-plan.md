@@ -100,7 +100,7 @@ PrototypeAutopilotNavigationPlayModeTests.cs
 ### Namespace-Struktur und Zielpfade
 
 ```
-Assets/_Weltraum/Scripts/
+Assets/_Weltraum/Runtime/
   Navigation/
     TargetDescriptor.cs                    # Weltraum.Navigation
     ArrivalEnvelope.cs                     # Weltraum.Navigation
@@ -176,7 +176,7 @@ Assets/_Weltraum/Tests/EditMode/
 | Attribut | Wert |
 |---|---|
 | Namespace | `Weltraum.Navigation` |
-| Datei | `Assets/_Weltraum/Scripts/Navigation/TargetDescriptor.cs` |
+| Datei | `Assets/_Weltraum/Runtime/Navigation/TargetDescriptor.cs` |
 | Typ | `readonly struct` (immutable, value-type) |
 | Besitzer | Planner-Eingang; wird von `NavigationTargetService` erzeugt |
 | Felder | `TargetKind Kind`, `FrameId Frame`, `Vector3d Position`, `Vector3d? DesiredVelocity`, `QuaternionD? DesiredAttitude`, `ArrivalEnvelope Envelope`, `TargetSafetyMetadata Safety` |
@@ -190,7 +190,7 @@ Assets/_Weltraum/Tests/EditMode/
 | Attribut | Wert |
 |---|---|
 | Namespace | `Weltraum.Navigation` |
-| Datei | `Assets/_Weltraum/Scripts/Navigation/ArrivalEnvelope.cs` |
+| Datei | `Assets/_Weltraum/Runtime/Navigation/ArrivalEnvelope.cs` |
 | Typ | `readonly struct` |
 | Besitzer | Komponente von TargetDescriptor |
 | Felder | `double MaxPositionErrorMeters`, `double MaxRelativeSpeedMetersPerSecond`, `double MaxAngularSpeedRadiansPerSecond`, `double HoldDurationSeconds` |
@@ -204,7 +204,7 @@ Assets/_Weltraum/Tests/EditMode/
 | Attribut | Wert |
 |---|---|
 | Namespace | `Weltraum.Navigation` |
-| Datei | `Assets/_Weltraum/Scripts/Navigation/RoutePlan.cs` |
+| Datei | `Assets/_Weltraum/Runtime/Navigation/RoutePlan.cs` |
 | Typ | `class`, immutable nach Konstruktion (Properties get-only) |
 | Besitzer | Planner-Ausgang, Executor-Eingang |
 | Felder | `IReadOnlyList<RouteSegment> Segments`, `string PlanHash`, `int PlanRevision`, `RouteCandidate SourceCandidate`, `double EstimatedDurationSeconds`, `double EstimatedFuelKg`, `double EstimatedDeltaV`, `RouteRiskLevel RiskLevel`, `double CreatedAtSimulationTimeSeconds` |
@@ -218,7 +218,7 @@ Assets/_Weltraum/Tests/EditMode/
 | Attribut | Wert |
 |---|---|
 | Namespace | `Weltraum.Navigation` |
-| Datei | `Assets/_Weltraum/Scripts/Navigation/RouteSegment.cs` |
+| Datei | `Assets/_Weltraum/Runtime/Navigation/RouteSegment.cs` |
 | Typ | `readonly struct` |
 | Besitzer | Komponente von RoutePlan |
 | Felder | `SegmentKind Kind`, `Vector3d StartPosition`, `Vector3d EndPosition`, `QuaternionD StartAttitude`, `QuaternionD EndAttitude`, `Vector3d StartVelocity`, `Vector3d EndVelocity`, `double DurationSeconds`, `double EstimatedFuelKg`, `double ClearanceMeters`, `int Index` |
@@ -232,7 +232,7 @@ Assets/_Weltraum/Tests/EditMode/
 | Attribut | Wert |
 |---|---|
 | Namespace | `Weltraum.Navigation` |
-| Datei | `Assets/_Weltraum/Scripts/Navigation/RouteCandidate.cs` |
+| Datei | `Assets/_Weltraum/Runtime/Navigation/RouteCandidate.cs` |
 | Typ | `class`, immutable nach Konstruktion |
 | Besitzer | Zwischenergebnis der Planung |
 | Felder | `string CandidateName`, `IReadOnlyList<RouteSegment> Segments`, `RouteScore Score`, `double EstimatedDurationSeconds`, `double EstimatedFuelKg`, `double EstimatedDeltaV`, `double MinimumClearanceMeters`, `IReadOnlyList<string> ValidationWarnings` |
@@ -246,7 +246,7 @@ Assets/_Weltraum/Tests/EditMode/
 | Attribut | Wert |
 |---|---|
 | Namespace | `Weltraum.Navigation` |
-| Datei | `Assets/_Weltraum/Scripts/Navigation/RouteScore.cs` |
+| Datei | `Assets/_Weltraum/Runtime/Navigation/RouteScore.cs` |
 | Typ | `readonly struct` |
 | Besitzer | Bewertungsresultat |
 | Felder | `double DurationScore`, `double FuelScore`, `double RiskScore`, `double ClearanceScore`, `double CompositeScore`, `RouteOptimizationMode OptimizationMode` |
@@ -260,7 +260,7 @@ Assets/_Weltraum/Tests/EditMode/
 | Attribut | Wert |
 |---|---|
 | Namespace | `Weltraum.Navigation` |
-| Datei | `Assets/_Weltraum/Scripts/Navigation/NavigationEnvironmentSnapshot.cs` |
+| Datei | `Assets/_Weltraum/Runtime/Navigation/NavigationEnvironmentSnapshot.cs` |
 | Typ | `class`, immutable nach Konstruktion |
 | Besitzer | Eingabedaten für Planner (eingefrorene Umgebung) |
 | Felder | `FrameId ReferenceFrame`, `IReadOnlyList<ObstacleSnapshot> Obstacles`, `IReadOnlyList<ObstacleSnapshot> NoGoVolumes`, `double ReferenceTimestampSeconds`, `Vector3d Origin` |
@@ -274,7 +274,7 @@ Assets/_Weltraum/Tests/EditMode/
 | Attribut | Wert |
 |---|---|
 | Namespace | `Weltraum.Navigation` |
-| Datei | `Assets/_Weltraum/Scripts/Navigation/ShipAuthoritySnapshot.cs` |
+| Datei | `Assets/_Weltraum/Runtime/Navigation/ShipAuthoritySnapshot.cs` |
 | Typ | `readonly struct` |
 | Besitzer | Schiffszustand zum Planungszeitpunkt |
 | Felder | `double MassKg`, `Vector3d Position`, `Vector3d Velocity`, `QuaternionD Attitude`, `Vector3d AngularVelocity`, `double MainThrustNewtons`, `double RcsThrustNewtons`, `double CurrentFuelKg`, `double MaxFuelKg`, `bool HasRcsAuthority`, `bool HasMainAuthority`, `AuthorityLevel AuthorityLevel` |
@@ -288,7 +288,7 @@ Assets/_Weltraum/Tests/EditMode/
 | Attribut | Wert |
 |---|---|
 | Namespace | `Weltraum.Navigation` |
-| Datei | `Assets/_Weltraum/Scripts/Navigation/ObstacleSnapshot.cs` |
+| Datei | `Assets/_Weltraum/Runtime/Navigation/ObstacleSnapshot.cs` |
 | Typ | `readonly struct` |
 | Besitzer | Einzelnes Hindernis im Environment Snapshot |
 | Felder | `string Id`, `ObstacleShape Shape`, `Vector3d Position`, `Vector3d Velocity`, `Vector3d PredictedPosition`, `double HardRadius`, `double ClearanceRadius`, `ObstacleHazardType HazardType`, `double Confidence` |
@@ -302,7 +302,7 @@ Assets/_Weltraum/Tests/EditMode/
 | Attribut | Wert |
 |---|---|
 | Namespace | `Weltraum.Flight` |
-| Datei | `Assets/_Weltraum/Scripts/Flight/FuelBudget.cs` |
+| Datei | `Assets/_Weltraum/Runtime/Flight/FuelBudget.cs` |
 | Typ | `readonly struct` |
 | Besitzer | Kraftstoffvorgabe für Planung |
 | Felder | `double AvailableKg`, `double ReservedKg`, `double MinimumReserveKg` |
@@ -316,7 +316,7 @@ Assets/_Weltraum/Tests/EditMode/
 | Attribut | Wert |
 |---|---|
 | Namespace | `Weltraum.Flight` |
-| Datei | `Assets/_Weltraum/Scripts/Flight/BrakeReserve.cs` |
+| Datei | `Assets/_Weltraum/Runtime/Flight/BrakeReserve.cs` |
 | Typ | `readonly struct` |
 | Besitzer | Bremsreserve für Planung |
 | Felder | `double DeltaVAvailable`, `double DeltaVRequired`, `double SafetyMargin` |
@@ -330,7 +330,7 @@ Assets/_Weltraum/Tests/EditMode/
 | Attribut | Wert |
 |---|---|
 | Namespace | `Weltraum.Navigation` |
-| Datei | `Assets/_Weltraum/Scripts/Navigation/PlanInvalidationReason.cs` |
+| Datei | `Assets/_Weltraum/Runtime/Navigation/PlanInvalidationReason.cs` |
 | Typ | `enum` (oder readonly struct mit Code + Message) |
 | Besitzer | Executor-Invalidierungsgrund |
 | Werte | `None`, `ObstacleDetected`, `FuelExhausted`, `AuthorityLost`, `TargetMoved`, `TimewarpInstability`, `SupervisorAbort`, `ManualOverride`, `ShipDamaged`, `EnvironmentChanged` |
@@ -344,7 +344,7 @@ Assets/_Weltraum/Tests/EditMode/
 | Attribut | Wert |
 |---|---|
 | Namespace | `Weltraum.Navigation.Execution` |
-| Datei | `Assets/_Weltraum/Scripts/Navigation/Execution/AutopilotExecutionState.cs` |
+| Datei | `Assets/_Weltraum/Runtime/Navigation/Execution/AutopilotExecutionState.cs` |
 | Typ | `readonly struct` |
 | Besitzer | Zustand des Executors zu einem gegebenen Tick |
 | Felder | `ExecutionPhase Phase`, `int CurrentSegmentIndex`, `double ElapsedTimeSeconds`, `double RemainingTimeSeconds`, `PlanInvalidationReason InvalidationReason`, `bool HasActivePlan`, `string ActivePlanHash` |
@@ -358,7 +358,7 @@ Assets/_Weltraum/Tests/EditMode/
 | Attribut | Wert |
 |---|---|
 | Namespace | `Weltraum.Navigation.Diagnostics` |
-| Datei | `Assets/_Weltraum/Scripts/Navigation/Diagnostics/AutopilotTelemetry.cs` |
+| Datei | `Assets/_Weltraum/Runtime/Navigation/Diagnostics/AutopilotTelemetry.cs` |
 | Typ | `class`, immutable Snapshot nach Tick |
 | Besitzer | Diagnostik-Ausgang für UI und Tests |
 | Felder | `AutopilotExecutionState ExecutionState`, `TargetDescriptor ActiveTarget`, `RouteScore SelectedCandidateScore`, `int CandidateCount`, `string ActivePlanHash`, `int ReplanCount`, `double FuelRemainingKg`, `double FuelUsedKg`, `double MinimumObstacleClearanceMeters`, `IReadOnlyList<string> Warnings`, `IReadOnlyList<string> Errors`, `PlanInvalidationReason? Invalidation` |
@@ -374,7 +374,7 @@ Assets/_Weltraum/Tests/EditMode/
 | Attribut | Wert |
 |---|---|
 | Namespace | `Weltraum.Navigation.Planning` |
-| Datei | `Assets/_Weltraum/Scripts/Navigation/Planning/IRoutePlanner.cs` |
+| Datei | `Assets/_Weltraum/Runtime/Navigation/Planning/IRoutePlanner.cs` |
 | Methode | `IReadOnlyList<RouteCandidate> PlanCandidates(TargetDescriptor target, ShipAuthoritySnapshot ship, NavigationEnvironmentSnapshot environment, FuelBudget fuelBudget, RouteOptimizationMode optimizationMode)` |
 | Verhalten | Erzeugt 0..N Kandidaten. Liefert leere Liste wenn kein Kandidat möglich. Darf niemals null zurückgeben. |
 | Harte Ablehnung | Ziel im Planeten, Clearance-Verletzung, Fuel insufficient, No Authority → leere Liste (nicht Exception). |
@@ -384,7 +384,7 @@ Assets/_Weltraum/Tests/EditMode/
 | Attribut | Wert |
 |---|---|
 | Namespace | `Weltraum.Navigation.Planning` |
-| Datei | `Assets/_Weltraum/Scripts/Navigation/Planning/DirectLocalPlanner.cs` |
+| Datei | `Assets/_Weltraum/Runtime/Navigation/Planning/DirectLocalPlanner.cs` |
 | Input | `TargetDescriptor`, `ShipAuthoritySnapshot`, `NavigationEnvironmentSnapshot`, `FuelBudget`, `RouteOptimizationMode` |
 | Output | 1 RouteCandidate (Orient → Burn → Coast → Brake → TerminalCapture) |
 | Harte Ablehnung | Target im Hindernis, Clearance < HardRadius, Fuel nicht ausreichend für Brake, No Authority |
@@ -396,7 +396,7 @@ Assets/_Weltraum/Tests/EditMode/
 | Attribut | Wert |
 |---|---|
 | Namespace | `Weltraum.Navigation.Planning` |
-| Datei | `Assets/_Weltraum/Scripts/Navigation/Planning/ObstacleAvoidancePlanner.cs` |
+| Datei | `Assets/_Weltraum/Runtime/Navigation/Planning/ObstacleAvoidancePlanner.cs` |
 | Input | `TargetDescriptor`, `ShipAuthoritySnapshot`, `NavigationEnvironmentSnapshot`, `FuelBudget`, `RouteOptimizationMode` |
 | Output | 1..N RouteCandidate (mit AvoidanceArc-Segment) |
 | Harte Ablehnung | Kein valides Avoidance-Manöver gefunden (Clearance- oder Fuel-Gate) → leere Liste |
@@ -408,7 +408,7 @@ Assets/_Weltraum/Tests/EditMode/
 | Attribut | Wert |
 |---|---|
 | Namespace | `Weltraum.Navigation.Planning` |
-| Datei | `Assets/_Weltraum/Scripts/Navigation/Planning/FuelAuthorityValidator.cs` |
+| Datei | `Assets/_Weltraum/Runtime/Navigation/Planning/FuelAuthorityValidator.cs` |
 | Input | `RouteCandidate`, `ShipAuthoritySnapshot`, `FuelBudget` |
 | Output | `ValidationResult` (Accepted / Rejected mit Grund) |
 | Harte Ablehnung | Fuel < Required + Reserve; BrakeReserve unterschritten; No Authority für RCS- oder Main-Thruster |
@@ -420,7 +420,7 @@ Assets/_Weltraum/Tests/EditMode/
 | Attribut | Wert |
 |---|---|
 | Namespace | `Weltraum.Navigation.Planning` |
-| Datei | `Assets/_Weltraum/Scripts/Navigation/Planning/RouteScorer.cs` |
+| Datei | `Assets/_Weltraum/Runtime/Navigation/Planning/RouteScorer.cs` |
 | Input | `IReadOnlyList<RouteCandidate>`, `RouteOptimizationMode` |
 | Output | `RouteScore` pro Kandidat; Methode `SelectBest()` → `RouteCandidate` |
 | Modi | `Fastest` (Duration hoch gewichtet), `FuelSaver` (DeltaV/Fuel hoch gewichtet), `Balanced` (gemischt) |
@@ -432,7 +432,7 @@ Assets/_Weltraum/Tests/EditMode/
 | Attribut | Wert |
 |---|---|
 | Namespace | `Weltraum.Navigation.Planning` |
-| Datei | `Assets/_Weltraum/Scripts/Navigation/Planning/RouteValidator.cs` |
+| Datei | `Assets/_Weltraum/Runtime/Navigation/Planning/RouteValidator.cs` |
 | Input | `RouteCandidate`, `NavigationEnvironmentSnapshot`, `ShipAuthoritySnapshot` |
 | Output | `ValidationResult` (Accepted / Rejected mit Grund + Detail) |
 | Harte Gates | Target nicht in Planet/Atmosphäre-No-Go, Clearance >= HardRadius für alle Segmente, Fuel + Reserve ausreichend, BrakeReserve ausreichend, Authority für benötigte Manöver vorhanden, Timewarp-Stabilität |
@@ -444,7 +444,7 @@ Assets/_Weltraum/Tests/EditMode/
 | Attribut | Wert |
 |---|---|
 | Namespace | `Weltraum.Navigation.Planning` |
-| Datei | `Assets/_Weltraum/Scripts/Navigation/Planning/PlanHashService.cs` |
+| Datei | `Assets/_Weltraum/Runtime/Navigation/Planning/PlanHashService.cs` |
 | Input | `RoutePlan` (oder serialisierbare Plan-Darstellung) |
 | Output | `string` (deterministischer Hash, z.B. SHA256 hex) |
 | Verhalten | Gleicher Plan → gleicher Hash. Unterschiedlicher Plan → anderer Hash. |
@@ -668,8 +668,8 @@ Phase 4: Legacy-Harness nur noch als Regression-Referenz nutzen.
 ## Rollback / Safe Stop
 
 ```text
-- Phase 1 (DTOs): Löschen der neuen Dateien unter Assets/_Weltraum/Scripts/Navigation/
-  und Assets/_Weltraum/Scripts/Flight/. Kein Einfluss auf Prototype.
+- Phase 1 (DTOs): Löschen der neuen Dateien unter Assets/_Weltraum/Runtime/Navigation/
+  und Assets/_Weltraum/Runtime/Flight/. Kein Einfluss auf Prototype.
 - Phase 2 (Planner): Löschen der Planner-Dateien. DTOs bleiben als reine
   Datenstrukturen bestehen.
 - Phase 3 (Executor): Löschen der Executor-Dateien. Planner + DTOs bleiben.
@@ -689,7 +689,7 @@ Phase 4: Legacy-Harness nur noch als Regression-Referenz nutzen.
 ## Definition of Done
 
 ```text
-□ Alle 14 Pflicht-DTOs unter Assets/_Weltraum/Scripts/Navigation/ und Assets/_Weltraum/Scripts/Flight/ existieren und kompilieren.
+□ Alle 14 Pflicht-DTOs unter Assets/_Weltraum/Runtime/Navigation/ und Assets/_Weltraum/Runtime/Flight/ existieren und kompilieren.
 □ Alle DTOs sind immutable (readonly struct oder immutable class).
 □ Alle DTOs haben jeweilige EditMode-Tests (14 DTO-/Enum-Test-Dateien).
 □ DirectLocalPlanner und ObstacleAvoidancePlanner existieren mit Tests.
