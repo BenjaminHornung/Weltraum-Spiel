@@ -171,13 +171,23 @@ Assets/_Weltraum/Tests/EditMode/
 
 ### DTO Contract Map
 
+Current implementation decision (2026-06-20): the Phase 1 contracts use
+immutable sealed classes with get-only properties and defensive read-only copies
+for collection-backed members. The earlier plan text proposed `readonly struct`
+for several DTOs, but the implemented class form is retained because it is
+immutable, tested, null-validatable for object graphs, and better aligned with
+Unity serialization / inspector tooling than a broad value-type conversion.
+Future DTOs should default to immutable sealed class unless a specific contract
+requires value-type semantics; small math values such as `SpatialVector3` may
+remain `readonly struct`.
+
 #### TargetDescriptor
 
 | Attribut | Wert |
 |---|---|
 | Namespace | `Weltraum.Navigation` |
 | Datei | `Assets/_Weltraum/Runtime/Navigation/TargetDescriptor.cs` |
-| Typ | `readonly struct` (immutable, value-type) |
+| Typ | immutable sealed class |
 | Besitzer | Planner-Eingang; wird von `NavigationTargetService` erzeugt |
 | Felder | `TargetKind Kind`, `FrameId Frame`, `Vector3d Position`, `Vector3d? DesiredVelocity`, `QuaternionD? DesiredAttitude`, `ArrivalEnvelope Envelope`, `TargetSafetyMetadata Safety` |
 | Invarianten | Position darf nicht NaN/Infinity sein; Frame muss bekannt sein; Envelope-Werte >= 0; `DesiredVelocity` ist null-bare, null bedeutet „keine Geschwindigkeitsvorgabe" |
@@ -191,7 +201,7 @@ Assets/_Weltraum/Tests/EditMode/
 |---|---|
 | Namespace | `Weltraum.Navigation` |
 | Datei | `Assets/_Weltraum/Runtime/Navigation/ArrivalEnvelope.cs` |
-| Typ | `readonly struct` |
+| Typ | immutable sealed class |
 | Besitzer | Komponente von TargetDescriptor |
 | Felder | `double MaxPositionErrorMeters`, `double MaxRelativeSpeedMetersPerSecond`, `double MaxAngularSpeedRadiansPerSecond`, `double HoldDurationSeconds` |
 | Invarianten | Alle Werte >= 0; MaxPositionError >= 0.01m (minimale Envelope); HoldDuration >= 0 |
@@ -205,7 +215,7 @@ Assets/_Weltraum/Tests/EditMode/
 |---|---|
 | Namespace | `Weltraum.Navigation` |
 | Datei | `Assets/_Weltraum/Runtime/Navigation/RoutePlan.cs` |
-| Typ | `class`, immutable nach Konstruktion (Properties get-only) |
+| Typ | immutable sealed class (Properties get-only) |
 | Besitzer | Planner-Ausgang, Executor-Eingang |
 | Felder | `IReadOnlyList<RouteSegment> Segments`, `string PlanHash`, `int PlanRevision`, `RouteCandidate SourceCandidate`, `double EstimatedDurationSeconds`, `double EstimatedFuelKg`, `double EstimatedDeltaV`, `RouteRiskLevel RiskLevel`, `double CreatedAtSimulationTimeSeconds` |
 | Invarianten | Segments.Count >= 1; PlanHash ist nicht leer und deterministisch; PlanRevision >= 1; SourceCandidate != null |
@@ -219,7 +229,7 @@ Assets/_Weltraum/Tests/EditMode/
 |---|---|
 | Namespace | `Weltraum.Navigation` |
 | Datei | `Assets/_Weltraum/Runtime/Navigation/RouteSegment.cs` |
-| Typ | `readonly struct` |
+| Typ | immutable sealed class |
 | Besitzer | Komponente von RoutePlan |
 | Felder | `SegmentKind Kind`, `Vector3d StartPosition`, `Vector3d EndPosition`, `QuaternionD StartAttitude`, `QuaternionD EndAttitude`, `Vector3d StartVelocity`, `Vector3d EndVelocity`, `double DurationSeconds`, `double EstimatedFuelKg`, `double ClearanceMeters`, `int Index` |
 | Invarianten | DurationSeconds > 0 (Ausnahme: Hold); ClearanceMeters >= 0; Index >= 0 und fortlaufend |
@@ -233,7 +243,7 @@ Assets/_Weltraum/Tests/EditMode/
 |---|---|
 | Namespace | `Weltraum.Navigation` |
 | Datei | `Assets/_Weltraum/Runtime/Navigation/RouteCandidate.cs` |
-| Typ | `class`, immutable nach Konstruktion |
+| Typ | immutable sealed class (Properties get-only) |
 | Besitzer | Zwischenergebnis der Planung |
 | Felder | `string CandidateName`, `IReadOnlyList<RouteSegment> Segments`, `RouteScore Score`, `double EstimatedDurationSeconds`, `double EstimatedFuelKg`, `double EstimatedDeltaV`, `double MinimumClearanceMeters`, `IReadOnlyList<string> ValidationWarnings` |
 | Invarianten | CandidateName nicht leer; Segments.Count >= 1; Score ist gültig und vollständig berechnet |
@@ -247,7 +257,7 @@ Assets/_Weltraum/Tests/EditMode/
 |---|---|
 | Namespace | `Weltraum.Navigation` |
 | Datei | `Assets/_Weltraum/Runtime/Navigation/RouteScore.cs` |
-| Typ | `readonly struct` |
+| Typ | immutable sealed class |
 | Besitzer | Bewertungsresultat |
 | Felder | `double DurationScore`, `double FuelScore`, `double RiskScore`, `double ClearanceScore`, `double CompositeScore`, `RouteOptimizationMode OptimizationMode` |
 | Invarianten | Alle Scores in [0.0, 1.0] (0 = schlechtest, 1 = bestes); CompositeScore >= 0 |
@@ -261,7 +271,7 @@ Assets/_Weltraum/Tests/EditMode/
 |---|---|
 | Namespace | `Weltraum.Navigation` |
 | Datei | `Assets/_Weltraum/Runtime/Navigation/NavigationEnvironmentSnapshot.cs` |
-| Typ | `class`, immutable nach Konstruktion |
+| Typ | immutable sealed class (Properties get-only) |
 | Besitzer | Eingabedaten für Planner (eingefrorene Umgebung) |
 | Felder | `FrameId ReferenceFrame`, `IReadOnlyList<ObstacleSnapshot> Obstacles`, `IReadOnlyList<ObstacleSnapshot> NoGoVolumes`, `double ReferenceTimestampSeconds`, `Vector3d Origin` |
 | Invarianten | Obstacles und NoGoVolumes nie null (leere Liste erlaubt); ReferenceTimestamp >= 0; Planeten/Mondkörper/Atmosphären-No-Go werden in V1 als `ObstacleSnapshot`/`NoGoVolumes` modelliert, nicht als zusätzliches DTO |
@@ -275,7 +285,7 @@ Assets/_Weltraum/Tests/EditMode/
 |---|---|
 | Namespace | `Weltraum.Navigation` |
 | Datei | `Assets/_Weltraum/Runtime/Navigation/ShipAuthoritySnapshot.cs` |
-| Typ | `readonly struct` |
+| Typ | immutable sealed class |
 | Besitzer | Schiffszustand zum Planungszeitpunkt |
 | Felder | `double MassKg`, `Vector3d Position`, `Vector3d Velocity`, `QuaternionD Attitude`, `Vector3d AngularVelocity`, `double MainThrustNewtons`, `double RcsThrustNewtons`, `double CurrentFuelKg`, `double MaxFuelKg`, `bool HasRcsAuthority`, `bool HasMainAuthority`, `AuthorityLevel AuthorityLevel` |
 | Invarianten | MassKg > 0; Thrust-Werte >= 0; Fuel-Werte >= 0; MaxFuel >= CurrentFuel |
@@ -289,7 +299,7 @@ Assets/_Weltraum/Tests/EditMode/
 |---|---|
 | Namespace | `Weltraum.Navigation` |
 | Datei | `Assets/_Weltraum/Runtime/Navigation/ObstacleSnapshot.cs` |
-| Typ | `readonly struct` |
+| Typ | immutable sealed class |
 | Besitzer | Einzelnes Hindernis im Environment Snapshot |
 | Felder | `string Id`, `ObstacleShape Shape`, `Vector3d Position`, `Vector3d Velocity`, `Vector3d PredictedPosition`, `double HardRadius`, `double ClearanceRadius`, `ObstacleHazardType HazardType`, `double Confidence` |
 | Invarianten | HardRadius > 0; ClearanceRadius >= HardRadius; Confidence in [0.0, 1.0]; Shape ist Enum-Wert |
@@ -303,7 +313,7 @@ Assets/_Weltraum/Tests/EditMode/
 |---|---|
 | Namespace | `Weltraum.Flight` |
 | Datei | `Assets/_Weltraum/Runtime/Flight/FuelBudget.cs` |
-| Typ | `readonly struct` |
+| Typ | immutable sealed class |
 | Besitzer | Kraftstoffvorgabe für Planung |
 | Felder | `double AvailableKg`, `double ReservedKg`, `double MinimumReserveKg` |
 | Invarianten | AvailableKg >= ReservedKg + MinimumReserveKg; alle Werte >= 0 |
@@ -317,7 +327,7 @@ Assets/_Weltraum/Tests/EditMode/
 |---|---|
 | Namespace | `Weltraum.Flight` |
 | Datei | `Assets/_Weltraum/Runtime/Flight/BrakeReserve.cs` |
-| Typ | `readonly struct` |
+| Typ | immutable sealed class |
 | Besitzer | Bremsreserve für Planung |
 | Felder | `double DeltaVAvailable`, `double DeltaVRequired`, `double SafetyMargin` |
 | Invarianten | DeltaVAvailable >= 0; DeltaVRequired >= 0; SafetyMargin >= 0; DeltaVAvailable >= DeltaVRequired + SafetyMargin (sonst Rejektion) |

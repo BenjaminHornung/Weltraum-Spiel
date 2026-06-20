@@ -7,11 +7,21 @@
 
 ## Phase 1: Planner Contracts Later
 
-- [ ] Define `TargetDescriptor` in the approved Clean-Core runtime location.
-- [ ] Define `ArrivalEnvelope`.
-- [ ] Define route plan and segment data contracts.
-- [ ] Add pure tests for stable serialization or equality semantics where
+- [x] Define `TargetDescriptor` in the approved Clean-Core runtime location.
+- [x] Define `ArrivalEnvelope`.
+- [x] Define route plan and segment data contracts.
+- [x] Add pure tests for stable serialization or equality semantics where
   needed.
+
+Evidence: current HEAD contains immutable Clean-Core contract types in
+`Assets/_Weltraum/Runtime/Navigation/AutopilotContracts.cs`,
+`Assets/_Weltraum/Runtime/Flight/FlightContracts.cs` and
+`Assets/_Weltraum/Runtime/Simulation/SpatialVector3.cs`, with focused EditMode
+coverage for `TargetDescriptor`, `ArrivalEnvelope`, `RoutePlan`,
+`RouteSegment`, `RouteCandidate`, `RouteScore`,
+`NavigationEnvironmentSnapshot`, `ShipAuthoritySnapshot`, `ObstacleSnapshot`,
+`FuelBudget` and `BrakeReserve`. Planner and executor implementation tasks below
+remain open.
 
 ## Phase 2: Deterministic Planning Later
 
