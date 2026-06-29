@@ -1,0 +1,24 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weltraum Browser</title>
+  </head>
+  <body>
+    <main id="app">
+      <canvas id="debug-scene" aria-label="Three.js autopilot debug scene"></canvas>
+      <section id="hud" aria-live="polite">
+        <div class="label">Plan</div>
+        <div id="plan-hash">pending</div>
+        <div class="label">Mode</div>
+        <div id="mode">unknown</div>
+        <div class="label">Status</div>
+        <div id="status">booting</div>
+        <div class="label">Telemetry</div>
+        <pre id="telemetry">{}</pre>
+      </section>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
