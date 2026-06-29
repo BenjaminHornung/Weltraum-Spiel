@@ -28,12 +28,29 @@ describe("browser proving-ground scenario matrix", () => {
     expect(results.every((result) => result.classification === "PASS")).toBe(true);
     for (const result of results) {
       expect(result.planHashAfter).toBe(result.planHashBefore);
+      expect(["Waypoint", "Point"]).toContain(result.targetKind);
+      expect(result.arrivalEnvelope.radius).toEqual(expect.any(Number));
+      expect(result.routeValidation.ok).toBe(true);
+      expect(result.routeValidation.issues).toEqual(expect.any(Array));
+      expect(result.routeScore).toEqual(
+        expect.objectContaining({
+          distance: expect.any(Number),
+          segmentCount: expect.any(Number),
+          clearanceRisk: expect.any(Number),
+          fuelCostEstimate: expect.any(Number),
+          authorityRisk: expect.any(Number),
+          total: expect.any(Number),
+          reasons: expect.any(Array)
+        })
+      );
       expect(result.initialMass).toEqual(expect.any(Number));
       expect(result.finalMass).toEqual(expect.any(Number));
       expect(result.initialFuel).toEqual(expect.any(Number));
       expect(result.finalFuel).toEqual(expect.any(Number));
       expect(result.fuelUsed).toEqual(expect.any(Number));
       expect(result.finalSpeed).toEqual(expect.any(Number));
+      expect(result.finalPosition).toEqual(expect.objectContaining({ x: expect.any(Number), y: expect.any(Number), z: expect.any(Number) }));
+      expect(result.targetPosition).toEqual(expect.objectContaining({ x: expect.any(Number), y: expect.any(Number), z: expect.any(Number) }));
       expect(result.failureReasonCodes).toEqual(expect.any(Array));
       expect(result.routeValid).toEqual(expect.any(Boolean));
       expect(authorityModes).toContain(result.authority.mode);
@@ -57,6 +74,8 @@ describe("browser proving-ground scenario matrix", () => {
     expect(result.classification).toBe("PASS");
     expect(result.status).toBe("Arrived");
     expect(result.replanRequired).toBe(false);
+    expect(result.finalPosition).toEqual(result.targetPosition);
+    expect(result.distanceToTarget).toBe(0);
   });
 
   it("reports obstacle avoidance route selection", () => {

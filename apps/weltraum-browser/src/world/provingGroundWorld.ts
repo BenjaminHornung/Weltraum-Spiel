@@ -33,20 +33,23 @@ export const provingGroundTargets = {
   nearArrival: {
     id: "arrival-near",
     label: "Direct arrival marker",
+    kind: "Waypoint",
     position: vec3(1.5, 0, 0),
-    arrivalRadius: 2
+    arrivalEnvelope: { radius: 2, stopBehavior: "NoStopRequired" }
   },
   navigationAlpha: {
     id: "nav-alpha",
     label: "Navigation Alpha",
+    kind: "Waypoint",
     position: vec3(120, 0, -30),
-    arrivalRadius: 3
+    arrivalEnvelope: { radius: 3, terminalSpeed: 8, stopBehavior: "MatchTerminalSpeed" }
   },
   navigationBeta: {
     id: "nav-beta",
     label: "Navigation Beta",
+    kind: "Point",
     position: vec3(90, 0, 0),
-    arrivalRadius: 3
+    arrivalEnvelope: { radius: 3, terminalSpeed: 8, stopBehavior: "MatchTerminalSpeed" }
   }
 } satisfies Record<string, TargetDescriptor>;
 

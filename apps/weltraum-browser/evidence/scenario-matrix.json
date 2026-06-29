@@ -4,11 +4,34 @@
     "label": "Direct local arrival",
     "tick": 1,
     "planner": "DirectLocal",
-    "planHashBefore": "ac43ea2e",
-    "planHashAfter": "ac43ea2e",
+    "planHashBefore": "5f08bde5",
+    "planHashAfter": "5f08bde5",
     "segmentKinds": [
       "Direct"
     ],
+    "targetKind": "Waypoint",
+    "arrivalEnvelope": {
+      "radius": 2,
+      "stopBehavior": "NoStopRequired"
+    },
+    "routeValidation": {
+      "ok": true,
+      "issues": [],
+      "rejectedReasonCodes": []
+    },
+    "routeScore": {
+      "distance": 1.5,
+      "segmentCount": 1,
+      "clearanceRisk": 0.5,
+      "fuelCostEstimate": 0.0003,
+      "authorityRisk": 0,
+      "total": 61.5015,
+      "reasons": [
+        "segments:1",
+        "distance:1.5",
+        "clearanceRisk:0.5"
+      ]
+    },
     "status": "Arrived",
     "replanRequired": false,
     "invalidationReasons": [],
@@ -25,7 +48,7 @@
       "reasonCodes": []
     },
     "brakingReserve": {
-      "requiredDeltaV": 1,
+      "requiredDeltaV": 0,
       "availableDeltaV": 4318.1818,
       "canBrake": true,
       "reasonCodes": []
@@ -37,7 +60,17 @@
     "fuelUsed": 0,
     "finalSpeed": 0,
     "fuel": 100,
-    "distanceToTarget": 1.5,
+    "finalPosition": {
+      "x": 1.5,
+      "y": 0,
+      "z": 0
+    },
+    "targetPosition": {
+      "x": 1.5,
+      "y": 0,
+      "z": 0
+    },
+    "distanceToTarget": 0,
     "offRouteDistance": 0,
     "classification": "PASS",
     "notes": []
@@ -47,12 +80,36 @@
     "label": "Obstacle avoidance route",
     "tick": 8,
     "planner": "ObstacleAvoidanceLocal",
-    "planHashBefore": "0575ec8f",
-    "planHashAfter": "0575ec8f",
+    "planHashBefore": "4d6b76cb",
+    "planHashAfter": "4d6b76cb",
     "segmentKinds": [
       "Avoidance",
       "Terminal"
     ],
+    "targetKind": "Point",
+    "arrivalEnvelope": {
+      "radius": 3,
+      "terminalSpeed": 8,
+      "stopBehavior": "MatchTerminalSpeed"
+    },
+    "routeValidation": {
+      "ok": true,
+      "issues": [],
+      "rejectedReasonCodes": []
+    },
+    "routeScore": {
+      "distance": 106,
+      "segmentCount": 2,
+      "clearanceRisk": 0.3958,
+      "fuelCostEstimate": 0.0233,
+      "authorityRisk": 0,
+      "total": 165.6965,
+      "reasons": [
+        "segments:2",
+        "distance:106",
+        "clearanceRisk:0.3958"
+      ]
+    },
     "status": "Executing",
     "replanRequired": false,
     "invalidationReasons": [],
@@ -81,6 +138,16 @@
     "fuelUsed": 0.0533,
     "finalSpeed": 2.4243,
     "fuel": 99.9467,
+    "finalPosition": {
+      "x": 0.3088,
+      "y": 0,
+      "z": 0.1921
+    },
+    "targetPosition": {
+      "x": 90,
+      "y": 0,
+      "z": 0
+    },
     "distanceToTarget": 89.69145352349403,
     "offRouteDistance": 0,
     "classification": "PASS",
@@ -91,11 +158,42 @@
     "label": "Insufficient fuel",
     "tick": 1,
     "planner": "DirectLocal",
-    "planHashBefore": "18bd88cc",
-    "planHashAfter": "18bd88cc",
+    "planHashBefore": "5bfe993b",
+    "planHashAfter": "5bfe993b",
     "segmentKinds": [
       "Direct"
     ],
+    "targetKind": "Point",
+    "arrivalEnvelope": {
+      "radius": 3,
+      "terminalSpeed": 8,
+      "stopBehavior": "MatchTerminalSpeed"
+    },
+    "routeValidation": {
+      "ok": true,
+      "issues": [
+        {
+          "code": "FuelInsufficient",
+          "message": "Operational route constraint is present: FuelInsufficient.",
+          "severity": "Warning",
+          "targetId": "nav-beta"
+        }
+      ],
+      "rejectedReasonCodes": []
+    },
+    "routeScore": {
+      "distance": 90,
+      "segmentCount": 1,
+      "clearanceRisk": 0.3333,
+      "fuelCostEstimate": 0.018,
+      "authorityRisk": 2,
+      "total": 233.42,
+      "reasons": [
+        "segments:1",
+        "distance:90",
+        "clearanceRisk:0.3333"
+      ]
+    },
     "status": "OutOfFuel",
     "replanRequired": true,
     "invalidationReasons": [
@@ -136,6 +234,16 @@
     "fuelUsed": 0,
     "finalSpeed": 0,
     "fuel": 0,
+    "finalPosition": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "targetPosition": {
+      "x": 90,
+      "y": 0,
+      "z": 0
+    },
     "distanceToTarget": 90,
     "offRouteDistance": 0,
     "classification": "PASS",
@@ -146,11 +254,42 @@
     "label": "No authority",
     "tick": 1,
     "planner": "DirectLocal",
-    "planHashBefore": "18bd88cc",
-    "planHashAfter": "18bd88cc",
+    "planHashBefore": "71c45383",
+    "planHashAfter": "71c45383",
     "segmentKinds": [
       "Direct"
     ],
+    "targetKind": "Point",
+    "arrivalEnvelope": {
+      "radius": 3,
+      "terminalSpeed": 8,
+      "stopBehavior": "MatchTerminalSpeed"
+    },
+    "routeValidation": {
+      "ok": true,
+      "issues": [
+        {
+          "code": "AutopilotUnavailable",
+          "message": "Operational route constraint is present: AutopilotUnavailable.",
+          "severity": "Warning",
+          "targetId": "nav-beta"
+        }
+      ],
+      "rejectedReasonCodes": []
+    },
+    "routeScore": {
+      "distance": 90,
+      "segmentCount": 1,
+      "clearanceRisk": 0.3333,
+      "fuelCostEstimate": 0.0198,
+      "authorityRisk": 2,
+      "total": 233.429,
+      "reasons": [
+        "segments:1",
+        "distance:90",
+        "clearanceRisk:0.3333"
+      ]
+    },
     "status": "NoAuthority",
     "replanRequired": true,
     "invalidationReasons": [
@@ -190,6 +329,16 @@
     "fuelUsed": 0,
     "finalSpeed": 0,
     "fuel": 100,
+    "finalPosition": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "targetPosition": {
+      "x": 90,
+      "y": 0,
+      "z": 0
+    },
     "distanceToTarget": 90,
     "offRouteDistance": 0,
     "classification": "PASS",
@@ -200,11 +349,42 @@
     "label": "No main thrusters",
     "tick": 1,
     "planner": "DirectLocal",
-    "planHashBefore": "18bd88cc",
-    "planHashAfter": "18bd88cc",
+    "planHashBefore": "ba16ecef",
+    "planHashAfter": "ba16ecef",
     "segmentKinds": [
       "Direct"
     ],
+    "targetKind": "Point",
+    "arrivalEnvelope": {
+      "radius": 3,
+      "terminalSpeed": 8,
+      "stopBehavior": "MatchTerminalSpeed"
+    },
+    "routeValidation": {
+      "ok": true,
+      "issues": [
+        {
+          "code": "MainThrustersUnavailable",
+          "message": "Operational route constraint is present: MainThrustersUnavailable.",
+          "severity": "Warning",
+          "targetId": "nav-beta"
+        }
+      ],
+      "rejectedReasonCodes": []
+    },
+    "routeScore": {
+      "distance": 90,
+      "segmentCount": 1,
+      "clearanceRisk": 0.3333,
+      "fuelCostEstimate": 0.0198,
+      "authorityRisk": 2,
+      "total": 233.429,
+      "reasons": [
+        "segments:1",
+        "distance:90",
+        "clearanceRisk:0.3333"
+      ]
+    },
     "status": "NoAuthority",
     "replanRequired": true,
     "invalidationReasons": [
@@ -244,6 +424,16 @@
     "fuelUsed": 0,
     "finalSpeed": 0,
     "fuel": 100,
+    "finalPosition": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "targetPosition": {
+      "x": 90,
+      "y": 0,
+      "z": 0
+    },
     "distanceToTarget": 90,
     "offRouteDistance": 0,
     "classification": "PASS",
@@ -254,11 +444,48 @@
     "label": "Brake reserve insufficient",
     "tick": 1,
     "planner": "DirectLocal",
-    "planHashBefore": "18bd88cc",
-    "planHashAfter": "18bd88cc",
+    "planHashBefore": "a275d8e4",
+    "planHashAfter": "a275d8e4",
     "segmentKinds": [
       "Direct"
     ],
+    "targetKind": "Point",
+    "arrivalEnvelope": {
+      "radius": 3,
+      "terminalSpeed": 8,
+      "stopBehavior": "MatchTerminalSpeed"
+    },
+    "routeValidation": {
+      "ok": true,
+      "issues": [
+        {
+          "code": "FuelInsufficient",
+          "message": "Operational route constraint is present: FuelInsufficient.",
+          "severity": "Warning",
+          "targetId": "nav-beta"
+        },
+        {
+          "code": "BrakeReserveInsufficient",
+          "message": "Operational route constraint is present: BrakeReserveInsufficient.",
+          "severity": "Warning",
+          "targetId": "nav-beta"
+        }
+      ],
+      "rejectedReasonCodes": []
+    },
+    "routeScore": {
+      "distance": 90,
+      "segmentCount": 1,
+      "clearanceRisk": 0.3333,
+      "fuelCostEstimate": 0.0181,
+      "authorityRisk": 0,
+      "total": 133.4205,
+      "reasons": [
+        "segments:1",
+        "distance:90",
+        "clearanceRisk:0.3333"
+      ]
+    },
     "status": "BrakeReserveInsufficient",
     "replanRequired": true,
     "invalidationReasons": [
@@ -296,6 +523,16 @@
     "fuelUsed": 0,
     "finalSpeed": 80,
     "fuel": 6,
+    "finalPosition": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "targetPosition": {
+      "x": 90,
+      "y": 0,
+      "z": 0
+    },
     "distanceToTarget": 90,
     "offRouteDistance": 0,
     "classification": "PASS",
@@ -306,11 +543,35 @@
     "label": "Off-route divergence",
     "tick": 1,
     "planner": "DirectLocal",
-    "planHashBefore": "18bd88cc",
-    "planHashAfter": "18bd88cc",
+    "planHashBefore": "14c3ec2e",
+    "planHashAfter": "14c3ec2e",
     "segmentKinds": [
       "Direct"
     ],
+    "targetKind": "Point",
+    "arrivalEnvelope": {
+      "radius": 3,
+      "terminalSpeed": 8,
+      "stopBehavior": "MatchTerminalSpeed"
+    },
+    "routeValidation": {
+      "ok": true,
+      "issues": [],
+      "rejectedReasonCodes": []
+    },
+    "routeScore": {
+      "distance": 90,
+      "segmentCount": 1,
+      "clearanceRisk": 0.3333,
+      "fuelCostEstimate": 0.0198,
+      "authorityRisk": 0,
+      "total": 133.429,
+      "reasons": [
+        "segments:1",
+        "distance:90",
+        "clearanceRisk:0.3333"
+      ]
+    },
     "status": "Diverged",
     "replanRequired": true,
     "invalidationReasons": [
@@ -343,6 +604,16 @@
     "fuelUsed": 0,
     "finalSpeed": 0,
     "fuel": 100,
+    "finalPosition": {
+      "x": 0,
+      "y": 40,
+      "z": 0
+    },
+    "targetPosition": {
+      "x": 90,
+      "y": 0,
+      "z": 0
+    },
     "distanceToTarget": 98.48857801796105,
     "offRouteDistance": 40,
     "classification": "PASS",
@@ -353,11 +624,35 @@
     "label": "Locked plan hash preservation",
     "tick": 12,
     "planner": "DirectLocal",
-    "planHashBefore": "18bd88cc",
-    "planHashAfter": "18bd88cc",
+    "planHashBefore": "14c3ec2e",
+    "planHashAfter": "14c3ec2e",
     "segmentKinds": [
       "Direct"
     ],
+    "targetKind": "Point",
+    "arrivalEnvelope": {
+      "radius": 3,
+      "terminalSpeed": 8,
+      "stopBehavior": "MatchTerminalSpeed"
+    },
+    "routeValidation": {
+      "ok": true,
+      "issues": [],
+      "rejectedReasonCodes": []
+    },
+    "routeScore": {
+      "distance": 90,
+      "segmentCount": 1,
+      "clearanceRisk": 0.3333,
+      "fuelCostEstimate": 0.0198,
+      "authorityRisk": 0,
+      "total": 133.429,
+      "reasons": [
+        "segments:1",
+        "distance:90",
+        "clearanceRisk:0.3333"
+      ]
+    },
     "status": "Executing",
     "replanRequired": false,
     "invalidationReasons": [],
@@ -386,6 +681,16 @@
     "fuelUsed": 0.08,
     "finalSpeed": 3.6365,
     "fuel": 99.92,
+    "finalPosition": {
+      "x": 0.7879,
+      "y": 0,
+      "z": 0
+    },
+    "targetPosition": {
+      "x": 90,
+      "y": 0,
+      "z": 0
+    },
     "distanceToTarget": 89.212103703067,
     "offRouteDistance": 1.1102230246251565e-16,
     "classification": "PASS",
@@ -396,12 +701,36 @@
     "label": "Explicit replan-required signal",
     "tick": 1,
     "planner": "ObstacleAvoidanceLocal",
-    "planHashBefore": "0575ec8f",
-    "planHashAfter": "0575ec8f",
+    "planHashBefore": "4d6b76cb",
+    "planHashAfter": "4d6b76cb",
     "segmentKinds": [
       "Avoidance",
       "Terminal"
     ],
+    "targetKind": "Point",
+    "arrivalEnvelope": {
+      "radius": 3,
+      "terminalSpeed": 8,
+      "stopBehavior": "MatchTerminalSpeed"
+    },
+    "routeValidation": {
+      "ok": true,
+      "issues": [],
+      "rejectedReasonCodes": []
+    },
+    "routeScore": {
+      "distance": 106,
+      "segmentCount": 2,
+      "clearanceRisk": 0.3958,
+      "fuelCostEstimate": 0.0233,
+      "authorityRisk": 0,
+      "total": 165.6965,
+      "reasons": [
+        "segments:2",
+        "distance:106",
+        "clearanceRisk:0.3958"
+      ]
+    },
     "status": "Diverged",
     "replanRequired": true,
     "invalidationReasons": [
@@ -434,6 +763,16 @@
     "fuelUsed": 0,
     "finalSpeed": 0,
     "fuel": 100,
+    "finalPosition": {
+      "x": 0,
+      "y": 42,
+      "z": 0
+    },
+    "targetPosition": {
+      "x": 90,
+      "y": 0,
+      "z": 0
+    },
     "distanceToTarget": 99.3176721434811,
     "offRouteDistance": 42,
     "classification": "PASS",

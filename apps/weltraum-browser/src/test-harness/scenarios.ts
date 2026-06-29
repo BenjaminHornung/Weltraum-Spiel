@@ -1,4 +1,4 @@
-import type { AuthorityState, BrakingReserve, ObstacleDescriptor, RoutePlan, ShipState, TargetDescriptor } from "../core";
+import type { ArrivalEnvelope, AuthorityState, BrakingReserve, ObstacleDescriptor, RoutePlan, RouteScore, RouteValidationResult, ShipState, TargetDescriptor } from "../core";
 import { vec3 } from "../core";
 import { blockingCorridorObstacles, createShipState, noAutopilotAuthority, noMainThrustersAuthority, provingGroundTargets } from "../world/provingGroundWorld";
 
@@ -47,6 +47,10 @@ export interface ScenarioResult {
   readonly planHashBefore: string;
   readonly planHashAfter: string | null;
   readonly segmentKinds: readonly string[];
+  readonly targetKind: TargetDescriptor["kind"];
+  readonly arrivalEnvelope: ArrivalEnvelope;
+  readonly routeValidation: RouteValidationResult;
+  readonly routeScore: RouteScore;
   readonly status: string;
   readonly replanRequired: boolean;
   readonly invalidationReasons: readonly string[];
@@ -61,6 +65,8 @@ export interface ScenarioResult {
   readonly fuelUsed: number;
   readonly finalSpeed: number;
   readonly fuel: number;
+  readonly finalPosition: { readonly x: number; readonly y: number; readonly z: number };
+  readonly targetPosition: { readonly x: number; readonly y: number; readonly z: number };
   readonly distanceToTarget: number;
   readonly offRouteDistance: number;
   readonly notes: readonly string[];

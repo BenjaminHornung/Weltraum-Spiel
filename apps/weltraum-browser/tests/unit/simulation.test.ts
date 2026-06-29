@@ -13,8 +13,9 @@ const ship: ShipState = createShipStateV2({
 const target: TargetDescriptor = {
   id: "beta",
   label: "Beta",
+  kind: "Point",
   position: vec3(60, 0, 0),
-  arrivalRadius: 2
+  arrivalEnvelope: { radius: 2, stopBehavior: "NoStopRequired" }
 };
 
 describe("FixedStepSimulationLoop", () => {

@@ -4,5 +4,6 @@ export * from "./vector";
 export * from "../flight/executor";
 export * from "../flight/state";
 export * from "../navigation/planners";
+export * from "../navigation/validation";
 export * from "../sim/simulation";
 export * from "../sim/telemetry";

@@ -154,7 +154,27 @@ test("debug scene exposes telemetry and writes evidence", async ({ page }) => {
   await expect(page.locator("#authority-status")).toContainText("AP ready");
   await expect(page.locator("#brake-status")).toContainText("ready");
 
-  const originalHash = telemetry.executor.planHash;
+  const arrivalTelemetry = await page.evaluate(() => {
+    let current = (window as any).TestBridge.getTelemetry();
+    for (let i = 0; i < 1_200 && current.executor.status !== "Arrived"; i += 1) {
+      current = (window as any).TestBridge.step(1);
+    }
+    return current;
+  });
+  expect(arrivalTelemetry.executor.status).toBe("Arrived");
+  expect(arrivalTelemetry.executor.distanceToTarget).toBeLessThanOrEqual(arrivalTelemetry.lockedPlan.target.arrivalEnvelope.radius);
+  expect(arrivalTelemetry.ship.position).toEqual(arrivalTelemetry.lockedPlan.target.position);
+  expect(arrivalTelemetry.executor.planHash).toBe(telemetry.executor.planHash);
+  await page.waitForFunction(() => (window as any).TestBridge.getRenderSnapshot?.().executorStatus === "Arrived");
+  const renderSnapshot = await page.evaluate(() => (window as any).TestBridge.getRenderSnapshot());
+  expect(renderSnapshot.targetVisible).toBe(true);
+  expect(renderSnapshot.shipPosition).toEqual(arrivalTelemetry.lockedPlan.target.position);
+  expect(renderSnapshot.targetPosition).toEqual(arrivalTelemetry.lockedPlan.target.position);
+  expect(renderSnapshot.lockedTargetPosition).toEqual(arrivalTelemetry.lockedPlan.target.position);
+  expect(renderSnapshot.distanceToTarget).toBeLessThanOrEqual(renderSnapshot.arrivalRadius);
+  expect(renderSnapshot.planHash).toBe(arrivalTelemetry.executor.planHash);
+
+  const originalHash = arrivalTelemetry.executor.planHash;
   const divergent = await page.evaluate(() => (window as any).TestBridge.disturbShip(0));
   expect(divergent.executor.replanRequired).toBe(true);
   expect(divergent.executor.planHash).toBe(originalHash);
@@ -184,6 +204,20 @@ test("debug scene exposes telemetry and writes evidence", async ({ page }) => {
         typeof result.fuelUsed === "number" &&
         typeof result.initialMass === "number" &&
         typeof result.finalMass === "number" &&
+        typeof result.finalPosition?.x === "number" &&
+        typeof result.finalPosition?.y === "number" &&
+        typeof result.finalPosition?.z === "number" &&
+        typeof result.targetPosition?.x === "number" &&
+        typeof result.targetPosition?.y === "number" &&
+        typeof result.targetPosition?.z === "number" &&
+        ["Waypoint", "Point"].includes(result.targetKind) &&
+        typeof result.arrivalEnvelope?.radius === "number" &&
+        result.routeValidation?.ok === true &&
+        Array.isArray(result.routeValidation?.issues) &&
+        typeof result.routeScore?.distance === "number" &&
+        typeof result.routeScore?.segmentCount === "number" &&
+        typeof result.routeScore?.total === "number" &&
+        Array.isArray(result.routeScore?.reasons) &&
         Array.isArray(result.failureReasonCodes) &&
         typeof result.routeValid === "boolean" &&
         typeof result.initialFuel === "number" &&
@@ -198,6 +232,9 @@ test("debug scene exposes telemetry and writes evidence", async ({ page }) => {
         typeof result.brakingReserve?.canBrake === "boolean"
     )
   ).toBe(true);
+  const directLocalArrival = matrixResults.find((result: any) => result.id === "direct-local-arrival");
+  expect(directLocalArrival.finalPosition).toEqual(directLocalArrival.targetPosition);
+  expect(directLocalArrival.distanceToTarget).toBe(0);
   const insufficientFuel = matrixResults.find((result: any) => result.id === "insufficient-fuel");
   expect(insufficientFuel).toEqual(
     expect.objectContaining({

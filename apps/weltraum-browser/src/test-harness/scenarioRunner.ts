@@ -1,4 +1,4 @@
-import { AutopilotExecutor, DirectLocalPlanner, FixedStepSimulationLoop, ObstacleAvoidanceLocalPlanner, magnitude, vec3 } from "../core";
+import { AutopilotExecutor, DirectLocalPlanner, FixedStepSimulationLoop, ObstacleAvoidanceLocalPlanner, magnitude, roundVec, vec3 } from "../core";
 import { getScenarioDefinition, scenarioCatalog } from "./scenarios";
 import type { PlannerKind, ScenarioDefinition, ScenarioId, ScenarioResult } from "./scenarios";
 
@@ -44,7 +44,11 @@ export const runScenario = (id: ScenarioId): ScenarioResult => {
   const scenario = getScenarioDefinition(id);
   const executor = new AutopilotExecutor({ divergenceDistance: scenario.divergenceDistance });
   const planner = createPlanner(scenario.planner);
-  const plan = planner.plan({ tick: 0, ship: scenario.ship, target: scenario.target, obstacles: scenario.obstacles });
+  const planningResult = planner.planResult({ tick: 0, ship: scenario.ship, target: scenario.target, obstacles: scenario.obstacles });
+  if (!planningResult.ok) {
+    throw new Error(`Scenario ${scenario.id} planner rejection: ${planningResult.rejection.reasonCodes.join(",")}`);
+  }
+  const plan = planningResult.plan;
   executor.lockPlan(plan, scenario.ship);
 
   const loop = new FixedStepSimulationLoop(scenario.ship, executor, { fixedDeltaSeconds: 1 / 30, maxSubSteps: 8 });
@@ -80,6 +84,10 @@ export const runScenario = (id: ScenarioId): ScenarioResult => {
     planHashBefore: plan.planHash,
     planHashAfter: executor.getLockedPlan()?.planHash ?? null,
     segmentKinds: plan.segments.map((segment) => segment.kind),
+    targetKind: plan.target.kind,
+    arrivalEnvelope: plan.target.arrivalEnvelope,
+    routeValidation: planningResult.validation,
+    routeScore: planningResult.score,
     status: telemetry.status,
     replanRequired: telemetry.replanRequired,
     invalidationReasons: telemetry.invalidationReasons,
@@ -94,6 +102,8 @@ export const runScenario = (id: ScenarioId): ScenarioResult => {
     fuelUsed: Number(Math.max(0, initialFuel - finalFuel).toFixed(4)),
     finalSpeed: Number(magnitude(finalShip.velocity).toFixed(4)),
     fuel: Number(finalFuel.toFixed(4)),
+    finalPosition: roundVec(finalShip.position),
+    targetPosition: roundVec(plan.target.position),
     distanceToTarget: telemetry.distanceToTarget,
     offRouteDistance: telemetry.offRouteDistance
   };

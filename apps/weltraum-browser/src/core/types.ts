@@ -72,11 +72,24 @@ export interface ShipState {
   readonly authority: AuthorityState;
 }
 
+export type TargetDescriptorKind = "Waypoint" | "Point" | "Landing" | "Docking" | "Cargo" | "Orbit";
+
+export type ArrivalStopBehavior = "NoStopRequired" | "StopWithinEnvelope" | "MatchTerminalSpeed";
+
+export interface ArrivalEnvelope {
+  readonly radius: number;
+  readonly terminalSpeed?: number;
+  readonly stopBehavior?: ArrivalStopBehavior;
+}
+
 export interface TargetDescriptor {
   readonly id: string;
   readonly label: string;
+  readonly kind: TargetDescriptorKind;
   readonly position: Vec3;
-  readonly arrivalRadius: number;
+  readonly arrivalEnvelope: ArrivalEnvelope;
+  /** @deprecated Use arrivalEnvelope.radius. Kept only as a compatibility bridge during v1 migration. */
+  readonly arrivalRadius?: number;
 }
 
 export type RouteSegmentKind = "Direct" | "Avoidance" | "Terminal";
@@ -96,8 +109,79 @@ export interface RoutePlan {
   readonly createdAtTick: number;
   readonly target: TargetDescriptor;
   readonly segments: readonly RouteSegment[];
+  readonly validation: RouteValidationResult;
+  readonly score: RouteScore;
   readonly planHash: string;
 }
+
+export type RouteValidationReasonCode =
+  | "InvalidTarget"
+  | "UnsupportedTargetKind"
+  | "UnsafeObstacle"
+  | "ImpossibleArrivalEnvelope"
+  | "FuelInsufficient"
+  | "FuelReserveViolated"
+  | "MainThrustersUnavailable"
+  | "AutopilotUnavailable"
+  | "AuthorityInsufficient"
+  | "BrakeReserveInsufficient";
+
+export type RouteValidationSeverity = "Reject" | "Warning";
+
+export interface RouteValidationIssue {
+  readonly code: RouteValidationReasonCode;
+  readonly severity: RouteValidationSeverity;
+  readonly message: string;
+  readonly targetId?: string;
+  readonly obstacleId?: string;
+}
+
+export interface RouteValidationResult {
+  readonly ok: boolean;
+  readonly issues: readonly RouteValidationIssue[];
+  readonly rejectedReasonCodes: readonly RouteValidationReasonCode[];
+}
+
+export interface RouteScore {
+  readonly distance: number;
+  readonly segmentCount: number;
+  readonly clearanceRisk: number;
+  readonly fuelCostEstimate: number;
+  readonly authorityRisk: number;
+  readonly total: number;
+  readonly reasons: readonly string[];
+}
+
+export interface RouteCandidate {
+  readonly id: string;
+  readonly planner: RoutePlan["planner"];
+  readonly target: TargetDescriptor;
+  readonly segments: readonly RouteSegment[];
+  readonly validation: RouteValidationResult;
+  readonly score: RouteScore;
+}
+
+export interface PlannerRejection {
+  readonly planner: RoutePlan["planner"];
+  readonly targetId: string | null;
+  readonly reasonCodes: readonly RouteValidationReasonCode[];
+  readonly issues: readonly RouteValidationIssue[];
+}
+
+export type RoutePlanningResult =
+  | {
+      readonly ok: true;
+      readonly plan: RoutePlan;
+      readonly candidate: RouteCandidate;
+      readonly validation: RouteValidationResult;
+      readonly score: RouteScore;
+    }
+  | {
+      readonly ok: false;
+      readonly rejection: PlannerRejection;
+      readonly validation: RouteValidationResult;
+      readonly candidate?: RouteCandidate;
+    };
 
 export interface ObstacleDescriptor {
   readonly id: string;
@@ -115,6 +199,7 @@ export interface PlannerContext {
 
 export interface LocalPlanner {
   readonly kind: RoutePlan["planner"];
+  planResult(context: PlannerContext): RoutePlanningResult;
   plan(context: PlannerContext): RoutePlan;
 }
 

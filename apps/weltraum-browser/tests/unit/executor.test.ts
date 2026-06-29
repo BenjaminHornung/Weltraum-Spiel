@@ -1,5 +1,5 @@
 ﻿import { describe, expect, it } from "vitest";
-import { AutopilotExecutor, DirectLocalPlanner, createAuthorityState, createShipStateV2, vec3 } from "../../src/core";
+import { AutopilotExecutor, DirectLocalPlanner, createAuthorityState, createShipStateV2, magnitude, vec3 } from "../../src/core";
 import type { ShipState, TargetDescriptor } from "../../src/core";
 
 const authority = createAuthorityState({ mode: "Autopilot" });
@@ -16,8 +16,9 @@ const createShip = (overrides: Parameters<typeof createShipStateV2>[0] = {}): Sh
 const target: TargetDescriptor = {
   id: "alpha",
   label: "Alpha",
+  kind: "Waypoint",
   position: vec3(100, 0, 0),
-  arrivalRadius: 2
+  arrivalEnvelope: { radius: 2, terminalSpeed: 6, stopBehavior: "MatchTerminalSpeed" }
 };
 
 describe("AutopilotExecutor", () => {
@@ -98,6 +99,77 @@ describe("AutopilotExecutor", () => {
     expect(telemetry.flightSnapshot.failureReasonCodes).toContain("OffLockedRoute");
     expect(telemetry.planHash).toBe(plan.planHash);
     expect(executor.getLockedPlan()?.planHash).toBe(plan.planHash);
+  });
+
+  it("captures terminal arrival at the locked target envelope instead of overshooting the green target", () => {
+    const planner = new DirectLocalPlanner();
+    const initialShip = createShip();
+    const plan = planner.plan({ tick: 1, ship: initialShip, target });
+    const executor = new AutopilotExecutor({ divergenceDistance: 12 });
+    executor.lockPlan(plan, initialShip);
+
+    const crossingShip = createShip({ position: vec3(96, 0, 0), velocity: vec3(180, 0, 0) });
+    const after = executor.step(crossingShip, 1 / 30, 2);
+
+    expect(executor.getTelemetry().status).toBe("Arrived");
+    expect(executor.getTelemetry().distanceToTarget).toBe(0);
+    expect(after.position).toEqual(plan.target.position);
+    expect(executor.getTelemetry().planHash).toBe(plan.planHash);
+    expect(executor.getLockedPlan()?.planHash).toBe(plan.planHash);
+  });
+
+  it("clamps already-inside-envelope arrivals to the visible locked target", () => {
+    const initialShip = createShip();
+    const plan = new DirectLocalPlanner().plan({ tick: 1, ship: initialShip, target });
+    const executor = new AutopilotExecutor();
+    executor.lockPlan(plan, initialShip);
+
+    const insideEnvelopeShip = createShip({ position: vec3(99, 0, 0), velocity: vec3(50, 0, 0) });
+    const after = executor.step(insideEnvelopeShip, 1 / 30, 2);
+
+    expect(executor.getTelemetry().status).toBe("Arrived");
+    expect(executor.getTelemetry().distanceToTarget).toBe(0);
+    expect(after.position).toEqual(plan.target.position);
+    expect(magnitude(after.velocity)).toBeLessThanOrEqual(target.arrivalEnvelope.terminalSpeed ?? 0);
+  });
+
+  it("preserves velocity for terminal-crossing NoStopRequired arrivals when no terminal speed is requested", () => {
+    const noStopTarget: TargetDescriptor = {
+      ...target,
+      id: "no-stop",
+      arrivalEnvelope: { radius: 2, stopBehavior: "NoStopRequired" }
+    };
+    const initialShip = createShip();
+    const plan = new DirectLocalPlanner().plan({ tick: 1, ship: initialShip, target: noStopTarget });
+    const executor = new AutopilotExecutor({ divergenceDistance: 40 });
+    executor.lockPlan(plan, initialShip);
+
+    const crossingShip = createShip({ position: vec3(96, 0, 0), velocity: vec3(180, 0, 0) });
+    const after = executor.step(crossingShip, 1 / 30, 2);
+
+    expect(executor.getTelemetry().status).toBe("Arrived");
+    expect(after.position).toEqual(plan.target.position);
+    expect(magnitude(after.velocity)).toBeGreaterThan(100);
+  });
+
+  it("does not snap tangential terminal swings that stay outside the arrival envelope", () => {
+    const tangentialTarget: TargetDescriptor = {
+      ...target,
+      id: "tangent",
+      position: vec3(0, 0, 0),
+      arrivalEnvelope: { radius: 2, stopBehavior: "NoStopRequired" }
+    };
+    const initialShip = createShip({ position: vec3(-10, 3, 0) });
+    const plan = new DirectLocalPlanner().plan({ tick: 1, ship: initialShip, target: tangentialTarget });
+    const executor = new AutopilotExecutor({ divergenceDistance: 100 });
+    executor.lockPlan(plan, initialShip);
+
+    const tangentialShip = createShip({ position: vec3(-10, 3, 0), velocity: vec3(600, 0, 0) });
+    const after = executor.step(tangentialShip, 1 / 30, 2);
+
+    expect(executor.getTelemetry().status).toBe("Executing");
+    expect(after.position).not.toEqual(plan.target.position);
+    expect(executor.getTelemetry().distanceToTarget).toBeGreaterThan(tangentialTarget.arrivalEnvelope.radius);
   });
 
   it("reports fuel depletion without building a replacement plan", () => {

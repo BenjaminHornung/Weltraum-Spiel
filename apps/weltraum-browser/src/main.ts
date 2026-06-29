@@ -10,9 +10,10 @@ if (!canvas) {
 const searchParams = new URLSearchParams(window.location.search);
 const runtime = createBrowserRuntime({ initialShip: createRuntimeShipForFlightCase(searchParams.get("flightCase")) });
 
+const scene = new DebugScene(canvas, runtime.controller);
+
 if (searchParams.get("testBridge") === "1") {
-  void import("./test-harness/browserBridge").then(({ installTestBridge }) => installTestBridge(runtime.controller));
+  void import("./test-harness/browserBridge").then(({ installTestBridge }) => installTestBridge(runtime.controller, () => scene.getRenderSnapshot()));
 }
 
-const scene = new DebugScene(canvas, runtime.controller);
 scene.start();
