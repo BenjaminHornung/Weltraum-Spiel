@@ -1,0 +1,257 @@
+[
+  {
+    "id": "direct-local-arrival",
+    "label": "Direct local arrival",
+    "tick": 1,
+    "planner": "DirectLocal",
+    "planHashBefore": "ac43ea2e",
+    "planHashAfter": "ac43ea2e",
+    "segmentKinds": [
+      "Direct"
+    ],
+    "status": "Arrived",
+    "replanRequired": false,
+    "invalidationReasons": [],
+    "authority": {
+      "mode": "Autopilot",
+      "mainThrusters": true,
+      "rcs": true,
+      "autopilot": true
+    },
+    "brakingReserve": {
+      "autopilotAvailable": true,
+      "mainThrustersAvailable": true,
+      "fuelAvailable": true,
+      "canBrake": true
+    },
+    "initialFuel": 100,
+    "finalFuel": 100,
+    "fuelUsed": 0,
+    "finalSpeed": 0,
+    "fuel": 100,
+    "distanceToTarget": 1.5,
+    "offRouteDistance": 0,
+    "classification": "PASS",
+    "notes": []
+  },
+  {
+    "id": "obstacle-avoidance-route",
+    "label": "Obstacle avoidance route",
+    "tick": 8,
+    "planner": "ObstacleAvoidanceLocal",
+    "planHashBefore": "0575ec8f",
+    "planHashAfter": "0575ec8f",
+    "segmentKinds": [
+      "Avoidance",
+      "Terminal"
+    ],
+    "status": "Executing",
+    "replanRequired": false,
+    "invalidationReasons": [],
+    "authority": {
+      "mode": "Autopilot",
+      "mainThrusters": true,
+      "rcs": true,
+      "autopilot": true
+    },
+    "brakingReserve": {
+      "autopilotAvailable": true,
+      "mainThrustersAvailable": true,
+      "fuelAvailable": true,
+      "canBrake": true
+    },
+    "initialFuel": 100,
+    "finalFuel": 99.9467,
+    "fuelUsed": 0.0533,
+    "finalSpeed": 2.6667,
+    "fuel": 99.9467,
+    "distanceToTarget": 89.66062638933714,
+    "offRouteDistance": 5.551115123125783e-17,
+    "classification": "PASS",
+    "notes": []
+  },
+  {
+    "id": "insufficient-fuel",
+    "label": "Insufficient fuel",
+    "tick": 1,
+    "planner": "DirectLocal",
+    "planHashBefore": "18bd88cc",
+    "planHashAfter": "18bd88cc",
+    "segmentKinds": [
+      "Direct"
+    ],
+    "status": "OutOfFuel",
+    "replanRequired": true,
+    "invalidationReasons": [
+      "FuelDepleted"
+    ],
+    "authority": {
+      "mode": "Autopilot",
+      "mainThrusters": true,
+      "rcs": true,
+      "autopilot": true
+    },
+    "brakingReserve": {
+      "autopilotAvailable": true,
+      "mainThrustersAvailable": true,
+      "fuelAvailable": false,
+      "canBrake": false
+    },
+    "initialFuel": 0,
+    "finalFuel": 0,
+    "fuelUsed": 0,
+    "finalSpeed": 0,
+    "fuel": 0,
+    "distanceToTarget": 90,
+    "offRouteDistance": 0,
+    "classification": "PASS",
+    "notes": []
+  },
+  {
+    "id": "no-authority",
+    "label": "No authority",
+    "tick": 1,
+    "planner": "DirectLocal",
+    "planHashBefore": "18bd88cc",
+    "planHashAfter": "18bd88cc",
+    "segmentKinds": [
+      "Direct"
+    ],
+    "status": "NoAuthority",
+    "replanRequired": true,
+    "invalidationReasons": [
+      "AuthorityUnavailable"
+    ],
+    "authority": {
+      "mode": "Manual",
+      "mainThrusters": true,
+      "rcs": true,
+      "autopilot": false
+    },
+    "brakingReserve": {
+      "autopilotAvailable": false,
+      "mainThrustersAvailable": true,
+      "fuelAvailable": true,
+      "canBrake": false
+    },
+    "initialFuel": 100,
+    "finalFuel": 100,
+    "fuelUsed": 0,
+    "finalSpeed": 0,
+    "fuel": 100,
+    "distanceToTarget": 90,
+    "offRouteDistance": 0,
+    "classification": "PASS",
+    "notes": []
+  },
+  {
+    "id": "off-route-divergence",
+    "label": "Off-route divergence",
+    "tick": 2,
+    "planner": "DirectLocal",
+    "planHashBefore": "18bd88cc",
+    "planHashAfter": "18bd88cc",
+    "segmentKinds": [
+      "Direct"
+    ],
+    "status": "Diverged",
+    "replanRequired": true,
+    "invalidationReasons": [
+      "OffLockedRoute"
+    ],
+    "authority": {
+      "mode": "Autopilot",
+      "mainThrusters": true,
+      "rcs": true,
+      "autopilot": true
+    },
+    "brakingReserve": {
+      "autopilotAvailable": true,
+      "mainThrustersAvailable": true,
+      "fuelAvailable": true,
+      "canBrake": true
+    },
+    "initialFuel": 100,
+    "finalFuel": 99.9867,
+    "fuelUsed": 0.0133,
+    "finalSpeed": 0.6521,
+    "fuel": 99.9867,
+    "distanceToTarget": 98.45716039717455,
+    "offRouteDistance": 39.99548688511235,
+    "classification": "PASS",
+    "notes": []
+  },
+  {
+    "id": "locked-plan-hash-preservation",
+    "label": "Locked plan hash preservation",
+    "tick": 12,
+    "planner": "DirectLocal",
+    "planHashBefore": "18bd88cc",
+    "planHashAfter": "18bd88cc",
+    "segmentKinds": [
+      "Direct"
+    ],
+    "status": "Executing",
+    "replanRequired": false,
+    "invalidationReasons": [],
+    "authority": {
+      "mode": "Autopilot",
+      "mainThrusters": true,
+      "rcs": true,
+      "autopilot": true
+    },
+    "brakingReserve": {
+      "autopilotAvailable": true,
+      "mainThrustersAvailable": true,
+      "fuelAvailable": true,
+      "canBrake": true
+    },
+    "initialFuel": 100,
+    "finalFuel": 99.92,
+    "fuelUsed": 0.08,
+    "finalSpeed": 4,
+    "fuel": 99.92,
+    "distanceToTarget": 89.13333333333334,
+    "offRouteDistance": 0,
+    "classification": "PASS",
+    "notes": []
+  },
+  {
+    "id": "explicit-replan-required-signal",
+    "label": "Explicit replan-required signal",
+    "tick": 2,
+    "planner": "ObstacleAvoidanceLocal",
+    "planHashBefore": "0575ec8f",
+    "planHashAfter": "0575ec8f",
+    "segmentKinds": [
+      "Avoidance",
+      "Terminal"
+    ],
+    "status": "Diverged",
+    "replanRequired": true,
+    "invalidationReasons": [
+      "OffLockedRoute"
+    ],
+    "authority": {
+      "mode": "Autopilot",
+      "mainThrusters": true,
+      "rcs": true,
+      "autopilot": true
+    },
+    "brakingReserve": {
+      "autopilotAvailable": true,
+      "mainThrustersAvailable": true,
+      "fuelAvailable": true,
+      "canBrake": true
+    },
+    "initialFuel": 100,
+    "finalFuel": 99.9867,
+    "fuelUsed": 0.0133,
+    "finalSpeed": 0.6296,
+    "fuel": 99.9867,
+    "distanceToTarget": 99.29095752104539,
+    "offRouteDistance": 41.99309820416717,
+    "classification": "PASS",
+    "notes": []
+  }
+]

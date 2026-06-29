@@ -1,0 +1,94 @@
+{
+  "ship": {
+    "position": {
+      "x": 44.529,
+      "y": 63.9993,
+      "z": 10.6234
+    },
+    "velocity": {
+      "x": 16.8833,
+      "y": -0.0205,
+      "z": 4.0279
+    },
+    "fuel": 99.6526,
+    "authority": {
+      "mode": "Autopilot",
+      "mainThrusters": true,
+      "rcs": true,
+      "autopilot": true
+    }
+  },
+  "executor": {
+    "tick": 110,
+    "status": "Diverged",
+    "planHash": "4f3a1050",
+    "activeSegmentId": "avoid-rock-a-0",
+    "distanceToTarget": 106.9675,
+    "offRouteDistance": 63.9993,
+    "replanRequired": true,
+    "invalidationReasons": [
+      "OffLockedRoute"
+    ],
+    "fuel": 99.6526,
+    "position": {
+      "x": 44.529,
+      "y": 63.9993,
+      "z": 10.6234
+    },
+    "velocity": {
+      "x": 16.8833,
+      "y": -0.0205,
+      "z": 4.0279
+    }
+  },
+  "lockedPlan": {
+    "id": "ObstacleAvoidanceLocal:nav-alpha:0",
+    "planner": "ObstacleAvoidanceLocal",
+    "createdAtTick": 0,
+    "target": {
+      "id": "nav-alpha",
+      "label": "Navigation Alpha",
+      "position": {
+        "x": 120,
+        "y": 0,
+        "z": -30
+      },
+      "arrivalRadius": 3
+    },
+    "segments": [
+      {
+        "id": "avoid-rock-a-0",
+        "kind": "Avoidance",
+        "start": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "end": {
+          "x": 65.40287024599908,
+          "y": 0,
+          "z": 15.6033510370371
+        },
+        "desiredSpeed": 14,
+        "clearanceRadius": 19
+      },
+      {
+        "id": "avoid-rock-a-1",
+        "kind": "Terminal",
+        "start": {
+          "x": 65.40287024599908,
+          "y": 0,
+          "z": 15.6033510370371
+        },
+        "end": {
+          "x": 120,
+          "y": 0,
+          "z": -30
+        },
+        "desiredSpeed": 12,
+        "clearanceRadius": 3
+      }
+    ],
+    "planHash": "4f3a1050"
+  }
+}
