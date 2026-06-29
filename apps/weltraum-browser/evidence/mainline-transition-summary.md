@@ -5,8 +5,10 @@ Date: 2026-06-29
 ## Branch and Mainline Decision
 
 - Worktree: `C:\IFI_SourceCode\Temp\WeltraumSpiel\.worktrees\Weltraum-Threejs-Mainline-Transition-v1`
-- Branch: `mainline/threejs-browser-transition-v1`
-- Original analyzed SHA: `e416eb880ff4b42fdf35a93c1b567dfbfa186bbb`
+- Current branch for this evidence refresh: `feature/browser-flight-authority-fuel-braking-v1`
+- Current analyzed base SHA before the flight/authority/fuel/braking v1 edits: `f1c886755e4bb46085b5d393598f0e16d0128113`
+- Historical mainline transition branch: `mainline/threejs-browser-transition-v1`
+- Historical transition SHA: `e416eb880ff4b42fdf35a93c1b567dfbfa186bbb`
 - Decision: Three.js/TypeScript under `apps/weltraum-browser` is the product mainline. Unity remains in-repo as legacy/reference material and as a feature-intent source only.
 
 ## Constraints Honored
@@ -29,7 +31,7 @@ Date: 2026-06-29
 
 Evidence file: `apps/weltraum-browser/evidence/scenario-matrix.json`
 
-Each scenario record includes final status, final distance, final speed, initial/final fuel, fuel used, authority state, braking-reserve booleans, initial/final plan hash, invalidation reasons, and replan-required state. The `insufficient-fuel` evidence records `status=OutOfFuel`, `fuelUsed=0`, `finalFuel=0`, `finalSpeed=0`, `brakingReserve.fuelAvailable=false`, and `brakingReserve.canBrake=false`; `no-authority` records `status=NoAuthority`, `authority.autopilot=false`, and `brakingReserve.canBrake=false`.
+Each scenario record includes final status, final distance, final speed, initial/final mass, initial/final fuel, fuel used, authority state, braking reserve, route validity, failure reason codes, initial/final plan hash, invalidation reasons, and replan-required state. The `insufficient-fuel` evidence records `status=OutOfFuel`, `fuelUsed=0`, `finalFuel=0`, `finalSpeed=0`, `routeValid=false`, `failureReasonCodes` containing `FuelInsufficient`/`FuelDepleted`, and `brakingReserve.canBrake=false`; `brake-reserve-insufficient` records both `FuelInsufficient` and `BrakeReserveInsufficient`; `off-route-divergence` records `status=Diverged`, `routeValid=false`, `failureReasonCodes=[OffLockedRoute]`, `fuelUsed=0`, `finalFuel=100`, and no silent plan replacement.
 
 | Scenario | Evidence status |
 | --- | --- |
@@ -37,20 +39,22 @@ Each scenario record includes final status, final distance, final speed, initial
 | `obstacle-avoidance-route` | PASS |
 | `insufficient-fuel` | PASS |
 | `no-authority` | PASS |
+| `no-main-thrusters` | PASS |
+| `brake-reserve-insufficient` | PASS |
 | `off-route-divergence` | PASS |
 | `locked-plan-hash-preservation` | PASS |
 | `explicit-replan-required-signal` | PASS |
 
 ## Final Verification Results
 
-- `npm install`: pass, up to date/audited 59 packages, 0 vulnerabilities, npmrc warnings only.
+- `npm ci`: pass, added/audited 59 packages, 0 vulnerabilities, npmrc warnings only.
 - `npx playwright install chromium`: pass, npmrc warnings only.
-- `npm run test`: pass, Vitest 4 files / 17 tests.
+- `npm run test`: pass, Vitest 5 files / 26 tests after final-review blocker fixes, including pre-step browser runtime telemetry coverage.
 - `npm run build`: pass, Vite build completed, chunk-size warning only.
-- `npm run test:e2e`: local bundled Chromium launch failed with `spawn UNKNOWN` in this environment.
-- `WELTRAUM_PLAYWRIGHT_EXECUTABLE_PATH="C:\Program Files\Google\Chrome\Application\chrome.exe" npm run test:e2e`: pass, Playwright 3 passed, no stale-server reuse. The path is an environment-gated local fallback only; it is not hardcoded in source/config.
+- `npm run test:e2e`: default bundled Chromium launch failed with `spawn UNKNOWN` in this local environment during the latest rerun.
+- `WELTRAUM_PLAYWRIGHT_EXECUTABLE_PATH="C:\Program Files\Google\Chrome\Application\chrome.exe" npm run test:e2e`: pass, Playwright 6/6 tests, no stale-server reuse. The path is an environment-gated local fallback only; it is not hardcoded in source/config.
 
-`npm install` remains the approved transition gate. For reproducible installs, `npm ci` is canonical because `package-lock.json` pins the resolved dependency graph.
+`npm ci` is the canonical reproducible install gate because `package-lock.json` pins the resolved dependency graph.
 
 ## Generated Evidence Artifacts
 
@@ -70,7 +74,7 @@ Each scenario record includes final status, final distance, final speed, initial
 - Spec task boxes remain unchecked because DevToolbox MCP completion preflight/task toggling is blocked by the same `unauthorized_path` path guard. This summary does not fake completion preflight; direct evidence is used instead.
 - Initial LFS worktree issue was resolved non-destructively with `GIT_LFS_SKIP_SMUDGE=1`.
 - Product runtime bootstrap creates an app-local browser runtime controller directly; `window.TestBridge` is exposed only when `?testBridge=1` is requested for E2E/test harness use, and the default product URL does not expose the global bridge.
-- Delivery state: this is an uncommitted worktree pending explicit user/orchestrator approval for any commit. No commit, push, archive, Unity validation, or dotnet validation is claimed by this summary.
+- Delivery state for this refresh: current edits are on `feature/browser-flight-authority-fuel-braking-v1` and are intentionally left for orchestrator verification/review before any staging or commit. This summary no longer makes a delivery claim about the historical mainline transition branch. No commit, push, archive, Unity validation, or dotnet validation is claimed by this refresh.
 
 ## Review Follow-Up Notes
 
@@ -79,4 +83,4 @@ Each scenario record includes final status, final distance, final speed, initial
 - Browser app dependencies are pinned to versions already resolved in `package-lock.json`; no dependency or devDependency uses `latest`.
 - Playwright defaults to the installed browser from Playwright, supports an optional `WELTRAUM_PLAYWRIGHT_EXECUTABLE_PATH` override for local runner compatibility, and keeps stale-server hardening via `reuseExistingServer: false` and Vite `--strictPort`.
 - The HUD renders mode as a dedicated visible readout instead of only embedding mode in telemetry JSON.
-- Scenario matrix evidence now includes `finalSpeed`, `initialFuel`, `finalFuel`, `fuelUsed`, `authority`, and `brakingReserve` fields, with unit and E2E assertions enforcing their presence.
+- Scenario matrix evidence now includes `finalSpeed`, `initialFuel`, `finalFuel`, `fuelUsed`, `authority`, `brakingReserve`, and `routeValid` fields, with unit and E2E assertions enforcing their presence.

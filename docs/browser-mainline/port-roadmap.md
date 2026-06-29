@@ -34,13 +34,17 @@ Required first matrix:
 2. obstacle avoidance route,
 3. insufficient fuel,
 4. no authority,
-5. off-route divergence,
-6. locked plan hash preservation,
-7. explicit replan-required signal.
+5. no main thrusters,
+6. brake reserve insufficient,
+7. off-route divergence,
+8. locked plan hash preservation,
+9. explicit replan-required signal.
 
 Gate: each scenario emits JSON, Markdown summary and screenshot/visual evidence where rendering is relevant.
 
 ## M3: Flight Authority / Fuel / Braking
+
+Status: v1 implemented in the browser mainline app. `ShipMass`, `FuelState`, `AuthorityState`, `BrakingReserve` and `FlightSnapshot` are explicit TypeScript contracts consumed by executor, telemetry, HUD, TestBridge and scenario evidence. Cargo mass remains a stubbed field only.
 
 Source paths:
 
@@ -57,6 +61,13 @@ Intent:
 - Feed navigation estimates and HUD warnings from the same authority snapshot.
 
 Gate: insufficient fuel, no authority and brake-reserve cases fail closed with visible reasons.
+
+Open M3 follow-up points:
+
+- richer thrust/engine curves beyond the current deterministic first approximation,
+- real cargo/resource data contract instead of the stubbed `cargoMass`,
+- route-validator scoring and player route-mode choices (belongs to M4, not this v1),
+- frame descriptors for future non-local-space flight boundaries.
 
 ## M4: Navigation / Autopilot V2
 

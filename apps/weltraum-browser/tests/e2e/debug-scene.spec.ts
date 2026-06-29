@@ -149,18 +149,27 @@ test("debug scene exposes telemetry and writes evidence", async ({ page }) => {
   expect(telemetry.executor.planHash).toMatch(/^[a-f0-9]{8}$/);
   expect(telemetry.lockedPlan?.segments.length).toBeGreaterThanOrEqual(1);
   expect(telemetry.executor.status).toMatch(/Executing|Arrived|Diverged/);
-  await expect(page.locator("#mode")).toHaveText(telemetry.ship.authority.mode);
+  await expect(page.locator("#mode")).toHaveText(telemetry.flightSnapshot.authority.mode);
+  await expect(page.locator("#fuel-status")).toContainText("Ready");
+  await expect(page.locator("#authority-status")).toContainText("AP ready");
+  await expect(page.locator("#brake-status")).toContainText("ready");
 
   const originalHash = telemetry.executor.planHash;
   const divergent = await page.evaluate(() => (window as any).TestBridge.disturbShip(0));
   expect(divergent.executor.replanRequired).toBe(true);
   expect(divergent.executor.planHash).toBe(originalHash);
+  expect(divergent.flightSnapshot.routeValid).toBe(false);
+  expect(divergent.flightSnapshot.failureReasonCodes).toContain("OffLockedRoute");
+  await expect(page.locator("#route-status")).toHaveText("invalid");
+  await expect(page.locator("#failure-reasons")).toContainText("OffLockedRoute");
   const scenarioIds = await page.evaluate(() => (window as any).TestBridge.listScenarios());
   expect(scenarioIds).toEqual([
     "direct-local-arrival",
     "obstacle-avoidance-route",
     "insufficient-fuel",
     "no-authority",
+    "no-main-thrusters",
+    "brake-reserve-insufficient",
     "off-route-divergence",
     "locked-plan-hash-preservation",
     "explicit-replan-required-signal"
@@ -173,12 +182,19 @@ test("debug scene exposes telemetry and writes evidence", async ({ page }) => {
       (result: any) =>
         typeof result.finalSpeed === "number" &&
         typeof result.fuelUsed === "number" &&
+        typeof result.initialMass === "number" &&
+        typeof result.finalMass === "number" &&
+        Array.isArray(result.failureReasonCodes) &&
+        typeof result.routeValid === "boolean" &&
         typeof result.initialFuel === "number" &&
         typeof result.finalFuel === "number" &&
         ["Manual", "Assisted", "Autopilot"].includes(result.authority?.mode) &&
-        typeof result.authority?.mainThrusters === "boolean" &&
-        typeof result.authority?.rcs === "boolean" &&
-        typeof result.authority?.autopilot === "boolean" &&
+        typeof result.authority?.mainThrustersAvailable === "boolean" &&
+        typeof result.authority?.rcsAvailable === "boolean" &&
+        typeof result.authority?.autopilotAvailable === "boolean" &&
+        typeof result.brakingReserve?.requiredDeltaV === "number" &&
+        typeof result.brakingReserve?.availableDeltaV === "number" &&
+        Array.isArray(result.brakingReserve?.reasonCodes) &&
         typeof result.brakingReserve?.canBrake === "boolean"
     )
   ).toBe(true);
@@ -190,9 +206,24 @@ test("debug scene exposes telemetry and writes evidence", async ({ page }) => {
       finalFuel: 0,
       fuelUsed: 0,
       finalSpeed: 0,
-      brakingReserve: expect.objectContaining({ fuelAvailable: false, canBrake: false })
+      brakingReserve: expect.objectContaining({ canBrake: false })
     })
   );
+  expect(insufficientFuel.failureReasonCodes).toEqual(expect.arrayContaining(["FuelInsufficient", "FuelDepleted"]));
+  const brakeReserveInsufficient = matrixResults.find((result: any) => result.id === "brake-reserve-insufficient");
+  expect(brakeReserveInsufficient.failureReasonCodes).toEqual(expect.arrayContaining(["FuelInsufficient", "BrakeReserveInsufficient"]));
+  expect(brakeReserveInsufficient.brakingReserve.reasonCodes).toEqual(expect.arrayContaining(["FuelInsufficient", "BrakeReserveInsufficient"]));
+  const offRouteDivergence = matrixResults.find((result: any) => result.id === "off-route-divergence");
+  expect(offRouteDivergence).toEqual(
+    expect.objectContaining({
+      status: "Diverged",
+      replanRequired: true,
+      routeValid: false,
+      fuelUsed: 0,
+      finalSpeed: 0
+    })
+  );
+  expect(offRouteDivergence.failureReasonCodes).toContain("OffLockedRoute");
   await assertCanvasHasNonDarkPixels(page);
 
   const evidenceDir = path.resolve(process.cwd(), "evidence");
@@ -216,7 +247,7 @@ test.describe("mobile viewport", () => {
     expect(telemetry.executor.planHash).toMatch(/^[a-f0-9]{8}$/);
     expect(telemetry.lockedPlan?.segments.length).toBeGreaterThanOrEqual(1);
     expect(telemetry.executor.status).toMatch(/Executing|Arrived|Diverged/);
-    await expect(page.locator("#mode")).toHaveText(telemetry.ship.authority.mode);
+    await expect(page.locator("#mode")).toHaveText(telemetry.flightSnapshot.authority.mode);
     await assertCanvasHasNonDarkPixels(page);
 
     const evidenceDir = path.resolve(process.cwd(), "evidence");
@@ -230,4 +261,34 @@ test("product bootstrap does not expose the E2E TestBridge by default", async ({
   await page.waitForSelector("#debug-scene", { state: "visible" });
   await expect(page.locator("#mode")).toBeVisible();
   await expect.poll(() => page.evaluate(() => "TestBridge" in window)).toBe(false);
+});
+
+test("TestBridge is exposed only when the testBridge query gate is enabled", async ({ page }) => {
+  await page.goto("/?flightCase=insufficient-fuel");
+  await page.waitForSelector("#debug-scene", { state: "visible" });
+  await expect.poll(() => page.evaluate(() => "TestBridge" in window)).toBe(false);
+
+  await page.goto("/?testBridge=1");
+  await page.waitForFunction(() => Boolean((window as any).TestBridge));
+  await expect.poll(() => page.evaluate(() => typeof (window as any).TestBridge?.runScenario)).toBe("function");
+});
+
+test("insufficient fuel warning is visible in the browser HUD", async ({ page }) => {
+  await page.goto("/?testBridge=1&flightCase=insufficient-fuel");
+  await page.waitForFunction(() => Boolean((window as any).TestBridge));
+  await page.evaluate(() => (window as any).TestBridge.step(1));
+
+  await expect(page.locator("#status")).toContainText("OutOfFuel");
+  await expect(page.locator("#fuel-status")).toContainText("Blocked");
+  await expect(page.locator("#failure-reasons")).toContainText("FuelInsufficient");
+});
+
+test("no authority warning is visible in the browser HUD", async ({ page }) => {
+  await page.goto("/?testBridge=1&flightCase=no-authority");
+  await page.waitForFunction(() => Boolean((window as any).TestBridge));
+  await page.evaluate(() => (window as any).TestBridge.step(1));
+
+  await expect(page.locator("#status")).toContainText("NoAuthority");
+  await expect(page.locator("#authority-status")).toContainText("AP blocked");
+  await expect(page.locator("#failure-reasons")).toContainText("AutopilotUnavailable");
 });

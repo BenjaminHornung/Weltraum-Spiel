@@ -57,9 +57,15 @@ export class DebugScene {
       this.lastTime = time;
       const telemetry = this.runtime.advance(elapsed);
       const position = toVector3(telemetry.ship.position);
+      const targetPosition = telemetry.lockedPlan?.target.position;
       this.ship.position.copy(position);
-      this.ship.lookAt(toVector3(telemetry.lockedPlan?.target.position ?? telemetry.ship.position));
-      this.target.position.copy(toVector3(telemetry.lockedPlan?.target.position ?? telemetry.ship.position));
+      if (targetPosition) {
+        this.ship.lookAt(toVector3(targetPosition));
+        this.target.visible = true;
+        this.target.position.copy(toVector3(targetPosition));
+      } else {
+        this.target.visible = false;
+      }
       this.obstacle.position.set(58, 0, -14);
       this.updateHud();
       this.renderer.render(this.scene, this.camera);

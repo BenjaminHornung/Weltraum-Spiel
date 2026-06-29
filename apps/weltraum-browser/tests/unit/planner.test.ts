@@ -1,13 +1,13 @@
 ﻿import { describe, expect, it } from "vitest";
-import { DirectLocalPlanner, ObstacleAvoidanceLocalPlanner, vec3 } from "../../src/core";
+import { DirectLocalPlanner, ObstacleAvoidanceLocalPlanner, createShipStateV2, vec3 } from "../../src/core";
 import type { ShipState, TargetDescriptor } from "../../src/core";
 
-const ship: ShipState = {
+const ship: ShipState = createShipStateV2({
   position: vec3(0, 0, 0),
   velocity: vec3(0, 0, 0),
   fuel: 100,
-  authority: { mode: "Autopilot", mainThrusters: true, rcs: true, autopilot: true }
-};
+  authority: { mode: "Autopilot" }
+});
 
 const target: TargetDescriptor = {
   id: "alpha",

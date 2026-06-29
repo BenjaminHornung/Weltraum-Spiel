@@ -1,17 +1,20 @@
 ﻿import { add, distance, magnitude, normalize, projectPointOnSegment, scale, sub, vec3 } from "../core/vector";
-import type { ExecutorTelemetry, RoutePlan, RouteSegment, ShipState } from "../core/types";
+import type { ExecutorTelemetry, FailureReasonCode, RoutePlan, RouteSegment, ShipState } from "../core/types";
+import { accelerationLimitForMass, burnFuel, createFlightSnapshot, createShipStateV2 } from "./state";
 
 export interface AutopilotExecutorOptions {
   readonly maxAcceleration: number;
-  readonly fuelBurnPerNewtonSecond: number;
+  readonly maxThrustKilonewtons: number;
   readonly divergenceDistance: number;
 }
 
 const defaultOptions: AutopilotExecutorOptions = {
   maxAcceleration: 10,
-  fuelBurnPerNewtonSecond: 0.02,
+  maxThrustKilonewtons: 10,
   divergenceDistance: 30
 };
+
+const unique = (codes: readonly FailureReasonCode[]): readonly FailureReasonCode[] => [...new Set(codes)];
 
 export class AutopilotExecutor {
   private readonly options: AutopilotExecutorOptions;
@@ -24,10 +27,10 @@ export class AutopilotExecutor {
     this.telemetry = this.createTelemetry(0, "Idle", null, this.emptyShip(), false, []);
   }
 
-  lockPlan(plan: RoutePlan): void {
+  lockPlan(plan: RoutePlan, ship: ShipState, tick = this.telemetry.tick): void {
     this.lockedPlan = plan;
     this.activeSegmentIndex = 0;
-    this.telemetry = this.createTelemetry(this.telemetry.tick, "Executing", plan, this.emptyShip(), false, []);
+    this.telemetry = this.createTelemetry(tick, "Executing", plan, ship, false, []);
   }
 
   getLockedPlan(): RoutePlan | null {
@@ -53,39 +56,49 @@ export class AutopilotExecutor {
       return stoppedShip;
     }
 
-    if (!ship.authority.autopilot || !ship.authority.mainThrusters) {
-      this.telemetry = this.createTelemetry(tick, "NoAuthority", plan, ship, true, ["AuthorityUnavailable"]);
+    const preflight = createFlightSnapshot(ship, plan, this.options);
+    if (preflight.failureReasonCodes.includes("FuelDepleted") || preflight.failureReasonCodes.includes("FuelReserveViolated")) {
+      this.telemetry = this.createTelemetry(tick, "OutOfFuel", plan, ship, true, preflight.failureReasonCodes);
       return ship;
     }
 
-    if (ship.fuel <= 0) {
-      this.telemetry = this.createTelemetry(tick, "OutOfFuel", plan, ship, true, ["FuelDepleted"]);
+    if (preflight.failureReasonCodes.includes("AutopilotUnavailable") || preflight.failureReasonCodes.includes("AuthorityInsufficient")) {
+      this.telemetry = this.createTelemetry(tick, "NoAuthority", plan, ship, true, preflight.failureReasonCodes);
+      return ship;
+    }
+
+    if (!preflight.brakingReserve.canBrake) {
+      this.telemetry = this.createTelemetry(tick, "BrakeReserveInsufficient", plan, ship, true, preflight.failureReasonCodes);
       return ship;
     }
 
     const offRouteDistance = this.offRouteDistance(ship.position, segment);
-    const invalidationReasons = offRouteDistance > this.options.divergenceDistance ? ["OffLockedRoute"] : [];
+    const invalidationReasons: readonly FailureReasonCode[] = offRouteDistance > this.options.divergenceDistance ? ["OffLockedRoute"] : [];
+    if (invalidationReasons.length > 0) {
+      this.telemetry = this.createTelemetry(tick, "Diverged", plan, ship, true, invalidationReasons);
+      return ship;
+    }
+
     const direction = normalize(sub(segment.end, ship.position));
     const desiredSpeed = Math.min(segment.desiredSpeed, Math.max(4, distance(ship.position, segment.end) * 0.55));
     const speedError = desiredSpeed - magnitude(ship.velocity);
-    const accelerationMagnitude = Math.max(0, Math.min(this.options.maxAcceleration, speedError + 4));
+    const accelerationLimit = accelerationLimitForMass(ship.mass, this.options);
+    const accelerationMagnitude = Math.max(0, Math.min(accelerationLimit, speedError + 4));
     const acceleration = scale(direction, accelerationMagnitude);
     const nextVelocity = add(ship.velocity, scale(acceleration, fixedDeltaSeconds));
     const nextPosition = add(ship.position, scale(nextVelocity, fixedDeltaSeconds));
-    const fuelBurn = accelerationMagnitude * fixedDeltaSeconds * this.options.fuelBurnPerNewtonSecond;
-    const nextShip: ShipState = {
+    const kilonewtonSeconds = accelerationMagnitude * (ship.mass.totalMass / 1_000) * fixedDeltaSeconds;
+    const nextShip: ShipState = burnFuel({
       ...ship,
       position: nextPosition,
-      velocity: nextVelocity,
-      fuel: Math.max(0, ship.fuel - fuelBurn)
-    };
+      velocity: nextVelocity
+    }, kilonewtonSeconds);
 
     if (distance(nextPosition, segment.end) <= Math.max(2, segment.clearanceRadius)) {
       this.activeSegmentIndex = Math.min(this.activeSegmentIndex + 1, plan.segments.length - 1);
     }
 
-    const status = invalidationReasons.length > 0 ? "Diverged" : "Executing";
-    this.telemetry = this.createTelemetry(tick, status, plan, nextShip, invalidationReasons.length > 0, invalidationReasons);
+    this.telemetry = this.createTelemetry(tick, "Executing", plan, nextShip, false, []);
     return nextShip;
   }
 
@@ -103,9 +116,16 @@ export class AutopilotExecutor {
     plan: RoutePlan | null,
     ship: ShipState,
     replanRequired: boolean,
-    invalidationReasons: readonly string[]
+    invalidationReasons: readonly FailureReasonCode[]
   ): ExecutorTelemetry {
     const segment = plan ? this.currentSegment(plan) : null;
+    const baseFlightSnapshot = createFlightSnapshot(ship, plan, this.options);
+    const failureReasonCodes = unique([...baseFlightSnapshot.failureReasonCodes, ...invalidationReasons]);
+    const flightSnapshot = {
+      ...baseFlightSnapshot,
+      routeValid: failureReasonCodes.length === 0,
+      failureReasonCodes
+    };
     return {
       tick,
       status,
@@ -115,23 +135,15 @@ export class AutopilotExecutor {
       offRouteDistance: plan && segment ? this.offRouteDistance(ship.position, segment) : 0,
       replanRequired,
       invalidationReasons,
+      failureReasonCodes,
       fuel: ship.fuel,
+      flightSnapshot,
       position: ship.position,
       velocity: ship.velocity
     };
   }
 
   private emptyShip(): ShipState {
-    return {
-      position: vec3(),
-      velocity: vec3(),
-      fuel: 0,
-      authority: {
-        mode: "Manual",
-        mainThrusters: false,
-        rcs: false,
-        autopilot: false
-      }
-    };
+    return createShipStateV2({ position: vec3(), velocity: vec3(), fuel: 0, authority: { mode: "Manual", mainThrustersAvailable: false, rcsAvailable: false, sasAvailable: false, autopilotAvailable: false } });
   }
 }

@@ -15,10 +15,10 @@ Card fields:
 | Field | Content |
 | --- | --- |
 | Source paths | `Assets/Scripts/Prototype/PlayerShipController.cs`; `Assets/Scripts/Prototype/MainThrusterBank.cs`; `Assets/Scripts/Prototype/RcsThrusterController.cs`; `docs/current-prototype-state.md`; `docs/architecture/prototype-legacy-boundary-audit-2026-06-15.md`; `analysis/threejs-mainline/source-evidence/current-core-inventory.md`; `analysis/threejs-mainline/source-evidence/unity-to-threejs-port-map.json` |
-| Browser-native intent | Deterministic ship state with position, velocity, mass, fuel and authority. Keep Cruise/Precision/Translation vocabulary, separate RCS/SAS concepts and scalar thrust/fuel burn until richer authority modeling is specified. Flight publishes authority snapshots for navigation and HUD. |
-| Non-goals | No Unity Rigidbody parity claim, no MonoBehaviour input lifecycle, no per-nozzle RCS allocator copy, no gimbal/SAS solver port in this doc slice. |
-| Tests / evidence hints | Unit tests for fixed-step integration, fuel burn and authority-limited commands; scenario evidence for no authority and insufficient fuel; telemetry JSON with `fuel`, `authority`, position/velocity and tick. |
-| Known Unity bug traps | Authority/fuel drift between controller, HUD and planner; residual RCS/translation drift; treating Unity physics output as deterministic truth; hidden root defaults when functional ship sockets are missing. |
+| Browser-native intent | Deterministic ship state now carries explicit `ShipMass`, `FuelState`, `AuthorityState`, `BrakingReserve` and owner `FlightSnapshot` contracts under `apps/weltraum-browser`. Cruise/Precision/Translation vocabulary remains intent-only for richer input modes; v1 exposes autopilot/main-thruster/RCS/SAS availability plus translation/rotation authority. Cargo mass is a stubbed numeric field only; richer cargo/resource contracts remain deferred. |
+| Non-goals | No Unity Rigidbody parity claim, no MonoBehaviour input lifecycle, no per-nozzle RCS allocator copy, no gimbal/SAS solver port, no cargo/resource/economy behavior. |
+| Tests / evidence hints | Unit tests cover deterministic fuel burn, mass-sensitive acceleration/braking reserve, no fuel, no autopilot authority, no main thrusters, brake-reserve insufficiency, HUD owner-snapshot consumption and plan-hash preservation. Scenario evidence records mass/fuel/authority/braking/failure reason fields. |
+| Known Unity bug traps | Authority/fuel/brake split-brain between controller, HUD and planner; residual RCS/translation drift; treating Unity physics output as deterministic truth; hidden root defaults when functional ship sockets are missing. |
 
 ## 2. Navigation / Autopilot
 
@@ -57,7 +57,7 @@ Card fields:
 | Source paths | `Assets/Tests/PlayMode/PrototypeAutopilotProvingGroundPlayModeTests.cs`; `Assets/Tests/Support/HeadlessSimulationRunner.cs`; `docs/current-prototype-state.md`; `docs/architecture/autopilot-v2-test-harness.md`; `analysis/threejs-mainline/source-evidence/current-core-inventory.md`; `analysis/threejs-mainline/source-evidence/threejs-spike-test-summary.md`; `analysis/threejs-mainline/source-evidence/threejs-spike-decision-report.md` |
 | Browser-native intent | Every mainline claim has deterministic tests and recorded evidence. The browser proving ground should emit scenario JSON, Markdown summary and screenshots through the same core/TestBridge APIs used by runtime. |
 | Non-goals | No manual-only acceptance, no Unity editor gate for browser features, no feature completion without at least a core test plus evidence scenario. |
-| Tests / evidence hints | Matrix: direct local arrival, obstacle avoidance route, insufficient fuel, no authority, off-route divergence, locked plan hash preservation, explicit replan-required signal. Preserve telemetry fields: status, ticks, final distance/speed, fuel used, initial/final plan hash, replan flag and reasons. |
+| Tests / evidence hints | Matrix: direct local arrival, obstacle avoidance route, insufficient fuel, no authority, no main thrusters, brake reserve insufficient, off-route divergence, locked plan hash preservation, explicit replan-required signal. Preserve telemetry fields: status, ticks, final distance/speed, initial/final mass, fuel used, authority, braking reserve, failure reasons, initial/final plan hash, replan flag and reasons. |
 | Known Unity bug traps | Evidence drift between README/current-state/tests; acceptance gates passing/failing without matching docs; screenshot/canvas false negatives; scenario CSV/JSON becoming detached from actual runtime state. |
 
 ## 6. Open-World / World-Scale / Floating-Origin
