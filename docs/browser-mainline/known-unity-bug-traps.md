@@ -36,6 +36,7 @@ Sources:
 | Floating-origin mutates truth | Moving local render/physics projections can accidentally alter absolute position, velocity, route math or camera state. | Floating origin is a projection correction only; absolute state and absolute velocity do not change. | Before/after shift evidence records absolute state unchanged, relative motion unchanged, local projection corrected. |
 | Velocity frame loss | Position conversion without velocity frame creates docking, landing and route bugs. | Positions and velocities carry frame descriptors/reference bodies. | Conversion tests cover absolute, planet-relative, surface-relative and local physics velocities. |
 | Camera/local transform as domain truth | Camera or local scene position is easy to read from Three.js/Unity and accidentally save as gameplay truth. | Renderer/camera consume snapshots only; save/map/nav use core frame state. | Evidence contains core state and render projection separately. |
+| Instanced mesh as world truth | Repeated low-poly fields can tempt runtime code to read or mutate `InstancedMesh` matrices as gameplay state. | Instanced meshes consume render-only descriptors derived from world data; source entity state remains outside Three.js. | Render snapshot records batch id, frame id, count, max instances and `rendererOwnsWorldTruth === false`. |
 | UI status recomputation | UI can display a different ETA/fuel/risk/arrival state than the owner. | Status has one authority owner; views translate codes into player text and next action only. | HUD tests compare displayed chips/status against telemetry owner fields. |
 | Debug UI becomes player contract | Prototype F2-F6/IMGUI controls can become the only way to do player tasks. | Player actions must be available in player modes; debug/test controls are labeled and separable. | Screenshot matrix includes Basic/player view with debug hidden. |
 | Scene/runtime assumptions leak | Bootstrap-created roots, one active camera, dynamic binder defaults and scene hierarchy can become hidden architecture. | Browser app uses explicit composition and manifests; domain does not depend on scene hierarchy. | Startup test asserts explicit runtime services and no scene-object-owned gameplay truth. |
@@ -58,6 +59,7 @@ Sources:
 3. Floating-origin shifts must preserve absolute position, absolute velocity and relative local motion.
 4. Ship-local axes and surface-local axes are different frames even if both use `+Y` as local up.
 5. Route previews, target markers, camera rigs and HUD projections shift together with local projection.
+6. Instanced render batches are projection consumers, not sources of gameplay or save/load truth.
 
 ## Mandatory UI Trap Rules
 
