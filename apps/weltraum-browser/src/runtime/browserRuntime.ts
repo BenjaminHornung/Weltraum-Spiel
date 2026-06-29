@@ -1,6 +1,9 @@
 import { AutopilotExecutor, DirectLocalPlanner, FixedStepSimulationLoop, ObstacleAvoidanceLocalPlanner, createTelemetrySnapshot, vec3 } from "../core";
 import type { ObstacleDescriptor, RoutePlan, ShipState, TargetDescriptor } from "../core";
 import { autopilotAuthority, createShipState, defaultObstacles, noAutopilotAuthority, provingGroundTargets } from "../world/provingGroundWorld";
+import type { BrowserRuntimeCommand } from "./commands";
+
+export type { BrowserRuntimeCommand } from "./commands";
 
 export interface BrowserRuntimeController {
   advance(elapsedSeconds: number): ReturnType<typeof createTelemetrySnapshot>;
@@ -8,6 +11,7 @@ export interface BrowserRuntimeController {
   getTelemetry(): ReturnType<typeof createTelemetrySnapshot>;
   getPlanHash(): string | null;
   getLockedPlan(): RoutePlan | null;
+  dispatchCommand(command: unknown): ReturnType<typeof createTelemetrySnapshot>;
   useDirectPlan(): RoutePlan;
   useObstacleAvoidancePlan(): RoutePlan;
   disturbShip(offsetX: number): ReturnType<typeof createTelemetrySnapshot>;
@@ -40,6 +44,31 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
   const useObstacleAvoidancePlan = () =>
     lockPlan(new ObstacleAvoidanceLocalPlanner().plan({ tick: loop.getTick(), ship: loop.getShip(), target: defaultTarget, obstacles: browserObstacles }));
 
+  const dispatchCommand = (command: unknown): ReturnType<typeof createTelemetrySnapshot> => {
+    if (!command || typeof command !== "object") {
+      return snapshot();
+    }
+
+    const candidate = command as Partial<BrowserRuntimeCommand>;
+    switch (candidate.type) {
+      case "EngageAutopilot":
+        if (candidate.planner === "DirectLocal") {
+          useDirectPlan();
+        } else if (candidate.planner === "ObstacleAvoidanceLocal") {
+          useObstacleAvoidancePlan();
+        }
+        return snapshot();
+      case "CancelAutopilot": {
+        const stoppedShip = executor.cancelPlan(loop.getShip(), loop.getTick());
+        loop.setShip(stoppedShip);
+        ship = stoppedShip;
+        return snapshot();
+      }
+      default:
+        return snapshot();
+    }
+  };
+
   useObstacleAvoidancePlan();
 
   const controller: BrowserRuntimeController = {
@@ -58,6 +87,7 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
     getLockedPlan() {
       return executor.getLockedPlan();
     },
+    dispatchCommand,
     useDirectPlan,
     useObstacleAvoidancePlan,
     disturbShip(offsetX: number) {

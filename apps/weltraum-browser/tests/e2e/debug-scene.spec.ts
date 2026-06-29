@@ -149,6 +149,9 @@ test("debug scene exposes telemetry and writes evidence", async ({ page }) => {
   expect(telemetry.executor.planHash).toMatch(/^[a-f0-9]{8}$/);
   expect(telemetry.lockedPlan?.segments.length).toBeGreaterThanOrEqual(1);
   expect(telemetry.executor.status).toMatch(/Executing|Arrived|Diverged/);
+  await expect(page.getByTestId("basic-hud")).toBeVisible();
+  await expect(page.getByTestId("selected-target")).toContainText("Navigation Alpha");
+  await expect(page.getByTestId("autopilot-active")).toContainText(telemetry.executor.status);
   await expect(page.locator("#mode")).toHaveText(telemetry.flightSnapshot.authority.mode);
   await expect(page.locator("#fuel-status")).toContainText("Ready");
   await expect(page.locator("#authority-status")).toContainText("AP ready");
@@ -180,8 +183,10 @@ test("debug scene exposes telemetry and writes evidence", async ({ page }) => {
   expect(divergent.executor.planHash).toBe(originalHash);
   expect(divergent.flightSnapshot.routeValid).toBe(false);
   expect(divergent.flightSnapshot.failureReasonCodes).toContain("OffLockedRoute");
-  await expect(page.locator("#route-status")).toHaveText("invalid");
-  await expect(page.locator("#failure-reasons")).toContainText("OffLockedRoute");
+  await expect(page.locator("#route-status")).toContainText("invalid");
+  await expect(page.locator("#failure-reasons")).toContainText("Plan invalidated");
+  await expect(page.locator("#failure-reasons")).not.toContainText("OffLockedRoute");
+  await expect(page.getByTestId("warning-state")).toContainText("Plan invalidated");
   const scenarioIds = await page.evaluate(() => (window as any).TestBridge.listScenarios());
   expect(scenarioIds).toEqual([
     "direct-local-arrival",
@@ -296,8 +301,28 @@ test.describe("mobile viewport", () => {
 test("product bootstrap does not expose the E2E TestBridge by default", async ({ page }) => {
   await page.goto("/");
   await page.waitForSelector("#debug-scene", { state: "visible" });
+  await expect(page.getByTestId("basic-hud")).not.toContainText("TestBridge");
+  await expect(page.locator("body")).not.toContainText("TestBridge");
+  await expect(page.locator("#telemetry")).toHaveCount(0);
   await expect(page.locator("#mode")).toBeVisible();
   await expect.poll(() => page.evaluate(() => "TestBridge" in window)).toBe(false);
+});
+
+test("real HUD buttons dispatch autopilot commands without exposing DirectLocal controls", async ({ page }) => {
+  await page.goto("/?testBridge=1");
+  await page.waitForFunction(() => Boolean((window as any).TestBridge));
+  await expect(page.locator("#engage-direct-autopilot")).toHaveCount(0);
+
+  await page.locator("#cancel-autopilot").click();
+  await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().executor.status)).toBe("Idle");
+  await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().executor.planHash)).toBeNull();
+  await expect(page.locator("#status")).toContainText("Idle");
+  await expect(page.locator("#target-status")).toContainText("none selected");
+
+  await page.locator("#engage-autopilot").click();
+  await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().lockedPlan?.planner)).toBe("ObstacleAvoidanceLocal");
+  await expect(page.locator("#status")).toContainText("Executing");
+  await expect(page.locator("#target-status")).toContainText("Navigation Alpha");
 });
 
 test("TestBridge is exposed only when the testBridge query gate is enabled", async ({ page }) => {
@@ -317,7 +342,9 @@ test("insufficient fuel warning is visible in the browser HUD", async ({ page })
 
   await expect(page.locator("#status")).toContainText("OutOfFuel");
   await expect(page.locator("#fuel-status")).toContainText("Blocked");
-  await expect(page.locator("#failure-reasons")).toContainText("FuelInsufficient");
+  await expect(page.locator("#failure-reasons")).toContainText("Fuel insufficient");
+  await expect(page.locator("#failure-reasons")).not.toContainText("FuelInsufficient");
+  await expect(page.getByTestId("warning-state")).toContainText("Fuel insufficient");
 });
 
 test("no authority warning is visible in the browser HUD", async ({ page }) => {
@@ -327,5 +354,6 @@ test("no authority warning is visible in the browser HUD", async ({ page }) => {
 
   await expect(page.locator("#status")).toContainText("NoAuthority");
   await expect(page.locator("#authority-status")).toContainText("AP blocked");
-  await expect(page.locator("#failure-reasons")).toContainText("AutopilotUnavailable");
+  await expect(page.locator("#failure-reasons")).toContainText("Autopilot unavailable");
+  await expect(page.locator("#failure-reasons")).not.toContainText("AutopilotUnavailable");
 });

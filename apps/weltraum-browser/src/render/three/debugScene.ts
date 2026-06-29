@@ -27,6 +27,7 @@ export class DebugScene {
   private readonly obstacle: THREE.Mesh;
   private frameHandle = 0;
   private lastTime = performance.now();
+  private lastDrawnPlanHash: string | null = null;
   private renderSnapshot: RenderDebugSnapshot = {
     shipPosition: { x: 0, y: 0, z: 0 },
     targetPosition: null,
@@ -81,6 +82,9 @@ export class DebugScene {
       const position = toVector3(telemetry.ship.position);
       const targetPosition = telemetry.lockedPlan?.target.position;
       const arrivalRadius = telemetry.lockedPlan ? arrivalRadiusForTarget(telemetry.lockedPlan.target) : null;
+      if (telemetry.executor.planHash !== this.lastDrawnPlanHash) {
+        this.drawPlan(telemetry.lockedPlan);
+      }
       this.ship.position.copy(position);
       if (targetPosition) {
         this.ship.lookAt(toVector3(targetPosition));
@@ -127,6 +131,7 @@ export class DebugScene {
 
   private drawPlan(plan: RoutePlan | null): void {
     this.routeGroup.clear();
+    this.lastDrawnPlanHash = plan?.planHash ?? null;
     if (!plan) {
       return;
     }
@@ -140,6 +145,11 @@ export class DebugScene {
   }
 
   private updateHud(): void {
-    renderStatusHud(this.runtime.getTelemetry());
+    renderStatusHud(this.runtime.getTelemetry(), {
+      dispatch: (command) => {
+        const telemetry = this.runtime.dispatchCommand(command);
+        this.drawPlan(telemetry.lockedPlan);
+      }
+    });
   }
 }
