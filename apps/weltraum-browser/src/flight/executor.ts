@@ -71,6 +71,14 @@ export class AutopilotExecutor {
     this.telemetry = this.createTelemetry(tick, "Executing", plan, ship, false, []);
   }
 
+  cancelPlan(ship: ShipState, tick = this.telemetry.tick): ShipState {
+    const stoppedShip: ShipState = { ...ship, velocity: vec3() };
+    this.lockedPlan = null;
+    this.activeSegmentIndex = 0;
+    this.telemetry = this.createTelemetry(tick, "Idle", null, stoppedShip, false, []);
+    return stoppedShip;
+  }
+
   getLockedPlan(): RoutePlan | null {
     return this.lockedPlan;
   }
@@ -82,8 +90,9 @@ export class AutopilotExecutor {
   step(ship: ShipState, fixedDeltaSeconds: number, tick: number): ShipState {
     const plan = this.lockedPlan;
     if (!plan) {
-      this.telemetry = this.createTelemetry(tick, "Idle", null, ship, false, []);
-      return ship;
+      const stoppedShip: ShipState = { ...ship, velocity: vec3() };
+      this.telemetry = this.createTelemetry(tick, "Idle", null, stoppedShip, false, []);
+      return stoppedShip;
     }
 
     const segment = this.currentSegment(plan);

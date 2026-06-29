@@ -27,6 +27,8 @@ body,
   background: rgba(8, 11, 18, 0.74);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.36);
   backdrop-filter: blur(8px);
+  max-height: calc(100vh - 32px);
+  overflow: auto;
 }
 
 .label {
@@ -42,11 +44,13 @@ body,
 #mode,
 #status,
 #route-status,
+#target-status,
+#target-distance,
 #fuel-status,
 #authority-status,
 #brake-status,
-#failure-reasons,
-#telemetry {
+#warning-chips,
+#failure-reasons {
   margin: 2px 0 0;
   color: #f7fbff;
   font-size: 12px;
@@ -54,7 +58,57 @@ body,
   overflow-wrap: anywhere;
 }
 
-#telemetry {
-  max-height: 220px;
-  overflow: auto;
+.warning-chip-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.warning-chip {
+  display: inline-flex;
+  border: 1px solid rgba(255, 209, 102, 0.5);
+  border-radius: 999px;
+  padding: 3px 8px;
+  background: rgba(255, 209, 102, 0.14);
+}
+
+.warning-chip--critical {
+  border-color: rgba(255, 107, 107, 0.72);
+  background: rgba(255, 107, 107, 0.2);
+}
+
+.warning-chip--high {
+  border-color: rgba(255, 209, 102, 0.72);
+}
+
+.hud-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.hud-actions button {
+  border: 1px solid rgba(142, 165, 201, 0.55);
+  border-radius: 6px;
+  padding: 4px 8px;
+  background: rgba(18, 29, 45, 0.88);
+  color: #f7fbff;
+  font: inherit;
+  font-size: 12px;
+}
+
+.hud-actions button:focus-visible {
+  outline: 2px solid #80ff9f;
+  outline-offset: 2px;
+}
+
+@media (max-width: 520px) {
+  #hud {
+    top: 8px;
+    left: 8px;
+    width: calc(100vw - 16px);
+    max-height: calc(100vh - 16px);
+    padding: 10px;
+  }
 }

@@ -107,6 +107,8 @@ Gate: plan determinism and no-silent-replan tests remain green while richer plan
 
 ## M5: HUD / Input / Telemetry Foundation
 
+Status: v1 browser foundation implemented. The Basic HUD now consumes a `StatusHudViewModel` derived from telemetry/owner snapshots, exposes explicit runtime commands for autopilot engage/cancel actions, renders target/distance/route/replan/fuel/authority/warning state, and keeps TestBridge query-gated for E2E only.
+
 Source paths:
 
 - `docs/ux/player-facing-status-authority-v1.md`
