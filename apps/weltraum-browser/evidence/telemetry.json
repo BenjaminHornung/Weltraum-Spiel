@@ -1,44 +1,108 @@
 {
   "ship": {
     "position": {
-      "x": 44.529,
-      "y": 63.9993,
-      "z": 10.6234
+      "x": 120,
+      "y": 64,
+      "z": -30
     },
     "velocity": {
-      "x": 16.8833,
-      "y": -0.0205,
-      "z": 4.0279
+      "x": 6.1399,
+      "y": 0,
+      "z": -5.1285
     },
-    "fuel": 99.6526,
+    "mass": {
+      "dryMass": 1000,
+      "cargoMass": 0,
+      "fuelMass": 99.27267715408875,
+      "totalMass": 1099.2726771540888
+    },
+    "fuel": {
+      "capacity": 100,
+      "current": 99.2727,
+      "reserve": 5,
+      "burnRate": 0.02,
+      "status": "Ready",
+      "reasonCodes": []
+    },
     "authority": {
       "mode": "Autopilot",
-      "mainThrusters": true,
-      "rcs": true,
-      "autopilot": true
+      "autopilotAvailable": true,
+      "mainThrustersAvailable": true,
+      "rcsAvailable": true,
+      "sasAvailable": true,
+      "translationAuthority": 1,
+      "rotationAuthority": 1,
+      "reasonCodes": []
     }
   },
   "executor": {
-    "tick": 110,
+    "tick": 310,
     "status": "Diverged",
-    "planHash": "4f3a1050",
-    "activeSegmentId": "avoid-rock-a-0",
-    "distanceToTarget": 106.9675,
-    "offRouteDistance": 63.9993,
+    "planHash": "154b829e",
+    "activeSegmentId": "avoid-rock-a-1",
+    "distanceToTarget": 64,
+    "offRouteDistance": 64,
     "replanRequired": true,
     "invalidationReasons": [
       "OffLockedRoute"
     ],
-    "fuel": 99.6526,
+    "failureReasonCodes": [
+      "OffLockedRoute"
+    ],
+    "fuel": {
+      "capacity": 100,
+      "current": 99.2727,
+      "reserve": 5,
+      "burnRate": 0.02,
+      "status": "Ready",
+      "reasonCodes": []
+    },
+    "flightSnapshot": {
+      "mass": {
+        "dryMass": 1000,
+        "cargoMass": 0,
+        "fuelMass": 99.2727,
+        "totalMass": 1099.2727
+      },
+      "fuel": {
+        "capacity": 100,
+        "current": 99.2727,
+        "reserve": 5,
+        "burnRate": 0.02,
+        "status": "Ready",
+        "reasonCodes": []
+      },
+      "authority": {
+        "mode": "Autopilot",
+        "autopilotAvailable": true,
+        "mainThrustersAvailable": true,
+        "rcsAvailable": true,
+        "sasAvailable": true,
+        "translationAuthority": 1,
+        "rotationAuthority": 1,
+        "reasonCodes": []
+      },
+      "brakingReserve": {
+        "requiredDeltaV": 9,
+        "availableDeltaV": 4287.9569,
+        "canBrake": true,
+        "reasonCodes": []
+      },
+      "routeValid": false,
+      "failureReasonCodes": [
+        "OffLockedRoute"
+      ],
+      "etaSeconds": 8
+    },
     "position": {
-      "x": 44.529,
-      "y": 63.9993,
-      "z": 10.6234
+      "x": 120,
+      "y": 64,
+      "z": -30
     },
     "velocity": {
-      "x": 16.8833,
-      "y": -0.0205,
-      "z": 4.0279
+      "x": 6.1399,
+      "y": 0,
+      "z": -5.1285
     }
   },
   "lockedPlan": {
@@ -48,12 +112,17 @@
     "target": {
       "id": "nav-alpha",
       "label": "Navigation Alpha",
+      "kind": "Waypoint",
       "position": {
         "x": 120,
         "y": 0,
         "z": -30
       },
-      "arrivalRadius": 3
+      "arrivalEnvelope": {
+        "radius": 3,
+        "terminalSpeed": 8,
+        "stopBehavior": "MatchTerminalSpeed"
+      }
     },
     "segments": [
       {
@@ -89,6 +158,61 @@
         "clearanceRadius": 3
       }
     ],
-    "planHash": "4f3a1050"
+    "validation": {
+      "ok": true,
+      "issues": [],
+      "rejectedReasonCodes": []
+    },
+    "score": {
+      "distance": 138.3757,
+      "segmentCount": 2,
+      "clearanceRisk": 0.386,
+      "fuelCostEstimate": 0.0304,
+      "authorityRisk": 0,
+      "total": 197.1277,
+      "reasons": [
+        "segments:2",
+        "distance:138.3757",
+        "clearanceRisk:0.386"
+      ]
+    },
+    "planHash": "154b829e"
+  },
+  "flightSnapshot": {
+    "mass": {
+      "dryMass": 1000,
+      "cargoMass": 0,
+      "fuelMass": 99.2727,
+      "totalMass": 1099.2727
+    },
+    "fuel": {
+      "capacity": 100,
+      "current": 99.2727,
+      "reserve": 5,
+      "burnRate": 0.02,
+      "status": "Ready",
+      "reasonCodes": []
+    },
+    "authority": {
+      "mode": "Autopilot",
+      "autopilotAvailable": true,
+      "mainThrustersAvailable": true,
+      "rcsAvailable": true,
+      "sasAvailable": true,
+      "translationAuthority": 1,
+      "rotationAuthority": 1,
+      "reasonCodes": []
+    },
+    "brakingReserve": {
+      "requiredDeltaV": 9,
+      "availableDeltaV": 4287.9569,
+      "canBrake": true,
+      "reasonCodes": []
+    },
+    "routeValid": false,
+    "failureReasonCodes": [
+      "OffLockedRoute"
+    ],
+    "etaSeconds": 8
   }
 }

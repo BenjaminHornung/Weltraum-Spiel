@@ -34,13 +34,17 @@ Required first matrix:
 2. obstacle avoidance route,
 3. insufficient fuel,
 4. no authority,
-5. off-route divergence,
-6. locked plan hash preservation,
-7. explicit replan-required signal.
+5. no main thrusters,
+6. brake reserve insufficient,
+7. off-route divergence,
+8. locked plan hash preservation,
+9. explicit replan-required signal.
 
 Gate: each scenario emits JSON, Markdown summary and screenshot/visual evidence where rendering is relevant.
 
 ## M3: Flight Authority / Fuel / Braking
+
+Status: v1 implemented in the browser mainline app. `ShipMass`, `FuelState`, `AuthorityState`, `BrakingReserve` and `FlightSnapshot` are explicit TypeScript contracts consumed by executor, telemetry, HUD, TestBridge and scenario evidence. Cargo mass remains a stubbed field only.
 
 Source paths:
 
@@ -58,7 +62,16 @@ Intent:
 
 Gate: insufficient fuel, no authority and brake-reserve cases fail closed with visible reasons.
 
+Open M3 follow-up points:
+
+- richer thrust/engine curves beyond the current deterministic first approximation,
+- real cargo/resource data contract instead of the stubbed `cargoMass`,
+- route-validator scoring and player route-mode choices (belongs to M4, not this v1),
+- frame descriptors for future non-local-space flight boundaries.
+
 ## M4: Navigation / Autopilot V2
+
+Status: v1 contract slice implemented in the browser mainline app. `TargetDescriptor` now distinguishes executable `Waypoint` and `Point` targets, stores `ArrivalEnvelope`, and reserves future kind names only as deferred type vocabulary. Planners expose structured `RoutePlanningResult` rejection, `RouteValidationResult`, deterministic `RouteCandidate`/`RouteScore` metadata, and still produce immutable `RoutePlan` objects with stable `planHash`. The executor remains locked to one plan and reports invalidation instead of replanning.
 
 Source paths:
 
@@ -72,6 +85,23 @@ Intent:
 - Add validator gates for clearance, fuel reserve, brake reserve, authority and unsafe targets.
 - Preserve immutable `RoutePlan` and no executor-side replan.
 - Add route modes: fastest, fuel saver, balanced and safe debug.
+
+Implemented in this v1 slice:
+
+- target kind/envelope contracts for waypoint and point execution targets,
+- invalid/unsupported/unsafe/impossible target rejection reasons,
+- null-safe target validation and finite obstacle radius/padding rejection,
+- planner terminal-segment alignment with the visible target position,
+- deterministic candidate scoring skeleton and validation metadata in scenario evidence,
+- locked-target arrival-envelope capture so the browser ship reaches the visible green target marker instead of overshooting into divergence, without snapping tangential swings outside the envelope,
+- no-silent-replan/locked-plan-hash tests remain green.
+
+Deferred M4 follow-up points:
+
+- player-selectable route modes (fastest, fuel saver, balanced, safe debug),
+- richer multi-candidate selection beyond the current deterministic skeleton,
+- landing/docking/cargo/orbit runtime behavior,
+- full frame-aware target descriptors for non-local-space routes.
 
 Gate: plan determinism and no-silent-replan tests remain green while richer planning is added.
 

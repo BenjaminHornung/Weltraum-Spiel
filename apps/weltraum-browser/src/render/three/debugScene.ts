@@ -1,9 +1,21 @@
 import * as THREE from "three";
-import type { RoutePlan } from "../../core";
+import { arrivalRadiusForTarget, type RoutePlan } from "../../core";
 import type { BrowserRuntimeController } from "../../runtime/browserRuntime";
 import { renderStatusHud } from "../../ui/statusHud";
 
 const toVector3 = (value: { x: number; y: number; z: number }) => new THREE.Vector3(value.x, value.y, value.z);
+const fromVector3 = (value: THREE.Vector3) => ({ x: value.x, y: value.y, z: value.z });
+
+export interface RenderDebugSnapshot {
+  readonly shipPosition: { readonly x: number; readonly y: number; readonly z: number };
+  readonly targetPosition: { readonly x: number; readonly y: number; readonly z: number } | null;
+  readonly lockedTargetPosition: { readonly x: number; readonly y: number; readonly z: number } | null;
+  readonly targetVisible: boolean;
+  readonly executorStatus: string;
+  readonly distanceToTarget: number;
+  readonly arrivalRadius: number | null;
+  readonly planHash: string | null;
+}
 
 export class DebugScene {
   private readonly scene = new THREE.Scene();
@@ -15,6 +27,16 @@ export class DebugScene {
   private readonly obstacle: THREE.Mesh;
   private frameHandle = 0;
   private lastTime = performance.now();
+  private renderSnapshot: RenderDebugSnapshot = {
+    shipPosition: { x: 0, y: 0, z: 0 },
+    targetPosition: null,
+    lockedTargetPosition: null,
+    targetVisible: false,
+    executorStatus: "Idle",
+    distanceToTarget: 0,
+    arrivalRadius: null,
+    planHash: null
+  };
 
   constructor(private readonly canvas: HTMLCanvasElement, private readonly runtime: BrowserRuntimeController) {
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
@@ -57,9 +79,26 @@ export class DebugScene {
       this.lastTime = time;
       const telemetry = this.runtime.advance(elapsed);
       const position = toVector3(telemetry.ship.position);
+      const targetPosition = telemetry.lockedPlan?.target.position;
+      const arrivalRadius = telemetry.lockedPlan ? arrivalRadiusForTarget(telemetry.lockedPlan.target) : null;
       this.ship.position.copy(position);
-      this.ship.lookAt(toVector3(telemetry.lockedPlan?.target.position ?? telemetry.ship.position));
-      this.target.position.copy(toVector3(telemetry.lockedPlan?.target.position ?? telemetry.ship.position));
+      if (targetPosition) {
+        this.ship.lookAt(toVector3(targetPosition));
+        this.target.visible = true;
+        this.target.position.copy(toVector3(targetPosition));
+      } else {
+        this.target.visible = false;
+      }
+      this.renderSnapshot = {
+        shipPosition: fromVector3(this.ship.position),
+        targetPosition: this.target.visible ? fromVector3(this.target.position) : null,
+        lockedTargetPosition: targetPosition ?? null,
+        targetVisible: this.target.visible,
+        executorStatus: telemetry.executor.status,
+        distanceToTarget: telemetry.executor.distanceToTarget,
+        arrivalRadius: arrivalRadius !== null && Number.isFinite(arrivalRadius) ? arrivalRadius : null,
+        planHash: telemetry.executor.planHash
+      };
       this.obstacle.position.set(58, 0, -14);
       this.updateHud();
       this.renderer.render(this.scene, this.camera);
@@ -72,6 +111,10 @@ export class DebugScene {
   stop(): void {
     cancelAnimationFrame(this.frameHandle);
     window.removeEventListener("resize", this.resize);
+  }
+
+  getRenderSnapshot(): RenderDebugSnapshot {
+    return this.renderSnapshot;
   }
 
   private readonly resize = () => {

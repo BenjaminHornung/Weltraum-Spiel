@@ -15,30 +15,30 @@ Card fields:
 | Field | Content |
 | --- | --- |
 | Source paths | `Assets/Scripts/Prototype/PlayerShipController.cs`; `Assets/Scripts/Prototype/MainThrusterBank.cs`; `Assets/Scripts/Prototype/RcsThrusterController.cs`; `docs/current-prototype-state.md`; `docs/architecture/prototype-legacy-boundary-audit-2026-06-15.md`; `analysis/threejs-mainline/source-evidence/current-core-inventory.md`; `analysis/threejs-mainline/source-evidence/unity-to-threejs-port-map.json` |
-| Browser-native intent | Deterministic ship state with position, velocity, mass, fuel and authority. Keep Cruise/Precision/Translation vocabulary, separate RCS/SAS concepts and scalar thrust/fuel burn until richer authority modeling is specified. Flight publishes authority snapshots for navigation and HUD. |
-| Non-goals | No Unity Rigidbody parity claim, no MonoBehaviour input lifecycle, no per-nozzle RCS allocator copy, no gimbal/SAS solver port in this doc slice. |
-| Tests / evidence hints | Unit tests for fixed-step integration, fuel burn and authority-limited commands; scenario evidence for no authority and insufficient fuel; telemetry JSON with `fuel`, `authority`, position/velocity and tick. |
-| Known Unity bug traps | Authority/fuel drift between controller, HUD and planner; residual RCS/translation drift; treating Unity physics output as deterministic truth; hidden root defaults when functional ship sockets are missing. |
+| Browser-native intent | Deterministic ship state now carries explicit `ShipMass`, `FuelState`, `AuthorityState`, `BrakingReserve` and owner `FlightSnapshot` contracts under `apps/weltraum-browser`. Cruise/Precision/Translation vocabulary remains intent-only for richer input modes; v1 exposes autopilot/main-thruster/RCS/SAS availability plus translation/rotation authority. Cargo mass is a stubbed numeric field only; richer cargo/resource contracts remain deferred. |
+| Non-goals | No Unity Rigidbody parity claim, no MonoBehaviour input lifecycle, no per-nozzle RCS allocator copy, no gimbal/SAS solver port, no cargo/resource/economy behavior. |
+| Tests / evidence hints | Unit tests cover deterministic fuel burn, mass-sensitive acceleration/braking reserve, no fuel, no autopilot authority, no main thrusters, brake-reserve insufficiency, HUD owner-snapshot consumption and plan-hash preservation. Scenario evidence records mass/fuel/authority/braking/failure reason fields. |
+| Known Unity bug traps | Authority/fuel/brake split-brain between controller, HUD and planner; residual RCS/translation drift; treating Unity physics output as deterministic truth; hidden root defaults when functional ship sockets are missing. |
 
 ## 2. Navigation / Autopilot
 
 | Field | Content |
 | --- | --- |
 | Source paths | `Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs`; `Assets/Scripts/Prototype/PrototypeFlightPlan.cs`; `Assets/Scripts/Prototype/PrototypeTrajectoryPlanner.cs`; `Assets/_Weltraum/Runtime/Navigation/AutopilotContracts.cs`; `docs/architecture/autopilot-v2-design.md`; `docs/architecture/autopilot-v2-test-harness.md`; `analysis/threejs-mainline/source-evidence/threejs-spike-decision-report.md`; `analysis/threejs-mainline/source-evidence/threejs-spike-test-summary.md` |
-| Browser-native intent | Split target resolution, planner, validator, immutable `RoutePlan`, executor, supervisor and telemetry. Planner produces deterministic `planHash`; executor executes exactly that locked plan; invalidation surfaces as visible status/reason/replan-required telemetry. |
-| Non-goals | No executor-side silent replan, no legacy fallback policy, no automatic plan replacement, no gravity/orbit/slingshot blending into local-space arrival. |
-| Tests / evidence hints | Direct local arrival, obstacle avoidance, off-route divergence, locked hash preservation, explicit `replanRequired`, plan serialization/hash determinism and no-silent-replan tests. |
-| Known Unity bug traps | Silent or safety replans hiding divergence; terminal capture flapping back to accelerate/reacquire; route plan labels diverging from executor truth; docs/test drift around exact point arrival status. |
+| Browser-native intent | Split target resolution, planner, validator, immutable `RoutePlan`, executor, supervisor and telemetry. The browser v1 slice now has explicit `TargetDescriptor.kind`, `ArrivalEnvelope`, `RouteValidationResult`, deterministic `RouteScore`/`RouteCandidate` metadata, and `RoutePlanningResult` structured rejection contracts. Planner produces deterministic `planHash`; executor executes exactly that locked plan; invalidation surfaces as visible status/reason/replan-required telemetry. |
+| Non-goals | No executor-side silent replan, no legacy fallback policy, no automatic plan replacement, no gravity/orbit/slingshot blending into local-space arrival, and no runtime route modes/landing/docking/cargo/orbit behavior in this v1 slice. |
+| Tests / evidence hints | Direct local arrival with final position equal to target position, obstacle avoidance, off-route divergence, locked hash preservation, explicit `replanRequired`, plan serialization/hash determinism, waypoint/point target taxonomy, arrival-envelope evidence, structured planner rejection, invalid obstacle rejection and deterministic candidate scoring tests. |
+| Known Unity bug traps | Silent or safety replans hiding divergence; terminal capture flapping back to accelerate/reacquire; route plan labels diverging from executor truth; target fallback to root/zero; docs/test drift around exact point arrival status. |
 
 ## 3. Route / Waypoint / Targeting
 
 | Field | Content |
 | --- | --- |
 | Source paths | `Assets/Scripts/Prototype/PrototypeWaypointManager.cs`; `Assets/Scripts/Prototype/PrototypeNavigationTarget.cs`; `Assets/Scripts/Prototype/PrototypeWeaponTargetRegistry.cs`; `Assets/Scripts/Prototype/PrototypeWeaponTarget.cs`; `docs/design-audits/2026-06-14-planning-consistency-audit.md`; `docs/architecture/surface-local-frame-architecture.md`; `analysis/threejs-mainline/source-evidence/current-core-inventory.md`; `analysis/threejs-mainline/source-evidence/unity-to-threejs-port-map.json` |
-| Browser-native intent | Use explicit `TargetDescriptor` data: target kind, frame, exact position/desired velocity/attitude where needed, and `ArrivalEnvelope`. Waypoints are player/map markers that resolve to executable target descriptors. Broad sites/zones resolve to exact target points before autopilot execution. |
-| Non-goals | No Unity transform hierarchy scan, no weapon target filtering as navigation truth, no broad-zone completion, no hidden target/root fallback. |
-| Tests / evidence hints | Target resolve tests for waypoint, landing target point and pickup target point; rejection tests for unsafe/inside-body targets; scenario evidence showing exact target ID/kind/frame/envelope in telemetry. |
-| Known Unity bug traps | Ambiguous taxonomy: `target point`, `landing zone`, `pickup point`, `site`, `waypoint`; broad landing zones reintroducing loose arrival; weapon target registry concepts leaking into navigation targets. |
+| Browser-native intent | Use explicit `TargetDescriptor` data: target kind, exact position and `ArrivalEnvelope`. Waypoints are player/map markers that resolve to executable target descriptors. `Waypoint` and `Point` are executable now; future landing/docking/cargo/orbit descriptors remain type-reserved/deferred until separate runtime specs define exact handoffs. Broad sites/zones must resolve to exact target points before autopilot execution. |
+| Non-goals | No Unity transform hierarchy scan, no weapon target filtering as navigation truth, no broad-zone completion, no hidden target/root fallback, and no landing/docking/cargo/orbit runtime in this v1 slice. |
+| Tests / evidence hints | Target tests distinguish waypoint and point; rejection tests cover missing/null/invalid descriptors, unsupported future target kind, unsafe/inside-obstacle target and invalid obstacle fields; scenario evidence shows exact target kind/envelope, validation/scoring metadata, final position and target position. |
+| Known Unity bug traps | Ambiguous taxonomy: `target point`, `landing zone`, `pickup point`, `site`, `waypoint`; unsupported future target kinds accidentally executing; broad landing zones reintroducing loose arrival; weapon target registry concepts leaking into navigation targets. |
 
 ## 4. HUD / Telemetry
 
@@ -57,7 +57,7 @@ Card fields:
 | Source paths | `Assets/Tests/PlayMode/PrototypeAutopilotProvingGroundPlayModeTests.cs`; `Assets/Tests/Support/HeadlessSimulationRunner.cs`; `docs/current-prototype-state.md`; `docs/architecture/autopilot-v2-test-harness.md`; `analysis/threejs-mainline/source-evidence/current-core-inventory.md`; `analysis/threejs-mainline/source-evidence/threejs-spike-test-summary.md`; `analysis/threejs-mainline/source-evidence/threejs-spike-decision-report.md` |
 | Browser-native intent | Every mainline claim has deterministic tests and recorded evidence. The browser proving ground should emit scenario JSON, Markdown summary and screenshots through the same core/TestBridge APIs used by runtime. |
 | Non-goals | No manual-only acceptance, no Unity editor gate for browser features, no feature completion without at least a core test plus evidence scenario. |
-| Tests / evidence hints | Matrix: direct local arrival, obstacle avoidance route, insufficient fuel, no authority, off-route divergence, locked plan hash preservation, explicit replan-required signal. Preserve telemetry fields: status, ticks, final distance/speed, fuel used, initial/final plan hash, replan flag and reasons. |
+| Tests / evidence hints | Matrix: direct local arrival, obstacle avoidance route, insufficient fuel, no authority, no main thrusters, brake reserve insufficient, off-route divergence, locked plan hash preservation, explicit replan-required signal. Preserve telemetry fields: status, ticks, final distance/speed, final position, target position, initial/final mass, fuel used, authority, braking reserve, failure reasons, initial/final plan hash, replan flag and reasons. |
 | Known Unity bug traps | Evidence drift between README/current-state/tests; acceptance gates passing/failing without matching docs; screenshot/canvas false negatives; scenario CSV/JSON becoming detached from actual runtime state. |
 
 ## 6. Open-World / World-Scale / Floating-Origin

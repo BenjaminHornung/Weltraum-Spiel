@@ -1,12 +1,14 @@
-import type { AuthorityState, ObstacleDescriptor, RoutePlan, ShipState, TargetDescriptor } from "../core";
+import type { ArrivalEnvelope, AuthorityState, BrakingReserve, ObstacleDescriptor, RoutePlan, RouteScore, RouteValidationResult, ShipState, TargetDescriptor } from "../core";
 import { vec3 } from "../core";
-import { blockingCorridorObstacles, createShipState, noAutopilotAuthority, provingGroundTargets } from "../world/provingGroundWorld";
+import { blockingCorridorObstacles, createShipState, noAutopilotAuthority, noMainThrustersAuthority, provingGroundTargets } from "../world/provingGroundWorld";
 
 export type ScenarioId =
   | "direct-local-arrival"
   | "obstacle-avoidance-route"
   | "insufficient-fuel"
   | "no-authority"
+  | "no-main-thrusters"
+  | "brake-reserve-insufficient"
   | "off-route-divergence"
   | "locked-plan-hash-preservation"
   | "explicit-replan-required-signal";
@@ -27,9 +29,10 @@ export interface ScenarioDefinition {
     readonly positionOffset: { readonly x: number; readonly y: number; readonly z: number };
   };
   readonly expected: {
-    readonly status?: "Arrived" | "Executing" | "Diverged" | "OutOfFuel" | "NoAuthority";
+    readonly status?: "Arrived" | "Executing" | "Diverged" | "OutOfFuel" | "NoAuthority" | "BrakeReserveInsufficient";
     readonly replanRequired?: boolean;
     readonly invalidationReason?: string;
+    readonly routeValid?: boolean;
     readonly requiresAvoidanceSegment?: boolean;
     readonly preservePlanHash?: boolean;
   };
@@ -44,21 +47,26 @@ export interface ScenarioResult {
   readonly planHashBefore: string;
   readonly planHashAfter: string | null;
   readonly segmentKinds: readonly string[];
+  readonly targetKind: TargetDescriptor["kind"];
+  readonly arrivalEnvelope: ArrivalEnvelope;
+  readonly routeValidation: RouteValidationResult;
+  readonly routeScore: RouteScore;
   readonly status: string;
   readonly replanRequired: boolean;
   readonly invalidationReasons: readonly string[];
+  readonly failureReasonCodes: readonly string[];
+  readonly routeValid: boolean;
   readonly authority: AuthorityState;
-  readonly brakingReserve: {
-    readonly autopilotAvailable: boolean;
-    readonly mainThrustersAvailable: boolean;
-    readonly fuelAvailable: boolean;
-    readonly canBrake: boolean;
-  };
+  readonly brakingReserve: BrakingReserve;
+  readonly initialMass: number;
+  readonly finalMass: number;
   readonly initialFuel: number;
   readonly finalFuel: number;
   readonly fuelUsed: number;
   readonly finalSpeed: number;
   readonly fuel: number;
+  readonly finalPosition: { readonly x: number; readonly y: number; readonly z: number };
+  readonly targetPosition: { readonly x: number; readonly y: number; readonly z: number };
   readonly distanceToTarget: number;
   readonly offRouteDistance: number;
   readonly notes: readonly string[];
@@ -107,7 +115,29 @@ export const scenarioCatalog: readonly ScenarioDefinition[] = [
     obstacles: [],
     maxTicks: 2,
     divergenceDistance: 24,
-    expected: { status: "NoAuthority", replanRequired: true, invalidationReason: "AuthorityUnavailable", preservePlanHash: true }
+    expected: { status: "NoAuthority", replanRequired: true, invalidationReason: "AutopilotUnavailable", preservePlanHash: true }
+  },
+  {
+    id: "no-main-thrusters",
+    label: "No main thrusters",
+    planner: "DirectLocal",
+    ship: createShipState({ authority: noMainThrustersAuthority }),
+    target: provingGroundTargets.navigationBeta,
+    obstacles: [],
+    maxTicks: 2,
+    divergenceDistance: 24,
+    expected: { status: "NoAuthority", replanRequired: true, invalidationReason: "MainThrustersUnavailable", preservePlanHash: true }
+  },
+  {
+    id: "brake-reserve-insufficient",
+    label: "Brake reserve insufficient",
+    planner: "DirectLocal",
+    ship: createShipState({ fuel: { current: 6, reserve: 5, capacity: 100, burnRate: 0.02 }, velocity: vec3(80, 0, 0) }),
+    target: provingGroundTargets.navigationBeta,
+    obstacles: [],
+    maxTicks: 2,
+    divergenceDistance: 24,
+    expected: { status: "BrakeReserveInsufficient", replanRequired: true, invalidationReason: "BrakeReserveInsufficient", preservePlanHash: true }
   },
   {
     id: "off-route-divergence",
@@ -118,8 +148,8 @@ export const scenarioCatalog: readonly ScenarioDefinition[] = [
     obstacles: [],
     maxTicks: 3,
     divergenceDistance: 12,
-    perturbation: { tick: 1, positionOffset: vec3(0, 40, 0) },
-    expected: { status: "Diverged", replanRequired: true, invalidationReason: "OffLockedRoute", preservePlanHash: true }
+    perturbation: { tick: 0, positionOffset: vec3(0, 40, 0) },
+    expected: { status: "Diverged", replanRequired: true, invalidationReason: "OffLockedRoute", routeValid: false, preservePlanHash: true }
   },
   {
     id: "locked-plan-hash-preservation",
@@ -141,8 +171,8 @@ export const scenarioCatalog: readonly ScenarioDefinition[] = [
     obstacles: blockingCorridorObstacles,
     maxTicks: 3,
     divergenceDistance: 10,
-    perturbation: { tick: 1, positionOffset: vec3(0, 42, 0) },
-    expected: { status: "Diverged", replanRequired: true, invalidationReason: "OffLockedRoute", preservePlanHash: true }
+    perturbation: { tick: 0, positionOffset: vec3(0, 42, 0) },
+    expected: { status: "Diverged", replanRequired: true, invalidationReason: "OffLockedRoute", routeValid: false, preservePlanHash: true }
   }
 ];
 

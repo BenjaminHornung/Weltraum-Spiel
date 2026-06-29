@@ -1,11 +1,13 @@
 import { createBrowserRuntime } from "../runtime/browserRuntime";
 import type { BrowserRuntimeController } from "../runtime/browserRuntime";
+import type { RenderDebugSnapshot } from "../render/three/debugScene";
 import { runScenario, scenarioCatalog } from "./scenarioRunner";
 import type { ScenarioId, ScenarioResult } from "./scenarios";
 
 export interface TestBridge extends BrowserRuntimeController {
   listScenarios(): readonly ScenarioId[];
   runScenario(id: ScenarioId): ScenarioResult;
+  getRenderSnapshot?: () => RenderDebugSnapshot;
 }
 
 declare global {
@@ -14,7 +16,10 @@ declare global {
   }
 }
 
-export const createTestBridge = (controller: BrowserRuntimeController = createBrowserRuntime().controller): TestBridge => {
+export const createTestBridge = (
+  controller: BrowserRuntimeController = createBrowserRuntime().controller,
+  getRenderSnapshot?: () => RenderDebugSnapshot
+): TestBridge => {
   const bridge: TestBridge = {
     ...controller,
     listScenarios() {
@@ -25,11 +30,15 @@ export const createTestBridge = (controller: BrowserRuntimeController = createBr
     }
   };
 
+  if (getRenderSnapshot) {
+    bridge.getRenderSnapshot = getRenderSnapshot;
+  }
+
   return bridge;
 };
 
-export const installTestBridge = (controller?: BrowserRuntimeController): TestBridge => {
-  const bridge = createTestBridge(controller);
+export const installTestBridge = (controller?: BrowserRuntimeController, getRenderSnapshot?: () => RenderDebugSnapshot): TestBridge => {
+  const bridge = createTestBridge(controller, getRenderSnapshot);
   window.TestBridge = bridge;
   return bridge;
 };

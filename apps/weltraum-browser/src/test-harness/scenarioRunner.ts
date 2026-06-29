@@ -1,4 +1,4 @@
-import { AutopilotExecutor, DirectLocalPlanner, FixedStepSimulationLoop, ObstacleAvoidanceLocalPlanner, magnitude, vec3 } from "../core";
+import { AutopilotExecutor, DirectLocalPlanner, FixedStepSimulationLoop, ObstacleAvoidanceLocalPlanner, magnitude, roundVec, vec3 } from "../core";
 import { getScenarioDefinition, scenarioCatalog } from "./scenarios";
 import type { PlannerKind, ScenarioDefinition, ScenarioId, ScenarioResult } from "./scenarios";
 
@@ -7,7 +7,7 @@ export { scenarioCatalog };
 const createPlanner = (kind: PlannerKind): DirectLocalPlanner | ObstacleAvoidanceLocalPlanner =>
   kind === "DirectLocal" ? new DirectLocalPlanner() : new ObstacleAvoidanceLocalPlanner();
 
-const terminalStatuses = new Set(["Arrived", "Diverged", "OutOfFuel", "NoAuthority"]);
+const terminalStatuses = new Set(["Arrived", "Diverged", "OutOfFuel", "NoAuthority", "BrakeReserveInsufficient"]);
 
 const evaluateScenario = (scenario: ScenarioDefinition, result: Omit<ScenarioResult, "classification" | "notes">): Pick<ScenarioResult, "classification" | "notes"> => {
   const notes: string[] = [];
@@ -25,6 +25,10 @@ const evaluateScenario = (scenario: ScenarioDefinition, result: Omit<ScenarioRes
     notes.push(`Missing invalidation reason ${expected.invalidationReason}`);
   }
 
+  if (expected.routeValid !== undefined && result.routeValid !== expected.routeValid) {
+    notes.push(`Expected routeValid=${expected.routeValid}, got ${result.routeValid}`);
+  }
+
   if (expected.requiresAvoidanceSegment && !result.segmentKinds.includes("Avoidance")) {
     notes.push("Expected an avoidance segment in the locked route");
   }
@@ -40,8 +44,12 @@ export const runScenario = (id: ScenarioId): ScenarioResult => {
   const scenario = getScenarioDefinition(id);
   const executor = new AutopilotExecutor({ divergenceDistance: scenario.divergenceDistance });
   const planner = createPlanner(scenario.planner);
-  const plan = planner.plan({ tick: 0, ship: scenario.ship, target: scenario.target, obstacles: scenario.obstacles });
-  executor.lockPlan(plan);
+  const planningResult = planner.planResult({ tick: 0, ship: scenario.ship, target: scenario.target, obstacles: scenario.obstacles });
+  if (!planningResult.ok) {
+    throw new Error(`Scenario ${scenario.id} planner rejection: ${planningResult.rejection.reasonCodes.join(",")}`);
+  }
+  const plan = planningResult.plan;
+  executor.lockPlan(plan, scenario.ship);
 
   const loop = new FixedStepSimulationLoop(scenario.ship, executor, { fixedDeltaSeconds: 1 / 30, maxSubSteps: 8 });
 
@@ -66,8 +74,8 @@ export const runScenario = (id: ScenarioId): ScenarioResult => {
 
   const telemetry = executor.getTelemetry();
   const finalShip = loop.getShip();
-  const initialFuel = scenario.ship.fuel;
-  const finalFuel = finalShip.fuel;
+  const initialFuel = scenario.ship.fuel.current;
+  const finalFuel = finalShip.fuel.current;
   const base = {
     id: scenario.id,
     label: scenario.label,
@@ -76,21 +84,26 @@ export const runScenario = (id: ScenarioId): ScenarioResult => {
     planHashBefore: plan.planHash,
     planHashAfter: executor.getLockedPlan()?.planHash ?? null,
     segmentKinds: plan.segments.map((segment) => segment.kind),
+    targetKind: plan.target.kind,
+    arrivalEnvelope: plan.target.arrivalEnvelope,
+    routeValidation: planningResult.validation,
+    routeScore: planningResult.score,
     status: telemetry.status,
     replanRequired: telemetry.replanRequired,
     invalidationReasons: telemetry.invalidationReasons,
+    failureReasonCodes: telemetry.failureReasonCodes,
+    routeValid: telemetry.flightSnapshot.routeValid,
     authority: finalShip.authority,
-    brakingReserve: {
-      autopilotAvailable: finalShip.authority.autopilot,
-      mainThrustersAvailable: finalShip.authority.mainThrusters,
-      fuelAvailable: finalFuel > 0,
-      canBrake: finalShip.authority.autopilot && finalShip.authority.mainThrusters && finalFuel > 0
-    },
+    brakingReserve: telemetry.flightSnapshot.brakingReserve,
+    initialMass: Number(scenario.ship.mass.totalMass.toFixed(4)),
+    finalMass: Number(finalShip.mass.totalMass.toFixed(4)),
     initialFuel: Number(initialFuel.toFixed(4)),
     finalFuel: Number(finalFuel.toFixed(4)),
     fuelUsed: Number(Math.max(0, initialFuel - finalFuel).toFixed(4)),
     finalSpeed: Number(magnitude(finalShip.velocity).toFixed(4)),
     fuel: Number(finalFuel.toFixed(4)),
+    finalPosition: roundVec(finalShip.position),
+    targetPosition: roundVec(plan.target.position),
     distanceToTarget: telemetry.distanceToTarget,
     offRouteDistance: telemetry.offRouteDistance
   };

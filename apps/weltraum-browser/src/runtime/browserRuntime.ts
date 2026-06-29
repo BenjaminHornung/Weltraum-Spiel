@@ -1,16 +1,16 @@
-import { AutopilotExecutor, DirectLocalPlanner, FixedStepSimulationLoop, ObstacleAvoidanceLocalPlanner, serializeTelemetry, vec3 } from "../core";
+import { AutopilotExecutor, DirectLocalPlanner, FixedStepSimulationLoop, ObstacleAvoidanceLocalPlanner, createTelemetrySnapshot, vec3 } from "../core";
 import type { ObstacleDescriptor, RoutePlan, ShipState, TargetDescriptor } from "../core";
-import { autopilotAuthority, createShipState, defaultObstacles, provingGroundTargets } from "../world/provingGroundWorld";
+import { autopilotAuthority, createShipState, defaultObstacles, noAutopilotAuthority, provingGroundTargets } from "../world/provingGroundWorld";
 
 export interface BrowserRuntimeController {
-  advance(elapsedSeconds: number): ReturnType<typeof serializeTelemetry>;
-  step(count?: number): ReturnType<typeof serializeTelemetry>;
-  getTelemetry(): ReturnType<typeof serializeTelemetry>;
+  advance(elapsedSeconds: number): ReturnType<typeof createTelemetrySnapshot>;
+  step(count?: number): ReturnType<typeof createTelemetrySnapshot>;
+  getTelemetry(): ReturnType<typeof createTelemetrySnapshot>;
   getPlanHash(): string | null;
   getLockedPlan(): RoutePlan | null;
   useDirectPlan(): RoutePlan;
   useObstacleAvoidancePlan(): RoutePlan;
-  disturbShip(offsetX: number): ReturnType<typeof serializeTelemetry>;
+  disturbShip(offsetX: number): ReturnType<typeof createTelemetrySnapshot>;
 }
 
 export const createInitialShip = (): ShipState => createShipState({ authority: autopilotAuthority });
@@ -19,15 +19,19 @@ export const defaultTarget: TargetDescriptor = provingGroundTargets.navigationAl
 
 export const browserObstacles: readonly ObstacleDescriptor[] = defaultObstacles;
 
-export const createBrowserRuntime = () => {
+export interface BrowserRuntimeOptions {
+  readonly initialShip?: ShipState;
+}
+
+export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
   const executor = new AutopilotExecutor({ divergenceDistance: 24 });
-  let ship = createInitialShip();
+  let ship = options.initialShip ?? createInitialShip();
   const loop = new FixedStepSimulationLoop(ship, executor, { fixedDeltaSeconds: 1 / 30, maxSubSteps: 10 });
 
-  const snapshot = () => serializeTelemetry({ ship: loop.getShip(), executor: loop.getTelemetry(), lockedPlan: executor.getLockedPlan() });
+  const snapshot = () => createTelemetrySnapshot(loop.getShip(), loop.getTelemetry(), executor.getLockedPlan());
 
   const lockPlan = (plan: RoutePlan): RoutePlan => {
-    executor.lockPlan(plan);
+    executor.lockPlan(plan, loop.getShip(), loop.getTick());
     return plan;
   };
 
@@ -71,3 +75,14 @@ export const createBrowserRuntime = () => {
 };
 
 export const createSpikeRuntime = createBrowserRuntime;
+
+export const createRuntimeShipForFlightCase = (flightCase: string | null): ShipState => {
+  if (flightCase === "insufficient-fuel") {
+    return createShipState({ fuel: 0 });
+  }
+  if (flightCase === "no-authority") {
+    return createShipState({ authority: noAutopilotAuthority });
+  }
+
+  return createInitialShip();
+};

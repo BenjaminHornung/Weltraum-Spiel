@@ -41,6 +41,11 @@ body,
 #plan-hash,
 #mode,
 #status,
+#route-status,
+#fuel-status,
+#authority-status,
+#brake-status,
+#failure-reasons,
 #telemetry {
   margin: 2px 0 0;
   color: #f7fbff;

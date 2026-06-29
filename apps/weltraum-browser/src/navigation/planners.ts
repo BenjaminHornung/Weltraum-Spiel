@@ -1,6 +1,7 @@
 ﻿import { planHashFor } from "../core/hash";
-import type { LocalPlanner, ObstacleDescriptor, PlannerContext, RoutePlan, RouteSegment } from "../core/types";
+import type { LocalPlanner, ObstacleDescriptor, PlannerContext, RoutePlan, RoutePlanningResult, RouteSegment } from "../core/types";
 import { cross, distance, dot, magnitude, normalize, sub, vec3 } from "../core/vector";
+import { arrivalRadiusForTarget, createRouteCandidate, planOrThrow, rejectionFor, validatePlanningContext, validateRouteSegments } from "./validation";
 
 const withHash = (plan: Omit<RoutePlan, "planHash">): RoutePlan => ({
   ...plan,
@@ -12,23 +13,40 @@ const routeId = (planner: RoutePlan["planner"], targetId: string, tick: number):
 export class DirectLocalPlanner implements LocalPlanner {
   readonly kind = "DirectLocal" as const;
 
-  plan(context: PlannerContext): RoutePlan {
+  planResult(context: PlannerContext): RoutePlanningResult {
+    const validation = validatePlanningContext(context);
+    if (!validation.ok) {
+      return rejectionFor(this.kind, context, validation);
+    }
+
     const segment: RouteSegment = {
       id: "direct-0",
       kind: "Direct",
       start: context.ship.position,
       end: context.target.position,
       desiredSpeed: 18,
-      clearanceRadius: context.target.arrivalRadius
+      clearanceRadius: arrivalRadiusForTarget(context.target)
     };
-
-    return withHash({
+    const routeValidation = validateRouteSegments(context, [segment], validation);
+    const candidate = createRouteCandidate(this.kind, context, [segment], routeValidation);
+    if (!routeValidation.ok) {
+      return rejectionFor(this.kind, context, routeValidation, candidate);
+    }
+    const plan = withHash({
       id: routeId(this.kind, context.target.id, context.tick),
       planner: this.kind,
       createdAtTick: context.tick,
       target: context.target,
-      segments: [segment]
+      segments: candidate.segments,
+      validation: routeValidation,
+      score: candidate.score
     });
+
+    return { ok: true, plan, candidate, validation: routeValidation, score: candidate.score };
+  }
+
+  plan(context: PlannerContext): RoutePlan {
+    return planOrThrow(this.planResult(context));
   }
 }
 
@@ -77,7 +95,12 @@ const avoidanceWaypoint = (context: PlannerContext, obstacle: ObstacleDescriptor
 export class ObstacleAvoidanceLocalPlanner implements LocalPlanner {
   readonly kind = "ObstacleAvoidanceLocal" as const;
 
-  plan(context: PlannerContext): RoutePlan {
+  planResult(context: PlannerContext): RoutePlanningResult {
+    const validation = validatePlanningContext(context);
+    if (!validation.ok) {
+      return rejectionFor(this.kind, context, validation);
+    }
+
     const obstacle = selectFirstBlockingObstacle(context);
     if (!obstacle) {
       const directSegment: RouteSegment = {
@@ -86,16 +109,24 @@ export class ObstacleAvoidanceLocalPlanner implements LocalPlanner {
         start: context.ship.position,
         end: context.target.position,
         desiredSpeed: 18,
-        clearanceRadius: context.target.arrivalRadius
+        clearanceRadius: arrivalRadiusForTarget(context.target)
       };
-
-      return withHash({
+      const routeValidation = validateRouteSegments(context, [directSegment], validation);
+      const candidate = createRouteCandidate(this.kind, context, [directSegment], routeValidation);
+      if (!routeValidation.ok) {
+        return rejectionFor(this.kind, context, routeValidation, candidate);
+      }
+      const plan = withHash({
         id: routeId(this.kind, context.target.id, context.tick),
         planner: this.kind,
         createdAtTick: context.tick,
         target: context.target,
-        segments: [directSegment]
+        segments: candidate.segments,
+        validation: routeValidation,
+        score: candidate.score
       });
+
+      return { ok: true, plan, candidate, validation: routeValidation, score: candidate.score };
     }
 
     const waypoint = avoidanceWaypoint(context, obstacle);
@@ -114,16 +145,28 @@ export class ObstacleAvoidanceLocalPlanner implements LocalPlanner {
         start: waypoint,
         end: context.target.position,
         desiredSpeed: 12,
-        clearanceRadius: context.target.arrivalRadius
+        clearanceRadius: arrivalRadiusForTarget(context.target)
       }
     ];
-
-    return withHash({
+    const routeValidation = validateRouteSegments(context, segments, validation);
+    const candidate = createRouteCandidate(this.kind, context, segments, routeValidation);
+    if (!routeValidation.ok) {
+      return rejectionFor(this.kind, context, routeValidation, candidate);
+    }
+    const plan = withHash({
       id: routeId(this.kind, context.target.id, context.tick),
       planner: this.kind,
       createdAtTick: context.tick,
       target: context.target,
-      segments
+      segments: candidate.segments,
+      validation: routeValidation,
+      score: candidate.score
     });
+
+    return { ok: true, plan, candidate, validation: routeValidation, score: candidate.score };
+  }
+
+  plan(context: PlannerContext): RoutePlan {
+    return planOrThrow(this.planResult(context));
   }
 }
