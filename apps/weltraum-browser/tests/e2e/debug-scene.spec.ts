@@ -176,6 +176,18 @@ test("debug scene exposes telemetry and writes evidence", async ({ page }) => {
   expect(renderSnapshot.lockedTargetPosition).toEqual(arrivalTelemetry.lockedPlan.target.position);
   expect(renderSnapshot.distanceToTarget).toBeLessThanOrEqual(renderSnapshot.arrivalRadius);
   expect(renderSnapshot.planHash).toBe(arrivalTelemetry.executor.planHash);
+  expect(renderSnapshot.lowPolyInstanceBatch).toEqual(
+    expect.objectContaining({
+      id: "debug-low-poly-asteroids",
+      batchKey: "low-poly-asteroid",
+      sourceId: "proving-ground-world",
+      frameId: "debug-local-render-frame",
+      count: 6,
+      maxInstances: 64,
+      renderOnly: true,
+      rendererOwnsWorldTruth: false
+    })
+  );
 
   const originalHash = arrivalTelemetry.executor.planHash;
   const divergent = await page.evaluate(() => (window as any).TestBridge.disturbShip(0));

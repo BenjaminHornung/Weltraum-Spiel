@@ -1,10 +1,10 @@
 # Tasks: Browser Low-Poly Open World Runtime v1
 
 
-- [ ] Write open-world runtime design doc.
-- [ ] Define local/world coordinate contracts.
-- [ ] Add floating-origin test skeleton.
-- [ ] Add simulation-bubble membership test.
-- [ ] Add render-only instanced asteroid field smoke.
-- [ ] Document object/update budgets.
+- [x] Write open-world runtime design doc.
+- [x] Define local/world coordinate contracts.
+- [x] Add floating-origin test skeleton.
+- [x] Add simulation-bubble membership test.
+- [x] Add render-only instanced asteroid field smoke.
+- [x] Document object/update budgets.
 

@@ -127,6 +127,8 @@ Gate: browser evidence covers Basic HUD, selected target, autopilot active, warn
 
 ## M6: Low-Poly Open-World Runtime Foundation
 
+Status: v1 foundation implemented in the browser mainline app. Explicit frame descriptors now separate absolute world coordinates from local render/physics projections. Floating-origin helpers reproject data without changing absolute position or velocity. Simulation bubble membership is deterministic over absolute coordinates. The debug Three.js scene consumes render-only asteroid instance descriptors via `InstancedMesh`; meshes do not own simulation truth.
+
 Source paths:
 
 - `docs/architecture/coordinate-spaces-and-floating-origin.md`
@@ -140,6 +142,20 @@ Intent:
 - Add floating-origin projection shift invariants.
 - Add simulation bubble membership.
 - Add chunk/LOD/instancing smoke tests for low-poly fields.
+
+Implemented in this v1 slice:
+
+- `FrameDescriptor`, `WorldCoordinate`, `LocalCoordinate` and `FramedVelocity` contracts under `apps/weltraum-browser/src/world`.
+- absolute-to-local, local-to-absolute and velocity frame conversion helpers with identity orientation only.
+- floating-origin projection shift evidence that preserves absolute state, absolute velocity and relative local distance.
+- deterministic `Full` / `Snapshot` / `Dormant` simulation-bubble membership, including boundary behavior.
+- render-only low-poly asteroid instance batches with an explicit max-instance budget and TestBridge render snapshot evidence.
+
+Deferred M6 follow-up points:
+
+- chunk registry and LOD streaming beyond the current fixed asteroid-field smoke,
+- non-identity frame orientation, planet-centered/surface conversion math and orbital mechanics,
+- terrain generation, surface runtime, save/load and full world streaming.
 
 Gate: absolute state and velocity remain unchanged by local projection shifts.
 

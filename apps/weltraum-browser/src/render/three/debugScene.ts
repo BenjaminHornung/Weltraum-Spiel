@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { arrivalRadiusForTarget, type RoutePlan } from "../../core";
 import type { BrowserRuntimeController } from "../../runtime/browserRuntime";
 import { renderStatusHud } from "../../ui/statusHud";
+import type { LowPolyInstanceBatch } from "../../world/lowPolyInstances";
 
 const toVector3 = (value: { x: number; y: number; z: number }) => new THREE.Vector3(value.x, value.y, value.z);
 const fromVector3 = (value: THREE.Vector3) => ({ x: value.x, y: value.y, z: value.z });
@@ -15,6 +16,20 @@ export interface RenderDebugSnapshot {
   readonly distanceToTarget: number;
   readonly arrivalRadius: number | null;
   readonly planHash: string | null;
+  readonly lowPolyInstanceBatch: {
+    readonly id: string;
+    readonly batchKey: string;
+    readonly sourceId: string | null;
+    readonly frameId: string;
+    readonly count: number;
+    readonly maxInstances: number;
+    readonly renderOnly: true;
+    readonly rendererOwnsWorldTruth: false;
+  };
+}
+
+export interface DebugSceneOptions {
+  readonly lowPolyInstanceBatch: LowPolyInstanceBatch;
 }
 
 export class DebugScene {
@@ -22,24 +37,19 @@ export class DebugScene {
   private readonly camera = new THREE.PerspectiveCamera(58, 1, 0.1, 1_000);
   private readonly renderer: THREE.WebGLRenderer;
   private readonly ship: THREE.Mesh;
+  private readonly asteroidBatch: LowPolyInstanceBatch;
+  private readonly asteroidField: THREE.InstancedMesh;
   private readonly routeGroup = new THREE.Group();
   private readonly target: THREE.Mesh;
   private readonly obstacle: THREE.Mesh;
   private frameHandle = 0;
   private lastTime = performance.now();
   private lastDrawnPlanHash: string | null = null;
-  private renderSnapshot: RenderDebugSnapshot = {
-    shipPosition: { x: 0, y: 0, z: 0 },
-    targetPosition: null,
-    lockedTargetPosition: null,
-    targetVisible: false,
-    executorStatus: "Idle",
-    distanceToTarget: 0,
-    arrivalRadius: null,
-    planHash: null
-  };
+  private renderSnapshot: RenderDebugSnapshot;
 
-  constructor(private readonly canvas: HTMLCanvasElement, private readonly runtime: BrowserRuntimeController) {
+  constructor(private readonly canvas: HTMLCanvasElement, private readonly runtime: BrowserRuntimeController, options: DebugSceneOptions) {
+    this.asteroidBatch = options.lowPolyInstanceBatch;
+    this.renderSnapshot = this.createInitialRenderSnapshot();
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.scene.background = new THREE.Color(0x080b12);
@@ -58,6 +68,14 @@ export class DebugScene {
     this.ship = new THREE.Mesh(new THREE.ConeGeometry(4, 12, 5), new THREE.MeshStandardMaterial({ color: 0x4cc9f0, roughness: 0.42 }));
     this.ship.rotation.x = Math.PI / 2;
     this.scene.add(this.ship);
+
+    this.asteroidField = new THREE.InstancedMesh(
+      new THREE.IcosahedronGeometry(3.2, 0),
+      new THREE.MeshStandardMaterial({ color: 0xb6a27a, roughness: 0.95, metalness: 0.02 }),
+      this.asteroidBatch.instances.length
+    );
+    this.writeAsteroidInstanceMatrices();
+    this.scene.add(this.asteroidField);
 
     this.target = new THREE.Mesh(new THREE.OctahedronGeometry(5, 0), new THREE.MeshStandardMaterial({ color: 0x80ff9f, emissive: 0x1c5a2a }));
     this.scene.add(this.target);
@@ -101,7 +119,8 @@ export class DebugScene {
         executorStatus: telemetry.executor.status,
         distanceToTarget: telemetry.executor.distanceToTarget,
         arrivalRadius: arrivalRadius !== null && Number.isFinite(arrivalRadius) ? arrivalRadius : null,
-        planHash: telemetry.executor.planHash
+        planHash: telemetry.executor.planHash,
+        lowPolyInstanceBatch: this.createLowPolyInstanceBatchSnapshot()
       };
       this.obstacle.position.set(58, 0, -14);
       this.updateHud();
@@ -142,6 +161,44 @@ export class DebugScene {
       const material = new THREE.LineBasicMaterial({ color: segment.kind === "Avoidance" ? 0xffd166 : 0x66d9ef });
       this.routeGroup.add(new THREE.Line(geometry, material));
     }
+  }
+
+  private writeAsteroidInstanceMatrices(): void {
+    const matrix = new THREE.Matrix4();
+    for (const [index, instance] of this.asteroidBatch.instances.entries()) {
+      const position = toVector3(instance.localPosition.value);
+      const scale = new THREE.Vector3(instance.localScale, instance.localScale, instance.localScale);
+      matrix.compose(position, new THREE.Quaternion(), scale);
+      this.asteroidField.setMatrixAt(index, matrix);
+    }
+    this.asteroidField.instanceMatrix.needsUpdate = true;
+  }
+
+  private createInitialRenderSnapshot(): RenderDebugSnapshot {
+    return {
+      shipPosition: { x: 0, y: 0, z: 0 },
+      targetPosition: null,
+      lockedTargetPosition: null,
+      targetVisible: false,
+      executorStatus: "Idle",
+      distanceToTarget: 0,
+      arrivalRadius: null,
+      planHash: null,
+      lowPolyInstanceBatch: this.createLowPolyInstanceBatchSnapshot()
+    };
+  }
+
+  private createLowPolyInstanceBatchSnapshot(): RenderDebugSnapshot["lowPolyInstanceBatch"] {
+    return {
+      id: this.asteroidBatch.id,
+      batchKey: this.asteroidBatch.batchKey,
+      sourceId: this.asteroidBatch.sourceId ?? null,
+      frameId: this.asteroidBatch.frame.id,
+      count: this.asteroidBatch.instances.length,
+      maxInstances: this.asteroidBatch.maxInstances,
+      renderOnly: this.asteroidBatch.renderOnly,
+      rendererOwnsWorldTruth: this.asteroidBatch.rendererOwnsWorldTruth
+    };
   }
 
   private updateHud(): void {
