@@ -7,6 +7,7 @@ const elementIds = [
   "mode",
   "control-mode",
   "camera-mode",
+  "ship-visual-source",
   "throttle-status",
   "velocity-status",
   "rcs-sas-status",
@@ -76,6 +77,7 @@ describe("renderStatusHud", () => {
     expect(elements.get("mode")?.textContent).toBe("Manual");
     expect(elements.get("control-mode")?.textContent).toBe("Cruise");
     expect(elements.get("camera-mode")?.textContent).toBe("ChaseLocked");
+    expect(elements.get("ship-visual-source")?.textContent).toBe("Ship visual: Procedural fallback");
     expect(elements.get("help-hint")?.textContent).toContain("Desktop keyboard/mouse manual flight");
     expect(elements.get("help-hint")?.textContent).toContain("W/S pitch");
     expect(elements.get("help-hint")?.textContent).toContain("Mobile: target selection and autopilot only");
@@ -342,5 +344,50 @@ describe("renderStatusHud", () => {
     expect(viewModel.velocityState).not.toContain("(1.0, 2.0, 3.0)");
     expect(viewModel.rcsSasState).toContain("RCS on, SAS off");
     expect(viewModel.rcsSasState).toContain("RCS translate");
+  });
+
+  it("renders a concise visual-source line from explicit render snapshot metadata", () => {
+    const ship = createShipStateV2({ authority: { mode: "Autopilot" } });
+    const ownerSnapshot = createFlightSnapshot(ship, null);
+
+    const viewModel = createStatusHudViewModel(
+      {
+        ship,
+        lockedPlan: null,
+        flightSnapshot: ownerSnapshot,
+        executor: {
+          tick: 1,
+          status: "Idle",
+          planHash: null,
+          activeSegmentId: null,
+          distanceToTarget: 0,
+          offRouteDistance: 0,
+          replanRequired: false,
+          invalidationReasons: [],
+          failureReasonCodes: [],
+          fuel: ownerSnapshot.fuel,
+          flightSnapshot: ownerSnapshot,
+          position: ship.position,
+          velocity: ship.velocity
+        }
+      },
+      {
+        state: "GLBLoaded",
+        label: "Demo Scout GLB",
+        candidateAssetPath: "Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.glb",
+        sourceAssetPath: "Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.glb",
+        browserAssetPath: "/ships/demo_scout_mk1.glb",
+        fallbackReason: null,
+        appliedScale: 3.2,
+        axisCorrection: {
+          from: "glb:-Z-forward,+Y-up",
+          to: "+X-forward,+Y-up,+/-Z-lateral",
+          rotationYRadians: -Math.PI / 2,
+          mapping: "browserX=-glbZ,browserY=glbY,browserZ=glbX"
+        }
+      }
+    );
+
+    expect(viewModel.visualSourceLine).toBe("Ship visual: Demo Scout GLB");
   });
 });

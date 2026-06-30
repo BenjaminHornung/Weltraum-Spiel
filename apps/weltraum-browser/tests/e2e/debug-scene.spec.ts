@@ -139,10 +139,29 @@ async function assertCanvasHasNonDarkPixels(page: Page, selector = "#debug-scene
   expect(result.uniqueSampledColors, `Canvas lacks color variation: ${JSON.stringify(result)}`).toBeGreaterThan(4);
 }
 
+async function waitForShipVisualReady(page: Page) {
+  await page.waitForFunction(() => {
+    const snapshot = (window as any).TestBridge?.getRenderSnapshot?.();
+    return snapshot?.shipVisual?.visualSource?.state && snapshot.shipVisual.visualSource.state !== "Loading";
+  });
+  return page.evaluate(() => (window as any).TestBridge.getRenderSnapshot().shipVisual);
+}
+
+function findShipVisualBinding(shipVisual: any, id: string) {
+  const binding = shipVisual.markerBindings.find((candidate: any) => candidate.id === id);
+  expect(binding, `Missing ship visual marker binding ${id}`).toBeTruthy();
+  return binding;
+}
+
 test("browser vertical slice selects a target, previews a route, engages autopilot, and writes evidence", async ({ page }) => {
   await page.goto("/?testBridge=1");
   await page.waitForFunction(() => Boolean((window as any).TestBridge));
-  await page.waitForTimeout(250);
+  const initialShipVisual = await waitForShipVisualReady(page);
+  expect(initialShipVisual.visualSource.state).toBe("GLBLoaded");
+  expect(initialShipVisual.visualSource.browserAssetPath).toBe("/ships/demo_scout_mk1.glb");
+  expect(initialShipVisual.descriptorValidation.ok).toBe(true);
+  expect(initialShipVisual.markerBindings.some((binding: any) => binding.source === "GLBNode")).toBe(true);
+  await expect(page.getByTestId("ship-visual-source")).toContainText("Ship visual: Demo Scout GLB");
 
   const initialTelemetry = await page.evaluate(() => (window as any).TestBridge.getTelemetry());
   expect(initialTelemetry.executor.planHash).toBeNull();
@@ -200,6 +219,8 @@ test("browser vertical slice selects a target, previews a route, engages autopil
   await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getRenderSnapshot().shipVisual.vfx.mainThrustVisible)).toBe(true);
   const evidenceDir = path.resolve(process.cwd(), "evidence");
   await mkdir(evidenceDir, { recursive: true });
+  await page.screenshot({ path: path.join(evidenceDir, "demo-scout-glb-loaded.png"), fullPage: true });
+  await page.screenshot({ path: path.join(evidenceDir, "demo-scout-main-thruster.png"), fullPage: true });
   await page.screenshot({ path: path.join(evidenceDir, "autopilot-thruster-burn.png"), fullPage: true });
 
   await page.locator('[data-target-id="nav-alpha"]').click();
@@ -232,6 +253,9 @@ test("browser vertical slice selects a target, previews a route, engages autopil
   await expect(page.getByTestId("autopilot-active")).toContainText("Arrived at selected target");
   await page.waitForFunction(() => (window as any).TestBridge.getRenderSnapshot?.().executorStatus === "Arrived");
   const renderSnapshot = await page.evaluate(() => (window as any).TestBridge.getRenderSnapshot());
+  expect(renderSnapshot.shipVisual.visualSource.state).toBe("GLBLoaded");
+  expect(renderSnapshot.camera.anchorId).toBe("chase-camera-anchor");
+  expect(renderSnapshot.camera.anchorLocalPosition).toEqual(renderSnapshot.shipVisual.cameraAnchorBinding.localPosition);
   expect(renderSnapshot.targetVisible).toBe(true);
   expect(renderSnapshot.targetPosition).toEqual(arrivalTelemetry.lockedPlan.target.position);
   expect(renderSnapshot.lockedTargetPosition).toEqual(arrivalTelemetry.lockedPlan.target.position);
@@ -240,6 +264,7 @@ test("browser vertical slice selects a target, previews a route, engages autopil
   expect(renderSnapshot.shipPosition).not.toEqual(arrivalTelemetry.lockedPlan.target.position);
   expect(renderSnapshot.planHash).toBe(arrivalTelemetry.executor.planHash);
   await page.screenshot({ path: path.join(evidenceDir, "autopilot-arrival.png"), fullPage: true });
+  await page.screenshot({ path: path.join(evidenceDir, "demo-scout-autopilot-arrival.png"), fullPage: true });
   expect(renderSnapshot.lowPolyInstanceBatch).toEqual(
     expect.objectContaining({
       id: "debug-low-poly-asteroids",
@@ -353,20 +378,37 @@ test("browser vertical slice selects a target, previews a route, engages autopil
 test("playable manual flight exposes ship visual, ChaseLocked camera, controls, and telemetry VFX", async ({ page }) => {
   await page.goto("/?testBridge=1");
   await page.waitForFunction(() => Boolean((window as any).TestBridge));
-  await page.waitForTimeout(250);
+  const readyVisual = await waitForShipVisualReady(page);
+  expect(readyVisual.visualSource.state).toBe("GLBLoaded");
 
   const initialRender = await page.evaluate(() => (window as any).TestBridge.getRenderSnapshot());
   expect(initialRender.shipVisual.oldConeOnlyPlaceholder).toBe(false);
-  expect(initialRender.shipVisual.descriptor.strategy).toBe("ProceduralLowPolyFallback");
-  expect(initialRender.shipVisual.visualSource.state).toBe("GLBUnavailableFallback");
+  expect(initialRender.shipVisual.descriptor.strategy).toBe("BrowserGlbAsset");
+  expect(initialRender.shipVisual.visualSource.state).toBe("GLBLoaded");
   expect(initialRender.shipVisual.visualSource.candidateAssetPath).toBe("Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.glb");
+  expect(initialRender.shipVisual.visualSource.browserAssetPath).toBe("/ships/demo_scout_mk1.glb");
+  expect(initialRender.shipVisual.visualSource.axisCorrection.mapping).toBe("browserX=-glbZ,browserY=glbY,browserZ=glbX");
   expect(initialRender.shipVisual.descriptorValidation.ok).toBe(true);
   expect(initialRender.shipVisual.markerCounts.hullParts).toBeGreaterThanOrEqual(4);
   expect(initialRender.shipVisual.markerCounts.rcs).toBeGreaterThanOrEqual(4);
   expect(initialRender.shipVisual.markerCounts.mainEngines).toBeGreaterThanOrEqual(1);
   expect(initialRender.shipVisual.markerCounts.muzzle).toBe(1);
+  const cockpitBinding = findShipVisualBinding(initialRender.shipVisual, "cockpit-front");
+  const mainEngineBinding = findShipVisualBinding(initialRender.shipVisual, "main-engine-aft");
+  const muzzleBinding = findShipVisualBinding(initialRender.shipVisual, "muzzle-placeholder");
+  expect(cockpitBinding.source).toBe("GLBNode");
+  expect(cockpitBinding.localPosition.x).toBeGreaterThan(0);
+  expect(mainEngineBinding.source).toBe("GLBNode");
+  expect(mainEngineBinding.localPosition.x).toBeLessThan(0);
+  expect(muzzleBinding.source).toBe("GLBNode");
+  expect(muzzleBinding.localPosition.x).toBeGreaterThan(0);
   expect(initialRender.camera.mode).toBe("ChaseLocked");
   expect(initialRender.camera.followsShip).toBe(true);
+  expect(initialRender.camera.anchorId).toBe("chase-camera-anchor");
+  expect(initialRender.shipVisual.cameraAnchorBinding.source).toBe("ManifestFallback");
+  expect(initialRender.camera.anchorSource).toBe("ManifestFallback");
+  expect(initialRender.camera.anchorLocalPosition).toEqual(initialRender.shipVisual.cameraAnchorBinding.localPosition);
+  await expect(page.getByTestId("ship-visual-source")).toContainText("Ship visual: Demo Scout GLB");
 
   await page.keyboard.down("Shift");
   await page.waitForTimeout(700);
@@ -380,6 +422,8 @@ test("playable manual flight exposes ship visual, ChaseLocked camera, controls, 
   expect(manualTelemetry.ship.actuatorTelemetry.rcsRotationActive || manualTelemetry.ship.actuatorTelemetry.sasCorrectionActive).toBe(true);
   const manualRender = await page.evaluate(() => (window as any).TestBridge.getRenderSnapshot());
   expect(manualRender.shipVisual.vfx.mainThrustVisible).toBe(true);
+  expect(manualRender.shipVisual.vfx.mainEngineBinding.id).toBe("main-engine-aft");
+  expect(manualRender.shipVisual.vfx.mainEngineBinding.source).toBe("GLBNode");
   expect(manualRender.camera.mode).toBe("ChaseLocked");
   expect(manualRender.camera.followTarget.x).toBeGreaterThan(initialRender.camera.followTarget.x);
   expect(manualRender.camera.distanceToShip).toBeGreaterThan(0);
@@ -396,6 +440,7 @@ test("playable manual flight exposes ship visual, ChaseLocked camera, controls, 
   const evidenceDir = path.resolve(process.cwd(), "evidence");
   await mkdir(evidenceDir, { recursive: true });
   await page.screenshot({ path: path.join(evidenceDir, "manual-flight-chasecam.png"), fullPage: true });
+  await page.screenshot({ path: path.join(evidenceDir, "demo-scout-chasecam.png"), fullPage: true });
 
   await page.keyboard.press("CapsLock");
   await page.keyboard.press("CapsLock");
@@ -407,7 +452,9 @@ test("playable manual flight exposes ship visual, ChaseLocked camera, controls, 
   await page.keyboard.up("h");
   expect(rcsRender.shipVisual.vfx.rcsTranslationVisible).toBe(true);
   expect(rcsRender.shipVisual.vfx.visibleRcsPuffCount).toBeGreaterThanOrEqual(4);
+  expect(rcsRender.shipVisual.vfx.rcsBindings.every((binding: any) => binding.source === "GLBNode")).toBe(true);
   await page.screenshot({ path: path.join(evidenceDir, "rcs-translation.png"), fullPage: true });
+  await page.screenshot({ path: path.join(evidenceDir, "demo-scout-rcs-puffs.png"), fullPage: true });
 
   await page.keyboard.press("v");
   await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().manualInput.cameraMode)).toBe("OrbitInspect");
@@ -461,6 +508,31 @@ test("product bootstrap does not expose the E2E TestBridge by default", async ({
   await expect(page.getByTestId("velocity-status")).not.toContainText(/\(-?\d+(?:\.\d+)?,\s*-?\d+(?:\.\d+)?,\s*-?\d+(?:\.\d+)?\)/);
   await expect(page.getByTestId("help-hint")).toContainText("Desktop keyboard/mouse manual flight");
   await expect.poll(() => page.evaluate(() => "TestBridge" in window)).toBe(false);
+});
+
+test("malformed browser GLB load fails into a visible procedural fallback", async ({ page }) => {
+  await page.route("**/ships/demo_scout_mk1.glb", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "model/gltf-binary",
+      body: Buffer.from("not-a-valid-glb")
+    });
+  });
+
+  await page.goto("/?testBridge=1");
+  await page.waitForFunction(() => Boolean((window as any).TestBridge));
+  const shipVisual = await waitForShipVisualReady(page);
+
+  expect(shipVisual.visualSource.state).toBe("GLBFailedFallback");
+  expect(shipVisual.visualSource.browserAssetPath).toBe("/ships/demo_scout_mk1.glb");
+  expect(shipVisual.visualSource.fallbackReason).toEqual(expect.any(String));
+  expect(shipVisual.visualSource.fallbackReason.length).toBeGreaterThan(0);
+  expect(shipVisual.descriptor.strategy).toBe("ProceduralLowPolyFallback");
+  expect(shipVisual.descriptorValidation.ok).toBe(true);
+  expect(shipVisual.markerCounts).toEqual({ hullParts: 4, mainEngines: 1, rcs: 6, muzzle: 1, cameraAnchors: 1 });
+  expect(shipVisual.markerBindings.every((binding: any) => binding.source === "ManifestFallback")).toBe(true);
+  await expect(page.getByTestId("ship-visual-source")).toContainText("Ship visual: Procedural fallback");
+  await assertCanvasHasNonDarkPixels(page);
 });
 
 test("real HUD buttons dispatch autopilot commands without exposing DirectLocal controls", async ({ page }) => {

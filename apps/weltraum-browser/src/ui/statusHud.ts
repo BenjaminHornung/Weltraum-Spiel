@@ -1,5 +1,6 @@
 import type { TelemetrySnapshot } from "../core";
 import type { BrowserRuntimeCommand } from "../runtime/commands";
+import type { ShipVisualSourceSnapshot } from "../render/three/shipVisual";
 
 type ChipSeverity = "Critical" | "High" | "Medium" | "Low";
 
@@ -30,6 +31,7 @@ export interface StatusHudViewModel {
   readonly warningSummary: string;
   readonly warningChips: readonly StatusHudWarningChipViewModel[];
   readonly runtimeMessage: string;
+  readonly visualSourceLine: string;
   readonly targetOptions: readonly StatusHudTargetOptionViewModel[];
 }
 
@@ -83,7 +85,17 @@ const createWarningChips = (codes: readonly string[]): readonly StatusHudWarning
     .map((code) => ({ code, ...(chipCatalog[code] ?? fallbackWarning) }))
     .sort((left, right) => severityOrder[left.severity] - severityOrder[right.severity] || left.code.localeCompare(right.code));
 
-export const createStatusHudViewModel = (telemetry: TelemetrySnapshot): StatusHudViewModel => {
+const formatVisualSourceLine = (visualSource: ShipVisualSourceSnapshot | undefined): string => {
+  if (!visualSource || visualSource.state === "ProceduralFallback" || visualSource.state === "GLBFailedFallback") {
+    return "Ship visual: Procedural fallback";
+  }
+  if (visualSource.state === "GLBLoaded") {
+    return "Ship visual: Demo Scout GLB";
+  }
+  return "Ship visual: Loading Demo Scout GLB";
+};
+
+export const createStatusHudViewModel = (telemetry: TelemetrySnapshot, visualSource?: ShipVisualSourceSnapshot): StatusHudViewModel => {
   const snapshot = telemetry.flightSnapshot;
   const selectedTarget = telemetry.selectedTarget ?? telemetry.lockedPlan?.target ?? telemetry.routePreview?.target ?? null;
   const preview = telemetry.routePreview;
@@ -146,6 +158,7 @@ export const createStatusHudViewModel = (telemetry: TelemetrySnapshot): StatusHu
     warningSummary: warningChips.length > 0 ? warningChips.map((chip) => chip.label).join(", ") : "none",
     warningChips,
     runtimeMessage: telemetry.runtimeMessage ?? preview?.playerMessage ?? "ready",
+    visualSourceLine: formatVisualSourceLine(visualSource),
     targetOptions
   };
 };
@@ -231,8 +244,8 @@ const bindCommand = (id: string, command: BrowserRuntimeCommand, sink: StatusHud
   element.onclick = sink ? () => void sink.dispatch(command) : null;
 };
 
-export const renderStatusHud = (telemetry: TelemetrySnapshot, commandSink?: StatusHudCommandSink): void => {
-  const viewModel = createStatusHudViewModel(telemetry);
+export const renderStatusHud = (telemetry: TelemetrySnapshot, commandSink?: StatusHudCommandSink, visualSource?: ShipVisualSourceSnapshot): void => {
+  const viewModel = createStatusHudViewModel(telemetry, visualSource);
   setText("plan-hash", viewModel.planState);
   setText("mode", viewModel.mode);
   setText("control-mode", viewModel.controlMode);
@@ -251,6 +264,7 @@ export const renderStatusHud = (telemetry: TelemetrySnapshot, commandSink?: Stat
   setText("brake-status", viewModel.brakingState);
   setText("failure-reasons", viewModel.warningSummary);
   setText("runtime-message", viewModel.runtimeMessage);
+  setText("ship-visual-source", viewModel.visualSourceLine);
   renderWarningChips(viewModel);
   renderTargetOptions(viewModel, commandSink);
   bindCommand("engage-autopilot", { type: "EngageAutopilot", planner: "ObstacleAvoidanceLocal" }, commandSink);
