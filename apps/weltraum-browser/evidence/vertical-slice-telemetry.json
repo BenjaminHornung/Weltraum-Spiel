@@ -79,7 +79,7 @@
       }
     },
     "executor": {
-      "tick": 18,
+      "tick": 13,
       "status": "Idle",
       "planHash": null,
       "activeSegmentId": null,
@@ -437,7 +437,7 @@
       }
     },
     "executor": {
-      "tick": 24,
+      "tick": 16,
       "status": "Idle",
       "planHash": null,
       "activeSegmentId": null,
@@ -616,9 +616,9 @@
         }
       },
       "plan": {
-        "id": "ObstacleAvoidanceLocal:nav-beta:24",
+        "id": "ObstacleAvoidanceLocal:nav-beta:15",
         "planner": "ObstacleAvoidanceLocal",
-        "createdAtTick": 24,
+        "createdAtTick": 15,
         "target": {
           "id": "nav-beta",
           "label": "Navigation Beta",
@@ -686,7 +686,7 @@
             "clearanceRisk:0.386"
           ]
         },
-        "planHash": "0dd242ba"
+        "planHash": "a5659532"
       },
       "validation": {
         "ok": true,
@@ -795,9 +795,9 @@
       }
     },
     "executor": {
-      "tick": 345,
+      "tick": 336,
       "status": "Arrived",
-      "planHash": "f07c6f0c",
+      "planHash": "7e145088",
       "activeSegmentId": "avoid-rock-a-1",
       "distanceToTarget": 0.1345,
       "offRouteDistance": 0.0345,
@@ -859,9 +859,9 @@
       }
     },
     "lockedPlan": {
-      "id": "ObstacleAvoidanceLocal:nav-beta:27",
+      "id": "ObstacleAvoidanceLocal:nav-beta:18",
       "planner": "ObstacleAvoidanceLocal",
-      "createdAtTick": 27,
+      "createdAtTick": 18,
       "target": {
         "id": "nav-beta",
         "label": "Navigation Beta",
@@ -929,7 +929,7 @@
           "clearanceRisk:0.386"
         ]
       },
-      "planHash": "f07c6f0c"
+      "planHash": "7e145088"
     },
     "flightSnapshot": {
       "mass": {
@@ -1046,9 +1046,9 @@
         }
       },
       "plan": {
-        "id": "ObstacleAvoidanceLocal:nav-beta:27",
+        "id": "ObstacleAvoidanceLocal:nav-beta:18",
         "planner": "ObstacleAvoidanceLocal",
-        "createdAtTick": 27,
+        "createdAtTick": 18,
         "target": {
           "id": "nav-beta",
           "label": "Navigation Beta",
@@ -1116,7 +1116,7 @@
             "clearanceRisk:0.386"
           ]
         },
-        "planHash": "f07c6f0c"
+        "planHash": "7e145088"
       },
       "validation": {
         "ok": true,
@@ -1225,9 +1225,9 @@
       }
     },
     "executor": {
-      "tick": 350,
+      "tick": 344,
       "status": "Diverged",
-      "planHash": "f07c6f0c",
+      "planHash": "7e145088",
       "activeSegmentId": "avoid-rock-a-1",
       "distanceToTarget": 64.0001,
       "offRouteDistance": 64,
@@ -1295,9 +1295,9 @@
       }
     },
     "lockedPlan": {
-      "id": "ObstacleAvoidanceLocal:nav-beta:27",
+      "id": "ObstacleAvoidanceLocal:nav-beta:18",
       "planner": "ObstacleAvoidanceLocal",
-      "createdAtTick": 27,
+      "createdAtTick": 18,
       "target": {
         "id": "nav-beta",
         "label": "Navigation Beta",
@@ -1365,7 +1365,7 @@
           "clearanceRisk:0.386"
         ]
       },
-      "planHash": "f07c6f0c"
+      "planHash": "7e145088"
     },
     "flightSnapshot": {
       "mass": {
@@ -1484,9 +1484,9 @@
         }
       },
       "plan": {
-        "id": "ObstacleAvoidanceLocal:nav-beta:27",
+        "id": "ObstacleAvoidanceLocal:nav-beta:18",
         "planner": "ObstacleAvoidanceLocal",
-        "createdAtTick": 27,
+        "createdAtTick": 18,
         "target": {
           "id": "nav-beta",
           "label": "Navigation Beta",
@@ -1554,7 +1554,7 @@
             "clearanceRisk:0.386"
           ]
         },
-        "planHash": "f07c6f0c"
+        "planHash": "7e145088"
       },
       "validation": {
         "ok": true,

@@ -1,7 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { AutopilotExecutor, DirectLocalPlanner, FixedStepSimulationLoop, createShipStateV2, vec3 } from "../../src/core";
 import { createBrowserRuntime } from "../../src/runtime/browserRuntime";
-import { createProceduralShipVisual, proceduralScoutDescriptor, validateShipVisualDescriptor } from "../../src/render/three/shipVisual";
+import {
+  createDemoScoutShipVisual,
+  createProceduralShipVisual,
+  demoScoutGlbDescriptor,
+  proceduralScoutDescriptor,
+  validateShipVisualDescriptor
+} from "../../src/render/three/shipVisual";
+import { createStatusHudViewModel } from "../../src/ui/statusHud";
 import { createTestBridge } from "../../src/test-harness/browserBridge";
 import { serializeTelemetry } from "../../src/sim/telemetry";
 import type { ShipState, TargetDescriptor } from "../../src/core";
@@ -25,9 +32,12 @@ const target: TargetDescriptor = {
 describe("FixedStepSimulationLoop", () => {
   it("validates required ship visual markers and socket descriptors", () => {
     const validation = validateShipVisualDescriptor(proceduralScoutDescriptor);
+    const glbManifestValidation = validateShipVisualDescriptor(demoScoutGlbDescriptor);
 
     expect(validation.ok).toBe(true);
     expect(validation.counts).toEqual({ hullParts: 4, mainEngines: 1, rcs: 6, muzzle: 1, cameraAnchors: 1 });
+    expect(glbManifestValidation.ok).toBe(true);
+    expect(glbManifestValidation.counts).toEqual({ hullParts: 4, mainEngines: 1, rcs: 4, muzzle: 1, cameraAnchors: 1 });
     expect(proceduralScoutDescriptor.hullParts).toContain("main-hull");
     expect(proceduralScoutDescriptor.cockpitMarker.id).toContain("cockpit");
     expect(proceduralScoutDescriptor.mainEngineMarkers.map((marker) => marker.id)).toContain("main-engine-aft");
@@ -48,8 +58,9 @@ describe("FixedStepSimulationLoop", () => {
     const visual = createProceduralShipVisual();
 
     const initialSnapshot = visual.getSnapshot();
-    expect(initialSnapshot.visualSource.state).toBe("GLBUnavailableFallback");
+    expect(initialSnapshot.visualSource.state).toBe("ProceduralFallback");
     expect(initialSnapshot.visualSource.candidateAssetPath).toBe("Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.glb");
+    expect(initialSnapshot.visualSource.axisCorrection.mapping).toBe("identity");
     expect(initialSnapshot.descriptorValidation.ok).toBe(true);
 
     visual.updateVfx({
@@ -64,6 +75,49 @@ describe("FixedStepSimulationLoop", () => {
     const offAxisThrustSnapshot = visual.getSnapshot();
     expect(offAxisThrustSnapshot.vfx.mainThrustVisible).toBe(true);
     expect(offAxisThrustSnapshot.vfx.mainThrustScale).toBeGreaterThan(1);
+    expect(offAxisThrustSnapshot.vfx.mainEngineBinding.id).toBe("main-engine-aft");
+    expect(offAxisThrustSnapshot.vfx.rcsBindings.length).toBeGreaterThanOrEqual(4);
+  });
+
+  it("exposes deterministic loading metadata while the Demo Scout GLB adapter keeps fallback geometry visible", () => {
+    const visual = createDemoScoutShipVisual({ autoLoad: false });
+
+    const snapshot = visual.getSnapshot();
+
+    expect(snapshot.visualSource.state).toBe("Loading");
+    expect(snapshot.visualSource.browserAssetPath).toBe("/ships/demo_scout_mk1.glb");
+    expect(snapshot.visualSource.appliedScale).toBe(3.2);
+    expect(snapshot.visualSource.axisCorrection.mapping).toBe("browserX=-glbZ,browserY=glbY,browserZ=glbX");
+    expect(snapshot.descriptorValidation.ok).toBe(true);
+    expect(snapshot.markerBindings.every((binding) => binding.source === "ManifestFallback")).toBe(true);
+  });
+
+  it("falls back deterministically when Demo Scout GLB loading fails", async () => {
+    const visual = createDemoScoutShipVisual({ browserAssetPath: "/does-not-exist.glb" });
+    let snapshot = visual.getSnapshot();
+
+    for (let attempt = 0; attempt < 25 && snapshot.visualSource.state !== "GLBFailedFallback"; attempt += 1) {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      snapshot = visual.getSnapshot();
+    }
+
+    expect(snapshot.visualSource.state).toBe("GLBFailedFallback");
+    expect(snapshot.visualSource.fallbackReason).toEqual(expect.any(String));
+    expect(snapshot.visualSource.fallbackReason?.length).toBeGreaterThan(0);
+    expect(snapshot.visualSource.appliedScale).toBe(1);
+    expect(snapshot.visualSource.axisCorrection.mapping).toBe("identity");
+    expect(snapshot.visualSource.axisCorrection.rotationYRadians).toBe(0);
+    expect(snapshot.descriptorValidation.ok).toBe(true);
+    expect(snapshot.markerCounts).toEqual({ hullParts: 4, mainEngines: 1, rcs: 6, muzzle: 1, cameraAnchors: 1 });
+    expect(snapshot.markerBindings.every((binding) => binding.source === "ManifestFallback")).toBe(true);
+    expect([...snapshot.markerBindings, snapshot.cameraAnchorBinding].every((binding) =>
+      Number.isFinite(binding.localPosition.x) &&
+      Number.isFinite(binding.localPosition.y) &&
+      Number.isFinite(binding.localPosition.z)
+    )).toBe(true);
+
+    const { controller } = createBrowserRuntime();
+    expect(createStatusHudViewModel(controller.getTelemetry(), snapshot.visualSource).visualSourceLine).toBe("Ship visual: Procedural fallback");
   });
 
   it("advances in deterministic fixed ticks", () => {

@@ -222,9 +222,16 @@ Polish v1 follow-up:
 - Manual flight in this browser slice is desktop keyboard/mouse only; mobile remains target selection/autopilot-only until a separate touch/manual-flight feature is specified.
 - Main-thruster VFX scales from acceleration magnitude, so off-axis acceleration still has visible burn scale.
 
+Demo Scout GLB visual parity v1 follow-up:
+
+- `Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.glb` is copied read-only into the browser public asset path as `apps/weltraum-browser/public/ships/demo_scout_mk1.glb` when this slice is present; source and browser copy both report size `127108`, GLB magic `glTF`, version `2`, declared length `127108`.
+- The browser render adapter now attempts `/ships/demo_scout_mk1.glb`, reports deterministic visual states (`Loading`, `GLBLoaded`, `GLBFailedFallback`, `ProceduralFallback`), keeps procedural geometry visible while loading or failed, and keeps all axis/scale correction render-only.
+- Demo Scout GLB marker resolution prefers named GLB nodes for cockpit/front, main engine, RCS hardpoints, and muzzle, then uses manifest fallback positions; the ChaseLocked camera anchor remains a manifest visual anchor when the GLB has no authored camera node.
+- HUD and TestBridge expose the same concise visual-source result (`Ship visual: Demo Scout GLB` or `Ship visual: Procedural fallback`) while detailed paths, axis correction, marker binding sources, and fallback reason remain in render snapshots/evidence.
+
 Deferred playable-flight follow-up points:
 
-- production ship asset/GLB loader path with authored marker/socket parity,
+- richer production ship asset pipeline beyond this Demo Scout GLB adapter,
 - richer Unity-style flight physics, per-nozzle RCS allocation, gimbal/SAS behavior and engine/particle effects,
 - broader camera polish and input rebinding/accessibility beyond the current key/mouse contract,
 - full radar/minimap/map integration and non-local-space/orbital/surface flight behavior.

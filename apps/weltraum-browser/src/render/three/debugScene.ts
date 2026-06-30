@@ -4,7 +4,7 @@ import type { BrowserRuntimeController } from "../../runtime/browserRuntime";
 import type { CameraMode } from "../../runtime/input";
 import { renderStatusHud } from "../../ui/statusHud";
 import type { LowPolyInstanceBatch } from "../../world/lowPolyInstances";
-import { createProceduralShipVisual, type ShipVisualSnapshot } from "./shipVisual";
+import { createDemoScoutShipVisual, type ShipVisualSnapshot } from "./shipVisual";
 
 const toVector3 = (value: { x: number; y: number; z: number }) => new THREE.Vector3(value.x, value.y, value.z);
 const fromVector3 = (value: THREE.Vector3) => ({ x: value.x, y: value.y, z: value.z });
@@ -31,6 +31,9 @@ export interface RenderDebugSnapshot {
     readonly followTarget: { readonly x: number; readonly y: number; readonly z: number };
     readonly followsShip: boolean;
     readonly distanceToShip: number;
+    readonly anchorId: string;
+    readonly anchorSource: string;
+    readonly anchorLocalPosition: { readonly x: number; readonly y: number; readonly z: number };
   };
   readonly lowPolyInstanceBatch: {
     readonly id: string;
@@ -52,7 +55,7 @@ export class DebugScene {
   private readonly scene = new THREE.Scene();
   private readonly camera = new THREE.PerspectiveCamera(58, 1, 0.1, 1_000);
   private readonly renderer: THREE.WebGLRenderer;
-  private readonly shipVisual = createProceduralShipVisual();
+  private readonly shipVisual = createDemoScoutShipVisual();
   private readonly asteroidBatch: LowPolyInstanceBatch;
   private readonly asteroidField: THREE.InstancedMesh;
   private readonly routeGroup = new THREE.Group();
@@ -244,7 +247,10 @@ export class DebugScene {
         position: fromVector3(this.camera.position),
         followTarget: { x: 0, y: 0, z: 0 },
         followsShip: true,
-        distanceToShip: 0
+        distanceToShip: 0,
+        anchorId: "chase-camera-anchor",
+        anchorSource: "ManifestFallback",
+        anchorLocalPosition: { x: -1.5, y: 1.3, z: 0 }
       },
       lowPolyInstanceBatch: this.createLowPolyInstanceBatchSnapshot()
     };
@@ -282,7 +288,9 @@ export class DebugScene {
 
   private updateCamera(mode: CameraMode, shipPosition: THREE.Vector3, orientation: { x: number; y: number; z: number; w: number }): RenderDebugSnapshot["camera"] {
     const shipQuaternion = new THREE.Quaternion(orientation.x, orientation.y, orientation.z, orientation.w).normalize();
-    const descriptor = this.shipVisual.descriptor.cameraAnchor;
+    const shipVisualSnapshot = this.shipVisual.getSnapshot();
+    const descriptor = shipVisualSnapshot.descriptor.cameraAnchor;
+    const cameraAnchorBinding = shipVisualSnapshot.cameraAnchorBinding;
     const localAnchor = toVector3(descriptor.localPosition).applyQuaternion(shipQuaternion);
     const followTarget = shipPosition.clone().add(localAnchor);
     const forward = new THREE.Vector3(1, 0, 0).applyQuaternion(shipQuaternion);
@@ -313,7 +321,10 @@ export class DebugScene {
       position: fromVector3(this.camera.position),
       followTarget: fromVector3(followTarget),
       followsShip: mode === "ChaseLocked" || mode === "Side",
-      distanceToShip: Number(this.camera.position.distanceTo(shipPosition).toFixed(4))
+      distanceToShip: Number(this.camera.position.distanceTo(shipPosition).toFixed(4)),
+      anchorId: descriptor.id,
+      anchorSource: cameraAnchorBinding.source,
+      anchorLocalPosition: cameraAnchorBinding.localPosition
     };
   }
 
@@ -411,11 +422,12 @@ export class DebugScene {
   }
 
   private updateHud(): void {
+    const shipVisualSnapshot = this.shipVisual.getSnapshot();
     renderStatusHud(this.runtime.getTelemetry(), {
       dispatch: (command) => {
         const telemetry = this.runtime.dispatchCommand(command);
         this.drawPlan(telemetry.lockedPlan ?? telemetry.routePreview?.plan ?? null);
       }
-    });
+    }, shipVisualSnapshot.visualSource);
   }
 }
