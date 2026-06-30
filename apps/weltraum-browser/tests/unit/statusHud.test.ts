@@ -76,7 +76,9 @@ describe("renderStatusHud", () => {
     expect(elements.get("mode")?.textContent).toBe("Manual");
     expect(elements.get("control-mode")?.textContent).toBe("Cruise");
     expect(elements.get("camera-mode")?.textContent).toBe("ChaseLocked");
+    expect(elements.get("help-hint")?.textContent).toContain("Desktop keyboard/mouse manual flight");
     expect(elements.get("help-hint")?.textContent).toContain("W/S pitch");
+    expect(elements.get("help-hint")?.textContent).toContain("Mobile: target selection and autopilot only");
     expect(elements.get("route-status")?.textContent).toContain("select a target");
     expect(elements.get("fuel-status")?.textContent).toContain("Blocked");
     expect(elements.get("status")?.textContent).toContain("Autopilot blocked: fuel");
@@ -180,6 +182,7 @@ describe("renderStatusHud", () => {
     expect(viewModel.cameraMode).toBe("ChaseLocked");
     expect(viewModel.throttleState).toContain("0%");
     expect(viewModel.velocityState).toContain("m/s");
+    expect(viewModel.velocityState).not.toMatch(/\(-?\d+(?:\.\d+)?,\s*-?\d+(?:\.\d+)?,\s*-?\d+(?:\.\d+)?\)/);
     expect(viewModel.rcsSasState).toContain("RCS on");
     expect(viewModel.helpHint).toContain("CapsLock mode");
     expect(viewModel.radarState).toContain("local contact Target A");
@@ -335,6 +338,8 @@ describe("renderStatusHud", () => {
     expect(viewModel.cameraMode).toBe("Side");
     expect(viewModel.throttleState).toContain("42% / main burn");
     expect(viewModel.velocityState).toContain("3.74 m/s");
+    expect(viewModel.velocityState).toBe("Speed 3.74 m/s");
+    expect(viewModel.velocityState).not.toContain("(1.0, 2.0, 3.0)");
     expect(viewModel.rcsSasState).toContain("RCS on, SAS off");
     expect(viewModel.rcsSasState).toContain("RCS translate");
   });

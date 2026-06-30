@@ -358,6 +358,9 @@ test("playable manual flight exposes ship visual, ChaseLocked camera, controls, 
   const initialRender = await page.evaluate(() => (window as any).TestBridge.getRenderSnapshot());
   expect(initialRender.shipVisual.oldConeOnlyPlaceholder).toBe(false);
   expect(initialRender.shipVisual.descriptor.strategy).toBe("ProceduralLowPolyFallback");
+  expect(initialRender.shipVisual.visualSource.state).toBe("GLBUnavailableFallback");
+  expect(initialRender.shipVisual.visualSource.candidateAssetPath).toBe("Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.glb");
+  expect(initialRender.shipVisual.descriptorValidation.ok).toBe(true);
   expect(initialRender.shipVisual.markerCounts.hullParts).toBeGreaterThanOrEqual(4);
   expect(initialRender.shipVisual.markerCounts.rcs).toBeGreaterThanOrEqual(4);
   expect(initialRender.shipVisual.markerCounts.mainEngines).toBeGreaterThanOrEqual(1);
@@ -383,9 +386,12 @@ test("playable manual flight exposes ship visual, ChaseLocked camera, controls, 
   await expect(page.getByTestId("control-mode")).toContainText("Cruise");
   await expect(page.getByTestId("throttle-status")).toContainText("main burn");
   await expect(page.getByTestId("velocity-status")).toContainText("m/s");
+  await expect(page.getByTestId("velocity-status")).not.toContainText(/\(-?\d+(?:\.\d+)?,\s*-?\d+(?:\.\d+)?,\s*-?\d+(?:\.\d+)?\)/);
   await expect(page.getByTestId("rcs-sas-status")).toContainText("RCS");
   await expect(page.getByTestId("camera-mode")).toContainText("ChaseLocked");
+  await expect(page.getByTestId("help-hint")).toContainText("Desktop keyboard/mouse manual flight");
   await expect(page.getByTestId("help-hint")).toContainText("CapsLock mode");
+  await expect(page.getByTestId("help-hint")).toContainText("Mobile: target selection and autopilot only");
 
   const evidenceDir = path.resolve(process.cwd(), "evidence");
   await mkdir(evidenceDir, { recursive: true });
@@ -435,6 +441,7 @@ test.describe("mobile viewport", () => {
     expect(telemetry.executor.status).toBe("Idle");
     await expect(page.locator("#mode")).toHaveText(telemetry.flightSnapshot.authority.mode);
     await expect(page.getByTestId("radar-status")).toContainText("local contact");
+    await expect(page.getByTestId("help-hint")).toContainText("Mobile: target selection and autopilot only");
     await assertCanvasHasNonDarkPixels(page);
 
     const evidenceDir = path.resolve(process.cwd(), "evidence");
@@ -451,6 +458,8 @@ test("product bootstrap does not expose the E2E TestBridge by default", async ({
   await expect(page.locator("body")).not.toContainText("TestBridge");
   await expect(page.locator("#telemetry")).toHaveCount(0);
   await expect(page.locator("#mode")).toBeVisible();
+  await expect(page.getByTestId("velocity-status")).not.toContainText(/\(-?\d+(?:\.\d+)?,\s*-?\d+(?:\.\d+)?,\s*-?\d+(?:\.\d+)?\)/);
+  await expect(page.getByTestId("help-hint")).toContainText("Desktop keyboard/mouse manual flight");
   await expect.poll(() => page.evaluate(() => "TestBridge" in window)).toBe(false);
 });
 
