@@ -1,0 +1,97 @@
+name: Browser Mainline CI
+
+on:
+  pull_request:
+    paths:
+      - "apps/weltraum-browser/**"
+      - ".github/workflows/browser-mainline-ci.yml"
+      - "docs/browser-mainline/**"
+      - ".devtoolbox/specs/changes/browser-*/**"
+  push:
+    branches:
+      - main
+    paths:
+      - "apps/weltraum-browser/**"
+      - ".github/workflows/browser-mainline-ci.yml"
+      - "docs/browser-mainline/**"
+      - ".devtoolbox/specs/changes/browser-*/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser-mainline:
+    name: Browser mainline verification
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/weltraum-browser
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: false
+
+      - name: Restore Demo Scout GLB if checked out as an LFS pointer
+        shell: bash
+        working-directory: .
+        run: |
+          set -euo pipefail
+          glb_path="apps/weltraum-browser/public/ships/demo_scout_mk1.glb"
+
+          if [ ! -f "$glb_path" ]; then
+            echo "::error::Expected Demo Scout GLB is missing at $glb_path"
+            exit 1
+          fi
+
+          if head -c 80 "$glb_path" | grep -q "version https://git-lfs.github.com/spec/v1"; then
+            echo "Demo Scout GLB is an LFS pointer; pulling only $glb_path"
+            git lfs install --local
+            git lfs pull --include="$glb_path" --exclude=""
+          else
+            echo "Demo Scout GLB is present as a normal repository file; no LFS pull needed."
+          fi
+
+          if [ "$(head -c 4 "$glb_path")" != "glTF" ]; then
+            echo "::error::Demo Scout GLB did not resolve to a GLB binary."
+            exit 1
+          fi
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/weltraum-browser/package-lock.json
+
+      - name: Install browser dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run unit tests
+        run: npm run test
+
+      - name: Build browser app
+        run: npm run build
+
+      - name: Run Playwright E2E
+        run: npm run test:e2e
+
+      - name: Upload browser test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-mainline-ci-artifacts
+          if-no-files-found: ignore
+          retention-days: 14
+          path: |
+            apps/weltraum-browser/playwright-report/**
+            apps/weltraum-browser/test-results/**
+            apps/weltraum-browser/evidence/playwright-report/**
+            apps/weltraum-browser/evidence/playwright-output/**
+            apps/weltraum-browser/evidence/*.png
+            apps/weltraum-browser/evidence/*.json
