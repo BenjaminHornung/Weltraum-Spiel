@@ -6,7 +6,7 @@
 `shipVisual.ts` remains the boundary that chooses between GLB-backed visuals and the procedural fallback. It consumes simulation state and visual metadata, but never becomes a source of flight truth.
 
 ### 2) Async deterministic state
-The visual pipeline uses explicit, monotonic states: `loading`, `glbReady`, `fallback`, and `error`. State transitions are deterministic and observable so tests can wait for a known condition instead of timing guesses.
+The visual pipeline uses explicit, monotonic states: `Loading`, `GLBLoaded`, `GLBFailedFallback`, and `ProceduralFallback`. State transitions are deterministic and observable so tests can wait for a known condition instead of timing guesses.
 
 ### 3) Marker fallback via manifest
 Marker lookup prefers GLB node names first. If a marker is absent or invalid, the visual layer falls back to a manifest-defined marker mapping so VFX binding remains stable even when the asset is incomplete.

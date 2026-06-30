@@ -10,8 +10,9 @@
 - Search for existing visual-source, fallback, marker, and anchor handling in those files before editing.
 
 **Acceptance criteria**
-- GLB load success produces a stable `glbReady` source state.
-- GLB load failure produces a stable `fallback` or `error` state and still renders the ship.
+- GLB load success produces a stable `GLBLoaded` source state.
+- GLB load failure produces a stable `GLBFailedFallback` source state and still renders the ship.
+- Explicit procedural rendering without a GLB load attempt produces `ProceduralFallback`; in-flight GLB loading is reported as `Loading`.
 - Axis/scale correction stays render-only.
 - Flight truth, pathing, and planner state remain unchanged.
 

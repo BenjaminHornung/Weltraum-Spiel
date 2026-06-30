@@ -4,7 +4,7 @@
 The browser demo already has a verified GLB asset for the scout ship, but the current visual path still needs an explicit spec package so implementation can add GLB parity without rediscovering product intent. The goal is to make the ship render from the GLB when available, preserve the existing procedural fallback, and keep flight truth isolated from visual correction.
 
 ## Outcomes
-- Deterministic GLB loading with explicit loading / ready / fallback states.
+- Deterministic GLB loading with explicit `Loading`, `GLBLoaded`, `GLBFailedFallback`, and `ProceduralFallback` states.
 - Visual parity metadata for axes, scale, markers, and VFX anchor binding.
 - HUD and TestBridge evidence that expose the active visual source.
 - No change to flight truth, planner behavior, or existing fallback safety.

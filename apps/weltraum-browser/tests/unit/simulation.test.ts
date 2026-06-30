@@ -30,6 +30,15 @@ const target: TargetDescriptor = {
 };
 
 describe("FixedStepSimulationLoop", () => {
+  const waitForVisualSourceState = async (visual: ReturnType<typeof createDemoScoutShipVisual>, state: string) => {
+    let snapshot = visual.getSnapshot();
+    for (let attempt = 0; attempt < 25 && snapshot.visualSource.state !== state; attempt += 1) {
+      await Promise.resolve();
+      snapshot = visual.getSnapshot();
+    }
+    return snapshot;
+  };
+
   it("validates required ship visual markers and socket descriptors", () => {
     const validation = validateShipVisualDescriptor(proceduralScoutDescriptor);
     const glbManifestValidation = validateShipVisualDescriptor(demoScoutGlbDescriptor);
@@ -52,6 +61,13 @@ describe("FixedStepSimulationLoop", () => {
     expect(weakenedValidation.ok).toBe(false);
     expect(weakenedValidation.missing).toContain("at least four RCS markers");
     expect(() => createProceduralShipVisual(weakenedDescriptor)).toThrow(/RCS markers/);
+  });
+
+  it("keeps Demo Scout GLB manifest marker signs aligned to browser render coordinates", () => {
+    expect(demoScoutGlbDescriptor.mainEngineMarkers[0]?.localPosition.x).toBeLessThan(0);
+    expect(demoScoutGlbDescriptor.cockpitMarker.localPosition.x).toBeGreaterThan(0);
+    expect(demoScoutGlbDescriptor.muzzleMarker.localPosition.x).toBeGreaterThan(0);
+    expect(validateShipVisualDescriptor(demoScoutGlbDescriptor).ok).toBe(true);
   });
 
   it("publishes visual source state and scales main flame by acceleration magnitude", () => {
@@ -92,17 +108,19 @@ describe("FixedStepSimulationLoop", () => {
     expect(snapshot.markerBindings.every((binding) => binding.source === "ManifestFallback")).toBe(true);
   });
 
-  it("falls back deterministically when Demo Scout GLB loading fails", async () => {
-    const visual = createDemoScoutShipVisual({ browserAssetPath: "/does-not-exist.glb" });
-    let snapshot = visual.getSnapshot();
-
-    for (let attempt = 0; attempt < 25 && snapshot.visualSource.state !== "GLBFailedFallback"; attempt += 1) {
-      await new Promise((resolve) => setTimeout(resolve, 0));
-      snapshot = visual.getSnapshot();
-    }
+  it("falls back deterministically when the normal Demo Scout GLB browser asset load fails", async () => {
+    const visual = createDemoScoutShipVisual({
+      loadGltf: async (assetPath) => {
+        expect(assetPath).toBe("/ships/demo_scout_mk1.glb");
+        throw new Error("malformed test GLB");
+      }
+    });
+    const snapshot = await waitForVisualSourceState(visual, "GLBFailedFallback");
 
     expect(snapshot.visualSource.state).toBe("GLBFailedFallback");
+    expect(snapshot.visualSource.browserAssetPath).toBe("/ships/demo_scout_mk1.glb");
     expect(snapshot.visualSource.fallbackReason).toEqual(expect.any(String));
+    expect(snapshot.visualSource.fallbackReason).toContain("malformed test GLB");
     expect(snapshot.visualSource.fallbackReason?.length).toBeGreaterThan(0);
     expect(snapshot.visualSource.appliedScale).toBe(1);
     expect(snapshot.visualSource.axisCorrection.mapping).toBe("identity");

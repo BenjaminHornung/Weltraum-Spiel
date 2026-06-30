@@ -7,9 +7,10 @@ Render the scout ship from the GLB when available, preserve the procedural fallb
 
 ### 1) GLB load path
 - The visual layer attempts to load `demo_scout_mk1.glb`.
-- While the asset is loading, the visual source state is `loading`.
-- If the GLB loads successfully, the state becomes `glbReady` and the ship renders from the GLB-backed mesh.
-- If the GLB cannot be loaded, the system falls back to the procedural ship and records the fallback reason.
+- While the asset is loading, the visual source state is `Loading`.
+- If the GLB loads successfully, the state becomes `GLBLoaded` and the ship renders from the GLB-backed mesh.
+- If the GLB cannot be loaded after the browser asset request starts, the state becomes `GLBFailedFallback`; the procedural ship stays visible and the fallback reason is recorded.
+- If the procedural visual path is requested explicitly without a GLB attempt, the state is `ProceduralFallback`.
 
 ### 2) Fallback behavior
 - Fallback must not block the scene or suppress the ship.
@@ -18,7 +19,7 @@ Render the scout ship from the GLB when available, preserve the procedural fallb
 
 ### 3) Visual source states
 - The active visual source is observable and stable enough for tests to wait on.
-- Valid states are at least: `loading`, `glbReady`, `fallback`, and `error`.
+- Valid states are exactly: `Loading`, `GLBLoaded`, `GLBFailedFallback`, and `ProceduralFallback`.
 - The HUD and TestBridge expose the same active visual-source value.
 
 ### 4) Markers

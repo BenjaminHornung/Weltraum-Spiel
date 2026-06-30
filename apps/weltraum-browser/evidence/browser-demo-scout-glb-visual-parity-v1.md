@@ -14,15 +14,15 @@
 - Axis/scale metadata: render-only `rotation.y = -Math.PI / 2`, mapping `browserX=-glbZ,browserY=glbY,browserZ=glbX`, applied scale `3.2`.
 - Descriptor validation: GLB manifest and runtime descriptor report hull/body identity, cockpit/front marker, one main engine, four RCS markers, muzzle placeholder, and camera anchor.
 - Marker binding: cockpit/front, main engine, RCS hardpoints, and muzzle resolve from GLB node names; ChaseLocked camera anchor uses the manifest visual anchor because the GLB does not provide a camera-anchor node.
-- Fallback: procedural fallback remains available as `ProceduralFallback`; failed browser GLB load would report `GLBFailedFallback` with `fallbackReason` and keep the procedural ship visible.
+- Fallback: procedural fallback remains available as `ProceduralFallback`; forced malformed browser GLB bytes on `/ships/demo_scout_mk1.glb` report `GLBFailedFallback` with `fallbackReason` and keep the procedural ship visible.
 
 ## Verification
 
 - `npm ci` (needed because `vitest` was not installed in the worktree) passed.
-- `npm run test` passed: 9 files, 75 tests.
+- `npm run test` passed: 9 files, 77 tests.
 - `npm run build` passed. Vite emitted the existing large-chunk warning for the bundled app.
 - `npm run test:e2e` first failed with bundled Chromium `spawn UNKNOWN`.
-- `WELTRAUM_PLAYWRIGHT_EXECUTABLE_PATH="C:\Program Files\Google\Chrome\Application\chrome.exe" npm run test:e2e` passed: 8/8 tests.
+- `WELTRAUM_PLAYWRIGHT_EXECUTABLE_PATH="C:\Program Files\Google\Chrome\Application\chrome.exe" npm run test:e2e` passed: 9/9 tests.
 - `git status --short -- Assets` reported no `Assets/**` changes.
 - `git diff --check` passed.
 

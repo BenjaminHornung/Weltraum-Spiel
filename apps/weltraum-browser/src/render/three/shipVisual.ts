@@ -563,6 +563,7 @@ const createShipVisualInternal = (initialDescriptor: ShipVisualDescriptor, initi
 export interface DemoScoutShipVisualOptions {
   readonly browserAssetPath?: string;
   readonly autoLoad?: boolean;
+  readonly loadGltf?: (browserAssetPath: string) => Promise<{ readonly scene: THREE.Object3D }>;
 }
 
 export const createProceduralShipVisual = (descriptor: ShipVisualDescriptor = proceduralScoutDescriptor): ProceduralShipVisual =>
@@ -584,6 +585,7 @@ export const createDemoScoutShipVisual = (options: DemoScoutShipVisualOptions = 
   const visual = createShipVisualInternal(proceduralScoutDescriptor, loadingSource);
   const rootGroup = visual.group;
   const fallbackGeometry = rootGroup.children.find((child) => child.name === `${proceduralScoutDescriptor.id}-geometry`);
+  const loadGltf = options.loadGltf ?? ((assetPath: string) => new GLTFLoader().loadAsync(assetPath));
   const glbContainer = new THREE.Group();
   glbContainer.name = "demo-scout-glb-container";
   glbContainer.visible = false;
@@ -597,7 +599,7 @@ export const createDemoScoutShipVisual = (options: DemoScoutShipVisualOptions = 
     }
     loadStarted = true;
     try {
-      const gltf = await new GLTFLoader().loadAsync(browserAssetPath);
+      const gltf = await loadGltf(browserAssetPath);
       configureImportedScene(gltf.scene);
       const resolvedBindings = resolveGlbBindings(gltf.scene, demoScoutGlbDescriptor, demoScoutGlbAppliedScale);
       const glbDescriptor = applyBindingsToDescriptor(demoScoutGlbDescriptor, resolvedBindings);

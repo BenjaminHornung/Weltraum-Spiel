@@ -147,6 +147,12 @@ async function waitForShipVisualReady(page: Page) {
   return page.evaluate(() => (window as any).TestBridge.getRenderSnapshot().shipVisual);
 }
 
+function findShipVisualBinding(shipVisual: any, id: string) {
+  const binding = shipVisual.markerBindings.find((candidate: any) => candidate.id === id);
+  expect(binding, `Missing ship visual marker binding ${id}`).toBeTruthy();
+  return binding;
+}
+
 test("browser vertical slice selects a target, previews a route, engages autopilot, and writes evidence", async ({ page }) => {
   await page.goto("/?testBridge=1");
   await page.waitForFunction(() => Boolean((window as any).TestBridge));
@@ -387,9 +393,20 @@ test("playable manual flight exposes ship visual, ChaseLocked camera, controls, 
   expect(initialRender.shipVisual.markerCounts.rcs).toBeGreaterThanOrEqual(4);
   expect(initialRender.shipVisual.markerCounts.mainEngines).toBeGreaterThanOrEqual(1);
   expect(initialRender.shipVisual.markerCounts.muzzle).toBe(1);
+  const cockpitBinding = findShipVisualBinding(initialRender.shipVisual, "cockpit-front");
+  const mainEngineBinding = findShipVisualBinding(initialRender.shipVisual, "main-engine-aft");
+  const muzzleBinding = findShipVisualBinding(initialRender.shipVisual, "muzzle-placeholder");
+  expect(cockpitBinding.source).toBe("GLBNode");
+  expect(cockpitBinding.localPosition.x).toBeGreaterThan(0);
+  expect(mainEngineBinding.source).toBe("GLBNode");
+  expect(mainEngineBinding.localPosition.x).toBeLessThan(0);
+  expect(muzzleBinding.source).toBe("GLBNode");
+  expect(muzzleBinding.localPosition.x).toBeGreaterThan(0);
   expect(initialRender.camera.mode).toBe("ChaseLocked");
   expect(initialRender.camera.followsShip).toBe(true);
   expect(initialRender.camera.anchorId).toBe("chase-camera-anchor");
+  expect(initialRender.shipVisual.cameraAnchorBinding.source).toBe("ManifestFallback");
+  expect(initialRender.camera.anchorSource).toBe("ManifestFallback");
   expect(initialRender.camera.anchorLocalPosition).toEqual(initialRender.shipVisual.cameraAnchorBinding.localPosition);
   await expect(page.getByTestId("ship-visual-source")).toContainText("Ship visual: Demo Scout GLB");
 
@@ -491,6 +508,31 @@ test("product bootstrap does not expose the E2E TestBridge by default", async ({
   await expect(page.getByTestId("velocity-status")).not.toContainText(/\(-?\d+(?:\.\d+)?,\s*-?\d+(?:\.\d+)?,\s*-?\d+(?:\.\d+)?\)/);
   await expect(page.getByTestId("help-hint")).toContainText("Desktop keyboard/mouse manual flight");
   await expect.poll(() => page.evaluate(() => "TestBridge" in window)).toBe(false);
+});
+
+test("malformed browser GLB load fails into a visible procedural fallback", async ({ page }) => {
+  await page.route("**/ships/demo_scout_mk1.glb", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "model/gltf-binary",
+      body: Buffer.from("not-a-valid-glb")
+    });
+  });
+
+  await page.goto("/?testBridge=1");
+  await page.waitForFunction(() => Boolean((window as any).TestBridge));
+  const shipVisual = await waitForShipVisualReady(page);
+
+  expect(shipVisual.visualSource.state).toBe("GLBFailedFallback");
+  expect(shipVisual.visualSource.browserAssetPath).toBe("/ships/demo_scout_mk1.glb");
+  expect(shipVisual.visualSource.fallbackReason).toEqual(expect.any(String));
+  expect(shipVisual.visualSource.fallbackReason.length).toBeGreaterThan(0);
+  expect(shipVisual.descriptor.strategy).toBe("ProceduralLowPolyFallback");
+  expect(shipVisual.descriptorValidation.ok).toBe(true);
+  expect(shipVisual.markerCounts).toEqual({ hullParts: 4, mainEngines: 1, rcs: 6, muzzle: 1, cameraAnchors: 1 });
+  expect(shipVisual.markerBindings.every((binding: any) => binding.source === "ManifestFallback")).toBe(true);
+  await expect(page.getByTestId("ship-visual-source")).toContainText("Ship visual: Procedural fallback");
+  await assertCanvasHasNonDarkPixels(page);
 });
 
 test("real HUD buttons dispatch autopilot commands without exposing DirectLocal controls", async ({ page }) => {

@@ -216,7 +216,7 @@ Asset decision:
 
 Polish v1 follow-up:
 
-- The procedural ship snapshot now exposes an explicit `GLBUnavailableFallback` visual source state while preserving the procedural fallback as runtime source of truth.
+- The procedural ship snapshot now exposes explicit visual-source states while preserving the procedural fallback as runtime source of truth: `Loading`, `GLBLoaded`, `GLBFailedFallback`, and `ProceduralFallback`.
 - Marker/socket descriptor validation now fails if hull/body identity, cockpit/front, main engine, four-or-more RCS markers, muzzle placeholder or camera anchor coverage disappears.
 - The default HUD shows scalar speed only, while full velocity vectors remain in telemetry/TestBridge evidence.
 - Manual flight in this browser slice is desktop keyboard/mouse only; mobile remains target selection/autopilot-only until a separate touch/manual-flight feature is specified.
