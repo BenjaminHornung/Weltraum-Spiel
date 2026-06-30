@@ -188,6 +188,39 @@ Deferred M7 follow-up points:
 - richer player route-mode selection beyond the current obstacle-avoidance engage action,
 - terrain/orbit/surface/cargo/economy/ship-builder runtime features.
 
+## browser-playable-ship-flight-v1: Playable Ship Flight v1
+
+Status: implemented as the first browser-playable flight slice after M7. This is a playable browser runtime milestone, not a full Unity parity claim.
+
+Intent:
+
+- Replace the cone-only ship marker with a browser ship visual that has render/test descriptors.
+- Add Flight State V2 and route manual controls and autopilot through the shared `applyFlightControllerStep` actuator layer.
+- Make `ChaseLocked` the default moving-ship camera, with `OrbitInspect`, `Side`, and `FreeInspect` as switchable inspection modes.
+- Drive main thruster and RCS/SAS VFX from actuator telemetry, not raw input state.
+- Remove normal-runtime autopilot snap/zero shortcuts while keeping arrival tied to the locked envelope, terminal-speed requirements, stable `planHash`, and no replan replacement.
+
+Implemented in this v1 slice:
+
+- procedural low-poly ship fallback with hull/body, cockpit/front, main engine, RCS marker, muzzle-placeholder and camera-anchor descriptors,
+- manual controls for pitch/yaw/roll, throttle ramp/cut/full, RCS/SAS toggles, control-mode cycling, translation vertical, camera cycling, RMB orbit/look and wheel zoom,
+- HUD readouts for control mode, camera mode, throttle, velocity/speed, RCS/SAS actuator state and keybind help alongside the existing autopilot/target/warning state,
+- VFX from `mainThrustActive`, `rcsTranslationActive`, `rcsRotationActive` and `sasCorrectionActive`,
+- no normal-runtime target/waypoint position snap, waypoint velocity zero, terminal velocity clamp/zero shortcut, or idle/cancel velocity zero,
+- screenshot evidence for manual ChaseLocked flight, RCS translation, autopilot thruster burn and autopilot arrival.
+
+Asset decision:
+
+- `Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.glb` was verified read-only as a valid GLB asset with size `127108` and a `glTF` binary header.
+- The GLB was not copied or used in this bounded slice because async loader/bundling risk was deferred. No `Assets/**` mutation was made.
+
+Deferred playable-flight follow-up points:
+
+- production ship asset/GLB loader path with marker/socket validation,
+- richer Unity-style flight physics, per-nozzle RCS allocation, gimbal/SAS behavior and engine/particle effects,
+- broader camera polish and input rebinding/accessibility beyond the current key/mouse contract,
+- full radar/minimap/map integration and non-local-space/orbital/surface flight behavior.
+
 ## Deferred Until Separate Feature Intent / Specs
 
 - Ship Builder runtime and broad catalog.

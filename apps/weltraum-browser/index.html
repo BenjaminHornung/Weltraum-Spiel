@@ -13,6 +13,16 @@
         <div id="plan-hash">pending</div>
         <div class="label">Mode</div>
         <div id="mode">unknown</div>
+        <div class="label">Control Mode</div>
+        <div id="control-mode" data-testid="control-mode">unknown</div>
+        <div class="label">Camera</div>
+        <div id="camera-mode" data-testid="camera-mode">ChaseLocked</div>
+        <div class="label">Throttle</div>
+        <div id="throttle-status" data-testid="throttle-status">0%</div>
+        <div class="label">Velocity</div>
+        <div id="velocity-status" data-testid="velocity-status">0 m/s</div>
+        <div class="label">RCS / SAS</div>
+        <div id="rcs-sas-status" data-testid="rcs-sas-status">RCS on, SAS on</div>
         <div class="label">Status</div>
         <div id="status" aria-live="polite" data-testid="autopilot-active">booting</div>
         <div class="label">Route</div>
@@ -37,6 +47,8 @@
         <div id="failure-reasons">none</div>
         <div class="label">Cockpit Message</div>
         <div id="runtime-message" data-testid="runtime-message">ready</div>
+        <div class="label">Help</div>
+        <div id="help-hint" data-testid="help-hint">W/S pitch, Shift throttle, V camera</div>
         <div class="label">Autopilot Commands</div>
         <div class="hud-actions">
           <button id="engage-autopilot" type="button">Engage route</button>

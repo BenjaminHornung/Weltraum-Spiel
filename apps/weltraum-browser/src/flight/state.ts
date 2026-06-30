@@ -1,5 +1,18 @@
-import { distance, magnitude } from "../core/vector";
-import type { AuthorityMode, AuthorityState, BrakingReserve, FailureReasonCode, FlightSnapshot, FuelState, RoutePlan, ShipMass, ShipState } from "../core/types";
+import { distance, magnitude, vec3 } from "../core/vector";
+import type {
+  ActuatorTelemetry,
+  AuthorityMode,
+  AuthorityState,
+  BrakingReserve,
+  FailureReasonCode,
+  FlightControlMode,
+  FlightSnapshot,
+  FuelState,
+  Quaternion,
+  RoutePlan,
+  ShipMass,
+  ShipState
+} from "../core/types";
 
 export interface FlightModelOptions {
   /** Maximum forward thrust available to the browser autopilot. Unit: kilonewtons. */
@@ -14,6 +27,19 @@ export const defaultFlightModelOptions: FlightModelOptions = {
 };
 
 const unique = (codes: readonly FailureReasonCode[]): readonly FailureReasonCode[] => [...new Set(codes)];
+
+export const identityOrientation = (): Quaternion => ({ x: 0, y: 0, z: 0, w: 1 });
+
+export const inactiveActuatorTelemetry = (): ActuatorTelemetry => ({
+  mainThrustActive: false,
+  rcsTranslationActive: false,
+  rcsRotationActive: false,
+  sasCorrectionActive: false,
+  lastAppliedAcceleration: vec3(),
+  lastAppliedAngularAcceleration: vec3()
+});
+
+const defaultControlMode = (authority: AuthorityState): FlightControlMode => (authority.mode === "Autopilot" ? "Cruise" : "Precision");
 
 export const createShipMass = (input: { readonly dryMass?: number; readonly cargoMass?: number; readonly fuelMass: number }): ShipMass => {
   const dryMass = input.dryMass ?? 1_000;
@@ -102,12 +128,23 @@ export const createShipStateV2 = (overrides: Partial<Omit<ShipState, "mass" | "f
   readonly authority?: Partial<AuthorityState>;
 }): ShipState => {
   const fuel = typeof overrides.fuel === "number" ? createFuelState({ current: overrides.fuel }) : createFuelState(overrides.fuel);
+  const authority = createAuthorityState(overrides.authority);
   return {
-    position: overrides.position ?? { x: 0, y: 0, z: 0 },
-    velocity: overrides.velocity ?? { x: 0, y: 0, z: 0 },
+    position: overrides.position ?? vec3(),
+    velocity: overrides.velocity ?? vec3(),
+    orientation: overrides.orientation ?? identityOrientation(),
+    angularVelocity: overrides.angularVelocity ?? vec3(),
+    throttle: Math.max(0, Math.min(1, overrides.throttle ?? 0)),
+    controlMode: overrides.controlMode ?? defaultControlMode(authority),
+    rcsEnabled: overrides.rcsEnabled ?? authority.rcsAvailable,
+    sasEnabled: overrides.sasEnabled ?? authority.sasAvailable,
+    mainThrottleCommand: Math.max(0, Math.min(1, overrides.mainThrottleCommand ?? overrides.throttle ?? 0)),
+    translationCommand: overrides.translationCommand ?? vec3(),
+    rotationCommand: overrides.rotationCommand ?? vec3(),
+    actuatorTelemetry: overrides.actuatorTelemetry ?? inactiveActuatorTelemetry(),
     mass: createShipMass({ dryMass: overrides.dryMass, cargoMass: overrides.cargoMass, fuelMass: fuel.current }),
     fuel,
-    authority: createAuthorityState(overrides.authority)
+    authority
   };
 };
 

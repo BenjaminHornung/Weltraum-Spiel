@@ -42,6 +42,11 @@ body,
 
 #plan-hash,
 #mode,
+#control-mode,
+#camera-mode,
+#throttle-status,
+#velocity-status,
+#rcs-sas-status,
 #status,
 #route-status,
 #target-status,
@@ -53,6 +58,7 @@ body,
 #warning-chips,
 #failure-reasons,
 #runtime-message,
+#help-hint,
 #target-options {
   margin: 2px 0 0;
   color: #f7fbff;

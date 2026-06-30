@@ -74,8 +74,8 @@ describe("browser proving-ground scenario matrix", () => {
     expect(result.classification).toBe("PASS");
     expect(result.status).toBe("Arrived");
     expect(result.replanRequired).toBe(false);
-    expect(result.finalPosition).toEqual(result.targetPosition);
-    expect(result.distanceToTarget).toBe(0);
+    expect(result.finalPosition).not.toEqual(result.targetPosition);
+    expect(result.distanceToTarget).toBeLessThanOrEqual(result.arrivalEnvelope.radius);
   });
 
   it("reports obstacle avoidance route selection", () => {

@@ -68,6 +68,8 @@ describe("FixedStepSimulationLoop", () => {
     expect(initial.flightSnapshot.failureReasonCodes).not.toContain("FuelDepleted");
     expect(initial.flightSnapshot.failureReasonCodes).not.toContain("AutopilotUnavailable");
     expect(initial.executor.planHash).toBeNull();
+    expect(initial.manualInput?.cameraMode).toBe("ChaseLocked");
+    expect(initial.manualInput?.controlMode).toBe("Cruise");
     expect(initial.selectedTarget?.id).toBe(provingGroundTargets.navigationAlpha.id);
     expect(initial.routePreview?.state).toBe("Ready");
     expect(initial.routePreview?.plan?.target.id).toBe(provingGroundTargets.navigationAlpha.id);
@@ -173,9 +175,41 @@ describe("FixedStepSimulationLoop", () => {
     expect(serialized.routePreview?.plan?.planHash).toBe(snapshot.routePreview?.plan?.planHash);
     expect(serialized.routePreview?.playerMessage).toBe(snapshot.routePreview?.playerMessage);
     expect(serialized.runtimeMessage).toBe(snapshot.runtimeMessage);
+    expect(serialized.manualInput).toEqual(snapshot.manualInput);
+    expect(serialized.ship.orientation).toEqual(snapshot.ship.orientation);
+    expect(serialized.ship.controlMode).toBe(snapshot.ship.controlMode);
+    expect(serialized.ship.actuatorTelemetry.mainThrustActive).toBe(snapshot.ship.actuatorTelemetry.mainThrustActive);
   });
 
-  it("cancels a non-zero-velocity autopilot into a stable stopped idle state", () => {
+  it("applies manual flight commands through runtime-owned input state while idle", () => {
+    const { controller } = createBrowserRuntime();
+
+    controller.dispatchCommand({ type: "SetThrottle", throttle: 0.7 });
+    controller.dispatchCommand({ type: "SetManualFlightInput", input: { rotationCommand: vec3(0, 0, 1) } });
+    const afterBurn = controller.step(12);
+
+    expect(afterBurn.executor.status).toBe("Idle");
+    expect(afterBurn.manualInput?.mainThrottleCommand).toBe(0.7);
+    expect(afterBurn.ship.throttle).toBe(0.7);
+    expect(afterBurn.ship.position.x).toBeGreaterThan(0);
+    expect(afterBurn.ship.velocity.x).toBeGreaterThan(0);
+    expect(afterBurn.ship.orientation).not.toEqual({ x: 0, y: 0, z: 0, w: 1 });
+    expect(afterBurn.ship.actuatorTelemetry.mainThrustActive).toBe(true);
+    expect(afterBurn.ship.actuatorTelemetry.rcsRotationActive).toBe(true);
+
+    const translationMode = controller.dispatchCommand({ type: "CycleControlMode" });
+    expect(translationMode.manualInput?.controlMode).toBe("Precision");
+    controller.dispatchCommand({ type: "CycleControlMode" });
+    const translation = controller.dispatchCommand({ type: "SetManualFlightInput", input: { translationCommand: vec3(0, 1, 0) } });
+    expect(translation.manualInput?.controlMode).toBe("Translation");
+    const afterTranslate = controller.step(2);
+    expect(afterTranslate.ship.actuatorTelemetry.rcsTranslationActive).toBe(true);
+
+    const camera = controller.dispatchCommand({ type: "CycleCameraMode" });
+    expect(camera.manualInput?.cameraMode).toBe("OrbitInspect");
+  });
+
+  it("cancels a non-zero-velocity autopilot into drift-preserving idle state", () => {
     const movingShip = createShipStateV2({ position: vec3(3, 0, 0), velocity: vec3(12, 0, 0), authority: { mode: "Autopilot" } });
     const { controller } = createBrowserRuntime({ initialShip: movingShip });
 
@@ -185,12 +219,13 @@ describe("FixedStepSimulationLoop", () => {
     expect(canceled.executor.status).toBe("Idle");
     expect(canceled.executor.planHash).toBeNull();
     expect(canceled.ship.position).toEqual(movingShip.position);
-    expect(canceled.ship.velocity).toEqual(vec3());
+    expect(canceled.ship.velocity).toEqual(movingShip.velocity);
     expect(canceled.executor.position).toEqual(movingShip.position);
-    expect(canceled.executor.velocity).toEqual(vec3());
-    expect(afterSteps.ship.position).toEqual(movingShip.position);
-    expect(afterSteps.ship.velocity).toEqual(vec3());
-    expect(afterSteps.executor.position).toEqual(movingShip.position);
-    expect(afterSteps.executor.velocity).toEqual(vec3());
+    expect(canceled.executor.velocity).toEqual(movingShip.velocity);
+    expect(afterSteps.ship.position.x).toBeCloseTo(5, 8);
+    expect(afterSteps.ship.velocity).toEqual(movingShip.velocity);
+    expect(afterSteps.executor.position.x).toBeCloseTo(5, 8);
+    expect(afterSteps.executor.velocity).toEqual(movingShip.velocity);
+    expect(afterSteps.ship.actuatorTelemetry.mainThrustActive).toBe(false);
   });
 });

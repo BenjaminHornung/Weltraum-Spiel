@@ -64,9 +64,37 @@ export interface FlightSnapshot {
   readonly etaSeconds: number | null;
 }
 
+export interface Quaternion {
+  readonly x: number;
+  readonly y: number;
+  readonly z: number;
+  readonly w: number;
+}
+
+export type FlightControlMode = "Cruise" | "Precision" | "Translation";
+
+export interface ActuatorTelemetry {
+  readonly mainThrustActive: boolean;
+  readonly rcsTranslationActive: boolean;
+  readonly rcsRotationActive: boolean;
+  readonly sasCorrectionActive: boolean;
+  readonly lastAppliedAcceleration: Vec3;
+  readonly lastAppliedAngularAcceleration: Vec3;
+}
+
 export interface ShipState {
   readonly position: Vec3;
   readonly velocity: Vec3;
+  readonly orientation: Quaternion;
+  readonly angularVelocity: Vec3;
+  readonly throttle: number;
+  readonly controlMode: FlightControlMode;
+  readonly rcsEnabled: boolean;
+  readonly sasEnabled: boolean;
+  readonly mainThrottleCommand: number;
+  readonly translationCommand: Vec3;
+  readonly rotationCommand: Vec3;
+  readonly actuatorTelemetry: ActuatorTelemetry;
   readonly mass: ShipMass;
   readonly fuel: FuelState;
   readonly authority: AuthorityState;
