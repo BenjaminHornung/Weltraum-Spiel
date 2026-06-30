@@ -1,5 +1,5 @@
 ﻿import { describe, expect, it } from "vitest";
-import { AutopilotExecutor, DirectLocalPlanner, createAuthorityState, createShipStateV2, magnitude, vec3 } from "../../src/core";
+import { AutopilotExecutor, DirectLocalPlanner, createAuthorityState, createShipStateV2, distance, magnitude, orientationFromForward, vec3 } from "../../src/core";
 import type { ShipState, TargetDescriptor } from "../../src/core";
 
 const authority = createAuthorityState({ mode: "Autopilot" });
@@ -21,6 +21,9 @@ const target: TargetDescriptor = {
   arrivalEnvelope: { radius: 2, terminalSpeed: 6, stopBehavior: "MatchTerminalSpeed" }
 };
 
+const quaternionDistance = (a: ShipState["orientation"], b: ShipState["orientation"]): number =>
+  Math.abs(a.x - b.x) + Math.abs(a.y - b.y) + Math.abs(a.z - b.z) + Math.abs(a.w - b.w);
+
 describe("AutopilotExecutor", () => {
   it("executes a locked plan without replacing its hash", () => {
     const planner = new DirectLocalPlanner();
@@ -37,6 +40,36 @@ describe("AutopilotExecutor", () => {
     expect(executor.getLockedPlan()?.planHash).toBe(plan.planHash);
     expect(executor.getTelemetry().status).toBe("Executing");
     expect(ship.position.x).toBeGreaterThan(0);
+  });
+
+  it("preserves linear drift when idle without a locked plan", () => {
+    const executor = new AutopilotExecutor();
+    const driftingShip = createShip({ position: vec3(3, 0, 0), velocity: vec3(6, 0, 0), mainThrottleCommand: 1 });
+
+    const after = executor.step(driftingShip, 0.5, 1);
+
+    expect(executor.getTelemetry().status).toBe("Idle");
+    expect(after.velocity).toEqual(driftingShip.velocity);
+    expect(after.position.x).toBeCloseTo(6, 8);
+    expect(after.actuatorTelemetry.mainThrustActive).toBe(false);
+  });
+
+  it("preserves velocity when canceling a locked plan", () => {
+    const initialShip = createShip();
+    const plan = new DirectLocalPlanner().plan({ tick: 1, ship: initialShip, target });
+    const executor = new AutopilotExecutor();
+    executor.lockPlan(plan, initialShip);
+    const movingShip = createShip({ position: vec3(3, 0, 0), velocity: vec3(12, 0, 0), mainThrottleCommand: 1 });
+
+    const canceled = executor.cancelPlan(movingShip, 2);
+
+    expect(executor.getTelemetry().status).toBe("Idle");
+    expect(executor.getTelemetry().planHash).toBeNull();
+    expect(canceled.position).toEqual(movingShip.position);
+    expect(canceled.velocity).toEqual(movingShip.velocity);
+    expect(canceled.throttle).toBe(0);
+    expect(canceled.actuatorTelemetry.mainThrustActive).toBe(false);
+    expect(executor.getLockedPlan()).toBeNull();
   });
 
   it("burns fuel deterministically and updates mass through the owner model", () => {
@@ -101,7 +134,7 @@ describe("AutopilotExecutor", () => {
     expect(executor.getLockedPlan()?.planHash).toBe(plan.planHash);
   });
 
-  it("captures terminal arrival at the locked target envelope instead of overshooting the green target", () => {
+  it("does not turn a high-speed terminal crossing into a snapped arrival", () => {
     const planner = new DirectLocalPlanner();
     const initialShip = createShip();
     const plan = planner.plan({ tick: 1, ship: initialShip, target });
@@ -111,26 +144,98 @@ describe("AutopilotExecutor", () => {
     const crossingShip = createShip({ position: vec3(96, 0, 0), velocity: vec3(180, 0, 0) });
     const after = executor.step(crossingShip, 1 / 30, 2);
 
-    expect(executor.getTelemetry().status).toBe("Arrived");
-    expect(executor.getTelemetry().distanceToTarget).toBe(0);
-    expect(after.position).toEqual(plan.target.position);
+    expect(executor.getTelemetry().status).toBe("Executing");
+    expect(executor.getTelemetry().distanceToTarget).toBeLessThanOrEqual(target.arrivalEnvelope.radius);
+    expect(after.position).not.toEqual(plan.target.position);
+    expect(magnitude(after.velocity)).toBeGreaterThan(target.arrivalEnvelope.terminalSpeed ?? 0);
     expect(executor.getTelemetry().planHash).toBe(plan.planHash);
     expect(executor.getLockedPlan()?.planHash).toBe(plan.planHash);
   });
 
-  it("clamps already-inside-envelope arrivals to the visible locked target", () => {
+  it("accepts already-inside-envelope arrivals only when terminal speed is satisfied and does not snap", () => {
     const initialShip = createShip();
     const plan = new DirectLocalPlanner().plan({ tick: 1, ship: initialShip, target });
     const executor = new AutopilotExecutor();
     executor.lockPlan(plan, initialShip);
 
-    const insideEnvelopeShip = createShip({ position: vec3(99, 0, 0), velocity: vec3(50, 0, 0) });
+    const insideEnvelopeShip = createShip({ position: vec3(99, 0, 0), velocity: vec3(4, 0, 0) });
     const after = executor.step(insideEnvelopeShip, 1 / 30, 2);
 
     expect(executor.getTelemetry().status).toBe("Arrived");
-    expect(executor.getTelemetry().distanceToTarget).toBe(0);
-    expect(after.position).toEqual(plan.target.position);
+    expect(executor.getTelemetry().distanceToTarget).toBe(1);
+    expect(after.position).toEqual(insideEnvelopeShip.position);
+    expect(after.position).not.toEqual(plan.target.position);
     expect(magnitude(after.velocity)).toBeLessThanOrEqual(target.arrivalEnvelope.terminalSpeed ?? 0);
+  });
+
+  it("keeps braking through the controller when inside the envelope above terminal speed", () => {
+    const initialShip = createShip();
+    const plan = new DirectLocalPlanner().plan({ tick: 1, ship: initialShip, target });
+    const executor = new AutopilotExecutor();
+    executor.lockPlan(plan, initialShip);
+
+    const fastInsideEnvelopeShip = createShip({ position: vec3(99, 0, 0), velocity: vec3(50, 0, 0) });
+    const after = executor.step(fastInsideEnvelopeShip, 1 / 30, 2);
+
+    expect(executor.getTelemetry().status).toBe("Executing");
+    expect(after.position).not.toEqual(plan.target.position);
+    expect(after.velocity.x).toBeLessThan(fastInsideEnvelopeShip.velocity.x);
+    expect(after.actuatorTelemetry.mainThrustActive).toBe(true);
+  });
+
+  it("holds MatchTerminalSpeed as the braking target instead of commanding a stop", () => {
+    const initialShip = createShip();
+    const plan = new DirectLocalPlanner().plan({ tick: 1, ship: initialShip, target });
+    const executor = new AutopilotExecutor({ divergenceDistance: 40 });
+    executor.lockPlan(plan, initialShip);
+
+    const terminalSpeedShip = createShip({ position: vec3(97, 0, 0), velocity: vec3(target.arrivalEnvelope.terminalSpeed ?? 0, 0, 0) });
+    const after = executor.step(terminalSpeedShip, 1 / 30, 2);
+
+    expect(executor.getTelemetry().status).toBe("Executing");
+    expect(executor.getTelemetry().planHash).toBe(plan.planHash);
+    expect(executor.getLockedPlan()?.planHash).toBe(plan.planHash);
+    expect(magnitude(after.velocity)).toBeGreaterThanOrEqual(target.arrivalEnvelope.terminalSpeed ?? 0);
+    expect(after.actuatorTelemetry.lastAppliedAcceleration.x).toBeGreaterThanOrEqual(0);
+  });
+
+  it("arrives for MatchTerminalSpeed only after satisfying the terminal speed envelope without snapping the plan hash", () => {
+    const initialShip = createShip();
+    const plan = new DirectLocalPlanner().plan({ tick: 1, ship: initialShip, target });
+    const executor = new AutopilotExecutor({ divergenceDistance: 40 });
+    executor.lockPlan(plan, initialShip);
+
+    const insideEnvelopeShip = createShip({ position: vec3(99, 0, 0), velocity: vec3((target.arrivalEnvelope.terminalSpeed ?? 0) + 0.5, 0, 0) });
+    executor.step(insideEnvelopeShip, 1 / 30, 2);
+    expect(executor.getTelemetry().status).toBe("Executing");
+
+    const after = executor.step(createShip({ position: vec3(99, 0, 0), velocity: vec3(target.arrivalEnvelope.terminalSpeed ?? 0, 0, 0) }), 1 / 30, 3);
+
+    expect(executor.getTelemetry().status).toBe("Arrived");
+    expect(executor.getTelemetry().planHash).toBe(plan.planHash);
+    expect(executor.getLockedPlan()?.planHash).toBe(plan.planHash);
+    expect(after.position).not.toEqual(plan.target.position);
+    expect(magnitude(after.velocity)).toBeLessThanOrEqual(target.arrivalEnvelope.terminalSpeed ?? 0);
+  });
+
+  it("rotates autopilot facing through the flight controller instead of overwriting orientation in one tick", () => {
+    const sidewaysTarget: TargetDescriptor = {
+      ...target,
+      id: "sideways",
+      position: vec3(0, 0, 100)
+    };
+    const initialShip = createShip();
+    const plan = new DirectLocalPlanner().plan({ tick: 1, ship: initialShip, target: sidewaysTarget });
+    const executor = new AutopilotExecutor({ divergenceDistance: 40 });
+    executor.lockPlan(plan, initialShip);
+
+    const after = executor.step(initialShip, 1 / 30, 2);
+    const desiredOrientation = orientationFromForward(vec3(0, 0, 1));
+
+    expect(quaternionDistance(after.orientation, desiredOrientation)).toBeGreaterThan(0.01);
+    expect(magnitude(after.angularVelocity)).toBeGreaterThan(0);
+    expect(after.actuatorTelemetry.rcsRotationActive).toBe(true);
+    expect(executor.getTelemetry().planHash).toBe(plan.planHash);
   });
 
   it("preserves velocity for terminal-crossing NoStopRequired arrivals when no terminal speed is requested", () => {
@@ -148,7 +253,8 @@ describe("AutopilotExecutor", () => {
     const after = executor.step(crossingShip, 1 / 30, 2);
 
     expect(executor.getTelemetry().status).toBe("Arrived");
-    expect(after.position).toEqual(plan.target.position);
+    expect(distance(after.position, plan.target.position)).toBeLessThanOrEqual(noStopTarget.arrivalEnvelope.radius);
+    expect(after.position).not.toEqual(plan.target.position);
     expect(magnitude(after.velocity)).toBeGreaterThan(100);
   });
 

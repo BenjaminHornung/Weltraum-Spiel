@@ -186,6 +186,22 @@ test("browser vertical slice selects a target, previews a route, engages autopil
   await expect(page.locator("#authority-status")).toContainText("AP ready");
   await expect(page.locator("#brake-status")).toContainText("ready");
 
+  const burnTelemetry = await page.evaluate(() => {
+    let current = (window as any).TestBridge.getTelemetry();
+    for (let i = 0; i < 90 && !current.ship.actuatorTelemetry.mainThrustActive; i += 1) {
+      current = (window as any).TestBridge.step(1);
+    }
+    return current;
+  });
+  expect(burnTelemetry.executor.status).toBe("Executing");
+  expect(burnTelemetry.executor.planHash).toBe(telemetry.executor.planHash);
+  expect(burnTelemetry.ship.position.x).toBeGreaterThan(telemetry.ship.position.x);
+  expect(burnTelemetry.ship.actuatorTelemetry.mainThrustActive).toBe(true);
+  await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getRenderSnapshot().shipVisual.vfx.mainThrustVisible)).toBe(true);
+  const evidenceDir = path.resolve(process.cwd(), "evidence");
+  await mkdir(evidenceDir, { recursive: true });
+  await page.screenshot({ path: path.join(evidenceDir, "autopilot-thruster-burn.png"), fullPage: true });
+
   await page.locator('[data-target-id="nav-alpha"]').click();
   const retargetedWhileLocked = await page.evaluate(() => (window as any).TestBridge.getTelemetry());
   expect(retargetedWhileLocked.executor.planHash).toBe(telemetry.executor.planHash);
@@ -207,18 +223,23 @@ test("browser vertical slice selects a target, previews a route, engages autopil
   });
   expect(arrivalTelemetry.executor.status).toBe("Arrived");
   expect(arrivalTelemetry.executor.distanceToTarget).toBeLessThanOrEqual(arrivalTelemetry.lockedPlan.target.arrivalEnvelope.radius);
-  expect(arrivalTelemetry.ship.position).toEqual(arrivalTelemetry.lockedPlan.target.position);
+  expect(arrivalTelemetry.ship.position).not.toEqual(arrivalTelemetry.lockedPlan.target.position);
+  const arrivalTerminalSpeed = arrivalTelemetry.lockedPlan.target.arrivalEnvelope.terminalSpeed ?? Number.POSITIVE_INFINITY;
+  expect(arrivalTelemetry.ship.velocity.x ** 2 + arrivalTelemetry.ship.velocity.y ** 2 + arrivalTelemetry.ship.velocity.z ** 2).toBeLessThanOrEqual(
+    arrivalTerminalSpeed ** 2 + 0.000001
+  );
   expect(arrivalTelemetry.executor.planHash).toBe(telemetry.executor.planHash);
   await expect(page.getByTestId("autopilot-active")).toContainText("Arrived at selected target");
   await page.waitForFunction(() => (window as any).TestBridge.getRenderSnapshot?.().executorStatus === "Arrived");
   const renderSnapshot = await page.evaluate(() => (window as any).TestBridge.getRenderSnapshot());
   expect(renderSnapshot.targetVisible).toBe(true);
-  expect(renderSnapshot.shipPosition).toEqual(arrivalTelemetry.lockedPlan.target.position);
   expect(renderSnapshot.targetPosition).toEqual(arrivalTelemetry.lockedPlan.target.position);
   expect(renderSnapshot.lockedTargetPosition).toEqual(arrivalTelemetry.lockedPlan.target.position);
   expect(renderSnapshot.selectedTargetId).toBe("nav-beta");
   expect(renderSnapshot.distanceToTarget).toBeLessThanOrEqual(renderSnapshot.arrivalRadius);
+  expect(renderSnapshot.shipPosition).not.toEqual(arrivalTelemetry.lockedPlan.target.position);
   expect(renderSnapshot.planHash).toBe(arrivalTelemetry.executor.planHash);
+  await page.screenshot({ path: path.join(evidenceDir, "autopilot-arrival.png"), fullPage: true });
   expect(renderSnapshot.lowPolyInstanceBatch).toEqual(
     expect.objectContaining({
       id: "debug-low-poly-asteroids",
@@ -293,8 +314,8 @@ test("browser vertical slice selects a target, previews a route, engages autopil
     )
   ).toBe(true);
   const directLocalArrival = matrixResults.find((result: any) => result.id === "direct-local-arrival");
-  expect(directLocalArrival.finalPosition).toEqual(directLocalArrival.targetPosition);
-  expect(directLocalArrival.distanceToTarget).toBe(0);
+  expect(directLocalArrival.finalPosition).not.toEqual(directLocalArrival.targetPosition);
+  expect(directLocalArrival.distanceToTarget).toBeLessThanOrEqual(directLocalArrival.arrivalEnvelope.radius);
   const insufficientFuel = matrixResults.find((result: any) => result.id === "insufficient-fuel");
   expect(insufficientFuel).toEqual(
     expect.objectContaining({
@@ -323,12 +344,79 @@ test("browser vertical slice selects a target, previews a route, engages autopil
   expect(offRouteDivergence.failureReasonCodes).toContain("OffLockedRoute");
   await assertCanvasHasNonDarkPixels(page);
 
-  const evidenceDir = path.resolve(process.cwd(), "evidence");
-  await mkdir(evidenceDir, { recursive: true });
   await page.screenshot({ path: path.join(evidenceDir, "debug-scene.png"), fullPage: true });
   await writeFile(path.join(evidenceDir, "telemetry.json"), JSON.stringify(divergent, null, 2), "utf8");
   await writeFile(path.join(evidenceDir, "vertical-slice-telemetry.json"), JSON.stringify({ initialTelemetry, betaPreview, arrivalTelemetry, divergent }, null, 2), "utf8");
   await writeFile(path.join(evidenceDir, "scenario-matrix.json"), JSON.stringify(matrixResults, null, 2), "utf8");
+});
+
+test("playable manual flight exposes ship visual, ChaseLocked camera, controls, and telemetry VFX", async ({ page }) => {
+  await page.goto("/?testBridge=1");
+  await page.waitForFunction(() => Boolean((window as any).TestBridge));
+  await page.waitForTimeout(250);
+
+  const initialRender = await page.evaluate(() => (window as any).TestBridge.getRenderSnapshot());
+  expect(initialRender.shipVisual.oldConeOnlyPlaceholder).toBe(false);
+  expect(initialRender.shipVisual.descriptor.strategy).toBe("ProceduralLowPolyFallback");
+  expect(initialRender.shipVisual.markerCounts.hullParts).toBeGreaterThanOrEqual(4);
+  expect(initialRender.shipVisual.markerCounts.rcs).toBeGreaterThanOrEqual(4);
+  expect(initialRender.shipVisual.markerCounts.mainEngines).toBeGreaterThanOrEqual(1);
+  expect(initialRender.shipVisual.markerCounts.muzzle).toBe(1);
+  expect(initialRender.camera.mode).toBe("ChaseLocked");
+  expect(initialRender.camera.followsShip).toBe(true);
+
+  await page.keyboard.down("Shift");
+  await page.waitForTimeout(700);
+  await page.keyboard.up("Shift");
+  await page.keyboard.down("w");
+  await page.waitForTimeout(350);
+  await page.keyboard.up("w");
+  await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().ship.position.x)).toBeGreaterThan(0.05);
+  const manualTelemetry = await page.evaluate(() => (window as any).TestBridge.getTelemetry());
+  expect(manualTelemetry.ship.actuatorTelemetry.mainThrustActive).toBe(true);
+  expect(manualTelemetry.ship.actuatorTelemetry.rcsRotationActive || manualTelemetry.ship.actuatorTelemetry.sasCorrectionActive).toBe(true);
+  const manualRender = await page.evaluate(() => (window as any).TestBridge.getRenderSnapshot());
+  expect(manualRender.shipVisual.vfx.mainThrustVisible).toBe(true);
+  expect(manualRender.camera.mode).toBe("ChaseLocked");
+  expect(manualRender.camera.followTarget.x).toBeGreaterThan(initialRender.camera.followTarget.x);
+  expect(manualRender.camera.distanceToShip).toBeGreaterThan(0);
+  await expect(page.getByTestId("control-mode")).toContainText("Cruise");
+  await expect(page.getByTestId("throttle-status")).toContainText("main burn");
+  await expect(page.getByTestId("velocity-status")).toContainText("m/s");
+  await expect(page.getByTestId("rcs-sas-status")).toContainText("RCS");
+  await expect(page.getByTestId("camera-mode")).toContainText("ChaseLocked");
+  await expect(page.getByTestId("help-hint")).toContainText("CapsLock mode");
+
+  const evidenceDir = path.resolve(process.cwd(), "evidence");
+  await mkdir(evidenceDir, { recursive: true });
+  await page.screenshot({ path: path.join(evidenceDir, "manual-flight-chasecam.png"), fullPage: true });
+
+  await page.keyboard.press("CapsLock");
+  await page.keyboard.press("CapsLock");
+  await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().manualInput.controlMode)).toBe("Translation");
+  await page.keyboard.down("h");
+  await page.waitForTimeout(450);
+  await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().ship.actuatorTelemetry.rcsTranslationActive)).toBe(true);
+  const rcsRender = await page.evaluate(() => (window as any).TestBridge.getRenderSnapshot());
+  await page.keyboard.up("h");
+  expect(rcsRender.shipVisual.vfx.rcsTranslationVisible).toBe(true);
+  expect(rcsRender.shipVisual.vfx.visibleRcsPuffCount).toBeGreaterThanOrEqual(4);
+  await page.screenshot({ path: path.join(evidenceDir, "rcs-translation.png"), fullPage: true });
+
+  await page.keyboard.press("v");
+  await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().manualInput.cameraMode)).toBe("OrbitInspect");
+  await page.mouse.click(420, 320, { button: "right" });
+  await page.mouse.down({ button: "right" });
+  await page.mouse.move(520, 360);
+  await page.mouse.up({ button: "right" });
+  await page.mouse.wheel(0, -240);
+  const orbitRender = await page.evaluate(() => (window as any).TestBridge.getRenderSnapshot());
+  expect(orbitRender.camera.mode).toBe("OrbitInspect");
+
+  await page.keyboard.press("v");
+  await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().manualInput.cameraMode)).toBe("Side");
+  await page.keyboard.press("v");
+  await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().manualInput.cameraMode)).toBe("FreeInspect");
 });
 
 test.describe("mobile viewport", () => {

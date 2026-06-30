@@ -1,5 +1,6 @@
-﻿import type { ExecutorTelemetry, FlightSnapshot, FuelState, RoutePlan, RouteValidationReasonCode, RouteValidationResult, ShipState, TargetDescriptor } from "../core/types";
+﻿import type { ActuatorTelemetry, ExecutorTelemetry, FlightSnapshot, FuelState, Quaternion, RoutePlan, RouteValidationReasonCode, RouteValidationResult, ShipState, TargetDescriptor } from "../core/types";
 import { roundVec } from "../core/vector";
+import type { ManualFlightInputState } from "../runtime/input";
 
 export interface RoutePreviewSnapshot {
   readonly state: "Ready" | "Unavailable";
@@ -20,6 +21,7 @@ export interface TelemetrySnapshot {
   readonly selectedTarget?: TargetDescriptor | null;
   readonly routePreview?: RoutePreviewSnapshot | null;
   readonly runtimeMessage?: string | null;
+  readonly manualInput?: ManualFlightInputState;
 }
 
 const roundFuel = (fuel: FuelState): FuelState => ({
@@ -28,6 +30,40 @@ const roundFuel = (fuel: FuelState): FuelState => ({
   current: Number(fuel.current.toFixed(4)),
   reserve: Number(fuel.reserve.toFixed(4)),
   burnRate: Number(fuel.burnRate.toFixed(6))
+});
+
+const roundQuaternion = (q: Quaternion): Quaternion => ({
+  x: Number(q.x.toFixed(6)),
+  y: Number(q.y.toFixed(6)),
+  z: Number(q.z.toFixed(6)),
+  w: Number(q.w.toFixed(6))
+});
+
+const roundActuatorTelemetry = (telemetry: ActuatorTelemetry): ActuatorTelemetry => ({
+  ...telemetry,
+  lastAppliedAcceleration: roundVec(telemetry.lastAppliedAcceleration),
+  lastAppliedAngularAcceleration: roundVec(telemetry.lastAppliedAngularAcceleration)
+});
+
+const roundShipState = (ship: ShipState): ShipState => ({
+  ...ship,
+  position: roundVec(ship.position),
+  velocity: roundVec(ship.velocity),
+  orientation: roundQuaternion(ship.orientation),
+  angularVelocity: roundVec(ship.angularVelocity),
+  throttle: Number(ship.throttle.toFixed(4)),
+  mainThrottleCommand: Number(ship.mainThrottleCommand.toFixed(4)),
+  translationCommand: roundVec(ship.translationCommand),
+  rotationCommand: roundVec(ship.rotationCommand),
+  actuatorTelemetry: roundActuatorTelemetry(ship.actuatorTelemetry),
+  fuel: roundFuel(ship.fuel),
+  mass: {
+    ...ship.mass,
+    dryMass: Number(ship.mass.dryMass.toFixed(4)),
+    cargoMass: ship.mass.cargoMass === undefined ? undefined : Number(ship.mass.cargoMass.toFixed(4)),
+    fuelMass: Number(ship.mass.fuelMass.toFixed(4)),
+    totalMass: Number(ship.mass.totalMass.toFixed(4))
+  }
 });
 
 const roundFlightSnapshot = (snapshot: FlightSnapshot): FlightSnapshot => ({
@@ -48,12 +84,7 @@ const roundFlightSnapshot = (snapshot: FlightSnapshot): FlightSnapshot => ({
 });
 
 export const serializeTelemetry = (snapshot: TelemetrySnapshot): TelemetrySnapshot => ({
-  ship: {
-    ...snapshot.ship,
-    position: roundVec(snapshot.ship.position),
-    velocity: roundVec(snapshot.ship.velocity),
-    fuel: roundFuel(snapshot.ship.fuel)
-  },
+  ship: roundShipState(snapshot.ship),
   executor: {
     ...snapshot.executor,
     distanceToTarget: Number(snapshot.executor.distanceToTarget.toFixed(4)),
@@ -68,7 +99,8 @@ export const serializeTelemetry = (snapshot: TelemetrySnapshot): TelemetrySnapsh
   selectableTargets: snapshot.selectableTargets,
   selectedTarget: snapshot.selectedTarget,
   routePreview: snapshot.routePreview,
-  runtimeMessage: snapshot.runtimeMessage
+  runtimeMessage: snapshot.runtimeMessage,
+  manualInput: snapshot.manualInput
 });
 
 export const createTelemetrySnapshot = (ship: ShipState, executor: ExecutorTelemetry, lockedPlan: RoutePlan | null): TelemetrySnapshot =>

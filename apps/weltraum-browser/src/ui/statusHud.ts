@@ -12,6 +12,12 @@ export interface StatusHudWarningChipViewModel {
 
 export interface StatusHudViewModel {
   readonly mode: string;
+  readonly controlMode: string;
+  readonly cameraMode: string;
+  readonly throttleState: string;
+  readonly velocityState: string;
+  readonly rcsSasState: string;
+  readonly helpHint: string;
   readonly planState: string;
   readonly routeState: string;
   readonly target: string;
@@ -54,6 +60,11 @@ const severityOrder: Record<ChipSeverity, number> = { Critical: 0, High: 1, Medi
 const unique = (codes: readonly string[]): readonly string[] => [...new Set(codes)];
 
 const formatMeters = (value: number): string => (Number.isFinite(value) ? `${value.toFixed(1)} m` : "unknown");
+
+const formatSpeed = (velocity: { readonly x: number; readonly y: number; readonly z: number }): string => {
+  const speed = Math.hypot(velocity.x, velocity.y, velocity.z);
+  return `${speed.toFixed(2)} m/s (${velocity.x.toFixed(1)}, ${velocity.y.toFixed(1)}, ${velocity.z.toFixed(1)})`;
+};
 
 const fallbackWarning = { severity: "Medium" as const, label: "System warning", action: "Check ship status" };
 
@@ -99,9 +110,26 @@ export const createStatusHudViewModel = (telemetry: TelemetrySnapshot): StatusHu
     kind: candidateTarget.kind,
     isSelected: candidateTarget.id === selectedTarget?.id
   }));
+  const manualInput = telemetry.manualInput;
+  const cameraMode = manualInput?.cameraMode ?? "ChaseLocked";
+  const controlMode = telemetry.ship.controlMode;
+  const rcsEnabled = telemetry.ship.rcsEnabled;
+  const sasEnabled = telemetry.ship.sasEnabled;
+  const activeActuators = [
+    telemetry.ship.actuatorTelemetry.mainThrustActive ? "main burn" : null,
+    telemetry.ship.actuatorTelemetry.rcsTranslationActive ? "RCS translate" : null,
+    telemetry.ship.actuatorTelemetry.rcsRotationActive ? "RCS rotate" : null,
+    telemetry.ship.actuatorTelemetry.sasCorrectionActive ? "SAS correction" : null
+  ].filter((item): item is string => Boolean(item));
 
   return {
     mode: snapshot.authority.mode,
+    controlMode,
+    cameraMode,
+    throttleState: `${Math.round(telemetry.ship.throttle * 100)}%${telemetry.ship.actuatorTelemetry.mainThrustActive ? " / main burn" : ""}`,
+    velocityState: formatSpeed(telemetry.ship.velocity),
+    rcsSasState: `RCS ${rcsEnabled ? "on" : "off"}, SAS ${sasEnabled ? "on" : "off"}${activeActuators.length > 0 ? ` / ${activeActuators.join(", ")}` : ""}`,
+    helpHint: "W/S pitch, A/D yaw, Q/E roll, Shift/Ctrl throttle, X cut, Y/Z full, R RCS, T SAS, CapsLock mode, H/N translate, V camera, RMB+wheel inspect",
     planState: telemetry.executor.planHash ? "Plan locked" : routePlan ? "Route preview ready" : "No active plan",
     routeState,
     target: target ? `${target.label} [${target.kind}]` : "none selected",
@@ -207,6 +235,12 @@ export const renderStatusHud = (telemetry: TelemetrySnapshot, commandSink?: Stat
   const viewModel = createStatusHudViewModel(telemetry);
   setText("plan-hash", viewModel.planState);
   setText("mode", viewModel.mode);
+  setText("control-mode", viewModel.controlMode);
+  setText("camera-mode", viewModel.cameraMode);
+  setText("throttle-status", viewModel.throttleState);
+  setText("velocity-status", viewModel.velocityState);
+  setText("rcs-sas-status", viewModel.rcsSasState);
+  setText("help-hint", viewModel.helpHint);
   setText("status", viewModel.autopilotState);
   setText("route-status", viewModel.routeState);
   setText("target-status", viewModel.target);

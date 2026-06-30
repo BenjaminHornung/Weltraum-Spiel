@@ -1,42 +1,38 @@
-﻿import { add, distance, magnitude, normalize, projectPointOnSegment, scale, sub, vec3 } from "../core/vector";
+﻿import { clamp, distance, dot, magnitude, normalize, projectPointOnSegment, scale, sub, vec3 } from "../core/vector";
 import type { ArrivalEnvelope, ExecutorTelemetry, FailureReasonCode, RoutePlan, RouteSegment, ShipState } from "../core/types";
 import { arrivalEnvelopeForTarget, arrivalRadiusForTarget } from "../navigation/validation";
-import { accelerationLimitForMass, burnFuel, createFlightSnapshot, createShipStateV2 } from "./state";
+import { applyFlightControllerStep } from "./flightController";
+import { accelerationLimitForMass, createFlightSnapshot, createShipStateV2 } from "./state";
 
 export interface AutopilotExecutorOptions {
   readonly maxAcceleration: number;
   readonly maxThrustKilonewtons: number;
   readonly divergenceDistance: number;
+  readonly allowManualInputWhenIdle: boolean;
 }
 
 const defaultOptions: AutopilotExecutorOptions = {
   maxAcceleration: 10,
   maxThrustKilonewtons: 10,
-  divergenceDistance: 30
+  divergenceDistance: 30,
+  allowManualInputWhenIdle: false
 };
 
 const unique = (codes: readonly FailureReasonCode[]): readonly FailureReasonCode[] => [...new Set(codes)];
 
-const capVelocity = (velocity: ShipState["velocity"], terminalSpeed: number | undefined): ShipState["velocity"] => {
-  if (terminalSpeed === undefined) {
-    return velocity;
+const terminalSpeedForArrival = (envelope: ArrivalEnvelope | null): number | undefined => {
+  if (!envelope) {
+    return undefined;
   }
-
-  const speed = magnitude(velocity);
-  if (speed <= terminalSpeed) {
-    return velocity;
+  if (envelope.terminalSpeed !== undefined) {
+    return envelope.terminalSpeed;
   }
-
-  return terminalSpeed <= 0 ? vec3() : scale(normalize(velocity), terminalSpeed);
+  return envelope.stopBehavior === "StopWithinEnvelope" || envelope.stopBehavior === "MatchTerminalSpeed" ? 0 : undefined;
 };
 
-const terminalVelocityForArrival = (velocity: ShipState["velocity"], envelope: ArrivalEnvelope | null): ShipState["velocity"] => {
-  const stopBehavior = envelope?.stopBehavior ?? "NoStopRequired";
-  if (stopBehavior === "NoStopRequired") {
-    return capVelocity(velocity, envelope?.terminalSpeed);
-  }
-
-  return envelope?.terminalSpeed === undefined ? vec3() : capVelocity(velocity, envelope.terminalSpeed);
+const isArrivalSpeedSatisfied = (ship: ShipState, envelope: ArrivalEnvelope | null): boolean => {
+  const terminalSpeed = terminalSpeedForArrival(envelope);
+  return terminalSpeed === undefined || magnitude(ship.velocity) <= terminalSpeed + 1e-6;
 };
 
 const crossedTerminalTarget = (from: ShipState["position"], to: ShipState["position"], target: ShipState["position"], arrivalRadius: number): boolean => {
@@ -53,6 +49,13 @@ const crossedTerminalTarget = (from: ShipState["position"], to: ShipState["posit
 
   return distance(target, projectPointOnSegment(target, from, to)) <= arrivalRadius;
 };
+
+interface AutopilotActuatorRequest {
+  readonly facingDirection: ShipState["position"];
+  readonly throttle: number;
+  readonly desiredAcceleration: ShipState["position"];
+  readonly braking: boolean;
+}
 
 export class AutopilotExecutor {
   private readonly options: AutopilotExecutorOptions;
@@ -72,11 +75,11 @@ export class AutopilotExecutor {
   }
 
   cancelPlan(ship: ShipState, tick = this.telemetry.tick): ShipState {
-    const stoppedShip: ShipState = { ...ship, velocity: vec3() };
+    const idleShip = applyFlightControllerStep(ship, { mainThrottleCommand: 0, translationCommand: vec3(), rotationCommand: vec3() }, 0, this.options);
     this.lockedPlan = null;
     this.activeSegmentIndex = 0;
-    this.telemetry = this.createTelemetry(tick, "Idle", null, stoppedShip, false, []);
-    return stoppedShip;
+    this.telemetry = this.createTelemetry(tick, "Idle", null, idleShip, false, []);
+    return idleShip;
   }
 
   getLockedPlan(): RoutePlan | null {
@@ -90,19 +93,27 @@ export class AutopilotExecutor {
   step(ship: ShipState, fixedDeltaSeconds: number, tick: number): ShipState {
     const plan = this.lockedPlan;
     if (!plan) {
-      const stoppedShip: ShipState = { ...ship, velocity: vec3() };
-      this.telemetry = this.createTelemetry(tick, "Idle", null, stoppedShip, false, []);
-      return stoppedShip;
+      const idleRequest = this.options.allowManualInputWhenIdle
+        ? {
+            controlMode: ship.controlMode,
+            mainThrottleCommand: ship.mainThrottleCommand,
+            translationCommand: ship.translationCommand,
+            rotationCommand: ship.rotationCommand,
+            rcsEnabled: ship.rcsEnabled,
+            sasEnabled: ship.sasEnabled
+          }
+        : { mainThrottleCommand: 0, translationCommand: vec3(), rotationCommand: vec3() };
+      const driftingShip = applyFlightControllerStep(ship, idleRequest, fixedDeltaSeconds, this.options);
+      this.telemetry = this.createTelemetry(tick, "Idle", null, driftingShip, false, []);
+      return driftingShip;
     }
 
     const segment = this.currentSegment(plan);
-    const distanceToTarget = distance(ship.position, plan.target.position);
     const arrivalEnvelope = arrivalEnvelopeForTarget(plan.target);
     const arrivalRadius = arrivalRadiusForTarget(plan.target);
-    if (Number.isFinite(arrivalRadius) && distanceToTarget <= arrivalRadius) {
-      const arrivedShip = { ...ship, position: plan.target.position, velocity: terminalVelocityForArrival(ship.velocity, arrivalEnvelope) };
-      this.telemetry = this.createTelemetry(tick, "Arrived", plan, arrivedShip, false, []);
-      return arrivedShip;
+    if (this.isArrived(ship, plan, arrivalEnvelope, arrivalRadius)) {
+      this.telemetry = this.createTelemetry(tick, "Arrived", plan, ship, false, []);
+      return ship;
     }
 
     const preflight = createFlightSnapshot(ship, plan, this.options);
@@ -128,52 +139,102 @@ export class AutopilotExecutor {
       return ship;
     }
 
-    const direction = normalize(sub(segment.end, ship.position));
-    const desiredSpeed = Math.min(segment.desiredSpeed, Math.max(4, distance(ship.position, segment.end) * 0.55));
-    const speedError = desiredSpeed - magnitude(ship.velocity);
-    const accelerationLimit = accelerationLimitForMass(ship.mass, this.options);
-    const accelerationMagnitude = Math.max(0, Math.min(accelerationLimit, speedError + 4));
-    const acceleration = scale(direction, accelerationMagnitude);
-    const nextVelocity = add(ship.velocity, scale(acceleration, fixedDeltaSeconds));
-    const nextPosition = add(ship.position, scale(nextVelocity, fixedDeltaSeconds));
-    const kilonewtonSeconds = accelerationMagnitude * (ship.mass.totalMass / 1_000) * fixedDeltaSeconds;
-    const nextShip: ShipState = burnFuel({
-      ...ship,
-      position: nextPosition,
-      velocity: nextVelocity
-    }, kilonewtonSeconds);
+    const actuatorRequest = this.createAutopilotActuatorRequest(ship, segment, plan, arrivalEnvelope, arrivalRadius);
+    const nextShip = applyFlightControllerStep(ship, {
+      controlMode: "Cruise",
+      mainThrottleCommand: actuatorRequest.throttle,
+      desiredAcceleration: actuatorRequest.desiredAcceleration,
+      desiredFacingDirection: actuatorRequest.facingDirection,
+      translationCommand: vec3(),
+      rotationCommand: vec3(),
+      rcsEnabled: ship.rcsEnabled,
+      sasEnabled: ship.sasEnabled
+    }, fixedDeltaSeconds, this.options);
+    const nextPosition = nextShip.position;
 
     const isTerminalSegment = this.activeSegmentIndex >= plan.segments.length - 1;
-    const reachedArrivalEnvelope = isTerminalSegment && distance(nextPosition, plan.target.position) <= arrivalRadius;
-    const crossedArrivalTarget = isTerminalSegment && crossedTerminalTarget(ship.position, nextPosition, plan.target.position, arrivalRadius);
-    if (reachedArrivalEnvelope || crossedArrivalTarget) {
-      const arrivedShip: ShipState = {
-        ...nextShip,
-        position: plan.target.position,
-        velocity: terminalVelocityForArrival(nextVelocity, arrivalEnvelope)
-      };
-      this.telemetry = this.createTelemetry(tick, "Arrived", plan, arrivedShip, false, []);
-      return arrivedShip;
+    if (isTerminalSegment && this.isArrived(nextShip, plan, arrivalEnvelope, arrivalRadius)) {
+      this.telemetry = this.createTelemetry(tick, "Arrived", plan, nextShip, false, []);
+      return nextShip;
     }
 
-    const reachedRouteWaypoint = !isTerminalSegment && (distance(nextPosition, segment.end) <= 2 || crossedTerminalTarget(ship.position, nextPosition, segment.end, 2));
+    const waypointEnvelopeRadius = Math.max(2, Math.min(8, segment.clearanceRadius));
+    const reachedRouteWaypoint = !isTerminalSegment && (distance(nextPosition, segment.end) <= waypointEnvelopeRadius || crossedTerminalTarget(ship.position, nextPosition, segment.end, waypointEnvelopeRadius));
     if (reachedRouteWaypoint) {
-      this.activeSegmentIndex = Math.min(this.activeSegmentIndex + 1, plan.segments.length - 1);
-      const waypointShip: ShipState = {
-        ...nextShip,
-        position: segment.end,
-        velocity: vec3()
-      };
-      this.telemetry = this.createTelemetry(tick, "Executing", plan, waypointShip, false, []);
-      return waypointShip;
-    }
-
-    if (distance(nextPosition, segment.end) <= 2) {
       this.activeSegmentIndex = Math.min(this.activeSegmentIndex + 1, plan.segments.length - 1);
     }
 
     this.telemetry = this.createTelemetry(tick, "Executing", plan, nextShip, false, []);
     return nextShip;
+  }
+
+  private isArrived(ship: ShipState, plan: RoutePlan, arrivalEnvelope: ArrivalEnvelope | null, arrivalRadius: number): boolean {
+    if (!this.lockedPlan || this.lockedPlan.planHash !== plan.planHash) {
+      return false;
+    }
+    return Number.isFinite(arrivalRadius) && distance(ship.position, plan.target.position) <= arrivalRadius && isArrivalSpeedSatisfied(ship, arrivalEnvelope);
+  }
+
+  private createAutopilotActuatorRequest(
+    ship: ShipState,
+    segment: RouteSegment,
+    plan: RoutePlan,
+    arrivalEnvelope: ArrivalEnvelope | null,
+    arrivalRadius: number
+  ): AutopilotActuatorRequest {
+    const targetOffset = sub(segment.end, ship.position);
+    const targetDirection = normalize(targetOffset);
+    const accelerationLimit = accelerationLimitForMass(ship.mass, this.options);
+    if (accelerationLimit <= 1e-6 || magnitude(targetDirection) <= 1e-6) {
+      return { facingDirection: targetDirection, throttle: 0, desiredAcceleration: vec3(), braking: false };
+    }
+
+    const isTerminalSegment = this.currentSegment(plan).id === segment.id && this.activeSegmentIndex >= plan.segments.length - 1;
+    const speed = magnitude(ship.velocity);
+    const segmentEnvelopeRadius = isTerminalSegment ? Math.max(0, arrivalRadius) : Math.max(2, Math.min(8, segment.clearanceRadius));
+    const arrivalTerminalSpeed = terminalSpeedForArrival(arrivalEnvelope);
+    const terminalSpeed = isTerminalSegment
+      ? arrivalEnvelope?.stopBehavior === "NoStopRequired"
+        ? (arrivalTerminalSpeed ?? segment.desiredSpeed)
+        : arrivalEnvelope?.stopBehavior === "MatchTerminalSpeed"
+          ? (arrivalTerminalSpeed ?? 0)
+          : 0
+      : this.waypointTurnSpeed(plan, segment);
+    const distanceToSegmentEnd = magnitude(targetOffset);
+    const brakingDistance = Math.max(0, (speed * speed - terminalSpeed * terminalSpeed) / (2 * accelerationLimit));
+    const terminalBrakeMargin = segmentEnvelopeRadius + speed * 0.2;
+    const needsBraking = speed > terminalSpeed + 0.25 && distanceToSegmentEnd <= brakingDistance + terminalBrakeMargin;
+
+    if (needsBraking) {
+      const desiredAcceleration = magnitude(ship.velocity) > 1e-6 ? scale(normalize(ship.velocity), -accelerationLimit) : vec3();
+      return {
+        facingDirection: magnitude(desiredAcceleration) > 1e-6 ? desiredAcceleration : targetDirection,
+        throttle: clamp(magnitude(desiredAcceleration) / accelerationLimit, 0.2, 1),
+        desiredAcceleration,
+        braking: true
+      };
+    }
+
+    const distanceLimitedSpeed = Math.sqrt(Math.max(0, terminalSpeed * terminalSpeed + 2 * accelerationLimit * Math.max(0, distanceToSegmentEnd - segmentEnvelopeRadius)));
+    const desiredSpeed = Math.min(segment.desiredSpeed, Math.max(terminalSpeed, distanceLimitedSpeed));
+    const desiredVelocity = scale(targetDirection, desiredSpeed);
+    const desiredAcceleration = scale(sub(desiredVelocity, ship.velocity), 1.35);
+    const accelerationMagnitude = magnitude(desiredAcceleration);
+    const throttle = accelerationMagnitude <= 0.05 ? 0 : clamp(accelerationMagnitude / Math.max(accelerationLimit, 1), 0.15, 1);
+    return { facingDirection: accelerationMagnitude > 1e-6 ? desiredAcceleration : targetDirection, throttle, desiredAcceleration, braking: false };
+  }
+
+  private waypointTurnSpeed(plan: RoutePlan, segment: RouteSegment): number {
+    const nextSegment = plan.segments[this.activeSegmentIndex + 1];
+    if (!nextSegment) {
+      return segment.desiredSpeed;
+    }
+
+    const currentDirection = normalize(sub(segment.end, segment.start));
+    const nextDirection = normalize(sub(nextSegment.end, nextSegment.start));
+    const turnAlignment = dot(currentDirection, nextDirection);
+    const sharpTurnSpeed = turnAlignment < 0.85 ? 4 : 8;
+    return Math.min(segment.desiredSpeed, nextSegment.desiredSpeed, sharpTurnSpeed);
   }
 
   private currentSegment(plan: RoutePlan): RouteSegment {

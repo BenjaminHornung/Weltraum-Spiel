@@ -2,6 +2,7 @@ import { AutopilotExecutor, DirectLocalPlanner, FixedStepSimulationLoop, Obstacl
 import type { ObstacleDescriptor, RoutePlan, RoutePlanningResult, ShipState, TargetDescriptor } from "../core";
 import { autopilotAuthority, createShipState, defaultObstacles, noAutopilotAuthority, provingGroundTargets } from "../world/provingGroundWorld";
 import type { BrowserRuntimeCommand } from "./commands";
+import { clamp01, createManualFlightInputState, mergeManualFlightInputState, nextCameraMode, nextControlMode, type ManualFlightInputState } from "./input";
 import type { RoutePreviewSnapshot, TelemetrySnapshot } from "../sim/telemetry";
 
 export type { BrowserRuntimeCommand } from "./commands";
@@ -13,6 +14,7 @@ export interface BrowserRuntimeController {
   getPlanHash(): string | null;
   getLockedPlan(): RoutePlan | null;
   dispatchCommand(command: unknown): TelemetrySnapshot;
+  getManualInput(): ManualFlightInputState;
   disturbShip(offsetX: number): TelemetrySnapshot;
 }
 
@@ -29,13 +31,22 @@ export interface BrowserRuntimeOptions {
 }
 
 export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
-  const executor = new AutopilotExecutor({ divergenceDistance: 24 });
+  const executor = new AutopilotExecutor({ divergenceDistance: 24, allowManualInputWhenIdle: true });
   let ship = options.initialShip ?? createInitialShip();
   const loop = new FixedStepSimulationLoop(ship, executor, { fixedDeltaSeconds: 1 / 30, maxSubSteps: 10 });
   let selectedTarget: TargetDescriptor | null = defaultTarget;
   let selectedPlanner: RoutePlan["planner"] = "ObstacleAvoidanceLocal";
   let routePreview: RoutePreviewSnapshot | null = null;
   let runtimeMessage: string | null = null;
+  let manualInput = createManualFlightInputState({
+    controlMode: ship.controlMode,
+    rcsEnabled: ship.rcsEnabled,
+    sasEnabled: ship.sasEnabled,
+    mainThrottleCommand: ship.mainThrottleCommand,
+    translationCommand: ship.translationCommand,
+    rotationCommand: ship.rotationCommand,
+    cameraMode: "ChaseLocked"
+  });
 
   const plannerFor = (planner: RoutePlan["planner"]): DirectLocalPlanner | ObstacleAvoidanceLocalPlanner =>
     planner === "DirectLocal" ? new DirectLocalPlanner() : new ObstacleAvoidanceLocalPlanner();
@@ -94,8 +105,30 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
     selectableTargets: browserTargetCatalog,
     selectedTarget,
     routePreview,
-    runtimeMessage
+    runtimeMessage,
+    manualInput
   });
+
+  const applyManualInputToLoopShip = (): void => {
+    const current = loop.getShip();
+    const updatedShip = {
+      ...current,
+      controlMode: manualInput.controlMode,
+      rcsEnabled: manualInput.rcsEnabled,
+      sasEnabled: manualInput.sasEnabled,
+      mainThrottleCommand: manualInput.mainThrottleCommand,
+      throttle: manualInput.mainThrottleCommand,
+      translationCommand: manualInput.translationCommand,
+      rotationCommand: manualInput.rotationCommand
+    };
+    loop.setShip(updatedShip);
+    ship = updatedShip;
+  };
+
+  const updateManualInput = (input: Partial<ManualFlightInputState>): void => {
+    manualInput = mergeManualFlightInputState(manualInput, input);
+    applyManualInputToLoopShip();
+  };
 
   const lockPlan = (plan: RoutePlan): RoutePlan => {
     executor.lockPlan(plan, loop.getShip(), loop.getTick());
@@ -173,10 +206,38 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
         const stoppedShip = executor.cancelPlan(loop.getShip(), loop.getTick());
         loop.setShip(stoppedShip);
         ship = stoppedShip;
+        manualInput = mergeManualFlightInputState(manualInput, {
+          mainThrottleCommand: stoppedShip.mainThrottleCommand,
+          translationCommand: stoppedShip.translationCommand,
+          rotationCommand: stoppedShip.rotationCommand
+        });
         runtimeMessage = "Autopilot canceled. Route preview remains available for the selected target.";
         refreshRoutePreview(selectedPlanner);
         return snapshot();
       }
+      case "SetManualFlightInput":
+        updateManualInput(typeof candidate.input === "object" && candidate.input ? candidate.input : {});
+        return snapshot();
+      case "SetThrottle":
+        updateManualInput({ mainThrottleCommand: clamp01(typeof candidate.throttle === "number" ? candidate.throttle : manualInput.mainThrottleCommand) });
+        runtimeMessage = manualInput.mainThrottleCommand <= 0 ? "Throttle cut." : manualInput.mainThrottleCommand >= 1 ? "Throttle full." : "Throttle adjusted.";
+        return snapshot();
+      case "ToggleRcs":
+        updateManualInput({ rcsEnabled: !manualInput.rcsEnabled });
+        runtimeMessage = `RCS ${manualInput.rcsEnabled ? "enabled" : "disabled"}.`;
+        return snapshot();
+      case "ToggleSas":
+        updateManualInput({ sasEnabled: !manualInput.sasEnabled });
+        runtimeMessage = `SAS ${manualInput.sasEnabled ? "enabled" : "disabled"}.`;
+        return snapshot();
+      case "CycleControlMode":
+        updateManualInput({ controlMode: nextControlMode(manualInput.controlMode) });
+        runtimeMessage = `Control mode ${manualInput.controlMode}.`;
+        return snapshot();
+      case "CycleCameraMode":
+        updateManualInput({ cameraMode: nextCameraMode(manualInput.cameraMode) });
+        runtimeMessage = `Camera mode ${manualInput.cameraMode}.`;
+        return snapshot();
       default:
         runtimeMessage = "Command ignored: use a supported cockpit action.";
         return snapshot();
@@ -189,10 +250,12 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
 
   const controller: BrowserRuntimeController = {
     advance(elapsedSeconds: number) {
+      applyManualInputToLoopShip();
       ship = loop.advance(elapsedSeconds);
       return snapshot();
     },
     step(count = 1) {
+      applyManualInputToLoopShip();
       ship = loop.step(count);
       return snapshot();
     },
@@ -204,6 +267,9 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
       return executor.getLockedPlan();
     },
     dispatchCommand,
+    getManualInput() {
+      return manualInput;
+    },
     disturbShip(offsetX: number) {
       const current = loop.getShip();
       loop.setShip({

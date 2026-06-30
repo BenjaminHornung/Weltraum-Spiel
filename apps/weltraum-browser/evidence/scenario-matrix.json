@@ -48,7 +48,7 @@
       "reasonCodes": []
     },
     "brakingReserve": {
-      "requiredDeltaV": 0,
+      "requiredDeltaV": 1,
       "availableDeltaV": 4318.1818,
       "canBrake": true,
       "reasonCodes": []
@@ -61,7 +61,7 @@
     "finalSpeed": 0,
     "fuel": 100,
     "finalPosition": {
-      "x": 1.5,
+      "x": 0,
       "y": 0,
       "z": 0
     },
@@ -70,7 +70,7 @@
       "y": 0,
       "z": 0
     },
-    "distanceToTarget": 0,
+    "distanceToTarget": 1.5,
     "offRouteDistance": 0,
     "classification": "PASS",
     "notes": []
@@ -149,7 +149,7 @@
       "z": 0
     },
     "distanceToTarget": 89.69145352349403,
-    "offRouteDistance": 0,
+    "offRouteDistance": 5.551115123125783e-17,
     "classification": "PASS",
     "notes": []
   },

@@ -5,6 +5,11 @@ import { createStatusHudViewModel, renderStatusHud } from "../../src/ui/statusHu
 const elementIds = [
   "plan-hash",
   "mode",
+  "control-mode",
+  "camera-mode",
+  "throttle-status",
+  "velocity-status",
+  "rcs-sas-status",
   "status",
   "route-status",
   "target-status",
@@ -17,6 +22,7 @@ const elementIds = [
   "warning-chips",
   "failure-reasons",
   "runtime-message",
+  "help-hint",
   "engage-autopilot",
   "cancel-autopilot"
 ] as const;
@@ -68,6 +74,9 @@ describe("renderStatusHud", () => {
     });
 
     expect(elements.get("mode")?.textContent).toBe("Manual");
+    expect(elements.get("control-mode")?.textContent).toBe("Cruise");
+    expect(elements.get("camera-mode")?.textContent).toBe("ChaseLocked");
+    expect(elements.get("help-hint")?.textContent).toContain("W/S pitch");
     expect(elements.get("route-status")?.textContent).toContain("select a target");
     expect(elements.get("fuel-status")?.textContent).toContain("Blocked");
     expect(elements.get("status")?.textContent).toContain("Autopilot blocked: fuel");
@@ -167,6 +176,12 @@ describe("renderStatusHud", () => {
     expect(viewModel.distance).toBe("42.4 m");
     expect(viewModel.routeState).toContain("new plan required");
     expect(viewModel.autopilotState).toContain("Autopilot blocked: fuel");
+    expect(viewModel.controlMode).toBe("Precision");
+    expect(viewModel.cameraMode).toBe("ChaseLocked");
+    expect(viewModel.throttleState).toContain("0%");
+    expect(viewModel.velocityState).toContain("m/s");
+    expect(viewModel.rcsSasState).toContain("RCS on");
+    expect(viewModel.helpHint).toContain("CapsLock mode");
     expect(viewModel.radarState).toContain("local contact Target A");
     expect(viewModel.warningChips.map((chip) => chip.code)).toEqual(expect.arrayContaining(["FuelInsufficient", "FuelDepleted"]));
   });
@@ -266,5 +281,61 @@ describe("renderStatusHud", () => {
     expect(elements.get("radar-status")?.textContent).toContain("local contact Target B");
     expect(elements.get("runtime-message")?.textContent).toContain("Selected Target B");
     expect(elements.get("target-options")?.textContent).toContain("Target B (selected)");
+  });
+
+  it("shows manual flight state, actuator state, and camera mode from snapshots", () => {
+    const ship = createShipStateV2({
+      controlMode: "Translation",
+      throttle: 0.42,
+      rcsEnabled: true,
+      sasEnabled: false,
+      velocity: { x: 1, y: 2, z: 3 },
+      actuatorTelemetry: {
+        mainThrustActive: true,
+        rcsTranslationActive: true,
+        rcsRotationActive: false,
+        sasCorrectionActive: false,
+        lastAppliedAcceleration: { x: 1, y: 0, z: 0 },
+        lastAppliedAngularAcceleration: { x: 0, y: 0, z: 0 }
+      }
+    });
+    const ownerSnapshot = createFlightSnapshot(ship, null);
+
+    const viewModel = createStatusHudViewModel({
+      ship,
+      lockedPlan: null,
+      manualInput: {
+        controlMode: "Translation",
+        rcsEnabled: true,
+        sasEnabled: false,
+        mainThrottleCommand: 0.42,
+        translationCommand: { x: 0, y: 1, z: 0 },
+        rotationCommand: { x: 0, y: 0, z: 0 },
+        cameraMode: "Side"
+      },
+      flightSnapshot: ownerSnapshot,
+      executor: {
+        tick: 1,
+        status: "Idle",
+        planHash: null,
+        activeSegmentId: null,
+        distanceToTarget: 0,
+        offRouteDistance: 0,
+        replanRequired: false,
+        invalidationReasons: [],
+        failureReasonCodes: [],
+        fuel: ownerSnapshot.fuel,
+        flightSnapshot: ownerSnapshot,
+        position: ship.position,
+        velocity: ship.velocity
+      }
+    });
+
+    expect(viewModel.controlMode).toBe("Translation");
+    expect(viewModel.cameraMode).toBe("Side");
+    expect(viewModel.throttleState).toContain("42% / main burn");
+    expect(viewModel.velocityState).toContain("3.74 m/s");
+    expect(viewModel.rcsSasState).toContain("RCS on, SAS off");
+    expect(viewModel.rcsSasState).toContain("RCS translate");
   });
 });
