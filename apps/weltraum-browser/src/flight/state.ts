@@ -4,6 +4,7 @@ import type {
   AuthorityMode,
   AuthorityState,
   BrakingReserve,
+  ControlModeEffectSnapshot,
   FailureReasonCode,
   FlightControlMode,
   FlightSnapshot,
@@ -30,11 +31,29 @@ const unique = (codes: readonly FailureReasonCode[]): readonly FailureReasonCode
 
 export const identityOrientation = (): Quaternion => ({ x: 0, y: 0, z: 0, w: 1 });
 
+export const inactiveControlModeEffect = (controlMode: FlightControlMode = "Cruise"): ControlModeEffectSnapshot => ({
+  controlMode,
+  mainThrustAllowed: controlMode === "Cruise",
+  rcsTranslationAllowed: controlMode === "Translation",
+  rcsRotationAllowed: true,
+  sasAllowed: true,
+  modeEffectLabel:
+    controlMode === "Cruise"
+      ? "main thrust enabled"
+      : controlMode === "Precision"
+        ? "RCS attitude / main thrust blocked"
+        : "RCS translation / main thrust blocked",
+  blockedReasonCodes: controlMode === "Cruise" ? ["RcsTranslationModeBlocked"] : ["MainThrustModeBlocked"],
+  notes: [],
+  rotationResponseScale: controlMode === "Precision" ? 0.45 : controlMode === "Translation" ? 0.65 : 1
+});
+
 export const inactiveActuatorTelemetry = (): ActuatorTelemetry => ({
   mainThrustActive: false,
   rcsTranslationActive: false,
   rcsRotationActive: false,
   sasCorrectionActive: false,
+  controlModeEffect: inactiveControlModeEffect(),
   lastAppliedAcceleration: vec3(),
   lastAppliedAngularAcceleration: vec3()
 });
@@ -129,19 +148,20 @@ export const createShipStateV2 = (overrides: Partial<Omit<ShipState, "mass" | "f
 }): ShipState => {
   const fuel = typeof overrides.fuel === "number" ? createFuelState({ current: overrides.fuel }) : createFuelState(overrides.fuel);
   const authority = createAuthorityState(overrides.authority);
+  const controlMode = overrides.controlMode ?? defaultControlMode(authority);
   return {
     position: overrides.position ?? vec3(),
     velocity: overrides.velocity ?? vec3(),
     orientation: overrides.orientation ?? identityOrientation(),
     angularVelocity: overrides.angularVelocity ?? vec3(),
     throttle: Math.max(0, Math.min(1, overrides.throttle ?? 0)),
-    controlMode: overrides.controlMode ?? defaultControlMode(authority),
+    controlMode,
     rcsEnabled: overrides.rcsEnabled ?? authority.rcsAvailable,
     sasEnabled: overrides.sasEnabled ?? authority.sasAvailable,
     mainThrottleCommand: Math.max(0, Math.min(1, overrides.mainThrottleCommand ?? overrides.throttle ?? 0)),
     translationCommand: overrides.translationCommand ?? vec3(),
     rotationCommand: overrides.rotationCommand ?? vec3(),
-    actuatorTelemetry: overrides.actuatorTelemetry ?? inactiveActuatorTelemetry(),
+    actuatorTelemetry: overrides.actuatorTelemetry ?? { ...inactiveActuatorTelemetry(), controlModeEffect: inactiveControlModeEffect(controlMode) },
     mass: createShipMass({ dryMass: overrides.dryMass, cargoMass: overrides.cargoMass, fuelMass: fuel.current }),
     fuel,
     authority

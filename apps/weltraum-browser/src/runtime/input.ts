@@ -25,25 +25,33 @@ export const nextControlMode = (current: FlightControlMode): FlightControlMode =
 
 export const clamp01 = (value: number): number => Math.max(0, Math.min(1, Number.isFinite(value) ? value : 0));
 
-export const createManualFlightInputState = (overrides: Partial<ManualFlightInputState> = {}): ManualFlightInputState => ({
-  controlMode: overrides.controlMode ?? "Cruise",
-  rcsEnabled: overrides.rcsEnabled ?? true,
-  sasEnabled: overrides.sasEnabled ?? true,
-  mainThrottleCommand: clamp01(overrides.mainThrottleCommand ?? 0),
-  translationCommand: overrides.translationCommand ?? vec3(),
-  rotationCommand: overrides.rotationCommand ?? vec3(),
-  cameraMode: overrides.cameraMode ?? "ChaseLocked"
-});
+const throttleForMode = (controlMode: FlightControlMode, throttle: number): number => controlMode === "Cruise" ? clamp01(throttle) : 0;
+
+export const createManualFlightInputState = (overrides: Partial<ManualFlightInputState> = {}): ManualFlightInputState => {
+  const controlMode = overrides.controlMode ?? "Cruise";
+  return {
+    controlMode,
+    rcsEnabled: overrides.rcsEnabled ?? true,
+    sasEnabled: overrides.sasEnabled ?? true,
+    mainThrottleCommand: throttleForMode(controlMode, overrides.mainThrottleCommand ?? 0),
+    translationCommand: overrides.translationCommand ?? vec3(),
+    rotationCommand: overrides.rotationCommand ?? vec3(),
+    cameraMode: overrides.cameraMode ?? "ChaseLocked"
+  };
+};
 
 export const mergeManualFlightInputState = (
   current: ManualFlightInputState,
   update: Partial<ManualFlightInputState>
-): ManualFlightInputState => ({
-  controlMode: update.controlMode ?? current.controlMode,
-  rcsEnabled: update.rcsEnabled ?? current.rcsEnabled,
-  sasEnabled: update.sasEnabled ?? current.sasEnabled,
-  mainThrottleCommand: clamp01(update.mainThrottleCommand ?? current.mainThrottleCommand),
-  translationCommand: update.translationCommand ?? current.translationCommand,
-  rotationCommand: update.rotationCommand ?? current.rotationCommand,
-  cameraMode: update.cameraMode ?? current.cameraMode
-});
+): ManualFlightInputState => {
+  const controlMode = update.controlMode ?? current.controlMode;
+  return {
+    controlMode,
+    rcsEnabled: update.rcsEnabled ?? current.rcsEnabled,
+    sasEnabled: update.sasEnabled ?? current.sasEnabled,
+    mainThrottleCommand: throttleForMode(controlMode, update.mainThrottleCommand ?? current.mainThrottleCommand),
+    translationCommand: update.translationCommand ?? current.translationCommand,
+    rotationCommand: update.rotationCommand ?? current.rotationCommand,
+    cameraMode: update.cameraMode ?? current.cameraMode
+  };
+};

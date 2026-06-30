@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { AutopilotExecutor, DirectLocalPlanner, FixedStepSimulationLoop, createShipStateV2, vec3 } from "../../src/core";
+import { AutopilotExecutor, DirectLocalPlanner, FixedStepSimulationLoop, createShipStateV2, inactiveControlModeEffect, vec3 } from "../../src/core";
 import { createBrowserRuntime } from "../../src/runtime/browserRuntime";
 import {
   createDemoScoutShipVisual,
@@ -84,6 +84,7 @@ describe("FixedStepSimulationLoop", () => {
       rcsTranslationActive: false,
       rcsRotationActive: false,
       sasCorrectionActive: false,
+      controlModeEffect: inactiveControlModeEffect("Cruise"),
       lastAppliedAcceleration: vec3(0, 12, 0),
       lastAppliedAngularAcceleration: vec3()
     });
@@ -312,17 +313,48 @@ describe("FixedStepSimulationLoop", () => {
     expect(afterBurn.ship.orientation).not.toEqual({ x: 0, y: 0, z: 0, w: 1 });
     expect(afterBurn.ship.actuatorTelemetry.mainThrustActive).toBe(true);
     expect(afterBurn.ship.actuatorTelemetry.rcsRotationActive).toBe(true);
+    expect(afterBurn.ship.actuatorTelemetry.controlModeEffect.modeEffectLabel).toBe("main thrust enabled");
 
     const translationMode = controller.dispatchCommand({ type: "CycleControlMode" });
     expect(translationMode.manualInput?.controlMode).toBe("Precision");
+    expect(translationMode.manualInput?.mainThrottleCommand).toBe(0);
+    controller.dispatchCommand({ type: "SetManualFlightInput", input: { rotationCommand: vec3(0, 0, 1) } });
+    const afterPrecisionRotate = controller.step(2);
+    expect(afterPrecisionRotate.ship.actuatorTelemetry.mainThrustActive).toBe(false);
+    expect(afterPrecisionRotate.ship.actuatorTelemetry.rcsRotationActive).toBe(true);
+    expect(afterPrecisionRotate.ship.actuatorTelemetry.controlModeEffect.modeEffectLabel).toBe("RCS attitude / main thrust blocked");
     controller.dispatchCommand({ type: "CycleControlMode" });
     const translation = controller.dispatchCommand({ type: "SetManualFlightInput", input: { translationCommand: vec3(0, 1, 0) } });
     expect(translation.manualInput?.controlMode).toBe("Translation");
     const afterTranslate = controller.step(2);
     expect(afterTranslate.ship.actuatorTelemetry.rcsTranslationActive).toBe(true);
+    expect(afterTranslate.ship.actuatorTelemetry.controlModeEffect.modeEffectLabel).toBe("RCS translation / main thrust blocked");
 
     const camera = controller.dispatchCommand({ type: "CycleCameraMode" });
     expect(camera.manualInput?.cameraMode).toBe("OrbitInspect");
+  });
+
+  it("does not persist SetThrottle commands issued outside Cruise", () => {
+    const { controller } = createBrowserRuntime();
+
+    controller.dispatchCommand({ type: "CycleControlMode" });
+    const precisionThrottle = controller.dispatchCommand({ type: "SetThrottle", throttle: 0.8 });
+    const afterPrecisionStep = controller.step(1);
+    controller.dispatchCommand({ type: "CycleControlMode" });
+    controller.dispatchCommand({ type: "CycleControlMode" });
+    const backToCruise = controller.step(1);
+
+    expect(precisionThrottle.manualInput?.controlMode).toBe("Precision");
+    expect(precisionThrottle.manualInput?.mainThrottleCommand).toBe(0);
+    expect(precisionThrottle.runtimeMessage).toBe("Throttle ignored outside Cruise.");
+    expect(afterPrecisionStep.ship.throttle).toBe(0);
+    expect(afterPrecisionStep.ship.mainThrottleCommand).toBe(0);
+    expect(afterPrecisionStep.ship.actuatorTelemetry.mainThrustActive).toBe(false);
+    expect(backToCruise.manualInput?.controlMode).toBe("Cruise");
+    expect(backToCruise.manualInput?.mainThrottleCommand).toBe(0);
+    expect(backToCruise.ship.throttle).toBe(0);
+    expect(backToCruise.ship.actuatorTelemetry.mainThrustActive).toBe(false);
+    expect(backToCruise.ship.velocity).toEqual(vec3());
   });
 
   it("cancels a non-zero-velocity autopilot into drift-preserving idle state", () => {

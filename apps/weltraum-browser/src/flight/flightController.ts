@@ -1,4 +1,4 @@
-import type { FlightControlMode, Quaternion, ShipState } from "../core/types";
+import type { ControlModeEffectReasonCode, ControlModeEffectSnapshot, FlightControlMode, Quaternion, ShipState } from "../core/types";
 import { add, clamp, magnitude, normalize, scale, vec3, type Vec3 } from "../core/vector";
 import { accelerationLimitForMass, createFuelState, createShipMass, defaultFlightModelOptions, inactiveActuatorTelemetry, type FlightModelOptions } from "./state";
 
@@ -26,6 +26,28 @@ export const defaultFlightControllerOptions: FlightControllerOptions = {
   rcsAngularAcceleration: 1.8,
   sasDamping: 1.35
 };
+
+const modeEffectLabel = (controlMode: FlightControlMode): string => {
+  if (controlMode === "Cruise") {
+    return "main thrust enabled";
+  }
+  if (controlMode === "Precision") {
+    return "RCS attitude / main thrust blocked";
+  }
+  return "RCS translation / main thrust blocked";
+};
+
+const rotationResponseScaleForMode = (controlMode: FlightControlMode): number => {
+  if (controlMode === "Precision") {
+    return 0.45;
+  }
+  if (controlMode === "Translation") {
+    return 0.65;
+  }
+  return 1;
+};
+
+const uniqueReasonCodes = (codes: readonly ControlModeEffectReasonCode[]): readonly ControlModeEffectReasonCode[] => [...new Set(codes)];
 
 export const identityQuaternion = (): Quaternion => ({ x: 0, y: 0, z: 0, w: 1 });
 
@@ -127,6 +149,77 @@ const rotationCommandForFacing = (orientation: Quaternion, desiredFacingDirectio
   return scale(normalize(axis), clamp(angle / (Math.PI * 0.5), 0, 1));
 };
 
+const createControlModeEffect = (
+  ship: ShipState,
+  controlMode: FlightControlMode,
+  rcsEnabled: boolean,
+  sasEnabled: boolean,
+  allowRcsTranslationOutsideTranslationMode: boolean
+): ControlModeEffectSnapshot => {
+  const blockedReasonCodes: ControlModeEffectReasonCode[] = [];
+  const notes: string[] = [];
+  const mainThrustModeAllowed = controlMode === "Cruise";
+  const mainThrustAllowed = mainThrustModeAllowed && ship.authority.mainThrustersAvailable && ship.fuel.current > 0;
+  const rcsBaseAllowed = rcsEnabled && ship.authority.rcsAvailable;
+  const rcsRotationAllowed = rcsBaseAllowed && ship.authority.rotationAuthority > 0;
+  const translationModeAllowed = controlMode === "Translation" || allowRcsTranslationOutsideTranslationMode;
+  const rcsTranslationAllowed = rcsBaseAllowed && ship.authority.translationAuthority > 0 && translationModeAllowed;
+  const sasAllowed = sasEnabled && ship.authority.sasAvailable && rcsRotationAllowed;
+
+  if (!mainThrustModeAllowed) {
+    blockedReasonCodes.push("MainThrustModeBlocked");
+    notes.push("main thrust mode-blocked");
+  } else if (!ship.authority.mainThrustersAvailable) {
+    blockedReasonCodes.push("MainThrustUnavailable");
+    notes.push("main thrust unavailable");
+  } else if (ship.fuel.current <= 0) {
+    blockedReasonCodes.push("MainThrustFuelBlocked");
+    notes.push("main thrust fuel-blocked");
+  } else {
+    notes.push("main thrust ready");
+  }
+
+  if (!rcsEnabled) {
+    blockedReasonCodes.push("RcsDisabled");
+    notes.push("RCS disabled");
+  } else if (!ship.authority.rcsAvailable) {
+    blockedReasonCodes.push("RcsUnavailable");
+    notes.push("RCS unavailable");
+  } else {
+    notes.push("RCS available");
+  }
+
+  if (!translationModeAllowed) {
+    blockedReasonCodes.push("RcsTranslationModeBlocked");
+  } else if (ship.authority.translationAuthority <= 0) {
+    blockedReasonCodes.push("RcsTranslationNoAuthority");
+  }
+
+  if (ship.authority.rotationAuthority <= 0) {
+    blockedReasonCodes.push("RcsRotationNoAuthority");
+  }
+
+  if (!sasEnabled) {
+    blockedReasonCodes.push("SasDisabled");
+  } else if (!ship.authority.sasAvailable) {
+    blockedReasonCodes.push("SasUnavailable");
+  } else if (!rcsRotationAllowed) {
+    blockedReasonCodes.push("SasNoRcsAuthority");
+  }
+
+  return {
+    controlMode,
+    mainThrustAllowed,
+    rcsTranslationAllowed,
+    rcsRotationAllowed,
+    sasAllowed,
+    modeEffectLabel: modeEffectLabel(controlMode),
+    blockedReasonCodes: uniqueReasonCodes(blockedReasonCodes),
+    notes,
+    rotationResponseScale: rotationResponseScaleForMode(controlMode)
+  };
+};
+
 const integrateOrientation = (orientation: Quaternion, angularVelocity: Vec3, fixedDeltaSeconds: number): Quaternion => {
   const angularSpeed = magnitude(angularVelocity);
   if (angularSpeed <= 1e-9 || fixedDeltaSeconds <= 0) {
@@ -157,34 +250,31 @@ export const applyFlightControllerStep = (
   const controlMode = request.controlMode ?? ship.controlMode;
   const rcsEnabled = request.rcsEnabled ?? ship.rcsEnabled;
   const sasEnabled = request.sasEnabled ?? ship.sasEnabled;
-  const mainThrottleCommand = clamp(request.mainThrottleCommand ?? ship.mainThrottleCommand, 0, 1);
+  const requestedMainThrottleCommand = clamp(request.mainThrottleCommand ?? ship.mainThrottleCommand, 0, 1);
+  const mainThrottleCommand = controlMode === "Cruise" ? requestedMainThrottleCommand : 0;
   const translationCommand = clampCommandVector(request.translationCommand ?? ship.translationCommand);
-  const rotationCommand = clampCommandVector(add(request.rotationCommand ?? ship.rotationCommand, rotationCommandForFacing(ship.orientation, request.desiredFacingDirection)));
+  const requestedRotationCommand = clampCommandVector(add(request.rotationCommand ?? ship.rotationCommand, rotationCommandForFacing(ship.orientation, request.desiredFacingDirection)));
+  const rotationCommand = controlMode === "Translation" ? vec3(requestedRotationCommand.x, 0, 0) : requestedRotationCommand;
   const accelerationLimit = accelerationLimitForMass(ship.mass, controllerOptions);
   const desiredAcceleration = request.desiredAcceleration ? clampAccelerationVector(request.desiredAcceleration, accelerationLimit) : null;
-  const canUseMainThrust =
-    controlMode === "Cruise" && ship.authority.mainThrustersAvailable && ship.fuel.current > 0 && (mainThrottleCommand > 1e-6 || magnitude(desiredAcceleration ?? vec3()) > 1e-6);
+  const controlModeEffect = createControlModeEffect(ship, controlMode, rcsEnabled, sasEnabled, request.allowRcsTranslationOutsideTranslationMode === true);
+  const canUseMainThrust = controlModeEffect.mainThrustAllowed && (mainThrottleCommand > 1e-6 || magnitude(desiredAcceleration ?? vec3()) > 1e-6);
   const mainAccelerationMagnitude = canUseMainThrust ? accelerationLimit * mainThrottleCommand : 0;
   const mainAcceleration = canUseMainThrust ? (desiredAcceleration ?? scale(rotateVectorByQuaternion(ship.orientation, vec3(1, 0, 0)), mainAccelerationMagnitude)) : vec3();
 
   const translationMagnitude = magnitude(translationCommand);
-  const canTranslateWithRcs =
-    rcsEnabled &&
-    ship.authority.rcsAvailable &&
-    ship.authority.translationAuthority > 0 &&
-    translationMagnitude > 1e-6 &&
-    (controlMode === "Translation" || request.allowRcsTranslationOutsideTranslationMode === true);
+  const canTranslateWithRcs = controlModeEffect.rcsTranslationAllowed && translationMagnitude > 1e-6;
   const rcsTranslationAcceleration = canTranslateWithRcs
     ? scale(rotateVectorByQuaternion(ship.orientation, normalize(translationCommand)), controllerOptions.rcsAcceleration * ship.authority.translationAuthority)
     : vec3();
   const appliedAcceleration = add(mainAcceleration, rcsTranslationAcceleration);
 
   const rcsRotationAngularAcceleration =
-    rcsEnabled && ship.authority.rcsAvailable && ship.authority.rotationAuthority > 0 && magnitude(rotationCommand) > 1e-6
-      ? scale(rotationCommand, controllerOptions.rcsAngularAcceleration * ship.authority.rotationAuthority)
+    controlModeEffect.rcsRotationAllowed && magnitude(rotationCommand) > 1e-6
+      ? scale(rotationCommand, controllerOptions.rcsAngularAcceleration * ship.authority.rotationAuthority * controlModeEffect.rotationResponseScale)
       : vec3();
   const sasAngularAcceleration =
-    sasEnabled && ship.authority.sasAvailable && rcsEnabled && magnitude(ship.angularVelocity) > 1e-6 ? scale(ship.angularVelocity, -controllerOptions.sasDamping) : vec3();
+    controlModeEffect.sasAllowed && magnitude(ship.angularVelocity) > 1e-6 ? scale(ship.angularVelocity, -controllerOptions.sasDamping) : vec3();
   const appliedAngularAcceleration = add(rcsRotationAngularAcceleration, sasAngularAcceleration);
 
   const elapsed = Math.max(0, fixedDeltaSeconds);
@@ -199,6 +289,7 @@ export const applyFlightControllerStep = (
     rcsTranslationActive: canTranslateWithRcs,
     rcsRotationActive: magnitude(rcsRotationAngularAcceleration) > 1e-6,
     sasCorrectionActive: magnitude(sasAngularAcceleration) > 1e-6,
+    controlModeEffect,
     lastAppliedAcceleration: appliedAcceleration,
     lastAppliedAngularAcceleration: appliedAngularAcceleration
   };

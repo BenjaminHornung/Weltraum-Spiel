@@ -229,6 +229,13 @@ Demo Scout GLB visual parity v1 follow-up:
 - Demo Scout GLB marker resolution prefers named GLB nodes for cockpit/front, main engine, RCS hardpoints, and muzzle, then uses manifest fallback positions; the ChaseLocked camera anchor remains a manifest visual anchor when the GLB has no authored camera node.
 - HUD and TestBridge expose the same concise visual-source result (`Ship visual: Demo Scout GLB` or `Ship visual: Procedural fallback`) while detailed paths, axis correction, marker binding sources, and fallback reason remain in render snapshots/evidence.
 
+Browser flight feel control modes v1 follow-up:
+
+- Cruise, Precision and Translation now have an explicit browser-native `ControlModeEffectSnapshot` in actuator telemetry, so HUD/tests read owner mode authority instead of recomputing rules.
+- Cruise is the only mode that converts throttle commands into active main thrust. Precision/Translation ignore and clear throttle commands outside Cruise; Precision mode-blocks main thrust and applies a finer RCS attitude response. Translation mode-blocks main thrust, maps W/S/A/D/H/N to RCS translation, and keeps Q/E as separately observable RCS roll authority.
+- The player HUD adds a compact control-effect line (`main thrust enabled`, `RCS attitude / main thrust blocked`, `RCS translation / main thrust blocked`) plus readable active/blocked labels for main thrust, RCS translation, RCS rotation and SAS.
+- Evidence screenshots cover Cruise main burn, Precision RCS rotation with main VFX off, and Translation RCS puffs while preserving Demo Scout GLB marker/VFX parity and TestBridge gating.
+
 Deferred playable-flight follow-up points:
 
 - richer production ship asset pipeline beyond this Demo Scout GLB adapter,

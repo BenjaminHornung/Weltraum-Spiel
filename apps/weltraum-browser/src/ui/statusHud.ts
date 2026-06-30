@@ -14,6 +14,7 @@ export interface StatusHudWarningChipViewModel {
 export interface StatusHudViewModel {
   readonly mode: string;
   readonly controlMode: string;
+  readonly controlModeEffectState: string;
   readonly cameraMode: string;
   readonly throttleState: string;
   readonly velocityState: string;
@@ -95,6 +96,68 @@ const formatVisualSourceLine = (visualSource: ShipVisualSourceSnapshot | undefin
   return "Ship visual: Loading Demo Scout GLB";
 };
 
+const mainThrustBlockedLabel = (reasons: readonly string[]): string => {
+  if (reasons.includes("MainThrustModeBlocked")) {
+    return "main thrust mode-blocked";
+  }
+  if (reasons.includes("MainThrustUnavailable")) {
+    return "main thrust unavailable";
+  }
+  if (reasons.includes("MainThrustFuelBlocked")) {
+    return "main thrust fuel-blocked";
+  }
+  return "main thrust blocked";
+};
+
+const rcsBlockedLabel = (reasons: readonly string[], primary: "RCS translation" | "RCS rotation"): string => {
+  if (reasons.includes("RcsDisabled")) {
+    return `${primary} blocked: RCS off`;
+  }
+  if (reasons.includes("RcsUnavailable")) {
+    return `${primary} blocked: RCS unavailable`;
+  }
+  if (primary === "RCS translation" && reasons.includes("RcsTranslationModeBlocked")) {
+    return `${primary} blocked by mode`;
+  }
+  if (reasons.includes(primary === "RCS translation" ? "RcsTranslationNoAuthority" : "RcsRotationNoAuthority")) {
+    return `${primary} blocked: no authority`;
+  }
+  return `${primary} blocked`;
+};
+
+const sasBlockedLabel = (reasons: readonly string[]): string => {
+  if (reasons.includes("SasDisabled")) {
+    return "SAS off";
+  }
+  if (reasons.includes("SasUnavailable")) {
+    return "SAS unavailable";
+  }
+  if (reasons.includes("SasNoRcsAuthority") || reasons.includes("RcsDisabled") || reasons.includes("RcsUnavailable") || reasons.includes("RcsRotationNoAuthority")) {
+    return "SAS blocked: no RCS authority";
+  }
+  return "SAS blocked";
+};
+
+const formatControlModeEffectState = (telemetry: TelemetrySnapshot): string => {
+  const actuatorTelemetry = telemetry.ship.actuatorTelemetry;
+  const effect = actuatorTelemetry.controlModeEffect;
+  const reasons = effect.blockedReasonCodes;
+  const mainState = effect.mainThrustAllowed
+    ? `main thrust ${actuatorTelemetry.mainThrustActive ? "active" : "ready"}`
+    : mainThrustBlockedLabel(reasons);
+  const translationState = effect.rcsTranslationAllowed
+    ? `RCS translation ${actuatorTelemetry.rcsTranslationActive ? "active" : "ready"}`
+    : rcsBlockedLabel(reasons, "RCS translation");
+  const rotationState = effect.rcsRotationAllowed
+    ? `RCS rotation ${actuatorTelemetry.rcsRotationActive ? "active" : "ready"}`
+    : rcsBlockedLabel(reasons, "RCS rotation");
+  const sasState = effect.sasAllowed
+    ? `SAS ${actuatorTelemetry.sasCorrectionActive ? "active" : "ready"}`
+    : sasBlockedLabel(reasons);
+
+  return `${effect.modeEffectLabel}; ${mainState}; ${translationState}; ${rotationState}; ${sasState}`;
+};
+
 export const createStatusHudViewModel = (telemetry: TelemetrySnapshot, visualSource?: ShipVisualSourceSnapshot): StatusHudViewModel => {
   const snapshot = telemetry.flightSnapshot;
   const selectedTarget = telemetry.selectedTarget ?? telemetry.lockedPlan?.target ?? telemetry.routePreview?.target ?? null;
@@ -137,6 +200,7 @@ export const createStatusHudViewModel = (telemetry: TelemetrySnapshot, visualSou
   return {
     mode: snapshot.authority.mode,
     controlMode,
+    controlModeEffectState: formatControlModeEffectState(telemetry),
     cameraMode,
     throttleState: `${Math.round(telemetry.ship.throttle * 100)}%${telemetry.ship.actuatorTelemetry.mainThrustActive ? " / main burn" : ""}`,
     velocityState: formatSpeed(telemetry.ship.velocity),
@@ -249,6 +313,7 @@ export const renderStatusHud = (telemetry: TelemetrySnapshot, commandSink?: Stat
   setText("plan-hash", viewModel.planState);
   setText("mode", viewModel.mode);
   setText("control-mode", viewModel.controlMode);
+  setText("control-mode-effect", viewModel.controlModeEffectState);
   setText("camera-mode", viewModel.cameraMode);
   setText("throttle-status", viewModel.throttleState);
   setText("velocity-status", viewModel.velocityState);

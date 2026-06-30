@@ -429,6 +429,8 @@ test("playable manual flight exposes ship visual, ChaseLocked camera, controls, 
   expect(manualRender.camera.distanceToShip).toBeGreaterThan(0);
   await expect(page.getByTestId("control-mode")).toContainText("Cruise");
   await expect(page.getByTestId("throttle-status")).toContainText("main burn");
+  await expect(page.getByTestId("control-mode-effect")).toContainText("main thrust enabled");
+  await expect(page.getByTestId("control-mode-effect")).toContainText("main thrust active");
   await expect(page.getByTestId("velocity-status")).toContainText("m/s");
   await expect(page.getByTestId("velocity-status")).not.toContainText(/\(-?\d+(?:\.\d+)?,\s*-?\d+(?:\.\d+)?,\s*-?\d+(?:\.\d+)?\)/);
   await expect(page.getByTestId("rcs-sas-status")).toContainText("RCS");
@@ -441,20 +443,52 @@ test("playable manual flight exposes ship visual, ChaseLocked camera, controls, 
   await mkdir(evidenceDir, { recursive: true });
   await page.screenshot({ path: path.join(evidenceDir, "manual-flight-chasecam.png"), fullPage: true });
   await page.screenshot({ path: path.join(evidenceDir, "demo-scout-chasecam.png"), fullPage: true });
+  await page.screenshot({ path: path.join(evidenceDir, "control-mode-cruise-main-thrust.png"), fullPage: true });
 
   await page.keyboard.press("CapsLock");
+  await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().manualInput.controlMode)).toBe("Precision");
+  await page.keyboard.down("w");
+  await page.waitForTimeout(450);
+  await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().ship.actuatorTelemetry.rcsRotationActive)).toBe(true);
+  const precisionTelemetry = await page.evaluate(() => (window as any).TestBridge.getTelemetry());
+  const precisionRender = await page.evaluate(() => (window as any).TestBridge.getRenderSnapshot());
+  await page.keyboard.up("w");
+  expect(precisionTelemetry.ship.actuatorTelemetry.mainThrustActive).toBe(false);
+  expect(precisionTelemetry.ship.actuatorTelemetry.controlModeEffect.mainThrustAllowed).toBe(false);
+  expect(precisionTelemetry.ship.actuatorTelemetry.controlModeEffect.modeEffectLabel).toBe("RCS attitude / main thrust blocked");
+  expect(precisionTelemetry.ship.actuatorTelemetry.controlModeEffect.rcsRotationAllowed).toBe(true);
+  expect(precisionRender.shipVisual.vfx.mainThrustVisible).toBe(false);
+  await expect(page.getByTestId("control-mode")).toContainText("Precision");
+  await expect(page.getByTestId("control-mode-effect")).toContainText("RCS attitude / main thrust blocked");
+  await expect(page.getByTestId("control-mode-effect")).toContainText("main thrust mode-blocked");
+  await expect(page.getByTestId("rcs-sas-status")).toContainText(/RCS rotate|SAS correction/);
+  await page.screenshot({ path: path.join(evidenceDir, "control-mode-precision-rcs-rotation.png"), fullPage: true });
+
   await page.keyboard.press("CapsLock");
   await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().manualInput.controlMode)).toBe("Translation");
   await page.keyboard.down("h");
   await page.waitForTimeout(450);
   await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().ship.actuatorTelemetry.rcsTranslationActive)).toBe(true);
   const rcsRender = await page.evaluate(() => (window as any).TestBridge.getRenderSnapshot());
-  await page.keyboard.up("h");
+  const translationTelemetry = await page.evaluate(() => (window as any).TestBridge.getTelemetry());
+  expect(translationTelemetry.ship.actuatorTelemetry.mainThrustActive).toBe(false);
+  expect(translationTelemetry.ship.actuatorTelemetry.controlModeEffect.modeEffectLabel).toBe("RCS translation / main thrust blocked");
   expect(rcsRender.shipVisual.vfx.rcsTranslationVisible).toBe(true);
   expect(rcsRender.shipVisual.vfx.visibleRcsPuffCount).toBeGreaterThanOrEqual(4);
   expect(rcsRender.shipVisual.vfx.rcsBindings.every((binding: any) => binding.source === "GLBNode")).toBe(true);
+  await expect(page.getByTestId("control-mode-effect")).toContainText("RCS translation / main thrust blocked");
+  await expect(page.getByTestId("control-mode-effect")).toContainText("RCS translation active");
   await page.screenshot({ path: path.join(evidenceDir, "rcs-translation.png"), fullPage: true });
   await page.screenshot({ path: path.join(evidenceDir, "demo-scout-rcs-puffs.png"), fullPage: true });
+  await page.screenshot({ path: path.join(evidenceDir, "control-mode-translation-rcs-translation.png"), fullPage: true });
+  await page.keyboard.down("q");
+  await page.waitForTimeout(250);
+  await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().ship.actuatorTelemetry.rcsRotationActive)).toBe(true);
+  await page.keyboard.up("q");
+  await page.keyboard.up("h");
+
+  await page.keyboard.press("CapsLock");
+  await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().manualInput.controlMode)).toBe("Cruise");
 
   await page.keyboard.press("v");
   await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().manualInput.cameraMode)).toBe("OrbitInspect");
