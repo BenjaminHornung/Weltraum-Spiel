@@ -16,12 +16,22 @@ export interface StatusHudViewModel {
   readonly routeState: string;
   readonly target: string;
   readonly distance: string;
+  readonly radarState: string;
   readonly autopilotState: string;
   readonly fuelState: string;
   readonly authorityState: string;
   readonly brakingState: string;
   readonly warningSummary: string;
   readonly warningChips: readonly StatusHudWarningChipViewModel[];
+  readonly runtimeMessage: string;
+  readonly targetOptions: readonly StatusHudTargetOptionViewModel[];
+}
+
+export interface StatusHudTargetOptionViewModel {
+  readonly id: string;
+  readonly label: string;
+  readonly kind: string;
+  readonly isSelected: boolean;
 }
 
 export interface StatusHudCommandSink {
@@ -47,6 +57,16 @@ const formatMeters = (value: number): string => (Number.isFinite(value) ? `${val
 
 const fallbackWarning = { severity: "Medium" as const, label: "System warning", action: "Check ship status" };
 
+const statusCatalog: Record<string, string> = {
+  Idle: "Autopilot standby",
+  Executing: "Autopilot executing",
+  Arrived: "Arrived at selected target",
+  Diverged: "Route invalidated",
+  OutOfFuel: "Autopilot blocked: fuel",
+  NoAuthority: "Autopilot blocked: authority",
+  BrakeReserveInsufficient: "Autopilot blocked: brake reserve"
+};
+
 const createWarningChips = (codes: readonly string[]): readonly StatusHudWarningChipViewModel[] =>
   unique(codes)
     .map((code) => ({ code, ...(chipCatalog[code] ?? fallbackWarning) }))
@@ -54,7 +74,9 @@ const createWarningChips = (codes: readonly string[]): readonly StatusHudWarning
 
 export const createStatusHudViewModel = (telemetry: TelemetrySnapshot): StatusHudViewModel => {
   const snapshot = telemetry.flightSnapshot;
-  const target = telemetry.lockedPlan?.target;
+  const selectedTarget = telemetry.selectedTarget ?? telemetry.lockedPlan?.target ?? telemetry.routePreview?.target ?? null;
+  const preview = telemetry.routePreview;
+  const target = telemetry.lockedPlan?.target ?? selectedTarget;
   const warningCodes = unique([
     ...snapshot.failureReasonCodes,
     ...snapshot.fuel.reasonCodes,
@@ -63,23 +85,40 @@ export const createStatusHudViewModel = (telemetry: TelemetrySnapshot): StatusHu
   ]);
 
   const warningChips = createWarningChips(warningCodes);
+  const routePlan = telemetry.lockedPlan ?? preview?.plan ?? null;
+  const previewDistance = preview?.plan?.score.distance;
+  const displayedDistance = telemetry.lockedPlan ? telemetry.executor.distanceToTarget : previewDistance;
+  const routeState = telemetry.lockedPlan
+    ? `${snapshot.routeValid ? "locked route valid" : "locked route invalid"}${telemetry.executor.replanRequired ? " / new plan required" : ""}`
+    : preview?.state === "Ready" && preview.plan
+      ? `preview ready: ${preview.plan.segments.length} leg${preview.plan.segments.length === 1 ? "" : "s"}`
+      : (preview?.playerMessage ?? "select a target to preview a route");
+  const targetOptions = (telemetry.selectableTargets ?? []).map((candidateTarget) => ({
+    id: candidateTarget.id,
+    label: candidateTarget.label,
+    kind: candidateTarget.kind,
+    isSelected: candidateTarget.id === selectedTarget?.id
+  }));
 
   return {
     mode: snapshot.authority.mode,
-    planState: telemetry.executor.planHash ? `Plan active: ${telemetry.executor.status}` : "No active plan",
-    routeState: `${snapshot.routeValid ? "valid" : "invalid"}${telemetry.executor.replanRequired ? " / replan required" : ""}`,
+    planState: telemetry.executor.planHash ? "Plan locked" : routePlan ? "Route preview ready" : "No active plan",
+    routeState,
     target: target ? `${target.label} [${target.kind}]` : "none selected",
-    distance: target ? formatMeters(telemetry.executor.distanceToTarget) : "n/a",
-    autopilotState: telemetry.executor.replanRequired
-    ? `${telemetry.executor.status} / replanRequired`
-    : telemetry.executor.status,
+    distance: target && displayedDistance !== undefined ? formatMeters(displayedDistance) : "n/a",
+    radarState: target && routePlan
+      ? `local contact ${target.label}: ${routePlan.segments.length} route leg${routePlan.segments.length === 1 ? "" : "s"}, terminal ${formatMeters(routePlan.score.distance)}`
+      : "no route contact",
+    autopilotState: `${statusCatalog[telemetry.executor.status] ?? "Autopilot status unknown"}${telemetry.executor.replanRequired ? " / new plan required" : ""}`,
     fuelState: `${snapshot.fuel.status}: ${snapshot.fuel.current}/${snapshot.fuel.capacity} kg (reserve ${snapshot.fuel.reserve})`,
     authorityState: `AP ${snapshot.authority.autopilotAvailable ? "ready" : "blocked"}, main ${snapshot.authority.mainThrustersAvailable ? "ready" : "blocked"}, RCS ${snapshot.authority.rcsAvailable ? "ready" : "blocked"}, SAS ${snapshot.authority.sasAvailable ? "ready" : "blocked"}`,
     brakingState: snapshot.brakingReserve.canBrake
     ? `ready: ${snapshot.brakingReserve.availableDeltaV} m/s available`
     : "blocked: check warnings",
     warningSummary: warningChips.length > 0 ? warningChips.map((chip) => chip.label).join(", ") : "none",
-    warningChips
+    warningChips,
+    runtimeMessage: telemetry.runtimeMessage ?? preview?.playerMessage ?? "ready",
+    targetOptions
   };
 };
 
@@ -116,6 +155,45 @@ const renderWarningChips = (viewModel: StatusHudViewModel): void => {
   element.textContent = viewModel.warningChips.map((chip) => `${chip.label}: ${chip.action}`).join(" | ");
 };
 
+const renderTargetOptions = (viewModel: StatusHudViewModel, sink: StatusHudCommandSink | undefined): void => {
+  const element = document.getElementById("target-options");
+  if (!element) {
+    return;
+  }
+
+  if (viewModel.targetOptions.length === 0) {
+    element.textContent = "no targets available";
+    return;
+  }
+
+  const renderKey = viewModel.targetOptions.map((target) => `${target.id}:${target.isSelected}`).join("|");
+  const container = element as HTMLElement;
+  if (container.dataset?.renderKey === renderKey) {
+    return;
+  }
+  if (container.dataset) {
+    container.dataset.renderKey = renderKey;
+  }
+
+  if (typeof document.createElement !== "function" || !("replaceChildren" in element)) {
+    element.textContent = viewModel.targetOptions.map((target) => `${target.label}${target.isSelected ? " (selected)" : ""}`).join(" | ");
+    return;
+  }
+
+  const buttons = viewModel.targetOptions.map((target) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = target.isSelected ? "target-option target-option--selected" : "target-option";
+    button.dataset.targetId = target.id;
+    button.setAttribute("aria-pressed", String(target.isSelected));
+    button.textContent = `${target.label} (${target.kind})`;
+    button.onclick = sink ? () => void sink.dispatch({ type: "SelectTarget", targetId: target.id }) : null;
+    return button;
+  });
+
+  element.replaceChildren(...buttons);
+};
+
 const bindCommand = (id: string, command: BrowserRuntimeCommand, sink: StatusHudCommandSink | undefined): void => {
   const element = document.getElementById(id) as (HTMLElement & { onclick: ((event: MouseEvent) => void) | null }) | null;
   if (!element) {
@@ -133,11 +211,14 @@ export const renderStatusHud = (telemetry: TelemetrySnapshot, commandSink?: Stat
   setText("route-status", viewModel.routeState);
   setText("target-status", viewModel.target);
   setText("target-distance", viewModel.distance);
+  setText("radar-status", viewModel.radarState);
   setText("fuel-status", viewModel.fuelState);
   setText("authority-status", viewModel.authorityState);
   setText("brake-status", viewModel.brakingState);
   setText("failure-reasons", viewModel.warningSummary);
+  setText("runtime-message", viewModel.runtimeMessage);
   renderWarningChips(viewModel);
+  renderTargetOptions(viewModel, commandSink);
   bindCommand("engage-autopilot", { type: "EngageAutopilot", planner: "ObstacleAvoidanceLocal" }, commandSink);
   bindCommand("cancel-autopilot", { type: "CancelAutopilot" }, commandSink);
 };

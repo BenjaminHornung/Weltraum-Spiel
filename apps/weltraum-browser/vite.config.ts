@@ -3,7 +3,10 @@
 export default defineConfig({
   server: {
     host: "127.0.0.1",
-    port: 5173
+    port: 5173,
+    watch: {
+      ignored: ["**/evidence/**", "**/dist/**"]
+    }
   },
   build: {
     target: "es2022",

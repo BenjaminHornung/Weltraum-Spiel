@@ -161,6 +161,8 @@ Gate: absolute state and velocity remain unchanged by local projection shifts.
 
 ## M7: Browser Vertical Slice
 
+Status: v1 browser vertical slice implemented. Runtime owns the selected proving-ground target, route preview, explicit engage/cancel/select commands, and fail-closed command messages. The player HUD renders selected target, preview/locked route state, autopilot status, warnings and compact radar-style route contact from telemetry/ViewModels only. Three.js renders selected target and route descriptors from runtime snapshots, while TestBridge remains gated behind `?testBridge=1`.
+
 Intent:
 
 - Ship starts in local space.
@@ -171,6 +173,20 @@ Intent:
 - Playwright records telemetry and screenshot evidence.
 
 Gate: proving-ground matrix plus player-facing HUD evidence pass in browser gates.
+
+Implemented in this v1 slice:
+
+- selectable existing proving-ground targets (`arrival-near`, `nav-alpha`, `nav-beta`) without invalid-target fallback,
+- route preview snapshot state that is separate from the executor's locked plan until explicit engage,
+- engage fail-closed behavior that does not silently replace an already locked plan,
+- compact HUD/radar readout and player-facing status/warning labels without raw TestBridge/debug JSON or internal failure-code leakage,
+- gated Playwright evidence for default TestBridge absence, target selection, route preview, autopilot arrival, off-route failure explanation and negative fuel/authority cases.
+
+Deferred M7 follow-up points:
+
+- full radar/minimap/map UI,
+- richer player route-mode selection beyond the current obstacle-avoidance engage action,
+- terrain/orbit/surface/cargo/economy/ship-builder runtime features.
 
 ## Deferred Until Separate Feature Intent / Specs
 

@@ -46,11 +46,14 @@ body,
 #route-status,
 #target-status,
 #target-distance,
+#radar-status,
 #fuel-status,
 #authority-status,
 #brake-status,
 #warning-chips,
-#failure-reasons {
+#failure-reasons,
+#runtime-message,
+#target-options {
   margin: 2px 0 0;
   color: #f7fbff;
   font-size: 12px;
@@ -62,6 +65,27 @@ body,
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+}
+
+.target-option-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.target-option {
+  border: 1px solid rgba(142, 165, 201, 0.55);
+  border-radius: 6px;
+  padding: 4px 8px;
+  background: rgba(18, 29, 45, 0.88);
+  color: #f7fbff;
+  font: inherit;
+  font-size: 12px;
+}
+
+.target-option--selected {
+  border-color: rgba(128, 255, 159, 0.78);
+  background: rgba(30, 91, 53, 0.6);
 }
 
 .warning-chip {
@@ -98,7 +122,8 @@ body,
   font-size: 12px;
 }
 
-.hud-actions button:focus-visible {
+.hud-actions button:focus-visible,
+.target-option:focus-visible {
   outline: 2px solid #80ff9f;
   outline-offset: 2px;
 }

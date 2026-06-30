@@ -11,6 +11,11 @@ export interface RenderDebugSnapshot {
   readonly shipPosition: { readonly x: number; readonly y: number; readonly z: number };
   readonly targetPosition: { readonly x: number; readonly y: number; readonly z: number } | null;
   readonly lockedTargetPosition: { readonly x: number; readonly y: number; readonly z: number } | null;
+  readonly selectedTargetId: string | null;
+  readonly selectedTargetLabel: string | null;
+  readonly routePreviewPlanHash: string | null;
+  readonly routePreviewTargetPosition: { readonly x: number; readonly y: number; readonly z: number } | null;
+  readonly routePreviewSegmentCount: number;
   readonly targetVisible: boolean;
   readonly executorStatus: string;
   readonly distanceToTarget: number;
@@ -98,10 +103,13 @@ export class DebugScene {
       this.lastTime = time;
       const telemetry = this.runtime.advance(elapsed);
       const position = toVector3(telemetry.ship.position);
-      const targetPosition = telemetry.lockedPlan?.target.position;
-      const arrivalRadius = telemetry.lockedPlan ? arrivalRadiusForTarget(telemetry.lockedPlan.target) : null;
-      if (telemetry.executor.planHash !== this.lastDrawnPlanHash) {
-        this.drawPlan(telemetry.lockedPlan);
+      const routePlan = telemetry.lockedPlan ?? telemetry.routePreview?.plan ?? null;
+      const targetDescriptor = telemetry.selectedTarget ?? telemetry.lockedPlan?.target ?? telemetry.routePreview?.target ?? null;
+      const targetPosition = targetDescriptor?.position;
+      const arrivalRadius = targetDescriptor ? arrivalRadiusForTarget(targetDescriptor) : null;
+      const drawnPlanHash = routePlan?.planHash ?? null;
+      if (drawnPlanHash !== this.lastDrawnPlanHash) {
+        this.drawPlan(routePlan);
       }
       this.ship.position.copy(position);
       if (targetPosition) {
@@ -114,7 +122,12 @@ export class DebugScene {
       this.renderSnapshot = {
         shipPosition: fromVector3(this.ship.position),
         targetPosition: this.target.visible ? fromVector3(this.target.position) : null,
-        lockedTargetPosition: targetPosition ?? null,
+        lockedTargetPosition: telemetry.lockedPlan?.target.position ?? null,
+        selectedTargetId: targetDescriptor?.id ?? null,
+        selectedTargetLabel: targetDescriptor?.label ?? null,
+        routePreviewPlanHash: telemetry.routePreview?.plan?.planHash ?? null,
+        routePreviewTargetPosition: telemetry.routePreview?.target?.position ?? null,
+        routePreviewSegmentCount: telemetry.routePreview?.plan?.segments.length ?? 0,
         targetVisible: this.target.visible,
         executorStatus: telemetry.executor.status,
         distanceToTarget: telemetry.executor.distanceToTarget,
@@ -179,6 +192,11 @@ export class DebugScene {
       shipPosition: { x: 0, y: 0, z: 0 },
       targetPosition: null,
       lockedTargetPosition: null,
+      selectedTargetId: null,
+      selectedTargetLabel: null,
+      routePreviewPlanHash: null,
+      routePreviewTargetPosition: null,
+      routePreviewSegmentCount: 0,
       targetVisible: false,
       executorStatus: "Idle",
       distanceToTarget: 0,
@@ -205,7 +223,7 @@ export class DebugScene {
     renderStatusHud(this.runtime.getTelemetry(), {
       dispatch: (command) => {
         const telemetry = this.runtime.dispatchCommand(command);
-        this.drawPlan(telemetry.lockedPlan);
+        this.drawPlan(telemetry.lockedPlan ?? telemetry.routePreview?.plan ?? null);
       }
     });
   }
