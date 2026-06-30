@@ -63,7 +63,7 @@ const formatMeters = (value: number): string => (Number.isFinite(value) ? `${val
 
 const formatSpeed = (velocity: { readonly x: number; readonly y: number; readonly z: number }): string => {
   const speed = Math.hypot(velocity.x, velocity.y, velocity.z);
-  return `${speed.toFixed(2)} m/s (${velocity.x.toFixed(1)}, ${velocity.y.toFixed(1)}, ${velocity.z.toFixed(1)})`;
+  return `Speed ${speed.toFixed(2)} m/s`;
 };
 
 const fallbackWarning = { severity: "Medium" as const, label: "System warning", action: "Check ship status" };
@@ -129,7 +129,7 @@ export const createStatusHudViewModel = (telemetry: TelemetrySnapshot): StatusHu
     throttleState: `${Math.round(telemetry.ship.throttle * 100)}%${telemetry.ship.actuatorTelemetry.mainThrustActive ? " / main burn" : ""}`,
     velocityState: formatSpeed(telemetry.ship.velocity),
     rcsSasState: `RCS ${rcsEnabled ? "on" : "off"}, SAS ${sasEnabled ? "on" : "off"}${activeActuators.length > 0 ? ` / ${activeActuators.join(", ")}` : ""}`,
-    helpHint: "W/S pitch, A/D yaw, Q/E roll, Shift/Ctrl throttle, X cut, Y/Z full, R RCS, T SAS, CapsLock mode, H/N translate, V camera, RMB+wheel inspect",
+    helpHint: "Desktop keyboard/mouse manual flight: W/S pitch, A/D yaw, Q/E roll, Shift/Ctrl throttle, X cut, Y/Z full, R RCS, T SAS, CapsLock mode, H/N translate, V camera, RMB+wheel inspect. Mobile: target selection and autopilot only in this slice.",
     planState: telemetry.executor.planHash ? "Plan locked" : routePlan ? "Route preview ready" : "No active plan",
     routeState,
     target: target ? `${target.label} [${target.kind}]` : "none selected",

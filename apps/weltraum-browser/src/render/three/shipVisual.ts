@@ -26,6 +26,27 @@ export interface ShipVisualDescriptor {
   readonly cameraAnchor: ShipCameraAnchorDescriptor;
 }
 
+export type ShipVisualSourceState = "ProceduralFallback" | "GLBUnavailableFallback" | "GLBLoaded";
+
+export interface ShipVisualSourceSnapshot {
+  readonly state: ShipVisualSourceState;
+  readonly candidateAssetPath: string | null;
+  readonly browserAssetPath: string | null;
+  readonly fallbackReason: string | null;
+}
+
+export interface ShipVisualDescriptorValidation {
+  readonly ok: boolean;
+  readonly missing: readonly string[];
+  readonly counts: {
+    readonly hullParts: number;
+    readonly mainEngines: number;
+    readonly rcs: number;
+    readonly muzzle: number;
+    readonly cameraAnchors: number;
+  };
+}
+
 export interface ShipVisualVfxSnapshot {
   readonly mainThrustVisible: boolean;
   readonly mainThrustScale: number;
@@ -37,6 +58,8 @@ export interface ShipVisualVfxSnapshot {
 
 export interface ShipVisualSnapshot {
   readonly descriptor: ShipVisualDescriptor;
+  readonly visualSource: ShipVisualSourceSnapshot;
+  readonly descriptorValidation: ShipVisualDescriptorValidation;
   readonly groupChildren: number;
   readonly markerCounts: {
     readonly hullParts: number;
@@ -82,6 +105,56 @@ export const proceduralScoutDescriptor: ShipVisualDescriptor = {
   }
 };
 
+export const demoScoutGlbCandidatePath = "Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.glb";
+
+export const proceduralShipVisualSource: ShipVisualSourceSnapshot = {
+  state: "GLBUnavailableFallback",
+  candidateAssetPath: demoScoutGlbCandidatePath,
+  browserAssetPath: null,
+  fallbackReason: "Demo Scout GLB is intentionally not loaded in this slice; the procedural fallback preserves deterministic marker/socket descriptors."
+};
+
+const hasFinitePosition = (marker: ShipMarkerDescriptor | ShipCameraAnchorDescriptor | undefined): boolean => {
+  if (!marker) {
+    return false;
+  }
+  return Number.isFinite(marker.localPosition.x) && Number.isFinite(marker.localPosition.y) && Number.isFinite(marker.localPosition.z);
+};
+
+export const validateShipVisualDescriptor = (descriptor: ShipVisualDescriptor): ShipVisualDescriptorValidation => {
+  const missing: string[] = [];
+  if (descriptor.hullParts.length < 1 || !descriptor.hullParts.includes("main-hull")) {
+    missing.push("hull/body identity");
+  }
+  if (!hasFinitePosition(descriptor.cockpitMarker)) {
+    missing.push("cockpit/front marker");
+  }
+  if (descriptor.mainEngineMarkers.length < 1 || descriptor.mainEngineMarkers.some((marker) => !hasFinitePosition(marker))) {
+    missing.push("main engine marker");
+  }
+  if (descriptor.rcsMarkers.length < 4 || descriptor.rcsMarkers.some((marker) => !hasFinitePosition(marker))) {
+    missing.push("at least four RCS markers");
+  }
+  if (!hasFinitePosition(descriptor.muzzleMarker)) {
+    missing.push("muzzle placeholder");
+  }
+  if (!hasFinitePosition(descriptor.cameraAnchor) || !Number.isFinite(descriptor.cameraAnchor.lookAhead)) {
+    missing.push("camera anchor");
+  }
+
+  return {
+    ok: missing.length === 0,
+    missing,
+    counts: {
+      hullParts: descriptor.hullParts.length,
+      mainEngines: descriptor.mainEngineMarkers.length,
+      rcs: descriptor.rcsMarkers.length,
+      muzzle: hasFinitePosition(descriptor.muzzleMarker) ? 1 : 0,
+      cameraAnchors: hasFinitePosition(descriptor.cameraAnchor) ? 1 : 0
+    }
+  };
+};
+
 const markerPosition = (marker: ShipMarkerDescriptor) => new THREE.Vector3(marker.localPosition.x, marker.localPosition.y, marker.localPosition.z);
 
 const applyMarkerTransform = (object: THREE.Object3D, marker: ShipMarkerDescriptor): void => {
@@ -103,6 +176,11 @@ const setQuaternion = (object: THREE.Object3D, orientation: Quaternion): void =>
 };
 
 export const createProceduralShipVisual = (descriptor: ShipVisualDescriptor = proceduralScoutDescriptor): ProceduralShipVisual => {
+  const descriptorValidation = validateShipVisualDescriptor(descriptor);
+  if (!descriptorValidation.ok) {
+    throw new Error(`Ship visual descriptor missing required markers: ${descriptorValidation.missing.join(", ")}`);
+  }
+
   const group = new THREE.Group();
   group.name = descriptor.id;
 
@@ -197,7 +275,12 @@ export const createProceduralShipVisual = (descriptor: ShipVisualDescriptor = pr
       setQuaternion(group, orientation);
     },
     updateVfx(telemetry) {
-      const mainThrustScale = telemetry.mainThrustActive ? 1 + Math.min(1.4, Math.abs(telemetry.lastAppliedAcceleration.x) * 0.08) : 0;
+      const accelerationMagnitude = Math.hypot(
+        telemetry.lastAppliedAcceleration.x,
+        telemetry.lastAppliedAcceleration.y,
+        telemetry.lastAppliedAcceleration.z
+      );
+      const mainThrustScale = telemetry.mainThrustActive ? 1 + Math.min(1.4, accelerationMagnitude * 0.08) : 0;
       mainFlame.visible = telemetry.mainThrustActive;
       mainFlame.scale.set(1, mainThrustScale, 1);
       const rcsVisible = telemetry.rcsTranslationActive || telemetry.rcsRotationActive || telemetry.sasCorrectionActive;
@@ -218,6 +301,8 @@ export const createProceduralShipVisual = (descriptor: ShipVisualDescriptor = pr
     getSnapshot() {
       return {
         descriptor,
+        visualSource: proceduralShipVisualSource,
+        descriptorValidation,
         groupChildren: group.children.length,
         markerCounts: {
           hullParts: descriptor.hullParts.length,

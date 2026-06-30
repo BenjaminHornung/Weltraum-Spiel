@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { AutopilotExecutor, DirectLocalPlanner, FixedStepSimulationLoop, createShipStateV2, vec3 } from "../../src/core";
 import { createBrowserRuntime } from "../../src/runtime/browserRuntime";
+import { createProceduralShipVisual, proceduralScoutDescriptor, validateShipVisualDescriptor } from "../../src/render/three/shipVisual";
 import { createTestBridge } from "../../src/test-harness/browserBridge";
 import { serializeTelemetry } from "../../src/sim/telemetry";
 import type { ShipState, TargetDescriptor } from "../../src/core";
@@ -22,6 +23,49 @@ const target: TargetDescriptor = {
 };
 
 describe("FixedStepSimulationLoop", () => {
+  it("validates required ship visual markers and socket descriptors", () => {
+    const validation = validateShipVisualDescriptor(proceduralScoutDescriptor);
+
+    expect(validation.ok).toBe(true);
+    expect(validation.counts).toEqual({ hullParts: 4, mainEngines: 1, rcs: 6, muzzle: 1, cameraAnchors: 1 });
+    expect(proceduralScoutDescriptor.hullParts).toContain("main-hull");
+    expect(proceduralScoutDescriptor.cockpitMarker.id).toContain("cockpit");
+    expect(proceduralScoutDescriptor.mainEngineMarkers.map((marker) => marker.id)).toContain("main-engine-aft");
+    expect(proceduralScoutDescriptor.rcsMarkers.map((marker) => marker.id)).toEqual(
+      expect.arrayContaining(["rcs-front-left", "rcs-front-right", "rcs-aft-left", "rcs-aft-right"])
+    );
+    expect(proceduralScoutDescriptor.muzzleMarker.id).toBe("muzzle-placeholder");
+    expect(proceduralScoutDescriptor.cameraAnchor.id).toBe("chase-camera-anchor");
+
+    const weakenedDescriptor = { ...proceduralScoutDescriptor, rcsMarkers: proceduralScoutDescriptor.rcsMarkers.slice(0, 3) };
+    const weakenedValidation = validateShipVisualDescriptor(weakenedDescriptor);
+    expect(weakenedValidation.ok).toBe(false);
+    expect(weakenedValidation.missing).toContain("at least four RCS markers");
+    expect(() => createProceduralShipVisual(weakenedDescriptor)).toThrow(/RCS markers/);
+  });
+
+  it("publishes visual source state and scales main flame by acceleration magnitude", () => {
+    const visual = createProceduralShipVisual();
+
+    const initialSnapshot = visual.getSnapshot();
+    expect(initialSnapshot.visualSource.state).toBe("GLBUnavailableFallback");
+    expect(initialSnapshot.visualSource.candidateAssetPath).toBe("Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.glb");
+    expect(initialSnapshot.descriptorValidation.ok).toBe(true);
+
+    visual.updateVfx({
+      mainThrustActive: true,
+      rcsTranslationActive: false,
+      rcsRotationActive: false,
+      sasCorrectionActive: false,
+      lastAppliedAcceleration: vec3(0, 12, 0),
+      lastAppliedAngularAcceleration: vec3()
+    });
+
+    const offAxisThrustSnapshot = visual.getSnapshot();
+    expect(offAxisThrustSnapshot.vfx.mainThrustVisible).toBe(true);
+    expect(offAxisThrustSnapshot.vfx.mainThrustScale).toBeGreaterThan(1);
+  });
+
   it("advances in deterministic fixed ticks", () => {
     const executorA = new AutopilotExecutor();
     const executorB = new AutopilotExecutor();

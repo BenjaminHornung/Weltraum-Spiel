@@ -203,13 +203,13 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
         engageAutopilot(candidate.planner);
         return snapshot();
       case "CancelAutopilot": {
-        const stoppedShip = executor.cancelPlan(loop.getShip(), loop.getTick());
-        loop.setShip(stoppedShip);
-        ship = stoppedShip;
+        const driftPreservingShip = executor.cancelPlan(loop.getShip(), loop.getTick());
+        loop.setShip(driftPreservingShip);
+        ship = driftPreservingShip;
         manualInput = mergeManualFlightInputState(manualInput, {
-          mainThrottleCommand: stoppedShip.mainThrottleCommand,
-          translationCommand: stoppedShip.translationCommand,
-          rotationCommand: stoppedShip.rotationCommand
+          mainThrottleCommand: driftPreservingShip.mainThrottleCommand,
+          translationCommand: driftPreservingShip.translationCommand,
+          rotationCommand: driftPreservingShip.rotationCommand
         });
         runtimeMessage = "Autopilot canceled. Route preview remains available for the selected target.";
         refreshRoutePreview(selectedPlanner);
