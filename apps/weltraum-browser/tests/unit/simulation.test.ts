@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { AutopilotExecutor, DirectLocalPlanner, FixedStepSimulationLoop, createShipStateV2, vec3 } from "../../src/core";
 import { createBrowserRuntime } from "../../src/runtime/browserRuntime";
+import { createTestBridge } from "../../src/test-harness/browserBridge";
+import { serializeTelemetry } from "../../src/sim/telemetry";
 import type { ShipState, TargetDescriptor } from "../../src/core";
+import { provingGroundTargets } from "../../src/world/provingGroundWorld";
 
 const ship: ShipState = createShipStateV2({
   position: vec3(0, 0, 0),
@@ -39,6 +42,7 @@ describe("FixedStepSimulationLoop", () => {
 
   it("exposes elapsed-time fixed-step advancement through the app bridge", () => {
     const { controller } = createBrowserRuntime();
+    controller.dispatchCommand({ type: "EngageAutopilot", planner: "ObstacleAvoidanceLocal" });
 
     const before = controller.getTelemetry();
     const partial = controller.advance(1 / 60);
@@ -63,24 +67,36 @@ describe("FixedStepSimulationLoop", () => {
     expect(initial.flightSnapshot.routeValid).toBe(true);
     expect(initial.flightSnapshot.failureReasonCodes).not.toContain("FuelDepleted");
     expect(initial.flightSnapshot.failureReasonCodes).not.toContain("AutopilotUnavailable");
+    expect(initial.executor.planHash).toBeNull();
+    expect(initial.selectedTarget?.id).toBe(provingGroundTargets.navigationAlpha.id);
+    expect(initial.routePreview?.state).toBe("Ready");
+    expect(initial.routePreview?.plan?.target.id).toBe(provingGroundTargets.navigationAlpha.id);
   });
 
   it("routes browser UI autopilot commands through the runtime controller", () => {
     const { controller } = createBrowserRuntime();
 
-    const canceled = controller.dispatchCommand({ type: "CancelAutopilot" });
-    expect(canceled.executor.status).toBe("Idle");
-    expect(canceled.executor.planHash).toBeNull();
-    expect(controller.getLockedPlan()).toBeNull();
+    const selected = controller.dispatchCommand({ type: "SelectTarget", targetId: provingGroundTargets.navigationBeta.id });
+    expect(selected.selectedTarget?.id).toBe(provingGroundTargets.navigationBeta.id);
+    expect(selected.routePreview?.plan?.target.id).toBe(provingGroundTargets.navigationBeta.id);
+    expect(selected.executor.planHash).toBeNull();
 
     const engaged = controller.dispatchCommand({ type: "EngageAutopilot", planner: "DirectLocal" });
     expect(engaged.executor.status).toBe("Executing");
     expect(engaged.lockedPlan?.planner).toBe("DirectLocal");
+    expect(engaged.lockedPlan?.target.id).toBe(provingGroundTargets.navigationBeta.id);
     expect(controller.getLockedPlan()?.planHash).toBe(engaged.executor.planHash);
+
+    const canceled = controller.dispatchCommand({ type: "CancelAutopilot" });
+    expect(canceled.executor.status).toBe("Idle");
+    expect(canceled.executor.planHash).toBeNull();
+    expect(canceled.selectedTarget?.id).toBe(provingGroundTargets.navigationBeta.id);
+    expect(controller.getLockedPlan()).toBeNull();
   });
 
   it("ignores malformed browser UI commands without canceling the active plan", () => {
     const { controller } = createBrowserRuntime();
+    controller.dispatchCommand({ type: "EngageAutopilot", planner: "ObstacleAvoidanceLocal" });
     const before = controller.getTelemetry();
 
     const after = controller.dispatchCommand({ type: "UnknownCommand" } as never);
@@ -88,6 +104,75 @@ describe("FixedStepSimulationLoop", () => {
     expect(after.executor.planHash).toBe(before.executor.planHash);
     expect(after.executor.status).toBe(before.executor.status);
     expect(controller.getLockedPlan()?.planHash).toBe(before.executor.planHash);
+  });
+
+  it("fails closed for unknown target selection without root fallback or locked-plan replacement", () => {
+    const { controller } = createBrowserRuntime();
+    const selected = controller.dispatchCommand({ type: "SelectTarget", targetId: provingGroundTargets.navigationBeta.id });
+    const engaged = controller.dispatchCommand({ type: "EngageAutopilot", planner: "ObstacleAvoidanceLocal" });
+
+    const afterUnknownTarget = controller.dispatchCommand({ type: "SelectTarget", targetId: "missing-target" });
+    const afterMalformedTarget = controller.dispatchCommand({ type: "SelectTarget" } as never);
+
+    expect(selected.selectedTarget?.id).toBe(provingGroundTargets.navigationBeta.id);
+    expect(afterUnknownTarget.selectedTarget?.id).toBe(provingGroundTargets.navigationBeta.id);
+    expect(afterMalformedTarget.selectedTarget?.id).toBe(provingGroundTargets.navigationBeta.id);
+    expect(afterUnknownTarget.executor.planHash).toBe(engaged.executor.planHash);
+    expect(afterMalformedTarget.executor.planHash).toBe(engaged.executor.planHash);
+    expect(afterUnknownTarget.lockedPlan?.target.position).toEqual(provingGroundTargets.navigationBeta.position);
+    expect(afterMalformedTarget.routePreview?.plan?.target.position).toEqual(provingGroundTargets.navigationBeta.position);
+  });
+
+  it("does not replace an already locked plan when engage is dispatched again", () => {
+    const { controller } = createBrowserRuntime();
+    const first = controller.dispatchCommand({ type: "EngageAutopilot", planner: "ObstacleAvoidanceLocal" });
+    controller.dispatchCommand({ type: "SelectTarget", targetId: provingGroundTargets.navigationBeta.id });
+
+    const second = controller.dispatchCommand({ type: "EngageAutopilot", planner: "DirectLocal" });
+
+    expect(second.executor.planHash).toBe(first.executor.planHash);
+    expect(second.lockedPlan?.target.id).toBe(provingGroundTargets.navigationAlpha.id);
+    expect(second.selectedTarget?.id).toBe(provingGroundTargets.navigationAlpha.id);
+    expect(second.routePreview?.plan?.target.id).toBe(provingGroundTargets.navigationAlpha.id);
+    expect(second.runtimeMessage).toContain("cancel");
+  });
+
+  it("keeps selected target, preview, and plan stable when selecting during a locked route", () => {
+    const { controller } = createBrowserRuntime();
+    const engaged = controller.dispatchCommand({ type: "EngageAutopilot", planner: "ObstacleAvoidanceLocal" });
+
+    const afterSelect = controller.dispatchCommand({ type: "SelectTarget", targetId: provingGroundTargets.navigationBeta.id });
+
+    expect(afterSelect.executor.planHash).toBe(engaged.executor.planHash);
+    expect(afterSelect.lockedPlan?.target.id).toBe(provingGroundTargets.navigationAlpha.id);
+    expect(afterSelect.selectedTarget?.id).toBe(provingGroundTargets.navigationAlpha.id);
+    expect(afterSelect.routePreview?.target?.id).toBe(provingGroundTargets.navigationAlpha.id);
+    expect(afterSelect.routePreview?.plan?.planHash).toBe(engaged.executor.planHash);
+    expect(afterSelect.runtimeMessage).toBe("Cancel the current autopilot route before selecting another target.");
+  });
+
+  it("does not expose legacy plan-lock helpers through controller or TestBridge", () => {
+    const { controller } = createBrowserRuntime();
+    const bridge = createTestBridge(controller);
+
+    expect("useDirectPlan" in controller).toBe(false);
+    expect("useObstacleAvoidancePlan" in controller).toBe(false);
+    expect("useDirectPlan" in bridge).toBe(false);
+    expect("useObstacleAvoidancePlan" in bridge).toBe(false);
+  });
+
+  it("preserves browser vertical-slice snapshot fields during telemetry serialization", () => {
+    const { controller } = createBrowserRuntime();
+    const snapshot = controller.getTelemetry();
+
+    const serialized = serializeTelemetry(snapshot);
+
+    expect(serialized.selectedTarget?.id).toBe(snapshot.selectedTarget?.id);
+    expect(serialized.selectableTargets?.map((targetOption) => targetOption.id)).toEqual(snapshot.selectableTargets?.map((targetOption) => targetOption.id));
+    expect(serialized.routePreview?.target?.id).toBe(snapshot.routePreview?.target?.id);
+    expect(serialized.routePreview?.plan?.planHash).toBe(snapshot.routePreview?.plan?.planHash);
+    expect(serialized.routePreview?.playerMessage).toBe(snapshot.routePreview?.playerMessage);
+    expect(serialized.runtimeMessage).toBe(snapshot.runtimeMessage);
   });
 
   it("cancels a non-zero-velocity autopilot into a stable stopped idle state", () => {

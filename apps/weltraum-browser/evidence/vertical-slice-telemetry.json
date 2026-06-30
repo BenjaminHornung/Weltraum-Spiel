@@ -1,0 +1,1350 @@
+{
+  "initialTelemetry": {
+    "ship": {
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "mass": {
+        "dryMass": 1000,
+        "cargoMass": 0,
+        "fuelMass": 100,
+        "totalMass": 1100
+      },
+      "fuel": {
+        "capacity": 100,
+        "current": 100,
+        "reserve": 5,
+        "burnRate": 0.02,
+        "status": "Ready",
+        "reasonCodes": []
+      },
+      "authority": {
+        "mode": "Autopilot",
+        "autopilotAvailable": true,
+        "mainThrustersAvailable": true,
+        "rcsAvailable": true,
+        "sasAvailable": true,
+        "translationAuthority": 1,
+        "rotationAuthority": 1,
+        "reasonCodes": []
+      }
+    },
+    "executor": {
+      "tick": 18,
+      "status": "Idle",
+      "planHash": null,
+      "activeSegmentId": null,
+      "distanceToTarget": 0,
+      "offRouteDistance": 0,
+      "replanRequired": false,
+      "invalidationReasons": [],
+      "failureReasonCodes": [],
+      "fuel": {
+        "capacity": 100,
+        "current": 100,
+        "reserve": 5,
+        "burnRate": 0.02,
+        "status": "Ready",
+        "reasonCodes": []
+      },
+      "flightSnapshot": {
+        "mass": {
+          "dryMass": 1000,
+          "cargoMass": 0,
+          "fuelMass": 100,
+          "totalMass": 1100
+        },
+        "fuel": {
+          "capacity": 100,
+          "current": 100,
+          "reserve": 5,
+          "burnRate": 0.02,
+          "status": "Ready",
+          "reasonCodes": []
+        },
+        "authority": {
+          "mode": "Autopilot",
+          "autopilotAvailable": true,
+          "mainThrustersAvailable": true,
+          "rcsAvailable": true,
+          "sasAvailable": true,
+          "translationAuthority": 1,
+          "rotationAuthority": 1,
+          "reasonCodes": []
+        },
+        "brakingReserve": {
+          "requiredDeltaV": 0,
+          "availableDeltaV": 4318.1818,
+          "canBrake": true,
+          "reasonCodes": []
+        },
+        "routeValid": true,
+        "failureReasonCodes": [],
+        "etaSeconds": null
+      },
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    "lockedPlan": null,
+    "flightSnapshot": {
+      "mass": {
+        "dryMass": 1000,
+        "cargoMass": 0,
+        "fuelMass": 100,
+        "totalMass": 1100
+      },
+      "fuel": {
+        "capacity": 100,
+        "current": 100,
+        "reserve": 5,
+        "burnRate": 0.02,
+        "status": "Ready",
+        "reasonCodes": []
+      },
+      "authority": {
+        "mode": "Autopilot",
+        "autopilotAvailable": true,
+        "mainThrustersAvailable": true,
+        "rcsAvailable": true,
+        "sasAvailable": true,
+        "translationAuthority": 1,
+        "rotationAuthority": 1,
+        "reasonCodes": []
+      },
+      "brakingReserve": {
+        "requiredDeltaV": 0,
+        "availableDeltaV": 4318.1818,
+        "canBrake": true,
+        "reasonCodes": []
+      },
+      "routeValid": true,
+      "failureReasonCodes": [],
+      "etaSeconds": null
+    },
+    "selectableTargets": [
+      {
+        "id": "arrival-near",
+        "label": "Direct arrival marker",
+        "kind": "Waypoint",
+        "position": {
+          "x": 1.5,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 2,
+          "stopBehavior": "NoStopRequired"
+        }
+      },
+      {
+        "id": "nav-alpha",
+        "label": "Navigation Alpha",
+        "kind": "Waypoint",
+        "position": {
+          "x": 120,
+          "y": 0,
+          "z": -30
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 8,
+          "stopBehavior": "MatchTerminalSpeed"
+        }
+      },
+      {
+        "id": "nav-beta",
+        "label": "Navigation Beta",
+        "kind": "Point",
+        "position": {
+          "x": 90,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 8,
+          "stopBehavior": "MatchTerminalSpeed"
+        }
+      }
+    ],
+    "selectedTarget": {
+      "id": "nav-alpha",
+      "label": "Navigation Alpha",
+      "kind": "Waypoint",
+      "position": {
+        "x": 120,
+        "y": 0,
+        "z": -30
+      },
+      "arrivalEnvelope": {
+        "radius": 3,
+        "terminalSpeed": 8,
+        "stopBehavior": "MatchTerminalSpeed"
+      }
+    },
+    "routePreview": {
+      "state": "Ready",
+      "planner": "ObstacleAvoidanceLocal",
+      "target": {
+        "id": "nav-alpha",
+        "label": "Navigation Alpha",
+        "kind": "Waypoint",
+        "position": {
+          "x": 120,
+          "y": 0,
+          "z": -30
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 8,
+          "stopBehavior": "MatchTerminalSpeed"
+        }
+      },
+      "plan": {
+        "id": "ObstacleAvoidanceLocal:nav-alpha:0",
+        "planner": "ObstacleAvoidanceLocal",
+        "createdAtTick": 0,
+        "target": {
+          "id": "nav-alpha",
+          "label": "Navigation Alpha",
+          "kind": "Waypoint",
+          "position": {
+            "x": 120,
+            "y": 0,
+            "z": -30
+          },
+          "arrivalEnvelope": {
+            "radius": 3,
+            "terminalSpeed": 8,
+            "stopBehavior": "MatchTerminalSpeed"
+          }
+        },
+        "segments": [
+          {
+            "id": "avoid-rock-a-0",
+            "kind": "Avoidance",
+            "start": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "end": {
+              "x": 65.40287024599908,
+              "y": 0,
+              "z": 15.6033510370371
+            },
+            "desiredSpeed": 14,
+            "clearanceRadius": 19
+          },
+          {
+            "id": "avoid-rock-a-1",
+            "kind": "Terminal",
+            "start": {
+              "x": 65.40287024599908,
+              "y": 0,
+              "z": 15.6033510370371
+            },
+            "end": {
+              "x": 120,
+              "y": 0,
+              "z": -30
+            },
+            "desiredSpeed": 12,
+            "clearanceRadius": 3
+          }
+        ],
+        "validation": {
+          "ok": true,
+          "issues": [],
+          "rejectedReasonCodes": []
+        },
+        "score": {
+          "distance": 138.3757,
+          "segmentCount": 2,
+          "clearanceRisk": 0.386,
+          "fuelCostEstimate": 0.0304,
+          "authorityRisk": 0,
+          "total": 197.1277,
+          "reasons": [
+            "segments:2",
+            "distance:138.3757",
+            "clearanceRisk:0.386"
+          ]
+        },
+        "planHash": "154b829e"
+      },
+      "validation": {
+        "ok": true,
+        "issues": [],
+        "rejectedReasonCodes": []
+      },
+      "rejectedReasonCodes": [],
+      "playerMessage": "Route preview ready for Navigation Alpha."
+    },
+    "runtimeMessage": null
+  },
+  "betaPreview": {
+    "ship": {
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "mass": {
+        "dryMass": 1000,
+        "cargoMass": 0,
+        "fuelMass": 100,
+        "totalMass": 1100
+      },
+      "fuel": {
+        "capacity": 100,
+        "current": 100,
+        "reserve": 5,
+        "burnRate": 0.02,
+        "status": "Ready",
+        "reasonCodes": []
+      },
+      "authority": {
+        "mode": "Autopilot",
+        "autopilotAvailable": true,
+        "mainThrustersAvailable": true,
+        "rcsAvailable": true,
+        "sasAvailable": true,
+        "translationAuthority": 1,
+        "rotationAuthority": 1,
+        "reasonCodes": []
+      }
+    },
+    "executor": {
+      "tick": 22,
+      "status": "Idle",
+      "planHash": null,
+      "activeSegmentId": null,
+      "distanceToTarget": 0,
+      "offRouteDistance": 0,
+      "replanRequired": false,
+      "invalidationReasons": [],
+      "failureReasonCodes": [],
+      "fuel": {
+        "capacity": 100,
+        "current": 100,
+        "reserve": 5,
+        "burnRate": 0.02,
+        "status": "Ready",
+        "reasonCodes": []
+      },
+      "flightSnapshot": {
+        "mass": {
+          "dryMass": 1000,
+          "cargoMass": 0,
+          "fuelMass": 100,
+          "totalMass": 1100
+        },
+        "fuel": {
+          "capacity": 100,
+          "current": 100,
+          "reserve": 5,
+          "burnRate": 0.02,
+          "status": "Ready",
+          "reasonCodes": []
+        },
+        "authority": {
+          "mode": "Autopilot",
+          "autopilotAvailable": true,
+          "mainThrustersAvailable": true,
+          "rcsAvailable": true,
+          "sasAvailable": true,
+          "translationAuthority": 1,
+          "rotationAuthority": 1,
+          "reasonCodes": []
+        },
+        "brakingReserve": {
+          "requiredDeltaV": 0,
+          "availableDeltaV": 4318.1818,
+          "canBrake": true,
+          "reasonCodes": []
+        },
+        "routeValid": true,
+        "failureReasonCodes": [],
+        "etaSeconds": null
+      },
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    "lockedPlan": null,
+    "flightSnapshot": {
+      "mass": {
+        "dryMass": 1000,
+        "cargoMass": 0,
+        "fuelMass": 100,
+        "totalMass": 1100
+      },
+      "fuel": {
+        "capacity": 100,
+        "current": 100,
+        "reserve": 5,
+        "burnRate": 0.02,
+        "status": "Ready",
+        "reasonCodes": []
+      },
+      "authority": {
+        "mode": "Autopilot",
+        "autopilotAvailable": true,
+        "mainThrustersAvailable": true,
+        "rcsAvailable": true,
+        "sasAvailable": true,
+        "translationAuthority": 1,
+        "rotationAuthority": 1,
+        "reasonCodes": []
+      },
+      "brakingReserve": {
+        "requiredDeltaV": 0,
+        "availableDeltaV": 4318.1818,
+        "canBrake": true,
+        "reasonCodes": []
+      },
+      "routeValid": true,
+      "failureReasonCodes": [],
+      "etaSeconds": null
+    },
+    "selectableTargets": [
+      {
+        "id": "arrival-near",
+        "label": "Direct arrival marker",
+        "kind": "Waypoint",
+        "position": {
+          "x": 1.5,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 2,
+          "stopBehavior": "NoStopRequired"
+        }
+      },
+      {
+        "id": "nav-alpha",
+        "label": "Navigation Alpha",
+        "kind": "Waypoint",
+        "position": {
+          "x": 120,
+          "y": 0,
+          "z": -30
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 8,
+          "stopBehavior": "MatchTerminalSpeed"
+        }
+      },
+      {
+        "id": "nav-beta",
+        "label": "Navigation Beta",
+        "kind": "Point",
+        "position": {
+          "x": 90,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 8,
+          "stopBehavior": "MatchTerminalSpeed"
+        }
+      }
+    ],
+    "selectedTarget": {
+      "id": "nav-beta",
+      "label": "Navigation Beta",
+      "kind": "Point",
+      "position": {
+        "x": 90,
+        "y": 0,
+        "z": 0
+      },
+      "arrivalEnvelope": {
+        "radius": 3,
+        "terminalSpeed": 8,
+        "stopBehavior": "MatchTerminalSpeed"
+      }
+    },
+    "routePreview": {
+      "state": "Ready",
+      "planner": "ObstacleAvoidanceLocal",
+      "target": {
+        "id": "nav-beta",
+        "label": "Navigation Beta",
+        "kind": "Point",
+        "position": {
+          "x": 90,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 8,
+          "stopBehavior": "MatchTerminalSpeed"
+        }
+      },
+      "plan": {
+        "id": "ObstacleAvoidanceLocal:nav-beta:22",
+        "planner": "ObstacleAvoidanceLocal",
+        "createdAtTick": 22,
+        "target": {
+          "id": "nav-beta",
+          "label": "Navigation Beta",
+          "kind": "Point",
+          "position": {
+            "x": 90,
+            "y": 0,
+            "z": 0
+          },
+          "arrivalEnvelope": {
+            "radius": 3,
+            "terminalSpeed": 8,
+            "stopBehavior": "MatchTerminalSpeed"
+          }
+        },
+        "segments": [
+          {
+            "id": "avoid-rock-a-0",
+            "kind": "Avoidance",
+            "start": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "end": {
+              "x": 59.66573556070519,
+              "y": 0,
+              "z": 31
+            },
+            "desiredSpeed": 14,
+            "clearanceRadius": 19
+          },
+          {
+            "id": "avoid-rock-a-1",
+            "kind": "Terminal",
+            "start": {
+              "x": 59.66573556070519,
+              "y": 0,
+              "z": 31
+            },
+            "end": {
+              "x": 90,
+              "y": 0,
+              "z": 0
+            },
+            "desiredSpeed": 12,
+            "clearanceRadius": 3
+          }
+        ],
+        "validation": {
+          "ok": true,
+          "issues": [],
+          "rejectedReasonCodes": []
+        },
+        "score": {
+          "distance": 110.6108,
+          "segmentCount": 2,
+          "clearanceRisk": 0.386,
+          "fuelCostEstimate": 0.0243,
+          "authorityRisk": 0,
+          "total": 169.3323,
+          "reasons": [
+            "segments:2",
+            "distance:110.6108",
+            "clearanceRisk:0.386"
+          ]
+        },
+        "planHash": "427142b6"
+      },
+      "validation": {
+        "ok": true,
+        "issues": [],
+        "rejectedReasonCodes": []
+      },
+      "rejectedReasonCodes": [],
+      "playerMessage": "Route preview ready for Navigation Beta."
+    },
+    "runtimeMessage": "Selected Navigation Beta."
+  },
+  "arrivalTelemetry": {
+    "ship": {
+      "position": {
+        "x": 90,
+        "y": 0,
+        "z": 0
+      },
+      "velocity": {
+        "x": 5.5951,
+        "y": 0,
+        "z": -5.7179
+      },
+      "mass": {
+        "dryMass": 1000,
+        "cargoMass": 0,
+        "fuelMass": 99.30103654070358,
+        "totalMass": 1099.3010365407035
+      },
+      "fuel": {
+        "capacity": 100,
+        "current": 99.301,
+        "reserve": 5,
+        "burnRate": 0.02,
+        "status": "Ready",
+        "reasonCodes": []
+      },
+      "authority": {
+        "mode": "Autopilot",
+        "autopilotAvailable": true,
+        "mainThrustersAvailable": true,
+        "rcsAvailable": true,
+        "sasAvailable": true,
+        "translationAuthority": 1,
+        "rotationAuthority": 1,
+        "reasonCodes": []
+      }
+    },
+    "executor": {
+      "tick": 281,
+      "status": "Arrived",
+      "planHash": "0dd242ba",
+      "activeSegmentId": "avoid-rock-a-1",
+      "distanceToTarget": 0,
+      "offRouteDistance": 0,
+      "replanRequired": false,
+      "invalidationReasons": [],
+      "failureReasonCodes": [],
+      "fuel": {
+        "capacity": 100,
+        "current": 99.301,
+        "reserve": 5,
+        "burnRate": 0.02,
+        "status": "Ready",
+        "reasonCodes": []
+      },
+      "flightSnapshot": {
+        "mass": {
+          "dryMass": 1000,
+          "cargoMass": 0,
+          "fuelMass": 99.301,
+          "totalMass": 1099.301
+        },
+        "fuel": {
+          "capacity": 100,
+          "current": 99.301,
+          "reserve": 5,
+          "burnRate": 0.02,
+          "status": "Ready",
+          "reasonCodes": []
+        },
+        "authority": {
+          "mode": "Autopilot",
+          "autopilotAvailable": true,
+          "mainThrustersAvailable": true,
+          "rcsAvailable": true,
+          "sasAvailable": true,
+          "translationAuthority": 1,
+          "rotationAuthority": 1,
+          "reasonCodes": []
+        },
+        "brakingReserve": {
+          "requiredDeltaV": 8,
+          "availableDeltaV": 4289.1362,
+          "canBrake": true,
+          "reasonCodes": []
+        },
+        "routeValid": true,
+        "failureReasonCodes": [],
+        "etaSeconds": 0
+      },
+      "position": {
+        "x": 90,
+        "y": 0,
+        "z": 0
+      },
+      "velocity": {
+        "x": 5.5951,
+        "y": 0,
+        "z": -5.7179
+      }
+    },
+    "lockedPlan": {
+      "id": "ObstacleAvoidanceLocal:nav-beta:24",
+      "planner": "ObstacleAvoidanceLocal",
+      "createdAtTick": 24,
+      "target": {
+        "id": "nav-beta",
+        "label": "Navigation Beta",
+        "kind": "Point",
+        "position": {
+          "x": 90,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 8,
+          "stopBehavior": "MatchTerminalSpeed"
+        }
+      },
+      "segments": [
+        {
+          "id": "avoid-rock-a-0",
+          "kind": "Avoidance",
+          "start": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "end": {
+            "x": 59.66573556070519,
+            "y": 0,
+            "z": 31
+          },
+          "desiredSpeed": 14,
+          "clearanceRadius": 19
+        },
+        {
+          "id": "avoid-rock-a-1",
+          "kind": "Terminal",
+          "start": {
+            "x": 59.66573556070519,
+            "y": 0,
+            "z": 31
+          },
+          "end": {
+            "x": 90,
+            "y": 0,
+            "z": 0
+          },
+          "desiredSpeed": 12,
+          "clearanceRadius": 3
+        }
+      ],
+      "validation": {
+        "ok": true,
+        "issues": [],
+        "rejectedReasonCodes": []
+      },
+      "score": {
+        "distance": 110.6108,
+        "segmentCount": 2,
+        "clearanceRisk": 0.386,
+        "fuelCostEstimate": 0.0243,
+        "authorityRisk": 0,
+        "total": 169.3323,
+        "reasons": [
+          "segments:2",
+          "distance:110.6108",
+          "clearanceRisk:0.386"
+        ]
+      },
+      "planHash": "0dd242ba"
+    },
+    "flightSnapshot": {
+      "mass": {
+        "dryMass": 1000,
+        "cargoMass": 0,
+        "fuelMass": 99.301,
+        "totalMass": 1099.301
+      },
+      "fuel": {
+        "capacity": 100,
+        "current": 99.301,
+        "reserve": 5,
+        "burnRate": 0.02,
+        "status": "Ready",
+        "reasonCodes": []
+      },
+      "authority": {
+        "mode": "Autopilot",
+        "autopilotAvailable": true,
+        "mainThrustersAvailable": true,
+        "rcsAvailable": true,
+        "sasAvailable": true,
+        "translationAuthority": 1,
+        "rotationAuthority": 1,
+        "reasonCodes": []
+      },
+      "brakingReserve": {
+        "requiredDeltaV": 8,
+        "availableDeltaV": 4289.1362,
+        "canBrake": true,
+        "reasonCodes": []
+      },
+      "routeValid": true,
+      "failureReasonCodes": [],
+      "etaSeconds": 0
+    },
+    "selectableTargets": [
+      {
+        "id": "arrival-near",
+        "label": "Direct arrival marker",
+        "kind": "Waypoint",
+        "position": {
+          "x": 1.5,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 2,
+          "stopBehavior": "NoStopRequired"
+        }
+      },
+      {
+        "id": "nav-alpha",
+        "label": "Navigation Alpha",
+        "kind": "Waypoint",
+        "position": {
+          "x": 120,
+          "y": 0,
+          "z": -30
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 8,
+          "stopBehavior": "MatchTerminalSpeed"
+        }
+      },
+      {
+        "id": "nav-beta",
+        "label": "Navigation Beta",
+        "kind": "Point",
+        "position": {
+          "x": 90,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 8,
+          "stopBehavior": "MatchTerminalSpeed"
+        }
+      }
+    ],
+    "selectedTarget": {
+      "id": "nav-beta",
+      "label": "Navigation Beta",
+      "kind": "Point",
+      "position": {
+        "x": 90,
+        "y": 0,
+        "z": 0
+      },
+      "arrivalEnvelope": {
+        "radius": 3,
+        "terminalSpeed": 8,
+        "stopBehavior": "MatchTerminalSpeed"
+      }
+    },
+    "routePreview": {
+      "state": "Ready",
+      "planner": "ObstacleAvoidanceLocal",
+      "target": {
+        "id": "nav-beta",
+        "label": "Navigation Beta",
+        "kind": "Point",
+        "position": {
+          "x": 90,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 8,
+          "stopBehavior": "MatchTerminalSpeed"
+        }
+      },
+      "plan": {
+        "id": "ObstacleAvoidanceLocal:nav-beta:24",
+        "planner": "ObstacleAvoidanceLocal",
+        "createdAtTick": 24,
+        "target": {
+          "id": "nav-beta",
+          "label": "Navigation Beta",
+          "kind": "Point",
+          "position": {
+            "x": 90,
+            "y": 0,
+            "z": 0
+          },
+          "arrivalEnvelope": {
+            "radius": 3,
+            "terminalSpeed": 8,
+            "stopBehavior": "MatchTerminalSpeed"
+          }
+        },
+        "segments": [
+          {
+            "id": "avoid-rock-a-0",
+            "kind": "Avoidance",
+            "start": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "end": {
+              "x": 59.66573556070519,
+              "y": 0,
+              "z": 31
+            },
+            "desiredSpeed": 14,
+            "clearanceRadius": 19
+          },
+          {
+            "id": "avoid-rock-a-1",
+            "kind": "Terminal",
+            "start": {
+              "x": 59.66573556070519,
+              "y": 0,
+              "z": 31
+            },
+            "end": {
+              "x": 90,
+              "y": 0,
+              "z": 0
+            },
+            "desiredSpeed": 12,
+            "clearanceRadius": 3
+          }
+        ],
+        "validation": {
+          "ok": true,
+          "issues": [],
+          "rejectedReasonCodes": []
+        },
+        "score": {
+          "distance": 110.6108,
+          "segmentCount": 2,
+          "clearanceRisk": 0.386,
+          "fuelCostEstimate": 0.0243,
+          "authorityRisk": 0,
+          "total": 169.3323,
+          "reasons": [
+            "segments:2",
+            "distance:110.6108",
+            "clearanceRisk:0.386"
+          ]
+        },
+        "planHash": "0dd242ba"
+      },
+      "validation": {
+        "ok": true,
+        "issues": [],
+        "rejectedReasonCodes": []
+      },
+      "rejectedReasonCodes": [],
+      "playerMessage": "Route preview ready for Navigation Beta."
+    },
+    "runtimeMessage": "Cancel the current autopilot route before selecting another target."
+  },
+  "divergent": {
+    "ship": {
+      "position": {
+        "x": 90,
+        "y": 64,
+        "z": 0
+      },
+      "velocity": {
+        "x": 5.5951,
+        "y": 0,
+        "z": -5.7179
+      },
+      "mass": {
+        "dryMass": 1000,
+        "cargoMass": 0,
+        "fuelMass": 99.30103654070358,
+        "totalMass": 1099.3010365407035
+      },
+      "fuel": {
+        "capacity": 100,
+        "current": 99.301,
+        "reserve": 5,
+        "burnRate": 0.02,
+        "status": "Ready",
+        "reasonCodes": []
+      },
+      "authority": {
+        "mode": "Autopilot",
+        "autopilotAvailable": true,
+        "mainThrustersAvailable": true,
+        "rcsAvailable": true,
+        "sasAvailable": true,
+        "translationAuthority": 1,
+        "rotationAuthority": 1,
+        "reasonCodes": []
+      }
+    },
+    "executor": {
+      "tick": 283,
+      "status": "Diverged",
+      "planHash": "0dd242ba",
+      "activeSegmentId": "avoid-rock-a-1",
+      "distanceToTarget": 64,
+      "offRouteDistance": 64,
+      "replanRequired": true,
+      "invalidationReasons": [
+        "OffLockedRoute"
+      ],
+      "failureReasonCodes": [
+        "OffLockedRoute"
+      ],
+      "fuel": {
+        "capacity": 100,
+        "current": 99.301,
+        "reserve": 5,
+        "burnRate": 0.02,
+        "status": "Ready",
+        "reasonCodes": []
+      },
+      "flightSnapshot": {
+        "mass": {
+          "dryMass": 1000,
+          "cargoMass": 0,
+          "fuelMass": 99.301,
+          "totalMass": 1099.301
+        },
+        "fuel": {
+          "capacity": 100,
+          "current": 99.301,
+          "reserve": 5,
+          "burnRate": 0.02,
+          "status": "Ready",
+          "reasonCodes": []
+        },
+        "authority": {
+          "mode": "Autopilot",
+          "autopilotAvailable": true,
+          "mainThrustersAvailable": true,
+          "rcsAvailable": true,
+          "sasAvailable": true,
+          "translationAuthority": 1,
+          "rotationAuthority": 1,
+          "reasonCodes": []
+        },
+        "brakingReserve": {
+          "requiredDeltaV": 9,
+          "availableDeltaV": 4289.1362,
+          "canBrake": true,
+          "reasonCodes": []
+        },
+        "routeValid": false,
+        "failureReasonCodes": [
+          "OffLockedRoute"
+        ],
+        "etaSeconds": 8
+      },
+      "position": {
+        "x": 90,
+        "y": 64,
+        "z": 0
+      },
+      "velocity": {
+        "x": 5.5951,
+        "y": 0,
+        "z": -5.7179
+      }
+    },
+    "lockedPlan": {
+      "id": "ObstacleAvoidanceLocal:nav-beta:24",
+      "planner": "ObstacleAvoidanceLocal",
+      "createdAtTick": 24,
+      "target": {
+        "id": "nav-beta",
+        "label": "Navigation Beta",
+        "kind": "Point",
+        "position": {
+          "x": 90,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 8,
+          "stopBehavior": "MatchTerminalSpeed"
+        }
+      },
+      "segments": [
+        {
+          "id": "avoid-rock-a-0",
+          "kind": "Avoidance",
+          "start": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "end": {
+            "x": 59.66573556070519,
+            "y": 0,
+            "z": 31
+          },
+          "desiredSpeed": 14,
+          "clearanceRadius": 19
+        },
+        {
+          "id": "avoid-rock-a-1",
+          "kind": "Terminal",
+          "start": {
+            "x": 59.66573556070519,
+            "y": 0,
+            "z": 31
+          },
+          "end": {
+            "x": 90,
+            "y": 0,
+            "z": 0
+          },
+          "desiredSpeed": 12,
+          "clearanceRadius": 3
+        }
+      ],
+      "validation": {
+        "ok": true,
+        "issues": [],
+        "rejectedReasonCodes": []
+      },
+      "score": {
+        "distance": 110.6108,
+        "segmentCount": 2,
+        "clearanceRisk": 0.386,
+        "fuelCostEstimate": 0.0243,
+        "authorityRisk": 0,
+        "total": 169.3323,
+        "reasons": [
+          "segments:2",
+          "distance:110.6108",
+          "clearanceRisk:0.386"
+        ]
+      },
+      "planHash": "0dd242ba"
+    },
+    "flightSnapshot": {
+      "mass": {
+        "dryMass": 1000,
+        "cargoMass": 0,
+        "fuelMass": 99.301,
+        "totalMass": 1099.301
+      },
+      "fuel": {
+        "capacity": 100,
+        "current": 99.301,
+        "reserve": 5,
+        "burnRate": 0.02,
+        "status": "Ready",
+        "reasonCodes": []
+      },
+      "authority": {
+        "mode": "Autopilot",
+        "autopilotAvailable": true,
+        "mainThrustersAvailable": true,
+        "rcsAvailable": true,
+        "sasAvailable": true,
+        "translationAuthority": 1,
+        "rotationAuthority": 1,
+        "reasonCodes": []
+      },
+      "brakingReserve": {
+        "requiredDeltaV": 9,
+        "availableDeltaV": 4289.1362,
+        "canBrake": true,
+        "reasonCodes": []
+      },
+      "routeValid": false,
+      "failureReasonCodes": [
+        "OffLockedRoute"
+      ],
+      "etaSeconds": 8
+    },
+    "selectableTargets": [
+      {
+        "id": "arrival-near",
+        "label": "Direct arrival marker",
+        "kind": "Waypoint",
+        "position": {
+          "x": 1.5,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 2,
+          "stopBehavior": "NoStopRequired"
+        }
+      },
+      {
+        "id": "nav-alpha",
+        "label": "Navigation Alpha",
+        "kind": "Waypoint",
+        "position": {
+          "x": 120,
+          "y": 0,
+          "z": -30
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 8,
+          "stopBehavior": "MatchTerminalSpeed"
+        }
+      },
+      {
+        "id": "nav-beta",
+        "label": "Navigation Beta",
+        "kind": "Point",
+        "position": {
+          "x": 90,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 8,
+          "stopBehavior": "MatchTerminalSpeed"
+        }
+      }
+    ],
+    "selectedTarget": {
+      "id": "nav-beta",
+      "label": "Navigation Beta",
+      "kind": "Point",
+      "position": {
+        "x": 90,
+        "y": 0,
+        "z": 0
+      },
+      "arrivalEnvelope": {
+        "radius": 3,
+        "terminalSpeed": 8,
+        "stopBehavior": "MatchTerminalSpeed"
+      }
+    },
+    "routePreview": {
+      "state": "Ready",
+      "planner": "ObstacleAvoidanceLocal",
+      "target": {
+        "id": "nav-beta",
+        "label": "Navigation Beta",
+        "kind": "Point",
+        "position": {
+          "x": 90,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 8,
+          "stopBehavior": "MatchTerminalSpeed"
+        }
+      },
+      "plan": {
+        "id": "ObstacleAvoidanceLocal:nav-beta:24",
+        "planner": "ObstacleAvoidanceLocal",
+        "createdAtTick": 24,
+        "target": {
+          "id": "nav-beta",
+          "label": "Navigation Beta",
+          "kind": "Point",
+          "position": {
+            "x": 90,
+            "y": 0,
+            "z": 0
+          },
+          "arrivalEnvelope": {
+            "radius": 3,
+            "terminalSpeed": 8,
+            "stopBehavior": "MatchTerminalSpeed"
+          }
+        },
+        "segments": [
+          {
+            "id": "avoid-rock-a-0",
+            "kind": "Avoidance",
+            "start": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "end": {
+              "x": 59.66573556070519,
+              "y": 0,
+              "z": 31
+            },
+            "desiredSpeed": 14,
+            "clearanceRadius": 19
+          },
+          {
+            "id": "avoid-rock-a-1",
+            "kind": "Terminal",
+            "start": {
+              "x": 59.66573556070519,
+              "y": 0,
+              "z": 31
+            },
+            "end": {
+              "x": 90,
+              "y": 0,
+              "z": 0
+            },
+            "desiredSpeed": 12,
+            "clearanceRadius": 3
+          }
+        ],
+        "validation": {
+          "ok": true,
+          "issues": [],
+          "rejectedReasonCodes": []
+        },
+        "score": {
+          "distance": 110.6108,
+          "segmentCount": 2,
+          "clearanceRisk": 0.386,
+          "fuelCostEstimate": 0.0243,
+          "authorityRisk": 0,
+          "total": 169.3323,
+          "reasons": [
+            "segments:2",
+            "distance:110.6108",
+            "clearanceRisk:0.386"
+          ]
+        },
+        "planHash": "0dd242ba"
+      },
+      "validation": {
+        "ok": true,
+        "issues": [],
+        "rejectedReasonCodes": []
+      },
+      "rejectedReasonCodes": [],
+      "playerMessage": "Route preview ready for Navigation Beta."
+    },
+    "runtimeMessage": "Ship disturbed from the locked route."
+  }
+}

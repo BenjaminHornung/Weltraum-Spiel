@@ -1,11 +1,25 @@
-﻿import type { ExecutorTelemetry, FlightSnapshot, FuelState, RoutePlan, ShipState } from "../core/types";
+﻿import type { ExecutorTelemetry, FlightSnapshot, FuelState, RoutePlan, RouteValidationReasonCode, RouteValidationResult, ShipState, TargetDescriptor } from "../core/types";
 import { roundVec } from "../core/vector";
+
+export interface RoutePreviewSnapshot {
+  readonly state: "Ready" | "Unavailable";
+  readonly planner: RoutePlan["planner"];
+  readonly target: TargetDescriptor | null;
+  readonly plan: RoutePlan | null;
+  readonly validation: RouteValidationResult | null;
+  readonly rejectedReasonCodes: readonly RouteValidationReasonCode[];
+  readonly playerMessage: string;
+}
 
 export interface TelemetrySnapshot {
   readonly ship: ShipState;
   readonly executor: ExecutorTelemetry;
   readonly lockedPlan: RoutePlan | null;
   readonly flightSnapshot: FlightSnapshot;
+  readonly selectableTargets?: readonly TargetDescriptor[];
+  readonly selectedTarget?: TargetDescriptor | null;
+  readonly routePreview?: RoutePreviewSnapshot | null;
+  readonly runtimeMessage?: string | null;
 }
 
 const roundFuel = (fuel: FuelState): FuelState => ({
@@ -50,7 +64,11 @@ export const serializeTelemetry = (snapshot: TelemetrySnapshot): TelemetrySnapsh
     velocity: roundVec(snapshot.executor.velocity)
   },
   lockedPlan: snapshot.lockedPlan,
-  flightSnapshot: roundFlightSnapshot(snapshot.flightSnapshot)
+  flightSnapshot: roundFlightSnapshot(snapshot.flightSnapshot),
+  selectableTargets: snapshot.selectableTargets,
+  selectedTarget: snapshot.selectedTarget,
+  routePreview: snapshot.routePreview,
+  runtimeMessage: snapshot.runtimeMessage
 });
 
 export const createTelemetrySnapshot = (ship: ShipState, executor: ExecutorTelemetry, lockedPlan: RoutePlan | null): TelemetrySnapshot =>
