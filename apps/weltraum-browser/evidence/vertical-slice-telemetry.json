@@ -42,6 +42,22 @@
         "rcsTranslationActive": false,
         "rcsRotationActive": false,
         "sasCorrectionActive": false,
+        "controlModeEffect": {
+          "controlMode": "Cruise",
+          "mainThrustAllowed": true,
+          "rcsTranslationAllowed": false,
+          "rcsRotationAllowed": true,
+          "sasAllowed": true,
+          "modeEffectLabel": "main thrust enabled",
+          "blockedReasonCodes": [
+            "RcsTranslationModeBlocked"
+          ],
+          "notes": [
+            "main thrust ready",
+            "RCS available"
+          ],
+          "rotationResponseScale": 1
+        },
         "lastAppliedAcceleration": {
           "x": 0,
           "y": 0,
@@ -79,7 +95,7 @@
       }
     },
     "executor": {
-      "tick": 13,
+      "tick": 12,
       "status": "Idle",
       "planHash": null,
       "activeSegmentId": null,
@@ -400,6 +416,22 @@
         "rcsTranslationActive": false,
         "rcsRotationActive": false,
         "sasCorrectionActive": false,
+        "controlModeEffect": {
+          "controlMode": "Cruise",
+          "mainThrustAllowed": true,
+          "rcsTranslationAllowed": false,
+          "rcsRotationAllowed": true,
+          "sasAllowed": true,
+          "modeEffectLabel": "main thrust enabled",
+          "blockedReasonCodes": [
+            "RcsTranslationModeBlocked"
+          ],
+          "notes": [
+            "main thrust ready",
+            "RCS available"
+          ],
+          "rotationResponseScale": 1
+        },
         "lastAppliedAcceleration": {
           "x": 0,
           "y": 0,
@@ -437,7 +469,7 @@
       }
     },
     "executor": {
-      "tick": 16,
+      "tick": 15,
       "status": "Idle",
       "planHash": null,
       "activeSegmentId": null,
@@ -758,6 +790,22 @@
         "rcsTranslationActive": false,
         "rcsRotationActive": true,
         "sasCorrectionActive": true,
+        "controlModeEffect": {
+          "controlMode": "Cruise",
+          "mainThrustAllowed": true,
+          "rcsTranslationAllowed": false,
+          "rcsRotationAllowed": true,
+          "sasAllowed": true,
+          "modeEffectLabel": "main thrust enabled",
+          "blockedReasonCodes": [
+            "RcsTranslationModeBlocked"
+          ],
+          "notes": [
+            "main thrust ready",
+            "RCS available"
+          ],
+          "rotationResponseScale": 1
+        },
         "lastAppliedAcceleration": {
           "x": -0.846,
           "y": 0,
@@ -795,9 +843,9 @@
       }
     },
     "executor": {
-      "tick": 336,
+      "tick": 335,
       "status": "Arrived",
-      "planHash": "7e145088",
+      "planHash": "c91f589a",
       "activeSegmentId": "avoid-rock-a-1",
       "distanceToTarget": 0.1345,
       "offRouteDistance": 0.0345,
@@ -859,9 +907,9 @@
       }
     },
     "lockedPlan": {
-      "id": "ObstacleAvoidanceLocal:nav-beta:18",
+      "id": "ObstacleAvoidanceLocal:nav-beta:17",
       "planner": "ObstacleAvoidanceLocal",
-      "createdAtTick": 18,
+      "createdAtTick": 17,
       "target": {
         "id": "nav-beta",
         "label": "Navigation Beta",
@@ -929,7 +977,7 @@
           "clearanceRisk:0.386"
         ]
       },
-      "planHash": "7e145088"
+      "planHash": "c91f589a"
     },
     "flightSnapshot": {
       "mass": {
@@ -1046,9 +1094,9 @@
         }
       },
       "plan": {
-        "id": "ObstacleAvoidanceLocal:nav-beta:18",
+        "id": "ObstacleAvoidanceLocal:nav-beta:17",
         "planner": "ObstacleAvoidanceLocal",
-        "createdAtTick": 18,
+        "createdAtTick": 17,
         "target": {
           "id": "nav-beta",
           "label": "Navigation Beta",
@@ -1116,7 +1164,7 @@
             "clearanceRisk:0.386"
           ]
         },
-        "planHash": "7e145088"
+        "planHash": "c91f589a"
       },
       "validation": {
         "ok": true,
@@ -1188,6 +1236,22 @@
         "rcsTranslationActive": false,
         "rcsRotationActive": true,
         "sasCorrectionActive": true,
+        "controlModeEffect": {
+          "controlMode": "Cruise",
+          "mainThrustAllowed": true,
+          "rcsTranslationAllowed": false,
+          "rcsRotationAllowed": true,
+          "sasAllowed": true,
+          "modeEffectLabel": "main thrust enabled",
+          "blockedReasonCodes": [
+            "RcsTranslationModeBlocked"
+          ],
+          "notes": [
+            "main thrust ready",
+            "RCS available"
+          ],
+          "rotationResponseScale": 1
+        },
         "lastAppliedAcceleration": {
           "x": -0.846,
           "y": 0,
@@ -1225,9 +1289,9 @@
       }
     },
     "executor": {
-      "tick": 344,
+      "tick": 342,
       "status": "Diverged",
-      "planHash": "7e145088",
+      "planHash": "c91f589a",
       "activeSegmentId": "avoid-rock-a-1",
       "distanceToTarget": 64.0001,
       "offRouteDistance": 64,
@@ -1295,9 +1359,9 @@
       }
     },
     "lockedPlan": {
-      "id": "ObstacleAvoidanceLocal:nav-beta:18",
+      "id": "ObstacleAvoidanceLocal:nav-beta:17",
       "planner": "ObstacleAvoidanceLocal",
-      "createdAtTick": 18,
+      "createdAtTick": 17,
       "target": {
         "id": "nav-beta",
         "label": "Navigation Beta",
@@ -1365,7 +1429,7 @@
           "clearanceRisk:0.386"
         ]
       },
-      "planHash": "7e145088"
+      "planHash": "c91f589a"
     },
     "flightSnapshot": {
       "mass": {
@@ -1484,9 +1548,9 @@
         }
       },
       "plan": {
-        "id": "ObstacleAvoidanceLocal:nav-beta:18",
+        "id": "ObstacleAvoidanceLocal:nav-beta:17",
         "planner": "ObstacleAvoidanceLocal",
-        "createdAtTick": 18,
+        "createdAtTick": 17,
         "target": {
           "id": "nav-beta",
           "label": "Navigation Beta",
@@ -1554,7 +1618,7 @@
             "clearanceRisk:0.386"
           ]
         },
-        "planHash": "7e145088"
+        "planHash": "c91f589a"
       },
       "validation": {
         "ok": true,

@@ -218,10 +218,14 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
       case "SetManualFlightInput":
         updateManualInput(typeof candidate.input === "object" && candidate.input ? candidate.input : {});
         return snapshot();
-      case "SetThrottle":
-        updateManualInput({ mainThrottleCommand: clamp01(typeof candidate.throttle === "number" ? candidate.throttle : manualInput.mainThrottleCommand) });
-        runtimeMessage = manualInput.mainThrottleCommand <= 0 ? "Throttle cut." : manualInput.mainThrottleCommand >= 1 ? "Throttle full." : "Throttle adjusted.";
+      case "SetThrottle": {
+        const requestedThrottle = clamp01(typeof candidate.throttle === "number" ? candidate.throttle : manualInput.mainThrottleCommand);
+        updateManualInput({ mainThrottleCommand: requestedThrottle });
+        runtimeMessage = manualInput.controlMode !== "Cruise" && requestedThrottle > 0
+          ? "Throttle ignored outside Cruise."
+          : manualInput.mainThrottleCommand <= 0 ? "Throttle cut." : manualInput.mainThrottleCommand >= 1 ? "Throttle full." : "Throttle adjusted.";
         return snapshot();
+      }
       case "ToggleRcs":
         updateManualInput({ rcsEnabled: !manualInput.rcsEnabled });
         runtimeMessage = `RCS ${manualInput.rcsEnabled ? "enabled" : "disabled"}.`;

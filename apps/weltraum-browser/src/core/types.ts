@@ -73,11 +73,37 @@ export interface Quaternion {
 
 export type FlightControlMode = "Cruise" | "Precision" | "Translation";
 
+export type ControlModeEffectReasonCode =
+  | "MainThrustModeBlocked"
+  | "MainThrustUnavailable"
+  | "MainThrustFuelBlocked"
+  | "RcsDisabled"
+  | "RcsUnavailable"
+  | "RcsTranslationModeBlocked"
+  | "RcsTranslationNoAuthority"
+  | "RcsRotationNoAuthority"
+  | "SasDisabled"
+  | "SasUnavailable"
+  | "SasNoRcsAuthority";
+
+export interface ControlModeEffectSnapshot {
+  readonly controlMode: FlightControlMode;
+  readonly mainThrustAllowed: boolean;
+  readonly rcsTranslationAllowed: boolean;
+  readonly rcsRotationAllowed: boolean;
+  readonly sasAllowed: boolean;
+  readonly modeEffectLabel: string;
+  readonly blockedReasonCodes: readonly ControlModeEffectReasonCode[];
+  readonly notes: readonly string[];
+  readonly rotationResponseScale: number;
+}
+
 export interface ActuatorTelemetry {
   readonly mainThrustActive: boolean;
   readonly rcsTranslationActive: boolean;
   readonly rcsRotationActive: boolean;
   readonly sasCorrectionActive: boolean;
+  readonly controlModeEffect: ControlModeEffectSnapshot;
   readonly lastAppliedAcceleration: Vec3;
   readonly lastAppliedAngularAcceleration: Vec3;
 }

@@ -1,11 +1,12 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { createFlightSnapshot, createShipStateV2 } from "../../src/core";
+import { applyFlightControllerStep, createFlightSnapshot, createShipStateV2, inactiveControlModeEffect, vec3 } from "../../src/core";
 import { createStatusHudViewModel, renderStatusHud } from "../../src/ui/statusHud";
 
 const elementIds = [
   "plan-hash",
   "mode",
   "control-mode",
+  "control-mode-effect",
   "camera-mode",
   "ship-visual-source",
   "throttle-status",
@@ -76,6 +77,7 @@ describe("renderStatusHud", () => {
 
     expect(elements.get("mode")?.textContent).toBe("Manual");
     expect(elements.get("control-mode")?.textContent).toBe("Cruise");
+    expect(elements.get("control-mode-effect")?.textContent).toContain("main thrust enabled");
     expect(elements.get("camera-mode")?.textContent).toBe("ChaseLocked");
     expect(elements.get("ship-visual-source")?.textContent).toBe("Ship visual: Procedural fallback");
     expect(elements.get("help-hint")?.textContent).toContain("Desktop keyboard/mouse manual flight");
@@ -181,6 +183,8 @@ describe("renderStatusHud", () => {
     expect(viewModel.routeState).toContain("new plan required");
     expect(viewModel.autopilotState).toContain("Autopilot blocked: fuel");
     expect(viewModel.controlMode).toBe("Precision");
+    expect(viewModel.controlModeEffectState).toContain("RCS attitude / main thrust blocked");
+    expect(viewModel.controlModeEffectState).toContain("main thrust mode-blocked");
     expect(viewModel.cameraMode).toBe("ChaseLocked");
     expect(viewModel.throttleState).toContain("0%");
     expect(viewModel.velocityState).toContain("m/s");
@@ -300,6 +304,14 @@ describe("renderStatusHud", () => {
         rcsTranslationActive: true,
         rcsRotationActive: false,
         sasCorrectionActive: false,
+        controlModeEffect: {
+          ...inactiveControlModeEffect("Translation"),
+          mainThrustAllowed: false,
+          rcsTranslationAllowed: true,
+          rcsRotationAllowed: true,
+          sasAllowed: false,
+          blockedReasonCodes: ["MainThrustModeBlocked", "SasDisabled"]
+        },
         lastAppliedAcceleration: { x: 1, y: 0, z: 0 },
         lastAppliedAngularAcceleration: { x: 0, y: 0, z: 0 }
       }
@@ -344,6 +356,44 @@ describe("renderStatusHud", () => {
     expect(viewModel.velocityState).not.toContain("(1.0, 2.0, 3.0)");
     expect(viewModel.rcsSasState).toContain("RCS on, SAS off");
     expect(viewModel.rcsSasState).toContain("RCS translate");
+    expect(viewModel.controlModeEffectState).toContain("RCS translation / main thrust blocked");
+    expect(viewModel.controlModeEffectState).toContain("RCS translation active");
+    expect(viewModel.controlModeEffectState).toContain("SAS off");
+  });
+
+  it("shows RCS-disabled mode authority as blocked player text", () => {
+    const ship = applyFlightControllerStep(
+      createShipStateV2({ controlMode: "Precision", rcsEnabled: false, sasEnabled: true }),
+      { controlMode: "Precision", rcsEnabled: false, rotationCommand: vec3(0, 0, 1) },
+      1
+    );
+    const ownerSnapshot = createFlightSnapshot(ship, null);
+
+    const viewModel = createStatusHudViewModel({
+      ship,
+      lockedPlan: null,
+      flightSnapshot: ownerSnapshot,
+      executor: {
+        tick: 1,
+        status: "Idle",
+        planHash: null,
+        activeSegmentId: null,
+        distanceToTarget: 0,
+        offRouteDistance: 0,
+        replanRequired: false,
+        invalidationReasons: [],
+        failureReasonCodes: [],
+        fuel: ownerSnapshot.fuel,
+        flightSnapshot: ownerSnapshot,
+        position: ship.position,
+        velocity: ship.velocity
+      }
+    });
+
+    expect(viewModel.controlModeEffectState).toContain("RCS attitude / main thrust blocked");
+    expect(viewModel.controlModeEffectState).toContain("RCS rotation blocked: RCS off");
+    expect(viewModel.controlModeEffectState).toContain("SAS blocked: no RCS authority");
+    expect(viewModel.rcsSasState).toContain("RCS off, SAS on");
   });
 
   it("renders a concise visual-source line from explicit render snapshot metadata", () => {
