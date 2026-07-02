@@ -1,0 +1,167 @@
+[
+  {
+    "id": "s-curve-obstacles",
+    "category": "Obstacle",
+    "currentExpectedState": "KnownStress",
+    "desiredV1State": "Pass",
+    "requiredPlannerCapability": "Deterministic iterative detours across multiple blocking obstacles with all-segment revalidation",
+    "acceptance": {
+      "minObstacleClearance": 14,
+      "maxSegments": 5,
+      "maxExtraDistanceRatio": 1.45,
+      "maxTicks": 3200,
+      "terminalSpeed": 0.5
+    },
+    "notes": "Current planner detours only the first blocker; v1 must preserve planHash while chaining enough waypoints to clear the remaining S-curve rocks."
+  },
+  {
+    "id": "s-curve-obstacles-long",
+    "category": "LongRangeObstacle",
+    "currentExpectedState": "KnownStress",
+    "desiredV1State": "Pass",
+    "requiredPlannerCapability": "Same deterministic multi-obstacle detour logic on longer routes with stable candidate ordering",
+    "acceptance": {
+      "minObstacleClearance": 14,
+      "maxSegments": 6,
+      "maxExtraDistanceRatio": 1.5,
+      "maxTicks": 5200,
+      "terminalSpeed": 0.5
+    },
+    "notes": "Long-range version keeps the same geometry stress but adds more room for planHash drift if waypoint ordering is not fixed."
+  },
+  {
+    "id": "narrow-corridor",
+    "category": "Obstacle",
+    "currentExpectedState": "KnownStress",
+    "desiredV1State": "Pass",
+    "requiredPlannerCapability": "Corridor-safe detour selection that reasons about both corridor walls and the downstream blocker",
+    "acceptance": {
+      "minObstacleClearance": 12,
+      "maxSegments": 5,
+      "maxExtraDistanceRatio": 1.4,
+      "maxTicks": 3200,
+      "terminalSpeed": 0.5
+    },
+    "notes": "This is the canonical multi-obstacle corridor case; a single lateral detour is not enough once the second obstacle is considered."
+  },
+  {
+    "id": "narrow-corridor-long",
+    "category": "LongRangeObstacle",
+    "currentExpectedState": "KnownStress",
+    "desiredV1State": "Pass",
+    "requiredPlannerCapability": "Deterministic corridor navigation over longer distances without looped replanning",
+    "acceptance": {
+      "minObstacleClearance": 12,
+      "maxSegments": 6,
+      "maxExtraDistanceRatio": 1.46,
+      "maxTicks": 5200,
+      "terminalSpeed": 0.5
+    },
+    "notes": "Use this to prove the planner stays bounded when the corridor remains tight over a longer run."
+  },
+  {
+    "id": "offset-gates",
+    "category": "Obstacle",
+    "currentExpectedState": "Pass",
+    "desiredV1State": "Pass",
+    "requiredPlannerCapability": "Multiple-gate reasoning without overreacting to the first blocker",
+    "acceptance": {
+      "minObstacleClearance": 10,
+      "maxSegments": 4,
+      "maxExtraDistanceRatio": 1.28,
+      "maxTicks": 2400,
+      "terminalSpeed": 0.5
+    },
+    "notes": "Currently passes under forgiving geometry; v1 must keep it deterministic while ensuring the candidate path is still revalidated against all nearby gates."
+  },
+  {
+    "id": "offset-gates-long",
+    "category": "LongRangeObstacle",
+    "currentExpectedState": "Pass",
+    "desiredV1State": "Pass",
+    "requiredPlannerCapability": "Offset gate traversal on longer routes with stable plan scoring and no silent replan",
+    "acceptance": {
+      "minObstacleClearance": 10,
+      "maxSegments": 5,
+      "maxExtraDistanceRatio": 1.35,
+      "maxTicks": 4200,
+      "terminalSpeed": 0.5
+    },
+    "notes": "Long-range offset gates help catch planHash instability that only shows up once the route has extra distance to accumulate numerical drift."
+  },
+  {
+    "id": "target-behind-obstacle-long",
+    "category": "LongRangeObstacle",
+    "currentExpectedState": "Pass",
+    "desiredV1State": "Pass",
+    "requiredPlannerCapability": "Terminal target approach that can route around a blocking obstacle without changing the locked arrival envelope",
+    "acceptance": {
+      "minObstacleClearance": 12,
+      "maxSegments": 4,
+      "maxExtraDistanceRatio": 1.3,
+      "maxTicks": 4200,
+      "terminalSpeed": 0.5
+    },
+    "notes": "This should remain a clean solvable case once the planner can chain more than one obstacle-aware segment."
+  },
+  {
+    "id": "target-near-obstacle-long",
+    "category": "LongRangeObstacle",
+    "currentExpectedState": "Pass",
+    "desiredV1State": "Pass",
+    "requiredPlannerCapability": "Fail-closed terminal-envelope validation when the target is close to obstacle padding",
+    "acceptance": {
+      "minObstacleClearance": 8,
+      "maxSegments": 4,
+      "maxExtraDistanceRatio": 1.22,
+      "maxTicks": 4200,
+      "terminalSpeed": 0.5
+    },
+    "notes": "If the route cannot keep the target envelope safely separate from the obstacle padding, the planner must reject instead of silently accepting an unsafe terminal segment."
+  },
+  {
+    "id": "multi-rock-field-1000m",
+    "category": "LongRangeObstacle",
+    "currentExpectedState": "KnownStress",
+    "desiredV1State": "Pass",
+    "requiredPlannerCapability": "Multi-candidate deterministic reasoning across a dense field without grid-style explosion",
+    "acceptance": {
+      "minObstacleClearance": 15,
+      "maxSegments": 6,
+      "maxExtraDistanceRatio": 1.6,
+      "maxTicks": 5200,
+      "terminalSpeed": 0.5
+    },
+    "notes": "Proves the planner can chain several obstacle-aware turns in a denser field while keeping candidate count bounded."
+  },
+  {
+    "id": "multi-rock-field-2500m",
+    "category": "LongRangeObstacle",
+    "currentExpectedState": "KnownStress",
+    "desiredV1State": "Pass",
+    "requiredPlannerCapability": "Long-horizon deterministic route construction with bounded waypoint depth and stable scoring",
+    "acceptance": {
+      "minObstacleClearance": 15,
+      "maxSegments": 8,
+      "maxExtraDistanceRatio": 1.75,
+      "maxTicks": 9800,
+      "terminalSpeed": 0.5
+    },
+    "notes": "This is the longest solvable stress case; the acceptance numbers intentionally leave room for the route to be longer than the 1000m field while still remaining deterministic."
+  },
+  {
+    "id": "unsolvable-blocked-corridor-negative",
+    "category": "Negative",
+    "currentExpectedState": "ExpectedFail",
+    "desiredV1State": "ExpectedFail",
+    "requiredPlannerCapability": "Fail-closed reject path when no safe route exists within the waypoint budget",
+    "acceptance": {
+      "minObstacleClearance": 0,
+      "maxSegments": 0,
+      "maxExtraDistanceRatio": 0,
+      "maxTicks": 1200,
+      "terminalSpeed": 0.5
+    },
+    "notes": "No route should be synthesized here; the planner must emit a structured reject/unsolvable reason instead of looping or changing the locked plan."
+  }
+]
