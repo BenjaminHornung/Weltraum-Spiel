@@ -17,7 +17,7 @@ This document defines the first planning catalog for modular ship parts.
 - World convention: `+Z` = Forward, `+Y` = Up, `+X` = Right.
 - Snap grid: `0.5 m` increments.
   - 0.5 m is half of a common 1 m module tile.
-  - It supports both compact fighters and large cargo blocks.
+  - It supports compact workships, utility craft, surface-rated landers, and large cargo blocks.
   - Small offsets from physics and camera placement remain stable when using integer snap coordinates.
 - The builder snap origin is at local module center unless pivot-specific.
 
