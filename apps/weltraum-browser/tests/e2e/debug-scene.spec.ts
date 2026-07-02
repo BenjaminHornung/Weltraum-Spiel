@@ -612,24 +612,32 @@ test("TestBridge is exposed only when the testBridge query gate is enabled", asy
 test("insufficient fuel warning is visible in the browser HUD", async ({ page }) => {
   await page.goto("/?testBridge=1&flightCase=insufficient-fuel");
   await page.waitForFunction(() => Boolean((window as any).TestBridge));
-  await page.locator("#engage-autopilot").click();
-  await page.evaluate(() => (window as any).TestBridge.step(1));
 
-  await expect(page.locator("#status")).toContainText("Autopilot blocked: fuel");
+  await expect(page.locator("#status")).toContainText("Autopilot standby");
   await expect(page.locator("#fuel-status")).toContainText("Blocked");
   await expect(page.locator("#failure-reasons")).toContainText("Fuel insufficient");
-  await expect(page.locator("#failure-reasons")).not.toContainText("FuelInsufficient");
+  await expect(page.locator("body")).not.toContainText("FuelInsufficient");
   await expect(page.getByTestId("warning-state")).toContainText("Fuel insufficient");
+  await expect(page.locator("#autopilot-action-state")).toContainText("Resolve warnings before engaging");
+  await expect(page.locator("#engage-autopilot")).toHaveText("Hold route");
+  await expect(page.locator("#engage-autopilot")).toBeDisabled();
+  await expect(page.locator("#engage-autopilot")).toHaveAttribute("aria-disabled", "true");
 });
 
 test("no authority warning is visible in the browser HUD", async ({ page }) => {
   await page.goto("/?testBridge=1&flightCase=no-authority");
   await page.waitForFunction(() => Boolean((window as any).TestBridge));
-  await page.locator("#engage-autopilot").click();
-  await page.evaluate(() => (window as any).TestBridge.step(1));
 
-  await expect(page.locator("#status")).toContainText("Autopilot blocked: authority");
+  await expect(page.locator("#status")).toContainText("Autopilot standby");
   await expect(page.locator("#authority-status")).toContainText("AP blocked");
   await expect(page.locator("#failure-reasons")).toContainText("Autopilot unavailable");
-  await expect(page.locator("#failure-reasons")).not.toContainText("AutopilotUnavailable");
+  await expect(page.locator("#failure-reasons")).toContainText("Authority insufficient");
+  await expect(page.locator("body")).not.toContainText("AutopilotUnavailable");
+  await expect(page.locator("body")).not.toContainText("AuthorityInsufficient");
+  await expect(page.getByTestId("warning-state")).toContainText("Autopilot unavailable");
+  await expect(page.getByTestId("warning-state")).toContainText("Authority insufficient");
+  await expect(page.locator("#autopilot-action-state")).toContainText("Resolve warnings before engaging");
+  await expect(page.locator("#engage-autopilot")).toHaveText("Hold route");
+  await expect(page.locator("#engage-autopilot")).toBeDisabled();
+  await expect(page.locator("#engage-autopilot")).toHaveAttribute("aria-disabled", "true");
 });
