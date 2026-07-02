@@ -170,6 +170,25 @@ describe("FixedStepSimulationLoop", () => {
     expect(afterOneTick.executor.planHash).toBe(before.executor.planHash);
   });
 
+  it("interpolates presentation pose from cloned fixed-step truth without mutating truth", () => {
+    const executor = new AutopilotExecutor({ allowManualInputWhenIdle: true });
+    const movingShip = createShipStateV2({ position: vec3(0, 0, 0), velocity: vec3(10, 0, 0), authority: { mode: "Manual", autopilotAvailable: false } });
+    const loop = new FixedStepSimulationLoop(movingShip, executor, { fixedDeltaSeconds: 0.1, maxSubSteps: 4 });
+
+    loop.advance(0.1);
+    const truthAfterTick = loop.getShip();
+    loop.advance(0.05);
+    const presentation = loop.getPresentationSnapshot();
+
+    expect(loop.getShip().position.x).toBeCloseTo(truthAfterTick.position.x, 8);
+    expect(presentation.interpolationAlpha).toBeCloseTo(0.5, 8);
+    expect(presentation.renderedShip.position.x).toBeGreaterThan(presentation.previousShip.position.x);
+    expect(presentation.renderedShip.position.x).toBeLessThan(presentation.currentShip.position.x);
+    (presentation.renderedShip.position as { x: number }).x = 999;
+    (presentation.currentShip.position as { x: number }).x = 999;
+    expect(loop.getShip().position.x).toBeCloseTo(truthAfterTick.position.x, 8);
+  });
+
   it("publishes real flight telemetry before the first browser runtime step", () => {
     const { controller } = createBrowserRuntime();
 
@@ -256,6 +275,38 @@ describe("FixedStepSimulationLoop", () => {
     expect(second.runtimeMessage).toContain("cancel");
   });
 
+  it("allows a new target and route after completed terminal holding without canceling first", () => {
+    const { controller } = createBrowserRuntime();
+    const engaged = controller.dispatchCommand({ type: "EngageAutopilot", planner: "DirectLocal" });
+    const firstPlanHash = engaged.executor.planHash;
+    let holding = controller.getTelemetry();
+    for (let i = 0; i < 1_800 && !holding.executor.stationKeepingActive; i += 1) {
+      holding = controller.step(1);
+    }
+
+    expect(holding.executor.status).toBe("Arrived");
+    expect(holding.executor.routeLifecycle).toBe("Holding");
+    expect(holding.executor.planHash).toBeNull();
+    expect(holding.executor.completedPlanHash).toBe(firstPlanHash);
+    expect(holding.executor.canAcceptNewPlan).toBe(true);
+    expect(holding.executor.canSelectNewTarget).toBe(true);
+    expect(holding.lockedPlan).toBeNull();
+    expect(controller.getLockedPlan()).toBeNull();
+
+    const selected = controller.dispatchCommand({ type: "SelectTarget", targetId: provingGroundTargets.navigationBeta.id });
+    const second = controller.dispatchCommand({ type: "EngageAutopilot", planner: "ObstacleAvoidanceLocal" });
+
+    expect(selected.selectedTarget?.id).toBe(provingGroundTargets.navigationBeta.id);
+    expect(second.executor.status).toBe("Executing");
+    expect(second.executor.planHash).toMatch(/^[a-f0-9]{8}$/);
+    expect(second.executor.planHash).not.toBe(firstPlanHash);
+    expect(second.executor.completedPlanHash).toBe(firstPlanHash);
+    expect(second.lockedPlan?.target.id).toBe(provingGroundTargets.navigationBeta.id);
+    expect(second.executor.stationKeepingActive).toBe(false);
+    expect(second.executor.canAcceptNewPlan).toBe(false);
+    expect(second.executor.canSelectNewTarget).toBe(false);
+  });
+
   it("keeps selected target, preview, and plan stable when selecting during a locked route", () => {
     const { controller } = createBrowserRuntime();
     const engaged = controller.dispatchCommand({ type: "EngageAutopilot", planner: "ObstacleAvoidanceLocal" });
@@ -310,6 +361,9 @@ describe("FixedStepSimulationLoop", () => {
     expect(serialized.ship.controlMode).toBe(snapshot.ship.controlMode);
     expect(serialized.ship.actuatorTelemetry.mainThrustActive).toBe(snapshot.ship.actuatorTelemetry.mainThrustActive);
     expect(serialized.executor.arrivalPhase).toBe(snapshot.executor.arrivalPhase);
+    expect(serialized.executor.completedPlanHash).toBe(snapshot.executor.completedPlanHash);
+    expect(serialized.executor.canAcceptNewPlan).toBe(snapshot.executor.canAcceptNewPlan);
+    expect(serialized.executor.canSelectNewTarget).toBe(snapshot.executor.canSelectNewTarget);
     expect(serialized.executor.desiredTerminalVelocity).toEqual(snapshot.executor.desiredTerminalVelocity);
     expect(typeof serialized.executor.currentSpeed).toBe("number");
   });

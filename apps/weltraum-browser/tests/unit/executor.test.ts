@@ -196,6 +196,14 @@ describe("AutopilotExecutor", () => {
 
     expect(executor.getTelemetry().status).toBe("Arrived");
     expect(executor.getTelemetry().arrivalPhase).toBe("Holding");
+    expect(executor.getTelemetry().routeLifecycle).toBe("Holding");
+    expect(executor.getTelemetry().planHash).toBeNull();
+    expect(executor.getTelemetry().completedPlanHash).toBe(plan.planHash);
+    expect(executor.getTelemetry().lockedPlanActive).toBe(false);
+    expect(executor.getTelemetry().stationKeepingActive).toBe(true);
+    expect(executor.getTelemetry().canAcceptNewPlan).toBe(true);
+    expect(executor.getTelemetry().canSelectNewTarget).toBe(true);
+    expect(executor.getLockedPlan()).toBeNull();
     expect(executor.getTelemetry().distanceToTarget).toBeLessThan(1);
     expect(after.position).not.toEqual(insideEnvelopeShip.position);
     expect(after.position).not.toEqual(plan.target.position);
@@ -218,9 +226,15 @@ describe("AutopilotExecutor", () => {
     expect(firstTelemetry.arrivalPhase).toBe("Holding");
     expect(firstTelemetry.terminalHoldingActive).toBe(true);
     expect(firstTelemetry.desiredTerminalVelocity).toEqual(vec3());
-    expect(firstTelemetry.planHash).toBe(plan.planHash);
+    expect(firstTelemetry.planHash).toBeNull();
+    expect(firstTelemetry.completedPlanHash).toBe(plan.planHash);
+    expect(firstTelemetry.canAcceptNewPlan).toBe(true);
+    expect(firstTelemetry.canSelectNewTarget).toBe(true);
     expect(secondTelemetry.status).toBe("Arrived");
-    expect(secondTelemetry.planHash).toBe(plan.planHash);
+    expect(secondTelemetry.planHash).toBeNull();
+    expect(secondTelemetry.completedPlanHash).toBe(plan.planHash);
+    expect(secondTelemetry.stationKeepingActive).toBe(true);
+    expect(executor.getLockedPlan()).toBeNull();
     expect(firstHold.position).not.toEqual(capturedShip.position);
     expect(secondHold.position).not.toEqual(firstHold.position);
     expect(magnitude(firstHold.velocity)).toBeGreaterThan(0);
@@ -273,6 +287,7 @@ describe("AutopilotExecutor", () => {
 
     expect(executor.getTelemetry().status).toBe("Executing");
     expect(executor.getTelemetry().planHash).toBe(plan.planHash);
+    expect(executor.getTelemetry().completedPlanHash).toBeNull();
     expect(executor.getLockedPlan()?.planHash).toBe(plan.planHash);
     expect(magnitude(after.velocity)).toBeGreaterThanOrEqual(target.arrivalEnvelope.terminalSpeed ?? 0);
     expect(after.actuatorTelemetry.lastAppliedAcceleration.x).toBeGreaterThanOrEqual(0);
@@ -291,8 +306,9 @@ describe("AutopilotExecutor", () => {
     const after = executor.step(createShip({ position: vec3(99, 0, 0), velocity: vec3(target.arrivalEnvelope.terminalSpeed ?? 0, 0, 0) }), 1 / 30, 3);
 
     expect(executor.getTelemetry().status).toBe("Arrived");
-    expect(executor.getTelemetry().planHash).toBe(plan.planHash);
-    expect(executor.getLockedPlan()?.planHash).toBe(plan.planHash);
+    expect(executor.getTelemetry().planHash).toBeNull();
+    expect(executor.getTelemetry().completedPlanHash).toBe(plan.planHash);
+    expect(executor.getLockedPlan()).toBeNull();
     expect(after.position).not.toEqual(plan.target.position);
     expect(magnitude(after.velocity)).toBeLessThanOrEqual(target.arrivalEnvelope.terminalSpeed ?? 0);
   });
@@ -315,6 +331,7 @@ describe("AutopilotExecutor", () => {
     expect(magnitude(after.angularVelocity)).toBeGreaterThan(0);
     expect(after.actuatorTelemetry.rcsRotationActive).toBe(true);
     expect(executor.getTelemetry().planHash).toBe(plan.planHash);
+    expect(executor.getTelemetry().completedPlanHash).toBeNull();
   });
 
   it("preserves fly-through telemetry for fast NoStopRequired arrivals when no terminal speed is requested", () => {
@@ -330,17 +347,57 @@ describe("AutopilotExecutor", () => {
 
     const crossingShip = createShip({ position: vec3(96, 0, 0), velocity: vec3(180, 0, 0) });
     const after = executor.step(crossingShip, 1 / 30, 2);
+    const arrivalTelemetry = executor.getTelemetry();
+    const afterIdleTick = executor.step(after, 1 / 30, 3);
+    const idleTelemetry = executor.getTelemetry();
 
-    expect(executor.getTelemetry().status).toBe("Arrived");
-    expect(executor.getTelemetry().arrivalPhase).toBe("None");
-    expect(executor.getTelemetry().terminalSpeedLimit).toBeNull();
-    expect(executor.getTelemetry().terminalCaptureActive).toBe(false);
-    expect(executor.getTelemetry().terminalHoldingActive).toBe(false);
-    expect(executor.getTelemetry().planHash).toBe(plan.planHash);
+    expect(arrivalTelemetry.status).toBe("Arrived");
+    expect(arrivalTelemetry.routeLifecycle).toBe("Arrived");
+    expect(arrivalTelemetry.arrivalPhase).toBe("None");
+    expect(arrivalTelemetry.terminalSpeedLimit).toBeNull();
+    expect(arrivalTelemetry.terminalCaptureActive).toBe(false);
+    expect(arrivalTelemetry.terminalHoldingActive).toBe(false);
+    expect(arrivalTelemetry.stationKeepingActive).toBe(false);
+    expect(arrivalTelemetry.lockedPlanActive).toBe(false);
+    expect(arrivalTelemetry.planHash).toBeNull();
+    expect(arrivalTelemetry.completedPlanHash).toBe(plan.planHash);
     expect(distance(after.position, plan.target.position)).toBeLessThanOrEqual(noStopTarget.arrivalEnvelope.radius);
     expect(after.position).not.toEqual(plan.target.position);
     expect(magnitude(after.velocity)).toBeGreaterThan(100);
-    expect(executor.getLockedPlan()?.planHash).toBe(plan.planHash);
+    expect(idleTelemetry.status).toBe("Idle");
+    expect(idleTelemetry.routeLifecycle).toBe("Idle");
+    expect(idleTelemetry.stationKeepingActive).toBe(false);
+    expect(idleTelemetry.terminalHoldingActive).toBe(false);
+    expect(idleTelemetry.planHash).toBeNull();
+    expect(idleTelemetry.completedPlanHash).toBe(plan.planHash);
+    expect(afterIdleTick.position).not.toEqual(plan.target.position);
+    expect(magnitude(afterIdleTick.velocity)).toBeCloseTo(magnitude(after.velocity), 8);
+    expect(magnitude(afterIdleTick.actuatorTelemetry.lastAppliedAcceleration)).toBe(0);
+    expect(afterIdleTick.actuatorTelemetry.mainThrustActive).toBe(false);
+    expect(executor.getLockedPlan()).toBeNull();
+  });
+
+  it("clears terminal station-keeping when a new route is locked after arrival", () => {
+    const initialShip = createShip();
+    const firstPlan = new DirectLocalPlanner().plan({ tick: 1, ship: initialShip, target: stopCaptureTarget });
+    const secondTarget: TargetDescriptor = { ...target, id: "second", position: vec3(140, 0, 0) };
+    const executor = new AutopilotExecutor({ divergenceDistance: 80 });
+    executor.lockPlan(firstPlan, initialShip);
+
+    const holdingShip = executor.step(createShip({ position: vec3(99.2, 0, 0), velocity: vec3(0.2, 0, 0) }), 1 / 30, 2);
+    expect(executor.getTelemetry().stationKeepingActive).toBe(true);
+    expect(executor.getTelemetry().canAcceptNewPlan).toBe(true);
+
+    const secondPlan = new DirectLocalPlanner().plan({ tick: 3, ship: holdingShip, target: secondTarget });
+    executor.lockPlan(secondPlan, holdingShip, 3);
+
+    expect(executor.getLockedPlan()?.planHash).toBe(secondPlan.planHash);
+    expect(executor.getTelemetry().routeLifecycle).toBe("Executing");
+    expect(executor.getTelemetry().planHash).toBe(secondPlan.planHash);
+    expect(executor.getTelemetry().completedPlanHash).toBe(firstPlan.planHash);
+    expect(executor.getTelemetry().stationKeepingActive).toBe(false);
+    expect(executor.getTelemetry().canAcceptNewPlan).toBe(false);
+    expect(executor.getTelemetry().canSelectNewTarget).toBe(false);
   });
 
   it("does not snap tangential terminal swings that stay outside the arrival envelope", () => {

@@ -11,6 +11,15 @@ const fromVector3 = (value: THREE.Vector3) => ({ x: value.x, y: value.y, z: valu
 
 export interface RenderDebugSnapshot {
   readonly shipPosition: { readonly x: number; readonly y: number; readonly z: number };
+  readonly usesInterpolatedPose: boolean;
+  readonly interpolationAlpha: number;
+  readonly truthShipPosition: { readonly x: number; readonly y: number; readonly z: number };
+  readonly renderedShipPosition: { readonly x: number; readonly y: number; readonly z: number };
+  readonly truthShipOrientation: { readonly x: number; readonly y: number; readonly z: number; readonly w: number };
+  readonly renderedShipOrientation: { readonly x: number; readonly y: number; readonly z: number; readonly w: number };
+  readonly fixedStepCountThisFrame: number;
+  readonly frameDeltaSeconds: number;
+  readonly cameraSmoothingAlpha: number;
   readonly targetPosition: { readonly x: number; readonly y: number; readonly z: number } | null;
   readonly lockedTargetPosition: { readonly x: number; readonly y: number; readonly z: number } | null;
   readonly selectedTargetId: string | null;
@@ -128,8 +137,9 @@ export class DebugScene {
       this.lastTime = time;
       this.dispatchManualInput(elapsed);
       const telemetry = this.runtime.advance(elapsed);
-      const position = toVector3(telemetry.ship.position);
-      const orientation = telemetry.ship.orientation;
+      const presentation = this.runtime.getPresentationSnapshot();
+      const position = toVector3(presentation.renderedShip.position);
+      const orientation = presentation.renderedShip.orientation;
       const routePlan = telemetry.lockedPlan ?? telemetry.routePreview?.plan ?? null;
       const targetDescriptor = telemetry.selectedTarget ?? telemetry.lockedPlan?.target ?? telemetry.routePreview?.target ?? null;
       const targetPosition = targetDescriptor?.position;
@@ -140,7 +150,7 @@ export class DebugScene {
       }
       this.shipVisual.updatePose(position, orientation);
       this.shipVisual.updateVfx(telemetry.ship.actuatorTelemetry);
-      const cameraSnapshot = this.updateCamera(telemetry.manualInput?.cameraMode ?? "ChaseLocked", position, orientation);
+      const cameraSnapshot = this.updateCamera(telemetry.manualInput?.cameraMode ?? "ChaseLocked", position, orientation, elapsed);
       if (targetPosition) {
         this.target.visible = true;
         this.target.position.copy(toVector3(targetPosition));
@@ -149,6 +159,15 @@ export class DebugScene {
       }
       this.renderSnapshot = {
         shipPosition: fromVector3(position),
+        usesInterpolatedPose: true,
+        interpolationAlpha: Number(presentation.interpolationAlpha.toFixed(4)),
+        truthShipPosition: telemetry.ship.position,
+        renderedShipPosition: fromVector3(position),
+        truthShipOrientation: telemetry.ship.orientation,
+        renderedShipOrientation: orientation,
+        fixedStepCountThisFrame: presentation.fixedStepCountThisFrame,
+        frameDeltaSeconds: Number(presentation.frameDeltaSeconds.toFixed(6)),
+        cameraSmoothingAlpha: cameraSnapshot.smoothingAlpha,
         targetPosition: this.target.visible ? fromVector3(this.target.position) : null,
         lockedTargetPosition: telemetry.lockedPlan?.target.position ?? null,
         selectedTargetId: targetDescriptor?.id ?? null,
@@ -228,6 +247,15 @@ export class DebugScene {
   private createInitialRenderSnapshot(): RenderDebugSnapshot {
     return {
       shipPosition: { x: 0, y: 0, z: 0 },
+      usesInterpolatedPose: true,
+      interpolationAlpha: 0,
+      truthShipPosition: { x: 0, y: 0, z: 0 },
+      renderedShipPosition: { x: 0, y: 0, z: 0 },
+      truthShipOrientation: { x: 0, y: 0, z: 0, w: 1 },
+      renderedShipOrientation: { x: 0, y: 0, z: 0, w: 1 },
+      fixedStepCountThisFrame: 0,
+      frameDeltaSeconds: 0,
+      cameraSmoothingAlpha: 0,
       targetPosition: null,
       lockedTargetPosition: null,
       selectedTargetId: null,
@@ -286,7 +314,7 @@ export class DebugScene {
     });
   }
 
-  private updateCamera(mode: CameraMode, shipPosition: THREE.Vector3, orientation: { x: number; y: number; z: number; w: number }): RenderDebugSnapshot["camera"] {
+  private updateCamera(mode: CameraMode, shipPosition: THREE.Vector3, orientation: { x: number; y: number; z: number; w: number }, deltaSeconds: number): RenderDebugSnapshot["camera"] & { readonly smoothingAlpha: number } {
     const shipQuaternion = new THREE.Quaternion(orientation.x, orientation.y, orientation.z, orientation.w).normalize();
     const shipVisualSnapshot = this.shipVisual.getSnapshot();
     const descriptor = shipVisualSnapshot.descriptor.cameraAnchor;
@@ -314,7 +342,9 @@ export class DebugScene {
       );
     }
 
-    this.camera.position.lerp(cameraPosition, mode === "ChaseLocked" ? 0.24 : 0.18);
+    const smoothingLambda = mode === "ChaseLocked" ? 16 : 11;
+    const smoothingAlpha = 1 - Math.exp(-smoothingLambda * Math.max(0, Math.min(0.1, deltaSeconds)));
+    this.camera.position.lerp(cameraPosition, smoothingAlpha);
     this.camera.lookAt(mode === "FreeInspect" ? followTarget : lookTarget);
     return {
       mode,
@@ -324,7 +354,8 @@ export class DebugScene {
       distanceToShip: Number(this.camera.position.distanceTo(shipPosition).toFixed(4)),
       anchorId: descriptor.id,
       anchorSource: cameraAnchorBinding.source,
-      anchorLocalPosition: cameraAnchorBinding.localPosition
+      anchorLocalPosition: cameraAnchorBinding.localPosition,
+      smoothingAlpha: Number(smoothingAlpha.toFixed(6))
     };
   }
 
