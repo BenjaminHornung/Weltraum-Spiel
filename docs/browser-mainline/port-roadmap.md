@@ -44,6 +44,8 @@ Gate: each scenario emits JSON, Markdown summary and screenshot/visual evidence 
 
 Proving-ground v2 follow-up: the browser app now adds an additive course catalog with 11 local courses and controlled `Safe`/`Balanced`/`Fast` speed profiles. The v2 harness records profile, ticks-to-arrival, peak speed, terminal speed, obstacle clearance, fuel used, arrival phase, plan hashes, replan signal and classification. `KnownStress` courses are kept as honest current-planner limit evidence for multi-obstacle/corridor pressure, while `ExpectedFail` courses cover low-fuel and off-route disturbance contracts.
 
+Long-range testfield v1 follow-up: the browser catalog is expanded to 35 courses with 500m/1000m/2500m direct tiers, long single-obstacle routes, multi-obstacle/corridor `KnownStress` rows, explicit fuel/authority/brake/off-route `ExpectedFail` rows, and evidence-only `Safe`/`Balanced`/`Fast` comparison rows. Browser evidence is produced by `apps/weltraum-browser/tests/e2e/autopilot-proving-ground-long-range.spec.ts` into `apps/weltraum-browser/evidence/browser-autopilot-long-range-testfield-v1.md`, `autopilot-long-range-summary.json`, `autopilot-long-range-speed-profile-summary.json`, and representative screenshots for direct 1000m, direct 2500m, obstacle, and KnownStress courses. This remains a local-space planner testfield: it documents the current one-blocking-obstacle planner limit and preserves no-snap, no velocity-zero shortcut, no silent replan, stable `planHash`, TestBridge query gating, and GLBLoaded evidence gates.
+
 ## M3: Flight Authority / Fuel / Braking
 
 Status: v1 implemented in the browser mainline app. `ShipMass`, `FuelState`, `AuthorityState`, `BrakingReserve` and `FlightSnapshot` are explicit TypeScript contracts consumed by executor, telemetry, HUD, TestBridge and scenario evidence. Cargo mass remains a stubbed field only.
@@ -105,6 +107,7 @@ Deferred M4 follow-up points:
 
 - player-facing route-mode UI (the browser proving-ground has internal `Safe`/`Balanced`/`Fast` profiles for evidence, but no player UI selector yet),
 - richer multi-candidate selection beyond the current deterministic skeleton,
+- planner support for globally solving multi-obstacle/corridor long-range routes beyond the current documented one-blocking-obstacle `KnownStress` limit,
 - landing/docking/cargo/orbit runtime behavior,
 - full frame-aware target descriptors for non-local-space routes.
 

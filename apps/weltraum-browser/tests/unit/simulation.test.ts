@@ -13,6 +13,7 @@ import { createTestBridge } from "../../src/test-harness/browserBridge";
 import { serializeTelemetry } from "../../src/sim/telemetry";
 import type { ShipState, TargetDescriptor } from "../../src/core";
 import { provingGroundTargets } from "../../src/world/provingGroundWorld";
+import { autopilotProvingGroundCourses } from "../../src/world/autopilotProvingGroundCourses";
 
 const ship: ShipState = createShipStateV2({
   position: vec3(0, 0, 0),
@@ -335,13 +336,17 @@ describe("FixedStepSimulationLoop", () => {
     const { controller } = createBrowserRuntime();
     const bridge = createTestBridge(controller);
 
-    expect(bridge.listAutopilotProvingGroundCourses()).toContain("direct-long");
+    expect(bridge.listAutopilotProvingGroundCourses()).toEqual(expect.arrayContaining([
+      "direct-medium-stop",
+      "direct-long-stop",
+      "direct-very-long-stop"
+    ]));
     const safe = bridge.runAutopilotProvingGroundCourse("direct-long", "Safe");
     const balanced = bridge.runAutopilotProvingGroundCourse("direct-long", "Balanced");
     expect(balanced.classification).toBe("Pass");
     expect(balanced.ticksToArrival as number).toBeLessThan(safe.ticksToArrival as number);
     expect(balanced.finalSpeed).toBeLessThanOrEqual(0.5);
-    expect(bridge.runAutopilotProvingGroundMatrix("Balanced")).toHaveLength(11);
+    expect(bridge.runAutopilotProvingGroundMatrix("Balanced")).toHaveLength(autopilotProvingGroundCourses.length);
   });
 
   it("preserves browser vertical-slice snapshot fields during telemetry serialization", () => {
