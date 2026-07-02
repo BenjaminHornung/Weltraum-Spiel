@@ -259,13 +259,25 @@ export interface LocalPlanner {
 
 export type ExecutorStatus = "Idle" | "Executing" | "Arrived" | "Diverged" | "OutOfFuel" | "NoAuthority" | "BrakeReserveInsufficient";
 
+export type ExecutorArrivalPhase = "None" | "TerminalBrake" | "Capture" | "Holding";
+
 export interface ExecutorTelemetry {
   readonly tick: number;
   readonly status: ExecutorStatus;
+  readonly arrivalPhase?: ExecutorArrivalPhase;
   readonly planHash: string | null;
   readonly activeSegmentId: string | null;
   readonly distanceToTarget: number;
   readonly offRouteDistance: number;
+  readonly terminalSpeedLimit?: number | null;
+  readonly currentSpeed?: number;
+  readonly terminalError?: number | null;
+  readonly terminalSpeedError?: number | null;
+  readonly terminalRadialSpeed?: number;
+  readonly terminalTangentialSpeed?: number;
+  readonly desiredTerminalVelocity?: Vec3;
+  readonly terminalCaptureActive?: boolean;
+  readonly terminalHoldingActive?: boolean;
   readonly replanRequired: boolean;
   readonly invalidationReasons: readonly string[];
   readonly failureReasonCodes: readonly FailureReasonCode[];

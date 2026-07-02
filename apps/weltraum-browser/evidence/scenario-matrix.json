@@ -33,6 +33,7 @@
       ]
     },
     "status": "Arrived",
+    "arrivalPhase": "None",
     "replanRequired": false,
     "invalidationReasons": [],
     "failureReasonCodes": [],
@@ -48,20 +49,31 @@
       "reasonCodes": []
     },
     "brakingReserve": {
-      "requiredDeltaV": 1,
-      "availableDeltaV": 4318.1818,
+      "requiredDeltaV": 1.303,
+      "availableDeltaV": 4317.905,
       "canBrake": true,
       "reasonCodes": []
     },
     "initialMass": 1100,
-    "finalMass": 1100,
+    "finalMass": 1099.9933,
     "initialFuel": 100,
-    "finalFuel": 100,
-    "fuelUsed": 0,
-    "finalSpeed": 0,
-    "fuel": 100,
-    "finalPosition": {
+    "finalFuel": 99.9933,
+    "fuelUsed": 0.0067,
+    "finalSpeed": 0.303,
+    "terminalSpeedLimit": null,
+    "terminalSpeedError": null,
+    "terminalRadialSpeed": 0.303,
+    "terminalTangentialSpeed": 0,
+    "desiredTerminalVelocity": {
       "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "terminalCaptureActive": false,
+    "terminalHoldingActive": false,
+    "fuel": 99.9933,
+    "finalPosition": {
+      "x": 0.0101,
       "y": 0,
       "z": 0
     },
@@ -70,7 +82,7 @@
       "y": 0,
       "z": 0
     },
-    "distanceToTarget": 1.5,
+    "distanceToTarget": 1.4898989898989898,
     "offRouteDistance": 0,
     "classification": "PASS",
     "notes": []
@@ -80,8 +92,8 @@
     "label": "Obstacle avoidance route",
     "tick": 8,
     "planner": "ObstacleAvoidanceLocal",
-    "planHashBefore": "4d6b76cb",
-    "planHashAfter": "4d6b76cb",
+    "planHashBefore": "df85c8b3",
+    "planHashAfter": "df85c8b3",
     "segmentKinds": [
       "Avoidance",
       "Terminal"
@@ -89,8 +101,8 @@
     "targetKind": "Point",
     "arrivalEnvelope": {
       "radius": 3,
-      "terminalSpeed": 8,
-      "stopBehavior": "MatchTerminalSpeed"
+      "terminalSpeed": 0.5,
+      "stopBehavior": "StopWithinEnvelope"
     },
     "routeValidation": {
       "ok": true,
@@ -111,6 +123,7 @@
       ]
     },
     "status": "Executing",
+    "arrivalPhase": "None",
     "replanRequired": false,
     "invalidationReasons": [],
     "failureReasonCodes": [],
@@ -137,6 +150,17 @@
     "finalFuel": 99.9467,
     "fuelUsed": 0.0533,
     "finalSpeed": 2.4243,
+    "terminalSpeedLimit": 0.5,
+    "terminalSpeedError": 1.92429384912491,
+    "terminalRadialSpeed": 2.0556,
+    "terminalTangentialSpeed": 1.2852,
+    "desiredTerminalVelocity": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "terminalCaptureActive": false,
+    "terminalHoldingActive": false,
     "fuel": 99.9467,
     "finalPosition": {
       "x": 0.3088,
@@ -158,16 +182,16 @@
     "label": "Insufficient fuel",
     "tick": 1,
     "planner": "DirectLocal",
-    "planHashBefore": "5bfe993b",
-    "planHashAfter": "5bfe993b",
+    "planHashBefore": "7f3d0233",
+    "planHashAfter": "7f3d0233",
     "segmentKinds": [
       "Direct"
     ],
     "targetKind": "Point",
     "arrivalEnvelope": {
       "radius": 3,
-      "terminalSpeed": 8,
-      "stopBehavior": "MatchTerminalSpeed"
+      "terminalSpeed": 0.5,
+      "stopBehavior": "StopWithinEnvelope"
     },
     "routeValidation": {
       "ok": true,
@@ -195,6 +219,7 @@
       ]
     },
     "status": "OutOfFuel",
+    "arrivalPhase": "None",
     "replanRequired": true,
     "invalidationReasons": [
       "FuelDepleted",
@@ -233,6 +258,17 @@
     "finalFuel": 0,
     "fuelUsed": 0,
     "finalSpeed": 0,
+    "terminalSpeedLimit": 0.5,
+    "terminalSpeedError": -0.5,
+    "terminalRadialSpeed": 0,
+    "terminalTangentialSpeed": 0,
+    "desiredTerminalVelocity": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "terminalCaptureActive": false,
+    "terminalHoldingActive": false,
     "fuel": 0,
     "finalPosition": {
       "x": 0,
@@ -254,16 +290,16 @@
     "label": "No authority",
     "tick": 1,
     "planner": "DirectLocal",
-    "planHashBefore": "71c45383",
-    "planHashAfter": "71c45383",
+    "planHashBefore": "e40c019b",
+    "planHashAfter": "e40c019b",
     "segmentKinds": [
       "Direct"
     ],
     "targetKind": "Point",
     "arrivalEnvelope": {
       "radius": 3,
-      "terminalSpeed": 8,
-      "stopBehavior": "MatchTerminalSpeed"
+      "terminalSpeed": 0.5,
+      "stopBehavior": "StopWithinEnvelope"
     },
     "routeValidation": {
       "ok": true,
@@ -291,6 +327,7 @@
       ]
     },
     "status": "NoAuthority",
+    "arrivalPhase": "None",
     "replanRequired": true,
     "invalidationReasons": [
       "AutopilotUnavailable",
@@ -328,6 +365,17 @@
     "finalFuel": 100,
     "fuelUsed": 0,
     "finalSpeed": 0,
+    "terminalSpeedLimit": 0.5,
+    "terminalSpeedError": -0.5,
+    "terminalRadialSpeed": 0,
+    "terminalTangentialSpeed": 0,
+    "desiredTerminalVelocity": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "terminalCaptureActive": false,
+    "terminalHoldingActive": false,
     "fuel": 100,
     "finalPosition": {
       "x": 0,
@@ -349,16 +397,16 @@
     "label": "No main thrusters",
     "tick": 1,
     "planner": "DirectLocal",
-    "planHashBefore": "ba16ecef",
-    "planHashAfter": "ba16ecef",
+    "planHashBefore": "7a7e62a7",
+    "planHashAfter": "7a7e62a7",
     "segmentKinds": [
       "Direct"
     ],
     "targetKind": "Point",
     "arrivalEnvelope": {
       "radius": 3,
-      "terminalSpeed": 8,
-      "stopBehavior": "MatchTerminalSpeed"
+      "terminalSpeed": 0.5,
+      "stopBehavior": "StopWithinEnvelope"
     },
     "routeValidation": {
       "ok": true,
@@ -386,6 +434,7 @@
       ]
     },
     "status": "NoAuthority",
+    "arrivalPhase": "None",
     "replanRequired": true,
     "invalidationReasons": [
       "MainThrustersUnavailable",
@@ -423,6 +472,17 @@
     "finalFuel": 100,
     "fuelUsed": 0,
     "finalSpeed": 0,
+    "terminalSpeedLimit": 0.5,
+    "terminalSpeedError": -0.5,
+    "terminalRadialSpeed": 0,
+    "terminalTangentialSpeed": 0,
+    "desiredTerminalVelocity": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "terminalCaptureActive": false,
+    "terminalHoldingActive": false,
     "fuel": 100,
     "finalPosition": {
       "x": 0,
@@ -444,16 +504,16 @@
     "label": "Brake reserve insufficient",
     "tick": 1,
     "planner": "DirectLocal",
-    "planHashBefore": "a275d8e4",
-    "planHashAfter": "a275d8e4",
+    "planHashBefore": "6b5b9450",
+    "planHashAfter": "6b5b9450",
     "segmentKinds": [
       "Direct"
     ],
     "targetKind": "Point",
     "arrivalEnvelope": {
       "radius": 3,
-      "terminalSpeed": 8,
-      "stopBehavior": "MatchTerminalSpeed"
+      "terminalSpeed": 0.5,
+      "stopBehavior": "StopWithinEnvelope"
     },
     "routeValidation": {
       "ok": true,
@@ -487,6 +547,7 @@
       ]
     },
     "status": "BrakeReserveInsufficient",
+    "arrivalPhase": "None",
     "replanRequired": true,
     "invalidationReasons": [
       "FuelInsufficient",
@@ -522,6 +583,17 @@
     "finalFuel": 6,
     "fuelUsed": 0,
     "finalSpeed": 80,
+    "terminalSpeedLimit": 0.5,
+    "terminalSpeedError": 79.5,
+    "terminalRadialSpeed": 80,
+    "terminalTangentialSpeed": 0,
+    "desiredTerminalVelocity": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "terminalCaptureActive": false,
+    "terminalHoldingActive": false,
     "fuel": 6,
     "finalPosition": {
       "x": 0,
@@ -543,16 +615,16 @@
     "label": "Off-route divergence",
     "tick": 1,
     "planner": "DirectLocal",
-    "planHashBefore": "14c3ec2e",
-    "planHashAfter": "14c3ec2e",
+    "planHashBefore": "bf7a1dba",
+    "planHashAfter": "bf7a1dba",
     "segmentKinds": [
       "Direct"
     ],
     "targetKind": "Point",
     "arrivalEnvelope": {
       "radius": 3,
-      "terminalSpeed": 8,
-      "stopBehavior": "MatchTerminalSpeed"
+      "terminalSpeed": 0.5,
+      "stopBehavior": "StopWithinEnvelope"
     },
     "routeValidation": {
       "ok": true,
@@ -573,6 +645,7 @@
       ]
     },
     "status": "Diverged",
+    "arrivalPhase": "None",
     "replanRequired": true,
     "invalidationReasons": [
       "OffLockedRoute"
@@ -603,6 +676,17 @@
     "finalFuel": 100,
     "fuelUsed": 0,
     "finalSpeed": 0,
+    "terminalSpeedLimit": 0.5,
+    "terminalSpeedError": -0.5,
+    "terminalRadialSpeed": 0,
+    "terminalTangentialSpeed": 0,
+    "desiredTerminalVelocity": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "terminalCaptureActive": false,
+    "terminalHoldingActive": false,
     "fuel": 100,
     "finalPosition": {
       "x": 0,
@@ -624,16 +708,16 @@
     "label": "Locked plan hash preservation",
     "tick": 12,
     "planner": "DirectLocal",
-    "planHashBefore": "14c3ec2e",
-    "planHashAfter": "14c3ec2e",
+    "planHashBefore": "bf7a1dba",
+    "planHashAfter": "bf7a1dba",
     "segmentKinds": [
       "Direct"
     ],
     "targetKind": "Point",
     "arrivalEnvelope": {
       "radius": 3,
-      "terminalSpeed": 8,
-      "stopBehavior": "MatchTerminalSpeed"
+      "terminalSpeed": 0.5,
+      "stopBehavior": "StopWithinEnvelope"
     },
     "routeValidation": {
       "ok": true,
@@ -654,6 +738,7 @@
       ]
     },
     "status": "Executing",
+    "arrivalPhase": "Capture",
     "replanRequired": false,
     "invalidationReasons": [],
     "failureReasonCodes": [],
@@ -680,6 +765,17 @@
     "finalFuel": 99.92,
     "fuelUsed": 0.08,
     "finalSpeed": 3.6365,
+    "terminalSpeedLimit": 0.5,
+    "terminalSpeedError": 3.1364848541172203,
+    "terminalRadialSpeed": 3.6365,
+    "terminalTangentialSpeed": 0,
+    "desiredTerminalVelocity": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "terminalCaptureActive": true,
+    "terminalHoldingActive": false,
     "fuel": 99.92,
     "finalPosition": {
       "x": 0.7879,
@@ -701,8 +797,8 @@
     "label": "Explicit replan-required signal",
     "tick": 1,
     "planner": "ObstacleAvoidanceLocal",
-    "planHashBefore": "4d6b76cb",
-    "planHashAfter": "4d6b76cb",
+    "planHashBefore": "df85c8b3",
+    "planHashAfter": "df85c8b3",
     "segmentKinds": [
       "Avoidance",
       "Terminal"
@@ -710,8 +806,8 @@
     "targetKind": "Point",
     "arrivalEnvelope": {
       "radius": 3,
-      "terminalSpeed": 8,
-      "stopBehavior": "MatchTerminalSpeed"
+      "terminalSpeed": 0.5,
+      "stopBehavior": "StopWithinEnvelope"
     },
     "routeValidation": {
       "ok": true,
@@ -732,6 +828,7 @@
       ]
     },
     "status": "Diverged",
+    "arrivalPhase": "None",
     "replanRequired": true,
     "invalidationReasons": [
       "OffLockedRoute"
@@ -762,6 +859,17 @@
     "finalFuel": 100,
     "fuelUsed": 0,
     "finalSpeed": 0,
+    "terminalSpeedLimit": 0.5,
+    "terminalSpeedError": -0.5,
+    "terminalRadialSpeed": 0,
+    "terminalTangentialSpeed": 0,
+    "desiredTerminalVelocity": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "terminalCaptureActive": false,
+    "terminalHoldingActive": false,
     "fuel": 100,
     "finalPosition": {
       "x": 0,

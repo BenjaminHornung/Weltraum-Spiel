@@ -1,5 +1,5 @@
-﻿import { clamp, distance, dot, magnitude, normalize, projectPointOnSegment, scale, sub, vec3 } from "../core/vector";
-import type { ArrivalEnvelope, ExecutorTelemetry, FailureReasonCode, RoutePlan, RouteSegment, ShipState } from "../core/types";
+﻿import { add, clamp, distance, dot, magnitude, normalize, projectPointOnSegment, scale, sub, vec3 } from "../core/vector";
+import type { ArrivalEnvelope, ExecutorArrivalPhase, ExecutorTelemetry, FailureReasonCode, RoutePlan, RouteSegment, ShipState } from "../core/types";
 import { arrivalEnvelopeForTarget, arrivalRadiusForTarget } from "../navigation/validation";
 import { applyFlightControllerStep } from "./flightController";
 import { accelerationLimitForMass, createFlightSnapshot, createShipStateV2 } from "./state";
@@ -35,6 +35,30 @@ const isArrivalSpeedSatisfied = (ship: ShipState, envelope: ArrivalEnvelope | nu
   return terminalSpeed === undefined || magnitude(ship.velocity) <= terminalSpeed + 1e-6;
 };
 
+const isStopCaptureEnvelope = (envelope: ArrivalEnvelope | null): boolean => envelope?.stopBehavior === "StopWithinEnvelope";
+
+const isTerminalTelemetryEnvelope = (envelope: ArrivalEnvelope | null): boolean =>
+  envelope?.stopBehavior !== "NoStopRequired" && terminalSpeedForArrival(envelope) !== undefined;
+
+const terminalStateForPhase = (
+  arrivalPhase: ExecutorArrivalPhase,
+  desiredTerminalVelocity: ShipState["position"] = vec3()
+): TerminalTelemetryState => ({
+  desiredTerminalVelocity,
+  arrivalPhase,
+  terminalCaptureActive: arrivalPhase === "Capture",
+  terminalHoldingActive: arrivalPhase === "Holding"
+});
+
+const clampMagnitude = (value: ShipState["position"], limit: number): ShipState["position"] => {
+  const valueMagnitude = magnitude(value);
+  if (valueMagnitude <= limit || valueMagnitude <= 1e-9) {
+    return value;
+  }
+
+  return scale(normalize(value), Math.max(0, limit));
+};
+
 const crossedTerminalTarget = (from: ShipState["position"], to: ShipState["position"], target: ShipState["position"], arrivalRadius: number): boolean => {
   if (!Number.isFinite(arrivalRadius) || arrivalRadius < 0) {
     return false;
@@ -54,8 +78,26 @@ interface AutopilotActuatorRequest {
   readonly facingDirection: ShipState["position"];
   readonly throttle: number;
   readonly desiredAcceleration: ShipState["position"];
+  readonly desiredTerminalVelocity: ShipState["position"];
+  readonly arrivalPhase: ExecutorArrivalPhase;
+  readonly terminalCaptureActive: boolean;
+  readonly terminalHoldingActive: boolean;
   readonly braking: boolean;
 }
+
+interface TerminalTelemetryState {
+  readonly desiredTerminalVelocity: ShipState["position"];
+  readonly arrivalPhase: ExecutorArrivalPhase;
+  readonly terminalCaptureActive: boolean;
+  readonly terminalHoldingActive: boolean;
+}
+
+const inactiveTerminalTelemetry: TerminalTelemetryState = {
+  desiredTerminalVelocity: vec3(),
+  arrivalPhase: "None",
+  terminalCaptureActive: false,
+  terminalHoldingActive: false
+};
 
 export class AutopilotExecutor {
   private readonly options: AutopilotExecutorOptions;
@@ -108,14 +150,6 @@ export class AutopilotExecutor {
       return driftingShip;
     }
 
-    const segment = this.currentSegment(plan);
-    const arrivalEnvelope = arrivalEnvelopeForTarget(plan.target);
-    const arrivalRadius = arrivalRadiusForTarget(plan.target);
-    if (this.isArrived(ship, plan, arrivalEnvelope, arrivalRadius)) {
-      this.telemetry = this.createTelemetry(tick, "Arrived", plan, ship, false, []);
-      return ship;
-    }
-
     const preflight = createFlightSnapshot(ship, plan, this.options);
     if (preflight.failureReasonCodes.includes("FuelDepleted") || preflight.failureReasonCodes.includes("FuelReserveViolated")) {
       this.telemetry = this.createTelemetry(tick, "OutOfFuel", plan, ship, true, preflight.failureReasonCodes);
@@ -131,6 +165,12 @@ export class AutopilotExecutor {
       this.telemetry = this.createTelemetry(tick, "BrakeReserveInsufficient", plan, ship, true, preflight.failureReasonCodes);
       return ship;
     }
+
+    const segment = this.currentSegment(plan);
+    const arrivalEnvelope = arrivalEnvelopeForTarget(plan.target);
+    const arrivalRadius = arrivalRadiusForTarget(plan.target);
+    const isTerminalSegment = this.activeSegmentIndex >= plan.segments.length - 1;
+    const alreadyArrived = isTerminalSegment && this.isArrived(ship, plan, arrivalEnvelope, arrivalRadius);
 
     const offRouteDistance = this.offRouteDistance(ship.position, segment);
     const invalidationReasons: readonly FailureReasonCode[] = offRouteDistance > this.options.divergenceDistance ? ["OffLockedRoute"] : [];
@@ -152,9 +192,11 @@ export class AutopilotExecutor {
     }, fixedDeltaSeconds, this.options);
     const nextPosition = nextShip.position;
 
-    const isTerminalSegment = this.activeSegmentIndex >= plan.segments.length - 1;
-    if (isTerminalSegment && this.isArrived(nextShip, plan, arrivalEnvelope, arrivalRadius)) {
-      this.telemetry = this.createTelemetry(tick, "Arrived", plan, nextShip, false, []);
+    if (isTerminalSegment && (alreadyArrived || this.isArrived(nextShip, plan, arrivalEnvelope, arrivalRadius))) {
+      const terminalState = isTerminalTelemetryEnvelope(arrivalEnvelope)
+        ? terminalStateForPhase("Holding", actuatorRequest.desiredTerminalVelocity)
+        : inactiveTerminalTelemetry;
+      this.telemetry = this.createTelemetry(tick, "Arrived", plan, nextShip, false, [], terminalState);
       return nextShip;
     }
 
@@ -164,7 +206,7 @@ export class AutopilotExecutor {
       this.activeSegmentIndex = Math.min(this.activeSegmentIndex + 1, plan.segments.length - 1);
     }
 
-    this.telemetry = this.createTelemetry(tick, "Executing", plan, nextShip, false, []);
+    this.telemetry = this.createTelemetry(tick, "Executing", plan, nextShip, false, [], actuatorRequest);
     return nextShip;
   }
 
@@ -185,8 +227,8 @@ export class AutopilotExecutor {
     const targetOffset = sub(segment.end, ship.position);
     const targetDirection = normalize(targetOffset);
     const accelerationLimit = accelerationLimitForMass(ship.mass, this.options);
-    if (accelerationLimit <= 1e-6 || magnitude(targetDirection) <= 1e-6) {
-      return { facingDirection: targetDirection, throttle: 0, desiredAcceleration: vec3(), braking: false };
+    if (accelerationLimit <= 1e-6) {
+      return { facingDirection: targetDirection, throttle: 0, desiredAcceleration: vec3(), desiredTerminalVelocity: vec3(), arrivalPhase: "None", terminalCaptureActive: false, terminalHoldingActive: false, braking: false };
     }
 
     const isTerminalSegment = this.currentSegment(plan).id === segment.id && this.activeSegmentIndex >= plan.segments.length - 1;
@@ -204,13 +246,46 @@ export class AutopilotExecutor {
     const brakingDistance = Math.max(0, (speed * speed - terminalSpeed * terminalSpeed) / (2 * accelerationLimit));
     const terminalBrakeMargin = segmentEnvelopeRadius + speed * 0.2;
     const needsBraking = speed > terminalSpeed + 0.25 && distanceToSegmentEnd <= brakingDistance + terminalBrakeMargin;
+    const publishTerminalTelemetry = isTerminalSegment && isTerminalTelemetryEnvelope(arrivalEnvelope);
+
+    if (isTerminalSegment && isStopCaptureEnvelope(arrivalEnvelope)) {
+      const desiredTerminalVelocity = vec3();
+      const positionError = sub(plan.target.position, ship.position);
+      const velocityError = sub(desiredTerminalVelocity, ship.velocity);
+      const desiredAcceleration = clampMagnitude(add(scale(positionError, 0.35), scale(velocityError, 1.4)), accelerationLimit);
+      const desiredAccelerationMagnitude = magnitude(desiredAcceleration);
+      const insideCaptureEnvelope = Number.isFinite(arrivalRadius) && distanceToSegmentEnd <= Math.max(0, arrivalRadius);
+      const arrivalPhase: ExecutorArrivalPhase = insideCaptureEnvelope ? "Capture" : needsBraking ? "TerminalBrake" : "Capture";
+      const terminalState = terminalStateForPhase(arrivalPhase, desiredTerminalVelocity);
+
+      return {
+        facingDirection: desiredAccelerationMagnitude > 1e-6 ? desiredAcceleration : targetDirection,
+        throttle: desiredAccelerationMagnitude <= 0.05 ? 0 : clamp(desiredAccelerationMagnitude / Math.max(accelerationLimit, 1), 0.15, 1),
+        desiredAcceleration,
+        desiredTerminalVelocity: terminalState.desiredTerminalVelocity,
+        arrivalPhase: terminalState.arrivalPhase,
+        terminalCaptureActive: terminalState.terminalCaptureActive,
+        terminalHoldingActive: terminalState.terminalHoldingActive,
+        braking: needsBraking
+      };
+    }
+
+    if (magnitude(targetDirection) <= 1e-6) {
+      return { facingDirection: targetDirection, throttle: 0, desiredAcceleration: vec3(), desiredTerminalVelocity: vec3(), arrivalPhase: "None", terminalCaptureActive: false, terminalHoldingActive: false, braking: false };
+    }
 
     if (needsBraking) {
       const desiredAcceleration = magnitude(ship.velocity) > 1e-6 ? scale(normalize(ship.velocity), -accelerationLimit) : vec3();
+      const arrivalPhase: ExecutorArrivalPhase = publishTerminalTelemetry ? "TerminalBrake" : "None";
+      const terminalState = terminalStateForPhase(arrivalPhase, arrivalEnvelope?.stopBehavior === "MatchTerminalSpeed" ? scale(targetDirection, terminalSpeed) : vec3());
       return {
         facingDirection: magnitude(desiredAcceleration) > 1e-6 ? desiredAcceleration : targetDirection,
         throttle: clamp(magnitude(desiredAcceleration) / accelerationLimit, 0.2, 1),
         desiredAcceleration,
+        desiredTerminalVelocity: terminalState.desiredTerminalVelocity,
+        arrivalPhase: terminalState.arrivalPhase,
+        terminalCaptureActive: terminalState.terminalCaptureActive,
+        terminalHoldingActive: terminalState.terminalHoldingActive,
         braking: true
       };
     }
@@ -221,7 +296,18 @@ export class AutopilotExecutor {
     const desiredAcceleration = scale(sub(desiredVelocity, ship.velocity), 1.35);
     const accelerationMagnitude = magnitude(desiredAcceleration);
     const throttle = accelerationMagnitude <= 0.05 ? 0 : clamp(accelerationMagnitude / Math.max(accelerationLimit, 1), 0.15, 1);
-    return { facingDirection: accelerationMagnitude > 1e-6 ? desiredAcceleration : targetDirection, throttle, desiredAcceleration, braking: false };
+    const arrivalPhase: ExecutorArrivalPhase = publishTerminalTelemetry ? "Capture" : "None";
+    const terminalState = terminalStateForPhase(arrivalPhase, arrivalEnvelope?.stopBehavior === "MatchTerminalSpeed" ? scale(targetDirection, terminalSpeed) : vec3());
+    return {
+      facingDirection: accelerationMagnitude > 1e-6 ? desiredAcceleration : targetDirection,
+      throttle,
+      desiredAcceleration,
+      desiredTerminalVelocity: terminalState.desiredTerminalVelocity,
+      arrivalPhase: terminalState.arrivalPhase,
+      terminalCaptureActive: terminalState.terminalCaptureActive,
+      terminalHoldingActive: terminalState.terminalHoldingActive,
+      braking: false
+    };
   }
 
   private waypointTurnSpeed(plan: RoutePlan, segment: RouteSegment): number {
@@ -251,7 +337,8 @@ export class AutopilotExecutor {
     plan: RoutePlan | null,
     ship: ShipState,
     replanRequired: boolean,
-    invalidationReasons: readonly FailureReasonCode[]
+    invalidationReasons: readonly FailureReasonCode[],
+    terminalState: TerminalTelemetryState = inactiveTerminalTelemetry
   ): ExecutorTelemetry {
     const segment = plan ? this.currentSegment(plan) : null;
     const baseFlightSnapshot = createFlightSnapshot(ship, plan, this.options);
@@ -264,10 +351,12 @@ export class AutopilotExecutor {
     return {
       tick,
       status,
+      arrivalPhase: terminalState.arrivalPhase,
       planHash: plan?.planHash ?? null,
       activeSegmentId: segment?.id ?? null,
       distanceToTarget: plan ? distance(ship.position, plan.target.position) : 0,
       offRouteDistance: plan && segment ? this.offRouteDistance(ship.position, segment) : 0,
+      ...this.createTerminalTelemetry(plan, ship, terminalState),
       replanRequired,
       invalidationReasons,
       failureReasonCodes,
@@ -280,5 +369,40 @@ export class AutopilotExecutor {
 
   private emptyShip(): ShipState {
     return createShipStateV2({ position: vec3(), velocity: vec3(), fuel: 0, authority: { mode: "Manual", mainThrustersAvailable: false, rcsAvailable: false, sasAvailable: false, autopilotAvailable: false } });
+  }
+
+  private createTerminalTelemetry(plan: RoutePlan | null, ship: ShipState, terminalState: TerminalTelemetryState): Pick<ExecutorTelemetry, "terminalSpeedLimit" | "currentSpeed" | "terminalError" | "terminalSpeedError" | "terminalRadialSpeed" | "terminalTangentialSpeed" | "desiredTerminalVelocity" | "terminalCaptureActive" | "terminalHoldingActive"> {
+    const currentSpeed = magnitude(ship.velocity);
+    if (!plan) {
+      return {
+        terminalSpeedLimit: null,
+        currentSpeed,
+        terminalError: null,
+        terminalSpeedError: null,
+        terminalRadialSpeed: 0,
+        terminalTangentialSpeed: currentSpeed,
+        desiredTerminalVelocity: terminalState.desiredTerminalVelocity,
+        terminalCaptureActive: terminalState.terminalCaptureActive,
+        terminalHoldingActive: terminalState.terminalHoldingActive
+      };
+    }
+
+    const terminalSpeedLimit = terminalSpeedForArrival(arrivalEnvelopeForTarget(plan.target)) ?? null;
+    const radialDirection = normalize(sub(plan.target.position, ship.position));
+    const terminalRadialSpeed = magnitude(radialDirection) <= 1e-9 ? 0 : dot(ship.velocity, radialDirection);
+    const terminalTangentialSpeed = Math.sqrt(Math.max(0, currentSpeed * currentSpeed - terminalRadialSpeed * terminalRadialSpeed));
+    const terminalSpeedError = terminalSpeedLimit === null ? null : currentSpeed - terminalSpeedLimit;
+
+    return {
+      terminalSpeedLimit,
+      currentSpeed,
+      terminalError: terminalSpeedError,
+      terminalSpeedError,
+      terminalRadialSpeed,
+      terminalTangentialSpeed,
+      desiredTerminalVelocity: terminalState.desiredTerminalVelocity,
+      terminalCaptureActive: terminalState.terminalCaptureActive,
+      terminalHoldingActive: terminalState.terminalHoldingActive
+    };
   }
 }

@@ -296,6 +296,9 @@ describe("FixedStepSimulationLoop", () => {
     expect(serialized.ship.orientation).toEqual(snapshot.ship.orientation);
     expect(serialized.ship.controlMode).toBe(snapshot.ship.controlMode);
     expect(serialized.ship.actuatorTelemetry.mainThrustActive).toBe(snapshot.ship.actuatorTelemetry.mainThrustActive);
+    expect(serialized.executor.arrivalPhase).toBe(snapshot.executor.arrivalPhase);
+    expect(serialized.executor.desiredTerminalVelocity).toEqual(snapshot.executor.desiredTerminalVelocity);
+    expect(typeof serialized.executor.currentSpeed).toBe("number");
   });
 
   it("applies manual flight commands through runtime-owned input state while idle", () => {
