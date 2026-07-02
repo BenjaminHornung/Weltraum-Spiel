@@ -1,0 +1,576 @@
+{
+  "selectedResults": [
+    {
+      "courseId": "direct-long",
+      "label": "Direct long terminal capture",
+      "profile": "Balanced",
+      "expectedOutcome": "Pass",
+      "ticksToArrival": 620,
+      "tick": 620,
+      "peakSpeed": 18,
+      "finalSpeed": 0.4951,
+      "finalDistance": 1.526,
+      "minObstacleClearance": 999999,
+      "fuelUsed": 0.8306,
+      "arrivalPhase": "Holding",
+      "status": "Arrived",
+      "terminalSpeedLimit": 0.5,
+      "planHashBefore": "bfb6eb6d",
+      "planHashAfter": "bfb6eb6d",
+      "replanRequired": false,
+      "planner": "DirectLocal",
+      "segmentKinds": [
+        "Direct",
+        "Terminal"
+      ],
+      "failureReasonCodes": [],
+      "invalidationReasons": [],
+      "classification": "Pass",
+      "notes": [
+        "Obstacle clearance uses closest sampled ship position distance minus obstacle radius plus padding.",
+        "Baseline browser-native long route used to compare Safe and Balanced profiles."
+      ]
+    },
+    {
+      "courseId": "s-curve-obstacles",
+      "label": "S-curve multi-obstacle stress",
+      "profile": "Balanced",
+      "expectedOutcome": "KnownStress",
+      "ticksToArrival": 632,
+      "tick": 632,
+      "peakSpeed": 24.2597,
+      "finalSpeed": 0.4955,
+      "finalDistance": 1.5278,
+      "minObstacleClearance": 6.636,
+      "fuelUsed": 1.612,
+      "arrivalPhase": "Holding",
+      "status": "Arrived",
+      "terminalSpeedLimit": 0.5,
+      "planHashBefore": "a69a5289",
+      "planHashAfter": "a69a5289",
+      "replanRequired": false,
+      "planner": "ObstacleAvoidanceLocal",
+      "segmentKinds": [
+        "Avoidance",
+        "Terminal"
+      ],
+      "failureReasonCodes": [],
+      "invalidationReasons": [],
+      "classification": "KnownStress",
+      "notes": [
+        "Obstacle clearance uses closest sampled ship position distance minus obstacle radius plus padding.",
+        "KnownStress: current local planner detours around the first blocking obstacle only."
+      ]
+    },
+    {
+      "courseId": "narrow-corridor",
+      "label": "Narrow corridor stress",
+      "profile": "Balanced",
+      "expectedOutcome": "KnownStress",
+      "ticksToArrival": 668,
+      "tick": 668,
+      "peakSpeed": 13.9996,
+      "finalSpeed": 0.4991,
+      "finalDistance": 1.5388,
+      "minObstacleClearance": 7.421,
+      "fuelUsed": 1.0797,
+      "arrivalPhase": "Holding",
+      "status": "Arrived",
+      "terminalSpeedLimit": 0.5,
+      "planHashBefore": "8a0776e3",
+      "planHashAfter": "8a0776e3",
+      "replanRequired": false,
+      "planner": "ObstacleAvoidanceLocal",
+      "segmentKinds": [
+        "Avoidance",
+        "Terminal"
+      ],
+      "failureReasonCodes": [],
+      "invalidationReasons": [],
+      "classification": "KnownStress",
+      "notes": [
+        "Obstacle clearance uses closest sampled ship position distance minus obstacle radius plus padding.",
+        "KnownStress: corridor geometry is intentionally tighter than the one-obstacle detour planner can fully classify."
+      ]
+    },
+    {
+      "courseId": "offset-gates",
+      "label": "Offset gate transit",
+      "profile": "Balanced",
+      "expectedOutcome": "Pass",
+      "ticksToArrival": 522,
+      "tick": 522,
+      "peakSpeed": 17.9993,
+      "finalSpeed": 0.4967,
+      "finalDistance": 1.531,
+      "minObstacleClearance": 4.7392,
+      "fuelUsed": 0.8227,
+      "arrivalPhase": "Holding",
+      "status": "Arrived",
+      "terminalSpeedLimit": 0.5,
+      "planHashBefore": "ea64efdb",
+      "planHashAfter": "ea64efdb",
+      "replanRequired": false,
+      "planner": "ObstacleAvoidanceLocal",
+      "segmentKinds": [
+        "Direct",
+        "Terminal"
+      ],
+      "failureReasonCodes": [],
+      "invalidationReasons": [],
+      "classification": "Pass",
+      "notes": [
+        "Obstacle clearance uses closest sampled ship position distance minus obstacle radius plus padding.",
+        "Offset obstacles should not require a replan or renderer-dependent truth."
+      ]
+    },
+    {
+      "courseId": "target-behind-obstacle",
+      "label": "Target behind obstacle",
+      "profile": "Balanced",
+      "expectedOutcome": "Pass",
+      "ticksToArrival": 621,
+      "tick": 621,
+      "peakSpeed": 16.2112,
+      "finalSpeed": 0.497,
+      "finalDistance": 1.5325,
+      "minObstacleClearance": 7.4179,
+      "fuelUsed": 1.233,
+      "arrivalPhase": "Holding",
+      "status": "Arrived",
+      "terminalSpeedLimit": 0.5,
+      "planHashBefore": "9a046e6f",
+      "planHashAfter": "9a046e6f",
+      "replanRequired": false,
+      "planner": "ObstacleAvoidanceLocal",
+      "segmentKinds": [
+        "Avoidance",
+        "Terminal"
+      ],
+      "failureReasonCodes": [],
+      "invalidationReasons": [],
+      "classification": "Pass",
+      "notes": [
+        "Obstacle clearance uses closest sampled ship position distance minus obstacle radius plus padding.",
+        "Single blocking obstacle is the current supported avoidance shape."
+      ]
+    }
+  ],
+  "speedComparison": {
+    "safe": {
+      "courseId": "direct-long",
+      "label": "Direct long terminal capture",
+      "profile": "Safe",
+      "expectedOutcome": "Pass",
+      "ticksToArrival": 769,
+      "tick": 769,
+      "peakSpeed": 12,
+      "finalSpeed": 0.4955,
+      "finalDistance": 1.5273,
+      "minObstacleClearance": 999999,
+      "fuelUsed": 0.5561,
+      "arrivalPhase": "Holding",
+      "status": "Arrived",
+      "terminalSpeedLimit": 0.5,
+      "planHashBefore": "5e255663",
+      "planHashAfter": "5e255663",
+      "replanRequired": false,
+      "planner": "DirectLocal",
+      "segmentKinds": [
+        "Direct",
+        "Terminal"
+      ],
+      "failureReasonCodes": [],
+      "invalidationReasons": [],
+      "classification": "Pass",
+      "notes": [
+        "Obstacle clearance uses closest sampled ship position distance minus obstacle radius plus padding.",
+        "Baseline browser-native long route used to compare Safe and Balanced profiles."
+      ]
+    },
+    "balanced": {
+      "courseId": "direct-long",
+      "label": "Direct long terminal capture",
+      "profile": "Balanced",
+      "expectedOutcome": "Pass",
+      "ticksToArrival": 620,
+      "tick": 620,
+      "peakSpeed": 18,
+      "finalSpeed": 0.4951,
+      "finalDistance": 1.526,
+      "minObstacleClearance": 999999,
+      "fuelUsed": 0.8306,
+      "arrivalPhase": "Holding",
+      "status": "Arrived",
+      "terminalSpeedLimit": 0.5,
+      "planHashBefore": "bfb6eb6d",
+      "planHashAfter": "bfb6eb6d",
+      "replanRequired": false,
+      "planner": "DirectLocal",
+      "segmentKinds": [
+        "Direct",
+        "Terminal"
+      ],
+      "failureReasonCodes": [],
+      "invalidationReasons": [],
+      "classification": "Pass",
+      "notes": [
+        "Obstacle clearance uses closest sampled ship position distance minus obstacle radius plus padding.",
+        "Baseline browser-native long route used to compare Safe and Balanced profiles."
+      ]
+    }
+  },
+  "matrix": [
+    {
+      "courseId": "direct-long",
+      "label": "Direct long terminal capture",
+      "profile": "Balanced",
+      "expectedOutcome": "Pass",
+      "ticksToArrival": 620,
+      "tick": 620,
+      "peakSpeed": 18,
+      "finalSpeed": 0.4951,
+      "finalDistance": 1.526,
+      "minObstacleClearance": 999999,
+      "fuelUsed": 0.8306,
+      "arrivalPhase": "Holding",
+      "status": "Arrived",
+      "terminalSpeedLimit": 0.5,
+      "planHashBefore": "bfb6eb6d",
+      "planHashAfter": "bfb6eb6d",
+      "replanRequired": false,
+      "planner": "DirectLocal",
+      "segmentKinds": [
+        "Direct",
+        "Terminal"
+      ],
+      "failureReasonCodes": [],
+      "invalidationReasons": [],
+      "classification": "Pass",
+      "notes": [
+        "Obstacle clearance uses closest sampled ship position distance minus obstacle radius plus padding.",
+        "Baseline browser-native long route used to compare Safe and Balanced profiles."
+      ]
+    },
+    {
+      "courseId": "s-curve-obstacles",
+      "label": "S-curve multi-obstacle stress",
+      "profile": "Balanced",
+      "expectedOutcome": "KnownStress",
+      "ticksToArrival": 632,
+      "tick": 632,
+      "peakSpeed": 24.2597,
+      "finalSpeed": 0.4955,
+      "finalDistance": 1.5278,
+      "minObstacleClearance": 6.636,
+      "fuelUsed": 1.612,
+      "arrivalPhase": "Holding",
+      "status": "Arrived",
+      "terminalSpeedLimit": 0.5,
+      "planHashBefore": "a69a5289",
+      "planHashAfter": "a69a5289",
+      "replanRequired": false,
+      "planner": "ObstacleAvoidanceLocal",
+      "segmentKinds": [
+        "Avoidance",
+        "Terminal"
+      ],
+      "failureReasonCodes": [],
+      "invalidationReasons": [],
+      "classification": "KnownStress",
+      "notes": [
+        "Obstacle clearance uses closest sampled ship position distance minus obstacle radius plus padding.",
+        "KnownStress: current local planner detours around the first blocking obstacle only."
+      ]
+    },
+    {
+      "courseId": "narrow-corridor",
+      "label": "Narrow corridor stress",
+      "profile": "Balanced",
+      "expectedOutcome": "KnownStress",
+      "ticksToArrival": 668,
+      "tick": 668,
+      "peakSpeed": 13.9996,
+      "finalSpeed": 0.4991,
+      "finalDistance": 1.5388,
+      "minObstacleClearance": 7.421,
+      "fuelUsed": 1.0797,
+      "arrivalPhase": "Holding",
+      "status": "Arrived",
+      "terminalSpeedLimit": 0.5,
+      "planHashBefore": "8a0776e3",
+      "planHashAfter": "8a0776e3",
+      "replanRequired": false,
+      "planner": "ObstacleAvoidanceLocal",
+      "segmentKinds": [
+        "Avoidance",
+        "Terminal"
+      ],
+      "failureReasonCodes": [],
+      "invalidationReasons": [],
+      "classification": "KnownStress",
+      "notes": [
+        "Obstacle clearance uses closest sampled ship position distance minus obstacle radius plus padding.",
+        "KnownStress: corridor geometry is intentionally tighter than the one-obstacle detour planner can fully classify."
+      ]
+    },
+    {
+      "courseId": "offset-gates",
+      "label": "Offset gate transit",
+      "profile": "Balanced",
+      "expectedOutcome": "Pass",
+      "ticksToArrival": 522,
+      "tick": 522,
+      "peakSpeed": 17.9993,
+      "finalSpeed": 0.4967,
+      "finalDistance": 1.531,
+      "minObstacleClearance": 4.7392,
+      "fuelUsed": 0.8227,
+      "arrivalPhase": "Holding",
+      "status": "Arrived",
+      "terminalSpeedLimit": 0.5,
+      "planHashBefore": "ea64efdb",
+      "planHashAfter": "ea64efdb",
+      "replanRequired": false,
+      "planner": "ObstacleAvoidanceLocal",
+      "segmentKinds": [
+        "Direct",
+        "Terminal"
+      ],
+      "failureReasonCodes": [],
+      "invalidationReasons": [],
+      "classification": "Pass",
+      "notes": [
+        "Obstacle clearance uses closest sampled ship position distance minus obstacle radius plus padding.",
+        "Offset obstacles should not require a replan or renderer-dependent truth."
+      ]
+    },
+    {
+      "courseId": "target-behind-obstacle",
+      "label": "Target behind obstacle",
+      "profile": "Balanced",
+      "expectedOutcome": "Pass",
+      "ticksToArrival": 621,
+      "tick": 621,
+      "peakSpeed": 16.2112,
+      "finalSpeed": 0.497,
+      "finalDistance": 1.5325,
+      "minObstacleClearance": 7.4179,
+      "fuelUsed": 1.233,
+      "arrivalPhase": "Holding",
+      "status": "Arrived",
+      "terminalSpeedLimit": 0.5,
+      "planHashBefore": "9a046e6f",
+      "planHashAfter": "9a046e6f",
+      "replanRequired": false,
+      "planner": "ObstacleAvoidanceLocal",
+      "segmentKinds": [
+        "Avoidance",
+        "Terminal"
+      ],
+      "failureReasonCodes": [],
+      "invalidationReasons": [],
+      "classification": "Pass",
+      "notes": [
+        "Obstacle clearance uses closest sampled ship position distance minus obstacle radius plus padding.",
+        "Single blocking obstacle is the current supported avoidance shape."
+      ]
+    },
+    {
+      "courseId": "target-near-obstacle",
+      "label": "Target near obstacle",
+      "profile": "Balanced",
+      "expectedOutcome": "Pass",
+      "ticksToArrival": 512,
+      "tick": 512,
+      "peakSpeed": 17.9988,
+      "finalSpeed": 0.4967,
+      "finalDistance": 1.5311,
+      "minObstacleClearance": 4,
+      "fuelUsed": 0.8227,
+      "arrivalPhase": "Holding",
+      "status": "Arrived",
+      "terminalSpeedLimit": 0.5,
+      "planHashBefore": "78bbe0c9",
+      "planHashAfter": "78bbe0c9",
+      "replanRequired": false,
+      "planner": "ObstacleAvoidanceLocal",
+      "segmentKinds": [
+        "Direct",
+        "Terminal"
+      ],
+      "failureReasonCodes": [],
+      "invalidationReasons": [],
+      "classification": "Pass",
+      "notes": [
+        "Obstacle clearance uses closest sampled ship position distance minus obstacle radius plus padding.",
+        "Target envelope remains outside the obstacle safety radius."
+      ]
+    },
+    {
+      "courseId": "high-initial-speed",
+      "label": "High initial speed terminal capture",
+      "profile": "Balanced",
+      "expectedOutcome": "Pass",
+      "ticksToArrival": 561,
+      "tick": 561,
+      "peakSpeed": 26,
+      "finalSpeed": 0.4965,
+      "finalDistance": 1.5304,
+      "minObstacleClearance": 999999,
+      "fuelUsed": 0.6072,
+      "arrivalPhase": "Holding",
+      "status": "Arrived",
+      "terminalSpeedLimit": 0.5,
+      "planHashBefore": "9b447f34",
+      "planHashAfter": "9b447f34",
+      "replanRequired": false,
+      "planner": "DirectLocal",
+      "segmentKinds": [
+        "Direct",
+        "Terminal"
+      ],
+      "failureReasonCodes": [],
+      "invalidationReasons": [],
+      "classification": "Pass",
+      "notes": [
+        "Obstacle clearance uses closest sampled ship position distance minus obstacle radius plus padding.",
+        "Starts fast to prove terminalSpeed remains the capture gate."
+      ]
+    },
+    {
+      "courseId": "lateral-initial-velocity",
+      "label": "Lateral initial velocity capture",
+      "profile": "Balanced",
+      "expectedOutcome": "Pass",
+      "ticksToArrival": 566,
+      "tick": 566,
+      "peakSpeed": 17.9999,
+      "finalSpeed": 0.4963,
+      "finalDistance": 1.5298,
+      "minObstacleClearance": 999999,
+      "fuelUsed": 0.8732,
+      "arrivalPhase": "Holding",
+      "status": "Arrived",
+      "terminalSpeedLimit": 0.5,
+      "planHashBefore": "ab0863b1",
+      "planHashAfter": "ab0863b1",
+      "replanRequired": false,
+      "planner": "DirectLocal",
+      "segmentKinds": [
+        "Direct",
+        "Terminal"
+      ],
+      "failureReasonCodes": [],
+      "invalidationReasons": [],
+      "classification": "Pass",
+      "notes": [
+        "Obstacle clearance uses closest sampled ship position distance minus obstacle radius plus padding.",
+        "Measures tangential velocity removal without snapping to the target."
+      ]
+    },
+    {
+      "courseId": "low-authority-terminal",
+      "label": "Low authority terminal capture",
+      "profile": "Balanced",
+      "expectedOutcome": "Pass",
+      "ticksToArrival": 565,
+      "tick": 565,
+      "peakSpeed": 17.9553,
+      "finalSpeed": 0.4947,
+      "finalDistance": 1.5247,
+      "minObstacleClearance": 999999,
+      "fuelUsed": 2.1179,
+      "arrivalPhase": "Holding",
+      "status": "Arrived",
+      "terminalSpeedLimit": 0.5,
+      "planHashBefore": "1eae3391",
+      "planHashAfter": "1eae3391",
+      "replanRequired": false,
+      "planner": "DirectLocal",
+      "segmentKinds": [
+        "Direct",
+        "Terminal"
+      ],
+      "failureReasonCodes": [],
+      "invalidationReasons": [],
+      "classification": "Pass",
+      "notes": [
+        "Obstacle clearance uses closest sampled ship position distance minus obstacle radius plus padding.",
+        "Lower acceleration from mass only; maxAcceleration is not raised globally."
+      ]
+    },
+    {
+      "courseId": "low-fuel-long-route",
+      "label": "Low fuel long route expected fail",
+      "profile": "Balanced",
+      "expectedOutcome": "ExpectedFail",
+      "ticksToArrival": null,
+      "tick": 38,
+      "peakSpeed": 12.1177,
+      "finalSpeed": 12.1177,
+      "finalDistance": 252.2497,
+      "minObstacleClearance": 999999,
+      "fuelUsed": 0.9757,
+      "arrivalPhase": "None",
+      "status": "BrakeReserveInsufficient",
+      "terminalSpeedLimit": 0.5,
+      "planHashBefore": "48485091",
+      "planHashAfter": "48485091",
+      "replanRequired": true,
+      "planner": "DirectLocal",
+      "segmentKinds": [
+        "Direct",
+        "Terminal"
+      ],
+      "failureReasonCodes": [
+        "FuelInsufficient",
+        "BrakeReserveInsufficient"
+      ],
+      "invalidationReasons": [
+        "FuelInsufficient",
+        "BrakeReserveInsufficient"
+      ],
+      "classification": "ExpectedFail",
+      "notes": [
+        "Obstacle clearance uses closest sampled ship position distance minus obstacle radius plus padding.",
+        "ExpectedFail documents the fuel contract instead of hiding it as a route success."
+      ]
+    },
+    {
+      "courseId": "off-route-disturbance-midcourse",
+      "label": "Off-route disturbance midcourse",
+      "profile": "Balanced",
+      "expectedOutcome": "ExpectedFail",
+      "ticksToArrival": null,
+      "tick": 41,
+      "peakSpeed": 11.6972,
+      "finalSpeed": 11.6972,
+      "finalDistance": 182.1715,
+      "minObstacleClearance": 999999,
+      "fuelUsed": 0.2667,
+      "arrivalPhase": "None",
+      "status": "Diverged",
+      "terminalSpeedLimit": 0.5,
+      "planHashBefore": "553908ea",
+      "planHashAfter": "553908ea",
+      "replanRequired": true,
+      "planner": "DirectLocal",
+      "segmentKinds": [
+        "Direct",
+        "Terminal"
+      ],
+      "failureReasonCodes": [
+        "OffLockedRoute"
+      ],
+      "invalidationReasons": [
+        "OffLockedRoute"
+      ],
+      "classification": "ExpectedFail",
+      "notes": [
+        "Obstacle clearance uses closest sampled ship position distance minus obstacle radius plus padding.",
+        "ExpectedFail proves explicit replanRequired signaling without silent replanning."
+      ]
+    }
+  ]
+}

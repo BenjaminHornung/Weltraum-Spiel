@@ -280,6 +280,19 @@ describe("FixedStepSimulationLoop", () => {
     expect("useObstacleAvoidancePlan" in bridge).toBe(false);
   });
 
+  it("exposes the gated proving-ground v2 helpers through TestBridge only", () => {
+    const { controller } = createBrowserRuntime();
+    const bridge = createTestBridge(controller);
+
+    expect(bridge.listAutopilotProvingGroundCourses()).toContain("direct-long");
+    const safe = bridge.runAutopilotProvingGroundCourse("direct-long", "Safe");
+    const balanced = bridge.runAutopilotProvingGroundCourse("direct-long", "Balanced");
+    expect(balanced.classification).toBe("Pass");
+    expect(balanced.ticksToArrival as number).toBeLessThan(safe.ticksToArrival as number);
+    expect(balanced.finalSpeed).toBeLessThanOrEqual(0.5);
+    expect(bridge.runAutopilotProvingGroundMatrix("Balanced")).toHaveLength(11);
+  });
+
   it("preserves browser vertical-slice snapshot fields during telemetry serialization", () => {
     const { controller } = createBrowserRuntime();
     const snapshot = controller.getTelemetry();

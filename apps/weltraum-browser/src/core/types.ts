@@ -155,6 +155,7 @@ export interface RouteSegment {
   readonly end: Vec3;
   readonly desiredSpeed: number;
   readonly clearanceRadius: number;
+  readonly brakeMarginMultiplier?: number;
 }
 
 export interface RoutePlan {
@@ -244,11 +245,89 @@ export interface ObstacleDescriptor {
   readonly padding: number;
 }
 
+export type AutopilotSpeedProfileId = "Safe" | "Balanced" | "Fast";
+
+export interface AutopilotSpeedProfile {
+  readonly id: AutopilotSpeedProfileId;
+  readonly label: string;
+  readonly directDesiredSpeed: number;
+  readonly avoidanceDesiredSpeed: number;
+  readonly terminalApproachDesiredSpeed: number;
+  readonly brakeMarginMultiplier: number;
+  readonly notes: readonly string[];
+}
+
+export const autopilotSpeedProfiles: Readonly<Record<AutopilotSpeedProfileId, AutopilotSpeedProfile>> = {
+  Safe: {
+    id: "Safe",
+    label: "Safe",
+    directDesiredSpeed: 12,
+    avoidanceDesiredSpeed: 10,
+    terminalApproachDesiredSpeed: 8,
+    brakeMarginMultiplier: 1.25,
+    notes: ["Lower cruise speed and larger midcourse braking margin; terminal capture gates are unchanged."]
+  },
+  Balanced: {
+    id: "Balanced",
+    label: "Balanced",
+    directDesiredSpeed: 18,
+    avoidanceDesiredSpeed: 14,
+    terminalApproachDesiredSpeed: 12,
+    brakeMarginMultiplier: 1,
+    notes: ["Current default browser autopilot cruise speeds with conservative terminal capture preserved."]
+  },
+  Fast: {
+    id: "Fast",
+    label: "Fast",
+    directDesiredSpeed: 22,
+    avoidanceDesiredSpeed: 18,
+    terminalApproachDesiredSpeed: 15,
+    brakeMarginMultiplier: 0.9,
+    notes: ["Higher non-terminal desired speeds for stress evidence; StopWithinEnvelope terminal speed remains a hard gate."]
+  }
+};
+
+export const autopilotSpeedProfileIds: readonly AutopilotSpeedProfileId[] = ["Safe", "Balanced", "Fast"];
+
+export const autopilotSpeedProfileFor = (profile: AutopilotSpeedProfileId | null | undefined): AutopilotSpeedProfile =>
+  autopilotSpeedProfiles[profile ?? "Balanced"];
+
+export type AutopilotCourseExpectedOutcome = "Pass" | "KnownStress" | "ExpectedFail";
+
+export type AutopilotCourseClassification = AutopilotCourseExpectedOutcome | "Fail";
+
+export interface AutopilotCourseAcceptance {
+  readonly maxFinalDistance: number;
+  readonly maxFinalSpeed: number;
+  readonly minObstacleClearance: number;
+  readonly maxTicks: number;
+  readonly maxFuelUsed?: number;
+  readonly allowReplanRequired?: boolean;
+  readonly expectedFailureReasonCodes?: readonly FailureReasonCode[];
+}
+
+export interface AutopilotProvingGroundCourse {
+  readonly id: string;
+  readonly label: string;
+  readonly initialShip: ShipState;
+  readonly target: TargetDescriptor;
+  readonly obstacles: readonly ObstacleDescriptor[];
+  readonly expectedOutcome: AutopilotCourseExpectedOutcome;
+  readonly acceptance: AutopilotCourseAcceptance;
+  readonly planner?: RoutePlan["planner"];
+  readonly disturbance?: {
+    readonly tick: number;
+    readonly positionOffset: Vec3;
+  };
+  readonly notes?: readonly string[];
+}
+
 export interface PlannerContext {
   readonly tick: number;
   readonly ship: ShipState;
   readonly target: TargetDescriptor;
   readonly obstacles?: readonly ObstacleDescriptor[];
+  readonly speedProfile?: AutopilotSpeedProfileId;
 }
 
 export interface LocalPlanner {

@@ -1,24 +1,24 @@
 {
   "ship": {
     "position": {
-      "x": 88.9435,
+      "x": 88.9879,
       "y": 64,
-      "z": 0.9169
+      "z": 0.8783
     },
     "velocity": {
-      "x": 0.3427,
+      "x": 0.3282,
       "y": 0,
-      "z": -0.2974
+      "z": -0.2848
     },
     "orientation": {
       "x": 0,
-      "y": -0.936446,
+      "y": -0.936539,
       "z": 0,
-      "w": 0.350812
+      "w": 0.350562
     },
     "angularVelocity": {
       "x": 0,
-      "y": -0.0043,
+      "y": -0.0038,
       "z": 0
     },
     "throttle": 0,
@@ -58,25 +58,25 @@
         "rotationResponseScale": 1
       },
       "lastAppliedAcceleration": {
-        "x": -0.1111,
+        "x": -0.1064,
         "y": 0,
-        "z": 0.0964
+        "z": 0.0924
       },
       "lastAppliedAngularAcceleration": {
         "x": 0,
-        "y": 0.0032,
+        "y": 0.0033,
         "z": 0
       }
     },
     "mass": {
       "dryMass": 1000,
       "cargoMass": 0,
-      "fuelMass": 99.0826,
-      "totalMass": 1099.0826
+      "fuelMass": 99.0822,
+      "totalMass": 1099.0822
     },
     "fuel": {
       "capacity": 100,
-      "current": 99.0826,
+      "current": 99.0822,
       "reserve": 5,
       "burnRate": 0.02,
       "status": "Ready",
@@ -94,19 +94,19 @@
     }
   },
   "executor": {
-    "tick": 552,
+    "tick": 560,
     "status": "Diverged",
     "arrivalPhase": "None",
-    "planHash": "604c9f08",
+    "planHash": "32a19989",
     "activeSegmentId": "avoid-rock-a-1",
-    "distanceToTarget": 64.0153,
+    "distanceToTarget": 64.014,
     "offRouteDistance": 64.0001,
     "terminalSpeedLimit": 0.5,
-    "currentSpeed": 0.4537,
-    "terminalError": -0.0463,
-    "terminalSpeedError": -0.0463,
-    "terminalRadialSpeed": 0.0099,
-    "terminalTangentialSpeed": 0.4536,
+    "currentSpeed": 0.4346,
+    "terminalError": -0.0654,
+    "terminalSpeedError": -0.0654,
+    "terminalRadialSpeed": 0.0091,
+    "terminalTangentialSpeed": 0.4345,
     "desiredTerminalVelocity": {
       "x": 0,
       "y": 0,
@@ -123,7 +123,7 @@
     ],
     "fuel": {
       "capacity": 100,
-      "current": 99.0826,
+      "current": 99.0822,
       "reserve": 5,
       "burnRate": 0.02,
       "status": "Ready",
@@ -133,12 +133,12 @@
       "mass": {
         "dryMass": 1000,
         "cargoMass": 0,
-        "fuelMass": 99.0826,
-        "totalMass": 1099.0826
+        "fuelMass": 99.0822,
+        "totalMass": 1099.0822
       },
       "fuel": {
         "capacity": 100,
-        "current": 99.0826,
+        "current": 99.0822,
         "reserve": 5,
         "burnRate": 0.02,
         "status": "Ready",
@@ -155,8 +155,8 @@
         "reasonCodes": []
       },
       "brakingReserve": {
-        "requiredDeltaV": 1.4537,
-        "availableDeltaV": 4280.0527,
+        "requiredDeltaV": 1.4346,
+        "availableDeltaV": 4280.0352,
         "canBrake": true,
         "reasonCodes": []
       },
@@ -164,23 +164,23 @@
       "failureReasonCodes": [
         "OffLockedRoute"
       ],
-      "etaSeconds": 141.1
+      "etaSeconds": 147.3
     },
     "position": {
-      "x": 88.9435,
+      "x": 88.9879,
       "y": 64,
-      "z": 0.9169
+      "z": 0.8783
     },
     "velocity": {
-      "x": 0.3427,
+      "x": 0.3282,
       "y": 0,
-      "z": -0.2974
+      "z": -0.2848
     }
   },
   "lockedPlan": {
-    "id": "ObstacleAvoidanceLocal:nav-beta:21",
+    "id": "ObstacleAvoidanceLocal:nav-beta:25",
     "planner": "ObstacleAvoidanceLocal",
-    "createdAtTick": 21,
+    "createdAtTick": 25,
     "target": {
       "id": "nav-beta",
       "label": "Navigation Beta",
@@ -211,7 +211,8 @@
           "z": 31
         },
         "desiredSpeed": 14,
-        "clearanceRadius": 19
+        "clearanceRadius": 19,
+        "brakeMarginMultiplier": 1
       },
       {
         "id": "avoid-rock-a-1",
@@ -248,18 +249,18 @@
         "clearanceRisk:0.386"
       ]
     },
-    "planHash": "604c9f08"
+    "planHash": "32a19989"
   },
   "flightSnapshot": {
     "mass": {
       "dryMass": 1000,
       "cargoMass": 0,
-      "fuelMass": 99.0826,
-      "totalMass": 1099.0826
+      "fuelMass": 99.0822,
+      "totalMass": 1099.0822
     },
     "fuel": {
       "capacity": 100,
-      "current": 99.0826,
+      "current": 99.0822,
       "reserve": 5,
       "burnRate": 0.02,
       "status": "Ready",
@@ -276,8 +277,8 @@
       "reasonCodes": []
     },
     "brakingReserve": {
-      "requiredDeltaV": 1.4537,
-      "availableDeltaV": 4280.0527,
+      "requiredDeltaV": 1.4346,
+      "availableDeltaV": 4280.0352,
       "canBrake": true,
       "reasonCodes": []
     },
@@ -285,7 +286,7 @@
     "failureReasonCodes": [
       "OffLockedRoute"
     ],
-    "etaSeconds": 141.1
+    "etaSeconds": 147.3
   },
   "selectableTargets": [
     {
@@ -367,9 +368,9 @@
       }
     },
     "plan": {
-      "id": "ObstacleAvoidanceLocal:nav-beta:21",
+      "id": "ObstacleAvoidanceLocal:nav-beta:25",
       "planner": "ObstacleAvoidanceLocal",
-      "createdAtTick": 21,
+      "createdAtTick": 25,
       "target": {
         "id": "nav-beta",
         "label": "Navigation Beta",
@@ -400,7 +401,8 @@
             "z": 31
           },
           "desiredSpeed": 14,
-          "clearanceRadius": 19
+          "clearanceRadius": 19,
+          "brakeMarginMultiplier": 1
         },
         {
           "id": "avoid-rock-a-1",
@@ -437,7 +439,7 @@
           "clearanceRisk:0.386"
         ]
       },
-      "planHash": "604c9f08"
+      "planHash": "32a19989"
     },
     "validation": {
       "ok": true,

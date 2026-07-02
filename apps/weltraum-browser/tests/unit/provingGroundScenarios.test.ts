@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { planHashFor, stableStringify } from "../../src/core";
-import { runScenario, runScenarioMatrix } from "../../src/test-harness/scenarioRunner";
+import { evaluateAutopilotProvingGroundCourseResult, runAutopilotProvingGroundCourse, runAutopilotProvingGroundMatrix, runScenario, runScenarioMatrix } from "../../src/test-harness/scenarioRunner";
 import { scenarioCatalog } from "../../src/test-harness/scenarios";
+import { autopilotProvingGroundCourses, getAutopilotProvingGroundCourse } from "../../src/world/autopilotProvingGroundCourses";
 import { createShipState } from "../../src/world/provingGroundWorld";
 
 const authorityModes = ["Manual", "Assisted", "Autopilot"];
@@ -175,5 +176,126 @@ describe("browser proving-ground scenario matrix", () => {
     expect(result.invalidationReasons).toEqual(["OffLockedRoute"]);
     expect(result.failureReasonCodes).toContain("OffLockedRoute");
     expect(result.routeValid).toBe(false);
+  });
+
+  it("defines the browser-native proving-ground v2 course catalog", () => {
+    expect(autopilotProvingGroundCourses.map((course) => course.id)).toEqual([
+      "direct-long",
+      "s-curve-obstacles",
+      "narrow-corridor",
+      "offset-gates",
+      "target-behind-obstacle",
+      "target-near-obstacle",
+      "high-initial-speed",
+      "lateral-initial-velocity",
+      "low-authority-terminal",
+      "low-fuel-long-route",
+      "off-route-disturbance-midcourse"
+    ]);
+    expect(autopilotProvingGroundCourses.every((course) => course.target.arrivalEnvelope.stopBehavior === "StopWithinEnvelope")).toBe(true);
+    expect(autopilotProvingGroundCourses.every((course) => course.target.arrivalEnvelope.terminalSpeed === 0.5)).toBe(true);
+  });
+
+  it("runs the v2 proving-ground matrix without treating KnownStress or ExpectedFail as suite failures", () => {
+    const results = runAutopilotProvingGroundMatrix("Balanced");
+
+    expect(results).toHaveLength(11);
+    expect(Object.fromEntries(results.map((result) => [result.courseId, result.classification]))).toEqual({
+      "direct-long": "Pass",
+      "s-curve-obstacles": "KnownStress",
+      "narrow-corridor": "KnownStress",
+      "offset-gates": "Pass",
+      "target-behind-obstacle": "Pass",
+      "target-near-obstacle": "Pass",
+      "high-initial-speed": "Pass",
+      "lateral-initial-velocity": "Pass",
+      "low-authority-terminal": "Pass",
+      "low-fuel-long-route": "ExpectedFail",
+      "off-route-disturbance-midcourse": "ExpectedFail"
+    });
+    expect(results.every((result) => result.planHashBefore === result.planHashAfter || result.planHashBefore === null)).toBe(true);
+    for (const result of results) {
+      expect(result.profile).toBe("Balanced");
+      expect(typeof result.peakSpeed).toBe("number");
+      expect(typeof result.finalSpeed).toBe("number");
+      expect(typeof result.finalDistance).toBe("number");
+      expect(typeof result.minObstacleClearance).toBe("number");
+      expect(typeof result.fuelUsed).toBe("number");
+      expect(typeof result.arrivalPhase).toBe("string");
+      expect(Array.isArray(result.notes)).toBe(true);
+      expect(result.notes.join(" ")).toContain("closest sampled ship position");
+    }
+  });
+
+  it("makes Balanced measurably faster than Safe on direct-long while preserving terminal capture", () => {
+    const safe = runAutopilotProvingGroundCourse("direct-long", "Safe");
+    const balanced = runAutopilotProvingGroundCourse("direct-long", "Balanced");
+
+    expect(safe.classification).toBe("Pass");
+    expect(balanced.classification).toBe("Pass");
+    expect(balanced.ticksToArrival).toEqual(expect.any(Number));
+    expect(safe.ticksToArrival).toEqual(expect.any(Number));
+    expect(balanced.ticksToArrival as number).toBeLessThan(safe.ticksToArrival as number);
+    expect(balanced.peakSpeed).toBeGreaterThan(safe.peakSpeed);
+    expect(balanced.finalSpeed).toBeLessThanOrEqual(0.5);
+    expect(safe.finalSpeed).toBeLessThanOrEqual(0.5);
+    expect(balanced.planHashBefore).not.toBe(safe.planHashBefore);
+  });
+
+  it("measures obstacle clearance independently from rendering", () => {
+    const result = runAutopilotProvingGroundCourse("target-behind-obstacle", "Balanced");
+
+    expect(result.classification).toBe("Pass");
+    expect(result.minObstacleClearance).toBeGreaterThanOrEqual(0);
+    expect(result.segmentKinds).toContain("Avoidance");
+    expect(result.notes.join(" ")).toContain("Obstacle clearance uses closest sampled ship position");
+  });
+
+  it("keeps KnownStress courses visible without failing the suite", () => {
+    const result = runAutopilotProvingGroundCourse("narrow-corridor", "Balanced");
+
+    expect(result.classification).toBe("KnownStress");
+    expect(result.notes.join(" ")).toContain("one-obstacle");
+    expect(result.planHashAfter).toBe(result.planHashBefore);
+  });
+
+  it("fails ExpectedFail classification when the expected failure signal or reason is absent", () => {
+    const course = getAutopilotProvingGroundCourse("low-fuel-long-route");
+    const result = runAutopilotProvingGroundCourse("low-fuel-long-route", "Balanced");
+
+    expect(result.classification).toBe("ExpectedFail");
+
+    const evaluation = evaluateAutopilotProvingGroundCourseResult(course, {
+      ...result,
+      status: "Arrived",
+      replanRequired: false,
+      failureReasonCodes: [],
+      invalidationReasons: []
+    });
+
+    expect(evaluation.classification).toBe("Fail");
+    expect(evaluation.notes.join(" ")).toContain("Expected a failure or replan signal");
+    expect(evaluation.notes.join(" ")).toContain("FuelInsufficient");
+  });
+
+  it("fails KnownStress classification when terminal or locked-plan hard invariants are violated", () => {
+    const course = getAutopilotProvingGroundCourse("narrow-corridor");
+    const result = runAutopilotProvingGroundCourse("narrow-corridor", "Balanced");
+
+    expect(result.classification).toBe("KnownStress");
+
+    const terminalGateEvaluation = evaluateAutopilotProvingGroundCourseResult(course, {
+      ...result,
+      status: "Arrived",
+      ticksToArrival: result.tick,
+      finalDistance: course.acceptance.maxFinalDistance,
+      finalSpeed: course.acceptance.maxFinalSpeed + 0.1
+    });
+    const planHashEvaluation = evaluateAutopilotProvingGroundCourseResult(course, { ...result, planHashAfter: `${result.planHashBefore ?? "plan"}-changed` });
+
+    expect(terminalGateEvaluation.classification).toBe("Fail");
+    expect(terminalGateEvaluation.notes.join(" ")).toContain("Arrived final speed");
+    expect(planHashEvaluation.classification).toBe("Fail");
+    expect(planHashEvaluation.notes.join(" ")).toContain("Locked plan hash changed");
   });
 });
