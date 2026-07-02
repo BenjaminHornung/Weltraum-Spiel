@@ -130,7 +130,7 @@ test("flight HUD foundation keeps center clear, shows navigation, autopilot, war
       "- Verified 1024x768 and 760x640 keep Mode, Autopilot, Ship Visual, Ship Status, Navigation/Target, and Warnings player-visible without covering the center safe area.",
       "- Verified blocked/critical warning state disables the primary route button instead of dispatching EngageAutopilot.",
       "- Used `/?testBridge=1` only for controlled setup/evidence; default `/` was checked to keep TestBridge hidden.",
-      "- TODO: lifecycle-specific Hold/Ready fields are represented by current executor status/planHash only; no autopilot lifecycle logic was changed."
+      "- Note: post-arrival Hold/Ready evidence uses current executor lifecycle telemetry and player-facing HUD labels; no autopilot lifecycle logic was changed."
     ].join("\n"),
     "utf8"
   );

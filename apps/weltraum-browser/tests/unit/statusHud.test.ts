@@ -408,6 +408,64 @@ describe("renderStatusHud", () => {
     expect(elements.get("target-options")?.textContent).toContain("Target B (selected)");
   });
 
+  it("keeps completed station-keeping route hashes out of the player HUD", () => {
+    const elements = installDocumentStub();
+    const ship = createShipStateV2({ authority: { mode: "Autopilot" } });
+    const ownerSnapshot = createFlightSnapshot(ship, null);
+    const completedPlanHash = "completed-raw-hash-1234";
+
+    renderStatusHud({
+      ship,
+      lockedPlan: null,
+      flightSnapshot: ownerSnapshot,
+      executor: {
+        tick: 7,
+        status: "Arrived",
+        routeLifecycle: "Holding",
+        arrivalPhase: "Holding",
+        planHash: null,
+        completedPlanHash,
+        stationKeepingActive: true,
+        canAcceptNewPlan: true,
+        canSelectNewTarget: true,
+        activeSegmentId: null,
+        distanceToTarget: 0,
+        offRouteDistance: 0,
+        replanRequired: false,
+        invalidationReasons: [],
+        failureReasonCodes: [],
+        fuel: ownerSnapshot.fuel,
+        flightSnapshot: ownerSnapshot,
+        position: ship.position,
+        velocity: ship.velocity
+      }
+    });
+
+    expect(elements.get("plan-hash")?.textContent).toBe("Plan completed");
+    expect(elements.get("route-status")?.textContent).toBe("holding at target; new route ready");
+
+    const playerText = [
+      "plan-hash",
+      "mode",
+      "status",
+      "target-status",
+      "route-status",
+      "target-distance",
+      "radar-status",
+      "fuel-status",
+      "warning-chips",
+      "failure-reasons",
+      "runtime-message",
+      "ship-visual-source",
+      "autopilot-action-state"
+    ].map((id) => elements.get(id)?.textContent ?? "").join("\n");
+
+    expect(playerText).toContain("Plan completed");
+    expect(playerText).toContain("holding at target");
+    expect(playerText).toContain("new route ready");
+    expect(playerText).not.toContain(completedPlanHash);
+  });
+
   it("shows manual flight state, actuator state, and camera mode from snapshots", () => {
     const ship = createShipStateV2({
       controlMode: "Translation",

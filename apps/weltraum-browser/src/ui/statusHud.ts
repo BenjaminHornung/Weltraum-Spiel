@@ -281,7 +281,7 @@ export const createStatusHudViewModel = (telemetry: TelemetrySnapshot, visualSou
   const routeState = telemetry.lockedPlan
     ? `${snapshot.routeValid ? "locked route valid" : "locked route invalid"}${telemetry.executor.replanRequired ? " / new plan required" : ""}`
     : telemetry.executor.stationKeepingActive && telemetry.executor.completedPlanHash
-      ? `holding complete route ${telemetry.executor.completedPlanHash}; new route ready`
+      ? "holding at target; new route ready"
     : preview?.state === "Ready" && preview.plan
       ? `preview ready: ${preview.plan.segments.length} leg${preview.plan.segments.length === 1 ? "" : "s"}`
       : (preview?.playerMessage ?? "select a target to preview a route");
@@ -306,7 +306,7 @@ export const createStatusHudViewModel = (telemetry: TelemetrySnapshot, visualSou
   const planState = telemetry.executor.planHash
     ? "Plan locked"
     : telemetry.executor.completedPlanHash
-      ? `Completed ${telemetry.executor.completedPlanHash}`
+      ? "Plan completed"
       : routePlan
         ? "Route preview ready"
         : "No active plan";
