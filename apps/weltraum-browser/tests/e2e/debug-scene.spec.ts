@@ -307,6 +307,16 @@ test("browser vertical slice selects a target, previews a route, engages autopil
     matrixResults.every(
       (result: any) =>
         typeof result.finalSpeed === "number" &&
+        typeof result.arrivalPhase === "string" &&
+        (typeof result.terminalSpeedLimit === "number" || result.terminalSpeedLimit === null) &&
+        (typeof result.terminalSpeedError === "number" || result.terminalSpeedError === null) &&
+        typeof result.terminalRadialSpeed === "number" &&
+        typeof result.terminalTangentialSpeed === "number" &&
+        typeof result.desiredTerminalVelocity?.x === "number" &&
+        typeof result.desiredTerminalVelocity?.y === "number" &&
+        typeof result.desiredTerminalVelocity?.z === "number" &&
+        typeof result.terminalCaptureActive === "boolean" &&
+        typeof result.terminalHoldingActive === "boolean" &&
         typeof result.fuelUsed === "number" &&
         typeof result.initialMass === "number" &&
         typeof result.finalMass === "number" &&

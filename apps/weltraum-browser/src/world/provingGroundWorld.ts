@@ -46,14 +46,14 @@ export const provingGroundTargets = {
     label: "Navigation Alpha",
     kind: "Waypoint",
     position: vec3(120, 0, -30),
-    arrivalEnvelope: { radius: 3, terminalSpeed: 8, stopBehavior: "MatchTerminalSpeed" }
+    arrivalEnvelope: { radius: 3, terminalSpeed: 0.5, stopBehavior: "StopWithinEnvelope" }
   },
   navigationBeta: {
     id: "nav-beta",
     label: "Navigation Beta",
     kind: "Point",
     position: vec3(90, 0, 0),
-    arrivalEnvelope: { radius: 3, terminalSpeed: 8, stopBehavior: "MatchTerminalSpeed" }
+    arrivalEnvelope: { radius: 3, terminalSpeed: 0.5, stopBehavior: "StopWithinEnvelope" }
   }
 } satisfies Record<string, TargetDescriptor>;
 

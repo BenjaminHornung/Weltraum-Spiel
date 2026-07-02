@@ -94,6 +94,8 @@ Implemented in this v1 slice:
 - planner terminal-segment alignment with the visible target position,
 - deterministic candidate scoring skeleton and validation metadata in scenario evidence,
 - locked-target arrival-envelope capture so the browser ship reaches the visible green target marker instead of overshooting into divergence, without snapping tangential swings outside the envelope,
+- default browser proving-ground navigation targets (`nav-alpha`, `nav-beta`) now use stop/capture envelopes (`StopWithinEnvelope`, terminal speed 0.5 m/s), with executor terminal phases `TerminalBrake`, `Capture`, and `Holding` exposed in telemetry,
+- terminal capture and holding are applied through the shared FlightController/actuator path using desired acceleration; `Arrived`/Holding ticks keep integrating with a stable locked `planHash` instead of freezing nonzero velocity, snapping to the target, or zeroing velocity,
 - no-silent-replan/locked-plan-hash tests remain green.
 
 Deferred M4 follow-up points:

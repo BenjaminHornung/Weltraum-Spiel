@@ -1,24 +1,24 @@
 {
   "ship": {
     "position": {
-      "x": 89.9337,
+      "x": 88.9435,
       "y": 64,
-      "z": 0.117
+      "z": 0.9169
     },
     "velocity": {
-      "x": 5.9022,
+      "x": 0.3427,
       "y": 0,
-      "z": -5.3995
+      "z": -0.2974
     },
     "orientation": {
       "x": 0,
-      "y": 0.849601,
+      "y": -0.936446,
       "z": 0,
-      "w": 0.527426
+      "w": 0.350812
     },
     "angularVelocity": {
       "x": 0,
-      "y": 0.4391,
+      "y": -0.0043,
       "z": 0
     },
     "throttle": 0,
@@ -58,25 +58,25 @@
         "rotationResponseScale": 1
       },
       "lastAppliedAcceleration": {
-        "x": -0.846,
+        "x": -0.1111,
         "y": 0,
-        "z": -0.8336
+        "z": 0.0964
       },
       "lastAppliedAngularAcceleration": {
         "x": 0,
-        "y": -0.2035,
+        "y": 0.0032,
         "z": 0
       }
     },
     "mass": {
       "dryMass": 1000,
       "cargoMass": 0,
-      "fuelMass": 99.1038,
-      "totalMass": 1099.1038
+      "fuelMass": 99.0826,
+      "totalMass": 1099.0826
     },
     "fuel": {
       "capacity": 100,
-      "current": 99.1038,
+      "current": 99.0826,
       "reserve": 5,
       "burnRate": 0.02,
       "status": "Ready",
@@ -94,12 +94,26 @@
     }
   },
   "executor": {
-    "tick": 342,
+    "tick": 552,
     "status": "Diverged",
-    "planHash": "c91f589a",
+    "arrivalPhase": "None",
+    "planHash": "604c9f08",
     "activeSegmentId": "avoid-rock-a-1",
-    "distanceToTarget": 64.0001,
-    "offRouteDistance": 64,
+    "distanceToTarget": 64.0153,
+    "offRouteDistance": 64.0001,
+    "terminalSpeedLimit": 0.5,
+    "currentSpeed": 0.4537,
+    "terminalError": -0.0463,
+    "terminalSpeedError": -0.0463,
+    "terminalRadialSpeed": 0.0099,
+    "terminalTangentialSpeed": 0.4536,
+    "desiredTerminalVelocity": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "terminalCaptureActive": false,
+    "terminalHoldingActive": false,
     "replanRequired": true,
     "invalidationReasons": [
       "OffLockedRoute"
@@ -109,7 +123,7 @@
     ],
     "fuel": {
       "capacity": 100,
-      "current": 99.1038,
+      "current": 99.0826,
       "reserve": 5,
       "burnRate": 0.02,
       "status": "Ready",
@@ -119,12 +133,12 @@
       "mass": {
         "dryMass": 1000,
         "cargoMass": 0,
-        "fuelMass": 99.1038,
-        "totalMass": 1099.1038
+        "fuelMass": 99.0826,
+        "totalMass": 1099.0826
       },
       "fuel": {
         "capacity": 100,
-        "current": 99.1038,
+        "current": 99.0826,
         "reserve": 5,
         "burnRate": 0.02,
         "status": "Ready",
@@ -141,8 +155,8 @@
         "reasonCodes": []
       },
       "brakingReserve": {
-        "requiredDeltaV": 8.9994,
-        "availableDeltaV": 4280.9326,
+        "requiredDeltaV": 1.4537,
+        "availableDeltaV": 4280.0527,
         "canBrake": true,
         "reasonCodes": []
       },
@@ -150,23 +164,23 @@
       "failureReasonCodes": [
         "OffLockedRoute"
       ],
-      "etaSeconds": 8
+      "etaSeconds": 141.1
     },
     "position": {
-      "x": 89.9337,
+      "x": 88.9435,
       "y": 64,
-      "z": 0.117
+      "z": 0.9169
     },
     "velocity": {
-      "x": 5.9022,
+      "x": 0.3427,
       "y": 0,
-      "z": -5.3995
+      "z": -0.2974
     }
   },
   "lockedPlan": {
-    "id": "ObstacleAvoidanceLocal:nav-beta:17",
+    "id": "ObstacleAvoidanceLocal:nav-beta:21",
     "planner": "ObstacleAvoidanceLocal",
-    "createdAtTick": 17,
+    "createdAtTick": 21,
     "target": {
       "id": "nav-beta",
       "label": "Navigation Beta",
@@ -178,8 +192,8 @@
       },
       "arrivalEnvelope": {
         "radius": 3,
-        "terminalSpeed": 8,
-        "stopBehavior": "MatchTerminalSpeed"
+        "terminalSpeed": 0.5,
+        "stopBehavior": "StopWithinEnvelope"
       }
     },
     "segments": [
@@ -234,18 +248,18 @@
         "clearanceRisk:0.386"
       ]
     },
-    "planHash": "c91f589a"
+    "planHash": "604c9f08"
   },
   "flightSnapshot": {
     "mass": {
       "dryMass": 1000,
       "cargoMass": 0,
-      "fuelMass": 99.1038,
-      "totalMass": 1099.1038
+      "fuelMass": 99.0826,
+      "totalMass": 1099.0826
     },
     "fuel": {
       "capacity": 100,
-      "current": 99.1038,
+      "current": 99.0826,
       "reserve": 5,
       "burnRate": 0.02,
       "status": "Ready",
@@ -262,8 +276,8 @@
       "reasonCodes": []
     },
     "brakingReserve": {
-      "requiredDeltaV": 8.9994,
-      "availableDeltaV": 4280.9326,
+      "requiredDeltaV": 1.4537,
+      "availableDeltaV": 4280.0527,
       "canBrake": true,
       "reasonCodes": []
     },
@@ -271,7 +285,7 @@
     "failureReasonCodes": [
       "OffLockedRoute"
     ],
-    "etaSeconds": 8
+    "etaSeconds": 141.1
   },
   "selectableTargets": [
     {
@@ -299,8 +313,8 @@
       },
       "arrivalEnvelope": {
         "radius": 3,
-        "terminalSpeed": 8,
-        "stopBehavior": "MatchTerminalSpeed"
+        "terminalSpeed": 0.5,
+        "stopBehavior": "StopWithinEnvelope"
       }
     },
     {
@@ -314,8 +328,8 @@
       },
       "arrivalEnvelope": {
         "radius": 3,
-        "terminalSpeed": 8,
-        "stopBehavior": "MatchTerminalSpeed"
+        "terminalSpeed": 0.5,
+        "stopBehavior": "StopWithinEnvelope"
       }
     }
   ],
@@ -330,8 +344,8 @@
     },
     "arrivalEnvelope": {
       "radius": 3,
-      "terminalSpeed": 8,
-      "stopBehavior": "MatchTerminalSpeed"
+      "terminalSpeed": 0.5,
+      "stopBehavior": "StopWithinEnvelope"
     }
   },
   "routePreview": {
@@ -348,14 +362,14 @@
       },
       "arrivalEnvelope": {
         "radius": 3,
-        "terminalSpeed": 8,
-        "stopBehavior": "MatchTerminalSpeed"
+        "terminalSpeed": 0.5,
+        "stopBehavior": "StopWithinEnvelope"
       }
     },
     "plan": {
-      "id": "ObstacleAvoidanceLocal:nav-beta:17",
+      "id": "ObstacleAvoidanceLocal:nav-beta:21",
       "planner": "ObstacleAvoidanceLocal",
-      "createdAtTick": 17,
+      "createdAtTick": 21,
       "target": {
         "id": "nav-beta",
         "label": "Navigation Beta",
@@ -367,8 +381,8 @@
         },
         "arrivalEnvelope": {
           "radius": 3,
-          "terminalSpeed": 8,
-          "stopBehavior": "MatchTerminalSpeed"
+          "terminalSpeed": 0.5,
+          "stopBehavior": "StopWithinEnvelope"
         }
       },
       "segments": [
@@ -423,7 +437,7 @@
           "clearanceRisk:0.386"
         ]
       },
-      "planHash": "c91f589a"
+      "planHash": "604c9f08"
     },
     "validation": {
       "ok": true,

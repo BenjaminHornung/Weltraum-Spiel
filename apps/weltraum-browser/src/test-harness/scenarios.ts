@@ -52,6 +52,7 @@ export interface ScenarioResult {
   readonly routeValidation: RouteValidationResult;
   readonly routeScore: RouteScore;
   readonly status: string;
+  readonly arrivalPhase: string;
   readonly replanRequired: boolean;
   readonly invalidationReasons: readonly string[];
   readonly failureReasonCodes: readonly string[];
@@ -64,6 +65,13 @@ export interface ScenarioResult {
   readonly finalFuel: number;
   readonly fuelUsed: number;
   readonly finalSpeed: number;
+  readonly terminalSpeedLimit: number | null;
+  readonly terminalSpeedError: number | null;
+  readonly terminalRadialSpeed: number;
+  readonly terminalTangentialSpeed: number;
+  readonly desiredTerminalVelocity: { readonly x: number; readonly y: number; readonly z: number };
+  readonly terminalCaptureActive: boolean;
+  readonly terminalHoldingActive: boolean;
   readonly fuel: number;
   readonly finalPosition: { readonly x: number; readonly y: number; readonly z: number };
   readonly targetPosition: { readonly x: number; readonly y: number; readonly z: number };
