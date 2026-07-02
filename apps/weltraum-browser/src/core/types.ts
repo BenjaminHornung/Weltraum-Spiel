@@ -336,6 +336,8 @@ export interface LocalPlanner {
   plan(context: PlannerContext): RoutePlan;
 }
 
+export type RouteLifecycle = "Idle" | "Executing" | "TerminalCapture" | "Arrived" | "Completed" | "Holding" | "Cancelled";
+
 export type ExecutorStatus = "Idle" | "Executing" | "Arrived" | "Diverged" | "OutOfFuel" | "NoAuthority" | "BrakeReserveInsufficient";
 
 export type ExecutorArrivalPhase = "None" | "TerminalBrake" | "Capture" | "Holding";
@@ -343,8 +345,14 @@ export type ExecutorArrivalPhase = "None" | "TerminalBrake" | "Capture" | "Holdi
 export interface ExecutorTelemetry {
   readonly tick: number;
   readonly status: ExecutorStatus;
+  readonly routeLifecycle?: RouteLifecycle;
   readonly arrivalPhase?: ExecutorArrivalPhase;
   readonly planHash: string | null;
+  readonly completedPlanHash?: string | null;
+  readonly lockedPlanActive?: boolean;
+  readonly stationKeepingActive?: boolean;
+  readonly canAcceptNewPlan?: boolean;
+  readonly canSelectNewTarget?: boolean;
   readonly activeSegmentId: string | null;
   readonly distanceToTarget: number;
   readonly offRouteDistance: number;

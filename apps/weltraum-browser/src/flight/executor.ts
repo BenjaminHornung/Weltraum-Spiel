@@ -1,5 +1,5 @@
 ﻿import { add, clamp, distance, dot, magnitude, normalize, projectPointOnSegment, scale, sub, vec3 } from "../core/vector";
-import type { ArrivalEnvelope, ExecutorArrivalPhase, ExecutorTelemetry, FailureReasonCode, RoutePlan, RouteSegment, ShipState } from "../core/types";
+import type { ArrivalEnvelope, ExecutorArrivalPhase, ExecutorTelemetry, FailureReasonCode, RouteLifecycle, RoutePlan, RouteSegment, ShipState } from "../core/types";
 import { arrivalEnvelopeForTarget, arrivalRadiusForTarget } from "../navigation/validation";
 import { applyFlightControllerStep } from "./flightController";
 import { accelerationLimitForMass, createFlightSnapshot, createShipStateV2 } from "./state";
@@ -102,6 +102,8 @@ const inactiveTerminalTelemetry: TerminalTelemetryState = {
 export class AutopilotExecutor {
   private readonly options: AutopilotExecutorOptions;
   private lockedPlan: RoutePlan | null = null;
+  private stationKeepingPlan: RoutePlan | null = null;
+  private completedPlanHash: string | null = null;
   private activeSegmentIndex = 0;
   private telemetry: ExecutorTelemetry;
 
@@ -112,15 +114,17 @@ export class AutopilotExecutor {
 
   lockPlan(plan: RoutePlan, ship: ShipState, tick = this.telemetry.tick): void {
     this.lockedPlan = plan;
+    this.stationKeepingPlan = null;
     this.activeSegmentIndex = 0;
-    this.telemetry = this.createTelemetry(tick, "Executing", plan, ship, false, []);
+    this.telemetry = this.createTelemetry(tick, "Executing", plan, ship, false, [], inactiveTerminalTelemetry, "Executing");
   }
 
   cancelPlan(ship: ShipState, tick = this.telemetry.tick): ShipState {
     const idleShip = applyFlightControllerStep(ship, { mainThrottleCommand: 0, translationCommand: vec3(), rotationCommand: vec3() }, 0, this.options);
     this.lockedPlan = null;
+    this.stationKeepingPlan = null;
     this.activeSegmentIndex = 0;
-    this.telemetry = this.createTelemetry(tick, "Idle", null, idleShip, false, []);
+    this.telemetry = this.createTelemetry(tick, "Idle", null, idleShip, false, [], inactiveTerminalTelemetry, "Cancelled");
     return idleShip;
   }
 
@@ -135,6 +139,10 @@ export class AutopilotExecutor {
   step(ship: ShipState, fixedDeltaSeconds: number, tick: number): ShipState {
     const plan = this.lockedPlan;
     if (!plan) {
+      if (this.stationKeepingPlan) {
+        return this.stepStationKeeping(ship, fixedDeltaSeconds, tick);
+      }
+
       const idleRequest = this.options.allowManualInputWhenIdle
         ? {
             controlMode: ship.controlMode,
@@ -146,23 +154,23 @@ export class AutopilotExecutor {
           }
         : { mainThrottleCommand: 0, translationCommand: vec3(), rotationCommand: vec3() };
       const driftingShip = applyFlightControllerStep(ship, idleRequest, fixedDeltaSeconds, this.options);
-      this.telemetry = this.createTelemetry(tick, "Idle", null, driftingShip, false, []);
+      this.telemetry = this.createTelemetry(tick, "Idle", null, driftingShip, false, [], inactiveTerminalTelemetry, "Idle");
       return driftingShip;
     }
 
     const preflight = createFlightSnapshot(ship, plan, this.options);
     if (preflight.failureReasonCodes.includes("FuelDepleted") || preflight.failureReasonCodes.includes("FuelReserveViolated")) {
-      this.telemetry = this.createTelemetry(tick, "OutOfFuel", plan, ship, true, preflight.failureReasonCodes);
+      this.telemetry = this.createTelemetry(tick, "OutOfFuel", plan, ship, true, preflight.failureReasonCodes, inactiveTerminalTelemetry, "Executing");
       return ship;
     }
 
     if (preflight.failureReasonCodes.includes("AutopilotUnavailable") || preflight.failureReasonCodes.includes("AuthorityInsufficient")) {
-      this.telemetry = this.createTelemetry(tick, "NoAuthority", plan, ship, true, preflight.failureReasonCodes);
+      this.telemetry = this.createTelemetry(tick, "NoAuthority", plan, ship, true, preflight.failureReasonCodes, inactiveTerminalTelemetry, "Executing");
       return ship;
     }
 
     if (!preflight.brakingReserve.canBrake) {
-      this.telemetry = this.createTelemetry(tick, "BrakeReserveInsufficient", plan, ship, true, preflight.failureReasonCodes);
+      this.telemetry = this.createTelemetry(tick, "BrakeReserveInsufficient", plan, ship, true, preflight.failureReasonCodes, inactiveTerminalTelemetry, "Executing");
       return ship;
     }
 
@@ -175,7 +183,7 @@ export class AutopilotExecutor {
     const offRouteDistance = this.offRouteDistance(ship.position, segment);
     const invalidationReasons: readonly FailureReasonCode[] = offRouteDistance > this.options.divergenceDistance ? ["OffLockedRoute"] : [];
     if (invalidationReasons.length > 0) {
-      this.telemetry = this.createTelemetry(tick, "Diverged", plan, ship, true, invalidationReasons);
+      this.telemetry = this.createTelemetry(tick, "Diverged", plan, ship, true, invalidationReasons, inactiveTerminalTelemetry, "Executing");
       return ship;
     }
 
@@ -193,10 +201,15 @@ export class AutopilotExecutor {
     const nextPosition = nextShip.position;
 
     if (isTerminalSegment && (alreadyArrived || this.isArrived(nextShip, plan, arrivalEnvelope, arrivalRadius))) {
+      const shouldEnterStationKeeping = isTerminalTelemetryEnvelope(arrivalEnvelope);
       const terminalState = isTerminalTelemetryEnvelope(arrivalEnvelope)
         ? terminalStateForPhase("Holding", actuatorRequest.desiredTerminalVelocity)
         : inactiveTerminalTelemetry;
-      this.telemetry = this.createTelemetry(tick, "Arrived", plan, nextShip, false, [], terminalState);
+      this.completedPlanHash = plan.planHash;
+      this.stationKeepingPlan = shouldEnterStationKeeping ? plan : null;
+      this.lockedPlan = null;
+      this.activeSegmentIndex = 0;
+      this.telemetry = this.createTelemetry(tick, "Arrived", null, nextShip, false, [], terminalState, shouldEnterStationKeeping ? "Holding" : "Arrived", plan);
       return nextShip;
     }
 
@@ -206,7 +219,44 @@ export class AutopilotExecutor {
       this.activeSegmentIndex = Math.min(this.activeSegmentIndex + 1, plan.segments.length - 1);
     }
 
-    this.telemetry = this.createTelemetry(tick, "Executing", plan, nextShip, false, [], actuatorRequest);
+    const routeLifecycle: RouteLifecycle = actuatorRequest.terminalCaptureActive || actuatorRequest.arrivalPhase === "TerminalBrake" ? "TerminalCapture" : "Executing";
+    this.telemetry = this.createTelemetry(tick, "Executing", plan, nextShip, false, [], actuatorRequest, routeLifecycle);
+    return nextShip;
+  }
+
+  private stepStationKeeping(ship: ShipState, fixedDeltaSeconds: number, tick: number): ShipState {
+    const plan = this.stationKeepingPlan;
+    if (!plan) {
+      return ship;
+    }
+
+    const arrivalEnvelope = arrivalEnvelopeForTarget(plan.target);
+    const terminalSpeed = terminalSpeedForArrival(arrivalEnvelope);
+    const desiredTerminalVelocity = arrivalEnvelope?.stopBehavior === "MatchTerminalSpeed"
+      ? scale(normalize(sub(plan.target.position, ship.position)), terminalSpeed ?? 0)
+      : vec3();
+    const accelerationLimit = accelerationLimitForMass(ship.mass, this.options);
+    const positionError = sub(plan.target.position, ship.position);
+    const velocityError = sub(desiredTerminalVelocity, ship.velocity);
+    const desiredAcceleration = clampMagnitude(add(scale(positionError, 0.35), scale(velocityError, 1.4)), accelerationLimit);
+    const desiredAccelerationMagnitude = magnitude(desiredAcceleration);
+    const targetDirection = normalize(positionError);
+    const nextShip = applyFlightControllerStep(ship, {
+      controlMode: "Cruise",
+      mainThrottleCommand: desiredAccelerationMagnitude <= 0.05 ? 0 : clamp(desiredAccelerationMagnitude / Math.max(accelerationLimit, 1), 0.15, 1),
+      desiredAcceleration,
+      desiredFacingDirection: desiredAccelerationMagnitude > 1e-6 ? desiredAcceleration : targetDirection,
+      translationCommand: vec3(),
+      rotationCommand: vec3(),
+      rcsEnabled: ship.rcsEnabled,
+      sasEnabled: ship.sasEnabled
+    }, fixedDeltaSeconds, this.options);
+
+    const terminalState = isTerminalTelemetryEnvelope(arrivalEnvelope)
+      ? terminalStateForPhase("Holding", desiredTerminalVelocity)
+      : inactiveTerminalTelemetry;
+    this.completedPlanHash = this.completedPlanHash ?? plan.planHash;
+    this.telemetry = this.createTelemetry(tick, "Arrived", null, nextShip, false, [], terminalState, "Holding", plan);
     return nextShip;
   }
 
@@ -339,8 +389,11 @@ export class AutopilotExecutor {
     ship: ShipState,
     replanRequired: boolean,
     invalidationReasons: readonly FailureReasonCode[],
-    terminalState: TerminalTelemetryState = inactiveTerminalTelemetry
+    terminalState: TerminalTelemetryState = inactiveTerminalTelemetry,
+    routeLifecycle: RouteLifecycle = status === "Executing" ? "Executing" : status === "Arrived" ? "Arrived" : "Idle",
+    stationKeepingPlan: RoutePlan | null = null
   ): ExecutorTelemetry {
+    const telemetryPlan = plan ?? stationKeepingPlan;
     const segment = plan ? this.currentSegment(plan) : null;
     const baseFlightSnapshot = createFlightSnapshot(ship, plan, this.options);
     const failureReasonCodes = unique([...baseFlightSnapshot.failureReasonCodes, ...invalidationReasons]);
@@ -352,12 +405,18 @@ export class AutopilotExecutor {
     return {
       tick,
       status,
+      routeLifecycle,
       arrivalPhase: terminalState.arrivalPhase,
       planHash: plan?.planHash ?? null,
+      completedPlanHash: this.completedPlanHash,
+      lockedPlanActive: plan !== null,
+      stationKeepingActive: this.stationKeepingPlan !== null && plan === null,
+      canAcceptNewPlan: this.lockedPlan === null,
+      canSelectNewTarget: this.lockedPlan === null,
       activeSegmentId: segment?.id ?? null,
-      distanceToTarget: plan ? distance(ship.position, plan.target.position) : 0,
+      distanceToTarget: telemetryPlan ? distance(ship.position, telemetryPlan.target.position) : 0,
       offRouteDistance: plan && segment ? this.offRouteDistance(ship.position, segment) : 0,
-      ...this.createTerminalTelemetry(plan, ship, terminalState),
+      ...this.createTerminalTelemetry(telemetryPlan, ship, terminalState),
       replanRequired,
       invalidationReasons,
       failureReasonCodes,

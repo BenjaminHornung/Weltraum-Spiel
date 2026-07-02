@@ -14,8 +14,8 @@ Base: `927ca01 #WELTRAUM-000 Merge browser mainline CI`
 - Default proving-ground navigation targets are stop/capture targets: `StopWithinEnvelope` with terminal speed 0.5 m/s or lower.
 - Terminal capture uses a browser-native desired-acceleration controller through `applyFlightControllerStep()`.
 - `Arrived` means captured and holding, not a frozen shortcut.
-- Holding continues controller integration while the locked plan remains active.
-- `planHash` remains stable; no silent replan, target snap, waypoint snap, or velocity-zero shortcut is introduced.
+- Holding continues controller integration through station-keeping after the active route lock is cleared.
+- Active-route `planHash` remains stable while executing/capturing; after completion the finished hash remains visible as `completedPlanHash`. No silent replan, target snap, waypoint snap, or velocity-zero shortcut is introduced.
 - Demo Scout `GLBLoaded`, procedural fallback, TestBridge gating, renderer-not-truth, and HUD ViewModel flow remain intact.
 
 ## Evidence files
@@ -34,7 +34,7 @@ Key telemetry from the generated JSON:
 | holding | Arrived | Holding | 0.4992 m/s | 1.5392 m | 0.5 m/s | GLBLoaded |
 | afterHold | Arrived | Holding | 0.4680 m/s | 1.4430 m | 0.5 m/s | GLBLoaded |
 
-The plan hash remained `53a60488` for all terminal samples in the generated evidence. The ship position differs from the locked target position in capture and holding samples; holding continues to integrate for five more TestBridge ticks instead of returning a frozen state.
+The plan hash remained `53a60488` while the route was executing/capturing. In holding samples, active-route `planHash` is cleared and `completedPlanHash` preserves `53a60488`, so the completed route no longer blocks selecting/engaging a new target. The ship position differs from the selected target position in capture and holding samples; holding continues to integrate for five more TestBridge ticks instead of returning a frozen state.
 
 ## Verification
 

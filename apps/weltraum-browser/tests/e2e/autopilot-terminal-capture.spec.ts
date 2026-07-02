@@ -79,25 +79,31 @@ test("default navigation target terminal capture brakes, captures, and holds wit
   expect(holding.executor.status).toBe("Arrived");
   expect(holding.executor.arrivalPhase).toBe("Holding");
   expect(holding.executor.terminalHoldingActive).toBe(true);
-  expect(holding.executor.planHash).toBe(planHash);
-  expect(holding.executor.distanceToTarget).toBeLessThanOrEqual(holding.lockedPlan.target.arrivalEnvelope.radius);
+  expect(holding.executor.planHash).toBeNull();
+  expect(holding.executor.completedPlanHash).toBe(planHash);
+  expect(holding.executor.canAcceptNewPlan).toBe(true);
+  expect(holding.executor.canSelectNewTarget).toBe(true);
+  expect(holding.lockedPlan).toBeNull();
+  expect(holding.executor.distanceToTarget).toBeLessThanOrEqual(holding.selectedTarget.arrivalEnvelope.radius);
   expect(speedOf(holding)).toBeLessThanOrEqual(0.500001);
-  expect(holding.ship.position).not.toEqual(holding.lockedPlan.target.position);
+  expect(holding.ship.position).not.toEqual(holding.selectedTarget.position);
   expect(holding.executor.desiredTerminalVelocity).toEqual({ x: 0, y: 0, z: 0 });
 
   const afterHold = await page.evaluate(() => (window as any).TestBridge.step(5));
   expect(afterHold.executor.status).toBe("Arrived");
   expect(afterHold.executor.arrivalPhase).toBe("Holding");
-  expect(afterHold.executor.planHash).toBe(planHash);
+  expect(afterHold.executor.planHash).toBeNull();
+  expect(afterHold.executor.completedPlanHash).toBe(planHash);
   expect(afterHold.ship.position).not.toEqual(holding.ship.position);
-  expect(afterHold.ship.position).not.toEqual(afterHold.lockedPlan.target.position);
-  expect(afterHold.lockedPlan.target.position).toEqual(holding.lockedPlan.target.position);
+  expect(afterHold.ship.position).not.toEqual(afterHold.selectedTarget.position);
+  expect(afterHold.selectedTarget.position).toEqual(holding.selectedTarget.position);
 
   const renderSnapshot = await page.evaluate(() => (window as any).TestBridge.getRenderSnapshot());
   expect(renderSnapshot.shipVisual.visualSource.state).toBe("GLBLoaded");
-  expect(renderSnapshot.targetPosition).toEqual(holding.lockedPlan.target.position);
-  expect(renderSnapshot.shipPosition).not.toEqual(holding.lockedPlan.target.position);
-  expect(renderSnapshot.planHash).toBe(planHash);
+  expect(renderSnapshot.targetPosition).toEqual(holding.selectedTarget.position);
+  expect(renderSnapshot.shipPosition).not.toEqual(holding.selectedTarget.position);
+  expect(renderSnapshot.planHash).toBeNull();
+  expect(renderSnapshot.usesInterpolatedPose).toBe(true);
   await page.screenshot({ path: path.join(evidenceDir, "autopilot-terminal-hold.png"), fullPage: true });
 
   await writeFile(

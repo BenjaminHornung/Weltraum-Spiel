@@ -176,6 +176,8 @@ export const createStatusHudViewModel = (telemetry: TelemetrySnapshot, visualSou
   const displayedDistance = telemetry.lockedPlan ? telemetry.executor.distanceToTarget : previewDistance;
   const routeState = telemetry.lockedPlan
     ? `${snapshot.routeValid ? "locked route valid" : "locked route invalid"}${telemetry.executor.replanRequired ? " / new plan required" : ""}`
+    : telemetry.executor.stationKeepingActive && telemetry.executor.completedPlanHash
+      ? `holding complete route ${telemetry.executor.completedPlanHash}; new route ready`
     : preview?.state === "Ready" && preview.plan
       ? `preview ready: ${preview.plan.segments.length} leg${preview.plan.segments.length === 1 ? "" : "s"}`
       : (preview?.playerMessage ?? "select a target to preview a route");
@@ -206,7 +208,7 @@ export const createStatusHudViewModel = (telemetry: TelemetrySnapshot, visualSou
     velocityState: formatSpeed(telemetry.ship.velocity),
     rcsSasState: `RCS ${rcsEnabled ? "on" : "off"}, SAS ${sasEnabled ? "on" : "off"}${activeActuators.length > 0 ? ` / ${activeActuators.join(", ")}` : ""}`,
     helpHint: "Desktop keyboard/mouse manual flight: W/S pitch, A/D yaw, Q/E roll, Shift/Ctrl throttle, X cut, Y/Z full, R RCS, T SAS, CapsLock mode, H/N translate, V camera, RMB+wheel inspect. Mobile: target selection and autopilot only in this slice.",
-    planState: telemetry.executor.planHash ? "Plan locked" : routePlan ? "Route preview ready" : "No active plan",
+    planState: telemetry.executor.planHash ? "Plan locked" : telemetry.executor.completedPlanHash ? `Completed ${telemetry.executor.completedPlanHash}` : routePlan ? "Route preview ready" : "No active plan",
     routeState,
     target: target ? `${target.label} [${target.kind}]` : "none selected",
     distance: target && displayedDistance !== undefined ? formatMeters(displayedDistance) : "n/a",
