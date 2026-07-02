@@ -1,6 +1,8 @@
 # Browser Flight UI Screenshot Audit
 
-Scope: all 38 tracked PNG references under `docs/UI-Screenshots/`. The user-specified `ui-screenshots/` folder was absent, so this audit uses the approved tracked source folder. Source screenshots are read-only references and were not modified.
+Scope: the first 38 tracked PNG references under `docs/UI-Screenshots/` that were available when the browser flight HUD foundation plan was authored. The user-specified `ui-screenshots/` folder was absent, so this audit uses the approved tracked source folder. Source screenshots are read-only references and were not modified.
+
+Mainline merge note (2026-07-02): screenshots `39-schiff-verlassen-surface-uebergang.png` through `48-minoa-listening-post-langstreckenscan.png` now exist in `docs/UI-Screenshots/`. They were added after this flight-HUD foundation audit and depict surface/resource/outpost/relay scenarios. They remain outside this task's HUD foundation scope; future surface/resource UI slices should audit them before implementing those flows.
 
 Common visual vocabulary across the set: dark navy/black cockpit base, cool blue panel strokes, cyan/green route/ready accents, amber/red warning accents, compact Inter-like labels/values, restrained frosted panels, and a center viewport reserved for ship/target/route visuals. v1 implements structure and contracts (top/edge/bottom HUD, center-safe area, player/debug split) rather than copying unfinished large map/builder/combat/economy screens.
 

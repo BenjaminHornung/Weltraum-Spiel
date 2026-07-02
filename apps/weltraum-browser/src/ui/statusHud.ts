@@ -280,6 +280,8 @@ export const createStatusHudViewModel = (telemetry: TelemetrySnapshot, visualSou
   const displayedDistance = telemetry.lockedPlan ? telemetry.executor.distanceToTarget : previewDistance;
   const routeState = telemetry.lockedPlan
     ? `${snapshot.routeValid ? "locked route valid" : "locked route invalid"}${telemetry.executor.replanRequired ? " / new plan required" : ""}`
+    : telemetry.executor.stationKeepingActive && telemetry.executor.completedPlanHash
+      ? `holding complete route ${telemetry.executor.completedPlanHash}; new route ready`
     : preview?.state === "Ready" && preview.plan
       ? `preview ready: ${preview.plan.segments.length} leg${preview.plan.segments.length === 1 ? "" : "s"}`
       : (preview?.playerMessage ?? "select a target to preview a route");
@@ -301,7 +303,13 @@ export const createStatusHudViewModel = (telemetry: TelemetrySnapshot, visualSou
     telemetry.ship.actuatorTelemetry.sasCorrectionActive ? "SAS correction" : null
   ].filter((item): item is string => Boolean(item));
 
-  const planState = telemetry.executor.planHash ? "Plan locked" : routePlan ? "Route preview ready" : "No active plan";
+  const planState = telemetry.executor.planHash
+    ? "Plan locked"
+    : telemetry.executor.completedPlanHash
+      ? `Completed ${telemetry.executor.completedPlanHash}`
+      : routePlan
+        ? "Route preview ready"
+        : "No active plan";
   const targetState = target ? `${target.label} [${target.kind}]` : "none selected";
   const distanceState = target && displayedDistance !== undefined ? formatMeters(displayedDistance) : "n/a";
   const radarState = target && routePlan

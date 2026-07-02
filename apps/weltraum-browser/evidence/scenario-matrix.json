@@ -49,7 +49,7 @@
       "reasonCodes": []
     },
     "brakingReserve": {
-      "requiredDeltaV": 1.303,
+      "requiredDeltaV": 0.303,
       "availableDeltaV": 4317.905,
       "canBrake": true,
       "reasonCodes": []

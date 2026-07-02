@@ -97,7 +97,8 @@ Implemented in this v1 slice:
 - deterministic candidate scoring skeleton and validation metadata in scenario evidence,
 - locked-target arrival-envelope capture so the browser ship reaches the visible green target marker instead of overshooting into divergence, without snapping tangential swings outside the envelope,
 - default browser proving-ground navigation targets (`nav-alpha`, `nav-beta`) now use stop/capture envelopes (`StopWithinEnvelope`, terminal speed 0.5 m/s), with executor terminal phases `TerminalBrake`, `Capture`, and `Holding` exposed in telemetry,
-- terminal capture and holding are applied through the shared FlightController/actuator path using desired acceleration; `Arrived`/Holding ticks keep integrating with a stable locked `planHash` instead of freezing nonzero velocity, snapping to the target, or zeroing velocity,
+- terminal capture and holding are applied through the shared FlightController/actuator path using desired acceleration; completed routes now move the finished route hash to `completedPlanHash`, clear the active route lock, and continue station-keeping separately so a new target/route can be selected without pressing Cancel,
+- active `Executing`/`TerminalCapture` routes remain fail-closed for target selection and Engage; only completed/holding station-keeping sets `canAcceptNewPlan` and `canSelectNewTarget`,
 - no-silent-replan/locked-plan-hash tests remain green.
 
 Deferred M4 follow-up points:
@@ -194,6 +195,7 @@ Implemented in this v1 slice:
 - engage fail-closed behavior that does not silently replace an already locked plan,
 - compact HUD/radar readout and player-facing status/warning labels without raw TestBridge/debug JSON or internal failure-code leakage,
 - gated Playwright evidence for default TestBridge absence, target selection, route preview, autopilot arrival, off-route failure explanation and negative fuel/authority cases.
+- lifecycle smoothing follow-up evidence confirms a completed/holding route accepts a new target and new route while active routes still block replacement; `completedPlanHash` keeps the finished hash visible after `planHash` returns to active-route-only semantics.
 
 Deferred M7 follow-up points:
 
@@ -221,6 +223,7 @@ Implemented in this v1 slice:
 - VFX from `mainThrustActive`, `rcsTranslationActive`, `rcsRotationActive` and `sasCorrectionActive`,
 - no normal-runtime target/waypoint position snap, waypoint velocity zero, terminal velocity clamp/zero shortcut, or idle/cancel velocity zero,
 - screenshot evidence for manual ChaseLocked flight, RCS translation, autopilot thruster burn and autopilot arrival.
+- fixed-step presentation interpolation now exposes cloned previous/current/rendered ship snapshots; Three.js uses the interpolated pose only for ship visual and camera, while HUD, route, target, VFX and TestBridge truth continue to read owner telemetry. Chase camera damping uses `1 - exp(-lambda * dt)` with tighter ChaseLocked damping than inspection modes.
 
 Asset decision:
 

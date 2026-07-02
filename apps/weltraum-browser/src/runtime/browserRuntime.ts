@@ -1,5 +1,5 @@
 import { AutopilotExecutor, DirectLocalPlanner, FixedStepSimulationLoop, ObstacleAvoidanceLocalPlanner, createTelemetrySnapshot, vec3 } from "../core";
-import type { ObstacleDescriptor, RoutePlan, RoutePlanningResult, ShipState, TargetDescriptor } from "../core";
+import type { ObstacleDescriptor, PresentationSnapshot, RoutePlan, RoutePlanningResult, ShipState, TargetDescriptor } from "../core";
 import { autopilotAuthority, createShipState, defaultObstacles, noAutopilotAuthority, provingGroundTargets } from "../world/provingGroundWorld";
 import type { BrowserRuntimeCommand } from "./commands";
 import { clamp01, createManualFlightInputState, mergeManualFlightInputState, nextCameraMode, nextControlMode, type ManualFlightInputState } from "./input";
@@ -13,6 +13,7 @@ export interface BrowserRuntimeController {
   getTelemetry(): TelemetrySnapshot;
   getPlanHash(): string | null;
   getLockedPlan(): RoutePlan | null;
+  getPresentationSnapshot(): PresentationSnapshot;
   dispatchCommand(command: unknown): TelemetrySnapshot;
   getManualInput(): ManualFlightInputState;
   disturbShip(offsetX: number): TelemetrySnapshot;
@@ -111,15 +112,34 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
 
   const applyManualInputToLoopShip = (): void => {
     const current = loop.getShip();
+    const autopilotOwnsFlight = !executor.getTelemetry().canAcceptNewPlan || executor.getTelemetry().stationKeepingActive;
+    const manualInputChanged =
+      current.rcsEnabled !== manualInput.rcsEnabled ||
+      current.sasEnabled !== manualInput.sasEnabled ||
+      (!autopilotOwnsFlight && (
+        current.controlMode !== manualInput.controlMode ||
+        Math.abs(current.mainThrottleCommand - manualInput.mainThrottleCommand) > 1e-6 ||
+        Math.abs(current.translationCommand.x - manualInput.translationCommand.x) > 1e-6 ||
+        Math.abs(current.translationCommand.y - manualInput.translationCommand.y) > 1e-6 ||
+        Math.abs(current.translationCommand.z - manualInput.translationCommand.z) > 1e-6 ||
+        Math.abs(current.rotationCommand.x - manualInput.rotationCommand.x) > 1e-6 ||
+        Math.abs(current.rotationCommand.y - manualInput.rotationCommand.y) > 1e-6 ||
+        Math.abs(current.rotationCommand.z - manualInput.rotationCommand.z) > 1e-6
+      ));
+    if (!manualInputChanged) {
+      ship = current;
+      return;
+    }
+
     const updatedShip = {
       ...current,
-      controlMode: manualInput.controlMode,
+      controlMode: autopilotOwnsFlight ? current.controlMode : manualInput.controlMode,
       rcsEnabled: manualInput.rcsEnabled,
       sasEnabled: manualInput.sasEnabled,
-      mainThrottleCommand: manualInput.mainThrottleCommand,
-      throttle: manualInput.mainThrottleCommand,
-      translationCommand: manualInput.translationCommand,
-      rotationCommand: manualInput.rotationCommand
+      mainThrottleCommand: autopilotOwnsFlight ? current.mainThrottleCommand : manualInput.mainThrottleCommand,
+      throttle: autopilotOwnsFlight ? current.throttle : manualInput.mainThrottleCommand,
+      translationCommand: autopilotOwnsFlight ? current.translationCommand : manualInput.translationCommand,
+      rotationCommand: autopilotOwnsFlight ? current.rotationCommand : manualInput.rotationCommand
     };
     loop.setShip(updatedShip);
     ship = updatedShip;
@@ -146,7 +166,7 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
   };
 
   const selectTarget = (targetId: unknown): void => {
-    if (executor.getLockedPlan()) {
+    if (!executor.getTelemetry().canSelectNewTarget) {
       runtimeMessage = "Cancel the current autopilot route before selecting another target.";
       return;
     }
@@ -173,8 +193,7 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
       return;
     }
 
-    const lockedPlan = executor.getLockedPlan();
-    if (lockedPlan) {
+    if (!executor.getTelemetry().canAcceptNewPlan) {
       runtimeMessage = "Autopilot not engaged: cancel the current locked route before engaging a new one.";
       return;
     }
@@ -269,6 +288,9 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
     },
     getLockedPlan() {
       return executor.getLockedPlan();
+    },
+    getPresentationSnapshot() {
+      return loop.getPresentationSnapshot();
     },
     dispatchCommand,
     getManualInput() {

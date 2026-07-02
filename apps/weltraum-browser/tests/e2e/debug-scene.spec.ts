@@ -243,26 +243,31 @@ test("browser vertical slice selects a target, previews a route, engages autopil
     return current;
   });
   expect(arrivalTelemetry.executor.status).toBe("Arrived");
-  expect(arrivalTelemetry.executor.distanceToTarget).toBeLessThanOrEqual(arrivalTelemetry.lockedPlan.target.arrivalEnvelope.radius);
-  expect(arrivalTelemetry.ship.position).not.toEqual(arrivalTelemetry.lockedPlan.target.position);
-  const arrivalTerminalSpeed = arrivalTelemetry.lockedPlan.target.arrivalEnvelope.terminalSpeed ?? Number.POSITIVE_INFINITY;
+  expect(arrivalTelemetry.executor.distanceToTarget).toBeLessThanOrEqual(arrivalTelemetry.selectedTarget.arrivalEnvelope.radius);
+  expect(arrivalTelemetry.ship.position).not.toEqual(arrivalTelemetry.selectedTarget.position);
+  const arrivalTerminalSpeed = arrivalTelemetry.selectedTarget.arrivalEnvelope.terminalSpeed ?? Number.POSITIVE_INFINITY;
   expect(arrivalTelemetry.ship.velocity.x ** 2 + arrivalTelemetry.ship.velocity.y ** 2 + arrivalTelemetry.ship.velocity.z ** 2).toBeLessThanOrEqual(
     arrivalTerminalSpeed ** 2 + 0.000001
   );
-  expect(arrivalTelemetry.executor.planHash).toBe(telemetry.executor.planHash);
+  expect(arrivalTelemetry.executor.planHash).toBeNull();
+  expect(arrivalTelemetry.executor.completedPlanHash).toBe(telemetry.executor.planHash);
+  expect(arrivalTelemetry.executor.canAcceptNewPlan).toBe(true);
+  expect(arrivalTelemetry.executor.canSelectNewTarget).toBe(true);
+  expect(arrivalTelemetry.lockedPlan).toBeNull();
   await expect(page.getByTestId("autopilot-active")).toContainText("Arrived at selected target");
   await page.waitForFunction(() => (window as any).TestBridge.getRenderSnapshot?.().executorStatus === "Arrived");
   const renderSnapshot = await page.evaluate(() => (window as any).TestBridge.getRenderSnapshot());
   expect(renderSnapshot.shipVisual.visualSource.state).toBe("GLBLoaded");
   expect(renderSnapshot.camera.anchorId).toBe("chase-camera-anchor");
   expect(renderSnapshot.camera.anchorLocalPosition).toEqual(renderSnapshot.shipVisual.cameraAnchorBinding.localPosition);
+  expect(renderSnapshot.usesInterpolatedPose).toBe(true);
   expect(renderSnapshot.targetVisible).toBe(true);
-  expect(renderSnapshot.targetPosition).toEqual(arrivalTelemetry.lockedPlan.target.position);
-  expect(renderSnapshot.lockedTargetPosition).toEqual(arrivalTelemetry.lockedPlan.target.position);
+  expect(renderSnapshot.targetPosition).toEqual(arrivalTelemetry.selectedTarget.position);
+  expect(renderSnapshot.lockedTargetPosition).toBeNull();
   expect(renderSnapshot.selectedTargetId).toBe("nav-beta");
   expect(renderSnapshot.distanceToTarget).toBeLessThanOrEqual(renderSnapshot.arrivalRadius);
-  expect(renderSnapshot.shipPosition).not.toEqual(arrivalTelemetry.lockedPlan.target.position);
-  expect(renderSnapshot.planHash).toBe(arrivalTelemetry.executor.planHash);
+  expect(renderSnapshot.shipPosition).not.toEqual(arrivalTelemetry.selectedTarget.position);
+  expect(renderSnapshot.planHash).toBeNull();
   await page.screenshot({ path: path.join(evidenceDir, "autopilot-arrival.png"), fullPage: true });
   await page.screenshot({ path: path.join(evidenceDir, "demo-scout-autopilot-arrival.png"), fullPage: true });
   expect(renderSnapshot.lowPolyInstanceBatch).toEqual(
@@ -278,16 +283,16 @@ test("browser vertical slice selects a target, previews a route, engages autopil
     })
   );
 
-  const originalHash = arrivalTelemetry.executor.planHash;
-  const divergent = await page.evaluate(() => (window as any).TestBridge.disturbShip(0));
-  expect(divergent.executor.replanRequired).toBe(true);
-  expect(divergent.executor.planHash).toBe(originalHash);
-  expect(divergent.flightSnapshot.routeValid).toBe(false);
-  expect(divergent.flightSnapshot.failureReasonCodes).toContain("OffLockedRoute");
-  await expect(page.locator("#route-status")).toContainText("invalid");
-  await expect(page.locator("#failure-reasons")).toContainText("Plan invalidated");
-  await expect(page.locator("#failure-reasons")).not.toContainText("OffLockedRoute");
-  await expect(page.getByTestId("warning-state")).toContainText("Plan invalidated");
+  await page.locator('[data-target-id="nav-alpha"]').click();
+  await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().selectedTarget?.id)).toBe("nav-alpha");
+  await page.locator("#engage-autopilot").click();
+  await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().lockedPlan?.target.id)).toBe("nav-alpha");
+  const newRouteTelemetry = await page.evaluate(() => (window as any).TestBridge.getTelemetry());
+  expect(newRouteTelemetry.executor.planHash).toMatch(/^[a-f0-9]{8}$/);
+  expect(newRouteTelemetry.executor.planHash).not.toBe(telemetry.executor.planHash);
+  expect(newRouteTelemetry.executor.completedPlanHash).toBe(telemetry.executor.planHash);
+  expect(newRouteTelemetry.executor.canAcceptNewPlan).toBe(false);
+  expect(newRouteTelemetry.executor.canSelectNewTarget).toBe(false);
   const scenarioIds = await page.evaluate(() => (window as any).TestBridge.listScenarios());
   expect(scenarioIds).toEqual([
     "direct-local-arrival",
@@ -380,8 +385,8 @@ test("browser vertical slice selects a target, previews a route, engages autopil
   await assertCanvasHasNonDarkPixels(page);
 
   await page.screenshot({ path: path.join(evidenceDir, "debug-scene.png"), fullPage: true });
-  await writeFile(path.join(evidenceDir, "telemetry.json"), JSON.stringify(divergent, null, 2), "utf8");
-  await writeFile(path.join(evidenceDir, "vertical-slice-telemetry.json"), JSON.stringify({ initialTelemetry, betaPreview, arrivalTelemetry, divergent }, null, 2), "utf8");
+  await writeFile(path.join(evidenceDir, "telemetry.json"), JSON.stringify(newRouteTelemetry, null, 2), "utf8");
+  await writeFile(path.join(evidenceDir, "vertical-slice-telemetry.json"), JSON.stringify({ initialTelemetry, betaPreview, arrivalTelemetry, newRouteTelemetry }, null, 2), "utf8");
   await writeFile(path.join(evidenceDir, "scenario-matrix.json"), JSON.stringify(matrixResults, null, 2), "utf8");
 });
 
