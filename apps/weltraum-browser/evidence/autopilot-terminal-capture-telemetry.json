@@ -2,12 +2,12 @@
   "engaged": {
     "ship": {
       "position": {
-        "x": 0,
+        "x": 0.7879,
         "y": 0,
         "z": 0
       },
       "velocity": {
-        "x": 0,
+        "x": 3.6365,
         "y": 0,
         "z": 0
       },
@@ -22,11 +22,11 @@
         "y": 0,
         "z": 0
       },
-      "throttle": 0,
+      "throttle": 1,
       "controlMode": "Cruise",
       "rcsEnabled": true,
       "sasEnabled": true,
-      "mainThrottleCommand": 0,
+      "mainThrottleCommand": 1,
       "translationCommand": {
         "x": 0,
         "y": 0,
@@ -38,7 +38,7 @@
         "z": 0
       },
       "actuatorTelemetry": {
-        "mainThrustActive": false,
+        "mainThrustActive": true,
         "rcsTranslationActive": false,
         "rcsRotationActive": false,
         "sasCorrectionActive": false,
@@ -59,7 +59,7 @@
           "rotationResponseScale": 1
         },
         "lastAppliedAcceleration": {
-          "x": 0,
+          "x": 9.0915,
           "y": 0,
           "z": 0
         },
@@ -72,12 +72,12 @@
       "mass": {
         "dryMass": 1000,
         "cargoMass": 0,
-        "fuelMass": 100,
-        "totalMass": 1100
+        "fuelMass": 99.92,
+        "totalMass": 1099.92
       },
       "fuel": {
         "capacity": 100,
-        "current": 100,
+        "current": 99.92,
         "reserve": 5,
         "burnRate": 0.02,
         "status": "Ready",
@@ -95,38 +95,38 @@
       }
     },
     "executor": {
-      "tick": 26,
+      "tick": 114,
       "status": "Executing",
-      "routeLifecycle": "Executing",
-      "arrivalPhase": "None",
-      "planHash": "5a8b6e3d",
+      "routeLifecycle": "TerminalCapture",
+      "arrivalPhase": "Capture",
+      "planHash": "4b165bbd",
       "completedPlanHash": null,
       "lockedPlanActive": true,
       "stationKeepingActive": false,
       "canAcceptNewPlan": false,
       "canSelectNewTarget": false,
       "activeSegmentId": "direct-0",
-      "distanceToTarget": 90,
+      "distanceToTarget": 89.2121,
       "offRouteDistance": 0,
       "terminalSpeedLimit": 0.5,
-      "currentSpeed": 0,
-      "terminalError": -0.5,
-      "terminalSpeedError": -0.5,
-      "terminalRadialSpeed": 0,
+      "currentSpeed": 3.6365,
+      "terminalError": 3.1365,
+      "terminalSpeedError": 3.1365,
+      "terminalRadialSpeed": 3.6365,
       "terminalTangentialSpeed": 0,
       "desiredTerminalVelocity": {
         "x": 0,
         "y": 0,
         "z": 0
       },
-      "terminalCaptureActive": false,
+      "terminalCaptureActive": true,
       "terminalHoldingActive": false,
       "replanRequired": false,
       "invalidationReasons": [],
       "failureReasonCodes": [],
       "fuel": {
         "capacity": 100,
-        "current": 100,
+        "current": 99.92,
         "reserve": 5,
         "burnRate": 0.02,
         "status": "Ready",
@@ -136,12 +136,12 @@
         "mass": {
           "dryMass": 1000,
           "cargoMass": 0,
-          "fuelMass": 100,
-          "totalMass": 1100
+          "fuelMass": 99.92,
+          "totalMass": 1099.92
         },
         "fuel": {
           "capacity": 100,
-          "current": 100,
+          "current": 99.92,
           "reserve": 5,
           "burnRate": 0.02,
           "status": "Ready",
@@ -158,30 +158,30 @@
           "reasonCodes": []
         },
         "brakingReserve": {
-          "requiredDeltaV": 1,
-          "availableDeltaV": 4318.1818,
+          "requiredDeltaV": 4.6365,
+          "availableDeltaV": 4314.8593,
           "canBrake": true,
           "reasonCodes": []
         },
         "routeValid": true,
         "failureReasonCodes": [],
-        "etaSeconds": null
+        "etaSeconds": 24.53
       },
       "position": {
-        "x": 0,
+        "x": 0.7879,
         "y": 0,
         "z": 0
       },
       "velocity": {
-        "x": 0,
+        "x": 3.6365,
         "y": 0,
         "z": 0
       }
     },
     "lockedPlan": {
-      "id": "DirectLocal:nav-beta:26",
+      "id": "DirectLocal:nav-beta:102",
       "planner": "DirectLocal",
-      "createdAtTick": 26,
+      "createdAtTick": 102,
       "target": {
         "id": "nav-beta",
         "label": "Navigation Beta",
@@ -234,18 +234,18 @@
           "clearanceRisk:0.3333"
         ]
       },
-      "planHash": "5a8b6e3d"
+      "planHash": "4b165bbd"
     },
     "flightSnapshot": {
       "mass": {
         "dryMass": 1000,
         "cargoMass": 0,
-        "fuelMass": 100,
-        "totalMass": 1100
+        "fuelMass": 99.92,
+        "totalMass": 1099.92
       },
       "fuel": {
         "capacity": 100,
-        "current": 100,
+        "current": 99.92,
         "reserve": 5,
         "burnRate": 0.02,
         "status": "Ready",
@@ -262,14 +262,14 @@
         "reasonCodes": []
       },
       "brakingReserve": {
-        "requiredDeltaV": 1,
-        "availableDeltaV": 4318.1818,
+        "requiredDeltaV": 4.6365,
+        "availableDeltaV": 4314.8593,
         "canBrake": true,
         "reasonCodes": []
       },
       "routeValid": true,
       "failureReasonCodes": [],
-      "etaSeconds": null
+      "etaSeconds": 24.53
     },
     "selectableTargets": [
       {
@@ -351,9 +351,9 @@
         }
       },
       "plan": {
-        "id": "DirectLocal:nav-beta:26",
+        "id": "DirectLocal:nav-beta:102",
         "planner": "DirectLocal",
-        "createdAtTick": 26,
+        "createdAtTick": 102,
         "target": {
           "id": "nav-beta",
           "label": "Navigation Beta",
@@ -406,7 +406,7 @@
             "clearanceRisk:0.3333"
           ]
         },
-        "planHash": "5a8b6e3d"
+        "planHash": "4b165bbd"
       },
       "validation": {
         "ok": true,
@@ -531,11 +531,11 @@
       }
     },
     "executor": {
-      "tick": 385,
+      "tick": 461,
       "status": "Executing",
       "routeLifecycle": "TerminalCapture",
       "arrivalPhase": "TerminalBrake",
-      "planHash": "5a8b6e3d",
+      "planHash": "4b165bbd",
       "completedPlanHash": null,
       "lockedPlanActive": true,
       "stationKeepingActive": false,
@@ -615,9 +615,9 @@
       }
     },
     "lockedPlan": {
-      "id": "DirectLocal:nav-beta:26",
+      "id": "DirectLocal:nav-beta:102",
       "planner": "DirectLocal",
-      "createdAtTick": 26,
+      "createdAtTick": 102,
       "target": {
         "id": "nav-beta",
         "label": "Navigation Beta",
@@ -670,7 +670,7 @@
           "clearanceRisk:0.3333"
         ]
       },
-      "planHash": "5a8b6e3d"
+      "planHash": "4b165bbd"
     },
     "flightSnapshot": {
       "mass": {
@@ -787,9 +787,9 @@
         }
       },
       "plan": {
-        "id": "DirectLocal:nav-beta:26",
+        "id": "DirectLocal:nav-beta:102",
         "planner": "DirectLocal",
-        "createdAtTick": 26,
+        "createdAtTick": 102,
         "target": {
           "id": "nav-beta",
           "label": "Navigation Beta",
@@ -842,7 +842,7 @@
             "clearanceRisk:0.3333"
           ]
         },
-        "planHash": "5a8b6e3d"
+        "planHash": "4b165bbd"
       },
       "validation": {
         "ok": true,
@@ -874,24 +874,24 @@
   "capture": {
     "ship": {
       "position": {
-        "x": 87.0342,
+        "x": 87.3078,
         "y": 0,
         "z": 0
       },
       "velocity": {
-        "x": 0.9618,
+        "x": 0.8731,
         "y": 0,
         "z": 0
       },
       "orientation": {
         "x": 0,
-        "y": 0.999997,
+        "y": 0.999999,
         "z": 0,
-        "w": 0.002543
+        "w": 0.001683
       },
       "angularVelocity": {
         "x": 0,
-        "y": 0.0062,
+        "y": 0.0053,
         "z": 0
       },
       "throttle": 0.15,
@@ -906,7 +906,7 @@
       },
       "rotationCommand": {
         "x": 0,
-        "y": 0.0034,
+        "y": 0.0023,
         "z": 0
       },
       "actuatorTelemetry": {
@@ -931,25 +931,25 @@
           "rotationResponseScale": 1
         },
         "lastAppliedAcceleration": {
-          "x": -0.3119,
+          "x": -0.2831,
           "y": 0,
           "z": 0
         },
         "lastAppliedAngularAcceleration": {
           "x": 0,
-          "y": -0.0024,
+          "y": -0.0033,
           "z": 0
         }
       },
       "mass": {
         "dryMass": 1000,
         "cargoMass": 0,
-        "fuelMass": 99.2867,
-        "totalMass": 1099.2867
+        "fuelMass": 99.2847,
+        "totalMass": 1099.2847
       },
       "fuel": {
         "capacity": 100,
-        "current": 99.2867,
+        "current": 99.2847,
         "reserve": 5,
         "burnRate": 0.02,
         "status": "Ready",
@@ -967,24 +967,24 @@
       }
     },
     "executor": {
-      "tick": 393,
+      "tick": 478,
       "status": "Executing",
       "routeLifecycle": "TerminalCapture",
       "arrivalPhase": "Capture",
-      "planHash": "5a8b6e3d",
+      "planHash": "4b165bbd",
       "completedPlanHash": null,
       "lockedPlanActive": true,
       "stationKeepingActive": false,
       "canAcceptNewPlan": false,
       "canSelectNewTarget": false,
       "activeSegmentId": "direct-0",
-      "distanceToTarget": 2.9658,
+      "distanceToTarget": 2.6922,
       "offRouteDistance": 0,
       "terminalSpeedLimit": 0.5,
-      "currentSpeed": 0.9618,
-      "terminalError": 0.4618,
-      "terminalSpeedError": 0.4618,
-      "terminalRadialSpeed": 0.9618,
+      "currentSpeed": 0.8731,
+      "terminalError": 0.3731,
+      "terminalSpeedError": 0.3731,
+      "terminalRadialSpeed": 0.8731,
       "terminalTangentialSpeed": 0,
       "desiredTerminalVelocity": {
         "x": 0,
@@ -998,7 +998,7 @@
       "failureReasonCodes": [],
       "fuel": {
         "capacity": 100,
-        "current": 99.2867,
+        "current": 99.2847,
         "reserve": 5,
         "burnRate": 0.02,
         "status": "Ready",
@@ -1008,12 +1008,12 @@
         "mass": {
           "dryMass": 1000,
           "cargoMass": 0,
-          "fuelMass": 99.2867,
-          "totalMass": 1099.2867
+          "fuelMass": 99.2847,
+          "totalMass": 1099.2847
         },
         "fuel": {
           "capacity": 100,
-          "current": 99.2867,
+          "current": 99.2847,
           "reserve": 5,
           "burnRate": 0.02,
           "status": "Ready",
@@ -1030,8 +1030,8 @@
           "reasonCodes": []
         },
         "brakingReserve": {
-          "requiredDeltaV": 1.9618,
-          "availableDeltaV": 4288.5398,
+          "requiredDeltaV": 1.8731,
+          "availableDeltaV": 4288.4587,
           "canBrake": true,
           "reasonCodes": []
         },
@@ -1040,20 +1040,20 @@
         "etaSeconds": 3.08
       },
       "position": {
-        "x": 87.0342,
+        "x": 87.3078,
         "y": 0,
         "z": 0
       },
       "velocity": {
-        "x": 0.9618,
+        "x": 0.8731,
         "y": 0,
         "z": 0
       }
     },
     "lockedPlan": {
-      "id": "DirectLocal:nav-beta:26",
+      "id": "DirectLocal:nav-beta:102",
       "planner": "DirectLocal",
-      "createdAtTick": 26,
+      "createdAtTick": 102,
       "target": {
         "id": "nav-beta",
         "label": "Navigation Beta",
@@ -1106,18 +1106,18 @@
           "clearanceRisk:0.3333"
         ]
       },
-      "planHash": "5a8b6e3d"
+      "planHash": "4b165bbd"
     },
     "flightSnapshot": {
       "mass": {
         "dryMass": 1000,
         "cargoMass": 0,
-        "fuelMass": 99.2867,
-        "totalMass": 1099.2867
+        "fuelMass": 99.2847,
+        "totalMass": 1099.2847
       },
       "fuel": {
         "capacity": 100,
-        "current": 99.2867,
+        "current": 99.2847,
         "reserve": 5,
         "burnRate": 0.02,
         "status": "Ready",
@@ -1134,8 +1134,8 @@
         "reasonCodes": []
       },
       "brakingReserve": {
-        "requiredDeltaV": 1.9618,
-        "availableDeltaV": 4288.5398,
+        "requiredDeltaV": 1.8731,
+        "availableDeltaV": 4288.4587,
         "canBrake": true,
         "reasonCodes": []
       },
@@ -1223,9 +1223,9 @@
         }
       },
       "plan": {
-        "id": "DirectLocal:nav-beta:26",
+        "id": "DirectLocal:nav-beta:102",
         "planner": "DirectLocal",
-        "createdAtTick": 26,
+        "createdAtTick": 102,
         "target": {
           "id": "nav-beta",
           "label": "Navigation Beta",
@@ -1278,7 +1278,7 @@
             "clearanceRisk:0.3333"
           ]
         },
-        "planHash": "5a8b6e3d"
+        "planHash": "4b165bbd"
       },
       "validation": {
         "ok": true,
@@ -1403,12 +1403,12 @@
       }
     },
     "executor": {
-      "tick": 454,
+      "tick": 530,
       "status": "Arrived",
       "routeLifecycle": "Holding",
       "arrivalPhase": "Holding",
       "planHash": null,
-      "completedPlanHash": "5a8b6e3d",
+      "completedPlanHash": "4b165bbd",
       "lockedPlanActive": false,
       "stationKeepingActive": true,
       "canAcceptNewPlan": true,
@@ -1602,9 +1602,9 @@
         }
       },
       "plan": {
-        "id": "DirectLocal:nav-beta:26",
+        "id": "DirectLocal:nav-beta:102",
         "planner": "DirectLocal",
-        "createdAtTick": 26,
+        "createdAtTick": 102,
         "target": {
           "id": "nav-beta",
           "label": "Navigation Beta",
@@ -1657,7 +1657,7 @@
             "clearanceRisk:0.3333"
           ]
         },
-        "planHash": "5a8b6e3d"
+        "planHash": "4b165bbd"
       },
       "validation": {
         "ok": true,
@@ -1689,12 +1689,12 @@
   "afterHold": {
     "ship": {
       "position": {
-        "x": 88.557,
+        "x": 88.5877,
         "y": 0,
         "z": 0
       },
       "velocity": {
-        "x": 0.468,
+        "x": 0.458,
         "y": 0,
         "z": 0
       },
@@ -1706,7 +1706,7 @@
       },
       "angularVelocity": {
         "x": 0,
-        "y": 0.0001,
+        "y": 0,
         "z": 0
       },
       "throttle": 0.15,
@@ -1746,25 +1746,25 @@
           "rotationResponseScale": 1
         },
         "lastAppliedAcceleration": {
-          "x": -0.1518,
+          "x": -0.1486,
           "y": 0,
           "z": 0
         },
         "lastAppliedAngularAcceleration": {
           "x": 0,
-          "y": -0.0012,
+          "y": -0.0011,
           "z": 0
         }
       },
       "mass": {
         "dryMass": 1000,
         "cargoMass": 0,
-        "fuelMass": 99.2758,
-        "totalMass": 1099.2758
+        "fuelMass": 99.2756,
+        "totalMass": 1099.2756
       },
       "fuel": {
         "capacity": 100,
-        "current": 99.2758,
+        "current": 99.2756,
         "reserve": 5,
         "burnRate": 0.02,
         "status": "Ready",
@@ -1782,24 +1782,24 @@
       }
     },
     "executor": {
-      "tick": 460,
+      "tick": 538,
       "status": "Arrived",
       "routeLifecycle": "Holding",
       "arrivalPhase": "Holding",
       "planHash": null,
-      "completedPlanHash": "5a8b6e3d",
+      "completedPlanHash": "4b165bbd",
       "lockedPlanActive": false,
       "stationKeepingActive": true,
       "canAcceptNewPlan": true,
       "canSelectNewTarget": true,
       "activeSegmentId": null,
-      "distanceToTarget": 1.443,
+      "distanceToTarget": 1.4123,
       "offRouteDistance": 0,
       "terminalSpeedLimit": 0.5,
-      "currentSpeed": 0.468,
-      "terminalError": -0.032,
-      "terminalSpeedError": -0.032,
-      "terminalRadialSpeed": 0.468,
+      "currentSpeed": 0.458,
+      "terminalError": -0.042,
+      "terminalSpeedError": -0.042,
+      "terminalRadialSpeed": 0.458,
       "terminalTangentialSpeed": 0,
       "desiredTerminalVelocity": {
         "x": 0,
@@ -1813,7 +1813,7 @@
       "failureReasonCodes": [],
       "fuel": {
         "capacity": 100,
-        "current": 99.2758,
+        "current": 99.2756,
         "reserve": 5,
         "burnRate": 0.02,
         "status": "Ready",
@@ -1823,12 +1823,12 @@
         "mass": {
           "dryMass": 1000,
           "cargoMass": 0,
-          "fuelMass": 99.2758,
-          "totalMass": 1099.2758
+          "fuelMass": 99.2756,
+          "totalMass": 1099.2756
         },
         "fuel": {
           "capacity": 100,
-          "current": 99.2758,
+          "current": 99.2756,
           "reserve": 5,
           "burnRate": 0.02,
           "status": "Ready",
@@ -1845,8 +1845,8 @@
           "reasonCodes": []
         },
         "brakingReserve": {
-          "requiredDeltaV": 0.468,
-          "availableDeltaV": 4288.0883,
+          "requiredDeltaV": 0.458,
+          "availableDeltaV": 4288.0792,
           "canBrake": true,
           "reasonCodes": []
         },
@@ -1855,12 +1855,12 @@
         "etaSeconds": null
       },
       "position": {
-        "x": 88.557,
+        "x": 88.5877,
         "y": 0,
         "z": 0
       },
       "velocity": {
-        "x": 0.468,
+        "x": 0.458,
         "y": 0,
         "z": 0
       }
@@ -1870,12 +1870,12 @@
       "mass": {
         "dryMass": 1000,
         "cargoMass": 0,
-        "fuelMass": 99.2758,
-        "totalMass": 1099.2758
+        "fuelMass": 99.2756,
+        "totalMass": 1099.2756
       },
       "fuel": {
         "capacity": 100,
-        "current": 99.2758,
+        "current": 99.2756,
         "reserve": 5,
         "burnRate": 0.02,
         "status": "Ready",
@@ -1892,8 +1892,8 @@
         "reasonCodes": []
       },
       "brakingReserve": {
-        "requiredDeltaV": 0.468,
-        "availableDeltaV": 4288.0883,
+        "requiredDeltaV": 0.458,
+        "availableDeltaV": 4288.0792,
         "canBrake": true,
         "reasonCodes": []
       },
@@ -1981,9 +1981,9 @@
         }
       },
       "plan": {
-        "id": "DirectLocal:nav-beta:26",
+        "id": "DirectLocal:nav-beta:102",
         "planner": "DirectLocal",
-        "createdAtTick": 26,
+        "createdAtTick": 102,
         "target": {
           "id": "nav-beta",
           "label": "Navigation Beta",
@@ -2036,7 +2036,7 @@
             "clearanceRisk:0.3333"
           ]
         },
-        "planHash": "5a8b6e3d"
+        "planHash": "4b165bbd"
       },
       "validation": {
         "ok": true,
@@ -2067,19 +2067,19 @@
   },
   "renderSnapshot": {
     "shipPosition": {
-      "x": 88.58011129555446,
+      "x": 88.59531261313188,
       "y": 0,
       "z": 0
     },
     "usesInterpolatedPose": true,
-    "interpolationAlpha": 0.502,
+    "interpolationAlpha": 0.503,
     "truthShipPosition": {
-      "x": 88.5877,
+      "x": 88.6028,
       "y": 0,
       "z": 0
     },
     "renderedShipPosition": {
-      "x": 88.58011129555446,
+      "x": 88.59531261313188,
       "y": 0,
       "z": 0
     },
@@ -2087,17 +2087,17 @@
       "x": 0,
       "y": 1,
       "z": 0,
-      "w": -0.000482
+      "w": -0.000481
     },
     "renderedShipOrientation": {
       "x": 0,
-      "y": 0.9999998838539985,
+      "y": 0.9999998841348091,
       "z": 0,
-      "w": -0.00048196679315199836
+      "w": -0.0004813838056013885
     },
     "fixedStepCountThisFrame": 0,
-    "frameDeltaSeconds": 0.0167,
-    "cameraSmoothingAlpha": 0.23448,
+    "frameDeltaSeconds": 0.0165,
+    "cameraSmoothingAlpha": 0.232026,
     "targetPosition": {
       "x": 90,
       "y": 0,
@@ -2106,7 +2106,7 @@
     "lockedTargetPosition": null,
     "selectedTargetId": "nav-beta",
     "selectedTargetLabel": "Navigation Beta",
-    "routePreviewPlanHash": "5a8b6e3d",
+    "routePreviewPlanHash": "4b165bbd",
     "routePreviewTargetPosition": {
       "x": 90,
       "y": 0,
@@ -2115,14 +2115,14 @@
     "routePreviewSegmentCount": 1,
     "targetVisible": true,
     "executorStatus": "Arrived",
-    "distanceToTarget": 1.4123,
+    "distanceToTarget": 1.3972,
     "arrivalRadius": 3,
     "planHash": null,
     "shipOrientation": {
       "x": 0,
-      "y": 0.9999998838539985,
+      "y": 0.9999998841348091,
       "z": 0,
-      "w": -0.00048196679315199836
+      "w": -0.0004813838056013885
     },
     "shipVisual": {
       "descriptor": {
@@ -2416,17 +2416,17 @@
     "camera": {
       "mode": "ChaseLocked",
       "position": {
-        "x": 119.46673869719432,
-        "y": 14.100000013443175,
-        "z": -0.008919901411945763
+        "x": 119.66517560395106,
+        "y": 14.100000000000001,
+        "z": -0.023021569520434146
       },
       "followTarget": {
-        "x": 89.78011073805368,
+        "x": 89.795312056979,
         "y": 2.1,
-        "z": -0.001156720169216358
+        "z": -0.0011553209995818286
       },
       "followsShip": true,
-      "distanceToShip": 33.9528,
+      "distanceToShip": 34.1196,
       "anchorId": "chase-camera-anchor",
       "anchorSource": "ManifestFallback",
       "anchorLocalPosition": {
@@ -2434,7 +2434,7 @@
         "y": 2.1,
         "z": 0
       },
-      "smoothingAlpha": 0.23448
+      "smoothingAlpha": 0.232026
     },
     "lowPolyInstanceBatch": {
       "id": "debug-low-poly-asteroids",
