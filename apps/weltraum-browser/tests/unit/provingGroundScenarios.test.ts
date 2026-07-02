@@ -266,6 +266,23 @@ describe("browser proving-ground scenario matrix", () => {
     expect(balanced.planHashBefore).not.toBe(safe.planHashBefore);
   });
 
+  it("uses catalog speed profiles for omitted matrix arguments while preserving explicit overrides", () => {
+    const defaultProfiles = Object.fromEntries(runAutopilotProvingGroundMatrix().map((result) => [result.courseId, result.profile]));
+    const balancedProfiles = Object.fromEntries(runAutopilotProvingGroundMatrix("Balanced").map((result) => [result.courseId, result.profile]));
+
+    expect(defaultProfiles).toMatchObject({
+      "direct-long-safe": "Safe",
+      "direct-long-balanced": "Balanced",
+      "direct-long-fast": "Fast",
+      "corridor-safe": "Safe"
+    });
+    expect(balancedProfiles).toMatchObject({
+      "direct-long-safe": "Balanced",
+      "direct-long-fast": "Balanced",
+      "corridor-safe": "Balanced"
+    });
+  });
+
   it("measures obstacle clearance independently from rendering", () => {
     const result = runAutopilotProvingGroundCourse("target-behind-obstacle", "Balanced");
 

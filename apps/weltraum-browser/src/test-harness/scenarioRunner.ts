@@ -9,7 +9,7 @@ import {
   roundVec,
   vec3
 } from "../core";
-import type { AutopilotCourseCategory, AutopilotCourseClassification, AutopilotProvingGroundCourse, AutopilotSpeedProfileId, ObstacleDescriptor, RouteLifecycle, RoutePlan } from "../core";
+import type { AutopilotCourseCategory, AutopilotCourseClassification, AutopilotProvingGroundCourse, AutopilotSpeedProfileId, ExecutorTelemetry, ObstacleDescriptor, RouteLifecycle, RoutePlan, ShipState } from "../core";
 import { autopilotProvingGroundCourses, getAutopilotProvingGroundCourse, type AutopilotProvingGroundCourseId } from "../world/autopilotProvingGroundCourses";
 import { getScenarioDefinition, scenarioCatalog } from "./scenarios";
 import type { PlannerKind, ScenarioDefinition, ScenarioId, ScenarioResult } from "./scenarios";
@@ -153,11 +153,11 @@ export interface AutopilotProvingGroundCourseResult {
   readonly peakSpeed: number;
   readonly finalSpeed: number;
   readonly finalDistance: number;
-  /** Speed after the deterministic post-arrival holding evidence window. */
+  /** Post-arrival holding speed after a bounded deterministic settling window. */
   readonly settledSpeed: number;
-  /** Target distance after the deterministic post-arrival holding evidence window. */
+  /** Post-arrival distance to target after a bounded deterministic settling window. */
   readonly settledDistance: number;
-  /** Post-arrival ticks simulated for settled/holding evidence. */
+  /** Number of holding ticks stepped after first Arrived telemetry. */
   readonly settlingTicks: number;
   readonly minObstacleClearance: number;
   readonly fuelUsed: number;
@@ -193,15 +193,8 @@ const clearanceAtPosition = (position: { readonly x: number; readonly y: number;
 const round4 = (value: number): number => Number(value.toFixed(4));
 
 const fixedDeltaSeconds = 1 / 30;
-const settledEvidenceTicks = 30;
 
-type AutopilotTelemetrySnapshot = ReturnType<AutopilotExecutor["getTelemetry"]>;
-
-const captureTelemetrySnapshot = (telemetry: AutopilotTelemetrySnapshot): AutopilotTelemetrySnapshot => ({
-  ...telemetry,
-  failureReasonCodes: [...telemetry.failureReasonCodes],
-  invalidationReasons: [...telemetry.invalidationReasons]
-});
+const postArrivalSettlingTicks = 30;
 
 const simulatedSecondsForTick = (tick: number): number => round4(Math.max(0, tick) * fixedDeltaSeconds);
 
@@ -389,10 +382,11 @@ export const evaluateAutopilotProvingGroundCourseResult = (
 
 export const runAutopilotProvingGroundCourse = (
   id: AutopilotProvingGroundCourseId,
-  profile: AutopilotSpeedProfileId = "Balanced"
+  profile?: AutopilotSpeedProfileId
 ): AutopilotProvingGroundCourseResult => {
   const course = getAutopilotProvingGroundCourse(id);
-  const speedProfile = autopilotSpeedProfileFor(profile);
+  const resolvedProfile = profile ?? course.speedProfile ?? "Balanced";
+  const speedProfile = autopilotSpeedProfileFor(resolvedProfile);
   const plannerKind: PlannerKind = course.planner ?? (course.obstacles.length > 0 ? "ObstacleAvoidanceLocal" : "DirectLocal");
   const planner = createPlanner(plannerKind);
   const planningResult = planner.planResult({ tick: 0, ship: course.initialShip, target: course.target, obstacles: course.obstacles, speedProfile: speedProfile.id });
@@ -452,8 +446,8 @@ export const runAutopilotProvingGroundCourse = (
   let ticksToArrival: number | null = null;
   let terminalCaptureTicks = 0;
   let holdingTicks = 0;
-  let firstArrivalTelemetry: AutopilotTelemetrySnapshot | null = null;
-  let firstArrivalShip: typeof course.initialShip | null = null;
+  let firstArrivalTelemetry: ExecutorTelemetry | null = null;
+  let firstArrivalShip: ShipState | null = null;
 
   for (let i = 0; i < course.acceptance.maxTicks; i += 1) {
     if (course.disturbance && loop.getTick() === course.disturbance.tick) {
@@ -488,7 +482,7 @@ export const runAutopilotProvingGroundCourse = (
     }
     if (telemetry.status === "Arrived") {
       ticksToArrival = telemetry.tick;
-      firstArrivalTelemetry = captureTelemetrySnapshot(telemetry);
+      firstArrivalTelemetry = telemetry;
       firstArrivalShip = currentShip;
       break;
     }
@@ -497,23 +491,20 @@ export const runAutopilotProvingGroundCourse = (
     }
   }
 
-  const telemetry = firstArrivalTelemetry ?? captureTelemetrySnapshot(executor.getTelemetry());
+  const telemetry = firstArrivalTelemetry ?? executor.getTelemetry();
   const finalShip = firstArrivalShip ?? loop.getShip();
   let settledShip = finalShip;
   let settlingTicks = 0;
-
-  if (firstArrivalTelemetry?.status === "Arrived") {
-    for (let i = 0; i < settledEvidenceTicks; i += 1) {
+  if (firstArrivalTelemetry !== null) {
+    for (let i = 0; i < postArrivalSettlingTicks; i += 1) {
       loop.step(1);
       settlingTicks += 1;
       settledShip = loop.getShip();
-      const settledTelemetry = executor.getTelemetry();
-      if (settledTelemetry.status !== "Arrived" && terminalStatuses.has(settledTelemetry.status)) {
+      if (executor.getTelemetry().status !== "Arrived") {
         break;
       }
     }
   }
-
   const simulatedSeconds = simulatedSecondsForTick(telemetry.tick);
   const base = {
     courseId: course.id as AutopilotProvingGroundCourseId,
@@ -558,5 +549,5 @@ export const runAutopilotProvingGroundCourse = (
   return { ...base, ...evaluateAutopilotProvingGroundCourseResult(course, base) };
 };
 
-export const runAutopilotProvingGroundMatrix = (profile: AutopilotSpeedProfileId = "Balanced"): readonly AutopilotProvingGroundCourseResult[] =>
+export const runAutopilotProvingGroundMatrix = (profile?: AutopilotSpeedProfileId): readonly AutopilotProvingGroundCourseResult[] =>
   autopilotProvingGroundCourses.map((course) => runAutopilotProvingGroundCourse(course.id as AutopilotProvingGroundCourseId, profile));

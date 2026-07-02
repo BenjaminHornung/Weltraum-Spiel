@@ -1,5 +1,7 @@
 {
-  "generatedAt": "2026-07-02T19:13:43.103Z",
+  "generatedAt": "2026-07-02T20:01:12.023Z",
+  "evidenceOwner": "apps/weltraum-browser/tests/e2e/autopilot-proving-ground-v2.spec.ts",
+  "evidenceTest": "browser autopilot proving-ground v2 records long-range evidence",
   "catalogCourseCount": 35,
   "testedCourseCount": 7,
   "classificationCounts": {
@@ -271,8 +273,7 @@
   ],
   "invariantConfirmation": {
     "noSnap": "E2E only invokes the deterministic course runner and records finalDistance/arrivalPhase; it does not mutate position to target.",
-    "noVelocityZeroShortcut": "E2E records finalSpeed and terminalSpeedLimit from runtime results; it does not zero velocity.",
-    "settledEvidence": "E2E records settledSpeed, settledDistance, and settlingTicks separately from first-arrival finalSpeed/finalDistance.",
+    "noVelocityZeroShortcut": "E2E records first-arrival finalSpeed, terminalSpeedLimit and separate settledSpeed from runtime results; it does not zero velocity.",
     "noSilentReplan": true,
     "stablePlanHash": true
   },

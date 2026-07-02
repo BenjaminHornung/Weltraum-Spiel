@@ -346,6 +346,8 @@ describe("FixedStepSimulationLoop", () => {
     expect(balanced.classification).toBe("Pass");
     expect(balanced.ticksToArrival as number).toBeLessThan(safe.ticksToArrival as number);
     expect(balanced.finalSpeed).toBeLessThanOrEqual(0.5);
+    expect(bridge.runAutopilotProvingGroundCourse("direct-long-fast").profile).toBe("Fast");
+    expect(bridge.runAutopilotProvingGroundCourse("direct-long-fast", "Safe").profile).toBe("Safe");
     expect(bridge.runAutopilotProvingGroundMatrix("Balanced")).toHaveLength(autopilotProvingGroundCourses.length);
   });
 
