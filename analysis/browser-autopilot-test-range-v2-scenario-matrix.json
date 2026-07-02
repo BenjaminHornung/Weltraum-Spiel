@@ -1,0 +1,1918 @@
+{
+  "version": 2,
+  "change": "browser-autopilot-test-range-v2",
+  "coordinateSystem": "browser-local-space",
+  "terminalCaptureInvariant": "All StopWithinEnvelope scenarios keep terminal speed conservative; speed profiles do not change terminal speed gates or executor maxAcceleration.",
+  "scenarioCount": 25,
+  "categories": [
+    "Basic",
+    "Obstacle",
+    "AuthorityFuel",
+    "Disturbance",
+    "SpeedProfile"
+  ],
+  "scenarios": [
+    {
+      "id": "direct-short-stop",
+      "label": "Direct short stop",
+      "category": "Basic",
+      "initialShip": {
+        "position": {
+          "y": 0,
+          "z": 0
+        },
+        "velocity": {
+          "y": 0,
+          "z": 0
+        },
+        "fuel": {
+          "current": 80,
+          "capacity": 80,
+          "reserve": 5,
+          "burnRate": 0.02
+        }
+      },
+      "target": {
+        "position": {
+          "x": 80,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 0.5,
+          "stopBehavior": "StopWithinEnvelope"
+        }
+      },
+      "obstacles": [],
+      "profile": "Balanced",
+      "expectedOutcome": "Pass",
+      "acceptance": {
+        "maxFinalDistance": 3,
+        "maxFinalSpeed": 0.5,
+        "minObstacleClearance": 999999,
+        "maxTicks": 800,
+        "maxFuelUsed": 18,
+        "allowReplanRequired": false
+      },
+      "evidence": {
+        "requiredTelemetryFields": [
+          "courseId",
+          "profile",
+          "status",
+          "ticksToArrival",
+          "peakSpeed",
+          "finalDistance",
+          "finalSpeed",
+          "fuelUsed",
+          "arrivalPhase",
+          "replanRequired",
+          "planHashBefore",
+          "planHashAfter",
+          "failureReasonCodes",
+          "invalidationReasons",
+          "terminalSpeedLimit"
+        ],
+        "screenshotRecommended": false,
+        "notes": "Short baseline stop."
+      }
+    },
+    {
+      "id": "direct-medium-stop",
+      "label": "Direct medium stop",
+      "category": "Basic",
+      "initialShip": {
+        "position": {
+          "y": 0,
+          "z": 0
+        },
+        "velocity": {
+          "y": 0,
+          "z": 0
+        },
+        "fuel": {
+          "current": 110,
+          "capacity": 110,
+          "reserve": 5,
+          "burnRate": 0.02
+        }
+      },
+      "target": {
+        "position": {
+          "x": 150,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 0.5,
+          "stopBehavior": "StopWithinEnvelope"
+        }
+      },
+      "obstacles": [],
+      "profile": "Balanced",
+      "expectedOutcome": "Pass",
+      "acceptance": {
+        "maxFinalDistance": 3,
+        "maxFinalSpeed": 0.5,
+        "minObstacleClearance": 999999,
+        "maxTicks": 1100,
+        "maxFuelUsed": 28,
+        "allowReplanRequired": false
+      },
+      "evidence": {
+        "requiredTelemetryFields": [
+          "courseId",
+          "profile",
+          "status",
+          "ticksToArrival",
+          "peakSpeed",
+          "finalDistance",
+          "finalSpeed",
+          "fuelUsed",
+          "arrivalPhase",
+          "replanRequired",
+          "planHashBefore",
+          "planHashAfter",
+          "failureReasonCodes",
+          "invalidationReasons",
+          "terminalSpeedError"
+        ],
+        "screenshotRecommended": false,
+        "notes": "Medium route bridge between near and long stops."
+      }
+    },
+    {
+      "id": "direct-long-stop",
+      "label": "Direct long stop",
+      "category": "Basic",
+      "initialShip": {
+        "position": {
+          "y": 0,
+          "z": 0
+        },
+        "velocity": {
+          "y": 0,
+          "z": 0
+        },
+        "fuel": {
+          "current": 150,
+          "capacity": 150,
+          "reserve": 5,
+          "burnRate": 0.02
+        }
+      },
+      "target": {
+        "position": {
+          "x": 260,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 0.5,
+          "stopBehavior": "StopWithinEnvelope"
+        }
+      },
+      "obstacles": [],
+      "profile": "Balanced",
+      "expectedOutcome": "Pass",
+      "acceptance": {
+        "maxFinalDistance": 3,
+        "maxFinalSpeed": 0.5,
+        "minObstacleClearance": 999999,
+        "maxTicks": 1600,
+        "maxFuelUsed": 42,
+        "allowReplanRequired": false
+      },
+      "evidence": {
+        "requiredTelemetryFields": [
+          "courseId",
+          "profile",
+          "status",
+          "ticksToArrival",
+          "peakSpeed",
+          "finalDistance",
+          "finalSpeed",
+          "fuelUsed",
+          "arrivalPhase",
+          "replanRequired",
+          "planHashBefore",
+          "planHashAfter",
+          "failureReasonCodes",
+          "invalidationReasons",
+          "terminalCaptureActive",
+          "terminalHoldingActive"
+        ],
+        "screenshotRecommended": true,
+        "notes": "Primary long-route baseline."
+      }
+    },
+    {
+      "id": "lateral-start-velocity",
+      "label": "Lateral start velocity stop",
+      "category": "Basic",
+      "initialShip": {
+        "position": {
+          "y": 0,
+          "z": 0
+        },
+        "velocity": {
+          "x": 5,
+          "y": 14,
+          "z": 0
+        },
+        "fuel": {
+          "current": 150,
+          "capacity": 150,
+          "reserve": 5,
+          "burnRate": 0.02
+        }
+      },
+      "target": {
+        "position": {
+          "x": 190,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 0.5,
+          "stopBehavior": "StopWithinEnvelope"
+        }
+      },
+      "obstacles": [],
+      "profile": "Balanced",
+      "expectedOutcome": "Pass",
+      "acceptance": {
+        "maxFinalDistance": 3,
+        "maxFinalSpeed": 0.5,
+        "minObstacleClearance": 999999,
+        "maxTicks": 1700,
+        "maxFuelUsed": 45,
+        "allowReplanRequired": false
+      },
+      "evidence": {
+        "requiredTelemetryFields": [
+          "courseId",
+          "profile",
+          "status",
+          "ticksToArrival",
+          "peakSpeed",
+          "finalDistance",
+          "finalSpeed",
+          "fuelUsed",
+          "arrivalPhase",
+          "replanRequired",
+          "planHashBefore",
+          "planHashAfter",
+          "failureReasonCodes",
+          "invalidationReasons",
+          "terminalRadialSpeed",
+          "terminalTangentialSpeed",
+          "desiredTerminalVelocity"
+        ],
+        "screenshotRecommended": false,
+        "notes": "Tangential velocity must be damped without snapping."
+      }
+    },
+    {
+      "id": "high-start-speed",
+      "label": "High start speed terminal stop",
+      "category": "Basic",
+      "initialShip": {
+        "position": {
+          "y": 0,
+          "z": 0
+        },
+        "velocity": {
+          "x": 30,
+          "y": 0,
+          "z": 0
+        },
+        "fuel": {
+          "current": 170,
+          "capacity": 170,
+          "reserve": 5,
+          "burnRate": 0.02
+        }
+      },
+      "target": {
+        "position": {
+          "x": 230,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 0.5,
+          "stopBehavior": "StopWithinEnvelope"
+        }
+      },
+      "obstacles": [],
+      "profile": "Balanced",
+      "expectedOutcome": "Pass",
+      "acceptance": {
+        "maxFinalDistance": 3,
+        "maxFinalSpeed": 0.5,
+        "minObstacleClearance": 999999,
+        "maxTicks": 1700,
+        "maxFuelUsed": 55,
+        "allowReplanRequired": false
+      },
+      "evidence": {
+        "requiredTelemetryFields": [
+          "courseId",
+          "profile",
+          "status",
+          "ticksToArrival",
+          "peakSpeed",
+          "finalDistance",
+          "finalSpeed",
+          "fuelUsed",
+          "arrivalPhase",
+          "replanRequired",
+          "planHashBefore",
+          "planHashAfter",
+          "failureReasonCodes",
+          "invalidationReasons",
+          "terminalSpeedLimit",
+          "terminalSpeedError"
+        ],
+        "screenshotRecommended": true,
+        "notes": "High initial speed covers overshoot risk."
+      }
+    },
+    {
+      "id": "single-blocking-obstacle",
+      "label": "Single blocking obstacle",
+      "category": "Obstacle",
+      "initialShip": {
+        "position": {
+          "y": 0,
+          "z": 0
+        },
+        "velocity": {
+          "y": 0,
+          "z": 0
+        },
+        "fuel": {
+          "current": 130,
+          "capacity": 130,
+          "reserve": 5,
+          "burnRate": 0.02
+        }
+      },
+      "target": {
+        "position": {
+          "x": 150,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 0.5,
+          "stopBehavior": "StopWithinEnvelope"
+        }
+      },
+      "obstacles": [
+        {
+          "id": "single-blocker-a",
+          "center": {
+            "x": 75,
+            "y": 0,
+            "z": 0
+          },
+          "radius": 12,
+          "padding": 7
+        }
+      ],
+      "profile": "Balanced",
+      "expectedOutcome": "Pass",
+      "acceptance": {
+        "maxFinalDistance": 3,
+        "maxFinalSpeed": 0.5,
+        "minObstacleClearance": 0,
+        "maxTicks": 1500,
+        "maxFuelUsed": 45,
+        "allowReplanRequired": false
+      },
+      "evidence": {
+        "requiredTelemetryFields": [
+          "courseId",
+          "profile",
+          "status",
+          "ticksToArrival",
+          "peakSpeed",
+          "finalDistance",
+          "finalSpeed",
+          "fuelUsed",
+          "arrivalPhase",
+          "replanRequired",
+          "planHashBefore",
+          "planHashAfter",
+          "failureReasonCodes",
+          "invalidationReasons",
+          "segmentKinds",
+          "minObstacleClearance",
+          "planner"
+        ],
+        "screenshotRecommended": true,
+        "notes": "Supported one-blocking-obstacle avoidance shape."
+      }
+    },
+    {
+      "id": "s-curve-obstacles",
+      "label": "S-curve obstacles",
+      "category": "Obstacle",
+      "initialShip": {
+        "position": {
+          "y": 0,
+          "z": 0
+        },
+        "velocity": {
+          "y": 0,
+          "z": 0
+        },
+        "fuel": {
+          "current": 160,
+          "capacity": 160,
+          "reserve": 5,
+          "burnRate": 0.02
+        }
+      },
+      "target": {
+        "position": {
+          "x": 190,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 0.5,
+          "stopBehavior": "StopWithinEnvelope"
+        }
+      },
+      "obstacles": [
+        {
+          "id": "s-rock-a",
+          "center": {
+            "x": 50,
+            "y": 0,
+            "z": 0
+          },
+          "radius": 10,
+          "padding": 6
+        },
+        {
+          "id": "s-rock-b",
+          "center": {
+            "x": 92,
+            "y": 24,
+            "z": 0
+          },
+          "radius": 10,
+          "padding": 6
+        },
+        {
+          "id": "s-rock-c",
+          "center": {
+            "x": 135,
+            "y": -22,
+            "z": 0
+          },
+          "radius": 10,
+          "padding": 6
+        }
+      ],
+      "profile": "Balanced",
+      "expectedOutcome": "KnownStress",
+      "acceptance": {
+        "maxFinalDistance": 3,
+        "maxFinalSpeed": 0.5,
+        "minObstacleClearance": -8,
+        "maxTicks": 1900,
+        "allowReplanRequired": false
+      },
+      "evidence": {
+        "requiredTelemetryFields": [
+          "courseId",
+          "profile",
+          "status",
+          "ticksToArrival",
+          "peakSpeed",
+          "finalDistance",
+          "finalSpeed",
+          "fuelUsed",
+          "arrivalPhase",
+          "replanRequired",
+          "planHashBefore",
+          "planHashAfter",
+          "failureReasonCodes",
+          "invalidationReasons",
+          "classification",
+          "notes",
+          "segmentKinds",
+          "minObstacleClearance"
+        ],
+        "screenshotRecommended": true,
+        "notes": "Current local planner only detours first blocking obstacle."
+      }
+    },
+    {
+      "id": "narrow-corridor",
+      "label": "Narrow corridor",
+      "category": "Obstacle",
+      "initialShip": {
+        "position": {
+          "y": 0,
+          "z": 0
+        },
+        "velocity": {
+          "y": 0,
+          "z": 0
+        },
+        "fuel": {
+          "current": 150,
+          "capacity": 150,
+          "reserve": 5,
+          "burnRate": 0.02
+        }
+      },
+      "target": {
+        "position": {
+          "x": 175,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 0.5,
+          "stopBehavior": "StopWithinEnvelope"
+        }
+      },
+      "obstacles": [
+        {
+          "id": "corridor-upper-a",
+          "center": {
+            "x": 70,
+            "y": 17,
+            "z": 0
+          },
+          "radius": 10,
+          "padding": 4
+        },
+        {
+          "id": "corridor-lower-a",
+          "center": {
+            "x": 70,
+            "y": -17,
+            "z": 0
+          },
+          "radius": 10,
+          "padding": 4
+        },
+        {
+          "id": "corridor-center-b",
+          "center": {
+            "x": 118,
+            "y": 0,
+            "z": 0
+          },
+          "radius": 9,
+          "padding": 5
+        }
+      ],
+      "profile": "Balanced",
+      "expectedOutcome": "KnownStress",
+      "acceptance": {
+        "maxFinalDistance": 3,
+        "maxFinalSpeed": 0.5,
+        "minObstacleClearance": -6,
+        "maxTicks": 1900,
+        "allowReplanRequired": false
+      },
+      "evidence": {
+        "requiredTelemetryFields": [
+          "courseId",
+          "profile",
+          "status",
+          "ticksToArrival",
+          "peakSpeed",
+          "finalDistance",
+          "finalSpeed",
+          "fuelUsed",
+          "arrivalPhase",
+          "replanRequired",
+          "planHashBefore",
+          "planHashAfter",
+          "failureReasonCodes",
+          "invalidationReasons",
+          "classification",
+          "notes",
+          "minObstacleClearance"
+        ],
+        "screenshotRecommended": true,
+        "notes": "Tight corridor remains KnownStress until multi-obstacle planner support exists."
+      }
+    },
+    {
+      "id": "offset-gates",
+      "label": "Offset gates",
+      "category": "Obstacle",
+      "initialShip": {
+        "position": {
+          "y": 0,
+          "z": 0
+        },
+        "velocity": {
+          "y": 0,
+          "z": 0
+        },
+        "fuel": {
+          "current": 135,
+          "capacity": 135,
+          "reserve": 5,
+          "burnRate": 0.02
+        }
+      },
+      "target": {
+        "position": {
+          "x": 165,
+          "y": 18,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 0.5,
+          "stopBehavior": "StopWithinEnvelope"
+        }
+      },
+      "obstacles": [
+        {
+          "id": "gate-left",
+          "center": {
+            "x": 62,
+            "y": -18,
+            "z": 0
+          },
+          "radius": 8,
+          "padding": 5
+        },
+        {
+          "id": "gate-right",
+          "center": {
+            "x": 110,
+            "y": 31,
+            "z": 0
+          },
+          "radius": 8,
+          "padding": 5
+        }
+      ],
+      "profile": "Balanced",
+      "expectedOutcome": "Pass",
+      "acceptance": {
+        "maxFinalDistance": 3,
+        "maxFinalSpeed": 0.5,
+        "minObstacleClearance": 0,
+        "maxTicks": 1500,
+        "maxFuelUsed": 45,
+        "allowReplanRequired": false
+      },
+      "evidence": {
+        "requiredTelemetryFields": [
+          "courseId",
+          "profile",
+          "status",
+          "ticksToArrival",
+          "peakSpeed",
+          "finalDistance",
+          "finalSpeed",
+          "fuelUsed",
+          "arrivalPhase",
+          "replanRequired",
+          "planHashBefore",
+          "planHashAfter",
+          "failureReasonCodes",
+          "invalidationReasons",
+          "minObstacleClearance",
+          "segmentKinds"
+        ],
+        "screenshotRecommended": true,
+        "notes": "Offset hazards should not require renderer-derived truth."
+      }
+    },
+    {
+      "id": "target-behind-obstacle",
+      "label": "Target behind obstacle",
+      "category": "Obstacle",
+      "initialShip": {
+        "position": {
+          "y": 0,
+          "z": 0
+        },
+        "velocity": {
+          "y": 0,
+          "z": 0
+        },
+        "fuel": {
+          "current": 135,
+          "capacity": 135,
+          "reserve": 5,
+          "burnRate": 0.02
+        }
+      },
+      "target": {
+        "position": {
+          "x": 155,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 0.5,
+          "stopBehavior": "StopWithinEnvelope"
+        }
+      },
+      "obstacles": [
+        {
+          "id": "front-rock",
+          "center": {
+            "x": 78,
+            "y": 0,
+            "z": 0
+          },
+          "radius": 12,
+          "padding": 7
+        }
+      ],
+      "profile": "Balanced",
+      "expectedOutcome": "Pass",
+      "acceptance": {
+        "maxFinalDistance": 3,
+        "maxFinalSpeed": 0.5,
+        "minObstacleClearance": 0,
+        "maxTicks": 1550,
+        "maxFuelUsed": 45,
+        "allowReplanRequired": false
+      },
+      "evidence": {
+        "requiredTelemetryFields": [
+          "courseId",
+          "profile",
+          "status",
+          "ticksToArrival",
+          "peakSpeed",
+          "finalDistance",
+          "finalSpeed",
+          "fuelUsed",
+          "arrivalPhase",
+          "replanRequired",
+          "planHashBefore",
+          "planHashAfter",
+          "failureReasonCodes",
+          "invalidationReasons",
+          "segmentKinds",
+          "minObstacleClearance",
+          "routeValid"
+        ],
+        "screenshotRecommended": true,
+        "notes": "Target is collinear behind one blocking obstacle."
+      }
+    },
+    {
+      "id": "target-near-obstacle",
+      "label": "Target near obstacle",
+      "category": "Obstacle",
+      "initialShip": {
+        "position": {
+          "y": 0,
+          "z": 0
+        },
+        "velocity": {
+          "y": 0,
+          "z": 0
+        },
+        "fuel": {
+          "current": 135,
+          "capacity": 135,
+          "reserve": 5,
+          "burnRate": 0.02
+        }
+      },
+      "target": {
+        "position": {
+          "x": 158,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 0.5,
+          "stopBehavior": "StopWithinEnvelope"
+        }
+      },
+      "obstacles": [
+        {
+          "id": "near-rock",
+          "center": {
+            "x": 136,
+            "y": 16,
+            "z": 0
+          },
+          "radius": 8,
+          "padding": 4
+        }
+      ],
+      "profile": "Balanced",
+      "expectedOutcome": "Pass",
+      "acceptance": {
+        "maxFinalDistance": 3,
+        "maxFinalSpeed": 0.5,
+        "minObstacleClearance": 0,
+        "maxTicks": 1550,
+        "maxFuelUsed": 45,
+        "allowReplanRequired": false
+      },
+      "evidence": {
+        "requiredTelemetryFields": [
+          "courseId",
+          "profile",
+          "status",
+          "ticksToArrival",
+          "peakSpeed",
+          "finalDistance",
+          "finalSpeed",
+          "fuelUsed",
+          "arrivalPhase",
+          "replanRequired",
+          "planHashBefore",
+          "planHashAfter",
+          "failureReasonCodes",
+          "invalidationReasons",
+          "routeValid",
+          "minObstacleClearance",
+          "terminalSpeedError"
+        ],
+        "screenshotRecommended": true,
+        "notes": "Target envelope remains outside obstacle unsafe distance."
+      }
+    },
+    {
+      "id": "low-main-thrust",
+      "label": "Low main thrust long stop",
+      "category": "AuthorityFuel",
+      "initialShip": {
+        "position": {
+          "y": 0,
+          "z": 0
+        },
+        "velocity": {
+          "y": 0,
+          "z": 0
+        },
+        "fuel": {
+          "current": 180,
+          "capacity": 180,
+          "reserve": 5,
+          "burnRate": 0.02
+        },
+        "authorityOverrides": {
+          "mode": "Autopilot",
+          "mainThrustersAvailable": true,
+          "translationAuthority": 1,
+          "rotationAuthority": 1,
+          "massScale": 1.6
+        }
+      },
+      "target": {
+        "position": {
+          "x": 170,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 0.5,
+          "stopBehavior": "StopWithinEnvelope"
+        }
+      },
+      "obstacles": [],
+      "profile": "Safe",
+      "expectedOutcome": "Pass",
+      "acceptance": {
+        "maxFinalDistance": 3,
+        "maxFinalSpeed": 0.5,
+        "minObstacleClearance": 999999,
+        "maxTicks": 2100,
+        "maxFuelUsed": 65,
+        "allowReplanRequired": false
+      },
+      "evidence": {
+        "requiredTelemetryFields": [
+          "courseId",
+          "profile",
+          "status",
+          "ticksToArrival",
+          "peakSpeed",
+          "finalDistance",
+          "finalSpeed",
+          "fuelUsed",
+          "arrivalPhase",
+          "replanRequired",
+          "planHashBefore",
+          "planHashAfter",
+          "failureReasonCodes",
+          "invalidationReasons",
+          "initialMass",
+          "finalMass",
+          "brakingReserve"
+        ],
+        "screenshotRecommended": false,
+        "notes": "Low acceleration represented by authority/mass contract, not maxAcceleration increase."
+      }
+    },
+    {
+      "id": "low-rcs-terminal",
+      "label": "Low RCS terminal correction",
+      "category": "AuthorityFuel",
+      "initialShip": {
+        "position": {
+          "y": 0,
+          "z": 0
+        },
+        "velocity": {
+          "x": 6,
+          "y": 8,
+          "z": 0
+        },
+        "fuel": {
+          "current": 160,
+          "capacity": 160,
+          "reserve": 5,
+          "burnRate": 0.02
+        },
+        "authorityOverrides": {
+          "mode": "Autopilot",
+          "rcsAvailable": true,
+          "translationAuthority": 0.2,
+          "rotationAuthority": 1
+        }
+      },
+      "target": {
+        "position": {
+          "x": 155,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 0.5,
+          "stopBehavior": "StopWithinEnvelope"
+        }
+      },
+      "obstacles": [],
+      "profile": "Safe",
+      "expectedOutcome": "Pass",
+      "acceptance": {
+        "maxFinalDistance": 3,
+        "maxFinalSpeed": 0.5,
+        "minObstacleClearance": 999999,
+        "maxTicks": 2300,
+        "maxFuelUsed": 60,
+        "allowReplanRequired": false
+      },
+      "evidence": {
+        "requiredTelemetryFields": [
+          "courseId",
+          "profile",
+          "status",
+          "ticksToArrival",
+          "peakSpeed",
+          "finalDistance",
+          "finalSpeed",
+          "fuelUsed",
+          "arrivalPhase",
+          "replanRequired",
+          "planHashBefore",
+          "planHashAfter",
+          "failureReasonCodes",
+          "invalidationReasons",
+          "terminalTangentialSpeed",
+          "terminalCaptureActive",
+          "authority"
+        ],
+        "screenshotRecommended": false,
+        "notes": "Browser analog for Unity low-RCS terminal correction."
+      }
+    },
+    {
+      "id": "low-fuel-long-route",
+      "label": "Low fuel long route",
+      "category": "AuthorityFuel",
+      "initialShip": {
+        "position": {
+          "y": 0,
+          "z": 0
+        },
+        "velocity": {
+          "y": 0,
+          "z": 0
+        },
+        "fuel": {
+          "current": 7,
+          "capacity": 100,
+          "reserve": 5,
+          "burnRate": 0.08
+        }
+      },
+      "target": {
+        "position": {
+          "x": 270,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 0.5,
+          "stopBehavior": "StopWithinEnvelope"
+        }
+      },
+      "obstacles": [],
+      "profile": "Balanced",
+      "expectedOutcome": "ExpectedFail",
+      "acceptance": {
+        "maxFinalDistance": 3,
+        "maxFinalSpeed": 0.5,
+        "minObstacleClearance": 999999,
+        "maxTicks": 1200,
+        "maxFuelUsed": 10,
+        "allowReplanRequired": true,
+        "expectedFailureReasonCodes": [
+          "FuelInsufficient"
+        ]
+      },
+      "evidence": {
+        "requiredTelemetryFields": [
+          "courseId",
+          "profile",
+          "status",
+          "ticksToArrival",
+          "peakSpeed",
+          "finalDistance",
+          "finalSpeed",
+          "fuelUsed",
+          "arrivalPhase",
+          "replanRequired",
+          "planHashBefore",
+          "planHashAfter",
+          "failureReasonCodes",
+          "invalidationReasons",
+          "brakingReserve"
+        ],
+        "screenshotRecommended": false,
+        "notes": "ExpectedFail must surface FuelInsufficient instead of hidden success."
+      }
+    },
+    {
+      "id": "no-main-thrusters-negative",
+      "label": "No main thrusters negative",
+      "category": "AuthorityFuel",
+      "initialShip": {
+        "position": {
+          "y": 0,
+          "z": 0
+        },
+        "velocity": {
+          "y": 0,
+          "z": 0
+        },
+        "fuel": {
+          "current": 120,
+          "capacity": 120,
+          "reserve": 5,
+          "burnRate": 0.02
+        },
+        "authorityOverrides": {
+          "mode": "Autopilot",
+          "mainThrustersAvailable": false,
+          "autopilotAvailable": true
+        }
+      },
+      "target": {
+        "position": {
+          "x": 140,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 0.5,
+          "stopBehavior": "StopWithinEnvelope"
+        }
+      },
+      "obstacles": [],
+      "profile": "Balanced",
+      "expectedOutcome": "ExpectedFail",
+      "acceptance": {
+        "maxFinalDistance": 3,
+        "maxFinalSpeed": 0.5,
+        "minObstacleClearance": 999999,
+        "maxTicks": 300,
+        "allowReplanRequired": true,
+        "expectedFailureReasonCodes": [
+          "MainThrustersUnavailable"
+        ]
+      },
+      "evidence": {
+        "requiredTelemetryFields": [
+          "courseId",
+          "profile",
+          "status",
+          "ticksToArrival",
+          "peakSpeed",
+          "finalDistance",
+          "finalSpeed",
+          "fuelUsed",
+          "arrivalPhase",
+          "replanRequired",
+          "planHashBefore",
+          "planHashAfter",
+          "failureReasonCodes",
+          "invalidationReasons",
+          "brakingReserve",
+          "authority"
+        ],
+        "screenshotRecommended": false,
+        "notes": "No main thrusters must fail closed before false completion."
+      }
+    },
+    {
+      "id": "no-autopilot-authority-negative",
+      "label": "No autopilot authority negative",
+      "category": "AuthorityFuel",
+      "initialShip": {
+        "position": {
+          "y": 0,
+          "z": 0
+        },
+        "velocity": {
+          "y": 0,
+          "z": 0
+        },
+        "fuel": {
+          "current": 120,
+          "capacity": 120,
+          "reserve": 5,
+          "burnRate": 0.02
+        },
+        "authorityOverrides": {
+          "mode": "Manual",
+          "autopilotAvailable": false,
+          "mainThrustersAvailable": true
+        }
+      },
+      "target": {
+        "position": {
+          "x": 140,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 0.5,
+          "stopBehavior": "StopWithinEnvelope"
+        }
+      },
+      "obstacles": [],
+      "profile": "Balanced",
+      "expectedOutcome": "ExpectedFail",
+      "acceptance": {
+        "maxFinalDistance": 3,
+        "maxFinalSpeed": 0.5,
+        "minObstacleClearance": 999999,
+        "maxTicks": 300,
+        "allowReplanRequired": true,
+        "expectedFailureReasonCodes": [
+          "AutopilotUnavailable"
+        ]
+      },
+      "evidence": {
+        "requiredTelemetryFields": [
+          "courseId",
+          "profile",
+          "status",
+          "ticksToArrival",
+          "peakSpeed",
+          "finalDistance",
+          "finalSpeed",
+          "fuelUsed",
+          "arrivalPhase",
+          "replanRequired",
+          "planHashBefore",
+          "planHashAfter",
+          "failureReasonCodes",
+          "invalidationReasons",
+          "authority"
+        ],
+        "screenshotRecommended": false,
+        "notes": "No-autopilot failure must be visible and stable."
+      }
+    },
+    {
+      "id": "midcourse-position-disturbance",
+      "label": "Midcourse position disturbance",
+      "category": "Disturbance",
+      "initialShip": {
+        "position": {
+          "y": 0,
+          "z": 0
+        },
+        "velocity": {
+          "y": 0,
+          "z": 0
+        },
+        "fuel": {
+          "current": 140,
+          "capacity": 140,
+          "reserve": 5,
+          "burnRate": 0.02
+        }
+      },
+      "target": {
+        "position": {
+          "x": 180,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 0.5,
+          "stopBehavior": "StopWithinEnvelope"
+        }
+      },
+      "obstacles": [],
+      "profile": "Balanced",
+      "expectedOutcome": "ExpectedFail",
+      "acceptance": {
+        "maxFinalDistance": 3,
+        "maxFinalSpeed": 0.5,
+        "minObstacleClearance": 999999,
+        "maxTicks": 1500,
+        "allowReplanRequired": true,
+        "expectedFailureReasonCodes": [
+          "OffLockedRoute"
+        ]
+      },
+      "evidence": {
+        "requiredTelemetryFields": [
+          "courseId",
+          "profile",
+          "status",
+          "ticksToArrival",
+          "peakSpeed",
+          "finalDistance",
+          "finalSpeed",
+          "fuelUsed",
+          "arrivalPhase",
+          "replanRequired",
+          "planHashBefore",
+          "planHashAfter",
+          "failureReasonCodes",
+          "invalidationReasons",
+          "offRouteDistance"
+        ],
+        "screenshotRecommended": false,
+        "notes": "Explicit replan-required signal; no silent route replacement."
+      },
+      "disturbance": {
+        "tick": 45,
+        "positionOffset": {
+          "x": 0,
+          "y": 60,
+          "z": 0
+        }
+      }
+    },
+    {
+      "id": "midcourse-velocity-disturbance",
+      "label": "Midcourse velocity disturbance",
+      "category": "Disturbance",
+      "initialShip": {
+        "position": {
+          "y": 0,
+          "z": 0
+        },
+        "velocity": {
+          "y": 0,
+          "z": 0
+        },
+        "fuel": {
+          "current": 160,
+          "capacity": 160,
+          "reserve": 5,
+          "burnRate": 0.02
+        }
+      },
+      "target": {
+        "position": {
+          "x": 210,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 0.5,
+          "stopBehavior": "StopWithinEnvelope"
+        }
+      },
+      "obstacles": [],
+      "profile": "Balanced",
+      "expectedOutcome": "KnownStress",
+      "acceptance": {
+        "maxFinalDistance": 3,
+        "maxFinalSpeed": 0.5,
+        "minObstacleClearance": 999999,
+        "maxTicks": 1900,
+        "maxFuelUsed": 65,
+        "allowReplanRequired": false
+      },
+      "evidence": {
+        "requiredTelemetryFields": [
+          "courseId",
+          "profile",
+          "status",
+          "ticksToArrival",
+          "peakSpeed",
+          "finalDistance",
+          "finalSpeed",
+          "fuelUsed",
+          "arrivalPhase",
+          "replanRequired",
+          "planHashBefore",
+          "planHashAfter",
+          "failureReasonCodes",
+          "invalidationReasons",
+          "terminalTangentialSpeed",
+          "terminalSpeedError",
+          "notes"
+        ],
+        "screenshotRecommended": false,
+        "notes": "Runner may need velocity-disturbance support; hard invariants still apply."
+      },
+      "disturbance": {
+        "tick": 55,
+        "velocityOffset": {
+          "x": 0,
+          "y": 12,
+          "z": 0
+        }
+      }
+    },
+    {
+      "id": "terminal-overspeed-disturbance",
+      "label": "Terminal overspeed disturbance",
+      "category": "Disturbance",
+      "initialShip": {
+        "position": {
+          "x": -8,
+          "y": 0,
+          "z": 0
+        },
+        "velocity": {
+          "x": 34,
+          "y": 0,
+          "z": 0
+        },
+        "fuel": {
+          "current": 170,
+          "capacity": 170,
+          "reserve": 5,
+          "burnRate": 0.02
+        }
+      },
+      "target": {
+        "position": {
+          "x": 42,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 0.5,
+          "stopBehavior": "StopWithinEnvelope"
+        }
+      },
+      "obstacles": [],
+      "profile": "Safe",
+      "expectedOutcome": "KnownStress",
+      "acceptance": {
+        "maxFinalDistance": 3,
+        "maxFinalSpeed": 0.5,
+        "minObstacleClearance": 999999,
+        "maxTicks": 1200,
+        "maxFuelUsed": 55,
+        "allowReplanRequired": false
+      },
+      "evidence": {
+        "requiredTelemetryFields": [
+          "courseId",
+          "profile",
+          "status",
+          "ticksToArrival",
+          "peakSpeed",
+          "finalDistance",
+          "finalSpeed",
+          "fuelUsed",
+          "arrivalPhase",
+          "replanRequired",
+          "planHashBefore",
+          "planHashAfter",
+          "failureReasonCodes",
+          "invalidationReasons",
+          "terminalSpeedLimit",
+          "terminalSpeedError",
+          "terminalCaptureActive"
+        ],
+        "screenshotRecommended": true,
+        "notes": "Overspeed case covers terminal brake/capture flapping risk."
+      }
+    },
+    {
+      "id": "off-route-fail-closed",
+      "label": "Off-route fail closed",
+      "category": "Disturbance",
+      "initialShip": {
+        "position": {
+          "y": 0,
+          "z": 0
+        },
+        "velocity": {
+          "y": 0,
+          "z": 0
+        },
+        "fuel": {
+          "current": 130,
+          "capacity": 130,
+          "reserve": 5,
+          "burnRate": 0.02
+        }
+      },
+      "target": {
+        "position": {
+          "x": 160,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 0.5,
+          "stopBehavior": "StopWithinEnvelope"
+        }
+      },
+      "obstacles": [],
+      "profile": "Balanced",
+      "expectedOutcome": "ExpectedFail",
+      "acceptance": {
+        "maxFinalDistance": 3,
+        "maxFinalSpeed": 0.5,
+        "minObstacleClearance": 999999,
+        "maxTicks": 600,
+        "allowReplanRequired": true,
+        "expectedFailureReasonCodes": [
+          "OffLockedRoute"
+        ]
+      },
+      "evidence": {
+        "requiredTelemetryFields": [
+          "courseId",
+          "profile",
+          "status",
+          "ticksToArrival",
+          "peakSpeed",
+          "finalDistance",
+          "finalSpeed",
+          "fuelUsed",
+          "arrivalPhase",
+          "replanRequired",
+          "planHashBefore",
+          "planHashAfter",
+          "failureReasonCodes",
+          "invalidationReasons",
+          "routeValid",
+          "offRouteDistance"
+        ],
+        "screenshotRecommended": false,
+        "notes": "Immediate divergence must not be hidden by fallback or replacement route."
+      },
+      "disturbance": {
+        "tick": 0,
+        "positionOffset": {
+          "x": 0,
+          "y": 42,
+          "z": 0
+        }
+      }
+    },
+    {
+      "id": "direct-long-safe",
+      "label": "Direct long Safe profile",
+      "category": "SpeedProfile",
+      "initialShip": {
+        "position": {
+          "y": 0,
+          "z": 0
+        },
+        "velocity": {
+          "y": 0,
+          "z": 0
+        },
+        "fuel": {
+          "current": 150,
+          "capacity": 150,
+          "reserve": 5,
+          "burnRate": 0.02
+        }
+      },
+      "target": {
+        "position": {
+          "x": 260,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 0.5,
+          "stopBehavior": "StopWithinEnvelope"
+        }
+      },
+      "obstacles": [],
+      "profile": "Safe",
+      "expectedOutcome": "Pass",
+      "acceptance": {
+        "maxFinalDistance": 3,
+        "maxFinalSpeed": 0.5,
+        "minObstacleClearance": 999999,
+        "maxTicks": 1900,
+        "maxFuelUsed": 40,
+        "allowReplanRequired": false
+      },
+      "evidence": {
+        "requiredTelemetryFields": [
+          "courseId",
+          "profile",
+          "status",
+          "ticksToArrival",
+          "peakSpeed",
+          "finalDistance",
+          "finalSpeed",
+          "fuelUsed",
+          "arrivalPhase",
+          "replanRequired",
+          "planHashBefore",
+          "planHashAfter",
+          "failureReasonCodes",
+          "invalidationReasons",
+          "profile",
+          "ticksToArrival",
+          "peakSpeed"
+        ],
+        "screenshotRecommended": false,
+        "notes": "Safe baseline for direct-long comparison."
+      }
+    },
+    {
+      "id": "direct-long-balanced",
+      "label": "Direct long Balanced profile",
+      "category": "SpeedProfile",
+      "initialShip": {
+        "position": {
+          "y": 0,
+          "z": 0
+        },
+        "velocity": {
+          "y": 0,
+          "z": 0
+        },
+        "fuel": {
+          "current": 150,
+          "capacity": 150,
+          "reserve": 5,
+          "burnRate": 0.02
+        }
+      },
+      "target": {
+        "position": {
+          "x": 260,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 0.5,
+          "stopBehavior": "StopWithinEnvelope"
+        }
+      },
+      "obstacles": [],
+      "profile": "Balanced",
+      "expectedOutcome": "Pass",
+      "acceptance": {
+        "maxFinalDistance": 3,
+        "maxFinalSpeed": 0.5,
+        "minObstacleClearance": 999999,
+        "maxTicks": 1600,
+        "maxFuelUsed": 45,
+        "allowReplanRequired": false
+      },
+      "evidence": {
+        "requiredTelemetryFields": [
+          "courseId",
+          "profile",
+          "status",
+          "ticksToArrival",
+          "peakSpeed",
+          "finalDistance",
+          "finalSpeed",
+          "fuelUsed",
+          "arrivalPhase",
+          "replanRequired",
+          "planHashBefore",
+          "planHashAfter",
+          "failureReasonCodes",
+          "invalidationReasons",
+          "profile",
+          "ticksToArrival",
+          "peakSpeed"
+        ],
+        "screenshotRecommended": true,
+        "notes": "Balanced must be faster than Safe without terminal violation."
+      }
+    },
+    {
+      "id": "direct-long-fast",
+      "label": "Direct long Fast profile",
+      "category": "SpeedProfile",
+      "initialShip": {
+        "position": {
+          "y": 0,
+          "z": 0
+        },
+        "velocity": {
+          "y": 0,
+          "z": 0
+        },
+        "fuel": {
+          "current": 170,
+          "capacity": 170,
+          "reserve": 5,
+          "burnRate": 0.02
+        }
+      },
+      "target": {
+        "position": {
+          "x": 260,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 0.5,
+          "stopBehavior": "StopWithinEnvelope"
+        }
+      },
+      "obstacles": [],
+      "profile": "Fast",
+      "expectedOutcome": "KnownStress",
+      "acceptance": {
+        "maxFinalDistance": 3,
+        "maxFinalSpeed": 0.5,
+        "minObstacleClearance": 999999,
+        "maxTicks": 1450,
+        "maxFuelUsed": 60,
+        "allowReplanRequired": false
+      },
+      "evidence": {
+        "requiredTelemetryFields": [
+          "courseId",
+          "profile",
+          "status",
+          "ticksToArrival",
+          "peakSpeed",
+          "finalDistance",
+          "finalSpeed",
+          "fuelUsed",
+          "arrivalPhase",
+          "replanRequired",
+          "planHashBefore",
+          "planHashAfter",
+          "failureReasonCodes",
+          "invalidationReasons",
+          "profile",
+          "ticksToArrival",
+          "peakSpeed",
+          "terminalSpeedError",
+          "notes"
+        ],
+        "screenshotRecommended": false,
+        "notes": "Fast may start KnownStress; hard invariants remain strict."
+      }
+    },
+    {
+      "id": "corridor-safe",
+      "label": "Corridor Safe profile",
+      "category": "SpeedProfile",
+      "initialShip": {
+        "position": {
+          "y": 0,
+          "z": 0
+        },
+        "velocity": {
+          "y": 0,
+          "z": 0
+        },
+        "fuel": {
+          "current": 150,
+          "capacity": 150,
+          "reserve": 5,
+          "burnRate": 0.02
+        }
+      },
+      "target": {
+        "position": {
+          "x": 175,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 0.5,
+          "stopBehavior": "StopWithinEnvelope"
+        }
+      },
+      "obstacles": [
+        {
+          "id": "corridor-upper-a",
+          "center": {
+            "x": 70,
+            "y": 17,
+            "z": 0
+          },
+          "radius": 10,
+          "padding": 4
+        },
+        {
+          "id": "corridor-lower-a",
+          "center": {
+            "x": 70,
+            "y": -17,
+            "z": 0
+          },
+          "radius": 10,
+          "padding": 4
+        },
+        {
+          "id": "corridor-center-b",
+          "center": {
+            "x": 118,
+            "y": 0,
+            "z": 0
+          },
+          "radius": 9,
+          "padding": 5
+        }
+      ],
+      "profile": "Safe",
+      "expectedOutcome": "KnownStress",
+      "acceptance": {
+        "maxFinalDistance": 3,
+        "maxFinalSpeed": 0.5,
+        "minObstacleClearance": -4,
+        "maxTicks": 2200,
+        "allowReplanRequired": false
+      },
+      "evidence": {
+        "requiredTelemetryFields": [
+          "courseId",
+          "profile",
+          "status",
+          "ticksToArrival",
+          "peakSpeed",
+          "finalDistance",
+          "finalSpeed",
+          "fuelUsed",
+          "arrivalPhase",
+          "replanRequired",
+          "planHashBefore",
+          "planHashAfter",
+          "failureReasonCodes",
+          "invalidationReasons",
+          "profile",
+          "minObstacleClearance",
+          "peakSpeed",
+          "notes"
+        ],
+        "screenshotRecommended": true,
+        "notes": "Safe corridor exposes current planner limit less aggressively."
+      }
+    },
+    {
+      "id": "corridor-balanced",
+      "label": "Corridor Balanced profile",
+      "category": "SpeedProfile",
+      "initialShip": {
+        "position": {
+          "y": 0,
+          "z": 0
+        },
+        "velocity": {
+          "y": 0,
+          "z": 0
+        },
+        "fuel": {
+          "current": 150,
+          "capacity": 150,
+          "reserve": 5,
+          "burnRate": 0.02
+        }
+      },
+      "target": {
+        "position": {
+          "x": 175,
+          "y": 0,
+          "z": 0
+        },
+        "arrivalEnvelope": {
+          "radius": 3,
+          "terminalSpeed": 0.5,
+          "stopBehavior": "StopWithinEnvelope"
+        }
+      },
+      "obstacles": [
+        {
+          "id": "corridor-upper-a",
+          "center": {
+            "x": 70,
+            "y": 17,
+            "z": 0
+          },
+          "radius": 10,
+          "padding": 4
+        },
+        {
+          "id": "corridor-lower-a",
+          "center": {
+            "x": 70,
+            "y": -17,
+            "z": 0
+          },
+          "radius": 10,
+          "padding": 4
+        },
+        {
+          "id": "corridor-center-b",
+          "center": {
+            "x": 118,
+            "y": 0,
+            "z": 0
+          },
+          "radius": 9,
+          "padding": 5
+        }
+      ],
+      "profile": "Balanced",
+      "expectedOutcome": "KnownStress",
+      "acceptance": {
+        "maxFinalDistance": 3,
+        "maxFinalSpeed": 0.5,
+        "minObstacleClearance": -6,
+        "maxTicks": 1900,
+        "allowReplanRequired": false
+      },
+      "evidence": {
+        "requiredTelemetryFields": [
+          "courseId",
+          "profile",
+          "status",
+          "ticksToArrival",
+          "peakSpeed",
+          "finalDistance",
+          "finalSpeed",
+          "fuelUsed",
+          "arrivalPhase",
+          "replanRequired",
+          "planHashBefore",
+          "planHashAfter",
+          "failureReasonCodes",
+          "invalidationReasons",
+          "profile",
+          "minObstacleClearance",
+          "peakSpeed",
+          "notes"
+        ],
+        "screenshotRecommended": true,
+        "notes": "Balanced corridor pressure remains KnownStress until planner expands."
+      }
+    }
+  ]
+}
