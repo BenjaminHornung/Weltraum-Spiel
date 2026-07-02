@@ -37,10 +37,10 @@ export const createTestBridge = (
     listAutopilotProvingGroundCourses() {
       return autopilotProvingGroundCourses.map((course) => course.id as AutopilotProvingGroundCourseId);
     },
-    runAutopilotProvingGroundCourse(id: AutopilotProvingGroundCourseId, profile: AutopilotSpeedProfileId = "Balanced") {
+    runAutopilotProvingGroundCourse(id: AutopilotProvingGroundCourseId, profile?: AutopilotSpeedProfileId) {
       return runAutopilotProvingGroundCourse(id, profile);
     },
-    runAutopilotProvingGroundMatrix(profile: AutopilotSpeedProfileId = "Balanced") {
+    runAutopilotProvingGroundMatrix(profile?: AutopilotSpeedProfileId) {
       return runAutopilotProvingGroundMatrix(profile);
     }
   };

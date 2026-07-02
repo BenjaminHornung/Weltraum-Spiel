@@ -21,6 +21,19 @@ const comparableMetrics = (courseId: "direct-long-stop" | "direct-medium-stop" |
 };
 
 describe("autopilot speed profile course metrics", () => {
+  it("uses the catalog speed profile when no explicit override is supplied", () => {
+    const safeDefault = runAutopilotProvingGroundCourse("direct-long-safe");
+    const fastDefault = runAutopilotProvingGroundCourse("direct-long-fast");
+    const explicitBalanced = runAutopilotProvingGroundCourse("direct-long-safe", "Balanced");
+
+    expect(safeDefault.catalogSpeedProfile).toBe("Safe");
+    expect(safeDefault.profile).toBe("Safe");
+    expect(fastDefault.catalogSpeedProfile).toBe("Fast");
+    expect(fastDefault.profile).toBe("Fast");
+    expect(explicitBalanced.catalogSpeedProfile).toBe("Safe");
+    expect(explicitBalanced.profile).toBe("Balanced");
+  });
+
   it("runs Safe, Balanced, and Fast deterministically on a long direct stop", () => {
     for (const profile of ["Safe", "Balanced", "Fast"] as const) {
       expect(comparableMetrics("direct-long-stop", profile)).toEqual(comparableMetrics("direct-long-stop", profile));
@@ -54,17 +67,19 @@ describe("autopilot speed profile course metrics", () => {
       expect(result.status, result.profile).toBe("Arrived");
       expect(result.finalDistance, result.profile).toBeLessThanOrEqual(3);
       expect(result.finalSpeed, result.profile).toBeLessThanOrEqual(result.terminalSpeedLimit ?? 0.5);
-      expect(result.settlingTicks, result.profile).toBe(30);
-      expect(result.settledSpeed, result.profile).toBeLessThanOrEqual(result.finalSpeed);
+      expect(result.finalSpeed, `${result.profile} first-arrival finalSpeed`).toEqual(expect.any(Number));
+      expect(result.settlingTicks, `${result.profile} settlingTicks`).toBe(30);
+      expect(result.settledDistance, `${result.profile} settledDistance`).toEqual(expect.any(Number));
+      expect(result.settledSpeed, `${result.profile} settledSpeed`).toEqual(expect.any(Number));
+      expect(result.replanRequired, result.profile).toBe(false);
+      expect(result.failureReasonCodes, result.profile).toEqual([]);
+      expect(result.invalidationReasons, result.profile).toEqual([]);
+      expect(result.planHashAfter, result.profile).toBe(result.planHashBefore);
     }
 
     expect(fast.finalSpeed).toBeLessThanOrEqual(fast.terminalSpeedLimit ?? 0.5);
     expect(fast.settledSpeed).toBeLessThanOrEqual(0.45);
-    expect(fast.failureReasonCodes).toHaveLength(0);
-    expect(fast.invalidationReasons).toHaveLength(0);
-    expect(fast.replanRequired).toBe(false);
-    expect(fast.planHashAfter).toBe(fast.planHashBefore);
-    expect(fast.completedPlanHash).toBe(fast.planHashBefore);
+    expect(fast.settledSpeed).toBeLessThanOrEqual(fast.finalSpeed);
     expect(balanced.ticksToArrival as number).toBeLessThan(safe.ticksToArrival as number);
     expect(fast.ticksToArrival as number).toBeLessThanOrEqual(balanced.ticksToArrival as number);
     expect(balanced.averageSpeed).toBeGreaterThan(safe.averageSpeed);

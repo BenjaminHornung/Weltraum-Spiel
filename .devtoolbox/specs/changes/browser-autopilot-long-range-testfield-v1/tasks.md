@@ -60,12 +60,23 @@
   - Report-back format: verification summary, review result, and Git status.
   - Stopping rule: stop once the implementation is verified and ready for handoff.
 
-- [x] **Follow-up fix: Fast 2500m settled evidence**
-  - Objective: remove the brittle Fast 2500m evidence margin by adding deterministic settled/holding metrics while preserving first-arrival runtime semantics.
-  - Exact files/search targets: `apps/weltraum-browser/src/test-harness/scenarioRunner.ts`; `apps/weltraum-browser/tests/unit/autopilotSpeedProfiles.test.ts`; optional `apps/weltraum-browser/tests/unit/autopilotCourseMetrics.test.ts`; `apps/weltraum-browser/tests/e2e/autopilot-proving-ground-long-range.spec.ts`; long-range evidence JSON/Markdown outputs.
-  - Acceptance criteria: `finalSpeed` remains the first `Arrived` speed and stays under the real terminal-speed gate (`<= 0.5`); runner and evidence emit `settledSpeed`, `settledDistance`, and `settlingTicks`; Fast 2500m settled speed is `<= 0.45`; Safe/Balanced/Fast 2500m rows still pass/arrive; Fast is no slower than Balanced at first arrival; stable plan hash/no silent replan/no failure or invalidation signals remain intact for pass rows.
-  - Implementation guidance: previous profile-only tuning was stopped/escalated because it could not reduce first-arrival Fast 2500m below `0.45` without changing semantics; add settled evidence only, with a bounded post-arrival stepping window and no runtime/product arrival behavior changes.
-  - Required skills/MCPs: `devtoolbox-specs-execution`, `verification-before-completion`; DevToolbox MCP unavailable for this recovery worktree, so use direct artifact fallback.
-  - Verification command/scenario: run focused unit tests, TypeScript no-emit, focused Chrome-fallback long-range E2E, `git status --short -- Assets`, and `git diff --check` from the recovery worktree/app paths.
-  - Report-back format: changed files, exact Safe/Balanced/Fast 2500m first-arrival and settled metrics, regenerated evidence paths, verification results, and unverified items.
-  - Stopping rule: stop if post-arrival stepping requires product/runtime executor changes, if Fast 2500m cannot settle to `<= 0.45` in the bounded window, if `Assets/**` would need to change, or if unrelated failures require broader scope.
+## Follow-up fixes
+
+- [ ] **Fast 2500m terminal-speed buffer (profile-only stopped/escalated)**
+  - Objective: make the accepted Fast 2500m pass less brittle by adding at least a 0.05 m/s buffer below the existing `StopWithinEnvelope` terminal gate.
+  - Exact files/search targets: `apps/weltraum-browser/src/core/types.ts`, `apps/weltraum-browser/tests/unit/autopilotSpeedProfiles.test.ts`, `apps/weltraum-browser/tests/e2e/autopilot-proving-ground-v2.spec.ts`, and regenerated `apps/weltraum-browser/evidence/*long-range*` artifacts.
+  - Acceptance criteria: Safe, Balanced, and Fast 2500m direct-stop rows pass; Fast final speed is `<= 0.45` while Fast remains no slower than Balanced; plan hashes stay stable; no silent replan/failure/invalidation codes appear for Pass rows.
+  - Implementation guidance: tune only the Fast speed profile first; do not weaken terminal gates or executor physics; no Unity or `Assets/**` changes.
+  - Verification command/scenario: focused unit test, `tsc --noEmit`, focused long-range Playwright coverage in `apps/weltraum-browser/tests/e2e/autopilot-proving-ground-v2.spec.ts` with Chrome fallback if bundled Chromium is broken, `git status --short -- Assets`, and `git diff --check`.
+  - Report-back format: exact Safe/Balanced/Fast 2500m metrics, changed files, evidence paths, verification results, risks/unverified items.
+  - Stopping rule: stop if a profile-only tune cannot satisfy `finalSpeed <= 0.45` while preserving Fast `<=` Balanced arrival time.
+  - Status: stopped/escalated under manual execution `manual-fast-2500m-buffer-2026-07-02`; profile-only probing could not make first-arrival `finalSpeed <= 0.45` without losing the Fast-vs-Balanced arrival-time constraint, so this task remains intentionally incomplete.
+
+- [x] **Fast 2500m settled holding evidence**
+  - Objective: replace the brittle first-arrival buffer claim with explicit post-arrival holding evidence while preserving the existing first-`Arrived` runtime semantics and terminal-speed gate.
+  - Exact files/search targets: `apps/weltraum-browser/src/test-harness/scenarioRunner.ts`, `apps/weltraum-browser/tests/unit/autopilotSpeedProfiles.test.ts`, `apps/weltraum-browser/tests/unit/autopilotCourseMetrics.test.ts`, `apps/weltraum-browser/tests/e2e/autopilot-proving-ground-v2.spec.ts`, and regenerated `apps/weltraum-browser/evidence/*long-range*` artifacts.
+  - Acceptance criteria: Safe, Balanced, and Fast 2500m direct-stop rows pass at first arrival; `finalSpeed` remains the first-arrival terminal-speed metric and is `<= terminalSpeedLimit`; Fast emits `settledSpeed <= 0.45` after a bounded holding window; Fast remains no slower than Balanced at first arrival; plan hashes stay stable; no silent replan/failure/invalidation codes appear for Pass rows.
+  - Implementation guidance: add settled evidence metrics only; do not weaken terminal gates, arrival checks, profile tuning, executor physics, Unity, or `Assets/**`.
+  - Verification command/scenario: `npm run test -- --run tests/unit/autopilotSpeedProfiles.test.ts tests/unit/autopilotCourseMetrics.test.ts`, `npx tsc -p tsconfig.json --noEmit`, Chrome-fallback focused long-range Playwright coverage in `apps/weltraum-browser/tests/e2e/autopilot-proving-ground-v2.spec.ts`, `git status --short -- Assets`, `git diff --check`, plus full `npm run test` and `npm run build` while time allowed.
+  - Report-back format: exact Safe/Balanced/Fast 2500m first-arrival and settled metrics, changed files, evidence paths, verification results, risks/unverified items.
+  - Stopping rule: stop if post-arrival stepping requires product/runtime executor changes or if Fast cannot reach `settledSpeed <= 0.45` within the bounded holding window.
