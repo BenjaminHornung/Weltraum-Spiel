@@ -9,7 +9,7 @@ import {
   roundVec,
   vec3
 } from "../core";
-import type { AutopilotCourseClassification, AutopilotProvingGroundCourse, AutopilotSpeedProfileId, ObstacleDescriptor, RoutePlan } from "../core";
+import type { AutopilotCourseCategory, AutopilotCourseClassification, AutopilotProvingGroundCourse, AutopilotSpeedProfileId, ObstacleDescriptor, RouteLifecycle, RoutePlan } from "../core";
 import { autopilotProvingGroundCourses, getAutopilotProvingGroundCourse, type AutopilotProvingGroundCourseId } from "../world/autopilotProvingGroundCourses";
 import { getScenarioDefinition, scenarioCatalog } from "./scenarios";
 import type { PlannerKind, ScenarioDefinition, ScenarioId, ScenarioResult } from "./scenarios";
@@ -137,20 +137,36 @@ export const runScenarioMatrix = (): readonly ScenarioResult[] => scenarioCatalo
 export interface AutopilotProvingGroundCourseResult {
   readonly courseId: AutopilotProvingGroundCourseId;
   readonly label: string;
+  readonly category: AutopilotCourseCategory;
+  readonly catalogSpeedProfile: AutopilotSpeedProfileId;
   readonly profile: AutopilotSpeedProfileId;
   readonly expectedOutcome: "Pass" | "KnownStress" | "ExpectedFail";
   readonly ticksToArrival: number | null;
   readonly tick: number;
+  readonly simulatedSeconds: number;
+  /** Straight-line distance from the initial ship position to the course target. */
+  readonly targetDistance: number;
+  /** Catalog-owned straight-line distance in metres for evidence summaries. */
+  readonly distanceMeters: number;
+  /** Straight-line targetDistance divided by simulatedSeconds; not path-length travelled. */
+  readonly averageSpeed: number;
   readonly peakSpeed: number;
   readonly finalSpeed: number;
   readonly finalDistance: number;
   readonly minObstacleClearance: number;
   readonly fuelUsed: number;
+  readonly fuelReserveRemaining: number;
   readonly arrivalPhase: string;
   readonly status: string;
   readonly terminalSpeedLimit: number | null;
   readonly planHashBefore: string | null;
   readonly planHashAfter: string | null;
+  readonly completedPlanHash: string | null;
+  readonly routeLifecycle: RouteLifecycle | null;
+  readonly terminalCaptureTicks: number;
+  readonly holdingTicks: number;
+  readonly stationKeepingActive: boolean;
+  readonly holdingActive: boolean;
   readonly replanRequired: boolean;
   readonly classification: AutopilotCourseClassification;
   readonly notes: readonly string[];
@@ -169,6 +185,13 @@ const clearanceAtPosition = (position: { readonly x: number; readonly y: number;
 };
 
 const round4 = (value: number): number => Number(value.toFixed(4));
+
+const fixedDeltaSeconds = 1 / 30;
+
+const simulatedSecondsForTick = (tick: number): number => round4(Math.max(0, tick) * fixedDeltaSeconds);
+
+const averageSpeedFor = (initialDistance: number, simulatedSeconds: number): number =>
+  simulatedSeconds > 0 ? round4(initialDistance / simulatedSeconds) : 0;
 
 const hasReasonCode = (result: Pick<AutopilotProvingGroundCourseResult, "failureReasonCodes" | "invalidationReasons">, code: string): boolean =>
   result.failureReasonCodes.includes(code) || result.invalidationReasons.includes(code);
@@ -204,10 +227,16 @@ const collectHardInvariantViolations = (
   const finiteMetrics = [
     ["tick", result.tick],
     ["peakSpeed", result.peakSpeed],
+    ["simulatedSeconds", result.simulatedSeconds],
+    ["targetDistance", result.targetDistance],
+    ["averageSpeed", result.averageSpeed],
     ["finalSpeed", result.finalSpeed],
     ["finalDistance", result.finalDistance],
     ["minObstacleClearance", result.minObstacleClearance],
-    ["fuelUsed", result.fuelUsed]
+    ["fuelUsed", result.fuelUsed],
+    ["fuelReserveRemaining", result.fuelReserveRemaining],
+    ["terminalCaptureTicks", result.terminalCaptureTicks],
+    ["holdingTicks", result.holdingTicks]
   ] as const;
 
   for (const [name, value] of finiteMetrics) {
@@ -218,6 +247,10 @@ const collectHardInvariantViolations = (
 
   if (result.planHashBefore !== result.planHashAfter) {
     notes.push(`Locked plan hash changed from ${result.planHashBefore ?? "null"} to ${result.planHashAfter ?? "null"}.`);
+  }
+
+  if (result.completedPlanHash !== null && result.completedPlanHash !== result.planHashBefore) {
+    notes.push(`Completed plan hash ${result.completedPlanHash} does not match locked plan hash ${result.planHashBefore ?? "null"}.`);
   }
 
   if (!acceptance.allowReplanRequired && result.replanRequired) {
@@ -267,6 +300,42 @@ const collectAcceptanceViolations = (
   return notes;
 };
 
+const collectKnownStressHardAcceptanceViolations = (
+  course: AutopilotProvingGroundCourse,
+  result: Omit<AutopilotProvingGroundCourseResult, "classification" | "notes">
+): string[] => {
+  const notes: string[] = [];
+  const acceptance = course.acceptance;
+
+  if (result.status !== "Arrived") {
+    notes.push(`KnownStress must still arrive; got ${result.status}.`);
+  }
+  if (result.ticksToArrival === null || result.ticksToArrival > acceptance.maxTicks) {
+    notes.push(`KnownStress must arrive within ${acceptance.maxTicks} ticks, got ${result.ticksToArrival ?? "none"}.`);
+  }
+  if (result.finalDistance > acceptance.maxFinalDistance) {
+    notes.push(`KnownStress final distance ${result.finalDistance} exceeds ${acceptance.maxFinalDistance}.`);
+  }
+  if (result.finalSpeed > acceptance.maxFinalSpeed + 1e-6) {
+    notes.push(`KnownStress final speed ${result.finalSpeed} exceeds ${acceptance.maxFinalSpeed}.`);
+  }
+  if (acceptance.maxFuelUsed !== undefined && result.fuelUsed > acceptance.maxFuelUsed) {
+    notes.push(`KnownStress fuel used ${result.fuelUsed} exceeds ${acceptance.maxFuelUsed}.`);
+  }
+
+  return notes;
+};
+
+const collectKnownStressRouteQualityViolations = (
+  course: AutopilotProvingGroundCourse,
+  result: Omit<AutopilotProvingGroundCourseResult, "classification" | "notes">
+): string[] => {
+  if (result.minObstacleClearance >= course.acceptance.minObstacleClearance) {
+    return [];
+  }
+  return [`Minimum obstacle clearance ${result.minObstacleClearance} is below ${course.acceptance.minObstacleClearance}.`];
+};
+
 export const evaluateAutopilotProvingGroundCourseResult = (
   course: AutopilotProvingGroundCourse,
   result: Omit<AutopilotProvingGroundCourseResult, "classification" | "notes">
@@ -280,9 +349,11 @@ export const evaluateAutopilotProvingGroundCourseResult = (
   }
 
   if (course.expectedOutcome === "KnownStress") {
-    notes.push(...hardViolations);
-    notes.push(...acceptanceViolations.map((violation) => `KnownStress tolerated planner-limit note: ${violation}`));
-    return { classification: hardViolations.length === 0 ? "KnownStress" : "Fail", notes };
+    const hardAcceptanceViolations = collectKnownStressHardAcceptanceViolations(course, result);
+    const routeQualityViolations = collectKnownStressRouteQualityViolations(course, result);
+    notes.push(...hardViolations, ...hardAcceptanceViolations);
+    notes.push(...routeQualityViolations.map((violation) => `KnownStress tolerated route-quality planner-limit note: ${violation}`));
+    return { classification: hardViolations.length === 0 && hardAcceptanceViolations.length === 0 ? "KnownStress" : "Fail", notes };
   }
 
   if (course.expectedOutcome === "ExpectedFail") {
@@ -295,7 +366,7 @@ export const evaluateAutopilotProvingGroundCourseResult = (
 
   notes.push(...hardViolations, ...acceptanceViolations);
 
-  return { classification: notes.length === 1 + (course.notes?.length ?? 0) ? "Pass" : "Fail", notes };
+  return { classification: hardViolations.length === 0 && acceptanceViolations.length === 0 ? "Pass" : "Fail", notes };
 };
 
 export const runAutopilotProvingGroundCourse = (
@@ -308,25 +379,40 @@ export const runAutopilotProvingGroundCourse = (
   const planner = createPlanner(plannerKind);
   const planningResult = planner.planResult({ tick: 0, ship: course.initialShip, target: course.target, obstacles: course.obstacles, speedProfile: speedProfile.id });
   const initialFuel = course.initialShip.fuel.current;
+  const initialDistance = distance(course.initialShip.position, course.target.position);
 
   if (!planningResult.ok) {
+    const simulatedSeconds = simulatedSecondsForTick(0);
     const base = {
       courseId: course.id as AutopilotProvingGroundCourseId,
       label: course.label,
+      category: course.category,
+      catalogSpeedProfile: course.speedProfile,
       profile: speedProfile.id,
       expectedOutcome: course.expectedOutcome,
       ticksToArrival: null,
       tick: 0,
+      simulatedSeconds,
+      targetDistance: round4(initialDistance),
+      distanceMeters: course.distanceMeters,
+      averageSpeed: averageSpeedFor(initialDistance, simulatedSeconds),
       peakSpeed: round4(magnitude(course.initialShip.velocity)),
       finalSpeed: round4(magnitude(course.initialShip.velocity)),
       finalDistance: round4(distance(course.initialShip.position, course.target.position)),
       minObstacleClearance: round4(clearanceAtPosition(course.initialShip.position, course.obstacles)),
       fuelUsed: 0,
+      fuelReserveRemaining: round4(course.initialShip.fuel.current - course.initialShip.fuel.reserve),
       arrivalPhase: "None",
       status: "PlanningRejected",
       terminalSpeedLimit: course.target.arrivalEnvelope.terminalSpeed ?? null,
       planHashBefore: null,
       planHashAfter: null,
+      completedPlanHash: null,
+      routeLifecycle: "Idle",
+      terminalCaptureTicks: 0,
+      holdingTicks: 0,
+      stationKeepingActive: false,
+      holdingActive: false,
       replanRequired: true,
       planner: null,
       segmentKinds: [],
@@ -343,16 +429,25 @@ export const runAutopilotProvingGroundCourse = (
   let peakSpeed = magnitude(course.initialShip.velocity);
   let minObstacleClearance = clearanceAtPosition(course.initialShip.position, course.obstacles);
   let ticksToArrival: number | null = null;
+  let terminalCaptureTicks = 0;
+  let holdingTicks = 0;
 
   for (let i = 0; i < course.acceptance.maxTicks; i += 1) {
     if (course.disturbance && loop.getTick() === course.disturbance.tick) {
       const current = loop.getShip();
+      const positionOffset = course.disturbance.positionOffset ?? vec3();
+      const velocityOffset = course.disturbance.velocityOffset ?? vec3();
       loop.setShip({
         ...current,
         position: vec3(
-          current.position.x + course.disturbance.positionOffset.x,
-          current.position.y + course.disturbance.positionOffset.y,
-          current.position.z + course.disturbance.positionOffset.z
+          current.position.x + positionOffset.x,
+          current.position.y + positionOffset.y,
+          current.position.z + positionOffset.z
+        ),
+        velocity: vec3(
+          current.velocity.x + velocityOffset.x,
+          current.velocity.y + velocityOffset.y,
+          current.velocity.z + velocityOffset.z
         )
       });
     }
@@ -362,6 +457,12 @@ export const runAutopilotProvingGroundCourse = (
     peakSpeed = Math.max(peakSpeed, magnitude(currentShip.velocity));
     minObstacleClearance = Math.min(minObstacleClearance, clearanceAtPosition(currentShip.position, course.obstacles));
     const telemetry = executor.getTelemetry();
+    if (telemetry.terminalCaptureActive) {
+      terminalCaptureTicks += 1;
+    }
+    if (telemetry.terminalHoldingActive || telemetry.routeLifecycle === "Holding") {
+      holdingTicks += 1;
+    }
     if (telemetry.status === "Arrived") {
       ticksToArrival = telemetry.tick;
       break;
@@ -373,23 +474,37 @@ export const runAutopilotProvingGroundCourse = (
 
   const telemetry = executor.getTelemetry();
   const finalShip = loop.getShip();
+  const simulatedSeconds = simulatedSecondsForTick(telemetry.tick);
   const base = {
     courseId: course.id as AutopilotProvingGroundCourseId,
     label: course.label,
+    category: course.category,
+    catalogSpeedProfile: course.speedProfile,
     profile: speedProfile.id,
     expectedOutcome: course.expectedOutcome,
     ticksToArrival,
     tick: telemetry.tick,
+    simulatedSeconds,
+    targetDistance: round4(initialDistance),
+    distanceMeters: course.distanceMeters,
+    averageSpeed: averageSpeedFor(initialDistance, simulatedSeconds),
     peakSpeed: round4(peakSpeed),
     finalSpeed: round4(magnitude(finalShip.velocity)),
     finalDistance: round4(distance(finalShip.position, plan.target.position)),
     minObstacleClearance: round4(minObstacleClearance),
     fuelUsed: round4(Math.max(0, initialFuel - finalShip.fuel.current)),
+    fuelReserveRemaining: round4(finalShip.fuel.current - finalShip.fuel.reserve),
     arrivalPhase: telemetry.arrivalPhase ?? "None",
     status: telemetry.status,
     terminalSpeedLimit: telemetry.terminalSpeedLimit ?? null,
     planHashBefore: plan.planHash,
     planHashAfter: telemetry.planHash ?? telemetry.completedPlanHash ?? null,
+    completedPlanHash: telemetry.completedPlanHash ?? null,
+    routeLifecycle: telemetry.routeLifecycle ?? null,
+    terminalCaptureTicks,
+    holdingTicks,
+    stationKeepingActive: telemetry.stationKeepingActive === true,
+    holdingActive: telemetry.terminalHoldingActive === true,
     replanRequired: telemetry.replanRequired,
     planner: plan.planner,
     segmentKinds: plan.segments.map((segment) => segment.kind),

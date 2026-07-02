@@ -296,6 +296,22 @@ export type AutopilotCourseExpectedOutcome = "Pass" | "KnownStress" | "ExpectedF
 
 export type AutopilotCourseClassification = AutopilotCourseExpectedOutcome | "Fail";
 
+export type AutopilotCourseCategory =
+  | "DirectShort"
+  | "DirectMedium"
+  | "DirectLong"
+  | "DirectExtreme"
+  | "LateralInitialVelocity"
+  | "HighInitialSpeed"
+  | "LowAuthorityTerminal"
+  | "LowFuelExpectedFail"
+  | "NoMainThrusterExpectedFail"
+  | "NoAuthorityExpectedFail"
+  | "OffRouteDisturbanceExpectedFail"
+  | "TerminalOverspeedExpectedFail"
+  | "ObstacleSingle"
+  | "ObstacleStress";
+
 export interface AutopilotCourseAcceptance {
   readonly maxFinalDistance: number;
   readonly maxFinalSpeed: number;
@@ -309,6 +325,11 @@ export interface AutopilotCourseAcceptance {
 export interface AutopilotProvingGroundCourse {
   readonly id: string;
   readonly label: string;
+  readonly category: AutopilotCourseCategory;
+  /** Straight-line distance from initial ship position to target in metres, rounded for catalog/evidence summaries. */
+  readonly distanceMeters: number;
+  /** Default evidence profile for this row; callers may still override it explicitly. */
+  readonly speedProfile: AutopilotSpeedProfileId;
   readonly initialShip: ShipState;
   readonly target: TargetDescriptor;
   readonly obstacles: readonly ObstacleDescriptor[];
@@ -317,7 +338,8 @@ export interface AutopilotProvingGroundCourse {
   readonly planner?: RoutePlan["planner"];
   readonly disturbance?: {
     readonly tick: number;
-    readonly positionOffset: Vec3;
+    readonly positionOffset?: Vec3;
+    readonly velocityOffset?: Vec3;
   };
   readonly notes?: readonly string[];
 }

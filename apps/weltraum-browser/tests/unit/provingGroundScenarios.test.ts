@@ -179,7 +179,7 @@ describe("browser proving-ground scenario matrix", () => {
   });
 
   it("defines the browser-native proving-ground v2 course catalog", () => {
-    expect(autopilotProvingGroundCourses.map((course) => course.id)).toEqual([
+    expect(autopilotProvingGroundCourses.map((course) => course.id)).toEqual(expect.arrayContaining([
       "direct-long",
       "s-curve-obstacles",
       "narrow-corridor",
@@ -191,7 +191,8 @@ describe("browser proving-ground scenario matrix", () => {
       "low-authority-terminal",
       "low-fuel-long-route",
       "off-route-disturbance-midcourse"
-    ]);
+    ]));
+    expect(autopilotProvingGroundCourses.length).toBeGreaterThanOrEqual(20);
     expect(autopilotProvingGroundCourses.every((course) => course.target.arrivalEnvelope.stopBehavior === "StopWithinEnvelope")).toBe(true);
     expect(autopilotProvingGroundCourses.every((course) => course.target.arrivalEnvelope.terminalSpeed === 0.5)).toBe(true);
   });
@@ -199,8 +200,8 @@ describe("browser proving-ground scenario matrix", () => {
   it("runs the v2 proving-ground matrix without treating KnownStress or ExpectedFail as suite failures", () => {
     const results = runAutopilotProvingGroundMatrix("Balanced");
 
-    expect(results).toHaveLength(11);
-    expect(Object.fromEntries(results.map((result) => [result.courseId, result.classification]))).toEqual({
+    expect(results).toHaveLength(autopilotProvingGroundCourses.length);
+    expect(Object.fromEntries(results.map((result) => [result.courseId, result.classification]))).toMatchObject({
       "direct-long": "Pass",
       "s-curve-obstacles": "KnownStress",
       "narrow-corridor": "KnownStress",
@@ -211,17 +212,40 @@ describe("browser proving-ground scenario matrix", () => {
       "lateral-initial-velocity": "Pass",
       "low-authority-terminal": "Pass",
       "low-fuel-long-route": "ExpectedFail",
-      "off-route-disturbance-midcourse": "ExpectedFail"
+      "off-route-disturbance-midcourse": "ExpectedFail",
+      "direct-short-stop": "Pass",
+      "direct-medium-stop": "Pass",
+      "direct-long-stop": "Pass",
+      "direct-very-long-stop": "Pass",
+      "single-blocking-obstacle-long": "Pass",
+      "no-main-thrusters-negative": "ExpectedFail",
+      "no-autopilot-authority-negative": "ExpectedFail",
+      "off-route-fail-closed": "ExpectedFail"
     });
+    const unexpectedClassifications = results.filter((result) => result.classification !== result.expectedOutcome);
+    expect(
+      unexpectedClassifications.map((result) => ({ courseId: result.courseId, expectedOutcome: result.expectedOutcome, classification: result.classification, notes: result.notes })),
+      "every catalog row should classify exactly as declared"
+    ).toEqual([]);
     expect(results.every((result) => result.planHashBefore === result.planHashAfter || result.planHashBefore === null)).toBe(true);
     for (const result of results) {
       expect(result.profile).toBe("Balanced");
+      expect(typeof result.category).toBe("string");
+      expect(["Safe", "Balanced", "Fast"]).toContain(result.catalogSpeedProfile);
+      expect(result.distanceMeters).toBe(Math.round(result.targetDistance));
+      expect(typeof result.simulatedSeconds).toBe("number");
+      expect(typeof result.averageSpeed).toBe("number");
       expect(typeof result.peakSpeed).toBe("number");
       expect(typeof result.finalSpeed).toBe("number");
       expect(typeof result.finalDistance).toBe("number");
       expect(typeof result.minObstacleClearance).toBe("number");
       expect(typeof result.fuelUsed).toBe("number");
+      expect(typeof result.fuelReserveRemaining).toBe("number");
       expect(typeof result.arrivalPhase).toBe("string");
+      expect(typeof result.terminalCaptureTicks).toBe("number");
+      expect(typeof result.holdingTicks).toBe("number");
+      expect(typeof result.stationKeepingActive).toBe("boolean");
+      expect(typeof result.holdingActive).toBe("boolean");
       expect(Array.isArray(result.notes)).toBe(true);
       expect(result.notes.join(" ")).toContain("closest sampled ship position");
     }
@@ -257,6 +281,8 @@ describe("browser proving-ground scenario matrix", () => {
     expect(result.classification).toBe("KnownStress");
     expect(result.notes.join(" ")).toContain("one-obstacle");
     expect(result.planHashAfter).toBe(result.planHashBefore);
+    expect(result.replanRequired).toBe(false);
+    expect(result.status).toBe("Arrived");
   });
 
   it("fails ExpectedFail classification when the expected failure signal or reason is absent", () => {
@@ -292,10 +318,13 @@ describe("browser proving-ground scenario matrix", () => {
       finalSpeed: course.acceptance.maxFinalSpeed + 0.1
     });
     const planHashEvaluation = evaluateAutopilotProvingGroundCourseResult(course, { ...result, planHashAfter: `${result.planHashBefore ?? "plan"}-changed` });
+    const replanEvaluation = evaluateAutopilotProvingGroundCourseResult(course, { ...result, replanRequired: true });
 
     expect(terminalGateEvaluation.classification).toBe("Fail");
     expect(terminalGateEvaluation.notes.join(" ")).toContain("Arrived final speed");
     expect(planHashEvaluation.classification).toBe("Fail");
     expect(planHashEvaluation.notes.join(" ")).toContain("Locked plan hash changed");
+    expect(replanEvaluation.classification).toBe("Fail");
+    expect(replanEvaluation.notes.join(" ")).toContain("Unexpected replanRequired");
   });
 });
