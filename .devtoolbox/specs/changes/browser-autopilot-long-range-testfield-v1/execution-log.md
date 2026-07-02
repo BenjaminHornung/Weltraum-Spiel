@@ -71,3 +71,19 @@
 - Moved the long-range Playwright evidence owner to `apps/weltraum-browser/tests/e2e/autopilot-proving-ground-long-range.spec.ts` and updated generated Markdown to name that spec.
 - Trimmed `autopilot-proving-ground-v2.spec.ts` back to a compatibility smoke that asserts baseline v2 IDs plus expanded catalog IDs/count without generating long-range evidence artifacts.
 - Focused E2E passed with Chrome fallback: `npx.cmd playwright test tests/e2e/autopilot-proving-ground-v2.spec.ts tests/e2e/autopilot-proving-ground-long-range.spec.ts --project=chromium` (3/3 tests).
+
+## 2026-07-02 Fast 2500m settled-evidence recovery
+
+- Manual execution id: `manual-fast-2500m-settled-evidence-2026-07-02-recovery`.
+- Recovery worktree: `C:\IFI_SourceCode\Temp\WeltraumSpiel\.worktrees\Weltraum-Browser-IFIWELTRAUM-000-browser-autopilot-long-range-testfield-v1-settled-nosmudge`.
+- Recovery branch: `recovery/browser-autopilot-long-range-settled-evidence-v1-nosmudge` at long-range commit `89fc09061025c2ac44e767606e008234e4654be0`.
+- Previous profile-only approach stopped/escalated: first-arrival Fast 2500m speed could not be tuned to `<= 0.45` without changing first-arrival semantics or ordering, so the approved follow-up is settled-evidence only.
+- Scope guardrails: no `Assets/**`, no Unity, no LFS smudge/pull, no commit/push, and no product/runtime arrival behavior changes.
+- Implemented runner/evidence split: existing `finalSpeed`, `finalDistance`, `tick`, `simulatedSeconds`, and `ticksToArrival` remain first-`Arrived` metrics; new `settledSpeed`, `settledDistance`, and `settlingTicks` report a bounded 30-tick post-arrival holding window.
+- Exact 2500m speed-profile evidence after focused E2E regeneration:
+  - Safe: `ticksToArrival=6471`, `simulatedSeconds=215.7`, `finalSpeed=0.4967`, `settledSpeed=0.3597`, `settledDistance=1.1088`, `settlingTicks=30`, `terminalSpeedLimit=0.5`, `classification=Pass`, `replanRequired=false`, `planHashBefore=22afedd7`, `planHashAfter=22afedd7`, `completedPlanHash=22afedd7`, `failureReasonCodes=[]`, `invalidationReasons=[]`.
+  - Balanced: `ticksToArrival=4428`, `simulatedSeconds=147.6`, `finalSpeed=0.4958`, `settledSpeed=0.359`, `settledDistance=1.1069`, `settlingTicks=30`, `terminalSpeedLimit=0.5`, `classification=Pass`, `replanRequired=false`, `planHashBefore=7f5c1f03`, `planHashAfter=7f5c1f03`, `completedPlanHash=7f5c1f03`, `failureReasonCodes=[]`, `invalidationReasons=[]`.
+  - Fast: `ticksToArrival=3691`, `simulatedSeconds=123.0333`, `finalSpeed=0.4998`, `settledSpeed=0.3619`, `settledDistance=1.1158`, `settlingTicks=30`, `terminalSpeedLimit=0.5`, `classification=Pass`, `replanRequired=false`, `planHashBefore=acb63fa7`, `planHashAfter=acb63fa7`, `completedPlanHash=acb63fa7`, `failureReasonCodes=[]`, `invalidationReasons=[]`.
+- Verification passed from `apps/weltraum-browser`: `npm run test -- --run tests/unit/autopilotSpeedProfiles.test.ts tests/unit/autopilotCourseMetrics.test.ts` (5 tests), `npx tsc -p tsconfig.json --noEmit`, Chrome-fallback `npx playwright test tests/e2e/autopilot-proving-ground-long-range.spec.ts --project=chromium` (2/2), `npm run test` (118 tests), and `npm run build`.
+- Repository checks passed: `git status --short -- Assets` returned clean and `git diff --check` reported no whitespace errors.
+- Regenerated evidence files: long-range Markdown, summary JSON, speed-profile JSON, and the four long-range PNG screenshots under `apps/weltraum-browser/evidence/`.

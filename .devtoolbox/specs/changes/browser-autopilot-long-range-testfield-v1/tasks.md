@@ -59,3 +59,13 @@
   - Verification command/scenario: run the prescribed verification suite for the implemented slice before any handoff.
   - Report-back format: verification summary, review result, and Git status.
   - Stopping rule: stop once the implementation is verified and ready for handoff.
+
+- [x] **Follow-up fix: Fast 2500m settled evidence**
+  - Objective: remove the brittle Fast 2500m evidence margin by adding deterministic settled/holding metrics while preserving first-arrival runtime semantics.
+  - Exact files/search targets: `apps/weltraum-browser/src/test-harness/scenarioRunner.ts`; `apps/weltraum-browser/tests/unit/autopilotSpeedProfiles.test.ts`; optional `apps/weltraum-browser/tests/unit/autopilotCourseMetrics.test.ts`; `apps/weltraum-browser/tests/e2e/autopilot-proving-ground-long-range.spec.ts`; long-range evidence JSON/Markdown outputs.
+  - Acceptance criteria: `finalSpeed` remains the first `Arrived` speed and stays under the real terminal-speed gate (`<= 0.5`); runner and evidence emit `settledSpeed`, `settledDistance`, and `settlingTicks`; Fast 2500m settled speed is `<= 0.45`; Safe/Balanced/Fast 2500m rows still pass/arrive; Fast is no slower than Balanced at first arrival; stable plan hash/no silent replan/no failure or invalidation signals remain intact for pass rows.
+  - Implementation guidance: previous profile-only tuning was stopped/escalated because it could not reduce first-arrival Fast 2500m below `0.45` without changing semantics; add settled evidence only, with a bounded post-arrival stepping window and no runtime/product arrival behavior changes.
+  - Required skills/MCPs: `devtoolbox-specs-execution`, `verification-before-completion`; DevToolbox MCP unavailable for this recovery worktree, so use direct artifact fallback.
+  - Verification command/scenario: run focused unit tests, TypeScript no-emit, focused Chrome-fallback long-range E2E, `git status --short -- Assets`, and `git diff --check` from the recovery worktree/app paths.
+  - Report-back format: changed files, exact Safe/Balanced/Fast 2500m first-arrival and settled metrics, regenerated evidence paths, verification results, and unverified items.
+  - Stopping rule: stop if post-arrival stepping requires product/runtime executor changes, if Fast 2500m cannot settle to `<= 0.45` in the bounded window, if `Assets/**` would need to change, or if unrelated failures require broader scope.

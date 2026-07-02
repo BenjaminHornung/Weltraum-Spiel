@@ -153,6 +153,12 @@ export interface AutopilotProvingGroundCourseResult {
   readonly peakSpeed: number;
   readonly finalSpeed: number;
   readonly finalDistance: number;
+  /** Speed after the deterministic post-arrival holding evidence window. */
+  readonly settledSpeed: number;
+  /** Target distance after the deterministic post-arrival holding evidence window. */
+  readonly settledDistance: number;
+  /** Post-arrival ticks simulated for settled/holding evidence. */
+  readonly settlingTicks: number;
   readonly minObstacleClearance: number;
   readonly fuelUsed: number;
   readonly fuelReserveRemaining: number;
@@ -187,6 +193,15 @@ const clearanceAtPosition = (position: { readonly x: number; readonly y: number;
 const round4 = (value: number): number => Number(value.toFixed(4));
 
 const fixedDeltaSeconds = 1 / 30;
+const settledEvidenceTicks = 30;
+
+type AutopilotTelemetrySnapshot = ReturnType<AutopilotExecutor["getTelemetry"]>;
+
+const captureTelemetrySnapshot = (telemetry: AutopilotTelemetrySnapshot): AutopilotTelemetrySnapshot => ({
+  ...telemetry,
+  failureReasonCodes: [...telemetry.failureReasonCodes],
+  invalidationReasons: [...telemetry.invalidationReasons]
+});
 
 const simulatedSecondsForTick = (tick: number): number => round4(Math.max(0, tick) * fixedDeltaSeconds);
 
@@ -232,6 +247,9 @@ const collectHardInvariantViolations = (
     ["averageSpeed", result.averageSpeed],
     ["finalSpeed", result.finalSpeed],
     ["finalDistance", result.finalDistance],
+    ["settledSpeed", result.settledSpeed],
+    ["settledDistance", result.settledDistance],
+    ["settlingTicks", result.settlingTicks],
     ["minObstacleClearance", result.minObstacleClearance],
     ["fuelUsed", result.fuelUsed],
     ["fuelReserveRemaining", result.fuelReserveRemaining],
@@ -399,6 +417,9 @@ export const runAutopilotProvingGroundCourse = (
       peakSpeed: round4(magnitude(course.initialShip.velocity)),
       finalSpeed: round4(magnitude(course.initialShip.velocity)),
       finalDistance: round4(distance(course.initialShip.position, course.target.position)),
+      settledSpeed: round4(magnitude(course.initialShip.velocity)),
+      settledDistance: round4(distance(course.initialShip.position, course.target.position)),
+      settlingTicks: 0,
       minObstacleClearance: round4(clearanceAtPosition(course.initialShip.position, course.obstacles)),
       fuelUsed: 0,
       fuelReserveRemaining: round4(course.initialShip.fuel.current - course.initialShip.fuel.reserve),
@@ -431,6 +452,8 @@ export const runAutopilotProvingGroundCourse = (
   let ticksToArrival: number | null = null;
   let terminalCaptureTicks = 0;
   let holdingTicks = 0;
+  let firstArrivalTelemetry: AutopilotTelemetrySnapshot | null = null;
+  let firstArrivalShip: typeof course.initialShip | null = null;
 
   for (let i = 0; i < course.acceptance.maxTicks; i += 1) {
     if (course.disturbance && loop.getTick() === course.disturbance.tick) {
@@ -465,6 +488,8 @@ export const runAutopilotProvingGroundCourse = (
     }
     if (telemetry.status === "Arrived") {
       ticksToArrival = telemetry.tick;
+      firstArrivalTelemetry = captureTelemetrySnapshot(telemetry);
+      firstArrivalShip = currentShip;
       break;
     }
     if (terminalStatuses.has(telemetry.status)) {
@@ -472,8 +497,23 @@ export const runAutopilotProvingGroundCourse = (
     }
   }
 
-  const telemetry = executor.getTelemetry();
-  const finalShip = loop.getShip();
+  const telemetry = firstArrivalTelemetry ?? captureTelemetrySnapshot(executor.getTelemetry());
+  const finalShip = firstArrivalShip ?? loop.getShip();
+  let settledShip = finalShip;
+  let settlingTicks = 0;
+
+  if (firstArrivalTelemetry?.status === "Arrived") {
+    for (let i = 0; i < settledEvidenceTicks; i += 1) {
+      loop.step(1);
+      settlingTicks += 1;
+      settledShip = loop.getShip();
+      const settledTelemetry = executor.getTelemetry();
+      if (settledTelemetry.status !== "Arrived" && terminalStatuses.has(settledTelemetry.status)) {
+        break;
+      }
+    }
+  }
+
   const simulatedSeconds = simulatedSecondsForTick(telemetry.tick);
   const base = {
     courseId: course.id as AutopilotProvingGroundCourseId,
@@ -491,6 +531,9 @@ export const runAutopilotProvingGroundCourse = (
     peakSpeed: round4(peakSpeed),
     finalSpeed: round4(magnitude(finalShip.velocity)),
     finalDistance: round4(distance(finalShip.position, plan.target.position)),
+    settledSpeed: round4(magnitude(settledShip.velocity)),
+    settledDistance: round4(distance(settledShip.position, plan.target.position)),
+    settlingTicks,
     minObstacleClearance: round4(minObstacleClearance),
     fuelUsed: round4(Math.max(0, initialFuel - finalShip.fuel.current)),
     fuelReserveRemaining: round4(finalShip.fuel.current - finalShip.fuel.reserve),

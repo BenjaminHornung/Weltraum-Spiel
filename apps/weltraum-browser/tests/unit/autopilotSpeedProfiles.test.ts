@@ -12,6 +12,9 @@ const comparableMetrics = (courseId: "direct-long-stop" | "direct-medium-stop" |
     peakSpeed: result.peakSpeed,
     finalSpeed: result.finalSpeed,
     finalDistance: result.finalDistance,
+    settledSpeed: result.settledSpeed,
+    settledDistance: result.settledDistance,
+    settlingTicks: result.settlingTicks,
     planHashBefore: result.planHashBefore,
     planHashAfter: result.planHashAfter
   };
@@ -51,8 +54,17 @@ describe("autopilot speed profile course metrics", () => {
       expect(result.status, result.profile).toBe("Arrived");
       expect(result.finalDistance, result.profile).toBeLessThanOrEqual(3);
       expect(result.finalSpeed, result.profile).toBeLessThanOrEqual(result.terminalSpeedLimit ?? 0.5);
+      expect(result.settlingTicks, result.profile).toBe(30);
+      expect(result.settledSpeed, result.profile).toBeLessThanOrEqual(result.finalSpeed);
     }
 
+    expect(fast.finalSpeed).toBeLessThanOrEqual(fast.terminalSpeedLimit ?? 0.5);
+    expect(fast.settledSpeed).toBeLessThanOrEqual(0.45);
+    expect(fast.failureReasonCodes).toHaveLength(0);
+    expect(fast.invalidationReasons).toHaveLength(0);
+    expect(fast.replanRequired).toBe(false);
+    expect(fast.planHashAfter).toBe(fast.planHashBefore);
+    expect(fast.completedPlanHash).toBe(fast.planHashBefore);
     expect(balanced.ticksToArrival as number).toBeLessThan(safe.ticksToArrival as number);
     expect(fast.ticksToArrival as number).toBeLessThanOrEqual(balanced.ticksToArrival as number);
     expect(balanced.averageSpeed).toBeGreaterThan(safe.averageSpeed);
