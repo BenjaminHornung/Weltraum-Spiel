@@ -42,6 +42,8 @@ Required first matrix:
 
 Gate: each scenario emits JSON, Markdown summary and screenshot/visual evidence where rendering is relevant.
 
+Proving-ground v2 follow-up: the browser app now adds an additive course catalog with 11 local courses and controlled `Safe`/`Balanced`/`Fast` speed profiles. The v2 harness records profile, ticks-to-arrival, peak speed, terminal speed, obstacle clearance, fuel used, arrival phase, plan hashes, replan signal and classification. `KnownStress` courses are kept as honest current-planner limit evidence for multi-obstacle/corridor pressure, while `ExpectedFail` courses cover low-fuel and off-route disturbance contracts.
+
 ## M3: Flight Authority / Fuel / Braking
 
 Status: v1 implemented in the browser mainline app. `ShipMass`, `FuelState`, `AuthorityState`, `BrakingReserve` and `FlightSnapshot` are explicit TypeScript contracts consumed by executor, telemetry, HUD, TestBridge and scenario evidence. Cargo mass remains a stubbed field only.
@@ -100,7 +102,7 @@ Implemented in this v1 slice:
 
 Deferred M4 follow-up points:
 
-- player-selectable route modes (fastest, fuel saver, balanced, safe debug),
+- player-facing route-mode UI (the browser proving-ground has internal `Safe`/`Balanced`/`Fast` profiles for evidence, but no player UI selector yet),
 - richer multi-candidate selection beyond the current deterministic skeleton,
 - landing/docking/cargo/orbit runtime behavior,
 - full frame-aware target descriptors for non-local-space routes.

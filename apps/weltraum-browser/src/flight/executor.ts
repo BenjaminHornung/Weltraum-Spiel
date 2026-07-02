@@ -244,7 +244,8 @@ export class AutopilotExecutor {
       : this.waypointTurnSpeed(plan, segment);
     const distanceToSegmentEnd = magnitude(targetOffset);
     const brakingDistance = Math.max(0, (speed * speed - terminalSpeed * terminalSpeed) / (2 * accelerationLimit));
-    const terminalBrakeMargin = segmentEnvelopeRadius + speed * 0.2;
+    const brakeMarginMultiplier = isTerminalSegment ? 1 : (segment.brakeMarginMultiplier ?? 1);
+    const terminalBrakeMargin = segmentEnvelopeRadius + speed * 0.2 * brakeMarginMultiplier;
     const needsBraking = speed > terminalSpeed + 0.25 && distanceToSegmentEnd <= brakingDistance + terminalBrakeMargin;
     const publishTerminalTelemetry = isTerminalSegment && isTerminalTelemetryEnvelope(arrivalEnvelope);
 

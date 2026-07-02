@@ -4,8 +4,8 @@
     "label": "Direct local arrival",
     "tick": 1,
     "planner": "DirectLocal",
-    "planHashBefore": "5f08bde5",
-    "planHashAfter": "5f08bde5",
+    "planHashBefore": "c9c73252",
+    "planHashAfter": "c9c73252",
     "segmentKinds": [
       "Direct"
     ],
@@ -92,8 +92,8 @@
     "label": "Obstacle avoidance route",
     "tick": 8,
     "planner": "ObstacleAvoidanceLocal",
-    "planHashBefore": "df85c8b3",
-    "planHashAfter": "df85c8b3",
+    "planHashBefore": "ac10fd6a",
+    "planHashAfter": "ac10fd6a",
     "segmentKinds": [
       "Avoidance",
       "Terminal"
@@ -182,8 +182,8 @@
     "label": "Insufficient fuel",
     "tick": 1,
     "planner": "DirectLocal",
-    "planHashBefore": "7f3d0233",
-    "planHashAfter": "7f3d0233",
+    "planHashBefore": "b9365474",
+    "planHashAfter": "b9365474",
     "segmentKinds": [
       "Direct"
     ],
@@ -290,8 +290,8 @@
     "label": "No authority",
     "tick": 1,
     "planner": "DirectLocal",
-    "planHashBefore": "e40c019b",
-    "planHashAfter": "e40c019b",
+    "planHashBefore": "58e3f84c",
+    "planHashAfter": "58e3f84c",
     "segmentKinds": [
       "Direct"
     ],
@@ -397,8 +397,8 @@
     "label": "No main thrusters",
     "tick": 1,
     "planner": "DirectLocal",
-    "planHashBefore": "7a7e62a7",
-    "planHashAfter": "7a7e62a7",
+    "planHashBefore": "7e93e248",
+    "planHashAfter": "7e93e248",
     "segmentKinds": [
       "Direct"
     ],
@@ -504,8 +504,8 @@
     "label": "Brake reserve insufficient",
     "tick": 1,
     "planner": "DirectLocal",
-    "planHashBefore": "6b5b9450",
-    "planHashAfter": "6b5b9450",
+    "planHashBefore": "f1ddf643",
+    "planHashAfter": "f1ddf643",
     "segmentKinds": [
       "Direct"
     ],
@@ -615,8 +615,8 @@
     "label": "Off-route divergence",
     "tick": 1,
     "planner": "DirectLocal",
-    "planHashBefore": "bf7a1dba",
-    "planHashAfter": "bf7a1dba",
+    "planHashBefore": "1c63341f",
+    "planHashAfter": "1c63341f",
     "segmentKinds": [
       "Direct"
     ],
@@ -708,8 +708,8 @@
     "label": "Locked plan hash preservation",
     "tick": 12,
     "planner": "DirectLocal",
-    "planHashBefore": "bf7a1dba",
-    "planHashAfter": "bf7a1dba",
+    "planHashBefore": "1c63341f",
+    "planHashAfter": "1c63341f",
     "segmentKinds": [
       "Direct"
     ],
@@ -797,8 +797,8 @@
     "label": "Explicit replan-required signal",
     "tick": 1,
     "planner": "ObstacleAvoidanceLocal",
-    "planHashBefore": "df85c8b3",
-    "planHashAfter": "df85c8b3",
+    "planHashBefore": "ac10fd6a",
+    "planHashAfter": "ac10fd6a",
     "segmentKinds": [
       "Avoidance",
       "Terminal"

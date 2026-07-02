@@ -1,12 +1,18 @@
 import { createBrowserRuntime } from "../runtime/browserRuntime";
 import type { BrowserRuntimeController } from "../runtime/browserRuntime";
 import type { RenderDebugSnapshot } from "../render/three/debugScene";
-import { runScenario, scenarioCatalog } from "./scenarioRunner";
+import { autopilotProvingGroundCourses, runAutopilotProvingGroundCourse, runAutopilotProvingGroundMatrix, runScenario, scenarioCatalog } from "./scenarioRunner";
+import type { AutopilotSpeedProfileId } from "../core";
+import type { AutopilotProvingGroundCourseId } from "../world/autopilotProvingGroundCourses";
+import type { AutopilotProvingGroundCourseResult } from "./scenarioRunner";
 import type { ScenarioId, ScenarioResult } from "./scenarios";
 
 export interface TestBridge extends BrowserRuntimeController {
   listScenarios(): readonly ScenarioId[];
   runScenario(id: ScenarioId): ScenarioResult;
+  listAutopilotProvingGroundCourses(): readonly AutopilotProvingGroundCourseId[];
+  runAutopilotProvingGroundCourse(id: AutopilotProvingGroundCourseId, profile?: AutopilotSpeedProfileId): AutopilotProvingGroundCourseResult;
+  runAutopilotProvingGroundMatrix(profile?: AutopilotSpeedProfileId): readonly AutopilotProvingGroundCourseResult[];
   getRenderSnapshot?: () => RenderDebugSnapshot;
 }
 
@@ -27,6 +33,15 @@ export const createTestBridge = (
     },
     runScenario(id: ScenarioId) {
       return runScenario(id);
+    },
+    listAutopilotProvingGroundCourses() {
+      return autopilotProvingGroundCourses.map((course) => course.id as AutopilotProvingGroundCourseId);
+    },
+    runAutopilotProvingGroundCourse(id: AutopilotProvingGroundCourseId, profile: AutopilotSpeedProfileId = "Balanced") {
+      return runAutopilotProvingGroundCourse(id, profile);
+    },
+    runAutopilotProvingGroundMatrix(profile: AutopilotSpeedProfileId = "Balanced") {
+      return runAutopilotProvingGroundMatrix(profile);
     }
   };
 

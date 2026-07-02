@@ -1,7 +1,8 @@
 ﻿import { planHashFor } from "../core/hash";
+import { autopilotSpeedProfileFor } from "../core/types";
 import type { LocalPlanner, ObstacleDescriptor, PlannerContext, RoutePlan, RoutePlanningResult, RouteSegment } from "../core/types";
-import { cross, distance, dot, magnitude, normalize, sub, vec3 } from "../core/vector";
-import { arrivalRadiusForTarget, createRouteCandidate, planOrThrow, rejectionFor, validatePlanningContext, validateRouteSegments } from "./validation";
+import { cross, distance, dot, magnitude, normalize, scale, sub, vec3 } from "../core/vector";
+import { arrivalEnvelopeForTarget, arrivalRadiusForTarget, createRouteCandidate, planOrThrow, rejectionFor, validatePlanningContext, validateRouteSegments } from "./validation";
 
 const withHash = (plan: Omit<RoutePlan, "planHash">): RoutePlan => ({
   ...plan,
@@ -9,6 +10,51 @@ const withHash = (plan: Omit<RoutePlan, "planHash">): RoutePlan => ({
 });
 
 const routeId = (planner: RoutePlan["planner"], targetId: string, tick: number): string => `${planner}:${targetId}:${tick}`;
+
+const directSegmentsFor = (context: PlannerContext): readonly RouteSegment[] => {
+  const profile = autopilotSpeedProfileFor(context.speedProfile);
+  const arrivalRadius = arrivalRadiusForTarget(context.target);
+  const arrivalEnvelope = arrivalEnvelopeForTarget(context.target);
+  const routeOffset = sub(context.target.position, context.ship.position);
+  const routeDistance = magnitude(routeOffset);
+  const approachDistance = Math.max(arrivalRadius * 6, 18);
+
+  if (context.speedProfile !== undefined && arrivalEnvelope?.stopBehavior === "StopWithinEnvelope" && routeDistance > approachDistance + Math.max(2, arrivalRadius)) {
+    const routeDirection = normalize(routeOffset);
+    const terminalStart = sub(context.target.position, scale(routeDirection, approachDistance));
+    return [
+      {
+        id: "direct-0",
+        kind: "Direct",
+        start: context.ship.position,
+        end: terminalStart,
+        desiredSpeed: profile.directDesiredSpeed,
+        clearanceRadius: Math.max(4, arrivalRadius),
+        brakeMarginMultiplier: profile.brakeMarginMultiplier
+      },
+      {
+        id: "direct-terminal-0",
+        kind: "Terminal",
+        start: terminalStart,
+        end: context.target.position,
+        desiredSpeed: profile.terminalApproachDesiredSpeed,
+        clearanceRadius: arrivalRadius
+      }
+    ];
+  }
+
+  return [
+    {
+      id: "direct-0",
+      kind: "Direct",
+      start: context.ship.position,
+      end: context.target.position,
+      desiredSpeed: profile.directDesiredSpeed,
+      clearanceRadius: arrivalRadius,
+      brakeMarginMultiplier: profile.brakeMarginMultiplier
+    }
+  ];
+};
 
 export class DirectLocalPlanner implements LocalPlanner {
   readonly kind = "DirectLocal" as const;
@@ -19,16 +65,9 @@ export class DirectLocalPlanner implements LocalPlanner {
       return rejectionFor(this.kind, context, validation);
     }
 
-    const segment: RouteSegment = {
-      id: "direct-0",
-      kind: "Direct",
-      start: context.ship.position,
-      end: context.target.position,
-      desiredSpeed: 18,
-      clearanceRadius: arrivalRadiusForTarget(context.target)
-    };
-    const routeValidation = validateRouteSegments(context, [segment], validation);
-    const candidate = createRouteCandidate(this.kind, context, [segment], routeValidation);
+    const segments = directSegmentsFor(context);
+    const routeValidation = validateRouteSegments(context, segments, validation);
+    const candidate = createRouteCandidate(this.kind, context, segments, routeValidation);
     if (!routeValidation.ok) {
       return rejectionFor(this.kind, context, routeValidation, candidate);
     }
@@ -101,18 +140,12 @@ export class ObstacleAvoidanceLocalPlanner implements LocalPlanner {
       return rejectionFor(this.kind, context, validation);
     }
 
+    const profile = autopilotSpeedProfileFor(context.speedProfile);
     const obstacle = selectFirstBlockingObstacle(context);
     if (!obstacle) {
-      const directSegment: RouteSegment = {
-        id: "direct-0",
-        kind: "Direct",
-        start: context.ship.position,
-        end: context.target.position,
-        desiredSpeed: 18,
-        clearanceRadius: arrivalRadiusForTarget(context.target)
-      };
-      const routeValidation = validateRouteSegments(context, [directSegment], validation);
-      const candidate = createRouteCandidate(this.kind, context, [directSegment], routeValidation);
+      const directSegments = directSegmentsFor(context);
+      const routeValidation = validateRouteSegments(context, directSegments, validation);
+      const candidate = createRouteCandidate(this.kind, context, directSegments, routeValidation);
       if (!routeValidation.ok) {
         return rejectionFor(this.kind, context, routeValidation, candidate);
       }
@@ -136,15 +169,16 @@ export class ObstacleAvoidanceLocalPlanner implements LocalPlanner {
         kind: "Avoidance",
         start: context.ship.position,
         end: waypoint,
-        desiredSpeed: 14,
-        clearanceRadius: obstacle.radius + obstacle.padding
+        desiredSpeed: profile.avoidanceDesiredSpeed,
+        clearanceRadius: obstacle.radius + obstacle.padding,
+        brakeMarginMultiplier: profile.brakeMarginMultiplier
       },
       {
         id: `avoid-${obstacle.id}-1`,
         kind: "Terminal",
         start: waypoint,
         end: context.target.position,
-        desiredSpeed: 12,
+        desiredSpeed: profile.terminalApproachDesiredSpeed,
         clearanceRadius: arrivalRadiusForTarget(context.target)
       }
     ];

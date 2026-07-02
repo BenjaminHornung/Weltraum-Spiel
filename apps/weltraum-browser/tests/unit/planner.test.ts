@@ -1,5 +1,5 @@
 ﻿import { describe, expect, it } from "vitest";
-import { DirectLocalPlanner, ObstacleAvoidanceLocalPlanner, createShipStateV2, vec3 } from "../../src/core";
+import { DirectLocalPlanner, ObstacleAvoidanceLocalPlanner, autopilotSpeedProfileFor, autopilotSpeedProfileIds, createShipStateV2, vec3 } from "../../src/core";
 import type { ShipState, TargetDescriptor } from "../../src/core";
 
 const ship: ShipState = createShipStateV2({
@@ -155,5 +155,36 @@ describe("local planners", () => {
 
     expect(directPlan.segments.at(-1)?.end).toEqual(directPlan.target.position);
     expect(avoidancePlan.segments.at(-1)?.end).toEqual(avoidancePlan.target.position);
+  });
+
+  it("defines deterministic speed profile settings without changing acceleration authority", () => {
+    expect(autopilotSpeedProfileIds).toEqual(["Safe", "Balanced", "Fast"]);
+    expect(autopilotSpeedProfileFor("Safe")).toEqual(expect.objectContaining({ directDesiredSpeed: 12, brakeMarginMultiplier: 1.25 }));
+    expect(autopilotSpeedProfileFor("Balanced")).toEqual(expect.objectContaining({ directDesiredSpeed: 18, brakeMarginMultiplier: 1 }));
+    expect(autopilotSpeedProfileFor("Fast")).toEqual(expect.objectContaining({ directDesiredSpeed: 22, brakeMarginMultiplier: 0.9 }));
+    expect(autopilotSpeedProfileFor(undefined).id).toBe("Balanced");
+  });
+
+  it("applies speed profiles to route segment desired speeds and non-terminal brake margins", () => {
+    const planner = new ObstacleAvoidanceLocalPlanner();
+    const context = {
+      tick: 4,
+      ship,
+      target,
+      obstacles: [{ id: "rock", center: vec3(45, 0, 0), radius: 10, padding: 5 }]
+    };
+    const safePlan = planner.plan({ ...context, speedProfile: "Safe" });
+    const balancedPlan = planner.plan({ ...context, speedProfile: "Balanced" });
+    const fastPlan = planner.plan({ ...context, speedProfile: "Fast" });
+
+    expect(safePlan.segments.map((segment) => segment.desiredSpeed)).toEqual([10, 8]);
+    expect(balancedPlan.segments.map((segment) => segment.desiredSpeed)).toEqual([14, 12]);
+    expect(fastPlan.segments.map((segment) => segment.desiredSpeed)).toEqual([18, 15]);
+    expect(safePlan.segments[0].brakeMarginMultiplier).toBe(1.25);
+    expect(balancedPlan.segments[0].brakeMarginMultiplier).toBe(1);
+    expect(fastPlan.segments[0].brakeMarginMultiplier).toBe(0.9);
+    expect(safePlan.segments[1].brakeMarginMultiplier).toBeUndefined();
+    expect(safePlan.planHash).toBe(new ObstacleAvoidanceLocalPlanner().plan({ ...context, speedProfile: "Safe" }).planHash);
+    expect(safePlan.planHash).not.toBe(balancedPlan.planHash);
   });
 });
