@@ -11,7 +11,63 @@ export interface StatusHudWarningChipViewModel {
   readonly action: string;
 }
 
+export interface StatusHudLabelValueViewModel {
+  readonly label: string;
+  readonly value: string;
+}
+
+export interface FlightStatusPanelViewModel {
+  readonly title: "Flight Status";
+  readonly mode: StatusHudLabelValueViewModel;
+  readonly controlMode: StatusHudLabelValueViewModel;
+  readonly throttle: StatusHudLabelValueViewModel;
+  readonly speed: StatusHudLabelValueViewModel;
+  readonly rcsSas: StatusHudLabelValueViewModel;
+  readonly fuel: StatusHudLabelValueViewModel;
+  readonly shipVisual: StatusHudLabelValueViewModel;
+}
+
+export interface NavigationPanelViewModel {
+  readonly title: "Navigation";
+  readonly plan: StatusHudLabelValueViewModel;
+  readonly route: StatusHudLabelValueViewModel;
+  readonly target: StatusHudLabelValueViewModel;
+  readonly distance: StatusHudLabelValueViewModel;
+  readonly radar: StatusHudLabelValueViewModel;
+  readonly targetOptions: readonly StatusHudTargetOptionViewModel[];
+}
+
+export interface WarningPanelViewModel {
+  readonly title: "Warnings";
+  readonly summary: string;
+  readonly chips: readonly StatusHudWarningChipViewModel[];
+  readonly cockpitMessage: string;
+}
+
+export interface ActionPanelViewModel {
+  readonly title: "Route Action";
+  readonly primaryLabel: string;
+  readonly primaryCommandEnabled: boolean;
+  readonly primaryDisabledReason: string | null;
+  readonly secondaryLabel: string;
+  readonly stateLabel: string;
+}
+
+export interface DebugPanelViewModel {
+  readonly title: "Diagnostics";
+  readonly cameraMode: StatusHudLabelValueViewModel;
+  readonly controlModeEffect: StatusHudLabelValueViewModel;
+  readonly authority: StatusHudLabelValueViewModel;
+  readonly braking: StatusHudLabelValueViewModel;
+  readonly help: StatusHudLabelValueViewModel;
+}
+
 export interface StatusHudViewModel {
+  readonly flightStatus: FlightStatusPanelViewModel;
+  readonly navigation: NavigationPanelViewModel;
+  readonly warnings: WarningPanelViewModel;
+  readonly actions: ActionPanelViewModel;
+  readonly debug: DebugPanelViewModel;
   readonly mode: string;
   readonly controlMode: string;
   readonly controlModeEffectState: string;
@@ -96,6 +152,54 @@ const formatVisualSourceLine = (visualSource: ShipVisualSourceSnapshot | undefin
   return "Ship visual: Loading Demo Scout GLB";
 };
 
+const createActionPanel = (telemetry: TelemetrySnapshot, warningChips: readonly StatusHudWarningChipViewModel[]): ActionPanelViewModel => {
+  const hasLockedRoute = Boolean(telemetry.executor.planHash || telemetry.lockedPlan);
+  const hasReadyPreview = telemetry.routePreview?.state === "Ready" && Boolean(telemetry.routePreview.plan);
+  const hasCriticalWarning = warningChips.some((chip) => chip.severity === "Critical");
+
+  if (hasLockedRoute) {
+    return {
+      title: "Route Action",
+      primaryLabel: "Route locked",
+      primaryCommandEnabled: false,
+      primaryDisabledReason: "Cancel the current route before engaging another route.",
+      secondaryLabel: "Cancel autopilot",
+      stateLabel: telemetry.executor.status === "Arrived" ? "Holding at target" : "Cancel current route before selecting another target"
+    };
+  }
+
+  if (hasCriticalWarning) {
+    return {
+      title: "Route Action",
+      primaryLabel: "Hold route",
+      primaryCommandEnabled: false,
+      primaryDisabledReason: "Resolve critical ship warnings before engaging autopilot.",
+      secondaryLabel: "Cancel autopilot",
+      stateLabel: "Resolve warnings before engaging"
+    };
+  }
+
+  if (hasReadyPreview) {
+    return {
+      title: "Route Action",
+      primaryLabel: "Engage route",
+      primaryCommandEnabled: true,
+      primaryDisabledReason: null,
+      secondaryLabel: "Cancel autopilot",
+      stateLabel: "Ready"
+    };
+  }
+
+  return {
+    title: "Route Action",
+    primaryLabel: "Hold route",
+    primaryCommandEnabled: false,
+    primaryDisabledReason: "Select a target and wait for a valid route preview before engaging autopilot.",
+    secondaryLabel: "Cancel autopilot",
+    stateLabel: "Select a target first"
+  };
+};
+
 const mainThrustBlockedLabel = (reasons: readonly string[]): string => {
   if (reasons.includes("MainThrustModeBlocked")) {
     return "main thrust mode-blocked";
@@ -177,7 +281,7 @@ export const createStatusHudViewModel = (telemetry: TelemetrySnapshot, visualSou
   const routeState = telemetry.lockedPlan
     ? `${snapshot.routeValid ? "locked route valid" : "locked route invalid"}${telemetry.executor.replanRequired ? " / new plan required" : ""}`
     : telemetry.executor.stationKeepingActive && telemetry.executor.completedPlanHash
-      ? `holding complete route ${telemetry.executor.completedPlanHash}; new route ready`
+      ? "holding at target; new route ready"
     : preview?.state === "Ready" && preview.plan
       ? `preview ready: ${preview.plan.segments.length} leg${preview.plan.segments.length === 1 ? "" : "s"}`
       : (preview?.playerMessage ?? "select a target to preview a route");
@@ -199,32 +303,94 @@ export const createStatusHudViewModel = (telemetry: TelemetrySnapshot, visualSou
     telemetry.ship.actuatorTelemetry.sasCorrectionActive ? "SAS correction" : null
   ].filter((item): item is string => Boolean(item));
 
+  const planState = telemetry.executor.planHash
+    ? "Plan locked"
+    : telemetry.executor.completedPlanHash
+      ? "Plan completed"
+      : routePlan
+        ? "Route preview ready"
+        : "No active plan";
+  const targetState = target ? `${target.label} [${target.kind}]` : "none selected";
+  const distanceState = target && displayedDistance !== undefined ? formatMeters(displayedDistance) : "n/a";
+  const radarState = target && routePlan
+    ? `local contact ${target.label}: ${routePlan.segments.length} route leg${routePlan.segments.length === 1 ? "" : "s"}, terminal ${formatMeters(routePlan.score.distance)}`
+    : "no route contact";
+  const autopilotState = `${statusCatalog[telemetry.executor.status] ?? "Autopilot status unknown"}${telemetry.executor.replanRequired ? " / new plan required" : ""}`;
+  const fuelState = `${snapshot.fuel.status}: ${snapshot.fuel.current}/${snapshot.fuel.capacity} kg (reserve ${snapshot.fuel.reserve})`;
+  const authorityState = `AP ${snapshot.authority.autopilotAvailable ? "ready" : "blocked"}, main ${snapshot.authority.mainThrustersAvailable ? "ready" : "blocked"}, RCS ${snapshot.authority.rcsAvailable ? "ready" : "blocked"}, SAS ${snapshot.authority.sasAvailable ? "ready" : "blocked"}`;
+  const brakingState = snapshot.brakingReserve.canBrake
+    ? `ready: ${snapshot.brakingReserve.availableDeltaV} m/s available`
+    : "blocked: check warnings";
+  const warningSummary = warningChips.length > 0 ? warningChips.map((chip) => chip.label).join(", ") : "none";
+  const runtimeMessage = telemetry.runtimeMessage ?? preview?.playerMessage ?? "ready";
+  const visualSourceLine = formatVisualSourceLine(visualSource);
+  const throttleState = `${Math.round(telemetry.ship.throttle * 100)}%${telemetry.ship.actuatorTelemetry.mainThrustActive ? " / main burn" : ""}`;
+  const velocityState = formatSpeed(telemetry.ship.velocity);
+  const rcsSasState = `RCS ${rcsEnabled ? "on" : "off"}, SAS ${sasEnabled ? "on" : "off"}${activeActuators.length > 0 ? ` / ${activeActuators.join(", ")}` : ""}`;
+  const helpHint = "Desktop keyboard/mouse manual flight: W/S pitch, A/D yaw, Q/E roll, Shift/Ctrl throttle, X cut, Y/Z full, R RCS, T SAS, CapsLock mode, H/N translate, V camera, RMB+wheel inspect. Mobile: target selection and autopilot only in this slice.";
+  const controlModeEffectState = formatControlModeEffectState(telemetry);
+  const actionPanel = createActionPanel(telemetry, warningChips);
+  const flightStatus: FlightStatusPanelViewModel = {
+    title: "Flight Status",
+    mode: { label: "Mode", value: snapshot.authority.mode },
+    controlMode: { label: "Control Mode", value: controlMode },
+    throttle: { label: "Throttle", value: throttleState },
+    speed: { label: "Speed", value: velocityState },
+    rcsSas: { label: "RCS / SAS", value: rcsSasState },
+    fuel: { label: "Fuel", value: fuelState },
+    shipVisual: { label: "Ship Visual", value: visualSourceLine }
+  };
+  const navigation: NavigationPanelViewModel = {
+    title: "Navigation",
+    plan: { label: "Plan", value: planState },
+    route: { label: "Route", value: routeState },
+    target: { label: "Target", value: targetState },
+    distance: { label: "Distance", value: distanceState },
+    radar: { label: "Radar", value: radarState },
+    targetOptions
+  };
+  const warnings: WarningPanelViewModel = {
+    title: "Warnings",
+    summary: warningSummary,
+    chips: warningChips,
+    cockpitMessage: runtimeMessage
+  };
+  const debug: DebugPanelViewModel = {
+    title: "Diagnostics",
+    cameraMode: { label: "Camera", value: cameraMode },
+    controlModeEffect: { label: "Control Effect", value: controlModeEffectState },
+    authority: { label: "Authority", value: authorityState },
+    braking: { label: "Brake Reserve", value: brakingState },
+    help: { label: "Help", value: helpHint }
+  };
+
   return {
+    flightStatus,
+    navigation,
+    warnings,
+    actions: actionPanel,
+    debug,
     mode: snapshot.authority.mode,
     controlMode,
-    controlModeEffectState: formatControlModeEffectState(telemetry),
+    controlModeEffectState,
     cameraMode,
-    throttleState: `${Math.round(telemetry.ship.throttle * 100)}%${telemetry.ship.actuatorTelemetry.mainThrustActive ? " / main burn" : ""}`,
-    velocityState: formatSpeed(telemetry.ship.velocity),
-    rcsSasState: `RCS ${rcsEnabled ? "on" : "off"}, SAS ${sasEnabled ? "on" : "off"}${activeActuators.length > 0 ? ` / ${activeActuators.join(", ")}` : ""}`,
-    helpHint: "Desktop keyboard/mouse manual flight: W/S pitch, A/D yaw, Q/E roll, Shift/Ctrl throttle, X cut, Y/Z full, R RCS, T SAS, CapsLock mode, H/N translate, V camera, RMB+wheel inspect. Mobile: target selection and autopilot only in this slice.",
-    planState: telemetry.executor.planHash ? "Plan locked" : telemetry.executor.completedPlanHash ? `Completed ${telemetry.executor.completedPlanHash}` : routePlan ? "Route preview ready" : "No active plan",
+    throttleState,
+    velocityState,
+    rcsSasState,
+    helpHint,
+    planState,
     routeState,
-    target: target ? `${target.label} [${target.kind}]` : "none selected",
-    distance: target && displayedDistance !== undefined ? formatMeters(displayedDistance) : "n/a",
-    radarState: target && routePlan
-      ? `local contact ${target.label}: ${routePlan.segments.length} route leg${routePlan.segments.length === 1 ? "" : "s"}, terminal ${formatMeters(routePlan.score.distance)}`
-      : "no route contact",
-    autopilotState: `${statusCatalog[telemetry.executor.status] ?? "Autopilot status unknown"}${telemetry.executor.replanRequired ? " / new plan required" : ""}`,
-    fuelState: `${snapshot.fuel.status}: ${snapshot.fuel.current}/${snapshot.fuel.capacity} kg (reserve ${snapshot.fuel.reserve})`,
-    authorityState: `AP ${snapshot.authority.autopilotAvailable ? "ready" : "blocked"}, main ${snapshot.authority.mainThrustersAvailable ? "ready" : "blocked"}, RCS ${snapshot.authority.rcsAvailable ? "ready" : "blocked"}, SAS ${snapshot.authority.sasAvailable ? "ready" : "blocked"}`,
-    brakingState: snapshot.brakingReserve.canBrake
-    ? `ready: ${snapshot.brakingReserve.availableDeltaV} m/s available`
-    : "blocked: check warnings",
-    warningSummary: warningChips.length > 0 ? warningChips.map((chip) => chip.label).join(", ") : "none",
+    target: targetState,
+    distance: distanceState,
+    radarState,
+    autopilotState,
+    fuelState,
+    authorityState,
+    brakingState,
+    warningSummary,
     warningChips,
-    runtimeMessage: telemetry.runtimeMessage ?? preview?.playerMessage ?? "ready",
-    visualSourceLine: formatVisualSourceLine(visualSource),
+    runtimeMessage,
+    visualSourceLine,
     targetOptions
   };
 };
@@ -301,39 +467,73 @@ const renderTargetOptions = (viewModel: StatusHudViewModel, sink: StatusHudComma
   element.replaceChildren(...buttons);
 };
 
-const bindCommand = (id: string, command: BrowserRuntimeCommand, sink: StatusHudCommandSink | undefined): void => {
-  const element = document.getElementById(id) as (HTMLElement & { onclick: ((event: MouseEvent) => void) | null }) | null;
+const bindCommand = (
+  id: string,
+  command: BrowserRuntimeCommand,
+  sink: StatusHudCommandSink | undefined,
+  options: { readonly enabled?: boolean; readonly disabledReason?: string | null } = {}
+): void => {
+  const element = document.getElementById(id) as (HTMLElement & {
+    disabled?: boolean;
+    onclick: ((event: MouseEvent) => void) | null;
+    title?: string;
+  }) | null;
   if (!element) {
     return;
   }
 
+  const isCommandEnabled = options.enabled ?? true;
+  if ("disabled" in element) {
+    element.disabled = !isCommandEnabled;
+  }
+  element.setAttribute("aria-disabled", String(!isCommandEnabled));
+  if (!isCommandEnabled) {
+    if (options.disabledReason) {
+      element.setAttribute("title", options.disabledReason);
+      element.title = options.disabledReason;
+    } else {
+      element.removeAttribute("title");
+      element.title = "";
+    }
+    element.onclick = null;
+    return;
+  }
+
+  element.removeAttribute("title");
+  element.title = "";
   element.onclick = sink ? () => void sink.dispatch(command) : null;
 };
 
 export const renderStatusHud = (telemetry: TelemetrySnapshot, commandSink?: StatusHudCommandSink, visualSource?: ShipVisualSourceSnapshot): void => {
   const viewModel = createStatusHudViewModel(telemetry, visualSource);
-  setText("plan-hash", viewModel.planState);
-  setText("mode", viewModel.mode);
-  setText("control-mode", viewModel.controlMode);
-  setText("control-mode-effect", viewModel.controlModeEffectState);
-  setText("camera-mode", viewModel.cameraMode);
-  setText("throttle-status", viewModel.throttleState);
-  setText("velocity-status", viewModel.velocityState);
-  setText("rcs-sas-status", viewModel.rcsSasState);
-  setText("help-hint", viewModel.helpHint);
+  setText("plan-hash", viewModel.navigation.plan.value);
+  setText("mode", viewModel.flightStatus.mode.value);
+  setText("control-mode", viewModel.flightStatus.controlMode.value);
+  setText("control-mode-effect", viewModel.debug.controlModeEffect.value);
+  setText("camera-mode", viewModel.debug.cameraMode.value);
+  setText("throttle-status", viewModel.flightStatus.throttle.value);
+  setText("velocity-status", viewModel.flightStatus.speed.value);
+  setText("rcs-sas-status", viewModel.flightStatus.rcsSas.value);
+  setText("help-hint", viewModel.debug.help.value);
   setText("status", viewModel.autopilotState);
-  setText("route-status", viewModel.routeState);
-  setText("target-status", viewModel.target);
-  setText("target-distance", viewModel.distance);
-  setText("radar-status", viewModel.radarState);
-  setText("fuel-status", viewModel.fuelState);
-  setText("authority-status", viewModel.authorityState);
-  setText("brake-status", viewModel.brakingState);
-  setText("failure-reasons", viewModel.warningSummary);
-  setText("runtime-message", viewModel.runtimeMessage);
-  setText("ship-visual-source", viewModel.visualSourceLine);
+  setText("route-status", viewModel.navigation.route.value);
+  setText("target-status", viewModel.navigation.target.value);
+  setText("target-distance", viewModel.navigation.distance.value);
+  setText("radar-status", viewModel.navigation.radar.value);
+  setText("fuel-status", viewModel.flightStatus.fuel.value);
+  setText("authority-status", viewModel.debug.authority.value);
+  setText("brake-status", viewModel.debug.braking.value);
+  setText("failure-reasons", viewModel.warnings.summary);
+  setText("runtime-message", viewModel.warnings.cockpitMessage);
+  setText("ship-visual-source", viewModel.flightStatus.shipVisual.value);
+  setText("autopilot-action-state", viewModel.actions.stateLabel);
   renderWarningChips(viewModel);
   renderTargetOptions(viewModel, commandSink);
-  bindCommand("engage-autopilot", { type: "EngageAutopilot", planner: "ObstacleAvoidanceLocal" }, commandSink);
+  setText("engage-autopilot", viewModel.actions.primaryLabel);
+  setText("cancel-autopilot", viewModel.actions.secondaryLabel);
+  bindCommand("engage-autopilot", { type: "EngageAutopilot", planner: "ObstacleAvoidanceLocal" }, commandSink, {
+    enabled: viewModel.actions.primaryCommandEnabled,
+    disabledReason: viewModel.actions.primaryDisabledReason
+  });
   bindCommand("cancel-autopilot", { type: "CancelAutopilot" }, commandSink);
 };

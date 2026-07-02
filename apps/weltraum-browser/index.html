@@ -8,56 +8,86 @@
   <body>
     <main id="app">
       <canvas id="debug-scene" aria-label="Flight viewport"></canvas>
-      <section id="hud" data-testid="basic-hud">
-        <div class="label">Plan</div>
-        <div id="plan-hash">pending</div>
-        <div class="label">Mode</div>
-        <div id="mode">unknown</div>
-        <div class="label">Control Mode</div>
-        <div id="control-mode" data-testid="control-mode">unknown</div>
-        <div class="label">Control Effect</div>
-        <div id="control-mode-effect" data-testid="control-mode-effect">mode effect pending</div>
+      <div class="hud-center-safe-area" aria-hidden="true"></div>
+      <section id="flight-hud" data-testid="basic-hud" aria-label="Flight HUD">
+        <header id="hud-top-strip" class="hud-strip hud-strip--top">
+          <div class="hud-readout hud-readout--mode">
+            <div class="label">Mode</div>
+            <div id="mode">unknown</div>
+          </div>
+          <div class="hud-readout">
+            <div class="label">Autopilot</div>
+            <div id="status" aria-live="polite" data-testid="autopilot-active">booting</div>
+          </div>
+          <div class="hud-readout">
+            <div class="label">Ship Visual</div>
+            <div id="ship-visual-source" data-testid="ship-visual-source">Ship visual: loading</div>
+          </div>
+        </header>
+
+        <aside id="hud-left-panel" class="hud-panel hud-panel--left" aria-label="Ship status">
+          <div class="hud-panel-title">Ship Status</div>
+          <div class="label">Control Mode</div>
+          <div id="control-mode" data-testid="control-mode">unknown</div>
+          <div class="label">Throttle</div>
+          <div id="throttle-status" data-testid="throttle-status">0%</div>
+          <div class="label">Speed</div>
+          <div id="velocity-status" data-testid="velocity-status">0 m/s</div>
+          <div class="label">RCS / SAS</div>
+          <div id="rcs-sas-status" data-testid="rcs-sas-status">RCS on, SAS on</div>
+          <div class="label">Fuel</div>
+          <div id="fuel-status">unknown</div>
+        </aside>
+
+        <aside id="hud-right-panel" class="hud-panel hud-panel--right" aria-label="Navigation">
+          <div class="hud-panel-title">Navigation</div>
+          <div class="label">Plan</div>
+          <div id="plan-hash">pending</div>
+          <div class="label">Route</div>
+          <div id="route-status">unknown</div>
+          <div class="label">Selected Target</div>
+          <div id="target-status" data-testid="selected-target">none selected</div>
+          <div class="label">Distance</div>
+          <div id="target-distance">n/a</div>
+          <div class="label">Radar Status</div>
+          <div id="radar-status" data-testid="radar-status">no route contact</div>
+          <div class="label">Target Selection</div>
+          <div id="target-options" class="target-option-strip" data-testid="target-options">loading</div>
+        </aside>
+
+        <footer id="hud-bottom-strip" class="hud-strip hud-strip--bottom" aria-label="Warnings and route action">
+          <div class="hud-bottom-group hud-bottom-group--warnings">
+            <div class="label">Warnings</div>
+            <div id="warning-chips" class="warning-chip-strip" aria-live="polite" data-testid="warning-state">none</div>
+            <div class="label">Summary</div>
+            <div id="failure-reasons">none</div>
+          </div>
+          <div class="hud-bottom-group hud-bottom-group--message">
+            <div class="label">Cockpit Message</div>
+            <div id="runtime-message" data-testid="runtime-message">ready</div>
+          </div>
+          <div class="hud-bottom-group hud-bottom-group--actions">
+            <div class="label">Route Action</div>
+            <div id="autopilot-action-state" class="action-state">Ready</div>
+            <div class="hud-actions">
+              <button id="engage-autopilot" type="button">Engage route</button>
+              <button id="cancel-autopilot" type="button">Cancel autopilot</button>
+            </div>
+          </div>
+        </footer>
+      </section>
+
+      <section id="debug-hud" aria-label="Diagnostic HUD" hidden>
         <div class="label">Camera</div>
         <div id="camera-mode" data-testid="camera-mode">ChaseLocked</div>
-        <div class="label">Ship Visual</div>
-        <div id="ship-visual-source" data-testid="ship-visual-source">Ship visual: loading</div>
-        <div class="label">Throttle</div>
-        <div id="throttle-status" data-testid="throttle-status">0%</div>
-        <div class="label">Velocity</div>
-        <div id="velocity-status" data-testid="velocity-status">0 m/s</div>
-        <div class="label">RCS / SAS</div>
-        <div id="rcs-sas-status" data-testid="rcs-sas-status">RCS on, SAS on</div>
-        <div class="label">Status</div>
-        <div id="status" aria-live="polite" data-testid="autopilot-active">booting</div>
-        <div class="label">Route</div>
-        <div id="route-status">unknown</div>
-        <div class="label">Selected Target</div>
-        <div id="target-status" data-testid="selected-target">none selected</div>
-        <div class="label">Target Selection</div>
-        <div id="target-options" class="target-option-strip" data-testid="target-options">loading</div>
-        <div class="label">Distance</div>
-        <div id="target-distance">n/a</div>
-        <div class="label">Radar Status</div>
-        <div id="radar-status" data-testid="radar-status">no route contact</div>
-        <div class="label">Fuel</div>
-        <div id="fuel-status">unknown</div>
+        <div class="label">Control Effect</div>
+        <div id="control-mode-effect" data-testid="control-mode-effect">mode effect pending</div>
         <div class="label">Authority</div>
         <div id="authority-status">unknown</div>
         <div class="label">Brake Reserve</div>
         <div id="brake-status">unknown</div>
-        <div class="label">Warnings</div>
-        <div id="warning-chips" class="warning-chip-strip" aria-live="polite" data-testid="warning-state">none</div>
-        <div class="label">Warning Summary</div>
-        <div id="failure-reasons">none</div>
-        <div class="label">Cockpit Message</div>
-        <div id="runtime-message" data-testid="runtime-message">ready</div>
         <div class="label">Help</div>
         <div id="help-hint" data-testid="help-hint">Desktop keyboard/mouse manual flight. Mobile: target selection and autopilot only.</div>
-        <div class="label">Autopilot Commands</div>
-        <div class="hud-actions">
-          <button id="engage-autopilot" type="button">Engage route</button>
-          <button id="cancel-autopilot" type="button">Cancel autopilot</button>
-        </div>
       </section>
     </main>
     <script type="module" src="/src/main.ts"></script>

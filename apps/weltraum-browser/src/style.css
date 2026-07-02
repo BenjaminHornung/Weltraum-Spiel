@@ -16,19 +16,92 @@ body,
   height: 100vh;
 }
 
-#hud {
+#flight-hud {
+  --hud-edge: clamp(10px, 1.5vw, 18px);
+  --hud-panel-width: clamp(240px, 24vw, 330px);
+  --hud-bottom-height: clamp(118px, 18vh, 168px);
+  --hud-panel-bg: rgba(8, 11, 18, 0.74);
+  --hud-border: rgba(116, 144, 186, 0.45);
+  --hud-cyan: #70dfff;
+  --hud-green: #80ff9f;
+  --hud-amber: #ffd166;
+  pointer-events: none;
   position: fixed;
-  top: 16px;
-  left: 16px;
-  width: min(360px, calc(100vw - 32px));
-  padding: 12px;
-  border: 1px solid rgba(116, 144, 186, 0.45);
+  inset: 0;
+  z-index: 10;
+}
+
+.hud-center-safe-area {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: min(46vw, 680px);
+  height: min(48vh, 470px);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  background: transparent;
+  border: 0;
+  z-index: 1;
+}
+
+.hud-strip,
+.hud-panel {
+  pointer-events: auto;
+  border: 1px solid var(--hud-border);
   border-radius: 8px;
-  background: rgba(8, 11, 18, 0.74);
+  background: var(--hud-panel-bg);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.36);
   backdrop-filter: blur(8px);
-  max-height: calc(100vh - 32px);
+}
+
+#hud-top-strip {
+  position: fixed;
+  top: var(--hud-edge);
+  left: 50%;
+  display: grid;
+  grid-template-columns: minmax(120px, 0.85fr) minmax(220px, 1.2fr) minmax(180px, 1fr);
+  gap: 14px;
+  width: min(760px, calc(100vw - (2 * var(--hud-edge))));
+  padding: 8px 12px;
+  transform: translateX(-50%);
+}
+
+.hud-panel {
+  position: fixed;
+  top: clamp(74px, 11vh, 116px);
+  width: var(--hud-panel-width);
+  max-height: calc(100vh - var(--hud-bottom-height) - 120px);
+  padding: 12px;
   overflow: auto;
+}
+
+#hud-left-panel {
+  left: var(--hud-edge);
+}
+
+#hud-right-panel {
+  right: var(--hud-edge);
+}
+
+#hud-bottom-strip {
+  position: fixed;
+  right: var(--hud-edge);
+  bottom: var(--hud-edge);
+  left: var(--hud-edge);
+  display: grid;
+  grid-template-columns: minmax(260px, 1.2fr) minmax(260px, 1fr) minmax(220px, 0.8fr);
+  gap: 14px;
+  min-height: 88px;
+  padding: 10px 12px;
+}
+
+.hud-panel-title {
+  margin-bottom: 8px;
+  color: var(--hud-cyan);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .label {
@@ -36,8 +109,14 @@ body,
   color: #8ea5c9;
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
+}
+
+.hud-readout .label,
+.hud-bottom-group .label:first-child,
+.hud-panel .label:first-of-type {
+  margin-top: 0;
 }
 
 #plan-hash,
@@ -59,12 +138,28 @@ body,
 #failure-reasons,
 #runtime-message,
 #help-hint,
-#target-options {
+#target-options,
+#ship-visual-source,
+#control-mode-effect,
+#autopilot-action-state {
   margin: 2px 0 0;
   color: #f7fbff;
   font-size: 12px;
   line-height: 1.35;
   overflow-wrap: anywhere;
+}
+
+#mode,
+#status,
+#target-status,
+#autopilot-action-state {
+  color: #f8ffff;
+  font-weight: 800;
+}
+
+#ship-visual-source,
+#radar-status {
+  color: #bfe9ff;
 }
 
 .warning-chip-strip {
@@ -121,25 +216,94 @@ body,
 .hud-actions button {
   border: 1px solid rgba(142, 165, 201, 0.55);
   border-radius: 6px;
-  padding: 4px 8px;
+  padding: 5px 10px;
   background: rgba(18, 29, 45, 0.88);
   color: #f7fbff;
   font: inherit;
   font-size: 12px;
 }
 
+.hud-actions button:first-child {
+  border-color: rgba(112, 223, 255, 0.7);
+}
+
+.hud-actions button:disabled,
+.hud-actions button[aria-disabled="true"] {
+  opacity: 0.58;
+  cursor: not-allowed;
+}
+
 .hud-actions button:focus-visible,
 .target-option:focus-visible {
-  outline: 2px solid #80ff9f;
+  outline: 2px solid var(--hud-green);
   outline-offset: 2px;
 }
 
-@media (max-width: 520px) {
-  #hud {
-    top: 8px;
-    left: 8px;
+#debug-hud[hidden] {
+  display: none;
+}
+
+@media (min-aspect-ratio: 18 / 9) {
+  #flight-hud {
+    --hud-panel-width: clamp(260px, 19vw, 340px);
+  }
+
+  #hud-top-strip {
+    width: min(860px, 64vw);
+  }
+}
+
+@media (max-aspect-ratio: 4 / 3) {
+  #flight-hud {
+    --hud-panel-width: min(260px, 29vw);
+  }
+
+  #hud-top-strip {
+    grid-template-columns: minmax(96px, 0.7fr) minmax(170px, 1fr) minmax(160px, 0.95fr);
+    gap: 10px;
+  }
+
+  #hud-bottom-strip {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .hud-bottom-group--message {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  #flight-hud {
+    --hud-edge: 8px;
+    --hud-panel-width: calc(30vw - 12px);
+    --hud-bottom-height: calc(30vh - 16px);
+  }
+
+  .hud-center-safe-area {
+    width: min(36vw, 280px);
+    height: min(40vh, 260px);
+  }
+
+  #hud-top-strip {
+    grid-template-columns: 1fr;
+    gap: 4px;
+    max-height: calc(30vh - 16px);
+    overflow: auto;
     width: calc(100vw - 16px);
-    max-height: calc(100vh - 16px);
-    padding: 10px;
+    padding: 8px 10px;
+  }
+
+  .hud-panel {
+    top: clamp(104px, 20vh, 132px);
+    max-height: max(72px, calc(70vh - 176px));
+    padding: 8px;
+    font-size: 11px;
+  }
+
+  #hud-bottom-strip {
+    grid-template-columns: 1fr;
+    min-height: 0;
+    max-height: calc(30vh - 16px);
+    overflow: auto;
   }
 }

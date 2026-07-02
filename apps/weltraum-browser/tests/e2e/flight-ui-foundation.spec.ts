@@ -1,0 +1,137 @@
+import { expect, test, type Page } from "@playwright/test";
+import { mkdir, writeFile } from "node:fs/promises";
+import path from "node:path";
+
+const evidenceDir = path.resolve(process.cwd(), "evidence");
+
+async function waitForBridgeAndVisual(page: Page) {
+  await page.waitForFunction(() => Boolean((window as any).TestBridge));
+  await page.waitForFunction(() => {
+    const snapshot = (window as any).TestBridge?.getRenderSnapshot?.();
+    return snapshot?.shipVisual?.visualSource?.state && snapshot.shipVisual.visualSource.state !== "Loading";
+  });
+}
+
+async function expectCenterSafeAreaClear(page: Page) {
+  const viewport = page.viewportSize();
+  expect(viewport, "Viewport must be known for HUD safe-area check").toBeTruthy();
+  const safeArea = await page.locator(".hud-center-safe-area").boundingBox();
+  expect(safeArea).toBeTruthy();
+  expect(safeArea!.width).toBeGreaterThan(viewport!.width <= 760 ? 260 : 280);
+  expect(safeArea!.height).toBeGreaterThan(220);
+  const safeRect = {
+    left: safeArea!.x,
+    right: safeArea!.x + safeArea!.width,
+    top: safeArea!.y,
+    bottom: safeArea!.y + safeArea!.height
+  };
+  const allowedOverlapArea = viewport!.width <= 760 ? 800 : Math.max(800, safeArea!.width * safeArea!.height * 0.04);
+
+  for (const selector of ["#hud-top-strip", "#hud-left-panel", "#hud-right-panel", "#hud-bottom-strip"]) {
+    const box = await page.locator(selector).boundingBox();
+    expect(box, `${selector} should exist for layout audit`).toBeTruthy();
+    const overlapX = Math.max(0, Math.min(box!.x + box!.width, safeRect.right) - Math.max(box!.x, safeRect.left));
+    const overlapY = Math.max(0, Math.min(box!.y + box!.height, safeRect.bottom) - Math.max(box!.y, safeRect.top));
+    const overlapArea = overlapX * overlapY;
+    expect(overlapArea, `${selector} overlaps center safe area`).toBeLessThan(allowedOverlapArea);
+  }
+}
+
+async function expectPlayerEdgeHudAvailable(page: Page) {
+  await expect(page.locator("#mode")).toBeVisible();
+  await expect(page.getByTestId("autopilot-active")).toBeVisible();
+  await expect(page.getByTestId("ship-visual-source")).toBeVisible();
+  await expect(page.locator("#hud-left-panel"), "Ship status panel remains player-visible").toBeVisible();
+  await expect(page.locator("#hud-right-panel"), "Navigation panel remains player-visible").toBeVisible();
+  await expect(page.locator("#warning-chips"), "Warnings remain player-visible").toBeVisible();
+  await expect(page.getByTestId("selected-target")).toContainText("Navigation Alpha");
+  await expect(page.getByTestId("autopilot-active")).toContainText("Autopilot standby");
+  await expect(page.getByTestId("ship-visual-source")).toContainText(/Ship visual: (Demo Scout GLB|Procedural fallback)/);
+}
+
+async function captureResponsive(page: Page, width: number, height: number, fileName: string) {
+  await page.setViewportSize({ width, height });
+  await page.goto("/?testBridge=1");
+  await waitForBridgeAndVisual(page);
+  await expect(page.getByTestId("basic-hud")).toBeVisible();
+  await expectPlayerEdgeHudAvailable(page);
+  await expectCenterSafeAreaClear(page);
+  await page.screenshot({ path: path.join(evidenceDir, fileName), fullPage: true });
+}
+
+test("default product URL exposes player HUD without TestBridge/debug text", async ({ page }) => {
+  await page.goto("/");
+  await page.waitForSelector("#debug-scene", { state: "visible" });
+  await expect(page.getByTestId("basic-hud")).toBeVisible();
+  await expect(page.getByTestId("basic-hud")).not.toContainText("TestBridge");
+  await expect(page.locator("body")).not.toContainText("TestBridge");
+  await expect(page.locator("#debug-hud")).toBeHidden();
+  await expect.poll(() => page.evaluate(() => "TestBridge" in window)).toBe(false);
+});
+
+test("flight HUD foundation keeps center clear, shows navigation, autopilot, warnings, and records evidence", async ({ page }) => {
+  await mkdir(evidenceDir, { recursive: true });
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.goto("/?testBridge=1");
+  await waitForBridgeAndVisual(page);
+
+  await expect(page.getByTestId("basic-hud")).toBeVisible();
+  await expect(page.locator("#flight-hud")).toBeVisible();
+  await expect(page.locator("#hud-top-strip")).toBeVisible();
+  await expect(page.locator("#hud-left-panel")).toBeVisible();
+  await expect(page.locator("#hud-right-panel")).toBeVisible();
+  await expect(page.locator("#hud-bottom-strip")).toBeVisible();
+  await expectPlayerEdgeHudAvailable(page);
+  await expect(page.getByTestId("selected-target")).toContainText("Navigation Alpha");
+  await expect(page.getByTestId("radar-status")).toContainText("local contact Navigation Alpha");
+  await expect(page.getByTestId("autopilot-active")).toContainText("Autopilot standby");
+  await expect(page.getByTestId("ship-visual-source")).toContainText(/Ship visual: (Demo Scout GLB|Procedural fallback)/);
+  await expect(page.getByTestId("velocity-status")).not.toContainText(/\(-?\d+(?:\.\d+)?,\s*-?\d+(?:\.\d+)?,\s*-?\d+(?:\.\d+)?\)/);
+  await expectCenterSafeAreaClear(page);
+  await page.screenshot({ path: path.join(evidenceDir, "flight-ui-foundation-1280x720.png"), fullPage: true });
+
+  await page.locator('[data-target-id="nav-beta"]').click();
+  await expect(page.getByTestId("selected-target")).toContainText("Navigation Beta");
+  await page.locator("#engage-autopilot").click();
+  await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().executor.status)).toBe("Executing");
+  await expect(page.getByTestId("autopilot-active")).toContainText("Autopilot executing");
+  await expect(page.locator("#autopilot-action-state")).toContainText(/Cancel|Holding/);
+  await expectCenterSafeAreaClear(page);
+  await page.screenshot({ path: path.join(evidenceDir, "flight-ui-autopilot-active-1280x720.png"), fullPage: true });
+
+  await page.goto("/?testBridge=1&flightCase=insufficient-fuel");
+  await waitForBridgeAndVisual(page);
+  const blockedStatusBeforeClick = await page.evaluate(() => (window as any).TestBridge.getTelemetry().executor.status);
+  await expect(page.locator("#engage-autopilot")).toBeDisabled();
+  await expect(page.locator("#engage-autopilot")).toHaveAttribute("aria-disabled", "true");
+  await expect(page.locator("#engage-autopilot")).toContainText("Hold route");
+  await expect(page.locator("#autopilot-action-state")).toContainText("Resolve warnings before engaging");
+  await page.locator("#engage-autopilot").evaluate((element) => (element as HTMLButtonElement).click());
+  await page.evaluate(() => (window as any).TestBridge.step(1));
+  await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().executor.status)).toBe(blockedStatusBeforeClick);
+  await expect(page.getByTestId("warning-state")).toContainText("Fuel insufficient");
+  await expect(page.locator("#failure-reasons")).not.toContainText("FuelInsufficient");
+  await expectCenterSafeAreaClear(page);
+  await page.screenshot({ path: path.join(evidenceDir, "flight-ui-fuel-warning-1280x720.png"), fullPage: true });
+
+  await captureResponsive(page, 1440, 900, "flight-ui-1440x900.png");
+  await captureResponsive(page, 1024, 768, "flight-ui-1024x768.png");
+  await captureResponsive(page, 760, 640, "flight-ui-760x640.png");
+  await captureResponsive(page, 1920, 800, "flight-ui-ultrawide-1920x800.png");
+
+  await writeFile(
+    path.join(evidenceDir, "browser-flight-ui-foundation-v1.md"),
+    [
+      "# Browser Flight UI Foundation v1 Evidence",
+      "",
+      "- Captured player HUD at 1280x720, 1440x900, 1024x768, narrow 760x640, and ultrawide 1920x800.",
+      "- Verified edge-panel layout with `.hud-center-safe-area` and bounding-box overlap checks.",
+      "- Verified selected target/navigation, autopilot executing state, fuel warning chips, concise ship visual line, and absence of raw fuel reason codes in player HUD.",
+      "- Verified 1024x768 and 760x640 keep Mode, Autopilot, Ship Visual, Ship Status, Navigation/Target, and Warnings player-visible without covering the center safe area.",
+      "- Verified blocked/critical warning state disables the primary route button instead of dispatching EngageAutopilot.",
+      "- Used `/?testBridge=1` only for controlled setup/evidence; default `/` was checked to keep TestBridge hidden.",
+      "- Note: post-arrival Hold/Ready evidence uses current executor lifecycle telemetry and player-facing HUD labels; no autopilot lifecycle logic was changed."
+    ].join("\n"),
+    "utf8"
+  );
+});

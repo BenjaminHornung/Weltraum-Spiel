@@ -114,6 +114,8 @@ Gate: plan determinism and no-silent-replan tests remain green while richer plan
 
 Status: v1 browser foundation implemented. The Basic HUD now consumes a `StatusHudViewModel` derived from telemetry/owner snapshots, exposes explicit runtime commands for autopilot engage/cancel actions, renders target/distance/route/replan/fuel/authority/warning state, and keeps TestBridge query-gated for E2E only.
 
+Flight UI foundation v1 follow-up: the browser HUD is now screenshot-informed by `docs/browser-mainline/ui-screenshot-audit.md` and the 38 tracked `docs/UI-Screenshots/*.png` references. The player HUD uses edge-only regions (`#hud-top-strip`, `#hud-left-panel`, `#hud-right-panel`, `#hud-bottom-strip`) inside `#flight-hud`, preserves `data-testid="basic-hud"`, and declares `.hud-center-safe-area` so ship/target/route visuals remain unobstructed. Player status, navigation, warning, route action, and concise ship-visual source are grouped as ViewModels; diagnostic/help/control-effect details stay separate in hidden `#debug-hud`, and TestBridge remains evidence-only behind `?testBridge=1`.
+
 Source paths:
 
 - `docs/ux/player-facing-status-authority-v1.md`
@@ -129,6 +131,13 @@ Intent:
 - Add route timeline and target context only as ViewModels/snapshots.
 
 Gate: browser evidence covers Basic HUD, selected target, autopilot active, warning state and debug hidden.
+
+Deferred M5 UI follow-up points:
+
+- full system map/navigation planner screen,
+- combat/weapon HUD beyond shared warning chrome,
+- station/outpost/economy/cargo/surface/builder screens,
+- richer autopilot lifecycle fields beyond current executor status/planHash-derived Ready/Hold/Cancel labels.
 
 ## M6: Low-Poly Open-World Runtime Foundation
 
