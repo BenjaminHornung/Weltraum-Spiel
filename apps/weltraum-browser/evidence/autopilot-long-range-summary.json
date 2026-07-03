@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
   "generatedAt": "2026-07-03T09:07:32.840Z",
+=======
+  "generatedAt": "2026-07-03T09:49:34.967Z",
+>>>>>>> feature/browser-flight-hud-polish-v1
   "evidenceOwner": "apps/weltraum-browser/tests/e2e/autopilot-proving-ground-v2.spec.ts",
   "evidenceTest": "browser autopilot proving-ground v2 records long-range evidence",
   "catalogCourseCount": 38,

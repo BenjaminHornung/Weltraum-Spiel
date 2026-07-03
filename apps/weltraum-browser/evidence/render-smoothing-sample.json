@@ -1,37 +1,37 @@
 {
   "renderSnapshot": {
     "shipPosition": {
-      "x": 89.37960316713354,
+      "x": 89.60826439529092,
       "y": 0,
-      "z": -0.610648792572777
+      "z": -0.8123836265897327
     },
     "usesInterpolatedPose": true,
-    "interpolationAlpha": 0.519,
+    "interpolationAlpha": 0.52,
     "truthShipPosition": {
-      "x": 89.4312,
+      "x": 89.6662,
       "y": 0,
-      "z": -0.6557
+      "z": -0.864
     },
     "renderedShipPosition": {
-      "x": 89.37960316713354,
+      "x": 89.60826439529092,
       "y": 0,
-      "z": -0.610648792572777
+      "z": -0.8123836265897327
     },
     "truthShipOrientation": {
       "x": 0,
-      "y": 0.997114,
+      "y": 0.995237,
       "z": 0,
-      "w": 0.075924
+      "w": 0.097484
     },
     "renderedShipOrientation": {
       "x": 0,
-      "y": 0.9974675766116755,
+      "y": 0.9957415968870532,
       "z": 0,
-      "w": 0.071122665926069
+      "w": 0.09218824344145778
     },
     "fixedStepCountThisFrame": 0,
-    "frameDeltaSeconds": 0.0167,
-    "cameraSmoothingAlpha": 0.23448,
+    "frameDeltaSeconds": 0.0166,
+    "cameraSmoothingAlpha": 0.233254,
     "targetPosition": {
       "x": 120,
       "y": 0,
@@ -44,7 +44,7 @@
     },
     "selectedTargetId": "nav-alpha",
     "selectedTargetLabel": "Navigation Alpha",
-    "routePreviewPlanHash": "322cf4c5",
+    "routePreviewPlanHash": "91a7941f",
     "routePreviewTargetPosition": {
       "x": 120,
       "y": 0,
@@ -53,14 +53,14 @@
     "routePreviewSegmentCount": 1,
     "targetVisible": true,
     "executorStatus": "Executing",
-    "distanceToTarget": 42.3738,
+    "distanceToTarget": 42.06,
     "arrivalRadius": 3,
-    "planHash": "322cf4c5",
+    "planHash": "91a7941f",
     "shipOrientation": {
       "x": 0,
-      "y": 0.9974675766116755,
+      "y": 0.9957415968870532,
       "z": 0,
-      "w": 0.071122665926069
+      "w": 0.09218824344145778
     },
     "shipVisual": {
       "descriptor": {
@@ -286,7 +286,7 @@
       },
       "vfx": {
         "mainThrustVisible": true,
-        "mainThrustScale": 1.728,
+        "mainThrustScale": 1.671,
         "mainEngineBinding": {
           "id": "main-engine-aft",
           "role": "mainEngine",
@@ -354,17 +354,17 @@
     "camera": {
       "mode": "ChaseLocked",
       "position": {
-        "x": 120.21005383176886,
-        "y": 14.1000000003392,
-        "z": 3.0475589397039218
+        "x": 120.25406871924454,
+        "y": 14.100000000017298,
+        "z": 4.056530427217415
       },
       "followTarget": {
-        "x": 90.56746292647331,
+        "x": 90.78786758194174,
         "y": 2.1,
-        "z": -0.4403866648365262
+        "z": -0.5920740216170698
       },
       "followsShip": true,
-      "distanceToShip": 34.0985,
+      "distanceToShip": 34.0835,
       "anchorId": "chase-camera-anchor",
       "anchorSource": "ManifestFallback",
       "anchorLocalPosition": {
@@ -372,7 +372,7 @@
         "y": 2.1,
         "z": 0
       },
-      "smoothingAlpha": 0.23448
+      "smoothingAlpha": 0.233254
     },
     "lowPolyInstanceBatch": {
       "id": "debug-low-poly-asteroids",
@@ -391,73 +391,9 @@
   },
   "frameJumpSample": {
     "sampleCount": 32,
-    "maxRenderedShipJump": 0.13432366240124952,
-    "maxCameraJump": 0.41904594576599513,
+    "maxRenderedShipJump": 0.1360476156386055,
+    "maxCameraJump": 0.4240979110331428,
     "samples": [
-      {
-        "executorStatus": "Executing",
-        "interpolationAlpha": 0.526,
-        "fixedStepCountThisFrame": 0,
-        "frameDeltaSeconds": 0.0167,
-        "renderedShipPosition": {
-          "x": 90.43628087196947,
-          "y": 0,
-          "z": -1.563264546151975
-        },
-        "cameraPosition": {
-          "x": 120.04652052403809,
-          "y": 14.10000000000474,
-          "z": 7.631794079972349
-        }
-      },
-      {
-        "executorStatus": "Executing",
-        "interpolationAlpha": 0.027,
-        "fixedStepCountThisFrame": 1,
-        "frameDeltaSeconds": 0.0167,
-        "renderedShipPosition": {
-          "x": 90.51301318826569,
-          "y": 0,
-          "z": -1.6337867773654462
-        },
-        "cameraPosition": {
-          "x": 119.99727866390923,
-          "y": 14.100000000003629,
-          "z": 7.958059950623388
-        }
-      },
-      {
-        "executorStatus": "Executing",
-        "interpolationAlpha": 0.525,
-        "fixedStepCountThisFrame": 0,
-        "frameDeltaSeconds": 0.0166,
-        "renderedShipPosition": {
-          "x": 90.5913272529178,
-          "y": 0,
-          "z": -1.7059952367919973
-        },
-        "cameraPosition": {
-          "x": 119.94232912823827,
-          "y": 14.100000000002781,
-          "z": 8.285838253266698
-        }
-      },
-      {
-        "executorStatus": "Executing",
-        "interpolationAlpha": 0.029,
-        "fixedStepCountThisFrame": 1,
-        "frameDeltaSeconds": 0.0168,
-        "renderedShipPosition": {
-          "x": 90.67070286122187,
-          "y": 0,
-          "z": -1.7791957652684394
-        },
-        "cameraPosition": {
-          "x": 119.88048773333321,
-          "y": 14.100000000002126,
-          "z": 8.620506863768787
-        }
-      },
       {
         "executorStatus": "Executing",
         "interpolationAlpha": 0.527,
@@ -466,28 +402,124 @@
         "renderedShipPosition": {
           "x": 90.7510432827975,
           "y": 0,
-          "z": -1.8535007636704708
+          "z": -1.8535007636704748
         },
         "cameraPosition": {
-          "x": 119.81301709081532,
-          "y": 14.10000000000163,
-          "z": 8.953847273616631
+          "x": 119.81301097353048,
+          "y": 14.100000000000241,
+          "z": 8.953881101020716
+        }
+      },
+      {
+        "executorStatus": "Executing",
+        "interpolationAlpha": 0.025,
+        "fixedStepCountThisFrame": 1,
+        "frameDeltaSeconds": 0.0166,
+        "renderedShipPosition": {
+          "x": 90.83147911351486,
+          "y": 0,
+          "z": -1.9279046478205832
+        },
+        "cameraPosition": {
+          "x": 119.73914939969347,
+          "y": 14.100000000000184,
+          "z": 9.289185435374996
+        }
+      },
+      {
+        "executorStatus": "Executing",
+        "interpolationAlpha": 0.526,
+        "fixedStepCountThisFrame": 0,
+        "frameDeltaSeconds": 0.0167,
+        "renderedShipPosition": {
+          "x": 90.91421551273386,
+          "y": 0,
+          "z": -2.0046389370863693
+        },
+        "cameraPosition": {
+          "x": 119.65785690240872,
+          "y": 14.100000000000142,
+          "z": 9.629408854433434
+        }
+      },
+      {
+        "executorStatus": "Executing",
+        "interpolationAlpha": 0.027,
+        "fixedStepCountThisFrame": 1,
+        "frameDeltaSeconds": 0.0167,
+        "renderedShipPosition": {
+          "x": 90.99704841120881,
+          "y": 0,
+          "z": -2.0814734309147163
+        },
+        "cameraPosition": {
+          "x": 119.56975079295188,
+          "y": 14.100000000000108,
+          "z": 9.971067635639374
+        }
+      },
+      {
+        "executorStatus": "Executing",
+        "interpolationAlpha": 0.531,
+        "fixedStepCountThisFrame": 0,
+        "frameDeltaSeconds": 0.0168,
+        "renderedShipPosition": {
+          "x": 91.08208155741207,
+          "y": 0,
+          "z": -2.160537692110224
+        },
+        "cameraPosition": {
+          "x": 119.47367978167091,
+          "y": 14.100000000000083,
+          "z": 10.317080912077454
+        }
+      },
+      {
+        "executorStatus": "Executing",
+        "interpolationAlpha": 0.026,
+        "fixedStepCountThisFrame": 1,
+        "frameDeltaSeconds": 0.0165,
+        "renderedShipPosition": {
+          "x": 91.16568313736373,
+          "y": 0,
+          "z": -2.2382804955955486
+        },
+        "cameraPosition": {
+          "x": 119.37254416832084,
+          "y": 14.100000000000064,
+          "z": 10.65712015692469
+        }
+      },
+      {
+        "executorStatus": "Executing",
+        "interpolationAlpha": 0.53,
+        "fixedStepCountThisFrame": 0,
+        "frameDeltaSeconds": 0.0168,
+        "renderedShipPosition": {
+          "x": 91.2524004729912,
+          "y": 0,
+          "z": -2.3190972054382044
+        },
+        "cameraPosition": {
+          "x": 119.26161542196336,
+          "y": 14.10000000000005,
+          "z": 11.005652418867603
         }
       },
       {
         "executorStatus": "Executing",
         "interpolationAlpha": 0.028,
         "fixedStepCountThisFrame": 1,
-        "frameDeltaSeconds": 0.0167,
+        "frameDeltaSeconds": 0.0166,
         "renderedShipPosition": {
-          "x": 90.83197454105509,
+          "x": 91.3381727855244,
           "y": 0,
-          "z": -1.9283641345826512
+          "z": -2.39904288042501
         },
         "cameraPosition": {
-          "x": 119.73862447681107,
-          "y": 14.100000000001248,
-          "z": 9.291413256190355
+          "x": 119.14480972355864,
+          "y": 14.100000000000037,
+          "z": 11.349948930288685
         }
       },
       {
@@ -496,145 +528,113 @@
         "fixedStepCountThisFrame": 0,
         "frameDeltaSeconds": 0.0167,
         "renderedShipPosition": {
-          "x": 90.91471094027409,
+          "x": 91.4259364606724,
           "y": 0,
-          "z": -2.005098423848437
+          "z": -2.481008020038201
         },
         "cameraPosition": {
-          "x": 119.6573047098248,
-          "y": 14.100000000000955,
-          "z": 9.631602026341017
+          "x": 119.01927051639257,
+          "y": 14.100000000000028,
+          "z": 11.697538732849583
         }
       },
       {
         "executorStatus": "Executing",
-        "interpolationAlpha": 0.027,
+        "interpolationAlpha": 0.03,
         "fixedStepCountThisFrame": 1,
-        "frameDeltaSeconds": 0.0166,
+        "frameDeltaSeconds": 0.0167,
         "renderedShipPosition": {
-          "x": 90.99704841120881,
+          "x": 91.5137872895026,
           "y": 0,
-          "z": -2.081473430914712
+          "z": -2.5630642712566267
         },
         "cameraPosition": {
-          "x": 119.56978800181328,
-          "y": 14.100000000000733,
-          "z": 9.970963120750781
+          "x": 118.88601645626093,
+          "y": 14.100000000000021,
+          "z": 12.045026188011963
         }
       },
       {
         "executorStatus": "Executing",
-        "interpolationAlpha": 0.528,
+        "interpolationAlpha": 0.531,
         "fixedStepCountThisFrame": 0,
         "frameDeltaSeconds": 0.0167,
         "renderedShipPosition": {
-          "x": 91.08157540773229,
+          "x": 91.60300643114343,
           "y": 0,
-          "z": -2.1600670715078722
+          "z": -2.6465509746772167
         },
         "cameraPosition": {
-          "x": 119.47437909502995,
-          "y": 14.100000000000561,
-          "z": 10.314714384645022
+          "x": 118.74455763318157,
+          "y": 14.100000000000016,
+          "z": 12.392872057852752
         }
       },
       {
         "executorStatus": "Executing",
         "interpolationAlpha": 0.029,
         "fixedStepCountThisFrame": 1,
-        "frameDeltaSeconds": 0.0167,
+        "frameDeltaSeconds": 0.0166,
         "renderedShipPosition": {
-          "x": 91.16619931198056,
+          "x": 91.6917696350166,
           "y": 0,
-          "z": -2.2387615474398475
+          "z": -2.7296198427937126
         },
         "cameraPosition": {
-          "x": 119.37182510783346,
-          "y": 14.10000000000043,
-          "z": 10.659399668350254
-        }
-      },
-      {
-        "executorStatus": "Executing",
-        "interpolationAlpha": 0.53,
-        "fixedStepCountThisFrame": 0,
-        "frameDeltaSeconds": 0.0167,
-        "renderedShipPosition": {
-          "x": 91.2524004729912,
-          "y": 0,
-          "z": -2.3190972054382
-        },
-        "cameraPosition": {
-          "x": 119.26164094554024,
-          "y": 14.100000000000328,
-          "z": 11.00558773560794
-        }
-      },
-      {
-        "executorStatus": "Executing",
-        "interpolationAlpha": 0.031,
-        "fixedStepCountThisFrame": 1,
-        "frameDeltaSeconds": 0.0167,
-        "renderedShipPosition": {
-          "x": 91.33869831651333,
-          "y": 0,
-          "z": -2.3995336896442567
-        },
-        "cameraPosition": {
-          "x": 119.1440075956005,
-          "y": 14.100000000000252,
-          "z": 11.352203694580782
+          "x": 118.59617695842633,
+          "y": 14.100000000000012,
+          "z": 12.737790411951107
         }
       }
     ],
     "consecutiveJumps": [
       {
-        "renderedShipJump": 0.10421724166139104,
-        "cameraJump": 0.3299608751664815
+        "renderedShipJump": 0.1095712591869557,
+        "cameraJump": 0.3433431646712171
       },
       {
-        "renderedShipJump": 0.10652302255892816,
-        "cameraJump": 0.33235232382846913
+        "renderedShipJump": 0.11284264665830616,
+        "cameraJump": 0.34980057888832083
       },
       {
-        "renderedShipJump": 0.10797594437129292,
-        "cameraJump": 0.3403343017963399
+        "renderedShipJump": 0.11298154057906654,
+        "cameraJump": 0.3528362358074207
       },
       {
-        "renderedShipJump": 0.10943407205470984,
-        "cameraJump": 0.3401001564823305
+        "renderedShipJump": 0.11611112501227522,
+        "cameraJump": 0.3591028079533265
       },
       {
-        "renderedShipJump": 0.11024696307604974,
-        "cameraJump": 0.3456661013309652
+        "renderedShipJump": 0.11416289968361824,
+        "cameraJump": 0.3547606239761848
       },
       {
-        "renderedShipJump": 0.112842646658306,
-        "cameraJump": 0.3497732177273176
+        "renderedShipJump": 0.11853791329409816,
+        "cameraJump": 0.36575938044496936
       },
       {
-        "renderedShipJump": 0.11230583610970096,
-        "cameraJump": 0.35046415876686504
+        "renderedShipJump": 0.11725272084856006,
+        "cameraJump": 0.36357070695607596
       },
       {
-        "renderedShipJump": 0.11541998736339877,
-        "cameraJump": 0.35674611549739244
+        "renderedShipJump": 0.12008641383309368,
+        "cameraJump": 0.3695656415039285
       },
       {
-        "renderedShipJump": 0.11555961973124283,
-        "cameraJump": 0.3596182213026105
+        "renderedShipJump": 0.12021229758296056,
+        "cameraJump": 0.37216149187791053
       },
       {
-        "renderedShipJump": 0.11783233047686735,
-        "cameraJump": 0.3632997763994233
+        "renderedShipJump": 0.12218872649783687,
+        "cameraJump": 0.37550945100262556
       },
       {
-        "renderedShipJump": 0.11797180081698183,
-        "cameraJump": 0.36603309690888314
+        "renderedShipJump": 0.12157032208555633,
+        "cameraJump": 0.37548035319406436
       },
       {
-        "renderedShipJump": 0.11936733351072275,
-        "cameraJump": 0.3670754142772936
+        "renderedShipJump": 0.12414551703373745,
+        "cameraJump": 0.3812610852791734
       }
     ]
   }
