@@ -44,6 +44,7 @@ async function expectPlayerEdgeHudAvailable(page: Page) {
   await expect(page.locator("#hud-left-panel"), "Ship status panel remains player-visible").toBeVisible();
   await expect(page.locator("#hud-right-panel"), "Navigation panel remains player-visible").toBeVisible();
   await expect(page.locator("#warning-chips"), "Warnings remain player-visible").toBeVisible();
+  await expect(page.getByTestId("runtime-message"), "Cockpit runtime message remains player-visible").toBeVisible();
   await expect(page.getByTestId("selected-target")).toContainText("Navigation Alpha");
   await expect(page.getByTestId("autopilot-active")).toContainText("Autopilot standby");
   await expect(page.getByTestId("ship-visual-source")).toContainText(/Ship visual: (Demo Scout GLB|Procedural fallback)/);
@@ -127,7 +128,7 @@ test("flight HUD foundation keeps center clear, shows navigation, autopilot, war
       "- Captured player HUD at 1280x720, 1440x900, 1024x768, narrow 760x640, and ultrawide 1920x800.",
       "- Verified edge-panel layout with `.hud-center-safe-area` and bounding-box overlap checks.",
       "- Verified selected target/navigation, autopilot executing state, fuel warning chips, concise ship visual line, and absence of raw fuel reason codes in player HUD.",
-      "- Verified 1024x768 and 760x640 keep Mode, Autopilot, Ship Visual, Ship Status, Navigation/Target, and Warnings player-visible without covering the center safe area.",
+      "- Verified 1024x768 and 760x640 keep Mode, Autopilot, Ship Visual, Ship Status, Navigation/Target, Warnings, and Cockpit Message player-visible without covering the center safe area.",
       "- Verified blocked/critical warning state disables the primary route button instead of dispatching EngageAutopilot.",
       "- Used `/?testBridge=1` only for controlled setup/evidence; default `/` was checked to keep TestBridge hidden.",
       "- Note: post-arrival Hold/Ready evidence uses current executor lifecycle telemetry and player-facing HUD labels; no autopilot lifecycle logic was changed."

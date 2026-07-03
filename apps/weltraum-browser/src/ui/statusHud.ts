@@ -3,6 +3,8 @@ import type { BrowserRuntimeCommand } from "../runtime/commands";
 import type { ShipVisualSourceSnapshot } from "../render/three/shipVisual";
 
 type ChipSeverity = "Critical" | "High" | "Medium" | "Low";
+export type StatusHudTone = "manual" | "ready" | "active" | "holding" | "blocked";
+export type StatusHudMeterTone = "idle" | "ready" | "active" | "caution" | "blocked";
 
 export interface StatusHudWarningChipViewModel {
   readonly code: string;
@@ -21,16 +23,24 @@ export interface FlightStatusPanelViewModel {
   readonly mode: StatusHudLabelValueViewModel;
   readonly controlMode: StatusHudLabelValueViewModel;
   readonly throttle: StatusHudLabelValueViewModel;
+  readonly throttleMeter: StatusHudMeterViewModel;
   readonly speed: StatusHudLabelValueViewModel;
   readonly rcsSas: StatusHudLabelValueViewModel;
   readonly fuel: StatusHudLabelValueViewModel;
+  readonly fuelMeter: StatusHudMeterViewModel;
   readonly shipVisual: StatusHudLabelValueViewModel;
+}
+
+export interface StatusHudMeterViewModel {
+  readonly percent: number;
+  readonly tone: StatusHudMeterTone;
 }
 
 export interface NavigationPanelViewModel {
   readonly title: "Navigation";
   readonly plan: StatusHudLabelValueViewModel;
   readonly route: StatusHudLabelValueViewModel;
+  readonly routeTone: StatusHudTone;
   readonly target: StatusHudLabelValueViewModel;
   readonly distance: StatusHudLabelValueViewModel;
   readonly radar: StatusHudLabelValueViewModel;
@@ -51,6 +61,7 @@ export interface ActionPanelViewModel {
   readonly primaryDisabledReason: string | null;
   readonly secondaryLabel: string;
   readonly stateLabel: string;
+  readonly stateTone: StatusHudTone;
 }
 
 export interface DebugPanelViewModel {
@@ -83,6 +94,10 @@ export interface StatusHudViewModel {
   readonly radarState: string;
   readonly autopilotState: string;
   readonly fuelState: string;
+  readonly throttleMeter: StatusHudMeterViewModel;
+  readonly fuelMeter: StatusHudMeterViewModel;
+  readonly routeTone: StatusHudTone;
+  readonly actionTone: StatusHudTone;
   readonly authorityState: string;
   readonly brakingState: string;
   readonly warningSummary: string;
@@ -120,6 +135,8 @@ const unique = (codes: readonly string[]): readonly string[] => [...new Set(code
 
 const formatMeters = (value: number): string => (Number.isFinite(value) ? `${value.toFixed(1)} m` : "unknown");
 
+const clampPercent = (value: number): number => Math.max(0, Math.min(100, Math.round(value)));
+
 const formatSpeed = (velocity: { readonly x: number; readonly y: number; readonly z: number }): string => {
   const speed = Math.hypot(velocity.x, velocity.y, velocity.z);
   return `Speed ${speed.toFixed(2)} m/s`;
@@ -142,6 +159,35 @@ const createWarningChips = (codes: readonly string[]): readonly StatusHudWarning
     .map((code) => ({ code, ...(chipCatalog[code] ?? fallbackWarning) }))
     .sort((left, right) => severityOrder[left.severity] - severityOrder[right.severity] || left.code.localeCompare(right.code));
 
+const createThrottleMeter = (telemetry: TelemetrySnapshot): StatusHudMeterViewModel => {
+  const percent = clampPercent(telemetry.ship.throttle * 100);
+  const tone: StatusHudMeterTone = telemetry.ship.actuatorTelemetry.mainThrustActive ? "active" : percent > 0 ? "ready" : "idle";
+  return { percent, tone };
+};
+
+const createFuelMeter = (telemetry: TelemetrySnapshot): StatusHudMeterViewModel => {
+  const fuel = telemetry.flightSnapshot.fuel;
+  const percent = fuel.capacity > 0 ? clampPercent((fuel.current / fuel.capacity) * 100) : 0;
+  const tone: StatusHudMeterTone = fuel.status === "Blocked" ? "blocked" : fuel.current <= fuel.reserve || percent <= 25 ? "caution" : "ready";
+  return { percent, tone };
+};
+
+const createRouteTone = (telemetry: TelemetrySnapshot, warningChips: readonly StatusHudWarningChipViewModel[]): StatusHudTone => {
+  if (warningChips.some((chip) => chip.severity === "Critical") || telemetry.executor.replanRequired || telemetry.executor.status === "Diverged") {
+    return "blocked";
+  }
+  if (telemetry.executor.status === "Arrived" || telemetry.executor.stationKeepingActive) {
+    return "holding";
+  }
+  if (telemetry.executor.status === "Executing" || Boolean(telemetry.executor.planHash || telemetry.lockedPlan)) {
+    return "active";
+  }
+  if (telemetry.routePreview?.state === "Ready" && telemetry.routePreview.plan) {
+    return "ready";
+  }
+  return "manual";
+};
+
 const formatVisualSourceLine = (visualSource: ShipVisualSourceSnapshot | undefined): string => {
   if (!visualSource || visualSource.state === "ProceduralFallback" || visualSource.state === "GLBFailedFallback") {
     return "Ship visual: Procedural fallback";
@@ -152,7 +198,7 @@ const formatVisualSourceLine = (visualSource: ShipVisualSourceSnapshot | undefin
   return "Ship visual: Loading Demo Scout GLB";
 };
 
-const createActionPanel = (telemetry: TelemetrySnapshot, warningChips: readonly StatusHudWarningChipViewModel[]): ActionPanelViewModel => {
+const createActionPanel = (telemetry: TelemetrySnapshot, warningChips: readonly StatusHudWarningChipViewModel[], routeTone: StatusHudTone): ActionPanelViewModel => {
   const hasLockedRoute = Boolean(telemetry.executor.planHash || telemetry.lockedPlan);
   const hasReadyPreview = telemetry.routePreview?.state === "Ready" && Boolean(telemetry.routePreview.plan);
   const hasCriticalWarning = warningChips.some((chip) => chip.severity === "Critical");
@@ -164,7 +210,8 @@ const createActionPanel = (telemetry: TelemetrySnapshot, warningChips: readonly 
       primaryCommandEnabled: false,
       primaryDisabledReason: "Cancel the current route before engaging another route.",
       secondaryLabel: "Cancel autopilot",
-      stateLabel: telemetry.executor.status === "Arrived" ? "Holding at target" : "Cancel current route before selecting another target"
+      stateLabel: telemetry.executor.status === "Arrived" ? "Holding at target" : "Cancel current route before selecting another target",
+      stateTone: routeTone
     };
   }
 
@@ -175,7 +222,20 @@ const createActionPanel = (telemetry: TelemetrySnapshot, warningChips: readonly 
       primaryCommandEnabled: false,
       primaryDisabledReason: "Resolve critical ship warnings before engaging autopilot.",
       secondaryLabel: "Cancel autopilot",
-      stateLabel: "Resolve warnings before engaging"
+      stateLabel: "Resolve warnings before engaging",
+      stateTone: "blocked"
+    };
+  }
+
+  if (routeTone === "holding" && !hasReadyPreview) {
+    return {
+      title: "Route Action",
+      primaryLabel: "Hold route",
+      primaryCommandEnabled: false,
+      primaryDisabledReason: "Select a new target and wait for a route preview before engaging another route.",
+      secondaryLabel: "Cancel autopilot",
+      stateLabel: "Holding at target; select a new route",
+      stateTone: "holding"
     };
   }
 
@@ -186,7 +246,8 @@ const createActionPanel = (telemetry: TelemetrySnapshot, warningChips: readonly 
       primaryCommandEnabled: true,
       primaryDisabledReason: null,
       secondaryLabel: "Cancel autopilot",
-      stateLabel: "Ready"
+      stateLabel: "Ready",
+      stateTone: "ready"
     };
   }
 
@@ -196,7 +257,8 @@ const createActionPanel = (telemetry: TelemetrySnapshot, warningChips: readonly 
     primaryCommandEnabled: false,
     primaryDisabledReason: "Select a target and wait for a valid route preview before engaging autopilot.",
     secondaryLabel: "Cancel autopilot",
-    stateLabel: "Select a target first"
+    stateLabel: "Select a target first",
+    stateTone: "manual"
   };
 };
 
@@ -275,6 +337,7 @@ export const createStatusHudViewModel = (telemetry: TelemetrySnapshot, visualSou
   ]);
 
   const warningChips = createWarningChips(warningCodes);
+  const routeTone = createRouteTone(telemetry, warningChips);
   const routePlan = telemetry.lockedPlan ?? preview?.plan ?? null;
   const previewDistance = preview?.plan?.score.distance;
   const displayedDistance = telemetry.lockedPlan ? telemetry.executor.distanceToTarget : previewDistance;
@@ -325,25 +388,30 @@ export const createStatusHudViewModel = (telemetry: TelemetrySnapshot, visualSou
   const runtimeMessage = telemetry.runtimeMessage ?? preview?.playerMessage ?? "ready";
   const visualSourceLine = formatVisualSourceLine(visualSource);
   const throttleState = `${Math.round(telemetry.ship.throttle * 100)}%${telemetry.ship.actuatorTelemetry.mainThrustActive ? " / main burn" : ""}`;
+  const throttleMeter = createThrottleMeter(telemetry);
+  const fuelMeter = createFuelMeter(telemetry);
   const velocityState = formatSpeed(telemetry.ship.velocity);
   const rcsSasState = `RCS ${rcsEnabled ? "on" : "off"}, SAS ${sasEnabled ? "on" : "off"}${activeActuators.length > 0 ? ` / ${activeActuators.join(", ")}` : ""}`;
   const helpHint = "Desktop keyboard/mouse manual flight: W/S pitch, A/D yaw, Q/E roll, Shift/Ctrl throttle, X cut, Y/Z full, R RCS, T SAS, CapsLock mode, H/N translate, V camera, RMB+wheel inspect. Mobile: target selection and autopilot only in this slice.";
   const controlModeEffectState = formatControlModeEffectState(telemetry);
-  const actionPanel = createActionPanel(telemetry, warningChips);
+  const actionPanel = createActionPanel(telemetry, warningChips, routeTone);
   const flightStatus: FlightStatusPanelViewModel = {
     title: "Flight Status",
     mode: { label: "Mode", value: snapshot.authority.mode },
     controlMode: { label: "Control Mode", value: controlMode },
     throttle: { label: "Throttle", value: throttleState },
+    throttleMeter,
     speed: { label: "Speed", value: velocityState },
     rcsSas: { label: "RCS / SAS", value: rcsSasState },
     fuel: { label: "Fuel", value: fuelState },
+    fuelMeter,
     shipVisual: { label: "Ship Visual", value: visualSourceLine }
   };
   const navigation: NavigationPanelViewModel = {
     title: "Navigation",
     plan: { label: "Plan", value: planState },
     route: { label: "Route", value: routeState },
+    routeTone,
     target: { label: "Target", value: targetState },
     distance: { label: "Distance", value: distanceState },
     radar: { label: "Radar", value: radarState },
@@ -385,6 +453,10 @@ export const createStatusHudViewModel = (telemetry: TelemetrySnapshot, visualSou
     radarState,
     autopilotState,
     fuelState,
+    throttleMeter,
+    fuelMeter,
+    routeTone,
+    actionTone: actionPanel.stateTone,
     authorityState,
     brakingState,
     warningSummary,
@@ -400,6 +472,41 @@ const setText = (id: string, value: string): void => {
   if (element) {
     element.textContent = value;
   }
+};
+
+const setStateTone = (id: string, tone: StatusHudTone | StatusHudMeterTone): void => {
+  const element = document.getElementById(id);
+  if (!element) {
+    return;
+  }
+
+  element.setAttribute("data-hud-tone", tone);
+};
+
+const setMeter = (id: string, meter: StatusHudMeterViewModel): void => {
+  const element = document.getElementById(id) as HTMLElement | null;
+  if (!element) {
+    return;
+  }
+
+  element.style.width = `${meter.percent}%`;
+  element.setAttribute("data-hud-tone", meter.tone);
+};
+
+const renderPresentationState = (viewModel: StatusHudViewModel): void => {
+  const flightHud = document.getElementById("flight-hud");
+  if (flightHud) {
+    flightHud.setAttribute("data-route-tone", viewModel.routeTone);
+    flightHud.setAttribute("data-action-tone", viewModel.actionTone);
+  }
+
+  setStateTone("status", viewModel.routeTone);
+  setStateTone("route-status", viewModel.routeTone);
+  setStateTone("autopilot-action-state", viewModel.actionTone);
+  setStateTone("fuel-status", viewModel.fuelMeter.tone);
+  setStateTone("throttle-status", viewModel.throttleMeter.tone);
+  setMeter("fuel-meter-fill", viewModel.fuelMeter);
+  setMeter("throttle-meter-fill", viewModel.throttleMeter);
 };
 
 const renderWarningChips = (viewModel: StatusHudViewModel): void => {
@@ -527,6 +634,7 @@ export const renderStatusHud = (telemetry: TelemetrySnapshot, commandSink?: Stat
   setText("runtime-message", viewModel.warnings.cockpitMessage);
   setText("ship-visual-source", viewModel.flightStatus.shipVisual.value);
   setText("autopilot-action-state", viewModel.actions.stateLabel);
+  renderPresentationState(viewModel);
   renderWarningChips(viewModel);
   renderTargetOptions(viewModel, commandSink);
   setText("engage-autopilot", viewModel.actions.primaryLabel);

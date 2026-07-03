@@ -4,6 +4,7 @@ import { applyFlightControllerStep, createFlightSnapshot, createShipStateV2, ina
 import { createStatusHudViewModel, renderStatusHud } from "../../src/ui/statusHud";
 
 const elementIds = [
+  "flight-hud",
   "plan-hash",
   "mode",
   "control-mode",
@@ -26,6 +27,8 @@ const elementIds = [
   "failure-reasons",
   "runtime-message",
   "autopilot-action-state",
+  "throttle-meter-fill",
+  "fuel-meter-fill",
   "help-hint",
   "engage-autopilot",
   "cancel-autopilot"
@@ -36,6 +39,7 @@ type StubElement = {
   onclick: ((event?: unknown) => void) | null;
   disabled: boolean;
   title: string;
+  style: Record<string, string>;
   attributes: Map<string, string>;
   setAttribute(name: string, value: string): void;
   removeAttribute(name: string): void;
@@ -49,6 +53,7 @@ const createStubElement = (): StubElement => {
     onclick: null,
     disabled: false,
     title: "",
+    style: {},
     attributes,
     setAttribute(name: string, value: string) {
       attributes.set(name, value);
@@ -119,6 +124,10 @@ describe("renderStatusHud", () => {
     expect(elements.get("route-status")?.textContent).toContain("select a target");
     expect(elements.get("fuel-status")?.textContent).toContain("Blocked");
     expect(elements.get("status")?.textContent).toContain("Autopilot blocked: fuel");
+    expect(elements.get("flight-hud")?.getAttribute("data-route-tone")).toBe("blocked");
+    expect(elements.get("status")?.getAttribute("data-hud-tone")).toBe("blocked");
+    expect(elements.get("fuel-status")?.getAttribute("data-hud-tone")).toBe("blocked");
+    expect(elements.get("fuel-meter-fill")?.style.width).toBe("0%");
     expect(elements.get("failure-reasons")?.textContent).toContain("Fuel insufficient");
     expect(elements.get("failure-reasons")?.textContent).not.toContain("FuelInsufficient");
     expect(elements.get("warning-chips")?.textContent).toContain("Fuel insufficient");
@@ -229,14 +238,20 @@ describe("renderStatusHud", () => {
     expect(viewModel.flightStatus.title).toBe("Flight Status");
     expect(viewModel.flightStatus.mode.value).toBe("Manual");
     expect(viewModel.flightStatus.speed.value).toBe(viewModel.velocityState);
+    expect(viewModel.flightStatus.throttleMeter).toEqual({ percent: 0, tone: "idle" });
+    expect(viewModel.flightStatus.fuelMeter).toEqual({ percent: 0, tone: "blocked" });
     expect(viewModel.navigation.title).toBe("Navigation");
     expect(viewModel.navigation.target.value).toBe("Target A [Waypoint]");
+    expect(viewModel.navigation.routeTone).toBe("blocked");
+    expect(viewModel.routeTone).toBe("blocked");
     expect(viewModel.warnings.title).toBe("Warnings");
     expect(viewModel.warnings.summary).toContain("Fuel insufficient");
     expect(viewModel.actions.title).toBe("Route Action");
     expect(viewModel.actions.primaryCommandEnabled).toBe(false);
     expect(viewModel.actions.primaryDisabledReason).toContain("Cancel the current route");
     expect(viewModel.actions.stateLabel).toContain("Cancel");
+    expect(viewModel.actions.stateTone).toBe("blocked");
+    expect(viewModel.actionTone).toBe("blocked");
     expect(viewModel.debug.title).toBe("Diagnostics");
   });
 
@@ -345,6 +360,9 @@ describe("renderStatusHud", () => {
     expect(elements.get("engage-autopilot")?.getAttribute("aria-disabled")).toBe("false");
     expect(elements.get("engage-autopilot")?.title).toBe("");
     expect(elements.get("autopilot-action-state")?.textContent).toBe("Ready");
+    expect(elements.get("route-status")?.getAttribute("data-hud-tone")).toBe("ready");
+    expect(elements.get("autopilot-action-state")?.getAttribute("data-hud-tone")).toBe("ready");
+    expect(elements.get("flight-hud")?.getAttribute("data-action-tone")).toBe("ready");
   });
 
   it("renders selected target and route-preview labels from snapshot fields", () => {
@@ -443,6 +461,9 @@ describe("renderStatusHud", () => {
 
     expect(elements.get("plan-hash")?.textContent).toBe("Plan completed");
     expect(elements.get("route-status")?.textContent).toBe("holding at target; new route ready");
+    expect(elements.get("route-status")?.getAttribute("data-hud-tone")).toBe("holding");
+    expect(elements.get("autopilot-action-state")?.textContent).toBe("Holding at target; select a new route");
+    expect(elements.get("autopilot-action-state")?.getAttribute("data-hud-tone")).toBe("holding");
 
     const playerText = [
       "plan-hash",
