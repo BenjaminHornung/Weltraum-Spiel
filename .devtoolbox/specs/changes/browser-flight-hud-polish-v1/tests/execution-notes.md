@@ -89,5 +89,17 @@
 
 ### manual-exec-010 - Commit, merge, push
 
-- Status: created.
+- Status: merge committed; push pending.
 - Task: commit feature branch, merge into clean up-to-date `main`, and push after user approval.
+- Feature commit: `abdd5cd #WELTRAUM-000 Polish browser flight HUD`.
+- User feedback: current UI looks good but is still far from concept-art screenshots. User chose to merge/push current v1 and treat closer concept-art fidelity as follow-up.
+- Merge commit on `main`: `0a1c510 #WELTRAUM-000 Merge browser flight HUD polish`.
+- Merge conflicts: non-HUD long-range/autopilot evidence conflicts were resolved by keeping current `main` evidence for conflicted files.
+
+### manual-exec-011 - Post-merge verification
+
+- Status: passed.
+- Task: verify merged `main` before push.
+- Results: `npm run test` passed 129/129 across 13 files, `npm run build` passed, focused HUD E2E passed 2/2 with Chrome fallback, and full E2E passed 18/18 with Chrome fallback.
+- Confirmed: default `/` hides TestBridge/debug text; `#debug-hud` hidden by default; no `Assets/**` changes.
+- Evidence: post-merge verification refreshed evidence files under `apps/weltraum-browser/evidence/**`; these are committed separately before push because the user chose to keep generated evidence updates.

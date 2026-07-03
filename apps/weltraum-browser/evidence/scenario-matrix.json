@@ -4,8 +4,8 @@
     "label": "Direct local arrival",
     "tick": 1,
     "planner": "DirectLocal",
-    "planHashBefore": "c9c73252",
-    "planHashAfter": "c9c73252",
+    "planHashBefore": "c10187f4",
+    "planHashAfter": "c10187f4",
     "segmentKinds": [
       "Direct"
     ],
@@ -29,7 +29,8 @@
       "reasons": [
         "segments:1",
         "distance:1.5",
-        "clearanceRisk:0.5"
+        "clearanceRisk:0.5",
+        "plannerComplexity:0"
       ]
     },
     "status": "Arrived",
@@ -92,8 +93,8 @@
     "label": "Obstacle avoidance route",
     "tick": 8,
     "planner": "ObstacleAvoidanceLocal",
-    "planHashBefore": "ac10fd6a",
-    "planHashAfter": "ac10fd6a",
+    "planHashBefore": "ce95ed9a",
+    "planHashAfter": "ce95ed9a",
     "segmentKinds": [
       "Avoidance",
       "Terminal"
@@ -115,11 +116,12 @@
       "clearanceRisk": 0.3958,
       "fuelCostEstimate": 0.0233,
       "authorityRisk": 0,
-      "total": 165.6965,
+      "total": 170.6965,
       "reasons": [
         "segments:2",
         "distance:106",
-        "clearanceRisk:0.3958"
+        "clearanceRisk:0.3958",
+        "plannerComplexity:1"
       ]
     },
     "status": "Executing",
@@ -182,8 +184,8 @@
     "label": "Insufficient fuel",
     "tick": 1,
     "planner": "DirectLocal",
-    "planHashBefore": "b9365474",
-    "planHashAfter": "b9365474",
+    "planHashBefore": "a8ec4c46",
+    "planHashAfter": "a8ec4c46",
     "segmentKinds": [
       "Direct"
     ],
@@ -215,7 +217,8 @@
       "reasons": [
         "segments:1",
         "distance:90",
-        "clearanceRisk:0.3333"
+        "clearanceRisk:0.3333",
+        "plannerComplexity:0"
       ]
     },
     "status": "OutOfFuel",
@@ -290,8 +293,8 @@
     "label": "No authority",
     "tick": 1,
     "planner": "DirectLocal",
-    "planHashBefore": "58e3f84c",
-    "planHashAfter": "58e3f84c",
+    "planHashBefore": "001a7982",
+    "planHashAfter": "001a7982",
     "segmentKinds": [
       "Direct"
     ],
@@ -323,7 +326,8 @@
       "reasons": [
         "segments:1",
         "distance:90",
-        "clearanceRisk:0.3333"
+        "clearanceRisk:0.3333",
+        "plannerComplexity:0"
       ]
     },
     "status": "NoAuthority",
@@ -397,8 +401,8 @@
     "label": "No main thrusters",
     "tick": 1,
     "planner": "DirectLocal",
-    "planHashBefore": "7e93e248",
-    "planHashAfter": "7e93e248",
+    "planHashBefore": "3f19b0f6",
+    "planHashAfter": "3f19b0f6",
     "segmentKinds": [
       "Direct"
     ],
@@ -430,7 +434,8 @@
       "reasons": [
         "segments:1",
         "distance:90",
-        "clearanceRisk:0.3333"
+        "clearanceRisk:0.3333",
+        "plannerComplexity:0"
       ]
     },
     "status": "NoAuthority",
@@ -504,8 +509,8 @@
     "label": "Brake reserve insufficient",
     "tick": 1,
     "planner": "DirectLocal",
-    "planHashBefore": "f1ddf643",
-    "planHashAfter": "f1ddf643",
+    "planHashBefore": "a2a33515",
+    "planHashAfter": "a2a33515",
     "segmentKinds": [
       "Direct"
     ],
@@ -543,7 +548,8 @@
       "reasons": [
         "segments:1",
         "distance:90",
-        "clearanceRisk:0.3333"
+        "clearanceRisk:0.3333",
+        "plannerComplexity:0"
       ]
     },
     "status": "BrakeReserveInsufficient",
@@ -615,8 +621,8 @@
     "label": "Off-route divergence",
     "tick": 1,
     "planner": "DirectLocal",
-    "planHashBefore": "1c63341f",
-    "planHashAfter": "1c63341f",
+    "planHashBefore": "7bc11f61",
+    "planHashAfter": "7bc11f61",
     "segmentKinds": [
       "Direct"
     ],
@@ -641,7 +647,8 @@
       "reasons": [
         "segments:1",
         "distance:90",
-        "clearanceRisk:0.3333"
+        "clearanceRisk:0.3333",
+        "plannerComplexity:0"
       ]
     },
     "status": "Diverged",
@@ -708,8 +715,8 @@
     "label": "Locked plan hash preservation",
     "tick": 12,
     "planner": "DirectLocal",
-    "planHashBefore": "1c63341f",
-    "planHashAfter": "1c63341f",
+    "planHashBefore": "7bc11f61",
+    "planHashAfter": "7bc11f61",
     "segmentKinds": [
       "Direct"
     ],
@@ -734,7 +741,8 @@
       "reasons": [
         "segments:1",
         "distance:90",
-        "clearanceRisk:0.3333"
+        "clearanceRisk:0.3333",
+        "plannerComplexity:0"
       ]
     },
     "status": "Executing",
@@ -797,8 +805,8 @@
     "label": "Explicit replan-required signal",
     "tick": 1,
     "planner": "ObstacleAvoidanceLocal",
-    "planHashBefore": "ac10fd6a",
-    "planHashAfter": "ac10fd6a",
+    "planHashBefore": "ce95ed9a",
+    "planHashAfter": "ce95ed9a",
     "segmentKinds": [
       "Avoidance",
       "Terminal"
@@ -820,11 +828,12 @@
       "clearanceRisk": 0.3958,
       "fuelCostEstimate": 0.0233,
       "authorityRisk": 0,
-      "total": 165.6965,
+      "total": 170.6965,
       "reasons": [
         "segments:2",
         "distance:106",
-        "clearanceRisk:0.3958"
+        "clearanceRisk:0.3958",
+        "plannerComplexity:1"
       ]
     },
     "status": "Diverged",
