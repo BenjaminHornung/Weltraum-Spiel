@@ -203,8 +203,8 @@ describe("browser proving-ground scenario matrix", () => {
     expect(results).toHaveLength(autopilotProvingGroundCourses.length);
     expect(Object.fromEntries(results.map((result) => [result.courseId, result.classification]))).toMatchObject({
       "direct-long": "Pass",
-      "s-curve-obstacles": "KnownStress",
-      "narrow-corridor": "KnownStress",
+      "s-curve-obstacles": "Pass",
+      "narrow-corridor": "Pass",
       "offset-gates": "Pass",
       "target-behind-obstacle": "Pass",
       "target-near-obstacle": "Pass",
@@ -218,9 +218,16 @@ describe("browser proving-ground scenario matrix", () => {
       "direct-long-stop": "Pass",
       "direct-very-long-stop": "Pass",
       "single-blocking-obstacle-long": "Pass",
+      "s-curve-obstacles-long": "Pass",
+      "narrow-corridor-long": "Pass",
+      "corridor-safe": "Pass",
+      "corridor-balanced": "Pass",
+      "multi-rock-field-1000m": "Pass",
+      "multi-rock-field-2500m": "ExpectedFail",
       "no-main-thrusters-negative": "ExpectedFail",
       "no-autopilot-authority-negative": "ExpectedFail",
-      "off-route-fail-closed": "ExpectedFail"
+      "off-route-fail-closed": "ExpectedFail",
+      "unsolvable-blocked-corridor-negative": "ExpectedFail"
     });
     const unexpectedClassifications = results.filter((result) => result.classification !== result.expectedOutcome);
     expect(
@@ -292,14 +299,16 @@ describe("browser proving-ground scenario matrix", () => {
     expect(result.notes.join(" ")).toContain("Obstacle clearance uses closest sampled ship position");
   });
 
-  it("keeps KnownStress courses visible without failing the suite", () => {
+  it("keeps reclassified multi-obstacle courses behind hard gates", () => {
     const result = runAutopilotProvingGroundCourse("narrow-corridor", "Balanced");
 
-    expect(result.classification).toBe("KnownStress");
-    expect(result.notes.join(" ")).toContain("one-obstacle");
+    expect(result.classification).toBe("Pass");
+    expect(result.notes.join(" ")).toContain("Reclassified Pass");
     expect(result.planHashAfter).toBe(result.planHashBefore);
     expect(result.replanRequired).toBe(false);
     expect(result.status).toBe("Arrived");
+    expect(result.finalDistance).toBeLessThanOrEqual(3);
+    expect(result.finalSpeed).toBeLessThanOrEqual(result.terminalSpeedLimit ?? 0.5);
   });
 
   it("fails ExpectedFail classification when the expected failure signal or reason is absent", () => {
@@ -321,11 +330,11 @@ describe("browser proving-ground scenario matrix", () => {
     expect(evaluation.notes.join(" ")).toContain("FuelInsufficient");
   });
 
-  it("fails KnownStress classification when terminal or locked-plan hard invariants are violated", () => {
+  it("fails Pass classification when terminal or locked-plan hard invariants are violated", () => {
     const course = getAutopilotProvingGroundCourse("narrow-corridor");
     const result = runAutopilotProvingGroundCourse("narrow-corridor", "Balanced");
 
-    expect(result.classification).toBe("KnownStress");
+    expect(result.classification).toBe("Pass");
 
     const terminalGateEvaluation = evaluateAutopilotProvingGroundCourseResult(course, {
       ...result,

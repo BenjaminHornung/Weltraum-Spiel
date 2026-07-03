@@ -101,7 +101,7 @@ const representativeRequests: readonly CourseEvidenceRequest[] = [
   { id: "direct-very-long-stop", profile: "Balanced", role: "2500m direct long-range baseline" },
   { id: "single-blocking-obstacle-long", profile: "Balanced", role: "long single-obstacle route" },
   { id: "terminal-overspeed-disturbance", profile: "Balanced", role: "terminal overspeed ExpectedFail" },
-  { id: "narrow-corridor-long", profile: "Balanced", role: "KnownStress multi-obstacle corridor" },
+  { id: "narrow-corridor-long", profile: "Balanced", role: "reclassified multi-obstacle corridor" },
   { id: "off-route-fail-closed", profile: "Balanced", role: "ExpectedFail off-route fail-closed" }
 ];
 
@@ -112,7 +112,7 @@ const speedComparisonRequests: readonly CourseEvidenceRequest[] = [
 ];
 
 const plannerLimits = [
-  "Current local obstacle planner documents one-blocking-obstacle detours; multi-obstacle S-curves and corridors remain KnownStress evidence.",
+  "Multi-obstacle S-curves and corridors are reclassified only when terminal capture, no-replan, and planHash hard gates pass.",
   "ExpectedFail courses remain explicit for fuel, authority, brake-reserve and off-route invalidation instead of being hidden as successful arrivals.",
   "Executor consumes one locked RoutePlan and reports replanRequired/invalidation reasons; it does not silently replace the plan.",
   "Speed profiles may change desired route speeds and non-terminal brake margins only; StopWithinEnvelope and terminal speed gates stay invariant."
@@ -281,13 +281,12 @@ test("browser autopilot proving-ground v2 records long-range evidence", async ({
   const singleObstacle = representativeResults.find((result) => result.courseId === "single-blocking-obstacle-long");
   expect(singleObstacle).toEqual(expect.objectContaining({ classification: "Pass", status: "Arrived" }));
 
-  const knownStress = representativeResults.find((result) => result.classification === "KnownStress");
-  expect(knownStress?.courseId).toBe("narrow-corridor-long");
-  expect(knownStress?.notes.join(" ")).toMatch(/KnownStress|one-blocking-obstacle|corridor/i);
-  expect(knownStress?.status).toBe("Arrived");
-  expect(knownStress?.replanRequired).toBe(false);
-  expect(knownStress?.finalDistance).toBeLessThanOrEqual(3);
-  expect(knownStress?.finalSpeed).toBeLessThanOrEqual(knownStress?.terminalSpeedLimit ?? 0.5);
+  const reclassifiedCorridor = representativeResults.find((result) => result.courseId === "narrow-corridor-long");
+  expect(reclassifiedCorridor).toEqual(expect.objectContaining({ classification: "Pass", status: "Arrived" }));
+  expect(reclassifiedCorridor?.notes.join(" ")).toMatch(/Reclassified Pass|corridor/i);
+  expect(reclassifiedCorridor?.replanRequired).toBe(false);
+  expect(reclassifiedCorridor?.finalDistance).toBeLessThanOrEqual(3);
+  expect(reclassifiedCorridor?.finalSpeed).toBeLessThanOrEqual(reclassifiedCorridor?.terminalSpeedLimit ?? 0.5);
 
   const expectedFailures = representativeResults.filter((result) => result.classification === "ExpectedFail");
   expect(expectedFailures.map((result) => result.courseId)).toEqual(expect.arrayContaining(["terminal-overspeed-disturbance", "off-route-fail-closed"]));
@@ -333,7 +332,7 @@ test("browser autopilot proving-ground v2 records long-range evidence", async ({
   await captureCourseScreenshot(page, { id: "direct-long-stop", profile: "Balanced", role: "1000m direct screenshot" }, "autopilot-long-range-direct-1000m.png");
   await captureCourseScreenshot(page, { id: "direct-very-long-stop", profile: "Balanced", role: "2500m direct screenshot" }, "autopilot-long-range-direct-2500m.png");
   await captureCourseScreenshot(page, { id: "single-blocking-obstacle-long", profile: "Balanced", role: "single obstacle screenshot" }, "autopilot-long-range-obstacle-course.png");
-  await captureCourseScreenshot(page, { id: "narrow-corridor-long", profile: "Balanced", role: "KnownStress screenshot" }, "autopilot-long-range-known-stress.png");
+  await captureCourseScreenshot(page, { id: "narrow-corridor-long", profile: "Balanced", role: "reclassified corridor screenshot" }, "autopilot-long-range-known-stress.png");
 });
 
 test("product bootstrap still hides TestBridge by default", async ({ page }) => {

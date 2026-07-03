@@ -84,7 +84,10 @@ describe("autopilot proving-ground course catalog", () => {
       "direct-long-balanced",
       "direct-long-fast",
       "corridor-safe",
-      "corridor-balanced"
+      "corridor-balanced",
+      "multi-rock-field-1000m",
+      "multi-rock-field-2500m",
+      "unsolvable-blocked-corridor-negative"
     ]));
   });
 

@@ -13,7 +13,7 @@ import type {
   TargetDescriptor,
   TargetDescriptorKind
 } from "../core/types";
-import { distance } from "../core/vector";
+import { distance, dot, projectPointOnSegment, sub } from "../core/vector";
 import { estimateBrakingReserve } from "../flight/state";
 
 const supportedRuntimeKinds: readonly TargetDescriptorKind[] = ["Waypoint", "Point"];
@@ -32,8 +32,17 @@ const isFiniteVec3 = (value: unknown): value is TargetDescriptor["position"] =>
 const issue = (
   code: RouteValidationReasonCode,
   message: string,
-  options: Pick<RouteValidationIssue, "targetId" | "obstacleId"> & { readonly severity?: RouteValidationIssue["severity"] } = {}
-): RouteValidationIssue => ({ code, message, severity: options.severity ?? "Reject", targetId: options.targetId, obstacleId: options.obstacleId });
+  options: Pick<RouteValidationIssue, "targetId" | "obstacleId" | "segmentId"> & { readonly severity?: RouteValidationIssue["severity"] } = {}
+): RouteValidationIssue => ({
+  code,
+  message,
+  severity: options.severity ?? "Reject",
+  ...(options.targetId !== undefined ? { targetId: options.targetId } : {}),
+  ...(options.obstacleId !== undefined ? { obstacleId: options.obstacleId } : {}),
+  ...(options.segmentId !== undefined ? { segmentId: options.segmentId } : {})
+});
+
+export const createRouteValidationIssue = issue;
 
 export const arrivalEnvelopeForTarget = (target: TargetDescriptor | null | undefined): ArrivalEnvelope | null => {
   if (target?.arrivalEnvelope) {
@@ -138,16 +147,60 @@ export const validateRouteSegments = (context: PlannerContext, segments: readonl
     issues.push(issue("InvalidTarget", "Terminal route segment must end at the target position.", { targetId }));
   }
 
+  const orderedObstacles = orderObstaclesForRoute(context);
+  for (const violation of findUnsafeRouteSegmentViolations(segments, orderedObstacles)) {
+    issues.push(
+      issue("UnsafeRouteSegment", `Route segment ${violation.segment.id} intersects obstacle envelope ${violation.obstacle.id}.`, {
+        targetId,
+        obstacleId: violation.obstacle.id,
+        segmentId: violation.segment.id
+      })
+    );
+  }
+
   return validationResult(issues);
 };
+
+export interface UnsafeRouteSegmentViolation {
+  readonly segmentIndex: number;
+  readonly obstacleIndex: number;
+  readonly segment: RouteSegment;
+  readonly obstacle: ObstacleDescriptor;
+  readonly clearance: number;
+  readonly requiredClearance: number;
+}
+
+export const findUnsafeRouteSegmentViolations = (segments: readonly RouteSegment[], obstacles: readonly ObstacleDescriptor[]): readonly UnsafeRouteSegmentViolation[] => {
+  const violations: UnsafeRouteSegmentViolation[] = [];
+
+  segments.forEach((segment, segmentIndex) => {
+    obstacles.forEach((obstacle, obstacleIndex) => {
+      if (!isValidObstacle(obstacle)) {
+        return;
+      }
+
+      const closest = projectPointOnSegment(obstacle.center, segment.start, segment.end);
+      const clearance = distance(closest, obstacle.center);
+      const requiredClearance = obstacle.radius + obstacle.padding;
+      if (clearance <= requiredClearance) {
+        violations.push({ segmentIndex, obstacleIndex, segment, obstacle, clearance, requiredClearance });
+      }
+    });
+  });
+
+  return violations;
+};
+
+export const findFirstUnsafeRouteSegmentViolation = (segments: readonly RouteSegment[], obstacles: readonly ObstacleDescriptor[]): UnsafeRouteSegmentViolation | null => findUnsafeRouteSegmentViolations(segments, obstacles)[0] ?? null;
 
 export const scoreRouteCandidate = (context: PlannerContext, segments: readonly RouteSegment[]): RouteScore => {
   const distanceTotal = round4(segments.reduce((sum, segment) => sum + distance(segment.start, segment.end), 0));
   const clearanceRisk = round4(segments.reduce((sum, segment) => sum + 1 / Math.max(1, segment.clearanceRadius), 0));
+  const plannerComplexity = segments.filter((segment) => segment.kind === "Avoidance").length;
   const massTonnes = Math.max(0.001, context.ship.mass.totalMass / 1_000);
   const fuelCostEstimate = round4(distanceTotal * massTonnes * context.ship.fuel.burnRate * 0.01);
   const authorityRisk = context.ship.authority.reasonCodes.length + context.ship.fuel.reasonCodes.length;
-  const total = round4(distanceTotal + segments.length * 10 + clearanceRisk * 100 + fuelCostEstimate * 5 + authorityRisk * 50);
+  const total = round4(distanceTotal + segments.length * 10 + plannerComplexity * 5 + clearanceRisk * 100 + fuelCostEstimate * 5 + authorityRisk * 50);
 
   return {
     distance: distanceTotal,
@@ -156,7 +209,7 @@ export const scoreRouteCandidate = (context: PlannerContext, segments: readonly 
     fuelCostEstimate,
     authorityRisk,
     total,
-    reasons: [`segments:${segments.length}`, `distance:${distanceTotal}`, `clearanceRisk:${clearanceRisk}`]
+    reasons: [`segments:${segments.length}`, `distance:${distanceTotal}`, `clearanceRisk:${clearanceRisk}`, `plannerComplexity:${plannerComplexity}`]
   };
 };
 
@@ -199,6 +252,24 @@ const validationResult = (issues: readonly RouteValidationIssue[]): RouteValidat
   issues,
   rejectedReasonCodes: [...new Set(issues.filter((candidate) => candidate.severity === "Reject").map((candidate) => candidate.code))]
 });
+
+export const createRouteValidationResult = validationResult;
+
+const obstacleSortKey = (context: PlannerContext, obstacle: ObstacleDescriptor) => {
+  const route = sub(context.target.position, context.ship.position);
+  const lengthSq = dot(route, route);
+  const projection = lengthSq <= 1e-9 ? 0 : dot(sub(obstacle.center, context.ship.position), route) / lengthSq;
+  return [projection, obstacle.id, obstacle.center.x, obstacle.center.y, obstacle.center.z, obstacle.radius, obstacle.padding] as const;
+};
+
+const compareNumbers = (a: number, b: number): number => (a < b ? -1 : a > b ? 1 : 0);
+
+export const orderObstaclesForRoute = (context: PlannerContext): readonly ObstacleDescriptor[] =>
+  [...(context.obstacles ?? [])].sort((a, b) => {
+    const ak = obstacleSortKey(context, a);
+    const bk = obstacleSortKey(context, b);
+    return compareNumbers(ak[0], bk[0]) || ak[1].localeCompare(bk[1]) || compareNumbers(ak[2], bk[2]) || compareNumbers(ak[3], bk[3]) || compareNumbers(ak[4], bk[4]) || compareNumbers(ak[5], bk[5]) || compareNumbers(ak[6], bk[6]);
+  });
 
 const isValidObstacle = (obstacle: ObstacleDescriptor | null | undefined): obstacle is ObstacleDescriptor => {
   if (!obstacle || typeof obstacle !== "object") {

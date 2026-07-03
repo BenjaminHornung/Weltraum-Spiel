@@ -37,7 +37,10 @@ export type AutopilotProvingGroundCourseId =
   | "direct-long-balanced"
   | "direct-long-fast"
   | "corridor-safe"
-  | "corridor-balanced";
+  | "corridor-balanced"
+  | "multi-rock-field-1000m"
+  | "multi-rock-field-2500m"
+  | "unsolvable-blocked-corridor-negative";
 
 const stopTarget = (id: AutopilotProvingGroundCourseId, label: string, position: TargetDescriptor["position"]): TargetDescriptor => ({
   id,
@@ -109,7 +112,10 @@ const courseMetadata: Readonly<Record<AutopilotProvingGroundCourseId, CourseMeta
   "direct-long-balanced": { category: "DirectLong", speedProfile: "Balanced" },
   "direct-long-fast": { category: "DirectLong", speedProfile: "Fast" },
   "corridor-safe": { category: "ObstacleStress", speedProfile: "Safe" },
-  "corridor-balanced": { category: "ObstacleStress", speedProfile: "Balanced" }
+  "corridor-balanced": { category: "ObstacleStress", speedProfile: "Balanced" },
+  "multi-rock-field-1000m": { category: "ObstacleStress", speedProfile: "Balanced" },
+  "multi-rock-field-2500m": { category: "ObstacleStress", speedProfile: "Balanced" },
+  "unsolvable-blocked-corridor-negative": { category: "ObstacleStress", speedProfile: "Balanced" }
 };
 
 type CourseWithoutDerivedMetadata = Omit<AutopilotProvingGroundCourse, "category" | "distanceMeters" | "speedProfile"> & {
@@ -141,10 +147,10 @@ export const autopilotProvingGroundCourses: readonly AutopilotProvingGroundCours
     initialShip: createShipState({ fuel: { current: 150, capacity: 150, reserve: 5, burnRate: 0.02 } }),
     target: stopTarget("s-curve-obstacles", "S-Curve Exit", vec3(180, 0, 0)),
     obstacles: [obstacle("s-rock-a", 50, 0, 0, 10, 6), obstacle("s-rock-b", 90, 22, 0, 10, 6), obstacle("s-rock-c", 130, -20, 0, 10, 6)],
-    expectedOutcome: "KnownStress",
+    expectedOutcome: "Pass",
     planner: "ObstacleAvoidanceLocal",
-    acceptance: { ...baseAcceptance, minObstacleClearance: -8, maxTicks: 1_800 },
-    notes: ["KnownStress: current local planner detours around the first blocking obstacle only."]
+    acceptance: { ...baseAcceptance, minObstacleClearance: 0, maxTicks: 3_200, maxFuelUsed: 40 },
+    notes: ["Reclassified Pass: deterministic multi-obstacle route validation preserves terminal capture, planHash stability, and no silent replan on the S-curve course."]
   }),
   passCourse({
     id: "narrow-corridor",
@@ -152,10 +158,10 @@ export const autopilotProvingGroundCourses: readonly AutopilotProvingGroundCours
     initialShip: createShipState({ fuel: { current: 140, capacity: 140, reserve: 5, burnRate: 0.02 } }),
     target: stopTarget("narrow-corridor", "Corridor Exit", vec3(170, 0, 0)),
     obstacles: [obstacle("corridor-upper-a", 70, 17, 0, 10, 4), obstacle("corridor-lower-a", 70, -17, 0, 10, 4), obstacle("corridor-center-b", 115, 0, 0, 9, 5)],
-    expectedOutcome: "KnownStress",
+    expectedOutcome: "Pass",
     planner: "ObstacleAvoidanceLocal",
-    acceptance: { ...baseAcceptance, minObstacleClearance: -6, maxTicks: 1_800 },
-    notes: ["KnownStress: corridor geometry is intentionally tighter than the one-obstacle detour planner can fully classify."]
+    acceptance: { ...baseAcceptance, minObstacleClearance: 0, maxTicks: 3_200, maxFuelUsed: 40 },
+    notes: ["Reclassified Pass: corridor evidence now keeps the locked route stable while satisfying terminal distance, terminal speed, and no-replan gates."]
   }),
   passCourse({
     id: "offset-gates",
@@ -319,10 +325,10 @@ export const autopilotProvingGroundCourses: readonly AutopilotProvingGroundCours
     initialShip: createShipState({ fuel: fuel(280, 12) }),
     target: stopTarget("s-curve-obstacles-long", "S-Curve Long Exit", vec3(500, 0, 0)),
     obstacles: [obstacle("long-s-a", 140, 0, 0, 10, 6), obstacle("long-s-b", 250, 22, 0, 10, 6), obstacle("long-s-c", 360, -20, 0, 10, 6)],
-    expectedOutcome: "KnownStress",
+    expectedOutcome: "Pass",
     planner: "ObstacleAvoidanceLocal",
-    acceptance: { ...baseAcceptance, minObstacleClearance: -8, maxTicks: 2_500, maxFuelUsed: 95 },
-    notes: ["KnownStress: current local planner detours around the first blocking obstacle only, so multi-obstacle S-curves are tracked as stress evidence."]
+    acceptance: { ...baseAcceptance, minObstacleClearance: 0, maxTicks: 5_200, maxFuelUsed: 95 },
+    notes: ["Reclassified Pass: long S-curve route remains deterministic with stable planHash and StopWithinEnvelope terminal capture."]
   }),
   passCourse({
     id: "narrow-corridor-long",
@@ -330,10 +336,10 @@ export const autopilotProvingGroundCourses: readonly AutopilotProvingGroundCours
     initialShip: createShipState({ fuel: fuel(280, 12) }),
     target: stopTarget("narrow-corridor-long", "Long Corridor Exit", vec3(1_000, 0, 0)),
     obstacles: [obstacle("long-corridor-upper-a", 330, 28, 0, 18, 8), obstacle("long-corridor-lower-a", 330, -28, 0, 18, 8), obstacle("long-corridor-center-b", 620, 0, 0, 20, 8)],
-    expectedOutcome: "KnownStress",
+    expectedOutcome: "Pass",
     planner: "ObstacleAvoidanceLocal",
-    acceptance: { ...baseAcceptance, minObstacleClearance: -14, maxTicks: 4_100, maxFuelUsed: 120 },
-    notes: ["KnownStress: current local planner detours around the first blocking obstacle only and cannot prove long corridor clearance globally."]
+    acceptance: { ...baseAcceptance, minObstacleClearance: 0, maxTicks: 5_200, maxFuelUsed: 120 },
+    notes: ["Reclassified Pass: long corridor route satisfies terminal capture, planHash, and no-silent-replan hard gates under the multi-obstacle planner."]
   }),
   passCourse({
     id: "offset-gates-long",
@@ -499,10 +505,10 @@ export const autopilotProvingGroundCourses: readonly AutopilotProvingGroundCours
     initialShip: createShipState({ fuel: fuel(280, 12) }),
     target: stopTarget("corridor-safe", "Corridor Safe", vec3(1_000, 0, 0)),
     obstacles: [obstacle("safe-corridor-upper", 400, 28, 0, 18, 8), obstacle("safe-corridor-lower", 400, -28, 0, 18, 8), obstacle("safe-corridor-center", 690, 0, 0, 20, 8)],
-    expectedOutcome: "KnownStress",
+    expectedOutcome: "Pass",
     planner: "ObstacleAvoidanceLocal",
-    acceptance: { ...baseAcceptance, minObstacleClearance: -14, maxTicks: 4_400, maxFuelUsed: 125 },
-    notes: ["KnownStress: current local planner detours around the first blocking obstacle only; run with Safe for conservative corridor evidence."]
+    acceptance: { ...baseAcceptance, minObstacleClearance: 0, maxTicks: 5_200, maxFuelUsed: 125 },
+    notes: ["Reclassified Pass: Safe corridor row remains stable without weakening terminal capture or executor physics."]
   }),
   passCourse({
     id: "corridor-balanced",
@@ -510,10 +516,64 @@ export const autopilotProvingGroundCourses: readonly AutopilotProvingGroundCours
     initialShip: createShipState({ fuel: fuel(280, 12) }),
     target: stopTarget("corridor-balanced", "Corridor Balanced", vec3(1_000, 0, 0)),
     obstacles: [obstacle("balanced-corridor-upper", 400, 28, 0, 18, 8), obstacle("balanced-corridor-lower", 400, -28, 0, 18, 8), obstacle("balanced-corridor-center", 690, 0, 0, 20, 8)],
-    expectedOutcome: "KnownStress",
+    expectedOutcome: "Pass",
     planner: "ObstacleAvoidanceLocal",
-    acceptance: { ...baseAcceptance, minObstacleClearance: -14, maxTicks: 4_200, maxFuelUsed: 125 },
-    notes: ["KnownStress: current local planner detours around the first blocking obstacle only; run with Balanced for default corridor evidence."]
+    acceptance: { ...baseAcceptance, minObstacleClearance: 0, maxTicks: 5_200, maxFuelUsed: 125 },
+    notes: ["Reclassified Pass: Balanced corridor row remains stable without weakening terminal capture or executor physics."]
+  }),
+  passCourse({
+    id: "multi-rock-field-1000m",
+    label: "Multi-rock field 1000m",
+    initialShip: createShipState({ fuel: fuel(300, 12) }),
+    target: stopTarget("multi-rock-field-1000m", "Multi-Rock Field 1000m", vec3(1_000, 0, 0)),
+    obstacles: [
+      obstacle("field-1000-rock-a", 250, 0, 0, 14, 8),
+      obstacle("field-1000-rock-b", 430, 30, 0, 15, 7),
+      obstacle("field-1000-rock-c", 620, -30, 0, 15, 7),
+      obstacle("field-1000-rock-d", 790, 0, 0, 14, 8)
+    ],
+    expectedOutcome: "Pass",
+    planner: "ObstacleAvoidanceLocal",
+    acceptance: { ...baseAcceptance, minObstacleClearance: 0, maxTicks: 5_200, maxFuelUsed: 135 },
+    notes: ["Pass: dense 1000m field proves bounded deterministic multi-obstacle routing with stable planHash and no silent replan."]
+  }),
+  passCourse({
+    id: "multi-rock-field-2500m",
+    label: "Multi-rock field 2500m",
+    initialShip: createShipState({ fuel: fuel(520, 18) }),
+    target: stopTarget("multi-rock-field-2500m", "Multi-Rock Field 2500m", vec3(2_500, 0, 0)),
+    obstacles: [
+      obstacle("field-2500-rock-a", 700, 0, 0, 9, 5),
+      obstacle("field-2500-rock-b", 1_080, 42, 0, 10, 5),
+      obstacle("field-2500-rock-c", 1_460, -42, 0, 10, 5),
+      obstacle("field-2500-rock-d", 1_850, 0, 0, 9, 5),
+      obstacle("field-2500-rock-e", 2_180, 44, 0, 9, 5)
+    ],
+    expectedOutcome: "ExpectedFail",
+    planner: "ObstacleAvoidanceLocal",
+    acceptance: { ...baseAcceptance, minObstacleClearance: 0, maxTicks: 9_800, maxFuelUsed: 230, allowReplanRequired: true, expectedFailureReasonCodes: ["OffLockedRoute"] },
+    notes: ["ExpectedFail: 2500m dense field still diverges from the locked route under current executor hard gates, so it is not hidden as Pass."]
+  }),
+  passCourse({
+    id: "unsolvable-blocked-corridor-negative",
+    label: "Unsolvable blocked corridor negative",
+    initialShip: createShipState({ fuel: fuel(180, 10) }),
+    target: stopTarget("unsolvable-blocked-corridor-negative", "Blocked Corridor Negative", vec3(1_000, 0, 0)),
+    obstacles: [
+      obstacle("blocked-corridor-rock-a", 120, 0, 0, 18, 10),
+      obstacle("blocked-corridor-rock-b", 240, 0, 0, 18, 10),
+      obstacle("blocked-corridor-rock-c", 360, 0, 0, 18, 10),
+      obstacle("blocked-corridor-rock-d", 480, 0, 0, 18, 10),
+      obstacle("blocked-corridor-rock-e", 600, 0, 0, 18, 10),
+      obstacle("blocked-corridor-rock-f", 720, 0, 0, 18, 10),
+      obstacle("blocked-corridor-rock-g", 840, 0, 0, 18, 10),
+      obstacle("blocked-corridor-rock-h", 940, 0, 0, 18, 10),
+      obstacle("blocked-corridor-target-seal", 1_000, 0, 0, 28, 8)
+    ],
+    expectedOutcome: "ExpectedFail",
+    planner: "ObstacleAvoidanceLocal",
+    acceptance: { ...baseAcceptance, maxTicks: 1_200, allowReplanRequired: true, expectedFailureReasonCodes: ["UnsafeObstacle"] },
+    notes: ["ExpectedFail: blocked corridor seals the target envelope and must reject before a locked route is synthesized."]
   })
 ];
 

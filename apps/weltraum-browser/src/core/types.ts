@@ -173,6 +173,9 @@ export type RouteValidationReasonCode =
   | "InvalidTarget"
   | "UnsupportedTargetKind"
   | "UnsafeObstacle"
+  | "UnsafeRouteSegment"
+  | "RouteBudgetExceeded"
+  | "RouteUnsolvable"
   | "ImpossibleArrivalEnvelope"
   | "FuelInsufficient"
   | "FuelReserveViolated"
@@ -189,6 +192,7 @@ export interface RouteValidationIssue {
   readonly message: string;
   readonly targetId?: string;
   readonly obstacleId?: string;
+  readonly segmentId?: string;
 }
 
 export interface RouteValidationResult {
@@ -296,6 +300,8 @@ export type AutopilotCourseExpectedOutcome = "Pass" | "KnownStress" | "ExpectedF
 
 export type AutopilotCourseClassification = AutopilotCourseExpectedOutcome | "Fail";
 
+export type AutopilotExpectedFailureReasonCode = FailureReasonCode | RouteValidationReasonCode;
+
 export type AutopilotCourseCategory =
   | "DirectShort"
   | "DirectMedium"
@@ -319,7 +325,7 @@ export interface AutopilotCourseAcceptance {
   readonly maxTicks: number;
   readonly maxFuelUsed?: number;
   readonly allowReplanRequired?: boolean;
-  readonly expectedFailureReasonCodes?: readonly FailureReasonCode[];
+  readonly expectedFailureReasonCodes?: readonly AutopilotExpectedFailureReasonCode[];
 }
 
 export interface AutopilotProvingGroundCourse {
