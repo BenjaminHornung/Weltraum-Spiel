@@ -110,7 +110,7 @@ test("normal browser runtime exposes and previews the playable large proving-gro
   const range1000 = await selectTargetAndAssertPreview(page, largeTargets[1]);
   expect(range1000.hudDistanceDisplay).toContain("km");
   expect(range1000.routeStatus).toContain("route 1.");
-  expect(range1000.radarStatus).toMatch(/auto range (1\.0|2\.5) km/);
+  expect(range1000.radarStatus).toContain("auto range 1.0 km");
   await page.screenshot({ path: path.join(evidenceDir, "playable-large-field-1000m-target.png"), fullPage: true });
   const range2500 = await selectTargetAndAssertPreview(page, largeTargets[2]);
   expect(range2500.hudDistanceDisplay).toContain("km");
