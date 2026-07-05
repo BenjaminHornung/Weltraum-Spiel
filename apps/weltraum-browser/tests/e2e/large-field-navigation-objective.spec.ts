@@ -43,6 +43,33 @@ async function readObjectiveEvidence(page: Page, phase: string): Promise<Objecti
   };
 }
 
+async function waitForRuntimeFrames(page: Page, frameCount: number): Promise<void> {
+  await page.evaluate(async (frames) => {
+    for (let index = 0; index < frames; index += 1) {
+      await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+    }
+  }, frameCount);
+}
+
+async function waitForObjectiveComplete(page: Page, readyDistanceMeters: number): Promise<ObjectiveEvidence> {
+  const deadline = Date.now() + 60_000;
+  let latest = await readObjectiveEvidence(page, "complete-or-progress");
+  let progressed = latest.distanceMeters < readyDistanceMeters - 2;
+
+  while (Date.now() < deadline) {
+    await waitForRuntimeFrames(page, 60);
+    await page.waitForTimeout(500);
+    latest = await readObjectiveEvidence(page, "complete-or-progress");
+    progressed = progressed || latest.distanceMeters < readyDistanceMeters - 2;
+    if (latest.status === "Complete") {
+      return latest;
+    }
+  }
+
+  expect(progressed, "Objective should at least show live distance progress before the completion wait budget ends").toBe(true);
+  return latest;
+}
+
 function createMarkdown(rows: readonly ObjectiveEvidence[]): string {
   const tableRows = rows
     .map((row) => `| ${row.phase} | ${row.label} | ${row.status} | ${row.target} | ${row.distanceDisplay} | ${row.distanceMeters} | ${row.nextAction} | ${row.hint} |`)
@@ -74,6 +101,7 @@ ${tableRows}
 }
 
 test("normal runtime presents and progresses the Range 500m navigation objective", async ({ page }) => {
+  test.setTimeout(95_000);
   await mkdir(evidenceDir, { recursive: true });
   await page.goto("/");
   await page.waitForSelector("#debug-scene", { state: "visible" });
@@ -93,25 +121,25 @@ test("normal runtime presents and progresses the Range 500m navigation objective
   await expect(page.getByTestId("objective-next-action")).toContainText("engage autopilot");
   await expect(page.getByTestId("objective-hint")).toContainText("engage autopilot");
   const ready = await readObjectiveEvidence(page, "ready");
-  await page.screenshot({ path: path.join(evidenceDir, "large-field-objective-ready.png"), fullPage: true });
+  const readyScreenshot = await page.screenshot({ fullPage: true });
 
   await page.locator("#engage-autopilot").click();
   await expect(page.getByTestId("autopilot-active")).toContainText("Autopilot executing");
   await expect(page.getByTestId("objective-status")).toContainText(/Enroute|Complete/);
   const enroute = await readObjectiveEvidence(page, "enroute");
-  await page.screenshot({ path: path.join(evidenceDir, "large-field-objective-enroute.png"), fullPage: true });
+  const enrouteScreenshot = await page.screenshot({ fullPage: true });
 
-  await expect.poll(async () => {
-    const evidence = await readObjectiveEvidence(page, "progress");
-    return evidence.distanceMeters;
-  }, { timeout: 12_000 }).toBeLessThan(ready.distanceMeters - 2);
-
-  const progress = await readObjectiveEvidence(page, "complete-or-progress");
+  const progress = await waitForObjectiveComplete(page, ready.distanceMeters);
   expect(progress.distanceMeters).toBeLessThan(ready.distanceMeters);
-  expect(progress.status).toMatch(/Enroute|Complete/);
-  await page.screenshot({ path: path.join(evidenceDir, "large-field-objective-complete-or-progress.png"), fullPage: true });
+  expect(progress.status).toBe("Complete");
+  expect(progress.nextAction).toBe("complete");
+  expect(progress.hint).toContain("complete");
+  const progressScreenshot = await page.screenshot({ fullPage: true });
   await expectTestBridgeHidden(page);
 
+  await writeFile(path.join(evidenceDir, "large-field-objective-ready.png"), readyScreenshot);
+  await writeFile(path.join(evidenceDir, "large-field-objective-enroute.png"), enrouteScreenshot);
+  await writeFile(path.join(evidenceDir, "large-field-objective-complete-or-progress.png"), progressScreenshot);
   await writeFile(
     path.join(evidenceDir, "browser-large-field-navigation-objective-v1.md"),
     createMarkdown([ready, enroute, progress]),

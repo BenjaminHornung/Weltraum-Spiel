@@ -14,7 +14,7 @@ git diff --check
 git status --short -- Assets package.json package-lock.json apps/weltraum-browser/package.json apps/weltraum-browser/package-lock.json
 ```
 
-`tests/e2e/playable-large-field-live-flight.spec.ts` is not present in this branch at task start.
+Integration note: `tests/e2e/playable-large-field-live-flight.spec.ts` was not present at this feature branch's task start, but it is present in `integration/browser-live-flight-objectives-v1` after merging `feature/browser-live-large-field-flight-acceptance-v1`.
 
 Expected evidence files:
 
@@ -22,3 +22,32 @@ Expected evidence files:
 - `apps/weltraum-browser/evidence/large-field-objective-ready.png`
 - `apps/weltraum-browser/evidence/large-field-objective-enroute.png`
 - `apps/weltraum-browser/evidence/large-field-objective-complete-or-progress.png`
+
+## Integration Results - browser-live-flight-objectives-v1
+
+Integration branch: `integration/browser-live-flight-objectives-v1`.
+
+Merged inputs:
+
+1. `feature/browser-live-large-field-flight-acceptance-v1`
+2. `feature/browser-large-field-navigation-objective-v1`
+
+The objective HUD spec remained present and passed after live flight acceptance was integrated. The Objective test now waits for the 500m objective completion state when it is reachable within the live browser budget.
+
+| Command | Result |
+| --- | --- |
+| `npm run test:e2e -- tests/e2e/large-field-navigation-objective.spec.ts` | Pass: 1 test, 41.0s live browser runtime |
+| `npm run test:e2e -- tests/e2e/playable-large-field-live-flight.spec.ts` | Pass: 1 test, 40.7s live browser runtime |
+
+Integrated objective evidence:
+
+| Field | Value |
+| --- | --- |
+| Product URL | `/` |
+| TestBridge | Hidden/absent in default product URL |
+| Objective | `Reach Range 500m` |
+| Ready distance | `500.0 m` |
+| Enroute state | `Enroute` |
+| Completion state | `Complete` |
+| Completion distance | `1.2 m` |
+| Completion next action | `complete` |

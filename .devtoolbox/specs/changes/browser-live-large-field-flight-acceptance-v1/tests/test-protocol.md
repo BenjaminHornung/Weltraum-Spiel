@@ -46,3 +46,31 @@ Live acceptance values from the generated evidence:
 | Later in-flight distance | `473.6 m` |
 | Final autopilot state | `Arrived at selected target` |
 | Final route state | `holding at target; new route ready` |
+
+## Integration Results - browser-live-flight-objectives-v1
+
+Integration branch: `integration/browser-live-flight-objectives-v1`.
+
+Merged inputs:
+
+1. `feature/browser-live-large-field-flight-acceptance-v1`
+2. `feature/browser-large-field-navigation-objective-v1`
+
+The live acceptance spec remained present and passed after the runtime-owned navigation objective HUD was integrated.
+
+| Command | Result |
+| --- | --- |
+| `npm run test:e2e -- tests/e2e/playable-large-field-live-flight.spec.ts` | Pass: 1 test, 40.7s live browser runtime |
+| `npm run test:e2e -- tests/e2e/large-field-navigation-objective.spec.ts` | Pass: 1 test, 41.0s live browser runtime |
+
+Integrated live-flight evidence:
+
+| Field | Value |
+| --- | --- |
+| Product URL | `/` |
+| TestBridge | Hidden/absent in default product URL |
+| Selected target | `range-500m` |
+| Initial locked-route distance | `500.0 m` |
+| Later in-flight distance | `473.6 m` |
+| Final autopilot state | `Arrived at selected target` |
+| Final route state | `holding at target; new route ready` |
