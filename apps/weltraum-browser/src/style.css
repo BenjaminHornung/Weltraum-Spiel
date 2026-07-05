@@ -258,6 +258,13 @@ body,
 #velocity-status,
 #rcs-sas-status,
 #status,
+#objective-label,
+#objective-status,
+#objective-target,
+#objective-distance,
+#objective-next-action,
+#objective-hint,
+#objective-options,
 #route-status,
 #target-status,
 #target-distance,
@@ -282,6 +289,7 @@ body,
 
 #mode,
 #status,
+#objective-label,
 #target-status,
 #autopilot-action-state {
   color: #f8ffff;
@@ -301,6 +309,7 @@ body,
 }
 
 #status[data-hud-tone="manual"],
+#objective-status[data-hud-tone="manual"],
 #route-status[data-hud-tone="manual"],
 #autopilot-action-state[data-hud-tone="manual"] {
   border-color: rgba(142, 165, 201, 0.46);
@@ -308,6 +317,7 @@ body,
 }
 
 #status[data-hud-tone="ready"],
+#objective-status[data-hud-tone="ready"],
 #route-status[data-hud-tone="ready"],
 #autopilot-action-state[data-hud-tone="ready"] {
   border-color: rgba(128, 255, 159, 0.72);
@@ -316,6 +326,7 @@ body,
 }
 
 #status[data-hud-tone="active"],
+#objective-status[data-hud-tone="active"],
 #route-status[data-hud-tone="active"],
 #autopilot-action-state[data-hud-tone="active"] {
   border-color: rgba(112, 223, 255, 0.78);
@@ -324,6 +335,7 @@ body,
 }
 
 #status[data-hud-tone="holding"],
+#objective-status[data-hud-tone="holding"],
 #route-status[data-hud-tone="holding"],
 #autopilot-action-state[data-hud-tone="holding"] {
   border-color: rgba(128, 255, 159, 0.62);
@@ -332,6 +344,7 @@ body,
 }
 
 #status[data-hud-tone="blocked"],
+#objective-status[data-hud-tone="blocked"],
 #route-status[data-hud-tone="blocked"],
 #autopilot-action-state[data-hud-tone="blocked"],
 #fuel-status[data-hud-tone="blocked"] {
@@ -365,6 +378,13 @@ body,
   gap: 6px;
 }
 
+.objective-option-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 5px;
+}
+
 .target-option {
   border: 1px solid rgba(142, 165, 201, 0.55);
   border-radius: 6px;
@@ -376,6 +396,24 @@ body,
   line-height: 1.15;
   overflow-wrap: anywhere;
   text-align: left;
+}
+
+.objective-option {
+  border: 1px solid rgba(142, 165, 201, 0.55);
+  border-radius: 6px;
+  padding: 4px 7px;
+  background: rgba(18, 29, 45, 0.88);
+  color: #f7fbff;
+  font: inherit;
+  font-size: 11px;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+  text-align: left;
+}
+
+.objective-option--selected {
+  border-color: rgba(128, 255, 159, 0.78);
+  background: rgba(30, 91, 53, 0.6);
 }
 
 .target-option--selected {
@@ -429,6 +467,7 @@ body,
 }
 
 .hud-actions button:focus-visible,
+.objective-option:focus-visible,
 .target-option:focus-visible {
   outline: 2px solid var(--hud-green);
   outline-offset: 2px;

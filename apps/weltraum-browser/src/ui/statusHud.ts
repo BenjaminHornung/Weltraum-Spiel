@@ -1,6 +1,7 @@
 import type { TelemetrySnapshot } from "../core";
 import type { BrowserRuntimeCommand } from "../runtime/commands";
 import type { ShipVisualSourceSnapshot } from "../render/three/shipVisual";
+import type { NavigationObjectiveStatus } from "../sim/telemetry";
 
 type ChipSeverity = "Critical" | "High" | "Medium" | "Low";
 export type StatusHudTone = "manual" | "ready" | "active" | "holding" | "blocked";
@@ -38,6 +39,7 @@ export interface StatusHudMeterViewModel {
 
 export interface NavigationPanelViewModel {
   readonly title: "Navigation";
+  readonly objective: StatusHudObjectiveViewModel;
   readonly plan: StatusHudLabelValueViewModel;
   readonly route: StatusHudLabelValueViewModel;
   readonly routeTone: StatusHudTone;
@@ -45,6 +47,17 @@ export interface NavigationPanelViewModel {
   readonly distance: StatusHudLabelValueViewModel;
   readonly radar: StatusHudLabelValueViewModel;
   readonly targetOptions: readonly StatusHudTargetOptionViewModel[];
+}
+
+export interface StatusHudObjectiveViewModel {
+  readonly label: string;
+  readonly target: string;
+  readonly distance: string;
+  readonly status: string;
+  readonly statusTone: StatusHudTone;
+  readonly hint: string;
+  readonly nextAction: string;
+  readonly options: readonly StatusHudObjectiveOptionViewModel[];
 }
 
 export interface WarningPanelViewModel {
@@ -105,6 +118,7 @@ export interface StatusHudViewModel {
   readonly runtimeMessage: string;
   readonly visualSourceLine: string;
   readonly targetOptions: readonly StatusHudTargetOptionViewModel[];
+  readonly objective: StatusHudObjectiveViewModel;
 }
 
 export interface StatusHudTargetOptionViewModel {
@@ -115,6 +129,16 @@ export interface StatusHudTargetOptionViewModel {
   readonly displayLabel: string;
   readonly ariaLabel: string;
   readonly isSelected: boolean;
+}
+
+export interface StatusHudObjectiveOptionViewModel {
+  readonly id: string;
+  readonly label: string;
+  readonly targetId: string;
+  readonly status: NavigationObjectiveStatus;
+  readonly displayLabel: string;
+  readonly ariaLabel: string;
+  readonly isActive: boolean;
 }
 
 export interface StatusHudCommandSink {
@@ -189,6 +213,24 @@ const statusCatalog: Record<string, string> = {
   BrakeReserveInsufficient: "Autopilot blocked: brake reserve"
 };
 
+const objectiveStatusCatalog: Record<NavigationObjectiveStatus, string> = {
+  inactive: "Inactive",
+  active: "Active",
+  "route-ready": "Route ready",
+  enroute: "Enroute",
+  complete: "Complete",
+  blocked: "Blocked"
+};
+
+const objectiveToneCatalog: Record<NavigationObjectiveStatus, StatusHudTone> = {
+  inactive: "manual",
+  active: "manual",
+  "route-ready": "ready",
+  enroute: "active",
+  complete: "holding",
+  blocked: "blocked"
+};
+
 const createWarningChips = (codes: readonly string[]): readonly StatusHudWarningChipViewModel[] =>
   unique(codes)
     .map((code) => ({ code, ...(chipCatalog[code] ?? fallbackWarning) }))
@@ -205,6 +247,41 @@ const createFuelMeter = (telemetry: TelemetrySnapshot): StatusHudMeterViewModel 
   const percent = fuel.capacity > 0 ? clampPercent((fuel.current / fuel.capacity) * 100) : 0;
   const tone: StatusHudMeterTone = fuel.status === "Blocked" ? "blocked" : fuel.current <= fuel.reserve || percent <= 25 ? "caution" : "ready";
   return { percent, tone };
+};
+
+const createObjectiveViewModel = (telemetry: TelemetrySnapshot): StatusHudObjectiveViewModel => {
+  const objective = telemetry.navigationObjective;
+  if (!objective) {
+    return {
+      label: "No navigation objective",
+      target: "none",
+      distance: "n/a",
+      status: "Inactive",
+      statusTone: "manual",
+      hint: "Choose a large-field objective to begin.",
+      nextAction: "choose objective",
+      options: []
+    };
+  }
+
+  return {
+    label: objective.label,
+    target: objective.targetLabel,
+    distance: objective.distanceMeters === null ? "n/a" : formatDistance(objective.distanceMeters),
+    status: objectiveStatusCatalog[objective.status],
+    statusTone: objectiveToneCatalog[objective.status],
+    hint: objective.hint,
+    nextAction: objective.nextAction,
+    options: objective.options.map((option) => ({
+      id: option.id,
+      label: option.label,
+      targetId: option.targetId,
+      status: option.status,
+      displayLabel: `${option.label}${option.isActive ? " (active)" : option.status === "complete" ? " (complete)" : ""}`,
+      ariaLabel: `${option.label}, ${objectiveStatusCatalog[option.status]}`,
+      isActive: option.isActive
+    }))
+  };
 };
 
 const createRouteTone = (telemetry: TelemetrySnapshot, warningChips: readonly StatusHudWarningChipViewModel[]): StatusHudTone => {
@@ -433,6 +510,7 @@ export const createStatusHudViewModel = (telemetry: TelemetrySnapshot, visualSou
   const helpHint = "Desktop keyboard/mouse manual flight: W/S pitch, A/D yaw, Q/E roll, Shift/Ctrl throttle, X cut, Y/Z full, R RCS, T SAS, CapsLock mode, H/N translate, V camera, RMB+wheel inspect. Mobile: target selection and autopilot only in this slice.";
   const controlModeEffectState = formatControlModeEffectState(telemetry);
   const actionPanel = createActionPanel(telemetry, warningChips, routeTone);
+  const objective = createObjectiveViewModel(telemetry);
   const flightStatus: FlightStatusPanelViewModel = {
     title: "Flight Status",
     mode: { label: "Mode", value: snapshot.authority.mode },
@@ -447,6 +525,7 @@ export const createStatusHudViewModel = (telemetry: TelemetrySnapshot, visualSou
   };
   const navigation: NavigationPanelViewModel = {
     title: "Navigation",
+    objective,
     plan: { label: "Plan", value: planState },
     route: { label: "Route", value: routeState },
     routeTone,
@@ -501,7 +580,8 @@ export const createStatusHudViewModel = (telemetry: TelemetrySnapshot, visualSou
     warningChips,
     runtimeMessage,
     visualSourceLine,
-    targetOptions
+    targetOptions,
+    objective
   };
 };
 
@@ -541,6 +621,7 @@ const renderPresentationState = (viewModel: StatusHudViewModel): void => {
   setStateTone("status", viewModel.routeTone);
   setStateTone("route-status", viewModel.routeTone);
   setStateTone("autopilot-action-state", viewModel.actionTone);
+  setStateTone("objective-status", viewModel.objective.statusTone);
   setStateTone("fuel-status", viewModel.fuelMeter.tone);
   setStateTone("throttle-status", viewModel.throttleMeter.tone);
   setMeter("fuel-meter-fill", viewModel.fuelMeter);
@@ -571,6 +652,47 @@ const renderWarningChips = (viewModel: StatusHudViewModel): void => {
   }
 
   element.textContent = viewModel.warningChips.map((chip) => `${chip.label}: ${chip.action}`).join(" | ");
+};
+
+const renderObjectiveOptions = (viewModel: StatusHudViewModel, sink: StatusHudCommandSink | undefined): void => {
+  const element = document.getElementById("objective-options");
+  if (!element) {
+    return;
+  }
+
+  if (viewModel.objective.options.length === 0) {
+    element.textContent = "no objectives available";
+    return;
+  }
+
+  const renderKey = viewModel.objective.options.map((objective) => `${objective.id}:${objective.status}:${objective.isActive}`).join("|");
+  const container = element as HTMLElement;
+  if (container.dataset?.renderKey === renderKey) {
+    return;
+  }
+  if (container.dataset) {
+    container.dataset.renderKey = renderKey;
+  }
+
+  if (typeof document.createElement !== "function" || !("replaceChildren" in element)) {
+    element.textContent = viewModel.objective.options.map((objective) => objective.displayLabel).join(" | ");
+    return;
+  }
+
+  const buttons = viewModel.objective.options.map((objective) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = objective.isActive ? "objective-option objective-option--selected" : "objective-option";
+    button.dataset.objectiveId = objective.id;
+    button.setAttribute("aria-pressed", String(objective.isActive));
+    button.setAttribute("aria-label", objective.ariaLabel);
+    button.title = objective.ariaLabel;
+    button.textContent = objective.displayLabel;
+    button.onclick = sink ? () => void sink.dispatch({ type: "SelectObjective", objectiveId: objective.id }) : null;
+    return button;
+  });
+
+  element.replaceChildren(...buttons);
 };
 
 const renderTargetOptions = (viewModel: StatusHudViewModel, sink: StatusHudCommandSink | undefined): void => {
@@ -663,6 +785,12 @@ export const renderStatusHud = (telemetry: TelemetrySnapshot, commandSink?: Stat
   setText("rcs-sas-status", viewModel.flightStatus.rcsSas.value);
   setText("help-hint", viewModel.debug.help.value);
   setText("status", viewModel.autopilotState);
+  setText("objective-label", viewModel.objective.label);
+  setText("objective-status", viewModel.objective.status);
+  setText("objective-target", viewModel.objective.target);
+  setText("objective-distance", viewModel.objective.distance);
+  setText("objective-hint", viewModel.objective.hint);
+  setText("objective-next-action", viewModel.objective.nextAction);
   setText("route-status", viewModel.navigation.route.value);
   setText("target-status", viewModel.navigation.target.value);
   setText("target-distance", viewModel.navigation.distance.value);
@@ -676,6 +804,7 @@ export const renderStatusHud = (telemetry: TelemetrySnapshot, commandSink?: Stat
   setText("autopilot-action-state", viewModel.actions.stateLabel);
   renderPresentationState(viewModel);
   renderWarningChips(viewModel);
+  renderObjectiveOptions(viewModel, commandSink);
   renderTargetOptions(viewModel, commandSink);
   setText("engage-autopilot", viewModel.actions.primaryLabel);
   setText("cancel-autopilot", viewModel.actions.secondaryLabel);
