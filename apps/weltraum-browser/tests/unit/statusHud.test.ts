@@ -375,6 +375,89 @@ describe("renderStatusHud", () => {
     expect(elements.get("flight-hud")?.getAttribute("data-action-tone")).toBe("ready");
   });
 
+  it("keeps route engage disabled when the completed objective points to the next objective", () => {
+    const elements = installDocumentStub();
+    const ship = createShipStateV2({ authority: { mode: "Autopilot" } });
+    const ownerSnapshot = createFlightSnapshot(ship, null);
+    const target = {
+      id: "range-500m",
+      label: "Range 500m",
+      kind: "Waypoint" as const,
+      position: ship.position,
+      arrivalEnvelope: { radius: 8 }
+    };
+    const commands: unknown[] = [];
+
+    renderStatusHud(
+      {
+        ship,
+        lockedPlan: null,
+        selectedTarget: target,
+        navigationObjective: {
+          id: "reach-range-500m",
+          label: "Reach Range 500m",
+          targetId: "range-500m",
+          targetLabel: "Range 500m",
+          status: "complete",
+          hint: "Reach Range 500m complete. Reach Range 1000m is available.",
+          distanceMeters: 1,
+          nextAction: "next objective available",
+          options: [
+            { id: "reach-range-500m", label: "Reach Range 500m", targetId: "range-500m", status: "complete", isActive: true },
+            { id: "reach-range-1000m", label: "Reach Range 1000m", targetId: "range-1000m", status: "available", isActive: false }
+          ]
+        },
+        routePreview: {
+          state: "Ready",
+          planner: "ObstacleAvoidanceLocal",
+          target,
+          plan: {
+            id: "preview-complete",
+            planner: "ObstacleAvoidanceLocal",
+            createdAtTick: 0,
+            target,
+            segments: [{ id: "direct-0", kind: "Direct", start: ship.position, end: target.position, desiredSpeed: 18, clearanceRadius: 3 }],
+            validation: { ok: true, issues: [], rejectedReasonCodes: [] },
+            score: { distance: 1, segmentCount: 1, clearanceRisk: 0, fuelCostEstimate: 0, authorityRisk: 0, total: 1, reasons: [] },
+            planHash: "done500m"
+          },
+          validation: { ok: true, issues: [], rejectedReasonCodes: [] },
+          rejectedReasonCodes: [],
+          playerMessage: "Route preview ready for Range 500m."
+        },
+        flightSnapshot: ownerSnapshot,
+        executor: {
+          tick: 1,
+          status: "Arrived",
+          routeLifecycle: "Holding",
+          arrivalPhase: "Holding",
+          planHash: null,
+          completedPlanHash: "done500m",
+          stationKeepingActive: true,
+          activeSegmentId: null,
+          distanceToTarget: 1,
+          offRouteDistance: 0,
+          replanRequired: false,
+          invalidationReasons: [],
+          failureReasonCodes: [],
+          fuel: ownerSnapshot.fuel,
+          flightSnapshot: ownerSnapshot,
+          position: ship.position,
+          velocity: ship.velocity
+        }
+      },
+      { dispatch: (command) => commands.push(command) }
+    );
+
+    elements.get("engage-autopilot")?.onclick?.();
+
+    expect(commands).toEqual([]);
+    expect(elements.get("engage-autopilot")?.textContent).toBe("Hold route");
+    expect(elements.get("engage-autopilot")?.disabled).toBe(true);
+    expect(elements.get("autopilot-action-state")?.textContent).toBe("Next objective available");
+    expect(elements.get("autopilot-action-state")?.getAttribute("data-hud-tone")).toBe("holding");
+  });
+
   it("renders selected target and route-preview labels from snapshot fields", () => {
     const elements = installDocumentStub();
     const ship = createShipStateV2({ authority: { mode: "Autopilot" } });
@@ -455,7 +538,7 @@ describe("renderStatusHud", () => {
         nextAction: "engage autopilot",
         options: [
           { id: "reach-range-500m", label: "Reach Range 500m", targetId: "range-500m", status: "route-ready", isActive: true },
-          { id: "reach-range-1000m", label: "Reach Range 1000m", targetId: "range-1000m", status: "inactive", isActive: false }
+          { id: "reach-range-1000m", label: "Reach Range 1000m", targetId: "range-1000m", status: "locked", isActive: false }
         ]
       },
       flightSnapshot: ownerSnapshot,
@@ -483,8 +566,8 @@ describe("renderStatusHud", () => {
     expect(elements.get("objective-distance")?.textContent).toBe("514.1 m");
     expect(elements.get("objective-next-action")?.textContent).toBe("engage autopilot");
     expect(elements.get("objective-hint")?.textContent).toContain("engage autopilot");
-    expect(elements.get("objective-options")?.textContent).toContain("Reach Range 500m (active)");
-    expect(elements.get("objective-options")?.textContent).toContain("Reach Range 1000m");
+    expect(elements.get("objective-options")?.textContent).toContain("Reach Range 500m (route ready)");
+    expect(elements.get("objective-options")?.textContent).toContain("Reach Range 1000m (locked)");
   });
 
   it("formats large-field target choices, route distance, and radar scale for readable km previews", () => {
