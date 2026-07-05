@@ -12,7 +12,7 @@ import { createStatusHudViewModel } from "../../src/ui/statusHud";
 import { createTestBridge } from "../../src/test-harness/browserBridge";
 import { serializeTelemetry } from "../../src/sim/telemetry";
 import type { ShipState, TargetDescriptor } from "../../src/core";
-import { provingGroundTargets } from "../../src/world/provingGroundWorld";
+import { playableLargeFieldTargets, provingGroundTargets } from "../../src/world/provingGroundWorld";
 import { autopilotProvingGroundCourses } from "../../src/world/autopilotProvingGroundCourses";
 
 const ship: ShipState = createShipStateV2({
@@ -210,6 +210,79 @@ describe("FixedStepSimulationLoop", () => {
     expect(initial.selectedTarget?.id).toBe(provingGroundTargets.navigationAlpha.id);
     expect(initial.routePreview?.state).toBe("Ready");
     expect(initial.routePreview?.plan?.target.id).toBe(provingGroundTargets.navigationAlpha.id);
+    expect(initial.navigationObjective).toEqual(expect.objectContaining({
+      id: "reach-range-500m",
+      label: "Reach Range 500m",
+      targetId: playableLargeFieldTargets.range500.id,
+      status: "active",
+      nextAction: "select target"
+    }));
+  });
+
+  it("progresses the large-field navigation objective from runtime target selection to executor completion", () => {
+    const { controller } = createBrowserRuntime({
+      initialShip: createShipStateV2({ position: vec3(498, 0, 0), authority: { mode: "Autopilot" } })
+    });
+
+    const selected = controller.dispatchCommand({ type: "SelectObjective", objectiveId: "reach-range-500m" });
+
+    expect(selected.selectedTarget?.id).toBe(playableLargeFieldTargets.range500.id);
+    expect(selected.routePreview?.state).toBe("Ready");
+    expect(selected.routePreview?.plan?.target.id).toBe(playableLargeFieldTargets.range500.id);
+    expect(selected.navigationObjective).toEqual(expect.objectContaining({
+      id: "reach-range-500m",
+      status: "route-ready",
+      nextAction: "engage autopilot"
+    }));
+    expect(selected.runtimeMessage).toContain("Reach Range 500m active");
+
+    let telemetry = controller.dispatchCommand({ type: "EngageAutopilot", planner: "DirectLocal" });
+    expect(telemetry.lockedPlan?.target.id).toBe(playableLargeFieldTargets.range500.id);
+    expect(telemetry.navigationObjective?.status).toBe("enroute");
+
+    for (let i = 0; i < 240 && telemetry.navigationObjective?.status !== "complete"; i += 1) {
+      telemetry = controller.step(1);
+    }
+
+    expect(telemetry.executor.status).toBe("Arrived");
+    expect(telemetry.navigationObjective).toEqual(expect.objectContaining({
+      id: "reach-range-500m",
+      status: "complete",
+      nextAction: "complete"
+    }));
+    expect(telemetry.navigationObjective?.hint).toContain("complete");
+  });
+
+  it("keeps the engaged navigation objective active when another objective is clicked mid-route", () => {
+    const { controller } = createBrowserRuntime({
+      initialShip: createShipStateV2({ position: vec3(498, 0, 0), authority: { mode: "Autopilot" } })
+    });
+
+    controller.dispatchCommand({ type: "SelectObjective", objectiveId: "reach-range-500m" });
+    controller.dispatchCommand({ type: "EngageAutopilot", planner: "DirectLocal" });
+    const attemptedSwitch = controller.dispatchCommand({ type: "SelectObjective", objectiveId: "reach-range-1000m" });
+
+    expect(attemptedSwitch.runtimeMessage).toBe("Cancel the current autopilot route before changing objective target.");
+    expect(attemptedSwitch.selectedTarget?.id).toBe(playableLargeFieldTargets.range500.id);
+    expect(attemptedSwitch.lockedPlan?.target.id).toBe(playableLargeFieldTargets.range500.id);
+    expect(attemptedSwitch.navigationObjective).toEqual(expect.objectContaining({
+      id: "reach-range-500m",
+      status: "enroute"
+    }));
+
+    let telemetry = attemptedSwitch;
+    for (let i = 0; i < 240 && telemetry.navigationObjective?.status !== "complete"; i += 1) {
+      telemetry = controller.step(1);
+    }
+
+    expect(telemetry.navigationObjective).toEqual(expect.objectContaining({
+      id: "reach-range-500m",
+      status: "complete"
+    }));
+    expect(telemetry.navigationObjective?.options).toEqual(expect.arrayContaining([
+      expect.objectContaining({ id: "reach-range-500m", status: "complete", isActive: true }),
+      expect.objectContaining({ id: "reach-range-1000m", status: "inactive", isActive: false })
+    ]));
   });
 
   it("routes browser UI autopilot commands through the runtime controller", () => {
@@ -362,6 +435,7 @@ describe("FixedStepSimulationLoop", () => {
     expect(serialized.routePreview?.target?.id).toBe(snapshot.routePreview?.target?.id);
     expect(serialized.routePreview?.plan?.planHash).toBe(snapshot.routePreview?.plan?.planHash);
     expect(serialized.routePreview?.playerMessage).toBe(snapshot.routePreview?.playerMessage);
+    expect(serialized.navigationObjective).toEqual(snapshot.navigationObjective);
     expect(serialized.runtimeMessage).toBe(snapshot.runtimeMessage);
     expect(serialized.manualInput).toEqual(snapshot.manualInput);
     expect(serialized.ship.orientation).toEqual(snapshot.ship.orientation);

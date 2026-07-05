@@ -15,6 +15,13 @@ const elementIds = [
   "velocity-status",
   "rcs-sas-status",
   "status",
+  "objective-label",
+  "objective-status",
+  "objective-target",
+  "objective-distance",
+  "objective-next-action",
+  "objective-hint",
+  "objective-options",
   "route-status",
   "target-status",
   "target-options",
@@ -122,6 +129,9 @@ describe("renderStatusHud", () => {
     expect(elements.get("help-hint")?.textContent).toContain("W/S pitch");
     expect(elements.get("help-hint")?.textContent).toContain("Mobile: target selection and autopilot only");
     expect(elements.get("route-status")?.textContent).toContain("select a target");
+    expect(elements.get("objective-label")?.textContent).toBe("No navigation objective");
+    expect(elements.get("objective-status")?.textContent).toBe("Inactive");
+    expect(elements.get("objective-options")?.textContent).toBe("no objectives available");
     expect(elements.get("fuel-status")?.textContent).toContain("Blocked");
     expect(elements.get("status")?.textContent).toContain("Autopilot blocked: fuel");
     expect(elements.get("flight-hud")?.getAttribute("data-route-tone")).toBe("blocked");
@@ -424,6 +434,57 @@ describe("renderStatusHud", () => {
     expect(elements.get("radar-status")?.textContent).toContain("local contact Target B");
     expect(elements.get("runtime-message")?.textContent).toContain("Selected Target B");
     expect(elements.get("target-options")?.textContent).toContain("Target B ~0 m (selected)");
+  });
+
+  it("renders navigation objective state from telemetry fields", () => {
+    const elements = installDocumentStub();
+    const ship = createShipStateV2({ authority: { mode: "Autopilot" } });
+    const ownerSnapshot = createFlightSnapshot(ship, null);
+
+    renderStatusHud({
+      ship,
+      lockedPlan: null,
+      navigationObjective: {
+        id: "reach-range-500m",
+        label: "Reach Range 500m",
+        targetId: "range-500m",
+        targetLabel: "Range 500m",
+        status: "route-ready",
+        hint: "Route preview ready for Range 500m; engage autopilot to progress.",
+        distanceMeters: 514.1,
+        nextAction: "engage autopilot",
+        options: [
+          { id: "reach-range-500m", label: "Reach Range 500m", targetId: "range-500m", status: "route-ready", isActive: true },
+          { id: "reach-range-1000m", label: "Reach Range 1000m", targetId: "range-1000m", status: "inactive", isActive: false }
+        ]
+      },
+      flightSnapshot: ownerSnapshot,
+      executor: {
+        tick: 1,
+        status: "Idle",
+        planHash: null,
+        activeSegmentId: null,
+        distanceToTarget: 0,
+        offRouteDistance: 0,
+        replanRequired: false,
+        invalidationReasons: [],
+        failureReasonCodes: [],
+        fuel: ownerSnapshot.fuel,
+        flightSnapshot: ownerSnapshot,
+        position: ship.position,
+        velocity: ship.velocity
+      }
+    });
+
+    expect(elements.get("objective-label")?.textContent).toBe("Reach Range 500m");
+    expect(elements.get("objective-status")?.textContent).toBe("Route ready");
+    expect(elements.get("objective-status")?.getAttribute("data-hud-tone")).toBe("ready");
+    expect(elements.get("objective-target")?.textContent).toBe("Range 500m");
+    expect(elements.get("objective-distance")?.textContent).toBe("514.1 m");
+    expect(elements.get("objective-next-action")?.textContent).toBe("engage autopilot");
+    expect(elements.get("objective-hint")?.textContent).toContain("engage autopilot");
+    expect(elements.get("objective-options")?.textContent).toContain("Reach Range 500m (active)");
+    expect(elements.get("objective-options")?.textContent).toContain("Reach Range 1000m");
   });
 
   it("formats large-field target choices, route distance, and radar scale for readable km previews", () => {
@@ -776,6 +837,8 @@ describe("renderStatusHud", () => {
     expect(html).toContain('id="hud-left-panel"');
     expect(html).toContain('id="hud-right-panel"');
     expect(html).toContain('id="hud-bottom-strip"');
+    expect(html).toContain('id="objective-status"');
+    expect(html).toContain('data-testid="objective-label"');
     expect(html).toContain('class="hud-center-safe-area"');
     expect(html).toContain('id="debug-hud"');
     expect(css).toContain(".hud-center-safe-area");
@@ -783,5 +846,6 @@ describe("renderStatusHud", () => {
     expect(css).toContain("#hud-left-panel");
     expect(css).toContain("#hud-right-panel");
     expect(css).toContain("#hud-bottom-strip");
+    expect(css).toContain(".objective-option-strip");
   });
 });

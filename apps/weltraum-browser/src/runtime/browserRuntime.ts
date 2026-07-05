@@ -1,9 +1,9 @@
 import { AutopilotExecutor, DirectLocalPlanner, FixedStepSimulationLoop, ObstacleAvoidanceLocalPlanner, createTelemetrySnapshot, vec3 } from "../core";
 import type { ObstacleDescriptor, PresentationSnapshot, RoutePlan, RoutePlanningResult, ShipState, TargetDescriptor } from "../core";
-import { autopilotAuthority, createShipState, noAutopilotAuthority, playableLargeFieldRuntimeObstacles, provingGroundTargets } from "../world/provingGroundWorld";
+import { autopilotAuthority, createShipState, noAutopilotAuthority, playableLargeFieldRuntimeObstacles, playableLargeFieldTargets, provingGroundTargets } from "../world/provingGroundWorld";
 import type { BrowserRuntimeCommand } from "./commands";
 import { clamp01, createManualFlightInputState, mergeManualFlightInputState, nextCameraMode, nextControlMode, type ManualFlightInputState } from "./input";
-import type { RoutePreviewSnapshot, TelemetrySnapshot } from "../sim/telemetry";
+import type { NavigationObjectiveOptionSnapshot, NavigationObjectiveSnapshot, NavigationObjectiveStatus, RoutePreviewSnapshot, TelemetrySnapshot } from "../sim/telemetry";
 
 export type { BrowserRuntimeCommand } from "./commands";
 
@@ -31,6 +31,23 @@ export interface BrowserRuntimeOptions {
   readonly initialShip?: ShipState;
 }
 
+interface NavigationObjectiveDefinition {
+  readonly id: string;
+  readonly label: string;
+  readonly targetId: string;
+}
+
+const navigationObjectives: readonly NavigationObjectiveDefinition[] = [
+  { id: "reach-range-500m", label: "Reach Range 500m", targetId: playableLargeFieldTargets.range500.id },
+  { id: "reach-range-1000m", label: "Reach Range 1000m", targetId: playableLargeFieldTargets.range1000.id },
+  { id: "reach-range-2500m", label: "Reach Range 2500m", targetId: playableLargeFieldTargets.range2500.id }
+];
+
+const distanceBetween = (
+  left: { readonly x: number; readonly y: number; readonly z: number },
+  right: { readonly x: number; readonly y: number; readonly z: number }
+): number => Math.hypot(left.x - right.x, left.y - right.y, left.z - right.z);
+
 export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
   const executor = new AutopilotExecutor({ divergenceDistance: 24, allowManualInputWhenIdle: true });
   let ship = options.initialShip ?? createInitialShip();
@@ -39,6 +56,11 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
   let selectedPlanner: RoutePlan["planner"] = "ObstacleAvoidanceLocal";
   let routePreview: RoutePreviewSnapshot | null = null;
   let runtimeMessage: string | null = null;
+  let activeObjectiveId: string | null = navigationObjectives[0]?.id ?? null;
+  let lastEngagedObjectiveId: string | null = null;
+  let lastEngagedObjectiveTargetId: string | null = null;
+  let lastEngagedObjectivePlanHash: string | null = null;
+  const completedObjectiveIds = new Set<string>();
   let manualInput = createManualFlightInputState({
     controlMode: ship.controlMode,
     rcsEnabled: ship.rcsEnabled,
@@ -101,11 +123,131 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
     return routePreview;
   };
 
+  const objectiveTargetFor = (objective: NavigationObjectiveDefinition): TargetDescriptor | null =>
+    browserTargetCatalog.find((candidateTarget) => candidateTarget.id === objective.targetId) ?? null;
+
+  const completedByExecutor = (objective: NavigationObjectiveDefinition, executorTelemetry = executor.getTelemetry()): boolean =>
+    lastEngagedObjectiveId === objective.id &&
+    lastEngagedObjectiveTargetId === objective.targetId &&
+    (executorTelemetry.status === "Arrived" || executorTelemetry.stationKeepingActive === true) &&
+    (lastEngagedObjectivePlanHash === null ||
+      executorTelemetry.completedPlanHash === lastEngagedObjectivePlanHash ||
+      executorTelemetry.planHash === lastEngagedObjectivePlanHash);
+
+  const refreshCompletedObjectives = (): void => {
+    const objective = navigationObjectives.find((candidateObjective) => candidateObjective.id === activeObjectiveId);
+    if (objective && completedByExecutor(objective)) {
+      completedObjectiveIds.add(objective.id);
+    }
+  };
+
+  const statusForInactiveObjective = (objective: NavigationObjectiveDefinition): NavigationObjectiveStatus =>
+    completedObjectiveIds.has(objective.id) ? "complete" : "inactive";
+
+  const createNavigationObjectiveSnapshot = (): NavigationObjectiveSnapshot | null => {
+    refreshCompletedObjectives();
+    const objective = navigationObjectives.find((candidateObjective) => candidateObjective.id === activeObjectiveId) ?? null;
+    const options: readonly NavigationObjectiveOptionSnapshot[] = navigationObjectives.map((candidateObjective) => ({
+      id: candidateObjective.id,
+      label: candidateObjective.label,
+      targetId: candidateObjective.targetId,
+      status: candidateObjective.id === objective?.id ? "active" : statusForInactiveObjective(candidateObjective),
+      isActive: candidateObjective.id === objective?.id
+    }));
+
+    if (!objective) {
+      return {
+        id: "no-objective",
+        label: "No navigation objective",
+        targetId: "",
+        targetLabel: "none",
+        status: "inactive",
+        hint: "Choose a large-field objective to begin.",
+        distanceMeters: null,
+        nextAction: "choose objective",
+        options
+      };
+    }
+
+    const target = objectiveTargetFor(objective);
+    if (!target) {
+      return {
+        id: objective.id,
+        label: objective.label,
+        targetId: objective.targetId,
+        targetLabel: "missing target",
+        status: "blocked",
+        hint: "Objective target is unavailable.",
+        distanceMeters: null,
+        nextAction: "blocked",
+        options
+      };
+    }
+
+    const lockedPlan = executor.getLockedPlan();
+    const executorTelemetry = executor.getTelemetry();
+    const distanceMeters = distanceBetween(loop.getShip().position, target.position);
+    const selectedMatches = selectedTarget?.id === target.id;
+    const lockedMatches = lockedPlan?.target.id === target.id;
+    const lockedOtherTarget = Boolean(lockedPlan && !lockedMatches);
+    const previewMatches = routePreview?.target?.id === target.id;
+    const routeReady = previewMatches && routePreview?.state === "Ready" && Boolean(routePreview.plan);
+
+    let status: NavigationObjectiveStatus = "active";
+    let hint = `Select ${target.label} to preview the route.`;
+    let nextAction = "select target";
+
+    if (completedObjectiveIds.has(objective.id) || completedByExecutor(objective, executorTelemetry)) {
+      status = "complete";
+      hint = `${objective.label} complete. Choose the next range objective when ready.`;
+      nextAction = "complete";
+    } else if (lockedMatches && executorTelemetry.status === "Executing") {
+      status = "enroute";
+      hint = `Autopilot enroute to ${target.label}; monitor distance until arrival.`;
+      nextAction = "enroute";
+    } else if (lockedOtherTarget) {
+      status = "blocked";
+      hint = "Cancel the current route before following this objective.";
+      nextAction = "cancel route";
+    } else if (routeReady) {
+      status = "route-ready";
+      hint = `Route preview ready for ${target.label}; engage autopilot to progress.`;
+      nextAction = "engage autopilot";
+    } else if (selectedMatches && routePreview?.state === "Unavailable") {
+      status = "blocked";
+      hint = routePreview.playerMessage;
+      nextAction = "blocked";
+    } else if (selectedMatches) {
+      status = "active";
+      hint = `Selected ${target.label}; wait for a route preview.`;
+      nextAction = "preview route";
+    }
+
+    return {
+      id: objective.id,
+      label: objective.label,
+      targetId: objective.targetId,
+      targetLabel: target.label,
+      status,
+      hint,
+      distanceMeters,
+      nextAction,
+      options: navigationObjectives.map((candidateObjective) => ({
+        id: candidateObjective.id,
+        label: candidateObjective.label,
+        targetId: candidateObjective.targetId,
+        status: candidateObjective.id === objective.id ? status : statusForInactiveObjective(candidateObjective),
+        isActive: candidateObjective.id === objective.id
+      }))
+    };
+  };
+
   const snapshot = (): TelemetrySnapshot => ({
     ...createTelemetrySnapshot(loop.getShip(), loop.getTelemetry(), executor.getLockedPlan()),
     selectableTargets: browserTargetCatalog,
     selectedTarget,
     routePreview,
+    navigationObjective: createNavigationObjectiveSnapshot(),
     runtimeMessage,
     manualInput
   });
@@ -152,6 +294,12 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
 
   const lockPlan = (plan: RoutePlan): RoutePlan => {
     executor.lockPlan(plan, loop.getShip(), loop.getTick());
+    const objective = navigationObjectives.find((candidateObjective) => candidateObjective.id === activeObjectiveId);
+    if (objective && objective.targetId === plan.target.id) {
+      lastEngagedObjectiveId = objective.id;
+      lastEngagedObjectiveTargetId = plan.target.id;
+      lastEngagedObjectivePlanHash = plan.planHash;
+    }
     return plan;
   };
 
@@ -187,6 +335,36 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
     refreshRoutePreview(selectedPlanner);
   };
 
+  const selectObjective = (objectiveId: unknown): void => {
+    if (typeof objectiveId !== "string") {
+      runtimeMessage = "Objective unchanged: choose a known navigation objective.";
+      return;
+    }
+
+    const objective = navigationObjectives.find((candidateObjective) => candidateObjective.id === objectiveId) ?? null;
+    if (!objective) {
+      runtimeMessage = "Objective unchanged: choose a known navigation objective.";
+      return;
+    }
+
+    const target = objectiveTargetFor(objective);
+    if (!target) {
+      runtimeMessage = `${objective.label} is blocked: target unavailable.`;
+      return;
+    }
+
+    if (!executor.getTelemetry().canSelectNewTarget) {
+      runtimeMessage = "Cancel the current autopilot route before changing objective target.";
+      return;
+    }
+
+    activeObjectiveId = objective.id;
+    selectedTarget = target;
+    refreshRoutePreview(selectedPlanner);
+    const previewState = routePreview?.state === "Ready" ? "Route preview ready" : "Route preview unavailable";
+    runtimeMessage = `${objective.label} active. ${previewState} for ${target.label}.`;
+  };
+
   const engageAutopilot = (planner: unknown): void => {
     if (planner !== "DirectLocal" && planner !== "ObstacleAvoidanceLocal") {
       runtimeMessage = "Autopilot not engaged: choose a supported route mode.";
@@ -217,6 +395,9 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
     switch (candidate.type) {
       case "SelectTarget":
         selectTarget(candidate.targetId);
+        return snapshot();
+      case "SelectObjective":
+        selectObjective(candidate.objectiveId);
         return snapshot();
       case "EngageAutopilot":
         engageAutopilot(candidate.planner);
