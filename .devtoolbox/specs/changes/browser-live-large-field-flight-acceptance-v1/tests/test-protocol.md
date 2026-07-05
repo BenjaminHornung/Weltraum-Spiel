@@ -74,3 +74,29 @@ Integrated live-flight evidence:
 | Later in-flight distance | `473.6 m` |
 | Final autopilot state | `Arrived at selected target` |
 | Final route state | `holding at target; new route ready` |
+
+## Mainline Objective Chain Audit - 2026-07-05
+
+Mainline merge order:
+
+1. `integration/browser-live-flight-objectives-v1`
+2. `feature/browser-large-field-objective-chain-live-v1`
+
+`apps/weltraum-browser/tests/e2e/playable-large-field-live-flight.spec.ts` remained present after the objective-chain merge and passed against the normal product URL `/`.
+
+| Command | Result |
+| --- | --- |
+| `npm run test:e2e -- tests/e2e/playable-large-field-live-flight.spec.ts` | Pass: 1 Chromium test, 42.2s live browser runtime |
+
+Mainline live-flight evidence:
+
+| Field | Value |
+| --- | --- |
+| Product URL | `/` |
+| TestBridge | Hidden/absent in default product URL |
+| Selected target | `range-500m` |
+| Initial locked-route distance | `500.0 m` |
+| Later in-flight distance | `473.6 m` |
+| Final autopilot state | `Arrived at selected target` |
+| Final route state | `holding at target; new route ready` |
+| Final action state | `Next objective available` |

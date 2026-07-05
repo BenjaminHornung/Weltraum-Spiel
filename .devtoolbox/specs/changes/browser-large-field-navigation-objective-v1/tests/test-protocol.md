@@ -51,3 +51,27 @@ Integrated objective evidence:
 | Completion state | `Complete` |
 | Completion distance | `1.2 m` |
 | Completion next action | `complete` |
+
+## Mainline Objective Chain Audit - 2026-07-05
+
+The final mainline merge includes both `integration/browser-live-flight-objectives-v1` and `feature/browser-large-field-objective-chain-live-v1`. The live-flight spec is present on `main`, and the navigation objective spec passed after objective chaining was integrated.
+
+| Command | Result |
+| --- | --- |
+| `npm run test:e2e -- tests/e2e/large-field-navigation-objective.spec.ts` | Pass: 1 Chromium test, 41.9s live browser runtime |
+| `npm run test:e2e -- tests/e2e/playable-large-field-live-flight.spec.ts` | Pass: 1 Chromium test, 42.2s live browser runtime |
+| `npm run test:e2e -- tests/e2e/large-field-objective-chain-live.spec.ts` | Pass: 1 Chromium test, 45.0s live browser runtime |
+
+Mainline objective evidence:
+
+| Field | Value |
+| --- | --- |
+| Product URL | `/` |
+| TestBridge | Hidden/absent in default product URL |
+| Objective | `Reach Range 500m` |
+| Ready distance | `500.0 m` |
+| Enroute state | `Enroute` |
+| Completion state | `Complete` |
+| Completion distance | `1.5 m` |
+| Completion next action | `next objective available` |
+| Follow-up objective | `Reach Range 1000m` available after 500m completion |
