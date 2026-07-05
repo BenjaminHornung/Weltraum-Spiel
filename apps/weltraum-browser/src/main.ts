@@ -9,6 +9,11 @@ if (!canvas) {
 }
 
 const searchParams = new URLSearchParams(window.location.search);
+const uiScenario = searchParams.get("uiScenario");
+if (uiScenario) {
+  document.body.dataset.uiScenario = uiScenario;
+}
+
 const runtime = createBrowserRuntime({ initialShip: createRuntimeShipForFlightCase(searchParams.get("flightCase")) });
 const lowPolyInstanceBatch = createProvingGroundLowPolyRenderBatch();
 

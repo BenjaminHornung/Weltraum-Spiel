@@ -1,0 +1,305 @@
+{
+  "generatedBy": "apps/weltraum-browser/tests/e2e/ui-concept-parity.spec.ts",
+  "normalRuntimeOnly": true,
+  "testBridgeUsed": false,
+  "entries": [
+    {
+      "name": "flight-hud-1640x900",
+      "viewport": {
+        "width": 1640,
+        "height": 900
+      },
+      "boxes": {
+        "#hud-top-strip": {
+          "x": 425,
+          "y": 18,
+          "width": 790,
+          "height": 61,
+          "right": 1215,
+          "bottom": 79
+        },
+        "#hud-left-panel": {
+          "x": 18,
+          "y": 92,
+          "width": 328,
+          "height": 384,
+          "right": 346,
+          "bottom": 476
+        },
+        "#hud-radar-panel": {
+          "x": 18,
+          "y": 590,
+          "width": 292,
+          "height": 292,
+          "right": 310,
+          "bottom": 882
+        },
+        "#hud-right-panel": {
+          "x": 1294,
+          "y": 92,
+          "width": 328,
+          "height": 748,
+          "right": 1622,
+          "bottom": 840
+        },
+        "#hud-bottom-strip": {
+          "x": 326,
+          "y": 753,
+          "width": 954,
+          "height": 129,
+          "right": 1280,
+          "bottom": 882
+        }
+      },
+      "centerSafeArea": {
+        "x": 470,
+        "y": 243,
+        "width": 700,
+        "height": 414,
+        "right": 1170,
+        "bottom": 657
+      },
+      "overlapPercentages": {
+        "#hud-top-strip": 0,
+        "#hud-left-panel": 0,
+        "#hud-radar-panel": 0,
+        "#hud-right-panel": 0,
+        "#hud-bottom-strip": 0
+      },
+      "screenshotPath": "E:\\Unity\\Weltraum Spiel\\Weltraum Spiel\\apps\\weltraum-browser\\evidence\\ui-concept-parity-flight-hud.png"
+    },
+    {
+      "name": "flight-hud-1440x900",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "boxes": {
+        "#hud-top-strip": {
+          "x": 325,
+          "y": 18,
+          "width": 790,
+          "height": 61,
+          "right": 1115,
+          "bottom": 79
+        },
+        "#hud-left-panel": {
+          "x": 18,
+          "y": 92,
+          "width": 288,
+          "height": 392,
+          "right": 306,
+          "bottom": 484
+        },
+        "#hud-radar-panel": {
+          "x": 18,
+          "y": 623,
+          "width": 259,
+          "height": 259,
+          "right": 277,
+          "bottom": 882
+        },
+        "#hud-right-panel": {
+          "x": 1134,
+          "y": 92,
+          "width": 288,
+          "height": 748,
+          "right": 1422,
+          "bottom": 840
+        },
+        "#hud-bottom-strip": {
+          "x": 293,
+          "y": 753,
+          "width": 827,
+          "height": 129,
+          "right": 1120,
+          "bottom": 882
+        }
+      },
+      "centerSafeArea": {
+        "x": 403,
+        "y": 243,
+        "width": 634,
+        "height": 414,
+        "right": 1037,
+        "bottom": 657
+      },
+      "overlapPercentages": {
+        "#hud-top-strip": 0,
+        "#hud-left-panel": 0,
+        "#hud-radar-panel": 0,
+        "#hud-right-panel": 0,
+        "#hud-bottom-strip": 0
+      },
+      "screenshotPath": "E:\\Unity\\Weltraum Spiel\\Weltraum Spiel\\apps\\weltraum-browser\\evidence\\ui-concept-parity-flight-hud-1440x900.png"
+    },
+    {
+      "name": "flight-hud-1280x720",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "boxes": {
+        "#hud-top-strip": {
+          "x": 260,
+          "y": 14,
+          "width": 760,
+          "height": 61,
+          "right": 1020,
+          "bottom": 75
+        },
+        "#hud-left-panel": {
+          "x": 14,
+          "y": 80,
+          "width": 306,
+          "height": 378,
+          "right": 320,
+          "bottom": 458
+        },
+        "#hud-radar-panel": {
+          "x": 14,
+          "y": 464,
+          "width": 242,
+          "height": 242,
+          "right": 256,
+          "bottom": 706
+        },
+        "#hud-right-panel": {
+          "x": 960,
+          "y": 80,
+          "width": 306,
+          "height": 594,
+          "right": 1266,
+          "bottom": 674
+        },
+        "#hud-bottom-strip": {
+          "x": 270,
+          "y": 555,
+          "width": 678,
+          "height": 151,
+          "right": 948,
+          "bottom": 706
+        }
+      },
+      "centerSafeArea": {
+        "x": 358,
+        "y": 194,
+        "width": 563,
+        "height": 331,
+        "right": 922,
+        "bottom": 526
+      },
+      "overlapPercentages": {
+        "#hud-top-strip": 0,
+        "#hud-left-panel": 0,
+        "#hud-radar-panel": 0,
+        "#hud-right-panel": 0,
+        "#hud-bottom-strip": 0
+      },
+      "screenshotPath": "E:\\Unity\\Weltraum Spiel\\Weltraum Spiel\\apps\\weltraum-browser\\evidence\\ui-concept-parity-flight-hud-1280x720.png"
+    },
+    {
+      "name": "navigation-planner",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "boxes": {
+        "#navigation-planner": {
+          "x": 16,
+          "y": 16,
+          "width": 1408,
+          "height": 868,
+          "right": 1424,
+          "bottom": 884
+        },
+        "#nav-planner-map": {
+          "x": 143,
+          "y": 130,
+          "width": 910,
+          "height": 741,
+          "right": 1053,
+          "bottom": 871
+        },
+        "#nav-planner-details": {
+          "x": 1063,
+          "y": 17,
+          "width": 360,
+          "height": 866,
+          "right": 1423,
+          "bottom": 883
+        }
+      },
+      "centerSafeArea": {
+        "x": 403,
+        "y": 243,
+        "width": 634,
+        "height": 414,
+        "right": 1037,
+        "bottom": 657
+      },
+      "overlapPercentages": {
+        "#navigation-planner": 100,
+        "#nav-planner-map": 100,
+        "#nav-planner-details": 0
+      },
+      "screenshotPath": "E:\\Unity\\Weltraum Spiel\\Weltraum Spiel\\apps\\weltraum-browser\\evidence\\ui-concept-parity-navigation-planner.png"
+    },
+    {
+      "name": "combat-contact",
+      "viewport": {
+        "width": 1640,
+        "height": 900
+      },
+      "boxes": {
+        "#hud-left-panel": {
+          "x": 18,
+          "y": 92,
+          "width": 328,
+          "height": 384,
+          "right": 346,
+          "bottom": 476
+        },
+        "#hud-radar-panel": {
+          "x": 18,
+          "y": 590,
+          "width": 292,
+          "height": 292,
+          "right": 310,
+          "bottom": 882
+        },
+        "#contact-panel": {
+          "x": 1322,
+          "y": 22,
+          "width": 300,
+          "height": 376,
+          "right": 1622,
+          "bottom": 398
+        },
+        "#contact-target-card": {
+          "x": 1322,
+          "y": 687,
+          "width": 300,
+          "height": 195,
+          "right": 1622,
+          "bottom": 882
+        }
+      },
+      "centerSafeArea": {
+        "x": 470,
+        "y": 243,
+        "width": 700,
+        "height": 414,
+        "right": 1170,
+        "bottom": 657
+      },
+      "overlapPercentages": {
+        "#hud-left-panel": 0,
+        "#hud-radar-panel": 0,
+        "#contact-panel": 0,
+        "#contact-target-card": 0
+      },
+      "screenshotPath": "E:\\Unity\\Weltraum Spiel\\Weltraum Spiel\\apps\\weltraum-browser\\evidence\\ui-concept-parity-combat-contact.png"
+    }
+  ]
+}
