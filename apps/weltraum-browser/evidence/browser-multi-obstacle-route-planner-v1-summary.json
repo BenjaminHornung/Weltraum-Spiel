@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-03T10:12:27.906Z",
+  "generatedAt": "2026-07-05T11:25:39.600Z",
   "evidenceOwner": "apps/weltraum-browser/tests/e2e/multi-obstacle-planner.spec.ts",
   "evidenceTest": "browser multi-obstacle planner records course evidence",
   "catalogCourseCount": 38,

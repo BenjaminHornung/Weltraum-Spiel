@@ -1,6 +1,6 @@
 import { AutopilotExecutor, DirectLocalPlanner, FixedStepSimulationLoop, ObstacleAvoidanceLocalPlanner, createTelemetrySnapshot, vec3 } from "../core";
 import type { ObstacleDescriptor, PresentationSnapshot, RoutePlan, RoutePlanningResult, ShipState, TargetDescriptor } from "../core";
-import { autopilotAuthority, createShipState, defaultObstacles, noAutopilotAuthority, provingGroundTargets } from "../world/provingGroundWorld";
+import { autopilotAuthority, createShipState, noAutopilotAuthority, playableLargeFieldRuntimeObstacles, provingGroundTargets } from "../world/provingGroundWorld";
 import type { BrowserRuntimeCommand } from "./commands";
 import { clamp01, createManualFlightInputState, mergeManualFlightInputState, nextCameraMode, nextControlMode, type ManualFlightInputState } from "./input";
 import type { RoutePreviewSnapshot, TelemetrySnapshot } from "../sim/telemetry";
@@ -25,7 +25,7 @@ export const defaultTarget: TargetDescriptor = provingGroundTargets.navigationAl
 
 export const browserTargetCatalog: readonly TargetDescriptor[] = Object.values(provingGroundTargets);
 
-export const browserObstacles: readonly ObstacleDescriptor[] = defaultObstacles;
+export const browserObstacles: readonly ObstacleDescriptor[] = playableLargeFieldRuntimeObstacles;
 
 export interface BrowserRuntimeOptions {
   readonly initialShip?: ShipState;

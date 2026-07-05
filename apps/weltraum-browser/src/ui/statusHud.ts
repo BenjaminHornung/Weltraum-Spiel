@@ -111,6 +111,9 @@ export interface StatusHudTargetOptionViewModel {
   readonly id: string;
   readonly label: string;
   readonly kind: string;
+  readonly rangeLabel: string;
+  readonly displayLabel: string;
+  readonly ariaLabel: string;
   readonly isSelected: boolean;
 }
 
@@ -133,7 +136,39 @@ const severityOrder: Record<ChipSeverity, number> = { Critical: 0, High: 1, Medi
 
 const unique = (codes: readonly string[]): readonly string[] => [...new Set(codes)];
 
-const formatMeters = (value: number): string => (Number.isFinite(value) ? `${value.toFixed(1)} m` : "unknown");
+const formatDistance = (value: number): string => {
+  if (!Number.isFinite(value)) {
+    return "unknown";
+  }
+  return Math.abs(value) >= 995 ? `${(value / 1000).toFixed(1)} km` : `${value.toFixed(1)} m`;
+};
+
+const formatRangeHint = (value: number): string => {
+  if (!Number.isFinite(value)) {
+    return "range unknown";
+  }
+  return Math.abs(value) >= 995 ? `~${(value / 1000).toFixed(1)} km` : `~${Math.round(value)} m`;
+};
+
+const radarRangeForMeters = (value: number): string => {
+  if (!Number.isFinite(value)) {
+    return "auto range unknown";
+  }
+  const distance = Math.abs(value);
+  if (distance <= 250) {
+    return "250 m";
+  }
+  if (distance <= 1000) {
+    return "1.0 km";
+  }
+  if (distance <= 2500) {
+    return "2.5 km";
+  }
+  return "5.0 km";
+};
+
+const distanceFromOrigin = (position: { readonly x: number; readonly y: number; readonly z: number }): number =>
+  Math.hypot(position.x, position.y, position.z);
 
 const clampPercent = (value: number): number => Math.max(0, Math.min(100, Math.round(value)));
 
@@ -346,12 +381,15 @@ export const createStatusHudViewModel = (telemetry: TelemetrySnapshot, visualSou
     : telemetry.executor.stationKeepingActive && telemetry.executor.completedPlanHash
       ? "holding at target; new route ready"
     : preview?.state === "Ready" && preview.plan
-      ? `preview ready: ${preview.plan.segments.length} leg${preview.plan.segments.length === 1 ? "" : "s"}`
+      ? `preview ready: ${preview.plan.segments.length} leg${preview.plan.segments.length === 1 ? "" : "s"}, route ${formatDistance(preview.plan.score.distance)}`
       : (preview?.playerMessage ?? "select a target to preview a route");
   const targetOptions = (telemetry.selectableTargets ?? []).map((candidateTarget) => ({
     id: candidateTarget.id,
     label: candidateTarget.label,
     kind: candidateTarget.kind,
+    rangeLabel: formatRangeHint(distanceFromOrigin(candidateTarget.position)),
+    displayLabel: `${candidateTarget.label} ${formatRangeHint(distanceFromOrigin(candidateTarget.position))}`,
+    ariaLabel: `${candidateTarget.label}, ${candidateTarget.kind}, range ${formatRangeHint(distanceFromOrigin(candidateTarget.position)).replace(/^~/, "")}`,
     isSelected: candidateTarget.id === selectedTarget?.id
   }));
   const manualInput = telemetry.manualInput;
@@ -374,9 +412,9 @@ export const createStatusHudViewModel = (telemetry: TelemetrySnapshot, visualSou
         ? "Route preview ready"
         : "No active plan";
   const targetState = target ? `${target.label} [${target.kind}]` : "none selected";
-  const distanceState = target && displayedDistance !== undefined ? formatMeters(displayedDistance) : "n/a";
+  const distanceState = target && displayedDistance !== undefined ? formatDistance(displayedDistance) : "n/a";
   const radarState = target && routePlan
-    ? `local contact ${target.label}: ${routePlan.segments.length} route leg${routePlan.segments.length === 1 ? "" : "s"}, terminal ${formatMeters(routePlan.score.distance)}`
+    ? `local contact ${target.label}; auto range ${radarRangeForMeters(distanceFromOrigin(target.position))}; ${routePlan.segments.length} route leg${routePlan.segments.length === 1 ? "" : "s"}; terminal ${formatDistance(routePlan.score.distance)}`
     : "no route contact";
   const autopilotState = `${statusCatalog[telemetry.executor.status] ?? "Autopilot status unknown"}${telemetry.executor.replanRequired ? " / new plan required" : ""}`;
   const fuelState = `${snapshot.fuel.status}: ${snapshot.fuel.current}/${snapshot.fuel.capacity} kg (reserve ${snapshot.fuel.reserve})`;
@@ -546,7 +584,7 @@ const renderTargetOptions = (viewModel: StatusHudViewModel, sink: StatusHudComma
     return;
   }
 
-  const renderKey = viewModel.targetOptions.map((target) => `${target.id}:${target.isSelected}`).join("|");
+  const renderKey = viewModel.targetOptions.map((target) => `${target.id}:${target.rangeLabel}:${target.isSelected}`).join("|");
   const container = element as HTMLElement;
   if (container.dataset?.renderKey === renderKey) {
     return;
@@ -556,7 +594,7 @@ const renderTargetOptions = (viewModel: StatusHudViewModel, sink: StatusHudComma
   }
 
   if (typeof document.createElement !== "function" || !("replaceChildren" in element)) {
-    element.textContent = viewModel.targetOptions.map((target) => `${target.label}${target.isSelected ? " (selected)" : ""}`).join(" | ");
+    element.textContent = viewModel.targetOptions.map((target) => `${target.displayLabel}${target.isSelected ? " (selected)" : ""}`).join(" | ");
     return;
   }
 
@@ -566,7 +604,9 @@ const renderTargetOptions = (viewModel: StatusHudViewModel, sink: StatusHudComma
     button.className = target.isSelected ? "target-option target-option--selected" : "target-option";
     button.dataset.targetId = target.id;
     button.setAttribute("aria-pressed", String(target.isSelected));
-    button.textContent = `${target.label} (${target.kind})`;
+    button.setAttribute("aria-label", target.ariaLabel);
+    button.title = target.ariaLabel;
+    button.textContent = target.displayLabel;
     button.onclick = sink ? () => void sink.dispatch({ type: "SelectTarget", targetId: target.id }) : null;
     return button;
   });
