@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { arrivalRadiusForTarget, vec3, type RoutePlan } from "../../core";
-import type { BrowserRuntimeController } from "../../runtime/browserRuntime";
+import { browserObstacles, browserTargetCatalog, type BrowserRuntimeController } from "../../runtime/browserRuntime";
 import type { CameraMode } from "../../runtime/input";
 import { renderStatusHud } from "../../ui/statusHud";
 import type { LowPolyInstanceBatch } from "../../world/lowPolyInstances";
@@ -54,6 +54,8 @@ export interface RenderDebugSnapshot {
     readonly renderOnly: true;
     readonly rendererOwnsWorldTruth: false;
   };
+  readonly targetBeaconCount: number;
+  readonly runtimeObstacleCount: number;
 }
 
 export interface DebugSceneOptions {
@@ -68,8 +70,9 @@ export class DebugScene {
   private readonly asteroidBatch: LowPolyInstanceBatch;
   private readonly asteroidField: THREE.InstancedMesh;
   private readonly routeGroup = new THREE.Group();
+  private readonly targetBeaconGroup = new THREE.Group();
+  private readonly obstacleGroup = new THREE.Group();
   private readonly target: THREE.Mesh;
-  private readonly obstacle: THREE.Mesh;
   private frameHandle = 0;
   private lastTime = performance.now();
   private lastDrawnPlanHash: string | null = null;
@@ -86,7 +89,10 @@ export class DebugScene {
     this.renderSnapshot = this.createInitialRenderSnapshot();
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    this.renderer.setClearColor(0x080b12, 1);
     this.scene.background = new THREE.Color(0x080b12);
+    this.camera.far = 5_000;
+    this.camera.updateProjectionMatrix();
     this.camera.position.set(0, 80, 150);
     this.camera.lookAt(55, 0, -20);
 
@@ -95,7 +101,7 @@ export class DebugScene {
     key.position.set(40, 80, 60);
     this.scene.add(ambient, key);
 
-    const grid = new THREE.GridHelper(240, 24, 0x294568, 0x152236);
+    const grid = new THREE.GridHelper(3_000, 30, 0x294568, 0x152236);
     grid.position.y = -6;
     this.scene.add(grid);
 
@@ -112,11 +118,10 @@ export class DebugScene {
     this.target = new THREE.Mesh(new THREE.OctahedronGeometry(5, 0), new THREE.MeshStandardMaterial({ color: 0x80ff9f, emissive: 0x1c5a2a }));
     this.scene.add(this.target);
 
-    this.obstacle = new THREE.Mesh(
-      new THREE.IcosahedronGeometry(11, 0),
-      new THREE.MeshStandardMaterial({ color: 0x9a6bff, roughness: 0.8, metalness: 0.05 })
-    );
-    this.scene.add(this.obstacle);
+    this.populateTargetBeaconMarkers();
+    this.populateObstacleMarkers();
+    this.scene.add(this.targetBeaconGroup);
+    this.scene.add(this.obstacleGroup);
     this.scene.add(this.routeGroup);
 
     window.addEventListener("resize", this.resize);
@@ -154,6 +159,9 @@ export class DebugScene {
       if (targetPosition) {
         this.target.visible = true;
         this.target.position.copy(toVector3(targetPosition));
+        const selectedTargetDistance = this.target.position.distanceTo(position);
+        const selectedTargetScale = selectedTargetDistance >= 2_000 ? 4.5 : selectedTargetDistance >= 900 ? 3.1 : selectedTargetDistance >= 400 ? 2 : 1;
+        this.target.scale.setScalar(selectedTargetScale);
       } else {
         this.target.visible = false;
       }
@@ -183,9 +191,10 @@ export class DebugScene {
         shipOrientation: orientation,
         shipVisual: this.shipVisual.getSnapshot(),
         camera: cameraSnapshot,
-        lowPolyInstanceBatch: this.createLowPolyInstanceBatchSnapshot()
+        lowPolyInstanceBatch: this.createLowPolyInstanceBatchSnapshot(),
+        targetBeaconCount: this.targetBeaconGroup.children.length,
+        runtimeObstacleCount: this.obstacleGroup.children.length
       };
-      this.obstacle.position.set(58, 0, -14);
       this.updateHud();
       this.renderer.render(this.scene, this.camera);
       this.frameHandle = requestAnimationFrame(render);
@@ -280,8 +289,34 @@ export class DebugScene {
         anchorSource: "ManifestFallback",
         anchorLocalPosition: { x: -1.5, y: 1.3, z: 0 }
       },
-      lowPolyInstanceBatch: this.createLowPolyInstanceBatchSnapshot()
+      lowPolyInstanceBatch: this.createLowPolyInstanceBatchSnapshot(),
+      targetBeaconCount: this.targetBeaconGroup.children.length,
+      runtimeObstacleCount: this.obstacleGroup.children.length
     };
+  }
+
+  private populateTargetBeaconMarkers(): void {
+    const material = new THREE.MeshBasicMaterial({ color: 0x70dfff, transparent: true, opacity: 0.72, depthWrite: false, depthTest: false });
+    for (const target of browserTargetCatalog) {
+      const distanceFromOrigin = Math.hypot(target.position.x, target.position.y, target.position.z);
+      const markerScale = distanceFromOrigin >= 2_000 ? 5.8 : distanceFromOrigin >= 900 ? 3.6 : distanceFromOrigin >= 400 ? 2.4 : 0.9;
+      const marker = new THREE.Mesh(new THREE.OctahedronGeometry(3.2, 0), material);
+      marker.name = `runtime-target-beacon:${target.id}`;
+      marker.position.copy(toVector3(target.position));
+      marker.scale.setScalar(markerScale);
+      marker.renderOrder = 2;
+      this.targetBeaconGroup.add(marker);
+    }
+  }
+
+  private populateObstacleMarkers(): void {
+    const material = new THREE.MeshStandardMaterial({ color: 0x9a6bff, transparent: true, opacity: 0.58, roughness: 0.8, metalness: 0.05 });
+    for (const obstacle of browserObstacles) {
+      const marker = new THREE.Mesh(new THREE.IcosahedronGeometry(Math.max(1, obstacle.radius), 0), material);
+      marker.name = `runtime-obstacle-truth:${obstacle.id}`;
+      marker.position.copy(toVector3(obstacle.center));
+      this.obstacleGroup.add(marker);
+    }
   }
 
   private dispatchManualInput(elapsedSeconds: number): void {

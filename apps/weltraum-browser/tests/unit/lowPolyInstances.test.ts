@@ -26,7 +26,12 @@ describe("low-poly render instance descriptors", () => {
     );
     expect("absolutePosition" in batch.instances[0]).toBe(false);
     expect("absoluteVelocity" in batch.instances[0]).toBe(false);
-    expect(budget).toEqual({ sourceEntityCount: 6, renderedInstanceCount: 4, maxInstances: 4, culledByBudget: 2 });
+    expect(budget).toEqual({
+      sourceEntityCount: provingGroundAsteroidField.length,
+      renderedInstanceCount: 4,
+      maxInstances: 4,
+      culledByBudget: provingGroundAsteroidField.length - 4
+    });
   });
 
   it("builds the proving-ground render descriptor outside the renderer", () => {

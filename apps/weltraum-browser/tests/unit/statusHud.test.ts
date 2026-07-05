@@ -423,7 +423,89 @@ describe("renderStatusHud", () => {
     expect(elements.get("route-status")?.textContent).toContain("preview ready");
     expect(elements.get("radar-status")?.textContent).toContain("local contact Target B");
     expect(elements.get("runtime-message")?.textContent).toContain("Selected Target B");
-    expect(elements.get("target-options")?.textContent).toContain("Target B (selected)");
+    expect(elements.get("target-options")?.textContent).toContain("Target B ~0 m (selected)");
+  });
+
+  it("formats large-field target choices, route distance, and radar scale for readable km previews", () => {
+    const ship = createShipStateV2({ authority: { mode: "Autopilot" } });
+    const ownerSnapshot = createFlightSnapshot(ship, null);
+    const targets = [
+      {
+        id: "range-500m",
+        label: "Range 500m",
+        kind: "Point" as const,
+        position: vec3(500, 0, 0),
+        arrivalEnvelope: { radius: 8 }
+      },
+      {
+        id: "range-1000m",
+        label: "Range 1000m",
+        kind: "Point" as const,
+        position: vec3(1000, 0, 0),
+        arrivalEnvelope: { radius: 8 }
+      },
+      {
+        id: "range-2500m",
+        label: "Range 2500m",
+        kind: "Point" as const,
+        position: vec3(2500, 0, 0),
+        arrivalEnvelope: { radius: 8 }
+      }
+    ];
+    const target = targets[2];
+
+    const viewModel = createStatusHudViewModel({
+      ship,
+      lockedPlan: null,
+      selectedTarget: target,
+      selectableTargets: targets,
+      routePreview: {
+        state: "Ready",
+        planner: "ObstacleAvoidanceLocal",
+        target,
+        plan: {
+          id: "preview-2500",
+          planner: "ObstacleAvoidanceLocal",
+          createdAtTick: 0,
+          target,
+          segments: [
+            { id: "leg-0", kind: "Direct", start: ship.position, end: vec3(1000, 0, 0), desiredSpeed: 18, clearanceRadius: 3 },
+            { id: "leg-1", kind: "Direct", start: vec3(1000, 0, 0), end: vec3(2000, 0, 0), desiredSpeed: 18, clearanceRadius: 3 },
+            { id: "leg-2", kind: "Direct", start: vec3(2000, 0, 0), end: target.position, desiredSpeed: 18, clearanceRadius: 3 }
+          ],
+          validation: { ok: true, issues: [], rejectedReasonCodes: [] },
+          score: { distance: 2500, segmentCount: 3, clearanceRisk: 0, fuelCostEstimate: 0, authorityRisk: 0, total: 2500, reasons: [] },
+          planHash: "face2500"
+        },
+        validation: { ok: true, issues: [], rejectedReasonCodes: [] },
+        rejectedReasonCodes: [],
+        playerMessage: "Route preview ready for Range 2500m."
+      },
+      flightSnapshot: ownerSnapshot,
+      executor: {
+        tick: 1,
+        status: "Idle",
+        planHash: null,
+        activeSegmentId: null,
+        distanceToTarget: 0,
+        offRouteDistance: 0,
+        replanRequired: false,
+        invalidationReasons: [],
+        failureReasonCodes: [],
+        fuel: ownerSnapshot.fuel,
+        flightSnapshot: ownerSnapshot,
+        position: ship.position,
+        velocity: ship.velocity
+      }
+    });
+
+    expect(viewModel.distance).toBe("2.5 km");
+    expect(viewModel.routeState).toBe("preview ready: 3 legs, route 2.5 km");
+    expect(viewModel.radarState).toContain("local contact Range 2500m");
+    expect(viewModel.radarState).toContain("auto range 2.5 km");
+    expect(viewModel.radarState).toContain("terminal 2.5 km");
+    expect(viewModel.targetOptions.map((option) => option.displayLabel)).toEqual(["Range 500m ~500 m", "Range 1000m ~1.0 km", "Range 2500m ~2.5 km"]);
+    expect(viewModel.targetOptions[2].ariaLabel).toBe("Range 2500m, Point, range 2.5 km");
   });
 
   it("keeps completed station-keeping route hashes out of the player HUD", () => {
