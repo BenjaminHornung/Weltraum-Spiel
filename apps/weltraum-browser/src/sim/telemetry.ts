@@ -12,7 +12,7 @@ export interface RoutePreviewSnapshot {
   readonly playerMessage: string;
 }
 
-export type NavigationObjectiveStatus = "inactive" | "active" | "route-ready" | "enroute" | "complete" | "blocked";
+export type NavigationObjectiveStatus = "inactive" | "locked" | "available" | "route-ready" | "enroute" | "complete" | "blocked";
 
 export interface NavigationObjectiveOptionSnapshot {
   readonly id: string;

@@ -43,6 +43,9 @@ const navigationObjectives: readonly NavigationObjectiveDefinition[] = [
   { id: "reach-range-2500m", label: "Reach Range 2500m", targetId: playableLargeFieldTargets.range2500.id }
 ];
 
+const objectiveIndexFor = (objective: NavigationObjectiveDefinition): number =>
+  navigationObjectives.findIndex((candidateObjective) => candidateObjective.id === objective.id);
+
 const distanceBetween = (
   left: { readonly x: number; readonly y: number; readonly z: number },
   right: { readonly x: number; readonly y: number; readonly z: number }
@@ -135,25 +138,75 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
       executorTelemetry.planHash === lastEngagedObjectivePlanHash);
 
   const refreshCompletedObjectives = (): void => {
-    const objective = navigationObjectives.find((candidateObjective) => candidateObjective.id === activeObjectiveId);
+    const objective = navigationObjectives.find((candidateObjective) => candidateObjective.id === lastEngagedObjectiveId);
     if (objective && completedByExecutor(objective)) {
       completedObjectiveIds.add(objective.id);
     }
   };
 
-  const statusForInactiveObjective = (objective: NavigationObjectiveDefinition): NavigationObjectiveStatus =>
-    completedObjectiveIds.has(objective.id) ? "complete" : "inactive";
+  const isObjectiveUnlocked = (objective: NavigationObjectiveDefinition): boolean => {
+    const objectiveIndex = objectiveIndexFor(objective);
+    if (objectiveIndex <= 0) {
+      return true;
+    }
+
+    return navigationObjectives
+      .slice(0, objectiveIndex)
+      .every((previousObjective) => completedObjectiveIds.has(previousObjective.id));
+  };
+
+  const nextUnlockedObjectiveAfter = (objective: NavigationObjectiveDefinition): NavigationObjectiveDefinition | null => {
+    const objectiveIndex = objectiveIndexFor(objective);
+    if (objectiveIndex < 0) {
+      return null;
+    }
+
+    return navigationObjectives
+      .slice(objectiveIndex + 1)
+      .find((candidateObjective) => !completedObjectiveIds.has(candidateObjective.id) && isObjectiveUnlocked(candidateObjective)) ?? null;
+  };
+
+  const firstBlockingObjectiveFor = (objective: NavigationObjectiveDefinition): NavigationObjectiveDefinition | null => {
+    const objectiveIndex = objectiveIndexFor(objective);
+    if (objectiveIndex <= 0) {
+      return null;
+    }
+
+    return navigationObjectives
+      .slice(0, objectiveIndex)
+      .find((candidateObjective) => !completedObjectiveIds.has(candidateObjective.id)) ?? null;
+  };
+
+  const statusForObjectiveOption = (
+    objective: NavigationObjectiveDefinition,
+    activeObjective: NavigationObjectiveDefinition | null,
+    activeStatus: NavigationObjectiveStatus | null
+  ): NavigationObjectiveStatus => {
+    if (objective.id === activeObjective?.id && activeStatus) {
+      return activeStatus;
+    }
+    if (completedObjectiveIds.has(objective.id)) {
+      return "complete";
+    }
+    return isObjectiveUnlocked(objective) ? "available" : "locked";
+  };
+
+  const createObjectiveOptions = (
+    activeObjective: NavigationObjectiveDefinition | null,
+    activeStatus: NavigationObjectiveStatus | null
+  ): readonly NavigationObjectiveOptionSnapshot[] =>
+    navigationObjectives.map((candidateObjective) => ({
+      id: candidateObjective.id,
+      label: candidateObjective.label,
+      targetId: candidateObjective.targetId,
+      status: statusForObjectiveOption(candidateObjective, activeObjective, activeStatus),
+      isActive: candidateObjective.id === activeObjective?.id
+    }));
 
   const createNavigationObjectiveSnapshot = (): NavigationObjectiveSnapshot | null => {
     refreshCompletedObjectives();
     const objective = navigationObjectives.find((candidateObjective) => candidateObjective.id === activeObjectiveId) ?? null;
-    const options: readonly NavigationObjectiveOptionSnapshot[] = navigationObjectives.map((candidateObjective) => ({
-      id: candidateObjective.id,
-      label: candidateObjective.label,
-      targetId: candidateObjective.targetId,
-      status: candidateObjective.id === objective?.id ? "active" : statusForInactiveObjective(candidateObjective),
-      isActive: candidateObjective.id === objective?.id
-    }));
+    const options = createObjectiveOptions(objective, null);
 
     if (!objective) {
       return {
@@ -169,6 +222,21 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
       };
     }
 
+    const lockedBy = firstBlockingObjectiveFor(objective);
+    if (lockedBy) {
+      return {
+        id: objective.id,
+        label: objective.label,
+        targetId: objective.targetId,
+        targetLabel: "locked",
+        status: "locked",
+        hint: `${objective.label} unlocks after ${lockedBy.label} is complete.`,
+        distanceMeters: null,
+        nextAction: "select objective",
+        options: createObjectiveOptions(objective, "locked")
+      };
+    }
+
     const target = objectiveTargetFor(objective);
     if (!target) {
       return {
@@ -180,7 +248,7 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
         hint: "Objective target is unavailable.",
         distanceMeters: null,
         nextAction: "blocked",
-        options
+        options: createObjectiveOptions(objective, "blocked")
       };
     }
 
@@ -193,14 +261,17 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
     const previewMatches = routePreview?.target?.id === target.id;
     const routeReady = previewMatches && routePreview?.state === "Ready" && Boolean(routePreview.plan);
 
-    let status: NavigationObjectiveStatus = "active";
+    let status: NavigationObjectiveStatus = "available";
     let hint = `Select ${target.label} to preview the route.`;
     let nextAction = "select target";
 
     if (completedObjectiveIds.has(objective.id) || completedByExecutor(objective, executorTelemetry)) {
+      const nextObjective = nextUnlockedObjectiveAfter(objective);
       status = "complete";
-      hint = `${objective.label} complete. Choose the next range objective when ready.`;
-      nextAction = "complete";
+      hint = nextObjective
+        ? `${objective.label} complete. ${nextObjective.label} is available.`
+        : `${objective.label} complete.`;
+      nextAction = nextObjective ? "next objective available" : "complete";
     } else if (lockedMatches && executorTelemetry.status === "Executing") {
       status = "enroute";
       hint = `Autopilot enroute to ${target.label}; monitor distance until arrival.`;
@@ -218,7 +289,7 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
       hint = routePreview.playerMessage;
       nextAction = "blocked";
     } else if (selectedMatches) {
-      status = "active";
+      status = "available";
       hint = `Selected ${target.label}; wait for a route preview.`;
       nextAction = "preview route";
     }
@@ -232,13 +303,7 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
       hint,
       distanceMeters,
       nextAction,
-      options: navigationObjectives.map((candidateObjective) => ({
-        id: candidateObjective.id,
-        label: candidateObjective.label,
-        targetId: candidateObjective.targetId,
-        status: candidateObjective.id === objective.id ? status : statusForInactiveObjective(candidateObjective),
-        isActive: candidateObjective.id === objective.id
-      }))
+      options: createObjectiveOptions(objective, status)
     };
   };
 
@@ -358,11 +423,17 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
       return;
     }
 
+    const lockedBy = firstBlockingObjectiveFor(objective);
+    if (lockedBy) {
+      runtimeMessage = `${objective.label} locked: complete ${lockedBy.label} first.`;
+      return;
+    }
+
     activeObjectiveId = objective.id;
     selectedTarget = target;
     refreshRoutePreview(selectedPlanner);
     const previewState = routePreview?.state === "Ready" ? "Route preview ready" : "Route preview unavailable";
-    runtimeMessage = `${objective.label} active. ${previewState} for ${target.label}.`;
+    runtimeMessage = `${objective.label} available. ${previewState} for ${target.label}.`;
   };
 
   const engageAutopilot = (planner: unknown): void => {

@@ -215,7 +215,8 @@ const statusCatalog: Record<string, string> = {
 
 const objectiveStatusCatalog: Record<NavigationObjectiveStatus, string> = {
   inactive: "Inactive",
-  active: "Active",
+  locked: "Locked",
+  available: "Available",
   "route-ready": "Route ready",
   enroute: "Enroute",
   complete: "Complete",
@@ -224,11 +225,21 @@ const objectiveStatusCatalog: Record<NavigationObjectiveStatus, string> = {
 
 const objectiveToneCatalog: Record<NavigationObjectiveStatus, StatusHudTone> = {
   inactive: "manual",
-  active: "manual",
+  locked: "manual",
+  available: "manual",
   "route-ready": "ready",
   enroute: "active",
   complete: "holding",
   blocked: "blocked"
+};
+
+const formatObjectiveOptionLabel = (option: {
+  readonly label: string;
+  readonly status: NavigationObjectiveStatus;
+  readonly isActive: boolean;
+}): string => {
+  const statusLabel = objectiveStatusCatalog[option.status].toLowerCase();
+  return `${option.label} (${statusLabel})`;
 };
 
 const createWarningChips = (codes: readonly string[]): readonly StatusHudWarningChipViewModel[] =>
@@ -277,7 +288,7 @@ const createObjectiveViewModel = (telemetry: TelemetrySnapshot): StatusHudObject
       label: option.label,
       targetId: option.targetId,
       status: option.status,
-      displayLabel: `${option.label}${option.isActive ? " (active)" : option.status === "complete" ? " (complete)" : ""}`,
+      displayLabel: formatObjectiveOptionLabel(option),
       ariaLabel: `${option.label}, ${objectiveStatusCatalog[option.status]}`,
       isActive: option.isActive
     }))
@@ -314,6 +325,9 @@ const createActionPanel = (telemetry: TelemetrySnapshot, warningChips: readonly 
   const hasLockedRoute = Boolean(telemetry.executor.planHash || telemetry.lockedPlan);
   const hasReadyPreview = telemetry.routePreview?.state === "Ready" && Boolean(telemetry.routePreview.plan);
   const hasCriticalWarning = warningChips.some((chip) => chip.severity === "Critical");
+  const nextObjectiveAvailable =
+    telemetry.navigationObjective?.status === "complete" &&
+    telemetry.navigationObjective.nextAction === "next objective available";
 
   if (hasLockedRoute) {
     return {
@@ -336,6 +350,18 @@ const createActionPanel = (telemetry: TelemetrySnapshot, warningChips: readonly 
       secondaryLabel: "Cancel autopilot",
       stateLabel: "Resolve warnings before engaging",
       stateTone: "blocked"
+    };
+  }
+
+  if (nextObjectiveAvailable) {
+    return {
+      title: "Route Action",
+      primaryLabel: "Hold route",
+      primaryCommandEnabled: false,
+      primaryDisabledReason: "Select the next available objective before engaging another route.",
+      secondaryLabel: "Cancel autopilot",
+      stateLabel: "Next objective available",
+      stateTone: "holding"
     };
   }
 
@@ -684,6 +710,7 @@ const renderObjectiveOptions = (viewModel: StatusHudViewModel, sink: StatusHudCo
     button.type = "button";
     button.className = objective.isActive ? "objective-option objective-option--selected" : "objective-option";
     button.dataset.objectiveId = objective.id;
+    button.dataset.objectiveStatus = objective.status;
     button.setAttribute("aria-pressed", String(objective.isActive));
     button.setAttribute("aria-label", objective.ariaLabel);
     button.title = objective.ariaLabel;

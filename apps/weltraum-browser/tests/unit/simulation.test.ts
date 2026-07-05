@@ -214,9 +214,14 @@ describe("FixedStepSimulationLoop", () => {
       id: "reach-range-500m",
       label: "Reach Range 500m",
       targetId: playableLargeFieldTargets.range500.id,
-      status: "active",
+      status: "available",
       nextAction: "select target"
     }));
+    expect(initial.navigationObjective?.options).toEqual([
+      expect.objectContaining({ id: "reach-range-500m", status: "available", isActive: true }),
+      expect.objectContaining({ id: "reach-range-1000m", status: "locked", isActive: false }),
+      expect.objectContaining({ id: "reach-range-2500m", status: "locked", isActive: false })
+    ]);
   });
 
   it("progresses the large-field navigation objective from runtime target selection to executor completion", () => {
@@ -234,7 +239,7 @@ describe("FixedStepSimulationLoop", () => {
       status: "route-ready",
       nextAction: "engage autopilot"
     }));
-    expect(selected.runtimeMessage).toContain("Reach Range 500m active");
+    expect(selected.runtimeMessage).toContain("Reach Range 500m available");
 
     let telemetry = controller.dispatchCommand({ type: "EngageAutopilot", planner: "DirectLocal" });
     expect(telemetry.lockedPlan?.target.id).toBe(playableLargeFieldTargets.range500.id);
@@ -248,9 +253,15 @@ describe("FixedStepSimulationLoop", () => {
     expect(telemetry.navigationObjective).toEqual(expect.objectContaining({
       id: "reach-range-500m",
       status: "complete",
-      nextAction: "complete"
+      nextAction: "next objective available"
     }));
+    expect(telemetry.navigationObjective?.options).toEqual([
+      expect.objectContaining({ id: "reach-range-500m", status: "complete", isActive: true }),
+      expect.objectContaining({ id: "reach-range-1000m", status: "available", isActive: false }),
+      expect.objectContaining({ id: "reach-range-2500m", status: "locked", isActive: false })
+    ]);
     expect(telemetry.navigationObjective?.hint).toContain("complete");
+    expect(telemetry.navigationObjective?.hint).toContain("Reach Range 1000m is available");
   });
 
   it("keeps the engaged navigation objective active when another objective is clicked mid-route", () => {
@@ -281,8 +292,60 @@ describe("FixedStepSimulationLoop", () => {
     }));
     expect(telemetry.navigationObjective?.options).toEqual(expect.arrayContaining([
       expect.objectContaining({ id: "reach-range-500m", status: "complete", isActive: true }),
-      expect.objectContaining({ id: "reach-range-1000m", status: "inactive", isActive: false })
+      expect.objectContaining({ id: "reach-range-1000m", status: "available", isActive: false }),
+      expect.objectContaining({ id: "reach-range-2500m", status: "locked", isActive: false })
     ]));
+  });
+
+  it("keeps later objective choices visible but locked until prerequisites complete", () => {
+    const { controller } = createBrowserRuntime();
+
+    const attemptedLockedObjective = controller.dispatchCommand({ type: "SelectObjective", objectiveId: "reach-range-1000m" });
+
+    expect(attemptedLockedObjective.runtimeMessage).toBe("Reach Range 1000m locked: complete Reach Range 500m first.");
+    expect(attemptedLockedObjective.navigationObjective).toEqual(expect.objectContaining({
+      id: "reach-range-500m",
+      status: "available",
+      nextAction: "select target"
+    }));
+    expect(attemptedLockedObjective.selectedTarget?.id).toBe(provingGroundTargets.navigationAlpha.id);
+    expect(attemptedLockedObjective.navigationObjective?.options).toEqual([
+      expect.objectContaining({ id: "reach-range-500m", status: "available", isActive: true }),
+      expect.objectContaining({ id: "reach-range-1000m", status: "locked", isActive: false }),
+      expect.objectContaining({ id: "reach-range-2500m", status: "locked", isActive: false })
+    ]);
+  });
+
+  it("unlocks and routes the 1000m objective after the 500m objective completes", () => {
+    const { controller } = createBrowserRuntime({
+      initialShip: createShipStateV2({ position: vec3(498, 0, 0), authority: { mode: "Autopilot" } })
+    });
+
+    controller.dispatchCommand({ type: "SelectObjective", objectiveId: "reach-range-500m" });
+    let telemetry = controller.dispatchCommand({ type: "EngageAutopilot", planner: "DirectLocal" });
+    for (let i = 0; i < 240 && telemetry.navigationObjective?.status !== "complete"; i += 1) {
+      telemetry = controller.step(1);
+    }
+
+    expect(telemetry.navigationObjective?.options).toEqual(expect.arrayContaining([
+      expect.objectContaining({ id: "reach-range-1000m", status: "available", isActive: false })
+    ]));
+
+    const selected1000m = controller.dispatchCommand({ type: "SelectObjective", objectiveId: "reach-range-1000m" });
+
+    expect(selected1000m.selectedTarget?.id).toBe(playableLargeFieldTargets.range1000.id);
+    expect(selected1000m.routePreview?.state).toBe("Ready");
+    expect(selected1000m.routePreview?.plan?.target.id).toBe(playableLargeFieldTargets.range1000.id);
+    expect(selected1000m.navigationObjective).toEqual(expect.objectContaining({
+      id: "reach-range-1000m",
+      status: "route-ready",
+      nextAction: "engage autopilot"
+    }));
+    expect(selected1000m.navigationObjective?.options).toEqual([
+      expect.objectContaining({ id: "reach-range-500m", status: "complete", isActive: false }),
+      expect.objectContaining({ id: "reach-range-1000m", status: "route-ready", isActive: true }),
+      expect.objectContaining({ id: "reach-range-2500m", status: "locked", isActive: false })
+    ]);
   });
 
   it("routes browser UI autopilot commands through the runtime controller", () => {

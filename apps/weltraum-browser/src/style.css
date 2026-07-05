@@ -416,6 +416,15 @@ body,
   background: rgba(30, 91, 53, 0.6);
 }
 
+.objective-option[data-objective-status="locked"] {
+  border-color: rgba(142, 165, 201, 0.38);
+  color: #b8c7df;
+}
+
+.objective-option[data-objective-status="available"] {
+  border-color: rgba(112, 223, 255, 0.62);
+}
+
 .target-option--selected {
   border-color: rgba(128, 255, 159, 0.78);
   background: rgba(30, 91, 53, 0.6);

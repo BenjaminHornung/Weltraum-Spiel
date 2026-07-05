@@ -109,10 +109,11 @@ test("normal runtime presents and progresses the Range 500m navigation objective
   await expect(page.getByTestId("ship-visual-source")).toContainText("Ship visual: Demo Scout GLB", { timeout: 20_000 });
 
   await expect(page.getByTestId("objective-label")).toContainText("Reach Range 500m");
-  await expect(page.getByTestId("objective-status")).toContainText("Active");
+  await expect(page.getByTestId("objective-status")).toContainText("Available");
   await expect(page.getByTestId("objective-target")).toContainText("Range 500m");
   await expect(page.getByTestId("objective-next-action")).toContainText("select target");
   await expect(page.getByTestId("objective-options")).toContainText("Reach Range 500m");
+  await expect(page.getByTestId("objective-options")).toContainText("Reach Range 1000m (locked)");
 
   await page.locator('button[data-objective-id="reach-range-500m"]').click();
   await expect(page.getByTestId("selected-target")).toContainText("Range 500m");
@@ -132,8 +133,9 @@ test("normal runtime presents and progresses the Range 500m navigation objective
   const progress = await waitForObjectiveComplete(page, ready.distanceMeters);
   expect(progress.distanceMeters).toBeLessThan(ready.distanceMeters);
   expect(progress.status).toBe("Complete");
-  expect(progress.nextAction).toBe("complete");
+  expect(progress.nextAction).toBe("next objective available");
   expect(progress.hint).toContain("complete");
+  expect(progress.hint).toContain("Reach Range 1000m is available");
   const progressScreenshot = await page.screenshot({ fullPage: true });
   await expectTestBridgeHidden(page);
 
