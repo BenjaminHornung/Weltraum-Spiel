@@ -12,6 +12,28 @@ export interface RoutePreviewSnapshot {
   readonly playerMessage: string;
 }
 
+export type NavigationObjectiveStatus = "inactive" | "active" | "route-ready" | "enroute" | "complete" | "blocked";
+
+export interface NavigationObjectiveOptionSnapshot {
+  readonly id: string;
+  readonly label: string;
+  readonly targetId: string;
+  readonly status: NavigationObjectiveStatus;
+  readonly isActive: boolean;
+}
+
+export interface NavigationObjectiveSnapshot {
+  readonly id: string;
+  readonly label: string;
+  readonly targetId: string;
+  readonly targetLabel: string;
+  readonly status: NavigationObjectiveStatus;
+  readonly hint: string;
+  readonly distanceMeters: number | null;
+  readonly nextAction: string;
+  readonly options: readonly NavigationObjectiveOptionSnapshot[];
+}
+
 export interface TelemetrySnapshot {
   readonly ship: ShipState;
   readonly executor: ExecutorTelemetry;
@@ -20,6 +42,7 @@ export interface TelemetrySnapshot {
   readonly selectableTargets?: readonly TargetDescriptor[];
   readonly selectedTarget?: TargetDescriptor | null;
   readonly routePreview?: RoutePreviewSnapshot | null;
+  readonly navigationObjective?: NavigationObjectiveSnapshot | null;
   readonly runtimeMessage?: string | null;
   readonly manualInput?: ManualFlightInputState;
 }
@@ -106,6 +129,7 @@ export const serializeTelemetry = (snapshot: TelemetrySnapshot): TelemetrySnapsh
   selectableTargets: snapshot.selectableTargets,
   selectedTarget: snapshot.selectedTarget,
   routePreview: snapshot.routePreview,
+  navigationObjective: snapshot.navigationObjective,
   runtimeMessage: snapshot.runtimeMessage,
   manualInput: snapshot.manualInput
 });

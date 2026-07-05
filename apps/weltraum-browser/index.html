@@ -64,6 +64,20 @@
         <aside id="hud-right-panel" class="hud-panel hud-panel--right" aria-label="Navigation">
           <div class="hud-panel-title">Navigation / Radar</div>
           <div class="hud-panel-section hud-panel-section--navigation">
+            <div class="hud-nav-card hud-nav-card--objective">
+              <div class="label">Objective</div>
+              <div id="objective-label" data-testid="objective-label">No navigation objective</div>
+              <div id="objective-status" class="hud-route-state" data-testid="objective-status">Inactive</div>
+              <div class="label">Objective Target</div>
+              <div id="objective-target" data-testid="objective-target">none</div>
+              <div class="label">Objective Distance</div>
+              <div id="objective-distance" data-testid="objective-distance">n/a</div>
+              <div class="label">Next Action</div>
+              <div id="objective-next-action" data-testid="objective-next-action">choose objective</div>
+              <div id="objective-hint" data-testid="objective-hint">Choose a large-field objective to begin.</div>
+              <div class="label">Objective Selection</div>
+              <div id="objective-options" class="objective-option-strip" data-testid="objective-options">loading</div>
+            </div>
             <div class="hud-nav-card hud-nav-card--route">
               <div class="label">Plan</div>
               <div id="plan-hash">pending</div>
