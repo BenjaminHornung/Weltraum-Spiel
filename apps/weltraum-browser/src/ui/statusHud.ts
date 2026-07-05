@@ -335,7 +335,7 @@ const createActionPanel = (telemetry: TelemetrySnapshot, warningChips: readonly 
       primaryLabel: "Route locked",
       primaryCommandEnabled: false,
       primaryDisabledReason: "Cancel the current route before engaging another route.",
-      secondaryLabel: "Cancel autopilot",
+      secondaryLabel: "Cancel",
       stateLabel: telemetry.executor.status === "Arrived" ? "Holding at target" : "Cancel current route before selecting another target",
       stateTone: routeTone
     };
@@ -347,7 +347,7 @@ const createActionPanel = (telemetry: TelemetrySnapshot, warningChips: readonly 
       primaryLabel: "Hold route",
       primaryCommandEnabled: false,
       primaryDisabledReason: "Resolve critical ship warnings before engaging autopilot.",
-      secondaryLabel: "Cancel autopilot",
+      secondaryLabel: "Cancel",
       stateLabel: "Resolve warnings before engaging",
       stateTone: "blocked"
     };
@@ -359,7 +359,7 @@ const createActionPanel = (telemetry: TelemetrySnapshot, warningChips: readonly 
       primaryLabel: "Hold route",
       primaryCommandEnabled: false,
       primaryDisabledReason: "Select the next available objective before engaging another route.",
-      secondaryLabel: "Cancel autopilot",
+      secondaryLabel: "Cancel",
       stateLabel: "Next objective available",
       stateTone: "holding"
     };
@@ -371,7 +371,7 @@ const createActionPanel = (telemetry: TelemetrySnapshot, warningChips: readonly 
       primaryLabel: "Hold route",
       primaryCommandEnabled: false,
       primaryDisabledReason: "Select a new target and wait for a route preview before engaging another route.",
-      secondaryLabel: "Cancel autopilot",
+      secondaryLabel: "Cancel",
       stateLabel: "Holding at target; select a new route",
       stateTone: "holding"
     };
@@ -383,7 +383,7 @@ const createActionPanel = (telemetry: TelemetrySnapshot, warningChips: readonly 
       primaryLabel: "Engage route",
       primaryCommandEnabled: true,
       primaryDisabledReason: null,
-      secondaryLabel: "Cancel autopilot",
+      secondaryLabel: "Cancel",
       stateLabel: "Ready",
       stateTone: "ready"
     };
@@ -394,7 +394,7 @@ const createActionPanel = (telemetry: TelemetrySnapshot, warningChips: readonly 
     primaryLabel: "Hold route",
     primaryCommandEnabled: false,
     primaryDisabledReason: "Select a target and wait for a valid route preview before engaging autopilot.",
-    secondaryLabel: "Cancel autopilot",
+    secondaryLabel: "Cancel",
     stateLabel: "Select a target first",
     stateTone: "manual"
   };
@@ -722,6 +722,23 @@ const renderObjectiveOptions = (viewModel: StatusHudViewModel, sink: StatusHudCo
   element.replaceChildren(...buttons);
 };
 
+const createTargetOptionButton = (
+  target: StatusHudTargetOptionViewModel,
+  sink: StatusHudCommandSink | undefined,
+  className: string
+): HTMLButtonElement => {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = `${className}${target.isSelected ? ` ${className}--selected` : ""}`;
+  button.dataset.targetId = target.id;
+  button.setAttribute("aria-pressed", String(target.isSelected));
+  button.setAttribute("aria-label", target.ariaLabel);
+  button.title = target.ariaLabel;
+  button.textContent = target.displayLabel;
+  button.onclick = sink ? () => void sink.dispatch({ type: "SelectTarget", targetId: target.id }) : null;
+  return button;
+};
+
 const renderTargetOptions = (viewModel: StatusHudViewModel, sink: StatusHudCommandSink | undefined): void => {
   const element = document.getElementById("target-options");
   if (!element) {
@@ -747,20 +764,99 @@ const renderTargetOptions = (viewModel: StatusHudViewModel, sink: StatusHudComma
     return;
   }
 
-  const buttons = viewModel.targetOptions.map((target) => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = target.isSelected ? "target-option target-option--selected" : "target-option";
-    button.dataset.targetId = target.id;
-    button.setAttribute("aria-pressed", String(target.isSelected));
-    button.setAttribute("aria-label", target.ariaLabel);
-    button.title = target.ariaLabel;
-    button.textContent = target.displayLabel;
-    button.onclick = sink ? () => void sink.dispatch({ type: "SelectTarget", targetId: target.id }) : null;
-    return button;
-  });
+  const buttons = viewModel.targetOptions.map((target) => createTargetOptionButton(target, sink, "target-option"));
 
   element.replaceChildren(...buttons);
+};
+
+const renderPlannerTargetOptions = (viewModel: StatusHudViewModel, sink: StatusHudCommandSink | undefined): void => {
+  const element = document.getElementById("planner-target-options");
+  if (!element) {
+    return;
+  }
+
+  if (viewModel.targetOptions.length === 0) {
+    element.textContent = "no targets available";
+    return;
+  }
+
+  const renderKey = viewModel.targetOptions.map((target) => `${target.id}:${target.rangeLabel}:${target.isSelected}`).join("|");
+  const container = element as HTMLElement;
+  if (container.dataset?.renderKey === renderKey) {
+    return;
+  }
+  if (container.dataset) {
+    container.dataset.renderKey = renderKey;
+  }
+
+  if (typeof document.createElement !== "function" || !("replaceChildren" in element)) {
+    element.textContent = viewModel.targetOptions.map((target) => `${target.displayLabel}${target.isSelected ? " (selected)" : ""}`).join(" | ");
+    return;
+  }
+
+  const buttons = viewModel.targetOptions.map((target) => {
+    const button = createTargetOptionButton(target, sink, "planner-target-option");
+    button.removeAttribute("data-target-id");
+    button.dataset.plannerTargetId = target.id;
+    return button;
+  });
+  element.replaceChildren(...buttons);
+};
+
+const setHidden = (id: string, isHidden: boolean): void => {
+  const element = document.getElementById(id) as HTMLElement | null;
+  if (!element) {
+    return;
+  }
+
+  element.hidden = isHidden;
+};
+
+const bindUiAction = (id: string, handler: () => void): void => {
+  const element = document.getElementById(id) as (HTMLElement & { onclick: ((event: MouseEvent) => void) | null }) | null;
+  if (!element) {
+    return;
+  }
+
+  element.onclick = () => handler();
+};
+
+const setNavigationPlannerOpen = (isOpen: boolean): void => {
+  setHidden("navigation-planner", !isOpen);
+  const flightHud = document.getElementById("flight-hud");
+  if (flightHud) {
+    flightHud.setAttribute("data-planner-open", String(isOpen));
+  }
+};
+
+const bindPresentationUi = (): void => {
+  bindUiAction("open-navigation-planner", () => setNavigationPlannerOpen(true));
+  bindUiAction("planner-close", () => setNavigationPlannerOpen(false));
+
+  const isCombatScenario = document.body?.dataset.uiScenario === "combat-contact";
+  setHidden("combat-contact-hud", !isCombatScenario);
+};
+
+const renderNavigationPlanner = (viewModel: StatusHudViewModel, sink: StatusHudCommandSink | undefined): void => {
+  const planner = document.getElementById("navigation-planner");
+  if (planner) {
+    planner.setAttribute("data-route-tone", viewModel.routeTone);
+  }
+
+  setText("planner-selected-target", viewModel.navigation.target.value);
+  setText("planner-route-distance", viewModel.navigation.distance.value);
+  setText("planner-route-status", viewModel.navigation.route.value);
+  setText("planner-map-target", viewModel.navigation.target.value);
+  setText("planner-objective", `${viewModel.objective.label}: ${viewModel.objective.status}`);
+  setText("planner-route-detail", `${viewModel.navigation.plan.value}; ${viewModel.navigation.radar.value}`);
+  setText("planner-burn-state", viewModel.routeTone === "active" ? "Executing" : viewModel.routeTone === "ready" ? "Ready" : "Preview");
+  setStateTone("planner-route-status", viewModel.routeTone);
+  renderPlannerTargetOptions(viewModel, sink);
+  setText("planner-engage-route", viewModel.actions.primaryLabel === "Engage route" ? "Engage" : viewModel.actions.primaryLabel);
+  bindCommand("planner-engage-route", { type: "EngageAutopilot", planner: "ObstacleAvoidanceLocal" }, sink, {
+    enabled: viewModel.actions.primaryCommandEnabled,
+    disabledReason: viewModel.actions.primaryDisabledReason
+  });
 };
 
 const bindCommand = (
@@ -833,6 +929,8 @@ export const renderStatusHud = (telemetry: TelemetrySnapshot, commandSink?: Stat
   renderWarningChips(viewModel);
   renderObjectiveOptions(viewModel, commandSink);
   renderTargetOptions(viewModel, commandSink);
+  renderNavigationPlanner(viewModel, commandSink);
+  bindPresentationUi();
   setText("engage-autopilot", viewModel.actions.primaryLabel);
   setText("cancel-autopilot", viewModel.actions.secondaryLabel);
   bindCommand("engage-autopilot", { type: "EngageAutopilot", planner: "ObstacleAvoidanceLocal" }, commandSink, {

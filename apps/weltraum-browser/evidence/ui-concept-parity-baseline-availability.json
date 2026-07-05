@@ -1,0 +1,14 @@
+{
+  "captures": [
+    "ui-concept-parity-baseline-flight-1640x900.png",
+    "ui-concept-parity-baseline-flight-1440x900.png",
+    "ui-concept-parity-baseline-flight-1280x720.png",
+    "ui-concept-parity-baseline-target-selected-1440x900.png",
+    "ui-concept-parity-baseline-objective-enroute-1280x720.png"
+  ],
+  "availability": {
+    "navigationPlannerExists": false,
+    "combatContactExists": false,
+    "testBridgePresent": false
+  }
+}
