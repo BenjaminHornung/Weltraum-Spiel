@@ -40,6 +40,16 @@ const isStopCaptureEnvelope = (envelope: ArrivalEnvelope | null): boolean => env
 const isTerminalTelemetryEnvelope = (envelope: ArrivalEnvelope | null): boolean =>
   envelope?.stopBehavior !== "NoStopRequired" && terminalSpeedForArrival(envelope) !== undefined;
 
+const terminalPdAcceleration = (
+  ship: ShipState,
+  targetPosition: ShipState["position"],
+  desiredTerminalVelocity: ShipState["velocity"]
+): ShipState["position"] =>
+  add(scale(sub(targetPosition, ship.position), 0.35), scale(sub(desiredTerminalVelocity, ship.velocity), 1.4));
+
+const isReadyForStopCaptureHolding = (ship: ShipState, plan: RoutePlan, envelope: ArrivalEnvelope | null): boolean =>
+  !isStopCaptureEnvelope(envelope) || dot(terminalPdAcceleration(ship, plan.target.position, vec3()), ship.velocity) <= 1e-6;
+
 const terminalStateForPhase = (
   arrivalPhase: ExecutorArrivalPhase,
   desiredTerminalVelocity: ShipState["position"] = vec3()
@@ -237,8 +247,7 @@ export class AutopilotExecutor {
       : vec3();
     const accelerationLimit = accelerationLimitForMass(ship.mass, this.options);
     const positionError = sub(plan.target.position, ship.position);
-    const velocityError = sub(desiredTerminalVelocity, ship.velocity);
-    const desiredAcceleration = clampMagnitude(add(scale(positionError, 0.35), scale(velocityError, 1.4)), accelerationLimit);
+    const desiredAcceleration = clampMagnitude(terminalPdAcceleration(ship, plan.target.position, desiredTerminalVelocity), accelerationLimit);
     const desiredAccelerationMagnitude = magnitude(desiredAcceleration);
     const targetDirection = normalize(positionError);
     const nextShip = applyFlightControllerStep(ship, {
@@ -264,7 +273,10 @@ export class AutopilotExecutor {
     if (!this.lockedPlan || this.lockedPlan.planHash !== plan.planHash) {
       return false;
     }
-    return Number.isFinite(arrivalRadius) && distance(ship.position, plan.target.position) <= arrivalRadius && isArrivalSpeedSatisfied(ship, arrivalEnvelope);
+    return Number.isFinite(arrivalRadius) &&
+      distance(ship.position, plan.target.position) <= arrivalRadius &&
+      isArrivalSpeedSatisfied(ship, arrivalEnvelope) &&
+      isReadyForStopCaptureHolding(ship, plan, arrivalEnvelope);
   }
 
   private createAutopilotActuatorRequest(
@@ -298,16 +310,17 @@ export class AutopilotExecutor {
     const terminalBrakeMargin = segmentEnvelopeRadius + speed * 0.2 * brakeMarginMultiplier;
     const needsBraking = speed > terminalSpeed + 0.25 && distanceToSegmentEnd <= brakingDistance + terminalBrakeMargin;
     const publishTerminalTelemetry = isTerminalSegment && isTerminalTelemetryEnvelope(arrivalEnvelope);
+    const insideStopCaptureEnvelope =
+      isTerminalSegment &&
+      isStopCaptureEnvelope(arrivalEnvelope) &&
+      Number.isFinite(arrivalRadius) &&
+      distanceToSegmentEnd <= Math.max(0, arrivalRadius);
 
-    if (isTerminalSegment && isStopCaptureEnvelope(arrivalEnvelope)) {
+    if (insideStopCaptureEnvelope) {
       const desiredTerminalVelocity = vec3();
-      const positionError = sub(plan.target.position, ship.position);
-      const velocityError = sub(desiredTerminalVelocity, ship.velocity);
-      const desiredAcceleration = clampMagnitude(add(scale(positionError, 0.35), scale(velocityError, 1.4)), accelerationLimit);
+      const desiredAcceleration = clampMagnitude(terminalPdAcceleration(ship, plan.target.position, desiredTerminalVelocity), accelerationLimit);
       const desiredAccelerationMagnitude = magnitude(desiredAcceleration);
-      const insideCaptureEnvelope = Number.isFinite(arrivalRadius) && distanceToSegmentEnd <= Math.max(0, arrivalRadius);
-      const arrivalPhase: ExecutorArrivalPhase = insideCaptureEnvelope ? "Capture" : needsBraking ? "TerminalBrake" : "Capture";
-      const terminalState = terminalStateForPhase(arrivalPhase, desiredTerminalVelocity);
+      const terminalState = terminalStateForPhase("Capture", desiredTerminalVelocity);
 
       return {
         facingDirection: desiredAccelerationMagnitude > 1e-6 ? desiredAcceleration : targetDirection,
@@ -347,7 +360,7 @@ export class AutopilotExecutor {
     const desiredAcceleration = scale(sub(desiredVelocity, ship.velocity), 1.35);
     const accelerationMagnitude = magnitude(desiredAcceleration);
     const throttle = accelerationMagnitude <= 0.05 ? 0 : clamp(accelerationMagnitude / Math.max(accelerationLimit, 1), 0.15, 1);
-    const arrivalPhase: ExecutorArrivalPhase = publishTerminalTelemetry ? "Capture" : "None";
+    const arrivalPhase: ExecutorArrivalPhase = publishTerminalTelemetry && !isStopCaptureEnvelope(arrivalEnvelope) ? "Capture" : "None";
     const terminalState = terminalStateForPhase(arrivalPhase, arrivalEnvelope?.stopBehavior === "MatchTerminalSpeed" ? scale(targetDirection, terminalSpeed) : vec3());
     return {
       facingDirection: accelerationMagnitude > 1e-6 ? desiredAcceleration : targetDirection,

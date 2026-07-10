@@ -110,10 +110,10 @@ const targetRequests: readonly MultiObstacleCourseRequest[] = [
   {
     id: "multi-rock-field-2500m",
     profile: "Balanced",
-    role: "2500m dense field remaining fail",
-    expectedClassification: "ExpectedFail",
+    role: "2500m dense field terminal-execution proof",
+    expectedClassification: "Pass",
     maxSegments: 8,
-    reclassificationReason: "ExpectedFail because current execution diverges from the locked route, so the course is not hidden as Pass."
+    reclassificationReason: "Pass because bounded long-terminal approach control reaches the strict capture gates without replan or plan replacement."
   },
   {
     id: "unsolvable-blocked-corridor-negative",
@@ -201,14 +201,14 @@ ${results.map(formatResultLine).join("\n")}
 test("multi-obstacle TestBridge remains query gated", async ({ page }) => {
   await page.goto("/");
   await page.waitForSelector("#debug-scene", { state: "visible" });
-  await expect.poll(() => page.evaluate(() => "TestBridge" in window)).toBe(false);
+  await expect.poll(() => page.evaluate(() => Reflect.has(window, "TestBridge"))).toBe(false);
   await expect(page.getByTestId("basic-hud")).not.toContainText("TestBridge");
 });
 
 test("browser multi-obstacle planner records course evidence", async ({ page }) => {
   await mkdir(evidenceDir, { recursive: true });
   await page.goto("/?testBridge=1");
-  await page.waitForFunction(() => Boolean((window as any).TestBridge));
+  await page.waitForFunction(() => Reflect.has(window, "TestBridge"));
   const shipVisual = await waitForShipVisualReady(page);
   expect(shipVisual.visualSource.state).toBe("GLBLoaded");
 
@@ -234,10 +234,10 @@ test("browser multi-obstacle planner records course evidence", async ({ page }) 
   }
 
   const remainingExpectedFailIds = expectedFailRows.map((result) => result.courseId);
-  expect(remainingExpectedFailIds).toEqual(expect.arrayContaining(["multi-rock-field-2500m", "unsolvable-blocked-corridor-negative"]));
+  expect(remainingExpectedFailIds).toEqual(["unsolvable-blocked-corridor-negative"]);
   expect(expectedFailRows.every((result) => result.expectedOutcome === "ExpectedFail")).toBe(true);
   expect(expectedFailRows.every((result) => result.replanRequired || result.failureReasonCodes.length > 0 || result.invalidationReasons.length > 0 || result.status !== "Arrived")).toBe(true);
-  expect(results.find((result) => result.courseId === "multi-rock-field-2500m")?.failureReasonCodes).toContain("OffLockedRoute");
+  expect(results.find((result) => result.courseId === "multi-rock-field-2500m")?.status).toBe("Arrived");
   expect(results.find((result) => result.courseId === "unsolvable-blocked-corridor-negative")?.status).toBe("PlanningRejected");
   expect(results.find((result) => result.courseId === "unsolvable-blocked-corridor-negative")?.failureReasonCodes).toContain("UnsafeObstacle");
 
