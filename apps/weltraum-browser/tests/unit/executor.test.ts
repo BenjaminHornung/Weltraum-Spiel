@@ -1,6 +1,6 @@
 ﻿import { describe, expect, it } from "vitest";
 import { AutopilotExecutor, DirectLocalPlanner, createAuthorityState, createShipStateV2, distance, magnitude, orientationFromForward, vec3 } from "../../src/core";
-import type { ShipState, TargetDescriptor } from "../../src/core";
+import type { RoutePlan, ShipState, TargetDescriptor } from "../../src/core";
 import { provingGroundTargets } from "../../src/world/provingGroundWorld";
 
 const authority = createAuthorityState({ mode: "Autopilot" });
@@ -30,6 +30,18 @@ const stopCaptureTarget: TargetDescriptor = {
 
 const quaternionDistance = (a: ShipState["orientation"], b: ShipState["orientation"]): number =>
   Math.abs(a.x - b.x) + Math.abs(a.y - b.y) + Math.abs(a.z - b.z) + Math.abs(a.w - b.w);
+
+const lockedRoutePlan = (
+  initialShip: ShipState,
+  routeTarget: TargetDescriptor,
+  segments: RoutePlan["segments"],
+  planHash: string
+): RoutePlan => ({
+  ...new DirectLocalPlanner().plan({ tick: 1, ship: initialShip, target: routeTarget }),
+  id: `route-${planHash}`,
+  segments,
+  planHash
+});
 
 describe("AutopilotExecutor", () => {
   it("executes a locked plan without replacing its hash", () => {
@@ -139,6 +151,95 @@ describe("AutopilotExecutor", () => {
     expect(telemetry.flightSnapshot.failureReasonCodes).toContain("OffLockedRoute");
     expect(telemetry.planHash).toBe(plan.planHash);
     expect(executor.getLockedPlan()?.planHash).toBe(plan.planHash);
+  });
+
+  it("advances a high-speed waypoint crossing onto the next locked segment without false divergence", () => {
+    const initialShip = createShip();
+    const handoffTarget: TargetDescriptor = {
+      ...stopCaptureTarget,
+      id: "handoff-target",
+      position: vec3(250, 0, 0)
+    };
+    const plan = lockedRoutePlan(initialShip, handoffTarget, [
+      { id: "approach", kind: "Avoidance", start: vec3(0, 0, 0), end: vec3(100, 0, 0), desiredSpeed: 20, clearanceRadius: 8 },
+      { id: "terminal", kind: "Terminal", start: vec3(100, 0, 0), end: handoffTarget.position, desiredSpeed: 12, clearanceRadius: 2 }
+    ], "high-speed-handoff");
+    const executor = new AutopilotExecutor({ divergenceDistance: 12 });
+    executor.lockPlan(plan, initialShip);
+
+    const crossingShip = createShip({ position: vec3(98, 0, 0), velocity: vec3(90, 0, 0) });
+    const afterCrossing = executor.step(crossingShip, 1 / 30, 2);
+    const crossingTelemetry = executor.getTelemetry();
+    executor.step(afterCrossing, 1 / 30, 3);
+    const terminalTelemetry = executor.getTelemetry();
+
+    expect(afterCrossing.position.x).toBeGreaterThan(100);
+    expect(crossingTelemetry.status).toBe("Executing");
+    expect(crossingTelemetry.activeSegmentId).toBe("terminal");
+    expect(crossingTelemetry.replanRequired).toBe(false);
+    expect(crossingTelemetry.invalidationReasons).toEqual([]);
+    expect(terminalTelemetry.status).toBe("Executing");
+    expect(terminalTelemetry.activeSegmentId).toBe("terminal");
+    expect(terminalTelemetry.planHash).toBe(plan.planHash);
+    expect(executor.getLockedPlan()?.planHash).toBe(plan.planHash);
+  });
+
+  it("still fails closed for a true lateral departure beside a segment handoff", () => {
+    const initialShip = createShip();
+    const handoffTarget: TargetDescriptor = {
+      ...stopCaptureTarget,
+      id: "departure-target",
+      position: vec3(250, 0, 0)
+    };
+    const plan = lockedRoutePlan(initialShip, handoffTarget, [
+      { id: "approach", kind: "Avoidance", start: vec3(0, 0, 0), end: vec3(100, 0, 0), desiredSpeed: 20, clearanceRadius: 8 },
+      { id: "terminal", kind: "Terminal", start: vec3(100, 0, 0), end: handoffTarget.position, desiredSpeed: 12, clearanceRadius: 2 }
+    ], "handoff-departure");
+    const executor = new AutopilotExecutor({ divergenceDistance: 12 });
+    executor.lockPlan(plan, initialShip);
+
+    const departedShip = createShip({ position: vec3(99, 20, 0), velocity: vec3(30, 0, 0) });
+    const after = executor.step(departedShip, 1 / 30, 2);
+    const telemetry = executor.getTelemetry();
+
+    expect(after).toBe(departedShip);
+    expect(telemetry.status).toBe("Diverged");
+    expect(telemetry.replanRequired).toBe(true);
+    expect(telemetry.failureReasonCodes).toContain("OffLockedRoute");
+    expect(telemetry.invalidationReasons).toContain("OffLockedRoute");
+    expect(telemetry.planHash).toBe(plan.planHash);
+    expect(executor.getLockedPlan()?.planHash).toBe(plan.planHash);
+  });
+
+  it("physically captures a long StopWithinEnvelope terminal segment without overshooting the locked route", () => {
+    const initialShip = createShip({ fuel: 200 });
+    const longTarget: TargetDescriptor = {
+      ...stopCaptureTarget,
+      id: "long-terminal-target",
+      position: vec3(650, 0, 0)
+    };
+    const plan = lockedRoutePlan(initialShip, longTarget, [
+      { id: "long-terminal", kind: "Terminal", start: initialShip.position, end: longTarget.position, desiredSpeed: 12, clearanceRadius: 2 }
+    ], "long-terminal-capture");
+    const executor = new AutopilotExecutor({ divergenceDistance: 30 });
+    executor.lockPlan(plan, initialShip);
+
+    let ship = initialShip;
+    let peakSpeed = magnitude(ship.velocity);
+    for (let tick = 1; tick <= 4_000 && executor.getTelemetry().status === "Executing"; tick += 1) {
+      ship = executor.step(ship, 1 / 30, tick);
+      peakSpeed = Math.max(peakSpeed, magnitude(ship.velocity));
+    }
+
+    const telemetry = executor.getTelemetry();
+    expect(telemetry.status).toBe("Arrived");
+    expect(telemetry.replanRequired).toBe(false);
+    expect(telemetry.failureReasonCodes).toEqual([]);
+    expect(telemetry.invalidationReasons).toEqual([]);
+    expect(telemetry.completedPlanHash).toBe(plan.planHash);
+    expect(distance(ship.position, longTarget.position)).toBeLessThanOrEqual(longTarget.arrivalEnvelope.radius);
+    expect(magnitude(ship.velocity)).toBeLessThanOrEqual(longTarget.arrivalEnvelope.terminalSpeed ?? 0);
+    expect(peakSpeed).toBeLessThanOrEqual(12.5);
   });
 
   it("does not turn a high-speed terminal crossing into a snapped arrival", () => {

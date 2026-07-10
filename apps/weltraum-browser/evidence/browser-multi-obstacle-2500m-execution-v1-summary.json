@@ -1,0 +1,220 @@
+{
+  "schemaVersion": 1,
+  "courseId": "multi-rock-field-2500m",
+  "rootCause": "StopWithinEnvelope computed needsBraking on the terminal segment but returned the terminal PD command across the full approximately 650 m terminal leg. That bypassed the existing hard-braking and distance-limited segment-speed branches until the ship crossed the target too fast and physically left the finite locked route.",
+  "codeDecision": "Use the terminal PD controller only inside the configured StopWithinEnvelope arrival radius. Outside it, reuse the executor's existing bounded hard-braking and distance-limited segment desired-speed path. Transfer from capture to holding only when the same PD command will not add kinetic energy.",
+  "settlingRegression": {
+    "cause": "The radius-only PD gate initially let direct Fast arrive at the outer edge with no capture ticks. Holding then received a positive acceleration command and increased speed.",
+    "regressed": {
+      "captureTicksBeforeArrival": 0,
+      "firstArrivalDistance": 2.994302,
+      "firstArrivalSpeed": 0.225418,
+      "firstHoldingAcceleration": 0.73242,
+      "firstHoldingKineticPowerSign": 0.165101,
+      "settledSpeed": 0.576207
+    },
+    "baselineOldTerminalPd": {
+      "captureTicksBeforeArrival": 231,
+      "firstArrivalDistance": 1.54068,
+      "firstArrivalSpeed": 0.499836,
+      "firstHoldingAcceleration": -0.160532,
+      "firstHoldingKineticPowerSign": -0.08024,
+      "settledSpeed": 0.361937
+    },
+    "corrected": {
+      "captureTicksBeforeArrival": 75,
+      "firstArrivalDistance": 1.674919,
+      "firstArrivalSpeed": 0.498553,
+      "firstHoldingAcceleration": -0.111753,
+      "firstHoldingKineticPowerSign": -0.055715,
+      "settledDistance": 1.2349,
+      "settledSpeed": 0.3858
+    }
+  },
+  "before": {
+    "status": "Diverged",
+    "tick": 4483,
+    "terminalHandoffTick": 4013,
+    "terminalHandoffSpeed": 8.139021,
+    "terminalHandoffDistanceToTarget": 658.187797,
+    "terminalBrakingTick": 4275,
+    "peakSpeed": 70.217474,
+    "targetCrossingTick": 4455,
+    "targetCrossingDistance": 0.48518,
+    "targetCrossingSpeed": 37.009674,
+    "firstDivergenceThresholdCrossingTick": 4482,
+    "finalDistance": 30.970153,
+    "finalSpeed": 31.073102,
+    "finalOffRouteDistance": 30.970153,
+    "terminalProjectionT": 1.047613,
+    "replanRequired": true,
+    "planHashBefore": "ab9e1027",
+    "planHashAfter": "ab9e1027",
+    "failureReasonCodes": [
+      "OffLockedRoute"
+    ],
+    "invalidationReasons": [
+      "OffLockedRoute"
+    ]
+  },
+  "after": {
+    "classification": "Pass",
+    "status": "Arrived",
+    "tick": 5793,
+    "simulatedSeconds": 193.1,
+    "peakSpeed": 14,
+    "finalDistance": 1.6702,
+    "finalSpeed": 0.4969,
+    "settledDistance": 1.2315,
+    "settledSpeed": 0.3847,
+    "terminalCaptureTicks": 77,
+    "terminalSpeedLimit": 0.5,
+    "minObstacleClearance": 11.8833,
+    "fuelUsed": 1.5566,
+    "replanRequired": false,
+    "planHashBefore": "ab9e1027",
+    "planHashAfter": "ab9e1027",
+    "completedPlanHash": "ab9e1027",
+    "failureReasonCodes": [],
+    "invalidationReasons": []
+  },
+  "regressions": {
+    "multiRock1000m": {
+      "classification": "Pass",
+      "status": "Arrived",
+      "tick": 2422,
+      "peakSpeed": 14,
+      "finalDistance": 1.6748,
+      "finalSpeed": 0.4985,
+      "settledDistance": 1.2349,
+      "settledSpeed": 0.3858,
+      "minObstacleClearance": 11.4714,
+      "replanRequired": false,
+      "planHashStable": true
+    },
+    "lateralDisturbance": {
+      "courseId": "midcourse-position-disturbance",
+      "classification": "ExpectedFail",
+      "status": "Diverged",
+      "tick": 121,
+      "replanRequired": true,
+      "planHashStable": true,
+      "failureReasonCodes": [
+        "OffLockedRoute"
+      ]
+    },
+    "blockedCorridor": {
+      "courseId": "unsolvable-blocked-corridor-negative",
+      "classification": "ExpectedFail",
+      "status": "PlanningRejected",
+      "replanRequired": true,
+      "failureReasonCodes": [
+        "UnsafeObstacle"
+      ]
+    },
+    "direct2500m": [
+      {
+        "profile": "Safe",
+        "classification": "Pass",
+        "status": "Arrived",
+        "tick": 6426,
+        "peakSpeed": 12,
+        "finalDistance": 1.6837,
+        "finalSpeed": 0.4996,
+        "settledDistance": 1.2422,
+        "settledSpeed": 0.3876,
+        "replanRequired": false,
+        "planHashStable": true
+      },
+      {
+        "profile": "Balanced",
+        "classification": "Pass",
+        "status": "Arrived",
+        "tick": 4374,
+        "peakSpeed": 18,
+        "finalDistance": 1.6697,
+        "finalSpeed": 0.4965,
+        "settledDistance": 1.2313,
+        "settledSpeed": 0.3845,
+        "replanRequired": false,
+        "planHashStable": true
+      },
+      {
+        "profile": "Fast",
+        "classification": "Pass",
+        "status": "Arrived",
+        "tick": 3631,
+        "peakSpeed": 22,
+        "finalDistance": 1.6749,
+        "finalSpeed": 0.4986,
+        "settledDistance": 1.2349,
+        "settledSpeed": 0.3858,
+        "replanRequired": false,
+        "planHashStable": true
+      }
+    ]
+  },
+  "invariants": {
+    "noPlannerCallsDuringExecution": true,
+    "noSilentReplan": true,
+    "planHashStable": true,
+    "strictOffRouteDetectionPreserved": true,
+    "noPositionOrWaypointSnap": true,
+    "noVelocityZeroOrDirectVelocityClamp": true,
+    "noMaxAccelerationIncrease": true,
+    "flightControllerStillOwnsPhysicalActuation": true,
+    "testBridgeQueryGated": true
+  },
+  "verification": [
+    {
+      "command": "npm run test -- tests/unit/autopilotSpeedProfiles.test.ts",
+      "result": "PASS: 4/4"
+    },
+    {
+      "command": "npm run test -- tests/unit/executor.test.ts",
+      "result": "PASS: 26/26"
+    },
+    {
+      "command": "npm run test -- tests/unit/multiObstaclePlanner.test.ts",
+      "result": "PASS: 9/9"
+    },
+    {
+      "command": "npm run test -- tests/unit/provingGroundScenarios.test.ts tests/unit/autopilotCourseMetrics.test.ts",
+      "result": "PASS: 26/26"
+    },
+    {
+      "command": "npm run test",
+      "result": "PASS: 147/147 across 14 files"
+    },
+    {
+      "command": "npm run test:e2e -- tests/e2e/multi-obstacle-2500m-execution.spec.ts",
+      "result": "PASS: 2/2; query-gated execution passed and bare / exposed no TestBridge"
+    },
+    {
+      "command": "npm run test:e2e -- tests/e2e/multi-obstacle-planner.spec.ts",
+      "result": "PASS: 2/2"
+    },
+    {
+      "command": "npm run test:e2e -- tests/e2e/autopilot-proving-ground-v2.spec.ts",
+      "result": "PASS: 3/3"
+    },
+    {
+      "command": "npm run test:e2e -- tests/e2e/playable-large-field-live-flight.spec.ts",
+      "result": "PASS: 1/1 normal-runtime live flight"
+    },
+    {
+      "command": "npm run build",
+      "result": "PASS: TypeScript and Vite build; existing chunk-size warning only"
+    }
+  ],
+  "verificationEnvironment": {
+    "independentFinalMatrixPassed": true,
+    "requiredCommandCount": 9,
+    "browser": "bundled Playwright Chromium",
+    "browserFallbackUsed": false,
+    "warnings": [
+      "Vite reported the existing build chunk-size warning."
+    ]
+  },
+  "traceEvidence": "evidence/browser-multi-obstacle-2500m-trace.json"
+}

@@ -549,10 +549,10 @@ export const autopilotProvingGroundCourses: readonly AutopilotProvingGroundCours
       obstacle("field-2500-rock-d", 1_850, 0, 0, 9, 5),
       obstacle("field-2500-rock-e", 2_180, 44, 0, 9, 5)
     ],
-    expectedOutcome: "ExpectedFail",
+    expectedOutcome: "Pass",
     planner: "ObstacleAvoidanceLocal",
-    acceptance: { ...baseAcceptance, minObstacleClearance: 0, maxTicks: 9_800, maxFuelUsed: 230, allowReplanRequired: true, expectedFailureReasonCodes: ["OffLockedRoute"] },
-    notes: ["ExpectedFail: 2500m dense field still diverges from the locked route under current executor hard gates, so it is not hidden as Pass."]
+    acceptance: { ...baseAcceptance, minObstacleClearance: 0, maxTicks: 9_800, maxFuelUsed: 230 },
+    notes: ["Pass: the long terminal leg now uses bounded segment-speed and braking control before the capture envelope, preserving strict arrival and locked-route gates."]
   }),
   passCourse({
     id: "unsolvable-blocked-corridor-negative",

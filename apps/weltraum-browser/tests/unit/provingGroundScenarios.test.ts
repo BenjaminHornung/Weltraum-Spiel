@@ -223,7 +223,7 @@ describe("browser proving-ground scenario matrix", () => {
       "corridor-safe": "Pass",
       "corridor-balanced": "Pass",
       "multi-rock-field-1000m": "Pass",
-      "multi-rock-field-2500m": "ExpectedFail",
+      "multi-rock-field-2500m": "Pass",
       "no-main-thrusters-negative": "ExpectedFail",
       "no-autopilot-authority-negative": "ExpectedFail",
       "off-route-fail-closed": "ExpectedFail",
@@ -309,6 +309,65 @@ describe("browser proving-ground scenario matrix", () => {
     expect(result.status).toBe("Arrived");
     expect(result.finalDistance).toBeLessThanOrEqual(3);
     expect(result.finalSpeed).toBeLessThanOrEqual(result.terminalSpeedLimit ?? 0.5);
+  });
+
+  it("keeps both multi-rock distances physically captured with a stable locked plan", () => {
+    const results = [
+      runAutopilotProvingGroundCourse("multi-rock-field-1000m", "Balanced"),
+      runAutopilotProvingGroundCourse("multi-rock-field-2500m", "Balanced")
+    ];
+
+    for (const result of results) {
+      expect(result.classification, result.courseId).toBe("Pass");
+      expect(result.status, result.courseId).toBe("Arrived");
+      expect(result.finalDistance, result.courseId).toBeLessThanOrEqual(3);
+      expect(result.finalSpeed, result.courseId).toBeLessThanOrEqual(result.terminalSpeedLimit ?? 0.5);
+      expect(result.minObstacleClearance, result.courseId).toBeGreaterThan(0);
+      expect(result.replanRequired, result.courseId).toBe(false);
+      expect(result.planHashAfter, result.courseId).toBe(result.planHashBefore);
+      expect(result.completedPlanHash, result.courseId).toBe(result.planHashBefore);
+      expect(result.failureReasonCodes, result.courseId).toEqual([]);
+      expect(result.invalidationReasons, result.courseId).toEqual([]);
+    }
+  });
+
+  it("preserves direct 2500m terminal capture across Safe, Balanced, and Fast profiles", () => {
+    const results = (["Safe", "Balanced", "Fast"] as const).map((profile) =>
+      runAutopilotProvingGroundCourse("direct-very-long-stop", profile)
+    );
+
+    for (const result of results) {
+      expect(result.classification, result.profile).toBe("Pass");
+      expect(result.status, result.profile).toBe("Arrived");
+      expect(result.finalDistance, result.profile).toBeLessThanOrEqual(3);
+      expect(result.finalSpeed, result.profile).toBeLessThanOrEqual(result.terminalSpeedLimit ?? 0.5);
+      expect(result.replanRequired, result.profile).toBe(false);
+      expect(result.planHashAfter, result.profile).toBe(result.planHashBefore);
+      expect(result.failureReasonCodes, result.profile).toEqual([]);
+      expect(result.invalidationReasons, result.profile).toEqual([]);
+    }
+  });
+
+  it("keeps real lateral disturbances fail-closed without replacing the locked plan", () => {
+    const result = runAutopilotProvingGroundCourse("midcourse-position-disturbance", "Balanced");
+
+    expect(result.classification).toBe("ExpectedFail");
+    expect(result.status).toBe("Diverged");
+    expect(result.replanRequired).toBe(true);
+    expect(result.failureReasonCodes).toContain("OffLockedRoute");
+    expect(result.invalidationReasons).toContain("OffLockedRoute");
+    expect(result.planHashAfter).toBe(result.planHashBefore);
+  });
+
+  it("keeps sealed obstacle corridors rejected before route execution", () => {
+    const result = runAutopilotProvingGroundCourse("unsolvable-blocked-corridor-negative", "Balanced");
+
+    expect(result.classification).toBe("ExpectedFail");
+    expect(result.status).toBe("PlanningRejected");
+    expect(result.replanRequired).toBe(true);
+    expect(result.failureReasonCodes).toContain("UnsafeObstacle");
+    expect(result.planHashBefore).toBeNull();
+    expect(result.planHashAfter).toBeNull();
   });
 
   it("fails ExpectedFail classification when the expected failure signal or reason is absent", () => {
