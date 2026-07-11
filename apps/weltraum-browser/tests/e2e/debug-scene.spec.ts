@@ -270,13 +270,14 @@ test("browser vertical slice selects a target, previews a route, engages autopil
   expect(renderSnapshot.planHash).toBeNull();
   await page.screenshot({ path: path.join(evidenceDir, "autopilot-arrival.png"), fullPage: true });
   await page.screenshot({ path: path.join(evidenceDir, "demo-scout-autopilot-arrival.png"), fullPage: true });
+  // Committed provingGroundAsteroidField: 6 base asteroids + 8 unique large-field visual landmarks.
   expect(renderSnapshot.lowPolyInstanceBatch).toEqual(
     expect.objectContaining({
       id: "debug-low-poly-asteroids",
       batchKey: "low-poly-asteroid",
       sourceId: "proving-ground-world",
       frameId: "debug-local-render-frame",
-      count: 6,
+      count: 14,
       maxInstances: 64,
       renderOnly: true,
       rendererOwnsWorldTruth: false
