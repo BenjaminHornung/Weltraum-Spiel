@@ -1,0 +1,6 @@
+﻿# Tasks
+
+- [ ] 1. Implement deterministic navigation-map contracts, canonical snapshot/signature logic, projection utilities, active-ship presentation, and a read-only WorldChunkRegistry/WorldStreaming adapter with focused unit tests.
+- [ ] 2. Integrate NavigationMapSnapshot into telemetry and BrowserRuntime using absolute WorldCoordinate values, runtime route/target/obstacle truth, and resident world entities; add runtime integration tests.
+- [ ] 3. Refactor plannerMap, planner HTML, and CSS to one semantic projection with descriptor-driven ship identity, correct north-up/ship-up orientation, exact runtime target clicks, focus/pan/zoom/scale behavior, LOCAL NAVIGATION MAP title, and no static semantic background or target-specific positioning; add focused UI/source-guard tests.
+- [ ] 4. Add normal-runtime Playwright coverage and FHD/QHD evidence, run focused and full regression verification, complete spec review and code-quality review, and document evidence without changing packages or Unity Assets.
