@@ -102,8 +102,13 @@ Normal `/` TestBridge isolation is covered by passing tests in all three relevan
 
 ## Remote verification
 
-- New run ID / URL: pending
-- Final conclusion: pending
+- New run: [29146828394](https://github.com/BenjaminHornung/Weltraum-Spiel/actions/runs/29146828394)
+- Event / branch / SHA: `pull_request` / `fix/browser-mainline-ci-root-cause-and-hardening-v1` / `700f50829ea27b2d7d2c70e3d06cefd6f75b644d`
+- Job: `Browser mainline verification`
+- Result: `success`
+- Successful required steps: selective Demo Scout GLB validation, dependency installation, Playwright Chromium installation, tool-version diagnostics, unit tests, build, exact E2E group coverage validation, core/autopilot E2E, live runtime/objectives E2E, UI/layout E2E, evidence JSON validation, and artifact upload
+- Artifact: `browser-mainline-ci-artifacts`, ID `8247048541`, `10699550` bytes, digest `sha256:2b21f2a39032835c93f5a82d9235ef27fc4c4e2293386e7937baa06cd402a457`, expires 2026-07-25
+- Final conclusion: Browser Mainline CI is green on the hardened workflow and fixed test contract.
 
 ## Remaining CI risks
 

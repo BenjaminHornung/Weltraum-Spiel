@@ -17,4 +17,4 @@
 ## Phase 4: Review and remote verification
 
 - [x] Review the complete diff for missing specs, weakened assertions, production-scope drift, and artifact gaps; complete DevToolbox verification/preflight.
-- [ ] Commit and push the branch, observe a new Browser Mainline CI run to completion, iterate on any failure, and finalize the remote run evidence.
+- [x] Commit and push the branch, observe a new Browser Mainline CI run to completion, iterate on any failure, and finalize the remote run evidence.
