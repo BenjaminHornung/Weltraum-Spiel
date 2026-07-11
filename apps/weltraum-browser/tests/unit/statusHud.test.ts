@@ -9,6 +9,15 @@ import {
   createStatusHudViewModel,
   renderStatusHud
 } from "../../src/ui/statusHud";
+import {
+  DEFAULT_ACTIVE_SHIP_PRESENTATION,
+  createNavigationMapSnapshot,
+  navigationMapObstacleSnapshot,
+  navigationMapRouteSnapshot,
+  navigationMapShipSnapshot,
+  navigationMapTargetSnapshot
+} from "../../src/navigation/map";
+import { worldCoordinate } from "../../src/world/frames";
 
 const elementIds = [
   "flight-hud",
@@ -1325,9 +1334,33 @@ describe("renderStatusHud", () => {
 
   it("keeps planner obstacles accessible without rendering colliding obstacle labels", () => {
     const elements = installDocumentStub("flight", true);
+    const base = createTwoLegRouteTelemetry(125);
+    const orientedShip = {
+      ...base.ship,
+      orientation: { x: 0, y: -Math.SQRT1_2, z: 0, w: Math.SQRT1_2 }
+    };
+    const obstacles = [{ id: "runtime-rock-a", center: vec3(150, 0, 12), radius: 18, padding: 4 }];
     const telemetry: TelemetrySnapshot = {
-      ...createTwoLegRouteTelemetry(125),
-      obstacles: [{ id: "runtime-rock-a", center: vec3(150, 0, 12), radius: 18, padding: 4 }]
+      ...base,
+      ship: orientedShip,
+      obstacles,
+      navigationMap: createNavigationMapSnapshot({
+        ship: navigationMapShipSnapshot({
+          absolutePosition: worldCoordinate(orientedShip.position),
+          orientation: orientedShip.orientation,
+          presentation: DEFAULT_ACTIVE_SHIP_PRESENTATION
+        }),
+        targets: base.selectedTarget ? [navigationMapTargetSnapshot(base.selectedTarget)] : [],
+        selectedTargetId: base.selectedTarget?.id ?? null,
+        route: base.lockedPlan ? navigationMapRouteSnapshot(base.lockedPlan) : null,
+        obstacles: obstacles.map((obstacle) => navigationMapObstacleSnapshot(obstacle)),
+        world: {
+          registrySignature: "status-hud-test-registry",
+          streamingSignature: "status-hud-test-streaming",
+          fullChunkIds: [],
+          snapshotChunkIds: []
+        }
+      })
     };
     const css = readFileSync("src/style.css", "utf8");
     const authoritativeCss = css.slice(css.lastIndexOf("/* V3 authoritative live planner and telemetry-owned flight contacts. */"));
@@ -1338,11 +1371,12 @@ describe("renderStatusHud", () => {
     const viewport = elements.get("planner-map-viewport");
     const mapNodes = viewport ? descendantsOf(viewport) : [];
     const obstacle = mapNodes.find((node) => node.getAttribute("data-obstacle-id") === "runtime-rock-a");
+    const shipMarker = mapNodes.find((node) => node.getAttribute("data-map-object") === "active-ship");
     const obstacleLabels = mapNodes.filter((node) => node.getAttribute("class")?.includes("planner-map-runtime-label--obstacle"));
 
     expect(svg?.dataset.obstacleLabels).toBe("accessible-only");
     expect(svg?.getAttribute("role")).toBe("group");
-    expect(svg?.getAttribute("aria-label")).toBe("Runtime route preview map");
+    expect(svg?.getAttribute("aria-label")).toBe("Runtime local navigation map");
     expect(obstacle?.tagName).toBe("CIRCLE");
     expect(obstacle?.getAttribute("role")).toBe("img");
     expect(obstacle?.getAttribute("data-radius-metres")).toBe("18");
@@ -1350,6 +1384,11 @@ describe("renderStatusHud", () => {
     expect(obstacle?.getAttribute("aria-label")).toBe("runtime-rock-a, radius 18.0 metres");
     expect(obstacle?.children[0]?.tagName).toBe("TITLE");
     expect(obstacle?.children[0]?.textContent).toBe("runtime-rock-a, radius 18.0 metres");
+    expect(shipMarker?.getAttribute("data-absolute-x")).toBe("125");
+    expect(shipMarker?.getAttribute("data-heading-degrees")).toBe("90.0000");
+    expect(shipMarker?.getAttribute("transform")).toContain("rotate(0.0000)");
+    expect(shipMarker?.getAttribute("data-display-name")).toBe("Demo Scout GLB");
+    expect(shipMarker?.getAttribute("data-blueprint-id")).toBe("demo-scout-mk1");
     expect(obstacleLabels).toHaveLength(0);
     expect(elements.get("planner-route-detail")?.textContent).toContain("hash progress-hash");
     expect(authoritativeCss).toMatch(/\.planner-runtime-summary\s*\{[\s\S]*?position:\s*static;[\s\S]*?width:\s*100%;[\s\S]*?clip-path:\s*none;/);

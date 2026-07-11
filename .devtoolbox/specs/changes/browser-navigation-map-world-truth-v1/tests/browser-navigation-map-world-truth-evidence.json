@@ -1,0 +1,31 @@
+{
+  "route": {
+    "targetId": "range-1000m",
+    "targetAbsoluteX": 1000,
+    "targetAbsoluteZ": 0,
+    "previewHash": "da734301"
+  },
+  "ship": {
+    "initialShipX": 0,
+    "initialShipZ": 0,
+    "movedShipX": 20.880889989119552,
+    "movedShipZ": 0,
+    "initialHeading": 0,
+    "changedHeading": 83.1538
+  },
+  "layers": {
+    "targets": 6,
+    "routeSegments": 3,
+    "obstacles": 7,
+    "entities": 14
+  },
+  "background": {
+    "image": "linear-gradient(rgba(35, 214, 242, 0.043) 1px, rgba(0, 0, 0, 0) 1px), linear-gradient(90deg, rgba(35, 214, 242, 0.043) 1px, rgba(0, 0, 0, 0) 1px)",
+    "before": "none",
+    "after": "none"
+  },
+  "screenshots": [
+    ".devtoolbox/specs/changes/browser-navigation-map-world-truth-v1/tests/screenshots/browser-navigation-map-world-truth-fhd-1920x1080.png",
+    ".devtoolbox/specs/changes/browser-navigation-map-world-truth-v1/tests/screenshots/browser-navigation-map-world-truth-qhd-2560x1440.png"
+  ]
+}

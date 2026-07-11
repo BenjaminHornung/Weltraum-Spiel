@@ -198,7 +198,7 @@
             <header class="planner-top-strip">
               <div class="planner-header-title">
                 <div id="planner-dialog-title" class="label">NAVIGATION PLANNER</div>
-                <div class="planner-title">SYSTEM MAP</div>
+                <div class="planner-title">LOCAL NAVIGATION MAP</div>
               </div>
               <div class="planner-telemetry planner-telemetry--target">
                 <div class="label">Ziel</div>
@@ -238,12 +238,18 @@
                 <button id="planner-map-orbit" type="button" class="planner-map-control planner-map-control--orbit" aria-label="Toggle north-up or ship-up" aria-pressed="false" title="Orbit"></button>
                 <button id="planner-map-zoom" type="button" class="planner-map-control planner-map-control--zoom" aria-label="Cycle map zoom" title="Zoom"></button>
               </div>
+              <div id="planner-map-scale" class="planner-map-scale" aria-label="Map scale">
+                <span id="planner-map-scale-line" class="planner-map-scale-line" aria-hidden="true"></span>
+                <output id="planner-map-scale-label" class="planner-map-scale-label">100 m</output>
+              </div>
               <div class="planner-map-legend">
+                <span class="planner-legend-item planner-legend-item--ship">Aktives Schiff</span>
                 <span class="planner-legend-item planner-legend-item--route">Geplante Route</span>
                 <span class="planner-legend-item planner-legend-item--avoidance">Ausweichroute</span>
                 <span class="planner-legend-item planner-legend-item--waypoint">Wegpunkt</span>
                 <span class="planner-legend-item planner-legend-item--maneuver">Manöverpunkt</span>
                 <span class="planner-legend-item planner-legend-item--hazard">Hindernis</span>
+                <span class="planner-legend-item planner-legend-item--entity">Weltobjekt</span>
               </div>
             </div>
           </div>

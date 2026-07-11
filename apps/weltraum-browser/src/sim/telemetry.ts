@@ -3,6 +3,7 @@ import type { AutopilotSpeedProfileId, ObstacleDescriptor } from "../core/types"
 import { roundVec } from "../core/vector";
 import type { PreviewLockValidationResult, RoutePreviewProvenance, RoutePreviewStaleReason } from "../navigation/previewLock";
 import type { ManualFlightInputState } from "../runtime/input";
+import type { NavigationMapSnapshot } from "../navigation/map";
 
 export interface RoutePreviewSnapshot {
   readonly state: "Ready" | "Stale" | "Unavailable";
@@ -54,6 +55,7 @@ export interface TelemetrySnapshot {
   readonly navigationObjective?: NavigationObjectiveSnapshot | null;
   readonly runtimeMessage?: string | null;
   readonly manualInput?: ManualFlightInputState;
+  readonly navigationMap?: NavigationMapSnapshot;
 }
 
 const roundFuel = (fuel: FuelState): FuelState => ({
@@ -143,7 +145,8 @@ export const serializeTelemetry = (snapshot: TelemetrySnapshot): TelemetrySnapsh
   obstacles: snapshot.obstacles,
   navigationObjective: snapshot.navigationObjective,
   runtimeMessage: snapshot.runtimeMessage,
-  manualInput: snapshot.manualInput
+  manualInput: snapshot.manualInput,
+  navigationMap: snapshot.navigationMap
 });
 
 export const createTelemetrySnapshot = (ship: ShipState, executor: ExecutorTelemetry, lockedPlan: RoutePlan | null): TelemetrySnapshot =>
