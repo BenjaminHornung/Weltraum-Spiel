@@ -1,6 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { engageVisiblePreview, selectVisiblePlannerTarget } from "./support/plannerWorkflow";
 
 const evidenceDir = path.resolve(process.cwd(), "evidence");
 
@@ -19,7 +20,9 @@ interface TargetPreviewEvidence {
   readonly hudDistanceDisplay: string;
   readonly hudDistanceMeters: number;
   readonly routeStatus: string;
+  readonly routeDiagnostic: string;
   readonly radarStatus: string;
+  readonly previewPlanHash: string;
 }
 
 interface LiveFlightEvidence {
@@ -85,6 +88,9 @@ async function expectNoTestBridgeLeakage(page: Page): Promise<void> {
 }
 
 async function expectCenterFlightAreaVisible(page: Page): Promise<CenterFlightAreaEvidence> {
+  await expect(page.locator("#hud-top-strip")).toBeHidden();
+  await expect(page.locator("#hud-bottom-strip")).toBeHidden();
+  await expect(page.locator("#debug-hud")).toBeHidden();
   const canvas = await page.locator("#debug-scene").boundingBox();
   const safeArea = await page.locator(".hud-center-safe-area").boundingBox();
   expect(canvas, "Flight canvas should be visible for live screenshot evidence").toBeTruthy();
@@ -102,7 +108,7 @@ async function expectCenterFlightAreaVisible(page: Page): Promise<CenterFlightAr
   };
   const allowedOverlapArea = Math.max(800, safeArea!.width * safeArea!.height * 0.06);
 
-  for (const selector of ["#hud-top-strip", "#hud-left-panel", "#hud-right-panel", "#hud-bottom-strip"]) {
+  for (const selector of ["#hud-left-panel", "#hud-radar-panel", "#hud-right-panel", "#open-navigation-planner"]) {
     const box = await page.locator(selector).boundingBox();
     expect(box, `${selector} should be available for live HUD layout evidence`).toBeTruthy();
     const overlapX = Math.max(0, Math.min(box!.x + box!.width, safeRect.right) - Math.max(box!.x, safeRect.left));
@@ -119,19 +125,21 @@ async function expectCenterFlightAreaVisible(page: Page): Promise<CenterFlightAr
 }
 
 async function selectTargetAndAssertPreview(page: Page, target: (typeof liveTargets)[number]): Promise<TargetPreviewEvidence> {
-  const button = page.locator(`button[data-target-id="${target.targetId}"]`);
-  await expect(button).toBeVisible();
-  await button.click();
-  await expect(button).toHaveAttribute("aria-pressed", "true");
+  const previewPlanHash = await selectVisiblePlannerTarget(page, target.targetId, target.label);
+  await page.locator("#planner-close").click();
   await expect(page.getByTestId("selected-target")).toContainText(target.label);
-  await expect(page.locator("#route-status")).toContainText("preview ready");
-  await expect(page.getByTestId("radar-status")).toContainText(target.label);
-  await expect(page.getByTestId("radar-status")).toContainText(target.radarBucket);
+  const route = page.locator("#route-status");
+  await expect(route).toHaveText("Preview ready");
+  await expect(route).toHaveAttribute("title", /preview ready: \d+ legs?, route/i);
+  await expect(page.getByTestId("radar-status")).toContainText(/^\d+ contacts$/i);
+  await expect(page.getByTestId("radar-status")).toHaveAttribute("title", new RegExp(target.label, "i"));
+  await expect(page.getByTestId("radar-status")).toHaveAttribute("title", new RegExp(target.radarBucket.replace(".", "\\."), "i"));
 
   const selectedTarget = await page.getByTestId("selected-target").innerText();
   const distance = await readDistance(page);
-  const routeStatus = await textFrom(page, "#route-status");
-  const radarStatus = await page.getByTestId("radar-status").innerText();
+  const routeStatus = (await route.innerText()).trim();
+  const routeDiagnostic = (await route.getAttribute("title")) ?? "";
+  const radarStatus = (await page.getByTestId("radar-status").getAttribute("title")) ?? "";
 
   expect(distance.display).toContain(target.distanceUnit);
   expect(distance.meters).toBeGreaterThanOrEqual(target.minMeters);
@@ -144,7 +152,9 @@ async function selectTargetAndAssertPreview(page: Page, target: (typeof liveTarg
     hudDistanceDisplay: distance.display,
     hudDistanceMeters: distance.meters,
     routeStatus,
-    radarStatus
+    routeDiagnostic,
+    radarStatus,
+    previewPlanHash
   };
 }
 
@@ -199,7 +209,7 @@ function createMarkdown(
   centerArea: CenterFlightAreaEvidence
 ): string {
   const previewRows = previews
-    .map((preview) => `| ${preview.targetId} | ${preview.label} | ${preview.hudDistanceDisplay} | ${preview.hudDistanceMeters} | ${preview.routeStatus} | ${preview.radarStatus} |`)
+    .map((preview) => `| ${preview.targetId} | ${preview.label} | ${preview.hudDistanceDisplay} | ${preview.hudDistanceMeters} | ${preview.previewPlanHash} | ${preview.routeStatus} | ${preview.routeDiagnostic} | ${preview.radarStatus} |`)
     .join("\n");
   const arrivalStatement = liveFlight.arrivalOrHoldingReached
     ? "Arrival/Holding was reached inside the live E2E budget; after route completion the HUD distance field may return to the ready route-preview distance."
@@ -213,14 +223,14 @@ Generated by \`apps/weltraum-browser/tests/e2e/playable-large-field-live-flight.
 
 - URL: normal browser runtime \`/\`
 - TestBridge: absent from \`window\`, absent from the visible HUD, and no \`/?testBridge=1\` route was used
-- Interaction path: player HUD buttons only
+- Interaction path: visible navigation planner target and Engage buttons only
 - Ship visual: Demo Scout GLB player-facing source line confirmed before flight
 - Selected live-flight target: ${liveFlight.selectedTarget}
 
 ## Target Preview Sweep
 
-| Target ID | Label | HUD distance display | Parsed distance (m) | Route status | Radar status |
-| --- | --- | --- | ---: | --- | --- |
+| Target ID | Label | HUD distance display | Parsed distance (m) | Preview hash | Visible route status | Raw route diagnostic | Radar status |
+| --- | --- | --- | ---: | --- | --- | --- | --- |
 ${previewRows}
 
 ## Live Flight Proof
@@ -272,12 +282,6 @@ test("normal player HUD flies a large-field target with live browser runtime mov
   await expect(page.getByTestId("ship-visual-source")).toContainText("Ship visual: Demo Scout GLB", { timeout: 20_000 });
 
   const centerArea = await expectCenterFlightAreaVisible(page);
-  const targetOptions = page.getByTestId("target-options");
-  for (const target of liveTargets) {
-    await expect(targetOptions).toContainText(target.label);
-    await expect(page.locator(`button[data-target-id="${target.targetId}"]`)).toBeVisible();
-  }
-
   const previews: TargetPreviewEvidence[] = [];
   for (const target of liveTargets) {
     previews.push(await selectTargetAndAssertPreview(page, target));
@@ -288,9 +292,10 @@ test("normal player HUD flies a large-field target with live browser runtime mov
   await expectCenterFlightAreaVisible(page);
   const beforeEngageScreenshot = await page.screenshot({ fullPage: true });
 
-  await page.locator("#engage-autopilot").click();
+  await engageVisiblePreview(page, selectedForFlight.previewPlanHash);
   await expect(page.getByTestId("autopilot-active")).toContainText(/Autopilot executing|Arrived at selected target/);
-  await expect(page.locator("#route-status")).toContainText(/locked route valid|holding at target/i);
+  await expect(page.locator("#route-status")).toContainText(/Autopilot active|Holding at target/i);
+  await expect(page.locator("#route-status")).toHaveAttribute("title", /locked route valid|holding at target/i);
   await expect(page.locator("#autopilot-action-state")).toContainText(/Cancel current route|Holding at target|Ready/i);
   await expectNoTestBridgeLeakage(page);
 
@@ -298,14 +303,16 @@ test("normal player HUD flies a large-field target with live browser runtime mov
   const initialAutopilotState = await page.getByTestId("autopilot-active").innerText();
   const laterDistance = await waitForDistanceDecrease(page, initialDistance.meters);
   const laterAutopilotState = await page.getByTestId("autopilot-active").innerText();
-  await expect(page.locator("#warning-chips")).toContainText("none");
-  await expect(page.locator("#failure-reasons")).toContainText("none");
+  await expect(page.getByTestId("warning-state")).toBeHidden();
+  await expect(page.getByTestId("warning-state")).toHaveText("");
+  await expect(page.locator("#failure-reasons")).toBeHidden();
   await expect(page.locator("#route-status")).not.toContainText(/invalid|new plan required/i);
   const inFlightScreenshot = await page.screenshot({ fullPage: true });
 
   const arrival = await waitForArrivalOrProgress(page);
-  await expect(page.locator("#warning-chips")).toContainText("none");
-  await expect(page.locator("#failure-reasons")).toContainText("none");
+  await expect(page.getByTestId("warning-state")).toBeHidden();
+  await expect(page.getByTestId("warning-state")).toHaveText("");
+  await expect(page.locator("#failure-reasons")).toBeHidden();
   await expect(page.locator("#route-status")).not.toContainText(/invalid|new plan required/i);
   await expectNoTestBridgeLeakage(page);
   await expectCenterFlightAreaVisible(page);

@@ -1,7 +1,8 @@
-import type { TelemetrySnapshot } from "../core";
-import type { BrowserRuntimeCommand } from "../runtime/commands";
+import type { AutopilotSpeedProfileId, RoutePlan, RouteSegment, TelemetrySnapshot, Vec3 } from "../core";
+import type { BrowserRuntimeCommand, BrowserRuntimeCommandResult } from "../runtime/commands";
 import type { ShipVisualSourceSnapshot } from "../render/three/shipVisual";
 import type { NavigationObjectiveStatus } from "../sim/telemetry";
+import { renderPlannerMap } from "./plannerMap";
 
 type ChipSeverity = "Critical" | "High" | "Medium" | "Low";
 export type StatusHudTone = "manual" | "ready" | "active" | "holding" | "blocked";
@@ -44,8 +45,10 @@ export interface NavigationPanelViewModel {
   readonly route: StatusHudLabelValueViewModel;
   readonly routeTone: StatusHudTone;
   readonly target: StatusHudLabelValueViewModel;
+  readonly targetKind: StatusHudLabelValueViewModel;
   readonly distance: StatusHudLabelValueViewModel;
   readonly radar: StatusHudLabelValueViewModel;
+  readonly radarRange: StatusHudLabelValueViewModel;
   readonly targetOptions: readonly StatusHudTargetOptionViewModel[];
 }
 
@@ -121,6 +124,22 @@ export interface StatusHudViewModel {
   readonly objective: StatusHudObjectiveViewModel;
 }
 
+export interface CombatRuntimeViewModel {
+  readonly speed: string;
+  readonly throttle: string;
+  readonly fuel: string;
+  readonly targetLabel: string;
+  readonly targetKind: string;
+  readonly targetDistance: string;
+  readonly autopilot: string;
+  readonly controlMode: string;
+  readonly controlAssist: string;
+  readonly authority: string;
+  readonly braking: string;
+  readonly warnings: string;
+  readonly radar: string;
+}
+
 export interface StatusHudTargetOptionViewModel {
   readonly id: string;
   readonly label: string;
@@ -191,8 +210,140 @@ const radarRangeForMeters = (value: number): string => {
   return "5.0 km";
 };
 
-const distanceFromOrigin = (position: { readonly x: number; readonly y: number; readonly z: number }): number =>
-  Math.hypot(position.x, position.y, position.z);
+const distanceBetween = (left: Vec3, right: Vec3): number =>
+  Math.hypot(right.x - left.x, right.y - left.y, right.z - left.z);
+
+const segmentDistance = (segment: RouteSegment): number => distanceBetween(segment.start, segment.end);
+
+const formatDuration = (seconds: number | null): string => {
+  if (seconds === null || !Number.isFinite(seconds) || seconds < 0) {
+    return "--:--";
+  }
+
+  const rounded = Math.round(seconds);
+  const hours = Math.floor(rounded / 3_600);
+  const minutes = Math.floor((rounded % 3_600) / 60);
+  const remainingSeconds = rounded % 60;
+  return hours > 0
+    ? `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(remainingSeconds).padStart(2, "0")}`
+    : `${String(minutes).padStart(2, "0")}:${String(remainingSeconds).padStart(2, "0")}`;
+};
+
+const etaForPlan = (plan: RoutePlan | null): number | null => {
+  if (!plan) {
+    return null;
+  }
+
+  let total = 0;
+  for (const segment of plan.segments) {
+    const distance = segmentDistance(segment);
+    if (distance <= 0.000001) {
+      continue;
+    }
+    if (!Number.isFinite(segment.desiredSpeed) || segment.desiredSpeed <= 0) {
+      return null;
+    }
+    total += distance / segment.desiredSpeed;
+  }
+  return total;
+};
+
+const clampUnit = (value: number): number => Math.max(0, Math.min(1, value));
+
+export const calculateRouteProgressPercent = (telemetry: TelemetrySnapshot): number | null => {
+  const lockedPlan = telemetry.lockedPlan;
+  const previewPlan = telemetry.routePreview?.state === "Ready" ? telemetry.routePreview.plan : null;
+  const plan = lockedPlan ?? previewPlan;
+  if (!plan) {
+    return null;
+  }
+  if (!lockedPlan) {
+    return 0;
+  }
+  if (telemetry.executor.status === "Arrived" || telemetry.executor.routeLifecycle === "Completed" || telemetry.executor.routeLifecycle === "Holding") {
+    return 100;
+  }
+
+  const segments = plan.segments.filter((segment) => segmentDistance(segment) > 0.000001);
+  const routeDistance = segments.reduce((total, segment) => total + segmentDistance(segment), 0);
+  if (routeDistance <= 0.000001) {
+    return 0;
+  }
+
+  const activeIndex = segments.findIndex((segment) => segment.id === telemetry.executor.activeSegmentId);
+  if (activeIndex < 0) {
+    return 0;
+  }
+
+  const completedDistance = segments
+    .slice(0, activeIndex)
+    .reduce((total, segment) => total + segmentDistance(segment), 0);
+  const activeSegment = segments[activeIndex];
+  const segmentVector = {
+    x: activeSegment.end.x - activeSegment.start.x,
+    y: activeSegment.end.y - activeSegment.start.y,
+    z: activeSegment.end.z - activeSegment.start.z
+  };
+  const shipVector = {
+    x: telemetry.ship.position.x - activeSegment.start.x,
+    y: telemetry.ship.position.y - activeSegment.start.y,
+    z: telemetry.ship.position.z - activeSegment.start.z
+  };
+  const lengthSquared = segmentVector.x ** 2 + segmentVector.y ** 2 + segmentVector.z ** 2;
+  const projection = lengthSquared > 0
+    ? clampUnit((shipVector.x * segmentVector.x + shipVector.y * segmentVector.y + shipVector.z * segmentVector.z) / lengthSquared)
+    : 0;
+  const travelledDistance = completedDistance + projection * Math.sqrt(lengthSquared);
+  return Math.max(0, Math.min(100, (travelledDistance / routeDistance) * 100));
+};
+
+export interface PlannerTimelineRowViewModel {
+  readonly id: string;
+  readonly kind: string;
+  readonly label: string;
+  readonly detail: string;
+  readonly time: string;
+  readonly isActive: boolean;
+  readonly isComplete: boolean;
+  readonly isExecutorPhase: boolean;
+}
+
+export const createPlannerTimelineRows = (telemetry: TelemetrySnapshot, plan: RoutePlan | null): readonly PlannerTimelineRowViewModel[] => {
+  const activeSegmentIndex = plan?.segments.findIndex((segment) => segment.id === telemetry.executor.activeSegmentId) ?? -1;
+  const routeComplete = telemetry.executor.status === "Arrived" || telemetry.executor.routeLifecycle === "Completed" || telemetry.executor.routeLifecycle === "Holding";
+  const rows: PlannerTimelineRowViewModel[] = [];
+  for (const [index, segment] of (plan?.segments ?? []).entries()) {
+    const distance = segmentDistance(segment);
+    if (distance <= 0.000001) {
+      continue;
+    }
+    rows.push({
+      id: segment.id,
+      kind: segment.kind,
+      label: segment.kind.toUpperCase(),
+      detail: `${formatDistance(distance)} at ${segment.desiredSpeed.toFixed(1)} m/s`,
+      time: formatDuration(segment.desiredSpeed > 0 ? distance / segment.desiredSpeed : null),
+      isActive: activeSegmentIndex === index,
+      isComplete: routeComplete || (activeSegmentIndex > index && Boolean(telemetry.lockedPlan)),
+      isExecutorPhase: false
+    });
+  }
+
+  const arrivalPhase = telemetry.executor.arrivalPhase;
+  if (arrivalPhase && arrivalPhase !== "None") {
+    rows.push({
+      id: `executor-${arrivalPhase}`,
+      kind: "Phase",
+      label: arrivalPhase.replace(/([a-z])([A-Z])/g, "$1 $2").toUpperCase(),
+      detail: telemetry.executor.routeLifecycle ?? "Executor phase",
+      time: "--:--",
+      isActive: Boolean(telemetry.executor.terminalCaptureActive || telemetry.executor.terminalHoldingActive),
+      isComplete: false,
+      isExecutorPhase: true
+    });
+  }
+  return rows;
+};
 
 const clampPercent = (value: number): number => Math.max(0, Math.min(100, Math.round(value)));
 
@@ -323,7 +474,7 @@ const formatVisualSourceLine = (visualSource: ShipVisualSourceSnapshot | undefin
 
 const createActionPanel = (telemetry: TelemetrySnapshot, warningChips: readonly StatusHudWarningChipViewModel[], routeTone: StatusHudTone): ActionPanelViewModel => {
   const hasLockedRoute = Boolean(telemetry.executor.planHash || telemetry.lockedPlan);
-  const hasReadyPreview = telemetry.routePreview?.state === "Ready" && Boolean(telemetry.routePreview.plan);
+  const hasReadyPreview = telemetry.routePreview?.state === "Ready" && Boolean(telemetry.routePreview.plan) && (telemetry.routePreview.lockAdmission?.ok ?? true);
   const hasCriticalWarning = warningChips.some((chip) => chip.severity === "Critical");
   const nextObjectiveAvailable =
     telemetry.navigationObjective?.status === "complete" &&
@@ -386,6 +537,18 @@ const createActionPanel = (telemetry: TelemetrySnapshot, warningChips: readonly 
       secondaryLabel: "Cancel",
       stateLabel: "Ready",
       stateTone: "ready"
+    };
+  }
+
+  if (telemetry.routePreview?.state === "Ready" && telemetry.routePreview.plan && telemetry.routePreview.lockAdmission && !telemetry.routePreview.lockAdmission.ok) {
+    return {
+      title: "Route Action",
+      primaryLabel: "Hold route",
+      primaryCommandEnabled: false,
+      primaryDisabledReason: telemetry.routePreview.lockAdmission.message,
+      secondaryLabel: "Cancel",
+      stateLabel: telemetry.routePreview.lockAdmission.message,
+      stateTone: "blocked"
     };
   }
 
@@ -464,7 +627,7 @@ const formatControlModeEffectState = (telemetry: TelemetrySnapshot): string => {
 
 export const createStatusHudViewModel = (telemetry: TelemetrySnapshot, visualSource?: ShipVisualSourceSnapshot): StatusHudViewModel => {
   const snapshot = telemetry.flightSnapshot;
-  const selectedTarget = telemetry.selectedTarget ?? telemetry.lockedPlan?.target ?? telemetry.routePreview?.target ?? null;
+  const selectedTarget = telemetry.selectedTarget ?? telemetry.lockedPlan?.target ?? null;
   const preview = telemetry.routePreview;
   const target = telemetry.lockedPlan?.target ?? selectedTarget;
   const warningCodes = unique([
@@ -476,7 +639,7 @@ export const createStatusHudViewModel = (telemetry: TelemetrySnapshot, visualSou
 
   const warningChips = createWarningChips(warningCodes);
   const routeTone = createRouteTone(telemetry, warningChips);
-  const routePlan = telemetry.lockedPlan ?? preview?.plan ?? null;
+  const routePlan = telemetry.lockedPlan ?? (preview?.state === "Ready" ? preview.plan : null);
   const previewDistance = preview?.plan?.score.distance;
   const displayedDistance = telemetry.lockedPlan ? telemetry.executor.distanceToTarget : previewDistance;
   const routeState = telemetry.lockedPlan
@@ -486,13 +649,24 @@ export const createStatusHudViewModel = (telemetry: TelemetrySnapshot, visualSou
     : preview?.state === "Ready" && preview.plan
       ? `preview ready: ${preview.plan.segments.length} leg${preview.plan.segments.length === 1 ? "" : "s"}, route ${formatDistance(preview.plan.score.distance)}`
       : (preview?.playerMessage ?? "select a target to preview a route");
+  const routePlayerState = routeTone === "blocked"
+    ? "Blocked"
+    : routeTone === "holding"
+      ? "Holding"
+      : routeTone === "active"
+        ? "Autopilot active"
+        : routeTone === "ready"
+          ? "Preview ready"
+          : selectedTarget
+            ? "Target selected"
+            : "Select target";
   const targetOptions = (telemetry.selectableTargets ?? []).map((candidateTarget) => ({
     id: candidateTarget.id,
     label: candidateTarget.label,
     kind: candidateTarget.kind,
-    rangeLabel: formatRangeHint(distanceFromOrigin(candidateTarget.position)),
-    displayLabel: `${candidateTarget.label} ${formatRangeHint(distanceFromOrigin(candidateTarget.position))}`,
-    ariaLabel: `${candidateTarget.label}, ${candidateTarget.kind}, range ${formatRangeHint(distanceFromOrigin(candidateTarget.position)).replace(/^~/, "")}`,
+    rangeLabel: formatRangeHint(distanceBetween(telemetry.ship.position, candidateTarget.position)),
+    displayLabel: `${candidateTarget.label} ${formatRangeHint(distanceBetween(telemetry.ship.position, candidateTarget.position))}`,
+    ariaLabel: `${candidateTarget.label}, ${candidateTarget.kind}, range ${formatRangeHint(distanceBetween(telemetry.ship.position, candidateTarget.position)).replace(/^~/, "")}`,
     isSelected: candidateTarget.id === selectedTarget?.id
   }));
   const manualInput = telemetry.manualInput;
@@ -515,12 +689,30 @@ export const createStatusHudViewModel = (telemetry: TelemetrySnapshot, visualSou
         ? "Route preview ready"
         : "No active plan";
   const targetState = target ? `${target.label} [${target.kind}]` : "none selected";
+  const targetLabel = target?.label ?? "No target";
+  const targetKind = target?.kind ?? "Unselected";
   const distanceState = target && displayedDistance !== undefined ? formatDistance(displayedDistance) : "n/a";
-  const radarState = target && routePlan
-    ? `local contact ${target.label}; auto range ${radarRangeForMeters(distanceFromOrigin(target.position))}; ${routePlan.segments.length} route leg${routePlan.segments.length === 1 ? "" : "s"}; terminal ${formatDistance(routePlan.score.distance)}`
+  const routeContactCount = routePlan?.segments.filter((segment) => segmentDistance(segment) > 0.000001).length ?? 0;
+  const obstacleContactCount = telemetry.obstacles?.length ?? 0;
+  const radarContactCount = routeContactCount + obstacleContactCount + (target ? 1 : 0);
+  const radarDistanceCandidates = [1];
+  if (target) {
+    radarDistanceCandidates.push(distanceBetween(telemetry.ship.position, target.position));
+  }
+  for (const obstacle of telemetry.obstacles ?? []) {
+    radarDistanceCandidates.push(distanceBetween(telemetry.ship.position, obstacle.center) + obstacle.radius);
+  }
+  for (const segment of routePlan?.segments ?? []) {
+    radarDistanceCandidates.push(distanceBetween(telemetry.ship.position, segment.end));
+  }
+  const radarRangeState = radarRangeForMeters(Math.max(...radarDistanceCandidates));
+  const radarSummary = `${radarContactCount} contact${radarContactCount === 1 ? "" : "s"}`;
+  const radarState = target
+    ? `local contact ${target.label}; auto range ${radarRangeForMeters(distanceBetween(telemetry.ship.position, target.position))}${routePlan ? `; ${routePlan.segments.length} route leg${routePlan.segments.length === 1 ? "" : "s"}; terminal ${formatDistance(routePlan.score.distance)}` : ""}`
     : "no route contact";
   const autopilotState = `${statusCatalog[telemetry.executor.status] ?? "Autopilot status unknown"}${telemetry.executor.replanRequired ? " / new plan required" : ""}`;
   const fuelState = `${snapshot.fuel.status}: ${snapshot.fuel.current}/${snapshot.fuel.capacity} kg (reserve ${snapshot.fuel.reserve})`;
+  const fuelSummary = `${snapshot.fuel.current}/${snapshot.fuel.capacity} kg`;
   const authorityState = `AP ${snapshot.authority.autopilotAvailable ? "ready" : "blocked"}, main ${snapshot.authority.mainThrustersAvailable ? "ready" : "blocked"}, RCS ${snapshot.authority.rcsAvailable ? "ready" : "blocked"}, SAS ${snapshot.authority.sasAvailable ? "ready" : "blocked"}`;
   const brakingState = snapshot.brakingReserve.canBrake
     ? `ready: ${snapshot.brakingReserve.availableDeltaV} m/s available`
@@ -545,7 +737,7 @@ export const createStatusHudViewModel = (telemetry: TelemetrySnapshot, visualSou
     throttleMeter,
     speed: { label: "Speed", value: velocityState },
     rcsSas: { label: "RCS / SAS", value: rcsSasState },
-    fuel: { label: "Fuel", value: fuelState },
+    fuel: { label: "Fuel", value: fuelSummary },
     fuelMeter,
     shipVisual: { label: "Ship Visual", value: visualSourceLine }
   };
@@ -553,11 +745,13 @@ export const createStatusHudViewModel = (telemetry: TelemetrySnapshot, visualSou
     title: "Navigation",
     objective,
     plan: { label: "Plan", value: planState },
-    route: { label: "Route", value: routeState },
+    route: { label: "Route", value: routePlayerState },
     routeTone,
-    target: { label: "Target", value: targetState },
+    target: { label: "Target", value: targetLabel },
+    targetKind: { label: "Target Kind", value: targetKind },
     distance: { label: "Distance", value: distanceState },
-    radar: { label: "Radar", value: radarState },
+    radar: { label: "Radar", value: radarSummary },
+    radarRange: { label: "Radar Range", value: radarRangeState },
     targetOptions
   };
   const warnings: WarningPanelViewModel = {
@@ -611,6 +805,32 @@ export const createStatusHudViewModel = (telemetry: TelemetrySnapshot, visualSou
   };
 };
 
+export const createCombatRuntimeViewModel = (telemetry: TelemetrySnapshot): CombatRuntimeViewModel => {
+  const hud = createStatusHudViewModel(telemetry);
+  const target = telemetry.selectedTarget ?? telemetry.lockedPlan?.target ?? null;
+  const fuel = telemetry.flightSnapshot.fuel;
+  const fuelPercent = fuel.capacity > 0 ? clampPercent((fuel.current / fuel.capacity) * 100) : 0;
+  return {
+    speed: `${Math.hypot(telemetry.ship.velocity.x, telemetry.ship.velocity.y, telemetry.ship.velocity.z).toFixed(2)} m/s`,
+    throttle: `${Math.round(telemetry.ship.throttle * 100)}%`,
+    fuel: `${fuel.current.toFixed(1)} / ${fuel.capacity.toFixed(1)} kg (${fuelPercent}%)`,
+    targetLabel: target?.label ?? "No target",
+    targetKind: target?.kind ?? "Unselected",
+    targetDistance: target ? formatDistance(distanceBetween(telemetry.ship.position, target.position)) : "n/a",
+    autopilot: hud.navigation.route.value,
+    controlMode: telemetry.ship.controlMode,
+    controlAssist: `RCS ${telemetry.ship.rcsEnabled ? "on" : "off"} · SAS ${telemetry.ship.sasEnabled ? "on" : "off"}`,
+    authority: telemetry.flightSnapshot.authority.autopilotAvailable && telemetry.flightSnapshot.authority.mainThrustersAvailable
+      ? "Flight authority ready"
+      : "Flight authority blocked",
+    braking: telemetry.flightSnapshot.brakingReserve.canBrake
+      ? `${telemetry.flightSnapshot.brakingReserve.availableDeltaV.toFixed(1)} m/s available`
+      : "Brake reserve blocked",
+    warnings: hud.warningChips.length > 0 ? hud.warningSummary : "",
+    radar: `${hud.navigation.radar.value} · ${hud.navigation.radarRange.value}`
+  };
+};
+
 const setText = (id: string, value: string): void => {
   const element = document.getElementById(id);
   if (element) {
@@ -633,8 +853,31 @@ const setMeter = (id: string, meter: StatusHudMeterViewModel): void => {
     return;
   }
 
-  element.style.width = `${meter.percent}%`;
+  if (typeof element.style.setProperty === "function") {
+    element.style.setProperty("width", `${meter.percent}%`, "important");
+  } else {
+    element.style.width = `${meter.percent}%`;
+  }
   element.setAttribute("data-hud-tone", meter.tone);
+};
+
+const renderThrottleSegments = (meter: StatusHudMeterViewModel): void => {
+  const element = document.getElementById("throttle-segments") as HTMLElement | null;
+  if (!element) {
+    return;
+  }
+
+  const segments = Array.from(element.children) as HTMLElement[];
+  const activeCount = meter.percent <= 0 ? 0 : Math.min(segments.length, Math.ceil((meter.percent / 100) * segments.length));
+  for (const [index, segment] of segments.entries()) {
+    const isActive = index < activeCount;
+    segment.classList.toggle("is-active", isActive);
+    segment.dataset.active = String(isActive);
+  }
+  element.dataset.activeCount = String(activeCount);
+  element.dataset.percent = String(meter.percent);
+  element.setAttribute("aria-valuenow", String(meter.percent));
+  element.setAttribute("aria-valuetext", `${meter.percent}% throttle, ${activeCount} of ${segments.length} segments active`);
 };
 
 const renderPresentationState = (viewModel: StatusHudViewModel): void => {
@@ -652,6 +895,7 @@ const renderPresentationState = (viewModel: StatusHudViewModel): void => {
   setStateTone("throttle-status", viewModel.throttleMeter.tone);
   setMeter("fuel-meter-fill", viewModel.fuelMeter);
   setMeter("throttle-meter-fill", viewModel.throttleMeter);
+  renderThrottleSegments(viewModel.throttleMeter);
 };
 
 const renderWarningChips = (viewModel: StatusHudViewModel): void => {
@@ -661,9 +905,12 @@ const renderWarningChips = (viewModel: StatusHudViewModel): void => {
   }
 
   if (viewModel.warningChips.length === 0) {
-    element.textContent = "none";
+    element.textContent = "";
+    element.hidden = true;
     return;
   }
+
+  element.hidden = false;
 
   if (typeof document.createElement === "function" && "replaceChildren" in element) {
     const chips = viewModel.warningChips.map((chip) => {
@@ -769,7 +1016,94 @@ const renderTargetOptions = (viewModel: StatusHudViewModel, sink: StatusHudComma
   element.replaceChildren(...buttons);
 };
 
-const renderPlannerTargetOptions = (viewModel: StatusHudViewModel, sink: StatusHudCommandSink | undefined): void => {
+let plannerReturnFocus: HTMLElement | null = null;
+let plannerFeedback = "";
+let plannerFeedbackIsError = false;
+
+const isRouteLocked = (telemetry: TelemetrySnapshot): boolean => Boolean(telemetry.lockedPlan || telemetry.executor.planHash);
+
+const renderPlannerFeedback = (message: string, isError = false): void => {
+  const element = document.getElementById("planner-feedback") as HTMLElement | null;
+  if (!element) {
+    return;
+  }
+
+  element.textContent = message;
+  element.dataset.error = String(isError);
+  element.setAttribute("role", isError ? "alert" : "status");
+};
+
+const isBrowserRuntimeCommandResult = (value: unknown): value is BrowserRuntimeCommandResult =>
+  typeof value === "object" &&
+  value !== null &&
+  "success" in value &&
+  typeof value.success === "boolean" &&
+  "telemetry" in value &&
+  typeof value.telemetry === "object" &&
+  value.telemetry !== null &&
+  "message" in value &&
+  typeof value.message === "string";
+
+const dispatchPlannerCommand = (
+  command: BrowserRuntimeCommand,
+  sink: StatusHudCommandSink | undefined,
+  options: { readonly closeOnSuccess?: boolean } = {}
+): BrowserRuntimeCommandResult | null => {
+  if (!sink) {
+    return null;
+  }
+
+  const dispatched = sink.dispatch(command);
+  if (!isBrowserRuntimeCommandResult(dispatched)) {
+    plannerFeedback = "The runtime did not return a typed command result.";
+    plannerFeedbackIsError = true;
+    renderPlannerFeedback(plannerFeedback, true);
+    document.getElementById("planner-feedback")?.focus();
+    return null;
+  }
+
+  const result = dispatched;
+  plannerFeedback = result.message;
+  plannerFeedbackIsError = !result.success;
+  renderPlannerFeedback(plannerFeedback, plannerFeedbackIsError);
+  if (!result.success) {
+    document.getElementById("planner-feedback")?.focus();
+    return result;
+  }
+
+  if (options.closeOnSuccess) {
+    setNavigationPlannerOpen(false);
+  }
+  return result;
+};
+
+const setControlEnabled = (id: string, enabled: boolean, reason: string | null): void => {
+  const element = document.getElementById(id) as HTMLButtonElement | null;
+  if (!element) {
+    return;
+  }
+
+  element.disabled = !enabled;
+  element.setAttribute("aria-disabled", String(!enabled));
+  if (!enabled && reason) {
+    element.title = reason;
+    element.setAttribute("aria-description", reason);
+  } else {
+    element.title = "";
+    element.removeAttribute("aria-description");
+  }
+};
+
+const setTextWithDetail = (id: string, value: string, detail: string): void => {
+  setText(id, value);
+  document.getElementById(id)?.setAttribute("title", detail);
+};
+
+const renderPlannerTargetOptions = (
+  telemetry: TelemetrySnapshot,
+  viewModel: StatusHudViewModel,
+  sink: StatusHudCommandSink | undefined
+): void => {
   const element = document.getElementById("planner-target-options");
   if (!element) {
     return;
@@ -780,7 +1114,8 @@ const renderPlannerTargetOptions = (viewModel: StatusHudViewModel, sink: StatusH
     return;
   }
 
-  const renderKey = viewModel.targetOptions.map((target) => `${target.id}:${target.rangeLabel}:${target.isSelected}`).join("|");
+  const locked = isRouteLocked(telemetry);
+  const renderKey = `${locked}|${viewModel.targetOptions.map((target) => `${target.id}:${target.rangeLabel}:${target.isSelected}`).join("|")}`;
   const container = element as HTMLElement;
   if (container.dataset?.renderKey === renderKey) {
     return;
@@ -798,6 +1133,14 @@ const renderPlannerTargetOptions = (viewModel: StatusHudViewModel, sink: StatusH
     const button = createTargetOptionButton(target, sink, "planner-target-option");
     button.removeAttribute("data-target-id");
     button.dataset.plannerTargetId = target.id;
+    button.disabled = locked;
+    button.setAttribute("aria-disabled", String(locked));
+    if (locked) {
+      button.title = "Cancel the locked route before changing target.";
+      button.onclick = null;
+    } else {
+      button.onclick = () => void dispatchPlannerCommand({ type: "SelectTarget", targetId: target.id }, sink);
+    }
     return button;
   });
   element.replaceChildren(...buttons);
@@ -821,42 +1164,399 @@ const bindUiAction = (id: string, handler: () => void): void => {
   element.onclick = () => handler();
 };
 
+const setPlannerBackgroundInert = (isInert: boolean): void => {
+  if (typeof document.querySelectorAll !== "function") {
+    return;
+  }
+
+  const background = document.querySelectorAll<HTMLElement>(
+    "#debug-scene, .hud-center-safe-area, #flight-hud > :not(#navigation-planner), #debug-hud"
+  );
+  for (const element of background) {
+    element.inert = isInert;
+    if (isInert) {
+      element.setAttribute("inert", "");
+    } else {
+      element.removeAttribute("inert");
+    }
+  }
+};
+
 const setNavigationPlannerOpen = (isOpen: boolean): void => {
-  setHidden("navigation-planner", !isOpen);
+  const planner = document.getElementById("navigation-planner") as HTMLDialogElement | null;
   const flightHud = document.getElementById("flight-hud");
   if (flightHud) {
     flightHud.setAttribute("data-planner-open", String(isOpen));
   }
+  if (document.body) {
+    document.body.setAttribute("data-planner-open", String(isOpen));
+  }
+  if (!planner) {
+    return;
+  }
+
+  if (isOpen) {
+    if (!planner.open) {
+      plannerReturnFocus = document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : document.getElementById("open-navigation-planner");
+      setPlannerBackgroundInert(true);
+      if (typeof planner.showModal === "function") {
+        planner.showModal();
+      } else {
+        planner.setAttribute("open", "");
+      }
+      const selectedProfile = planner.querySelector<HTMLButtonElement>('.planner-profile-controls button[aria-pressed="true"]:not(:disabled)');
+      (selectedProfile ?? planner.querySelector<HTMLButtonElement>("button:not(:disabled)"))?.focus();
+    }
+    return;
+  }
+
+  if (planner.open && typeof planner.close === "function") {
+    planner.close();
+  } else {
+    planner.removeAttribute("open");
+  }
+  setPlannerBackgroundInert(false);
+  const focusTarget = plannerReturnFocus ?? document.getElementById("open-navigation-planner") ?? flightHud;
+  focusTarget?.focus();
+  plannerReturnFocus = null;
+  plannerFeedback = "";
+  plannerFeedbackIsError = false;
 };
 
 const bindPresentationUi = (): void => {
   bindUiAction("open-navigation-planner", () => setNavigationPlannerOpen(true));
   bindUiAction("planner-close", () => setNavigationPlannerOpen(false));
 
+  const planner = document.getElementById("navigation-planner") as HTMLDialogElement | null;
+  if (planner) {
+    planner.oncancel = (event) => {
+      event.preventDefault();
+      setNavigationPlannerOpen(false);
+    };
+    planner.onkeydown = (event) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setNavigationPlannerOpen(false);
+        return;
+      }
+      if (event.key !== "Tab") {
+        return;
+      }
+      const focusable = [...planner.querySelectorAll<HTMLElement>("button:not(:disabled), [href], [tabindex]:not([tabindex='-1'])")]
+        .filter((element) => !element.hasAttribute("hidden"));
+      if (focusable.length === 0) {
+        event.preventDefault();
+        return;
+      }
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+  }
+
   const isCombatScenario = document.body?.dataset.uiScenario === "combat-contact";
   setHidden("combat-contact-hud", !isCombatScenario);
 };
 
-const renderNavigationPlanner = (viewModel: StatusHudViewModel, sink: StatusHudCommandSink | undefined): void => {
+const renderPlannerTimeline = (telemetry: TelemetrySnapshot, plan: RoutePlan | null): void => {
+  const timeline = document.getElementById("planner-timeline");
+  if (!timeline || typeof document.createElement !== "function" || !("replaceChildren" in timeline)) {
+    return;
+  }
+
+  const items: HTMLElement[] = [];
+  for (const row of createPlannerTimelineRows(telemetry, plan)) {
+    const item = document.createElement("li");
+    item.className = `planner-step--${row.kind.toLowerCase()}${row.isActive ? " planner-step--active" : ""}${row.isComplete ? " planner-step--complete" : ""}`;
+    item.dataset.timelineId = row.id;
+    if (row.isExecutorPhase) {
+      item.dataset.executorPhase = row.label;
+    } else {
+      item.dataset.segmentId = row.id;
+      item.dataset.segmentKind = row.kind;
+    }
+    const marker = document.createElement("span");
+    marker.className = "planner-step-marker";
+    marker.setAttribute("aria-hidden", "true");
+    const copy = document.createElement("span");
+    copy.className = "planner-step-copy";
+    const title = document.createElement("strong");
+    title.textContent = row.label;
+    const detail = document.createElement("span");
+    detail.className = "planner-step-note";
+    detail.textContent = row.detail;
+    copy.append(title, detail);
+    const time = document.createElement("time");
+    time.textContent = row.time;
+    item.append(marker, copy, time);
+    items.push(item);
+  }
+
+  if (items.length === 0) {
+    const empty = document.createElement("li");
+    empty.className = "planner-step--empty";
+    empty.textContent = "No route preview available";
+    items.push(empty);
+  }
+  timeline.replaceChildren(...items);
+  setText("planner-timeline-total", formatDuration(etaForPlan(plan)));
+};
+
+const renderPlannerMetrics = (telemetry: TelemetrySnapshot, plan: RoutePlan | null): void => {
+  const fuel = telemetry.flightSnapshot.fuel;
+  const fuelPercent = fuel.capacity > 0 ? clampPercent((fuel.current / fuel.capacity) * 100) : 0;
+  const fuelEstimate = plan?.score.fuelCostEstimate ?? null;
+  const remainingFuel = fuelEstimate === null ? null : Math.max(0, fuel.current - fuelEstimate);
+  const remainingPercent = remainingFuel === null || fuel.capacity <= 0 ? null : clampPercent((remainingFuel / fuel.capacity) * 100);
+  const brake = telemetry.flightSnapshot.brakingReserve;
+  const avoidanceSegments = plan?.segments.filter((segment) => segment.kind === "Avoidance").length ?? 0;
+  const obstacleCount = telemetry.obstacles?.length ?? 0;
+  const profile = telemetry.selectedRouteProfile ?? plan?.speedProfile ?? "Balanced";
+
+  setText("planner-fuel-value", `${fuel.current.toFixed(1)} / ${fuel.capacity.toFixed(1)}`);
+  setText("planner-fuel-percent", `${fuelPercent}%`);
+  setText("planner-brake-value", `${brake.availableDeltaV.toFixed(1)} m/s available`);
+  setText("planner-brake-required", `${brake.requiredDeltaV.toFixed(1)} m/s required`);
+  setText("planner-route-eta", formatDuration(etaForPlan(plan)));
+  setText("planner-metric-distance", plan ? formatDistance(plan.score.distance) : "n/a");
+  setText("planner-metric-fuel-estimate", fuelEstimate === null ? "n/a" : `${fuelEstimate.toFixed(2)} kg estimate`);
+  setText("planner-metric-fuel-remaining", remainingFuel === null ? "n/a" : `${remainingFuel.toFixed(1)} kg (${remainingPercent}%)`);
+  setText("planner-metric-brake-reserve", `${brake.availableDeltaV.toFixed(1)} m/s / ${brake.requiredDeltaV.toFixed(1)} m/s required`);
+  setText("planner-metric-avoidance", plan ? `${avoidanceSegments > 0 ? `${avoidanceSegments} avoidance segment${avoidanceSegments === 1 ? "" : "s"}` : "Direct route"}; ${obstacleCount} obstacle${obstacleCount === 1 ? "" : "s"}` : `${obstacleCount} obstacle${obstacleCount === 1 ? "" : "s"}`);
+  setText("planner-metric-route", plan ? `${profile} / ${plan.planner} / ${plan.planHash}` : `${profile} / no preview`);
+};
+
+const renderNavigationPlanner = (
+  telemetry: TelemetrySnapshot,
+  viewModel: StatusHudViewModel,
+  sink: StatusHudCommandSink | undefined
+): void => {
   const planner = document.getElementById("navigation-planner");
   if (planner) {
     planner.setAttribute("data-route-tone", viewModel.routeTone);
   }
 
-  setText("planner-selected-target", viewModel.navigation.target.value);
-  setText("planner-route-distance", viewModel.navigation.distance.value);
-  setText("planner-route-status", viewModel.navigation.route.value);
-  setText("planner-map-target", viewModel.navigation.target.value);
+  const locked = isRouteLocked(telemetry);
+  const preview = telemetry.routePreview;
+  const plan = telemetry.lockedPlan ?? preview?.plan ?? null;
+  const selectedTarget = telemetry.selectedTarget ?? telemetry.lockedPlan?.target ?? preview?.target ?? null;
+  const visiblePreviewHash = preview?.plan?.planHash ?? null;
+  const selectedProfile = telemetry.selectedRouteProfile ?? plan?.speedProfile ?? "Balanced";
+  const lockReason = locked ? "Cancel the locked route before changing target, profile, or preview." : null;
+  const planningReason = lockReason ?? (!selectedTarget ? "Select a target before creating a route preview." : null);
+  const admission = preview?.lockAdmission;
+  const canEngage = !locked && preview?.state === "Ready" && Boolean(visiblePreviewHash) && (admission?.ok ?? true);
+  const engageReason = locked
+    ? "A route is already locked."
+    : preview?.state !== "Ready" || !visiblePreviewHash
+      ? (preview?.playerMessage ?? "Create a valid route preview before engaging.")
+      : admission && !admission.ok
+        ? admission.message
+        : null;
+
+  if (planner) {
+    const plannerElement = planner as HTMLElement;
+    plannerElement.dataset.visiblePreviewHash = visiblePreviewHash ?? "";
+    plannerElement.dataset.locked = String(locked);
+    plannerElement.dataset.profile = selectedProfile;
+  }
+  setText("planner-selected-target", selectedTarget ? `${selectedTarget.label} [${selectedTarget.kind}]` : "none selected");
+  setText("planner-route-distance", plan ? formatDistance(plan.score.distance) : viewModel.navigation.distance.value);
+  setText("planner-route-status", `${viewModel.navigation.route.value}; executor ${telemetry.executor.routeLifecycle ?? telemetry.executor.status}${telemetry.executor.activeSegmentId ? `; active ${telemetry.executor.activeSegmentId}` : ""}`);
   setText("planner-objective", `${viewModel.objective.label}: ${viewModel.objective.status}`);
-  setText("planner-route-detail", `${viewModel.navigation.plan.value}; ${viewModel.navigation.radar.value}`);
-  setText("planner-burn-state", viewModel.routeTone === "active" ? "Executing" : viewModel.routeTone === "ready" ? "Ready" : "Preview");
+  setText("planner-route-detail", plan
+    ? `${plan.planner}; profile ${plan.speedProfile}; hash ${plan.planHash}; ${preview?.state ?? "Locked"}`
+    : (preview?.playerMessage ?? "Select a target to preview a route."));
   setStateTone("planner-route-status", viewModel.routeTone);
-  renderPlannerTargetOptions(viewModel, sink);
-  setText("planner-engage-route", viewModel.actions.primaryLabel === "Engage route" ? "Engage" : viewModel.actions.primaryLabel);
-  bindCommand("planner-engage-route", { type: "EngageAutopilot", planner: "ObstacleAvoidanceLocal" }, sink, {
-    enabled: viewModel.actions.primaryCommandEnabled,
-    disabledReason: viewModel.actions.primaryDisabledReason
+  renderPlannerTargetOptions(telemetry, viewModel, sink);
+  renderPlannerTimeline(telemetry, plan);
+  renderPlannerMetrics(telemetry, plan);
+  renderPlannerMap(telemetry);
+
+  const lockReasonElement = document.getElementById("planner-lock-reason") as HTMLElement | null;
+  if (lockReasonElement) {
+    lockReasonElement.hidden = !lockReason;
+    lockReasonElement.textContent = lockReason ?? "";
+  }
+
+  const profiles: readonly AutopilotSpeedProfileId[] = ["Safe", "Balanced", "Fast"];
+  for (const profile of profiles) {
+    const id = `planner-profile-${profile.toLowerCase()}`;
+    const button = document.getElementById(id) as HTMLButtonElement | null;
+    if (!button) {
+      continue;
+    }
+    const isSelected = profile === selectedProfile;
+    button.classList.toggle("planner-profile-controls__active", isSelected);
+    button.setAttribute("aria-pressed", String(isSelected));
+    setControlEnabled(id, !locked, lockReason);
+    button.onclick = locked ? null : () => void dispatchPlannerCommand({ type: "SetRouteProfile", profile }, sink);
+  }
+
+  setControlEnabled("planner-preview-route", !locked && Boolean(selectedTarget), planningReason);
+  setControlEnabled("planner-replan-route", !locked && Boolean(selectedTarget), planningReason);
+  setControlEnabled("planner-engage-route", canEngage, engageReason);
+  const previewButton = document.getElementById("planner-preview-route") as HTMLButtonElement | null;
+  const replanButton = document.getElementById("planner-replan-route") as HTMLButtonElement | null;
+  const engageButton = document.getElementById("planner-engage-route") as HTMLButtonElement | null;
+  if (previewButton) {
+    previewButton.onclick = locked || !selectedTarget ? null : () => void dispatchPlannerCommand({ type: "PreviewRoute" }, sink);
+  }
+  if (replanButton) {
+    replanButton.onclick = locked || !selectedTarget ? null : () => void dispatchPlannerCommand({ type: "ReplanRoute" }, sink);
+  }
+  if (engageButton) {
+    engageButton.textContent = telemetry.lockedPlan ? "Route locked" : "Engage";
+    engageButton.onclick = canEngage && visiblePreviewHash
+      ? () => void dispatchPlannerCommand({ type: "EngageRoutePreview", expectedPlanHash: visiblePreviewHash }, sink, { closeOnSuccess: true })
+      : null;
+  }
+
+  renderPlannerFeedback(
+    plannerFeedback || engageReason || preview?.playerMessage || telemetry.runtimeMessage || "Select a target to begin.",
+    plannerFeedbackIsError
+  );
+};
+
+const renderFlightDistanceProgress = (telemetry: TelemetrySnapshot): void => {
+  const element = document.getElementById("flight-nav-distance-scale") as HTMLElement | null;
+  if (!element || typeof document.createElement !== "function" || !("replaceChildren" in element)) {
+    return;
+  }
+
+  const progressPercent = calculateRouteProgressPercent(telemetry);
+  const plan = telemetry.lockedPlan ?? (telemetry.routePreview?.state === "Ready" ? telemetry.routePreview.plan : null);
+  if (!plan || progressPercent === null) {
+    element.hidden = true;
+    element.replaceChildren();
+    element.removeAttribute("data-active-segment-id");
+    element.removeAttribute("data-progress-percent");
+    return;
+  }
+
+  const ship = document.createElement("span");
+  ship.className = "flight-nav-distance-scale__ship";
+  ship.setAttribute("aria-hidden", "true");
+  const track = document.createElement("span");
+  track.className = "flight-nav-distance-scale__track";
+  track.setAttribute("aria-hidden", "true");
+  const fill = document.createElement("span");
+  fill.className = "flight-nav-distance-scale__fill";
+  fill.style.width = `${progressPercent.toFixed(4)}%`;
+  track.append(fill);
+  const target = document.createElement("span");
+  target.className = "flight-nav-distance-scale__target";
+  target.setAttribute("aria-hidden", "true");
+  element.replaceChildren(ship, track, target);
+  element.hidden = false;
+  element.dataset.segmentCount = String(plan.segments.length);
+  element.dataset.progressPercent = progressPercent.toFixed(4);
+  element.dataset.progressState = telemetry.lockedPlan
+    ? progressPercent >= 100 ? "arrived" : "executing"
+    : "preview";
+  element.style.setProperty("--route-progress", `${progressPercent.toFixed(4)}%`);
+  element.setAttribute("aria-label", `Navigation route progress ${progressPercent.toFixed(1)} percent`);
+  if (telemetry.executor.activeSegmentId) {
+    element.dataset.activeSegmentId = telemetry.executor.activeSegmentId;
+  } else {
+    element.removeAttribute("data-active-segment-id");
+  }
+};
+
+const renderRadarContacts = (telemetry: TelemetrySnapshot): void => {
+  const element = document.getElementById("radar-runtime-contacts") as HTMLElement | null;
+  if (!element || typeof document.createElement !== "function" || !("replaceChildren" in element)) {
+    return;
+  }
+
+  const ship = telemetry.ship.position;
+  const target = telemetry.selectedTarget ?? telemetry.lockedPlan?.target ?? null;
+  const plan = telemetry.lockedPlan ?? (telemetry.routePreview?.state === "Ready" ? telemetry.routePreview.plan : null);
+  const obstacles = telemetry.obstacles ?? [];
+  const rangeCandidates = [1];
+  if (target) {
+    rangeCandidates.push(distanceBetween(ship, target.position));
+  }
+  for (const obstacle of obstacles) {
+    rangeCandidates.push(distanceBetween(ship, obstacle.center) + obstacle.radius);
+  }
+  for (const segment of plan?.segments ?? []) {
+    rangeCandidates.push(distanceBetween(ship, segment.end));
+  }
+  const radarRange = Math.max(...rangeCandidates);
+  const toRadar = (position: Vec3): { readonly left: number; readonly top: number } => ({
+    left: 50 + ((position.x - ship.x) / radarRange) * 44,
+    top: 50 - ((position.z - ship.z) / radarRange) * 44
   });
+  const contacts: HTMLElement[] = [];
+  const createContact = (className: string, position: Vec3, label: string): HTMLElement => {
+    const contact = document.createElement("span");
+    const projected = toRadar(position);
+    contact.className = `radar-contact ${className}`;
+    contact.style.left = `${projected.left.toFixed(3)}%`;
+    contact.style.top = `${projected.top.toFixed(3)}%`;
+    contact.title = label;
+    contact.setAttribute("aria-label", label);
+    return contact;
+  };
+
+  for (const obstacle of obstacles) {
+    const contact = createContact("radar-contact--runtime-obstacle", obstacle.center, `${obstacle.id}, radius ${obstacle.radius.toFixed(1)} metres`);
+    const diameter = Math.max(5, Math.min(18, (obstacle.radius / radarRange) * 88));
+    contact.style.width = `${diameter.toFixed(2)}%`;
+    contact.style.height = `${diameter.toFixed(2)}%`;
+    contact.dataset.obstacleId = obstacle.id;
+    contacts.push(contact);
+  }
+  if (plan) {
+    for (const segment of plan.segments.filter((candidate) => segmentDistance(candidate) > 0.000001)) {
+      const contact = createContact("radar-contact--runtime-route", segment.end, `${segment.kind} route point`);
+      contact.dataset.segmentId = segment.id;
+      contacts.push(contact);
+    }
+  }
+  if (target) {
+    const contact = createContact("radar-contact--runtime-target", target.position, target.label);
+    contact.dataset.targetId = target.id;
+    contacts.push(contact);
+  }
+
+  element.replaceChildren(...contacts);
+  element.dataset.rangeMetres = radarRange.toFixed(3);
+  element.dataset.targetCount = String(target ? 1 : 0);
+  element.dataset.routeContactCount = String(plan?.segments.filter((segment) => segmentDistance(segment) > 0.000001).length ?? 0);
+  element.dataset.obstacleCount = String(obstacles.length);
+};
+
+const renderCombatRuntime = (telemetry: TelemetrySnapshot): void => {
+  const combat = createCombatRuntimeViewModel(telemetry);
+  const hasWarnings = combat.warnings.length > 0;
+  setText("combat-marker-target", combat.targetLabel.toUpperCase());
+  setText("combat-marker-distance", combat.targetDistance);
+  setText("combat-contact-name", combat.targetLabel);
+  setText("combat-contact-range", combat.targetDistance);
+  setText("combat-target-name", combat.targetLabel.toUpperCase());
+  setText("combat-target-kind", combat.targetKind.toUpperCase());
+  setText("combat-target-distance", combat.targetDistance);
+  setText("combat-flight-speed", combat.speed);
+  setText("combat-flight-throttle", combat.throttle);
+  setText("combat-flight-fuel", combat.fuel);
+  setText("combat-control-mode", combat.controlMode);
+  setText("combat-control-assist", combat.controlAssist);
+  setText("combat-authority-status", combat.authority);
+  setText("combat-brake-status", combat.braking);
+  setText("combat-autopilot-status", combat.autopilot);
+  setText("combat-warning-status", hasWarnings ? combat.warnings : "");
+  setHidden("combat-warning-row", !hasWarnings);
+  setText("combat-radar-status", combat.radar);
 };
 
 const bindCommand = (
@@ -898,6 +1598,10 @@ const bindCommand = (
 
 export const renderStatusHud = (telemetry: TelemetrySnapshot, commandSink?: StatusHudCommandSink, visualSource?: ShipVisualSourceSnapshot): void => {
   const viewModel = createStatusHudViewModel(telemetry, visualSource);
+  document.getElementById("flight-hud")?.setAttribute(
+    "data-route-locked",
+    String(Boolean(telemetry.lockedPlan || telemetry.executor.planHash))
+  );
   setText("plan-hash", viewModel.navigation.plan.value);
   setText("mode", viewModel.flightStatus.mode.value);
   setText("control-mode", viewModel.flightStatus.controlMode.value);
@@ -914,11 +1618,13 @@ export const renderStatusHud = (telemetry: TelemetrySnapshot, commandSink?: Stat
   setText("objective-distance", viewModel.objective.distance);
   setText("objective-hint", viewModel.objective.hint);
   setText("objective-next-action", viewModel.objective.nextAction);
-  setText("route-status", viewModel.navigation.route.value);
-  setText("target-status", viewModel.navigation.target.value);
+  setTextWithDetail("route-status", viewModel.navigation.route.value, viewModel.routeState);
+  setTextWithDetail("target-status", viewModel.navigation.target.value, viewModel.target);
+  setText("target-kind", viewModel.navigation.targetKind.value);
   setText("target-distance", viewModel.navigation.distance.value);
-  setText("radar-status", viewModel.navigation.radar.value);
-  setText("fuel-status", viewModel.flightStatus.fuel.value);
+  setTextWithDetail("radar-status", viewModel.navigation.radar.value, viewModel.radarState);
+  setText("radar-range", viewModel.navigation.radarRange.value);
+  setTextWithDetail("fuel-status", viewModel.flightStatus.fuel.value, viewModel.fuelState);
   setText("authority-status", viewModel.debug.authority.value);
   setText("brake-status", viewModel.debug.braking.value);
   setText("failure-reasons", viewModel.warnings.summary);
@@ -929,11 +1635,15 @@ export const renderStatusHud = (telemetry: TelemetrySnapshot, commandSink?: Stat
   renderWarningChips(viewModel);
   renderObjectiveOptions(viewModel, commandSink);
   renderTargetOptions(viewModel, commandSink);
-  renderNavigationPlanner(viewModel, commandSink);
+  renderFlightDistanceProgress(telemetry);
+  renderRadarContacts(telemetry);
+  renderCombatRuntime(telemetry);
+  renderNavigationPlanner(telemetry, viewModel, commandSink);
   bindPresentationUi();
   setText("engage-autopilot", viewModel.actions.primaryLabel);
   setText("cancel-autopilot", viewModel.actions.secondaryLabel);
-  bindCommand("engage-autopilot", { type: "EngageAutopilot", planner: "ObstacleAvoidanceLocal" }, commandSink, {
+  const visiblePreviewHash = telemetry.routePreview?.state === "Ready" ? telemetry.routePreview.plan?.planHash ?? null : null;
+  bindCommand("engage-autopilot", { type: "EngageRoutePreview", expectedPlanHash: visiblePreviewHash ?? "" }, commandSink, {
     enabled: viewModel.actions.primaryCommandEnabled,
     disabledReason: viewModel.actions.primaryDisabledReason
   });

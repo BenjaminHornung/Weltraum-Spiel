@@ -161,6 +161,7 @@ export interface RouteSegment {
 export interface RoutePlan {
   readonly id: string;
   readonly planner: "DirectLocal" | "ObstacleAvoidanceLocal";
+  readonly speedProfile: AutopilotSpeedProfileId;
   readonly createdAtTick: number;
   readonly target: TargetDescriptor;
   readonly segments: readonly RouteSegment[];

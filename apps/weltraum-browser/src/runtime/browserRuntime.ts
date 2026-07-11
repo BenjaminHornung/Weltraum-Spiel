@@ -1,11 +1,11 @@
-import { AutopilotExecutor, DirectLocalPlanner, FixedStepSimulationLoop, ObstacleAvoidanceLocalPlanner, createTelemetrySnapshot, vec3 } from "../core";
-import type { ObstacleDescriptor, PresentationSnapshot, RoutePlan, RoutePlanningResult, ShipState, TargetDescriptor } from "../core";
+import { AutopilotExecutor, DirectLocalPlanner, FixedStepSimulationLoop, ObstacleAvoidanceLocalPlanner, autopilotSpeedProfileIds, createRoutePreviewProvenance, createTelemetrySnapshot, validatePreviewForLock, vec3 } from "../core";
+import type { AutopilotSpeedProfileId, ObstacleDescriptor, PresentationSnapshot, PreviewLockValidationResult, RoutePlan, RoutePlanningResult, ShipState, TargetDescriptor } from "../core";
 import { autopilotAuthority, createShipState, noAutopilotAuthority, playableLargeFieldRuntimeObstacles, playableLargeFieldTargets, provingGroundTargets } from "../world/provingGroundWorld";
-import type { BrowserRuntimeCommand } from "./commands";
+import type { BrowserRuntimeCommand, BrowserRuntimeCommandCode, BrowserRuntimeCommandResult, BrowserRuntimeRejectionCode } from "./commands";
 import { clamp01, createManualFlightInputState, mergeManualFlightInputState, nextCameraMode, nextControlMode, type ManualFlightInputState } from "./input";
 import type { NavigationObjectiveOptionSnapshot, NavigationObjectiveSnapshot, NavigationObjectiveStatus, RoutePreviewSnapshot, TelemetrySnapshot } from "../sim/telemetry";
 
-export type { BrowserRuntimeCommand } from "./commands";
+export type { BrowserRuntimeCommand, BrowserRuntimeCommandResult } from "./commands";
 
 export interface BrowserRuntimeController {
   advance(elapsedSeconds: number): TelemetrySnapshot;
@@ -14,7 +14,7 @@ export interface BrowserRuntimeController {
   getPlanHash(): string | null;
   getLockedPlan(): RoutePlan | null;
   getPresentationSnapshot(): PresentationSnapshot;
-  dispatchCommand(command: unknown): TelemetrySnapshot;
+  dispatchCommand(command: unknown): BrowserRuntimeCommandResult;
   getManualInput(): ManualFlightInputState;
   disturbShip(offsetX: number): TelemetrySnapshot;
 }
@@ -52,12 +52,14 @@ const distanceBetween = (
 ): number => Math.hypot(left.x - right.x, left.y - right.y, left.z - right.z);
 
 export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
+  type StoredRoutePreview = Omit<RoutePreviewSnapshot, "lockAdmission">;
   const executor = new AutopilotExecutor({ divergenceDistance: 24, allowManualInputWhenIdle: true });
   let ship = options.initialShip ?? createInitialShip();
   const loop = new FixedStepSimulationLoop(ship, executor, { fixedDeltaSeconds: 1 / 30, maxSubSteps: 10 });
   let selectedTarget: TargetDescriptor | null = defaultTarget;
   let selectedPlanner: RoutePlan["planner"] = "ObstacleAvoidanceLocal";
-  let routePreview: RoutePreviewSnapshot | null = null;
+  let selectedRouteProfile: AutopilotSpeedProfileId = "Balanced";
+  let routePreview: StoredRoutePreview | null = null;
   let runtimeMessage: string | null = null;
   let activeObjectiveId: string | null = navigationObjectives[0]?.id ?? null;
   let lastEngagedObjectiveId: string | null = null;
@@ -77,7 +79,24 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
   const plannerFor = (planner: RoutePlan["planner"]): DirectLocalPlanner | ObstacleAvoidanceLocalPlanner =>
     planner === "DirectLocal" ? new DirectLocalPlanner() : new ObstacleAvoidanceLocalPlanner();
 
-  const createRoutePreview = (planner: RoutePlan["planner"], target: TargetDescriptor | null): RoutePreviewSnapshot => {
+  const lockAdmissionFor = (
+    preview: StoredRoutePreview | null,
+    expectedPlanHash?: string | null,
+    target: TargetDescriptor | null = selectedTarget,
+    planner: RoutePlan["planner"] = selectedPlanner,
+    speedProfile: AutopilotSpeedProfileId = selectedRouteProfile
+  ): PreviewLockValidationResult => validatePreviewForLock({
+    preview,
+    expectedPlanHash,
+    lockedPlan: executor.getLockedPlan(),
+    ship: loop.getShip(),
+    target,
+    obstacles: browserObstacles,
+    planner,
+    speedProfile
+  });
+
+  const createRoutePreview = (planner: RoutePlan["planner"], target: TargetDescriptor | null): StoredRoutePreview => {
     if (!target) {
       return {
         state: "Unavailable",
@@ -86,15 +105,21 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
         plan: null,
         validation: null,
         rejectedReasonCodes: [],
-        playerMessage: "Select a target to preview a route."
+        playerMessage: "Select a target to preview a route.",
+        provenance: null,
+        stale: false,
+        staleReason: null
       };
     }
 
+    const sourceTick = loop.getTick();
+    const sourceShip = loop.getShip();
     const planningResult: RoutePlanningResult = plannerFor(planner).planResult({
-      tick: loop.getTick(),
-      ship: loop.getShip(),
+      tick: sourceTick,
+      ship: sourceShip,
       target,
-      obstacles: planner === "ObstacleAvoidanceLocal" ? browserObstacles : undefined
+      obstacles: planner === "ObstacleAvoidanceLocal" ? browserObstacles : undefined,
+      speedProfile: selectedRouteProfile
     });
 
     if (planningResult.ok) {
@@ -105,7 +130,17 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
         plan: planningResult.plan,
         validation: planningResult.validation,
         rejectedReasonCodes: [],
-        playerMessage: `Route preview ready for ${target.label}.`
+        playerMessage: `Route preview ready for ${target.label}.`,
+        provenance: createRoutePreviewProvenance({
+          ship: sourceShip,
+          target,
+          obstacles: browserObstacles,
+          planner,
+          speedProfile: selectedRouteProfile,
+          sourceTick
+        }),
+        stale: false,
+        staleReason: null
       };
     }
 
@@ -116,15 +151,36 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
       plan: null,
       validation: planningResult.validation,
       rejectedReasonCodes: planningResult.rejection.reasonCodes,
-      playerMessage: `Route preview unavailable for ${target.label}.`
+      playerMessage: `Route preview unavailable for ${target.label}.`,
+      provenance: null,
+      stale: false,
+      staleReason: null
     };
   };
 
-  const refreshRoutePreview = (planner: RoutePlan["planner"] = selectedPlanner): RoutePreviewSnapshot => {
+  const releaseExecutorControl = (): void => {
+    const driftPreservingShip = executor.cancelPlan(loop.getShip(), loop.getTick());
+    loop.setShip(driftPreservingShip);
+    ship = driftPreservingShip;
+    manualInput = mergeManualFlightInputState(manualInput, {
+      mainThrottleCommand: driftPreservingShip.mainThrottleCommand,
+      translationCommand: driftPreservingShip.translationCommand,
+      rotationCommand: driftPreservingShip.rotationCommand
+    });
+  };
+
+  const refreshRoutePreview = (planner: RoutePlan["planner"] = selectedPlanner): StoredRoutePreview => {
+    if (executor.getTelemetry().stationKeepingActive) {
+      refreshCompletedObjectives();
+      releaseExecutorControl();
+    }
     selectedPlanner = planner;
     routePreview = createRoutePreview(planner, selectedTarget);
     return routePreview;
   };
+
+  const currentRoutePreview = (): RoutePreviewSnapshot | null =>
+    routePreview ? { ...routePreview, lockAdmission: lockAdmissionFor(routePreview) } : null;
 
   const objectiveTargetFor = (objective: NavigationObjectiveDefinition): TargetDescriptor | null =>
     browserTargetCatalog.find((candidateTarget) => candidateTarget.id === objective.targetId) ?? null;
@@ -259,7 +315,7 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
     const lockedMatches = lockedPlan?.target.id === target.id;
     const lockedOtherTarget = Boolean(lockedPlan && !lockedMatches);
     const previewMatches = routePreview?.target?.id === target.id;
-    const routeReady = previewMatches && routePreview?.state === "Ready" && Boolean(routePreview.plan);
+    const routeReady = previewMatches && routePreview?.state === "Ready" && Boolean(routePreview.plan) && lockAdmissionFor(routePreview).ok;
 
     let status: NavigationObjectiveStatus = "available";
     let hint = `Select ${target.label} to preview the route.`;
@@ -311,7 +367,10 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
     ...createTelemetrySnapshot(loop.getShip(), loop.getTelemetry(), executor.getLockedPlan()),
     selectableTargets: browserTargetCatalog,
     selectedTarget,
-    routePreview,
+    routePreview: currentRoutePreview(),
+    selectedRouteProfile,
+    selectedPlanner,
+    obstacles: browserObstacles,
     navigationObjective: createNavigationObjectiveSnapshot(),
     runtimeMessage,
     manualInput
@@ -368,154 +427,218 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
     return plan;
   };
 
-  const planForSelectedTarget = (planner: RoutePlan["planner"]): RoutePlan | null => {
-    const preview = refreshRoutePreview(planner);
-    if (preview.plan) {
-      return preview.plan;
-    }
+  interface CommandOutcome {
+    readonly success: boolean;
+    readonly code: BrowserRuntimeCommandCode;
+    readonly rejectionCode: BrowserRuntimeRejectionCode | null;
+    readonly message: string;
+  }
 
-    runtimeMessage = preview.playerMessage;
-    return null;
-  };
+  const accepted = (code: BrowserRuntimeCommandCode, message: string): CommandOutcome => ({ success: true, code, rejectionCode: null, message });
+  const rejected = (code: BrowserRuntimeRejectionCode, message: string): CommandOutcome => ({ success: false, code, rejectionCode: code, message });
 
-  const selectTarget = (targetId: unknown): void => {
+  const selectTarget = (targetId: unknown): CommandOutcome => {
     if (!executor.getTelemetry().canSelectNewTarget) {
-      runtimeMessage = "Cancel the current autopilot route before selecting another target.";
-      return;
+      return rejected("PlanLocked", "Cancel the current autopilot route before selecting another target.");
     }
 
     if (typeof targetId !== "string") {
-      runtimeMessage = "Target selection unchanged: choose a known target.";
-      return;
+      return rejected("UnknownTarget", "Target selection unchanged: choose a known target.");
     }
 
     const target = browserTargetCatalog.find((candidateTarget) => candidateTarget.id === targetId) ?? null;
     if (!target) {
-      runtimeMessage = "Target selection unchanged: choose a known target.";
-      return;
+      return rejected("UnknownTarget", "Target selection unchanged: choose a known target.");
     }
 
+    refreshCompletedObjectives();
+    const activatedObjective = navigationObjectives.find((objective) =>
+      objective.targetId === target.id &&
+      !completedObjectiveIds.has(objective.id) &&
+      isObjectiveUnlocked(objective)
+    ) ?? null;
+    if (activatedObjective) {
+      activeObjectiveId = activatedObjective.id;
+    }
     selectedTarget = target;
-    runtimeMessage = `Selected ${target.label}.`;
-    refreshRoutePreview(selectedPlanner);
+    const preview = refreshRoutePreview(selectedPlanner);
+    const objectiveMessage = activatedObjective ? ` Activated ${activatedObjective.label}.` : "";
+    return accepted("TargetSelected", `Selected ${target.label}.${objectiveMessage} ${preview.playerMessage}`);
   };
 
-  const selectObjective = (objectiveId: unknown): void => {
+  const selectObjective = (objectiveId: unknown): CommandOutcome => {
     if (typeof objectiveId !== "string") {
-      runtimeMessage = "Objective unchanged: choose a known navigation objective.";
-      return;
+      return rejected("UnknownObjective", "Objective unchanged: choose a known navigation objective.");
     }
 
     const objective = navigationObjectives.find((candidateObjective) => candidateObjective.id === objectiveId) ?? null;
     if (!objective) {
-      runtimeMessage = "Objective unchanged: choose a known navigation objective.";
-      return;
+      return rejected("UnknownObjective", "Objective unchanged: choose a known navigation objective.");
     }
 
     const target = objectiveTargetFor(objective);
     if (!target) {
-      runtimeMessage = `${objective.label} is blocked: target unavailable.`;
-      return;
+      return rejected("UnknownTarget", `${objective.label} is blocked: target unavailable.`);
     }
 
     if (!executor.getTelemetry().canSelectNewTarget) {
-      runtimeMessage = "Cancel the current autopilot route before changing objective target.";
-      return;
+      return rejected("PlanLocked", "Cancel the current autopilot route before changing objective target.");
     }
 
     const lockedBy = firstBlockingObjectiveFor(objective);
     if (lockedBy) {
-      runtimeMessage = `${objective.label} locked: complete ${lockedBy.label} first.`;
-      return;
+      return rejected("ObjectiveLocked", `${objective.label} locked: complete ${lockedBy.label} first.`);
     }
 
     activeObjectiveId = objective.id;
     selectedTarget = target;
     refreshRoutePreview(selectedPlanner);
     const previewState = routePreview?.state === "Ready" ? "Route preview ready" : "Route preview unavailable";
-    runtimeMessage = `${objective.label} available. ${previewState} for ${target.label}.`;
+    return accepted("ObjectiveSelected", `${objective.label} available. ${previewState} for ${target.label}.`);
   };
 
-  const engageAutopilot = (planner: unknown): void => {
-    if (planner !== "DirectLocal" && planner !== "ObstacleAvoidanceLocal") {
-      runtimeMessage = "Autopilot not engaged: choose a supported route mode.";
-      return;
-    }
-
+  const setRouteProfile = (profile: unknown): CommandOutcome => {
     if (!executor.getTelemetry().canAcceptNewPlan) {
-      runtimeMessage = "Autopilot not engaged: cancel the current locked route before engaging a new one.";
-      return;
+      return rejected("PlanLocked", "Cancel the current autopilot route before changing the speed profile.");
+    }
+    if (typeof profile !== "string" || !autopilotSpeedProfileIds.includes(profile as AutopilotSpeedProfileId)) {
+      return rejected("UnsupportedRouteProfile", "Choose Safe, Balanced, or Fast.");
     }
 
-    const plan = planForSelectedTarget(planner);
+    selectedRouteProfile = profile as AutopilotSpeedProfileId;
+    const preview = refreshRoutePreview(selectedPlanner);
+    return accepted("RouteProfileSet", `${selectedRouteProfile} route profile selected. ${preview.playerMessage}`);
+  };
+
+  const previewRoute = (): CommandOutcome => {
+    if (!executor.getTelemetry().canAcceptNewPlan) {
+      return rejected("PlanLocked", "Cancel the current autopilot route before previewing another route.");
+    }
+    const admission = lockAdmissionFor(routePreview);
+    if (!executor.getTelemetry().stationKeepingActive && admission.ok) {
+      return accepted("RoutePreviewReused", "The current route preview is still valid.");
+    }
+
+    const preview = refreshRoutePreview(selectedPlanner);
+    return preview.plan
+      ? accepted("RoutePreviewCreated", preview.playerMessage)
+      : rejected("PlanningRejected", preview.playerMessage);
+  };
+
+  const replanRoute = (): CommandOutcome => {
+    if (!executor.getTelemetry().canAcceptNewPlan) {
+      return rejected("PlanLocked", "Cancel the current autopilot route before replanning.");
+    }
+    const preview = refreshRoutePreview(selectedPlanner);
+    return preview.plan
+      ? accepted("RouteReplanned", `Route replanned for ${preview.target?.label ?? "the selected target"}.`)
+      : rejected("PlanningRejected", preview.playerMessage);
+  };
+
+  const engageRoutePreview = (expectedPlanHash: unknown): CommandOutcome => {
+    if (typeof expectedPlanHash !== "string" || expectedPlanHash.length === 0) {
+      return rejected("InvalidCommand", "Autopilot not engaged: the visible preview hash is required.");
+    }
+
+    const admission = lockAdmissionFor(routePreview, expectedPlanHash);
+    if (!admission.ok) {
+      return rejected(admission.code, admission.message);
+    }
+
+    const plan = routePreview?.plan;
     if (!plan) {
-      return;
+      return rejected("MissingPreview", "Create a route preview before engaging autopilot.");
     }
 
     lockPlan(plan);
-    runtimeMessage = `Autopilot engaged for ${plan.target.label}.`;
+    return accepted("RoutePreviewEngaged", `Autopilot engaged for ${plan.target.label}.`);
   };
 
-  const dispatchCommand = (command: unknown): TelemetrySnapshot => {
+  const engageLegacyPreview = (): CommandOutcome => {
+    const visiblePlanHash = routePreview?.plan?.planHash;
+    if (!visiblePlanHash) {
+      const admission = lockAdmissionFor(routePreview);
+      return admission.ok
+        ? rejected("MissingPreview", "Create a route preview before engaging autopilot.")
+        : rejected(admission.code, admission.message);
+    }
+    return engageRoutePreview(visiblePlanHash);
+  };
+
+  const completeCommand = (outcome: CommandOutcome): BrowserRuntimeCommandResult => {
+    runtimeMessage = outcome.message;
+    const telemetry = snapshot();
+    return {
+      ...outcome,
+      telemetry,
+      previewPlanHash: telemetry.routePreview?.plan?.planHash ?? null,
+      lockedPlanHash: telemetry.lockedPlan?.planHash ?? null
+    };
+  };
+
+  const cancelAutopilot = (): CommandOutcome => {
+    const preservedPreview = routePreview;
+    releaseExecutorControl();
+    if (preservedPreview?.plan) {
+      routePreview = {
+        ...preservedPreview,
+        state: "Stale",
+        stale: true,
+        staleReason: "Cancelled",
+        playerMessage: "Autopilot canceled. The preserved route preview is stale; preview or replan before engaging again."
+      };
+    }
+    return accepted("AutopilotCancelled", "Autopilot canceled. The previous route preview was preserved and marked stale.");
+  };
+
+  const dispatchCommand = (command: unknown): BrowserRuntimeCommandResult => {
     if (!command || typeof command !== "object") {
-      runtimeMessage = "Command ignored: use a supported cockpit action.";
-      return snapshot();
+      return completeCommand(rejected("InvalidCommand", "Command ignored: use a supported cockpit action."));
     }
 
     const candidate = command as Partial<BrowserRuntimeCommand>;
     switch (candidate.type) {
       case "SelectTarget":
-        selectTarget(candidate.targetId);
-        return snapshot();
+        return completeCommand(selectTarget(candidate.targetId));
       case "SelectObjective":
-        selectObjective(candidate.objectiveId);
-        return snapshot();
+        return completeCommand(selectObjective(candidate.objectiveId));
+      case "SetRouteProfile":
+        return completeCommand(setRouteProfile(candidate.profile));
+      case "PreviewRoute":
+        return completeCommand(previewRoute());
+      case "ReplanRoute":
+        return completeCommand(replanRoute());
+      case "EngageRoutePreview":
+        return completeCommand(engageRoutePreview(candidate.expectedPlanHash));
       case "EngageAutopilot":
-        engageAutopilot(candidate.planner);
-        return snapshot();
-      case "CancelAutopilot": {
-        const driftPreservingShip = executor.cancelPlan(loop.getShip(), loop.getTick());
-        loop.setShip(driftPreservingShip);
-        ship = driftPreservingShip;
-        manualInput = mergeManualFlightInputState(manualInput, {
-          mainThrottleCommand: driftPreservingShip.mainThrottleCommand,
-          translationCommand: driftPreservingShip.translationCommand,
-          rotationCommand: driftPreservingShip.rotationCommand
-        });
-        runtimeMessage = "Autopilot canceled. Route preview remains available for the selected target.";
-        refreshRoutePreview(selectedPlanner);
-        return snapshot();
-      }
+        return completeCommand(engageLegacyPreview());
+      case "CancelAutopilot":
+        return completeCommand(cancelAutopilot());
       case "SetManualFlightInput":
         updateManualInput(typeof candidate.input === "object" && candidate.input ? candidate.input : {});
-        return snapshot();
+        return completeCommand(accepted("ManualInputUpdated", "Manual flight input updated."));
       case "SetThrottle": {
         const requestedThrottle = clamp01(typeof candidate.throttle === "number" ? candidate.throttle : manualInput.mainThrottleCommand);
         updateManualInput({ mainThrottleCommand: requestedThrottle });
-        runtimeMessage = manualInput.controlMode !== "Cruise" && requestedThrottle > 0
+        const message = manualInput.controlMode !== "Cruise" && requestedThrottle > 0
           ? "Throttle ignored outside Cruise."
           : manualInput.mainThrottleCommand <= 0 ? "Throttle cut." : manualInput.mainThrottleCommand >= 1 ? "Throttle full." : "Throttle adjusted.";
-        return snapshot();
+        return completeCommand(accepted("ThrottleUpdated", message));
       }
       case "ToggleRcs":
         updateManualInput({ rcsEnabled: !manualInput.rcsEnabled });
-        runtimeMessage = `RCS ${manualInput.rcsEnabled ? "enabled" : "disabled"}.`;
-        return snapshot();
+        return completeCommand(accepted("RcsToggled", `RCS ${manualInput.rcsEnabled ? "enabled" : "disabled"}.`));
       case "ToggleSas":
         updateManualInput({ sasEnabled: !manualInput.sasEnabled });
-        runtimeMessage = `SAS ${manualInput.sasEnabled ? "enabled" : "disabled"}.`;
-        return snapshot();
+        return completeCommand(accepted("SasToggled", `SAS ${manualInput.sasEnabled ? "enabled" : "disabled"}.`));
       case "CycleControlMode":
         updateManualInput({ controlMode: nextControlMode(manualInput.controlMode) });
-        runtimeMessage = `Control mode ${manualInput.controlMode}.`;
-        return snapshot();
+        return completeCommand(accepted("ControlModeCycled", `Control mode ${manualInput.controlMode}.`));
       case "CycleCameraMode":
         updateManualInput({ cameraMode: nextCameraMode(manualInput.cameraMode) });
-        runtimeMessage = `Camera mode ${manualInput.cameraMode}.`;
-        return snapshot();
+        return completeCommand(accepted("CameraModeCycled", `Camera mode ${manualInput.cameraMode}.`));
       default:
-        runtimeMessage = "Command ignored: use a supported cockpit action.";
-        return snapshot();
+        return completeCommand(rejected("InvalidCommand", "Command ignored: use a supported cockpit action."));
     }
   };
 

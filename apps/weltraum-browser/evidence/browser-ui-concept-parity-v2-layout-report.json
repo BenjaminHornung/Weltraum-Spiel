@@ -1,0 +1,240 @@
+{
+  "generatedBy": "apps/weltraum-browser/tests/e2e/ui-concept-parity-v2.spec.ts",
+  "normalRuntimeOnly": true,
+  "testBridgeUsed": false,
+  "rejectedV1Comparison": true,
+  "entries": [
+    {
+      "name": "flight-hud-v2-1640x900",
+      "viewport": {
+        "width": 1640,
+        "height": 900
+      },
+      "boxes": {
+        "#hud-left-panel": {
+          "x": 12,
+          "y": 20,
+          "width": 335,
+          "height": 414,
+          "right": 347,
+          "bottom": 434
+        },
+        "#hud-radar-panel": {
+          "x": 12,
+          "y": 576,
+          "width": 296,
+          "height": 306,
+          "right": 308,
+          "bottom": 882
+        },
+        "#hud-right-panel": {
+          "x": 1188,
+          "y": 20,
+          "width": 440,
+          "height": 860,
+          "right": 1628,
+          "bottom": 880
+        },
+        ".cockpit-frame": {
+          "x": 0,
+          "y": 0,
+          "width": 1640,
+          "height": 900,
+          "right": 1640,
+          "bottom": 900
+        }
+      },
+      "centerSafeArea": {
+        "x": 475,
+        "y": 248,
+        "width": 690,
+        "height": 405,
+        "right": 1165,
+        "bottom": 653
+      },
+      "overlapPercentages": {
+        "#hud-left-panel": 0,
+        "#hud-radar-panel": 0,
+        "#hud-right-panel": 0,
+        ".cockpit-frame": 100
+      },
+      "screenshotPath": "E:\\Unity\\Weltraum Spiel\\Weltraum Spiel\\apps\\weltraum-browser\\evidence\\ui-concept-parity-v2-flight-hud.png",
+      "v1ComparisonPath": "E:\\Unity\\Weltraum Spiel\\Weltraum Spiel\\apps\\weltraum-browser\\evidence\\ui-concept-parity-v1-rejected-flight-hud.png",
+      "pixelDeltaFromRejectedV1": 0.1509
+    },
+    {
+      "name": "flight-hud-v2-1280x720",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "boxes": {
+        "#hud-left-panel": {
+          "x": 12,
+          "y": 20,
+          "width": 290,
+          "height": 347,
+          "right": 302,
+          "bottom": 367
+        },
+        "#hud-radar-panel": {
+          "x": 12,
+          "y": 448,
+          "width": 242,
+          "height": 254,
+          "right": 254,
+          "bottom": 702
+        },
+        "#hud-right-panel": {
+          "x": 925,
+          "y": 20,
+          "width": 343,
+          "height": 680,
+          "right": 1268,
+          "bottom": 700
+        }
+      },
+      "centerSafeArea": {
+        "x": 365,
+        "y": 198,
+        "width": 550,
+        "height": 324,
+        "right": 915,
+        "bottom": 522
+      },
+      "overlapPercentages": {
+        "#hud-left-panel": 0,
+        "#hud-radar-panel": 0,
+        "#hud-right-panel": 0
+      },
+      "screenshotPath": "E:\\Unity\\Weltraum Spiel\\Weltraum Spiel\\apps\\weltraum-browser\\evidence\\ui-concept-parity-v2-flight-hud-1280x720.png",
+      "v1ComparisonPath": "E:\\Unity\\Weltraum Spiel\\Weltraum Spiel\\apps\\weltraum-browser\\evidence\\ui-concept-parity-v1-rejected-flight-hud-1280x720.png",
+      "pixelDeltaFromRejectedV1": 0.1715
+    },
+    {
+      "name": "navigation-planner-v2",
+      "viewport": {
+        "width": 1640,
+        "height": 900
+      },
+      "boxes": {
+        "#navigation-planner": {
+          "x": 14,
+          "y": 14,
+          "width": 1612,
+          "height": 872,
+          "right": 1626,
+          "bottom": 886
+        },
+        "#nav-planner-map": {
+          "x": 130,
+          "y": 120,
+          "width": 1002,
+          "height": 718,
+          "right": 1132,
+          "bottom": 838
+        },
+        "#nav-planner-details": {
+          "x": 1132,
+          "y": 120,
+          "width": 494,
+          "height": 718,
+          "right": 1626,
+          "bottom": 838
+        }
+      },
+      "centerSafeArea": {
+        "x": 475,
+        "y": 248,
+        "width": 690,
+        "height": 405,
+        "right": 1165,
+        "bottom": 653
+      },
+      "overlapPercentages": {
+        "#navigation-planner": 100,
+        "#nav-planner-map": 95.22,
+        "#nav-planner-details": 4.78
+      },
+      "screenshotPath": "E:\\Unity\\Weltraum Spiel\\Weltraum Spiel\\apps\\weltraum-browser\\evidence\\ui-concept-parity-v2-navigation-planner.png",
+      "v1ComparisonPath": "E:\\Unity\\Weltraum Spiel\\Weltraum Spiel\\apps\\weltraum-browser\\evidence\\ui-concept-parity-v1-rejected-navigation-planner.png",
+      "pixelDeltaFromRejectedV1": 0.154
+    },
+    {
+      "name": "combat-contact-v2",
+      "viewport": {
+        "width": 1640,
+        "height": 900
+      },
+      "boxes": {
+        "#hud-left-panel": {
+          "x": 12,
+          "y": 20,
+          "width": 300,
+          "height": 396,
+          "right": 312,
+          "bottom": 416
+        },
+        "#hud-radar-panel": {
+          "x": 12,
+          "y": 576,
+          "width": 296,
+          "height": 306,
+          "right": 308,
+          "bottom": 882
+        },
+        "#contact-panel": {
+          "x": 1322,
+          "y": 20,
+          "width": 304,
+          "height": 449,
+          "right": 1626,
+          "bottom": 469
+        },
+        "#contact-target-card": {
+          "x": 1322,
+          "y": 732,
+          "width": 304,
+          "height": 150,
+          "right": 1626,
+          "bottom": 882
+        },
+        ".contact-reticle": {
+          "x": 692,
+          "y": 312,
+          "width": 226,
+          "height": 201,
+          "right": 918,
+          "bottom": 513
+        },
+        ".contact-marker": {
+          "x": 831,
+          "y": 216,
+          "width": 150,
+          "height": 49,
+          "right": 981,
+          "bottom": 265
+        }
+      },
+      "centerSafeArea": {
+        "x": 475,
+        "y": 248,
+        "width": 690,
+        "height": 405,
+        "right": 1165,
+        "bottom": 653
+      },
+      "overlapPercentages": {
+        "#hud-left-panel": 0,
+        "#hud-radar-panel": 0,
+        "#contact-panel": 0,
+        "#contact-target-card": 0,
+        ".contact-reticle": 16.26,
+        ".contact-marker": 0.91
+      },
+      "screenshotPath": "E:\\Unity\\Weltraum Spiel\\Weltraum Spiel\\apps\\weltraum-browser\\evidence\\ui-concept-parity-v2-combat-contact.png",
+      "v1ComparisonPath": "E:\\Unity\\Weltraum Spiel\\Weltraum Spiel\\apps\\weltraum-browser\\evidence\\ui-concept-parity-v1-rejected-combat-contact.png",
+      "pixelDeltaFromRejectedV1": 0.1844
+    }
+  ]
+}

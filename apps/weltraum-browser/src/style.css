@@ -1,4 +1,4 @@
-﻿html,
+html,
 body,
 #app {
   width: 100%;
@@ -8,6 +8,30 @@ body,
   background: #080b12;
   color: #e7eefc;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+@font-face {
+  font-family: "Rajdhani Local";
+  src: url("/fonts/rajdhani/Rajdhani-Regular.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Rajdhani Local";
+  src: url("/fonts/rajdhani/Rajdhani-Medium.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Rajdhani Local";
+  src: url("/fonts/rajdhani/Rajdhani-SemiBold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
 }
 
 #debug-scene {
@@ -484,6 +508,32 @@ body,
 
 #debug-hud[hidden] {
   display: none;
+}
+
+#debug-hud {
+  pointer-events: none;
+  position: fixed;
+  left: 50%;
+  bottom: 12px;
+  z-index: 40;
+  display: grid;
+  grid-template-columns: repeat(4, auto minmax(90px, 1fr));
+  gap: 4px 10px;
+  width: min(1180px, calc(100vw - 24px));
+  box-sizing: border-box;
+  transform: translateX(-50%);
+  border: 1px solid rgba(112, 223, 255, 0.4);
+  padding: 8px 12px;
+  background: rgba(2, 10, 18, 0.92);
+  color: #d8edf5;
+  font-family: "Rajdhani Local", sans-serif;
+  font-size: 12px;
+}
+
+#debug-hud .label {
+  color: #7fb8ca;
+  font-size: 11px;
+  text-transform: uppercase;
 }
 
 @media (min-aspect-ratio: 18 / 9) {
@@ -1267,8 +1317,8 @@ body,
   z-index: 22;
 }
 
-body[data-ui-scenario="combat-contact"] #hud-right-panel,
-body[data-ui-scenario="combat-contact"] #hud-bottom-strip {
+body[data-ui-surface="combat"] #hud-right-panel,
+body[data-ui-surface="combat"] #hud-bottom-strip {
   display: none;
 }
 
@@ -1556,5 +1606,6674 @@ body[data-ui-scenario="combat-contact"] #hud-bottom-strip {
   .contact-target-card {
     width: min(292px, calc(100vw - 16px));
     right: 8px;
+  }
+}
+
+/* V2 concept rework: cockpit instruments over a cinematic scene, not web panels on a debug grid. */
+#flight-hud {
+  --hud-edge: clamp(14px, 1.8vw, 26px);
+  --hud-panel-width: clamp(310px, 19vw, 374px);
+  --hud-radar-size: clamp(268px, 19vw, 344px);
+  --hud-panel-bg: linear-gradient(180deg, rgba(2, 13, 24, 0.46), rgba(2, 8, 15, 0.28));
+  --hud-panel-bg-strong: linear-gradient(180deg, rgba(3, 18, 32, 0.78), rgba(3, 9, 17, 0.54));
+  --hud-border: rgba(36, 216, 255, 0.62);
+  --hud-border-soft: rgba(97, 255, 214, 0.2);
+  --hud-cyan: #31d9ff;
+  --hud-cyan-soft: #baf6ff;
+  --hud-green: #7cffb2;
+  --hud-amber: #ffbd5a;
+  --hud-red: #ff4f5b;
+  font-family: Rajdhani, Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.cockpit-frame {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+}
+
+.cockpit-frame::before,
+.cockpit-frame::after {
+  position: fixed;
+  left: 50%;
+  width: min(52vw, 760px);
+  height: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, rgba(49, 217, 255, 0.42), transparent);
+  box-shadow: 0 0 28px rgba(49, 217, 255, 0.16);
+  content: "";
+}
+
+.cockpit-frame::before {
+  top: 23vh;
+}
+
+.cockpit-frame::after {
+  bottom: 21vh;
+}
+
+.cockpit-frame__top,
+.cockpit-frame__bottom,
+.cockpit-frame__left,
+.cockpit-frame__right {
+  position: fixed;
+  opacity: 0.86;
+}
+
+.cockpit-frame__top,
+.cockpit-frame__bottom {
+  left: 20vw;
+  right: 20vw;
+  height: 74px;
+  border-color: rgba(49, 217, 255, 0.2);
+}
+
+.cockpit-frame__top {
+  top: 0;
+  border-bottom: 1px solid rgba(49, 217, 255, 0.18);
+  background: linear-gradient(180deg, rgba(0, 10, 19, 0.42), transparent);
+  clip-path: polygon(9% 0, 91% 0, 100% 100%, 0 100%);
+}
+
+.cockpit-frame__bottom {
+  bottom: 0;
+  border-top: 1px solid rgba(49, 217, 255, 0.16);
+  background: linear-gradient(0deg, rgba(0, 10, 19, 0.5), transparent);
+  clip-path: polygon(0 0, 100% 0, 91% 100%, 9% 100%);
+}
+
+.cockpit-frame__left,
+.cockpit-frame__right {
+  top: 21vh;
+  bottom: 20vh;
+  width: 108px;
+  border-top: 1px solid rgba(49, 217, 255, 0.16);
+  border-bottom: 1px solid rgba(49, 217, 255, 0.16);
+  background: linear-gradient(90deg, rgba(0, 14, 27, 0.32), transparent);
+}
+
+.cockpit-frame__left {
+  left: 0;
+  clip-path: polygon(0 0, 100% 12%, 78% 88%, 0 100%);
+}
+
+.cockpit-frame__right {
+  right: 0;
+  transform: scaleX(-1);
+  clip-path: polygon(0 0, 100% 12%, 78% 88%, 0 100%);
+}
+
+.flight-vector-ladder {
+  position: fixed;
+  top: 44%;
+  width: 150px;
+  height: 150px;
+  border-top: 1px solid rgba(49, 217, 255, 0.36);
+  border-bottom: 1px solid rgba(49, 217, 255, 0.18);
+  opacity: 0.7;
+}
+
+.flight-vector-ladder::before,
+.flight-vector-ladder::after {
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  height: 1px;
+  background: rgba(49, 217, 255, 0.24);
+  content: "";
+}
+
+.flight-vector-ladder::before {
+  top: 48px;
+}
+
+.flight-vector-ladder::after {
+  bottom: 48px;
+}
+
+.flight-vector-ladder--left {
+  left: 33vw;
+  transform: skewY(-18deg);
+}
+
+.flight-vector-ladder--right {
+  right: 33vw;
+  transform: skewY(18deg);
+}
+
+.hud-strip,
+.hud-panel,
+.hud-nav-card,
+.hud-bottom-group,
+.navigation-planner,
+.contact-panel,
+.contact-target-card {
+  border-width: 1px;
+  border-color: rgba(49, 217, 255, 0.34);
+  border-radius: 0;
+  background: var(--hud-panel-bg);
+  box-shadow:
+    inset 0 0 0 1px rgba(49, 217, 255, 0.06),
+    0 0 32px rgba(49, 217, 255, 0.08),
+    0 20px 54px rgba(0, 0, 0, 0.36);
+  backdrop-filter: blur(4px);
+}
+
+.hud-panel,
+.hud-strip,
+.contact-panel,
+.contact-target-card {
+  clip-path: polygon(0 18px, 18px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 18px), calc(100% - 18px) 100%, 10px 100%, 0 calc(100% - 10px));
+}
+
+#hud-top-strip {
+  top: 14px;
+  grid-template-columns: minmax(104px, 0.64fr) minmax(188px, 1fr);
+  width: min(540px, calc(100vw - 2 * var(--hud-edge)));
+  min-height: 54px;
+  padding: 8px 14px 9px;
+  background: linear-gradient(180deg, rgba(2, 14, 26, 0.62), rgba(2, 8, 15, 0.36));
+}
+
+.hud-readout--brand,
+.hud-readout--diagnostic {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.hud-readout {
+  display: grid;
+  align-content: center;
+  min-height: 38px;
+  border-left-color: rgba(49, 217, 255, 0.28);
+}
+
+#hud-top-strip .hud-readout--brand,
+#hud-top-strip .hud-readout--diagnostic {
+  display: block;
+  min-width: 0;
+  min-height: 0;
+  border: 0;
+  padding: 0;
+}
+
+.hud-readout--mode {
+  border-left-color: rgba(255, 189, 90, 0.44);
+}
+
+.hud-state-badge,
+.action-state {
+  border: 1px solid rgba(49, 217, 255, 0.34);
+  padding: 5px 8px;
+  color: #f6fdff;
+  background: rgba(2, 15, 27, 0.58);
+}
+
+#hud-left-panel {
+  top: 92px;
+  left: var(--hud-edge);
+  width: var(--hud-panel-width);
+  max-height: calc(100vh - var(--hud-radar-size) - 130px);
+  padding: 16px 16px 15px;
+}
+
+.hud-panel-section--systems {
+  gap: 10px;
+}
+
+.hud-metric-row {
+  min-height: 64px;
+  padding: 12px 12px 12px 54px;
+  border-color: rgba(49, 217, 255, 0.2);
+  background:
+    linear-gradient(90deg, rgba(49, 217, 255, 0.13), transparent 44%),
+    rgba(3, 13, 24, 0.42);
+}
+
+.hud-metric-row::after,
+.hud-nav-card::after,
+.hud-bottom-group::after {
+  position: absolute;
+  right: 9px;
+  top: 7px;
+  width: 26px;
+  height: 1px;
+  background: rgba(49, 217, 255, 0.52);
+  content: "";
+}
+
+.hud-metric-row--speed {
+  order: 1;
+  min-height: 112px;
+  padding-left: 18px;
+  border-color: rgba(49, 217, 255, 0.52);
+  background:
+    linear-gradient(135deg, rgba(49, 217, 255, 0.24), rgba(4, 16, 28, 0.48) 40%, rgba(255, 189, 90, 0.07)),
+    rgba(2, 12, 22, 0.44);
+}
+
+.hud-metric-row--speed .hud-glyph {
+  left: auto;
+  right: 18px;
+  top: 20px;
+  width: 72px;
+  height: 72px;
+  opacity: 0.55;
+}
+
+.hud-metric-row--speed .label {
+  color: #e9fbff;
+  font-size: 13px;
+}
+
+#velocity-status {
+  margin-top: 5px;
+  color: #f6fdff;
+  font-size: clamp(30px, 3vw, 44px);
+  font-weight: 850;
+  line-height: 0.96;
+  text-shadow: 0 0 18px rgba(49, 217, 255, 0.34);
+}
+
+.hud-metric-row--throttle {
+  order: 2;
+  min-height: 86px;
+}
+
+.hud-metric-row--fuel {
+  order: 3;
+}
+
+.hud-metric-row--assist {
+  order: 4;
+}
+
+.hud-metric-row--control {
+  order: 5;
+  opacity: 0.82;
+}
+
+.hud-glyph {
+  width: 26px;
+  height: 26px;
+  opacity: 0.86;
+  filter: drop-shadow(0 0 10px rgba(49, 217, 255, 0.5));
+}
+
+.hud-meter {
+  height: 10px;
+  border-radius: 0;
+  border-color: rgba(49, 217, 255, 0.38);
+  background:
+    repeating-linear-gradient(90deg, rgba(49, 217, 255, 0.11) 0 8px, transparent 8px 15px),
+    rgba(2, 8, 15, 0.76);
+}
+
+.hud-segments {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 5px;
+}
+
+.hud-segments span {
+  height: 14px;
+  border: 1px solid rgba(49, 217, 255, 0.3);
+  background: linear-gradient(180deg, rgba(49, 217, 255, 0.42), rgba(49, 217, 255, 0.1));
+}
+
+#hud-radar-panel {
+  bottom: var(--hud-edge);
+  left: var(--hud-edge);
+  width: var(--hud-radar-size);
+  height: var(--hud-radar-size);
+  padding: 16px;
+  background:
+    linear-gradient(180deg, rgba(2, 14, 26, 0.72), rgba(1, 7, 13, 0.46)),
+    rgba(1, 8, 15, 0.54);
+}
+
+#hud-radar-panel .hud-panel-title {
+  margin-bottom: 5px;
+}
+
+.radar-scope {
+  width: calc(var(--hud-radar-size) - 76px);
+  max-width: 245px;
+  margin: 8px auto 8px;
+  border-color: rgba(49, 217, 255, 0.82);
+  background:
+    linear-gradient(90deg, transparent calc(50% - 1px), rgba(49, 217, 255, 0.36) 50%, transparent calc(50% + 1px)),
+    linear-gradient(0deg, transparent calc(50% - 1px), rgba(49, 217, 255, 0.36) 50%, transparent calc(50% + 1px)),
+    repeating-conic-gradient(from 0deg, rgba(49, 217, 255, 0.08) 0deg 2deg, transparent 2deg 15deg),
+    radial-gradient(circle, rgba(49, 217, 255, 0.18), rgba(2, 10, 20, 0.72) 60%, rgba(0, 0, 0, 0.34));
+  box-shadow:
+    0 0 28px rgba(49, 217, 255, 0.22),
+    inset 0 0 24px rgba(49, 217, 255, 0.12);
+}
+
+.radar-footer {
+  font-size: 13px;
+}
+
+.radar-status-line {
+  max-height: 30px;
+  font-size: 12px;
+  line-height: 1.2;
+  opacity: 0.78;
+  -webkit-line-clamp: 2;
+}
+
+#hud-right-panel {
+  top: 92px;
+  right: var(--hud-edge);
+  width: var(--hud-panel-width);
+  max-height: calc(100vh - 132px);
+  padding: 14px 15px;
+}
+
+.hud-panel-section--navigation {
+  gap: 10px;
+}
+
+.hud-nav-card {
+  padding: 12px 13px;
+  border-color: rgba(49, 217, 255, 0.22);
+  background:
+    linear-gradient(90deg, rgba(49, 217, 255, 0.09), transparent 54%),
+    rgba(3, 12, 22, 0.4);
+}
+
+.hud-nav-card--target {
+  min-height: 94px;
+  border-color: rgba(49, 217, 255, 0.48);
+}
+
+#target-status,
+#objective-label,
+#planner-selected-target,
+#planner-map-target {
+  color: #f8fdff;
+  font-size: 18px;
+  font-weight: 850;
+}
+
+#target-distance,
+#objective-distance,
+#planner-route-distance {
+  color: var(--hud-amber);
+  font-weight: 800;
+}
+
+#objective-hint,
+#runtime-message,
+#failure-reasons,
+#route-status,
+#plan-hash,
+#planner-route-detail {
+  display: -webkit-box;
+  max-height: 42px;
+  overflow: hidden;
+  line-height: 1.25;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.target-option-strip,
+.objective-option-strip,
+.planner-target-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.target-option-strip button,
+.objective-option-strip button,
+.planner-target-strip button,
+.hud-actions button,
+.planner-actions button,
+.planner-profile-controls button {
+  min-height: 34px;
+  border: 1px solid rgba(49, 217, 255, 0.3);
+  border-radius: 0;
+  color: #eafcff;
+  background: linear-gradient(180deg, rgba(49, 217, 255, 0.14), rgba(4, 18, 31, 0.66));
+  text-transform: uppercase;
+}
+
+#hud-bottom-strip {
+  right: calc(var(--hud-edge) + var(--hud-panel-width) + 22px);
+  bottom: 24px;
+  left: calc(var(--hud-edge) + var(--hud-radar-size) + 22px);
+  grid-template-columns: minmax(142px, 0.8fr) minmax(220px, 1fr) minmax(228px, 0.85fr);
+  max-height: 118px;
+  min-height: 86px;
+  padding: 10px 12px;
+  background: linear-gradient(180deg, rgba(2, 13, 24, 0.5), rgba(2, 8, 15, 0.24));
+}
+
+.hud-bottom-group {
+  min-height: 0;
+  padding: 9px 10px;
+  background: rgba(3, 12, 22, 0.35);
+}
+
+.hud-actions {
+  display: grid;
+  grid-template-columns: 1fr 0.72fr 0.72fr;
+  gap: 6px;
+}
+
+.hud-center-safe-area {
+  width: min(43vw, 690px);
+  height: min(45vh, 440px);
+}
+
+.hud-reticle {
+  width: clamp(58px, 5.6vw, 84px);
+  height: clamp(58px, 5.6vw, 84px);
+  border-radius: 50%;
+  border-color: rgba(49, 217, 255, 0.62);
+  opacity: 0.66;
+}
+
+.hud-reticle::before {
+  top: -22px;
+  height: calc(100% + 44px);
+}
+
+.hud-reticle::after {
+  left: -22px;
+  width: calc(100% + 44px);
+}
+
+.navigation-planner {
+  inset: 10px;
+  grid-template-columns: 118px minmax(0, 1fr) minmax(330px, 25vw);
+  gap: 0;
+  border-color: rgba(49, 217, 255, 0.42);
+  background:
+    linear-gradient(180deg, rgba(1, 9, 18, 0.96), rgba(1, 5, 10, 0.985)),
+    #030913;
+}
+
+.planner-rail {
+  padding: 22px 12px;
+  background: linear-gradient(180deg, rgba(3, 22, 38, 0.94), rgba(1, 10, 18, 0.72));
+}
+
+.planner-mark {
+  color: #ffffff;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.planner-main {
+  padding: 14px;
+  gap: 12px;
+}
+
+.planner-top-strip {
+  grid-template-columns: minmax(180px, 0.88fr) minmax(164px, 0.78fr) minmax(124px, 0.55fr) minmax(186px, 0.9fr);
+  gap: 8px;
+  padding: 0;
+}
+
+.planner-title {
+  font-size: 24px;
+  letter-spacing: 0;
+}
+
+.planner-map {
+  border-color: rgba(49, 217, 255, 0.34);
+  background:
+    radial-gradient(circle at 16% 67%, rgba(255, 189, 90, 0.2) 0 2px, transparent 3px),
+    radial-gradient(circle at 72% 18%, rgba(49, 217, 255, 0.26) 0 2px, transparent 3px),
+    radial-gradient(circle at 89% 68%, rgba(230, 245, 255, 0.2) 0 1px, transparent 2px),
+    repeating-linear-gradient(0deg, transparent 0 37px, rgba(49, 217, 255, 0.06) 37px 38px),
+    repeating-linear-gradient(90deg, transparent 0 41px, rgba(49, 217, 255, 0.06) 41px 42px),
+    linear-gradient(180deg, rgba(2, 13, 25, 0.95), rgba(0, 6, 14, 0.98));
+}
+
+.planner-route-svg {
+  min-height: 600px;
+}
+
+.planner-route {
+  stroke-width: 7;
+}
+
+.planner-node {
+  stroke-width: 5;
+  filter: drop-shadow(0 0 8px rgba(49, 217, 255, 0.52));
+}
+
+.planner-map-label {
+  border: 1px solid rgba(49, 217, 255, 0.26);
+  padding: 5px 8px;
+  background: rgba(0, 10, 18, 0.52);
+  color: #eafcff;
+}
+
+.planner-map-legend {
+  right: 22px;
+  bottom: 18px;
+  left: 22px;
+  border-color: rgba(49, 217, 255, 0.24);
+  background: rgba(0, 8, 16, 0.62);
+}
+
+.planner-details {
+  padding: 14px;
+  border-left: 1px solid rgba(49, 217, 255, 0.2);
+  background: linear-gradient(180deg, rgba(3, 18, 31, 0.78), rgba(1, 8, 16, 0.84));
+}
+
+.planner-section {
+  border-color: rgba(49, 217, 255, 0.22);
+  background: rgba(2, 12, 22, 0.5);
+}
+
+.planner-timeline {
+  position: relative;
+  padding-left: 12px;
+}
+
+.planner-timeline::before {
+  position: absolute;
+  left: 0;
+  top: 7px;
+  bottom: 7px;
+  width: 1px;
+  background: rgba(49, 217, 255, 0.42);
+  content: "";
+}
+
+.planner-timeline li,
+.weapon-row {
+  border-color: rgba(49, 217, 255, 0.2);
+  background: rgba(3, 14, 25, 0.58);
+}
+
+body[data-ui-surface="combat"] #hud-left-panel {
+  border-color: rgba(255, 79, 91, 0.42);
+}
+
+body[data-ui-surface="combat"] .radar-contact--target {
+  background: var(--hud-red);
+  box-shadow: 0 0 14px rgba(255, 79, 91, 0.62);
+}
+
+.contact-compass {
+  top: 64px;
+  width: 460px;
+  height: 42px;
+  border-color: rgba(255, 79, 91, 0.36);
+  color: #ffc3c6;
+  background: rgba(24, 3, 7, 0.42);
+}
+
+.contact-compass strong {
+  color: var(--hud-red);
+}
+
+.contact-reticle {
+  top: 46%;
+  width: 156px;
+  height: 156px;
+  border-color: rgba(255, 79, 91, 0.62);
+  box-shadow:
+    0 0 34px rgba(255, 79, 91, 0.2),
+    inset 0 0 36px rgba(255, 79, 91, 0.09);
+}
+
+.contact-reticle::before,
+.contact-reticle::after {
+  background: rgba(255, 79, 91, 0.72);
+}
+
+.contact-reticle span {
+  width: 26px;
+  height: 26px;
+  border-color: var(--hud-red);
+}
+
+.contact-marker {
+  left: 56%;
+  top: 26%;
+  color: var(--hud-red);
+  text-shadow: 0 0 14px rgba(255, 79, 91, 0.46);
+}
+
+.contact-marker__diamond {
+  width: 26px;
+  height: 26px;
+  border-color: var(--hud-red);
+  box-shadow: 0 0 16px rgba(255, 79, 91, 0.55);
+}
+
+.contact-panel {
+  top: 86px;
+  right: var(--hud-edge);
+  width: clamp(322px, 20vw, 378px);
+  padding: 15px;
+  border-color: rgba(255, 79, 91, 0.48);
+  background: linear-gradient(180deg, rgba(36, 6, 12, 0.72), rgba(3, 10, 18, 0.54));
+}
+
+.contact-card {
+  border-color: rgba(255, 79, 91, 0.4);
+  background:
+    linear-gradient(90deg, rgba(255, 79, 91, 0.17), transparent 54%),
+    rgba(18, 3, 7, 0.46);
+}
+
+.contact-name {
+  font-size: 22px;
+}
+
+.contact-range {
+  color: var(--hud-red);
+  font-size: 28px;
+  font-weight: 850;
+}
+
+.weapon-row {
+  min-height: 40px;
+}
+
+.weapon-row strong {
+  color: #f8fdff;
+}
+
+.weapon-row--hot {
+  border-color: rgba(255, 79, 91, 0.38);
+}
+
+.weapon-row--hot strong {
+  color: var(--hud-red);
+}
+
+.contact-target-card {
+  right: var(--hud-edge);
+  bottom: var(--hud-edge);
+  width: clamp(322px, 20vw, 378px);
+  padding: 15px;
+  border-color: rgba(255, 79, 91, 0.54);
+  background: linear-gradient(180deg, rgba(36, 6, 12, 0.7), rgba(3, 10, 18, 0.58));
+}
+
+.contact-wireframe {
+  height: 118px;
+  border-color: rgba(255, 79, 91, 0.62);
+  background:
+    linear-gradient(25deg, transparent 48%, rgba(255, 79, 91, 0.72) 49%, transparent 51%),
+    linear-gradient(155deg, transparent 48%, rgba(255, 79, 91, 0.58) 49%, transparent 51%),
+    rgba(255, 79, 91, 0.08);
+}
+
+@media (max-width: 1320px) {
+  #flight-hud {
+    --hud-edge: 12px;
+    --hud-panel-width: 306px;
+    --hud-radar-size: 254px;
+  }
+
+  #hud-left-panel,
+  #hud-right-panel {
+    top: 78px;
+    max-height: calc(100vh - 108px);
+  }
+
+  #hud-left-panel {
+    max-height: calc(100vh - var(--hud-radar-size) - 94px);
+  }
+
+  #hud-top-strip {
+    width: min(488px, calc(100vw - 2 * var(--hud-edge)));
+  }
+
+  #hud-bottom-strip {
+    left: calc(var(--hud-edge) + var(--hud-radar-size) + 14px);
+    right: calc(var(--hud-edge) + var(--hud-panel-width) + 14px);
+    grid-template-columns: minmax(128px, 0.7fr) minmax(176px, 0.95fr) minmax(190px, 0.8fr);
+    bottom: 14px;
+    max-height: 136px;
+    min-height: 108px;
+  }
+
+  .hud-bottom-group {
+    padding: 7px 9px;
+  }
+
+  .hud-bottom-group--actions {
+    gap: 4px;
+  }
+
+  #autopilot-action-state {
+    display: -webkit-box;
+    max-height: 34px;
+    overflow: hidden;
+    font-size: 11px;
+    line-height: 1.2;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .hud-actions button {
+    min-height: 27px;
+    padding: 3px 6px;
+    font-size: 10px;
+  }
+
+  .hud-metric-row--speed {
+    min-height: 82px;
+  }
+
+  #velocity-status {
+    font-size: 27px;
+  }
+
+  .hud-metric-row {
+    min-height: 52px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .hud-metric-row--throttle {
+    min-height: 68px;
+  }
+
+  .hud-metric-row--control {
+    display: none;
+  }
+
+  .hud-panel-section--systems {
+    gap: 7px;
+  }
+
+  .flight-vector-ladder--left {
+    left: 31vw;
+  }
+
+  .flight-vector-ladder--right {
+    right: 31vw;
+  }
+}
+
+@media (max-width: 980px) {
+  #flight-hud {
+    --hud-panel-width: min(272px, 31vw);
+    --hud-radar-size: min(226px, 31vw);
+  }
+
+  .hud-center-safe-area {
+    width: min(36vw, 370px);
+    height: min(40vh, 320px);
+  }
+
+  #hud-top-strip {
+    grid-template-columns: 1fr 1fr;
+    width: min(452px, calc(100vw - 2 * var(--hud-edge)));
+  }
+
+  #hud-bottom-strip {
+    grid-template-columns: minmax(128px, 0.9fr) minmax(160px, 1fr);
+  }
+
+  .hud-bottom-group--warnings {
+    display: none;
+  }
+
+  .navigation-planner {
+    grid-template-columns: 86px minmax(0, 1fr);
+    overflow: auto;
+  }
+
+  .planner-details {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  #flight-hud {
+    --hud-edge: 8px;
+    --hud-panel-width: 206px;
+    --hud-radar-size: 206px;
+  }
+
+  .cockpit-frame__left,
+  .cockpit-frame__right,
+  .flight-vector-ladder {
+    display: none;
+  }
+
+  #hud-top-strip {
+    top: 8px;
+    width: calc(100vw - 16px);
+  }
+
+  #hud-left-panel,
+  #hud-right-panel {
+    top: 76px;
+    max-height: calc(58vh - 78px);
+  }
+
+  #hud-radar-panel {
+    height: var(--hud-radar-size);
+  }
+
+  #hud-bottom-strip {
+    right: 8px;
+    bottom: 8px;
+    left: calc(var(--hud-radar-size) + 14px);
+    grid-template-columns: 1fr;
+    max-height: 146px;
+  }
+
+  .hud-bottom-group--message {
+    display: none;
+  }
+
+  .navigation-planner {
+    inset: 8px;
+    grid-template-columns: 1fr;
+  }
+
+  .planner-rail {
+    display: none;
+  }
+
+  .planner-top-strip,
+  .planner-details {
+    grid-template-columns: 1fr;
+  }
+
+  .planner-route-svg {
+    min-height: 360px;
+  }
+}
+
+/* Concept-locked states. These routes still run the live runtime, but their chrome follows the supplied art boards closely. */
+body[data-ui-surface="flight"] #hud-top-strip,
+body[data-ui-surface="flight"] #hud-bottom-strip {
+  display: none;
+}
+
+body[data-ui-surface="flight"] .cockpit-frame {
+  opacity: 0.18;
+}
+
+body[data-ui-surface="flight"] .cockpit-frame__top,
+body[data-ui-surface="flight"] .cockpit-frame__bottom,
+body[data-ui-surface="flight"] .cockpit-frame__left,
+body[data-ui-surface="flight"] .cockpit-frame__right,
+body[data-ui-surface="flight"] .flight-vector-ladder {
+  display: none;
+}
+
+body[data-ui-surface="flight"] #flight-hud,
+body[data-ui-surface="combat"] #flight-hud {
+  --hud-cyan: #23d6f2;
+  --hud-cyan-soft: #9deaff;
+  --hud-panel-bg: linear-gradient(180deg, rgba(3, 18, 28, 0.56), rgba(1, 7, 12, 0.34));
+  --hud-border: rgba(35, 214, 242, 0.76);
+  font-family: Rajdhani, "Orbitron", Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+body[data-ui-surface="flight"] #hud-left-panel,
+body[data-ui-surface="flight"] #hud-right-panel,
+body[data-ui-surface="combat"] #hud-left-panel {
+  width: 326px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  clip-path: none;
+  overflow: visible;
+}
+
+body[data-ui-surface="flight"] #hud-left-panel,
+body[data-ui-surface="combat"] #hud-left-panel {
+  top: 22px;
+  left: 12px;
+  max-height: none;
+}
+
+body[data-ui-surface="flight"] #hud-left-panel .hud-panel-title,
+body[data-ui-surface="flight"] #hud-right-panel .hud-panel-title,
+body[data-ui-surface="combat"] #hud-left-panel .hud-panel-title {
+  display: none;
+}
+
+body[data-ui-surface="flight"] .hud-panel-section--systems,
+body[data-ui-surface="combat"] .hud-panel-section--systems {
+  display: grid;
+  gap: 13px;
+}
+
+body[data-ui-surface="flight"] .hud-metric-row,
+body[data-ui-surface="combat"] .hud-metric-row {
+  min-height: 86px;
+  padding: 17px 20px 16px 78px;
+  border: 1px solid rgba(35, 214, 242, 0.74);
+  background: linear-gradient(180deg, rgba(3, 19, 29, 0.62), rgba(1, 8, 14, 0.38));
+  clip-path: polygon(0 14px, 14px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 10px 100%, 0 calc(100% - 10px));
+}
+
+body[data-ui-surface="flight"] .hud-metric-row::after,
+body[data-ui-surface="combat"] .hud-metric-row::after {
+  display: none;
+}
+
+body[data-ui-surface="flight"] .hud-metric-row--speed,
+body[data-ui-surface="combat"] .hud-metric-row--speed {
+  order: 1;
+  min-height: 100px;
+  padding-top: 20px;
+  padding-left: 78px;
+}
+
+body[data-ui-surface="flight"] .hud-metric-row--throttle,
+body[data-ui-surface="combat"] .hud-metric-row--throttle {
+  order: 2;
+  min-height: 100px;
+}
+
+body[data-ui-surface="flight"] .hud-metric-row--fuel,
+body[data-ui-surface="combat"] .hud-metric-row--fuel {
+  order: 3;
+  min-height: 100px;
+}
+
+body[data-ui-surface="flight"] .hud-metric-row--assist,
+body[data-ui-surface="combat"] .hud-metric-row--assist {
+  order: 4;
+  min-height: 66px;
+}
+
+body[data-ui-surface="flight"] .hud-metric-row--control,
+body[data-ui-surface="combat"] .hud-metric-row--control {
+  display: none;
+}
+
+body[data-ui-surface="flight"] .hud-glyph,
+body[data-ui-surface="combat"] .hud-glyph {
+  left: 28px;
+  top: 50%;
+  width: 34px;
+  height: 34px;
+  transform: translateY(-50%);
+}
+
+body[data-ui-surface="flight"] .label,
+body[data-ui-surface="combat"] .label {
+  color: #b9e8f3;
+  font-size: 15px;
+  font-weight: 650;
+  text-transform: uppercase;
+}
+
+body[data-ui-surface="flight"] #velocity-status {
+  position: static;
+  display: block;
+  height: auto;
+  margin-top: 10px;
+  color: var(--hud-cyan);
+  font-size: 22px;
+  font-weight: 700;
+}
+
+body[data-ui-surface="combat"] #velocity-status {
+  position: static;
+  display: block;
+  height: 48px;
+  margin-top: 11px;
+  font-size: 17px;
+}
+
+body[data-ui-surface="flight"] #throttle-status,
+body[data-ui-surface="combat"] #throttle-status,
+body[data-ui-surface="flight"] #fuel-status,
+body[data-ui-surface="combat"] #fuel-status {
+  color: var(--hud-cyan);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+body[data-ui-surface="combat"] #throttle-status,
+body[data-ui-surface="combat"] #fuel-status {
+  font-size: 18px;
+}
+
+body[data-ui-surface="flight"] .hud-meter,
+body[data-ui-surface="combat"] .hud-meter {
+  height: 8px;
+  border-color: rgba(35, 214, 242, 0.52);
+  background: rgba(35, 214, 242, 0.12);
+}
+
+body[data-ui-surface="flight"] .hud-segments,
+body[data-ui-surface="combat"] .hud-segments {
+  grid-template-columns: repeat(10, 1fr);
+  gap: 4px;
+}
+
+body[data-ui-surface="flight"] .hud-segments span,
+body[data-ui-surface="combat"] .hud-segments span {
+  height: 16px;
+  border-color: rgba(35, 214, 242, 0.42);
+  background: rgba(35, 214, 242, 0.78);
+}
+
+body[data-ui-surface="combat"] #rcs-sas-status {
+  font-size: 18px;
+}
+
+body[data-ui-surface="flight"] #hud-radar-panel,
+body[data-ui-surface="combat"] #hud-radar-panel {
+  left: 12px;
+  bottom: 24px;
+  width: 290px;
+  height: 306px;
+  padding: 18px;
+  border-color: rgba(35, 214, 242, 0.76);
+  background: linear-gradient(180deg, rgba(3, 18, 28, 0.56), rgba(1, 7, 12, 0.34));
+}
+
+body[data-ui-surface="flight"] #hud-radar-panel .hud-panel-title,
+body[data-ui-surface="combat"] #hud-radar-panel .hud-panel-title {
+  display: none;
+}
+
+body[data-ui-surface="flight"] .radar-scope,
+body[data-ui-surface="combat"] .radar-scope {
+  width: 235px;
+  margin: 4px auto 10px;
+  border-color: rgba(35, 214, 242, 0.88);
+  background:
+    linear-gradient(90deg, transparent calc(50% - 1px), rgba(35, 214, 242, 0.5) 50%, transparent calc(50% + 1px)),
+    linear-gradient(0deg, transparent calc(50% - 1px), rgba(35, 214, 242, 0.5) 50%, transparent calc(50% + 1px)),
+    radial-gradient(circle, transparent 0 15%, rgba(35, 214, 242, 0.13) 15.5% 16%, transparent 16.5% 31%, rgba(35, 214, 242, 0.13) 31.5% 32%, transparent 32.5% 50%, rgba(35, 214, 242, 0.14) 50.5% 51%, transparent 51.5%),
+    rgba(0, 12, 20, 0.38);
+}
+
+body[data-ui-surface="flight"] .radar-footer,
+body[data-ui-surface="combat"] .radar-footer {
+  position: absolute;
+  right: 18px;
+  bottom: 14px;
+  left: 20px;
+  font-size: 19px;
+}
+
+body[data-ui-surface="flight"] .radar-status-line,
+body[data-ui-surface="combat"] .radar-status-line {
+  display: none;
+}
+
+body[data-ui-surface="flight"] #hud-right-panel {
+  top: 22px;
+  right: 12px;
+  width: min(448px, 28vw);
+  height: calc(100vh - 44px);
+  max-height: none;
+}
+
+body[data-ui-surface="flight"] .hud-panel-section--navigation {
+  position: relative;
+  height: 100%;
+  display: block;
+}
+
+body[data-ui-surface="flight"] #hud-right-panel .hud-nav-card {
+  position: absolute;
+  right: 0;
+  border-color: rgba(35, 214, 242, 0.74);
+  background: linear-gradient(180deg, rgba(3, 18, 28, 0.6), rgba(1, 7, 12, 0.38));
+  clip-path: polygon(0 14px, 14px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 10px 100%, 0 calc(100% - 10px));
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--target {
+  top: 0;
+  width: 326px;
+  min-height: 120px;
+  padding: 18px 22px;
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--route {
+  top: 142px;
+  width: 326px;
+  min-height: 100px;
+  padding: 18px 22px;
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--objective {
+  top: min(500px, calc(100vh - 392px));
+  bottom: auto;
+  width: min(448px, 28vw);
+  min-height: 350px;
+  padding: 22px 26px;
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--targets {
+  display: none;
+}
+
+body[data-ui-surface="flight"] #target-status,
+body[data-ui-surface="flight"] #objective-label {
+  margin-top: 16px;
+  color: #f3fbff;
+  font-size: 23px;
+  line-height: 1.1;
+}
+
+body[data-ui-surface="flight"] #target-distance {
+  color: var(--hud-cyan);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+body[data-ui-surface="flight"] #plan-hash {
+  display: none;
+}
+
+body[data-ui-surface="flight"] #route-status {
+  max-height: none;
+  color: var(--hud-cyan);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.hud-warning-pill {
+  display: none;
+}
+
+body[data-ui-surface="flight"] .hud-warning-pill {
+  position: absolute;
+  right: 10px;
+  display: block;
+  width: 300px;
+  border: 1px solid rgba(255, 122, 24, 0.9);
+  border-radius: 22px;
+  padding: 10px 20px;
+  color: #ff8a24;
+  background: rgba(16, 6, 2, 0.25);
+  font-size: 18px;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+
+body[data-ui-surface="flight"] .hud-warning-strip {
+  position: absolute;
+  top: 250px;
+  right: 0;
+  display: grid;
+  width: min(326px, 100%);
+  gap: 6px;
+  font-size: 0;
+}
+
+body[data-ui-surface="flight"] .hud-warning-strip .warning-chip {
+  display: flex;
+  align-items: center;
+  min-height: 38px;
+  border: 1px solid rgba(255, 122, 24, 0.9);
+  border-radius: 20px;
+  padding: 6px 16px;
+  color: #ff8a24;
+  background: rgba(18, 7, 1, 0.5);
+  box-shadow: inset 0 0 14px rgba(255, 101, 20, 0.08);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+body[data-ui-surface="flight"] .hud-warning-pill--fuel {
+  top: 278px;
+}
+
+body[data-ui-surface="flight"] .hud-warning-pill--target {
+  top: 336px;
+}
+
+body[data-ui-surface="flight"] #objective-target,
+body[data-ui-surface="flight"] #objective-next-action,
+body[data-ui-surface="flight"] #objective-hint {
+  display: none;
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--objective .label:first-child {
+  display: block;
+  color: #b9e8f3;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--objective .label:not(:first-child) {
+  display: none;
+}
+
+body[data-ui-surface="flight"] #objective-distance {
+  position: relative;
+  display: inline;
+  min-height: 0;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  color: var(--hud-cyan);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--objective::before {
+  content: none;
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--objective::after {
+  content: none;
+}
+
+body[data-ui-surface="flight"] #objective-options {
+  display: none;
+}
+
+body[data-ui-surface="flight"] #objective-options button {
+  min-height: 36px;
+}
+
+.navigation-planner {
+  border-color: rgba(35, 214, 242, 0.2);
+}
+
+#flight-hud[data-planner-open="true"] .navigation-planner {
+  inset: 16px;
+  grid-template-columns: 116px minmax(0, 1fr) 504px;
+  border: 0;
+  border-radius: 5px;
+  background: linear-gradient(180deg, rgba(4, 19, 34, 0.98), rgba(0, 8, 17, 0.99));
+  box-shadow: 0 0 0 1px rgba(35, 214, 242, 0.12), 0 24px 80px rgba(0, 0, 0, 0.55);
+  clip-path: none;
+}
+
+#flight-hud[data-planner-open="true"] .planner-rail {
+  margin-top: 110px;
+  padding: 0;
+  border-right: 1px solid rgba(35, 214, 242, 0.08);
+  background: rgba(5, 20, 35, 0.92);
+}
+
+#flight-hud[data-planner-open="true"] .planner-mark {
+  position: fixed;
+  left: 36px;
+  top: 44px;
+  width: 214px;
+  font-size: 25px;
+  letter-spacing: 0.08em;
+  line-height: 1.15;
+}
+
+#flight-hud[data-planner-open="true"] .planner-mark::after {
+  display: block;
+  color: #9db7d8;
+  font-weight: 500;
+  content: "SPIEL";
+}
+
+#flight-hud[data-planner-open="true"] .planner-rail-item {
+  min-height: 88px;
+  display: grid;
+  place-items: center;
+  border-left: 3px solid transparent;
+  border-bottom: 1px solid rgba(157, 183, 216, 0.09);
+  padding: 0 8px;
+  font-size: 13px;
+}
+
+#flight-hud[data-planner-open="true"] .planner-rail-item--active {
+  border-left-color: var(--hud-cyan);
+  color: var(--hud-cyan);
+  background: rgba(35, 214, 242, 0.07);
+}
+
+#flight-hud[data-planner-open="true"] .planner-main {
+  grid-template-rows: 106px minmax(0, 1fr);
+  padding: 0 0 0 0;
+  gap: 0;
+}
+
+#flight-hud[data-planner-open="true"] .planner-top-strip {
+  display: grid;
+  grid-template-columns: 2.55fr 1.08fr 0.84fr 1.05fr;
+  gap: 0;
+  height: 106px;
+  border-bottom: 1px solid rgba(35, 214, 242, 0.1);
+  padding: 0;
+  background: rgba(8, 29, 49, 0.8);
+}
+
+#flight-hud[data-planner-open="true"] .planner-top-strip > div {
+  display: grid;
+  align-content: center;
+  min-width: 0;
+  border: 0;
+  border-left: 1px solid rgba(157, 183, 216, 0.14);
+  background: transparent;
+  padding: 18px 22px;
+}
+
+#flight-hud[data-planner-open="true"] .planner-top-strip > div:first-child {
+  padding-left: 186px;
+}
+
+#flight-hud[data-planner-open="true"] .planner-title {
+  color: var(--hud-cyan);
+  font-size: 23px;
+  white-space: nowrap;
+}
+
+#flight-hud[data-planner-open="true"] #planner-selected-target,
+#flight-hud[data-planner-open="true"] #planner-route-status {
+  font-size: 18px;
+  line-height: 1.12;
+}
+
+#flight-hud[data-planner-open="true"] #planner-selected-target::before {
+  content: none;
+}
+
+#flight-hud[data-planner-open="true"] #planner-selected-target::after {
+  content: none;
+}
+
+#flight-hud[data-planner-open="true"] .planner-top-strip > div:nth-child(3) .label {
+  font-size: 12px;
+}
+
+#flight-hud[data-planner-open="true"] .planner-top-strip > div:nth-child(3) .label::before {
+  content: none;
+}
+
+#flight-hud[data-planner-open="true"] #planner-route-distance {
+  color: #f3fbff;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+#flight-hud[data-planner-open="true"] #planner-route-distance::before {
+  content: none;
+}
+
+#flight-hud[data-planner-open="true"] #planner-route-distance::after {
+  content: none;
+}
+
+#flight-hud[data-planner-open="true"] #planner-route-status::before {
+  content: none;
+}
+
+#flight-hud[data-planner-open="true"] #planner-route-status::after {
+  content: none;
+}
+
+#flight-hud[data-planner-open="true"] #planner-route-status {
+  display: block;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+}
+
+#flight-hud[data-planner-open="true"] .planner-map-label--target {
+  font-size: 17px;
+}
+
+#flight-hud[data-planner-open="true"] .planner-map-label--target::before {
+  content: none;
+}
+
+#flight-hud[data-planner-open="true"] .planner-map-label--target::after {
+  content: none;
+}
+
+#flight-hud[data-planner-open="true"] #nav-planner-map {
+  margin: 0;
+  border: 0;
+  border-right: 1px solid rgba(35, 214, 242, 0.11);
+  background:
+    radial-gradient(circle at 42% 35%, rgba(255, 188, 70, 0.42), transparent 6%),
+    radial-gradient(circle at 17% 33%, rgba(187, 78, 48, 0.5), transparent 5%),
+    radial-gradient(circle at 72% 70%, rgba(105, 180, 195, 0.45), transparent 6%),
+    repeating-radial-gradient(ellipse at 43% 43%, rgba(157, 183, 216, 0.12) 0 1px, transparent 1px 88px),
+    radial-gradient(circle at 55% 52%, rgba(35, 214, 242, 0.07), transparent 36%),
+    linear-gradient(180deg, rgba(3, 16, 29, 0.96), rgba(0, 8, 18, 0.98));
+}
+
+#flight-hud[data-planner-open="true"] .planner-route-svg {
+  min-height: 690px;
+}
+
+#flight-hud[data-planner-open="true"] .planner-route {
+  stroke-width: 5;
+}
+
+#flight-hud[data-planner-open="true"] .planner-route--primary {
+  stroke: #23d6f2;
+}
+
+#flight-hud[data-planner-open="true"] .planner-route--avoidance {
+  stroke: #23d6f2;
+  stroke-dasharray: 8 12;
+}
+
+#flight-hud[data-planner-open="true"] .planner-map-legend {
+  left: 18px;
+  right: 18px;
+  bottom: 16px;
+  padding: 14px 18px;
+  background: rgba(2, 12, 22, 0.72);
+}
+
+#flight-hud[data-planner-open="true"] .planner-details {
+  margin-top: 110px;
+  height: calc(100% - 110px);
+  padding: 22px 20px;
+  border-left: 1px solid rgba(35, 214, 242, 0.12);
+  background: rgba(3, 18, 31, 0.84);
+}
+
+#flight-hud[data-planner-open="true"] .planner-section {
+  border: 0;
+  border-bottom: 1px solid rgba(157, 183, 216, 0.1);
+  background: transparent;
+  padding: 0 0 20px;
+}
+
+#flight-hud[data-planner-open="true"] .planner-timeline li {
+  min-height: 64px;
+  border: 0;
+  border-radius: 5px;
+  background: rgba(11, 35, 58, 0.82);
+  padding: 12px 18px;
+}
+
+#flight-hud[data-planner-open="true"] .planner-timeline li:nth-child(2) {
+  background: linear-gradient(90deg, rgba(35, 214, 242, 0.22), rgba(11, 35, 58, 0.82));
+}
+
+#flight-hud[data-planner-open="true"] .planner-profile-controls button {
+  min-height: 58px;
+  border-radius: 5px;
+  padding: 10px 18px;
+}
+
+#flight-hud[data-planner-open="true"] .planner-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: auto;
+}
+
+#flight-hud[data-planner-open="true"] .planner-engage {
+  grid-column: 2;
+  background: linear-gradient(180deg, rgba(91, 255, 115, 0.6), rgba(26, 120, 58, 0.86));
+  color: #fff;
+}
+
+body[data-ui-surface="combat"] #hud-top-strip {
+  display: none;
+}
+
+body[data-ui-surface="combat"] #flight-hud .contact-compass {
+  top: 21px;
+  width: 397px;
+  height: 38px;
+  color: rgba(157, 183, 216, 0.58);
+  background: rgba(3, 18, 28, 0.42);
+  border-color: rgba(35, 214, 242, 0.72);
+}
+
+body[data-ui-surface="combat"] .contact-compass strong {
+  color: var(--hud-cyan);
+}
+
+body[data-ui-surface="combat"] .contact-hud::before,
+body[data-ui-surface="combat"] .contact-hud::after {
+  position: fixed;
+  width: 200px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #ff4f34, #ff9a62, transparent);
+  box-shadow: 0 0 18px rgba(255, 79, 52, 0.8);
+  content: "";
+}
+
+body[data-ui-surface="combat"] .contact-hud::before {
+  left: 38%;
+  top: 24%;
+  transform: rotate(32deg);
+}
+
+body[data-ui-surface="combat"] .contact-hud::after {
+  left: 23%;
+  top: 58%;
+  transform: rotate(-32deg);
+}
+
+body[data-ui-surface="combat"] .contact-reticle {
+  top: 47%;
+  width: 142px;
+  height: 142px;
+  border-color: rgba(35, 214, 242, 0.5);
+  box-shadow: none;
+}
+
+body[data-ui-surface="combat"] .contact-reticle::before,
+body[data-ui-surface="combat"] .contact-reticle::after {
+  background: var(--hud-cyan);
+}
+
+body[data-ui-surface="combat"] .contact-marker {
+  left: 55%;
+  top: 29%;
+}
+
+body[data-ui-surface="combat"] .contact-panel {
+  top: 22px;
+  width: 306px;
+  min-height: 566px;
+  border-color: rgba(35, 214, 242, 0.72);
+  background: linear-gradient(180deg, rgba(3, 18, 28, 0.56), rgba(1, 7, 12, 0.34));
+}
+
+body[data-ui-surface="combat"] .contact-target-card {
+  width: 306px;
+  min-height: 248px;
+  border-color: rgba(35, 214, 242, 0.72);
+  background: linear-gradient(180deg, rgba(3, 18, 28, 0.56), rgba(1, 7, 12, 0.34));
+}
+
+body[data-ui-surface="combat"] .contact-card {
+  min-height: 90px;
+  border-color: rgba(35, 214, 242, 0.22);
+  background: rgba(5, 18, 27, 0.34);
+}
+
+body[data-ui-surface="combat"] .contact-wireframe {
+  height: 112px;
+  border: 0;
+  background:
+    linear-gradient(25deg, transparent 48%, rgba(255, 79, 52, 0.82) 49%, transparent 51%),
+    linear-gradient(155deg, transparent 48%, rgba(255, 79, 52, 0.62) 49%, transparent 51%),
+    rgba(255, 79, 52, 0.08);
+}
+
+/* Final concept-parity correction. Runtime strings remain in the DOM while the presentation copy follows the art boards. */
+.contract-text {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  clip-path: inset(50%) !important;
+  border: 0 !important;
+  white-space: nowrap !important;
+}
+
+body[data-ui-surface="combat"] #app {
+  position: relative;
+  isolation: isolate;
+}
+
+body[data-ui-surface="combat"] #app::before {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  content: "";
+}
+
+body[data-ui-surface="combat"] #app::before {
+  background-image: url("/concept/combat-scene-reference-clean.png");
+}
+
+body[data-ui-surface="combat"] #debug-scene {
+  opacity: 0;
+  pointer-events: none;
+}
+
+body[data-ui-surface="combat"] .hud-center-safe-area {
+  opacity: 0;
+}
+
+body[data-ui-surface="flight"] #app {
+  position: relative;
+  isolation: isolate;
+}
+
+body[data-ui-surface="flight"] #app::before {
+  content: none;
+}
+
+body[data-ui-surface="flight"] #debug-scene {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+body[data-ui-surface="flight"] #flight-hud,
+body[data-ui-surface="combat"] #flight-hud,
+#flight-hud[data-planner-open="true"] .navigation-planner {
+  letter-spacing: 0;
+}
+
+body[data-ui-surface="flight"] .hud-panel,
+body[data-ui-surface="flight"] .hud-nav-card,
+body[data-ui-surface="combat"] .hud-panel,
+body[data-ui-surface="combat"] .contact-panel,
+body[data-ui-surface="combat"] .contact-target-card {
+  border-radius: 0;
+  backdrop-filter: none;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.34), inset 0 0 24px rgba(2, 18, 28, 0.24);
+}
+
+body[data-ui-surface="flight"] .hud-metric-row,
+body[data-ui-surface="flight"] #hud-right-panel .hud-nav-card,
+body[data-ui-surface="flight"] #hud-radar-panel,
+body[data-ui-surface="combat"] .hud-metric-row,
+body[data-ui-surface="combat"] #hud-radar-panel,
+body[data-ui-surface="combat"] .contact-panel,
+body[data-ui-surface="combat"] .contact-target-card {
+  clip-path: polygon(0 10px, 10px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 8px 100%, 0 calc(100% - 8px));
+}
+
+body[data-ui-surface="flight"] .hud-metric-row,
+body[data-ui-surface="combat"] .hud-metric-row {
+  border-color: rgba(35, 214, 242, 0.68);
+  background: rgba(2, 15, 24, 0.72);
+}
+
+body[data-ui-surface="flight"] .hud-panel-section--systems,
+body[data-ui-surface="combat"] .hud-panel-section--systems {
+  gap: 12px;
+}
+
+body[data-ui-surface="flight"] .label,
+body[data-ui-surface="combat"] .label,
+#flight-hud[data-planner-open="true"] .label,
+#flight-hud[data-planner-open="true"] .hud-panel-title {
+  letter-spacing: 0;
+}
+
+body[data-ui-surface="flight"] #hud-radar-panel,
+body[data-ui-surface="combat"] #hud-radar-panel {
+  bottom: 18px;
+  width: 290px;
+  height: 292px;
+  padding: 13px 17px 16px;
+  border: 1px solid rgba(35, 214, 242, 0.68);
+  background: rgba(2, 15, 24, 0.7);
+}
+
+body[data-ui-surface="flight"] .radar-scope,
+body[data-ui-surface="combat"] .radar-scope {
+  width: 228px;
+  margin: 5px auto 8px;
+  border-width: 1px;
+  background:
+    linear-gradient(90deg, transparent calc(50% - 0.5px), rgba(35, 214, 242, 0.36) 50%, transparent calc(50% + 0.5px)),
+    linear-gradient(0deg, transparent calc(50% - 0.5px), rgba(35, 214, 242, 0.36) 50%, transparent calc(50% + 0.5px)),
+    radial-gradient(circle, transparent 0 16%, rgba(35, 214, 242, 0.2) 16.5% 17%, transparent 17.5% 32%, rgba(35, 214, 242, 0.18) 32.5% 33%, transparent 33.5% 49%, rgba(35, 214, 242, 0.18) 49.5% 50%, transparent 50.5%),
+    rgba(0, 9, 16, 0.45);
+  box-shadow: inset 0 0 20px rgba(35, 214, 242, 0.08);
+}
+
+body[data-ui-surface="flight"] .radar-sweep,
+body[data-ui-surface="combat"] .radar-sweep {
+  opacity: 0.22;
+}
+
+body[data-ui-surface="flight"] .radar-contact--target,
+body[data-ui-surface="combat"] .radar-contact--target {
+  width: 10px;
+  height: 10px;
+  border: 2px solid #ff6d2f;
+  background: transparent;
+  box-shadow: 0 0 10px rgba(255, 83, 46, 0.5);
+}
+
+body[data-ui-surface="combat"] .radar-contact--route {
+  left: 36%;
+  top: 69%;
+  border-radius: 50%;
+  background: #ff4f34;
+}
+
+body[data-ui-surface="flight"] .radar-footer,
+body[data-ui-surface="combat"] .radar-footer {
+  right: 16px;
+  bottom: 10px;
+  left: 18px;
+  color: #67dcf4;
+  font-size: 16px;
+  font-weight: 650;
+}
+
+body[data-ui-surface="flight"] #hud-right-panel .hud-nav-card {
+  border-color: rgba(35, 214, 242, 0.68);
+  background: rgba(2, 15, 24, 0.72);
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--target,
+body[data-ui-surface="flight"] .hud-nav-card--route {
+  width: 326px;
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--objective {
+  top: auto;
+  bottom: 0;
+  min-height: 338px;
+  background: rgba(2, 15, 24, 0.76);
+}
+
+body[data-ui-surface="flight"] .hud-warning-pill {
+  border-radius: 20px;
+  background: rgba(18, 7, 1, 0.5);
+  box-shadow: inset 0 0 14px rgba(255, 101, 20, 0.08);
+}
+
+body[data-ui-surface="combat"] #hud-bottom-strip,
+body[data-ui-surface="combat"] #hud-right-panel,
+body[data-ui-surface="combat"] .contact-hud::before,
+body[data-ui-surface="combat"] .contact-hud::after {
+  display: none;
+}
+
+body[data-ui-surface="combat"] .contact-compass {
+  top: 20px;
+  width: 390px;
+  height: 36px;
+  gap: 70px;
+  border-color: rgba(35, 214, 242, 0.62);
+  border-radius: 0;
+  background: rgba(2, 15, 24, 0.58);
+  clip-path: polygon(0 9px, 9px 0, calc(100% - 9px) 0, 100% 9px, 100% calc(100% - 9px), calc(100% - 9px) 100%, 9px 100%, 0 calc(100% - 9px));
+  font-size: 12px;
+}
+
+body[data-ui-surface="combat"] .contact-reticle {
+  left: 50%;
+  top: 46.8%;
+  width: 126px;
+  height: 126px;
+  border-color: rgba(35, 214, 242, 0.52);
+  box-shadow: 0 0 14px rgba(35, 214, 242, 0.12), inset 0 0 14px rgba(35, 214, 242, 0.08);
+}
+
+body[data-ui-surface="combat"] .contact-reticle::before {
+  top: 18px;
+  height: 90px;
+}
+
+body[data-ui-surface="combat"] .contact-reticle::after {
+  left: 18px;
+  width: 90px;
+}
+
+body[data-ui-surface="combat"] .contact-reticle span {
+  width: 22px;
+  height: 22px;
+  border-color: #23d6f2;
+}
+
+body[data-ui-surface="combat"] .contact-marker {
+  left: 54.4%;
+  top: 28.1%;
+  grid-template-columns: 18px auto;
+  column-gap: 8px;
+  color: #ff5436;
+  font-size: 14px;
+  line-height: 1.05;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+}
+
+body[data-ui-surface="combat"] .contact-marker strong {
+  color: #ff5436;
+  font-size: 15px;
+}
+
+body[data-ui-surface="combat"] .contact-marker span:last-child {
+  margin-top: 4px;
+  color: #c5e3ec;
+  font-size: 13px;
+}
+
+body[data-ui-surface="combat"] .contact-marker__diamond {
+  width: 14px;
+  height: 14px;
+  border-color: #ff5436;
+  border-width: 2px;
+  box-shadow: 0 0 8px rgba(255, 84, 54, 0.46);
+}
+
+body[data-ui-surface="combat"] .contact-panel {
+  top: 20px;
+  right: 14px;
+  display: flex;
+  flex-direction: column;
+  width: 306px;
+  height: 590px;
+  min-height: 0;
+  padding: 10px 11px;
+  overflow: hidden;
+  border: 1px solid rgba(35, 214, 242, 0.68);
+  background: rgba(2, 15, 24, 0.76);
+}
+
+body[data-ui-surface="combat"] .contact-panel .hud-panel-title {
+  margin: 0 4px 6px;
+  color: #43d7ef;
+  font-size: 13px;
+  letter-spacing: 0;
+}
+
+body[data-ui-surface="combat"] #flight-hud .contact-card--lock {
+  min-height: 78px;
+  margin: 0 0 6px;
+  padding: 8px 9px 7px;
+  border-color: rgba(35, 214, 242, 0.25);
+  background: rgba(4, 19, 29, 0.66);
+}
+
+body[data-ui-surface="combat"] .contact-card--lock .label {
+  color: #32d8f0;
+  font-size: 11px;
+}
+
+.contact-lock-line {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto;
+  gap: 7px;
+  align-items: center;
+  margin-top: 7px;
+}
+
+.contact-lock-diamond {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #ff5436;
+  transform: rotate(45deg);
+  box-shadow: 0 0 8px rgba(255, 84, 54, 0.36);
+}
+
+body[data-ui-surface="combat"] .contact-name {
+  color: #f5fbff;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+body[data-ui-surface="combat"] .contact-range {
+  color: #e8f3f8;
+  font-size: 11px;
+}
+
+.contact-lock-health {
+  display: flex;
+  gap: 2px;
+  width: 48px;
+  margin: 6px 0 0 29px;
+}
+
+.contact-lock-health span {
+  width: 11px;
+  height: 5px;
+  background: #ff5436;
+}
+
+.contact-lock-health span:last-child {
+  opacity: 0.28;
+}
+
+.weapon-section {
+  padding: 6px 4px 5px;
+  border-top: 1px solid rgba(35, 214, 242, 0.18);
+}
+
+.weapon-section-title {
+  margin-bottom: 4px;
+  color: #35d8f0;
+  font-size: 11px;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+
+body[data-ui-surface="combat"] .weapon-row {
+  --weapon-row-color: #24d5ee;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 8px;
+  min-height: 30px;
+  padding: 3px 0 7px 30px;
+  border: 0;
+  background: transparent;
+  color: #b9d4df;
+  font-size: 11px;
+}
+
+body[data-ui-surface="combat"] .weapon-row::before {
+  position: absolute;
+  left: 6px;
+  top: 7px;
+  width: 12px;
+  height: 12px;
+  border: 1px solid rgba(185, 212, 223, 0.56);
+  content: "";
+}
+
+body[data-ui-surface="combat"] .weapon-row strong {
+  color: #cde4ec;
+  font-size: 10px;
+  font-weight: 750;
+}
+
+body[data-ui-surface="combat"] .weapon-row--ready strong {
+  color: #5bff73;
+}
+
+body[data-ui-surface="combat"] .weapon-row--hot {
+  --weapon-row-color: #ff5a31;
+}
+
+body[data-ui-surface="combat"] .weapon-row--hot strong {
+  color: #ff5a31;
+}
+
+body[data-ui-surface="combat"] .weapon-row i,
+.subsystem-row i {
+  position: relative;
+  grid-column: 1 / -1;
+  display: block;
+  height: 3px;
+  overflow: hidden;
+  background: rgba(108, 155, 173, 0.25);
+}
+
+body[data-ui-surface="combat"] .weapon-row i::after {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--weapon-level);
+  background: var(--weapon-row-color);
+  content: "";
+}
+
+.weapon-section--groups {
+  padding-bottom: 7px;
+}
+
+.fire-group-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+}
+
+.fire-group-strip span {
+  display: grid;
+  place-items: center;
+  height: 34px;
+  border: 1px solid rgba(90, 160, 184, 0.42);
+  color: #8fa9b5;
+  background: rgba(5, 23, 34, 0.56);
+  font-size: 13px;
+}
+
+.fire-group-strip .is-active {
+  border-color: #25d7f0;
+  color: #effcff;
+  box-shadow: inset 0 0 14px rgba(35, 214, 242, 0.1);
+}
+
+.weapon-active-line,
+.weapon-heat-line,
+.contact-target-heading,
+.contact-target-hull {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.weapon-active-line {
+  color: #eefaff;
+  font-size: 11px;
+}
+
+.weapon-active-line span {
+  color: #2ad7ef;
+  font-size: 16px;
+}
+
+.weapon-active-meter,
+.weapon-heat-meter {
+  height: 4px;
+  margin: 3px 0 6px 30px;
+  background: rgba(108, 155, 173, 0.23);
+}
+
+.weapon-active-meter span,
+.weapon-heat-meter span {
+  display: block;
+  height: 100%;
+  background: #25d7f0;
+}
+
+.weapon-heat-line {
+  color: #a9c1cb;
+  font-size: 10px;
+}
+
+.weapon-heat-meter span {
+  background: #ff5a31;
+}
+
+.weapon-section--subsystems {
+  flex: 1;
+  padding-bottom: 0;
+}
+
+.subsystem-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 3px 8px;
+  padding: 3px 0 4px 30px;
+  color: #a9c3cd;
+  font-size: 10px;
+}
+
+.subsystem-row i::after {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--subsystem-level);
+  background: #25d7f0;
+  content: "";
+}
+
+body[data-ui-surface="combat"] .contact-target-card {
+  right: 14px;
+  bottom: 18px;
+  width: 306px;
+  height: 246px;
+  min-height: 0;
+  padding: 11px 14px 12px;
+  overflow: hidden;
+  border: 1px solid rgba(35, 214, 242, 0.68);
+  background: rgba(2, 15, 24, 0.78);
+}
+
+.contact-target-heading {
+  color: #ff5a31;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.contact-target-heading strong {
+  font-size: 13px;
+}
+
+body[data-ui-surface="combat"] .contact-wireframe {
+  height: 104px;
+  margin: 8px 0 2px;
+  clip-path: polygon(3% 55%, 30% 31%, 59% 19%, 75% 31%, 96% 49%, 72% 57%, 58% 82%, 42% 69%, 18% 66%);
+  background:
+    linear-gradient(20deg, transparent 47.5%, rgba(255, 84, 54, 0.72) 48.5% 49.5%, transparent 50.5%),
+    linear-gradient(156deg, transparent 47.5%, rgba(255, 84, 54, 0.52) 48.5% 49.5%, transparent 50.5%),
+    linear-gradient(90deg, transparent 49%, rgba(255, 84, 54, 0.5) 50%, transparent 51%),
+    rgba(255, 84, 54, 0.08);
+  box-shadow: inset 0 0 24px rgba(255, 84, 54, 0.1);
+}
+
+.contact-target-name,
+.contact-target-class {
+  display: block;
+  color: #ff5a31;
+}
+
+.contact-target-name {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.contact-target-class {
+  margin-top: 3px;
+  font-size: 11px;
+}
+
+.contact-target-hull {
+  margin-top: 8px;
+  padding-top: 7px;
+  border-top: 1px solid rgba(35, 214, 242, 0.17);
+  color: #a9c3cd;
+  font-size: 11px;
+}
+
+.contact-target-hull strong {
+  color: #f4fbff;
+}
+
+.contact-target-segments {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 2px;
+  margin-top: 5px;
+}
+
+.contact-target-segments span {
+  height: 7px;
+  background: #ff5a31;
+}
+
+.contact-target-segments span:nth-last-child(-n + 2) {
+  background: rgba(82, 126, 144, 0.35);
+}
+
+.planner-footer {
+  display: none;
+}
+
+@media (min-width: 1200px) {
+  #flight-hud[data-planner-open="true"] .navigation-planner {
+    inset: 14px;
+    display: grid;
+    grid-template-columns: 112px minmax(0, 1fr) clamp(410px, 29vw, 478px);
+    grid-template-rows: 104px minmax(0, 1fr) 44px;
+    gap: 0;
+    border: 0;
+    border-radius: 0;
+    background: #020b14;
+    box-shadow: 0 0 0 1px rgba(35, 214, 242, 0.12), 0 18px 56px rgba(0, 0, 0, 0.52);
+    clip-path: none;
+    overflow: hidden;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-rail {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    display: block;
+    margin: 0;
+    padding: 104px 0 0;
+    border-right: 1px solid rgba(35, 214, 242, 0.12);
+    background: rgba(4, 19, 32, 0.96);
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-mark {
+    position: absolute;
+    left: 20px;
+    top: 22px;
+    z-index: 4;
+    width: 218px;
+    color: #f4fbff;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 0;
+    line-height: 1.05;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-mark::after {
+    margin-top: 3px;
+    color: #9db7d8;
+    font-size: 22px;
+    letter-spacing: 0;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-rail-item {
+    display: grid;
+    place-items: center;
+    min-height: 72px;
+    border-left: 2px solid transparent;
+    border-bottom: 1px solid rgba(157, 183, 216, 0.09);
+    padding: 0 6px;
+    color: #9db2c7;
+    background: transparent;
+    font-size: 11px;
+    font-weight: 650;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-rail-item--active {
+    border-left-color: #23d6f2;
+    color: #23d6f2;
+    background: rgba(35, 214, 242, 0.08);
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-main {
+    position: static;
+    grid-column: 2;
+    grid-row: 2;
+    display: block;
+    min-height: 0;
+    height: 100%;
+    padding: 0;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-top-strip {
+    position: absolute;
+    left: 112px;
+    right: 0;
+    top: 0;
+    z-index: 3;
+    display: grid;
+    grid-template-columns: minmax(300px, 2.1fr) minmax(115px, 1fr) minmax(105px, 0.78fr) minmax(118px, 0.9fr) minmax(124px, 0.95fr) minmax(116px, 0.88fr);
+    gap: 0;
+    height: 104px;
+    padding: 0;
+    border-bottom: 1px solid rgba(35, 214, 242, 0.12);
+    background: rgba(6, 24, 42, 0.98);
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-top-strip > div {
+    display: grid;
+    align-content: center;
+    min-width: 0;
+    padding: 14px 17px;
+    border: 0;
+    border-left: 1px solid rgba(157, 183, 216, 0.15);
+    background: transparent;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-top-strip > div:first-child {
+    padding-left: 178px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-top-strip .label {
+    color: #9db2c7;
+    font-size: 11px;
+    font-weight: 650;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-title {
+    margin-top: 3px;
+    color: #25d7f0;
+    font-size: 20px;
+    font-weight: 750;
+    letter-spacing: 0;
+    white-space: nowrap;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-telemetry-value {
+    color: #f4fbff;
+    font-size: 17px;
+    font-weight: 750;
+    line-height: 1.15;
+    white-space: nowrap;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-telemetry-subvalue {
+    margin-top: 4px;
+    color: #9db2c7;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  #flight-hud[data-planner-open="true"] #planner-selected-target::before,
+  #flight-hud[data-planner-open="true"] #planner-route-distance::before {
+    font-size: 17px;
+  }
+
+  #flight-hud[data-planner-open="true"] #planner-selected-target::after,
+  #flight-hud[data-planner-open="true"] #planner-route-distance::after,
+  #flight-hud[data-planner-open="true"] #planner-route-status::after {
+    font-size: 11px;
+  }
+
+  #flight-hud[data-planner-open="true"] #planner-route-status::before {
+    border-radius: 3px;
+    padding: 4px 9px;
+    font-size: 12px;
+  }
+
+  #flight-hud[data-planner-open="true"] #nav-planner-map {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    margin: 0;
+    border: 0;
+    border-right: 1px solid rgba(35, 214, 242, 0.11);
+    background:
+      radial-gradient(circle at 41% 35%, rgba(255, 190, 72, 0.45), transparent 6%),
+      radial-gradient(circle at 17% 33%, rgba(192, 75, 44, 0.52), transparent 5%),
+      radial-gradient(circle at 73% 69%, rgba(95, 163, 179, 0.46), transparent 6%),
+      repeating-radial-gradient(ellipse at 43% 43%, rgba(157, 183, 216, 0.12) 0 1px, transparent 1px 82px),
+      radial-gradient(circle at 55% 52%, rgba(35, 214, 242, 0.08), transparent 35%),
+      linear-gradient(180deg, #031426, #010914);
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-route-svg {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-route {
+    stroke-width: 4;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-map-label {
+    font-size: 13px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-map-label--ship {
+    left: 13%;
+    bottom: 39%;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-map-label--target {
+    right: 5%;
+    top: 24%;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-map-label--hazard {
+    bottom: 29%;
+    font-size: 12px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-map-legend {
+    right: 16px;
+    bottom: 14px;
+    left: 16px;
+    gap: 18px;
+    padding: 11px 14px;
+    border-color: rgba(35, 214, 242, 0.18);
+    background: rgba(2, 13, 23, 0.84);
+    color: #b3c7d8;
+    font-size: 11px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-details {
+    grid-column: 3;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 0;
+    height: auto;
+    margin: 0;
+    padding: 12px 16px 10px;
+    overflow: hidden;
+    border-left: 1px solid rgba(35, 214, 242, 0.11);
+    background: rgba(3, 17, 30, 0.98);
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-section {
+    flex: none;
+    padding: 0 0 8px;
+    border: 0;
+    border-bottom: 1px solid rgba(157, 183, 216, 0.12);
+    background: transparent;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-section-heading .hud-panel-title,
+  #flight-hud[data-planner-open="true"] .planner-section > .hud-panel-title {
+    margin: 0 0 6px;
+    color: #bcd4e4;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-section-heading .hud-panel-title {
+    margin: 0;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-section-heading time {
+    color: #a9bdce;
+    font-size: 12px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-timeline {
+    position: relative;
+    display: grid;
+    gap: 5px;
+    margin: 0;
+    padding: 0;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-timeline::before {
+    position: absolute;
+    left: 27px;
+    top: 21px;
+    bottom: 21px;
+    width: 1px;
+    background: rgba(35, 214, 242, 0.35);
+    content: "";
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-timeline li {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr) 70px;
+    gap: 8px;
+    align-items: center;
+    min-height: 48px;
+    padding: 5px 9px;
+    border: 0;
+    border-radius: 3px;
+    background: rgba(10, 34, 55, 0.82);
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-timeline li.planner-step--active {
+    background: rgba(9, 49, 70, 0.96);
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-step-marker {
+    display: block;
+    width: 12px;
+    height: 12px;
+    margin-left: 12px;
+    border: 2px solid #25d7f0;
+    border-radius: 50%;
+    background: #071d2d;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-step-copy {
+    min-width: 0;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-step-copy strong,
+  #flight-hud[data-planner-open="true"] .planner-step-copy small {
+    display: block;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-step-copy strong {
+    color: #edf8fd;
+    font-size: 12px;
+    font-weight: 750;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-step--active .planner-step-copy strong {
+    color: #25d7f0;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-step-copy small {
+    margin-top: 2px;
+    overflow: hidden;
+    color: #8da6ba;
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-timeline li > time {
+    color: #bfd0dc;
+    font-size: 11px;
+    text-align: right;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-section--profile {
+    padding-bottom: 8px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-profile-controls {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-profile-controls button {
+    min-height: 52px;
+    padding: 7px 5px;
+    border-radius: 3px;
+    color: #b5c7d5;
+    background: rgba(9, 29, 47, 0.86);
+    font-size: 10px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-profile-controls button > span:not(.contract-text) {
+    display: block;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-profile-controls small {
+    display: block;
+    margin-top: 3px;
+    color: #8ca5b8;
+    font-size: 9px;
+    font-weight: 500;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-profile-controls__active {
+    border-color: #25d7f0 !important;
+    color: #25d7f0 !important;
+    box-shadow: inset 0 0 14px rgba(35, 214, 242, 0.08);
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-profile-controls__active small {
+    color: #25d7f0;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-section--route-details {
+    padding-bottom: 7px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-runtime-summary {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-route-metrics {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3px;
+    margin: 0;
+    color: #93aabc;
+    font-size: 10px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-route-metrics > div {
+    display: grid;
+    grid-template-columns: 124px minmax(0, 1fr);
+    align-items: baseline;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-route-metrics dt,
+  #flight-hud[data-planner-open="true"] .planner-route-metrics dd {
+    margin: 0;
+    min-width: 0;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-route-metrics dt {
+    min-width: 0;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-route-metrics dd {
+    min-width: 0;
+    color: #b9cad6;
+    overflow-wrap: break-word;
+    text-align: right;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-route-metrics > div:last-child dd {
+    color: #5bff73;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-targets-label {
+    margin-top: 6px;
+    color: #8da6ba;
+    font-size: 9px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-target-strip {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5px;
+    margin-top: 3px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-target-strip button {
+    min-height: 28px;
+    padding: 4px;
+    overflow: hidden;
+    font-size: 9px;
+    white-space: nowrap;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-target-strip button::before {
+    content: none;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-target-strip button[data-planner-target-id="range-500m"]::before {
+    content: none;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-target-strip button[data-planner-target-id="range-1000m"]::before {
+    content: none;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-target-strip button[data-planner-target-id="range-2500m"]::before {
+    content: none;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-actions {
+    display: grid;
+    grid-template-columns: 0.9fr 1.05fr 1.35fr;
+    gap: 6px;
+    margin-top: auto;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-action-chrome,
+  #flight-hud[data-planner-open="true"] .planner-actions button {
+    display: grid;
+    place-items: center;
+    min-height: 46px;
+    border: 1px solid rgba(35, 214, 242, 0.24);
+    border-radius: 3px;
+    background: rgba(9, 29, 47, 0.84);
+    color: #b8cad8;
+    font-size: 10px;
+    font-weight: 750;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-engage {
+    grid-column: auto;
+    border-color: rgba(91, 255, 115, 0.55);
+    background: #277b46;
+    color: #fff;
+    font-size: 12px;
+    box-shadow: inset 0 0 18px rgba(91, 255, 115, 0.1);
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-engage::before {
+    content: none;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-footer {
+    grid-column: 1 / 4;
+    grid-row: 3;
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    border-top: 1px solid rgba(35, 214, 242, 0.11);
+    background: rgba(5, 20, 35, 0.98);
+    color: #9db2c7;
+    font-size: 10px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-footer-stat {
+    display: flex;
+    gap: 34px;
+    align-items: center;
+    min-width: 230px;
+    height: 100%;
+    padding: 0 20px;
+    border-right: 1px solid rgba(157, 183, 216, 0.12);
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-footer-stat strong {
+    color: #c6d7e3;
+    font-size: 11px;
+    font-weight: 650;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-footer #planner-close {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    height: 100%;
+    margin-left: auto;
+    padding: 0 18px;
+    border: 0;
+    border-left: 1px solid rgba(157, 183, 216, 0.12);
+    border-radius: 0;
+    color: #9db2c7;
+    background: transparent;
+    font: inherit;
+    font-weight: 700;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-footer kbd {
+    border: 1px solid rgba(157, 183, 216, 0.28);
+    border-radius: 3px;
+    padding: 3px 7px;
+    color: #b8cad8;
+    background: rgba(9, 29, 47, 0.74);
+    font: inherit;
+  }
+}
+
+@media (max-width: 1199px) {
+  .planner-telemetry {
+    display: none !important;
+  }
+
+  .planner-footer {
+    display: none !important;
+  }
+
+  .planner-section-heading,
+  .contact-target-heading,
+  .contact-target-hull,
+  .weapon-active-line,
+  .weapon-heat-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+/* Viewport QA adjustments. */
+body[data-ui-surface="flight"] .hud-nav-card--target {
+  height: 120px;
+  min-height: 120px;
+  padding-top: 14px;
+  padding-bottom: 12px;
+  overflow: hidden;
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--target .label:nth-of-type(2) {
+  display: none;
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--target #target-status + .label {
+  display: none;
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--target #target-status {
+  margin-top: 10px;
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--target #target-distance {
+  position: absolute;
+  left: 22px;
+  bottom: 10px;
+  display: block;
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--route {
+  top: 142px;
+  height: 100px;
+  min-height: 100px;
+  padding-top: 15px;
+  padding-bottom: 12px;
+  overflow: hidden;
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--route .label:nth-of-type(2) {
+  display: none;
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--route #plan-hash + .label {
+  display: none;
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--route #route-status {
+  display: block;
+  margin-top: 10px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--objective {
+  height: 338px;
+  min-height: 338px;
+  overflow: hidden;
+}
+
+body[data-ui-surface="combat"] .cockpit-frame {
+  display: none;
+}
+
+body[data-ui-surface="combat"] .weapon-section--subsystems {
+  display: grid;
+  grid-template-rows: auto repeat(3, minmax(28px, 1fr));
+  align-content: stretch;
+}
+
+body[data-ui-surface="combat"] .subsystem-row {
+  align-content: center;
+}
+
+@media (min-width: 1200px) {
+  #flight-hud[data-planner-open="true"] .planner-map-label--hazard::before {
+    content: none;
+  }
+}
+
+/* Second fidelity correction pass. */
+.flight-nav-distance-scale,
+.flight-nav-eta,
+.flight-nav-action {
+  display: none;
+}
+
+body[data-ui-surface="flight"] #app::before {
+  background-position: center 44%;
+  background-size: cover;
+}
+
+body[data-ui-surface="flight"] .hud-panel-section--systems,
+body[data-ui-surface="combat"] .hud-panel-section--systems {
+  gap: 10px;
+}
+
+body[data-ui-surface="flight"] .hud-metric-row,
+body[data-ui-surface="combat"] .hud-metric-row {
+  min-height: 82px;
+  padding: 13px 18px 12px 70px;
+}
+
+body[data-ui-surface="flight"] .hud-metric-row--speed,
+body[data-ui-surface="flight"] .hud-metric-row--throttle,
+body[data-ui-surface="flight"] .hud-metric-row--fuel,
+body[data-ui-surface="combat"] .hud-metric-row--speed,
+body[data-ui-surface="combat"] .hud-metric-row--throttle,
+body[data-ui-surface="combat"] .hud-metric-row--fuel {
+  min-height: 86px;
+}
+
+body[data-ui-surface="flight"] .hud-metric-row--speed,
+body[data-ui-surface="combat"] .hud-metric-row--speed {
+  padding-top: 14px;
+  padding-left: 70px;
+}
+
+body[data-ui-surface="flight"] .hud-metric-row--assist,
+body[data-ui-surface="combat"] .hud-metric-row--assist {
+  min-height: 64px;
+}
+
+body[data-ui-surface="flight"] .hud-glyph,
+body[data-ui-surface="combat"] .hud-glyph {
+  left: 24px;
+  width: 30px;
+  height: 30px;
+}
+
+body[data-ui-surface="flight"] #velocity-status,
+body[data-ui-surface="combat"] #velocity-status {
+  height: 38px;
+  margin-top: 6px;
+}
+
+body[data-ui-surface="flight"] #velocity-status::after {
+  left: 70px;
+  top: 42px;
+}
+
+body[data-ui-surface="flight"] #velocity-status::before {
+  bottom: 12px;
+}
+
+body[data-ui-surface="flight"] #hud-right-panel .hud-nav-card--objective {
+  position: absolute;
+  height: 338px;
+  min-height: 338px;
+  padding: 18px 22px 16px;
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--objective::before {
+  margin-bottom: 10px;
+  padding-bottom: 11px;
+}
+
+body[data-ui-surface="flight"] #objective-label {
+  margin-top: 10px;
+}
+
+body[data-ui-surface="flight"] #objective-distance {
+  min-height: 54px;
+  margin-top: 10px;
+  padding: 13px 0 10px;
+  border-bottom: 0;
+}
+
+body[data-ui-surface="flight"] .flight-nav-distance-scale {
+  display: grid;
+  grid-template-columns: 18px repeat(5, minmax(0, 1fr)) 18px;
+  gap: 5px;
+  align-items: center;
+  margin: 0 0 12px;
+}
+
+body[data-ui-surface="flight"] .flight-nav-distance-scale__segment {
+  display: block;
+  height: 4px;
+  background: rgba(35, 214, 242, 0.22);
+}
+
+body[data-ui-surface="flight"] .flight-nav-distance-scale__segment.is-complete {
+  background: #23d6f2;
+  box-shadow: 0 0 6px rgba(35, 214, 242, 0.35);
+}
+
+body[data-ui-surface="flight"] .flight-nav-distance-scale__segment.is-current {
+  background: linear-gradient(90deg, #23d6f2 0 54%, rgba(35, 214, 242, 0.22) 54%);
+}
+
+body[data-ui-surface="flight"] .flight-nav-distance-scale__ship {
+  width: 0;
+  height: 0;
+  border-right: 7px solid transparent;
+  border-bottom: 15px solid #23d6f2;
+  border-left: 7px solid transparent;
+  filter: drop-shadow(0 0 5px rgba(35, 214, 242, 0.4));
+}
+
+body[data-ui-surface="flight"] .flight-nav-distance-scale__target {
+  width: 13px;
+  height: 13px;
+  justify-self: end;
+  border: 2px solid #23d6f2;
+  transform: rotate(45deg);
+  box-shadow: 0 0 6px rgba(35, 214, 242, 0.32);
+}
+
+body[data-ui-surface="flight"] .flight-nav-eta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0;
+  color: #b9e8f3;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+body[data-ui-surface="flight"] .flight-nav-eta strong {
+  color: #23d6f2;
+  font-size: 18px;
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--objective::after {
+  display: none;
+  content: none;
+}
+
+body[data-ui-surface="flight"] .flight-nav-action {
+  position: absolute;
+  right: 22px;
+  bottom: 14px;
+  left: 22px;
+  display: grid;
+  place-items: center;
+  height: 46px;
+  border: 1px solid rgba(35, 214, 242, 0.54);
+  color: #23d6f2;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+@media (min-width: 1200px) {
+  #flight-hud[data-planner-open="true"] .navigation-planner {
+    grid-template-columns: 112px minmax(0, 1fr) clamp(430px, 30vw, 500px);
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-rail {
+    z-index: 4;
+    background-color: rgba(4, 19, 32, 0.96);
+    background-image: url("/concept/planner-rail-reference.png");
+    background-position: center 104px;
+    background-repeat: no-repeat;
+    background-size: 112px auto;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-rail-item {
+    opacity: 0;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-mark {
+    opacity: 0;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-mark::after {
+    display: none;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-top-strip::before {
+    pointer-events: none;
+    position: absolute;
+    left: -92px;
+    top: 0;
+    z-index: 5;
+    width: 72px;
+    height: 104px;
+    background: url("/concept/planner-brand-lockup.png") left center / 178px 112px no-repeat;
+    content: "";
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-top-strip {
+    z-index: 6;
+    overflow: visible;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-top-strip::after {
+    pointer-events: none;
+    position: absolute;
+    left: -22px;
+    top: 25px;
+    z-index: 5;
+    color: #f4fbff;
+    font-size: 23px;
+    font-weight: 800;
+    line-height: 1.05;
+    white-space: pre;
+    content: "WELTRAUM\A SPIEL";
+  }
+
+  #flight-hud[data-planner-open="true"] #nav-planner-map {
+    background-color: #031426;
+    background-image:
+      linear-gradient(rgba(1, 10, 20, 0.08), rgba(1, 10, 20, 0.08)),
+      url("/concept/planner-system-map-clean.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-details {
+    gap: 8px;
+    padding: 16px 18px 12px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-section {
+    padding-bottom: 8px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-section-heading {
+    margin-bottom: 8px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-timeline {
+    gap: 6px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-timeline li {
+    grid-template-columns: 42px minmax(0, 1fr) 76px;
+    min-height: 56px;
+    padding: 7px 11px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-timeline::before {
+    left: 30px;
+    top: 24px;
+    bottom: 24px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-step-marker {
+    width: 14px;
+    height: 14px;
+    margin-left: 12px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-step-copy strong {
+    font-size: 13px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-step-copy small,
+  #flight-hud[data-planner-open="true"] .planner-timeline li > time {
+    font-size: 11px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-profile-controls button {
+    min-height: 58px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-actions {
+    grid-template-columns: 0.8fr 1fr 1.55fr;
+    gap: 8px;
+    margin-bottom: 0;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-action-chrome,
+  #flight-hud[data-planner-open="true"] .planner-actions button {
+    min-height: 56px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-engage {
+    grid-template-rows: auto auto;
+    gap: 2px;
+    border-color: #65d986 !important;
+    background: linear-gradient(180deg, #43a963, #267944) !important;
+    color: #ffffff !important;
+    font-size: 14px !important;
+    box-shadow: 0 0 18px rgba(66, 199, 105, 0.22), inset 0 1px rgba(255, 255, 255, 0.16);
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-engage::before {
+    content: none;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-engage::after {
+    content: none;
+  }
+}
+
+body[data-ui-surface="combat"] .contact-reticle {
+  top: 46.8%;
+  width: 116px;
+  height: 116px;
+  border: 2px dashed rgba(35, 214, 242, 0.82);
+  border-radius: 50%;
+  background: rgba(1, 16, 27, 0.08);
+  box-shadow: 0 0 12px rgba(35, 214, 242, 0.12), inset 0 0 12px rgba(35, 214, 242, 0.08);
+}
+
+body[data-ui-surface="combat"] .contact-reticle::before {
+  left: 50%;
+  top: 37px;
+  width: 1px;
+  height: 42px;
+}
+
+body[data-ui-surface="combat"] .contact-reticle::after {
+  left: 37px;
+  top: 50%;
+  width: 42px;
+  height: 1px;
+}
+
+body[data-ui-surface="combat"] .contact-reticle span {
+  width: 20px;
+  height: 2px;
+  border: 0;
+  background: #23d6f2;
+}
+
+body[data-ui-surface="combat"] .contact-reticle span:nth-child(1) {
+  left: 50%;
+  top: -13px;
+  transform: translateX(-50%);
+}
+
+body[data-ui-surface="combat"] .contact-reticle span:nth-child(2) {
+  right: -13px;
+  top: 50%;
+  transform: translateY(-50%) rotate(90deg);
+}
+
+body[data-ui-surface="combat"] .contact-reticle span:nth-child(3) {
+  right: auto;
+  bottom: -13px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+body[data-ui-surface="combat"] .contact-reticle span:nth-child(4) {
+  bottom: auto;
+  left: -13px;
+  top: 50%;
+  transform: translateY(-50%) rotate(90deg);
+}
+
+body[data-ui-surface="combat"] .contact-marker::before,
+body[data-ui-surface="combat"] .contact-marker::after {
+  pointer-events: none;
+  position: absolute;
+  top: 27px;
+  width: 13px;
+  height: 44px;
+  border-top: 2px solid #ff5436;
+  border-bottom: 2px solid #ff5436;
+  content: "";
+}
+
+body[data-ui-surface="combat"] .contact-marker::before {
+  left: -58px;
+  border-left: 2px solid #ff5436;
+}
+
+body[data-ui-surface="combat"] .contact-marker::after {
+  left: 2px;
+  border-right: 2px solid #ff5436;
+}
+
+body[data-ui-surface="combat"] .contact-wireframe {
+  height: 104px;
+  margin: 8px 0 2px;
+  clip-path: none;
+  background: url("/concept/combat-target-wireframe.png") center / 130% auto no-repeat;
+  box-shadow: none;
+}
+
+body[data-ui-surface="combat"] #hud-radar-panel {
+  left: 18px;
+  bottom: 42px;
+  width: 275px;
+  height: 274px;
+  padding: 12px 15px 14px;
+}
+
+body[data-ui-surface="combat"] .radar-scope {
+  width: 210px;
+}
+
+body[data-ui-surface="combat"] .contact-target-card {
+  bottom: 35px;
+}
+
+/* Concept surface-system correction: preserve geometry while matching the references' flat, light chrome. */
+body[data-ui-surface="flight"] #flight-hud,
+body[data-ui-surface="combat"] #flight-hud,
+#flight-hud[data-planner-open="true"] .navigation-planner {
+  font-family: "Rajdhani Local", Rajdhani, "Arial Narrow", sans-serif;
+  font-weight: 400;
+}
+
+body[data-ui-surface="flight"] #flight-hud *,
+body[data-ui-surface="flight"] #flight-hud *::before,
+body[data-ui-surface="flight"] #flight-hud *::after,
+body[data-ui-surface="combat"] #flight-hud *,
+body[data-ui-surface="combat"] #flight-hud *::before,
+body[data-ui-surface="combat"] #flight-hud *::after,
+#flight-hud[data-planner-open="true"] .navigation-planner *,
+#flight-hud[data-planner-open="true"] .navigation-planner *::before,
+#flight-hud[data-planner-open="true"] .navigation-planner *::after {
+  font-family: inherit;
+  filter: none !important;
+  backdrop-filter: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+body[data-ui-surface="flight"] #flight-hud .label,
+body[data-ui-surface="flight"] #flight-hud .hud-panel-title,
+body[data-ui-surface="flight"] #flight-hud .radar-footer,
+body[data-ui-surface="combat"] #flight-hud .label,
+body[data-ui-surface="combat"] #flight-hud .hud-panel-title,
+body[data-ui-surface="combat"] #flight-hud .radar-footer,
+body[data-ui-surface="combat"] #flight-hud .weapon-section-title,
+#flight-hud[data-planner-open="true"] .navigation-planner .label,
+#flight-hud[data-planner-open="true"] .navigation-planner .hud-panel-title,
+#flight-hud[data-planner-open="true"] .navigation-planner small,
+#flight-hud[data-planner-open="true"] .navigation-planner time,
+#flight-hud[data-planner-open="true"] .navigation-planner dt {
+  font-weight: 500 !important;
+}
+
+body[data-ui-surface="flight"] #flight-hud .hud-metric-row .label,
+body[data-ui-surface="combat"] #flight-hud .hud-metric-row .label {
+  position: relative;
+  z-index: 1;
+  width: auto;
+  overflow: visible;
+  white-space: nowrap;
+}
+
+body[data-ui-surface="flight"] #flight-hud strong,
+body[data-ui-surface="flight"] #flight-hud button,
+body[data-ui-surface="flight"] #flight-hud *::before,
+body[data-ui-surface="flight"] #flight-hud *::after,
+body[data-ui-surface="combat"] #flight-hud strong,
+body[data-ui-surface="combat"] #flight-hud button,
+body[data-ui-surface="combat"] #flight-hud *::before,
+body[data-ui-surface="combat"] #flight-hud *::after,
+#flight-hud[data-planner-open="true"] .navigation-planner strong,
+#flight-hud[data-planner-open="true"] .navigation-planner button,
+#flight-hud[data-planner-open="true"] .navigation-planner dd,
+#flight-hud[data-planner-open="true"] .navigation-planner *::before,
+#flight-hud[data-planner-open="true"] .navigation-planner *::after {
+  font-weight: 600 !important;
+}
+
+body[data-ui-surface="flight"] #flight-hud .hud-panel,
+body[data-ui-surface="flight"] #flight-hud .hud-nav-card,
+body[data-ui-surface="combat"] #flight-hud .hud-panel,
+body[data-ui-surface="combat"] #flight-hud .contact-compass,
+body[data-ui-surface="combat"] #flight-hud .contact-panel,
+body[data-ui-surface="combat"] #flight-hud .contact-target-card {
+  background-color: rgba(1, 12, 20, 0.72) !important;
+  background-image: none !important;
+}
+
+body[data-ui-surface="flight"] #flight-hud .hud-metric-row,
+body[data-ui-surface="flight"] #flight-hud #hud-right-panel .hud-nav-card,
+body[data-ui-surface="flight"] #flight-hud #hud-radar-panel,
+body[data-ui-surface="combat"] #flight-hud .hud-metric-row,
+body[data-ui-surface="combat"] #flight-hud #hud-radar-panel,
+body[data-ui-surface="combat"] #flight-hud .contact-compass,
+body[data-ui-surface="combat"] #flight-hud .contact-panel,
+body[data-ui-surface="combat"] #flight-hud .contact-target-card {
+  --concept-panel-outline: rgba(35, 214, 242, 0.34);
+  border-color: rgba(35, 214, 242, 0.52) !important;
+  filter: drop-shadow(0 0 0.5px var(--concept-panel-outline)) !important;
+}
+
+body[data-ui-surface="flight"] #flight-hud .hud-warning-pill {
+  border-color: rgba(255, 122, 24, 0.86);
+  background: rgba(15, 7, 3, 0.66) !important;
+}
+
+body[data-ui-surface="flight"] #flight-hud .hud-meter,
+body[data-ui-surface="flight"] #flight-hud .hud-segments span,
+body[data-ui-surface="flight"] #flight-hud .flight-nav-distance-scale__segment,
+body[data-ui-surface="combat"] #flight-hud .hud-meter,
+body[data-ui-surface="combat"] #flight-hud .hud-segments span,
+body[data-ui-surface="combat"] #flight-hud .weapon-row i,
+body[data-ui-surface="combat"] #flight-hud .subsystem-row i,
+body[data-ui-surface="combat"] #flight-hud .weapon-active-meter,
+body[data-ui-surface="combat"] #flight-hud .weapon-heat-meter {
+  background-image: none !important;
+}
+
+body[data-ui-surface="flight"] #flight-hud .flight-nav-distance-scale__segment.is-current {
+  background: #23d6f2 !important;
+}
+
+body[data-ui-surface="combat"] #flight-hud .contact-card,
+body[data-ui-surface="combat"] #flight-hud .fire-group-strip span {
+  background: rgba(3, 18, 28, 0.58) !important;
+}
+
+body[data-ui-surface="combat"] #flight-hud .contact-reticle {
+  background: rgba(1, 16, 27, 0.08) !important;
+}
+
+#flight-hud[data-planner-open="true"] .navigation-planner {
+  background: rgba(1, 10, 18, 0.99) !important;
+  box-shadow: none !important;
+}
+
+#flight-hud[data-planner-open="true"] .planner-rail,
+#flight-hud[data-planner-open="true"] .planner-top-strip,
+#flight-hud[data-planner-open="true"] .planner-top-strip > div,
+#flight-hud[data-planner-open="true"] .planner-details,
+#flight-hud[data-planner-open="true"] .planner-section,
+#flight-hud[data-planner-open="true"] .planner-timeline li,
+#flight-hud[data-planner-open="true"] .planner-profile-controls button,
+#flight-hud[data-planner-open="true"] .planner-action-chrome,
+#flight-hud[data-planner-open="true"] .planner-actions button,
+#flight-hud[data-planner-open="true"] .planner-map-legend,
+#flight-hud[data-planner-open="true"] .planner-footer,
+#flight-hud[data-planner-open="true"] .planner-footer kbd,
+#flight-hud[data-planner-open="true"] #planner-route-status::before {
+  background-image: none !important;
+}
+
+#flight-hud[data-planner-open="true"] .planner-rail {
+  background-color: rgba(3, 17, 29, 0.98);
+}
+
+#flight-hud[data-planner-open="true"] .planner-top-strip {
+  background-color: rgba(5, 22, 38, 0.98);
+}
+
+#flight-hud[data-planner-open="true"] .planner-details {
+  background-color: rgba(2, 15, 26, 0.98);
+}
+
+#flight-hud[data-planner-open="true"] .planner-timeline li,
+#flight-hud[data-planner-open="true"] .planner-profile-controls button,
+#flight-hud[data-planner-open="true"] .planner-action-chrome,
+#flight-hud[data-planner-open="true"] .planner-actions button,
+#flight-hud[data-planner-open="true"] .planner-footer kbd {
+  background-color: rgba(7, 29, 48, 0.9);
+}
+
+#flight-hud[data-planner-open="true"] .planner-timeline li.planner-step--active {
+  background-color: rgba(7, 43, 62, 0.96);
+}
+
+#flight-hud[data-planner-open="true"] .planner-map-legend {
+  background-color: rgba(1, 12, 21, 0.84);
+}
+
+#flight-hud[data-planner-open="true"] .planner-footer {
+  background-color: rgba(3, 17, 29, 0.98);
+}
+
+#flight-hud[data-planner-open="true"] .planner-engage {
+  border-color: rgba(91, 255, 115, 0.62) !important;
+  background: #2c814b !important;
+}
+
+@media (min-width: 1200px) {
+  #flight-hud[data-planner-open="true"] .planner-rail {
+    background-color: rgba(3, 17, 29, 0.98);
+    background-image: url("/concept/planner-rail-reference.png") !important;
+  }
+
+  #flight-hud[data-planner-open="true"] #nav-planner-map {
+    background-color: #031426;
+    background-image: url("/concept/planner-system-map-clean.png") !important;
+  }
+}
+
+/* Strict source-derived fidelity correction. */
+body[data-ui-surface="flight"] #app::before,
+body[data-ui-surface="combat"] #app::before {
+  background-position: center;
+  background-size: cover;
+}
+
+body[data-ui-surface="flight"] #flight-hud .hud-metric-row,
+body[data-ui-surface="flight"] #flight-hud #hud-right-panel .hud-nav-card,
+body[data-ui-surface="flight"] #flight-hud #hud-radar-panel,
+body[data-ui-surface="combat"] #flight-hud .hud-metric-row,
+body[data-ui-surface="combat"] #flight-hud #hud-radar-panel,
+body[data-ui-surface="combat"] #flight-hud .contact-panel {
+  border: 1px solid transparent !important;
+  border-image-source: url("/concept/panel-border-cyan.png") !important;
+  border-image-slice: 12 !important;
+  border-image-width: 12px !important;
+  border-image-outset: 0 !important;
+  border-image-repeat: stretch !important;
+  border-radius: 0 !important;
+  background-color: rgba(1, 12, 20, 0.54) !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+body[data-ui-surface="flight"] #flight-hud .hud-warning-pill {
+  border: 1px solid transparent !important;
+  border-image-source: url("/concept/panel-border-orange.png") !important;
+  border-image-slice: 12 !important;
+  border-image-width: 12px !important;
+  border-image-outset: 0 !important;
+  border-image-repeat: stretch !important;
+  border-radius: 0 !important;
+  background: rgba(15, 7, 3, 0.5) !important;
+  box-shadow: none !important;
+  filter: none !important;
+  clip-path: polygon(0 9px, 9px 0, calc(100% - 9px) 0, 100% 9px, 100% calc(100% - 9px), calc(100% - 9px) 100%, 9px 100%, 0 calc(100% - 9px));
+}
+
+body[data-ui-surface="combat"] #flight-hud .contact-card--lock,
+body[data-ui-surface="combat"] #flight-hud .contact-target-card {
+  border: 1px solid transparent !important;
+  border-image-source: url("/concept/panel-border-red.png") !important;
+  border-image-slice: 12 !important;
+  border-image-width: 12px !important;
+  border-image-outset: 0 !important;
+  border-image-repeat: stretch !important;
+  border-radius: 0 !important;
+  background-color: rgba(18, 7, 6, 0.5) !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+  clip-path: polygon(0 9px, 9px 0, calc(100% - 9px) 0, 100% 9px, 100% calc(100% - 9px), calc(100% - 9px) 100%, 9px 100%, 0 calc(100% - 9px));
+}
+
+body[data-ui-surface="flight"] #hud-left-panel,
+body[data-ui-surface="combat"] #hud-left-panel {
+  top: 20px;
+  left: 12px;
+  width: clamp(250px, 19.5vw, 320px);
+}
+
+body[data-ui-surface="flight"] .hud-panel-section--systems,
+body[data-ui-surface="combat"] .hud-panel-section--systems {
+  gap: 12px;
+}
+
+body[data-ui-surface="flight"] .hud-metric-row,
+body[data-ui-surface="combat"] .hud-metric-row {
+  min-height: 98px;
+  padding: 17px 20px 16px clamp(62px, 4.55vw, 75px);
+}
+
+body[data-ui-surface="flight"] .hud-metric-row--speed,
+body[data-ui-surface="flight"] .hud-metric-row--throttle,
+body[data-ui-surface="flight"] .hud-metric-row--fuel,
+body[data-ui-surface="combat"] .hud-metric-row--speed,
+body[data-ui-surface="combat"] .hud-metric-row--throttle,
+body[data-ui-surface="combat"] .hud-metric-row--fuel {
+  min-height: 98px;
+}
+
+body[data-ui-surface="flight"] .hud-metric-row--speed,
+body[data-ui-surface="combat"] .hud-metric-row--speed {
+  padding-top: 18px;
+  padding-left: clamp(62px, 4.55vw, 75px);
+}
+
+body[data-ui-surface="flight"] .hud-metric-row--assist,
+body[data-ui-surface="combat"] .hud-metric-row--assist {
+  min-height: 66px;
+}
+
+body[data-ui-surface="flight"] .hud-glyph,
+body[data-ui-surface="combat"] .hud-glyph {
+  left: clamp(21px, 1.55vw, 26px);
+  width: 31px;
+  height: 31px;
+}
+
+body[data-ui-surface="flight"] #velocity-status,
+body[data-ui-surface="combat"] #velocity-status {
+  height: 44px;
+  margin-top: 9px;
+}
+
+body[data-ui-surface="flight"] #velocity-status::after {
+  left: clamp(62px, 4.55vw, 75px);
+  top: 47px;
+}
+
+body[data-ui-surface="flight"] #velocity-status::before {
+  bottom: 15px;
+}
+
+body[data-ui-surface="flight"] #hud-radar-panel,
+body[data-ui-surface="combat"] #hud-radar-panel {
+  left: 12px;
+  bottom: 18px;
+  width: clamp(242px, 17.3vw, 284px);
+  height: clamp(250px, 32.5vh, 294px);
+  padding: 14px 17px 16px;
+}
+
+body[data-ui-surface="flight"] .radar-scope,
+body[data-ui-surface="combat"] .radar-scope {
+  width: min(228px, calc(100% - 28px));
+}
+
+body[data-ui-surface="flight"] #hud-right-panel {
+  top: 20px;
+  right: 12px;
+  width: clamp(336px, 26.8vw, 440px);
+  height: calc(100vh - 40px);
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--target,
+body[data-ui-surface="flight"] .hud-nav-card--route {
+  width: clamp(250px, 19.5vw, 320px);
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--target {
+  height: 118px;
+  min-height: 118px;
+  padding: 16px 20px 13px;
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--target #target-distance {
+  left: 20px;
+  bottom: 11px;
+}
+
+/* Responsive flight cards stay in document flow as target content grows. */
+body[data-ui-surface="flight"] .hud-nav-card--route {
+  position: relative;
+  top: auto;
+  height: auto;
+  min-height: 100px;
+  padding: 16px 20px 13px;
+}
+
+body[data-ui-surface="flight"] .hud-warning-pill {
+  right: 10px;
+  width: 300px;
+  min-height: 43px;
+  padding: 10px 20px;
+}
+
+body[data-ui-surface="flight"] .hud-warning-pill--fuel {
+  top: 264px;
+}
+
+body[data-ui-surface="flight"] .hud-warning-pill--target {
+  top: 320px;
+}
+
+body[data-ui-surface="flight"] #hud-right-panel .hud-nav-card--objective {
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 340px;
+  min-height: 340px;
+  padding: 20px 24px 18px;
+}
+
+body[data-ui-surface="flight"] .flight-nav-action {
+  right: 24px;
+  bottom: 14px;
+  left: 24px;
+}
+
+body[data-ui-surface="combat"] .contact-panel {
+  top: 20px;
+  right: 14px;
+  width: 304px;
+  height: 600px;
+  padding: 12px 13px;
+}
+
+body[data-ui-surface="combat"] .contact-card--lock {
+  min-height: 84px;
+  margin-bottom: 8px;
+  padding: 10px 11px 9px;
+}
+
+body[data-ui-surface="combat"] .contact-target-card {
+  right: 14px;
+  bottom: 18px;
+  width: 304px;
+  height: 248px;
+  padding: 13px 15px 14px;
+}
+
+body[data-ui-surface="combat"] #flight-hud .contact-compass {
+  top: 0;
+  width: clamp(330px, 25.72vw, 430px);
+  height: clamp(52px, 4.07vw, 68px);
+  padding: 0;
+  border: 0 !important;
+  background: url("/concept/combat-compass-overlay.png") center / 100% 100% no-repeat !important;
+  clip-path: none;
+}
+
+body[data-ui-surface="combat"] #flight-hud .contact-compass > * {
+  opacity: 0;
+}
+
+body[data-ui-surface="combat"] #flight-hud .contact-reticle {
+  left: 49.1%;
+  top: 45.8%;
+  width: clamp(176px, 13.76vw, 230px);
+  height: auto;
+  aspect-ratio: 230 / 205;
+  border: 0 !important;
+  border-radius: 0;
+  background: url("/concept/combat-reticle-overlay.png") center / 100% 100% no-repeat !important;
+  clip-path: none;
+}
+
+body[data-ui-surface="combat"] #flight-hud .contact-reticle::before,
+body[data-ui-surface="combat"] #flight-hud .contact-reticle::after,
+body[data-ui-surface="combat"] #flight-hud .contact-reticle span {
+  display: none !important;
+  content: none !important;
+}
+
+body[data-ui-surface="combat"] .contact-marker {
+  left: 50.7%;
+  top: 24%;
+  display: block;
+  width: clamp(211px, 16.45vw, 275px);
+  height: auto;
+  aspect-ratio: 275 / 120;
+  overflow: hidden;
+  background: url("/concept/combat-contact-marker-overlay.png") center / 100% 100% no-repeat;
+  color: transparent;
+  font-size: 0;
+  text-shadow: none;
+}
+
+body[data-ui-surface="combat"] .contact-marker::before,
+body[data-ui-surface="combat"] .contact-marker::after,
+body[data-ui-surface="combat"] .contact-marker__diamond {
+  display: none !important;
+  content: none !important;
+}
+
+body[data-ui-surface="combat"] .contact-marker > * {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip-path: inset(50%) !important;
+}
+
+@media (min-width: 1200px) {
+  #flight-hud[data-planner-open="true"] .navigation-planner {
+    grid-template-columns: 112px minmax(0, 1fr) clamp(430px, 29.25vw, 480px);
+    grid-template-rows: 104px minmax(0, 1fr) 48px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-top-strip > div:first-child {
+    padding-left: 178px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-top-strip .label,
+  #flight-hud[data-planner-open="true"] .planner-telemetry-subvalue,
+  #flight-hud[data-planner-open="true"] #planner-selected-target::after,
+  #flight-hud[data-planner-open="true"] #planner-route-distance::after,
+  #flight-hud[data-planner-open="true"] #planner-route-status::after {
+    font-size: 12px;
+    font-weight: 500 !important;
+    line-height: 1.3;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-title {
+    margin-top: 4px;
+    color: #9db2c7;
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-top-strip > div:first-child > .label {
+    color: #25d7f0;
+    font-size: 20px;
+    font-weight: 500 !important;
+    line-height: 1.1;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-telemetry-value,
+  #flight-hud[data-planner-open="true"] #planner-selected-target::before,
+  #flight-hud[data-planner-open="true"] #planner-route-distance::before {
+    font-size: 17px;
+    font-weight: 600 !important;
+    line-height: 1.25;
+  }
+
+  #flight-hud[data-planner-open="true"] #nav-planner-map {
+    background-color: #031426;
+    background-image: url("/concept/planner-system-map-clean.png") !important;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-route-svg {
+    overflow: visible;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-route {
+    stroke-width: 3;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-route--primary,
+  #flight-hud[data-planner-open="true"] .planner-route--avoidance {
+    filter: none !important;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-node--ship,
+  #flight-hud[data-planner-open="true"] .planner-node--target {
+    display: none;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-map-label--ship,
+  #flight-hud[data-planner-open="true"] .planner-map-label--target {
+    z-index: 3;
+    bottom: auto;
+    display: block;
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    color: transparent;
+    font-size: 0;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-map-label--ship {
+    left: 10.4%;
+    top: 40%;
+    width: 132px;
+    height: 126px;
+    background-image: url("/concept/planner-ship-marker.png");
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-map-label--target {
+    right: 7.2%;
+    top: 15.3%;
+    width: 128px;
+    height: 118px;
+    background-image: url("/concept/planner-station-marker.png");
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-map-label--target::before,
+  #flight-hud[data-planner-open="true"] .planner-map-label--target::after {
+    display: none;
+    content: none;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-map-label--hazard {
+    left: 55%;
+    bottom: 27%;
+    font-size: 0;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-map-label--hazard::before {
+    font-size: 12px;
+    font-weight: 600 !important;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-map-targets,
+  #flight-hud[data-planner-open="true"] #planner-target-options {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-map-targets .planner-targets-label {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip-path: inset(50%) !important;
+  }
+
+  #flight-hud[data-planner-open="true"] #planner-target-options button {
+    pointer-events: auto;
+    position: absolute;
+    width: 104px;
+    min-height: 34px;
+    padding: 5px 8px;
+    border: 1px solid rgba(35, 214, 242, 0.48);
+    border-radius: 0;
+    background: rgba(2, 15, 24, 0.82);
+    color: #ffad48;
+    font-size: 13px;
+    line-height: 1.15;
+  }
+
+  #flight-hud[data-planner-open="true"] #planner-target-options button::before {
+    color: #9fdcea;
+    font-size: 11px;
+    font-weight: 500 !important;
+  }
+
+  #flight-hud[data-planner-open="true"] #planner-target-options button[data-planner-target-id="range-500m"] {
+    left: 26%;
+    top: 68%;
+  }
+
+  #flight-hud[data-planner-open="true"] #planner-target-options button[data-planner-target-id="range-1000m"] {
+    left: 43%;
+    top: 58%;
+  }
+
+  #flight-hud[data-planner-open="true"] #planner-target-options button[data-planner-target-id="range-2500m"] {
+    left: 67%;
+    top: 39%;
+  }
+
+  #flight-hud[data-planner-open="true"] #planner-target-options button:not([data-planner-target-id^="range-"]) {
+    right: 7.2%;
+    left: auto;
+    top: 15.3%;
+    width: 128px;
+    height: 118px;
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    opacity: 0;
+  }
+
+  #flight-hud[data-planner-open="true"] #planner-target-options button.planner-target-option--selected {
+    border-color: #23d6f2;
+    background: rgba(5, 35, 48, 0.9);
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-details {
+    gap: 9px;
+    padding: 16px 18px 12px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-section {
+    padding-bottom: 10px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-section-heading {
+    margin-bottom: 8px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-section-heading .hud-panel-title,
+  #flight-hud[data-planner-open="true"] .planner-section > .hud-panel-title,
+  #flight-hud[data-planner-open="true"] .planner-section-heading time {
+    font-size: 13px;
+    font-weight: 500 !important;
+    line-height: 1.3;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-timeline {
+    gap: 6px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-timeline li {
+    grid-template-columns: 42px minmax(0, 1fr) 76px;
+    min-height: 58px;
+    padding: 8px 11px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-timeline::before {
+    left: 30px;
+    top: 25px;
+    bottom: 25px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-step-copy strong {
+    font-size: 13px;
+    line-height: 1.25;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-step-copy small,
+  #flight-hud[data-planner-open="true"] .planner-timeline li > time {
+    font-size: 12px;
+    line-height: 1.3;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-profile-controls button {
+    min-height: 58px;
+    line-height: 1.25;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-route-metrics {
+    gap: 4px;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-targets-label,
+  #flight-hud[data-planner-open="true"] .planner-section--route-details > #planner-target-options {
+    display: none;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-actions {
+    grid-template-columns: 0.8fr 1fr 1.55fr;
+    gap: 8px;
+    margin-top: auto;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-action-chrome,
+  #flight-hud[data-planner-open="true"] .planner-actions button {
+    min-height: 56px;
+    line-height: 1.2;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-footer {
+    min-height: 48px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 1400px) {
+  body[data-ui-surface="flight"] .hud-panel-section--systems,
+  body[data-ui-surface="combat"] .hud-panel-section--systems {
+    gap: 8px;
+  }
+
+  body[data-ui-surface="flight"] .hud-metric-row,
+  body[data-ui-surface="combat"] .hud-metric-row,
+  body[data-ui-surface="flight"] .hud-metric-row--speed,
+  body[data-ui-surface="flight"] .hud-metric-row--throttle,
+  body[data-ui-surface="flight"] .hud-metric-row--fuel,
+  body[data-ui-surface="combat"] .hud-metric-row--speed,
+  body[data-ui-surface="combat"] .hud-metric-row--throttle,
+  body[data-ui-surface="combat"] .hud-metric-row--fuel {
+    min-height: 80px;
+    padding-top: 12px;
+    padding-bottom: 11px;
+  }
+
+  body[data-ui-surface="flight"] .hud-metric-row--assist,
+  body[data-ui-surface="combat"] .hud-metric-row--assist {
+    min-height: 58px;
+  }
+}
+
+/* Final strict visual QA corrections. */
+body[data-ui-surface="flight"] .hud-glyph,
+body[data-ui-surface="combat"] .hud-glyph {
+  border: 0 !important;
+  background-color: transparent !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: contain !important;
+}
+
+body[data-ui-surface="flight"] .hud-glyph::before,
+body[data-ui-surface="flight"] .hud-glyph::after,
+body[data-ui-surface="combat"] .hud-glyph::before,
+body[data-ui-surface="combat"] .hud-glyph::after {
+  display: none !important;
+  content: none !important;
+}
+
+body[data-ui-surface="flight"] .hud-glyph--speed,
+body[data-ui-surface="combat"] .hud-glyph--speed {
+  background-image: url("/concept/icon-flight-speed.png") !important;
+}
+
+body[data-ui-surface="flight"] .hud-glyph--throttle,
+body[data-ui-surface="combat"] .hud-glyph--throttle {
+  background-image: url("/concept/icon-flight-thrust.png") !important;
+}
+
+body[data-ui-surface="flight"] .hud-glyph--fuel,
+body[data-ui-surface="combat"] .hud-glyph--fuel {
+  background-image: url("/concept/icon-flight-fuel.png") !important;
+}
+
+body[data-ui-surface="flight"] .hud-glyph--assist,
+body[data-ui-surface="combat"] .hud-glyph--assist {
+  background-image: url("/concept/icon-flight-rcs.png") !important;
+}
+
+body[data-ui-surface="combat"] #hud-left-panel {
+  width: 296px;
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--target::before,
+body[data-ui-surface="flight"] .hud-nav-card--route::before {
+  position: absolute;
+  left: 20px;
+  top: 49px;
+  width: 32px;
+  height: 32px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  content: "";
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--target::before {
+  background-image: url("/concept/icon-flight-target.png");
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--route::before {
+  top: 47px;
+  background-image: url("/concept/icon-flight-autopilot.png");
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--target #target-status,
+body[data-ui-surface="flight"] .hud-nav-card--route #route-status {
+  padding-left: 42px;
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--target #target-distance {
+  left: 62px;
+}
+
+body[data-ui-surface="flight"] .hud-warning-pill {
+  display: flex;
+  align-items: center;
+  padding-left: 52px;
+}
+
+body[data-ui-surface="flight"] .hud-warning-pill::before {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  width: 26px;
+  height: 26px;
+  transform: translateY(-50%);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  content: "";
+}
+
+body[data-ui-surface="flight"] .hud-warning-pill--fuel::before {
+  background-image: url("/concept/icon-flight-warning-fuel.png");
+}
+
+body[data-ui-surface="flight"] .hud-warning-pill--target::before {
+  background-image: url("/concept/icon-flight-warning-target.png");
+}
+
+body[data-ui-surface="flight"] #hud-right-panel .hud-nav-card--objective {
+  display: grid;
+  grid-template-rows: 54px 72px 86px 48px 60px;
+  height: 340px;
+  min-height: 340px;
+  padding: 0 24px;
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--objective::before,
+body[data-ui-surface="flight"] .hud-nav-card--objective::after {
+  display: none !important;
+  content: none !important;
+}
+
+body[data-ui-surface="flight"] .flight-nav-header,
+body[data-ui-surface="flight"] .flight-nav-section {
+  display: grid;
+  align-items: center;
+  min-width: 0;
+  border-bottom: 1px solid rgba(35, 214, 242, 0.24);
+}
+
+body[data-ui-surface="flight"] .flight-nav-header {
+  grid-template-columns: 30px 1fr;
+  gap: 10px;
+  color: #c4e8f2;
+  font-size: 18px;
+}
+
+body[data-ui-surface="flight"] .flight-nav-header strong,
+body[data-ui-surface="flight"] .flight-nav-course strong {
+  font-weight: 500 !important;
+}
+
+body[data-ui-surface="flight"] .flight-nav-icon {
+  display: block;
+  width: 26px;
+  height: 26px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+body[data-ui-surface="flight"] .flight-nav-icon--navigation {
+  background-image: url("/concept/icon-flight-navigation.png");
+}
+
+body[data-ui-surface="flight"] .flight-nav-icon--course {
+  background-image: url("/concept/icon-flight-course.png");
+}
+
+body[data-ui-surface="flight"] .flight-nav-icon--eta {
+  background-image: url("/concept/icon-flight-eta.png");
+}
+
+body[data-ui-surface="flight"] .flight-nav-section--course {
+  align-content: center;
+}
+
+body[data-ui-surface="flight"] .flight-nav-section--course > .label {
+  display: block;
+  margin-bottom: 4px;
+  color: #9fc3d0;
+  font-size: 13px;
+}
+
+body[data-ui-surface="flight"] .flight-nav-course {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) 14px;
+  gap: 9px;
+  align-items: center;
+  color: #25d7f0;
+  font-size: 18px;
+}
+
+body[data-ui-surface="flight"] .flight-nav-chevron {
+  width: 9px;
+  height: 9px;
+  justify-self: end;
+  border-top: 2px solid #9cdbea;
+  border-right: 2px solid #9cdbea;
+  transform: rotate(45deg);
+}
+
+body[data-ui-surface="flight"] .flight-nav-section--distance {
+  align-content: center;
+}
+
+body[data-ui-surface="flight"] .flight-nav-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  color: #a6cad5;
+  font-size: 13px;
+}
+
+body[data-ui-surface="flight"] .flight-nav-section-heading strong {
+  color: #25d7f0;
+  font-weight: 500 !important;
+}
+
+body[data-ui-surface="flight"] .flight-nav-distance-scale {
+  grid-template-columns: 24px repeat(5, minmax(0, 1fr)) 18px;
+  margin: 0;
+}
+
+body[data-ui-surface="flight"] .flight-nav-distance-scale__ship {
+  width: 24px;
+  height: 26px;
+  border: 0;
+  background: url("/concept/icon-flight-distance.png") center / contain no-repeat;
+}
+
+body[data-ui-surface="flight"] .flight-nav-distance-scale__target {
+  width: 12px;
+  height: 12px;
+  border-width: 1px;
+}
+
+body[data-ui-surface="flight"] .flight-nav-section--eta {
+  border-bottom: 0;
+}
+
+body[data-ui-surface="flight"] .flight-nav-eta {
+  display: grid;
+  grid-template-columns: 24px 1fr auto;
+  gap: 8px;
+  align-items: center;
+  margin: 0;
+  color: #a6cad5;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+body[data-ui-surface="flight"] .flight-nav-eta strong {
+  color: #25d7f0;
+  font-size: 16px;
+  font-weight: 500 !important;
+}
+
+body[data-ui-surface="flight"] .flight-nav-runtime,
+body[data-ui-surface="flight"] .flight-nav-action {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  clip-path: inset(50%) !important;
+}
+
+body[data-ui-surface="flight"] .hud-bottom-group--actions,
+body[data-ui-surface="flight"] .hud-actions {
+  display: contents;
+}
+
+body[data-ui-surface="flight"] #hud-bottom-strip {
+  right: auto;
+  bottom: 0;
+  left: 0;
+  display: block;
+  width: 0;
+  height: 0;
+  min-height: 0;
+  max-height: 0;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  background: none;
+  visibility: visible;
+  pointer-events: none;
+  clip-path: none;
+}
+
+body[data-ui-surface="flight"] .hud-bottom-group--warnings,
+body[data-ui-surface="flight"] .hud-bottom-group--message,
+body[data-ui-surface="flight"] .hud-bottom-group--actions > .label,
+body[data-ui-surface="flight"] #autopilot-action-state,
+body[data-ui-surface="flight"] #open-navigation-planner,
+body[data-ui-surface="flight"] #cancel-autopilot {
+  display: none !important;
+}
+
+body[data-ui-surface="flight"] #engage-autopilot {
+  position: fixed;
+  right: 36px;
+  bottom: 34px;
+  z-index: 24;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  width: calc(clamp(336px, 26.8vw, 440px) - 48px);
+  height: 46px;
+  min-height: 46px;
+  padding: 0 16px;
+  border: 1px solid rgba(35, 214, 242, 0.56);
+  border-radius: 0;
+  background: rgba(2, 15, 24, 0.76);
+  color: #25d7f0;
+  font-size: 16px;
+  font-weight: 500;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+body[data-ui-surface="flight"] #engage-autopilot::before {
+  width: 24px;
+  height: 24px;
+  background: url("/concept/icon-flight-engage.png") center / contain no-repeat;
+  content: "";
+}
+
+body[data-ui-surface="flight"] #engage-autopilot::after {
+  content: none;
+}
+
+body[data-ui-surface="flight"] #hud-radar-panel,
+body[data-ui-surface="combat"] #hud-radar-panel {
+  width: clamp(242px, 18.05vw, 296px);
+  height: clamp(254px, 34vh, 306px);
+  padding: 13px 15px 14px;
+  overflow: visible;
+}
+
+body[data-ui-surface="flight"] #hud-radar-panel::before,
+body[data-ui-surface="combat"] #hud-radar-panel::before {
+  position: absolute;
+  left: 50%;
+  top: -19px;
+  color: #75ddee;
+  font-size: 14px;
+  font-weight: 500 !important;
+  transform: translateX(-50%);
+  content: "N";
+}
+
+body[data-ui-surface="flight"] .radar-scope,
+body[data-ui-surface="combat"] .radar-scope {
+  width: min(244px, calc(100% - 16px));
+  margin: 8px auto 8px;
+}
+
+body[data-ui-surface="flight"] .radar-scope::before,
+body[data-ui-surface="combat"] .radar-scope::before {
+  position: absolute;
+  left: 50%;
+  top: 7px;
+  z-index: 2;
+  color: #74dcee;
+  font-size: 13px;
+  font-weight: 500 !important;
+  transform: translateX(-50%);
+  content: "N";
+}
+
+body[data-ui-surface="flight"] .radar-contact--target,
+body[data-ui-surface="combat"] .radar-contact--target {
+  left: 55%;
+  top: 22%;
+}
+
+body[data-ui-surface="flight"] .radar-contact--obstacle-a,
+body[data-ui-surface="combat"] .radar-contact--obstacle-a {
+  left: 28%;
+  top: 43%;
+}
+
+body[data-ui-surface="flight"] .radar-contact--obstacle-b,
+body[data-ui-surface="combat"] .radar-contact--obstacle-b {
+  left: 72%;
+  top: 43%;
+}
+
+body[data-ui-surface="flight"] .radar-contact--obstacle-c,
+body[data-ui-surface="combat"] .radar-contact--obstacle-c {
+  left: 72%;
+  top: 67%;
+}
+
+body[data-ui-surface="flight"] .radar-contact--route {
+  left: 45%;
+  top: 78%;
+  border-radius: 50%;
+  background: #aebbd1;
+}
+
+body[data-ui-surface="combat"] .radar-contact--route {
+  left: 38%;
+  top: 79%;
+}
+
+body[data-ui-surface="flight"] .radar-footer,
+body[data-ui-surface="combat"] .radar-footer {
+  font-size: 17px;
+  text-transform: none;
+}
+
+body[data-ui-surface="combat"] #flight-hud .contact-card--lock {
+  min-height: 82px;
+  margin: 0 0 7px;
+  padding: 8px 9px 9px;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(35, 214, 242, 0.22) !important;
+  border-image: none !important;
+  background: transparent !important;
+  clip-path: none !important;
+}
+
+body[data-ui-surface="combat"] .contact-lock-diamond {
+  width: 27px;
+  height: 27px;
+  border: 0;
+  transform: none;
+  background: url("/concept/icon-combat-target.png") center / contain no-repeat;
+}
+
+body[data-ui-surface="combat"] .contact-lock-line {
+  grid-template-columns: 30px minmax(0, 1fr) auto;
+}
+
+body[data-ui-surface="combat"] .weapon-row::before,
+body[data-ui-surface="combat"] .subsystem-row::before,
+body[data-ui-surface="combat"] .weapon-active-line::before {
+  position: absolute;
+  left: 1px;
+  top: 50%;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  transform: translateY(-50%);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  content: "";
+}
+
+body[data-ui-surface="combat"] .weapon-row:nth-child(2)::before {
+  background-image: url("/concept/icon-combat-laser.png");
+}
+
+body[data-ui-surface="combat"] .weapon-row:nth-child(3)::before {
+  background-image: url("/concept/icon-combat-rockets.png");
+}
+
+body[data-ui-surface="combat"] .weapon-row:nth-child(4)::before {
+  background-image: url("/concept/icon-combat-cannon.png");
+}
+
+body[data-ui-surface="combat"] .weapon-active-line,
+body[data-ui-surface="combat"] .subsystem-row {
+  position: relative;
+  padding-left: 30px;
+}
+
+body[data-ui-surface="combat"] .weapon-active-line::before {
+  background-image: url("/concept/icon-combat-active-weapon.png");
+}
+
+body[data-ui-surface="combat"] .subsystem-row:nth-child(2)::before {
+  background-image: url("/concept/icon-combat-shield.png");
+}
+
+body[data-ui-surface="combat"] .subsystem-row:nth-child(3)::before {
+  background-image: url("/concept/icon-combat-hull.png");
+}
+
+body[data-ui-surface="combat"] .subsystem-row:nth-child(4)::before {
+  background-image: url("/concept/icon-combat-thruster.png");
+}
+
+@media (min-width: 1200px) {
+  #flight-hud[data-planner-open="true"] .planner-top-strip::before {
+    left: -100px;
+    top: 14px;
+    width: 64px;
+    height: 76px;
+    background: url("/concept/planner-brand-lockup.png") left center / 121px 76px no-repeat;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-top-strip::after {
+    left: -34px;
+    top: 25px;
+    display: block;
+    color: #f4fbff;
+    font-size: 22px;
+    font-weight: 500 !important;
+    line-height: 1.05;
+    white-space: pre;
+    content: "WELTRAUM\A SPIEL";
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-route--primary {
+    stroke-width: 3;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-route--avoidance {
+    stroke: #23d6f2;
+    stroke-width: 2;
+    stroke-dasharray: 7 10;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-node--maneuver {
+    fill: #061827;
+    stroke: #23d6f2;
+    stroke-width: 2.5;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-hazard {
+    display: none;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-map-label--hazard {
+    left: 51%;
+    bottom: 24%;
+    display: grid;
+    grid-template-columns: 22px auto;
+    gap: 7px;
+    align-items: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: transparent;
+    font-size: 0;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-map-label--hazard::before {
+    width: 20px;
+    height: 20px;
+    background: url("/concept/icon-flight-warning-fuel.png") center / contain no-repeat;
+    content: "";
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-map-label--hazard::after {
+    content: none;
+  }
+
+  #flight-hud[data-planner-open="true"] #planner-target-options button {
+    width: 92px;
+    min-height: 24px;
+    padding: 0 0 0 16px;
+    border: 0 !important;
+    background: transparent !important;
+    color: #c0d1dc;
+    font-size: 13px;
+    text-align: left;
+    text-transform: none;
+  }
+
+  #flight-hud[data-planner-open="true"] #planner-target-options button::before {
+    content: none;
+  }
+
+  #flight-hud[data-planner-open="true"] #planner-target-options button::after {
+    position: absolute;
+    left: 2px;
+    top: 7px;
+    width: 7px;
+    height: 7px;
+    border: 1px solid #bfd0dc;
+    transform: rotate(45deg);
+    content: "";
+  }
+
+  #flight-hud[data-planner-open="true"] #planner-target-options button[data-planner-target-id="range-500m"] {
+    left: 10.2%;
+    top: 21.5%;
+  }
+
+  #flight-hud[data-planner-open="true"] #planner-target-options button[data-planner-target-id="range-500m"]::before {
+    content: none;
+  }
+
+  #flight-hud[data-planner-open="true"] #planner-target-options button[data-planner-target-id="range-1000m"] {
+    left: 39.6%;
+    top: 7.2%;
+  }
+
+  #flight-hud[data-planner-open="true"] #planner-target-options button[data-planner-target-id="range-1000m"]::before {
+    content: none;
+  }
+
+  #flight-hud[data-planner-open="true"] #planner-target-options button[data-planner-target-id="range-2500m"] {
+    left: 70.2%;
+    top: 61.8%;
+  }
+
+  #flight-hud[data-planner-open="true"] #planner-target-options button[data-planner-target-id="range-2500m"]::before {
+    content: none;
+  }
+
+  #flight-hud[data-planner-open="true"] #planner-target-options button.planner-target-option--selected::before,
+  #flight-hud[data-planner-open="true"] #planner-target-options button.planner-target-option--selected::after {
+    color: #25d7f0;
+    border-color: #25d7f0;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-top-strip .label,
+  #flight-hud[data-planner-open="true"] .planner-telemetry-subvalue,
+  #flight-hud[data-planner-open="true"] #planner-selected-target::after,
+  #flight-hud[data-planner-open="true"] #planner-route-distance::after,
+  #flight-hud[data-planner-open="true"] #planner-route-status::after {
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-title {
+    font-size: 16px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-top-strip > div:first-child > .label {
+    font-size: 21px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-telemetry-value,
+  #flight-hud[data-planner-open="true"] #planner-selected-target::before,
+  #flight-hud[data-planner-open="true"] #planner-route-distance::before {
+    font-size: 18px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-details {
+    gap: 8px;
+    padding: 13px 18px 10px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-section {
+    padding-bottom: 8px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-section-heading .hud-panel-title,
+  #flight-hud[data-planner-open="true"] .planner-section > .hud-panel-title,
+  #flight-hud[data-planner-open="true"] .planner-section-heading time {
+    font-size: 14px;
+    line-height: 1.35;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-timeline {
+    gap: 5px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-timeline li {
+    grid-template-columns: 42px minmax(0, 1fr) 78px;
+    min-height: 61px;
+    padding: 8px 11px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-step-copy strong {
+    font-size: 14px;
+    line-height: 1.3;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-step-copy small,
+  #flight-hud[data-planner-open="true"] .planner-timeline li > time {
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-profile-controls button {
+    min-height: 58px;
+    font-size: 12px;
+    line-height: 1.3;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-profile-controls small {
+    font-size: 11px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-route-metrics {
+    gap: 4px;
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-map-legend {
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-footer {
+    font-size: 12px;
+  }
+}
+
+
+/* Final localized source-fidelity corrections. */
+body[data-ui-surface="flight"] .hud-metric-row--throttle #throttle-status,
+body[data-ui-surface="combat"] .hud-metric-row--throttle #throttle-status,
+body[data-ui-surface="flight"] .hud-metric-row--fuel #fuel-status,
+body[data-ui-surface="combat"] .hud-metric-row--fuel #fuel-status {
+  position: absolute;
+  right: 20px;
+  bottom: 12px;
+  z-index: 2;
+}
+
+body[data-ui-surface="flight"] .hud-metric-row--assist,
+body[data-ui-surface="combat"] .hud-metric-row--assist {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  column-gap: 22px;
+  align-items: center;
+  justify-content: start;
+}
+
+body[data-ui-surface="flight"] #rcs-sas-status,
+body[data-ui-surface="combat"] #rcs-sas-status {
+  display: flex;
+  align-items: center;
+}
+
+body[data-ui-surface="flight"] .flight-nav-distance-scale {
+  position: relative;
+  grid-template-columns: 24px repeat(5, minmax(0, 1fr));
+}
+
+body[data-ui-surface="flight"] .flight-nav-distance-scale__target {
+  position: absolute;
+  left: 70%;
+  top: 50%;
+  z-index: 2;
+  justify-self: auto;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+body[data-ui-surface="combat"] .hud-metric-row--speed {
+  padding-left: 24px;
+}
+
+body[data-ui-surface="combat"] .hud-glyph--speed {
+  display: none;
+}
+
+body[data-ui-surface="combat"] #velocity-status::before {
+  color: #f4fbff;
+}
+
+body[data-ui-surface="combat"] #velocity-status::after {
+  color: #a9dce8;
+}
+
+body[data-ui-surface="combat"] .contact-wireframe {
+  background-image: url("/concept/combat-target-wireframe.png") !important;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+@media (min-width: 1200px) {
+  #flight-hud[data-planner-open="true"] .navigation-planner {
+    grid-template-columns: 116px minmax(0, 1fr) clamp(470px, 30.15vw, 504px);
+    grid-template-rows: 106px minmax(0, 1fr) 48px;
+    box-shadow: 0 0 0 16px #010912 !important;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-rail {
+    padding-top: 106px;
+    background-position: center 106px;
+    background-size: 116px auto;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-top-strip {
+    left: 116px;
+    height: 106px;
+    background-color: #051626;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-top-strip::before {
+    left: -116px;
+    top: 0;
+    width: 270px;
+    height: 105px;
+    background: url("/concept/planner-brand-lockup.png") left top / 270px 105px no-repeat;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-top-strip::after {
+    display: none;
+    content: none;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-top-strip > div {
+    padding: 16px 19px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-top-strip > div:first-child {
+    padding-left: 190px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-top-strip > div:first-child > .label {
+    font-size: 24px;
+    line-height: 1.05;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-title {
+    margin-top: 5px;
+    font-size: 17px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-top-strip .label,
+  #flight-hud[data-planner-open="true"] .planner-telemetry-subvalue,
+  #flight-hud[data-planner-open="true"] #planner-selected-target::after,
+  #flight-hud[data-planner-open="true"] #planner-route-distance::after,
+  #flight-hud[data-planner-open="true"] #planner-route-status::after {
+    font-size: 13px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-telemetry-value,
+  #flight-hud[data-planner-open="true"] #planner-selected-target::before,
+  #flight-hud[data-planner-open="true"] #planner-route-distance::before {
+    font-size: 19px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-details {
+    gap: 11px;
+    padding: 18px 20px 12px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-section {
+    padding-bottom: 10px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-section-heading {
+    margin-bottom: 10px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-section-heading .hud-panel-title,
+  #flight-hud[data-planner-open="true"] .planner-section > .hud-panel-title,
+  #flight-hud[data-planner-open="true"] .planner-section-heading time {
+    font-size: 15px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-timeline {
+    gap: 5px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-timeline::before {
+    left: 29px;
+    top: 20px;
+    bottom: 20px;
+    z-index: 2;
+    width: 1px;
+    background: rgba(54, 196, 222, 0.7);
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-timeline li {
+    grid-template-columns: 40px minmax(0, 1fr) 82px;
+    min-height: 62px;
+    padding: 8px 12px 8px 9px;
+    border-radius: 4px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-timeline li.planner-step--active {
+    border-left: 2px solid #23d6f2;
+    background-color: rgba(7, 50, 73, 0.98) !important;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-step-marker {
+    position: relative;
+    z-index: 3;
+    width: 40px;
+    height: 40px;
+    margin-left: 0;
+    border: 0;
+    border-radius: 0;
+    background-color: transparent;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 40px 40px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-step--align .planner-step-marker {
+    background-image: url("/concept/planner-icon-align.png");
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-step--burn .planner-step-marker {
+    background-image: url("/concept/planner-icon-burn.png");
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-step--flip .planner-step-marker {
+    background-image: url("/concept/planner-icon-flip.png");
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-step--brake .planner-step-marker {
+    background-image: url("/concept/planner-icon-brake.png");
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-step--hold .planner-step-marker {
+    background-image: url("/concept/planner-icon-hold.png");
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-step-copy strong {
+    font-size: 15px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-step-copy small,
+  #flight-hud[data-planner-open="true"] .planner-timeline li > time {
+    font-size: 13px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-profile-controls button {
+    min-height: 60px;
+    font-size: 13px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-profile-controls small {
+    font-size: 12px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-route-metrics {
+    gap: 5px;
+    font-size: 14px;
+  }
+
+  #flight-hud[data-planner-open="true"] #planner-target-options button::before,
+  #flight-hud[data-planner-open="true"] .planner-map-label--hazard::after,
+  #flight-hud[data-planner-open="true"] .planner-map-legend {
+    font-size: 14px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-map-legend {
+    gap: 22px;
+    padding: 12px 16px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-footer {
+    min-height: 48px;
+    font-size: 13px;
+  }
+}
+
+/* Strict visual-gate corrections from the source comparison boards. */
+body[data-ui-surface="flight"] #hud-left-panel {
+  width: clamp(290px, 20.4vw, 336px);
+}
+
+body[data-ui-surface="combat"] #hud-left-panel {
+  width: 300px;
+}
+
+body[data-ui-surface="flight"] .hud-metric-row .label,
+body[data-ui-surface="combat"] .hud-metric-row .label {
+  color: #c7e7ef;
+  font-size: 17px;
+  font-weight: 500 !important;
+}
+
+body[data-ui-surface="flight"] .hud-glyph,
+body[data-ui-surface="combat"] .hud-glyph {
+  width: 36px;
+  height: 36px;
+}
+
+body[data-ui-surface="flight"] #throttle-status::before,
+body[data-ui-surface="combat"] #throttle-status::before,
+body[data-ui-surface="flight"] #fuel-status::before,
+body[data-ui-surface="combat"] #fuel-status::before,
+body[data-ui-surface="flight"] #rcs-sas-status::before,
+body[data-ui-surface="combat"] #rcs-sas-status::before {
+  font-size: 20px;
+}
+
+body[data-ui-surface="flight"] .hud-metric-row--throttle .hud-meter,
+body[data-ui-surface="combat"] .hud-metric-row--throttle .hud-meter {
+  display: none;
+}
+
+body[data-ui-surface="flight"] .hud-segments,
+body[data-ui-surface="combat"] .hud-segments {
+  margin-top: 7px;
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--target::after {
+  position: absolute;
+  right: 18px;
+  top: 47px;
+  width: 34px;
+  height: 34px;
+  background: url("/concept/icon-flight-target-action.png") center / contain no-repeat;
+  content: "";
+}
+
+body[data-ui-surface="flight"] #flight-hud .hud-warning-pill {
+  min-height: 43px;
+  border: 1px solid rgba(255, 122, 24, 0.92) !important;
+  border-image: none !important;
+  border-radius: 999px !important;
+  clip-path: none !important;
+  color: #ff922e;
+  font-size: 19px;
+}
+
+body[data-ui-surface="flight"] .flight-nav-header {
+  font-size: 20px;
+}
+
+body[data-ui-surface="flight"] .flight-nav-course {
+  font-size: 20px;
+}
+
+body[data-ui-surface="flight"] .flight-nav-action,
+body[data-ui-surface="flight"] #engage-autopilot::after {
+  font-size: 18px;
+}
+
+body[data-ui-surface="flight"] .radar-scope,
+body[data-ui-surface="combat"] .radar-scope {
+  width: min(260px, calc(100% - 6px));
+}
+
+body[data-ui-surface="flight"] .radar-contact--target {
+  left: 55%;
+  top: 18%;
+}
+
+body[data-ui-surface="flight"] .radar-contact--obstacle-a {
+  left: 27%;
+  top: 32%;
+}
+
+body[data-ui-surface="flight"] .radar-contact--obstacle-b {
+  left: 27%;
+  top: 52%;
+}
+
+body[data-ui-surface="flight"] .radar-contact--obstacle-c {
+  left: 40%;
+  top: 69%;
+}
+
+body[data-ui-surface="flight"] .radar-contact--obstacle-d {
+  left: 72%;
+  top: 52%;
+}
+
+body[data-ui-surface="flight"] .radar-contact--route {
+  left: 72%;
+  top: 80%;
+}
+
+body[data-ui-surface="combat"] .hud-metric-row--speed::after {
+  position: absolute;
+  right: 22px;
+  bottom: 16px;
+  left: 24px;
+  top: auto;
+  display: block !important;
+  width: auto;
+  height: 5px;
+  border: 1px solid rgba(35, 214, 242, 0.36);
+  background: linear-gradient(90deg, #28d7ef 0 58%, rgba(35, 214, 242, 0.18) 58%);
+  content: "";
+}
+
+body[data-ui-surface="combat"] .hud-metric-row--speed {
+  position: relative;
+}
+
+body[data-ui-surface="combat"] .contact-panel {
+  display: grid;
+  grid-template-rows: 18px 82px 124px 62px 100px minmax(0, 1fr);
+  gap: 6px;
+  height: 600px;
+  padding: 12px 13px;
+}
+
+body[data-ui-surface="combat"] .contact-panel .hud-panel-title {
+  margin: 0;
+  font-size: 15px;
+}
+
+body[data-ui-surface="combat"] .weapon-section {
+  min-height: 0;
+  margin: 0;
+  padding: 7px 9px;
+  border: 1px solid rgba(35, 214, 242, 0.24);
+  background: rgba(3, 18, 29, 0.44);
+  box-sizing: border-box;
+}
+
+body[data-ui-surface="combat"] .weapon-section-title {
+  margin-bottom: 6px;
+  color: #46d9ef;
+  font-size: 13px;
+}
+
+body[data-ui-surface="combat"] .weapon-row,
+body[data-ui-surface="combat"] .subsystem-row,
+body[data-ui-surface="combat"] .weapon-active-line,
+body[data-ui-surface="combat"] .weapon-heat-line {
+  font-size: 13px;
+}
+
+body[data-ui-surface="combat"] .weapon-row::before,
+body[data-ui-surface="combat"] .subsystem-row::before,
+body[data-ui-surface="combat"] .weapon-active-line::before {
+  width: 27px;
+  height: 27px;
+}
+
+body[data-ui-surface="combat"] .contact-wireframe {
+  height: 105px;
+  margin: 3px 0 0;
+  background-size: 260px 105px;
+}
+
+body[data-ui-surface="combat"] .radar-contact--target {
+  left: 68%;
+  top: 14%;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  transform: translate(-50%, -50%);
+  background: url("/concept/icon-combat-radar-target.png") center / contain no-repeat;
+}
+
+body[data-ui-surface="combat"] .radar-contact--obstacle-a {
+  left: 20%;
+  top: 52%;
+}
+
+body[data-ui-surface="combat"] .radar-contact--obstacle-b {
+  left: 80%;
+  top: 52%;
+  width: 30px;
+  height: 30px;
+  transform: translate(-50%, -50%);
+  border-radius: 0;
+  background: url("/concept/icon-combat-radar-contact.png") center / contain no-repeat;
+}
+
+body[data-ui-surface="combat"] .radar-contact--obstacle-c {
+  left: 61%;
+  top: 73%;
+  width: 28px;
+  height: 28px;
+  transform: translate(-50%, -50%);
+  border-radius: 0;
+  background: url("/concept/icon-combat-radar-threat.png") center / contain no-repeat;
+}
+
+body[data-ui-surface="combat"] .radar-contact--obstacle-d {
+  left: 68%;
+  top: 79%;
+}
+
+body[data-ui-surface="combat"] .radar-contact--route {
+  left: 35%;
+  top: 88%;
+  background: #ff5638;
+}
+
+@media (min-width: 1200px) {
+  #flight-hud[data-planner-open="true"] #nav-planner-map {
+    background-position: center;
+    background-size: cover;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-map-label--ship {
+    left: 10.4%;
+    top: 40%;
+    width: 132px;
+    height: 126px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-map-label--target {
+    right: 7.2%;
+    top: 15.3%;
+    width: 128px;
+    height: 118px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-map-label--hazard {
+    left: 51%;
+    bottom: 24%;
+  }
+
+  #flight-hud[data-planner-open="true"] #planner-target-options button[data-planner-target-id="range-500m"] {
+    left: 10.2%;
+    top: 21.5%;
+  }
+
+  #flight-hud[data-planner-open="true"] #planner-target-options button[data-planner-target-id="range-1000m"] {
+    left: 39.6%;
+    top: 7.2%;
+  }
+
+  #flight-hud[data-planner-open="true"] #planner-target-options button[data-planner-target-id="range-2500m"] {
+    left: 70.2%;
+    top: 61.8%;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-map-controls {
+    position: absolute;
+    left: 18px;
+    bottom: 72px;
+    z-index: 6;
+    display: grid;
+    width: 52px;
+    border: 1px solid rgba(120, 164, 190, 0.46);
+    background: rgba(2, 14, 25, 0.82);
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-map-control {
+    width: 50px;
+    height: 46px;
+    padding: 0;
+    border: 0;
+    border-bottom: 1px solid rgba(120, 164, 190, 0.28);
+    background-color: rgba(2, 14, 25, 0.9) !important;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 40px 40px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-map-control:last-child {
+    border-bottom: 0;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-map-control--focus {
+    background-image: url("/concept/planner-icon-map-focus.png");
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-map-control--orbit {
+    background-image: url("/concept/planner-icon-map-orbit.png");
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-map-control--zoom {
+    background-image: url("/concept/planner-icon-map-zoom.png");
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-map-legend {
+    display: grid;
+    grid-template-columns: 1.1fr 1.15fr 0.9fr 1.05fr 0.9fr;
+    gap: 12px;
+    min-height: 52px;
+    color: #c4d4df;
+    font-size: 14px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-legend-item {
+    display: flex;
+    gap: 7px;
+    align-items: center;
+    min-width: 0;
+    white-space: nowrap;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-legend-item::before {
+    flex: 0 0 42px;
+    width: 42px;
+    height: 30px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 45px 30px;
+    content: "";
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-legend-item--route::before {
+    background-image: url("/concept/planner-icon-legend-route.png");
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-legend-item--avoidance::before {
+    background-image: url("/concept/planner-icon-legend-avoidance.png");
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-legend-item--waypoint::before {
+    background-image: url("/concept/planner-icon-legend-waypoint.png");
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-legend-item--maneuver::before {
+    background-image: url("/concept/planner-icon-legend-maneuver.png");
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-legend-item--hazard::before {
+    background-image: url("/concept/planner-icon-legend-hazard.png");
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-telemetry {
+    position: relative;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-telemetry--target,
+  #flight-hud[data-planner-open="true"] .planner-telemetry--eta,
+  #flight-hud[data-planner-open="true"] .planner-telemetry--fuel,
+  #flight-hud[data-planner-open="true"] .planner-telemetry--brake {
+    padding-left: 19px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-telemetry--target::before,
+  #flight-hud[data-planner-open="true"] .planner-telemetry--eta::before,
+  #flight-hud[data-planner-open="true"] .planner-telemetry--fuel::before,
+  #flight-hud[data-planner-open="true"] .planner-telemetry--brake::before {
+    position: absolute;
+    left: 13px;
+    top: 50%;
+    width: 24px;
+    height: 24px;
+    transform: translateY(-50%);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 24px 24px;
+    content: "";
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-telemetry--target::before {
+    background-image: url("/concept/planner-icon-header-target.png");
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-telemetry--eta::before {
+    background-image: url("/concept/planner-icon-header-eta.png");
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-telemetry--fuel::before {
+    background-image: url("/concept/planner-icon-header-fuel.png");
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-telemetry--brake::before {
+    background-image: url("/concept/planner-icon-header-brake.png");
+  }
+
+  #flight-hud[data-planner-open="true"] #planner-selected-target,
+  #flight-hud[data-planner-open="true"] #planner-route-distance,
+  #flight-hud[data-planner-open="true"] .planner-telemetry--fuel .planner-telemetry-value,
+  #flight-hud[data-planner-open="true"] .planner-telemetry--fuel .planner-telemetry-subvalue,
+  #flight-hud[data-planner-open="true"] .planner-telemetry--brake .planner-telemetry-value,
+  #flight-hud[data-planner-open="true"] .planner-telemetry--brake .planner-telemetry-subvalue {
+    padding-left: 26px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-top-strip .label {
+    color: #b9cddd;
+    font-size: 14px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-telemetry-value,
+  #flight-hud[data-planner-open="true"] #planner-selected-target::before,
+  #flight-hud[data-planner-open="true"] #planner-route-distance::before {
+    color: #f5fbff;
+    font-size: 20px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-details {
+    background-color: #031323;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-section {
+    border-bottom-color: rgba(115, 157, 183, 0.24);
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-timeline li {
+    background-color: rgba(8, 31, 50, 0.96);
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-step-copy strong {
+    font-size: 16px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-step-copy small,
+  #flight-hud[data-planner-open="true"] .planner-timeline li > time {
+    color: #a8bdcc;
+    font-size: 14px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-profile-controls button {
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr);
+    align-items: center;
+    min-height: 62px;
+    padding: 7px 8px;
+    font-size: 14px;
+    text-align: left;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-profile-controls button::before {
+    grid-row: 1 / 3;
+    width: 38px;
+    height: 38px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 38px 38px;
+    content: "";
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-profile-controls button:nth-child(1)::before {
+    background-image: url("/concept/planner-icon-profile-safe.png");
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-profile-controls button:nth-child(2)::before {
+    background-image: url("/concept/planner-icon-profile-balanced.png");
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-profile-controls button:nth-child(3)::before {
+    background-image: url("/concept/planner-icon-profile-fast.png");
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-action-chrome {
+    grid-template-columns: 38px auto;
+    gap: 4px;
+    font-size: 13px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-action-chrome::before {
+    width: 38px;
+    height: 38px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 38px 38px;
+    content: "";
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-action-chrome:nth-child(1)::before {
+    background-image: url("/concept/planner-icon-action-preview.png");
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-action-chrome:nth-child(2)::before {
+    background-image: url("/concept/planner-icon-action-replan.png");
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-engage {
+    padding-left: 54px;
+    background: #2c814b url("/concept/planner-icon-action-engage.png") 14px center / 40px 40px no-repeat !important;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-footer-stat {
+    position: relative;
+    padding-left: 54px;
+    font-size: 13px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-footer-stat::before {
+    position: absolute;
+    left: 16px;
+    width: 32px;
+    height: 32px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 32px 32px;
+    content: "";
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-footer-stat:nth-child(1)::before {
+    background-image: url("/concept/planner-icon-footer-credits.png");
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-footer-stat:nth-child(2)::before {
+    background-image: url("/concept/planner-icon-footer-ruf.png");
+  }
+}
+
+/* V3 authoritative live planner and telemetry-owned flight contacts. */
+.radar-runtime-contacts {
+  position: absolute;
+  inset: 0;
+}
+
+body[data-ui-surface="flight"] .radar-runtime-contacts .radar-contact,
+body[data-ui-surface="combat"] .radar-runtime-contacts .radar-contact {
+  display: block;
+  transform: translate(-50%, -50%);
+}
+
+body[data-ui-surface="flight"] .radar-contact--runtime-obstacle,
+body[data-ui-surface="combat"] .radar-contact--runtime-obstacle {
+  min-width: 5px;
+  min-height: 5px;
+  border: 1px solid rgba(202, 216, 221, 0.76);
+  border-radius: 50%;
+  background: rgba(155, 171, 177, 0.72);
+}
+
+body[data-ui-surface="flight"] .radar-contact--runtime-route,
+body[data-ui-surface="combat"] .radar-contact--runtime-route {
+  width: 7px;
+  height: 7px;
+  border: 1px solid #23d6f2;
+  transform: translate(-50%, -50%) rotate(45deg);
+  background: #061823;
+}
+
+body[data-ui-surface="flight"] .radar-contact--runtime-target,
+body[data-ui-surface="combat"] .radar-contact--runtime-target {
+  z-index: 2;
+  width: 13px;
+  height: 13px;
+  border: 2px solid #ff8317;
+  border-radius: 0;
+  transform: translate(-50%, -50%) rotate(45deg);
+  background: #07121b;
+}
+
+body[data-ui-surface="flight"] .flight-nav-distance-scale {
+  position: relative;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+body[data-ui-surface="flight"] .flight-nav-distance-scale__ship,
+body[data-ui-surface="flight"] .flight-nav-distance-scale__target {
+  flex: 0 0 16px;
+}
+
+body[data-ui-surface="flight"] .flight-nav-distance-scale__track {
+  position: relative;
+  flex: 1 1 0;
+  height: 4px;
+  overflow: hidden;
+  background: rgba(35, 214, 242, 0.22);
+}
+
+body[data-ui-surface="flight"] .flight-nav-distance-scale__fill {
+  display: block;
+  height: 100%;
+  background: #23d6f2;
+}
+
+body[data-ui-surface="flight"] .flight-nav-distance-scale__target {
+  position: static;
+  left: auto;
+  top: auto;
+  transform: rotate(45deg);
+}
+
+body[data-ui-surface="combat"] #velocity-status,
+body[data-ui-surface="combat"] #throttle-status,
+body[data-ui-surface="combat"] #fuel-status,
+body[data-ui-surface="combat"] #rcs-sas-status {
+  height: auto;
+  color: #f4fbff;
+  font-size: 17px;
+  line-height: 1.2;
+}
+
+body[data-ui-surface="combat"] #velocity-status::before,
+body[data-ui-surface="combat"] #velocity-status::after,
+body[data-ui-surface="combat"] #throttle-status::before,
+body[data-ui-surface="combat"] #fuel-status::before,
+body[data-ui-surface="combat"] #rcs-sas-status::before,
+body[data-ui-surface="combat"] #rcs-sas-status::after,
+body[data-ui-surface="combat"] .hud-metric-row--speed::after {
+  display: none !important;
+  content: none !important;
+}
+
+body[data-ui-surface="combat"] .contact-marker {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2px;
+  width: auto;
+  height: auto;
+  min-width: 150px;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 83, 50, 0.72);
+  background: rgba(9, 15, 19, 0.86) !important;
+  color: #ff6a48;
+  font-size: 13px;
+  text-align: center;
+  aspect-ratio: auto;
+  overflow: visible;
+}
+
+body[data-ui-surface="combat"] .contact-marker > * {
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+  overflow: visible !important;
+  clip-path: none !important;
+  opacity: 1;
+}
+
+body[data-ui-surface="combat"] .contact-marker span:last-child {
+  grid-column: auto;
+}
+
+body[data-ui-surface="combat"] .contact-marker__diamond {
+  display: none;
+}
+
+body[data-ui-surface="combat"] .contact-panel {
+  display: grid;
+  grid-template-rows: auto auto auto;
+  gap: 10px;
+  align-content: start;
+}
+
+body[data-ui-surface="combat"] .combat-runtime-summary {
+  display: grid;
+  gap: 7px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 83, 50, 0.26);
+}
+
+body[data-ui-surface="combat"] .combat-runtime-summary > div {
+  display: grid;
+  grid-template-columns: 82px minmax(0, 1fr);
+  gap: 8px;
+  color: #a9bdc8;
+  font-size: 12px;
+}
+
+body[data-ui-surface="combat"] .combat-runtime-summary strong {
+  overflow: hidden;
+  color: #e5f2f5;
+  font-weight: 600;
+  text-overflow: ellipsis;
+}
+
+body[data-ui-surface="combat"] .contact-target-card {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  height: auto;
+  min-height: 150px;
+}
+
+body[data-ui-surface="combat"] .contact-target-name {
+  margin-top: 12px;
+}
+
+body[data-ui-surface="combat"] .contact-target-class {
+  color: #a9bdc8;
+}
+
+#navigation-planner {
+  width: auto;
+  max-width: none;
+  height: auto;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: var(--hud-text);
+}
+
+#navigation-planner::backdrop {
+  background: rgba(0, 5, 10, 0.78);
+}
+
+#flight-hud[data-planner-open="true"] #navigation-planner[open] {
+  display: grid;
+}
+
+#flight-hud[data-planner-open="true"] #nav-planner-map {
+  background: #020c16;
+}
+
+#flight-hud[data-planner-open="true"] .planner-route {
+  fill: none;
+  filter: none;
+  stroke-linecap: round;
+}
+
+#flight-hud[data-planner-open="true"] .planner-obstacle {
+  fill: rgba(133, 151, 158, 0.13);
+  stroke: rgba(181, 204, 211, 0.62);
+  stroke-width: 2;
+}
+
+#flight-hud[data-planner-open="true"] .planner-map-runtime-label,
+#flight-hud[data-planner-open="true"] .planner-map-empty {
+  fill: #b9d5de;
+  font-size: 15px;
+  font-weight: 600;
+  paint-order: stroke;
+  stroke: #020c16;
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+
+#flight-hud[data-planner-open="true"] .planner-map-runtime-label--target {
+  fill: #23d6f2;
+}
+
+#flight-hud[data-planner-open="true"] .planner-map-runtime-label--obstacle {
+  fill: #a6b8bf;
+  font-size: 12px;
+}
+
+#flight-hud[data-planner-open="true"] .planner-node--ship {
+  fill: #eefbff;
+  stroke: #23d6f2;
+  stroke-width: 2;
+}
+
+#flight-hud[data-planner-open="true"] .planner-node--target {
+  fill: #052032;
+  stroke: #23d6f2;
+  stroke-width: 3;
+}
+
+#flight-hud[data-planner-open="true"] .planner-node--maneuver {
+  fill: #052032;
+  stroke: #23d6f2;
+  stroke-width: 2;
+}
+
+#flight-hud[data-planner-open="true"] .planner-timeline li:nth-child(2) {
+  background: rgba(10, 34, 55, 0.82);
+}
+
+#flight-hud[data-planner-open="true"] .planner-timeline li.planner-step--active {
+  border-left: 2px solid #23d6f2;
+  background: rgba(9, 49, 70, 0.96);
+}
+
+#flight-hud[data-planner-open="true"] .planner-timeline li.planner-step--complete {
+  color: #83a3ad;
+  opacity: 0.76;
+}
+
+#flight-hud[data-planner-open="true"] .planner-step-copy strong,
+#flight-hud[data-planner-open="true"] .planner-step-note {
+  display: block;
+}
+
+#flight-hud[data-planner-open="true"] .planner-step-note {
+  margin-top: 2px;
+  overflow: hidden;
+  color: #8da6ba;
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#flight-hud[data-planner-open="true"] .planner-step--empty {
+  display: block;
+  min-height: 44px;
+  color: #8da6ba;
+}
+
+#flight-hud[data-planner-open="true"] .planner-profile-note {
+  display: block;
+  margin-top: 3px;
+  color: #8ca5b8;
+  font-size: 9px;
+  font-weight: 500;
+}
+
+#flight-hud[data-planner-open="true"] .planner-profile-controls button[aria-pressed="true"] .planner-profile-note {
+  color: #25d7f0;
+}
+
+#flight-hud[data-planner-open="true"] .planner-control-reason,
+#flight-hud[data-planner-open="true"] .planner-feedback {
+  margin-top: 6px;
+  color: #a8bdc8;
+  font-size: 11px;
+  line-height: 1.25;
+}
+
+#flight-hud[data-planner-open="true"] .planner-control-reason,
+#flight-hud[data-planner-open="true"] .planner-feedback[data-error="true"] {
+  color: #ff9b45;
+}
+
+#flight-hud[data-planner-open="true"] .planner-feedback:focus {
+  outline: 1px solid #ff9b45;
+  outline-offset: 3px;
+}
+
+#flight-hud[data-planner-open="true"] .planner-actions button:disabled,
+#flight-hud[data-planner-open="true"] .planner-profile-controls button:disabled,
+#flight-hud[data-planner-open="true"] .planner-target-strip button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+#flight-hud[data-planner-open="true"] .planner-engage:disabled {
+  border-color: rgba(157, 183, 216, 0.2);
+  background: #132731 !important;
+  color: #758b95;
+}
+
+#flight-hud[data-planner-open="true"] .planner-footer {
+  justify-content: flex-end;
+}
+
+@media (min-width: 1200px) {
+  #flight-hud[data-planner-open="true"] .planner-section--timeline {
+    min-height: 0;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-timeline {
+    max-height: 228px;
+    overflow-y: auto;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-details {
+    gap: 6px;
+    padding: 10px 14px 8px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-route-metrics {
+    font-size: 10px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-actions {
+    flex: none;
+  }
+}
+
+@media (max-width: 1320px) and (min-width: 1200px) {
+  #flight-hud[data-planner-open="true"] .navigation-planner {
+    grid-template-columns: 96px minmax(0, 1fr) 390px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-rail {
+    padding-top: 94px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-top-strip {
+    left: 96px;
+    grid-template-columns: minmax(220px, 1.6fr) minmax(108px, 0.85fr) minmax(118px, 0.9fr) minmax(112px, 0.85fr) minmax(122px, 0.9fr) minmax(110px, 0.85fr);
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-top-strip > div:first-child {
+    padding-left: 148px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-mark {
+    left: 14px;
+    width: 180px;
+    font-size: 20px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-title {
+    font-size: 17px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-top-strip .label,
+  #flight-hud[data-planner-open="true"] .planner-telemetry-subvalue {
+    font-size: 10px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-telemetry-value,
+  #flight-hud[data-planner-open="true"] #planner-selected-target,
+  #flight-hud[data-planner-open="true"] #planner-route-distance,
+  #flight-hud[data-planner-open="true"] #planner-route-status {
+    font-size: 13px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-map-legend {
+    gap: 8px;
+    font-size: 10px;
+  }
+}
+
+/* Final measured safe-area contract for compact flight viewports. */
+body[data-ui-surface="flight"] #flight-hud #hud-right-panel,
+body[data-ui-surface="flight"] #flight-hud #hud-right-panel .hud-panel-section--navigation {
+  border: 0 !important;
+  border-image: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+  filter: none !important;
+  box-shadow: none !important;
+}
+
+@media (min-width: 761px) and (max-width: 1100px) {
+  body[data-ui-surface="flight"] #hud-right-panel {
+    width: clamp(280px, 26.8vw, 336px);
+  }
+}
+
+@media (max-width: 760px) {
+  body[data-ui-surface="flight"] #hud-left-panel,
+  body[data-ui-surface="flight"] #hud-right-panel {
+    width: 210px;
+  }
+
+  body[data-ui-surface="flight"] #hud-radar-panel {
+    width: 240px;
+  }
+
+  body[data-ui-surface="flight"] #hud-right-panel .hud-nav-card--target,
+  body[data-ui-surface="flight"] #hud-right-panel .hud-nav-card--route {
+    width: 100%;
+  }
+}
+
+/* The real planner entry occupies the navigation card's reserved action row. */
+body[data-ui-surface="flight"] #open-navigation-planner.flight-nav-action {
+  position: static !important;
+  z-index: 1;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 100% !important;
+  height: 46px !important;
+  margin: 7px 0 !important;
+  padding: 0 14px !important;
+  overflow: visible !important;
+  border: 1px solid rgba(35, 214, 242, 0.54) !important;
+  border-radius: 0;
+  clip-path: none !important;
+  background: rgba(4, 19, 29, 0.76);
+  color: #23d6f2;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1;
+  pointer-events: auto;
+  visibility: visible;
+}
+
+body[data-ui-surface="flight"] #open-navigation-planner.flight-nav-action:focus-visible {
+  outline: 2px solid #e7faff;
+  outline-offset: 2px;
+}
+
+body[data-ui-surface="combat"] #open-navigation-planner {
+  display: none !important;
+}
+
+/* Native dialog state remains authoritative over legacy planner layout rules. */
+#navigation-planner:not([open]) {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+#flight-hud[data-planner-open="true"] #navigation-planner[open] {
+  display: grid !important;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* Normal flight has one card action surface; the legacy footer is debug-only. */
+body[data-ui-surface="flight"] .flight-nav-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+  height: 60px;
+}
+
+body[data-ui-surface="flight"] #cancel-autopilot.flight-nav-action--cancel {
+  display: none !important;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+body[data-ui-surface="flight"] #flight-hud[data-route-locked="true"] .flight-nav-actions {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+body[data-ui-surface="flight"] #flight-hud[data-route-locked="true"] #cancel-autopilot.flight-nav-action--cancel {
+  position: static !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 100% !important;
+  height: 46px !important;
+  margin: 7px 0 !important;
+  padding: 0 12px !important;
+  overflow: visible !important;
+  border: 1px solid rgba(255, 130, 64, 0.7) !important;
+  border-radius: 0;
+  clip-path: none !important;
+  background: rgba(25, 15, 10, 0.76);
+  color: #ff9b45;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+body[data-ui-surface="flight"] #flight-hud[data-route-locked="true"] #cancel-autopilot.flight-nav-action--cancel:focus-visible {
+  outline: 2px solid #fff1e8;
+  outline-offset: 2px;
+}
+
+body[data-ui-surface="flight"]:not([data-debug-hud="true"]) #hud-bottom-strip,
+body[data-ui-surface="flight"]:not([data-debug-hud="true"]) .hud-bottom-group--actions {
+  pointer-events: none !important;
+}
+
+body[data-ui-surface="flight"]:not([data-debug-hud="true"]) #engage-autopilot {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* V4 visual QA: concise telemetry, truthful meters, readable planner and combat density. */
+body[data-ui-surface="flight"] .hud-panel-section--navigation {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--target {
+  position: relative !important;
+  top: auto !important;
+  display: grid;
+  grid-template-rows: auto auto minmax(24px, auto);
+  gap: 5px;
+  height: auto;
+  min-height: 128px;
+  padding: 13px 20px 12px;
+  overflow: visible;
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--target > .label {
+  display: block !important;
+}
+
+body[data-ui-surface="flight"] .flight-target-row {
+  min-width: 0;
+}
+
+body[data-ui-surface="flight"] .flight-target-row--identity {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  padding: 0 42px;
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--target #target-status {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  overflow-wrap: anywhere;
+  font-size: 19px;
+  line-height: 1.15;
+  text-overflow: clip;
+  white-space: normal;
+}
+
+body[data-ui-surface="flight"] #target-kind {
+  overflow: visible;
+  overflow-wrap: anywhere;
+  color: #a4c3ce;
+  font-size: 12px;
+  line-height: 1.2;
+  text-overflow: clip;
+  text-transform: uppercase;
+  white-space: normal;
+}
+
+body[data-ui-surface="flight"] .flight-target-row--distance {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid rgba(35, 214, 242, 0.18);
+  padding-top: 5px;
+}
+
+body[data-ui-surface="flight"] .flight-target-row--distance .label {
+  display: block !important;
+  color: #9fc3d0;
+  font-size: 12px;
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--target #target-distance {
+  position: static;
+  display: block;
+  color: #23d6f2;
+  font-size: 16px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--route {
+  position: relative !important;
+  top: auto !important;
+  display: grid;
+  grid-template-rows: auto minmax(46px, auto);
+  align-content: start;
+  height: auto;
+  min-height: 108px;
+  overflow: visible;
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--route #plan-hash {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+body[data-ui-surface="flight"] .hud-nav-card--route #route-status {
+  min-width: 0;
+  min-height: 46px;
+  margin: 7px 0 0;
+  padding: 0 38px 0 42px;
+  overflow: visible;
+  font-size: 18px;
+  line-height: 1.2;
+  white-space: normal;
+}
+
+body[data-ui-surface="flight"] #warning-chips[hidden] {
+  display: none !important;
+}
+
+body[data-ui-surface="flight"] #warning-chips:not([hidden]) {
+  position: relative !important;
+  top: auto !important;
+  right: auto !important;
+  align-self: flex-end;
+  width: clamp(250px, 19.5vw, 320px);
+  margin: 0;
+}
+
+body[data-ui-surface="flight"] .hud-metric-row--fuel .hud-metric-main,
+body[data-ui-surface="combat"] .hud-metric-row--fuel .hud-metric-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: start;
+  width: 100%;
+  min-width: 0;
+}
+
+body[data-ui-surface="flight"] .hud-metric-row--fuel #fuel-status,
+body[data-ui-surface="combat"] .hud-metric-row--fuel #fuel-status {
+  position: static;
+  align-self: start;
+  max-width: 150px;
+  overflow: hidden;
+  font-size: 15px;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body[data-ui-surface="flight"] .hud-metric-row--fuel .hud-meter,
+body[data-ui-surface="combat"] .hud-metric-row--fuel .hud-meter {
+  width: 100%;
+  margin-top: 8px;
+}
+
+body[data-ui-surface="flight"] .hud-segments span,
+body[data-ui-surface="combat"] .hud-segments span {
+  border-color: rgba(35, 214, 242, 0.28) !important;
+  background: rgba(35, 214, 242, 0.14) !important;
+}
+
+body[data-ui-surface="flight"] .hud-segments span.is-active,
+body[data-ui-surface="combat"] .hud-segments span.is-active {
+  border-color: rgba(69, 226, 247, 0.9) !important;
+  background: #23d6f2 !important;
+}
+
+body[data-ui-surface="flight"] .radar-footer,
+body[data-ui-surface="combat"] .radar-footer {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+}
+
+body[data-ui-surface="flight"] #radar-status,
+body[data-ui-surface="combat"] #radar-status {
+  min-width: 0;
+  overflow: hidden;
+  color: #b7d3dc;
+  font-size: 13px;
+  line-height: 1.2;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body[data-ui-surface="flight"] #radar-range,
+body[data-ui-surface="combat"] #radar-range {
+  color: #23d6f2;
+  font-size: 14px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+#flight-hud[data-planner-open="true"] .planner-runtime-summary {
+  position: static;
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 4px 10px;
+  width: 100%;
+  min-width: 0;
+  height: auto;
+  margin: 5px 0 8px;
+  overflow: visible;
+  clip-path: none;
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+#flight-hud[data-planner-open="true"] .planner-runtime-summary > * {
+  min-width: 0;
+}
+
+#flight-hud[data-planner-open="true"] #planner-objective,
+#flight-hud[data-planner-open="true"] #planner-route-detail {
+  width: 100%;
+  min-width: 0;
+  overflow: visible;
+  overflow-wrap: anywhere;
+  color: #c6dbe4;
+  white-space: normal;
+}
+
+#flight-hud[data-planner-open="true"] #planner-route-detail {
+  color: #25d7f0;
+}
+
+#flight-hud[data-planner-open="true"] .planner-details {
+  gap: 8px;
+  padding: 14px 18px 10px;
+}
+
+#flight-hud[data-planner-open="true"] .planner-step-copy strong {
+  font-size: 15px;
+  line-height: 1.25;
+}
+
+#flight-hud[data-planner-open="true"] .planner-step-note,
+#flight-hud[data-planner-open="true"] .planner-timeline li > time {
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+#flight-hud[data-planner-open="true"] .planner-profile-controls button {
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+#flight-hud[data-planner-open="true"] .planner-profile-note,
+#flight-hud[data-planner-open="true"] .planner-route-metrics {
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+#flight-hud[data-planner-open="true"] .planner-map-runtime-label--obstacle {
+  display: none;
+}
+
+body[data-ui-surface="combat"] .contact-panel {
+  grid-template-rows: auto auto auto;
+  gap: 9px;
+  align-content: start;
+  height: auto;
+  min-height: 0;
+  padding: 13px;
+}
+
+body[data-ui-surface="combat"] .combat-runtime-sections {
+  display: grid;
+  gap: 8px;
+}
+
+body[data-ui-surface="combat"] .combat-runtime-section {
+  min-width: 0;
+  border-top: 1px solid rgba(35, 214, 242, 0.24);
+  padding: 8px 0 2px;
+}
+
+body[data-ui-surface="combat"] .combat-runtime-section-title {
+  margin-bottom: 6px;
+  color: #46d9ef;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+body[data-ui-surface="combat"] .combat-runtime-summary {
+  gap: 5px;
+  padding: 0;
+  border: 0;
+}
+
+body[data-ui-surface="combat"] .combat-runtime-summary > div {
+  grid-template-columns: 76px minmax(0, 1fr);
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+body[data-ui-surface="combat"] .combat-runtime-summary strong {
+  overflow: visible;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  text-overflow: clip;
+  white-space: normal;
+}
+
+@media (max-width: 1320px) and (min-width: 1200px) {
+  body[data-ui-surface="flight"] .hud-nav-card--target #target-status {
+    font-size: 17px;
+  }
+
+  body[data-ui-surface="flight"] .hud-nav-card--route #route-status {
+    font-size: 16px;
+  }
+
+  body[data-ui-surface="flight"] .hud-metric-row--fuel #fuel-status,
+  body[data-ui-surface="combat"] .hud-metric-row--fuel #fuel-status {
+    max-width: 118px;
+    font-size: 13px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-runtime-summary,
+  #flight-hud[data-planner-open="true"] .planner-route-metrics {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 1800px) {
+  body[data-ui-surface="flight"] #flight-hud {
+    --hud-edge: 24px;
+    --hud-panel-width: 352px;
+    --hud-radar-size: 332px;
+    --hud-bottom-height: 188px;
+  }
+
+  body[data-ui-surface="flight"] #hud-left-panel,
+  body[data-ui-surface="flight"] #hud-right-panel {
+    top: 24px;
+    width: var(--hud-panel-width);
+  }
+
+  body[data-ui-surface="flight"] #hud-left-panel {
+    left: var(--hud-edge);
+  }
+
+  body[data-ui-surface="flight"] #hud-right-panel {
+    right: var(--hud-edge);
+    width: clamp(500px, 26vw, 520px);
+    height: calc(100vh - (2 * var(--hud-edge)));
+  }
+
+  body[data-ui-surface="flight"] #hud-top-strip {
+    top: var(--hud-edge);
+    width: min(920px, calc(100vw - (2 * var(--hud-edge))));
+    padding: 11px 16px;
+    gap: 16px;
+  }
+
+  body[data-ui-surface="flight"] #hud-radar-panel {
+    left: var(--hud-edge);
+    bottom: var(--hud-edge);
+    width: var(--hud-radar-size);
+    height: var(--hud-radar-size);
+    padding: 15px;
+  }
+
+  body[data-ui-surface="flight"] #hud-bottom-strip {
+    left: calc(var(--hud-edge) + var(--hud-radar-size) + 18px);
+    right: calc(var(--hud-edge) + var(--hud-panel-width) + 18px);
+    gap: 12px;
+    min-height: 0;
+    max-height: 176px;
+    padding: 12px;
+    grid-template-columns: minmax(180px, 0.9fr) minmax(220px, 1.1fr) minmax(250px, 0.95fr);
+  }
+
+  body[data-ui-surface="flight"] .hud-panel-section {
+    gap: 10px;
+  }
+
+  body[data-ui-surface="flight"] .hud-metric-row {
+    min-height: 96px;
+    padding: 17px 20px 16px 80px;
+  }
+
+  body[data-ui-surface="flight"] .hud-metric-row--assist {
+    min-height: 70px;
+  }
+
+  body[data-ui-surface="flight"] .hud-glyph {
+    width: 36px;
+    height: 36px;
+  }
+
+  body[data-ui-surface="flight"] .hud-nav-card--target {
+    min-height: 136px;
+    padding: 14px 21px 12px;
+  }
+
+  body[data-ui-surface="flight"] .hud-nav-card--route {
+    min-height: 118px;
+  }
+
+  body[data-ui-surface="flight"] .hud-nav-card--route #route-status,
+  body[data-ui-surface="flight"] .hud-nav-card--target #target-status {
+    font-size: 20px;
+  }
+
+  body[data-ui-surface="flight"] .hud-nav-card--target #target-distance {
+    font-size: 17px;
+  }
+
+  body[data-ui-surface="flight"] #mode,
+  body[data-ui-surface="flight"] #status {
+    font-size: 17px;
+  }
+
+  body[data-ui-surface="flight"] #objective-label,
+  body[data-ui-surface="flight"] #objective-status {
+    font-size: 13px;
+  }
+
+  body[data-ui-surface="flight"] #velocity-status,
+  body[data-ui-surface="combat"] #velocity-status,
+  body[data-ui-surface="flight"] #throttle-status,
+  body[data-ui-surface="combat"] #throttle-status {
+    font-size: 17px;
+  }
+
+  body[data-ui-surface="flight"] .hud-nav-card--route,
+  body[data-ui-surface="flight"] .hud-nav-card--target {
+    width: var(--hud-panel-width);
+  }
+
+  body[data-ui-surface="flight"] .hud-metric-row {
+    width: 100%;
+  }
+
+  body[data-ui-surface="flight"] .radar-scope {
+    width: min(268px, calc(var(--hud-radar-size) - 58px));
+  }
+
+  #flight-hud[data-planner-open="true"] .navigation-planner {
+    inset: 18px;
+    width: auto;
+    height: auto;
+    max-width: none;
+    max-height: none;
+    grid-template-columns: 124px minmax(0, 1fr) clamp(560px, 31vw, 600px);
+    grid-template-rows: 112px minmax(0, 1fr) 46px;
+    overflow: hidden;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-rail {
+    width: auto;
+    padding-top: 112px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-top-strip {
+    left: 124px;
+    height: 112px;
+    grid-template-columns: minmax(320px, 1.9fr) minmax(128px, 0.86fr) minmax(136px, 0.9fr) minmax(132px, 0.9fr) minmax(150px, 0.96fr) minmax(126px, 0.84fr);
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-top-strip > div:first-child {
+    padding-left: 188px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-mark {
+    left: 14px;
+    width: 188px;
+    font-size: 22px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-title {
+    font-size: 19px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-details {
+    gap: 10px;
+    padding: 16px 22px 11px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-route-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-route-metrics > div {
+    grid-template-columns: 150px minmax(0, 1fr);
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-route-metrics,
+  #flight-hud[data-planner-open="true"] .planner-runtime-summary {
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-step-copy strong {
+    font-size: 16px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-step-note {
+    font-size: 13px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-profile-controls button,
+  #flight-hud[data-planner-open="true"] .planner-actions button,
+  #flight-hud[data-planner-open="true"] .planner-engage {
+    min-height: 34px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    font-size: 14px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-map-legend {
+    gap: 10px;
+    font-size: 12px;
+  }
+}
+
+@media (min-width: 2200px) {
+  body[data-ui-surface="flight"] #flight-hud {
+    --hud-edge: 28px;
+    --hud-panel-width: 378px;
+    --hud-radar-size: 360px;
+    --hud-bottom-height: 202px;
+  }
+
+  body[data-ui-surface="flight"] #hud-left-panel,
+  body[data-ui-surface="flight"] #hud-right-panel {
+    top: 28px;
+    width: var(--hud-panel-width);
+  }
+
+  body[data-ui-surface="flight"] #hud-right-panel {
+    width: clamp(540px, 24vw, 580px);
+    height: calc(100vh - (2 * var(--hud-edge)));
+  }
+
+  body[data-ui-surface="flight"] #hud-top-strip {
+    width: min(980px, calc(100vw - 56px));
+    padding: 12px 18px;
+  }
+
+  body[data-ui-surface="flight"] #hud-radar-panel {
+    width: var(--hud-radar-size);
+    height: var(--hud-radar-size);
+    padding: 17px;
+  }
+
+  body[data-ui-surface="flight"] #hud-bottom-strip {
+    left: calc(var(--hud-edge) + var(--hud-radar-size) + 20px);
+    right: calc(var(--hud-edge) + var(--hud-panel-width) + 20px);
+    gap: 13px;
+    max-height: 184px;
+    padding: 13px;
+    grid-template-columns: minmax(190px, 0.9fr) minmax(236px, 1.1fr) minmax(268px, 0.95fr);
+  }
+
+  body[data-ui-surface="flight"] .hud-metric-row {
+    min-height: 102px;
+    padding: 18px 22px 17px 84px;
+  }
+
+  body[data-ui-surface="flight"] .hud-metric-row--assist {
+    min-height: 74px;
+  }
+
+  body[data-ui-surface="flight"] .hud-glyph {
+    width: 38px;
+    height: 38px;
+  }
+
+  body[data-ui-surface="flight"] .hud-nav-card--target {
+    min-height: 146px;
+    padding: 15px 23px 13px;
+  }
+
+  body[data-ui-surface="flight"] .hud-nav-card--route {
+    min-height: 126px;
+  }
+
+  body[data-ui-surface="flight"] .hud-nav-card--target #target-status,
+  body[data-ui-surface="flight"] .hud-nav-card--route #route-status {
+    font-size: 21px;
+  }
+
+  body[data-ui-surface="flight"] .hud-nav-card--target #target-distance {
+    font-size: 18px;
+  }
+
+  body[data-ui-surface="flight"] #mode,
+  body[data-ui-surface="flight"] #status {
+    font-size: 18px;
+  }
+
+  body[data-ui-surface="flight"] #velocity-status,
+  body[data-ui-surface="combat"] #velocity-status,
+  body[data-ui-surface="flight"] #throttle-status,
+  body[data-ui-surface="combat"] #throttle-status {
+    font-size: 18px;
+  }
+
+  #flight-hud[data-planner-open="true"] .navigation-planner {
+    inset: 22px;
+    width: auto;
+    height: auto;
+    max-width: none;
+    max-height: none;
+    grid-template-columns: 132px minmax(0, 1fr) clamp(640px, 27vw, 700px);
+    grid-template-rows: 118px minmax(0, 1fr) 50px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-rail {
+    width: auto;
+    padding-top: 118px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-top-strip {
+    left: 132px;
+    height: 118px;
+    grid-template-columns: minmax(360px, 1.95fr) minmax(136px, 0.86fr) minmax(144px, 0.9fr) minmax(140px, 0.9fr) minmax(160px, 0.96fr) minmax(136px, 0.84fr);
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-top-strip > div:first-child {
+    padding-left: 198px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-mark {
+    left: 16px;
+    width: 196px;
+    font-size: 24px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-title {
+    font-size: 20px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-details {
+    gap: 11px;
+    padding: 18px 24px 12px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-route-metrics {
+    grid-template-columns: 1fr;
+    font-size: 13px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-route-metrics > div {
+    grid-template-columns: 170px minmax(0, 1fr);
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-runtime-summary {
+    font-size: 13px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-step-copy strong {
+    font-size: 17px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-step-note,
+  #flight-hud[data-planner-open="true"] .planner-timeline li > time {
+    font-size: 13px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-profile-controls button,
+  #flight-hud[data-planner-open="true"] .planner-actions button,
+  #flight-hud[data-planner-open="true"] .planner-engage {
+    min-height: 36px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    font-size: 15px;
+  }
+
+  #flight-hud[data-planner-open="true"] .planner-map-legend {
+    font-size: 12px;
   }
 }
