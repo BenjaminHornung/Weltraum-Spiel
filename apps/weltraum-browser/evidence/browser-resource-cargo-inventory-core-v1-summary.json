@@ -1,0 +1,258 @@
+{
+  "schemaVersion": "browser-resource-cargo-inventory-core-v1",
+  "generator": "apps/weltraum-browser/tests/e2e/resource-cargo-core.spec.ts",
+  "test": "normal page dynamically imports the resource cargo core and records deterministic evidence",
+  "normalPageGuard": {
+    "route": "/",
+    "testBridgeOwnProperty": false,
+    "testBridgeInWindow": false,
+    "bodyContainsTestBridge": false,
+    "debugHudVisible": false
+  },
+  "dynamicImport": {
+    "modulePath": "/src/resources/index.ts",
+    "importedPublicApi": [
+      "createStarterResourceCatalog",
+      "createResourceContainerDefinition",
+      "createResourceContainerState",
+      "createResourceContainerSnapshot",
+      "transferResource",
+      "canonicalJson",
+      "canonicalSignature"
+    ]
+  },
+  "deterministicRepeat": {
+    "identicalCanonicalResult": true,
+    "identicalSuiteSignature": true,
+    "suiteSignature": "d8711589",
+    "catalogSignature": "a4d5fa75"
+  },
+  "scenarios": [
+    {
+      "id": "full-suit-to-ship",
+      "status": "Accepted",
+      "code": null,
+      "requestedQuantity": 2,
+      "acceptedQuantity": 2,
+      "rejectedQuantity": 0,
+      "issues": [],
+      "warnings": [],
+      "sourceRevisions": {
+        "before": 0,
+        "after": 1
+      },
+      "targetRevisions": {
+        "before": 0,
+        "after": 1
+      },
+      "sourceSignatures": {
+        "before": "94a6d886",
+        "after": "684df9fb"
+      },
+      "targetSignatures": {
+        "before": "b1e33b25",
+        "after": "638af7bf"
+      },
+      "sourceStacks": [],
+      "targetStacks": [
+        {
+          "stackId": "ship_ore",
+          "resourceId": "ore_iron_silicate",
+          "quantity": 2,
+          "grade": "high",
+          "condition": 0.75,
+          "ownerId": "pilot",
+          "legalStatus": "Restricted",
+          "sealed": false,
+          "extensions": {
+            "weltraum.e2e": {
+              "lot": "full_alpha"
+            }
+          }
+        }
+      ],
+      "metadataPreserved": true,
+      "rejectedSnapshotUnchanged": null
+    },
+    {
+      "id": "capacity-limited-explicit-partial",
+      "status": "PartiallyAccepted",
+      "code": null,
+      "requestedQuantity": 3,
+      "acceptedQuantity": 2.5,
+      "rejectedQuantity": 0.5,
+      "issues": [
+        "TargetMassExceeded"
+      ],
+      "warnings": [],
+      "sourceRevisions": {
+        "before": 0,
+        "after": 1
+      },
+      "targetRevisions": {
+        "before": 0,
+        "after": 1
+      },
+      "sourceSignatures": {
+        "before": "3ca26f8a",
+        "after": "f726d482"
+      },
+      "targetSignatures": {
+        "before": "23d70db2",
+        "after": "f39c220b"
+      },
+      "sourceStacks": [
+        {
+          "stackId": "partial_source_ore",
+          "resourceId": "ore_iron_silicate",
+          "quantity": 7.5,
+          "grade": "high",
+          "ownerId": "pilot",
+          "sealed": false,
+          "extensions": {
+            "weltraum.e2e": {
+              "lot": "partial_alpha"
+            }
+          }
+        }
+      ],
+      "targetStacks": [
+        {
+          "stackId": "partial_target_ore",
+          "resourceId": "ore_iron_silicate",
+          "quantity": 2.5,
+          "grade": "high",
+          "ownerId": "pilot",
+          "sealed": false,
+          "extensions": {
+            "weltraum.e2e": {
+              "lot": "partial_alpha"
+            }
+          }
+        }
+      ],
+      "metadataPreserved": true,
+      "rejectedSnapshotUnchanged": null
+    },
+    {
+      "id": "mission-locked-rejection",
+      "status": "Rejected",
+      "code": "MissionLocked",
+      "requestedQuantity": 1,
+      "acceptedQuantity": 0,
+      "rejectedQuantity": 1,
+      "issues": [
+        "MissionLocked"
+      ],
+      "warnings": [],
+      "sourceRevisions": {
+        "before": 0,
+        "after": 0
+      },
+      "targetRevisions": {
+        "before": 0,
+        "after": 0
+      },
+      "sourceSignatures": {
+        "before": "12885675",
+        "after": "12885675"
+      },
+      "targetSignatures": {
+        "before": "1961737d",
+        "after": "1961737d"
+      },
+      "sourceStacks": [
+        {
+          "stackId": "mission_ore",
+          "resourceId": "ore_iron_silicate",
+          "quantity": 1,
+          "sealed": false,
+          "extensions": {}
+        }
+      ],
+      "targetStacks": [],
+      "metadataPreserved": true,
+      "rejectedSnapshotUnchanged": true
+    },
+    {
+      "id": "sealed-split-rejection",
+      "status": "Rejected",
+      "code": "SealedStackCannotSplit",
+      "requestedQuantity": 1,
+      "acceptedQuantity": 0,
+      "rejectedQuantity": 1,
+      "issues": [
+        "SealedStackCannotSplit"
+      ],
+      "warnings": [],
+      "sourceRevisions": {
+        "before": 0,
+        "after": 0
+      },
+      "targetRevisions": {
+        "before": 0,
+        "after": 0
+      },
+      "sourceSignatures": {
+        "before": "3e852cef",
+        "after": "3e852cef"
+      },
+      "targetSignatures": {
+        "before": "6d393797",
+        "after": "6d393797"
+      },
+      "sourceStacks": [
+        {
+          "stackId": "sealed_ore",
+          "resourceId": "ore_iron_silicate",
+          "quantity": 2,
+          "sealed": true,
+          "extensions": {}
+        }
+      ],
+      "targetStacks": [],
+      "metadataPreserved": true,
+      "rejectedSnapshotUnchanged": true
+    }
+  ],
+  "stableTransferStatuses": [
+    "Accepted",
+    "PartiallyAccepted",
+    "Rejected"
+  ],
+  "stableRejectionCodes": [
+    "QuantityInvalid",
+    "UnknownResource",
+    "SameContainerTransfer",
+    "SourceRevisionConflict",
+    "TargetRevisionConflict",
+    "UnknownSourceStack",
+    "InsufficientQuantity",
+    "AccessDenied",
+    "OwnershipDenied",
+    "MissionLocked",
+    "ResourceCategoryBlocked",
+    "ResourceTagBlocked",
+    "HazardBlocked",
+    "TargetMassExceeded",
+    "TargetVolumeExceeded",
+    "TargetStackLimitExceeded",
+    "SealedStackCannotSplit",
+    "PartialTransferNotAllowed"
+  ],
+  "scope": [
+    "Normal / startup with TestBridge absent from window, body, and debug HUD.",
+    "In-page dynamic import of the public /src/resources/index.ts module.",
+    "Deterministic full, capacity-limited partial, mission-locked, and sealed-split transfer results."
+  ],
+  "nonGoals": [
+    "No runtime, UI, renderer, simulator, flight, or Ship Builder integration.",
+    "No economy consequences, mining gameplay loop, screenshot, clock, random value, duration, or machine-specific path."
+  ],
+  "verification": {
+    "command": "npm run test:e2e -- tests/e2e/resource-cargo-core.spec.ts",
+    "expectedResult": "one focused Playwright test passes and writes these two task-owned evidence files",
+    "observedResult": "pass",
+    "screenshot": "not captured: no visual change"
+  }
+}
