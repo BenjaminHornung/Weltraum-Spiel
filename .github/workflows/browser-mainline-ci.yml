@@ -24,6 +24,7 @@ jobs:
   browser-mainline:
     name: Browser mainline verification
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     defaults:
       run:
         working-directory: apps/weltraum-browser
@@ -59,6 +60,9 @@ jobs:
             exit 1
           fi
 
+          file "$glb_path"
+          echo "Demo Scout GLB bytes: $(wc -c < "$glb_path")"
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -67,19 +71,106 @@ jobs:
           cache-dependency-path: apps/weltraum-browser/package-lock.json
 
       - name: Install browser dependencies
+        id: install-browser-dependencies
         run: npm ci
 
       - name: Install Playwright Chromium
+        id: install-playwright
         run: npx playwright install --with-deps chromium
 
+      - name: Print browser tool versions
+        run: |
+          node --version
+          npm --version
+          npx playwright --version
+
       - name: Run unit tests
+        id: unit-tests
         run: npm run test
 
       - name: Build browser app
+        id: browser-build
         run: npm run build
 
-      - name: Run Playwright E2E
-        run: npm run test:e2e
+      - name: Validate Playwright CI group coverage
+        id: playwright-group-coverage
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import { readdir, readFile } from "node:fs/promises";
+
+          const packageJson = JSON.parse(await readFile("package.json", "utf8"));
+          const groupScripts = ["test:e2e:core", "test:e2e:live", "test:e2e:ui"];
+          const groupedSpecs = groupScripts.flatMap((scriptName) => {
+            const script = packageJson.scripts?.[scriptName];
+            if (typeof script !== "string") {
+              throw new Error(`Missing required Playwright group script: ${scriptName}`);
+            }
+
+            return script.match(/tests\/e2e\/[^\s]+\.spec\.ts/g) ?? [];
+          });
+          const discoveredSpecs = (await readdir("tests/e2e", { withFileTypes: true }))
+            .filter((entry) => entry.isFile() && entry.name.endsWith(".spec.ts"))
+            .map((entry) => `tests/e2e/${entry.name}`)
+            .sort();
+          const groupedCounts = new Map();
+
+          for (const spec of groupedSpecs) {
+            groupedCounts.set(spec, (groupedCounts.get(spec) ?? 0) + 1);
+          }
+
+          const missing = discoveredSpecs.filter((spec) => !groupedCounts.has(spec));
+          const duplicates = [...groupedCounts]
+            .filter(([, count]) => count > 1)
+            .map(([spec]) => spec)
+            .sort();
+          const unexpected = [...groupedCounts.keys()]
+            .filter((spec) => !discoveredSpecs.includes(spec))
+            .sort();
+
+          if (missing.length || duplicates.length || unexpected.length) {
+            console.error(JSON.stringify({ missing, duplicates, unexpected }, null, 2));
+            process.exit(1);
+          }
+
+          console.log(`Validated ${discoveredSpecs.length} Playwright specs across ${groupScripts.length} required CI groups.`);
+          NODE
+
+      - name: Run Playwright core and autopilot E2E
+        if: ${{ !cancelled() && steps.install-browser-dependencies.outcome == 'success' && steps.install-playwright.outcome == 'success' && steps.browser-build.outcome == 'success' && steps.playwright-group-coverage.outcome == 'success' }}
+        env:
+          WELTRAUM_PLAYWRIGHT_ARTIFACT_GROUP: core-autopilot
+        run: npm run test:e2e:core
+
+      - name: Run Playwright live runtime and objectives E2E
+        if: ${{ !cancelled() && steps.install-browser-dependencies.outcome == 'success' && steps.install-playwright.outcome == 'success' && steps.browser-build.outcome == 'success' && steps.playwright-group-coverage.outcome == 'success' }}
+        env:
+          WELTRAUM_PLAYWRIGHT_ARTIFACT_GROUP: live-runtime
+        run: npm run test:e2e:live
+
+      - name: Run Playwright UI and layout E2E
+        if: ${{ !cancelled() && steps.install-browser-dependencies.outcome == 'success' && steps.install-playwright.outcome == 'success' && steps.browser-build.outcome == 'success' && steps.playwright-group-coverage.outcome == 'success' }}
+        env:
+          WELTRAUM_PLAYWRIGHT_ARTIFACT_GROUP: ui-layout
+        run: npm run test:e2e:ui
+
+      - name: Validate browser evidence JSON
+        if: ${{ !cancelled() && steps.install-browser-dependencies.outcome == 'success' }}
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import { readdir, readFile } from "node:fs/promises";
+
+          const evidenceFiles = (await readdir("evidence"))
+            .filter((file) => file.endsWith(".json"))
+            .sort();
+
+          for (const file of evidenceFiles) {
+            JSON.parse(await readFile(`evidence/${file}`, "utf8"));
+          }
+
+          console.log(`Validated ${evidenceFiles.length} browser evidence JSON files.`);
+          NODE
 
       - name: Upload browser test artifacts
         if: always()
@@ -95,3 +186,4 @@ jobs:
             apps/weltraum-browser/evidence/playwright-output/**
             apps/weltraum-browser/evidence/*.png
             apps/weltraum-browser/evidence/*.json
+            apps/weltraum-browser/evidence/*.md

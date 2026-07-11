@@ -2,6 +2,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { inflateSync } from "node:zlib";
+import { provingGroundAsteroidField } from "../../src/world/provingGroundWorld";
 
 interface PngSampleResult {
   readonly width: number;
@@ -276,7 +277,7 @@ test("browser vertical slice selects a target, previews a route, engages autopil
       batchKey: "low-poly-asteroid",
       sourceId: "proving-ground-world",
       frameId: "debug-local-render-frame",
-      count: 6,
+      count: provingGroundAsteroidField.length,
       maxInstances: 64,
       renderOnly: true,
       rendererOwnsWorldTruth: false

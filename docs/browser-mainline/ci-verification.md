@@ -28,10 +28,18 @@ npm ci
 npx playwright install --with-deps chromium
 npm run test
 npm run build
-npm run test:e2e
+npm run test:e2e:core
+npm run test:e2e:live
+npm run test:e2e:ui
 ```
 
-`npm run test` executes Vitest, `npm run build` executes the TypeScript/Vite browser build, and `npm run test:e2e` executes the Chromium Playwright suite.
+`npm run test` executes Vitest and `npm run build` executes the TypeScript/Vite browser build. The three required Chromium Playwright groups separate core/autopilot, live runtime/objectives, and UI/layout failures while retaining the aggregate `npm run test:e2e` command for local full-suite verification.
+
+CI runs Playwright with one worker and rejects committed `test.only` calls. Each E2E group writes automatic output and its HTML report beneath a group-specific folder in `evidence/playwright-output` and `evidence/playwright-report`, so a later group cannot replace an earlier failure trace or screenshot.
+
+Before launching Playwright, CI compares every `tests/e2e/*.spec.ts` file with the three group scripts. Missing, duplicate, or stale entries fail the job, so new E2E specs cannot be silently omitted during parallel feature integration.
+
+The workflow also prints Node, npm, and Playwright versions, reports the resolved Demo Scout GLB file type and byte size, and parses every top-level `evidence/*.json` file in a named required step.
 
 ## Demo Scout GLB / LFS strategy
 
@@ -71,6 +79,7 @@ Uploaded paths are:
 - `apps/weltraum-browser/evidence/playwright-output/**`
 - `apps/weltraum-browser/evidence/*.png`
 - `apps/weltraum-browser/evidence/*.json`
+- `apps/weltraum-browser/evidence/*.md`
 
 ## What this CI does not prove
 

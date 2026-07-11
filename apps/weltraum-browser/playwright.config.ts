@@ -4,13 +4,17 @@ import { existsSync } from "node:fs";
 const configuredBrowserPath = process.env.WELTRAUM_PLAYWRIGHT_EXECUTABLE_PATH;
 const launchOptions =
   configuredBrowserPath && existsSync(configuredBrowserPath) ? { executablePath: configuredBrowserPath } : undefined;
+const artifactGroup = process.env.WELTRAUM_PLAYWRIGHT_ARTIFACT_GROUP?.replace(/[^a-z0-9_-]/gi, "-");
+const artifactSuffix = artifactGroup ? `/${artifactGroup}` : "";
 
 export default defineConfig({
   testDir: "./tests/e2e",
   timeout: 30_000,
   expect: { timeout: 5_000 },
-  outputDir: "./evidence/playwright-output",
-  reporter: [["list"], ["html", { outputFolder: "./evidence/playwright-report", open: "never" }]],
+  forbidOnly: Boolean(process.env.CI),
+  workers: process.env.CI ? 1 : undefined,
+  outputDir: `./evidence/playwright-output${artifactSuffix}`,
+  reporter: [["list"], ["html", { outputFolder: `./evidence/playwright-report${artifactSuffix}`, open: "never" }]],
   use: {
     baseURL: "http://127.0.0.1:5173",
     trace: "retain-on-failure",

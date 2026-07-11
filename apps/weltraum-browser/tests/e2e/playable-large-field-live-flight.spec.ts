@@ -10,7 +10,11 @@ const liveTargets = [
   { targetId: "range-2500m", label: "Range 2500m", minMeters: 2_495, maxMeters: 3_200, distanceUnit: "km", radarBucket: "auto range 2.5 km" }
 ] as const;
 
-test.use({ screenshot: "off", trace: "off" });
+test.use(
+  process.env.CI
+    ? { screenshot: "only-on-failure", trace: "retain-on-failure" }
+    : { screenshot: "off", trace: "off" }
+);
 
 interface TargetPreviewEvidence {
   readonly targetId: string;
