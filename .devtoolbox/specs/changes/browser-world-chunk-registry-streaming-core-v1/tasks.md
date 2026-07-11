@@ -6,7 +6,7 @@
   - Verify: `npm run test -- tests/unit/chunkRegistry.test.ts`
 
 ## Phase 2: Streaming planner
-- [ ] Implement independent simulation residency/render LOD planning, budgets, hysteresis, transition events, canonical serialization/signatures, and focused unit tests.
+- [x] Implement independent simulation residency/render LOD planning, budgets, hysteresis, transition events, canonical serialization/signatures, and focused unit tests.
   - Files: `apps/weltraum-browser/src/world/worldStreaming.ts`, `apps/weltraum-browser/tests/unit/worldStreaming.test.ts`
   - Verify: `npm run test -- tests/unit/worldStreaming.test.ts` and the existing world-frame/simulation/low-poly unit regressions.
 
