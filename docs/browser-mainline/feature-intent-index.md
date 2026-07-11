@@ -70,14 +70,14 @@ Card fields:
 | Tests / evidence hints | Unit tests for canonical IDs (`chunk:x:y:z`), duplicate/conflict validation, ordered registry listings, bounded radius/bounds queries, and deterministic world streaming plans. E2E scenario checks include deterministic `initial`/`boundary`/`farther` observer steps, policy radii and budgets, ordered transitions and rejections, signed canonical snapshot strings, floating-origin invariance, and `TestBridge` availability only at `?testBridge=1`. Evidence files: `browser-world-chunk-registry-streaming-v1.md`, `browser-world-chunk-registry-streaming-v1-summary.json`. |
 | Known Unity bug traps | Floating-origin shifts changing residency/LOD/signatures; local projections leaking into gameplay state; simulation/render budget coupling; state churn from final-state-based transitions; query-gated scenario accidentally visible on default `/` route. |
 
-## 7. Ship Builder (Later Intent Only)
+## 7. Ship Builder (Domain Catalog Foundation Implemented; UI Later)
 
 | Field | Content |
 | --- | --- |
-| Source paths | `docs/spielkonzept/ship-builder-acceptance-scenarios.md`; `docs/spielkonzept/ship-builder-data-model.md`; `docs/spielkonzept/ship-builder-gameplay-ux.md`; `docs/spielkonzept/ship-builder-modular-parts.md`; `docs/spielkonzept/ship-builder-mvp-flow.md`; `docs/spielkonzept/ship-builder-stat-formulas.md`; `docs/spielkonzept/ship-builder-testflight-validation.md`; `docs/spielkonzept/ship-builder-validation-rules.md`; `docs/ux/player-hud-map-builder-surface-flow.md`; `docs/architecture/coordinate-spaces-and-floating-origin.md` |
-| Browser-native intent | Future browser builder owns ship-local part placement, validation, stats, draft save/test flight flow and part metadata. It should use ship-local coordinates (`+Z` forward, `+Y` up, `+X` right) and publish runtime authority/mass snapshots only through contracts. |
-| Non-goals | Not implemented in this transition step. No broad catalog, economy unlocks, production art import or runtime builder port. |
-| Tests / evidence hints | Later: validation unit tests, draft/test-flight handoff, stats snapshot tests, screenshot evidence for builder edit/test-flight/return. |
+| Source paths | `docs/spielkonzept/ship-builder-acceptance-scenarios.md`; `docs/spielkonzept/ship-builder-data-model.md`; `docs/spielkonzept/ship-builder-gameplay-ux.md`; `docs/spielkonzept/ship-builder-modular-parts.md`; `docs/spielkonzept/ship-builder-mvp-flow.md`; `docs/spielkonzept/ship-builder-stat-formulas.md`; `docs/spielkonzept/ship-builder-testflight-validation.md`; `docs/spielkonzept/ship-builder-validation-rules.md`; `apps/weltraum-browser/src/ship-builder/`; `docs/browser-mainline/ship-builder-domain-catalog-v1.md` |
+| Browser-native intent | The browser now has a JSON-safe Ship Builder domain/catalog/blueprint/serialization foundation with stable ASCII IDs, schema-first nested validation, explicit typed components and sockets, immutable indexes, canonical hashes, a sixteen-part starter catalog, and schema-integrity fixtures. The serialized built-in category IDs are `cockpit`, `hullFrame`, `mainThruster`, `rcs`, `fuelPower`, `cargoStorage`, `weapon`, and `utility`. A later builder owns ship-local placement, validation, stats, draft save/test flight flow, and runtime authority/mass snapshots through contracts. |
+| Non-goals | No Builder UI, full validation/stat engine, runtime/test-flight integration, economy unlocks/final costs, production art import, or the remaining sixteen planned catalog variants. Categories remain metadata and do not grant capability. |
+| Tests / evidence hints | `shipBuilderCatalog`, `shipBuilderBlueprint`, and `shipBuilderSerialization` unit suites cover the domain contracts. `tests/e2e/ship-builder-domain-catalog.spec.ts` loads normal `/`, keeps `TestBridge` absent, imports the domain through Vite, and writes deterministic JSON/Markdown evidence without screenshots. Later: builder edit/test-flight/return screenshots and runtime validation/stat evidence. |
 | Known Unity bug traps | Gameplay stats derived from visual helpers instead of metadata; socket alias ambiguity; test flight mutating active ship; builder input leaking into flight/autopilot controls. |
 
 ## 8. Surface-FPS (Later Intent Only)
@@ -108,6 +108,6 @@ Card fields:
 - [x] HUD / Telemetry
 - [x] Proving-Ground / Evidence
 - [x] Open-World / World-Scale / Floating-Origin
-- [x] Ship Builder later intent only
+- [x] Ship Builder domain/catalog foundation (Builder UI/runtime deferred)
 - [x] Surface-FPS later intent only
 - [x] Resource / Cargo Contract Core

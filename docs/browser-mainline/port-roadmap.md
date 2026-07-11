@@ -290,9 +290,30 @@ Deferred playable-flight follow-up points:
 - broader camera polish and input rebinding/accessibility beyond the current key/mouse contract,
 - full radar/minimap/map integration and non-local-space/orbital/surface flight behavior.
 
+## Ship Builder Domain Catalog Foundation v1
+
+Status: implemented as a browser-safe domain/catalog/serialization foundation, not as a Builder runtime milestone.
+
+Implemented in this slice:
+
+- stable ASCII ID/version contracts, schema-first nested validation, explicit typed components/sockets, and JSON-safe extension validation; the serialized built-in category IDs are `cockpit`, `hullFrame`, `mainThruster`, `rcs`, `fuelPower`, `cargoStorage`, `weapon`, and `utility`;
+- immutable catalog snapshots with deterministic indexes, canonical serialization/signature, and catalog/blueprint migration seams;
+- authoritative blueprint instances/connections, stable transform IDs, canonical roundtrips, and an authority-only layout hash;
+- eight categories and sixteen provisional starter definitions with scout/cargo/weapon schema-integrity fixtures;
+- a normal-route Vite browser smoke that keeps `TestBridge` absent, dynamically imports the domain barrel, and writes deterministic JSON/Markdown evidence without screenshots.
+
+Deferred Ship Builder work:
+
+- Builder palette/placement/edit/mirror/save UI;
+- full compatibility, validation, stat, mass/COM, flight-authority, cargo, and weapon engines;
+- runtime test flight, active-ship handoff, renderer/art binding, and flight-ready validation;
+- resource/economy/recipe/unlock integration, final costs/balance, and the remaining sixteen planned catalog variants.
+
+Gate: preserve stable identities, explicit socket/connection integrity, canonical serialization, and the no-`TestBridge` normal-route module smoke while later builder layers are added.
+
 ## Deferred Until Separate Feature Intent / Specs
 
-- Ship Builder runtime and broad catalog.
+- Ship Builder runtime, Builder UI, validation/stat engines, test flight, economy, production art binding, and the remaining planned catalog variants; the domain/catalog/serialization foundation is already implemented separately.
 - Surface-FPS runtime.
 - Economy, missions, factions, drones.
 - Real production asset migration.

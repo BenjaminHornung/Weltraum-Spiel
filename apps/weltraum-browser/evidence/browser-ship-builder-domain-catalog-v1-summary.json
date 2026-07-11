@@ -1,0 +1,83 @@
+{
+  "route": "/",
+  "testBridgeAbsent": true,
+  "catalogSignature": "5aaa27fd",
+  "schemaVersions": {
+    "catalog": 1,
+    "blueprint": 1
+  },
+  "catalogVersion": 1,
+  "categoryCount": 8,
+  "partDefinitionCount": 16,
+  "categoryCounts": [
+    {
+      "categoryId": "cockpit",
+      "partCount": 2
+    },
+    {
+      "categoryId": "hullFrame",
+      "partCount": 2
+    },
+    {
+      "categoryId": "mainThruster",
+      "partCount": 2
+    },
+    {
+      "categoryId": "rcs",
+      "partCount": 2
+    },
+    {
+      "categoryId": "fuelPower",
+      "partCount": 2
+    },
+    {
+      "categoryId": "cargoStorage",
+      "partCount": 2
+    },
+    {
+      "categoryId": "weapon",
+      "partCount": 2
+    },
+    {
+      "categoryId": "utility",
+      "partCount": 2
+    }
+  ],
+  "scout": {
+    "blueprintId": "blueprint_scout_v0",
+    "instanceCount": 5,
+    "connectionCount": 4,
+    "canonicalRoundTripEqual": true,
+    "instanceIdsStable": true,
+    "connectionIdsStable": true,
+    "layoutHashBefore": "fc4597b6",
+    "layoutHashAfter": "fc4597b6"
+  },
+  "fixtureCounts": [
+    {
+      "fixture": "scout",
+      "instanceCount": 5,
+      "connectionCount": 4
+    },
+    {
+      "fixture": "cargo",
+      "instanceCount": 6,
+      "connectionCount": 5
+    },
+    {
+      "fixture": "weapon",
+      "instanceCount": 7,
+      "connectionCount": 6
+    }
+  ],
+  "uiIntegration": "none",
+  "screenshotStatus": "not-captured-no-visual-contract",
+  "provisionalBalance": true,
+  "nonGoals": [
+    "Builder UI",
+    "validation and stat engines",
+    "runtime test flight",
+    "economy and final build costs",
+    "flight-ready compatibility validation"
+  ]
+}
