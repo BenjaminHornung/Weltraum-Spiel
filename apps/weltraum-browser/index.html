@@ -14,44 +14,53 @@
         <div class="hud-corridor hud-corridor--vertical"></div>
       </div>
       <section id="flight-hud" data-testid="basic-hud" aria-label="Flight HUD">
+        <div class="cockpit-frame" aria-hidden="true">
+          <div class="cockpit-frame__top"></div>
+          <div class="cockpit-frame__left"></div>
+          <div class="cockpit-frame__right"></div>
+          <div class="cockpit-frame__bottom"></div>
+          <div class="flight-vector-ladder flight-vector-ladder--left"></div>
+          <div class="flight-vector-ladder flight-vector-ladder--right"></div>
+        </div>
         <header id="hud-top-strip" class="hud-strip hud-strip--top">
           <div class="hud-readout hud-readout--brand hud-readout--primary">
             <div class="hud-kicker">Weltraum</div>
             <div class="hud-brand-line">Flight HUD</div>
           </div>
           <div class="hud-readout hud-readout--mode">
-            <div class="label">Mode</div>
+            <div class="label">Modus</div>
             <div id="mode">unknown</div>
           </div>
           <div class="hud-readout hud-readout--state">
             <div class="label">Autopilot</div>
             <div id="status" class="hud-state-badge" aria-live="polite" data-testid="autopilot-active">booting</div>
           </div>
-          <div class="hud-readout">
-            <div class="label">Ship Visual</div>
+          <div class="hud-readout hud-readout--diagnostic">
+            <div class="label">Visual Source</div>
             <div id="ship-visual-source" data-testid="ship-visual-source">Ship visual: loading</div>
           </div>
         </header>
 
         <aside id="hud-left-panel" class="hud-panel hud-panel--left" aria-label="Ship status" data-hud-region="ship-status">
-          <div class="hud-panel-title">Ship Systems</div>
+          <div class="hud-panel-title">Schiffssysteme</div>
           <div class="hud-panel-section hud-panel-section--systems">
             <div class="hud-metric-row hud-metric-row--control">
               <span class="hud-glyph hud-glyph--mode" aria-hidden="true"></span>
-              <div class="label">Control Mode</div>
+              <div class="label">Flugmodus</div>
               <div id="control-mode" class="hud-metric-value" data-testid="control-mode">unknown</div>
             </div>
             <div class="hud-metric-row hud-metric-row--throttle">
               <span class="hud-glyph hud-glyph--throttle" aria-hidden="true"></span>
               <div class="hud-metric-main">
-                <div class="label">Throttle</div>
+                <div class="label">Schub</div>
                 <div id="throttle-status" class="hud-metric-value" data-testid="throttle-status">0%</div>
               </div>
               <div class="hud-meter" aria-hidden="true"><span id="throttle-meter-fill" class="hud-meter-fill"></span></div>
+              <div id="throttle-segments" class="hud-segments" role="meter" aria-label="Throttle" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></div>
             </div>
             <div class="hud-metric-row hud-metric-row--speed">
               <span class="hud-glyph hud-glyph--speed" aria-hidden="true"></span>
-              <div class="label">Speed</div>
+              <div class="label">Geschwindigkeit</div>
               <div id="velocity-status" class="hud-metric-value" data-testid="velocity-status">0 m/s</div>
             </div>
             <div class="hud-metric-row hud-metric-row--assist">
@@ -62,7 +71,7 @@
             <div class="hud-metric-row hud-metric-row--fuel">
               <span class="hud-glyph hud-glyph--fuel" aria-hidden="true"></span>
               <div class="hud-metric-main">
-                <div class="label">Fuel</div>
+                <div class="label">Treibstoff</div>
                 <div id="fuel-status" class="hud-metric-value">unknown</div>
               </div>
               <div class="hud-meter hud-meter--fuel" aria-hidden="true"><span id="fuel-meter-fill" class="hud-meter-fill"></span></div>
@@ -71,56 +80,85 @@
         </aside>
 
         <aside id="hud-radar-panel" class="hud-panel hud-panel--radar" aria-label="Local radar" data-hud-region="radar">
-          <div class="hud-panel-title">Local Radar</div>
+          <div class="hud-panel-title">Lokalradar</div>
           <div class="radar-scope" data-testid="radar-scope" aria-hidden="true">
             <span class="radar-ring radar-ring--outer"></span>
             <span class="radar-ring radar-ring--mid"></span>
             <span class="radar-ring radar-ring--inner"></span>
             <span class="radar-sweep"></span>
             <span class="radar-ship"></span>
-            <span class="radar-contact radar-contact--target"></span>
-            <span class="radar-contact radar-contact--obstacle-a"></span>
-            <span class="radar-contact radar-contact--obstacle-b"></span>
-            <span class="radar-contact radar-contact--route"></span>
+            <div id="radar-runtime-contacts" class="radar-runtime-contacts"></div>
           </div>
           <div class="radar-footer">
-            <span>Local</span>
-            <span>Auto range</span>
+            <span>LOKAL</span>
+            <span id="radar-status" data-testid="radar-status">No contacts</span>
+            <span id="radar-range">250 m</span>
           </div>
-          <div id="radar-status" class="radar-status-line" data-testid="radar-status">no route contact</div>
         </aside>
 
         <aside id="hud-right-panel" class="hud-panel hud-panel--right" aria-label="Navigation" data-hud-region="target-autopilot">
-          <div class="hud-panel-title">Target / Autopilot</div>
+          <div class="hud-panel-title">Ziel / Autopilot</div>
           <div class="hud-panel-section hud-panel-section--navigation">
             <div class="hud-nav-card hud-nav-card--target">
-              <div class="label">Selected Target</div>
-              <div id="target-status" data-testid="selected-target">none selected</div>
-              <div class="label">Distance</div>
-              <div id="target-distance">n/a</div>
+              <div class="label">Ziel</div>
+              <div class="flight-target-row flight-target-row--identity">
+                <div id="target-status" data-testid="selected-target">No target</div>
+                <div id="target-kind">Unselected</div>
+              </div>
+              <div class="flight-target-row flight-target-row--distance">
+                <div class="label">Entfernung</div>
+                <div id="target-distance">n/a</div>
+              </div>
             </div>
             <div class="hud-nav-card hud-nav-card--objective">
-              <div class="label">Objective</div>
-              <div id="objective-label" data-testid="objective-label">No navigation objective</div>
-              <div id="objective-status" class="hud-route-state" data-testid="objective-status">Inactive</div>
-              <div class="label">Objective Target</div>
-              <div id="objective-target" data-testid="objective-target">none</div>
-              <div class="label">Objective Distance</div>
-              <div id="objective-distance" data-testid="objective-distance">n/a</div>
-              <div class="label">Next Action</div>
-              <div id="objective-next-action" data-testid="objective-next-action">choose objective</div>
-              <div id="objective-hint" data-testid="objective-hint">Choose a large-field objective to begin.</div>
-              <div class="label">Objective Selection</div>
-              <div id="objective-options" class="objective-option-strip" data-testid="objective-options">loading</div>
+              <div class="flight-nav-header">
+                <span class="flight-nav-icon flight-nav-icon--navigation"></span>
+                <strong>NAVIGATION</strong>
+              </div>
+              <div class="flight-nav-section flight-nav-section--course">
+                <div class="label">KURS</div>
+                <div class="flight-nav-course">
+                  <span class="flight-nav-icon flight-nav-icon--course" aria-hidden="true"></span>
+                  <strong id="objective-label" data-testid="objective-label">No navigation objective</strong>
+                  <span class="flight-nav-chevron" aria-hidden="true"></span>
+                </div>
+              </div>
+              <div class="flight-nav-section flight-nav-section--distance">
+                <div class="flight-nav-section-heading"><span>ENTFERNUNG</span><strong id="objective-distance" data-testid="objective-distance">n/a</strong></div>
+                <div id="flight-nav-distance-scale" class="flight-nav-distance-scale" aria-label="Navigation distance scale" hidden></div>
+              </div>
+              <div class="flight-nav-section flight-nav-section--eta">
+                <div class="flight-nav-eta">
+                  <span class="flight-nav-icon flight-nav-icon--eta" aria-hidden="true"></span>
+                  <span>STATUS</span>
+                  <strong id="objective-status" class="hud-route-state" data-testid="objective-status">Inactive</strong>
+                </div>
+              </div>
+              <div class="flight-nav-actions">
+                <button id="open-navigation-planner" class="flight-nav-action" type="button">Navigationsplaner</button>
+                <button id="cancel-autopilot" class="flight-nav-action flight-nav-action--cancel" type="button">Cancel</button>
+              </div>
+              <div class="flight-nav-runtime">
+                <div class="label">Auftrag</div>
+                <div class="label">Zielpunkt</div>
+                <div id="objective-target" data-testid="objective-target">none</div>
+                <div class="label">Distanz</div>
+                <div class="label">Nächster Schritt</div>
+                <div id="objective-next-action" data-testid="objective-next-action">choose objective</div>
+                <div id="objective-hint" data-testid="objective-hint">Choose a large-field objective to begin.</div>
+                <div class="label">Auftragskette</div>
+                <div id="objective-options" class="objective-option-strip" data-testid="objective-options">loading</div>
+              </div>
             </div>
             <div class="hud-nav-card hud-nav-card--route">
-              <div class="label">Plan</div>
+              <div class="label">Autopilot</div>
               <div id="plan-hash">pending</div>
-              <div class="label">Route</div>
+              <div class="label">Navigation</div>
               <div id="route-status" class="hud-route-state">unknown</div>
             </div>
+            <div id="warning-chips" class="warning-chip-strip hud-warning-strip" aria-live="polite" data-testid="warning-state" hidden></div>
             <div class="hud-nav-card hud-nav-card--targets">
-              <div class="label">Target Selection</div>
+              <div class="label">Kursziel</div>
               <div id="target-options" class="target-option-strip" data-testid="target-options">loading</div>
             </div>
           </div>
@@ -128,46 +166,58 @@
 
         <footer id="hud-bottom-strip" class="hud-strip hud-strip--bottom" aria-label="Warnings and route action">
           <div class="hud-bottom-group hud-bottom-group--warnings">
-            <div class="label">Warnings</div>
-            <div id="warning-chips" class="warning-chip-strip" aria-live="polite" data-testid="warning-state">none</div>
-            <div class="label">Summary</div>
+            <div class="label">Warnungen</div>
+            <div class="label">Status</div>
             <div id="failure-reasons">none</div>
           </div>
           <div class="hud-bottom-group hud-bottom-group--message">
-            <div class="label">Cockpit Message</div>
+            <div class="label">Cockpit</div>
             <div id="runtime-message" aria-live="polite" data-testid="runtime-message">ready</div>
           </div>
           <div class="hud-bottom-group hud-bottom-group--actions">
-            <div class="label">Route Action</div>
+            <div class="label">Kommando</div>
             <div id="autopilot-action-state" class="hud-state-badge action-state">Ready</div>
             <div class="hud-actions">
               <button id="engage-autopilot" type="button">Engage route</button>
-              <button id="open-navigation-planner" type="button">Planner</button>
-              <button id="cancel-autopilot" type="button">Cancel</button>
             </div>
           </div>
         </footer>
 
-        <section id="navigation-planner" class="hud-overlay navigation-planner" aria-label="Navigation planner" data-testid="navigation-planner" hidden>
+        <dialog id="navigation-planner" class="hud-overlay navigation-planner" role="dialog" aria-modal="true" aria-labelledby="planner-dialog-title" data-testid="navigation-planner">
           <aside class="planner-rail" aria-label="Planner navigation">
             <div class="planner-mark">Weltraum</div>
+            <div class="planner-rail-item">Übersicht</div>
             <div class="planner-rail-item planner-rail-item--active">Navigation</div>
-            <div class="planner-rail-item">Objectives</div>
-            <div class="planner-rail-item">Ship</div>
+            <div class="planner-rail-item">Aufträge</div>
+            <div class="planner-rail-item">Fracht</div>
+            <div class="planner-rail-item">Schiff</div>
+            <div class="planner-rail-item">Systeme</div>
+            <div class="planner-rail-item">Kodex</div>
           </aside>
           <div class="planner-main">
             <header class="planner-top-strip">
-              <div>
-                <div class="label">Navigation Planner</div>
-                <div class="planner-title">System Map</div>
+              <div class="planner-header-title">
+                <div id="planner-dialog-title" class="label">NAVIGATION PLANNER</div>
+                <div class="planner-title">SYSTEM MAP</div>
               </div>
-              <div>
-                <div class="label">Target</div>
+              <div class="planner-telemetry planner-telemetry--target">
+                <div class="label">Ziel</div>
                 <div id="planner-selected-target" data-testid="planner-selected-target">none selected</div>
               </div>
-              <div>
-                <div class="label">Distance</div>
+              <div class="planner-telemetry planner-telemetry--eta">
+                <div class="label">ETA / Entfernung</div>
+                <div id="planner-route-eta" class="planner-telemetry-value">--:--</div>
                 <div id="planner-route-distance" data-testid="planner-route-distance">n/a</div>
+              </div>
+              <div class="planner-telemetry planner-telemetry--fuel">
+                <div class="label">Treibstoff</div>
+                <div id="planner-fuel-value" class="planner-telemetry-value">0 / 0</div>
+                <div id="planner-fuel-percent" class="planner-telemetry-subvalue">0%</div>
+              </div>
+              <div class="planner-telemetry planner-telemetry--brake">
+                <div class="label">Bremsreserve</div>
+                <div id="planner-brake-value" class="planner-telemetry-value">n/a</div>
+                <div id="planner-brake-required" class="planner-telemetry-subvalue">n/a</div>
               </div>
               <div>
                 <div class="label">Status</div>
@@ -176,71 +226,74 @@
             </header>
 
             <div id="nav-planner-map" class="planner-map" data-testid="navigation-planner-map" aria-label="Route map">
-              <svg class="planner-route-svg" viewBox="0 0 1000 620" role="img" aria-label="Route preview map">
-                <defs>
-                  <filter id="planner-route-glow" x="-30%" y="-30%" width="160%" height="160%">
-                    <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-                    <feMerge>
-                      <feMergeNode in="coloredBlur" />
-                      <feMergeNode in="SourceGraphic" />
-                    </feMerge>
-                  </filter>
-                </defs>
-                <ellipse cx="520" cy="310" rx="420" ry="210" class="planner-orbit planner-orbit--outer" />
-                <ellipse cx="520" cy="310" rx="310" ry="150" class="planner-orbit planner-orbit--inner" />
-                <path class="planner-route planner-route--primary" d="M155 405 C300 400 390 374 505 326 S735 235 865 155" />
-                <path class="planner-route planner-route--avoidance" d="M505 326 C585 365 670 350 755 274" />
-                <circle cx="155" cy="405" r="31" class="planner-node planner-node--ship" />
-                <circle cx="505" cy="326" r="12" class="planner-node" />
-                <circle cx="685" cy="260" r="11" class="planner-node" />
-                <polygon points="865,116 907,140 907,189 865,214 823,189 823,140" class="planner-node planner-node--target" />
-                <circle cx="600" cy="382" r="58" class="planner-hazard" />
+              <svg id="planner-route-svg" class="planner-route-svg" viewBox="0 0 1000 620" role="group" aria-label="Runtime route preview map" data-orbit="north-up" data-zoom="1">
+                <g id="planner-map-viewport"></g>
               </svg>
-              <div class="planner-map-label planner-map-label--ship">Demo Scout</div>
-              <div class="planner-map-label planner-map-label--target" id="planner-map-target">Selected route</div>
-              <div class="planner-map-label planner-map-label--hazard">Obstacle field</div>
+              <div class="planner-map-targets" aria-label="Route targets">
+                <div class="label planner-targets-label">Ziele</div>
+                <div id="planner-target-options" class="planner-target-strip" data-testid="planner-target-options">loading</div>
+              </div>
+              <div class="planner-map-controls" aria-label="Map view controls">
+                <button id="planner-map-focus" type="button" class="planner-map-control planner-map-control--focus" aria-label="Focus all runtime geometry" title="Focus"></button>
+                <button id="planner-map-orbit" type="button" class="planner-map-control planner-map-control--orbit" aria-label="Toggle north-up or ship-up" aria-pressed="false" title="Orbit"></button>
+                <button id="planner-map-zoom" type="button" class="planner-map-control planner-map-control--zoom" aria-label="Cycle map zoom" title="Zoom"></button>
+              </div>
               <div class="planner-map-legend">
-                <span>Planned route</span>
-                <span>Avoidance arc</span>
-                <span>Waypoint</span>
-                <span>Obstacle</span>
+                <span class="planner-legend-item planner-legend-item--route">Geplante Route</span>
+                <span class="planner-legend-item planner-legend-item--avoidance">Ausweichroute</span>
+                <span class="planner-legend-item planner-legend-item--waypoint">Wegpunkt</span>
+                <span class="planner-legend-item planner-legend-item--maneuver">Manöverpunkt</span>
+                <span class="planner-legend-item planner-legend-item--hazard">Hindernis</span>
               </div>
             </div>
           </div>
 
           <aside id="nav-planner-details" class="planner-details" data-testid="route-details-panel" aria-label="Route details">
-            <div class="planner-section">
-              <div class="hud-panel-title">Maneuver Timeline</div>
-              <ol class="planner-timeline">
-                <li><span>Align</span><strong>Ready</strong></li>
-                <li><span>Burn</span><strong id="planner-burn-state">Preview</strong></li>
-                <li><span>Avoid</span><strong>Obstacle-safe</strong></li>
-                <li><span>Brake</span><strong>Reserved</strong></li>
-                <li><span>Hold</span><strong>Arrival</strong></li>
-              </ol>
-            </div>
-            <div class="planner-section">
-              <div class="hud-panel-title">Route Profile</div>
-              <div class="planner-profile-controls" data-testid="route-profile-controls">
-                <button type="button" disabled title="Reserve profile is a presentation placeholder">Safe</button>
-                <button type="button" class="planner-profile-controls__active">Balanced</button>
-                <button type="button" disabled title="Fast profile is not implemented yet">Fast</button>
+            <div class="planner-section planner-section--timeline">
+              <div class="planner-section-heading">
+                <div class="hud-panel-title">Manöver-Zeitliste</div>
+                <time id="planner-timeline-total">--:--</time>
               </div>
+              <ol id="planner-timeline" class="planner-timeline"></ol>
             </div>
-            <div class="planner-section">
-              <div class="label">Objective</div>
-              <div id="planner-objective" data-testid="planner-objective">No objective</div>
-              <div class="label">Route Detail</div>
-              <div id="planner-route-detail" data-testid="planner-route-detail">select a target to preview a route</div>
-              <div class="label">Available Targets</div>
-              <div id="planner-target-options" class="planner-target-strip" data-testid="planner-target-options">loading</div>
+            <div class="planner-section planner-section--profile">
+              <div class="hud-panel-title">Routenprofil</div>
+              <div class="planner-profile-controls" data-testid="route-profile-controls">
+                <button id="planner-profile-safe" type="button" aria-pressed="false"><span>SICHER<span class="planner-profile-note">Mehr Reserve</span></span><span class="contract-text">Safe</span></button>
+                <button id="planner-profile-balanced" type="button" aria-pressed="true"><span>AUSGEWOGEN<span class="planner-profile-note">Empfohlen</span></span><span class="contract-text">Balanced</span></button>
+                <button id="planner-profile-fast" type="button" aria-pressed="false"><span>SCHNELL<span class="planner-profile-note">Weniger Zeit</span></span><span class="contract-text">Fast</span></button>
+              </div>
+              <div id="planner-lock-reason" class="planner-control-reason" hidden></div>
             </div>
+            <div class="planner-section planner-section--route-details">
+              <div class="hud-panel-title">Routendetails</div>
+              <div class="planner-runtime-summary">
+                <div class="label">Auftrag</div>
+                <div id="planner-objective" data-testid="planner-objective">No objective</div>
+                <div class="label">Routenstatus</div>
+                <div id="planner-route-detail" data-testid="planner-route-detail">select a target to preview a route</div>
+              </div>
+              <dl class="planner-route-metrics">
+                <div><dt>Strecke</dt><dd id="planner-metric-distance">n/a</dd></div>
+                <div><dt>Geschätzter Treibstoff</dt><dd id="planner-metric-fuel-estimate">n/a</dd></div>
+                <div><dt>Treibstoff nach Ankunft</dt><dd id="planner-metric-fuel-remaining">n/a</dd></div>
+                <div><dt>Bremsreserve</dt><dd id="planner-metric-brake-reserve">n/a</dd></div>
+                <div><dt>Hindernisvermeidung</dt><dd id="planner-metric-avoidance">n/a</dd></div>
+                <div><dt>Profil / Route</dt><dd id="planner-metric-route">n/a</dd></div>
+              </dl>
+            </div>
+            <div id="planner-feedback" class="planner-feedback" role="status" aria-live="assertive" tabindex="-1"></div>
             <div class="planner-actions">
+              <button id="planner-preview-route" type="button" class="planner-action-chrome">Preview</button>
+              <button id="planner-replan-route" type="button" class="planner-action-chrome">Replan</button>
               <button id="planner-engage-route" type="button" class="planner-engage" data-testid="planner-engage-route">Engage</button>
-              <button id="planner-close" type="button">Close</button>
             </div>
           </aside>
-        </section>
+
+          <footer class="planner-footer" aria-label="Planner footer">
+            <button id="planner-close" type="button"><span aria-hidden="true">VERLASSEN</span><span class="contract-text">Close</span><kbd>ESC</kbd></button>
+          </footer>
+        </dialog>
 
         <section id="combat-contact-hud" class="contact-hud" aria-label="Combat contact presentation" data-testid="combat-contact-hud" hidden>
           <div class="contact-compass" aria-hidden="true"><span>NW</span><strong>N</strong><span>NE</span></div>
@@ -249,29 +302,55 @@
           </div>
           <div class="contact-marker" data-testid="contact-marker">
             <span class="contact-marker__diamond"></span>
-            <strong>Presentation Contact</strong>
-            <span>611 m</span>
+            <strong id="combat-marker-target">NO TARGET</strong>
+            <span id="combat-marker-distance">n/a</span>
           </div>
           <aside id="contact-panel" class="contact-panel" data-testid="combat-contact-panel" aria-label="Contact and weapon panel">
-            <div class="hud-panel-title">Weapon Computer</div>
-            <div class="contact-card">
-              <div class="label">Target acquired</div>
-              <div class="contact-name">Presentation Contact</div>
-              <div class="contact-range">611 m</div>
+            <div class="hud-panel-title">Kontaktstatus</div>
+            <div class="contact-card contact-card--lock">
+              <div class="label">Ausgewähltes Ziel</div>
+              <div class="contact-lock-line">
+                <span class="contact-lock-diamond" aria-hidden="true"></span>
+                <div id="combat-contact-name" class="contact-name">No target</div>
+                <div id="combat-contact-range" class="contact-range">n/a</div>
+              </div>
             </div>
-            <div class="label">Turret Status</div>
-            <div class="weapon-row"><span>Laser</span><strong>Ready</strong></div>
-            <div class="weapon-row"><span>Rockets</span><strong>7 / 12</strong></div>
-            <div class="weapon-row weapon-row--hot"><span>Cannon</span><strong>Offline</strong></div>
-            <div class="label">Subsystems</div>
-            <div class="weapon-row"><span>Shields</span><strong>100%</strong></div>
-            <div class="weapon-row"><span>Hull</span><strong>87%</strong></div>
+            <div class="combat-runtime-sections">
+              <section class="combat-runtime-section" aria-label="Flight telemetry">
+                <div class="combat-runtime-section-title">Flug</div>
+                <div class="combat-runtime-summary">
+                  <div><span>Tempo</span><strong id="combat-flight-speed">0.00 m/s</strong></div>
+                  <div><span>Schub</span><strong id="combat-flight-throttle">0%</strong></div>
+                  <div><span>Treibstoff</span><strong id="combat-flight-fuel">0 / 0 kg</strong></div>
+                </div>
+              </section>
+              <section class="combat-runtime-section" aria-label="Control telemetry">
+                <div class="combat-runtime-section-title">Steuerung</div>
+                <div class="combat-runtime-summary">
+                  <div><span>Modus</span><strong id="combat-control-mode">Cruise</strong></div>
+                  <div><span>Assistenz</span><strong id="combat-control-assist">RCS / SAS</strong></div>
+                  <div><span>Autorität</span><strong id="combat-authority-status">Unknown</strong></div>
+                </div>
+              </section>
+              <section class="combat-runtime-section" aria-label="Navigation safety telemetry">
+                <div class="combat-runtime-section-title">Navigation / Sicherheit</div>
+                <div class="combat-runtime-summary">
+                  <div><span>Autopilot</span><strong id="combat-autopilot-status">Standby</strong></div>
+                  <div><span>Bremsen</span><strong id="combat-brake-status">Unknown</strong></div>
+                  <div id="combat-warning-row" hidden><span>Warnungen</span><strong id="combat-warning-status"></strong></div>
+                  <div><span>Radar</span><strong id="combat-radar-status">No contacts</strong></div>
+                </div>
+              </section>
+            </div>
           </aside>
           <aside id="contact-target-card" class="contact-target-card" data-testid="contact-target-card">
-            <div class="label">Presentation shell</div>
-            <div class="contact-wireframe" aria-hidden="true"></div>
-            <strong>No real combat system active</strong>
-            <span>UI-only contact scenario</span>
+            <div class="contact-target-heading"><span>ZIEL</span><strong id="combat-target-distance">n/a</strong></div>
+            <strong id="combat-target-name" class="contact-target-name">NO TARGET</strong>
+            <span id="combat-target-kind" class="contact-target-class">UNSELECTED</span>
+            <div class="combat-contract-copy contract-text">
+              <strong>No real combat system active</strong>
+              <span>Navigation telemetry only</span>
+            </div>
           </aside>
         </section>
       </section>

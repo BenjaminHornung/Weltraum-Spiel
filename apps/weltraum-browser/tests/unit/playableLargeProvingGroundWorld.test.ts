@@ -34,8 +34,11 @@ describe("playable large proving-ground world", () => {
     expect(new Set(ids).size).toBe(ids.length);
 
     for (const targetId of targetIds) {
-      const telemetry = controller.dispatchCommand({ type: "SelectTarget", targetId });
+      const result = controller.dispatchCommand({ type: "SelectTarget", targetId });
+      const telemetry = result.telemetry;
 
+      expect(result.success).toBe(true);
+      expect(result.code).toBe("TargetSelected");
       expect(telemetry.selectedTarget?.id).toBe(targetId);
       expect(telemetry.selectableTargets?.map((target) => target.id)).toEqual(expect.arrayContaining([...targetIds]));
       expect(telemetry.routePreview?.state).toBe("Ready");

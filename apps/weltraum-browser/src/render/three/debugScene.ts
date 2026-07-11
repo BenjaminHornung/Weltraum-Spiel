@@ -60,6 +60,9 @@ export interface RenderDebugSnapshot {
 
 export interface DebugSceneOptions {
   readonly lowPolyInstanceBatch: LowPolyInstanceBatch;
+  readonly showDebugGrid?: boolean;
+  readonly surface?: "flight" | "combat";
+  readonly showDebugHelpers?: boolean;
 }
 
 export class DebugScene {
@@ -81,41 +84,63 @@ export class DebugScene {
   private orbitPitch = 0.28;
   private orbitDistance = 42;
   private isOrbiting = false;
+  private plannerWasOpen = false;
   private pointerLast = { x: 0, y: 0 };
   private renderSnapshot: RenderDebugSnapshot;
+  private readonly surface: NonNullable<DebugSceneOptions["surface"]>;
+  private readonly showDebugHelpers: boolean;
 
   constructor(private readonly canvas: HTMLCanvasElement, private readonly runtime: BrowserRuntimeController, options: DebugSceneOptions) {
+    this.surface = options.surface ?? "flight";
+    this.showDebugHelpers = options.showDebugHelpers ?? false;
     this.asteroidBatch = options.lowPolyInstanceBatch;
     this.renderSnapshot = this.createInitialRenderSnapshot();
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    this.renderer.setClearColor(0x080b12, 1);
-    this.scene.background = new THREE.Color(0x080b12);
+    this.renderer.setClearColor(0x020713, 1);
+    this.scene.background = new THREE.Color(0x020713);
+    this.scene.fog = new THREE.FogExp2(0x061224, 0.00042);
     this.camera.far = 5_000;
     this.camera.updateProjectionMatrix();
     this.camera.position.set(0, 80, 150);
     this.camera.lookAt(55, 0, -20);
 
-    const ambient = new THREE.AmbientLight(0x9fb8ff, 1.1);
-    const key = new THREE.DirectionalLight(0xffffff, 2.2);
-    key.position.set(40, 80, 60);
-    this.scene.add(ambient, key);
+    const ambient = new THREE.AmbientLight(0x7ea6ff, 0.92);
+    const key = new THREE.DirectionalLight(0xffffff, 2.85);
+    key.position.set(-42, 96, 72);
+    const rim = new THREE.DirectionalLight(0x35d9ff, 1.45);
+    rim.position.set(-120, 28, -90);
+    const fill = new THREE.PointLight(0xffb04a, 36, 620, 1.6);
+    fill.position.set(-72, 18, 44);
+    this.scene.add(ambient, key, rim, fill);
 
-    const grid = new THREE.GridHelper(3_000, 30, 0x294568, 0x152236);
-    grid.position.y = -6;
-    this.scene.add(grid);
+    if (options.showDebugGrid) {
+      const grid = new THREE.GridHelper(3_000, 30, 0x294568, 0x152236);
+      grid.position.y = -6;
+      this.scene.add(grid);
+    }
+
+    this.scene.add(this.createStarField(), this.createDistantPlanet(), this.createCinematicAsteroidBelt());
 
     this.scene.add(this.shipVisual.group);
 
     this.asteroidField = new THREE.InstancedMesh(
       new THREE.IcosahedronGeometry(3.2, 0),
-      new THREE.MeshStandardMaterial({ color: 0xb6a27a, roughness: 0.95, metalness: 0.02 }),
+      new THREE.MeshStandardMaterial({ color: 0x8d8f94, roughness: 0.96, metalness: 0.03, flatShading: true }),
       this.asteroidBatch.instances.length
     );
     this.writeAsteroidInstanceMatrices();
+    this.asteroidField.visible = this.surface === "flight";
     this.scene.add(this.asteroidField);
 
-    this.target = new THREE.Mesh(new THREE.OctahedronGeometry(5, 0), new THREE.MeshStandardMaterial({ color: 0x80ff9f, emissive: 0x1c5a2a }));
+    this.target = new THREE.Mesh(new THREE.OctahedronGeometry(5, 0), new THREE.MeshStandardMaterial({
+      color: 0x31d9ff,
+      emissive: 0x0f7fa0,
+      emissiveIntensity: 1.35,
+      transparent: true,
+      opacity: 0.62,
+      roughness: 0.3
+    }));
     this.scene.add(this.target);
 
     this.populateTargetBeaconMarkers();
@@ -123,6 +148,9 @@ export class DebugScene {
     this.scene.add(this.targetBeaconGroup);
     this.scene.add(this.obstacleGroup);
     this.scene.add(this.routeGroup);
+    this.routeGroup.visible = this.showDebugHelpers;
+    this.targetBeaconGroup.visible = this.showDebugHelpers;
+    this.obstacleGroup.visible = this.showDebugHelpers;
 
     window.addEventListener("resize", this.resize);
     window.addEventListener("keydown", this.handleKeyDown);
@@ -156,7 +184,7 @@ export class DebugScene {
       this.shipVisual.updatePose(position, orientation);
       this.shipVisual.updateVfx(telemetry.ship.actuatorTelemetry);
       const cameraSnapshot = this.updateCamera(telemetry.manualInput?.cameraMode ?? "ChaseLocked", position, orientation, elapsed);
-      if (targetPosition) {
+      if (targetPosition && this.showDebugHelpers) {
         this.target.visible = true;
         this.target.position.copy(toVector3(targetPosition));
         const selectedTargetDistance = this.target.position.distanceTo(position);
@@ -237,17 +265,114 @@ export class DebugScene {
     for (const segment of plan.segments) {
       const points = [toVector3(segment.start), toVector3(segment.end)];
       const geometry = new THREE.BufferGeometry().setFromPoints(points);
-      const material = new THREE.LineBasicMaterial({ color: segment.kind === "Avoidance" ? 0xffd166 : 0x66d9ef });
+      const material = new THREE.LineBasicMaterial({ color: segment.kind === "Avoidance" ? 0xff9d2e : 0x31d9ff, transparent: true, opacity: 0.78 });
       this.routeGroup.add(new THREE.Line(geometry, material));
     }
   }
 
+  private seededUnit(index: number, salt: number): number {
+    const raw = Math.sin(index * 12.9898 + salt * 78.233) * 43_758.5453;
+    return raw - Math.floor(raw);
+  }
+
+  private createStarField(): THREE.Points {
+    const count = 1_800;
+    const positions = new Float32Array(count * 3);
+    const colors = new Float32Array(count * 3);
+    for (let index = 0; index < count; index += 1) {
+      const radius = 900 + this.seededUnit(index, 1) * 3_700;
+      const theta = this.seededUnit(index, 2) * Math.PI * 2;
+      const phi = Math.acos(2 * this.seededUnit(index, 3) - 1);
+      const x = Math.sin(phi) * Math.cos(theta) * radius + 520;
+      const y = Math.cos(phi) * radius * 0.55;
+      const z = Math.sin(phi) * Math.sin(theta) * radius;
+      const offset = index * 3;
+      positions[offset] = x;
+      positions[offset + 1] = y;
+      positions[offset + 2] = z;
+      const cool = 0.78 + this.seededUnit(index, 4) * 0.22;
+      colors[offset] = cool;
+      colors[offset + 1] = 0.84 + this.seededUnit(index, 5) * 0.16;
+      colors[offset + 2] = 1;
+    }
+
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+    const material = new THREE.PointsMaterial({
+      size: 5.4,
+      sizeAttenuation: true,
+      transparent: true,
+      opacity: 0.92,
+      depthWrite: false,
+      vertexColors: true
+    });
+    const field = new THREE.Points(geometry, material);
+    field.name = "presentation-starfield";
+    field.renderOrder = -20;
+    field.userData.renderOnly = true;
+    return field;
+  }
+
+  private createDistantPlanet(): THREE.Group {
+    const group = new THREE.Group();
+    group.name = "presentation-distant-planet";
+    group.userData.renderOnly = true;
+    const planet = new THREE.Mesh(
+      new THREE.SphereGeometry(68, 32, 18),
+      new THREE.MeshStandardMaterial({ color: 0x496c87, roughness: 1, metalness: 0, flatShading: true })
+    );
+    planet.position.set(720, 210, -520);
+    const haze = new THREE.Mesh(
+      new THREE.SphereGeometry(75, 32, 18),
+      new THREE.MeshBasicMaterial({ color: 0x31d9ff, transparent: true, opacity: 0.055, depthWrite: false })
+    );
+    haze.position.copy(planet.position);
+    group.add(planet, haze);
+    return group;
+  }
+
+  private createCinematicAsteroidBelt(): THREE.InstancedMesh {
+    const count = 150;
+    const mesh = new THREE.InstancedMesh(
+      new THREE.IcosahedronGeometry(1, 1),
+      new THREE.MeshStandardMaterial({ color: 0x6f7075, roughness: 0.98, metalness: 0.02, flatShading: true }),
+      count
+    );
+    mesh.name = "presentation-render-only-asteroid-belt";
+    mesh.userData.renderOnly = true;
+    const matrix = new THREE.Matrix4();
+    const rotation = new THREE.Quaternion();
+    const euler = new THREE.Euler();
+    for (let index = 0; index < count; index += 1) {
+      const lane = index % 3;
+      const x = 120 + this.seededUnit(index, 11) * 2_650;
+      const y = -150 + this.seededUnit(index, 12) * 280 + lane * 8;
+      const z = -820 + this.seededUnit(index, 13) * 1_640;
+      const scaleValue = 2.4 + Math.pow(this.seededUnit(index, 14), 2.15) * 18;
+      euler.set(
+        this.seededUnit(index, 15) * Math.PI,
+        this.seededUnit(index, 16) * Math.PI,
+        this.seededUnit(index, 17) * Math.PI
+      );
+      rotation.setFromEuler(euler);
+      matrix.compose(new THREE.Vector3(x, y, z), rotation, new THREE.Vector3(scaleValue, scaleValue * (0.68 + this.seededUnit(index, 18) * 0.58), scaleValue));
+      mesh.setMatrixAt(index, matrix);
+    }
+    mesh.instanceMatrix.needsUpdate = true;
+    return mesh;
+  }
+
   private writeAsteroidInstanceMatrices(): void {
     const matrix = new THREE.Matrix4();
+    const rotation = new THREE.Quaternion();
+    const euler = new THREE.Euler();
     for (const [index, instance] of this.asteroidBatch.instances.entries()) {
       const position = toVector3(instance.localPosition.value);
       const scale = new THREE.Vector3(instance.localScale, instance.localScale, instance.localScale);
-      matrix.compose(position, new THREE.Quaternion(), scale);
+      euler.set((index % 7) * 0.31, (index % 11) * 0.23, (index % 5) * 0.41);
+      rotation.setFromEuler(euler);
+      matrix.compose(position, rotation, scale);
       this.asteroidField.setMatrixAt(index, matrix);
     }
     this.asteroidField.instanceMatrix.needsUpdate = true;
@@ -296,7 +421,7 @@ export class DebugScene {
   }
 
   private populateTargetBeaconMarkers(): void {
-    const material = new THREE.MeshBasicMaterial({ color: 0x70dfff, transparent: true, opacity: 0.72, depthWrite: false, depthTest: false });
+    const material = new THREE.MeshBasicMaterial({ color: 0x31d9ff, transparent: true, opacity: 0.54, depthWrite: false, depthTest: false });
     for (const target of browserTargetCatalog) {
       const distanceFromOrigin = Math.hypot(target.position.x, target.position.y, target.position.z);
       const markerScale = distanceFromOrigin >= 2_000 ? 5.8 : distanceFromOrigin >= 900 ? 3.6 : distanceFromOrigin >= 400 ? 2.4 : 0.9;
@@ -310,7 +435,7 @@ export class DebugScene {
   }
 
   private populateObstacleMarkers(): void {
-    const material = new THREE.MeshStandardMaterial({ color: 0x9a6bff, transparent: true, opacity: 0.58, roughness: 0.8, metalness: 0.05 });
+    const material = new THREE.MeshStandardMaterial({ color: 0x7b8088, transparent: true, opacity: 0.76, roughness: 0.96, metalness: 0.03, flatShading: true });
     for (const obstacle of browserObstacles) {
       const marker = new THREE.Mesh(new THREE.IcosahedronGeometry(Math.max(1, obstacle.radius), 0), material);
       marker.name = `runtime-obstacle-truth:${obstacle.id}`;
@@ -320,6 +445,37 @@ export class DebugScene {
   }
 
   private dispatchManualInput(elapsedSeconds: number): void {
+    const plannerOpen = this.isPlannerOpen();
+    if (plannerOpen) {
+      if (!this.plannerWasOpen) {
+        const input = this.runtime.getManualInput();
+        const hasHeldFlightKey = [...this.pressedKeys].some((code) => this.isFlightKeyCode(code));
+        const hasActiveManualAxis = Math.hypot(
+          input.translationCommand.x,
+          input.translationCommand.y,
+          input.translationCommand.z,
+          input.rotationCommand.x,
+          input.rotationCommand.y,
+          input.rotationCommand.z
+        ) > 0.000001;
+        if (hasHeldFlightKey || hasActiveManualAxis || this.isOrbiting) {
+          void this.runtime.dispatchCommand({
+            type: "SetManualFlightInput",
+            input: {
+              mainThrottleCommand: input.mainThrottleCommand,
+              translationCommand: vec3(),
+              rotationCommand: vec3()
+            }
+          });
+        }
+      }
+      this.pressedKeys.clear();
+      this.isOrbiting = false;
+      this.plannerWasOpen = true;
+      return;
+    }
+    this.plannerWasOpen = false;
+
     const input = this.runtime.getManualInput();
     let throttle = input.mainThrottleCommand;
     const throttleDelta = 0.85 * Math.max(0, elapsedSeconds);
@@ -357,8 +513,8 @@ export class DebugScene {
     const localAnchor = toVector3(descriptor.localPosition).applyQuaternion(shipQuaternion);
     const followTarget = shipPosition.clone().add(localAnchor);
     const forward = new THREE.Vector3(1, 0, 0).applyQuaternion(shipQuaternion);
-    const lookTarget = followTarget.clone().addScaledVector(forward, descriptor.lookAhead);
-    const chaseOffset = toVector3(descriptor.chaseOffset).applyQuaternion(shipQuaternion);
+    const lookTarget = followTarget.clone().addScaledVector(forward, descriptor.lookAhead + 6);
+    const chaseOffset = toVector3({ x: -22, y: 8, z: 0 }).applyQuaternion(shipQuaternion);
     let cameraPosition: THREE.Vector3;
 
     if (mode === "ChaseLocked") {
@@ -395,6 +551,15 @@ export class DebugScene {
   }
 
   private readonly handleKeyDown = (event: KeyboardEvent) => {
+    if (this.isPlannerOpen()) {
+      this.pressedKeys.clear();
+      this.isOrbiting = false;
+      if (this.isFlightKey(event)) {
+        event.preventDefault();
+      }
+      return;
+    }
+
     this.pressedKeys.add(event.code || event.key);
     if (this.isFlightKey(event)) {
       event.preventDefault();
@@ -427,6 +592,11 @@ export class DebugScene {
   private readonly preventContextMenu = (event: Event) => event.preventDefault();
 
   private readonly handlePointerDown = (event: PointerEvent) => {
+    if (this.isPlannerOpen()) {
+      this.isOrbiting = false;
+      return;
+    }
+
     if (event.button !== 2) {
       return;
     }
@@ -446,6 +616,14 @@ export class DebugScene {
   };
 
   private readonly handlePointerMove = (event: PointerEvent) => {
+    if (this.isPlannerOpen()) {
+      this.isOrbiting = false;
+      if (this.canvas.hasPointerCapture(event.pointerId)) {
+        this.canvas.releasePointerCapture(event.pointerId);
+      }
+      return;
+    }
+
     if (!this.isOrbiting) {
       return;
     }
@@ -458,6 +636,10 @@ export class DebugScene {
   };
 
   private readonly handleWheel = (event: WheelEvent) => {
+    if (this.isPlannerOpen()) {
+      return;
+    }
+
     this.orbitDistance = Math.max(16, Math.min(120, this.orbitDistance + event.deltaY * 0.04));
     event.preventDefault();
   };
@@ -466,12 +648,20 @@ export class DebugScene {
     return this.pressedKeys.has(code);
   }
 
+  private isPlannerOpen(): boolean {
+    return document.getElementById("flight-hud")?.getAttribute("data-planner-open") === "true";
+  }
+
   private axis(positive: string, negative: string): number {
     return (this.isPressed(positive) ? 1 : 0) - (this.isPressed(negative) ? 1 : 0);
   }
 
   private isFlightKey(event: KeyboardEvent): boolean {
-    return ["KeyW", "KeyS", "KeyA", "KeyD", "KeyQ", "KeyE", "ShiftLeft", "ShiftRight", "ControlLeft", "ControlRight", "KeyX", "KeyY", "KeyZ", "KeyR", "KeyT", "CapsLock", "KeyH", "KeyN", "KeyV"].includes(event.code);
+    return this.isFlightKeyCode(event.code);
+  }
+
+  private isFlightKeyCode(code: string): boolean {
+    return ["KeyW", "KeyS", "KeyA", "KeyD", "KeyQ", "KeyE", "ShiftLeft", "ShiftRight", "ControlLeft", "ControlRight", "KeyX", "KeyY", "KeyZ", "KeyR", "KeyT", "CapsLock", "KeyH", "KeyN", "KeyV"].includes(code);
   }
 
   private createLowPolyInstanceBatchSnapshot(): RenderDebugSnapshot["lowPolyInstanceBatch"] {
@@ -491,8 +681,9 @@ export class DebugScene {
     const shipVisualSnapshot = this.shipVisual.getSnapshot();
     renderStatusHud(this.runtime.getTelemetry(), {
       dispatch: (command) => {
-        const telemetry = this.runtime.dispatchCommand(command);
-        this.drawPlan(telemetry.lockedPlan ?? telemetry.routePreview?.plan ?? null);
+        const result = this.runtime.dispatchCommand(command);
+        this.drawPlan(result.telemetry.lockedPlan ?? result.telemetry.routePreview?.plan ?? null);
+        return result;
       }
     }, shipVisualSnapshot.visualSource);
   }

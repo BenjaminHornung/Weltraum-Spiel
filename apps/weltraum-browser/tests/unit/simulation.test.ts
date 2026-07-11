@@ -229,8 +229,11 @@ describe("FixedStepSimulationLoop", () => {
       initialShip: createShipStateV2({ position: vec3(498, 0, 0), authority: { mode: "Autopilot" } })
     });
 
-    const selected = controller.dispatchCommand({ type: "SelectObjective", objectiveId: "reach-range-500m" });
+    const selectedResult = controller.dispatchCommand({ type: "SelectObjective", objectiveId: "reach-range-500m" });
+    const selected = selectedResult.telemetry;
 
+    expect(selectedResult.success).toBe(true);
+    expect(selectedResult.code).toBe("ObjectiveSelected");
     expect(selected.selectedTarget?.id).toBe(playableLargeFieldTargets.range500.id);
     expect(selected.routePreview?.state).toBe("Ready");
     expect(selected.routePreview?.plan?.target.id).toBe(playableLargeFieldTargets.range500.id);
@@ -241,7 +244,10 @@ describe("FixedStepSimulationLoop", () => {
     }));
     expect(selected.runtimeMessage).toContain("Reach Range 500m available");
 
-    let telemetry = controller.dispatchCommand({ type: "EngageAutopilot", planner: "DirectLocal" });
+    const engageResult = controller.dispatchCommand({ type: "EngageAutopilot", planner: "DirectLocal" });
+    let telemetry = engageResult.telemetry;
+    expect(engageResult.success).toBe(true);
+    expect(engageResult.code).toBe("RoutePreviewEngaged");
     expect(telemetry.lockedPlan?.target.id).toBe(playableLargeFieldTargets.range500.id);
     expect(telemetry.navigationObjective?.status).toBe("enroute");
 
@@ -271,8 +277,11 @@ describe("FixedStepSimulationLoop", () => {
 
     controller.dispatchCommand({ type: "SelectObjective", objectiveId: "reach-range-500m" });
     controller.dispatchCommand({ type: "EngageAutopilot", planner: "DirectLocal" });
-    const attemptedSwitch = controller.dispatchCommand({ type: "SelectObjective", objectiveId: "reach-range-1000m" });
+    const attemptedSwitchResult = controller.dispatchCommand({ type: "SelectObjective", objectiveId: "reach-range-1000m" });
+    const attemptedSwitch = attemptedSwitchResult.telemetry;
 
+    expect(attemptedSwitchResult.success).toBe(false);
+    expect(attemptedSwitchResult.code).toBe("PlanLocked");
     expect(attemptedSwitch.runtimeMessage).toBe("Cancel the current autopilot route before changing objective target.");
     expect(attemptedSwitch.selectedTarget?.id).toBe(playableLargeFieldTargets.range500.id);
     expect(attemptedSwitch.lockedPlan?.target.id).toBe(playableLargeFieldTargets.range500.id);
@@ -300,8 +309,11 @@ describe("FixedStepSimulationLoop", () => {
   it("keeps later objective choices visible but locked until prerequisites complete", () => {
     const { controller } = createBrowserRuntime();
 
-    const attemptedLockedObjective = controller.dispatchCommand({ type: "SelectObjective", objectiveId: "reach-range-1000m" });
+    const attemptedLockedObjectiveResult = controller.dispatchCommand({ type: "SelectObjective", objectiveId: "reach-range-1000m" });
+    const attemptedLockedObjective = attemptedLockedObjectiveResult.telemetry;
 
+    expect(attemptedLockedObjectiveResult.success).toBe(false);
+    expect(attemptedLockedObjectiveResult.code).toBe("ObjectiveLocked");
     expect(attemptedLockedObjective.runtimeMessage).toBe("Reach Range 1000m locked: complete Reach Range 500m first.");
     expect(attemptedLockedObjective.navigationObjective).toEqual(expect.objectContaining({
       id: "reach-range-500m",
@@ -322,7 +334,7 @@ describe("FixedStepSimulationLoop", () => {
     });
 
     controller.dispatchCommand({ type: "SelectObjective", objectiveId: "reach-range-500m" });
-    let telemetry = controller.dispatchCommand({ type: "EngageAutopilot", planner: "DirectLocal" });
+    let telemetry = controller.dispatchCommand({ type: "EngageAutopilot", planner: "DirectLocal" }).telemetry;
     for (let i = 0; i < 240 && telemetry.navigationObjective?.status !== "complete"; i += 1) {
       telemetry = controller.step(1);
     }
@@ -331,8 +343,11 @@ describe("FixedStepSimulationLoop", () => {
       expect.objectContaining({ id: "reach-range-1000m", status: "available", isActive: false })
     ]));
 
-    const selected1000m = controller.dispatchCommand({ type: "SelectObjective", objectiveId: "reach-range-1000m" });
+    const selected1000mResult = controller.dispatchCommand({ type: "SelectObjective", objectiveId: "reach-range-1000m" });
+    const selected1000m = selected1000mResult.telemetry;
 
+    expect(selected1000mResult.success).toBe(true);
+    expect(selected1000mResult.code).toBe("ObjectiveSelected");
     expect(selected1000m.selectedTarget?.id).toBe(playableLargeFieldTargets.range1000.id);
     expect(selected1000m.routePreview?.state).toBe("Ready");
     expect(selected1000m.routePreview?.plan?.target.id).toBe(playableLargeFieldTargets.range1000.id);
@@ -348,21 +363,225 @@ describe("FixedStepSimulationLoop", () => {
     ]);
   });
 
+  it("activates the unlocked 1000m objective when its visible planner target is selected", () => {
+    const { controller } = createBrowserRuntime({
+      initialShip: createShipStateV2({ position: vec3(498, 0, 0), authority: { mode: "Autopilot" } })
+    });
+
+    const selected500m = controller.dispatchCommand({ type: "SelectTarget", targetId: playableLargeFieldTargets.range500.id });
+    let telemetry = controller.dispatchCommand({
+      type: "EngageRoutePreview",
+      expectedPlanHash: selected500m.previewPlanHash ?? ""
+    }).telemetry;
+    for (let i = 0; i < 240 && !telemetry.executor.stationKeepingActive; i += 1) {
+      telemetry = controller.step(1);
+    }
+
+    expect(telemetry.executor.stationKeepingActive).toBe(true);
+    expect(telemetry.navigationObjective).toEqual(expect.objectContaining({
+      id: "reach-range-500m",
+      status: "complete"
+    }));
+
+    const selected1000mResult = controller.dispatchCommand({
+      type: "SelectTarget",
+      targetId: playableLargeFieldTargets.range1000.id
+    });
+    const selected1000m = selected1000mResult.telemetry;
+
+    expect(selected1000mResult.success).toBe(true);
+    expect(selected1000mResult.code).toBe("TargetSelected");
+    expect(selected1000mResult.previewPlanHash).toMatch(/^[a-f0-9]{8}$/);
+    expect(selected1000m.executor.stationKeepingActive).toBe(false);
+    expect(selected1000m.selectedTarget?.id).toBe(playableLargeFieldTargets.range1000.id);
+    expect(selected1000m.routePreview?.target?.id).toBe(playableLargeFieldTargets.range1000.id);
+    expect(selected1000m.routePreview?.plan?.target.id).toBe(playableLargeFieldTargets.range1000.id);
+    expect(selected1000m.routePreview?.plan?.planHash).toBe(selected1000mResult.previewPlanHash);
+    expect(selected1000m.navigationObjective).toEqual(expect.objectContaining({
+      id: "reach-range-1000m",
+      status: "route-ready",
+      nextAction: "engage autopilot"
+    }));
+    expect(selected1000m.navigationObjective?.options).toEqual([
+      expect.objectContaining({ id: "reach-range-500m", status: "complete", isActive: false }),
+      expect.objectContaining({ id: "reach-range-1000m", status: "route-ready", isActive: true }),
+      expect.objectContaining({ id: "reach-range-2500m", status: "locked", isActive: false })
+    ]);
+
+    telemetry = controller.step(30);
+    expect(telemetry.executor.stationKeepingActive).toBe(false);
+    expect(telemetry.routePreview?.plan?.planHash).toBe(selected1000mResult.previewPlanHash);
+    expect(telemetry.routePreview?.lockAdmission).toEqual(expect.objectContaining({
+      ok: true,
+      code: "Ready",
+      planHash: selected1000mResult.previewPlanHash
+    }));
+    expect(telemetry.navigationObjective).toEqual(expect.objectContaining({
+      id: "reach-range-1000m",
+      status: "route-ready"
+    }));
+
+    const engaged1000m = controller.dispatchCommand({
+      type: "EngageRoutePreview",
+      expectedPlanHash: selected1000mResult.previewPlanHash ?? ""
+    });
+    telemetry = engaged1000m.telemetry;
+    expect(engaged1000m.success).toBe(true);
+    expect(telemetry.navigationObjective?.status).toBe("enroute");
+
+    for (let i = 0; i < 12_000 && telemetry.navigationObjective?.status !== "complete"; i += 1) {
+      telemetry = controller.step(1);
+    }
+
+    expect(telemetry.executor.status).toBe("Arrived");
+    expect(telemetry.navigationObjective).toEqual(expect.objectContaining({
+      id: "reach-range-1000m",
+      status: "complete"
+    }));
+  });
+
+  it("keeps completed station holding active while no planning mutation occurs", () => {
+    const { controller } = createBrowserRuntime({
+      initialShip: createShipStateV2({ position: vec3(498, 0, 0), authority: { mode: "Autopilot" } })
+    });
+    const selected500m = controller.dispatchCommand({ type: "SelectTarget", targetId: playableLargeFieldTargets.range500.id });
+    let telemetry = controller.dispatchCommand({
+      type: "EngageRoutePreview",
+      expectedPlanHash: selected500m.previewPlanHash ?? ""
+    }).telemetry;
+    for (let i = 0; i < 240 && !telemetry.executor.stationKeepingActive; i += 1) {
+      telemetry = controller.step(1);
+    }
+
+    const holdingPlanHash = telemetry.routePreview?.plan?.planHash;
+    const holdingSourceTick = telemetry.routePreview?.provenance?.sourceTick;
+    const completedPlanHash = telemetry.executor.completedPlanHash;
+    telemetry = controller.step(30);
+
+    expect(telemetry.executor.status).toBe("Arrived");
+    expect(telemetry.executor.routeLifecycle).toBe("Holding");
+    expect(telemetry.executor.stationKeepingActive).toBe(true);
+    expect(telemetry.executor.completedPlanHash).toBe(completedPlanHash);
+    expect(telemetry.routePreview?.plan?.planHash).toBe(holdingPlanHash);
+    expect(telemetry.routePreview?.provenance?.sourceTick).toBe(holdingSourceTick);
+    expect(telemetry.selectedTarget?.id).toBe(playableLargeFieldTargets.range500.id);
+    expect(telemetry.navigationObjective).toEqual(expect.objectContaining({
+      id: "reach-range-500m",
+      status: "complete"
+    }));
+  });
+
+  it("keeps a locked objective inactive when its target is selected as a generic destination", () => {
+    const { controller } = createBrowserRuntime();
+
+    const selectedResult = controller.dispatchCommand({
+      type: "SelectTarget",
+      targetId: playableLargeFieldTargets.range2500.id
+    });
+    const selected = selectedResult.telemetry;
+
+    expect(selectedResult.success).toBe(true);
+    expect(selectedResult.code).toBe("TargetSelected");
+    expect(selected.selectedTarget?.id).toBe(playableLargeFieldTargets.range2500.id);
+    expect(selected.routePreview?.state).toBe("Ready");
+    expect(selected.routePreview?.plan?.target.id).toBe(playableLargeFieldTargets.range2500.id);
+    expect(selected.navigationObjective).toEqual(expect.objectContaining({
+      id: "reach-range-500m",
+      status: "available"
+    }));
+    expect(selected.navigationObjective?.options).toEqual([
+      expect.objectContaining({ id: "reach-range-500m", status: "available", isActive: true }),
+      expect.objectContaining({ id: "reach-range-1000m", status: "locked", isActive: false }),
+      expect.objectContaining({ id: "reach-range-2500m", status: "locked", isActive: false })
+    ]);
+  });
+
+  it("does not reactivate a completed objective when its target is selected again", () => {
+    const { controller } = createBrowserRuntime({
+      initialShip: createShipStateV2({ position: vec3(498, 0, 0), authority: { mode: "Autopilot" } })
+    });
+
+    const selected500m = controller.dispatchCommand({ type: "SelectTarget", targetId: playableLargeFieldTargets.range500.id });
+    let telemetry = controller.dispatchCommand({
+      type: "EngageRoutePreview",
+      expectedPlanHash: selected500m.previewPlanHash ?? ""
+    }).telemetry;
+    for (let i = 0; i < 240 && telemetry.navigationObjective?.status !== "complete"; i += 1) {
+      telemetry = controller.step(1);
+    }
+
+    const selected1000m = controller.dispatchCommand({
+      type: "SelectTarget",
+      targetId: playableLargeFieldTargets.range1000.id
+    });
+    expect(selected1000m.telemetry.navigationObjective?.id).toBe("reach-range-1000m");
+
+    const reselected500m = controller.dispatchCommand({
+      type: "SelectTarget",
+      targetId: playableLargeFieldTargets.range500.id
+    }).telemetry;
+
+    expect(reselected500m.selectedTarget?.id).toBe(playableLargeFieldTargets.range500.id);
+    expect(reselected500m.routePreview?.plan?.target.id).toBe(playableLargeFieldTargets.range500.id);
+    expect(reselected500m.navigationObjective).toEqual(expect.objectContaining({
+      id: "reach-range-1000m",
+      status: "available"
+    }));
+    expect(reselected500m.navigationObjective?.options).toEqual([
+      expect.objectContaining({ id: "reach-range-500m", status: "complete", isActive: false }),
+      expect.objectContaining({ id: "reach-range-1000m", status: "available", isActive: true }),
+      expect.objectContaining({ id: "reach-range-2500m", status: "locked", isActive: false })
+    ]);
+  });
+
+  it("rejects target-first objective activation while a plan is locked without mutating route state", () => {
+    const { controller } = createBrowserRuntime();
+    const selected500m = controller.dispatchCommand({ type: "SelectTarget", targetId: playableLargeFieldTargets.range500.id });
+    const engaged = controller.dispatchCommand({
+      type: "EngageRoutePreview",
+      expectedPlanHash: selected500m.previewPlanHash ?? ""
+    }).telemetry;
+
+    const attemptedSelection = controller.dispatchCommand({
+      type: "SelectTarget",
+      targetId: playableLargeFieldTargets.range1000.id
+    });
+    const after = attemptedSelection.telemetry;
+
+    expect(attemptedSelection.success).toBe(false);
+    expect(attemptedSelection.code).toBe("PlanLocked");
+    expect(after.navigationObjective?.id).toBe(engaged.navigationObjective?.id);
+    expect(after.navigationObjective?.options).toEqual(engaged.navigationObjective?.options);
+    expect(after.selectedTarget?.id).toBe(engaged.selectedTarget?.id);
+    expect(after.routePreview?.target?.id).toBe(engaged.routePreview?.target?.id);
+    expect(after.routePreview?.plan?.planHash).toBe(engaged.routePreview?.plan?.planHash);
+    expect(after.lockedPlan?.planHash).toBe(engaged.lockedPlan?.planHash);
+  });
+
   it("routes browser UI autopilot commands through the runtime controller", () => {
     const { controller } = createBrowserRuntime();
 
-    const selected = controller.dispatchCommand({ type: "SelectTarget", targetId: provingGroundTargets.navigationBeta.id });
+    const selectedResult = controller.dispatchCommand({ type: "SelectTarget", targetId: provingGroundTargets.navigationBeta.id });
+    const selected = selectedResult.telemetry;
+    expect(selectedResult.success).toBe(true);
+    expect(selectedResult.code).toBe("TargetSelected");
     expect(selected.selectedTarget?.id).toBe(provingGroundTargets.navigationBeta.id);
     expect(selected.routePreview?.plan?.target.id).toBe(provingGroundTargets.navigationBeta.id);
     expect(selected.executor.planHash).toBeNull();
 
-    const engaged = controller.dispatchCommand({ type: "EngageAutopilot", planner: "DirectLocal" });
+    const engagedResult = controller.dispatchCommand({ type: "EngageAutopilot", planner: "DirectLocal" });
+    const engaged = engagedResult.telemetry;
+    expect(engagedResult.success).toBe(true);
+    expect(engagedResult.code).toBe("RoutePreviewEngaged");
     expect(engaged.executor.status).toBe("Executing");
-    expect(engaged.lockedPlan?.planner).toBe("DirectLocal");
+    expect(engaged.lockedPlan?.planner).toBe("ObstacleAvoidanceLocal");
     expect(engaged.lockedPlan?.target.id).toBe(provingGroundTargets.navigationBeta.id);
     expect(controller.getLockedPlan()?.planHash).toBe(engaged.executor.planHash);
 
-    const canceled = controller.dispatchCommand({ type: "CancelAutopilot" });
+    const canceledResult = controller.dispatchCommand({ type: "CancelAutopilot" });
+    const canceled = canceledResult.telemetry;
+    expect(canceledResult.success).toBe(true);
+    expect(canceledResult.code).toBe("AutopilotCancelled");
     expect(canceled.executor.status).toBe("Idle");
     expect(canceled.executor.planHash).toBeNull();
     expect(canceled.selectedTarget?.id).toBe(provingGroundTargets.navigationBeta.id);
@@ -374,8 +593,11 @@ describe("FixedStepSimulationLoop", () => {
     controller.dispatchCommand({ type: "EngageAutopilot", planner: "ObstacleAvoidanceLocal" });
     const before = controller.getTelemetry();
 
-    const after = controller.dispatchCommand({ type: "UnknownCommand" } as never);
+    const afterResult = controller.dispatchCommand({ type: "UnknownCommand" } as never);
+    const after = afterResult.telemetry;
 
+    expect(afterResult.success).toBe(false);
+    expect(afterResult.code).toBe("InvalidCommand");
     expect(after.executor.planHash).toBe(before.executor.planHash);
     expect(after.executor.status).toBe(before.executor.status);
     expect(controller.getLockedPlan()?.planHash).toBe(before.executor.planHash);
@@ -383,12 +605,16 @@ describe("FixedStepSimulationLoop", () => {
 
   it("fails closed for unknown target selection without root fallback or locked-plan replacement", () => {
     const { controller } = createBrowserRuntime();
-    const selected = controller.dispatchCommand({ type: "SelectTarget", targetId: provingGroundTargets.navigationBeta.id });
-    const engaged = controller.dispatchCommand({ type: "EngageAutopilot", planner: "ObstacleAvoidanceLocal" });
+    const selected = controller.dispatchCommand({ type: "SelectTarget", targetId: provingGroundTargets.navigationBeta.id }).telemetry;
+    const engaged = controller.dispatchCommand({ type: "EngageAutopilot", planner: "ObstacleAvoidanceLocal" }).telemetry;
 
-    const afterUnknownTarget = controller.dispatchCommand({ type: "SelectTarget", targetId: "missing-target" });
-    const afterMalformedTarget = controller.dispatchCommand({ type: "SelectTarget" } as never);
+    const afterUnknownTargetResult = controller.dispatchCommand({ type: "SelectTarget", targetId: "missing-target" });
+    const afterMalformedTargetResult = controller.dispatchCommand({ type: "SelectTarget" } as never);
+    const afterUnknownTarget = afterUnknownTargetResult.telemetry;
+    const afterMalformedTarget = afterMalformedTargetResult.telemetry;
 
+    expect(afterUnknownTargetResult.code).toBe("PlanLocked");
+    expect(afterMalformedTargetResult.code).toBe("PlanLocked");
     expect(selected.selectedTarget?.id).toBe(provingGroundTargets.navigationBeta.id);
     expect(afterUnknownTarget.selectedTarget?.id).toBe(provingGroundTargets.navigationBeta.id);
     expect(afterMalformedTarget.selectedTarget?.id).toBe(provingGroundTargets.navigationBeta.id);
@@ -400,21 +626,24 @@ describe("FixedStepSimulationLoop", () => {
 
   it("does not replace an already locked plan when engage is dispatched again", () => {
     const { controller } = createBrowserRuntime();
-    const first = controller.dispatchCommand({ type: "EngageAutopilot", planner: "ObstacleAvoidanceLocal" });
+    const first = controller.dispatchCommand({ type: "EngageAutopilot", planner: "ObstacleAvoidanceLocal" }).telemetry;
     controller.dispatchCommand({ type: "SelectTarget", targetId: provingGroundTargets.navigationBeta.id });
 
-    const second = controller.dispatchCommand({ type: "EngageAutopilot", planner: "DirectLocal" });
+    const secondResult = controller.dispatchCommand({ type: "EngageAutopilot", planner: "DirectLocal" });
+    const second = secondResult.telemetry;
 
+    expect(secondResult.success).toBe(false);
+    expect(secondResult.code).toBe("PlanAlreadyLocked");
     expect(second.executor.planHash).toBe(first.executor.planHash);
     expect(second.lockedPlan?.target.id).toBe(provingGroundTargets.navigationAlpha.id);
     expect(second.selectedTarget?.id).toBe(provingGroundTargets.navigationAlpha.id);
     expect(second.routePreview?.plan?.target.id).toBe(provingGroundTargets.navigationAlpha.id);
-    expect(second.runtimeMessage).toContain("cancel");
+    expect(second.runtimeMessage).toContain("Cancel");
   });
 
   it("allows a new target and route after completed terminal holding without canceling first", () => {
     const { controller } = createBrowserRuntime();
-    const engaged = controller.dispatchCommand({ type: "EngageAutopilot", planner: "DirectLocal" });
+    const engaged = controller.dispatchCommand({ type: "EngageAutopilot", planner: "DirectLocal" }).telemetry;
     const firstPlanHash = engaged.executor.planHash;
     let holding = controller.getTelemetry();
     for (let i = 0; i < 1_800 && !holding.executor.stationKeepingActive; i += 1) {
@@ -430,8 +659,8 @@ describe("FixedStepSimulationLoop", () => {
     expect(holding.lockedPlan).toBeNull();
     expect(controller.getLockedPlan()).toBeNull();
 
-    const selected = controller.dispatchCommand({ type: "SelectTarget", targetId: provingGroundTargets.navigationBeta.id });
-    const second = controller.dispatchCommand({ type: "EngageAutopilot", planner: "ObstacleAvoidanceLocal" });
+    const selected = controller.dispatchCommand({ type: "SelectTarget", targetId: provingGroundTargets.navigationBeta.id }).telemetry;
+    const second = controller.dispatchCommand({ type: "EngageAutopilot", planner: "ObstacleAvoidanceLocal" }).telemetry;
 
     expect(selected.selectedTarget?.id).toBe(provingGroundTargets.navigationBeta.id);
     expect(second.executor.status).toBe("Executing");
@@ -446,10 +675,13 @@ describe("FixedStepSimulationLoop", () => {
 
   it("keeps selected target, preview, and plan stable when selecting during a locked route", () => {
     const { controller } = createBrowserRuntime();
-    const engaged = controller.dispatchCommand({ type: "EngageAutopilot", planner: "ObstacleAvoidanceLocal" });
+    const engaged = controller.dispatchCommand({ type: "EngageAutopilot", planner: "ObstacleAvoidanceLocal" }).telemetry;
 
-    const afterSelect = controller.dispatchCommand({ type: "SelectTarget", targetId: provingGroundTargets.navigationBeta.id });
+    const afterSelectResult = controller.dispatchCommand({ type: "SelectTarget", targetId: provingGroundTargets.navigationBeta.id });
+    const afterSelect = afterSelectResult.telemetry;
 
+    expect(afterSelectResult.success).toBe(false);
+    expect(afterSelectResult.code).toBe("PlanLocked");
     expect(afterSelect.executor.planHash).toBe(engaged.executor.planHash);
     expect(afterSelect.lockedPlan?.target.id).toBe(provingGroundTargets.navigationAlpha.id);
     expect(afterSelect.selectedTarget?.id).toBe(provingGroundTargets.navigationAlpha.id);
@@ -529,7 +761,7 @@ describe("FixedStepSimulationLoop", () => {
     expect(afterBurn.ship.actuatorTelemetry.rcsRotationActive).toBe(true);
     expect(afterBurn.ship.actuatorTelemetry.controlModeEffect.modeEffectLabel).toBe("main thrust enabled");
 
-    const translationMode = controller.dispatchCommand({ type: "CycleControlMode" });
+    const translationMode = controller.dispatchCommand({ type: "CycleControlMode" }).telemetry;
     expect(translationMode.manualInput?.controlMode).toBe("Precision");
     expect(translationMode.manualInput?.mainThrottleCommand).toBe(0);
     controller.dispatchCommand({ type: "SetManualFlightInput", input: { rotationCommand: vec3(0, 0, 1) } });
@@ -538,13 +770,13 @@ describe("FixedStepSimulationLoop", () => {
     expect(afterPrecisionRotate.ship.actuatorTelemetry.rcsRotationActive).toBe(true);
     expect(afterPrecisionRotate.ship.actuatorTelemetry.controlModeEffect.modeEffectLabel).toBe("RCS attitude / main thrust blocked");
     controller.dispatchCommand({ type: "CycleControlMode" });
-    const translation = controller.dispatchCommand({ type: "SetManualFlightInput", input: { translationCommand: vec3(0, 1, 0) } });
+    const translation = controller.dispatchCommand({ type: "SetManualFlightInput", input: { translationCommand: vec3(0, 1, 0) } }).telemetry;
     expect(translation.manualInput?.controlMode).toBe("Translation");
     const afterTranslate = controller.step(2);
     expect(afterTranslate.ship.actuatorTelemetry.rcsTranslationActive).toBe(true);
     expect(afterTranslate.ship.actuatorTelemetry.controlModeEffect.modeEffectLabel).toBe("RCS translation / main thrust blocked");
 
-    const camera = controller.dispatchCommand({ type: "CycleCameraMode" });
+    const camera = controller.dispatchCommand({ type: "CycleCameraMode" }).telemetry;
     expect(camera.manualInput?.cameraMode).toBe("OrbitInspect");
   });
 
@@ -552,7 +784,7 @@ describe("FixedStepSimulationLoop", () => {
     const { controller } = createBrowserRuntime();
 
     controller.dispatchCommand({ type: "CycleControlMode" });
-    const precisionThrottle = controller.dispatchCommand({ type: "SetThrottle", throttle: 0.8 });
+    const precisionThrottle = controller.dispatchCommand({ type: "SetThrottle", throttle: 0.8 }).telemetry;
     const afterPrecisionStep = controller.step(1);
     controller.dispatchCommand({ type: "CycleControlMode" });
     controller.dispatchCommand({ type: "CycleControlMode" });
@@ -575,7 +807,7 @@ describe("FixedStepSimulationLoop", () => {
     const movingShip = createShipStateV2({ position: vec3(3, 0, 0), velocity: vec3(12, 0, 0), authority: { mode: "Autopilot" } });
     const { controller } = createBrowserRuntime({ initialShip: movingShip });
 
-    const canceled = controller.dispatchCommand({ type: "CancelAutopilot" });
+    const canceled = controller.dispatchCommand({ type: "CancelAutopilot" }).telemetry;
     const afterSteps = controller.step(5);
 
     expect(canceled.executor.status).toBe("Idle");

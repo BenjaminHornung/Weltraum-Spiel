@@ -75,6 +75,7 @@ export class DirectLocalPlanner implements LocalPlanner {
     const plan = withHash({
       id: routeId(this.kind, context.target.id, context.tick),
       planner: this.kind,
+      speedProfile: autopilotSpeedProfileFor(context.speedProfile).id,
       createdAtTick: context.tick,
       target: context.target,
       segments: candidate.segments,
@@ -109,6 +110,7 @@ export class ObstacleAvoidanceLocalPlanner implements LocalPlanner {
       const plan = withHash({
         id: routeId(this.kind, context.target.id, context.tick),
         planner: this.kind,
+        speedProfile: autopilotSpeedProfileFor(context.speedProfile).id,
         createdAtTick: context.tick,
         target: context.target,
         segments: directCandidate.segments,
@@ -129,6 +131,7 @@ export class ObstacleAvoidanceLocalPlanner implements LocalPlanner {
     const plan = withHash({
       id: routeId(this.kind, context.target.id, context.tick),
       planner: this.kind,
+      speedProfile: autopilotSpeedProfileFor(context.speedProfile).id,
       createdAtTick: context.tick,
       target: context.target,
       segments: candidate.segments,

@@ -177,6 +177,9 @@ describe("local planners", () => {
     const balancedPlan = planner.plan({ ...context, speedProfile: "Balanced" });
     const fastPlan = planner.plan({ ...context, speedProfile: "Fast" });
 
+    expect(safePlan.speedProfile).toBe("Safe");
+    expect(balancedPlan.speedProfile).toBe("Balanced");
+    expect(fastPlan.speedProfile).toBe("Fast");
     expect(safePlan.segments.map((segment) => segment.desiredSpeed)).toEqual([10, 8]);
     expect(balancedPlan.segments.map((segment) => segment.desiredSpeed)).toEqual([14, 12]);
     expect(fastPlan.segments.map((segment) => segment.desiredSpeed)).toEqual([18, 15]);
@@ -186,5 +189,7 @@ describe("local planners", () => {
     expect(safePlan.segments[1].brakeMarginMultiplier).toBeUndefined();
     expect(safePlan.planHash).toBe(new ObstacleAvoidanceLocalPlanner().plan({ ...context, speedProfile: "Safe" }).planHash);
     expect(safePlan.planHash).not.toBe(balancedPlan.planHash);
+    expect(balancedPlan.planHash).not.toBe(fastPlan.planHash);
+    expect(new Set([safePlan.planHash, balancedPlan.planHash, fastPlan.planHash]).size).toBe(3);
   });
 });

@@ -29,6 +29,32 @@ async function expectTestBridgeHidden(page: Page): Promise<void> {
   await expect(page.getByTestId("basic-hud")).not.toContainText("TestBridge");
 }
 
+async function selectVisiblePlannerTarget(page: Page, targetId: string, label: string): Promise<string> {
+  await expect(page.locator("#open-navigation-planner")).toBeVisible();
+  await page.locator("#open-navigation-planner").click();
+  const planner = page.getByTestId("navigation-planner");
+  await expect(planner).toBeVisible();
+  const target = page.locator(`#planner-target-options button[data-planner-target-id="${targetId}"]`);
+  await expect(target).toBeVisible();
+  await target.click();
+  await expect(target).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByTestId("planner-selected-target")).toContainText(label);
+  await expect(page.getByTestId("planner-objective")).toContainText("Reach Range 500m");
+  await expect.poll(async () => (await planner.getAttribute("data-visible-preview-hash")) ?? "").toMatch(/^[a-f0-9]{8}$/);
+  const previewHash = (await planner.getAttribute("data-visible-preview-hash"))!;
+  await expect(page.locator("#planner-route-detail")).toContainText(previewHash);
+  await page.locator("#planner-close").click();
+  return previewHash;
+}
+
+async function engageVisiblePreview(page: Page, expectedHash: string): Promise<void> {
+  await page.locator("#open-navigation-planner").click();
+  await expect(page.getByTestId("navigation-planner")).toHaveAttribute("data-visible-preview-hash", expectedHash);
+  await expect(page.getByTestId("planner-engage-route")).toBeEnabled();
+  await page.getByTestId("planner-engage-route").click();
+  await expect(page.getByTestId("navigation-planner")).toBeHidden();
+}
+
 async function readObjectiveEvidence(page: Page, phase: string): Promise<ObjectiveEvidence> {
   const distanceDisplay = await page.getByTestId("objective-distance").innerText();
   return {
@@ -95,7 +121,7 @@ ${tableRows}
 
 - Default \`/\` kept \`window.TestBridge\` absent.
 - Demo Scout GLB loaded through the normal runtime.
-- Objective target focus, route preview, and autopilot engage used player HUD buttons.
+- Objective target focus, route preview, and autopilot Engage used the visible navigation planner.
 - Objective progress was observed from player HUD distance/status, not renderer-only markers or TestBridge helpers.
 `;
 }
@@ -109,22 +135,24 @@ test("normal runtime presents and progresses the Range 500m navigation objective
   await expect(page.getByTestId("ship-visual-source")).toContainText("Ship visual: Demo Scout GLB", { timeout: 20_000 });
 
   await expect(page.getByTestId("objective-label")).toContainText("Reach Range 500m");
+  await expect(page.getByTestId("objective-label")).toBeVisible();
   await expect(page.getByTestId("objective-status")).toContainText("Available");
+  await expect(page.getByTestId("objective-status")).toBeVisible();
+  await expect(page.getByTestId("objective-distance")).toBeVisible();
   await expect(page.getByTestId("objective-target")).toContainText("Range 500m");
   await expect(page.getByTestId("objective-next-action")).toContainText("select target");
-  await expect(page.getByTestId("objective-options")).toContainText("Reach Range 500m");
-  await expect(page.getByTestId("objective-options")).toContainText("Reach Range 1000m (locked)");
+  await expect(page.getByTestId("objective-options")).toBeHidden();
 
-  await page.locator('button[data-objective-id="reach-range-500m"]').click();
+  const previewHash = await selectVisiblePlannerTarget(page, "range-500m", "Range 500m");
   await expect(page.getByTestId("selected-target")).toContainText("Range 500m");
-  await expect(page.locator("#route-status")).toContainText("preview ready");
+  await expect(page.locator("#route-status")).toContainText(/preview ready/i);
   await expect(page.getByTestId("objective-status")).toContainText("Route ready");
   await expect(page.getByTestId("objective-next-action")).toContainText("engage autopilot");
   await expect(page.getByTestId("objective-hint")).toContainText("engage autopilot");
   const ready = await readObjectiveEvidence(page, "ready");
   const readyScreenshot = await page.screenshot({ fullPage: true });
 
-  await page.locator("#engage-autopilot").click();
+  await engageVisiblePreview(page, previewHash);
   await expect(page.getByTestId("autopilot-active")).toContainText("Autopilot executing");
   await expect(page.getByTestId("objective-status")).toContainText(/Enroute|Complete/);
   const enroute = await readObjectiveEvidence(page, "enroute");

@@ -1,15 +1,21 @@
 ﻿import type { ActuatorTelemetry, ExecutorTelemetry, FlightSnapshot, FuelState, Quaternion, RoutePlan, RouteValidationReasonCode, RouteValidationResult, ShipState, TargetDescriptor } from "../core/types";
+import type { AutopilotSpeedProfileId, ObstacleDescriptor } from "../core/types";
 import { roundVec } from "../core/vector";
+import type { PreviewLockValidationResult, RoutePreviewProvenance, RoutePreviewStaleReason } from "../navigation/previewLock";
 import type { ManualFlightInputState } from "../runtime/input";
 
 export interface RoutePreviewSnapshot {
-  readonly state: "Ready" | "Unavailable";
+  readonly state: "Ready" | "Stale" | "Unavailable";
   readonly planner: RoutePlan["planner"];
   readonly target: TargetDescriptor | null;
   readonly plan: RoutePlan | null;
   readonly validation: RouteValidationResult | null;
   readonly rejectedReasonCodes: readonly RouteValidationReasonCode[];
   readonly playerMessage: string;
+  readonly provenance: RoutePreviewProvenance | null;
+  readonly stale: boolean;
+  readonly staleReason: RoutePreviewStaleReason | null;
+  readonly lockAdmission: PreviewLockValidationResult;
 }
 
 export type NavigationObjectiveStatus = "inactive" | "locked" | "available" | "route-ready" | "enroute" | "complete" | "blocked";
@@ -42,6 +48,9 @@ export interface TelemetrySnapshot {
   readonly selectableTargets?: readonly TargetDescriptor[];
   readonly selectedTarget?: TargetDescriptor | null;
   readonly routePreview?: RoutePreviewSnapshot | null;
+  readonly selectedRouteProfile?: AutopilotSpeedProfileId;
+  readonly selectedPlanner?: RoutePlan["planner"];
+  readonly obstacles?: readonly ObstacleDescriptor[];
   readonly navigationObjective?: NavigationObjectiveSnapshot | null;
   readonly runtimeMessage?: string | null;
   readonly manualInput?: ManualFlightInputState;
@@ -129,6 +138,9 @@ export const serializeTelemetry = (snapshot: TelemetrySnapshot): TelemetrySnapsh
   selectableTargets: snapshot.selectableTargets,
   selectedTarget: snapshot.selectedTarget,
   routePreview: snapshot.routePreview,
+  selectedRouteProfile: snapshot.selectedRouteProfile,
+  selectedPlanner: snapshot.selectedPlanner,
+  obstacles: snapshot.obstacles,
   navigationObjective: snapshot.navigationObjective,
   runtimeMessage: snapshot.runtimeMessage,
   manualInput: snapshot.manualInput

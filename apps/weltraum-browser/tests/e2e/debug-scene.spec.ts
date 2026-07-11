@@ -2,6 +2,13 @@ import { expect, test, type Page } from "@playwright/test";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { inflateSync } from "node:zlib";
+import {
+  engageVisiblePreview,
+  openVisiblePlanner,
+  selectVisiblePlannerTarget
+} from "./support/plannerWorkflow";
+
+const PLANNER_SAFETY_REJECTION = "Current fuel, braking reserve, or flight authority cannot safely engage this route.";
 
 interface PngSampleResult {
   readonly width: number;
@@ -154,8 +161,10 @@ function findShipVisualBinding(shipVisual: any, id: string) {
 }
 
 test("browser vertical slice selects a target, previews a route, engages autopilot, and writes evidence", async ({ page }) => {
+  test.setTimeout(90_000);
   await page.goto("/?testBridge=1");
   await page.waitForFunction(() => Boolean((window as any).TestBridge));
+  await expect(page.locator("body")).toHaveAttribute("data-debug-hud", "false");
   const initialShipVisual = await waitForShipVisualReady(page);
   expect(initialShipVisual.visualSource.state).toBe("GLBLoaded");
   expect(initialShipVisual.visualSource.browserAssetPath).toBe("/ships/demo_scout_mk1.glb");
@@ -171,37 +180,39 @@ test("browser vertical slice selects a target, previews a route, engages autopil
   expect(initialTelemetry.routePreview?.plan?.target.id).toBe("nav-alpha");
   await expect(page.getByTestId("basic-hud")).toBeVisible();
   await expect(page.getByTestId("selected-target")).toContainText("Navigation Alpha");
-  await expect(page.locator("#route-status")).toContainText("preview ready");
-  await expect(page.getByTestId("radar-status")).toContainText("local contact Navigation Alpha");
+  await expect(page.locator("#route-status")).toContainText(/preview ready/i);
+  await expect(page.getByTestId("radar-status")).toContainText(/^\d+ contacts$/i);
+  await expect(page.getByTestId("radar-status")).toHaveAttribute("title", /local contact Navigation Alpha/i);
 
-  await page.locator('[data-target-id="nav-beta"]').click();
+  const visibleBetaPreviewHash = await selectVisiblePlannerTarget(page, "nav-beta", "Navigation Beta");
   await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().selectedTarget?.id)).toBe("nav-beta");
   const betaPreview = await page.evaluate(() => (window as any).TestBridge.getTelemetry());
   expect(betaPreview.executor.planHash).toBeNull();
   expect(betaPreview.routePreview?.state).toBe("Ready");
   expect(betaPreview.routePreview?.plan?.target.id).toBe("nav-beta");
+  expect(betaPreview.routePreview?.plan?.planHash).toBe(visibleBetaPreviewHash);
   expect(betaPreview.routePreview?.plan?.segments.at(-1).end).toEqual(betaPreview.selectedTarget.position);
   await expect(page.getByTestId("selected-target")).toContainText("Navigation Beta");
-  await expect(page.getByTestId("runtime-message")).toContainText("Selected Navigation Beta");
 
   await page.waitForFunction(() => (window as any).TestBridge.getRenderSnapshot?.().selectedTargetId === "nav-beta");
   const betaRenderSnapshot = await page.evaluate(() => (window as any).TestBridge.getRenderSnapshot());
-  expect(betaRenderSnapshot.targetVisible).toBe(true);
+  expect(betaRenderSnapshot.targetVisible).toBe(false);
   expect(betaRenderSnapshot.selectedTargetId).toBe("nav-beta");
-  expect(betaRenderSnapshot.targetPosition).toEqual(betaPreview.selectedTarget.position);
+  expect(betaRenderSnapshot.targetPosition).toBeNull();
   expect(betaRenderSnapshot.routePreviewTargetPosition).toEqual(betaPreview.selectedTarget.position);
   expect(betaRenderSnapshot.routePreviewPlanHash).toBe(betaPreview.routePreview.plan.planHash);
 
-  await page.locator("#engage-autopilot").click();
+  await engageVisiblePreview(page, visibleBetaPreviewHash);
   await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().executor.status)).toBe("Executing");
   await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().lockedPlan?.target.id)).toBe("nav-beta");
   const telemetry = await page.evaluate(() => (window as any).TestBridge.getTelemetry());
-  expect(telemetry.executor.planHash).toMatch(/^[a-f0-9]{8}$/);
+  expect(telemetry.executor.planHash).toBe(visibleBetaPreviewHash);
   expect(telemetry.routePreview?.plan?.planHash).toBe(telemetry.executor.planHash);
   expect(telemetry.lockedPlan?.segments.length).toBeGreaterThanOrEqual(1);
   await expect(page.getByTestId("autopilot-active")).toContainText("Autopilot executing");
   await expect(page.locator("#mode")).toHaveText(telemetry.flightSnapshot.authority.mode);
-  await expect(page.locator("#fuel-status")).toContainText("Ready");
+  await expect(page.locator("#fuel-status")).toContainText(/\d+(?:\.\d+)?\/100 kg/i);
+  await expect(page.locator("#fuel-status")).toHaveAttribute("title", /Ready:/i);
   await expect(page.locator("#authority-status")).toContainText("AP ready");
   await expect(page.locator("#brake-status")).toContainText("ready");
 
@@ -223,17 +234,21 @@ test("browser vertical slice selects a target, previews a route, engages autopil
   await page.screenshot({ path: path.join(evidenceDir, "demo-scout-main-thruster.png"), fullPage: true });
   await page.screenshot({ path: path.join(evidenceDir, "autopilot-thruster-burn.png"), fullPage: true });
 
-  await page.locator('[data-target-id="nav-alpha"]').click();
+  const lockedPlanner = await openVisiblePlanner(page);
+  const lockedNavAlpha = page.locator('#planner-target-options button[data-planner-target-id="nav-alpha"]');
+  await expect(lockedNavAlpha).toBeDisabled();
+  await expect(page.locator("#planner-lock-reason")).toContainText(/Cancel the locked route/i);
+  await page.locator("#planner-close").click();
+  await expect(lockedPlanner).toBeHidden();
   const retargetedWhileLocked = await page.evaluate(() => (window as any).TestBridge.getTelemetry());
   expect(retargetedWhileLocked.executor.planHash).toBe(telemetry.executor.planHash);
   expect(retargetedWhileLocked.lockedPlan?.target.id).toBe("nav-beta");
   expect(retargetedWhileLocked.selectedTarget?.id).toBe("nav-beta");
   expect(retargetedWhileLocked.routePreview?.target?.id).toBe("nav-beta");
   await expect(page.getByTestId("selected-target")).toContainText("Navigation Beta");
-  await expect(page.getByTestId("runtime-message")).toContainText("Cancel the current autopilot route before selecting another target");
   const lockedRenderSnapshot = await page.evaluate(() => (window as any).TestBridge.getRenderSnapshot());
   expect(lockedRenderSnapshot.selectedTargetId).toBe("nav-beta");
-  expect(lockedRenderSnapshot.targetPosition).toEqual(telemetry.lockedPlan.target.position);
+  expect(lockedRenderSnapshot.targetPosition).toBeNull();
 
   const arrivalTelemetry = await page.evaluate(() => {
     let current = (window as any).TestBridge.getTelemetry();
@@ -261,8 +276,8 @@ test("browser vertical slice selects a target, previews a route, engages autopil
   expect(renderSnapshot.camera.anchorId).toBe("chase-camera-anchor");
   expect(renderSnapshot.camera.anchorLocalPosition).toEqual(renderSnapshot.shipVisual.cameraAnchorBinding.localPosition);
   expect(renderSnapshot.usesInterpolatedPose).toBe(true);
-  expect(renderSnapshot.targetVisible).toBe(true);
-  expect(renderSnapshot.targetPosition).toEqual(arrivalTelemetry.selectedTarget.position);
+  expect(renderSnapshot.targetVisible).toBe(false);
+  expect(renderSnapshot.targetPosition).toBeNull();
   expect(renderSnapshot.lockedTargetPosition).toBeNull();
   expect(renderSnapshot.selectedTargetId).toBe("nav-beta");
   expect(renderSnapshot.distanceToTarget).toBeLessThanOrEqual(renderSnapshot.arrivalRadius);
@@ -270,25 +285,26 @@ test("browser vertical slice selects a target, previews a route, engages autopil
   expect(renderSnapshot.planHash).toBeNull();
   await page.screenshot({ path: path.join(evidenceDir, "autopilot-arrival.png"), fullPage: true });
   await page.screenshot({ path: path.join(evidenceDir, "demo-scout-autopilot-arrival.png"), fullPage: true });
+  // Committed provingGroundAsteroidField: 6 base asteroids + 8 unique large-field visual landmarks.
   expect(renderSnapshot.lowPolyInstanceBatch).toEqual(
     expect.objectContaining({
       id: "debug-low-poly-asteroids",
       batchKey: "low-poly-asteroid",
       sourceId: "proving-ground-world",
       frameId: "debug-local-render-frame",
-      count: 6,
+      count: 14,
       maxInstances: 64,
       renderOnly: true,
       rendererOwnsWorldTruth: false
     })
   );
 
-  await page.locator('[data-target-id="nav-alpha"]').click();
-  await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().selectedTarget?.id)).toBe("nav-alpha");
-  await page.locator("#engage-autopilot").click();
-  await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().lockedPlan?.target.id)).toBe("nav-alpha");
+  const visibleNextPreviewHash = await selectVisiblePlannerTarget(page, "range-500m", "Range 500m");
+  await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().selectedTarget?.id)).toBe("range-500m");
+  await engageVisiblePreview(page, visibleNextPreviewHash);
+  await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().lockedPlan?.target.id)).toBe("range-500m");
   const newRouteTelemetry = await page.evaluate(() => (window as any).TestBridge.getTelemetry());
-  expect(newRouteTelemetry.executor.planHash).toMatch(/^[a-f0-9]{8}$/);
+  expect(newRouteTelemetry.executor.planHash).toBe(visibleNextPreviewHash);
   expect(newRouteTelemetry.executor.planHash).not.toBe(telemetry.executor.planHash);
   expect(newRouteTelemetry.executor.completedPlanHash).toBe(telemetry.executor.planHash);
   expect(newRouteTelemetry.executor.canAcceptNewPlan).toBe(false);
@@ -536,7 +552,8 @@ test.describe("mobile viewport", () => {
     expect(telemetry.routePreview?.plan?.segments.length).toBeGreaterThanOrEqual(1);
     expect(telemetry.executor.status).toBe("Idle");
     await expect(page.locator("#mode")).toHaveText(telemetry.flightSnapshot.authority.mode);
-    await expect(page.getByTestId("radar-status")).toContainText("local contact");
+    await expect(page.getByTestId("radar-status")).toContainText(/^\d+ contacts$/i);
+    await expect(page.getByTestId("radar-status")).toHaveAttribute("title", /local contact/i);
     await expect(page.getByTestId("help-hint")).toContainText("Mobile: target selection and autopilot only");
     await assertCanvasHasNonDarkPixels(page);
 
@@ -553,7 +570,10 @@ test("product bootstrap does not expose the E2E TestBridge by default", async ({
   await expect(page.getByTestId("basic-hud")).not.toContainText("TestBridge");
   await expect(page.locator("body")).not.toContainText("TestBridge");
   await expect(page.locator("#telemetry")).toHaveCount(0);
-  await expect(page.locator("#mode")).toBeVisible();
+  await expect(page.locator("body")).toHaveAttribute("data-ui-surface", "flight");
+  await expect(page.getByTestId("basic-hud")).toBeVisible();
+  await expect(page.locator("#route-status")).toBeVisible();
+  await expect(page.locator("#route-status")).toContainText(/Preview ready|Autopilot active|Holding/i);
   await expect(page.getByTestId("velocity-status")).not.toContainText(/\(-?\d+(?:\.\d+)?,\s*-?\d+(?:\.\d+)?,\s*-?\d+(?:\.\d+)?\)/);
   await expect(page.getByTestId("help-hint")).toContainText("Desktop keyboard/mouse manual flight");
   await expect.poll(() => page.evaluate(() => "TestBridge" in window)).toBe(false);
@@ -589,16 +609,18 @@ test("real HUD buttons dispatch autopilot commands without exposing DirectLocal 
   await page.waitForFunction(() => Boolean((window as any).TestBridge));
   await expect(page.locator("#engage-direct-autopilot")).toHaveCount(0);
 
+  const previewHash = await selectVisiblePlannerTarget(page, "nav-beta", "Navigation Beta");
+  await engageVisiblePreview(page, previewHash);
+  await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().lockedPlan?.planner)).toBe("ObstacleAvoidanceLocal");
+  await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().executor.planHash)).toBe(previewHash);
+  await expect(page.locator("#status")).toContainText("Autopilot executing");
+  await expect(page.locator("#target-status")).toContainText("Navigation Beta");
+
+  await expect(page.locator("#cancel-autopilot")).toBeVisible();
   await page.locator("#cancel-autopilot").click();
   await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().executor.status)).toBe("Idle");
   await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().executor.planHash)).toBeNull();
   await expect(page.locator("#status")).toContainText("Autopilot standby");
-  await expect(page.locator("#target-status")).toContainText("Navigation Alpha");
-
-  await page.locator('[data-target-id="nav-beta"]').click();
-  await page.locator("#engage-autopilot").click();
-  await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().lockedPlan?.planner)).toBe("ObstacleAvoidanceLocal");
-  await expect(page.locator("#status")).toContainText("Autopilot executing");
   await expect(page.locator("#target-status")).toContainText("Navigation Beta");
 });
 
@@ -619,30 +641,40 @@ test("insufficient fuel warning is visible in the browser HUD", async ({ page })
   await page.waitForFunction(() => Boolean((window as any).TestBridge));
 
   await expect(page.locator("#status")).toContainText("Autopilot standby");
-  await expect(page.locator("#fuel-status")).toContainText("Blocked");
-  await expect(page.locator("#failure-reasons")).toContainText("Fuel insufficient");
+  await expect(page.locator("#fuel-status")).toContainText("0/100 kg");
+  await expect(page.locator("#fuel-status")).toHaveAttribute("title", "Blocked: 0/100 kg (reserve 5)");
   await expect(page.locator("body")).not.toContainText("FuelInsufficient");
-  await expect(page.getByTestId("warning-state")).toContainText("Fuel insufficient");
-  await expect(page.locator("#autopilot-action-state")).toContainText("Resolve warnings before engaging");
-  await expect(page.locator("#engage-autopilot")).toHaveText("Hold route");
-  await expect(page.locator("#engage-autopilot")).toBeDisabled();
-  await expect(page.locator("#engage-autopilot")).toHaveAttribute("aria-disabled", "true");
+  const warningState = page.getByTestId("warning-state");
+  await expect(warningState).toBeVisible();
+  await expect.poll(async () => (await warningState.innerText()).trim()).toBe(
+    "FUEL DEPLETED: REFUEL BEFORE ENGAGING\nFUEL INSUFFICIENT: REFUEL OR SHORTEN ROUTE"
+  );
+  await openVisiblePlanner(page);
+  const engage = page.getByTestId("planner-engage-route");
+  await expect(engage).toBeVisible();
+  await expect(engage).toBeDisabled();
+  await expect(engage).toHaveAttribute("aria-disabled", "true");
+  await expect(engage).toHaveAttribute("aria-description", PLANNER_SAFETY_REJECTION);
+  await expect(page.locator("#planner-feedback")).toHaveText(PLANNER_SAFETY_REJECTION);
 });
 
 test("no authority warning is visible in the browser HUD", async ({ page }) => {
-  await page.goto("/?testBridge=1&flightCase=no-authority");
-  await page.waitForFunction(() => Boolean((window as any).TestBridge));
-
-  await expect(page.locator("#status")).toContainText("Autopilot standby");
-  await expect(page.locator("#authority-status")).toContainText("AP blocked");
-  await expect(page.locator("#failure-reasons")).toContainText("Autopilot unavailable");
-  await expect(page.locator("#failure-reasons")).toContainText("Authority insufficient");
+  await page.goto("/?flightCase=no-authority");
+  await page.waitForSelector("#debug-scene", { state: "visible" });
+  await expect(page.locator("body")).toHaveAttribute("data-ui-surface", "flight");
+  await expect.poll(() => page.evaluate(() => "TestBridge" in window)).toBe(false);
   await expect(page.locator("body")).not.toContainText("AutopilotUnavailable");
   await expect(page.locator("body")).not.toContainText("AuthorityInsufficient");
-  await expect(page.getByTestId("warning-state")).toContainText("Autopilot unavailable");
-  await expect(page.getByTestId("warning-state")).toContainText("Authority insufficient");
-  await expect(page.locator("#autopilot-action-state")).toContainText("Resolve warnings before engaging");
-  await expect(page.locator("#engage-autopilot")).toHaveText("Hold route");
-  await expect(page.locator("#engage-autopilot")).toBeDisabled();
-  await expect(page.locator("#engage-autopilot")).toHaveAttribute("aria-disabled", "true");
+  const warningState = page.getByTestId("warning-state");
+  await expect(warningState).toBeVisible();
+  await expect.poll(async () => (await warningState.innerText()).trim()).toBe(
+    "AUTHORITY INSUFFICIENT: RESTORE FLIGHT AUTHORITY\nAUTOPILOT UNAVAILABLE: USE MANUAL FLIGHT OR REPAIR"
+  );
+  await openVisiblePlanner(page);
+  const engage = page.getByTestId("planner-engage-route");
+  await expect(engage).toBeVisible();
+  await expect(engage).toBeDisabled();
+  await expect(engage).toHaveAttribute("aria-disabled", "true");
+  await expect(engage).toHaveAttribute("aria-description", PLANNER_SAFETY_REJECTION);
+  await expect(page.locator("#planner-feedback")).toHaveText(PLANNER_SAFETY_REJECTION);
 });

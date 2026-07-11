@@ -104,17 +104,22 @@ async function captureAndRecord(
 }
 
 async function expectFlightHudStructure(page: Page): Promise<void> {
+  await expect(page.locator("body")).toHaveAttribute("data-ui-surface", "flight");
+  await expect(page.locator("body")).toHaveAttribute("data-debug-hud", "false");
+  await expect(page.locator("#debug-scene")).toBeVisible();
+  await expect(page.locator("#debug-scene")).toHaveCSS("opacity", "1");
   await expect(page.locator("#hud-left-panel")).toBeVisible();
   await expect(page.locator("#hud-radar-panel")).toBeVisible();
   await expect(page.locator("#hud-right-panel")).toBeVisible();
-  await expect(page.locator("#hud-bottom-strip")).toBeVisible();
-  await expect(page.locator("#velocity-status")).toContainText("Speed");
+  await expect(page.locator("#hud-top-strip")).toBeHidden();
+  await expect(page.locator("#hud-bottom-strip")).toBeHidden();
+  await expect(page.locator("#velocity-status")).toContainText("m/s");
   await expect(page.locator("#throttle-status")).toBeVisible();
   await expect(page.locator("#fuel-status")).toBeVisible();
   await expect(page.locator("#rcs-sas-status")).toContainText("RCS");
   await expect(page.getByTestId("radar-scope")).toBeVisible();
   await expect(page.getByTestId("selected-target")).toBeVisible();
-  await expect(page.getByTestId("autopilot-active")).toBeVisible();
+  await expect(page.locator("#route-status")).toBeVisible();
 
   const viewport = page.viewportSize();
   expect(viewport).toBeTruthy();
@@ -128,7 +133,7 @@ async function expectFlightHudStructure(page: Page): Promise<void> {
   expect(radar.x).toBeLessThan(48);
   expect(radar.bottom).toBeGreaterThan(viewport!.height - 36);
   expect(right.right).toBeGreaterThan(viewport!.width - 48);
-  expect(right.width).toBeLessThanOrEqual(360);
+  expect(right.width).toBeLessThanOrEqual(460);
   expect(safe.width).toBeGreaterThan(300);
   expect(safe.height).toBeGreaterThan(240);
 
@@ -140,8 +145,8 @@ async function expectFlightHudStructure(page: Page): Promise<void> {
       panelBackground: style.getPropertyValue("--hud-panel-bg").trim()
     };
   });
-  expect(cssTokens.cyan).toBe("#31d9ff");
-  expect(cssTokens.border).toContain("216");
+  expect(cssTokens.cyan).toBe("#23d6f2");
+  expect(cssTokens.border).toContain("35, 214, 242");
   expect(cssTokens.panelBackground).toContain("linear-gradient");
 }
 
@@ -178,11 +183,9 @@ test("normal flight HUD follows concept edge layout and records screenshots", as
   await waitForNormalRuntime(page);
   await expectFlightHudStructure(page);
   const flight1640 = await captureAndRecord(page, "flight-hud-1640x900", "ui-concept-parity-flight-hud.png", [
-    "#hud-top-strip",
     "#hud-left-panel",
     "#hud-radar-panel",
-    "#hud-right-panel",
-    "#hud-bottom-strip"
+    "#hud-right-panel"
   ]);
   await expectCenterClear(flight1640, 1.5);
 
@@ -190,11 +193,9 @@ test("normal flight HUD follows concept edge layout and records screenshots", as
   await waitFrames(page, 30);
   await expectFlightHudStructure(page);
   const flight1440 = await captureAndRecord(page, "flight-hud-1440x900", "ui-concept-parity-flight-hud-1440x900.png", [
-    "#hud-top-strip",
     "#hud-left-panel",
     "#hud-radar-panel",
-    "#hud-right-panel",
-    "#hud-bottom-strip"
+    "#hud-right-panel"
   ]);
   await expectCenterClear(flight1440, 1.5);
 
@@ -202,25 +203,19 @@ test("normal flight HUD follows concept edge layout and records screenshots", as
   await waitFrames(page, 30);
   await expectFlightHudStructure(page);
   const flight1280 = await captureAndRecord(page, "flight-hud-1280x720", "ui-concept-parity-flight-hud-1280x720.png", [
-    "#hud-top-strip",
     "#hud-left-panel",
     "#hud-radar-panel",
-    "#hud-right-panel",
-    "#hud-bottom-strip"
+    "#hud-right-panel"
   ]);
   await expectCenterClear(flight1280, 2.5);
 
-  await page.locator('button[data-target-id="range-1000m"]').click();
+  await page.locator("#open-navigation-planner").click();
+  await page.locator('#planner-target-options button[data-planner-target-id="range-1000m"]').click();
+  await page.locator("#planner-close").click();
   await expect(page.getByTestId("selected-target")).toContainText("Range 1000m");
-  await expect(page.locator("#route-status")).toContainText("preview ready");
+  await expect(page.locator("#route-status")).toContainText(/preview ready/i);
   await page.screenshot({ path: path.join(evidenceDir, "ui-concept-parity-flight-hud-target-selected.png"), fullPage: true });
 
-  await page.locator('button[data-objective-id="reach-range-500m"]').click();
-  await expect(page.getByTestId("objective-status")).toContainText("Route ready");
-  await page.locator("#engage-autopilot").click();
-  await expect(page.getByTestId("objective-status")).toContainText(/Enroute|Complete/);
-  await waitFrames(page, 60);
-  await page.screenshot({ path: path.join(evidenceDir, "ui-concept-parity-flight-hud-enroute.png"), fullPage: true });
   await expectNoTestBridge(page);
 });
 
@@ -241,7 +236,7 @@ test("normal runtime navigation planner opens with dominant route map and route 
 
   await page.locator('#planner-target-options button[data-planner-target-id="range-2500m"]').click();
   await expect(page.getByTestId("planner-selected-target")).toContainText("Range 2500m");
-  await expect(page.getByTestId("planner-route-status")).toContainText("preview ready");
+  await expect(page.getByTestId("planner-route-status")).toContainText(/preview ready/i);
   await expect(page.getByTestId("planner-engage-route")).toBeEnabled();
 
   const viewport = page.viewportSize();
@@ -268,11 +263,12 @@ test("query-scoped combat contact presentation shell is visible without TestBrid
   await page.setViewportSize({ width: 1640, height: 900 });
   await page.goto("/?uiScenario=combat-contact");
   await waitForNormalRuntime(page);
+  await expect(page.locator("body")).toHaveAttribute("data-ui-surface", "combat");
   await expect(page.getByTestId("combat-contact-hud")).toBeVisible();
   await expect(page.getByTestId("combat-contact-panel")).toBeVisible();
   await expect(page.getByTestId("contact-target-card")).toBeVisible();
   await expect(page.getByTestId("contact-reticle")).toBeVisible();
-  await expect(page.getByTestId("contact-marker")).toContainText("Presentation Contact");
+  await expect(page.getByTestId("contact-marker")).toContainText(/Navigation Alpha/i);
   await expect(page.getByTestId("radar-scope")).toBeVisible();
   await expect(page.getByTestId("contact-target-card")).toContainText("No real combat system active");
 

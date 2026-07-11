@@ -406,8 +406,14 @@ const resolveGlbBindings = (scene: THREE.Object3D, descriptor: ShipVisualDescrip
 
 const createVfxObjects = (group: THREE.Group) => {
   const mainFlame = new THREE.Mesh(
-    new THREE.ConeGeometry(0.85, 4.8, 10),
-    new THREE.MeshBasicMaterial({ color: 0xff8a2a, transparent: true, opacity: 0.74, depthWrite: false })
+    new THREE.ConeGeometry(1.18, 8.6, 16),
+    new THREE.MeshBasicMaterial({
+      color: 0x43d9ff,
+      transparent: true,
+      opacity: 0.78,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending
+    })
   );
   mainFlame.name = "main-thruster-vfx";
   mainFlame.rotation.z = Math.PI / 2;
@@ -516,9 +522,9 @@ const createShipVisualInternal = (initialDescriptor: ShipVisualDescriptor, initi
         telemetry.lastAppliedAcceleration.y,
         telemetry.lastAppliedAcceleration.z
       );
-      const mainThrustScale = telemetry.mainThrustActive ? 1 + Math.min(1.4, accelerationMagnitude * 0.08) : 0;
+      const mainThrustScale = telemetry.mainThrustActive ? 1.35 + Math.min(2.35, accelerationMagnitude * 0.12) : 0;
       mainFlame.visible = telemetry.mainThrustActive;
-      mainFlame.scale.set(1, mainThrustScale, 1);
+      mainFlame.scale.set(1 + mainThrustScale * 0.08, mainThrustScale, 1 + mainThrustScale * 0.08);
       const rcsVisible = telemetry.rcsTranslationActive || telemetry.rcsRotationActive || telemetry.sasCorrectionActive;
       const activePuffs = rcsPuffs.slice(0, activeDescriptor.rcsMarkers.length);
       for (const [index, puff] of rcsPuffs.entries()) {
