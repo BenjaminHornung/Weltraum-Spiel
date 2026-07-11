@@ -4241,18 +4241,6 @@ body[data-ui-surface="combat"] .contact-wireframe {
     content: none;
   }
 
-  #flight-hud[data-planner-open="true"] .planner-target-strip button[data-planner-target-id="range-500m"]::before {
-    content: none;
-  }
-
-  #flight-hud[data-planner-open="true"] .planner-target-strip button[data-planner-target-id="range-1000m"]::before {
-    content: none;
-  }
-
-  #flight-hud[data-planner-open="true"] .planner-target-strip button[data-planner-target-id="range-2500m"]::before {
-    content: none;
-  }
-
   #flight-hud[data-planner-open="true"] .planner-actions {
     display: grid;
     grid-template-columns: 0.9fr 1.05fr 1.35fr;
@@ -4663,11 +4651,11 @@ body[data-ui-surface="flight"] .flight-nav-action {
   #flight-hud[data-planner-open="true"] #nav-planner-map {
     background-color: #031426;
     background-image:
-      linear-gradient(rgba(1, 10, 20, 0.08), rgba(1, 10, 20, 0.08)),
-      url("/concept/planner-system-map-clean.png");
+      linear-gradient(rgba(35, 214, 242, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(35, 214, 242, 0.045) 1px, transparent 1px);
     background-position: center;
     background-repeat: no-repeat;
-    background-size: cover;
+    background-size: 40px 40px;
   }
 
   #flight-hud[data-planner-open="true"] .planner-details {
@@ -5034,7 +5022,10 @@ body[data-ui-surface="combat"] #flight-hud .contact-reticle {
 
   #flight-hud[data-planner-open="true"] #nav-planner-map {
     background-color: #031426;
-    background-image: url("/concept/planner-system-map-clean.png") !important;
+    background-image:
+      linear-gradient(rgba(35, 214, 242, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(35, 214, 242, 0.045) 1px, transparent 1px) !important;
+    background-size: 40px 40px;
   }
 }
 
@@ -5359,10 +5350,12 @@ body[data-ui-surface="combat"] .contact-marker > * {
 
   #flight-hud[data-planner-open="true"] #nav-planner-map {
     background-color: #031426;
-    background-image: url("/concept/planner-system-map-clean.png") !important;
+    background-image:
+      linear-gradient(rgba(35, 214, 242, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(35, 214, 242, 0.045) 1px, transparent 1px) !important;
     background-position: center;
     background-repeat: no-repeat;
-    background-size: cover;
+    background-size: 40px 40px;
   }
 
   #flight-hud[data-planner-open="true"] .planner-route-svg {
@@ -5466,34 +5459,6 @@ body[data-ui-surface="combat"] .contact-marker > * {
     color: #9fdcea;
     font-size: 11px;
     font-weight: 500 !important;
-  }
-
-  #flight-hud[data-planner-open="true"] #planner-target-options button[data-planner-target-id="range-500m"] {
-    left: 26%;
-    top: 68%;
-  }
-
-  #flight-hud[data-planner-open="true"] #planner-target-options button[data-planner-target-id="range-1000m"] {
-    left: 43%;
-    top: 58%;
-  }
-
-  #flight-hud[data-planner-open="true"] #planner-target-options button[data-planner-target-id="range-2500m"] {
-    left: 67%;
-    top: 39%;
-  }
-
-  #flight-hud[data-planner-open="true"] #planner-target-options button:not([data-planner-target-id^="range-"]) {
-    right: 7.2%;
-    left: auto;
-    top: 15.3%;
-    width: 128px;
-    height: 118px;
-    min-height: 0;
-    padding: 0;
-    border: 0;
-    background: transparent;
-    opacity: 0;
   }
 
   #flight-hud[data-planner-open="true"] #planner-target-options button.planner-target-option--selected {
@@ -6174,33 +6139,6 @@ body[data-ui-surface="combat"] .subsystem-row:nth-child(4)::before {
     content: "";
   }
 
-  #flight-hud[data-planner-open="true"] #planner-target-options button[data-planner-target-id="range-500m"] {
-    left: 10.2%;
-    top: 21.5%;
-  }
-
-  #flight-hud[data-planner-open="true"] #planner-target-options button[data-planner-target-id="range-500m"]::before {
-    content: none;
-  }
-
-  #flight-hud[data-planner-open="true"] #planner-target-options button[data-planner-target-id="range-1000m"] {
-    left: 39.6%;
-    top: 7.2%;
-  }
-
-  #flight-hud[data-planner-open="true"] #planner-target-options button[data-planner-target-id="range-1000m"]::before {
-    content: none;
-  }
-
-  #flight-hud[data-planner-open="true"] #planner-target-options button[data-planner-target-id="range-2500m"] {
-    left: 70.2%;
-    top: 61.8%;
-  }
-
-  #flight-hud[data-planner-open="true"] #planner-target-options button[data-planner-target-id="range-2500m"]::before {
-    content: none;
-  }
-
   #flight-hud[data-planner-open="true"] #planner-target-options button.planner-target-option--selected::before,
   #flight-hud[data-planner-open="true"] #planner-target-options button.planner-target-option--selected::after {
     color: #25d7f0;
@@ -6783,21 +6721,6 @@ body[data-ui-surface="combat"] .radar-contact--route {
   #flight-hud[data-planner-open="true"] .planner-map-label--hazard {
     left: 51%;
     bottom: 24%;
-  }
-
-  #flight-hud[data-planner-open="true"] #planner-target-options button[data-planner-target-id="range-500m"] {
-    left: 10.2%;
-    top: 21.5%;
-  }
-
-  #flight-hud[data-planner-open="true"] #planner-target-options button[data-planner-target-id="range-1000m"] {
-    left: 39.6%;
-    top: 7.2%;
-  }
-
-  #flight-hud[data-planner-open="true"] #planner-target-options button[data-planner-target-id="range-2500m"] {
-    left: 70.2%;
-    top: 61.8%;
   }
 
   #flight-hud[data-planner-open="true"] .planner-map-controls {
@@ -8276,4 +8199,182 @@ body[data-ui-surface="combat"] .combat-runtime-summary strong {
   #flight-hud[data-planner-open="true"] .planner-map-legend {
     font-size: 12px;
   }
+}
+
+/* Runtime-owned local navigation map. Decoration stays in CSS; semantic geometry stays in SVG. */
+#flight-hud[data-planner-open="true"] #nav-planner-map {
+  overflow: hidden;
+  background-color: #020c16 !important;
+  background-image:
+    linear-gradient(rgba(35, 214, 242, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(35, 214, 242, 0.045) 1px, transparent 1px) !important;
+  background-position: center !important;
+  background-size: 40px 40px !important;
+}
+
+#flight-hud[data-planner-open="true"] .planner-route-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden !important;
+  cursor: grab;
+  touch-action: none;
+}
+
+#flight-hud[data-planner-open="true"] .planner-route-svg:active {
+  cursor: grabbing;
+}
+
+#flight-hud[data-planner-open="true"] .planner-map-layer {
+  pointer-events: none;
+}
+
+#flight-hud[data-planner-open="true"] .planner-target-marker {
+  cursor: pointer;
+  pointer-events: all;
+}
+
+#flight-hud[data-planner-open="true"] .planner-target-marker .planner-node--target {
+  display: block !important;
+  fill: #052032;
+  stroke: #23d6f2;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+#flight-hud[data-planner-open="true"] .planner-target-marker:hover .planner-node--target,
+#flight-hud[data-planner-open="true"] .planner-target-marker:focus .planner-node--target,
+#flight-hud[data-planner-open="true"] .planner-target-marker--selected .planner-node--target {
+  fill: #0a4c61;
+  stroke: #effcff;
+}
+
+#flight-hud[data-planner-open="true"] .planner-active-ship-symbol {
+  fill: #eafcff;
+  stroke: #23d6f2;
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+#flight-hud[data-planner-open="true"] .planner-world-entity {
+  fill: rgba(143, 167, 177, 0.46);
+  stroke: rgba(204, 224, 231, 0.7);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+#flight-hud[data-planner-open="true"] .planner-map-runtime-label--ship {
+  fill: #effcff;
+  font-size: 14px;
+  font-weight: 750;
+}
+
+#flight-hud[data-planner-open="true"] .planner-map-runtime-label--ship-identity {
+  fill: #82a7b5;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+#flight-hud[data-planner-open="true"] .planner-map-runtime-label--target {
+  font-size: 11px;
+}
+
+#flight-hud[data-planner-open="true"] .planner-map-runtime-label--target.is-selected {
+  fill: #effcff;
+  font-weight: 750;
+}
+
+#flight-hud[data-planner-open="true"] .planner-map-targets {
+  pointer-events: auto !important;
+  position: absolute !important;
+  inset: 12px 12px auto auto !important;
+  z-index: 7;
+  width: min(52%, 560px);
+  padding: 8px 10px;
+  border: 1px solid rgba(91, 146, 171, 0.36);
+  background: rgba(2, 14, 25, 0.78);
+}
+
+#flight-hud[data-planner-open="true"] .planner-map-targets .planner-targets-label {
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 0 5px !important;
+  overflow: visible !important;
+  clip: auto !important;
+  white-space: normal !important;
+}
+
+#flight-hud[data-planner-open="true"] #planner-target-options {
+  pointer-events: auto !important;
+  position: static !important;
+  inset: auto !important;
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+#flight-hud[data-planner-open="true"] #planner-target-options button {
+  position: static !important;
+  width: auto !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: 28px !important;
+  padding: 5px 8px !important;
+  border: 1px solid rgba(91, 146, 171, 0.42) !important;
+  background: rgba(4, 25, 39, 0.9) !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+#flight-hud[data-planner-open="true"] #planner-target-options button.planner-target-option--selected {
+  border-color: #23d6f2 !important;
+  background: rgba(5, 55, 72, 0.94) !important;
+}
+
+#flight-hud[data-planner-open="true"] .planner-map-scale {
+  position: absolute;
+  left: 84px;
+  bottom: 76px;
+  z-index: 7;
+  display: flex;
+  align-items: end;
+  gap: 8px;
+  color: #a8c4ce;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
+#flight-hud[data-planner-open="true"] .planner-map-scale-line {
+  position: relative;
+  display: block;
+  width: 100px;
+  min-width: 1px;
+  height: 7px;
+  border-right: 1px solid #a8c4ce;
+  border-bottom: 1px solid #a8c4ce;
+  border-left: 1px solid #a8c4ce;
+}
+
+#flight-hud[data-planner-open="true"] .planner-map-scale-label {
+  min-width: 42px;
+  color: inherit;
+}
+
+#flight-hud[data-planner-open="true"] .planner-map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+}
+
+#flight-hud[data-planner-open="true"] .planner-legend-item--ship::before {
+  border-color: #23d6f2;
+  background: #eafcff;
+}
+
+#flight-hud[data-planner-open="true"] .planner-legend-item--entity::before {
+  border-color: #b9d5de;
+  background: rgba(143, 167, 177, 0.46);
 }
