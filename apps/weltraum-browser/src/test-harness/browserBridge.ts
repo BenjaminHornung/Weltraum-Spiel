@@ -6,6 +6,7 @@ import type { AutopilotSpeedProfileId } from "../core";
 import type { AutopilotProvingGroundCourseId } from "../world/autopilotProvingGroundCourses";
 import type { AutopilotProvingGroundCourseResult } from "./scenarioRunner";
 import type { ScenarioId, ScenarioResult } from "./scenarios";
+import { runWorldStreamingScenario, type WorldStreamingScenarioResult } from "../world/worldStreamingScenario";
 
 export interface TestBridge extends BrowserRuntimeController {
   listScenarios(): readonly ScenarioId[];
@@ -13,6 +14,7 @@ export interface TestBridge extends BrowserRuntimeController {
   listAutopilotProvingGroundCourses(): readonly AutopilotProvingGroundCourseId[];
   runAutopilotProvingGroundCourse(id: AutopilotProvingGroundCourseId, profile?: AutopilotSpeedProfileId): AutopilotProvingGroundCourseResult;
   runAutopilotProvingGroundMatrix(profile?: AutopilotSpeedProfileId): readonly AutopilotProvingGroundCourseResult[];
+  runWorldStreamingScenario(): WorldStreamingScenarioResult;
   getRenderSnapshot?: () => RenderDebugSnapshot;
 }
 
@@ -42,6 +44,9 @@ export const createTestBridge = (
     },
     runAutopilotProvingGroundMatrix(profile?: AutopilotSpeedProfileId) {
       return runAutopilotProvingGroundMatrix(profile);
+    },
+    runWorldStreamingScenario() {
+      return runWorldStreamingScenario();
     }
   };
 

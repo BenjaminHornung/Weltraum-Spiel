@@ -144,7 +144,7 @@ Deferred M5 UI follow-up points:
 
 ## M6: Low-Poly Open-World Runtime Foundation
 
-Status: v1 foundation implemented in the browser mainline app. Explicit frame descriptors now separate absolute world coordinates from local render/physics projections. Floating-origin helpers reproject data without changing absolute position or velocity. Simulation bubble membership is deterministic over absolute coordinates. The debug Three.js scene consumes render-only asteroid instance descriptors via `InstancedMesh`; meshes do not own simulation truth.
+Status: v1 foundation expanded with deterministic world chunk registry and world streaming contracts. Explicit frame descriptors now separate absolute world coordinates from local render/physics projections. Floating-origin helpers reproject data without changing absolute position or velocity. Simulation bubble membership is deterministic over absolute coordinates. The debug Three.js scene consumes render-only asteroid instance descriptors via `InstancedMesh`; meshes do not own simulation truth.
 
 Source paths:
 
@@ -152,13 +152,19 @@ Source paths:
 - `docs/architecture/real-scale-world-architecture.md`
 - `docs/architecture/surface-local-frame-architecture.md`
 - historical external package input "docs/open-world-low-poly-browser-plan.md" (not a live repo path in this worktree)
+- `apps/weltraum-browser/src/world/chunkRegistry.ts`
+- `apps/weltraum-browser/src/world/worldStreaming.ts`
+- `apps/weltraum-browser/src/world/worldStreamingScenario.ts`
+- `apps/weltraum-browser/tests/e2e/world-chunk-streaming.spec.ts`
+- `apps/weltraum-browser/tests/unit/chunkRegistry.test.ts`
+- `apps/weltraum-browser/tests/unit/worldStreaming.test.ts`
 
 Intent:
 
 - Add explicit frame descriptors and conversion tests.
 - Add floating-origin projection shift invariants.
-- Add simulation bubble membership.
-- Add chunk/LOD/instancing smoke tests for low-poly fields.
+- Add deterministic chunk registry and world streaming with independent simulation/render residency.
+- Keep render/low-poly instancing smoke tests for low-poly fields and add ordered chunk transition and budget smoke coverage.
 
 Implemented in this v1 slice:
 
@@ -166,13 +172,35 @@ Implemented in this v1 slice:
 - absolute-to-local, local-to-absolute and velocity frame conversion helpers with identity orientation only.
 - floating-origin projection shift evidence that preserves absolute state, absolute velocity and relative local distance.
 - deterministic `Full` / `Snapshot` / `Dormant` simulation-bubble membership, including boundary behavior.
-- render-only low-poly asteroid instance batches with an explicit max-instance budget and TestBridge render snapshot evidence.
+- deterministic `Near` / `Medium` / `Far` / `Culled` render LOD with independent simulation and render budget application.
+- chunk registry snapshots with canonical IDs (`chunk:x:y:z`), canonical sorting, duplicate/conflict validation, immutable reads, and canonical signature.
+- world streaming planner with:
+  - finite policy/radius validation,
+  - per-domain budgets (full, snapshot, visible, estimated entity),
+  - deadband-based hysteresis,
+  - fixed domain-ordered transition vocabulary,
+  - fixed rejection ordering (`FullChunkBudgetExceeded`, `SnapshotChunkBudgetExceeded`, `EstimatedEntityBudgetExceeded`, `VisibleChunkBudgetExceeded`),
+  - byte-stable canonical signatures for registry, policy, and per-step snapshot.
+- query-gated browser scenario at `/?testBridge=1` via `runWorldStreamingScenario`, including:
+  - three deterministic observer positions (`0`, `240`, `520`) with previous-snapshot chaining,
+  - explicit `chunkSizeMeters = 256`, ordered chunk IDs and budgets,
+  - floating-origin projection invariance checks and `rendererOwnsWorldTruth: false`.
+- evidence exports under `apps/weltraum-browser/evidence`:
+  - `browser-world-chunk-registry-streaming-v1.md`
+  - `browser-world-chunk-registry-streaming-v1-summary.json`
+- default `/` entrypoint remains TestBridge hidden; scenario is only available with `?testBridge=1`.
 
 Deferred M6 follow-up points:
 
-- chunk registry and LOD streaming beyond the current fixed asteroid-field smoke,
-- non-identity frame orientation, planet-centered/surface conversion math and orbital mechanics,
-- terrain generation, surface runtime, save/load and full world streaming.
+- persistent or async chunk IO and runtime chunk asset loader integration,
+- terrain generation, planet-centered/surface conversion math, orbital mechanics,
+- large-scale world content generation, surface runtime, save/load and full world streaming.
+
+Remaining M6 limitations:
+
+- only deterministic registry/streaming contracts and low-poly instance smoke are implemented in-browser,
+- no non-identity frame conversion path, no production chunk loader, and no terrain/surface/proximity planet layer integration yet,
+- no dynamic chunk source discovery or streaming from external content pipelines in this slice.
 
 Gate: absolute state and velocity remain unchanged by local projection shifts.
 
