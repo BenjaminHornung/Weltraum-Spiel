@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { fnv1aHash, stableStringify } from "../../src/core/hash";
 import { vec3 } from "../../src/core/vector";
 import {
   createWorldChunkBounds,
@@ -83,6 +84,24 @@ const expectStreamingError = (action: () => unknown, code: WorldStreamingError["
   }
 };
 
+const deepFreeze = <T>(value: T): T => {
+  if (value !== null && typeof value === "object" && !Object.isFrozen(value)) {
+    Object.values(value as Record<string, unknown>).forEach(deepFreeze);
+    Object.freeze(value);
+  }
+  return value;
+};
+
+const resignRegistry = (
+  registry: WorldChunkRegistrySnapshot,
+  chunks: WorldChunkRegistrySnapshot["chunks"]
+): WorldChunkRegistrySnapshot =>
+  deepFreeze({
+    chunkSizeMeters: registry.chunkSizeMeters,
+    chunks,
+    signature: fnv1aHash(stableStringify({ chunkSizeMeters: registry.chunkSizeMeters, chunks }))
+  });
+
 describe("world streaming nominal planning", () => {
   it("keeps Full/Snapshot/Dormant independent from Near/Medium/Far/Culled", () => {
     const registry = registryFor([
@@ -126,6 +145,40 @@ describe("world streaming nominal planning", () => {
     expect(snapshot.assignments[0].distanceMeters).toBeCloseTo(Math.hypot(5, 5, 5));
     expect(snapshot.assignments[0].finalSimulationMode).toBe("Snapshot");
     expect(snapshot.assignments[0].finalRenderLod).toBe("Far");
+  });
+
+  it("culls finite extreme AABB distances whose Euclidean norm is unrepresentable", () => {
+    const chunkSizeMeters = 1e307;
+    const registry = createWorldChunkRegistry({ chunkSizeMeters });
+    const coordinate = { x: -9, y: -9, z: -9 } as const;
+    registry.register(
+      createWorldChunkMetadata({
+        id: worldChunkIdFromCoordinate(coordinate),
+        coordinate,
+        bounds: createWorldChunkBounds(coordinate, chunkSizeMeters),
+        entityIds: [],
+        renderBatchKeys: [],
+        revision: 0
+      })
+    );
+    const extremePolicy: WorldStreamingPolicy = {
+      ...DEFAULT_POLICY,
+      fullUpdateRadius: 1,
+      snapshotRadius: Number.MAX_VALUE,
+      nearLodRadius: 1,
+      mediumLodRadius: 1e308,
+      farLodRadius: Number.MAX_VALUE
+    };
+
+    const snapshot = planWorldStreaming({
+      registry: registry.snapshot(),
+      observerAbsolutePosition: worldCoordinate(vec3(9e307, 9e307, 9e307)),
+      policy: extremePolicy
+    });
+
+    expect(snapshot.assignments[0].distanceMeters).toBe(Number.MAX_VALUE);
+    expect(snapshot.assignments[0].finalSimulationMode).toBe("Dormant");
+    expect(snapshot.assignments[0].finalRenderLod).toBe("Culled");
   });
 
   it("deep-freezes canonical snapshots and never exposes renderer ownership", () => {
@@ -431,6 +484,45 @@ describe("world streaming validation and canonical output", () => {
         }),
       "INVALID_REGISTRY"
     );
+  });
+
+  it("rejects deeply frozen and correctly re-signed noncanonical registry snapshots", () => {
+    const registry = registryFor([
+      { coordinate: { x: 0, y: 0, z: 0 }, entityIds: ["a", "b"] },
+      { coordinate: { x: 1, y: 0, z: 0 }, entityIds: ["c"] }
+    ]);
+    const [first, second] = registry.chunks;
+    const forgedSnapshots = [
+      resignRegistry(registry, [first, first]),
+      resignRegistry(registry, [second, first]),
+      resignRegistry(registry, [{ ...first, id: "chunk:99:0:0" }, second] as typeof registry.chunks),
+      resignRegistry(registry, [{ ...first, coordinate: { x: 0.5, y: 0, z: 0 } }, second] as typeof registry.chunks),
+      resignRegistry(
+        registry,
+        [{ ...first, bounds: { ...first.bounds, halfExtents: vec3(4, 5, 5) } }, second] as typeof registry.chunks
+      ),
+      resignRegistry(
+        registry,
+        [
+          {
+            ...first,
+            bounds: {
+              ...first.bounds,
+              center: {
+                ...first.bounds.center,
+                frame: { ...first.bounds.center.frame, originAbsolutePosition: vec3(0.000001, 0, 0) }
+              }
+            }
+          },
+          second
+        ] as typeof registry.chunks
+      ),
+      resignRegistry(registry, [{ ...first, entityIds: ["b", "a", "a"] }, second] as typeof registry.chunks)
+    ];
+
+    for (const forged of forgedSnapshots) {
+      expectStreamingError(() => plan(forged), "INVALID_REGISTRY");
+    }
   });
 
   it("rejects incompatible previous registry and policy signatures explicitly", () => {

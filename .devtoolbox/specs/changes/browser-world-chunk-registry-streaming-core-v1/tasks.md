@@ -16,6 +16,6 @@
   - Verify: targeted Playwright spec, repeated byte-equivalence, three observer positions, ordered transitions, budgets, floating-origin invariance, and normal-root TestBridge absence.
 
 ## Phase 4: Documentation and full verification
-- [ ] Update Browser roadmap/intent documentation, create the DevToolbox test protocol, run all required unit/build/Playwright regressions, and prove forbidden paths remain unchanged.
+- [x] Update Browser roadmap/intent documentation, create the DevToolbox test protocol, run all required unit/build/Playwright regressions, and prove forbidden paths remain unchanged.
   - Files: `docs/browser-mainline/port-roadmap.md`, `docs/browser-mainline/feature-intent-index.md`, `.devtoolbox/specs/changes/browser-world-chunk-registry-streaming-core-v1/tests/test-protocol.md`
   - Verify: full `npm run test`, `npm run build`, required Playwright regressions, JSON parse checks, `git diff --check`, staged diff check when applicable, and forbidden-path status/diff audit.

@@ -1,6 +1,11 @@
 import { fnv1aHash, stableStringify } from "../core/hash";
 import { vec3, type Vec3 } from "../core/vector";
-import type { WorldChunkId, WorldChunkMetadata, WorldChunkRegistrySnapshot } from "./chunkRegistry";
+import {
+  createWorldChunkRegistry,
+  type WorldChunkId,
+  type WorldChunkMetadata,
+  type WorldChunkRegistrySnapshot
+} from "./chunkRegistry";
 import { ABSOLUTE_SYSTEM_FRAME, type WorldCoordinate } from "./frames";
 import { createSimulationBubble, type SimulationBubbleDescriptor, type SimulationUpdateMode } from "./simulationBubble";
 
@@ -171,6 +176,30 @@ const deepFreeze = <T>(value: T, seen = new WeakSet<object>()): T => {
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 
+const isExactlyEqual = (left: unknown, right: unknown): boolean => {
+  if (Object.is(left, right)) {
+    return true;
+  }
+  if (Array.isArray(left) || Array.isArray(right)) {
+    return (
+      Array.isArray(left) &&
+      Array.isArray(right) &&
+      left.length === right.length &&
+      left.every((value, index) => isExactlyEqual(value, right[index]))
+    );
+  }
+  if (!isRecord(left) || !isRecord(right)) {
+    return false;
+  }
+
+  const leftKeys = Object.keys(left).sort(codeUnitCompare);
+  const rightKeys = Object.keys(right).sort(codeUnitCompare);
+  return (
+    leftKeys.length === rightKeys.length &&
+    leftKeys.every((key, index) => key === rightKeys[index] && isExactlyEqual(left[key], right[key]))
+  );
+};
+
 const isFiniteVec3 = (value: unknown): value is Vec3 =>
   isRecord(value) && [value.x, value.y, value.z].every((component) => typeof component === "number" && Number.isFinite(component));
 
@@ -336,6 +365,20 @@ const assertValidRegistry: (registry: unknown) => asserts registry is WorldChunk
   if (typedRegistry.signature !== expectedSignature) {
     fail("INVALID_REGISTRY", "Registry snapshot signature does not match its canonical contents");
   }
+
+  try {
+    const canonicalRegistry = createWorldChunkRegistry({ chunkSizeMeters: typedRegistry.chunkSizeMeters });
+    typedRegistry.chunks.forEach((chunk) => canonicalRegistry.register(chunk));
+    const canonicalSnapshot = canonicalRegistry.snapshot();
+    if (!isExactlyEqual(typedRegistry, canonicalSnapshot)) {
+      fail("INVALID_REGISTRY", "Registry snapshot does not match canonical registry output");
+    }
+  } catch (error) {
+    if (error instanceof WorldStreamingError) {
+      throw error;
+    }
+    fail("INVALID_REGISTRY", "Registry snapshot violates canonical registry invariants");
+  }
 };
 
 const axisGap = (position: number, center: number, halfExtent: number): number => {
@@ -350,7 +393,10 @@ const axisGap = (position: number, center: number, halfExtent: number): number =
   return 0;
 };
 
-const distanceToChunkBounds = (observer: Vec3, chunk: WorldChunkMetadata): number => {
+const distanceToChunkBounds = (
+  observer: Vec3,
+  chunk: WorldChunkMetadata
+): { readonly distanceMeters: number; readonly outOfRange: boolean } => {
   const center = chunk.bounds.center.value;
   const halfExtents = chunk.bounds.halfExtents;
   const distance = Math.hypot(
@@ -358,7 +404,9 @@ const distanceToChunkBounds = (observer: Vec3, chunk: WorldChunkMetadata): numbe
     axisGap(observer.y, center.y, halfExtents.y),
     axisGap(observer.z, center.z, halfExtents.z)
   );
-  return Number.isFinite(distance) ? distance : Number.MAX_VALUE;
+  return Number.isFinite(distance)
+    ? { distanceMeters: distance, outOfRange: false }
+    : { distanceMeters: Number.MAX_VALUE, outOfRange: true };
 };
 
 const nominalSimulationMode = (distanceMeters: number, policy: CanonicalWorldStreamingPolicy): SimulationUpdateMode =>
@@ -847,15 +895,15 @@ export const planWorldStreaming = (input: PlanWorldStreamingInput): WorldStreami
     input.previousSnapshot?.assignments.map((assignment) => [assignment.chunkId, assignment]) ?? []
   );
   const assignments: MutableAssignment[] = input.registry.chunks.map((chunk) => {
-    const distanceMeters = distanceToChunkBounds(observerAbsolutePosition.value, chunk);
+    const { distanceMeters, outOfRange } = distanceToChunkBounds(observerAbsolutePosition.value, chunk);
     const previous = previousById.get(chunk.id);
-    const nominalSimulation = nominalSimulationMode(distanceMeters, policy);
-    const nominalRender = nominalRenderLod(distanceMeters, policy);
+    const nominalSimulation = outOfRange ? "Dormant" : nominalSimulationMode(distanceMeters, policy);
+    const nominalRender = outOfRange ? "Culled" : nominalRenderLod(distanceMeters, policy);
     return {
       chunkId: chunk.id,
       distanceMeters,
       estimatedEntityCount: chunk.entityIds.length,
-      requestedSimulationMode: previous
+      requestedSimulationMode: previous && !outOfRange
         ? applyBandHysteresis(
             distanceMeters,
             previous.requestedSimulationMode,
@@ -866,7 +914,7 @@ export const planWorldStreaming = (input: PlanWorldStreamingInput): WorldStreami
           )
         : nominalSimulation,
       finalSimulationMode: nominalSimulation,
-      requestedRenderLod: previous
+      requestedRenderLod: previous && !outOfRange
         ? applyBandHysteresis(
             distanceMeters,
             previous.requestedRenderLod,
