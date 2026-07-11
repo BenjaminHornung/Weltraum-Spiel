@@ -221,6 +221,9 @@ const renderScaleBar = (metersPerPixel: number): void => {
 const configureMapInteractions = (svg: SVGSVGElement, snapshot: NavigationMapSnapshot): void => {
   svg.setAttribute("tabindex", "-1");
   svg.onpointerdown = (event) => {
+    if ((event.target as Element | null)?.closest?.("[data-target-id]")) {
+      return;
+    }
     svg.focus();
     dragState = { pointerId: event.pointerId, clientX: event.clientX, clientY: event.clientY };
     svg.setPointerCapture?.(event.pointerId);
@@ -336,6 +339,19 @@ export const renderPlannerMap = (telemetry: TelemetrySnapshot): void => {
 
   const orientation = navigationMapOrientation(snapshot.ship.orientation, viewState.orbit);
   const viewportState = currentViewport();
+  const renderKey = [
+    snapshot.signature,
+    viewState.orbit,
+    viewportState.centerAbsoluteX.toFixed(6),
+    viewportState.centerAbsoluteZ.toFixed(6),
+    viewportState.metersPerPixel.toFixed(8)
+  ].join("|");
+  if (svg.dataset.renderKey === renderKey && viewport.children.length > 0) {
+    configureMapInteractions(svg, snapshot);
+    configureButtons(snapshot);
+    renderScaleBar(viewportState.metersPerPixel);
+    return;
+  }
   const toMap = (position: NavigationMapSnapshot["ship"]["absolutePosition"]) =>
     projectNavigationMapPosition(position, viewportState, { width: VIEW_WIDTH, height: VIEW_HEIGHT }, orientation.worldRotationDegrees);
   const content = svgElement("g", { class: "planner-map-content", "data-semantic-geometry": "runtime" });
@@ -432,8 +448,27 @@ export const renderPlannerMap = (telemetry: TelemetrySnapshot): void => {
       "data-absolute-x": String(target.absolutePosition.value.x),
       "data-absolute-z": String(target.absolutePosition.value.z)
     });
-    marker.append(svgElement("path", { d: "M 0 -9 L 9 0 L 0 9 L -9 0 Z", class: "planner-node planner-node--target" }));
-    marker.onclick = () => { selectPlannerMapTarget(target.id); };
+    const dispatchSelection = (): void => {
+      selectPlannerMapTarget(target.id);
+    };
+    const markerPath = svgElement("path", {
+      d: "M 0 -9 L 9 0 L 0 9 L -9 0 Z",
+      class: "planner-node planner-node--target",
+      "data-target-hit-id": target.id
+    });
+    if (typeof markerPath.addEventListener === "function") {
+      markerPath.addEventListener("click", (event) => {
+        event.stopPropagation();
+        dispatchSelection();
+      });
+    } else {
+      markerPath.onclick = (event) => {
+        event.stopPropagation();
+        dispatchSelection();
+      };
+    }
+    marker.append(markerPath);
+    marker.onclick = dispatchSelection;
     marker.onkeydown = (event) => {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
@@ -443,14 +478,16 @@ export const renderPlannerMap = (telemetry: TelemetrySnapshot): void => {
     appendTitle(marker, `${target.label}, ${target.kind}`);
     targetLayer.append(marker);
 
-    const label = svgElement("text", {
-      x: (point.x + 13).toFixed(3),
-      y: (point.y - 12).toFixed(3),
-      class: `planner-map-runtime-label planner-map-runtime-label--target${selected ? " is-selected" : ""}`,
-      "data-target-label-id": target.id
-    });
-    label.textContent = target.label;
-    targetLayer.append(label);
+    if (selected) {
+      const label = svgElement("text", {
+        x: (point.x + 13).toFixed(3),
+        y: (point.y - 12).toFixed(3),
+        class: "planner-map-runtime-label planner-map-runtime-label--target is-selected",
+        "data-target-label-id": target.id
+      });
+      label.textContent = target.label;
+      targetLayer.append(label);
+    }
   }
   content.append(targetLayer);
 
@@ -500,6 +537,7 @@ export const renderPlannerMap = (telemetry: TelemetrySnapshot): void => {
   const zoom = viewState.focusMetersPerPixel / viewState.metersPerPixel;
   const zoomLabel = String(Number(zoom.toFixed(4)));
   svg.dataset.snapshot = "ready";
+  svg.dataset.renderKey = renderKey;
   svg.dataset.snapshotSignature = snapshot.signature;
   svg.dataset.orbit = viewState.orbit;
   svg.dataset.effectiveOrbit = orientation.effectiveOrbit;
@@ -511,6 +549,7 @@ export const renderPlannerMap = (telemetry: TelemetrySnapshot): void => {
   svg.dataset.viewCenter = `${viewportState.centerAbsoluteX.toFixed(3)},${viewportState.centerAbsoluteZ.toFixed(3)}`;
   svg.dataset.mapTransform = `orbit:${orientation.effectiveOrbit};rotation:${orientation.worldRotationDegrees.toFixed(4)};zoom:${zoom.toFixed(4)}`;
   svg.dataset.segmentCount = String(snapshot.route?.segments.length ?? 0);
+  svg.dataset.routePlanHash = snapshot.route?.planHash ?? "";
   svg.dataset.obstacleCount = String(snapshot.obstacles.length);
   svg.dataset.targetCount = String(snapshot.targets.length);
   svg.dataset.entityCount = String(snapshot.entities.length);

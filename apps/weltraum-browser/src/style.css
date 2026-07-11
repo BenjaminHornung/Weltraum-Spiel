@@ -1206,31 +1206,6 @@ body,
   stroke-dasharray: 8 8;
 }
 
-.planner-map-label {
-  position: absolute;
-  color: #f4fbff;
-  font-weight: 800;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
-}
-
-.planner-map-label--ship {
-  left: 14%;
-  bottom: 31%;
-}
-
-.planner-map-label--target {
-  right: 6%;
-  top: 18%;
-  max-width: 210px;
-  color: var(--hud-cyan);
-}
-
-.planner-map-label--hazard {
-  left: 50%;
-  bottom: 30%;
-  color: var(--hud-amber);
-}
-
 .planner-map-legend {
   position: absolute;
   right: 16px;
@@ -2153,13 +2128,6 @@ body[data-ui-surface="combat"] #hud-bottom-strip {
   filter: drop-shadow(0 0 8px rgba(49, 217, 255, 0.52));
 }
 
-.planner-map-label {
-  border: 1px solid rgba(49, 217, 255, 0.26);
-  padding: 5px 8px;
-  background: rgba(0, 10, 18, 0.52);
-  color: #eafcff;
-}
-
 .planner-map-legend {
   right: 22px;
   bottom: 18px;
@@ -3029,18 +2997,6 @@ body[data-ui-surface="flight"] #objective-options button {
   background: transparent;
   box-shadow: none;
   padding: 0;
-}
-
-#flight-hud[data-planner-open="true"] .planner-map-label--target {
-  font-size: 17px;
-}
-
-#flight-hud[data-planner-open="true"] .planner-map-label--target::before {
-  content: none;
-}
-
-#flight-hud[data-planner-open="true"] .planner-map-label--target::after {
-  content: none;
 }
 
 #flight-hud[data-planner-open="true"] #nav-planner-map {
@@ -3967,25 +3923,6 @@ body[data-ui-surface="combat"] .contact-wireframe {
     stroke-width: 4;
   }
 
-  #flight-hud[data-planner-open="true"] .planner-map-label {
-    font-size: 13px;
-  }
-
-  #flight-hud[data-planner-open="true"] .planner-map-label--ship {
-    left: 13%;
-    bottom: 39%;
-  }
-
-  #flight-hud[data-planner-open="true"] .planner-map-label--target {
-    right: 5%;
-    top: 24%;
-  }
-
-  #flight-hud[data-planner-open="true"] .planner-map-label--hazard {
-    bottom: 29%;
-    font-size: 12px;
-  }
-
   #flight-hud[data-planner-open="true"] .planner-map-legend {
     right: 16px;
     bottom: 14px;
@@ -4420,12 +4357,6 @@ body[data-ui-surface="combat"] .weapon-section--subsystems {
 
 body[data-ui-surface="combat"] .subsystem-row {
   align-content: center;
-}
-
-@media (min-width: 1200px) {
-  #flight-hud[data-planner-open="true"] .planner-map-label--hazard::before {
-    content: none;
-  }
 }
 
 /* Second fidelity correction pass. */
@@ -5371,59 +5302,6 @@ body[data-ui-surface="combat"] .contact-marker > * {
     filter: none !important;
   }
 
-  #flight-hud[data-planner-open="true"] .planner-node--ship,
-  #flight-hud[data-planner-open="true"] .planner-node--target {
-    display: none;
-  }
-
-  #flight-hud[data-planner-open="true"] .planner-map-label--ship,
-  #flight-hud[data-planner-open="true"] .planner-map-label--target {
-    z-index: 3;
-    bottom: auto;
-    display: block;
-    padding: 0;
-    border: 0;
-    background-color: transparent;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    color: transparent;
-    font-size: 0;
-  }
-
-  #flight-hud[data-planner-open="true"] .planner-map-label--ship {
-    left: 10.4%;
-    top: 40%;
-    width: 132px;
-    height: 126px;
-    background-image: url("/concept/planner-ship-marker.png");
-  }
-
-  #flight-hud[data-planner-open="true"] .planner-map-label--target {
-    right: 7.2%;
-    top: 15.3%;
-    width: 128px;
-    height: 118px;
-    background-image: url("/concept/planner-station-marker.png");
-  }
-
-  #flight-hud[data-planner-open="true"] .planner-map-label--target::before,
-  #flight-hud[data-planner-open="true"] .planner-map-label--target::after {
-    display: none;
-    content: none;
-  }
-
-  #flight-hud[data-planner-open="true"] .planner-map-label--hazard {
-    left: 55%;
-    bottom: 27%;
-    font-size: 0;
-  }
-
-  #flight-hud[data-planner-open="true"] .planner-map-label--hazard::before {
-    font-size: 12px;
-    font-weight: 600 !important;
-  }
-
   #flight-hud[data-planner-open="true"] .planner-map-targets,
   #flight-hud[data-planner-open="true"] #planner-target-options {
     pointer-events: none;
@@ -6087,31 +5965,6 @@ body[data-ui-surface="combat"] .subsystem-row:nth-child(4)::before {
     display: none;
   }
 
-  #flight-hud[data-planner-open="true"] .planner-map-label--hazard {
-    left: 51%;
-    bottom: 24%;
-    display: grid;
-    grid-template-columns: 22px auto;
-    gap: 7px;
-    align-items: center;
-    padding: 0;
-    border: 0;
-    background: transparent;
-    color: transparent;
-    font-size: 0;
-  }
-
-  #flight-hud[data-planner-open="true"] .planner-map-label--hazard::before {
-    width: 20px;
-    height: 20px;
-    background: url("/concept/icon-flight-warning-fuel.png") center / contain no-repeat;
-    content: "";
-  }
-
-  #flight-hud[data-planner-open="true"] .planner-map-label--hazard::after {
-    content: none;
-  }
-
   #flight-hud[data-planner-open="true"] #planner-target-options button {
     width: 92px;
     min-height: 24px;
@@ -6461,7 +6314,6 @@ body[data-ui-surface="combat"] .contact-wireframe {
   }
 
   #flight-hud[data-planner-open="true"] #planner-target-options button::before,
-  #flight-hud[data-planner-open="true"] .planner-map-label--hazard::after,
   #flight-hud[data-planner-open="true"] .planner-map-legend {
     font-size: 14px;
   }
@@ -6702,25 +6554,6 @@ body[data-ui-surface="combat"] .radar-contact--route {
   #flight-hud[data-planner-open="true"] #nav-planner-map {
     background-position: center;
     background-size: cover;
-  }
-
-  #flight-hud[data-planner-open="true"] .planner-map-label--ship {
-    left: 10.4%;
-    top: 40%;
-    width: 132px;
-    height: 126px;
-  }
-
-  #flight-hud[data-planner-open="true"] .planner-map-label--target {
-    right: 7.2%;
-    top: 15.3%;
-    width: 128px;
-    height: 118px;
-  }
-
-  #flight-hud[data-planner-open="true"] .planner-map-label--hazard {
-    left: 51%;
-    bottom: 24%;
   }
 
   #flight-hud[data-planner-open="true"] .planner-map-controls {
@@ -8232,7 +8065,15 @@ body[data-ui-surface="combat"] .combat-runtime-summary strong {
 
 #flight-hud[data-planner-open="true"] .planner-target-marker {
   cursor: pointer;
-  pointer-events: all;
+  pointer-events: all !important;
+}
+
+#flight-hud[data-planner-open="true"] .planner-map-layer--targets {
+  pointer-events: all !important;
+}
+
+#flight-hud[data-planner-open="true"] .planner-map-layer--targets text {
+  pointer-events: none;
 }
 
 #flight-hud[data-planner-open="true"] .planner-target-marker .planner-node--target {
@@ -8241,6 +8082,7 @@ body[data-ui-surface="combat"] .combat-runtime-summary strong {
   stroke: #23d6f2;
   stroke-width: 2;
   vector-effect: non-scaling-stroke;
+  pointer-events: all !important;
 }
 
 #flight-hud[data-planner-open="true"] .planner-target-marker:hover .planner-node--target,
@@ -8370,11 +8212,19 @@ body[data-ui-surface="combat"] .combat-runtime-summary strong {
 }
 
 #flight-hud[data-planner-open="true"] .planner-legend-item--ship::before {
+  width: 12px;
+  height: 12px;
+  flex: 0 0 12px;
   border-color: #23d6f2;
   background: #eafcff;
+  clip-path: polygon(50% 0, 100% 100%, 50% 72%, 0 100%);
 }
 
 #flight-hud[data-planner-open="true"] .planner-legend-item--entity::before {
+  width: 10px;
+  height: 10px;
+  flex: 0 0 10px;
   border-color: #b9d5de;
+  border-radius: 50%;
   background: rgba(143, 167, 177, 0.46);
 }

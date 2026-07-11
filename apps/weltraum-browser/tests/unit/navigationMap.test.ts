@@ -113,6 +113,7 @@ describe("navigation map snapshot contracts", () => {
     const snapshot = createNavigationMapSnapshot(mapInput("local-frame"));
 
     expect(snapshot.route?.segments.map((segment) => segment.id)).toEqual(["segment-z", "segment-a"]);
+    expect(snapshot.route?.planHash).toBe("route-hash");
     expect(snapshot.route?.nodes.map((node) => node.absolutePosition.value)).toEqual([
       vec3(10, 0, 20),
       vec3(40, 0, -30),

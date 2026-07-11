@@ -62,6 +62,7 @@ export interface NavigationMapRouteSegmentSnapshot {
 
 export interface NavigationMapRouteSnapshot {
   readonly id: string;
+  readonly planHash: string;
   readonly planner: RoutePlan["planner"];
   readonly speedProfile: RoutePlan["speedProfile"];
   readonly targetId: string;
@@ -226,6 +227,7 @@ const cloneObstacle = (obstacle: NavigationMapObstacleSnapshot): NavigationMapOb
 
 const cloneRoute = (route: NavigationMapRouteSnapshot): NavigationMapRouteSnapshot => deepFreeze({
   id: requiredId(route.id, "Route id"),
+  planHash: requiredId(route.planHash, "Route plan hash"),
   planner: route.planner,
   speedProfile: route.speedProfile,
   targetId: requiredId(route.targetId, "Route target id"),
@@ -371,6 +373,7 @@ export const navigationMapRouteSnapshot = (
   frame = ABSOLUTE_SYSTEM_FRAME
 ): NavigationMapRouteSnapshot => cloneRoute({
   id: plan.id,
+  planHash: plan.planHash,
   planner: plan.planner,
   speedProfile: plan.speedProfile,
   targetId: plan.target.id,
