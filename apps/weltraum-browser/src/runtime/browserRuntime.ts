@@ -4,6 +4,19 @@ import { autopilotAuthority, createShipState, noAutopilotAuthority, playableLarg
 import type { BrowserRuntimeCommand, BrowserRuntimeCommandCode, BrowserRuntimeCommandResult, BrowserRuntimeRejectionCode } from "./commands";
 import { clamp01, createManualFlightInputState, mergeManualFlightInputState, nextCameraMode, nextControlMode, type ManualFlightInputState } from "./input";
 import type { NavigationObjectiveOptionSnapshot, NavigationObjectiveSnapshot, NavigationObjectiveStatus, RoutePreviewSnapshot, TelemetrySnapshot } from "../sim/telemetry";
+import {
+  DEFAULT_ACTIVE_SHIP_PRESENTATION,
+  createNavigationMapSnapshot,
+  navigationMapObstacleSnapshot,
+  navigationMapRouteSnapshot,
+  navigationMapShipSnapshot,
+  navigationMapTargetSnapshot
+} from "../navigation/map";
+import { worldCoordinate } from "../world/frames";
+import {
+  createProvingGroundNavigationMapWorldAdapter,
+  type NavigationMapWorldAdapterSnapshot
+} from "../world/navigationMapWorldAdapter";
 
 export type { BrowserRuntimeCommand, BrowserRuntimeCommandResult } from "./commands";
 
@@ -56,6 +69,8 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
   const executor = new AutopilotExecutor({ divergenceDistance: 24, allowManualInputWhenIdle: true });
   let ship = options.initialShip ?? createInitialShip();
   const loop = new FixedStepSimulationLoop(ship, executor, { fixedDeltaSeconds: 1 / 30, maxSubSteps: 10 });
+  const navigationMapWorldAdapter = createProvingGroundNavigationMapWorldAdapter();
+  let previousNavigationMapWorld: NavigationMapWorldAdapterSnapshot | undefined;
   let selectedTarget: TargetDescriptor | null = defaultTarget;
   let selectedPlanner: RoutePlan["planner"] = "ObstacleAvoidanceLocal";
   let selectedRouteProfile: AutopilotSpeedProfileId = "Balanced";
@@ -363,18 +378,49 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
     };
   };
 
-  const snapshot = (): TelemetrySnapshot => ({
-    ...createTelemetrySnapshot(loop.getShip(), loop.getTelemetry(), executor.getLockedPlan()),
-    selectableTargets: browserTargetCatalog,
-    selectedTarget,
-    routePreview: currentRoutePreview(),
-    selectedRouteProfile,
-    selectedPlanner,
-    obstacles: browserObstacles,
-    navigationObjective: createNavigationObjectiveSnapshot(),
-    runtimeMessage,
-    manualInput
-  });
+  const snapshot = (): TelemetrySnapshot => {
+    const currentShip = loop.getShip();
+    const lockedPlan = executor.getLockedPlan();
+    const preview = currentRoutePreview();
+    const mapRoutePlan = lockedPlan ?? (preview?.state === "Ready" ? preview.plan : null);
+    const mapWorld = navigationMapWorldAdapter.snapshot(
+      worldCoordinate(currentShip.position),
+      previousNavigationMapWorld
+    );
+    previousNavigationMapWorld = mapWorld;
+    const navigationMap = createNavigationMapSnapshot({
+      ship: navigationMapShipSnapshot({
+        absolutePosition: worldCoordinate(currentShip.position),
+        orientation: currentShip.orientation,
+        presentation: DEFAULT_ACTIVE_SHIP_PRESENTATION
+      }),
+      targets: browserTargetCatalog.map((target) => navigationMapTargetSnapshot(target)),
+      selectedTargetId: selectedTarget?.id ?? null,
+      route: mapRoutePlan ? navigationMapRouteSnapshot(mapRoutePlan) : null,
+      obstacles: browserObstacles.map((obstacle) => navigationMapObstacleSnapshot(obstacle)),
+      entities: mapWorld.entities,
+      world: {
+        registrySignature: mapWorld.registry.signature,
+        streamingSignature: mapWorld.streaming.signature,
+        fullChunkIds: mapWorld.streaming.fullChunkIds,
+        snapshotChunkIds: mapWorld.streaming.snapshotChunkIds
+      }
+    });
+
+    return {
+      ...createTelemetrySnapshot(currentShip, loop.getTelemetry(), lockedPlan),
+      selectableTargets: browserTargetCatalog,
+      selectedTarget,
+      routePreview: preview,
+      selectedRouteProfile,
+      selectedPlanner,
+      obstacles: browserObstacles,
+      navigationObjective: createNavigationObjectiveSnapshot(),
+      runtimeMessage,
+      manualInput,
+      navigationMap
+    };
+  };
 
   const applyManualInputToLoopShip = (): void => {
     const current = loop.getShip();
