@@ -18,7 +18,7 @@
 
 ## Task 2 — Renderer + DebugScene contract seam
 
-- [ ] Implement `worldPresentationRenderer` lifecycle and `DebugScene` integration as projection-only rendering for truth and decorative separation.
+- [x] Implement `worldPresentationRenderer` lifecycle and `DebugScene` integration as projection-only rendering for truth and decorative separation.
   - Execution:
     - Create `apps/weltraum-browser/src/render/three/worldPresentationRenderer.ts`.
     - Update `apps/weltraum-browser/src/render/three/debugScene.ts` adapter read points.

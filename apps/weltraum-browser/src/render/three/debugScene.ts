@@ -4,12 +4,99 @@ import { browserObstacles, browserTargetCatalog, type BrowserRuntimeController }
 import type { CameraMode } from "../../runtime/input";
 import { renderStatusHud } from "../../ui/statusHud";
 import type { LowPolyInstanceBatch } from "../../world/lowPolyInstances";
+import { playableLargeFieldVisualLandmarks, provingGroundAsteroidField } from "../../world/provingGroundWorld";
+import { buildWorldPresentationSnapshot } from "../../world/worldPresentation";
+import type { WorldEntityState } from "../../world/floatingOrigin";
 import { createDemoScoutShipVisual, type ShipVisualSnapshot } from "./shipVisual";
+import { WorldPresentationRenderer, type WorldPresentationRenderSnapshot } from "./worldPresentationRenderer";
 
 const toVector3 = (value: { x: number; y: number; z: number }) => new THREE.Vector3(value.x, value.y, value.z);
 const fromVector3 = (value: THREE.Vector3) => ({ x: value.x, y: value.y, z: value.z });
 
-export interface RenderDebugSnapshot {
+export const applyDecorativePresentationMetadata = <T extends THREE.Object3D>(object: T): T => {
+  Object.assign(object.userData, {
+    renderOnly: true,
+    truthBacked: false,
+    radarVisible: false,
+    collisionRelevant: false
+  });
+  return object;
+};
+
+export interface DecorativePresentationInventory {
+  readonly baseAsteroidSources: readonly WorldEntityState[];
+  readonly baseAsteroidCount: number;
+  readonly beltAsteroidCount: number;
+  readonly decorativeAsteroidCount: number;
+  readonly landmarkCount: number;
+}
+
+export const deriveDecorativePresentationInventory = (
+  sources: readonly WorldEntityState[],
+  landmarks: readonly WorldEntityState[],
+  beltAsteroidCount: number
+): DecorativePresentationInventory => {
+  if (!Number.isInteger(beltAsteroidCount) || beltAsteroidCount < 0) {
+    throw new Error("beltAsteroidCount must be a non-negative integer");
+  }
+  const landmarkIds = new Set(landmarks.map((landmark) => landmark.id));
+  const baseAsteroidSources = Object.freeze(sources.filter((source) => !landmarkIds.has(source.id)));
+  return Object.freeze({
+    baseAsteroidSources,
+    baseAsteroidCount: baseAsteroidSources.length,
+    beltAsteroidCount,
+    decorativeAsteroidCount: baseAsteroidSources.length + beltAsteroidCount,
+    landmarkCount: landmarks.length
+  });
+};
+
+export interface RenderPresentationEvidence {
+  readonly selectedTargetProxyVisible: boolean;
+  readonly selectedTargetProxyId: string | null;
+  readonly routeProxyVisible: boolean;
+  readonly routeProxyVisibility: "Visible" | "Hidden" | "Blocked" | null;
+  readonly routeProxyPlanHash: string | null;
+  readonly routeProxySegmentCount: number;
+  readonly activeRouteProxySegmentId: string | null;
+  readonly truthBackedObstacleProxyCount: number;
+  readonly runtimeTruthObstacleCount: number;
+  readonly decorativeAsteroidCount: number;
+  readonly decorativeLandmarkCount: number;
+  readonly decorativeObjectsExcludedFromRadar: true;
+  readonly rendererOwnsWorldTruth: false;
+  readonly worldPresentationSignature: string | null;
+  readonly renderFrameRevision: number;
+  readonly renderFrameDelta: number;
+  readonly navigationFocusBeaconCount: number;
+  readonly selectedTargetProjectedPosition: { readonly x: number; readonly y: number; readonly z: number } | null;
+}
+
+export const mergeWorldPresentationRenderEvidence = <T extends object>(
+  legacySnapshot: T,
+  presentation: WorldPresentationRenderSnapshot
+): T & RenderPresentationEvidence => ({
+  ...legacySnapshot,
+  selectedTargetProxyVisible: presentation.selectedTargetProxyVisible,
+  selectedTargetProxyId: presentation.selectedTargetProxyId,
+  routeProxyVisible: presentation.routeProxyVisible,
+  routeProxyVisibility: presentation.routeProxyVisibility,
+  routeProxyPlanHash: presentation.routeProxyPlanHash,
+  routeProxySegmentCount: presentation.routeProxySegmentCount,
+  activeRouteProxySegmentId: presentation.activeRouteProxySegmentId,
+  truthBackedObstacleProxyCount: presentation.truthBackedObstacleProxyCount,
+  runtimeTruthObstacleCount: presentation.runtimeTruthObstacleCount,
+  decorativeAsteroidCount: presentation.decorativeAsteroidCount,
+  decorativeLandmarkCount: presentation.decorativeLandmarkCount,
+  decorativeObjectsExcludedFromRadar: presentation.decorativeObjectsExcludedFromRadar,
+  rendererOwnsWorldTruth: presentation.rendererOwnsWorldTruth,
+  worldPresentationSignature: presentation.worldPresentationSignature,
+  renderFrameRevision: presentation.renderFrameRevision,
+  renderFrameDelta: presentation.renderFrameDelta,
+  navigationFocusBeaconCount: presentation.navigationFocusBeaconCount,
+  selectedTargetProjectedPosition: presentation.selectedTargetProjectedPosition
+});
+
+export interface RenderDebugSnapshot extends RenderPresentationEvidence {
   readonly shipPosition: { readonly x: number; readonly y: number; readonly z: number };
   readonly usesInterpolatedPose: boolean;
   readonly interpolationAlpha: number;
@@ -72,6 +159,9 @@ export class DebugScene {
   private readonly shipVisual = createDemoScoutShipVisual();
   private readonly asteroidBatch: LowPolyInstanceBatch;
   private readonly asteroidField: THREE.InstancedMesh;
+  private readonly cinematicAsteroidBelt: THREE.InstancedMesh;
+  private readonly decorativeInventory: DecorativePresentationInventory;
+  private readonly worldPresentationRenderer: WorldPresentationRenderer;
   private readonly routeGroup = new THREE.Group();
   private readonly targetBeaconGroup = new THREE.Group();
   private readonly obstacleGroup = new THREE.Group();
@@ -89,12 +179,12 @@ export class DebugScene {
   private renderSnapshot: RenderDebugSnapshot;
   private readonly surface: NonNullable<DebugSceneOptions["surface"]>;
   private readonly showDebugHelpers: boolean;
+  private worldPresentationFrameRevision = 0;
 
   constructor(private readonly canvas: HTMLCanvasElement, private readonly runtime: BrowserRuntimeController, options: DebugSceneOptions) {
     this.surface = options.surface ?? "flight";
     this.showDebugHelpers = options.showDebugHelpers ?? false;
     this.asteroidBatch = options.lowPolyInstanceBatch;
-    this.renderSnapshot = this.createInitialRenderSnapshot();
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.setClearColor(0x020713, 1);
@@ -120,15 +210,16 @@ export class DebugScene {
       this.scene.add(grid);
     }
 
-    this.scene.add(this.createStarField(), this.createDistantPlanet(), this.createCinematicAsteroidBelt());
+    this.cinematicAsteroidBelt = this.createCinematicAsteroidBelt();
+    this.scene.add(this.createStarField(), this.createDistantPlanet(), this.cinematicAsteroidBelt);
 
     this.scene.add(this.shipVisual.group);
 
-    this.asteroidField = new THREE.InstancedMesh(
+    this.asteroidField = applyDecorativePresentationMetadata(new THREE.InstancedMesh(
       new THREE.IcosahedronGeometry(3.2, 0),
       new THREE.MeshStandardMaterial({ color: 0x8d8f94, roughness: 0.96, metalness: 0.03, flatShading: true }),
       this.asteroidBatch.instances.length
-    );
+    ));
     this.writeAsteroidInstanceMatrices();
     this.asteroidField.visible = this.surface === "flight";
     this.scene.add(this.asteroidField);
@@ -151,6 +242,20 @@ export class DebugScene {
     this.routeGroup.visible = this.showDebugHelpers;
     this.targetBeaconGroup.visible = this.showDebugHelpers;
     this.obstacleGroup.visible = this.showDebugHelpers;
+
+    this.decorativeInventory = deriveDecorativePresentationInventory(
+      provingGroundAsteroidField,
+      playableLargeFieldVisualLandmarks,
+      this.cinematicAsteroidBelt.count
+    );
+    this.worldPresentationRenderer = new WorldPresentationRenderer({
+      parent: this.scene,
+      camera: this.camera,
+      canvas,
+      decorativeAsteroidCount: this.decorativeInventory.decorativeAsteroidCount,
+      decorativeLandmarkCount: this.decorativeInventory.landmarkCount
+    });
+    this.renderSnapshot = this.createInitialRenderSnapshot();
 
     window.addEventListener("resize", this.resize);
     window.addEventListener("keydown", this.handleKeyDown);
@@ -177,6 +282,22 @@ export class DebugScene {
       const targetDescriptor = telemetry.selectedTarget ?? telemetry.lockedPlan?.target ?? telemetry.routePreview?.target ?? null;
       const targetPosition = targetDescriptor?.position;
       const arrivalRadius = targetDescriptor ? arrivalRadiusForTarget(targetDescriptor) : null;
+      const worldPresentation = buildWorldPresentationSnapshot({
+        telemetry,
+        frame: this.asteroidBatch.frame,
+        renderFrameRevision: ++this.worldPresentationFrameRevision,
+        landmarks: playableLargeFieldVisualLandmarks.map((landmark) => ({
+          sourceLandmarkId: landmark.id,
+          label: landmark.id,
+          position: landmark.absolutePosition.value
+        })),
+        decorations: this.decorativeInventory.baseAsteroidSources.map((entity) => ({
+          sourceDecorationId: entity.id,
+          position: entity.absolutePosition.value,
+          scale: this.asteroidBatch.instances.find((instance) => instance.sourceEntityId === entity.id)?.localScale ?? 1,
+          batchKey: entity.renderBatchKey ?? this.asteroidBatch.batchKey
+        }))
+      });
       const drawnPlanHash = routePlan?.planHash ?? null;
       if (drawnPlanHash !== this.lastDrawnPlanHash) {
         this.drawPlan(routePlan);
@@ -184,6 +305,7 @@ export class DebugScene {
       this.shipVisual.updatePose(position, orientation);
       this.shipVisual.updateVfx(telemetry.ship.actuatorTelemetry);
       const cameraSnapshot = this.updateCamera(telemetry.manualInput?.cameraMode ?? "ChaseLocked", position, orientation, elapsed);
+      const worldPresentationRender = this.worldPresentationRenderer.update(worldPresentation, this.asteroidBatch.frame);
       if (targetPosition && this.showDebugHelpers) {
         this.target.visible = true;
         this.target.position.copy(toVector3(targetPosition));
@@ -193,7 +315,7 @@ export class DebugScene {
       } else {
         this.target.visible = false;
       }
-      this.renderSnapshot = {
+      this.renderSnapshot = mergeWorldPresentationRenderEvidence({
         shipPosition: fromVector3(position),
         usesInterpolatedPose: true,
         interpolationAlpha: Number(presentation.interpolationAlpha.toFixed(4)),
@@ -222,7 +344,7 @@ export class DebugScene {
         lowPolyInstanceBatch: this.createLowPolyInstanceBatchSnapshot(),
         targetBeaconCount: this.targetBeaconGroup.children.length,
         runtimeObstacleCount: this.obstacleGroup.children.length
-      };
+      }, worldPresentationRender);
       this.updateHud();
       this.renderer.render(this.scene, this.camera);
       this.frameHandle = requestAnimationFrame(render);
@@ -241,6 +363,7 @@ export class DebugScene {
     window.removeEventListener("pointerup", this.handlePointerUp);
     window.removeEventListener("pointermove", this.handlePointerMove);
     this.canvas.removeEventListener("wheel", this.handleWheel);
+    this.worldPresentationRenderer.dispose();
   }
 
   getRenderSnapshot(): RenderDebugSnapshot {
@@ -307,26 +430,24 @@ export class DebugScene {
       depthWrite: false,
       vertexColors: true
     });
-    const field = new THREE.Points(geometry, material);
+    const field = applyDecorativePresentationMetadata(new THREE.Points(geometry, material));
     field.name = "presentation-starfield";
     field.renderOrder = -20;
-    field.userData.renderOnly = true;
     return field;
   }
 
   private createDistantPlanet(): THREE.Group {
-    const group = new THREE.Group();
+    const group = applyDecorativePresentationMetadata(new THREE.Group());
     group.name = "presentation-distant-planet";
-    group.userData.renderOnly = true;
-    const planet = new THREE.Mesh(
+    const planet = applyDecorativePresentationMetadata(new THREE.Mesh(
       new THREE.SphereGeometry(68, 32, 18),
       new THREE.MeshStandardMaterial({ color: 0x496c87, roughness: 1, metalness: 0, flatShading: true })
-    );
+    ));
     planet.position.set(720, 210, -520);
-    const haze = new THREE.Mesh(
+    const haze = applyDecorativePresentationMetadata(new THREE.Mesh(
       new THREE.SphereGeometry(75, 32, 18),
       new THREE.MeshBasicMaterial({ color: 0x31d9ff, transparent: true, opacity: 0.055, depthWrite: false })
-    );
+    ));
     haze.position.copy(planet.position);
     group.add(planet, haze);
     return group;
@@ -334,13 +455,12 @@ export class DebugScene {
 
   private createCinematicAsteroidBelt(): THREE.InstancedMesh {
     const count = 150;
-    const mesh = new THREE.InstancedMesh(
+    const mesh = applyDecorativePresentationMetadata(new THREE.InstancedMesh(
       new THREE.IcosahedronGeometry(1, 1),
       new THREE.MeshStandardMaterial({ color: 0x6f7075, roughness: 0.98, metalness: 0.02, flatShading: true }),
       count
-    );
+    ));
     mesh.name = "presentation-render-only-asteroid-belt";
-    mesh.userData.renderOnly = true;
     const matrix = new THREE.Matrix4();
     const rotation = new THREE.Quaternion();
     const euler = new THREE.Euler();
@@ -379,7 +499,7 @@ export class DebugScene {
   }
 
   private createInitialRenderSnapshot(): RenderDebugSnapshot {
-    return {
+    return mergeWorldPresentationRenderEvidence({
       shipPosition: { x: 0, y: 0, z: 0 },
       usesInterpolatedPose: true,
       interpolationAlpha: 0,
@@ -417,7 +537,7 @@ export class DebugScene {
       lowPolyInstanceBatch: this.createLowPolyInstanceBatchSnapshot(),
       targetBeaconCount: this.targetBeaconGroup.children.length,
       runtimeObstacleCount: this.obstacleGroup.children.length
-    };
+    }, this.worldPresentationRenderer.getSnapshot());
   }
 
   private populateTargetBeaconMarkers(): void {
