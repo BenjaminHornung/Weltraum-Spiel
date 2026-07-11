@@ -98,6 +98,10 @@ test("default navigation target terminal capture brakes, captures, and holds wit
   expect(afterHold.ship.position).not.toEqual(afterHold.selectedTarget.position);
   expect(afterHold.selectedTarget.position).toEqual(holding.selectedTarget.position);
 
+  await page.waitForFunction(() => {
+    const snapshot = (window as any).TestBridge.getRenderSnapshot?.();
+    return snapshot?.executorStatus === "Arrived" && snapshot.planHash === null;
+  });
   const renderSnapshot = await page.evaluate(() => (window as any).TestBridge.getRenderSnapshot());
   expect(renderSnapshot.shipVisual.visualSource.state).toBe("GLBLoaded");
   expect(renderSnapshot.targetPosition).toEqual(holding.selectedTarget.position);
