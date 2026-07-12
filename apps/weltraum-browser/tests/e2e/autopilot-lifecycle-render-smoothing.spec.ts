@@ -19,7 +19,7 @@ test("completed terminal holding accepts a new route while active routes still b
   const evidenceDir = path.resolve(process.cwd(), "evidence");
   await mkdir(evidenceDir, { recursive: true });
 
-  await page.locator('[data-target-id="nav-beta"]').click();
+  await page.evaluate(() => (window as any).TestBridge.dispatchCommand({ type: "SelectTarget", targetId: "nav-beta" }));
   await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().selectedTarget?.id)).toBe("nav-beta");
   await page.evaluate(() => (window as any).TestBridge.dispatchCommand({ type: "EngageAutopilot", planner: "DirectLocal" }));
   const engaged = await page.evaluate(() => (window as any).TestBridge.getTelemetry());
@@ -42,10 +42,10 @@ test("completed terminal holding accepts a new route while active routes still b
   expect(holding.executor.canSelectNewTarget).toBe(true);
   expect(holding.lockedPlan).toBeNull();
 
-  await page.locator('[data-target-id="nav-alpha"]').click();
+  await page.evaluate(() => (window as any).TestBridge.dispatchCommand({ type: "SelectTarget", targetId: "nav-alpha" }));
   const selectedAfterHolding = await page.evaluate(() => (window as any).TestBridge.getTelemetry());
   expect(selectedAfterHolding.selectedTarget?.id).toBe("nav-alpha");
-  await page.locator("#engage-autopilot").click();
+  await page.evaluate(() => (window as any).TestBridge.dispatchCommand({ type: "EngageAutopilot", planner: "DirectLocal" }));
   await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().lockedPlan?.target.id)).toBe("nav-alpha");
   const newRoute = await page.evaluate(() => (window as any).TestBridge.getTelemetry());
   expect(newRoute.executor.status).toBe("Executing");
@@ -55,11 +55,15 @@ test("completed terminal holding accepts a new route while active routes still b
   expect(newRoute.executor.canAcceptNewPlan).toBe(false);
   expect(newRoute.executor.canSelectNewTarget).toBe(false);
 
-  await page.locator('[data-target-id="nav-beta"]').click();
-  const blockedSelect = await page.evaluate(() => (window as any).TestBridge.getTelemetry());
+  const blockedSelectResult = await page.evaluate(() => (window as any).TestBridge.dispatchCommand({ type: "SelectTarget", targetId: "nav-beta" }));
+  const blockedSelect = blockedSelectResult.telemetry;
   expect(blockedSelect.executor.planHash).toBe(newRoute.executor.planHash);
   expect(blockedSelect.selectedTarget?.id).toBe("nav-alpha");
-  expect(blockedSelect.runtimeMessage).toContain("Cancel the current autopilot route");
+  expect(blockedSelectResult.success).toBe(false);
+  expect(blockedSelectResult.code).toBe("PlanLocked");
+  expect(blockedSelectResult.rejectionCode).toBe("PlanLocked");
+  expect(blockedSelectResult.message).toBe("Cancel the current autopilot route before selecting another target.");
+  expect(blockedSelect.runtimeMessage).toBe(blockedSelectResult.message);
   await page.evaluate(() => (window as any).TestBridge.dispatchCommand({ type: "EngageAutopilot", planner: "DirectLocal" }));
   const blockedEngage = await page.evaluate(() => (window as any).TestBridge.getTelemetry());
   expect(blockedEngage.executor.planHash).toBe(newRoute.executor.planHash);

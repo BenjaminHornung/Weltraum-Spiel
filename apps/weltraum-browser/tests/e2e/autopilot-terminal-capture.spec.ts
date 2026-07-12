@@ -32,7 +32,7 @@ test("default navigation target terminal capture brakes, captures, and holds wit
   const initialVisual = await page.evaluate(() => (window as any).TestBridge.getRenderSnapshot().shipVisual);
   expect(initialVisual.visualSource.state).toBe("GLBLoaded");
 
-  await page.locator('[data-target-id="nav-beta"]').click();
+  await page.evaluate(() => (window as any).TestBridge.dispatchCommand({ type: "SelectTarget", targetId: "nav-beta" }));
   await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().selectedTarget?.id)).toBe("nav-beta");
   const preview = await page.evaluate(() => (window as any).TestBridge.getTelemetry());
   expect(preview.selectedTarget.arrivalEnvelope).toEqual({ radius: 3, terminalSpeed: 0.5, stopBehavior: "StopWithinEnvelope" });
@@ -104,7 +104,17 @@ test("default navigation target terminal capture brakes, captures, and holds wit
   });
   const renderSnapshot = await page.evaluate(() => (window as any).TestBridge.getRenderSnapshot());
   expect(renderSnapshot.shipVisual.visualSource.state).toBe("GLBLoaded");
-  expect(renderSnapshot.targetPosition).toEqual(holding.selectedTarget.position);
+  expect(renderSnapshot.executorStatus).toBe("Arrived");
+  expect(renderSnapshot.targetVisible).toBe(false);
+  expect(renderSnapshot.targetPosition).toBeNull();
+  expect(renderSnapshot.selectedTargetId).toBe("nav-beta");
+  expect(renderSnapshot.selectedTargetProxyVisible).toBe(true);
+  expect(renderSnapshot.selectedTarget).toMatchObject({
+    sourceTargetId: "nav-beta",
+    position: holding.selectedTarget.position,
+    arrivalRadius: holding.selectedTarget.arrivalEnvelope.radius
+  });
+  expect(renderSnapshot.lockedTargetPosition).toBeNull();
   expect(renderSnapshot.shipPosition).not.toEqual(holding.selectedTarget.position);
   expect(renderSnapshot.planHash).toBeNull();
   expect(renderSnapshot.usesInterpolatedPose).toBe(true);
