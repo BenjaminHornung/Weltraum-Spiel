@@ -107,6 +107,45 @@ describe("ship-builder structural validation", () => {
     );
   });
 
+  it("keeps opposite Cargo authoring roles distinct while sharing endpoint identity", () => {
+    const report = validate(CARGO_BLUEPRINT);
+    const cargoBayFront = report.occupiedSocketEndpoints.filter(
+      (occupied) =>
+        occupied.endpoint.partInstanceId === "cargo-bay" && occupied.endpoint.socketId === "structural-front"
+    );
+
+    expect(cargoBayFront).toEqual([
+      {
+        endpoint: { partInstanceId: "cargo-bay", socketId: "structural-front" },
+        connectionRole: "From",
+        connectionIds: ["connection_cargo_bay_docking"]
+      },
+      {
+        endpoint: { partInstanceId: "cargo-bay", socketId: "structural-front" },
+        connectionRole: "To",
+        connectionIds: ["connection_cargo_frame_bay"]
+      }
+    ]);
+    expect(report.summary.occupiedSocketEndpointCount).toBe(10);
+
+    const exclusiveSource = clonePolicy();
+    exclusiveSource.policyId = "cargo-opposite-role-exclusive-test";
+    exclusiveSource.endpointRules[0].occupancy = "Exclusive";
+    const exclusiveReport = validate(
+      CARGO_BLUEPRINT,
+      STARTER_CATALOG,
+      createShipBuilderValidationPolicy(exclusiveSource)
+    );
+    expect(
+      exclusiveReport.diagnostics.find(
+        (diagnostic) =>
+          diagnostic.code === "ExclusiveSocketOccupiedMultipleTimes" &&
+          diagnostic.endpoints[0]?.partInstanceId === "cargo-bay" &&
+          diagnostic.endpoints[0]?.socketId === "structural-front"
+      )?.connectionIds
+    ).toEqual(["connection_cargo_bay_docking", "connection_cargo_frame_bay"]);
+  });
+
   it("reports one canonical occupancy error under an explicitly derived Exclusive policy", () => {
     const policySource = clonePolicy();
     policySource.policyId = "starter-structural-exclusive-test";

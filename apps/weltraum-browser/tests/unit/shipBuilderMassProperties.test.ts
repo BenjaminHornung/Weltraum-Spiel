@@ -165,6 +165,31 @@ describe("ship-builder mass properties", () => {
     expect(yawNinety.gridBounds?.grid).toEqual(bounds(vector(-3, -1, -2), vector(3, 1, 2)));
   });
 
+  it("projects meter-space bound sizes directly from grid sizes", () => {
+    const catalogSource = cloneCatalog();
+    const source = cloneBlueprint();
+    const frame = source.instances.find((instance: MutableRecord) => instance.stableInstanceId === "scout-frame");
+    const frameDefinition = catalogSource.partDefinitions.find(
+      (definition: MutableRecord) => definition.partDefinitionId === frame.partDefinitionId
+    );
+    if (frameDefinition === undefined) {
+      throw new Error("Missing frame definition.");
+    }
+    frameDefinition.gridFootprint.x = 1;
+    source.instances = [frame];
+    source.connections = [];
+    source.referencedPartDefinitionIds = [frame.partDefinitionId];
+    source.gridMeters = 0.1;
+    frame.localGridPosition.x = -100;
+    const catalog = createShipPartCatalogSnapshot(catalogSource);
+    const report = evaluate(source, catalog);
+
+    expect(report.status).toBe("Valid");
+    expect(report.gridBounds?.grid.size.x).toBe(1);
+    expect(report.gridBounds?.meters.size.x).toBe(0.1);
+    expect(report.gridBounds?.meters.size.x).toBe(report.gridBounds!.grid.size.x * source.gridMeters);
+  });
+
   it("fails closed on dry-mass aggregation overflow", () => {
     const catalogSource = cloneCatalog();
     for (const definition of catalogSource.partDefinitions) {

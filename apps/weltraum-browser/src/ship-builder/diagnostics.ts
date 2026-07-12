@@ -3,7 +3,7 @@ import type { ConnectionId, PartInstanceId, SocketId } from "./ids";
 import { deepFreeze } from "./validation";
 import type { JsonValue } from "./validation";
 
-export const SHIP_BUILDER_DIAGNOSTIC_CODE_ORDER = [
+export const SHIP_BUILDER_DIAGNOSTIC_CODE_ORDER = Object.freeze([
   "NoEnabledInstances",
   "ConnectionEndpointDisabled",
   "IdenticalConnectionEndpoints",
@@ -23,7 +23,7 @@ export const SHIP_BUILDER_DIAGNOSTIC_CODE_ORDER = [
   "ZeroDryMass",
   "NonFiniteCenterOfMass",
   "InvalidGridBounds"
-] as const;
+] as const);
 
 export type ShipBuilderDiagnosticCode = (typeof SHIP_BUILDER_DIAGNOSTIC_CODE_ORDER)[number];
 export type ShipBuilderDiagnosticSeverity = "Error" | "Warning" | "Info";
@@ -79,7 +79,12 @@ export const compareShipBuilderDiagnosticEndpoints = (
 const orderedUniqueEndpoints = (
   endpoints: readonly ShipBuilderDiagnosticEndpoint[]
 ): readonly ShipBuilderDiagnosticEndpoint[] => {
-  const ordered = [...endpoints].sort(compareShipBuilderDiagnosticEndpoints);
+  const ordered = endpoints
+    .map((endpoint) => ({
+      partInstanceId: endpoint.partInstanceId,
+      socketId: endpoint.socketId
+    }))
+    .sort(compareShipBuilderDiagnosticEndpoints);
   return ordered.filter(
     (endpoint, index) =>
       index === 0 || compareShipBuilderDiagnosticEndpoints(ordered[index - 1], endpoint) !== 0
@@ -138,7 +143,8 @@ export const compareShipBuilderDiagnostics = (
 
 export const orderShipBuilderDiagnostics = (
   diagnostics: readonly ShipBuilderDiagnostic[]
-): readonly ShipBuilderDiagnostic[] => deepFreeze([...diagnostics].sort(compareShipBuilderDiagnostics));
+): readonly ShipBuilderDiagnostic[] =>
+  deepFreeze(diagnostics.map((diagnostic) => createShipBuilderDiagnostic(diagnostic)).sort(compareShipBuilderDiagnostics));
 
 export const shipBuilderValidationStatusForDiagnostics = (
   diagnostics: readonly Pick<ShipBuilderDiagnostic, "severity">[]

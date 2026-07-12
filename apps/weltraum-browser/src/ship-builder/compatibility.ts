@@ -162,6 +162,14 @@ const readComponentKind = (value: unknown, path: string): ComponentKind => {
 const canonicalPair = <TValue extends string>(left: TValue, right: TValue): readonly [TValue, TValue] =>
   (compareText(left, right) <= 0 ? [left, right] : [right, left]) as readonly [TValue, TValue];
 
+const comparePairs = <TValue extends string>(
+  left: readonly [TValue, TValue],
+  right: readonly [TValue, TValue]
+): number => {
+  const firstComparison = compareText(left[0], right[0]);
+  return firstComparison !== 0 ? firstComparison : compareText(left[1], right[1]);
+};
+
 const readPair = <TValue extends string>(
   value: unknown,
   path: string,
@@ -199,7 +207,7 @@ const readSortedUniquePairs = <TValue extends string>(
 ): readonly (readonly [TValue, TValue])[] => {
   const parsed = readArray(value, path)
     .map((candidate, index) => readPair(candidate, dataPath(path, index), reader))
-    .sort((left, right) => compareText(`${left[0]}\u0000${left[1]}`, `${right[0]}\u0000${right[1]}`));
+    .sort(comparePairs);
   if (parsed.length === 0) {
     throw dataError("InvalidValue", path, "Expected at least one symmetric pair.");
   }
@@ -307,9 +315,7 @@ const readPolicyDocument = (input: unknown): ShipBuilderValidationPolicyDocument
 
   const connectionRules = readArray(readRequiredProperty(object, "connectionRules", path), "/connectionRules")
     .map((entry, index) => readConnectionRule(entry, dataPath("/connectionRules", index)))
-    .sort((left, right) =>
-      compareText(`${left.socketTypes[0]}\u0000${left.socketTypes[1]}`, `${right.socketTypes[0]}\u0000${right.socketTypes[1]}`)
-    );
+    .sort((left, right) => comparePairs(left.socketTypes, right.socketTypes));
   for (let index = 1; index < connectionRules.length; index += 1) {
     const previous = connectionRules[index - 1].socketTypes;
     const current = connectionRules[index].socketTypes;
@@ -399,7 +405,7 @@ export const STARTER_SHIP_BUILDER_VALIDATION_POLICY = createShipBuilderValidatio
 });
 
 export const shipBuilderEndpointKey = (endpoint: PartConnectionEndpoint): string =>
-  `${endpoint.partInstanceId}:${endpoint.socketId}`;
+  canonicalJsonStringify([endpoint.partInstanceId, endpoint.socketId]);
 
 export const compareShipBuilderConnectionEndpoints = (
   left: PartConnectionEndpoint,

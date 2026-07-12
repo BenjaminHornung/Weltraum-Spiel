@@ -109,8 +109,11 @@ const axisAlignedBounds = (
 const projectBoundsToMeters = (
   gridBounds: ShipBuilderAxisAlignedBounds,
   gridMeters: number
-): ShipBuilderAxisAlignedBounds =>
-  axisAlignedBounds(multiplyVector(gridBounds.minimum, gridMeters), multiplyVector(gridBounds.maximum, gridMeters));
+): ShipBuilderAxisAlignedBounds => ({
+  minimum: multiplyVector(gridBounds.minimum, gridMeters),
+  maximum: multiplyVector(gridBounds.maximum, gridMeters),
+  size: multiplyVector(gridBounds.size, gridMeters)
+});
 
 const rotatedFootprint = (footprint: GridFootprint, yaw: number): GridFootprint =>
   yaw === 90 || yaw === 270

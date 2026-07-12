@@ -47,7 +47,7 @@
 
 ## Phase 4: Review and release evidence
 
-- [ ] 6. Complete review, full verification, allowlist audit, and release evidence.
+- [x] 6. Complete review, full verification, allowlist audit, and release evidence.
   - **Owned files:** test protocol/task state and fixes only in the original owning task paths.
   - **Deliverable:** findings-first review with no unresolved correctness issues, exact command results, DevToolbox verification/preflight, clean allowlist, final branch report.
   - **Verification:** all required npm, Playwright, dotnet, diff, JSON, and allowlist commands.

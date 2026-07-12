@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   SCOUT_BLUEPRINT,
+  SHIP_BUILDER_DIAGNOSTIC_CODE_ORDER,
   STARTER_BLUEPRINT_FIXTURES,
   STARTER_CATALOG,
   STARTER_PART_IDS,
@@ -14,6 +15,7 @@ import {
   endpointOccupancyForSocketType,
   evaluatePartConnectionCompatibility,
   orderShipBuilderDiagnostics,
+  shipBuilderEndpointKey,
   shipBuilderValidationPolicyDocument,
   shipBuilderValidationStatusForDiagnostics
 } from "../../src/ship-builder";
@@ -61,6 +63,23 @@ const evaluateFirst = (
 const diagnosticCodes = (result: ReturnType<typeof evaluateFirst>): readonly string[] =>
   result.diagnostics.map((diagnostic) => diagnostic.code);
 
+const isPlainJsonValue = (value: unknown): boolean => {
+  if (value === null || typeof value === "string" || typeof value === "boolean") {
+    return true;
+  }
+  if (typeof value === "number") {
+    return Number.isFinite(value);
+  }
+  if (Array.isArray(value)) {
+    return value.every(isPlainJsonValue);
+  }
+  if (typeof value !== "object") {
+    return false;
+  }
+  const prototype = Object.getPrototypeOf(value);
+  return (prototype === Object.prototype || prototype === null) && Object.values(value).every(isPlainJsonValue);
+};
+
 describe("ship-builder compatibility policy", () => {
   it("canonicalizes, signs, and deeply freezes plain policy data", () => {
     const reordered = clonePolicy();
@@ -79,14 +98,39 @@ describe("ship-builder compatibility policy", () => {
     expect(JSON.parse(JSON.stringify(shipBuilderValidationPolicyDocument(rebuilt)))).toEqual(
       shipBuilderValidationPolicyDocument(rebuilt)
     );
+    expect(isPlainJsonValue(rebuilt)).toBe(true);
     expect(Object.isFrozen(rebuilt)).toBe(true);
     expect(Object.isFrozen(rebuilt.connectionRules)).toBe(true);
     expect(Object.isFrozen(rebuilt.connectionRules[0].mountSidePairs[0])).toBe(true);
+    expect(Object.isFrozen(reordered)).toBe(false);
+    reordered.policyId = "caller-mutated-after-construction";
+    expect(rebuilt.policyId).toBe("starter-ship-builder-validation-v1");
     expect(endpointOccupancyForSocketType(rebuilt, "structural")).toBe("Shared");
     expect(endpointOccupancyForSocketType(rebuilt, "custom")).toBeUndefined();
   });
 
   it("uses the fixed diagnostic precedence and status semantics", () => {
+    expect(SHIP_BUILDER_DIAGNOSTIC_CODE_ORDER).toEqual([
+      "NoEnabledInstances",
+      "ConnectionEndpointDisabled",
+      "IdenticalConnectionEndpoints",
+      "SelfConnectionNotAllowed",
+      "SocketTypeIncompatible",
+      "ConnectionTypeIncompatible",
+      "SocketCapacityIncompatible",
+      "SocketCategoryIncompatible",
+      "SocketComponentKindIncompatible",
+      "SocketMountSideIncompatible",
+      "SocketDirectionInvalid",
+      "SocketDirectionsIncompatible",
+      "ExclusiveSocketOccupiedMultipleTimes",
+      "RequiredSocketUnused",
+      "DisconnectedInstances",
+      "NonFiniteDryMassAggregate",
+      "ZeroDryMass",
+      "NonFiniteCenterOfMass",
+      "InvalidGridBounds"
+    ]);
     const warning = createShipBuilderDiagnostic({
       code: "RequiredSocketUnused",
       severity: "Warning",
@@ -116,6 +160,38 @@ describe("ship-builder compatibility policy", () => {
     expect(shipBuilderValidationStatusForDiagnostics([warning, info])).toBe("ValidWithWarnings");
     expect(shipBuilderValidationStatusForDiagnostics(ordered)).toBe("Invalid");
     expect(Object.isFrozen(ordered)).toBe(true);
+    expect(Object.isFrozen(SHIP_BUILDER_DIAGNOSTIC_CODE_ORDER)).toBe(true);
+  });
+
+  it("freezes cloned diagnostic endpoints without mutating caller-owned input", () => {
+    const endpoint = { partInstanceId: "caller-instance", socketId: "caller-socket" };
+    const diagnostic = createShipBuilderDiagnostic({
+      code: "RequiredSocketUnused",
+      severity: "Warning",
+      phase: "RequiredSockets",
+      path: "/instances/0",
+      endpoints: [endpoint as never]
+    });
+
+    expect(diagnostic.endpoints[0]).not.toBe(endpoint);
+    expect(Object.isFrozen(diagnostic.endpoints[0])).toBe(true);
+    expect(Object.isFrozen(endpoint)).toBe(false);
+    endpoint.socketId = "caller-socket-updated";
+    expect(diagnostic.endpoints[0].socketId).toBe("caller-socket");
+
+    const callerDiagnostic = {
+      code: "ZeroDryMass",
+      severity: "Warning",
+      phase: "MassProperties",
+      path: "/dryMassKg",
+      instanceIds: [],
+      connectionIds: [],
+      endpoints: []
+    };
+    const ordered = orderShipBuilderDiagnostics([callerDiagnostic as never]);
+    expect(ordered[0]).not.toBe(callerDiagnostic);
+    expect(Object.isFrozen(ordered[0])).toBe(true);
+    expect(Object.isFrozen(callerDiagnostic)).toBe(false);
   });
 
   it("fails policy construction when a connection type lacks explicit endpoint occupancy", () => {
@@ -128,6 +204,35 @@ describe("ship-builder compatibility policy", () => {
     } catch (error) {
       expect(error).toMatchObject({ code: "UnknownReference", path: "/connectionRules/0/socketTypes" });
     }
+  });
+
+  it("canonicalizes custom socket-type pairs without delimiter collisions", () => {
+    const connectionRule = (socketTypes: readonly [string, string]) => ({
+      socketTypes,
+      connectionTypes: ["Structural"],
+      capacityPairs: [["standard", "standard"]],
+      mountSidePairs: [["any", "any"]],
+      directionMode: "Finite",
+      allowSameInstance: false,
+      contributesToStructure: false
+    });
+    const input = {
+      policyId: "custom-pair-canonicalization",
+      version: 1,
+      endpointRules: ["a", "a\u0000b", "b\u0000c", "c"].map((socketType) => ({
+        socketType,
+        occupancy: "Shared"
+      })),
+      connectionRules: [connectionRule(["a\u0000b", "c"]), connectionRule(["a", "b\u0000c"])],
+      requiredSocketRules: []
+    };
+    const canonical = createShipBuilderValidationPolicy(input);
+    const reordered = structuredClone(input);
+    reordered.connectionRules.reverse();
+    const reorderedPolicy = createShipBuilderValidationPolicy(reordered);
+
+    expect(reorderedPolicy).toEqual(canonical);
+    expect(reorderedPolicy.signature).toBe(canonical.signature);
   });
 });
 
@@ -180,6 +285,59 @@ describe("ship-builder connection compatibility", () => {
     allowingPolicySource.connectionRules[0].allowSameInstance = true;
     const allowingPolicy = createShipBuilderValidationPolicy(allowingPolicySource);
     expect(evaluateFirst(buildBlueprint(sameInstanceSource), STARTER_CATALOG, allowingPolicy).status).toBe("Compatible");
+    const identicalWithAllowingPolicy = evaluateFirst(
+      buildBlueprint(identicalSource),
+      STARTER_CATALOG,
+      allowingPolicy
+    );
+    expect(identicalWithAllowingPolicy.status).toBe("Incompatible");
+    expect(diagnosticCodes(identicalWithAllowingPolicy)).toContain("IdenticalConnectionEndpoints");
+  });
+
+  it("keeps colon-namespaced endpoint identities collision-free", () => {
+    const from = { partInstanceId: "a:b", socketId: "c" };
+    const to = { partInstanceId: "a", socketId: "b:c" };
+    expect(shipBuilderEndpointKey(from as never)).not.toBe(shipBuilderEndpointKey(to as never));
+
+    const catalogSource = cloneCatalog();
+    const frameDefinition = partById(catalogSource, STARTER_PART_IDS.smallSpineFrame);
+    socketById(frameDefinition, "structural-back").socketId = "c";
+    socketById(frameDefinition, "structural-front").socketId = "b:c";
+    const structuralComponent = frameDefinition.components.find(
+      (component: MutableRecord) => component.componentId === "structure-core"
+    );
+    structuralComponent.structuralSocketIds = structuralComponent.structuralSocketIds.map((socketId: string) =>
+      socketId === "structural-back" ? "c" : socketId === "structural-front" ? "b:c" : socketId
+    );
+    const catalog = createShipPartCatalogSnapshot(catalogSource);
+
+    const source = cloneBlueprint();
+    const frameTemplate = source.instances.find(
+      (instance: MutableRecord) => instance.stableInstanceId === "scout-frame"
+    );
+    source.instances = [
+      { ...structuredClone(frameTemplate), stableInstanceId: "a:b" },
+      {
+        ...structuredClone(frameTemplate),
+        stableInstanceId: "a",
+        localGridPosition: { x: 0, y: 0, z: 1 }
+      }
+    ];
+    source.connections = [
+      {
+        connectionId: "connection_colon_endpoint_probe",
+        from,
+        to,
+        connectionType: "Structural",
+        enabled: true
+      }
+    ];
+    source.referencedPartDefinitionIds = [STARTER_PART_IDS.smallSpineFrame];
+    const blueprint = buildBlueprint(source, catalog);
+    const result = evaluateFirst(blueprint, catalog);
+
+    expect(result.status).toBe("Compatible");
+    expect(result.diagnostics).toEqual([]);
   });
 
   it("fails closed for custom socket types without an explicit policy rule", () => {
@@ -235,6 +393,27 @@ describe("ship-builder connection compatibility", () => {
     opposedBlueprintSource.instances.find((instance: MutableRecord) => instance.stableInstanceId === "scout-cockpit").localRotation.yaw = 90;
     opposedBlueprintSource.instances.find((instance: MutableRecord) => instance.stableInstanceId === "scout-frame").localRotation.yaw = 90;
     expect(evaluateFirst(buildBlueprint(opposedBlueprintSource), STARTER_CATALOG, opposedPolicy).status).toBe("Compatible");
+  });
+
+  it("reports mount-side and opposed-direction mismatches independently", () => {
+    const mountPolicySource = clonePolicy();
+    mountPolicySource.connectionRules[0].mountSidePairs = [["bottom", "top"]];
+    const mountPolicy = createShipBuilderValidationPolicy(mountPolicySource);
+    expect(diagnosticCodes(evaluateFirst(buildBlueprint(cloneBlueprint()), STARTER_CATALOG, mountPolicy))).toContain(
+      "SocketMountSideIncompatible"
+    );
+
+    const opposedPolicySource = clonePolicy();
+    opposedPolicySource.connectionRules[0].directionMode = "Opposed";
+    opposedPolicySource.connectionRules[0].mountSidePairs = [["back", "back"]];
+    const opposedPolicy = createShipBuilderValidationPolicy(opposedPolicySource);
+    const sameDirectionSource = cloneBlueprint();
+    sameDirectionSource.instances.find(
+      (instance: MutableRecord) => instance.stableInstanceId === "scout-frame"
+    ).localRotation.yaw = 180;
+    const sameDirection = evaluateFirst(buildBlueprint(sameDirectionSource), STARTER_CATALOG, opposedPolicy);
+    expect(diagnosticCodes(sameDirection)).toContain("SocketDirectionsIncompatible");
+    expect(diagnosticCodes(sameDirection)).not.toContain("SocketMountSideIncompatible");
   });
 
   it("reports nonzero direction failures without synthesizing a fallback", () => {

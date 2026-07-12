@@ -107,12 +107,6 @@ interface OccupiedEndpointRoleAccumulator {
   readonly connectionIds: Set<ConnectionId>;
 }
 
-interface RequiredEndpointRecord {
-  readonly endpoint: ShipBuilderDiagnosticEndpoint;
-  readonly requirements: readonly ShipBuilderRequiredSocketRequirement[];
-  readonly instanceIndex: number;
-}
-
 const compareText = (left: string, right: string): number => (left < right ? -1 : left > right ? 1 : 0);
 
 const resolvedDefinition = (
@@ -357,7 +351,7 @@ export const validateShipBlueprintStructure = (
     }
   }
 
-  const allRequiredEndpoints: RequiredEndpointRecord[] = [];
+  let requiredSocketEndpointCount = 0;
   const unusedRequiredSocketEndpoints: ShipBuilderUnusedRequiredSocketEndpoint[] = [];
   for (let instanceIndex = 0; instanceIndex < blueprint.instances.length; instanceIndex += 1) {
     const instance = blueprint.instances[instanceIndex];
@@ -371,8 +365,7 @@ export const validateShipBlueprintStructure = (
         continue;
       }
       const endpoint = { partInstanceId: instance.stableInstanceId, socketId: socket.socketId };
-      const requiredEndpoint = { endpoint, requirements, instanceIndex };
-      allRequiredEndpoints.push(requiredEndpoint);
+      requiredSocketEndpointCount += 1;
       if (occupancy.has(shipBuilderEndpointKey(endpoint))) {
         continue;
       }
@@ -396,7 +389,6 @@ export const validateShipBlueprintStructure = (
       }
     }
   }
-  allRequiredEndpoints.sort((left, right) => compareShipBuilderConnectionEndpoints(left.endpoint, right.endpoint));
   unusedRequiredSocketEndpoints.sort((left, right) =>
     compareShipBuilderConnectionEndpoints(left.endpoint, right.endpoint)
   );
@@ -440,7 +432,7 @@ export const validateShipBlueprintStructure = (
     connectedComponentCount: connectedComponents.length,
     disconnectedInstanceCount: disconnectedInstanceIds.length,
     occupiedSocketEndpointCount: occupiedSocketEndpoints.length,
-    requiredSocketEndpointCount: allRequiredEndpoints.length,
+    requiredSocketEndpointCount,
     unusedRequiredSocketEndpointCount: unusedRequiredSocketEndpoints.length,
     diagnosticCount: orderedDiagnostics.length,
     errorCount: orderedDiagnostics.filter((diagnostic) => diagnostic.severity === "Error").length,
