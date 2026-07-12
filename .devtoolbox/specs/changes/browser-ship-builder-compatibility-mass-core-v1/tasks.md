@@ -31,7 +31,7 @@
   - **Verification:** focused validation test plus compatibility/existing suites and build.
   - **Commit:** `#WELTRAUM-000 Add ship builder structural validation`.
 
-- [ ] 4. Implement dry mass, COM, and grid bounds evaluation.
+- [x] 4. Implement dry mass, COM, and grid bounds evaluation.
   - **Owned files:** `src/ship-builder/massProperties.ts`, `index.ts`, `tests/unit/shipBuilderMassProperties.test.ts`.
   - **Deliverable:** enabled dry-mass contributions, grid/meter COM, yaw-aware footprint bounds, fail-closed numeric behavior, immutable signed result.
   - **Verification:** focused mass test plus all Ship Builder unit suites and build.
