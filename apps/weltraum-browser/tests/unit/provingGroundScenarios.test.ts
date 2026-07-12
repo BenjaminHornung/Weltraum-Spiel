@@ -226,6 +226,7 @@ describe("browser proving-ground scenario matrix", () => {
       "multi-rock-field-2500m": "Pass",
       "no-main-thrusters-negative": "ExpectedFail",
       "no-autopilot-authority-negative": "ExpectedFail",
+      "low-rcs-terminal-long": "ExpectedFail",
       "off-route-fail-closed": "ExpectedFail",
       "unsolvable-blocked-corridor-negative": "ExpectedFail"
     });
@@ -385,7 +386,7 @@ describe("browser proving-ground scenario matrix", () => {
     });
 
     expect(evaluation.classification).toBe("Fail");
-    expect(evaluation.notes.join(" ")).toContain("Expected a failure or replan signal");
+    expect(evaluation.notes.join(" ")).toContain("Expected failure status BrakeReserveInsufficient, got Arrived.");
     expect(evaluation.notes.join(" ")).toContain("FuelInsufficient");
   });
 

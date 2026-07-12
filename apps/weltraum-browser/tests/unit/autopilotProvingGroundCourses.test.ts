@@ -111,4 +111,22 @@ describe("autopilot proving-ground course catalog", () => {
       }
     }
   });
+
+  it("marks the no-RCS finite-attitude course as an AuthorityInsufficient ExpectedFail", () => {
+    const course = courseById("low-rcs-terminal-long");
+
+    expect(course.expectedOutcome).toBe("ExpectedFail");
+    expect(course.acceptance.allowReplanRequired).toBe(true);
+    expect(course.acceptance.expectedFailureReasonCodes).toEqual(["AuthorityInsufficient"]);
+    expect(course.notes?.join(" ")).toMatch(/no physical attitude actuator|fake RCS|world-space thrust/i);
+  });
+
+  it("keeps no-autopilot authority rejection exact while admitting its paired authority reason", () => {
+    const course = courseById("no-autopilot-authority-negative");
+
+    expect(course.expectedOutcome).toBe("ExpectedFail");
+    expect(course.acceptance.expectedFailureStatus).toBe("NoAuthority");
+    expect(course.acceptance.expectedFailureReasonCodes).toEqual(["AutopilotUnavailable"]);
+    expect(course.acceptance.allowedFailureReasonCodes).toEqual(["AutopilotUnavailable", "AuthorityInsufficient"]);
+  });
 });

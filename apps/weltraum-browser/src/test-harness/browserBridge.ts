@@ -7,6 +7,13 @@ import type { AutopilotProvingGroundCourseId } from "../world/autopilotProvingGr
 import type { AutopilotProvingGroundCourseResult } from "./scenarioRunner";
 import type { ScenarioId, ScenarioResult } from "./scenarios";
 import { runWorldStreamingScenario, type WorldStreamingScenarioResult } from "../world/worldStreamingScenario";
+import {
+  bangBangTransitScenarioCatalog,
+  runBangBangTransitScenario,
+  runBangBangTransitScenarioMatrix,
+  type BangBangTransitMetrics,
+  type BangBangTransitScenarioId
+} from "./autopilotBangBangMetrics";
 
 export interface TestBridge extends BrowserRuntimeController {
   listScenarios(): readonly ScenarioId[];
@@ -14,6 +21,9 @@ export interface TestBridge extends BrowserRuntimeController {
   listAutopilotProvingGroundCourses(): readonly AutopilotProvingGroundCourseId[];
   runAutopilotProvingGroundCourse(id: AutopilotProvingGroundCourseId, profile?: AutopilotSpeedProfileId): AutopilotProvingGroundCourseResult;
   runAutopilotProvingGroundMatrix(profile?: AutopilotSpeedProfileId): readonly AutopilotProvingGroundCourseResult[];
+  listBangBangTransitScenarios(): readonly BangBangTransitScenarioId[];
+  runBangBangTransitScenario(id: BangBangTransitScenarioId): BangBangTransitMetrics;
+  runBangBangTransitScenarioMatrix(): readonly BangBangTransitMetrics[];
   runWorldStreamingScenario(): WorldStreamingScenarioResult;
   getRenderSnapshot?: () => RenderDebugSnapshot;
 }
@@ -44,6 +54,15 @@ export const createTestBridge = (
     },
     runAutopilotProvingGroundMatrix(profile?: AutopilotSpeedProfileId) {
       return runAutopilotProvingGroundMatrix(profile);
+    },
+    listBangBangTransitScenarios() {
+      return bangBangTransitScenarioCatalog.map((scenario) => scenario.id);
+    },
+    runBangBangTransitScenario(id: BangBangTransitScenarioId) {
+      return runBangBangTransitScenario(id);
+    },
+    runBangBangTransitScenarioMatrix() {
+      return runBangBangTransitScenarioMatrix();
     },
     runWorldStreamingScenario() {
       return runWorldStreamingScenario();

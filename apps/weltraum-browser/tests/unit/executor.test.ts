@@ -1,6 +1,7 @@
 ﻿import { describe, expect, it } from "vitest";
 import { AutopilotExecutor, DirectLocalPlanner, createAuthorityState, createShipStateV2, distance, magnitude, orientationFromForward, vec3 } from "../../src/core";
 import type { RoutePlan, ShipState, TargetDescriptor } from "../../src/core";
+import { normalCrewedScoutPropulsionCapability } from "../../src/flight/propulsionCapability";
 import { provingGroundTargets } from "../../src/world/provingGroundWorld";
 
 const authority = createAuthorityState({ mode: "Autopilot" });
@@ -31,13 +32,31 @@ const stopCaptureTarget: TargetDescriptor = {
 const quaternionDistance = (a: ShipState["orientation"], b: ShipState["orientation"]): number =>
   Math.abs(a.x - b.x) + Math.abs(a.y - b.y) + Math.abs(a.z - b.z) + Math.abs(a.w - b.w);
 
+const stepUntilLongitudinalBraking = (
+  executor: AutopilotExecutor,
+  initialShip: ShipState,
+  initialTick: number
+): ShipState => {
+  let ship = initialShip;
+  for (let tick = initialTick; tick < initialTick + 600; tick += 1) {
+    ship = executor.step(ship, 1 / 30, tick);
+    if (ship.velocity.x < initialShip.velocity.x && ship.actuatorTelemetry.lastAppliedAcceleration.x < -1e-6) {
+      return ship;
+    }
+  }
+  return ship;
+};
+
 const lockedRoutePlan = (
   initialShip: ShipState,
   routeTarget: TargetDescriptor,
   segments: RoutePlan["segments"],
   planHash: string
 ): RoutePlan => ({
-  ...new DirectLocalPlanner().plan({ tick: 1, ship: initialShip, target: routeTarget }),
+  ...(() => {
+    const { motionProfile: _profile, ...legacyPlan } = new DirectLocalPlanner().plan({ tick: 1, ship: initialShip, target: routeTarget });
+    return legacyPlan;
+  })(),
   id: `route-${planHash}`,
   segments,
   planHash
@@ -115,8 +134,10 @@ describe("AutopilotExecutor", () => {
     lightExecutor.lockPlan(plan, initialShip);
     heavyExecutor.lockPlan(plan, initialShip);
 
-    const light = lightExecutor.step(createShip({ dryMass: 900 }), 1, 2);
-    const heavy = heavyExecutor.step(createShip({ dryMass: 4_000 }), 1, 2);
+    const lightFirst = lightExecutor.step(createShip({ dryMass: 900 }), 1, 2);
+    const heavyFirst = heavyExecutor.step(createShip({ dryMass: 4_000 }), 1, 2);
+    const light = lightExecutor.step(lightFirst, 1, 3);
+    const heavy = heavyExecutor.step(heavyFirst, 1, 3);
 
     expect(light.position.x).toBeGreaterThan(heavy.position.x);
     expect(heavyExecutor.getTelemetry().flightSnapshot.brakingReserve.availableDeltaV).toBeLessThan(
@@ -151,6 +172,194 @@ describe("AutopilotExecutor", () => {
     expect(telemetry.flightSnapshot.failureReasonCodes).toContain("OffLockedRoute");
     expect(telemetry.planHash).toBe(plan.planHash);
     expect(executor.getLockedPlan()?.planHash).toBe(plan.planHash);
+  });
+
+  it("clones and freezes the complete profile plan at lock while rejecting a pre-lock hash mismatch", () => {
+    const initialShip = createShip();
+    const plan = new DirectLocalPlanner().plan({ tick: 1, ship: initialShip, target, transitPolicy: "CrewSprint" });
+    const executor = new AutopilotExecutor();
+    const externallyMutablePlan = JSON.parse(JSON.stringify(plan)) as RoutePlan;
+    const mutablePayload = externallyMutablePlan as unknown as {
+      target: { position: { x: number } };
+      motionProfile: { resolvedPolicy: { maximumJerkMps3: number } };
+    };
+
+    executor.lockPlan(externallyMutablePlan, initialShip);
+    mutablePayload.target.position.x = 9_999;
+    mutablePayload.motionProfile.resolvedPolicy.maximumJerkMps3 = 0;
+
+    const locked = executor.getLockedPlan();
+    expect(locked).not.toBe(externallyMutablePlan);
+    expect(locked?.target.position.x).toBe(target.position.x);
+    expect(locked?.motionProfile?.resolvedPolicy.maximumJerkMps3).toBe(plan.motionProfile?.resolvedPolicy.maximumJerkMps3);
+    expect(Object.isFrozen(locked)).toBe(true);
+    expect(Object.isFrozen(locked?.target.position ?? {})).toBe(true);
+    expect(Object.isFrozen(locked?.target.arrivalEnvelope ?? {})).toBe(true);
+    expect(Object.isFrozen(locked?.validation ?? {})).toBe(true);
+    expect(Object.isFrozen(locked?.score ?? {})).toBe(true);
+    expect(Object.isFrozen(locked?.motionProfile ?? {})).toBe(true);
+
+    const tampered = { ...plan, target: { ...plan.target, position: vec3(777, 0, 0) } };
+    expect(() => new AutopilotExecutor().lockPlan(tampered, initialShip)).toThrow(/hash mismatch/i);
+  });
+
+  it("latches a divergence through a restored follow-up step until cancel or a new lock", () => {
+    const initialShip = createShip();
+    const plan = new DirectLocalPlanner().plan({ tick: 1, ship: initialShip, target, transitPolicy: "CrewSprint" });
+    const executor = new AutopilotExecutor({ divergenceDistance: 12 });
+    executor.lockPlan(plan, initialShip);
+    executor.step(createShip({ position: vec3(10, 40, 0) }), 1 / 30, 2);
+
+    const restoredShip = createShip();
+    const afterRestore = executor.step(restoredShip, 1 / 30, 3);
+    expect(afterRestore).toBe(restoredShip);
+    expect(executor.getTelemetry().status).toBe("Diverged");
+    expect(executor.getTelemetry().planHash).toBe(plan.planHash);
+    expect(executor.getTelemetry().replanRequired).toBe(true);
+
+    executor.cancelPlan(restoredShip, 4);
+    executor.lockPlan(plan, restoredShip, 5);
+    executor.step(restoredShip, 1 / 30, 6);
+    expect(executor.getTelemetry().status).toBe("Executing");
+  });
+
+  it("fails a zero-jerk powered route before reserve math and keeps the locked failure latched", () => {
+    const initialShip = createShip();
+    const plan = new DirectLocalPlanner().plan({
+      tick: 1,
+      ship: initialShip,
+      target: stopCaptureTarget,
+      transitPolicy: "Custom",
+      customTransitPolicyConstraints: {
+        targetAccelerationFraction: 1,
+        maximumAccelerationMps2: 100,
+        maximumJerkMps3: 0,
+        coastAllowed: false,
+        coastFraction: 0,
+        minimumTime: true,
+        brakingReserveMultiplier: 1,
+        turnBehavior: "Balanced",
+        waypointBehavior: "BrakeForWaypoint",
+        gravityFloorPolicy: "Preferred"
+      }
+    });
+    const executor = new AutopilotExecutor();
+    executor.lockPlan(plan, initialShip);
+
+    const afterFailure = executor.step(initialShip, 1 / 30, 2);
+    const failureTelemetry = executor.getTelemetry();
+    const restoredShip = createShip();
+    const afterRestore = executor.step(restoredShip, 1 / 30, 3);
+
+    expect(afterFailure).toBe(initialShip);
+    expect(failureTelemetry.status).toBe("NoAuthority");
+    expect(failureTelemetry.invalidationReasons).toEqual(["JerkAuthorityUnavailable"]);
+    expect(failureTelemetry.failureReasonCodes).toEqual(["JerkAuthorityUnavailable"]);
+    expect(failureTelemetry.replanRequired).toBe(true);
+    expect(failureTelemetry.planHash).toBe(plan.planHash);
+    expect(executor.getLockedPlan()?.planHash).toBe(plan.planHash);
+    expect(afterRestore).toBe(restoredShip);
+    expect(executor.getTelemetry().status).toBe("NoAuthority");
+    expect(executor.getTelemetry().failureReasonCodes).toEqual(["JerkAuthorityUnavailable"]);
+    expect(executor.getTelemetry().planHash).toBe(plan.planHash);
+  });
+
+  it("allows a zero-jerk plan already satisfying its terminal gates to complete without powered transit", () => {
+    const initialShip = createShip();
+    const plan = new DirectLocalPlanner().plan({
+      tick: 1,
+      ship: initialShip,
+      target: stopCaptureTarget,
+      transitPolicy: "Custom",
+      customTransitPolicyConstraints: {
+        targetAccelerationFraction: 1,
+        maximumAccelerationMps2: 100,
+        maximumJerkMps3: 0,
+        coastAllowed: false,
+        coastFraction: 0,
+        minimumTime: true,
+        brakingReserveMultiplier: 1,
+        turnBehavior: "Balanced",
+        waypointBehavior: "BrakeForWaypoint",
+        gravityFloorPolicy: "Preferred"
+      }
+    });
+    const executor = new AutopilotExecutor();
+    executor.lockPlan(plan, initialShip);
+
+    const arrivedShip = executor.step(createShip({ position: vec3(99.2, 0, 0), velocity: vec3(0.2, 0, 0) }), 1 / 30, 2);
+
+    expect(executor.getTelemetry().status).toBe("Arrived");
+    expect(executor.getTelemetry().replanRequired).toBe(false);
+    expect(executor.getTelemetry().failureReasonCodes).toEqual([]);
+    expect(executor.getTelemetry().completedPlanHash).toBe(plan.planHash);
+    expect(executor.getLockedPlan()).toBeNull();
+    expect(arrivedShip.actuatorTelemetry.mainThrustActive).toBe(false);
+    expect(magnitude(arrivedShip.velocity)).toBeLessThanOrEqual(stopCaptureTarget.arrivalEnvelope.terminalSpeed ?? 0);
+  });
+
+  it("fails closed for a sufficient-fuel high-speed stopping deficit caused by reduced live braking authority", () => {
+    const initialShip = createShip({ fuel: 200 });
+    const targetAtRange = { ...stopCaptureTarget, id: "reduced-brake-authority", position: vec3(1_000, 0, 0) };
+    const plan = new DirectLocalPlanner().plan({ tick: 1, ship: initialShip, target: targetAtRange, transitPolicy: "CrewSprint" });
+    const executor = new AutopilotExecutor();
+    executor.lockPlan(plan, initialShip);
+    const after = executor.step(createShip({
+      fuel: 200,
+      position: vec3(600, 0, 0),
+      velocity: vec3(60, 0, 0),
+      propulsionCapability: { ...normalCrewedScoutPropulsionCapability, effectiveBrakingThrustNewton: 500 }
+    }), 1 / 30, 2);
+
+    expect(after.position).toEqual(vec3(600, 0, 0));
+    expect(executor.getTelemetry().status).toBe("BrakeReserveInsufficient");
+    expect(executor.getTelemetry().failureReasonCodes).toContain("BrakeReserveInsufficient");
+    expect(executor.getTelemetry().failureReasonCodes).not.toContain("FuelInsufficient");
+    expect(executor.getTelemetry().planHash).toBe(plan.planHash);
+  });
+
+  it("latches a finite live braking degradation discovered during an active Brake phase", () => {
+    const initialShip = createShip({ fuel: 200 });
+    const targetAtRange = { ...stopCaptureTarget, id: "committed-brake-authority-loss", position: vec3(1_000, 0, 0) };
+    const plan = new DirectLocalPlanner().plan({ tick: 1, ship: initialShip, target: targetAtRange, transitPolicy: "CrewSprint" });
+    const executor = new AutopilotExecutor({ divergenceDistance: 50 });
+    executor.lockPlan(plan, initialShip);
+
+    let ship = initialShip;
+    let brakeTick = 0;
+    for (let tick = 1; tick <= 6_000 && executor.getTelemetry().status === "Executing"; tick += 1) {
+      ship = executor.step(ship, 1 / 30, tick);
+      if (executor.getTelemetry().motionPhase === "Brake" && ship.actuatorTelemetry.lastAppliedAcceleration.x < -1e-6) {
+        brakeTick = tick;
+        break;
+      }
+    }
+
+    expect(brakeTick).toBeGreaterThan(0);
+    expect(executor.getTelemetry().motionPhase).toBe("Brake");
+    const degradedShip: ShipState = {
+      ...ship,
+      propulsionCapability: {
+        ...ship.propulsionCapability,
+        effectiveBrakingThrustNewton: 500
+      }
+    };
+    const afterFailure = executor.step(degradedShip, 1 / 30, brakeTick + 1);
+    const failureTelemetry = executor.getTelemetry();
+    const afterRestore = executor.step(ship, 1 / 30, brakeTick + 2);
+
+    expect(degradedShip.propulsionCapability.effectiveBrakingThrustNewton).toBeGreaterThan(0);
+    expect(afterFailure).toBe(degradedShip);
+    expect(failureTelemetry.status).toBe("BrakeReserveInsufficient");
+    expect(failureTelemetry.invalidationReasons).toEqual(["BrakeReserveInsufficient"]);
+    expect(failureTelemetry.failureReasonCodes).toEqual(["BrakeReserveInsufficient"]);
+    expect(failureTelemetry.replanRequired).toBe(true);
+    expect(failureTelemetry.planHash).toBe(plan.planHash);
+    expect(executor.getLockedPlan()?.planHash).toBe(plan.planHash);
+    expect(afterRestore).toBe(ship);
+    expect(executor.getTelemetry().status).toBe("BrakeReserveInsufficient");
+    expect(executor.getTelemetry().failureReasonCodes).toEqual(["BrakeReserveInsufficient"]);
+    expect(executor.getTelemetry().planHash).toBe(plan.planHash);
   });
 
   it("advances a high-speed waypoint crossing onto the next locked segment without false divergence", () => {
@@ -272,7 +481,7 @@ describe("AutopilotExecutor", () => {
     executor.lockPlan(plan, initialShip);
 
     const fastInsideEnvelopeShip = createShip({ position: vec3(99, 0, 0), velocity: vec3(8, 0, 0) });
-    const after = executor.step(fastInsideEnvelopeShip, 1 / 30, 2);
+    const after = stepUntilLongitudinalBraking(executor, fastInsideEnvelopeShip, 2);
     const telemetry = executor.getTelemetry();
 
     expect(telemetry.status).toBe("Executing");
@@ -350,12 +559,12 @@ describe("AutopilotExecutor", () => {
     executor.lockPlan(plan, initialShip);
 
     const fastInsideEnvelopeShip = createShip({ position: vec3(99, 0, 0), velocity: vec3(50, 0, 0) });
-    const after = executor.step(fastInsideEnvelopeShip, 1 / 30, 2);
+    const after = stepUntilLongitudinalBraking(executor, fastInsideEnvelopeShip, 2);
 
     expect(executor.getTelemetry().status).toBe("Executing");
     expect(after.position).not.toEqual(plan.target.position);
     expect(after.velocity.x).toBeLessThan(fastInsideEnvelopeShip.velocity.x);
-    expect(after.actuatorTelemetry.mainThrustActive).toBe(true);
+    expect(after.actuatorTelemetry.mainThrustActive || after.actuatorTelemetry.rcsTranslationActive).toBe(true);
   });
 
   it("brakes exact-target StopWithinEnvelope overspeed through terminal PD instead of the zero-direction guard", () => {
@@ -365,7 +574,7 @@ describe("AutopilotExecutor", () => {
     executor.lockPlan(plan, initialShip);
 
     const overspeedAtTarget = createShip({ position: stopCaptureTarget.position, velocity: vec3(8, 0, 0) });
-    const after = executor.step(overspeedAtTarget, 1 / 30, 2);
+    const after = stepUntilLongitudinalBraking(executor, overspeedAtTarget, 2);
     const telemetry = executor.getTelemetry();
 
     expect(telemetry.status).toBe("Executing");

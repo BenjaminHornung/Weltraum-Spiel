@@ -420,6 +420,56 @@ EditMode tests in `Assets/Tests/Editor/PrototypePhysicsValidationTests.cs` exerc
 
 Run the suite through Unity Test Runner EditMode or Unity MCP `run_tests(mode=EditMode)`. Store run output and deterministic probe evidence under the active spec folder, for example `.devtoolbox/specs/changes/validation-physics-test-suite/tests/test-protocol.md`.
 
+## Browser Autopilot Bang-Bang Transit Metrics
+
+The Browser implementation keeps its local-space autopilot evidence separate from
+the Unity runtime and samples it at a fixed `30 Hz`. The evidence source is the
+executor plus `ShipState.actuatorTelemetry.lastAppliedAcceleration` after the
+controller has applied its real output. Renderer/UI state, phase labels, and
+TestBridge presentation do not create acceleration, gravity, fuel, or terminal
+truth.
+
+The Browser transit metrics record the finite `AlignForBurn`, `Accelerate`,
+`Coast`, `Flip`, `Brake`, `TerminalCapture`, and `Holding` timeline; actual
+positive/negative g relative to the locked route; phase durations; peak speed;
+first-arrival and settled terminal values; modeled impulse/delta-v/fuel; physical
+limits; locked/completed hashes; and explicit replan, failure, and invalidation
+signals. Coast and flip therefore record zero main-thrust gravity unless an
+actual controller output occurs; terminal capture and holding retain their real
+RCS/controller output instead of receiving synthetic labels.
+
+The query-gated Browser E2E test writes exactly these deterministic JSON
+artifacts under `apps/weltraum-browser/evidence/`:
+
+- `browser-autopilot-bang-bang-metrics.json` — machine-readable metrics and the
+  500/1000/2500 m policy comparisons.
+- `browser-autopilot-bang-bang-report.json` — a human-readable structured report
+  with immutable legacy 2500 m values and caveats.
+- `browser-autopilot-bang-bang-timeline.json` — per-scenario phase timelines and
+  controller-derived acceleration evidence.
+
+The report preserves the old speed-capped 2500 m simulated baselines of `215.7 s`
+(`Safe`), `147.6 s` (`Balanced`), and `123.0 s` (`Fast`). Any ideal-kinematics
+number is explicitly an idealized constant-acceleration lower bound that omits
+finite alignment/flip time, jerk, terminal capture, station keeping, obstacle
+geometry, and RCS correction; it is never substituted for the simulated result.
+
+Browser v1 fuel use remains a simple fixed impulse-burn model. Economy evidence
+can claim lower modeled impulse, delta-v, peak speed, and fuel only when those
+controller-derived measurements are lower than CrewSprint; it never claims a
+low-throttle efficiency bonus. Thermal fields are abstract capability metadata
+(`heatLoadPerNewtonSecond` and `sustainedCoolingCapacity`) and record a modeled
+load only: this slice has no engine-specific heat-soak curve or thermal throttle
+bonus.
+
+The serializable propulsion capability snapshot is an abstract future Ship Builder
+data boundary. It does not implement Ship Builder, select an engine technology,
+or derive gameplay values from visuals. When finite attitude authority is absent
+(for example no RCS), the Browser executor retains the locked hash and fails
+closed with `AuthorityInsufficient`; it does not restore world-space thrust or
+grant fake RCS. TestBridge is installed only when the Browser URL contains
+`?testBridge=1`; the normal route keeps it absent.
+
 ## Deferred Physics Slices
 
 The current prototype intentionally defers deeper simulation layers:

@@ -1,14 +1,11 @@
-﻿import { planHashFor } from "../core/hash";
-import { autopilotSpeedProfileFor } from "../core/types";
+﻿import { autopilotSpeedProfileFor } from "../core/types";
 import type { LocalPlanner, PlannerContext, RoutePlan, RoutePlanningResult, RouteSegment } from "../core/types";
 import { magnitude, normalize, scale, sub } from "../core/vector";
 import { buildMultiObstacleRoute } from "./multiObstaclePlanner";
-import { arrivalEnvelopeForTarget, arrivalRadiusForTarget, createRouteCandidate, planOrThrow, rejectionFor, validatePlanningContext, validateRouteSegments } from "./validation";
+import { lockRouteMotionProfile } from "./motionProfile";
+import { arrivalEnvelopeForTarget, arrivalRadiusForTarget, createCanonicalLockedRoutePlan, createRouteCandidate, planOrThrow, rejectionFor, validatePlanningContext, validateRouteSegments } from "./validation";
 
-const withHash = (plan: Omit<RoutePlan, "planHash">): RoutePlan => ({
-  ...plan,
-  planHash: planHashFor(plan)
-});
+const withHash = (plan: Omit<RoutePlan, "planHash">): RoutePlan => createCanonicalLockedRoutePlan(plan);
 
 const routeId = (planner: RoutePlan["planner"], targetId: string, tick: number): string => `${planner}:${targetId}:${tick}`;
 
@@ -20,7 +17,7 @@ const directSegmentsFor = (context: PlannerContext): readonly RouteSegment[] => 
   const routeDistance = magnitude(routeOffset);
   const approachDistance = Math.max(arrivalRadius * 6, 18);
 
-  if (context.speedProfile !== undefined && arrivalEnvelope?.stopBehavior === "StopWithinEnvelope" && routeDistance > approachDistance + Math.max(2, arrivalRadius)) {
+  if (context.transitPolicy === undefined && context.speedProfile !== undefined && arrivalEnvelope?.stopBehavior === "StopWithinEnvelope" && routeDistance > approachDistance + Math.max(2, arrivalRadius)) {
     const routeDirection = normalize(routeOffset);
     const terminalStart = sub(context.target.position, scale(routeDirection, approachDistance));
     return [
@@ -57,6 +54,38 @@ const directSegmentsFor = (context: PlannerContext): readonly RouteSegment[] => 
   ];
 };
 
+const finalizeLockedPlan = (
+  planner: RoutePlan["planner"],
+  context: PlannerContext,
+  routeSegments: readonly RouteSegment[],
+  routeValidation: ReturnType<typeof validateRouteSegments>
+): RoutePlanningResult => {
+  const rawCandidate = createRouteCandidate(planner, context, routeSegments, routeValidation);
+  if (!routeValidation.ok) {
+    return rejectionFor(planner, context, routeValidation, rawCandidate);
+  }
+
+  const locked = lockRouteMotionProfile(context, routeSegments);
+  const lockedValidation = validateRouteSegments(context, locked.segments, routeValidation, locked.motionProfile);
+  const candidate = createRouteCandidate(planner, context, locked.segments, lockedValidation);
+  if (!lockedValidation.ok) {
+    return rejectionFor(planner, context, lockedValidation, candidate);
+  }
+
+  const plan = withHash({
+    id: routeId(planner, context.target.id, context.tick),
+    planner,
+    createdAtTick: context.tick,
+    target: context.target,
+    segments: candidate.segments,
+    validation: lockedValidation,
+    score: candidate.score,
+    motionProfile: locked.motionProfile
+  });
+
+  return { ok: true, plan, candidate, validation: lockedValidation, score: candidate.score };
+};
+
 export class DirectLocalPlanner implements LocalPlanner {
   readonly kind = "DirectLocal" as const;
 
@@ -67,22 +96,7 @@ export class DirectLocalPlanner implements LocalPlanner {
     }
 
     const segments = directSegmentsFor(context);
-    const routeValidation = validateRouteSegments(context, segments, validation);
-    const candidate = createRouteCandidate(this.kind, context, segments, routeValidation);
-    if (!routeValidation.ok) {
-      return rejectionFor(this.kind, context, routeValidation, candidate);
-    }
-    const plan = withHash({
-      id: routeId(this.kind, context.target.id, context.tick),
-      planner: this.kind,
-      createdAtTick: context.tick,
-      target: context.target,
-      segments: candidate.segments,
-      validation: routeValidation,
-      score: candidate.score
-    });
-
-    return { ok: true, plan, candidate, validation: routeValidation, score: candidate.score };
+    return finalizeLockedPlan(this.kind, context, segments, validateRouteSegments(context, segments, validation));
   }
 
   plan(context: PlannerContext): RoutePlan {
@@ -102,41 +116,11 @@ export class ObstacleAvoidanceLocalPlanner implements LocalPlanner {
     const directSegments = directSegmentsFor(context);
     const directValidation = validateRouteSegments(context, directSegments, validation);
     if (directValidation.ok || !directValidation.rejectedReasonCodes.includes("UnsafeRouteSegment")) {
-      const directCandidate = createRouteCandidate(this.kind, context, directSegments, directValidation);
-      if (!directValidation.ok) {
-        return rejectionFor(this.kind, context, directValidation, directCandidate);
-      }
-      const plan = withHash({
-        id: routeId(this.kind, context.target.id, context.tick),
-        planner: this.kind,
-        createdAtTick: context.tick,
-        target: context.target,
-        segments: directCandidate.segments,
-        validation: directValidation,
-        score: directCandidate.score
-      });
-
-      return { ok: true, plan, candidate: directCandidate, validation: directValidation, score: directCandidate.score };
+      return finalizeLockedPlan(this.kind, context, directSegments, directValidation);
     }
 
     const multiObstacleRoute = buildMultiObstacleRoute(context, validation);
-    const routeValidation = multiObstacleRoute.validation;
-    const segments = multiObstacleRoute.segments;
-    const candidate = createRouteCandidate(this.kind, context, segments, routeValidation);
-    if (!routeValidation.ok) {
-      return rejectionFor(this.kind, context, routeValidation, candidate);
-    }
-    const plan = withHash({
-      id: routeId(this.kind, context.target.id, context.tick),
-      planner: this.kind,
-      createdAtTick: context.tick,
-      target: context.target,
-      segments: candidate.segments,
-      validation: routeValidation,
-      score: candidate.score
-    });
-
-    return { ok: true, plan, candidate, validation: routeValidation, score: candidate.score };
+    return finalizeLockedPlan(this.kind, context, multiObstacleRoute.segments, multiObstacleRoute.validation);
   }
 
   plan(context: PlannerContext): RoutePlan {

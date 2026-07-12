@@ -9,6 +9,8 @@ export type FailureReasonCode =
   | "MainThrustersUnavailable"
   | "AutopilotUnavailable"
   | "AuthorityInsufficient"
+  | "JerkAuthorityUnavailable"
+  | "ComfortAccelerationUnavailable"
   | "BrakeReserveInsufficient"
   | "OffLockedRoute";
 
@@ -21,6 +23,99 @@ export interface ShipMass {
   readonly fuelMass: number;
   /** Computed owner value, never recomputed by HUD. Unit: kilograms. */
   readonly totalMass: number;
+}
+
+/** JSON-safe values permitted in a capability extension payload. */
+export type JsonValue = string | number | boolean | null | readonly JsonValue[] | { readonly [key: string]: JsonValue };
+
+/** Capability extension keys are namespaced so future producers do not collide. */
+export type NamespacedExtensionKey = `${string}:${string}`;
+
+export interface PropulsionFuelEfficiencyMetadata {
+  readonly version: 1;
+  /** Browser-v1 modeled impulse delivered per kilogram of fuel. */
+  readonly modeledImpulsePerFuelKilogram: number;
+}
+
+export interface PropulsionHeatMetadata {
+  readonly version: 1;
+  /** Abstract thermal load accumulated per newton-second of powered thrust. */
+  readonly heatLoadPerNewtonSecond: number;
+  /** Abstract sustained cooling capacity for the capability snapshot. */
+  readonly sustainedCoolingCapacity: number;
+}
+
+/**
+ * Serializable physical propulsion snapshot. Values describe a ship's installed
+ * capability rather than a planner/executor preference.
+ */
+export interface ShipPropulsionCapability {
+  readonly version: 1;
+  readonly mainThrustNewton: number;
+  readonly effectiveBrakingThrustNewton: number;
+  readonly structuralMaxAccelerationMps2: number;
+  readonly sustainedThermalMaxAccelerationMps2: number;
+  readonly maximumPeakAccelerationMps2: number;
+  /** Radians per second squared. */
+  readonly maximumAngularAcceleration: number;
+  /** Radians per second. */
+  readonly maximumAngularVelocity: number;
+  readonly maximumCruiseSpeedMps?: number;
+  readonly fuelEfficiency?: PropulsionFuelEfficiencyMetadata;
+  readonly heat?: PropulsionHeatMetadata;
+  readonly extensions?: Readonly<Partial<Record<NamespacedExtensionKey, JsonValue>>>;
+}
+
+export type OccupantMode = "HumanCrew" | "CrewlessDrone";
+
+export type GravityFloorPolicy = "Preferred" | "RequiredWhenPhysicallyAvailable" | "Disabled";
+
+/**
+ * Occupant acceleration constraints. Crewless envelopes intentionally omit
+ * biological acceleration maxima instead of serializing a non-finite sentinel.
+ */
+export interface OccupantAccelerationEnvelope {
+  readonly version: 1;
+  readonly occupantMode: OccupantMode;
+  readonly preferredAccelerationMps2: number;
+  readonly minimumComfortAccelerationMps2: number;
+  readonly maximumSustainedAccelerationMps2?: number;
+  readonly maximumPeakAccelerationMps2?: number;
+  readonly maximumJerkMps3: number;
+  readonly gravityFloorPolicy: GravityFloorPolicy;
+}
+
+export type TransitPolicyId = "CrewComfort" | "CrewSprint" | "Economy" | "DroneSprint" | "Custom";
+
+export type LegacyTransitPolicyId = "Safe" | "Balanced" | "Fast";
+
+export type RequestedTransitPolicyId = TransitPolicyId | LegacyTransitPolicyId;
+
+export type TransitTurnBehavior = "Conservative" | "Balanced" | "Aggressive";
+
+export type TransitWaypointBehavior = "BrakeForWaypoint" | "PreserveMomentum";
+
+/** Serializable constraints locked with a resolved transit policy in later planning work. */
+export interface TransitPolicyConstraints {
+  readonly targetAccelerationMps2?: number;
+  readonly targetAccelerationFraction?: number;
+  readonly maximumAccelerationMps2: number;
+  readonly maximumJerkMps3: number;
+  readonly maximumPeakSpeedMps?: number;
+  readonly coastAllowed: boolean;
+  readonly coastFraction: number;
+  readonly minimumTime: boolean;
+  readonly brakingReserveMultiplier: number;
+  readonly turnBehavior: TransitTurnBehavior;
+  readonly waypointBehavior: TransitWaypointBehavior;
+  readonly gravityFloorPolicy: GravityFloorPolicy;
+}
+
+/** Includes both the caller's identity and the canonical policy identity for deterministic hashing. */
+export interface ResolvedTransitPolicy extends TransitPolicyConstraints {
+  readonly version: 1;
+  readonly requestedPolicyId: RequestedTransitPolicyId;
+  readonly resolvedPolicyId: TransitPolicyId;
 }
 
 export interface FuelState {
@@ -104,6 +199,20 @@ export interface ActuatorTelemetry {
   readonly rcsRotationActive: boolean;
   readonly sasCorrectionActive: boolean;
   readonly controlModeEffect: ControlModeEffectSnapshot;
+  /** Guidance direction requested by the executor; never an applied world-space thrust vector. */
+  readonly requestedBurnDirection?: Vec3;
+  /** Actual body-forward main-thrust direction when main thrust is applying force, otherwise zero. */
+  readonly actualMainThrustDirection?: Vec3;
+  /** Dot product of requested and current body-forward burn directions. */
+  readonly mainThrustAlignment?: number;
+  readonly mainThrustAlignmentErrorRadians?: number;
+  readonly mainThrustAlignmentToleranceRadians?: number;
+  readonly requestedMainAccelerationMps2?: number;
+  readonly appliedMainAccelerationMps2?: number;
+  /** Maximum safe vector sum of main and RCS acceleration for this step. */
+  readonly combinedAccelerationLimitMps2?: number;
+  /** Locked-profile jerk ceiling supplied for autonomous burn commands, zero when not applicable. */
+  readonly maximumJerkMps3?: number;
   readonly lastAppliedAcceleration: Vec3;
   readonly lastAppliedAngularAcceleration: Vec3;
 }
@@ -121,6 +230,8 @@ export interface ShipState {
   readonly translationCommand: Vec3;
   readonly rotationCommand: Vec3;
   readonly actuatorTelemetry: ActuatorTelemetry;
+  readonly propulsionCapability: ShipPropulsionCapability;
+  readonly occupantAccelerationEnvelope: OccupantAccelerationEnvelope;
   readonly mass: ShipMass;
   readonly fuel: FuelState;
   readonly authority: AuthorityState;
@@ -148,14 +259,86 @@ export interface TargetDescriptor {
 
 export type RouteSegmentKind = "Direct" | "Avoidance" | "Terminal";
 
+/** Stable phase names reserved for locked Browser transit profiles. */
+export type LockedTransitPhase = "AlignForBurn" | "Accelerate" | "Coast" | "Flip" | "Brake" | "TerminalCapture" | "Holding";
+
+/**
+ * A finite turn constraint calculated from immutable route geometry and the
+ * planning-time authority snapshot. It describes the transition at a
+ * segment's exit, never a runtime route edit.
+ */
+export interface RouteTurnConstraint {
+  readonly version: 1;
+  readonly kind: "Straight" | "Corner" | "Terminal";
+  readonly turnAngleRadians: number;
+  readonly effectiveCornerRadiusM: number;
+  readonly lateralAccelerationLimitMps2: number;
+  readonly attitudeAngularAccelerationLimitRadps2: number;
+  readonly attitudeAngularVelocityLimitRadps: number;
+  readonly authorityScale: number;
+  readonly nextSegmentBrakingAccelerationMps2: number;
+  /** Present only when policy, capability, or corner geometry supplies a real finite cap. */
+  readonly speedLimitMps?: number;
+}
+
+/** Immutable speed and authority bounds locked for one route segment. */
+export interface RouteSegmentMotionConstraint {
+  readonly version: 1;
+  readonly entrySpeedMps: number;
+  readonly exitSpeedMps: number;
+  /** The unchanged target arrival speed when this is the terminal segment. */
+  readonly terminalSpeedMps?: number;
+  /** Present only when policy, capability, or corner geometry supplies a real finite cap. */
+  readonly maximumPeakSpeedMps?: number;
+  readonly plannedUsableMainAccelerationMps2: number;
+  readonly plannedUsableBrakingAccelerationMps2: number;
+  readonly turnConstraint: RouteTurnConstraint;
+}
+
+/**
+ * Serializable route truth fixed before hashing. Fuel and live mass remain
+ * execution inputs and therefore are intentionally not present here.
+ */
+export interface LockedRouteMotionProfile {
+  readonly version: 1;
+  readonly requestedPolicyId: RequestedTransitPolicyId;
+  readonly resolvedPolicy: ResolvedTransitPolicy;
+  readonly occupantAccelerationEnvelope: OccupantAccelerationEnvelope;
+  readonly propulsionCapability: ShipPropulsionCapability;
+  readonly planningAuthority: AuthorityState;
+  readonly targetAccelerationMps2: number;
+  readonly maximumAccelerationMps2: number;
+  readonly maximumJerkMps3: number;
+  /** Present only when policy or capability supplies a real finite route cap. */
+  readonly maximumPeakSpeedMps?: number;
+  readonly coastAllowed: boolean;
+  readonly coastFraction: number;
+  readonly minimumTime: boolean;
+  readonly brakingReserveMultiplier: number;
+  readonly turnBehavior: TransitTurnBehavior;
+  readonly waypointBehavior: TransitWaypointBehavior;
+  readonly gravityFloorPolicy: GravityFloorPolicy;
+  readonly plannedUsableMainAccelerationMps2: number;
+  readonly plannedUsableBrakingAccelerationMps2: number;
+  readonly mainThrustAlignmentToleranceRadians: number;
+  readonly flipCompletionToleranceRadians: number;
+  readonly phaseVocabulary: readonly LockedTransitPhase[];
+}
+
 export interface RouteSegment {
   readonly id: string;
   readonly kind: RouteSegmentKind;
   readonly start: Vec3;
   readonly end: Vec3;
+  /**
+   * Legacy compatibility/diagnostic value. New transit execution must use the
+   * immutable motionConstraint instead of treating this as a policy cap.
+   */
   readonly desiredSpeed: number;
   readonly clearanceRadius: number;
   readonly brakeMarginMultiplier?: number;
+  /** Omitted only for legacy manually-constructed segments. */
+  readonly motionConstraint?: RouteSegmentMotionConstraint;
 }
 
 export interface RoutePlan {
@@ -166,6 +349,8 @@ export interface RoutePlan {
   readonly segments: readonly RouteSegment[];
   readonly validation: RouteValidationResult;
   readonly score: RouteScore;
+  /** Omitted only for legacy manually-constructed plans. Planner-created plans always lock this before hashing. */
+  readonly motionProfile?: LockedRouteMotionProfile;
   readonly planHash: string;
 }
 
@@ -182,7 +367,8 @@ export type RouteValidationReasonCode =
   | "MainThrustersUnavailable"
   | "AutopilotUnavailable"
   | "AuthorityInsufficient"
-  | "BrakeReserveInsufficient";
+  | "BrakeReserveInsufficient"
+  | "InvalidMotionProfile";
 
 export type RouteValidationSeverity = "Reject" | "Warning";
 
@@ -325,7 +511,12 @@ export interface AutopilotCourseAcceptance {
   readonly maxTicks: number;
   readonly maxFuelUsed?: number;
   readonly allowReplanRequired?: boolean;
+  /** Required primary failure reasons for ExpectedFail courses. */
   readonly expectedFailureReasonCodes?: readonly AutopilotExpectedFailureReasonCode[];
+  /** Explicit failure-reason allow-list for ExpectedFail courses. */
+  readonly allowedFailureReasonCodes?: readonly AutopilotExpectedFailureReasonCode[];
+  /** Exact terminal executor status required by an ExpectedFail course. */
+  readonly expectedFailureStatus?: "PlanningRejected" | Exclude<ExecutorStatus, "Idle" | "Executing" | "Arrived">;
 }
 
 export interface AutopilotProvingGroundCourse {
@@ -355,6 +546,15 @@ export interface PlannerContext {
   readonly ship: ShipState;
   readonly target: TargetDescriptor;
   readonly obstacles?: readonly ObstacleDescriptor[];
+  /** Preferred v1 policy selector. When omitted, the legacy speed profile resolves to its deterministic alias. */
+  readonly transitPolicy?: RequestedTransitPolicyId;
+  /** Required when transitPolicy is Custom; ignored by all canonical policy IDs. */
+  readonly customTransitPolicyConstraints?: TransitPolicyConstraints;
+  /** Planning-only override that is snapshotted into the locked route. */
+  readonly occupantAccelerationEnvelope?: OccupantAccelerationEnvelope;
+  /** Planning-only override that is snapshotted into the locked route. */
+  readonly propulsionCapability?: ShipPropulsionCapability;
+  /** Legacy compatibility/diagnostic selector retained during the transit-policy migration. */
   readonly speedProfile?: AutopilotSpeedProfileId;
 }
 
@@ -374,6 +574,8 @@ export interface ExecutorTelemetry {
   readonly tick: number;
   readonly status: ExecutorStatus;
   readonly routeLifecycle?: RouteLifecycle;
+  /** Current immutable-profile execution phase, separate from terminal arrival state. */
+  readonly motionPhase?: LockedTransitPhase;
   readonly arrivalPhase?: ExecutorArrivalPhase;
   readonly planHash: string | null;
   readonly completedPlanHash?: string | null;
@@ -393,6 +595,15 @@ export interface ExecutorTelemetry {
   readonly desiredTerminalVelocity?: Vec3;
   readonly terminalCaptureActive?: boolean;
   readonly terminalHoldingActive?: boolean;
+  readonly requestedBurnDirection?: Vec3;
+  readonly actualMainThrustDirection?: Vec3;
+  readonly mainThrustAlignment?: number;
+  readonly mainThrustAlignmentErrorRadians?: number;
+  readonly flipActive?: boolean;
+  readonly flipAngleRadians?: number;
+  readonly commandedPoweredAccelerationMps2?: number;
+  readonly appliedMainAccelerationMps2?: number;
+  readonly appliedAccelerationMps2?: number;
   readonly replanRequired: boolean;
   readonly invalidationReasons: readonly string[];
   readonly failureReasonCodes: readonly FailureReasonCode[];

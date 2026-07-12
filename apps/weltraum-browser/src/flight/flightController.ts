@@ -1,5 +1,5 @@
 import type { ControlModeEffectReasonCode, ControlModeEffectSnapshot, FlightControlMode, Quaternion, ShipState } from "../core/types";
-import { add, clamp, magnitude, normalize, scale, vec3, type Vec3 } from "../core/vector";
+import { add, clamp, dot, magnitude, normalize, scale, vec3, type Vec3 } from "../core/vector";
 import { accelerationLimitForMass, createFuelState, createShipMass, defaultFlightModelOptions, inactiveActuatorTelemetry, type FlightModelOptions } from "./state";
 
 export interface FlightControllerOptions extends FlightModelOptions {
@@ -15,8 +15,24 @@ export interface FlightControllerStepRequest {
   readonly mainThrottleCommand?: number;
   readonly translationCommand?: Vec3;
   readonly rotationCommand?: Vec3;
+  /**
+   * A world-space guidance request. It is only used to choose a body-facing
+   * burn direction and requested magnitude; it never becomes world-space main
+   * thrust directly.
+   */
   readonly desiredAcceleration?: Vec3;
   readonly desiredFacingDirection?: Vec3;
+  /** Locked executor alignment gate for autonomous main thrust. */
+  readonly mainThrustAlignmentToleranceRadians?: number;
+  /** Executor-owned main-thrust ceiling derived from locked and live authority. */
+  readonly maximumMainAccelerationMps2?: number;
+  /** Shared linear ceiling for the vector sum of main and RCS translation. */
+  readonly maximumCombinedAccelerationMps2?: number;
+  /** Executor-owned angular ceilings derived from locked and live authority. */
+  readonly maximumAngularAccelerationRadps2?: number;
+  readonly maximumAngularVelocityRadps?: number;
+  /** Locked-profile jerk ceiling recorded with autonomous actuator output. */
+  readonly maximumJerkMps3?: number;
   readonly allowRcsTranslationOutsideTranslationMode?: boolean;
 }
 
@@ -26,6 +42,8 @@ export const defaultFlightControllerOptions: FlightControllerOptions = {
   rcsAngularAcceleration: 1.8,
   sasDamping: 1.35
 };
+
+const defaultMainThrustAlignmentToleranceRadians = 0.12;
 
 const modeEffectLabel = (controlMode: FlightControlMode): string => {
   if (controlMode === "Cruise") {
@@ -119,6 +137,82 @@ const clampAccelerationVector = (acceleration: Vec3, accelerationLimit: number):
 
   return scale(normalize(acceleration), accelerationLimit);
 };
+
+const finiteNonNegativeOr = (value: number | undefined, fallback: number): number =>
+  value !== undefined && Number.isFinite(value) && value >= 0 ? value : fallback;
+
+const livePhysicalMainAccelerationLimit = (ship: ShipState): number => {
+  const mass = Math.max(0.001, ship.mass.totalMass);
+  const capability = ship.propulsionCapability;
+  const capabilityCeiling = Math.min(
+    capability.structuralMaxAccelerationMps2,
+    capability.sustainedThermalMaxAccelerationMps2,
+    capability.maximumPeakAccelerationMps2
+  );
+  const occupantCeiling = ship.occupantAccelerationEnvelope.occupantMode === "HumanCrew"
+    ? Math.min(
+        ship.occupantAccelerationEnvelope.maximumSustainedAccelerationMps2 ?? 0,
+        ship.occupantAccelerationEnvelope.maximumPeakAccelerationMps2 ?? 0
+      )
+    : Number.POSITIVE_INFINITY;
+  return Math.max(0, Math.min(capability.mainThrustNewton / mass, capabilityCeiling, occupantCeiling));
+};
+
+const livePhysicalCombinedAccelerationLimit = (ship: ShipState): number => {
+  const capability = ship.propulsionCapability;
+  const capabilityCeiling = Math.min(
+    capability.structuralMaxAccelerationMps2,
+    capability.sustainedThermalMaxAccelerationMps2,
+    capability.maximumPeakAccelerationMps2
+  );
+  const occupantCeiling = ship.occupantAccelerationEnvelope.occupantMode === "HumanCrew"
+    ? Math.min(
+        ship.occupantAccelerationEnvelope.maximumSustainedAccelerationMps2 ?? 0,
+        ship.occupantAccelerationEnvelope.maximumPeakAccelerationMps2 ?? 0
+      )
+    : Number.POSITIVE_INFINITY;
+  return Math.max(0, Math.min(capabilityCeiling, occupantCeiling));
+};
+
+/** Preserves the body-forward main contribution while allocating only the RCS residual. */
+const allocateCombinedAcceleration = (
+  mainAcceleration: Vec3,
+  rcsTranslationAcceleration: Vec3,
+  combinedAccelerationLimit: number
+): { readonly mainAcceleration: Vec3; readonly rcsTranslationAcceleration: Vec3; readonly appliedAcceleration: Vec3 } => {
+  const limit = Math.max(0, combinedAccelerationLimit);
+  const boundedMain = clampAccelerationVector(mainAcceleration, limit);
+  const unboundedCombined = add(boundedMain, rcsTranslationAcceleration);
+  if (magnitude(unboundedCombined) <= limit + 1e-9) {
+    return { mainAcceleration: boundedMain, rcsTranslationAcceleration, appliedAcceleration: unboundedCombined };
+  }
+
+  const rcsMagnitudeSquared = dot(rcsTranslationAcceleration, rcsTranslationAcceleration);
+  if (rcsMagnitudeSquared <= 1e-12) {
+    return { mainAcceleration: boundedMain, rcsTranslationAcceleration: vec3(), appliedAcceleration: boundedMain };
+  }
+
+  const b = 2 * dot(boundedMain, rcsTranslationAcceleration);
+  const c = dot(boundedMain, boundedMain) - limit * limit;
+  const discriminant = Math.max(0, b * b - 4 * rcsMagnitudeSquared * c);
+  const rcsScale = clamp((-b + Math.sqrt(discriminant)) / (2 * rcsMagnitudeSquared), 0, 1);
+  const boundedRcs = scale(rcsTranslationAcceleration, rcsScale);
+  return {
+    mainAcceleration: boundedMain,
+    rcsTranslationAcceleration: boundedRcs,
+    appliedAcceleration: add(boundedMain, boundedRcs)
+  };
+};
+
+const mainThrustAlignmentTolerance = (requestedTolerance: number | undefined): number => {
+  if (requestedTolerance === undefined) {
+    return defaultMainThrustAlignmentToleranceRadians;
+  }
+  return Number.isFinite(requestedTolerance) ? clamp(requestedTolerance, 0, Math.PI) : defaultMainThrustAlignmentToleranceRadians;
+};
+
+const requestedBurnDirectionFor = (request: FlightControllerStepRequest, desiredAcceleration: Vec3 | null): Vec3 =>
+  normalize(request.desiredFacingDirection ?? desiredAcceleration ?? vec3());
 
 const rotationCommandForFacing = (orientation: Quaternion, desiredFacingDirection: Vec3 | undefined): Vec3 => {
   const desiredForward = normalize(desiredFacingDirection ?? vec3());
@@ -253,43 +347,85 @@ export const applyFlightControllerStep = (
   const requestedMainThrottleCommand = clamp(request.mainThrottleCommand ?? ship.mainThrottleCommand, 0, 1);
   const mainThrottleCommand = controlMode === "Cruise" ? requestedMainThrottleCommand : 0;
   const translationCommand = clampCommandVector(request.translationCommand ?? ship.translationCommand);
-  const requestedRotationCommand = clampCommandVector(add(request.rotationCommand ?? ship.rotationCommand, rotationCommandForFacing(ship.orientation, request.desiredFacingDirection)));
+  const legacyAccelerationLimit = accelerationLimitForMass(ship.mass, controllerOptions, ship.propulsionCapability, ship.occupantAccelerationEnvelope);
+  const mainAccelerationLimit = Math.min(
+    livePhysicalMainAccelerationLimit(ship),
+    finiteNonNegativeOr(request.maximumMainAccelerationMps2, legacyAccelerationLimit)
+  );
+  const combinedAccelerationLimit = Math.min(
+    livePhysicalCombinedAccelerationLimit(ship),
+    finiteNonNegativeOr(request.maximumCombinedAccelerationMps2, mainAccelerationLimit)
+  );
+  const desiredAcceleration = request.desiredAcceleration ? clampAccelerationVector(request.desiredAcceleration, mainAccelerationLimit) : null;
+  const requestedBurnDirection = requestedBurnDirectionFor(request, desiredAcceleration);
+  const requestedRotationCommand = clampCommandVector(add(request.rotationCommand ?? ship.rotationCommand, rotationCommandForFacing(ship.orientation, requestedBurnDirection)));
   const rotationCommand = controlMode === "Translation" ? vec3(requestedRotationCommand.x, 0, 0) : requestedRotationCommand;
-  const accelerationLimit = accelerationLimitForMass(ship.mass, controllerOptions);
-  const desiredAcceleration = request.desiredAcceleration ? clampAccelerationVector(request.desiredAcceleration, accelerationLimit) : null;
   const controlModeEffect = createControlModeEffect(ship, controlMode, rcsEnabled, sasEnabled, request.allowRcsTranslationOutsideTranslationMode === true);
-  const canUseMainThrust = controlModeEffect.mainThrustAllowed && (mainThrottleCommand > 1e-6 || magnitude(desiredAcceleration ?? vec3()) > 1e-6);
-  const mainAccelerationMagnitude = canUseMainThrust ? accelerationLimit * mainThrottleCommand : 0;
-  const mainAcceleration = canUseMainThrust ? (desiredAcceleration ?? scale(rotateVectorByQuaternion(ship.orientation, vec3(1, 0, 0)), mainAccelerationMagnitude)) : vec3();
+  const currentForward = normalize(rotateVectorByQuaternion(ship.orientation, vec3(1, 0, 0)));
+  const alignmentTolerance = mainThrustAlignmentTolerance(request.mainThrustAlignmentToleranceRadians);
+  const alignment = magnitude(requestedBurnDirection) <= 1e-9 ? 1 : clamp(dot(currentForward, requestedBurnDirection), -1, 1);
+  const alignmentError = Math.acos(alignment);
+  const mainThrustAligned = alignmentError <= alignmentTolerance;
+  const canUseMainThrust = controlModeEffect.mainThrustAllowed && mainThrottleCommand > 1e-6 && mainThrustAligned;
+  const requestedMainAccelerationMagnitude = desiredAcceleration ? magnitude(desiredAcceleration) : mainAccelerationLimit * mainThrottleCommand;
+  const mainAccelerationMagnitude = canUseMainThrust ? Math.min(mainAccelerationLimit * mainThrottleCommand, requestedMainAccelerationMagnitude) : 0;
+  const mainAcceleration = mainAccelerationMagnitude > 1e-6 ? scale(currentForward, mainAccelerationMagnitude) : vec3();
 
   const translationMagnitude = magnitude(translationCommand);
   const canTranslateWithRcs = controlModeEffect.rcsTranslationAllowed && translationMagnitude > 1e-6;
-  const rcsTranslationAcceleration = canTranslateWithRcs
-    ? scale(rotateVectorByQuaternion(ship.orientation, normalize(translationCommand)), controllerOptions.rcsAcceleration * ship.authority.translationAuthority)
+  const requestedRcsTranslationAcceleration = canTranslateWithRcs
+    ? scale(rotateVectorByQuaternion(ship.orientation, normalize(translationCommand)), controllerOptions.rcsAcceleration * ship.authority.translationAuthority * clamp(translationMagnitude, 0, 1))
     : vec3();
-  const appliedAcceleration = add(mainAcceleration, rcsTranslationAcceleration);
+  const allocatedAcceleration = allocateCombinedAcceleration(mainAcceleration, requestedRcsTranslationAcceleration, combinedAccelerationLimit);
+  const appliedAcceleration = allocatedAcceleration.appliedAcceleration;
 
+  const legacyAngularAcceleration = Math.min(controllerOptions.rcsAngularAcceleration, ship.propulsionCapability.maximumAngularAcceleration) * ship.authority.rotationAuthority;
+  const maximumAngularAcceleration = Math.min(
+    ship.propulsionCapability.maximumAngularAcceleration * ship.authority.rotationAuthority,
+    finiteNonNegativeOr(request.maximumAngularAccelerationRadps2, legacyAngularAcceleration)
+  );
   const rcsRotationAngularAcceleration =
     controlModeEffect.rcsRotationAllowed && magnitude(rotationCommand) > 1e-6
-      ? scale(rotationCommand, controllerOptions.rcsAngularAcceleration * ship.authority.rotationAuthority * controlModeEffect.rotationResponseScale)
+      ? scale(rotationCommand, maximumAngularAcceleration * controlModeEffect.rotationResponseScale)
       : vec3();
   const sasAngularAcceleration =
     controlModeEffect.sasAllowed && magnitude(ship.angularVelocity) > 1e-6 ? scale(ship.angularVelocity, -controllerOptions.sasDamping) : vec3();
-  const appliedAngularAcceleration = add(rcsRotationAngularAcceleration, sasAngularAcceleration);
+  const appliedAngularAcceleration = clampAccelerationVector(add(rcsRotationAngularAcceleration, sasAngularAcceleration), maximumAngularAcceleration);
 
   const elapsed = Math.max(0, fixedDeltaSeconds);
   const nextVelocity = add(ship.velocity, scale(appliedAcceleration, elapsed));
   const nextPosition = add(ship.position, scale(nextVelocity, elapsed));
-  const nextAngularVelocity = add(ship.angularVelocity, scale(appliedAngularAcceleration, elapsed));
+  const legacyAngularVelocity = ship.propulsionCapability.maximumAngularVelocity;
+  const maximumAngularVelocity = Math.min(
+    ship.propulsionCapability.maximumAngularVelocity * ship.authority.rotationAuthority,
+    finiteNonNegativeOr(request.maximumAngularVelocityRadps, legacyAngularVelocity)
+  );
+  // Losing rotation authority cannot silently erase existing momentum. With no
+  // actuator authority we preserve angular velocity and report the blocked
+  // control effect; the next orientation still evolves physically.
+  const nextAngularVelocity = maximumAngularVelocity <= 1e-9
+    ? ship.angularVelocity
+    : clampAccelerationVector(add(ship.angularVelocity, scale(appliedAngularAcceleration, elapsed)), maximumAngularVelocity);
   const nextOrientation = integrateOrientation(ship.orientation, nextAngularVelocity, elapsed);
   const burned = burnFuelForAcceleration(ship, magnitude(appliedAcceleration), elapsed);
+  const appliedMainAccelerationMps2 = magnitude(allocatedAcceleration.mainAcceleration);
+  const appliedRcsTranslationAccelerationMps2 = magnitude(allocatedAcceleration.rcsTranslationAcceleration);
   const actuatorTelemetry = {
     ...inactiveActuatorTelemetry(),
-    mainThrustActive: canUseMainThrust,
-    rcsTranslationActive: canTranslateWithRcs,
+    mainThrustActive: appliedMainAccelerationMps2 > 1e-6,
+    rcsTranslationActive: appliedRcsTranslationAccelerationMps2 > 1e-6,
     rcsRotationActive: magnitude(rcsRotationAngularAcceleration) > 1e-6,
     sasCorrectionActive: magnitude(sasAngularAcceleration) > 1e-6,
     controlModeEffect,
+    requestedBurnDirection,
+    actualMainThrustDirection: appliedMainAccelerationMps2 > 1e-6 ? currentForward : vec3(),
+    mainThrustAlignment: alignment,
+    mainThrustAlignmentErrorRadians: alignmentError,
+    mainThrustAlignmentToleranceRadians: alignmentTolerance,
+    requestedMainAccelerationMps2: requestedMainAccelerationMagnitude,
+    appliedMainAccelerationMps2,
+    combinedAccelerationLimitMps2: combinedAccelerationLimit,
+    maximumJerkMps3: finiteNonNegativeOr(request.maximumJerkMps3, 0),
     lastAppliedAcceleration: appliedAcceleration,
     lastAppliedAngularAcceleration: appliedAngularAcceleration
   };
