@@ -25,7 +25,7 @@
   - **Verification:** focused compatibility test, existing Ship Builder suites, build, diff check.
   - **Commit:** `#WELTRAUM-000 Add ship builder connection compatibility`.
 
-- [ ] 3. Implement deterministic structural validation and reporting.
+- [x] 3. Implement deterministic structural validation and reporting.
   - **Owned files:** `src/ship-builder/blueprintValidation.ts`, `index.ts`, `tests/unit/shipBuilderValidation.test.ts`.
   - **Deliverable:** occupancy, required sockets, compatible structural graph, components/root/disconnected IDs, summary/status/signature, immutable report.
   - **Verification:** focused validation test plus compatibility/existing suites and build.
