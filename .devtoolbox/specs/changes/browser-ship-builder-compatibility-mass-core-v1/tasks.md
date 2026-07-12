@@ -19,7 +19,7 @@
 
 ## Phase 2: Domain implementation
 
-- [ ] 2. Implement immutable diagnostics and connection compatibility policy.
+- [x] 2. Implement immutable diagnostics and connection compatibility policy.
   - **Owned files:** `src/ship-builder/diagnostics.ts`, `compatibility.ts`, `index.ts`, `tests/unit/shipBuilderCompatibility.test.ts`.
   - **Deliverable:** canonical policy snapshot/signature, starter policy, yaw transforms, per-connection compatibility, stable diagnostics, endpoint occupancy helpers, and focused cases.
   - **Verification:** focused compatibility test, existing Ship Builder suites, build, diff check.
