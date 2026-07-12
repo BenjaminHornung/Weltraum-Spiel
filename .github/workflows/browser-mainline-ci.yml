@@ -24,6 +24,10 @@ jobs:
   browser-mainline:
     name: Browser mainline verification
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
     defaults:
       run:
         working-directory: apps/weltraum-browser
@@ -34,30 +38,59 @@ jobs:
         with:
           lfs: false
 
-      - name: Restore Demo Scout GLB if checked out as an LFS pointer
+      - name: Restore selective LFS fixtures
         shell: bash
         working-directory: .
         run: |
           set -euo pipefail
           glb_path="apps/weltraum-browser/public/ships/demo_scout_mk1.glb"
+          png_paths=(
+            "apps/weltraum-browser/evidence/ui-concept-parity-v1-rejected-combat-contact.png"
+            "apps/weltraum-browser/evidence/ui-concept-parity-v1-rejected-flight-hud-1280x720.png"
+            "apps/weltraum-browser/evidence/ui-concept-parity-v1-rejected-flight-hud.png"
+            "apps/weltraum-browser/evidence/ui-concept-parity-v1-rejected-navigation-planner.png"
+          )
 
           if [ ! -f "$glb_path" ]; then
             echo "::error::Expected Demo Scout GLB is missing at $glb_path"
             exit 1
           fi
 
-          if head -c 80 "$glb_path" | grep -q "version https://git-lfs.github.com/spec/v1"; then
-            echo "Demo Scout GLB is an LFS pointer; pulling only $glb_path"
+          needs_lfs_pull=false
+          for fixture_path in "$glb_path" "${png_paths[@]}"; do
+            if [ -f "$fixture_path" ] && head -c 80 "$fixture_path" | grep -q "version https://git-lfs.github.com/spec/v1"; then
+              needs_lfs_pull=true
+              break
+            fi
+          done
+
+          if [ "$needs_lfs_pull" = true ]; then
+            echo "Selective fixtures include LFS pointers; pulling required files."
             git lfs install --local
-            git lfs pull --include="$glb_path" --exclude=""
+            git lfs pull --include="$glb_path,${png_paths[0]},${png_paths[1]},${png_paths[2]},${png_paths[3]}" --exclude=""
           else
-            echo "Demo Scout GLB is present as a normal repository file; no LFS pull needed."
+            echo "Selective fixtures are present as normal repository files; no LFS pull needed."
           fi
 
           if [ "$(head -c 4 "$glb_path")" != "glTF" ]; then
             echo "::error::Demo Scout GLB did not resolve to a GLB binary."
             exit 1
           fi
+
+          for png_path in "${png_paths[@]}"; do
+            if [ ! -f "$png_path" ]; then
+              echo "::error::Expected PNG fixture is missing at $png_path"
+              exit 1
+            fi
+            if head -c 80 "$png_path" | grep -q "version https://git-lfs.github.com/spec/v1"; then
+              echo "::error::PNG fixture remained an LFS pointer at $png_path"
+              exit 1
+            fi
+            if [ "$(od -An -tx1 -N8 "$png_path" | tr -d ' \n')" != "89504e470d0a1a0a" ]; then
+              echo "::error::PNG fixture has invalid magic at $png_path"
+              exit 1
+            fi
+          done
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -79,13 +112,13 @@ jobs:
         run: npm run build
 
       - name: Run Playwright E2E
-        run: npm run test:e2e
+        run: npm run test:e2e -- --workers=1 --shard=${{ matrix.shard }}/2
 
       - name: Upload browser test artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: browser-mainline-ci-artifacts
+          name: browser-mainline-ci-artifacts-shard-${{ matrix.shard }}
           if-no-files-found: ignore
           retention-days: 14
           path: |
