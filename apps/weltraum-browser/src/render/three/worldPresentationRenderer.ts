@@ -417,7 +417,7 @@ export class WorldPresentationRenderer {
   }
 
   private updateRoute(route: WorldPresentationRoute | null, frame: FrameDescriptor): void {
-    if (!route) {
+    if (!route || route.visibility === "Hidden") {
       this.removeRoute();
       this.routeGroup.visible = false;
       return;
@@ -429,7 +429,7 @@ export class WorldPresentationRenderer {
       this.routeGroup.add(this.route.group);
     }
 
-    this.routeGroup.visible = route.visibility !== "Hidden";
+    this.routeGroup.visible = true;
     const lines = this.route.group.children.filter((child): child is THREE.Line => child instanceof THREE.Line);
     for (const [index, segment] of route.segments.entries()) {
       const line = lines[index];
@@ -528,6 +528,9 @@ export class WorldPresentationRenderer {
   }
 
   private validateRoute(route: WorldPresentationRoute | null): void {
+    if (route?.visibility === "Hidden") {
+      return;
+    }
     if (route && this.route?.sourcePlanHash === route.sourcePlanHash && this.route.geometrySignature !== routeGeometrySignature(route)) {
       throw new Error(`Route geometry changed for stable sourcePlanHash ${route.sourcePlanHash}`);
     }

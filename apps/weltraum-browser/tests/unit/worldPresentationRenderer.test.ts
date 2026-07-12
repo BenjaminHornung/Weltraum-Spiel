@@ -49,6 +49,7 @@ const fixture = (overrides: {
   readonly routeTargetId?: string;
   readonly focusTargetId?: string;
   readonly focusPosition?: { readonly x: number; readonly y: number; readonly z: number };
+  readonly emptyRouteGeometry?: boolean;
 } = {}): WorldPresentationSnapshot => {
   const sourcePlanHash = overrides.sourcePlanHash ?? "plan-a";
   const lifecycle = overrides.lifecycle ?? "Preview";
@@ -75,7 +76,7 @@ const fixture = (overrides: {
     sourceTargetId: overrides.focusTargetId ?? routeTarget.sourceTargetId,
     position: overrides.focusPosition ?? routeTarget.position
   };
-  const segments = [
+  const segments = overrides.emptyRouteGeometry ? [] : [
     {
       sourceSegmentId: "segment-direct",
       kind: "Direct" as const,
@@ -192,7 +193,7 @@ const fixture = (overrides: {
       visibility,
       blockerCode: visibility === "Blocked" ? "FlightAdmissionRejected" : null,
       admissionReady: visibility === "Visible",
-      activeSegmentId: lifecycle === "Locked" ? "segment-avoidance" : null,
+      activeSegmentId: overrides.emptyRouteGeometry ? null : lifecycle === "Locked" ? "segment-avoidance" : null,
       segments,
       goal: routeTarget,
       truthBacked: true
@@ -308,6 +309,33 @@ describe("WorldPresentationRenderer", () => {
       /Route geometry changed for stable sourcePlanHash plan-a/
     );
     expect(renderer.getSnapshot().presentationRevision).toBe(1);
+  });
+
+  it("removes hidden empty geometry and accepts the same canonical route when it becomes visible again", () => {
+    const { renderer } = setup();
+    renderer.update(fixture(), frame());
+
+    const hidden = renderer.update(fixture({
+      visibility: "Hidden",
+      emptyRouteGeometry: true,
+      renderFrameRevision: 5
+    }), frame());
+    expect(hidden).toMatchObject({
+      routeProxyVisible: false,
+      routeProxyVisibility: "Hidden",
+      routeProxyPlanHash: "plan-a",
+      routeProxySegmentCount: 0
+    });
+    expect(renderer.routeGroup.children).toHaveLength(0);
+
+    const visible = renderer.update(fixture({ renderFrameRevision: 6 }), frame());
+    expect(visible).toMatchObject({
+      routeProxyVisible: true,
+      routeProxyVisibility: "Visible",
+      routeProxyPlanHash: "plan-a",
+      routeProxySegmentCount: 3
+    });
+    expect(renderer.routeGroup.children).toHaveLength(1);
   });
 
   it("replaces route identity for every different hash even when geometry is equal", () => {

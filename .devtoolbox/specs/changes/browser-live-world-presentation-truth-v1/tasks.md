@@ -69,7 +69,7 @@
 
 ## Task 5 — Review + full regression finalization
 
-- [ ] Review and close implementation, execute full regression and scope validation, and produce final rebase-ready state.
+- [x] Review and close implementation, execute full regression and scope validation, and produce final rebase-ready state.
   - Execution:
     - Execute full command set in `tests/test-protocol.md`.
     - Run explicit allowlist forbidden-path validation including evidence/test/render/world files required by this change.
