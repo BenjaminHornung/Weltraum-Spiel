@@ -10,3 +10,7 @@ export * from "./blueprint";
 export * from "./serialization";
 export * from "./starterCatalog";
 export * from "./fixtures";
+export * from "./diagnostics";
+export * from "./compatibility";
+export * from "./blueprintValidation";
+export * from "./massProperties";
