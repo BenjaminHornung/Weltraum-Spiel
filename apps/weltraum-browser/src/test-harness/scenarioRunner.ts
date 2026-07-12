@@ -204,25 +204,31 @@ const averageSpeedFor = (initialDistance: number, simulatedSeconds: number): num
 const hasReasonCode = (result: Pick<AutopilotProvingGroundCourseResult, "failureReasonCodes" | "invalidationReasons">, code: string): boolean =>
   result.failureReasonCodes.includes(code) || result.invalidationReasons.includes(code);
 
-const hasFailureOrReplanSignal = (result: Pick<AutopilotProvingGroundCourseResult, "failureReasonCodes" | "invalidationReasons" | "replanRequired" | "status">): boolean =>
-  result.replanRequired || result.failureReasonCodes.length > 0 || result.invalidationReasons.length > 0 || result.status !== "Arrived";
-
 const appendExpectedFailureViolations = (
-  expectedCodes: readonly string[],
+  acceptance: Pick<AutopilotProvingGroundCourse["acceptance"], "expectedFailureReasonCodes" | "allowedFailureReasonCodes" | "expectedFailureStatus">,
   result: Omit<AutopilotProvingGroundCourseResult, "classification" | "notes">,
   notes: string[]
 ): void => {
+  const expectedCodes = acceptance.expectedFailureReasonCodes ?? [];
   if (expectedCodes.length === 0) {
     return;
   }
 
-  if (!hasFailureOrReplanSignal(result)) {
-    notes.push("Expected a failure or replan signal, but none was raised.");
+  if (acceptance.expectedFailureStatus === undefined) {
+    notes.push("ExpectedFail requires an exact expectedFailureStatus.");
+  } else if (result.status !== acceptance.expectedFailureStatus) {
+    notes.push(`Expected failure status ${acceptance.expectedFailureStatus}, got ${result.status}.`);
   }
 
   const missingCodes = expectedCodes.filter((code) => !hasReasonCode(result, code));
   if (missingCodes.length > 0) {
     notes.push(`Expected failure reason codes missing: ${missingCodes.join(",")}.`);
+  }
+  const allowedCodes: readonly string[] = acceptance.allowedFailureReasonCodes ?? [];
+  const unexpectedCodes = [...new Set([...result.failureReasonCodes, ...result.invalidationReasons])]
+    .filter((code) => !allowedCodes.includes(code));
+  if (unexpectedCodes.length > 0) {
+    notes.push(`Unexpected failure reason codes: ${unexpectedCodes.join(",")}.`);
   }
 };
 
@@ -277,7 +283,7 @@ const collectHardInvariantViolations = (
     }
   }
 
-  appendExpectedFailureViolations(acceptance.expectedFailureReasonCodes ?? [], result, notes);
+  appendExpectedFailureViolations(acceptance, result, notes);
 
   return notes;
 };

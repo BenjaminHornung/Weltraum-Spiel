@@ -1,0 +1,241 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "human-readable-transit-report",
+  "title": "Browser Autopilot Bang-Bang Transit Profiles v1",
+  "deterministicRepeatability": "Two independent query-gated TestBridge runs produced identical structured results.",
+  "legacyBaseline": {
+    "label": "Immutable legacy capped 2500 m simulated baselines; these are not ideal kinematics.",
+    "seconds": {
+      "Safe": 215.7,
+      "Balanced": 147.6,
+      "Fast": 123
+    }
+  },
+  "summaries": [
+    "All gravity and phase metrics come from executor/actuator truth at a fixed 30 Hz; renderer and UI do not contribute physics truth.",
+    "Coast, Flip, TerminalCapture, and Holding phases only report their actual controller output. A phase label never creates gravity.",
+    "Economy uses lower modeled impulse, total delta-v, peak speed, and fuel in the existing fixed impulse model. It does not claim a throttle-efficiency bonus.",
+    "Modeled thermal fields are abstract capability metadata only. Browser v1 does not model a heat-soak curve or thermal throttle bonus.",
+    "The abstract propulsion snapshot is a future Ship Builder data boundary, not a Ship Builder implementation."
+  ],
+  "policyComparisonRows": [
+    {
+      "distanceMeters": 500,
+      "rows": [
+        {
+          "policy": "CrewComfort",
+          "simulatedFirstArrivalSeconds": 29.3667,
+          "peakSpeedMps": 38.8969,
+          "totalDeltaVMps": 77.4767,
+          "impulseNewtonSeconds": 95996.9627,
+          "actualFuelUsedKg": 1.9165,
+          "classification": "Pass"
+        },
+        {
+          "policy": "CrewSprint",
+          "simulatedFirstArrivalSeconds": 21.7,
+          "peakSpeedMps": 40.9569,
+          "totalDeltaVMps": 81.8257,
+          "impulseNewtonSeconds": 101381.2497,
+          "actualFuelUsedKg": 2.0196,
+          "classification": "Pass"
+        },
+        {
+          "policy": "Economy",
+          "simulatedFirstArrivalSeconds": 37.7333,
+          "peakSpeedMps": 29.4186,
+          "totalDeltaVMps": 64.0376,
+          "impulseNewtonSeconds": 79355.8781,
+          "actualFuelUsedKg": 1.5737,
+          "classification": "Pass"
+        }
+      ],
+      "idealizedKinematics": {
+        "crewComfort": {
+          "label": "Idealized constant-acceleration rest-to-rest lower bound, not the simulated result",
+          "assumptions": [
+            "No finite attitude alignment or flip time",
+            "No jerk ramp, terminal capture, station keeping, obstacle geometry, or RCS correction",
+            "Uses recorded peak positive actuator acceleration only"
+          ],
+          "accelerationMps2": 9.8066,
+          "lowerBoundSeconds": 14.2809,
+          "simulatedFirstArrivalSeconds": 29.3667
+        },
+        "crewSprint": {
+          "label": "Idealized constant-acceleration rest-to-rest lower bound, not the simulated result",
+          "assumptions": [
+            "No finite attitude alignment or flip time",
+            "No jerk ramp, terminal capture, station keeping, obstacle geometry, or RCS correction",
+            "Uses recorded peak positive actuator acceleration only"
+          ],
+          "accelerationMps2": 12.7996,
+          "lowerBoundSeconds": 12.5002,
+          "simulatedFirstArrivalSeconds": 21.7
+        },
+        "economy": {
+          "label": "Idealized constant-acceleration rest-to-rest lower bound, not the simulated result",
+          "assumptions": [
+            "No finite attitude alignment or flip time",
+            "No jerk ramp, terminal capture, station keeping, obstacle geometry, or RCS correction",
+            "Uses recorded peak positive actuator acceleration only"
+          ],
+          "accelerationMps2": 3.9227,
+          "lowerBoundSeconds": null,
+          "simulatedFirstArrivalSeconds": 37.7333
+        }
+      }
+    },
+    {
+      "distanceMeters": 1000,
+      "rows": [
+        {
+          "policy": "CrewComfort",
+          "simulatedFirstArrivalSeconds": 35.7,
+          "peakSpeedMps": 64.0673,
+          "totalDeltaVMps": 132.5033,
+          "impulseNewtonSeconds": 164087.0073,
+          "actualFuelUsedKg": 3.2777,
+          "classification": "Pass"
+        },
+        {
+          "policy": "CrewSprint",
+          "simulatedFirstArrivalSeconds": 32.5,
+          "peakSpeedMps": 69.134,
+          "totalDeltaVMps": 137.9579,
+          "impulseNewtonSeconds": 170832.6232,
+          "actualFuelUsedKg": 3.4132,
+          "classification": "Pass"
+        },
+        {
+          "policy": "Economy",
+          "simulatedFirstArrivalSeconds": 67.5333,
+          "peakSpeedMps": 37.0024,
+          "totalDeltaVMps": 102.1045,
+          "impulseNewtonSeconds": 126480.524,
+          "actualFuelUsedKg": 2.5262,
+          "classification": "Pass"
+        }
+      ],
+      "idealizedKinematics": {
+        "crewComfort": {
+          "label": "Idealized constant-acceleration rest-to-rest lower bound, not the simulated result",
+          "assumptions": [
+            "No finite attitude alignment or flip time",
+            "No jerk ramp, terminal capture, station keeping, obstacle geometry, or RCS correction",
+            "Uses recorded peak positive actuator acceleration only"
+          ],
+          "accelerationMps2": 9.8066,
+          "lowerBoundSeconds": 20.1962,
+          "simulatedFirstArrivalSeconds": 35.7
+        },
+        "crewSprint": {
+          "label": "Idealized constant-acceleration rest-to-rest lower bound, not the simulated result",
+          "assumptions": [
+            "No finite attitude alignment or flip time",
+            "No jerk ramp, terminal capture, station keeping, obstacle geometry, or RCS correction",
+            "Uses recorded peak positive actuator acceleration only"
+          ],
+          "accelerationMps2": 14.71,
+          "lowerBoundSeconds": 16.4901,
+          "simulatedFirstArrivalSeconds": 32.5
+        },
+        "economy": {
+          "label": "Idealized constant-acceleration rest-to-rest lower bound, not the simulated result",
+          "assumptions": [
+            "No finite attitude alignment or flip time",
+            "No jerk ramp, terminal capture, station keeping, obstacle geometry, or RCS correction",
+            "Uses recorded peak positive actuator acceleration only"
+          ],
+          "accelerationMps2": 3.9227,
+          "lowerBoundSeconds": null,
+          "simulatedFirstArrivalSeconds": 67.5333
+        }
+      }
+    },
+    {
+      "distanceMeters": 2500,
+      "rows": [
+        {
+          "policy": "CrewComfort",
+          "simulatedFirstArrivalSeconds": 66.0667,
+          "peakSpeedMps": 116.6964,
+          "totalDeltaVMps": 285.1599,
+          "impulseNewtonSeconds": 412306.1942,
+          "actualFuelUsedKg": 8.242,
+          "classification": "Pass"
+        },
+        {
+          "policy": "CrewSprint",
+          "simulatedFirstArrivalSeconds": 43.1,
+          "peakSpeedMps": 131.8965,
+          "totalDeltaVMps": 268.7372,
+          "impulseNewtonSeconds": 388625.3254,
+          "actualFuelUsedKg": 7.7674,
+          "classification": "Pass"
+        },
+        {
+          "policy": "Economy",
+          "simulatedFirstArrivalSeconds": 108,
+          "peakSpeedMps": 37.0024,
+          "totalDeltaVMps": 101.5353,
+          "impulseNewtonSeconds": 147076.9351,
+          "actualFuelUsedKg": 2.9376,
+          "classification": "Pass"
+        }
+      ],
+      "idealizedKinematics": {
+        "crewComfort": {
+          "label": "Idealized constant-acceleration rest-to-rest lower bound, not the simulated result",
+          "assumptions": [
+            "No finite attitude alignment or flip time",
+            "No jerk ramp, terminal capture, station keeping, obstacle geometry, or RCS correction",
+            "Uses recorded peak positive actuator acceleration only"
+          ],
+          "accelerationMps2": 9.8066,
+          "lowerBoundSeconds": 31.933,
+          "simulatedFirstArrivalSeconds": 66.0667
+        },
+        "crewSprint": {
+          "label": "Idealized constant-acceleration rest-to-rest lower bound, not the simulated result",
+          "assumptions": [
+            "No finite attitude alignment or flip time",
+            "No jerk ramp, terminal capture, station keeping, obstacle geometry, or RCS correction",
+            "Uses recorded peak positive actuator acceleration only"
+          ],
+          "accelerationMps2": 14.71,
+          "lowerBoundSeconds": 26.0732,
+          "simulatedFirstArrivalSeconds": 43.1
+        },
+        "economy": {
+          "label": "Idealized constant-acceleration rest-to-rest lower bound, not the simulated result",
+          "assumptions": [
+            "No finite attitude alignment or flip time",
+            "No jerk ramp, terminal capture, station keeping, obstacle geometry, or RCS correction",
+            "Uses recorded peak positive actuator acceleration only"
+          ],
+          "accelerationMps2": 3.9227,
+          "lowerBoundSeconds": null,
+          "simulatedFirstArrivalSeconds": 108
+        }
+      }
+    }
+  ],
+  "safetySummary": {
+    "lowRcs": "ExpectedFail / AuthorityInsufficient; no world-space thrust, fake RCS, snap, or silent replan is used.",
+    "terminal": "First-arrival and post-arrival settled fields remain separate, retaining terminal capture and controller-integrated holding evidence.",
+    "lockedPlan": "Every scenario records before/after/completed hashes and replan/failure/invalidation signals.",
+    "obstacleGeometry": [
+      {
+        "scenarioId": "single-obstacle-corner-1000m",
+        "clearanceMeters": 11.6019,
+        "classification": "Pass"
+      },
+      {
+        "scenarioId": "sharp-corner-geometry-1000m",
+        "clearanceMeters": 11.7424,
+        "classification": "Pass"
+      }
+    ]
+  }
+}

@@ -237,7 +237,7 @@ export const autopilotProvingGroundCourses: readonly AutopilotProvingGroundCours
     obstacles: [],
     expectedOutcome: "ExpectedFail",
     planner: "DirectLocal",
-    acceptance: { ...baseAcceptance, maxTicks: 1_200, maxFuelUsed: 10, allowReplanRequired: true, expectedFailureReasonCodes: ["FuelInsufficient"] },
+    acceptance: { ...baseAcceptance, maxTicks: 1_200, maxFuelUsed: 10, allowReplanRequired: true, expectedFailureStatus: "BrakeReserveInsufficient", expectedFailureReasonCodes: ["FuelInsufficient"], allowedFailureReasonCodes: ["FuelInsufficient", "BrakeReserveInsufficient"] },
     notes: ["ExpectedFail documents the fuel contract instead of hiding it as a route success."]
   }),
   passCourse({
@@ -249,7 +249,7 @@ export const autopilotProvingGroundCourses: readonly AutopilotProvingGroundCours
     expectedOutcome: "ExpectedFail",
     planner: "DirectLocal",
     disturbance: { tick: 40, positionOffset: vec3(0, 60, 0) },
-    acceptance: { ...baseAcceptance, maxTicks: 1_500, allowReplanRequired: true, expectedFailureReasonCodes: ["OffLockedRoute"] },
+    acceptance: { ...baseAcceptance, maxTicks: 1_500, allowReplanRequired: true, expectedFailureStatus: "Diverged", expectedFailureReasonCodes: ["OffLockedRoute"], allowedFailureReasonCodes: ["OffLockedRoute"] },
     notes: ["ExpectedFail proves explicit replanRequired signaling without silent replanning."]
   }),
 
@@ -387,14 +387,14 @@ export const autopilotProvingGroundCourses: readonly AutopilotProvingGroundCours
   }),
   passCourse({
     id: "low-rcs-terminal-long",
-    label: "Low RCS terminal long",
+    label: "No RCS finite-attitude long expected fail",
     initialShip: createShipState({ fuel: fuel(260, 12), authority: createAuthorityState({ mode: "Autopilot", rcsAvailable: false, sasAvailable: true }) }),
     target: stopTarget("low-rcs-terminal-long", "Low RCS Terminal Long", vec3(800, 0, 0)),
     obstacles: [],
-    expectedOutcome: "Pass",
+    expectedOutcome: "ExpectedFail",
     planner: "DirectLocal",
-    acceptance: { ...baseAcceptance, maxTicks: 3_200, maxFuelUsed: 100 },
-    notes: ["Terminal StopWithinEnvelope remains enforced when RCS is unavailable but main-thrust autopilot authority remains valid."]
+    acceptance: { ...baseAcceptance, maxTicks: 3_200, allowReplanRequired: true, expectedFailureStatus: "NoAuthority", expectedFailureReasonCodes: ["AuthorityInsufficient"], allowedFailureReasonCodes: ["AuthorityInsufficient"] },
+    notes: ["ExpectedFail: SAS has no physical attitude actuator without RCS, so the locked plan fails closed with AuthorityInsufficient instead of granting world-space thrust or fake RCS."]
   }),
   passCourse({
     id: "no-main-thrusters-negative",
@@ -404,7 +404,7 @@ export const autopilotProvingGroundCourses: readonly AutopilotProvingGroundCours
     obstacles: [],
     expectedOutcome: "ExpectedFail",
     planner: "DirectLocal",
-    acceptance: { ...baseAcceptance, maxTicks: 200, allowReplanRequired: true, expectedFailureReasonCodes: ["MainThrustersUnavailable"] },
+    acceptance: { ...baseAcceptance, maxTicks: 200, allowReplanRequired: true, expectedFailureStatus: "NoAuthority", expectedFailureReasonCodes: ["MainThrustersUnavailable"], allowedFailureReasonCodes: ["MainThrustersUnavailable", "AuthorityInsufficient"] },
     notes: ["ExpectedFail keeps missing main-thruster authority as an explicit route/flight blocker."]
   }),
   passCourse({
@@ -415,7 +415,7 @@ export const autopilotProvingGroundCourses: readonly AutopilotProvingGroundCours
     obstacles: [],
     expectedOutcome: "ExpectedFail",
     planner: "DirectLocal",
-    acceptance: { ...baseAcceptance, maxTicks: 200, allowReplanRequired: true, expectedFailureReasonCodes: ["AutopilotUnavailable"] },
+    acceptance: { ...baseAcceptance, maxTicks: 200, allowReplanRequired: true, expectedFailureStatus: "NoAuthority", expectedFailureReasonCodes: ["AutopilotUnavailable"], allowedFailureReasonCodes: ["AutopilotUnavailable", "AuthorityInsufficient"] },
     notes: ["ExpectedFail keeps missing autopilot authority as an explicit route/flight blocker."]
   }),
   passCourse({
@@ -427,7 +427,7 @@ export const autopilotProvingGroundCourses: readonly AutopilotProvingGroundCours
     expectedOutcome: "ExpectedFail",
     planner: "DirectLocal",
     disturbance: { tick: 120, positionOffset: vec3(0, 75, 0) },
-    acceptance: { ...baseAcceptance, maxTicks: 2_400, allowReplanRequired: true, expectedFailureReasonCodes: ["OffLockedRoute"] },
+    acceptance: { ...baseAcceptance, maxTicks: 2_400, allowReplanRequired: true, expectedFailureStatus: "Diverged", expectedFailureReasonCodes: ["OffLockedRoute"], allowedFailureReasonCodes: ["OffLockedRoute"] },
     notes: ["ExpectedFail verifies off-route disturbance fail-closed behavior without silently replanning."]
   }),
   passCourse({
@@ -439,7 +439,7 @@ export const autopilotProvingGroundCourses: readonly AutopilotProvingGroundCours
     expectedOutcome: "ExpectedFail",
     planner: "DirectLocal",
     disturbance: { tick: 120, velocityOffset: vec3(0, 28, 0) },
-    acceptance: { ...baseAcceptance, maxTicks: 2_600, allowReplanRequired: true, expectedFailureReasonCodes: ["OffLockedRoute"] },
+    acceptance: { ...baseAcceptance, maxTicks: 2_600, allowReplanRequired: true, expectedFailureStatus: "Diverged", expectedFailureReasonCodes: ["OffLockedRoute"], allowedFailureReasonCodes: ["OffLockedRoute"] },
     notes: ["ExpectedFail verifies a lateral velocity kick becomes an explicit off-route signal rather than a silent replan."]
   }),
   passCourse({
@@ -451,7 +451,7 @@ export const autopilotProvingGroundCourses: readonly AutopilotProvingGroundCours
     expectedOutcome: "ExpectedFail",
     planner: "DirectLocal",
     disturbance: { tick: 80, velocityOffset: vec3(80, 0, 0) },
-    acceptance: { ...baseAcceptance, maxTicks: 2_000, allowReplanRequired: true, expectedFailureReasonCodes: ["FuelInsufficient", "BrakeReserveInsufficient"] },
+    acceptance: { ...baseAcceptance, maxTicks: 2_000, allowReplanRequired: true, expectedFailureStatus: "BrakeReserveInsufficient", expectedFailureReasonCodes: ["FuelInsufficient", "BrakeReserveInsufficient"], allowedFailureReasonCodes: ["FuelInsufficient", "BrakeReserveInsufficient"] },
     notes: ["ExpectedFail verifies terminal overspeed with insufficient braking reserve is surfaced explicitly."]
   }),
   passCourse({
@@ -463,7 +463,7 @@ export const autopilotProvingGroundCourses: readonly AutopilotProvingGroundCours
     expectedOutcome: "ExpectedFail",
     planner: "DirectLocal",
     disturbance: { tick: 90, positionOffset: vec3(0, -85, 0) },
-    acceptance: { ...baseAcceptance, maxTicks: 2_400, allowReplanRequired: true, expectedFailureReasonCodes: ["OffLockedRoute"] },
+    acceptance: { ...baseAcceptance, maxTicks: 2_400, allowReplanRequired: true, expectedFailureStatus: "Diverged", expectedFailureReasonCodes: ["OffLockedRoute"], allowedFailureReasonCodes: ["OffLockedRoute"] },
     notes: ["ExpectedFail proves off-route detection fails closed and preserves the locked plan hash."]
   }),
   passCourse({
@@ -572,7 +572,7 @@ export const autopilotProvingGroundCourses: readonly AutopilotProvingGroundCours
     ],
     expectedOutcome: "ExpectedFail",
     planner: "ObstacleAvoidanceLocal",
-    acceptance: { ...baseAcceptance, maxTicks: 1_200, allowReplanRequired: true, expectedFailureReasonCodes: ["UnsafeObstacle"] },
+    acceptance: { ...baseAcceptance, maxTicks: 1_200, allowReplanRequired: true, expectedFailureStatus: "PlanningRejected", expectedFailureReasonCodes: ["UnsafeObstacle"], allowedFailureReasonCodes: ["UnsafeObstacle"] },
     notes: ["ExpectedFail: blocked corridor seals the target envelope and must reject before a locked route is synthesized."]
   })
 ];

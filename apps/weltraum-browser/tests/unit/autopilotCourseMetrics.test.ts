@@ -50,4 +50,17 @@ describe("autopilot course runner metrics", () => {
       expect(result.terminalSpeedLimit, result.courseId).toBeLessThanOrEqual(0.5);
     }
   });
+
+  it("classifies a no-RCS finite-attitude course as an explicit fail-closed result", () => {
+    const result = runAutopilotProvingGroundMatrix("Balanced").find((candidate) => candidate.courseId === "low-rcs-terminal-long");
+
+    expect(result).toEqual(expect.objectContaining({
+      expectedOutcome: "ExpectedFail",
+      classification: "ExpectedFail",
+      status: "NoAuthority",
+      replanRequired: true
+    }));
+    expect(result?.failureReasonCodes).toContain("AuthorityInsufficient");
+    expect(result?.planHashAfter).toBe(result?.planHashBefore);
+  });
 });

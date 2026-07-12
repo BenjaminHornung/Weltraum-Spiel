@@ -1,5 +1,7 @@
+import { canonicalCloneAndDeepFreeze, planHashFor } from "../core/hash";
 import type {
   ArrivalEnvelope,
+  LockedRouteMotionProfile,
   ObstacleDescriptor,
   PlannerContext,
   RouteCandidate,
@@ -57,6 +59,26 @@ export const arrivalEnvelopeForTarget = (target: TargetDescriptor | null | undef
 };
 
 export const arrivalRadiusForTarget = (target: TargetDescriptor | null | undefined): number => arrivalEnvelopeForTarget(target)?.radius ?? Number.NaN;
+
+/**
+ * The planner-side terminal constraint mirrors the existing executor gate:
+ * stop/capture routes never accept more than 0.5 m/s, while MatchTerminalSpeed
+ * retains its declared target. No-stop targets intentionally have no terminal
+ * speed constraint.
+ */
+export const terminalSpeedForTarget = (target: TargetDescriptor | null | undefined): number | undefined => {
+  const envelope = arrivalEnvelopeForTarget(target);
+  if (!envelope) {
+    return undefined;
+  }
+  if (envelope.stopBehavior === "StopWithinEnvelope") {
+    return Math.min(0.5, envelope.terminalSpeed ?? 0.5);
+  }
+  if (envelope.stopBehavior === "MatchTerminalSpeed") {
+    return envelope.terminalSpeed ?? 0;
+  }
+  return undefined;
+};
 
 export const validateTargetDescriptor = (target: TargetDescriptor | null | undefined): RouteValidationResult => {
   const issues: RouteValidationIssue[] = [];
@@ -132,7 +154,12 @@ export const validatePlanningContext = (context: PlannerContext): RouteValidatio
   return validationResult(issues);
 };
 
-export const validateRouteSegments = (context: PlannerContext, segments: readonly RouteSegment[], validation: RouteValidationResult): RouteValidationResult => {
+export const validateRouteSegments = (
+  context: PlannerContext,
+  segments: readonly RouteSegment[],
+  validation: RouteValidationResult,
+  motionProfile?: LockedRouteMotionProfile
+): RouteValidationResult => {
   const issues: RouteValidationIssue[] = [...validation.issues];
   const targetId = typeof context.target?.id === "string" && context.target.id.trim().length > 0 ? context.target.id : undefined;
 
@@ -156,6 +183,10 @@ export const validateRouteSegments = (context: PlannerContext, segments: readonl
         segmentId: violation.segment.id
       })
     );
+  }
+
+  if (motionProfile) {
+    validateLockedMotionProfile(context, segments, motionProfile, issues, targetId);
   }
 
   return validationResult(issues);
@@ -254,6 +285,113 @@ const validationResult = (issues: readonly RouteValidationIssue[]): RouteValidat
 });
 
 export const createRouteValidationResult = validationResult;
+
+/** Builds the canonical immutable route payload before its hash is exposed. */
+export const createCanonicalLockedRoutePlan = (planWithoutHash: Omit<RoutePlan, "planHash">): RoutePlan => {
+  const canonicalPayload = canonicalCloneAndDeepFreeze(planWithoutHash);
+  return canonicalCloneAndDeepFreeze({
+    ...canonicalPayload,
+    planHash: planHashFor(canonicalPayload)
+  });
+};
+
+/**
+ * Re-clones a route at the executor boundary and rejects any mutation whose
+ * payload no longer matches the original planner hash.
+ */
+export const canonicalizeLockedRoutePlan = (plan: RoutePlan): RoutePlan => {
+  const canonicalPlan = canonicalCloneAndDeepFreeze(plan);
+  const expectedHash = planHashFor(canonicalPlan);
+  if (canonicalPlan.planHash !== expectedHash) {
+    throw new RangeError(`Locked route hash mismatch: expected ${expectedHash}, received ${canonicalPlan.planHash}.`);
+  }
+  return canonicalPlan;
+};
+
+const isFiniteNonNegative = (value: unknown): value is number => isFiniteNumber(value) && value >= 0;
+
+const hasFiniteMotionProfile = (profile: LockedRouteMotionProfile): boolean =>
+  profile.version === 1 &&
+  isFiniteNonNegative(profile.targetAccelerationMps2) &&
+  isFiniteNonNegative(profile.maximumAccelerationMps2) &&
+  isFiniteNonNegative(profile.maximumJerkMps3) &&
+  (profile.maximumPeakSpeedMps === undefined || isFiniteNonNegative(profile.maximumPeakSpeedMps)) &&
+  isFiniteNumber(profile.coastFraction) &&
+  profile.coastFraction >= 0 &&
+  profile.coastFraction <= 1 &&
+  isFiniteNumber(profile.brakingReserveMultiplier) &&
+  profile.brakingReserveMultiplier > 0 &&
+  isFiniteNonNegative(profile.plannedUsableMainAccelerationMps2) &&
+  isFiniteNonNegative(profile.plannedUsableBrakingAccelerationMps2) &&
+  isFiniteNonNegative(profile.mainThrustAlignmentToleranceRadians) &&
+  isFiniteNonNegative(profile.flipCompletionToleranceRadians) &&
+  profile.phaseVocabulary.length > 0;
+
+const hasFiniteMotionConstraint = (segment: RouteSegment): boolean => {
+  const constraint = segment.motionConstraint;
+  if (!constraint || constraint.version !== 1) {
+    return false;
+  }
+  const turn = constraint.turnConstraint;
+  return (
+    isFiniteNonNegative(constraint.entrySpeedMps) &&
+    isFiniteNonNegative(constraint.exitSpeedMps) &&
+    (constraint.terminalSpeedMps === undefined || isFiniteNonNegative(constraint.terminalSpeedMps)) &&
+    (constraint.maximumPeakSpeedMps === undefined || isFiniteNonNegative(constraint.maximumPeakSpeedMps)) &&
+    isFiniteNonNegative(constraint.plannedUsableMainAccelerationMps2) &&
+    isFiniteNonNegative(constraint.plannedUsableBrakingAccelerationMps2) &&
+    turn.version === 1 &&
+    isFiniteNonNegative(turn.turnAngleRadians) &&
+    isFiniteNonNegative(turn.effectiveCornerRadiusM) &&
+    isFiniteNonNegative(turn.lateralAccelerationLimitMps2) &&
+    isFiniteNonNegative(turn.attitudeAngularAccelerationLimitRadps2) &&
+    isFiniteNonNegative(turn.attitudeAngularVelocityLimitRadps) &&
+    isFiniteNumber(turn.authorityScale) &&
+    turn.authorityScale >= 0 &&
+    turn.authorityScale <= 1 &&
+    isFiniteNonNegative(turn.nextSegmentBrakingAccelerationMps2) &&
+    (turn.speedLimitMps === undefined || isFiniteNonNegative(turn.speedLimitMps))
+  );
+};
+
+const validateLockedMotionProfile = (
+  context: PlannerContext,
+  segments: readonly RouteSegment[],
+  profile: LockedRouteMotionProfile,
+  issues: RouteValidationIssue[],
+  targetId: string | undefined
+): void => {
+  if (!hasFiniteMotionProfile(profile)) {
+    issues.push(issue("InvalidMotionProfile", "Locked route motion profile must contain finite serializable constraints.", { targetId }));
+    return;
+  }
+
+  for (const segment of segments) {
+    if (!hasFiniteMotionConstraint(segment)) {
+      issues.push(issue("InvalidMotionProfile", `Route segment ${segment.id} is missing finite locked motion constraints.`, { targetId, segmentId: segment.id }));
+    }
+  }
+
+  const terminalSegment = segments.at(-1);
+  const expectedTerminalSpeed = terminalSpeedForTarget(context.target);
+  const terminalConstraint = terminalSegment?.motionConstraint;
+  if (!terminalSegment || expectedTerminalSpeed === undefined) {
+    return;
+  }
+  if (
+    !terminalConstraint ||
+    terminalConstraint.terminalSpeedMps === undefined ||
+    Math.abs(terminalConstraint.terminalSpeedMps - expectedTerminalSpeed) > 1e-6 ||
+    terminalConstraint.exitSpeedMps > expectedTerminalSpeed + 1e-6
+  ) {
+    issues.push(
+      issue("ImpossibleArrivalEnvelope", "Locked terminal motion constraint does not preserve the target arrival speed gate.", {
+        targetId,
+        segmentId: terminalSegment.id
+      })
+    );
+  }
+};
 
 const obstacleSortKey = (context: PlannerContext, obstacle: ObstacleDescriptor) => {
   const route = sub(context.target.position, context.ship.position);
