@@ -1,6 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { engageVisiblePreview, openVisiblePlanner, selectVisiblePlannerTarget } from "./support/plannerWorkflow";
 
 async function waitForBridge(page: Page) {
   await page.goto("/?testBridge=1");
@@ -19,12 +20,12 @@ test("completed terminal holding accepts a new route while active routes still b
   const evidenceDir = path.resolve(process.cwd(), "evidence");
   await mkdir(evidenceDir, { recursive: true });
 
-  await page.locator('[data-target-id="nav-beta"]').click();
+  const visibleBetaPreviewHash = await selectVisiblePlannerTarget(page, "nav-beta", "Navigation Beta");
   await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().selectedTarget?.id)).toBe("nav-beta");
   await page.evaluate(() => (window as any).TestBridge.dispatchCommand({ type: "EngageAutopilot", planner: "DirectLocal" }));
   const engaged = await page.evaluate(() => (window as any).TestBridge.getTelemetry());
   const firstPlanHash = engaged.executor.planHash;
-  expect(firstPlanHash).toMatch(/^[a-f0-9]{8}$/);
+  expect(firstPlanHash).toBe(visibleBetaPreviewHash);
 
   const holding = await page.evaluate(() => {
     let current = (window as any).TestBridge.getTelemetry();
@@ -42,24 +43,33 @@ test("completed terminal holding accepts a new route while active routes still b
   expect(holding.executor.canSelectNewTarget).toBe(true);
   expect(holding.lockedPlan).toBeNull();
 
-  await page.locator('[data-target-id="nav-alpha"]').click();
+  const visibleAlphaPreviewHash = await selectVisiblePlannerTarget(page, "nav-alpha", "Navigation Alpha");
   const selectedAfterHolding = await page.evaluate(() => (window as any).TestBridge.getTelemetry());
   expect(selectedAfterHolding.selectedTarget?.id).toBe("nav-alpha");
-  await page.locator("#engage-autopilot").click();
+  await engageVisiblePreview(page, visibleAlphaPreviewHash);
   await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().lockedPlan?.target.id)).toBe("nav-alpha");
   const newRoute = await page.evaluate(() => (window as any).TestBridge.getTelemetry());
   expect(newRoute.executor.status).toBe("Executing");
-  expect(newRoute.executor.planHash).toMatch(/^[a-f0-9]{8}$/);
+  expect(newRoute.executor.planHash).toBe(visibleAlphaPreviewHash);
   expect(newRoute.executor.planHash).not.toBe(firstPlanHash);
   expect(newRoute.executor.completedPlanHash).toBe(firstPlanHash);
   expect(newRoute.executor.canAcceptNewPlan).toBe(false);
   expect(newRoute.executor.canSelectNewTarget).toBe(false);
 
-  await page.locator('[data-target-id="nav-beta"]').click();
-  const blockedSelect = await page.evaluate(() => (window as any).TestBridge.getTelemetry());
+  const lockedPlanner = await openVisiblePlanner(page);
+  await expect(page.locator('#planner-target-options button[data-planner-target-id="nav-beta"]')).toBeDisabled();
+  await expect(page.locator("#planner-lock-reason")).toContainText(/Cancel the locked route/i);
+  const blockedSelectResult = await page.evaluate(() =>
+    (window as any).TestBridge.dispatchCommand({ type: "SelectTarget", targetId: "nav-beta" })
+  );
+  expect(blockedSelectResult.success).toBe(false);
+  expect(blockedSelectResult.code).toBe("PlanLocked");
+  const blockedSelect = blockedSelectResult.telemetry;
   expect(blockedSelect.executor.planHash).toBe(newRoute.executor.planHash);
   expect(blockedSelect.selectedTarget?.id).toBe("nav-alpha");
   expect(blockedSelect.runtimeMessage).toContain("Cancel the current autopilot route");
+  await page.locator("#planner-close").click();
+  await expect(lockedPlanner).toBeHidden();
   await page.evaluate(() => (window as any).TestBridge.dispatchCommand({ type: "EngageAutopilot", planner: "DirectLocal" }));
   const blockedEngage = await page.evaluate(() => (window as any).TestBridge.getTelemetry());
   expect(blockedEngage.executor.planHash).toBe(newRoute.executor.planHash);

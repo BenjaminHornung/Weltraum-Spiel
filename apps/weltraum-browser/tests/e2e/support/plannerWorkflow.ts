@@ -42,17 +42,29 @@ export async function selectVisiblePlannerProfile(
   await openVisiblePlanner(page);
   const profileButton = page.locator(`#planner-profile-${profile.toLowerCase()}`);
   await expect(profileButton).toBeEnabled();
-  await profileButton.click();
-  await expect(profileButton).toHaveAttribute("aria-pressed", "true");
-  return readVisiblePreviewHash(page);
+  if (await profileButton.getAttribute("aria-pressed") !== "true") {
+    const previousHash = await currentVisiblePreviewHash(page);
+    await profileButton.click();
+    await expect(profileButton).toHaveAttribute("aria-pressed", "true");
+    if (previousHash !== null) {
+      await expect.poll(() => currentVisiblePreviewHash(page)).not.toBe(previousHash);
+    }
+  }
+  const hash = await readVisiblePreviewHash(page);
+  await expect(page.locator("#planner-route-detail")).toContainText(hash);
+  return hash;
 }
 
 export async function previewVisibleRoute(page: Page): Promise<string> {
   await openVisiblePlanner(page);
   const previewButton = page.locator("#planner-preview-route");
+  const engageButton = page.getByTestId("planner-engage-route");
   await expect(previewButton).toBeEnabled();
   await previewButton.click();
-  return readVisiblePreviewHash(page);
+  await expect(engageButton).toBeEnabled();
+  const hash = await readVisiblePreviewHash(page);
+  await expect(page.locator("#planner-route-detail")).toContainText(hash);
+  return hash;
 }
 
 export async function engageVisiblePreview(page: Page, expectedHash: string): Promise<void> {

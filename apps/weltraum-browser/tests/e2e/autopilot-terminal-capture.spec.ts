@@ -1,6 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { selectVisiblePlannerTarget } from "./support/plannerWorkflow";
 
 const speedOf = (telemetry: any): number => Math.hypot(telemetry.ship.velocity.x, telemetry.ship.velocity.y, telemetry.ship.velocity.z);
 
@@ -32,15 +33,16 @@ test("default navigation target terminal capture brakes, captures, and holds wit
   const initialVisual = await page.evaluate(() => (window as any).TestBridge.getRenderSnapshot().shipVisual);
   expect(initialVisual.visualSource.state).toBe("GLBLoaded");
 
-  await page.locator('[data-target-id="nav-beta"]').click();
+  const visiblePreviewHash = await selectVisiblePlannerTarget(page, "nav-beta", "Navigation Beta");
   await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().selectedTarget?.id)).toBe("nav-beta");
   const preview = await page.evaluate(() => (window as any).TestBridge.getTelemetry());
   expect(preview.selectedTarget.arrivalEnvelope).toEqual({ radius: 3, terminalSpeed: 0.5, stopBehavior: "StopWithinEnvelope" });
+  expect(preview.routePreview.plan.planHash).toBe(visiblePreviewHash);
 
   await page.evaluate(() => (window as any).TestBridge.dispatchCommand({ type: "EngageAutopilot", planner: "DirectLocal" }));
   const engaged = await page.evaluate(() => (window as any).TestBridge.getTelemetry());
   const planHash = engaged.executor.planHash;
-  expect(planHash).toMatch(/^[a-f0-9]{8}$/);
+  expect(planHash).toBe(visiblePreviewHash);
 
   const terminalBrake = await stepUntil(
     page,
@@ -104,7 +106,11 @@ test("default navigation target terminal capture brakes, captures, and holds wit
   });
   const renderSnapshot = await page.evaluate(() => (window as any).TestBridge.getRenderSnapshot());
   expect(renderSnapshot.shipVisual.visualSource.state).toBe("GLBLoaded");
-  expect(renderSnapshot.targetPosition).toEqual(holding.selectedTarget.position);
+  expect(renderSnapshot.targetVisible).toBe(false);
+  expect(renderSnapshot.targetPosition).toBeNull();
+  expect(renderSnapshot.lockedTargetPosition).toBeNull();
+  expect(renderSnapshot.selectedTargetId).toBe("nav-beta");
+  expect(renderSnapshot.distanceToTarget).toBeLessThanOrEqual(renderSnapshot.arrivalRadius);
   expect(renderSnapshot.shipPosition).not.toEqual(holding.selectedTarget.position);
   expect(renderSnapshot.planHash).toBeNull();
   expect(renderSnapshot.usesInterpolatedPose).toBe(true);

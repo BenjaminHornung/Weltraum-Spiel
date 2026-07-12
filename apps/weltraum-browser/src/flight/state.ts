@@ -37,6 +37,8 @@ export const defaultFlightModelOptions: FlightModelOptions = {
   maxAcceleration: 10
 };
 
+export const defaultRcsTranslationAccelerationMps2 = 2.5;
+
 const legacyCompatibleSprintPolicy = resolveTransitPolicy("Fast");
 
 const unique = (codes: readonly FailureReasonCode[]): readonly FailureReasonCode[] => [...new Set(codes)];

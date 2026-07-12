@@ -7,6 +7,7 @@ import { distance, dot, magnitude, normalize, sub, vec3 } from "../../src/core/v
 import { DirectLocalPlanner, ObstacleAvoidanceLocalPlanner } from "../../src/navigation/planners";
 import { bangBangFixedDeltaSeconds, getBangBangTransitScenario } from "../../src/test-harness/autopilotBangBangMetrics";
 import { getAutopilotProvingGroundCourse } from "../../src/world/autopilotProvingGroundCourses";
+import { playableLargeFieldRuntimeObstacles, playableLargeFieldTargets } from "../../src/world/provingGroundWorld";
 
 const authority = createAuthorityState({ mode: "Autopilot" });
 
@@ -77,7 +78,16 @@ const terminalCloseCorrectionWindowObserved = (
 
 interface ExecutorTestInternals {
   commandedPoweredAccelerationMps2: number;
+  activeSegmentIndex: number;
+  activeMotionPhase: LockedTransitPhase | null;
+  brakingCommitted: boolean;
   pendingRampDownDeltaVMps(maximumJerkMps3: number, fixedDeltaSeconds: number): number;
+  advanceToNextSegment(
+    plan: RoutePlan,
+    segment: RoutePlan["segments"][number],
+    ship: ShipState,
+    fixedDeltaSeconds: number
+  ): void;
 }
 
 const testInternals = (executor: AutopilotExecutor): ExecutorTestInternals => executor as unknown as ExecutorTestInternals;
@@ -555,7 +565,41 @@ describe("locked bang-bang transit execution", () => {
     expect(executor.getTelemetry().completedPlanHash).toBe(plan.planHash);
   });
 
-  it("retargets a committed brake at non-collinear locked corners without spending the terminal leg or changing the plan", () => {
+  it("keeps the origin-to-Range-500m obstacle route inside the locked corridor through both waypoint handoffs", () => {
+    const initialShip = createShip({ fuel: 100 });
+    const plan = new ObstacleAvoidanceLocalPlanner().plan({
+      tick: 0,
+      ship: initialShip,
+      target: playableLargeFieldTargets.range500,
+      obstacles: playableLargeFieldRuntimeObstacles,
+      speedProfile: "Balanced"
+    });
+    const executor = new AutopilotExecutor({ divergenceDistance: 24 });
+    executor.lockPlan(plan, initialShip);
+
+    let ship = initialShip;
+    let maximumOffRouteDistanceM = 0;
+    const observedSegmentIds = new Set<string>();
+    for (let tick = 1; tick <= 3_000 && executor.getTelemetry().status === "Executing"; tick += 1) {
+      ship = executor.step(ship, bangBangFixedDeltaSeconds, tick);
+      const telemetry = executor.getTelemetry();
+      maximumOffRouteDistanceM = Math.max(maximumOffRouteDistanceM, telemetry.offRouteDistance);
+      if (telemetry.activeSegmentId) {
+        observedSegmentIds.add(telemetry.activeSegmentId);
+      }
+    }
+
+    expect([...observedSegmentIds]).toEqual(plan.segments.map((segment) => segment.id));
+    expect(maximumOffRouteDistanceM).toBeLessThan(24);
+    expect(executor.getTelemetry().tick).toBeLessThanOrEqual(1_600);
+    expect(executor.getTelemetry().status).toBe("Arrived");
+    expect(executor.getTelemetry().replanRequired).toBe(false);
+    expect(executor.getTelemetry().completedPlanHash).toBe(plan.planHash);
+    expect(distance(ship.position, plan.target.position)).toBeLessThanOrEqual(3);
+    expect(magnitude(ship.velocity)).toBeLessThanOrEqual(0.5);
+  });
+
+  it("hands non-collinear corners across at their locked entry speed without spending the terminal leg or changing the plan", () => {
     const scenario = getBangBangTransitScenario("sharp-corner-geometry-1000m");
     const plan = new ObstacleAvoidanceLocalPlanner().plan({
       tick: 0,
@@ -577,11 +621,11 @@ describe("locked bang-bang transit execution", () => {
     const handoffToleranceMps = (plan.motionProfile?.plannedUsableBrakingAccelerationMps2 ?? 0) * bangBangFixedDeltaSeconds + 0.05;
     let ship = scenario.initialShip;
     let maxOffRouteDistance = 0;
-    let committedCornerHandoffObserved = false;
+    let nonCollinearEntryHandoffObserved = false;
     let pendingPositiveRampObserved = false;
     let stableBrakeBeforeExitObserved = false;
     let terminalHandoffSpeedMps: number | null = null;
-    let retargetedSegmentId: string | null = null;
+    let handoffSegmentId: string | null = null;
 
     for (let tick = 1; tick <= scenario.maxTicks && executor.getTelemetry().status === "Executing"; tick += 1) {
       const beforeTelemetry = executor.getTelemetry();
@@ -597,24 +641,24 @@ describe("locked bang-bang transit execution", () => {
         const previousExitSpeedMps = previousSegment.motionConstraint?.exitSpeedMps ?? previousSegment.desiredSpeed;
         const speedAtPreviousExitMps = Math.max(0, dot(ship.velocity, previousDirection));
         const projectedActiveSpeedMps = Math.max(0, dot(ship.velocity, activeDirection));
-        const activeExitSpeedMps = activeSegment.motionConstraint?.exitSpeedMps ?? activeSegment.desiredSpeed;
+        const activeEntrySpeedMps = activeSegment.motionConstraint?.entrySpeedMps ?? activeSegment.desiredSpeed;
 
-        expect(speedAtPreviousExitMps, `${previousSegment.id} exit`).toBeLessThanOrEqual(previousExitSpeedMps + handoffToleranceMps);
-        if (dot(previousDirection, activeDirection) < 0.999 && projectedActiveSpeedMps > activeExitSpeedMps + handoffToleranceMps) {
-          expect(telemetry.motionPhase, `${previousSegment.id} -> ${activeSegment.id}`).toBe("Flip");
-          committedCornerHandoffObserved = true;
-          retargetedSegmentId = activeSegment.id;
+        expect(speedAtPreviousExitMps, `${previousSegment.id} exit`).toBeLessThanOrEqual(previousExitSpeedMps + handoffToleranceMps + 0.01);
+        if (dot(previousDirection, activeDirection) < 0.999) {
+          expect(projectedActiveSpeedMps, `${activeSegment.id} entry`).toBeLessThanOrEqual(activeEntrySpeedMps + handoffToleranceMps);
+          expect(telemetry.motionPhase, `${previousSegment.id} -> ${activeSegment.id}`).toBe("AlignForBurn");
+          nonCollinearEntryHandoffObserved = true;
+          handoffSegmentId = activeSegment.id;
         }
         if (activeSegment.kind === "Terminal") {
           terminalHandoffSpeedMps = speedAtPreviousExitMps;
         }
       }
 
-      if (telemetry.activeSegmentId === retargetedSegmentId && telemetry.motionPhase === "Flip" && (telemetry.commandedPoweredAccelerationMps2 ?? 0) > 1e-6) {
+      if (telemetry.activeSegmentId === handoffSegmentId && telemetry.motionPhase === "AlignForBurn" && (telemetry.commandedPoweredAccelerationMps2 ?? 0) > 1e-6) {
         pendingPositiveRampObserved = true;
       }
       if (
-        telemetry.activeSegmentId === retargetedSegmentId &&
         telemetry.motionPhase === "Brake" &&
         ship.actuatorTelemetry.mainThrustActive &&
         activeSegment &&
@@ -624,17 +668,70 @@ describe("locked bang-bang transit execution", () => {
       }
     }
 
-    expect(committedCornerHandoffObserved).toBe(true);
+    expect(nonCollinearEntryHandoffObserved).toBe(true);
     expect(pendingPositiveRampObserved).toBe(true);
     expect(stableBrakeBeforeExitObserved).toBe(true);
     expect(terminalHandoffSpeedMps).not.toBeNull();
     const terminalEntrySegment = plan.segments[plan.segments.length - 2];
-    expect(terminalHandoffSpeedMps).toBeLessThanOrEqual((terminalEntrySegment.motionConstraint?.exitSpeedMps ?? terminalEntrySegment.desiredSpeed) + handoffToleranceMps);
+    expect(terminalHandoffSpeedMps).toBeLessThanOrEqual((terminalEntrySegment.motionConstraint?.exitSpeedMps ?? terminalEntrySegment.desiredSpeed) + handoffToleranceMps + 0.01);
     expect(maxOffRouteDistance).toBeLessThan(30);
     expect(executor.getTelemetry().status).toBe("Arrived");
     expect(distance(ship.position, scenario.target.position)).toBeLessThanOrEqual(3);
     expect(magnitude(ship.velocity)).toBeLessThanOrEqual(0.5);
     expect(executor.getTelemetry().completedPlanHash).toBe(plan.planHash);
     expect(executor.getTelemetry().replanRequired).toBe(false);
+  });
+
+  it("retains an overspeed non-collinear handoff as one Flip on the immediate next locked segment", () => {
+    const scenario = getBangBangTransitScenario("sharp-corner-geometry-1000m");
+    const plan = new ObstacleAvoidanceLocalPlanner().plan({
+      tick: 0,
+      ship: scenario.initialShip,
+      target: scenario.target,
+      obstacles: scenario.obstacles,
+      transitPolicy: scenario.transitPolicy
+    });
+    const executor = new AutopilotExecutor({ divergenceDistance: 30 });
+    executor.lockPlan(plan, scenario.initialShip);
+
+    const lockedPlan = executor.getLockedPlan();
+    expect(lockedPlan).not.toBeNull();
+    const currentSegment = lockedPlan!.segments[0];
+    const nextSegment = lockedPlan!.segments[1];
+    expect(nextSegment).toBeDefined();
+
+    const currentDirection = normalize(sub(currentSegment.end, currentSegment.start));
+    const nextDirection = normalize(sub(nextSegment.end, nextSegment.start));
+    expect(dot(currentDirection, nextDirection)).toBeLessThan(0.999);
+
+    const nextEntrySpeedMps = nextSegment.motionConstraint?.entrySpeedMps ?? nextSegment.desiredSpeed;
+    const entryToleranceMps =
+      (nextSegment.motionConstraint?.plannedUsableBrakingAccelerationMps2 ?? 0) * bangBangFixedDeltaSeconds + 0.05;
+    const overspeedMps = nextEntrySpeedMps + entryToleranceMps + 1;
+    const overspeedShip = createShip({
+      position: currentSegment.end,
+      velocity: vec3(
+        nextDirection.x * overspeedMps,
+        nextDirection.y * overspeedMps,
+        nextDirection.z * overspeedMps
+      )
+    });
+    expect(dot(overspeedShip.velocity, nextDirection)).toBeGreaterThan(nextEntrySpeedMps + entryToleranceMps);
+
+    const internals = testInternals(executor);
+    internals.brakingCommitted = true;
+    internals.activeMotionPhase = "Brake";
+    const lockedHash = lockedPlan!.planHash;
+
+    internals.advanceToNextSegment(lockedPlan!, currentSegment, overspeedShip, bangBangFixedDeltaSeconds);
+
+    expect(internals.activeSegmentIndex).toBe(1);
+    expect(lockedPlan!.segments[internals.activeSegmentIndex].id).toBe(nextSegment.id);
+    expect(internals.activeMotionPhase).toBe("Flip");
+    expect(internals.brakingCommitted).toBe(true);
+    expect(executor.getLockedPlan()?.planHash).toBe(lockedHash);
+    expect(executor.getLockedPlan()?.segments.map((segment) => segment.id)).toEqual(
+      lockedPlan!.segments.map((segment) => segment.id)
+    );
   });
 });

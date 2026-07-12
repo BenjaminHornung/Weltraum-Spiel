@@ -34,30 +34,52 @@ jobs:
         with:
           lfs: false
 
-      - name: Restore Demo Scout GLB if checked out as an LFS pointer
+      - name: Restore required browser LFS artifacts if checked out as pointers
         shell: bash
         working-directory: .
         run: |
           set -euo pipefail
           glb_path="apps/weltraum-browser/public/ships/demo_scout_mk1.glb"
+          reference_pngs=(
+            "apps/weltraum-browser/evidence/ui-concept-parity-v1-rejected-flight-hud.png"
+            "apps/weltraum-browser/evidence/ui-concept-parity-v1-rejected-flight-hud-1280x720.png"
+            "apps/weltraum-browser/evidence/ui-concept-parity-v1-rejected-navigation-planner.png"
+            "apps/weltraum-browser/evidence/ui-concept-parity-v1-rejected-combat-contact.png"
+          )
+          required_lfs_paths=("$glb_path" "${reference_pngs[@]}")
 
-          if [ ! -f "$glb_path" ]; then
-            echo "::error::Expected Demo Scout GLB is missing at $glb_path"
-            exit 1
-          fi
+          needs_lfs_pull=false
+          for path in "${required_lfs_paths[@]}"; do
+            if [ ! -f "$path" ]; then
+              echo "::error::Expected browser artifact is missing at $path"
+              exit 1
+            fi
+            if head -c 80 "$path" | grep -q "version https://git-lfs.github.com/spec/v1"; then
+              needs_lfs_pull=true
+            fi
+          done
 
-          if head -c 80 "$glb_path" | grep -q "version https://git-lfs.github.com/spec/v1"; then
-            echo "Demo Scout GLB is an LFS pointer; pulling only $glb_path"
+          if [ "$needs_lfs_pull" = true ]; then
+            include_paths=$(IFS=,; echo "${required_lfs_paths[*]}")
+            echo "Required browser artifacts include LFS pointers; pulling only $include_paths"
             git lfs install --local
-            git lfs pull --include="$glb_path" --exclude=""
+            git lfs pull --include="$include_paths" --exclude=""
           else
-            echo "Demo Scout GLB is present as a normal repository file; no LFS pull needed."
+            echo "Required browser artifacts are present as normal files; no LFS pull needed."
           fi
 
           if [ "$(head -c 4 "$glb_path")" != "glTF" ]; then
             echo "::error::Demo Scout GLB did not resolve to a GLB binary."
             exit 1
           fi
+
+          for path in "${reference_pngs[@]}"; do
+            png_signature=$(od -An -tx1 -N8 "$path" | tr -d ' \n')
+            if [ "$png_signature" != "89504e470d0a1a0a" ]; then
+              echo "::error::Reference image did not resolve to a PNG binary: $path"
+              exit 1
+            fi
+          done
 
       - name: Setup Node.js
         uses: actions/setup-node@v4

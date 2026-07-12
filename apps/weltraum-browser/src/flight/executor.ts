@@ -364,7 +364,7 @@ export class AutopilotExecutor {
     }
 
     if (this.shouldHandoffToCollinearTerminalSegment(ship, plan, segment)) {
-      this.advanceToNextSegment(plan, segment, ship);
+      this.advanceToNextSegment(plan, segment, ship, fixedDeltaSeconds);
       segment = this.currentSegment(plan);
     }
 
@@ -503,7 +503,7 @@ export class AutopilotExecutor {
     const routeLifecycle: RouteLifecycle = actuatorRequest.terminalCaptureActive || actuatorRequest.arrivalPhase === "TerminalBrake" ? "TerminalCapture" : "Executing";
     this.activeMotionPhase = actuatorRequest.motionPhase;
     if (reachedRouteWaypoint) {
-      this.advanceToNextSegment(plan, segment, nextShip);
+      this.advanceToNextSegment(plan, segment, nextShip, fixedDeltaSeconds);
     }
     this.telemetry = this.createTelemetry(tick, "Executing", plan, nextShip, false, [], actuatorRequest, routeLifecycle);
     return nextShip;
@@ -1170,7 +1170,7 @@ export class AutopilotExecutor {
     return Math.max(0, dot(ship.velocity, currentDirection)) <= terminalEntrySpeed + 0.05;
   }
 
-  private advanceToNextSegment(plan: RoutePlan, segment: RouteSegment, ship: ShipState): void {
+  private advanceToNextSegment(plan: RoutePlan, segment: RouteSegment, ship: ShipState, fixedDeltaSeconds: number): void {
     const nextSegment = plan.segments[this.activeSegmentIndex + 1];
     const currentDirection = normalize(sub(segment.end, segment.start));
     const nextDirection = nextSegment ? normalize(sub(nextSegment.end, nextSegment.start)) : vec3();
@@ -1185,12 +1185,15 @@ export class AutopilotExecutor {
 
     const activeSegment = this.currentSegment(plan);
     const activeDirection = normalize(sub(activeSegment.end, activeSegment.start));
-    const activeLockedExitSpeedMps = activeSegment.motionConstraint?.exitSpeedMps ?? this.waypointTurnSpeed(plan, activeSegment);
+    const activeLockedEntrySpeedMps = activeSegment.motionConstraint?.entrySpeedMps ?? this.waypointTurnSpeed(plan, activeSegment);
+    const activeEntrySpeedToleranceMps = activeSegment.motionConstraint === undefined
+      ? 0.05
+      : activeSegment.motionConstraint.plannedUsableBrakingAccelerationMps2 * Math.max(0, fixedDeltaSeconds) + 0.05;
     const projectedActiveSpeedMps = magnitude(activeDirection) <= 1e-6 ? 0 : Math.max(0, dot(ship.velocity, activeDirection));
     const mustRetargetCommittedBrake =
       this.brakingCommitted &&
       nextSegment !== undefined &&
-      projectedActiveSpeedMps > activeLockedExitSpeedMps + 0.05;
+      projectedActiveSpeedMps > activeLockedEntrySpeedMps + activeEntrySpeedToleranceMps;
     if (mustRetargetCommittedBrake) {
       // The prior direction was not a geometric continuation. Keep the existing
       // commitment, but make its next request a brake/flip for the new locked
