@@ -1,0 +1,414 @@
+{
+  "schemaVersion": 1,
+  "normalRuntime": {
+    "url": "/",
+    "testBridgePresent": false,
+    "selectedTargetLabel": "Range 2500m",
+    "previewPlanHash": "f2593850",
+    "lockedVisiblePlanHash": "f2593850",
+    "previewToEngagePlanHashStable": true,
+    "previewCanvas": {
+      "selectedTargetProxyVisible": "true",
+      "routeProxyVisible": "true",
+      "routeProxyVisibility": "Visible",
+      "routeProxySegmentCount": 3,
+      "truthObstacleProxyCount": 7,
+      "runtimeTruthObstacleCount": 7,
+      "navigationFocusBeaconCount": 0,
+      "worldEntitySlotCount": 14,
+      "worldEntityCount": 14,
+      "residentWorldEntityCount": 14,
+      "visibleWorldEntityCount": 14,
+      "landmarkWorldEntityCount": 8,
+      "ambientWorldEntityCount": 6,
+      "decorativeAsteroidCount": 150,
+      "decorativeLandmarkCount": 0,
+      "decorativeObjectsExcludedFromRadar": "true",
+      "rendererOwnsWorldTruth": "false"
+    },
+    "lockedCanvas": {
+      "selectedTargetProxyVisible": "true",
+      "routeProxyVisible": "true",
+      "routeProxyVisibility": "Visible",
+      "routeProxySegmentCount": 3,
+      "truthObstacleProxyCount": 7,
+      "runtimeTruthObstacleCount": 7,
+      "navigationFocusBeaconCount": 0,
+      "worldEntitySlotCount": 14,
+      "worldEntityCount": 14,
+      "residentWorldEntityCount": 14,
+      "visibleWorldEntityCount": 14,
+      "landmarkWorldEntityCount": 8,
+      "ambientWorldEntityCount": 6,
+      "decorativeAsteroidCount": 150,
+      "decorativeLandmarkCount": 0,
+      "decorativeObjectsExcludedFromRadar": "true",
+      "rendererOwnsWorldTruth": "false"
+    },
+    "fullTruthCanvasAttributesPresent": false
+  },
+  "queryGatedRuntime": {
+    "url": "/?testBridge=1",
+    "absoluteFrameId": "absolute-system",
+    "selectedTarget": {
+      "sourceTargetId": "range-2500m",
+      "label": "Range 2500m",
+      "kind": "Waypoint",
+      "position": {
+        "x": 2500,
+        "y": 0,
+        "z": 0
+      },
+      "arrivalRadius": 3,
+      "terminalSpeed": 0.5,
+      "stopBehavior": "StopWithinEnvelope",
+      "selected": true,
+      "locked": false,
+      "truthBacked": true
+    },
+    "route": {
+      "sourcePlanHash": "d4c263dc",
+      "sourceTargetId": "range-2500m",
+      "segmentIds": [
+        "multi-avoid-0",
+        "multi-avoid-1",
+        "multi-terminal-2"
+      ],
+      "segments": [
+        {
+          "sourceSegmentId": "multi-avoid-0",
+          "kind": "Avoidance",
+          "start": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "end": {
+            "x": 58,
+            "y": 0,
+            "z": 31
+          },
+          "desiredSpeed": 14,
+          "clearanceRadius": 32,
+          "brakeMarginMultiplier": 1,
+          "progress": "Pending"
+        },
+        {
+          "sourceSegmentId": "multi-avoid-1",
+          "kind": "Avoidance",
+          "start": {
+            "x": 58,
+            "y": 0,
+            "z": 31
+          },
+          "end": {
+            "x": 760.7373,
+            "y": 0,
+            "z": 58.082
+          },
+          "desiredSpeed": 14,
+          "clearanceRadius": 32,
+          "brakeMarginMultiplier": 1,
+          "progress": "Pending"
+        },
+        {
+          "sourceSegmentId": "multi-terminal-2",
+          "kind": "Terminal",
+          "start": {
+            "x": 760.7373,
+            "y": 0,
+            "z": 58.082
+          },
+          "end": {
+            "x": 2500,
+            "y": 0,
+            "z": 0
+          },
+          "desiredSpeed": 12,
+          "clearanceRadius": 3,
+          "brakeMarginMultiplier": null,
+          "progress": "Pending"
+        }
+      ]
+    },
+    "entities": [
+      {
+        "sourceEntityId": "asteroid-a",
+        "absolutePosition": {
+          "x": 22,
+          "y": -2,
+          "z": -36
+        },
+        "chunkId": "chunk:0:0:0",
+        "residence": "Full",
+        "renderLod": "Near",
+        "presentationKey": "asteroid",
+        "role": "Ambient",
+        "renderEligible": true,
+        "truthBacked": true,
+        "renderOnly": false,
+        "radarVisible": true,
+        "collisionRelevant": false
+      },
+      {
+        "sourceEntityId": "asteroid-b",
+        "absolutePosition": {
+          "x": 38,
+          "y": 4,
+          "z": -64
+        },
+        "chunkId": "chunk:0:0:0",
+        "residence": "Full",
+        "renderLod": "Near",
+        "presentationKey": "asteroid",
+        "role": "Ambient",
+        "renderEligible": true,
+        "truthBacked": true,
+        "renderOnly": false,
+        "radarVisible": true,
+        "collisionRelevant": false
+      },
+      {
+        "sourceEntityId": "asteroid-c",
+        "absolutePosition": {
+          "x": 64,
+          "y": -3,
+          "z": -48
+        },
+        "chunkId": "chunk:0:0:0",
+        "residence": "Full",
+        "renderLod": "Near",
+        "presentationKey": "asteroid",
+        "role": "Ambient",
+        "renderEligible": true,
+        "truthBacked": true,
+        "renderOnly": false,
+        "radarVisible": true,
+        "collisionRelevant": false
+      },
+      {
+        "sourceEntityId": "asteroid-d",
+        "absolutePosition": {
+          "x": 86,
+          "y": 6,
+          "z": -78
+        },
+        "chunkId": "chunk:0:0:0",
+        "residence": "Full",
+        "renderLod": "Near",
+        "presentationKey": "asteroid",
+        "role": "Ambient",
+        "renderEligible": true,
+        "truthBacked": true,
+        "renderOnly": false,
+        "radarVisible": true,
+        "collisionRelevant": false
+      },
+      {
+        "sourceEntityId": "asteroid-e",
+        "absolutePosition": {
+          "x": 114,
+          "y": -5,
+          "z": -42
+        },
+        "chunkId": "chunk:0:0:0",
+        "residence": "Full",
+        "renderLod": "Near",
+        "presentationKey": "asteroid",
+        "role": "Ambient",
+        "renderEligible": true,
+        "truthBacked": true,
+        "renderOnly": false,
+        "radarVisible": true,
+        "collisionRelevant": false
+      },
+      {
+        "sourceEntityId": "asteroid-f",
+        "absolutePosition": {
+          "x": 132,
+          "y": 3,
+          "z": -92
+        },
+        "chunkId": "chunk:1:0:0",
+        "residence": "Full",
+        "renderLod": "Near",
+        "presentationKey": "asteroid",
+        "role": "Ambient",
+        "renderEligible": true,
+        "truthBacked": true,
+        "renderOnly": false,
+        "radarVisible": true,
+        "collisionRelevant": false
+      },
+      {
+        "sourceEntityId": "range-beacon-1500",
+        "absolutePosition": {
+          "x": 1500,
+          "y": 38,
+          "z": -130
+        },
+        "chunkId": "chunk:6:0:-1",
+        "residence": "Snapshot",
+        "renderLod": "Medium",
+        "presentationKey": "asteroid",
+        "role": "Landmark",
+        "renderEligible": true,
+        "truthBacked": true,
+        "renderOnly": false,
+        "radarVisible": true,
+        "collisionRelevant": false
+      },
+      {
+        "sourceEntityId": "range-beacon-2100",
+        "absolutePosition": {
+          "x": 2100,
+          "y": -44,
+          "z": 140
+        },
+        "chunkId": "chunk:8:0:1",
+        "residence": "Snapshot",
+        "renderLod": "Far",
+        "presentationKey": "asteroid",
+        "role": "Landmark",
+        "renderEligible": true,
+        "truthBacked": true,
+        "renderOnly": false,
+        "radarVisible": true,
+        "collisionRelevant": false
+      },
+      {
+        "sourceEntityId": "range-gate-1000-port",
+        "absolutePosition": {
+          "x": 1000,
+          "y": -10,
+          "z": -72
+        },
+        "chunkId": "chunk:4:0:0",
+        "residence": "Snapshot",
+        "renderLod": "Medium",
+        "presentationKey": "asteroid",
+        "role": "Landmark",
+        "renderEligible": true,
+        "truthBacked": true,
+        "renderOnly": false,
+        "radarVisible": true,
+        "collisionRelevant": false
+      },
+      {
+        "sourceEntityId": "range-gate-1000-starboard",
+        "absolutePosition": {
+          "x": 1000,
+          "y": 10,
+          "z": 72
+        },
+        "chunkId": "chunk:4:0:0",
+        "residence": "Snapshot",
+        "renderLod": "Medium",
+        "presentationKey": "asteroid",
+        "role": "Landmark",
+        "renderEligible": true,
+        "truthBacked": true,
+        "renderOnly": false,
+        "radarVisible": true,
+        "collisionRelevant": false
+      },
+      {
+        "sourceEntityId": "range-gate-2500-port",
+        "absolutePosition": {
+          "x": 2500,
+          "y": -16,
+          "z": -120
+        },
+        "chunkId": "chunk:10:0:0",
+        "residence": "Snapshot",
+        "renderLod": "Far",
+        "presentationKey": "asteroid",
+        "role": "Landmark",
+        "renderEligible": true,
+        "truthBacked": true,
+        "renderOnly": false,
+        "radarVisible": true,
+        "collisionRelevant": false
+      },
+      {
+        "sourceEntityId": "range-gate-2500-starboard",
+        "absolutePosition": {
+          "x": 2500,
+          "y": 16,
+          "z": 120
+        },
+        "chunkId": "chunk:10:0:0",
+        "residence": "Snapshot",
+        "renderLod": "Far",
+        "presentationKey": "asteroid",
+        "role": "Landmark",
+        "renderEligible": true,
+        "truthBacked": true,
+        "renderOnly": false,
+        "radarVisible": true,
+        "collisionRelevant": false
+      },
+      {
+        "sourceEntityId": "range-gate-500-port",
+        "absolutePosition": {
+          "x": 500,
+          "y": -8,
+          "z": -54
+        },
+        "chunkId": "chunk:2:0:0",
+        "residence": "Snapshot",
+        "renderLod": "Near",
+        "presentationKey": "asteroid",
+        "role": "Landmark",
+        "renderEligible": true,
+        "truthBacked": true,
+        "renderOnly": false,
+        "radarVisible": true,
+        "collisionRelevant": false
+      },
+      {
+        "sourceEntityId": "range-gate-500-starboard",
+        "absolutePosition": {
+          "x": 500,
+          "y": 8,
+          "z": 54
+        },
+        "chunkId": "chunk:2:0:0",
+        "residence": "Snapshot",
+        "renderLod": "Near",
+        "presentationKey": "asteroid",
+        "role": "Landmark",
+        "renderEligible": true,
+        "truthBacked": true,
+        "renderOnly": false,
+        "radarVisible": true,
+        "collisionRelevant": false
+      }
+    ],
+    "worldProvenance": {
+      "registrySignature": "909c437c",
+      "streamingSignature": "b88d819b",
+      "fullChunkIds": [
+        "chunk:0:0:0",
+        "chunk:1:0:0"
+      ],
+      "snapshotChunkIds": [
+        "chunk:10:0:0",
+        "chunk:2:0:0",
+        "chunk:4:0:0",
+        "chunk:6:0:-1",
+        "chunk:8:0:1"
+      ]
+    },
+    "sourceNavigationMapSignature": "40b95b8a",
+    "previewWorldPresentationSignature": "b8aa9a21",
+    "lockedWorldPresentationSignature": "235bd5f3",
+    "previewToEngagePlanHashStable": true,
+    "rendererOwnsWorldTruth": false
+  },
+  "screenshots": [
+    "apps/weltraum-browser/evidence/live-world-preview-route.png",
+    "apps/weltraum-browser/evidence/live-world-locked-route.png",
+    "apps/weltraum-browser/evidence/live-world-obstacle-proxies.png"
+  ]
+}

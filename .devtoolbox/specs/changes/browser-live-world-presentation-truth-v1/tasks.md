@@ -53,7 +53,7 @@
 
 ## Task 4 — Playwright evidence + docs capture
 
-- [ ] Add E2E evidence suite and final docs entry for normal `/` mode and query-gated test bridge observations.
+- [x] Add E2E evidence suite and final docs entry for normal `/` mode and query-gated test bridge observations.
   - Execution:
     - Add `apps/weltraum-browser/tests/e2e/live-world-presentation-truth.spec.ts` and screenshot capture.
     - Write `docs/browser-mainline/live-world-presentation-truth-v1.md` with evidence references.
