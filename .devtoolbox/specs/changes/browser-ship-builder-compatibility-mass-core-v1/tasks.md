@@ -39,7 +39,7 @@
 
 ## Phase 3: Browser evidence and documentation
 
-- [ ] 5. Add normal-route browser evidence and Browser-mainline documentation.
+- [x] 5. Add normal-route browser evidence and Browser-mainline documentation.
   - **Owned files:** named compatibility/mass E2E, task-specific JSON/Markdown evidence, new compatibility/mass doc, scoped feature-intent and roadmap edits.
   - **Deliverable:** default-route TestBridge absence, dynamic barrel import, all three fixture reports/mass results/signatures, deterministic evidence, documented rules/non-goals.
   - **Verification:** both Ship Builder E2E specs, JSON parse/invariants, focused/full unit tests, build.

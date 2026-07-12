@@ -290,9 +290,9 @@ Deferred playable-flight follow-up points:
 - broader camera polish and input rebinding/accessibility beyond the current key/mouse contract,
 - full radar/minimap/map integration and non-local-space/orbital/surface flight behavior.
 
-## Ship Builder Domain Catalog Foundation v1
+## Ship Builder Domain, Compatibility & Mass Foundations v1
 
-Status: implemented as a browser-safe domain/catalog/serialization foundation, not as a Builder runtime milestone.
+Status: implemented as browser-safe domain/catalog/serialization, connection-compatibility, structural-validation, and dry-mass foundations; this is not a Builder runtime milestone.
 
 Implemented in this slice:
 
@@ -300,20 +300,23 @@ Implemented in this slice:
 - immutable catalog snapshots with deterministic indexes, canonical serialization/signature, and catalog/blueprint migration seams;
 - authoritative blueprint instances/connections, stable transform IDs, canonical roundtrips, and an authority-only layout hash;
 - eight categories and sixteen provisional starter definitions with scout/cargo/weapon schema-integrity fixtures;
-- a normal-route Vite browser smoke that keeps `TestBridge` absent, dynamically imports the domain barrel, and writes deterministic JSON/Markdown evidence without screenshots.
+- canonical, deeply frozen validation policies with explicit endpoint occupancy, symmetric socket/connection/capacity/mount/direction rules, same-instance gates, and fail-closed custom socket types;
+- deterministic enabled-only structure reports with compatible graph edges, ControlCore/Structural root selection, ordered components/disconnected IDs, Shared/Exclusive occupancy, Required-Socket severities, status, provenance, and report signatures;
+- enabled-only `PartDefinition.dryMassKilograms` aggregation, part-origin grid/meter COM, yaw-aware footprint bounds, and null/Error fail-closed handling for aggregate or spatial overflow;
+- normal-route Vite browser smokes that keep `TestBridge` absent, dynamically import the domain barrel, pin catalog/policy/layout/structure/mass signatures, and write deterministic JSON/Markdown evidence without screenshots.
 
 Deferred Ship Builder work:
 
 - Builder palette/placement/edit/mirror/save UI;
-- full compatibility, validation, stat, mass/COM, flight-authority, cargo, and weapon engines;
+- thrust, flight-authority, cargo/fuel/ammo/crew/resource mass, weapon, overlap/proximity, and full gameplay-stat engines;
 - runtime test flight, active-ship handoff, renderer/art binding, and flight-ready validation;
 - resource/economy/recipe/unlock integration, final costs/balance, and the remaining sixteen planned catalog variants.
 
-Gate: preserve stable identities, explicit socket/connection integrity, canonical serialization, and the no-`TestBridge` normal-route module smoke while later builder layers are added.
+Gate: preserve stable identities and serialized schemas, explicit policy authority, schema/domain error separation, canonical report signatures, starter fixture invariants, and the no-`TestBridge` normal-route module smokes while later Builder layers are added.
 
 ## Deferred Until Separate Feature Intent / Specs
 
-- Ship Builder runtime, Builder UI, validation/stat engines, test flight, economy, production art binding, and the remaining planned catalog variants; the domain/catalog/serialization foundation is already implemented separately.
+- Ship Builder runtime, Builder UI, runtime authority/full-stat engines, test flight, economy, production art binding, and the remaining planned catalog variants; domain/catalog/serialization plus compatibility/structure/dry-mass foundations are already implemented separately.
 - Surface-FPS runtime.
 - Economy, missions, factions, drones.
 - Real production asset migration.
