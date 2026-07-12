@@ -6,7 +6,6 @@
 - `apps/weltraum-browser/src/world/worldPresentation.ts` (new)
 - `apps/weltraum-browser/src/render/three/worldPresentationRenderer.ts` (new)
 - `apps/weltraum-browser/src/render/three/debugScene.ts` (existing)
-- `apps/weltraum-browser/src/world/provingGroundWorld.ts` (existing, optional reuse/export of frame descriptor only)
 - `apps/weltraum-browser/tests/unit/worldPresentation.test.ts` (new)
 - `apps/weltraum-browser/tests/unit/worldPresentationRenderer.test.ts` (new)
 - `apps/weltraum-browser/tests/e2e/live-world-presentation-truth.spec.ts` (new)
@@ -24,22 +23,24 @@
 - package manifests/lockfiles
 - `flight/planner/executor` core, proving-ground flight logic
 
-## Requirement 1 — World presentation adapter is pure TelemetrySnapshot projection
-The system SHALL provide `WorldPresentationSnapshot` via a pure adapter from a telemetry source (runtime/world descriptors only). The adapter MUST NOT execute renderer mutations and MUST remain side-effect free.
+## Requirement 1 — NavigationMapSnapshot is the only spatial truth
+The system SHALL provide `WorldPresentationSnapshot` via a pure adapter that requires `TelemetrySnapshot.navigationMap`. The adapter MUST NOT execute renderer mutations and MUST remain side-effect free.
 
-- Output includes `frameId` and excludes no semantic inputs required for signature stability.
-- Output includes `navigationState`/`shipState` projection fields but never authoritative physics writes.
+- Ship transform, selected target geometry, route geometry, obstacles, entity positions, chunk residence, and render LOD MUST come only from the navigation map snapshot.
+- Raw telemetry MAY enrich velocity, executor lifecycle/progress, preview admission, and arrival metadata only.
+- No raw-telemetry, proving-ground, world-streaming, or renderer spatial fallback is allowed.
+- Normal runtime without a navigation map snapshot is a contract failure.
 - `signature` is computed from canonical snapshot fields excluding `renderFrameRevision`.
 - `selectedTarget.selected`, `selectedTarget.locked`, and `selectedTarget.truthBacked` MUST be present.
 - `route.truthBacked` MUST be true.
 
 ## Requirement 2 — Stable frame/revision contract
-- `frameId` is a stable semantic frame identifier.
+- `frameId` is derived from `navigationMap.absoluteFrameId`.
 - `renderFrameRevision` is a renderer-only revision token.
 - Changing `renderFrameRevision` MUST NOT change `signature`.
 - `frameId` remains stable across semantic-identical regenerations and does not rotate for equivalent snapshots.
 - `signature` changes when semantic snapshot data changes.
-- Frame-revision progression may reflect projection updates including floating-origin-only transform updates, but those updates must not alter semantic signature or `frameId`.
+- Floating-origin frame and revision changes may change projection revision, but MUST NOT alter semantic signature or `frameId`.
 
 ## Requirement 3 — Canonical serialization and hashing
 - Deterministic string form MUST use `stableStringify`.
@@ -50,7 +51,7 @@ The system SHALL provide `WorldPresentationSnapshot` via a pure adapter from a t
 - Every different `sourcePlanHash` replaces route identity and must be treated as a route change even if segment geometry and count are identical.
 
 ## Requirement 4 — Ordered IDs and numeric safety
-- Unordered collections (obstacles, beacons, decorative objects, and residency IDs) MUST be sorted by stable source ID.
+- Unordered collections (obstacles, world entities, and residency IDs) MUST be sorted by stable source ID.
 - Route segment order MUST exactly match canonical source plan order.
 - All numeric fields in signatures/projections MUST be finite; `-0` must normalize to `0`.
 
@@ -68,6 +69,9 @@ The system SHALL provide `WorldPresentationSnapshot` via a pure adapter from a t
 - Route-relative `distanceToTarget` and `offRouteDistance` MUST be `null`/absent unless the presented route is associated with the current executor route by either current `planHash` or `completedPlanHash`.
 - If current selection is null or preview `sourceTargetId` mismatches current selection target, proxy visibility MUST be `hidden`; if preview is same-target-ready but non-admissible, proxy visibility MUST be `blocked`.
 - Executor lifecycle/progress fields (`completed`, `arrived`, `holding`, etc.) may only be inherited from executor sources when the executor plan hash OR completed-plan hash matches the presented route.
+- Visible or blocked route geometry MUST match a canonical navigation map route by `sourcePlanHash`, target ID, and exact segment order.
+- Stale or hidden routes without canonical map geometry MUST remain `hidden` with an empty segment list.
+- The adapter MUST NOT guess, recalculate, or silently remap route geometry.
 
 ## Requirement 7 — Truth obstacle contract
 - All truth obstacles from runtime/world descriptors MUST be retained as projection entries.
@@ -77,13 +81,17 @@ The system SHALL provide `WorldPresentationSnapshot` via a pure adapter from a t
 - Equality of `runtimeTruthObstacleCount` and `truthBackedObstacleProxyCount` is required only for fixed proving-ground v1 where every truth obstacle is resident.
 - `visualProxyStyle` MUST be explicit for each truth obstacle proxy.
 
-## Requirement 8 — Decorative metadata contract
-Each non-truth entry MUST include all flags:
+## Requirement 8 — World entity and decorative metadata contract
+- Each map-backed world entity MUST include source ID, absolute position, chunk ID, residence, render LOD, presentation key, and role `Ambient` or `Landmark`.
+- The eight gates/beacons MUST be `Landmark` world entities and the six base asteroids MUST be `Ambient` world entities.
+- These fourteen entries MUST NOT contribute to decorative counts.
+- Only the starfield, distant planet, and 150-object cinematic belt are renderer-only.
+- `decorativeAsteroidCount` MUST equal `150`.
+- Each renderer-only entry MUST include all flags:
 - `truthBacked` = false
 - `renderOnly` = true
 - `radarVisible` = false
 - `collisionRelevant` = false
-- Landmarks must retain `truthBacked:false` naming and cannot be merged into truth obstacle/proxy fields.
 
 ## Requirement 9 — Renderer contract
 `worldPresentationRenderer` SHALL:
@@ -93,6 +101,9 @@ Each non-truth entry MUST include all flags:
 - Snapshot builder returns readonly snapshot data; renderer must not mutate snapshot inputs.
 - Unit tests must deep-freeze fixtures to assert non-mutation.
 - At most one semantic navigation beacon may exist from `navigationFocusTarget`; it must be truth-backed and distinct from landmarks/decorative entries.
+- The existing fourteen low-poly instance slots MUST bind by exact map entity ID every frame.
+- Missing, dormant, or `Culled` entities MUST receive zero scale.
+- Visible residents MUST retain configured scale and deterministic rotation.
 
 ## Requirement 10 — Visual contract
 - Route visualization MUST include more than color-only cues. Use dash/gap styling, opacity, geometry/endpoint markers, and layering in place of line width.
@@ -103,6 +114,7 @@ Each non-truth entry MUST include all flags:
 - `TestBridge` must be exposed only via explicit query (`?testBridge=1`).
 - Normal `/` run must not expose TestBridge.
 - `fullIds` evidence fields are query-gated and visible only in instrumentation mode.
+- Normal canvas attributes MUST expose state and counts only; complete IDs, hashes, segments, and signatures MUST remain query-gated.
 
 ## Requirement 12 — Evidence of semantic and render decoupling
 Evidence snapshots MUST include at least:
@@ -123,3 +135,7 @@ Evidence snapshots MUST include at least:
 - `routeProxyVisibility`
 - `navigationFocusBeaconCount`
 - `selectedTargetProjectedPosition`
+- `worldEntityCount`
+- `residentWorldEntityCount`
+- `landmarkWorldEntityCount`
+- `ambientWorldEntityCount`

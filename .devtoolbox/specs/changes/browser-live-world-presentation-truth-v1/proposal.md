@@ -4,12 +4,14 @@
 `browser-live-world-presentation-truth-v1`
 
 ## Context
-Current runtime owns the telemetry truth source, while the normal scene currently hides target/route/obstacle visibility unless debug surfaces are used, and decorative objects are mixed with truth projections.
+`TelemetrySnapshot.navigationMap` is now the canonical browser spatial truth, while the live world presentation still projects several world objects from renderer-owned defaults and does not yet enforce map-route parity for every visible route.
 
 ## Goal
 Align the specification set to the approved implementation so the world presentation layer uses:
-- a pure telemetry snapshot adapter,
+- `TelemetrySnapshot.navigationMap` as the only spatial source,
+- raw telemetry only for velocity, executor lifecycle, preview admission, and arrival metadata,
 - deterministic world-presentation IDs and hashes,
+- exact map-backed target, route, obstacle, entity, residency, and LOD projections,
 - strict truth/decorative separation,
 - a non-authoritative renderer contract, and
 - explicit evidence gates for normal runtime and query-gated tooling.
@@ -26,7 +28,6 @@ Align the specification set to the approved implementation so the world presenta
 - New: `apps/weltraum-browser/src/world/worldPresentation.ts`
 - New: `apps/weltraum-browser/src/render/three/worldPresentationRenderer.ts`
 - Existing: `apps/weltraum-browser/src/render/three/debugScene.ts`
-- Optional existing: `apps/weltraum-browser/src/world/provingGroundWorld.ts` (for frame descriptor reuse/export)
 - New: `apps/weltraum-browser/tests/unit/worldPresentation.test.ts`
 - New: `apps/weltraum-browser/tests/unit/worldPresentationRenderer.test.ts`
 - New: `apps/weltraum-browser/tests/e2e/live-world-presentation-truth.spec.ts`
@@ -35,6 +36,7 @@ Align the specification set to the approved implementation so the world presenta
 ## Hard Constraints
 - Scope must remain in this change folder, listed source files, and this mainline docs file.
 - Forbidden paths: `apps/weltraum-browser/src/ui/**`, `apps/weltraum-browser/src/runtime/**`, `apps/weltraum-browser/src/main.ts`, `src/world/planner/*`, `src/runtime/*`, `src/flight/planner/*`, `Assets/**`, package files and lockfiles.
-- No planner-map modules, planner/controls styles/scripts, or map-only ownership files.
+- No planner-map modules, planner/controls styles/scripts, runtime fallback sources, or map ownership files.
 - Normal `/` must stay TestBridge-free.
 - Renderer output is presentation-only and must not write back to gameplay truth.
+- Abort instead of widening scope if normal `/` has no navigation map snapshot or a map target/hash/geometry contradiction is detected.

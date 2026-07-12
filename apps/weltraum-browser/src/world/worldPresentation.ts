@@ -2,48 +2,26 @@ import { fnv1aHash, stableStringify } from "../core/hash";
 import type {
   ArrivalStopBehavior,
   ExecutorStatus,
-  ObstacleDescriptor,
   Quaternion,
   RouteLifecycle,
   RoutePlan,
   RouteSegmentKind,
-  TargetDescriptorKind
+  TargetDescriptor
 } from "../core/types";
 import type { Vec3 } from "../core/vector";
+import type {
+  NavigationMapEntitySnapshot,
+  NavigationMapRouteSnapshot,
+  NavigationMapTargetSnapshot
+} from "../navigation/map";
 import type { TelemetrySnapshot } from "../sim/telemetry";
-import type { FrameDescriptor } from "./frames";
 import type { WorldChunkId } from "./chunkRegistry";
-import type { RenderLodBand, WorldStreamingSnapshot } from "./worldStreaming";
-
-export interface WorldPresentationResidencyCandidate {
-  readonly sourceId: string;
-  readonly chunkId: WorldChunkId | null;
-}
-
-export interface WorldPresentationResidency {
-  readonly sourceId: string;
-  readonly chunkId: WorldChunkId | null;
-  readonly renderEligible: boolean;
-  readonly renderLod: RenderLodBand | null;
-}
-
-export interface WorldPresentationLandmarkDescriptor {
-  readonly sourceLandmarkId: string;
-  readonly label: string;
-  readonly position: Vec3;
-}
-
-export interface WorldPresentationDecorationDescriptor {
-  readonly sourceDecorationId: string;
-  readonly position: Vec3;
-  readonly scale: number;
-  readonly batchKey: string;
-}
+import type { RenderLodBand } from "./worldStreaming";
 
 export interface WorldPresentationTarget {
   readonly sourceTargetId: string;
   readonly label: string;
-  readonly kind: TargetDescriptorKind;
+  readonly kind: NavigationMapTargetSnapshot["kind"];
   readonly position: Vec3;
   readonly arrivalRadius: number;
   readonly terminalSpeed: number | null;
@@ -110,7 +88,7 @@ export interface WorldPresentationObstacle {
   readonly visualProxyStyle: {
     readonly geometry: "SolidLowPoly";
     readonly outline: "Restrained";
-    readonly radiusSource: "RuntimeTruth";
+    readonly radiusSource: "NavigationMapTruth";
   };
 }
 
@@ -124,32 +102,35 @@ export interface WorldPresentationNavigationBeacon {
   readonly collisionRelevant: false;
 }
 
-export interface WorldPresentationLandmark {
-  readonly sourceLandmarkId: string;
-  readonly label: string;
-  readonly position: Vec3;
-  readonly truthBacked: false;
-  readonly renderOnly: true;
-  readonly radarVisible: false;
+export type WorldPresentationEntityRole = "Ambient" | "Landmark";
+
+export interface WorldPresentationEntity {
+  readonly sourceEntityId: string;
+  readonly absolutePosition: Vec3;
+  readonly chunkId: WorldChunkId;
+  readonly residence: NavigationMapEntitySnapshot["residence"];
+  readonly renderLod: RenderLodBand;
+  readonly presentationKey: string;
+  readonly role: WorldPresentationEntityRole;
+  readonly renderEligible: boolean;
+  readonly truthBacked: true;
+  readonly renderOnly: false;
+  readonly radarVisible: true;
   readonly collisionRelevant: false;
 }
 
-export interface WorldPresentationDecoration {
-  readonly sourceDecorationId: string;
-  readonly position: Vec3;
-  readonly scale: number;
-  readonly batchKey: string;
-  readonly renderEligible: boolean;
-  readonly truthBacked: false;
-  readonly renderOnly: true;
-  readonly radarVisible: false;
-  readonly collisionRelevant: false;
+export interface WorldPresentationWorldProvenance {
+  readonly registrySignature: string;
+  readonly streamingSignature: string;
+  readonly fullChunkIds: readonly WorldChunkId[];
+  readonly snapshotChunkIds: readonly WorldChunkId[];
 }
 
 export interface WorldPresentationSnapshot {
   readonly frameId: string;
   readonly renderFrameRevision: number;
   readonly signature: string;
+  readonly sourceNavigationMapSignature: string;
   readonly shipState: WorldPresentationShipState;
   readonly navigationState: WorldPresentationNavigationState;
   readonly selectedTarget: WorldPresentationTarget | null;
@@ -157,23 +138,30 @@ export interface WorldPresentationSnapshot {
   readonly navigationBeacon: WorldPresentationNavigationBeacon | null;
   readonly route: WorldPresentationRoute | null;
   readonly obstacles: readonly WorldPresentationObstacle[];
-  readonly landmarks: readonly WorldPresentationLandmark[];
-  readonly decorations: readonly WorldPresentationDecoration[];
-  readonly residency: readonly WorldPresentationResidency[];
+  readonly entities: readonly WorldPresentationEntity[];
+  readonly world: WorldPresentationWorldProvenance;
   readonly runtimeTruthObstacleCount: number;
   readonly truthBackedObstacleProxyCount: number;
-  readonly decorativeObjectCount: number;
+  readonly worldEntityCount: number;
+  readonly residentWorldEntityCount: number;
+  readonly renderEligibleWorldEntityCount: number;
+  readonly landmarkWorldEntityCount: number;
+  readonly ambientWorldEntityCount: number;
   readonly rendererOwnsWorldTruth: false;
 }
 
 export interface BuildWorldPresentationInput {
   readonly telemetry: TelemetrySnapshot;
-  readonly frame: FrameDescriptor;
   readonly renderFrameRevision: number;
-  readonly landmarks?: readonly WorldPresentationLandmarkDescriptor[];
-  readonly decorations?: readonly WorldPresentationDecorationDescriptor[];
-  readonly streaming?: WorldStreamingSnapshot | null;
-  readonly streamingCandidates?: readonly WorldPresentationResidencyCandidate[];
+  readonly landmarkEntityIds: readonly string[];
+}
+
+interface RoutePresentationIntent {
+  readonly plan: RoutePlan;
+  readonly lifecycle: WorldPresentationRouteLifecycle;
+  readonly visibility: WorldPresentationRouteVisibility;
+  readonly blockerCode: string | null;
+  readonly admissionReady: boolean;
 }
 
 const compareIds = (left: string, right: string): number => left < right ? -1 : left > right ? 1 : 0;
@@ -235,103 +223,160 @@ const deepFreeze = <T>(value: T, seen = new WeakSet<object>()): T => {
   return Object.freeze(value);
 };
 
+const metadataTargetFor = (telemetry: TelemetrySnapshot, targetId: string): TargetDescriptor | null => {
+  const candidates = [
+    telemetry.selectedTarget ?? null,
+    ...(telemetry.selectableTargets ?? []),
+    telemetry.lockedPlan?.target ?? null,
+    telemetry.routePreview?.target ?? null,
+    telemetry.routePreview?.plan?.target ?? null
+  ];
+  return candidates.find((candidate): candidate is TargetDescriptor => candidate?.id === targetId) ?? null;
+};
+
 const targetFor = (
-  target: NonNullable<TelemetrySnapshot["selectedTarget"]>,
+  target: NavigationMapTargetSnapshot,
+  metadata: TargetDescriptor | null,
   label: string,
   state: { readonly selected: boolean; readonly locked: boolean }
 ): WorldPresentationTarget => ({
   sourceTargetId: requiredId(target.id, `${label} target id`),
-  label: target.label,
+  label: requiredId(target.label, `${label} target label`),
   kind: target.kind,
-  position: copyVec3(target.position, `${label} target position`),
-  arrivalRadius: nonNegative(target.arrivalEnvelope.radius, `${label} target arrival radius`),
-  terminalSpeed: target.arrivalEnvelope.terminalSpeed === undefined
+  position: copyVec3(target.absolutePosition.value, `${label} target position`),
+  arrivalRadius: nonNegative(target.arrivalRadius, `${label} target arrival radius`),
+  terminalSpeed: metadata?.arrivalEnvelope.terminalSpeed === undefined
     ? null
-    : nonNegative(target.arrivalEnvelope.terminalSpeed, `${label} target terminal speed`),
-  stopBehavior: target.arrivalEnvelope.stopBehavior ?? null,
+    : nonNegative(metadata.arrivalEnvelope.terminalSpeed, `${label} target terminal speed`),
+  stopBehavior: metadata?.arrivalEnvelope.stopBehavior ?? null,
   selected: state.selected,
   locked: state.locked,
   truthBacked: true
 });
 
-export const adaptWorldStreamingResidency = (
-  candidates: readonly WorldPresentationResidencyCandidate[],
-  streaming?: WorldStreamingSnapshot | null
-): readonly WorldPresentationResidency[] => {
-  assertUnique(candidates, (candidate) => candidate.sourceId, "residency source");
-  const visibleLods = new Map((streaming?.visibleLods ?? []).map((entry) => [entry.chunkId, entry.lod] as const));
-  const result = candidates
-    .map((candidate): WorldPresentationResidency => {
-      const sourceId = requiredId(candidate.sourceId, "Residency source id");
-      const chunkId = candidate.chunkId === null ? null : requiredId(candidate.chunkId, `Residency chunk id for ${sourceId}`);
-      const renderLod = chunkId === null || !streaming ? null : (visibleLods.get(chunkId) ?? "Culled");
-      return {
-        sourceId,
-        chunkId,
-        renderEligible: chunkId === null || !streaming || renderLod !== "Culled",
-        renderLod
-      };
-    })
-    .sort((left, right) => compareIds(left.sourceId, right.sourceId));
-  return deepFreeze(result);
-};
-
-const routeFor = (telemetry: TelemetrySnapshot): WorldPresentationRoute | null => {
-  const selectedTargetId = telemetry.selectedTarget?.id ?? null;
+const routeIntentFor = (
+  telemetry: TelemetrySnapshot,
+  selectedTargetId: string | null
+): RoutePresentationIntent | null => {
   const locked = telemetry.lockedPlan;
-  const preview = telemetry.routePreview;
-  let plan: RoutePlan | null = null;
-  let lifecycle: WorldPresentationRouteLifecycle = "Preview";
-  let visibility: WorldPresentationRouteVisibility = "Visible";
-  let blockerCode: string | null = null;
-  let admissionReady = false;
-
   if (locked) {
-    plan = locked;
-    lifecycle = "Locked";
-    admissionReady = true;
-  } else if (preview?.state === "Ready" && !preview.stale && preview.plan) {
-    plan = preview.plan;
-    admissionReady = preview.lockAdmission.ok;
-    if (selectedTargetId === null || preview.target?.id !== plan.target.id || plan.target.id !== selectedTargetId) {
-      visibility = "Hidden";
-      blockerCode = "TargetMismatch";
-      admissionReady = false;
-    } else if (!preview.lockAdmission.ok) {
-      visibility = "Blocked";
-      blockerCode = preview.lockAdmission.code;
-    }
-  } else if (preview?.plan) {
-    plan = preview.plan;
-    visibility = "Hidden";
-    blockerCode = preview.staleReason ?? preview.state;
-  } else {
+    return {
+      plan: locked,
+      lifecycle: "Locked",
+      visibility: "Visible",
+      blockerCode: null,
+      admissionReady: true
+    };
+  }
+
+  const preview = telemetry.routePreview;
+  if (!preview?.plan) {
     return null;
   }
 
-  assertUnique(plan.segments, (segment) => segment.id, "route segment");
-  const isCurrentExecutorPlan = telemetry.executor.planHash === plan.planHash;
-  const isCompletedExecutorPlan = telemetry.executor.completedPlanHash === plan.planHash;
-  if (lifecycle === "Preview" && isCompletedExecutorPlan) {
+  let visibility: WorldPresentationRouteVisibility = "Hidden";
+  let blockerCode: string | null = preview.staleReason ?? preview.state;
+  let admissionReady = false;
+  if (preview.state === "Ready" && !preview.stale) {
+    if (selectedTargetId === null || preview.target?.id !== preview.plan.target.id || preview.plan.target.id !== selectedTargetId) {
+      visibility = "Hidden";
+      blockerCode = "TargetMismatch";
+    } else if (!preview.lockAdmission.ok) {
+      visibility = "Blocked";
+      blockerCode = preview.lockAdmission.code;
+    } else {
+      visibility = "Visible";
+      blockerCode = null;
+      admissionReady = true;
+    }
+  }
+
+  if (telemetry.executor.completedPlanHash === preview.plan.planHash) {
     visibility = "Hidden";
     blockerCode = "CompletedPlan";
     admissionReady = false;
   }
-  const executorAssociation = isCurrentExecutorPlan ? "Current" : isCompletedExecutorPlan ? "Completed" : null;
-  const executorActiveSegmentId = isCurrentExecutorPlan ? telemetry.executor.activeSegmentId : null;
-  const activeIndex = executorActiveSegmentId === null ? -1 : plan.segments.findIndex((segment) => segment.id === executorActiveSegmentId);
-  if (executorActiveSegmentId !== null && activeIndex < 0) {
-    throw new Error(`Active segment id ${executorActiveSegmentId} is not present in route ${plan.id}`);
+
+  return {
+    plan: preview.plan,
+    lifecycle: "Preview",
+    visibility,
+    blockerCode,
+    admissionReady
+  };
+};
+
+const sameVec3 = (left: Vec3, right: Vec3): boolean =>
+  left.x === right.x && left.y === right.y && left.z === right.z;
+
+const routeMapMismatch = (mapRoute: NavigationMapRouteSnapshot, plan: RoutePlan): string | null => {
+  if (mapRoute.planHash !== plan.planHash) {
+    return `planHash ${mapRoute.planHash} does not match ${plan.planHash}`;
   }
-  const goal = targetFor(plan.target, "Route goal", {
-    selected: selectedTargetId === plan.target.id,
-    locked: lifecycle === "Locked"
+  if (mapRoute.targetId !== plan.target.id) {
+    return `target ${mapRoute.targetId} does not match ${plan.target.id}`;
+  }
+  if (mapRoute.segments.length !== plan.segments.length) {
+    return `segment count ${mapRoute.segments.length} does not match ${plan.segments.length}`;
+  }
+  for (const [index, mapSegment] of mapRoute.segments.entries()) {
+    const sourceSegment = plan.segments[index];
+    if (mapSegment.id !== sourceSegment.id) {
+      return `segment order differs at ${index}: ${mapSegment.id} does not match ${sourceSegment.id}`;
+    }
+    if (
+      mapSegment.kind !== sourceSegment.kind
+      || !sameVec3(mapSegment.start.value, sourceSegment.start)
+      || !sameVec3(mapSegment.end.value, sourceSegment.end)
+      || mapSegment.desiredSpeed !== sourceSegment.desiredSpeed
+      || mapSegment.clearanceRadius !== sourceSegment.clearanceRadius
+      || (mapSegment.brakeMarginMultiplier ?? null) !== (sourceSegment.brakeMarginMultiplier ?? null)
+    ) {
+      return `geometry differs for segment ${mapSegment.id}`;
+    }
+  }
+  return null;
+};
+
+const routeFor = (
+  telemetry: TelemetrySnapshot,
+  selectedTargetId: string | null,
+  targetById: ReadonlyMap<string, NavigationMapTargetSnapshot>,
+  mapRoute: NavigationMapRouteSnapshot | null
+): WorldPresentationRoute | null => {
+  const intent = routeIntentFor(telemetry, selectedTargetId);
+  if (!intent) {
+    return null;
+  }
+
+  const mismatch = mapRoute === null ? "canonical navigation map route is missing" : routeMapMismatch(mapRoute, intent.plan);
+  const canonicalMapRoute = mismatch === null && intent.visibility !== "Hidden" ? mapRoute : null;
+  const mapTarget = targetById.get(intent.plan.target.id);
+  if (!mapTarget) {
+    throw new Error(`Navigation map target contradiction: target ${intent.plan.target.id} is missing`);
+  }
+
+  const isCurrentExecutorPlan = telemetry.executor.planHash === intent.plan.planHash;
+  const isCompletedExecutorPlan = telemetry.executor.completedPlanHash === intent.plan.planHash;
+  const executorAssociation = isCurrentExecutorPlan ? "Current" : isCompletedExecutorPlan ? "Completed" : null;
+  const requestedActiveSegmentId = isCurrentExecutorPlan ? telemetry.executor.activeSegmentId : null;
+  const canonicalSegments = canonicalMapRoute?.segments ?? [];
+  const activeIndex = requestedActiveSegmentId === null
+    ? -1
+    : canonicalSegments.findIndex((segment) => segment.id === requestedActiveSegmentId);
+  if (requestedActiveSegmentId !== null && canonicalMapRoute && activeIndex < 0) {
+    throw new Error(`Active segment id ${requestedActiveSegmentId} is not present in navigation map route ${canonicalMapRoute.id}`);
+  }
+  const activeSegmentId = canonicalMapRoute && activeIndex >= 0 ? requestedActiveSegmentId : null;
+  const goal = targetFor(mapTarget, metadataTargetFor(telemetry, mapTarget.id), "Route goal", {
+    selected: selectedTargetId === mapTarget.id,
+    locked: intent.lifecycle === "Locked"
   });
-  const segments = plan.segments.map((segment, index): WorldPresentationRouteSegment => ({
+  const segments = canonicalSegments.map((segment, index): WorldPresentationRouteSegment => ({
     sourceSegmentId: requiredId(segment.id, "Route segment id"),
     kind: segment.kind,
-    start: copyVec3(segment.start, `Route segment ${segment.id} start`),
-    end: copyVec3(segment.end, `Route segment ${segment.id} end`),
+    start: copyVec3(segment.start.value, `Route segment ${segment.id} start`),
+    end: copyVec3(segment.end.value, `Route segment ${segment.id} end`),
     desiredSpeed: nonNegative(segment.desiredSpeed, `Route segment ${segment.id} desiredSpeed`),
     clearanceRadius: nonNegative(segment.clearanceRadius, `Route segment ${segment.id} clearanceRadius`),
     brakeMarginMultiplier: segment.brakeMarginMultiplier === undefined
@@ -341,94 +386,63 @@ const routeFor = (telemetry: TelemetrySnapshot): WorldPresentationRoute | null =
   }));
 
   return {
-    sourceRouteId: requiredId(plan.id, "Route id"),
-    sourcePlanHash: requiredId(plan.planHash, "Route sourcePlanHash"),
+    sourceRouteId: requiredId(canonicalMapRoute?.id ?? intent.plan.id, "Route id"),
+    sourcePlanHash: requiredId(intent.plan.planHash, "Route sourcePlanHash"),
     sourceTargetId: goal.sourceTargetId,
-    lifecycle,
+    lifecycle: intent.lifecycle,
     executorLifecycle: executorAssociation === null ? null : (telemetry.executor.routeLifecycle ?? null),
     executorAssociation,
-    visibility,
-    blockerCode,
-    admissionReady,
-    activeSegmentId: executorActiveSegmentId,
+    visibility: mismatch === null ? intent.visibility : "Hidden",
+    blockerCode: mismatch === null ? intent.blockerCode : "NavigationMapRouteMismatch",
+    admissionReady: mismatch === null && intent.admissionReady,
+    activeSegmentId,
     segments,
     goal,
     truthBacked: true
   };
 };
 
+const copyWorldChunkIds = (values: readonly WorldChunkId[], label: string): readonly WorldChunkId[] => {
+  const result = values.map((value) => requiredId(value, label)).sort(compareIds);
+  assertUnique(result, (value) => value, label);
+  return result;
+};
+
 export const buildWorldPresentationSnapshot = (input: BuildWorldPresentationInput): WorldPresentationSnapshot => {
-  const frameId = requiredId(input.frame.id, "Presentation frame id");
+  const navigationMap = input.telemetry.navigationMap;
+  if (!navigationMap) {
+    throw new Error("TelemetrySnapshot.navigationMap is required for world presentation");
+  }
+
+  const frameId = requiredId(navigationMap.absoluteFrameId, "Navigation map absolute frame id");
+  const sourceNavigationMapSignature = requiredId(navigationMap.signature, "Navigation map signature");
   const renderFrameRevision = nonNegative(input.renderFrameRevision, "renderFrameRevision");
   if (!Number.isInteger(renderFrameRevision)) {
     throw new Error("renderFrameRevision must be an integer");
   }
 
-  const obstacles = input.telemetry.obstacles ?? [];
-  const landmarks = input.landmarks ?? [];
-  const decorations = input.decorations ?? [];
-  assertUnique(obstacles, (obstacle) => obstacle.id, "obstacle");
-  assertUnique(landmarks, (landmark) => landmark.sourceLandmarkId, "landmark");
-  assertUnique(decorations, (decoration) => decoration.sourceDecorationId, "decoration");
+  assertUnique(navigationMap.targets, (target) => target.id, "navigation map target");
+  assertUnique(navigationMap.obstacles, (obstacle) => obstacle.id, "navigation map obstacle");
+  assertUnique(navigationMap.entities, (entity) => entity.id, "navigation map entity");
+  const targetById = new Map(navigationMap.targets.map((target) => [target.id, target] as const));
+  if (navigationMap.selectedTargetId !== null && !targetById.has(navigationMap.selectedTargetId)) {
+    throw new Error(`Navigation map selected target contradiction: target ${navigationMap.selectedTargetId} is missing`);
+  }
+  if (navigationMap.route && !targetById.has(navigationMap.route.targetId)) {
+    throw new Error(`Navigation map route target contradiction: target ${navigationMap.route.targetId} is missing`);
+  }
 
-  const residencyCandidates: readonly WorldPresentationResidencyCandidate[] = input.streamingCandidates ?? [
-    ...obstacles.map((obstacle) => ({ sourceId: obstacle.id, chunkId: null })),
-    ...decorations.map((decoration) => ({ sourceId: decoration.sourceDecorationId, chunkId: null }))
-  ];
-  const residency = adaptWorldStreamingResidency(residencyCandidates, input.streaming);
-  const residencyById = new Map(residency.map((entry) => [entry.sourceId, entry] as const));
-  const renderEligibleFor = (sourceId: string): boolean => residencyById.get(sourceId)?.renderEligible ?? true;
-
-  const obstacleSnapshots = obstacles
-    .map((obstacle: ObstacleDescriptor): WorldPresentationObstacle => ({
-      sourceObstacleId: requiredId(obstacle.id, "Obstacle id"),
-      center: copyVec3(obstacle.center, `Obstacle ${obstacle.id} center`),
-      radius: nonNegative(obstacle.radius, `Obstacle ${obstacle.id} radius`),
-      padding: nonNegative(obstacle.padding, `Obstacle ${obstacle.id} padding`),
-      renderEligible: renderEligibleFor(obstacle.id),
-      truthBacked: true,
-      renderOnly: false,
-      radarVisible: true,
-      collisionRelevant: true,
-      visualProxyStyle: {
-        geometry: "SolidLowPoly",
-        outline: "Restrained",
-        radiusSource: "RuntimeTruth"
-      }
-    }))
-    .sort((left, right) => compareIds(left.sourceObstacleId, right.sourceObstacleId));
-
-  const landmarkSnapshots = landmarks
-    .map((landmark): WorldPresentationLandmark => ({
-      sourceLandmarkId: requiredId(landmark.sourceLandmarkId, "Landmark id"),
-      label: landmark.label,
-      position: copyVec3(landmark.position, `Landmark ${landmark.sourceLandmarkId} position`),
-      truthBacked: false,
-      renderOnly: true,
-      radarVisible: false,
-      collisionRelevant: false
-    }))
-    .sort((left, right) => compareIds(left.sourceLandmarkId, right.sourceLandmarkId));
-
-  const decorationSnapshots = decorations
-    .map((decoration): WorldPresentationDecoration => ({
-      sourceDecorationId: requiredId(decoration.sourceDecorationId, "Decoration id"),
-      position: copyVec3(decoration.position, `Decoration ${decoration.sourceDecorationId} position`),
-      scale: nonNegative(decoration.scale, `Decoration ${decoration.sourceDecorationId} scale`),
-      batchKey: requiredId(decoration.batchKey, `Decoration ${decoration.sourceDecorationId} batchKey`),
-      renderEligible: renderEligibleFor(decoration.sourceDecorationId),
-      truthBacked: false,
-      renderOnly: true,
-      radarVisible: false,
-      collisionRelevant: false
-    }))
-    .sort((left, right) => compareIds(left.sourceDecorationId, right.sourceDecorationId));
-
-  const selectedTarget = input.telemetry.selectedTarget ? targetFor(input.telemetry.selectedTarget, "Selected", {
-    selected: true,
-    locked: input.telemetry.lockedPlan?.target.id === input.telemetry.selectedTarget.id
-  }) : null;
-  const route = routeFor(input.telemetry);
+  const selectedMapTarget = navigationMap.selectedTargetId === null
+    ? null
+    : (targetById.get(navigationMap.selectedTargetId) ?? null);
+  const selectedTarget = selectedMapTarget === null
+    ? null
+    : targetFor(selectedMapTarget, metadataTargetFor(input.telemetry, selectedMapTarget.id), "Selected", {
+      selected: true,
+      locked: input.telemetry.lockedPlan?.target.id === selectedMapTarget.id
+        && input.telemetry.lockedPlan.planHash === navigationMap.route?.planHash
+    });
+  const route = routeFor(input.telemetry, navigationMap.selectedTargetId, targetById, navigationMap.route);
   const navigationFocusTarget = route?.visibility === "Visible" && route.admissionReady ? route.goal : selectedTarget;
   const navigationBeacon: WorldPresentationNavigationBeacon | null = navigationFocusTarget === null ? null : {
     sourceTargetId: navigationFocusTarget.sourceTargetId,
@@ -439,20 +453,69 @@ export const buildWorldPresentationSnapshot = (input: BuildWorldPresentationInpu
     radarVisible: true,
     collisionRelevant: false
   };
+
+  const obstacles = navigationMap.obstacles
+    .map((obstacle): WorldPresentationObstacle => ({
+      sourceObstacleId: requiredId(obstacle.id, "Obstacle id"),
+      center: copyVec3(obstacle.center.value, `Obstacle ${obstacle.id} center`),
+      radius: nonNegative(obstacle.radius, `Obstacle ${obstacle.id} radius`),
+      padding: nonNegative(obstacle.padding, `Obstacle ${obstacle.id} padding`),
+      renderEligible: true,
+      truthBacked: true,
+      renderOnly: false,
+      radarVisible: true,
+      collisionRelevant: true,
+      visualProxyStyle: {
+        geometry: "SolidLowPoly",
+        outline: "Restrained",
+        radiusSource: "NavigationMapTruth"
+      }
+    }))
+    .sort((left, right) => compareIds(left.sourceObstacleId, right.sourceObstacleId));
+
+  const landmarkEntityIds = new Set(
+    input.landmarkEntityIds.map((entityId) => requiredId(entityId, "Landmark entity id"))
+  );
+
+  const entities = navigationMap.entities
+    .map((entity): WorldPresentationEntity => ({
+      sourceEntityId: requiredId(entity.id, "World entity id"),
+      absolutePosition: copyVec3(entity.absolutePosition.value, `World entity ${entity.id} position`),
+      chunkId: requiredId(entity.chunkId, `World entity ${entity.id} chunk id`),
+      residence: entity.residence,
+      renderLod: entity.renderLod,
+      presentationKey: requiredId(entity.presentationKey, `World entity ${entity.id} presentation key`),
+      role: landmarkEntityIds.has(entity.id) ? "Landmark" : "Ambient",
+      renderEligible: entity.renderLod !== "Culled",
+      truthBacked: true,
+      renderOnly: false,
+      radarVisible: true,
+      collisionRelevant: false
+    }))
+    .sort((left, right) => compareIds(left.sourceEntityId, right.sourceEntityId));
+
+  const world: WorldPresentationWorldProvenance = {
+    registrySignature: requiredId(navigationMap.world.registrySignature, "World registry signature"),
+    streamingSignature: requiredId(navigationMap.world.streamingSignature, "World streaming signature"),
+    fullChunkIds: copyWorldChunkIds(navigationMap.world.fullChunkIds, "Full chunk id"),
+    snapshotChunkIds: copyWorldChunkIds(navigationMap.world.snapshotChunkIds, "Snapshot chunk id")
+  };
+  const routeAssociated = route?.executorAssociation !== null && route?.executorAssociation !== undefined;
   const semanticPayload = {
     frameId,
+    sourceNavigationMapSignature,
     shipState: {
-      position: copyVec3(input.telemetry.ship.position, "Ship position"),
+      position: copyVec3(navigationMap.ship.absolutePosition.value, "Ship position"),
       velocity: copyVec3(input.telemetry.ship.velocity, "Ship velocity"),
-      orientation: copyQuaternion(input.telemetry.ship.orientation, "Ship orientation")
+      orientation: copyQuaternion(navigationMap.ship.orientation, "Ship orientation")
     },
     navigationState: {
-      executorStatus: route?.executorAssociation ? input.telemetry.executor.status : "Idle",
+      executorStatus: routeAssociated ? input.telemetry.executor.status : "Idle",
       routeLifecycle: route?.executorLifecycle ?? null,
-      distanceToTarget: route?.executorAssociation
+      distanceToTarget: routeAssociated
         ? finite(input.telemetry.executor.distanceToTarget, "Navigation distanceToTarget")
         : null,
-      offRouteDistance: route?.executorAssociation
+      offRouteDistance: routeAssociated
         ? finite(input.telemetry.executor.offRouteDistance, "Navigation offRouteDistance")
         : null
     },
@@ -460,13 +523,16 @@ export const buildWorldPresentationSnapshot = (input: BuildWorldPresentationInpu
     navigationFocusTarget,
     navigationBeacon,
     route,
-    obstacles: obstacleSnapshots,
-    landmarks: landmarkSnapshots,
-    decorations: decorationSnapshots,
-    residency,
-    runtimeTruthObstacleCount: obstacleSnapshots.length,
-    truthBackedObstacleProxyCount: obstacleSnapshots.filter((obstacle) => obstacle.renderEligible).length,
-    decorativeObjectCount: landmarkSnapshots.length + decorationSnapshots.length,
+    obstacles,
+    entities,
+    world,
+    runtimeTruthObstacleCount: obstacles.length,
+    truthBackedObstacleProxyCount: obstacles.length,
+    worldEntityCount: entities.length,
+    residentWorldEntityCount: entities.length,
+    renderEligibleWorldEntityCount: entities.filter((entity) => entity.renderEligible).length,
+    landmarkWorldEntityCount: entities.filter((entity) => entity.role === "Landmark").length,
+    ambientWorldEntityCount: entities.filter((entity) => entity.role === "Ambient").length,
     rendererOwnsWorldTruth: false as const
   };
 

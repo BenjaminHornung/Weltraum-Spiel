@@ -1,11 +1,19 @@
 import * as THREE from "three";
-import { arrivalRadiusForTarget, vec3, type RoutePlan } from "../../core";
+import { vec3 } from "../../core";
 import { browserObstacles, browserTargetCatalog, type BrowserRuntimeController } from "../../runtime/browserRuntime";
 import type { CameraMode } from "../../runtime/input";
 import { renderStatusHud } from "../../ui/statusHud";
+import type { FrameDescriptor } from "../../world/frames";
 import type { LowPolyInstanceBatch } from "../../world/lowPolyInstances";
 import { playableLargeFieldVisualLandmarks, provingGroundAsteroidField } from "../../world/provingGroundWorld";
-import { buildWorldPresentationSnapshot } from "../../world/worldPresentation";
+import {
+  buildWorldPresentationSnapshot,
+  type WorldPresentationEntity,
+  type WorldPresentationRoute,
+  type WorldPresentationRouteSegment,
+  type WorldPresentationTarget,
+  type WorldPresentationWorldProvenance
+} from "../../world/worldPresentation";
 import type { WorldEntityState } from "../../world/floatingOrigin";
 import { createDemoScoutShipVisual, type ShipVisualSnapshot } from "./shipVisual";
 import { WorldPresentationRenderer, type WorldPresentationRenderSnapshot } from "./worldPresentationRenderer";
@@ -23,12 +31,65 @@ export const applyDecorativePresentationMetadata = <T extends THREE.Object3D>(ob
   return object;
 };
 
+export const applyWorldEntityPresentationMetadata = <T extends THREE.Object3D>(object: T): T => {
+  Object.assign(object.userData, {
+    renderOnly: false,
+    truthBacked: true,
+    radarVisible: true,
+    collisionRelevant: false
+  });
+  return object;
+};
+
+export interface WorldEntityInstanceTransform {
+  readonly sourceEntityId: string;
+  readonly position: { readonly x: number; readonly y: number; readonly z: number };
+  readonly rotationEuler: { readonly x: number; readonly y: number; readonly z: number };
+  readonly scale: number;
+}
+
+export const resolveWorldEntityInstanceTransforms = (
+  batch: LowPolyInstanceBatch,
+  entities: readonly WorldPresentationEntity[],
+  frame: FrameDescriptor
+): readonly WorldEntityInstanceTransform[] => {
+  const entityById = new Map<string, WorldPresentationEntity>();
+  for (const entity of entities) {
+    if (entityById.has(entity.sourceEntityId)) {
+      throw new Error(`Duplicate world presentation entity id: ${entity.sourceEntityId}`);
+    }
+    entityById.set(entity.sourceEntityId, entity);
+  }
+  return Object.freeze(batch.instances.map((instance, index): WorldEntityInstanceTransform => {
+    const entity = entityById.get(instance.sourceEntityId);
+    const position = entity
+      ? {
+        x: entity.absolutePosition.x - frame.originAbsolutePosition.x,
+        y: entity.absolutePosition.y - frame.originAbsolutePosition.y,
+        z: entity.absolutePosition.z - frame.originAbsolutePosition.z
+      }
+      : { x: 0, y: 0, z: 0 };
+    return Object.freeze({
+      sourceEntityId: instance.sourceEntityId,
+      position,
+      rotationEuler: {
+        x: (index % 7) * 0.31,
+        y: (index % 11) * 0.23,
+        z: (index % 5) * 0.41
+      },
+      scale: entity?.renderEligible ? instance.localScale : 0
+    });
+  }));
+};
+
 export interface DecorativePresentationInventory {
   readonly baseAsteroidSources: readonly WorldEntityState[];
   readonly baseAsteroidCount: number;
   readonly beltAsteroidCount: number;
   readonly decorativeAsteroidCount: number;
   readonly landmarkCount: number;
+  readonly worldEntityCount: number;
+  readonly worldEntityLandmarkCount: number;
 }
 
 export const deriveDecorativePresentationInventory = (
@@ -45,8 +106,10 @@ export const deriveDecorativePresentationInventory = (
     baseAsteroidSources,
     baseAsteroidCount: baseAsteroidSources.length,
     beltAsteroidCount,
-    decorativeAsteroidCount: baseAsteroidSources.length + beltAsteroidCount,
-    landmarkCount: landmarks.length
+    decorativeAsteroidCount: beltAsteroidCount,
+    landmarkCount: 0,
+    worldEntityCount: sources.length,
+    worldEntityLandmarkCount: landmarks.length
   });
 };
 
@@ -58,8 +121,20 @@ export interface RenderPresentationEvidence {
   readonly routeProxyPlanHash: string | null;
   readonly routeProxySegmentCount: number;
   readonly activeRouteProxySegmentId: string | null;
+  readonly routeSegmentIds: readonly string[];
+  readonly routeSegments: readonly WorldPresentationRouteSegment[];
+  readonly selectedTarget: WorldPresentationTarget | null;
+  readonly sourceNavigationMapSignature: string | null;
+  readonly worldEntities: readonly WorldPresentationEntity[];
+  readonly worldProvenance: WorldPresentationWorldProvenance | null;
   readonly truthBackedObstacleProxyCount: number;
   readonly runtimeTruthObstacleCount: number;
+  readonly worldEntitySlotCount: number;
+  readonly worldEntityCount: number;
+  readonly residentWorldEntityCount: number;
+  readonly visibleWorldEntityCount: number;
+  readonly landmarkWorldEntityCount: number;
+  readonly ambientWorldEntityCount: number;
   readonly decorativeAsteroidCount: number;
   readonly decorativeLandmarkCount: number;
   readonly decorativeObjectsExcludedFromRadar: true;
@@ -83,8 +158,20 @@ export const mergeWorldPresentationRenderEvidence = <T extends object>(
   routeProxyPlanHash: presentation.routeProxyPlanHash,
   routeProxySegmentCount: presentation.routeProxySegmentCount,
   activeRouteProxySegmentId: presentation.activeRouteProxySegmentId,
+  routeSegmentIds: presentation.routeSegmentIds,
+  routeSegments: presentation.routeSegments,
+  selectedTarget: presentation.selectedTarget,
+  sourceNavigationMapSignature: presentation.sourceNavigationMapSignature,
+  worldEntities: presentation.worldEntities,
+  worldProvenance: presentation.worldProvenance,
   truthBackedObstacleProxyCount: presentation.truthBackedObstacleProxyCount,
   runtimeTruthObstacleCount: presentation.runtimeTruthObstacleCount,
+  worldEntitySlotCount: presentation.worldEntitySlotCount,
+  worldEntityCount: presentation.worldEntityCount,
+  residentWorldEntityCount: presentation.residentWorldEntityCount,
+  visibleWorldEntityCount: presentation.visibleWorldEntityCount,
+  landmarkWorldEntityCount: presentation.landmarkWorldEntityCount,
+  ambientWorldEntityCount: presentation.ambientWorldEntityCount,
   decorativeAsteroidCount: presentation.decorativeAsteroidCount,
   decorativeLandmarkCount: presentation.decorativeLandmarkCount,
   decorativeObjectsExcludedFromRadar: presentation.decorativeObjectsExcludedFromRadar,
@@ -215,12 +302,14 @@ export class DebugScene {
 
     this.scene.add(this.shipVisual.group);
 
-    this.asteroidField = applyDecorativePresentationMetadata(new THREE.InstancedMesh(
+    this.asteroidField = applyWorldEntityPresentationMetadata(new THREE.InstancedMesh(
       new THREE.IcosahedronGeometry(3.2, 0),
       new THREE.MeshStandardMaterial({ color: 0x8d8f94, roughness: 0.96, metalness: 0.03, flatShading: true }),
       this.asteroidBatch.instances.length
     ));
-    this.writeAsteroidInstanceMatrices();
+    this.asteroidField.name = "navigation-map-world-entities";
+    this.asteroidField.userData.sourceEntityIds = this.asteroidBatch.instances.map((instance) => instance.sourceEntityId);
+    this.writeWorldEntityInstanceMatrices([]);
     this.asteroidField.visible = this.surface === "flight";
     this.scene.add(this.asteroidField);
 
@@ -253,7 +342,8 @@ export class DebugScene {
       camera: this.camera,
       canvas,
       decorativeAsteroidCount: this.decorativeInventory.decorativeAsteroidCount,
-      decorativeLandmarkCount: this.decorativeInventory.landmarkCount
+      decorativeLandmarkCount: this.decorativeInventory.landmarkCount,
+      worldEntitySlotCount: this.asteroidBatch.instances.length
     });
     this.renderSnapshot = this.createInitialRenderSnapshot();
 
@@ -266,7 +356,7 @@ export class DebugScene {
     window.addEventListener("pointermove", this.handlePointerMove);
     this.canvas.addEventListener("wheel", this.handleWheel, { passive: false });
     this.resize();
-    this.drawPlan(this.runtime.getLockedPlan());
+    this.drawPlan(null, null);
   }
 
   start(): void {
@@ -278,29 +368,20 @@ export class DebugScene {
       const presentation = this.runtime.getPresentationSnapshot();
       const position = toVector3(presentation.renderedShip.position);
       const orientation = presentation.renderedShip.orientation;
-      const routePlan = telemetry.lockedPlan ?? telemetry.routePreview?.plan ?? null;
-      const targetDescriptor = telemetry.selectedTarget ?? telemetry.lockedPlan?.target ?? telemetry.routePreview?.target ?? null;
-      const targetPosition = targetDescriptor?.position;
-      const arrivalRadius = targetDescriptor ? arrivalRadiusForTarget(targetDescriptor) : null;
       const worldPresentation = buildWorldPresentationSnapshot({
         telemetry,
-        frame: this.asteroidBatch.frame,
         renderFrameRevision: ++this.worldPresentationFrameRevision,
-        landmarks: playableLargeFieldVisualLandmarks.map((landmark) => ({
-          sourceLandmarkId: landmark.id,
-          label: landmark.id,
-          position: landmark.absolutePosition.value
-        })),
-        decorations: this.decorativeInventory.baseAsteroidSources.map((entity) => ({
-          sourceDecorationId: entity.id,
-          position: entity.absolutePosition.value,
-          scale: this.asteroidBatch.instances.find((instance) => instance.sourceEntityId === entity.id)?.localScale ?? 1,
-          batchKey: entity.renderBatchKey ?? this.asteroidBatch.batchKey
-        }))
+        landmarkEntityIds: playableLargeFieldVisualLandmarks.map((landmark) => landmark.id)
       });
-      const drawnPlanHash = routePlan?.planHash ?? null;
+      const targetDescriptor = worldPresentation.selectedTarget;
+      const targetPosition = targetDescriptor?.position;
+      const arrivalRadius = targetDescriptor?.arrivalRadius ?? null;
+      this.writeWorldEntityInstanceMatrices(worldPresentation.entities);
+      const drawnPlanHash = worldPresentation.route === null
+        ? null
+        : `${worldPresentation.route.sourcePlanHash}:${worldPresentation.route.lifecycle}:${worldPresentation.route.visibility}:${worldPresentation.route.segments.map((segment) => segment.sourceSegmentId).join(",")}`;
       if (drawnPlanHash !== this.lastDrawnPlanHash) {
-        this.drawPlan(routePlan);
+        this.drawPlan(worldPresentation.route, drawnPlanHash);
       }
       this.shipVisual.updatePose(position, orientation);
       this.shipVisual.updateVfx(telemetry.ship.actuatorTelemetry);
@@ -327,12 +408,12 @@ export class DebugScene {
         frameDeltaSeconds: Number(presentation.frameDeltaSeconds.toFixed(6)),
         cameraSmoothingAlpha: cameraSnapshot.smoothingAlpha,
         targetPosition: this.target.visible ? fromVector3(this.target.position) : null,
-        lockedTargetPosition: telemetry.lockedPlan?.target.position ?? null,
-        selectedTargetId: targetDescriptor?.id ?? null,
+        lockedTargetPosition: worldPresentation.route?.lifecycle === "Locked" ? worldPresentation.route.goal.position : null,
+        selectedTargetId: targetDescriptor?.sourceTargetId ?? null,
         selectedTargetLabel: targetDescriptor?.label ?? null,
-        routePreviewPlanHash: telemetry.routePreview?.plan?.planHash ?? null,
-        routePreviewTargetPosition: telemetry.routePreview?.target?.position ?? null,
-        routePreviewSegmentCount: telemetry.routePreview?.plan?.segments.length ?? 0,
+        routePreviewPlanHash: worldPresentation.route?.lifecycle === "Preview" ? worldPresentation.route.sourcePlanHash : null,
+        routePreviewTargetPosition: worldPresentation.route?.lifecycle === "Preview" ? worldPresentation.route.goal.position : null,
+        routePreviewSegmentCount: worldPresentation.route?.lifecycle === "Preview" ? worldPresentation.route.segments.length : 0,
         targetVisible: this.target.visible,
         executorStatus: telemetry.executor.status,
         distanceToTarget: telemetry.executor.distanceToTarget,
@@ -378,10 +459,18 @@ export class DebugScene {
     this.renderer.setSize(width, height, false);
   };
 
-  private drawPlan(plan: RoutePlan | null): void {
+  private drawPlan(plan: WorldPresentationRoute | null, renderKey: string | null): void {
+    for (const child of this.routeGroup.children) {
+      if (child instanceof THREE.Line) {
+        child.geometry.dispose();
+        const materials = Array.isArray(child.material) ? child.material : [child.material];
+        materials.forEach((material) => material.dispose());
+      }
+    }
     this.routeGroup.clear();
-    this.lastDrawnPlanHash = plan?.planHash ?? null;
-    if (!plan) {
+    this.lastDrawnPlanHash = renderKey;
+    this.routeGroup.visible = this.showDebugHelpers && plan !== null && plan.visibility !== "Hidden";
+    if (!plan || plan.visibility === "Hidden") {
       return;
     }
 
@@ -483,19 +572,21 @@ export class DebugScene {
     return mesh;
   }
 
-  private writeAsteroidInstanceMatrices(): void {
+  private writeWorldEntityInstanceMatrices(entities: readonly WorldPresentationEntity[]): void {
     const matrix = new THREE.Matrix4();
     const rotation = new THREE.Quaternion();
     const euler = new THREE.Euler();
-    for (const [index, instance] of this.asteroidBatch.instances.entries()) {
-      const position = toVector3(instance.localPosition.value);
-      const scale = new THREE.Vector3(instance.localScale, instance.localScale, instance.localScale);
-      euler.set((index % 7) * 0.31, (index % 11) * 0.23, (index % 5) * 0.41);
+    const transforms = resolveWorldEntityInstanceTransforms(this.asteroidBatch, entities, this.asteroidBatch.frame);
+    for (const [index, transform] of transforms.entries()) {
+      const position = toVector3(transform.position);
+      const scale = new THREE.Vector3(transform.scale, transform.scale, transform.scale);
+      euler.set(transform.rotationEuler.x, transform.rotationEuler.y, transform.rotationEuler.z);
       rotation.setFromEuler(euler);
       matrix.compose(position, rotation, scale);
       this.asteroidField.setMatrixAt(index, matrix);
     }
     this.asteroidField.instanceMatrix.needsUpdate = true;
+    this.asteroidField.computeBoundingSphere();
   }
 
   private createInitialRenderSnapshot(): RenderDebugSnapshot {
@@ -801,9 +892,7 @@ export class DebugScene {
     const shipVisualSnapshot = this.shipVisual.getSnapshot();
     renderStatusHud(this.runtime.getTelemetry(), {
       dispatch: (command) => {
-        const result = this.runtime.dispatchCommand(command);
-        this.drawPlan(result.telemetry.lockedPlan ?? result.telemetry.routePreview?.plan ?? null);
-        return result;
+        return this.runtime.dispatchCommand(command);
       }
     }, shipVisualSnapshot.visualSource);
   }

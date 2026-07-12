@@ -2,10 +2,13 @@ import * as THREE from "three";
 import type { Vec3 } from "../../core/vector";
 import type { FrameDescriptor } from "../../world/frames";
 import type {
+  WorldPresentationEntity,
   WorldPresentationObstacle,
   WorldPresentationRoute,
   WorldPresentationRouteSegment,
-  WorldPresentationSnapshot
+  WorldPresentationSnapshot,
+  WorldPresentationTarget,
+  WorldPresentationWorldProvenance
 } from "../../world/worldPresentation";
 
 export type WorldPresentationRendererOperation = "add" | "update" | "remove" | "dispose";
@@ -21,6 +24,7 @@ export interface WorldPresentationRendererOptions {
   readonly canvas?: WorldPresentationCanvasTarget;
   readonly decorativeAsteroidCount: number;
   readonly decorativeLandmarkCount: number;
+  readonly worldEntitySlotCount: number;
 }
 
 export interface WorldPresentationRenderSnapshot {
@@ -32,8 +36,19 @@ export interface WorldPresentationRenderSnapshot {
   readonly routeProxySegmentCount: number;
   readonly activeRouteProxySegmentId: string | null;
   readonly routeSegmentIds: readonly string[];
+  readonly routeSegments: readonly WorldPresentationRouteSegment[];
+  readonly selectedTarget: WorldPresentationTarget | null;
+  readonly sourceNavigationMapSignature: string | null;
+  readonly worldEntities: readonly WorldPresentationEntity[];
+  readonly worldProvenance: WorldPresentationWorldProvenance | null;
   readonly truthBackedObstacleProxyCount: number;
   readonly runtimeTruthObstacleCount: number;
+  readonly worldEntitySlotCount: number;
+  readonly worldEntityCount: number;
+  readonly residentWorldEntityCount: number;
+  readonly visibleWorldEntityCount: number;
+  readonly landmarkWorldEntityCount: number;
+  readonly ambientWorldEntityCount: number;
   readonly decorativeAsteroidCount: number;
   readonly decorativeLandmarkCount: number;
   readonly decorativeObjectsExcludedFromRadar: true;
@@ -68,7 +83,14 @@ const CANVAS_ATTRIBUTES = [
   "data-truth-obstacle-proxy-count",
   "data-runtime-truth-obstacle-count",
   "data-navigation-focus-beacon-count",
+  "data-world-entity-slot-count",
+  "data-world-entity-count",
+  "data-resident-world-entity-count",
+  "data-visible-world-entity-count",
+  "data-landmark-world-entity-count",
+  "data-ambient-world-entity-count",
   "data-decorative-asteroid-count",
+  "data-decorative-landmark-count",
   "data-decorative-objects-excluded-from-radar",
   "data-renderer-owns-world-truth"
 ] as const;
@@ -101,7 +123,11 @@ const disposeResources = (resources: readonly (THREE.BufferGeometry | THREE.Mate
   }
 };
 
-const initialSnapshot = (decorativeAsteroidCount: number, decorativeLandmarkCount: number): WorldPresentationRenderSnapshot => ({
+const initialSnapshot = (
+  decorativeAsteroidCount: number,
+  decorativeLandmarkCount: number,
+  worldEntitySlotCount: number
+): WorldPresentationRenderSnapshot => ({
   selectedTargetProxyVisible: false,
   selectedTargetProxyId: null,
   routeProxyVisible: false,
@@ -109,9 +135,20 @@ const initialSnapshot = (decorativeAsteroidCount: number, decorativeLandmarkCoun
   routeProxyPlanHash: null,
   routeProxySegmentCount: 0,
   activeRouteProxySegmentId: null,
-  routeSegmentIds: [],
+  routeSegmentIds: Object.freeze([]),
+  routeSegments: Object.freeze([]),
+  selectedTarget: null,
+  sourceNavigationMapSignature: null,
+  worldEntities: Object.freeze([]),
+  worldProvenance: null,
   truthBackedObstacleProxyCount: 0,
   runtimeTruthObstacleCount: 0,
+  worldEntitySlotCount,
+  worldEntityCount: 0,
+  residentWorldEntityCount: 0,
+  visibleWorldEntityCount: 0,
+  landmarkWorldEntityCount: 0,
+  ambientWorldEntityCount: 0,
   decorativeAsteroidCount,
   decorativeLandmarkCount,
   decorativeObjectsExcludedFromRadar: true,
@@ -186,6 +223,9 @@ export class WorldPresentationRenderer {
     if (!Number.isInteger(options.decorativeLandmarkCount) || options.decorativeLandmarkCount < 0) {
       throw new Error("decorativeLandmarkCount must be a non-negative integer");
     }
+    if (!Number.isInteger(options.worldEntitySlotCount) || options.worldEntitySlotCount < 0) {
+      throw new Error("worldEntitySlotCount must be a non-negative integer");
+    }
 
     this.root.name = "world-presentation-truth-proxies";
     this.selectedTargetGroup.name = "world-presentation-selected-target";
@@ -202,7 +242,11 @@ export class WorldPresentationRenderer {
     this.navigationFocusGroup.add(this.navigationBeacon);
     this.root.add(this.selectedTargetGroup, this.navigationFocusGroup, this.routeGroup, this.obstacleGroup);
     options.parent.add(this.root);
-    this.snapshot = initialSnapshot(options.decorativeAsteroidCount, options.decorativeLandmarkCount);
+    this.snapshot = initialSnapshot(
+      options.decorativeAsteroidCount,
+      options.decorativeLandmarkCount,
+      options.worldEntitySlotCount
+    );
   }
 
   update(source: WorldPresentationSnapshot, frame: FrameDescriptor): WorldPresentationRenderSnapshot {
@@ -226,8 +270,19 @@ export class WorldPresentationRenderer {
       routeProxySegmentCount: this.route?.segmentIds.length ?? 0,
       activeRouteProxySegmentId: source.route?.activeSegmentId ?? null,
       routeSegmentIds: Object.freeze([...(this.route?.segmentIds ?? [])]),
+      routeSegments: Object.freeze([...(source.route?.segments ?? [])]),
+      selectedTarget: source.selectedTarget,
+      sourceNavigationMapSignature: source.sourceNavigationMapSignature,
+      worldEntities: Object.freeze([...source.entities]),
+      worldProvenance: source.world,
       truthBackedObstacleProxyCount: this.obstacles.size,
       runtimeTruthObstacleCount: source.runtimeTruthObstacleCount,
+      worldEntitySlotCount: this.options.worldEntitySlotCount,
+      worldEntityCount: source.worldEntityCount,
+      residentWorldEntityCount: source.residentWorldEntityCount,
+      visibleWorldEntityCount: source.renderEligibleWorldEntityCount,
+      landmarkWorldEntityCount: source.landmarkWorldEntityCount,
+      ambientWorldEntityCount: source.ambientWorldEntityCount,
       decorativeAsteroidCount: this.options.decorativeAsteroidCount,
       decorativeLandmarkCount: this.options.decorativeLandmarkCount,
       decorativeObjectsExcludedFromRadar: true,
@@ -255,7 +310,11 @@ export class WorldPresentationRenderer {
     }
     this.obstacles.clear();
     this.snapshot = Object.freeze({
-      ...initialSnapshot(this.options.decorativeAsteroidCount, this.options.decorativeLandmarkCount),
+      ...initialSnapshot(
+        this.options.decorativeAsteroidCount,
+        this.options.decorativeLandmarkCount,
+        this.options.worldEntitySlotCount
+      ),
       presentationRevision: this.snapshot.presentationRevision + 1,
       renderFrameRevision: this.snapshot.renderFrameRevision,
       lifecycleOperation: "remove"
@@ -287,7 +346,11 @@ export class WorldPresentationRenderer {
     ]);
     this.disposed = true;
     this.snapshot = Object.freeze({
-      ...initialSnapshot(this.options.decorativeAsteroidCount, this.options.decorativeLandmarkCount),
+      ...initialSnapshot(
+        this.options.decorativeAsteroidCount,
+        this.options.decorativeLandmarkCount,
+        this.options.worldEntitySlotCount
+      ),
       presentationRevision: this.snapshot.presentationRevision + 1,
       lifecycleOperation: "dispose"
     });
@@ -536,7 +599,14 @@ export class WorldPresentationRenderer {
       ["data-truth-obstacle-proxy-count", String(snapshot.truthBackedObstacleProxyCount)],
       ["data-runtime-truth-obstacle-count", String(snapshot.runtimeTruthObstacleCount)],
       ["data-navigation-focus-beacon-count", String(snapshot.navigationFocusBeaconCount)],
+      ["data-world-entity-slot-count", String(snapshot.worldEntitySlotCount)],
+      ["data-world-entity-count", String(snapshot.worldEntityCount)],
+      ["data-resident-world-entity-count", String(snapshot.residentWorldEntityCount)],
+      ["data-visible-world-entity-count", String(snapshot.visibleWorldEntityCount)],
+      ["data-landmark-world-entity-count", String(snapshot.landmarkWorldEntityCount)],
+      ["data-ambient-world-entity-count", String(snapshot.ambientWorldEntityCount)],
       ["data-decorative-asteroid-count", String(snapshot.decorativeAsteroidCount)],
+      ["data-decorative-landmark-count", String(snapshot.decorativeLandmarkCount)],
       ["data-decorative-objects-excluded-from-radar", "true"],
       ["data-renderer-owns-world-truth", "false"]
     ];

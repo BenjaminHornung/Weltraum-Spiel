@@ -2,15 +2,21 @@ import * as THREE from "three";
 import { describe, expect, it, vi } from "vitest";
 import {
   applyDecorativePresentationMetadata,
+  applyWorldEntityPresentationMetadata,
   deriveDecorativePresentationInventory,
-  mergeWorldPresentationRenderEvidence
+  mergeWorldPresentationRenderEvidence,
+  resolveWorldEntityInstanceTransforms
 } from "../../src/render/three/debugScene";
 import {
   WorldPresentationRenderer,
   type WorldPresentationCanvasTarget
 } from "../../src/render/three/worldPresentationRenderer";
 import { createLocalPhysicsFrame } from "../../src/world/frames";
-import { playableLargeFieldVisualLandmarks, provingGroundAsteroidField } from "../../src/world/provingGroundWorld";
+import {
+  createProvingGroundLowPolyRenderBatch,
+  playableLargeFieldVisualLandmarks,
+  provingGroundAsteroidField
+} from "../../src/world/provingGroundWorld";
 import type { WorldPresentationSnapshot } from "../../src/world/worldPresentation";
 
 const deepFreeze = <T>(value: T, seen = new WeakSet<object>()): T => {
@@ -116,13 +122,44 @@ const fixture = (overrides: {
     visualProxyStyle: {
       geometry: "SolidLowPoly" as const,
       outline: "Restrained" as const,
-      radiusSource: "RuntimeTruth" as const
+      radiusSource: "NavigationMapTruth" as const
     }
   }));
+  const entities = [
+    {
+      sourceEntityId: "asteroid-a",
+      absolutePosition: { x: 140, y: 2, z: -40 },
+      chunkId: "chunk:0:0:0" as const,
+      residence: "Full" as const,
+      renderLod: "Near" as const,
+      presentationKey: "asteroid",
+      role: "Ambient" as const,
+      renderEligible: true,
+      truthBacked: true as const,
+      renderOnly: false as const,
+      radarVisible: true as const,
+      collisionRelevant: false as const
+    },
+    {
+      sourceEntityId: "range-gate-500-port",
+      absolutePosition: { x: 500, y: -8, z: -54 },
+      chunkId: "chunk:2:0:0" as const,
+      residence: "Snapshot" as const,
+      renderLod: "Far" as const,
+      presentationKey: "asteroid",
+      role: "Landmark" as const,
+      renderEligible: true,
+      truthBacked: true as const,
+      renderOnly: false as const,
+      radarVisible: true as const,
+      collisionRelevant: false as const
+    }
+  ];
   return deepFreeze({
     frameId: "semantic-frame",
     renderFrameRevision: overrides.renderFrameRevision ?? 4,
     signature: overrides.signature ?? "signature-stable",
+    sourceNavigationMapSignature: "navigation-map-signature",
     shipState: {
       position: { x: 100, y: 5, z: -20 },
       velocity: { x: 1, y: 0, z: 0 },
@@ -161,12 +198,20 @@ const fixture = (overrides: {
       truthBacked: true
     },
     obstacles,
-    landmarks: [],
-    decorations: [],
-    residency: [],
+    entities,
+    world: {
+      registrySignature: "registry-signature",
+      streamingSignature: "streaming-signature",
+      fullChunkIds: ["chunk:0:0:0"],
+      snapshotChunkIds: ["chunk:2:0:0"]
+    },
     runtimeTruthObstacleCount: obstacles.length,
     truthBackedObstacleProxyCount: obstacles.filter((obstacle) => obstacle.renderEligible).length,
-    decorativeObjectCount: 14,
+    worldEntityCount: entities.length,
+    residentWorldEntityCount: entities.length,
+    renderEligibleWorldEntityCount: entities.filter((entity) => entity.renderEligible).length,
+    landmarkWorldEntityCount: entities.filter((entity) => entity.role === "Landmark").length,
+    ambientWorldEntityCount: entities.filter((entity) => entity.role === "Ambient").length,
     rendererOwnsWorldTruth: false
   });
 };
@@ -198,8 +243,9 @@ const setup = () => {
     parent,
     camera,
     canvas,
-    decorativeAsteroidCount: 156,
-    decorativeLandmarkCount: 8
+    decorativeAsteroidCount: 150,
+    decorativeLandmarkCount: 0,
+    worldEntitySlotCount: 14
   });
   return { parent, camera, canvas, renderer };
 };
@@ -274,14 +320,22 @@ describe("WorldPresentationRenderer", () => {
     expect(renderer.getSnapshot().routeProxyPlanHash).toBe("plan-b");
   });
 
-  it("preserves exact route order and internal IDs while canvas evidence exposes no full IDs", () => {
+  it("keeps complete target, route, entity, and signature values off the normal canvas evidence surface", () => {
     const { canvas, renderer } = setup();
     const rendered = renderer.update(fixture(), frame());
 
     expect(rendered.routeSegmentIds).toEqual(["segment-direct", "segment-avoidance", "segment-terminal"]);
+    expect(rendered.routeSegments.map((segment) => segment.sourceSegmentId)).toEqual(rendered.routeSegmentIds);
     expect(rendered.selectedTargetProxyId).toBe("target-full-internal-id");
-    expect([...canvas.attributes.keys()].some((key) => /target-id|segment-id|plan-hash|signature/.test(key))).toBe(false);
+    expect(rendered.selectedTarget?.sourceTargetId).toBe("target-full-internal-id");
+    expect(rendered.sourceNavigationMapSignature).toBe("navigation-map-signature");
+    expect(rendered.worldEntities.map((entity) => entity.sourceEntityId)).toEqual(["asteroid-a", "range-gate-500-port"]);
+    expect([...canvas.attributes.keys()].some((key) => /target-id|segment-id|entity-id|plan-hash|signature/.test(key))).toBe(false);
     expect([...canvas.attributes.values()]).not.toContain("target-full-internal-id");
+    expect(canvas.attributes.get("data-world-entity-slot-count")).toBe("14");
+    expect(canvas.attributes.get("data-world-entity-count")).toBe("2");
+    expect(canvas.attributes.get("data-landmark-world-entity-count")).toBe("1");
+    expect(canvas.attributes.get("data-ambient-world-entity-count")).toBe("1");
   });
 
   it("reprojects target, route, and obstacle transforms on frame-origin changes without semantic mutation", () => {
@@ -509,11 +563,12 @@ describe("WorldPresentationRenderer", () => {
   it("invalidates canvas revision before every intermediate dispose removal", () => {
     const { canvas, renderer } = setup();
     renderer.update(fixture(), frame());
+    canvas.writes.length = 0;
     const captured: [string, string | undefined][] = [];
     canvas.onRemove = (name, attributes) => captured.push([name, attributes.get("data-world-presentation-revision")]);
 
     renderer.dispose();
-    expect(canvas.writes.at(-11)).toBe("remove:data-world-presentation-revision");
+    expect(canvas.writes[0]).toBe("remove:data-world-presentation-revision");
     expect(captured.length).toBeGreaterThan(1);
     expect(captured.every(([, revision]) => revision === undefined)).toBe(true);
   });
@@ -535,7 +590,9 @@ describe("WorldPresentationRenderer", () => {
       targetBeaconCount: 3,
       runtimeObstacleCount: 7,
       selectedTargetProxyId: "target-full-internal-id",
-      decorativeLandmarkCount: 8,
+      decorativeLandmarkCount: 0,
+      worldEntitySlotCount: 14,
+      worldEntityCount: 2,
       rendererOwnsWorldTruth: false
     });
     expect(merged.shipPosition).toBe(legacy.shipPosition);
@@ -543,7 +600,7 @@ describe("WorldPresentationRenderer", () => {
     expect(rendered.navigationFocusBeaconCount).toBe(0);
   });
 
-  it("derives six base plus actual belt asteroids separately from eight actual landmarks", () => {
+  it("counts only the 150-object cinematic belt as decorative asteroids", () => {
     const belt = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1), new THREE.MeshBasicMaterial(), 150);
     const inventory = deriveDecorativePresentationInventory(
       provingGroundAsteroidField,
@@ -563,8 +620,10 @@ describe("WorldPresentationRenderer", () => {
     ]);
     expect(inventory.baseAsteroidCount).toBe(6);
     expect(inventory.beltAsteroidCount).toBe(belt.count);
-    expect(inventory.decorativeAsteroidCount).toBe(156);
-    expect(inventory.landmarkCount).toBe(8);
+    expect(inventory.decorativeAsteroidCount).toBe(150);
+    expect(inventory.landmarkCount).toBe(0);
+    expect(inventory.worldEntityCount).toBe(14);
+    expect(inventory.worldEntityLandmarkCount).toBe(8);
     expect(rendered.decorativeAsteroidCount).toBe(inventory.decorativeAsteroidCount);
     expect(rendered.decorativeLandmarkCount).toBe(inventory.landmarkCount);
     expect(rendered.decorativeObjectsExcludedFromRadar).toBe(true);
@@ -589,5 +648,48 @@ describe("WorldPresentationRenderer", () => {
         collisionRelevant: false
       });
     }
+  });
+
+  it("binds fixed low-poly slots by exact map entity ID and zero-scales missing or culled entries", () => {
+    const batch = createProvingGroundLowPolyRenderBatch();
+    const source = fixture();
+    const visible = {
+      ...source.entities[0],
+      sourceEntityId: batch.instances[0].sourceEntityId,
+      absolutePosition: { x: 155, y: 8, z: -33 }
+    };
+    const culled = {
+      ...source.entities[1],
+      sourceEntityId: batch.instances[1].sourceEntityId,
+      absolutePosition: { x: 199, y: 11, z: -44 },
+      renderLod: "Culled" as const,
+      renderEligible: false
+    };
+    const transforms = resolveWorldEntityInstanceTransforms(batch, [culled, visible], frame());
+
+    expect(transforms).toHaveLength(14);
+    expect(transforms[0]).toMatchObject({
+      sourceEntityId: batch.instances[0].sourceEntityId,
+      position: { x: 55, y: 3, z: -13 },
+      scale: batch.instances[0].localScale
+    });
+    expect(transforms[1].scale).toBe(0);
+    expect(transforms.slice(2).every((transform) => transform.scale === 0)).toBe(true);
+    expect(resolveWorldEntityInstanceTransforms(batch, [visible], frame())[0].rotationEuler).toEqual(transforms[0].rotationEuler);
+  });
+
+  it("marks the low-poly world entity mesh as map truth rather than render-only decoration", () => {
+    const mesh = applyWorldEntityPresentationMetadata(
+      new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1), new THREE.MeshBasicMaterial(), 2)
+    );
+
+    expect(mesh.userData).toMatchObject({
+      renderOnly: false,
+      truthBacked: true,
+      radarVisible: true,
+      collisionRelevant: false
+    });
+    mesh.geometry.dispose();
+    (mesh.material as THREE.Material).dispose();
   });
 });
