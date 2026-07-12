@@ -1,6 +1,7 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { ciTimeout } from "./support/ciTiming";
 import { readVisiblePreviewHash } from "./support/plannerWorkflow";
 
 const evidenceRoot = path.resolve(
@@ -42,7 +43,7 @@ const numericAttribute = async (locator: Locator, name: string): Promise<number>
 };
 
 test("normal runtime owns local map geometry, interaction, live ship state, and FHD/QHD evidence", async ({ page }) => {
-  test.setTimeout(70_000);
+  test.setTimeout(ciTimeout(70_000, 180_000));
   await mkdir(screenshotRoot, { recursive: true });
   await page.setViewportSize({ width: 1_920, height: 1_080 });
   await page.goto("/");

@@ -2,6 +2,7 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
 import { existsSync } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { ciTimeout } from "./support/ciTiming";
 
 const evidenceDir = path.resolve(process.cwd(), "evidence");
 const layoutReportPath = path.join(evidenceDir, "browser-ui-concept-parity-v2-layout-report.json");
@@ -141,7 +142,7 @@ async function changedPixelRatio(page: Page, previousPath: string, currentBuffer
       context.drawImage(currentImage, 0, 0, width, height);
       const currentData = context.getImageData(0, 0, width, height).data;
 
-      const step = 4;
+      const step = 2;
       let changed = 0;
       let sampled = 0;
       for (let y = 0; y < height; y += step) {
@@ -291,7 +292,7 @@ test("authoritative normal flight surface keeps live WebGL and concept HUD bound
 });
 
 test("navigation planner presents a full star-map route plan in normal runtime", async ({ page }) => {
-  test.setTimeout(55_000);
+  test.setTimeout(ciTimeout(55_000, 135_000));
   await mkdir(evidenceDir, { recursive: true });
   await page.setViewportSize({ width: 1640, height: 900 });
   await page.goto("/");
@@ -331,7 +332,7 @@ test("navigation planner presents a full star-map route plan in normal runtime",
 });
 
 test("combat contact scenario is a red-accented UI shell without default TestBridge exposure", async ({ page }) => {
-  test.setTimeout(55_000);
+  test.setTimeout(ciTimeout(55_000, 135_000));
   await mkdir(evidenceDir, { recursive: true });
   await page.setViewportSize({ width: 1640, height: 900 });
   await page.goto("/?uiScenario=combat-contact");

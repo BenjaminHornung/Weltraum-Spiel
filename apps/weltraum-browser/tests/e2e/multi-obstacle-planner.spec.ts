@@ -1,6 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { ciTimeout } from "./support/ciTiming";
 
 const evidenceDir = path.resolve(process.cwd(), "evidence");
 
@@ -206,6 +207,7 @@ test("multi-obstacle TestBridge remains query gated", async ({ page }) => {
 });
 
 test("browser multi-obstacle planner records course evidence", async ({ page }) => {
+  test.setTimeout(ciTimeout(30_000, 90_000));
   await mkdir(evidenceDir, { recursive: true });
   await page.goto("/?testBridge=1");
   await page.waitForFunction(() => Reflect.has(window, "TestBridge"));

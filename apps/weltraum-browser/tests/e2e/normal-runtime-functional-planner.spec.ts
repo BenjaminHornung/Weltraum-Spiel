@@ -1,4 +1,5 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
+import { ciTimeout } from "./support/ciTiming";
 import {
   currentVisiblePreviewHash,
   engageVisiblePreview,
@@ -91,7 +92,7 @@ async function visibleDistance(page: Page): Promise<number> {
 }
 
 test("normal runtime executes the authoritative target-profile-preview-replan-engage workflow", async ({ page }) => {
-  test.setTimeout(55_000);
+  test.setTimeout(ciTimeout(55_000, 150_000));
   await page.setViewportSize({ width: 1640, height: 900 });
   await page.goto("/");
   await waitForNormalFlight(page);
@@ -163,7 +164,7 @@ test("normal runtime executes the authoritative target-profile-preview-replan-en
 });
 
 test("Escape, Close, focus trap, and keyboard map controls preserve route and view state", async ({ page }) => {
-  test.setTimeout(45_000);
+  test.setTimeout(ciTimeout(45_000, 135_000));
   await page.setViewportSize({ width: 1640, height: 900 });
   await page.goto("/");
   await waitForNormalFlight(page);

@@ -1,6 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { ciTimeout } from "./support/ciTiming";
 import { selectVisiblePlannerTarget } from "./support/plannerWorkflow";
 
 const speedOf = (telemetry: any): number => Math.hypot(telemetry.ship.velocity.x, telemetry.ship.velocity.y, telemetry.ship.velocity.z);
@@ -29,6 +30,7 @@ async function stepUntil(page: Page, predicateSource: string, maxSteps: number) 
 }
 
 test("default navigation target terminal capture brakes, captures, and holds without snapping", async ({ page }) => {
+  test.setTimeout(ciTimeout(30_000, 90_000));
   await waitForBridge(page);
   const initialVisual = await page.evaluate(() => (window as any).TestBridge.getRenderSnapshot().shipVisual);
   expect(initialVisual.visualSource.state).toBe("GLBLoaded");

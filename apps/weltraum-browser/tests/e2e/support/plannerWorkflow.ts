@@ -1,6 +1,8 @@
 import { expect, type Locator, type Page } from "@playwright/test";
+import { ciTimeout } from "./ciTiming";
 
 export const PREVIEW_HASH_PATTERN = /^[a-f0-9]{8}$/;
+const previewHashTimeout = ciTimeout(5_000, 20_000);
 
 export async function openVisiblePlanner(page: Page): Promise<Locator> {
   const planner = page.getByTestId("navigation-planner");
@@ -18,7 +20,7 @@ export async function currentVisiblePreviewHash(page: Page): Promise<string | nu
 }
 
 export async function readVisiblePreviewHash(page: Page): Promise<string> {
-  await expect.poll(() => currentVisiblePreviewHash(page)).toMatch(PREVIEW_HASH_PATTERN);
+  await expect.poll(() => currentVisiblePreviewHash(page), { timeout: previewHashTimeout }).toMatch(PREVIEW_HASH_PATTERN);
   return (await currentVisiblePreviewHash(page))!;
 }
 

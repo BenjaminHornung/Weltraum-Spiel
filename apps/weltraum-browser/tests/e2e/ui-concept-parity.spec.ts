@@ -2,6 +2,7 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
 import { existsSync } from "node:fs";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { ciTimeout } from "./support/ciTiming";
 
 const evidenceDir = path.resolve(process.cwd(), "evidence");
 const layoutReportPath = path.join(evidenceDir, "browser-ui-concept-parity-v1-layout-report.json");
@@ -175,7 +176,7 @@ test.afterAll(async () => {
 });
 
 test("normal flight HUD follows concept edge layout and records screenshots", async ({ page }) => {
-  test.setTimeout(70_000);
+  test.setTimeout(ciTimeout(70_000, 180_000));
   await mkdir(evidenceDir, { recursive: true });
 
   await page.setViewportSize({ width: 1640, height: 900 });

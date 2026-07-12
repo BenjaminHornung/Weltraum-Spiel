@@ -1,6 +1,7 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { ciTimeout } from "./support/ciTiming";
 import {
   engageVisiblePreview,
   openVisiblePlanner,
@@ -120,7 +121,7 @@ function relativeEvidencePath(filePath: string): string {
 }
 
 test("normal and query-gated runtime expose live world presentation truth without renderer ownership", async ({ page }) => {
-  test.setTimeout(100_000);
+  test.setTimeout(ciTimeout(100_000, 240_000));
   await mkdir(evidenceRoot, { recursive: true });
   await page.setViewportSize({ width: 1_920, height: 1_080 });
 

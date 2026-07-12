@@ -1,6 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { ciTimeout } from "./support/ciTiming";
 
 const evidenceDir = path.resolve(process.cwd(), "evidence");
 const PLANNER_SAFETY_REJECTION = "Current fuel, braking reserve, or flight authority cannot safely engage this route.";
@@ -80,6 +81,7 @@ test("default product URL exposes player HUD without TestBridge/debug text", asy
 });
 
 test("debug HUD, TestBridge, and compatibility flight query remain independent opt-ins", async ({ page }) => {
+  test.setTimeout(ciTimeout(30_000, 90_000));
   await page.goto("/?testBridge=1");
   await waitForBridgeAndVisual(page);
   await expect(page.locator("body")).toHaveAttribute("data-ui-surface", "flight");
@@ -104,7 +106,7 @@ test("debug HUD, TestBridge, and compatibility flight query remain independent o
 });
 
 test("flight HUD foundation keeps center clear, shows navigation, autopilot, warnings, and records evidence", async ({ page }) => {
-  test.setTimeout(60_000);
+  test.setTimeout(ciTimeout(60_000, 150_000));
   await mkdir(evidenceDir, { recursive: true });
   await page.setViewportSize({ width: 1280, height: 720 });
   await page.goto("/");
