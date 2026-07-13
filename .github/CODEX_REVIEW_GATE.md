@@ -35,7 +35,7 @@ A new push cancels the older run and starts a new check for the new head SHA. Dr
 
 Comments created with the default `GITHUB_TOKEN` are authored by `github-actions[bot]`. Codex cannot associate that bot identity with the GitHub user connected to Codex, so such comments cannot reliably start a review.
 
-Create a dedicated fine-grained personal access token for the same GitHub user that is connected to Codex. Restrict it to this repository and grant only the permissions needed to read pull-request reviews and post pull-request conversation comments. Store it as:
+Create a dedicated fine-grained personal access token for the same GitHub user that is connected to Codex. Restrict it to this repository and grant only `Issues: Read and write`. Pull-request conversation comments use GitHub's issue-comment API; all review reads and commit-status writes continue to use the workflow's default `GITHUB_TOKEN`. Store the token as:
 
 ```text
 Settings -> Secrets and variables -> Actions -> New repository secret
