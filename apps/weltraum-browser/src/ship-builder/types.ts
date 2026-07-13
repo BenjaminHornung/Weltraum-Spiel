@@ -150,6 +150,7 @@ export interface MainThrusterComponent extends ComponentBase<"MainThruster"> {
   readonly propellantBurnKilogramsPerSecond: number;
   readonly throttleResponseSeconds: number;
   readonly gimbalDegrees?: number;
+  readonly propulsionSupply?: PropulsionSupply;
 }
 
 export interface RcsClusterComponent extends ComponentBase<"RcsCluster"> {
@@ -158,7 +159,17 @@ export interface RcsClusterComponent extends ComponentBase<"RcsCluster"> {
   readonly propellantBurnKilogramsPerSecond: number;
   readonly translationAxes: readonly ("x" | "y" | "z")[];
   readonly rotationAxes: readonly ("x" | "y" | "z")[];
+  readonly propulsionSupply?: PropulsionSupply;
 }
+
+export type PropulsionSupply =
+  | {
+      readonly mode: "Fuel";
+      readonly fuelKind: string;
+    }
+  | {
+      readonly mode: "FuelFreeExperimental";
+    };
 
 export interface FuelTankComponent extends ComponentBase<"FuelTank"> {
   readonly capacityKilograms: number;
@@ -365,4 +376,140 @@ export interface ShipPartCatalogSnapshot extends ShipPartCatalogDocument {
   readonly summary: ShipPartCatalogSummary;
   readonly signature: string;
   readonly indexes: ShipPartCatalogIndexes;
+}
+
+export type ShipStatAvailability =
+  | "Available"
+  | "UnavailableMissingMetadata"
+  | "UnavailableNoFuel"
+  | "UnavailableNoThrust"
+  | "UnavailableUnsupported"
+  | "Invalid";
+
+export type ShipStatUnit =
+  | "kg"
+  | "N"
+  | "m/s^2"
+  | "N*m"
+  | "m/s"
+  | "s"
+  | "m^3"
+  | "m"
+  | "W"
+  | "count"
+  | "ratio"
+  | "unitless";
+
+export type ShipStatValue<TValue, TUnit extends ShipStatUnit = ShipStatUnit> =
+  | {
+      readonly availability: "Available";
+      readonly value: TValue;
+      readonly unit: TUnit;
+    }
+  | {
+      readonly availability: Exclude<ShipStatAvailability, "Available">;
+      readonly value: null;
+      readonly unit: TUnit;
+    };
+
+export interface ShipStatPreviewInput {
+  readonly fuelFillFraction?: number;
+  readonly cargoPreviewMassKg?: number;
+  readonly cargoPreviewVolumeM3?: number;
+}
+
+export interface ShipStatPreviewPayload {
+  readonly previewVersion: 1;
+  readonly fuelFillFraction: number;
+  readonly cargoPreviewMassKg: number;
+  readonly cargoPreviewVolumeM3: number;
+}
+
+export interface ShipStatPreview extends ShipStatPreviewPayload {
+  readonly signature: string;
+}
+
+export interface ShipAnalysisPolicyInput {
+  readonly thrustOffsetWarningMeters?: number;
+  readonly weakBrakingRatio?: number;
+  readonly hardOverlapRatio?: number;
+  readonly lowAccelerationMps2?: number | null;
+  readonly minimumRcsSymmetryRatio?: number | null;
+}
+
+export interface ShipAnalysisPolicyPayload {
+  readonly policyVersion: 1;
+  readonly thrustOffsetWarningMeters: number;
+  readonly weakBrakingRatio: number;
+  readonly hardOverlapRatio: number;
+  readonly lowAccelerationMps2: number | null;
+  readonly minimumRcsSymmetryRatio: number | null;
+}
+
+export interface ShipAnalysisPolicy extends ShipAnalysisPolicyPayload {
+  readonly signature: string;
+}
+
+export interface ShipStats {
+  readonly dryMassKg: ShipStatValue<number, "kg">;
+  readonly plannedFuelMassKg: ShipStatValue<number, "kg">;
+  readonly plannedCargoMassKg: ShipStatValue<number, "kg">;
+  readonly plannedCargoVolumeM3: ShipStatValue<number, "m^3">;
+  readonly totalEmptyMassKg: ShipStatValue<number, "kg">;
+  readonly totalLoadedMassKg: ShipStatValue<number, "kg">;
+  readonly mainThrustNewtons: ShipStatValue<number, "N">;
+  readonly accelerationEmptyMps2: ShipStatValue<number, "m/s^2">;
+  readonly accelerationLoadedMps2: ShipStatValue<number, "m/s^2">;
+  readonly rcsTranslationPositiveX: ShipStatValue<number, "N">;
+  readonly rcsTranslationNegativeX: ShipStatValue<number, "N">;
+  readonly rcsTranslationPositiveY: ShipStatValue<number, "N">;
+  readonly rcsTranslationNegativeY: ShipStatValue<number, "N">;
+  readonly rcsTranslationPositiveZ: ShipStatValue<number, "N">;
+  readonly rcsTranslationNegativeZ: ShipStatValue<number, "N">;
+  readonly pitchTorqueNm: ShipStatValue<number, "N*m">;
+  readonly yawTorqueNm: ShipStatValue<number, "N*m">;
+  readonly rollTorqueNm: ShipStatValue<number, "N*m">;
+  readonly deltaVMps: ShipStatValue<number, "m/s">;
+  readonly burnTimeSeconds: ShipStatValue<number, "s">;
+  readonly cargoMassCapacityKg: ShipStatValue<number, "kg">;
+  readonly cargoVolumeCapacityM3: ShipStatValue<number, "m^3">;
+  readonly weaponCount: ShipStatValue<number, "count">;
+  readonly usableWeaponCount: ShipStatValue<number, "count">;
+  readonly fixedWeaponCount: ShipStatValue<number, "count">;
+  readonly turretWeaponCount: ShipStatValue<number, "count">;
+  readonly missingMuzzleCount: ShipStatValue<number, "count">;
+  readonly blockedOrInvalidWeaponCount: ShipStatValue<number, "count">;
+  readonly centerOfMass: ShipStatValue<SerializableVector3, "m">;
+  readonly thrustAxisPoint: ShipStatValue<SerializableVector3, "m">;
+  readonly thrustAxisDirection: ShipStatValue<SerializableVector3, "unitless">;
+  readonly thrustOffsetMeters: ShipStatValue<number, "m">;
+  readonly forwardAccelerationMps2: ShipStatValue<number, "m/s^2">;
+  readonly brakingAccelerationMps2: ShipStatValue<number, "m/s^2">;
+  readonly brakingRatio: ShipStatValue<number, "ratio">;
+  readonly powerGenerated: ShipStatValue<number, "W">;
+  readonly powerRequired: ShipStatValue<number, "W">;
+  readonly powerBalance: ShipStatValue<number, "W">;
+  readonly heatGenerated: ShipStatValue<number, "W">;
+  readonly coolingCapacity: ShipStatValue<number, "W">;
+  readonly heatBalance: ShipStatValue<number, "W">;
+}
+
+export interface ShipStatsEvaluationOptions {
+  readonly preview?: ShipStatPreviewInput | ShipStatPreview;
+  readonly policy?: ShipAnalysisPolicyInput | ShipAnalysisPolicy;
+}
+
+export interface ShipStatsReportPayload {
+  readonly reportVersion: 1;
+  readonly catalogSignature: string;
+  readonly blueprintLayoutHash: string;
+  readonly previewSignature: string;
+  readonly policySignature: string;
+  readonly preview: ShipStatPreview;
+  readonly policy: ShipAnalysisPolicy;
+  readonly stats: ShipStats;
+}
+
+export interface ShipStatsReport extends ShipStatsReportPayload {
+  readonly signature: string;
 }
