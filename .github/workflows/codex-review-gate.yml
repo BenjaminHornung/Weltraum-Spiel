@@ -14,8 +14,8 @@ concurrency:
 
 permissions:
   contents: read
-  issues: write
-  pull-requests: write
+  issues: read
+  pull-requests: read
 
 jobs:
   current-head-reviewed:
@@ -23,7 +23,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      GH_TOKEN: ${{ secrets.CODEX_REVIEW_TOKEN || github.token }}
+      GH_TOKEN: ${{ github.token }}
+      CODEX_REVIEW_TOKEN: ${{ secrets.CODEX_REVIEW_TOKEN }}
       REPOSITORY: ${{ github.repository }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
       HEAD_SHA: ${{ github.event.pull_request.head.sha }}
@@ -113,18 +114,30 @@ jobs:
           request_comment_id="$(find_request_comment_id)"
 
           if [[ -z "${request_comment_id}" ]]; then
+            if [[ -z "${CODEX_REVIEW_TOKEN}" ]]; then
+              {
+                echo "## Codex review token missing"
+                echo
+                echo "No current-head Codex review exists and the repository secret \`CODEX_REVIEW_TOKEN\` is not configured."
+                echo
+                echo "Add the narrowly scoped linked-user token described in \`.github/CODEX_REVIEW_GATE.md\`, or comment \`@codex review\` manually and re-run this job."
+              } >> "${GITHUB_STEP_SUMMARY}"
+              echo "::error::CODEX_REVIEW_TOKEN is required for automatic current-head re-review requests."
+              exit 1
+            fi
+
             printf -v request_body \
               '@codex review\n\nPlease review the current pull-request head `%s`. This request is repeated after every new head commit so the merge gate cannot rely on a stale review.\n\n%s\n' \
               "${short_sha}" \
               "${marker}"
 
-            if ! request_response="$(gh api \
+            if ! request_response="$(GH_TOKEN="${CODEX_REVIEW_TOKEN}" gh api \
               --method POST \
               -H "Accept: application/vnd.github+json" \
               "repos/${REPOSITORY}/issues/${PR_NUMBER}/comments" \
               -f body="${request_body}" 2>&1)"; then
               echo "${request_response}"
-              echo "::error::Unable to post the current-head Codex review request."
+              echo "::error::Unable to post the current-head Codex review request with CODEX_REVIEW_TOKEN."
               exit 1
             fi
 
@@ -153,7 +166,7 @@ jobs:
             echo "No Codex result was found for head \`${HEAD_SHA}\`."
             echo
             echo "Comment \`@codex review\` on pull request #${PR_NUMBER}, then re-run this check."
-            echo "For fully automatic re-requests after every push, configure the repository secret \`CODEX_REVIEW_TOKEN\` as documented in \`.github/CODEX_REVIEW_GATE.md\`."
+            echo "Verify that \`CODEX_REVIEW_TOKEN\` belongs to the GitHub user connected to Codex."
           } >> "${GITHUB_STEP_SUMMARY}"
 
           echo "::error::Codex did not review current pull-request head ${HEAD_SHA}."
