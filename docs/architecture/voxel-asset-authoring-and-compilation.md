@@ -22,10 +22,11 @@ Structural Semantics, Collision/Nav-Projektionen oder Masseneigenschaften.
   und [Browser Mainline Architecture](../browser-mainline/browser-architecture.md)
   erlauben GLB-basierte Renderassets, halten aber Gameplay Truth außerhalb von
   Three.js und Scene Objects.
-- **[Code Evidence]** Der Observability-Audit hat im aktuellen Browserlauf ein
-  geladenes GLB-Schiffsasset beobachtet. Das belegt einen Render-Assetpfad,
-  keinen Voxel-Compiler, keine Structural Semantics und keine deterministische
-  Assetnormalisierung.
+- **[Observed Demo Evidence]** Der Observability-Audit hat im aktuellen
+  Browserlauf einen sichtbaren Viewport und einen HTTP-200-Request für das
+  GLB-Schiffsasset beobachtet. Das beweist weder erfolgreiches Parsen oder
+  Binden des GLB noch einen Voxel-Compiler, Structural Semantics oder
+  deterministische Assetnormalisierung.
 - [Surface Local Frame Architecture](surface-local-frame-architecture.md)
   besitzt die Platzierungs- und Site-Frame-Regeln. Der Compiler erzeugt lokale
   Assetframes; die Weltinstanz platziert sie später in einem expliziten
