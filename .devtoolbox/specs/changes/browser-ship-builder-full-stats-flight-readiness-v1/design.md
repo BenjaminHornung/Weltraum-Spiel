@@ -18,8 +18,9 @@ legacy structure/mass report payloads remain unchanged.
 
 No UI, placement, runtime, test-flight execution, active-ship handoff, resources,
 economy, combat, navigation, renderer, settings, celestial, test-harness, Unity,
-package, or lockfile work. No mesh, GLB, Three.js bounds, random values, final
-balance constants, or player-facing copy.
+dependency, or lockfile work. `package.json` may change only by appending the named
+Ship Builder E2E to the existing `test:e2e:core` group. No mesh, GLB, Three.js
+bounds, random values, final balance constants, or player-facing copy.
 
 ## Architekturentscheidung
 
@@ -120,7 +121,7 @@ Hard overlap uses part gameplay AABBs only. Touching and exactly 75% do not bloc
 2. Implement full stat aggregation and canonical signed reports.
 3. Implement ordered handling diagnostics, fix codes, overlap, and three-level readiness.
 4. Add focused unit suites for all mandatory scenarios.
-5. Add the approved empty data-URL favicon declaration to `apps/weltraum-browser/index.html`,
+5. Verify the user-approved `/favicon.png` declaration in `apps/weltraum-browser/index.html`,
    then add normal-route Vite browser verification, deterministic evidence, and
    browser-mainline documentation.
 6. Run full regression, scope audit, review, DevToolbox preflight, commit, and push.
@@ -141,15 +142,15 @@ or absolute machine paths. No screenshot is required.
   `CI=true` Playwright configuration, retain neither legacy rewrites nor failure
   artifacts, and prove the final unrelated-evidence manifest is byte-identical.
 - Without an explicit favicon declaration Chrome requests `/favicon.ico`; the approved
-  `data:,` declaration removes that real normal-route 404 without test interception.
+  `/favicon.png` asset removes that real normal-route 404 without test interception.
 - Power/heat and weapon blockage are intentionally incomplete metadata domains.
 
 ## Rollback / Safe Stop
 
 Stop without resetting if starter signatures change, a forbidden path/import appears,
 required metadata would need renderer/runtime inference, an unrelated evidence file
-changes, or a DevToolbox completion preflight lacks fresh evidence. Never overwrite an
-existing remote branch or merge to `main`.
+changes, or a DevToolbox completion preflight lacks fresh evidence. Never force-push
+or merge to `main` without explicit user authorization and current green CI.
 
 ## Fortschrittslog
 
@@ -160,4 +161,5 @@ requires its listed fresh verification and DevToolbox preflight.
 
 All focused/full commands pass, both new evidence files are deterministic, the strict
 allowlist and legacy signature guards pass, review finds no unresolved correctness
-issue, DevToolbox accepts completion, and the single feature commit is pushed without merge.
+issue, DevToolbox accepts completion, the feature branch is synchronized with current
+`main`, and every required PR check passes before any explicitly authorized merge.

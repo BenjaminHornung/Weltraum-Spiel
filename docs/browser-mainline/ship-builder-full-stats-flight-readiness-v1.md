@@ -56,7 +56,7 @@ Individual signed RCS-axis gaps remain warnings at both higher levels. `ActiveSh
 
 ## Browser protocol and deterministic evidence
 
-`apps/weltraum-browser/tests/e2e/ship-builder-full-stats-flight-readiness.spec.ts` attaches console-error, failed-request, and HTTP-error listeners before loading normal `/`. The document declares `<link rel="icon" href="data:,">`, preventing the browser's implicit `/favicon.ico` request without filtering or intercepting network events; the E2E test asserts this real document declaration. It proves `TestBridge` absent through both own-property and prototype-chain checks, confirms the body has no TestBridge reference, and dynamically imports `/src/ship-builder/index.ts` through Vite.
+`apps/weltraum-browser/tests/e2e/ship-builder-full-stats-flight-readiness.spec.ts` attaches console-error, failed-request, and HTTP-error listeners before loading normal `/`. The document declares `<link rel="icon" type="image/png" href="/favicon.png">`, preventing the browser's implicit `/favicon.ico` request without filtering or intercepting network events; the E2E test asserts this real document declaration. It proves `TestBridge` absent through both own-property and prototype-chain checks, confirms the body has no TestBridge reference, and dynamically imports `/src/ship-builder/index.ts` through Vite.
 
 Scout, Cargo, Weapon, and a synthetic complete fuel-propulsion fixture are each evaluated twice through the public APIs. The test pins stat, handling, and readiness signatures and selected capability values; verifies finite JSON, recursive freezing, repeat equality, and unchanged mutable inputs; and requires zero browser error events.
 

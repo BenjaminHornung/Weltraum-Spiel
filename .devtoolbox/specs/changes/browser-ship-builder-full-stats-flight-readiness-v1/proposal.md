@@ -30,8 +30,8 @@ Add a deterministic, deeply immutable, canonically signed TypeScript core that:
 - Gameplay-AABB hard-overlap evaluation using a signed policy threshold.
 - Stable availability, diagnostic, error/warning, suggested-fix, and signature contracts.
 - Unit, browser, deterministic JSON/Markdown evidence, and browser-mainline documentation.
-- One normal-route infrastructure fix in `apps/weltraum-browser/index.html`: declare an
-  empty data-URL favicon so Chrome does not generate an unrelated `/favicon.ico` 404.
+- One normal-route browser-health contract: retain the user-approved `/favicon.png`
+  declaration so Chrome does not generate an unrelated `/favicon.ico` 404.
 
 ## Non-Goals
 
@@ -49,5 +49,5 @@ with synthetic test catalogs rather than changing starter data or existing E2E p
 ## Success
 
 All 30 required scenarios, focused browser evidence, full unit/build/E2E regression,
-DevToolbox verification, and the strict path allowlist pass from base
-`7e1d0237cdf272bfb759f26e2be8cdb3a760e15c`.
+DevToolbox verification, and the strict final-PR path allowlist pass against the
+current `origin/main` after that target branch has been integrated.

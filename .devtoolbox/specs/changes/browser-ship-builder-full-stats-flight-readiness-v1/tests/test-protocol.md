@@ -2,12 +2,15 @@
 
 ## Baseline and scope
 
-- Base SHA: `7e1d0237cdf272bfb759f26e2be8cdb3a760e15c`.
+- Original implementation base SHA: `7e1d0237cdf272bfb759f26e2be8cdb3a760e15c`.
+- Final PR audit target: current `origin/main`, integrated into the feature branch
+  before the final verification run.
 - Branch: `feature/browser-ship-builder-full-stats-flight-readiness-v1`.
 - `STARTER_CATALOG_SIGNATURE` remains `5aaa27fd`.
-- Only the request allowlist may differ from the base SHA.
-- User-approved scope extension: `apps/weltraum-browser/index.html` may differ only by
-  an empty data-URL favicon declaration that prevents Chrome's automatic 404 request.
+- Only the request allowlist and the exact `package.json` `test:e2e:core` registration
+  may differ from the current target branch.
+- Mainline integration dependency: `apps/weltraum-browser/index.html` retains the
+  user-approved `/favicon.png` declaration that prevents Chrome's automatic 404 request.
 - Unity and .NET are not applicable to this browser-only checkout.
 
 ## Required commands
@@ -56,8 +59,8 @@ asymmetry, diagnostic/fix ordering, and legacy starter signatures.
 ## Browser protocol
 
 - Attach console-error, request-failed, and HTTP `>=400` listeners before `goto("/")`.
-- Assert the real document declares `link[rel="icon"][href="data:,"]`; do not filter or
-  intercept favicon failures in the test.
+- Assert the real document declares `link[rel="icon"][type="image/png"][href="/favicon.png"]`;
+  do not filter or intercept favicon failures in the test.
 - Load normal `/` without query parameters and assert both own-property and `in window`
   checks show no `TestBridge`.
 - Dynamically import `/src/ship-builder/index.ts` through Vite.
@@ -73,8 +76,11 @@ duration, absolute path, random value, screenshot, NaN, or Infinity.
 
 ## Scope and dependency audit
 
-- Compare `git diff --name-only 7e1d0237cdf272bfb759f26e2be8cdb3a760e15c` to the exact allowlist.
-- Assert `starterCatalog.ts`, package/lockfiles, `Assets/**`, and every forbidden subsystem are unchanged.
+- Fetch and integrate current `origin/main`, then compare
+  `git diff --name-only origin/main...HEAD` to the exact final PR allowlist.
+- Assert `starterCatalog.ts`, package lockfiles, `Assets/**`, and every forbidden
+  subsystem are unchanged; `package.json` may differ only by the single Ship Builder
+  spec token appended to `test:e2e:core`.
 - Search new Ship Builder modules for Three.js, render, combat, runtime, flight,
   navigation, resources, celestial, settings, UI, and test-harness imports.
 - Run full E2E through the repository's stable CI Playwright configuration (one worker

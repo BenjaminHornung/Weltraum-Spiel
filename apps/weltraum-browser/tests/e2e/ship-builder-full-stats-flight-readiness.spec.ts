@@ -43,7 +43,7 @@ interface BrowserScenarioEvidence {
 interface BrowserShipBuilderFullStatsSummary {
   readonly route: "/";
   readonly sourceModule: "/src/ship-builder/index.ts";
-  readonly faviconHref: "data:,";
+  readonly faviconHref: "/favicon.png";
   readonly testBridge: {
     readonly ownPropertyAbsent: boolean;
     readonly inheritedPropertyAbsent: boolean;
@@ -132,7 +132,8 @@ test("normal browser route evaluates full ship stats and flight readiness with d
   await page.goto("/");
   const favicon = page.locator('head link[rel="icon"]');
   await expect(favicon).toHaveCount(1);
-  await expect(favicon).toHaveAttribute("href", "data:,");
+  await expect(favicon).toHaveAttribute("type", "image/png");
+  await expect(favicon).toHaveAttribute("href", "/favicon.png");
 
   const summary = await page.evaluate<BrowserShipBuilderFullStatsSummary>(async () => {
     const sourceModule = String("/src/ship-builder/index.ts") as "/src/ship-builder/index.ts";
@@ -243,7 +244,7 @@ test("normal browser route evaluates full ship stats and flight readiness with d
     return {
       route: "/",
       sourceModule,
-      faviconHref: document.querySelector<HTMLLinkElement>('head link[rel="icon"]')?.getAttribute("href") as "data:,",
+      faviconHref: document.querySelector<HTMLLinkElement>('head link[rel="icon"]')?.getAttribute("href") as "/favicon.png",
       testBridge: { ownPropertyAbsent, inheritedPropertyAbsent, bodyReferenceAbsent },
       starterCatalogSignature: starterCatalog.signature,
       previewSignature: preview.signature,
@@ -272,7 +273,7 @@ test("normal browser route evaluates full ship stats and flight readiness with d
   expect(summary).toMatchObject({
     route: "/",
     sourceModule: "/src/ship-builder/index.ts",
-    faviconHref: "data:,",
+    faviconHref: "/favicon.png",
     testBridge: { ownPropertyAbsent: true, inheritedPropertyAbsent: true, bodyReferenceAbsent: true },
     starterCatalogSignature: "5aaa27fd",
     previewSignature: "b22bc0ea",

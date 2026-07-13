@@ -152,5 +152,6 @@ caller inputs SHALL remain byte-equivalent and mutable after evaluation.
 
 Normal `/` SHALL expose no `window.TestBridge`; the real Vite browser SHALL import
 the ship-builder barrel, evaluate all fixtures, and record zero console/network errors.
-The normal route SHALL declare an empty data-URL favicon so Chrome does not request
-an absent `/favicon.ico`; the E2E SHALL not filter or intercept this failure.
+The normal route SHALL declare the user-approved PNG favicon at `/favicon.png` so
+Chrome does not request an absent `/favicon.ico`; the E2E SHALL not filter or
+intercept favicon failures.
