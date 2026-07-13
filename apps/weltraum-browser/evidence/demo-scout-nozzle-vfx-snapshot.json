@@ -1,0 +1,3602 @@
+{
+  "initialNozzleBindings": [
+    {
+      "kind": "DirectionalNozzle",
+      "id": "main-engine-aft-nozzle-main",
+      "role": "MainEngine",
+      "blockId": "main-engine-aft",
+      "source": "GLBNode",
+      "sourceObjectName": "DEMO_Scout_Mk1_PART_Main_Engine_Bell_Mk1_THRUST_NOZZLE_MAIN",
+      "localPosition": {
+        "x": -6.208,
+        "y": 0,
+        "z": 0
+      },
+      "localForceDirection": {
+        "x": 1,
+        "y": 0,
+        "z": 0
+      },
+      "localExhaustDirection": {
+        "x": -1,
+        "y": 0,
+        "z": 0
+      },
+      "diagnostic": {
+        "status": "Resolved",
+        "expectedNodeNames": [
+          "DEMO_Scout_Mk1_PART_Main_Engine_Bell_Mk1_THRUST_NOZZLE_MAIN"
+        ],
+        "matchedNodeNames": [
+          "DEMO_Scout_Mk1_PART_Main_Engine_Bell_Mk1_THRUST_NOZZLE_MAIN"
+        ],
+        "matchedNodeCount": 1,
+        "reason": "Resolved 'main-engine-aft-nozzle-main' to one unique GLB node."
+      }
+    },
+    {
+      "kind": "DirectionalNozzle",
+      "id": "rcs-front-left-nozzle-back",
+      "role": "Rcs",
+      "blockId": "rcs-front-left",
+      "source": "GLBNode",
+      "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Back",
+      "localPosition": {
+        "x": 0.896,
+        "y": 0.576,
+        "z": -3.152
+      },
+      "localForceDirection": {
+        "x": 1,
+        "y": 0,
+        "z": 0
+      },
+      "localExhaustDirection": {
+        "x": -1,
+        "y": 0,
+        "z": 0
+      },
+      "diagnostic": {
+        "status": "Resolved",
+        "expectedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Back"
+        ],
+        "matchedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Back"
+        ],
+        "matchedNodeCount": 1,
+        "reason": "Resolved 'rcs-front-left-nozzle-back' to one unique GLB node."
+      }
+    },
+    {
+      "kind": "DirectionalNozzle",
+      "id": "rcs-front-left-nozzle-down",
+      "role": "Rcs",
+      "blockId": "rcs-front-left",
+      "source": "GLBNode",
+      "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Down",
+      "localPosition": {
+        "x": 1.856,
+        "y": -0.576,
+        "z": -3.152
+      },
+      "localForceDirection": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "localExhaustDirection": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "diagnostic": {
+        "status": "Resolved",
+        "expectedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Down"
+        ],
+        "matchedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Down"
+        ],
+        "matchedNodeCount": 1,
+        "reason": "Resolved 'rcs-front-left-nozzle-down' to one unique GLB node."
+      }
+    },
+    {
+      "kind": "DirectionalNozzle",
+      "id": "rcs-front-left-nozzle-forward",
+      "role": "Rcs",
+      "blockId": "rcs-front-left",
+      "source": "GLBNode",
+      "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Forward",
+      "localPosition": {
+        "x": 2.816,
+        "y": 0.576,
+        "z": -3.152
+      },
+      "localForceDirection": {
+        "x": -1,
+        "y": 0,
+        "z": 0
+      },
+      "localExhaustDirection": {
+        "x": 1,
+        "y": 0,
+        "z": 0
+      },
+      "diagnostic": {
+        "status": "Resolved",
+        "expectedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Forward"
+        ],
+        "matchedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Forward"
+        ],
+        "matchedNodeCount": 1,
+        "reason": "Resolved 'rcs-front-left-nozzle-forward' to one unique GLB node."
+      }
+    },
+    {
+      "kind": "DirectionalNozzle",
+      "id": "rcs-front-left-nozzle-left",
+      "role": "Rcs",
+      "blockId": "rcs-front-left",
+      "source": "GLBNode",
+      "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Left",
+      "localPosition": {
+        "x": 1.856,
+        "y": 0.576,
+        "z": -4.272
+      },
+      "localForceDirection": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "localExhaustDirection": {
+        "x": 0,
+        "y": 0,
+        "z": -1
+      },
+      "diagnostic": {
+        "status": "Resolved",
+        "expectedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Left"
+        ],
+        "matchedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Left"
+        ],
+        "matchedNodeCount": 1,
+        "reason": "Resolved 'rcs-front-left-nozzle-left' to one unique GLB node."
+      }
+    },
+    {
+      "kind": "DirectionalNozzle",
+      "id": "rcs-front-left-nozzle-up",
+      "role": "Rcs",
+      "blockId": "rcs-front-left",
+      "source": "GLBNode",
+      "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Up",
+      "localPosition": {
+        "x": 1.856,
+        "y": 1.728,
+        "z": -3.152
+      },
+      "localForceDirection": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "localExhaustDirection": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "diagnostic": {
+        "status": "Resolved",
+        "expectedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Up"
+        ],
+        "matchedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Up"
+        ],
+        "matchedNodeCount": 1,
+        "reason": "Resolved 'rcs-front-left-nozzle-up' to one unique GLB node."
+      }
+    },
+    {
+      "kind": "DirectionalNozzle",
+      "id": "rcs-front-right-nozzle-back",
+      "role": "Rcs",
+      "blockId": "rcs-front-right",
+      "source": "GLBNode",
+      "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Back",
+      "localPosition": {
+        "x": 0.896,
+        "y": 0.576,
+        "z": 3.152
+      },
+      "localForceDirection": {
+        "x": 1,
+        "y": 0,
+        "z": 0
+      },
+      "localExhaustDirection": {
+        "x": -1,
+        "y": 0,
+        "z": 0
+      },
+      "diagnostic": {
+        "status": "Resolved",
+        "expectedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Back"
+        ],
+        "matchedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Back"
+        ],
+        "matchedNodeCount": 1,
+        "reason": "Resolved 'rcs-front-right-nozzle-back' to one unique GLB node."
+      }
+    },
+    {
+      "kind": "DirectionalNozzle",
+      "id": "rcs-front-right-nozzle-down",
+      "role": "Rcs",
+      "blockId": "rcs-front-right",
+      "source": "GLBNode",
+      "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Down",
+      "localPosition": {
+        "x": 1.856,
+        "y": -0.576,
+        "z": 3.152
+      },
+      "localForceDirection": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "localExhaustDirection": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "diagnostic": {
+        "status": "Resolved",
+        "expectedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Down"
+        ],
+        "matchedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Down"
+        ],
+        "matchedNodeCount": 1,
+        "reason": "Resolved 'rcs-front-right-nozzle-down' to one unique GLB node."
+      }
+    },
+    {
+      "kind": "DirectionalNozzle",
+      "id": "rcs-front-right-nozzle-forward",
+      "role": "Rcs",
+      "blockId": "rcs-front-right",
+      "source": "GLBNode",
+      "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Forward",
+      "localPosition": {
+        "x": 2.816,
+        "y": 0.576,
+        "z": 3.152
+      },
+      "localForceDirection": {
+        "x": -1,
+        "y": 0,
+        "z": 0
+      },
+      "localExhaustDirection": {
+        "x": 1,
+        "y": 0,
+        "z": 0
+      },
+      "diagnostic": {
+        "status": "Resolved",
+        "expectedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Forward"
+        ],
+        "matchedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Forward"
+        ],
+        "matchedNodeCount": 1,
+        "reason": "Resolved 'rcs-front-right-nozzle-forward' to one unique GLB node."
+      }
+    },
+    {
+      "kind": "DirectionalNozzle",
+      "id": "rcs-front-right-nozzle-right",
+      "role": "Rcs",
+      "blockId": "rcs-front-right",
+      "source": "GLBNode",
+      "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Right",
+      "localPosition": {
+        "x": 1.856,
+        "y": 0.576,
+        "z": 4.272
+      },
+      "localForceDirection": {
+        "x": 0,
+        "y": 0,
+        "z": -1
+      },
+      "localExhaustDirection": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "diagnostic": {
+        "status": "Resolved",
+        "expectedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Right"
+        ],
+        "matchedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Right"
+        ],
+        "matchedNodeCount": 1,
+        "reason": "Resolved 'rcs-front-right-nozzle-right' to one unique GLB node."
+      }
+    },
+    {
+      "kind": "DirectionalNozzle",
+      "id": "rcs-front-right-nozzle-up",
+      "role": "Rcs",
+      "blockId": "rcs-front-right",
+      "source": "GLBNode",
+      "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Up",
+      "localPosition": {
+        "x": 1.856,
+        "y": 1.728,
+        "z": 3.152
+      },
+      "localForceDirection": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "localExhaustDirection": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "diagnostic": {
+        "status": "Resolved",
+        "expectedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Up"
+        ],
+        "matchedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Up"
+        ],
+        "matchedNodeCount": 1,
+        "reason": "Resolved 'rcs-front-right-nozzle-up' to one unique GLB node."
+      }
+    },
+    {
+      "kind": "DirectionalNozzle",
+      "id": "rcs-aft-left-nozzle-back",
+      "role": "Rcs",
+      "blockId": "rcs-aft-left",
+      "source": "GLBNode",
+      "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Back",
+      "localPosition": {
+        "x": -2.816,
+        "y": -0.576,
+        "z": -3.152
+      },
+      "localForceDirection": {
+        "x": 1,
+        "y": 0,
+        "z": 0
+      },
+      "localExhaustDirection": {
+        "x": -1,
+        "y": 0,
+        "z": 0
+      },
+      "diagnostic": {
+        "status": "Resolved",
+        "expectedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Back"
+        ],
+        "matchedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Back"
+        ],
+        "matchedNodeCount": 1,
+        "reason": "Resolved 'rcs-aft-left-nozzle-back' to one unique GLB node."
+      }
+    },
+    {
+      "kind": "DirectionalNozzle",
+      "id": "rcs-aft-left-nozzle-down",
+      "role": "Rcs",
+      "blockId": "rcs-aft-left",
+      "source": "GLBNode",
+      "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Down",
+      "localPosition": {
+        "x": -1.856,
+        "y": -1.728,
+        "z": -3.152
+      },
+      "localForceDirection": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "localExhaustDirection": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "diagnostic": {
+        "status": "Resolved",
+        "expectedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Down"
+        ],
+        "matchedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Down"
+        ],
+        "matchedNodeCount": 1,
+        "reason": "Resolved 'rcs-aft-left-nozzle-down' to one unique GLB node."
+      }
+    },
+    {
+      "kind": "DirectionalNozzle",
+      "id": "rcs-aft-left-nozzle-forward",
+      "role": "Rcs",
+      "blockId": "rcs-aft-left",
+      "source": "GLBNode",
+      "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Forward",
+      "localPosition": {
+        "x": -0.896,
+        "y": -0.576,
+        "z": -3.152
+      },
+      "localForceDirection": {
+        "x": -1,
+        "y": 0,
+        "z": 0
+      },
+      "localExhaustDirection": {
+        "x": 1,
+        "y": 0,
+        "z": 0
+      },
+      "diagnostic": {
+        "status": "Resolved",
+        "expectedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Forward"
+        ],
+        "matchedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Forward"
+        ],
+        "matchedNodeCount": 1,
+        "reason": "Resolved 'rcs-aft-left-nozzle-forward' to one unique GLB node."
+      }
+    },
+    {
+      "kind": "DirectionalNozzle",
+      "id": "rcs-aft-left-nozzle-left",
+      "role": "Rcs",
+      "blockId": "rcs-aft-left",
+      "source": "GLBNode",
+      "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Left",
+      "localPosition": {
+        "x": -1.856,
+        "y": -0.576,
+        "z": -4.272
+      },
+      "localForceDirection": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "localExhaustDirection": {
+        "x": 0,
+        "y": 0,
+        "z": -1
+      },
+      "diagnostic": {
+        "status": "Resolved",
+        "expectedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Left"
+        ],
+        "matchedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Left"
+        ],
+        "matchedNodeCount": 1,
+        "reason": "Resolved 'rcs-aft-left-nozzle-left' to one unique GLB node."
+      }
+    },
+    {
+      "kind": "DirectionalNozzle",
+      "id": "rcs-aft-left-nozzle-up",
+      "role": "Rcs",
+      "blockId": "rcs-aft-left",
+      "source": "GLBNode",
+      "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Up",
+      "localPosition": {
+        "x": -1.856,
+        "y": 0.576,
+        "z": -3.152
+      },
+      "localForceDirection": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "localExhaustDirection": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "diagnostic": {
+        "status": "Resolved",
+        "expectedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Up"
+        ],
+        "matchedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Up"
+        ],
+        "matchedNodeCount": 1,
+        "reason": "Resolved 'rcs-aft-left-nozzle-up' to one unique GLB node."
+      }
+    },
+    {
+      "kind": "DirectionalNozzle",
+      "id": "rcs-aft-right-nozzle-back",
+      "role": "Rcs",
+      "blockId": "rcs-aft-right",
+      "source": "GLBNode",
+      "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Back",
+      "localPosition": {
+        "x": -2.816,
+        "y": -0.576,
+        "z": 3.152
+      },
+      "localForceDirection": {
+        "x": 1,
+        "y": 0,
+        "z": 0
+      },
+      "localExhaustDirection": {
+        "x": -1,
+        "y": 0,
+        "z": 0
+      },
+      "diagnostic": {
+        "status": "Resolved",
+        "expectedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Back"
+        ],
+        "matchedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Back"
+        ],
+        "matchedNodeCount": 1,
+        "reason": "Resolved 'rcs-aft-right-nozzle-back' to one unique GLB node."
+      }
+    },
+    {
+      "kind": "DirectionalNozzle",
+      "id": "rcs-aft-right-nozzle-down",
+      "role": "Rcs",
+      "blockId": "rcs-aft-right",
+      "source": "GLBNode",
+      "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Down",
+      "localPosition": {
+        "x": -1.856,
+        "y": -1.728,
+        "z": 3.152
+      },
+      "localForceDirection": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "localExhaustDirection": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "diagnostic": {
+        "status": "Resolved",
+        "expectedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Down"
+        ],
+        "matchedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Down"
+        ],
+        "matchedNodeCount": 1,
+        "reason": "Resolved 'rcs-aft-right-nozzle-down' to one unique GLB node."
+      }
+    },
+    {
+      "kind": "DirectionalNozzle",
+      "id": "rcs-aft-right-nozzle-forward",
+      "role": "Rcs",
+      "blockId": "rcs-aft-right",
+      "source": "GLBNode",
+      "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Forward",
+      "localPosition": {
+        "x": -0.896,
+        "y": -0.576,
+        "z": 3.152
+      },
+      "localForceDirection": {
+        "x": -1,
+        "y": 0,
+        "z": 0
+      },
+      "localExhaustDirection": {
+        "x": 1,
+        "y": 0,
+        "z": 0
+      },
+      "diagnostic": {
+        "status": "Resolved",
+        "expectedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Forward"
+        ],
+        "matchedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Forward"
+        ],
+        "matchedNodeCount": 1,
+        "reason": "Resolved 'rcs-aft-right-nozzle-forward' to one unique GLB node."
+      }
+    },
+    {
+      "kind": "DirectionalNozzle",
+      "id": "rcs-aft-right-nozzle-right",
+      "role": "Rcs",
+      "blockId": "rcs-aft-right",
+      "source": "GLBNode",
+      "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Right",
+      "localPosition": {
+        "x": -1.856,
+        "y": -0.576,
+        "z": 4.272
+      },
+      "localForceDirection": {
+        "x": 0,
+        "y": 0,
+        "z": -1
+      },
+      "localExhaustDirection": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      },
+      "diagnostic": {
+        "status": "Resolved",
+        "expectedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Right"
+        ],
+        "matchedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Right"
+        ],
+        "matchedNodeCount": 1,
+        "reason": "Resolved 'rcs-aft-right-nozzle-right' to one unique GLB node."
+      }
+    },
+    {
+      "kind": "DirectionalNozzle",
+      "id": "rcs-aft-right-nozzle-up",
+      "role": "Rcs",
+      "blockId": "rcs-aft-right",
+      "source": "GLBNode",
+      "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Up",
+      "localPosition": {
+        "x": -1.856,
+        "y": 0.576,
+        "z": 3.152
+      },
+      "localForceDirection": {
+        "x": 0,
+        "y": -1,
+        "z": 0
+      },
+      "localExhaustDirection": {
+        "x": 0,
+        "y": 1,
+        "z": 0
+      },
+      "diagnostic": {
+        "status": "Resolved",
+        "expectedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Up"
+        ],
+        "matchedNodeNames": [
+          "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Up"
+        ],
+        "matchedNodeCount": 1,
+        "reason": "Resolved 'rcs-aft-right-nozzle-up' to one unique GLB node."
+      }
+    }
+  ],
+  "mainTelemetry": {
+    "mainThrustActive": true,
+    "rcsTranslationActive": false,
+    "rcsRotationActive": false,
+    "sasCorrectionActive": true,
+    "controlModeEffect": {
+      "controlMode": "Cruise",
+      "mainThrustAllowed": true,
+      "rcsTranslationAllowed": false,
+      "rcsRotationAllowed": true,
+      "sasAllowed": true,
+      "modeEffectLabel": "main thrust enabled",
+      "blockedReasonCodes": [
+        "RcsTranslationModeBlocked"
+      ],
+      "notes": [
+        "main thrust ready",
+        "RCS available"
+      ],
+      "rotationResponseScale": 1
+    },
+    "requestedBurnDirection": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "actualMainThrustDirection": {
+      "x": 0.9935013307193846,
+      "y": 0.11382049841224462,
+      "z": 0
+    },
+    "mainThrustAlignment": 1,
+    "mainThrustAlignmentErrorRadians": 0,
+    "mainThrustAlignmentToleranceRadians": 0.12,
+    "requestedMainAccelerationMps2": 5.537829094087441,
+    "appliedMainAccelerationMps2": 5.537829094087441,
+    "combinedAccelerationLimitMps2": 9.091673251280461,
+    "maximumJerkMps3": 0,
+    "lastAppliedMainAcceleration": {
+      "x": 5.5018,
+      "y": 0.6303,
+      "z": 0
+    },
+    "lastAppliedRcsTranslationAcceleration": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "lastAppliedAcceleration": {
+      "x": 5.5018,
+      "y": 0.6303,
+      "z": 0
+    },
+    "lastAppliedAngularAcceleration": {
+      "x": 0,
+      "y": 0,
+      "z": -0.7153
+    }
+  },
+  "mainVfx": {
+    "mainThrustVisible": true,
+    "mainThrustScale": 2.015,
+    "mainEngineBinding": {
+      "id": "main-engine-aft",
+      "role": "mainEngine",
+      "source": "GLBNode",
+      "sourceObjectName": "DEMO_Scout_Mk1_PART_Main_Engine_Bell_Mk1_THRUST_NOZZLE_MAIN",
+      "localPosition": {
+        "x": -6.208,
+        "y": 0,
+        "z": 0
+      }
+    },
+    "mainNozzleBinding": {
+      "kind": "DirectionalNozzle",
+      "id": "main-engine-aft-nozzle-main",
+      "role": "MainEngine",
+      "blockId": "main-engine-aft",
+      "source": "GLBNode",
+      "sourceObjectName": "DEMO_Scout_Mk1_PART_Main_Engine_Bell_Mk1_THRUST_NOZZLE_MAIN",
+      "localPosition": {
+        "x": -6.208,
+        "y": 0,
+        "z": 0
+      },
+      "localForceDirection": {
+        "x": 1,
+        "y": 0,
+        "z": 0
+      },
+      "localExhaustDirection": {
+        "x": -1,
+        "y": 0,
+        "z": 0
+      },
+      "diagnostic": {
+        "status": "Resolved",
+        "expectedNodeNames": [
+          "DEMO_Scout_Mk1_PART_Main_Engine_Bell_Mk1_THRUST_NOZZLE_MAIN"
+        ],
+        "matchedNodeNames": [
+          "DEMO_Scout_Mk1_PART_Main_Engine_Bell_Mk1_THRUST_NOZZLE_MAIN"
+        ],
+        "matchedNodeCount": 1,
+        "reason": "Resolved 'main-engine-aft-nozzle-main' to one unique GLB node."
+      }
+    },
+    "rcsTranslationVisible": false,
+    "rcsRotationVisible": false,
+    "sasCorrectionVisible": true,
+    "visibleRcsPuffCount": 8,
+    "rcsBindings": [
+      {
+        "id": "rcs-front-left",
+        "role": "rcs",
+        "source": "GLBNode",
+        "sourceObjectName": "DEMO_Scout_Mk1_RCS_Hardpoint_Left_Front",
+        "localPosition": {
+          "x": 1.856,
+          "y": 0.576,
+          "z": -2.352
+        }
+      },
+      {
+        "id": "rcs-front-right",
+        "role": "rcs",
+        "source": "GLBNode",
+        "sourceObjectName": "DEMO_Scout_Mk1_RCS_Hardpoint_Right_Front",
+        "localPosition": {
+          "x": 1.856,
+          "y": 0.576,
+          "z": 2.352
+        }
+      },
+      {
+        "id": "rcs-aft-left",
+        "role": "rcs",
+        "source": "GLBNode",
+        "sourceObjectName": "DEMO_Scout_Mk1_RCS_Hardpoint_Left_Rear",
+        "localPosition": {
+          "x": -1.856,
+          "y": -0.576,
+          "z": -2.352
+        }
+      },
+      {
+        "id": "rcs-aft-right",
+        "role": "rcs",
+        "source": "GLBNode",
+        "sourceObjectName": "DEMO_Scout_Mk1_RCS_Hardpoint_Right_Rear",
+        "localPosition": {
+          "x": -1.856,
+          "y": -0.576,
+          "z": 2.352
+        }
+      }
+    ],
+    "rcsPuffs": [
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-front-left-nozzle-back",
+        "role": "Rcs",
+        "blockId": "rcs-front-left",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Back",
+        "localPosition": {
+          "x": 0.896,
+          "y": 0.576,
+          "z": -3.152
+        },
+        "localForceDirection": {
+          "x": 1,
+          "y": 0,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": -1,
+          "y": 0,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Back"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Back"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-front-left-nozzle-back' to one unique GLB node."
+        },
+        "visible": true,
+        "translationCompatible": false,
+        "torqueCompatible": true,
+        "translationScore": 0,
+        "torqueScore": 0.179764
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-front-left-nozzle-down",
+        "role": "Rcs",
+        "blockId": "rcs-front-left",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Down",
+        "localPosition": {
+          "x": 1.856,
+          "y": -0.576,
+          "z": -3.152
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Down"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Down"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-front-left-nozzle-down' to one unique GLB node."
+        },
+        "visible": false,
+        "translationCompatible": false,
+        "torqueCompatible": false,
+        "translationScore": 0,
+        "torqueScore": -0.507402
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-front-left-nozzle-forward",
+        "role": "Rcs",
+        "blockId": "rcs-front-left",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Forward",
+        "localPosition": {
+          "x": 2.816,
+          "y": 0.576,
+          "z": -3.152
+        },
+        "localForceDirection": {
+          "x": -1,
+          "y": 0,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 1,
+          "y": 0,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Forward"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Forward"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-front-left-nozzle-forward' to one unique GLB node."
+        },
+        "visible": false,
+        "translationCompatible": false,
+        "torqueCompatible": false,
+        "translationScore": 0,
+        "torqueScore": -0.179764
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-front-left-nozzle-left",
+        "role": "Rcs",
+        "blockId": "rcs-front-left",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Left",
+        "localPosition": {
+          "x": 1.856,
+          "y": 0.576,
+          "z": -4.272
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": 0,
+          "z": 1
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Left"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Left"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-front-left-nozzle-left' to one unique GLB node."
+        },
+        "visible": false,
+        "translationCompatible": false,
+        "torqueCompatible": false,
+        "translationScore": 0,
+        "torqueScore": 0
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-front-left-nozzle-up",
+        "role": "Rcs",
+        "blockId": "rcs-front-left",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Up",
+        "localPosition": {
+          "x": 1.856,
+          "y": 1.728,
+          "z": -3.152
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Up"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Up"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-front-left-nozzle-up' to one unique GLB node."
+        },
+        "visible": true,
+        "translationCompatible": false,
+        "torqueCompatible": true,
+        "translationScore": 0,
+        "torqueScore": 0.507402
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-front-right-nozzle-back",
+        "role": "Rcs",
+        "blockId": "rcs-front-right",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Back",
+        "localPosition": {
+          "x": 0.896,
+          "y": 0.576,
+          "z": 3.152
+        },
+        "localForceDirection": {
+          "x": 1,
+          "y": 0,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": -1,
+          "y": 0,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Back"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Back"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-front-right-nozzle-back' to one unique GLB node."
+        },
+        "visible": true,
+        "translationCompatible": false,
+        "torqueCompatible": true,
+        "translationScore": 0,
+        "torqueScore": 0.179764
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-front-right-nozzle-down",
+        "role": "Rcs",
+        "blockId": "rcs-front-right",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Down",
+        "localPosition": {
+          "x": 1.856,
+          "y": -0.576,
+          "z": 3.152
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Down"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Down"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-front-right-nozzle-down' to one unique GLB node."
+        },
+        "visible": false,
+        "translationCompatible": false,
+        "torqueCompatible": false,
+        "translationScore": 0,
+        "torqueScore": -0.507402
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-front-right-nozzle-forward",
+        "role": "Rcs",
+        "blockId": "rcs-front-right",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Forward",
+        "localPosition": {
+          "x": 2.816,
+          "y": 0.576,
+          "z": 3.152
+        },
+        "localForceDirection": {
+          "x": -1,
+          "y": 0,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 1,
+          "y": 0,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Forward"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Forward"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-front-right-nozzle-forward' to one unique GLB node."
+        },
+        "visible": false,
+        "translationCompatible": false,
+        "torqueCompatible": false,
+        "translationScore": 0,
+        "torqueScore": -0.179764
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-front-right-nozzle-right",
+        "role": "Rcs",
+        "blockId": "rcs-front-right",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Right",
+        "localPosition": {
+          "x": 1.856,
+          "y": 0.576,
+          "z": 4.272
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": 0,
+          "z": 1
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Right"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Right"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-front-right-nozzle-right' to one unique GLB node."
+        },
+        "visible": false,
+        "translationCompatible": false,
+        "torqueCompatible": false,
+        "translationScore": 0,
+        "torqueScore": 0
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-front-right-nozzle-up",
+        "role": "Rcs",
+        "blockId": "rcs-front-right",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Up",
+        "localPosition": {
+          "x": 1.856,
+          "y": 1.728,
+          "z": 3.152
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Up"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Up"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-front-right-nozzle-up' to one unique GLB node."
+        },
+        "visible": true,
+        "translationCompatible": false,
+        "torqueCompatible": true,
+        "translationScore": 0,
+        "torqueScore": 0.507402
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-aft-left-nozzle-back",
+        "role": "Rcs",
+        "blockId": "rcs-aft-left",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Back",
+        "localPosition": {
+          "x": -2.816,
+          "y": -0.576,
+          "z": -3.152
+        },
+        "localForceDirection": {
+          "x": 1,
+          "y": 0,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": -1,
+          "y": 0,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Back"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Back"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-aft-left-nozzle-back' to one unique GLB node."
+        },
+        "visible": false,
+        "translationCompatible": false,
+        "torqueCompatible": false,
+        "translationScore": 0,
+        "torqueScore": -0.179764
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-aft-left-nozzle-down",
+        "role": "Rcs",
+        "blockId": "rcs-aft-left",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Down",
+        "localPosition": {
+          "x": -1.856,
+          "y": -1.728,
+          "z": -3.152
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Down"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Down"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-aft-left-nozzle-down' to one unique GLB node."
+        },
+        "visible": true,
+        "translationCompatible": false,
+        "torqueCompatible": true,
+        "translationScore": 0,
+        "torqueScore": 0.507402
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-aft-left-nozzle-forward",
+        "role": "Rcs",
+        "blockId": "rcs-aft-left",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Forward",
+        "localPosition": {
+          "x": -0.896,
+          "y": -0.576,
+          "z": -3.152
+        },
+        "localForceDirection": {
+          "x": -1,
+          "y": 0,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 1,
+          "y": 0,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Forward"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Forward"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-aft-left-nozzle-forward' to one unique GLB node."
+        },
+        "visible": true,
+        "translationCompatible": false,
+        "torqueCompatible": true,
+        "translationScore": 0,
+        "torqueScore": 0.179764
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-aft-left-nozzle-left",
+        "role": "Rcs",
+        "blockId": "rcs-aft-left",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Left",
+        "localPosition": {
+          "x": -1.856,
+          "y": -0.576,
+          "z": -4.272
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": 0,
+          "z": 1
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Left"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Left"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-aft-left-nozzle-left' to one unique GLB node."
+        },
+        "visible": false,
+        "translationCompatible": false,
+        "torqueCompatible": false,
+        "translationScore": 0,
+        "torqueScore": 0
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-aft-left-nozzle-up",
+        "role": "Rcs",
+        "blockId": "rcs-aft-left",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Up",
+        "localPosition": {
+          "x": -1.856,
+          "y": 0.576,
+          "z": -3.152
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Up"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Up"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-aft-left-nozzle-up' to one unique GLB node."
+        },
+        "visible": false,
+        "translationCompatible": false,
+        "torqueCompatible": false,
+        "translationScore": 0,
+        "torqueScore": -0.507402
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-aft-right-nozzle-back",
+        "role": "Rcs",
+        "blockId": "rcs-aft-right",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Back",
+        "localPosition": {
+          "x": -2.816,
+          "y": -0.576,
+          "z": 3.152
+        },
+        "localForceDirection": {
+          "x": 1,
+          "y": 0,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": -1,
+          "y": 0,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Back"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Back"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-aft-right-nozzle-back' to one unique GLB node."
+        },
+        "visible": false,
+        "translationCompatible": false,
+        "torqueCompatible": false,
+        "translationScore": 0,
+        "torqueScore": -0.179764
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-aft-right-nozzle-down",
+        "role": "Rcs",
+        "blockId": "rcs-aft-right",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Down",
+        "localPosition": {
+          "x": -1.856,
+          "y": -1.728,
+          "z": 3.152
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Down"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Down"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-aft-right-nozzle-down' to one unique GLB node."
+        },
+        "visible": true,
+        "translationCompatible": false,
+        "torqueCompatible": true,
+        "translationScore": 0,
+        "torqueScore": 0.507402
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-aft-right-nozzle-forward",
+        "role": "Rcs",
+        "blockId": "rcs-aft-right",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Forward",
+        "localPosition": {
+          "x": -0.896,
+          "y": -0.576,
+          "z": 3.152
+        },
+        "localForceDirection": {
+          "x": -1,
+          "y": 0,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 1,
+          "y": 0,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Forward"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Forward"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-aft-right-nozzle-forward' to one unique GLB node."
+        },
+        "visible": true,
+        "translationCompatible": false,
+        "torqueCompatible": true,
+        "translationScore": 0,
+        "torqueScore": 0.179764
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-aft-right-nozzle-right",
+        "role": "Rcs",
+        "blockId": "rcs-aft-right",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Right",
+        "localPosition": {
+          "x": -1.856,
+          "y": -0.576,
+          "z": 4.272
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": 0,
+          "z": 1
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Right"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Right"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-aft-right-nozzle-right' to one unique GLB node."
+        },
+        "visible": false,
+        "translationCompatible": false,
+        "torqueCompatible": false,
+        "translationScore": 0,
+        "torqueScore": 0
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-aft-right-nozzle-up",
+        "role": "Rcs",
+        "blockId": "rcs-aft-right",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Up",
+        "localPosition": {
+          "x": -1.856,
+          "y": 0.576,
+          "z": 3.152
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Up"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Up"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-aft-right-nozzle-up' to one unique GLB node."
+        },
+        "visible": false,
+        "translationCompatible": false,
+        "torqueCompatible": false,
+        "translationScore": 0,
+        "torqueScore": -0.507402
+      }
+    ],
+    "bindingKindCounts": {
+      "DirectionalNozzle": 21,
+      "LegacyMarkerFallback": 0
+    },
+    "nozzleSourceCounts": {
+      "GLBNode": 21,
+      "ManifestNozzleFallback": 0
+    },
+    "bindingDiagnosticCounts": {
+      "Resolved": 21,
+      "ManifestOnly": 0,
+      "MissingNode": 0,
+      "DuplicateNode": 0,
+      "AmbiguousCandidates": 0,
+      "NodeAlreadyBound": 0,
+      "InvalidPosition": 0
+    },
+    "frameSemantics": {
+      "translation": "BodyLocalFromOwnerOrientation",
+      "angular": "BodyLocalTelemetry"
+    }
+  },
+  "rotationTelemetry": {
+    "mainThrustActive": false,
+    "rcsTranslationActive": false,
+    "rcsRotationActive": true,
+    "sasCorrectionActive": true,
+    "controlModeEffect": {
+      "controlMode": "Precision",
+      "mainThrustAllowed": false,
+      "rcsTranslationAllowed": false,
+      "rcsRotationAllowed": true,
+      "sasAllowed": true,
+      "modeEffectLabel": "RCS attitude / main thrust blocked",
+      "blockedReasonCodes": [
+        "MainThrustModeBlocked",
+        "RcsTranslationModeBlocked"
+      ],
+      "notes": [
+        "main thrust mode-blocked",
+        "RCS available"
+      ],
+      "rotationResponseScale": 0.45
+    },
+    "requestedBurnDirection": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "actualMainThrustDirection": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "mainThrustAlignment": 1,
+    "mainThrustAlignmentErrorRadians": 0,
+    "mainThrustAlignmentToleranceRadians": 0.12,
+    "requestedMainAccelerationMps2": 0,
+    "appliedMainAccelerationMps2": 0,
+    "combinedAccelerationLimitMps2": 9.092378179790318,
+    "maximumJerkMps3": 0,
+    "lastAppliedMainAcceleration": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "lastAppliedRcsTranslationAcceleration": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "lastAppliedAcceleration": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "lastAppliedAngularAcceleration": {
+      "x": 0,
+      "y": 0,
+      "z": 0.2888
+    }
+  },
+  "rotationVfx": {
+    "mainThrustVisible": false,
+    "mainThrustScale": 0,
+    "mainEngineBinding": {
+      "id": "main-engine-aft",
+      "role": "mainEngine",
+      "source": "GLBNode",
+      "sourceObjectName": "DEMO_Scout_Mk1_PART_Main_Engine_Bell_Mk1_THRUST_NOZZLE_MAIN",
+      "localPosition": {
+        "x": -6.208,
+        "y": 0,
+        "z": 0
+      }
+    },
+    "mainNozzleBinding": {
+      "kind": "DirectionalNozzle",
+      "id": "main-engine-aft-nozzle-main",
+      "role": "MainEngine",
+      "blockId": "main-engine-aft",
+      "source": "GLBNode",
+      "sourceObjectName": "DEMO_Scout_Mk1_PART_Main_Engine_Bell_Mk1_THRUST_NOZZLE_MAIN",
+      "localPosition": {
+        "x": -6.208,
+        "y": 0,
+        "z": 0
+      },
+      "localForceDirection": {
+        "x": 1,
+        "y": 0,
+        "z": 0
+      },
+      "localExhaustDirection": {
+        "x": -1,
+        "y": 0,
+        "z": 0
+      },
+      "diagnostic": {
+        "status": "Resolved",
+        "expectedNodeNames": [
+          "DEMO_Scout_Mk1_PART_Main_Engine_Bell_Mk1_THRUST_NOZZLE_MAIN"
+        ],
+        "matchedNodeNames": [
+          "DEMO_Scout_Mk1_PART_Main_Engine_Bell_Mk1_THRUST_NOZZLE_MAIN"
+        ],
+        "matchedNodeCount": 1,
+        "reason": "Resolved 'main-engine-aft-nozzle-main' to one unique GLB node."
+      }
+    },
+    "rcsTranslationVisible": false,
+    "rcsRotationVisible": true,
+    "sasCorrectionVisible": true,
+    "visibleRcsPuffCount": 8,
+    "rcsBindings": [
+      {
+        "id": "rcs-front-left",
+        "role": "rcs",
+        "source": "GLBNode",
+        "sourceObjectName": "DEMO_Scout_Mk1_RCS_Hardpoint_Left_Front",
+        "localPosition": {
+          "x": 1.856,
+          "y": 0.576,
+          "z": -2.352
+        }
+      },
+      {
+        "id": "rcs-front-right",
+        "role": "rcs",
+        "source": "GLBNode",
+        "sourceObjectName": "DEMO_Scout_Mk1_RCS_Hardpoint_Right_Front",
+        "localPosition": {
+          "x": 1.856,
+          "y": 0.576,
+          "z": 2.352
+        }
+      },
+      {
+        "id": "rcs-aft-left",
+        "role": "rcs",
+        "source": "GLBNode",
+        "sourceObjectName": "DEMO_Scout_Mk1_RCS_Hardpoint_Left_Rear",
+        "localPosition": {
+          "x": -1.856,
+          "y": -0.576,
+          "z": -2.352
+        }
+      },
+      {
+        "id": "rcs-aft-right",
+        "role": "rcs",
+        "source": "GLBNode",
+        "sourceObjectName": "DEMO_Scout_Mk1_RCS_Hardpoint_Right_Rear",
+        "localPosition": {
+          "x": -1.856,
+          "y": -0.576,
+          "z": 2.352
+        }
+      }
+    ],
+    "rcsPuffs": [
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-front-left-nozzle-back",
+        "role": "Rcs",
+        "blockId": "rcs-front-left",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Back",
+        "localPosition": {
+          "x": 0.896,
+          "y": 0.576,
+          "z": -3.152
+        },
+        "localForceDirection": {
+          "x": 1,
+          "y": 0,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": -1,
+          "y": 0,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Back"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Back"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-front-left-nozzle-back' to one unique GLB node."
+        },
+        "visible": false,
+        "translationCompatible": false,
+        "torqueCompatible": false,
+        "translationScore": 0,
+        "torqueScore": -0.179764
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-front-left-nozzle-down",
+        "role": "Rcs",
+        "blockId": "rcs-front-left",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Down",
+        "localPosition": {
+          "x": 1.856,
+          "y": -0.576,
+          "z": -3.152
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Down"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Down"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-front-left-nozzle-down' to one unique GLB node."
+        },
+        "visible": true,
+        "translationCompatible": false,
+        "torqueCompatible": true,
+        "translationScore": 0,
+        "torqueScore": 0.507402
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-front-left-nozzle-forward",
+        "role": "Rcs",
+        "blockId": "rcs-front-left",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Forward",
+        "localPosition": {
+          "x": 2.816,
+          "y": 0.576,
+          "z": -3.152
+        },
+        "localForceDirection": {
+          "x": -1,
+          "y": 0,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 1,
+          "y": 0,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Forward"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Forward"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-front-left-nozzle-forward' to one unique GLB node."
+        },
+        "visible": true,
+        "translationCompatible": false,
+        "torqueCompatible": true,
+        "translationScore": 0,
+        "torqueScore": 0.179764
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-front-left-nozzle-left",
+        "role": "Rcs",
+        "blockId": "rcs-front-left",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Left",
+        "localPosition": {
+          "x": 1.856,
+          "y": 0.576,
+          "z": -4.272
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": 0,
+          "z": 1
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Left"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Left"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-front-left-nozzle-left' to one unique GLB node."
+        },
+        "visible": false,
+        "translationCompatible": false,
+        "torqueCompatible": false,
+        "translationScore": 0,
+        "torqueScore": 0
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-front-left-nozzle-up",
+        "role": "Rcs",
+        "blockId": "rcs-front-left",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Up",
+        "localPosition": {
+          "x": 1.856,
+          "y": 1.728,
+          "z": -3.152
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Up"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Up"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-front-left-nozzle-up' to one unique GLB node."
+        },
+        "visible": false,
+        "translationCompatible": false,
+        "torqueCompatible": false,
+        "translationScore": 0,
+        "torqueScore": -0.507402
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-front-right-nozzle-back",
+        "role": "Rcs",
+        "blockId": "rcs-front-right",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Back",
+        "localPosition": {
+          "x": 0.896,
+          "y": 0.576,
+          "z": 3.152
+        },
+        "localForceDirection": {
+          "x": 1,
+          "y": 0,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": -1,
+          "y": 0,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Back"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Back"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-front-right-nozzle-back' to one unique GLB node."
+        },
+        "visible": false,
+        "translationCompatible": false,
+        "torqueCompatible": false,
+        "translationScore": 0,
+        "torqueScore": -0.179764
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-front-right-nozzle-down",
+        "role": "Rcs",
+        "blockId": "rcs-front-right",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Down",
+        "localPosition": {
+          "x": 1.856,
+          "y": -0.576,
+          "z": 3.152
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Down"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Down"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-front-right-nozzle-down' to one unique GLB node."
+        },
+        "visible": true,
+        "translationCompatible": false,
+        "torqueCompatible": true,
+        "translationScore": 0,
+        "torqueScore": 0.507402
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-front-right-nozzle-forward",
+        "role": "Rcs",
+        "blockId": "rcs-front-right",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Forward",
+        "localPosition": {
+          "x": 2.816,
+          "y": 0.576,
+          "z": 3.152
+        },
+        "localForceDirection": {
+          "x": -1,
+          "y": 0,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 1,
+          "y": 0,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Forward"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Forward"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-front-right-nozzle-forward' to one unique GLB node."
+        },
+        "visible": true,
+        "translationCompatible": false,
+        "torqueCompatible": true,
+        "translationScore": 0,
+        "torqueScore": 0.179764
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-front-right-nozzle-right",
+        "role": "Rcs",
+        "blockId": "rcs-front-right",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Right",
+        "localPosition": {
+          "x": 1.856,
+          "y": 0.576,
+          "z": 4.272
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": 0,
+          "z": 1
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Right"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Right"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-front-right-nozzle-right' to one unique GLB node."
+        },
+        "visible": false,
+        "translationCompatible": false,
+        "torqueCompatible": false,
+        "translationScore": 0,
+        "torqueScore": 0
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-front-right-nozzle-up",
+        "role": "Rcs",
+        "blockId": "rcs-front-right",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Up",
+        "localPosition": {
+          "x": 1.856,
+          "y": 1.728,
+          "z": 3.152
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Up"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Up"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-front-right-nozzle-up' to one unique GLB node."
+        },
+        "visible": false,
+        "translationCompatible": false,
+        "torqueCompatible": false,
+        "translationScore": 0,
+        "torqueScore": -0.507402
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-aft-left-nozzle-back",
+        "role": "Rcs",
+        "blockId": "rcs-aft-left",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Back",
+        "localPosition": {
+          "x": -2.816,
+          "y": -0.576,
+          "z": -3.152
+        },
+        "localForceDirection": {
+          "x": 1,
+          "y": 0,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": -1,
+          "y": 0,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Back"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Back"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-aft-left-nozzle-back' to one unique GLB node."
+        },
+        "visible": true,
+        "translationCompatible": false,
+        "torqueCompatible": true,
+        "translationScore": 0,
+        "torqueScore": 0.179764
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-aft-left-nozzle-down",
+        "role": "Rcs",
+        "blockId": "rcs-aft-left",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Down",
+        "localPosition": {
+          "x": -1.856,
+          "y": -1.728,
+          "z": -3.152
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Down"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Down"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-aft-left-nozzle-down' to one unique GLB node."
+        },
+        "visible": false,
+        "translationCompatible": false,
+        "torqueCompatible": false,
+        "translationScore": 0,
+        "torqueScore": -0.507402
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-aft-left-nozzle-forward",
+        "role": "Rcs",
+        "blockId": "rcs-aft-left",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Forward",
+        "localPosition": {
+          "x": -0.896,
+          "y": -0.576,
+          "z": -3.152
+        },
+        "localForceDirection": {
+          "x": -1,
+          "y": 0,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 1,
+          "y": 0,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Forward"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Forward"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-aft-left-nozzle-forward' to one unique GLB node."
+        },
+        "visible": false,
+        "translationCompatible": false,
+        "torqueCompatible": false,
+        "translationScore": 0,
+        "torqueScore": -0.179764
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-aft-left-nozzle-left",
+        "role": "Rcs",
+        "blockId": "rcs-aft-left",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Left",
+        "localPosition": {
+          "x": -1.856,
+          "y": -0.576,
+          "z": -4.272
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": 0,
+          "z": 1
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Left"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Left"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-aft-left-nozzle-left' to one unique GLB node."
+        },
+        "visible": false,
+        "translationCompatible": false,
+        "torqueCompatible": false,
+        "translationScore": 0,
+        "torqueScore": 0
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-aft-left-nozzle-up",
+        "role": "Rcs",
+        "blockId": "rcs-aft-left",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Up",
+        "localPosition": {
+          "x": -1.856,
+          "y": 0.576,
+          "z": -3.152
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Up"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Up"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-aft-left-nozzle-up' to one unique GLB node."
+        },
+        "visible": true,
+        "translationCompatible": false,
+        "torqueCompatible": true,
+        "translationScore": 0,
+        "torqueScore": 0.507402
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-aft-right-nozzle-back",
+        "role": "Rcs",
+        "blockId": "rcs-aft-right",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Back",
+        "localPosition": {
+          "x": -2.816,
+          "y": -0.576,
+          "z": 3.152
+        },
+        "localForceDirection": {
+          "x": 1,
+          "y": 0,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": -1,
+          "y": 0,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Back"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Back"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-aft-right-nozzle-back' to one unique GLB node."
+        },
+        "visible": true,
+        "translationCompatible": false,
+        "torqueCompatible": true,
+        "translationScore": 0,
+        "torqueScore": 0.179764
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-aft-right-nozzle-down",
+        "role": "Rcs",
+        "blockId": "rcs-aft-right",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Down",
+        "localPosition": {
+          "x": -1.856,
+          "y": -1.728,
+          "z": 3.152
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Down"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Down"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-aft-right-nozzle-down' to one unique GLB node."
+        },
+        "visible": false,
+        "translationCompatible": false,
+        "torqueCompatible": false,
+        "translationScore": 0,
+        "torqueScore": -0.507402
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-aft-right-nozzle-forward",
+        "role": "Rcs",
+        "blockId": "rcs-aft-right",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Forward",
+        "localPosition": {
+          "x": -0.896,
+          "y": -0.576,
+          "z": 3.152
+        },
+        "localForceDirection": {
+          "x": -1,
+          "y": 0,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 1,
+          "y": 0,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Forward"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Forward"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-aft-right-nozzle-forward' to one unique GLB node."
+        },
+        "visible": false,
+        "translationCompatible": false,
+        "torqueCompatible": false,
+        "translationScore": 0,
+        "torqueScore": -0.179764
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-aft-right-nozzle-right",
+        "role": "Rcs",
+        "blockId": "rcs-aft-right",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Right",
+        "localPosition": {
+          "x": -1.856,
+          "y": -0.576,
+          "z": 4.272
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": 0,
+          "z": 1
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Right"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Right"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-aft-right-nozzle-right' to one unique GLB node."
+        },
+        "visible": false,
+        "translationCompatible": false,
+        "torqueCompatible": false,
+        "translationScore": 0,
+        "torqueScore": 0
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-aft-right-nozzle-up",
+        "role": "Rcs",
+        "blockId": "rcs-aft-right",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Up",
+        "localPosition": {
+          "x": -1.856,
+          "y": 0.576,
+          "z": 3.152
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Up"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Up"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-aft-right-nozzle-up' to one unique GLB node."
+        },
+        "visible": true,
+        "translationCompatible": false,
+        "torqueCompatible": true,
+        "translationScore": 0,
+        "torqueScore": 0.507402
+      }
+    ],
+    "bindingKindCounts": {
+      "DirectionalNozzle": 21,
+      "LegacyMarkerFallback": 0
+    },
+    "nozzleSourceCounts": {
+      "GLBNode": 21,
+      "ManifestNozzleFallback": 0
+    },
+    "bindingDiagnosticCounts": {
+      "Resolved": 21,
+      "ManifestOnly": 0,
+      "MissingNode": 0,
+      "DuplicateNode": 0,
+      "AmbiguousCandidates": 0,
+      "NodeAlreadyBound": 0,
+      "InvalidPosition": 0
+    },
+    "frameSemantics": {
+      "translation": "BodyLocalFromOwnerOrientation",
+      "angular": "BodyLocalTelemetry"
+    }
+  },
+  "translationTelemetry": {
+    "mainThrustActive": false,
+    "rcsTranslationActive": true,
+    "rcsRotationActive": false,
+    "sasCorrectionActive": true,
+    "controlModeEffect": {
+      "controlMode": "Translation",
+      "mainThrustAllowed": false,
+      "rcsTranslationAllowed": true,
+      "rcsRotationAllowed": true,
+      "sasAllowed": true,
+      "modeEffectLabel": "RCS translation / main thrust blocked",
+      "blockedReasonCodes": [
+        "MainThrustModeBlocked"
+      ],
+      "notes": [
+        "main thrust mode-blocked",
+        "RCS available"
+      ],
+      "rotationResponseScale": 0.65
+    },
+    "requestedBurnDirection": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "actualMainThrustDirection": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "mainThrustAlignment": 1,
+    "mainThrustAlignmentErrorRadians": 0,
+    "mainThrustAlignmentToleranceRadians": 0.12,
+    "requestedMainAccelerationMps2": 0,
+    "appliedMainAccelerationMps2": 0,
+    "combinedAccelerationLimitMps2": 9.092605492275634,
+    "maximumJerkMps3": 0,
+    "lastAppliedMainAcceleration": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "lastAppliedRcsTranslationAcceleration": {
+      "x": -1.6534,
+      "y": 1.8752,
+      "z": 0
+    },
+    "lastAppliedAcceleration": {
+      "x": -1.6534,
+      "y": 1.8752,
+      "z": 0
+    },
+    "lastAppliedAngularAcceleration": {
+      "x": 0,
+      "y": 0,
+      "z": -0.2028
+    }
+  },
+  "translationVfx": {
+    "mainThrustVisible": false,
+    "mainThrustScale": 0,
+    "mainEngineBinding": {
+      "id": "main-engine-aft",
+      "role": "mainEngine",
+      "source": "GLBNode",
+      "sourceObjectName": "DEMO_Scout_Mk1_PART_Main_Engine_Bell_Mk1_THRUST_NOZZLE_MAIN",
+      "localPosition": {
+        "x": -6.208,
+        "y": 0,
+        "z": 0
+      }
+    },
+    "mainNozzleBinding": {
+      "kind": "DirectionalNozzle",
+      "id": "main-engine-aft-nozzle-main",
+      "role": "MainEngine",
+      "blockId": "main-engine-aft",
+      "source": "GLBNode",
+      "sourceObjectName": "DEMO_Scout_Mk1_PART_Main_Engine_Bell_Mk1_THRUST_NOZZLE_MAIN",
+      "localPosition": {
+        "x": -6.208,
+        "y": 0,
+        "z": 0
+      },
+      "localForceDirection": {
+        "x": 1,
+        "y": 0,
+        "z": 0
+      },
+      "localExhaustDirection": {
+        "x": -1,
+        "y": 0,
+        "z": 0
+      },
+      "diagnostic": {
+        "status": "Resolved",
+        "expectedNodeNames": [
+          "DEMO_Scout_Mk1_PART_Main_Engine_Bell_Mk1_THRUST_NOZZLE_MAIN"
+        ],
+        "matchedNodeNames": [
+          "DEMO_Scout_Mk1_PART_Main_Engine_Bell_Mk1_THRUST_NOZZLE_MAIN"
+        ],
+        "matchedNodeCount": 1,
+        "reason": "Resolved 'main-engine-aft-nozzle-main' to one unique GLB node."
+      }
+    },
+    "rcsTranslationVisible": true,
+    "rcsRotationVisible": false,
+    "sasCorrectionVisible": true,
+    "visibleRcsPuffCount": 12,
+    "rcsBindings": [
+      {
+        "id": "rcs-front-left",
+        "role": "rcs",
+        "source": "GLBNode",
+        "sourceObjectName": "DEMO_Scout_Mk1_RCS_Hardpoint_Left_Front",
+        "localPosition": {
+          "x": 1.856,
+          "y": 0.576,
+          "z": -2.352
+        }
+      },
+      {
+        "id": "rcs-front-right",
+        "role": "rcs",
+        "source": "GLBNode",
+        "sourceObjectName": "DEMO_Scout_Mk1_RCS_Hardpoint_Right_Front",
+        "localPosition": {
+          "x": 1.856,
+          "y": 0.576,
+          "z": 2.352
+        }
+      },
+      {
+        "id": "rcs-aft-left",
+        "role": "rcs",
+        "source": "GLBNode",
+        "sourceObjectName": "DEMO_Scout_Mk1_RCS_Hardpoint_Left_Rear",
+        "localPosition": {
+          "x": -1.856,
+          "y": -0.576,
+          "z": -2.352
+        }
+      },
+      {
+        "id": "rcs-aft-right",
+        "role": "rcs",
+        "source": "GLBNode",
+        "sourceObjectName": "DEMO_Scout_Mk1_RCS_Hardpoint_Right_Rear",
+        "localPosition": {
+          "x": -1.856,
+          "y": -0.576,
+          "z": 2.352
+        }
+      }
+    ],
+    "rcsPuffs": [
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-front-left-nozzle-back",
+        "role": "Rcs",
+        "blockId": "rcs-front-left",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Back",
+        "localPosition": {
+          "x": 0.896,
+          "y": 0.576,
+          "z": -3.152
+        },
+        "localForceDirection": {
+          "x": 1,
+          "y": 0,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": -1,
+          "y": 0,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Back"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Back"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-front-left-nozzle-back' to one unique GLB node."
+        },
+        "visible": true,
+        "translationCompatible": true,
+        "torqueCompatible": true,
+        "translationScore": 0.004989,
+        "torqueScore": 0.179764
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-front-left-nozzle-down",
+        "role": "Rcs",
+        "blockId": "rcs-front-left",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Down",
+        "localPosition": {
+          "x": 1.856,
+          "y": -0.576,
+          "z": -3.152
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Down"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Down"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-front-left-nozzle-down' to one unique GLB node."
+        },
+        "visible": true,
+        "translationCompatible": true,
+        "torqueCompatible": false,
+        "translationScore": 0.999988,
+        "torqueScore": -0.507402
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-front-left-nozzle-forward",
+        "role": "Rcs",
+        "blockId": "rcs-front-left",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Forward",
+        "localPosition": {
+          "x": 2.816,
+          "y": 0.576,
+          "z": -3.152
+        },
+        "localForceDirection": {
+          "x": -1,
+          "y": 0,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 1,
+          "y": 0,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Forward"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Forward"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-front-left-nozzle-forward' to one unique GLB node."
+        },
+        "visible": false,
+        "translationCompatible": false,
+        "torqueCompatible": false,
+        "translationScore": -0.004989,
+        "torqueScore": -0.179764
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-front-left-nozzle-left",
+        "role": "Rcs",
+        "blockId": "rcs-front-left",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Left",
+        "localPosition": {
+          "x": 1.856,
+          "y": 0.576,
+          "z": -4.272
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": 0,
+          "z": 1
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Left"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Left"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-front-left-nozzle-left' to one unique GLB node."
+        },
+        "visible": false,
+        "translationCompatible": false,
+        "torqueCompatible": false,
+        "translationScore": 0,
+        "torqueScore": 0
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-front-left-nozzle-up",
+        "role": "Rcs",
+        "blockId": "rcs-front-left",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Up",
+        "localPosition": {
+          "x": 1.856,
+          "y": 1.728,
+          "z": -3.152
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Up"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1_Up"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-front-left-nozzle-up' to one unique GLB node."
+        },
+        "visible": true,
+        "translationCompatible": false,
+        "torqueCompatible": true,
+        "translationScore": -0.999988,
+        "torqueScore": 0.507402
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-front-right-nozzle-back",
+        "role": "Rcs",
+        "blockId": "rcs-front-right",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Back",
+        "localPosition": {
+          "x": 0.896,
+          "y": 0.576,
+          "z": 3.152
+        },
+        "localForceDirection": {
+          "x": 1,
+          "y": 0,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": -1,
+          "y": 0,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Back"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Back"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-front-right-nozzle-back' to one unique GLB node."
+        },
+        "visible": true,
+        "translationCompatible": true,
+        "torqueCompatible": true,
+        "translationScore": 0.004989,
+        "torqueScore": 0.179764
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-front-right-nozzle-down",
+        "role": "Rcs",
+        "blockId": "rcs-front-right",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Down",
+        "localPosition": {
+          "x": 1.856,
+          "y": -0.576,
+          "z": 3.152
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Down"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Down"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-front-right-nozzle-down' to one unique GLB node."
+        },
+        "visible": true,
+        "translationCompatible": true,
+        "torqueCompatible": false,
+        "translationScore": 0.999988,
+        "torqueScore": -0.507402
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-front-right-nozzle-forward",
+        "role": "Rcs",
+        "blockId": "rcs-front-right",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Forward",
+        "localPosition": {
+          "x": 2.816,
+          "y": 0.576,
+          "z": 3.152
+        },
+        "localForceDirection": {
+          "x": -1,
+          "y": 0,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 1,
+          "y": 0,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Forward"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Forward"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-front-right-nozzle-forward' to one unique GLB node."
+        },
+        "visible": false,
+        "translationCompatible": false,
+        "torqueCompatible": false,
+        "translationScore": -0.004989,
+        "torqueScore": -0.179764
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-front-right-nozzle-right",
+        "role": "Rcs",
+        "blockId": "rcs-front-right",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Right",
+        "localPosition": {
+          "x": 1.856,
+          "y": 0.576,
+          "z": 4.272
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": 0,
+          "z": 1
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Right"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Right"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-front-right-nozzle-right' to one unique GLB node."
+        },
+        "visible": false,
+        "translationCompatible": false,
+        "torqueCompatible": false,
+        "translationScore": 0,
+        "torqueScore": 0
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-front-right-nozzle-up",
+        "role": "Rcs",
+        "blockId": "rcs-front-right",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Up",
+        "localPosition": {
+          "x": 1.856,
+          "y": 1.728,
+          "z": 3.152
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Up"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1002_Up"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-front-right-nozzle-up' to one unique GLB node."
+        },
+        "visible": true,
+        "translationCompatible": false,
+        "torqueCompatible": true,
+        "translationScore": -0.999988,
+        "torqueScore": 0.507402
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-aft-left-nozzle-back",
+        "role": "Rcs",
+        "blockId": "rcs-aft-left",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Back",
+        "localPosition": {
+          "x": -2.816,
+          "y": -0.576,
+          "z": -3.152
+        },
+        "localForceDirection": {
+          "x": 1,
+          "y": 0,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": -1,
+          "y": 0,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Back"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Back"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-aft-left-nozzle-back' to one unique GLB node."
+        },
+        "visible": true,
+        "translationCompatible": true,
+        "torqueCompatible": false,
+        "translationScore": 0.004989,
+        "torqueScore": -0.179764
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-aft-left-nozzle-down",
+        "role": "Rcs",
+        "blockId": "rcs-aft-left",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Down",
+        "localPosition": {
+          "x": -1.856,
+          "y": -1.728,
+          "z": -3.152
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Down"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Down"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-aft-left-nozzle-down' to one unique GLB node."
+        },
+        "visible": true,
+        "translationCompatible": true,
+        "torqueCompatible": true,
+        "translationScore": 0.999988,
+        "torqueScore": 0.507402
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-aft-left-nozzle-forward",
+        "role": "Rcs",
+        "blockId": "rcs-aft-left",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Forward",
+        "localPosition": {
+          "x": -0.896,
+          "y": -0.576,
+          "z": -3.152
+        },
+        "localForceDirection": {
+          "x": -1,
+          "y": 0,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 1,
+          "y": 0,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Forward"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Forward"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-aft-left-nozzle-forward' to one unique GLB node."
+        },
+        "visible": true,
+        "translationCompatible": false,
+        "torqueCompatible": true,
+        "translationScore": -0.004989,
+        "torqueScore": 0.179764
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-aft-left-nozzle-left",
+        "role": "Rcs",
+        "blockId": "rcs-aft-left",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Left",
+        "localPosition": {
+          "x": -1.856,
+          "y": -0.576,
+          "z": -4.272
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": 0,
+          "z": 1
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Left"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Left"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-aft-left-nozzle-left' to one unique GLB node."
+        },
+        "visible": false,
+        "translationCompatible": false,
+        "torqueCompatible": false,
+        "translationScore": 0,
+        "torqueScore": 0
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-aft-left-nozzle-up",
+        "role": "Rcs",
+        "blockId": "rcs-aft-left",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Up",
+        "localPosition": {
+          "x": -1.856,
+          "y": 0.576,
+          "z": -3.152
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Up"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1001_Up"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-aft-left-nozzle-up' to one unique GLB node."
+        },
+        "visible": false,
+        "translationCompatible": false,
+        "torqueCompatible": false,
+        "translationScore": -0.999988,
+        "torqueScore": -0.507402
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-aft-right-nozzle-back",
+        "role": "Rcs",
+        "blockId": "rcs-aft-right",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Back",
+        "localPosition": {
+          "x": -2.816,
+          "y": -0.576,
+          "z": 3.152
+        },
+        "localForceDirection": {
+          "x": 1,
+          "y": 0,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": -1,
+          "y": 0,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Back"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Back"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-aft-right-nozzle-back' to one unique GLB node."
+        },
+        "visible": true,
+        "translationCompatible": true,
+        "torqueCompatible": false,
+        "translationScore": 0.004989,
+        "torqueScore": -0.179764
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-aft-right-nozzle-down",
+        "role": "Rcs",
+        "blockId": "rcs-aft-right",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Down",
+        "localPosition": {
+          "x": -1.856,
+          "y": -1.728,
+          "z": 3.152
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Down"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Down"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-aft-right-nozzle-down' to one unique GLB node."
+        },
+        "visible": true,
+        "translationCompatible": true,
+        "torqueCompatible": true,
+        "translationScore": 0.999988,
+        "torqueScore": 0.507402
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-aft-right-nozzle-forward",
+        "role": "Rcs",
+        "blockId": "rcs-aft-right",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Forward",
+        "localPosition": {
+          "x": -0.896,
+          "y": -0.576,
+          "z": 3.152
+        },
+        "localForceDirection": {
+          "x": -1,
+          "y": 0,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 1,
+          "y": 0,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Forward"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Forward"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-aft-right-nozzle-forward' to one unique GLB node."
+        },
+        "visible": true,
+        "translationCompatible": false,
+        "torqueCompatible": true,
+        "translationScore": -0.004989,
+        "torqueScore": 0.179764
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-aft-right-nozzle-right",
+        "role": "Rcs",
+        "blockId": "rcs-aft-right",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Right",
+        "localPosition": {
+          "x": -1.856,
+          "y": -0.576,
+          "z": 4.272
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": 0,
+          "z": 1
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Right"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Right"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-aft-right-nozzle-right' to one unique GLB node."
+        },
+        "visible": false,
+        "translationCompatible": false,
+        "torqueCompatible": false,
+        "translationScore": 0,
+        "torqueScore": 0
+      },
+      {
+        "kind": "DirectionalNozzle",
+        "id": "rcs-aft-right-nozzle-up",
+        "role": "Rcs",
+        "blockId": "rcs-aft-right",
+        "source": "GLBNode",
+        "sourceObjectName": "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Up",
+        "localPosition": {
+          "x": -1.856,
+          "y": 0.576,
+          "z": 3.152
+        },
+        "localForceDirection": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        },
+        "localExhaustDirection": {
+          "x": 0,
+          "y": 1,
+          "z": 0
+        },
+        "diagnostic": {
+          "status": "Resolved",
+          "expectedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Up"
+          ],
+          "matchedNodeNames": [
+            "RCS_Nozzle_DEMOScoutMk1PARTRCSPod4WayMk1003_Up"
+          ],
+          "matchedNodeCount": 1,
+          "reason": "Resolved 'rcs-aft-right-nozzle-up' to one unique GLB node."
+        },
+        "visible": false,
+        "translationCompatible": false,
+        "torqueCompatible": false,
+        "translationScore": -0.999988,
+        "torqueScore": -0.507402
+      }
+    ],
+    "bindingKindCounts": {
+      "DirectionalNozzle": 21,
+      "LegacyMarkerFallback": 0
+    },
+    "nozzleSourceCounts": {
+      "GLBNode": 21,
+      "ManifestNozzleFallback": 0
+    },
+    "bindingDiagnosticCounts": {
+      "Resolved": 21,
+      "ManifestOnly": 0,
+      "MissingNode": 0,
+      "DuplicateNode": 0,
+      "AmbiguousCandidates": 0,
+      "NodeAlreadyBound": 0,
+      "InvalidPosition": 0
+    },
+    "frameSemantics": {
+      "translation": "BodyLocalFromOwnerOrientation",
+      "angular": "BodyLocalTelemetry"
+    }
+  }
+}
