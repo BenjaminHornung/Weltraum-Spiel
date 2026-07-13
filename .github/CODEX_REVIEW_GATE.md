@@ -21,10 +21,12 @@ Codex Review / current head
 The gate accepts one of the Codex formats observed in this repository:
 
 1. a GitHub review from the Codex connector whose `commit_id` exactly equals the full current head SHA;
-2. a top-level Codex review-result comment created after the exact-head request, containing either the full SHA or Codex's standard 10-character reviewed SHA;
+2. a top-level Codex review-result comment created after the exact-head request and containing either:
+   - the full current head SHA in a recognized result format, or
+   - Codex's 10-character SHA in an explicit `Reviewed commit` field, after GitHub resolves that prefix uniquely to the full current head;
 3. a Codex `+1` reaction on the exact-head request, or a PR-level `+1` created after that request.
 
-Result comments and reactions are additionally constrained by Codex author identity and request timestamp. This prevents an old review or old thumbs-up from satisfying a newer head.
+Result comments and reactions are additionally constrained by Codex author identity and request timestamp. A short SHA appearing elsewhere in prose or findings is not accepted. These checks prevent an old review or old thumbs-up from satisfying a newer head.
 
 Every new push cancels the previous run and creates a new pending status for the new head. Draft PRs receive a successful deferred status and are checked when marked ready.
 
