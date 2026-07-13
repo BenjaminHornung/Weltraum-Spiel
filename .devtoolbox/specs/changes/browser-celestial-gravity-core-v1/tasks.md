@@ -7,4 +7,4 @@
 - [x] 5. Add focused unit tests for catalog contents/order/indexes, validation/error contracts, ephemerides, gravity, floating-origin invariance and deep immutability.
 - [x] 6. Add the normal-route Vite dynamic-import Playwright test and generate task-owned deterministic JSON/Markdown evidence without screenshots.
 - [x] 7. Run focused TypeScript/unit/browser verification, the full unit/build/E2E gates, `git diff --check` and an explicit allowed/forbidden-path scope audit.
-- [ ] 8. Record final evidence and remaining limits, complete DevToolbox preflight/task toggles when path access permits, commit and push `feature/browser-celestial-gravity-core-v1` without merging to `main`.
+- [x] 8. Record final evidence and remaining limits, complete DevToolbox preflight/task toggles when path access permits, commit and push `feature/browser-celestial-gravity-core-v1` without merging to `main`.
