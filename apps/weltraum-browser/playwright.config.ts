@@ -9,6 +9,7 @@ export default defineConfig({
   testDir: "./tests/e2e",
   timeout: 30_000,
   expect: { timeout: 5_000 },
+  workers: process.env.CI === "true" ? 1 : undefined,
   outputDir: "./evidence/playwright-output",
   reporter: [["list"], ["html", { outputFolder: "./evidence/playwright-report", open: "never" }]],
   use: {

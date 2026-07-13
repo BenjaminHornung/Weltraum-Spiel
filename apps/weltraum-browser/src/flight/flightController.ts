@@ -1,6 +1,14 @@
 import type { ControlModeEffectReasonCode, ControlModeEffectSnapshot, FlightControlMode, Quaternion, ShipState } from "../core/types";
 import { add, clamp, dot, magnitude, normalize, scale, vec3, type Vec3 } from "../core/vector";
-import { accelerationLimitForMass, createFuelState, createShipMass, defaultFlightModelOptions, inactiveActuatorTelemetry, type FlightModelOptions } from "./state";
+import {
+  accelerationLimitForMass,
+  createFuelState,
+  createShipMass,
+  defaultFlightModelOptions,
+  defaultRcsTranslationAccelerationMps2,
+  inactiveActuatorTelemetry,
+  type FlightModelOptions
+} from "./state";
 
 export interface FlightControllerOptions extends FlightModelOptions {
   readonly rcsAcceleration: number;
@@ -38,7 +46,7 @@ export interface FlightControllerStepRequest {
 
 export const defaultFlightControllerOptions: FlightControllerOptions = {
   ...defaultFlightModelOptions,
-  rcsAcceleration: 2.5,
+  rcsAcceleration: defaultRcsTranslationAccelerationMps2,
   rcsAngularAcceleration: 1.8,
   sasDamping: 1.35
 };

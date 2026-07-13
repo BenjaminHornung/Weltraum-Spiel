@@ -2,6 +2,7 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
 import { existsSync } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { ciTimeout } from "./support/ciTiming";
 
 const evidenceDir = path.resolve(process.cwd(), "evidence");
 const layoutReportPath = path.join(evidenceDir, "browser-ui-concept-parity-v2-layout-report.json");
@@ -111,11 +112,16 @@ async function expectNoStaticFlightReplacement(page: Page): Promise<void> {
   expect(presentation.beforeContent).toMatch(/none|normal/);
 }
 
-async function changedPixelRatio(page: Page, previousPath: string, currentBuffer: Buffer): Promise<number> {
+async function changedPixelRatio(
+  page: Page,
+  previousPath: string,
+  currentBuffer: Buffer,
+  comparisonRegions: readonly RectReport[] | null = null
+): Promise<number> {
   const previous = `data:image/png;base64,${(await readFile(previousPath)).toString("base64")}`;
   const current = `data:image/png;base64,${currentBuffer.toString("base64")}`;
   return page.evaluate(
-    async ({ previous, current }) => {
+    async ({ previous, current, comparisonRegions }) => {
       const loadImage = async (source: string): Promise<HTMLImageElement> =>
         new Promise((resolve, reject) => {
           const image = new Image();
@@ -141,11 +147,16 @@ async function changedPixelRatio(page: Page, previousPath: string, currentBuffer
       context.drawImage(currentImage, 0, 0, width, height);
       const currentData = context.getImageData(0, 0, width, height).data;
 
-      const step = 4;
+      const step = 2;
       let changed = 0;
       let sampled = 0;
       for (let y = 0; y < height; y += step) {
         for (let x = 0; x < width; x += step) {
+          if (comparisonRegions && !comparisonRegions.some((region) =>
+            x >= region.x && x < region.right && y >= region.y && y < region.bottom
+          )) {
+            continue;
+          }
           const offset = (y * width + x) * 4;
           const red = Math.abs(previousData[offset] - currentData[offset]);
           const green = Math.abs(previousData[offset + 1] - currentData[offset + 1]);
@@ -160,7 +171,7 @@ async function changedPixelRatio(page: Page, previousPath: string, currentBuffer
 
       return sampled === 0 ? 0 : Number((changed / sampled).toFixed(4));
     },
-    { previous, current }
+    { previous, current, comparisonRegions }
   );
 }
 
@@ -169,7 +180,8 @@ async function captureAndRecord(
   name: string,
   fileName: string,
   selectors: readonly string[],
-  rejectedV1FileName: string | null = null
+  rejectedV1FileName: string | null = null,
+  limitPixelComparisonToCapturedSelectors = false
 ): Promise<LayoutEntry> {
   const viewport = page.viewportSize();
   expect(viewport, "Viewport should be known for layout report").toBeTruthy();
@@ -195,7 +207,8 @@ async function captureAndRecord(
       existsSync(v1ComparisonPath),
       `Required rejected-V1 comparison artifact is missing: ${v1ComparisonPath}`
     ).toBe(true);
-    pixelDeltaFromRejectedV1 = await changedPixelRatio(page, v1ComparisonPath, screenshot);
+    const comparisonRegions = limitPixelComparisonToCapturedSelectors ? Object.values(boxes) : null;
+    pixelDeltaFromRejectedV1 = await changedPixelRatio(page, v1ComparisonPath, screenshot, comparisonRegions);
   }
 
   const entry: LayoutEntry = {
@@ -291,7 +304,7 @@ test("authoritative normal flight surface keeps live WebGL and concept HUD bound
 });
 
 test("navigation planner presents a full star-map route plan in normal runtime", async ({ page }) => {
-  test.setTimeout(55_000);
+  test.setTimeout(ciTimeout(55_000, 135_000));
   await mkdir(evidenceDir, { recursive: true });
   await page.setViewportSize({ width: 1640, height: 900 });
   await page.goto("/");
@@ -331,7 +344,7 @@ test("navigation planner presents a full star-map route plan in normal runtime",
 });
 
 test("combat contact scenario is a red-accented UI shell without default TestBridge exposure", async ({ page }) => {
-  test.setTimeout(55_000);
+  test.setTimeout(ciTimeout(55_000, 135_000));
   await mkdir(evidenceDir, { recursive: true });
   await page.setViewportSize({ width: 1640, height: 900 });
   await page.goto("/?uiScenario=combat-contact");
@@ -360,7 +373,7 @@ test("combat contact scenario is a red-accented UI shell without default TestBri
     "#contact-target-card",
     ".contact-reticle",
     ".contact-marker"
-  ], "ui-concept-parity-v1-rejected-combat-contact.png");
+  ], "ui-concept-parity-v1-rejected-combat-contact.png", true);
   await expectCenterClear(entry, 3);
   expect(entry.pixelDeltaFromRejectedV1, "Rejected V1 combat comparison should produce a pixel delta").not.toBeNull();
   expect(entry.pixelDeltaFromRejectedV1!, "V2 combat screenshot should visibly differ from the rejected V1 contact shell").toBeGreaterThan(0.1);

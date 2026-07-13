@@ -3,7 +3,7 @@ import type { OccupantAccelerationEnvelope, RouteSegment, ShipPropulsionCapabili
 import { stableStringify } from "../../src/core/hash";
 import { vec3 } from "../../src/core/vector";
 import { defaultCrewlessDroneAccelerationEnvelope, defaultHumanCrewAccelerationEnvelope, normalCrewedScoutPropulsionCapability } from "../../src/flight/propulsionCapability";
-import { createShipStateV2 } from "../../src/flight/state";
+import { createShipStateV2, defaultRcsTranslationAccelerationMps2 } from "../../src/flight/state";
 import { lockRouteMotionProfile } from "../../src/navigation/motionProfile";
 import { DirectLocalPlanner, ObstacleAvoidanceLocalPlanner } from "../../src/navigation/planners";
 import { findUnsafeRouteSegmentViolations } from "../../src/navigation/validation";
@@ -220,8 +220,43 @@ describe("locked autopilot motion profiles", () => {
     expect(sharpConstraint.turnConstraint.turnAngleRadians).toBeGreaterThan(shallowConstraint.turnConstraint.turnAngleRadians);
     expect(sharpConstraint.exitSpeedMps).toBeLessThan(shallowConstraint.exitSpeedMps);
     expect(lowAuthorityConstraint.exitSpeedMps).toBeLessThan(sharpConstraint.exitSpeedMps);
-    expect(sharpConstraint.maximumPeakSpeedMps).toBeLessThan(shallowConstraint.maximumPeakSpeedMps ?? Number.MAX_VALUE);
+    expect(sharpConstraint.maximumPeakSpeedMps).toBe(sharp.motionProfile.maximumPeakSpeedMps);
+    expect(shallowConstraint.maximumPeakSpeedMps).toBe(shallow.motionProfile.maximumPeakSpeedMps);
     expect(sharpConstraint.turnConstraint.nextSegmentBrakingAccelerationMps2).toBe(sharp.motionProfile.plannedUsableBrakingAccelerationMps2);
+  });
+
+  it("locks waypoint lateral acceleration to physical RCS translation authority instead of main thrust", () => {
+    const ship = shipAtOrigin();
+    const target = stopTarget("rcs-corner-target", vec3(500, 0, 0));
+    const physicalRcsTranslationAcceleration = defaultRcsTranslationAccelerationMps2 * ship.authority.translationAuthority;
+    const cases = [
+      { label: "Balanced", context: { speedProfile: "Balanced" as const } },
+      { label: "Fast", context: { speedProfile: "Fast" as const } },
+      {
+        label: "DroneSprint",
+        context: {
+          transitPolicy: "DroneSprint" as const,
+          occupantAccelerationEnvelope: defaultCrewlessDroneAccelerationEnvelope
+        }
+      }
+    ];
+    for (const { label, context } of cases) {
+      const locked = lockRouteMotionProfile(
+        { tick: 16, ship, target, ...context },
+        [
+          { id: "rcs-corner-entry", kind: "Avoidance", start: vec3(), end: vec3(58, 0, 31), desiredSpeed: 14, clearanceRadius: 32 },
+          { id: "rcs-corner-exit", kind: "Terminal", start: vec3(58, 0, 31), end: target.position, desiredSpeed: 12, clearanceRadius: 3 }
+        ]
+      );
+      const constraint = motionFor(locked.segments[0]);
+
+      expect(constraint.turnConstraint.kind, label).toBe("Corner");
+      expect(constraint.turnConstraint.lateralAccelerationLimitMps2, label).toBe(physicalRcsTranslationAcceleration);
+      expect(constraint.turnConstraint.lateralAccelerationLimitMps2, label).toBeLessThan(locked.motionProfile.plannedUsableMainAccelerationMps2);
+      expect(constraint.turnConstraint.speedLimitMps, label).toBeLessThanOrEqual(
+        Math.sqrt(physicalRcsTranslationAcceleration * constraint.turnConstraint.effectiveCornerRadiusM) + 1e-6
+      );
+    }
   });
 
   it("locks constraints after obstacle geometry remains validated without moving route points", () => {

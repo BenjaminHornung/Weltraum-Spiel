@@ -21,7 +21,11 @@ import {
   assertValidShipPropulsionCapability,
   deriveEffectiveMotionAuthority
 } from "../flight/propulsionCapability";
-import { legacyCompatibilityAccelerationClampForMass, defaultFlightModelOptions } from "../flight/state";
+import {
+  defaultFlightModelOptions,
+  defaultRcsTranslationAccelerationMps2,
+  legacyCompatibilityAccelerationClampForMass
+} from "../flight/state";
 import { resolveTransitPolicy } from "../flight/transitPolicies";
 import { terminalSpeedForTarget } from "./validation";
 
@@ -275,11 +279,14 @@ const turnConstraintFor = (
   const direction = segmentDirection(segment);
   const nextDirection = segmentDirection(nextSegment);
   if (!direction || !nextDirection) {
+    const nextCornerClearanceRadius = nextSegment.kind === "Terminal"
+      ? clearanceRadius
+      : Math.min(clearanceRadius, finiteNonNegative(nextSegment.clearanceRadius, `segment ${nextSegment.id} clearanceRadius`));
     return Object.freeze({
       version: 1,
       kind: "Straight",
       turnAngleRadians: 0,
-      effectiveCornerRadiusM: rounded(Math.max(0.5, Math.min(clearanceRadius, finiteNonNegative(nextSegment.clearanceRadius, `segment ${nextSegment.id} clearanceRadius`))), "effectiveCornerRadiusM"),
+      effectiveCornerRadiusM: rounded(Math.max(0.5, nextCornerClearanceRadius), "effectiveCornerRadiusM"),
       lateralAccelerationLimitMps2: 0,
       attitudeAngularAccelerationLimitRadps2: angularAcceleration,
       attitudeAngularVelocityLimitRadps: angularVelocity,
@@ -290,9 +297,10 @@ const turnConstraintFor = (
 
   const angle = Math.acos(clamp(dot(direction, nextDirection), -1, 1));
   const nextClearanceRadius = finiteNonNegative(nextSegment.clearanceRadius, `segment ${nextSegment.id} clearanceRadius`);
+  const cornerClearanceRadius = nextSegment.kind === "Terminal" ? clearanceRadius : Math.min(clearanceRadius, nextClearanceRadius);
   const effectiveCornerRadiusM = Math.max(
     0.5,
-    Math.min(clearanceRadius, nextClearanceRadius) / Math.max(0.05, Math.sin(angle / 2))
+    cornerClearanceRadius / Math.max(0.05, Math.sin(angle / 2))
   );
 
   if (angle <= 0.001) {
@@ -310,7 +318,9 @@ const turnConstraintFor = (
   }
 
   const lateralAcceleration = rounded(
-    profile.plannedUsableMainAccelerationMps2 * authorityScale * turnBehaviorScaleFor(profile),
+    (profile.planningAuthority.rcsAvailable
+      ? defaultRcsTranslationAccelerationMps2 * authorityScaleFor(profile.planningAuthority.translationAuthority, "authority.translationAuthority")
+      : 0) * Math.min(1, turnBehaviorScaleFor(profile)),
     "lateralAccelerationLimitMps2"
   );
   const lateralSpeedLimit = lateralAcceleration <= EPSILON
@@ -321,7 +331,7 @@ const turnConstraintFor = (
     : Math.max(Math.sqrt((2 * angle) / angularAcceleration), angle / angularVelocity);
   const attitudeSpeedLimit = attitudeTurnTime === undefined ? 0 : effectiveCornerRadiusM / attitudeTurnTime;
   const speedLimitMps = rounded(
-    Math.min(lateralSpeedLimit, attitudeSpeedLimit) * waypointBehaviorScaleFor(profile),
+    Math.min(lateralSpeedLimit, attitudeSpeedLimit) * Math.min(1, waypointBehaviorScaleFor(profile)),
     "turnSpeedLimitMps"
   );
 
@@ -383,10 +393,7 @@ const pointSpeedsFor = (
   return Object.freeze(speeds);
 };
 
-const segmentPeakCapFor = (
-  profile: LockedRouteMotionProfile,
-  turnConstraint: RouteTurnConstraint
-): number | undefined => minimumDefined([profile.maximumPeakSpeedMps, turnConstraint.speedLimitMps]);
+const segmentPeakCapFor = (profile: LockedRouteMotionProfile): number | undefined => profile.maximumPeakSpeedMps;
 
 const compatibilityDesiredSpeedFor = (
   context: PlannerContext,
@@ -431,7 +438,7 @@ export const lockRouteMotionProfile = (
   const pointSpeeds = pointSpeedsFor(context, routeSegments, motionProfile, turnConstraints);
   const terminalSpeedMps = terminalSpeedForTarget(context.target);
   const segments = Object.freeze(routeSegments.map((segment, index) => {
-    const peakCap = segmentPeakCapFor(motionProfile, turnConstraints[index]);
+    const peakCap = segmentPeakCapFor(motionProfile);
     const isTerminal = index === routeSegments.length - 1;
     const entrySpeedMps = pointSpeeds[index];
     const exitSpeedMps = pointSpeeds[index + 1];

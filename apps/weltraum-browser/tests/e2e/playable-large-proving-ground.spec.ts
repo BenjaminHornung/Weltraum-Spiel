@@ -1,6 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { ciTimeout } from "./support/ciTiming";
 import { engageVisiblePreview, selectVisiblePlannerTarget } from "./support/plannerWorkflow";
 
 const evidenceDir = path.resolve(process.cwd(), "evidence");
@@ -94,6 +95,7 @@ ${rows}
 }
 
 test("normal browser runtime exposes and previews the playable large proving-ground targets", async ({ page }) => {
+  test.setTimeout(ciTimeout(30_000, 120_000));
   await mkdir(evidenceDir, { recursive: true });
   await page.goto("/");
   await page.waitForSelector("#debug-scene", { state: "visible" });

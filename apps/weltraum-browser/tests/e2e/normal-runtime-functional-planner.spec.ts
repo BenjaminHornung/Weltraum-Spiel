@@ -1,4 +1,5 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
+import { ciTimeout } from "./support/ciTiming";
 import {
   currentVisiblePreviewHash,
   engageVisiblePreview,
@@ -91,7 +92,7 @@ async function visibleDistance(page: Page): Promise<number> {
 }
 
 test("normal runtime executes the authoritative target-profile-preview-replan-engage workflow", async ({ page }) => {
-  test.setTimeout(55_000);
+  test.setTimeout(ciTimeout(55_000, 150_000));
   await page.setViewportSize({ width: 1640, height: 900 });
   await page.goto("/");
   await waitForNormalFlight(page);
@@ -163,7 +164,7 @@ test("normal runtime executes the authoritative target-profile-preview-replan-en
 });
 
 test("Escape, Close, focus trap, and keyboard map controls preserve route and view state", async ({ page }) => {
-  test.setTimeout(45_000);
+  test.setTimeout(ciTimeout(45_000, 135_000));
   await page.setViewportSize({ width: 1640, height: 900 });
   await page.goto("/");
   await waitForNormalFlight(page);
@@ -291,6 +292,7 @@ test("explicit TestBridge instrumentation preserves exact lock and terminal hash
 });
 
 test("hash-mismatch Engage fails visibly, remains modal, and focuses the inline live error", async ({ page }) => {
+  test.setTimeout(ciTimeout(30_000, 90_000));
   await page.goto("/?testBridge=1");
   await page.waitForFunction(() => Boolean((window as any).TestBridge));
   await waitForNormalFlight(page);

@@ -1,6 +1,8 @@
 import { expect, type Locator, type Page } from "@playwright/test";
+import { ciTimeout } from "./ciTiming";
 
 export const PREVIEW_HASH_PATTERN = /^[a-f0-9]{8}$/;
+const previewHashTimeout = ciTimeout(5_000, 20_000);
 
 export async function openVisiblePlanner(page: Page): Promise<Locator> {
   const planner = page.getByTestId("navigation-planner");
@@ -18,7 +20,7 @@ export async function currentVisiblePreviewHash(page: Page): Promise<string | nu
 }
 
 export async function readVisiblePreviewHash(page: Page): Promise<string> {
-  await expect.poll(() => currentVisiblePreviewHash(page)).toMatch(PREVIEW_HASH_PATTERN);
+  await expect.poll(() => currentVisiblePreviewHash(page), { timeout: previewHashTimeout }).toMatch(PREVIEW_HASH_PATTERN);
   return (await currentVisiblePreviewHash(page))!;
 }
 
@@ -42,17 +44,62 @@ export async function selectVisiblePlannerProfile(
   await openVisiblePlanner(page);
   const profileButton = page.locator(`#planner-profile-${profile.toLowerCase()}`);
   await expect(profileButton).toBeEnabled();
-  await profileButton.click();
-  await expect(profileButton).toHaveAttribute("aria-pressed", "true");
-  return readVisiblePreviewHash(page);
+  if (await profileButton.getAttribute("aria-pressed") !== "true") {
+    const previousHash = await currentVisiblePreviewHash(page);
+    await profileButton.click();
+    await expect(profileButton).toHaveAttribute("aria-pressed", "true");
+    if (previousHash !== null) {
+      await expect.poll(() => currentVisiblePreviewHash(page)).not.toBe(previousHash);
+    }
+  }
+  const hash = await readVisiblePreviewHash(page);
+  await expect(page.locator("#planner-route-detail")).toContainText(hash);
+  return hash;
 }
 
 export async function previewVisibleRoute(page: Page): Promise<string> {
   await openVisiblePlanner(page);
   const previewButton = page.locator("#planner-preview-route");
+  const engageButton = page.getByTestId("planner-engage-route");
   await expect(previewButton).toBeEnabled();
   await previewButton.click();
-  return readVisiblePreviewHash(page);
+  await expect(engageButton).toBeEnabled();
+  const hash = await readVisiblePreviewHash(page);
+  await expect(page.locator("#planner-route-detail")).toContainText(hash);
+  return hash;
+}
+
+export async function previewAndEngageVisibleRoute(page: Page, expectedHash: string): Promise<string> {
+  const planner = await openVisiblePlanner(page);
+  const previewButton = page.locator("#planner-preview-route");
+  await expect(previewButton).toBeEnabled();
+
+  const interaction = await page.evaluate((expectedPreviewHash) => {
+    const visiblePlanner = document.querySelector<HTMLElement>('[data-testid="navigation-planner"]');
+    const preview = document.getElementById("planner-preview-route") as HTMLButtonElement | null;
+    const engage = document.getElementById("planner-engage-route") as HTMLButtonElement | null;
+    const routeDetail = document.getElementById("planner-route-detail");
+    if (!visiblePlanner || !preview || !engage || !routeDetail) {
+      return { previewHash: null, detailText: "", engageEnabled: false, engaged: false };
+    }
+
+    preview.click();
+    const previewHash = visiblePlanner.dataset.visiblePreviewHash ?? null;
+    const detailText = routeDetail.textContent ?? "";
+    const engageEnabled = !engage.disabled && engage.getAttribute("aria-disabled") !== "true";
+    const engaged = previewHash === expectedPreviewHash && detailText.includes(expectedPreviewHash) && engageEnabled;
+    if (engaged) {
+      engage.click();
+    }
+    return { previewHash, detailText, engageEnabled, engaged };
+  }, expectedHash);
+
+  expect(interaction.previewHash).toBe(expectedHash);
+  expect(interaction.detailText).toContain(expectedHash);
+  expect(interaction.engageEnabled).toBe(true);
+  expect(interaction.engaged).toBe(true);
+  await expect(planner).toBeHidden();
+  return interaction.previewHash!;
 }
 
 export async function engageVisiblePreview(page: Page, expectedHash: string): Promise<void> {
