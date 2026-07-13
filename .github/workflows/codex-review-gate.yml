@@ -24,7 +24,7 @@ jobs:
   current-head-reviewed:
     name: Current head reviewed
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     env:
       GH_TOKEN: ${{ github.token }}
       CODEX_REVIEW_TOKEN: ${{ secrets.CODEX_REVIEW_TOKEN }}
@@ -64,6 +64,7 @@ jobs:
 
           fail_status_on_exit() {
             local exit_code=$?
+            trap - EXIT
             if [[ ${exit_code} -ne 0 ]]; then
               set_gate_status "failure" "Codex review gate failed for ${short_sha}" || true
             fi
@@ -110,10 +111,14 @@ jobs:
               "repos/${REPOSITORY}/pulls/${PR_NUMBER}/reviews?per_page=100" \
               | jq -e --arg short "${short_sha}" --arg full "${HEAD_SHA}" '
                   any(.[][]?;
-                    (((.user.login // "") == "chatgpt-codex-connector[bot]") or
-                     ((.user.login // "") == "chatgpt-codex-connector")) and
-                    ((((.body // "") | contains($short))) or
-                     (((.body // "") | contains($full))))
+                    (
+                      ((.user.login // "") == "chatgpt-codex-connector[bot]") or
+                      ((.user.login // "") == "chatgpt-codex-connector")
+                    ) and (
+                      ((.commit_id // "") == $full) or
+                      ((.body // "") | contains($short)) or
+                      ((.body // "") | contains($full))
+                    )
                   )
                 ' >/dev/null
           }
@@ -122,9 +127,24 @@ jobs:
             gh api --paginate --slurp \
               -H "Accept: application/vnd.github+json" \
               "repos/${REPOSITORY}/issues/${PR_NUMBER}/comments?per_page=100" \
-              | jq -r --arg marker "${marker}" '
-                  [.[][]? | select((.body // "") | contains($marker))][-1].id // empty
-                '
+              | jq -r \
+                  --arg marker "${marker}" \
+                  --arg short "${short_sha}" \
+                  --arg full "${HEAD_SHA}" '
+                    [
+                      .[][]? |
+                      select(
+                        ((.body // "") | contains($marker)) or
+                        (
+                          ((.body // "") | contains("@codex review")) and
+                          (
+                            ((.body // "") | contains($short)) or
+                            ((.body // "") | contains($full))
+                          )
+                        )
+                      )
+                    ][-1].id // empty
+                  '
           }
 
           codex_acknowledged_request() {
@@ -136,9 +156,10 @@ jobs:
               "repos/${REPOSITORY}/issues/comments/${comment_id}/reactions?per_page=100" \
               | jq -e '
                   any(.[][]?;
-                    (((.user.login // "") == "chatgpt-codex-connector[bot]") or
-                     ((.user.login // "") == "chatgpt-codex-connector")) and
-                    (.content == "+1")
+                    (
+                      ((.user.login // "") == "chatgpt-codex-connector[bot]") or
+                      ((.user.login // "") == "chatgpt-codex-connector")
+                    ) and (.content == "+1")
                   )
                 ' >/dev/null
           }
@@ -163,7 +184,7 @@ jobs:
                 echo
                 echo "No current-head Codex review exists and the repository secret \`CODEX_REVIEW_TOKEN\` is not configured."
                 echo
-                echo "Add the narrowly scoped linked-user token described in \`.github/CODEX_REVIEW_GATE.md\`, or comment \`@codex review\` manually and re-run this workflow."
+                echo "Add the narrowly scoped linked-user token described in \`.github/CODEX_REVIEW_GATE.md\`, or comment \`@codex review\` together with head \`${short_sha}\` and re-run this workflow."
               } >> "${GITHUB_STEP_SUMMARY}"
               echo "::error::CODEX_REVIEW_TOKEN is required for automatic current-head re-review requests."
               exit 1
@@ -187,9 +208,9 @@ jobs:
             request_comment_id="$(jq -r '.id' <<<"${request_response}")"
           fi
 
-          # Accept either a Codex review submission naming the current head, or
+          # Accept either a Codex review submission tied to the current head, or
           # Codex's thumbs-up reaction when it found no review comments.
-          for _ in {1..36}; do
+          for _ in {1..56}; do
             if codex_review_exists; then
               complete_success \
                 "Codex review submission for the current head" \
@@ -210,7 +231,7 @@ jobs:
             echo
             echo "No Codex result was found for head \`${HEAD_SHA}\`."
             echo
-            echo "Comment \`@codex review\` on pull request #${PR_NUMBER}, then re-run this workflow."
+            echo "Comment \`@codex review\` together with head \`${short_sha}\` on pull request #${PR_NUMBER}, then re-run this workflow."
             echo "Verify that \`CODEX_REVIEW_TOKEN\` belongs to the GitHub user connected to Codex."
           } >> "${GITHUB_STEP_SUMMARY}"
 
