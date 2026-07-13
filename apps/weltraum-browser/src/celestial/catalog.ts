@@ -114,6 +114,15 @@ export const createCelestialCatalog = (value: unknown): CelestialCatalog => {
   if (!Array.isArray(value.bodies) || value.bodies.length === 0) {
     return failCelestial("InvalidCatalog", "/bodies", "Celestial catalog bodies must be a non-empty array.");
   }
+  for (let index = 0; index < value.bodies.length; index += 1) {
+    if (!Object.hasOwn(value.bodies, index)) {
+      return failCelestial(
+        "InvalidCatalog",
+        `/bodies/${index}`,
+        "Celestial catalog bodies must be a dense array."
+      );
+    }
+  }
 
   const rawBodies = value.bodies.map((entry, index) => {
     if (!isCelestialRecord(entry)) {

@@ -14,6 +14,7 @@ import {
   assertCelestialSchemaVersion,
   deepFreezeCelestial,
   isCelestialRecord,
+  requireFiniteNumber,
   requireFinitePositive,
   requireFiniteVec3
 } from "./validation";
@@ -87,8 +88,14 @@ export const gravitationalAccelerationAt = (
       `Gravity query for ${source.bodyId} is inside its minimum radius.`
     );
   }
-  const magnitudeMetersPerSecondSquared = source.gravitationalParameterMu / distanceMeters ** 2;
-  const accelerationMetersPerSecondSquared = scale(displacement, magnitudeMetersPerSecondSquared / distanceMeters);
+  const magnitudeMetersPerSecondSquared = requireFiniteNumber(
+    source.gravitationalParameterMu / distanceMeters ** 2,
+    "/magnitudeMetersPerSecondSquared"
+  );
+  const accelerationMetersPerSecondSquared = requireFiniteVec3(
+    scale(displacement, magnitudeMetersPerSecondSquared / distanceMeters),
+    "/accelerationMetersPerSecondSquared"
+  );
   return deepFreezeCelestial({
     sourceBodyId: source.bodyId,
     queryPositionMeters: queryPosition,
@@ -103,10 +110,16 @@ export const gravitationalAccelerationAt = (
 export const gravityAccelerationAtPosition = gravitationalAccelerationAt;
 
 export const surfaceGravityMetersPerSecondSquared = (body: CelestialBodyDefinition): number =>
-  body.gravity.gravitationalParameterMu / body.radiusMeters ** 2;
+  requireFiniteNumber(
+    body.gravity.gravitationalParameterMu / body.radiusMeters ** 2,
+    "/surfaceGravityMetersPerSecondSquared"
+  );
 
 export const escapeVelocityMetersPerSecond = (body: CelestialBodyDefinition): number =>
-  Math.sqrt(2 * body.gravity.gravitationalParameterMu / body.radiusMeters);
+  requireFiniteNumber(
+    Math.sqrt(2 * body.gravity.gravitationalParameterMu / body.radiusMeters),
+    "/escapeVelocityMetersPerSecond"
+  );
 
 export const surfaceGravity = surfaceGravityMetersPerSecondSquared;
 export const escapeVelocity = escapeVelocityMetersPerSecond;

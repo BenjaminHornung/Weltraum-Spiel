@@ -1,10 +1,23 @@
 import type { Vec3 } from "../core/vector";
 import { failCelestial } from "./errors";
 import type { OrbitDefinition, KeplerSolution, KeplerSolverOptions, RelativeOrbitalState } from "./types";
-import { deepFreezeCelestial, requireFiniteNumber, requireFinitePositive } from "./validation";
+import {
+  deepFreezeCelestial,
+  requireFiniteNumber,
+  requireFinitePositive,
+  requireFiniteVec3
+} from "./validation";
 
 const TWO_PI = Math.PI * 2;
 const DEGREES_TO_RADIANS = Math.PI / 180;
+
+const requireFinitePositiveResult = (value: number, path: string, label: string): number => {
+  const result = requireFiniteNumber(value, path);
+  if (result <= 0) {
+    return failCelestial("InvalidNumber", path, `${label} must be finite and greater than zero.`);
+  }
+  return result;
+};
 
 export const DEFAULT_KEPLER_SOLVER_OPTIONS: KeplerSolverOptions = Object.freeze({
   toleranceRadians: 1e-13,
@@ -66,7 +79,11 @@ export const solveEllipticKepler = (
 export const orbitalPeriodSeconds = (semiMajorAxisMeters: number, parentMu: number): number => {
   const semiMajorAxis = requireFinitePositive(semiMajorAxisMeters, "/orbit/semiMajorAxisMeters");
   const mu = requireFinitePositive(parentMu, "/parentMu");
-  return TWO_PI * Math.sqrt(semiMajorAxis ** 3 / mu);
+  return requireFinitePositiveResult(
+    TWO_PI * Math.sqrt(semiMajorAxis ** 3 / mu),
+    "/orbitalPeriodSeconds",
+    "Orbital period"
+  );
 };
 
 const rotatePerifocalVector = (vector: Vec3, orbit: OrbitDefinition): Vec3 => {
@@ -122,7 +139,11 @@ export const propagateKeplerOrbit = (
   const requestedTime = requireFiniteNumber(requestedTimeSeconds, "/requestedTimeSeconds");
   const semiMajorAxis = orbit.semiMajorAxisMeters;
   const eccentricity = orbit.eccentricity;
-  const meanMotionRadiansPerSecond = Math.sqrt(mu / semiMajorAxis ** 3);
+  const meanMotionRadiansPerSecond = requireFinitePositiveResult(
+    Math.sqrt(mu / semiMajorAxis ** 3),
+    "/meanMotionRadiansPerSecond",
+    "Mean motion"
+  );
   const meanAnomalyRadians = normalizeAngleRadians(
     orbit.meanAnomalyAtEpochDegrees * DEGREES_TO_RADIANS + meanMotionRadiansPerSecond * (requestedTime - epoch)
   );
@@ -132,21 +153,27 @@ export const propagateKeplerOrbit = (
   const sqrtOneMinusEccentricitySquared = Math.sqrt(1 - eccentricity ** 2);
   const eccentricRadiusFactor = 1 - eccentricity * cosine;
   const eccentricAnomalyRate = meanMotionRadiansPerSecond / eccentricRadiusFactor;
-  const positionMeters = rotatePerifocalVector(
-    {
-      x: semiMajorAxis * (cosine - eccentricity),
-      y: semiMajorAxis * sqrtOneMinusEccentricitySquared * sine,
-      z: 0
-    },
-    orbit
+  const positionMeters = requireFiniteVec3(
+    rotatePerifocalVector(
+      {
+        x: semiMajorAxis * (cosine - eccentricity),
+        y: semiMajorAxis * sqrtOneMinusEccentricitySquared * sine,
+        z: 0
+      },
+      orbit
+    ),
+    "/positionMeters"
   );
-  const velocityMetersPerSecond = rotatePerifocalVector(
-    {
-      x: -semiMajorAxis * sine * eccentricAnomalyRate,
-      y: semiMajorAxis * sqrtOneMinusEccentricitySquared * cosine * eccentricAnomalyRate,
-      z: 0
-    },
-    orbit
+  const velocityMetersPerSecond = requireFiniteVec3(
+    rotatePerifocalVector(
+      {
+        x: -semiMajorAxis * sine * eccentricAnomalyRate,
+        y: semiMajorAxis * sqrtOneMinusEccentricitySquared * cosine * eccentricAnomalyRate,
+        z: 0
+      },
+      orbit
+    ),
+    "/velocityMetersPerSecond"
   );
 
   return deepFreezeCelestial({

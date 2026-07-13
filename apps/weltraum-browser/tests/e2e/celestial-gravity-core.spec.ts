@@ -45,7 +45,7 @@ interface CelestialEvidence {
   readonly normalPageGuard: NormalPageGuard;
   readonly browserHealth: {
     readonly consoleErrors: readonly string[];
-    readonly ignoredKnownBrowserNoiseRule: "only the normal page favicon.ico HTTP 404 console message";
+    readonly ignoredKnownBrowserNoiseRule: "only the normal page favicon.ico HTTP 404 console message or response";
     readonly pageErrors: readonly string[];
     readonly failedRequests: readonly string[];
     readonly errorResponses: readonly string[];
@@ -189,6 +189,11 @@ test("normal page imports and proves the deterministic celestial and gravity cor
   page.on("pageerror", (error) => pageErrors.push(error.message));
   page.on("requestfailed", (request) => failedRequests.push(`${request.method()} ${request.url()}`));
   page.on("response", (response) => {
+    const url = new URL(response.url());
+    if (response.status() === 404 && url.pathname === "/favicon.ico") {
+      ignoredKnownBrowserNoise.push(`${response.status()} ${response.url()}`);
+      return;
+    }
     if (response.status() >= 400) errorResponses.push(`${response.status()} ${response.url()}`);
   });
 
@@ -286,7 +291,7 @@ test("normal page imports and proves the deterministic celestial and gravity cor
     normalPageGuard,
     browserHealth: {
       consoleErrors,
-      ignoredKnownBrowserNoiseRule: "only the normal page favicon.ico HTTP 404 console message",
+      ignoredKnownBrowserNoiseRule: "only the normal page favicon.ico HTTP 404 console message or response",
       pageErrors,
       failedRequests,
       errorResponses
