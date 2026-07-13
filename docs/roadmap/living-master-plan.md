@@ -1,6 +1,6 @@
 # Weltraum Browser Mainline: Living Master Plan
 Stand: 2026-07-13
-Letzter Abgleich: `main` @ `639f2e11ee98814b92ad2abb2ec0f0847483e498`
+Letzter Abgleich: `main` @ `dbf4d1ef7071ceada692250672eb354b814d1dec`
 Dokumenttyp: laufender Planungsindex, keine Implementierungsspezifikation
 Produkt-Mainline: Browser, Three.js und TypeScript
 Legacy/Referenz: Unity-Prototyp, historische Specs und Runtime-Evidence
@@ -145,6 +145,11 @@ Planeten-/Terrain-Streaming, mehrere Biome und Sites, Multi-Drone-Operationen, F
 
 - **[OPEN] P00.03.04 Architektur-Entscheidungslog**
   Neue irreversible Entscheidungen als kleine ADRs festhalten, besonders für Persistence, Orbitmodell, Surface-Übergang, Builder-Runtime und Multiplayer-Authority.
+
+### P00.04 External Reference Governance
+
+- **[OPEN] P00.04.01 External Reference Governance**
+  Externe Referenzen über eine versionierte Adoption-Matrix mit Entscheidung, Pin, Lizenz und Provenance führen; README-Aussagen und Code-Evidence bleiben getrennt. Es besitzt keine harte Vorbedingung, schließt aber an P00.03.02/P00.03.04 an; Acceptance sind vollständige Referenzeinträge ohne fremde Sourcefragmente oder unbelegte Adoptionsentscheidung.
 
 ## P01. Core Runtime, Determinismus und Datenautorität
 
@@ -399,6 +404,45 @@ Planeten-/Terrain-Streaming, mehrere Biome und Sites, Multi-Drone-Operationen, F
 
 - **[DEFERRED] P04.04.04 Planetweite Terrain- und Biome-Generierung**
   Globale LOD, Millionen Sites, Klima-/Geologie- und Biome-Verteilung erst nach einem bewiesenen Surface Vertical Slice.
+
+### P04.05 Prozedurale Voxel-Planet-Runtime
+
+- **[RESEARCH] P04.05.01 Voxel Runtime Architecture Benchmark**
+  P00.04.01 und P14.02.01 liefern Governance und Messbasis; astronomische Makrodaten verwenden hierarchische Double-Precision-Frames, die globale Planetenrepräsentation bleibt nicht vollständig volumetrisch und nur das Near Field darf echte Microvoxels bei 0,25 m Qualitätsziel sowie 0,50 m Fallback verwenden. Acceptance sind reproduzierbare CPU-, GPU-, Memory- und Worker-Budgets für Macro Planet Data, Surface Tiles und lokale Bricks; World State und Voxel State bleiben Three.js-unabhängig, Three.js ist ausschließlich Renderer-Adapter und keine Research-Bibliothek gilt ohne weitere Evidence als beschlossen.
+
+- **[BLOCKED] P04.05.02 Planet Tile Scheduler**
+  Benötigt P04.02.02/P04.02.03, P04.03.04 und P04.05.01; Tile-Prioritäten berücksichtigen Geschwindigkeit, Route und Deadline. Deterministische Scheduler-Traces müssen Budgets, Cancellation und den aktiven Parent-Fallback bis zur Bereitschaft feinerer Repräsentationen belegen.
+
+- **[BLOCKED] P04.05.03 Representation Handoff**
+  Benötigt P04.05.02, P04.02.03 und P04.03.04; globale Shell, Surface Tile und editierbarer Voxel-Brick behalten stabile IDs und Revisionen. Acceptance sind lückenfreie Handoff-Tests, bei denen grobe Repräsentationen bis zur vollständigen Bereitschaft der feineren aktiv bleiben.
+
+- **[RESEARCH] P04.05.04 Takram Atmosphere Adapter Spike**
+  Benötigt P00.04.01 und den Vertrag aus P04.04.02; Takram three-geospatial wird ausschließlich hinter einem Atmosphere-/Render-Adapter auf Koordinatenfit, API, Lizenz und Performance geprüft. Erst gemessene Evidence darf eine spätere Adoption begründen.
+
+- **[RESEARCH] P04.05.05 Microvoxel Mesher Benchmark**
+  Benötigt P04.05.01 und den Golden Corpus aus P13.05.02; Terrain und Gebäude dürfen getrennte Mesher verwenden. Acceptance vergleicht 0,25 m und 0,50 m für Topologie, Seams, Durchsatz, Speicher und Edit-Latenz, ohne WASM vor einem Benchmark festzuschreiben.
+
+### P04.06 Galaxie, Sektoren und Birth Clusters
+
+- **[RESEARCH] P04.06.01 Birth Cluster Allocation**
+  Benötigt P01.01.04, P04.01.01 und P12.01.02; uncommitted oder unobserved bezeichnen zunächst getrennte Kandidatenklassifikationen für die spätere Platzierung eines privaten Hestia-Heimatsystems, während das formale AND/OR-Eignungsprädikat im Birth-Cluster-Allocation-Paket durch eine fail-closed Authority-Entscheidung festzulegen bleibt. Property Tests müssen deterministische Allokation, eine temporäre Pufferzone aus unentdeckten Nachbarsystemen und spätere normale Entdeckung durch andere Spieler belegen.
+
+- **[OPEN] P04.06.02 Story Normalization**
+  Baut auf der Allocation-Policy aus P04.06.01 und der Hestia-Richtung aus P13.03.02 auf; der Spieler beginnt auf Hestia ohne eigenes Schiff, authored Städte und Story-Hotspots überlagern die prozedurale Basis und referenzieren stabile Template-/Semantic-IDs statt absoluter Galaxiekoordinaten. Acceptance ist eine Normalisierungsmatrix, in der Ground-Origin, Progression und spätere Cluster-Überführung keine kanonische Storywahrheit verändern.
+
+- **[DEFERRED] P04.06.03 Hidden Sector Interest Management**
+  Benötigt P04.06.01 und P12.04.03; temporär gepufferte Sektoren dürfen vor Freigabe weder beobachtet noch durch fremde Simulation committed werden. Eine spätere Mehrclient-Evidence muss Geheimhaltung, Pufferabbau und anschließende normale Discovery belegen; ein vollständig bidirektionaler Offline-/Online-Merge bleibt eigenständige Research-Arbeit.
+
+### P04.07 Destructible Bodies, Mass and Dynamics
+
+- **[RESEARCH] P04.07.01 Destructible Asteroid Research**
+  Benötigt P04.05.05 und P12.03.05; lokale Voxelzerstörung, Persistenz und Runtime-Budgets werden zunächst an Asteroiden untersucht. Acceptance trennt sichtbare lokale Destruktion ausdrücklich von automatischen Änderungen eines Körperorbits.
+
+- **[RESEARCH] P04.07.02 Body Mass Properties**
+  Benötigt P04.07.01 und P03.03.02; Masse, Schwerpunkt und Trägheit werden revisionsfähig aus tatsächlich bilanzierten Material- und Massentransfers abgeleitet. Deterministische Delta-Evidence muss lokale Geometrieänderung und echte Masseneigenschaftsänderung unterscheiden.
+
+- **[DEFERRED] P04.07.03 Rotation/Orbit Coupling**
+  Benötigt P04.07.02, P03.03.01 bis P03.03.04 und P12.01.03; nur separat bilanzierte Massentransfers und Impulsübertragung dürfen Rotation oder Orbit beeinflussen. Langfristige Conservation- und Schwellwerttests bleiben Voraussetzung für jede Kopplung.
 
 ## P05. Player UI, Input, Maps und Accessibility
 
@@ -929,6 +973,9 @@ Planeten-/Terrain-Streaming, mehrere Biome und Sites, Multi-Drone-Operationen, F
 - **[OPEN] P12.03.04 Deterministic Save/Load Regression Harness**
   Roundtrip, Migration, Frame Shift, Plan Hash, Cargo, Mission und Event Queue mit gepinnten Signaturen testen.
 
+- **[BLOCKED] P12.03.05 Persistent Voxel Deltas**
+  Benötigt P12.01.02, P12.01.04, P12.01.05 und P04.05.03; ein WorldTemplate liefert Seeds und Versionen, während eine WorldInstance nur Semantic State und lokale Deltas statt Mesh- oder Three.js-Zustand speichert. Acceptance sind deterministische Roundtrip-, Replay- und Migrationstests über Versionswechsel.
+
 ### P12.04 Offline und Multiplayer
 
 - **[OPEN] P12.04.01 Offline-Time Policy**
@@ -1010,6 +1057,14 @@ Planeten-/Terrain-Streaming, mehrere Biome und Sites, Multi-Drone-Operationen, F
 - **[DEFERRED] P13.04.05 Musik und adaptive Score**
   Nach stabilen Gameplay States und Encounter-/Location-Vokabular.
 
+### P13.05 Voxel Asset Authoring und Compilation
+
+- **[OPEN] P13.05.01 GLB-to-Voxel Compiler**
+  Benötigt P07.02.05 und P00.04.01; GLB/glTF ist der kanonische Input für einen deterministischen, Three.js-unabhängigen Asset-Compiler. Acceptance sind gepinnte Inputs mit reproduzierbaren Voxel-/Semantik-Artefakten, Hashes, Bounds und verständlichen Reject-Diagnostics.
+
+- **[OPEN] P13.05.02 Voxel Golden Asset Corpus**
+  Baut auf dem Compiler-Vertrag aus P13.05.01 und der Lizenzprüfung aus P00.04.01 auf. Lizenzklare Golden Cases für dünne Wände, Diagonalen, Terrain, Gebäude, authored Hotspots und Damage müssen erwartete Hashes, Bounds und Qualitätsdiagnosen besitzen.
+
 ## P14. Tooling, Performance, Release und langfristige Plattform
 
 ### P14.01 Test- und CI-Plattform
@@ -1063,6 +1118,20 @@ Planeten-/Terrain-Streaming, mehrere Biome und Sites, Multi-Drone-Operationen, F
 - **[DEFERRED] P14.03.05 Multiplayer/Backend/Anti-cheat**
   Nach stabiler Singleplayer-Domain, Persistence, Authority und Encounter-Grundlage als separates Programm planen.
 
+### P14.04 WebGL Observability und Performance Evidence
+
+- **[RESEARCH] P14.04.01 Worker Data/Control Plane Benchmark**
+  Benötigt P04.05.01 und P14.02.01; große Worker-Payloads verwenden Transferables, während RPC nur die Control Plane vereinfachen darf. Acceptance vergleicht Transfer, Clone und Control-Overhead; WASM folgt nur aus Benchmarks, Shared Memory bleibt optional und erhält eine eigene Deploymentprüfung.
+
+- **[OPEN] P14.04.02 Spector WebGL Capture**
+  Baut auf P14.02.01 auf und definiert reproduzierbare, anlassbezogene Captures für Draw Calls, Programme, Buffer und GPU-State. Acceptance dokumentiert Capture-Rezept und Observer-Effekt; Spector bleibt WebGL-Capture, Chrome DevTools CPU-/Network-/Heap-Diagnostik, stats-gl Dev-only-Indikator und MemLab Leak-/Retainer-Harness.
+
+- **[OPEN] P14.04.03 Runtime Performance Telemetry**
+  Baut auf P14.02.01 auf und erfasst kontinuierlich CPU-, GPU-, Frame-, Streaming- und Memory-Signale mit klarer stats-gl-Rolle. Acceptance sind versionierte Budgets, repräsentative Szenarien und ein gemessener Telemetrie-Overhead, getrennt von Spector-Captures.
+
+- **[BLOCKED] P14.04.04 Streaming Memory Leak Harness**
+  Benötigt P04.03.04 und P14.04.03; wiederholte Tile-/Brick-Load-Unload-Zyklen werden mit MemLab-orientierten Retainer- und Heap-Prüfungen untersucht. Acceptance sind stabile Speicherbudgets und reproduzierbare Leak-Failures, nicht einzelne Momentaufnahmen.
+
 ## 7. Kritische Abhängigkeiten
 
 - `P06.02.03 Cargo-Mass-to-Flight` benötigt Runtime Container und Ship Cargo Aggregation.
@@ -1074,6 +1143,11 @@ Planeten-/Terrain-Streaming, mehrere Biome und Sites, Multi-Drone-Operationen, F
 - `P03 Encounters` benötigt Predictor, Event Queue, Sensor Knowledge und Timewarp/Real-Time Handoff.
 - `P10 Combat Economy` benötigt Ammo/Fuel/Repair Resources, Damage State und Legal/Faction Hooks.
 - `P04 große Planetenskalierung` benötigt nachgewiesene lokale Surface-/Streaming-/Persistence-Budgets.
+- `P04.05 Planetare Voxel-Runtime` benötigt Frame-, Loader- und Benchmark-Evidence; Representation Handoffs behalten grobe Parents bis zur Bereitschaft feinerer Daten aktiv.
+- `P04.06 Birth Clusters` benötigt deterministische Seeds, Celestial IDs und Save-Schemas; Hidden-Sector-Interest bleibt bis zu einer Online-Authority deferred.
+- `P12.03.05 Persistent Voxel Deltas` benötigt globale Save-/Migration-Verträge und stabile Representation-Handoff-IDs.
+- `P04.07 Destructible Bodies` benötigt Mesher-, Delta- und Orbitverträge; lokale Zerstörung verändert nicht automatisch Rotation oder Orbit.
+- `P14.04.04 Streaming Memory Leak Harness` benötigt einen realen Async Loader sowie kontinuierliche Runtime-Telemetrie.
 
 ## 8. Nächste empfohlene Spec-Pakete
 
