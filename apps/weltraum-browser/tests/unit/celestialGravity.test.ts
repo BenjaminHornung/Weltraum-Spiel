@@ -89,4 +89,22 @@ describe("pure local gravity queries", () => {
     expect(Object.isFrozen(gravity.accelerationMetersPerSecondSquared)).toBe(true);
     expect(Object.values(gravity.accelerationMetersPerSecondSquared).every(Number.isFinite)).toBe(true);
   });
+
+  it("fails closed when finite gravity inputs overflow derived public results", () => {
+    const overflowingSource = source("body.overflow", 0, Number.MAX_VALUE, 0.5);
+
+    expectCelestialError(
+      () => gravitationalAccelerationAt(overflowingSource, { x: 0.5, y: 0, z: 0 }),
+      "InvalidNumber"
+    );
+    expectCelestialError(
+      () => selectDominantGravitySource([overflowingSource], { x: 0.5, y: 0, z: 0 }),
+      "InvalidNumber"
+    );
+
+    const hestia = requireCelestialBody(STARTER_CELESTIAL_CATALOG, STARTER_BODY_IDS.hestia);
+    const tinyBody = { ...hestia, radiusMeters: Number.MIN_VALUE };
+    expectCelestialError(() => surfaceGravityMetersPerSecondSquared(tinyBody), "InvalidNumber");
+    expectCelestialError(() => escapeVelocityMetersPerSecond(tinyBody), "InvalidNumber");
+  });
 });

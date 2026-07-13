@@ -11,13 +11,16 @@ import {
   solveEllipticKepler
 } from "../../src/celestial";
 
-const expectCelestialError = (action: () => unknown, code: CelestialError["code"]): void => {
+const expectCelestialError = (action: () => unknown, code: CelestialError["code"], path?: string): void => {
   try {
     action();
     throw new Error(`Expected CelestialError ${code}.`);
   } catch (error) {
     expect(error).toBeInstanceOf(CelestialError);
     expect((error as CelestialError).code).toBe(code);
+    if (path !== undefined) {
+      expect((error as CelestialError).path).toBe(path);
+    }
   }
 };
 
@@ -55,6 +58,42 @@ describe("deterministic Kepler propagation", () => {
     expectCelestialError(
       () => solveEllipticKepler(1, 0.99, { toleranceRadians: Number.MIN_VALUE, maxIterations: 1 }),
       "KeplerConvergenceFailure"
+    );
+  });
+
+  it("fails closed when finite orbital inputs overflow derived public results", () => {
+    const body = requireCelestialBody(STARTER_CELESTIAL_CATALOG, STARTER_BODY_IDS.hestia);
+    const parent = requireCelestialBody(STARTER_CELESTIAL_CATALOG, STARTER_BODY_IDS.aurelia);
+    const overflowingOrbit = {
+      ...body.orbit!,
+      semiMajorAxisMeters: Number.MAX_VALUE,
+      eccentricity: 0.9,
+      meanAnomalyAtEpochDegrees: 180
+    };
+
+    expectCelestialError(
+      () => orbitalPeriodSeconds(Number.MAX_VALUE, parent.gravity.gravitationalParameterMu),
+      "InvalidNumber",
+      "/orbitalPeriodSeconds"
+    );
+    expectCelestialError(
+      () => propagateKeplerOrbit(overflowingOrbit, parent.gravity.gravitationalParameterMu, 0, 0),
+      "InvalidNumber"
+    );
+    expectCelestialError(
+      () => orbitalPeriodSeconds(Number.MIN_VALUE, Number.MAX_VALUE),
+      "InvalidNumber",
+      "/orbitalPeriodSeconds"
+    );
+    expectCelestialError(
+      () => propagateKeplerOrbit(
+        { ...body.orbit!, semiMajorAxisMeters: Number.MIN_VALUE },
+        parent.gravity.gravitationalParameterMu,
+        0,
+        0
+      ),
+      "InvalidNumber",
+      "/meanMotionRadiansPerSecond"
     );
   });
 });

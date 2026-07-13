@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   STARTER_BODY_IDS,
   STARTER_CELESTIAL_CATALOG,
+  CelestialError,
   bodyIdsForType,
   canonicalCelestialJson,
   childBodyIdsFor,
@@ -9,6 +10,17 @@ import {
   createStarterCelestialCatalog,
   requireCelestialBody
 } from "../../src/celestial";
+
+const expectCelestialError = (action: () => unknown, code: CelestialError["code"], path: string): void => {
+  try {
+    action();
+    throw new Error(`Expected CelestialError ${code}.`);
+  } catch (error) {
+    expect(error).toBeInstanceOf(CelestialError);
+    expect((error as CelestialError).code).toBe(code);
+    expect((error as CelestialError).path).toBe(path);
+  }
+};
 
 const EXPECTED_STARTER_IDS = [
   "asteroid.eber",
@@ -82,5 +94,20 @@ describe("starter celestial catalog", () => {
     expect(Object.isFrozen(catalog.indexes)).toBe(true);
     expect(Object.isFrozen(catalog.indexes.bodyById)).toBe(true);
     expect(Object.getPrototypeOf(catalog.indexes.bodyById)).toBeNull();
+  });
+
+  it("rejects sparse body arrays with a stable catalog error", () => {
+    const sparseBodies = new Array(2);
+    sparseBodies[0] = STARTER_CELESTIAL_CATALOG.bodies[0];
+
+    expectCelestialError(
+      () => createCelestialCatalog({
+        schemaVersion: 1,
+        catalogId: "catalog.sparse.v1",
+        bodies: sparseBodies
+      }),
+      "InvalidCatalog",
+      "/bodies/1"
+    );
   });
 });
