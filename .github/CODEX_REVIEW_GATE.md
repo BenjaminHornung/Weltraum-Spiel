@@ -22,13 +22,13 @@ For every non-draft pull request, the workflow:
 
 A new push cancels the older run and starts a new check for the new head SHA. Draft pull requests pass without requesting a review and are checked when marked ready.
 
-The workflow does not check out or execute pull-request code. Its write access is limited to posting the review-request comment.
+The workflow does not check out or execute pull-request code. Its default `GITHUB_TOKEN` is read-only. The only write operation uses the separately configured, narrowly scoped `CODEX_REVIEW_TOKEN` to post the review-request comment.
 
-## Optional token for fully automatic re-requests
+## Required token for automatic re-requests
 
-The workflow first uses the repository secret `CODEX_REVIEW_TOKEN` when present and otherwise falls back to the normal `GITHUB_TOKEN`.
+Comments created with the default `GITHUB_TOKEN` are authored by `github-actions[bot]`. Codex cannot associate that bot identity with the GitHub user connected to Codex, so such comments cannot reliably start a review.
 
-A dedicated fine-grained token is recommended when GitHub or the Codex integration ignores comments authored by `github-actions[bot]`. Restrict the token to this repository and grant only the permissions needed to read pull-request reviews and post pull-request conversation comments. Store it as:
+Create a dedicated fine-grained personal access token for the same GitHub user that is connected to Codex. Restrict it to this repository and grant only the permissions needed to read pull-request reviews and post pull-request conversation comments. Store it as:
 
 ```text
 Settings -> Secrets and variables -> Actions -> New repository secret
@@ -37,7 +37,7 @@ Name: CODEX_REVIEW_TOKEN
 
 Do not commit the token or place it in workflow YAML, repository variables, logs or evidence.
 
-Without the optional secret, the gate remains fail-closed. If the automatic comment is ignored, it reports the exact manual recovery action: comment `@codex review` on the pull request and re-run the failed job.
+When the secret is absent, the gate does not create a noisy bot-authored request. It fails with the exact recovery action: either configure the secret or comment `@codex review` manually as the connected GitHub user and re-run the job.
 
 ## Make it a real merge requirement
 
@@ -51,8 +51,8 @@ Also enable conversation-resolution requirements when unresolved Codex inline fi
 
 ## Manual recovery
 
-When a run times out:
+When a run reports a missing token or times out:
 
-1. comment `@codex review` on the pull request;
+1. comment `@codex review` on the pull request as the GitHub user connected to Codex;
 2. wait for the Codex review or thumbs-up reaction;
 3. re-run `Codex Review Gate / Current head reviewed`.
