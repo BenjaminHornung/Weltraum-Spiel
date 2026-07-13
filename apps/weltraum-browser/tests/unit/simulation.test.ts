@@ -450,6 +450,61 @@ describe("FixedStepSimulationLoop", () => {
       id: "reach-range-1000m",
       status: "complete"
     }));
+    expect(telemetry.navigationObjective?.options).toEqual([
+      expect.objectContaining({ id: "reach-range-500m", status: "complete", isActive: false }),
+      expect.objectContaining({ id: "reach-range-1000m", status: "complete", isActive: true }),
+      expect.objectContaining({ id: "reach-range-2500m", status: "available", isActive: false })
+    ]);
+
+    const completed1000mPlanHash = telemetry.executor.completedPlanHash;
+    expect(completed1000mPlanHash).toBe(selected1000mResult.previewPlanHash);
+
+    const selected2500mResult = controller.dispatchCommand({
+      type: "SelectTarget",
+      targetId: playableLargeFieldTargets.range2500.id
+    });
+    const selected2500m = selected2500mResult.telemetry;
+    const preview2500mHash = selected2500mResult.previewPlanHash;
+
+    expect(selected2500mResult.success).toBe(true);
+    expect(selected2500mResult.code).toBe("TargetSelected");
+    expect(preview2500mHash).toMatch(/^[a-f0-9]{8}$/);
+    expect(preview2500mHash).not.toBe(completed1000mPlanHash);
+    expect(selected2500m.executor.status).toBe("Idle");
+    expect(selected2500m.executor.stationKeepingActive).toBe(false);
+    expect(selected2500m.executor.completedPlanHash).toBe(completed1000mPlanHash);
+    expect(selected2500m.selectedTarget?.id).toBe(playableLargeFieldTargets.range2500.id);
+    expect(selected2500m.routePreview?.state).toBe("Ready");
+    expect(selected2500m.routePreview?.stale).toBe(false);
+    expect(selected2500m.routePreview?.plan?.target.id).toBe(playableLargeFieldTargets.range2500.id);
+    expect(selected2500m.routePreview?.plan?.planHash).toBe(preview2500mHash);
+    expect(selected2500m.routePreview?.lockAdmission).toEqual(expect.objectContaining({
+      ok: true,
+      code: "Ready",
+      planHash: preview2500mHash
+    }));
+    expect(selected2500m.navigationObjective).toEqual(expect.objectContaining({
+      id: "reach-range-2500m",
+      status: "route-ready",
+      nextAction: "engage autopilot"
+    }));
+    expect(selected2500m.navigationObjective?.options).toEqual([
+      expect.objectContaining({ id: "reach-range-500m", status: "complete", isActive: false }),
+      expect.objectContaining({ id: "reach-range-1000m", status: "complete", isActive: false }),
+      expect.objectContaining({ id: "reach-range-2500m", status: "route-ready", isActive: true })
+    ]);
+
+    const stable2500m = controller.step(30);
+    expect(stable2500m.routePreview?.plan?.planHash).toBe(preview2500mHash);
+    expect(stable2500m.routePreview?.lockAdmission).toEqual(expect.objectContaining({
+      ok: true,
+      code: "Ready",
+      planHash: preview2500mHash
+    }));
+    expect(stable2500m.navigationObjective).toEqual(expect.objectContaining({
+      id: "reach-range-2500m",
+      status: "route-ready"
+    }));
   });
 
   it("keeps completed station holding active while no planning mutation occurs", () => {

@@ -1,4 +1,5 @@
-import type { AutopilotSpeedProfileId, RoutePlan, RouteSegment, TelemetrySnapshot, Vec3 } from "../core";
+import type { AutopilotSpeedProfileId, PreviewLockRejectionCode, RoutePlan, RouteSegment, TelemetrySnapshot, Vec3 } from "../core";
+import { createNavigationMapSnapshot, navigationMapRouteSnapshot } from "../navigation/map";
 import type { BrowserRuntimeCommand, BrowserRuntimeCommandResult } from "../runtime/commands";
 import type { ShipVisualSourceSnapshot } from "../render/three/shipVisual";
 import type { NavigationObjectiveStatus } from "../sim/telemetry";
@@ -252,7 +253,7 @@ const clampUnit = (value: number): number => Math.max(0, Math.min(1, value));
 
 export const calculateRouteProgressPercent = (telemetry: TelemetrySnapshot): number | null => {
   const lockedPlan = telemetry.lockedPlan;
-  const previewPlan = telemetry.routePreview?.state === "Ready" ? telemetry.routePreview.plan : null;
+  const previewPlan = evaluateRoutePreviewPresentation(telemetry).displayPlan;
   const plan = lockedPlan ?? previewPlan;
   if (!plan) {
     return null;
@@ -446,18 +447,139 @@ const createObjectiveViewModel = (telemetry: TelemetrySnapshot): StatusHudObject
   };
 };
 
+type RoutePreviewPresentation =
+  | { readonly state: "None"; readonly displayPlan: null; readonly admittedPlan: null; readonly message: string; readonly runtimeMessage: string }
+  | { readonly state: "Locked"; readonly displayPlan: null; readonly admittedPlan: null; readonly message: string; readonly runtimeMessage: string }
+  | { readonly state: "Rejected"; readonly displayPlan: RoutePlan | null; readonly admittedPlan: null; readonly message: string; readonly runtimeMessage: string }
+  | { readonly state: "Admitted"; readonly displayPlan: RoutePlan; readonly admittedPlan: RoutePlan; readonly message: string; readonly runtimeMessage: string };
+
+const rejectedRoutePreviewPresentation = (message: string, displayPlan: RoutePlan | null = null): RoutePreviewPresentation => ({
+  state: "Rejected",
+  displayPlan,
+  admittedPlan: null,
+  message,
+  runtimeMessage: message
+});
+
+const rejectedLockAdmissionMessage = (code: PreviewLockRejectionCode): string => {
+  switch (code) {
+    case "MissingPreview":
+      return "Create a route preview before engaging autopilot.";
+    case "ExpectedPlanHashMismatch":
+      return "The visible route changed. Review the current preview before engaging.";
+    case "PlanAlreadyLocked":
+      return "Cancel the current autopilot route before engaging another plan.";
+    case "PreviewStale":
+      return "The route preview is stale. Preview or replan before engaging.";
+    case "RouteValidationRejected":
+      return "The exact preview route no longer passes route validation.";
+    case "VelocityMismatch":
+      return "Ship velocity changed. Replan before engaging.";
+    case "FlightAdmissionRejected":
+      return "Current fuel, braking reserve, or flight authority cannot safely engage this route.";
+    default:
+      return "The route preview was rejected for engagement. Replan before engaging.";
+  }
+};
+
+const displayableCurrentStateRejectionCodes: ReadonlySet<PreviewLockRejectionCode> = new Set([
+  "VelocityMismatch",
+  "FlightAdmissionRejected"
+]);
+
+const evaluateRoutePreviewPresentation = (telemetry: TelemetrySnapshot): RoutePreviewPresentation => {
+  const preview = telemetry.routePreview;
+  if (telemetry.lockedPlan || telemetry.executor.planHash) {
+    const message = "A route is already locked.";
+    return {
+      state: "Locked",
+      displayPlan: null,
+      admittedPlan: null,
+      message,
+      runtimeMessage: telemetry.runtimeMessage && telemetry.runtimeMessage !== preview?.playerMessage
+        ? telemetry.runtimeMessage
+        : message
+    };
+  }
+  if (!preview) {
+    const message = telemetry.selectedTarget
+      ? "Create a route preview before engaging autopilot."
+      : "Select a target to preview a route.";
+    return {
+      state: "None",
+      displayPlan: null,
+      admittedPlan: null,
+      message,
+      runtimeMessage: telemetry.runtimeMessage ?? "ready"
+    };
+  }
+  if (preview.state === "Stale" || preview.stale) {
+    return rejectedRoutePreviewPresentation("The route preview is stale. Preview or replan before engaging.");
+  }
+  if (preview.state !== "Ready") {
+    return rejectedRoutePreviewPresentation("No valid route preview is available.");
+  }
+
+  const plan = preview.plan;
+  if (!plan) {
+    return rejectedRoutePreviewPresentation("Create a route preview before engaging autopilot.");
+  }
+  if (preview.validation?.ok !== true || preview.rejectedReasonCodes.length > 0) {
+    return rejectedRoutePreviewPresentation("The exact preview route no longer passes route validation.");
+  }
+
+  const admission = preview.lockAdmission;
+  if (!admission) {
+    return rejectedRoutePreviewPresentation("The route preview has no lock admission. Replan before engaging.");
+  }
+  if (!admission.ok) {
+    const message = rejectedLockAdmissionMessage(admission.code);
+    if (!displayableCurrentStateRejectionCodes.has(admission.code)) {
+      return rejectedRoutePreviewPresentation(message);
+    }
+    if (admission.planHash !== plan.planHash) {
+      return rejectedRoutePreviewPresentation("The visible route changed. Review the current preview before engaging.");
+    }
+    if (plan.planHash === telemetry.executor.completedPlanHash) {
+      return rejectedRoutePreviewPresentation("Select or replan a new route before engaging.");
+    }
+    return rejectedRoutePreviewPresentation(message, plan);
+  }
+  if (admission.planHash !== plan.planHash) {
+    return rejectedRoutePreviewPresentation("The visible route changed. Review the current preview before engaging.");
+  }
+  if (plan.planHash === telemetry.executor.completedPlanHash) {
+    return rejectedRoutePreviewPresentation("Select or replan a new route before engaging.");
+  }
+
+  return {
+    state: "Admitted",
+    displayPlan: plan,
+    admittedPlan: plan,
+    message: preview.playerMessage,
+    runtimeMessage: telemetry.runtimeMessage ?? preview.playerMessage
+  };
+};
+
+const admittedNewRoutePreviewPlan = (telemetry: TelemetrySnapshot): RoutePlan | null =>
+  evaluateRoutePreviewPresentation(telemetry).admittedPlan;
+
 const createRouteTone = (telemetry: TelemetrySnapshot, warningChips: readonly StatusHudWarningChipViewModel[]): StatusHudTone => {
   if (warningChips.some((chip) => chip.severity === "Critical") || telemetry.executor.replanRequired || telemetry.executor.status === "Diverged") {
     return "blocked";
   }
-  if (telemetry.executor.status === "Arrived" || telemetry.executor.stationKeepingActive) {
-    return "holding";
-  }
   if (telemetry.executor.status === "Executing" || Boolean(telemetry.executor.planHash || telemetry.lockedPlan)) {
     return "active";
   }
-  if (telemetry.routePreview?.state === "Ready" && telemetry.routePreview.plan) {
+  if (admittedNewRoutePreviewPlan(telemetry)) {
     return "ready";
+  }
+  const previewPresentation = evaluateRoutePreviewPresentation(telemetry);
+  if (previewPresentation.state === "Rejected" && previewPresentation.displayPlan) {
+    return "blocked";
+  }
+  if (telemetry.executor.status === "Arrived" || telemetry.executor.stationKeepingActive) {
+    return "holding";
   }
   return "manual";
 };
@@ -473,8 +595,9 @@ const formatVisualSourceLine = (visualSource: ShipVisualSourceSnapshot | undefin
 };
 
 const createActionPanel = (telemetry: TelemetrySnapshot, warningChips: readonly StatusHudWarningChipViewModel[], routeTone: StatusHudTone): ActionPanelViewModel => {
+  const previewPresentation = evaluateRoutePreviewPresentation(telemetry);
   const hasLockedRoute = Boolean(telemetry.executor.planHash || telemetry.lockedPlan);
-  const hasReadyPreview = telemetry.routePreview?.state === "Ready" && Boolean(telemetry.routePreview.plan) && (telemetry.routePreview.lockAdmission?.ok ?? true);
+  const hasReadyPreview = previewPresentation.state === "Admitted";
   const hasCriticalWarning = warningChips.some((chip) => chip.severity === "Critical");
   const nextObjectiveAvailable =
     telemetry.navigationObjective?.status === "complete" &&
@@ -540,15 +663,15 @@ const createActionPanel = (telemetry: TelemetrySnapshot, warningChips: readonly 
     };
   }
 
-  if (telemetry.routePreview?.state === "Ready" && telemetry.routePreview.plan && telemetry.routePreview.lockAdmission && !telemetry.routePreview.lockAdmission.ok) {
+  if (previewPresentation.state === "Rejected") {
     return {
       title: "Route Action",
       primaryLabel: "Hold route",
       primaryCommandEnabled: false,
-      primaryDisabledReason: telemetry.routePreview.lockAdmission.message,
+      primaryDisabledReason: previewPresentation.message,
       secondaryLabel: "Cancel",
-      stateLabel: telemetry.routePreview.lockAdmission.message,
-      stateTone: "blocked"
+      stateLabel: previewPresentation.message,
+      stateTone: routeTone
     };
   }
 
@@ -628,7 +751,6 @@ const formatControlModeEffectState = (telemetry: TelemetrySnapshot): string => {
 export const createStatusHudViewModel = (telemetry: TelemetrySnapshot, visualSource?: ShipVisualSourceSnapshot): StatusHudViewModel => {
   const snapshot = telemetry.flightSnapshot;
   const selectedTarget = telemetry.selectedTarget ?? telemetry.lockedPlan?.target ?? null;
-  const preview = telemetry.routePreview;
   const target = telemetry.lockedPlan?.target ?? selectedTarget;
   const warningCodes = unique([
     ...snapshot.failureReasonCodes,
@@ -639,16 +761,27 @@ export const createStatusHudViewModel = (telemetry: TelemetrySnapshot, visualSou
 
   const warningChips = createWarningChips(warningCodes);
   const routeTone = createRouteTone(telemetry, warningChips);
-  const routePlan = telemetry.lockedPlan ?? (preview?.state === "Ready" ? preview.plan : null);
-  const previewDistance = preview?.plan?.score.distance;
-  const displayedDistance = telemetry.lockedPlan ? telemetry.executor.distanceToTarget : previewDistance;
+  const previewPresentation = evaluateRoutePreviewPresentation(telemetry);
+  const displayPreviewPlan = previewPresentation.displayPlan;
+  const admittedPreviewPlan = previewPresentation.admittedPlan;
+  const routePlan = telemetry.lockedPlan ?? displayPreviewPlan;
+  const previewDistance = displayPreviewPlan?.score.distance;
+  const displayedDistance = telemetry.lockedPlan || telemetry.executor.stationKeepingActive
+    ? telemetry.executor.distanceToTarget
+    : previewDistance;
   const routeState = telemetry.lockedPlan
     ? `${snapshot.routeValid ? "locked route valid" : "locked route invalid"}${telemetry.executor.replanRequired ? " / new plan required" : ""}`
     : telemetry.executor.stationKeepingActive && telemetry.executor.completedPlanHash
-      ? "holding at target; new route ready"
-    : preview?.state === "Ready" && preview.plan
-      ? `preview ready: ${preview.plan.segments.length} leg${preview.plan.segments.length === 1 ? "" : "s"}, route ${formatDistance(preview.plan.score.distance)}`
-      : (preview?.playerMessage ?? "select a target to preview a route");
+      ? admittedPreviewPlan
+        ? "holding at target; new route ready"
+        : displayPreviewPlan
+          ? `holding at target; preview blocked: ${previewPresentation.message}`
+        : `holding at target; ${previewPresentation.message}`
+    : admittedPreviewPlan
+      ? `preview ready: ${admittedPreviewPlan.segments.length} leg${admittedPreviewPlan.segments.length === 1 ? "" : "s"}, route ${formatDistance(admittedPreviewPlan.score.distance)}`
+      : displayPreviewPlan
+        ? `preview blocked: ${previewPresentation.message}; ${displayPreviewPlan.segments.length} leg${displayPreviewPlan.segments.length === 1 ? "" : "s"}, route ${formatDistance(displayPreviewPlan.score.distance)}`
+      : previewPresentation.message;
   const routePlayerState = routeTone === "blocked"
     ? "Blocked"
     : routeTone === "holding"
@@ -683,10 +816,12 @@ export const createStatusHudViewModel = (telemetry: TelemetrySnapshot, visualSou
 
   const planState = telemetry.executor.planHash
     ? "Plan locked"
-    : telemetry.executor.completedPlanHash
-      ? "Plan completed"
-      : routePlan
+    : admittedPreviewPlan
         ? "Route preview ready"
+      : displayPreviewPlan
+        ? "Route preview blocked"
+      : telemetry.executor.completedPlanHash
+        ? "Plan completed"
         : "No active plan";
   const targetState = target ? `${target.label} [${target.kind}]` : "none selected";
   const targetLabel = target?.label ?? "No target";
@@ -718,7 +853,7 @@ export const createStatusHudViewModel = (telemetry: TelemetrySnapshot, visualSou
     ? `ready: ${snapshot.brakingReserve.availableDeltaV} m/s available`
     : "blocked: check warnings";
   const warningSummary = warningChips.length > 0 ? warningChips.map((chip) => chip.label).join(", ") : "none";
-  const runtimeMessage = telemetry.runtimeMessage ?? preview?.playerMessage ?? "ready";
+  const runtimeMessage = previewPresentation.runtimeMessage;
   const visualSourceLine = formatVisualSourceLine(visualSource);
   const throttleState = `${Math.round(telemetry.ship.throttle * 100)}%${telemetry.ship.actuatorTelemetry.mainThrustActive ? " / main burn" : ""}`;
   const throttleMeter = createThrottleMeter(telemetry);
@@ -1334,6 +1469,31 @@ const renderPlannerMetrics = (telemetry: TelemetrySnapshot, plan: RoutePlan | nu
   setText("planner-metric-route", plan ? `${profile} / ${plan.planner} / ${plan.planHash}` : `${profile} / no preview`);
 };
 
+const plannerMapTelemetryForVisiblePlan = (
+  telemetry: TelemetrySnapshot,
+  visiblePlan: RoutePlan | null
+): TelemetrySnapshot => {
+  const snapshot = telemetry.navigationMap;
+  if (!snapshot) {
+    return telemetry;
+  }
+
+  return {
+    ...telemetry,
+    navigationMap: createNavigationMapSnapshot({
+      absoluteFrameId: snapshot.absoluteFrameId,
+      ...(snapshot.floatingOriginFrameId === undefined ? {} : { floatingOriginFrameId: snapshot.floatingOriginFrameId }),
+      ship: snapshot.ship,
+      targets: snapshot.targets,
+      selectedTargetId: snapshot.selectedTargetId,
+      route: visiblePlan ? navigationMapRouteSnapshot(visiblePlan, snapshot.ship.absolutePosition.frame) : null,
+      obstacles: snapshot.obstacles,
+      entities: snapshot.entities,
+      world: snapshot.world
+    })
+  };
+};
+
 const renderNavigationPlanner = (
   telemetry: TelemetrySnapshot,
   viewModel: StatusHudViewModel,
@@ -1346,21 +1506,18 @@ const renderNavigationPlanner = (
 
   const locked = isRouteLocked(telemetry);
   const preview = telemetry.routePreview;
-  const plan = telemetry.lockedPlan ?? preview?.plan ?? null;
+  const previewPresentation = evaluateRoutePreviewPresentation(telemetry);
+  const displayPreviewPlan = previewPresentation.displayPlan;
+  const admittedPreviewPlan = previewPresentation.admittedPlan;
+  const visiblePlan = telemetry.lockedPlan ?? displayPreviewPlan;
   const selectedTarget = telemetry.selectedTarget ?? telemetry.lockedPlan?.target ?? preview?.target ?? null;
-  const visiblePreviewHash = preview?.plan?.planHash ?? null;
-  const selectedProfile = telemetry.selectedRouteProfile ?? plan?.speedProfile ?? "Balanced";
+  const visiblePreviewHash = visiblePlan?.planHash ?? null;
+  const admittedPreviewHash = admittedPreviewPlan?.planHash ?? null;
+  const selectedProfile = telemetry.selectedRouteProfile ?? visiblePlan?.speedProfile ?? "Balanced";
   const lockReason = locked ? "Cancel the locked route before changing target, profile, or preview." : null;
   const planningReason = lockReason ?? (!selectedTarget ? "Select a target before creating a route preview." : null);
-  const admission = preview?.lockAdmission;
-  const canEngage = !locked && preview?.state === "Ready" && Boolean(visiblePreviewHash) && (admission?.ok ?? true);
-  const engageReason = locked
-    ? "A route is already locked."
-    : preview?.state !== "Ready" || !visiblePreviewHash
-      ? (preview?.playerMessage ?? "Create a valid route preview before engaging.")
-      : admission && !admission.ok
-        ? admission.message
-        : null;
+  const canEngage = previewPresentation.state === "Admitted";
+  const engageReason = previewPresentation.state === "Admitted" ? null : previewPresentation.message;
 
   if (planner) {
     const plannerElement = planner as HTMLElement;
@@ -1369,17 +1526,17 @@ const renderNavigationPlanner = (
     plannerElement.dataset.profile = selectedProfile;
   }
   setText("planner-selected-target", selectedTarget ? `${selectedTarget.label} [${selectedTarget.kind}]` : "none selected");
-  setText("planner-route-distance", plan ? formatDistance(plan.score.distance) : viewModel.navigation.distance.value);
+  setText("planner-route-distance", visiblePlan ? formatDistance(visiblePlan.score.distance) : viewModel.navigation.distance.value);
   setText("planner-route-status", `${viewModel.navigation.route.value}; executor ${telemetry.executor.routeLifecycle ?? telemetry.executor.status}${telemetry.executor.activeSegmentId ? `; active ${telemetry.executor.activeSegmentId}` : ""}`);
   setText("planner-objective", `${viewModel.objective.label}: ${viewModel.objective.status}`);
-  setText("planner-route-detail", plan
-    ? `${plan.planner}; profile ${plan.speedProfile}; hash ${plan.planHash}; ${preview?.state ?? "Locked"}`
-    : (preview?.playerMessage ?? "Select a target to preview a route."));
+  setText("planner-route-detail", visiblePlan
+    ? `${visiblePlan.planner}; profile ${visiblePlan.speedProfile}; hash ${visiblePlan.planHash}; ${telemetry.lockedPlan ? "Locked" : admittedPreviewPlan ? "Ready" : "Blocked"}`
+    : previewPresentation.message);
   setStateTone("planner-route-status", viewModel.routeTone);
   renderPlannerTargetOptions(telemetry, viewModel, sink);
-  renderPlannerTimeline(telemetry, plan);
-  renderPlannerMetrics(telemetry, plan);
-  renderPlannerMap(telemetry);
+  renderPlannerTimeline(telemetry, visiblePlan);
+  renderPlannerMetrics(telemetry, visiblePlan);
+  renderPlannerMap(plannerMapTelemetryForVisiblePlan(telemetry, visiblePlan));
 
   const lockReasonElement = document.getElementById("planner-lock-reason") as HTMLElement | null;
   if (lockReasonElement) {
@@ -1415,14 +1572,20 @@ const renderNavigationPlanner = (
   }
   if (engageButton) {
     engageButton.textContent = telemetry.lockedPlan ? "Route locked" : "Engage";
-    engageButton.onclick = canEngage && visiblePreviewHash
-      ? () => void dispatchPlannerCommand({ type: "EngageRoutePreview", expectedPlanHash: visiblePreviewHash }, sink, { closeOnSuccess: true })
+    engageButton.onclick = canEngage && admittedPreviewHash
+      ? () => void dispatchPlannerCommand({ type: "EngageRoutePreview", expectedPlanHash: admittedPreviewHash }, sink, { closeOnSuccess: true })
       : null;
   }
 
+  const presentationOwnsFeedback = previewPresentation.state === "Rejected" || previewPresentation.state === "Locked";
+  const presentationFeedback = presentationOwnsFeedback
+    ? previewPresentation.message
+    : plannerFeedback || (previewPresentation.state === "Admitted"
+      ? previewPresentation.message
+      : previewPresentation.runtimeMessage);
   renderPlannerFeedback(
-    plannerFeedback || engageReason || preview?.playerMessage || telemetry.runtimeMessage || "Select a target to begin.",
-    plannerFeedbackIsError
+    presentationFeedback,
+    previewPresentation.state === "Rejected" ? true : presentationOwnsFeedback ? false : plannerFeedbackIsError
   );
 };
 
@@ -1433,7 +1596,7 @@ const renderFlightDistanceProgress = (telemetry: TelemetrySnapshot): void => {
   }
 
   const progressPercent = calculateRouteProgressPercent(telemetry);
-  const plan = telemetry.lockedPlan ?? (telemetry.routePreview?.state === "Ready" ? telemetry.routePreview.plan : null);
+  const plan = telemetry.lockedPlan ?? evaluateRoutePreviewPresentation(telemetry).displayPlan;
   if (!plan || progressPercent === null) {
     element.hidden = true;
     element.replaceChildren();
@@ -1479,7 +1642,7 @@ const renderRadarContacts = (telemetry: TelemetrySnapshot): void => {
 
   const ship = telemetry.ship.position;
   const target = telemetry.selectedTarget ?? telemetry.lockedPlan?.target ?? null;
-  const plan = telemetry.lockedPlan ?? (telemetry.routePreview?.state === "Ready" ? telemetry.routePreview.plan : null);
+  const plan = telemetry.lockedPlan ?? evaluateRoutePreviewPresentation(telemetry).displayPlan;
   const obstacles = telemetry.obstacles ?? [];
   const rangeCandidates = [1];
   if (target) {
@@ -1642,7 +1805,7 @@ export const renderStatusHud = (telemetry: TelemetrySnapshot, commandSink?: Stat
   bindPresentationUi();
   setText("engage-autopilot", viewModel.actions.primaryLabel);
   setText("cancel-autopilot", viewModel.actions.secondaryLabel);
-  const visiblePreviewHash = telemetry.routePreview?.state === "Ready" ? telemetry.routePreview.plan?.planHash ?? null : null;
+  const visiblePreviewHash = evaluateRoutePreviewPresentation(telemetry).admittedPlan?.planHash ?? null;
   bindCommand("engage-autopilot", { type: "EngageRoutePreview", expectedPlanHash: visiblePreviewHash ?? "" }, commandSink, {
     enabled: viewModel.actions.primaryCommandEnabled,
     disabledReason: viewModel.actions.primaryDisabledReason

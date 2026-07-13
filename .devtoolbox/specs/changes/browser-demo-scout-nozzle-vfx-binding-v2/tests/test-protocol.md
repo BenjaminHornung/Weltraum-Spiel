@@ -124,3 +124,25 @@ implementation review passed with no findings. A manual equivalent completion
 preflight uses the fresh commands, diff review, asset/package guardrails, and a
 final independent verification review. Exact-head pull-request CI remains the
 external merge gate and must pass before merge.
+
+## Post-main synchronization verification
+
+The completed implementation was synchronized without manual conflict edits to
+`origin/main` at `8383487f89f6eb6e63140def564052ac86de259a`, which includes
+the objective-chain HUD admission and display-plan hardening. Fresh verification
+on the combined tree passed:
+
+- focused Nozzle plus overlap units: 4 files, 96/96 tests;
+- full unit suite: 40 files, 473/473 tests;
+- TypeScript/Vite production build;
+- `debug-scene.spec.ts`: 9/9 Chromium tests under `CI=true`;
+- lifecycle/render-smoothing plus flight-UI regressions: 4/4 Chromium tests
+  under `CI=true`;
+- final diff/check, package/lockfile, Demo Scout GLB, and `Assets/**`
+  guardrails.
+
+The browser commands regenerated only test-owned evidence. Those working-tree
+changes were restored to the verified branch content afterward. The final tree
+relative to synchronized `origin/main` contains exactly the 22 intended
+Nozzle-VFX spec, evidence, source, and test files. Exact-head pull-request CI
+remains the final external merge gate.

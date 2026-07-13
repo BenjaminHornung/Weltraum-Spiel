@@ -17,6 +17,7 @@ interface ObjectiveChainSnapshot {
   readonly selectedTarget: string;
   readonly routeStatus: string;
   readonly autopilotState: string;
+  readonly previewHash: string;
 }
 
 const distanceFromHud = (text: string): number => {
@@ -59,6 +60,7 @@ async function selectVisiblePlannerTarget(
   const previewHash = (await planner.getAttribute("data-visible-preview-hash"))!;
   await expect(page.locator("#planner-route-detail")).toContainText(previewHash);
   await page.locator("#planner-close").click();
+  await expect(planner).toBeHidden();
   return previewHash;
 }
 
@@ -68,14 +70,6 @@ async function engageVisiblePreview(page: Page, expectedHash: string): Promise<v
   await expect(page.getByTestId("planner-engage-route")).toBeEnabled();
   await page.getByTestId("planner-engage-route").click();
   await expect(page.getByTestId("navigation-planner")).toBeHidden();
-}
-
-async function waitForRuntimeFrames(page: Page, frameCount: number): Promise<void> {
-  await page.evaluate(async (frames) => {
-    for (let index = 0; index < frames; index += 1) {
-      await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
-    }
-  }, frameCount);
 }
 
 async function readObjectiveSnapshot(page: Page, phase: string): Promise<ObjectiveChainSnapshot> {
@@ -92,60 +86,39 @@ async function readObjectiveSnapshot(page: Page, phase: string): Promise<Objecti
     options: await page.getByTestId("objective-options").innerText(),
     selectedTarget: await page.getByTestId("selected-target").innerText(),
     routeStatus: await textFrom(page, "#route-status"),
-    autopilotState: await page.getByTestId("autopilot-active").innerText()
+    autopilotState: await page.getByTestId("autopilot-active").innerText(),
+    previewHash: (await page.getByTestId("navigation-planner").getAttribute("data-visible-preview-hash")) ?? "none"
   };
 }
 
-async function waitFor500mComplete(page: Page): Promise<ObjectiveChainSnapshot> {
-  const deadline = Date.now() + 70_000;
-  let latest = await readObjectiveSnapshot(page, "500m-complete");
-
-  while (Date.now() < deadline) {
-    await waitForRuntimeFrames(page, 60);
-    await page.waitForTimeout(500);
-    latest = await readObjectiveSnapshot(page, "500m-complete");
-    if (latest.objective === "Reach Range 500m" && latest.status === "Complete") {
-      return latest;
-    }
-  }
-
-  throw new Error(`Range 500m objective did not complete in the live wait budget. Last state: ${JSON.stringify(latest)}`);
-}
-
-async function waitFor1000mProgress(
+async function waitForObjectiveComplete(
   page: Page,
-  initialDistanceMeters: number
+  objective: "Reach Range 500m" | "Reach Range 1000m",
+  phase: "500m-complete" | "1000m-complete"
 ): Promise<ObjectiveChainSnapshot> {
-  const deadline = Date.now() + 30_000;
-  let latest = await readObjectiveSnapshot(page, "1000m-ready-or-enroute");
+  await expect.poll(
+    async () => {
+      const latest = await readObjectiveSnapshot(page, phase);
+      return `${latest.objective}|${latest.status}`;
+    },
+    { timeout: 70_000, intervals: [250, 500, 1_000] }
+  ).toBe(`${objective}|Complete`);
 
-  while (Date.now() < deadline) {
-    await waitForRuntimeFrames(page, 60);
-    await page.waitForTimeout(500);
-    latest = await readObjectiveSnapshot(page, "1000m-ready-or-enroute");
-    if (latest.status === "Complete" || latest.distanceMeters <= initialDistanceMeters - 10) {
-      return latest;
-    }
-  }
-
-  expect(latest.status).toMatch(/Route ready|Enroute|Complete/);
-  return latest;
+  return readObjectiveSnapshot(page, phase);
 }
 
 function createMarkdown(rows: readonly ObjectiveChainSnapshot[]): string {
   const timelineRows = rows
-    .map((row) => `| ${row.phase} | ${row.objective} | ${row.status} | ${row.target} | ${row.distanceDisplay} | ${row.distanceMeters} | ${row.nextAction} | ${row.selectedTarget} | ${row.autopilotState} |`)
+    .map((row) => `| ${row.phase} | ${row.objective} | ${row.status} | ${row.target} | ${row.distanceDisplay} | ${row.distanceMeters} | ${row.nextAction} | ${row.selectedTarget} | ${row.autopilotState} | ${row.previewHash} |`)
     .join("\n");
   const selectedTargetRows = rows
     .map((row) => `| ${row.phase} | ${row.selectedTarget} | ${row.routeStatus} |`)
     .join("\n");
-  const ready = rows.find((row) => row.phase === "ready");
-  const oneThousand = rows.find((row) => row.phase === "1000m-ready-or-enroute");
-  const oneThousandOutcome = oneThousand?.status === "Complete"
-    ? "Range 1000m reached complete inside the live E2E budget."
-    : "Range 1000m full arrival is deferred; this run proves route-ready/enroute state plus live distance reduction.";
+  const ready = rows.find((row) => row.phase === "500m-ready");
+  const oneThousand = rows.find((row) => row.phase === "1000m-complete");
+  const twoThousandFiveHundred = rows.find((row) => row.phase === "2500m-ready");
 
-  return `# Browser Large-Field Objective Chain Live v1 Evidence
+  return `# Browser Objective Chain 1000m Completion v2 Evidence
 
 Generated by \`apps/weltraum-browser/tests/e2e/large-field-objective-chain-live.spec.ts\`.
 
@@ -158,8 +131,8 @@ Generated by \`apps/weltraum-browser/tests/e2e/large-field-objective-chain-live.
 
 ## Objective State Timeline
 
-| Phase | Objective | Status | Target | HUD distance | Parsed distance (m) | Next action | Selected target | Autopilot state |
-| --- | --- | --- | --- | --- | ---: | --- | --- | --- |
+| Phase | Objective | Status | Target | HUD distance | Parsed distance (m) | Next action | Selected target | Autopilot state | Visible preview hash |
+| --- | --- | --- | --- | --- | ---: | --- | --- | --- | --- |
 ${timelineRows}
 
 ## Selected Target Timeline
@@ -171,15 +144,19 @@ ${selectedTargetRows}
 ## Live Movement
 
 - Initial 500m objective distance: ${ready?.distanceDisplay ?? "unknown"}
-- Later 1000m objective distance: ${oneThousand?.distanceDisplay ?? "unknown"}
-- 1000m outcome: ${oneThousandOutcome}
+- Range 1000m terminal distance: ${oneThousand?.distanceDisplay ?? "unknown"}
+- Range 1000m outcome: real objective Complete with visible Arrived/Holding state
+- Range 2500m admitted preview distance: ${twoThousandFiveHundred?.distanceDisplay ?? "unknown"}
+- Range 2500m visible preview hash: ${twoThousandFiveHundred?.previewHash ?? "unknown"}
 
 ## Screenshots
 
-- \`apps/weltraum-browser/evidence/objective-chain-ready.png\`
-- \`apps/weltraum-browser/evidence/objective-chain-500m-enroute.png\`
-- \`apps/weltraum-browser/evidence/objective-chain-500m-complete.png\`
-- \`apps/weltraum-browser/evidence/objective-chain-1000m-ready-or-enroute.png\`
+- \`apps/weltraum-browser/evidence/objective-chain-v2-500m-ready.png\`
+- \`apps/weltraum-browser/evidence/objective-chain-v2-500m-enroute.png\`
+- \`apps/weltraum-browser/evidence/objective-chain-v2-500m-complete.png\`
+- \`apps/weltraum-browser/evidence/objective-chain-v2-1000m-ready.png\`
+- \`apps/weltraum-browser/evidence/objective-chain-v2-1000m-complete.png\`
+- \`apps/weltraum-browser/evidence/objective-chain-v2-2500m-ready.png\`
 
 ## Tests Run
 
@@ -187,8 +164,8 @@ ${selectedTargetRows}
 `;
 }
 
-test("normal runtime chains large-field objectives from 500m completion into 1000m flight", async ({ page }) => {
-  test.setTimeout(125_000);
+test("normal runtime completes 500m and 1000m before admitting the visible 2500m preview", async ({ page }) => {
+  test.setTimeout(200_000);
   await mkdir(evidenceDir, { recursive: true });
   await page.setViewportSize({ width: 1280, height: 720 });
   await page.goto("/");
@@ -208,22 +185,25 @@ test("normal runtime chains large-field objectives from 500m completion into 100
   await expect(page.getByTestId("selected-target")).toContainText("Range 500m");
   await expect(page.getByTestId("objective-status")).toContainText("Route ready");
   await expect(page.getByTestId("objective-next-action")).toContainText("engage autopilot");
-  const ready = await readObjectiveSnapshot(page, "ready");
-  const readyScreenshot = await page.screenshot({ fullPage: true });
+  const ready500m = await readObjectiveSnapshot(page, "500m-ready");
+  expect(ready500m.previewHash).toBe(preview500mHash);
+  const ready500mScreenshot = await page.screenshot({ fullPage: true });
 
   await engageVisiblePreview(page, preview500mHash);
   await expect(page.getByTestId("autopilot-active")).toContainText(/Autopilot executing|Arrived at selected target/);
   await expect(page.getByTestId("objective-status")).toContainText(/Enroute|Complete/);
-  const enroute = await readObjectiveSnapshot(page, "500m-enroute");
-  const enrouteScreenshot = await page.screenshot({ fullPage: true });
+  const enroute500m = await readObjectiveSnapshot(page, "500m-enroute");
+  const enroute500mScreenshot = await page.screenshot({ fullPage: true });
 
-  const complete500m = await waitFor500mComplete(page);
+  const complete500m = await waitForObjectiveComplete(page, "Reach Range 500m", "500m-complete");
+  await expect(page.getByTestId("autopilot-active")).toContainText("Arrived at selected target");
+  await expect(page.locator("#route-status")).toContainText("Holding");
   expect(complete500m.nextAction).toBe("next objective available");
   expect(complete500m.hint).toContain("Reach Range 1000m is available");
   expect(complete500m.options).toContain("Reach Range 500m (complete)");
   expect(complete500m.options).toContain("Reach Range 1000m (available)");
   expect(complete500m.options).toContain("Reach Range 2500m (locked)");
-  const completeScreenshot = await page.screenshot({ fullPage: true });
+  const complete500mScreenshot = await page.screenshot({ fullPage: true });
 
   const preview1000mHash = await selectVisiblePlannerTarget(page, "range-1000m", "Range 1000m", "Reach Range 1000m");
   await expect(page.getByTestId("objective-label")).toContainText("Reach Range 1000m");
@@ -232,23 +212,57 @@ test("normal runtime chains large-field objectives from 500m completion into 100
   await expect(page.getByTestId("objective-options")).toContainText("Reach Range 500m (complete)");
   await expect(page.getByTestId("objective-options")).toContainText("Reach Range 1000m (route ready)");
   const ready1000m = await readObjectiveSnapshot(page, "1000m-ready");
+  expect(ready1000m.previewHash).toBe(preview1000mHash);
+  const ready1000mScreenshot = await page.screenshot({ fullPage: true });
 
   await engageVisiblePreview(page, preview1000mHash);
   await expect(page.getByTestId("objective-status")).toContainText(/Enroute|Complete/);
-  const progress1000m = await waitFor1000mProgress(page, ready1000m.distanceMeters);
-  expect(progress1000m.objective).toBe("Reach Range 1000m");
-  expect(progress1000m.status).toMatch(/Enroute|Complete/);
-  expect(progress1000m.distanceMeters).toBeLessThan(ready1000m.distanceMeters);
-  const progressScreenshot = await page.screenshot({ fullPage: true });
+  const complete1000m = await waitForObjectiveComplete(page, "Reach Range 1000m", "1000m-complete");
+  await expect(page.getByTestId("autopilot-active")).toContainText("Arrived at selected target");
+  await expect(page.locator("#route-status")).toContainText("Holding");
+  expect(complete1000m.distanceMeters).toBeLessThan(ready1000m.distanceMeters);
+  expect(complete1000m.nextAction).toBe("next objective available");
+  expect(complete1000m.options).toContain("Reach Range 500m (complete)");
+  expect(complete1000m.options).toContain("Reach Range 1000m (complete)");
+  expect(complete1000m.options).toContain("Reach Range 2500m (available)");
+  const complete1000mScreenshot = await page.screenshot({ fullPage: true });
+
+  const preview2500mHash = await selectVisiblePlannerTarget(page, "range-2500m", "Range 2500m", "Reach Range 2500m");
+  expect(preview2500mHash).not.toBe(preview1000mHash);
+  await expect(page.getByTestId("objective-label")).toContainText("Reach Range 2500m");
+  await expect(page.getByTestId("selected-target")).toContainText("Range 2500m");
+  await expect(page.getByTestId("objective-status")).toContainText("Route ready");
+  await expect(page.getByTestId("objective-options")).toContainText("Reach Range 500m (complete)");
+  await expect(page.getByTestId("objective-options")).toContainText("Reach Range 1000m (complete)");
+  await expect(page.getByTestId("objective-options")).toContainText("Reach Range 2500m (route ready)");
+  await expect(page.locator("#plan-hash")).toHaveText("Route preview ready");
+  await expect(page.locator("#route-status")).toHaveText("Preview ready");
+  await expect(page.locator("#route-status")).toHaveAttribute("data-hud-tone", "ready");
+  await expect(page.locator("#engage-autopilot")).toBeEnabled();
+
+  await page.locator("#open-navigation-planner").click();
+  await expect(page.getByTestId("navigation-planner")).toHaveAttribute("data-visible-preview-hash", preview2500mHash);
+  await expect(page.locator("#planner-route-detail")).toContainText(preview2500mHash);
+  await expect(page.getByTestId("planner-engage-route")).toBeEnabled();
+  await page.locator("#planner-close").click();
+  await expect(page.getByTestId("navigation-planner")).toBeHidden();
+
+  const ready2500m = await readObjectiveSnapshot(page, "2500m-ready");
+  expect(ready2500m.previewHash).toBe(preview2500mHash);
+  expect(ready2500m.distanceMeters).toBeGreaterThanOrEqual(1_450);
+  expect(ready2500m.distanceMeters).toBeLessThanOrEqual(1_550);
+  const ready2500mScreenshot = await page.screenshot({ fullPage: true });
   await expectTestBridgeAbsent(page);
 
-  await writeFile(path.join(evidenceDir, "objective-chain-ready.png"), readyScreenshot);
-  await writeFile(path.join(evidenceDir, "objective-chain-500m-enroute.png"), enrouteScreenshot);
-  await writeFile(path.join(evidenceDir, "objective-chain-500m-complete.png"), completeScreenshot);
-  await writeFile(path.join(evidenceDir, "objective-chain-1000m-ready-or-enroute.png"), progressScreenshot);
+  await writeFile(path.join(evidenceDir, "objective-chain-v2-500m-ready.png"), ready500mScreenshot);
+  await writeFile(path.join(evidenceDir, "objective-chain-v2-500m-enroute.png"), enroute500mScreenshot);
+  await writeFile(path.join(evidenceDir, "objective-chain-v2-500m-complete.png"), complete500mScreenshot);
+  await writeFile(path.join(evidenceDir, "objective-chain-v2-1000m-ready.png"), ready1000mScreenshot);
+  await writeFile(path.join(evidenceDir, "objective-chain-v2-1000m-complete.png"), complete1000mScreenshot);
+  await writeFile(path.join(evidenceDir, "objective-chain-v2-2500m-ready.png"), ready2500mScreenshot);
   await writeFile(
-    path.join(evidenceDir, "browser-large-field-objective-chain-live-v1.md"),
-    createMarkdown([ready, enroute, complete500m, ready1000m, progress1000m]),
+    path.join(evidenceDir, "browser-objective-chain-1000m-completion-v2.md"),
+    createMarkdown([ready500m, enroute500m, complete500m, ready1000m, complete1000m, ready2500m]),
     "utf8"
   );
 });
