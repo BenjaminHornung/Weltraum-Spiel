@@ -1,0 +1,160 @@
+{
+  "changeId": "browser-graphics-settings-foundation-v1",
+  "generatedAt": "2026-07-13T19:42:53+02:00",
+  "branch": "feature/browser-graphics-settings-foundation-v1",
+  "implementationStartSha": "7e1d0237cdf272bfb759f26e2be8cdb3a760e15c",
+  "integrationBaseSha": "ea4ccbadfa8c91787e4b4451e04b1fb4ad18a12f",
+  "schema": {
+    "storageKey": "weltraum.browser.graphics-settings",
+    "version": 1,
+    "defaultPreset": "High",
+    "presets": [
+      "Low",
+      "Medium",
+      "High",
+      "Ultra",
+      "Custom"
+    ],
+    "invalidOrFutureVersionBehavior": "Fail closed to defaults without overwriting storage during startup."
+  },
+  "application": {
+    "supportedLive": [
+      "render scale and maximum device pixel ratio",
+      "perspective-camera field of view",
+      "camera-only render distance",
+      "presentation FPS limit",
+      "tone mapping and exposure",
+      "supported anisotropy policy",
+      "tagged render-only decor density"
+    ],
+    "supportedAfterRendererRestart": [
+      "WebGL anti-aliasing"
+    ],
+    "browserManaged": [
+      "fullscreen",
+      "vertical synchronization"
+    ],
+    "planned": [
+      "scene shadows until an effective caster/receiver chain exists",
+      "environment and reflection quality",
+      "texture asset variants"
+    ],
+    "unsupported": [
+      "bloom without a post-processing pipeline",
+      "motion-related post-processing effects"
+    ]
+  },
+  "safetyEvidence": {
+    "rendererOwnsWorldTruth": false,
+    "fpsLimitGatesSimulationTicks": false,
+    "renderDistanceChangesSimulationResidency": false,
+    "normalSettingsTestsExposeTestBridge": false,
+    "exactGameplaySnapshotUnchanged": true,
+    "visibleLockedPlanHashUnchanged": true,
+    "flightInputBlockedWhileDialogOpen": true
+  },
+  "verification": [
+    {
+      "command": "npm ci",
+      "status": "PASS",
+      "detail": "59 packages audited; 0 vulnerabilities; lockfile unchanged. package.json contains only the user-authorized Graphics E2E group registration."
+    },
+    {
+      "command": "npx tsc -p tsconfig.json",
+      "status": "PASS"
+    },
+    {
+      "command": "npx vitest run tests/unit/graphicsSettingsPresets.test.ts tests/unit/graphicsSettingsSchema.test.ts tests/unit/graphicsSettingsStorage.test.ts tests/unit/graphicsSettingsCapabilities.test.ts tests/unit/graphicsSettingsAdapter.test.ts",
+      "status": "PASS",
+      "detail": "5 files; 30 tests"
+    },
+    {
+      "command": "npm run test:e2e:ui -- --config=<isolated Chrome config>",
+      "status": "PASS",
+      "detail": "12 tests; graphics-settings.spec.ts is assigned exactly once to the UI group."
+    },
+    {
+      "command": "npx playwright test tests/e2e/graphics-settings.spec.ts --config=<isolated Chrome config>",
+      "status": "PASS",
+      "detail": "3 Chromium tests through installed Google Chrome on isolated port 5174."
+    },
+    {
+      "command": "CI E2E group inventory",
+      "status": "BASELINE FAIL",
+      "detail": "Graphics is assigned exactly once. The rebased origin/main already contains the unrelated unassigned tests/e2e/combat-weapon-damage-core.spec.ts; the same inventory check fails on origin/main."
+    },
+    {
+      "command": "npm run test",
+      "status": "PASS",
+      "detail": "54 files; 577 tests"
+    },
+    {
+      "command": "npm run build",
+      "status": "PASS",
+      "detail": "66 modules; non-blocking Vite chunk-size warning only."
+    },
+    {
+      "command": "npx playwright test --config=<isolated Chrome config>",
+      "status": "PASS",
+      "detail": "49 tests; installed Google Chrome fallback because the policy-blocked bundled headless shell returned spawn UNKNOWN."
+    },
+    {
+      "command": "dotnet build \"Weltraum Spiel.sln\" --no-restore",
+      "status": "NOT APPLICABLE",
+      "detail": "MSB1009: the solution does not exist; no .sln, .slnx, or .csproj is present in this browser repository."
+    },
+    {
+      "command": "dotnet test \"Weltraum Spiel.sln\" --no-build",
+      "status": "NOT RUN",
+      "detail": "No solution or project exists to test."
+    },
+    {
+      "command": "Unity validation",
+      "status": "NOT RUN",
+      "detail": "Unity was explicitly excluded by the change request."
+    },
+    {
+      "command": "DevToolbox verification and completion preflight",
+      "status": "BLOCKED",
+      "detail": "workspace_prepare_for_agent rejected the isolated worktree with unauthorized_path; tasks remain unchecked."
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "apps/weltraum-browser/evidence/graphics-settings-panel-1920x1080.png",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 137576,
+      "sha256": "f3a156e3ebfc36650ef4b89a0b3492d6588a06c9af904a790d0330456232be8f"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/graphics-settings-low-preset-1920x1080.png",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 136013,
+      "sha256": "ecd4ba6fa4b5613e2f74f54be9ba4ec54f6f4ca5469c62c785ed6ba35acf072b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/graphics-settings-high-preset-1920x1080.png",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 135132,
+      "sha256": "9c0492acc0dbdae499e83d77b13031133686815c35ef88a08867407ac8af8eeb"
+    }
+  ],
+  "visualInspection": {
+    "readableLabels": true,
+    "controlsClipped": false,
+    "hudCollision": false,
+    "keyboardFocusVisible": true,
+    "disabledAndRestartStatesDistinct": true,
+    "centralSceneFreeOutsideSettingsMode": true
+  },
+  "knownLimits": [
+    "Anti-aliasing requires renderer recreation and therefore a page reload.",
+    "The browser owns fullscreen transitions and vertical synchronization.",
+    "Shadows, environment/reflections, texture variants, bloom, and motion effects stay unapplied until matching renderer pipelines exist.",
+    "The current origin/main fails the strict E2E group inventory because its combat-weapon-damage-core.spec.ts is unassigned; this change registers only the user-authorized Graphics spec and does not broaden scope into Combat.",
+    "DevToolbox task closure must be completed after its workspace authorization includes this isolated worktree."
+  ]
+}

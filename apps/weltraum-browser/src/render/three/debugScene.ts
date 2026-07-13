@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { vec3 } from "../../core";
 import { browserObstacles, browserTargetCatalog, type BrowserRuntimeController } from "../../runtime/browserRuntime";
+import type { GraphicsRuntimePort } from "../../settings";
 import type { CameraMode } from "../../runtime/input";
 import { renderStatusHud } from "../../ui/statusHud";
 import type { FrameDescriptor } from "../../world/frames";
@@ -16,6 +17,7 @@ import {
 } from "../../world/worldPresentation";
 import type { WorldEntityState } from "../../world/floatingOrigin";
 import { createDemoScoutShipVisual, type ShipVisualSnapshot } from "./shipVisual";
+import { ThreeGraphicsSettingsAdapter } from "./graphicsSettingsAdapter";
 import { WorldPresentationRenderer, type WorldPresentationRenderSnapshot } from "./worldPresentationRenderer";
 
 const toVector3 = (value: { x: number; y: number; z: number }) => new THREE.Vector3(value.x, value.y, value.z);
@@ -234,6 +236,7 @@ export interface RenderDebugSnapshot extends RenderPresentationEvidence {
 
 export interface DebugSceneOptions {
   readonly lowPolyInstanceBatch: LowPolyInstanceBatch;
+  readonly antiAliasing?: boolean;
   readonly showDebugGrid?: boolean;
   readonly surface?: "flight" | "combat";
   readonly showDebugHelpers?: boolean;
@@ -249,6 +252,7 @@ export class DebugScene {
   private readonly cinematicAsteroidBelt: THREE.InstancedMesh;
   private readonly decorativeInventory: DecorativePresentationInventory;
   private readonly worldPresentationRenderer: WorldPresentationRenderer;
+  private readonly graphicsSettingsAdapter: ThreeGraphicsSettingsAdapter;
   private readonly routeGroup = new THREE.Group();
   private readonly targetBeaconGroup = new THREE.Group();
   private readonly obstacleGroup = new THREE.Group();
@@ -261,7 +265,8 @@ export class DebugScene {
   private orbitPitch = 0.28;
   private orbitDistance = 42;
   private isOrbiting = false;
-  private plannerWasOpen = false;
+  private modalWasOpen = false;
+  private shipVisualSourceState = this.shipVisual.getSnapshot().visualSource.state;
   private pointerLast = { x: 0, y: 0 };
   private renderSnapshot: RenderDebugSnapshot;
   private readonly surface: NonNullable<DebugSceneOptions["surface"]>;
@@ -272,8 +277,7 @@ export class DebugScene {
     this.surface = options.surface ?? "flight";
     this.showDebugHelpers = options.showDebugHelpers ?? false;
     this.asteroidBatch = options.lowPolyInstanceBatch;
-    this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    this.renderer = new THREE.WebGLRenderer({ canvas, antialias: options.antiAliasing ?? true, alpha: false });
     this.renderer.setClearColor(0x020713, 1);
     this.scene.background = new THREE.Color(0x020713);
     this.scene.fog = new THREE.FogExp2(0x061224, 0.00042);
@@ -345,6 +349,13 @@ export class DebugScene {
       decorativeLandmarkCount: this.decorativeInventory.landmarkCount,
       worldEntitySlotCount: this.asteroidBatch.instances.length
     });
+    this.graphicsSettingsAdapter = new ThreeGraphicsSettingsAdapter({
+      renderer: this.renderer,
+      camera: this.camera,
+      scene: this.scene,
+      canvas,
+      fullscreenElement: document.documentElement
+    });
     this.renderSnapshot = this.createInitialRenderSnapshot();
 
     window.addEventListener("resize", this.resize);
@@ -396,6 +407,11 @@ export class DebugScene {
       } else {
         this.target.visible = false;
       }
+      const shipVisualSnapshot = this.shipVisual.getSnapshot();
+      if (this.shipVisualSourceState === "Loading" && shipVisualSnapshot.visualSource.state !== "Loading") {
+        this.graphicsSettingsAdapter.refreshManagedTextures();
+      }
+      this.shipVisualSourceState = shipVisualSnapshot.visualSource.state;
       this.renderSnapshot = mergeWorldPresentationRenderEvidence({
         shipPosition: fromVector3(position),
         usesInterpolatedPose: true,
@@ -420,14 +436,16 @@ export class DebugScene {
         arrivalRadius: arrivalRadius !== null && Number.isFinite(arrivalRadius) ? arrivalRadius : null,
         planHash: telemetry.executor.planHash,
         shipOrientation: orientation,
-        shipVisual: this.shipVisual.getSnapshot(),
+        shipVisual: shipVisualSnapshot,
         camera: cameraSnapshot,
         lowPolyInstanceBatch: this.createLowPolyInstanceBatchSnapshot(),
         targetBeaconCount: this.targetBeaconGroup.children.length,
         runtimeObstacleCount: this.obstacleGroup.children.length
       }, worldPresentationRender);
       this.updateHud();
-      this.renderer.render(this.scene, this.camera);
+      if (this.graphicsSettingsAdapter.scheduler.shouldPresent(time)) {
+        this.renderer.render(this.scene, this.camera);
+      }
       this.frameHandle = requestAnimationFrame(render);
     };
 
@@ -451,12 +469,12 @@ export class DebugScene {
     return this.renderSnapshot;
   }
 
+  getGraphicsSettingsPort(): GraphicsRuntimePort {
+    return this.graphicsSettingsAdapter;
+  }
+
   private readonly resize = () => {
-    const width = Math.max(1, this.canvas.clientWidth);
-    const height = Math.max(1, this.canvas.clientHeight);
-    this.camera.aspect = width / height;
-    this.camera.updateProjectionMatrix();
-    this.renderer.setSize(width, height, false);
+    this.graphicsSettingsAdapter.resize();
   };
 
   private drawPlan(plan: WorldPresentationRoute | null, renderKey: string | null): void {
@@ -521,6 +539,8 @@ export class DebugScene {
     });
     const field = applyDecorativePresentationMetadata(new THREE.Points(geometry, material));
     field.name = "presentation-starfield";
+    field.userData.graphicsDensityMode = "drawRange";
+    field.userData.graphicsDensityBaseCount = count;
     field.renderOrder = -20;
     return field;
   }
@@ -550,6 +570,8 @@ export class DebugScene {
       count
     ));
     mesh.name = "presentation-render-only-asteroid-belt";
+    mesh.userData.graphicsDensityMode = "instanceCount";
+    mesh.userData.graphicsDensityBaseCount = count;
     const matrix = new THREE.Matrix4();
     const rotation = new THREE.Quaternion();
     const euler = new THREE.Euler();
@@ -656,9 +678,9 @@ export class DebugScene {
   }
 
   private dispatchManualInput(elapsedSeconds: number): void {
-    const plannerOpen = this.isPlannerOpen();
-    if (plannerOpen) {
-      if (!this.plannerWasOpen) {
+    const inputBlocked = this.isPlayerInputBlocked();
+    if (inputBlocked) {
+      if (!this.modalWasOpen) {
         const input = this.runtime.getManualInput();
         const hasHeldFlightKey = [...this.pressedKeys].some((code) => this.isFlightKeyCode(code));
         const hasActiveManualAxis = Math.hypot(
@@ -682,10 +704,10 @@ export class DebugScene {
       }
       this.pressedKeys.clear();
       this.isOrbiting = false;
-      this.plannerWasOpen = true;
+      this.modalWasOpen = true;
       return;
     }
-    this.plannerWasOpen = false;
+    this.modalWasOpen = false;
 
     const input = this.runtime.getManualInput();
     let throttle = input.mainThrottleCommand;
@@ -762,7 +784,7 @@ export class DebugScene {
   }
 
   private readonly handleKeyDown = (event: KeyboardEvent) => {
-    if (this.isPlannerOpen()) {
+    if (this.isPlayerInputBlocked()) {
       this.pressedKeys.clear();
       this.isOrbiting = false;
       if (this.isFlightKey(event)) {
@@ -803,7 +825,7 @@ export class DebugScene {
   private readonly preventContextMenu = (event: Event) => event.preventDefault();
 
   private readonly handlePointerDown = (event: PointerEvent) => {
-    if (this.isPlannerOpen()) {
+    if (this.isPlayerInputBlocked()) {
       this.isOrbiting = false;
       return;
     }
@@ -827,7 +849,7 @@ export class DebugScene {
   };
 
   private readonly handlePointerMove = (event: PointerEvent) => {
-    if (this.isPlannerOpen()) {
+    if (this.isPlayerInputBlocked()) {
       this.isOrbiting = false;
       if (this.canvas.hasPointerCapture(event.pointerId)) {
         this.canvas.releasePointerCapture(event.pointerId);
@@ -847,7 +869,7 @@ export class DebugScene {
   };
 
   private readonly handleWheel = (event: WheelEvent) => {
-    if (this.isPlannerOpen()) {
+    if (this.isPlayerInputBlocked()) {
       return;
     }
 
@@ -859,8 +881,10 @@ export class DebugScene {
     return this.pressedKeys.has(code);
   }
 
-  private isPlannerOpen(): boolean {
-    return document.getElementById("flight-hud")?.getAttribute("data-planner-open") === "true";
+  private isPlayerInputBlocked(): boolean {
+    const flightHud = document.getElementById("flight-hud");
+    return flightHud?.getAttribute("data-planner-open") === "true"
+      || flightHud?.getAttribute("data-flight-input-blocked") === "true";
   }
 
   private axis(positive: string, negative: string): number {
