@@ -109,25 +109,21 @@ jobs:
             gh api --paginate --slurp \
               -H "Accept: application/vnd.github+json" \
               "repos/${REPOSITORY}/pulls/${PR_NUMBER}/reviews?per_page=100" \
-              | jq -e --arg short "${short_sha}" --arg full "${HEAD_SHA}" '
+              | jq -e --arg full "${HEAD_SHA}" '
                   any(.[][]?;
                     (
                       ((.user.login // "") == "chatgpt-codex-connector[bot]") or
                       ((.user.login // "") == "chatgpt-codex-connector")
-                    ) and (
-                      ((.commit_id // "") == $full) or
-                      ((.body // "") | contains($short)) or
-                      ((.body // "") | contains($full))
-                    )
+                    ) and ((.commit_id // "") == $full)
                   )
                 ' >/dev/null
           }
 
-          find_request_comment_id() {
+          find_request_comment() {
             gh api --paginate --slurp \
               -H "Accept: application/vnd.github+json" \
               "repos/${REPOSITORY}/issues/${PR_NUMBER}/comments?per_page=100" \
-              | jq -r \
+              | jq -c \
                   --arg marker "${marker}" \
                   --arg short "${short_sha}" \
                   --arg full "${HEAD_SHA}" '
@@ -143,15 +139,17 @@ jobs:
                           )
                         )
                       )
-                    ][-1].id // empty
+                    ][-1] // empty |
+                    if . == null then empty else {id, created_at} end
                   '
           }
 
           codex_acknowledged_request() {
             local comment_id="$1"
-            [[ -n "${comment_id}" ]] || return 1
+            local request_created_at="$2"
+            [[ -n "${comment_id}" && -n "${request_created_at}" ]] || return 1
 
-            gh api --paginate --slurp \
+            if gh api --paginate --slurp \
               -H "Accept: application/vnd.github+json" \
               "repos/${REPOSITORY}/issues/comments/${comment_id}/reactions?per_page=100" \
               | jq -e '
@@ -160,6 +158,22 @@ jobs:
                       ((.user.login // "") == "chatgpt-codex-connector[bot]") or
                       ((.user.login // "") == "chatgpt-codex-connector")
                     ) and (.content == "+1")
+                  )
+                ' >/dev/null; then
+              return 0
+            fi
+
+            gh api --paginate --slurp \
+              -H "Accept: application/vnd.github+json" \
+              "repos/${REPOSITORY}/issues/${PR_NUMBER}/reactions?per_page=100" \
+              | jq -e --arg requested_at "${request_created_at}" '
+                  any(.[][]?;
+                    (
+                      ((.user.login // "") == "chatgpt-codex-connector[bot]") or
+                      ((.user.login // "") == "chatgpt-codex-connector")
+                    ) and
+                    (.content == "+1") and
+                    ((.created_at // "") >= $requested_at)
                   )
                 ' >/dev/null
           }
@@ -175,7 +189,14 @@ jobs:
             sleep 10
           done
 
-          request_comment_id="$(find_request_comment_id)"
+          request_record="$(find_request_comment)"
+          request_comment_id=""
+          request_created_at=""
+
+          if [[ -n "${request_record}" ]]; then
+            request_comment_id="$(jq -r '.id' <<<"${request_record}")"
+            request_created_at="$(jq -r '.created_at' <<<"${request_record}")"
+          fi
 
           if [[ -z "${request_comment_id}" ]]; then
             if [[ -z "${CODEX_REVIEW_TOKEN}" ]]; then
@@ -206,20 +227,21 @@ jobs:
             fi
 
             request_comment_id="$(jq -r '.id' <<<"${request_response}")"
+            request_created_at="$(jq -r '.created_at' <<<"${request_response}")"
           fi
 
           # Accept either a Codex review submission tied to the current head, or
-          # Codex's thumbs-up reaction when it found no review comments.
-          for _ in {1..56}; do
+          # a Codex thumbs-up produced after this exact-head request.
+          for _ in {1..48}; do
             if codex_review_exists; then
               complete_success \
                 "Codex review submission for the current head" \
                 "Codex reviewed ${short_sha}"
             fi
 
-            if codex_acknowledged_request "${request_comment_id}"; then
+            if codex_acknowledged_request "${request_comment_id}" "${request_created_at}"; then
               complete_success \
-                "Codex thumbs-up on the current-head review request" \
+                "Codex thumbs-up after the current-head review request" \
                 "Codex found no comments for ${short_sha}"
             fi
 
