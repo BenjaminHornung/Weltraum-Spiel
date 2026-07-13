@@ -70,9 +70,9 @@ same Git blob as the starting commit. `ProceduralFallback` remains present.
 ## DevToolbox consolidation
 
 The machine-readable inventory contains all 178 initial change directories plus
-four Browser changes introduced by the first synchronized `main`, for 182
-classified directories in total. The later Persistence/Universe-Time/Event
-change remains active and is included in the physical after-count below.
+five Browser changes introduced across the two synchronized `main` snapshots,
+for 183 classified directories in total. The Persistence/Universe-Time/Event
+change retains its seven explicitly unchecked tasks and remains active.
 Physical consolidation results:
 
 - active changes before/after: 112 / 33 (five arrived from synchronized `main`);
@@ -187,15 +187,15 @@ passed. This is a local execution-policy constraint, not a product failure.
   rewrite or retroactive LFS migration was explicitly out of scope.
 - DevToolbox MCP path authorization did not include the isolated cleanup
   worktree, so no checkbox or tool-driven completion mutation was attempted.
-- Current `main` initially left the Combat E2E spec unassigned and the live
-  progress poll could return at equality before its stricter assertion. The
-  cleanup merge adds the missing Core group path and makes the poll wait for the
-  already-required strict progress; no assertion, timeout or product behavior
-  was weakened.
+- The first synchronized `main` left the Combat E2E spec unassigned, while the
+  live progress poll could return at equality before its stricter assertion.
+  Current `main` now contains the exact Combat and Persistence Core assignments;
+  the cleanup keeps the poll waiting for the already-required strict progress.
+  No assertion, timeout or product behavior was weakened.
 
 Browser gameplay, physics, planner, executor, FlightController, renderer truth
 and UI behavior are unchanged. The only browser source edit updates the Demo
 Scout source-provenance string to its neutral `art/` location; the runtime URL,
 GLB bytes and fallback behavior remain unchanged. Test-only changes preserve
-historical evidence, isolate generated output, repair exact CI membership and
+historical evidence, isolate generated output, preserve exact CI membership and
 align a polling return condition with its existing strict assertion.

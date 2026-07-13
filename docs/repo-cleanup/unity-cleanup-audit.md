@@ -180,13 +180,16 @@ directories exactly once:
 - Status: 45 active, 100 complete, 23 reconcile, 10 superseded.
 - Actions: 91 keep, 55 archive, 8 delete, 24 review.
 
-Before final PR verification, synchronized `main` added four Browser changes.
+Across the two final `main` synchronizations, five Browser changes were added.
 They are appended to `docs/repo-cleanup/devtoolbox-change-inventory.json`, which
-therefore contains 182 entries: 40 browser, 12 cross-platform, 129 Unity and 1
-unknown; actions are 92 keep, 58 archive, 8 delete and 24 review. Three additions
-had zero open tasks plus evidence and move to the dated archive. The Demo Scout
-nozzle-VFX change retains its one open CI task and stays active without checkbox
-mutation.
+therefore contains 183 entries: 41 browser, 12 cross-platform, 129 Unity and 1
+unknown. Statuses are 47 active, 103 complete, 23 reconcile and 10 superseded;
+actions are 93 keep, 58 archive, 8 delete and 24 review. Three additions had zero
+open tasks plus evidence and move to the dated archive. The Demo Scout
+nozzle-VFX change retains its one open CI task. The Persistence/Universe-Time/
+Event change deliberately retains seven unchecked tasks because DevToolbox
+preflight could not run in its isolated source worktree; both remain active
+without checkbox mutation.
 
 DevToolbox MCP is installed but rejects the isolated cleanup worktree with
 `unauthorized_path`. Therefore no task checkbox is changed and no doubtful
@@ -212,9 +215,9 @@ All 152 files under `apps/weltraum-browser/evidence` were classified:
 - generated log: 5;
 - unreferenced non-log evidence: 9.
 
-Synchronized `main` later added eight tracked current Browser evidence files.
+Synchronized `main` later added ten tracked current Browser evidence files.
 They remain untouched; after deleting the five classified generated logs, the
-final tracked Browser evidence count is 155. Ignored local Playwright
+final tracked Browser evidence count is 157. Ignored local Playwright
 report/output directories are not counted.
 
 Only these five generated, unreferenced command logs are safe to delete:

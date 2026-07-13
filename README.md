@@ -22,6 +22,7 @@ The current browser runtime provides a playable local-space flight slice:
 - A live objective chain that completes real Range 500 m and Range 1000 m arrivals and then exposes an admitted Range 2500 m preview.
 - Deterministic world/chunk/LOD/floating-origin foundations.
 - A pure browser celestial/gravity core with validated Aurelia-system identities, deterministic elliptic Kepler propagation and local inverse-square gravity queries. It is not yet connected to flight, navigation, rendering or UI.
+- Pure Combat and Persistence/Universe-Time/Event domain cores with deterministic contracts and normal-route Browser evidence. They are not yet playable combat or save/load systems.
 - Resource/cargo and ship-builder domain foundations. These are data and validation cores, not complete player-facing gameplay systems.
 
 The browser runtime does **not** yet provide full planets, voxel terrain, orbital flight, SOI or patched-conics navigation, seamless surface transitions, production multiplayer, a playable ship-builder UI, persistent cargo gameplay, full combat, economy or missions.
@@ -135,6 +136,8 @@ Player-facing and domain claims should be backed by tests and inspectable artifa
 - `apps/weltraum-browser/evidence/browser-autopilot-terminal-capture-v1.md`
 - `apps/weltraum-browser/evidence/browser-world-chunk-registry-streaming-v1.md`
 - `apps/weltraum-browser/evidence/browser-celestial-gravity-core-v1.md`
+- `apps/weltraum-browser/evidence/browser-combat-weapon-damage-core-v1.md`
+- `apps/weltraum-browser/evidence/browser-persistence-universe-time-event-core-v1.md`
 - `apps/weltraum-browser/evidence/demo-scout-nozzle-vfx-snapshot.json`
 - `.devtoolbox/specs/changes/archive/2026-07-13-browser-objective-chain-1000m-completion-v2/tests/test-protocol.md`
 

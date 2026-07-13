@@ -147,7 +147,9 @@ Implemented:
 - floating-origin invariants;
 - deterministic simulation bubble, LOD, chunk registry and streaming plans;
 - renderer-owned instancing without renderer-owned simulation truth;
-- a pure celestial catalog, ephemeris and local gravity-query core.
+- a pure celestial catalog, ephemeris and local gravity-query core;
+- pure Combat and Persistence/Universe-Time/Event contract cores without live
+  runtime ownership.
 
 Still missing:
 
@@ -156,7 +158,8 @@ Still missing:
 - production content/chunk IO;
 - generated planets, terrain and voxel data;
 - surface-local gameplay transitions;
-- timewarp, persistence and multiplayer universe authority.
+- runtime save/load integration, timewarp, offline progression and multiplayer
+  universe authority.
 
 Future planetary and voxel work must preserve absolute simulation state while streaming local render/physics regions.
 
@@ -174,7 +177,7 @@ Do not port MonoBehaviour shape, `Update`/`FixedUpdate` ownership, scene wiring 
 - FlightController-owned actuator and terminal-capture behavior.
 - Explicit target semantics and arrival envelopes.
 - Fail-closed authority, fuel and braking checks.
-- Stable IDs across serialization and future persistence.
+- Stable IDs and deterministic signatures across serialization and persistence.
 - Explicit frame metadata across absolute/local/surface/orbital boundaries.
 - Celestial calculations remain explicit-time, deterministic and independent from presentation.
 - UI and rendering remain command/snapshot adapters.
@@ -188,6 +191,8 @@ Do not port MonoBehaviour shape, `Update`/`FixedUpdate` ownership, scene wiring 
 - `docs/browser-mainline/ci-verification.md`
 - `docs/browser-mainline/port-roadmap.md`
 - `docs/browser-mainline/celestial-gravity-core-v1.md`
+- `docs/browser-mainline/combat-weapon-damage-core-v1.md`
+- `docs/browser-mainline/persistence-universe-time-event-core-v1.md`
 - `docs/roadmap/living-master-plan.md`
 - `docs/architecture/autopilot-v2-design.md`
 - `docs/architecture/coordinate-spaces-and-floating-origin.md`

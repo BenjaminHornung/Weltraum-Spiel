@@ -2,8 +2,8 @@
 
 Stand: 2026-07-13
 Status snapshot: browser mainline after the objective-chain,
-celestial-gravity-core, combat-weapon-damage-core and Demo Scout nozzle-VFX
-merges
+celestial-gravity-core, combat-weapon-damage-core, Persistence/Universe-Time/
+Event core and Demo Scout nozzle-VFX merges
 
 ## Product Mainline
 
@@ -139,6 +139,24 @@ Evidence:
 - `apps/weltraum-browser/evidence/browser-combat-weapon-damage-core-v1.md`
 - `apps/weltraum-browser/evidence/browser-combat-weapon-damage-core-v1-summary.json`
 
+### Persistence, Universe Time And Event Core
+
+`apps/weltraum-browser/src/persistence` provides a deterministic pure-TypeScript
+contract boundary for 120 Hz Universe time, stable persistence identities,
+strict V1 save envelopes, validated migration mechanics, persistent domain
+events, simulation-mode transitions and canonical JSON signatures.
+
+The core is not connected to the live flight loop, renderer, UI, Browser
+storage, offline progression or multiplayer transport. It must not be described
+as a playable save/load system, timewarp, background simulation or persistent
+universe authority.
+
+Evidence:
+
+- `docs/browser-mainline/persistence-universe-time-event-core-v1.md`
+- `apps/weltraum-browser/evidence/browser-persistence-universe-time-event-core-v1.md`
+- `apps/weltraum-browser/evidence/browser-persistence-universe-time-event-core-v1-summary.json`
+
 ### World And Streaming
 
 Implemented foundations include absolute/local frames, floating-origin
@@ -208,6 +226,8 @@ harness scenarios.
   `art/source/ships/prototype-ship-kit`.
 - The four `ui-concept-parity-v1-rejected-*.png` files under
   `apps/weltraum-browser/evidence` are required comparison baselines.
+- `apps/weltraum-browser/public/favicon.png` is the low-poly app-shell icon used
+  by the synchronized normal route.
 - Current Browser Markdown, JSON and screenshot evidence remains under
   `apps/weltraum-browser/evidence`.
 - The historical Unity status report is

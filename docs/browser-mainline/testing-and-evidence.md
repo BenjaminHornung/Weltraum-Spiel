@@ -137,6 +137,23 @@ Evidence:
 
 No screenshot is required for this feature because it deliberately has no visible UI or render change.
 
+## Combat And Persistence Core Acceptance
+
+The standalone Combat and Persistence/Universe-Time/Event cores use focused
+unit suites plus normal-route Browser E2E scenarios:
+
+- `apps/weltraum-browser/tests/e2e/combat-weapon-damage-core.spec.ts`
+- `apps/weltraum-browser/tests/e2e/persistence-universe-time-event-core.spec.ts`
+- `apps/weltraum-browser/evidence/browser-combat-weapon-damage-core-v1.md`
+- `apps/weltraum-browser/evidence/browser-persistence-universe-time-event-core-v1.md`
+- `docs/browser-mainline/combat-weapon-damage-core-v1.md`
+- `docs/browser-mainline/persistence-universe-time-event-core-v1.md`
+
+Both scenarios prove that normal `/` remains healthy and does not expose
+`TestBridge` before importing the bounded domain module. Neither core is
+evidence of playable Combat, Browser storage, save/load UI, offline progression
+or runtime persistence integration.
+
 ## Visual And Nozzle-VFX Evidence
 
 Visible ship/VFX changes should prove that:

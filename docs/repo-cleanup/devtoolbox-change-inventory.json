@@ -2000,5 +2000,16 @@
         "hasTasks":  true,
         "hasEvidence":  true,
         "action":  "archive"
+    },
+    {
+        "name":  "browser-persistence-universe-time-event-core-v1",
+        "platform":  "browser",
+        "status":  "active",
+        "openTaskCount":  7,
+        "hasProposal":  true,
+        "hasDesign":  true,
+        "hasTasks":  true,
+        "hasEvidence":  true,
+        "action":  "keep"
     }
 ]
