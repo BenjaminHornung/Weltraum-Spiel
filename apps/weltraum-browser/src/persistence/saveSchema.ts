@@ -21,6 +21,7 @@ import {
   type StableInstanceId
 } from "./ids";
 import { UniverseTimeError, createSimulationTick, validateUniverseTime, type UniverseTime } from "./time";
+import { isSimulationMode } from "./simulationMode";
 import type {
   BasePersistentState,
   DefinitionReference,
@@ -67,14 +68,6 @@ export const SAVE_GAME_SCHEMA_VERSION_V1 = 1 as const;
 
 const codeUnitCompare = (left: string, right: string): number => (left < right ? -1 : left > right ? 1 : 0);
 const domainPattern = /^[a-z][a-z0-9._-]*$/;
-const simulationModes = new Set<SimulationMode>([
-  "Active",
-  "Background",
-  "Dormant",
-  "NeedsReplan",
-  "NeedsPlayerAttention",
-  "Destroyed"
-]);
 const eventTypes = new Set<EventType>([
   "MissionComplete",
   "FuelReserveLow",
@@ -226,10 +219,10 @@ const parseNullable = <T>(value: unknown, parse: (entry: unknown, path: string) 
   value === null ? null : parse(value, path);
 
 const parseSimulationMode = (value: unknown, path: string): SimulationMode => {
-  if (typeof value !== "string" || !simulationModes.has(value as SimulationMode)) {
+  if (!isSimulationMode(value)) {
     return failPersistenceValidation("INVALID_VALUE", path, "Simulation mode is not supported.");
   }
-  return value as SimulationMode;
+  return value;
 };
 
 const parseContainerIds = (value: unknown, path: string): readonly ReturnType<typeof parseContainerId>[] => {

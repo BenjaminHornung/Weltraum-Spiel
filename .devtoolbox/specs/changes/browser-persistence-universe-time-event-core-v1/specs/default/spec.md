@@ -173,7 +173,7 @@ Repeated canonicalization and parse/serialize roundtrips of equivalent data prod
 
 ## Requirement: Persistence core remains isolated
 
-The source SHALL NOT import or use Three.js, DOM, renderer, flight/runtime/UI cores, browser storage, system time, random state, or another domain's calculations. The implementation SHALL remain inside its allowlist, except for the approved exact `test:e2e:core` script append.
+The source SHALL NOT import or use Three.js, DOM, renderer, flight/runtime/UI cores, browser storage, system time, random state, or another domain's calculations. The implementation SHALL remain inside its allowlist, except for the approved exact `test:e2e:core` script append and the user-requested generated low-poly `public/favicon.png` with its single `index.html` link.
 
 ### Scenario 28: No Three.js, DOM, or renderer dependency
 

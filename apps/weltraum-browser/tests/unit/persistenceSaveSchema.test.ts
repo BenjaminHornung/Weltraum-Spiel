@@ -4,6 +4,8 @@ import {
   createDefinitionResolutionFixture,
   createSaveGameEnvelopeV1Fixture,
   createStableFixtureId,
+  deserializeSaveGameEnvelopeV1,
+  serializeSaveGameEnvelopeV1,
   validateSaveGameEnvelopeV1
 } from "../../src/persistence";
 
@@ -22,6 +24,20 @@ const validationError = (operation: () => unknown): PersistenceValidationError =
 };
 
 describe("persistence SaveGameEnvelopeV1", () => {
+  it("keeps the normal V1 fixture valid across a canonical roundtrip", () => {
+    const snapshots = createDefinitionResolutionFixture();
+    const serialized = serializeSaveGameEnvelopeV1(createSaveGameEnvelopeV1Fixture(), snapshots);
+    const roundtripped = deserializeSaveGameEnvelopeV1(serialized, snapshots);
+
+    expect(serializeSaveGameEnvelopeV1(roundtripped, snapshots)).toBe(serialized);
+
+    const nullPrototypeData = mutableFixture();
+    nullPrototypeData.player.data = Object.assign(Object.create(null), { credits: 1000 });
+    const validated = validateSaveGameEnvelopeV1(nullPrototypeData, snapshots);
+    expect(validated.player.data.credits).toBe(1000);
+    expect(Object.getPrototypeOf(validated.player.data)).toBeNull();
+  });
+
   it("validates finite mobile state, definition-only references, and immutable defensive output", () => {
     const source = mutableFixture();
     const validated = validateSaveGameEnvelopeV1(source, createDefinitionResolutionFixture());
@@ -61,6 +77,55 @@ describe("persistence SaveGameEnvelopeV1", () => {
       validateSaveGameEnvelopeV1(legacyMobileShape, createDefinitionResolutionFixture())
     );
     expect(legacyError).toMatchObject({ code: "UNKNOWN_FIELD", path: "/ships/0/definitionRef" });
+  });
+
+  it("rejects Array subclasses and extra array properties at the envelope boundary", () => {
+    class SaveCollection<T> extends Array<T> {}
+
+    const subclass = mutableFixture();
+    subclass.ships = new SaveCollection(...subclass.ships);
+    expect(validationError(() => validateSaveGameEnvelopeV1(subclass, createDefinitionResolutionFixture()))).toMatchObject({
+      code: "INVALID_TYPE",
+      path: "/ships"
+    });
+
+    const extraProperty = mutableFixture();
+    extraProperty.ships.extra = true;
+    expect(
+      validationError(() => validateSaveGameEnvelopeV1(extraProperty, createDefinitionResolutionFixture()))
+    ).toMatchObject({ code: "INVALID_JSON", path: "/ships/extra" });
+  });
+
+  it("rejects symbol and non-enumerable object properties instead of ignoring them", () => {
+    const symbolProperty = mutableFixture();
+    symbolProperty.player[Symbol("hidden")] = true;
+    expect(
+      validationError(() => validateSaveGameEnvelopeV1(symbolProperty, createDefinitionResolutionFixture()))
+    ).toMatchObject({ code: "INVALID_JSON", path: "/player" });
+
+    const nonEnumerableProperty = mutableFixture();
+    Object.defineProperty(nonEnumerableProperty.player, "hidden", { value: true, enumerable: false });
+    expect(
+      validationError(() => validateSaveGameEnvelopeV1(nonEnumerableProperty, createDefinitionResolutionFixture()))
+    ).toMatchObject({ code: "INVALID_JSON", path: "/player/hidden" });
+  });
+
+  it("rejects an enumerable schema getter without invoking it", () => {
+    const save = mutableFixture();
+    let getterInvocations = 0;
+    Object.defineProperty(save.player, "data", {
+      enumerable: true,
+      get: () => {
+        getterInvocations += 1;
+        return { credits: 1000 };
+      }
+    });
+
+    expect(validationError(() => validateSaveGameEnvelopeV1(save, createDefinitionResolutionFixture()))).toMatchObject({
+      code: "INVALID_JSON",
+      path: "/player/data"
+    });
+    expect(getterInvocations).toBe(0);
   });
 
   it("rejects duplicate owned IDs and unresolved active player references", () => {

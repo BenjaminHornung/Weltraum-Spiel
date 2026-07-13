@@ -26,7 +26,7 @@ Provide a pure TypeScript persistence core that:
 - One normal-route Playwright spec and task-specific deterministic JSON/Markdown evidence.
 - One browser-mainline persistence contract document.
 - This DevToolbox change and test protocol.
-- One approved allowlist exception: append the new Playwright spec to the existing `test:e2e:core` command in `apps/weltraum-browser/package.json`. Do not change dependencies, other scripts, or either package lockfile.
+- Approved allowlist exceptions: append the new Playwright spec to the existing `test:e2e:core` command in `apps/weltraum-browser/package.json`; add the user-requested generated low-poly `apps/weltraum-browser/public/favicon.png` and its single `apps/weltraum-browser/index.html` link. Do not change dependencies, other scripts, either package lockfile, or any other app-shell file.
 
 ## Non-goals
 
@@ -48,4 +48,4 @@ Provide a pure TypeScript persistence core that:
 
 ## Success
 
-All 30 mandatory unit cases, typecheck, full unit/build regressions, focused and full Playwright suites, repeated byte-equivalent browser evidence, scope audits, and diff checks pass. Canonical roundtrips produce identical bytes and signatures. The final diff contains only the approved allowlist plus the single `test:e2e:core` script append, and the feature branch is pushed without merging.
+All 30 mandatory unit cases, typecheck, full unit/build regressions, focused and full Playwright suites, repeated byte-equivalent browser evidence, scope audits, and diff checks pass. Canonical roundtrips produce identical bytes and signatures. The final diff contains only the approved allowlist plus the exact `test:e2e:core` append and favicon/app-shell exceptions, and the feature branch is pushed without merging.

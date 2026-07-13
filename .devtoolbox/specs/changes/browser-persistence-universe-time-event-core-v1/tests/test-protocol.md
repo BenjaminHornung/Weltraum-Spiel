@@ -8,6 +8,7 @@
 - Generic migration test contract: isolated neutral fixture `v1 -> v2`, not a product V2 save schema.
 - Canonical time quantum: 120 Universe ticks per game epoch second; no runtime-loop change.
 - Scope exception: only append the new E2E spec to `apps/weltraum-browser/package.json` `test:e2e:core`; dependencies, lockfiles, and every other script remain unchanged.
+- User-approved browser-health exception: add the generated low-poly spaceship at `apps/weltraum-browser/public/favicon.png` and reference it from `apps/weltraum-browser/index.html`; no other app-shell change is allowed.
 
 Run npm/TypeScript/Vitest/Playwright commands from `apps/weltraum-browser` in the isolated worktree. Run Git and evidence-integrity commands from repository root. Inspect every exit code and retain command-level evidence.
 
@@ -59,8 +60,8 @@ $summaryText = Get-Content -LiteralPath $summaryPath -Raw
 $summary = $summaryText | ConvertFrom-Json
 $markdown = Get-Content -LiteralPath $markdownPath -Raw
 if ($summary.schemaVersion -ne 1) { throw 'Evidence schemaVersion must be 1' }
-if (-not $summary.roundtrip.byteStable) { throw 'Roundtrip bytes are not stable' }
-if (-not $summary.roundtrip.signatureStable) { throw 'Roundtrip signature is not stable' }
+if (-not $summary.save.canonicalBytesEqualAfterRoundtrip) { throw 'Roundtrip bytes are not stable' }
+if (-not $summary.save.signatureEqualAfterRoundtrip) { throw 'Roundtrip signature is not stable' }
 $forbiddenEvidencePattern = '(?i)timestamp|wall.?clock|durationMs|machinePath|screenshot'
 if ($summaryText -match $forbiddenEvidencePattern -or $markdown -match $forbiddenEvidencePattern) {
   throw 'Evidence contains forbidden nondeterministic/reporting fields'
@@ -77,7 +78,7 @@ if ($firstSummaryHash -ne $secondSummaryHash -or $firstMarkdownHash -ne $secondM
   throw 'Repeated browser evidence is not byte-identical'
 }
 
-# Original allowlist plus the approved package script exception only.
+# Original allowlist plus the approved package-script and favicon/app-shell exceptions only.
 $allowedPatterns = @(
   '^\.devtoolbox/specs/changes/browser-persistence-universe-time-event-core-v1/',
   '^apps/weltraum-browser/src/persistence/',
@@ -85,7 +86,9 @@ $allowedPatterns = @(
   '^apps/weltraum-browser/tests/e2e/persistence-universe-time-event-core\.spec\.ts$',
   '^apps/weltraum-browser/evidence/browser-persistence-universe-time-event-core-v1',
   '^docs/browser-mainline/persistence-universe-time-event-core-v1\.md$',
-  '^apps/weltraum-browser/package\.json$'
+  '^apps/weltraum-browser/package\.json$',
+  '^apps/weltraum-browser/index\.html$',
+  '^apps/weltraum-browser/public/favicon\.png$'
 )
 $changed = @(git diff --name-only 7e1d0237cdf272bfb759f26e2be8cdb3a760e15c...HEAD) + @(git status --short | ForEach-Object { $_.Substring(3) })
 $changed = @($changed | ForEach-Object { $_ -replace '\\','/' } | Sort-Object -Unique)
@@ -146,22 +149,23 @@ Expected evidence paths:
 
 Evidence SHALL be deterministic, JSON-safe where applicable, machine-path-free, screenshot-free, and contain no generated timestamp, system time, duration, UUID, or random value.
 
-## Results to fill after fresh execution
+## Fresh verification results
 
 | Check | Result | Command evidence / notes |
 | --- | --- | --- |
-| `npm ci` | `NOT RUN` | Pending implementation verification. |
-| TypeScript | `NOT RUN` | Pending. |
-| Six focused unit suites / 30 cases | `NOT RUN` | Pending. |
-| Focused E2E run 1 | `NOT RUN` | Pending. |
-| Focused E2E run 2 / byte comparison | `NOT RUN` | Pending. |
-| Full unit suite | `NOT RUN` | Pending. |
-| Build | `NOT RUN` | Pending. |
-| E2E core/live/ui/aggregate | `NOT RUN` | Pending. |
-| Evidence integrity | `NOT RUN` | Pending. |
-| Scope/forbidden-path/package audit | `NOT RUN` | Pending. |
-| `git diff --check` | `NOT RUN` | Pending final diff. |
-| Independent read-only review | `NOT RUN` | Pending. |
+| `npm ci` | `PASS` | Exit `0`; 59 packages audited, 0 vulnerabilities. |
+| TypeScript | `PASS` | `npx tsc -p tsconfig.json`, exit `0`. |
+| Six focused unit suites / 30 cases | `PASS` | 6 files and 39 tests passed; all normative Scenarios 01-30 are covered. |
+| Focused E2E run 1 | `PASS` | 1/1 passed on the normal `/` route with unfiltered browser-health gates. |
+| Focused E2E run 2 / byte comparison | `PASS` | 1/1 passed; both approved evidence files remained byte-identical. |
+| Full unit suite | `PASS` | 45 files and 483/483 tests passed. |
+| Build | `PASS` | Production build completed with 53 transformed modules; only the pre-existing chunk-size warning was emitted. |
+| E2E core/live/ui/aggregate | `PASS` | Core 24/24, live 12/12, UI 9/9, aggregate 45/45 passed. The final UI and aggregate reruns used materialized Git LFS comparison PNGs. |
+| Evidence integrity | `PASS` | JSON SHA-256 `97A7552498B00CBF0552179CB36B4C8D4E1E37F5787CBB72C5EFD5A7E22CA253`; Markdown SHA-256 `F4F40142A94BBB1152E2D802C80647C19BA66C500DD7F8B5B5E0CC08784E700B`; parse/schema/stability/forbidden-field checks passed. |
+| Scope/forbidden-path/package audit | `PASS` | Allowlist, forbidden-path and forbidden-source searches passed; package change is script-only and package-lock SHA-256 remained `0D1E242E5CEE47F2A6DDDD90BB2AE87E9FB62538FD4C4A92E90D44229CBB42E6`. |
+| `git diff --check` | `PASS` | Exit `0`; only Git's configured LF-to-CRLF working-copy notices were emitted. |
+| Independent read-only review | `PASS` | Descriptor-safe strict JSON validation and shared simulation-mode vocabulary fixes were re-reviewed; no additional findings. |
+| Repository .NET build/test | `NOT APPLICABLE` | The repository contains no `.sln`, `.slnx`, or `.csproj`; the browser npm/TypeScript/Vitest/Playwright gates above are authoritative. |
 | DevToolbox completion preflight/task toggles | `NOT RUN` | Restricted-root limitation; tasks remain unchecked. |
 
 ## Completion rule

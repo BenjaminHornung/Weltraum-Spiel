@@ -61,10 +61,53 @@ export const isPlainObject = (value: unknown): value is Record<string, unknown> 
   return prototype === Object.prototype || prototype === null;
 };
 
+const readEnumerableDataPropertyKeys = (
+  object: Readonly<Record<string, unknown>>,
+  path: string
+): readonly string[] => {
+  const ownKeys = Reflect.ownKeys(object);
+  if (ownKeys.some((key) => typeof key === "symbol")) {
+    return failPersistenceValidation("INVALID_JSON", path, "Plain JSON objects cannot contain symbol properties.");
+  }
+
+  const keys = (ownKeys as string[]).sort();
+  for (const key of keys) {
+    const descriptor = Object.getOwnPropertyDescriptor(object, key);
+    if (descriptor === undefined || !("value" in descriptor) || descriptor.enumerable !== true) {
+      return failPersistenceValidation(
+        "INVALID_JSON",
+        persistencePath(path, key),
+        "Plain JSON object fields must be enumerable data properties."
+      );
+    }
+  }
+  return keys;
+};
+
+const readEnumerableDataProperty = (
+  object: Readonly<Record<string, unknown>>,
+  key: string,
+  path: string
+): unknown => {
+  const descriptor = Object.getOwnPropertyDescriptor(object, key);
+  if (descriptor === undefined) {
+    return failPersistenceValidation("MISSING_REQUIRED_FIELD", persistencePath(path, key), "Required field is missing.");
+  }
+  if (!("value" in descriptor) || descriptor.enumerable !== true) {
+    return failPersistenceValidation(
+      "INVALID_JSON",
+      persistencePath(path, key),
+      "Plain JSON object fields must be enumerable data properties."
+    );
+  }
+  return descriptor.value;
+};
+
 export const readPlainObject = (value: unknown, path: string): Readonly<Record<string, unknown>> => {
   if (!isPlainObject(value)) {
     return failPersistenceValidation("INVALID_TYPE", path, "Expected a plain object.");
   }
+  readEnumerableDataPropertyKeys(value, path);
   return value;
 };
 
@@ -73,27 +116,64 @@ export const assertAllowedFields = (
   path: string,
   fields: readonly string[]
 ): void => {
-  for (const key of Object.keys(object).sort()) {
+  for (const key of readEnumerableDataPropertyKeys(object, path)) {
     if (!fields.includes(key)) {
       failPersistenceValidation("UNKNOWN_FIELD", persistencePath(path, key), "Unexpected field in persistence data.");
     }
   }
 };
 
-export const readRequired = (object: Readonly<Record<string, unknown>>, key: string, path: string): unknown => {
-  if (!Object.prototype.hasOwnProperty.call(object, key)) {
-    return failPersistenceValidation("MISSING_REQUIRED_FIELD", persistencePath(path, key), "Required field is missing.");
-  }
-  return object[key];
-};
+export const readRequired = (object: Readonly<Record<string, unknown>>, key: string, path: string): unknown =>
+  readEnumerableDataProperty(object, key, path);
 
 export const readArray = (value: unknown, path: string): readonly unknown[] => {
   if (!Array.isArray(value)) {
     return failPersistenceValidation("INVALID_TYPE", path, "Expected an array.");
   }
-  for (let index = 0; index < value.length; index += 1) {
-    if (!Object.prototype.hasOwnProperty.call(value, index)) {
+  if (Object.getPrototypeOf(value) !== Array.prototype) {
+    return failPersistenceValidation("INVALID_TYPE", path, "Expected a plain Array instance.");
+  }
+
+  const ownKeys = Reflect.ownKeys(value);
+  if (ownKeys.some((key) => typeof key === "symbol")) {
+    return failPersistenceValidation("INVALID_JSON", path, "JSON arrays cannot contain symbol properties.");
+  }
+  const lengthDescriptor = Object.getOwnPropertyDescriptor(value, "length");
+  if (
+    lengthDescriptor === undefined ||
+    !("value" in lengthDescriptor) ||
+    lengthDescriptor.enumerable !== false ||
+    lengthDescriptor.configurable !== false ||
+    typeof lengthDescriptor.value !== "number" ||
+    !Number.isSafeInteger(lengthDescriptor.value) ||
+    lengthDescriptor.value < 0
+  ) {
+    return failPersistenceValidation("INVALID_JSON", path, "JSON arrays require a normal length property.");
+  }
+  const length = lengthDescriptor.value;
+  for (const key of (ownKeys as string[]).sort()) {
+    if (key === "length") {
+      continue;
+    }
+    if (!/^(0|[1-9][0-9]*)$/.test(key) || Number(key) >= length) {
+      return failPersistenceValidation(
+        "INVALID_JSON",
+        persistencePath(path, key),
+        "JSON arrays cannot contain extra properties."
+      );
+    }
+  }
+  for (let index = 0; index < length; index += 1) {
+    const descriptor = Object.getOwnPropertyDescriptor(value, String(index));
+    if (descriptor === undefined) {
       return failPersistenceValidation("INVALID_JSON", persistencePath(path, index), "Sparse arrays are not JSON-safe.");
+    }
+    if (!("value" in descriptor) || descriptor.enumerable !== true) {
+      return failPersistenceValidation(
+        "INVALID_JSON",
+        persistencePath(path, index),
+        "JSON array entries must be enumerable data properties."
+      );
     }
   }
   return value;
@@ -146,26 +226,39 @@ const cloneJsonValueInternal = (value: unknown, path: string, ancestors: Set<obj
     return readFiniteNumber(value, path);
   }
   if (Array.isArray(value)) {
-    readArray(value, path);
+    const array = readArray(value, path);
     if (ancestors.has(value)) {
       return failPersistenceValidation("INVALID_JSON", path, "JSON data must not contain cycles.");
     }
     ancestors.add(value);
     try {
-      return value.map((entry, index) => cloneJsonValueInternal(entry, persistencePath(path, index), ancestors));
+      const result: JsonValue[] = [];
+      for (let index = 0; index < array.length; index += 1) {
+        const descriptor = Object.getOwnPropertyDescriptor(array, String(index));
+        if (descriptor === undefined || !("value" in descriptor)) {
+          return failPersistenceValidation("INVALID_JSON", persistencePath(path, index), "Invalid JSON array entry.");
+        }
+        result.push(cloneJsonValueInternal(descriptor.value, persistencePath(path, index), ancestors));
+      }
+      return result;
     } finally {
       ancestors.delete(value);
     }
   }
   if (isPlainObject(value)) {
+    const object = readPlainObject(value, path);
     if (ancestors.has(value)) {
       return failPersistenceValidation("INVALID_JSON", path, "JSON data must not contain cycles.");
     }
     ancestors.add(value);
     try {
       const result = Object.create(null) as Record<string, JsonValue>;
-      for (const key of Object.keys(value).sort()) {
-        result[key] = cloneJsonValueInternal(value[key], persistencePath(path, key), ancestors);
+      for (const key of readEnumerableDataPropertyKeys(object, path)) {
+        const descriptor = Object.getOwnPropertyDescriptor(object, key);
+        if (descriptor === undefined || !("value" in descriptor)) {
+          return failPersistenceValidation("INVALID_JSON", persistencePath(path, key), "Invalid JSON object field.");
+        }
+        result[key] = cloneJsonValueInternal(descriptor.value, persistencePath(path, key), ancestors);
       }
       return result;
     } finally {

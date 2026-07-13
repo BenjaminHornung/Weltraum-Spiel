@@ -166,6 +166,6 @@ The scenario runs twice and requires identical canonical bytes and signatures. O
 
 ## Scope and parallel-work protection
 
-Owned paths are the new persistence source directory, named persistence unit/E2E/evidence files, the single browser-mainline contract document, and this change directory. The sole exception outside the original allowlist is the precise `test:e2e:core` command append in `apps/weltraum-browser/package.json`; dependencies and lockfiles remain unchanged.
+Owned paths are the new persistence source directory, named persistence unit/E2E/evidence files, the single browser-mainline contract document, and this change directory. Exceptions outside the original allowlist are the precise `test:e2e:core` command append in `apps/weltraum-browser/package.json` plus the user-requested generated low-poly `apps/weltraum-browser/public/favicon.png` and its single `apps/weltraum-browser/index.html` link; dependencies and lockfiles remain unchanged.
 
 Any required edit to Flight, Navigation, Runtime, Render, UI, Combat, Celestial, Settings, Resources, Ship Builder, World, Test Harness, Unity/Assets, roadmap/index documents, another package script, or any existing domain-core behavior is a stop condition.

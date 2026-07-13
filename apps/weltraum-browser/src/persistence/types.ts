@@ -69,13 +69,16 @@ export interface FiniteQuaternion {
   readonly w: number;
 }
 
-export type SimulationMode =
-  | "Active"
-  | "Background"
-  | "Dormant"
-  | "NeedsReplan"
-  | "NeedsPlayerAttention"
-  | "Destroyed";
+export const SIMULATION_MODES = Object.freeze([
+  "Active",
+  "Background",
+  "Dormant",
+  "NeedsReplan",
+  "NeedsPlayerAttention",
+  "Destroyed"
+] as const);
+
+export type SimulationMode = (typeof SIMULATION_MODES)[number];
 
 export interface MobileObjectPersistentState<TObjectId extends ShipId | DroneId = ShipId | DroneId> {
   readonly objectId: TObjectId;

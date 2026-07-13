@@ -11,7 +11,7 @@ All tasks intentionally remain unchecked. DevToolbox MCP is `NOT RUN` because it
 - Browser/Evidence: the named persistence E2E spec and evidence files
 - Documentation: `docs/browser-mainline/persistence-universe-time-event-core-v1.md`
 - Spec: `.devtoolbox/specs/changes/browser-persistence-universe-time-event-core-v1/**`
-- Approved exception: append only the persistence E2E filename to `apps/weltraum-browser/package.json` `test:e2e:core`; no dependency, lockfile, or other script change.
+- Approved exceptions: append only the persistence E2E filename to `apps/weltraum-browser/package.json` `test:e2e:core`; add the user-requested low-poly `apps/weltraum-browser/public/favicon.png` and its single `apps/weltraum-browser/index.html` link; no dependency, lockfile, other script, or other app-shell change.
 
 ## Phase 1: Spec and contract gate
 
@@ -38,7 +38,7 @@ All tasks intentionally remain unchecked. DevToolbox MCP is `NOT RUN` because it
 ## Phase 4: Normal-route browser evidence and documentation
 
 - [ ] Implement the browser acceptance scenario, deterministic evidence, and browser-mainline contract document.
-  - Files: `tests/e2e/persistence-universe-time-event-core.spec.ts`; the two `evidence/browser-persistence-universe-time-event-core-v1*` files; `docs/browser-mainline/persistence-universe-time-event-core-v1.md`.
+  - Files: `tests/e2e/persistence-universe-time-event-core.spec.ts`; the two `evidence/browser-persistence-universe-time-event-core-v1*` files; `docs/browser-mainline/persistence-universe-time-event-core-v1.md`; user-approved `public/favicon.png` and its single `index.html` link.
   - Package exception: append only the new spec to `test:e2e:core` in `apps/weltraum-browser/package.json`; assert `package-lock.json` is byte-identical.
   - Acceptance: error listeners registered before normal `/`; `TestBridge` absent; dynamic persistence import; clock/save/event/mode/generic-migration/roundtrip scenario runs twice; bytes/signatures identical; evidence written only after success and contains no timestamp, duration, screenshot, random value, or machine path.
   - Verify: focused E2E twice, parse evidence JSON, compare repeated evidence bytes, and run `test:e2e:core`.
@@ -47,7 +47,7 @@ All tasks intentionally remain unchecked. DevToolbox MCP is `NOT RUN` because it
 
 - [ ] Run fresh focused/full verification and record exact results in `tests/test-protocol.md` and evidence.
   - Verify: `npm ci`, TypeScript typecheck, all six focused unit suites, focused E2E, full unit/build, `test:e2e:core`, `test:e2e:live`, `test:e2e:ui`, aggregate `test:e2e`, JSON/evidence checks, `git diff --check`, and allowlist/forbidden-path audits.
-  - Acceptance: every exit code is inspected; unexpected failures are resolved or reported; package lock remains unchanged; only the exact package script append is present outside the original allowlist.
+  - Acceptance: every exit code is inspected; unexpected failures are resolved or reported; package lock remains unchanged; only the exact package script append and user-approved favicon/app-shell files are present outside the original allowlist.
 - [ ] Obtain independent read-only review of contracts, determinism, regression risk, security boundaries, and test evidence, then perform a fresh completion verification.
   - Acceptance: actionable findings are resolved and rerun; evidence, diff, and test protocol support Done independently of implementer claims.
 - [ ] Complete eligible DevToolbox validation/evidence/preflight, toggle tasks only after successful preflight, commit, and push the feature branch without merging.
@@ -64,7 +64,7 @@ All tasks intentionally remain unchecked. DevToolbox MCP is `NOT RUN` because it
 - Unit cases: all numbered Scenarios 01-30 in `specs/default/spec.md`.
 - Browser: normal-route dynamic import, clean console/network, full scenario twice, canonical byte/signature equality, deterministic JSON/Markdown evidence.
 - Regression: complete browser unit, build, and all configured E2E groups.
-- Scope: diff allowlist, approved single package script exception, byte-identical lockfiles, unchanged forbidden domain cores and Unity paths.
+- Scope: diff allowlist, approved package-script and favicon/app-shell exceptions, byte-identical lockfiles, unchanged forbidden domain cores and Unity paths.
 - Completion: fresh evidence, independent review, DevToolbox completion preflight, then task toggles.
 
 ## Safe stops
@@ -74,7 +74,7 @@ Stop and report without expanding scope if:
 - `origin/main` or the worktree base no longer matches the recorded task context in a way that introduces a competing persistence core;
 - the branch/worktree has unexpected ownership or conflicting changes;
 - a contract requires a product decision absent from proposal/design/spec;
-- implementation needs a change outside the owned paths or more than the exact package-script exception;
+- implementation needs a change outside the owned paths or more than the exact package-script and favicon/app-shell exceptions;
 - dependencies or a lockfile would change;
 - browser errors require generic filtering or evidence cannot be deterministic;
 - an existing domain core, runtime loop, production storage, offline progression, timewarp, or real V2 save schema would need modification; or

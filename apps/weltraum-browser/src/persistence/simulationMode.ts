@@ -1,4 +1,4 @@
-import type { SimulationMode } from "./types";
+import { SIMULATION_MODES, type SimulationMode } from "./types";
 
 export type SimulationModeTransitionErrorCode = "INVALID_SIMULATION_MODE" | "INVALID_SIMULATION_MODE_TRANSITION";
 
@@ -14,15 +14,6 @@ export class SimulationModeTransitionError extends Error {
     Object.setPrototypeOf(this, new.target.prototype);
   }
 }
-
-export const SIMULATION_MODES = Object.freeze([
-  "Active",
-  "Background",
-  "Dormant",
-  "NeedsReplan",
-  "NeedsPlayerAttention",
-  "Destroyed"
-] as const satisfies readonly SimulationMode[]);
 
 export const SIMULATION_MODE_TRANSITIONS: Readonly<Record<SimulationMode, readonly SimulationMode[]>> =
   Object.freeze({
