@@ -180,9 +180,198 @@
             <div id="autopilot-action-state" class="hud-state-badge action-state">Ready</div>
             <div class="hud-actions">
               <button id="engage-autopilot" type="button">Engage route</button>
+              <button id="graphics-settings-button" class="hud-secondary-action" type="button" data-testid="graphics-settings-open">Grafik</button>
             </div>
           </div>
         </footer>
+
+        <dialog id="graphics-settings-dialog" class="graphics-settings-dialog" role="dialog" aria-modal="true" aria-labelledby="graphics-settings-title" aria-describedby="graphics-settings-description" data-testid="graphics-settings-dialog">
+          <div class="graphics-settings-shell">
+            <header class="graphics-settings-header">
+              <div>
+                <div class="graphics-settings-kicker">Darstellung</div>
+                <h2 id="graphics-settings-title">Grafikeinstellungen</h2>
+                <p id="graphics-settings-description">Darstellung anpassen, ohne Flugzustand oder Simulation zu verändern.</p>
+              </div>
+              <div class="graphics-settings-pending" data-testid="graphics-pending-state" aria-live="polite">Gespeichert</div>
+            </header>
+
+            <div class="graphics-settings-content">
+              <section class="graphics-settings-presets" aria-labelledby="graphics-presets-title">
+                <div class="graphics-settings-section-heading">
+                  <h3 id="graphics-presets-title">Qualitätsprofil</h3>
+                  <output id="graphics-preset-current" data-testid="graphics-preset-current">High</output>
+                </div>
+                <div class="graphics-settings-preset-list" role="group" aria-label="Qualitätsprofil wählen">
+                  <button type="button" data-graphics-preset="Low" data-testid="graphics-preset-low">Low</button>
+                  <button type="button" data-graphics-preset="Medium" data-testid="graphics-preset-medium">Medium</button>
+                  <button type="button" data-graphics-preset="High" data-testid="graphics-preset-high">High</button>
+                  <button type="button" data-graphics-preset="Ultra" data-testid="graphics-preset-ultra">Ultra</button>
+                </div>
+                <p>Profile ändern Qualitätswerte. Sichtfeld, FPS-Limit und Vollbild bleiben unangetastet.</p>
+              </section>
+
+              <div class="graphics-settings-grid">
+                <section class="graphics-settings-group" aria-labelledby="graphics-display-title">
+                  <h3 id="graphics-display-title">Anzeige</h3>
+
+                  <label class="graphics-settings-control" for="graphics-render-scale">
+                    <span><strong>Render-Skalierung</strong><output id="graphics-render-scale-value">100%</output></span>
+                    <input id="graphics-render-scale" type="range" min="0.5" max="1.25" step="0.05" data-setting-path="display.renderScale" data-capability-id="renderScale" data-testid="graphics-render-scale" />
+                    <small data-capability-for="renderScale"></small>
+                  </label>
+
+                  <label class="graphics-settings-control" for="graphics-max-dpr">
+                    <span><strong>Maximale Pixeldichte</strong><output id="graphics-max-dpr-value">2.00x</output></span>
+                    <input id="graphics-max-dpr" type="range" min="1" max="2" step="0.25" data-setting-path="display.maxDevicePixelRatio" data-capability-id="maxDevicePixelRatio" data-testid="graphics-max-dpr" />
+                    <small data-capability-for="maxDevicePixelRatio"></small>
+                  </label>
+
+                  <label class="graphics-settings-control" for="graphics-fov">
+                    <span><strong>Sichtfeld</strong><output id="graphics-fov-value">58°</output></span>
+                    <input id="graphics-fov" type="range" min="45" max="100" step="1" data-setting-path="display.fieldOfView" data-capability-id="fieldOfView" data-testid="graphics-fov" />
+                    <small data-capability-for="fieldOfView"></small>
+                  </label>
+
+                  <label class="graphics-settings-control" for="graphics-render-distance">
+                    <span><strong>Sichtweite</strong><output id="graphics-render-distance-value">5,000 m</output></span>
+                    <input id="graphics-render-distance" type="range" min="500" max="20000" step="500" data-setting-path="display.renderDistance" data-capability-id="renderDistance" data-testid="graphics-render-distance" />
+                    <small data-capability-for="renderDistance"></small>
+                  </label>
+
+                  <label class="graphics-settings-control" for="graphics-fps-limit">
+                    <span><strong>FPS-Limit</strong></span>
+                    <select id="graphics-fps-limit" data-setting-path="display.fpsLimit" data-value-type="number" data-capability-id="fpsLimit" data-testid="graphics-fps-limit">
+                      <option value="0">Browser / unbegrenzt</option>
+                      <option value="30">30 FPS</option>
+                      <option value="60">60 FPS</option>
+                      <option value="120">120 FPS</option>
+                    </select>
+                    <small data-capability-for="fpsLimit"></small>
+                  </label>
+
+                  <label class="graphics-settings-control" for="graphics-fullscreen">
+                    <span><strong>Darstellungsmodus</strong></span>
+                    <select id="graphics-fullscreen" data-setting-path="display.fullscreenPreference" data-capability-id="fullscreen" data-testid="graphics-fullscreen">
+                      <option value="Windowed">Fenster</option>
+                      <option value="Fullscreen">Vollbild</option>
+                    </select>
+                    <small data-capability-for="fullscreen"></small>
+                  </label>
+                </section>
+
+                <section class="graphics-settings-group" aria-labelledby="graphics-quality-title">
+                  <h3 id="graphics-quality-title">Qualität</h3>
+
+                  <label class="graphics-settings-control" for="graphics-shadows">
+                    <span><strong>Schatten</strong></span>
+                    <select id="graphics-shadows" data-setting-path="shadows.quality" data-capability-id="shadows" data-testid="graphics-shadows">
+                      <option value="Off">Aus</option><option value="Low">Low</option><option value="Medium">Medium</option><option value="High">High</option>
+                    </select>
+                    <small data-capability-for="shadows"></small>
+                  </label>
+
+                  <label class="graphics-settings-control" for="graphics-textures">
+                    <span><strong>Texturen</strong></span>
+                    <select id="graphics-textures" data-setting-path="textures.quality" data-capability-id="textureQuality" data-testid="graphics-texture-quality">
+                      <option value="Low">Low</option><option value="Medium">Medium</option><option value="High">High</option><option value="Ultra">Ultra</option>
+                    </select>
+                    <small data-capability-for="textureQuality"></small>
+                    <small data-capability-for="textureVariants"></small>
+                  </label>
+
+                  <label class="graphics-settings-control" for="graphics-lighting-quality">
+                    <span><strong>Beleuchtung</strong></span>
+                    <select id="graphics-lighting-quality" data-setting-path="lighting.quality" data-capability-id="lightingQuality" data-testid="graphics-lighting-quality">
+                      <option value="Low">Low</option><option value="Medium">Medium</option><option value="High">High</option><option value="Ultra">Ultra</option><option value="Custom" disabled>Benutzerdefiniert</option>
+                    </select>
+                    <small data-capability-for="lightingQuality"></small>
+                  </label>
+
+                  <label class="graphics-settings-control" for="graphics-tone-mapping">
+                    <span><strong>Tonemapping</strong></span>
+                    <select id="graphics-tone-mapping" data-setting-path="lighting.toneMapping" data-capability-id="toneMapping" data-testid="graphics-tone-mapping">
+                      <option value="None">Keins</option><option value="Reinhard">Reinhard</option><option value="ACESFilmic">ACES Filmic</option>
+                    </select>
+                    <small data-capability-for="toneMapping"></small>
+                  </label>
+
+                  <label class="graphics-settings-control" for="graphics-exposure">
+                    <span><strong>Belichtung</strong><output id="graphics-exposure-value">1.00</output></span>
+                    <input id="graphics-exposure" type="range" min="0.5" max="2" step="0.05" data-setting-path="lighting.exposure" data-capability-id="exposure" data-testid="graphics-exposure" />
+                    <small data-capability-for="exposure"></small>
+                  </label>
+
+                  <label class="graphics-settings-control" for="graphics-reflections">
+                    <span><strong>Umgebungsreflexionen</strong></span>
+                    <select id="graphics-reflections" data-setting-path="lighting.environmentReflectionQuality" data-capability-id="environmentReflections" data-testid="graphics-environment-reflections">
+                      <option value="Low">Low</option><option value="Medium">Medium</option><option value="High">High</option><option value="Ultra">Ultra</option>
+                    </select>
+                    <small data-capability-for="environmentReflections"></small>
+                  </label>
+                </section>
+
+                <section class="graphics-settings-group" aria-labelledby="graphics-effects-title">
+                  <h3 id="graphics-effects-title">Effekte</h3>
+
+                  <label class="graphics-settings-control" for="graphics-effects-quality">
+                    <span><strong>Effektqualität</strong></span>
+                    <select id="graphics-effects-quality" data-setting-path="effects.quality" data-capability-id="effectsQuality" data-testid="graphics-effects-quality">
+                      <option value="Low">Low</option><option value="Medium">Medium</option><option value="High">High</option><option value="Ultra">Ultra</option><option value="Custom" disabled>Benutzerdefiniert</option>
+                    </select>
+                    <small data-capability-for="effectsQuality"></small>
+                  </label>
+
+                  <label class="graphics-settings-control" for="graphics-decor-density">
+                    <span><strong>Dekorationsdichte</strong><output id="graphics-decor-density-value">100%</output></span>
+                    <input id="graphics-decor-density" type="range" min="0" max="1" step="0.05" data-setting-path="effects.decorDensity" data-capability-id="decorDensity" data-testid="graphics-decor-density" />
+                    <small data-capability-for="decorDensity"></small>
+                  </label>
+
+                  <label class="graphics-settings-toggle" for="graphics-bloom">
+                    <span><strong>Bloom</strong><small data-capability-for="bloom"></small></span>
+                    <input id="graphics-bloom" type="checkbox" data-setting-path="effects.bloomPreference" data-capability-id="bloom" data-testid="graphics-bloom" />
+                  </label>
+
+                  <label class="graphics-settings-toggle" for="graphics-motion-effects">
+                    <span><strong>Bewegungseffekte</strong><small data-capability-for="motionEffects"></small></span>
+                    <input id="graphics-motion-effects" type="checkbox" data-setting-path="effects.motionEffectsPreference" data-capability-id="motionEffects" data-testid="graphics-motion-effects" />
+                  </label>
+
+                  <label class="graphics-settings-toggle" for="graphics-antialiasing">
+                    <span><strong>Antialiasing</strong><small data-capability-for="antiAliasing"></small></span>
+                    <input id="graphics-antialiasing" type="checkbox" data-setting-path="antiAliasing.enabled" data-capability-id="antiAliasing" data-testid="graphics-anti-aliasing" />
+                  </label>
+
+                  <div class="graphics-settings-readonly" data-testid="graphics-vsync-status">
+                    <span><strong>VSync</strong><b>Browsergesteuert</b></span>
+                    <small data-capability-for="vsync"></small>
+                  </div>
+                </section>
+
+                <aside class="graphics-settings-runtime" aria-labelledby="graphics-runtime-title">
+                  <h3 id="graphics-runtime-title">Aktiver Renderer</h3>
+                  <div class="graphics-settings-summary" data-testid="graphics-requested-summary">
+                    <span>Angefordert</span>
+                    <strong id="graphics-requested-values">High · 100% · 58°</strong>
+                  </div>
+                  <div class="graphics-settings-summary" data-testid="graphics-actual-summary">
+                    <span>Tatsächlich</span>
+                    <strong id="graphics-actual-values">100% · DPR 1.00 · 58°</strong>
+                  </div>
+                  <div id="graphics-restart-state" class="graphics-settings-restart" data-testid="graphics-restart-state">Kein Neustart erforderlich</div>
+                  <p id="graphics-settings-message" class="graphics-settings-message" role="status" aria-live="polite" data-testid="graphics-settings-message">Bereit.</p>
+                </aside>
+              </div>
+            </div>
+
+            <footer class="graphics-settings-actions">
+              <button id="graphics-settings-cancel" type="button" data-testid="graphics-cancel">Zurück</button>
+              <button id="graphics-settings-reset" type="button" data-testid="graphics-reset">High-Standard laden</button>
+              <button id="graphics-settings-apply" class="graphics-settings-apply" type="button" data-testid="graphics-apply">Anwenden</button>
+            </footer>
+          </div>
+        </dialog>
 
         <dialog id="navigation-planner" class="hud-overlay navigation-planner" role="dialog" aria-modal="true" aria-labelledby="planner-dialog-title" data-testid="navigation-planner">
           <aside class="planner-rail" aria-label="Planner navigation">
