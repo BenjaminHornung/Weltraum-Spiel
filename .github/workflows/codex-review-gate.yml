@@ -1,0 +1,159 @@
+name: Codex Review Gate
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - ready_for_review
+      - synchronize
+
+concurrency:
+  group: codex-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: read
+
+jobs:
+  current-head-reviewed:
+    name: Current head reviewed
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_REVIEW_TOKEN || github.token }}
+      REPOSITORY: ${{ github.repository }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      IS_DRAFT: ${{ github.event.pull_request.draft }}
+
+    steps:
+      - name: Request and verify Codex review for the current head
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ "${IS_DRAFT}" == "true" ]]; then
+            {
+              echo "## Codex review deferred"
+              echo
+              echo "Draft pull requests are reviewed when they become ready for review."
+            } >> "${GITHUB_STEP_SUMMARY}"
+            exit 0
+          fi
+
+          command -v gh >/dev/null
+          command -v jq >/dev/null
+
+          short_sha="${HEAD_SHA:0:10}"
+          marker="<!-- codex-review-request:${HEAD_SHA} -->"
+
+          codex_review_exists() {
+            gh api --paginate --slurp \
+              -H "Accept: application/vnd.github+json" \
+              "repos/${REPOSITORY}/pulls/${PR_NUMBER}/reviews?per_page=100" \
+              | jq -e --arg short "${short_sha}" --arg full "${HEAD_SHA}" '
+                  any(.[][]?;
+                    (((.user.login // "") == "chatgpt-codex-connector[bot]") or
+                     ((.user.login // "") == "chatgpt-codex-connector")) and
+                    ((((.body // "") | contains($short))) or
+                     (((.body // "") | contains($full))))
+                  )
+                ' >/dev/null
+          }
+
+          find_request_comment_id() {
+            gh api --paginate --slurp \
+              -H "Accept: application/vnd.github+json" \
+              "repos/${REPOSITORY}/issues/${PR_NUMBER}/comments?per_page=100" \
+              | jq -r --arg marker "${marker}" '
+                  [.[][]? | select((.body // "") | contains($marker))][-1].id // empty
+                '
+          }
+
+          codex_acknowledged_request() {
+            local comment_id="$1"
+            [[ -n "${comment_id}" ]] || return 1
+
+            gh api --paginate --slurp \
+              -H "Accept: application/vnd.github+json" \
+              "repos/${REPOSITORY}/issues/comments/${comment_id}/reactions?per_page=100" \
+              | jq -e '
+                  any(.[][]?;
+                    (((.user.login // "") == "chatgpt-codex-connector[bot]") or
+                     ((.user.login // "") == "chatgpt-codex-connector")) and
+                    (.content == "+1")
+                  )
+                ' >/dev/null
+          }
+
+          report_success() {
+            local proof="$1"
+            {
+              echo "## Codex review verified"
+              echo
+              echo "- Pull request: #${PR_NUMBER}"
+              echo "- Reviewed head: \`${HEAD_SHA}\`"
+              echo "- Proof: ${proof}"
+            } >> "${GITHUB_STEP_SUMMARY}"
+          }
+
+          # Give the repository-level automatic trigger a brief chance to finish
+          # before creating an explicit, head-specific review request.
+          for _ in {1..6}; do
+            if codex_review_exists; then
+              report_success "Codex review submission for the current head"
+              exit 0
+            fi
+            sleep 10
+          done
+
+          request_comment_id="$(find_request_comment_id)"
+
+          if [[ -z "${request_comment_id}" ]]; then
+            request_body="$(cat <<EOF
+          @codex review
+
+          Please review the current pull-request head \`${short_sha}\`. This request is repeated after every new head commit so the merge gate cannot rely on a stale review.
+
+          ${marker}
+          EOF
+          )"
+
+            request_response="$(gh api \
+              --method POST \
+              -H "Accept: application/vnd.github+json" \
+              "repos/${REPOSITORY}/issues/${PR_NUMBER}/comments" \
+              -f body="${request_body}")"
+            request_comment_id="$(jq -r '.id' <<<"${request_response}")"
+          fi
+
+          # Accept either a Codex review submission naming the current head, or
+          # Codex's thumbs-up reaction when it found no review comments.
+          for _ in {1..36}; do
+            if codex_review_exists; then
+              report_success "Codex review submission for the current head"
+              exit 0
+            fi
+
+            if codex_acknowledged_request "${request_comment_id}"; then
+              report_success "Codex thumbs-up on the current-head review request"
+              exit 0
+            fi
+
+            sleep 45
+          done
+
+          {
+            echo "## Codex review missing"
+            echo
+            echo "No Codex result was found for head \`${HEAD_SHA}\`."
+            echo
+            echo "Comment \`@codex review\` on pull request #${PR_NUMBER}, then re-run this check."
+            echo "For fully automatic re-requests after every push, configure the repository secret \`CODEX_REVIEW_TOKEN\` as documented in \`.github/CODEX_REVIEW_GATE.md\`."
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+          echo "::error::Codex did not review current pull-request head ${HEAD_SHA}."
+          exit 1
