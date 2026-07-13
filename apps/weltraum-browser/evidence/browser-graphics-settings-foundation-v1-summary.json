@@ -1,6 +1,6 @@
 {
   "changeId": "browser-graphics-settings-foundation-v1",
-  "generatedAt": "2026-07-13T19:42:53+02:00",
+  "generatedAt": "2026-07-13T19:53:26+02:00",
   "branch": "feature/browser-graphics-settings-foundation-v1",
   "implementationStartSha": "7e1d0237cdf272bfb759f26e2be8cdb3a760e15c",
   "integrationBaseSha": "ea4ccbadfa8c91787e4b4451e04b1fb4ad18a12f",
@@ -57,7 +57,7 @@
     {
       "command": "npm ci",
       "status": "PASS",
-      "detail": "59 packages audited; 0 vulnerabilities; lockfile unchanged. package.json contains only the user-authorized Graphics E2E group registration."
+      "detail": "59 packages audited; 0 vulnerabilities; lockfile unchanged. package.json contains the user-authorized Graphics UI registration and Combat core CI-inventory repair."
     },
     {
       "command": "npx tsc -p tsconfig.json",
@@ -67,6 +67,11 @@
       "command": "npx vitest run tests/unit/graphicsSettingsPresets.test.ts tests/unit/graphicsSettingsSchema.test.ts tests/unit/graphicsSettingsStorage.test.ts tests/unit/graphicsSettingsCapabilities.test.ts tests/unit/graphicsSettingsAdapter.test.ts",
       "status": "PASS",
       "detail": "5 files; 30 tests"
+    },
+    {
+      "command": "npm run test:e2e:core -- --config=<isolated Chrome config>",
+      "status": "PASS",
+      "detail": "25 tests across all 12 core-group specs, including combat-weapon-damage-core.spec.ts."
     },
     {
       "command": "npm run test:e2e:ui -- --config=<isolated Chrome config>",
@@ -80,8 +85,8 @@
     },
     {
       "command": "CI E2E group inventory",
-      "status": "BASELINE FAIL",
-      "detail": "Graphics is assigned exactly once. The rebased origin/main already contains the unrelated unassigned tests/e2e/combat-weapon-damage-core.spec.ts; the same inventory check fails on origin/main."
+      "status": "PASS",
+      "detail": "24 discovered Playwright specs are assigned exactly once; no unassigned, duplicate, or stale entries."
     },
     {
       "command": "npm run test",
@@ -154,7 +159,6 @@
     "Anti-aliasing requires renderer recreation and therefore a page reload.",
     "The browser owns fullscreen transitions and vertical synchronization.",
     "Shadows, environment/reflections, texture variants, bloom, and motion effects stay unapplied until matching renderer pipelines exist.",
-    "The current origin/main fails the strict E2E group inventory because its combat-weapon-damage-core.spec.ts is unassigned; this change registers only the user-authorized Graphics spec and does not broaden scope into Combat.",
     "DevToolbox task closure must be completed after its workspace authorization includes this isolated worktree."
   ]
 }

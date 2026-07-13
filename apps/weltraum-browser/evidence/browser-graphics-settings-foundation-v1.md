@@ -29,12 +29,13 @@ The visible Graphics action opens a native modal dialog in the existing dark nav
 
 | Gate | Result | Evidence |
 | --- | --- | --- |
-| `npm ci` | PASS | 59 packages, 0 vulnerabilities; lockfile unchanged; `package.json` only registers the Graphics E2E spec as authorized by the user |
+| `npm ci` | PASS | 59 packages, 0 vulnerabilities; lockfile unchanged; `package.json` registers Graphics in UI and repairs the missing Combat core inventory entry as authorized by the user |
 | `npx tsc -p tsconfig.json` | PASS | no diagnostics |
 | Focused Graphics unit tests | PASS | 5 files, 30 tests |
+| Core E2E group | PASS | 25 tests across all 12 grouped specs, including Combat |
 | UI E2E group | PASS | 12 tests; Graphics assigned exactly once |
 | Focused Graphics E2E | PASS | 3 normal `/` tests, no TestBridge |
-| CI E2E group inventory | BASELINE FAIL | Graphics is assigned exactly once; current `origin/main` already leaves unrelated `combat-weapon-damage-core.spec.ts` unassigned |
+| CI E2E group inventory | PASS | 24 discovered specs assigned exactly once; no unassigned, duplicate, or stale entries |
 | Full unit suite | PASS | 54 files, 577 tests |
 | Production build | PASS | 66 modules; chunk-size warning only |
 | Full browser E2E | PASS | 49 tests |
@@ -56,6 +57,6 @@ Visual inspection confirms readable labels, no clipped controls or HUD collision
 
 ## Scope and limits
 
-The final feature diff is restricted to the original user allowlist plus the explicitly authorized one-line `apps/weltraum-browser/package.json` registration for `tests/e2e/graphics-settings.spec.ts`; the lockfile remains unchanged. `Assets/**`, gameplay domains, TestBridge code, and protected roadmap/index files remain unchanged. The renderer remains projection-only and owns no gameplay or world truth.
+The final feature diff is restricted to the original user allowlist plus the explicitly authorized `apps/weltraum-browser/package.json` group registrations for the Graphics UI spec and the previously missing Combat core spec; the lockfile remains unchanged. `Assets/**`, gameplay domains, TestBridge code, and protected roadmap/index files remain unchanged. The renderer remains projection-only and owns no gameplay or world truth.
 
-Anti-aliasing needs renderer recreation, so a reload is required. Fullscreen transitions and VSync remain browser-controlled. Shadows, environment/reflections, texture variants, bloom, and motion effects cannot be applied until the corresponding scene or renderer pipeline exists. The strict E2E group inventory is still red on this branch for the same pre-existing Combat assignment gap as `origin/main`; this scoped change does not alter Combat. DevToolbox verification and task closure remain pending until that service authorizes the isolated worktree.
+Anti-aliasing needs renderer recreation, so a reload is required. Fullscreen transitions and VSync remain browser-controlled. Shadows, environment/reflections, texture variants, bloom, and motion effects cannot be applied until the corresponding scene or renderer pipeline exists. DevToolbox verification and task closure remain pending until that service authorizes the isolated worktree.
