@@ -22,10 +22,10 @@ For every non-draft pull request targeting `main`, the workflow:
 
 1. writes a pending `Codex Review / current head` status to the exact PR head SHA;
 2. waits briefly for the normal repository-level Codex trigger;
-3. checks whether a Codex review names the current head SHA;
+3. checks whether a Codex review is tied to the current head by GitHub `commit_id`, with the visible reviewed-SHA text retained as compatibility evidence;
 4. creates one head-specific `@codex review` request when no current review exists;
 5. waits for either:
-   - a Codex review submission naming the current head, or
+   - a Codex review submission tied to the current head, or
    - Codex's `+1` reaction on the head-specific request when it found no comments;
 6. writes success or failure to the same exact-head commit status.
 
@@ -44,7 +44,7 @@ Name: CODEX_REVIEW_TOKEN
 
 Do not commit the token or place it in workflow YAML, repository variables, logs or evidence.
 
-When the secret is absent, the gate does not create a noisy bot-authored request. It writes a failed exact-head status with the recovery action: either configure the secret or comment `@codex review` manually as the connected GitHub user and re-run the workflow.
+When the secret is absent, the gate does not create a noisy bot-authored request. It writes a failed exact-head status with the recovery action: either configure the secret or request the review manually as the connected GitHub user.
 
 ## Make it a real merge requirement
 
@@ -60,8 +60,12 @@ Also enable conversation-resolution requirements when unresolved Codex inline fi
 
 ## Manual recovery
 
-When a run reports a missing token or times out:
+When a run reports a missing token or times out, post a comment as the GitHub user connected to Codex that includes both the trigger and the current head SHA, for example:
 
-1. comment `@codex review` on the pull request as the GitHub user connected to Codex;
-2. wait for the Codex review or thumbs-up reaction;
-3. re-run `Codex Review Gate` for the pull request.
+```text
+@codex review
+
+current head: 0123456789
+```
+
+The SHA is required so a no-findings `+1` reaction can be attributed to the same exact head instead of an older request. Then wait for the Codex review or thumbs-up reaction and re-run `Codex Review Gate` for the pull request.
