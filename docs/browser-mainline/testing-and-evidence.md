@@ -112,7 +112,7 @@ Primary files:
 
 - `apps/weltraum-browser/evidence/browser-objective-chain-1000m-completion-v2.md`
 - `apps/weltraum-browser/tests/e2e/large-field-objective-chain-live.spec.ts`
-- `.devtoolbox/specs/changes/browser-objective-chain-1000m-completion-v2/tests/test-protocol.md`
+- `.devtoolbox/specs/changes/archive/2026-07-13-browser-objective-chain-1000m-completion-v2/tests/test-protocol.md`
 
 ## Celestial Core Acceptance
 
@@ -133,7 +133,7 @@ Evidence:
 - `docs/browser-mainline/celestial-gravity-core-v1.md`
 - `apps/weltraum-browser/evidence/browser-celestial-gravity-core-v1.md`
 - `apps/weltraum-browser/evidence/browser-celestial-gravity-core-v1-summary.json`
-- `.devtoolbox/specs/changes/browser-celestial-gravity-core-v1/tests/test-protocol.md`
+- `.devtoolbox/specs/changes/archive/2026-07-13-browser-celestial-gravity-core-v1/tests/test-protocol.md`
 
 No screenshot is required for this feature because it deliberately has no visible UI or render change.
 

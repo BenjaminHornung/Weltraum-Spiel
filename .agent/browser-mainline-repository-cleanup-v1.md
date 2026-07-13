@@ -11,7 +11,7 @@ werden neutral unter `art/` und `docs/legacy-unity/` konserviert.
 ## Kontext
 
 - Ausgangscommit: `8383487f89f6eb6e63140def564052ac86de259a`
-- Vor finaler PR-Verifikation synchronisierter `main`: `ea4ccbadfa8c91787e4b4451e04b1fb4ad18a12f`
+- Vor finaler PR-Verifikation synchronisierter `main`: `a790e7b7d4601989c6851e05943d54f3b0adfd52`
 - Cleanup-Branch: `cleanup/browser-mainline-repository-v1`
 - Archiv-Tag: `unity-legacy-final-2026-07`
 - Archiv-Branch: `archive/unity-legacy-final-2026-07`
@@ -76,6 +76,7 @@ npm run build
 npm run test:e2e:core
 npm run test:e2e:live
 npm run test:e2e:ui
+npm run test:e2e
 ```
 
 Zusätzlich:

@@ -53,7 +53,7 @@ currently proven as an admitted preview, not as a required completed arrival.
 Primary evidence:
 
 - `apps/weltraum-browser/evidence/browser-objective-chain-1000m-completion-v2.md`
-- `.devtoolbox/specs/changes/browser-objective-chain-1000m-completion-v2/tests/test-protocol.md`
+- `.devtoolbox/specs/changes/archive/2026-07-13-browser-objective-chain-1000m-completion-v2/tests/test-protocol.md`
 - `apps/weltraum-browser/tests/e2e/large-field-objective-chain-live.spec.ts`
 
 ## Navigation And Autopilot Truth

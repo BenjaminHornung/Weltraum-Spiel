@@ -5,7 +5,7 @@ Date: 2026-07-13
 ## Identity and immutable Unity archive
 
 - Starting commit: `8383487f89f6eb6e63140def564052ac86de259a`
-- Synchronized PR base: `ea4ccbadfa8c91787e4b4451e04b1fb4ad18a12f`
+- Synchronized PR base: `a790e7b7d4601989c6851e05943d54f3b0adfd52`
 - Cleanup branch: `cleanup/browser-mainline-repository-v1`
 - Archive tag: `unity-legacy-final-2026-07`
 - Archive branch: `archive/unity-legacy-final-2026-07`
@@ -15,7 +15,7 @@ Both resolve exactly to the starting commit. No history rewrite, force push or
 LFS history migration was performed.
 
 Before final PR verification, the cleanup branch merged the then-current
-`origin/main` normally. This retained 22 intervening Browser/documentation
+`origin/main` normally. This retained 29 intervening Browser/documentation
 commits without moving either immutable Unity archive ref.
 
 ## Removed active project structure
@@ -70,11 +70,12 @@ same Git blob as the starting commit. `ProceduralFallback` remains present.
 ## DevToolbox consolidation
 
 The machine-readable inventory contains all 178 initial change directories plus
-four Browser changes introduced by the synchronized `main`, for 182 classified
-directories in total.
+four Browser changes introduced by the first synchronized `main`, for 182
+classified directories in total. The later Persistence/Universe-Time/Event
+change remains active and is included in the physical after-count below.
 Physical consolidation results:
 
-- active changes before/after: 112 / 32 (four arrived from synchronized `main`);
+- active changes before/after: 112 / 33 (five arrived from synchronized `main`);
 - archived change directories before/after: 66 / 142;
 - 79 active directories moved to dated archive areas: 58 Unity, 20 completed
   browser changes and 1 completed reconciliation record;
@@ -93,15 +94,15 @@ active.
 
 | Metric | Before | After |
 | --- | ---: | ---: |
-| Tracked files | 3,835 | 2,086 |
-| Git LFS paths | 669 | 406 |
-| Active DevToolbox change directories | 112 | 32 |
+| Tracked files | 3,835 | 2,113 |
+| Git LFS paths | 669 | 407 |
+| Active DevToolbox change directories | 112 | 33 |
 | Archived DevToolbox change directories | 66 | 142 |
-| Tracked Browser evidence files | 152 | 155 |
+| Tracked Browser evidence files | 152 | 157 |
 
 Git object database before cleanup: 14.59 MiB packed plus 791.90 KiB loose.
-After cleanup and current-main synchronization: 15.86 MiB packed plus 739.87
-KiB loose.
+After cleanup and current-main synchronization: 16.38 MiB packed plus 0 bytes
+loose.
 
 `git count-objects` measures the shared object database, including retained
 history, rather than the logical size of the cleaned checkout. Removing current
@@ -112,8 +113,8 @@ paths does not rewrite or shrink archived history.
 All 152 initial browser evidence files were classified. Only five generated,
 unreferenced verification logs were deleted. All screenshots, JSON, Markdown
 evidence, required baselines and conservative unreferenced records remain.
-The synchronized Browser mainline added eight tracked current evidence files,
-producing the final tracked count of 155 without deleting or rewriting those
+The synchronized Browser mainline added ten tracked current evidence files,
+producing the final tracked count of 157 without deleting or rewriting those
 additions. Ignored local Playwright report/output directories are not counted.
 
 The required rejected UI baselines are real PNG payloads (not pointers in the
@@ -138,32 +139,35 @@ preserve the original pointer state and the limitation is recorded in
   regular Git blobs; no retroactive GLB-to-LFS migration was introduced.
 - `.github/workflows/browser-mainline-ci.yml` required no path change or CI
   redesign. The synchronized `main` contained an unassigned Combat E2E spec, so
-  the existing Core npm group received that one missing spec path.
+  the existing Core npm group received that one missing spec path. The later
+  Persistence E2E spec remains assigned to Core as merged from current `main`.
 - Historical Browser evidence preserves its capture-time Unity paths and carries
   cleanup annotations pointing to `unity-legacy-final-2026-07:<path>`. Current
   non-historical references use archive-object or neutral `art/` paths.
 
 ## Verification
 
-All browser commands ran with Node `v22.23.1`:
+All fresh browser commands ran with Node `v26.2.0`:
 
 | Command / check | Result |
 | --- | --- |
 | `npm ci` | PASS; 60 packages audited, 0 vulnerabilities |
-| `npm run test` | PASS; 49 files, 547 tests |
+| `npx tsc -p tsconfig.json` | PASS |
+| `npm run test` | PASS; 55 files, 586 tests |
 | `npm run build` | PASS; production bundle built (existing chunk-size warning only) |
-| `npm run test:e2e:core` | PASS; 25 tests, including synchronized Celestial and Combat coverage |
+| `npm run test:e2e:core` | PASS; 26 tests, including synchronized Celestial, Combat and Persistence coverage |
 | `npm run test:e2e:live` | PASS; 12 tests |
 | `npm run test:e2e:ui` | PASS; 9 tests |
+| `npm run test:e2e` | PASS; 47 tests |
 | Navigation-map E2E after stable ignored output-path correction | PASS; 1 test; archived snapshot unchanged |
 | Live-flight strict-progress reproduction | PASS focused and in full 8-worker Live group |
-| CI Playwright group-membership script | PASS; 23 discovered and 23 uniquely assigned specs (Core 12, Live 8, UI 3) |
+| CI Playwright group-membership script | PASS; 24 discovered and 24 uniquely assigned specs (Core 13, Live 8, UI 3) |
 | Normal `/` route without `TestBridge` | PASS in Core, Live and UI tests |
 | Demo Scout GLB signature and unchanged blob | PASS |
 | Four required PNG signatures/OIDs | PASS |
 | Prospective cleanup-tree `git lfs fsck --pointers` | PASS |
-| Relative links in moved Markdown documents | PASS; 0 missing |
-| Dependency/lockfile diff | PASS; unchanged; package script only assigns the ungrouped Combat spec to Core |
+| Relative links in active Markdown documents | PASS; 83 files checked, 18 relative links, 0 missing |
+| Dependency/lockfile diff | PASS; unchanged; package script preserves the Combat and Persistence specs in Core |
 | Runtime screenshot diff after evidence restore | PASS; no PNG changes |
 | `git diff --check` and `git diff --cached --check` | PASS |
 | Final Unity/reference/path checks | PASS; no unresolved active Unity path or stale mainline claim |

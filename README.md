@@ -136,7 +136,7 @@ Player-facing and domain claims should be backed by tests and inspectable artifa
 - `apps/weltraum-browser/evidence/browser-world-chunk-registry-streaming-v1.md`
 - `apps/weltraum-browser/evidence/browser-celestial-gravity-core-v1.md`
 - `apps/weltraum-browser/evidence/demo-scout-nozzle-vfx-snapshot.json`
-- `.devtoolbox/specs/changes/browser-objective-chain-1000m-completion-v2/tests/test-protocol.md`
+- `.devtoolbox/specs/changes/archive/2026-07-13-browser-objective-chain-1000m-completion-v2/tests/test-protocol.md`
 
 Concept images under `docs/UI-Screenshots/` are design references. They do not prove runtime behavior.
 

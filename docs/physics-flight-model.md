@@ -418,7 +418,7 @@ Limitations for the first pass:
 
 EditMode tests in `unity-legacy-final-2026-07:Assets/Tests/Editor/PrototypePhysicsValidationTests.cs` exercise deterministic generated ship probes from `PhysicsValidationProbe`. They cover throttle-only main force, gimbal cross-product torque, RCS translation and yaw allocation, RCS spool diagnostics, manual/SAS torque priority, partial-fuel thrust scaling, configured-mass projectile recoil/impact checks, force-vs-impulse diagnostic separation, projectile sweep/self-hit checks, thermal heat rise, idle cooling, overheat hook activation, and a 0.02 vs 0.01 timestep comparison.
 
-Run the suite through Unity Test Runner EditMode or Unity MCP `run_tests(mode=EditMode)`. Store run output and deterministic probe evidence under the active spec folder, for example `.devtoolbox/specs/changes/validation-physics-test-suite/tests/test-protocol.md`.
+Run the historical suite through Unity Test Runner EditMode or Unity MCP `run_tests(mode=EditMode)`. Its preserved test protocol is archived at `.devtoolbox/specs/changes/archive/2026-05-21-validation-physics-test-suite/tests/test-protocol.md`.
 
 ## Browser Autopilot Bang-Bang Transit Metrics
 
