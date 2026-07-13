@@ -434,6 +434,8 @@ export const applyFlightControllerStep = (
     appliedMainAccelerationMps2,
     combinedAccelerationLimitMps2: combinedAccelerationLimit,
     maximumJerkMps3: finiteNonNegativeOr(request.maximumJerkMps3, 0),
+    lastAppliedMainAcceleration: allocatedAcceleration.mainAcceleration,
+    lastAppliedRcsTranslationAcceleration: allocatedAcceleration.rcsTranslationAcceleration,
     lastAppliedAcceleration: appliedAcceleration,
     lastAppliedAngularAcceleration: appliedAngularAcceleration
   };

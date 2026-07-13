@@ -77,6 +77,8 @@ export const inactiveActuatorTelemetry = (): ActuatorTelemetry => ({
   appliedMainAccelerationMps2: 0,
   combinedAccelerationLimitMps2: 0,
   maximumJerkMps3: 0,
+  lastAppliedMainAcceleration: vec3(),
+  lastAppliedRcsTranslationAcceleration: vec3(),
   lastAppliedAcceleration: vec3(),
   lastAppliedAngularAcceleration: vec3()
 });

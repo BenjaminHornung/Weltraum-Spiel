@@ -213,7 +213,13 @@ export interface ActuatorTelemetry {
   readonly combinedAccelerationLimitMps2?: number;
   /** Locked-profile jerk ceiling supplied for autonomous burn commands, zero when not applicable. */
   readonly maximumJerkMps3?: number;
+  /** Applied body-forward main acceleration in the owner world/local-physics frame. */
+  readonly lastAppliedMainAcceleration: Vec3;
+  /** Applied RCS translation acceleration in the owner world/local-physics frame. */
+  readonly lastAppliedRcsTranslationAcceleration: Vec3;
+  /** Compatibility vector: main plus RCS translation in the owner world/local-physics frame. */
   readonly lastAppliedAcceleration: Vec3;
+  /** Applied rotation/SAS acceleration in the owner ship body-local frame. */
   readonly lastAppliedAngularAcceleration: Vec3;
 }
 

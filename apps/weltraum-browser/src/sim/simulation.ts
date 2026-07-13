@@ -28,6 +28,8 @@ const cloneShip = (ship: ShipState): ShipState => ({
   rotationCommand: { ...ship.rotationCommand },
   actuatorTelemetry: {
     ...ship.actuatorTelemetry,
+    lastAppliedMainAcceleration: { ...ship.actuatorTelemetry.lastAppliedMainAcceleration },
+    lastAppliedRcsTranslationAcceleration: { ...ship.actuatorTelemetry.lastAppliedRcsTranslationAcceleration },
     lastAppliedAcceleration: { ...ship.actuatorTelemetry.lastAppliedAcceleration },
     lastAppliedAngularAcceleration: { ...ship.actuatorTelemetry.lastAppliedAngularAcceleration },
     controlModeEffect: {
