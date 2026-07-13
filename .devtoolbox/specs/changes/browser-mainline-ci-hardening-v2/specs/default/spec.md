@@ -18,9 +18,9 @@ All three groups shall be required steps in one job. A failed group shall not su
 
 CI shall reject focused tests with `forbidOnly` only when `CI=true`. A configured artifact group shall be validated as safe lowercase alphanumeric hyphen-separated text and shall isolate both Playwright output and HTML reports. Unset configuration shall preserve existing aggregate directories.
 
-### CIH-005 Failure artifacts without local long-run cost
+### CIH-005 Bounded long-run diagnostics without tracing cost
 
-The live large-field test shall retain traces and automatic screenshots on CI failures and keep them disabled locally without changing test behavior, assertions, or timeouts.
+The live large-field test shall keep automatic traces and screenshots disabled in every environment because it writes explicit evidence and runs close to its unchanged Linux timeout budget. Grouped job logs, reports, and any explicit evidence written before a failure shall remain available without changing test behavior, assertions, retries, workers, or timeouts. Global failure-artifact behavior for other specs shall remain unchanged.
 
 ### CIH-006 Current setup diagnostics
 

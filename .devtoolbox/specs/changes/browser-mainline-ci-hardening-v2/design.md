@@ -14,7 +14,12 @@ The browser workflow remains one job with one CI worker and a finite 45-minute t
 
 CI supplies a safe group identifier to Playwright. The configuration rejects values outside lowercase alphanumeric segments separated by single hyphens. Valid values suffix both automatic output and HTML report folders. An unset variable preserves the existing aggregate paths.
 
-The long live-flight spec keeps local trace and automatic screenshots disabled, but retains them on CI failures. Explicit product evidence screenshots in the test remain unchanged.
+The long live-flight spec keeps trace and automatic screenshots disabled in
+both local and CI execution. It writes three explicit product-evidence
+screenshots and Markdown after its bounded live wait, while grouped job logs and
+reports provide failure localization. This preserves the previously green
+Linux runtime budget without changing assertions, retries, workers, or timeout;
+global failure-artifact behavior for every other spec remains unchanged.
 
 ## Current setup and evidence gates
 

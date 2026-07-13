@@ -43,6 +43,14 @@ All three group steps are required. Each later group uses an explicit `!cancelle
 
 The workflow sets `WELTRAUM_PLAYWRIGHT_ARTIFACT_GROUP` to `core-autopilot`, `live-runtime`, or `ui-layout`. Playwright accepts only lowercase letters, digits, and single hyphen separators for this value. It isolates automatic output and HTML reports beneath the matching group folder. When the variable is unset, the existing aggregate paths remain `evidence/playwright-output` and `evidence/playwright-report`.
 
+The bounded `playable-large-field-live-flight.spec.ts` runner keeps automatic
+trace and screenshot capture disabled in every environment. It already writes
+three explicit product-evidence screenshots plus Markdown after its live wait,
+and the grouped job log/report still identifies a timeout or failing assertion.
+This exception preserves the previously green Linux runtime margin; it does not
+change assertions, retries, workers, or the 95-second test timeout. Other specs
+retain the global Playwright failure-artifact behavior.
+
 After installation, CI prints compact Node, npm, Playwright, and Demo Scout GLB type/size diagnostics. After the E2E groups, it parses every top-level `evidence/*.json` file and fails on invalid JSON.
 
 ## Demo Scout GLB / LFS strategy

@@ -74,7 +74,7 @@ override selected the installed
 | Unchanged aggregate `npm run test:e2e` | Pass; 44/44 tests in 284.6s. |
 | Exact inline membership validator rerun | Pass; 21 discovered, 21 assigned exactly once, groups 10/8/3, strict parser mutation checks pass. |
 | Exact evidence parser rerun | Pass; all 23 top-level JSON files parse. |
-| Final tracked evidence cleanup | Pass; generated changes were restored and only the five intended tracked implementation files plus this new spec remain. |
+| Final tracked evidence cleanup | Pass; generated changes were restored and only the four intended tracked implementation files plus this new spec remain. |
 
 The first local UI-slice attempt exposed an environment-preflight difference,
 not a product failure: four allowed rejected-V1 PNG references were still
@@ -84,6 +84,32 @@ matched their expected SHA-256 values. Running `git lfs checkout` only for the
 four workflow-allowlisted paths restored valid PNG signatures without changing
 Git content; the complete UI slice then passed 9/9. Unscoped LFS download or
 checkout was not used.
+
+### Pull-request exact-head diagnosis
+
+PR #8 run `29244532142` on head
+`47bec973cbff0b6ce54912db638ad4cc3ef1a324` proved the independent-step design:
+core passed 23/23, UI passed 9/9, evidence JSON and upload passed, while the live
+group continued to a single failure after 11/12 passes. The failing
+`playable-large-field-live-flight.spec.ts` test reached its unchanged 95-second
+timeout inside `waitForRuntimeFrames`. The immediately preceding green main run
+`29231733375` passed the same test in about 89 seconds with automatic trace and
+screenshots disabled.
+
+The branch's only test-level change had enabled continuous
+`trace: retain-on-failure` for CI; the failed run produced `trace.zip`, proving
+the added instrumentation was active. Independent root-cause review confirmed
+that it consumed the prior six-second Linux margin. The test now restores its
+previously green unconditional `trace: off` / `screenshot: off` exception. It
+still writes three explicit screenshots and Markdown after the bounded live
+wait, and no timeout, assertion, retry, worker, product source, dependency, or
+group membership changed. A new exact-head pull-request run is required.
+
+The corrected test then passed locally under `CI=true`, one worker, artifact
+group `live-runtime`, and the repository-supported installed-Chrome override:
+1/1 in 46.5 seconds. Its regenerated explicit evidence files were restored to
+their unchanged HEAD content after the successful run. Exact-head GitHub
+Actions remains the authoritative Linux verification.
 
 The DevToolbox MCP remains unavailable for this nested worktree because the
 workspace path is rejected as unauthorized. The equivalent local completion
