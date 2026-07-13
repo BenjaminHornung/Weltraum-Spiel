@@ -5,7 +5,8 @@
 - Date: 2026-07-13
 - Branch: `feature/browser-objective-chain-1000m-completion-v2`
 - Base commit: `639f2e11ee98814b92ad2abb2ec0f0847483e498`
-- Implementation commit: pending
+- Implementation commit: `d48ecdc27cfa20b7f84e2a25674e6994ff4227f2`
+- Pull-request regression repair: working tree pending
 - DevToolbox MCP: unavailable for this worktree because workspace preparation
   rejects the path as unauthorized; this change record and evidence are
   maintained manually.
@@ -32,14 +33,37 @@ remains the external merge gate.
 
 | Command | Result |
 | --- | --- |
-| `npm run test -- tests/unit/statusHud.test.ts tests/unit/simulation.test.ts` | PASS after fail-closed presentation and planner-map gate fixes: 2 files, 57 tests |
+| `npm run test -- tests/unit/statusHud.test.ts tests/unit/simulation.test.ts` | PASS after PR regression repair: 2 files, 60 tests |
+| Targeted PR-regression Playwright gate: the two `debug-scene` safety cases plus `flight-ui-foundation`, `browser-navigation-map-world-truth`, `playable-large-field-live-flight`, and `large-field-objective-chain-live` | PASS with `CI=true`: 6 Chromium tests in 3.1 minutes using the installed Chrome override |
 | `npm run test:e2e -- tests/e2e/large-field-objective-chain-live.spec.ts --project=chromium` | PASS after the final planner-close waits: 1 Chromium test in 91.3s; normal `/`, TestBridge absent |
 | `npm run test:e2e -- tests/e2e/normal-runtime-functional-planner.spec.ts` | PASS after review fixes: 4 Chromium tests, including blank rejected-preview hash and explicit replan/hash-mismatch flow |
 | `npm run test:e2e -- tests/e2e/autopilot-terminal-capture.spec.ts tests/e2e/normal-runtime-functional-planner.spec.ts --project=chromium` | PASS on the final worktree: 5 Chromium tests in 35.9s |
-| `npm run test` | PASS after fail-closed presentation and planner-map gate fixes: 39 files, 448 tests |
+| `npm run test` | PASS after PR regression repair: 39 files, 451 tests |
 | `npm run build` | PASS: TypeScript 7 compile and Vite 8 production build; existing large-chunk warning only |
 | `git diff --check` | PASS |
 | package / `Assets/**` status guardrail | PASS: no output |
+
+## Pull-Request Regression Coverage
+
+The exact-head PR run exposed three presentation regressions after the original
+local proof: generic copy for `FlightAdmissionRejected`, a disappearing display
+hash after `VelocityMismatch`, and `n/a` target distance after terminal
+`lockedPlan` cleanup. Focused unit coverage now proves:
+
+- exact typed `FlightAdmissionRejected` safety wording despite poisoned raw
+  preview/runtime/admission copy;
+- a `VelocityMismatch` display plan retains its exact route hash, distance, and
+  planner-map route while both Engage controls remain disabled and dispatch
+  nothing;
+- terminal station keeping uses live executor distance while the completed raw
+  preview route and hash remain hidden.
+
+Focused and full unit verification, the production build, and a targeted
+six-test browser gate all passed after the repair. That browser gate reproduced
+all four CI failure shapes and the complete 500m/1000m/2500m objective flow
+under `CI=true`. Its regenerated historical evidence files were restored to
+their unchanged branch content after the successful run. Exact-head
+pull-request CI remains the external browser merge gate.
 
 The final browser commands were run after both fail-closed presentation fixes,
 including the planner-map route/hash gate. The four terminal-capture evidence

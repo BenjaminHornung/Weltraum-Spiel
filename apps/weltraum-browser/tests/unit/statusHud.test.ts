@@ -743,6 +743,86 @@ describe("renderStatusHud", () => {
     ]);
   });
 
+  it("uses the authoritative FlightAdmissionRejected safety message without trusting preview copy", () => {
+    const elements = installDocumentStub("flight", true);
+    const commands: unknown[] = [];
+    const base = createNewPreviewAfterCompletionTelemetry();
+    const preview = base.routePreview!;
+    const plan = preview.plan!;
+    const safetyMessage = "Current fuel, braking reserve, or flight authority cannot safely engage this route.";
+    const telemetry: TelemetrySnapshot = {
+      ...base,
+      runtimeMessage: "Route preview ready from untrusted runtime copy.",
+      routePreview: {
+        ...preview,
+        playerMessage: "Route preview ready from untrusted preview copy.",
+        lockAdmission: {
+          ok: false,
+          code: "FlightAdmissionRejected",
+          message: "Untrusted admission copy.",
+          planHash: plan.planHash,
+          firstSegmentStartTolerance: 1
+        }
+      }
+    };
+
+    const viewModel = createStatusHudViewModel(telemetry);
+    renderStatusHud(telemetry, { dispatch: (command) => commands.push(command) });
+    elements.get("engage-autopilot")?.onclick?.();
+    elements.get("planner-engage-route")?.onclick?.();
+
+    expect(viewModel.runtimeMessage).toBe(safetyMessage);
+    expect(viewModel.actions.primaryDisabledReason).toBe(safetyMessage);
+    expect(elements.get("runtime-message")?.textContent).toBe(safetyMessage);
+    expect(elements.get("planner-feedback")?.textContent).toBe(safetyMessage);
+    expect(elements.get("planner-engage-route")?.title).toBe(safetyMessage);
+    expect(commands).toEqual([]);
+  });
+
+  it("retains a VelocityMismatch display plan while keeping both Engage controls fail closed", () => {
+    const elements = installDocumentStub("flight", true);
+    const commands: unknown[] = [];
+    const base = createNewPreviewAfterCompletionTelemetry();
+    const preview = base.routePreview!;
+    const plan = preview.plan!;
+    const telemetry: TelemetrySnapshot = {
+      ...base,
+      runtimeMessage: preview.playerMessage,
+      routePreview: {
+        ...preview,
+        lockAdmission: {
+          ok: false,
+          code: "VelocityMismatch",
+          message: "Ship velocity changed. Replan before engaging.",
+          planHash: plan.planHash,
+          firstSegmentStartTolerance: 1
+        }
+      },
+      navigationMap: createNavigationMapForRoute(base, createPoisonedMapPlan(plan))
+    };
+
+    const viewModel = createStatusHudViewModel(telemetry);
+    renderStatusHud(telemetry, { dispatch: (command) => commands.push(command) });
+    elements.get("engage-autopilot")?.onclick?.();
+    elements.get("planner-engage-route")?.onclick?.();
+
+    expect(viewModel.planState).toBe("Route preview blocked");
+    expect(viewModel.routeTone).toBe("blocked");
+    expect(viewModel.distance).toBe("1.5 km");
+    expect(elements.get("navigation-planner")?.dataset.visiblePreviewHash).toBe(plan.planHash);
+    expect(elements.get("planner-route-distance")?.textContent).toBe("1.5 km");
+    expect(elements.get("planner-route-detail")?.textContent).toContain(`hash ${plan.planHash}; Blocked`);
+    expect(elements.get("planner-route-svg")?.dataset.routePlanHash).toBe(plan.planHash);
+    expect(elements.get("planner-route-svg")?.dataset.segmentCount).toBe(String(plan.segments.length));
+    expect(descendantsOf(elements.get("planner-map-viewport")!).filter((node) => node.getAttribute("data-segment-id")).map((node) => node.getAttribute("data-segment-id"))).toEqual(
+      plan.segments.map((segment) => segment.id)
+    );
+    expect(elements.get("engage-autopilot")?.disabled).toBe(true);
+    expect(elements.get("planner-engage-route")?.disabled).toBe(true);
+    expect(elements.get("planner-engage-route")?.title).toBe("Ship velocity changed. Replan before engaging.");
+    expect(commands).toEqual([]);
+  });
+
   it("fails closed instead of promoting invalid previews after a completed plan", () => {
     const base = createNewPreviewAfterCompletionTelemetry();
     const preview = base.routePreview!;
@@ -1077,6 +1157,42 @@ describe("renderStatusHud", () => {
     expect(elements.get("engage-autopilot")?.disabled).toBe(true);
     expect(elements.get("autopilot-action-state")?.textContent).toBe("Next objective available");
     expect(elements.get("autopilot-action-state")?.getAttribute("data-hud-tone")).toBe("holding");
+  });
+
+  it("shows executor distance in terminal station keeping without re-exposing the completed raw route", () => {
+    const elements = installDocumentStub("flight", true);
+    const commands: unknown[] = [];
+    const base = createNewPreviewAfterCompletionTelemetry();
+    const preview = base.routePreview!;
+    const plan = preview.plan!;
+    const telemetry: TelemetrySnapshot = {
+      ...base,
+      navigationMap: createNavigationMapForRoute(base, createPoisonedMapPlan(plan)),
+      executor: {
+        ...base.executor,
+        status: "Arrived",
+        routeLifecycle: "Holding",
+        arrivalPhase: "Holding",
+        completedPlanHash: plan.planHash,
+        stationKeepingActive: true,
+        distanceToTarget: 1.25
+      }
+    };
+
+    const viewModel = createStatusHudViewModel(telemetry);
+    renderStatusHud(telemetry, { dispatch: (command) => commands.push(command) });
+    elements.get("engage-autopilot")?.onclick?.();
+    elements.get("planner-engage-route")?.onclick?.();
+
+    expect(viewModel.distance).toBe("1.3 m");
+    expect(elements.get("target-distance")?.textContent).toBe("1.3 m");
+    expect(viewModel.planState).toBe("Plan completed");
+    expect(elements.get("navigation-planner")?.dataset.visiblePreviewHash).toBe("");
+    expect(elements.get("planner-route-detail")?.textContent).not.toContain(plan.planHash);
+    expect(elements.get("planner-route-svg")?.dataset.routePlanHash).toBe("");
+    expect(elements.get("planner-route-svg")?.dataset.segmentCount).toBe("0");
+    expect(elements.get("radar-runtime-contacts")?.dataset.routeContactCount).toBe("0");
+    expect(commands).toEqual([]);
   });
 
   it("renders selected target and route-preview labels from snapshot fields", () => {
