@@ -119,7 +119,7 @@ explizit surface-rated Craft vereinbar.
 | [Celestial Runtime Data Contract](./celestial-runtime-data-contract.md) nennt `OrbitOnly` oder `LoadingTransition` als frühe Hestia-Prototypoption. | Diese alte Implementierungsstufung ist keine Produkt-Startentscheidung und beweist keinen Ground Origin. |
 | [On-Planet First-Person Mode](./on-planet-first-person-mode.md) beginnt mit Landen, Aussteigen und Rückkehr zum Schiff. | Dieser Loop gilt nach Schiffserwerb oder wenn der Spieler mit fremdem/öffentlichem Transport ankommt. Der Pre-Ship-Loop hat keinen eigenen Ship Anchor. |
 | [Planetary Exploration Loop](./planetary-exploration-loop.md) führt Ergebnisse zurück in Schiff oder Ship Cargo. | Vor dem ersten Schiff fließen Ergebnisse in lokalen Semantic State und den Erwerbsfortschritt; danach gilt der normale Space-/Cargo-Rückfluss. |
-| [Current Prototype State](../current-prototype-state.md) und der Browser-Port zeigen ein funktionsfähiges Schiff. | Das ist Runtime-/Code-Evidence für Flight und Visual Adapter, kein Beleg für Storybesitz, Startort oder Schiffserwerb. |
+| [Legacy Current Prototype State](../legacy-unity/current-prototype-state-2026-06-15.md) und der Browser-Port zeigen ein funktionsfähiges Schiff. | Das ist Runtime-/Code-Evidence für Flight und Visual Adapter, kein Beleg für Storybesitz, Startort oder Schiffserwerb. |
 
 ## 5. Aktuelle Foundation auf main
 

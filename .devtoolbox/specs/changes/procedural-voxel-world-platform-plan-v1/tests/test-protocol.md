@@ -20,14 +20,14 @@ boundaries and WebGL performance Evidence.
 | Research allowlists | PASS | Each branch has one commit from `c780656c` and exactly one Research document plus five Markdown DevToolbox artifacts. |
 | Isolated worktree | PASS WITH CAVEAT | The worktree started from the Research base `c780656c29ff4e5794be9ba58d6b78396a5826d5`; checkout used LFS-smudge skip because an unrelated historical LFS object is missing server-side. |
 | Research cherry-picks | PASS | All four checked commits were applied individually without conflicts. |
-| Final `origin/main` alignment | PASS | The branch was rebased without conflicts onto `ea4ccbadfa8c91787e4b4451e04b1fb4ad18a12f`; immediately before this Evidence commit it was 10 commits ahead and 0 behind. |
+| Final `origin/main` alignment | PASS | The post-cleanup `origin/main` at `051239d9dbb7761c74a52ac8b65743343ec43f18` was merged without conflicts as `dd0a49b43990b3ad8bf9498c627192fdac36d524`; no rebase or force-push was used for the public PR. |
 | Target-document content | PASS | All requested Research, Spielkonzept, Architecture and Adoption Matrix documents exist; all mandatory product and architecture directions are represented. |
-| Relative links | PASS | 125 relative Markdown links across the changed files resolve; 0 are broken. |
-| Adoption Matrix | PASS | All 27 required references occur exactly once with one of the six allowed verdicts; README claims remain distinct from code and observed-demo Evidence. |
-| Work-package IDs and statuses | PASS | 292 package IDs are unique; all 19 requested packages are present, all statuses are valid and none of the new packages is `DONE` or `FOUNDATION`. |
+| Relative links | PASS | 131 relative Markdown links across the changed files resolve; 0 are broken. |
+| Adoption Matrix | PASS | All 27 required references plus six additional references with independent Audit verdicts occur exactly once with one of the six allowed categories; README claims remain distinct from code and observed-demo Evidence. |
+| Work-package IDs and statuses | PASS | 292 package IDs are unique; all 19 requested packages are present, all statuses are valid and none of the new packages is `DONE` or `FOUNDATION`. Eight pre-existing Celestial-/Combat-Core packages are reconciled to current Mainline Evidence. |
 | Docs-only allowlist | PASS | 41 changed files are Markdown below `docs/` or one of five allowlisted DevToolbox change directories (four Research changes plus this planning change); 0 Package, Runtime Source, test-code, image, binary or capture files are present. |
 | `git diff --check` | PASS | The complete branch diff against `origin/main` has no whitespace errors. |
-| Independent Docs Review | PASS | Both findings were corrected: stale Main/Evidence metadata was refreshed and the GLB observation was narrowed to visible viewport plus HTTP 200 without claiming parse, binding, compiler, semantics or determinism. Residual review risk is low. |
+| Pre-cleanup Independent Docs Review | PASS | Both pre-cleanup findings were corrected: stale Main/Evidence metadata was refreshed and the GLB observation was narrowed to visible viewport plus HTTP 200 without claiming parse, binding, compiler, semantics or determinism. The final post-cleanup review remains a PR merge gate and is documented on PR #16. |
 | DevToolbox prepare/status/validate/load/execution | BLOCKED | `workspace_prepare_for_agent`, status, validation, task load and execution creation reject the isolated worktree as `unauthorized_path`; no override used. |
 | DevToolbox `verify_run` | NOT RUN | No execution ID can be created while the root guard rejects the worktree, so verification cannot be attached to a DevToolbox execution. |
 | Runtime build/tests | NOT APPLICABLE | The authorized scope contains no Runtime, package, Source, test, asset or Scene changes. |

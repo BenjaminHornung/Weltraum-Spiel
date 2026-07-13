@@ -6,8 +6,10 @@ Status: verbindliche Docs-only-Planungsklassifikation, keine Integrationsfreigab
 ## Zweck und Geltungsbereich
 
 Diese Matrix normalisiert die Entscheidungen der vier abgeschlossenen
-Research-Audits zu genau einer Planungskategorie je verlangter Referenz. Sie ist
-die kanonische Leseschicht über den unveränderten Einzelbefunden:
+Research-Audits zu genau einer Planungskategorie je eigenständig
+klassifizierter Referenz. Sie enthält die 27 ausdrücklich verlangten
+Mindest-Referenzen und sechs weitere Referenzen mit eigenem Audit-Urteil. Sie
+ist die kanonische Leseschicht über den unveränderten Einzelbefunden:
 
 - [Browser Voxel Runtime Reference Audit v1](browser-voxel-runtime-reference-audit-v1.md)
 - [Planet LOD & Streaming Reference Audit v1](planet-lod-streaming-reference-audit-v1.md)
@@ -83,16 +85,22 @@ Nur die folgenden sechs Kategorien sind gültig:
 | R25 | Blockbench | Adopt as external tool | Externes Authoring für boxige Props und modulare Technikobjekte mit GLB-Ausgabe. Hestia-Semantik benötigt Konvention oder Plugin und Compilerprüfung; GPL-Source bleibt außerhalb der Runtime. | [Meshing-Audit §§5, 12.3, 14, 17, 20](voxel-meshing-destruction-asset-audit-v1.md) |
 | R26 | Goxel | Study concepts | Copy-on-write-Tiles, Layers, Undo und Painter-Modell sind nützliche Editorideen. Die GPL-native Editorarchitektur ist weder Runtime- noch Compilerfundament. | [Meshing-Audit §§5, 5.1, 14, 17, 20](voxel-meshing-destruction-asset-audit-v1.md) |
 | R27 | MagicaVoxel | Adopt as external tool | Extern für Stil, Paletten und kleine Referenzassets nutzbar. Software oder Binaries werden nicht gebündelt oder redistribuiert; ein automatisierter Import bleibt ein späterer Prüfpunkt. | [Meshing-Audit §§5, 14, 17, 20](voxel-meshing-destruction-asset-audit-v1.md) |
+| R28 | Cosmonium | Study concepts | Frameleiter, Anchor-Split, Depth-Regionen und dynamische Near-/Far-Projektion sind relevante Präzisionsmuster. GPL, Panda3D und die Mixed-Language-Basis schließen eine Codeintegration aus; komprimierte Renderkoordinaten dürfen nie Simulationswahrheit werden. | [Planet-Audit §Cosmonium und §12](planet-lod-streaming-reference-audit-v1.md) |
+| R29 | dgreenheck/threejs-procedural-planets | Revisit later | Ausschließlich spätere visuelle Lookdev-Referenz für Shader, Höhenfarben und Atmosphäre. Fixe Sphere-Dichte, unseeded Wolken, offene Atmosphärenperformance und fehlender Tile-/Chunk-Lifecycle liefern keine Planet- oder Streamingarchitektur. | [Planet-Audit §dgreenheck/threejs-procedural-planets](planet-lod-streaming-reference-audit-v1.md) |
+| R30 | XenoverseUp/procedural-planets | Revisit later | Ausschließlich spätere visuelle Referenz für Six-Face-Mesh, Noise und Gradienten. Unseeded Noise, synchrones GPU-Readback, fixe Flächenauflösung, Shaderwarnungen und fehlende Tests schließen eine aktuelle Adoption aus. | [Planet-Audit §XenoverseUp/procedural-planets](planet-lod-streaming-reference-audit-v1.md) |
+| R31 | vanruesc/rabbit-hole | Study concepts | Dual Contouring mit QEF, Sparse Voxel Octree, Clipmaps, CSG, Worker und serialisierte SDF-Operationen sind Konzeptquellen. Das alte, ausdrücklich unvollständige Projekt belegt weder LOD-Seams noch belastbare Persistenz oder Performance. | [Meshing-Audit §§3.1, 5, 5.1, 17, 20](voxel-meshing-destruction-asset-audit-v1.md) |
+| R32 | EricLengyel/Transvoxel tables | Isolated code reuse candidate | Ausschließlich die MIT-lizenzierten Lookup-Tabellen dürfen nach erneuter Provenance-, Attribution- und Paritätsprüfung isoliert untersucht werden. Mesher, Algorithmus, Indexierung, 2:1-Seamvertrag und Tests bleiben Eigenarbeit. | [Meshing-Audit §§3.1, 5, 7.2, 17, 20](voxel-meshing-destruction-asset-audit-v1.md) |
+| R33 | Blender Geometry Nodes | Adopt as external tool | Externes prozedurales Authoring für Assetfamilien. Toolversion, Node-Gruppen und Exportoptionen werden gepinnt; Instanzen, Modifier, evaluierte Geometrie und Metadaten müssen vor dem Compiler deterministisch gebaked werden. Der Nodegraph ist keine Runtime-Wahrheit. | [Meshing-Audit §§5, 12, 14, 17, 20](voxel-meshing-destruction-asset-audit-v1.md) |
 
-Verteilung der 27 Entscheidungen:
+Verteilung der 33 Entscheidungen:
 
 | Kategorie | Anzahl |
 | --- | ---: |
-| Adopt as external tool | 5 |
+| Adopt as external tool | 6 |
 | Prototype behind adapter | 7 |
-| Study concepts | 12 |
-| Isolated code reuse candidate | 1 |
-| Revisit later | 0 |
+| Study concepts | 14 |
+| Isolated code reuse candidate | 2 |
+| Revisit later | 2 |
 | Reject | 2 |
 
 ## Verbindliche Cross-Audit-Architektur

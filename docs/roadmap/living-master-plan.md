@@ -1,6 +1,6 @@
 # Weltraum Browser Mainline: Living Master Plan
 Stand: 2026-07-13
-Letzter Abgleich: `main` @ `ea4ccbadfa8c91787e4b4451e04b1fb4ad18a12f`
+Letzter Abgleich: `main` @ `051239d9dbb7761c74a52ac8b65743343ec43f18`
 Dokumenttyp: laufender Planungsindex, keine Implementierungsspezifikation
 Produkt-Mainline: Browser, Three.js und TypeScript
 Legacy/Referenz: Unity-Prototyp, historische Specs und Runtime-Evidence
@@ -56,17 +56,19 @@ Statusregeln:
 - **[FOUNDATION] Real-Scale World Core**: Absolute/local Frames, Floating-Origin-Invarianten, Chunk Registry, Residency, LOD und World-Streaming-Planung sind implementiert; dynamisches Content Streaming und echte Planeten fehlen.
 - **[DONE] Resource/Cargo Contract Core**: Resource IDs, Katalog, Stack-Regeln, Container, Kapazitäten, Transfers, Ownership-/Legality-Metadaten und kanonische Serialisierung sind als unabhängiger Browser-Core vorhanden.
 - **[DONE] Ship Builder Domain Foundations**: Part-Katalog, Kategorien, Komponenten, Sockets, Blueprints, kanonische Serialisierung, Kompatibilität, Strukturgraph, Dry Mass, COM und Bounds sind implementiert.
+- **[FOUNDATION] Celestial/Gravity Domain Core**: Kanonischer Aurelia-Katalog, analytische Kepler-Ephemeriden, explizite Reference Frames und reine Gravity Queries sind implementiert. Ein reiner Universe-Time-Vertrag existiert separat; automatische Zeitfortschreibung, aktive Flight-/Navigation-Integration, SOI und System Map fehlen.
+- **[FOUNDATION] Combat Weapon/Damage Domain Core**: Fire Permission, Projectile-/Beam-Delivery, Hit Resolution, Damage und kanonische Combat Events sind implementiert. Spielbare Combat Runtime, Gegner, Flight-Folgen, Loot, Repair und echte Weapon UI fehlen.
 
 ### 4.2 Größte offene Produktlücken
 
-- Kein echtes Aurelia-System mit analytischen Orbits, Gravitation, SOI und System-Map-Truth.
+- Der Celestial/Gravity Domain Core existiert. Ein reiner Universe-Time-Vertrag ist vorhanden; es fehlen noch seine aktive Runtime-/Flight-/Navigation-Kopplung, SOI, Patched Conics, System-Map-Truth sowie planetare Darstellung und Übergänge.
 - Kein objektgebundener Timewarp, keine Intercept-/Encounter-Simulation und keine persistente Langstreckenreise.
 - Kein Runtime-Cargo im aktiven Schiff und keine Cargo-Mass-Integration in Flight/Autopilot.
 - Kein spielbarer Ship Builder mit Placement, Save Variant, Test Flight und Active-Ship-Handoff.
 - Kein implementierter SurfaceLocalFrame-Übergang, keine planetare Lauf-/Scanner-/Mining-Schicht und kein Schiff-zu-Surface-State-Handoff.
 - Keine spielbaren Drohnenmissionen, persistenten Savegames oder Offline-/Event-Queue-Schicht; die vorhandene World-/Simulation-Bubble ist nur eine Runtime-Grundlage.
 - Keine vollständige Economy, Missions-, Faction-, Reputation-, Legality- oder Outpost-Runtime.
-- Kein vollständiges Space-/Surface-Combat-, Damage-, Loot- und Repair-System.
+- Der Combat Weapon/Damage Domain Core existiert. Es fehlen noch eine spielbare Space-/Surface-Combat-Runtime, Gegner und Encounters, Flight-/Navigation-Folgen, Ammo-/Resource-Integration, Loot, Repair und player-facing Combat Controls.
 
 ## 5. Empfohlene Umsetzungswellen
 
@@ -298,11 +300,11 @@ Planeten-/Terrain-Streaming, mehrere Biome und Sites, Multi-Drone-Operationen, F
 - **[OPEN] P03.03.01 Gemeinsamer Trajectory Predictor**
   Map, Planner, Executor, Timewarp und Intercept Solver müssen dieselbe Vorhersage für Position, Velocity, Burns und Gefahren nutzen.
 
-- **[OPEN] P03.03.02 Lokale Gravitation und dominante Source**
-  Punktmassen-Gravitation mit realem `mu`, klarer Reference Frame Authority und reproduzierbaren Integrationsschritten einführen.
+- **[FOUNDATION] P03.03.02 Lokale Gravitation und dominante Source**
+  Pure inverse-square Gravity Queries und deterministische dominante Source-Auswahl sind implementiert. Aktive Schiffskraft, lokale Integrationsschritte und Frame-Handoffs fehlen.
 
-- **[OPEN] P03.03.03 Analytische Kepler-Ephemeriden**
-  Sterne, Planeten, Monde und große Asteroiden aus Orbitdaten und Universe Time stabil fortschreiben.
+- **[FOUNDATION] P03.03.03 Analytische Kepler-Ephemeriden**
+  Katalogkörper können aus expliziter Epoch und Requested Time analytisch fortgeschrieben werden. Ein gemeinsamer, aktiv fortgeschriebener Universe-Time-Service und die Runtime-/Map-Kopplung fehlen.
 
 - **[OPEN] P03.03.04 Sphere-of-Influence Transitions**
   Frame-Wechsel als explizite, validierte Plansegmente mit plausibler Energie-/Velocity-Erhaltung umsetzen.
@@ -348,14 +350,14 @@ Planeten-/Terrain-Streaming, mehrere Biome und Sites, Multi-Drone-Operationen, F
 
 ### P04.01 Celestial Data
 
-- **[OPEN] P04.01.01 Canonical Celestial Catalog**
-  Aurelia, sieben Planeten, ausgewählte Monde, Asteroiden und Stationen mit stabilen IDs, realen Größen, `mu`, Orbits und Visual Profiles erfassen.
+- **[FOUNDATION] P04.01.01 Canonical Celestial Catalog**
+  Aurelia, sieben Planeten, vier benannte Hestia-Monde und drei spezifizierte Asteroiden besitzen einen kanonischen Katalog. Stationen und weitere unvollständig dokumentierte Körper bleiben offen.
 
-- **[OPEN] P04.01.02 Celestial Schema Validation**
-  Parent-Graph, Radius/Masse/`mu`, Atmosphere, Rotation, Surface Access, Gameplay Access und Visual Scale validieren.
+- **[DONE] P04.01.02 Celestial Schema Validation**
+  Schema-Version, IDs, Zahlen, Masse/`mu`, Parent-Graph, Orbits, Rotation, Atmosphäre, Visual Scale und Access Profiles werden fail-closed validiert.
 
-- **[OPEN] P04.01.03 Definition/Runtime/Visual Separation**
-  Unveränderliche Quelldaten, zeitabhängige OrbitRuntimeState und ansichtsspezifische Visual-Projektion strikt trennen.
+- **[FOUNDATION] P04.01.03 Definition/Runtime/Visual Separation**
+  Celestial Definitions, zeitabhängige Runtime States und render-only Visual Profiles sind getrennt. Die echte Renderer-/Map-Projektion fehlt.
 
 - **[OPEN] P04.01.04 Discovery und Knowledge State**
   Bekannte, vermutete, gescannte und freigeschaltete Himmelskörper-/Site-Daten getrennt von den kanonischen Definitionen speichern.
@@ -814,16 +816,16 @@ Planeten-/Terrain-Streaming, mehrere Biome und Sites, Multi-Drone-Operationen, F
 ### P10.01 Space Combat
 
 - **[FOUNDATION] P10.01.01 Combat HUD/Contact Presentation**
-  Visuelle Shell und Kontaktkontext existieren; echte Combat Authority, Weapons und Damage fehlen.
+  Combat Presentation existiert, und ein eigenständiger Combat Core ist vorhanden. Die sichtbare UI ist aber noch nicht mit einer spielbaren Combat Runtime verbunden.
 
-- **[OPEN] P10.01.02 Space Targeting und Weapon Computer Core**
-  Target Selection, Range, Arc, Tracking, Cooldown, Ammo/Energy und Fire Permission owner-seitig modellieren.
+- **[DONE] P10.01.02 Space Targeting und Weapon Computer Core**
+  Target Snapshots, Range, Arc, Alignment, Tracking, Cooldown, Ammo/Energy/Heat, Fire Permission und Line-of-Fire Blocker sind deterministisch implementiert.
 
-- **[OPEN] P10.01.03 Projectile/Beam/Hit Resolution**
-  Deterministische Projectiles oder Rays, Collision Layers, Hit Results und Evidence ohne Renderer-Authority implementieren.
+- **[DONE] P10.01.03 Projectile/Beam/Hit Resolution**
+  Projectile Advancement, Swept Collision, Beam Rays, stabile Tie-Breaks und authoritative Hit Results sind implementiert.
 
-- **[OPEN] P10.01.04 Ship Damage und Module Effects**
-  Hull, Armor, Thruster, RCS, Weapon, Cargo und Sensor Damage mit Flight-/Navigation-Folgen verbinden.
+- **[FOUNDATION] P10.01.04 Ship Damage und Module Effects**
+  Armor, Hull, Module Damage, Damage Types und semantische Module Effects existieren. Die Effects sind noch nicht mit Flight, Navigation, Weapons, Cargo oder Runtime verbunden.
 
 - **[OPEN] P10.01.05 Space PvE Encounter v0**
   Ein plausibel gespawnter/übergebener Gegner, klarer Combat Start, Flucht/Abbruch und Reward/Repair-Rückfluss.
@@ -1203,6 +1205,8 @@ Bei jedem größeren Merge:
 - `docs/browser-mainline/testing-and-evidence.md`
 - `docs/browser-mainline/ci-verification.md`
 - `docs/browser-mainline/live-world-presentation-truth-v1.md`
+- `docs/browser-mainline/celestial-gravity-core-v1.md`
+- `docs/browser-mainline/combat-weapon-damage-core-v1.md`
 - `docs/browser-mainline/resource-cargo-inventory-core-v1.md`
 - `docs/browser-mainline/ship-builder-domain-catalog-v1.md`
 - `docs/browser-mainline/ship-builder-compatibility-mass-core-v1.md`

@@ -12,13 +12,17 @@ Zerstörung und Performance-Evidence.
 
 - Initiale Research-Basis: `origin/main` bei
   `c780656c29ff4e5794be9ba58d6b78396a5826d5`.
-- Finaler Main-Abgleich und Rebase: `origin/main` bei
+- Initialer Synthese-Abgleich per Rebase: `origin/main` bei
   `ea4ccbadfa8c91787e4b4451e04b1fb4ad18a12f`.
+- Post-Cleanup-Abgleich per Merge: `origin/main` bei
+  `051239d9dbb7761c74a52ac8b65743343ec43f18`; Merge-Commit
+  `dd0a49b43990b3ad8bf9498c627192fdac36d524`.
 - Research-Commits: `a8973415`, `02a86ada`, `eacf46f3`, `eebe79a3`.
 - Zielbranch: `docs/procedural-voxel-world-platform-plan-v1`.
-- Relevante bestehende Autoritäten: Current Prototype State, Planning
-  Consistency Audit, Coordinate/Surface Frames, Real Scale World, Browser
-  Mainline, Orbitalmodell, Persistence und Living Master Plan.
+- Relevante bestehende Autoritäten: Current Mainline State, archivierter
+  Current Prototype State, Planning Consistency Audit, Coordinate/Surface
+  Frames, Real Scale World, Browser Mainline, Orbitalmodell, Persistence und
+  Living Master Plan.
 - DevToolbox blockiert den isolierten Worktree derzeit mit
   `unauthorized_path`; Preflights werden nicht umgangen.
 
