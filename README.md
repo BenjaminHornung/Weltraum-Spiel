@@ -25,6 +25,7 @@ The current browser runtime provides a playable local-space flight slice:
 - Pure Combat and Persistence/Universe-Time/Event domain cores with deterministic contracts and normal-route Browser evidence. They are not yet playable combat or save/load systems.
 - Resource/cargo domain foundations. These are data and validation cores, not complete player-facing gameplay systems.
 - Ship Builder part/blueprint foundations plus deterministic stats, handling diagnostics and static flight-readiness reports. There is still no player-facing Builder UI, runtime handoff or active-ship replacement.
+- A player-facing Graphics dialog with versioned presets, strict local preference storage and a presentation-only Three.js adapter. Graphics choices do not alter simulation, navigation or world truth.
 
 The browser runtime does **not** yet provide full planets, voxel terrain, orbital flight, SOI or patched-conics navigation, seamless surface transitions, production multiplayer, a playable ship-builder UI, persistent cargo gameplay, full combat, economy or missions.
 

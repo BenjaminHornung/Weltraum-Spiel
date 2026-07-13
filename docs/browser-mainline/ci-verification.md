@@ -21,7 +21,7 @@ The path filters include:
 
 ## Current baseline and commands
 
-The current browser package uses TypeScript `7.0.2`. The current suite contains 25 Playwright spec files and 48 tests. The job runs on `ubuntu-latest` with Node.js 22, has a finite 45-minute timeout, and uses the npm cache keyed by `apps/weltraum-browser/package-lock.json`. All npm commands run from `apps/weltraum-browser`:
+The current browser package uses TypeScript `7.0.2`. The current suite contains 26 Playwright spec files and 51 tests. The job runs on `ubuntu-latest` with Node.js 22, has a finite 45-minute timeout, and uses the npm cache keyed by `apps/weltraum-browser/package-lock.json`. All npm commands run from `apps/weltraum-browser`:
 
 ```text
 npm ci
@@ -33,7 +33,7 @@ npm run test:e2e:live
 npm run test:e2e:ui
 ```
 
-`npm run test` executes Vitest and `npm run build` executes the TypeScript/Vite browser build. The three required Chromium Playwright groups separate core/autopilot/domain coverage (14 specs), live runtime/objectives (8 specs), and UI/layout (3 specs). The aggregate `npm run test:e2e` command remains unchanged and discovers the complete suite for local full-suite verification.
+`npm run test` executes Vitest and `npm run build` executes the TypeScript/Vite browser build. The three required Chromium Playwright groups separate core/autopilot/domain coverage (14 specs), live runtime/objectives (8 specs), and UI/layout/settings (4 specs). The aggregate `npm run test:e2e` command remains unchanged and discovers the complete suite for local full-suite verification.
 
 ## E2E failure isolation and guardrails
 

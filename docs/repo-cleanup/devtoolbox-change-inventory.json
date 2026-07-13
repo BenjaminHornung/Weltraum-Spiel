@@ -2011,5 +2011,27 @@
         "hasTasks":  true,
         "hasEvidence":  true,
         "action":  "keep"
+    },
+    {
+        "name":  "browser-ship-builder-full-stats-flight-readiness-v1",
+        "platform":  "browser",
+        "status":  "complete",
+        "openTaskCount":  0,
+        "hasProposal":  true,
+        "hasDesign":  true,
+        "hasTasks":  true,
+        "hasEvidence":  true,
+        "action":  "keep"
+    },
+    {
+        "name":  "browser-graphics-settings-foundation-v1",
+        "platform":  "browser",
+        "status":  "active",
+        "openTaskCount":  22,
+        "hasProposal":  true,
+        "hasDesign":  true,
+        "hasTasks":  true,
+        "hasEvidence":  true,
+        "action":  "keep"
     }
 ]

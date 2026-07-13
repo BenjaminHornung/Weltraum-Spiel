@@ -11,7 +11,7 @@ werden neutral unter `art/` und `docs/legacy-unity/` konserviert.
 ## Kontext
 
 - Ausgangscommit: `8383487f89f6eb6e63140def564052ac86de259a`
-- Vor finaler PR-Verifikation synchronisierter `main`: `a790e7b7d4601989c6851e05943d54f3b0adfd52`
+- Vor finaler PR-Verifikation synchronisierter `main`: `bb8ef8378295c1788866d376ded059563229183b`
 - Cleanup-Branch: `cleanup/browser-mainline-repository-v1`
 - Archiv-Tag: `unity-legacy-final-2026-07`
 - Archiv-Branch: `archive/unity-legacy-final-2026-07`
@@ -54,7 +54,7 @@ und als vorbestehender Datenintegritätsverlust dokumentiert.
 
 1. Archiv-Refs und vollständiges Before-Inventar verifizieren.
 2. LFS-Risiken, eingehende Referenzen, Evidence und `.devtoolbox` klassifizieren.
-3. Art-Quellen und vier kompakte Legacy-Intent-Dokumente extrahieren.
+3. Art-Quellen und fünf kompakte Legacy-Intent-Dokumente extrahieren.
 4. Dokument-/Evidence-Moves ausführen und Referenzen aktualisieren.
 5. `Assets`, `Packages`, `ProjectSettings`, Unity-Projektdateien und das
    Strategiepaket entfernen.

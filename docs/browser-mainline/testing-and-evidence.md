@@ -47,7 +47,7 @@ Covers normal player runtime and world presentation including visible planner in
 
 ### `test:e2e:ui`
 
-Covers player-facing HUD, planner and visual parity/layout checks.
+Covers player-facing HUD, planner, graphics settings and visual parity/layout checks.
 
 CI validates that every `tests/e2e/**/*.spec.ts` is assigned to exactly one required group and rejects stale, duplicate or malformed script membership.
 
@@ -157,6 +157,22 @@ These scenarios prove that normal `/` remains healthy and does not expose
 of playable Combat, Browser storage, save/load UI, offline progression or
 runtime persistence integration. Ship Builder analysis is likewise not
 evidence of placement UI, completed test flight or active-ship handoff.
+
+## Graphics Settings Acceptance
+
+The player-facing Graphics dialog is verified on normal `/` without TestBridge.
+Its E2E flow covers Apply, persistence, Cancel, Reset, Low/High runtime evidence
+and preservation of an active locked route while presentation settings change.
+Unit tests prove schema validation, capability truth, storage behavior and that
+the Three.js adapter cannot mutate gameplay snapshots.
+
+- `apps/weltraum-browser/tests/e2e/graphics-settings.spec.ts`
+- `apps/weltraum-browser/evidence/browser-graphics-settings-foundation-v1.md`
+- `apps/weltraum-browser/evidence/browser-graphics-settings-foundation-v1-summary.json`
+- `docs/browser-mainline/graphics-settings-foundation-v1.md`
+
+These artifacts establish presentation preferences and adapter behavior, not
+simulation FPS, world-streaming distance, sensor range or gameplay authority.
 
 ## Visual And Nozzle-VFX Evidence
 

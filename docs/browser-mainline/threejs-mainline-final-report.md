@@ -2,6 +2,10 @@
 
 Date: 2026-06-29
 
+> Historical transition snapshot. Branch, worktree, delivery-state and
+> verification notes below describe the 2026-06-29 capture. Current repository
+> truth is maintained in `docs/current-mainline-state.md`.
+
 ## Branch and Worktree Context
 
 - Worktree: `C:\IFI_SourceCode\Temp\WeltraumSpiel\.worktrees\Weltraum-Threejs-Mainline-Transition-v1`
@@ -89,7 +93,7 @@ The final verification evidence is recorded in app-local evidence logs:
 
 ## Review Follow-Up Notes
 
-- Verification logs under `apps/weltraum-browser/evidence/verification-*.log` are intended to be trackable by normal `git add`; the app-local `.gitignore` allows them despite the root `*.log` ignore.
+- Generated `apps/weltraum-browser/evidence/verification-*.log` files are ignored by the root `*.log` rule and are not durable evidence. Current verification should use the maintained Markdown/JSON protocols and CI results instead of force-adding command logs.
 - Browser-mainline documentation cites copied source evidence under `docs/legacy-unity/source-evidence/`; package-only inputs are marked as historical external inputs, not live repo paths.
 - Browser app dependencies are pinned to versions already resolved in `package-lock.json`; no dependency or devDependency uses `latest`.
 - Playwright defaults to the installed browser from Playwright, supports an optional `WELTRAUM_PLAYWRIGHT_EXECUTABLE_PATH` override for local runner compatibility, and keeps stale-server hardening via `reuseExistingServer: false` and Vite `--strictPort`.

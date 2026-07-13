@@ -51,12 +51,17 @@ shipBuilder
   Part catalog, blueprints, sockets, compatibility, structure, mass, COM and
   bounds plus signed stats, handling diagnostics and static readiness contracts.
 
+settings
+  Versioned graphics preferences, presets, validation, capabilities, draft/apply
+  state and local storage without ownership of simulation or world truth.
+
 ui
-  HUD and navigation-planner ViewModels/presentation plus explicit commands.
+  HUD, navigation-planner and Graphics-dialog presentation plus explicit commands.
 
 render/three
   Three.js scene, cameras, Demo Scout GLB adapter, nozzle VFX binding,
-  procedural fallback, render interpolation and world-presentation projection.
+  procedural fallback, graphics-settings adapter, render interpolation and
+  world-presentation projection.
 
 tests/evidence
   Vitest, Playwright, query-gated TestBridge scenarios and recorded artifacts.
@@ -73,6 +78,7 @@ Directory names may evolve, but these authority boundaries are product contracts
 - Combat owns pure targeting, delivery, hit and damage decisions. It does not currently drive playable encounters, Flight, Navigation, UI or Runtime.
 - Persistence owns pure time, identity, schema, event and canonicalization contracts. It has no Browser storage, live Runtime, offline progression or multiplayer transport binding.
 - Resources and Ship Builder own deterministic domain reports only; Builder readiness is static eligibility, not a runtime handoff or completed test flight.
+- Settings owns player graphics preferences and capability truth; its Three.js adapter changes presentation only and cannot change simulation cadence, world residency, navigation or telemetry.
 - Runtime coordinates commands and exposes immutable snapshots.
 - UI reads ViewModels/snapshots and sends commands.
 - Three.js consumes render/world-presentation snapshots only.
@@ -125,7 +131,7 @@ World data/snapshots own absolute entity state, local projections, obstacle and 
 
 ### Presentation truth
 
-Three.js and UI may own meshes, materials, interpolated render pose, camera damping, label layout, CSS state and visual transitions. They cannot authorize engagement, complete objectives, alter absolute/celestial state or manufacture contacts.
+Three.js and UI may own meshes, materials, interpolated render pose, camera damping, label layout, CSS state, graphics preferences and visual transitions. They cannot authorize engagement, complete objectives, alter simulation cadence, world residency, navigation, telemetry or absolute/celestial state, or manufacture contacts.
 
 ## Navigation Lifecycle
 
@@ -161,6 +167,7 @@ The Demo Scout GLB is the preferred player-facing visual. The procedural ship re
 - Main-engine and RCS nozzle effects derive from actuator telemetry and resolved bindings, not raw key state.
 - Missing visual nodes must not create phantom gameplay thrusters, targets or world state.
 - Render interpolation affects ship/camera presentation only.
+- Graphics presets and live settings affect presentation only; camera render distance is not a world-streaming or detection distance.
 - Decorative objects remain outside radar/world truth unless backed by explicit runtime entities.
 
 ## World-Scale And Orbital Foundations
@@ -220,6 +227,7 @@ Do not port MonoBehaviour shape, `Update`/`FixedUpdate` ownership, scene wiring 
 - `docs/browser-mainline/combat-weapon-damage-core-v1.md`
 - `docs/browser-mainline/persistence-universe-time-event-core-v1.md`
 - `docs/browser-mainline/ship-builder-full-stats-flight-readiness-v1.md`
+- `docs/browser-mainline/graphics-settings-foundation-v1.md`
 - `docs/roadmap/living-master-plan.md`
 - `docs/architecture/autopilot-v2-design.md`
 - `docs/architecture/coordinate-spaces-and-floating-origin.md`

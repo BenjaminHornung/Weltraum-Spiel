@@ -3,7 +3,8 @@
 Stand: 2026-07-13
 Status snapshot: browser mainline after the objective-chain,
 celestial-gravity-core, combat-weapon-damage-core, Persistence/Universe-Time/
-Event core, Ship Builder full-stats/readiness and Demo Scout nozzle-VFX merges
+Event core, Ship Builder full-stats/readiness, Graphics Settings and Demo Scout
+nozzle-VFX merges
 
 ## Product Mainline
 
@@ -29,6 +30,7 @@ The normal route `/` boots a playable local-space flight slice with:
 - fixed-step simulation with interpolated ship/camera presentation;
 - runtime-owned targets, obstacles, routes and world contacts;
 - player HUD, local radar and navigation planner;
+- player-facing Graphics dialog with Low/Medium/High/Ultra presets and Custom state;
 - explicit target selection, route preview, Engage and Cancel actions;
 - local obstacle-aware planning, immutable route identity and typed fail-closed
   rejection states;
@@ -204,8 +206,18 @@ Evidence:
   bindings.
 - Combat presentation is a bounded UI/presentation slice, not a complete
   browser combat loop.
+- Graphics settings use strict versioned local preference storage and a narrow
+  Three.js adapter. Render scale, FOV, presentation FPS, exposure, anisotropy
+  and render-only decor remain presentation concerns; they cannot change
+  simulation cadence, world residency, route identity or telemetry truth.
 - Concept screenshots under `docs/UI-Screenshots/` are design references, not
   runtime evidence.
+
+Graphics Settings evidence:
+
+- `docs/browser-mainline/graphics-settings-foundation-v1.md`
+- `apps/weltraum-browser/evidence/browser-graphics-settings-foundation-v1.md`
+- `apps/weltraum-browser/evidence/browser-graphics-settings-foundation-v1-summary.json`
 
 ## Verification Contract
 

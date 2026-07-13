@@ -25,7 +25,7 @@ unaltered archive refs preserve the original pointer state.
 - Initial cleanup source: the then-current `origin/main` at
   `8383487f89f6eb6e63140def564052ac86de259a`.
 - Final synchronized PR base: `origin/main` at
-  `a790e7b7d4601989c6851e05943d54f3b0adfd52`.
+  `bb8ef8378295c1788866d376ded059563229183b`.
 - Cleanup branch: `cleanup/browser-mainline-repository-v1`.
 - Unity legacy tag: `unity-legacy-final-2026-07`.
 - Unity legacy archive branch: `archive/unity-legacy-final-2026-07`.
@@ -87,7 +87,7 @@ qualification.
 | `analysis` | 14 | Move / Delete | Move source evidence to `docs/legacy-unity/source-evidence`; move useful final transition reports into browser docs, then remove the top-level directory. |
 | `apps` | 371 | Keep | Product mainline; only provenance path literals and their tests may change. |
 | `art` | 11 | Keep / Extend | Neutral home for original ship sources, exports, manifest, validation and renders. |
-| `docs/browser-mainline/design-qa-v3.md` | 1 | Move | Move to `docs/browser-mainline/design-qa-v3.md`. |
+| `design-qa.md` | 1 | Move | Move to `docs/browser-mainline/design-qa-v3.md`. |
 | `docs` | 142 | Keep / Update | Browser docs remain; Unity state/evidence moves under `docs/legacy-unity`. |
 | `uam` | 1 | Delete | Generated Unity Asset Manager folder; its README says it is deletable. |
 | `weltraum_refactor_strategy_package` | 19 | Delete | Sixteen exact duplicates and three superseded draft specs; mapping recorded below. |
@@ -182,16 +182,18 @@ directories exactly once:
 - Status: 45 active, 100 complete, 23 reconcile, 10 superseded.
 - Actions: 91 keep, 55 archive, 8 delete, 24 review.
 
-Across the two final `main` synchronizations, five Browser changes were added.
+Across the four final `main` synchronizations, seven Browser changes were added.
 They are appended to `docs/repo-cleanup/devtoolbox-change-inventory.json`, which
-therefore contains 183 entries: 41 browser, 12 cross-platform, 129 Unity and 1
-unknown. Statuses are 47 active, 103 complete, 23 reconcile and 10 superseded;
-actions are 93 keep, 58 archive, 8 delete and 24 review. Three additions had zero
-open tasks plus evidence and move to the dated archive. The Demo Scout
-nozzle-VFX change retains its one open CI task. The Persistence/Universe-Time/
-Event change deliberately retains seven unchecked tasks because DevToolbox
-preflight could not run in its isolated source worktree; both remain active
-without checkbox mutation.
+therefore contains 185 entries: 43 browser, 12 cross-platform, 129 Unity and 1
+unknown. Statuses are 48 active, 104 complete, 23 reconcile and 10 superseded;
+actions are 95 keep, 58 archive, 8 delete and 24 review. Three completed
+additions with zero open tasks plus evidence move to the dated archive. The
+current Ship Builder change also has zero open tasks and evidence, but remains
+active as a newly synchronized mainline contract rather than being reclassified
+by the cleanup. The Demo Scout nozzle-VFX change retains its one open CI task;
+Persistence/Universe-Time/Event retains seven unchecked tasks and Graphics
+Settings retains 22 unchecked tasks. DevToolbox preflight could not run in the
+isolated source worktrees, so no checkbox is mutated.
 
 DevToolbox MCP is installed but rejects the isolated cleanup worktree with
 `unauthorized_path`. Therefore no task checkbox is changed and no doubtful
@@ -217,9 +219,9 @@ All 152 files under `apps/weltraum-browser/evidence` were classified:
 - generated log: 5;
 - unreferenced non-log evidence: 9.
 
-Synchronized `main` later added ten tracked current Browser evidence files.
+Synchronized `main` later added seventeen tracked current Browser evidence files.
 They remain untouched; after deleting the five classified generated logs, the
-final tracked Browser evidence count is 157. Ignored local Playwright
+final tracked Browser evidence count is 164. Ignored local Playwright
 report/output directories are not counted.
 
 Only these five generated, unreferenced command logs are safe to delete:
@@ -263,11 +265,12 @@ No LFS replacement, history migration or fake binary is permitted.
 - Node 22 remains the CI runtime.
 - The exact group-membership check remains the workflow's inline Node script;
   the first synchronization required the missing Combat assignment, while the
-  final synchronized `main` already contains both Combat and Persistence. The
-  final cleanup therefore has no package or lockfile diff.
+  final synchronized `main` contains Combat, Persistence and Ship Builder in
+  Core plus Graphics Settings in UI. The final cleanup therefore has no package
+  or lockfile diff.
 - `analysis/threejs-mainline/source-evidence` references change to
   `docs/legacy-unity/source-evidence`.
-- Root `docs/browser-mainline/design-qa-v3.md` references change to
+- Root `design-qa.md` references change to
   `docs/browser-mainline/design-qa-v3.md`.
 - Historical Unity state references change to
   `docs/legacy-unity/current-prototype-state-2026-06-15.md`; current mainline
