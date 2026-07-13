@@ -56,11 +56,11 @@ Every envelope collection with instance identity is validated for duplicate IDs 
 
 ## Definitions and mutable state
 
-`DefinitionReference` contains an explicit definition domain, stable definition ID, and definitions-version reference. `DefinitionsVersionReference` contains a domain and a nonempty version string. An envelope has one canonical entry per domain.
+`DefinitionReference` contains an explicit definition domain, stable definition ID, and definitions-version reference. It is used by `MutableInstanceState` and neutral records, not by mobile-object wire records. `DefinitionsVersionReference` contains a domain and a nonempty version string. An envelope has exactly one canonical entry per referenced domain.
 
 `MutableInstanceState<TId, TDefinitionId, TData>` contains only instance ID, `DefinitionReference`, and JSON-safe mutable data. Definition bodies, display names, localized labels, resource catalogs, part catalogs, and celestial definitions are never copied into a save.
 
-Validation receives an explicit `DefinitionSnapshotResolver`/snapshot containing domain, version, and the known stable definition IDs. A reference is valid only when its domain-version pair exists in the envelope and supplied snapshot and its definition ID resolves in that exact snapshot. Missing definitions, missing version references, and version mismatch produce deterministic issue codes and JSON-pointer paths. A display-name change outside the save therefore does not affect save identity or canonical bytes.
+Validation receives explicit `DefinitionResolutionSnapshot` records containing domain, version, and known stable definition IDs. A `DefinitionReference` is valid only when its domain-version pair exists in the envelope and supplied snapshot and its definition ID resolves in that exact snapshot. A mobile object instead stores exactly one bare `definitionId` field: that ID must occur in exactly one supplied snapshot, and that snapshot's domain/version must match exactly one top-level `definitionsVersionRefs` entry. No snapshot match yields `MISSING_DEFINITION` at the mobile `/definitionId`; multiple snapshot matches yield `DUPLICATE_ID` at that path; missing or mismatched version bindings use their dedicated stable codes. A display-name change outside the save therefore does not affect save identity or canonical bytes.
 
 ## SaveGameEnvelopeV1
 
@@ -96,7 +96,7 @@ The V1 validator syntactically validates external frame, container, damage, powe
 
 `MobileObjectPersistentState` contains:
 
-- stable `objectId`, `ownerId`, and `definitionId`/definition reference;
+- stable `objectId`, `ownerId`, and bare `definitionId`; a mobile record has no `definitionRef` field;
 - stable `frameId` reference;
 - finite three-component `positionMeters`, `velocityMetersPerSecond`, and `angularVelocity` vectors;
 - finite four-component quaternion `orientation` (nonzero magnitude; normalization is not performed by this persistence slice);
@@ -106,6 +106,8 @@ The V1 validator syntactically validates external frame, container, damage, powe
 - `simulationMode`.
 
 Persistence validation does not calculate trajectories, frames, mass sums, fuel consumption, damage, power, cargo, plans, or missions. It does not require `currentMassKg = dryMassKg + fuelMassKg`; those are authoritative runtime/domain concerns outside the change.
+
+The mobile record's strict allowlist requires `definitionId` and rejects the former/nested `definitionRef` shape as an unknown field. Domain/version binding is derived only through the unique supplied definition snapshot and the matching top-level version reference; it is not duplicated inside the mobile record.
 
 ## Migration registry
 

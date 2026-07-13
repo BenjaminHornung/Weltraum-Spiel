@@ -56,15 +56,15 @@ Equivalent envelopes with differently inserted object keys and differently order
 
 ## Requirement: Definitions remain separate from mutable state
 
-The save SHALL store `DefinitionReference`, `DefinitionsVersionReference`, and `MutableInstanceState` records. Definition references SHALL carry a stable definition ID and explicit domain-version binding. Validation SHALL resolve them only against an explicitly supplied matching definition snapshot. Definition bodies and display metadata SHALL NOT be duplicated into mutable save state.
+The save SHALL store `DefinitionReference`, `DefinitionsVersionReference`, and `MutableInstanceState` records. Definition references used by neutral mutable records SHALL carry a stable definition ID and explicit domain-version binding. A mobile object SHALL instead contain exactly the bare `definitionId` field and SHALL NOT contain `definitionRef`. Validation SHALL resolve all definition identities only against explicitly supplied definition snapshots and top-level version references. Definition bodies and display metadata SHALL NOT be duplicated into mutable save state.
 
 ### Scenario 10: Definitions are referenced only
 
-A valid envelope contains a stable definition reference but none of the referenced definition's display name or body; changing the external display name leaves save identity, canonical bytes, and signature unchanged.
+A valid envelope contains stable definition IDs/references but none of the referenced definition's display name or body; changing the external display name leaves save identity, canonical bytes, and signature unchanged.
 
 ### Scenario 11: Missing definition produces a stable error
 
-When a referenced ID is absent from the explicitly supplied matching snapshot, validation reports the documented missing-definition code and deterministic JSON-pointer path. A missing or mismatched definitions version is separately and deterministically reported.
+When a referenced ID is absent from the explicitly supplied matching snapshot, validation reports `MISSING_DEFINITION` at a deterministic JSON-pointer path. A mobile `/definitionId` must occur in exactly one supplied snapshot; more than one match reports `DUPLICATE_ID` at that path. The matching snapshot's domain/version must have exactly one matching top-level `definitionsVersionRefs` entry; a missing or mismatched version is separately and deterministically reported.
 
 ### Scenario 12: Mutable state remains separate
 
@@ -72,13 +72,13 @@ Changing valid instance-owned mutable data changes only that instance state and 
 
 ## Requirement: Mobile object persistent state
 
-Mobile object state SHALL contain stable object/owner/definition/frame identifiers, finite position/velocity/angular-velocity vectors, a finite nonzero quaternion, finite nonnegative epoch and mass values, canonical container references, nullable syntactically valid damage/power/plan/mission references, and a valid simulation mode.
+Mobile object state SHALL contain stable `objectId`, `ownerId`, bare `definitionId`, and `frameId` fields; finite position/velocity/angular-velocity vectors; a finite nonzero quaternion; finite nonnegative epoch and mass values; canonical container references; nullable syntactically valid damage/power/plan/mission references; and a valid simulation mode. Its strict wire schema SHALL reject `definitionRef` as unknown rather than accept both definition shapes.
 
 The validator SHALL NOT compute flight, celestial frames, trajectories, mass sums, fuel, cargo, damage, power, plan, or mission behavior.
 
 ### Scenario 13: Finite mobile state is valid
 
-A complete mobile record with finite vectors/quaternion, nonnegative finite masses/time, stable references, and an allowed mode validates and canonicalizes without invoking another domain core.
+A complete mobile record with the exact bare `definitionId` field, finite vectors/quaternion, nonnegative finite masses/time, stable references, and an allowed mode validates and canonicalizes without invoking another domain core.
 
 ### Scenario 14: NaN and Infinity are rejected
 
