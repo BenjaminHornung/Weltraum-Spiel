@@ -1,67 +1,66 @@
 # Codex Review Gate
 
-`codex-review-gate.yml` ensures that a pull request is not treated as reviewed merely because Codex inspected an older commit.
+`codex-review-gate.yml` requires Codex evidence for the exact current pull-request head instead of accepting a review of an older commit.
 
-## Why this exists
+## Trigger and security boundary
 
-The repository-level Codex integration automatically reacts when a pull request is opened for review or changed from draft to ready. It can also be triggered explicitly with a pull-request comment containing `@codex review`.
+The workflow handles pull requests targeting `main` when they are opened, reopened, marked ready or updated with a new head commit.
 
-Pushing another commit to an already-open pull request is not a documented automatic Codex trigger. The workflow therefore handles `synchronize` as well as open, reopen and ready-for-review events and requires proof for the exact current head SHA.
+It uses `pull_request_target`, so GitHub loads the trusted workflow from the base branch. The workflow must never check out, build, test or otherwise execute pull-request content. This trusted-base boundary is required because the workflow can use a repository secret.
 
-## Security model
+The default `GITHUB_TOKEN` reads PR metadata and writes the custom commit status directly to `github.event.pull_request.head.sha`. The separate `CODEX_REVIEW_TOKEN` is used only to post one head-specific PR comment.
 
-The workflow uses `pull_request_target`, so GitHub loads the trusted workflow from the base repository's default branch. It does not check out or execute pull-request code. Do not add checkout, build, test, cache restore or any command that executes content from the pull-request head to this workflow.
+## Accepted exact-head evidence
 
-This trusted-base execution is required because the workflow uses a repository secret. A normal `pull_request` workflow can be modified by the pull request itself and must not receive a user personal access token.
+The status context is:
 
-The default `GITHUB_TOKEN` is limited to read operations plus writing one commit status to the exact pull-request head SHA. The only PR-comment write uses the separately configured, narrowly scoped `CODEX_REVIEW_TOKEN`.
+```text
+Codex Review / current head
+```
 
-## Gate behavior
+The gate accepts one of the Codex formats observed in this repository:
 
-For every non-draft pull request targeting `main`, the workflow:
+1. a GitHub review from the Codex connector whose `commit_id` exactly equals the full current head SHA;
+2. a top-level Codex review-result comment created after the exact-head request, containing either the full SHA or Codex's standard 10-character reviewed SHA;
+3. a Codex `+1` reaction on the exact-head request, or a PR-level `+1` created after that request.
 
-1. writes a pending `Codex Review / current head` status to the exact PR head SHA;
-2. waits briefly for the normal repository-level Codex trigger;
-3. accepts a Codex review only when GitHub's review `commit_id` equals the current head SHA;
-4. creates one head-specific `@codex review` request when no current review exists;
-5. waits for one of the actual Codex completion formats:
-   - a GitHub review submission tied to the current head;
-   - a Codex top-level `Review Result` comment created after the request and containing the full current head SHA;
-   - a Codex `+1` reaction on the request comment, or on the PR itself when that reaction was created after the exact-head request;
-6. writes success or failure to the same exact-head commit status.
+Result comments and reactions are additionally constrained by Codex author identity and request timestamp. This prevents an old review or old thumbs-up from satisfying a newer head.
 
-The author, timestamp and full-SHA requirements prevent an old comment or reaction from satisfying a request for a newer commit. A new push cancels the older run and starts a new check for the new head SHA. Draft pull requests receive a successful deferred status and are checked when marked ready.
+Every new push cancels the previous run and creates a new pending status for the new head. Draft PRs receive a successful deferred status and are checked when marked ready.
 
-## Required token for automatic re-requests
+## Token setup
 
-Comments created with the default `GITHUB_TOKEN` are authored by `github-actions[bot]`. Codex cannot associate that bot identity with the GitHub user connected to Codex, so such comments cannot reliably start a review.
+Create a fine-grained personal access token for the same GitHub user that is connected to Codex.
 
-Create a dedicated fine-grained personal access token for the same GitHub user that is connected to Codex. Restrict it to this repository and grant only `Issues: Read and write`. Pull-request conversation comments use GitHub's issue-comment API; all review reads and commit-status writes continue to use the workflow's default `GITHUB_TOKEN`. Store the token as:
+Use these settings:
+
+```text
+Repository access: Only selected repositories -> Weltraum-Spiel
+Repository permission: Pull requests -> Read and write
+```
+
+Store it under:
 
 ```text
 Settings -> Secrets and variables -> Actions -> New repository secret
 Name: CODEX_REVIEW_TOKEN
 ```
 
-Do not commit the token or place it in workflow YAML, repository variables, logs or evidence.
+Do not commit the token or expose it through repository variables, logs or evidence. Review reads and commit-status writes continue to use the workflow's default token.
 
-When the secret is absent, the gate does not create a noisy bot-authored request. It writes a failed exact-head status with the recovery action: either configure the secret or request the review manually as the connected GitHub user.
+## Branch rule
 
-## Make it a real merge requirement
-
-After this workflow is merged to the default branch and has run for a later pull request, configure the branch rule or ruleset for `main` to require this commit-status context:
+After the status has appeared on a PR, configure the `main` ruleset to require:
 
 ```text
 Codex Review / current head
 ```
 
-The workflow job itself runs in trusted base-branch context. The custom status above is deliberately written to `github.event.pull_request.head.sha`, so the required merge signal follows the latest pull-request commit.
-
-Also enable conversation-resolution requirements when unresolved Codex inline findings should block merge. The exact-head gate proves that Codex inspected the current commit; it does not decide whether every finding is valid or resolved.
+Also enable required conversation resolution when unresolved Codex inline findings should block merging. The exact-head status proves that Codex inspected the current commit; conversation resolution controls whether findings remain open.
 
 ## Manual recovery
 
-When a run reports a missing token or times out, post a comment as the GitHub user connected to Codex that includes both the trigger and the current head SHA, for example:
+A manual request must include the current SHA so a no-findings result can be attributed to the correct head:
 
 ```text
 @codex review
@@ -69,4 +68,4 @@ When a run reports a missing token or times out, post a comment as the GitHub us
 current head: 0123456789
 ```
 
-The SHA is required so any no-findings result can be attributed to the same exact head instead of an older request. Then wait for the Codex result and re-run `Codex Review Gate` for the pull request.
+Then wait for the Codex result and re-run the workflow if necessary.
