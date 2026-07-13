@@ -1,7 +1,9 @@
 name: Codex Review Gate
 
 on:
-  pull_request:
+  pull_request_target:
+    branches:
+      - main
     types:
       - opened
       - reopened
@@ -16,6 +18,7 @@ permissions:
   contents: read
   issues: read
   pull-requests: read
+  statuses: write
 
 jobs:
   current-head-reviewed:
@@ -29,6 +32,7 @@ jobs:
       PR_NUMBER: ${{ github.event.pull_request.number }}
       HEAD_SHA: ${{ github.event.pull_request.head.sha }}
       IS_DRAFT: ${{ github.event.pull_request.draft }}
+      RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
     steps:
       - name: Request and verify Codex review for the current head
@@ -36,20 +40,69 @@ jobs:
         run: |
           set -euo pipefail
 
+          command -v gh >/dev/null
+          command -v jq >/dev/null
+
+          short_sha="${HEAD_SHA:0:10}"
+          marker="<!-- codex-review-request:${HEAD_SHA} -->"
+          status_context="Codex Review / current head"
+
+          set_gate_status() {
+            local state="$1"
+            local description="$2"
+
+            gh api \
+              --method POST \
+              -H "Accept: application/vnd.github+json" \
+              "repos/${REPOSITORY}/statuses/${HEAD_SHA}" \
+              -f state="${state}" \
+              -f context="${status_context}" \
+              -f description="${description}" \
+              -f target_url="${RUN_URL}" \
+              >/dev/null
+          }
+
+          fail_status_on_exit() {
+            local exit_code=$?
+            if [[ ${exit_code} -ne 0 ]]; then
+              set_gate_status "failure" "Codex review gate failed for ${short_sha}" || true
+            fi
+            exit "${exit_code}"
+          }
+
+          trap fail_status_on_exit EXIT
+          set_gate_status "pending" "Waiting for Codex review of ${short_sha}"
+
+          report_success() {
+            local proof="$1"
+            {
+              echo "## Codex review verified"
+              echo
+              echo "- Pull request: #${PR_NUMBER}"
+              echo "- Reviewed head: \`${HEAD_SHA}\`"
+              echo "- Proof: ${proof}"
+            } >> "${GITHUB_STEP_SUMMARY}"
+          }
+
+          complete_success() {
+            local proof="$1"
+            local description="$2"
+            report_success "${proof}"
+            set_gate_status "success" "${description}"
+            trap - EXIT
+            exit 0
+          }
+
           if [[ "${IS_DRAFT}" == "true" ]]; then
             {
               echo "## Codex review deferred"
               echo
               echo "Draft pull requests are reviewed when they become ready for review."
             } >> "${GITHUB_STEP_SUMMARY}"
+            set_gate_status "success" "Review deferred while pull request is draft"
+            trap - EXIT
             exit 0
           fi
-
-          command -v gh >/dev/null
-          command -v jq >/dev/null
-
-          short_sha="${HEAD_SHA:0:10}"
-          marker="<!-- codex-review-request:${HEAD_SHA} -->"
 
           codex_review_exists() {
             gh api --paginate --slurp \
@@ -90,23 +143,13 @@ jobs:
                 ' >/dev/null
           }
 
-          report_success() {
-            local proof="$1"
-            {
-              echo "## Codex review verified"
-              echo
-              echo "- Pull request: #${PR_NUMBER}"
-              echo "- Reviewed head: \`${HEAD_SHA}\`"
-              echo "- Proof: ${proof}"
-            } >> "${GITHUB_STEP_SUMMARY}"
-          }
-
           # Give the repository-level automatic trigger a brief chance to finish
           # before creating an explicit, head-specific review request.
           for _ in {1..6}; do
             if codex_review_exists; then
-              report_success "Codex review submission for the current head"
-              exit 0
+              complete_success \
+                "Codex review submission for the current head" \
+                "Codex reviewed ${short_sha}"
             fi
             sleep 10
           done
@@ -120,7 +163,7 @@ jobs:
                 echo
                 echo "No current-head Codex review exists and the repository secret \`CODEX_REVIEW_TOKEN\` is not configured."
                 echo
-                echo "Add the narrowly scoped linked-user token described in \`.github/CODEX_REVIEW_GATE.md\`, or comment \`@codex review\` manually and re-run this job."
+                echo "Add the narrowly scoped linked-user token described in \`.github/CODEX_REVIEW_GATE.md\`, or comment \`@codex review\` manually and re-run this workflow."
               } >> "${GITHUB_STEP_SUMMARY}"
               echo "::error::CODEX_REVIEW_TOKEN is required for automatic current-head re-review requests."
               exit 1
@@ -148,13 +191,15 @@ jobs:
           # Codex's thumbs-up reaction when it found no review comments.
           for _ in {1..36}; do
             if codex_review_exists; then
-              report_success "Codex review submission for the current head"
-              exit 0
+              complete_success \
+                "Codex review submission for the current head" \
+                "Codex reviewed ${short_sha}"
             fi
 
             if codex_acknowledged_request "${request_comment_id}"; then
-              report_success "Codex thumbs-up on the current-head review request"
-              exit 0
+              complete_success \
+                "Codex thumbs-up on the current-head review request" \
+                "Codex found no comments for ${short_sha}"
             fi
 
             sleep 45
@@ -165,7 +210,7 @@ jobs:
             echo
             echo "No Codex result was found for head \`${HEAD_SHA}\`."
             echo
-            echo "Comment \`@codex review\` on pull request #${PR_NUMBER}, then re-run this check."
+            echo "Comment \`@codex review\` on pull request #${PR_NUMBER}, then re-run this workflow."
             echo "Verify that \`CODEX_REVIEW_TOKEN\` belongs to the GitHub user connected to Codex."
           } >> "${GITHUB_STEP_SUMMARY}"
 
