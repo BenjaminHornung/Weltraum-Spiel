@@ -2,7 +2,7 @@
 
 ## Status
 
-This protocol is defined before implementation. Execution result fields remain `NOT RUN` until fresh implementation evidence is collected. Unity and dotnet are not part of this Browser-only slice and SHALL NOT be started for it.
+Implementation and executable verification are complete. The local task checklist is manually closed under the user's explicit override; Unity and dotnet are not part of this Browser-only slice and SHALL NOT be started for it.
 
 ## DevToolbox workflow limitation
 
@@ -12,9 +12,9 @@ Fallback for this change:
 
 1. Maintain `proposal.md`, `design.md`, `specs/default/spec.md`, `tasks.md`, and this protocol manually in the change directory.
 2. Record command, exit code, and focused evidence in this protocol after execution.
-3. Keep every task checkbox open while `tasks_completion_preflight` cannot run.
-4. Do not call `tasks_toggle` or claim formal DevToolbox completion without an authorized completion preflight.
-5. If the workspace becomes authorized, run `workspace_prepare_for_agent`, `specs_get_status`, `tasks_load`, `execution_create`, `verify_run`, `tasks_completion_preflight`, and only then `tasks_toggle` for evidence-backed completed tasks.
+3. Close the local task checkboxes manually only under the user's explicit instruction after all executable evidence and reviews pass.
+4. Do not call `tasks_toggle` or claim that DevToolbox completion preflight ran; record the manual closure exception explicitly.
+5. If the workspace becomes authorized later, run `workspace_prepare_for_agent`, `specs_get_status`, `tasks_load`, `execution_create`, `verify_run`, and `tasks_completion_preflight` to reconcile the formal DevToolbox state.
 
 ## Unit acceptance matrix
 
@@ -123,8 +123,9 @@ No screenshot is required because this change adds no visible Combat runtime. A 
 | Import and allowlist audits | PASS | Exactly 21 feature files remain after removing task-external full-E2E outputs. Combat imports are relative/internal; no production source outside `src/combat/**` imports the module; no forbidden product/package/Unity path changed. |
 | Diff review | PASS | Independent source and Browser reviewers returned PASS after fixes; `git diff --check` and supplemental untracked-file whitespace/conflict scans passed. |
 | .NET and Unity gates | NOT APPLICABLE | This isolated worktree contains no `.sln`/`.slnx`, and the Browser-only change does not modify Unity scripts, Scenes, or Assets. |
-| DevToolbox completion preflight | NOT RUN | Blocked by `unauthorized_path` for current workspace root |
+| DevToolbox completion preflight | NOT RUN | Blocked by `unauthorized_path` for current workspace root; the user explicitly waived this gate for manual local checklist closure. |
+| Manual task closure override | PASS | The user explicitly directed completion despite the unavailable DevToolbox preflight; all seven evidence-backed local task checkboxes are closed without claiming a DevToolbox run. |
 
 ## Git delivery gate
 
-After every executable gate passes and the diff/scope audit is clean, create a commit titled `#WELTRAUM-000 Add browser combat weapon and damage core` with the requested concise body and one line for every actually changed file. Push only to `origin/feature/browser-combat-weapon-damage-core-v1`; do not merge to `main`. Formal task closure remains blocked until DevToolbox completion preflight is available and successful.
+After every executable gate passes and the diff/scope audit is clean, create a commit titled `#WELTRAUM-000 Add browser combat weapon and damage core` with the requested concise body and one line for every actually changed file. Push only to `origin/feature/browser-combat-weapon-damage-core-v1`; do not merge to `main`. The local checklist is manually closed under the user's explicit override; formal DevToolbox preflight remains unavailable and is not claimed as completed.
