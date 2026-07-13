@@ -2,6 +2,11 @@
 
 Date: 2026-06-30
 
+> Repository cleanup note (2026-07-13): `Assets/**` below is the original
+> capture-time path. The immutable Unity snapshot is available at
+> `unity-legacy-final-2026-07:Assets/**`; the retained source copy is under
+> `art/source/ships/prototype-ship-kit/`.
+
 ## Scope
 
 Bounded follow-up to `browser-playable-ship-flight-v1`: optional Demo Scout GLB evaluation, procedural fallback/marker validation, HUD readability, desktop/mobile wording, VFX scale polish and cancel-path naming cleanup.

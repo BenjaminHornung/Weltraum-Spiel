@@ -1,5 +1,10 @@
 # Test Protocol: Browser Demo Scout Nozzle VFX Binding v2
 
+> Repository cleanup note (2026-07-13): `Assets` commands and guardrail results
+> below are capture-time evidence from the pre-cleanup worktree. The immutable
+> source is now available through `unity-legacy-final-2026-07:Assets/**`; no
+> active Unity project exists on this branch.
+
 ## Context
 
 - Date: 2026-07-13

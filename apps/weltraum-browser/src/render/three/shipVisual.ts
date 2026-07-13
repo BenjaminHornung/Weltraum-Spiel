@@ -207,7 +207,7 @@ export interface DemoScoutShipVisual extends ShipVisual {
 
 export type ProceduralShipVisual = ShipVisual;
 
-export const demoScoutGlbCandidatePath = "Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.glb";
+export const demoScoutGlbCandidatePath = "art/source/ships/prototype-ship-kit/exports/demo-ships/demo_scout_mk1.glb";
 export const demoScoutGlbBrowserPath = "/ships/demo_scout_mk1.glb";
 export const demoScoutGlbAppliedScale = 3.2;
 

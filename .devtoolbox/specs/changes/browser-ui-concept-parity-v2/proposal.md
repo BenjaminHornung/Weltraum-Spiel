@@ -23,7 +23,7 @@ The primary acceptance target is the flight HUD. Navigation planner and combat/c
 
 ## Non-Goals
 
-- No Unity `Assets/**` edits.
+- No Unity `unity-legacy-final-2026-07:Assets/**` edits.
 - No Unity Editor launch.
 - No package or lockfile changes unless strictly justified.
 - No fake flight progress, snapped ship position, zeroed velocity, or planner/executor/FlightController invariant changes.

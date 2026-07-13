@@ -11,7 +11,7 @@ Dieses Audit trennt Konzeptgrafik, Runtime-Evidence und Browser-Screenshots mit 
 | --- | --- | --- | --- | --- |
 | `art/blender/reference_renders/prototype_ship_kit_v0/demo_scout_mk1_*.png` | Concept/Reference Render | Kein Blocker; industrielle Form, RCS-kompatibel. | Behalten. | Als Referenz fuer modulare Scout-/Workship-Formen nutzbar. |
 | `art/blender/reference_renders/prototype_ship_kit_v0/demo_cargo_mk1_*.png` | Concept/Reference Render | Kein Blocker. | Behalten. | Als Referenz fuer Frachtmodule und Nutzlastlesbarkeit nutzbar. |
-| `Assets/Screenshots/screenshot-20260614-*.png` | Debug-/Editor-/Runtime-Artefakt | Nicht als Concept Art gedacht. | Behalten; kein Concept-Replacement. | Evidence bleibt Evidence. |
+| `unity-legacy-final-2026-07:Assets/Screenshots/screenshot-20260614-*.png` | Debug-/Editor-/Runtime-Artefakt | Nicht als Concept Art gedacht. | Behalten; kein Concept-Replacement. | Evidence bleibt Evidence. |
 | `.devtoolbox/specs/changes/**/tests/screenshots/*.png` | Runtime-/synthetische Evidence | Nachweisartefakte duerfen nicht kosmetisch ersetzt werden. | Behalten/als Evidence markieren. | Bei Bedarf neue echte Runtime-Evidence erzeugen, nicht uebermalen. |
 | `spikes/threejs-core-port-v1/evidence/debug-scene*.png` | Debug-/Testartefakt | Debug-Szene, keine stabile Art Direction. | Behalten. | Nur fuer technische Nachweise verwenden. |
 | `apps/weltraum-browser/evidence/browser-autopilot-lifecycle-render-smoothing-v1.md` | Evidence Scaffold | Markdown-Scaffold, keine PNGs vorhanden. | Behalten. | Keine Bildentscheidung noetig. |

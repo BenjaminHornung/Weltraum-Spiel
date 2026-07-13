@@ -25,9 +25,14 @@ Fix applied: `PrototypeFlightHud.ResolveTrackedTarget()` now only auto-discovers
 
 ## Manual Sight Check
 
-Screenshot:
-
-`E:\Unity\Weltraum Spiel\Weltraum Spiel\.devtoolbox\specs\changes\prototype-ui-readability-testability-pass\tests\screenshots\default-compact-flight-ui-after-navball-fix.png`
+Screenshot evidence was originally recorded here. The two historical Git LFS
+pointers referenced objects
+`909d62e6585e6439a6d189d21b81140e8e892a054801c7fa2e026e8daa50fdd1` and
+`414747a1b9c1943cce1f8b5087a2b55be292df891514e477ceec64e8a0b2a284`,
+but both payloads were already absent from GitHub LFS before the 2026-07
+browser-mainline repository cleanup. The broken pointers were removed from the
+active branch; their original state remains visible through
+`unity-legacy-final-2026-07`.
 
 Observed:
 

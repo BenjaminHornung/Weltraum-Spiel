@@ -2,7 +2,7 @@
 
 ## Current baseline
 
-Current `main` already includes an initial v2 catalog and runner. The future implementation should treat that as a seed and normalize it to the 25-scenario matrix defined in `analysis/browser-autopilot-test-range-v2-scenario-matrix.json`.
+Current `main` already includes an initial v2 catalog and runner. The future implementation should treat that as a seed and normalize it to the 25-scenario matrix defined in `docs/browser-mainline/implementation-analysis/browser-autopilot-test-range-v2-scenario-matrix.json`.
 
 ## Architecture choice
 

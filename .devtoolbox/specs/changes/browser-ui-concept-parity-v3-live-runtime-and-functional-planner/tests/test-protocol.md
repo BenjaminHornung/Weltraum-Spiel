@@ -33,11 +33,11 @@ git diff --check
 - Functional planner: 1640x900 beside concept 03.
 - Combat regression: 1640x900 beside concept 07.
 - Full-view and focused comparisons are required for every P0/P1/P2 iteration.
-- `design-qa.md` remains `blocked` until fresh browser evidence has no actionable
+- `docs/browser-mainline/design-qa-v3.md` remains `blocked` until fresh browser evidence has no actionable
   P0/P1/P2 finding.
 
 ## Repository safety
 
 The initial worktree is dirty with unrelated Unity/spec/evidence changes. V3
 must compare its final path delta to `baseline-worktree.md`, must not modify
-`Assets/**`, `package.json`, or lockfiles, and must not stage, commit, or push.
+`unity-legacy-final-2026-07:Assets/**`, `package.json`, or lockfiles, and must not stage, commit, or push.

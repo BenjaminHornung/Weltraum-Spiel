@@ -2,6 +2,10 @@
 
 Baseline captured from the real Browser/Three.js runtime before the UI parity edits. The baseline used the normal product URL `/`; `window.TestBridge` was absent.
 
+> Repository cleanup note (2026-07-13): `Assets/**` below is the original
+> capture-time path. The immutable Unity snapshot is available at
+> `unity-legacy-final-2026-07:Assets/**`; retained reusable art is under `art/`.
+
 ## Concept References
 
 | Concept target | Path |

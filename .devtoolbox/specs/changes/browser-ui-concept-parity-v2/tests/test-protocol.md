@@ -25,7 +25,7 @@
 - `apps/weltraum-browser/evidence/browser-ui-concept-parity-v2-qa-flight.png`
 - `apps/weltraum-browser/evidence/browser-ui-concept-parity-v2-qa-planner.png`
 - `apps/weltraum-browser/evidence/browser-ui-concept-parity-v2-qa-combat.png`
-- `design-qa.md`
+- `docs/browser-mainline/design-qa-v3.md`
 
 ## Current Visual Verdict
 

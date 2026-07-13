@@ -177,4 +177,4 @@ modified.
 - GIVEN the setup change is inspected
 - WHEN modified files are listed
 - THEN no runtime code, Unity scene, prefab, asset, or
-  `Assets/Scripts/Prototype` file is modified.
+  `unity-legacy-final-2026-07:Assets/Scripts/Prototype` file is modified.

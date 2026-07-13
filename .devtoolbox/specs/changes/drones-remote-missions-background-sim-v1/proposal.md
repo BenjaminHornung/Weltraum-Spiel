@@ -27,7 +27,7 @@ Create a planning/spec package that defines drones as deployable, role-specific 
 ## Non-Goals
 
 - Do not implement runtime code, tests, scenes, assets, prefabs, UI, drones, AI or background systems in this change.
-- Do not modify `Assets/**`, autopilot/harness files, ship builder runtime code or Unity assets.
+- Do not modify `unity-legacy-final-2026-07:Assets/**`, autopilot/harness files, ship builder runtime code or Unity assets.
 - Do not define final balance values, final pathfinding, final economy, final combat AI or final remote camera/control behavior.
 - Do not require full orbital navigation, gravity simulation, multiplayer authority or scene streaming before the V0 data slice can exist.
 

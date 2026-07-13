@@ -2,7 +2,7 @@
 
 Date: 2026-05-21
 
-Source document: `docs/player-facing-ui-concept-v0.md`
+Source document: `docs/legacy-unity/ux/player-facing-ui-concept-v0.md`
 
 ## Coverage map
 

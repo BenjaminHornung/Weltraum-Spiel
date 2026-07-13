@@ -9,7 +9,7 @@ Context:
 - The current screenshots still look like web/debug panels over a debug-grid scene.
 - The user explicitly wants a visible rework, not another tiny CSS iteration.
 - The implementation must remain a real browser runtime verified with Playwright screenshots. It must not use TestBridge for normal screenshots.
-- It must not edit Unity `Assets/**`, start Unity, change packages/lockfiles, alter planner/executor/FlightController truth, fake flight progression, snap position, zero velocity, weaken planHash/no-silent-replan/objective behavior, or claim real combat when only a UI shell exists.
+- It must not edit Unity `unity-legacy-final-2026-07:Assets/**`, start Unity, change packages/lockfiles, alter planner/executor/FlightController truth, fake flight progression, snap position, zero velocity, weaken planHash/no-silent-replan/objective behavior, or claim real combat when only a UI shell exists.
 
 Visual targets:
 - Flight HUD concept: `docs/UI-Screenshots/02-flug-hud-asteroidenguertel-cruise.png`

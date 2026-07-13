@@ -6,15 +6,15 @@ Date: 2026-06-15
 
 This protocol covers the runtime status-contract slice only:
 
-- `Assets/_Weltraum/Runtime/UI/StatusAuthorityContracts.cs`
-- `Assets/_Weltraum/Runtime/UI/StatusSnapshots.cs`
-- `Assets/_Weltraum/Tests/EditMode/UI/StatusAuthorityContractsTests.cs`
+- `unity-legacy-final-2026-07:Assets/_Weltraum/Runtime/UI/StatusAuthorityContracts.cs`
+- `unity-legacy-final-2026-07:Assets/_Weltraum/Runtime/UI/StatusSnapshots.cs`
+- `unity-legacy-final-2026-07:Assets/_Weltraum/Tests/EditMode/UI/StatusAuthorityContractsTests.cs`
 
 No Prototype, Scene, Prefab, Package, ProjectSettings, ViewModel, or rendering changes are part of this slice.
 
 ## Current Evidence
 
-- `dotnet build "Weltraum Spiel.sln" --no-restore` passed with 0 errors.
+- Historical Unity archive evidence (`unity-legacy-final-2026-07`): `dotnet build "Weltraum Spiel.sln" --no-restore` passed with 0 errors for that archive tag.
   Known workspace warning noise remains (`MSB3277` conflict warnings; warning count
   varied by incremental build output, but no errors were reported).
 - `dotnet test "Weltraum Spiel.sln" --no-build` exited successfully but produced no
@@ -28,10 +28,10 @@ No Prototype, Scene, Prefab, Package, ProjectSettings, ViewModel, or rendering c
   player text keys are normalized by definition constructors.
 - Unity MCP `validate_script` passed for all new C# files with 0 warnings and 0
   errors:
-  - `Assets/_Weltraum/Runtime/UI/StatusAuthorityContracts.cs`
-  - `Assets/_Weltraum/Runtime/UI/StatusSnapshots.cs`
-  - `Assets/_Weltraum/Tests/EditMode/UI/StatusAuthorityContractsTests.cs`
-- Final forbidden-path check for `Assets/Scripts/Prototype`, `Assets/Scenes`,
+  - `unity-legacy-final-2026-07:Assets/_Weltraum/Runtime/UI/StatusAuthorityContracts.cs`
+  - `unity-legacy-final-2026-07:Assets/_Weltraum/Runtime/UI/StatusSnapshots.cs`
+  - `unity-legacy-final-2026-07:Assets/_Weltraum/Tests/EditMode/UI/StatusAuthorityContractsTests.cs`
+- Final forbidden-path check for `unity-legacy-final-2026-07:Assets/Scripts/Prototype`, `unity-legacy-final-2026-07:Assets/Scenes`,
   `Packages`, and `ProjectSettings` returned no changes.
 
 ## Contract Assertions Under Test

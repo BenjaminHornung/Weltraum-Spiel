@@ -16,15 +16,15 @@ This is not a 1:1 Unity rewrite. The browser mainline ports feature intent, data
 
 Source evidence:
 
-- `analysis/threejs-mainline/source-evidence/current-core-inventory.md`
-- `analysis/threejs-mainline/source-evidence/unity-to-threejs-port-map.json`
-- `analysis/threejs-mainline/source-evidence/threejs-spike-decision-report.md`
-- `analysis/threejs-mainline/source-evidence/threejs-spike-test-summary.md`
-- `docs/current-prototype-state.md`
-- `docs/architecture/prototype-legacy-boundary-audit-2026-06-15.md`
+- `docs/legacy-unity/source-evidence/current-core-inventory.md`
+- `docs/legacy-unity/source-evidence/unity-to-threejs-port-map.json`
+- `docs/legacy-unity/source-evidence/threejs-spike-decision-report.md`
+- `docs/legacy-unity/source-evidence/threejs-spike-test-summary.md`
+- `docs/legacy-unity/current-prototype-state-2026-06-15.md`
+- `docs/legacy-unity/architecture/prototype-legacy-boundary-audit-2026-06-15.md`
 - `docs/architecture/autopilot-v2-design.md`
-- `docs/architecture/autopilot-v2-test-harness.md`
-- `docs/architecture/clean-core-runtime-architecture.md`
+- `docs/legacy-unity/architecture/autopilot-v2-test-harness.md`
+- `docs/legacy-unity/architecture/clean-core-runtime-architecture.md`
 
 The Three.js spike proved a deterministic browser seam for fixed-step simulation, route planning, locked-plan execution, telemetry snapshots, browser screenshots and Playwright evidence. The previous spike recommendation was conservative (`Three.js parallel`) because much of the gameplay surface is still Unity-bound. The owner decision for this transition is to move the product mainline to the browser while preserving Unity as reference/evidence and keeping expansion incremental.
 

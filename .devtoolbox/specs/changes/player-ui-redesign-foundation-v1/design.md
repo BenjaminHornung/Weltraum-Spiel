@@ -2,7 +2,8 @@
 
 ## Source Draft
 
-Ausgangspunkt ist `weltraum_refactor_strategy_package/spec_drafts/player-ui-redesign-foundation-v1.md`.
+The original package draft is superseded by this complete change tree. Its
+durable UX source is `docs/ux/player-ui-redesign-foundation-v1.md`.
 
 ## UI Direction
 

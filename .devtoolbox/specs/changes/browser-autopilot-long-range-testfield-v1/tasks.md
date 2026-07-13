@@ -34,7 +34,7 @@
   - Objective: capture browser evidence for the long-range testfield and distinguish pass, `KnownStress`, and `ExpectedFail` outcomes.
   - Exact files/search targets: scenario/evidence files under the later implementation path; current bootstrap remains in `.devtoolbox/specs/changes/browser-autopilot-long-range-testfield-v1/**` only.
   - Acceptance criteria: evidence shows the required distances/profiles, `TestBridge` is only active with `?testBridge=1`, and renderer output is treated as observation only.
-  - Implementation guidance: do not add Unity; do not use `Assets/**`; keep evidence collection explicit and reproducible.
+  - Implementation guidance: do not add Unity; do not use `unity-legacy-final-2026-07:Assets/**`; keep evidence collection explicit and reproducible.
   - Required skills/MCPs: `subagent-driven-development`, `verification-before-completion`; no Unity; direct artifact fallback only.
   - Verification command/scenario: later run the browser scenario and capture the evidence bundle.
   - Report-back format: scenario id, evidence paths, and any observed stress/fail labels.
@@ -66,7 +66,7 @@
   - Objective: make the accepted Fast 2500m pass less brittle by adding at least a 0.05 m/s buffer below the existing `StopWithinEnvelope` terminal gate.
   - Exact files/search targets: `apps/weltraum-browser/src/core/types.ts`, `apps/weltraum-browser/tests/unit/autopilotSpeedProfiles.test.ts`, `apps/weltraum-browser/tests/e2e/autopilot-proving-ground-v2.spec.ts`, and regenerated `apps/weltraum-browser/evidence/*long-range*` artifacts.
   - Acceptance criteria: Safe, Balanced, and Fast 2500m direct-stop rows pass; Fast final speed is `<= 0.45` while Fast remains no slower than Balanced; plan hashes stay stable; no silent replan/failure/invalidation codes appear for Pass rows.
-  - Implementation guidance: tune only the Fast speed profile first; do not weaken terminal gates or executor physics; no Unity or `Assets/**` changes.
+  - Implementation guidance: tune only the Fast speed profile first; do not weaken terminal gates or executor physics; no Unity or `unity-legacy-final-2026-07:Assets/**` changes.
   - Verification command/scenario: focused unit test, `tsc --noEmit`, focused long-range Playwright coverage in `apps/weltraum-browser/tests/e2e/autopilot-proving-ground-v2.spec.ts` with Chrome fallback if bundled Chromium is broken, `git status --short -- Assets`, and `git diff --check`.
   - Report-back format: exact Safe/Balanced/Fast 2500m metrics, changed files, evidence paths, verification results, risks/unverified items.
   - Stopping rule: stop if a profile-only tune cannot satisfy `finalSpeed <= 0.45` while preserving Fast `<=` Balanced arrival time.
@@ -76,7 +76,7 @@
   - Objective: replace the brittle first-arrival buffer claim with explicit post-arrival holding evidence while preserving the existing first-`Arrived` runtime semantics and terminal-speed gate.
   - Exact files/search targets: `apps/weltraum-browser/src/test-harness/scenarioRunner.ts`, `apps/weltraum-browser/tests/unit/autopilotSpeedProfiles.test.ts`, `apps/weltraum-browser/tests/unit/autopilotCourseMetrics.test.ts`, `apps/weltraum-browser/tests/e2e/autopilot-proving-ground-v2.spec.ts`, and regenerated `apps/weltraum-browser/evidence/*long-range*` artifacts.
   - Acceptance criteria: Safe, Balanced, and Fast 2500m direct-stop rows pass at first arrival; `finalSpeed` remains the first-arrival terminal-speed metric and is `<= terminalSpeedLimit`; Fast emits `settledSpeed <= 0.45` after a bounded holding window; Fast remains no slower than Balanced at first arrival; plan hashes stay stable; no silent replan/failure/invalidation codes appear for Pass rows.
-  - Implementation guidance: add settled evidence metrics only; do not weaken terminal gates, arrival checks, profile tuning, executor physics, Unity, or `Assets/**`.
+  - Implementation guidance: add settled evidence metrics only; do not weaken terminal gates, arrival checks, profile tuning, executor physics, Unity, or `unity-legacy-final-2026-07:Assets/**`.
   - Verification command/scenario: `npm run test -- --run tests/unit/autopilotSpeedProfiles.test.ts tests/unit/autopilotCourseMetrics.test.ts`, `npx tsc -p tsconfig.json --noEmit`, Chrome-fallback focused long-range Playwright coverage in `apps/weltraum-browser/tests/e2e/autopilot-proving-ground-v2.spec.ts`, `git status --short -- Assets`, `git diff --check`, plus full `npm run test` and `npm run build` while time allowed.
   - Report-back format: exact Safe/Balanced/Fast 2500m first-arrival and settled metrics, changed files, evidence paths, verification results, risks/unverified items.
   - Stopping rule: stop if post-arrival stepping requires product/runtime executor changes or if Fast cannot reach `settledSpeed <= 0.45` within the bounded holding window.

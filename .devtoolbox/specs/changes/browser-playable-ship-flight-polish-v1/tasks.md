@@ -7,7 +7,7 @@
 
 ## Task 2 — Ship visual source and marker validation
 
-- [x] Validate `Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.glb` read-only.
+- [x] Validate `unity-legacy-final-2026-07:Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.glb` read-only.
 - [x] Either copy/use it safely under `apps/weltraum-browser/public/ships/` or document fallback if loader/marker risk is too high.
 - [x] Ensure ship visual snapshot includes visual source state.
 - [x] Add marker/socket descriptor validation for hull/body, cockpit/front, main engine, at least four RCS markers, muzzle placeholder, and camera anchor.

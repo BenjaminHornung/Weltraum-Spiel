@@ -23,7 +23,7 @@ This change expands the browser-only autopilot proving ground so future implemen
 ## Non-Goals
 
 - No Unity work.
-- No `Assets/**` changes.
+- No `unity-legacy-final-2026-07:Assets/**` changes.
 - No render smoothing, jitter, VFX, or nozzle work.
 - No Cargo, Surface, Economy, or unrelated simulation features.
 - No replacement of the current planner architecture.

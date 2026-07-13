@@ -16,18 +16,18 @@ Captured on 2026-07-11 before V3 implementation.
   `tests/e2e/ui-concept-parity.spec.ts`, V2 evidence, concept assets, and fonts.
 - `.devtoolbox/specs/changes/browser-ui-concept-parity-v2/`,
   `apps/weltraum-browser/public/concept/`,
-  `apps/weltraum-browser/public/fonts/`, `design-qa.md`, `.playwright-mcp/`, and
+  `apps/weltraum-browser/public/fonts/`, `docs/browser-mainline/design-qa-v3.md`, `.playwright-mcp/`, and
   `nul` were already untracked.
 
 ## V3 allowed mutation surface
 
 - `.devtoolbox/specs/changes/browser-ui-concept-parity-v3-live-runtime-and-functional-planner/**`
-- `design-qa.md` and the two V2 evidence reports only for explicit correction.
+- `docs/browser-mainline/design-qa-v3.md` and the two V2 evidence reports only for explicit correction.
 - `apps/weltraum-browser/index.html`
 - `apps/weltraum-browser/src/**`
 - `apps/weltraum-browser/tests/**`
 - New V3 evidence under `apps/weltraum-browser/evidence/`
 
-`Assets/**`, `package.json`, and lockfiles are forbidden. Final verification
+`unity-legacy-final-2026-07:Assets/**`, `package.json`, and lockfiles are forbidden. Final verification
 must use `git status --short`, `git diff --name-status`, and a baseline-aware
 forbidden-path comparison rather than assuming those paths began clean.

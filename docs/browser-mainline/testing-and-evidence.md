@@ -6,6 +6,8 @@ Stand: 2026-07-13
 
 Browser-mainline work is complete only when the relevant domain rule, runtime behavior and player-visible claim are covered by inspectable verification. Visual plausibility alone is not evidence.
 
+The active branch has no Unity project. Historical comparison sources are read through `unity-legacy-final-2026-07:<path>` or curated records under `docs/legacy-unity`; current reusable art lives under `art/`.
+
 The browser test stack under `apps/weltraum-browser` uses:
 
 - Vitest for deterministic unit and integration coverage;
@@ -37,7 +39,7 @@ Use focused commands while developing, then run the relevant required groups bef
 
 ### `test:e2e:core`
 
-Covers deterministic browser integration including autopilot/executor lifecycle, terminal capture, proving-ground and obstacle scenarios, negative fuel/authority/divergence contracts, resource/cargo and ship-builder domain smokes, Demo Scout nozzle-VFX binding, and the celestial/gravity pure-core browser smoke.
+Covers deterministic browser integration including autopilot/executor lifecycle, terminal capture, proving-ground and obstacle scenarios, negative fuel/authority/divergence contracts, resource/cargo, Ship Builder stats/readiness, Combat, Persistence and celestial/gravity domain smokes, plus Demo Scout nozzle-VFX binding.
 
 ### `test:e2e:live`
 
@@ -45,7 +47,7 @@ Covers normal player runtime and world presentation including visible planner in
 
 ### `test:e2e:ui`
 
-Covers player-facing HUD, planner and visual parity/layout checks.
+Covers player-facing HUD, planner, graphics settings and visual parity/layout checks.
 
 CI validates that every `tests/e2e/**/*.spec.ts` is assigned to exactly one required group and rejects stale, duplicate or malformed script membership.
 
@@ -64,7 +66,7 @@ Use `/` and visible interactions whenever the claim concerns gameplay or UI:
 
 ### Pure-domain browser smokes
 
-A non-visible domain feature may open `/`, prove TestBridge is absent, dynamically import the public browser module and run deterministic probes. This is appropriate for foundations such as the celestial catalog/ephemeris/gravity core that intentionally have no runtime UI or renderer integration.
+A non-visible domain feature may open `/`, prove TestBridge is absent, dynamically import the public browser module and run deterministic probes. This is appropriate for foundations such as Celestial/Gravity, Combat, Persistence and Ship Builder analysis that intentionally have no runtime UI or renderer integration.
 
 Such tests must use explicit inputs, repeat probes for deterministic equality, reject console/page/request failures attributable to the feature, and record JSON/Markdown evidence. They must not imply that a pure core is already integrated gameplay.
 
@@ -110,7 +112,7 @@ Primary files:
 
 - `apps/weltraum-browser/evidence/browser-objective-chain-1000m-completion-v2.md`
 - `apps/weltraum-browser/tests/e2e/large-field-objective-chain-live.spec.ts`
-- `.devtoolbox/specs/changes/browser-objective-chain-1000m-completion-v2/tests/test-protocol.md`
+- `.devtoolbox/specs/changes/archive/2026-07-13-browser-objective-chain-1000m-completion-v2/tests/test-protocol.md`
 
 ## Celestial Core Acceptance
 
@@ -131,9 +133,46 @@ Evidence:
 - `docs/browser-mainline/celestial-gravity-core-v1.md`
 - `apps/weltraum-browser/evidence/browser-celestial-gravity-core-v1.md`
 - `apps/weltraum-browser/evidence/browser-celestial-gravity-core-v1-summary.json`
-- `.devtoolbox/specs/changes/browser-celestial-gravity-core-v1/tests/test-protocol.md`
+- `.devtoolbox/specs/changes/archive/2026-07-13-browser-celestial-gravity-core-v1/tests/test-protocol.md`
 
 No screenshot is required for this feature because it deliberately has no visible UI or render change.
+
+## Combat, Persistence And Ship Builder Core Acceptance
+
+The standalone Combat, Persistence/Universe-Time/Event and Ship Builder
+analysis cores use focused unit suites plus normal-route Browser E2E scenarios:
+
+- `apps/weltraum-browser/tests/e2e/combat-weapon-damage-core.spec.ts`
+- `apps/weltraum-browser/tests/e2e/persistence-universe-time-event-core.spec.ts`
+- `apps/weltraum-browser/tests/e2e/ship-builder-full-stats-flight-readiness.spec.ts`
+- `apps/weltraum-browser/evidence/browser-combat-weapon-damage-core-v1.md`
+- `apps/weltraum-browser/evidence/browser-persistence-universe-time-event-core-v1.md`
+- `apps/weltraum-browser/evidence/browser-ship-builder-full-stats-flight-readiness-v1.md`
+- `docs/browser-mainline/combat-weapon-damage-core-v1.md`
+- `docs/browser-mainline/persistence-universe-time-event-core-v1.md`
+- `docs/browser-mainline/ship-builder-full-stats-flight-readiness-v1.md`
+
+These scenarios prove that normal `/` remains healthy and does not expose
+`TestBridge` before importing the bounded domain module. They are not evidence
+of playable Combat, Browser storage, save/load UI, offline progression or
+runtime persistence integration. Ship Builder analysis is likewise not
+evidence of placement UI, completed test flight or active-ship handoff.
+
+## Graphics Settings Acceptance
+
+The player-facing Graphics dialog is verified on normal `/` without TestBridge.
+Its E2E flow covers Apply, persistence, Cancel, Reset, Low/High runtime evidence
+and preservation of an active locked route while presentation settings change.
+Unit tests prove schema validation, capability truth, storage behavior and that
+the Three.js adapter cannot mutate gameplay snapshots.
+
+- `apps/weltraum-browser/tests/e2e/graphics-settings.spec.ts`
+- `apps/weltraum-browser/evidence/browser-graphics-settings-foundation-v1.md`
+- `apps/weltraum-browser/evidence/browser-graphics-settings-foundation-v1-summary.json`
+- `docs/browser-mainline/graphics-settings-foundation-v1.md`
+
+These artifacts establish presentation preferences and adapter behavior, not
+simulation FPS, world-streaming distance, sensor range or gameplay authority.
 
 ## Visual And Nozzle-VFX Evidence
 
@@ -186,5 +225,5 @@ A browser feature is ready only when:
 4. production build passes;
 5. visible claims have fresh browser evidence;
 6. TestBridge and runtime routes obey their boundary;
-7. package/lockfile and `Assets/**` guardrails remain clean unless explicitly in scope;
+7. package/lockfile and active-tree Unity guardrails remain clean unless explicitly in scope;
 8. docs describe the implementation honestly as complete, foundation, integrated, deferred or unsupported.

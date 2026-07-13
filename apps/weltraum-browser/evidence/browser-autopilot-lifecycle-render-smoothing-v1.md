@@ -4,6 +4,10 @@ Date: 2026-07-02
 Branch: `feature/browser-autopilot-lifecycle-render-smoothing-v1`
 Base: `082c9587b6ea02756e0bf312dd08327c7bcc2a71`
 
+> Repository cleanup note (2026-07-13): `Assets/**` below is the original
+> capture-time path. The immutable Unity snapshot is available at
+> `unity-legacy-final-2026-07:Assets/**`; retained reusable art is under `art/`.
+
 ## Verified lifecycle semantics
 
 - Active `Executing` / `TerminalCapture` routes keep a locked active `planHash` and block target selection / new Engage.

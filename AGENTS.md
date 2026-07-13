@@ -2,7 +2,7 @@
 
 ## Projektregel
 
-Die Produkt-Mainline ist die Browser-Anwendung unter `apps/weltraum-browser` mit Three.js und TypeScript. Unity bleibt Legacy-, Vergleichs- und Evidence-Quelle.
+Die Produkt-Mainline ist die Browser-Anwendung unter `apps/weltraum-browser` mit Three.js und TypeScript. Unity bleibt ausschließlich als unveränderlicher Tag `unity-legacy-final-2026-07`, Archiv-Branch und kuratierte Legacy-Evidence erhalten.
 
 Arbeite spec-first, klein, überprüfbar und mit Evidence. Keine opportunistischen Großrefactors und keine stillen Änderungen an fachlichen Autoritätsgrenzen.
 
@@ -15,28 +15,29 @@ apps/weltraum-browser/          Produkt-Mainline
   tests/e2e/                    Playwright
   evidence/                     JSON, Markdown und Screenshots
 
-docs/current-prototype-state.md Aktueller Projektstatus trotz historischem Dateinamen
+docs/current-mainline-state.md   Aktueller Browser-Produktstatus
 docs/browser-mainline/          Browser-Architektur, Tests, CI und Port-Dokumente
 docs/roadmap/                   Living Master Plan und Meilensteine
 docs/architecture/              Gemeinsame Architekturverträge
 docs/ux/                        UI-, Input- und Flow-Verträge
+docs/legacy-unity/              Historische Unity-Intent-/Evidence-Referenz
+art/                            Neutrale wiederverwendbare Quellen und Exporte
 .devtoolbox/specs/changes/       Changes, Tasks und Evidence
 .agent/PLANS.md                  ExecPlan-Regeln
-Assets/                         Unity Legacy/Referenz
 ```
 
 ## Vor jeder Aufgabe
 
 1. Lies diese Datei.
-2. Lies `README.md` und `docs/current-prototype-state.md`.
+2. Lies `README.md` und `docs/current-mainline-state.md`.
 3. Lies die relevante Spec und bei größeren Vorhaben `docs/roadmap/living-master-plan.md`.
 4. Prüfe aktuelle Runtime-, Test- und Evidence-Pfade, statt aus älteren Unity-Dokumenten zu schließen.
 5. Schreibe für komplexe Aufgaben einen kurzen Plan und halte den Scope ein.
 
 ## Nicht verhandelbare Browser-Regeln
 
-- Unity nicht starten, außer die Aufgabe verlangt ausdrücklich Unity-Arbeit.
-- `Assets/**` nicht ändern, außer die Aufgabe erlaubt den konkreten Legacy-/Asset-Scope.
+- Auf diesem Branch existiert kein aktives Unity-Projekt; historische Quellen nur über den Archiv-Tag oder `docs/legacy-unity` lesen.
+- Archivobjekte nicht als schreibbare Mainline behandeln; wiederverwendbare Quellen unter `art/` pflegen.
 - Keine Package- oder Lockfile-Änderung ohne technisch zwingenden Grund.
 - TestBridge nur über `?testBridge=1`. Auf `/` muss `window.TestBridge` fehlen.
 - Keine Fake-Progression, keine Positions-Snaps und kein Velocity-Zero-Shortcut.
@@ -117,9 +118,9 @@ Tasks erst nach Implementierung, frischer Evidence und Completion Preflight schl
 ## Dokumentationsregeln
 
 - `README.md` ist der Einstieg in die Browser-Mainline.
-- `docs/current-prototype-state.md` ist der kompakte Status-Snapshot.
+- `docs/current-mainline-state.md` ist der kompakte Status-Snapshot.
 - `docs/roadmap/living-master-plan.md` ist der Planungsindex, keine Implementierungsspec.
-- Unity-Dokumente klar als Legacy/Referenz markieren.
+- Unity-Dokumente und Archivobjekte klar als historische Legacy/Referenz markieren.
 - Implementiert, Foundation, integriert, geplant und ausdrücklich nicht implementiert sauber trennen.
 - Nach größeren Mainline-Merges Status, Evidence-Links und bekannte Grenzen aktualisieren.
 

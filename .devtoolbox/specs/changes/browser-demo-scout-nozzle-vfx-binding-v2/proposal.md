@@ -37,6 +37,6 @@ from current `main`.
 - No per-nozzle force allocator or exact allocation claim.
 - No flight tuning, physics changes, planner/executor changes, or render-smoothing
   authority changes.
-- No GLB mutation, package change, Unity/`Assets/**` change, or broad asset
+- No GLB mutation, dependency/lockfile change, archived Unity-source change, or broad neutral-art
   pipeline work.
 - No reuse of stale screenshots or evidence from the superseded branch.

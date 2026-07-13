@@ -1,58 +1,70 @@
-# PLANS.md - ExecPlans für Weltraum-Spiel
+# PLANS.md - ExecPlans for Weltraum-Spiel
 
-Ein ExecPlan ist ein lebendes Implementierungsdokument für große Refactors oder
-mehrstufige Features. Er muss so geschrieben sein, dass ein Agent ohne
-vorherige Erinnerung damit arbeiten kann.
+An ExecPlan is a living implementation document for a large refactor,
+multi-step feature or risky repository operation. It must be self-contained so
+another agent can execute it without prior conversation memory.
 
-## Wann verwenden?
+## When to use one
 
 ```text
-- Autopilot V2
-- Clean-Core Architektur
-- UI Redesign
-- Scene Management
-- Data Contract Migration
-- große Spec-Reconciliation
+- Browser architecture or public data-contract changes
+- Repository cleanup or large evidence/spec reconciliation
+- World/chunk streaming and large-coordinate runtime work
+- Ship Builder domain, compatibility, persistence or UI slices
+- Planet runtime, surface handoff or celestial/gravity integration
+- Cross-cutting autopilot/flight/controller changes
+- Historical Unity extraction or archive work (legacy-only example)
 ```
 
-## Pflichtstruktur
+Unity is not a default implementation target. A Unity-related ExecPlan may only
+extract, validate or archive historical intent/assets unless a task explicitly
+targets the preserved legacy branch.
+
+## Required structure
 
 ```markdown
-# ExecPlan: <Name>
+# ExecPlan: <name>
 
-## Ziel
-Was soll am Ende wahr sein?
+## Goal
+What must be true at the end?
 
-## Kontext
-Welche Dateien, Docs, Specs, Tests und Szenen sind relevant?
+## Context
+Which files, docs, specs, tests, evidence and integration points matter?
 
-## Nicht-Ziele
-Was darf nicht nebenbei passieren?
+## Non-goals
+What must not change opportunistically?
 
-## Architekturentscheidung
-Welche Grenzen, Module und Datenverträge gelten?
+## Architecture decision
+Which boundaries, modules, owner snapshots and data contracts apply?
 
-## Implementierungsphasen
-Kleine Schritte mit überprüfbarem Ergebnis.
+## Implementation phases
+Small ordered steps with a verifiable result after each phase.
 
-## Tests und Evidence
-Welche Build-/Unity-/MCP-/Screenshot-/CSV-/JSON-Beweise sind nötig?
+## Tests and evidence
+Which unit, build, Playwright, signature, screenshot, JSON or performance gates
+prove the result?
 
-## Risiken
-Was kann kaputt gehen?
+## Risks
+What can break, be lost or silently drift?
 
-## Rollback / Safe Stop
-Wie erkennt ein Agent, dass er stoppen soll?
+## Rollback / safe stop
+Which condition stops mutation, and how can completed work be reversed?
 
-## Fortschrittslog
+## Progress log
 - [ ] Phase 1 ...
 - [ ] Phase 2 ...
 
 ## Definition of Done
-Konkrete Gates.
+Concrete behavior, verification and documentation gates.
 ```
 
-## Regel
+## Plan rules
 
-Ein Agent darf den Plan aktualisieren, wenn er neue Fakten findet. Er muss
-Änderungen im Fortschrittslog erklären.
+- Keep product truth in browser core/simulation contracts; do not treat render
+  objects or screenshots as gameplay proof.
+- Name exact files, commands and evidence outputs.
+- Separate discovery, mutation and independent verification.
+- Record newly discovered facts and explain plan changes in the progress log.
+- Do not mark phases complete without fresh evidence.
+- Preserve stable `planHash`, locked-plan execution, explicit replan-required
+  state and the no-snap/no-velocity-zero invariants in autopilot work.

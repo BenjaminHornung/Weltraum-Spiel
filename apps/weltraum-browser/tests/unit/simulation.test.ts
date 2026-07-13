@@ -76,7 +76,7 @@ describe("FixedStepSimulationLoop", () => {
 
     const initialSnapshot = visual.getSnapshot();
     expect(initialSnapshot.visualSource.state).toBe("ProceduralFallback");
-    expect(initialSnapshot.visualSource.candidateAssetPath).toBe("Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.glb");
+    expect(initialSnapshot.visualSource.candidateAssetPath).toBe("art/source/ships/prototype-ship-kit/exports/demo-ships/demo_scout_mk1.glb");
     expect(initialSnapshot.visualSource.axisCorrection.mapping).toBe("identity");
     expect(initialSnapshot.descriptorValidation.ok).toBe(true);
 
