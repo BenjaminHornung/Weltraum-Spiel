@@ -75,6 +75,8 @@ const roundQuaternion = (q: Quaternion): Quaternion => ({
 
 const roundActuatorTelemetry = (telemetry: ActuatorTelemetry): ActuatorTelemetry => ({
   ...telemetry,
+  lastAppliedMainAcceleration: roundVec(telemetry.lastAppliedMainAcceleration),
+  lastAppliedRcsTranslationAcceleration: roundVec(telemetry.lastAppliedRcsTranslationAcceleration),
   lastAppliedAcceleration: roundVec(telemetry.lastAppliedAcceleration),
   lastAppliedAngularAcceleration: roundVec(telemetry.lastAppliedAngularAcceleration)
 });

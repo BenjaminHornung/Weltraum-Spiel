@@ -384,7 +384,7 @@ export class DebugScene {
         this.drawPlan(worldPresentation.route, drawnPlanHash);
       }
       this.shipVisual.updatePose(position, orientation);
-      this.shipVisual.updateVfx(telemetry.ship.actuatorTelemetry);
+      this.shipVisual.updateVfx(telemetry.ship.actuatorTelemetry, telemetry.ship.orientation);
       const cameraSnapshot = this.updateCamera(telemetry.manualInput?.cameraMode ?? "ChaseLocked", position, orientation, elapsed);
       const worldPresentationRender = this.worldPresentationRenderer.update(worldPresentation, this.asteroidBatch.frame);
       if (targetPosition && this.showDebugHelpers) {

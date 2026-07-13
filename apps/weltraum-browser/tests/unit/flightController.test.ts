@@ -24,6 +24,8 @@ describe("flight controller", () => {
         modeEffectLabel: "main thrust enabled"
       })
     );
+    expect(ship.actuatorTelemetry.lastAppliedMainAcceleration).toEqual(vec3());
+    expect(ship.actuatorTelemetry.lastAppliedRcsTranslationAcceleration).toEqual(vec3());
     expect(ship.actuatorTelemetry.lastAppliedAcceleration).toEqual(vec3());
   });
 
@@ -42,6 +44,8 @@ describe("flight controller", () => {
     expect(full.fuel.current).toBeLessThan(ship.fuel.current);
     expect(full.actuatorTelemetry.mainThrustActive).toBe(true);
     expect(full.actuatorTelemetry.controlModeEffect.mainThrustAllowed).toBe(true);
+    expect(full.actuatorTelemetry.lastAppliedMainAcceleration.x).toBeGreaterThan(0);
+    expect(full.actuatorTelemetry.lastAppliedRcsTranslationAcceleration).toEqual(vec3());
     expect(full.actuatorTelemetry.lastAppliedAcceleration.x).toBeGreaterThan(0);
   });
 
@@ -118,12 +122,40 @@ describe("flight controller", () => {
 
     expect(translated.actuatorTelemetry.rcsTranslationActive).toBe(true);
     expect(translated.actuatorTelemetry.rcsRotationActive).toBe(false);
+    expect(translated.actuatorTelemetry.lastAppliedMainAcceleration).toEqual(vec3());
+    expect(magnitude(translated.actuatorTelemetry.lastAppliedRcsTranslationAcceleration)).toBeGreaterThan(0);
     expect(magnitude(translated.actuatorTelemetry.lastAppliedAcceleration)).toBeGreaterThan(0);
     expect(magnitude(translated.actuatorTelemetry.lastAppliedAngularAcceleration)).toBe(0);
     expect(rolled.actuatorTelemetry.rcsTranslationActive).toBe(false);
     expect(rolled.actuatorTelemetry.rcsRotationActive).toBe(true);
     expect(magnitude(rolled.actuatorTelemetry.lastAppliedAcceleration)).toBe(0);
     expect(magnitude(rolled.actuatorTelemetry.lastAppliedAngularAcceleration)).toBeGreaterThan(0);
+  });
+
+  it.each([
+    ["main-only", { mainThrottleCommand: 0.4, translationCommand: vec3() }, true, false],
+    ["RCS-only", { mainThrottleCommand: 0, translationCommand: vec3(0, 0, 1) }, false, true],
+    ["simultaneous main and RCS", { mainThrottleCommand: 0.4, translationCommand: vec3(0, 0, 1) }, true, true]
+  ] as const)("preserves the complete XYZ acceleration sum for %s", (_label, commands, expectMain, expectRcs) => {
+    const ship = createShipStateV2({ fuel: 50, controlMode: "Cruise", rcsEnabled: true, sasEnabled: false });
+
+    const after = applyFlightControllerStep(ship, {
+      ...commands,
+      allowRcsTranslationOutsideTranslationMode: true,
+      maximumCombinedAccelerationMps2: 100
+    }, 0.25);
+
+    const telemetry = after.actuatorTelemetry;
+    expect(telemetry.mainThrustActive).toBe(expectMain);
+    expect(telemetry.rcsTranslationActive).toBe(expectRcs);
+    expect(magnitude(telemetry.lastAppliedMainAcceleration) > 0).toBe(expectMain);
+    expect(magnitude(telemetry.lastAppliedRcsTranslationAcceleration) > 0).toBe(expectRcs);
+    for (const axis of ["x", "y", "z"] as const) {
+      expect(telemetry.lastAppliedAcceleration[axis]).toBeCloseTo(
+        telemetry.lastAppliedMainAcceleration[axis] + telemetry.lastAppliedRcsTranslationAcceleration[axis],
+        10
+      );
+    }
   });
 
   it("masks Translation rotation to roll-only while ignoring yaw and pitch", () => {
@@ -260,6 +292,8 @@ describe("flight controller", () => {
     expect(snapshot.ship.orientation.w).toBe(Number(snapshot.ship.orientation.w.toFixed(6)));
     expect(snapshot.ship.mainThrottleCommand).toBe(1);
     expect(snapshot.ship.actuatorTelemetry.mainThrustActive).toBe(true);
+    expect(snapshot.ship.actuatorTelemetry.lastAppliedMainAcceleration.x).toBeGreaterThan(0);
+    expect(snapshot.ship.actuatorTelemetry.lastAppliedRcsTranslationAcceleration).toEqual(vec3());
     expect(snapshot.ship.actuatorTelemetry.lastAppliedAcceleration.x).toBeGreaterThan(0);
   });
 });
