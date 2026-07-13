@@ -233,12 +233,21 @@ Bis ein eigener Research-Auftrag belastbare Regeln und Evidence liefert, gilt:
 
 ## 10. Aktuelle Foundation auf main
 
-Resource- und Ship-Builder-Domänen besitzen erste stabile IDs und kanonische
+Resource- und Ship-Builder-Domänen besitzen stabile IDs und kanonische
 Serialisierung. Absolute/local Frames, World Snapshots und Chunk-/Residency-
-Grundlagen sind vorhanden. Ein globales Savegame-Schema, `WorldTemplate`,
-`WorldInstance`, persistente Voxel-Deltas, Migration Registry, Offline-/Online-
-Import oder Server-Authority existieren nicht. Der aktuelle Status steht im
-[Living Master Plan](../roadmap/living-master-plan.md).
+Grundlagen sind vorhanden. Der Browser-Persistence-Core besitzt außerdem ein
+striktes `SaveGameEnvelopeV1`, stabile Persistence-Identitäten, versionierte
+Definitionsreferenzen, persistente Domain Events und eine generische Migration
+Registry. Diese Verträge sind noch nicht mit Browser Storage, Save/Load UI,
+automatischer Zeitfortschreibung oder der spielbaren Runtime verbunden.
+
+Nicht vorhanden sind `WorldTemplate`- und `WorldInstance`-Schemas,
+persistente Voxel-Deltas, produktive World-/Voxel-Migrationen,
+Offline-/Online-Import und Server-Authority. Der aktuelle Status steht im
+[Living Master Plan](../roadmap/living-master-plan.md). Die
+[Persistence-/Universe-Time-/Event-Core-Evidence](../browser-mainline/persistence-universe-time-event-core-v1.md)
+belegt nur die generischen Contracts, nicht die hier geplante
+WorldTemplate-/WorldInstance-Persistence.
 
 Die
 [Browser Mainline Architecture](../browser-mainline/browser-architecture.md)
