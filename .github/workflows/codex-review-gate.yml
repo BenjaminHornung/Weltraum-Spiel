@@ -15,7 +15,7 @@ concurrency:
 permissions:
   contents: read
   issues: write
-  pull-requests: read
+  pull-requests: write
 
 jobs:
   current-head-reviewed:
@@ -122,11 +122,16 @@ jobs:
           EOF
           )"
 
-            request_response="$(gh api \
+            if ! request_response="$(gh api \
               --method POST \
               -H "Accept: application/vnd.github+json" \
               "repos/${REPOSITORY}/issues/${PR_NUMBER}/comments" \
-              -f body="${request_body}")"
+              -f body="${request_body}" 2>&1)"; then
+              echo "${request_response}"
+              echo "::error::Unable to post the current-head Codex review request."
+              exit 1
+            fi
+
             request_comment_id="$(jq -r '.id' <<<"${request_response}")"
           fi
 
