@@ -34,6 +34,6 @@ Implement a Browser-native v2 proving-ground matrix that covers:
 
 ## Planning artifacts
 
-- `analysis/browser-autopilot-test-range-v2-plan.md`
-- `analysis/browser-autopilot-test-range-v2-scenario-matrix.json`
-- `analysis/browser-autopilot-test-range-v2-implementation-map.md`
+- `docs/browser-mainline/implementation-analysis/browser-autopilot-test-range-v2-plan.md`
+- `docs/browser-mainline/implementation-analysis/browser-autopilot-test-range-v2-scenario-matrix.json`
+- `docs/browser-mainline/implementation-analysis/browser-autopilot-test-range-v2-implementation-map.md`

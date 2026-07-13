@@ -104,7 +104,7 @@ Uploaded paths are:
 This workflow is browser-mainline verification only. It does not prove:
 
 - Unity EditMode/PlayMode behavior
-- any change under `Assets/**`
+- any change under `unity-legacy-final-2026-07:Assets/**`
 - full gameplay parity with the Unity prototype
 - full GLB/ShipVisual implementation quality beyond what browser unit tests, build checks, and Playwright E2E cover
 - Flight-feel, RCS/SAS, or gameplay behavior that has not been implemented in browser source and covered by the browser tests

@@ -79,10 +79,17 @@ Each scenario record includes final status, final distance, final speed, final p
 - Product runtime bootstrap creates an app-local browser runtime controller directly; `window.TestBridge` is exposed only when `?testBridge=1` is requested for E2E/test harness use, and the default product URL does not expose the global bridge.
 - Delivery state for this refresh: current edits are on `feature/browser-navigation-autopilot-v2-v1` and are intentionally left for orchestrator verification/review before any staging or commit. This summary no longer makes a delivery claim about the historical mainline transition branch. No commit, push, archive, Unity validation, or dotnet validation is claimed by this refresh.
 
+## Repository Cleanup Note (2026-07-13)
+
+Capture-time `Assets/**` strings in historical Markdown and JSON evidence remain
+unchanged. They describe the original worktree and are recoverable from
+`unity-legacy-final-2026-07:Assets/**`; retained reusable art now lives under
+`art/`. Current documentation paths below reflect their post-cleanup locations.
+
 ## Review Follow-Up Notes
 
-- Verification logs under `apps/weltraum-browser/evidence/verification-*.log` are intended to be trackable by normal `git add`; the app-local `.gitignore` allows them despite the root `*.log` ignore.
-- Browser-mainline documentation cites copied source evidence under `analysis/threejs-mainline/source-evidence/`; package-only inputs are marked as historical external inputs, not live repo paths.
+- Five generated, unreferenced `verification-*.log` files were removed after the cleanup evidence inventory; screenshots, JSON, Markdown, baselines and conservative unreferenced records remain.
+- Browser-mainline documentation cites copied source evidence under `docs/legacy-unity/source-evidence/`; package-only inputs are marked as historical external inputs, not live repo paths.
 - Browser app dependencies are pinned to versions already resolved in `package-lock.json`; no dependency or devDependency uses `latest`.
 - Playwright defaults to the installed browser from Playwright, supports an optional `WELTRAUM_PLAYWRIGHT_EXECUTABLE_PATH` override for local runner compatibility, and keeps stale-server hardening via `reuseExistingServer: false` and Vite `--strictPort`.
 - The HUD renders mode as a dedicated visible readout instead of only embedding mode in telemetry JSON.

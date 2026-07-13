@@ -4,7 +4,7 @@ This prototype uses the imported Blender Demo Scout as the default runtime ship,
 
 ## Imported Functional Socket Binding
 
-`PrototypeBootstrap` defaults to `PrototypeShipBuildMode.ImportedDemoScoutFunctionalDefault`. The runtime root remains `PrototypeShip`, but the Blender scout is instantiated under `PrototypeShip/ImportedShipVisual` and bound by `PrototypeFunctionalShipBinder`.
+`unity-legacy-final-2026-07:PrototypeBootstrap` defaults to `PrototypeShipBuildMode.ImportedDemoScoutFunctionalDefault`. The runtime root remains `PrototypeShip`, but the Blender scout is instantiated under `PrototypeShip/ImportedShipVisual` and bound by `PrototypeFunctionalShipBinder`.
 
 The binder runs `PrototypeShipSocketUtility.EnsureSocketsInHierarchy` on the imported model, then binds:
 
@@ -321,7 +321,7 @@ Soft capture does not teleport or write Rigidbody velocity. When eligible, it pr
 
 `PrototypeDockingApproachAssist` is the runtime bridge from those diagnostics to play. It binds a source port, chooses an explicit or discovered target port outside the ship hierarchy, and exposes the latest target, distance, closing speed, lateral offset, alignment, refusal, and routed-assist state to the player HUD. When soft capture is eligible and enabled, it forwards the existing `DockingSoftCaptureRequest.assistRequest` into `PlayerShipController.SetExternalFlightAssistRequest`; when disabled, ineligible, or missing a target it clears only docking-owned external assist requests. The component does not assign Rigidbody position or velocity.
 
-`PrototypeBootstrap` adds a small component-backed docking approach target only when no other target port is available. The target is kinematic, faces the player source port, and is bound through component references/candidate lists rather than an existing demo hierarchy path.
+`unity-legacy-final-2026-07:PrototypeBootstrap` adds a small component-backed docking approach target only when no other target port is available. The target is kinematic, faces the player source port, and is bound through component references/candidate lists rather than an existing demo hierarchy path.
 
 Hard lock is intentionally a documented placeholder in this slice. `BuildHardLockPrototype` only requests a lock when `DockingEligibility.canHardLock` is true, reports `hard-lock-placeholder`, and does not create a joint. If the experimental joint toggle is enabled before a joint implementation exists, diagnostics report `hard-lock-joint-not-yet-implemented` rather than silently adding an unstable constraint.
 
@@ -395,7 +395,7 @@ Excluded forces and effects for this slice:
 
 `PrototypeTrajectoryPreviewNavMap` promotes the first slice from debug-only gizmos into a bounded player-facing nav-map source. It prefers the existing `PrototypeWaypointAutopilot.PredictedRoute` when that route is available, otherwise it samples `TrajectoryPredictor` with the same `ShipPhysicsCore` central-gravity hook and a small `TrajectoryBurnPlan` estimate. The component clamps the prediction step count, fixed horizon, and rendered point count, then reports `Disabled`, `Unavailable`, `Empty`, `Valid`, or `Truncated` so HUD/minimap tests can distinguish "off" from "no safe data".
 
-The preview is toggleable through the minimap control surface and is bound by `PrototypeBootstrap` to both `PrototypePlayerHudRenderer` and `PrototypeMinimapOverlay`. HUD radar and minimap rendering use the existing route drawing surfaces with a separate preview color, and both paths filter non-finite points before any geometry is drawn.
+The preview is toggleable through the minimap control surface and is bound by `unity-legacy-final-2026-07:PrototypeBootstrap` to both `PrototypePlayerHudRenderer` and `PrototypeMinimapOverlay`. HUD radar and minimap rendering use the existing route drawing surfaces with a separate preview color, and both paths filter non-finite points before any geometry is drawn.
 
 This v1 layer intentionally does not add full N-body simulation, patched conics, sphere-of-influence transitions, maneuver-node editing, a persistent route planner, or unbounded prediction. It remains local prototype guidance over the current predictor and burn-plan infrastructure.
 
@@ -416,7 +416,7 @@ Limitations for the first pass:
 
 ## Physics Validation
 
-EditMode tests in `Assets/Tests/Editor/PrototypePhysicsValidationTests.cs` exercise deterministic generated ship probes from `PhysicsValidationProbe`. They cover throttle-only main force, gimbal cross-product torque, RCS translation and yaw allocation, RCS spool diagnostics, manual/SAS torque priority, partial-fuel thrust scaling, configured-mass projectile recoil/impact checks, force-vs-impulse diagnostic separation, projectile sweep/self-hit checks, thermal heat rise, idle cooling, overheat hook activation, and a 0.02 vs 0.01 timestep comparison.
+EditMode tests in `unity-legacy-final-2026-07:Assets/Tests/Editor/PrototypePhysicsValidationTests.cs` exercise deterministic generated ship probes from `PhysicsValidationProbe`. They cover throttle-only main force, gimbal cross-product torque, RCS translation and yaw allocation, RCS spool diagnostics, manual/SAS torque priority, partial-fuel thrust scaling, configured-mass projectile recoil/impact checks, force-vs-impulse diagnostic separation, projectile sweep/self-hit checks, thermal heat rise, idle cooling, overheat hook activation, and a 0.02 vs 0.01 timestep comparison.
 
 Run the suite through Unity Test Runner EditMode or Unity MCP `run_tests(mode=EditMode)`. Store run output and deterministic probe evidence under the active spec folder, for example `.devtoolbox/specs/changes/validation-physics-test-suite/tests/test-protocol.md`.
 

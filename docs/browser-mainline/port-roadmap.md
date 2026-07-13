@@ -24,9 +24,9 @@ Gate: every feature slice has a feature-intent card, source paths, non-goals and
 
 Source paths:
 
-- `docs/architecture/autopilot-v2-test-harness.md`
-- `analysis/threejs-mainline/source-evidence/threejs-spike-test-summary.md`
-- `analysis/threejs-mainline/source-evidence/threejs-spike-decision-report.md`
+- `docs/legacy-unity/architecture/autopilot-v2-test-harness.md`
+- `docs/legacy-unity/source-evidence/threejs-spike-test-summary.md`
+- `docs/legacy-unity/source-evidence/threejs-spike-decision-report.md`
 
 Required first matrix:
 
@@ -52,11 +52,11 @@ Status: v1 implemented in the browser mainline app. `ShipMass`, `FuelState`, `Au
 
 Source paths:
 
-- `Assets/Scripts/Prototype/PlayerShipController.cs`
-- `Assets/Scripts/Prototype/MainThrusterBank.cs`
-- `Assets/Scripts/Prototype/RcsThrusterController.cs`
+- `unity-legacy-final-2026-07:Assets/Scripts/Prototype/PlayerShipController.cs`
+- `unity-legacy-final-2026-07:Assets/Scripts/Prototype/MainThrusterBank.cs`
+- `unity-legacy-final-2026-07:Assets/Scripts/Prototype/RcsThrusterController.cs`
 - `docs/design-audits/2026-06-14-planning-consistency-audit.md`
-- `analysis/threejs-mainline/source-evidence/unity-to-threejs-port-map.json`
+- `docs/legacy-unity/source-evidence/unity-to-threejs-port-map.json`
 
 Intent:
 
@@ -80,8 +80,8 @@ Status: v1 contract slice implemented in the browser mainline app. `TargetDescri
 Source paths:
 
 - `docs/architecture/autopilot-v2-design.md`
-- `docs/architecture/autopilot-v2-test-harness.md`
-- `Assets/_Weltraum/Runtime/Navigation/AutopilotContracts.cs`
+- `docs/legacy-unity/architecture/autopilot-v2-test-harness.md`
+- `unity-legacy-final-2026-07:Assets/_Weltraum/Runtime/Navigation/AutopilotContracts.cs`
 
 Intent:
 
@@ -258,8 +258,8 @@ Implemented in this v1 slice:
 
 Asset decision:
 
-- `Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.glb` was verified read-only as a valid GLB asset with size `127108` and a `glTF` binary header.
-- The GLB was not copied or used in this bounded slice because async loader/bundling risk was deferred. No `Assets/**` mutation was made.
+- `art/source/ships/prototype-ship-kit/exports/demo-ships/demo_scout_mk1.glb` was verified read-only as a valid GLB asset with size `127108` and a `glTF` binary header.
+- The GLB was not copied or used in this bounded slice because async loader/bundling risk was deferred. No `unity-legacy-final-2026-07:Assets/**` mutation was made.
 
 Polish v1 follow-up:
 
@@ -271,7 +271,7 @@ Polish v1 follow-up:
 
 Demo Scout GLB visual parity v1 follow-up:
 
-- `Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.glb` is copied read-only into the browser public asset path as `apps/weltraum-browser/public/ships/demo_scout_mk1.glb` when this slice is present; source and browser copy both report size `127108`, GLB magic `glTF`, version `2`, declared length `127108`.
+- `art/source/ships/prototype-ship-kit/exports/demo-ships/demo_scout_mk1.glb` is copied read-only into the browser public asset path as `apps/weltraum-browser/public/ships/demo_scout_mk1.glb` when this slice is present; source and browser copy both report size `127108`, GLB magic `glTF`, version `2`, declared length `127108`.
 - The browser render adapter now attempts `/ships/demo_scout_mk1.glb`, reports deterministic visual states (`Loading`, `GLBLoaded`, `GLBFailedFallback`, `ProceduralFallback`), keeps procedural geometry visible while loading or failed, and keeps all axis/scale correction render-only.
 - Demo Scout GLB marker resolution prefers named GLB nodes for cockpit/front, main engine, RCS hardpoints, and muzzle, then uses manifest fallback positions; the ChaseLocked camera anchor remains a manifest visual anchor when the GLB has no authored camera node.
 - HUD and TestBridge expose the same concise visual-source result (`Ship visual: Demo Scout GLB` or `Ship visual: Procedural fallback`) while detailed paths, axis correction, marker binding sources, and fallback reason remain in render snapshots/evidence.

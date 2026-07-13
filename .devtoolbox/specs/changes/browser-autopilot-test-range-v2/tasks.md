@@ -4,8 +4,8 @@
 
 ## Phase 1: Reconcile current catalog with the 25-scenario matrix
 
-- [ ] Objective: Normalize the current Browser v2 course catalog to the IDs and categories in `analysis/browser-autopilot-test-range-v2-scenario-matrix.json`.
-  - Files/search targets: `apps/weltraum-browser/src/world/autopilotProvingGroundCourses.ts`, `apps/weltraum-browser/src/core/types.ts`, `analysis/browser-autopilot-test-range-v2-scenario-matrix.json`.
+- [ ] Objective: Normalize the current Browser v2 course catalog to the IDs and categories in `docs/browser-mainline/implementation-analysis/browser-autopilot-test-range-v2-scenario-matrix.json`.
+  - Files/search targets: `apps/weltraum-browser/src/world/autopilotProvingGroundCourses.ts`, `apps/weltraum-browser/src/core/types.ts`, `docs/browser-mainline/implementation-analysis/browser-autopilot-test-range-v2-scenario-matrix.json`.
   - Acceptance criteria: all 25 scenario IDs exist; every course has initial ship, target envelope, obstacles, profile, expected outcome, acceptance, and evidence metadata or equivalent runtime mapping.
   - Implementation guidance: preserve the existing 11-course seed where useful; add missing Basic, Authority/Fuel, Disturbance, and SpeedProfile entries; do not delete old harness scenarios.
   - Required skills/MCPs: repo `AGENTS.md`, `subagent-driven-development`, `verification-before-completion`.

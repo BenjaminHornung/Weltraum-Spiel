@@ -58,7 +58,7 @@ Focused detail comparisons:
 - `apps/weltraum-browser/evidence/ui-concept-parity-v2-combat-contact.png`
 - `apps/weltraum-browser/evidence/browser-ui-concept-parity-v2-layout-report.json`
 - `apps/weltraum-browser/evidence/browser-ui-concept-parity-v2-visual-audit.md`
-- `design-qa.md`
+- `docs/browser-mainline/design-qa-v3.md`
 
 ## Screenshot Loop Notes
 

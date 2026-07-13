@@ -1,0 +1,168 @@
+{
+  "analyzedCommit": "e416eb880ff4b42fdf35a93c1b567dfbfa186bbb",
+  "branch": "spike/threejs-core-port-v1",
+  "unityEditorUsed": false,
+  "lfsNote": "Checkout used GIT_LFS_SKIP_SMUDGE=1 because an archived screenshot LFS object returned 404 during normal clone.",
+  "systems": [
+    {
+      "name": "Flight / Control",
+      "unitySources": [
+        "Assets/Scripts/Prototype/PlayerShipController.cs",
+        "Assets/Scripts/Prototype/MainThrusterBank.cs",
+        "Assets/Scripts/Prototype/RcsThrusterController.cs"
+      ],
+      "portedTo": [
+        "spikes/threejs-core-port-v1/src/core/types.ts",
+        "spikes/threejs-core-port-v1/src/core/simulation.ts"
+      ],
+      "portedFeatures": [
+        "ship position",
+        "ship velocity",
+        "fuel",
+        "authority",
+        "fixed-step integration",
+        "scalar thrust and fuel burn"
+      ],
+      "stubbedFeatures": [
+        "per-nozzle RCS allocation",
+        "gimbal torque",
+        "SAS stabilization"
+      ],
+      "excludedFeatures": [
+        "Unity Rigidbody integration",
+        "MonoBehaviour input lifecycle"
+      ]
+    },
+    {
+      "name": "Navigation / Autopilot",
+      "unitySources": [
+        "Assets/Scripts/Prototype/PrototypeWaypointAutopilot.cs",
+        "Assets/Scripts/Prototype/PrototypeFlightPlan.cs",
+        "Assets/Scripts/Prototype/PrototypeTrajectoryPlanner.cs",
+        "Assets/_Weltraum/Runtime/Navigation/AutopilotContracts.cs"
+      ],
+      "portedTo": [
+        "spikes/threejs-core-port-v1/src/core/planners.ts",
+        "spikes/threejs-core-port-v1/src/core/executor.ts",
+        "spikes/threejs-core-port-v1/src/core/hash.ts"
+      ],
+      "portedFeatures": [
+        "TargetDescriptor",
+        "RoutePlan",
+        "RouteSegment",
+        "deterministic planHash",
+        "DirectLocal planner",
+        "ObstacleAvoidanceLocal planner",
+        "locked-plan executor",
+        "explicit replanRequired telemetry"
+      ],
+      "stubbedFeatures": [
+        "candidate scoring beyond direct/avoidance choice",
+        "terminal braking envelope",
+        "legacy fallback policy"
+      ],
+      "excludedFeatures": [
+        "silent replans",
+        "automatic plan replacement inside executor"
+      ]
+    },
+    {
+      "name": "Route / Waypoint / Targeting",
+      "unitySources": [
+        "Assets/Scripts/Prototype/PrototypeWaypointManager.cs",
+        "Assets/Scripts/Prototype/PrototypeNavigationTarget.cs",
+        "Assets/Scripts/Prototype/PrototypeWeaponTargetRegistry.cs",
+        "Assets/Scripts/Prototype/PrototypeWeaponTarget.cs"
+      ],
+      "portedTo": [
+        "spikes/threejs-core-port-v1/src/core/types.ts",
+        "spikes/threejs-core-port-v1/src/core/planners.ts"
+      ],
+      "portedFeatures": [
+        "named target descriptor",
+        "arrival radius",
+        "route waypoints"
+      ],
+      "stubbedFeatures": [
+        "target registry version snapshots",
+        "hierarchy-aware target discovery"
+      ],
+      "excludedFeatures": [
+        "weapon target filtering",
+        "Unity transform hierarchy scanning"
+      ]
+    },
+    {
+      "name": "HUD / Telemetry",
+      "unitySources": [
+        "Assets/Scripts/Prototype/PrototypePlayerHud.cs",
+        "Assets/Scripts/Prototype/PrototypeFlightHud.cs",
+        "Assets/Scripts/Prototype/PrototypeTrajectoryPreviewNavMap.cs",
+        "Assets/Scripts/Prototype/PrototypeRuntimeDataSnapshots.cs",
+        "Assets/_Weltraum/Runtime/UI/StatusAuthorityContracts.cs",
+        "Assets/_Weltraum/Runtime/UI/StatusSnapshots.cs"
+      ],
+      "portedTo": [
+        "spikes/threejs-core-port-v1/src/core/telemetry.ts",
+        "spikes/threejs-core-port-v1/src/app/testBridge.ts",
+        "spikes/threejs-core-port-v1/src/main.ts"
+      ],
+      "portedFeatures": [
+        "read-only telemetry snapshot",
+        "plan hash display",
+        "executor status display",
+        "basic telemetry DOM readout",
+        "JSON telemetry bridge"
+      ],
+      "stubbedFeatures": [
+        "HUD timeline rows",
+        "navball projection",
+        "full assist chips"
+      ],
+      "excludedFeatures": [
+        "Unity IMGUI",
+        "production HUD styling"
+      ]
+    },
+    {
+      "name": "Proving Ground / Evidence",
+      "unitySources": [
+        "Assets/Tests/PlayMode/PrototypeAutopilotProvingGroundPlayModeTests.cs",
+        "docs/legacy-unity/current-prototype-state-2026-06-15.md",
+        "README.md"
+      ],
+      "portedTo": [
+        "spikes/threejs-core-port-v1/tests/unit",
+        "spikes/threejs-core-port-v1/tests/e2e",
+        "spikes/threejs-core-port-v1/evidence"
+      ],
+      "portedFeatures": [
+        "unit acceptance checks",
+        "browser telemetry evidence",
+        "screenshot output",
+        "test summary document",
+        "decision report document"
+      ],
+      "stubbedFeatures": [
+        "scenario matrix breadth",
+        "CSV scenario reporting"
+      ],
+      "excludedFeatures": [
+        "Unity PlayMode harness",
+        "Unity editor acceptance gate"
+      ]
+    }
+  ],
+  "decisionInputs": {
+    "keepUnityStrengths": [
+      "existing prototype systems are Unity object and physics integrated",
+      "ship, surface, asset, and editor workflows are not ported by this spike"
+    ],
+    "threeJsStrengths": [
+      "pure planning/execution core can be isolated",
+      "browser telemetry and screenshots are fast to run in CI",
+      "locked-plan semantics can be tested without Unity"
+    ],
+    "primaryRisk": "A full game rewrite would be premature; only the navigation-core seam has enough evidence for a browser parallel track."
+  }
+}

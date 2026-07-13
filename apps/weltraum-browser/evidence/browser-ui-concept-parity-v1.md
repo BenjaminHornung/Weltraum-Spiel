@@ -2,6 +2,10 @@
 
 Generated from Playwright-rendered browser screenshots and DOM layout measurements. The UI parity flow used normal runtime `/` and `/?uiScenario=combat-contact`; screenshots are not hand-edited mockups.
 
+> Repository cleanup note (2026-07-13): `Assets/**` below is the original
+> capture-time path. The immutable Unity snapshot is available at
+> `unity-legacy-final-2026-07:Assets/**`; retained reusable art is under `art/`.
+
 ## Concept And Actual Screenshots
 
 | Screen | Concept Reference | Real Browser Output |

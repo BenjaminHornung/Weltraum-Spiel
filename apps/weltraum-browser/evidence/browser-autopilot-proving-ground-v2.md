@@ -7,6 +7,10 @@
 - Base: `origin/main` at `3baa6b93669e9fb546dd49cc8254b04ce50c11c6`
 - Baseline context: terminal capture v1 is the preserved safety baseline for no snap, no velocity-zero shortcut, no silent replan, stable `planHash`, and HUD snapshot/ViewModel consumer behavior.
 
+> Repository cleanup note (2026-07-13): `Assets/**` below is the original
+> capture-time path. The immutable Unity snapshot is available at
+> `unity-legacy-final-2026-07:Assets/**`; retained reusable art is under `art/`.
+
 ## Planned Evidence Paths
 
 - Spec artifacts: `.devtoolbox/specs/changes/browser-autopilot-proving-ground-v2/`

@@ -62,14 +62,14 @@ test-harness may orchestrate all layers but must not contain product rules.
 Source paths:
 
 - `docs/architecture/autopilot-v2-design.md`
-- `docs/architecture/autopilot-v2-test-harness.md`
+- `docs/legacy-unity/architecture/autopilot-v2-test-harness.md`
 - `docs/architecture/coordinate-spaces-and-floating-origin.md`
 - `docs/architecture/real-scale-world-architecture.md`
 - `docs/architecture/surface-local-frame-architecture.md`
 - `docs/ux/player-facing-status-authority-v1.md`
 - `docs/ux/unified-ui-input-mode-architecture.md`
-- `analysis/threejs-mainline/source-evidence/current-core-inventory.md`
-- `analysis/threejs-mainline/source-evidence/unity-to-threejs-port-map.json`
+- `docs/legacy-unity/source-evidence/current-core-inventory.md`
+- `docs/legacy-unity/source-evidence/unity-to-threejs-port-map.json`
 
 Required contracts:
 

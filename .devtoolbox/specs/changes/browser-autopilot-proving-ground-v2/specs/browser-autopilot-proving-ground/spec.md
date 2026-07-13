@@ -50,7 +50,7 @@ Browser autopilot proving ground v2 provides deterministic, evidence-friendly br
 ## Non-Functional Constraints
 
 - No Unity work.
-- No `Assets/**` changes.
+- No `unity-legacy-final-2026-07:Assets/**` changes.
 - No render smoothing, jitter, VFX, or nozzle work.
 - No Cargo, Surface, Economy, or unrelated simulation features.
 - Preserve terminal capture v1 behavior and its evidence trail.

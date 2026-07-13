@@ -1,5 +1,10 @@
 # Browser Demo Scout GLB Visual Parity v1 Evidence
 
+> Repository cleanup note (2026-07-13): `Assets/**` below is the original
+> capture-time path. The immutable Unity snapshot is available at
+> `unity-legacy-final-2026-07:Assets/**`; the retained source copy is under
+> `art/source/ships/prototype-ship-kit/`.
+
 ## Asset copy
 
 - Source: `Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.glb`

@@ -1,0 +1,246 @@
+{
+  "changeName": "browser-flight-feel-rcs-sas-parity-v1",
+  "branch": "analysis/browser-flight-feel-rcs-sas-parity-v1",
+  "purpose": "Map Unity flight-feel intent and browser seams for a browser-native RCS/SAS parity implementation plan without treating Unity code as a 1:1 port target.",
+  "scopeNotes": [
+    "Analysis/spec only; no product implementation in this package.",
+    "Do not touch apps/weltraum-browser/src/**, apps/weltraum-browser/tests/**, apps/weltraum-browser/evidence/*.png, apps/weltraum-browser/package.json, apps/weltraum-browser/package-lock.json, or unity-legacy-final-2026-07:Assets/** in this analysis branch.",
+    "Browser parity must remain independent from current Demo Scout GLB/ShipVisual work and from Unity Rigidbody/nozzle hierarchy details."
+  ],
+  "unitySources": [
+    {
+      "path": "unity-legacy-final-2026-07:Assets/Scripts/Prototype/PlayerShipController.cs",
+      "role": "Primary Unity player-flight authority, mode/input routing, assist integration, and control diagnostics source.",
+      "relatedSource": false,
+      "importantSymbols": [
+        "FlightControlMode",
+        "SasControlMode",
+        "GimbalAssistMode",
+        "PrototypeFlightControlDiagnostics",
+        "ControlModeLabel",
+        "MainThrusterAllowed",
+        "GimbalAllowed",
+        "ApplyKeyboardFlightKeys",
+        "UpdateMainThrottle",
+        "HandleUtilityInputs",
+        "UpdateSasTargetRotation",
+        "BuildFlightAssistRequest",
+        "UpdateAssistRotationCameraSignal",
+        "SetControlMode",
+        "CycleControlMode",
+        "ResetStartupFlightControls"
+      ],
+      "behaviorsByTopic": {
+        "modes": "FlightControlMode.Normal is labeled Cruise; Precision and Translation are RCS-driven; mode cycling is Cruise -> Precision -> Translation -> Cruise; non-Cruise modes force RCS on and disable manual main-thruster/gimbal authority.",
+        "throttle": "Persistent main throttle supports cut/full/ramp controls and is separated from actual main-thruster module response.",
+        "rcs": "RCS can be toggled and supplies attitude and translation paths; Precision/Translation rely on RCS authority.",
+        "sas": "SAS supports KillRotation/HoldAttitude concepts with effective/inverted state, target rotation updates, manual-axis masking, and assist interaction.",
+        "assist": "Waypoint autopilot and momentum assist can request force, torque, and main throttle; assist ownership should not be copied blindly.",
+        "diagnostics": "Control diagnostics include RCS enabled/available/status, SAS state/authority, mode, throttle, main/gimbal allowance, autopilot, and momentum assist state."
+      },
+      "browserPlanningUse": [
+        "Use as semantic source for mode labels, authority boundaries, throttle terminology, RCS/SAS status, and HUD diagnostics.",
+        "Do not port Unity Rigidbody wiring, hidden assist ownership, or exact key/mode internals without browser product decision."
+      ]
+    },
+    {
+      "path": "unity-legacy-final-2026-07:Assets/Scripts/Prototype/MainThrusterBank.cs",
+      "role": "Main-thruster bank coordination and aggregate runtime/telemetry source.",
+      "relatedSource": false,
+      "importantSymbols": [
+        "Fire()",
+        "SetThrustMode()",
+        "ApplySettings()",
+        "ResetAggregateRuntime()",
+        "LastTargetThrottle",
+        "LastActualThrottle",
+        "LastAppliedDirection",
+        "LastForceWorld",
+        "LastEstimatedTorque"
+      ],
+      "behaviorsByTopic": {
+        "mainThruster": "Coordinates main thruster modules, aggregate thrust, force, torque, gimbal, power draw, and throttle runtime data.",
+        "throttle": "Provides target-vs-actual throttle/spool values used by PlayerShipController diagnostics.",
+        "diagnostics": "Separates requested throttle/gimbal state from applied runtime output."
+      },
+      "browserPlanningUse": [
+        "Use as reference for commanded-vs-applied throttle telemetry and main-thrust active/intensity fields.",
+        "Do not copy module hierarchy or physical nozzle force implementation directly."
+      ]
+    },
+    {
+      "path": "unity-legacy-final-2026-07:Assets/Scripts/Prototype/MainThrusterModule.cs",
+      "role": "Related main-thruster module implementing spool, gimbal lag, thermal/fuel gating, and force/torque output.",
+      "relatedSource": true,
+      "importantSymbols": [
+        "Fire()",
+        "GetThrustDirection()",
+        "MoveThrottleTowards()",
+        "SetThrustMode()",
+        "ConfigureThrottleResponse()",
+        "ConfigureGimbalSlewRate()",
+        "ApplySettings()"
+      ],
+      "behaviorsByTopic": {
+        "throttle": "Persistent throttle is spooled toward a target before being applied.",
+        "gimbal": "Target and actual gimbal commands can diverge because of slew/lag.",
+        "mainThruster": "COM-safe steering and fully physical nozzle force are separate Unity modes; thermal/fuel gating can reduce output."
+      },
+      "browserPlanningUse": [
+        "Use as a feel reference for throttle ramp and VFX intensity only.",
+        "Do not import thermal/fuel hard-zero behavior into browser parity unless a later spec requires it."
+      ]
+    },
+    {
+      "path": "unity-legacy-final-2026-07:Assets/Scripts/Prototype/RcsThrusterController.cs",
+      "role": "RCS solver/allocation, SAS command, nozzle runtime, and diagnostics source.",
+      "relatedSource": false,
+      "importantSymbols": [
+        "RcsSolverMode",
+        "SetRcsEnabled()",
+        "SetSolverMode()",
+        "ApplyControls()",
+        "ComputeSasCommand()",
+        "AllocateAndApplyRcs()",
+        "ApplyStablePrototypeRcs()",
+        "BuildAllocationData()",
+        "DetermineAllocatorStatus()",
+        "CopyNozzleSnapshot()"
+      ],
+      "behaviorsByTopic": {
+        "rcs": "Stable prototype and experimental physical-nozzle solvers produce force/torque output and authority diagnostics.",
+        "sas": "SAS command participates in RCS allocation, including masks and authority status.",
+        "diagnostics": "Reports actual/residual force and torque, allocator status, nozzle counts, saturation, fuel requested/consumed, active nozzle IDs, SAS masks, and torque authority.",
+        "visualization": "VFX is tied to nozzle activity/throttle rather than a single global RCS flag."
+      },
+      "browserPlanningUse": [
+        "Use as checklist for browser RCS diagnostics and per-marker visualization seams.",
+        "Do not copy stable-vs-experimental allocator mechanics or Unity child-nozzle discovery as browser architecture."
+      ]
+    },
+    {
+      "path": "unity-legacy-final-2026-07:Assets/Scripts/Prototype/PrototypePlayerHud.cs",
+      "role": "Player-facing HUD snapshot, status label, warning chip, and assist chip source.",
+      "relatedSource": false,
+      "importantSymbols": [
+        "PrototypePlayerFlightSnapshot",
+        "PrototypePlayerNavigationSnapshot",
+        "PrototypePlayerShipStatusSnapshot",
+        "PrototypePlayerHudSnapshot",
+        "BuildFlight()",
+        "BuildNavigation()",
+        "BuildShipStatus()",
+        "BuildWarningChips()",
+        "BuildAssistChips()"
+      ],
+      "behaviorsByTopic": {
+        "hud": "Shows flight mode, throttle, fuel, main/RCS/SAS labels, warnings, assist chips, radar, and target indicators.",
+        "labels": "Maps state into readable strings such as Main ready, Main disabled by mode, RCS ready/off/no authority, and SAS on/inverted/off/ineffective.",
+        "diagnostics": "Separates player-readable status from deeper debug surfaces."
+      },
+      "browserPlanningUse": [
+        "Use as UX reference for clear HUD/status messaging.",
+        "Do not port IMGUI layout or debug preset structure as browser player UI."
+      ]
+    },
+    {
+      "path": "unity-legacy-final-2026-07:Assets/Scripts/Prototype/PrototypeRuntimeDataSnapshots.cs",
+      "role": "Runtime snapshot/data-contract source for ship state, RCS allocation, and camera visual bounds.",
+      "relatedSource": false,
+      "importantSymbols": [
+        "ShipRuntimeState",
+        "RcsNozzleData",
+        "RcsAllocationRequestData",
+        "RcsNozzleAllocationResultData",
+        "CameraVisualBoundsData"
+      ],
+      "behaviorsByTopic": {
+        "telemetry": "Defines runtime data shapes for ship state and diagnostics.",
+        "rcsDiagnostics": "RcsNozzleData and allocation request/result structs describe nozzle pose, throttle/spool/cache data, requested/effective output, and allocation results.",
+        "cameraFeel": "Camera visual bounds are data, not flight authority."
+      },
+      "browserPlanningUse": [
+        "Use as source-map reference for browser telemetry field planning.",
+        "Keep browser telemetry smaller and Playwright-readable."
+      ]
+    },
+    {
+      "path": "docs/legacy-unity/current-prototype-state-2026-06-15.md",
+      "role": "Current Unity prototype behavior, HUD/debug, control, and verification contract summary.",
+      "relatedSource": false,
+      "importantSymbols": [
+        "Primary Controls",
+        "HUD And Debug Presets",
+        "Verification Contract",
+        "Change Consolidation"
+      ],
+      "behaviorsByTopic": {
+        "controls": "Documents Cruise/Precision/Translation, RCS, SAS, camera modes, and control overlays.",
+        "hud": "Basic HUD includes flight status, fuel/throttle/RCS/SAS, warning/assist chips, radar, Kill Momentum, contextual panels, and F1 help.",
+        "verification": "Documents Unity validation commands, but this analysis package intentionally did not run tests/builds."
+      },
+      "browserPlanningUse": [
+        "Use as current Unity intent snapshot and terminology source.",
+        "Do not treat Unity validation commands as required for this browser analysis-only branch."
+      ]
+    }
+  ],
+  "browserOrientationAnchors": [
+    {
+      "path": "apps/weltraum-browser/src/core/types.ts",
+      "currentState": "Defines FlightControlMode = Cruise | Precision | Translation; ShipState already carries controlMode, rcsEnabled, sasEnabled, mainThrottleCommand, translationCommand, rotationCommand, actuatorTelemetry, angularVelocity, and orientation.",
+      "remainingGaps": [
+        "Telemetry is actuator-level rather than player-explanatory.",
+        "No per-nozzle/per-marker diagnostic data shape yet.",
+        "No explicit applied-throttle/spool fields beyond current throttle/mainThrottleCommand."
+      ]
+    },
+    {
+      "path": "apps/weltraum-browser/src/runtime/input.ts",
+      "currentState": "Defines CameraMode, ManualFlightInputState, controlModes = [Cruise, Precision, Translation], default Cruise/RCS-on/SAS-on/throttle-zero state, and merge/cycle helpers.",
+      "remainingGaps": [
+        "Mode input exists, but Precision still needs a distinct feel contract.",
+        "Future implementation must verify final keybindings against browser controls and evidence scenarios."
+      ]
+    },
+    {
+      "path": "apps/weltraum-browser/src/flight/flightController.ts",
+      "currentState": "applyFlightControllerStep already gates main thrust to Cruise, RCS translation to Translation unless explicitly allowed, RCS rotation by RCS authority, and SAS damping by sasEnabled/sasAvailable/rcsEnabled; actuator telemetry exposes active flags and applied acceleration/angular acceleration.",
+      "remainingGaps": [
+        "Precision has little/no distinct behavior beyond mode gating.",
+        "Throttle command is applied directly; no target-vs-actual ramp/spool model.",
+        "SAS is damping-only and lacks readable effectiveness/hold-defer decision.",
+        "RCS diagnostics are not nozzle/marker-level."
+      ]
+    },
+    {
+      "path": "apps/weltraum-browser/src/flight/executor.ts",
+      "currentState": "Executor owns manual/autopilot handoff, idle/manual preservation, planHash/replanRequired telemetry, Cruise autopilot requests, and no-snap/no-idle-zero-sensitive behavior.",
+      "remainingGaps": [
+        "New flight-feel changes must not introduce hidden replans, snap-to-target, or idle zeroing.",
+        "New telemetry must preserve existing flightSnapshot/position/velocity status."
+      ]
+    }
+  ],
+  "notOneToOnePortRules": [
+    "Do not copy Unity Rigidbody force/torque integration into browser simulation.",
+    "Do not mirror Unity child-object nozzle discovery, VFX binding, or imported socket names.",
+    "Do not copy stable-vs-experimental RCS allocator mechanics unless a focused diagnostic slice explicitly requires it.",
+    "Do not replicate hidden assist-owned main throttle/gimbal behavior without product decision.",
+    "Do not treat the H/N translation split as settled; verify browser controls and evidence first.",
+    "Do not port IMGUI debug surfaces/presets as player-facing browser UI.",
+    "Do not implement Unity fuel/thermal hard-zero behavior as part of this parity slice unless separately specified.",
+    "Do not reintroduce snap-to-destination, executor-side replanning, or idle velocity zeroing."
+  ],
+  "parityTopics": {
+    "manualFlightFeelTuning": "Mode-specific input response, authority, damping, and player-readable telemetry.",
+    "throttleRampAndInertia": "Commanded vs applied throttle, deterministic spool/ramp, main-thrust active/intensity telemetry.",
+    "cruisePrecisionTranslation": "Cruise keeps main-thrust feel; Precision becomes fine/RCS attitude profile; Translation emphasizes RCS linear movement.",
+    "rcsTranslationVsRotation": "Separate RCS translation and rotation commands/effective outputs in behavior and telemetry.",
+    "sasDampingStabilization": "Use existing damping as v1 base; add readable effectiveness and explicitly defer or test HoldAttitude behavior.",
+    "perMarkerNozzleVisualization": "Start with telemetry/descriptor/procedural marker fallback; bind GLB markers only after visual hierarchy stabilizes.",
+    "hudTelemetry": "Expose mode, throttle command/applied state, RCS/SAS status/effectiveness, command/effective outputs, and no-authority labels.",
+    "playwrightEvidence": "Manual flight, mode switching, throttle ramp, RCS enabled/disabled, SAS on/off/effectiveness, camera authority isolation, no-snap/no-idle-zero.",
+    "noSnapNoIdleZeroRegression": "Preserve executor planHash/replanRequired visibility, gradual arrival, manual/autopilot handoff, and idle/manual request continuity."
+  }
+}

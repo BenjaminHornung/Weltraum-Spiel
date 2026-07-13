@@ -2,6 +2,10 @@
 
 Generated on integration branch `integration/browser-live-flight-objectives-v1` and updated from the final mainline objective-chain audit.
 
+> Repository cleanup note (2026-07-13): `Assets/**` below records the original
+> worktree state at capture time. The immutable Unity snapshot is available at
+> `unity-legacy-final-2026-07:Assets/**`; retained reusable art is under `art/`.
+
 ## Integrated Branches
 
 Merge order:

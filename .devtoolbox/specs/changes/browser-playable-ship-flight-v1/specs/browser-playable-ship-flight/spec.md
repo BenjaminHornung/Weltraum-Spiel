@@ -13,7 +13,7 @@ The browser renderer MUST show a real ship visual instead of the prior cone-only
 - muzzle or weapon marker placeholder,
 - camera anchor.
 
-If an existing browser-usable ship asset can be safely used without mutating `Assets/**`, the implementation MAY copy it into browser public assets and consume it from there. If not, the implementation MUST provide a temporary procedural low-poly ship and document the parity gap.
+If an existing browser-usable ship asset can be safely used without mutating `unity-legacy-final-2026-07:Assets/**`, the implementation MAY copy it into browser public assets and consume it from there. If not, the implementation MUST provide a temporary procedural low-poly ship and document the parity gap.
 
 ### PLAY-002 Flight State V2
 

@@ -1598,8 +1598,8 @@ describe("renderStatusHud", () => {
       {
         state: "GLBLoaded",
         label: "Demo Scout GLB",
-        candidateAssetPath: "Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.glb",
-        sourceAssetPath: "Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.glb",
+        candidateAssetPath: "art/source/ships/prototype-ship-kit/exports/demo-ships/demo_scout_mk1.glb",
+        sourceAssetPath: "art/source/ships/prototype-ship-kit/exports/demo-ships/demo_scout_mk1.glb",
         browserAssetPath: "/ships/demo_scout_mk1.glb",
         fallbackReason: null,
         appliedScale: 3.2,

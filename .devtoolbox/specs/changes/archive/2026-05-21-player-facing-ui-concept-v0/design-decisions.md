@@ -2,7 +2,7 @@
 
 Date: 2026-05-21
 
-Source concept: `docs/player-facing-ui-concept-v0.md`
+Source concept: `docs/legacy-unity/ux/player-facing-ui-concept-v0.md`
 
 ## Implement now
 

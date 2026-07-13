@@ -8,7 +8,7 @@
 
 The browser playable-flight demo remains functionally unchanged but is easier to trust and present:
 
-- A safe GLB integration attempt is documented, with a browser-readable copy only if it does not require Unity, fragile dependencies, or `Assets/**` mutation.
+- A safe GLB integration attempt is documented, with a browser-readable copy only if it does not require Unity, fragile dependencies, or `unity-legacy-final-2026-07:Assets/**` mutation.
 - Procedural low-poly fallback remains available and validated.
 - Ship visual descriptor exposes required markers/sockets for future authored-asset parity.
 - Player HUD avoids raw velocity component triples while retaining scalar speed and keeping full vectors in telemetry/TestBridge.
@@ -20,12 +20,12 @@ The browser playable-flight demo remains functionally unchanged but is easier to
 In scope:
 
 - `apps/weltraum-browser` render/runtime/UI/test/evidence updates needed for this polish slice.
-- Optional browser public copy of `Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.glb` to `apps/weltraum-browser/public/ships/demo_scout_mk1.glb`, only after read-only validation and with no `Assets/**` changes.
+- Optional browser public copy of `unity-legacy-final-2026-07:Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.glb` to `apps/weltraum-browser/public/ships/demo_scout_mk1.glb`, only after read-only validation and with no `unity-legacy-final-2026-07:Assets/**` changes.
 - Direct `.devtoolbox/specs` task/evidence updates because DevToolbox MCP is unavailable for this repo path (`unauthorized_path`).
 
 Out of scope:
 
-- Unity startup, Unity install, Unity MCP, `Assets/**` edits/deletes.
+- Unity startup, Unity install, Unity MCP, `unity-legacy-final-2026-07:Assets/**` edits/deletes.
 - 1:1 MonoBehaviour port.
 - New gameplay systems: weapons, ship builder, cargo, economy, missions, drones, surface/orbit/terrain runtime.
 - Mobile touch/manual flight controls.

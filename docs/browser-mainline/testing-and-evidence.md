@@ -6,13 +6,13 @@ Mainline browser features are not complete by feel. They need deterministic test
 
 Source paths:
 
-- `docs/current-prototype-state.md`
-- `docs/architecture/autopilot-v2-test-harness.md`
-- `docs/architecture/prototype-legacy-boundary-audit-2026-06-15.md`
-- `analysis/threejs-mainline/source-evidence/current-core-inventory.md`
-- `analysis/threejs-mainline/source-evidence/unity-to-threejs-port-map.json`
-- `analysis/threejs-mainline/source-evidence/threejs-spike-test-summary.md`
-- `analysis/threejs-mainline/source-evidence/threejs-spike-decision-report.md`
+- `docs/legacy-unity/current-prototype-state-2026-06-15.md`
+- `docs/legacy-unity/architecture/autopilot-v2-test-harness.md`
+- `docs/legacy-unity/architecture/prototype-legacy-boundary-audit-2026-06-15.md`
+- `docs/legacy-unity/source-evidence/current-core-inventory.md`
+- `docs/legacy-unity/source-evidence/unity-to-threejs-port-map.json`
+- `docs/legacy-unity/source-evidence/threejs-spike-test-summary.md`
+- `docs/legacy-unity/source-evidence/threejs-spike-decision-report.md`
 - historical external package input "docs/testing-and-evidence-strategy.md" (not a live repo path in this worktree)
 
 ## Evidence Levels
@@ -105,4 +105,4 @@ A feature is browser-mainline-ready only when:
 
 ## Documentation Slice And Later Evidence
 
-The original documentation slice did not run Unity, npm, build, Vitest, Playwright or browser evidence commands. The later Three.js browser-mainline implementation under `apps/weltraum-browser` records direct browser evidence in `apps/weltraum-browser/evidence/` and is summarized by `analysis/threejs-mainline/final-report.md`.
+The original documentation slice did not run Unity, npm, build, Vitest, Playwright or browser evidence commands. The later Three.js browser-mainline implementation under `apps/weltraum-browser` records direct browser evidence in `apps/weltraum-browser/evidence/` and is summarized by `docs/browser-mainline/threejs-mainline-final-report.md`.

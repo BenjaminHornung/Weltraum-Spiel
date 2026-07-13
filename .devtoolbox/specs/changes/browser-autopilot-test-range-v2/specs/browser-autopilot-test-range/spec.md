@@ -8,7 +8,7 @@ Browser Autopilot Test Range v2 provides a deterministic Browser-local proving-g
 
 ### Course definitions
 
-- The system MUST define the v2 course matrix from `analysis/browser-autopilot-test-range-v2-scenario-matrix.json` or an explicitly approved successor.
+- The system MUST define the v2 course matrix from `docs/browser-mainline/implementation-analysis/browser-autopilot-test-range-v2-scenario-matrix.json` or an explicitly approved successor.
 - Each course MUST have a stable `id`, `label`, `category`, `initialShip`, `target`, `obstacles`, `profile`, `expectedOutcome`, `acceptance`, and evidence requirements.
 - Each executable target MUST include an `arrivalEnvelope` with positive radius.
 - Every `StopWithinEnvelope` course MUST define a non-negative `terminalSpeed`.

@@ -1,61 +1,78 @@
 # AGENTS.md - Weltraum-Spiel
 
-## Projektregel
+## Product rule
 
-Dieses Unity-Projekt wird agentengestützt entwickelt. Arbeite spec-first,
-klein, überprüfbar und mit Evidence. Keine großen opportunistischen Refactors.
+The product mainline is the browser-native TypeScript/Three.js application.
+Work spec-first, in small verifiable slices, and record evidence. Do not create
+a second runtime architecture from historical Unity material.
 
-## Wichtige Pfade
+Unity exists only in `unity-legacy-final-2026-07` and
+`archive/unity-legacy-final-2026-07`. Files under `docs/legacy-unity` are
+behavior/art/evidence references, not implementation targets.
 
-```text
-Assets/_Weltraum/            Neuer Produktkern
-Assets/Scripts/Prototype/    Legacy-Prototyp, nur Adapter/Fixes
-Assets/Scenes/               Alte Szenen und Legacy Bootstrap
-docs/architecture/           Architekturentscheidungen
-docs/ux/                     UI/Input/Flow-Dokumente
-docs/roadmap/                Planung und Meilensteine
-.devtoolbox/specs/changes/   Spec Changes, Tasks, Evidence
-.agent/PLANS.md              ExecPlan-Regeln
-```
-
-## Vor jeder Aufgabe
-
-1. Lies diese Datei.
-2. Lies die relevante Spec.
-3. Prüfe docs/current-prototype-state.md und relevante design-audits.
-4. Schreibe einen kurzen Plan.
-5. Arbeite nur am vereinbarten Scope.
-
-## Code-Regeln
-
-- Neue Produktfeatures gehören unter `Assets/_Weltraum`.
-- `Assets/Scripts/Prototype` ist Legacy. Nicht erweitern, außer der Task sagt es.
-- Autopilot-Kern: Planner, Plan, Executor, Diagnostics trennen.
-- UI spricht über ViewModels/Commands, nicht direkt mit Planner-Interna.
-- Scenes enthalten Wiring, keine Geschäftslogik.
-- Keine stillen Replans im Autopilot Executor.
-- Keine Cargo/Surface/Economy Features ohne Datenvertrag.
-
-## Tests
-
-Für Codeänderungen:
+## Main paths
 
 ```text
-dotnet build "Weltraum Spiel.sln" --no-restore
-dotnet test "Weltraum Spiel.sln" --no-build
+apps/weltraum-browser/        Product runtime, tests and browser evidence
+docs/browser-mainline/        Architecture, intent, testing and roadmap
+docs/current-mainline-state.md Current product status
+docs/spielkonzept/            Product and game-design concepts
+docs/legacy-unity/            Historical reference only
+art/                          Neutral source art, exports and validation
+.devtoolbox/specs/changes/    Active browser/cross-platform specs and archives
+.agent/PLANS.md               ExecPlan rules
 ```
 
-Für Unity-Arbeit zusätzlich:
+## Before each task
+
+1. Read this file and the relevant spec.
+2. Read `docs/current-mainline-state.md` and relevant browser design audits.
+3. Write a short plan; use an ExecPlan for cross-layer or high-risk work.
+4. Work only in the agreed scope and keep browser evidence attributable.
+
+## Architecture invariants
+
+- Core/simulation state is gameplay truth; Three.js is a render adapter.
+- UI renders owner snapshots/ViewModels and sends commands; it does not inspect
+  planner internals or recompute route/fuel/authority truth.
+- Keep planner, immutable plan, executor and diagnostics separate.
+- `planHash` is stable and the executor runs exactly the locked plan.
+- No silent replan and no hidden plan replacement.
+- No fake progression, target/waypoint/position snap or velocity-zero shortcut.
+- `TestBridge` is available only with the explicit `?testBridge=1` query gate.
+- Keep Demo Scout GLB and `ProceduralFallback`; neither owns gameplay state.
+- Do not change Planner, Executor, FlightController, rendering truth or UI
+  behavior in repository-only cleanup work.
+- Do not change package manifests or lockfiles without a necessary product or
+  tooling reason.
+
+## Standard verification
+
+Run from `apps/weltraum-browser`:
 
 ```text
-- Unity MCP validate_script oder console check
-- relevante EditMode/PlayMode Tests
-- Screenshot/Evidence bei UI/Scene Änderungen
+npm ci
+npm run test
+npm run build
 ```
 
-## DevToolbox
+Run the Playwright groups relevant to the change. For mainline, shared runtime,
+CI or repository-wide changes, run all three:
 
-Nutze den Spec-Workflow:
+```text
+npm run test:e2e:core
+npm run test:e2e:live
+npm run test:e2e:ui
+```
+
+Also run the Playwright group-membership validation from
+`.github/workflows/browser-mainline-ci.yml` when test files or group scripts
+change. Visible UI/runtime changes require an attributable screenshot matrix;
+repository-only cleanup must not refresh runtime screenshots.
+
+## DevToolbox workflow
+
+When available for the active workspace, use:
 
 ```text
 workspace_prepare_for_agent
@@ -67,25 +84,21 @@ tasks_completion_preflight
 tasks_toggle
 ```
 
-Tasks werden erst nach Evidence und Completion Preflight geschlossen.
+Never close a task checkbox without evidence and completion preflight. Preserve
+open browser and cross-platform work; archive historical Unity records without
+presenting them as current product work.
 
-## UI-Regeln
+## UI and evidence rules
 
-- Player UI und Debug UI trennen.
-- Modus immer sichtbar.
-- Eine primäre Aktion pro Kontext.
-- Keine generischen AI-UI-Muster: übertriebene Glass Panels, Gradient-Dashboards,
-  Unicode-Icon-Suppe, unnötige Floating Cards.
-- Screenshot-Matrix für sichtbare UI-Änderungen.
+- Keep player UI and diagnostics/TestBridge surfaces separate.
+- Keep the current mode visible and one primary action per context.
+- Avoid generic glass/gradient dashboards, icon soup and unnecessary floating
+  cards.
+- Do not delete browser screenshots, JSON, Markdown evidence or CI baselines
+  merely because they are currently unreferenced. Only clearly generated,
+  unreferenced logs are cleanup candidates.
 
-## Scene-Regeln
+## Complex work
 
-- Neue Scenes brauchen Manifest.
-- Keine Missing Scripts.
-- Genau eine aktive MainCamera, außer dokumentiert.
-- Keine Produktlogik als Scene-only Script.
-- Scene validation und Screenshot/Evidence bei Änderungen.
-
-## Wenn Aufgabe komplex ist
-
-Nutze einen ExecPlan nach `.agent/PLANS.md`.
+Use a living ExecPlan following `.agent/PLANS.md` for repository cleanup, world
+streaming, Ship Builder, planet runtime and other multi-step work.

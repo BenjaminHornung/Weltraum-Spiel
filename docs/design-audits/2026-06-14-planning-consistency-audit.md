@@ -11,7 +11,7 @@ This report does not fix source documents. It creates a single follow-up map so 
 
 Required documents read:
 
-- `docs/current-prototype-state.md`
+- `docs/legacy-unity/current-prototype-state-2026-06-15.md`
 - `README.md`
 - `docs/spielkonzept/ship-builder-modular-parts.md`
 - `docs/art/blender-modular-ship-parts-guidelines.md`

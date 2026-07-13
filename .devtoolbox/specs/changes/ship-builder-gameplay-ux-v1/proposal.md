@@ -65,7 +65,7 @@ Out of scope:
 - `docs/spielkonzept/ship-builder-modular-parts.md`
 - `docs/art/blender-modular-ship-parts-guidelines.md`
 - `docs/art/blender-mcp-part-generation-prompts.md`
-- `docs/current-prototype-state.md`
+- `docs/legacy-unity/current-prototype-state-2026-06-15.md`
 - `README.md`
 - `.devtoolbox/specs/changes/prototype-ship-blueprint-v0/`
 - `.devtoolbox/specs/changes/prototype-ship-builder-modular-parts-art-pipeline-v1/`
