@@ -2,7 +2,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { ciTimeout } from "./support/ciTiming";
-import { engageVisiblePreview, openVisiblePlanner, previewVisibleRoute, selectVisiblePlannerTarget } from "./support/plannerWorkflow";
+import { openVisiblePlanner, previewAndEngageVisibleRoute, selectVisiblePlannerTarget } from "./support/plannerWorkflow";
 
 async function waitForBridge(page: Page) {
   await page.goto("/?testBridge=1");
@@ -48,9 +48,8 @@ test("completed terminal holding accepts a new route while active routes still b
   const visibleAlphaPreviewHash = await selectVisiblePlannerTarget(page, "nav-alpha", "Navigation Alpha");
   const selectedAfterHolding = await page.evaluate(() => (window as any).TestBridge.getTelemetry());
   expect(selectedAfterHolding.selectedTarget?.id).toBe("nav-alpha");
-  const refreshedAlphaPreviewHash = await previewVisibleRoute(page);
+  const refreshedAlphaPreviewHash = await previewAndEngageVisibleRoute(page, visibleAlphaPreviewHash);
   expect(refreshedAlphaPreviewHash).toBe(visibleAlphaPreviewHash);
-  await engageVisiblePreview(page, refreshedAlphaPreviewHash);
   await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().lockedPlan?.target.id)).toBe("nav-alpha");
   const newRoute = await page.evaluate(() => (window as any).TestBridge.getTelemetry());
   expect(newRoute.executor.status).toBe("Executing");

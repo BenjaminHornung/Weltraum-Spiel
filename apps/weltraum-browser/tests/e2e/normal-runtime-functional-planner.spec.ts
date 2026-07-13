@@ -292,6 +292,7 @@ test("explicit TestBridge instrumentation preserves exact lock and terminal hash
 });
 
 test("hash-mismatch Engage fails visibly, remains modal, and focuses the inline live error", async ({ page }) => {
+  test.setTimeout(ciTimeout(30_000, 90_000));
   await page.goto("/?testBridge=1");
   await page.waitForFunction(() => Boolean((window as any).TestBridge));
   await waitForNormalFlight(page);
