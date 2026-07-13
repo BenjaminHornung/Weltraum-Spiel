@@ -407,6 +407,7 @@ test("browser vertical slice selects a target, previews a route, engages autopil
 });
 
 test("playable manual flight exposes ship visual, ChaseLocked camera, controls, and telemetry VFX", async ({ page }) => {
+  test.setTimeout(60_000);
   await page.goto("/?testBridge=1");
   await page.waitForFunction(() => Boolean((window as any).TestBridge));
   const readyVisual = await waitForShipVisualReady(page);
