@@ -1,116 +1,235 @@
 # Browser Mainline Architecture
 
-## Goal
+Stand: 2026-07-13
 
-Define the browser-native architecture target for the Three.js mainline without importing Unity's scene, MonoBehaviour or Rigidbody architecture.
+## Purpose
 
-## Layer Model
+This document describes the implemented browser-native architecture and the boundaries that future work must preserve. The product mainline is `apps/weltraum-browser`; Unity is a legacy/reference source and is not imported as runtime architecture.
+
+## Current Layer Model
 
 ```text
 core
-  IDs, Result-style outcomes, deterministic time, event log, hash helpers.
+  Stable IDs, deterministic hashing, Result-style outcomes and shared utilities.
 
 math
-  Vec3, transforms, frame descriptors, stable numeric helpers.
-
-sim
-  Fixed-step loop, simulation clock, active simulation bubble, replay hooks.
+  Vec3/quaternion helpers and stable numeric operations.
 
 flight
-  ShipState, mass, fuel, thrust, RCS/SAS abstractions, authority snapshots.
+  Flight state, manual input, control modes, mass, fuel, authority,
+  braking reserve, actuators, fixed-step controller and terminal capture.
 
 navigation
-  TargetDescriptor, ArrivalEnvelope, RoutePlan, Planner, Validator,
-  Executor, Supervisor, Telemetry.
+  Target descriptors, arrival envelopes, planners, route candidates,
+  validation, preview/admission, immutable RoutePlan, executor and telemetry.
+
+runtime
+  Browser command dispatch, selected target, preview state, locked execution,
+  objective progression, station keeping and owner snapshots.
 
 world
-  Bodies, obstacles, zones, stations, resources, frame/chunk metadata.
+  Obstacles, proving-ground entities, frame descriptors, floating-origin
+  projection, chunk registry, simulation residency, LOD and streaming plans.
 
-render-three
-  Three.js scene, cameras, mesh factories, instancing, debug gizmos.
+resources
+  Resource catalog, stacks, containers, capacity, transfers, provenance and
+  serialization contracts.
+
+shipBuilder
+  Part catalog, blueprints, sockets, compatibility, structure, mass, COM and
+  bounds contracts.
 
 ui
-  HUD, input modes, route status panels, warning chips, settings.
+  HUD and navigation-planner ViewModels/presentation plus explicit commands.
 
-test-harness
-  Scenario catalog, TestBridge, evidence recorder, browser automation API.
+render/three
+  Three.js scene, cameras, Demo Scout GLB adapter, procedural fallback,
+  render interpolation and world-presentation projection.
+
+tests/evidence
+  Vitest, Playwright, query-gated TestBridge scenarios and recorded artifacts.
 ```
 
-## Dependency Rule
+Directory names may evolve, but these authority boundaries are part of the product contract.
+
+## Dependency Direction
 
 ```text
-core knows nobody.
-math knows core.
-sim knows core + math.
-flight knows core + math + sim.
-world knows core + math.
-navigation knows core + math + sim + flight + world contracts.
-render-three consumes render snapshots and debug snapshots only.
-ui consumes ViewModels/snapshots and sends commands.
-test-harness may orchestrate all layers but must not contain product rules.
+Core/domain contracts do not depend on UI or Three.js.
+Flight owns executable physical state and actuator truth.
+Navigation consumes flight/world snapshots and emits plans or typed rejection.
+Runtime coordinates commands and exposes immutable snapshots.
+UI reads ViewModels/snapshots and sends commands.
+Three.js consumes render/world-presentation snapshots only.
+Tests may orchestrate layers but must not become product-rule owners.
 ```
+
+Do not let UI or rendering become a second implementation of planner, executor, objective, world or arrival rules.
 
 ## Truth Ownership
 
-- Durable world truth is data: entity state, absolute/local frames, ownership and simulation state.
-- Current render truth is a projection: Three.js objects, camera transforms, labels and debug gizmos.
-- Player UI truth is read-only presentation: warning chips, route state, fuel/authority status, telemetry and next actions from owners.
-- Test truth is recorded evidence: scenario JSON/Markdown/screenshots/telemetry from the same core APIs used by the browser runtime.
+### Gameplay and flight truth
 
-## Mainline Contracts To Preserve
+Owned by runtime/domain state:
 
-Source paths:
+- ship position, orientation and velocity;
+- manual input and control mode;
+- fuel, mass, authority and braking reserve;
+- actuator requests and applied flight-controller state;
+- terminal capture, Arrival and station keeping.
 
-- `docs/architecture/autopilot-v2-design.md`
-- `docs/architecture/autopilot-v2-test-harness.md`
-- `docs/architecture/coordinate-spaces-and-floating-origin.md`
-- `docs/architecture/real-scale-world-architecture.md`
-- `docs/architecture/surface-local-frame-architecture.md`
-- `docs/ux/player-facing-status-authority-v1.md`
-- `docs/ux/unified-ui-input-mode-architecture.md`
-- `analysis/threejs-mainline/source-evidence/current-core-inventory.md`
-- `analysis/threejs-mainline/source-evidence/unity-to-threejs-port-map.json`
+### Navigation truth
 
-Required contracts:
+Owned by navigation/runtime contracts:
 
-- `RoutePlan` identity must be deterministic and stable across equal inputs.
-- Executor accepts one locked plan and reports divergence/invalidation without plan replacement.
-- `TargetDescriptor` must carry exact target semantics plus arrival envelope. Broad zones/sites resolve before execution.
-- Authority/fuel/brake reserve are owned by flight/navigation services, not HUD rendering.
-- Frame descriptors travel with positions and velocities whenever systems cross absolute, local physics, ship-local, planet-centered or surface-local spaces.
-- Browser UI and renderer are snapshot consumers. Commands enter core through explicit APIs.
+- selected target and target identity;
+- route preview and validation result;
+- admission result for the exact preview hash;
+- locked plan and active execution segment;
+- completion history and `completedPlanHash`;
+- explicit invalidation/replan-required state.
+
+A displayable route is not automatically engageable. `displayPlan` may provide context; only `admittedPlan` can authorize Engage, and only for its exact stable `planHash`.
+
+### World truth
+
+Owned as data and snapshots:
+
+- absolute entity positions and velocities;
+- frame descriptors and local projections;
+- obstacle and target identities;
+- chunk registry, simulation residency and render eligibility;
+- runtime world-contact provenance.
+
+### Presentation truth
+
+Three.js and UI may own only presentation state such as:
+
+- mesh instances and materials;
+- interpolated render pose;
+- camera damping and inspection distance;
+- label layout, CSS state and visual transitions.
+
+These layers cannot authorize engagement, complete objectives, alter absolute world state or manufacture runtime contacts.
+
+## Navigation Lifecycle
+
+```text
+Target selection
+  -> route planning
+  -> preview validation
+  -> exact-hash admission
+  -> explicit Engage command
+  -> immutable locked execution
+  -> terminal brake/capture
+  -> Arrival/Holding
+  -> completedPlanHash history + station keeping
+```
+
+Failure paths are explicit:
+
+```text
+Unavailable
+StalePreview
+ValidationRejected
+FlightAdmissionRejected
+VelocityMismatch
+Diverged
+Invalidated
+ReplanRequired
+FuelInsufficient
+NoAuthority
+BrakeReserveInsufficient
+```
+
+The executor must not silently plan or replace its locked plan. Replanning is a new explicit planning/admission action.
+
+## TestBridge Boundary
+
+`window.TestBridge` is test infrastructure, not part of the product runtime.
+
+- Normal player route: `/`
+- Explicit test route: `/?testBridge=1`
+
+Live player acceptance must prefer visible UI interactions on `/`. The query-gated route is reserved for deterministic harness scenarios that cannot be expressed as a practical player-flow test.
+
+No player-facing component may depend on TestBridge being present.
+
+## Render And Asset Boundary
+
+The Demo Scout GLB is the preferred player-facing visual. The procedural ship remains a required fallback and test-safe source.
+
+Rules:
+
+- GLB axis/scale correction is render-only.
+- Marker/socket binding may consume named GLB nodes or manifest fallback descriptors.
+- Missing visual nodes must not create phantom gameplay thrusters, targets or world state.
+- Render interpolation affects ship/camera presentation only; HUD and gameplay state continue to read owner snapshots.
+- Decorative objects are excluded from radar/world truth unless they have explicit runtime-backed entities.
+
+## World-Scale Foundation
+
+Implemented foundations:
+
+- stable absolute coordinates;
+- local projection frames and floating-origin invariants;
+- deterministic simulation bubble and render LOD;
+- chunk registry and streaming transition plans;
+- renderer-owned instancing without renderer-owned simulation truth.
+
+Still missing:
+
+- production content/chunk IO;
+- generated planets and terrain;
+- voxel data and destruction;
+- surface-local gameplay transitions;
+- orbit/gravity/SOI/timewarp;
+- persistent or multiplayer universe authority.
+
+Future planet and voxel work must preserve absolute simulation state while streaming local render/physics regions. A future 3D-asset-to-voxel converter should target an explicit voxel resolution and material/interaction schema rather than baking renderer meshes directly into gameplay truth.
 
 ## Unity Reference Boundary
 
-Read Unity/legacy sources for:
+Unity sources may be read for:
 
-- player-visible behavior,
-- domain vocabulary,
-- edge cases and historic defects,
-- evidence scenarios,
-- useful constants when test-backed.
+- feature intent and player-visible behavior;
+- vocabulary and historical defects;
+- evidence scenarios;
+- useful test-backed constants;
+- reusable source assets.
 
-Do not port:
+Do not port as architecture:
 
-- `Update`/`FixedUpdate` lifecycle ordering as architecture,
-- MonoBehaviour class shape,
-- scene wiring as domain truth,
-- Rigidbody integration as deterministic truth,
-- IMGUI debug windows as player UI,
-- root/zero/default fallbacks for missing targets, sockets or markers,
-- silent replan/fallback behavior.
+- MonoBehaviour class shape;
+- `Update`/`FixedUpdate` ownership;
+- scene wiring as domain state;
+- Rigidbody state as deterministic authority;
+- IMGUI as player UI;
+- root/default fallbacks for missing semantic objects;
+- silent replan or hidden assist behavior.
 
-## Browser Runtime Shape
+## Core Contracts To Preserve
 
-The browser app should start as a low-poly proving ground: one ship, one route, one target, optional obstacles, HUD readout, telemetry bridge and evidence recorder. It then expands by scenarios and contracts, not by copying Unity scene breadth.
+- Deterministic, stable plan and domain signatures.
+- One admitted locked plan per execution.
+- No target/waypoint snap or hidden velocity reset.
+- FlightController-owned actuator and terminal-capture behavior.
+- Explicit target semantics and arrival envelopes.
+- Fail-closed authority, fuel and braking checks.
+- Stable IDs across serialization and future persistence.
+- Frame metadata whenever state crosses absolute/local/surface/orbital boundaries.
+- UI and rendering remain command/snapshot adapters.
+- Demo Scout and Procedural Fallback remain available.
 
-## Open-World Preparedness
+## Related Documents
 
-From `docs/architecture/coordinate-spaces-and-floating-origin.md`, `docs/architecture/real-scale-world-architecture.md` and historical external package low-poly planning (not a live repo path in this worktree):
-
-- use floating origin/local frames as projection corrections only;
-- keep absolute simulation state stable;
-- simulate nearby active objects in a bubble;
-- treat far objects as data/snapshots;
-- budget object counts and avoid unchecked `O(n^2)` world loops;
-- use instancing/LOD for low-poly fields before adding content volume.
+- `docs/current-prototype-state.md`
+- `docs/browser-mainline/adr-0001-threejs-mainline.md`
+- `docs/browser-mainline/testing-and-evidence.md`
+- `docs/browser-mainline/ci-verification.md`
+- `docs/browser-mainline/port-roadmap.md`
+- `docs/roadmap/living-master-plan.md`
+- `docs/architecture/autopilot-v2-design.md`
+- `docs/architecture/coordinate-spaces-and-floating-origin.md`
+- `docs/architecture/real-scale-world-architecture.md`
+- `docs/ux/player-facing-status-authority-v1.md`
