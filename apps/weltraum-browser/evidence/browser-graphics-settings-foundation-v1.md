@@ -2,7 +2,7 @@
 
 ## Result
 
-The browser mainline now has a versioned, persisted graphics-preference contract, a truthful capability model, an accessible player-facing dialog, and a narrow Three.js presentation adapter. The implementation started from `7e1d0237cdf272bfb759f26e2be8cdb3a760e15c` and is integrated against `ea4ccbadfa8c91787e4b4451e04b1fb4ad18a12f` on `feature/browser-graphics-settings-foundation-v1`.
+The browser mainline now has a versioned, persisted graphics-preference contract, a truthful capability model, an accessible player-facing dialog, and a narrow Three.js presentation adapter. The implementation started from `7e1d0237cdf272bfb759f26e2be8cdb3a760e15c` and is integrated against `a790e7b7d4601989c6851e05943d54f3b0adfd52` on `feature/browser-graphics-settings-foundation-v1`.
 
 ## Settings contract
 
@@ -29,21 +29,21 @@ The visible Graphics action opens a native modal dialog in the existing dark nav
 
 | Gate | Result | Evidence |
 | --- | --- | --- |
-| `npm ci` | PASS | 59 packages, 0 vulnerabilities; lockfile unchanged; `package.json` registers Graphics in UI and repairs the missing Combat core inventory entry as authorized by the user |
+| `npm ci` | PASS | 59 packages, 0 vulnerabilities; lockfile unchanged; `package.json` adds Graphics to the current-main UI group |
 | `npx tsc -p tsconfig.json` | PASS | no diagnostics |
 | Focused Graphics unit tests | PASS | 5 files, 30 tests |
-| Core E2E group | PASS | 25 tests across all 12 grouped specs, including Combat |
+| Core E2E group | PASS | 26 tests across all 13 current-main grouped specs, including Combat and Persistence |
 | UI E2E group | PASS | 12 tests; Graphics assigned exactly once |
 | Focused Graphics E2E | PASS | 3 normal `/` tests, no TestBridge |
-| CI E2E group inventory | PASS | 24 discovered specs assigned exactly once; no unassigned, duplicate, or stale entries |
-| Full unit suite | PASS | 54 files, 577 tests |
+| CI E2E group inventory | PASS | 25 discovered specs assigned exactly once; no unassigned, duplicate, or stale entries |
+| Full unit suite | PASS | 60 files, 616 tests |
 | Production build | PASS | 66 modules; chunk-size warning only |
-| Full browser E2E | PASS | 49 tests |
+| Full browser E2E | PASS | 50 tests |
 | `.NET` build/test | NOT APPLICABLE | `Weltraum Spiel.sln` and all `.sln`/`.slnx`/`.csproj` files are absent |
 | Unity | NOT RUN | explicitly excluded by the change request |
 | DevToolbox completion | BLOCKED | `workspace_prepare_for_agent` rejects the isolated worktree as `unauthorized_path`; task boxes remain open |
 
-The machine policy blocks Playwright's bundled `chrome-headless-shell.exe` with `spawn UNKNOWN`. The repository-supported installed Google Chrome fallback was used on isolated port 5174. An early full run exposed missing locally smudged baseline images; after selectively fetching the four already tracked LFS objects, the final post-rebase run passed 49/49. Test-generated changes to unrelated evidence files were discarded.
+The machine policy blocks Playwright's bundled `chrome-headless-shell.exe` with `spawn UNKNOWN`. The repository-supported installed Google Chrome fallback was used on isolated port 5174. An early full run exposed missing locally smudged baseline images; after selectively fetching the four already tracked LFS objects, the final current-main integration run passed 50/50. Test-generated changes to unrelated evidence files were discarded.
 
 ## Screenshot matrix
 
@@ -57,6 +57,6 @@ Visual inspection confirms readable labels, no clipped controls or HUD collision
 
 ## Scope and limits
 
-The final feature diff is restricted to the original user allowlist plus the explicitly authorized `apps/weltraum-browser/package.json` group registrations for the Graphics UI spec and the previously missing Combat core spec; the lockfile remains unchanged. `Assets/**`, gameplay domains, TestBridge code, and protected roadmap/index files remain unchanged. The renderer remains projection-only and owns no gameplay or world truth.
+The final feature diff is restricted to the original user allowlist plus the explicitly authorized `apps/weltraum-browser/package.json` registration for the Graphics UI spec; current main already supplies the Combat and Persistence core registrations. The lockfile remains unchanged. `Assets/**`, gameplay domains, TestBridge code, and protected roadmap/index files remain unchanged. The renderer remains projection-only and owns no gameplay or world truth.
 
 Anti-aliasing needs renderer recreation, so a reload is required. Fullscreen transitions and VSync remain browser-controlled. Shadows, environment/reflections, texture variants, bloom, and motion effects cannot be applied until the corresponding scene or renderer pipeline exists. DevToolbox verification and task closure remain pending until that service authorizes the isolated worktree.

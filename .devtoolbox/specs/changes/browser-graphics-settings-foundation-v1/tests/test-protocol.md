@@ -86,6 +86,6 @@ Visually inspect readable labels, no clipping, no HUD collision, visible keyboar
 ## Scope audit
 
 - Diff paths SHALL match the user-provided allowlist.
-- `Assets/**`, lockfiles, flight/navigation/resources/ship-builder/combat/celestial/test-harness domains, and protected roadmap/index files SHALL be unchanged. By explicit user authorization after review, `apps/weltraum-browser/package.json` may register `tests/e2e/graphics-settings.spec.ts` in the UI group and repair the missing `tests/e2e/combat-weapon-damage-core.spec.ts` core-group assignment required by CI.
+- `Assets/**`, lockfiles, flight/navigation/resources/ship-builder/combat/celestial/test-harness domains, and protected roadmap/index files SHALL be unchanged. By explicit user authorization after review, `apps/weltraum-browser/package.json` may register `tests/e2e/graphics-settings.spec.ts` in the UI group. The integrated current mainline owns the Combat and Persistence core-group assignments.
 - Evidence SHALL come from the real runtime, not static reference images.
 - Tasks SHALL be checked only after fresh evidence and completion preflight.

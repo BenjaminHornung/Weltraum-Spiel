@@ -1,9 +1,9 @@
 {
   "changeId": "browser-graphics-settings-foundation-v1",
-  "generatedAt": "2026-07-13T19:53:26+02:00",
+  "generatedAt": "2026-07-13T20:46:36+02:00",
   "branch": "feature/browser-graphics-settings-foundation-v1",
   "implementationStartSha": "7e1d0237cdf272bfb759f26e2be8cdb3a760e15c",
-  "integrationBaseSha": "ea4ccbadfa8c91787e4b4451e04b1fb4ad18a12f",
+  "integrationBaseSha": "a790e7b7d4601989c6851e05943d54f3b0adfd52",
   "schema": {
     "storageKey": "weltraum.browser.graphics-settings",
     "version": 1,
@@ -57,7 +57,7 @@
     {
       "command": "npm ci",
       "status": "PASS",
-      "detail": "59 packages audited; 0 vulnerabilities; lockfile unchanged. package.json contains the user-authorized Graphics UI registration and Combat core CI-inventory repair."
+      "detail": "59 packages audited; 0 vulnerabilities; lockfile unchanged. package.json adds the user-authorized Graphics UI registration to the current mainline groups."
     },
     {
       "command": "npx tsc -p tsconfig.json",
@@ -71,7 +71,7 @@
     {
       "command": "npm run test:e2e:core -- --config=<isolated Chrome config>",
       "status": "PASS",
-      "detail": "25 tests across all 12 core-group specs, including combat-weapon-damage-core.spec.ts."
+      "detail": "26 tests across all 13 current-main core-group specs, including Combat and Persistence."
     },
     {
       "command": "npm run test:e2e:ui -- --config=<isolated Chrome config>",
@@ -86,12 +86,12 @@
     {
       "command": "CI E2E group inventory",
       "status": "PASS",
-      "detail": "24 discovered Playwright specs are assigned exactly once; no unassigned, duplicate, or stale entries."
+      "detail": "25 discovered Playwright specs are assigned exactly once; no unassigned, duplicate, or stale entries."
     },
     {
       "command": "npm run test",
       "status": "PASS",
-      "detail": "54 files; 577 tests"
+      "detail": "60 files; 616 tests"
     },
     {
       "command": "npm run build",
@@ -101,7 +101,7 @@
     {
       "command": "npx playwright test --config=<isolated Chrome config>",
       "status": "PASS",
-      "detail": "49 tests; installed Google Chrome fallback because the policy-blocked bundled headless shell returned spawn UNKNOWN."
+      "detail": "50 tests on the integrated current mainline; installed Google Chrome fallback because the policy-blocked bundled headless shell returned spawn UNKNOWN."
     },
     {
       "command": "dotnet build \"Weltraum Spiel.sln\" --no-restore",
