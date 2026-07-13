@@ -307,7 +307,10 @@ test("hash-mismatch Engage fails visibly, remains modal, and focuses the inline 
   await expect(page.locator("#planner-route-detail")).toContainText(/stale/i);
   await expect(page.getByTestId("planner-engage-route")).toHaveAttribute("aria-description", /stale|preview or replan/i);
   await expect(page.getByTestId("navigation-planner")).toBeVisible();
-  await expect(page.getByTestId("navigation-planner")).toHaveAttribute("data-visible-preview-hash", originalHash);
+  await expect(page.getByTestId("navigation-planner")).toHaveAttribute("data-visible-preview-hash", "");
+  await expect(page.locator("#planner-route-detail")).not.toContainText(originalHash);
+  await expect(page.locator("#planner-metric-route")).not.toContainText(originalHash);
+  await expect(page.locator("#planner-timeline")).not.toContainText(originalHash);
 
   await previewVisibleRoute(page);
   await expect(page.getByTestId("planner-engage-route")).toBeEnabled();

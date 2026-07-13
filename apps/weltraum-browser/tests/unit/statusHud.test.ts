@@ -59,6 +59,22 @@ const elementIds = [
   "engage-autopilot",
   "open-navigation-planner",
   "cancel-autopilot",
+  "navigation-planner",
+  "planner-selected-target",
+  "planner-route-distance",
+  "planner-route-status",
+  "planner-objective",
+  "planner-lock-reason",
+  "planner-feedback",
+  "planner-preview-route",
+  "planner-replan-route",
+  "planner-engage-route",
+  "planner-metric-distance",
+  "planner-metric-fuel-estimate",
+  "planner-metric-fuel-remaining",
+  "planner-metric-brake-reserve",
+  "planner-metric-avoidance",
+  "planner-metric-route",
   "flight-nav-distance-scale",
   "planner-timeline",
   "planner-timeline-total",
@@ -274,6 +290,127 @@ const createTwoLegRouteTelemetry = (
   };
 };
 
+const createNewPreviewAfterCompletionTelemetry = (): TelemetrySnapshot => {
+  const ship = createShipStateV2({
+    position: vec3(1_000, 0, 0),
+    authority: { mode: "Autopilot" }
+  });
+  const target = {
+    id: "range-2500m",
+    label: "Range 2500m",
+    kind: "Point" as const,
+    position: vec3(2_500, 0, 0),
+    arrivalEnvelope: { radius: 8 }
+  };
+  const plan: RoutePlan = {
+    id: "preview-range-2500m",
+    planner: "ObstacleAvoidanceLocal",
+    speedProfile: "Balanced",
+    createdAtTick: 12_345,
+    target,
+    segments: [
+      {
+        id: "direct-0",
+        kind: "Direct",
+        start: ship.position,
+        end: target.position,
+        desiredSpeed: 18,
+        clearanceRadius: 3
+      }
+    ],
+    validation: { ok: true, issues: [], rejectedReasonCodes: [] },
+    score: {
+      distance: 1_500,
+      segmentCount: 1,
+      clearanceRisk: 0,
+      fuelCostEstimate: 0,
+      authorityRisk: 0,
+      total: 1_500,
+      reasons: []
+    },
+    planHash: "new2500a"
+  };
+  const flightSnapshot = createFlightSnapshot(ship, null);
+
+  return {
+    ship,
+    lockedPlan: null,
+    selectedTarget: target,
+    routePreview: {
+      state: "Ready",
+      planner: plan.planner,
+      target,
+      plan,
+      validation: plan.validation,
+      rejectedReasonCodes: [],
+      playerMessage: "Route preview ready for Range 2500m.",
+      provenance: null,
+      stale: false,
+      staleReason: null,
+      lockAdmission: {
+        ok: true,
+        code: "Ready",
+        message: "Route preview is ready to engage.",
+        planHash: plan.planHash,
+        firstSegmentStartTolerance: 1
+      }
+    },
+    flightSnapshot,
+    executor: {
+      tick: 12_345,
+      status: "Idle",
+      routeLifecycle: "Idle",
+      arrivalPhase: "None",
+      planHash: null,
+      completedPlanHash: "completed1000",
+      stationKeepingActive: false,
+      activeSegmentId: null,
+      distanceToTarget: 1_500,
+      offRouteDistance: 0,
+      replanRequired: false,
+      invalidationReasons: [],
+      failureReasonCodes: [],
+      fuel: flightSnapshot.fuel,
+      flightSnapshot,
+      position: ship.position,
+      velocity: ship.velocity
+    }
+  };
+};
+
+const createNavigationMapForRoute = (
+  telemetry: TelemetrySnapshot,
+  route: RoutePlan | null
+): NonNullable<TelemetrySnapshot["navigationMap"]> => createNavigationMapSnapshot({
+  ship: navigationMapShipSnapshot({
+    absolutePosition: worldCoordinate(telemetry.ship.position),
+    orientation: telemetry.ship.orientation,
+    presentation: DEFAULT_ACTIVE_SHIP_PRESENTATION
+  }),
+  targets: telemetry.selectedTarget ? [navigationMapTargetSnapshot(telemetry.selectedTarget)] : [],
+  selectedTargetId: telemetry.selectedTarget?.id ?? null,
+  route: route ? navigationMapRouteSnapshot(route) : null,
+  obstacles: (telemetry.obstacles ?? []).map((obstacle) => navigationMapObstacleSnapshot(obstacle)),
+  world: {
+    registrySignature: "status-hud-route-gate-registry",
+    streamingSignature: "status-hud-route-gate-streaming",
+    fullChunkIds: [],
+    snapshotChunkIds: []
+  }
+});
+
+const createPoisonedMapPlan = (plan: RoutePlan): RoutePlan => ({
+  ...plan,
+  id: "poisoned-map-plan",
+  planHash: "poisoned-map-hash",
+  segments: [{
+    ...plan.segments[0],
+    id: "poisoned-map-segment",
+    start: vec3(-9_000, 0, -9_000),
+    end: vec3(9_000, 0, 9_000)
+  }]
+});
+
 describe("renderStatusHud", () => {
   afterEach(() => {
     delete (globalThis as { document?: Document }).document;
@@ -314,7 +451,7 @@ describe("renderStatusHud", () => {
     expect(elements.get("help-hint")?.textContent).toContain("W/S pitch");
     expect(elements.get("help-hint")?.textContent).toContain("Mobile: target selection and autopilot only");
     expect(elements.get("route-status")?.textContent).toBe("Blocked");
-    expect(elements.get("route-status")?.getAttribute("title")).toContain("select a target");
+    expect(elements.get("route-status")?.getAttribute("title")).toBe("A route is already locked.");
     expect(elements.get("objective-label")?.textContent).toBe("No navigation objective");
     expect(elements.get("objective-status")?.textContent).toBe("Inactive");
     expect(elements.get("objective-options")?.textContent).toBe("no objectives available");
@@ -571,6 +708,369 @@ describe("renderStatusHud", () => {
     expect(elements.get("flight-hud")?.getAttribute("data-action-tone")).toBe("ready");
   });
 
+  it("promotes a new admitted preview over an older completed plan and engages its exact hash", () => {
+    const elements = installDocumentStub("flight", true);
+    const commands: unknown[] = [];
+    const base = createNewPreviewAfterCompletionTelemetry();
+    const admittedPlan = base.routePreview!.plan!;
+    const telemetry: TelemetrySnapshot = {
+      ...base,
+      navigationMap: createNavigationMapForRoute(base, createPoisonedMapPlan(admittedPlan))
+    };
+
+    renderStatusHud(telemetry, {
+      dispatch: (command) => commands.push(command)
+    });
+
+    elements.get("engage-autopilot")?.onclick?.();
+
+    expect(elements.get("plan-hash")?.textContent).toBe("Route preview ready");
+    expect(elements.get("route-status")?.textContent).toBe("Preview ready");
+    expect(elements.get("route-status")?.getAttribute("data-hud-tone")).toBe("ready");
+    expect(elements.get("engage-autopilot")?.textContent).toBe("Engage route");
+    expect(elements.get("engage-autopilot")?.disabled).toBe(false);
+    expect(elements.get("navigation-planner")?.dataset.visiblePreviewHash).toBe("new2500a");
+    expect(elements.get("planner-route-detail")?.textContent).toContain("hash new2500a; Ready");
+    expect(elements.get("planner-metric-route")?.textContent).toContain("new2500a");
+    expect(elements.get("planner-engage-route")?.disabled).toBe(false);
+    expect(elements.get("planner-route-svg")?.dataset.segmentCount).toBe(String(admittedPlan.segments.length));
+    expect(elements.get("planner-route-svg")?.dataset.routePlanHash).toBe(admittedPlan.planHash);
+    expect(descendantsOf(elements.get("planner-map-viewport")!).filter((node) => node.getAttribute("data-segment-id")).map((node) => node.getAttribute("data-segment-id"))).toEqual(
+      admittedPlan.segments.map((segment) => segment.id)
+    );
+    expect(commands).toEqual([
+      { type: "EngageRoutePreview", expectedPlanHash: "new2500a" }
+    ]);
+  });
+
+  it("uses the authoritative FlightAdmissionRejected safety message without trusting preview copy", () => {
+    const elements = installDocumentStub("flight", true);
+    const commands: unknown[] = [];
+    const base = createNewPreviewAfterCompletionTelemetry();
+    const preview = base.routePreview!;
+    const plan = preview.plan!;
+    const safetyMessage = "Current fuel, braking reserve, or flight authority cannot safely engage this route.";
+    const telemetry: TelemetrySnapshot = {
+      ...base,
+      runtimeMessage: "Route preview ready from untrusted runtime copy.",
+      routePreview: {
+        ...preview,
+        playerMessage: "Route preview ready from untrusted preview copy.",
+        lockAdmission: {
+          ok: false,
+          code: "FlightAdmissionRejected",
+          message: "Untrusted admission copy.",
+          planHash: plan.planHash,
+          firstSegmentStartTolerance: 1
+        }
+      }
+    };
+
+    const viewModel = createStatusHudViewModel(telemetry);
+    renderStatusHud(telemetry, { dispatch: (command) => commands.push(command) });
+    elements.get("engage-autopilot")?.onclick?.();
+    elements.get("planner-engage-route")?.onclick?.();
+
+    expect(viewModel.runtimeMessage).toBe(safetyMessage);
+    expect(viewModel.actions.primaryDisabledReason).toBe(safetyMessage);
+    expect(elements.get("runtime-message")?.textContent).toBe(safetyMessage);
+    expect(elements.get("planner-feedback")?.textContent).toBe(safetyMessage);
+    expect(elements.get("planner-engage-route")?.title).toBe(safetyMessage);
+    expect(commands).toEqual([]);
+  });
+
+  it("retains a VelocityMismatch display plan while keeping both Engage controls fail closed", () => {
+    const elements = installDocumentStub("flight", true);
+    const commands: unknown[] = [];
+    const base = createNewPreviewAfterCompletionTelemetry();
+    const preview = base.routePreview!;
+    const plan = preview.plan!;
+    const telemetry: TelemetrySnapshot = {
+      ...base,
+      runtimeMessage: preview.playerMessage,
+      routePreview: {
+        ...preview,
+        lockAdmission: {
+          ok: false,
+          code: "VelocityMismatch",
+          message: "Ship velocity changed. Replan before engaging.",
+          planHash: plan.planHash,
+          firstSegmentStartTolerance: 1
+        }
+      },
+      navigationMap: createNavigationMapForRoute(base, createPoisonedMapPlan(plan))
+    };
+
+    const viewModel = createStatusHudViewModel(telemetry);
+    renderStatusHud(telemetry, { dispatch: (command) => commands.push(command) });
+    elements.get("engage-autopilot")?.onclick?.();
+    elements.get("planner-engage-route")?.onclick?.();
+
+    expect(viewModel.planState).toBe("Route preview blocked");
+    expect(viewModel.routeTone).toBe("blocked");
+    expect(viewModel.distance).toBe("1.5 km");
+    expect(elements.get("navigation-planner")?.dataset.visiblePreviewHash).toBe(plan.planHash);
+    expect(elements.get("planner-route-distance")?.textContent).toBe("1.5 km");
+    expect(elements.get("planner-route-detail")?.textContent).toContain(`hash ${plan.planHash}; Blocked`);
+    expect(elements.get("planner-route-svg")?.dataset.routePlanHash).toBe(plan.planHash);
+    expect(elements.get("planner-route-svg")?.dataset.segmentCount).toBe(String(plan.segments.length));
+    expect(descendantsOf(elements.get("planner-map-viewport")!).filter((node) => node.getAttribute("data-segment-id")).map((node) => node.getAttribute("data-segment-id"))).toEqual(
+      plan.segments.map((segment) => segment.id)
+    );
+    expect(elements.get("engage-autopilot")?.disabled).toBe(true);
+    expect(elements.get("planner-engage-route")?.disabled).toBe(true);
+    expect(elements.get("planner-engage-route")?.title).toBe("Ship velocity changed. Replan before engaging.");
+    expect(commands).toEqual([]);
+  });
+
+  it("fails closed instead of promoting invalid previews after a completed plan", () => {
+    const base = createNewPreviewAfterCompletionTelemetry();
+    const preview = base.routePreview!;
+    const plan = preview.plan!;
+    const poisonedReadyMessage = preview.playerMessage;
+    const poisonedBase = { ...base, runtimeMessage: poisonedReadyMessage } satisfies TelemetrySnapshot;
+    const poisonedMapPlan = createPoisonedMapPlan(plan);
+    const mapObstacle = { id: "route-independent-map-obstacle", center: vec3(1_250, 0, 25), radius: 12, padding: 3 };
+    const poisonedNavigationMap = createNavigationMapForRoute({ ...base, obstacles: [mapObstacle] }, poisonedMapPlan);
+    const cases: readonly {
+      readonly label: string;
+      readonly telemetry: TelemetrySnapshot;
+      readonly reason: string;
+    }[] = [
+      {
+        label: "unavailable",
+        telemetry: {
+          ...poisonedBase,
+          routePreview: {
+            ...preview,
+            state: "Unavailable",
+            plan: null,
+            validation: null,
+            rejectedReasonCodes: ["RouteUnsolvable"],
+            playerMessage: poisonedReadyMessage,
+            lockAdmission: {
+              ok: false,
+              code: "MissingPreview",
+              message: "Create a route preview before engaging autopilot.",
+              planHash: null,
+              firstSegmentStartTolerance: null
+            }
+          }
+        },
+        reason: "No valid route preview is available."
+      },
+      {
+        label: "missing plan",
+        telemetry: {
+          ...poisonedBase,
+          routePreview: { ...preview, plan: null }
+        },
+        reason: "Create a route preview before engaging autopilot."
+      },
+      {
+        label: "stale",
+        telemetry: {
+          ...poisonedBase,
+          routePreview: { ...preview, stale: true, staleReason: "ExplicitlyInvalidated" }
+        },
+        reason: "The route preview is stale. Preview or replan before engaging."
+      },
+      {
+        label: "rejected admission",
+        telemetry: {
+          ...poisonedBase,
+          routePreview: {
+            ...preview,
+            lockAdmission: {
+              ok: false,
+              code: "RouteValidationRejected",
+              message: poisonedReadyMessage,
+              planHash: plan.planHash,
+              firstSegmentStartTolerance: 1
+            }
+          }
+        },
+        reason: "The exact preview route no longer passes route validation."
+      },
+      {
+        label: "missing admission",
+        telemetry: {
+          ...poisonedBase,
+          routePreview: { ...preview, lockAdmission: undefined as never }
+        },
+        reason: "The route preview has no lock admission. Replan before engaging."
+      },
+      {
+        label: "admission hash mismatch",
+        telemetry: {
+          ...poisonedBase,
+          routePreview: {
+            ...preview,
+            lockAdmission: { ...preview.lockAdmission, planHash: "other2500" }
+          }
+        },
+        reason: "The visible route changed. Review the current preview before engaging."
+      },
+      {
+        label: "same as completed",
+        telemetry: {
+          ...poisonedBase,
+          executor: { ...base.executor, completedPlanHash: plan.planHash }
+        },
+        reason: "Select or replan a new route before engaging."
+      },
+      {
+        label: "rejected validation",
+        telemetry: {
+          ...poisonedBase,
+          routePreview: {
+            ...preview,
+            validation: {
+              ok: false,
+              issues: [{ code: "UnsafeRouteSegment", severity: "Reject", message: "Rejected route." }],
+              rejectedReasonCodes: ["UnsafeRouteSegment"]
+            }
+          }
+        },
+        reason: "The exact preview route no longer passes route validation."
+      }
+    ];
+
+    for (const invalidCase of cases) {
+      const elements = installDocumentStub("flight", true);
+      const commands: unknown[] = [];
+      const telemetry = { ...invalidCase.telemetry, navigationMap: poisonedNavigationMap } satisfies TelemetrySnapshot;
+      const viewModel = createStatusHudViewModel(telemetry);
+      renderStatusHud(telemetry, {
+        dispatch: (command) => commands.push(command)
+      });
+
+      elements.get("engage-autopilot")?.onclick?.();
+      elements.get("planner-engage-route")?.onclick?.();
+
+      expect(viewModel.planState, invalidCase.label).toBe("Plan completed");
+      expect(viewModel.routeTone, invalidCase.label).toBe("manual");
+      expect(viewModel.actions.primaryCommandEnabled, invalidCase.label).toBe(false);
+      expect(elements.get("route-status")?.getAttribute("data-hud-tone"), invalidCase.label).toBe("manual");
+      expect(elements.get("route-status")?.getAttribute("title"), invalidCase.label).toBe(invalidCase.reason);
+      expect(elements.get("route-status")?.textContent, invalidCase.label).not.toBe("Preview ready");
+      expect(elements.get("runtime-message")?.textContent, invalidCase.label).toBe(invalidCase.reason);
+      expect(elements.get("autopilot-action-state")?.textContent, invalidCase.label).toBe(invalidCase.reason);
+      expect(elements.get("planner-selected-target")?.textContent, invalidCase.label).toBe("Range 2500m [Point]");
+      expect(elements.get("navigation-planner")?.dataset.visiblePreviewHash, invalidCase.label).toBe("");
+      expect(elements.get("planner-route-detail")?.textContent, invalidCase.label).toBe(invalidCase.reason);
+      expect(elements.get("planner-route-detail")?.textContent, invalidCase.label).not.toContain(plan.planHash);
+      expect(elements.get("planner-timeline")?.children, invalidCase.label).toHaveLength(1);
+      expect(elements.get("planner-timeline")?.children[0]?.textContent, invalidCase.label).toBe("No route preview available");
+      expect(elements.get("planner-timeline-total")?.textContent, invalidCase.label).toBe("--:--");
+      expect(elements.get("planner-route-eta")?.textContent, invalidCase.label).toBe("--:--");
+      expect(elements.get("planner-metric-distance")?.textContent, invalidCase.label).toBe("n/a");
+      expect(elements.get("planner-metric-route")?.textContent, invalidCase.label).toBe("Balanced / no preview");
+      expect(elements.get("planner-metric-route")?.textContent, invalidCase.label).not.toContain(plan.planHash);
+      expect(elements.get("planner-engage-route")?.disabled, invalidCase.label).toBe(true);
+      expect(elements.get("planner-engage-route")?.title, invalidCase.label).toBe(invalidCase.reason);
+      expect(elements.get("planner-engage-route")?.getAttribute("aria-description"), invalidCase.label).toBe(invalidCase.reason);
+      expect(elements.get("planner-feedback")?.textContent, invalidCase.label).toBe(invalidCase.reason);
+      const mapNodes = descendantsOf(elements.get("planner-map-viewport")!);
+      expect(elements.get("planner-route-svg")?.dataset.segmentCount, invalidCase.label).toBe("0");
+      expect(elements.get("planner-route-svg")?.dataset.routePlanHash, invalidCase.label).toBe("");
+      expect(mapNodes.filter((node) => node.getAttribute("data-segment-id")), invalidCase.label).toHaveLength(0);
+      expect(mapNodes.find((node) => node.getAttribute("data-target-id") === plan.target.id), invalidCase.label).toBeDefined();
+      expect(elements.get("planner-route-svg")?.dataset.targetCount, invalidCase.label).toBe("1");
+      expect(mapNodes.find((node) => node.getAttribute("data-obstacle-id") === mapObstacle.id), invalidCase.label).toBeDefined();
+      expect(elements.get("planner-route-svg")?.dataset.obstacleCount, invalidCase.label).toBe("1");
+      for (const id of ["route-status", "runtime-message", "autopilot-action-state", "planner-route-detail", "planner-feedback"] as const) {
+        expect(elements.get(id)?.textContent, `${invalidCase.label}: ${id}`).not.toContain(poisonedReadyMessage);
+        expect(elements.get(id)?.getAttribute("title") ?? "", `${invalidCase.label}: ${id} title`).not.toContain(poisonedReadyMessage);
+      }
+      expect(commands, invalidCase.label).toEqual([]);
+    }
+  });
+
+  it("hides a poisoned raw map route without a preview while preserving the target contact", () => {
+    const base = createNewPreviewAfterCompletionTelemetry();
+    const plan = base.routePreview!.plan!;
+    const telemetry: TelemetrySnapshot = {
+      ...base,
+      routePreview: null,
+      runtimeMessage: "Normal runtime message.",
+      navigationMap: createNavigationMapForRoute(base, createPoisonedMapPlan(plan))
+    };
+    const elements = installDocumentStub("flight", true);
+
+    renderStatusHud(telemetry);
+
+    const mapNodes = descendantsOf(elements.get("planner-map-viewport")!);
+    expect(elements.get("planner-route-svg")?.dataset.segmentCount).toBe("0");
+    expect(elements.get("planner-route-svg")?.dataset.routePlanHash).toBe("");
+    expect(mapNodes.filter((node) => node.getAttribute("data-segment-id"))).toHaveLength(0);
+    expect(mapNodes.find((node) => node.getAttribute("data-target-id") === plan.target.id)).toBeDefined();
+    expect(elements.get("planner-route-svg")?.dataset.targetCount).toBe("1");
+    expect(elements.get("runtime-message")?.textContent).toBe("Normal runtime message.");
+  });
+
+  it("keeps a locked plan authoritative when a poisoned raw preview coexists", () => {
+    const base = createNewPreviewAfterCompletionTelemetry();
+    const preview = base.routePreview!;
+    const lockedPlan: RoutePlan = {
+      ...preview.plan!,
+      id: "locked-range-2500m",
+      planHash: "locked2500"
+    };
+    const poisonedMapPlan = createPoisonedMapPlan(preview.plan!);
+    const flightSnapshot = createFlightSnapshot(base.ship, lockedPlan);
+    const poisonedReadyMessage = "Route preview ready for a poisoned stale route.";
+    const telemetry: TelemetrySnapshot = {
+      ...base,
+      lockedPlan,
+      routePreview: {
+        ...preview,
+        stale: true,
+        staleReason: "ExplicitlyInvalidated",
+        playerMessage: poisonedReadyMessage
+      },
+      runtimeMessage: poisonedReadyMessage,
+      navigationMap: createNavigationMapForRoute(base, poisonedMapPlan),
+      flightSnapshot,
+      executor: {
+        ...base.executor,
+        status: "Executing",
+        routeLifecycle: "Executing",
+        planHash: lockedPlan.planHash,
+        activeSegmentId: lockedPlan.segments[0]?.id ?? null,
+        fuel: flightSnapshot.fuel,
+        flightSnapshot
+      }
+    };
+    const elements = installDocumentStub("flight", true);
+
+    const viewModel = createStatusHudViewModel(telemetry);
+    renderStatusHud(telemetry);
+
+    expect(viewModel.planState).toBe("Plan locked");
+    expect(viewModel.routeTone).toBe("active");
+    expect(elements.get("route-status")?.textContent).toBe("Autopilot active");
+    expect(elements.get("route-status")?.getAttribute("title")).toContain("locked route");
+    expect(elements.get("runtime-message")?.textContent).toBe("A route is already locked.");
+    expect(elements.get("navigation-planner")?.dataset.visiblePreviewHash).toBe(lockedPlan.planHash);
+    expect(elements.get("planner-route-detail")?.textContent).toContain(`hash ${lockedPlan.planHash}; Locked`);
+    expect(elements.get("planner-metric-route")?.textContent).toContain(lockedPlan.planHash);
+    expect(elements.get("planner-engage-route")?.disabled).toBe(true);
+    expect(elements.get("planner-engage-route")?.title).toBe("A route is already locked.");
+    expect(elements.get("planner-feedback")?.textContent).toBe("A route is already locked.");
+    const mapNodes = descendantsOf(elements.get("planner-map-viewport")!);
+    expect(elements.get("planner-route-svg")?.dataset.segmentCount).toBe(String(lockedPlan.segments.length));
+    expect(elements.get("planner-route-svg")?.dataset.routePlanHash).toBe(lockedPlan.planHash);
+    expect(mapNodes.filter((node) => node.getAttribute("data-segment-id")).map((node) => node.getAttribute("data-segment-id"))).toEqual(
+      lockedPlan.segments.map((segment) => segment.id)
+    );
+    expect(mapNodes.find((node) => node.getAttribute("data-target-id") === lockedPlan.target.id)).toBeDefined();
+    for (const id of ["route-status", "runtime-message", "planner-route-detail", "planner-feedback"] as const) {
+      expect(elements.get(id)?.textContent, id).not.toContain("poisoned stale route");
+      expect(elements.get(id)?.getAttribute("title") ?? "", `${id} title`).not.toContain("poisoned stale route");
+    }
+  });
+
   it("keeps route engage disabled when the completed objective points to the next objective", () => {
     const elements = installDocumentStub();
     const ship = createShipStateV2({ authority: { mode: "Autopilot" } });
@@ -657,6 +1157,42 @@ describe("renderStatusHud", () => {
     expect(elements.get("engage-autopilot")?.disabled).toBe(true);
     expect(elements.get("autopilot-action-state")?.textContent).toBe("Next objective available");
     expect(elements.get("autopilot-action-state")?.getAttribute("data-hud-tone")).toBe("holding");
+  });
+
+  it("shows executor distance in terminal station keeping without re-exposing the completed raw route", () => {
+    const elements = installDocumentStub("flight", true);
+    const commands: unknown[] = [];
+    const base = createNewPreviewAfterCompletionTelemetry();
+    const preview = base.routePreview!;
+    const plan = preview.plan!;
+    const telemetry: TelemetrySnapshot = {
+      ...base,
+      navigationMap: createNavigationMapForRoute(base, createPoisonedMapPlan(plan)),
+      executor: {
+        ...base.executor,
+        status: "Arrived",
+        routeLifecycle: "Holding",
+        arrivalPhase: "Holding",
+        completedPlanHash: plan.planHash,
+        stationKeepingActive: true,
+        distanceToTarget: 1.25
+      }
+    };
+
+    const viewModel = createStatusHudViewModel(telemetry);
+    renderStatusHud(telemetry, { dispatch: (command) => commands.push(command) });
+    elements.get("engage-autopilot")?.onclick?.();
+    elements.get("planner-engage-route")?.onclick?.();
+
+    expect(viewModel.distance).toBe("1.3 m");
+    expect(elements.get("target-distance")?.textContent).toBe("1.3 m");
+    expect(viewModel.planState).toBe("Plan completed");
+    expect(elements.get("navigation-planner")?.dataset.visiblePreviewHash).toBe("");
+    expect(elements.get("planner-route-detail")?.textContent).not.toContain(plan.planHash);
+    expect(elements.get("planner-route-svg")?.dataset.routePlanHash).toBe("");
+    expect(elements.get("planner-route-svg")?.dataset.segmentCount).toBe("0");
+    expect(elements.get("radar-runtime-contacts")?.dataset.routeContactCount).toBe("0");
+    expect(commands).toEqual([]);
   });
 
   it("renders selected target and route-preview labels from snapshot fields", () => {
@@ -904,7 +1440,7 @@ describe("renderStatusHud", () => {
 
     expect(elements.get("plan-hash")?.textContent).toBe("Plan completed");
     expect(elements.get("route-status")?.textContent).toBe("Holding");
-    expect(elements.get("route-status")?.getAttribute("title")).toBe("holding at target; new route ready");
+    expect(elements.get("route-status")?.getAttribute("title")).toBe("holding at target; Select a target to preview a route.");
     expect(elements.get("route-status")?.getAttribute("data-hud-tone")).toBe("holding");
     expect(elements.get("autopilot-action-state")?.textContent).toBe("Holding at target; select a new route");
     expect(elements.get("autopilot-action-state")?.getAttribute("data-hud-tone")).toBe("holding");
@@ -1390,7 +1926,8 @@ describe("renderStatusHud", () => {
     expect(shipMarker?.getAttribute("data-display-name")).toBe("Demo Scout GLB");
     expect(shipMarker?.getAttribute("data-blueprint-id")).toBe("demo-scout-mk1");
     expect(obstacleLabels).toHaveLength(0);
-    expect(elements.get("planner-route-detail")?.textContent).toContain("hash progress-hash");
+    expect(elements.get("navigation-planner")?.dataset.visiblePreviewHash).toBe("progress-hash");
+    expect(elements.get("planner-route-detail")?.textContent).toContain("hash progress-hash; Locked");
     expect(authoritativeCss).toMatch(/\.planner-runtime-summary\s*\{[\s\S]*?position:\s*static;[\s\S]*?width:\s*100%;[\s\S]*?clip-path:\s*none;/);
     expect(authoritativeCss).toMatch(/#planner-route-detail\s*\{[\s\S]*?width:\s*100%;[\s\S]*?overflow-wrap:\s*anywhere;/);
   });
