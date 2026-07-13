@@ -22,8 +22,10 @@ unaltered archive refs preserve the original pointer state.
 - Original user checkout: `spike/threejs-core-port-v1` at
   `e416eb880ff4b42fdf35a93c1b567dfbfa186bbb`, with 414 pre-existing dirty
   entries; it remains untouched.
-- Cleanup source: current `origin/main` at
+- Initial cleanup source: the then-current `origin/main` at
   `8383487f89f6eb6e63140def564052ac86de259a`.
+- Final synchronized PR base: `origin/main` at
+  `a790e7b7d4601989c6851e05943d54f3b0adfd52`.
 - Cleanup branch: `cleanup/browser-mainline-repository-v1`.
 - Unity legacy tag: `unity-legacy-final-2026-07`.
 - Unity legacy archive branch: `archive/unity-legacy-final-2026-07`.
@@ -237,6 +239,11 @@ The required Demo Scout is a real 127,108-byte GLB with `glTF` signature. The
 four required rejected UI baselines were pulled normally from LFS and verified
 as real PNG files with the `89 50 4e 47 0d 0a 1a 0a` signature.
 
+The later synchronized `public/favicon.png` is likewise available from Git LFS
+and resolves to a real PNG. Because Browser CI checks out with `lfs: false`, its
+selective restore/signature list must include that runtime icon as well as the
+four evidence baselines.
+
 ## Pre-existing unavailable LFS payloads
 
 | Path | OID | Resolution on active cleanup branch |
@@ -251,11 +258,13 @@ No LFS replacement, history migration or fake binary is permitted.
 ## Expected CI, documentation and spec impact
 
 - Browser CI remains under `.github/workflows/browser-mainline-ci.yml`; action
-  versions and job design do not change.
+  versions and job design do not change, while the selective LFS allowlist adds
+  the synchronized favicon.
 - Node 22 remains the CI runtime.
 - The exact group-membership check remains the workflow's inline Node script;
-  the Core package script adds only the synchronized Combat spec that current
-  `main` had left unassigned.
+  the first synchronization required the missing Combat assignment, while the
+  final synchronized `main` already contains both Combat and Persistence. The
+  final cleanup therefore has no package or lockfile diff.
 - `analysis/threejs-mainline/source-evidence` references change to
   `docs/legacy-unity/source-evidence`.
 - Root `docs/browser-mainline/design-qa-v3.md` references change to
@@ -279,6 +288,7 @@ Stop cleanup mutation if any of these occurs:
 - a DevToolbox record cannot be preserved without claiming false completion;
 - a Browser test fails after move-only cleanup and repair would require product
   behavior, weaker assertions, longer timeouts or reduced coverage;
-- the Demo Scout GLB, ProceduralFallback or four required UI baselines change;
+- the Demo Scout GLB, ProceduralFallback, synchronized favicon or four required
+  UI baselines change;
 - `TestBridge` becomes available on the normal `/` route;
 - planner/executor/flight/render/UI product behavior changes.

@@ -101,8 +101,9 @@ active.
 | Tracked Browser evidence files | 152 | 157 |
 
 Git object database before cleanup: 14.59 MiB packed plus 791.90 KiB loose.
-After cleanup and current-main synchronization: 16.38 MiB packed plus 0 bytes
-loose.
+At the latest pre-delivery measurement after current-main synchronization it
+contained 16.38 MiB packed plus 180.58 KiB loose; subsequent commits can change
+the loose-object count without changing the cleaned tree.
 
 `git count-objects` measures the shared object database, including retained
 history, rather than the logical size of the cleaned checkout. Removing current
@@ -121,6 +122,10 @@ The required rejected UI baselines are real PNG payloads (not pointers in the
 working tree) and match their LFS OIDs. The art preservation scope contains no
 unresolved LFS pointer file.
 
+The synchronized low-poly `public/favicon.png` is also an available LFS-backed
+PNG. Browser CI now includes it in the selective LFS restore and signature gate,
+so `lfs: false` checkout mode cannot silently serve the pointer text as an icon.
+
 The starting commit already referenced four unavailable LFS payloads. GitHub
 LFS returns HTTP 404 and no exact local payload exists. Three were historical
 screenshots and one was a Unity tutorial icon. The active branch removes those
@@ -137,10 +142,10 @@ preserve the original pointer state and the limitation is recorded in
 - `.gitattributes` has no Unity YAML merge/type rules and retains appropriate
   text/EOL and existing LFS rules for binary art/evidence. GLB files remain
   regular Git blobs; no retroactive GLB-to-LFS migration was introduced.
-- `.github/workflows/browser-mainline-ci.yml` required no path change or CI
-  redesign. The synchronized `main` contained an unassigned Combat E2E spec, so
-  the existing Core npm group received that one missing spec path. The later
-  Persistence E2E spec remains assigned to Core as merged from current `main`.
+- `.github/workflows/browser-mainline-ci.yml` keeps its existing jobs and group
+  design. Its selective artifact restore now includes the synchronized favicon;
+  the current Core group preserves the Combat and Persistence assignments from
+  current `main`.
 - Historical Browser evidence preserves its capture-time Unity paths and carries
   cleanup annotations pointing to `unity-legacy-final-2026-07:<path>`. Current
   non-historical references use archive-object or neutral `art/` paths.
@@ -164,14 +169,14 @@ All fresh browser commands ran with Node `v26.2.0`:
 | CI Playwright group-membership script | PASS; 24 discovered and 24 uniquely assigned specs (Core 13, Live 8, UI 3) |
 | Normal `/` route without `TestBridge` | PASS in Core, Live and UI tests |
 | Demo Scout GLB signature and unchanged blob | PASS |
-| Four required PNG signatures/OIDs | PASS |
+| Five required PNG signatures/OIDs (four UI baselines plus favicon) | PASS |
 | Prospective cleanup-tree `git lfs fsck --pointers` | PASS |
 | Relative links in active Markdown documents | PASS; 83 files checked, 18 relative links, 0 missing |
 | Dependency/lockfile diff | PASS; unchanged; package script preserves the Combat and Persistence specs in Core |
 | Runtime screenshot diff after evidence restore | PASS; no PNG changes |
 | `git diff --check` and `git diff --cached --check` | PASS |
 | Final Unity/reference/path checks | PASS; no unresolved active Unity path or stale mainline claim |
-| Independent staged-diff reviews | PASS after GLB policy, historical evidence, E2E output-path, synchronized current-state and evidence-metric fixes; final re-review found no remaining P0-P2 issues |
+| Independent staged-diff reviews | PASS after GLB policy, historical evidence, E2E output-path, synchronized current-state, metric, final-base and favicon-restore fixes; latest re-review found no remaining P0-P2 issues |
 
 The local Windows policy blocks Playwright's downloaded
 `chrome-headless-shell.exe` (`spawn UNKNOWN`). The repository-supported
