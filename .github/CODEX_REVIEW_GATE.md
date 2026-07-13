@@ -22,14 +22,14 @@ For every non-draft pull request targeting `main`, the workflow:
 
 1. writes a pending `Codex Review / current head` status to the exact PR head SHA;
 2. waits briefly for the normal repository-level Codex trigger;
-3. checks whether a Codex review is tied to the current head by GitHub `commit_id`, with the visible reviewed-SHA text retained as compatibility evidence;
+3. accepts a Codex review only when GitHub's review `commit_id` equals the current head SHA;
 4. creates one head-specific `@codex review` request when no current review exists;
 5. waits for either:
    - a Codex review submission tied to the current head, or
-   - Codex's `+1` reaction on the head-specific request when it found no comments;
+   - a Codex `+1` reaction on the request comment, or on the PR itself when that reaction was created after the exact-head request;
 6. writes success or failure to the same exact-head commit status.
 
-A new push cancels the older run and starts a new check for the new head SHA. Draft pull requests receive a successful deferred status and are checked when marked ready.
+The timestamp rule prevents an old PR-level thumbs-up from satisfying a review request for a newer commit. A new push cancels the older run and starts a new check for the new head SHA. Draft pull requests receive a successful deferred status and are checked when marked ready.
 
 ## Required token for automatic re-requests
 
@@ -68,4 +68,4 @@ When a run reports a missing token or times out, post a comment as the GitHub us
 current head: 0123456789
 ```
 
-The SHA is required so a no-findings `+1` reaction can be attributed to the same exact head instead of an older request. Then wait for the Codex review or thumbs-up reaction and re-run `Codex Review Gate` for the pull request.
+The SHA is required so a no-findings reaction can be attributed to the same exact head instead of an older request. Then wait for the Codex review or thumbs-up reaction and re-run `Codex Review Gate` for the pull request.
