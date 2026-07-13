@@ -14,3 +14,7 @@ export * from "./diagnostics";
 export * from "./compatibility";
 export * from "./blueprintValidation";
 export * from "./massProperties";
+export * from "./statCanonical";
+export * from "./shipStats";
+export * from "./handlingDiagnostics";
+export * from "./flightReadiness";
