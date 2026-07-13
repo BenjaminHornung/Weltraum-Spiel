@@ -950,6 +950,8 @@ describe("renderStatusHud", () => {
           sasAllowed: false,
           blockedReasonCodes: ["MainThrustModeBlocked", "SasDisabled"]
         },
+        lastAppliedMainAcceleration: { x: 0, y: 0, z: 0 },
+        lastAppliedRcsTranslationAcceleration: { x: 1, y: 0, z: 0 },
         lastAppliedAcceleration: { x: 1, y: 0, z: 0 },
         lastAppliedAngularAcceleration: { x: 0, y: 0, z: 0 }
       }

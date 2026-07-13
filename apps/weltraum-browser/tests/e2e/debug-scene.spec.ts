@@ -420,6 +420,7 @@ test("playable manual flight exposes ship visual, ChaseLocked camera, controls, 
   expect(initialRender.shipVisual.visualSource.browserAssetPath).toBe("/ships/demo_scout_mk1.glb");
   expect(initialRender.shipVisual.visualSource.axisCorrection.mapping).toBe("browserX=-glbZ,browserY=glbY,browserZ=glbX");
   expect(initialRender.shipVisual.descriptorValidation.ok).toBe(true);
+  expect(initialRender.shipVisual.descriptorValidation.counts.rcsNozzles).toBe(20);
   expect(initialRender.shipVisual.markerCounts.hullParts).toBeGreaterThanOrEqual(4);
   expect(initialRender.shipVisual.markerCounts.rcs).toBeGreaterThanOrEqual(4);
   expect(initialRender.shipVisual.markerCounts.mainEngines).toBeGreaterThanOrEqual(1);
@@ -433,6 +434,19 @@ test("playable manual flight exposes ship visual, ChaseLocked camera, controls, 
   expect(mainEngineBinding.localPosition.x).toBeLessThan(0);
   expect(muzzleBinding.source).toBe("GLBNode");
   expect(muzzleBinding.localPosition.x).toBeGreaterThan(0);
+  expect(initialRender.shipVisual.nozzleBindings).toHaveLength(21);
+  expect(initialRender.shipVisual.nozzleBindings.filter((binding: any) => binding.role === "Rcs")).toHaveLength(20);
+  expect(initialRender.shipVisual.nozzleBindings.every((binding: any) => binding.source === "GLBNode")).toBe(true);
+  expect(initialRender.shipVisual.nozzleBindings.every((binding: any) => binding.diagnostic.status === "Resolved")).toBe(true);
+  expect(new Set(initialRender.shipVisual.nozzleBindings.map((binding: any) => binding.sourceObjectName)).size).toBe(21);
+  expect(initialRender.shipVisual.vfx.nozzleSourceCounts).toEqual({ GLBNode: 21, ManifestNozzleFallback: 0 });
+  expect(initialRender.shipVisual.vfx.bindingDiagnosticCounts.Resolved).toBe(21);
+  expect(initialRender.shipVisual.vfx.rcsPuffs).toHaveLength(20);
+  expect(initialRender.shipVisual.vfx.visibleRcsPuffCount).toBe(0);
+  expect(initialRender.shipVisual.vfx.frameSemantics).toEqual({
+    translation: "BodyLocalFromOwnerOrientation",
+    angular: "BodyLocalTelemetry"
+  });
   expect(initialRender.camera.mode).toBe("ChaseLocked");
   expect(initialRender.camera.followsShip).toBe(true);
   expect(initialRender.camera.anchorId).toBe("chase-camera-anchor");
@@ -450,11 +464,18 @@ test("playable manual flight exposes ship visual, ChaseLocked camera, controls, 
   await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().ship.position.x)).toBeGreaterThan(0.05);
   const manualTelemetry = await page.evaluate(() => (window as any).TestBridge.getTelemetry());
   expect(manualTelemetry.ship.actuatorTelemetry.mainThrustActive).toBe(true);
+  expect(Math.hypot(
+    manualTelemetry.ship.actuatorTelemetry.lastAppliedMainAcceleration.x,
+    manualTelemetry.ship.actuatorTelemetry.lastAppliedMainAcceleration.y,
+    manualTelemetry.ship.actuatorTelemetry.lastAppliedMainAcceleration.z
+  )).toBeGreaterThan(0);
   expect(manualTelemetry.ship.actuatorTelemetry.rcsRotationActive || manualTelemetry.ship.actuatorTelemetry.sasCorrectionActive).toBe(true);
   const manualRender = await page.evaluate(() => (window as any).TestBridge.getRenderSnapshot());
   expect(manualRender.shipVisual.vfx.mainThrustVisible).toBe(true);
   expect(manualRender.shipVisual.vfx.mainEngineBinding.id).toBe("main-engine-aft");
   expect(manualRender.shipVisual.vfx.mainEngineBinding.source).toBe("GLBNode");
+  expect(manualRender.shipVisual.vfx.mainNozzleBinding.source).toBe("GLBNode");
+  expect(manualRender.shipVisual.vfx.mainNozzleBinding.sourceObjectName).toBe("DEMO_Scout_Mk1_PART_Main_Engine_Bell_Mk1_THRUST_NOZZLE_MAIN");
   expect(manualRender.camera.mode).toBe("ChaseLocked");
   expect(manualRender.camera.followTarget.x).toBeGreaterThan(initialRender.camera.followTarget.x);
   expect(manualRender.camera.distanceToShip).toBeGreaterThan(0);
@@ -475,12 +496,14 @@ test("playable manual flight exposes ship visual, ChaseLocked camera, controls, 
   await page.screenshot({ path: path.join(evidenceDir, "manual-flight-chasecam.png"), fullPage: true });
   await page.screenshot({ path: path.join(evidenceDir, "demo-scout-chasecam.png"), fullPage: true });
   await page.screenshot({ path: path.join(evidenceDir, "control-mode-cruise-main-thrust.png"), fullPage: true });
+  await page.screenshot({ path: path.join(evidenceDir, "demo-scout-nozzle-vfx-main.png"), fullPage: true });
 
   await page.keyboard.press("CapsLock");
   await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().manualInput.controlMode)).toBe("Precision");
   await page.keyboard.down("w");
   await page.waitForTimeout(450);
   await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().ship.actuatorTelemetry.rcsRotationActive)).toBe(true);
+  await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getRenderSnapshot().shipVisual.vfx.visibleRcsPuffCount)).toBeGreaterThan(0);
   const precisionTelemetry = await page.evaluate(() => (window as any).TestBridge.getTelemetry());
   const precisionRender = await page.evaluate(() => (window as any).TestBridge.getRenderSnapshot());
   await page.keyboard.up("w");
@@ -489,29 +512,89 @@ test("playable manual flight exposes ship visual, ChaseLocked camera, controls, 
   expect(precisionTelemetry.ship.actuatorTelemetry.controlModeEffect.modeEffectLabel).toBe("RCS attitude / main thrust blocked");
   expect(precisionTelemetry.ship.actuatorTelemetry.controlModeEffect.rcsRotationAllowed).toBe(true);
   expect(precisionRender.shipVisual.vfx.mainThrustVisible).toBe(false);
+  const rotationPuffs = precisionRender.shipVisual.vfx.rcsPuffs.filter((puff: any) => puff.visible);
+  expect(rotationPuffs.length).toBeGreaterThan(0);
+  expect(rotationPuffs.length).toBeLessThan(20);
+  expect(rotationPuffs.every((puff: any) => puff.torqueCompatible && puff.torqueScore > 0)).toBe(true);
+  expect(rotationPuffs.every((puff: any) => puff.source === "GLBNode" && /^RCS_Nozzle_/.test(puff.sourceObjectName))).toBe(true);
+  expect(rotationPuffs.every((puff: any) =>
+    Number.isFinite(puff.localPosition.x) &&
+    Number.isFinite(puff.localPosition.y) &&
+    Number.isFinite(puff.localPosition.z)
+  )).toBe(true);
   await expect(page.getByTestId("control-mode")).toContainText("Precision");
   await expect(page.getByTestId("control-mode-effect")).toContainText("RCS attitude / main thrust blocked");
   await expect(page.getByTestId("control-mode-effect")).toContainText("main thrust mode-blocked");
   await expect(page.getByTestId("rcs-sas-status")).toContainText(/RCS rotate|SAS correction/);
-  await page.screenshot({ path: path.join(evidenceDir, "control-mode-precision-rcs-rotation.png"), fullPage: true });
+  const rotationEvidence = await page.screenshot({
+    path: path.join(evidenceDir, "control-mode-precision-rcs-rotation.png"),
+    fullPage: true
+  });
+  await writeFile(path.join(evidenceDir, "demo-scout-nozzle-vfx-rotation.png"), rotationEvidence);
 
   await page.keyboard.press("CapsLock");
   await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().manualInput.controlMode)).toBe("Translation");
   await page.keyboard.down("h");
   await page.waitForTimeout(450);
   await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().ship.actuatorTelemetry.rcsTranslationActive)).toBe(true);
+  await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getRenderSnapshot().shipVisual.vfx.visibleRcsPuffCount)).toBeGreaterThan(0);
   const rcsRender = await page.evaluate(() => (window as any).TestBridge.getRenderSnapshot());
   const translationTelemetry = await page.evaluate(() => (window as any).TestBridge.getTelemetry());
   expect(translationTelemetry.ship.actuatorTelemetry.mainThrustActive).toBe(false);
+  expect(Math.hypot(
+    translationTelemetry.ship.actuatorTelemetry.lastAppliedRcsTranslationAcceleration.x,
+    translationTelemetry.ship.actuatorTelemetry.lastAppliedRcsTranslationAcceleration.y,
+    translationTelemetry.ship.actuatorTelemetry.lastAppliedRcsTranslationAcceleration.z
+  )).toBeGreaterThan(0);
+  expect(translationTelemetry.ship.actuatorTelemetry.lastAppliedMainAcceleration).toEqual({ x: 0, y: 0, z: 0 });
   expect(translationTelemetry.ship.actuatorTelemetry.controlModeEffect.modeEffectLabel).toBe("RCS translation / main thrust blocked");
   expect(rcsRender.shipVisual.vfx.rcsTranslationVisible).toBe(true);
-  expect(rcsRender.shipVisual.vfx.visibleRcsPuffCount).toBeGreaterThanOrEqual(4);
+  expect(rcsRender.shipVisual.vfx.visibleRcsPuffCount).toBeGreaterThan(0);
   expect(rcsRender.shipVisual.vfx.rcsBindings.every((binding: any) => binding.source === "GLBNode")).toBe(true);
+  const directionalPuffs = rcsRender.shipVisual.vfx.rcsPuffs.filter((puff: any) => puff.kind === "DirectionalNozzle");
+  // This continuous scenario already rotated the owner. Compatibility therefore
+  // follows every positive body-local dot product, not an axis-pure four-puff set.
+  expect(directionalPuffs).toHaveLength(20);
+  expect(directionalPuffs.every((puff: any) =>
+    puff.translationCompatible === (puff.translationScore > 1e-6)
+  )).toBe(true);
+  const translationPuffs = directionalPuffs.filter((puff: any) => puff.translationCompatible);
+  expect(translationPuffs.length).toBeGreaterThan(4);
+  expect(translationPuffs.length).toBeLessThan(20);
+  expect(translationPuffs.every((puff: any) =>
+    puff.visible && puff.source === "GLBNode" && puff.translationScore > 1e-6
+  )).toBe(true);
+  const dominantDownPuffs = translationPuffs.filter((puff: any) =>
+    puff.id.endsWith("-nozzle-down") && puff.translationScore > 0.99
+  );
+  expect(dominantDownPuffs).toHaveLength(4);
+  expect(dominantDownPuffs.every((puff: any) => puff.visible)).toBe(true);
+  expect(translationPuffs.every((puff: any) => {
+    const forceMagnitude = Math.hypot(puff.localForceDirection.x, puff.localForceDirection.y, puff.localForceDirection.z);
+    const exhaustMagnitude = Math.hypot(puff.localExhaustDirection.x, puff.localExhaustDirection.y, puff.localExhaustDirection.z);
+    const oppositeDot = puff.localForceDirection.x * puff.localExhaustDirection.x +
+      puff.localForceDirection.y * puff.localExhaustDirection.y +
+      puff.localForceDirection.z * puff.localExhaustDirection.z;
+    return Math.abs(forceMagnitude - 1) < 1e-6 && Math.abs(exhaustMagnitude - 1) < 1e-6 && Math.abs(oppositeDot + 1) < 1e-6;
+  })).toBe(true);
+  const visibleDirectionalPuffs = directionalPuffs.filter((puff: any) => puff.visible);
+  expect(rcsRender.shipVisual.vfx.visibleRcsPuffCount).toBe(visibleDirectionalPuffs.length);
+  expect(visibleDirectionalPuffs.every((puff: any) => puff.translationCompatible || puff.torqueCompatible)).toBe(true);
   await expect(page.getByTestId("control-mode-effect")).toContainText("RCS translation / main thrust blocked");
   await expect(page.getByTestId("control-mode-effect")).toContainText("RCS translation active");
   await page.screenshot({ path: path.join(evidenceDir, "rcs-translation.png"), fullPage: true });
   await page.screenshot({ path: path.join(evidenceDir, "demo-scout-rcs-puffs.png"), fullPage: true });
   await page.screenshot({ path: path.join(evidenceDir, "control-mode-translation-rcs-translation.png"), fullPage: true });
+  await page.screenshot({ path: path.join(evidenceDir, "demo-scout-nozzle-vfx-translation.png"), fullPage: true });
+  await writeFile(path.join(evidenceDir, "demo-scout-nozzle-vfx-snapshot.json"), JSON.stringify({
+    initialNozzleBindings: initialRender.shipVisual.nozzleBindings,
+    mainTelemetry: manualTelemetry.ship.actuatorTelemetry,
+    mainVfx: manualRender.shipVisual.vfx,
+    rotationTelemetry: precisionTelemetry.ship.actuatorTelemetry,
+    rotationVfx: precisionRender.shipVisual.vfx,
+    translationTelemetry: translationTelemetry.ship.actuatorTelemetry,
+    translationVfx: rcsRender.shipVisual.vfx
+  }, null, 2), "utf8");
   await page.keyboard.down("q");
   await page.waitForTimeout(250);
   await expect.poll(() => page.evaluate(() => (window as any).TestBridge.getTelemetry().ship.actuatorTelemetry.rcsRotationActive)).toBe(true);
@@ -600,6 +683,73 @@ test("malformed browser GLB load fails into a visible procedural fallback", asyn
   expect(shipVisual.descriptorValidation.ok).toBe(true);
   expect(shipVisual.markerCounts).toEqual({ hullParts: 4, mainEngines: 1, rcs: 6, muzzle: 1, cameraAnchors: 1 });
   expect(shipVisual.markerBindings.every((binding: any) => binding.source === "ManifestFallback")).toBe(true);
+
+  const legacyMarkerIds = [
+    "rcs-front-left",
+    "rcs-front-right",
+    "rcs-aft-left",
+    "rcs-aft-right",
+    "rcs-dorsal",
+    "rcs-ventral"
+  ];
+  const descriptorMarkerPositions = new Map(
+    shipVisual.descriptor.rcsMarkers.map((marker: any) => [marker.id, marker.localPosition])
+  );
+  expect(shipVisual.descriptor.rcsMarkers.map((marker: any) => marker.id)).toEqual(legacyMarkerIds);
+  expect(shipVisual.nozzleBindings).toHaveLength(6);
+  expect(shipVisual.nozzleBindings.map((binding: any) => binding.id)).toEqual(legacyMarkerIds);
+  expect(shipVisual.vfx.rcsPuffs).toHaveLength(6);
+  expect(shipVisual.vfx.rcsPuffs.map((puff: any) => puff.id)).toEqual(legacyMarkerIds);
+  expect(shipVisual.vfx.bindingKindCounts).toEqual({ DirectionalNozzle: 0, LegacyMarkerFallback: 6 });
+  expect(shipVisual.vfx.nozzleSourceCounts).toEqual({ GLBNode: 0, ManifestNozzleFallback: 0 });
+
+  const directionalOnlyFields = [
+    "localForceDirection",
+    "localExhaustDirection",
+    "diagnostic",
+    "translationCompatible",
+    "torqueCompatible",
+    "translationScore",
+    "torqueScore"
+  ];
+  for (const binding of shipVisual.nozzleBindings) {
+    expect(binding).toEqual(expect.objectContaining({
+      kind: "LegacyMarkerFallback",
+      role: "Rcs",
+      source: "LegacyMarkerFallback",
+      sourceObjectName: null
+    }));
+    expect(binding.localPosition).toEqual(descriptorMarkerPositions.get(binding.id));
+    for (const field of directionalOnlyFields) {
+      expect(binding).not.toHaveProperty(field);
+    }
+  }
+  for (const puff of shipVisual.vfx.rcsPuffs) {
+    expect(puff).toEqual(expect.objectContaining({
+      kind: "LegacyMarkerFallback",
+      role: "Rcs",
+      source: "LegacyMarkerFallback",
+      sourceObjectName: null,
+      visible: false,
+      aggregateTranslationActivity: false,
+      aggregateAngularActivity: false
+    }));
+    expect(puff.localPosition).toEqual(descriptorMarkerPositions.get(puff.id));
+    for (const field of directionalOnlyFields) {
+      expect(puff).not.toHaveProperty(field);
+    }
+  }
+  expect(shipVisual.nozzleBindingDiagnostics).toEqual([]);
+  expect(shipVisual.vfx.bindingDiagnosticCounts).toEqual({
+    Resolved: 0,
+    ManifestOnly: 0,
+    MissingNode: 0,
+    DuplicateNode: 0,
+    AmbiguousCandidates: 0,
+    NodeAlreadyBound: 0,
+    InvalidPosition: 0
+  });
+  expect(shipVisual.vfx.visibleRcsPuffCount).toBe(0);
   await expect(page.getByTestId("ship-visual-source")).toContainText("Ship visual: Procedural fallback");
   await assertCanvasHasNonDarkPixels(page);
 });
