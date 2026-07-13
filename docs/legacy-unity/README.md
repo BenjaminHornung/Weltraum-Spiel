@@ -12,3 +12,8 @@ inside tag `unity-legacy-final-2026-07` or branch
 
 Do not copy MonoBehaviour, scene wiring or Unity project structure into the
 browser mainline. Preserve behavior contracts and acceptance intent instead.
+
+Key retained workflow and flight references:
+
+- [`agent-workflows/agent-workflow-v1.md`](agent-workflows/agent-workflow-v1.md)
+- [`flight/physics-flight-model.md`](flight/physics-flight-model.md)

@@ -1,4 +1,9 @@
-# 06 - AI-Agent, Codex, MCP und DevToolbox Workflow
+# Legacy: AI-Agent, Codex, MCP und DevToolbox Workflow
+
+> **[LEGACY]** Dieses Dokument beschreibt den entfernten Unity-/Unity-MCP-
+> Arbeitsablauf. Aktive Browser-Arbeit folgt dem Root-`AGENTS.md`,
+> `.agent/PLANS.md` und den aktuellen Browser-Specs. Die folgenden Unity-Regeln
+> sind ausschließlich historische Referenz.
 
 ## Ziel
 

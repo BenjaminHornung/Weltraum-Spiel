@@ -27,6 +27,14 @@ celestial
   Validated body/catalog identities, canonical signatures, explicit reference
   frames, deterministic elliptic Kepler propagation and local gravity queries.
 
+combat
+  Target snapshots, fire permission, Projectile/Beam delivery, Hit resolution,
+  Armor/Hull/Module damage and canonical semantic events.
+
+persistence
+  Universe time, stable persistence identity, strict save envelopes, schema
+  migration, persistent events, simulation modes and canonical signatures.
+
 runtime
   Browser command dispatch, selected target, preview state, locked execution,
   objective progression, station keeping and owner snapshots.
@@ -41,7 +49,7 @@ resources
 
 shipBuilder
   Part catalog, blueprints, sockets, compatibility, structure, mass, COM and
-  bounds contracts.
+  bounds plus signed stats, handling diagnostics and static readiness contracts.
 
 ui
   HUD and navigation-planner ViewModels/presentation plus explicit commands.
@@ -62,6 +70,9 @@ Directory names may evolve, but these authority boundaries are product contracts
 - Flight owns executable physical state and actuator truth.
 - Navigation consumes flight/world snapshots and emits plans or typed rejection.
 - Celestial owns pure validated data and math. It does not currently drive flight, navigation, renderer, UI or world bootstrap.
+- Combat owns pure targeting, delivery, hit and damage decisions. It does not currently drive playable encounters, Flight, Navigation, UI or Runtime.
+- Persistence owns pure time, identity, schema, event and canonicalization contracts. It has no Browser storage, live Runtime, offline progression or multiplayer transport binding.
+- Resources and Ship Builder own deterministic domain reports only; Builder readiness is static eligibility, not a runtime handoff or completed test flight.
 - Runtime coordinates commands and exposes immutable snapshots.
 - UI reads ViewModels/snapshots and sends commands.
 - Three.js consumes render/world-presentation snapshots only.
@@ -94,6 +105,19 @@ Current boundary:
 - no flight/navigation integration, SOI switching, patched conics, N-body physics, landing, terrain or atmosphere runtime.
 
 The root star remains at the absolute system origin. Floating-origin translation is an external projection concern and cannot alter ephemeris truth.
+
+### Pure domain-core truth
+
+Combat owns deterministic Target/Weapon snapshots, Fire permission,
+Projectile/Beam delivery, Hit resolution, Damage and canonical Combat events.
+Persistence owns Universe time, stable IDs, save validation/migration,
+persistent events, simulation-mode transitions and canonical serialization.
+Resources and Ship Builder own their validated catalogs, transfers, analyses,
+diagnostics and signed static readiness reports.
+
+These cores do not become live gameplay authority merely because their normal
+route E2E probes pass. Runtime integration, player controls, Browser storage,
+offline progression and active-ship handoff remain explicit future boundaries.
 
 ### World truth
 
@@ -149,7 +173,9 @@ Implemented:
 - renderer-owned instancing without renderer-owned simulation truth;
 - a pure celestial catalog, ephemeris and local gravity-query core;
 - pure Combat and Persistence/Universe-Time/Event contract cores without live
-  runtime ownership.
+  runtime ownership;
+- signed Ship Builder stats, handling diagnostics and static readiness without
+  UI or active-ship handoff.
 
 Still missing:
 
@@ -193,6 +219,7 @@ Do not port MonoBehaviour shape, `Update`/`FixedUpdate` ownership, scene wiring 
 - `docs/browser-mainline/celestial-gravity-core-v1.md`
 - `docs/browser-mainline/combat-weapon-damage-core-v1.md`
 - `docs/browser-mainline/persistence-universe-time-event-core-v1.md`
+- `docs/browser-mainline/ship-builder-full-stats-flight-readiness-v1.md`
 - `docs/roadmap/living-master-plan.md`
 - `docs/architecture/autopilot-v2-design.md`
 - `docs/architecture/coordinate-spaces-and-floating-origin.md`

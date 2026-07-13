@@ -47,7 +47,7 @@ docs/architecture/clean-core-refactor-plan.md
 docs/architecture/autopilot-v2-design.md
 docs/legacy-unity/architecture/scene-management-v1.md
 docs/ux/player-ui-redesign-v1.md
-docs/ai/agent-workflow-v1.md
+docs/legacy-unity/agent-workflows/agent-workflow-v1.md
 docs/legacy-unity/roadmap/milestones.md
 AGENTS.md
 .agent/PLANS.md

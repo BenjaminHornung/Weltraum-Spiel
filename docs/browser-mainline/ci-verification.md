@@ -21,7 +21,7 @@ The path filters include:
 
 ## Current baseline and commands
 
-The current browser package uses TypeScript `7.0.2`. The latest green baseline contains 21 Playwright spec files and 44 tests. The job runs on `ubuntu-latest` with Node.js 22, has a finite 45-minute timeout, and uses the npm cache keyed by `apps/weltraum-browser/package-lock.json`. All npm commands run from `apps/weltraum-browser`:
+The current browser package uses TypeScript `7.0.2`. The current suite contains 25 Playwright spec files and 48 tests. The job runs on `ubuntu-latest` with Node.js 22, has a finite 45-minute timeout, and uses the npm cache keyed by `apps/weltraum-browser/package-lock.json`. All npm commands run from `apps/weltraum-browser`:
 
 ```text
 npm ci
@@ -33,7 +33,7 @@ npm run test:e2e:live
 npm run test:e2e:ui
 ```
 
-`npm run test` executes Vitest and `npm run build` executes the TypeScript/Vite browser build. The three required Chromium Playwright groups separate core/autopilot (10 specs), live runtime/objectives (8 specs), and UI/layout (3 specs). The aggregate `npm run test:e2e` command remains unchanged and discovers the complete suite for local full-suite verification.
+`npm run test` executes Vitest and `npm run build` executes the TypeScript/Vite browser build. The three required Chromium Playwright groups separate core/autopilot/domain coverage (14 specs), live runtime/objectives (8 specs), and UI/layout (3 specs). The aggregate `npm run test:e2e` command remains unchanged and discovers the complete suite for local full-suite verification.
 
 ## E2E failure isolation and guardrails
 
@@ -55,21 +55,21 @@ After installation, CI prints compact Node, npm, Playwright, and Demo Scout GLB 
 
 ## Demo Scout GLB / LFS strategy
 
-The current checkout needs the Demo Scout GLB and four checked-in UI reference PNGs as real binaries. A broad Git LFS pull is not required.
+The current checkout needs the Demo Scout GLB, the runtime favicon and four checked-in UI reference PNGs as real binaries. A broad Git LFS pull is not required.
 
 The workflow still uses a guarded restore step for safety:
 
 1. Checkout runs with `lfs: false`, avoiding a full historical LFS download.
-2. The job checks the Demo Scout GLB and these four reference images for LFS pointers:
+2. The job checks the Demo Scout GLB, `apps/weltraum-browser/public/favicon.png` and these four reference images for LFS pointers:
    - `evidence/ui-concept-parity-v1-rejected-flight-hud.png`
    - `evidence/ui-concept-parity-v1-rejected-flight-hud-1280x720.png`
    - `evidence/ui-concept-parity-v1-rejected-navigation-planner.png`
    - `evidence/ui-concept-parity-v1-rejected-combat-contact.png`
-3. Only if one of those five exact files is a pointer, the job runs an include-limited pull for those paths.
-4. The step verifies `glTF` magic bytes for the GLB and PNG signatures for all four images.
+3. Only if one of those six exact files is a pointer, the job runs an include-limited pull for those paths.
+4. The step verifies `glTF` magic bytes for the GLB and PNG signatures for the favicon and all four reference images.
 
 ```text
-git lfs pull --include="apps/weltraum-browser/public/ships/demo_scout_mk1.glb,apps/weltraum-browser/evidence/ui-concept-parity-v1-rejected-flight-hud.png,apps/weltraum-browser/evidence/ui-concept-parity-v1-rejected-flight-hud-1280x720.png,apps/weltraum-browser/evidence/ui-concept-parity-v1-rejected-navigation-planner.png,apps/weltraum-browser/evidence/ui-concept-parity-v1-rejected-combat-contact.png" --exclude=""
+git lfs pull --include="apps/weltraum-browser/public/ships/demo_scout_mk1.glb,apps/weltraum-browser/public/favicon.png,apps/weltraum-browser/evidence/ui-concept-parity-v1-rejected-flight-hud.png,apps/weltraum-browser/evidence/ui-concept-parity-v1-rejected-flight-hud-1280x720.png,apps/weltraum-browser/evidence/ui-concept-parity-v1-rejected-navigation-planner.png,apps/weltraum-browser/evidence/ui-concept-parity-v1-rejected-combat-contact.png" --exclude=""
 ```
 
 This avoids pulling old Unity/test/evidence LFS objects that are unrelated to the browser CI path and have caused missing-object problems in previous full LFS checkouts.

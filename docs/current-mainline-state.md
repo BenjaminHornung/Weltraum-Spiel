@@ -3,7 +3,7 @@
 Stand: 2026-07-13
 Status snapshot: browser mainline after the objective-chain,
 celestial-gravity-core, combat-weapon-damage-core, Persistence/Universe-Time/
-Event core and Demo Scout nozzle-VFX merges
+Event core, Ship Builder full-stats/readiness and Demo Scout nozzle-VFX merges
 
 ## Product Mainline
 
@@ -176,14 +176,22 @@ browser domain contracts.
 Active ship cargo, loaded-mass integration, mining, trading, inventory UI and
 persistence remain unimplemented.
 
-### Ship Builder Foundations
+### Ship Builder Analysis Foundations
 
 Part categories, definitions, components, sockets, blueprints, compatibility,
-structural graphs, dry mass, center of mass and footprint bounds exist as
-deterministic domain foundations.
+structural graphs, dry/loaded mass, center of mass, footprint bounds, signed
+stat reports, handling diagnostics and static Draft/TestFlight/Active readiness
+exist as deterministic domain foundations.
 
-Placement/edit UI, complete gameplay stats, test-flight handoff, active-ship
-replacement, production art binding and save/load remain unimplemented.
+Placement/edit UI, dynamic runtime resources, completed-test-flight tracking,
+test-flight/runtime handoff, active-ship replacement, production art binding
+and save/load remain unimplemented.
+
+Evidence:
+
+- `docs/browser-mainline/ship-builder-full-stats-flight-readiness-v1.md`
+- `apps/weltraum-browser/evidence/browser-ship-builder-full-stats-flight-readiness-v1.md`
+- `apps/weltraum-browser/evidence/browser-ship-builder-full-stats-flight-readiness-v1-summary.json`
 
 ## UI And Presentation State
 

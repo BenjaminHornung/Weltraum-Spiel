@@ -39,7 +39,7 @@ Use focused commands while developing, then run the relevant required groups bef
 
 ### `test:e2e:core`
 
-Covers deterministic browser integration including autopilot/executor lifecycle, terminal capture, proving-ground and obstacle scenarios, negative fuel/authority/divergence contracts, resource/cargo and ship-builder domain smokes, Demo Scout nozzle-VFX binding, and the celestial/gravity pure-core browser smoke.
+Covers deterministic browser integration including autopilot/executor lifecycle, terminal capture, proving-ground and obstacle scenarios, negative fuel/authority/divergence contracts, resource/cargo, Ship Builder stats/readiness, Combat, Persistence and celestial/gravity domain smokes, plus Demo Scout nozzle-VFX binding.
 
 ### `test:e2e:live`
 
@@ -66,7 +66,7 @@ Use `/` and visible interactions whenever the claim concerns gameplay or UI:
 
 ### Pure-domain browser smokes
 
-A non-visible domain feature may open `/`, prove TestBridge is absent, dynamically import the public browser module and run deterministic probes. This is appropriate for foundations such as the celestial catalog/ephemeris/gravity core that intentionally have no runtime UI or renderer integration.
+A non-visible domain feature may open `/`, prove TestBridge is absent, dynamically import the public browser module and run deterministic probes. This is appropriate for foundations such as Celestial/Gravity, Combat, Persistence and Ship Builder analysis that intentionally have no runtime UI or renderer integration.
 
 Such tests must use explicit inputs, repeat probes for deterministic equality, reject console/page/request failures attributable to the feature, and record JSON/Markdown evidence. They must not imply that a pure core is already integrated gameplay.
 
@@ -137,22 +137,26 @@ Evidence:
 
 No screenshot is required for this feature because it deliberately has no visible UI or render change.
 
-## Combat And Persistence Core Acceptance
+## Combat, Persistence And Ship Builder Core Acceptance
 
-The standalone Combat and Persistence/Universe-Time/Event cores use focused
-unit suites plus normal-route Browser E2E scenarios:
+The standalone Combat, Persistence/Universe-Time/Event and Ship Builder
+analysis cores use focused unit suites plus normal-route Browser E2E scenarios:
 
 - `apps/weltraum-browser/tests/e2e/combat-weapon-damage-core.spec.ts`
 - `apps/weltraum-browser/tests/e2e/persistence-universe-time-event-core.spec.ts`
+- `apps/weltraum-browser/tests/e2e/ship-builder-full-stats-flight-readiness.spec.ts`
 - `apps/weltraum-browser/evidence/browser-combat-weapon-damage-core-v1.md`
 - `apps/weltraum-browser/evidence/browser-persistence-universe-time-event-core-v1.md`
+- `apps/weltraum-browser/evidence/browser-ship-builder-full-stats-flight-readiness-v1.md`
 - `docs/browser-mainline/combat-weapon-damage-core-v1.md`
 - `docs/browser-mainline/persistence-universe-time-event-core-v1.md`
+- `docs/browser-mainline/ship-builder-full-stats-flight-readiness-v1.md`
 
-Both scenarios prove that normal `/` remains healthy and does not expose
-`TestBridge` before importing the bounded domain module. Neither core is
-evidence of playable Combat, Browser storage, save/load UI, offline progression
-or runtime persistence integration.
+These scenarios prove that normal `/` remains healthy and does not expose
+`TestBridge` before importing the bounded domain module. They are not evidence
+of playable Combat, Browser storage, save/load UI, offline progression or
+runtime persistence integration. Ship Builder analysis is likewise not
+evidence of placement UI, completed test flight or active-ship handoff.
 
 ## Visual And Nozzle-VFX Evidence
 
