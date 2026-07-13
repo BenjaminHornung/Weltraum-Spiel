@@ -18,7 +18,7 @@ The browser app should demonstrate a complete local-space loop: the player selec
 
 ## Non-Goals
 
-- No Unity startup/install/MCP and no `Assets/**` edits.
+- No Unity startup/install/MCP and no `unity-legacy-final-2026-07:Assets/**` edits.
 - No full radar/minimap/map navigation UI.
 - No terrain streaming, orbital mechanics, surface runtime, ship builder, economy, cargo/resource runtime, missions, drones, mining, docking, landing, or broad open-world gameplay.
 - No executor-side silent replan and no replacement of locked `RoutePlan` or `planHash`.

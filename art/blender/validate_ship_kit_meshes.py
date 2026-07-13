@@ -9,9 +9,11 @@ REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 REPORT_PATH = os.path.join(os.path.dirname(__file__), "ship_kit_mesh_validation_report.md")
 MANIFEST_PATH = os.path.join(
     REPO_ROOT,
-    "Assets",
-    "Art",
-    "PrototypeShipKit",
+    "art",
+    "source",
+    "ships",
+    "prototype-ship-kit",
+    "metadata",
     "prototype_ship_kit_manifest.json",
 )
 

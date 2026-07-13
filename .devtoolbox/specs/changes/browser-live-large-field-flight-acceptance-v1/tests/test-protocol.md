@@ -35,7 +35,7 @@ All commands were run from `apps/weltraum-browser` unless the command is a Git c
 | `npm run build` | Pass; Vite reported the existing large chunk warning |
 | JSON parse check for generated E2E JSON evidence | Pass |
 | `git diff --check` | Pass; CRLF warnings only |
-| `git status --short -- Assets package.json package-lock.json apps/weltraum-browser/package.json apps/weltraum-browser/package-lock.json` | Package files clean; pre-existing `Assets/**` dirty/untracked files still present |
+| `git status --short -- Assets package.json package-lock.json apps/weltraum-browser/package.json apps/weltraum-browser/package-lock.json` | Package files clean; pre-existing `unity-legacy-final-2026-07:Assets/**` dirty/untracked files still present |
 
 Live acceptance values from the generated evidence:
 

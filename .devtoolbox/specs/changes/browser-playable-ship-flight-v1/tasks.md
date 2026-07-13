@@ -2,7 +2,7 @@
 
 ## Status
 
-- [x] Task 1 implementation slice: procedural low-poly ship fallback used; GLB candidate verified read-only but not copied/used; no `Assets/**` mutation.
+- [x] Task 1 implementation slice: procedural low-poly ship fallback used; GLB candidate verified read-only but not copied/used; no `unity-legacy-final-2026-07:Assets/**` mutation.
 - [x] Task 2 implementation slice: Flight State V2 and shared `applyFlightControllerStep` actuator controller foundation implemented.
 - [x] Task 3 implementation slice: manual controls, HUD keybind help and camera modes implemented.
 - [x] Task 4 implementation slice: telemetry-driven main-thruster and RCS/SAS VFX implemented.
@@ -14,13 +14,13 @@
 ## Task 1 — Implement browser ship visual descriptor
 
 - Objective: replace cone-only ship marker with a browser ship visual descriptor/render group.
-- Files/search targets: `apps/weltraum-browser/src/render/three/debugScene.ts`, new `apps/weltraum-browser/src/render/three/shipVisual.ts`, optional safe copy to `apps/weltraum-browser/public/ships/`, `Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.glb` read-only.
+- Files/search targets: `apps/weltraum-browser/src/render/three/debugScene.ts`, new `apps/weltraum-browser/src/render/three/shipVisual.ts`, optional safe copy to `apps/weltraum-browser/public/ships/`, `unity-legacy-final-2026-07:Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.glb` read-only.
 - Acceptance criteria:
   - Ship visual has hull/body, cockpit/front marker, main engine marker(s), at least four RCS markers, muzzle placeholder, and camera anchor descriptor.
   - Renderer consumes descriptor/snapshot only; no domain truth is stored in Three.js meshes.
   - E2E/TestBridge can prove visual is not the old cone-only placeholder.
 - Guidance:
-  - Prefer safe GLB copy only if it does not mutate `Assets/**` and does not require Unity/export tooling.
+  - Prefer safe GLB copy only if it does not mutate `unity-legacy-final-2026-07:Assets/**` and does not require Unity/export tooling.
   - Fall back to procedural low-poly ship if GLB loading is risky.
 - Required skills/MCPs: `subagent-driven-development`, `verification-before-completion`; no Unity MCP.
 - Verification: focused E2E render snapshot plus screenshot nonblank check.
@@ -109,4 +109,4 @@
   - Chrome fallback if default fails only with `spawn UNKNOWN`
   - `git status --short -- Assets`
 - Report-back: full verification table, screenshot paths, changed files, parity gaps, next task.
-- Stopping rule: do not close task if required browser evidence is missing or `Assets/**` changed unexpectedly.
+- Stopping rule: do not close task if required browser evidence is missing or `unity-legacy-final-2026-07:Assets/**` changed unexpectedly.

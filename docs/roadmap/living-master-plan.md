@@ -1210,13 +1210,13 @@ Bei jedem größeren Merge:
 
 ### 10.2 Architektur und Audits
 
-- `docs/current-prototype-state.md`
+- `docs/legacy-unity/current-prototype-state-2026-06-15.md`
 - `docs/design-audits/2026-06-14-planning-consistency-audit.md`
-- `docs/architecture/prototype-legacy-boundary-audit-2026-06-15.md`
-- `.devtoolbox/specs/change-audit-2026-06-14.md`
-- `docs/roadmap/spec-sorting-2026-06-15.md`
-- `docs/roadmap/stale-metadata-backlog-2026-06-15.md`
-- `docs/roadmap/spec-sorting-backlog.md`
+- `docs/legacy-unity/architecture/prototype-legacy-boundary-audit-2026-06-15.md`
+- `docs/legacy-unity/devtoolbox-audits/change-audit-2026-06-14.md`
+- `docs/legacy-unity/roadmap/spec-sorting-2026-06-15.md`
+- `docs/legacy-unity/roadmap/stale-metadata-backlog-2026-06-15.md`
+- `docs/legacy-unity/roadmap/spec-sorting-backlog.md`
 - `docs/architecture/**`
 - `docs/ux/**`
 
@@ -1248,7 +1248,7 @@ Bei jedem größeren Merge:
 
 - `docs/UI-Screenshots/*.png`
 - `docs/browser-mainline/ui-screenshot-audit.md`
-- `docs/player-facing-ui-concept-v0.md`
+- `docs/legacy-unity/ux/player-facing-ui-concept-v0.md`
 - `docs/concept-art/ship-image-audit.md`
 - `docs/concept-art/hard-sci-fi-ships/**`
 - `docs/concept-art/planetary-operations/**`

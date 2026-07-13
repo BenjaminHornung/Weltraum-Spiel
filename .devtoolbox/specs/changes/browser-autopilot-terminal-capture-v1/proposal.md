@@ -20,7 +20,7 @@ Default browser navigation targets must become real stop/capture goals. The exec
 
 ## Non-goals
 
-- No Unity start/install and no `Assets/**` changes.
+- No Unity start/install and no `unity-legacy-final-2026-07:Assets/**` changes.
 - No Demo Scout GLB visual parity removal and no procedural fallback removal.
 - No VFX nozzle/per-nozzle allocator work.
 - No silent replan, target snap, waypoint snap, or velocity-zero arrival shortcut.

@@ -4,20 +4,20 @@ These are traps to preserve as design warnings. They are not instructions to por
 
 Sources:
 
-- `docs/current-prototype-state.md`
+- `docs/legacy-unity/current-prototype-state-2026-06-15.md`
 - `docs/design-audits/2026-06-14-planning-consistency-audit.md`
-- `docs/architecture/prototype-legacy-boundary-audit-2026-06-15.md`
+- `docs/legacy-unity/architecture/prototype-legacy-boundary-audit-2026-06-15.md`
 - `docs/architecture/autopilot-v2-design.md`
-- `docs/architecture/autopilot-v2-test-harness.md`
+- `docs/legacy-unity/architecture/autopilot-v2-test-harness.md`
 - `docs/architecture/coordinate-spaces-and-floating-origin.md`
 - `docs/architecture/real-scale-world-architecture.md`
 - `docs/architecture/surface-local-frame-architecture.md`
 - `docs/ux/player-facing-status-authority-v1.md`
 - `docs/ux/debug-vs-player-ui-policy.md`
-- `analysis/threejs-mainline/source-evidence/current-core-inventory.md`
-- `analysis/threejs-mainline/source-evidence/unity-to-threejs-port-map.json`
-- `analysis/threejs-mainline/source-evidence/threejs-spike-decision-report.md`
-- `analysis/threejs-mainline/source-evidence/threejs-spike-test-summary.md`
+- `docs/legacy-unity/source-evidence/current-core-inventory.md`
+- `docs/legacy-unity/source-evidence/unity-to-threejs-port-map.json`
+- `docs/legacy-unity/source-evidence/threejs-spike-decision-report.md`
+- `docs/legacy-unity/source-evidence/threejs-spike-test-summary.md`
 
 ## Trap Matrix
 

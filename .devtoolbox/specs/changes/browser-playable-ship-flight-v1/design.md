@@ -8,7 +8,7 @@ The browser mainline has target selection, route preview, stable locked route pl
 
 ### Ship visual strategy
 
-Discovery found `Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.glb`, which is browser-usable in principle. Because `Assets/**` is read-only and no Unity/export tooling may run, implementation should first verify whether copying this file into `apps/weltraum-browser/public/ships/` is safe and straightforward. If GLB loading or copied asset validation becomes a blocker, use a procedural low-poly ship descriptor in this v1 slice and document the GLB/parity follow-up.
+Discovery found `unity-legacy-final-2026-07:Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.glb`, which is browser-usable in principle. Because `unity-legacy-final-2026-07:Assets/**` is read-only and no Unity/export tooling may run, implementation should first verify whether copying this file into `apps/weltraum-browser/public/ships/` is safe and straightforward. If GLB loading or copied asset validation becomes a blocker, use a procedural low-poly ship descriptor in this v1 slice and document the GLB/parity follow-up.
 
 The renderer must consume a descriptor/snapshot and own only visual objects. Domain truth remains in runtime/flight state.
 

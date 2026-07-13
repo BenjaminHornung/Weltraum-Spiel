@@ -1,4 +1,4 @@
-﻿# Proposal: Browser UI Concept Parity V3
+# Proposal: Browser UI Concept Parity V3
 
 ## Problem
 
@@ -17,6 +17,6 @@ Normal `/` is the authoritative concept-quality flight surface while Three.js/We
 ## Non-Goals
 
 - No economy, credits, reputation, cargo, surface, or combat-system expansion.
-- No changes under `Assets/**`, `package.json`, or lockfiles.
+- No changes under `unity-legacy-final-2026-07:Assets/**`, `package.json`, or lockfiles.
 - No commit, push, archive, or unrelated cleanup without Benjamin's explicit authorization.
 - No visual redesign beyond matching the supplied concepts; the live 3D player ship remains the only intentional visual exception.

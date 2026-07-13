@@ -6,7 +6,7 @@ This is a narrow follow-up to the playable-flight slice. It should improve prese
 
 ## GLB handling
 
-The Demo Scout GLB is treated as an optional browser asset candidate. The implementation must first validate it read-only from `Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.glb` (header/size/basic path). A copy to `apps/weltraum-browser/public/ships/demo_scout_mk1.glb` is allowed only if it does not mutate `Assets/**` and does not introduce fragile asynchronous loader behavior that would weaken the current deterministic E2E path.
+The Demo Scout GLB is treated as an optional browser asset candidate. The implementation must first validate it read-only from `unity-legacy-final-2026-07:Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.glb` (header/size/basic path). A copy to `apps/weltraum-browser/public/ships/demo_scout_mk1.glb` is allowed only if it does not mutate `unity-legacy-final-2026-07:Assets/**` and does not introduce fragile asynchronous loader behavior that would weaken the current deterministic E2E path.
 
 If integration is deferred, the procedural visual remains the runtime source of truth for this slice, and evidence records the reason. This is preferable to adding a brittle loader or losing required marker descriptors.
 

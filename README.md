@@ -2,8 +2,8 @@
 
 Browser-based low-poly spaceflight prototype with deterministic flight, navigation and evidence-driven development.
 
-> **Product mainline:** `apps/weltraum-browser` using Three.js, TypeScript, Vite, Vitest and Playwright.  
-> **Legacy/reference:** the Unity project under `Assets/**`. Unity is not the default development or verification path.
+> **Product mainline:** `apps/weltraum-browser` using Three.js, TypeScript, Vite, Vitest and Playwright.
+> **Legacy/reference:** the immutable Unity snapshot at tag `unity-legacy-final-2026-07` and branch `archive/unity-legacy-final-2026-07`. No active Unity project exists on this branch.
 
 ## Current State
 
@@ -22,11 +22,14 @@ The current browser runtime provides a playable local-space flight slice:
 - A live objective chain that completes real Range 500 m and Range 1000 m arrivals and then exposes an admitted Range 2500 m preview.
 - Deterministic world/chunk/LOD/floating-origin foundations.
 - A pure browser celestial/gravity core with validated Aurelia-system identities, deterministic elliptic Kepler propagation and local inverse-square gravity queries. It is not yet connected to flight, navigation, rendering or UI.
-- Resource/cargo and ship-builder domain foundations. These are data and validation cores, not complete player-facing gameplay systems.
+- Pure Combat and Persistence/Universe-Time/Event domain cores with deterministic contracts and normal-route Browser evidence. They are not yet playable combat or save/load systems.
+- Resource/cargo domain foundations. These are data and validation cores, not complete player-facing gameplay systems.
+- Ship Builder part/blueprint foundations plus deterministic stats, handling diagnostics and static flight-readiness reports. There is still no player-facing Builder UI, runtime handoff or active-ship replacement.
+- A player-facing Graphics dialog with versioned presets, strict local preference storage and a presentation-only Three.js adapter. Graphics choices do not alter simulation, navigation or world truth.
 
 The browser runtime does **not** yet provide full planets, voxel terrain, orbital flight, SOI or patched-conics navigation, seamless surface transitions, production multiplayer, a playable ship-builder UI, persistent cargo gameplay, full combat, economy or missions.
 
-For the detailed snapshot, see [docs/current-prototype-state.md](docs/current-prototype-state.md). The longer planning index is [docs/roadmap/living-master-plan.md](docs/roadmap/living-master-plan.md).
+For the detailed snapshot, see [docs/current-mainline-state.md](docs/current-mainline-state.md). The longer planning index is [docs/roadmap/living-master-plan.md](docs/roadmap/living-master-plan.md).
 
 ## Quick Start
 
@@ -117,11 +120,13 @@ apps/weltraum-browser/          Browser product mainline
   public/ships/                 Browser ship assets
 
 docs/browser-mainline/          Browser architecture, testing, CI and transition docs
+docs/current-mainline-state.md  Current browser product status
 docs/roadmap/                   Living plan and milestone planning
 docs/architecture/              Cross-cutting architecture contracts
 docs/ux/                        Player UI, input and flow contracts
+docs/legacy-unity/              Historical Unity intent and evidence references
+art/                            Neutral reusable source art and exports
 .devtoolbox/specs/changes/       Change specs, tasks and verification records
-Assets/                         Unity legacy/reference implementation and evidence source
 ```
 
 ## Evidence
@@ -133,13 +138,16 @@ Player-facing and domain claims should be backed by tests and inspectable artifa
 - `apps/weltraum-browser/evidence/browser-autopilot-terminal-capture-v1.md`
 - `apps/weltraum-browser/evidence/browser-world-chunk-registry-streaming-v1.md`
 - `apps/weltraum-browser/evidence/browser-celestial-gravity-core-v1.md`
+- `apps/weltraum-browser/evidence/browser-combat-weapon-damage-core-v1.md`
+- `apps/weltraum-browser/evidence/browser-persistence-universe-time-event-core-v1.md`
+- `apps/weltraum-browser/evidence/browser-ship-builder-full-stats-flight-readiness-v1.md`
 - `apps/weltraum-browser/evidence/demo-scout-nozzle-vfx-snapshot.json`
-- `.devtoolbox/specs/changes/browser-objective-chain-1000m-completion-v2/tests/test-protocol.md`
+- `.devtoolbox/specs/changes/archive/2026-07-13-browser-objective-chain-1000m-completion-v2/tests/test-protocol.md`
 
 Concept images under `docs/UI-Screenshots/` are design references. They do not prove runtime behavior.
 
 ## Unity Legacy Boundary
 
-The Unity prototype remains useful for feature intent, terminology, historical behavior, assets and regression scenarios. Do not start Unity or modify `Assets/**` during browser work unless a task explicitly requests a bounded Unity-reference change.
+The archived Unity prototype remains useful for feature intent, terminology, historical behavior, assets and regression scenarios. Read it through `unity-legacy-final-2026-07:<path>` or the curated records under `docs/legacy-unity`; reusable retained sources live under `art/`.
 
-The old Unity-specific setup, controls and implementation notes remain available through repository history and legacy documentation. They are no longer the root README or product onboarding path.
+The old Unity-specific setup, controls and implementation notes remain available through the immutable archive refs, repository history and legacy documentation. They are no longer the root README or product onboarding path.

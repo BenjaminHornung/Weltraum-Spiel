@@ -32,8 +32,8 @@ The following mandatory context was read before writing:
 - `docs/ux/player-hud-map-builder-surface-flow.md`
 - `docs/ux/debug-vs-player-ui-policy.md`
 - `docs/architecture/autopilot-v2-design.md`
-- `docs/roadmap/spec-sorting-backlog.md`
-- `docs/roadmap/spec-sorting-2026-06-15.md`
+- `docs/legacy-unity/roadmap/spec-sorting-backlog.md`
+- `docs/legacy-unity/roadmap/spec-sorting-2026-06-15.md`
 
 Existing spec-change scaffold patterns were reviewed:
 
@@ -82,12 +82,12 @@ git status --short
 
 Result: includes this change's untracked additions under `docs/ux/` and
 `.devtoolbox/specs/changes/player-facing-status-authority-v1/`, plus unrelated
-untracked work outside this change (for example `Assets/_Weltraum/` and other
+untracked work outside this change (for example `unity-legacy-final-2026-07:Assets/_Weltraum/` and other
 spec folders). Those unrelated files are not part of this setup task and are not
 staged.
 
 Conclusion: this change stages no runtime code, Unity scene, prefab, package,
-project setting, asset, or `Assets/Scripts/Prototype` file.
+project setting, asset, or `unity-legacy-final-2026-07:Assets/Scripts/Prototype` file.
 
 ## DevToolbox Validation
 

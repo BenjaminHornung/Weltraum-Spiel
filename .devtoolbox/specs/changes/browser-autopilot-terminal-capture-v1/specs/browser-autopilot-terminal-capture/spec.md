@@ -28,6 +28,6 @@ Browser autopilot terminal capture and holding for proving-ground navigation tar
 ## Non-goals
 
 - No Unity runtime work.
-- No `Assets/**` mutation.
+- No `unity-legacy-final-2026-07:Assets/**` mutation.
 - No VFX nozzle allocator or per-nozzle particle parity.
 - No full Unity terminal-capture parity claim.

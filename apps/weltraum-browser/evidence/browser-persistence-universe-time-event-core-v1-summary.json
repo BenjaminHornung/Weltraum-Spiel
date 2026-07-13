@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "feature": "browser-persistence-universe-time-event-core-v1",
+  "route": {
+    "route": "/",
+    "testBridgeOwnProperty": false,
+    "testBridgeInWindow": false
+  },
+  "moduleLoad": {
+    "path": "/src/persistence/index.ts",
+    "loaded": true
+  },
+  "universeTime": {
+    "ticksPerSecond": 120,
+    "initialTick": 0,
+    "advancedByTicks": 120,
+    "advancedTick": 120,
+    "advancedEpochSeconds": 1,
+    "missionTickRemainedIndependent": true,
+    "acknowledgementTick": 124
+  },
+  "events": {
+    "orderedEventIds": [
+      "event:alpha.0",
+      "event:zeta.0"
+    ],
+    "statuses": [
+      "Acknowledged",
+      "Pending"
+    ],
+    "duplicateWasNoOp": true,
+    "acknowledgedEventRetained": true,
+    "actionRequiredRetained": true,
+    "acknowledgementTimeRetained": true
+  },
+  "simulationMode": {
+    "path": [
+      "Active",
+      "Background",
+      "Dormant",
+      "NeedsPlayerAttention",
+      "Destroyed"
+    ],
+    "destroyedSelfTransition": "Destroyed",
+    "terminalErrorCode": "INVALID_SIMULATION_MODE_TRANSITION",
+    "eventCountBefore": 2,
+    "eventCountAfter": 2
+  },
+  "save": {
+    "saveId": "save:primary.0",
+    "signature": "fnv1a32:f0cd384d",
+    "canonicalBytesEqualAfterRoundtrip": true,
+    "signatureEqualAfterRoundtrip": true,
+    "canonicalByteLength": 1812,
+    "frozen": true,
+    "nestedStateFrozen": true
+  },
+  "migration": {
+    "sourceVersion": 1,
+    "targetVersion": 2,
+    "appliedMigrationIds": [
+      "fixture.neutral.v1-to-v2"
+    ],
+    "expectedMigrationId": "fixture.neutral.v1-to-v2",
+    "inputUnchanged": true,
+    "resultFrozen": true,
+    "nestedStateFrozen": true
+  },
+  "deterministicRepeat": {
+    "canonicalBytesEqual": true,
+    "signaturesEqual": true,
+    "completeScenarioEqual": true
+  },
+  "health": {
+    "consoleErrors": 0,
+    "pageErrors": 0,
+    "requestFailures": 0,
+    "httpErrors": 0
+  },
+  "status": "PASS"
+}

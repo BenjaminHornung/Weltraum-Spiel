@@ -25,6 +25,7 @@ import type {
   PartCategoryDefinition,
   PartDefinition,
   PartSocket,
+  PropulsionSupply,
   SerializableVector3,
   ShipBuilderComponent,
   ShipPartCatalogDocument,
@@ -139,14 +140,16 @@ const COMPONENT_FIELDS_BY_KIND: Readonly<Record<ComponentKind, readonly string[]
     "maximumThrustNewtons",
     "propellantBurnKilogramsPerSecond",
     "throttleResponseSeconds",
-    "gimbalDegrees"
+    "gimbalDegrees",
+    "propulsionSupply"
   ],
   RcsCluster: [
     "nozzleSocketIds",
     "thrustPerNozzleNewtons",
     "propellantBurnKilogramsPerSecond",
     "translationAxes",
-    "rotationAxes"
+    "rotationAxes",
+    "propulsionSupply"
   ],
   FuelTank: ["capacityKilograms", "fuelKind", "feedSocketIds", "fillSocketId"],
   CargoStorage: ["cargoAttachSocketIds", "capacityCubicMeters", "maximumPayloadKilograms", "accessSocketId"],
@@ -465,6 +468,44 @@ const readNonNegative = (object: Readonly<Record<string, unknown>>, key: string,
 const readPositive = (object: Readonly<Record<string, unknown>>, key: string, path: string): number =>
   readRequired(object, key, path, readPositiveFiniteNumber);
 
+const readPropulsionSupply = (value: unknown, path: string): PropulsionSupply => {
+  const object = readPlainObject(value, path);
+  const mode = readRequired(object, "mode", path, readString);
+  if (mode === "Fuel") {
+    assertAllowedFields(object, path, ["mode", "fuelKind"]);
+    return {
+      mode,
+      fuelKind: readRequired(object, "fuelKind", path, readNonEmptyString)
+    };
+  }
+  if (mode === "FuelFreeExperimental") {
+    assertAllowedFields(object, path, ["mode"]);
+    return { mode };
+  }
+  throw dataError("InvalidValue", dataPath(path, "mode"), "Unknown propulsion supply mode.");
+};
+
+const validatePropulsionMassFlow = (
+  supply: PropulsionSupply | undefined,
+  massFlow: number,
+  path: string
+): void => {
+  if (supply?.mode === "Fuel" && massFlow <= 0) {
+    throw dataError(
+      "OutOfRange",
+      dataPath(path, "propellantBurnKilogramsPerSecond"),
+      "Fuel propulsion requires positive mass flow."
+    );
+  }
+  if (supply?.mode === "FuelFreeExperimental" && massFlow !== 0) {
+    throw dataError(
+      "InvalidValue",
+      dataPath(path, "propellantBurnKilogramsPerSecond"),
+      "Fuel-free experimental propulsion requires zero mass flow."
+    );
+  }
+};
+
 const readComponent = (value: unknown, path: string): ShipBuilderComponent => {
   const object = readPlainObject(value, path);
   const schemaVersion = readRequired(object, "schemaVersion", path, parseComponentSchemaVersion);
@@ -502,23 +543,30 @@ const readComponent = (value: unknown, path: string): ShipBuilderComponent => {
       };
     case "MainThruster": {
       const gimbalDegrees = readOptional(object, "gimbalDegrees", path, readNonNegativeFiniteNumber);
+      const propulsionSupply = readOptional(object, "propulsionSupply", path, readPropulsionSupply);
+      const propellantBurnKilogramsPerSecond = readNonNegative(object, "propellantBurnKilogramsPerSecond", path);
+      validatePropulsionMassFlow(propulsionSupply, propellantBurnKilogramsPerSecond, path);
       return {
         ...componentBase(object, path, "MainThruster", schemaVersion),
         nozzleSocketId: readRequiredSocketId(object, "nozzleSocketId", path),
         maximumThrustNewtons: readPositive(object, "maximumThrustNewtons", path),
-        propellantBurnKilogramsPerSecond: readNonNegative(object, "propellantBurnKilogramsPerSecond", path),
+        propellantBurnKilogramsPerSecond,
         throttleResponseSeconds: readNonNegative(object, "throttleResponseSeconds", path),
-        ...(gimbalDegrees !== undefined ? { gimbalDegrees } : {})
+        ...(gimbalDegrees !== undefined ? { gimbalDegrees } : {}),
+        ...(propulsionSupply !== undefined ? { propulsionSupply } : {})
       };
     }
-    case "RcsCluster":
+    case "RcsCluster": {
+      const propulsionSupply = readOptional(object, "propulsionSupply", path, readPropulsionSupply);
+      const propellantBurnKilogramsPerSecond = readNonNegative(object, "propellantBurnKilogramsPerSecond", path);
+      validatePropulsionMassFlow(propulsionSupply, propellantBurnKilogramsPerSecond, path);
       return {
         ...componentBase(object, path, "RcsCluster", schemaVersion),
         nozzleSocketIds: readRequired(object, "nozzleSocketIds", path, (candidate, candidatePath) =>
           readSortedStableIds(candidate, candidatePath, parseSocketId)
         ),
         thrustPerNozzleNewtons: readPositive(object, "thrustPerNozzleNewtons", path),
-        propellantBurnKilogramsPerSecond: readNonNegative(object, "propellantBurnKilogramsPerSecond", path),
+        propellantBurnKilogramsPerSecond,
         translationAxes: readRequired(object, "translationAxes", path, (candidate, candidatePath) =>
           sortUniqueStrings(
             readArray(candidate, candidatePath).map((entry, index) =>
@@ -532,8 +580,10 @@ const readComponent = (value: unknown, path: string): ShipBuilderComponent => {
               readEnum(entry, dataPath(candidatePath, index), AXES, "Rotation axis")
             )
           ) as readonly ("x" | "y" | "z")[]
-        )
+        ),
+        ...(propulsionSupply !== undefined ? { propulsionSupply } : {})
       };
+    }
     case "FuelTank": {
       const feedSocketIds = readOptional(object, "feedSocketIds", path, (candidate, candidatePath) =>
         readSortedStableIds(candidate, candidatePath, parseSocketId)

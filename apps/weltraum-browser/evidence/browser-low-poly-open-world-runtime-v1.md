@@ -2,6 +2,10 @@
 
 Status: M6 foundation/test slice implemented. This is not gameplay open-world runtime.
 
+> Repository cleanup note (2026-07-13): `Assets/**` below is the original
+> capture-time path. The immutable Unity snapshot is available at
+> `unity-legacy-final-2026-07:Assets/**`; retained reusable art is under `art/`.
+
 ## Implemented Contracts
 
 - WORLD-001: `FrameDescriptor`, `WorldCoordinate`, `LocalCoordinate` and `FramedVelocity` separate durable absolute coordinates from local render/physics projections.

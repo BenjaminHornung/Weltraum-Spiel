@@ -20,7 +20,7 @@ Create a browser-native playable flight foundation where the player can see and 
 ## Non-goals
 
 - Do not start or install Unity.
-- Do not edit or delete `Assets/**`.
+- Do not edit or delete `unity-legacy-final-2026-07:Assets/**`.
 - Do not port MonoBehaviours 1:1.
 - Do not implement full orbital mechanics, terrain/surface runtime, ship builder, economy, missions, drones, cargo, weapons gameplay, production radar/minimap, or save/load.
 - Do not remove existing browser guarantees: route preview, selected target, stable locked `planHash`, TestBridge query gate, no silent replan, owner-snapshot HUD.

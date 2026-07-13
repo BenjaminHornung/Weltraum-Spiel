@@ -21,7 +21,7 @@
 ## 4. Observability and TestBridge
 - `TestBridge` may be used only when the request includes `?testBridge=1`.
 - Renderer output is observability data only and must not be treated as truth.
-- The implementation shall not depend on `Assets/**` for this change.
+- The implementation shall not depend on `unity-legacy-final-2026-07:Assets/**` for this change.
 
 ## 5. Evidence Expectations
 - Stress and expected-fail outcomes shall be visible in metrics and logs.

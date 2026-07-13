@@ -1,5 +1,10 @@
 # Browser Playable Ship Flight v1 Evidence
 
+> Repository cleanup note (2026-07-13): `Assets/**` below is the original
+> capture-time path. The immutable Unity snapshot is available at
+> `unity-legacy-final-2026-07:Assets/**`; the retained source copy is under
+> `art/source/ships/prototype-ship-kit/`.
+
 ## What is now playable
 
 - The browser ship is no longer a cone-only marker. It uses a procedural low-poly ship fallback with hull/body, cockpit/front, main engine, RCS marker, muzzle-placeholder and camera-anchor descriptors.

@@ -11,7 +11,7 @@ This report does not fix source documents. It creates a single follow-up map so 
 
 Required documents read:
 
-- `docs/current-prototype-state.md`
+- `docs/legacy-unity/current-prototype-state-2026-06-15.md`
 - `README.md`
 - `docs/spielkonzept/ship-builder-modular-parts.md`
 - `docs/art/blender-modular-ship-parts-guidelines.md`
@@ -22,22 +22,22 @@ Required documents read:
 - `docs/spielkonzept/worldbuilding-factions-economy.md`
 - `docs/spielkonzept/planetary-exploration-loop.md`
 - `docs/spielkonzept/planetary-settlements-outposts.md`
-- `.devtoolbox/specs/changes/prototype-ship-builder-modular-parts-art-pipeline-v1/proposal.md`
-- `.devtoolbox/specs/changes/prototype-ship-builder-modular-parts-art-pipeline-v1/design.md`
-- `.devtoolbox/specs/changes/prototype-ship-builder-modular-parts-art-pipeline-v1/tasks.md`
-- `.devtoolbox/specs/changes/prototype-ship-builder-modular-parts-art-pipeline-v1/specs/ship-builder-modular-parts/spec.md`
+- `.devtoolbox/specs/changes/archive/2026-07-13-unity-prototype-ship-builder-modular-parts-art-pipeline-v1/proposal.md`
+- `.devtoolbox/specs/changes/archive/2026-07-13-unity-prototype-ship-builder-modular-parts-art-pipeline-v1/design.md`
+- `.devtoolbox/specs/changes/archive/2026-07-13-unity-prototype-ship-builder-modular-parts-art-pipeline-v1/tasks.md`
+- `.devtoolbox/specs/changes/archive/2026-07-13-unity-prototype-ship-builder-modular-parts-art-pipeline-v1/specs/ship-builder-modular-parts/spec.md`
 - `.devtoolbox/specs/changes/planet-first-person-worldbuilding-v1/proposal.md`
 - `.devtoolbox/specs/changes/planet-first-person-worldbuilding-v1/design.md`
 - `.devtoolbox/specs/changes/planet-first-person-worldbuilding-v1/tasks.md`
 - `.devtoolbox/specs/changes/planet-first-person-worldbuilding-v1/specs/planet-first-person-mode/spec.md`
-- `.devtoolbox/specs/changes/autopilot-large-local-test-range-v1/proposal.md`
-- `.devtoolbox/specs/changes/autopilot-large-local-test-range-v1/design.md`
-- `.devtoolbox/specs/changes/autopilot-large-local-test-range-v1/tasks.md`
-- `.devtoolbox/specs/changes/autopilot-large-local-test-range-v1/specs/autopilot-large-local-test-range/spec.md`
-- `.devtoolbox/specs/changes/fix-autopilot-exact-point-arrival-v1/proposal.md`
-- `.devtoolbox/specs/changes/fix-autopilot-exact-point-arrival-v1/design.md`
-- `.devtoolbox/specs/changes/fix-autopilot-exact-point-arrival-v1/tasks.md`
-- `.devtoolbox/specs/changes/fix-autopilot-exact-point-arrival-v1/specs/default/spec.md`
+- `.devtoolbox/specs/changes/archive/2026-07-13-unity-autopilot-large-local-test-range-v1/proposal.md`
+- `.devtoolbox/specs/changes/archive/2026-07-13-unity-autopilot-large-local-test-range-v1/design.md`
+- `.devtoolbox/specs/changes/archive/2026-07-13-unity-autopilot-large-local-test-range-v1/tasks.md`
+- `.devtoolbox/specs/changes/archive/2026-07-13-unity-autopilot-large-local-test-range-v1/specs/autopilot-large-local-test-range/spec.md`
+- `.devtoolbox/specs/changes/archive/2026-07-13-unity-fix-autopilot-exact-point-arrival-v1/proposal.md`
+- `.devtoolbox/specs/changes/archive/2026-07-13-unity-fix-autopilot-exact-point-arrival-v1/design.md`
+- `.devtoolbox/specs/changes/archive/2026-07-13-unity-fix-autopilot-exact-point-arrival-v1/tasks.md`
+- `.devtoolbox/specs/changes/archive/2026-07-13-unity-fix-autopilot-exact-point-arrival-v1/specs/default/spec.md`
 
 Supporting documents sampled for existing conventions:
 

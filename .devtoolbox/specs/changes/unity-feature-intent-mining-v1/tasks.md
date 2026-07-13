@@ -8,5 +8,5 @@
 - [ ] Create `docs/browser-mainline/feature-intent-index.md`.
 - [ ] Create Feature Intent Cards under `docs/browser-mainline/feature-intents/`.
 - [ ] Create `docs/browser-mainline/known-unity-bug-traps.md`.
-- [ ] Create `analysis/threejs-mainline/spec-reconciliation-table.csv`.
+- [ ] Create `docs/legacy-unity/source-evidence/spec-reconciliation-table.csv`.
 

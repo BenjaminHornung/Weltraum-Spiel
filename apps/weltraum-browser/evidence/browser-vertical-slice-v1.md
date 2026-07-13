@@ -2,6 +2,10 @@
 
 Date: 2026-06-30
 
+> Repository cleanup note (2026-07-13): `Assets/**` below is the original
+> capture-time path. The immutable Unity snapshot is available at
+> `unity-legacy-final-2026-07:Assets/**`; retained reusable art is under `art/`.
+
 ## Scope
 
 - Worktree: `C:\IFI_SourceCode\Temp\WeltraumSpiel\.worktrees\Weltraum-Browser-IFIWELTRAUM-000-vertical-slice-v1`

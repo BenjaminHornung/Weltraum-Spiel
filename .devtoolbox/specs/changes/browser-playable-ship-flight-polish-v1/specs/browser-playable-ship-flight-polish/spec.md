@@ -4,7 +4,7 @@
 
 ### POLISH-001 Ship visual source and fallback
 
-The browser ship visual MUST retain a procedural fallback and MAY use a browser-readable Demo Scout GLB only when the asset can be validated and consumed without Unity, new fragile runtime dependencies, or `Assets/**` mutation.
+The browser ship visual MUST retain a procedural fallback and MAY use a browser-readable Demo Scout GLB only when the asset can be validated and consumed without Unity, new fragile runtime dependencies, or `unity-legacy-final-2026-07:Assets/**` mutation.
 
 If the GLB is not integrated, the runtime MUST expose a clear visual source state such as `ProceduralFallback` / `GLBUnavailableFallback`, and evidence MUST document why the fallback remains active.
 
@@ -41,7 +41,7 @@ The change MUST preserve:
 - actuator-driven autopilot and no normal target/waypoint snap,
 - TestBridge gated behind `?testBridge=1`,
 - HUD owner-snapshot consumption,
-- no `Assets/**` modifications.
+- no `unity-legacy-final-2026-07:Assets/**` modifications.
 
 ## Non-Goals
 

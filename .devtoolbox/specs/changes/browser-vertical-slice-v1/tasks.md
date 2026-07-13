@@ -39,7 +39,7 @@ DevToolbox MCP note: `workspace_discover` is blocked for this repo path with `un
 
 - [ ] Objective: Update M7 documentation/evidence, run fresh verification, fix review findings, then prepare commit/merge if gates pass.
 - Files/search targets: `.devtoolbox/specs/changes/browser-vertical-slice-v1/**`, `docs/browser-mainline/port-roadmap.md`, `docs/browser-mainline/feature-intent-index.md`, `docs/browser-mainline/known-unity-bug-traps.md` only if a new trap is identified, `apps/weltraum-browser/evidence/browser-vertical-slice-v1.md`.
-- Acceptance criteria: docs accurately state implemented/deferred M7 behavior; evidence lists exact commands/results and Playwright fallback if used; dual review plus UI review finds no blockers; no `Assets/**` changes; branch is ready for IFI-format commit.
+- Acceptance criteria: docs accurately state implemented/deferred M7 behavior; evidence lists exact commands/results and Playwright fallback if used; dual review plus UI review finds no blockers; no `unity-legacy-final-2026-07:Assets/**` changes; branch is ready for IFI-format commit.
 - Guidance: do not overclaim full radar/minimap/open-world gameplay; document DevToolbox MCP `unauthorized_path` fallback; keep residual risks explicit.
 - Required skills/MCPs: `requesting-code-review`, `verification-before-completion`, `ifi-commit-message`; DevToolbox MCP unavailable due `unauthorized_path`.
 - Verification: `npm ci`, `npm run test -- tests/unit/statusHud.test.ts tests/unit/simulation.test.ts`, `npm run test`, `npm run build`, `npm run test:e2e` and Chrome fallback if needed, `git status --short -- Assets`.

@@ -1,14 +1,16 @@
 # Architecture Docs
 
-Empfohlene Lese-Reihenfolge fuer den Clean-Core-Refactor:
+This directory contains platform-neutral runtime and domain architecture.
 
-1. `clean-core-refactor-overview.md`
-2. `clean-core-runtime-architecture.md`
-3. `scene-management-v1.md`
-4. `autopilot-v2-design.md`
-5. `autopilot-v2-test-harness.md`
+Recommended starting points:
 
-Ergaenzende bestehende Architekturdocs wie `real-scale-world-architecture.md`,
-`coordinate-spaces-and-floating-origin.md` und
-`surface-local-frame-architecture.md` bleiben relevante Kontextquellen fuer
-spaetere Runtime-Slices.
+1. [`../browser-mainline/browser-architecture.md`](../browser-mainline/browser-architecture.md)
+2. [`../browser-mainline/adr-0001-threejs-mainline.md`](../browser-mainline/adr-0001-threejs-mainline.md)
+3. [`autopilot-v2-design.md`](autopilot-v2-design.md)
+4. [`real-scale-world-architecture.md`](real-scale-world-architecture.md)
+5. [`coordinate-spaces-and-floating-origin.md`](coordinate-spaces-and-floating-origin.md)
+6. [`surface-local-frame-architecture.md`](surface-local-frame-architecture.md)
+
+Unity-specific Clean Core, scene and test-harness designs are historical
+reference material under [`../legacy-unity/architecture/`](../legacy-unity/architecture/).
+They are not implementation targets for the browser mainline.

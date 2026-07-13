@@ -6,7 +6,7 @@ import { readVisiblePreviewHash } from "./support/plannerWorkflow";
 
 const evidenceRoot = path.resolve(
   process.cwd(),
-  "../../.devtoolbox/specs/changes/browser-navigation-map-world-truth-v1/tests"
+  "test-results/browser-navigation-map-world-truth"
 );
 const repositoryRoot = path.resolve(process.cwd(), "../..");
 const screenshotRoot = path.join(evidenceRoot, "screenshots");

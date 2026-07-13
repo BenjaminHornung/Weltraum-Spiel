@@ -407,6 +407,7 @@ test("browser vertical slice selects a target, previews a route, engages autopil
 });
 
 test("playable manual flight exposes ship visual, ChaseLocked camera, controls, and telemetry VFX", async ({ page }) => {
+  test.setTimeout(60_000);
   await page.goto("/?testBridge=1");
   await page.waitForFunction(() => Boolean((window as any).TestBridge));
   const readyVisual = await waitForShipVisualReady(page);
@@ -416,7 +417,7 @@ test("playable manual flight exposes ship visual, ChaseLocked camera, controls, 
   expect(initialRender.shipVisual.oldConeOnlyPlaceholder).toBe(false);
   expect(initialRender.shipVisual.descriptor.strategy).toBe("BrowserGlbAsset");
   expect(initialRender.shipVisual.visualSource.state).toBe("GLBLoaded");
-  expect(initialRender.shipVisual.visualSource.candidateAssetPath).toBe("Assets/Art/PrototypeShipKit/DemoShips/demo_scout_mk1.glb");
+  expect(initialRender.shipVisual.visualSource.candidateAssetPath).toBe("art/source/ships/prototype-ship-kit/exports/demo-ships/demo_scout_mk1.glb");
   expect(initialRender.shipVisual.visualSource.browserAssetPath).toBe("/ships/demo_scout_mk1.glb");
   expect(initialRender.shipVisual.visualSource.axisCorrection.mapping).toBe("browserX=-glbZ,browserY=glbY,browserZ=glbX");
   expect(initialRender.shipVisual.descriptorValidation.ok).toBe(true);

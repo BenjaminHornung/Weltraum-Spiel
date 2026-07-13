@@ -1,6 +1,8 @@
 ﻿import "./style.css";
 import { DebugScene } from "./render/three/debugScene";
 import { createBrowserRuntime, createRuntimeShipForFlightCase } from "./runtime/browserRuntime";
+import { createGraphicsSettingsController, loadGraphicsSettings } from "./settings";
+import { createGraphicsSettingsPanel } from "./ui/graphicsSettingsPanel";
 import { createProvingGroundLowPolyRenderBatch } from "./world/provingGroundWorld";
 
 const canvas = document.querySelector<HTMLCanvasElement>("#debug-scene");
@@ -12,6 +14,13 @@ const searchParams = new URLSearchParams(window.location.search);
 const uiScenario = searchParams.get("uiScenario");
 const uiSurface = uiScenario === "combat-contact" ? "combat" : "flight";
 const debugHudEnabled = searchParams.get("debugHud") === "1";
+let graphicsStorage: Storage | null = null;
+try {
+  graphicsStorage = window.localStorage;
+} catch {
+  // Storage access can be denied by browser policy; the settings domain falls back safely.
+}
+const graphicsSettingsLoad = loadGraphicsSettings(graphicsStorage);
 
 document.body.dataset.uiSurface = uiSurface;
 document.body.dataset.debugHud = String(debugHudEnabled);
@@ -29,13 +38,23 @@ const lowPolyInstanceBatch = createProvingGroundLowPolyRenderBatch();
 
 const scene = new DebugScene(canvas, runtime.controller, {
   lowPolyInstanceBatch,
+  antiAliasing: graphicsSettingsLoad.settings.antiAliasing.enabled,
   showDebugGrid: searchParams.get("debugGrid") === "1",
   surface: uiSurface,
   showDebugHelpers: debugHudEnabled
 });
+const graphicsSettingsController = createGraphicsSettingsController({
+  initial: graphicsSettingsLoad,
+  storage: graphicsStorage,
+  runtime: scene.getGraphicsSettingsPort()
+});
+createGraphicsSettingsPanel(graphicsSettingsController);
 
 if (searchParams.get("testBridge") === "1") {
   void import("./test-harness/browserBridge").then(({ installTestBridge }) => installTestBridge(runtime.controller, () => scene.getRenderSnapshot()));
 }
 
-scene.start();
+void graphicsSettingsController.initializeRuntime().then((result) => {
+  document.body.dataset.graphicsSettingsReady = String(result.ok);
+  scene.start();
+});

@@ -1,4 +1,4 @@
-﻿# Tasks
+# Tasks
 
 ## Phase 1 — Domain core
 
@@ -42,4 +42,4 @@
   - Skills/MCPs: project `AGENTS.md`, `playwright`/browser-debugger for evidence if needed, `devtoolbox-review`, `verification-before-completion`; no Unity MCP/editor.
   - Verification: required three focused unit commands, `npm run test`, `npm run build`, `npm run test:e2e -- tests/e2e/resource-cargo-core.spec.ts`, JSON parse, `git diff --check`, staged check if applicable, exact forbidden-status path check, allowlist audit, reviewer + reviewer-glm.
   - Report: changed files, test/build/Playwright results, evidence paths, review findings/fixes, blockers, remaining risks/unverified items, forbidden-path audit.
-  - Stop/escalate: stop on package/lock/Assets/Ship Builder/runtime/UI/render/sim or existing-evidence modification; do not commit/push until orchestrator presents summary and user confirms.
+  - Stop/escalate: stop on package/lock/unity-legacy-final-2026-07:Assets/Ship Builder/runtime/UI/render/sim or existing-evidence modification; do not commit/push until orchestrator presents summary and user confirms.

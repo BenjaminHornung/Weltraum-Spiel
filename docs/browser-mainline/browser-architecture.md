@@ -4,7 +4,7 @@ Stand: 2026-07-13
 
 ## Purpose
 
-This document describes the implemented browser-native architecture and the boundaries future work must preserve. The product mainline is `apps/weltraum-browser`; Unity is a legacy/reference source and is not imported as runtime architecture.
+This document describes the implemented browser-native architecture and the boundaries future work must preserve. The product mainline is `apps/weltraum-browser`; Unity is available only through `unity-legacy-final-2026-07`, its archive branch and curated records under `docs/legacy-unity`, and is not imported as runtime architecture.
 
 ## Current Layer Model
 
@@ -27,6 +27,14 @@ celestial
   Validated body/catalog identities, canonical signatures, explicit reference
   frames, deterministic elliptic Kepler propagation and local gravity queries.
 
+combat
+  Target snapshots, fire permission, Projectile/Beam delivery, Hit resolution,
+  Armor/Hull/Module damage and canonical semantic events.
+
+persistence
+  Universe time, stable persistence identity, strict save envelopes, schema
+  migration, persistent events, simulation modes and canonical signatures.
+
 runtime
   Browser command dispatch, selected target, preview state, locked execution,
   objective progression, station keeping and owner snapshots.
@@ -41,14 +49,19 @@ resources
 
 shipBuilder
   Part catalog, blueprints, sockets, compatibility, structure, mass, COM and
-  bounds contracts.
+  bounds plus signed stats, handling diagnostics and static readiness contracts.
+
+settings
+  Versioned graphics preferences, presets, validation, capabilities, draft/apply
+  state and local storage without ownership of simulation or world truth.
 
 ui
-  HUD and navigation-planner ViewModels/presentation plus explicit commands.
+  HUD, navigation-planner and Graphics-dialog presentation plus explicit commands.
 
 render/three
   Three.js scene, cameras, Demo Scout GLB adapter, nozzle VFX binding,
-  procedural fallback, render interpolation and world-presentation projection.
+  procedural fallback, graphics-settings adapter, render interpolation and
+  world-presentation projection.
 
 tests/evidence
   Vitest, Playwright, query-gated TestBridge scenarios and recorded artifacts.
@@ -62,6 +75,10 @@ Directory names may evolve, but these authority boundaries are product contracts
 - Flight owns executable physical state and actuator truth.
 - Navigation consumes flight/world snapshots and emits plans or typed rejection.
 - Celestial owns pure validated data and math. It does not currently drive flight, navigation, renderer, UI or world bootstrap.
+- Combat owns pure targeting, delivery, hit and damage decisions. It does not currently drive playable encounters, Flight, Navigation, UI or Runtime.
+- Persistence owns pure time, identity, schema, event and canonicalization contracts. It has no Browser storage, live Runtime, offline progression or multiplayer transport binding.
+- Resources and Ship Builder own deterministic domain reports only; Builder readiness is static eligibility, not a runtime handoff or completed test flight.
+- Settings owns player graphics preferences and capability truth; its Three.js adapter changes presentation only and cannot change simulation cadence, world residency, navigation or telemetry.
 - Runtime coordinates commands and exposes immutable snapshots.
 - UI reads ViewModels/snapshots and sends commands.
 - Three.js consumes render/world-presentation snapshots only.
@@ -95,13 +112,26 @@ Current boundary:
 
 The root star remains at the absolute system origin. Floating-origin translation is an external projection concern and cannot alter ephemeris truth.
 
+### Pure domain-core truth
+
+Combat owns deterministic Target/Weapon snapshots, Fire permission,
+Projectile/Beam delivery, Hit resolution, Damage and canonical Combat events.
+Persistence owns Universe time, stable IDs, save validation/migration,
+persistent events, simulation-mode transitions and canonical serialization.
+Resources and Ship Builder own their validated catalogs, transfers, analyses,
+diagnostics and signed static readiness reports.
+
+These cores do not become live gameplay authority merely because their normal
+route E2E probes pass. Runtime integration, player controls, Browser storage,
+offline progression and active-ship handoff remain explicit future boundaries.
+
 ### World truth
 
 World data/snapshots own absolute entity state, local projections, obstacle and target identities, chunk registry, simulation residency, render eligibility and contact provenance.
 
 ### Presentation truth
 
-Three.js and UI may own meshes, materials, interpolated render pose, camera damping, label layout, CSS state and visual transitions. They cannot authorize engagement, complete objectives, alter absolute/celestial state or manufacture contacts.
+Three.js and UI may own meshes, materials, interpolated render pose, camera damping, label layout, CSS state, graphics preferences and visual transitions. They cannot authorize engagement, complete objectives, alter simulation cadence, world residency, navigation, telemetry or absolute/celestial state, or manufacture contacts.
 
 ## Navigation Lifecycle
 
@@ -137,6 +167,7 @@ The Demo Scout GLB is the preferred player-facing visual. The procedural ship re
 - Main-engine and RCS nozzle effects derive from actuator telemetry and resolved bindings, not raw key state.
 - Missing visual nodes must not create phantom gameplay thrusters, targets or world state.
 - Render interpolation affects ship/camera presentation only.
+- Graphics presets and live settings affect presentation only; camera render distance is not a world-streaming or detection distance.
 - Decorative objects remain outside radar/world truth unless backed by explicit runtime entities.
 
 ## World-Scale And Orbital Foundations
@@ -147,7 +178,11 @@ Implemented:
 - floating-origin invariants;
 - deterministic simulation bubble, LOD, chunk registry and streaming plans;
 - renderer-owned instancing without renderer-owned simulation truth;
-- a pure celestial catalog, ephemeris and local gravity-query core.
+- a pure celestial catalog, ephemeris and local gravity-query core;
+- pure Combat and Persistence/Universe-Time/Event contract cores without live
+  runtime ownership;
+- signed Ship Builder stats, handling diagnostics and static readiness without
+  UI or active-ship handoff.
 
 Still missing:
 
@@ -156,13 +191,14 @@ Still missing:
 - production content/chunk IO;
 - generated planets, terrain and voxel data;
 - surface-local gameplay transitions;
-- timewarp, persistence and multiplayer universe authority.
+- runtime save/load integration, timewarp, offline progression and multiplayer
+  universe authority.
 
 Future planetary and voxel work must preserve absolute simulation state while streaming local render/physics regions.
 
 ## Unity Reference Boundary
 
-Unity sources may be read for feature intent, player-visible behavior, terminology, historical defects, evidence scenarios, test-backed constants and reusable source assets.
+Archived Unity sources may be read through `unity-legacy-final-2026-07:<path>` for feature intent, player-visible behavior, terminology, historical defects, evidence scenarios and test-backed constants. Curated intent/evidence lives under `docs/legacy-unity`; retained reusable source assets live under `art/`.
 
 Do not port MonoBehaviour shape, `Update`/`FixedUpdate` ownership, scene wiring as domain state, Rigidbody state as deterministic authority, IMGUI as player UI, root/default semantic fallbacks, or silent replan behavior.
 
@@ -174,7 +210,7 @@ Do not port MonoBehaviour shape, `Update`/`FixedUpdate` ownership, scene wiring 
 - FlightController-owned actuator and terminal-capture behavior.
 - Explicit target semantics and arrival envelopes.
 - Fail-closed authority, fuel and braking checks.
-- Stable IDs across serialization and future persistence.
+- Stable IDs and deterministic signatures across serialization and persistence.
 - Explicit frame metadata across absolute/local/surface/orbital boundaries.
 - Celestial calculations remain explicit-time, deterministic and independent from presentation.
 - UI and rendering remain command/snapshot adapters.
@@ -182,12 +218,16 @@ Do not port MonoBehaviour shape, `Update`/`FixedUpdate` ownership, scene wiring 
 
 ## Related Documents
 
-- `docs/current-prototype-state.md`
+- `docs/current-mainline-state.md`
 - `docs/browser-mainline/adr-0001-threejs-mainline.md`
 - `docs/browser-mainline/testing-and-evidence.md`
 - `docs/browser-mainline/ci-verification.md`
 - `docs/browser-mainline/port-roadmap.md`
 - `docs/browser-mainline/celestial-gravity-core-v1.md`
+- `docs/browser-mainline/combat-weapon-damage-core-v1.md`
+- `docs/browser-mainline/persistence-universe-time-event-core-v1.md`
+- `docs/browser-mainline/ship-builder-full-stats-flight-readiness-v1.md`
+- `docs/browser-mainline/graphics-settings-foundation-v1.md`
 - `docs/roadmap/living-master-plan.md`
 - `docs/architecture/autopilot-v2-design.md`
 - `docs/architecture/coordinate-spaces-and-floating-origin.md`

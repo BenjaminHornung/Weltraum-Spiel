@@ -57,7 +57,7 @@
 
 - [ ] Task 6: Stage browser-native RCS visualization and marker feedback
   - Objective: Provide a no-GLB-dependent visualization path for RCS activity and control feel.
-  - Files/search targets: `apps/weltraum-browser/src/**` for telemetry consumers and rendering hooks; avoid `Assets/**` changes.
+  - Files/search targets: `apps/weltraum-browser/src/**` for telemetry consumers and rendering hooks; avoid `unity-legacy-final-2026-07:Assets/**` changes.
   - Acceptance criteria: Visualization can be staged with browser-native markers/debug primitives and does not require nozzle hierarchy discovery.
   - Implementation guidance: Start with data plumbing and marker placement; do not block on art asset integration.
   - Required skills/MCPs: `subagent-driven-development`, `verification-before-completion`, `playwright` or browser evidence capture tools when visual evidence is required.

@@ -68,7 +68,7 @@ Out of scope:
 - `docs/ux/debug-vs-player-ui-policy.md` — Debug-Grenze, Basic-Mode-Contract.
 - `docs/architecture/autopilot-v2-design.md` — Autopilot-Telemetry-Codes,
   Zustandsmaschine, Failure-Reasons.
-- `docs/roadmap/spec-sorting-backlog.md` — Gruppe C UI/Input/Map, Reihenfolge:
+- `docs/legacy-unity/roadmap/spec-sorting-backlog.md` — Gruppe C UI/Input/Map, Reihenfolge:
   Input Mode → Status Authority → HUD ViewModels.
 
 ## Success Criteria

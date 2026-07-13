@@ -12,7 +12,7 @@
 - [x] Add an additive browser course catalog and `Safe`/`Balanced`/`Fast` profile model.
   - Files: browser app flight/proving-ground model files and colocated unit tests only.
   - Verification: targeted unit tests prove catalog IDs, profile defaults, and profile-to-non-terminal-speed/brake-margin semantics.
-  - Stopping rule: stop if implementation requires `Assets/**`, Unity, render smoothing, jitter, VFX, nozzle, Cargo, Surface, or Economy changes.
+  - Stopping rule: stop if implementation requires `unity-legacy-final-2026-07:Assets/**`, Unity, render smoothing, jitter, VFX, nozzle, Cargo, Surface, or Economy changes.
 
 ## 3. Planner integration
 
@@ -53,7 +53,7 @@
 
 - [ ] Review the completed change and commit only after evidence is complete.
   - Files: review notes/evidence as needed.
-  - Verification: review confirms scope, invariants, tests, evidence, and no `Assets/**` changes.
+  - Verification: review confirms scope, invariants, tests, evidence, and no `unity-legacy-final-2026-07:Assets/**` changes.
   - Stopping rule: do not commit, merge, push, or toggle tasks without completed verification evidence and approval-compatible status.
 
 ## Implementation Evidence Notes

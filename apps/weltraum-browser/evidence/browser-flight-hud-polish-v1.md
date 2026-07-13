@@ -4,6 +4,10 @@ Date: 2026-07-03
 Execution: manual-exec-005
 Scope: Task 2 HUD verification rerun after safe-area CSS box-sizing fix.
 
+> Repository cleanup note (2026-07-13): `Assets/**` below is the original
+> capture-time path. The immutable Unity snapshot is available at
+> `unity-legacy-final-2026-07:Assets/**`; retained reusable art is under `art/`.
+
 ## Commands
 
 From `apps/weltraum-browser`:

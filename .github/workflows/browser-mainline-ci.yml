@@ -41,13 +41,14 @@ jobs:
         run: |
           set -euo pipefail
           glb_path="apps/weltraum-browser/public/ships/demo_scout_mk1.glb"
+          favicon_path="apps/weltraum-browser/public/favicon.png"
           reference_pngs=(
             "apps/weltraum-browser/evidence/ui-concept-parity-v1-rejected-flight-hud.png"
             "apps/weltraum-browser/evidence/ui-concept-parity-v1-rejected-flight-hud-1280x720.png"
             "apps/weltraum-browser/evidence/ui-concept-parity-v1-rejected-navigation-planner.png"
             "apps/weltraum-browser/evidence/ui-concept-parity-v1-rejected-combat-contact.png"
           )
-          required_lfs_paths=("$glb_path" "${reference_pngs[@]}")
+          required_lfs_paths=("$glb_path" "$favicon_path" "${reference_pngs[@]}")
 
           needs_lfs_pull=false
           for path in "${required_lfs_paths[@]}"; do
@@ -74,7 +75,7 @@ jobs:
             exit 1
           fi
 
-          for path in "${reference_pngs[@]}"; do
+          for path in "$favicon_path" "${reference_pngs[@]}"; do
             png_signature=$(od -An -tx1 -N8 "$path" | tr -d ' \n')
             if [ "$png_signature" != "89504e470d0a1a0a" ]; then
               echo "::error::Reference image did not resolve to a PNG binary: $path"

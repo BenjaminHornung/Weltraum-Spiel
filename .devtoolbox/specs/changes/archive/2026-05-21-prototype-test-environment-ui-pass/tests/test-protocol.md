@@ -13,8 +13,12 @@ Date: 2026-05-20
 
 - Built the prototype in the Unity editor through `PrototypeBootstrap.BuildPrototype()` using Unity MCP `execute_code`.
 - Result: `ship=True`, `environmentPoints=32`, `camera=True`.
-- Captured an overview screenshot:
-  - `.devtoolbox/specs/changes/prototype-test-environment-ui-pass/tests/screenshots/environment-overview.png`
+- Captured an overview screenshot. Its historical Git LFS pointer referenced
+  object `c03d059b365d570421ef9c8f06abd7f55c2bbc50ce6587afb84b436f02738e53`,
+  but that payload was already absent from GitHub LFS before the 2026-07
+  browser-mainline repository cleanup. The broken pointer was removed from the
+  active branch; the original pointer remains visible through
+  `unity-legacy-final-2026-07`.
 - Inspection notes:
   - Origin beacon, world axes, range rings, labels, target/gate/beacon landmarks, and station-area markers are visible from an overview camera.
   - The environment is generated from primitives, LineRenderer circles/axes, lights, and TextMesh labels only.
