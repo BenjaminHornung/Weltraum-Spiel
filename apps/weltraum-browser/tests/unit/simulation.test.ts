@@ -45,9 +45,9 @@ describe("FixedStepSimulationLoop", () => {
     const glbManifestValidation = validateShipVisualDescriptor(demoScoutGlbDescriptor);
 
     expect(validation.ok).toBe(true);
-    expect(validation.counts).toEqual({ hullParts: 4, mainEngines: 1, rcs: 6, muzzle: 1, cameraAnchors: 1 });
+    expect(validation.counts).toEqual({ hullParts: 4, mainEngines: 1, mainEngineNozzles: 0, rcs: 6, legacyRcsMarkers: 6, rcsNozzles: 0, muzzle: 1, cameraAnchors: 1 });
     expect(glbManifestValidation.ok).toBe(true);
-    expect(glbManifestValidation.counts).toEqual({ hullParts: 4, mainEngines: 1, rcs: 4, muzzle: 1, cameraAnchors: 1 });
+    expect(glbManifestValidation.counts).toEqual({ hullParts: 4, mainEngines: 1, mainEngineNozzles: 1, rcs: 4, legacyRcsMarkers: 0, rcsNozzles: 20, muzzle: 1, cameraAnchors: 1 });
     expect(proceduralScoutDescriptor.hullParts).toContain("main-hull");
     expect(proceduralScoutDescriptor.cockpitMarker.id).toContain("cockpit");
     expect(proceduralScoutDescriptor.mainEngineMarkers.map((marker) => marker.id)).toContain("main-engine-aft");
@@ -60,8 +60,8 @@ describe("FixedStepSimulationLoop", () => {
     const weakenedDescriptor = { ...proceduralScoutDescriptor, rcsMarkers: proceduralScoutDescriptor.rcsMarkers.slice(0, 3) };
     const weakenedValidation = validateShipVisualDescriptor(weakenedDescriptor);
     expect(weakenedValidation.ok).toBe(false);
-    expect(weakenedValidation.missing).toContain("at least four RCS markers");
-    expect(() => createProceduralShipVisual(weakenedDescriptor)).toThrow(/RCS markers/);
+    expect(weakenedValidation.missing).toContain("exactly six legacy RCS markers");
+    expect(() => createProceduralShipVisual(weakenedDescriptor)).toThrow(/legacy RCS markers/);
   });
 
   it("keeps Demo Scout GLB manifest marker signs aligned to browser render coordinates", () => {
@@ -86,9 +86,11 @@ describe("FixedStepSimulationLoop", () => {
       rcsRotationActive: false,
       sasCorrectionActive: false,
       controlModeEffect: inactiveControlModeEffect("Cruise"),
+      lastAppliedMainAcceleration: vec3(0, 12, 0),
+      lastAppliedRcsTranslationAcceleration: vec3(),
       lastAppliedAcceleration: vec3(0, 12, 0),
       lastAppliedAngularAcceleration: vec3()
-    });
+    }, { x: 0, y: 0, z: 0, w: 1 });
 
     const offAxisThrustSnapshot = visual.getSnapshot();
     expect(offAxisThrustSnapshot.vfx.mainThrustVisible).toBe(true);
@@ -130,6 +132,12 @@ describe("FixedStepSimulationLoop", () => {
     expect(snapshot.descriptorValidation.ok).toBe(true);
     expect(snapshot.markerCounts).toEqual({ hullParts: 4, mainEngines: 1, rcs: 6, muzzle: 1, cameraAnchors: 1 });
     expect(snapshot.markerBindings.every((binding) => binding.source === "ManifestFallback")).toBe(true);
+    expect(snapshot.nozzleBindings).toHaveLength(6);
+    expect(snapshot.nozzleBindings.every((binding) => binding.kind === "LegacyMarkerFallback")).toBe(true);
+    expect(snapshot.vfx.rcsPuffs).toHaveLength(6);
+    expect(snapshot.vfx.visibleRcsPuffCount).toBe(0);
+    expect(snapshot.vfx.bindingKindCounts).toEqual({ DirectionalNozzle: 0, LegacyMarkerFallback: 6 });
+    expect(snapshot.vfx.nozzleSourceCounts).toEqual({ GLBNode: 0, ManifestNozzleFallback: 0 });
     expect([...snapshot.markerBindings, snapshot.cameraAnchorBinding].every((binding) =>
       Number.isFinite(binding.localPosition.x) &&
       Number.isFinite(binding.localPosition.y) &&
@@ -187,7 +195,11 @@ describe("FixedStepSimulationLoop", () => {
     expect(presentation.renderedShip.position.x).toBeLessThan(presentation.currentShip.position.x);
     (presentation.renderedShip.position as { x: number }).x = 999;
     (presentation.currentShip.position as { x: number }).x = 999;
+    (presentation.currentShip.actuatorTelemetry.lastAppliedMainAcceleration as { x: number }).x = 999;
+    (presentation.currentShip.actuatorTelemetry.lastAppliedRcsTranslationAcceleration as { x: number }).x = 999;
     expect(loop.getShip().position.x).toBeCloseTo(truthAfterTick.position.x, 8);
+    expect(loop.getShip().actuatorTelemetry.lastAppliedMainAcceleration.x).toBe(0);
+    expect(loop.getShip().actuatorTelemetry.lastAppliedRcsTranslationAcceleration.x).toBe(0);
   });
 
   it("publishes real flight telemetry before the first browser runtime step", () => {

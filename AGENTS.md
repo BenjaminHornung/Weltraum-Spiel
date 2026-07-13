@@ -1,78 +1,98 @@
 # AGENTS.md - Weltraum-Spiel
 
-## Product rule
+## Projektregel
 
-The product mainline is the browser-native TypeScript/Three.js application.
-Work spec-first, in small verifiable slices, and record evidence. Do not create
-a second runtime architecture from historical Unity material.
+Die Produkt-Mainline ist die Browser-Anwendung unter `apps/weltraum-browser` mit Three.js und TypeScript. Unity bleibt ausschließlich als unveränderlicher Tag `unity-legacy-final-2026-07`, Archiv-Branch und kuratierte Legacy-Evidence erhalten.
 
-Unity exists only in `unity-legacy-final-2026-07` and
-`archive/unity-legacy-final-2026-07`. Files under `docs/legacy-unity` are
-behavior/art/evidence references, not implementation targets.
+Arbeite spec-first, klein, überprüfbar und mit Evidence. Keine opportunistischen Großrefactors und keine stillen Änderungen an fachlichen Autoritätsgrenzen.
 
-## Main paths
+## Wichtige Pfade
 
 ```text
-apps/weltraum-browser/        Product runtime, tests and browser evidence
-docs/browser-mainline/        Architecture, intent, testing and roadmap
-docs/current-mainline-state.md Current product status
-docs/spielkonzept/            Product and game-design concepts
-docs/legacy-unity/            Historical reference only
-art/                          Neutral source art, exports and validation
-.devtoolbox/specs/changes/    Active browser/cross-platform specs and archives
-.agent/PLANS.md               ExecPlan rules
+apps/weltraum-browser/          Produkt-Mainline
+  src/                          Runtime, Flight, Navigation, Celestial, World, UI, Three.js
+  tests/unit/                   Vitest
+  tests/e2e/                    Playwright
+  evidence/                     JSON, Markdown und Screenshots
+
+docs/current-mainline-state.md   Aktueller Browser-Produktstatus
+docs/browser-mainline/          Browser-Architektur, Tests, CI und Port-Dokumente
+docs/roadmap/                   Living Master Plan und Meilensteine
+docs/architecture/              Gemeinsame Architekturverträge
+docs/ux/                        UI-, Input- und Flow-Verträge
+docs/legacy-unity/              Historische Unity-Intent-/Evidence-Referenz
+art/                            Neutrale wiederverwendbare Quellen und Exporte
+.devtoolbox/specs/changes/       Changes, Tasks und Evidence
+.agent/PLANS.md                  ExecPlan-Regeln
 ```
 
-## Before each task
+## Vor jeder Aufgabe
 
-1. Read this file and the relevant spec.
-2. Read `docs/current-mainline-state.md` and relevant browser design audits.
-3. Write a short plan; use an ExecPlan for cross-layer or high-risk work.
-4. Work only in the agreed scope and keep browser evidence attributable.
+1. Lies diese Datei.
+2. Lies `README.md` und `docs/current-mainline-state.md`.
+3. Lies die relevante Spec und bei größeren Vorhaben `docs/roadmap/living-master-plan.md`.
+4. Prüfe aktuelle Runtime-, Test- und Evidence-Pfade, statt aus älteren Unity-Dokumenten zu schließen.
+5. Schreibe für komplexe Aufgaben einen kurzen Plan und halte den Scope ein.
 
-## Architecture invariants
+## Nicht verhandelbare Browser-Regeln
 
-- Core/simulation state is gameplay truth; Three.js is a render adapter.
-- UI renders owner snapshots/ViewModels and sends commands; it does not inspect
-  planner internals or recompute route/fuel/authority truth.
-- Keep planner, immutable plan, executor and diagnostics separate.
-- `planHash` is stable and the executor runs exactly the locked plan.
-- No silent replan and no hidden plan replacement.
-- No fake progression, target/waypoint/position snap or velocity-zero shortcut.
-- `TestBridge` is available only with the explicit `?testBridge=1` query gate.
-- Keep Demo Scout GLB and `ProceduralFallback`; neither owns gameplay state.
-- Do not change Planner, Executor, FlightController, rendering truth or UI
-  behavior in repository-only cleanup work.
-- Do not change package manifests or lockfiles without a necessary product or
-  tooling reason.
+- Auf diesem Branch existiert kein aktives Unity-Projekt; historische Quellen nur über den Archiv-Tag oder `docs/legacy-unity` lesen.
+- Archivobjekte nicht als schreibbare Mainline behandeln; wiederverwendbare Quellen unter `art/` pflegen.
+- Keine Package- oder Lockfile-Änderung ohne technisch zwingenden Grund.
+- TestBridge nur über `?testBridge=1`. Auf `/` muss `window.TestBridge` fehlen.
+- Keine Fake-Progression, keine Positions-Snaps und kein Velocity-Zero-Shortcut.
+- Der Planner erzeugt zuerst einen Plan. Der Executor führt genau den zugelassenen gelockten Plan aus.
+- Kein stilles Replan. Invalidation und Divergence bleiben sichtbar und benötigen eine explizite neue Planung.
+- `planHash` bleibt bei gleichen Inputs stabil und während Execution unverändert.
+- Terminal Capture, Arrival und Holding bleiben Runtime-/FlightController-owned.
+- Renderer, Three.js-Objekte, CSS und HUD sind Projektionen, niemals Gameplay- oder World-Truth.
+- Demo Scout GLB und Procedural Fallback bleiben beide funktionsfähig.
+- UI darf keine Ready-, Arrival-, Combat- oder World-State-Behauptung erfinden.
 
-## Standard verification
+## Architekturregeln
 
-Run from `apps/weltraum-browser`:
+- Domain- und Runtime-Zustand liegt in `core`, `flight`, `navigation`, `celestial`, `world`, `resources`, `shipBuilder` oder klaren Runtime-Ownern.
+- UI liest ViewModels/Snapshots und sendet explizite Commands.
+- Three.js konsumiert Render-/World-Presentation-Snapshots.
+- Persistent relevante Identitäten sind stabile IDs, keine Anzeigenamen oder Objekt-Hierarchien.
+- Navigation trennt Target, Preview, Admission, Locked Plan, Execution, Completion und Station Keeping.
+- Celestial-Katalog, Ephemeris und Gravity Core bleiben reine deterministische Daten/Math, bis eine eigene Spec die Integration in Flight, Navigation, Renderer oder UI definiert.
+- Resource/Cargo- und Ship-Builder-Foundations nicht als fertige Gameplay-Loops darstellen.
+- Keine Surface-, Orbit-, Voxel-, Economy- oder Multiplayer-Implementation ohne eigenen Datenvertrag und eigene Spec.
 
-```text
-npm ci
+## Verifikation
+
+Befehle aus `apps/weltraum-browser`:
+
+```bash
 npm run test
 npm run build
-```
-
-Run the Playwright groups relevant to the change. For mainline, shared runtime,
-CI or repository-wide changes, run all three:
-
-```text
 npm run test:e2e:core
 npm run test:e2e:live
 npm run test:e2e:ui
 ```
 
-Also run the Playwright group-membership validation from
-`.github/workflows/browser-mainline-ci.yml` when test files or group scripts
-change. Visible UI/runtime changes require an attributable screenshot matrix;
-repository-only cleanup must not refresh runtime screenshots.
+Für einen gezielten Slice zuerst fokussierte Unit-/E2E-Tests ausführen, danach die relevanten Gruppen. Bei Änderungen an Gruppenmitgliedschaften muss die CI-Inventarprüfung weiterhin jede `tests/e2e/**/*.spec.ts` genau einer Gruppe zuordnen.
 
-## DevToolbox workflow
+Windows kann für Playwright einen expliziten Browserpfad benötigen:
 
-When available for the active workspace, use:
+```powershell
+$env:WELTRAUM_PLAYWRIGHT_EXECUTABLE_PATH = "C:\Program Files\Google\Chrome\Application\chrome.exe"
+```
+
+## Evidence-Regeln
+
+- Normale Spieler-Flows auf `/` mit sichtbaren UI-Aktionen prüfen.
+- TestBridge nur für bewusst synthetische, deterministische Harness-Szenarien verwenden.
+- Sichtbare UI-Änderungen mit Playwright-Screenshots prüfen.
+- Nicht sichtbare Pure-Core-Slices dürfen JSON-/Markdown-Evidence ohne Screenshot verwenden, wenn ausdrücklich dokumentiert ist, dass es keine UI-/Renderänderung gibt.
+- Telemetrie, Screenshot und fachliche Behauptung müssen dieselbe Runtime-Truth abbilden.
+- Concept Art und Referenzbilder sind Design-Input, keine Runtime-Evidence.
+- Regenerierte Evidence nicht ungeprüft überschreiben oder als neu behaupten.
+
+## DevToolbox
+
+Wenn der Workspace verfügbar ist, den Spec-Workflow verwenden:
 
 ```text
 workspace_prepare_for_agent
@@ -84,21 +104,26 @@ tasks_completion_preflight
 tasks_toggle
 ```
 
-Never close a task checkbox without evidence and completion preflight. Preserve
-open browser and cross-platform work; archive historical Unity records without
-presenting them as current product work.
+Tasks erst nach Implementierung, frischer Evidence und Completion Preflight schließen. Wenn DevToolbox in einem Worktree nicht autorisiert ist, die äquivalenten Checks und den Grund im Testprotokoll dokumentieren.
 
-## UI and evidence rules
+## UI-Regeln
 
-- Keep player UI and diagnostics/TestBridge surfaces separate.
-- Keep the current mode visible and one primary action per context.
-- Avoid generic glass/gradient dashboards, icon soup and unnecessary floating
-  cards.
-- Do not delete browser screenshots, JSON, Markdown evidence or CI baselines
-  merely because they are currently unreferenced. Only clearly generated,
-  unreferenced logs are cleanup candidates.
+- Player UI und Debug/Test UI strikt trennen.
+- Aktiven Modus, Zustand, Risiko und nächste Aktion sichtbar machen.
+- Planner-Interaktionen dürfen gehaltene Flight-Inputs nicht weiter ausführen.
+- Blockierte oder veraltete Route Previews dürfen keine Engage-Authority erhalten.
+- Keine generischen Dashboard-Muster, unnötige Floating Cards oder Debugdaten im Spieler-HUD.
+- Sichtbare Änderungen gegen die relevante Screenshot-Matrix und reale Runtime prüfen.
 
-## Complex work
+## Dokumentationsregeln
 
-Use a living ExecPlan following `.agent/PLANS.md` for repository cleanup, world
-streaming, Ship Builder, planet runtime and other multi-step work.
+- `README.md` ist der Einstieg in die Browser-Mainline.
+- `docs/current-mainline-state.md` ist der kompakte Status-Snapshot.
+- `docs/roadmap/living-master-plan.md` ist der Planungsindex, keine Implementierungsspec.
+- Unity-Dokumente und Archivobjekte klar als historische Legacy/Referenz markieren.
+- Implementiert, Foundation, integriert, geplant und ausdrücklich nicht implementiert sauber trennen.
+- Nach größeren Mainline-Merges Status, Evidence-Links und bekannte Grenzen aktualisieren.
+
+## Wenn die Aufgabe komplex ist
+
+Nutze einen ExecPlan nach `.agent/PLANS.md`. Parallelisiere read-heavy Analyse und unabhängige Tests, aber vermeide parallele write-heavy Änderungen an denselben Verträgen oder Dateien.

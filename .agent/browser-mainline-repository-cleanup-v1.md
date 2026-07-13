@@ -11,6 +11,7 @@ werden neutral unter `art/` und `docs/legacy-unity/` konserviert.
 ## Kontext
 
 - Ausgangscommit: `8383487f89f6eb6e63140def564052ac86de259a`
+- Vor finaler PR-Verifikation synchronisierter `main`: `ea4ccbadfa8c91787e4b4451e04b1fb4ad18a12f`
 - Cleanup-Branch: `cleanup/browser-mainline-repository-v1`
 - Archiv-Tag: `unity-legacy-final-2026-07`
 - Archiv-Branch: `archive/unity-legacy-final-2026-07`
@@ -29,7 +30,9 @@ und als vorbestehender Datenintegritätsverlust dokumentiert.
 
 - Keine Änderung an Browser-Gameplay, Physics, Planner, Executor, Flight
   Controller, Renderer-Truth oder UI-Verhalten.
-- Keine Package- oder Lockfile-Änderung.
+- Keine Dependency- oder Lockfile-Änderung. Ein aus dem synchronisierten `main`
+  übernommener, fehlender E2E-Gruppeneintrag darf als reine CI-Zuordnung
+  korrigiert werden.
 - Kein History Rewrite, Force Push oder LFS-History-Migration.
 - Keine stillen Task-Abschlüsse oder Checkbox-Änderungen.
 - Kein Ersatz historischer Evidence durch nachgestellte oder anders gehashte

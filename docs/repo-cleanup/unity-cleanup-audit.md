@@ -173,13 +173,20 @@ package is a safe delete.
 
 ## DevToolbox classification
 
-The machine-readable initial inventory is
-`docs/repo-cleanup/devtoolbox-change-inventory.json` and represents all 178
-change directories exactly once.
+At the audit base, the machine-readable inventory represented all 178 change
+directories exactly once:
 
 - Platforms: 36 browser, 12 cross-platform, 129 Unity, 1 unknown.
 - Status: 45 active, 100 complete, 23 reconcile, 10 superseded.
 - Actions: 91 keep, 55 archive, 8 delete, 24 review.
+
+Before final PR verification, synchronized `main` added four Browser changes.
+They are appended to `docs/repo-cleanup/devtoolbox-change-inventory.json`, which
+therefore contains 182 entries: 40 browser, 12 cross-platform, 129 Unity and 1
+unknown; actions are 92 keep, 58 archive, 8 delete and 24 review. Three additions
+had zero open tasks plus evidence and move to the dated archive. The Demo Scout
+nozzle-VFX change retains its one open CI task and stays active without checkbox
+mutation.
 
 DevToolbox MCP is installed but rejects the isolated cleanup worktree with
 `unauthorized_path`. Therefore no task checkbox is changed and no doubtful
@@ -204,6 +211,11 @@ All 152 files under `apps/weltraum-browser/evidence` were classified:
 - historical evidence: 16;
 - generated log: 5;
 - unreferenced non-log evidence: 9.
+
+Synchronized `main` later added eight tracked current Browser evidence files.
+They remain untouched; after deleting the five classified generated logs, the
+final tracked Browser evidence count is 155. Ignored local Playwright
+report/output directories are not counted.
 
 Only these five generated, unreferenced command logs are safe to delete:
 
@@ -239,7 +251,8 @@ No LFS replacement, history migration or fake binary is permitted.
   versions and job design do not change.
 - Node 22 remains the CI runtime.
 - The exact group-membership check remains the workflow's inline Node script;
-  package scripts are unchanged.
+  the Core package script adds only the synchronized Combat spec that current
+  `main` had left unassigned.
 - `analysis/threejs-mainline/source-evidence` references change to
   `docs/legacy-unity/source-evidence`.
 - Root `docs/browser-mainline/design-qa-v3.md` references change to

@@ -166,7 +166,7 @@ async function waitForDistanceDecrease(page: Page, initialMeters: number): Promi
     await waitForRuntimeFrames(page, 30);
     await page.waitForTimeout(500);
     latest = await readDistance(page);
-    if (latest.meters <= initialMeters - 20) {
+    if (latest.meters < initialMeters - 20) {
       return latest;
     }
   }

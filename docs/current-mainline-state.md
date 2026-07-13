@@ -1,47 +1,191 @@
 # Current Browser Mainline State
 
-Date: 2026-07-13
+Stand: 2026-07-13
+Status snapshot: browser mainline after the objective-chain,
+celestial-gravity-core, combat-weapon-damage-core and Demo Scout nozzle-VFX
+merges
 
-## Product mainline
+## Product Mainline
 
-The active product is the TypeScript/Three.js browser application under
-`apps/weltraum-browser`. Unity is no longer a second product architecture on
-the active branch; its final repository snapshot is preserved by
-`unity-legacy-final-2026-07` and
-`archive/unity-legacy-final-2026-07`.
+The product mainline is the browser application under
+`apps/weltraum-browser` using Three.js `0.185.0`, TypeScript `7.0.2`, Vite
+`8.1.0`, Vitest `4.1.9` and Playwright `1.61.1`.
 
-## Runtime state
+The final Unity implementation is immutable archive/reference material. Its
+repository snapshot is preserved by tag `unity-legacy-final-2026-07` and branch
+`archive/unity-legacy-final-2026-07`; archived source paths can be addressed as
+`unity-legacy-final-2026-07:Assets/**`. No Unity project is active on this
+branch.
 
-The browser mainline currently provides:
+## Playable Browser State
 
-- a deterministic fixed-step simulation with explicit ship, flight, fuel,
-  mass, authority and actuator snapshots;
-- desktop manual flight with Cruise, Precision and Translation control modes,
-  RCS/SAS state and a chase-locked camera presentation;
-- target resolution, deterministic route planning, stable `planHash`, locked-
-  plan execution, explicit invalidation/replan-required state and terminal
-  capture without target/position snap or velocity-zero shortcuts;
-- local obstacle routing, proving-ground/long-range scenarios and explicit
-  known-stress/expected-fail evidence;
-- browser world/chunk/objective foundations, navigation-map world truth,
-  resource/cargo contracts, ship-builder domain/compatibility contracts,
-  celestial/gravity foundations, combat/damage contracts and persistence/time
-  foundations;
-- a Demo Scout GLB render adapter with marker validation and an explicit
-  `ProceduralFallback`; renderer objects never own gameplay truth;
-- player HUD and UI snapshots separated from diagnostics and a TestBridge that
-  is available only with `?testBridge=1`.
+The normal route `/` boots a playable local-space flight slice with:
 
-The feature-intent inventory and port boundaries are maintained in
-[`browser-mainline/feature-intent-index.md`](browser-mainline/feature-intent-index.md)
-and [`browser-mainline/port-roadmap.md`](browser-mainline/port-roadmap.md).
+- Demo Scout GLB plus deterministic procedural fallback;
+- telemetry-driven main-engine and RCS nozzle VFX bound to the visible ship;
+- Cruise, Precision and Translation control modes;
+- persistent throttle, main thrust, RCS, SAS, fuel, mass and braking authority;
+- ChaseLocked, OrbitInspect, Side and FreeInspect cameras;
+- fixed-step simulation with interpolated ship/camera presentation;
+- runtime-owned targets, obstacles, routes and world contacts;
+- player HUD, local radar and navigation planner;
+- explicit target selection, route preview, Engage and Cancel actions;
+- local obstacle-aware planning, immutable route identity and typed fail-closed
+  rejection states;
+- terminal braking, capture, Arrival/Holding truth and continued station
+  keeping.
 
-## Authoritative verification surfaces
+The normal player runtime does not expose TestBridge. `window.TestBridge` is
+available only on the explicit test route `/?testBridge=1`.
 
-Unit coverage is under `apps/weltraum-browser/tests/unit`; Playwright coverage
-is under `apps/weltraum-browser/tests/e2e`. The package exposes these gates:
+## Current Objective Chain
 
-```text
+Current normal-runtime evidence proves through visible UI on `/`:
+
+1. Range 500 m produces an admitted route preview and completes physically.
+2. Range 1000 m unlocks and completes through the same runtime path.
+3. Range 2500 m then becomes available with a distinct admitted preview hash.
+
+The latest recorded evidence completed Range 500 m at approximately 1.3 m
+final distance and Range 1000 m at approximately 1.0 m. Range 2500 m is
+currently proven as an admitted preview, not as a required completed arrival.
+
+Primary evidence:
+
+- `apps/weltraum-browser/evidence/browser-objective-chain-1000m-completion-v2.md`
+- `.devtoolbox/specs/changes/browser-objective-chain-1000m-completion-v2/tests/test-protocol.md`
+- `apps/weltraum-browser/tests/e2e/large-field-objective-chain-live.spec.ts`
+
+## Navigation And Autopilot Truth
+
+- The planner creates a `RoutePlan` before execution.
+- A preview is display context until the exact route passes admission.
+- Engage dispatches the exact admitted `planHash`.
+- The executor consumes one immutable locked plan and never silently replaces
+  it.
+- Divergence, invalidation or current-state mismatch requires explicit
+  replanning.
+- Fuel, braking reserve and flight authority fail closed.
+- Terminal capture and station keeping use the shared
+  FlightController/actuator path.
+- Completion preserves `completedPlanHash` as history without reusing it as a
+  new route.
+- Renderer and HUD projections cannot authorize execution or manufacture
+  Arrival/Holding.
+
+The implemented planner remains local-space. It is not an orbital navigator,
+patched-conics planner, SOI planner, maneuver-node system or gravity-assist
+planner.
+
+## Browser Controls
+
+| Input | Current behavior |
+| --- | --- |
+| `W/S` | Pitch in Cruise/Precision; forward/back translation in Translation |
+| `A/D` | Yaw in Cruise/Precision; lateral translation in Translation |
+| `Q/E` | Roll |
+| `H/N` | Vertical translation in Translation |
+| `Left Shift` / `Left Control` | Increase/decrease persistent main throttle |
+| `X` | Cut throttle |
+| `Y` or `Z` | Full throttle |
+| `R` | Toggle RCS |
+| `T` | Toggle SAS |
+| `Caps Lock` | Cycle Cruise, Precision and Translation |
+| `V` | Cycle camera mode |
+| RMB + mouse | Orbit/look |
+| Mouse wheel | Adjust inspection distance |
+
+The navigation planner owns target and route actions. While it is open, held
+flight keys are cleared and manual flight input is suppressed.
+
+## Implemented Foundations
+
+### Celestial And Gravity Core
+
+`apps/weltraum-browser/src/celestial` now provides a deterministic pure-data
+and pure-math seam for the documented Aurelia starter system:
+
+- validated stable body/catalog identities;
+- canonical serialization and deterministic signatures;
+- explicit reference frames;
+- bound elliptic Kepler propagation at explicit times;
+- local inverse-square gravity queries and deterministic dominant-source
+  selection.
+
+This core is deliberately not connected to flight, navigation, renderer, UI,
+world bootstrap, SOI transitions, patched conics, terrain, atmosphere or
+landing gameplay. It must not be described as playable orbital mechanics.
+
+Evidence:
+
+- `docs/browser-mainline/celestial-gravity-core-v1.md`
+- `apps/weltraum-browser/evidence/browser-celestial-gravity-core-v1.md`
+- `apps/weltraum-browser/evidence/browser-celestial-gravity-core-v1-summary.json`
+
+### Combat Weapon And Damage Core
+
+`apps/weltraum-browser/src/combat` provides a deterministic,
+renderer-independent domain core for target selection, fire permission,
+Projectile/Beam delivery, authoritative hit resolution, layered
+Armor/Hull/Module damage and canonical semantic events.
+
+The core is not connected to Browser Runtime, player/debug UI, renderer/VFX,
+Flight, Navigation, enemy encounters, Ship Builder, Resources or persistence.
+It must not be described as a complete playable combat loop.
+
+Evidence:
+
+- `docs/browser-mainline/combat-weapon-damage-core-v1.md`
+- `apps/weltraum-browser/evidence/browser-combat-weapon-damage-core-v1.md`
+- `apps/weltraum-browser/evidence/browser-combat-weapon-damage-core-v1-summary.json`
+
+### World And Streaming
+
+Implemented foundations include absolute/local frames, floating-origin
+invariants, simulation-bubble membership, chunk registry, deterministic
+residency and LOD, streaming transition/budget plans, and render-only instanced
+asteroid presentation from runtime-backed descriptors.
+
+Production chunk IO, terrain, voxel data, surface transitions and persistent
+generated universe content remain unimplemented.
+
+### Resource And Cargo Core
+
+Stable resource IDs, catalog entries, stacks, capacity rules, containers,
+transfers, ownership/legality/provenance and canonical serialization exist as
+browser domain contracts.
+
+Active ship cargo, loaded-mass integration, mining, trading, inventory UI and
+persistence remain unimplemented.
+
+### Ship Builder Foundations
+
+Part categories, definitions, components, sockets, blueprints, compatibility,
+structural graphs, dry mass, center of mass and footprint bounds exist as
+deterministic domain foundations.
+
+Placement/edit UI, complete gameplay stats, test-flight handoff, active-ship
+replacement, production art binding and save/load remain unimplemented.
+
+## UI And Presentation State
+
+- Flight and planner state are runtime-driven.
+- Debug/TestBridge details are absent from the normal player HUD.
+- Route geometry and identity come from the same locked/display plan.
+- Blocked previews may remain visible only as typed context and cannot enable
+  Engage.
+- Demo Scout nozzle VFX derive from actuator telemetry and resolved visual
+  bindings.
+- Combat presentation is a bounded UI/presentation slice, not a complete
+  browser combat loop.
+- Concept screenshots under `docs/UI-Screenshots/` are design references, not
+  runtime evidence.
+
+## Verification Contract
+
+Run from `apps/weltraum-browser`:
+
+```bash
 npm run test
 npm run build
 npm run test:e2e:core
@@ -49,34 +193,63 @@ npm run test:e2e:live
 npm run test:e2e:ui
 ```
 
-The workflow
-[`browser-mainline-ci.yml`](../.github/workflows/browser-mainline-ci.yml)
-enforces exact, unique membership of every `tests/e2e/**/*.spec.ts` file in one
-of the three E2E groups. It also validates top-level evidence JSON and restores
-and checks the required browser baselines.
+Use `npm run test:e2e` for complete local Playwright discovery. CI additionally
+checks exact E2E group membership, required browser LFS binaries and evidence
+JSON validity.
 
-## Required runtime and evidence assets
+Visible gameplay claims should use normal `/` Playwright flows and visible
+controls. Use `?testBridge=1` only for explicitly synthetic deterministic
+harness scenarios.
+
+## Repository And Evidence Boundary
 
 - `apps/weltraum-browser/public/ships/demo_scout_mk1.glb` is the unchanged
-  runtime Demo Scout asset; the source export lives under
+  runtime Demo Scout asset; its neutral source export lives under
   `art/source/ships/prototype-ship-kit`.
-- The four `ui-concept-parity-v1-rejected-*.png` files under browser evidence
-  are required comparison baselines.
-- Current Markdown, JSON and screenshot evidence remains under
+- The four `ui-concept-parity-v1-rejected-*.png` files under
+  `apps/weltraum-browser/evidence` are required comparison baselines.
+- Current Browser Markdown, JSON and screenshot evidence remains under
   `apps/weltraum-browser/evidence`.
+- The historical Unity status report is
+  [`legacy-unity/current-prototype-state-2026-06-15.md`](legacy-unity/current-prototype-state-2026-06-15.md).
 
-## Architectural invariants
+## Accepted Limits
 
-- Simulation/core state is authoritative; Three.js renders snapshots.
-- UI renders owner snapshots/ViewModels and sends commands.
-- Planner, immutable plan, executor and diagnostics remain separate.
-- The executor executes exactly the locked plan and never silently replans.
-- A plan keeps its stable `planHash` throughout execution.
-- No fake progression, target/waypoint/position snap or velocity-zero shortcut.
-- No Package/lockfile changes are needed for repository cleanup.
+The project is not yet:
 
-## Historical Unity state
+- a seamless planet-to-planet or space-to-surface game;
+- a voxel planet/terrain runtime;
+- integrated orbital flight, SOI, patched conics or timewarp;
+- a persistent or multiplayer universe authority;
+- a complete ship builder;
+- a complete cargo/mining/economy loop;
+- a complete combat/damage/loot/repair loop;
+- a mission, faction, reputation or outpost runtime.
 
-The last detailed Unity prototype report moved to
-[`legacy-unity/current-prototype-state-2026-06-15.md`](legacy-unity/current-prototype-state-2026-06-15.md).
-It is historical evidence only and must not be read as current product status.
+## Unity Legacy Boundary
+
+Unity archive material may be read for intended behavior, vocabulary, source
+assets, historical bug traps and archived evidence. Do not copy MonoBehaviour
+lifecycle, scene wiring, Rigidbody state, IMGUI or prototype fallback behavior
+into browser domain authority.
+
+Do not start or mutate a restored Unity archive during normal browser work
+unless a task explicitly grants that scope. The active branch contains no Unity
+project.
+
+## Current Planning Priorities
+
+The detailed ordering remains in
+[`roadmap/living-master-plan.md`](roadmap/living-master-plan.md). Near-term gaps
+are:
+
+1. keep project truth, active specs and evidence indexes reconciled with
+   `main`;
+2. define how the celestial core integrates with shared trajectory prediction
+   before calling it orbital gameplay;
+3. connect resource/cargo contracts to loaded ship mass and flight authority;
+4. build a player-facing Ship Builder MVP with validation and test-flight
+   handoff;
+5. specify surface target/local-frame transitions before surface gameplay;
+6. design the planetary/voxel streaming and asset-conversion pipeline before
+   creating large content volumes.

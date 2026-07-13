@@ -1,108 +1,192 @@
 # Browser Mainline Testing And Evidence
 
+Stand: 2026-07-13
+
 ## Principle
 
-Mainline browser features are not complete by feel. They need deterministic tests and recorded evidence that can be inspected without Unity.
+Browser-mainline work is complete only when the relevant domain rule, runtime behavior and player-visible claim are covered by inspectable verification. Visual plausibility alone is not evidence.
 
-Source paths:
+The active branch has no Unity project. Historical comparison sources are read through `unity-legacy-final-2026-07:<path>` or curated records under `docs/legacy-unity`; current reusable art lives under `art/`.
 
-- `docs/legacy-unity/current-prototype-state-2026-06-15.md`
-- `docs/legacy-unity/architecture/autopilot-v2-test-harness.md`
-- `docs/legacy-unity/architecture/prototype-legacy-boundary-audit-2026-06-15.md`
-- `docs/legacy-unity/source-evidence/current-core-inventory.md`
-- `docs/legacy-unity/source-evidence/unity-to-threejs-port-map.json`
-- `docs/legacy-unity/source-evidence/threejs-spike-test-summary.md`
-- `docs/legacy-unity/source-evidence/threejs-spike-decision-report.md`
-- historical external package input "docs/testing-and-evidence-strategy.md" (not a live repo path in this worktree)
+The browser test stack under `apps/weltraum-browser` uses:
+
+- Vitest for deterministic unit and integration coverage;
+- Playwright for normal-runtime player flows, UI/layout and browser domain smokes;
+- TypeScript/Vite production builds;
+- Markdown, JSON and screenshot evidence under `apps/weltraum-browser/evidence` and change-specific test folders.
+
+## Required Commands
+
+Run from `apps/weltraum-browser`:
+
+```bash
+npm run test
+npm run build
+npm run test:e2e:core
+npm run test:e2e:live
+npm run test:e2e:ui
+```
+
+The aggregate local discovery command remains:
+
+```bash
+npm run test:e2e
+```
+
+Use focused commands while developing, then run the relevant required groups before completion. Do not weaken assertions, replace physical execution with shortcuts or move a failing test out of a required group to obtain a green result.
+
+## E2E Groups
+
+### `test:e2e:core`
+
+Covers deterministic browser integration including autopilot/executor lifecycle, terminal capture, proving-ground and obstacle scenarios, negative fuel/authority/divergence contracts, resource/cargo and ship-builder domain smokes, Demo Scout nozzle-VFX binding, and the celestial/gravity pure-core browser smoke.
+
+### `test:e2e:live`
+
+Covers normal player runtime and world presentation including visible planner interactions, live large-field flight, Range 500 m and Range 1000 m completion, admitted Range 2500 m preview, runtime-owned target/route/world presentation and world-streaming flows.
+
+### `test:e2e:ui`
+
+Covers player-facing HUD, planner and visual parity/layout checks.
+
+CI validates that every `tests/e2e/**/*.spec.ts` is assigned to exactly one required group and rejects stale, duplicate or malformed script membership.
+
+## Normal Runtime Versus TestBridge
+
+### Normal player acceptance
+
+Use `/` and visible interactions whenever the claim concerns gameplay or UI:
+
+- select targets through visible controls;
+- preview and engage the visible exact route hash;
+- wait on runtime/player-facing conditions rather than synthetic skips;
+- prove Arrival/Holding from executor/runtime truth;
+- confirm `window.TestBridge` is absent;
+- capture screenshots only after UI transitions are stable.
+
+### Pure-domain browser smokes
+
+A non-visible domain feature may open `/`, prove TestBridge is absent, dynamically import the public browser module and run deterministic probes. This is appropriate for foundations such as the celestial catalog/ephemeris/gravity core that intentionally have no runtime UI or renderer integration.
+
+Such tests must use explicit inputs, repeat probes for deterministic equality, reject console/page/request failures attributable to the feature, and record JSON/Markdown evidence. They must not imply that a pure core is already integrated gameplay.
+
+### Query-gated harness scenarios
+
+Use `/?testBridge=1` only for explicitly synthetic deterministic scenarios that need direct harness orchestration, such as controlled streaming snapshots or fault injection.
+
+TestBridge must never exist on `/`, become player UI, own product rules, snap position, zero velocity, replace a locked plan, or bypass admission and stable-hash checks.
 
 ## Evidence Levels
 
 ```text
 Unit tests
-  Core, math, frame conversion, planner, executor, fuel, authority.
+  Domain rules, math, hashing, validation, planner/executor contracts,
+  celestial propagation/gravity, resources and ship-builder calculations.
 
 Integration/scenario tests
-  Renderer-free scenario runner using fixed-step simulation and scenario fixtures.
+  Fixed-step runtime behavior and deterministic fixtures.
 
-Browser E2E tests
-  Playwright, TestBridge, telemetry JSON, screenshots, mobile/desktop smoke.
+Normal-runtime browser E2E
+  Visible player controls, physical execution and screenshot evidence on `/`.
 
-Visual smoke tests
-  Canvas nonblank, expected route/ship/target/obstacle/HUD elements visible.
+Pure-domain browser smoke
+  Deterministic module import/probe on `/`, usually JSON/Markdown evidence.
 
-Performance smoke tests
-  Bundle size note, object counts, scenario runtime, obvious world-loop budget checks.
+Query-gated harness E2E
+  Explicit synthetic scenarios on `/?testBridge=1`.
+
+Build and CI checks
+  TypeScript compile, Vite build, grouped-suite inventory,
+  required LFS validation and evidence parsing.
 ```
 
-## Required Proving-Ground Matrix
+## Navigation And Flight Acceptance
 
-| Scenario | Proves | Minimum assertions |
-| --- | --- | --- |
-| Direct local arrival | Exact local target arrival remains stable. | final distance/speed/hold gates pass; plan hash deterministic. |
-| Obstacle avoidance route | Planner can avoid a blocking obstacle without executor replans. | route includes avoidance/terminal segments; minimum clearance recorded. |
-| Insufficient fuel | Fuel policy fails closed. | route invalid or execution blocked with visible `FuelInsufficient`/warning reason. |
-| No authority | Authority honesty is preserved. | no false completion; `NoAuthority` or equivalent status visible. |
-| Off-route divergence | Divergence does not mutate locked plan. | status `Diverged`/invalidated; `replanRequired === true`; plan hash unchanged. |
-| Locked plan hash preservation | Executor consumes a locked immutable plan. | initial, active and final locked plan hashes match unless player explicitly replans. |
-| Explicit replan-required signal | Player/UI can tell what action is needed. | telemetry contains replan flag and invalidation reasons; HUD can show player-facing chip. |
+A positive navigation/autopilot claim should prove the intended stable target, Ready/non-stale preview, exact-hash admission, exact Engage dispatch, immutable locked hash, no silent replan, no snap/velocity shortcut, truthful fuel/braking/authority, FlightController-owned terminal capture and valid Arrival/Holding envelopes.
 
-## Evidence Artifact Shape
+A negative scenario must fail closed with a typed deterministic reason and must not expose false Ready, Engage or completion state.
 
-Recommended per-scenario output:
+Current live objective evidence proves Range 500 m Ready -> Enroute -> Complete, Range 1000 m Ready -> Complete and a new admitted Range 2500 m preview, all through visible planner controls on `/` with TestBridge absent. Range 2500 m is a preview proof, not a completed-arrival proof.
+
+Primary files:
+
+- `apps/weltraum-browser/evidence/browser-objective-chain-1000m-completion-v2.md`
+- `apps/weltraum-browser/tests/e2e/large-field-objective-chain-live.spec.ts`
+- `.devtoolbox/specs/changes/browser-objective-chain-1000m-completion-v2/tests/test-protocol.md`
+
+## Celestial Core Acceptance
+
+The celestial/gravity foundation must prove:
+
+- schema and stable-ID validation fail closed;
+- canonical serialization and signatures are deterministic;
+- catalog/index ordering is stable;
+- propagation uses explicit epoch/requested time and bound elliptic inputs only;
+- repeated ephemeris and gravity probes are byte/signature stable;
+- floating-origin or renderer state cannot alter orbital truth;
+- minimum-radius gravity errors do not clamp to fake finite values;
+- dominant-source ties resolve deterministically;
+- no claim of flight, navigation, SOI, patched-conics or UI integration is made.
+
+Evidence:
+
+- `docs/browser-mainline/celestial-gravity-core-v1.md`
+- `apps/weltraum-browser/evidence/browser-celestial-gravity-core-v1.md`
+- `apps/weltraum-browser/evidence/browser-celestial-gravity-core-v1-summary.json`
+- `.devtoolbox/specs/changes/browser-celestial-gravity-core-v1/tests/test-protocol.md`
+
+No screenshot is required for this feature because it deliberately has no visible UI or render change.
+
+## Visual And Nozzle-VFX Evidence
+
+Visible ship/VFX changes should prove that:
+
+- Demo Scout and procedural fallback still load correctly;
+- resolved GLB/manifest bindings match the visible effect locations;
+- main and RCS effects derive from actuator telemetry, not raw input;
+- inactive nozzles do not emit effects;
+- renderer state does not create physical authority;
+- screenshots correspond to matching telemetry/binding snapshots.
+
+Current artifacts include `apps/weltraum-browser/evidence/demo-scout-nozzle-vfx-snapshot.json` and the main/translation/rotation screenshots in the same folder.
+
+## Evidence Artifact Rules
+
+Each durable artifact should identify feature/scenario ID, date, branch/commit where available, exact command, runtime route, relevant identities/hashes, final status, important numeric outcomes, artifact paths and known limitations.
+
+Recommended shape:
 
 ```text
-evidence/scenarios/<scenario-id>.json
-evidence/scenarios/<scenario-id>.md
-evidence/screenshots/<scenario-id>.png
+apps/weltraum-browser/evidence/
+  <feature>.md
+  <feature>-summary.json
+  <feature>-<state>.png
+
+.devtoolbox/specs/changes/<change>/tests/
+  test-protocol.md
 ```
 
-Recommended JSON fields:
+A screenshot is required for player-visible UI/render claims. A pure-data/math feature may omit screenshots when its protocol explicitly states that no visual behavior changed. Concept art, stale generated output or a screenshot without matching runtime state is not implementation evidence.
 
-```json
-{
-  "scenarioId": "direct-local-arrival-500m",
-  "status": "Passed",
-  "ticks": 0,
-  "fixedStepSeconds": 0.0333333333,
-  "target": {
-    "kind": "TargetPoint",
-    "frameId": "LocalPhysicsFrame:test",
-    "arrivalEnvelope": {
-      "maxPositionErrorMeters": 0,
-      "maxRelativeSpeedMetersPerSecond": 0,
-      "holdDurationSeconds": 0
-    }
-  },
-  "finalDistanceMeters": 0,
-  "finalRelativeSpeedMetersPerSecond": 0,
-  "fuelUsed": 0,
-  "authorityState": "Nominal",
-  "planHashInitial": "",
-  "planHashFinal": "",
-  "replanRequired": false,
-  "invalidationReasons": []
-}
+## Windows Playwright Caveat
+
+If the downloaded Playwright browser cannot start on Windows, use:
+
+```powershell
+$env:WELTRAUM_PLAYWRIGHT_EXECUTABLE_PATH = "C:\Program Files\Google\Chrome\Application\chrome.exe"
 ```
 
-## Browser Evidence Rules
+Record the override in the test protocol. Do not change product behavior or assertions for a host-policy issue.
 
-- Use `window.TestBridge`/equivalent only as a test harness API, not as player UI.
-- Browser screenshots should be captured through Playwright-rendered output. Do not rely only on WebGL backbuffer reads.
-- Record desktop and mobile smoke evidence when visible UI/layout is involved.
-- Store telemetry JSON with the screenshot so visual evidence can be tied to core state.
-- Record command, status, date, branch/commit when available, and artifact paths.
+## Completion Gate
 
-## Feature Readiness Gate
+A browser feature is ready only when:
 
-A feature is browser-mainline-ready only when:
-
-1. its feature-intent card exists;
-2. non-goals and Unity bug traps are documented;
-3. at least one core test covers its domain rule;
-4. at least one scenario/evidence artifact covers the user-visible behavior;
-5. UI-visible features include screenshot or browser evidence;
-6. known traps for silent replan, authority/fuel, target taxonomy, frame conversion and UI status ownership are either tested or explicitly deferred.
-
-## Documentation Slice And Later Evidence
-
-The original documentation slice did not run Unity, npm, build, Vitest, Playwright or browser evidence commands. The later Three.js browser-mainline implementation under `apps/weltraum-browser` records direct browser evidence in `apps/weltraum-browser/evidence/` and is summarized by `docs/browser-mainline/threejs-mainline-final-report.md`.
+1. intent, scope and non-goals are explicit;
+2. owner/domain rules have focused tests;
+3. relevant required groups pass;
+4. production build passes;
+5. visible claims have fresh browser evidence;
+6. TestBridge and runtime routes obey their boundary;
+7. package/lockfile and active-tree Unity guardrails remain clean unless explicitly in scope;
+8. docs describe the implementation honestly as complete, foundation, integrated, deferred or unsupported.

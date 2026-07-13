@@ -1956,5 +1956,49 @@
         "hasTasks":  true,
         "hasEvidence":  true,
         "action":  "keep"
+    },
+    {
+        "name":  "browser-celestial-gravity-core-v1",
+        "platform":  "browser",
+        "status":  "complete",
+        "openTaskCount":  0,
+        "hasProposal":  true,
+        "hasDesign":  true,
+        "hasTasks":  true,
+        "hasEvidence":  true,
+        "action":  "archive"
+    },
+    {
+        "name":  "browser-combat-weapon-damage-core-v1",
+        "platform":  "browser",
+        "status":  "complete",
+        "openTaskCount":  0,
+        "hasProposal":  true,
+        "hasDesign":  true,
+        "hasTasks":  true,
+        "hasEvidence":  true,
+        "action":  "archive"
+    },
+    {
+        "name":  "browser-demo-scout-nozzle-vfx-binding-v2",
+        "platform":  "browser",
+        "status":  "active",
+        "openTaskCount":  1,
+        "hasProposal":  true,
+        "hasDesign":  true,
+        "hasTasks":  true,
+        "hasEvidence":  true,
+        "action":  "keep"
+    },
+    {
+        "name":  "fix-browser-celestial-fail-closed-review-v1",
+        "platform":  "browser",
+        "status":  "complete",
+        "openTaskCount":  0,
+        "hasProposal":  true,
+        "hasDesign":  true,
+        "hasTasks":  true,
+        "hasEvidence":  true,
+        "action":  "archive"
     }
 ]

@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "browser-celestial-gravity-core-v1",
+  "generator": "apps/weltraum-browser/tests/e2e/celestial-gravity-core.spec.ts",
+  "test": "normal page imports and proves the deterministic celestial and gravity core",
+  "normalPageGuard": {
+    "route": "/",
+    "testBridgeOwnProperty": false,
+    "testBridgeInWindow": false,
+    "bodyContainsTestBridge": false,
+    "debugHudVisible": false
+  },
+  "browserHealth": {
+    "consoleErrors": [],
+    "ignoredKnownBrowserNoiseRule": "only the normal page favicon.ico HTTP 404 console message",
+    "pageErrors": [],
+    "failedRequests": [],
+    "errorResponses": []
+  },
+  "dynamicImport": {
+    "modulePath": "/src/celestial/index.ts",
+    "importedPublicApi": [
+      "createStarterCelestialCatalog",
+      "computeCatalogEphemeris",
+      "gravitySourceFromRuntimeState",
+      "gravityAccelerationAtPosition",
+      "selectDominantGravitySource",
+      "surfaceGravity",
+      "escapeVelocity",
+      "canonicalCelestialJson",
+      "celestialSignature"
+    ]
+  },
+  "deterministicRepeat": {
+    "identicalCanonicalResult": true,
+    "identicalSuiteSignature": true,
+    "catalogSignature": "f943488e",
+    "ephemerisSignature": "b0db0855",
+    "secondEphemerisSignature": "4fe8a72b",
+    "suiteSignature": "a5c88133"
+  },
+  "starterSystem": {
+    "catalogId": "catalog.aurelia.v1",
+    "rootBodyId": "star.aurelia",
+    "bodyIds": [
+      "asteroid.eber",
+      "asteroid.kallisto",
+      "asteroid.minoa",
+      "moon.hestia.luma",
+      "moon.hestia.nixia",
+      "moon.hestia.oru",
+      "moon.hestia.sela",
+      "planet.aureon",
+      "planet.hestia",
+      "planet.korus",
+      "planet.nereion",
+      "planet.pyra",
+      "planet.tharos",
+      "planet.umbra",
+      "star.aurelia"
+    ]
+  },
+  "explicitTime": {
+    "epochSeconds": 12000,
+    "requestedTimeSeconds": 345678,
+    "secondRequestedTimeSeconds": 432078
+  },
+  "frameAndGravityProbe": {
+    "rootPositionMeters": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "moonParentFrame": "planet.hestia",
+    "moonAbsoluteFrame": "star.aurelia",
+    "surfaceGravityMetersPerSecondSquared": 11.794460201817357,
+    "escapeVelocityMetersPerSecond": 13977.247181863197,
+    "dominantSourceBodyId": "planet.hestia"
+  },
+  "scope": [
+    "Normal / startup with TestBridge absent and debug HUD hidden.",
+    "In-page dynamic import of /src/celestial/index.ts.",
+    "Explicit-time starter catalog ephemeris, frame composition, local gravity, and deterministic repeat proof."
+  ],
+  "nonGoals": [
+    "No renderer, runtime, navigation, flight, UI, world, or Unity integration.",
+    "No N-body, SOI, collision, landing, atmosphere simulation, stations, or unnamed bodies.",
+    "No screenshot because this change has no visible UI or scene effect."
+  ],
+  "verification": {
+    "command": "npm run test:e2e -- tests/e2e/celestial-gravity-core.spec.ts",
+    "expectedResult": "one focused Playwright test passes and writes both task-owned evidence files",
+    "observedResult": "pass",
+    "screenshot": "not captured: no visual change"
+  }
+}
