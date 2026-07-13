@@ -129,32 +129,63 @@ jobs:
                   '
           }
 
+          short_sha_resolves_to_head() {
+            local resolved_sha
+            resolved_sha="$(gh api \
+              -H "Accept: application/vnd.github+json" \
+              "repos/${REPOSITORY}/commits/${short_sha}" \
+              --jq '.sha' 2>/dev/null || true)"
+            [[ "${resolved_sha}" == "${HEAD_SHA}" ]]
+          }
+
           codex_result_comment_exists() {
             local requested_at="$1"
             [[ -n "${requested_at}" ]] || return 1
+
+            if gh api --paginate --slurp \
+              -H "Accept: application/vnd.github+json" \
+              "repos/${REPOSITORY}/issues/${PR_NUMBER}/comments?per_page=100" \
+              | jq -e \
+                  --arg full "${HEAD_SHA}" \
+                  --arg requested_at "${requested_at}" '
+                    any(.[][]?;
+                      (.body // "") as $body |
+                      (
+                        ((.user.login // "") == "chatgpt-codex-connector[bot]") or
+                        ((.user.login // "") == "chatgpt-codex-connector")
+                      ) and
+                      ((.created_at // "") >= $requested_at) and
+                      ($body | contains($full)) and
+                      (
+                        ($body | contains("### Review Result")) or
+                        ($body | contains("Codex Review:")) or
+                        ($body | contains("**Reviewed commit:**")) or
+                        ($body | contains("reviewed the PR head commit"))
+                      )
+                    )
+                  ' >/dev/null; then
+              return 0
+            fi
+
+            short_sha_resolves_to_head || return 1
 
             gh api --paginate --slurp \
               -H "Accept: application/vnd.github+json" \
               "repos/${REPOSITORY}/issues/${PR_NUMBER}/comments?per_page=100" \
               | jq -e \
                   --arg short "${short_sha}" \
-                  --arg full "${HEAD_SHA}" \
                   --arg requested_at "${requested_at}" '
                     any(.[][]?;
+                      (.body // "") as $body |
                       (
                         ((.user.login // "") == "chatgpt-codex-connector[bot]") or
                         ((.user.login // "") == "chatgpt-codex-connector")
                       ) and
                       ((.created_at // "") >= $requested_at) and
                       (
-                        ((.body // "") | contains($full)) or
-                        ((.body // "") | contains($short))
-                      ) and
-                      (
-                        ((.body // "") | contains("### Review Result")) or
-                        ((.body // "") | contains("Codex Review:")) or
-                        ((.body // "") | contains("**Reviewed commit:**")) or
-                        ((.body // "") | contains("reviewed the PR head commit"))
+                        ($body | contains("**Reviewed commit:** `" + $short + "`")) or
+                        ($body | contains("Reviewed commit: `" + $short + "`")) or
+                        ($body | contains("reviewed the PR head commit `" + $short + "`"))
                       )
                     )
                   ' >/dev/null
