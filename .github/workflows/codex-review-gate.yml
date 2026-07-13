@@ -24,7 +24,7 @@ jobs:
   current-head-reviewed:
     name: Current head reviewed
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 35
     env:
       GH_TOKEN: ${{ github.token }}
       CODEX_REVIEW_TOKEN: ${{ secrets.CODEX_REVIEW_TOKEN }}
@@ -48,15 +48,13 @@ jobs:
           status_context="Codex Review / current head"
 
           set_gate_status() {
-            local state="$1"
-            local description="$2"
             gh api \
               --method POST \
               -H "Accept: application/vnd.github+json" \
               "repos/${REPOSITORY}/statuses/${HEAD_SHA}" \
-              -f state="${state}" \
+              -f state="$1" \
               -f context="${status_context}" \
-              -f description="${description}" \
+              -f description="$2" \
               -f target_url="${RUN_URL}" \
               >/dev/null
           }
@@ -65,36 +63,29 @@ jobs:
             local exit_code=$?
             trap - EXIT
             if [[ ${exit_code} -ne 0 ]]; then
-              set_gate_status "failure" "Codex review gate failed for ${short_sha}" || true
+              set_gate_status failure "Codex review gate failed for ${short_sha}" || true
             fi
             exit "${exit_code}"
           }
 
           complete_success() {
-            local proof="$1"
-            local description="$2"
             {
               echo "## Codex review verified"
               echo
               echo "- Pull request: #${PR_NUMBER}"
               echo "- Reviewed head: \`${HEAD_SHA}\`"
-              echo "- Proof: ${proof}"
+              echo "- Proof: $1"
             } >> "${GITHUB_STEP_SUMMARY}"
-            set_gate_status "success" "${description}"
+            set_gate_status success "$2"
             trap - EXIT
             exit 0
           }
 
           trap fail_status_on_exit EXIT
-          set_gate_status "pending" "Waiting for Codex review of ${short_sha}"
+          set_gate_status pending "Waiting for Codex review of ${short_sha}"
 
           if [[ "${IS_DRAFT}" == "true" ]]; then
-            {
-              echo "## Codex review deferred"
-              echo
-              echo "Draft pull requests are reviewed when they become ready for review."
-            } >> "${GITHUB_STEP_SUMMARY}"
-            set_gate_status "success" "Review deferred while pull request is draft"
+            set_gate_status success "Review deferred while pull request is draft"
             trap - EXIT
             exit 0
           fi
@@ -103,17 +94,17 @@ jobs:
             gh api --paginate --slurp \
               -H "Accept: application/vnd.github+json" \
               "repos/${REPOSITORY}/pulls/${PR_NUMBER}/reviews?per_page=100" \
-              | jq -e --arg full "${HEAD_SHA}" '
+              | jq -e --arg head "${HEAD_SHA}" '
                   any(.[][]?;
                     (
                       ((.user.login // "") == "chatgpt-codex-connector[bot]") or
                       ((.user.login // "") == "chatgpt-codex-connector")
-                    ) and ((.commit_id // "") == $full)
+                    ) and ((.commit_id // "") == $head)
                   )
                 ' >/dev/null
           }
 
-          find_request_comment() {
+          find_exact_head_request() {
             gh api --paginate --slurp \
               -H "Accept: application/vnd.github+json" \
               "repos/${REPOSITORY}/issues/${PR_NUMBER}/comments?per_page=100" \
@@ -139,24 +130,29 @@ jobs:
           }
 
           codex_result_comment_exists() {
-            local request_created_at="$1"
-            [[ -n "${request_created_at}" ]] || return 1
+            local requested_at="$1"
+            [[ -n "${requested_at}" ]] || return 1
 
             gh api --paginate --slurp \
               -H "Accept: application/vnd.github+json" \
               "repos/${REPOSITORY}/issues/${PR_NUMBER}/comments?per_page=100" \
               | jq -e \
+                  --arg short "${short_sha}" \
                   --arg full "${HEAD_SHA}" \
-                  --arg requested_at "${request_created_at}" '
+                  --arg requested_at "${requested_at}" '
                     any(.[][]?;
                       (
                         ((.user.login // "") == "chatgpt-codex-connector[bot]") or
                         ((.user.login // "") == "chatgpt-codex-connector")
                       ) and
                       ((.created_at // "") >= $requested_at) and
-                      ((.body // "") | contains($full)) and
+                      (
+                        ((.body // "") | contains($full)) or
+                        ((.body // "") | contains($short))
+                      ) and
                       (
                         ((.body // "") | contains("### Review Result")) or
+                        ((.body // "") | contains("Codex Review:")) or
                         ((.body // "") | contains("**Reviewed commit:**")) or
                         ((.body // "") | contains("reviewed the PR head commit"))
                       )
@@ -164,10 +160,10 @@ jobs:
                   ' >/dev/null
           }
 
-          codex_acknowledged_request() {
+          codex_reaction_exists() {
             local comment_id="$1"
-            local request_created_at="$2"
-            [[ -n "${comment_id}" && -n "${request_created_at}" ]] || return 1
+            local requested_at="$2"
+            [[ -n "${comment_id}" && -n "${requested_at}" ]] || return 1
 
             if gh api --paginate --slurp \
               -H "Accept: application/vnd.github+json" \
@@ -186,7 +182,7 @@ jobs:
             gh api --paginate --slurp \
               -H "Accept: application/vnd.github+json" \
               "repos/${REPOSITORY}/issues/${PR_NUMBER}/reactions?per_page=100" \
-              | jq -e --arg requested_at "${request_created_at}" '
+              | jq -e --arg requested_at "${requested_at}" '
                   any(.[][]?;
                     (
                       ((.user.login // "") == "chatgpt-codex-connector[bot]") or
@@ -198,90 +194,57 @@ jobs:
                 ' >/dev/null
           }
 
-          # Give the repository-level automatic trigger a brief chance to finish.
+          # Let Codex's normal PR-open/ready trigger finish first.
           for _ in {1..6}; do
             if codex_review_exists; then
-              complete_success \
-                "Codex review submission for the current head" \
-                "Codex reviewed ${short_sha}"
+              complete_success "Codex GitHub review for the current commit" "Codex reviewed ${short_sha}"
             fi
             sleep 10
           done
 
-          request_record="$(find_request_comment)"
-          request_comment_id=""
-          request_created_at=""
+          request_record="$(find_exact_head_request)"
 
-          if [[ -n "${request_record}" ]]; then
-            request_comment_id="$(jq -r '.id' <<<"${request_record}")"
-            request_created_at="$(jq -r '.created_at' <<<"${request_record}")"
-          fi
-
-          if [[ -z "${request_comment_id}" ]]; then
+          if [[ -z "${request_record}" ]]; then
             if [[ -z "${CODEX_REVIEW_TOKEN}" ]]; then
-              {
-                echo "## Codex review token missing"
-                echo
-                echo "No current-head Codex review exists and \`CODEX_REVIEW_TOKEN\` is not configured."
-                echo
-                echo "Configure the token described in \`.github/CODEX_REVIEW_GATE.md\`, or comment \`@codex review\` together with head \`${short_sha}\` and re-run this workflow."
-              } >> "${GITHUB_STEP_SUMMARY}"
-              echo "::error::CODEX_REVIEW_TOKEN is required for automatic current-head re-review requests."
+              echo "::error::CODEX_REVIEW_TOKEN is missing."
               exit 1
             fi
 
             printf -v request_body \
-              '@codex review\n\nPlease review the current pull-request head `%s`. This request is repeated after every new head commit so the merge gate cannot rely on a stale review.\n\n%s\n' \
+              '@codex review\n\nPlease review the current pull-request head `%s`.\n\n%s\n' \
               "${short_sha}" \
               "${marker}"
 
-            if ! request_response="$(GH_TOKEN="${CODEX_REVIEW_TOKEN}" gh api \
+            if ! request_record="$(GH_TOKEN="${CODEX_REVIEW_TOKEN}" gh api \
               --method POST \
               -H "Accept: application/vnd.github+json" \
               "repos/${REPOSITORY}/issues/${PR_NUMBER}/comments" \
-              -f body="${request_body}" 2>&1)"; then
-              echo "${request_response}"
-              echo "::error::Unable to post the current-head Codex review request with CODEX_REVIEW_TOKEN."
+              -f body="${request_body}" \
+              --jq '{id, created_at}' 2>&1)"; then
+              echo "${request_record}"
+              echo "::error::Unable to post the Codex review request. Ensure CODEX_REVIEW_TOKEN has Pull requests: Read and write for this repository."
               exit 1
             fi
-
-            request_comment_id="$(jq -r '.id' <<<"${request_response}")"
-            request_created_at="$(jq -r '.created_at' <<<"${request_response}")"
           fi
 
-          # Codex currently completes through one of three observable channels:
-          # a GitHub review, an exact-head top-level Review Result comment, or a
-          # thumbs-up reaction produced after the exact-head request.
-          for _ in {1..48}; do
+          request_comment_id="$(jq -r '.id' <<<"${request_record}")"
+          request_created_at="$(jq -r '.created_at' <<<"${request_record}")"
+
+          for _ in {1..40}; do
             if codex_review_exists; then
-              complete_success \
-                "Codex review submission for the current head" \
-                "Codex reviewed ${short_sha}"
+              complete_success "Codex GitHub review for the current commit" "Codex reviewed ${short_sha}"
             fi
 
             if codex_result_comment_exists "${request_created_at}"; then
-              complete_success \
-                "Codex exact-head Review Result comment" \
-                "Codex reviewed ${short_sha}"
+              complete_success "Codex exact-head result comment" "Codex reviewed ${short_sha}"
             fi
 
-            if codex_acknowledged_request "${request_comment_id}" "${request_created_at}"; then
-              complete_success \
-                "Codex thumbs-up after the current-head review request" \
-                "Codex found no comments for ${short_sha}"
+            if codex_reaction_exists "${request_comment_id}" "${request_created_at}"; then
+              complete_success "Codex no-findings reaction after the exact-head request" "Codex found no comments for ${short_sha}"
             fi
 
             sleep 45
           done
 
-          {
-            echo "## Codex review missing"
-            echo
-            echo "No Codex result was found for head \`${HEAD_SHA}\`."
-            echo
-            echo "Comment \`@codex review\` together with head \`${short_sha}\` on pull request #${PR_NUMBER}, then re-run this workflow."
-            echo "Verify that \`CODEX_REVIEW_TOKEN\` belongs to the GitHub user connected to Codex."
-          } >> "${GITHUB_STEP_SUMMARY}"
-
-          echo "::error::Codex did not review current pull-request head ${HEAD_SHA}."
+          echo "::error::No Codex result was found for current head ${HEAD_SHA}."
           exit 1
