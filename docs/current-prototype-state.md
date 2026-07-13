@@ -1,157 +1,226 @@
-# Current Prototype State
+# Current Project State
 
-Stand: 2026-06-15
+> The historical file name is retained because many specs and agent instructions link to it.
 
-## Playable State
+Stand: 2026-07-13  
+Status snapshot: browser mainline after `8383487f89f6eb6e63140def564052ac86de259a`
 
-The prototype boots into a playable zero-gravity flight/combat sandbox. The default ship is the imported Blender Demo Scout, bound as a functional ship with main thrusters, RCS nozzles, engine VFX, weapon muzzle/flash markers, visible turret tracking, Weapon Computer ownership, fuel usage, projectile firing, target dummies, navigation waypoints, and a small PvE arena loop. Generated primitive ships remain available as explicit fallback/debug variants only.
+## Product Mainline
 
-The current default gameplay surface is the uGUI player HUD. Legacy IMGUI windows still exist for diagnostics, but they are not the default player view.
+The product mainline is the browser application under `apps/weltraum-browser`:
 
-## Standard Scene
+- Three.js `0.185.0`
+- TypeScript `7.0.2`
+- Vite `8.1.0`
+- Vitest `4.1.9`
+- Playwright `1.61.1`
 
-Use `Assets/Scenes/PrototypeBootstrapHost.unity`.
+The Unity implementation under `Assets/**` is legacy/reference/evidence. It remains useful for feature intent, terminology, assets, historical defects and scenario ideas, but it is not the default product runtime or verification path.
 
-Pressing Play from an empty or nearly empty scene is also supported: `PrototypeBootstrap` creates the required runtime roots when needed. The bootstrap keeps exactly one active main camera, binds HUD/debug/minimap/follow camera components after rebuilds, and snaps/reframes the follow camera to the active ship.
+## Playable Browser State
 
-## Primary Controls
+The normal browser route `/` boots a playable local-space flight slice with:
+
+- the Demo Scout GLB as the player-facing ship visual;
+- a deterministic procedural fallback when the GLB cannot load;
+- Cruise, Precision and Translation control modes;
+- persistent throttle, main thrust, RCS, SAS, fuel, mass and braking authority;
+- ChaseLocked, OrbitInspect, Side and FreeInspect camera modes;
+- fixed-step runtime state with interpolated ship/camera presentation;
+- runtime-owned targets, obstacles, routes and world contacts;
+- a player HUD, local radar and navigation planner;
+- explicit target selection, route preview, Engage and Cancel actions;
+- local obstacle-aware planning, immutable route identity and typed fail-closed rejection states;
+- terminal braking, capture, Arrival/Holding truth and continued station keeping.
+
+The player runtime does not expose TestBridge. `window.TestBridge` is available only on the explicit test route `/?testBridge=1`.
+
+## Current Objective Chain
+
+The current live player-flow evidence proves the following through visible UI on `/`:
+
+1. Range 500 m becomes available and produces an admitted route preview.
+2. The player engages the exact visible preview hash.
+3. The ship physically reaches Arrival/Holding without snap or velocity reset.
+4. Range 1000 m unlocks and completes through the same runtime path.
+5. Range 2500 m becomes available and exposes a new admitted preview with a distinct stable hash.
+
+The latest recorded evidence completed Range 500 m at approximately 1.3 m final distance and Range 1000 m at approximately 1.0 m final distance. The Range 2500 m route is currently proven as a visible admitted preview, not as a required completed 2500 m arrival.
+
+Primary evidence:
+
+- `apps/weltraum-browser/evidence/browser-objective-chain-1000m-completion-v2.md`
+- `.devtoolbox/specs/changes/browser-objective-chain-1000m-completion-v2/tests/test-protocol.md`
+- `apps/weltraum-browser/tests/e2e/large-field-objective-chain-live.spec.ts`
+
+## Navigation And Autopilot Truth
+
+Current browser navigation follows these rules:
+
+- A planner creates a `RoutePlan` before execution.
+- A preview is display context until the exact route passes admission.
+- Engage dispatches the exact visible/admitted `planHash`.
+- The executor consumes one immutable locked plan.
+- Equal planning inputs produce a stable route identity.
+- The executor does not silently replace a route.
+- Divergence, invalidation or current-state mismatch requires an explicit new plan.
+- Fuel, braking reserve and flight authority fail closed.
+- Arrival is based on runtime distance and relative-motion envelopes.
+- Terminal capture and station keeping use the shared FlightController/actuator path.
+- Completion moves the active route identity into historical `completedPlanHash` truth without re-exposing a completed preview as a new route.
+- Renderer and HUD projections cannot authorize execution or manufacture Arrival/Holding.
+
+The implemented planner remains local-space. It is not an orbital navigator, patched-conics planner, SOI planner, maneuver-node system or gravity-assist planner.
+
+## Browser Controls
 
 | Input | Current behavior |
 | --- | --- |
-| `W/S`, `A/D`, `Q/E` | Pitch, yaw, roll in Cruise/Precision; Translation maps W/S/A/D to translation and keeps Q/E as roll. |
-| `Left Shift` / `Left Control` | Increase/decrease persistent main throttle in Cruise only. |
-| `X` / `Y` or `Z` | Cut throttle / full throttle. |
-| `R` | Toggle RCS force application and VFX. |
-| `T` | Toggle SAS angular stabilization; SAS torque requests route through RCS. |
-| `Caps Lock` | Cycle `Cruise -> Precision -> Translation -> Cruise`. |
-| `H` / `N` | Up/down RCS translation in Translation mode; Precision keeps attitude control only. |
-| `Tab` / `B` | Select next / previous navigation waypoint. |
-| `G` | Toggle waypoint autopilot for the selected target. |
-| `Space` | Fire the current main gun; Weapon Computer target tracking gates turret fire. |
-| `V` | Cycle camera mode: `ChaseLocked -> OrbitInspect -> Side -> FreeInspect -> ChaseLocked`. |
-| RMB + mouse / wheel | Look/orbit and zoom camera. |
-| `F1` | Toggle player-facing HUD help in Basic view. |
-| `F2` | Toggle prototype diagnostics/developer overlay. |
-| `F3` | Toggle prototype debug console. |
-| `F4` | Toggle legacy IMGUI HUD/Navball diagnostic surface. |
-| `F5` | Toggle legacy prototype minimap/test-environment diagnostic surface. |
-| `F6` | Cycle prototype visual/debug display mode. |
+| `W/S` | Pitch in Cruise/Precision; forward/back translation in Translation |
+| `A/D` | Yaw in Cruise/Precision; lateral translation in Translation |
+| `Q/E` | Roll |
+| `H/N` | Vertical translation in Translation |
+| `Left Shift` / `Left Control` | Increase/decrease persistent main throttle |
+| `X` | Cut throttle |
+| `Y` or `Z` | Full throttle |
+| `R` | Toggle RCS |
+| `T` | Toggle SAS |
+| `Caps Lock` | Cycle Cruise, Precision and Translation |
+| `V` | Cycle camera mode |
+| RMB + mouse | Orbit/look |
+| Mouse wheel | Adjust inspection distance |
 
-Control-mode summary:
+The navigation planner owns target/route actions. While it is open, held flight keys are cleared and manual flight input is suppressed.
 
-- Cruise: main-thruster flight mode; Shift/Ctrl throttle works; waypoint autopilot uses main burn/brake path; RCS and SAS stay available.
-- Precision: RCS available, main thruster/gimbal forced off, attitude control stays on W/S/A/D/Q/E, and SAS continues to stabilize through RCS on released axes.
-- Translation: RCS available, main thruster/gimbal forced off, W/S/A/D/H/N map to linear translation while Q/E stays roll, and SAS continues to route through RCS when enabled.
+## Implemented Foundations Beyond The Flight Slice
 
-If the HUD does not clearly show the active mode, treat that as a HUD visibility/UI follow-up rather than missing controller logic.
+### World And Streaming
 
-## HUD And Debug Presets
+Implemented as deterministic foundations:
 
-The default Basic view uses `PrototypePlayerHudRenderer` with flight status, fuel/throttle/RCS/SAS, warning and assist chips, player radar, Kill Momentum, contextual navigation/combat panels, and F1 help.
+- absolute and local frame descriptors;
+- floating-origin projection invariants;
+- simulation-bubble membership;
+- chunk registry and canonical signatures;
+- Full/Snapshot/Dormant simulation residency;
+- Near/Medium/Far/Culled render LOD;
+- deterministic world-streaming transition and budget planning;
+- render-only instanced asteroid presentation from runtime-owned descriptors.
 
-`F1` is the player-facing help entry point. `F2` through `F6` are intentionally prototype/developer controls for diagnostics, legacy surfaces, and visual debugging; they are not part of the polished player control contract.
+Not implemented yet:
 
-Debug Console presets:
+- production chunk IO or asset streaming;
+- planet terrain or voxel terrain;
+- surface-local runtime transitions;
+- non-identity planetary frame conversion;
+- persistent generated universe content.
 
-| Preset | Purpose |
-| --- | --- |
-| Basic | Gameplay-facing default; legacy IMGUI windows mostly hidden. |
-| Flight Test | Focused flight diagnostics without opening every heavy window. |
-| RCS Test | RCS/SAS diagnostics, allocator state, and related debug surfaces. |
-| Full Diagnostics | Full prototype debug surface for investigation. |
+### Resource And Cargo Core
 
-Presets only change visibility/collapsed state and debug marker visibility. They do not change physics, bindings, ship authority, or control mappings.
+Implemented as browser domain contracts:
+
+- stable resource IDs and catalog entries;
+- stack and capacity rules;
+- containers, transfers and ownership metadata;
+- legality/provenance fields;
+- deterministic validation and canonical serialization.
+
+Not implemented yet:
+
+- active player-ship cargo runtime;
+- cargo mass feeding flight/autopilot authority;
+- mining, trading, inventory UI or persistence loop.
+
+### Ship Builder Foundations
+
+Implemented as domain and validation foundations:
+
+- part categories and starter definitions;
+- typed components and sockets;
+- blueprint instances, connections and stable transforms;
+- canonical serialization and migration seams;
+- compatibility, occupancy and structural graph validation;
+- dry-mass, center-of-mass and footprint bounds calculations.
+
+Not implemented yet:
+
+- player-facing placement/edit/mirror UI;
+- complete propulsion, fuel, cargo, weapons, crew and gameplay-stat calculation;
+- test-flight handoff or active-ship replacement;
+- production art binding and save/load gameplay.
+
+## UI State
+
+The player-facing browser UI now uses the runtime flight HUD, local radar and navigation planner. Concept screenshots under `docs/UI-Screenshots/` guide visual direction but are not runtime truth.
+
+Current UI boundaries:
+
+- Flight and planner state are runtime-driven.
+- Debug/TestBridge details are not part of the normal player HUD.
+- Route geometry and route identity must come from the same locked/display plan.
+- Blocked previews may remain visible as context only when typed admission rules allow it; they cannot enable Engage.
+- Combat presentation exists only as a bounded UI/presentation slice. Do not claim a complete browser combat loop.
 
 ## Verification Contract
 
-DevToolbox must use the workspace-local verify config at `.devtoolbox/verify.json`. The current resolved plan source is `verify-config`, and the project verification steps are:
+Run from `apps/weltraum-browser`:
 
-```powershell
-dotnet build "Weltraum Spiel.sln" --no-restore
-dotnet test "Weltraum Spiel.sln" --no-build
+```bash
+npm run test
+npm run build
+npm run test:e2e:core
+npm run test:e2e:live
+npm run test:e2e:ui
 ```
 
-For Unity-facing work, authoritative evidence should combine:
+The complete local Playwright discovery command is:
 
-- Unity MCP script validation or console checks after script edits.
-- Focused Unity EditMode/PlayMode tests for the affected runtime slice.
-- Explicit solution build/test above.
-- Evidence under `.devtoolbox/specs/changes/<change-name>/tests/`.
+```bash
+npm run test:e2e
+```
 
-Generic root commands such as bare `dotnet build`, bare `dotnet test`, and root `dotnet format --verify-no-changes` are not authoritative for this Unity workspace because the root contains multiple MSBuild files and known pre-existing formatting/reference warnings.
+Current CI also checks that every `tests/e2e/**/*.spec.ts` belongs to exactly one required E2E group and validates the required Demo Scout GLB and UI-reference binaries without pulling unrelated historical LFS content.
 
-Current validation caveat: workspace-wide `specs_validate` is still blocked by incomplete draft/old change folders, not by the verify config. Validate individual ready changes when archiving or completing work.
-
-## Change Consolidation
-
-| Change | Fachlicher Status | Offene Tasks | Evidence | Entscheidung |
-| --- | --- | ---: | --- | --- |
-| `weltraum-001-celestial-backbone` | Completed, verified, not archived | 0 | Execution verification passed; one old review finding flags build warnings only. | Keep active until the stale review finding is resolved or explicitly superseded; then archive. |
-| `player-ui-regression-controls-autopilot-rcs-v1` | Completed | 0 | Test protocol/screenshots exist; linked execution lacked formal verification result. | Archived on 2026-06-12 with verification/commit warnings acknowledged. |
-| `weltraum-002-orbit-map-prototype` | Completed | 0 | Test protocol exists; previously built and pushed as orbit-map prototype. | Archive candidate after focused preflight. |
-| `weltraum-004-map-hud-navigation-readout` | Completed | 0 | Test protocol records Unity and solution verification. | Archive candidate after focused preflight. |
-| `player-ui-concept-runtime-audit-v1` | Audit/evidence change completed in practice | Check before archive | Test matrix, findings, and screenshots exist. | Archive candidate after review of any remaining task checkboxes. |
-| `player-target-indicators-v1` | Completed in practice | Check before archive | Test protocol, findings, screenshots, and logs exist. | Archive candidate after focused preflight. |
-| `player-hud-live-aspect-ratio-scaling-v1` | Likely completed by later HUD/aspect work | Check remaining tasks | Evidence folder present. | Verify task state, then archive or roll remaining work into a new small follow-up. |
-| `fix-functional-blender-ship-vfx-turret-v1` | Completed/closed for functional default scope | 0 | Tasks are checked off; `tests/test-protocol.md` records Blender validation, compile checks, EditMode/PlayMode evidence, manual scene verification, imported Demo Scout functional default, imported sockets, weapon binders, and no root muzzle/nozzle fallback. | Keep closed; Cargo functional binding remains out of scope unless a separate cargo slice is opened. |
-| `fix-prototype-usability-flight-feel` | Partially completed; much was absorbed by later control/HUD work | 25 | Test protocol has explicit solution build/test and notes generic verify blocker. | Close implemented slices; convert remaining UI/environment/visual polish into a smaller follow-up. |
-| `fix-prototype-ui-performance-v1` | Mostly completed | 1 | EditMode/performance evidence exists; latest old verifier failed on lint. | Manual PlayMode responsiveness note is the only open task; record evidence, then close/archive. |
-| `autopilot-proving-ground-harness-v1` | Implemented and acceptance gate now PASS | 0 | `tests/test-protocol.md`, `tests/autopilot-proving-ground-summary.json`, and per-scenario CSVs exist. As of 2026-06-14 evidence the acceptance gate reports PASS for all scenarios. | Treat as the current authority for autopilot quality and use it before claiming future autopilot fixes. Archive candidate after preflight. |
-| `fix-autopilot-plan-execution-fidelity-v1` | Implemented and evidence-backed | 0 | Tasks are checked off through evidence/test coverage; later stabilization docs record terminal-capture and obstacle-replan-chatter verification. | Keep as implemented; optional Phase 7 executor extraction remains separate future work. |
-| `fix-autopilot-exact-point-arrival-v1` | Complete and verified | 0 | All scenarios PASS (final distances 0.20m to 0.52m), acceptance gate PASS, EditMode 46/46, PlayMode regression PASS, dotnet build PASS, specs_validate PASS. | Archive candidate after preflight. Exact arrival is resolved. |
-| `player-navigation-planner-ui-overhaul-v1` | Implemented and evidenced | 0 | Tasks are checked off; evidence plan includes screenshot matrix, layout/overlap checks, planner timeline/map/radar/HUD controls, combat panel split, and PlayMode/EditMode coverage. | Keep implemented; no supported UI-quality blocker is documented in the required evidence set. Continue using screenshots/layout checks for future polish. |
-| `prototype-ship-blueprint-v0` | Implemented prototype slice | 0 | `tests/ship-builder-v0-verification.md` records script validation, focused EditMode/PlayMode passes, solution build, and screenshots. | Keep as current builder prototype evidence; remaining ship-editor depth belongs in later blueprint/builder slices. |
+For visible runtime claims, prefer normal `/` Playwright flows using visible player controls. Use `?testBridge=1` only for explicitly synthetic or deterministic harness scenarios.
 
 ## Accepted Limits
 
-- This is not the final ship editor, economy, mission framework, multiplayer mode, or final gameplay architecture.
-- Controller support has compile/play coverage, but physical hardware feel remains manually unverified.
-- Navigation Computer, trajectory preview, and waypoint autopilot are local-space prototype guidance. They are not full orbital navigation, patched conics, SOI planning, maneuver-node planning, or slingshot navigation.
-- Exact point arrival is resolved: the proving-ground harness reports PASS for all scenarios (final distances 0.20m to 0.52m, acceptance gate PASS, specs_validate PASS). See `fix-autopilot-exact-point-arrival-v1/tests/test-protocol.md`. Gravity, orbital, and slingshot navigation remain future research and should not be mixed into local-space arrival work.
-- Docking hard lock is a documented placeholder, not an active joint.
-- RCS allocation is bounded prototype logic, not a final optimizer.
-- IMGUI debug windows remain temporary diagnostic surfaces.
-- Full armor balance, part detachment, visual destruction, and combat economy remain out of scope.
+The current project is not yet:
 
-## Next Feature Slice
+- a seamless planet-to-planet or space-to-surface game;
+- a voxel planet/terrain runtime;
+- an orbital mechanics or gravity simulation;
+- a persistent open universe;
+- a multiplayer universe authority/server implementation;
+- a complete ship builder;
+- a complete cargo/mining/economy loop;
+- a complete combat/damage/loot/repair loop;
+- a mission, faction, reputation or outpost runtime;
+- a savegame/background-simulation product slice.
 
-`fix-autopilot-exact-point-arrival-v1` is complete and verified (2026-06-14
-evidence: all scenarios PASS, acceptance gate PASS, specs_validate PASS).
+Long-term concepts such as voxelizing imported 3D assets, seamless planetary streaming and placing a new multiplayer player system into an unexplored region with a protected discovery buffer require dedicated architecture/spec work before implementation.
 
-Recommended next slices, in order:
+## Unity Legacy Boundary
 
-1. `autopilot-large-local-test-range-v1` (prerequisite now met)
-2. Control-mode/HUD visibility follow-up
-3. `autopilot-v2-core-planner-executor-v1` pure core implementation
-4. Gravity-assist research harness
+Unity may be read for:
 
-Done state for `fix-autopilot-exact-point-arrival-v1` (all verified):
+- intended player-visible behavior;
+- vocabulary and edge cases;
+- archived test scenarios and evidence;
+- reusable asset sources such as the Demo Scout;
+- historical bug traps.
 
-- The proving-ground harness shows direct no-obstacle arrivals completing at the
-  requested point (0.20m to 0.52m final distance), not merely inside the old loose
-  radius.
-- Terminal capture remains stable after the ship enters the exact-arrival envelope.
-- Brake/flip/terminal states do not flap back to Accelerate/Reacquire after
-  terminal commitment.
-- No-obstacle scenarios do not select obstacle-reacquire planner profiles.
-- Obstacle corridor scenarios preserve required clearance
-  (`minimumObstacleClearance = 85.49m`) while reacquiring the direct path.
-- Low-RCS terminal correction completes with precise final error (0.20m).
-- No future autopilot tuning is treated as complete without proving-ground evidence.
+Do not copy Unity architecture directly into the browser runtime. MonoBehaviour lifecycle, scene wiring, Rigidbody state, IMGUI and prototype fallbacks are not browser domain authority.
 
-## Known Current Autopilot Status
+Do not start Unity or change `Assets/**` during normal browser work unless the task explicitly grants that scope.
 
-Exact point arrival is resolved. The proving-ground harness is implemented and
-its acceptance gate now reports PASS as of 2026-06-14 evidence
-(`fix-autopilot-exact-point-arrival-v1/tests/test-protocol.md`):
+## Current Planning Priorities
 
-- Direct no-obstacle runs complete at 0.20m to 0.24m from the requested target point.
-- Terminal capture is stable after entering the near-target envelope.
-- Post-brake behavior does not flap back into Accelerate/Reacquire.
-- No-obstacle lateral/rotation scenarios do not enter disallowed Reacquire profiles.
-- The obstacle corridor scenario preserves `85.49m` minimum clearance and completes cleanly.
-- Low-RCS terminal correction completes with 0.20m final target error and 0 safety replans.
-- The no-RCS negative case correctly reports `Failed` (no false completion).
+The detailed ordering remains in `docs/roadmap/living-master-plan.md`. The nearest high-value gaps are:
 
-Do not mix gravity/orbital/slingshot navigation into local-space arrival work.
-Those systems remain future-work research after local-space exact arrival is stable.
+1. keep project truth, active specs and evidence indexes reconciled with `main`;
+2. connect resource/cargo contracts to loaded ship mass and flight authority;
+3. build a player-facing Ship Builder MVP with validation and test-flight handoff;
+4. specify and implement surface target/local-frame transitions before surface gameplay;
+5. design the real-scale planetary/voxel streaming and asset-conversion pipeline before creating large content volumes;
+6. introduce orbit, gravity, SOI and timewarp only on a shared deterministic trajectory-prediction foundation.
