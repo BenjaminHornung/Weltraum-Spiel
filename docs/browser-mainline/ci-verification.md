@@ -19,32 +19,49 @@ The path filters include:
 - `docs/browser-mainline/**`
 - `.devtoolbox/specs/changes/browser-*/**`
 
-## Commands
+## Current baseline and commands
 
-The job runs on `ubuntu-latest` with Node.js 22 and uses the npm cache keyed by `apps/weltraum-browser/package-lock.json`. All npm commands run from `apps/weltraum-browser`:
+The current browser package uses TypeScript `7.0.2`. The latest green baseline contains 21 Playwright spec files and 44 tests. The job runs on `ubuntu-latest` with Node.js 22, has a finite 45-minute timeout, and uses the npm cache keyed by `apps/weltraum-browser/package-lock.json`. All npm commands run from `apps/weltraum-browser`:
 
 ```text
 npm ci
 npx playwright install --with-deps chromium
 npm run test
 npm run build
-npm run test:e2e
+npm run test:e2e:core
+npm run test:e2e:live
+npm run test:e2e:ui
 ```
 
-`npm run test` executes Vitest, `npm run build` executes the TypeScript/Vite browser build, and `npm run test:e2e` executes the Chromium Playwright suite.
+`npm run test` executes Vitest and `npm run build` executes the TypeScript/Vite browser build. The three required Chromium Playwright groups separate core/autopilot (10 specs), live runtime/objectives (8 specs), and UI/layout (3 specs). The aggregate `npm run test:e2e` command remains unchanged and discovers the complete suite for local full-suite verification.
+
+## E2E failure isolation and guardrails
+
+CI keeps one Playwright worker and enables `forbidOnly` only when `CI=true`. Before browser execution, an inline Node preflight recursively discovers every `tests/e2e/**/*.spec.ts` file and compares that inventory with the actual file arguments in the three package scripts. Each script is tokenized completely: it must start with the exact tokens `playwright test`, contain at least one spec, and contain no flags, shell operators, redirections, comments, quoted extras, commands, or other non-spec tokens. Every remaining token must be a normalized discovered spec path. Embedded parser assertions cover one valid command plus shell-suffix and `--grep` mutations. Missing/unassigned, duplicate, and stale entries fail closed; the package scripts are the only maintained group membership list.
+
+All three group steps are required. Each later group uses an explicit `!cancelled()` condition with successful prerequisite checks, so a failed earlier group does not suppress independent diagnostics while its failure still fails the job. No group uses `continue-on-error`.
+
+The workflow sets `WELTRAUM_PLAYWRIGHT_ARTIFACT_GROUP` to `core-autopilot`, `live-runtime`, or `ui-layout`. Playwright accepts only lowercase letters, digits, and single hyphen separators for this value. It isolates automatic output and HTML reports beneath the matching group folder. When the variable is unset, the existing aggregate paths remain `evidence/playwright-output` and `evidence/playwright-report`.
+
+After installation, CI prints compact Node, npm, Playwright, and Demo Scout GLB type/size diagnostics. After the E2E groups, it parses every top-level `evidence/*.json` file and fails on invalid JSON.
 
 ## Demo Scout GLB / LFS strategy
 
-The current checkout stores `apps/weltraum-browser/public/ships/demo_scout_mk1.glb` as a normal GLB binary with `glTF` magic bytes, so a broad Git LFS pull is not required.
+The current checkout needs the Demo Scout GLB and four checked-in UI reference PNGs as real binaries. A broad Git LFS pull is not required.
 
 The workflow still uses a guarded restore step for safety:
 
 1. Checkout runs with `lfs: false`, avoiding a full historical LFS download.
-2. The job checks whether the Demo Scout GLB file is an LFS pointer.
-3. Only if that exact file is a pointer, the job runs:
+2. The job checks the Demo Scout GLB and these four reference images for LFS pointers:
+   - `evidence/ui-concept-parity-v1-rejected-flight-hud.png`
+   - `evidence/ui-concept-parity-v1-rejected-flight-hud-1280x720.png`
+   - `evidence/ui-concept-parity-v1-rejected-navigation-planner.png`
+   - `evidence/ui-concept-parity-v1-rejected-combat-contact.png`
+3. Only if one of those five exact files is a pointer, the job runs an include-limited pull for those paths.
+4. The step verifies `glTF` magic bytes for the GLB and PNG signatures for all four images.
 
 ```text
-git lfs pull --include="apps/weltraum-browser/public/ships/demo_scout_mk1.glb" --exclude=""
+git lfs pull --include="apps/weltraum-browser/public/ships/demo_scout_mk1.glb,apps/weltraum-browser/evidence/ui-concept-parity-v1-rejected-flight-hud.png,apps/weltraum-browser/evidence/ui-concept-parity-v1-rejected-flight-hud-1280x720.png,apps/weltraum-browser/evidence/ui-concept-parity-v1-rejected-navigation-planner.png,apps/weltraum-browser/evidence/ui-concept-parity-v1-rejected-combat-contact.png" --exclude=""
 ```
 
 This avoids pulling old Unity/test/evidence LFS objects that are unrelated to the browser CI path and have caused missing-object problems in previous full LFS checkouts.
@@ -69,8 +86,10 @@ Uploaded paths are:
 - `apps/weltraum-browser/test-results/**`
 - `apps/weltraum-browser/evidence/playwright-report/**`
 - `apps/weltraum-browser/evidence/playwright-output/**`
+- group-specific `core-autopilot`, `live-runtime`, and `ui-layout` report/output folders beneath those two paths
 - `apps/weltraum-browser/evidence/*.png`
 - `apps/weltraum-browser/evidence/*.json`
+- `apps/weltraum-browser/evidence/*.md`
 
 ## What this CI does not prove
 
