@@ -10,7 +10,10 @@ Zerstörung und Performance-Evidence.
 
 ## Kontext
 
-- Basis: `origin/main` bei `c780656c29ff4e5794be9ba58d6b78396a5826d5`.
+- Initiale Research-Basis: `origin/main` bei
+  `c780656c29ff4e5794be9ba58d6b78396a5826d5`.
+- Finaler Main-Abgleich und Rebase: `origin/main` bei
+  `ea4ccbadfa8c91787e4b4451e04b1fb4ad18a12f`.
 - Research-Commits: `a8973415`, `02a86ada`, `eacf46f3`, `eebe79a3`.
 - Zielbranch: `docs/procedural-voxel-world-platform-plan-v1`.
 - Relevante bestehende Autoritäten: Current Prototype State, Planning
@@ -79,10 +82,17 @@ bleiben in getrennten Commits und werden nicht force-gepusht.
 
 - [x] Remote-Refs, SHAs, Allowlisten und Basis geprüft.
 - [x] Isolierten Worktree erstellt und vier Research-Commits übernommen.
-- [ ] Research und bestehende Dokumente reconciliieren.
-- [ ] Ziel-Dokumente und Adoption Matrix erstellen.
-- [ ] Living Master Plan ergänzen.
-- [ ] Evidence, Review, Commits, Push und Draft-PR abschließen.
+- [x] Research und bestehende Dokumente reconciliieren.
+- [x] Ziel-Dokumente und Adoption Matrix erstellen.
+- [x] Living Master Plan ergänzen.
+- [x] Evidence, unabhängigen Docs-Review und logische Docs-Commits abschließen.
+- [ ] Branch pushen und Draft-PR gegen `main` erstellen; dieser externe Schritt
+  folgt nach dem eingecheckten Evidence-Snapshot.
+
+Die formalen Checkboxen in `tasks.md` bleiben offen, weil der konfigurierte
+DevToolbox-Root-Guard den Completion Preflight mit `unauthorized_path`
+blockiert. Der Preflight wird nicht umgangen und `tasks_toggle` nicht manuell
+ausgeführt.
 
 ## Definition of Done
 

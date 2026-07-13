@@ -1,6 +1,6 @@
 # Weltraum Browser Mainline: Living Master Plan
 Stand: 2026-07-13
-Letzter Abgleich: `main` @ `dbf4d1ef7071ceada692250672eb354b814d1dec`
+Letzter Abgleich: `main` @ `ea4ccbadfa8c91787e4b4451e04b1fb4ad18a12f`
 Dokumenttyp: laufender Planungsindex, keine Implementierungsspezifikation
 Produkt-Mainline: Browser, Three.js und TypeScript
 Legacy/Referenz: Unity-Prototyp, historische Specs und Runtime-Evidence
