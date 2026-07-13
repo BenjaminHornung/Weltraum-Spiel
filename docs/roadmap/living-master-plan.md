@@ -1,6 +1,6 @@
 # Weltraum Browser Mainline: Living Master Plan
 Stand: 2026-07-13
-Letzter Abgleich: `main` @ `639f2e11ee98814b92ad2abb2ec0f0847483e498`
+Letzter Abgleich: `main` @ `051239d9dbb7761c74a52ac8b65743343ec43f18`
 Dokumenttyp: laufender Planungsindex, keine Implementierungsspezifikation
 Produkt-Mainline: Browser, Three.js und TypeScript
 Legacy/Referenz: Unity-Prototyp, historische Specs und Runtime-Evidence
@@ -56,17 +56,22 @@ Statusregeln:
 - **[FOUNDATION] Real-Scale World Core**: Absolute/local Frames, Floating-Origin-Invarianten, Chunk Registry, Residency, LOD und World-Streaming-Planung sind implementiert; dynamisches Content Streaming und echte Planeten fehlen.
 - **[DONE] Resource/Cargo Contract Core**: Resource IDs, Katalog, Stack-Regeln, Container, Kapazitäten, Transfers, Ownership-/Legality-Metadaten und kanonische Serialisierung sind als unabhängiger Browser-Core vorhanden.
 - **[DONE] Ship Builder Domain Foundations**: Part-Katalog, Kategorien, Komponenten, Sockets, Blueprints, kanonische Serialisierung, Kompatibilität, Strukturgraph, Dry Mass, COM und Bounds sind implementiert.
+- **[FOUNDATION] Ship Builder Stats/Readiness Core**: Loaded Mass, Thrust, RCS, Delta-v, Cargo, Weapons, reservierte Power/Heat-Werte, Handling Diagnostics und statische Readiness-Level sind implementiert. Builder UI, Test-Flight-Nachweis, Runtime Assembly, dynamische Ressourcen sowie vollständige Power-/Heat-Bilanzen fehlen.
+- **[FOUNDATION] Persistence/Universe-Time/Event Core**: Ein striktes `SaveGameEnvelopeV1`, stabile Persistence-IDs, 120-Hz-Universe-Time, unabhängige Mission Time, eine generische Migration Registry, persistente Domain Events und Simulation-Mode-Transitions sind implementiert. Browser Storage, Save/Load UI, automatische Zeitfortschreibung, Gameplay-Kopplung, Offline Progression und produktive Save-Migrationen fehlen.
+- **[FOUNDATION] Graphics Settings Core**: Versionierte Graphics Preferences, Presets, FOV, FPS-Limit, Render Scale, player-facing Dialog und ein rendererbegrenzter Apply-Adapter sind implementiert. Audio-/Gameplay-Settings, Camera Shake, Autopilot Defaults sowie browserverwaltetes VSync/Fullscreen bleiben offen.
+- **[FOUNDATION] Celestial/Gravity Domain Core**: Kanonischer Aurelia-Katalog, analytische Kepler-Ephemeriden, explizite Reference Frames und reine Gravity Queries sind implementiert. Ein reiner Universe-Time-Vertrag existiert separat; automatische Zeitfortschreibung, aktive Flight-/Navigation-Integration, SOI und System Map fehlen.
+- **[FOUNDATION] Combat Weapon/Damage Domain Core**: Fire Permission, Projectile-/Beam-Delivery, Hit Resolution, Damage und kanonische Combat Events sind implementiert. Spielbare Combat Runtime, Gegner, Flight-Folgen, Loot, Repair und echte Weapon UI fehlen.
 
 ### 4.2 Größte offene Produktlücken
 
-- Kein echtes Aurelia-System mit analytischen Orbits, Gravitation, SOI und System-Map-Truth.
+- Der Celestial/Gravity Domain Core existiert. Ein reiner Universe-Time-Vertrag ist vorhanden; es fehlen noch seine aktive Runtime-/Flight-/Navigation-Kopplung, SOI, Patched Conics, System-Map-Truth sowie planetare Darstellung und Übergänge.
 - Kein objektgebundener Timewarp, keine Intercept-/Encounter-Simulation und keine persistente Langstreckenreise.
 - Kein Runtime-Cargo im aktiven Schiff und keine Cargo-Mass-Integration in Flight/Autopilot.
 - Kein spielbarer Ship Builder mit Placement, Save Variant, Test Flight und Active-Ship-Handoff.
 - Kein implementierter SurfaceLocalFrame-Übergang, keine planetare Lauf-/Scanner-/Mining-Schicht und kein Schiff-zu-Surface-State-Handoff.
-- Keine spielbaren Drohnenmissionen, persistenten Savegames oder Offline-/Event-Queue-Schicht; die vorhandene World-/Simulation-Bubble ist nur eine Runtime-Grundlage.
+- Kein player-facing Save/Load mit Browser Storage, Slots oder Autosave, keine Offline Progression und keine Gameplay-Produzenten/-Konsumenten für persistente Domain Events. Die vorhandenen Save-, Time-, Event- und Simulation-Mode-Verträge sind noch nicht mit einer spielbaren Runtime verbunden.
 - Keine vollständige Economy, Missions-, Faction-, Reputation-, Legality- oder Outpost-Runtime.
-- Kein vollständiges Space-/Surface-Combat-, Damage-, Loot- und Repair-System.
+- Der Combat Weapon/Damage Domain Core existiert. Es fehlen noch eine spielbare Space-/Surface-Combat-Runtime, Gegner und Encounters, Flight-/Navigation-Folgen, Ammo-/Resource-Integration, Loot, Repair und player-facing Combat Controls.
 
 ## 5. Empfohlene Umsetzungswellen
 
@@ -78,7 +83,7 @@ Living Plan einchecken, alte aktive Specs gegen `main` reconciliieren, Evidence 
 
 ### Welle 1: Gemeinsame Runtime-Verträge
 
-Runtime-Cargo plus Loaded-Mass-Authority, Surface Target/Local Frame, Builder Gameplay Metadata, globale Save-/Migration-IDs und ein gemeinsames Status-/Event-Modell spezifizieren. Diese Verträge sind die Brücke zwischen den bereits vorhandenen Cores und echten Gameplay-Loops.
+Runtime-Cargo plus Loaded-Mass-Authority, Surface Target/Local Frame und verbleibende Builder Gameplay Metadata spezifizieren. Die vorhandenen Save-/Time-/Event-Verträge werden um Browser Storage, Runtime-Kopplung und domänenübergreifende Migrationsregeln ergänzt; diese Integrationen sind die Brücke zwischen den bereits vorhandenen Cores und echten Gameplay-Loops.
 
 ### Welle 2: Zwei produktnahe Vertical Slices
 
@@ -146,6 +151,11 @@ Planeten-/Terrain-Streaming, mehrere Biome und Sites, Multi-Drone-Operationen, F
 - **[OPEN] P00.03.04 Architektur-Entscheidungslog**
   Neue irreversible Entscheidungen als kleine ADRs festhalten, besonders für Persistence, Orbitmodell, Surface-Übergang, Builder-Runtime und Multiplayer-Authority.
 
+### P00.04 External Reference Governance
+
+- **[OPEN] P00.04.01 External Reference Governance**
+  Externe Referenzen über eine versionierte Adoption-Matrix mit Entscheidung, Pin, Lizenz und Provenance führen; README-Aussagen und Code-Evidence bleiben getrennt. Es besitzt keine harte Vorbedingung, schließt aber an P00.03.02/P00.03.04 an; Acceptance sind vollständige Referenzeinträge ohne fremde Sourcefragmente oder unbelegte Adoptionsentscheidung.
+
 ## P01. Core Runtime, Determinismus und Datenautorität
 
 ### P01.01 Deterministischer Kern
@@ -156,22 +166,22 @@ Planeten-/Terrain-Streaming, mehrere Biome und Sites, Multi-Drone-Operationen, F
 - **[FOUNDATION] P01.01.02 Immutable Snapshot Contracts**
   Flight, Navigation, World, Resource und Builder verwenden Snapshot-/Readonly-Muster; ein gemeinsamer Stil für Versionierung und Provenance bleibt offen.
 
-- **[OPEN] P01.01.03 Globale Schema- und Migrationskonvention**
-  Gemeinsame Regeln für Schema-Versionen, Migration Registry, Stable IDs und Future-Version-Rejection über alle Domain-Dokumente festlegen.
+- **[FOUNDATION] P01.01.03 Globale Schema- und Migrationskonvention**
+  Strikte Schema-Versionierung, Stable Persistence IDs, Future-Version-Rejection und eine generische, lückenlose Migration Registry sind im Persistence Core implementiert. Domänenübergreifende Konventionen, produktive Save-Migrationen sowie Missing-/Renamed-Definition-Policies fehlen.
 
 - **[OPEN] P01.01.04 Deterministische Seeds und Content IDs**
   Seed-basierte Weltinhalte und rekonstruierbare Deko von persistenten, semantischen Objekten klar trennen.
 
 ### P01.02 Zeit, Ticks und Ereignisse
 
-- **[OPEN] P01.02.01 Universe Time Contract**
-  Realtime, Fixed Tick, Mission Time, Warp Time und Epoch Time in einem gemeinsamen, speicherbaren Zeitmodell definieren.
+- **[FOUNDATION] P01.02.01 Universe Time Contract**
+  Ein speicherbarer Universe-Time-Vertrag mit 120 Ticks pro Game-Epoch-Sekunde und unabhängiger Mission Time ist implementiert. Realtime-/Runtime-Kopplung, automatische Progression, Warp-/Offline-Zeit und gemeinsame Flight-/Navigation-Nutzung fehlen.
 
 - **[OPEN] P01.02.02 Simulation Scheduler**
   Active Scene, Background und Dormant Jobs deterministisch takten, ohne dass geladene Renderobjekte Autorität übernehmen.
 
-- **[OPEN] P01.02.03 Domain Event Queue**
-  Ereignisse wie `MissionComplete`, `FuelReserveLow`, `WarpExited`, `CargoFull` und `ContactLost` als stabile Datenobjekte bereitstellen.
+- **[FOUNDATION] P01.02.03 Domain Event Queue**
+  Persistente, zeitgestempelte Domain Events mit stabiler ID, deterministischer Queue-Reihenfolge und Acknowledgement sind implementiert. Konkrete Mission-, Flight-, Economy- und Encounter-Produzenten/-Konsumenten sowie player-facing Folgen fehlen.
 
 - **[OPEN] P01.02.04 Command/Result Audit Trail**
   Spieler- und Agentenaktionen mit Actor, Source, Result, Reject Reason und State Delta speicherbar und testbar machen.
@@ -293,11 +303,11 @@ Planeten-/Terrain-Streaming, mehrere Biome und Sites, Multi-Drone-Operationen, F
 - **[OPEN] P03.03.01 Gemeinsamer Trajectory Predictor**
   Map, Planner, Executor, Timewarp und Intercept Solver müssen dieselbe Vorhersage für Position, Velocity, Burns und Gefahren nutzen.
 
-- **[OPEN] P03.03.02 Lokale Gravitation und dominante Source**
-  Punktmassen-Gravitation mit realem `mu`, klarer Reference Frame Authority und reproduzierbaren Integrationsschritten einführen.
+- **[FOUNDATION] P03.03.02 Lokale Gravitation und dominante Source**
+  Pure inverse-square Gravity Queries und deterministische dominante Source-Auswahl sind implementiert. Aktive Schiffskraft, lokale Integrationsschritte und Frame-Handoffs fehlen.
 
-- **[OPEN] P03.03.03 Analytische Kepler-Ephemeriden**
-  Sterne, Planeten, Monde und große Asteroiden aus Orbitdaten und Universe Time stabil fortschreiben.
+- **[FOUNDATION] P03.03.03 Analytische Kepler-Ephemeriden**
+  Katalogkörper können aus expliziter Epoch und Requested Time analytisch fortgeschrieben werden. Ein gemeinsamer, aktiv fortgeschriebener Universe-Time-Service und die Runtime-/Map-Kopplung fehlen.
 
 - **[OPEN] P03.03.04 Sphere-of-Influence Transitions**
   Frame-Wechsel als explizite, validierte Plansegmente mit plausibler Energie-/Velocity-Erhaltung umsetzen.
@@ -314,7 +324,7 @@ Planeten-/Terrain-Streaming, mehrere Biome und Sites, Multi-Drone-Operationen, F
 ### P03.04 Objektgebundener Timewarp
 
 - **[BLOCKED] P03.04.01 Warp Authority und State Machine**
-  Benötigt Universe Time, persistente AbsoluteState- und Predictor-Verträge.
+  Der reine Universe-Time- und ein generischer persistenter Mobile-State-Vertrag existieren; es fehlen aktive Zeitautorität, vollständige warp-fähige Domainzustände, Runtime-Materialisierung und -Roundtrips, Predictor-Kopplung sowie Warp-spezifische Runtime-Regeln.
 
 - **[BLOCKED] P03.04.02 Warp-eligible Plan Segments**
   Coast-/Correction-Segmente, Abbruchpunkte, Safety Checks und Exit-Zustände auf dem gemeinsamen Predictor markieren.
@@ -343,14 +353,14 @@ Planeten-/Terrain-Streaming, mehrere Biome und Sites, Multi-Drone-Operationen, F
 
 ### P04.01 Celestial Data
 
-- **[OPEN] P04.01.01 Canonical Celestial Catalog**
-  Aurelia, sieben Planeten, ausgewählte Monde, Asteroiden und Stationen mit stabilen IDs, realen Größen, `mu`, Orbits und Visual Profiles erfassen.
+- **[FOUNDATION] P04.01.01 Canonical Celestial Catalog**
+  Aurelia, sieben Planeten, vier benannte Hestia-Monde und drei spezifizierte Asteroiden besitzen einen kanonischen Katalog. Stationen und weitere unvollständig dokumentierte Körper bleiben offen.
 
-- **[OPEN] P04.01.02 Celestial Schema Validation**
-  Parent-Graph, Radius/Masse/`mu`, Atmosphere, Rotation, Surface Access, Gameplay Access und Visual Scale validieren.
+- **[DONE] P04.01.02 Celestial Schema Validation**
+  Schema-Version, IDs, Zahlen, Masse/`mu`, Parent-Graph, Orbits, Rotation, Atmosphäre, Visual Scale und Access Profiles werden fail-closed validiert.
 
-- **[OPEN] P04.01.03 Definition/Runtime/Visual Separation**
-  Unveränderliche Quelldaten, zeitabhängige OrbitRuntimeState und ansichtsspezifische Visual-Projektion strikt trennen.
+- **[FOUNDATION] P04.01.03 Definition/Runtime/Visual Separation**
+  Celestial Definitions, zeitabhängige Runtime States und render-only Visual Profiles sind getrennt. Die echte Renderer-/Map-Projektion fehlt.
 
 - **[OPEN] P04.01.04 Discovery und Knowledge State**
   Bekannte, vermutete, gescannte und freigeschaltete Himmelskörper-/Site-Daten getrennt von den kanonischen Definitionen speichern.
@@ -399,6 +409,45 @@ Planeten-/Terrain-Streaming, mehrere Biome und Sites, Multi-Drone-Operationen, F
 
 - **[DEFERRED] P04.04.04 Planetweite Terrain- und Biome-Generierung**
   Globale LOD, Millionen Sites, Klima-/Geologie- und Biome-Verteilung erst nach einem bewiesenen Surface Vertical Slice.
+
+### P04.05 Prozedurale Voxel-Planet-Runtime
+
+- **[RESEARCH] P04.05.01 Voxel Runtime Architecture Benchmark**
+  P00.04.01 und P14.02.01 liefern Governance und Messbasis; astronomische Makrodaten verwenden hierarchische Double-Precision-Frames, die globale Planetenrepräsentation bleibt nicht vollständig volumetrisch und nur das Near Field darf echte Microvoxels bei 0,25 m Qualitätsziel sowie 0,50 m Fallback verwenden. Acceptance sind reproduzierbare CPU-, GPU-, Memory- und Worker-Budgets für Macro Planet Data, Surface Tiles und lokale Bricks; World State und Voxel State bleiben Three.js-unabhängig, Three.js ist ausschließlich Renderer-Adapter und keine Research-Bibliothek gilt ohne weitere Evidence als beschlossen.
+
+- **[BLOCKED] P04.05.02 Planet Tile Scheduler**
+  Benötigt P04.02.02/P04.02.03, P04.03.04 und P04.05.01; Tile-Prioritäten berücksichtigen Geschwindigkeit, Route und Deadline. Deterministische Scheduler-Traces müssen Budgets, Cancellation und den aktiven Parent-Fallback bis zur Bereitschaft feinerer Repräsentationen belegen.
+
+- **[BLOCKED] P04.05.03 Representation Handoff**
+  Benötigt P04.05.02, P04.02.03 und P04.03.04; globale Shell, Surface Tile und editierbarer Voxel-Brick behalten stabile IDs und Revisionen. Acceptance sind lückenfreie Handoff-Tests, bei denen grobe Repräsentationen bis zur vollständigen Bereitschaft der feineren aktiv bleiben.
+
+- **[RESEARCH] P04.05.04 Takram Atmosphere Adapter Spike**
+  Benötigt P00.04.01 und den Vertrag aus P04.04.02; Takram three-geospatial wird ausschließlich hinter einem Atmosphere-/Render-Adapter auf Koordinatenfit, API, Lizenz und Performance geprüft. Erst gemessene Evidence darf eine spätere Adoption begründen.
+
+- **[RESEARCH] P04.05.05 Microvoxel Mesher Benchmark**
+  Benötigt P04.05.01 und den Golden Corpus aus P13.05.02; Terrain und Gebäude dürfen getrennte Mesher verwenden. Acceptance vergleicht 0,25 m und 0,50 m für Topologie, Seams, Durchsatz, Speicher und Edit-Latenz, ohne WASM vor einem Benchmark festzuschreiben.
+
+### P04.06 Galaxie, Sektoren und Birth Clusters
+
+- **[RESEARCH] P04.06.01 Birth Cluster Allocation**
+  Benötigt P01.01.04, P04.01.01 und P12.01.02; uncommitted oder unobserved bezeichnen zunächst getrennte Kandidatenklassifikationen für die spätere Platzierung eines privaten Hestia-Heimatsystems, während das formale AND/OR-Eignungsprädikat im Birth-Cluster-Allocation-Paket durch eine fail-closed Authority-Entscheidung festzulegen bleibt. Property Tests müssen deterministische Allokation, eine temporäre Pufferzone aus unentdeckten Nachbarsystemen und spätere normale Entdeckung durch andere Spieler belegen.
+
+- **[OPEN] P04.06.02 Story Normalization**
+  Baut auf der Allocation-Policy aus P04.06.01 und der Hestia-Richtung aus P13.03.02 auf; der Spieler beginnt auf Hestia ohne eigenes Schiff, authored Städte und Story-Hotspots überlagern die prozedurale Basis und referenzieren stabile Template-/Semantic-IDs statt absoluter Galaxiekoordinaten. Acceptance ist eine Normalisierungsmatrix, in der Ground-Origin, Progression und spätere Cluster-Überführung keine kanonische Storywahrheit verändern.
+
+- **[DEFERRED] P04.06.03 Hidden Sector Interest Management**
+  Benötigt P04.06.01 und P12.04.03; temporär gepufferte Sektoren dürfen vor Freigabe weder beobachtet noch durch fremde Simulation committed werden. Eine spätere Mehrclient-Evidence muss Geheimhaltung, Pufferabbau und anschließende normale Discovery belegen; ein vollständig bidirektionaler Offline-/Online-Merge bleibt eigenständige Research-Arbeit.
+
+### P04.07 Destructible Bodies, Mass and Dynamics
+
+- **[RESEARCH] P04.07.01 Destructible Asteroid Research**
+  Benötigt P04.05.05 und P12.03.05; lokale Voxelzerstörung, Persistenz und Runtime-Budgets werden zunächst an Asteroiden untersucht. Acceptance trennt sichtbare lokale Destruktion ausdrücklich von automatischen Änderungen eines Körperorbits.
+
+- **[RESEARCH] P04.07.02 Body Mass Properties**
+  Benötigt P04.07.01 und P03.03.02; Masse, Schwerpunkt und Trägheit werden revisionsfähig aus tatsächlich bilanzierten Material- und Massentransfers abgeleitet. Deterministische Delta-Evidence muss lokale Geometrieänderung und echte Masseneigenschaftsänderung unterscheiden.
+
+- **[DEFERRED] P04.07.03 Rotation/Orbit Coupling**
+  Benötigt P04.07.02, P03.03.01 bis P03.03.04 und P12.01.03; nur separat bilanzierte Massentransfers und Impulsübertragung dürfen Rotation oder Orbit beeinflussen. Langfristige Conservation- und Schwellwerttests bleiben Voraussetzung für jede Kopplung.
 
 ## P05. Player UI, Input, Maps und Accessibility
 
@@ -470,8 +519,8 @@ Planeten-/Terrain-Streaming, mehrere Biome und Sites, Multi-Drone-Operationen, F
 - **[OPEN] P05.04.02 Rebinding und Device Presentation**
   Action-basierte Keyboard/Mouse-/Controller-Bindings, Remapping und geräteabhängige Hilfetexte implementieren.
 
-- **[OPEN] P05.04.03 Graphics/Audio/Gameplay Settings**
-  Display, Quality, Render Scale, FPS/VSync, FOV, Camera Shake, Audio und Autopilot Defaults persistieren.
+- **[FOUNDATION] P05.04.03 Graphics/Audio/Gameplay Settings**
+  Versionierte Graphics Preferences für Presets, Render Scale, FOV, FPS-Limit und weitere Presentation-Werte samt player-facing Dialog sind implementiert. Audio-/Gameplay-Settings, Camera Shake, Autopilot Defaults sowie browserverwaltetes VSync/Fullscreen fehlen.
 
 - **[OPEN] P05.04.04 Accessibility Baseline**
   Text Scale, Contrast, Color-safe Markers, Reticle Scale, Motion Reduction, Hold-to-confirm und Untertitel-/Audiohinweise definieren.
@@ -570,17 +619,17 @@ Planeten-/Terrain-Streaming, mehrere Biome und Sites, Multi-Drone-Operationen, F
 
 ### P07.02 Gameplay Metadata und Validation
 
-- **[OPEN] P07.02.01 Full Ship Stat Aggregator**
-  Fuel/Loaded Mass, Main Thrust, RCS Axis Force/Torque, Delta-v, Burn Time, Cargo, Weapons, Power und Heat berechnen.
+- **[FOUNDATION] P07.02.01 Full Ship Stat Aggregator**
+  Fuel/Loaded Mass, Main Thrust, RCS Force/Torque, Delta-v, Burn Time, Cargo, Weapons sowie reservierte Power- und Heat-Werte werden deterministisch berechnet. Power Generation, Cooling und autoritative Power-/Heat-Bilanzen fehlen.
 
-- **[OPEN] P07.02.02 Thrust Axis und Handling Diagnostics**
-  COM/Thrust Offset, Weak Braking, Missing RCS Axis, Low Acceleration und Inertia Estimates erzeugen.
+- **[FOUNDATION] P07.02.02 Thrust Axis und Handling Diagnostics**
+  COM/Thrust Offset, Weak Braking, RCS-Axis-/Torque-Gaps, Hard Overlap und optionale Acceleration-/Symmetry-Diagnostics sind implementiert. Inertia Estimates und die finale Gameplay-/Balance-Policy fehlen.
 
-- **[OPEN] P07.02.03 Spatial Overlap und Arc Validation**
-  Hard/Soft Overlap, Physical Bounds, Plume, Turret Arc, Cargo Exposure und Camera Framing datengetrieben prüfen.
+- **[FOUNDATION] P07.02.03 Spatial Overlap und Arc Validation**
+  Strikte Hard-Overlap- und Camera-Authority-Prüfungen sind implementiert. Soft Overlap, Physical-/Plume-/Turret-Arcs, Cargo Exposure und vollständiges Camera Framing fehlen.
 
-- **[OPEN] P07.02.04 Flight-ready Validation Policy**
-  Control Core, Structure, Main Thrust, Fuel/Power, RCS, finite Stats und zielabhängige Requirements mit klaren Errors/Warnings verbinden.
+- **[FOUNDATION] P07.02.04 Flight-ready Validation Policy**
+  Statische `DraftValid`-, `TestFlightReady`- und `ActiveShipReady`-Policies verbinden Control Core, Structure, Thrust, Fuel, RCS, Cargo, Overlap, Camera und finite Stats. Runtime Handoff, abgeschlossene Test Flights und dynamische Ressourcen fehlen.
 
 - **[OPEN] P07.02.05 Marker Alias und Art Metadata Contract**
   Blender/GLB Nodes, Sockets, Helpers, VFX, Muzzles, Nozzles, Cargo, Docking, Camera, Landing und Drone Bay über stabile Rollen binden.
@@ -770,16 +819,16 @@ Planeten-/Terrain-Streaming, mehrere Biome und Sites, Multi-Drone-Operationen, F
 ### P10.01 Space Combat
 
 - **[FOUNDATION] P10.01.01 Combat HUD/Contact Presentation**
-  Visuelle Shell und Kontaktkontext existieren; echte Combat Authority, Weapons und Damage fehlen.
+  Combat Presentation existiert, und ein eigenständiger Combat Core ist vorhanden. Die sichtbare UI ist aber noch nicht mit einer spielbaren Combat Runtime verbunden.
 
-- **[OPEN] P10.01.02 Space Targeting und Weapon Computer Core**
-  Target Selection, Range, Arc, Tracking, Cooldown, Ammo/Energy und Fire Permission owner-seitig modellieren.
+- **[DONE] P10.01.02 Space Targeting und Weapon Computer Core**
+  Target Snapshots, Range, Arc, Alignment, Tracking, Cooldown, Ammo/Energy/Heat, Fire Permission und Line-of-Fire Blocker sind deterministisch implementiert.
 
-- **[OPEN] P10.01.03 Projectile/Beam/Hit Resolution**
-  Deterministische Projectiles oder Rays, Collision Layers, Hit Results und Evidence ohne Renderer-Authority implementieren.
+- **[DONE] P10.01.03 Projectile/Beam/Hit Resolution**
+  Projectile Advancement, Swept Collision, Beam Rays, stabile Tie-Breaks und authoritative Hit Results sind implementiert.
 
-- **[OPEN] P10.01.04 Ship Damage und Module Effects**
-  Hull, Armor, Thruster, RCS, Weapon, Cargo und Sensor Damage mit Flight-/Navigation-Folgen verbinden.
+- **[FOUNDATION] P10.01.04 Ship Damage und Module Effects**
+  Armor, Hull, Module Damage, Damage Types und semantische Module Effects existieren. Die Effects sind noch nicht mit Flight, Navigation, Weapons, Cargo oder Runtime verbunden.
 
 - **[OPEN] P10.01.05 Space PvE Encounter v0**
   Ein plausibel gespawnter/übergebener Gegner, klarer Combat Start, Flucht/Abbruch und Reward/Repair-Rückfluss.
@@ -887,24 +936,24 @@ Planeten-/Terrain-Streaming, mehrere Biome und Sites, Multi-Drone-Operationen, F
 ### P12.01 Savegame Foundation
 
 - **[FOUNDATION] P12.01.01 Domain-local Canonical Serialization**
-  Resource und Builder besitzen stabile Serialisierung; ein globales Savegame-/Migration-System fehlt.
+  Resource und Builder besitzen stabile Serialisierung; zusätzlich existieren kanonisches Persistence JSON, Signaturen, ein striktes `SaveGameEnvelopeV1` und eine generische Migration Boundary. Storage, Runtime-Integration und produktive Save-Migrationen fehlen.
 
-- **[OPEN] P12.01.02 Global SaveGame Schema**
-  Universe Time, Player, Ships, Drones, Stations, Bases, Missions, Encounters, Economy, Discoveries und Seeds versionieren.
+- **[FOUNDATION] P12.01.02 Global SaveGame Schema**
+  `SaveGameEnvelopeV1` versioniert Universe Time, Definition References, Player, Ships, Drones, Stations, Bases, Missions, Encounters, Discoveries und World Events fail-closed. Economy, Seeds, vollständige Domainzustände, Storage und Save/Load-Flows fehlen.
 
-- **[OPEN] P12.01.03 MobileObject AbsoluteState**
-  Frame, Position, Velocity, Rotation, Angular Velocity, Epoch, Mass, Fuel, Cargo, Damage, Power, Plan und Mission speichern.
+- **[FOUNDATION] P12.01.03 MobileObject AbsoluteState**
+  Ein generischer Mobile Record persistiert Identität, Frame, Transform, Velocity, Epoch, Mass, Fuel, Cargo-IDs sowie Damage-/Power-/Plan-/Mission-Referenzen. Vollständige domänenspezifische Zustände, Materialisierung und Runtime-Roundtrips fehlen.
 
-- **[OPEN] P12.01.04 Definitions vs Mutable State**
-  Katalogdaten per Stable ID referenzieren und nur veränderliche Instanzdaten ins Savegame schreiben.
+- **[FOUNDATION] P12.01.04 Definitions vs Mutable State**
+  Mutable Records referenzieren versionierte Definitions-Snapshots über stabile IDs; Definition Bodies und Presentation Truth werden nicht ins Save eingebettet. WorldTemplate-/Voxel-Definitionen und die Integration weiterer Domains fehlen.
 
-- **[OPEN] P12.01.05 Save Migration Registry**
-  Version-to-Version-Migration, Missing ID, Renamed Definition und Future-Version-Rejection testbar machen.
+- **[FOUNDATION] P12.01.05 Save Migration Registry**
+  Eine generische Registry validiert eindeutige, lückenlose, reine Version-to-Version-Schritte fail-closed. Es gibt noch keine produktive Game-Save-Migration, kein `SaveGameEnvelopeV2` und keine Missing-/Renamed-Definition-Policy.
 
 ### P12.02 Simulation Modes
 
-- **[OPEN] P12.02.01 Active/Background/Dormant State Machine**
-  Objekte zwischen geladener Szene, datenbasierter Fortschreibung und eventgetriebenem Ruhezustand verlustfrei wechseln lassen.
+- **[FOUNDATION] P12.02.01 Active/Background/Dormant State Machine**
+  Eine deterministische Transition Matrix für `Active`, `Background`, `Dormant`, Replan-/Attention-Zustände und `Destroyed` ist implementiert. Tatsächliche Scene Materialization, Background Progression und Runtime-Handoffs fehlen.
 
 - **[OPEN] P12.02.02 Background Mobile Simulation**
   Analytical Orbit, Autopilot Coast/Burn, Mission Step, Fuel/Cargo und Events ohne Renderobjekt fortschreiben.
@@ -926,8 +975,11 @@ Planeten-/Terrain-Streaming, mehrere Biome und Sites, Multi-Drone-Operationen, F
 - **[OPEN] P12.03.03 Outpost/Mission/Faction Persistence**
   Services, Storage, Jobs, Reputation, Hostility und Background Events über Szenenwechsel erhalten.
 
-- **[OPEN] P12.03.04 Deterministic Save/Load Regression Harness**
-  Roundtrip, Migration, Frame Shift, Plan Hash, Cargo, Mission und Event Queue mit gepinnten Signaturen testen.
+- **[FOUNDATION] P12.03.04 Deterministic Save/Load Regression Harness**
+  Fokussierte Unit- und Browser-Evidence deckt kanonischen Roundtrip, Signaturen, Migration Registry, Event Queue und Mode Transitions ab. Der integrierte Save/Load-Harness für Frame Shift, Plan Hash, Cargo, Missionen und echte Runtimezustände fehlt.
+
+- **[BLOCKED] P12.03.05 Persistent Voxel Deltas**
+  Die generischen Save-/Definitions-/Migration-Foundations aus P12.01 existieren; es fehlen P04.05.03 sowie WorldTemplate-/WorldInstance-Schemas und produktive Voxel-Delta-Integration. Ein WorldTemplate liefert Seeds und Versionen, während eine WorldInstance nur Semantic State und lokale Deltas statt Mesh- oder Three.js-Zustand speichert. Acceptance sind deterministische Roundtrip-, Replay- und Migrationstests über Versionswechsel.
 
 ### P12.04 Offline und Multiplayer
 
@@ -1010,6 +1062,14 @@ Planeten-/Terrain-Streaming, mehrere Biome und Sites, Multi-Drone-Operationen, F
 - **[DEFERRED] P13.04.05 Musik und adaptive Score**
   Nach stabilen Gameplay States und Encounter-/Location-Vokabular.
 
+### P13.05 Voxel Asset Authoring und Compilation
+
+- **[OPEN] P13.05.01 GLB-to-Voxel Compiler**
+  Benötigt P07.02.05 und P00.04.01; GLB/glTF ist der kanonische Input für einen deterministischen, Three.js-unabhängigen Asset-Compiler. Acceptance sind gepinnte Inputs mit reproduzierbaren Voxel-/Semantik-Artefakten, Hashes, Bounds und verständlichen Reject-Diagnostics.
+
+- **[OPEN] P13.05.02 Voxel Golden Asset Corpus**
+  Baut auf dem Compiler-Vertrag aus P13.05.01 und der Lizenzprüfung aus P00.04.01 auf. Lizenzklare Golden Cases für dünne Wände, Diagonalen, Terrain, Gebäude, authored Hotspots und Damage müssen erwartete Hashes, Bounds und Qualitätsdiagnosen besitzen.
+
 ## P14. Tooling, Performance, Release und langfristige Plattform
 
 ### P14.01 Test- und CI-Plattform
@@ -1063,17 +1123,36 @@ Planeten-/Terrain-Streaming, mehrere Biome und Sites, Multi-Drone-Operationen, F
 - **[DEFERRED] P14.03.05 Multiplayer/Backend/Anti-cheat**
   Nach stabiler Singleplayer-Domain, Persistence, Authority und Encounter-Grundlage als separates Programm planen.
 
+### P14.04 WebGL Observability und Performance Evidence
+
+- **[RESEARCH] P14.04.01 Worker Data/Control Plane Benchmark**
+  Benötigt P04.05.01 und P14.02.01; große Worker-Payloads verwenden Transferables, während RPC nur die Control Plane vereinfachen darf. Acceptance vergleicht Transfer, Clone und Control-Overhead; WASM folgt nur aus Benchmarks, Shared Memory bleibt optional und erhält eine eigene Deploymentprüfung.
+
+- **[OPEN] P14.04.02 Spector WebGL Capture**
+  Baut auf P14.02.01 auf und definiert reproduzierbare, anlassbezogene Captures für Draw Calls, Programme, Buffer und GPU-State. Acceptance dokumentiert Capture-Rezept und Observer-Effekt; Spector bleibt WebGL-Capture, Chrome DevTools CPU-/Network-/Heap-Diagnostik, stats-gl Dev-only-Indikator und MemLab Leak-/Retainer-Harness.
+
+- **[OPEN] P14.04.03 Runtime Performance Telemetry**
+  Baut auf P14.02.01 auf und erfasst kontinuierlich CPU-, GPU-, Frame-, Streaming- und Memory-Signale mit klarer stats-gl-Rolle. Acceptance sind versionierte Budgets, repräsentative Szenarien und ein gemessener Telemetrie-Overhead, getrennt von Spector-Captures.
+
+- **[BLOCKED] P14.04.04 Streaming Memory Leak Harness**
+  Benötigt P04.03.04 und P14.04.03; wiederholte Tile-/Brick-Load-Unload-Zyklen werden mit MemLab-orientierten Retainer- und Heap-Prüfungen untersucht. Acceptance sind stabile Speicherbudgets und reproduzierbare Leak-Failures, nicht einzelne Momentaufnahmen.
+
 ## 7. Kritische Abhängigkeiten
 
 - `P06.02.03 Cargo-Mass-to-Flight` benötigt Runtime Container und Ship Cargo Aggregation.
-- `P07.03 Ship Builder MVP` benötigt Full Stats, Flight-ready Validation und eine Blueprint-to-Ship Runtime Assembly.
+- `P07.03 Ship Builder MVP` nutzt die vorhandenen statischen Full-Stats-/Readiness-Foundations; es benötigt verbleibende Gameplay Metadata und eine Blueprint-to-Ship Runtime Assembly.
 - `P08 Surface` benötigt SurfaceLocalFrame, Target Handoff, Player/Ship/Drone State Handoff und Runtime Cargo.
 - `P09 Drone Mining` benötigt Drone Domain, Mission Core, Background Tick, Resource Node und Runtime Cargo.
 - `P11 V0 Outpost` benötigt Surface/Location Target, Runtime Cargo, Transaction Core und Faction/Access State.
-- `P03 Timewarp` benötigt Universe Time, AbsoluteState Persistence und den gemeinsamen Trajectory Predictor.
-- `P03 Encounters` benötigt Predictor, Event Queue, Sensor Knowledge und Timewarp/Real-Time Handoff.
+- `P03 Timewarp` nutzt den vorhandenen Universe-Time-Vertrag; es benötigt aktive Zeitautorität, vollständige AbsoluteState Persistence und den gemeinsamen Trajectory Predictor.
+- `P03 Encounters` nutzt den vorhandenen Event-Queue-Vertrag; es benötigt Gameplay-Produzenten/-Konsumenten, Predictor, Sensor Knowledge und Timewarp/Real-Time Handoff.
 - `P10 Combat Economy` benötigt Ammo/Fuel/Repair Resources, Damage State und Legal/Faction Hooks.
 - `P04 große Planetenskalierung` benötigt nachgewiesene lokale Surface-/Streaming-/Persistence-Budgets.
+- `P04.05 Planetare Voxel-Runtime` benötigt Frame-, Loader- und Benchmark-Evidence; Representation Handoffs behalten grobe Parents bis zur Bereitschaft feinerer Daten aktiv.
+- `P04.06 Birth Clusters` benötigt deterministische Seeds, Celestial IDs und Save-Schemas; Hidden-Sector-Interest bleibt bis zu einer Online-Authority deferred.
+- `P12.03.05 Persistent Voxel Deltas` nutzt die generischen Save-/Migration-Foundations; es benötigt WorldTemplate-/WorldInstance-Schemas, produktive Voxel-Migrationen und stabile Representation-Handoff-IDs.
+- `P04.07 Destructible Bodies` benötigt Mesher-, Delta- und Orbitverträge; lokale Zerstörung verändert nicht automatisch Rotation oder Orbit.
+- `P14.04.04 Streaming Memory Leak Harness` benötigt einen realen Async Loader sowie kontinuierliche Runtime-Telemetrie.
 
 ## 8. Nächste empfohlene Spec-Pakete
 
@@ -1085,22 +1164,19 @@ Diese Reihenfolge maximiert Wiederverwendung und reduziert parallele Doppelwahrh
 2. **`surface-target-local-frame-and-state-handoff-v1`**
    Definiert LandingZone, Surface Target, SurfaceLocalFrame und Player/Ship/Drone Übergänge als gemeinsame Basis.
 
-3. **`ship-builder-full-stats-and-flight-readiness-v1`**
-   Ergänzt Thrust/RCS/Delta-v/Cargo/Weapon/Power-Metadaten und die echte Test-Flight-Gate-Policy.
+3. **`persistence-browser-storage-save-load-runtime-integration-v1`**
+   Verbindet das vorhandene V1-Envelope, Universe Time, Domain Events und Simulation Modes mit Browser Storage, Save/Load-Flows und expliziter Runtime-Autorität.
 
-4. **`persistence-universe-time-and-event-queue-v1`**
-   Baut Global Save IDs, Universe Time, Active/Background/Dormant und World Events als minimale Plattform.
-
-5. **`ship-builder-mvp-edit-save-testflight-v1`**
+4. **`ship-builder-mvp-edit-save-testflight-v1`**
    Erstellt den ersten vollständigen Builder-Loop auf den bereits vorhandenen Domain- und Stat-Grundlagen.
 
-6. **`surface-mining-cargo-return-vertical-slice-v1`**
+5. **`surface-mining-cargo-return-vertical-slice-v1`**
    Beweist Map Target, Land/Transition, Exit, Scan, Mine, Suit Cargo, Ship Transfer und Reward Hook in einer kleinen Region.
 
-7. **`outpost-services-and-mission-contract-v1`**
+6. **`outpost-services-and-mission-contract-v1`**
    Verbindet Surface, Cargo, Market, Refuel, Owner/Faction und einen Mine-and-deliver-Vertrag.
 
-8. **`drone-remote-mission-background-v1`**
+7. **`drone-remote-mission-background-v1`**
    Fügt eine einfache Scout/Mining-Hybrid-Drohne mit Datenmission, Background Tick und Ship-Cargo-Transfer hinzu.
 
 Danach werden Combat/Economy oder Celestial/Orbit je nach gewünschtem nächsten Produktziel priorisiert.
@@ -1128,10 +1204,16 @@ Bei jedem größeren Merge:
 - `docs/browser-mainline/port-roadmap.md`
 - `docs/browser-mainline/testing-and-evidence.md`
 - `docs/browser-mainline/ci-verification.md`
+- `docs/current-mainline-state.md`
 - `docs/browser-mainline/live-world-presentation-truth-v1.md`
+- `docs/browser-mainline/celestial-gravity-core-v1.md`
+- `docs/browser-mainline/combat-weapon-damage-core-v1.md`
+- `docs/browser-mainline/persistence-universe-time-event-core-v1.md`
+- `docs/browser-mainline/graphics-settings-foundation-v1.md`
 - `docs/browser-mainline/resource-cargo-inventory-core-v1.md`
 - `docs/browser-mainline/ship-builder-domain-catalog-v1.md`
 - `docs/browser-mainline/ship-builder-compatibility-mass-core-v1.md`
+- `docs/browser-mainline/ship-builder-full-stats-flight-readiness-v1.md`
 - `apps/weltraum-browser/evidence/**`
 
 ### 10.2 Architektur und Audits
