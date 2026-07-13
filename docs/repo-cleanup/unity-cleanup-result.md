@@ -5,7 +5,7 @@ Date: 2026-07-13
 ## Identity and immutable Unity archive
 
 - Starting commit: `8383487f89f6eb6e63140def564052ac86de259a`
-- Synchronized PR base: `bb8ef8378295c1788866d376ded059563229183b`
+- Synchronized PR base: `6f45ca6d655e4854ed439e46aee41b64536d4e4e`
 - Cleanup branch: `cleanup/browser-mainline-repository-v1`
 - Archive tag: `unity-legacy-final-2026-07`
 - Archive branch: `archive/unity-legacy-final-2026-07`
@@ -15,7 +15,7 @@ Both resolve exactly to the starting commit. No history rewrite, force push or
 LFS history migration was performed.
 
 Before final PR verification, the cleanup branch merged the then-current
-`origin/main` normally. This retained 42 intervening Browser/documentation
+`origin/main` normally. This retained 43 intervening Browser/documentation
 commits without moving either immutable Unity archive ref.
 
 ## Removed active project structure
@@ -179,7 +179,7 @@ All fresh browser commands ran with Node `v26.2.0`:
 | Runtime screenshot diff after evidence restore | PASS; no PNG changes |
 | `git diff --check` and `git diff --cached --check` | PASS |
 | Final Unity/reference/path checks | PASS; no unresolved active Unity path or stale mainline claim |
-| Independent staged-diff reviews | Pending fresh exact-head re-review after the final documentation reconciliation |
+| Independent staged-diff reviews | Not self-attested here; a fresh external exact-head review is required after final push |
 
 The local Windows policy blocks Playwright's downloaded
 `chrome-headless-shell.exe` (`spawn UNKNOWN`). The repository-supported

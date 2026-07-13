@@ -25,7 +25,7 @@ unaltered archive refs preserve the original pointer state.
 - Initial cleanup source: the then-current `origin/main` at
   `8383487f89f6eb6e63140def564052ac86de259a`.
 - Final synchronized PR base: `origin/main` at
-  `bb8ef8378295c1788866d376ded059563229183b`.
+  `6f45ca6d655e4854ed439e46aee41b64536d4e4e`.
 - Cleanup branch: `cleanup/browser-mainline-repository-v1`.
 - Unity legacy tag: `unity-legacy-final-2026-07`.
 - Unity legacy archive branch: `archive/unity-legacy-final-2026-07`.

@@ -11,7 +11,7 @@ werden neutral unter `art/` und `docs/legacy-unity/` konserviert.
 ## Kontext
 
 - Ausgangscommit: `8383487f89f6eb6e63140def564052ac86de259a`
-- Vor finaler PR-Verifikation synchronisierter `main`: `bb8ef8378295c1788866d376ded059563229183b`
+- Vor finaler PR-Verifikation synchronisierter `main`: `6f45ca6d655e4854ed439e46aee41b64536d4e4e`
 - Cleanup-Branch: `cleanup/browser-mainline-repository-v1`
 - Archiv-Tag: `unity-legacy-final-2026-07`
 - Archiv-Branch: `archive/unity-legacy-final-2026-07`
