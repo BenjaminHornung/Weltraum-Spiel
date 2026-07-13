@@ -113,14 +113,10 @@ jobs:
           request_comment_id="$(find_request_comment_id)"
 
           if [[ -z "${request_comment_id}" ]]; then
-            request_body="$(cat <<EOF
-          @codex review
-
-          Please review the current pull-request head \`${short_sha}\`. This request is repeated after every new head commit so the merge gate cannot rely on a stale review.
-
-          ${marker}
-          EOF
-          )"
+            printf -v request_body \
+              '@codex review\n\nPlease review the current pull-request head `%s`. This request is repeated after every new head commit so the merge gate cannot rely on a stale review.\n\n%s\n' \
+              "${short_sha}" \
+              "${marker}"
 
             if ! request_response="$(gh api \
               --method POST \
