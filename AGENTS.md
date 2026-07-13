@@ -2,60 +2,94 @@
 
 ## Projektregel
 
-Dieses Unity-Projekt wird agentengestützt entwickelt. Arbeite spec-first,
-klein, überprüfbar und mit Evidence. Keine großen opportunistischen Refactors.
+Die Produkt-Mainline ist die Browser-Anwendung unter `apps/weltraum-browser` mit Three.js und TypeScript. Unity bleibt Legacy-, Vergleichs- und Evidence-Quelle.
+
+Arbeite spec-first, klein, überprüfbar und mit Evidence. Keine opportunistischen Großrefactors und keine stillen Änderungen an fachlichen Autoritätsgrenzen.
 
 ## Wichtige Pfade
 
 ```text
-Assets/_Weltraum/            Neuer Produktkern
-Assets/Scripts/Prototype/    Legacy-Prototyp, nur Adapter/Fixes
-Assets/Scenes/               Alte Szenen und Legacy Bootstrap
-docs/architecture/           Architekturentscheidungen
-docs/ux/                     UI/Input/Flow-Dokumente
-docs/roadmap/                Planung und Meilensteine
-.devtoolbox/specs/changes/   Spec Changes, Tasks, Evidence
-.agent/PLANS.md              ExecPlan-Regeln
+apps/weltraum-browser/          Produkt-Mainline
+  src/                          Runtime, Flight, Navigation, World, UI, Three.js
+  tests/unit/                   Vitest
+  tests/e2e/                    Playwright
+  evidence/                     JSON, Markdown und Screenshots
+
+docs/current-prototype-state.md Aktueller Projektstatus trotz historischem Dateinamen
+docs/browser-mainline/          Browser-Architektur, Tests, CI und Port-Dokumente
+docs/roadmap/                   Living Master Plan und Meilensteine
+docs/architecture/              Gemeinsame Architekturverträge
+docs/ux/                        UI-, Input- und Flow-Verträge
+.devtoolbox/specs/changes/       Changes, Tasks und Evidence
+.agent/PLANS.md                  ExecPlan-Regeln
+Assets/                         Unity Legacy/Referenz
 ```
 
 ## Vor jeder Aufgabe
 
 1. Lies diese Datei.
-2. Lies die relevante Spec.
-3. Prüfe docs/current-prototype-state.md und relevante design-audits.
-4. Schreibe einen kurzen Plan.
-5. Arbeite nur am vereinbarten Scope.
+2. Lies `README.md` und `docs/current-prototype-state.md`.
+3. Lies die relevante Spec und bei größeren Vorhaben `docs/roadmap/living-master-plan.md`.
+4. Prüfe aktuelle Runtime-, Test- und Evidence-Pfade, statt aus älteren Unity-Dokumenten zu schließen.
+5. Schreibe für komplexe Aufgaben einen kurzen Plan und halte den Scope ein.
 
-## Code-Regeln
+## Nicht verhandelbare Browser-Regeln
 
-- Neue Produktfeatures gehören unter `Assets/_Weltraum`.
-- `Assets/Scripts/Prototype` ist Legacy. Nicht erweitern, außer der Task sagt es.
-- Autopilot-Kern: Planner, Plan, Executor, Diagnostics trennen.
-- UI spricht über ViewModels/Commands, nicht direkt mit Planner-Interna.
-- Scenes enthalten Wiring, keine Geschäftslogik.
-- Keine stillen Replans im Autopilot Executor.
-- Keine Cargo/Surface/Economy Features ohne Datenvertrag.
+- Unity nicht starten, außer die Aufgabe verlangt ausdrücklich Unity-Arbeit.
+- `Assets/**` nicht ändern, außer die Aufgabe erlaubt den konkreten Legacy-/Asset-Scope.
+- Keine Package- oder Lockfile-Änderung ohne technisch zwingenden Grund.
+- TestBridge nur über `?testBridge=1`. Auf `/` muss `window.TestBridge` fehlen.
+- Keine Fake-Progression, keine Positions-Snaps und kein Velocity-Zero-Shortcut.
+- Der Planner erzeugt zuerst einen Plan. Der Executor führt genau den zugelassenen gelockten Plan aus.
+- Kein stilles Replan. Invalidation und Divergence bleiben sichtbar und benötigen eine explizite neue Planung.
+- `planHash` bleibt bei gleichen Inputs stabil und während Execution unverändert.
+- Terminal Capture, Arrival und Holding bleiben Runtime-/FlightController-owned.
+- Renderer, Three.js-Objekte, CSS und HUD sind Projektionen, niemals Gameplay- oder World-Truth.
+- Demo Scout GLB und Procedural Fallback bleiben beide funktionsfähig.
+- UI darf keine Ready-, Arrival-, Combat- oder World-State-Behauptung erfinden.
 
-## Tests
+## Architekturregeln
 
-Für Codeänderungen:
+- Domain- und Runtime-Zustand liegt in `core`, `flight`, `navigation`, `world`, `resources`, `shipBuilder` oder klaren Runtime-Ownern.
+- UI liest ViewModels/Snapshots und sendet explizite Commands.
+- Three.js konsumiert Render-/World-Presentation-Snapshots.
+- Persistent relevante Identitäten sind stabile IDs, keine Anzeigenamen oder Objekt-Hierarchien.
+- Navigation trennt Target, Preview, Admission, Locked Plan, Execution, Completion und Station Keeping.
+- Resource/Cargo- und Ship-Builder-Foundations nicht als fertige Gameplay-Loops darstellen.
+- Keine Surface-, Orbit-, Voxel-, Economy- oder Multiplayer-Implementation ohne eigenen Datenvertrag und eigene Spec.
 
-```text
-dotnet build "Weltraum Spiel.sln" --no-restore
-dotnet test "Weltraum Spiel.sln" --no-build
+## Verifikation
+
+Befehle aus `apps/weltraum-browser`:
+
+```bash
+npm run test
+npm run build
+npm run test:e2e:core
+npm run test:e2e:live
+npm run test:e2e:ui
 ```
 
-Für Unity-Arbeit zusätzlich:
+Für einen gezielten Slice zuerst fokussierte Unit-/E2E-Tests ausführen, danach die relevanten Gruppen. Bei Änderungen an Gruppenmitgliedschaften muss die CI-Inventarprüfung weiterhin jede `tests/e2e/**/*.spec.ts` genau einer Gruppe zuordnen.
 
-```text
-- Unity MCP validate_script oder console check
-- relevante EditMode/PlayMode Tests
-- Screenshot/Evidence bei UI/Scene Änderungen
+Windows kann für Playwright einen expliziten Browserpfad benötigen:
+
+```powershell
+$env:WELTRAUM_PLAYWRIGHT_EXECUTABLE_PATH = "C:\Program Files\Google\Chrome\Application\chrome.exe"
 ```
+
+## Evidence-Regeln
+
+- Normale Spieler-Flows auf `/` mit sichtbaren UI-Aktionen prüfen.
+- TestBridge nur für bewusst synthetische, deterministische Harness-Szenarien verwenden.
+- Sichtbare UI-Änderungen mit Playwright-Screenshots prüfen.
+- Telemetrie, Screenshot und fachliche Behauptung müssen dieselbe Runtime-Truth abbilden.
+- Concept Art und Referenzbilder sind Design-Input, keine Runtime-Evidence.
+- Regenerierte Evidence nicht ungeprüft überschreiben oder als neu behaupten.
 
 ## DevToolbox
 
-Nutze den Spec-Workflow:
+Wenn der Workspace verfügbar ist, den Spec-Workflow verwenden:
 
 ```text
 workspace_prepare_for_agent
@@ -67,25 +101,26 @@ tasks_completion_preflight
 tasks_toggle
 ```
 
-Tasks werden erst nach Evidence und Completion Preflight geschlossen.
+Tasks erst nach Implementierung, frischer Evidence und Completion Preflight schließen. Wenn DevToolbox in einem Worktree nicht autorisiert ist, die äquivalenten Checks und den Grund im Testprotokoll dokumentieren.
 
 ## UI-Regeln
 
-- Player UI und Debug UI trennen.
-- Modus immer sichtbar.
-- Eine primäre Aktion pro Kontext.
-- Keine generischen AI-UI-Muster: übertriebene Glass Panels, Gradient-Dashboards,
-  Unicode-Icon-Suppe, unnötige Floating Cards.
-- Screenshot-Matrix für sichtbare UI-Änderungen.
+- Player UI und Debug/Test UI strikt trennen.
+- Aktiven Modus, Zustand, Risiko und nächste Aktion sichtbar machen.
+- Planner-Interaktionen dürfen gehaltene Flight-Inputs nicht weiter ausführen.
+- Blockierte oder veraltete Route Previews dürfen keine Engage-Authority erhalten.
+- Keine generischen Dashboard-Muster, unnötige Floating Cards oder Debugdaten im Spieler-HUD.
+- Sichtbare Änderungen gegen die relevante Screenshot-Matrix und reale Runtime prüfen.
 
-## Scene-Regeln
+## Dokumentationsregeln
 
-- Neue Scenes brauchen Manifest.
-- Keine Missing Scripts.
-- Genau eine aktive MainCamera, außer dokumentiert.
-- Keine Produktlogik als Scene-only Script.
-- Scene validation und Screenshot/Evidence bei Änderungen.
+- `README.md` ist der Einstieg in die Browser-Mainline.
+- `docs/current-prototype-state.md` ist der kompakte Status-Snapshot.
+- `docs/roadmap/living-master-plan.md` ist der Planungsindex, keine Implementierungsspec.
+- Unity-Dokumente klar als Legacy/Referenz markieren.
+- Implementiert, Foundation, geplant und ausdrücklich nicht implementiert sauber trennen.
+- Nach größeren Mainline-Merges Status, Evidence-Links und bekannte Grenzen aktualisieren.
 
-## Wenn Aufgabe komplex ist
+## Wenn die Aufgabe komplex ist
 
-Nutze einen ExecPlan nach `.agent/PLANS.md`.
+Nutze einen ExecPlan nach `.agent/PLANS.md`. Parallelisiere read-heavy Analyse und unabhängige Tests, aber vermeide parallele write-heavy Änderungen an denselben Verträgen oder Dateien.
