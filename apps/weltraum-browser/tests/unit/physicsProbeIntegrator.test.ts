@@ -102,7 +102,7 @@ describe("deterministic fixed-step physics probe", () => {
         velocityMetersPerSecond: { x: 2, y: 120, z: -3 }
       });
 
-    for (const startTick of [2, 8_192]) {
+    for (const startTick of [2, 8_192, 16_106_129_000]) {
       const start = fixtureAt(startTick);
       const end = fixtureAt(startTick + 1);
       const state = createStateAt(start, `probe:frame-derived-dt-${startTick}`);

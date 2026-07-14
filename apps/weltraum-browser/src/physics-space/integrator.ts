@@ -26,8 +26,8 @@ import type {
   PhysicsStepResult
 } from "./types";
 
-const FRAME_DERIVED_STEP_TOLERANCE_SECONDS =
-  1 / (UNIVERSE_TICKS_PER_SECOND * 1_000_000);
+const FRAME_DERIVED_EPOCH_ULP_FACTOR = 8;
+const FRAME_DERIVED_MAX_RELATIVE_DRIFT = 1e-3;
 
 export const createPhysicsProbeState = (input: PhysicsProbeStateInput): PhysicsProbeState => {
   if (input === null || typeof input !== "object" || Array.isArray(input)) {
@@ -60,9 +60,22 @@ const validateFixedStep = (input: PhysicsStepInput, state: PhysicsProbeState): n
   }
   const expectedSeconds = deltaTicks / UNIVERSE_TICKS_PER_SECOND;
   const frameDerivedSeconds = endTime.epochSeconds - state.time.epochSeconds;
+  const epochMagnitudeSeconds = Math.max(
+    1,
+    Math.abs(state.time.epochSeconds),
+    Math.abs(endTime.epochSeconds)
+  );
+  const epochSubtractionToleranceSeconds =
+    Number.EPSILON * FRAME_DERIVED_EPOCH_ULP_FACTOR * epochMagnitudeSeconds;
+  const materialDriftLimitSeconds =
+    Math.abs(expectedSeconds) * FRAME_DERIVED_MAX_RELATIVE_DRIFT;
+  const frameDerivedToleranceSeconds = Math.min(
+    epochSubtractionToleranceSeconds,
+    materialDriftLimitSeconds
+  );
   const matchesFrameDerivedSeconds =
     Object.is(dt, frameDerivedSeconds) &&
-    Math.abs(frameDerivedSeconds - expectedSeconds) <= FRAME_DERIVED_STEP_TOLERANCE_SECONDS;
+    Math.abs(frameDerivedSeconds - expectedSeconds) <= frameDerivedToleranceSeconds;
   if (!Object.is(dt, expectedSeconds) && !matchesFrameDerivedSeconds) {
     return failPhysicsSpace(
       "INVALID_TIME_STEP",

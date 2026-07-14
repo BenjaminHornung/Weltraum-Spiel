@@ -26,7 +26,7 @@ Connected frames SHALL transform positions, directions, orientations, linear vel
 
 ## Gravity and probes
 
-Gravity SHALL delegate each source query and dominant-source diagnostic to existing Celestial APIs. Snapshots SHALL bind explicit source states, time, and system frame. A fixed-step translational probe SHALL use positive exact 120 Hz steps and documented semi-implicit Euler in inertial space. Invalid `dt`, non-finite inputs, time mismatches, collision, atmosphere, thrust, and hidden source updates SHALL be rejected or excluded.
+Gravity SHALL delegate each source query and dominant-source diagnostic to existing Celestial APIs. Snapshots SHALL bind explicit source states, time, and system frame. A fixed-step translational probe SHALL use positive 120 Hz tick spans and documented semi-implicit Euler in inertial space. The integer tick span SHALL be authoritative; canonical tick-derived `dt` and sufficiently precise explicit frame-epoch subtraction SHALL produce the same canonical result, while materially imprecise epoch subtraction SHALL fail closed. Invalid `dt`, non-finite inputs, time mismatches, collision, atmosphere, thrust, and hidden source updates SHALL be rejected or excluded.
 
 ## Physics-space handoff
 
