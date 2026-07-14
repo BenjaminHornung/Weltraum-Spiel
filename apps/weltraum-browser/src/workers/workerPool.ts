@@ -182,6 +182,9 @@ export class WorkerPool {
     for (const record of running) this.fail(record, "Shutdown", "Worker pool shut down before completion.", record.handle?.workerEpoch);
     for (const handle of this.handles) {
       try { handle.stop(); }
+      catch {
+        // Shutdown remains terminal even when its final control message cannot be delivered.
+      }
       finally { handle.terminate(); }
     }
     this.handles.length = 0;

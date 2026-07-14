@@ -48,6 +48,26 @@ class RuntimeTransport implements WorkerTransport {
   }
 }
 
+class PendingStartupTransport implements WorkerTransport {
+  public onmessage: ((event: MessageEvent<unknown>) => void) | null = null;
+  public onerror: ((event: ErrorEvent) => void) | null = null;
+  public onmessageerror: ((event: MessageEvent<unknown>) => void) | null = null;
+  public terminated = false;
+  public postMessage(): void {}
+  public terminate(): void { this.terminated = true; }
+}
+
+class ThrowingInitializeTransport extends PendingStartupTransport {
+  public postMessage(): void { throw new Error("synthetic initialize post failure"); }
+}
+
+class ThrowingShutdownTransport extends RuntimeTransport {
+  public postMessage(message: HostToWorkerMessage, transfer: Transferable[] = []): void {
+    if (message.type === "ShutdownWorker") throw new Error("synthetic shutdown post failure");
+    super.postMessage(message, transfer);
+  }
+}
+
 const request = (id: string, bytes: number, planning = 1): WorkerJobRequest => ({
   jobId: workerJobId(id), jobKind: workerJobKind("TransformBuffer"), targetKey: workerTargetKey(`target-${id}`),
   planningEpoch: planningEpoch(planning), workerEpoch: workerEpoch(0), inputRevision: contentRevision(1),
@@ -214,6 +234,54 @@ describe("WorkerPool lifecycle", () => {
     const terminals = await Promise.all([running.result, queued.result]);
     expect(terminals.map((terminal) => terminal.kind).sort()).toEqual(["Cancelled", "Failed"]);
     expect(pool.snapshot()).toMatchObject({ state: "Stopped", runningJobs: 0, queue: { size: 0 } });
+  });
+
+  it("rejects a pending pool start when shutdown terminates the starting handle", async () => {
+    const transport = new PendingStartupTransport();
+    const pool = new WorkerPool({
+      workerCount: 1,
+      queueCapacity: 4,
+      initialPlanningEpoch: planningEpoch(1),
+      transportFactory: () => transport
+    });
+    const starting = pool.start();
+    const rejectedStart = expect(starting).rejects.toThrow("Worker terminated before becoming ready");
+    await Promise.resolve();
+
+    await pool.shutdown();
+
+    await rejectedStart;
+    expect(transport.terminated).toBe(true);
+    expect(pool.snapshot()).toMatchObject({ state: "Stopped", activeWorkers: 0, runningJobs: 0 });
+  });
+
+  it("rejects startup when the initialize control message cannot be posted", async () => {
+    const pool = new WorkerPool({
+      workerCount: 1,
+      queueCapacity: 4,
+      initialPlanningEpoch: planningEpoch(1),
+      transportFactory: () => new ThrowingInitializeTransport()
+    });
+
+    await expect(pool.start()).rejects.toThrow("synthetic initialize post failure");
+
+    expect(pool.snapshot()).toMatchObject({ state: "Stopped", activeWorkers: 0, runningJobs: 0 });
+  });
+
+  it("finishes shutdown when the final control message cannot be posted", async () => {
+    const transport = new ThrowingShutdownTransport();
+    const pool = new WorkerPool({
+      workerCount: 1,
+      queueCapacity: 4,
+      initialPlanningEpoch: planningEpoch(1),
+      transportFactory: () => transport
+    });
+    await pool.start();
+
+    await expect(pool.shutdown()).resolves.toBeUndefined();
+
+    expect(transport.terminated).toBe(true);
+    expect(pool.snapshot()).toMatchObject({ state: "Stopped", activeWorkers: 0, runningJobs: 0 });
   });
 
   it("isolates throwing diagnostic observers from queue and lifecycle decisions", async () => {

@@ -52,7 +52,12 @@ export class WorkerHandle {
     this.transport.onerror = (event) => this.fault(event.message || "Worker error event.");
     this.transport.onmessageerror = () => this.fault("Worker messageerror event.");
     const ready = new Promise<void>((resolve, reject) => { this.readyResolve = resolve; this.readyReject = reject; });
-    this.post({ type: "InitializeWorker", workerEpoch: this.workerEpoch });
+    try {
+      this.post({ type: "InitializeWorker", workerEpoch: this.workerEpoch });
+    } catch (error) {
+      this.clearReadyPromise();
+      throw error;
+    }
     return ready;
   }
 
@@ -78,6 +83,7 @@ export class WorkerHandle {
   }
 
   public terminate(): void {
+    const rejectPendingStart = this.readyReject;
     if (this.transport) {
       this.transport.onmessage = null;
       this.transport.onerror = null;
@@ -88,6 +94,8 @@ export class WorkerHandle {
     this.activeJobId = undefined;
     this.output = undefined;
     this.state = "Stopped";
+    rejectPendingStart?.(new Error("Worker terminated before becoming ready."));
+    this.clearReadyPromise();
   }
 
   private post(message: HostToWorkerMessage, transfer?: Transferable[]): void {
