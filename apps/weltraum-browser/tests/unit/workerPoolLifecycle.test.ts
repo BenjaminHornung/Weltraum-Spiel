@@ -13,6 +13,7 @@ import {
   workerTargetKey,
   type HostToWorkerMessage,
   type TransferableBufferBundle,
+  type WorkerEpoch,
   type WorkerJobRequest,
   type WorkerToHostMessage,
   type WorkerTransport
@@ -58,8 +59,20 @@ class PendingStartupTransport implements WorkerTransport {
   public onerror: ((event: ErrorEvent) => void) | null = null;
   public onmessageerror: ((event: MessageEvent<unknown>) => void) | null = null;
   public terminated = false;
-  public postMessage(): void {}
+  public postMessage(_message: HostToWorkerMessage, _transfer?: Transferable[]): void {}
   public terminate(): void { this.terminated = true; }
+}
+
+class DeferredReadyTransport extends PendingStartupTransport {
+  private epoch: WorkerEpoch | undefined;
+  public postMessage(message: HostToWorkerMessage, _transfer?: Transferable[]): void {
+    if (message.type === "InitializeWorker") this.epoch = message.workerEpoch;
+  }
+  public ready(): void {
+    if (this.epoch === undefined) throw new Error("Worker was not initialized.");
+    this.onmessage?.({ data: { type: "WorkerReady", workerEpoch: this.epoch } } as MessageEvent<unknown>);
+  }
+  public fail(message = "synthetic worker error"): void { this.onerror?.({ message } as ErrorEvent); }
 }
 
 class ThrowingInitializeTransport extends PendingStartupTransport {
@@ -268,6 +281,30 @@ describe("WorkerPool lifecycle", () => {
     expect(pool.snapshot()).toMatchObject({ state: "Stopped", runningJobs: 0, queue: { size: 0 } });
   });
 
+  it("replaces a ready worker that faults while another slot is still starting", async () => {
+    const first = new RuntimeTransport();
+    const second = new DeferredReadyTransport();
+    const created: WorkerTransport[] = [];
+    let calls = 0;
+    const pool = new WorkerPool({
+      workerCount: 2, queueCapacity: 4, initialPlanningEpoch: planningEpoch(1),
+      transportFactory: () => {
+        const call = calls++;
+        const transport = call === 0 ? first : call === 1 ? second : new RuntimeTransport();
+        created.push(transport);
+        return transport;
+      }
+    });
+    const starting = pool.start();
+    await expect.poll(() => pool.snapshot().workers.find((worker) => worker.slot === 0)?.state).toBe("Ready");
+    first.fail();
+    second.ready();
+    await starting;
+    expect(pool.snapshot()).toMatchObject({ state: "Running", activeWorkers: 2, workerRestarts: 1 });
+    expect(created).toHaveLength(3);
+    expect(first.terminated).toBe(true);
+    await pool.shutdown();
+  });
   it("rejects a pending pool start when shutdown terminates the starting handle", async () => {
     const transport = new PendingStartupTransport();
     const pool = new WorkerPool({

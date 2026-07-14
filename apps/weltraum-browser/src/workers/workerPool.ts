@@ -87,6 +87,12 @@ export class WorkerPool {
     try {
       await Promise.all(Array.from({ length: this.options.workerCount }, (_, slot) => this.createHandle(slot, false)));
       this.lifecycle = "Running";
+      while (true) {
+        const unavailableSlots = Array.from({ length: this.options.workerCount }, (_, slot) => slot)
+          .filter((slot) => this.handles.find((handle) => handle.slot === slot)?.state !== "Ready");
+        if (unavailableSlots.length === 0) break;
+        await Promise.all(unavailableSlots.map((slot) => this.createHandle(slot, true)));
+      }
       this.dispatch();
     } catch (error) {
       for (const handle of this.handles) handle.terminate();
