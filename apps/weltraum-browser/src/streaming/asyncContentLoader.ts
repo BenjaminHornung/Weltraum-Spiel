@@ -123,6 +123,7 @@ export class AsyncContentLoader {
     this.#emit(Object.freeze({ kind: "CacheMiss", key: snapshot.canonicalKey }));
 
     let operation = this.#inFlight.get(snapshot.signature);
+    let startsProvider = false;
     if (operation === undefined) {
       operation = {
         request: snapshot,
@@ -130,11 +131,15 @@ export class AsyncContentLoader {
         subscribers: new Set<Subscriber>()
       };
       this.#inFlight.set(snapshot.signature, operation);
-      void this.#run(operation);
+      startsProvider = true;
     } else {
       this.#emit(Object.freeze({ kind: "Deduplicated", key: snapshot.canonicalKey }));
     }
-    return this.#subscribe(operation, signal);
+    const subscription = this.#subscribe(operation, signal);
+    if (startsProvider && operation.subscribers.size > 0 && !operation.controller.signal.aborted) {
+      void this.#run(operation);
+    }
+    return subscription;
   }
 
   #snapshotRequest(request: ContentRequest): RequestSnapshot {

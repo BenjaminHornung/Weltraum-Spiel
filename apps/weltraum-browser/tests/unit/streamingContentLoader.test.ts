@@ -111,6 +111,15 @@ describe("AsyncContentLoader", () => {
     if (loaded.kind === "Loaded") loaded.lease.release();
   });
 
+  it("settles the first subscriber when provider setup throws synchronously", async () => {
+    const failure = new Error("synchronous provider failure");
+    const provider: ContentProvider = { load() { throw failure; } };
+    const loader = new AsyncContentLoader(new MemoryContentCache(64), provider);
+    const result = await loader.load({ key: contentKey });
+    expect(result).toMatchObject({ kind: "Failed", error: failure });
+    expect(loader.inFlightCount).toBe(0);
+  });
+
   it("propagates stale provider revisions as failure", async () => {
     const stale = createContentKey({ ...contentKey, inputRevision: contentKey.inputRevision + 1 });
     const provider: ContentProvider = { async load(request) { return { ...resultFor(request), key: stale }; } };
