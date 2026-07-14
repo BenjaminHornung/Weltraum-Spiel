@@ -23,6 +23,7 @@ import {
 } from "./validation";
 
 export type MeshIndexArray = Uint16Array | Uint32Array;
+export type MeshArtifactOwnership = "SnapshotOwned" | "AdoptedExclusive";
 
 export interface MeshArtifact {
   readonly representationKey: RepresentationKey;
@@ -37,13 +38,16 @@ export interface MeshArtifact {
   readonly attributes?: MeshArtifactAttributes;
   readonly materialRanges: readonly MaterialRange[];
   readonly bounds: AxisAlignedBounds;
+  readonly ownership: MeshArtifactOwnership;
 }
 
-export interface MeshArtifactInput extends Omit<MeshArtifact, "contentHash" | "materialRanges" | "bounds" | "attributes"> {
+export interface MeshArtifactInput extends Omit<MeshArtifact, "contentHash" | "materialRanges" | "bounds" | "attributes" | "ownership"> {
   readonly attributes?: MeshArtifactAttributes;
   readonly materialRanges: readonly MaterialRange[];
   readonly bounds: AxisAlignedBounds;
 }
+
+type MeshArtifactContent = Omit<MeshArtifact, "contentHash" | "representationKey" | "sourceRevision" | "artifactRevision" | "ownership">;
 
 const vectorRecord = (vector: AxisAlignedBounds["min"]): AxisAlignedBounds["min"] =>
   Object.freeze({ x: vector.x, y: vector.y, z: vector.z });
@@ -65,7 +69,7 @@ const canonicalAttributes = (attributes: MeshArtifactAttributes | undefined): Me
   return Object.freeze({ uv: attributes.uv, color: attributes.color });
 };
 
-const contentFields = (artifact: Omit<MeshArtifact, "contentHash" | "representationKey" | "sourceRevision" | "artifactRevision">): unknown => ({
+const contentFields = (artifact: MeshArtifactContent): unknown => ({
   version: 1,
   algorithmVersion: artifact.algorithmVersion,
   frameId: artifact.frameId,
@@ -80,7 +84,7 @@ const contentFields = (artifact: Omit<MeshArtifact, "contentHash" | "representat
 });
 
 export const calculateMeshArtifactContentHash = (
-  artifact: Omit<MeshArtifact, "contentHash" | "representationKey" | "sourceRevision" | "artifactRevision">
+  artifact: MeshArtifactContent
 ): ContentHash => canonicalSignature(contentFields(artifact));
 
 const validateFullExclusiveBuffer = (
@@ -135,6 +139,9 @@ export const validateMeshArtifact = (artifact: MeshArtifact): ValidationResult =
   add(validateRevision(artifact.artifactRevision, "artifactRevision"));
   add(validateSemanticId(artifact.algorithmVersion, "algorithmVersion"));
   add(validateSemanticId(artifact.frameId, "frameId"));
+  if (artifact.ownership !== "SnapshotOwned" && artifact.ownership !== "AdoptedExclusive") {
+    issues.push(issue("InvalidOwnershipMode", "ownership", "must be SnapshotOwned or AdoptedExclusive"));
+  }
   if (!isContentHash(artifact.contentHash)) {
     issues.push(issue("InvalidContentHash", "contentHash", "must use the canonical fnv1a64 format"));
   }
@@ -230,30 +237,104 @@ export const validateMeshArtifact = (artifact: MeshArtifact): ValidationResult =
   return issues.length === 0 ? validResult() : invalidResult(issues);
 };
 
-export const createMeshArtifact = (input: MeshArtifactInput): MeshArtifact => {
+const invalidInput = (path: string, message: string): never => {
+  throwIfInvalid("MeshArtifactInput", invalidResult([issue("InvalidMeshArtifactInput", path, message)]));
+  throw new Error("unreachable");
+};
+
+const requireFloat32Array = (value: unknown, path: string): Float32Array =>
+  value instanceof Float32Array ? value : invalidInput(path, "must be a Float32Array");
+
+const requireMeshIndexArray = (value: unknown, path: string): MeshIndexArray =>
+  value instanceof Uint16Array || value instanceof Uint32Array
+    ? value
+    : invalidInput(path, "must be a Uint16Array or Uint32Array");
+
+const copyFloat32Array = (value: unknown, path: string): Float32Array =>
+  new Float32Array(requireFloat32Array(value, path));
+
+const copyMeshIndexArray = (value: unknown, path: string): MeshIndexArray => {
+  const typed = requireMeshIndexArray(value, path);
+  return typed instanceof Uint16Array ? new Uint16Array(typed) : new Uint32Array(typed);
+};
+
+interface MeshArtifactBuffers {
+  readonly positions: Float32Array;
+  readonly normals: Float32Array;
+  readonly indices: MeshIndexArray;
+  readonly attributes?: MeshArtifactAttributes;
+}
+
+const snapshotBuffers = (input: MeshArtifactInput): MeshArtifactBuffers => ({
+  positions: copyFloat32Array(input.positions, "positions"),
+  normals: copyFloat32Array(input.normals, "normals"),
+  indices: copyMeshIndexArray(input.indices, "indices"),
+  attributes: input.attributes === undefined
+    ? undefined
+    : {
+        uv: input.attributes.uv === undefined ? undefined : copyFloat32Array(input.attributes.uv, "attributes.uv"),
+        color: input.attributes.color === undefined ? undefined : copyFloat32Array(input.attributes.color, "attributes.color")
+      }
+});
+
+const adoptedBuffers = (input: MeshArtifactInput): MeshArtifactBuffers => ({
+  positions: requireFloat32Array(input.positions, "positions"),
+  normals: requireFloat32Array(input.normals, "normals"),
+  indices: requireMeshIndexArray(input.indices, "indices"),
+  attributes: input.attributes === undefined
+    ? undefined
+    : {
+        uv: input.attributes.uv === undefined ? undefined : requireFloat32Array(input.attributes.uv, "attributes.uv"),
+        color: input.attributes.color === undefined ? undefined : requireFloat32Array(input.attributes.color, "attributes.color")
+      }
+});
+
+const buildMeshArtifact = (input: MeshArtifactInput, ownership: MeshArtifactOwnership, buffers: MeshArtifactBuffers): MeshArtifact => {
   const materialRanges = canonicalRanges(input.materialRanges);
-  const attributes = canonicalAttributes(input.attributes);
+  const attributes = canonicalAttributes(buffers.attributes);
   const bounds = Object.freeze({ min: vectorRecord(input.bounds.min), max: vectorRecord(input.bounds.max) });
+  const content = {
+    algorithmVersion: input.algorithmVersion,
+    frameId: input.frameId,
+    positions: buffers.positions,
+    normals: buffers.normals,
+    indices: buffers.indices,
+    attributes,
+    materialRanges,
+    bounds
+  } satisfies MeshArtifactContent;
   const withoutHash = {
     representationKey: input.representationKey,
     sourceRevision: input.sourceRevision,
     artifactRevision: input.artifactRevision,
-    algorithmVersion: input.algorithmVersion,
-    frameId: input.frameId,
-    positions: input.positions,
-    normals: input.normals,
-    indices: input.indices,
-    attributes,
-    materialRanges,
-    bounds
+    ...content,
+    ownership
   };
   const artifact: MeshArtifact = Object.freeze({
     ...withoutHash,
-    contentHash: calculateMeshArtifactContentHash(withoutHash)
+    contentHash: calculateMeshArtifactContentHash(content)
   });
   throwIfInvalid("MeshArtifact", validateMeshArtifact(artifact));
   return deepFreezeMetadata(artifact);
 };
+
+/**
+ * Creates the normal public MeshArtifact snapshot. Every caller Typed Array is
+ * copied exactly once; the returned artifact never observes later caller
+ * mutations. The backend may reference the snapshot arrays directly.
+ */
+export const createMeshArtifact = (input: MeshArtifactInput): MeshArtifact =>
+  buildMeshArtifact(input, "SnapshotOwned", snapshotBuffers(input));
+
+/**
+ * Trusted worker-result move path. This function never copies mesh buffers.
+ * It accepts only fully validated, exclusive, unshared, non-resizable full
+ * ArrayBuffer views. Successful return transfers logical ownership to the
+ * artifact/backend; callers must not mutate, detach, transfer, or reuse the
+ * accepted buffers. Rejection leaves ownership with the caller.
+ */
+export const adoptMeshArtifactBuffers = (input: MeshArtifactInput): MeshArtifact =>
+  buildMeshArtifact(input, "AdoptedExclusive", adoptedBuffers(input));
 
 export const meshArtifactOwnedBuffers = (artifact: MeshArtifact): readonly ArrayBuffer[] => Object.freeze([
   artifact.positions.buffer as ArrayBuffer,

@@ -183,7 +183,12 @@ export const validateRenderCommand = (command: unknown): ValidationResult => {
 
 const commandFieldsForSignature = (command: RenderCommand): unknown => {
   if (command.kind === "UpsertMeshArtifact") {
-    return { ...command, materialProfiles: [...command.materialProfiles].sort((left, right) => compareAscii(left.id, right.id)) };
+    const { ownership: _ownership, ...artifactContent } = command.artifact;
+    return {
+      ...command,
+      artifact: artifactContent,
+      materialProfiles: [...command.materialProfiles].sort((left, right) => compareAscii(left.id, right.id))
+    };
   }
   return command;
 };
