@@ -17,7 +17,7 @@ Introduce a narrow backend-neutral presentation boundary and a real Three.js ada
 - Presentation modules SHALL NOT import or publicly expose Three.js types or domain objects.
 - Renderer diagnostics SHALL be observation only and SHALL NOT feed gameplay decisions.
 - Commands SHALL fail closed on invalid input, content conflicts, unsupported capabilities, wrong backend generation, or stale revision.
-- No package/lockfile, `main.ts`, existing `render/three/**` module, simulation/domain, roadmap, CI, WebGPU, WASM, Shared Memory, or general engine abstraction change is in scope.
+- No lockfile, `main.ts`, existing `render/three/**` module, simulation/domain, roadmap, WebGPU, WASM, Shared Memory, or general engine abstraction change is in scope. Package/CI integration is limited to the required `test:e2e:core` assignment and selective Git LFS baseline restore.
 
 ## Deliverables
 

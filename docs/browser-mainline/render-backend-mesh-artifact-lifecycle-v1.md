@@ -74,4 +74,4 @@ The associated JSON/Markdown evidence records deterministic status and diagnosti
 
 ## Explicit limits
 
-There is no `main.ts` integration, automatic context-loss recovery, world/voxel producer, worker transfer path, textures, shader graph, WebGPU, WASM, Shared Memory, or general engine abstraction in V1. Assignment of the new Playwright spec to a grouped CI command is intentionally deferred because package changes are prohibited for this change.
+There is no `main.ts` integration, automatic context-loss recovery, world/voxel producer, worker transfer path, textures, shader graph, WebGPU, WASM, Shared Memory, or general engine abstraction in V1. The Playwright spec is assigned once to `test:e2e:core`, and Browser Mainline CI selectively restores its three Git LFS snapshot baselines before running that group.

@@ -24,7 +24,7 @@ caller-owned primitive metadata + Typed Arrays
 ## Non-goals
 
 - No world, voxel, physics, flight, navigation, celestial, persistence, worker, streaming, or gameplay integration.
-- No change to `main.ts`, package files, CSS, existing Three.js modules, CI group registration, or roadmap files.
+- No change to `main.ts`, lockfiles, CSS, existing Three.js modules, or roadmap files. Integration is limited to assigning the new spec once to `test:e2e:core` and restoring its three Git LFS baselines in Browser Mainline CI.
 - No shader graph, textures, general material system, WebGPU, WASM, Shared Memory, transferable/detached-buffer transport, or universal engine API.
 - No reconstruction of domain state from scene nodes, no absolute astronomical coordinates in Three.js, and no renderer-to-domain writeback.
 - No automatic WebGL context-loss recovery; explicit reset and replay are the V1 recovery boundary.
