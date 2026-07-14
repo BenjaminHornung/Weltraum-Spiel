@@ -47,6 +47,9 @@ jobs:
             "apps/weltraum-browser/evidence/ui-concept-parity-v1-rejected-flight-hud-1280x720.png"
             "apps/weltraum-browser/evidence/ui-concept-parity-v1-rejected-navigation-planner.png"
             "apps/weltraum-browser/evidence/ui-concept-parity-v1-rejected-combat-contact.png"
+            "apps/weltraum-browser/tests/e2e/render-backend-mesh-lifecycle.spec.ts-snapshots/render-backend-parent-fallback.png"
+            "apps/weltraum-browser/tests/e2e/render-backend-mesh-lifecycle.spec.ts-snapshots/render-backend-child-active.png"
+            "apps/weltraum-browser/tests/e2e/render-backend-mesh-lifecycle.spec.ts-snapshots/render-backend-replacement-active.png"
           )
           required_lfs_paths=("$glb_path" "$favicon_path" "${reference_pngs[@]}")
 
