@@ -27,7 +27,6 @@ jobs:
     timeout-minutes: 25
     env:
       GH_TOKEN: ${{ github.token }}
-      CODEX_REVIEW_TOKEN: ${{ secrets.CODEX_REVIEW_TOKEN }}
       REPOSITORY: ${{ github.repository }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
       HEAD_SHA: ${{ github.event.pull_request.head.sha }}
@@ -38,6 +37,8 @@ jobs:
       - name: Initialize status and request exact-head Codex review
         id: request
         shell: bash
+        env:
+          CODEX_REVIEW_TOKEN: ${{ secrets.CODEX_REVIEW_TOKEN }}
         run: |
           set -euo pipefail
 
@@ -82,21 +83,10 @@ jobs:
               -H "Accept: application/vnd.github+json" \
               "repos/${REPOSITORY}/issues/${PR_NUMBER}/comments?per_page=100" \
               | jq -c \
-                  --arg marker "${marker}" \
-                  --arg short "${short_sha}" \
-                  --arg full "${HEAD_SHA}" '
+                  --arg marker "${marker}" '
                     [
                       .[][]? |
-                      select(
-                        ((.body // "") | contains($marker)) or
-                        (
-                          ((.body // "") | contains("@codex review")) and
-                          (
-                            ((.body // "") | contains($short)) or
-                            ((.body // "") | contains($full))
-                          )
-                        )
-                      )
+                      select((.body // "") | contains($marker))
                     ][-1] // empty |
                     if . == null then empty else
                       {id, created_at, author: (.user.login // "")}
