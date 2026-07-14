@@ -106,6 +106,10 @@ const cloneFreeze = (value: unknown, seen = new WeakSet<object>()): unknown => {
     return Object.freeze(clone);
   }
   if (typeof value === "object" && value !== undefined) {
+    const prototype = Object.getPrototypeOf(value);
+    if (prototype !== Object.prototype && prototype !== null) {
+      throw new RangeError("Job payload objects must be plain records.");
+    }
     if (seen.has(value)) throw new RangeError("Job payloads cannot contain cycles.");
     seen.add(value);
     const clone: Record<string, unknown> = {};
@@ -149,8 +153,11 @@ export const validateTransferableBundle = (bundle: TransferableBufferBundle): Tr
   const revision = contentRevision(bundle.revision);
   const declaredBytes = byteCount(bundle.byteLength, "bundle.byteLength");
   let actualBytes = 0;
+  const uniqueBuffers = new Set<ArrayBuffer>();
   const buffers = bundle.buffers.map((buffer) => {
     if (!(buffer instanceof ArrayBuffer)) throw new RangeError("Only ArrayBuffer payloads are transferable.");
+    if (uniqueBuffers.has(buffer)) throw new RangeError("Transfer bundles cannot list the same ArrayBuffer more than once.");
+    uniqueBuffers.add(buffer);
     actualBytes += buffer.byteLength;
     if (!Number.isSafeInteger(actualBytes)) throw new RangeError("Bundle byte length overflow.");
     return buffer;

@@ -72,25 +72,32 @@ export class PerformanceTelemetry {
   }
 
   public setWorkerState(workerCount: number, activeWorkers: number): void {
-    setGauge(this.gauges, "workerCount", workerCount);
-    setGauge(this.gauges, "activeWorkers", activeWorkers);
-    if (activeWorkers > workerCount) {
+    const validatedWorkerCount = assertTelemetryInteger(workerCount, "workerCount");
+    const validatedActiveWorkers = assertTelemetryInteger(activeWorkers, "activeWorkers");
+    if (validatedActiveWorkers > validatedWorkerCount) {
       throw new RangeError("activeWorkers cannot exceed workerCount.");
     }
+    setGauge(this.gauges, "workerCount", validatedWorkerCount);
+    setGauge(this.gauges, "activeWorkers", validatedActiveWorkers);
   }
 
   public setQueueState(queuedJobs: number, runningJobs: number): void {
-    this.setGauge("queuedJobs", queuedJobs);
-    setGauge(this.gauges, "runningJobs", runningJobs);
+    const validatedQueuedJobs = assertTelemetryInteger(queuedJobs, "queuedJobs");
+    const validatedRunningJobs = assertTelemetryInteger(runningJobs, "runningJobs");
+    this.setGauge("queuedJobs", validatedQueuedJobs);
+    setGauge(this.gauges, "runningJobs", validatedRunningJobs);
   }
 
   public setCacheState(cacheEntries: number, cacheBytes: number, pinnedEntries: number): void {
-    setGauge(this.gauges, "cacheEntries", cacheEntries);
-    setGauge(this.gauges, "cacheBytes", cacheBytes);
-    setGauge(this.gauges, "pinnedEntries", pinnedEntries);
-    if (pinnedEntries > cacheEntries) {
+    const validatedCacheEntries = assertTelemetryInteger(cacheEntries, "cacheEntries");
+    const validatedCacheBytes = assertTelemetryInteger(cacheBytes, "cacheBytes");
+    const validatedPinnedEntries = assertTelemetryInteger(pinnedEntries, "pinnedEntries");
+    if (validatedPinnedEntries > validatedCacheEntries) {
       throw new RangeError("pinnedEntries cannot exceed cacheEntries.");
     }
+    setGauge(this.gauges, "cacheEntries", validatedCacheEntries);
+    setGauge(this.gauges, "cacheBytes", validatedCacheBytes);
+    setGauge(this.gauges, "pinnedEntries", validatedPinnedEntries);
   }
 
   public observeQueueDepth(queueDepth: number): void {

@@ -68,6 +68,24 @@ describe("PerformanceTelemetry", () => {
     expect(reset).not.toHaveProperty("performanceNowTimestamp");
   });
 
+  it("rejects invalid compound gauge updates without partial mutation", () => {
+    const telemetry = new PerformanceTelemetry();
+    telemetry.setWorkerState(2, 1);
+    telemetry.setQueueState(3, 1);
+    telemetry.setCacheState(2, 64, 1);
+    const before = telemetry.snapshot();
+
+    expect(() => telemetry.setWorkerState(1, 2)).toThrow(RangeError);
+    expect(() => telemetry.setQueueState(9, -1)).toThrow(RangeError);
+    expect(() => telemetry.setCacheState(1, 128, 2)).toThrow(RangeError);
+
+    expect(telemetry.snapshot()).toMatchObject({
+      workerCount: before.workerCount, activeWorkers: before.activeWorkers,
+      queuedJobs: before.queuedJobs, runningJobs: before.runningJobs,
+      cacheEntries: before.cacheEntries, cacheBytes: before.cacheBytes, pinnedEntries: before.pinnedEntries
+    });
+  });
+
   it("saturates counters and freezes snapshots", () => {
     const telemetry = new PerformanceTelemetry();
     telemetry.recordInputBytesTransferred(MAX_TELEMETRY_VALUE);

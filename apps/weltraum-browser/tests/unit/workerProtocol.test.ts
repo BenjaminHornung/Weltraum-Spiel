@@ -45,6 +45,14 @@ describe("worker protocol", () => {
     expect(() => validateTransferableBundle({ ...valid, byteLength: byteCount(15) })).toThrow(/does not match/);
   });
 
+  it("rejects duplicate transferable buffer ownership", () => {
+    const shared = new ArrayBuffer(8);
+    expect(() => validateTransferableBundle({
+      ownership: "SenderToWorker", revision: contentRevision(1), byteLength: byteCount(16),
+      buffers: [shared, shared], views: []
+    })).toThrow(/more than once/);
+  });
+
   it("uses explicit transfer lists that detach the sender buffer", () => {
     const source = new ArrayBuffer(32);
     const input = validateTransferableBundle(bundle(source));
@@ -61,6 +69,10 @@ describe("worker protocol", () => {
     expect(snapshot.payload).toMatchObject({ nested: { value: 4 } });
     expect(Object.isFrozen(snapshot.payload)).toBe(true);
     expect(Object.isFrozen((snapshot.payload as typeof payload).nested)).toBe(true);
+    expect(() => snapshotWorkerJobRequest({
+      ...makeRequest(4),
+      payload: { createdAt: new Date(0) }
+    })).toThrow(/plain records/);
   });
 
   it("rejects recognized message tags with malformed required fields", () => {

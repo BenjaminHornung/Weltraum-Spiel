@@ -220,6 +220,33 @@ describe("WorkerPool lifecycle", () => {
     await pool.shutdown();
   });
 
+  it("does not let a rejected late cancellation replace a completed outcome", async () => {
+    const transports: RuntimeTransport[] = [];
+    let ticket: ReturnType<WorkerPool["enqueue"]> | undefined;
+    let lateCancelAccepted: boolean | undefined;
+    const pool = new WorkerPool({
+      workerCount: 1,
+      queueCapacity: 4,
+      initialPlanningEpoch: planningEpoch(1),
+      transportFactory: () => {
+        const transport = new RuntimeTransport();
+        transports.push(transport);
+        return transport;
+      },
+      observe: (event) => {
+        if (event.type === "OutputTransferred") lateCancelAccepted = ticket?.cancel();
+      }
+    });
+    await pool.start();
+    ticket = pool.enqueue(request("late-cancel", 8), input(8));
+
+    const terminal = await ticket.result;
+
+    expect(lateCancelAccepted).toBe(false);
+    expect(terminal).toMatchObject({ kind: "Completed" });
+    await pool.shutdown();
+  });
+
   it("rejects stale planning results after the planning epoch advances", async () => {
     const { pool } = await createPool();
     const ticket = pool.enqueue(request("stale", 256 * 1024), input(256 * 1024));

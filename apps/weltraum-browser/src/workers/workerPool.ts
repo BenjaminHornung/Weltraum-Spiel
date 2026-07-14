@@ -147,8 +147,9 @@ export class WorkerPool {
       return true;
     }
     if (record.cancelRequested) return true;
-    record.cancelRequested = true;
-    return record.handle?.cancel(jobId) ?? false;
+    const accepted = record.handle?.cancel(jobId) ?? false;
+    if (accepted) record.cancelRequested = true;
+    return accepted;
   }
 
   public async replaceWorker(slot: number): Promise<WorkerEpoch> {
