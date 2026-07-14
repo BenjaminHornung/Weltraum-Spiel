@@ -102,7 +102,7 @@ Gravity bindings are built from existing Celestial body definitions and runtime 
 
 ## Deterministic probe
 
-The probe is translational test infrastructure for this spine. A step supplies its state, start and end frames, start gravity snapshot, and a positive fixed `dt` that must equal an exact integer number of 120 Hz ticks. Integration happens in system inertial with semi-implicit Euler:
+The probe is translational test infrastructure for this spine. A step supplies its state, start and end frames, start gravity snapshot, and a positive fixed `dt`. The integer start/end tick span is authoritative. `dt` may be the canonical `deltaTicks / 120` value or the exact subtraction of the two explicit frame epochs when that subtraction remains within an epoch-scaled floating-point tolerance capped at 0.1% of the canonical span. Integration always uses the canonical tick-derived `dt`; materially imprecise epoch subtraction fails closed. Integration happens in system inertial with semi-implicit Euler:
 
 ```text
 v_next = v_current + acceleration * dt

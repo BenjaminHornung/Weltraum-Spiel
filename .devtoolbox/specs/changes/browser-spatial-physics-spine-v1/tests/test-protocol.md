@@ -40,7 +40,7 @@ git diff --check
 - Surface: radial Up, both poles finite, orthonormal EUS basis, all three handedness identities, actor orientation independence.
 - Transforms: position, velocity with rotational term, orientation, angular velocity, full roundtrip, no mutation.
 - Authority: floating-origin/render projection does not alter canonical IDs or states; no Three.js imports.
-- Gravity/probe: frame independence, reproducibility, byte-stable fixed steps, invalid `dt`, NaN/Infinity rejection.
+- Gravity/probe: frame independence, reproducibility, byte-stable fixed steps, canonical and frame-derived `dt` at early and multi-year ticks, fail-closed precision loss near the safe-integer boundary, invalid `dt`, NaN/Infinity rejection.
 - Handoff: absolute pose/velocity preservation, exact epoch, immutable snapshots, explicit gravity-binding result.
 - Browser: normal route, no TestBridge, Vite imports, full scenario twice, no browser/network errors.
 
