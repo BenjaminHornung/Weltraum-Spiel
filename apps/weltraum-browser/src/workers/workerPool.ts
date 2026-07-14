@@ -2,6 +2,7 @@ import { byteCount, planningEpoch, workerEpoch, type PlanningEpoch, type WorkerE
 import type { JobOutputDataMessage } from "./messages";
 import {
   snapshotWorkerJobRequest,
+  transferListFor,
   validateTransferableBundle,
   validateTransformPayload,
   type TransferableBufferBundle,
@@ -121,6 +122,14 @@ export class WorkerPool {
     if (queued.kind === "RejectedQueueFull") this.fail(record, "QueueFull", "Worker queue capacity is exhausted.");
     else if (queued.kind === "RejectedDuplicateJob") this.fail(record, "DuplicateJob", "Job ID is already queued.");
     else {
+      try {
+        const ownedInput = structuredClone(input, { transfer: transferListFor(input) }) as TransferableBufferBundle;
+        record.input = validateTransferableBundle(ownedInput);
+      } catch (error) {
+        this.queue.cancel(request.jobId);
+        this.fail(record, "InvalidInput", error instanceof Error ? error.message : "Input ownership transfer failed.");
+        return this.ticket(record);
+      }
       this.records.set(request.jobId, record);
       this.emit({ type: "Queued", jobId: request.jobId, queueDepth: this.queue.size });
       this.dispatch();

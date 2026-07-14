@@ -10,5 +10,5 @@
 - Cache miss/hit/pinning/release/eviction: **verified**
 - Canonical repeat: **identical**
 - Browser health errors: 0/0/0/0
-- Timing evidence (not gated): 848.50 ms, 1273.10 ms
+- Timing evidence (not gated): 904.30 ms, 877.00 ms
 - Focused command: `npm run test:e2e -- tests/e2e/worker-streaming-telemetry-spine.spec.ts`

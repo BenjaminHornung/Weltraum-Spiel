@@ -87,6 +87,25 @@ describe("WorkerPool lifecycle", () => {
     await pool.shutdown();
   });
 
+  it("takes transferable ownership before an accepted job waits in the queue", async () => {
+    const { pool } = await createPool();
+    const running = pool.enqueue(request("ownership-running", 512 * 1024), input(512 * 1024));
+    const queuedInput = input(8);
+    new Uint8Array(queuedInput.buffers[0]).fill(0x11);
+    const sender = queuedInput.buffers[0];
+    const queued = pool.enqueue(request("ownership-queued", 8), queuedInput);
+
+    expect(sender.byteLength).toBe(0);
+    expect(running.cancel()).toBe(true);
+    expect(await running.result).toEqual({ kind: "Cancelled", reason: "CancelledDuringExecution" });
+    const terminal = await queued.result;
+    expect(terminal.kind).toBe("Completed");
+    if (terminal.kind === "Completed") {
+      expect([...new Uint8Array(terminal.output.buffers[0])]).toEqual(Array(8).fill(0x22));
+    }
+    await pool.shutdown();
+  });
+
   it("cancels queued and running jobs with distinct outcomes", async () => {
     const { pool } = await createPool();
     const running = pool.enqueue(request("running", 512 * 1024), input(512 * 1024));

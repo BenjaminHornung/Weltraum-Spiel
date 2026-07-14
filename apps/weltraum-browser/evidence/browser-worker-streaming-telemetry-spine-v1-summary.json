@@ -28,8 +28,8 @@
     "canonicalIdentical": true
   },
   "diagnostics": {
-    "firstElapsedMs": 848.5,
-    "secondElapsedMs": 1273.1000000238419,
+    "firstElapsedMs": 904.3000000715256,
+    "secondElapsedMs": 877,
     "performanceGated": false
   },
   "scenario": {
