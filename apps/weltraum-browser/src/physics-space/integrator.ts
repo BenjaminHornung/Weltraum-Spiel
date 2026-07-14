@@ -26,6 +26,9 @@ import type {
   PhysicsStepResult
 } from "./types";
 
+const FRAME_DERIVED_STEP_TOLERANCE_SECONDS =
+  1 / (UNIVERSE_TICKS_PER_SECOND * 1_000_000);
+
 export const createPhysicsProbeState = (input: PhysicsProbeStateInput): PhysicsProbeState => {
   if (input === null || typeof input !== "object" || Array.isArray(input)) {
     return failPhysicsSpace("INVALID_INPUT", "", "Physics probe state input must be an object.");
@@ -57,7 +60,10 @@ const validateFixedStep = (input: PhysicsStepInput, state: PhysicsProbeState): n
   }
   const expectedSeconds = deltaTicks / UNIVERSE_TICKS_PER_SECOND;
   const frameDerivedSeconds = endTime.epochSeconds - state.time.epochSeconds;
-  if (!Object.is(dt, expectedSeconds) && !Object.is(dt, frameDerivedSeconds)) {
+  const matchesFrameDerivedSeconds =
+    Object.is(dt, frameDerivedSeconds) &&
+    Math.abs(frameDerivedSeconds - expectedSeconds) <= FRAME_DERIVED_STEP_TOLERANCE_SECONDS;
+  if (!Object.is(dt, expectedSeconds) && !matchesFrameDerivedSeconds) {
     return failPhysicsSpace(
       "INVALID_TIME_STEP",
       "/deltaTimeSeconds",
