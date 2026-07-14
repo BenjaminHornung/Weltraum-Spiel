@@ -176,4 +176,44 @@ describe("deterministic fixed-step physics probe", () => {
     expect(Object.isFrozen(first)).toBe(true);
     expect(Object.isFrozen(first.steps)).toBe(true);
   });
+
+  it("rejects an untyped step context that attempts to override the chained probe state", () => {
+    const tick0 = fixtureAt(0);
+    const tick1 = fixtureAt(1);
+    const initialState = createPhysicsProbeState({
+      probeId: "probe:context-override",
+      frameId: tick0.frame.frameId,
+      time: tick0.time,
+      positionMeters: {
+        x: tick0.runtimeState.absoluteState.positionMeters.x + tick0.body.radiusMeters + 30_000,
+        y: tick0.runtimeState.absoluteState.positionMeters.y,
+        z: tick0.runtimeState.absoluteState.positionMeters.z
+      },
+      velocityMetersPerSecond: { x: 0, y: 300, z: 0 }
+    });
+    const injectedState = createPhysicsProbeState({
+      ...initialState,
+      probeId: "probe:injected-context-state",
+      positionMeters: { x: 1, y: 2, z: 3 }
+    });
+    const untypedContexts = [{
+      deltaTimeSeconds: 1 / 120,
+      startFrameState: tick0.frame,
+      endFrameState: tick1.frame,
+      gravityField: tick0.field,
+      state: injectedState
+    }];
+
+    expect(() =>
+      runPhysicsProbeSimulation(
+        initialState,
+        untypedContexts as unknown as Parameters<typeof runPhysicsProbeSimulation>[1]
+      )
+    ).toThrowError(
+      expect.objectContaining<Partial<PhysicsSpaceError>>({
+        code: "INVALID_INPUT",
+        path: "/contexts/0/state"
+      })
+    );
+  });
 });

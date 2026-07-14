@@ -26,7 +26,14 @@ export const runPhysicsProbeSimulation = (
     if (context === null || typeof context !== "object" || Array.isArray(context)) {
       return failPhysicsSpace("INVALID_INPUT", `/contexts/${index}`, "Probe step context must be an object.");
     }
-    const result = stepPhysicsProbe({ state: currentState, ...context });
+    if (Object.prototype.hasOwnProperty.call(context, "state")) {
+      return failPhysicsSpace(
+        "INVALID_INPUT",
+        `/contexts/${index}/state`,
+        "Probe step context cannot override the chained probe state."
+      );
+    }
+    const result = stepPhysicsProbe({ ...context, state: currentState });
     steps.push(result);
     currentState = result.state;
   }
