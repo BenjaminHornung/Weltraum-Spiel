@@ -13,7 +13,7 @@ export type ByteCount = Brand<number, "ByteCount">;
 const STABLE_ASCII = /^[\x21-\x7e]+$/;
 
 export const stableAsciiId = <T extends string>(value: string, field: string, maximumLength = 256): T => {
-  if (!STABLE_ASCII.test(value) || value.length > maximumLength) {
+  if (typeof value !== "string" || !STABLE_ASCII.test(value) || value.length > maximumLength) {
     throw new RangeError(`${field} must be a non-empty stable ASCII identifier of at most ${maximumLength} bytes.`);
   }
   return value as T;

@@ -271,7 +271,8 @@ export class MemoryContentCache {
     if (!Number.isSafeInteger(input.byteLength) || input.byteLength < 0) {
       throw new MemoryContentCacheError("INVALID_ENTRY", "Content byte length must be a nonnegative safe integer.");
     }
-    if (!isContentHash(input.contentHash) || computeContentHash(input.buffer) !== input.contentHash) {
+    const ownedBuffer = input.buffer.slice(0);
+    if (!isContentHash(input.contentHash) || computeContentHash(ownedBuffer) !== input.contentHash) {
       throw new MemoryContentCacheError("CONTENT_HASH_MISMATCH", "Content hash does not match the supplied bytes.");
     }
     if (typeof input.layout !== "string" || input.layout.length === 0 || input.layout.length > 128 || !stableAsciiLayout.test(input.layout)) {
@@ -279,7 +280,7 @@ export class MemoryContentCache {
     }
     return Object.freeze({
       key,
-      buffer: input.buffer,
+      buffer: ownedBuffer,
       byteLength: input.byteLength,
       contentHash: input.contentHash,
       layout: input.layout

@@ -34,6 +34,12 @@ const bundle = (buffer: ArrayBuffer): TransferableBufferBundle => ({
 });
 
 describe("worker protocol", () => {
+  it("rejects non-string values at stable identifier boundaries", () => {
+    expect(() => workerJobId(123 as unknown as string)).toThrow(/stable ASCII identifier/);
+    expect(() => workerJobKind({} as unknown as string)).toThrow(/stable ASCII identifier/);
+    expect(() => workerTargetKey(true as unknown as string)).toThrow(/stable ASCII identifier/);
+  });
+
   it("validates aligned typed-array byte ranges", () => {
     const valid = validateTransferableBundle({
       ownership: "SenderToWorker", revision: contentRevision(1), byteLength: byteCount(16), buffers: [new ArrayBuffer(16)],

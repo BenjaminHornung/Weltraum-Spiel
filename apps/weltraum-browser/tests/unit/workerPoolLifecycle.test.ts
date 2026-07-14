@@ -249,7 +249,7 @@ describe("WorkerPool lifecycle", () => {
 
   it("rejects stale planning results after the planning epoch advances", async () => {
     const { pool } = await createPool();
-    const ticket = pool.enqueue(request("stale", 256 * 1024), input(256 * 1024));
+    const ticket = pool.enqueue(request("stale", 64 * 1024), input(64 * 1024));
     pool.setPlanningEpoch(planningEpoch(2));
     const terminal = await ticket.result;
     expect(terminal).toMatchObject({

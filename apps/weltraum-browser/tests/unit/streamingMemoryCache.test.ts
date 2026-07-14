@@ -60,6 +60,19 @@ describe("MemoryContentCache", () => {
     );
   });
 
+  it("takes ownership by copying admitted content buffers", () => {
+    const cache = new MemoryContentCache(16);
+    const admitted = entry("owned", 4, 7);
+    cache.put(admitted);
+
+    new Uint8Array(admitted.buffer).fill(9);
+    const lease = cache.get(admitted.key, admitted.contentHash);
+
+    expect([...new Uint8Array(lease?.buffer ?? new ArrayBuffer())]).toEqual([7, 7, 7, 7]);
+    expect(lease?.contentHash).toBe(admitted.contentHash);
+    lease?.release();
+  });
+
   it("clears reconstructable state and invalidates handles", () => {
     const cache = new MemoryContentCache(16);
     cache.put(entry("clear", 4, 1));
