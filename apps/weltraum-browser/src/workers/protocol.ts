@@ -170,8 +170,8 @@ export const validateTransferableBundle = (bundle: TransferableBufferBundle): Tr
     names.add(name);
     if (!Number.isSafeInteger(view.bufferIndex) || view.bufferIndex < 0 || view.bufferIndex >= buffers.length) throw new RangeError("View bufferIndex is out of range.");
     if (!(TYPED_ARRAY_KINDS as readonly string[]).includes(view.kind)) throw new RangeError("Unsupported typed array kind.");
-    const byteOffset = Number(view.byteOffset);
-    const elementCount = Number(view.elementCount);
+    const byteOffset = view.byteOffset;
+    const elementCount = view.elementCount;
     if (!Number.isSafeInteger(byteOffset) || byteOffset < 0 || !Number.isSafeInteger(elementCount) || elementCount < 0) throw new RangeError("Invalid view range.");
     const elementBytes = BYTES_PER_ELEMENT[view.kind];
     if (byteOffset % elementBytes !== 0) throw new RangeError("View byteOffset is not aligned.");
@@ -200,9 +200,11 @@ export const fnv1aBytes = (buffers: readonly ArrayBuffer[]): string => {
 export const validateTransformPayload = (payload: unknown): TransformBufferPayload => {
   if (!payload || typeof payload !== "object") throw new RangeError("TransformBuffer payload is required.");
   const record = payload as Record<string, unknown>;
-  const xorMask = Number(record.xorMask);
-  const chunkBytes = Number(record.chunkBytes);
-  if (!Number.isInteger(xorMask) || xorMask < 0 || xorMask > 255) throw new RangeError("xorMask must be an unsigned byte.");
-  if (!Number.isSafeInteger(chunkBytes) || chunkBytes <= 0) throw new RangeError("chunkBytes must be a positive safe integer.");
-  return Object.freeze({ xorMask, chunkBytes, outputRevision: contentRevision(Number(record.outputRevision), "outputRevision") });
+  const xorMask = record.xorMask;
+  const chunkBytes = record.chunkBytes;
+  const outputRevision = record.outputRevision;
+  if (typeof xorMask !== "number" || !Number.isInteger(xorMask) || xorMask < 0 || xorMask > 255) throw new RangeError("xorMask must be an unsigned byte.");
+  if (typeof chunkBytes !== "number" || !Number.isSafeInteger(chunkBytes) || chunkBytes <= 0) throw new RangeError("chunkBytes must be a positive safe integer.");
+  if (typeof outputRevision !== "number") throw new RangeError("outputRevision must be a non-negative safe integer.");
+  return Object.freeze({ xorMask, chunkBytes, outputRevision: contentRevision(outputRevision, "outputRevision") });
 };

@@ -11,6 +11,7 @@ import {
   snapshotWorkerJobRequest,
   transferListFor,
   validateTransferableBundle,
+  validateTransformPayload,
   workerEpoch,
   workerJobId,
   workerJobKind,
@@ -49,6 +50,8 @@ describe("worker protocol", () => {
     expect(() => validateTransferableBundle({ ...valid, views: [{ ...valid.views[0], byteOffset: 2 }] })).toThrow(/aligned/);
     expect(() => validateTransferableBundle({ ...valid, views: [{ ...valid.views[0], elementCount: 4 }] })).toThrow(/exceeds/);
     expect(() => validateTransferableBundle({ ...valid, byteLength: byteCount(15) })).toThrow(/does not match/);
+    expect(() => validateTransferableBundle({ ...valid, views: [{ ...valid.views[0], byteOffset: "0" as unknown as number }] })).toThrow(/Invalid view range/);
+    expect(() => validateTransferableBundle({ ...valid, views: [{ ...valid.views[0], elementCount: true as unknown as number }] })).toThrow(/Invalid view range/);
   });
 
   it("rejects duplicate transferable buffer ownership", () => {
@@ -87,6 +90,12 @@ describe("worker protocol", () => {
     expect(Object.prototype.hasOwnProperty.call(snapshot.payload, "__proto__")).toBe(true);
     expect(Object.getPrototypeOf(snapshot.payload)).toBeNull();
     expect((snapshot.payload as Record<string, unknown>).xorMask).toBeUndefined();
+  });
+
+  it("rejects coerced numeric transform payload fields", () => {
+    expect(() => validateTransformPayload({ xorMask: "90", chunkBytes: 1, outputRevision: 2 })).toThrow(/xorMask/);
+    expect(() => validateTransformPayload({ xorMask: 90, chunkBytes: true, outputRevision: 2 })).toThrow(/chunkBytes/);
+    expect(() => validateTransformPayload({ xorMask: 90, chunkBytes: 1, outputRevision: null })).toThrow(/outputRevision/);
   });
 
   it("rejects recognized message tags with malformed required fields", () => {
