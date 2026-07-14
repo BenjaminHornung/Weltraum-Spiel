@@ -29,9 +29,14 @@ class RuntimeTransport implements WorkerTransport {
   public onerror: ((event: ErrorEvent) => void) | null = null;
   public onmessageerror: ((event: MessageEvent<unknown>) => void) | null = null;
   public terminated = false;
+  public corruptNextOutputOwnership = false;
   readonly #runtime = new StreamingWorkerRuntime((message, transfer = []) => {
     const cloned = structuredClone(message, { transfer: [...transfer] }) as WorkerToHostMessage;
-    queueMicrotask(() => { if (!this.terminated) this.onmessage?.({ data: cloned } as MessageEvent<unknown>); });
+    const delivered: WorkerToHostMessage = this.corruptNextOutputOwnership && cloned.type === "JobOutputData"
+      ? { ...cloned, bundle: { ...cloned.bundle, ownership: "SenderToWorker" } }
+      : cloned;
+    if (cloned.type === "JobOutputData") this.corruptNextOutputOwnership = false;
+    queueMicrotask(() => { if (!this.terminated) this.onmessage?.({ data: delivered } as MessageEvent<unknown>); });
   });
 
   public postMessage(message: HostToWorkerMessage, transfer: Transferable[] = []): void {
@@ -312,6 +317,23 @@ describe("WorkerPool lifecycle", () => {
     transports[1].failMessage();
     expect(await messageError.result).toMatchObject({ kind: "Failed", failure: { code: "WorkerFault" } });
     await expect.poll(() => pool.snapshot().workerRestarts).toBe(2);
+    await pool.shutdown();
+  });
+
+  it("retires a worker whose completed result violates the integration contract", async () => {
+    const { pool, transports } = await createPool();
+    transports[0].corruptNextOutputOwnership = true;
+    const rejected = pool.enqueue(request("invalid-result-owner", 8), input(8));
+    const queued = pool.enqueue(request("after-invalid-result", 8), input(8));
+
+    expect(await rejected.result).toMatchObject({
+      kind: "Failed",
+      failure: { code: "ProtocolFault" },
+      integrationDecision: { kind: "RejectedInvalidLayout" }
+    });
+    await expect.poll(() => pool.snapshot().workerRestarts).toBe(1);
+    expect(await queued.result).toMatchObject({ kind: "Completed" });
+    expect(transports).toHaveLength(2);
     await pool.shutdown();
   });
 

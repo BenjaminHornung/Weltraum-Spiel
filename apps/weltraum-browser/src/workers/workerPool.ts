@@ -298,6 +298,10 @@ export class WorkerPool {
       if (decision.kind === "RejectedStalePlanningEpoch" || decision.kind === "RejectedStaleWorkerEpoch") {
         this.emit({ type: "StaleResultRejected", jobId: result.jobId });
       }
+      if (decision.kind !== "RejectedStalePlanningEpoch") {
+        this.replaceAfterFault(handle, "Worker result violated the integration contract.");
+        return;
+      }
     }
     this.dispatch();
   }

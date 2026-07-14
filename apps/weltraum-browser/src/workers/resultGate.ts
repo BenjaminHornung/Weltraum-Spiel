@@ -50,7 +50,8 @@ export const integrateWorkerResult = (
   if (validated.ownership !== "WorkerToConsumer") return Object.freeze({ kind: "RejectedInvalidLayout", message: "Output bundle ownership must be WorkerToConsumer." });
   if (validated.byteLength !== result.outputBytes || validated.byteLength > expectation.maximumOutputBytes) return Object.freeze({ kind: "RejectedOverBudget" });
   const actualHash = fnv1aBytes(validated.buffers);
-  const declaredHash = result.contentHash ?? validated.contentHash;
-  if ((expectation.expectedContentHash !== undefined && actualHash !== expectation.expectedContentHash) || (declaredHash !== undefined && actualHash !== declaredHash)) return Object.freeze({ kind: "RejectedContentHashMismatch" });
+  if ((expectation.expectedContentHash !== undefined && actualHash !== expectation.expectedContentHash)
+    || (result.contentHash !== undefined && actualHash !== result.contentHash)
+    || (validated.contentHash !== undefined && actualHash !== validated.contentHash)) return Object.freeze({ kind: "RejectedContentHashMismatch" });
   return Object.freeze({ kind: "Accepted", bundle: validated });
 };

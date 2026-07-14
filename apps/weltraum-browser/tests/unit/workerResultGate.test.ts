@@ -78,5 +78,9 @@ describe("worker result integration gate", () => {
   it("rejects content hash mismatches", () => {
     expect(integrateWorkerResult({ ...expectation, expectedContentHash: "deadbeef" }, result, output()).kind)
       .toBe("RejectedContentHashMismatch");
+    expect(integrateWorkerResult(expectation, result, { ...output(), contentHash: "deadbeef" }).kind)
+      .toBe("RejectedContentHashMismatch");
+    expect(integrateWorkerResult(expectation, { ...result, contentHash: "deadbeef" }, output()).kind)
+      .toBe("RejectedContentHashMismatch");
   });
 });
