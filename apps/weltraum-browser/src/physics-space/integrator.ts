@@ -26,6 +26,8 @@ import type {
   PhysicsStepResult
 } from "./types";
 
+const FIXED_STEP_COMPARISON_ULPS = 4;
+
 export const createPhysicsProbeState = (input: PhysicsProbeStateInput): PhysicsProbeState => {
   if (input === null || typeof input !== "object" || Array.isArray(input)) {
     return failPhysicsSpace("INVALID_INPUT", "", "Physics probe state input must be an object.");
@@ -56,14 +58,16 @@ const validateFixedStep = (input: PhysicsStepInput, state: PhysicsProbeState): n
     );
   }
   const expectedSeconds = deltaTicks / UNIVERSE_TICKS_PER_SECOND;
-  if (!Object.is(dt, expectedSeconds)) {
+  const comparisonTolerance =
+    Number.EPSILON * FIXED_STEP_COMPARISON_ULPS * Math.max(1, Math.abs(dt), Math.abs(expectedSeconds));
+  if (Math.abs(dt - expectedSeconds) > comparisonTolerance) {
     return failPhysicsSpace(
       "INVALID_TIME_STEP",
       "/deltaTimeSeconds",
-      "Physics step dt must equal the exact 120 Hz Universe tick span."
+      "Physics step dt must match the canonical 120 Hz Universe tick span."
     );
   }
-  return dt;
+  return expectedSeconds;
 };
 
 export const stepPhysicsProbe = (input: PhysicsStepInput): PhysicsStepResult => {
