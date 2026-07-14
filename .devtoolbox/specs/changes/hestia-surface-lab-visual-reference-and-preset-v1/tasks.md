@@ -14,7 +14,7 @@
 
 ## 2. Checkpoint 2 — Define the visual preset and agent handoff
 
-- [ ] **Objective:** Create mutually consistent Markdown, JSON, and concise-agent guidance, review it, verify it, and publish the final preset commit.
+- [x] **Objective:** Create mutually consistent Markdown, JSON, and concise-agent guidance, review it, verify it, and publish the final preset commit.
 - **Files:** `docs/concept-art/hestia-surface-lab-visual-preset-v1.md`, `docs/concept-art/hestia-surface-lab-visual-preset-v1.json`, `docs/concept-art/hestia-surface-lab-agent-handoff-v1.md`, and necessary updates within this change directory.
 - **Acceptance criteria:** all user-mandated MUST/SHOULD/MAY/MUST NOT/DEFERRED items; numerical Initial Preview Targets marked Not Yet Performance-Proven; 13-color palette with purpose/dominance/provenance; five materials; three vegetation tiers; fog/water/light/camera/HUD contracts; twelve-row observable acceptance matrix; valid stable JSON; concise handoff matches full preset.
 - **Implementation guidance:** treat the preset as design guidance only. Keep vegetation reconstructible presentation scatter, water non-authoritative presentation plane, fog defect-revealing, and the first 4×4 region traversable rather than spectacular.

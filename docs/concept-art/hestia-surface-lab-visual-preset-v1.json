@@ -1,0 +1,117 @@
+{
+  "presetId": "hestia.nebelwald-archipelago.preview.v1",
+  "status": "design-guidance",
+  "runtimeAuthority": false,
+  "runtimeImportExpectation": false,
+  "scope": "parallel Surface Lab visual preview only",
+  "authorityBoundary": {
+    "runtime": false,
+    "performance": false,
+    "gameplay": false,
+    "collision": false,
+    "navigation": false,
+    "persistence": false,
+    "voxel": false,
+    "renderer": false,
+    "allNumericValues": "Initial Preview Target; Not Yet Performance-Proven"
+  },
+  "sourceImages": [
+    "docs/UI-Screenshots/15-planetenbasis-landeplatz-aussenansicht.png",
+    "docs/UI-Screenshots/17-planet-hesta-uebersicht-landezonen.png",
+    "docs/UI-Screenshots/19-lokale-karte-siedlung-outpost.png",
+    "docs/UI-Screenshots/23-biom-wald-ressourcen-scan.png",
+    "docs/UI-Screenshots/30-hestia-biom-atlas-regionen.png",
+    "docs/UI-Screenshots/36-hestia-archipel-landschaft-konzept.png",
+    "docs/UI-Screenshots/37-tharos-wuestenlandschaft-surface-guidance.png",
+    "docs/UI-Screenshots/38-hestia-nebelwald-outpost-konzept.png",
+    "docs/UI-Screenshots/39-schiff-verlassen-surface-uebergang.png",
+    "docs/UI-Screenshots/40-surface-expedition-ressourcenspur-scanner.png"
+  ],
+  "missingSources": [
+    "docs/UI-Screenshots/41-hestia-biolumineszente-hoehlensysteme.png"
+  ],
+  "terrain": {
+    "provingFootprint": { "value": "4x4 local region", "provisional": true },
+    "foregroundGroundShare": { "min": 0.60, "max": 0.70, "unit": "frame share", "provisional": true },
+    "ridgeHeight": { "min": 1.5, "max": 3.0, "unit": "preview units", "provisional": true },
+    "wetDepressions": { "count": 1, "provisional": true },
+    "visibleInspectionBoundaries": { "min": 2, "max": 4, "provisional": true }
+  },
+  "palette": [
+    { "id": "night-sky", "hex": "#101A2B", "hexStatus": "Provisional; Not Yet Performance-Proven", "purpose": "open background and deepest cool field", "maximumDominance": "35%", "maximumDominanceStatus": "Provisional; Not Yet Performance-Proven", "provenance": "15, 19, 38 Direct Visual Evidence", "status": "Direct Visual Evidence", "provisional": true },
+    { "id": "deep-teal-water", "hex": "#124C59", "hexStatus": "Provisional; Not Yet Performance-Proven", "purpose": "fixed presentation plane", "maximumDominance": "18%", "maximumDominanceStatus": "Provisional; Not Yet Performance-Proven", "provenance": "17, 36 Direct Visual Evidence", "status": "Direct Visual Evidence", "provisional": true },
+    { "id": "lagoon-teal", "hex": "#2A9A9A", "hexStatus": "Provisional; Not Yet Performance-Proven", "purpose": "shallow wet contrast", "maximumDominance": "10%", "maximumDominanceStatus": "Provisional; Not Yet Performance-Proven", "provenance": "23, 36 Direct Visual Evidence", "status": "Direct Visual Evidence", "provisional": true },
+    { "id": "moss-green", "hex": "#274B3B", "hexStatus": "Provisional; Not Yet Performance-Proven", "purpose": "vegetation and moss mass", "maximumDominance": "24%", "maximumDominanceStatus": "Provisional; Not Yet Performance-Proven", "provenance": "23, 30, 38 Direct Visual Evidence", "status": "Direct Visual Evidence", "provisional": true },
+    { "id": "forest-green", "hex": "#3E6A45", "hexStatus": "Provisional; Not Yet Performance-Proven", "purpose": "controlled vegetation variation", "maximumDominance": "12%", "maximumDominanceStatus": "Provisional; Not Yet Performance-Proven", "provenance": "23, 40 Direct Visual Evidence", "status": "Direct Visual Evidence", "provisional": true },
+    { "id": "blue-grey-rock", "hex": "#526779", "hexStatus": "Provisional; Not Yet Performance-Proven", "purpose": "readable faceted rock planes", "maximumDominance": "22%", "maximumDominanceStatus": "Provisional; Not Yet Performance-Proven", "provenance": "15, 19, 38 Direct Visual Evidence", "status": "Direct Visual Evidence", "provisional": true },
+    { "id": "wet-slate", "hex": "#354B59", "hexStatus": "Provisional; Not Yet Performance-Proven", "purpose": "shadowed wet rock and crevice", "maximumDominance": "16%", "maximumDominanceStatus": "Provisional; Not Yet Performance-Proven", "provenance": "23, 38 Direct Visual Evidence", "status": "Direct Visual Evidence", "provisional": true },
+    { "id": "shore-silt", "hex": "#8A9A93", "hexStatus": "Provisional; Not Yet Performance-Proven", "purpose": "pale shoreline separation", "maximumDominance": "8%", "maximumDominanceStatus": "Provisional; Not Yet Performance-Proven", "provenance": "37 form-only inference; image 37's rejected red-brown palette is not adopted; exact silt color remains provisional", "status": "Provisional", "provisional": true },
+    { "id": "warm-amber", "hex": "#D38A4A", "hexStatus": "Provisional; Not Yet Performance-Proven", "purpose": "sparse warm biological/light accent", "maximumDominance": "4%", "maximumDominanceStatus": "Provisional; Not Yet Performance-Proven", "provenance": "30, 36 Direct Visual Evidence", "status": "Direct Visual Evidence", "provisional": true },
+    { "id": "fungus-cyan", "hex": "#63D6D0", "hexStatus": "Provisional; Not Yet Performance-Proven", "purpose": "one restrained landmark/node accent", "maximumDominance": "3%", "maximumDominanceStatus": "Provisional; Not Yet Performance-Proven", "provenance": "23, 38 Direct Visual Evidence", "status": "Direct Visual Evidence", "provisional": true },
+    { "id": "violet-shadow", "hex": "#443B62", "hexStatus": "Provisional; Not Yet Performance-Proven", "purpose": "cool vegetation shadow variation", "maximumDominance": "5%", "maximumDominanceStatus": "Provisional; Not Yet Performance-Proven", "provenance": "30, 40 Direct Visual Evidence", "status": "Direct Visual Evidence", "provisional": true },
+    { "id": "mist-blue", "hex": "#7893A5", "hexStatus": "Provisional; Not Yet Performance-Proven", "purpose": "depth-fog tint", "maximumDominance": "9%", "maximumDominanceStatus": "Provisional; Not Yet Performance-Proven", "provenance": "38 Direct Visual Evidence", "status": "Direct Visual Evidence", "provisional": true },
+    { "id": "near-black", "hex": "#081018", "hexStatus": "Provisional; Not Yet Performance-Proven", "purpose": "deepest crevice and chrome contrast", "maximumDominance": "12%", "maximumDominanceStatus": "Provisional; Not Yet Performance-Proven", "provenance": "15, 39 Direct Visual Evidence", "status": "Direct Visual Evidence", "provisional": true }
+  ],
+  "materialFamilies": [
+    "dark wet faceted rock",
+    "mossy dark soil",
+    "pale wet shoreline sediment",
+    "muted deep-teal presentation water",
+    "near-black damp crevice"
+  ],
+  "vegetation": [
+    { "tier": "Tier 1", "category": "low ground scatter", "visibleClumps": { "min": 3, "max": 6, "per": "4x4 region", "provisional": true } },
+    { "tier": "Tier 2", "category": "controlled framing cluster", "visibleClusters": { "min": 2, "max": 4, "per": "4x4 region", "provisional": true } },
+    { "tier": "Tier 3", "category": "restrained landmark", "visibleClusters": { "min": 0, "max": 1, "per": "4x4 region", "provisional": true } }
+  ],
+  "fog": {
+    "start": { "value": 12, "unit": "preview units", "provisional": true },
+    "end": { "value": 36, "unit": "preview units", "provisional": true },
+    "density": { "value": 0.18, "unit": "normalized preview value", "provisional": true },
+    "defectMasking": false
+  },
+  "water": {
+    "type": "fixed presentation plane",
+    "authoritative": false,
+    "coverage": { "min": 0.12, "max": 0.20, "unit": "frame share", "provisional": true },
+    "depthCue": { "min": 0.15, "max": 0.35, "unit": "preview units", "provisional": true },
+    "fluidSimulation": false,
+    "gameplayAuthority": false
+  },
+  "lighting": {
+    "keyDirection": { "value": 25, "unit": "degrees from upper-left", "provisional": true },
+    "keyIntensity": { "value": 0.75, "unit": "normalized preview value", "provisional": true },
+    "ambientIntensity": { "value": 0.35, "unit": "normalized preview value", "provisional": true },
+    "cyanAccentIntensity": { "value": 0.60, "unit": "normalized preview value", "provisional": true }
+  },
+  "camera": {
+    "canvas": { "width": 1920, "height": 1080, "unit": "pixels", "provisional": true },
+    "openCenterWidth": { "value": 0.70, "unit": "frame share", "provisional": true },
+    "shots": [
+      { "id": "C1-ground-traverse", "height": 1.7, "pitch": -6, "distance": 8, "unit": "preview units/degrees", "provisional": true },
+      { "id": "C2-ridge-context", "height": 2.4, "pitch": -10, "distance": 14, "unit": "preview units/degrees", "provisional": true },
+      { "id": "C3-shore-inspection", "height": 1.3, "pitch": -4, "distance": 6, "unit": "preview units/degrees", "provisional": true },
+      { "id": "C4-landmark-detail", "height": 1.8, "pitch": -8, "distance": 5, "unit": "preview units/degrees", "provisional": true },
+      { "id": "C5-seam-audit", "height": 2.0, "pitch": -12, "distance": 10, "unit": "preview units/degrees", "provisional": true }
+    ]
+  },
+  "hudChrome": {
+    "required": ["SURFACE LAB / PREVIEW", "Hestia — Nebelwald Archipelago", "C1–C5 shot indicator", "DESIGN GUIDANCE · NOT RUNTIME AUTHORITY"],
+    "forbiddenImplications": ["health", "fuel", "mission objectives", "inventory", "economy", "navigation authority", "collision state", "persistence state", "performance claims", "scanner/map loop"]
+  },
+  "acceptance": [
+    { "id": 1, "check": "Hestia wet/dark read", "pass": "wet dark green/teal immediate", "warning": "read mixed or weak", "fail": "barren dry or generic Earth dominates" },
+    { "id": 2, "check": "Traversable foreground", "pass": "clear inspectable route", "warning": "route narrow but usable", "fail": "path blocked or absent" },
+    { "id": 3, "check": "Low ridge", "pass": "one faceted ridge", "warning": "ridge too flat/tall", "fail": "plateau/spire dominates" },
+    { "id": 4, "check": "Shore/wet depression", "pass": "shallow wet edge", "warning": "edge subtle", "fail": "absent or ocean-scale" },
+    { "id": 5, "check": "Material separation", "pass": "five families distinguishable", "warning": "two families merge", "fail": "one flat shader read" },
+    { "id": 6, "check": "Vegetation Tier 1", "pass": "low scatter without occlusion", "warning": "occasional path overlap", "fail": "dense wall or hidden ground" },
+    { "id": 7, "check": "Vegetation Tier 2/3", "pass": "controlled clusters", "warning": "landmark competes", "fail": "jungle/neon coverage" },
+    { "id": 8, "check": "Seam inspection", "pass": "seams/holes visible", "warning": "one boundary hard", "fail": "fog/scatter hides defects" },
+    { "id": 9, "check": "Fog depth", "pass": "layers reveal ridge/ground", "warning": "depth weak or heavy", "fail": "fog conceals geometry" },
+    { "id": 10, "check": "Lighting/palette", "pass": "cool base and sparse accents", "warning": "accents frequent", "fail": "neon/red-brown/blown" },
+    { "id": 11, "check": "Camera composition", "pass": "foreground, shore, ridge, open center", "warning": "one layer cramped", "fail": "planet vista or obstructive frame" },
+    { "id": 12, "check": "HUD/chrome", "pass": "preview label/disclaimer only", "warning": "neutral guide", "fail": "mission/player/scanner/map authority" }
+  ],
+  "deferred": ["cities", "outposts", "missions", "characters", "economy", "authored hotspots", "caves", "underground streaming", "giant plateaus", "waterfalls", "full archipelago vistas", "planet-scale celestial spectacle", "universal main-ship landing"]
+}
