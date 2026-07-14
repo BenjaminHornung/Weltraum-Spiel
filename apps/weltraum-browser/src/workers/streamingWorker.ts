@@ -34,7 +34,7 @@ export class StreamingWorkerRuntime {
         return;
       case "EnqueueJob":
         if (!this.requireEpoch(message.request.workerEpoch, message.request.jobId)) return;
-        if (this.requests.has(message.request.jobId) || this.runningJobId !== undefined) return this.fail(message.request.jobId, "ProtocolFault", "Worker accepts only one active job.");
+        if (this.requests.size > 0 || this.runningJobId !== undefined) return this.fail(message.request.jobId, "ProtocolFault", "Worker accepts only one active job.");
         this.requests.set(message.request.jobId, message.request);
         this.emit({ type: "JobAccepted", jobId: message.request.jobId, workerEpoch: message.request.workerEpoch });
         return;

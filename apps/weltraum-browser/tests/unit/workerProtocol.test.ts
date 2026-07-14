@@ -99,6 +99,18 @@ describe("worker protocol", () => {
     })).toBe(false);
   });
 
+  it("rejects a second job while the first accepted job awaits input data", () => {
+    const emitted: WorkerToHostMessage[] = [];
+    const runtime = new StreamingWorkerRuntime((message) => emitted.push(message));
+    const first = makeRequest(4);
+    const second = { ...makeRequest(4), jobId: workerJobId("protocol-second"), targetKey: workerTargetKey("neutral-second") };
+    runtime.handleMessage({ type: "InitializeWorker", workerEpoch: first.workerEpoch });
+    runtime.handleMessage({ type: "EnqueueJob", request: first });
+    runtime.handleMessage({ type: "EnqueueJob", request: second });
+    expect(emitted).toContainEqual({ type: "JobFailed", failure: expect.objectContaining({ jobId: second.jobId, code: "ProtocolFault" }) });
+    expect(emitted.some((message) => message.type === "JobAccepted" && message.jobId === second.jobId)).toBe(false);
+  });
+
   it("runs the neutral transform deterministically", async () => {
     const emitted: WorkerToHostMessage[] = [];
     const runtime = new StreamingWorkerRuntime((message) => emitted.push(message));
