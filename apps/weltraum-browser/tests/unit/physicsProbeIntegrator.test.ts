@@ -89,40 +89,42 @@ describe("deterministic fixed-step physics probe", () => {
   });
 
   it("accepts a frame-derived tick interval and integrates with the canonical tick dt", () => {
-    const start = fixtureAt(2);
-    const end = fixtureAt(3);
-    const state = createPhysicsProbeState({
-      probeId: "probe:frame-derived-dt",
-      frameId: start.frame.frameId,
-      time: start.time,
-      positionMeters: {
-        x: start.runtimeState.absoluteState.positionMeters.x + start.body.radiusMeters + 5_000,
-        y: start.runtimeState.absoluteState.positionMeters.y,
-        z: start.runtimeState.absoluteState.positionMeters.z
-      },
-      velocityMetersPerSecond: { x: 2, y: 120, z: -3 }
-    });
-    const derivedDeltaTimeSeconds = end.time.epochSeconds - start.time.epochSeconds;
-    expect(Object.is(derivedDeltaTimeSeconds, 1 / 120)).toBe(false);
+    for (const startTick of [2, 8_192]) {
+      const start = fixtureAt(startTick);
+      const end = fixtureAt(startTick + 1);
+      const state = createPhysicsProbeState({
+        probeId: `probe:frame-derived-dt-${startTick}`,
+        frameId: start.frame.frameId,
+        time: start.time,
+        positionMeters: {
+          x: start.runtimeState.absoluteState.positionMeters.x + start.body.radiusMeters + 5_000,
+          y: start.runtimeState.absoluteState.positionMeters.y,
+          z: start.runtimeState.absoluteState.positionMeters.z
+        },
+        velocityMetersPerSecond: { x: 2, y: 120, z: -3 }
+      });
+      const derivedDeltaTimeSeconds = end.time.epochSeconds - start.time.epochSeconds;
+      expect(Object.is(derivedDeltaTimeSeconds, 1 / 120)).toBe(false);
 
-    const derived = stepPhysicsProbe({
-      state,
-      deltaTimeSeconds: derivedDeltaTimeSeconds,
-      startFrameState: start.frame,
-      endFrameState: end.frame,
-      gravityField: start.field
-    });
-    const canonical = stepPhysicsProbe({
-      state,
-      deltaTimeSeconds: 1 / 120,
-      startFrameState: start.frame,
-      endFrameState: end.frame,
-      gravityField: start.field
-    });
+      const derived = stepPhysicsProbe({
+        state,
+        deltaTimeSeconds: derivedDeltaTimeSeconds,
+        startFrameState: start.frame,
+        endFrameState: end.frame,
+        gravityField: start.field
+      });
+      const canonical = stepPhysicsProbe({
+        state,
+        deltaTimeSeconds: 1 / 120,
+        startFrameState: start.frame,
+        endFrameState: end.frame,
+        gravityField: start.field
+      });
 
-    expect(derived).toEqual(canonical);
-    expect(derived.canonicalJson).toBe(canonical.canonicalJson);
-    expect(derived.signature).toBe(canonical.signature);
+      expect(derived).toEqual(canonical);
+      expect(derived.canonicalJson).toBe(canonical.canonicalJson);
+      expect(derived.signature).toBe(canonical.signature);
+    }
   });
 
   it("rejects zero, negative, non-finite, inexact, and time-mismatched steps", () => {
