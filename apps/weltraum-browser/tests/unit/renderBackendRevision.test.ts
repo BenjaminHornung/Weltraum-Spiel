@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   artifactRevision,
+  adoptMeshArtifactBuffers,
   backendRevision,
   createMaterialProfile,
   createMeshArtifact,
@@ -8,7 +9,8 @@ import {
   materialProfileId,
   representationKey,
   sourceRevision,
-  type MeshArtifact
+  type MeshArtifact,
+  type MeshArtifactInput
 } from "../../src/presentation";
 import { ThreeRenderBackend, type ThreeRendererPort } from "../../src/render/three/backend";
 
@@ -37,6 +39,25 @@ const mesh = (revision: number, peak = 1): MeshArtifact => createMeshArtifact({
   bounds: { min: { x: -1, y: -1, z: 0 }, max: { x: 1, y: peak, z: 0 } }
 });
 
+const equivalentAdoptionInput = (value: MeshArtifact): MeshArtifactInput => ({
+  representationKey: value.representationKey,
+  sourceRevision: value.sourceRevision,
+  artifactRevision: value.artifactRevision,
+  algorithmVersion: value.algorithmVersion,
+  frameId: value.frameId,
+  positions: new Float32Array(value.positions),
+  normals: new Float32Array(value.normals),
+  indices: value.indices instanceof Uint16Array ? new Uint16Array(value.indices) : new Uint32Array(value.indices),
+  attributes: value.attributes === undefined
+    ? undefined
+    : {
+        uv: value.attributes.uv === undefined ? undefined : new Float32Array(value.attributes.uv),
+        color: value.attributes.color === undefined ? undefined : new Float32Array(value.attributes.color)
+      },
+  materialRanges: value.materialRanges,
+  bounds: value.bounds
+});
+
 class FakeRenderer implements ThreeRendererPort {
   setPixelRatio(): void {}
   setSize(): void {}
@@ -58,6 +79,18 @@ const upsert = (instance: ThreeRenderBackend, artifact: MeshArtifact) => instanc
 });
 
 describe("ThreeRenderBackend revision safety", () => {
+  it("treats a separate AdoptedExclusive artifact with equal content as AlreadyApplied", () => {
+    const instance = backend();
+    const snapshot = mesh(2);
+    const adopted = adoptMeshArtifactBuffers(equivalentAdoptionInput(snapshot));
+    expect(snapshot.ownership).toBe("SnapshotOwned");
+    expect(adopted.ownership).toBe("AdoptedExclusive");
+    expect(adopted.contentHash).toBe(snapshot.contentHash);
+    expect(upsert(instance, snapshot)).toMatchObject({ status: "Accepted", ownership: "MovedToBackend" });
+    expect(upsert(instance, adopted)).toMatchObject({ status: "AlreadyApplied", ownership: "RetainedByCaller" });
+    expect(instance.readDiagnostics()).toMatchObject({ geometryAllocations: 1, activeRepresentations: 1 });
+  });
+
   it("treats equal revision and content as idempotent without taking duplicate buffers", () => {
     const instance = backend();
     const first = mesh(2);

@@ -17,18 +17,31 @@ Three.js owns only derived scene and GPU state. Callers provide validated primit
 
 ## Mesh artifact and ownership
 
-V1 mesh artifacts contain Float32 positions/normals, Uint16/Uint32 triangle indices, optional Float32 UV/color arrays, complete material ranges, finite AABB bounds, algorithm/frame metadata, revisions, and a canonical content hash. Validation covers finite values, lengths, index ranges, triangle alignment, material coverage, bounds, buffer aliasing, supported index width, and hash integrity.
+V1 mesh artifacts contain Float32 positions/normals, Uint16/Uint32 triangle indices, optional Float32 UV/color arrays, complete material ranges, finite AABB bounds, algorithm/frame metadata, revisions, a canonical content hash, and an explicit ownership mode.
 
-Buffer transfer is a move-semantics contract without copy or detach:
+**Public Factory = immutable defensive snapshot.** createMeshArtifact copies
+positions, normals, indices, optional UV/color, and metadata once before
+hashing and returns ownership: SnapshotOwned. Caller arrays remain attached
+and may be changed afterward without changing the artifact or its hash. The
+Three.js adapter references the accepted snapshot arrays directly without a
+second copy.
 
-1. Caller owns every buffer until all validation has succeeded.
-2. Rejection leaves caller ownership and current backend state untouched.
-3. Successful commit atomically moves the exact arrays to the backend; Three.js BufferAttributes reference them directly.
-4. The caller must not mutate, detach, reuse, or transfer accepted arrays.
-5. The backend does not mutate vertex/index contents in V1.
-6. Exact idempotent replay is resolved before allocation and does not duplicate ownership.
-7. Replacement publishes the new resource before releasing the old one.
-8. Remove, eviction, reset, and dispose release backend references and GPU resources without altering or detaching buffer contents.
+**Trusted Worker Adoption = explicit zero-copy move path.**
+adoptMeshArtifactBuffers is a separate API. It performs complete validation
+before accepting only full views over exclusive, unshared, non-resizable
+ArrayBuffers with no attribute aliases, then returns ownership:
+AdoptedExclusive using the exact input arrays. Rejection leaves ownership with
+the caller. Successful adoption is a documented move: the caller must not
+mutate, detach, transfer, reuse, or otherwise access the accepted buffers as
+writable.
+
+Ownership mode is diagnostic contract metadata, not mesh content. It is
+excluded from content and upsert-command hashes so equal revision/content from
+a separate snapshot remains AlreadyApplied, while same revision/different
+content remains a conflict. Both modes share the same read-only backend
+lifecycle: validation precedes acceptance, the backend never mutates array
+contents, and remove, eviction, reset, and dispose release backend references
+and GPU resources without altering or detaching buffers.
 
 ## Materials and atomic resources
 

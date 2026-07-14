@@ -124,6 +124,36 @@ Mutable Domainobjekte werden nicht an Three.js gereicht. Der Adapter darf
 backendinterne Objekte mutieren, solange deren Zuordnung zu stabiler ID und
 Quellrevision nachvollziehbar bleibt.
 
+### MeshArtifact ownership modes
+
+Die öffentliche Factory ist ein unveränderlicher defensiver Snapshot:
+
+~~~text
+Public Factory = immutable defensive snapshot
+~~~
+
+createMeshArtifact kopiert Positions-, Normal-, Index-, optionale UV-/Color-
+Buffer und Metadaten einmal, berechnet den Hash aus den kopierten Daten und
+liefert SnapshotOwned. Nachträgliche Änderungen an Caller-Arrays ändern weder
+Artifact noch Hash. Der RenderBackend referenziert die Snapshot-Buffer direkt
+und erzeugt keine zweite Kopie.
+
+Für vertrauenswürdige Worker-Ergebnisse gibt es ausschließlich den expliziten
+Move-Pfad adoptMeshArtifactBuffers:
+
+~~~text
+Trusted Worker Adoption = explicit zero-copy move path
+~~~
+
+Adoption akzeptiert nur vollständig validierte, exklusive, unshared,
+nicht-resizable ArrayBuffer-Vollansichten ohne Aliase und übernimmt exakt
+deren Buffer ohne Kopie als AdoptedExclusive. Bei Ablehnung bleibt die
+Ownership beim Caller; nach erfolgreicher Adoption darf der Caller die Buffer
+nicht mutieren, detachen, übertragen oder wiederverwenden. Ownership wird nie
+aus Bufferform, Herkunft oder Performanceannahmen erraten. Der Ownership-Modus
+ist kein Inhaltsbestandteil des Hashes, damit gleiche Revision und gleicher
+Content auch zwischen einem Snapshot und einer Adoption idempotent bleiben.
+
 ## 7. Worker Data Plane
 
 Die Data Plane transportiert große Nutzdaten in wenigen Messages:
@@ -145,6 +175,11 @@ Regeln:
 - Kopie, Transfer und optional Shared Memory sind messbare Transportmodi, keine
   implizite Optimierung.
 
+Der öffentliche MeshArtifact-Fabrikpfad ist immer der defensive Snapshotpfad.
+Ein Worker darf den zero-copy-Pfad nur durch den ausdrücklich benannten
+adoptMeshArtifactBuffers-Vertrag verwenden; ein Backend darf den Ursprung
+nicht implizit erraten. Erfolgreiche Adoption ist eine Move-Semantik, während
+Ablehnung vor Ownership-Änderung erfolgt.
 Data-Plane-Nachrichten enthalten keine Three.js-`BufferGeometry`, Materials,
 Meshes oder Scene Nodes.
 

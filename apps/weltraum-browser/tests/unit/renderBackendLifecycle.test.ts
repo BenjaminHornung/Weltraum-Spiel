@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { describe, expect, it } from "vitest";
 import {
   artifactRevision,
+  adoptMeshArtifactBuffers,
   backendRevision,
   createFrameProjectionSnapshot,
   createMaterialProfile,
@@ -14,7 +15,8 @@ import {
   sourceRevision,
   visibilityPlanRevision,
   type MaterialProfile,
-  type MeshArtifact
+  type MeshArtifact,
+  type MeshArtifactInput
 } from "../../src/presentation";
 import { ThreeRenderBackend, type ThreeRendererPort } from "../../src/render/three/backend";
 
@@ -31,7 +33,7 @@ const profile = (red = 0.25): MaterialProfile => createMaterialProfile({
   depthWrite: true
 });
 
-const artifact = (revision: number, offset = 0): MeshArtifact => createMeshArtifact({
+const artifactInput = (revision: number, offset = 0): MeshArtifactInput => ({
   representationKey: key,
   sourceRevision: sourceRevision(1),
   artifactRevision: artifactRevision(revision),
@@ -43,6 +45,8 @@ const artifact = (revision: number, offset = 0): MeshArtifact => createMeshArtif
   materialRanges: [{ materialProfileId: materialId, startIndex: 0, indexCount: 6 }],
   bounds: { min: { x: -1 + offset, y: -1, z: 0 }, max: { x: 1 + offset, y: 1, z: 0 } }
 });
+
+const artifact = (revision: number, offset = 0): MeshArtifact => createMeshArtifact(artifactInput(revision, offset));
 
 class FakeRenderer implements ThreeRendererPort {
   renders = 0;
@@ -103,16 +107,75 @@ const projectAndShowFallback = (backend: ThreeRenderBackend): void => {
 };
 
 describe("ThreeRenderBackend resource lifecycle", () => {
-  it("adopts caller arrays without copying or mutating them", () => {
+  it("references SnapshotOwned arrays without a second backend copy", () => {
     const { backend } = setup();
-    const mesh = artifact(1);
+    const input = artifactInput(1);
+    const mesh = createMeshArtifact(input);
     const before = Array.from(mesh.positions);
     expect(upsert(backend, mesh)).toMatchObject({ status: "Accepted", ownership: "MovedToBackend" });
     const node = backend.representationRoot.children[0] as THREE.Mesh<THREE.BufferGeometry>;
+    expect(mesh.ownership).toBe("SnapshotOwned");
+    expect(mesh.positions).not.toBe(input.positions);
     expect(node.geometry.getAttribute("position").array).toBe(mesh.positions);
     expect(node.geometry.getAttribute("normal").array).toBe(mesh.normals);
     expect(node.geometry.index?.array).toBe(mesh.indices);
     expect(Array.from(mesh.positions)).toEqual(before);
+  });
+
+  it("references AdoptedExclusive arrays without copying them", () => {
+    const { backend } = setup();
+    const input = artifactInput(1);
+    const mesh = adoptMeshArtifactBuffers(input);
+    expect(upsert(backend, mesh)).toMatchObject({ status: "Accepted", ownership: "MovedToBackend" });
+    const node = backend.representationRoot.children[0] as THREE.Mesh<THREE.BufferGeometry>;
+    expect(mesh.ownership).toBe("AdoptedExclusive");
+    expect(mesh.positions).toBe(input.positions);
+    expect(node.geometry.getAttribute("position").array).toBe(input.positions);
+    expect(node.geometry.getAttribute("normal").array).toBe(input.normals);
+    expect(node.geometry.index?.array).toBe(input.indices);
+  });
+
+  it("does not detach or mutate snapshot/adopted buffers during release lifecycle", () => {
+    const removed = setup();
+    const removedInput = artifactInput(1);
+    const removedMesh = adoptMeshArtifactBuffers(removedInput);
+    upsert(removed.backend, removedMesh);
+    const removedPositions = Array.from(removedInput.positions);
+    expect(removed.backend.dispatch({
+      kind: "RemoveRepresentation",
+      backendRevision: backendRevision(0),
+      representationKey: key,
+      expectedSourceRevision: removedMesh.sourceRevision,
+      expectedArtifactRevision: removedMesh.artifactRevision,
+      expectedContentHash: removedMesh.contentHash
+    }).status).toBe("Accepted");
+    expect(removedInput.positions.byteLength).toBe(48);
+    expect(Array.from(removedInput.positions)).toEqual(removedPositions);
+
+    const reset = setup();
+    const resetInput = artifactInput(1);
+    const resetMesh = createMeshArtifact(resetInput);
+    upsert(reset.backend, resetMesh);
+    const resetPositions = Array.from(resetMesh.positions);
+    expect(reset.backend.dispatch({
+      kind: "ResetBackend",
+      backendRevision: backendRevision(0),
+      nextBackendRevision: backendRevision(1)
+    }).status).toBe("Accepted");
+    expect(resetMesh.positions.byteLength).toBe(48);
+    expect(Array.from(resetMesh.positions)).toEqual(resetPositions);
+
+    const disposed = setup();
+    const disposedInput = artifactInput(1);
+    const disposedMesh = adoptMeshArtifactBuffers(disposedInput);
+    upsert(disposed.backend, disposedMesh);
+    const disposedPositions = Array.from(disposedInput.positions);
+    expect(disposed.backend.dispatch({
+      kind: "DisposeBackend",
+      backendRevision: backendRevision(0)
+    }).status).toBe("Accepted");
+    expect(disposedInput.positions.byteLength).toBe(48);
+    expect(Array.from(disposedInput.positions)).toEqual(disposedPositions);
   });
 
   it("prepares a replacement before disposing the previous geometry", () => {
