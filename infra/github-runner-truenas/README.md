@@ -3,6 +3,8 @@
 This directory defines the repository-scoped Browser CI runner for
 `BenjaminHornung/Weltraum-Spiel`. It is deployed as the TrueNAS Custom App
 `github-runner-weltraum`; it is not a standalone Docker installation.
+The runner initiates outbound GitHub connections only, so a dynamic public IP
+needs neither inbound port forwarding nor a Cloudflare tunnel.
 
 ## Pinned components
 
