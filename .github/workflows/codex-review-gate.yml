@@ -34,20 +34,13 @@ jobs:
       RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
     steps:
-      - name: Initialize status and request exact-head Codex review
-        id: request
+      - name: Initialize exact-head Codex status
+        id: init
         shell: bash
-        env:
-          CODEX_REVIEW_TOKEN: ${{ secrets.CODEX_REVIEW_TOKEN }}
         run: |
           set -euo pipefail
 
-          command -v gh >/dev/null
-          command -v jq >/dev/null
-
           short_sha="${HEAD_SHA:0:10}"
-          marker="<!-- codex-review-request:${HEAD_SHA} -->"
-          status_context="Codex Review / current head"
 
           set_gate_status() {
             gh api \
@@ -55,31 +48,11 @@ jobs:
               -H "Accept: application/vnd.github+json" \
               "repos/${REPOSITORY}/statuses/${HEAD_SHA}" \
               -f state="$1" \
-              -f context="${status_context}" \
+              -f context="Codex Review / current head" \
               -f description="$2" \
               -f target_url="${RUN_URL}" \
               >/dev/null
           }
-
-          request_failure_description="Codex request step failed for ${short_sha}"
-
-          request_status_on_exit() {
-            local exit_code=$?
-            trap - EXIT
-            if [[ ${exit_code} -ne 0 ]]; then
-              set_gate_status failure "${request_failure_description}" || true
-            fi
-            exit "${exit_code}"
-          }
-
-          fail_request() {
-            request_failure_description="$1"
-            echo "::error::${request_failure_description}"
-            exit 1
-          }
-
-          trap request_status_on_exit EXIT
-          set_gate_status pending "Requesting Codex review for ${short_sha}"
 
           if [[ "${IS_DRAFT}" == "true" ]]; then
             echo "skip=true" >> "${GITHUB_OUTPUT}"
@@ -88,6 +61,16 @@ jobs:
           fi
 
           echo "skip=false" >> "${GITHUB_OUTPUT}"
+          set_gate_status pending "Preparing Codex review for ${short_sha}"
+
+      - name: Find existing exact-head request
+        id: existing
+        if: steps.init.outputs.skip != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          marker="<!-- codex-review-request:${HEAD_SHA} -->"
 
           request_record="$(
             gh api --paginate --slurp \
@@ -106,73 +89,104 @@ jobs:
           )"
 
           if [[ -z "${request_record}" ]]; then
-            [[ -n "${CODEX_REVIEW_TOKEN}" ]] || \
-              fail_request "CODEX_REVIEW_TOKEN is missing"
-
-            token_error_file="$(mktemp)"
-            if ! token_login="$(
-              GH_TOKEN="${CODEX_REVIEW_TOKEN}" \
-                gh api user --jq '.login' 2>"${token_error_file}"
-            )"; then
-              echo "Token authentication failed:" >> "${GITHUB_STEP_SUMMARY}"
-              cat "${token_error_file}" >> "${GITHUB_STEP_SUMMARY}"
-              fail_request "CODEX_REVIEW_TOKEN authentication failed"
-            fi
-
-            printf -v request_body \
-              '@codex review\n\nPlease review the current pull-request head `%s`.\n\n%s\n' \
-              "${short_sha}" \
-              "${marker}"
-
-            comment_error_file="$(mktemp)"
-            if ! request_record="$(
-              GH_TOKEN="${CODEX_REVIEW_TOKEN}" \
-                gh api \
-                  --method POST \
-                  -H "Accept: application/vnd.github+json" \
-                  "repos/${REPOSITORY}/issues/${PR_NUMBER}/comments" \
-                  -f body="${request_body}" \
-                  --jq '{id, created_at, author: .user.login}' \
-                  2>"${comment_error_file}"
-            )"; then
-              {
-                echo "## Codex request failed"
-                echo
-                echo "- Token authenticated as: \`${token_login}\`"
-                echo "- GitHub API response:"
-                echo '```text'
-                cat "${comment_error_file}"
-                echo '```'
-              } >> "${GITHUB_STEP_SUMMARY}"
-              fail_request "CODEX token cannot create PR comment"
-            fi
-
-            request_author="$(jq -r '.author' <<<"${request_record}")"
-            {
-              echo "## Codex review requested"
-              echo
-              echo "- Head: \`${HEAD_SHA}\`"
-              echo "- Token user: \`${token_login}\`"
-              echo "- Comment author: \`${request_author}\`"
-            } >> "${GITHUB_STEP_SUMMARY}"
-          else
-            {
-              echo "## Existing exact-head request reused"
-              echo
-              echo "- Head: \`${HEAD_SHA}\`"
-              echo "- Comment author: \`$(jq -r '.author' <<<"${request_record}")\`"
-            } >> "${GITHUB_STEP_SUMMARY}"
+            echo "found=false" >> "${GITHUB_OUTPUT}"
+            exit 0
           fi
+
+          echo "found=true" >> "${GITHUB_OUTPUT}"
+          echo "comment_id=$(jq -r '.id' <<<"${request_record}")" >> "${GITHUB_OUTPUT}"
+          echo "created_at=$(jq -r '.created_at' <<<"${request_record}")" >> "${GITHUB_OUTPUT}"
+          echo "author=$(jq -r '.author' <<<"${request_record}")" >> "${GITHUB_OUTPUT}"
+
+      - name: Authenticate CODEX_REVIEW_TOKEN
+        id: token
+        if: steps.init.outputs.skip != 'true' && steps.existing.outputs.found != 'true'
+        shell: bash
+        env:
+          CODEX_REVIEW_TOKEN: ${{ secrets.CODEX_REVIEW_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          [[ -n "${CODEX_REVIEW_TOKEN}" ]] || {
+            echo "::error::CODEX_REVIEW_TOKEN is missing"
+            exit 1
+          }
+
+          token_login="$(
+            GH_TOKEN="${CODEX_REVIEW_TOKEN}" \
+              gh api user --jq '.login'
+          )"
+
+          [[ -n "${token_login}" ]] || {
+            echo "::error::CODEX_REVIEW_TOKEN returned no user login"
+            exit 1
+          }
+
+          echo "login=${token_login}" >> "${GITHUB_OUTPUT}"
+
+      - name: Create exact-head Codex request
+        id: created
+        if: steps.init.outputs.skip != 'true' && steps.existing.outputs.found != 'true'
+        shell: bash
+        env:
+          CODEX_REVIEW_TOKEN: ${{ secrets.CODEX_REVIEW_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          short_sha="${HEAD_SHA:0:10}"
+          marker="<!-- codex-review-request:${HEAD_SHA} -->"
+
+          printf -v request_body \
+            '@codex review\n\nPlease review the current pull-request head `%s`.\n\n%s\n' \
+            "${short_sha}" \
+            "${marker}"
+
+          request_record="$(
+            GH_TOKEN="${CODEX_REVIEW_TOKEN}" \
+              gh api \
+                --method POST \
+                -H "Accept: application/vnd.github+json" \
+                "repos/${REPOSITORY}/issues/${PR_NUMBER}/comments" \
+                -f body="${request_body}" \
+                --jq '{id, created_at, author: .user.login}'
+          )"
 
           echo "comment_id=$(jq -r '.id' <<<"${request_record}")" >> "${GITHUB_OUTPUT}"
           echo "created_at=$(jq -r '.created_at' <<<"${request_record}")" >> "${GITHUB_OUTPUT}"
+          echo "author=$(jq -r '.author' <<<"${request_record}")" >> "${GITHUB_OUTPUT}"
+
+          {
+            echo "## Codex review requested"
+            echo
+            echo "- Head: \`${HEAD_SHA}\`"
+            echo "- Token user: \`${{ steps.token.outputs.login }}\`"
+            echo "- Comment author: \`$(jq -r '.author' <<<"${request_record}")\`"
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Report request setup failure
+        if: failure() && steps.init.outputs.skip != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          short_sha="${HEAD_SHA:0:10}"
+
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            "repos/${REPOSITORY}/statuses/${HEAD_SHA}" \
+            -f state="failure" \
+            -f context="Codex Review / current head" \
+            -f description="Codex request setup failed for ${short_sha}" \
+            -f target_url="${RUN_URL}" \
+            >/dev/null
 
       - name: Verify Codex result for the exact head
-        if: steps.request.outputs.skip != 'true'
+        if: success() && steps.init.outputs.skip != 'true'
         shell: bash
         env:
-          REQUEST_COMMENT_ID: ${{ steps.request.outputs.comment_id }}
-          REQUEST_CREATED_AT: ${{ steps.request.outputs.created_at }}
+          REQUEST_COMMENT_ID: ${{ steps.existing.outputs.comment_id || steps.created.outputs.comment_id }}
+          REQUEST_CREATED_AT: ${{ steps.existing.outputs.created_at || steps.created.outputs.created_at }}
         run: |
           set -euo pipefail
 
@@ -211,6 +225,11 @@ jobs:
             set_gate_status success "$2"
             trap - EXIT
             exit 0
+          }
+
+          [[ -n "${REQUEST_COMMENT_ID}" && -n "${REQUEST_CREATED_AT}" ]] || {
+            echo "::error::Exact-head request metadata is missing"
+            exit 1
           }
 
           codex_review_exists() {
