@@ -1,0 +1,139 @@
+{
+  "schemaVersion": "browser-spatial-physics-spine-v1",
+  "generator": "apps/weltraum-browser/tests/e2e/spatial-physics-spine.spec.ts",
+  "test": "normal page proves the deterministic spatial and physics spine through real Vite modules",
+  "baseRevision": {
+    "expectedAtAssignment": "8bb98b1b084ce86fb262a4fee554a573d43b94f5",
+    "usedOriginMain": "9f63c1cecda5a14563d4b6be3452b89d07055092",
+    "deviation": "origin/main had advanced by two review-gate-only commits; the isolated worktree was created from current origin/main."
+  },
+  "normalPageGuard": {
+    "route": "/",
+    "testBridgeOwnProperty": false,
+    "testBridgeInWindow": false
+  },
+  "browserHealth": {
+    "consoleErrors": [],
+    "pageErrors": [],
+    "failedRequests": [],
+    "errorResponses": []
+  },
+  "dynamicImport": {
+    "modulePaths": [
+      "/src/spatial/index.ts",
+      "/src/physics-space/index.ts",
+      "/src/celestial/index.ts"
+    ],
+    "importedPublicApi": [
+      "createRuntimeUniverseClock",
+      "createSystemInertialFrameState",
+      "createBodyInertialFrameState",
+      "createBodyFixedFrameState",
+      "createSurfaceLocalFrameDefinition",
+      "createSurfaceLocalFrameState",
+      "computeSurfaceBasis",
+      "transformKinematicState",
+      "createSpatialSignature",
+      "createGravitySourceBinding",
+      "createGravityFieldSnapshot",
+      "queryGravityField",
+      "runPhysicsProbeSimulation",
+      "createPhysicsSpaceDescriptor",
+      "handoffPhysicsSpace",
+      "createStarterCelestialCatalog",
+      "computeCatalogEphemeris",
+      "STARTER_BODY_IDS"
+    ]
+  },
+  "deterministicRepeat": {
+    "identicalCanonicalResult": true,
+    "identicalSuiteSignature": true,
+    "identicalProbeCanonicalResult": true,
+    "suiteSignature": "fnv1a32:5ba1613e",
+    "probeSignature": "fnv1a32:10640abc"
+  },
+  "universeTime": {
+    "rotationEpochTick": 0,
+    "scenarioTick": 1440000,
+    "scenarioEpochSeconds": 12000,
+    "ticksPerSecond": 120
+  },
+  "bodyAndFrames": {
+    "bodyId": "planet.hestia",
+    "radiusMeters": 8282000,
+    "system": "frame:aurelia",
+    "bodyInertial": "frame:body-inertial.planet.hestia",
+    "bodyFixed": "frame:body-fixed.planet.hestia",
+    "surfaceLocal": "frame:surface.hestia-browser-proof"
+  },
+  "surface": {
+    "convention": "+X East, +Y Up, +Z South; North is -Z",
+    "definitionSignature": "fnv1a32:466c63c0",
+    "stateSignature": "fnv1a32:0122cd0c",
+    "upNormalError": 1.3597399555105182e-16,
+    "maximumBasisLengthError": 2.220446049250313e-16,
+    "maximumOrthogonalityError": 5.551115123125783e-17,
+    "maximumHandednessError": 5.551115123125783e-17,
+    "northPoleFinite": true,
+    "southPoleFinite": true,
+    "actorOrientationIndependent": true,
+    "actorOrientationSeparationRadians": 0.63
+  },
+  "transformRoundtrip": {
+    "positionErrorMeters": 2.735760062932968e-9,
+    "velocityErrorMetersPerSecond": 1.5888218580782548e-13,
+    "orientationErrorRadians": 1.1295700899707568e-16,
+    "angularVelocityErrorRadiansPerSecond": 1.8111044797400594e-17,
+    "bodyFixedRelativeSpeedMetersPerSecond": 184.8632738929152
+  },
+  "gravity": {
+    "fieldSignature": "fnv1a32:c20d9b4a",
+    "dominantSourceBodyId": "planet.hestia",
+    "frameIndependenceErrorMetersPerSecondSquared": 0,
+    "accelerationMagnitudeMetersPerSecondSquared": 11.806592240042036
+  },
+  "probe": {
+    "stepCount": 2,
+    "signature": "fnv1a32:10640abc",
+    "finalTick": 1440002,
+    "finalAbsolutePositionMeters": {
+      "x": 89766079716.60677,
+      "y": 407485663.0051309,
+      "z": -80.18333330959129
+    }
+  },
+  "handoff": {
+    "spaceIds": [
+      "physics-space:system-browser-proof",
+      "physics-space:body-browser-proof",
+      "physics-space:surface-browser-proof"
+    ],
+    "signatures": [
+      "fnv1a32:3939c890",
+      "fnv1a32:4b2a7532"
+    ],
+    "maximumPositionErrorMeters": 2.7939677238464355e-9,
+    "maximumVelocityErrorMetersPerSecond": 9.099386826154683e-14,
+    "maximumOrientationErrorRadians": 1.4438902883526792e-16,
+    "maximumAngularVelocityErrorRadiansPerSecond": 1.8111044797400594e-17,
+    "gravityBindingsChanged": false
+  },
+  "scope": [
+    "Normal / browser startup without TestBridge and dynamic Vite imports of the public Spatial and Physics Space barrels.",
+    "Explicit 120 Hz Universe clock, Hestia ephemeris, SystemInertial, BodyInertial, BodyFixed, and geographic SurfaceLocal frames.",
+    "Position, velocity, actor orientation, and angular velocity roundtrip through rotating frames without snapping or zeroing.",
+    "Celestial-backed gravity query, two deterministic semi-implicit fixed steps, and explicit System->Body->Surface physics-space handoffs."
+  ],
+  "nonGoals": [
+    "No planet renderer, terrain, voxels, atmosphere, collision, thruster, or active flight-ship integration.",
+    "No FlightController, navigation planner, executor, autopilot, game-loop clock wiring, or automatic gravity-source switch.",
+    "No ellipsoid, geoid, terrain height, landing zone, player handoff, actor-facing frame, camera-facing frame, or visible UI.",
+    "No screenshot because this slice intentionally has no visible representation."
+  ],
+  "verification": {
+    "command": "npm run test:e2e -- tests/e2e/spatial-physics-spine.spec.ts",
+    "expectedResult": "one focused Playwright test passes twice deterministically and writes both task-owned evidence files",
+    "observedResult": "pass",
+    "screenshot": "not captured: no visible representation in this slice"
+  }
+}
