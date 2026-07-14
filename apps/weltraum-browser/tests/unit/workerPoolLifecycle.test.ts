@@ -128,6 +128,37 @@ describe("WorkerPool lifecycle", () => {
     await pool.shutdown();
   });
 
+  it("stops fail-closed when a fault replacement cannot start", async () => {
+    const transports: RuntimeTransport[] = [];
+    let creations = 0;
+    const pool = new WorkerPool({
+      workerCount: 1,
+      queueCapacity: 4,
+      initialPlanningEpoch: planningEpoch(1),
+      transportFactory: () => {
+        creations += 1;
+        if (creations > 1) throw new Error("synthetic replacement start failure");
+        const transport = new RuntimeTransport();
+        transports.push(transport);
+        return transport;
+      }
+    });
+    await pool.start();
+    const running = pool.enqueue(request("failed-replacement-running", 512 * 1024), input(512 * 1024));
+    const queued = pool.enqueue(request("failed-replacement-queued", 8), input(8));
+
+    transports[0].fail();
+
+    const terminals = await Promise.all([running.result, queued.result]);
+    expect(terminals).toEqual([
+      expect.objectContaining({ kind: "Failed", failure: expect.objectContaining({ code: "WorkerFault" }) }),
+      expect.objectContaining({ kind: "Failed", failure: expect.objectContaining({ code: "WorkerFault" }) })
+    ]);
+    await expect.poll(() => pool.snapshot().state).toBe("Stopped");
+    expect(pool.snapshot()).toMatchObject({ activeWorkers: 0, runningJobs: 0, queue: { size: 0 } });
+    expect(() => pool.enqueue(request("after-failed-replacement", 8), input(8))).toThrow("WorkerPool is not accepting jobs");
+  });
+
   it("explicit replacement advances epoch and never retries active work", async () => {
     const { pool } = await createPool();
     const ticket = pool.enqueue(request("replace", 512 * 1024), input(512 * 1024));

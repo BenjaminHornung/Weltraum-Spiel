@@ -163,9 +163,7 @@ export class WorkerPool {
       return replacement.workerEpoch;
     } catch (error) {
       const message = error instanceof Error ? error.message : "Replacement worker failed to start.";
-      for (const record of [...this.records.values()].filter((entry) => entry.status !== "Terminal").sort(compareRecords)) {
-        this.fail(record, "WorkerFault", message);
-      }
+      this.stopAfterReplacementFailure(message);
       throw error;
     }
   }
@@ -234,7 +232,14 @@ export class WorkerPool {
     const index = this.handles.findIndex((entry) => entry.slot === slot);
     if (index < 0) this.handles.push(handle); else this.handles.splice(index, 1, handle);
     this.handles.sort((left, right) => left.slot - right.slot);
-    await handle.start();
+    try {
+      await handle.start();
+    } catch (error) {
+      const failedIndex = this.handles.indexOf(handle);
+      if (failedIndex >= 0) this.handles.splice(failedIndex, 1);
+      handle.terminate();
+      throw error;
+    }
     if (replacement) {
       this.restarts += 1;
       this.emit({ type: "WorkerRestarted", workerEpoch: handle.workerEpoch });
@@ -322,10 +327,18 @@ export class WorkerPool {
     if (this.lifecycle !== "Running") return;
     void this.createHandle(handle.slot, true).then(() => this.dispatch()).catch((error: unknown) => {
       const message = error instanceof Error ? error.message : "Replacement worker failed to start.";
-      for (const record of [...this.records.values()].filter((entry) => entry.status !== "Terminal").sort(compareRecords)) {
-        this.fail(record, "WorkerFault", message);
-      }
+      this.stopAfterReplacementFailure(message);
     });
+  }
+
+  private stopAfterReplacementFailure(message: string): void {
+    this.queue.drain();
+    for (const record of [...this.records.values()].filter((entry) => entry.status !== "Terminal").sort(compareRecords)) {
+      this.fail(record, "WorkerFault", message);
+    }
+    for (const handle of this.handles) handle.terminate();
+    this.handles.length = 0;
+    this.lifecycle = "Stopped";
   }
 
   private failActive(handle: WorkerHandle, reason: string): void {

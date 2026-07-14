@@ -47,6 +47,7 @@ export const integrateWorkerResult = (
   let validated: TransferableBufferBundle;
   try { validated = validateTransferableBundle(bundle); }
   catch (error) { return Object.freeze({ kind: "RejectedInvalidLayout", message: error instanceof Error ? error.message : "Invalid output layout." }); }
+  if (validated.ownership !== "WorkerToConsumer") return Object.freeze({ kind: "RejectedInvalidLayout", message: "Output bundle ownership must be WorkerToConsumer." });
   if (validated.byteLength !== result.outputBytes || validated.byteLength > expectation.maximumOutputBytes) return Object.freeze({ kind: "RejectedOverBudget" });
   const actualHash = fnv1aBytes(validated.buffers);
   const declaredHash = result.contentHash ?? validated.contentHash;

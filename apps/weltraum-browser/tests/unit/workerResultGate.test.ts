@@ -68,6 +68,13 @@ describe("worker result integration gate", () => {
       .toBe("RejectedOverBudget");
   });
 
+  it("rejects output bundles that retain sender-to-worker ownership", () => {
+    expect(integrateWorkerResult(expectation, result, { ...output(), ownership: "SenderToWorker" })).toEqual({
+      kind: "RejectedInvalidLayout",
+      message: "Output bundle ownership must be WorkerToConsumer."
+    });
+  });
+
   it("rejects content hash mismatches", () => {
     expect(integrateWorkerResult({ ...expectation, expectedContentHash: "deadbeef" }, result, output()).kind)
       .toBe("RejectedContentHashMismatch");
