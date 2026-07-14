@@ -1,0 +1,175 @@
+{
+  "schemaVersion": "browser-render-backend-mesh-lifecycle-v1",
+  "status": "PASS",
+  "generator": "apps/weltraum-browser/tests/e2e/render-backend-mesh-lifecycle.spec.ts",
+  "route": "/",
+  "testBridgeAbsentBeforeAndAfter": true,
+  "harness": {
+    "width": 640,
+    "height": 360,
+    "pixelRatio": 1,
+    "antialias": false,
+    "animation": false,
+    "lighting": "None"
+  },
+  "commandStatuses": {
+    "parentUpsert": "Accepted",
+    "fallbackPlan": "Accepted",
+    "childUpsert": "Accepted",
+    "childProjection": "Accepted",
+    "replacementUpsert": "Accepted",
+    "staleReplace": "RejectedStaleRevision",
+    "staleRemove": "RejectedStaleRevision",
+    "pinnedParentRemove": "RejectedContentConflict",
+    "childRemove": "Accepted",
+    "reset": "Accepted",
+    "replayParent": "Accepted",
+    "replayReplacement": "Accepted"
+  },
+  "visibleKeys": {
+    "parentFallback": [
+      "planet:parent"
+    ],
+    "childActive": [
+      "planet:child"
+    ],
+    "replacementActive": [
+      "planet:child"
+    ],
+    "afterChildRemove": [
+      "planet:parent"
+    ],
+    "afterReset": [],
+    "afterRebuild": [
+      "planet:child"
+    ]
+  },
+  "diagnostics": {
+    "acceptedArtifacts": 5,
+    "rejectedArtifacts": 1,
+    "activeRepresentations": 2,
+    "activeFallbacks": 1,
+    "geometryAllocations": 5,
+    "geometryDisposals": 3,
+    "materialAllocations": 12,
+    "materialDisposals": 7,
+    "estimatedGpuBytes": 252,
+    "ownedCpuBytes": 252,
+    "replacementCount": 1,
+    "removeCount": 1,
+    "staleRejectCount": 2,
+    "resetCount": 1,
+    "evictionCount": 0,
+    "evictionRejectCount": 0,
+    "rehydrationCount": 0,
+    "renderTargetAllocations": 0,
+    "renderTargetDisposals": 0,
+    "activeRenderTargets": 0,
+    "backendRevision": 1,
+    "backendState": "Available",
+    "residentRepresentationKeys": [
+      "planet:child",
+      "planet:parent"
+    ],
+    "visibleRepresentationKeys": [
+      "planet:child"
+    ],
+    "pinnedFallbackRepresentationKeys": [
+      "planet:parent"
+    ],
+    "lastCommandStatus": "Accepted",
+    "lastOwnershipOutcome": "NotApplicable"
+  },
+  "screenshots": {
+    "render-backend-parent-fallback.png": {
+      "baselineComparison": {
+        "width": 640,
+        "height": 360,
+        "changedPixels": 0,
+        "changedRatio": 0,
+        "maximumChannelDelta": 0
+      },
+      "canvasMetrics": {
+        "width": 640,
+        "height": 360,
+        "nonBackgroundPixels": 38192,
+        "nonBackgroundRatio": 0.16576388888888888,
+        "bounds": {
+          "minX": 196,
+          "minY": 103,
+          "maxX": 443,
+          "maxY": 256
+        }
+      }
+    },
+    "render-backend-child-active.png": {
+      "baselineComparison": {
+        "width": 640,
+        "height": 360,
+        "changedPixels": 0,
+        "changedRatio": 0,
+        "maximumChannelDelta": 0
+      },
+      "canvasMetrics": {
+        "width": 640,
+        "height": 360,
+        "nonBackgroundPixels": 38192,
+        "nonBackgroundRatio": 0.16576388888888888,
+        "bounds": {
+          "minX": 196,
+          "minY": 103,
+          "maxX": 443,
+          "maxY": 256
+        }
+      }
+    },
+    "render-backend-replacement-active.png": {
+      "baselineComparison": {
+        "width": 640,
+        "height": 360,
+        "changedPixels": 0,
+        "changedRatio": 0,
+        "maximumChannelDelta": 0
+      },
+      "canvasMetrics": {
+        "width": 640,
+        "height": 360,
+        "nonBackgroundPixels": 38192,
+        "nonBackgroundRatio": 0.16576388888888888,
+        "bounds": {
+          "minX": 196,
+          "minY": 103,
+          "maxX": 443,
+          "maxY": 256
+        }
+      }
+    }
+  },
+  "stateDeltas": {
+    "parentToChild": {
+      "width": 640,
+      "height": 360,
+      "changedPixels": 38192,
+      "changedRatio": 0.16576388888888888,
+      "maximumChannelDelta": 72
+    },
+    "childToReplacement": {
+      "width": 640,
+      "height": 360,
+      "changedPixels": 38192,
+      "changedRatio": 0.16576388888888888,
+      "maximumChannelDelta": 181
+    }
+  },
+  "browserHealth": {
+    "consoleErrors": 0,
+    "pageErrors": 0,
+    "requestFailures": 0,
+    "httpErrors": 0
+  },
+  "verification": {
+    "command": "npm run test:e2e -- tests/e2e/render-backend-mesh-lifecycle.spec.ts",
+    "canvasTolerance": "per-channel 12; changed-pixel ratio <= 0.005",
+    "observedResult": "pass"
+  }
+}
