@@ -118,6 +118,54 @@ describe("explicit physics-space handoff", () => {
     expect(Object.isFrozen(fixture.bodySpace.frameState)).toBe(true);
   });
 
+  it("rejects shifted, rotating, and parented SystemSpace roots", () => {
+    const fixture = fixtureAt();
+    const createSystemDescriptor = (
+      frameState: ReturnType<typeof createFrameStateAtTime>,
+      parentFrameId: string | null = null
+    ) => () => createPhysicsSpaceDescriptor({
+      spaceId: "physics-space:invalid-system-root",
+      kind: "SystemSpace",
+      frameKind: "SystemInertial",
+      frameDefinition: {
+        frameId: fixture.system.frameId,
+        kind: "SystemInertial",
+        parentFrameId,
+        canonicalAuthority: true
+      },
+      frameState
+    } as unknown as Parameters<typeof createPhysicsSpaceDescriptor>[0]);
+    const shiftedRoot = createFrameStateAtTime({
+      ...fixture.system,
+      originPositionMeters: { x: 1, y: 0, z: 0 }
+    });
+    const movingRoot = createFrameStateAtTime({
+      ...fixture.system,
+      originVelocityMetersPerSecond: { x: 0, y: 1, z: 0 }
+    });
+    const rotatedRoot = createFrameStateAtTime({
+      ...fixture.system,
+      orientation: createQuaternionFromAxisAngle(spatialVector3(0, 0, 1), 0.25),
+      angularVelocityRadiansPerSecond: { x: 0, y: 0, z: 0.5 }
+    });
+
+    expect(createSystemDescriptor(shiftedRoot)).toThrowError(
+      expect.objectContaining<Partial<PhysicsSpaceError>>({ code: "FRAME_MISMATCH", path: "/frameState" })
+    );
+    expect(createSystemDescriptor(movingRoot)).toThrowError(
+      expect.objectContaining<Partial<PhysicsSpaceError>>({ code: "FRAME_MISMATCH", path: "/frameState" })
+    );
+    expect(createSystemDescriptor(rotatedRoot)).toThrowError(
+      expect.objectContaining<Partial<PhysicsSpaceError>>({ code: "FRAME_MISMATCH", path: "/frameState" })
+    );
+    expect(createSystemDescriptor(fixture.system, fixture.inertial.frameId)).toThrowError(
+      expect.objectContaining<Partial<PhysicsSpaceError>>({
+        code: "FRAME_MISMATCH",
+        path: "/frameDefinition/parentFrameId"
+      })
+    );
+  });
+
   it("preserves absolute position, velocity, actor orientation, and angular velocity without snap or zeroing", () => {
     const fixture = fixtureAt();
     const sourceState = createSpatialKinematicState({

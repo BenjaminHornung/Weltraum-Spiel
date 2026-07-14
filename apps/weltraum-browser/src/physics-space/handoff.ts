@@ -69,6 +69,38 @@ const assertSpaceFramePair = (kind: PhysicsSpaceKind, frameKind: FrameKind): voi
   }
 };
 
+const assertCanonicalSystemSpaceRoot = (
+  frameDefinition: PhysicsSpaceDescriptor["frameDefinition"],
+  frameState: PhysicsSpaceDescriptor["frameState"]
+): void => {
+  if (frameDefinition.parentFrameId !== null) {
+    failPhysicsSpace("FRAME_MISMATCH", "/frameDefinition/parentFrameId", "SystemSpace root must not have a parent frame.");
+  }
+  const canonicalRoot = createSystemInertialFrameState(frameState.systemFrameId, frameState.time);
+  const matchesCanonicalRoot =
+    frameState.frameId === canonicalRoot.frameId &&
+    frameState.originPositionMeters.x === canonicalRoot.originPositionMeters.x &&
+    frameState.originPositionMeters.y === canonicalRoot.originPositionMeters.y &&
+    frameState.originPositionMeters.z === canonicalRoot.originPositionMeters.z &&
+    frameState.orientation.x === canonicalRoot.orientation.x &&
+    frameState.orientation.y === canonicalRoot.orientation.y &&
+    frameState.orientation.z === canonicalRoot.orientation.z &&
+    frameState.orientation.w === canonicalRoot.orientation.w &&
+    frameState.originVelocityMetersPerSecond.x === canonicalRoot.originVelocityMetersPerSecond.x &&
+    frameState.originVelocityMetersPerSecond.y === canonicalRoot.originVelocityMetersPerSecond.y &&
+    frameState.originVelocityMetersPerSecond.z === canonicalRoot.originVelocityMetersPerSecond.z &&
+    frameState.angularVelocityRadiansPerSecond.x === canonicalRoot.angularVelocityRadiansPerSecond.x &&
+    frameState.angularVelocityRadiansPerSecond.y === canonicalRoot.angularVelocityRadiansPerSecond.y &&
+    frameState.angularVelocityRadiansPerSecond.z === canonicalRoot.angularVelocityRadiansPerSecond.z;
+  if (!matchesCanonicalRoot) {
+    failPhysicsSpace(
+      "FRAME_MISMATCH",
+      "/frameState",
+      "SystemSpace must bind the canonical identity SystemInertial root state."
+    );
+  }
+};
+
 export const createPhysicsSpaceDescriptor = (input: PhysicsSpaceDescriptorInput): PhysicsSpaceDescriptor => {
   if (input === null || typeof input !== "object" || Array.isArray(input)) {
     return failPhysicsSpace("INVALID_INPUT", "", "Physics space descriptor input must be an object.");
@@ -126,8 +158,8 @@ export const createPhysicsSpaceDescriptor = (input: PhysicsSpaceDescriptorInput)
   if (frameDefinition.frameId !== frameState.frameId) {
     return failPhysicsSpace("FRAME_MISMATCH", "/frameDefinition/frameId", "Frame definition must identify the bound frame state.");
   }
-  if (input.kind === "SystemSpace" && frameState.frameId !== frameState.systemFrameId) {
-    return failPhysicsSpace("FRAME_MISMATCH", "/frameState/frameId", "SystemSpace must bind the SystemInertial root state.");
+  if (input.kind === "SystemSpace") {
+    assertCanonicalSystemSpaceRoot(frameDefinition, frameState);
   }
   return Object.freeze({ spaceId, kind: input.kind, frameKind: input.frameKind, frameDefinition, frameState });
 };
