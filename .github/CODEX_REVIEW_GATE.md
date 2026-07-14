@@ -30,7 +30,7 @@ Failures are surfaced directly in the commit-status description:
 - `CODEX_REVIEW_TOKEN authentication failed`
 - `CODEX token cannot create PR comment`
 
-The token value is never printed.
+The token value is never printed. An EXIT trap converts unexpected request-step failures, including comment lookup and JSON parsing failures, into a failed exact-head status instead of leaving the status pending.
 
 ### 2. Verification step
 
