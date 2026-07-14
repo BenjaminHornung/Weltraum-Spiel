@@ -112,7 +112,7 @@ const cloneFreeze = (value: unknown, seen = new WeakSet<object>()): unknown => {
     }
     if (seen.has(value)) throw new RangeError("Job payloads cannot contain cycles.");
     seen.add(value);
-    const clone: Record<string, unknown> = {};
+    const clone = Object.create(null) as Record<string, unknown>;
     for (const key of Object.keys(value as JsonRecord).sort()) {
       const entry = (value as JsonRecord)[key];
       if (entry !== undefined) clone[key] = cloneFreeze(entry, seen);

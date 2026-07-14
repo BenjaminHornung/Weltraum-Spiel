@@ -81,6 +81,14 @@ describe("worker protocol", () => {
     })).toThrow(/plain records/);
   });
 
+  it("preserves __proto__ as own data without exposing inherited payload fields", () => {
+    const payload = JSON.parse('{"__proto__":{"xorMask":90,"chunkBytes":1,"outputRevision":2}}') as Record<string, unknown>;
+    const snapshot = snapshotWorkerJobRequest({ ...makeRequest(4), payload });
+    expect(Object.prototype.hasOwnProperty.call(snapshot.payload, "__proto__")).toBe(true);
+    expect(Object.getPrototypeOf(snapshot.payload)).toBeNull();
+    expect((snapshot.payload as Record<string, unknown>).xorMask).toBeUndefined();
+  });
+
   it("rejects recognized message tags with malformed required fields", () => {
     expect(isWorkerToHostMessage({ type: "WorkerReady" })).toBe(false);
     expect(isWorkerToHostMessage({ type: "JobCancelled", jobId: "job", workerEpoch: 1, reason: "other" })).toBe(false);
