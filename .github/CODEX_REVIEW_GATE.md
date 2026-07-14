@@ -8,7 +8,7 @@ The workflow handles pull requests targeting `main` when they are opened, reopen
 
 It uses `pull_request_target`, so GitHub loads the trusted workflow from the base branch. The workflow must never check out, build, test, restore caches from, or otherwise execute pull-request content.
 
-The default `GITHUB_TOKEN` reads PR metadata and writes the custom status directly to `github.event.pull_request.head.sha`. The separate `CODEX_REVIEW_TOKEN` is used only to authenticate the connected GitHub user and create one exact-head PR conversation comment.
+The default `GITHUB_TOKEN` reads PR metadata and writes the custom status directly to `github.event.pull_request.head.sha`. The separate `CODEX_REVIEW_TOKEN` is scoped only to the request step, where it authenticates the connected GitHub user and creates one exact-head PR conversation comment. The verification step never receives the secret.
 
 ## Two-step workflow
 
@@ -19,9 +19,9 @@ The gate deliberately separates requesting from verification.
 For every non-draft head, the first step:
 
 1. writes `Codex Review / current head` as pending;
-2. reuses an existing request only when it explicitly names the same head;
+2. reuses an existing request only when it contains the workflow's hidden exact-head marker;
 3. verifies that `CODEX_REVIEW_TOKEN` can authenticate;
-4. posts a marked `@codex review` comment for the exact head;
+4. posts exactly one marked `@codex review` comment for the exact head;
 5. exposes only the request comment ID and timestamp to the verification step.
 
 Failures are surfaced directly in the commit-status description:
