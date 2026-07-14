@@ -1,0 +1,113 @@
+{
+  "schemaVersion": "browser-worker-streaming-telemetry-spine-v1",
+  "status": "PASS",
+  "generator": "apps/weltraum-browser/tests/e2e/worker-streaming-telemetry-spine.spec.ts",
+  "normalRoute": {
+    "path": "/",
+    "testBridgeBefore": {
+      "ownProperty": false,
+      "inWindow": false
+    },
+    "testBridgeAfter": {
+      "ownProperty": false,
+      "inWindow": false
+    }
+  },
+  "modules": [
+    "/src/workers/index.ts",
+    "/src/streaming/index.ts",
+    "/src/diagnostics/performance/index.ts"
+  ],
+  "browserGuards": {
+    "consoleErrors": 0,
+    "pageErrors": 0,
+    "requestFailures": 0,
+    "httpErrors": 0
+  },
+  "deterministicRepeat": {
+    "canonicalIdentical": true
+  },
+  "diagnostics": {
+    "firstElapsedMs": 904.3000000715256,
+    "secondElapsedMs": 877,
+    "performanceGated": false
+  },
+  "scenario": {
+    "transfers": [
+      {
+        "bytes": 262144,
+        "detached": true,
+        "hash": "4c0c9dc5",
+        "first": 90,
+        "last": 165
+      },
+      {
+        "bytes": 1048576,
+        "detached": true,
+        "hash": "acdc9dc5",
+        "first": 90,
+        "last": 165
+      },
+      {
+        "bytes": 4194304,
+        "detached": true,
+        "hash": "301c9dc5",
+        "first": 90,
+        "last": 165
+      }
+    ],
+    "queuedCancellation": "CancelledBeforeStart",
+    "runningCancellation": "CancelledDuringExecution",
+    "staleDecision": "RejectedStalePlanningEpoch",
+    "replacementEpochDelta": 1,
+    "cache": {
+      "providerCalls": 1,
+      "deduplicated": true,
+      "hitSource": "Cache",
+      "pinnedSurvived": true,
+      "releasedEntryEvicted": true,
+      "canonical": {
+        "version": 1,
+        "maxBytes": 1048576,
+        "totalBytes": 786432,
+        "entries": [
+          {
+            "key": "[\"fixture\",\"d\",1,1,1]",
+            "contentHash": "fnv1a32:8abc9dc5",
+            "byteLength": 786432,
+            "pinCount": 0,
+            "leaseCount": 0
+          }
+        ]
+      }
+    },
+    "telemetry": {
+      "version": 1,
+      "resetEpoch": 0,
+      "workerCount": 1,
+      "activeWorkers": 0,
+      "workerRestarts": 1,
+      "queuedJobs": 0,
+      "runningJobs": 0,
+      "completedJobs": 3,
+      "failedJobs": 1,
+      "cancelledJobs": 2,
+      "staleResultsRejected": 1,
+      "inputBytesTransferred": 13893632,
+      "outputBytesTransferred": 9699328,
+      "cacheEntries": 1,
+      "cacheBytes": 786432,
+      "cacheHits": 3,
+      "cacheMisses": 2,
+      "cacheEvictions": 3,
+      "pinnedEntries": 0,
+      "loaderRequests": 3,
+      "loaderDeduplications": 1,
+      "largestObservedQueueDepth": 1
+    }
+  },
+  "verification": {
+    "command": "npm run test:e2e -- tests/e2e/worker-streaming-telemetry-spine.spec.ts",
+    "observedResult": "pass"
+  }
+}
