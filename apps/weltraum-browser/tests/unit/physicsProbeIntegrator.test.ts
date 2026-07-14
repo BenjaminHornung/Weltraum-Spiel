@@ -88,6 +88,68 @@ describe("deterministic fixed-step physics probe", () => {
     expect(Object.isFrozen(result.state)).toBe(true);
   });
 
+  it("accepts a frame-derived tick interval and integrates with the canonical tick dt", () => {
+    const createStateAt = (start: ReturnType<typeof fixtureAt>, probeId: string) =>
+      createPhysicsProbeState({
+        probeId,
+        frameId: start.frame.frameId,
+        time: start.time,
+        positionMeters: {
+          x: start.runtimeState.absoluteState.positionMeters.x + start.body.radiusMeters + 5_000,
+          y: start.runtimeState.absoluteState.positionMeters.y,
+          z: start.runtimeState.absoluteState.positionMeters.z
+        },
+        velocityMetersPerSecond: { x: 2, y: 120, z: -3 }
+      });
+
+    for (const startTick of [2, 8_192, 16_106_129_000]) {
+      const start = fixtureAt(startTick);
+      const end = fixtureAt(startTick + 1);
+      const state = createStateAt(start, `probe:frame-derived-dt-${startTick}`);
+      const derivedDeltaTimeSeconds = end.time.epochSeconds - start.time.epochSeconds;
+      expect(Object.is(derivedDeltaTimeSeconds, 1 / 120)).toBe(false);
+
+      const derived = stepPhysicsProbe({
+        state,
+        deltaTimeSeconds: derivedDeltaTimeSeconds,
+        startFrameState: start.frame,
+        endFrameState: end.frame,
+        gravityField: start.field
+      });
+      const canonical = stepPhysicsProbe({
+        state,
+        deltaTimeSeconds: 1 / 120,
+        startFrameState: start.frame,
+        endFrameState: end.frame,
+        gravityField: start.field
+      });
+
+      expect(derived).toEqual(canonical);
+      expect(derived.canonicalJson).toBe(canonical.canonicalJson);
+      expect(derived.signature).toBe(canonical.signature);
+    }
+
+    const impreciseStartTick = Number.MAX_SAFE_INTEGER - 1;
+    const impreciseStart = fixtureAt(impreciseStartTick);
+    const impreciseEnd = fixtureAt(impreciseStartTick + 1);
+    const impreciseState = createStateAt(impreciseStart, "probe:imprecise-frame-derived-dt");
+    const impreciseDeltaTimeSeconds =
+      impreciseEnd.time.epochSeconds - impreciseStart.time.epochSeconds;
+
+    expect(Math.abs(impreciseDeltaTimeSeconds - 1 / 120)).toBeGreaterThan(1e-6);
+    expect(() =>
+      stepPhysicsProbe({
+        state: impreciseState,
+        deltaTimeSeconds: impreciseDeltaTimeSeconds,
+        startFrameState: impreciseStart.frame,
+        endFrameState: impreciseEnd.frame,
+        gravityField: impreciseStart.field
+      })
+    ).toThrowError(
+      expect.objectContaining<Partial<PhysicsSpaceError>>({ code: "INVALID_TIME_STEP" })
+    );
+  });
+
   it("rejects zero, negative, non-finite, inexact, and time-mismatched steps", () => {
     const start = fixtureAt(0);
     const oneTick = fixtureAt(1);

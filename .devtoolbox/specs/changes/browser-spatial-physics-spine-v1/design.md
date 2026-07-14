@@ -75,7 +75,7 @@ Local axes are `+X East`, `+Y Up`, `+Z South`; geographic North is `-Z`. This is
 
 ### Probe integration
 
-The V1 probe is translational only. Each step supplies state, positive fixed `dt`, matching start/end universe times and frame states, plus explicit gravity sources. `dt` must be an exact positive integer tick span at 120 Hz. The integrator evaluates acceleration in canonical inertial space and applies semi-implicit Euler: `v1 = v0 + a dt`, then `p1 = p0 + v1 dt`; the result is converted to the explicitly supplied end frame. No force, collision, atmosphere, or hidden source update is allowed.
+The V1 probe is translational only. Each step supplies state, positive fixed `dt`, matching start/end universe times and frame states, plus explicit gravity sources. The positive safe-integer start/end tick span is authoritative. `dt` is accepted when it is the canonical `deltaTicks / 120` value or exactly the explicit frame-epoch subtraction within an eight-ULP epoch-scaled tolerance capped at 0.1% of the canonical span. The integrator always uses the canonical tick-derived value, and materially imprecise epoch subtraction fails closed. It evaluates acceleration in canonical inertial space and applies semi-implicit Euler: `v1 = v0 + a dt`, then `p1 = p0 + v1 dt`; the result is converted to the explicitly supplied end frame. No force, collision, atmosphere, or hidden source update is allowed.
 
 ### Physics-space handoff
 
