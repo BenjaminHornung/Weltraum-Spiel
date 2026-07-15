@@ -57,7 +57,7 @@
   - Report: scenario stages, canonical comparison, browser-health arrays, evidence paths, exact command/result; no commit.
   - Stop: do not modify package files, TestBridge, app startup, UI, screenshots, or E2E grouping.
 
-- [ ] 6. Review, run the complete Node 22 regression/scope audit, commit, and push
+- [x] 6. Review, run the complete Node 22 regression/scope audit, commit, and push
   - Objective: obtain independent correctness review, repair concrete findings, prove the complete requested matrix, and publish only the feature branch.
   - Files/search targets: all change-owned paths; compare against 5ff47aeef3c42c0b933e8480dafa5680759a40df; no new write scope except focused fixes/evidence/test protocol.
   - Acceptance: dual review has no unresolved blocking findings; npm ci leaves package manifests unchanged; tsc, seven focused unit files, focused E2E, full unit, build, full E2E, git diff --check, DevToolbox validation/verify/completion preflight, and allowlist/forbidden-import audit pass. One commit exactly titled #WELTRAUM-000 Add ship power and thermal core is pushed non-force to origin/feature/browser-ship-power-thermal-core-v1. No PR or merge.
