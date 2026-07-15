@@ -1,16 +1,42 @@
 import { WorkerCancellationRegistry, yieldToWorkerEventLoop } from "./cancellation";
 import { isMessageRecord, type HostToWorkerMessage, type WorkerToHostMessage } from "./messages";
 import {
+  GENERATE_HESTIA_VOXEL_BRICK_MESH_JOB_KIND,
+  HESTIA_VOXEL_OUTPUT_LAYOUT_VERSION,
+  expectedHestiaVoxelInputBytes,
   fnv1aBytes,
   transferListFor,
+  validateHestiaVoxelBrickMeshPayload,
+  validateHestiaVoxelInputBundle,
+  validateHestiaVoxelWorkerOutputByteLength,
   validateTransferableBundle,
   validateTransformPayload,
+  type HestiaVoxelBrickMeshResultDetails,
   type TransferableBufferBundle,
   type WorkerJobRequest,
+  type WorkerJobResult,
 } from "./protocol";
 import { byteCount, type WorkerEpoch, type WorkerJobId } from "./ids";
+import { generateHestiaVoxelBrickInSlices } from "../world-generation/hestia";
+import { createSurfaceNetsVoxelMeshProduct, type VoxelBrick } from "../voxel";
 
 export type WorkerMessageEmitter = (message: WorkerToHostMessage, transfer?: readonly Transferable[]) => void;
+
+class WorkerJobCancelled extends Error {}
+
+const monotonicNow = (): number => globalThis.performance?.now() ?? 0;
+
+const exactArrayBuffer = (view: ArrayBufferView, name: string): ArrayBuffer => {
+  if (!(view.buffer instanceof ArrayBuffer) || view.byteOffset !== 0 || view.byteLength !== view.buffer.byteLength) {
+    throw new RangeError(`${name} must own its complete ArrayBuffer.`);
+  }
+  return view.buffer;
+};
+
+interface WorkerExecutionOutput {
+  readonly bundle: TransferableBufferBundle;
+  readonly result: WorkerJobResult;
+}
 
 export class StreamingWorkerRuntime {
   private epoch: WorkerEpoch | undefined;
@@ -78,49 +104,155 @@ export class StreamingWorkerRuntime {
       }
       const input = validateTransferableBundle(sourceBundle);
       if (input.ownership !== "SenderToWorker" || input.revision !== request.inputRevision || input.byteLength !== request.estimatedInputBytes) throw new RangeError("Input ownership, revision, or byte length does not match the request.");
-      if (request.jobKind !== "TransformBuffer") throw new RangeError(`Unsupported worker job kind: ${request.jobKind}.`);
-      const payload = validateTransformPayload(request.payload);
-      const outputBuffers = input.buffers.map((buffer) => new ArrayBuffer(buffer.byteLength));
-      let sinceYield = 0;
-      for (let bufferIndex = 0; bufferIndex < input.buffers.length; bufferIndex += 1) {
-        const source = new Uint8Array(input.buffers[bufferIndex]);
-        const target = new Uint8Array(outputBuffers[bufferIndex]);
-        for (let index = 0; index < source.length; index += 1) {
-          target[index] = source[index] ^ payload.xorMask;
-          sinceYield += 1;
-          if (sinceYield >= payload.chunkBytes) {
-            sinceYield = 0;
+      const execution = request.jobKind === "TransformBuffer"
+        ? await this.executeTransform(request, input, async () => {
             await yieldToWorkerEventLoop();
-            if (token.isCancellationRequested) {
-              this.emit({ type: "JobCancelled", jobId, workerEpoch: request.workerEpoch, reason: "CancelledDuringExecution" });
-              return;
-            }
-          }
-        }
-      }
-      if (token.isCancellationRequested) {
-        this.emit({ type: "JobCancelled", jobId, workerEpoch: request.workerEpoch, reason: "CancelledDuringExecution" });
-        return;
-      }
-      const hash = fnv1aBytes(outputBuffers);
-      const output: TransferableBufferBundle = Object.freeze({
-        ownership: "WorkerToConsumer", revision: payload.outputRevision, byteLength: byteCount(outputBuffers.reduce((sum, buffer) => sum + buffer.byteLength, 0), "outputBytes"),
-        buffers: Object.freeze(outputBuffers), views: input.views, contentHash: hash,
-      });
-      this.emit({ type: "JobOutputData", jobId, workerEpoch: request.workerEpoch, outputBytes: output.byteLength, bundle: output }, transferListFor(output));
-      this.emit({ type: "JobCompleted", result: Object.freeze({
-        jobId, targetKey: request.targetKey, planningEpoch: request.planningEpoch, workerEpoch: request.workerEpoch,
-        inputRevision: request.inputRevision, outputRevision: payload.outputRevision, algorithmVersion: request.algorithmVersion,
-        outputBytes: output.byteLength, contentHash: hash,
-      }) });
+            if (token.isCancellationRequested) throw new WorkerJobCancelled();
+          })
+        : request.jobKind === GENERATE_HESTIA_VOXEL_BRICK_MESH_JOB_KIND
+          ? await this.executeHestiaVoxelMesh(request, input, async () => {
+              await yieldToWorkerEventLoop();
+              if (token.isCancellationRequested) throw new WorkerJobCancelled();
+            })
+          : (() => { throw new RangeError(`Unsupported worker job kind: ${request.jobKind}.`); })();
+      this.emit({ type: "JobOutputData", jobId, workerEpoch: request.workerEpoch, outputBytes: execution.bundle.byteLength, bundle: execution.bundle }, transferListFor(execution.bundle));
+      this.emit({ type: "JobCompleted", result: execution.result });
     } catch (error) {
-      this.fail(jobId, "JobExecutionFailed", error instanceof Error ? error.message : "Worker job failed.");
+      if (error instanceof WorkerJobCancelled) {
+        this.emit({ type: "JobCancelled", jobId, workerEpoch: request.workerEpoch, reason: "CancelledDuringExecution" });
+      } else {
+        this.fail(jobId, "JobExecutionFailed", error instanceof Error ? error.message : "Worker job failed.");
+      }
     } finally {
       this.cancellation.release(jobId);
       this.requests.delete(jobId);
       this.runningJobId = undefined;
       if (this.stopping && this.epoch !== undefined) this.emit({ type: "WorkerStopped", workerEpoch: this.epoch });
     }
+  }
+
+  private async executeTransform(
+    request: WorkerJobRequest,
+    input: TransferableBufferBundle,
+    checkpoint: () => Promise<void>,
+  ): Promise<WorkerExecutionOutput> {
+    const payload = validateTransformPayload(request.payload);
+    const outputBuffers = input.buffers.map((buffer) => new ArrayBuffer(buffer.byteLength));
+    let sinceYield = 0;
+    for (let bufferIndex = 0; bufferIndex < input.buffers.length; bufferIndex += 1) {
+      const source = new Uint8Array(input.buffers[bufferIndex]);
+      const target = new Uint8Array(outputBuffers[bufferIndex]);
+      for (let index = 0; index < source.length; index += 1) {
+        target[index] = source[index] ^ payload.xorMask;
+        sinceYield += 1;
+        if (sinceYield >= payload.chunkBytes) {
+          sinceYield = 0;
+          await checkpoint();
+        }
+      }
+    }
+    const hash = fnv1aBytes(outputBuffers);
+    const output: TransferableBufferBundle = Object.freeze({
+      ownership: "WorkerToConsumer", revision: payload.outputRevision, byteLength: byteCount(outputBuffers.reduce((sum, buffer) => sum + buffer.byteLength, 0), "outputBytes"),
+      buffers: Object.freeze(outputBuffers), views: input.views, contentHash: hash,
+    });
+    return Object.freeze({
+      bundle: output,
+      result: Object.freeze({
+        jobId: request.jobId, targetKey: request.targetKey, planningEpoch: request.planningEpoch, workerEpoch: request.workerEpoch,
+        inputRevision: request.inputRevision, outputRevision: payload.outputRevision, algorithmVersion: request.algorithmVersion,
+        outputBytes: output.byteLength, contentHash: hash,
+      }),
+    });
+  }
+
+  private async executeHestiaVoxelMesh(
+    request: WorkerJobRequest,
+    input: TransferableBufferBundle,
+    checkpoint: () => Promise<void>,
+  ): Promise<WorkerExecutionOutput> {
+    const payload = validateHestiaVoxelBrickMeshPayload(request.payload);
+    if (Number(request.inputRevision) !== Number(payload.sourceRevision)) throw new RangeError("Hestia inputRevision must match sourceRevision.");
+    if (request.estimatedInputBytes !== expectedHestiaVoxelInputBytes(payload)) throw new RangeError("Hestia estimated input bytes are invalid.");
+    if (request.estimatedOutputBytes < byteCount(1, "minimumOutputBytes")) throw new RangeError("Hestia estimated output bytes must be positive.");
+    validateHestiaVoxelWorkerOutputByteLength(request.estimatedOutputBytes);
+    const validatedInput = validateHestiaVoxelInputBundle(payload, input);
+    let brick: VoxelBrick;
+    let generationMilliseconds = 0;
+    if (payload.inputMode === "Generate") {
+      const generationStarted = monotonicNow();
+      brick = await generateHestiaVoxelBrickInSlices(payload, {
+        columnsPerSlice: payload.generationColumnsPerSlice,
+        checkpoint,
+      });
+      generationMilliseconds = monotonicNow() - generationStarted;
+    } else {
+      brick = validatedInput.brick!;
+    }
+    await checkpoint();
+    const meshingStarted = monotonicNow();
+    const mesh = createSurfaceNetsVoxelMeshProduct(brick);
+    const meshingMilliseconds = monotonicNow() - meshingStarted;
+    await checkpoint();
+    const outputBuffers = Object.freeze([
+      exactArrayBuffer(brick.densityBuffer, "density"),
+      exactArrayBuffer(brick.materialBuffer, "material"),
+      exactArrayBuffer(mesh.positions, "positions"),
+      exactArrayBuffer(mesh.normals, "normals"),
+      exactArrayBuffer(mesh.indices, "indices"),
+    ]);
+    const outputBytes = outputBuffers.reduce((sum, buffer) => sum + buffer.byteLength, 0);
+    validateHestiaVoxelWorkerOutputByteLength(outputBytes);
+    if (outputBytes > request.estimatedOutputBytes) throw new RangeError("Hestia output exceeds its declared byte budget.");
+    const indexKind = mesh.indices instanceof Uint16Array ? "Uint16Array" as const : "Uint32Array" as const;
+    const hash = fnv1aBytes(outputBuffers);
+    const output: TransferableBufferBundle = Object.freeze({
+      ownership: "WorkerToConsumer",
+      revision: payload.outputRevision,
+      byteLength: byteCount(outputBytes, "outputBytes"),
+      buffers: outputBuffers,
+      views: Object.freeze([
+        Object.freeze({ name: "density", bufferIndex: 0, kind: "Float32Array" as const, byteOffset: 0, elementCount: brick.densityBuffer.length }),
+        Object.freeze({ name: "material", bufferIndex: 1, kind: "Uint8Array" as const, byteOffset: 0, elementCount: brick.materialBuffer.length }),
+        Object.freeze({ name: "positions", bufferIndex: 2, kind: "Float32Array" as const, byteOffset: 0, elementCount: mesh.positions.length }),
+        Object.freeze({ name: "normals", bufferIndex: 3, kind: "Float32Array" as const, byteOffset: 0, elementCount: mesh.normals.length }),
+        Object.freeze({ name: "indices", bufferIndex: 4, kind: indexKind, byteOffset: 0, elementCount: mesh.indices.length }),
+      ]),
+      contentHash: hash,
+    });
+    const details: HestiaVoxelBrickMeshResultDetails = Object.freeze({
+      kind: GENERATE_HESTIA_VOXEL_BRICK_MESH_JOB_KIND,
+      layoutVersion: HESTIA_VOXEL_OUTPUT_LAYOUT_VERSION,
+      presetId: payload.presetId,
+      inputMode: payload.inputMode,
+      rootSeed: payload.rootSeed,
+      bodyId: payload.bodyId,
+      surfaceFrameId: payload.surfaceFrameId,
+      regionId: payload.regionId,
+      brickCoordinate: payload.brickCoordinate,
+      voxelSizeMeters: payload.voxelSizeMeters,
+      generatorVersion: payload.generatorVersion,
+      materialRegistryVersion: payload.materialRegistryVersion,
+      sourceRevision: payload.sourceRevision,
+      editRevision: payload.editRevision,
+      meshAlgorithmVersion: payload.meshAlgorithmVersion,
+      representationKey: mesh.representationKey,
+      brickContentHash: brick.contentHash,
+      meshContentHash: mesh.contentHash,
+      indexKind,
+      materialRanges: mesh.materialRanges,
+      bounds: mesh.bounds,
+      generationMilliseconds,
+      meshingMilliseconds,
+    });
+    return Object.freeze({
+      bundle: output,
+      result: Object.freeze({
+        jobId: request.jobId, targetKey: request.targetKey, planningEpoch: request.planningEpoch, workerEpoch: request.workerEpoch,
+        inputRevision: request.inputRevision, outputRevision: payload.outputRevision, algorithmVersion: request.algorithmVersion,
+        outputBytes: output.byteLength, contentHash: hash, details,
+      }),
+    });
   }
 
   private requireEpoch(epoch: WorkerEpoch, jobId?: WorkerJobId): boolean {

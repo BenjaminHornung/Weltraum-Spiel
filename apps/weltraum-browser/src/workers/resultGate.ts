@@ -1,5 +1,12 @@
 import type { AlgorithmVersion, ByteCount, ContentRevision, PlanningEpoch, WorkerEpoch, WorkerJobId, WorkerTargetKey } from "./ids";
-import { fnv1aBytes, validateTransferableBundle, type TransferableBufferBundle, type WorkerJobResult } from "./protocol";
+import {
+  fnv1aBytes,
+  validateHestiaVoxelWorkerOutput,
+  validateTransferableBundle,
+  type GenerateHestiaVoxelBrickMeshPayload,
+  type TransferableBufferBundle,
+  type WorkerJobResult,
+} from "./protocol";
 
 export interface WorkerResultExpectation {
   readonly jobId: WorkerJobId;
@@ -12,6 +19,7 @@ export interface WorkerResultExpectation {
   readonly algorithmVersion: AlgorithmVersion;
   readonly maximumOutputBytes: ByteCount;
   readonly expectedContentHash?: string;
+  readonly expectedHestiaPayload?: GenerateHestiaVoxelBrickMeshPayload;
 }
 
 export type WorkerResultIntegrationDecision =
@@ -53,5 +61,9 @@ export const integrateWorkerResult = (
   if ((expectation.expectedContentHash !== undefined && actualHash !== expectation.expectedContentHash)
     || (result.contentHash !== undefined && actualHash !== result.contentHash)
     || (validated.contentHash !== undefined && actualHash !== validated.contentHash)) return Object.freeze({ kind: "RejectedContentHashMismatch" });
+  if (expectation.expectedHestiaPayload !== undefined) {
+    try { validateHestiaVoxelWorkerOutput(expectation.expectedHestiaPayload, result, validated); }
+    catch (error) { return Object.freeze({ kind: "RejectedInvalidLayout", message: error instanceof Error ? error.message : "Invalid Hestia voxel output." }); }
+  }
   return Object.freeze({ kind: "Accepted", bundle: validated });
 };

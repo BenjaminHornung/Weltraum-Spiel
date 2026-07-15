@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { PerformanceTelemetry, createWorkerPoolTelemetryObserver } from "../../src/diagnostics/performance";
 import {
   StreamingWorkerRuntime,
   WorkerPool,
@@ -113,6 +114,38 @@ const createPool = async (workerCount = 1) => {
 };
 
 describe("WorkerPool lifecycle", () => {
+  it("reports only ready workers as active across startup, replacement failure, and shutdown", async () => {
+    const telemetry = new PerformanceTelemetry();
+    const transports: DeferredReadyTransport[] = [];
+    const pool = new WorkerPool({
+      workerCount: 1,
+      queueCapacity: 1,
+      initialPlanningEpoch: planningEpoch(1),
+      observe: createWorkerPoolTelemetryObserver(telemetry, 1),
+      transportFactory: () => {
+        const transport = new DeferredReadyTransport();
+        transports.push(transport);
+        return transport;
+      }
+    });
+
+    expect(telemetry.snapshot()).toMatchObject({ workerCount: 1, activeWorkers: 0 });
+    const start = pool.start();
+    expect(telemetry.snapshot()).toMatchObject({ workerCount: 1, activeWorkers: 0 });
+    transports[0]!.ready();
+    await start;
+    expect(telemetry.snapshot()).toMatchObject({ workerCount: 1, activeWorkers: 1 });
+
+    transports[0]!.fail("replacement telemetry failure");
+    await expect.poll(() => telemetry.snapshot().activeWorkers).toBe(0);
+    await expect.poll(() => transports.length).toBe(2);
+    transports[1]!.ready();
+    await expect.poll(() => telemetry.snapshot().activeWorkers).toBe(1);
+
+    await pool.shutdown();
+    expect(telemetry.snapshot()).toMatchObject({ workerCount: 1, activeWorkers: 0 });
+  });
+
   it("completes deterministic work and detaches transferred input", async () => {
     const { pool } = await createPool();
     const source = input(32);
