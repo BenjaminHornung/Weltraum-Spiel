@@ -62,6 +62,16 @@
   - Report: per-area changes, review findings/resolution, every command/result, screenshots, changed paths, skipped checks, residual risk, starting/final main SHA.
   - Stop: do not push on any failure, unresolved concrete finding, prohibited-path edit, or missing evidence; do not create a PR.
 
+- [x] 7. Prevent partial Planet Presentation coverage publication
+  - Objective: replace unconditional filtered VisibilityPlan publication with a stateless discriminated publish/hold decision so callers never replace complete coverage with an empty or partial plan.
+  - Files/search targets: `src/planet/planetPresentationAdapter.ts`, `src/planet/harness/hestiaOrbitHarness.ts`, `tests/unit/planetPresentationAdapter.test.ts`, `docs/browser-mainline/planet-shell-tile-scheduler-v1.md`; this change's design/spec/tasks/test protocol; inspect but do not modify the existing E2E spec and three baselines unless a concrete failing requirement proves otherwise.
+  - Acceptance: publish requires exact readiness revision, `READY`, and every unique active primary/fallback key render-ready; published coverage is complete and flattened exactly once with empty presentation fallback; hold returns no VisibilityPlan, unchanged exact load jobs, deterministic missing active IDs, and a closed reason for revision mismatch, `NOT_READY`, or missing active readiness; adapter remains stateless; stale/missing/inconsistent cases never partially publish; every harness fixture explicitly checks publish before applying; no impostor is added.
+  - Guidance: derive one canonical active-key set; evaluate fail-closed gates before constructing VisibilityPlan; on revision mismatch report all active keys as unverified; keep caller ownership of the last complete plan explicit; do not add previous-plan input or global state.
+  - Required skills/MCPs: subagent-driven-development; frontend-worker; requesting-code-review; devtoolbox-review; verification-before-completion; test-runner; browser-debugger; DevToolbox execution lifecycle.
+  - Verification: `npm ci`; `npx tsc -p tsconfig.json`; `npx vitest run tests/unit/planetPresentationAdapter.test.ts`; `npm run test -- tests/unit/planet*.test.ts`; `npm run test`; `npm run build`; focused planet-shell E2E without snapshot update; `git diff --check`; independent spec/architecture and code reviews; exact allowlist/prohibited-path and unchanged-baseline hash audits.
+  - Report: exact discriminated contract/reason codes, files changed, every command/result, review findings/resolution, baseline hashes, allowlist result, residual risks, final commit and branch-vs-main divergence.
+  - Stop: do not commit/push on any failed command, unresolved finding, partial/empty publication, load-job drift, hidden adapter state, changed prohibited path/baseline, weakened assertion/timeout, or need for Presentation/Render/package/CI changes.
+
 ## Deferred Surface-Lab merge gate
 
 After the Hestia Microvoxel Surface Lab is actually merged to origin/main, fetch and merge (not rebase) origin/main, resolve bounded conflicts, optionally add exactly one test:e2e:core assignment and necessary LFS baseline validation, rerun focused/full verification and dual review, then request explicit approval before push/PR. PR title: `#WELTRAUM-000 Add planet shell tile scheduler`. No automatic merge.

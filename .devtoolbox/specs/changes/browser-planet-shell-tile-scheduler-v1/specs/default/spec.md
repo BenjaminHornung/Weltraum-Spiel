@@ -70,7 +70,7 @@ The core SHALL expose one deduplicated `loadRequests` collection as the sole loa
 
 The system SHALL reject stale readiness snapshots and SHALL keep parent coverage desired until every required child is render-ready and the atomic child frontier fits the selected-primary budget. Child identity SHALL not include readiness state. Fallback SHALL be reserved for coarser parent coverage retained because required children are incomplete; budget-deferred refinement SHALL keep the parent active rather than emitting fine descendants as fallback. Readiness and per-level input arrays SHALL be dense and validated before traversal.
 
-The plan SHALL report `coverageStatus` as the closed value `READY` only when every desired primary/fallback tile is render-ready at the accepted revision, otherwise `NOT_READY`. The core owns load intent and the adapter owns load execution: the adapter SHALL translate only explicit `loadRequests` into load jobs and SHALL NOT infer additional loads from visibility lists. Presentation SHALL consume only resident, revision-compatible desired coverage. An existing coarser body/impostor representation may remain visible while root coverage loads; this V1 selector has no such input and therefore SHALL report `NOT_READY` when tile coverage is unavailable rather than inventing an empty placeholder.
+The plan SHALL report `coverageStatus` as the closed value `READY` only when every desired primary/fallback tile is render-ready at the accepted revision, otherwise `NOT_READY`. The core owns load intent and the adapter owns load execution: the adapter SHALL translate only explicit `loadRequests` into load jobs and SHALL NOT infer additional loads from visibility lists. Presentation SHALL receive a new tile visibility plan only through the complete-publication contract below. An existing coarser body/impostor representation may remain visible while root coverage loads; this V1 selector has no such input and therefore SHALL report `NOT_READY` when tile coverage is unavailable rather than inventing an empty placeholder.
 
 ### Scenarios
 
@@ -82,13 +82,20 @@ The plan SHALL report `coverageStatus` as the closed value `READY` only when eve
 
 ## Requirement: Deterministic shell meshes and existing render contracts
 
-The system SHALL generate finite regular-grid tile meshes through a `PlanetHeightSampler`, preserve double-precision authority outside Float32 artifact buffers, and use one adapter for existing MeshArtifact and VisibilityPlan contracts. The adapter SHALL flatten resident, revision-compatible `primary ∪ fallback` coverage into presentation `visibleRepresentationKeys`, SHALL leave presentation `fallbackRepresentationKeys` empty, and SHALL never map refinement requests directly to visibility. It SHALL translate only the core's explicit load requests into load jobs.
+The system SHALL generate finite regular-grid tile meshes through a `PlanetHeightSampler`, preserve double-precision authority outside Float32 artifact buffers, and use one stateless adapter for existing MeshArtifact and VisibilityPlan contracts. The adapter SHALL return a discriminated `publish` or `hold-last-complete-plan` result and SHALL translate only the core's explicit load requests into unchanged load jobs in both variants.
+
+`publish` SHALL occur only when the readiness revision exactly matches, `coverageStatus` is `READY`, and every unique active key from `primary ∪ fallback` is render-ready. It SHALL flatten the complete active set into presentation `visibleRepresentationKeys`, include every active key exactly once, and leave presentation `fallbackRepresentationKeys` empty.
+
+`hold-last-complete-plan` SHALL contain no `VisibilityPlan`, SHALL expose deterministic missing active tile IDs and a closed reason code, and SHALL occur on revision mismatch, `NOT_READY`, or any missing/non-ready active key, including a core plan inconsistently declared `READY`. On revision mismatch all active keys are unverified/missing. The adapter SHALL keep no previous-plan or global state; the caller owns the last complete plan and SHALL not replace it on hold. A future caller MAY choose an explicit planet impostor for hold, but this change SHALL NOT implement one.
 
 ### Scenarios
 
 - Mesh positions, normals, indices, winding, and bounds are finite and valid.
 - Equal generation input produces an equal stable MeshArtifact hash.
-- All-fallback/request-budget-zero and mixed primary/fallback branches remain hole-free through the existing presentation visibility resolver.
+- A missing active root with other ready roots, a stale readiness revision, and a missing non-root primary each return hold with no empty or partial visibility plan while preserving mandatory load jobs.
+- Complete all-fallback and mixed primary/fallback plans publish the full flattened active set exactly once with empty presentation fallback slots.
+- A plan declared `READY` but missing any active readiness entry fails closed with hold.
+- Every deterministic harness state checks and receives `publish` before applying visibility.
 - No planet-core module imports Three.js, and presentation/render-backend core files remain unchanged.
 
 ## Requirement: Separate visible Hestia harness

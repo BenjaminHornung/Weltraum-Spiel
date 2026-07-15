@@ -421,6 +421,14 @@ export const mountHestiaOrbitHarness = (parent: HTMLElement = document.body): He
     const corePlan = selectFor(definition, readiness);
     const highlightedReason = highlightedReasonFor(definition, corePlan);
     const adapted = adaptPlanetPresentation({ corePlan, readiness });
+    if (adapted.status !== "publish") {
+      const missing = adapted.missingActiveTileKeys.length > 0
+        ? adapted.missingActiveTileKeys.join(", ")
+        : "none";
+      throw new Error(
+        `Hestia presentation adapter unexpectedly held ${definition.state}: ${adapted.reasonCode}; missing active tiles: ${missing}.`
+      );
+    }
     const scale = definition.visualScale;
     const projection = createFrameProjectionSnapshot({
       frameId: FRAME_ID,

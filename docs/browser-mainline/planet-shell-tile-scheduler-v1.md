@@ -10,9 +10,38 @@ own Three.js objects, browser state, floating-origin state, local voxels, terrai
 streaming, collision, or product geology.
 
 `planetPresentationAdapter.ts` remains the only boundary from planet-core output
-to the existing presentation contracts. It maps accepted, render-ready core
-coverage to `VisibilityPlan`, converts explicit core load requests to load jobs,
-and does not infer additional work from visibility.
+to the existing presentation contracts. It maps only complete accepted,
+render-ready core coverage to `VisibilityPlan`, converts explicit core load
+requests to load jobs, and does not infer additional work from visibility.
+
+## Complete publication contract
+
+The stateless adapter returns one of two discriminated results:
+
+- `status: "publish"` contains a `visibilityPlan` and `loadJobs`.
+- `status: "hold-last-complete-plan"` contains `reasonCode`,
+  `missingActiveTileKeys`, and `loadJobs`, but no `visibilityPlan` property.
+
+A publication requires all three gates: the readiness snapshot revision exactly
+equals the core plan readiness revision, the core coverage status is `READY`,
+and every unique active tile in `primary ∪ fallback` is `render-ready` in that
+accepted snapshot. The adapter canonicalizes the active union, publishes every
+active tile exactly once in `visibleRepresentationKeys`, and always leaves
+presentation `fallbackRepresentationKeys` empty.
+
+Hold reasons are the closed values `readiness-revision-mismatch`,
+`coverage-not-ready`, and `active-tile-not-render-ready`, in that deterministic
+precedence order. A revision mismatch reports every active key as unverified.
+For an accepted `NOT_READY` revision, `missingActiveTileKeys` may be empty when
+all supplied active entries happen to be render-ready; the declaration still
+prevents publication. A `READY` declaration with a missing or non-render-ready
+active entry fails closed as `active-tile-not-render-ready`. Both result variants
+map `loadJobs` exactly and only from the core plan's explicit `loadRequests`.
+
+The adapter accepts no previous plan and owns no mutable or global state. The
+caller owns its last applied complete plan and retains it when the adapter holds.
+A future caller may choose an explicitly managed planet impostor while holding,
+but that policy remains caller-owned and V1 adds no planet impostor.
 
 ## Hestia orbit diagnostic harness
 
@@ -31,6 +60,10 @@ The visible shell uses generated root and `+Z` child meshes, the existing Three
 render backend, and the single planet presentation adapter. Body radius, bounds,
 camera inputs, tile IDs, and readiness remain in physical core units. The
 smaller visual radius is applied only through frame-projection transforms.
+Every deterministic harness fixture is complete: the harness requires the
+adapter's `publish` discriminant before dispatching `ApplyVisibilityPlan` and
+fails explicitly on an unexpected hold. It never substitutes an empty or
+partial visibility plan; load-job diagnostics continue to come from the adapter.
 
 ## Deterministic state sequence
 

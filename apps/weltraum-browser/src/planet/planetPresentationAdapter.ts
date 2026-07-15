@@ -17,10 +17,11 @@ import {
 import { parsePlanetTileId, planetTileId } from "./ids";
 import type { PlanetShellMesh } from "./shellMeshGenerator";
 import type { PlanetTileReadinessSnapshot } from "./tileReadiness";
-import type {
-  PlanetTileLoadRequest,
-  PlanetTileLoadRequestReasonCode,
-  PlanetTileVisibilityPlan
+import {
+  comparePlanetTileIds,
+  type PlanetTileLoadRequest,
+  type PlanetTileLoadRequestReasonCode,
+  type PlanetTileVisibilityPlan
 } from "./tileVisibilityPlan";
 import type { PlanetTileId, PlanetTileKey } from "./types";
 import type { PlanetTileSelectionPriority } from "./tileSelector";
@@ -60,10 +61,31 @@ export interface PlanetPresentationAdapterInput {
   readonly readiness: PlanetTileReadinessSnapshot;
 }
 
-export interface PlanetPresentationAdapterResult {
+export const PLANET_PRESENTATION_HOLD_REASON_CODES = Object.freeze([
+  "readiness-revision-mismatch",
+  "coverage-not-ready",
+  "active-tile-not-render-ready"
+] as const);
+
+export type PlanetPresentationHoldReasonCode =
+  (typeof PLANET_PRESENTATION_HOLD_REASON_CODES)[number];
+
+export interface PlanetPresentationPublishResult {
+  readonly status: "publish";
   readonly visibilityPlan: VisibilityPlan;
   readonly loadJobs: readonly PlanetPresentationLoadJob[];
 }
+
+export interface PlanetPresentationHoldResult {
+  readonly status: "hold-last-complete-plan";
+  readonly reasonCode: PlanetPresentationHoldReasonCode;
+  readonly missingActiveTileKeys: readonly PlanetTileId[];
+  readonly loadJobs: readonly PlanetPresentationLoadJob[];
+}
+
+export type PlanetPresentationAdapterResult =
+  | PlanetPresentationPublishResult
+  | PlanetPresentationHoldResult;
 
 export const planetTileRepresentationKey = (tileId: PlanetTileId): RepresentationKey => {
   parsePlanetTileId(tileId);
@@ -99,26 +121,45 @@ const loadJob = (request: PlanetTileLoadRequest): PlanetPresentationLoadJob => O
   expectedReadinessRevision: request.expectedReadinessRevision
 });
 
+const canonicalActiveTileKeys = (plan: PlanetTileVisibilityPlan): readonly PlanetTileId[] =>
+  Object.freeze([...new Set([...plan.primary, ...plan.fallback])].sort(comparePlanetTileIds));
+
+const holdLastCompletePlan = (
+  reasonCode: PlanetPresentationHoldReasonCode,
+  missingActiveTileKeys: readonly PlanetTileId[],
+  loadJobs: readonly PlanetPresentationLoadJob[]
+): PlanetPresentationHoldResult => Object.freeze({
+  status: "hold-last-complete-plan",
+  reasonCode,
+  missingActiveTileKeys,
+  loadJobs
+});
+
 export const adaptPlanetPresentation = (
   input: PlanetPresentationAdapterInput
 ): PlanetPresentationAdapterResult => {
-  const acceptedReadiness = input.readiness.revision === input.corePlan.readinessRevision;
-  const renderReady = acceptedReadiness
-    ? new Set(input.readiness.entries
-        .filter((entry) => entry.state === "render-ready")
-        .map((entry) => entry.tileId))
-    : new Set<PlanetTileId>();
-  const desiredCoverage = [...input.corePlan.primary, ...input.corePlan.fallback];
-  const visibleRepresentationKeys = desiredCoverage
-    .filter((tileId) => renderReady.has(tileId))
-    .map(planetTileRepresentationKey);
+  const activeTileKeys = canonicalActiveTileKeys(input.corePlan);
+  const loadJobs = Object.freeze(input.corePlan.loadRequests.map(loadJob));
+  if (input.readiness.revision !== input.corePlan.readinessRevision) {
+    return holdLastCompletePlan("readiness-revision-mismatch", activeTileKeys, loadJobs);
+  }
+
+  const renderReady = new Set(input.readiness.entries
+    .filter((entry) => entry.state === "render-ready")
+    .map((entry) => entry.tileId));
+  const missingActiveTileKeys = Object.freeze(activeTileKeys.filter((tileId) => !renderReady.has(tileId)));
+  if (input.corePlan.coverageStatus === "NOT_READY") {
+    return holdLastCompletePlan("coverage-not-ready", missingActiveTileKeys, loadJobs);
+  }
+  if (missingActiveTileKeys.length > 0) {
+    return holdLastCompletePlan("active-tile-not-render-ready", missingActiveTileKeys, loadJobs);
+  }
 
   const visibilityPlan = createVisibilityPlan({
     planRevision: visibilityPlanRevision(input.corePlan.selectionRevision),
-    visibleRepresentationKeys,
+    visibleRepresentationKeys: activeTileKeys.map(planetTileRepresentationKey),
     fallbackRepresentationKeys: [],
     hiddenRepresentationKeys: []
   });
-  const loadJobs = Object.freeze(input.corePlan.loadRequests.map(loadJob));
-  return Object.freeze({ visibilityPlan, loadJobs });
+  return Object.freeze({ status: "publish", visibilityPlan, loadJobs });
 };
