@@ -175,8 +175,8 @@ if len(checkout_steps) == 1:
     check(checkout_with.get("lfs") is False, "Selective LFS behavior must remain enabled")
 
 step_by_name = {step.get("name"): step for step in steps if isinstance(step, dict)}
-verify_step = step_by_name.get("Verify protected main checkout", {})
-check(bool(verify_step), "Protected main checkout verification step is missing")
+verify_step = step_by_name.get("Verify trusted main checkout", {})
+check(bool(verify_step), "Trusted main checkout verification step is missing")
 if verify_step:
     verify_env = verify_step.get("env", {}) or {}
     verify_script = str(verify_step.get("run", ""))
@@ -325,7 +325,7 @@ try:
 except UnicodeDecodeError as exc:
     failures.append(f"Runner-wide job-start hook is not UTF-8: {exc}")
     job_started_text = ""
-expected_job_started_sha256 = "ed49cd56c97c5c362d89638755963b4c76dfcca01fa2ca2c7723172fc3703f3a"
+expected_job_started_sha256 = "3aa1c5699b8993aa11d363e6440b8db7026ede2ef9798687a5007ed5c41e0a28"
 check(
     hashlib.sha256(job_started_bytes).hexdigest() == expected_job_started_sha256,
     "Runner-wide job-start hook content digest drifted",
@@ -334,7 +334,6 @@ for snippet in (
     'readonly expected_repository="BenjaminHornung/Weltraum-Spiel"',
     'readonly expected_ref="refs/heads/main"',
     'readonly expected_workflow_ref="BenjaminHornung/Weltraum-Spiel/.github/workflows/browser-mainline-ci.yml@refs/heads/main"',
-    "GITHUB_REF_PROTECTED",
     "GITHUB_WORKFLOW_REF",
     "GITHUB_WORKFLOW_SHA",
     'push|repository_dispatch',
@@ -343,6 +342,10 @@ for snippet in (
     '.client_payload == null',
 ):
     check(snippet in job_started_text, f"Runner-wide job-start trust gate is missing: {snippet}")
+check(
+    "GITHUB_REF_PROTECTED" not in job_started_text,
+    "Owner-only runner policy must not depend on unavailable technical branch protection",
+)
 marker_write = "printf 'started_at=%s\\n'"
 check(job_started_text.count(marker_write) == 1, "Job marker write contract drifted")
 check(
@@ -410,6 +413,10 @@ required_operations = (
     "Secret-Broker außerhalb des Job-Containers",
     "Das Löschen von _work allein ist ausdrücklich nicht ephemeral",
     "protected=false",
+    "Owner-only Trust Root",
+    "BenjaminHornung",
+    "keine Deploy Keys",
+    "read-only GITHUB_TOKEN",
     "ACTIONS_RUNNER_HOOK_JOB_STARTED",
     "## Aktivierungsbedingungen nach diesem Fix",
     "Runner-Credentials rotiert",
@@ -426,10 +433,18 @@ for snippet in (
     "repository_dispatch with the fixed type browser-mainline-ci",
     "## Repository validation",
     "cleanup is not ephemeral isolation",
-    "## Activation prerequisite",
+    "## Owner-only trust model",
     "runner-wide check",
 ):
     check(snippet in readme_text, f"README is missing: {snippet}")
+check(
+    bool(re.search(r"owner is the only write-capable\s+principal", readme_text)),
+    "README is missing the sole write-capable owner contract",
+)
+check(
+    bool(re.search(r"not equivalent to\s+technical branch protection", readme_text)),
+    "README is missing the branch-protection risk distinction",
+)
 
 sensitive_assignment_pattern = re.compile(
     r"(?im)^\s*(?:-\s*)?[a-z0-9_]*(?:token|password|credential|secret)[a-z0-9_]*"

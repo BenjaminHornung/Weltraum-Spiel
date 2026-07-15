@@ -48,23 +48,38 @@ angegebene Refs und SHAs werden für den Checkout verarbeitet.
 Zusätzlich erzwingt der root-owned, mit Modus 0555 aus dem Image gelieferte
 `ACTIONS_RUNNER_HOOK_JOB_STARTED` die Grenze runnerweit vor jedem Job-Step. Er
 akzeptiert nur das exakte Repository, `push` oder `repository_dispatch`,
-`refs/heads/main`, `GITHUB_REF_PROTECTED=true`, den Workflowpfad
+`refs/heads/main`, den Workflowpfad
 `.github/workflows/browser-mainline-ci.yml`, übereinstimmende Job- und
 Workflow-SHAs sowie einen passenden Event-Payload. Dadurch scheitert auch ein
 anderer Workflow, der in einem Feature-Branch dieselben Runner-Labels
 adressiert, vor der Ausführung seines ersten Steps.
-Der Ausführungsvertrag setzt einen geschützten main voraus. Die Live-Abfrage am
-15. Juli 2026 meldete für dieses private Repository jedoch protected=false;
-Rulesets und klassische Branch Protection antworteten im aktuellen GitHub-Plan
-mit HTTP 403 und verlangen GitHub Pro oder ein öffentliches Repository. Das
-Repository wird nicht öffentlich gemacht. Bis ein Plan-Upgrade technischen
-Branch-Schutz ermöglicht, ist dies eine offen dokumentierte Restgrenze:
-Schreibberechtigte Repository-Benutzer müssen direkte main-Pushes vermeiden.
+
+### Bewusst akzeptierte Owner-only Trust Root
+
+Die Live-Abfrage am 15. Juli 2026 meldete für dieses private Repository
+`protected=false`; Rulesets und klassische Branch Protection antworteten im
+aktuellen GitHub-Plan mit HTTP 403 und verlangen GitHub Pro oder ein
+öffentliches Repository. Das Repository wird nicht öffentlich gemacht. Der
+Repository-Eigentümer hat deshalb ausdrücklich ein Owner-only Trust Model als
+Ausnahme akzeptiert.
+
+Der Aktivierungsaudit bestätigte genau einen schreibberechtigten Principal:
+`BenjaminHornung` mit Adminrechten. Es existierten keine Deploy Keys. Der
+Standard-GITHUB_TOKEN besitzt nur Leserechte und darf keine Pull-Request-
+Reviews genehmigen. Unter diesem Vertrag gilt aktueller `main` als
+vertrauenswürdig, obwohl GitHub ihn nicht technisch schützt.
+
+Diese Ausnahme ist schwächer als Branch Protection: Wird das Owner-Konto, ein
+zukünftig schreibberechtigter Benutzer, Token, Deploy Key oder eine GitHub App
+kompromittiert, kann Code direkt auf `main` gelangen und auf dem persistenten
+Runner ausgeführt werden. Vor jeder neuen Schreibberechtigung oder Integration
+muss der Audit wiederholt und der Workflow bis zur Neubewertung deaktiviert
+werden.
 
 ## Aktivierungsbedingungen nach diesem Fix
 
-Der Workflow darf erst wieder aktiviert werden, wenn alle folgenden
-Bedingungen technisch erfüllt und belegt sind:
+Der Workflow darf unter dem ausdrücklich akzeptierten Owner-only Trust Model
+erst wieder aktiviert werden, wenn alle folgenden Bedingungen belegt sind:
 
 1. Das Runner-Image mit dem gehärteten `job-started.sh` ist über die TrueNAS
    Custom-App-Schnittstelle ausgerollt und positive sowie negative Hook-Tests
@@ -72,14 +87,18 @@ Bedingungen technisch erfüllt und belegt sind:
 2. Weil der persistente State zuvor PR-Code ausgeführt hat, wurden die
    Runner-Credentials rotiert und Runner-Binaries, Hooks sowie Runtime-State
    aus dem digest-verifizierten Image sauber neu initialisiert.
-3. `main` besitzt technischen Branch-Schutz mit den vereinbarten Reviews,
-   Exact-Head-Checks, Conversation Resolution und Force-Push-Schutz.
+3. Der Live-Audit weist genau den Repository-Eigentümer als
+   schreibberechtigten Principal, keine Deploy Keys und einen standardmäßig
+   read-only GITHUB_TOKEN aus.
+4. Der Eigentümer akzeptiert dokumentiert, dass eine Kompromittierung seines
+   Kontos oder zukünftiger Schreib-Credentials Codeausführung auf dem
+   persistenten Runner ermöglicht.
 
 Ein reines Löschen von `_work` erfüllt Punkt 2 nicht. Wenn App-/Runner-Neustart
-oder Branch-Schutz nicht zulässig beziehungsweise im aktuellen GitHub-Plan
-nicht verfügbar sind, bleibt `Browser Mainline CI` deaktiviert. Der Runner und
-die TrueNAS App können dabei online bleiben; sie dürfen bis zur vollständigen
-Aktivierung der Trust Boundary keinen Job annehmen.
+oder der Schreibzugriffs-Audit nicht möglich sind, bleibt `Browser Mainline CI`
+deaktiviert. Der Runner und die TrueNAS App können dabei online bleiben; sie
+dürfen bis zur vollständigen Aktivierung der Trust Boundary keinen Job
+annehmen.
 ## PR-Verifikation
 
 Der vorläufige Vertrag trennt untrusted PR-Verifikation vom persistenten

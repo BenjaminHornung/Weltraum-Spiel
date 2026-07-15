@@ -21,17 +21,27 @@ checkout SHA, origin/main ancestry, and current main-head equality for
 repository_dispatch before npm or product scripts run. Cleanup of _work does
 not make the persistent runner ephemeral.
 
-## Activation prerequisite
+## Owner-only trust model
 
 The repository configuration includes an image-owned pre-job hook that checks
-the exact repository, event, technically protected main ref, workflow path, workflow SHA, job SHA,
+the exact repository, event, main ref, workflow path, workflow SHA, job SHA,
 and webhook payload before any job step. This runner-wide check blocks another
-branch-controlled workflow even if it requests the same labels.
+branch-controlled workflow even if it requests the same labels. It does not
+require GitHub to report main as technically protected.
 
 This guarantee applies only after the updated image has been deployed. Keep
 Browser Mainline CI disabled until the immutable hook is live, previously
-PR-exposed runner credentials and state have been rotated/reinitialized, and
-main has technical branch protection. Deleting only `_work` is insufficient.
+PR-exposed runner credentials and state have been rotated/reinitialized, and a
+live repository audit confirms that the owner is the only write-capable
+principal and no write-capable deploy key exists. Deleting only `_work` is
+insufficient.
+
+This is an explicitly accepted owner-only trust model, not equivalent to
+technical branch protection. Compromise of the owner account, a future
+write-capable collaborator, token, deploy key, or GitHub App can place code on
+main and therefore execute it on the persistent runner. Re-audit write access
+before adding any collaborator, deploy key, or integration.
+
 ## Pinned components
 
 - Playwright `1.61.1`, official Noble image pinned to its Linux x64 digest.

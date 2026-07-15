@@ -16,7 +16,6 @@ for required in \
   GITHUB_REPOSITORY \
   GITHUB_EVENT_NAME \
   GITHUB_REF \
-  GITHUB_REF_PROTECTED \
   GITHUB_SHA \
   GITHUB_WORKFLOW_REF \
   GITHUB_WORKFLOW_SHA \
@@ -33,7 +32,6 @@ case "${GITHUB_EVENT_NAME}" in
 esac
 
 [[ "${GITHUB_REF}" == "${expected_ref}" ]] || fail "unexpected ref: ${GITHUB_REF}"
-[[ "${GITHUB_REF_PROTECTED}" == "true" ]] || fail "main ref is not technically protected"
 [[ "${GITHUB_SHA}" =~ ^[0-9a-f]{40}$ ]] || fail "github SHA is not a lowercase 40-character commit ID"
 [[ "${GITHUB_WORKFLOW_REF}" == "${expected_workflow_ref}" ]] || \
   fail "unexpected workflow ref: ${GITHUB_WORKFLOW_REF}"
