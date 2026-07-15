@@ -1,0 +1,7 @@
+*
+!Dockerfile
+!entrypoint.sh
+!cleanup-workspace.sh
+!job-started.sh
+!job-completed.sh
+!actions-runner-linux-x64-2.335.1.tar.gz

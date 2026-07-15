@@ -20,11 +20,19 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: browser-mainline-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   browser-mainline:
     name: Browser mainline verification
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64, weltraum-browser]
     timeout-minutes: 45
+    env:
+      CI: "true"
+      PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
+      npm_config_cache: /home/runner/.npm
     defaults:
       run:
         working-directory: apps/weltraum-browser
@@ -86,20 +94,74 @@ jobs:
             fi
           done
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: apps/weltraum-browser/package-lock.json
+      - name: Verify runner toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          command -v node npm git jq file >/dev/null
+          test "$(node --version | cut -d. -f1)" = "v22"
+          git lfs version
+          node --version
+          npm --version
+          jq --version
 
       - name: Install browser dependencies
         id: install_browser_dependencies
         run: npm ci
 
-      - name: Install Playwright Chromium
-        id: install_playwright
-        run: npx playwright install --with-deps chromium
+      - name: Verify pinned Playwright Chromium
+        id: verify_playwright
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$PLAYWRIGHT_BROWSERS_PATH" = "/ms-playwright"
+          test "$npm_config_cache" = "/home/runner/.npm"
+          node --input-type=module <<'NODE'
+          import { constants } from "node:fs";
+          import { access, readFile } from "node:fs/promises";
+          import { chromium } from "playwright";
+
+          const lock = JSON.parse(await readFile("package-lock.json", "utf8"));
+          const expected = lock.packages?.["node_modules/@playwright/test"]?.version;
+          const installedTest = JSON.parse(await readFile("node_modules/@playwright/test/package.json", "utf8")).version;
+          const installedPlaywright = JSON.parse(await readFile("node_modules/playwright/package.json", "utf8")).version;
+
+          if (!expected || expected !== installedTest || expected !== installedPlaywright) {
+            throw new Error(
+              "Playwright version mismatch: lock=" + expected
+              + " @playwright/test=" + installedTest
+              + " playwright=" + installedPlaywright
+            );
+          }
+          if (expected !== "1.61.1") {
+            throw new Error("Runner image expects Playwright 1.61.1, lockfile contains " + expected);
+          }
+
+          const executable = chromium.executablePath();
+          if (!executable.startsWith("/ms-playwright/")) {
+            throw new Error("Chromium resolved outside /ms-playwright: " + executable);
+          }
+          await access(executable, constants.X_OK);
+
+          const browser = await chromium.launch({ headless: true });
+          const page = await browser.newPage();
+          const webgl = await page.evaluate(() => {
+            const canvas = document.createElement("canvas");
+            const context = canvas.getContext("webgl2") || canvas.getContext("webgl");
+            return {
+              available: Boolean(context),
+              renderer: context ? context.getParameter(context.RENDERER) : null,
+              vendor: context ? context.getParameter(context.VENDOR) : null
+            };
+          });
+          const browserVersion = browser.version();
+          await browser.close();
+
+          if (!webgl.available) {
+            throw new Error("Headless Chromium did not provide a WebGL context.");
+          }
+          console.log(JSON.stringify({ expected, executable, browserVersion, webgl }, null, 2));
+          NODE
 
       - name: Print browser tool and GLB diagnostics
         shell: bash
@@ -248,19 +310,19 @@ jobs:
           NODE
 
       - name: Run Playwright core and autopilot E2E
-        if: ${{ !cancelled() && steps.install_browser_dependencies.outcome == 'success' && steps.install_playwright.outcome == 'success' && steps.browser_build.outcome == 'success' && steps.playwright_group_membership.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.install_browser_dependencies.outcome == 'success' && steps.verify_playwright.outcome == 'success' && steps.browser_build.outcome == 'success' && steps.playwright_group_membership.outcome == 'success' }}
         env:
           WELTRAUM_PLAYWRIGHT_ARTIFACT_GROUP: core-autopilot
         run: npm run test:e2e:core
 
       - name: Run Playwright live runtime and objectives E2E
-        if: ${{ !cancelled() && steps.install_browser_dependencies.outcome == 'success' && steps.install_playwright.outcome == 'success' && steps.browser_build.outcome == 'success' && steps.playwright_group_membership.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.install_browser_dependencies.outcome == 'success' && steps.verify_playwright.outcome == 'success' && steps.browser_build.outcome == 'success' && steps.playwright_group_membership.outcome == 'success' }}
         env:
           WELTRAUM_PLAYWRIGHT_ARTIFACT_GROUP: live-runtime
         run: npm run test:e2e:live
 
       - name: Run Playwright UI and layout E2E
-        if: ${{ !cancelled() && steps.install_browser_dependencies.outcome == 'success' && steps.install_playwright.outcome == 'success' && steps.browser_build.outcome == 'success' && steps.playwright_group_membership.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.install_browser_dependencies.outcome == 'success' && steps.verify_playwright.outcome == 'success' && steps.browser_build.outcome == 'success' && steps.playwright_group_membership.outcome == 'success' }}
         env:
           WELTRAUM_PLAYWRIGHT_ARTIFACT_GROUP: ui-layout
         run: npm run test:e2e:ui
@@ -285,23 +347,14 @@ jobs:
           NODE
 
       - name: Upload browser test artifacts
-        if: always()
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: browser-mainline-ci-artifacts
           if-no-files-found: ignore
-          retention-days: 14
+          retention-days: 3
           path: |
             apps/weltraum-browser/playwright-report/**
             apps/weltraum-browser/test-results/**
             apps/weltraum-browser/evidence/playwright-report/**
             apps/weltraum-browser/evidence/playwright-output/**
-            apps/weltraum-browser/evidence/playwright-report/core-autopilot/**
-            apps/weltraum-browser/evidence/playwright-report/live-runtime/**
-            apps/weltraum-browser/evidence/playwright-report/ui-layout/**
-            apps/weltraum-browser/evidence/playwright-output/core-autopilot/**
-            apps/weltraum-browser/evidence/playwright-output/live-runtime/**
-            apps/weltraum-browser/evidence/playwright-output/ui-layout/**
-            apps/weltraum-browser/evidence/*.png
-            apps/weltraum-browser/evidence/*.json
-            apps/weltraum-browser/evidence/*.md
