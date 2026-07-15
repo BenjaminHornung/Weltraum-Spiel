@@ -1,32 +1,37 @@
 name: Browser Mainline CI
 
 on:
-  pull_request:
-    paths:
-      - "apps/weltraum-browser/**"
-      - ".github/workflows/browser-mainline-ci.yml"
-      - "docs/browser-mainline/**"
-      - ".devtoolbox/specs/changes/browser-*/**"
   push:
     branches:
       - main
     paths:
       - "apps/weltraum-browser/**"
+      - ".gitattributes"
       - ".github/workflows/browser-mainline-ci.yml"
+      - "infra/github-runner-truenas/**"
+      - "docs/operations/truenas-self-hosted-github-runner.md"
       - "docs/browser-mainline/**"
       - ".devtoolbox/specs/changes/browser-*/**"
-  workflow_dispatch:
+
+  repository_dispatch:
+    types:
+      - browser-mainline-ci
 
 permissions:
   contents: read
 
 concurrency:
-  group: browser-mainline-${{ github.event.pull_request.number || github.ref }}
+  group: browser-mainline-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   browser-mainline:
     name: Browser mainline verification
+    if: >-
+      (github.event_name == 'push' &&
+       github.ref == 'refs/heads/main') ||
+      (github.event_name == 'repository_dispatch' &&
+       github.ref == 'refs/heads/main')
     runs-on: [self-hosted, linux, x64, weltraum-browser]
     timeout-minutes: 45
     env:
@@ -41,7 +46,54 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           lfs: false
+
+      - name: Verify trusted main checkout
+        shell: bash
+        working-directory: .
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          EXPECTED_REF: ${{ github.ref }}
+          EXPECTED_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+
+          case "${EVENT_NAME}" in
+            push|repository_dispatch) ;;
+            *)
+              echo "::error::Refusing unsupported event: ${EVENT_NAME}"
+              exit 1
+              ;;
+          esac
+
+          if [[ "${EXPECTED_REF}" != "refs/heads/main" ]]; then
+            echo "::error::Refusing non-main ref: ${EXPECTED_REF}"
+            exit 1
+          fi
+
+          actual_head="$(git rev-parse HEAD)"
+          if [[ "${actual_head}" != "${EXPECTED_SHA}" ]]; then
+            echo "::error::Checkout HEAD ${actual_head} does not match github.sha ${EXPECTED_SHA}."
+            exit 1
+          fi
+
+          git fetch --no-tags --prune origin \
+            +refs/heads/main:refs/remotes/origin/main
+
+          main_head="$(git rev-parse refs/remotes/origin/main)"
+          if ! git merge-base --is-ancestor "${EXPECTED_SHA}" refs/remotes/origin/main; then
+            echo "::error::github.sha ${EXPECTED_SHA} is not part of origin/main."
+            exit 1
+          fi
+
+          if [[ "${EVENT_NAME}" == "repository_dispatch" && "${main_head}" != "${EXPECTED_SHA}" ]]; then
+            echo "::error::repository_dispatch must execute the current main head ${main_head}, not ${EXPECTED_SHA}."
+            exit 1
+          fi
+
+          printf 'Verified event=%s ref=%s sha=%s origin_main=%s\n' \
+            "${EVENT_NAME}" "${EXPECTED_REF}" "${EXPECTED_SHA}" "${main_head}"
 
       - name: Restore required browser LFS artifacts if checked out as pointers
         shell: bash
