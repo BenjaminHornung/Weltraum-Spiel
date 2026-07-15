@@ -5,19 +5,143 @@ Task-ID: truenas-self-hosted-github-runner-v1
 ## Zweck und Architektur
 
 GitHub bleibt Quellcode-, Pull-Request- und Workflow-System. Die TrueNAS
-Custom App github-runner-weltraum betreibt genau einen nicht privilegierten
-GitHub-Actions-Runner für BenjaminHornung/Weltraum-Spiel. Nur der
-rechenintensive Workflow Browser Mainline CI verwendet ihn. Codex Review Gate
-bleibt unabhängig auf ubuntu-latest.
+Custom App github-runner-weltraum betreibt genau einen nicht privilegierten,
+persistenten GitHub-Actions-Runner für BenjaminHornung/Weltraum-Spiel. Nur der
+rechenintensive Workflow Browser Mainline CI verwendet ihn. Dieser Workflow
+führt ausschließlich Code des aktuellen main aus: automatisch nach einem Push
+auf refs/heads/main oder manuell über den festen repository_dispatch-Typ
+browser-mainline-ci. Codex Review Gate bleibt unabhängig auf ubuntu-latest.
 
 Der Container wird vom TrueNAS-Apps-System gebaut und verwaltet. Er basiert auf
 dem offiziellen Microsoft-Playwright-Noble-Image, enthält den offiziellen
 GitHub Actions Runner und benötigt weder VM noch separaten Docker-Daemon.
 Ausgehend sind DNS und HTTPS erforderlich; eingehende Ports werden nicht
-veröffentlicht.
+veröffentlicht. Der persistente Runner ist keine Sandbox für Pull-Request-Code
+oder andere nicht vertrauenswürdige Refs.
 
 Der Runner initiiert alle Verbindungen zu GitHub selbst. Eine dynamische
 öffentliche IP, Portweiterleitung oder ein Cloudflare-Tunnel ist nicht nötig.
+
+## Aktuelle Trust Boundary
+
+Der persistente Runner besitzt absichtlich wiederverwendbaren State. Unter
+/runner-state liegen Runner-Binaries, .runner, .credentials,
+.credentials_rsaparams, Hooks, Toolcache und Runtime-State. Runner und Job
+laufen als UID/GID 1000:1000. Deshalb darf dieser Runner ausschließlich den
+aktuellen, als vertrauenswürdig behandelten main ausführen. Er führt keine
+PR-Heads, Merge-Refs, Fork-Refs, Tags, beliebigen Branches oder vom Aufrufer
+angegebenen Commit-SHAs aus.
+
+Browser Mainline CI akzeptiert nur:
+
+- push mit github.ref gleich refs/heads/main
+- repository_dispatch mit Typ browser-mainline-ci und github.ref gleich
+  refs/heads/main
+
+Der Job besitzt zusätzlich einen fail-closed Event-/Ref-Guard. Nach dem
+normalen Checkout wird vor npm ci oder Produktskripten geprüft, dass HEAD exakt
+github.sha entspricht und github.sha Bestandteil von origin/main ist. Beim
+repository_dispatch muss github.sha außerdem exakt dem aktuellen main-Head
+entsprechen. Weder Workflow-Inputs noch client_payload, head_ref oder frei
+angegebene Refs und SHAs werden für den Checkout verarbeitet.
+
+Zusätzlich erzwingt der root-owned, mit Modus 0555 aus dem Image gelieferte
+`ACTIONS_RUNNER_HOOK_JOB_STARTED` die Grenze runnerweit vor jedem Job-Step. Er
+akzeptiert nur das exakte Repository, `push` oder `repository_dispatch`,
+`refs/heads/main`, `GITHUB_REF_PROTECTED=true`, den Workflowpfad
+`.github/workflows/browser-mainline-ci.yml`, übereinstimmende Job- und
+Workflow-SHAs sowie einen passenden Event-Payload. Dadurch scheitert auch ein
+anderer Workflow, der in einem Feature-Branch dieselben Runner-Labels
+adressiert, vor der Ausführung seines ersten Steps.
+Der Ausführungsvertrag setzt einen geschützten main voraus. Die Live-Abfrage am
+15. Juli 2026 meldete für dieses private Repository jedoch protected=false;
+Rulesets und klassische Branch Protection antworteten im aktuellen GitHub-Plan
+mit HTTP 403 und verlangen GitHub Pro oder ein öffentliches Repository. Das
+Repository wird nicht öffentlich gemacht. Bis ein Plan-Upgrade technischen
+Branch-Schutz ermöglicht, ist dies eine offen dokumentierte Restgrenze:
+Schreibberechtigte Repository-Benutzer müssen direkte main-Pushes vermeiden.
+
+## Aktivierungsbedingungen nach diesem Fix
+
+Der Workflow darf erst wieder aktiviert werden, wenn alle folgenden
+Bedingungen technisch erfüllt und belegt sind:
+
+1. Das Runner-Image mit dem gehärteten `job-started.sh` ist über die TrueNAS
+   Custom-App-Schnittstelle ausgerollt und positive sowie negative Hook-Tests
+   sind grün.
+2. Weil der persistente State zuvor PR-Code ausgeführt hat, wurden die
+   Runner-Credentials rotiert und Runner-Binaries, Hooks sowie Runtime-State
+   aus dem digest-verifizierten Image sauber neu initialisiert.
+3. `main` besitzt technischen Branch-Schutz mit den vereinbarten Reviews,
+   Exact-Head-Checks, Conversation Resolution und Force-Push-Schutz.
+
+Ein reines Löschen von `_work` erfüllt Punkt 2 nicht. Wenn App-/Runner-Neustart
+oder Branch-Schutz nicht zulässig beziehungsweise im aktuellen GitHub-Plan
+nicht verfügbar sind, bleibt `Browser Mainline CI` deaktiviert. Der Runner und
+die TrueNAS App können dabei online bleiben; sie dürfen bis zur vollständigen
+Aktivierung der Trust Boundary keinen Job annehmen.
+## PR-Verifikation
+
+Der vorläufige Vertrag trennt untrusted PR-Verifikation vom persistenten
+Runner:
+
+```text
+PR:
+- lokale Agent-Verifikation
+- TypeScript
+- Units
+- Build
+- Core/Live/UI/full E2E
+- Exact-Head Codex Review
+- Review-Threads
+- Scope-Audit
+
+Nach Merge:
+- vollständige Browser Mainline CI auf Self-hosted Runner
+- exakter main-SHA
+```
+
+Post-Merge-CI kann eine fehlerhafte Änderung erst nach dem Merge erkennen und
+verhindert sie nicht vorab. Eine fehlende lokale oder Review-Verifikation darf
+nicht durch den späteren Self-hosted Lauf ersetzt werden.
+
+## Sicherer manueller Lauf
+
+Ein manueller Lauf wird ausschließlich ohne Ref-, Branch-, SHA- oder sonstige
+Payload ausgelöst:
+
+```bash
+gh api \
+  --method POST \
+  repos/BenjaminHornung/Weltraum-Spiel/dispatches \
+  -f event_type=browser-mainline-ci
+```
+
+Kein client_payload mitsenden. GitHub verwendet bei repository_dispatch die
+Workflowdatei und den letzten Commit des Default-Branches; GITHUB_REF ist der
+Default-Branch. workflow_dispatch ist absichtlich nicht konfiguriert, weil es
+einen auswählbaren Ref akzeptiert.
+
+## Spätere PR-fähige Lösung
+
+Eine spätere Self-hosted PR-CI benötigt echte Ephemeral Isolation als eigenes
+Work Package:
+
+- frische Runner-Registrierung pro Job
+- frische Credentials pro Job
+- Runner mit --ephemeral
+- komplett neues Ausführungsumfeld pro Job
+- keine Wiederverwendung beschreibbarer Runner-Binaries
+- keine Wiederverwendung von .runner oder .credentials
+- keine gemeinsam beschreibbaren Hooks
+- keine gemeinsam beschreibbaren Tool-Verzeichnisse
+- vollständige Vernichtung nach Jobende
+- Secret-Broker außerhalb des Job-Containers
+- keine GitHub-App- oder PAT-Secrets im ausführenden PR-Container
+- kontrollierter Image- und Supply-Chain-Hash
+- Log- und Artifact-Export vor Vernichtung
+
+Das Löschen von _work allein ist ausdrücklich nicht ephemeral.
 
 ## Inventar
 
@@ -82,6 +206,8 @@ Shares werden gemountet.
   Environment-Variable oder langfristiges PAT gespeichert.
 - Der Tokeninhalt wird nach erfolgreicher Registrierung auf dem Host geleert.
 - Runner-Credentials liegen ausschließlich im restriktiven state-Verzeichnis.
+- Der persistente Runner verarbeitet nur aktuellen main und niemals PR-Code,
+  beliebige Refs oder benutzerdefinierte SHAs.
 - PLAYWRIGHT_BROWSERS_PATH ist /ms-playwright; es werden keine unsicheren
   Chromium-Flags ergänzt.
 
@@ -180,7 +306,11 @@ Erhalten bleiben:
 
 Bereinigt werden Checkout, temporäre Playwright-Dateien, Testresultate und
 sonstige Jobverzeichnisse unter _work. Das Runner-State-Verzeichnis selbst ist
-nie automatisches Löschziel.
+nie automatisches Löschziel. Dieser Cleanup ist keine Ephemeral Isolation:
+Runner-Binaries, Credentials, Hooks und Toolcache bleiben beschreibbar und
+werden zwischen Jobs wiederverwendet. Die Sicherheitsgrenze entsteht daher
+nicht durch Cleanup, sondern ausschließlich durch die Main-only Trigger-,
+Ref- und Checkout-Gates.
 
 Sicherer manueller Cleanup bei gestoppter oder eindeutig idle App:
 
@@ -281,10 +411,14 @@ Die Abnahme protokolliert:
 - Runner.Listener läuft genau einmal.
 - GitHub zeigt den Runner online/idle und die erwarteten Labels.
 - App-Neustart behält die Registrierung ohne erneute Tokenverwendung.
-- Pull-Request-Workflow läuft auf diesem Runner vollständig grün.
+- Der Workflow besitzt weder pull_request, pull_request_target,
+  workflow_dispatch noch andere untrusted Trigger.
+- Ein Push auf main oder ein payload-freier repository_dispatch führt exakt
+  den von GitHub gemeldeten main-SHA aus.
+- Für PR-Heads wird auf diesem persistenten Runner kein Lauf erzeugt.
 - Codex Review Gate läuft getrennt auf ubuntu-latest.
 - Erfolgreiche Browserläufe laden keine großen Testartefakte hoch.
-- Ein schneller Folge-Push storniert den älteren Browserlauf.
+- Ein schneller Folge-Push auf main storniert den älteren Browserlauf.
 - Nach Jobabschluss ist _work leer; Cache, Toolcache und Konfiguration bleiben
   erhalten.
 

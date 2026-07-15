@@ -6,6 +6,32 @@ This directory defines the repository-scoped Browser CI runner for
 The runner initiates outbound GitHub connections only, so a dynamic public IP
 needs neither inbound port forwarding nor a Cloudflare tunnel.
 
+## Execution trust boundary
+
+This runner is persistent and is not a sandbox for pull-request or other
+untrusted code. Browser Mainline CI may execute only the current main commit:
+
+- push on refs/heads/main
+- repository_dispatch with the fixed type browser-mainline-ci
+
+The workflow has no pull_request, pull_request_target, workflow_dispatch,
+workflow_call, issue_comment, tag, custom-ref, or custom-SHA execution path.
+Its fail-closed checkout guard verifies the event, refs/heads/main, exact
+checkout SHA, origin/main ancestry, and current main-head equality for
+repository_dispatch before npm or product scripts run. Cleanup of _work does
+not make the persistent runner ephemeral.
+
+## Activation prerequisite
+
+The repository configuration includes an image-owned pre-job hook that checks
+the exact repository, event, technically protected main ref, workflow path, workflow SHA, job SHA,
+and webhook payload before any job step. This runner-wide check blocks another
+branch-controlled workflow even if it requests the same labels.
+
+This guarantee applies only after the updated image has been deployed. Keep
+Browser Mainline CI disabled until the immutable hook is live, previously
+PR-exposed runner credentials and state have been rotated/reinitialized, and
+main has technical branch protection. Deleting only `_work` is insufficient.
 ## Pinned components
 
 - Playwright `1.61.1`, official Noble image pinned to its Linux x64 digest.
@@ -33,6 +59,21 @@ midclt call -j app.image.pull \
 
 The service uses `pull_policy: build`, so Compose never tries to pull the
 local-only `github-runner-weltraum` image from a registry.
+
+## Repository validation
+
+Run the repository-owned validation before deployment or review:
+
+```powershell
+py -3 infra/github-runner-truenas/validate-config.py
+```
+
+It parses the workflow and Compose YAML, parses every infra JSON file, checks
+all shell scripts with `bash -n`, verifies pinned versions/digests, labels,
+mounts, hooks, cleanup scope, documentation consistency, trigger/ref policy,
+and scans for credential patterns. It installs no package or system
+dependency; the validation environment must already provide Python, PyYAML,
+and Bash.
 
 ## Deployment contract
 
@@ -65,8 +106,10 @@ survive app restarts and are not overwritten on every container start.
 - The official Playwright seccomp profile is used without custom Chromium
   command-line flags.
 - One non-root listener handles at most one job at a time.
+- The persistent runner executes only current main and never PR heads, merge
+  refs, arbitrary branches, tags, or caller-supplied SHAs.
 - Cleanup is limited to `/runner-state/_work`; runner state and caches are not
-  automatic deletion targets.
+  automatic deletion targets and the cleanup is not ephemeral isolation.
 
 Operational lifecycle, registration, verification, update, troubleshooting,
 and rollback instructions live in
