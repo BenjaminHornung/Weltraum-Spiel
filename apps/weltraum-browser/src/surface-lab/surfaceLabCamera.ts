@@ -82,6 +82,7 @@ export const createSurfaceLabCamera = (options: SurfaceLabCameraOptions): Surfac
   };
 
   const reset = (): void => {
+    if (disposed) return;
     mode = "Orbit";
     target.set(RESET_TARGET.x, RESET_TARGET.y, RESET_TARGET.z);
     camera.position.set(RESET_POSITION.x, RESET_POSITION.y, RESET_POSITION.z);
@@ -90,6 +91,7 @@ export const createSurfaceLabCamera = (options: SurfaceLabCameraOptions): Surfac
   };
 
   const setMode = (nextMode: SurfaceLabCameraMode): void => {
+    if (disposed) return;
     if (nextMode === "Fly") focusViewport();
     if (mode === nextMode) return;
     if (nextMode === "Fly") {
@@ -157,6 +159,7 @@ export const createSurfaceLabCamera = (options: SurfaceLabCameraOptions): Surfac
   };
 
   const update = (deltaSeconds: number): void => {
+    if (disposed) return;
     if (mode !== "Fly" || pressedKeys.size === 0) return;
     const delta = finiteDelta(deltaSeconds);
     const speedMultiplier = pressedKeys.has("ShiftLeft") || pressedKeys.has("ShiftRight")

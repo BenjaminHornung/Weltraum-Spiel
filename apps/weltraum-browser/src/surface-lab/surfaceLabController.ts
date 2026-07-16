@@ -499,8 +499,8 @@ export class SurfaceLabController {
         this.#recordFailure(generation);
       }
     }
-    this.#emit();
     this.#finishIfSettled(generation);
+    this.#emit();
     return this.#settledPromise;
   }
 
@@ -650,12 +650,23 @@ export class SurfaceLabController {
     const referencedProfiles = new Set(decoded.artifact.materialRanges.map((range) => range.materialProfileId));
     const profiles = SURFACE_LAB_MATERIAL_PROFILES.filter((profile) => referencedProfiles.has(profile.id));
     const before = this.#now();
-    const result = this.#backend.dispatch(createRenderCommand({
-      kind: "UpsertMeshArtifact",
-      backendRevision: this.#backend.readDiagnostics().backendRevision,
-      artifact: decoded.artifact,
-      materialProfiles: profiles
-    }));
+    const backendRevision = this.#backend.readDiagnostics().backendRevision;
+    let result: RenderCommandResult;
+    try {
+      result = this.#backend.dispatch(createRenderCommand({
+        kind: "UpsertMeshArtifact",
+        backendRevision,
+        artifact: decoded.artifact,
+        materialProfiles: profiles
+      }));
+    } catch (publicationError) {
+      try {
+        this.#removeArtifact(decoded.artifact);
+      } catch {
+        // Preserve the publication failure while still attempting exact, version-aware compensation.
+      }
+      throw publicationError;
+    }
     this.#metrics.uploadMilliseconds += Math.max(0, this.#now() - before);
     resultAccepted(result, "Surface Lab artifact upsert");
     this.#published.set(decoded.representationKey, Object.freeze({

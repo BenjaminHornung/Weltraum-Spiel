@@ -40,8 +40,8 @@
 - Activate 0.25 m and require honestly reported 32 x 16 x 32 m region.
 - Capture 1920x1080 default, wireframe and quarter-meter screenshots.
 
-## Visual Review
-Require visible terrain, no black/empty frame, no chunk holes, no dominant debug grid, fog that retains readable depth, plausible waterline, recognizable faceted low-poly language, Hestia green/petrol/cyan direction, compact edge HUD, and no runtime concept image/ship/outpost/mission/player fiction.
+## Technical Screenshot Review and Visual Deferral
+Require a visible non-empty live terrain projection, no obvious chunk holes, no always-on dominant debug grid, a compact edge HUD, exact 1920x1080 dimensions, and no runtime concept image/ship/outpost/mission/player fiction. These captures are technical evidence for the pipeline and controls, not visual-fidelity acceptance. Independent review records the current visual result as known failing: landforms/material bands are too dark, the waterline is not convincingly readable, overlays can dominate, and the quarter-meter capture does not demonstrate readable microvoxel detail. Those findings are deferred to `browser-hestia-surface-lab-visual-fidelity-v1`.
 
 ## Performance Evidence
 Record per-region vertices, triangles and mesh bytes; per-job generation/meshing; upload time; queue/running; cache hits/misses; stale rejects; and 300 settled frame samples. Enforce <=16 MiB output per chunk and <=128 MiB region mesh buffers. Report observed values without generalizing beyond the test host.
@@ -58,7 +58,13 @@ Record per-region vertices, triangles and mesh bytes; per-job generation/meshing
 - git diff --check
 
 ## Completion Evidence
-Store summary JSON, Markdown and screenshots under apps/weltraum-browser/evidence. Record start/final SHAs, exact commands and results, screenshots reviewed, measured values, review findings/fixes and remaining limits.
+Store summary JSON, Markdown and technical screenshots under apps/weltraum-browser/evidence. Record start/final SHAs, exact commands and results, screenshot dimensions/runtime state, measured values, review findings/fixes, the explicit visual-fidelity deferment and remaining limits.
+
+## Approved Pipeline-Baseline Reframe (2026-07-15)
+1. Task 4.2 completes on real-browser inspectability, focus/input behavior, presentation-only environment ownership, telemetry, lifecycle/disposal safety and canonical-hash stability.
+2. The live spec proves same-seed equality, changed-seed inequality, settlement, zero browser/network errors, interaction hash stability, truthful quarter-meter extent and measured budgets without TestBridge.
+3. Screenshots remain required technical evidence, but visual-fidelity review is intentionally failing/deferred and is not a Task 5.2 blocker.
+4. Full Node 22 verification and independent correctness reviews remain mandatory. Any unavailable Node 22 runtime is a blocker rather than an implicit Node 26 substitution.
 
 ## Revised Task 4.1 Contract Matrix (2026-07-15)
 1. Execute the query predicate for absent, empty, 0, 01, true, duplicate 1 and exact single 1; source-text matching is not evidence.

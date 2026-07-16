@@ -299,7 +299,9 @@ class FakeThreeRenderer implements ThreeRendererPort {
   public dispose(): void {}
 }
 
-const realBackendFixture = (): Readonly<{
+type PresentationFaultKind = "ApplyFrameProjection" | "ApplyVisibilityPlan";
+
+const realBackendFixture = (rejectOnce?: PresentationFaultKind): Readonly<{
   backend: RenderBackend;
   realBackend: ThreeRenderBackend;
   commands: RenderCommand[];
@@ -309,9 +311,14 @@ const realBackendFixture = (): Readonly<{
     rendererFactory: () => new FakeThreeRenderer()
   });
   const commands: RenderCommand[] = [];
+  let pendingRejection = rejectOnce;
   const recordingBackend: RenderBackend = {
     dispatch: (command) => {
       commands.push(command);
+      if (command.kind === pendingRejection) {
+        pendingRejection = undefined;
+        return renderCommandResult("RejectedInvalidArtifact", "NotApplicable", "SyntheticPresentationFault");
+      }
       return realBackend.dispatch(command);
     },
     renderFrame: () => realBackend.renderFrame(),
@@ -522,6 +529,28 @@ describe("Surface Lab controller", () => {
     });
     expect(commandCount(backend, "UpsertMeshArtifact")).toBe(5);
     expect(backend.resident.size).toBe(5);
+  });
+
+  it("emits terminal failure when every regeneration enqueue fails synchronously", async () => {
+    const { workerPool, controller } = fixture();
+    await controller.start();
+    workerPool.completePlanning(1);
+    await controller.whenSettled();
+    const emitted: ReturnType<SurfaceLabController["readTelemetry"]>[] = [];
+    const unsubscribe = controller.subscribe((snapshot) => { emitted.push(snapshot); });
+    workerPool.enqueueFailureAfter = 0;
+
+    const settled = await controller.regenerate("hestia-surface-lab-sync-enqueue-failure");
+
+    expect(settled).toMatchObject({ lifecycle: "Failed", requestedChunks: 0, readyChunks: 0, failedChunks: 16 });
+    expect(emitted.at(-1)).toMatchObject({ lifecycle: "Failed", requestedChunks: 0, readyChunks: 0, failedChunks: 16 });
+    expect(controller.readTelemetry()).toMatchObject({
+      lifecycle: "Failed",
+      requestedChunks: 0,
+      readyChunks: 0,
+      failedChunks: 16
+    });
+    unsubscribe();
   });
 
   it("adopts exact accepted worker buffers, snapshots untrusted buffers and omits empty artifacts", async () => {
@@ -806,6 +835,65 @@ describe("Surface Lab controller", () => {
     expect(visibilityRevisions).toEqual(projectionRevisions);
     await controller.dispose();
   });
+
+  it.each(["ApplyFrameProjection", "ApplyVisibilityPlan"] as const)(
+    "compensates an accepted artifact when %s rejects and prevents later resurrection or generation mixing",
+    async (faultKind) => {
+      const workerPool = new FakeWorkerPool();
+      const { backend, realBackend, commands } = realBackendFixture(faultKind);
+      const controller = new SurfaceLabController({
+        workerPool,
+        backend,
+        decodeCompleted: decode,
+        admitToCache: (_cache, payload) => createHestiaVoxelCacheKey(payload, algorithmVersion(1))
+      });
+      await controller.start();
+      workerPool.completePlanning(1);
+      await expect(controller.whenSettled()).resolves.toMatchObject({
+        lifecycle: "Failed",
+        requestedChunks: 16,
+        readyChunks: 15,
+        failedChunks: 1
+      });
+
+      const firstGeneration = commands
+        .filter((command): command is Extract<RenderCommand, { kind: "UpsertMeshArtifact" }> =>
+          command.kind === "UpsertMeshArtifact" && command.artifact.artifactRevision === 1)
+        .map((command) => command.artifact);
+      expect(firstGeneration).toHaveLength(16);
+      const rejectedArtifact = firstGeneration[0];
+      if (rejectedArtifact === undefined) throw new Error("Expected a rejected first-generation artifact.");
+      expect(realBackend.readDiagnostics()).toMatchObject({ activeRepresentations: 15 });
+      expect(realBackend.readDiagnostics().residentRepresentationKeys).not.toContain(rejectedArtifact.representationKey);
+      expect(realBackend.readDiagnostics().visibleRepresentationKeys).not.toContain(rejectedArtifact.representationKey);
+
+      const changedSeed = controller.regenerate(`hestia-surface-lab-${faultKind}-recovery`);
+      workerPool.completePlanning(2);
+      await expect(changedSeed).resolves.toMatchObject({
+        lifecycle: "Ready",
+        requestedChunks: 16,
+        readyChunks: 16,
+        failedChunks: 0
+      });
+      const secondGeneration = commands
+        .filter((command): command is Extract<RenderCommand, { kind: "UpsertMeshArtifact" }> =>
+          command.kind === "UpsertMeshArtifact" && command.artifact.artifactRevision === 2)
+        .map((command) => command.artifact);
+      expect(secondGeneration).toHaveLength(16);
+      const secondKeys = secondGeneration.map((artifact) => artifact.representationKey).sort();
+      const firstKeys = new Set(firstGeneration.map((artifact) => artifact.representationKey));
+      expect(secondKeys.some((key) => firstKeys.has(key))).toBe(false);
+      expect(realBackend.readDiagnostics()).toMatchObject({
+        activeRepresentations: 16,
+        residentRepresentationKeys: secondKeys,
+        visibleRepresentationKeys: secondKeys
+      });
+      expect(commands.filter((command) => command.kind === "RemoveRepresentation"
+        && command.representationKey === rejectedArtifact.representationKey
+        && command.expectedArtifactRevision === rejectedArtifact.artifactRevision)).toHaveLength(1);
+      await controller.dispose();
+    }
+  );
 
   it("prevalidates invalid seeds without mutating active generation state", async () => {
     const invalidFixture = () => new SurfaceLabController({

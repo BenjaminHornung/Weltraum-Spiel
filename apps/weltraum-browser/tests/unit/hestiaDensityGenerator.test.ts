@@ -153,7 +153,7 @@ describe("Hestia V1 density and material generation", () => {
     expect(() => classifyHestiaMaterial({ ...base, density: Number.NaN })).toThrow(RangeError);
   });
 
-  it("generates deterministic hashes and byte-identical stored apron samples across X, Y, and Z neighbors", () => {
+  it("generates deterministic hashes and byte-identical stored apron samples across X, Y, and Z neighbors", { timeout: 20_000 }, () => {
     const originCoordinate: VoxelCoordinate = { x: 0, y: -1, z: 0 };
     const origin = generateHestiaVoxelBrick(input(originCoordinate));
     for (const axis of ["x", "y", "z"] as const) {

@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { createSurfaceLabCamera } from "../../src/surface-lab/surfaceLabCamera";
 
 class FakeCanvas extends EventTarget {
@@ -154,6 +154,36 @@ describe("Surface Lab camera", () => {
     canvas.setAttribute("tabindex", "7");
     controller.dispose();
     expect(canvas.getAttribute("tabindex")).toBe("7");
+  });
+
+  it("leaves retained public camera commands inert after disposal", () => {
+    const camera = new THREE.PerspectiveCamera();
+    const canvas = new FakeCanvas();
+    const windowPort = new FakeWindow();
+    const controller = createSurfaceLabCamera({
+      camera,
+      canvas: canvas as unknown as HTMLCanvasElement,
+      windowPort: windowPort as unknown as Window
+    });
+    controller.setMode("Fly");
+    windowPort.dispatchEvent(eventWith("keydown", { code: "KeyW", target: canvas }));
+    controller.update(0.1);
+    const { setMode, reset, update, dispose } = controller;
+
+    dispose();
+    const disposedPose = controller.readPose();
+    const disposedFocusCount = canvas.focusOptions.length;
+    const lookAt = vi.spyOn(camera, "lookAt");
+
+    setMode("Orbit");
+    reset();
+    update(0.1);
+    dispose();
+
+    expect(controller.readPose()).toEqual(disposedPose);
+    expect(controller.mode).toBe(disposedPose.mode);
+    expect(canvas.focusOptions).toHaveLength(disposedFocusCount);
+    expect(lookAt).not.toHaveBeenCalled();
   });
 
   it("removes a camera-owned tabindex when the canvas originally had none", () => {

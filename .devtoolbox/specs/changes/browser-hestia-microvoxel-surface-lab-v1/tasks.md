@@ -80,34 +80,34 @@
   - Report: lifecycle/epoch and publication revisions, canonical identity, frame/time, cache/ownership, commands/exits/counts, scope, Node/toolchain and remaining risk.
   - Stop: stop/replan if Presentation core/backend, WorkerPool/resultGate/streaming implementation or neutral V1 revision semantics must change; no visuals before deterministic readiness.
 
-- [ ] 4.2 Implement camera, environment, vegetation and visible HUD
-  - Objective: Make the generated terrain inspectable and visually match the audited Hestia proving-ground direction.
+- [x] 4.2 Implement camera, environment, vegetation and visible HUD
+  - Objective: Make the generated terrain technically inspectable through the real browser while preserving canonical pipeline authority; visual fidelity is deferred.
   - Files: src/surface-lab/surfaceLabCamera.ts, surfaceLabEnvironment.ts, surfaceLabHud.ts and required surface-lab modules; narrow src/style.css; focused DOM/camera tests.
-  - Acceptance: full-screen backend canvas; orbit/fly/WASD/mouse/reset; fog/water/lights/scatter as separate presentation; wireframe/boundaries/fog/vegetation controls; all required telemetry and warnings visible; center view unobstructed.
-  - Guidance: terrain only via MeshArtifact; no concept image at runtime; no fake gameplay; Hestia palette and flat shading.
-  - Skills/MCPs: subagent-driven-development; frontend-worker; ui-designer review; verification-before-completion.
-  - Verification: focused unit/DOM tests, build, browser smoke and screenshot review.
-  - Report: controls, visual choices, telemetry fields, tests, files, measured caveats.
-  - Stop: do not claim visual acceptance before real screenshots are reviewed.
+  - Acceptance: full-screen backend canvas; orbit/fly/WASD/mouse/reset; fog/water/lights/scatter as separate presentation; wireframe/boundaries/fog/vegetation controls; all required telemetry and warnings visible; center view unobstructed; camera/environment commands fail closed after disposal; camera and overlays do not change canonical hashes.
+  - Guidance: terrain only via MeshArtifact; no concept image at runtime; no fake gameplay; retained screenshots are technical evidence only. Preserve the independent finding that visual fidelity is currently too dark/indistinct and deferred to `browser-hestia-surface-lab-visual-fidelity-v1`.
+  - Skills/MCPs: subagent-driven-development; frontend-worker; verification-before-completion; DevToolbox execution tracking.
+  - Verification: focused unit/DOM tests, strict TypeScript slice, build, real-browser control/hash/settlement smoke, exact screenshot dimensions and console/network inventory.
+  - Report: controls, telemetry fields, tests, files, browser evidence, accepted visual debt and measured caveats.
+  - Stop: do not claim concept or visual-fidelity acceptance; stop on a functional browser, lifecycle or canonical-hash failure.
 
 ## Phase 5 — Evidence and release gates
 
-- [ ] 5.1 Add live E2E, CI assignment and evidence
+- [x] 5.1 Add live E2E, CI assignment and evidence
   - Objective: Prove deterministic browser behavior and capture exact evidence without TestBridge.
-  - Files: tests/e2e/hestia-microvoxel-surface-lab.spec.ts; package.json live-group token only; evidence/browser-hestia-microvoxel-surface-lab-v1-summary.json, .md, and three hestia-surface-lab PNGs; workflow only if current LFS policy requires it.
+  - Files: tests/e2e/hestia-microvoxel-surface-lab.spec.ts; package.json live-group token only; evidence/browser-hestia-microvoxel-surface-lab-v1-summary.json, .md, and three hestia-surface-lab PNGs; mirrored run notes/logs under the change tests/task-5.1-live folder; workflow only if current LFS policy requires it.
   - Acceptance: no console/page/request/HTTP errors; no TestBridge; 16/16 and settled queue; same seed same hashes; changed seed different hashes; toggles/camera/quarter-meter extent; screenshots 1920x1080; spec assigned exactly once; no dependency/lockfile changes.
   - Guidance: visible DOM/data attributes are read-only observability; regenerate bypasses cache; report measured timings/counts/bytes without unsupported claims.
-  - Skills/MCPs: subagent-driven-development; browser-debugger for evidence; test-runner; ui-designer; verification-before-completion.
-  - Verification: focused live spec, CI inventory logic, evidence schema/LFS checks, visual checklist.
-  - Report: E2E outcomes, screenshots, hashes, performance sample, files, limitations.
-  - Stop: no PR-ready claim with missing screenshot or open browser error.
+  - Skills/MCPs: subagent-driven-development; frontend-worker; browser-debugger for evidence; test-runner; verification-before-completion.
+  - Verification: focused live spec, CI inventory logic, evidence schema/LFS checks, technical screenshot dimensions/content check.
+  - Report: E2E outcomes, technical screenshots, hashes, performance sample, files, visual deferral and limitations.
+  - Stop: no pipeline-baseline-ready claim with missing technical screenshot, nondeterministic hash, unsettled work or open browser error; no visual-fidelity claim.
 
-- [ ] 5.2 Complete dual review and full Node 22 verification
-  - Objective: Close all correctness, regression, ownership, seam, visual and test-gap findings before publish.
+- [x] 5.2 Complete dual review and full Node 22 verification
+  - Objective: Close all correctness, regression, ownership, seam, lifecycle and pipeline-test findings before the baseline commit hold point; visual fidelity remains a separate change.
   - Files: all changed files; no scope expansion without explicit replan.
-  - Acceptance: reviewer and reviewer-glm have no open P0-P2; UI review accepts screenshots; npm ci, tsc, unit, build, core/live/ui/full E2E and git diff --check pass; forbidden changes absent.
+  - Acceptance: reviewer and reviewer-glm have no open pipeline/correctness P0-P2; npm ci, tsc, unit, build, core/live/ui/full E2E and git diff --check pass under Node 22; forbidden changes absent; visual FAIL/deferment is documented and not misreported.
   - Guidance: findings first; dispatch fixes to the owning implementation lane; rerun focused review and fresh verification.
   - Skills/MCPs: requesting-code-review; devtoolbox-review; maintainability-decay-review; verification-before-completion; test-runner.
   - Verification: full approved command matrix under Node 22 plus final git status/diff audit.
-  - Report: findings/fixes, commands, counts, evidence, remaining risk, publish readiness.
+  - Report: findings/fixes, commands, counts, deterministic evidence, deferred visual risk, remaining risk and baseline readiness.
   - Stop: wait for explicit user confirmation before commit, push, PR or merge.

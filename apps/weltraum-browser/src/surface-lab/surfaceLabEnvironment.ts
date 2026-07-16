@@ -281,6 +281,7 @@ export const createSurfaceLabEnvironment = (
   };
 
   const updateState = (partial: Partial<SurfaceLabPresentationState>): void => {
+    if (disposed) return;
     const wasWireframeEnabled = state.wireframeEnabled;
     state = Object.freeze({ ...state, ...partial });
     applyVisibility();

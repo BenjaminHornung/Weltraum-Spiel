@@ -28,7 +28,7 @@ No complete planet, voxel LOD, Transvoxel, octree, QEF, production cave system, 
 - Neighbor samples are byte-identical and border vertices numerically identical.
 - Stale or cancelled work cannot publish.
 - Runtime terrain flows through ThreeRenderBackend via the isolated adapter.
-- Required unit, build, grouped E2E, visual, and evidence gates pass.
+- Required unit, build, grouped E2E, deterministic pipeline, and evidence gates pass. The known visual-fidelity gap is documented as deferred and is not reported as accepted.
 
 ## Approved Task 4.1 Replan (2026-07-15)
 Task 4.1 must make content-changing seed and resolution transitions compatible with the real render-backend revision contract, integrate the existing canonical brick cache rather than fabricate cache telemetry, and harden async generation/disposal behavior. Completed Tasks 1.1-3.2 remain unchanged. The revision permits focused canonical representation-identity and Surface Lab controller/test changes; Presentation, render-backend, worker, streaming implementation, gameplay, visual Task 4.2, package and lockfile changes remain out of scope. Success requires deterministic content-addressed representation keys, no mixed old/new generation artifacts, truthful read-only cache/hash telemetry, accepted-terminal ownership safety, and executable lifecycle regressions.
@@ -39,3 +39,6 @@ Worker request target identity and generated mesh representation identity are se
 
 ## Approved Task 4.1 Amendment 3 (2026-07-15)
 Task 4.1 separates neutral Surface Nets V1 artifact revision zero from monotone Presentation publication revisions. Every superseding generation clears prior publications and republishes accepted current results at a strictly higher Presentation artifact revision, including same-input regenerate and revisit of a previously removed configuration. The focused adapter revision seam, cached-mode snapshot rule, truthful zero-based request telemetry, disposal-safe replacement handling and real-ledger regressions are in scope; Presentation core/backend/WorkerPool behavior remains unchanged.
+
+## Approved Pipeline-Baseline Reframe (2026-07-15)
+The user accepted the current Surface Lab only as a technical proving ground for the voxel/worker/mesh/render pipeline and explicitly deferred the concept-directed visual treatment. Task 4.2 therefore closes on functional browser inspectability, lifecycle safety, camera/input operation, technical presentation and honest telemetry. The current screenshots remain technical runtime evidence and retain a known-failing visual finding: terrain, material bands, waterline and quarter-meter detail are too dark or indistinct for visual-fidelity acceptance. Task 5 proves deterministic live behavior and regression safety without a pixel- or concept-parity claim. Visual fidelity is tracked separately by `browser-hestia-surface-lab-visual-fidelity-v1`.

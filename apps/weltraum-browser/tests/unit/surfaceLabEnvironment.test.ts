@@ -249,4 +249,93 @@ describe("Surface Lab environment", () => {
     expect(wireframeGroup.children).toHaveLength(0);
     environment.dispose();
   });
+
+  it("leaves retained public environment commands and disposed resources inert", () => {
+    const scene = new THREE.Scene();
+    const priorBackground = new THREE.Color(0x010203);
+    const priorFog = new THREE.Fog(0x040506, 2, 20);
+    scene.background = priorBackground;
+    scene.fog = priorFog;
+    const representationRoot = new THREE.Group();
+    representationRoot.add(new THREE.Mesh(
+      new THREE.BoxGeometry(4, 2, 4),
+      new THREE.MeshBasicMaterial({ color: 0x123456 })
+    ));
+    scene.add(representationRoot);
+    const createWireframeGeometry = vi.fn((source: THREE.BufferGeometry) => new THREE.WireframeGeometry(source));
+    const environment = createSurfaceLabEnvironment(
+      { scene, representationRoot },
+      { createWireframeGeometry }
+    );
+    environment.sync(telemetry());
+    environment.setWireframeEnabled(true);
+    environment.setWireframeEnabled(false);
+    environment.setFogEnabled(false);
+    environment.sync(telemetry({ meshHashes: ["mesh-newer"] }));
+
+    const presentationRoot = scene.getObjectByName("surface-lab-presentation") as THREE.Group;
+    const water = scene.getObjectByName("surface-lab-presentation-water") as THREE.Mesh;
+    const vegetationGroup = scene.getObjectByName("surface-lab-vegetation") as THREE.Group;
+    const wireframeGroup = scene.getObjectByName("surface-lab-wireframe") as THREE.Group;
+    const boundaryGroup = scene.getObjectByName("surface-lab-boundaries") as THREE.Group;
+    const ownedGeometries = new Set<THREE.BufferGeometry>();
+    const ownedMaterials = new Set<THREE.Material>();
+    presentationRoot.traverse((object) => {
+      const renderable = object as THREE.Mesh;
+      if (renderable.geometry !== undefined) ownedGeometries.add(renderable.geometry);
+      const materials = Array.isArray(renderable.material) ? renderable.material : [renderable.material];
+      materials.forEach((material) => {
+        if (material !== undefined) ownedMaterials.add(material);
+      });
+    });
+    ownedGeometries.forEach((geometry) => vi.spyOn(geometry, "dispose"));
+    ownedMaterials.forEach((material) => vi.spyOn(material, "dispose"));
+    const {
+      readState,
+      setFogEnabled,
+      setWaterEnabled,
+      setVegetationEnabled,
+      setWireframeEnabled,
+      setBoundariesEnabled,
+      sync,
+      dispose
+    } = environment;
+
+    dispose();
+    const disposedState = readState();
+    const disposedVisibility = {
+      water: water.visible,
+      vegetation: vegetationGroup.visible,
+      wireframe: wireframeGroup.visible,
+      boundaries: boundaryGroup.visible
+    };
+    const disposedWireframeChildren = [...wireframeGroup.children];
+    const wireframeGeometryCreations = createWireframeGeometry.mock.calls.length;
+
+    setFogEnabled(true);
+    setWaterEnabled(false);
+    setVegetationEnabled(false);
+    setWireframeEnabled(true);
+    setBoundariesEnabled(true);
+    sync(telemetry({
+      planningEpoch: 2,
+      seed: "post-dispose-seed",
+      meshHashes: ["post-dispose-mesh"],
+      regionExtentMeters: { x: 32, y: 16, z: 32 }
+    }));
+    dispose();
+
+    expect(readState()).toBe(disposedState);
+    expect(scene.background).toBe(priorBackground);
+    expect(scene.fog).toBe(priorFog);
+    expect(presentationRoot.parent).toBeNull();
+    expect(water.visible).toBe(disposedVisibility.water);
+    expect(vegetationGroup.visible).toBe(disposedVisibility.vegetation);
+    expect(wireframeGroup.visible).toBe(disposedVisibility.wireframe);
+    expect(boundaryGroup.visible).toBe(disposedVisibility.boundaries);
+    expect(wireframeGroup.children).toEqual(disposedWireframeChildren);
+    expect(createWireframeGeometry).toHaveBeenCalledTimes(wireframeGeometryCreations);
+    ownedGeometries.forEach((geometry) => expect(geometry.dispose).toHaveBeenCalledOnce());
+    ownedMaterials.forEach((material) => expect(material.dispose).toHaveBeenCalledOnce());
+  });
 });

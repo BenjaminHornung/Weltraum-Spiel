@@ -39,11 +39,14 @@ The lab shall provide orbit/fly camera controls, WASD/mouse, camera reset, regen
 ## Requirement: Read-Only Telemetry
 The visible HUD shall report seed, preset, voxel size, region extent, requested/ready/failed chunks, worker queue/running, stale rejects, cache hits/misses, vertices, triangles, mesh bytes, generation/meshing/upload times and frame time. Telemetry shall not influence decisions and shall be readable by Playwright through normal visible DOM/data attributes rather than TestBridge.
 
-## Requirement: Visual Acceptance
-The rendered region shall be visibly non-empty, low-poly and Hestia-directed: dark wet rock, green/petrol/muted cyan, wet soil/moss, grouped alien vegetation, valley fog, and small water/sea presentation. It shall have no visible chunk holes, dominant debug-grid default, fully obscuring fog, obvious water/terrain cuts, concept-art runtime image, ship, outpost, mission or fake player.
+## Requirement: Technical Surface Visibility
+For the pipeline baseline, the rendered region shall be visibly non-empty and shall expose the accepted MeshArtifacts without visible chunk holes, an always-on dominant debug grid, a concept-art runtime image, ship, outpost, mission or fake player. Camera, fog, water, vegetation, wireframe and boundaries remain presentation-only and shall not change canonical brick or mesh hashes.
+
+## Requirement: Deferred Visual Fidelity
+Concept-directed landform, material, waterline, vegetation, fog-depth, typography and quarter-meter detail readability are not accepted by this change. The retained screenshots are technical runtime evidence only. The current too-dark and low-contrast result shall be recorded as a known-failing visual finding and moved to `browser-hestia-surface-lab-visual-fidelity-v1`; it shall not block deterministic pipeline acceptance and shall not be described as visually complete.
 
 ## Requirement: Verification and Evidence
-Unit tests shall cover layout, apron, neighbor samples, materials, generator/scatter determinism, Surface Nets, worker protocol, cancellation/stale/ownership and controller lifecycle. A live Playwright spec shall be assigned exactly once to test:e2e:live, run without TestBridge, prove same/different seed hashes and interaction toggles, and create the required JSON, Markdown and 1920x1080 screenshots.
+Unit tests shall cover layout, apron, neighbor samples, materials, generator/scatter determinism, Surface Nets, worker protocol, cancellation/stale/ownership and controller lifecycle. A live Playwright spec shall be assigned exactly once to test:e2e:live, run without TestBridge, prove same/different seed hashes and interaction toggles, and create the required JSON, Markdown and 1920x1080 technical screenshots. The screenshots prove live rendering and telemetry correlation, not visual-fidelity acceptance.
 
 ## Requirement: Content-Addressed Mesh Representation Identity
 A VoxelMeshProduct representation key shall combine its canonical spatial brick identity with the canonical VoxelBrick content hash and mesher algorithm/version identity. Equal canonical inputs shall preserve the key. A changed seed/content, voxel resolution, or mesher algorithm shall produce a distinct key without relaxing Surface Nets V1 artifactRevision zero or the render-backend revision ledger.

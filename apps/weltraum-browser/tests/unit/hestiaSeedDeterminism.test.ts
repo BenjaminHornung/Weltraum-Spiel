@@ -1,6 +1,7 @@
-import { readFileSync, readdirSync } from "node:fs";
+import { readdirSync } from "node:fs";
 import { join, resolve } from "node:path";
-import * as ts from "typescript";
+import * as ts from "typescript/unstable/ast";
+import { API as TypeScriptAPI } from "typescript/unstable/sync";
 import { describe, expect, it } from "vitest";
 import { surfaceFrameId, voxelBodyId, voxelRegionId } from "../../src/voxel";
 import {
@@ -40,7 +41,7 @@ const unwrapExpression = (expression: ts.Expression): ts.Expression => {
   while (
     ts.isParenthesizedExpression(current)
     || ts.isAsExpression(current)
-    || ts.isTypeAssertionExpression(current)
+    || ts.isTypeAssertion(current)
     || ts.isSatisfiesExpression(current)
     || ts.isNonNullExpression(current)
   ) {
@@ -59,22 +60,22 @@ const expressionPath = (expression: ts.Expression): string | undefined => {
   if (ts.isElementAccessExpression(current) && current.argumentExpression !== undefined) {
     const owner = expressionPath(current.expression);
     const key = unwrapExpression(current.argumentExpression);
-    return owner !== undefined && ts.isStringLiteralLike(key) ? `${owner}.${key.text}` : undefined;
+    return owner !== undefined && ts.isStringLiteralLikeNode(key) ? `${owner}.${key.text}` : undefined;
   }
   return undefined;
 };
 
 const moduleSpecifierText = (node: ts.Node): string | undefined => {
   if ((ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) && node.moduleSpecifier !== undefined) {
-    return ts.isStringLiteralLike(node.moduleSpecifier) ? node.moduleSpecifier.text : undefined;
+    return ts.isStringLiteralLikeNode(node.moduleSpecifier) ? node.moduleSpecifier.text : undefined;
   }
   if (ts.isImportEqualsDeclaration(node) && ts.isExternalModuleReference(node.moduleReference)) {
     const expression = node.moduleReference.expression;
-    return expression !== undefined && ts.isStringLiteralLike(expression) ? expression.text : undefined;
+    return expression !== undefined && ts.isStringLiteralLikeNode(expression) ? expression.text : undefined;
   }
   if (ts.isImportTypeNode(node)) {
     const argument = node.argument;
-    return ts.isLiteralTypeNode(argument) && ts.isStringLiteralLike(argument.literal)
+    return ts.isLiteralTypeNode(argument) && ts.isStringLiteralLikeNode(argument.literal)
       ? argument.literal.text
       : undefined;
   }
@@ -132,14 +133,14 @@ const scanHestiaModule = (
         const argument = node.arguments[0];
         inspectDependency(
           node,
-          argument !== undefined && ts.isStringLiteralLike(argument) ? argument.text : undefined,
+          argument !== undefined && ts.isStringLiteralLikeNode(argument) ? argument.text : undefined,
           "dynamic import"
         );
       } else if (ts.isIdentifier(node.expression) && node.expression.text === "require") {
         const argument = node.arguments[0];
         inspectDependency(
           node,
-          argument !== undefined && ts.isStringLiteralLike(argument) ? argument.text : undefined,
+          argument !== undefined && ts.isStringLiteralLikeNode(argument) ? argument.text : undefined,
           "require"
         );
       }
@@ -181,7 +182,7 @@ const scanHestiaModule = (
       }
     }
 
-    ts.forEachChild(node, visit);
+    node.forEachChild(visit);
   };
   visit(sourceFile);
   return findings;
@@ -251,6 +252,7 @@ describe("Hestia V1 seed and byte determinism", () => {
 
   it("keeps the exact seven-module Hestia V1 boundary deterministic and owner-neutral", () => {
     const directory = resolve(process.cwd(), "src", "world-generation", "hestia");
+    const configFilePath = resolve(process.cwd(), "tsconfig.json");
     const actualModules = readdirSync(directory).filter((file) => file.endsWith(".ts")).sort();
     expect(actualModules).toEqual([...HESTIA_V1_MODULES].sort());
     const allowedDependencies = new Set([
@@ -259,17 +261,27 @@ describe("Hestia V1 seed and byte determinism", () => {
       "../../voxel"
     ]);
     const findings: string[] = [];
-
-    for (const moduleName of HESTIA_V1_MODULES) {
-      const filePath = join(directory, moduleName);
-      const sourceFile = ts.createSourceFile(
-        filePath,
-        readFileSync(filePath, "utf8"),
-        ts.ScriptTarget.Latest,
-        true,
-        ts.ScriptKind.TS
-      );
-      findings.push(...scanHestiaModule(moduleName, sourceFile, allowedDependencies));
+    const api = new TypeScriptAPI({ cwd: process.cwd() });
+    try {
+      const snapshot = api.updateSnapshot({ openProjects: [configFilePath] });
+      try {
+        const project = snapshot.getProject(configFilePath);
+        if (project === undefined) {
+          throw new Error(`TypeScript project snapshot is missing ${configFilePath}`);
+        }
+        for (const moduleName of HESTIA_V1_MODULES) {
+          const filePath = join(directory, moduleName);
+          const sourceFile = project.program.getSourceFile(filePath);
+          if (sourceFile === undefined) {
+            throw new Error(`TypeScript project snapshot is missing source file ${filePath}`);
+          }
+          findings.push(...scanHestiaModule(moduleName, sourceFile, allowedDependencies));
+        }
+      } finally {
+        snapshot.dispose();
+      }
+    } finally {
+      api.close();
     }
     expect(findings).toEqual([]);
   });

@@ -65,6 +65,9 @@ Image 38 is the primary dark green/petrol fog reference; image 36 supplies archi
 - Flight regression: exact query gate and full core/UI/live E2E groups.
 - Visual overreach: concept audit and explicit gameplay exclusions.
 
+## Pipeline-Baseline Closure
+The first delivery closes the deterministic pipeline before visual-fidelity work. Camera, lights, fog, water, scatter and overlays remain non-authoritative scene projections. Browser screenshots are retained to prove a live non-empty render, control states, resolution changes and telemetry correlation, but they do not prove concept parity or acceptable final art direction. Independent review found the current scene too dark to establish the intended landform, material, waterline and quarter-meter readability. That result is preserved as a known failing visual finding rather than normalized into this baseline. The separate `browser-hestia-surface-lab-visual-fidelity-v1` change owns any later lighting, palette, fog, water, vegetation, typography, focus-appearance or composition changes.
+
 ## Task 2.2 deterministic Hestia generator contract
 
 This section is the approved-plan execution refinement for Task 2.2. It fixes the algorithmic choices that must be stable before implementation; changing them later requires a new generator version and new golden vectors.
