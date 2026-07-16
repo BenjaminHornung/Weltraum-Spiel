@@ -1,8 +1,10 @@
 # Hestia Surface Lab V1 — Visual Target Audit
 
 **Date:** 2026-07-14
-**Status:** Binding pre-code visual contract for the `surfaceLab=1` proving ground.
+**Status:** `DEFERRED_KNOWN_FAILING`; binding pre-code visual contract for the later visual-fidelity change, not for the technical baseline.
 **Scope:** Documentation only. The five source PNGs below are read-only design references, not runtime assets or runtime evidence.
+
+> **Ownership and acceptance boundary:** This visual contract, including every reference to **Task 5.1**, is owned exclusively by the deferred change `browser-hestia-surface-lab-visual-fidelity-v1` (`DEFERRED_KNOWN_FAILING`). These visual-contract and Task 5.1 references are **not acceptance criteria for**, and are **not evidence that**, the technical baseline `browser-hestia-microvoxel-surface-lab-v1` has visual fidelity or visual acceptance. The visual target is preserved here for the deferred change; this clarification does not weaken or delete its requirements.
 
 ## Sources inspected
 
@@ -106,7 +108,7 @@ The following are rejected even if a concept source appears to suggest them:
 
 **Inspirational/non-binding:** exact seed literal until the approved implementation fixture is published, exact tree species/count, exact rock count, exact fog shape, exact landmark geometry, exact pixel colors, optional trace route, exact labels beyond the required approved equivalents, and any individual composition from images 23, 30, 36, 38, or 40. The implementation must synthesize the shared direction and deterministic runtime contracts, not overfit or display any one concept. Image 38 is the primary atmosphere cue; image 36 is the primary landform/shoreline cue; images 23 and 40 inform wet/optional-trace accents; image 30 informs restrained biome breadth. Ships, scanner, missions, outposts, megacities, avatars, tools, and cockpit views remain excluded despite their presence or implication in source concepts.
 
-## Task 5.1 screenshot and evidence matrix
+## Task 5.1 screenshot and evidence matrix (owned by the deferred visual-fidelity change)
 
 Task 5.1 must capture all rows at **1920x1080** from the live desktop browser route `/?surfaceLab=1`, with the visible mode labels and `surfaceLab=1` evidence. Each screenshot must be paired with the live evidence record for the same runtime state; source concept images are never substituted. The exact seed, reset pose, preset, resolution, fog state, vegetation state, and expected values must be recorded before capture.
 
