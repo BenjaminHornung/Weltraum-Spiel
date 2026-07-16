@@ -1,6 +1,10 @@
 import * as THREE from "three";
 import { surfaceFrameId, voxelBodyId, voxelRegionId } from "../voxel";
-import { generateHestiaScatter, type HestiaScatterKind } from "../world-generation/hestia";
+import {
+  generateHestiaScatter,
+  type HestiaScatterKind,
+  type HestiaScatterRecord
+} from "../world-generation/hestia";
 import type { ThreeRenderBackend } from "../render/three/backend";
 import type { SurfaceLabTelemetrySnapshot } from "./surfaceLabTelemetry";
 
@@ -34,6 +38,26 @@ const REGION_ID = voxelRegionId("region:hestia.surface-lab.v1");
 const CHUNK_COORDINATES = Object.freeze(
   [-2, -1, 0, 1].flatMap((z) => [-2, -1, 0, 1].map((x) => Object.freeze({ x, y: -1, z })))
 );
+const SHORELINE_POINTS = Object.freeze([
+  Object.freeze({ x: -1, y: -0.22 }),
+  Object.freeze({ x: -0.78, y: -0.72 }),
+  Object.freeze({ x: -0.22, y: -1 }),
+  Object.freeze({ x: 0.38, y: -0.87 }),
+  Object.freeze({ x: 0.92, y: -0.4 }),
+  Object.freeze({ x: 1, y: 0.18 }),
+  Object.freeze({ x: 0.63, y: 0.72 }),
+  Object.freeze({ x: 0.08, y: 0.96 }),
+  Object.freeze({ x: -0.48, y: 0.78 }),
+  Object.freeze({ x: -0.93, y: 0.32 })
+]);
+const TERRAIN_PRESENTATION_PALETTE = Object.freeze([
+  Object.freeze({ source: Object.freeze([0.08, 0.12, 0.11]), target: Object.freeze([0.13, 0.19, 0.19]) }),
+  Object.freeze({ source: Object.freeze([0.18, 0.23, 0.18]), target: Object.freeze([0.24, 0.27, 0.19]) }),
+  Object.freeze({ source: Object.freeze([0.18, 0.38, 0.27]), target: Object.freeze([0.2, 0.43, 0.25]) }),
+  Object.freeze({ source: Object.freeze([0.08, 0.31, 0.3]), target: Object.freeze([0.08, 0.36, 0.33]) }),
+  Object.freeze({ source: Object.freeze([0.12, 0.42, 0.46]), target: Object.freeze([0.12, 0.47, 0.51]) })
+]);
+const CLUSTER_NEIGHBOR_DISTANCE_SQUARED = 7 * 7;
 
 const disposeObjectResources = (root: THREE.Object3D): void => {
   const geometries = new Set<THREE.BufferGeometry>();
@@ -55,47 +79,57 @@ const clearOwnedGroup = (group: THREE.Group): void => {
 
 const createWaterPatchGeometry = (): THREE.ShapeGeometry => {
   const shoreline = new THREE.Shape();
-  shoreline.moveTo(-1, -0.22);
-  shoreline.lineTo(-0.78, -0.72);
-  shoreline.lineTo(-0.22, -1);
-  shoreline.lineTo(0.38, -0.87);
-  shoreline.lineTo(0.92, -0.4);
-  shoreline.lineTo(1, 0.18);
-  shoreline.lineTo(0.63, 0.72);
-  shoreline.lineTo(0.08, 0.96);
-  shoreline.lineTo(-0.48, 0.78);
-  shoreline.lineTo(-0.93, 0.32);
+  shoreline.moveTo(SHORELINE_POINTS[0]!.x, SHORELINE_POINTS[0]!.y);
+  SHORELINE_POINTS.slice(1).forEach((point) => shoreline.lineTo(point.x, point.y));
   shoreline.closePath();
   const geometry = new THREE.ShapeGeometry(shoreline);
   geometry.name = "surface-lab-water-patch-geometry";
   return geometry;
 };
 
+const createShorelineGeometry = (): THREE.BufferGeometry => {
+  const geometry = new THREE.BufferGeometry();
+  geometry.setFromPoints(SHORELINE_POINTS.map((point) => new THREE.Vector3(point.x, 0, -point.y)));
+  geometry.name = "surface-lab-waterline-geometry";
+  return geometry;
+};
+
+const clusterScatterRecords = (records: readonly HestiaScatterRecord[]): readonly HestiaScatterRecord[] => {
+  const clustered = records.filter((record, index) => records.some((candidate, candidateIndex) => {
+    if (candidateIndex === index) return false;
+    const deltaX = candidate.positionMeters.x - record.positionMeters.x;
+    const deltaZ = candidate.positionMeters.z - record.positionMeters.z;
+    return deltaX * deltaX + deltaZ * deltaZ <= CLUSTER_NEIGHBOR_DISTANCE_SQUARED;
+  }));
+  return clustered.length > 0 ? clustered : records;
+};
+
 const createScatterMesh = (
   kind: HestiaScatterKind,
-  records: ReturnType<typeof generateHestiaScatter>
+  records: readonly HestiaScatterRecord[]
 ): THREE.InstancedMesh | undefined => {
   const matching = records.filter((record) => record.kind === kind);
   if (matching.length === 0) return undefined;
   const geometry = kind === "black_trunk"
-    ? new THREE.ConeGeometry(0.32, 2.8, 5)
+    ? new THREE.CylinderGeometry(0.12, 0.24, 3.2, 5)
     : kind === "cyan_luminous_sprout"
-      ? new THREE.ConeGeometry(0.42, 1.35, 5)
-      : new THREE.SphereGeometry(0.55, 6, 4);
+      ? new THREE.ConeGeometry(0.34, 1.15, 5)
+      : new THREE.SphereGeometry(0.46, 6, 4);
   const material = new THREE.MeshStandardMaterial({
-    color: kind === "black_trunk" ? 0x101817 : kind === "cyan_luminous_sprout" ? 0x39a9a5 : 0x65c9bd,
-    emissive: kind === "black_trunk" ? 0x000000 : 0x082e2d,
-    emissiveIntensity: 0.45,
+    color: kind === "black_trunk" ? 0x172521 : kind === "cyan_luminous_sprout" ? 0x378b80 : 0x65aaa0,
+    emissive: kind === "black_trunk" ? 0x000000 : 0x071e1d,
+    emissiveIntensity: 0.2,
     roughness: 0.9,
     flatShading: true
   });
   const mesh = new THREE.InstancedMesh(geometry, material, matching.length);
   mesh.name = `surface-lab-scatter-${kind}`;
+  mesh.userData.sourceScatterIds = Object.freeze(matching.map((record) => record.id));
   const transform = new THREE.Matrix4();
   const rotation = new THREE.Quaternion();
   const scale = new THREE.Vector3();
   matching.forEach((record, index) => {
-    const heightOffset = kind === "cyan_luminous_cap" ? 1.2 : kind === "black_trunk" ? 1.4 : 0.65;
+    const heightOffset = kind === "cyan_luminous_cap" ? 1.05 : kind === "black_trunk" ? 1.6 : 0.58;
     rotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), record.yawRadians);
     scale.setScalar(record.uniformScale);
     transform.compose(
@@ -128,11 +162,11 @@ const createBoundaryGrid = (snapshot: SurfaceLabTelemetrySnapshot): THREE.Group 
   const material = new THREE.LineDashedMaterial({
     color: 0x72b7aa,
     transparent: true,
-    opacity: 0.42,
+    opacity: 0.2,
     depthTest: true,
     depthWrite: false,
-    dashSize: 1.5,
-    gapSize: 1.1
+    dashSize: 1.1,
+    gapSize: 1.7
   });
   material.name = "surface-lab-chunk-boundary-material";
   const boundaries = new THREE.LineSegments(geometry, material);
@@ -163,25 +197,25 @@ export const createSurfaceLabEnvironment = (
 
   const previousBackground = backend.scene.background;
   const previousFog = backend.scene.fog;
-  const background = new THREE.Color(0x102728);
+  const background = new THREE.Color(0x0c2224);
   backend.scene.background = background;
 
-  const hemisphere = new THREE.HemisphereLight(0xa1cfbf, 0x18251c, 1.05);
+  const hemisphere = new THREE.HemisphereLight(0xb7d8c6, 0x21372d, 1.35);
   hemisphere.name = "surface-lab-hemisphere-light";
-  const keyLight = new THREE.DirectionalLight(0xd0dfc0, 2.85);
+  const keyLight = new THREE.DirectionalLight(0xd6e5c8, 3.2);
   keyLight.name = "surface-lab-key-light";
-  keyLight.position.set(-34, 48, 18);
-  const rimLight = new THREE.DirectionalLight(0x4aa6aa, 0.95);
+  keyLight.position.set(-30, 52, 24);
+  const rimLight = new THREE.DirectionalLight(0x55a2a3, 1.1);
   rimLight.name = "surface-lab-rim-light";
-  rimLight.position.set(32, 18, -26);
+  rimLight.position.set(34, 20, -28);
   const waterMaterial = new THREE.MeshPhongMaterial({
-    color: 0x2d7478,
-    emissive: 0x051c1f,
-    emissiveIntensity: 0.18,
-    specular: 0x5ba4a3,
+    color: 0x286c73,
+    emissive: 0x041719,
+    emissiveIntensity: 0.14,
+    specular: 0x68aaa8,
     transparent: true,
-    opacity: 0.24,
-    shininess: 36,
+    opacity: 0.3,
+    shininess: 44,
     depthWrite: false,
     side: THREE.FrontSide
   });
@@ -191,7 +225,19 @@ export const createSurfaceLabEnvironment = (
   water.rotation.x = -Math.PI / 2;
   water.position.y = 0.04;
   water.renderOrder = 1;
-  staticGroup.add(hemisphere, keyLight, rimLight, water);
+  const shorelineMaterial = new THREE.LineBasicMaterial({
+    color: 0x77aaa5,
+    transparent: true,
+    opacity: 0.38,
+    depthTest: true,
+    depthWrite: false
+  });
+  shorelineMaterial.name = "surface-lab-waterline-material";
+  const shoreline = new THREE.LineLoop(createShorelineGeometry(), shorelineMaterial);
+  shoreline.name = "surface-lab-presentation-waterline";
+  shoreline.position.y = 0.09;
+  shoreline.renderOrder = 2;
+  staticGroup.add(hemisphere, keyLight, rimLight, water, shoreline);
 
   let state: SurfaceLabPresentationState = Object.freeze({
     fogEnabled: true,
@@ -206,10 +252,39 @@ export const createSurfaceLabEnvironment = (
   let activePlanningEpoch: number | undefined;
   let latestSettledSnapshot: SurfaceLabTelemetrySnapshot | undefined;
   let disposed = false;
-  const fog = new THREE.Fog(0x163536, 42, 126);
+  const fog = new THREE.Fog(0x173638, 28, 104);
+  const restoredTerrainMaterials = new Map<THREE.MeshLambertMaterial, Readonly<{
+    color: THREE.Color;
+    flatShading: boolean;
+  }>>();
+
+  const applyTerrainPresentation = (): void => {
+    backend.representationRoot.traverse((object) => {
+      if (!(object instanceof THREE.Mesh)) return;
+      const materials = Array.isArray(object.material) ? object.material : [object.material];
+      materials.forEach((material) => {
+        if (!(material instanceof THREE.MeshLambertMaterial) || restoredTerrainMaterials.has(material)) return;
+        const mapping = TERRAIN_PRESENTATION_PALETTE.find(({ source }) => {
+          const deltaR = material.color.r - source[0]!;
+          const deltaG = material.color.g - source[1]!;
+          const deltaB = material.color.b - source[2]!;
+          return deltaR * deltaR + deltaG * deltaG + deltaB * deltaB < 1e-8;
+        });
+        if (mapping === undefined) return;
+        restoredTerrainMaterials.set(material, Object.freeze({
+          color: material.color.clone(),
+          flatShading: material.flatShading
+        }));
+        material.color.setRGB(mapping.target[0]!, mapping.target[1]!, mapping.target[2]!);
+        material.flatShading = true;
+        material.needsUpdate = true;
+      });
+    });
+  };
 
   const applyVisibility = (): void => {
     water.visible = state.waterEnabled;
+    shoreline.visible = state.waterEnabled;
     vegetationGroup.visible = state.vegetationEnabled;
     wireframeGroup.visible = state.wireframeEnabled;
     boundaryGroup.visible = state.boundariesEnabled;
@@ -229,8 +304,9 @@ export const createSurfaceLabEnvironment = (
       brickCoordinate,
       voxelSizeMeters: snapshot.voxelSizeMeters
     }));
+    const clusteredRecords = clusterScatterRecords(records);
     (["black_trunk", "cyan_luminous_sprout", "cyan_luminous_cap"] as const).forEach((kind) => {
-      const mesh = createScatterMesh(kind, records);
+      const mesh = createScatterMesh(kind, clusteredRecords);
       if (mesh !== undefined) vegetationGroup.add(mesh);
     });
   };
@@ -245,6 +321,9 @@ export const createSurfaceLabEnvironment = (
     water.scale.set(snapshot.regionExtentMeters.x * 0.32, snapshot.regionExtentMeters.z * 0.28, 1);
     water.position.x = snapshot.regionExtentMeters.x * 0.06;
     water.position.z = -snapshot.regionExtentMeters.z * 0.04;
+    shoreline.scale.set(snapshot.regionExtentMeters.x * 0.32, 1, snapshot.regionExtentMeters.z * 0.28);
+    shoreline.position.x = water.position.x;
+    shoreline.position.z = water.position.z;
   };
 
   const clearWireframe = (): void => {
@@ -263,7 +342,7 @@ export const createSurfaceLabEnvironment = (
     const material = new THREE.LineBasicMaterial({
       color: 0x85d3c4,
       transparent: true,
-      opacity: 0.24,
+      opacity: 0.13,
       depthTest: true,
       depthWrite: false
     });
@@ -292,6 +371,7 @@ export const createSurfaceLabEnvironment = (
 
   const sync = (snapshot: SurfaceLabTelemetrySnapshot): void => {
     if (disposed) return;
+    applyTerrainPresentation();
     rebuildBoundaries(snapshot);
     rebuildScatter(snapshot);
     const generationStarted = snapshot.lifecycle === "Requesting" || snapshot.lifecycle === "Regenerating";
@@ -313,6 +393,12 @@ export const createSurfaceLabEnvironment = (
     backend.scene.remove(presentationRoot);
     if (backend.scene.fog === fog) backend.scene.fog = previousFog;
     if (backend.scene.background === background) backend.scene.background = previousBackground;
+    restoredTerrainMaterials.forEach((original, material) => {
+      material.color.copy(original.color);
+      material.flatShading = original.flatShading;
+      material.needsUpdate = true;
+    });
+    restoredTerrainMaterials.clear();
     disposeObjectResources(presentationRoot);
     presentationRoot.clear();
   };

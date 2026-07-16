@@ -24,8 +24,12 @@ export interface SurfaceLabCameraOptions {
   readonly windowPort?: Pick<Window, "innerWidth" | "innerHeight" | "addEventListener" | "removeEventListener">;
 }
 
-const RESET_POSITION = Object.freeze({ x: 46, y: 34, z: 52 });
-const RESET_TARGET = Object.freeze({ x: 0, y: -4, z: 0 });
+const RESET_TARGET = Object.freeze({ x: 0, y: -6, z: 0 });
+const RESET_DIRECTION = Object.freeze({ x: 27, y: 26, z: 31 });
+const CANONICAL_HALF_EXTENT_METERS = 32;
+const CANONICAL_SURFACE_Y_METERS = 0;
+const MIN_PRESENTATION_ASPECT = 4 / 3;
+const PRESENTATION_FRAME_FILL = 0.92;
 const MIN_PITCH = -Math.PI * 0.47;
 const MAX_PITCH = Math.PI * 0.47;
 const CAMERA_KEYS = new Set(["KeyW", "KeyA", "KeyS", "KeyD", "KeyQ", "KeyE", "ShiftLeft", "ShiftRight", "AltLeft", "AltRight"]);
@@ -36,6 +40,28 @@ const isEditableTarget = (target: EventTarget | null): boolean => {
 };
 
 const finiteDelta = (value: number): number => Number.isFinite(value) ? Math.min(Math.max(value, 0), 0.1) : 0;
+
+const derivePresentationResetDistance = (camera: THREE.PerspectiveCamera): number => {
+  const direction = new THREE.Vector3(RESET_DIRECTION.x, RESET_DIRECTION.y, RESET_DIRECTION.z).normalize();
+  const forward = direction.clone().negate();
+  const right = new THREE.Vector3().crossVectors(forward, camera.up).normalize();
+  const viewUp = new THREE.Vector3().crossVectors(right, forward).normalize();
+  const halfVerticalFovTangent = Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2);
+  const framingAspect = Math.min(Math.max(camera.aspect, 0.1), MIN_PRESENTATION_ASPECT);
+  let distance = 2;
+  for (const x of [-CANONICAL_HALF_EXTENT_METERS, CANONICAL_HALF_EXTENT_METERS]) {
+    for (const z of [-CANONICAL_HALF_EXTENT_METERS, CANONICAL_HALF_EXTENT_METERS]) {
+      const relativeCorner = new THREE.Vector3(x, CANONICAL_SURFACE_Y_METERS - RESET_TARGET.y, z);
+      const depthOffset = relativeCorner.dot(forward);
+      const horizontalDistance = Math.abs(relativeCorner.dot(right))
+        / (halfVerticalFovTangent * framingAspect * PRESENTATION_FRAME_FILL) - depthOffset;
+      const verticalDistance = Math.abs(relativeCorner.dot(viewUp))
+        / (halfVerticalFovTangent * PRESENTATION_FRAME_FILL) - depthOffset;
+      distance = Math.max(distance, horizontalDistance, verticalDistance);
+    }
+  }
+  return distance;
+};
 
 export const createSurfaceLabCamera = (options: SurfaceLabCameraOptions): SurfaceLabCameraController => {
   const camera = options.camera;
@@ -85,7 +111,12 @@ export const createSurfaceLabCamera = (options: SurfaceLabCameraOptions): Surfac
     if (disposed) return;
     mode = "Orbit";
     target.set(RESET_TARGET.x, RESET_TARGET.y, RESET_TARGET.z);
-    camera.position.set(RESET_POSITION.x, RESET_POSITION.y, RESET_POSITION.z);
+    const resetDistance = derivePresentationResetDistance(camera);
+    camera.position
+      .set(RESET_DIRECTION.x, RESET_DIRECTION.y, RESET_DIRECTION.z)
+      .normalize()
+      .multiplyScalar(resetDistance)
+      .add(target);
     deriveOrbitAngles();
     applyView();
   };

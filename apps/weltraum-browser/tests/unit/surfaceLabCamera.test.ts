@@ -40,16 +40,44 @@ describe("Surface Lab camera", () => {
 
     const pose = controller.readPose();
     expect(pose.mode).toBe("Orbit");
-    expect(pose.position.x).toBeCloseTo(46);
-    expect(pose.position.y).toBeCloseTo(34);
-    expect(pose.position.z).toBeCloseTo(52);
-    expect(pose.target).toEqual({ x: 0, y: -4, z: 0 });
+    expect(pose.target).toEqual({ x: 0, y: -6, z: 0 });
+    expect(camera.position.distanceTo(new THREE.Vector3(0, -6, 0))).toBeGreaterThan(49);
     expect(camera.aspect).toBeCloseTo(16 / 9);
 
     windowPort.innerWidth = 1024;
     windowPort.innerHeight = 768;
     windowPort.dispatchEvent(new Event("resize"));
     expect(camera.aspect).toBeCloseTo(4 / 3);
+    controller.dispose();
+  });
+
+  it.each([
+    [1600, 900, "16:9"],
+    [1024, 768, "4:3"]
+  ])("frames the complete canonical 64m surface extent at %s x %s (%s)", (width, height) => {
+    const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 1000);
+    const canvas = new FakeCanvas();
+    const windowPort = new FakeWindow();
+    windowPort.innerWidth = width as number;
+    windowPort.innerHeight = height as number;
+    const controller = createSurfaceLabCamera({
+      camera,
+      canvas: canvas as unknown as HTMLCanvasElement,
+      windowPort: windowPort as unknown as Window
+    });
+    camera.updateMatrixWorld(true);
+
+    const projectedCorners = [-32, 32].flatMap((x) => [-32, 32].map((z) =>
+      new THREE.Vector3(x, 0, z).project(camera)
+    ));
+    projectedCorners.forEach((corner) => {
+      expect(Math.abs(corner.x)).toBeLessThanOrEqual(0.92 + 1e-10);
+      expect(Math.abs(corner.y)).toBeLessThanOrEqual(0.92 + 1e-10);
+      expect(corner.z).toBeGreaterThanOrEqual(-1);
+      expect(corner.z).toBeLessThanOrEqual(1);
+    });
+    expect(Math.max(...projectedCorners.flatMap((corner) => [Math.abs(corner.x), Math.abs(corner.y)])))
+      .toBeGreaterThan(0.75);
     controller.dispose();
   });
 
@@ -71,9 +99,9 @@ describe("Surface Lab camera", () => {
     expect(canvas.releases).toEqual([7]);
     expect(camera.position.equals(resetPosition)).toBe(false);
 
-    const beforeDolly = camera.position.distanceTo(new THREE.Vector3(0, -4, 0));
+    const beforeDolly = camera.position.distanceTo(new THREE.Vector3(0, -6, 0));
     canvas.dispatchEvent(eventWith("wheel", { deltaY: -120 }));
-    expect(camera.position.distanceTo(new THREE.Vector3(0, -4, 0))).toBeLessThan(beforeDolly);
+    expect(camera.position.distanceTo(new THREE.Vector3(0, -6, 0))).toBeLessThan(beforeDolly);
 
     controller.setMode("Fly");
     expect(canvas.focusOptions).toEqual([{ preventScroll: true }, { preventScroll: true }]);
