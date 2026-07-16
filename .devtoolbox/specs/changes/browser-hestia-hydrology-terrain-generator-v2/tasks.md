@@ -95,7 +95,7 @@ a DevToolbox execution. Do not toggle task state from this handoff.
 
 ## Separately authorized closing steps
 
-- [ ] Commit the approved change only after explicit user authorization.
-- [ ] Push the approved commit only after explicit user authorization.
+- [x] Commit the approved change only after explicit user authorization.
+- [x] Push the approved commit only after explicit user authorization.
 
 These closing steps are recorded for handoff and must not be performed here.
