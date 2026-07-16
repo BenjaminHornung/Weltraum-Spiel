@@ -2,6 +2,7 @@
 import { DebugScene } from "./render/three/debugScene";
 import { createBrowserRuntime, createRuntimeShipForFlightCase } from "./runtime/browserRuntime";
 import { createGraphicsSettingsController, loadGraphicsSettings } from "./settings";
+import { startSurfaceLabRoute } from "./surface-lab/surfaceLabFailurePresenter";
 import { isSurfaceLabQuery } from "./surface-lab/surfaceLabQuery";
 import { createGraphicsSettingsPanel } from "./ui/graphicsSettingsPanel";
 import { createProvingGroundLowPolyRenderBatch } from "./world/provingGroundWorld";
@@ -63,7 +64,7 @@ const startNormalRuntime = (): void => {
 };
 
 if (isSurfaceLabQuery(searchParams)) {
-  void import("./surface-lab").then(({ startSurfaceLab }) => startSurfaceLab());
+  void startSurfaceLabRoute(document, () => import("./surface-lab"));
 } else {
   startNormalRuntime();
 }

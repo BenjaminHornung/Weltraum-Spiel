@@ -6,6 +6,7 @@ import { WorkerPool } from "../workers";
 import { createSurfaceLabCamera } from "./surfaceLabCamera";
 import { createSurfaceLabController, type SurfaceLabController } from "./surfaceLabController";
 import { createSurfaceLabEnvironment } from "./surfaceLabEnvironment";
+import { presentSurfaceLabFailure } from "./surfaceLabFailurePresenter";
 import {
   clearSurfaceLabDataset,
   createSurfaceLabFrameTimeSampler,
@@ -43,34 +44,6 @@ export interface SurfaceLabBootstrapDependencies {
   readonly createHud: typeof createSurfaceLabHud;
   readonly createFrameTimeSampler: typeof createSurfaceLabFrameTimeSampler;
 }
-
-const failureMessage = (error: unknown): string => error instanceof Error
-  ? error.message
-  : "Surface Lab initialization failed.";
-
-const renderFailure = (
-  dependencies: SurfaceLabBootstrapDependencies,
-  host: HTMLElement | undefined,
-  error: unknown
-): HTMLElement => {
-  clearSurfaceLabDataset(dependencies.documentPort.body);
-  dependencies.documentPort.body.dataset.surfaceLab = "1";
-  dependencies.documentPort.body.dataset.surfaceLabState = "Failed";
-  const root = dependencies.documentPort.createElement("section");
-  root.id = "surface-lab-failure";
-  root.className = "surface-lab-failure";
-  root.setAttribute("role", "alert");
-  root.setAttribute("aria-live", "assertive");
-  const heading = dependencies.documentPort.createElement("h1");
-  heading.textContent = "SURFACE LAB UNAVAILABLE";
-  const detail = dependencies.documentPort.createElement("p");
-  detail.textContent = `Technical initialization failure: ${failureMessage(error)}`;
-  const boundary = dependencies.documentPort.createElement("p");
-  boundary.textContent = "NOT GAMEPLAY · no terrain readiness is being claimed";
-  root.append(heading, detail, boundary);
-  (host ?? dependencies.documentPort.body).append(root);
-  return root;
-};
 
 export const startSurfaceLab = async (
   overrides: Partial<SurfaceLabBootstrapDependencies> = {}
@@ -257,7 +230,7 @@ export const startSurfaceLab = async (
     try { await dispose(); } catch {
       // The technical failure state remains authoritative even if cleanup reports a secondary error.
     }
-    failureRoot = renderFailure(dependencies, host, error);
+    failureRoot = presentSurfaceLabFailure(documentPort, error, host);
     let failureDisposed = false;
     const disposeFailure = async (): Promise<void> => {
       if (failureDisposed) return;

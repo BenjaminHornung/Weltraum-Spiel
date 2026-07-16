@@ -86,7 +86,10 @@ import {
   type SurfaceLabTelemetryListener,
   type SurfaceLabTelemetrySnapshot
 } from "./surfaceLabTelemetry";
-import { SURFACE_LAB_REGION } from "./surfaceLabRegion";
+import {
+  SURFACE_LAB_REGION,
+  SURFACE_LAB_REGION_MESH_BUFFER_BUDGET_BYTES
+} from "./surfaceLabRegion";
 
 export type SurfaceLabLifecycleState = "Idle" | "Requesting" | "Partial" | "Ready" | "Failed" | "Regenerating" | "Disposed";
 
@@ -614,6 +617,12 @@ export class SurfaceLabController {
     } else {
       try {
         const decoded = this.#decode(payload, terminal, artifactRevision(payload.outputRevision));
+        if (!Number.isSafeInteger(decoded.meshBytes) || decoded.meshBytes < 0) {
+          throw new RangeError("Surface Lab decoded mesh bytes must be a nonnegative safe integer.");
+        }
+        if (decoded.meshBytes > SURFACE_LAB_REGION_MESH_BUFFER_BUDGET_BYTES - this.#metrics.meshBytes) {
+          throw new RangeError("Surface Lab region mesh-buffer budget exceeded.");
+        }
         const cacheKey = this.#admitToCache(this.#cache, payload, terminal);
         this.#cachedBrickHashes.set(canonicalizeContentKey(cacheKey), decoded.brickContentHash);
         this.#publish(decoded);

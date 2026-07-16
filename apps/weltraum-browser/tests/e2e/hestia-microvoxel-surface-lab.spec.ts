@@ -171,6 +171,44 @@ const installBrowserEventCollectors = (page: Page): BrowserEvents => {
   return events;
 };
 
+test("Surface Lab entrypoint contains a failed dynamic module request without activating flight", async ({ page }) => {
+  const pageErrors: string[] = [];
+  const abortedSurfaceLabRequests: string[] = [];
+  let stateAtModuleRequest: readonly [string | null, string | null] | undefined;
+  page.on("pageerror", (error) => pageErrors.push(error.message));
+
+  // Vite resolves the directory import in main.ts to this source-module URL; the regex permits only its cache query.
+  await page.route(/\/src\/surface-lab\/index\.ts(?:\?.*)?$/, async (route) => {
+    abortedSurfaceLabRequests.push(route.request().url());
+    stateAtModuleRequest = await page.evaluate(() => [
+      document.body.dataset.surfaceLab ?? null,
+      document.body.dataset.surfaceLabState ?? null
+    ] as const);
+    await route.abort("failed");
+  });
+
+  await page.goto("/?surfaceLab=1", { waitUntil: "domcontentloaded" });
+
+  const body = page.locator("body");
+  await expect(body).toHaveAttribute("data-surface-lab", "1");
+  await expect(body).toHaveAttribute("data-surface-lab-state", "Failed");
+  expect(abortedSurfaceLabRequests).toHaveLength(1);
+  expect(stateAtModuleRequest).toEqual(["1", null]);
+
+  const failure = page.locator("#surface-lab-failure");
+  await expect(failure).toBeVisible();
+  await expect(failure).toHaveAttribute("role", "alert");
+  await expect(failure).toHaveAttribute("aria-live", "assertive");
+  await expect(failure.getByRole("heading", { name: "SURFACE LAB UNAVAILABLE", exact: true })).toBeVisible();
+  await expect(failure).toContainText("NOT GAMEPLAY · no terrain readiness is being claimed");
+
+  await expect(page.locator("#flight-hud")).toBeHidden();
+  expect(await body.getAttribute("data-ui-surface")).toBeNull();
+  expect(await body.getAttribute("data-graphics-settings-ready")).toBeNull();
+  expect(await readTestBridgeState(page)).toEqual({ ownProperty: false, inWindow: false });
+  expect(pageErrors).toEqual([]);
+});
+
 const readTestBridgeState = (page: Page): Promise<{ readonly ownProperty: boolean; readonly inWindow: boolean }> =>
   page.evaluate(() => ({
     ownProperty: Object.prototype.hasOwnProperty.call(window, "TestBridge"),

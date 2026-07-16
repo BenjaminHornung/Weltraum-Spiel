@@ -25,7 +25,10 @@ import {
 } from "../../src/surface-lab/surfaceLabController";
 import { createSurfaceLabPresentationBackend } from "../../src/surface-lab/surfaceLabPresentationBackend";
 import { isSurfaceLabQuery } from "../../src/surface-lab/surfaceLabQuery";
-import { SURFACE_LAB_REGION } from "../../src/surface-lab/surfaceLabRegion";
+import {
+  SURFACE_LAB_REGION,
+  SURFACE_LAB_REGION_MESH_BUFFER_BUDGET_BYTES
+} from "../../src/surface-lab/surfaceLabRegion";
 import {
   MemoryContentCache,
   admitHestiaVoxelWorkerOutputToCache,
@@ -173,7 +176,15 @@ class FakeWorkerPool implements SurfaceLabWorkerPool {
   }
 
   public completePlanning(epoch: number): void {
-    for (const pending of this.jobs.filter((job) => job.request.planningEpoch === epoch && !job.settled)) {
+    const planningJobs = this.jobs.filter((job) => job.request.planningEpoch === epoch);
+    this.completePlanningInOrder(epoch, planningJobs.map((_job, index) => index));
+  }
+
+  public completePlanningInOrder(epoch: number, jobIndices: readonly number[]): void {
+    const planningJobs = this.jobs.filter((job) => job.request.planningEpoch === epoch);
+    for (const index of jobIndices) {
+      const pending = planningJobs[index];
+      if (pending === undefined || pending.settled) continue;
       pending.settled = true;
       pending.resolve(Object.freeze({
         kind: "Completed",
@@ -463,6 +474,24 @@ const decode: SurfaceLabCompletedDecoder = (payload, _terminal, presentationRevi
   });
 };
 
+const MEBIBYTE = 1024 * 1024;
+const coordinateKey = (payload: GenerateHestiaVoxelBrickMeshPayload): string => {
+  const coordinate = payload.brickCoordinate;
+  return `${coordinate.x}:${coordinate.y}:${coordinate.z}`;
+};
+const decodeWithMeshBytes = (
+  meshBytesFor: (payload: GenerateHestiaVoxelBrickMeshPayload) => number
+): SurfaceLabCompletedDecoder => (payload, terminal, presentationRevision) => {
+  const decoded = decode(payload, terminal, presentationRevision);
+  const key = coordinateKey(payload);
+  return Object.freeze({
+    ...decoded,
+    meshContentHash: `synthetic-mesh:${key}`,
+    brickContentHash: `synthetic-brick:${key}`,
+    meshBytes: meshBytesFor(payload)
+  });
+};
+
 const fixture = () => {
   const workerPool = new FakeWorkerPool();
   const backend = new FakeBackend();
@@ -519,6 +548,180 @@ describe("Surface Lab controller", () => {
     });
     expect(commandCount(backend, "UpsertMeshArtifact")).toBe(16);
     expect(ready.cacheMisses).toBe(16);
+  });
+
+  it("accepts aggregate mesh buffers at exactly the 128 MiB region budget", async () => {
+    const workerPool = new FakeWorkerPool();
+    const backend = new FakeBackend();
+    const admittedCoordinates: string[] = [];
+    const controller = new SurfaceLabController({
+      workerPool,
+      backend,
+      decodeCompleted: decodeWithMeshBytes(() => 8 * MEBIBYTE),
+      admitToCache: (_cache, payload) => {
+        admittedCoordinates.push(coordinateKey(payload as GenerateHestiaVoxelBrickMeshPayload));
+        return createHestiaVoxelCacheKey(payload, algorithmVersion(1));
+      }
+    });
+
+    await controller.start();
+    workerPool.completePlanning(1);
+    const settled = await controller.whenSettled();
+
+    expect(settled).toMatchObject({
+      lifecycle: "Ready",
+      readyChunks: 16,
+      failedChunks: 0,
+      meshBytes: SURFACE_LAB_REGION_MESH_BUFFER_BUDGET_BYTES
+    });
+    expect(admittedCoordinates).toHaveLength(16);
+    expect(settled.brickHashes).toHaveLength(16);
+    expect(settled.meshHashes).toHaveLength(16);
+    expect(commandCount(backend, "UpsertMeshArtifact")).toBe(16);
+    expect(backend.resident.size).toBe(16);
+  });
+
+  it.each([
+    ["NaN", Number.NaN],
+    ["positive infinity", Number.POSITIVE_INFINITY],
+    ["negative infinity", Number.NEGATIVE_INFINITY],
+    ["negative", -1],
+    ["fractional", 0.5],
+    ["unsafe integer", Number.MAX_SAFE_INTEGER + 1]
+  ])("rejects %s decoded mesh bytes before cache, publication, or telemetry accounting", async (_label, malformedMeshBytes) => {
+    const cacheEvents: string[] = [];
+    const cache = new MemoryContentCache(32 * VOXEL_CHANNEL_BYTES, (event) => cacheEvents.push(event.kind));
+    const workerPool = new FakeWorkerPool();
+    const backend = new FakeBackend();
+    let admissionCalls = 0;
+    const controller = new SurfaceLabController({
+      workerPool,
+      backend,
+      cache,
+      decodeCompleted: decodeWithMeshBytes(() => malformedMeshBytes),
+      admitToCache: (_receivedCache, payload) => {
+        admissionCalls += 1;
+        return createHestiaVoxelCacheKey(payload, algorithmVersion(1));
+      }
+    });
+
+    await controller.start();
+    workerPool.completePlanning(1);
+    const settled = await controller.whenSettled();
+
+    expect(settled).toMatchObject({
+      lifecycle: "Failed",
+      readyChunks: 0,
+      failedChunks: 16,
+      vertices: 0,
+      triangles: 0,
+      meshBytes: 0,
+      generationMilliseconds: 0,
+      meshingMilliseconds: 0,
+      uploadMilliseconds: 0
+    });
+    expect(settled.brickHashes).toEqual([]);
+    expect(settled.meshHashes).toEqual([]);
+    expect(admissionCalls).toBe(0);
+    expect(cache.snapshot()).toMatchObject({ entryCount: 0, totalBytes: 0, evictionCount: 0, generation: 0 });
+    expect(cacheEvents).toEqual([]);
+    expect(commandCount(backend, "UpsertMeshArtifact")).toBe(0);
+    expect(backend.resident.size).toBe(0);
+  });
+
+  it("rejects a chunk one byte over the remaining region budget before cache admission, publication, or telemetry accumulation", async () => {
+    const workerPool = new FakeWorkerPool();
+    const backend = new FakeBackend();
+    const admittedCoordinates: string[] = [];
+    const finalCoordinate = SURFACE_LAB_REGION.chunkCoordinates.at(-1);
+    if (finalCoordinate === undefined) throw new Error("Expected a final Surface Lab coordinate.");
+    const finalCoordinateKey = `${finalCoordinate.x}:${finalCoordinate.y}:${finalCoordinate.z}`;
+    const controller = new SurfaceLabController({
+      workerPool,
+      backend,
+      decodeCompleted: decodeWithMeshBytes((payload) =>
+        coordinateKey(payload) === finalCoordinateKey ? 8 * MEBIBYTE + 1 : 8 * MEBIBYTE),
+      admitToCache: (_cache, payload) => {
+        admittedCoordinates.push(coordinateKey(payload as GenerateHestiaVoxelBrickMeshPayload));
+        return createHestiaVoxelCacheKey(payload, algorithmVersion(1));
+      }
+    });
+
+    await controller.start();
+    workerPool.completePlanning(1);
+    const settled = await controller.whenSettled();
+
+    expect(settled).toMatchObject({
+      lifecycle: "Failed",
+      readyChunks: 15,
+      failedChunks: 1,
+      vertices: 45,
+      triangles: 15,
+      meshBytes: 120 * MEBIBYTE,
+      generationMilliseconds: 30,
+      meshingMilliseconds: 15
+    });
+    expect(admittedCoordinates).toHaveLength(15);
+    expect(admittedCoordinates).not.toContain(finalCoordinateKey);
+    expect(settled.brickHashes).toHaveLength(15);
+    expect(settled.brickHashes).not.toContain(`synthetic-brick:${finalCoordinateKey}`);
+    expect(settled.meshHashes).toHaveLength(15);
+    expect(settled.meshHashes).not.toContain(`synthetic-mesh:${finalCoordinateKey}`);
+    expect(commandCount(backend, "UpsertMeshArtifact")).toBe(15);
+    expect(backend.resident.size).toBe(15);
+
+    const regeneration = controller.regenerate();
+    expect(backend.resident.size).toBe(0);
+    expect(commandCount(backend, "RemoveRepresentation")).toBe(15);
+    workerPool.completePlanning(2);
+    await expect(regeneration).resolves.toMatchObject({
+      lifecycle: "Failed",
+      readyChunks: 15,
+      failedChunks: 1,
+      meshBytes: 120 * MEBIBYTE
+    });
+    expect(admittedCoordinates).toHaveLength(30);
+    expect(admittedCoordinates.filter((coordinate) => coordinate === finalCoordinateKey)).toHaveLength(0);
+    expect(backend.resident.size).toBe(15);
+  });
+
+  it("uses completion-order admission without ever exceeding the region mesh-buffer budget", async () => {
+    const workerPool = new FakeWorkerPool();
+    const backend = new FakeBackend();
+    const admittedCoordinates: string[] = [];
+    const observedMeshBytes: number[] = [];
+    const oneMiBCoordinates = new Set(SURFACE_LAB_REGION.chunkCoordinates.slice(0, 8)
+      .map((coordinate) => `${coordinate.x}:${coordinate.y}:${coordinate.z}`));
+    const controller = new SurfaceLabController({
+      workerPool,
+      backend,
+      decodeCompleted: decodeWithMeshBytes((payload) =>
+        oneMiBCoordinates.has(coordinateKey(payload)) ? MEBIBYTE : 16 * MEBIBYTE),
+      admitToCache: (_cache, payload) => {
+        admittedCoordinates.push(coordinateKey(payload as GenerateHestiaVoxelBrickMeshPayload));
+        return createHestiaVoxelCacheKey(payload, algorithmVersion(1));
+      }
+    });
+    controller.subscribe((snapshot) => { observedMeshBytes.push(snapshot.meshBytes); });
+
+    await controller.start();
+    workerPool.completePlanningInOrder(1, [15, 14, 13, 12, 11, 10, 9, 8, 0, 1, 2, 3, 4, 5, 6, 7]);
+    const settled = await controller.whenSettled();
+
+    expect(settled).toMatchObject({
+      lifecycle: "Failed",
+      readyChunks: 8,
+      failedChunks: 8,
+      meshBytes: SURFACE_LAB_REGION_MESH_BUFFER_BUDGET_BYTES
+    });
+    expect(admittedCoordinates).toHaveLength(8);
+    expect(admittedCoordinates.some((coordinate) => oneMiBCoordinates.has(coordinate))).toBe(false);
+    expect(settled.brickHashes).toHaveLength(8);
+    expect(settled.meshHashes).toHaveLength(8);
+    expect(commandCount(backend, "UpsertMeshArtifact")).toBe(8);
+    expect(backend.resident.size).toBe(8);
+    expect(Math.max(...observedMeshBytes)).toBe(SURFACE_LAB_REGION_MESH_BUFFER_BUDGET_BYTES);
+    expect(observedMeshBytes.every((meshBytes) => meshBytes <= SURFACE_LAB_REGION_MESH_BUFFER_BUDGET_BYTES)).toBe(true);
   });
 
   it("fails closed without publishing when an artifact upsert reports NotFound", async () => {
