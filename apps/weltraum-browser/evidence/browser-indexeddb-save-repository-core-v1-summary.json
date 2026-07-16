@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "feature": "browser-indexeddb-save-repository-core-v1",
+  "route": {
+    "route": "/",
+    "testBridgeOwnProperty": false,
+    "testBridgeInWindow": false
+  },
+  "moduleLoad": {
+    "path": "/src/browser-storage/index.ts",
+    "loaded": true
+  },
+  "isolation": {
+    "databaseId": "e2e-browser-storage-core-v1-isolated",
+    "preRunDeletion": "deleted"
+  },
+  "repositorySchema": {
+    "version": 1,
+    "objectStores": [
+      "repositoryMetadata",
+      "saveSlots"
+    ]
+  },
+  "slotA": {
+    "slotId": "e2e-slot-a",
+    "initialRevision": 1,
+    "signature": "sha256:f086953be31bdebd52082aef006e7237988c48575811987495f14a3340cd9e73",
+    "reloadPreservedRevision": true,
+    "reloadPreservedSignature": true
+  },
+  "compareAndSwap": {
+    "staleErrorCode": "RevisionConflict",
+    "staleWritePreservedRecord": true,
+    "matchingRevisionBefore": 1,
+    "matchingRevisionAfter": 2,
+    "revisionAdvancedByOne": true
+  },
+  "exportImport": {
+    "policy": "CreateNewSlot",
+    "targetSlotId": "e2e-slot-b",
+    "targetRevision": 1,
+    "payloadMatchesExport": true,
+    "targetSurvivedSourceCorruption": true
+  },
+  "corruption": {
+    "sourceSlotId": "e2e-slot-a",
+    "mutation": "payload-byte-flipped-without-hash-update",
+    "errorCode": "ChecksumMismatch"
+  },
+  "cleanup": {
+    "deletedSlots": [
+      "e2e-slot-a",
+      "e2e-slot-b"
+    ],
+    "remainingSlotCount": 0,
+    "databaseDeletion": "deleted"
+  },
+  "health": {
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpErrors": []
+  },
+  "status": "PASS"
+}

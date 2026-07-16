@@ -1,0 +1,25 @@
+﻿{
+    "status":  "PASS",
+    "branch":  "feature/browser-indexeddb-save-repository-core-v1",
+    "nodeVersion":  "v22.23.1",
+    "npmVersion":  "11.13.0",
+    "port":  5187,
+    "workers":  1,
+    "expectedTests":  55,
+    "observedPassedTests":  55,
+    "playwrightExitCode":  0,
+    "initiallyRestoredUnrelatedEvidenceFiles":  87,
+    "postRunRestoredUnrelatedEvidenceFiles":  91,
+    "finalUnrelatedEvidenceFiles":  0,
+    "jsonEvidenceSha256":  "17a637414095211350253fe263b110561cc796edcd67153db0c5968bc7054935",
+    "markdownEvidenceSha256":  "8bfc28e7ceb930f4c422b37736c4628abf1c15365b68c54f92b6cd2b15dbafd8",
+    "featureEvidenceHashesMatch":  true,
+    "changedPathCount":  32,
+    "scopeViolations":  0,
+    "packageOrLockChanges":  0,
+    "temporaryConfigPresent":  false,
+    "finalPortListeners":  0,
+    "changedPaths":  [
+                         "apps/weltraum-browser/vite.config.ts"
+                     ]
+}
