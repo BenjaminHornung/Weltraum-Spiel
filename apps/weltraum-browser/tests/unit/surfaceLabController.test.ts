@@ -25,6 +25,7 @@ import {
 } from "../../src/surface-lab/surfaceLabController";
 import { createSurfaceLabPresentationBackend } from "../../src/surface-lab/surfaceLabPresentationBackend";
 import { isSurfaceLabQuery } from "../../src/surface-lab/surfaceLabQuery";
+import { SURFACE_LAB_REGION } from "../../src/surface-lab/surfaceLabRegion";
 import {
   MemoryContentCache,
   admitHestiaVoxelWorkerOutputToCache,
@@ -292,6 +293,27 @@ class FakeBackend implements RenderBackend {
   }
 }
 
+class OwnershipConsumingBackend extends FakeBackend {
+  readonly transfers: Readonly<{
+    readonly callerBuffers: readonly ArrayBuffer[];
+    readonly backendArtifact: Extract<RenderCommand, { kind: "UpsertMeshArtifact" }>["artifact"];
+  }>[] = [];
+
+  public override dispatch(command: RenderCommand): RenderCommandResult {
+    if (command.kind !== "UpsertMeshArtifact") return super.dispatch(command);
+    const callerBuffers = [...new Set([
+      command.artifact.positions.buffer,
+      command.artifact.normals.buffer,
+      command.artifact.indices.buffer,
+      ...(command.artifact.attributes?.uv === undefined ? [] : [command.artifact.attributes.uv.buffer]),
+      ...(command.artifact.attributes?.color === undefined ? [] : [command.artifact.attributes.color.buffer])
+    ])] as ArrayBuffer[];
+    const backendCommand = structuredClone(command, { transfer: callerBuffers }) as typeof command;
+    this.transfers.push(Object.freeze({ callerBuffers: Object.freeze(callerBuffers), backendArtifact: backendCommand.artifact }));
+    return super.dispatch(backendCommand);
+  }
+}
+
 class FakeThreeRenderer implements ThreeRendererPort {
   public setPixelRatio(): void {}
   public setSize(): void {}
@@ -481,6 +503,7 @@ describe("Surface Lab controller", () => {
     await controller.start();
     expect(workerPool.jobs).toHaveLength(16);
     expect(new Set(workerPool.jobs.map((job) => JSON.stringify(job.request.payload.brickCoordinate))).size).toBe(16);
+    expect(workerPool.jobs.map((job) => job.request.payload.brickCoordinate)).toEqual(SURFACE_LAB_REGION.chunkCoordinates);
     expect(workerPool.jobs.every((job) => job.request.jobKind === "GenerateHestiaVoxelBrickMesh")).toBe(true);
     expect(workerPool.jobs.every((job) => job.request.targetKey === calculateVoxelSpatialJobTargetKey(job.request.payload))).toBe(true);
     expect(workerPool.jobs.every((job) => job.request.workerEpoch === 0 && job.request.planningEpoch === 1)).toBe(true);
@@ -511,6 +534,63 @@ describe("Surface Lab controller", () => {
       failedChunks: 16
     });
     expect(commandCount(backend, "UpsertMeshArtifact")).toBe(16);
+    expect(backend.resident.size).toBe(0);
+  });
+
+  it("does not admit or publish when completed decoding fails", async () => {
+    const cacheEvents: string[] = [];
+    const cache = new MemoryContentCache(32 * VOXEL_CHANNEL_BYTES, (event) => cacheEvents.push(event.kind));
+    const workerPool = new FakeWorkerPool();
+    const backend = new FakeBackend();
+    let admissionCalls = 0;
+    const controller = new SurfaceLabController({
+      workerPool,
+      backend,
+      cache,
+      decodeCompleted: () => { throw new Error("synthetic decode failure"); },
+      admitToCache: (_receivedCache, payload) => {
+        admissionCalls += 1;
+        return createHestiaVoxelCacheKey(payload, algorithmVersion(1));
+      }
+    });
+
+    await controller.start();
+    workerPool.completePlanning(1);
+
+    await expect(controller.whenSettled()).resolves.toMatchObject({ lifecycle: "Failed", readyChunks: 0, failedChunks: 16 });
+    expect(admissionCalls).toBe(0);
+    expect(cache.snapshot()).toMatchObject({ entryCount: 0, totalBytes: 0, evictionCount: 0, generation: 0 });
+    expect(cacheEvents).toEqual([]);
+    expect(commandCount(backend, "UpsertMeshArtifact")).toBe(0);
+    expect(backend.resident.size).toBe(0);
+  });
+
+  it("passes the configured cache to admission and fails closed when its commit rejects", async () => {
+    const cacheEvents: string[] = [];
+    const cache = new MemoryContentCache(32 * VOXEL_CHANNEL_BYTES, (event) => cacheEvents.push(event.kind));
+    const workerPool = new FakeWorkerPool();
+    const backend = new FakeBackend();
+    const receivedCaches: MemoryContentCache[] = [];
+    const controller = new SurfaceLabController({
+      workerPool,
+      backend,
+      cache,
+      decodeCompleted: decode,
+      admitToCache: (receivedCache) => {
+        receivedCaches.push(receivedCache);
+        throw new Error("synthetic cache commit failure");
+      }
+    });
+
+    await controller.start();
+    workerPool.completePlanning(1);
+
+    await expect(controller.whenSettled()).resolves.toMatchObject({ lifecycle: "Failed", readyChunks: 0, failedChunks: 16 });
+    expect(receivedCaches).toHaveLength(16);
+    expect(receivedCaches.every((receivedCache) => receivedCache === cache)).toBe(true);
+    expect(cache.snapshot()).toMatchObject({ entryCount: 0, totalBytes: 0, evictionCount: 0, generation: 0 });
+    expect(cacheEvents).toEqual([]);
+    expect(commandCount(backend, "UpsertMeshArtifact")).toBe(0);
     expect(backend.resident.size).toBe(0);
   });
 
@@ -614,17 +694,78 @@ describe("Surface Lab controller", () => {
 
   it("uses one canonical cache for real misses, accepted admission and hits", async () => {
     const cache = new MemoryContentCache(32 * VOXEL_CHANNEL_BYTES);
-    const backend = new FakeBackend();
+    const backend = new OwnershipConsumingBackend();
     const workerPool = new WorkerPool({
       workerCount: 4,
       queueCapacity: 32,
       transportFactory: () => new RuntimeTransport()
     });
-    const controller = new SurfaceLabController({ workerPool, backend, cache });
+    const accepted: {
+      payload: GenerateHestiaVoxelBrickMeshPayload;
+      terminal: Extract<WorkerJobTerminal, { kind: "Completed" }>;
+      decoded: ReturnType<SurfaceLabCompletedDecoder>;
+    }[] = [];
+    const callbackCaches: MemoryContentCache[] = [];
+    const callbackSawReadableExclusiveBuffers: boolean[] = [];
+    const controller = new SurfaceLabController({
+      workerPool,
+      backend,
+      cache,
+      decodeCompleted: (payload, terminal, revision) => {
+        const decoded = decodeSurfaceLabCompletedChunk(payload, terminal, revision);
+        accepted.push({ payload, terminal, decoded });
+        return decoded;
+      },
+      admitToCache: (receivedCache, payload, terminal) => {
+        callbackCaches.push(receivedCache);
+        callbackSawReadableExclusiveBuffers.push(terminal.kind === "Completed"
+          && terminal.output.buffers.slice(2).every((buffer) => buffer.byteLength > 0));
+        expect(accepted.some((entry) => entry.terminal === terminal)).toBe(true);
+        return admitHestiaVoxelWorkerOutputToCache(receivedCache, payload, terminal);
+      }
+    });
     await controller.start();
     const first = await controller.whenSettled();
     expect(first).toMatchObject({ lifecycle: "Ready", cacheHits: 0, cacheMisses: 16, cacheBypasses: 0 });
+    expect(first.vertices).toBeGreaterThan(0);
+    expect(first.triangles).toBeGreaterThan(0);
     expect(cache.snapshot()).toMatchObject({ entryCount: 16, totalBytes: 16 * VOXEL_CHANNEL_BYTES });
+    expect(accepted).toHaveLength(16);
+    expect(callbackCaches).toHaveLength(16);
+    expect(callbackCaches.every((receivedCache) => receivedCache === cache)).toBe(true);
+    expect(callbackSawReadableExclusiveBuffers).toEqual(Array.from({ length: 16 }, () => true));
+    expect(backend.transfers).toHaveLength(16);
+    for (const transfer of backend.transfers) {
+      expect(transfer.callerBuffers.every((buffer) => buffer.byteLength === 0)).toBe(true);
+      expect(transfer.backendArtifact.ownership).toBe("AdoptedExclusive");
+      expect(transfer.backendArtifact.positions.byteLength).toBeGreaterThan(0);
+      expect(transfer.backendArtifact.indices.byteLength).toBeGreaterThan(0);
+      expect(transfer.backendArtifact.positions.buffer).not.toBe(transfer.callerBuffers[0]);
+    }
+
+    const admitted = accepted[0];
+    if (admitted === undefined) throw new Error("Expected an accepted Surface Lab result.");
+    expect(admitted.decoded.vertices).toBeGreaterThan(0);
+    expect(admitted.decoded.triangles).toBeGreaterThan(0);
+    expect(admitted.terminal.output.buffers.slice(2).every((buffer) => buffer.byteLength === 0)).toBe(true);
+    const cacheKey = createHestiaVoxelCacheKey(admitted.payload, algorithmVersion(1));
+    const cacheLease = cache.get(cacheKey);
+    if (cacheLease === undefined) throw new Error("Expected admitted canonical cache entry.");
+    expect(cacheLease.contentHash).toBe(computeContentHash(cacheLease.buffer));
+    const cachedPayload = validateHestiaVoxelBrickMeshPayload({
+      ...admitted.payload,
+      inputMode: "CachedCanonicalBrick",
+      cachedBrickContentHash: admitted.decoded.brickContentHash,
+      outputRevision: contentRevision(2)
+    });
+    const cachedBundle = createCachedHestiaVoxelInputBundle(cache, cacheKey, cachedPayload, contentRevision(0));
+    if (cachedBundle === undefined) throw new Error("Expected cached worker input.");
+    expect(new Float32Array(cachedBundle.buffers[0])).toEqual(new Float32Array(admitted.terminal.output.buffers[0]));
+    expect(new Uint8Array(cachedBundle.buffers[1])).toEqual(new Uint8Array(admitted.terminal.output.buffers[1]));
+    expect(cachedBundle.contentHash).toBe(fnv1aBytes(cachedBundle.buffers));
+    expect(first.brickHashes).toContain(admitted.decoded.brickContentHash);
+    expect(first.meshHashes).toContain(admitted.decoded.meshContentHash);
+    cacheLease.release();
 
     const cached = await controller.restartWorker(0);
     expect(cached).toMatchObject({ lifecycle: "Ready", cacheHits: 16, cacheMisses: 0, cacheBypasses: 0 });

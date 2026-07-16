@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { describe, expect, it, vi } from "vitest";
 import { createSurfaceLabEnvironment } from "../../src/surface-lab/surfaceLabEnvironment";
+import { SURFACE_LAB_REGION } from "../../src/surface-lab/surfaceLabRegion";
 import { snapshotSurfaceLabTelemetry, type SurfaceLabTelemetrySnapshot } from "../../src/surface-lab/surfaceLabTelemetry";
 
 const telemetry = (overrides: Partial<SurfaceLabTelemetrySnapshot> = {}): SurfaceLabTelemetrySnapshot => snapshotSurfaceLabTelemetry({
@@ -120,6 +121,11 @@ describe("Surface Lab environment", () => {
     expect(boundaryMaterial.depthWrite).toBe(false);
     expect(boundaryMaterial.dashSize).toBe(1.5);
     expect(boundaryMaterial.gapSize).toBe(1.1);
+    const boundaryGeometry = (scene.getObjectByName("surface-lab-boundaries")?.children[0] as THREE.LineSegments)
+      .geometry as THREE.BufferGeometry;
+    expect(boundaryGeometry.getAttribute("position").count).toBe(
+      2 * (SURFACE_LAB_REGION.chunkCounts.x + 1 + SURFACE_LAB_REGION.chunkCounts.z + 1)
+    );
     expect(scene.getObjectByName("surface-lab-vegetation")?.visible).toBe(false);
     expect(scene.fog).toBeNull();
 

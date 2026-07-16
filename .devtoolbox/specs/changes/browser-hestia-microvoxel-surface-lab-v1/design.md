@@ -135,7 +135,7 @@ This section is the approved-plan execution refinement for Task 2.3. It fixes to
 - `VoxelMeshProduct` contains schemaVersion, representationKey, sourceRevision, artifactRevision, algorithmVersion, frameId, materialRegistryVersion, positions, normals, indices, materialRanges, bounds, and contentHash. It imports no Presentation or Three.js type.
 - sourceRevision is copied from the brick; artifactRevision is the brick editRevision (zero in V1); frameId is the brick surfaceFrameId.
 - A neutral material range contains materialId, materialKey, startIndex, and indexCount. The later adapter alone maps materialKey to a Presentation materialProfileId.
-- representationKey is `voxel_mesh:<16 lowercase hex>`: FNV-1a-64 over ASCII prefix `weltraum-voxel-mesh-identity-v1\n` followed by canonical JSON `[bodyId,surfaceFrameId,regionId,[brickX,brickY,brickZ]]`. It is stable across remeshing and content revisions.
+- representationKey is `voxel_mesh:<16 lowercase hex>`: FNV-1a-64 over ASCII prefix `weltraum-voxel-mesh-identity-v2\n` followed by canonical JSON `[bodyId,surfaceFrameId,regionId,[brickX,brickY,brickZ]]`. It is stable across remeshing and content revisions.
 
 ### Cell vertex convention
 

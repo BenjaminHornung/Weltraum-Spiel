@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { surfaceFrameId, voxelBodyId, voxelRegionId } from "../voxel";
 import { generateHestiaScatter, type HestiaScatterKind } from "../world-generation/hestia";
 import type { ThreeRenderBackend } from "../render/three/backend";
+import { SURFACE_LAB_REGION } from "./surfaceLabRegion";
 import type { SurfaceLabTelemetrySnapshot } from "./surfaceLabTelemetry";
 
 export interface SurfaceLabPresentationState {
@@ -31,9 +32,6 @@ export interface SurfaceLabEnvironmentDependencies {
 
 const PRESENTATION_GROUP_NAME = "surface-lab-presentation";
 const REGION_ID = voxelRegionId("region:hestia.surface-lab.v1");
-const CHUNK_COORDINATES = Object.freeze(
-  [-2, -1, 0, 1].flatMap((z) => [-2, -1, 0, 1].map((x) => Object.freeze({ x, y: -1, z })))
-);
 
 const disposeObjectResources = (root: THREE.Object3D): void => {
   const geometries = new Set<THREE.BufferGeometry>();
@@ -114,14 +112,19 @@ const createBoundaryGrid = (snapshot: SurfaceLabTelemetrySnapshot): THREE.Group 
   group.name = "surface-lab-chunk-boundaries";
   const halfX = snapshot.regionExtentMeters.x / 2;
   const halfZ = snapshot.regionExtentMeters.z / 2;
-  const stepX = snapshot.regionExtentMeters.x / 4;
-  const stepZ = snapshot.regionExtentMeters.z / 4;
+  const stepX = snapshot.regionExtentMeters.x / SURFACE_LAB_REGION.chunkCounts.x;
+  const stepZ = snapshot.regionExtentMeters.z / SURFACE_LAB_REGION.chunkCounts.z;
   const positions: number[] = [];
-  for (let index = 0; index <= 4; index += 1) {
-    const x = -halfX + index * stepX;
-    positions.push(x, 0.08, -halfZ, x, 0.08, halfZ);
-    const z = -halfZ + index * stepZ;
-    positions.push(-halfX, 0.08, z, halfX, 0.08, z);
+  const divisionCount = Math.max(SURFACE_LAB_REGION.chunkCounts.x, SURFACE_LAB_REGION.chunkCounts.z);
+  for (let index = 0; index <= divisionCount; index += 1) {
+    if (index <= SURFACE_LAB_REGION.chunkCounts.x) {
+      const x = -halfX + index * stepX;
+      positions.push(x, 0.08, -halfZ, x, 0.08, halfZ);
+    }
+    if (index <= SURFACE_LAB_REGION.chunkCounts.z) {
+      const z = -halfZ + index * stepZ;
+      positions.push(-halfX, 0.08, z, halfX, 0.08, z);
+    }
   }
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
@@ -221,7 +224,7 @@ export const createSurfaceLabEnvironment = (
     if (scatterSignature === signature) return;
     scatterSignature = signature;
     clearOwnedGroup(vegetationGroup);
-    const records = CHUNK_COORDINATES.flatMap((brickCoordinate) => generateHestiaScatter({
+    const records = SURFACE_LAB_REGION.chunkCoordinates.flatMap((brickCoordinate) => generateHestiaScatter({
       rootSeed: snapshot.seed,
       bodyId: voxelBodyId(snapshot.bodyId),
       surfaceFrameId: surfaceFrameId(snapshot.surfaceFrameId),

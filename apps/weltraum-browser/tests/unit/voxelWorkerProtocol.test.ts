@@ -115,6 +115,27 @@ class HeldCompletionTransport implements WorkerTransport {
   public terminate(): void { this.#terminated = true; }
 }
 
+class DeferredCheckpointController {
+  readonly #pending: Array<() => void> = [];
+  readonly #waiters: Array<() => void> = [];
+
+  public readonly checkpoint = (): Promise<void> => new Promise((resolve) => {
+    this.#pending.push(resolve);
+    this.#waiters.shift()?.();
+  });
+
+  public waitForPendingCheckpoint(): Promise<void> {
+    if (this.#pending.length > 0) return Promise.resolve();
+    return new Promise((resolve) => this.#waiters.push(resolve));
+  }
+
+  public releaseNext(): void {
+    const release = this.#pending.shift();
+    if (release === undefined) throw new Error("No worker checkpoint is pending.");
+    release();
+  }
+}
+
 const generatedPayload = (): GenerateHestiaVoxelBrickMeshPayload => validateHestiaVoxelBrickMeshPayload({
   presetId: HESTIA_PRESET_ID,
   inputMode: "Generate",
@@ -174,17 +195,18 @@ const executeRuntime = async (
 ): Promise<RuntimeArtifact> => {
   const emitted: WorkerToHostMessage[] = [];
   const transfers: Transferable[][] = [];
+  let resolveTerminal!: (message: WorkerToHostMessage) => void;
+  const terminal = new Promise<WorkerToHostMessage>((resolve) => { resolveTerminal = resolve; });
   const runtime = new StreamingWorkerRuntime((message, transfer = []) => {
     emitted.push(message);
     transfers.push([...transfer]);
-  });
+    if (message.type === "JobCompleted" || message.type === "JobCancelled" || message.type === "JobFailed") resolveTerminal(message);
+  }, () => Promise.resolve());
   const request = requestFor(payload, id);
   runtime.handleMessage({ type: "InitializeWorker", workerEpoch: request.workerEpoch });
   runtime.handleMessage({ type: "EnqueueJob", request });
   runtime.handleMessage({ type: "JobInputData", jobId: request.jobId, workerEpoch: request.workerEpoch, bundle: input });
-  for (let attempt = 0; attempt < 300 && !emitted.some((message) => message.type === "JobCompleted"); attempt += 1) {
-    await new Promise<void>((resolve) => setTimeout(resolve, 50));
-  }
+  await terminal;
   const outputIndex = emitted.findIndex((message) => message.type === "JobOutputData");
   const outputMessage = emitted[outputIndex];
   const completed = emitted.find((message) => message.type === "JobCompleted");
@@ -418,12 +440,22 @@ describe("Hestia voxel worker protocol", () => {
     const payload = validateHestiaVoxelBrickMeshPayload({ ...generatedPayload(), generationColumnsPerSlice: 1 });
     const request = requestFor(payload, "hestia-cancelled");
     const emitted: WorkerToHostMessage[] = [];
-    const runtime = new StreamingWorkerRuntime((message) => emitted.push(message));
+    const checkpoints = new DeferredCheckpointController();
+    let resolveTerminal!: (message: WorkerToHostMessage) => void;
+    const terminal = new Promise<WorkerToHostMessage>((resolve) => { resolveTerminal = resolve; });
+    const runtime = new StreamingWorkerRuntime((message) => {
+      emitted.push(message);
+      if (message.type === "JobCompleted" || message.type === "JobCancelled" || message.type === "JobFailed") resolveTerminal(message);
+    }, checkpoints.checkpoint);
     runtime.handleMessage({ type: "InitializeWorker", workerEpoch: request.workerEpoch });
     runtime.handleMessage({ type: "EnqueueJob", request });
     runtime.handleMessage({ type: "JobInputData", jobId: request.jobId, workerEpoch: request.workerEpoch, bundle: emptyInput() });
-    setTimeout(() => runtime.handleMessage({ type: "CancelJob", jobId: request.jobId, workerEpoch: request.workerEpoch }), 0);
-    await expect.poll(() => emitted.some((message) => message.type === "JobCancelled"), { timeout: 5_000 }).toBe(true);
+    await checkpoints.waitForPendingCheckpoint();
+    checkpoints.releaseNext();
+    await checkpoints.waitForPendingCheckpoint();
+    runtime.handleMessage({ type: "CancelJob", jobId: request.jobId, workerEpoch: request.workerEpoch });
+    checkpoints.releaseNext();
+    expect(await terminal).toMatchObject({ type: "JobCancelled", jobId: request.jobId });
     expect(emitted.some((message) => message.type === "JobOutputData" || message.type === "JobCompleted")).toBe(false);
   });
 
@@ -494,7 +526,13 @@ describe("Hestia voxel worker protocol", () => {
     const jobId = workerJobId("transform-no-final-checkpoint");
     const epoch = workerEpoch(9);
     const emitted: WorkerToHostMessage[] = [];
-    const runtime = new StreamingWorkerRuntime((message) => emitted.push(message));
+    const checkpoints = new DeferredCheckpointController();
+    let resolveTerminal!: (message: WorkerToHostMessage) => void;
+    const terminal = new Promise<WorkerToHostMessage>((resolve) => { resolveTerminal = resolve; });
+    const runtime = new StreamingWorkerRuntime((message) => {
+      emitted.push(message);
+      if (message.type === "JobCompleted" || message.type === "JobCancelled" || message.type === "JobFailed") resolveTerminal(message);
+    }, checkpoints.checkpoint);
     const transformRequest: WorkerJobRequest = Object.freeze({
       jobId,
       jobKind: workerJobKind("TransformBuffer"),
@@ -520,9 +558,10 @@ describe("Hestia voxel worker protocol", () => {
     runtime.handleMessage({ type: "InitializeWorker", workerEpoch: epoch });
     runtime.handleMessage({ type: "EnqueueJob", request: transformRequest });
     runtime.handleMessage({ type: "JobInputData", jobId, workerEpoch: epoch, bundle: input });
-    setTimeout(() => runtime.handleMessage({ type: "CancelJob", jobId, workerEpoch: epoch }), 0);
-    await expect.poll(() => emitted.some((message) => message.type === "JobCompleted"), { timeout: 2_000 }).toBe(true);
-    await new Promise<void>((resolve) => setTimeout(resolve, 0));
+    await checkpoints.waitForPendingCheckpoint();
+    checkpoints.releaseNext();
+    expect(await terminal).toMatchObject({ type: "JobCompleted" });
+    runtime.handleMessage({ type: "CancelJob", jobId, workerEpoch: epoch });
     expect(emitted.some((message) => message.type === "JobCancelled")).toBe(false);
   });
 

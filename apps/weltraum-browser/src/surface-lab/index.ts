@@ -5,4 +5,5 @@ export * from "./surfaceLabEnvironment";
 export * from "./surfaceLabHud";
 export * from "./surfaceLabPresentationBackend";
 export * from "./surfaceLabQuery";
+export * from "./surfaceLabRegion";
 export * from "./surfaceLabTelemetry";

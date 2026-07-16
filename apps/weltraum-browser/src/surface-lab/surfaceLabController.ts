@@ -86,6 +86,7 @@ import {
   type SurfaceLabTelemetryListener,
   type SurfaceLabTelemetrySnapshot
 } from "./surfaceLabTelemetry";
+import { SURFACE_LAB_REGION } from "./surfaceLabRegion";
 
 export type SurfaceLabLifecycleState = "Idle" | "Requesting" | "Partial" | "Ready" | "Failed" | "Regenerating" | "Disposed";
 
@@ -134,7 +135,6 @@ export interface SurfaceLabControllerOptions {
 const SURFACE_FRAME_ID = "frame:surface_hestia_surface_lab_v1";
 const REGION_ID = "region:hestia.surface-lab.v1";
 const DEFAULT_SEED = "hestia-surface-lab-v1";
-const CHUNK_COUNT = 16;
 
 const MATERIAL_COLORS: Readonly<Record<string, Readonly<{ r: number; g: number; b: number }>>> = Object.freeze({
   dark_rock: Object.freeze({ r: 0.08, g: 0.12, b: 0.11 }),
@@ -212,6 +212,14 @@ const hasExclusiveWorkerBufferIdentity = (
 export const decodeSurfaceLabCompletedChunk: SurfaceLabCompletedDecoder = (payload, terminal, presentationArtifactRevision) => {
   const validated = validateHestiaVoxelWorkerOutput(payload, terminal.result, terminal.output);
   const mesh = validated.mesh;
+  const representationKey = mesh.representationKey;
+  const meshContentHash = mesh.contentHash;
+  const brickContentHash = validated.brick.contentHash;
+  const vertices = mesh.positions.length / 3;
+  const triangles = mesh.indices.length / 3;
+  const meshBytes = mesh.positions.byteLength + mesh.normals.byteLength + mesh.indices.byteLength;
+  const generationMilliseconds = validated.details.generationMilliseconds;
+  const meshingMilliseconds = validated.details.meshingMilliseconds;
   const artifact = mesh.positions.length === 0
     ? undefined
     : payload.inputMode === "Generate"
@@ -226,15 +234,15 @@ export const decodeSurfaceLabCompletedChunk: SurfaceLabCompletedDecoder = (paylo
           artifactRevision: presentationArtifactRevision
         });
   return Object.freeze({
-    representationKey: mesh.representationKey,
-    meshContentHash: mesh.contentHash,
-    brickContentHash: validated.brick.contentHash,
+    representationKey,
+    meshContentHash,
+    brickContentHash,
     ...(artifact === undefined ? {} : { artifact }),
-    vertices: mesh.positions.length / 3,
-    triangles: mesh.indices.length / 3,
-    meshBytes: mesh.positions.byteLength + mesh.normals.byteLength + mesh.indices.byteLength,
-    generationMilliseconds: validated.details.generationMilliseconds,
-    meshingMilliseconds: validated.details.meshingMilliseconds
+    vertices,
+    triangles,
+    meshBytes,
+    generationMilliseconds,
+    meshingMilliseconds
   });
 };
 
@@ -285,10 +293,6 @@ const emptyInputBundle = (): TransferableBufferBundle => Object.freeze({
   views: Object.freeze([]),
   contentHash: fnv1aBytes([])
 });
-
-const coordinates = (): readonly Readonly<{ x: number; y: number; z: number }>[] => Object.freeze(
-  [-2, -1, 0, 1].flatMap((z) => [-2, -1, 0, 1].map((x) => Object.freeze({ x, y: -1, z })))
-);
 
 export class SurfaceLabController {
   readonly #pool: SurfaceLabWorkerPool;
@@ -403,9 +407,9 @@ export class SurfaceLabController {
       presetId: HESTIA_PRESET_ID,
       voxelSizeMeters: this.#voxelSizeMeters,
       regionExtentMeters: {
-        x: 4 * VOXEL_BRICK_CELL_DIMENSIONS.x * this.#voxelSizeMeters,
+        x: SURFACE_LAB_REGION.chunkCounts.x * VOXEL_BRICK_CELL_DIMENSIONS.x * this.#voxelSizeMeters,
         y: VOXEL_BRICK_CELL_DIMENSIONS.y * this.#voxelSizeMeters,
-        z: 4 * VOXEL_BRICK_CELL_DIMENSIONS.z * this.#voxelSizeMeters
+        z: SURFACE_LAB_REGION.chunkCounts.z * VOXEL_BRICK_CELL_DIMENSIONS.z * this.#voxelSizeMeters
       },
       requestedChunks: this.#metrics.requestedChunks,
       readyChunks: this.#metrics.readyChunks,
@@ -486,7 +490,7 @@ export class SurfaceLabController {
     this.#metrics = freshMetrics();
     this.#settledPromise = new Promise<SurfaceLabTelemetrySnapshot>((resolve) => { this.#resolveSettled = resolve; });
     this.#tickets = [];
-    for (const coordinate of coordinates()) {
+    for (const coordinate of SURFACE_LAB_REGION.chunkCoordinates) {
       const prepared = this.#prepareInput(coordinate, allowCacheRead);
       const payload = prepared.payload;
       const request = this.#requestFor(payload, generation);
@@ -626,7 +630,7 @@ export class SurfaceLabController {
       }
     }
     const settled = this.#metrics.readyChunks + this.#metrics.failedChunks;
-    this.#lifecycle = settled >= CHUNK_COUNT
+    this.#lifecycle = settled >= SURFACE_LAB_REGION.chunkCount
       ? this.#metrics.failedChunks === 0 ? "Ready" : "Failed"
       : settled > 0 ? "Partial" : this.#lifecycle;
     this.#emit();
@@ -694,7 +698,7 @@ export class SurfaceLabController {
 
   #finishIfSettled(generation: number): void {
     if (this.#disposeRequested || generation !== this.#generation) return;
-    if (this.#metrics.readyChunks + this.#metrics.failedChunks < CHUNK_COUNT) return;
+    if (this.#metrics.readyChunks + this.#metrics.failedChunks < SURFACE_LAB_REGION.chunkCount) return;
     this.#lifecycle = this.#metrics.failedChunks === 0 ? "Ready" : "Failed";
     const snapshot = this.readTelemetry();
     this.#resolveSettled?.(snapshot);

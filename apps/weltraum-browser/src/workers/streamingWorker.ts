@@ -45,7 +45,10 @@ export class StreamingWorkerRuntime {
   private runningJobId: WorkerJobId | undefined;
   private stopping = false;
 
-  public constructor(private readonly emit: WorkerMessageEmitter) {}
+  public constructor(
+    private readonly emit: WorkerMessageEmitter,
+    private readonly checkpoint: () => Promise<void> = yieldToWorkerEventLoop,
+  ) {}
 
   public handleMessage(message: HostToWorkerMessage): void {
     if (!isMessageRecord(message)) {
@@ -97,7 +100,7 @@ export class StreamingWorkerRuntime {
     this.runningJobId = jobId;
     const token = this.cancellation.register(jobId);
     try {
-      await yieldToWorkerEventLoop();
+      await this.checkpoint();
       if (token.isCancellationRequested) {
         this.emit({ type: "JobCancelled", jobId, workerEpoch: request.workerEpoch, reason: "CancelledDuringExecution" });
         return;
@@ -106,12 +109,12 @@ export class StreamingWorkerRuntime {
       if (input.ownership !== "SenderToWorker" || input.revision !== request.inputRevision || input.byteLength !== request.estimatedInputBytes) throw new RangeError("Input ownership, revision, or byte length does not match the request.");
       const execution = request.jobKind === "TransformBuffer"
         ? await this.executeTransform(request, input, async () => {
-            await yieldToWorkerEventLoop();
+            await this.checkpoint();
             if (token.isCancellationRequested) throw new WorkerJobCancelled();
           })
         : request.jobKind === GENERATE_HESTIA_VOXEL_BRICK_MESH_JOB_KIND
           ? await this.executeHestiaVoxelMesh(request, input, async () => {
-              await yieldToWorkerEventLoop();
+              await this.checkpoint();
               if (token.isCancellationRequested) throw new WorkerJobCancelled();
             })
           : (() => { throw new RangeError(`Unsupported worker job kind: ${request.jobKind}.`); })();
