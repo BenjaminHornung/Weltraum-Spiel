@@ -314,7 +314,7 @@ export class SurfaceLabController {
   #plan = 0;
   #generation = 0;
   #metrics = freshMetrics();
-  #tickets: WorkerJobTicket[] = [];
+  readonly #tickets = new Map<WorkerJobTicket, number>();
   #cancelledJobs = 0;
   #staleRejects = 0;
   #publishedInputSignature: string | undefined;
@@ -492,16 +492,19 @@ export class SurfaceLabController {
     this.#lifecycle = lifecycle;
     this.#metrics = freshMetrics();
     this.#settledPromise = new Promise<SurfaceLabTelemetrySnapshot>((resolve) => { this.#resolveSettled = resolve; });
-    this.#tickets = [];
+    this.#tickets.clear();
     for (const coordinate of SURFACE_LAB_REGION.chunkCoordinates) {
       const prepared = this.#prepareInput(coordinate, allowCacheRead);
       const payload = prepared.payload;
       const request = this.#requestFor(payload, generation);
       try {
         const ticket = this.#pool.enqueue(request, prepared.bundle);
-        this.#tickets.push(ticket);
+        this.#tickets.set(ticket, generation);
         this.#metrics.requestedChunks += 1;
-        void ticket.result.then((terminal) => this.#handleTerminal(generation, payload, terminal));
+        void ticket.result.then((terminal) => {
+          this.#forgetTicket(ticket, generation);
+          this.#handleTerminal(generation, payload, terminal);
+        });
       } catch {
         this.#recordFailure(generation);
       }
@@ -714,11 +717,15 @@ export class SurfaceLabController {
     this.#resolveSettled = undefined;
   }
 
+  #forgetTicket(ticket: WorkerJobTicket, generation: number): void {
+    if (this.#tickets.get(ticket) === generation) this.#tickets.delete(ticket);
+  }
+
   #cancelTickets(): void {
-    for (const ticket of this.#tickets) {
+    for (const ticket of this.#tickets.keys()) {
       if (ticket.cancel()) this.#cancelledJobs += 1;
     }
-    this.#tickets = [];
+    this.#tickets.clear();
   }
 
   #emit(): void {

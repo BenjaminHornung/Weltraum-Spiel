@@ -72,6 +72,7 @@ interface PendingJob {
   readonly resolve: (terminal: WorkerJobTerminal) => void;
   cancelled: boolean;
   settled: boolean;
+  cancelAttempts: number;
 }
 
 class FakeWorkerPool implements SurfaceLabWorkerPool {
@@ -84,6 +85,7 @@ class FakeWorkerPool implements SurfaceLabWorkerPool {
   startError: Error | undefined;
   replacementError: Error | undefined;
   enqueueFailureAfter: number | undefined;
+  deferCancellationTerminals = false;
   #startGate: Promise<void> | undefined;
   #releaseStart: (() => void) | undefined;
   #replaceGate: Promise<void> | undefined;
@@ -117,17 +119,21 @@ class FakeWorkerPool implements SurfaceLabWorkerPool {
       request: source as WorkerJobRequest<GenerateHestiaVoxelBrickMeshPayload>,
       resolve,
       cancelled: false,
-      settled: false
+      settled: false,
+      cancelAttempts: 0
     };
     this.jobs.push(pending);
     return Object.freeze({
       jobId: source.jobId,
       result,
       cancel: () => {
+        pending.cancelAttempts += 1;
         if (pending.cancelled || pending.settled) return false;
         pending.cancelled = true;
-        pending.settled = true;
-        pending.resolve(Object.freeze({ kind: "Cancelled", reason: "CancelledBeforeStart" }));
+        if (!this.deferCancellationTerminals) {
+          pending.settled = true;
+          pending.resolve(Object.freeze({ kind: "Cancelled", reason: "CancelledBeforeStart" }));
+        }
         return true;
       }
     });
@@ -212,6 +218,14 @@ class FakeWorkerPool implements SurfaceLabWorkerPool {
         kind: "Failed",
         failure: Object.freeze({ jobId: pending.request.jobId, code: "JobExecutionFailed", message: "fixture failure" })
       }));
+    }
+  }
+
+  public cancelPlanning(epoch: number, count: number): void {
+    for (const pending of this.jobs.filter((job) => job.request.planningEpoch === epoch && !job.settled).slice(0, count)) {
+      pending.cancelled = true;
+      pending.settled = true;
+      pending.resolve(Object.freeze({ kind: "Cancelled", reason: "CancelledBeforeStart" }));
     }
   }
 }
@@ -1275,6 +1289,60 @@ describe("Surface Lab controller", () => {
       readyChunks: 15,
       failedChunks: 1
     });
+  });
+
+  it("forgets every settled ticket and only cancels tickets that remain active", async () => {
+    const { workerPool, controller } = fixture();
+    await controller.start();
+    const firstGeneration = workerPool.jobs.filter((job) => job.request.planningEpoch === 1);
+
+    workerPool.completePlanningInOrder(1, [0]);
+    workerPool.failPlanning(1, 1);
+    workerPool.cancelPlanning(1, 1);
+    await Promise.resolve();
+
+    const settledTickets = firstGeneration.filter((job) => job.settled);
+    const activeTickets = firstGeneration.filter((job) => !job.settled);
+    expect(settledTickets).toHaveLength(3);
+    expect(activeTickets).toHaveLength(13);
+
+    controller.regenerate("ticket-forgetting-regeneration");
+    expect(settledTickets.map((job) => job.cancelAttempts)).toEqual([0, 0, 0]);
+    expect(activeTickets.every((job) => job.cancelAttempts === 1)).toBe(true);
+    expect(controller.readTelemetry().cancelledJobs).toBe(13);
+
+    const secondGeneration = workerPool.jobs.filter((job) => job.request.planningEpoch === 2);
+    workerPool.completePlanning(2);
+    await controller.whenSettled();
+    expect(secondGeneration.every((job) => job.cancelAttempts === 0)).toBe(true);
+
+    await controller.dispose();
+    expect(settledTickets.map((job) => job.cancelAttempts)).toEqual([0, 0, 0]);
+    expect(activeTickets.every((job) => job.cancelAttempts === 1)).toBe(true);
+    expect(secondGeneration.every((job) => job.cancelAttempts === 0)).toBe(true);
+  });
+
+  it("keeps current tickets active when stale old terminals settle late", async () => {
+    const { workerPool, backend, controller } = fixture();
+    workerPool.deferCancellationTerminals = true;
+    await controller.start();
+    const firstGeneration = workerPool.jobs.filter((job) => job.request.planningEpoch === 1);
+
+    controller.regenerate("late-old-terminal-regeneration");
+    const secondGeneration = workerPool.jobs.filter((job) => job.request.planningEpoch === 2);
+    expect(firstGeneration.every((job) => job.cancelAttempts === 1)).toBe(true);
+    expect(secondGeneration).toHaveLength(16);
+
+    workerPool.completePlanning(1);
+    await Promise.resolve();
+    expect(commandCount(backend, "UpsertMeshArtifact")).toBe(0);
+    expect(controller.readTelemetry().staleRejects).toBe(16);
+    expect(secondGeneration.every((job) => job.cancelAttempts === 0)).toBe(true);
+
+    await controller.dispose();
+    expect(firstGeneration.every((job) => job.cancelAttempts === 1)).toBe(true);
+    expect(secondGeneration.every((job) => job.cancelAttempts === 1)).toBe(true);
+    expect(commandCount(backend, "UpsertMeshArtifact")).toBe(0);
   });
 
   it("clears a complete same-input generation before a one-of-sixteen replacement failure", async () => {
