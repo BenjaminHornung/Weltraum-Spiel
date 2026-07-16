@@ -108,6 +108,8 @@ Circular closure is applicable only to a pure `GravityCoast` request whose initi
 
 Canonicalization reuses the Persistence canonical serializer and FNV-1a signature through direct leaf imports. Object keys are lexical, negative zero is normalized, hazards are ID-sorted, wall/performance timing is absent, and `canonicalSignature` is excluded from its own payload. Equal semantic requests therefore produce equal frozen results and `fnv1a32:<8 lowercase hex>` signatures; hazard insertion order cannot change the canonical result.
 
+Because the accepted request payload is signed, an exact-zero impulse and a nonzero but numerically ineffective impulse remain canonically distinguishable even when their propagated physical states are equal.
+
 ## Fail-closed rejection model
 
 The public statuses are:

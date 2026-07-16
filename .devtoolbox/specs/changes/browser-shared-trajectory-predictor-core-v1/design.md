@@ -66,7 +66,7 @@ Circular closure is applicable only to a pure GravityCoast request whose initial
 
 ## Canonical result and immutability
 
-The implementation reuses the persistence canonical serializer and FNV-1a signature through direct leaf imports. It does not use the five-decimal stableStringify helper. Canonical payload includes every semantic request/result field and approximation/tolerance metadata, excludes canonicalSignature itself and excludes all wall/performance timing. Object keys are canonicalized; semantically unordered hazards are ID-sorted.
+The implementation reuses the persistence canonical serializer and FNV-1a signature through direct leaf imports. It does not use the five-decimal stableStringify helper. Canonical payload includes every semantic request/result field and approximation/tolerance metadata, excludes canonicalSignature itself and excludes all wall/performance timing. Object keys are canonicalized; semantically unordered hazards are ID-sorted. Because the accepted request is part of that payload, an exact-zero impulse and a nonzero but numerically ineffective impulse have different canonical signatures even when their propagated physical states are numerically equal.
 
 Caller input is cloned before validation/processing. Completed and rejected results are recursively frozen, including nested arrays and vectors. Mutation attempts cannot alter the result or its signature.
 

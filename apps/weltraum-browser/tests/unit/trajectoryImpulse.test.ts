@@ -119,4 +119,97 @@ describe("trajectory impulse", () => {
     expect(validation.budgetEstimate.sampleCount).toBe(result.samples.length);
     expect(result.metrics.totalSamples).toBe(result.samples.length);
   });
+
+  it("keeps a nonzero numerically ineffective impulse canonically distinct", () => {
+    const base = createHestiaAccelerationImpulseTrajectoryRequest();
+    const continuousSegment = base.segments[0];
+    const impulseSegment = base.segments[1];
+    if (continuousSegment?.kind !== "ConstantInertialAcceleration" || impulseSegment?.kind !== "ImpulseDeltaV") {
+      throw new Error("Acceleration/impulse fixture shape changed.");
+    }
+    // The public default RK4 fixture keeps gravity below the rounding threshold at this magnitude; make the IEEE-754 anchor explicit.
+    const storedVelocity = 2 ** 53;
+    const ineffectiveDelta = { x: 1, y: 0, z: 0 };
+    expect(ineffectiveDelta.x).not.toBe(0);
+    expect((2 ** 53) + 1).toBe(2 ** 53);
+
+    const request = {
+      ...base,
+      initialState: {
+        ...base.initialState,
+        velocityMetersPerSecond: { x: storedVelocity, y: 0, z: 0 }
+      },
+      segments: [
+        continuousSegment,
+        {
+          ...impulseSegment,
+          deltaVelocityMetersPerSecond: ineffectiveDelta
+        }
+      ]
+    };
+    const zeroDeltaRequest = {
+      ...request,
+      segments: [
+        continuousSegment,
+        {
+          ...impulseSegment,
+          deltaVelocityMetersPerSecond: { x: 0, y: 0, z: 0 }
+        }
+      ]
+    };
+
+    const validation = validateTrajectoryPredictionRequest(request);
+    expect(validation.valid).toBe(true);
+    if (!validation.valid) {
+      throw new Error(`Numerically ineffective impulse request rejected: ${validation.issues[0]?.message ?? "unknown"}`);
+    }
+
+    const first = predictTrajectory(request);
+    const second = predictTrajectory(request);
+    const zeroDeltaResult = predictTrajectory(zeroDeltaRequest);
+    expect(first.status).toBe("Completed");
+    expect(second.status).toBe("Completed");
+    expect(zeroDeltaResult.status).toBe("Completed");
+    if (first.status !== "Completed" || second.status !== "Completed" || zeroDeltaResult.status !== "Completed") {
+      throw new Error("Numerically ineffective and exact-zero impulse predictions must complete before comparison.");
+    }
+
+    const impulseResult = first.segmentResults[1];
+    expect(impulseResult?.kind).toBe("ImpulseDeltaV");
+    if (impulseResult?.kind !== "ImpulseDeltaV") {
+      throw new Error("Expected public impulse segment result.");
+    }
+    expect(impulseResult.preImpulseState.velocityMetersPerSecond.x).toBe(storedVelocity);
+    expect(impulseResult.postImpulseState.velocityMetersPerSecond).toEqual(
+      impulseResult.preImpulseState.velocityMetersPerSecond
+    );
+    expect(impulseResult.postImpulseState.positionMeters).toEqual(impulseResult.preImpulseState.positionMeters);
+    expect(impulseResult.postImpulseState.massKilograms).toBe(impulseResult.preImpulseState.massKilograms);
+    expect(impulseResult.postImpulseState.frameId).toBe(impulseResult.preImpulseState.frameId);
+    expect(impulseResult.postImpulseState.epochTick).toBe(impulseResult.preImpulseState.epochTick);
+
+    const sameTickSamples = first.samples.filter((sample) => sample.tick === impulseSegment.tick);
+    expect(sameTickSamples).toHaveLength(2);
+    const [boundarySample, postImpulseSample] = sameTickSamples;
+    if (boundarySample === undefined || postImpulseSample === undefined) {
+      throw new Error("Expected boundary and post-impulse samples at the impulse tick.");
+    }
+    expect(boundarySample).not.toBe(postImpulseSample);
+    expect(boundarySample.state).toEqual(impulseResult.preImpulseState);
+    expect(postImpulseSample.state).toEqual(impulseResult.postImpulseState);
+    expect(boundarySample.reasons).toEqual(["StepEnd", "SegmentBoundary"]);
+    // These ordinals and the 12-sample count pin this fixture's shape, not a generic ordinal contract.
+    expect(boundarySample.stableOrdinal).toBe(10);
+    expect(postImpulseSample.stableOrdinal).toBe(11);
+    expect(boundarySample.stableOrdinal).toBeLessThan(postImpulseSample.stableOrdinal);
+    expect(postImpulseSample.stableOrdinal).toBe(boundarySample.stableOrdinal + 1);
+    expect(postImpulseSample.reasons).toEqual(["ImpulsePostState", "Final"]);
+
+    expect(first.samples).toHaveLength(12);
+    expect(validation.budgetEstimate.sampleCount).toBe(first.samples.length);
+    expect(first.samples.length).toBe(first.metrics.totalSamples);
+    expect(first).toEqual(second);
+    expect(first.canonicalSignature).toBe(second.canonicalSignature);
+    expect(first.canonicalSignature).not.toBe(zeroDeltaResult.canonicalSignature);
+  });
 });

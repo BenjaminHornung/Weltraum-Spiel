@@ -71,7 +71,13 @@ The system SHALL test every integrated step chord against each spherical hazard'
 - THEN lexical hazardId resolves the tie
 
 ### Requirement: Stable ordering and canonical signature
-The system SHALL normalize semantically unordered hazards by stable ID, preserve deterministic timeline order for samples and segment results, and derive one canonical FNV signature from all semantic result data except the signature itself and performance timing. Equivalent cadence, boundary and final reasons for an identical state MAY collapse into one sample. Every ImpulsePostState SHALL occupy a separate sample because it is a non-equivalent semantic event, even when a zero or numerically ineffective delta leaves the physical state unchanged; impulses that change velocity remain separate too.
+The system SHALL normalize semantically unordered hazards by stable ID, preserve deterministic timeline order for samples and segment results, and derive one canonical FNV signature from all semantic request/result data except the signature itself and performance timing. Equivalent cadence, boundary and final reasons for an identical state MAY collapse into one sample. Every ImpulsePostState SHALL occupy a separate sample because it is a non-equivalent semantic event, even when a zero or numerically ineffective delta leaves the physical state unchanged; impulses that change velocity remain separate too. An exact-zero delta and a nonzero but numerically ineffective delta SHALL remain canonically distinguishable through their accepted request payload.
+
+#### Scenario: Nonzero but numerically ineffective impulse
+- GIVEN an accepted request whose pre-impulse X velocity is 2 ** 53 and whose X delta is 1
+- WHEN prediction completes twice and is compared with the otherwise identical exact-zero request
+- THEN the nonzero impulse has a separate ImpulsePostState sample even though the stored pre/post velocities are equal
+- AND identical runs are deep-equal with identical signatures while the exact-zero request has a different signature
 
 #### Scenario: Hazard insertion order
 - GIVEN equivalent requests differing only in hazard array insertion order
