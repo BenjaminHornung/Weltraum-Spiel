@@ -19,6 +19,7 @@ import tools.blender.hestia_asset_authoring.canonical as canonical
 import tools.blender.hestia_asset_authoring.export_hestia_glb as cli
 import tools.blender.hestia_asset_authoring.model as model
 import tools.blender.hestia_asset_authoring.report as report
+import tools.blender.hestia_asset_authoring.validation as validation
 
 
 class _PropertyBlock(dict[str, object]):
@@ -416,6 +417,98 @@ class BlenderBoundaryTests(unittest.TestCase):
             ):
                 adapter.extract_asset(source, objects=(part,))
 
+    def test_structural_material_id_does_not_create_phantom_render_material(self) -> None:
+        source = _PropertyBlock(
+            {
+                "hestia.schema_version": "hestia.asset-authoring.v1",
+                "hestia.asset_id": "asset-01",
+                "hestia.asset_revision": 1,
+                "hestia.representation_mode": "StructuralAssembly",
+            }
+        )
+        part = _FakeObject(
+            "Hull",
+            {
+                "hestia.part_id": "hull",
+                "hestia.representation_mode": "StructuralAssembly",
+                "hestia.render_material_id": "paint",
+                "hestia.structural_material_id": "steel",
+                "hestia.destructible": False,
+                "hestia.collision_policy": "None",
+                "hestia.navigation_policy": "None",
+                "hestia.thin_feature_policy": "Reject",
+                "hestia.declared_minimum_thickness_m": 0.01,
+            },
+        )
+        material = _PropertyBlock(
+            {
+                "hestia.render_material_id": "paint",
+                "hestia.structural_material_id": "steel",
+            }
+        )
+        material.name = material.name_full = "PaintSteel"  # type: ignore[attr-defined]
+        part.material_slots = (types.SimpleNamespace(material=material),)
+
+        with (
+            mock.patch.object(adapter, "bpy", types.SimpleNamespace()),
+            mock.patch.object(adapter, "transform_from_object", return_value=model.Transform()),
+            mock.patch.object(adapter, "collect_mesh_inventory", return_value=((), (), ())),
+        ):
+            extracted = adapter.extract_asset(source, objects=(part,))
+
+        self.assertEqual(
+            (model.CanonicalMaterial(render_material_id="paint", structural_material_id="steel"),),
+            extracted.asset.materials,
+        )
+        self.assertNotIn(
+            "steel",
+            tuple(material.render_material_id for material in extracted.asset.materials),
+        )
+
+    def test_empty_material_slots_leave_default_render_material_unresolved(self) -> None:
+        source = _PropertyBlock(
+            {
+                "hestia.schema_version": "hestia.asset-authoring.v1",
+                "hestia.asset_id": "asset-01",
+                "hestia.asset_revision": 1,
+                "hestia.representation_mode": "StructuralAssembly",
+            }
+        )
+        part = _FakeObject(
+            "Hull",
+            {
+                "hestia.part_id": "hull",
+                "hestia.representation_mode": "StructuralAssembly",
+                "hestia.render_material_id": "paint",
+                "hestia.structural_material_id": "steel",
+                "hestia.destructible": False,
+                "hestia.collision_policy": "None",
+                "hestia.navigation_policy": "None",
+                "hestia.thin_feature_policy": "Reject",
+                "hestia.declared_minimum_thickness_m": 0.01,
+            },
+        )
+        part.material_slots = ()
+
+        with (
+            mock.patch.object(adapter, "bpy", types.SimpleNamespace()),
+            mock.patch.object(adapter, "transform_from_object", return_value=model.Transform()),
+            mock.patch.object(adapter, "collect_mesh_inventory", return_value=((), (), ())),
+        ):
+            extracted = adapter.extract_asset(source, objects=(part,))
+
+        self.assertEqual((), extracted.asset.materials)
+        diagnostics = validation.validate_asset(extracted)
+        self.assertTrue(
+            any(
+                item.severity == model.DiagnosticSeverity.ERROR
+                and item.code == "reference.not-exactly-one"
+                and item.path.endswith(".defaultRenderMaterialId")
+                and "paint" in item.message
+                for item in diagnostics
+            )
+        )
+
     def test_semantic_part_mesh_creates_polygon_material_primitives_and_always_clears(self) -> None:
         red = _PropertyBlock({"hestia.render_material_id": "paint-red"})
         red.name = "Red"  # type: ignore[attr-defined]
@@ -648,6 +741,49 @@ class BlenderBoundaryTests(unittest.TestCase):
         )
         return model.AuthoringInput(asset=asset, inventory=model.GeometryInventory((), (), ()))
 
+    def test_non_finite_mesh_bounds_are_rejected_and_serialized_as_null(self) -> None:
+        base_input = self._authoring_input()
+        inputs = model.AuthoringInput(
+            asset=base_input.asset,
+            inventory=model.GeometryInventory(
+                meshes=(
+                    model.MeshInventory(
+                        "mesh-01",
+                        bounds_min=(float("nan"), 0.0, 0.0),
+                        bounds_max=(1.0, 1.0, 1.0),
+                        material_ids=("mat-render",),
+                        primitive_ids=("mesh-01",),
+                    ),
+                ),
+                primitives=(model.PrimitiveInventory("mesh-01", "mesh-01", "mat-render"),),
+                materials=(model.MaterialInventory("mat-render"),),
+            ),
+        )
+
+        diagnostics = validation.validate_asset(inputs)
+        bounds_diagnostics = [item for item in diagnostics if item.code == "inventory.bounds"]
+        self.assertEqual(1, len(bounds_diagnostics))
+        self.assertEqual(model.DiagnosticSeverity.ERROR, bounds_diagnostics[0].severity)
+        self.assertEqual("mesh[mesh-01]", bounds_diagnostics[0].path)
+
+        document = report.build_report(
+            inputs,
+            diagnostics=diagnostics,
+            glb_sha256=None,
+            output_basename="asset.glb",
+        )
+        serialized = canonical.canonical_json_bytes(document)
+        report_document = json.loads(serialized)
+        mesh_payload = report_document["payload"]["inventory"]["meshes"][0]
+        self.assertIsNone(mesh_payload["boundsMin"])
+        self.assertEqual([1.0, 1.0, 1.0], mesh_payload["boundsMax"])
+        self.assertIsNone(report_document["payload"]["glbSha256"])
+        self.assertIsNone(report_document["digests"]["glb_sha256"])
+        serialized_text = serialized.decode("utf-8")
+        for forbidden in ("NaN", "Infinity", "timestamp"):
+            with self.subTest(forbidden=forbidden):
+                self.assertNotIn(forbidden, serialized_text)
+
     @staticmethod
     def _minimal_glb(
         document: dict[str, object] | None = None,
@@ -697,21 +833,40 @@ class BlenderBoundaryTests(unittest.TestCase):
             Path(path).write_bytes(BlenderBoundaryTests._minimal_glb())
             return {"FINISHED"}
 
-        def attach_hestia_extras(target: _PropertyBlock, extras: object, **_: object) -> None:
-            target["hestia"] = json.loads(json.dumps(extras))
+        def attach_hestia_extras(
+            target: _PropertyBlock,
+            extras: object,
+            *,
+            kind: str | None = None,
+            **_: object,
+        ) -> None:
+            copied_extras = json.loads(json.dumps(extras))
+            if kind is not None:
+                copied_extras["kind"] = kind
+            target["hestia"] = copied_extras
 
-        def snapshot_hestia_properties(blocks: object) -> list[tuple[_PropertyBlock, dict[str, object]]]:
+        def snapshot_hestia_properties(
+            blocks: object,
+            *,
+            include_root: bool = True,
+        ) -> list[tuple[_PropertyBlock, dict[str, object]]]:
             return [
                 (
                     block,
                     {
                         key: json.loads(json.dumps(value))
                         for key, value in block.items()
-                        if key == "hestia" or key.startswith("hestia.")
+                        if key.startswith("hestia.") or (include_root and key == "hestia")
                     },
                 )
                 for block in blocks  # type: ignore[union-attr]
             ]
+
+        def clear_hestia_properties(snapshots: object, *, include_root: bool = True) -> None:
+            for block, _ in snapshots:  # type: ignore[union-attr]
+                for key in tuple(block):
+                    if key.startswith("hestia.") or (include_root and key == "hestia"):
+                        del block[key]
 
         def restore_hestia_properties(snapshots: object) -> None:
             for block, values in snapshots:  # type: ignore[union-attr]
@@ -730,6 +885,7 @@ class BlenderBoundaryTests(unittest.TestCase):
             extract_properties=mock.Mock(return_value={}),
             attach_hestia_extras=mock.Mock(side_effect=attach_hestia_extras),
             snapshot_hestia_properties=mock.Mock(side_effect=snapshot_hestia_properties),
+            clear_hestia_properties=mock.Mock(side_effect=clear_hestia_properties),
             restore_hestia_properties=mock.Mock(side_effect=restore_hestia_properties),
             export_glb=mock.Mock(side_effect=export_glb),
         )
@@ -766,6 +922,124 @@ class BlenderBoundaryTests(unittest.TestCase):
                 "schema.invalid",
                 report_document["payload"]["diagnostics"][0]["code"],
             )
+
+    def test_txt_output_is_rejected_before_handoff_and_preserves_sentinels(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "asset.txt"
+            sidecar = Path(directory) / "asset.hestia-authoring-report.json"
+            output.write_bytes(b"prior-output")
+            sidecar.write_bytes(b"prior-sidecar")
+            modules = self._mock_modules(output)
+            mocked_adapter = modules[0]
+            with (
+                mock.patch.object(cli, "_load_contract_modules", return_value=modules),
+                mock.patch.object(cli.os, "replace") as replace,
+            ):
+                result = cli.main(["blender", "--", "--output", str(output)])
+
+            self.assertEqual(1, result)
+            mocked_adapter.export_glb.assert_not_called()  # type: ignore[attr-defined]
+            replace.assert_not_called()
+            self.assertEqual(b"prior-output", output.read_bytes())
+            self.assertEqual(b"prior-sidecar", sidecar.read_bytes())
+
+    def test_output_equal_to_blender_source_is_rejected_without_mutating_source(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / "source.glb"
+            source.write_bytes(b"source-sentinel")
+            modules = self._mock_modules(source)
+            mocked_adapter = modules[0]
+            mocked_adapter.require_blender().data = types.SimpleNamespace(filepath=str(source))  # type: ignore[attr-defined]
+            with (
+                mock.patch.object(cli, "_load_contract_modules", return_value=modules),
+                mock.patch.object(cli.os, "replace") as replace,
+            ):
+                result = cli.main(["blender", "--", "--output", str(source)])
+
+            self.assertEqual(1, result)
+            mocked_adapter.export_glb.assert_not_called()  # type: ignore[attr-defined]
+            replace.assert_not_called()
+            self.assertEqual(b"source-sentinel", source.read_bytes())
+
+    def test_explicit_collection_is_asset_metadata_source_without_scene_duplication(self) -> None:
+        expected_asset_extras = {
+            "schema": "hestia.asset-authoring.v1",
+            "assetId": "asset-01",
+            "assetRevision": 7,
+            "representation": "StructuralAssembly",
+            "metersPerUnit": 1,
+            "coordinateFrame": {"forwardAxis": "+Z", "handedness": "RIGHT", "upAxis": "+Y"},
+            "tags": [],
+        }
+
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "asset.glb"
+            modules = self._mock_modules(output)
+            mocked_adapter = modules[0]
+            scene = mocked_adapter.require_blender().context.scene  # type: ignore[attr-defined]
+            collection = _PropertyBlock()
+            collection.name = "StructuralAssembly"  # type: ignore[attr-defined]
+            collection.objects = ()  # type: ignore[attr-defined]
+            collection.children = ()  # type: ignore[attr-defined]
+            collection_object = _FakeObject("CollectionPart")
+            mocked_adapter.find_named_collection.return_value = collection  # type: ignore[attr-defined]
+            mocked_adapter.iter_collection_objects.return_value = (collection_object,)  # type: ignore[attr-defined]
+            observed: dict[str, object] = {}
+
+            def export_collection(path: Path, **_: object) -> set[str]:
+                observed["collection_hestia"] = json.loads(json.dumps(collection["hestia"]))
+                observed["scene_hestia"] = scene.get("hestia")
+                Path(path).write_bytes(BlenderBoundaryTests._minimal_glb())
+                return {"FINISHED"}
+
+            mocked_adapter.export_glb.side_effect = export_collection  # type: ignore[attr-defined]
+            with mock.patch.object(cli, "_load_contract_modules", return_value=modules):
+                result = cli.main(
+                    [
+                        "blender",
+                        "--",
+                        "--collection",
+                        "StructuralAssembly",
+                        "--output",
+                        str(output),
+                    ]
+                )
+
+            self.assertEqual(0, result)
+            self.assertEqual(expected_asset_extras, observed["collection_hestia"])
+            self.assertIsNone(observed["scene_hestia"])
+            mocked_adapter.extract_asset.assert_called_once_with(  # type: ignore[attr-defined]
+                collection,
+                collection=collection,
+                scene=scene,
+            )
+            mocked_adapter.export_glb.assert_called_once_with(mock.ANY, collection=collection)  # type: ignore[attr-defined]
+
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "asset.glb"
+            modules = self._mock_modules(output)
+            mocked_adapter = modules[0]
+            scene = mocked_adapter.require_blender().context.scene  # type: ignore[attr-defined]
+            observed_scene: dict[str, object] = {}
+
+            def export_scene(path: Path, **_: object) -> set[str]:
+                observed_scene["scene_hestia"] = json.loads(json.dumps(scene["hestia"]))
+                Path(path).write_bytes(BlenderBoundaryTests._minimal_glb())
+                return {"FINISHED"}
+
+            mocked_adapter.export_glb.side_effect = export_scene  # type: ignore[attr-defined]
+            with mock.patch.object(cli, "_load_contract_modules", return_value=modules):
+                result = cli.main(["blender", "--", "--output", str(output)])
+
+            self.assertEqual(0, result)
+            self.assertEqual(expected_asset_extras, observed_scene["scene_hestia"])
+            mocked_adapter.find_named_collection.assert_not_called()  # type: ignore[attr-defined]
+            mocked_adapter.extract_asset.assert_called_once_with(  # type: ignore[attr-defined]
+                scene,
+                collection=None,
+                scene=scene,
+            )
+            mocked_adapter.export_glb.assert_called_once_with(mock.ANY, collection=None)  # type: ignore[attr-defined]
 
     def test_cli_treats_every_collection_option_as_explicit_and_fails_on_empty(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -841,6 +1115,70 @@ class BlenderBoundaryTests(unittest.TestCase):
         self.assertEqual((0x004E4942, bin_chunk), chunks[1])
         self.assertEqual(0, len(chunks[0][1]) % 4)
         self.assertTrue(chunks[0][1].endswith(b" ") or len(chunks[0][1]) % 4 == 0)
+
+    def test_postprocess_rejects_malformed_glb_without_publishing_destination(self) -> None:
+        valid = self._minimal_glb()
+        json_chunk = 0x4E4F534A
+        malformed_cases = (
+            ("bad magic", b"BAD!" + valid[4:], "glTF magic and version 2"),
+            (
+                "bad version",
+                struct.pack("<4sII", b"glTF", 3, len(valid)) + valid[12:],
+                "glTF magic and version 2",
+            ),
+            ("truncated header", valid[:8], "header is truncated"),
+            (
+                "chunk overrun",
+                struct.pack("<4sII", b"glTF", 2, 24)
+                + struct.pack("<II", 8, json_chunk)
+                + b"{}  ",
+                "chunk exceeds",
+            ),
+            (
+                "invalid JSON",
+                struct.pack("<4sII", b"glTF", 2, 24)
+                + struct.pack("<II", 4, json_chunk)
+                + b"{bad",
+                "not valid UTF-8 JSON",
+            ),
+            (
+                "multiple JSON chunks",
+                self._minimal_glb(trailing_chunks=((json_chunk, b"{}  "),)),
+                "exactly one JSON chunk",
+            ),
+        )
+
+        for label, malformed, error_text in malformed_cases:
+            with self.subTest(label=label):
+                with self.assertRaisesRegex(ValueError, error_text):
+                    cli._postprocess_glb(malformed, self._authoring_input().asset)
+
+                with tempfile.TemporaryDirectory() as directory:
+                    output = Path(directory) / "asset.glb"
+                    sidecar = Path(directory) / "asset.hestia-authoring-report.json"
+                    output.write_bytes(b"prior-output")
+                    sidecar.write_bytes(b"prior-sidecar")
+                    modules = self._mock_modules(output)
+                    mocked_adapter = modules[0]
+
+                    def export_malformed(path: Path, **_: object) -> set[str]:
+                        path.write_bytes(malformed)
+                        return {"FINISHED"}
+
+                    mocked_adapter.export_glb.side_effect = export_malformed  # type: ignore[attr-defined]
+                    with (
+                        mock.patch.object(cli, "_load_contract_modules", return_value=modules),
+                        mock.patch.object(cli, "_replace_handoff") as replace_handoff,
+                        mock.patch.object(cli, "_print_error") as print_error,
+                    ):
+                        result = cli.main(["blender", "--", "--output", str(output)])
+
+                    self.assertEqual(1, result)
+                    replace_handoff.assert_not_called()
+                    self.assertEqual(b"prior-output", output.read_bytes())
+                    self.assertEqual(b"prior-sidecar", sidecar.read_bytes())
+                    self.assertEqual("export.failed", print_error.call_args.args[0])
+                    self.assertRegex(print_error.call_args.args[1], error_text)
 
     def test_success_writes_exact_deterministic_sidecar_with_canonical_semantics(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -986,6 +1324,158 @@ class BlenderBoundaryTests(unittest.TestCase):
             self.assertEqual(b"prior-report", sidecar.read_bytes())
             self.assertEqual({"legitimate": "original"}, scene["hestia"])
             self.assertEqual([], list(Path(directory).glob("*.tmp.glb")))
+
+    def test_cli_export_handoff_strips_raw_properties_and_restores_them_after_success_or_failure(self) -> None:
+        part = model.CanonicalPart(
+            part_id="part-01",
+            representation_mode=model.RepresentationMode.STRUCTURAL_ASSEMBLY,
+            destructible=False,
+            collision_policy=model.CollisionPolicy.NONE,
+            navigation_policy=model.NavigationPolicy.NONE,
+            thin_feature=model.ThinFeature(
+                policy=model.ThinFeaturePolicy.REJECT,
+                declared_minimum_thickness_m=0.01,
+            ),
+            default_render_material_id="mat-render",
+            structural_material_id="mat-structural",
+        )
+        material_contract = model.CanonicalMaterial(
+            render_material_id="mat-render",
+            structural_material_id="mat-structural",
+            palette_index=3,
+            tags=("exterior",),
+        )
+        asset = model.CanonicalAsset(
+            asset_id="asset-01",
+            asset_revision=7,
+            representation_mode=model.RepresentationMode.STRUCTURAL_ASSEMBLY,
+            parts=(part,),
+            materials=(material_contract,),
+        )
+        authoring_input = model.AuthoringInput(
+            asset=asset,
+            inventory=model.GeometryInventory((), (), ()),
+        )
+
+        for should_fail in (False, True):
+            with self.subTest(should_fail=should_fail), tempfile.TemporaryDirectory() as directory:
+                output = Path(directory) / "asset.glb"
+                modules = self._mock_modules(output)
+                mocked_adapter = modules[0]
+                mocked_adapter.extract_asset.return_value = authoring_input  # type: ignore[attr-defined]
+                mocked_adapter.extract_properties.side_effect = adapter.extract_properties  # type: ignore[attr-defined]
+
+                source = _PropertyBlock(
+                    {
+                        "hestia.schema_version": "hestia.asset-authoring.v1",
+                        "hestia.asset_id": "raw-asset",
+                        "hestia.asset_revision": 2,
+                        "hestia": {"legacy": "source"},
+                        "ordinary": "source-preserved",
+                    }
+                )
+                source.name = "StructuralAssembly"  # type: ignore[attr-defined]
+                source.objects = ()  # type: ignore[attr-defined]
+                source.children = ()  # type: ignore[attr-defined]
+                part_object = _FakeObject(
+                    "Part",
+                    {
+                        "hestia.part_id": "part-01",
+                        "hestia.representation_mode": "StructuralAssembly",
+                        "hestia.destructible": False,
+                        "hestia.collision_policy": "None",
+                        "hestia.navigation_policy": "None",
+                        "hestia.thin_feature_policy": "Reject",
+                        "hestia.declared_minimum_thickness_m": 0.01,
+                        "hestia.render_material_id": "mat-render",
+                        "ordinary": "object-preserved",
+                    },
+                )
+                material = _PropertyBlock(
+                    {
+                        "hestia.render_material_id": "mat-render",
+                        "hestia.structural_material_id": "mat-structural",
+                        "hestia.palette_index": 3,
+                        "hestia": {"legacy": "material"},
+                        "ordinary": "material-preserved",
+                    }
+                )
+                part_object.material_slots = (types.SimpleNamespace(material=material),)
+                mocked_adapter.find_named_collection.return_value = source  # type: ignore[attr-defined]
+                mocked_adapter.iter_collection_objects.return_value = (part_object,)  # type: ignore[attr-defined]
+                original_properties = {
+                    name: json.loads(json.dumps(block))
+                    for name, block in (
+                        ("source", source),
+                        ("part", part_object),
+                        ("material", material),
+                    )
+                }
+                mocked_adapter.extract_properties.return_value = {"hestia.part_id": "part-01"}  # type: ignore[attr-defined]
+                material.get = mock.Mock(return_value="mat-render")  # type: ignore[method-assign]
+                observed_during_export: dict[str, dict[str, object]] = {}
+
+                def export_collection(path: Path, **_: object) -> set[str]:
+                    observed_during_export.update(
+                        {
+                            name: json.loads(json.dumps(block))
+                            for name, block in (
+                                ("source", source),
+                                ("part", part_object),
+                                ("material", material),
+                            )
+                        }
+                    )
+                    Path(path).write_bytes(BlenderBoundaryTests._minimal_glb())
+                    if should_fail:
+                        raise RuntimeError("injected export failure")
+                    return {"FINISHED"}
+
+                mocked_adapter.export_glb.side_effect = export_collection  # type: ignore[attr-defined]
+                with mock.patch.object(cli, "_load_contract_modules", return_value=modules):
+                    result = cli.main(
+                        [
+                            "blender",
+                            "--",
+                            "--collection",
+                            "StructuralAssembly",
+                            "--output",
+                            str(output),
+                        ]
+                    )
+
+                self.assertEqual(1 if should_fail else 0, result)
+                expected_source_hestia = {
+                    "schema": "hestia.asset-authoring.v1",
+                    "assetId": "asset-01",
+                    "assetRevision": 7,
+                    "representation": "StructuralAssembly",
+                    "metersPerUnit": 1,
+                    "coordinateFrame": {"forwardAxis": "+Z", "handedness": "RIGHT", "upAxis": "+Y"},
+                    "tags": [],
+                }
+                expected_hestia = {
+                    "source": expected_source_hestia,
+                    "part": json.loads(json.dumps({**part.to_contract_dict(), "kind": "part"})),
+                    "material": json.loads(json.dumps(material_contract.to_contract_dict())),
+                }
+                for name in ("source", "part", "material"):
+                    with self.subTest(should_fail=should_fail, block=name):
+                        observed = observed_during_export[name]
+                        self.assertEqual(
+                            [key for key in observed if key.startswith("hestia.")],
+                            [],
+                        )
+                        self.assertEqual(expected_hestia[name], observed["hestia"])
+                self.assertEqual(original_properties, {
+                    name: json.loads(json.dumps(block))
+                    for name, block in (
+                        ("source", source),
+                        ("part", part_object),
+                        ("material", material),
+                    )
+                })
+                mocked_adapter.export_glb.assert_called_once_with(mock.ANY, collection=source)  # type: ignore[attr-defined]
 
     def test_export_restores_source_custom_properties_even_when_export_fails(self) -> None:
         obj = _FakeObject("Part", {"hestia.part_id": "part-01", "ordinary": 4})

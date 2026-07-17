@@ -1,6 +1,7 @@
 """Deterministic handoff report construction for authored Hestia assets."""
 
 from __future__ import annotations
+import math
 
 from collections.abc import Sequence
 from typing import Any
@@ -25,6 +26,13 @@ def _diagnostic_sort_key(item: Diagnostic) -> tuple[str, str, str, str]:
 def _inventory_payload(inventory: GeometryInventory) -> dict[str, Any]:
     """Return inventory collections in identity order, independent of input order."""
 
+    def report_bounds(value: tuple[float, float, float] | None) -> tuple[float, float, float] | None:
+        if value is None or len(value) != 3:
+            return None
+        if any(isinstance(item, bool) or not isinstance(item, (int, float)) or not math.isfinite(float(item)) for item in value):
+            return None
+        return value
+
     def mesh_payload(item: MeshInventory) -> dict[str, Any]:
         return {
             "meshId": item.mesh_id,
@@ -37,8 +45,8 @@ def _inventory_payload(inventory: GeometryInventory) -> dict[str, Any]:
                 "nonManifoldEdgeCount": item.topology.non_manifold_edge_count,
                 "degeneratePolygonCount": item.topology.degenerate_polygon_count,
             },
-            "boundsMin": item.bounds_min,
-            "boundsMax": item.bounds_max,
+                "boundsMin": report_bounds(item.bounds_min),
+                "boundsMax": report_bounds(item.bounds_max),
             "materialIds": tuple(sorted(item.material_ids)),
             "primitiveIds": tuple(sorted(item.primitive_ids)),
         }

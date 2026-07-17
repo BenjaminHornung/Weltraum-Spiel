@@ -843,13 +843,6 @@ def extract_asset(
     meshes, primitives, inventory_materials = collect_mesh_inventory(
         geometry_objects, depsgraph=depsgraph
     )
-    material_ids = {
-        value
-        for part in parts
-        for value in (part.default_render_material_id, part.structural_material_id)
-        if value is not None
-    }
-    material_ids.update(material.material_id for material in inventory_materials)
     canonical_materials: dict[str, CanonicalMaterial] = {}
     material_owners: dict[str, int] = {}
     seen_material_blocks: set[int] = set()
@@ -885,8 +878,6 @@ def extract_asset(
                 )
             material_owners[render_material_id] = material_identity
             canonical_materials[render_material_id] = candidate
-    for value in material_ids:
-        canonical_materials.setdefault(value, CanonicalMaterial(render_material_id=value))
     materials = tuple(canonical_materials[value] for value in sorted(canonical_materials))
     canonical_asset = CanonicalAsset(
         asset_id=asset_id,

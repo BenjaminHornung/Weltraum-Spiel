@@ -429,6 +429,27 @@
               "interfaceId"
             ]
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "markerType": {
+                "not": {
+                  "const": "CutInterface"
+                }
+              }
+            },
+            "required": [
+              "markerType"
+            ]
+          },
+          "then": {
+            "not": {
+              "required": [
+                "interfaceId"
+              ]
+            }
+          }
         }
       ]
     },

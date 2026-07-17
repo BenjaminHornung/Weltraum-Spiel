@@ -604,6 +604,15 @@ def _validate_canonical(asset: CanonicalAsset, options: ValidationOptions) -> li
         result.extend(_transform_diagnostics(marker.transform, f"{path}.transform", options))
         if marker.marker_type == MarkerType.CUT_INTERFACE and not is_valid_id(marker.interface_id):
             result.append(_diag(DiagnosticSeverity.ERROR, "schema.cut-interface-id", "CutInterface requires a valid interfaceId", path))
+        elif marker.marker_type != MarkerType.CUT_INTERFACE and marker.interface_id is not None:
+            result.append(
+                _diag(
+                    DiagnosticSeverity.ERROR,
+                    "schema.cut-interface-id",
+                    "interfaceId is only allowed for CutInterface markers",
+                    f"{path}.interfaceId",
+                )
+            )
 
     for material in asset.materials:
         path = _path("material", getattr(material, "render_material_id", "?"))
