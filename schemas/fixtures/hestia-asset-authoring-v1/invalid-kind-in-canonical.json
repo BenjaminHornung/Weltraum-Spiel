@@ -1,0 +1,31 @@
+{
+  "schema": "hestia.asset-authoring.v1",
+  "asset": {
+    "assetId": "asset.transport-kind",
+    "assetRevision": 0,
+    "representation": "ModularPart",
+    "metersPerUnit": 1,
+    "coordinateFrame": {
+      "upAxis": "+Y",
+      "forwardAxis": "+Z",
+      "handedness": "RIGHT"
+    }
+  },
+  "parts": [
+    {
+      "kind": "part",
+      "partId": "hull.core",
+      "representation": "Solid",
+      "destructible": true,
+      "collisionPolicy": "AuthoredMesh",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.01
+      }
+    }
+  ],
+  "joints": [],
+  "markers": [],
+  "materials": []
+}

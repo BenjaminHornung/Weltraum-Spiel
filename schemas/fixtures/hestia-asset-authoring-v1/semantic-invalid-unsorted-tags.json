@@ -1,0 +1,22 @@
+{
+  "schema": "hestia.asset-authoring.v1",
+  "asset": {
+    "assetId": "asset.unsorted-tags",
+    "assetRevision": 0,
+    "representation": "Solid",
+    "metersPerUnit": 1,
+    "coordinateFrame": {
+      "upAxis": "+Y",
+      "forwardAxis": "+Z",
+      "handedness": "RIGHT"
+    },
+    "tags": [
+      "zeta",
+      "alpha"
+    ]
+  },
+  "parts": [],
+  "joints": [],
+  "markers": [],
+  "materials": []
+}

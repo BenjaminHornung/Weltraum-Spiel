@@ -1,7 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://weltraum.invalid/schemas/hestia-asset-authoring-v1.schema.json",
-  "title": "Hestia Asset Authoring Contract V1",
+  "title": "Hestia Asset Authoring Contract V1 (closed canonical authoring root)",
+  "description": "Draft 2020-12 schema for the in-memory canonical Hestia v1 authoring root. GLB transport metadata such as node extras.kind is removed before this schema is applied; unknown canonical fields fail closed. Registry binding is compiler configuration, not authoring data.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -14,30 +15,36 @@
   ],
   "properties": {
     "schema": {
+      "description": "The exact Hestia authoring schema discriminator. There is no v1 aliasing or migration.",
       "const": "hestia.asset-authoring.v1"
     },
     "asset": {
+      "description": "Canonical asset metadata collected from asset.extras.hestia. Source GLB/Blender state is not persisted by canonicalization.",
       "$ref": "#/$defs/asset"
     },
     "parts": {
+      "description": "Canonical part records. Transport node extras.kind is not a member of these records.",
       "type": "array",
       "items": {
         "$ref": "#/$defs/part"
       }
     },
     "joints": {
+      "description": "Canonical joint records. Transport node extras.kind is not a member of these records.",
       "type": "array",
       "items": {
         "$ref": "#/$defs/joint"
       }
     },
     "markers": {
+      "description": "Canonical marker records. Transport node extras.kind is not a member of these records.",
       "type": "array",
       "items": {
         "$ref": "#/$defs/marker"
       }
     },
     "materials": {
+      "description": "Canonical render-material entries. Render IDs resolve in this array; structural IDs resolve only in the external compiler-pinned registry.",
       "type": "array",
       "items": {
         "$ref": "#/$defs/material"
@@ -46,6 +53,7 @@
   },
   "$defs": {
     "id": {
+      "description": "Case-sensitive opaque v1 identifier syntax. Values are not trimmed or otherwise normalized by the schema.",
       "type": "string",
       "pattern": "^[a-z0-9][a-z0-9._:-]{0,127}$"
     },
@@ -81,6 +89,7 @@
       }
     },
     "tags": {
+      "description": "Optional ID-shaped tags. Empty arrays are valid and uniqueItems rejects duplicates; semantic canonicalization sorts tags lexically.",
       "type": "array",
       "items": {
         "$ref": "#/$defs/id"
@@ -88,6 +97,7 @@
       "uniqueItems": true
     },
     "asset": {
+      "description": "Required canonical asset fields. defaultStructuralMaterialId is a globally namespaced opaque external-registry ID, not a materials-array ID.",
       "type": "object",
       "additionalProperties": false,
       "required": [
@@ -124,6 +134,7 @@
       }
     },
     "thinFeature": {
+      "description": "Authored thin-feature policy and positive declared minimum thickness. Geometry measurement remains compiler-owned.",
       "type": "object",
       "additionalProperties": false,
       "required": [
@@ -147,6 +158,7 @@
       }
     },
     "shellLayer": {
+      "description": "A shell layer whose structural material ID is resolved through the external registry, never through canonical render materials.",
       "type": "object",
       "additionalProperties": false,
       "required": [
@@ -164,6 +176,7 @@
       }
     },
     "shell": {
+      "description": "Shell metadata required for Shell and LayeredShell parts. It does not persist source geometry or compiler registry data.",
       "type": "object",
       "additionalProperties": false,
       "required": [
@@ -185,6 +198,7 @@
       }
     },
     "part": {
+      "description": "Closed canonical part object. Transport-only kind and unknown Hestia fields are invalid. Decorative parts additionally require destructible false and collisionPolicy None or AuthoredMesh.",
       "type": "object",
       "additionalProperties": false,
       "required": [
@@ -206,9 +220,11 @@
           "$ref": "#/$defs/representation"
         },
         "defaultRenderMaterialId": {
+          "description": "Render-material ID resolved exactly once against one canonical materials entry.",
           "$ref": "#/$defs/id"
         },
         "structuralMaterialId": {
+          "description": "Opaque globally namespaced structural-material ID resolved only through the compiler-pinned external registry.",
           "$ref": "#/$defs/id"
         },
         "destructible": {
@@ -303,6 +319,7 @@
       ]
     },
     "joint": {
+      "description": "Closed canonical joint object assembled from a classified transport node; transport kind is not retained.",
       "type": "object",
       "additionalProperties": false,
       "required": [
@@ -379,6 +396,7 @@
       ]
     },
     "marker": {
+      "description": "Closed canonical marker object assembled from a classified transport node; transport kind is not retained.",
       "type": "object",
       "additionalProperties": false,
       "required": [
@@ -433,6 +451,7 @@
       ]
     },
     "material": {
+      "description": "Closed canonical material entry. renderMaterialId must be unique and resolve exactly once in the canonical materials array; structuralMaterialId is external-registry-only.",
       "type": "object",
       "additionalProperties": false,
       "required": [
@@ -440,9 +459,11 @@
       ],
       "properties": {
         "renderMaterialId": {
+          "description": "The sole render-material identifier for this entry and the key used for exact render-reference resolution.",
           "$ref": "#/$defs/id"
         },
         "structuralMaterialId": {
+          "description": "Opaque globally namespaced structural-material ID resolved only through the compiler-pinned external registry.",
           "$ref": "#/$defs/id"
         },
         "paletteIndex": {

@@ -1,0 +1,30 @@
+{
+  "schema": "hestia.asset-authoring.v1",
+  "asset": {
+    "assetId": "asset.decorative-collision",
+    "assetRevision": 0,
+    "representation": "Decorative",
+    "metersPerUnit": 1,
+    "coordinateFrame": {
+      "upAxis": "+Y",
+      "forwardAxis": "+Z",
+      "handedness": "RIGHT"
+    }
+  },
+  "parts": [
+    {
+      "partId": "trim.decorative",
+      "representation": "Decorative",
+      "destructible": false,
+      "collisionPolicy": "Voxel",
+      "navigationPolicy": "None",
+      "thinFeature": {
+        "policy": "DecorativeOnly",
+        "declaredMinimumThicknessMeters": 0.005
+      }
+    }
+  ],
+  "joints": [],
+  "markers": [],
+  "materials": []
+}

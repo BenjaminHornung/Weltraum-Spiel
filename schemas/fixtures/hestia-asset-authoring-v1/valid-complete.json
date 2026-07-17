@@ -1,0 +1,99 @@
+{
+  "schema": "hestia.asset-authoring.v1",
+  "asset": {
+    "assetId": "ship.demo-scout",
+    "assetRevision": 1,
+    "representation": "Hybrid",
+    "metersPerUnit": 1,
+    "coordinateFrame": {
+      "upAxis": "+Y",
+      "forwardAxis": "+Z",
+      "handedness": "RIGHT"
+    },
+    "defaultStructuralMaterialId": "structural.aluminum-6061",
+    "tags": [
+      "canonical",
+      "ship"
+    ]
+  },
+  "parts": [
+    {
+      "partId": "hull.core",
+      "representation": "Shell",
+      "defaultRenderMaterialId": "render.hull",
+      "structuralMaterialId": "structural.aluminum-6061",
+      "destructible": true,
+      "collisionPolicy": "AuthoredMesh",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "PreserveAsShell",
+        "declaredMinimumThicknessMeters": 0.02
+      },
+      "shell": {
+        "thicknessMeters": 0.02,
+        "layers": [
+          {
+            "structuralMaterialId": "structural.aluminum-6061",
+            "thicknessMeters": 0.02
+          }
+        ]
+      },
+      "tags": [
+        "hull",
+        "primary"
+      ]
+    },
+    {
+      "partId": "trim.decorative",
+      "parentPartId": "hull.core",
+      "representation": "Decorative",
+      "defaultRenderMaterialId": "render.hull",
+      "destructible": false,
+      "collisionPolicy": "AuthoredMesh",
+      "navigationPolicy": "None",
+      "thinFeature": {
+        "policy": "DecorativeOnly",
+        "declaredMinimumThicknessMeters": 0.005
+      },
+      "tags": [
+        "decorative",
+        "trim"
+      ]
+    }
+  ],
+  "joints": [
+    {
+      "jointId": "joint.trim",
+      "parentPartId": "hull.core",
+      "childPartId": "trim.decorative",
+      "jointType": "Fixed",
+      "breakPolicy": "Never",
+      "tags": [
+        "assembly",
+        "fixed"
+      ]
+    }
+  ],
+  "markers": [
+    {
+      "markerId": "docking.front",
+      "markerType": "Docking",
+      "partId": "hull.core",
+      "tags": [
+        "docking",
+        "front"
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "renderMaterialId": "render.hull",
+      "structuralMaterialId": "structural.aluminum-6061",
+      "paletteIndex": 7,
+      "tags": [
+        "hull",
+        "metal"
+      ]
+    }
+  ]
+}

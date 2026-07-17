@@ -1,0 +1,18 @@
+{
+  "schema": "hestia.asset-authoring.v2",
+  "asset": {
+    "assetId": "asset.wrong-version",
+    "assetRevision": 0,
+    "representation": "Solid",
+    "metersPerUnit": 1,
+    "coordinateFrame": {
+      "upAxis": "+Y",
+      "forwardAxis": "+Z",
+      "handedness": "RIGHT"
+    }
+  },
+  "parts": [],
+  "joints": [],
+  "markers": [],
+  "materials": []
+}
