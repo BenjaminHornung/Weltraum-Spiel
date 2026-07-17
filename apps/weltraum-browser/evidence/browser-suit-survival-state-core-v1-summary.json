@@ -1,0 +1,303 @@
+{
+  "schemaVersion": "browser-suit-survival-state-core-v1",
+  "status": "PASS",
+  "generator": "apps/weltraum-browser/tests/e2e/suit-survival-state-core.spec.ts",
+  "normalRoute": {
+    "path": "/",
+    "debugSceneVisible": true,
+    "testBridgeBefore": {
+      "ownProperty": false,
+      "inWindow": false
+    },
+    "testBridgeAfter": {
+      "ownProperty": false,
+      "inWindow": false
+    }
+  },
+  "dynamicImport": {
+    "modulePath": "/src/suit/index.ts",
+    "importedPublicApi": [
+      "SUIT_SCHEMA_VERSION",
+      "SUIT_SUBSYSTEM_ROLES",
+      "advanceSuitState",
+      "canonicalSuitJson",
+      "createCanonicalSuitEventSequence",
+      "createSuitCommand",
+      "createSuitDefinition",
+      "createSuitEnvironmentExposure",
+      "createSuitEquipmentInterfaceSnapshot",
+      "createSuitSignature",
+      "createSuitStateSnapshot"
+    ]
+  },
+  "browserHealth": {
+    "collectorsRegisteredBeforeNavigation": true,
+    "consoleErrors": 0,
+    "pageErrors": 0,
+    "requestFailures": 0,
+    "httpErrors": 0
+  },
+  "deterministicRepeat": {
+    "identicalCanonicalStateJson": true,
+    "identicalCanonicalEventJson": true,
+    "identicalCanonicalScenarioJson": true,
+    "identicalStateSignature": true,
+    "identicalEventSignature": true,
+    "identicalScenarioSignature": true
+  },
+  "signatures": {
+    "definition": "fnv1a32:a13a7af9",
+    "finalState": "fnv1a32:16341ae0",
+    "eventSequence": "fnv1a32:12d48490",
+    "scenario": "fnv1a32:44c39ecc"
+  },
+  "scenario": {
+    "scenarioName": "nominal-walk-survival-recovery",
+    "modulePath": "/src/suit/index.ts",
+    "importedPublicApi": [
+      "SUIT_SCHEMA_VERSION",
+      "SUIT_SUBSYSTEM_ROLES",
+      "advanceSuitState",
+      "canonicalSuitJson",
+      "createCanonicalSuitEventSequence",
+      "createSuitCommand",
+      "createSuitDefinition",
+      "createSuitEnvironmentExposure",
+      "createSuitEquipmentInterfaceSnapshot",
+      "createSuitSignature",
+      "createSuitStateSnapshot"
+    ],
+    "definitionSignature": "fnv1a32:a13a7af9",
+    "configuredTotalContinuousDrawMilliwatts": 5000,
+    "initialStateSignature": "fnv1a32:7e341478",
+    "stages": [
+      {
+        "id": "walk",
+        "tick": 1,
+        "revision": 1,
+        "mode": "Nominal",
+        "workload": "Walk",
+        "healthMilliPoints": 10000,
+        "healthRepairCeilingMilliPoints": 10000,
+        "oxygenMilligrams": 992,
+        "energyMillijoules": 490,
+        "sealIntegrityBasisPoints": 10000,
+        "radiationMicrosieverts": 0,
+        "contaminationMicroUnits": 0,
+        "activeAlerts": [],
+        "raisedAlerts": [],
+        "clearedAlerts": [],
+        "powerStarvedTransitionSubsystemIds": [],
+        "equipmentBusOnline": true,
+        "actualRechargeMillijoules": null,
+        "actualResupplyMilligrams": null,
+        "stateSignature": "fnv1a32:4a22f54d",
+        "eventSignature": "fnv1a32:8c3f5e5e"
+      },
+      {
+        "id": "damaged-seal",
+        "tick": 2,
+        "revision": 1,
+        "mode": "Nominal",
+        "workload": "Walk",
+        "healthMilliPoints": 10000,
+        "healthRepairCeilingMilliPoints": 10000,
+        "oxygenMilligrams": 959,
+        "energyMillijoules": 130,
+        "sealIntegrityBasisPoints": 7500,
+        "radiationMicrosieverts": 0,
+        "contaminationMicroUnits": 0,
+        "activeAlerts": [
+          "EnergyCritical",
+          "EquipmentBusOffline",
+          "SealDamaged"
+        ],
+        "raisedAlerts": [
+          "EnergyCritical",
+          "EquipmentBusOffline",
+          "SealDamaged"
+        ],
+        "clearedAlerts": [],
+        "powerStarvedTransitionSubsystemIds": [
+          "subsystem:equipment-bus"
+        ],
+        "equipmentBusOnline": false,
+        "actualRechargeMillijoules": null,
+        "actualResupplyMilligrams": null,
+        "stateSignature": "fnv1a32:15007759",
+        "eventSignature": "fnv1a32:cbd77b40"
+      },
+      {
+        "id": "radiation-contamination",
+        "tick": 3,
+        "revision": 1,
+        "mode": "Nominal",
+        "workload": "Walk",
+        "healthMilliPoints": 9995,
+        "healthRepairCeilingMilliPoints": 10000,
+        "oxygenMilligrams": 926,
+        "energyMillijoules": 20,
+        "sealIntegrityBasisPoints": 7500,
+        "radiationMicrosieverts": 150,
+        "contaminationMicroUnits": 300,
+        "activeAlerts": [
+          "EnergyCritical",
+          "ContaminationCritical",
+          "EquipmentBusOffline",
+          "RadiationElevated",
+          "SealDamaged"
+        ],
+        "raisedAlerts": [
+          "ContaminationCritical",
+          "RadiationElevated"
+        ],
+        "clearedAlerts": [],
+        "powerStarvedTransitionSubsystemIds": [
+          "subsystem:contamination-filter",
+          "subsystem:emergency-beacon",
+          "subsystem:radiation-monitor",
+          "subsystem:seal-monitor",
+          "subsystem:thermal-control"
+        ],
+        "equipmentBusOnline": false,
+        "actualRechargeMillijoules": null,
+        "actualResupplyMilligrams": null,
+        "stateSignature": "fnv1a32:591edbb9",
+        "eventSignature": "fnv1a32:559d9735"
+      },
+      {
+        "id": "oxygen-critical",
+        "tick": 4,
+        "revision": 1,
+        "mode": "Nominal",
+        "workload": "Walk",
+        "healthMilliPoints": 9990,
+        "healthRepairCeilingMilliPoints": 10000,
+        "oxygenMilligrams": 141,
+        "energyMillijoules": 10,
+        "sealIntegrityBasisPoints": 7500,
+        "radiationMicrosieverts": 150,
+        "contaminationMicroUnits": 300,
+        "activeAlerts": [
+          "OxygenCritical",
+          "EnergyCritical",
+          "ContaminationCritical",
+          "EquipmentBusOffline",
+          "RadiationElevated",
+          "SealDamaged"
+        ],
+        "raisedAlerts": [
+          "OxygenCritical"
+        ],
+        "clearedAlerts": [],
+        "powerStarvedTransitionSubsystemIds": [
+          "subsystem:oxygen-regulator"
+        ],
+        "equipmentBusOnline": false,
+        "actualRechargeMillijoules": null,
+        "actualResupplyMilligrams": null,
+        "stateSignature": "fnv1a32:c393c514",
+        "eventSignature": "fnv1a32:4ec2dba1"
+      },
+      {
+        "id": "emergency",
+        "tick": 5,
+        "revision": 2,
+        "mode": "Emergency",
+        "workload": "Walk",
+        "healthMilliPoints": 9985,
+        "healthRepairCeilingMilliPoints": 10000,
+        "oxygenMilligrams": 116,
+        "energyMillijoules": 10,
+        "sealIntegrityBasisPoints": 7500,
+        "radiationMicrosieverts": 150,
+        "contaminationMicroUnits": 300,
+        "activeAlerts": [
+          "OxygenCritical",
+          "EnergyCritical",
+          "ContaminationCritical",
+          "EquipmentBusOffline",
+          "RadiationElevated",
+          "SealDamaged"
+        ],
+        "raisedAlerts": [],
+        "clearedAlerts": [],
+        "powerStarvedTransitionSubsystemIds": [],
+        "equipmentBusOnline": false,
+        "actualRechargeMillijoules": null,
+        "actualResupplyMilligrams": null,
+        "stateSignature": "fnv1a32:63c00bf8",
+        "eventSignature": "fnv1a32:222f718e"
+      },
+      {
+        "id": "recharge-resupply",
+        "tick": 6,
+        "revision": 4,
+        "mode": "Emergency",
+        "workload": "Walk",
+        "healthMilliPoints": 9980,
+        "healthRepairCeilingMilliPoints": 10000,
+        "oxygenMilligrams": 975,
+        "energyMillijoules": 500,
+        "sealIntegrityBasisPoints": 7500,
+        "radiationMicrosieverts": 150,
+        "contaminationMicroUnits": 300,
+        "activeAlerts": [
+          "ContaminationCritical",
+          "RadiationElevated",
+          "SealDamaged"
+        ],
+        "raisedAlerts": [],
+        "clearedAlerts": [
+          "EnergyCritical",
+          "EquipmentBusOffline",
+          "OxygenCritical"
+        ],
+        "powerStarvedTransitionSubsystemIds": [],
+        "equipmentBusOnline": true,
+        "actualRechargeMillijoules": 990,
+        "actualResupplyMilligrams": 884,
+        "stateSignature": "fnv1a32:16341ae0",
+        "eventSignature": "fnv1a32:bf54f945"
+      }
+    ],
+    "alertTransitions": {
+      "raised": [
+        "damaged-seal:EnergyCritical",
+        "damaged-seal:EquipmentBusOffline",
+        "damaged-seal:SealDamaged",
+        "radiation-contamination:ContaminationCritical",
+        "radiation-contamination:RadiationElevated",
+        "oxygen-critical:OxygenCritical"
+      ],
+      "cleared": [
+        "recharge-resupply:EnergyCritical",
+        "recharge-resupply:EquipmentBusOffline",
+        "recharge-resupply:OxygenCritical"
+      ]
+    },
+    "finalStateSignature": "fnv1a32:16341ae0",
+    "eventSequenceSignature": "fnv1a32:12d48490",
+    "scenarioSignature": "fnv1a32:44c39ecc",
+    "canonicalStateJson": "{\"acceptedCommandIds\":[\"command:e2e-emergency\",\"command:e2e-recharge\",\"command:e2e-resupply\",\"command:e2e-walk\"],\"activeAlerts\":[{\"alertId\":\"alert:contaminationcritical:suit:contamination\",\"code\":\"ContaminationCritical\",\"measurement\":300,\"severity\":\"Critical\",\"sourceId\":\"suit:contamination\",\"suggestedAction\":\"decontaminate\",\"threshold\":200},{\"alertId\":\"alert:radiationelevated:suit:radiation\",\"code\":\"RadiationElevated\",\"measurement\":150,\"severity\":\"Warning\",\"sourceId\":\"suit:radiation\",\"suggestedAction\":\"leave-radiation\",\"threshold\":100},{\"alertId\":\"alert:sealdamaged:suit:seal\",\"code\":\"SealDamaged\",\"measurement\":7500,\"severity\":\"Warning\",\"sourceId\":\"suit:seal\",\"suggestedAction\":\"repair-seal\",\"threshold\":8000}],\"actorId\":\"actor:e2e-player\",\"actorIncapacitated\":false,\"contaminationMicroUnits\":300,\"contentSignature\":\"fnv1a32:16341ae0\",\"criticalState\":true,\"definitionId\":\"suit-definition:e2e-survival-v1\",\"energyMillijoules\":500,\"healthMilliPoints\":9980,\"healthRepairCeilingMilliPoints\":10000,\"internalTemperatureMilliKelvin\":300000,\"mode\":\"Emergency\",\"oxygenMilligrams\":975,\"radiationMicrosieverts\":150,\"rateRemainders\":[{\"denominator\":10000,\"key\":\"contamination:exposure:e2e-hazards\",\"numeratorRemainder\":0},{\"denominator\":10000,\"key\":\"contamination:exposure:e2e-oxygen\",\"numeratorRemainder\":0},{\"denominator\":10000,\"key\":\"contamination:exposure:e2e-seal\",\"numeratorRemainder\":0},{\"denominator\":10,\"key\":\"damage:contamination\",\"numeratorRemainder\":0},{\"denominator\":10,\"key\":\"net:oxygen\",\"numeratorRemainder\":0},{\"denominator\":10,\"key\":\"net:thermal\",\"numeratorRemainder\":0},{\"denominator\":100000,\"key\":\"seal:oxygen-leak\",\"numeratorRemainder\":0},{\"denominator\":10,\"key\":\"subsystem:subsystem:contamination-filter:energy\",\"numeratorRemainder\":0},{\"denominator\":10,\"key\":\"subsystem:subsystem:emergency-beacon:energy\",\"numeratorRemainder\":0},{\"denominator\":10,\"key\":\"subsystem:subsystem:equipment-bus:energy\",\"numeratorRemainder\":0},{\"denominator\":10,\"key\":\"subsystem:subsystem:oxygen-regulator:energy\",\"numeratorRemainder\":0},{\"denominator\":10,\"key\":\"subsystem:subsystem:radiation-monitor:energy\",\"numeratorRemainder\":0},{\"denominator\":10,\"key\":\"subsystem:subsystem:seal-monitor:energy\",\"numeratorRemainder\":0},{\"denominator\":10,\"key\":\"subsystem:subsystem:thermal-control:energy\",\"numeratorRemainder\":0},{\"denominator\":10,\"key\":\"workload:energy\",\"numeratorRemainder\":0}],\"revision\":4,\"schemaVersion\":1,\"sealIntegrityBasisPoints\":7500,\"sealRepairCeilingBasisPoints\":10000,\"stateId\":\"suit-state:e2e-player\",\"subsystemStates\":[{\"powerState\":\"Powered\",\"revision\":2,\"status\":\"Enabled\",\"subsystemId\":\"subsystem:contamination-filter\"},{\"powerState\":\"Powered\",\"revision\":2,\"status\":\"Enabled\",\"subsystemId\":\"subsystem:emergency-beacon\"},{\"powerState\":\"Powered\",\"revision\":2,\"status\":\"Enabled\",\"subsystemId\":\"subsystem:equipment-bus\"},{\"powerState\":\"Powered\",\"revision\":2,\"status\":\"Enabled\",\"subsystemId\":\"subsystem:oxygen-regulator\"},{\"powerState\":\"Powered\",\"revision\":2,\"status\":\"Enabled\",\"subsystemId\":\"subsystem:radiation-monitor\"},{\"powerState\":\"Powered\",\"revision\":2,\"status\":\"Enabled\",\"subsystemId\":\"subsystem:seal-monitor\"},{\"powerState\":\"Powered\",\"revision\":2,\"status\":\"Enabled\",\"subsystemId\":\"subsystem:thermal-control\"}],\"tick\":6,\"workload\":\"Walk\"}",
+    "canonicalEventJson": "[{\"actorId\":\"actor:e2e-player\",\"data\":{\"commandId\":\"command:e2e-walk\",\"commandKind\":\"SetWorkload\",\"outcome\":\"Changed\"},\"eventId\":\"event:e044d5c6\",\"kind\":\"SuitCommandAccepted\",\"phase\":\"CommandTransitions\",\"sourceId\":\"source:e2e-operator\",\"stateId\":\"suit-state:e2e-player\",\"tick\":0},{\"actorId\":\"actor:e2e-player\",\"data\":{\"channel\":\"oxygenMilligrams\",\"currentValue\":992,\"previousValue\":1000},\"eventId\":\"event:ea63bb85\",\"kind\":\"SuitChannelChanged\",\"phase\":\"SealOxygenConsequences\",\"sourceId\":\"suit:oxygen-milligrams\",\"stateId\":\"suit-state:e2e-player\",\"tick\":1},{\"actorId\":\"actor:e2e-player\",\"data\":{\"channel\":\"energyMillijoules\",\"currentValue\":490,\"previousValue\":1000},\"eventId\":\"event:1babaf60\",\"kind\":\"SuitChannelChanged\",\"phase\":\"EnergyFailSafe\",\"sourceId\":\"suit:energy-millijoules\",\"stateId\":\"suit-state:e2e-player\",\"tick\":1},{\"actorId\":\"actor:e2e-player\",\"data\":{\"channel\":\"oxygenMilligrams\",\"currentValue\":959,\"previousValue\":992},\"eventId\":\"event:33a87bba\",\"kind\":\"SuitChannelChanged\",\"phase\":\"SealOxygenConsequences\",\"sourceId\":\"suit:oxygen-milligrams\",\"stateId\":\"suit-state:e2e-player\",\"tick\":2},{\"actorId\":\"actor:e2e-player\",\"data\":{\"channel\":\"sealIntegrityBasisPoints\",\"currentValue\":7500,\"previousValue\":10000},\"eventId\":\"event:ea5436ee\",\"kind\":\"SuitChannelChanged\",\"phase\":\"SealOxygenConsequences\",\"sourceId\":\"suit:seal-integrity-basis-points\",\"stateId\":\"suit-state:e2e-player\",\"tick\":2},{\"actorId\":\"actor:e2e-player\",\"data\":{\"subsystemId\":\"subsystem:equipment-bus\"},\"eventId\":\"event:5637ed95\",\"kind\":\"SuitPowerStarved\",\"phase\":\"EnergyFailSafe\",\"sourceId\":\"subsystem:equipment-bus\",\"stateId\":\"suit-state:e2e-player\",\"tick\":2},{\"actorId\":\"actor:e2e-player\",\"data\":{\"currentPowerState\":\"PowerStarved\",\"previousPowerState\":\"Powered\",\"subsystemId\":\"subsystem:equipment-bus\"},\"eventId\":\"event:827eec6d\",\"kind\":\"SuitSubsystemStateChanged\",\"phase\":\"EnergyFailSafe\",\"sourceId\":\"subsystem:equipment-bus\",\"stateId\":\"suit-state:e2e-player\",\"tick\":2},{\"actorId\":\"actor:e2e-player\",\"data\":{\"channel\":\"energyMillijoules\",\"currentValue\":130,\"previousValue\":490},\"eventId\":\"event:849a0a76\",\"kind\":\"SuitChannelChanged\",\"phase\":\"EnergyFailSafe\",\"sourceId\":\"suit:energy-millijoules\",\"stateId\":\"suit-state:e2e-player\",\"tick\":2},{\"actorId\":\"actor:e2e-player\",\"data\":{\"alertId\":\"alert:energycritical:suit:energy\",\"code\":\"EnergyCritical\",\"severity\":\"Critical\"},\"eventId\":\"event:93e9c9af\",\"kind\":\"SuitAlertRaised\",\"phase\":\"AlertDerivation\",\"sourceId\":\"suit:energy\",\"stateId\":\"suit-state:e2e-player\",\"tick\":2},{\"actorId\":\"actor:e2e-player\",\"data\":{\"alertId\":\"alert:equipmentbusoffline:suit:equipment-bus\",\"code\":\"EquipmentBusOffline\",\"severity\":\"Critical\"},\"eventId\":\"event:8a3fb299\",\"kind\":\"SuitAlertRaised\",\"phase\":\"AlertDerivation\",\"sourceId\":\"suit:equipment-bus\",\"stateId\":\"suit-state:e2e-player\",\"tick\":2},{\"actorId\":\"actor:e2e-player\",\"data\":{\"alertId\":\"alert:sealdamaged:suit:seal\",\"code\":\"SealDamaged\",\"severity\":\"Warning\"},\"eventId\":\"event:c50a0c2c\",\"kind\":\"SuitAlertRaised\",\"phase\":\"AlertDerivation\",\"sourceId\":\"suit:seal\",\"stateId\":\"suit-state:e2e-player\",\"tick\":2},{\"actorId\":\"actor:e2e-player\",\"data\":{\"channel\":\"oxygenMilligrams\",\"currentValue\":926,\"previousValue\":959},\"eventId\":\"event:9c637fb4\",\"kind\":\"SuitChannelChanged\",\"phase\":\"SealOxygenConsequences\",\"sourceId\":\"suit:oxygen-milligrams\",\"stateId\":\"suit-state:e2e-player\",\"tick\":3},{\"actorId\":\"actor:e2e-player\",\"data\":{\"subsystemId\":\"subsystem:contamination-filter\"},\"eventId\":\"event:4bfe5b74\",\"kind\":\"SuitPowerStarved\",\"phase\":\"EnergyFailSafe\",\"sourceId\":\"subsystem:contamination-filter\",\"stateId\":\"suit-state:e2e-player\",\"tick\":3},{\"actorId\":\"actor:e2e-player\",\"data\":{\"currentPowerState\":\"PowerStarved\",\"previousPowerState\":\"Powered\",\"subsystemId\":\"subsystem:contamination-filter\"},\"eventId\":\"event:599789b8\",\"kind\":\"SuitSubsystemStateChanged\",\"phase\":\"EnergyFailSafe\",\"sourceId\":\"subsystem:contamination-filter\",\"stateId\":\"suit-state:e2e-player\",\"tick\":3},{\"actorId\":\"actor:e2e-player\",\"data\":{\"subsystemId\":\"subsystem:emergency-beacon\"},\"eventId\":\"event:09e17564\",\"kind\":\"SuitPowerStarved\",\"phase\":\"EnergyFailSafe\",\"sourceId\":\"subsystem:emergency-beacon\",\"stateId\":\"suit-state:e2e-player\",\"tick\":3},{\"actorId\":\"actor:e2e-player\",\"data\":{\"currentPowerState\":\"PowerStarved\",\"previousPowerState\":\"Powered\",\"subsystemId\":\"subsystem:emergency-beacon\"},\"eventId\":\"event:464dc72e\",\"kind\":\"SuitSubsystemStateChanged\",\"phase\":\"EnergyFailSafe\",\"sourceId\":\"subsystem:emergency-beacon\",\"stateId\":\"suit-state:e2e-player\",\"tick\":3},{\"actorId\":\"actor:e2e-player\",\"data\":{\"subsystemId\":\"subsystem:radiation-monitor\"},\"eventId\":\"event:2696fa02\",\"kind\":\"SuitPowerStarved\",\"phase\":\"EnergyFailSafe\",\"sourceId\":\"subsystem:radiation-monitor\",\"stateId\":\"suit-state:e2e-player\",\"tick\":3},{\"actorId\":\"actor:e2e-player\",\"data\":{\"currentPowerState\":\"PowerStarved\",\"previousPowerState\":\"Powered\",\"subsystemId\":\"subsystem:radiation-monitor\"},\"eventId\":\"event:7a80aeb8\",\"kind\":\"SuitSubsystemStateChanged\",\"phase\":\"EnergyFailSafe\",\"sourceId\":\"subsystem:radiation-monitor\",\"stateId\":\"suit-state:e2e-player\",\"tick\":3},{\"actorId\":\"actor:e2e-player\",\"data\":{\"subsystemId\":\"subsystem:seal-monitor\"},\"eventId\":\"event:a6d0e170\",\"kind\":\"SuitPowerStarved\",\"phase\":\"EnergyFailSafe\",\"sourceId\":\"subsystem:seal-monitor\",\"stateId\":\"suit-state:e2e-player\",\"tick\":3},{\"actorId\":\"actor:e2e-player\",\"data\":{\"currentPowerState\":\"PowerStarved\",\"previousPowerState\":\"Powered\",\"subsystemId\":\"subsystem:seal-monitor\"},\"eventId\":\"event:b093c922\",\"kind\":\"SuitSubsystemStateChanged\",\"phase\":\"EnergyFailSafe\",\"sourceId\":\"subsystem:seal-monitor\",\"stateId\":\"suit-state:e2e-player\",\"tick\":3},{\"actorId\":\"actor:e2e-player\",\"data\":{\"subsystemId\":\"subsystem:thermal-control\"},\"eventId\":\"event:23c93e74\",\"kind\":\"SuitPowerStarved\",\"phase\":\"EnergyFailSafe\",\"sourceId\":\"subsystem:thermal-control\",\"stateId\":\"suit-state:e2e-player\",\"tick\":3},{\"actorId\":\"actor:e2e-player\",\"data\":{\"currentPowerState\":\"PowerStarved\",\"previousPowerState\":\"Powered\",\"subsystemId\":\"subsystem:thermal-control\"},\"eventId\":\"event:b1c639a4\",\"kind\":\"SuitSubsystemStateChanged\",\"phase\":\"EnergyFailSafe\",\"sourceId\":\"subsystem:thermal-control\",\"stateId\":\"suit-state:e2e-player\",\"tick\":3},{\"actorId\":\"actor:e2e-player\",\"data\":{\"channel\":\"energyMillijoules\",\"currentValue\":20,\"previousValue\":130},\"eventId\":\"event:2a5bc91e\",\"kind\":\"SuitChannelChanged\",\"phase\":\"EnergyFailSafe\",\"sourceId\":\"suit:energy-millijoules\",\"stateId\":\"suit-state:e2e-player\",\"tick\":3},{\"actorId\":\"actor:e2e-player\",\"data\":{\"channel\":\"contaminationMicroUnits\",\"currentValue\":300,\"previousValue\":0},\"eventId\":\"event:3a690e6f\",\"kind\":\"SuitChannelChanged\",\"phase\":\"HazardConsequences\",\"sourceId\":\"suit:contamination-micro-units\",\"stateId\":\"suit-state:e2e-player\",\"tick\":3},{\"actorId\":\"actor:e2e-player\",\"data\":{\"channel\":\"radiationMicrosieverts\",\"currentValue\":150,\"previousValue\":0},\"eventId\":\"event:c016d0a9\",\"kind\":\"SuitChannelChanged\",\"phase\":\"HazardConsequences\",\"sourceId\":\"suit:radiation-microsieverts\",\"stateId\":\"suit-state:e2e-player\",\"tick\":3},{\"actorId\":\"actor:e2e-player\",\"data\":{\"channel\":\"healthMilliPoints\",\"currentValue\":9995,\"previousValue\":10000},\"eventId\":\"event:20632fa4\",\"kind\":\"SuitChannelChanged\",\"phase\":\"HealthDamage\",\"sourceId\":\"suit:health-milli-points\",\"stateId\":\"suit-state:e2e-player\",\"tick\":3},{\"actorId\":\"actor:e2e-player\",\"data\":{\"alertId\":\"alert:contaminationcritical:suit:contamination\",\"code\":\"ContaminationCritical\",\"severity\":\"Critical\"},\"eventId\":\"event:550114a2\",\"kind\":\"SuitAlertRaised\",\"phase\":\"AlertDerivation\",\"sourceId\":\"suit:contamination\",\"stateId\":\"suit-state:e2e-player\",\"tick\":3},{\"actorId\":\"actor:e2e-player\",\"data\":{\"alertId\":\"alert:radiationelevated:suit:radiation\",\"code\":\"RadiationElevated\",\"severity\":\"Warning\"},\"eventId\":\"event:951156bd\",\"kind\":\"SuitAlertRaised\",\"phase\":\"AlertDerivation\",\"sourceId\":\"suit:radiation\",\"stateId\":\"suit-state:e2e-player\",\"tick\":3},{\"actorId\":\"actor:e2e-player\",\"data\":{\"currentMode\":\"Emergency\",\"previousMode\":\"Nominal\"},\"eventId\":\"event:2036d930\",\"kind\":\"SuitLifeSupportModeChanged\",\"phase\":\"CommandTransitions\",\"sourceId\":\"source:e2e-operator\",\"stateId\":\"suit-state:e2e-player\",\"tick\":4},{\"actorId\":\"actor:e2e-player\",\"data\":{\"commandId\":\"command:e2e-emergency\",\"commandKind\":\"SetLifeSupportMode\",\"outcome\":\"Changed\"},\"eventId\":\"event:dc037a53\",\"kind\":\"SuitCommandAccepted\",\"phase\":\"CommandTransitions\",\"sourceId\":\"source:e2e-operator\",\"stateId\":\"suit-state:e2e-player\",\"tick\":4},{\"actorId\":\"actor:e2e-player\",\"data\":{\"channel\":\"oxygenMilligrams\",\"currentValue\":141,\"previousValue\":926},\"eventId\":\"event:032efd0a\",\"kind\":\"SuitChannelChanged\",\"phase\":\"SealOxygenConsequences\",\"sourceId\":\"suit:oxygen-milligrams\",\"stateId\":\"suit-state:e2e-player\",\"tick\":4},{\"actorId\":\"actor:e2e-player\",\"data\":{\"currentPowerState\":\"PowerStarved\",\"previousPowerState\":\"Powered\",\"subsystemId\":\"subsystem:oxygen-regulator\"},\"eventId\":\"event:41bc4e39\",\"kind\":\"SuitSubsystemStateChanged\",\"phase\":\"EnergyFailSafe\",\"sourceId\":\"subsystem:oxygen-regulator\",\"stateId\":\"suit-state:e2e-player\",\"tick\":4},{\"actorId\":\"actor:e2e-player\",\"data\":{\"subsystemId\":\"subsystem:oxygen-regulator\"},\"eventId\":\"event:dccce23b\",\"kind\":\"SuitPowerStarved\",\"phase\":\"EnergyFailSafe\",\"sourceId\":\"subsystem:oxygen-regulator\",\"stateId\":\"suit-state:e2e-player\",\"tick\":4},{\"actorId\":\"actor:e2e-player\",\"data\":{\"channel\":\"energyMillijoules\",\"currentValue\":10,\"previousValue\":20},\"eventId\":\"event:5afce840\",\"kind\":\"SuitChannelChanged\",\"phase\":\"EnergyFailSafe\",\"sourceId\":\"suit:energy-millijoules\",\"stateId\":\"suit-state:e2e-player\",\"tick\":4},{\"actorId\":\"actor:e2e-player\",\"data\":{\"channel\":\"healthMilliPoints\",\"currentValue\":9990,\"previousValue\":9995},\"eventId\":\"event:b0d8d903\",\"kind\":\"SuitChannelChanged\",\"phase\":\"HealthDamage\",\"sourceId\":\"suit:health-milli-points\",\"stateId\":\"suit-state:e2e-player\",\"tick\":4},{\"actorId\":\"actor:e2e-player\",\"data\":{\"alertId\":\"alert:oxygencritical:suit:oxygen\",\"code\":\"OxygenCritical\",\"severity\":\"Critical\"},\"eventId\":\"event:28379035\",\"kind\":\"SuitAlertRaised\",\"phase\":\"AlertDerivation\",\"sourceId\":\"suit:oxygen\",\"stateId\":\"suit-state:e2e-player\",\"tick\":4},{\"actorId\":\"actor:e2e-player\",\"data\":{\"channel\":\"oxygenMilligrams\",\"currentValue\":1000,\"previousValue\":116},\"eventId\":\"event:32b02398\",\"kind\":\"SuitChannelChanged\",\"phase\":\"CommandTransitions\",\"sourceId\":\"source:e2e-operator\",\"stateId\":\"suit-state:e2e-player\",\"tick\":5},{\"actorId\":\"actor:e2e-player\",\"data\":{\"channel\":\"energyMillijoules\",\"currentValue\":1000,\"previousValue\":10},\"eventId\":\"event:3e961db7\",\"kind\":\"SuitChannelChanged\",\"phase\":\"CommandTransitions\",\"sourceId\":\"source:e2e-operator\",\"stateId\":\"suit-state:e2e-player\",\"tick\":5},{\"actorId\":\"actor:e2e-player\",\"data\":{\"commandId\":\"command:e2e-recharge\",\"commandKind\":\"RechargeEnergy\",\"outcome\":\"Changed\"},\"eventId\":\"event:711ea06f\",\"kind\":\"SuitCommandAccepted\",\"phase\":\"CommandTransitions\",\"sourceId\":\"source:e2e-operator\",\"stateId\":\"suit-state:e2e-player\",\"tick\":5},{\"actorId\":\"actor:e2e-player\",\"data\":{\"commandId\":\"command:e2e-resupply\",\"commandKind\":\"ResupplyOxygen\",\"outcome\":\"Changed\"},\"eventId\":\"event:c105568d\",\"kind\":\"SuitCommandAccepted\",\"phase\":\"CommandTransitions\",\"sourceId\":\"source:e2e-operator\",\"stateId\":\"suit-state:e2e-player\",\"tick\":5},{\"actorId\":\"actor:e2e-player\",\"data\":{\"channel\":\"oxygenMilligrams\",\"currentValue\":116,\"previousValue\":141},\"eventId\":\"event:4ce35380\",\"kind\":\"SuitChannelChanged\",\"phase\":\"SealOxygenConsequences\",\"sourceId\":\"suit:oxygen-milligrams\",\"stateId\":\"suit-state:e2e-player\",\"tick\":5},{\"actorId\":\"actor:e2e-player\",\"data\":{\"channel\":\"healthMilliPoints\",\"currentValue\":9985,\"previousValue\":9990},\"eventId\":\"event:a2f792fb\",\"kind\":\"SuitChannelChanged\",\"phase\":\"HealthDamage\",\"sourceId\":\"suit:health-milli-points\",\"stateId\":\"suit-state:e2e-player\",\"tick\":5},{\"actorId\":\"actor:e2e-player\",\"data\":{\"channel\":\"oxygenMilligrams\",\"currentValue\":975,\"previousValue\":1000},\"eventId\":\"event:b8f5c69b\",\"kind\":\"SuitChannelChanged\",\"phase\":\"SealOxygenConsequences\",\"sourceId\":\"suit:oxygen-milligrams\",\"stateId\":\"suit-state:e2e-player\",\"tick\":6},{\"actorId\":\"actor:e2e-player\",\"data\":{\"currentPowerState\":\"Powered\",\"previousPowerState\":\"PowerStarved\",\"subsystemId\":\"subsystem:contamination-filter\"},\"eventId\":\"event:0470aa07\",\"kind\":\"SuitSubsystemStateChanged\",\"phase\":\"EnergyFailSafe\",\"sourceId\":\"subsystem:contamination-filter\",\"stateId\":\"suit-state:e2e-player\",\"tick\":6},{\"actorId\":\"actor:e2e-player\",\"data\":{\"currentPowerState\":\"Powered\",\"previousPowerState\":\"PowerStarved\",\"subsystemId\":\"subsystem:emergency-beacon\"},\"eventId\":\"event:fe8cf08d\",\"kind\":\"SuitSubsystemStateChanged\",\"phase\":\"EnergyFailSafe\",\"sourceId\":\"subsystem:emergency-beacon\",\"stateId\":\"suit-state:e2e-player\",\"tick\":6},{\"actorId\":\"actor:e2e-player\",\"data\":{\"currentPowerState\":\"Powered\",\"previousPowerState\":\"PowerStarved\",\"subsystemId\":\"subsystem:equipment-bus\"},\"eventId\":\"event:96284d5f\",\"kind\":\"SuitSubsystemStateChanged\",\"phase\":\"EnergyFailSafe\",\"sourceId\":\"subsystem:equipment-bus\",\"stateId\":\"suit-state:e2e-player\",\"tick\":6},{\"actorId\":\"actor:e2e-player\",\"data\":{\"currentPowerState\":\"Powered\",\"previousPowerState\":\"PowerStarved\",\"subsystemId\":\"subsystem:oxygen-regulator\"},\"eventId\":\"event:f6d89535\",\"kind\":\"SuitSubsystemStateChanged\",\"phase\":\"EnergyFailSafe\",\"sourceId\":\"subsystem:oxygen-regulator\",\"stateId\":\"suit-state:e2e-player\",\"tick\":6},{\"actorId\":\"actor:e2e-player\",\"data\":{\"currentPowerState\":\"Powered\",\"previousPowerState\":\"PowerStarved\",\"subsystemId\":\"subsystem:radiation-monitor\"},\"eventId\":\"event:3812d627\",\"kind\":\"SuitSubsystemStateChanged\",\"phase\":\"EnergyFailSafe\",\"sourceId\":\"subsystem:radiation-monitor\",\"stateId\":\"suit-state:e2e-player\",\"tick\":6},{\"actorId\":\"actor:e2e-player\",\"data\":{\"currentPowerState\":\"Powered\",\"previousPowerState\":\"PowerStarved\",\"subsystemId\":\"subsystem:seal-monitor\"},\"eventId\":\"event:d7b4bd11\",\"kind\":\"SuitSubsystemStateChanged\",\"phase\":\"EnergyFailSafe\",\"sourceId\":\"subsystem:seal-monitor\",\"stateId\":\"suit-state:e2e-player\",\"tick\":6},{\"actorId\":\"actor:e2e-player\",\"data\":{\"currentPowerState\":\"Powered\",\"previousPowerState\":\"PowerStarved\",\"subsystemId\":\"subsystem:thermal-control\"},\"eventId\":\"event:3d8e0293\",\"kind\":\"SuitSubsystemStateChanged\",\"phase\":\"EnergyFailSafe\",\"sourceId\":\"subsystem:thermal-control\",\"stateId\":\"suit-state:e2e-player\",\"tick\":6},{\"actorId\":\"actor:e2e-player\",\"data\":{\"channel\":\"energyMillijoules\",\"currentValue\":500,\"previousValue\":1000},\"eventId\":\"event:1b7c6559\",\"kind\":\"SuitChannelChanged\",\"phase\":\"EnergyFailSafe\",\"sourceId\":\"suit:energy-millijoules\",\"stateId\":\"suit-state:e2e-player\",\"tick\":6},{\"actorId\":\"actor:e2e-player\",\"data\":{\"channel\":\"healthMilliPoints\",\"currentValue\":9980,\"previousValue\":9985},\"eventId\":\"event:da44499b\",\"kind\":\"SuitChannelChanged\",\"phase\":\"HealthDamage\",\"sourceId\":\"suit:health-milli-points\",\"stateId\":\"suit-state:e2e-player\",\"tick\":6},{\"actorId\":\"actor:e2e-player\",\"data\":{\"alertId\":\"alert:energycritical:suit:energy\",\"code\":\"EnergyCritical\",\"severity\":\"Critical\"},\"eventId\":\"event:9e1806a5\",\"kind\":\"SuitAlertCleared\",\"phase\":\"AlertDerivation\",\"sourceId\":\"suit:energy\",\"stateId\":\"suit-state:e2e-player\",\"tick\":6},{\"actorId\":\"actor:e2e-player\",\"data\":{\"alertId\":\"alert:equipmentbusoffline:suit:equipment-bus\",\"code\":\"EquipmentBusOffline\",\"severity\":\"Critical\"},\"eventId\":\"event:c65ae5bd\",\"kind\":\"SuitAlertCleared\",\"phase\":\"AlertDerivation\",\"sourceId\":\"suit:equipment-bus\",\"stateId\":\"suit-state:e2e-player\",\"tick\":6},{\"actorId\":\"actor:e2e-player\",\"data\":{\"alertId\":\"alert:oxygencritical:suit:oxygen\",\"code\":\"OxygenCritical\",\"severity\":\"Critical\"},\"eventId\":\"event:d5df651d\",\"kind\":\"SuitAlertCleared\",\"phase\":\"AlertDerivation\",\"sourceId\":\"suit:oxygen\",\"stateId\":\"suit-state:e2e-player\",\"tick\":6}]",
+    "canonicalScenarioJson": "{\"alertTransitions\":{\"cleared\":[\"recharge-resupply:EnergyCritical\",\"recharge-resupply:EquipmentBusOffline\",\"recharge-resupply:OxygenCritical\"],\"raised\":[\"damaged-seal:EnergyCritical\",\"damaged-seal:EquipmentBusOffline\",\"damaged-seal:SealDamaged\",\"radiation-contamination:ContaminationCritical\",\"radiation-contamination:RadiationElevated\",\"oxygen-critical:OxygenCritical\"]},\"configuredTotalContinuousDrawMilliwatts\":5000,\"definitionSignature\":\"fnv1a32:a13a7af9\",\"eventSequenceSignature\":\"fnv1a32:12d48490\",\"finalStateSignature\":\"fnv1a32:16341ae0\",\"importedPublicApi\":[\"SUIT_SCHEMA_VERSION\",\"SUIT_SUBSYSTEM_ROLES\",\"advanceSuitState\",\"canonicalSuitJson\",\"createCanonicalSuitEventSequence\",\"createSuitCommand\",\"createSuitDefinition\",\"createSuitEnvironmentExposure\",\"createSuitEquipmentInterfaceSnapshot\",\"createSuitSignature\",\"createSuitStateSnapshot\"],\"initialStateSignature\":\"fnv1a32:7e341478\",\"modulePath\":\"/src/suit/index.ts\",\"scenarioName\":\"nominal-walk-survival-recovery\",\"stages\":[{\"activeAlerts\":[],\"actualRechargeMillijoules\":null,\"actualResupplyMilligrams\":null,\"clearedAlerts\":[],\"contaminationMicroUnits\":0,\"energyMillijoules\":490,\"equipmentBusOnline\":true,\"eventSignature\":\"fnv1a32:8c3f5e5e\",\"healthMilliPoints\":10000,\"healthRepairCeilingMilliPoints\":10000,\"id\":\"walk\",\"mode\":\"Nominal\",\"oxygenMilligrams\":992,\"powerStarvedTransitionSubsystemIds\":[],\"radiationMicrosieverts\":0,\"raisedAlerts\":[],\"revision\":1,\"sealIntegrityBasisPoints\":10000,\"stateSignature\":\"fnv1a32:4a22f54d\",\"tick\":1,\"workload\":\"Walk\"},{\"activeAlerts\":[\"EnergyCritical\",\"EquipmentBusOffline\",\"SealDamaged\"],\"actualRechargeMillijoules\":null,\"actualResupplyMilligrams\":null,\"clearedAlerts\":[],\"contaminationMicroUnits\":0,\"energyMillijoules\":130,\"equipmentBusOnline\":false,\"eventSignature\":\"fnv1a32:cbd77b40\",\"healthMilliPoints\":10000,\"healthRepairCeilingMilliPoints\":10000,\"id\":\"damaged-seal\",\"mode\":\"Nominal\",\"oxygenMilligrams\":959,\"powerStarvedTransitionSubsystemIds\":[\"subsystem:equipment-bus\"],\"radiationMicrosieverts\":0,\"raisedAlerts\":[\"EnergyCritical\",\"EquipmentBusOffline\",\"SealDamaged\"],\"revision\":1,\"sealIntegrityBasisPoints\":7500,\"stateSignature\":\"fnv1a32:15007759\",\"tick\":2,\"workload\":\"Walk\"},{\"activeAlerts\":[\"EnergyCritical\",\"ContaminationCritical\",\"EquipmentBusOffline\",\"RadiationElevated\",\"SealDamaged\"],\"actualRechargeMillijoules\":null,\"actualResupplyMilligrams\":null,\"clearedAlerts\":[],\"contaminationMicroUnits\":300,\"energyMillijoules\":20,\"equipmentBusOnline\":false,\"eventSignature\":\"fnv1a32:559d9735\",\"healthMilliPoints\":9995,\"healthRepairCeilingMilliPoints\":10000,\"id\":\"radiation-contamination\",\"mode\":\"Nominal\",\"oxygenMilligrams\":926,\"powerStarvedTransitionSubsystemIds\":[\"subsystem:contamination-filter\",\"subsystem:emergency-beacon\",\"subsystem:radiation-monitor\",\"subsystem:seal-monitor\",\"subsystem:thermal-control\"],\"radiationMicrosieverts\":150,\"raisedAlerts\":[\"ContaminationCritical\",\"RadiationElevated\"],\"revision\":1,\"sealIntegrityBasisPoints\":7500,\"stateSignature\":\"fnv1a32:591edbb9\",\"tick\":3,\"workload\":\"Walk\"},{\"activeAlerts\":[\"OxygenCritical\",\"EnergyCritical\",\"ContaminationCritical\",\"EquipmentBusOffline\",\"RadiationElevated\",\"SealDamaged\"],\"actualRechargeMillijoules\":null,\"actualResupplyMilligrams\":null,\"clearedAlerts\":[],\"contaminationMicroUnits\":300,\"energyMillijoules\":10,\"equipmentBusOnline\":false,\"eventSignature\":\"fnv1a32:4ec2dba1\",\"healthMilliPoints\":9990,\"healthRepairCeilingMilliPoints\":10000,\"id\":\"oxygen-critical\",\"mode\":\"Nominal\",\"oxygenMilligrams\":141,\"powerStarvedTransitionSubsystemIds\":[\"subsystem:oxygen-regulator\"],\"radiationMicrosieverts\":150,\"raisedAlerts\":[\"OxygenCritical\"],\"revision\":1,\"sealIntegrityBasisPoints\":7500,\"stateSignature\":\"fnv1a32:c393c514\",\"tick\":4,\"workload\":\"Walk\"},{\"activeAlerts\":[\"OxygenCritical\",\"EnergyCritical\",\"ContaminationCritical\",\"EquipmentBusOffline\",\"RadiationElevated\",\"SealDamaged\"],\"actualRechargeMillijoules\":null,\"actualResupplyMilligrams\":null,\"clearedAlerts\":[],\"contaminationMicroUnits\":300,\"energyMillijoules\":10,\"equipmentBusOnline\":false,\"eventSignature\":\"fnv1a32:222f718e\",\"healthMilliPoints\":9985,\"healthRepairCeilingMilliPoints\":10000,\"id\":\"emergency\",\"mode\":\"Emergency\",\"oxygenMilligrams\":116,\"powerStarvedTransitionSubsystemIds\":[],\"radiationMicrosieverts\":150,\"raisedAlerts\":[],\"revision\":2,\"sealIntegrityBasisPoints\":7500,\"stateSignature\":\"fnv1a32:63c00bf8\",\"tick\":5,\"workload\":\"Walk\"},{\"activeAlerts\":[\"ContaminationCritical\",\"RadiationElevated\",\"SealDamaged\"],\"actualRechargeMillijoules\":990,\"actualResupplyMilligrams\":884,\"clearedAlerts\":[\"EnergyCritical\",\"EquipmentBusOffline\",\"OxygenCritical\"],\"contaminationMicroUnits\":300,\"energyMillijoules\":500,\"equipmentBusOnline\":true,\"eventSignature\":\"fnv1a32:bf54f945\",\"healthMilliPoints\":9980,\"healthRepairCeilingMilliPoints\":10000,\"id\":\"recharge-resupply\",\"mode\":\"Emergency\",\"oxygenMilligrams\":975,\"powerStarvedTransitionSubsystemIds\":[],\"radiationMicrosieverts\":150,\"raisedAlerts\":[],\"revision\":4,\"sealIntegrityBasisPoints\":7500,\"stateSignature\":\"fnv1a32:16341ae0\",\"tick\":6,\"workload\":\"Walk\"}]}"
+  },
+  "checks": [
+    "Normal / route reached with TestBridge absent before and after the proof.",
+    "Only the public /src/suit/index.ts entry was dynamically imported by the proof.",
+    "Nominal Walk, damaged seal, deterministic equipment-bus starvation, hazards, oxygen critical, explicit Emergency, recharge, and resupply ran in the prescribed order.",
+    "Raised and cleared alerts matched the canonical transition sequence; persistent seal, radiation, and contamination alerts remained active after energy and oxygen recovery.",
+    "Power-starvation subsystem IDs describe transitions emitted during each stage, not the persistent current power state; equipmentBusOnline carries the current equipment-bus state.",
+    "Suit state snapshots derived canonical active alerts and preserved the immutable health repair ceiling through every stage.",
+    "Both complete in-page runs produced identical canonical state, event, and scenario JSON plus identical signatures.",
+    "Console, page, request-failure, and HTTP >=400 collectors all remained zero.",
+    "No screenshot was captured because this proof changes no UI or render behavior."
+  ],
+  "verification": {
+    "command": "npm run test:e2e -- tests/e2e/suit-survival-state-core.spec.ts --workers=1 --retries=0",
+    "expectedResult": "one focused Playwright test passes and overwrites exactly two deterministic evidence files",
+    "observedResult": "pass",
+    "screenshot": "not captured: pure domain proof with no visual change"
+  }
+}
