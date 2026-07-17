@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import dataclasses
 import inspect
+import json
 import math
 import os
 import re
@@ -405,6 +406,55 @@ class HestiaAssetAuthoringContractTests(unittest.TestCase):
         codes = self._codes(decorative)
         self.assertIn("representation.decorative-destructible", codes)
         self.assertIn("representation.decorative-collision", codes)
+
+    def test_interface_id_is_allowed_only_for_cut_interface_markers(self) -> None:
+        cut_interface = self._asset(
+            markers=(
+                self._marker(
+                    marker_type=MarkerType.CUT_INTERFACE,
+                    interface_id="interface-01",
+                ),
+            ),
+            joints=(),
+        )
+        self.assertEqual(validate_asset(cut_interface), ())
+        self.assertTrue(is_exportable(cut_interface))
+        self.assertEqual(cut_interface.markers[0].to_contract_dict()["interfaceId"], "interface-01")
+
+        for marker_type in MarkerType:
+            if marker_type is MarkerType.CUT_INTERFACE:
+                continue
+            with self.subTest(marker_type=marker_type.value):
+                asset = self._asset(
+                    markers=(self._marker(marker_type=marker_type, interface_id="interface-01"),),
+                    joints=(),
+                )
+                interface_errors = [
+                    item
+                    for item in validate_asset(asset)
+                    if item.code == "schema.cut-interface-id"
+                ]
+                self.assertEqual(len(interface_errors), 1)
+                self.assertEqual(interface_errors[0].path, "marker[marker-01].interfaceId")
+
+    def test_marker_json_schema_requires_interface_id_only_for_cut_interface(self) -> None:
+        schema_path = Path(__file__).resolve().parents[3] / "schemas" / "hestia-asset-authoring-v1.schema.json"
+        schema = json.loads(schema_path.read_text(encoding="utf-8"))
+        marker_schema = schema["$defs"]["marker"]
+
+        require_interface_id = next(
+            condition
+            for condition in marker_schema["allOf"]
+            if condition["if"]["properties"]["markerType"].get("const") == "CutInterface"
+        )
+        reject_interface_id = next(
+            condition
+            for condition in marker_schema["allOf"]
+            if condition["if"]["properties"]["markerType"].get("not", {}).get("const") == "CutInterface"
+        )
+
+        self.assertEqual(require_interface_id["then"]["required"], ["interfaceId"])
+        self.assertEqual(reject_interface_id["then"]["not"]["required"], ["interfaceId"])
 
     def test_present_break_values_must_be_positive_for_every_policy(self) -> None:
         for policy in BreakPolicy:

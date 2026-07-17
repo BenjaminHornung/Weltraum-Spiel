@@ -62,6 +62,26 @@ def _load_contract_modules() -> tuple[Any, Any, Any, Any, Any]:
     return adapter, model, validation, report, canonical
 
 
+class OutputPathError(ValueError):
+    """Raised when the requested output is not a safe GLB target."""
+
+
+def _normalized_path(path: Path | str) -> str:
+    return os.path.normcase(os.path.realpath(os.path.abspath(os.path.expanduser(os.fspath(path)))))
+
+
+def _validate_output_suffix(output: Path) -> None:
+    if output.suffix.lower() != ".glb":
+        raise OutputPathError("output path must use the .glb extension")
+
+
+def _validate_output_source(output: Path, blender: Any) -> None:
+    data = getattr(blender, "data", None)
+    source = getattr(data, "filepath", "") if data is not None else ""
+    if isinstance(source, str) and source and _normalized_path(output) == _normalized_path(source):
+        raise OutputPathError("output path must not resolve to the loaded Blender source file")
+
+
 def _sidecar_path(output: Path) -> Path:
     return output.with_name(f"{output.stem}.hestia-authoring-report.json")
 
@@ -355,21 +375,28 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0 if exc.code is None else int(exc.code)
 
     output = arguments.output
+    try:
+        _validate_output_suffix(output)
+    except OutputPathError as exc:
+        _print_error("output.invalid", str(exc))
+        return 1
     sidecar = _sidecar_path(output)
     try:
         adapter, model, validation, report, canonical = _load_contract_modules()
         blender = adapter.require_blender()
+        _validate_output_source(output, blender)
         scene = blender.context.scene
         collection = (
             adapter.find_named_collection(arguments.collection, scene)
             if arguments.collection is not None
             else None
         )
+        asset_source = collection if collection is not None else scene
         if collection is not None and not adapter.iter_collection_objects(collection):
             raise adapter.HestiaContractError(
                 f"named collection contains no exportable objects: {arguments.collection!r}"
             )
-        asset = adapter.extract_asset(scene, collection=collection)
+        asset = adapter.extract_asset(asset_source, collection=collection, scene=scene)
         options = model.ValidationOptions(
             unapplied_scale_policy=model.UnappliedScalePolicy(arguments.unapplied_scale)
         )
@@ -396,11 +423,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     temporary_glb: Path | None = None
     try:
         temporary_glb = _temporary_glb_path(output)
-        snapshots = adapter.snapshot_hestia_properties(
-            _temporary_property_blocks(adapter, scene, scene, collection)
-        )
+        property_blocks = _temporary_property_blocks(adapter, asset_source, scene, collection)
+        snapshots = adapter.snapshot_hestia_properties(property_blocks)
+        raw_snapshots = adapter.snapshot_hestia_properties(property_blocks, include_root=False)
         try:
-            _attach_canonical_extras(adapter, scene, scene, collection, asset)
+            _attach_canonical_extras(adapter, asset_source, scene, collection, asset)
+            adapter.clear_hestia_properties(raw_snapshots, include_root=False)
             export_result = adapter.export_glb(
                 temporary_glb,
                 collection=collection,
