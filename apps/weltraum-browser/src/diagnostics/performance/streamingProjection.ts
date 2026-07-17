@@ -64,7 +64,8 @@ export const createMemoryContentCacheTelemetryObserver = (
 ): MemoryContentCacheObserver => {
   let entries = 0;
   let bytes = 0;
-  const updateCacheState = (): void => telemetry.setCacheState(entries, bytes, 0);
+  let pinnedEntries = 0;
+  const updateCacheState = (): void => telemetry.setCacheState(entries, bytes, pinnedEntries);
   return (event): void => {
     switch (event.kind) {
       case "Hit":
@@ -82,9 +83,16 @@ export const createMemoryContentCacheTelemetryObserver = (
         bytes = Math.max(0, bytes - event.byteLength);
         telemetry.recordCacheEviction();
         break;
+      case "Pinned":
+        pinnedEntries += 1;
+        break;
+      case "Unpinned":
+        pinnedEntries = Math.max(0, pinnedEntries - 1);
+        break;
       case "Cleared":
         entries = 0;
         bytes = 0;
+        pinnedEntries = 0;
         break;
     }
     updateCacheState();
