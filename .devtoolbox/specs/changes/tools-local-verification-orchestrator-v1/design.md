@@ -14,7 +14,9 @@ Machine profiles are explicit versioned JSON, with no hidden scheduling defaults
 
 ## Process Safety
 
-Commands are argv arrays and never shell strings. Inline secret options, bearer/auth material, credential-bearing URLs, sensitive query parameters/signatures, and secret-bearing literal environment values are rejected without echo; secrets must remain in existing host-environment references. Child processes start in their own process group/session. Timeout and Ctrl-C termination target only the process group created by the run and never scan or kill unrelated processes. Run metadata tracks owned PIDs/groups. Output streams to console and file with environment/key and value redaction. No automatic retry exists; one diagnostic retry is permitted only when explicitly authorized by the plan.
+Commands are argv arrays, use `shell=False` with the child environment and working directory, and never become shell strings. On Windows, resolution accepts only native `.COM`/`.EXE`; explicit or discovered `.CMD`/`.BAT` is rejected before `Popen` with a constant sanitized anticipated exception, and unresolved commands are never passed through. Child PATH lookup strips balanced entry quotes, ignores empty and non-absolute entries, and checks absolute directories in PATH order with native candidates inside each directory. It never falls back to the current working directory or parent-process PATH. Separator-containing relative argv resolves only beneath the child working directory, while absolute argv resolves only when it is an existing native executable; canonical plan validation may independently restrict absolute commands. Runtime resolution leaves canonical argv, plan hash, run records, and summaries unchanged. The focused direct test command is `node node_modules/vitest/vitest.mjs run tests/unit/spatialUniverseClock.test.ts`.
+
+Inline secret options, bearer/auth material, credential-bearing URLs, sensitive query parameters/signatures, and secret-bearing literal environment values are rejected without echo; secrets must remain in existing host-environment references. Child processes start in their own process group/session. Timeout and Ctrl-C termination target only the process group created by the run and never scan or kill unrelated processes. Run metadata tracks owned PIDs/groups. Output streams to console and file with environment/key and value redaction. No automatic retry exists; one diagnostic retry is permitted only when explicitly authorized by the plan.
 
 ## Git Safety
 
@@ -22,7 +24,7 @@ All Git integration is observational: branch, SHA, dirty paths, ahead/behind, an
 
 ## Portability
 
-Windows uses process-group creation and targeted control events/termination fallback for owned children; POSIX uses a new session and group signals. Path normalization uses `pathlib`/`os.path` semantics and tests both Windows-style and POSIX-style inputs without changing the host filesystem.
+Windows retains the per-attempt Win32 Job Object boundary for native children, including suspended start, assignment before resume, kill-on-close, and targeted job termination. POSIX behavior remains unchanged and uses a new session and group signals. Path normalization uses `pathlib`/`os.path` semantics and tests both Windows-style and POSIX-style inputs without changing the host filesystem.
 
 ## Tradeoffs
 

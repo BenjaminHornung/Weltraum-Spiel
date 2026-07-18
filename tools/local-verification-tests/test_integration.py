@@ -2,6 +2,7 @@ import contextlib
 import io
 import json
 import os
+import shutil
 import socket
 import subprocess
 import sys
@@ -26,7 +27,13 @@ from tools.local_verification.process_control import get_process_identity
 from tools.local_verification.profiles import load_profile
 from tools.local_verification.redaction import REDACTED, Redactor
 from tools.local_verification.reservations import ReservationConflict, Reservations
-from tools.local_verification.runner import _run_attempt, _terminate_owned, execute_plan
+from tools.local_verification import runner as runner_module
+from tools.local_verification.runner import (
+    _run_attempt,
+    _runtime_argv,
+    _terminate_owned,
+    execute_plan,
+)
 from tools.local_verification.status import status_details, status_markdown
 from tools.local_verification.summary import (
     build_summary,
@@ -79,6 +86,13 @@ def runnable_plan(repository, command, **changes):
     )
     values.update(changes)
     return build_plan(**values)
+
+
+def copy_native_executable(directory, name):
+    destination = Path(directory, name)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(sys.executable, destination)
+    return destination
 
 
 class ParserAndClassificationTests(unittest.TestCase):
@@ -196,32 +210,270 @@ class ProcessAndReservationTests(unittest.TestCase):
             self.assertEqual(0, result["exit_code"])
             self.assertEqual(literal, json.loads(output.read_text(encoding="utf-8")))
 
-    @unittest.skipUnless(os.name == "nt", "Windows executable resolution regression")
-    def test_extensionless_command_resolves_from_child_path_without_mutating_plan(self):
+    @unittest.skipUnless(os.name == "nt", "Windows native executable resolution")
+    def test_extensionless_native_command_uses_child_path_job_and_preserves_plan(self):
         with tempfile.TemporaryDirectory() as repository, tempfile.TemporaryDirectory() as bin_dir:
             make_repository(repository)
-            Path(bin_dir, "path-shim.cmd").write_text("@echo off\r\nexit /b 0\r\n", encoding="utf-8")
-            plan = runnable_plan(repository, ["path-shim"])
+            copy_native_executable(bin_dir, "native-shim.exe")
+            plan = runnable_plan(
+                repository,
+                [
+                    "native-shim",
+                    "-c",
+                    "print('native-ran')",
+                ],
+            )
             canonical_argv = list(plan["command_argv"])
             canonical_hash = plan["canonical_plan_hash"]
+            child_path = os.pathsep.join((bin_dir, str(Path(sys.executable).parent)))
 
-            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
-                attempt = _run_attempt(
+            with mock.patch(
+                "tools.local_verification.runner.resolve_environment",
+                return_value={"PATH": child_path, "PATHEXT": ".CMD;.BAT"},
+            ), contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(
+                io.StringIO()
+            ):
+                result = execute_plan(
                     plan,
-                    1,
-                    io.StringIO(),
-                    "windows-path-shim",
-                    Redactor({}),
-                    resolved_environment={"PATH": bin_dir, "PATHEXT": ".CMD"},
-                    runtime_working_directory=repository,
+                    invocation_directory=repository,
                 )
 
+            attempt = result["attempts"][0]
+            run_record = json.loads(Path(result["run_path"]).read_text(encoding="utf-8"))
             self.assertEqual(0, attempt["exit_code"])
             self.assertEqual(1, attempt["attempt"])
             self.assertEqual("windows-job-object", attempt["owned_process"]["kind"])
             self.assertEqual(canonical_argv, plan["command_argv"])
             self.assertEqual(canonical_hash, plan["canonical_plan_hash"])
             self.assertEqual(canonical_hash, compute_plan_hash(plan))
+            self.assertEqual(canonical_argv, run_record["plan"]["command_argv"])
+            self.assertEqual(canonical_hash, run_record["plan"]["canonical_plan_hash"])
+            self.assertEqual(canonical_hash, result["summary"]["plan_hash"])
+            self.assertTrue(result["summary"]["hash_valid"])
+            self.assertTrue(result["summary"]["passed"])
+
+    @unittest.skipUnless(os.name == "nt", "Windows native executable resolution")
+    def test_batch_shims_with_metacharacters_are_rejected_before_popen(self):
+        with tempfile.TemporaryDirectory() as repository:
+            bin_dir = Path(repository, "bin")
+            evil_argument = "literal & echo injected>injected-marker.txt"
+            commands = []
+            for extension in (".cmd", ".bat"):
+                stem = f"batch-shim-{extension[1:]}"
+                shim = bin_dir / f"{stem}{extension}"
+                shim.parent.mkdir(parents=True, exist_ok=True)
+                shim.write_text(
+                    "@echo off\r\necho shim-ran>batch-marker.txt\r\nexit /b 0\r\n",
+                    encoding="utf-8",
+                )
+                commands.extend(
+                    (
+                        [str(Path("bin", shim.name)), evil_argument],
+                        [stem, evil_argument],
+                    )
+                )
+
+            with mock.patch("tools.local_verification.runner.subprocess.Popen") as popen:
+                for command in commands:
+                    with self.subTest(command=command[0]):
+                        plan = {
+                            "command_argv": command,
+                            "environment": {},
+                            "working_directory": repository,
+                            "timeout_seconds": 1,
+                        }
+                        with self.assertRaises(RuntimeError) as caught:
+                            _run_attempt(
+                                plan,
+                                1,
+                                io.StringIO(),
+                                "windows-batch-rejection",
+                                Redactor({}),
+                                resolved_environment={"PATH": str(bin_dir)},
+                                runtime_working_directory=repository,
+                            )
+                        self.assertEqual(
+                            runner_module.WINDOWS_NATIVE_EXECUTABLE_ERROR,
+                            str(caught.exception),
+                        )
+                        self.assertNotIn(evil_argument, str(caught.exception))
+
+                popen.assert_not_called()
+
+            self.assertFalse(Path(repository, "batch-marker.txt").exists())
+            self.assertFalse(Path(repository, "injected-marker.txt").exists())
+
+    @unittest.skipUnless(os.name == "nt", "Windows native executable resolution")
+    def test_windows_path_directory_priority_precedes_native_extension_priority(self):
+        with tempfile.TemporaryDirectory() as root:
+            first = Path(root, "first")
+            second = Path(root, "second")
+            first_exe = copy_native_executable(first, "priority-shim.exe")
+            copy_native_executable(second, "priority-shim.com")
+            argv = ["priority-shim", "literal argument"]
+
+            resolved = _runtime_argv(
+                argv,
+                {"PATH": os.pathsep.join((str(first), str(second)))},
+                root,
+            )
+
+            self.assertEqual(first_exe.resolve(), Path(resolved[0]).resolve())
+            self.assertEqual(argv[1:], resolved[1:])
+            self.assertEqual(["priority-shim", "literal argument"], argv)
+
+    @unittest.skipUnless(os.name == "nt", "Windows native executable resolution")
+    def test_windows_path_skips_empty_relative_and_cwd_fallbacks(self):
+        with tempfile.TemporaryDirectory() as root:
+            parent = Path(root, "parent")
+            child = Path(root, "child")
+            relative_bin = parent / "relative-bin"
+            parent.mkdir()
+            child.mkdir()
+            copy_native_executable(parent, "cwd-shadow.exe")
+            copy_native_executable(child, "child-shadow.exe")
+            copy_native_executable(relative_bin, "relative-shadow.exe")
+            original_cwd = Path.cwd()
+            os.chdir(parent)
+            try:
+                cases = (
+                    (["cwd-shadow"], {"PATH": ""}),
+                    (["cwd-shadow"], {"PATH": "."}),
+                    (["relative-shadow"], {"PATH": "relative-bin"}),
+                    (["child-shadow"], {"PATH": ""}),
+                )
+                for argv, env in cases:
+                    with self.subTest(argv=argv, path=env["PATH"]):
+                        with self.assertRaises(RuntimeError) as caught:
+                            _runtime_argv(argv, env, child)
+                        self.assertEqual(
+                            runner_module.WINDOWS_NATIVE_EXECUTABLE_ERROR,
+                            str(caught.exception),
+                        )
+            finally:
+                os.chdir(original_cwd)
+
+    @unittest.skipUnless(os.name == "nt", "Windows native executable resolution")
+    def test_root_relative_windows_paths_are_rejected_before_popen(self):
+        with tempfile.TemporaryDirectory() as root:
+            native = copy_native_executable(root, "rooted-shim.exe")
+            _, rooted_native = os.path.splitdrive(str(native))
+            _, rooted_directory = os.path.splitdrive(str(native.parent))
+            original_cwd = Path.cwd()
+            os.chdir(root)
+            try:
+                cases = (
+                    ([rooted_native], {"PATH": ""}),
+                    (["rooted-shim"], {"PATH": rooted_directory}),
+                )
+                with mock.patch(
+                    "tools.local_verification.runner.subprocess.Popen"
+                ) as popen:
+                    for command, resolved_environment in cases:
+                        with self.subTest(command=command[0]):
+                            plan = {
+                                "command_argv": command,
+                                "environment": {},
+                                "working_directory": root,
+                                "timeout_seconds": 1,
+                            }
+                            with self.assertRaises(RuntimeError) as caught:
+                                _run_attempt(
+                                    plan,
+                                    1,
+                                    io.StringIO(),
+                                    "windows-root-relative-rejection",
+                                    Redactor({}),
+                                    resolved_environment=resolved_environment,
+                                    runtime_working_directory=root,
+                                )
+                            self.assertEqual(
+                                runner_module.WINDOWS_NATIVE_EXECUTABLE_ERROR,
+                                str(caught.exception),
+                            )
+                    popen.assert_not_called()
+            finally:
+                os.chdir(original_cwd)
+
+    @unittest.skipUnless(os.name == "nt", "Windows native executable resolution")
+    def test_mixed_case_child_path_overrides_inherited_path_before_popen(self):
+        with tempfile.TemporaryDirectory() as bin_dir:
+            copy_native_executable(bin_dir, "parent-shadow.exe")
+            plan = {
+                "command_argv": ["parent-shadow"],
+                "environment": {},
+                "working_directory": bin_dir,
+                "timeout_seconds": 1,
+            }
+
+            with mock.patch.dict(
+                os.environ, {"PATH": bin_dir}, clear=True
+            ), mock.patch(
+                "tools.local_verification.runner.subprocess.Popen"
+            ) as popen:
+                child_environment = runner_module._child_environment({"Path": ""})
+                self.assertEqual("", child_environment["PATH"])
+                self.assertNotIn("Path", child_environment)
+                with self.assertRaises(RuntimeError) as caught:
+                    _run_attempt(
+                        plan,
+                        1,
+                        io.StringIO(),
+                        "windows-mixed-case-path-rejection",
+                        Redactor({}),
+                        resolved_environment={"Path": ""},
+                        runtime_working_directory=bin_dir,
+                    )
+                self.assertEqual(
+                    runner_module.WINDOWS_NATIVE_EXECUTABLE_ERROR,
+                    str(caught.exception),
+                )
+                popen.assert_not_called()
+
+    @unittest.skipUnless(os.name == "nt", "Windows native executable resolution")
+    def test_quoted_absolute_child_path_entry_resolves(self):
+        with tempfile.TemporaryDirectory(prefix="native path ") as bin_dir:
+            native = copy_native_executable(bin_dir, "quoted-shim.exe")
+
+            resolved = _runtime_argv(
+                ["quoted-shim"],
+                {"PATH": f'"{bin_dir}"'},
+                bin_dir,
+            )
+
+            self.assertEqual(native.resolve(), Path(resolved[0]).resolve())
+
+    @unittest.skipUnless(os.name == "nt", "Windows native executable resolution")
+    def test_explicit_native_paths_are_child_bounded_and_must_exist(self):
+        with tempfile.TemporaryDirectory() as root:
+            child = Path(root, "child")
+            native = copy_native_executable(child / "bin", "relative-shim.exe")
+            outside = copy_native_executable(root, "outside-shim.exe")
+            relative_argv = [str(Path("bin", native.name)), "literal"]
+
+            resolved_relative = _runtime_argv(relative_argv, {"PATH": ""}, child)
+            resolved_absolute = _runtime_argv([str(native)], {"PATH": ""}, child)
+
+            self.assertEqual(native.resolve(), Path(resolved_relative[0]).resolve())
+            self.assertEqual(["literal"], resolved_relative[1:])
+            self.assertEqual(native.resolve(), Path(resolved_absolute[0]).resolve())
+            for rejected in (
+                [str(Path("bin", "missing.exe"))],
+                [str(child / "missing.exe")],
+                [str(Path("..", outside.name))],
+            ):
+                with self.subTest(rejected=rejected[0]):
+                    with self.assertRaises(RuntimeError) as caught:
+                        _runtime_argv(rejected, {"PATH": ""}, child)
+                    self.assertEqual(
+                        runner_module.WINDOWS_NATIVE_EXECUTABLE_ERROR,
+                        str(caught.exception),
+                    )
+
+    def test_non_windows_runtime_argv_is_unchanged(self):
+        argv = ["batch-shim.cmd", "literal & untouched"]
+        with mock.patch.object(runner_module.os, "name", "posix"):
+            self.assertIs(argv, _runtime_argv(argv, {"PATH": ""}, "."))
 
     def test_runtime_log_redacts_configured_and_inline_secrets(self):
         with tempfile.TemporaryDirectory() as repository:
@@ -265,7 +517,7 @@ class ProcessAndReservationTests(unittest.TestCase):
         process.wait.side_effect = KeyboardInterrupt
         ownership = mock.Mock(metadata={"kind": "fake", "root_pid": 4321})
         plan = {"command_argv": ["fake", "literal arg"], "environment": {}, "working_directory": ".", "timeout_seconds": 1}
-        with mock.patch("tools.local_verification.runner.subprocess.Popen", return_value=process), mock.patch("tools.local_verification.runner.create_process_container", return_value=ownership), mock.patch("tools.local_verification.runner.resume_process"), mock.patch("tools.local_verification.runner._terminate_owned", return_value="sigterm") as terminate:
+        with mock.patch("tools.local_verification.runner._runtime_argv", return_value=plan["command_argv"]), mock.patch("tools.local_verification.runner.subprocess.Popen", return_value=process), mock.patch("tools.local_verification.runner.create_process_container", return_value=ownership), mock.patch("tools.local_verification.runner.resume_process"), mock.patch("tools.local_verification.runner._terminate_owned", return_value="sigterm") as terminate:
             attempt = _run_attempt(plan, 1, io.StringIO(), "run", Redactor({}))
         terminate.assert_called_once_with(process, ownership)
         self.assertEqual("SIGINT", attempt["signal"])

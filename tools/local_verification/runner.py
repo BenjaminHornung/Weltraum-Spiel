@@ -8,7 +8,7 @@ import sys
 import threading
 import time
 import uuid
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 
 from .git import inspect_repository, verify_allowed_paths, worktree_fingerprint, worktree_root
 from .environment import resolve_environment
@@ -30,6 +30,18 @@ class DirtyEvidenceError(RuntimeError):
 
 class PortConflictError(RuntimeError):
     pass
+
+
+WINDOWS_NATIVE_EXECUTABLE_ERROR = (
+    "Windows command must resolve to an existing native .COM or .EXE executable"
+)
+_WINDOWS_NATIVE_EXTENSIONS = (".COM", ".EXE")
+_WINDOWS_BATCH_EXTENSIONS = (".CMD", ".BAT")
+
+
+class WindowsNativeExecutableError(RuntimeError):
+    pass
+
 
 def _port_available(port):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
@@ -55,17 +67,93 @@ def _pump(stream, console, log, lock, redactor, captured):
     finally:
         stream.close()
 
-def _runtime_argv(argv, env):
-    if os.name != "nt" or os.path.splitext(argv[0])[1]:
+def _runtime_argv(argv, env, child_working_directory=None):
+    if os.name != "nt":
         return argv
-    path = env.get("PATH", "")
-    for extension in env.get("PATHEXT", ".COM;.EXE;.BAT;.CMD").split(os.pathsep):
-        if extension:
-            for directory in path.split(os.pathsep):
-                executable = os.path.abspath(os.path.join(directory, argv[0] + extension))
-                if os.path.isfile(executable):
-                    return [executable, *argv[1:]]
-    return argv
+
+    command = argv[0]
+    extension = os.path.splitext(command)[1].upper()
+    if extension in _WINDOWS_BATCH_EXTENSIONS:
+        raise WindowsNativeExecutableError(WINDOWS_NATIVE_EXECUTABLE_ERROR)
+
+    if _is_fully_qualified_windows_path(command):
+        executable = os.path.normpath(command)
+        if extension in _WINDOWS_NATIVE_EXTENSIONS and os.path.isfile(executable):
+            return [executable, *argv[1:]]
+        raise WindowsNativeExecutableError(WINDOWS_NATIVE_EXECUTABLE_ERROR)
+    if os.path.isabs(command):
+        raise WindowsNativeExecutableError(WINDOWS_NATIVE_EXECUTABLE_ERROR)
+
+    drive, _ = os.path.splitdrive(command)
+    has_separator = any(
+        separator and separator in command for separator in (os.sep, os.altsep)
+    )
+    if drive:
+        raise WindowsNativeExecutableError(WINDOWS_NATIVE_EXECUTABLE_ERROR)
+    if has_separator:
+        child_root = os.path.realpath(
+            os.path.abspath(os.fspath(child_working_directory or "."))
+        )
+        executable_base = os.path.realpath(os.path.join(child_root, command))
+        try:
+            contained = os.path.normcase(
+                os.path.commonpath((child_root, executable_base))
+            ) == os.path.normcase(child_root)
+        except ValueError:
+            contained = False
+        if not contained:
+            raise WindowsNativeExecutableError(WINDOWS_NATIVE_EXECUTABLE_ERROR)
+        executable = _resolve_windows_candidate(executable_base, extension)
+        if executable is not None:
+            return [executable, *argv[1:]]
+        raise WindowsNativeExecutableError(WINDOWS_NATIVE_EXECUTABLE_ERROR)
+
+    if extension and extension not in _WINDOWS_NATIVE_EXTENSIONS:
+        raise WindowsNativeExecutableError(WINDOWS_NATIVE_EXECUTABLE_ERROR)
+    for directory in _absolute_windows_path_entries(env):
+        executable = _resolve_windows_candidate(
+            os.path.join(directory, command), extension
+        )
+        if executable is not None:
+            return [executable, *argv[1:]]
+    raise WindowsNativeExecutableError(WINDOWS_NATIVE_EXECUTABLE_ERROR)
+
+
+def _absolute_windows_path_entries(env):
+    path = ""
+    for key, value in env.items():
+        if isinstance(key, str) and key.upper() == "PATH":
+            path = value
+    if not isinstance(path, str):
+        return
+    for raw_entry in path.split(os.pathsep):
+        entry = raw_entry.strip()
+        if len(entry) >= 2 and entry[0] == entry[-1] == '"':
+            entry = entry[1:-1]
+        if entry and _is_fully_qualified_windows_path(entry):
+            yield os.path.normpath(entry)
+
+
+def _is_fully_qualified_windows_path(value):
+    return PureWindowsPath(value).is_absolute()
+
+
+def _resolve_windows_candidate(executable_base, extension):
+    if extension:
+        if extension not in _WINDOWS_NATIVE_EXTENSIONS:
+            return None
+        return executable_base if os.path.isfile(executable_base) else None
+
+    for native_extension in _WINDOWS_NATIVE_EXTENSIONS:
+        executable = executable_base + native_extension
+        if os.path.isfile(executable):
+            return executable
+    if any(
+        os.path.isfile(executable_base + batch_extension)
+        for batch_extension in _WINDOWS_BATCH_EXTENSIONS
+    ):
+        raise WindowsNativeExecutableError(WINDOWS_NATIVE_EXECUTABLE_ERROR)
+    return None
 
 def _run_attempt(
     plan, attempt, log, run_id, redactor, resolved_environment=None,
@@ -73,9 +161,10 @@ def _run_attempt(
 ):
     argv = plan["command_argv"]
     if not isinstance(argv, list) or not argv or not all(isinstance(v, str) and v for v in argv): raise ValueError("command_argv must be a non-empty string array")
-    env = os.environ.copy()
-    env.update(resolved_environment if resolved_environment is not None else resolve_environment(plan.get("environment", {}), os.environ))
-    kwargs = dict(args=_runtime_argv(argv, env), cwd=runtime_working_directory or plan["working_directory"], env=env, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, bufsize=1)
+    resolved_environment = resolved_environment if resolved_environment is not None else resolve_environment(plan.get("environment", {}), os.environ)
+    env = _child_environment(resolved_environment)
+    child_working_directory = runtime_working_directory or plan["working_directory"]
+    kwargs = dict(args=_runtime_argv(argv, env, child_working_directory), cwd=child_working_directory, env=env, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, bufsize=1)
     if os.name == "nt":
         kwargs["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP | 0x00000004
     else: kwargs["start_new_session"] = True
@@ -114,6 +203,16 @@ def _run_attempt(
         "timed_out": timed_out, "signal": received_signal,
         "termination": termination, "_captured_output": "".join(captured),
     }
+
+
+def _child_environment(resolved_environment):
+    if os.name != "nt":
+        env = os.environ.copy()
+        env.update(resolved_environment)
+        return env
+    env = {key.upper(): value for key, value in os.environ.items()}
+    env.update({key.upper(): value for key, value in resolved_environment.items()})
+    return env
 
 def execute_plan(plan, invocation_directory=None):
     run_id = uuid.uuid4().hex
