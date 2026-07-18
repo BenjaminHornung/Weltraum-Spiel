@@ -1,0 +1,156 @@
+{
+  "schemaVersion": "browser-surface-interaction-core-v1",
+  "status": "PASS",
+  "generator": "apps/weltraum-browser/tests/e2e/surface-interaction-core.spec.ts",
+  "scenario": "locked-door-resource-node-repair-terminal",
+  "normalRoute": {
+    "path": "/",
+    "search": "",
+    "testBridgeQueryPresent": false,
+    "beforeImport": {
+      "ownProperty": false,
+      "inWindow": false
+    },
+    "afterImport": {
+      "ownProperty": false,
+      "inWindow": false
+    }
+  },
+  "dynamicImport": {
+    "modulePath": "/src/interaction/index.ts",
+    "importedPublicApi": [
+      "createInteractionActorContext",
+      "createInteractionCandidate",
+      "createInteractionRevision",
+      "createInteractionTargetSnapshot",
+      "createInteractionTick",
+      "evaluateInteraction",
+      "startInteractionSession",
+      "advanceInteractionSession",
+      "completeInteractionSession",
+      "canonicalInteractionJson",
+      "interactionHash"
+    ]
+  },
+  "deterministicRepeat": {
+    "canonicalFactsIdentical": true,
+    "proofHashIdentical": true,
+    "proofHash": "fnv1a32:6acc9712"
+  },
+  "proof": {
+    "modulePath": "/src/interaction/index.ts",
+    "importedPublicApi": [
+      "createInteractionActorContext",
+      "createInteractionCandidate",
+      "createInteractionRevision",
+      "createInteractionTargetSnapshot",
+      "createInteractionTick",
+      "evaluateInteraction",
+      "startInteractionSession",
+      "advanceInteractionSession",
+      "completeInteractionSession",
+      "canonicalInteractionJson",
+      "interactionHash"
+    ],
+    "fixture": {
+      "actor": {
+        "actorId": "actor.surface-technician",
+        "revision": 7,
+        "capabilities": [
+          "capability.access",
+          "capability.extract",
+          "capability.repair",
+          "capability.scan"
+        ],
+        "tools": [
+          "tool.cutter",
+          "tool.scanner"
+        ],
+        "energyAvailable": 3
+      },
+      "lockedCargoDoor": {
+        "targetId": "target.cargo-door.locked",
+        "revision": 11,
+        "locked": true,
+        "requiredPermissionId": "permission.cargo.open",
+        "supportedVerbs": [
+          "Open"
+        ]
+      },
+      "resourceNode": {
+        "targetId": "target.resource-node.iron",
+        "revision": 4,
+        "supportedVerbs": [
+          "Scan",
+          "Extract"
+        ]
+      },
+      "repairTerminal": {
+        "targetId": "target.repair-terminal.alpha",
+        "revision": 8,
+        "supportedVerbs": [
+          "Repair"
+        ]
+      }
+    },
+    "decisions": {
+      "scan": {
+        "status": "Allowed",
+        "reason": null,
+        "decisionHash": "fnv1a32:266fdf2c"
+      },
+      "extract": {
+        "status": "Blocked",
+        "reason": "InsufficientEnergy",
+        "decisionHash": "fnv1a32:210dd8e6"
+      },
+      "repair": {
+        "status": "Allowed",
+        "reason": null,
+        "decisionHash": "fnv1a32:0c656078"
+      },
+      "open": {
+        "status": "Allowed",
+        "reason": null,
+        "decisionHash": "fnv1a32:166c23aa"
+      }
+    },
+    "hold": {
+      "startStatus": "Started",
+      "startTick": 0,
+      "requiredHoldTicks": 3,
+      "progression": [
+        {
+          "tick": 1,
+          "progressTicks": 1,
+          "readyToComplete": false
+        },
+        {
+          "tick": 2,
+          "progressTicks": 2,
+          "readyToComplete": false
+        },
+        {
+          "tick": 3,
+          "progressTicks": 3,
+          "readyToComplete": true
+        }
+      ]
+    },
+    "staleCompletion": {
+      "requestedTargetRevision": 12,
+      "status": "Rejected",
+      "resultCode": "TargetRevisionStale",
+      "nextAction": "RetryEvaluation",
+      "mutationIsNull": true
+    },
+    "canonicalFacts": "{\"decisions\":{\"extract\":{\"decisionHash\":\"fnv1a32:210dd8e6\",\"reason\":\"InsufficientEnergy\",\"status\":\"Blocked\"},\"open\":{\"decisionHash\":\"fnv1a32:166c23aa\",\"reason\":null,\"status\":\"Allowed\"},\"repair\":{\"decisionHash\":\"fnv1a32:0c656078\",\"reason\":null,\"status\":\"Allowed\"},\"scan\":{\"decisionHash\":\"fnv1a32:266fdf2c\",\"reason\":null,\"status\":\"Allowed\"}},\"fixture\":{\"actor\":{\"actorId\":\"actor.surface-technician\",\"capabilities\":[\"capability.access\",\"capability.extract\",\"capability.repair\",\"capability.scan\"],\"energyAvailable\":3,\"revision\":7,\"tools\":[\"tool.cutter\",\"tool.scanner\"]},\"lockedCargoDoor\":{\"locked\":true,\"requiredPermissionId\":\"permission.cargo.open\",\"revision\":11,\"supportedVerbs\":[\"Open\"],\"targetId\":\"target.cargo-door.locked\"},\"repairTerminal\":{\"revision\":8,\"supportedVerbs\":[\"Repair\"],\"targetId\":\"target.repair-terminal.alpha\"},\"resourceNode\":{\"revision\":4,\"supportedVerbs\":[\"Scan\",\"Extract\"],\"targetId\":\"target.resource-node.iron\"}},\"hold\":{\"progression\":[{\"progressTicks\":1,\"readyToComplete\":false,\"tick\":1},{\"progressTicks\":2,\"readyToComplete\":false,\"tick\":2},{\"progressTicks\":3,\"readyToComplete\":true,\"tick\":3}],\"requiredHoldTicks\":3,\"startStatus\":\"Started\",\"startTick\":0},\"importedPublicApi\":[\"createInteractionActorContext\",\"createInteractionCandidate\",\"createInteractionRevision\",\"createInteractionTargetSnapshot\",\"createInteractionTick\",\"evaluateInteraction\",\"startInteractionSession\",\"advanceInteractionSession\",\"completeInteractionSession\",\"canonicalInteractionJson\",\"interactionHash\"],\"modulePath\":\"/src/interaction/index.ts\",\"staleCompletion\":{\"mutationIsNull\":true,\"nextAction\":\"RetryEvaluation\",\"requestedTargetRevision\":12,\"resultCode\":\"TargetRevisionStale\",\"status\":\"Rejected\"}}",
+    "proofHash": "fnv1a32:6acc9712"
+  },
+  "verification": {
+    "command": "npx playwright test --config <temporary-5201-config> tests/e2e/surface-interaction-core.spec.ts",
+    "expectedResult": "one focused browser test passes and rewrites exactly two canonical evidence files",
+    "observedResult": "pass",
+    "presentationArtifact": "none: pure domain module with no visible runtime change"
+  }
+}
