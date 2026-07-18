@@ -362,8 +362,7 @@ export class SurfaceLabController {
   public regenerate(seed = this.#seed): Promise<SurfaceLabTelemetrySnapshot> {
     this.#assertActive();
     assertHestiaRootSeed(seed);
-    this.#seed = seed;
-    return this.#beginGeneration("Regenerating", false);
+    return this.#beginGeneration("Regenerating", false, seed, this.#voxelSizeMeters);
   }
 
   public setResolution(voxelSizeMeters: HestiaVoxelSizeMeters): Promise<SurfaceLabTelemetrySnapshot> {
@@ -371,8 +370,7 @@ export class SurfaceLabController {
     if (voxelSizeMeters !== 0.25 && voxelSizeMeters !== 0.5) {
       throw new RangeError("Surface Lab voxel size must be 0.25 or 0.5 metres.");
     }
-    this.#voxelSizeMeters = voxelSizeMeters;
-    return this.#beginGeneration("Regenerating", true);
+    return this.#beginGeneration("Regenerating", true, this.#seed, voxelSizeMeters);
   }
 
   public async restartWorker(slot: number): Promise<SurfaceLabTelemetrySnapshot> {
@@ -478,25 +476,40 @@ export class SurfaceLabController {
     }
   }
 
-  #beginGeneration(lifecycle: "Requesting" | "Regenerating", allowCacheRead: boolean): Promise<SurfaceLabTelemetrySnapshot> {
+  #beginGeneration(
+    lifecycle: "Requesting" | "Regenerating",
+    allowCacheRead: boolean,
+    candidateSeed = this.#seed,
+    candidateVoxelSizeMeters = this.#voxelSizeMeters
+  ): Promise<SurfaceLabTelemetrySnapshot> {
+    const incumbentSnapshot = this.readTelemetry();
     if (this.#disposeRequested || this.#pool.snapshot().state !== "Running") {
       throw new Error("Surface Lab cannot begin generation while its worker pool is stopped.");
     }
-    this.#resolveSettled?.(this.readTelemetry());
-    this.#generation += 1;
-    const generation = this.#generation;
-    this.#plan += 1;
-    this.#pool.setPlanningEpoch(planningEpoch(this.#plan));
+    const generation = this.#generation + 1;
+    const plan = this.#plan + 1;
+    const staged = SURFACE_LAB_REGION.chunkCoordinates.map((coordinate) => {
+      const payload = this.#payloadFor(coordinate, candidateSeed, candidateVoxelSizeMeters, plan);
+      return Object.freeze({ payload, request: this.#requestFor(payload, generation, plan) });
+    });
+    this.#pool.setPlanningEpoch(planningEpoch(plan));
+    this.#seed = candidateSeed;
+    this.#voxelSizeMeters = candidateVoxelSizeMeters;
+    this.#generation = generation;
+    this.#plan = plan;
+    this.#resolveSettled?.(incumbentSnapshot);
     this.#cancelTickets();
     this.#clearPublishedForGeneration();
     this.#lifecycle = lifecycle;
     this.#metrics = freshMetrics();
     this.#settledPromise = new Promise<SurfaceLabTelemetrySnapshot>((resolve) => { this.#resolveSettled = resolve; });
     this.#tickets.clear();
-    for (const coordinate of SURFACE_LAB_REGION.chunkCoordinates) {
-      const prepared = this.#prepareInput(coordinate, allowCacheRead);
+    for (const stagedJob of staged) {
+      const prepared = this.#prepareInput(stagedJob.payload, allowCacheRead);
       const payload = prepared.payload;
-      const request = this.#requestFor(payload, generation);
+      const request = stagedJob.request.payload === payload
+        ? stagedJob.request
+        : this.#requestFor(payload, generation, plan);
       try {
         const ticket = this.#pool.enqueue(request, prepared.bundle);
         this.#tickets.set(ticket, generation);
@@ -504,6 +517,9 @@ export class SurfaceLabController {
         void ticket.result.then((terminal) => {
           this.#forgetTicket(ticket, generation);
           this.#handleTerminal(generation, payload, terminal);
+        }, () => {
+          this.#forgetTicket(ticket, generation);
+          this.#handleTicketRejection(generation);
         });
       } catch {
         this.#recordFailure(generation);
@@ -529,10 +545,9 @@ export class SurfaceLabController {
   }
 
   #prepareInput(
-    brickCoordinate: Readonly<{ x: number; y: number; z: number }>,
+    generatedPayload: GenerateHestiaVoxelBrickMeshPayload,
     allowCacheRead: boolean
   ): Readonly<{ payload: GenerateHestiaVoxelBrickMeshPayload; bundle: TransferableBufferBundle }> {
-    const generatedPayload = this.#payloadFor(brickCoordinate);
     if (!allowCacheRead) {
       this.#metrics.cacheBypasses += 1;
       return Object.freeze({ payload: generatedPayload, bundle: emptyInputBundle() });
@@ -566,34 +581,39 @@ export class SurfaceLabController {
     return Object.freeze({ payload: generatedPayload, bundle: emptyInputBundle() });
   }
 
-  #payloadFor(brickCoordinate: Readonly<{ x: number; y: number; z: number }>): GenerateHestiaVoxelBrickMeshPayload {
+  #payloadFor(
+    brickCoordinate: Readonly<{ x: number; y: number; z: number }>,
+    seed: string,
+    voxelSizeMeters: HestiaVoxelSizeMeters,
+    plan: number
+  ): GenerateHestiaVoxelBrickMeshPayload {
     return validateHestiaVoxelBrickMeshPayload({
       presetId: HESTIA_PRESET_ID,
       inputMode: "Generate",
-      rootSeed: this.#seed,
+      rootSeed: seed,
       bodyId: voxelBodyId(this.#frameChain.bodyId),
       surfaceFrameId: surfaceFrameId(this.#frameChain.surfaceFrame.frameId),
       regionId: voxelRegionId(REGION_ID),
       brickCoordinate,
-      voxelSizeMeters: this.#voxelSizeMeters,
+      voxelSizeMeters,
       generatorVersion: HESTIA_GENERATOR_VERSION_V1,
       materialRegistryVersion: HESTIA_MATERIAL_REGISTRY_VERSION_V1,
       sourceRevision: HESTIA_SOURCE_REVISION_V1,
       editRevision: HESTIA_EDIT_REVISION_V1,
       meshAlgorithmVersion: VOXEL_MESH_ALGORITHM_VERSION,
-      outputRevision: contentRevision(this.#plan),
+      outputRevision: contentRevision(plan),
       generationColumnsPerSlice: MAX_HESTIA_GENERATION_COLUMNS_PER_SLICE
     });
   }
 
-  #requestFor(payload: GenerateHestiaVoxelBrickMeshPayload, generation: number): WorkerJobRequest {
+  #requestFor(payload: GenerateHestiaVoxelBrickMeshPayload, generation: number, plan: number): WorkerJobRequest {
     const coordinate = payload.brickCoordinate;
     const id = `surface-lab:${generation}:${coordinate.x}:${coordinate.y}:${coordinate.z}`;
     return Object.freeze({
       jobId: workerJobId(id),
       jobKind: workerJobKind(GENERATE_HESTIA_VOXEL_BRICK_MESH_JOB_KIND),
       targetKey: workerTargetKey(calculateVoxelSpatialJobTargetKey(payload)),
-      planningEpoch: planningEpoch(this.#plan),
+      planningEpoch: planningEpoch(plan),
       workerEpoch: workerEpoch(0),
       inputRevision: contentRevision(HESTIA_SOURCE_REVISION_V1),
       algorithmVersion: algorithmVersion(1),
@@ -706,6 +726,17 @@ export class SurfaceLabController {
   #recordFailure(generation: number): void {
     if (this.#disposeRequested || generation !== this.#generation) return;
     this.#metrics.failedChunks += 1;
+  }
+
+  #handleTicketRejection(generation: number): void {
+    if (this.#disposeRequested || generation !== this.#generation) return;
+    this.#metrics.failedChunks += 1;
+    const settled = this.#metrics.readyChunks + this.#metrics.failedChunks;
+    this.#lifecycle = settled >= SURFACE_LAB_REGION.chunkCount
+      ? "Failed"
+      : settled > 0 ? "Partial" : this.#lifecycle;
+    this.#emit();
+    this.#finishIfSettled(generation);
   }
 
   #finishIfSettled(generation: number): void {

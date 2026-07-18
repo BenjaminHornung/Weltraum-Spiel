@@ -70,6 +70,7 @@ import {
 interface PendingJob {
   readonly request: WorkerJobRequest<GenerateHestiaVoxelBrickMeshPayload>;
   readonly resolve: (terminal: WorkerJobTerminal) => void;
+  readonly reject: (reason: unknown) => void;
   cancelled: boolean;
   settled: boolean;
   cancelAttempts: number;
@@ -84,6 +85,7 @@ class FakeWorkerPool implements SurfaceLabWorkerPool {
   shutdownRequested = false;
   startError: Error | undefined;
   replacementError: Error | undefined;
+  planningEpochError: Error | undefined;
   enqueueFailureAfter: number | undefined;
   deferCancellationTerminals = false;
   #startGate: Promise<void> | undefined;
@@ -107,17 +109,22 @@ class FakeWorkerPool implements SurfaceLabWorkerPool {
     return () => this.#releaseReplace?.();
   }
 
-  public setPlanningEpoch(value: ReturnType<typeof planningEpoch>): void { this.planningEpoch = value; }
+  public setPlanningEpoch(value: ReturnType<typeof planningEpoch>): void {
+    if (this.planningEpochError !== undefined) throw this.planningEpochError;
+    this.planningEpoch = value;
+  }
 
   public enqueue(source: WorkerJobRequest, _input: TransferableBufferBundle): WorkerJobTicket {
     if (this.enqueueFailureAfter !== undefined && this.jobs.length >= this.enqueueFailureAfter) {
       throw new Error("synthetic enqueue failure");
     }
     let resolve!: (terminal: WorkerJobTerminal) => void;
-    const result = new Promise<WorkerJobTerminal>((complete) => { resolve = complete; });
+    let reject!: (reason: unknown) => void;
+    const result = new Promise<WorkerJobTerminal>((complete, fail) => { resolve = complete; reject = fail; });
     const pending: PendingJob = {
       request: source as WorkerJobRequest<GenerateHestiaVoxelBrickMeshPayload>,
       resolve,
+      reject,
       cancelled: false,
       settled: false,
       cancelAttempts: 0
@@ -218,6 +225,13 @@ class FakeWorkerPool implements SurfaceLabWorkerPool {
         kind: "Failed",
         failure: Object.freeze({ jobId: pending.request.jobId, code: "JobExecutionFailed", message: "fixture failure" })
       }));
+    }
+  }
+
+  public rejectPlanningPromise(epoch: number, count: number): void {
+    for (const pending of this.jobs.filter((job) => job.request.planningEpoch === epoch && !job.settled).slice(0, count)) {
+      pending.settled = true;
+      pending.reject(new Error("synthetic ticket promise rejection"));
     }
   }
 
@@ -1056,13 +1070,38 @@ describe("Surface Lab controller", () => {
     expect(new Set([...backend.resident.values()].map((artifact) => artifact.artifactRevision))).toEqual(new Set([2]));
 
     const changedSeed = controller.regenerate("hestia-surface-lab-v1-b");
+    const reseededJobs = workerPool.jobs.filter((job) => job.request.planningEpoch === 3);
+    expect(reseededJobs).toHaveLength(16);
+    expect(reseededJobs.every((job) => job.request.payload.rootSeed === "hestia-surface-lab-v1-b")).toBe(true);
+    expect(reseededJobs.every((job) => job.request.payload.outputRevision === 3)).toBe(true);
+    expect(controller.readTelemetry()).toMatchObject({
+      seed: "hestia-surface-lab-v1-b",
+      voxelSizeMeters: 0.5,
+      planningEpoch: 3,
+      lifecycle: "Regenerating",
+      requestedChunks: 16
+    });
     workerPool.completePlanning(3);
     const reseeded = await changedSeed;
+    expect(reseeded).toMatchObject({ seed: "hestia-surface-lab-v1-b", planningEpoch: 3 });
     expect(reseeded.meshHashes).not.toEqual(first.meshHashes);
     expect(commandCount(backend, "RemoveRepresentation")).toBe(32);
     expect(new Set([...backend.resident.values()].map((artifact) => artifact.artifactRevision))).toEqual(new Set([3]));
 
     const quarterMeter = controller.setResolution(0.25);
+    const resizedJobs = workerPool.jobs.filter((job) => job.request.planningEpoch === 4);
+    expect(resizedJobs).toHaveLength(16);
+    expect(resizedJobs.every((job) => job.request.payload.rootSeed === "hestia-surface-lab-v1-b")).toBe(true);
+    expect(resizedJobs.every((job) => job.request.payload.voxelSizeMeters === 0.25)).toBe(true);
+    expect(resizedJobs.every((job) => job.request.payload.outputRevision === 4)).toBe(true);
+    expect(controller.readTelemetry()).toMatchObject({
+      seed: "hestia-surface-lab-v1-b",
+      voxelSizeMeters: 0.25,
+      regionExtentMeters: { x: 32, y: 16, z: 32 },
+      planningEpoch: 4,
+      lifecycle: "Regenerating",
+      requestedChunks: 16
+    });
     workerPool.completePlanning(4);
     const resized = await quarterMeter;
     expect(resized.regionExtentMeters).toEqual({ x: 32, y: 16, z: 32 });
@@ -1070,6 +1109,39 @@ describe("Surface Lab controller", () => {
     expect(resized.planningEpoch).toBe(4);
     expect(commandCount(backend, "RemoveRepresentation")).toBe(48);
     expect(new Set([...backend.resident.values()].map((artifact) => artifact.artifactRevision))).toEqual(new Set([4]));
+  });
+
+  it("settles a superseded generation with its exact incumbent telemetry snapshot", async () => {
+    const { workerPool, controller } = fixture();
+    await controller.start();
+    workerPool.completePlanningInOrder(1, [0]);
+    await Promise.resolve();
+    const incumbent = controller.readTelemetry();
+    const incumbentSettlement = controller.whenSettled();
+    expect(incumbent).toMatchObject({
+      seed: "hestia-surface-lab-v1",
+      voxelSizeMeters: 0.5,
+      planningEpoch: 1,
+      lifecycle: "Partial",
+      readyChunks: 1,
+      failedChunks: 0
+    });
+    expect(incumbent.meshHashes).toHaveLength(1);
+    expect(incumbent.brickHashes).toHaveLength(1);
+
+    const resized = controller.setResolution(0.25);
+
+    await expect(incumbentSettlement).resolves.toEqual(incumbent);
+    expect(controller.readTelemetry()).toMatchObject({
+      seed: "hestia-surface-lab-v1",
+      voxelSizeMeters: 0.25,
+      planningEpoch: 2,
+      lifecycle: "Regenerating",
+      readyChunks: 0,
+      failedChunks: 0
+    });
+    workerPool.completePlanning(2);
+    await resized;
   });
 
   it("preserves canonical keys across A-B-A and resurrects them above tombstones in the real Three backend", async () => {
@@ -1253,7 +1325,7 @@ describe("Surface Lab controller", () => {
     }
   );
 
-  it("prevalidates invalid seeds without mutating active generation state", async () => {
+  it("fails closed for invalid seed and resolution without changing any observable generation state", async () => {
     const invalidFixture = () => new SurfaceLabController({
       workerPool: new FakeWorkerPool(),
       backend: new FakeBackend(),
@@ -1266,14 +1338,61 @@ describe("Surface Lab controller", () => {
     workerPool.completePlanning(1);
     await controller.whenSettled();
     const before = controller.readTelemetry();
+    const jobsBefore = workerPool.jobs.length;
+    const planningEpochBefore = workerPool.planningEpoch;
     expect(() => controller.regenerate("invalid seed")).toThrow(/rootSeed/);
-    expect(controller.readTelemetry()).toMatchObject({
-      seed: before.seed,
-      planningEpoch: before.planningEpoch,
-      lifecycle: before.lifecycle,
-      requestedChunks: before.requestedChunks,
-      readyChunks: before.readyChunks
-    });
+    expect(() => controller.setResolution(1 as 0.25)).toThrow("Surface Lab voxel size must be 0.25 or 0.5 metres.");
+    expect(controller.readTelemetry()).toEqual(before);
+    expect(workerPool.jobs).toHaveLength(jobsBefore);
+    expect(workerPool.planningEpoch).toBe(planningEpochBefore);
+  });
+
+  it("keeps valid seed and resolution candidates inert while the pool is stopped", async () => {
+    const { workerPool, backend, controller } = fixture();
+    await controller.start();
+    workerPool.completePlanning(1);
+    await controller.whenSettled();
+    workerPool.state = "Stopped";
+    const before = controller.readTelemetry();
+    const settlementBefore = controller.whenSettled();
+    const jobsBefore = workerPool.jobs.length;
+    const commandsBefore = backend.commands.length;
+    const residentBefore = [...backend.resident.entries()];
+
+    expect(() => controller.regenerate("hestia-stopped-candidate")).toThrow(/worker pool is stopped/);
+    expect(() => controller.setResolution(0.25)).toThrow(/worker pool is stopped/);
+
+    expect(controller.readTelemetry()).toEqual(before);
+    expect(controller.whenSettled()).toBe(settlementBefore);
+    await expect(settlementBefore).resolves.toEqual(before);
+    expect(workerPool.jobs).toHaveLength(jobsBefore);
+    expect(workerPool.planningEpoch).toBe(1);
+    expect(backend.commands).toHaveLength(commandsBefore);
+    expect([...backend.resident.entries()]).toEqual(residentBefore);
+  });
+
+  it("does not half-commit candidates when planning-epoch admission throws before mutation", async () => {
+    const { workerPool, backend, controller } = fixture();
+    await controller.start();
+    workerPool.completePlanning(1);
+    await controller.whenSettled();
+    const before = controller.readTelemetry();
+    const settlementBefore = controller.whenSettled();
+    const jobsBefore = workerPool.jobs.length;
+    const commandsBefore = backend.commands.length;
+    const residentBefore = [...backend.resident.entries()];
+    workerPool.planningEpochError = new Error("synthetic planning admission failure");
+
+    expect(() => controller.regenerate("hestia-unadmitted-seed")).toThrow("synthetic planning admission failure");
+    expect(() => controller.setResolution(0.25)).toThrow("synthetic planning admission failure");
+
+    expect(controller.readTelemetry()).toEqual(before);
+    expect(controller.whenSettled()).toBe(settlementBefore);
+    await expect(settlementBefore).resolves.toEqual(before);
+    expect(workerPool.planningEpoch).toBe(1);
+    expect(workerPool.jobs).toHaveLength(jobsBefore);
+    expect(backend.commands).toHaveLength(commandsBefore);
+    expect([...backend.resident.entries()]).toEqual(residentBefore);
   });
 
   it("reports partial progress and settles a one-of-sixteen failure", async () => {
@@ -1289,6 +1408,22 @@ describe("Surface Lab controller", () => {
       readyChunks: 15,
       failedChunks: 1
     });
+  });
+
+  it("accounts for a rejected admitted ticket promise as a failed chunk and still settles", async () => {
+    const { workerPool, controller } = fixture();
+    await controller.start();
+    workerPool.rejectPlanningPromise(1, 1);
+    workerPool.completePlanning(1);
+
+    await expect(controller.whenSettled()).resolves.toMatchObject({
+      lifecycle: "Failed",
+      requestedChunks: 16,
+      readyChunks: 15,
+      failedChunks: 1,
+      planningEpoch: 1
+    });
+    expect(controller.readTelemetry()).toMatchObject({ lifecycle: "Failed", readyChunks: 15, failedChunks: 1 });
   });
 
   it("forgets every settled ticket and only cancels tickets that remain active", async () => {
@@ -1402,6 +1537,13 @@ describe("Surface Lab controller", () => {
 
     await expect(controller.restartWorker(0)).rejects.toThrow("synthetic replacement rejection");
     expect(controller.readTelemetry().lifecycle).toBe("Failed");
+    expect(workerPool.jobs).toHaveLength(jobsBefore);
+    expect(commandCount(backend, "RemoveRepresentation")).toBe(removalsBefore);
+    expect(backend.resident.size).toBe(16);
+    workerPool.state = "Stopped";
+    const failedBeforeRegenerate = controller.readTelemetry();
+    expect(() => controller.regenerate("hestia-after-replacement-failure")).toThrow(/worker pool is stopped/);
+    expect(controller.readTelemetry()).toEqual(failedBeforeRegenerate);
     expect(workerPool.jobs).toHaveLength(jobsBefore);
     expect(commandCount(backend, "RemoveRepresentation")).toBe(removalsBefore);
     expect(backend.resident.size).toBe(16);
