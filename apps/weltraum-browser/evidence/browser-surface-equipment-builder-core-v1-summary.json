@@ -1,0 +1,1215 @@
+{
+  "schemaVersion": "browser-surface-equipment-builder-core-v1",
+  "status": "PASS",
+  "generator": "apps/weltraum-browser/tests/e2e/surface-equipment-builder-core.spec.ts",
+  "dependencyShas": {
+    "interaction": "291c7d49e79d9a075a8ff6c50e7ddb578a8f1217",
+    "suit": "f8d257aeec17e8a6bd22400925ee816fc524b566",
+    "dependencyMerge": "ffb858ba661ae2d30f1e8c331ef5e6c163e9cd97"
+  },
+  "normalRoute": {
+    "path": "/",
+    "search": "",
+    "debugSceneVisible": true,
+    "testBridgeBefore": {
+      "ownProperty": false,
+      "inWindow": false
+    },
+    "testBridgeAfter": {
+      "ownProperty": false,
+      "inWindow": false
+    }
+  },
+  "dynamicImport": {
+    "modulePath": "/src/surface-equipment/index.ts",
+    "suitModulePath": "/src/suit/index.ts",
+    "combatModulePath": "/src/combat/index.ts",
+    "importedPublicApi": [
+      "SURFACE_EQUIPMENT_FIXTURES",
+      "MINING_CUTTER_FIXTURE",
+      "BALLISTIC_SIDEARM_FIXTURE",
+      "LASER_CUTTER_FIXTURE",
+      "SURFACE_EQUIPMENT_DIAGNOSTIC_CODE_ORDER",
+      "SURFACE_EQUIPMENT_BUDGET_READINESS_POLICY",
+      "applySurfaceEquipmentCommand",
+      "canonicalSurfaceEquipmentJson",
+      "createCombatCapabilityProjection",
+      "createInteractionCapabilityProjection",
+      "createSurfaceEquipmentCommandId",
+      "createSurfaceEquipmentSignature",
+      "deriveSurfaceEquipmentStats",
+      "evaluateEquipmentSuitReadiness"
+    ]
+  },
+  "browserHealth": {
+    "order": "pageErrors/consoleErrors/failedResponses/requestFailures",
+    "summary": "0/0/0/0",
+    "collectorsRegisteredBeforeNavigation": true,
+    "pageErrors": 0,
+    "consoleErrors": 0,
+    "failedResponses": 0,
+    "requestFailures": 0
+  },
+  "deterministicRepeat": {
+    "completeRunIdentical": true,
+    "canonicalScenarioJsonIdentical": true,
+    "scenarioSignatureIdentical": true
+  },
+  "signatures": {
+    "scenario": "5688993b",
+    "canonicalScenarioBytes": 13403
+  },
+  "fixtureSummary": {
+    "fixtureCount": 6,
+    "catalogCount": 6,
+    "fixtureIds": [
+      "blueprint:survey-scanner.v1",
+      "blueprint:mining-cutter.v1",
+      "blueprint:repair-tool.v1",
+      "blueprint:emp-breacher.v1",
+      "blueprint:ballistic-sidearm.v1",
+      "blueprint:laser-cutter.v1"
+    ],
+    "catalogIds": [
+      "catalog:survey-scanner.v1",
+      "catalog:mining-cutter.v1",
+      "catalog:repair-tool.v1",
+      "catalog:emp-breacher.v1",
+      "catalog:ballistic-sidearm.v1",
+      "catalog:laser-cutter.v1"
+    ],
+    "fixtures": [
+      {
+        "fixtureId": "blueprint:survey-scanner.v1",
+        "catalogId": "catalog:survey-scanner.v1",
+        "category": "Scanner",
+        "catalogSignature": "6061188c",
+        "blueprintSignature": "83ed3c78",
+        "slotCompatibility": [
+          {
+            "slotId": "slot:00:frame",
+            "slotTypeId": "slot-type:frame",
+            "moduleInstanceId": "instance:00:module:survey-scanner.frame",
+            "moduleId": "module:survey-scanner.frame",
+            "compatibleSlotTypeIds": [
+              "slot-type:frame"
+            ]
+          },
+          {
+            "slotId": "slot:01:scanner",
+            "slotTypeId": "slot-type:scanner",
+            "moduleInstanceId": "instance:01:module:survey-scanner.sensor",
+            "moduleId": "module:survey-scanner.sensor",
+            "compatibleSlotTypeIds": [
+              "slot-type:scanner"
+            ]
+          },
+          {
+            "slotId": "slot:02:control",
+            "slotTypeId": "slot-type:control",
+            "moduleInstanceId": "instance:02:module:survey-scanner.control",
+            "moduleId": "module:survey-scanner.control",
+            "compatibleSlotTypeIds": [
+              "slot-type:control"
+            ]
+          }
+        ],
+        "thermal": {
+          "activeThermalLoadMilliwatts": 100,
+          "passiveDissipationMilliwatts": 0,
+          "netThermalBurdenMilliwatts": 100,
+          "heatPerActionMillijoules": 0
+        },
+        "statsProvenance": {
+          "blueprintId": "blueprint:survey-scanner.v1",
+          "revision": 0,
+          "catalogId": "catalog:survey-scanner.v1",
+          "catalogVersion": 1,
+          "signature": "9b903aa7"
+        },
+        "readinessProvenance": {
+          "blueprintId": "blueprint:survey-scanner.v1",
+          "revision": 0,
+          "catalogId": "catalog:survey-scanner.v1",
+          "catalogVersion": 1,
+          "statsSignature": "9b903aa7",
+          "suitStateId": "suit-state:surface-equipment-nominal",
+          "suitRevision": 0,
+          "signature": "71bed0b1"
+        },
+        "readiness": "Ready",
+        "diagnostics": [],
+        "balanceTier": "provisional-v0"
+      },
+      {
+        "fixtureId": "blueprint:mining-cutter.v1",
+        "catalogId": "catalog:mining-cutter.v1",
+        "category": "ExtractionTool",
+        "catalogSignature": "928fccc2",
+        "blueprintSignature": "b57be5b6",
+        "slotCompatibility": [
+          {
+            "slotId": "slot:00:frame",
+            "slotTypeId": "slot-type:frame",
+            "moduleInstanceId": "instance:00:module:mining-cutter.frame",
+            "moduleId": "module:mining-cutter.frame",
+            "compatibleSlotTypeIds": [
+              "slot-type:frame"
+            ]
+          },
+          {
+            "slotId": "slot:01:toolhead",
+            "slotTypeId": "slot-type:toolhead",
+            "moduleInstanceId": "instance:01:module:mining-cutter.head",
+            "moduleId": "module:mining-cutter.head",
+            "compatibleSlotTypeIds": [
+              "slot-type:toolhead"
+            ]
+          },
+          {
+            "slotId": "slot:02:powerpack",
+            "slotTypeId": "slot-type:powerpack",
+            "moduleInstanceId": "instance:02:module:mining-cutter.power",
+            "moduleId": "module:mining-cutter.power",
+            "compatibleSlotTypeIds": [
+              "slot-type:powerpack"
+            ]
+          },
+          {
+            "slotId": "slot:03:thermalsink",
+            "slotTypeId": "slot-type:thermalsink",
+            "moduleInstanceId": "instance:03:module:mining-cutter.thermal",
+            "moduleId": "module:mining-cutter.thermal",
+            "compatibleSlotTypeIds": [
+              "slot-type:thermalsink"
+            ]
+          }
+        ],
+        "thermal": {
+          "activeThermalLoadMilliwatts": 1000,
+          "passiveDissipationMilliwatts": 800,
+          "netThermalBurdenMilliwatts": 200,
+          "heatPerActionMillijoules": 700
+        },
+        "statsProvenance": {
+          "blueprintId": "blueprint:mining-cutter.v1",
+          "revision": 0,
+          "catalogId": "catalog:mining-cutter.v1",
+          "catalogVersion": 1,
+          "signature": "bce505f1"
+        },
+        "readinessProvenance": {
+          "blueprintId": "blueprint:mining-cutter.v1",
+          "revision": 0,
+          "catalogId": "catalog:mining-cutter.v1",
+          "catalogVersion": 1,
+          "statsSignature": "bce505f1",
+          "suitStateId": "suit-state:surface-equipment-nominal",
+          "suitRevision": 0,
+          "signature": "c24091b1"
+        },
+        "readiness": "Ready",
+        "diagnostics": [],
+        "balanceTier": "provisional-v0"
+      },
+      {
+        "fixtureId": "blueprint:repair-tool.v1",
+        "catalogId": "catalog:repair-tool.v1",
+        "category": "RepairTool",
+        "catalogSignature": "e5aa9b07",
+        "blueprintSignature": "90fb406f",
+        "slotCompatibility": [
+          {
+            "slotId": "slot:00:frame",
+            "slotTypeId": "slot-type:frame",
+            "moduleInstanceId": "instance:00:module:repair-tool.frame",
+            "moduleId": "module:repair-tool.frame",
+            "compatibleSlotTypeIds": [
+              "slot-type:frame"
+            ]
+          },
+          {
+            "slotId": "slot:01:toolhead",
+            "slotTypeId": "slot-type:toolhead",
+            "moduleInstanceId": "instance:01:module:repair-tool.head",
+            "moduleId": "module:repair-tool.head",
+            "compatibleSlotTypeIds": [
+              "slot-type:toolhead"
+            ]
+          },
+          {
+            "slotId": "slot:02:control",
+            "slotTypeId": "slot-type:control",
+            "moduleInstanceId": "instance:02:module:repair-tool.control",
+            "moduleId": "module:repair-tool.control",
+            "compatibleSlotTypeIds": [
+              "slot-type:control"
+            ]
+          }
+        ],
+        "thermal": {
+          "activeThermalLoadMilliwatts": 200,
+          "passiveDissipationMilliwatts": 0,
+          "netThermalBurdenMilliwatts": 200,
+          "heatPerActionMillijoules": 0
+        },
+        "statsProvenance": {
+          "blueprintId": "blueprint:repair-tool.v1",
+          "revision": 0,
+          "catalogId": "catalog:repair-tool.v1",
+          "catalogVersion": 1,
+          "signature": "ec14e364"
+        },
+        "readinessProvenance": {
+          "blueprintId": "blueprint:repair-tool.v1",
+          "revision": 0,
+          "catalogId": "catalog:repair-tool.v1",
+          "catalogVersion": 1,
+          "statsSignature": "ec14e364",
+          "suitStateId": "suit-state:surface-equipment-nominal",
+          "suitRevision": 0,
+          "signature": "d3bf5b56"
+        },
+        "readiness": "Ready",
+        "diagnostics": [],
+        "balanceTier": "provisional-v0"
+      },
+      {
+        "fixtureId": "blueprint:emp-breacher.v1",
+        "catalogId": "catalog:emp-breacher.v1",
+        "category": "BreachingTool",
+        "catalogSignature": "5d87a3c9",
+        "blueprintSignature": "70c1316b",
+        "slotCompatibility": [
+          {
+            "slotId": "slot:00:frame",
+            "slotTypeId": "slot-type:frame",
+            "moduleInstanceId": "instance:00:module:emp-breacher.frame",
+            "moduleId": "module:emp-breacher.frame",
+            "compatibleSlotTypeIds": [
+              "slot-type:frame"
+            ]
+          },
+          {
+            "slotId": "slot:01:deliveryassembly",
+            "slotTypeId": "slot-type:deliveryassembly",
+            "moduleInstanceId": "instance:01:module:emp-breacher.delivery",
+            "moduleId": "module:emp-breacher.delivery",
+            "compatibleSlotTypeIds": [
+              "slot-type:deliveryassembly"
+            ]
+          },
+          {
+            "slotId": "slot:02:safety",
+            "slotTypeId": "slot-type:safety",
+            "moduleInstanceId": "instance:02:module:emp-breacher.safety",
+            "moduleId": "module:emp-breacher.safety",
+            "compatibleSlotTypeIds": [
+              "slot-type:safety"
+            ]
+          }
+        ],
+        "thermal": {
+          "activeThermalLoadMilliwatts": 600,
+          "passiveDissipationMilliwatts": 0,
+          "netThermalBurdenMilliwatts": 600,
+          "heatPerActionMillijoules": 500
+        },
+        "statsProvenance": {
+          "blueprintId": "blueprint:emp-breacher.v1",
+          "revision": 0,
+          "catalogId": "catalog:emp-breacher.v1",
+          "catalogVersion": 1,
+          "signature": "f6568005"
+        },
+        "readinessProvenance": {
+          "blueprintId": "blueprint:emp-breacher.v1",
+          "revision": 0,
+          "catalogId": "catalog:emp-breacher.v1",
+          "catalogVersion": 1,
+          "statsSignature": "f6568005",
+          "suitStateId": "suit-state:surface-equipment-nominal",
+          "suitRevision": 0,
+          "signature": "c839fb61"
+        },
+        "readiness": "Ready",
+        "diagnostics": [],
+        "balanceTier": "provisional-v0"
+      },
+      {
+        "fixtureId": "blueprint:ballistic-sidearm.v1",
+        "catalogId": "catalog:ballistic-sidearm.v1",
+        "category": "Sidearm",
+        "catalogSignature": "dfc16818",
+        "blueprintSignature": "3ec10a5a",
+        "slotCompatibility": [
+          {
+            "slotId": "slot:00:frame",
+            "slotTypeId": "slot-type:frame",
+            "moduleInstanceId": "instance:00:module:ballistic-sidearm.frame",
+            "moduleId": "module:ballistic-sidearm.frame",
+            "compatibleSlotTypeIds": [
+              "slot-type:frame"
+            ]
+          },
+          {
+            "slotId": "slot:01:deliveryassembly",
+            "slotTypeId": "slot-type:deliveryassembly",
+            "moduleInstanceId": "instance:01:module:ballistic-sidearm.delivery",
+            "moduleId": "module:ballistic-sidearm.delivery",
+            "compatibleSlotTypeIds": [
+              "slot-type:deliveryassembly"
+            ]
+          },
+          {
+            "slotId": "slot:02:feedsystem",
+            "slotTypeId": "slot-type:feedsystem",
+            "moduleInstanceId": "instance:02:module:ballistic-sidearm.feed",
+            "moduleId": "module:ballistic-sidearm.feed",
+            "compatibleSlotTypeIds": [
+              "slot-type:feedsystem"
+            ]
+          },
+          {
+            "slotId": "slot:03:magazine",
+            "slotTypeId": "slot-type:magazine",
+            "moduleInstanceId": "instance:03:module:ballistic-sidearm.magazine",
+            "moduleId": "module:ballistic-sidearm.magazine",
+            "compatibleSlotTypeIds": [
+              "slot-type:magazine"
+            ]
+          },
+          {
+            "slotId": "slot:04:control",
+            "slotTypeId": "slot-type:control",
+            "moduleInstanceId": "instance:04:module:ballistic-sidearm.control",
+            "moduleId": "module:ballistic-sidearm.control",
+            "compatibleSlotTypeIds": [
+              "slot-type:control"
+            ]
+          },
+          {
+            "slotId": "slot:05:safety",
+            "slotTypeId": "slot-type:safety",
+            "moduleInstanceId": "instance:05:module:ballistic-sidearm.safety",
+            "moduleId": "module:ballistic-sidearm.safety",
+            "compatibleSlotTypeIds": [
+              "slot-type:safety"
+            ]
+          }
+        ],
+        "thermal": {
+          "activeThermalLoadMilliwatts": 100,
+          "passiveDissipationMilliwatts": 0,
+          "netThermalBurdenMilliwatts": 100,
+          "heatPerActionMillijoules": 0
+        },
+        "statsProvenance": {
+          "blueprintId": "blueprint:ballistic-sidearm.v1",
+          "revision": 0,
+          "catalogId": "catalog:ballistic-sidearm.v1",
+          "catalogVersion": 1,
+          "signature": "e123ba40"
+        },
+        "readinessProvenance": {
+          "blueprintId": "blueprint:ballistic-sidearm.v1",
+          "revision": 0,
+          "catalogId": "catalog:ballistic-sidearm.v1",
+          "catalogVersion": 1,
+          "statsSignature": "e123ba40",
+          "suitStateId": "suit-state:surface-equipment-nominal",
+          "suitRevision": 0,
+          "signature": "380ef815"
+        },
+        "readiness": "Ready",
+        "diagnostics": [],
+        "balanceTier": "provisional-v0"
+      },
+      {
+        "fixtureId": "blueprint:laser-cutter.v1",
+        "catalogId": "catalog:laser-cutter.v1",
+        "category": "ExtractionTool",
+        "catalogSignature": "b5e91b16",
+        "blueprintSignature": "91c45732",
+        "slotCompatibility": [
+          {
+            "slotId": "slot:00:frame",
+            "slotTypeId": "slot-type:frame",
+            "moduleInstanceId": "instance:00:module:laser-cutter.frame",
+            "moduleId": "module:laser-cutter.frame",
+            "compatibleSlotTypeIds": [
+              "slot-type:frame"
+            ]
+          },
+          {
+            "slotId": "slot:01:toolhead",
+            "slotTypeId": "slot-type:toolhead",
+            "moduleInstanceId": "instance:01:module:laser-cutter.emitter",
+            "moduleId": "module:laser-cutter.emitter",
+            "compatibleSlotTypeIds": [
+              "slot-type:toolhead"
+            ]
+          },
+          {
+            "slotId": "slot:02:powerpack",
+            "slotTypeId": "slot-type:powerpack",
+            "moduleInstanceId": "instance:02:module:laser-cutter.power",
+            "moduleId": "module:laser-cutter.power",
+            "compatibleSlotTypeIds": [
+              "slot-type:powerpack"
+            ]
+          },
+          {
+            "slotId": "slot:03:thermalsink",
+            "slotTypeId": "slot-type:thermalsink",
+            "moduleInstanceId": "instance:03:module:laser-cutter.thermal",
+            "moduleId": "module:laser-cutter.thermal",
+            "compatibleSlotTypeIds": [
+              "slot-type:thermalsink"
+            ]
+          }
+        ],
+        "thermal": {
+          "activeThermalLoadMilliwatts": 1500,
+          "passiveDissipationMilliwatts": 1100,
+          "netThermalBurdenMilliwatts": 400,
+          "heatPerActionMillijoules": 1000
+        },
+        "statsProvenance": {
+          "blueprintId": "blueprint:laser-cutter.v1",
+          "revision": 0,
+          "catalogId": "catalog:laser-cutter.v1",
+          "catalogVersion": 1,
+          "signature": "b070755e"
+        },
+        "readinessProvenance": {
+          "blueprintId": "blueprint:laser-cutter.v1",
+          "revision": 0,
+          "catalogId": "catalog:laser-cutter.v1",
+          "catalogVersion": 1,
+          "statsSignature": "b070755e",
+          "suitStateId": "suit-state:surface-equipment-nominal",
+          "suitRevision": 0,
+          "signature": "9842057d"
+        },
+        "readiness": "Ready",
+        "diagnostics": [],
+        "balanceTier": "provisional-v0"
+      }
+    ]
+  },
+  "diagnosticCodeOrder": [
+    "MissingRequiredSlot",
+    "SlotCountMismatch",
+    "SlotTypeMismatch",
+    "SlotRoleMismatch",
+    "TagIncompatible",
+    "InterfaceMissing",
+    "MassLimitExceeded",
+    "BulkLimitExceeded",
+    "ContinuousPowerExceeded",
+    "PulseEnergyExceeded",
+    "ThermalBudgetExceeded",
+    "AmmoFeedMissing",
+    "MagazineMissing",
+    "ControlMissing",
+    "SafetyMissing",
+    "SafetyCertificationInvalid",
+    "DamageDeliveryIncomplete",
+    "CapabilityUnsatisfied",
+    "ResourceRequirementInvalid",
+    "AggregateOverflow",
+    "SuitActorIncapacitated",
+    "SuitEquipmentBusOffline",
+    "LegalConfigurationInvalid",
+    "DuplicateModuleInstance",
+    "RevisionConflict",
+    "DuplicateCommand",
+    "BlueprintMismatch",
+    "UnknownModuleInstance",
+    "UnknownModule",
+    "UnknownSlot",
+    "SlotCapacityExceeded",
+    "CalibrationInvalid",
+    "GripRequirementUnsatisfied",
+    "InvalidCommand"
+  ],
+  "laserCutterProof": {
+    "fixtureId": "blueprint:laser-cutter.v1",
+    "damageType": "Cutting",
+    "damageTypeAuthority": "imported Combat DamageType",
+    "combatDamageTypesIncludesCutting": true,
+    "deliveryClass": "Beam",
+    "statsSignature": "b070755e"
+  },
+  "readinessSummary": {
+    "miningCutter": {
+      "nominal": {
+        "state": "Ready",
+        "blockerCodes": [],
+        "suitSnapshotSignature": "fnv1a32:871146d5",
+        "readinessSignature": "c24091b1"
+      },
+      "insufficientEnergy": {
+        "state": "Limited",
+        "blockerCodes": [
+          "PulseEnergyExceeded"
+        ],
+        "blockerImpacts": [
+          "Limited"
+        ],
+        "requiredPulseEnergyMillijoules": 2100,
+        "availablePulseEnergyMillijoules": 1000,
+        "suitSnapshotSignature": "fnv1a32:132adb25",
+        "readinessSignature": "4b076d5c",
+        "policy": {
+          "zeroAvailable": "Blocked",
+          "safetyCriticalShortfall": "Blocked",
+          "utilityPositiveShortfall": "Limited"
+        }
+      }
+    },
+    "ballisticSidearm": {
+      "withoutSafety": {
+        "revision": 0,
+        "state": "Blocked",
+        "diagnosticCodes": [
+          "MissingRequiredSlot",
+          "SafetyMissing"
+        ],
+        "readinessSignature": "418054e1"
+      },
+      "installSafetyCommand": {
+        "kind": "InstallModule",
+        "status": "Accepted",
+        "outcome": "Changed",
+        "commandId": "command:e2e-install-ballistic-safety",
+        "installedModuleId": "module:ballistic-sidearm.safety",
+        "installedModuleInstanceId": "instance:05:module:ballistic-sidearm.safety",
+        "resultingRevision": 1
+      },
+      "afterSafetyInstall": {
+        "state": "Ready",
+        "diagnosticCodes": [],
+        "readinessSignature": "d2506777",
+        "blueprintSignature": "3ec10a5a"
+      }
+    }
+  },
+  "projectionSummary": {
+    "interaction": {
+      "equipmentId": "blueprint:ballistic-sidearm.v1",
+      "readiness": "Ready",
+      "capabilityIds": [
+        "capability.access"
+      ],
+      "toolId": "tool:3ec10a5a",
+      "rangeClass": "Long",
+      "projectionSignature": "43fe0892"
+    },
+    "combat": {
+      "status": "Available",
+      "damageType": "Kinetic",
+      "deliveryClass": "Projectile",
+      "currentReadiness": "Ready",
+      "readinessRequired": "Ready",
+      "projectionSignature": "cd3ca06a"
+    }
+  },
+  "proof": {
+    "scenarioName": "six-fixtures-cutter-readiness-sidearm-safety-projections",
+    "modulePath": "/src/surface-equipment/index.ts",
+    "suitModulePath": "/src/suit/index.ts",
+    "combatModulePath": "/src/combat/index.ts",
+    "importedPublicApi": [
+      "SURFACE_EQUIPMENT_FIXTURES",
+      "MINING_CUTTER_FIXTURE",
+      "BALLISTIC_SIDEARM_FIXTURE",
+      "LASER_CUTTER_FIXTURE",
+      "SURFACE_EQUIPMENT_DIAGNOSTIC_CODE_ORDER",
+      "SURFACE_EQUIPMENT_BUDGET_READINESS_POLICY",
+      "applySurfaceEquipmentCommand",
+      "canonicalSurfaceEquipmentJson",
+      "createCombatCapabilityProjection",
+      "createInteractionCapabilityProjection",
+      "createSurfaceEquipmentCommandId",
+      "createSurfaceEquipmentSignature",
+      "deriveSurfaceEquipmentStats",
+      "evaluateEquipmentSuitReadiness"
+    ],
+    "fixtureCatalog": {
+      "fixtureCount": 6,
+      "catalogCount": 6,
+      "fixtureIds": [
+        "blueprint:survey-scanner.v1",
+        "blueprint:mining-cutter.v1",
+        "blueprint:repair-tool.v1",
+        "blueprint:emp-breacher.v1",
+        "blueprint:ballistic-sidearm.v1",
+        "blueprint:laser-cutter.v1"
+      ],
+      "catalogIds": [
+        "catalog:survey-scanner.v1",
+        "catalog:mining-cutter.v1",
+        "catalog:repair-tool.v1",
+        "catalog:emp-breacher.v1",
+        "catalog:ballistic-sidearm.v1",
+        "catalog:laser-cutter.v1"
+      ],
+      "fixtures": [
+        {
+          "fixtureId": "blueprint:survey-scanner.v1",
+          "catalogId": "catalog:survey-scanner.v1",
+          "category": "Scanner",
+          "catalogSignature": "6061188c",
+          "blueprintSignature": "83ed3c78",
+          "slotCompatibility": [
+            {
+              "slotId": "slot:00:frame",
+              "slotTypeId": "slot-type:frame",
+              "moduleInstanceId": "instance:00:module:survey-scanner.frame",
+              "moduleId": "module:survey-scanner.frame",
+              "compatibleSlotTypeIds": [
+                "slot-type:frame"
+              ]
+            },
+            {
+              "slotId": "slot:01:scanner",
+              "slotTypeId": "slot-type:scanner",
+              "moduleInstanceId": "instance:01:module:survey-scanner.sensor",
+              "moduleId": "module:survey-scanner.sensor",
+              "compatibleSlotTypeIds": [
+                "slot-type:scanner"
+              ]
+            },
+            {
+              "slotId": "slot:02:control",
+              "slotTypeId": "slot-type:control",
+              "moduleInstanceId": "instance:02:module:survey-scanner.control",
+              "moduleId": "module:survey-scanner.control",
+              "compatibleSlotTypeIds": [
+                "slot-type:control"
+              ]
+            }
+          ],
+          "thermal": {
+            "activeThermalLoadMilliwatts": 100,
+            "passiveDissipationMilliwatts": 0,
+            "netThermalBurdenMilliwatts": 100,
+            "heatPerActionMillijoules": 0
+          },
+          "statsProvenance": {
+            "blueprintId": "blueprint:survey-scanner.v1",
+            "revision": 0,
+            "catalogId": "catalog:survey-scanner.v1",
+            "catalogVersion": 1,
+            "signature": "9b903aa7"
+          },
+          "readinessProvenance": {
+            "blueprintId": "blueprint:survey-scanner.v1",
+            "revision": 0,
+            "catalogId": "catalog:survey-scanner.v1",
+            "catalogVersion": 1,
+            "statsSignature": "9b903aa7",
+            "suitStateId": "suit-state:surface-equipment-nominal",
+            "suitRevision": 0,
+            "signature": "71bed0b1"
+          },
+          "readiness": "Ready",
+          "diagnostics": [],
+          "balanceTier": "provisional-v0"
+        },
+        {
+          "fixtureId": "blueprint:mining-cutter.v1",
+          "catalogId": "catalog:mining-cutter.v1",
+          "category": "ExtractionTool",
+          "catalogSignature": "928fccc2",
+          "blueprintSignature": "b57be5b6",
+          "slotCompatibility": [
+            {
+              "slotId": "slot:00:frame",
+              "slotTypeId": "slot-type:frame",
+              "moduleInstanceId": "instance:00:module:mining-cutter.frame",
+              "moduleId": "module:mining-cutter.frame",
+              "compatibleSlotTypeIds": [
+                "slot-type:frame"
+              ]
+            },
+            {
+              "slotId": "slot:01:toolhead",
+              "slotTypeId": "slot-type:toolhead",
+              "moduleInstanceId": "instance:01:module:mining-cutter.head",
+              "moduleId": "module:mining-cutter.head",
+              "compatibleSlotTypeIds": [
+                "slot-type:toolhead"
+              ]
+            },
+            {
+              "slotId": "slot:02:powerpack",
+              "slotTypeId": "slot-type:powerpack",
+              "moduleInstanceId": "instance:02:module:mining-cutter.power",
+              "moduleId": "module:mining-cutter.power",
+              "compatibleSlotTypeIds": [
+                "slot-type:powerpack"
+              ]
+            },
+            {
+              "slotId": "slot:03:thermalsink",
+              "slotTypeId": "slot-type:thermalsink",
+              "moduleInstanceId": "instance:03:module:mining-cutter.thermal",
+              "moduleId": "module:mining-cutter.thermal",
+              "compatibleSlotTypeIds": [
+                "slot-type:thermalsink"
+              ]
+            }
+          ],
+          "thermal": {
+            "activeThermalLoadMilliwatts": 1000,
+            "passiveDissipationMilliwatts": 800,
+            "netThermalBurdenMilliwatts": 200,
+            "heatPerActionMillijoules": 700
+          },
+          "statsProvenance": {
+            "blueprintId": "blueprint:mining-cutter.v1",
+            "revision": 0,
+            "catalogId": "catalog:mining-cutter.v1",
+            "catalogVersion": 1,
+            "signature": "bce505f1"
+          },
+          "readinessProvenance": {
+            "blueprintId": "blueprint:mining-cutter.v1",
+            "revision": 0,
+            "catalogId": "catalog:mining-cutter.v1",
+            "catalogVersion": 1,
+            "statsSignature": "bce505f1",
+            "suitStateId": "suit-state:surface-equipment-nominal",
+            "suitRevision": 0,
+            "signature": "c24091b1"
+          },
+          "readiness": "Ready",
+          "diagnostics": [],
+          "balanceTier": "provisional-v0"
+        },
+        {
+          "fixtureId": "blueprint:repair-tool.v1",
+          "catalogId": "catalog:repair-tool.v1",
+          "category": "RepairTool",
+          "catalogSignature": "e5aa9b07",
+          "blueprintSignature": "90fb406f",
+          "slotCompatibility": [
+            {
+              "slotId": "slot:00:frame",
+              "slotTypeId": "slot-type:frame",
+              "moduleInstanceId": "instance:00:module:repair-tool.frame",
+              "moduleId": "module:repair-tool.frame",
+              "compatibleSlotTypeIds": [
+                "slot-type:frame"
+              ]
+            },
+            {
+              "slotId": "slot:01:toolhead",
+              "slotTypeId": "slot-type:toolhead",
+              "moduleInstanceId": "instance:01:module:repair-tool.head",
+              "moduleId": "module:repair-tool.head",
+              "compatibleSlotTypeIds": [
+                "slot-type:toolhead"
+              ]
+            },
+            {
+              "slotId": "slot:02:control",
+              "slotTypeId": "slot-type:control",
+              "moduleInstanceId": "instance:02:module:repair-tool.control",
+              "moduleId": "module:repair-tool.control",
+              "compatibleSlotTypeIds": [
+                "slot-type:control"
+              ]
+            }
+          ],
+          "thermal": {
+            "activeThermalLoadMilliwatts": 200,
+            "passiveDissipationMilliwatts": 0,
+            "netThermalBurdenMilliwatts": 200,
+            "heatPerActionMillijoules": 0
+          },
+          "statsProvenance": {
+            "blueprintId": "blueprint:repair-tool.v1",
+            "revision": 0,
+            "catalogId": "catalog:repair-tool.v1",
+            "catalogVersion": 1,
+            "signature": "ec14e364"
+          },
+          "readinessProvenance": {
+            "blueprintId": "blueprint:repair-tool.v1",
+            "revision": 0,
+            "catalogId": "catalog:repair-tool.v1",
+            "catalogVersion": 1,
+            "statsSignature": "ec14e364",
+            "suitStateId": "suit-state:surface-equipment-nominal",
+            "suitRevision": 0,
+            "signature": "d3bf5b56"
+          },
+          "readiness": "Ready",
+          "diagnostics": [],
+          "balanceTier": "provisional-v0"
+        },
+        {
+          "fixtureId": "blueprint:emp-breacher.v1",
+          "catalogId": "catalog:emp-breacher.v1",
+          "category": "BreachingTool",
+          "catalogSignature": "5d87a3c9",
+          "blueprintSignature": "70c1316b",
+          "slotCompatibility": [
+            {
+              "slotId": "slot:00:frame",
+              "slotTypeId": "slot-type:frame",
+              "moduleInstanceId": "instance:00:module:emp-breacher.frame",
+              "moduleId": "module:emp-breacher.frame",
+              "compatibleSlotTypeIds": [
+                "slot-type:frame"
+              ]
+            },
+            {
+              "slotId": "slot:01:deliveryassembly",
+              "slotTypeId": "slot-type:deliveryassembly",
+              "moduleInstanceId": "instance:01:module:emp-breacher.delivery",
+              "moduleId": "module:emp-breacher.delivery",
+              "compatibleSlotTypeIds": [
+                "slot-type:deliveryassembly"
+              ]
+            },
+            {
+              "slotId": "slot:02:safety",
+              "slotTypeId": "slot-type:safety",
+              "moduleInstanceId": "instance:02:module:emp-breacher.safety",
+              "moduleId": "module:emp-breacher.safety",
+              "compatibleSlotTypeIds": [
+                "slot-type:safety"
+              ]
+            }
+          ],
+          "thermal": {
+            "activeThermalLoadMilliwatts": 600,
+            "passiveDissipationMilliwatts": 0,
+            "netThermalBurdenMilliwatts": 600,
+            "heatPerActionMillijoules": 500
+          },
+          "statsProvenance": {
+            "blueprintId": "blueprint:emp-breacher.v1",
+            "revision": 0,
+            "catalogId": "catalog:emp-breacher.v1",
+            "catalogVersion": 1,
+            "signature": "f6568005"
+          },
+          "readinessProvenance": {
+            "blueprintId": "blueprint:emp-breacher.v1",
+            "revision": 0,
+            "catalogId": "catalog:emp-breacher.v1",
+            "catalogVersion": 1,
+            "statsSignature": "f6568005",
+            "suitStateId": "suit-state:surface-equipment-nominal",
+            "suitRevision": 0,
+            "signature": "c839fb61"
+          },
+          "readiness": "Ready",
+          "diagnostics": [],
+          "balanceTier": "provisional-v0"
+        },
+        {
+          "fixtureId": "blueprint:ballistic-sidearm.v1",
+          "catalogId": "catalog:ballistic-sidearm.v1",
+          "category": "Sidearm",
+          "catalogSignature": "dfc16818",
+          "blueprintSignature": "3ec10a5a",
+          "slotCompatibility": [
+            {
+              "slotId": "slot:00:frame",
+              "slotTypeId": "slot-type:frame",
+              "moduleInstanceId": "instance:00:module:ballistic-sidearm.frame",
+              "moduleId": "module:ballistic-sidearm.frame",
+              "compatibleSlotTypeIds": [
+                "slot-type:frame"
+              ]
+            },
+            {
+              "slotId": "slot:01:deliveryassembly",
+              "slotTypeId": "slot-type:deliveryassembly",
+              "moduleInstanceId": "instance:01:module:ballistic-sidearm.delivery",
+              "moduleId": "module:ballistic-sidearm.delivery",
+              "compatibleSlotTypeIds": [
+                "slot-type:deliveryassembly"
+              ]
+            },
+            {
+              "slotId": "slot:02:feedsystem",
+              "slotTypeId": "slot-type:feedsystem",
+              "moduleInstanceId": "instance:02:module:ballistic-sidearm.feed",
+              "moduleId": "module:ballistic-sidearm.feed",
+              "compatibleSlotTypeIds": [
+                "slot-type:feedsystem"
+              ]
+            },
+            {
+              "slotId": "slot:03:magazine",
+              "slotTypeId": "slot-type:magazine",
+              "moduleInstanceId": "instance:03:module:ballistic-sidearm.magazine",
+              "moduleId": "module:ballistic-sidearm.magazine",
+              "compatibleSlotTypeIds": [
+                "slot-type:magazine"
+              ]
+            },
+            {
+              "slotId": "slot:04:control",
+              "slotTypeId": "slot-type:control",
+              "moduleInstanceId": "instance:04:module:ballistic-sidearm.control",
+              "moduleId": "module:ballistic-sidearm.control",
+              "compatibleSlotTypeIds": [
+                "slot-type:control"
+              ]
+            },
+            {
+              "slotId": "slot:05:safety",
+              "slotTypeId": "slot-type:safety",
+              "moduleInstanceId": "instance:05:module:ballistic-sidearm.safety",
+              "moduleId": "module:ballistic-sidearm.safety",
+              "compatibleSlotTypeIds": [
+                "slot-type:safety"
+              ]
+            }
+          ],
+          "thermal": {
+            "activeThermalLoadMilliwatts": 100,
+            "passiveDissipationMilliwatts": 0,
+            "netThermalBurdenMilliwatts": 100,
+            "heatPerActionMillijoules": 0
+          },
+          "statsProvenance": {
+            "blueprintId": "blueprint:ballistic-sidearm.v1",
+            "revision": 0,
+            "catalogId": "catalog:ballistic-sidearm.v1",
+            "catalogVersion": 1,
+            "signature": "e123ba40"
+          },
+          "readinessProvenance": {
+            "blueprintId": "blueprint:ballistic-sidearm.v1",
+            "revision": 0,
+            "catalogId": "catalog:ballistic-sidearm.v1",
+            "catalogVersion": 1,
+            "statsSignature": "e123ba40",
+            "suitStateId": "suit-state:surface-equipment-nominal",
+            "suitRevision": 0,
+            "signature": "380ef815"
+          },
+          "readiness": "Ready",
+          "diagnostics": [],
+          "balanceTier": "provisional-v0"
+        },
+        {
+          "fixtureId": "blueprint:laser-cutter.v1",
+          "catalogId": "catalog:laser-cutter.v1",
+          "category": "ExtractionTool",
+          "catalogSignature": "b5e91b16",
+          "blueprintSignature": "91c45732",
+          "slotCompatibility": [
+            {
+              "slotId": "slot:00:frame",
+              "slotTypeId": "slot-type:frame",
+              "moduleInstanceId": "instance:00:module:laser-cutter.frame",
+              "moduleId": "module:laser-cutter.frame",
+              "compatibleSlotTypeIds": [
+                "slot-type:frame"
+              ]
+            },
+            {
+              "slotId": "slot:01:toolhead",
+              "slotTypeId": "slot-type:toolhead",
+              "moduleInstanceId": "instance:01:module:laser-cutter.emitter",
+              "moduleId": "module:laser-cutter.emitter",
+              "compatibleSlotTypeIds": [
+                "slot-type:toolhead"
+              ]
+            },
+            {
+              "slotId": "slot:02:powerpack",
+              "slotTypeId": "slot-type:powerpack",
+              "moduleInstanceId": "instance:02:module:laser-cutter.power",
+              "moduleId": "module:laser-cutter.power",
+              "compatibleSlotTypeIds": [
+                "slot-type:powerpack"
+              ]
+            },
+            {
+              "slotId": "slot:03:thermalsink",
+              "slotTypeId": "slot-type:thermalsink",
+              "moduleInstanceId": "instance:03:module:laser-cutter.thermal",
+              "moduleId": "module:laser-cutter.thermal",
+              "compatibleSlotTypeIds": [
+                "slot-type:thermalsink"
+              ]
+            }
+          ],
+          "thermal": {
+            "activeThermalLoadMilliwatts": 1500,
+            "passiveDissipationMilliwatts": 1100,
+            "netThermalBurdenMilliwatts": 400,
+            "heatPerActionMillijoules": 1000
+          },
+          "statsProvenance": {
+            "blueprintId": "blueprint:laser-cutter.v1",
+            "revision": 0,
+            "catalogId": "catalog:laser-cutter.v1",
+            "catalogVersion": 1,
+            "signature": "b070755e"
+          },
+          "readinessProvenance": {
+            "blueprintId": "blueprint:laser-cutter.v1",
+            "revision": 0,
+            "catalogId": "catalog:laser-cutter.v1",
+            "catalogVersion": 1,
+            "statsSignature": "b070755e",
+            "suitStateId": "suit-state:surface-equipment-nominal",
+            "suitRevision": 0,
+            "signature": "9842057d"
+          },
+          "readiness": "Ready",
+          "diagnostics": [],
+          "balanceTier": "provisional-v0"
+        }
+      ]
+    },
+    "diagnosticCodeOrder": [
+      "MissingRequiredSlot",
+      "SlotCountMismatch",
+      "SlotTypeMismatch",
+      "SlotRoleMismatch",
+      "TagIncompatible",
+      "InterfaceMissing",
+      "MassLimitExceeded",
+      "BulkLimitExceeded",
+      "ContinuousPowerExceeded",
+      "PulseEnergyExceeded",
+      "ThermalBudgetExceeded",
+      "AmmoFeedMissing",
+      "MagazineMissing",
+      "ControlMissing",
+      "SafetyMissing",
+      "SafetyCertificationInvalid",
+      "DamageDeliveryIncomplete",
+      "CapabilityUnsatisfied",
+      "ResourceRequirementInvalid",
+      "AggregateOverflow",
+      "SuitActorIncapacitated",
+      "SuitEquipmentBusOffline",
+      "LegalConfigurationInvalid",
+      "DuplicateModuleInstance",
+      "RevisionConflict",
+      "DuplicateCommand",
+      "BlueprintMismatch",
+      "UnknownModuleInstance",
+      "UnknownModule",
+      "UnknownSlot",
+      "SlotCapacityExceeded",
+      "CalibrationInvalid",
+      "GripRequirementUnsatisfied",
+      "InvalidCommand"
+    ],
+    "laserCutter": {
+      "fixtureId": "blueprint:laser-cutter.v1",
+      "damageType": "Cutting",
+      "damageTypeAuthority": "imported Combat DamageType",
+      "combatDamageTypesIncludesCutting": true,
+      "deliveryClass": "Beam",
+      "statsSignature": "b070755e"
+    },
+    "miningCutter": {
+      "nominal": {
+        "state": "Ready",
+        "blockerCodes": [],
+        "suitSnapshotSignature": "fnv1a32:871146d5",
+        "readinessSignature": "c24091b1"
+      },
+      "insufficientEnergy": {
+        "state": "Limited",
+        "blockerCodes": [
+          "PulseEnergyExceeded"
+        ],
+        "blockerImpacts": [
+          "Limited"
+        ],
+        "requiredPulseEnergyMillijoules": 2100,
+        "availablePulseEnergyMillijoules": 1000,
+        "suitSnapshotSignature": "fnv1a32:132adb25",
+        "readinessSignature": "4b076d5c",
+        "policy": {
+          "zeroAvailable": "Blocked",
+          "safetyCriticalShortfall": "Blocked",
+          "utilityPositiveShortfall": "Limited"
+        }
+      }
+    },
+    "ballisticSidearm": {
+      "withoutSafety": {
+        "revision": 0,
+        "state": "Blocked",
+        "diagnosticCodes": [
+          "MissingRequiredSlot",
+          "SafetyMissing"
+        ],
+        "readinessSignature": "418054e1"
+      },
+      "installSafetyCommand": {
+        "kind": "InstallModule",
+        "status": "Accepted",
+        "outcome": "Changed",
+        "commandId": "command:e2e-install-ballistic-safety",
+        "installedModuleId": "module:ballistic-sidearm.safety",
+        "installedModuleInstanceId": "instance:05:module:ballistic-sidearm.safety",
+        "resultingRevision": 1
+      },
+      "afterSafetyInstall": {
+        "state": "Ready",
+        "diagnosticCodes": [],
+        "readinessSignature": "d2506777",
+        "blueprintSignature": "3ec10a5a"
+      }
+    },
+    "projections": {
+      "interaction": {
+        "equipmentId": "blueprint:ballistic-sidearm.v1",
+        "readiness": "Ready",
+        "capabilityIds": [
+          "capability.access"
+        ],
+        "toolId": "tool:3ec10a5a",
+        "rangeClass": "Long",
+        "projectionSignature": "43fe0892"
+      },
+      "combat": {
+        "status": "Available",
+        "damageType": "Kinetic",
+        "deliveryClass": "Projectile",
+        "currentReadiness": "Ready",
+        "readinessRequired": "Ready",
+        "projectionSignature": "cd3ca06a"
+      }
+    },
+    "canonicalScenarioJson": "{\"ballisticSidearm\":{\"afterSafetyInstall\":{\"blueprintSignature\":\"3ec10a5a\",\"diagnosticCodes\":[],\"readinessSignature\":\"d2506777\",\"state\":\"Ready\"},\"installSafetyCommand\":{\"commandId\":\"command:e2e-install-ballistic-safety\",\"installedModuleId\":\"module:ballistic-sidearm.safety\",\"installedModuleInstanceId\":\"instance:05:module:ballistic-sidearm.safety\",\"kind\":\"InstallModule\",\"outcome\":\"Changed\",\"resultingRevision\":1,\"status\":\"Accepted\"},\"withoutSafety\":{\"diagnosticCodes\":[\"MissingRequiredSlot\",\"SafetyMissing\"],\"readinessSignature\":\"418054e1\",\"revision\":0,\"state\":\"Blocked\"}},\"combatModulePath\":\"/src/combat/index.ts\",\"diagnosticCodeOrder\":[\"MissingRequiredSlot\",\"SlotCountMismatch\",\"SlotTypeMismatch\",\"SlotRoleMismatch\",\"TagIncompatible\",\"InterfaceMissing\",\"MassLimitExceeded\",\"BulkLimitExceeded\",\"ContinuousPowerExceeded\",\"PulseEnergyExceeded\",\"ThermalBudgetExceeded\",\"AmmoFeedMissing\",\"MagazineMissing\",\"ControlMissing\",\"SafetyMissing\",\"SafetyCertificationInvalid\",\"DamageDeliveryIncomplete\",\"CapabilityUnsatisfied\",\"ResourceRequirementInvalid\",\"AggregateOverflow\",\"SuitActorIncapacitated\",\"SuitEquipmentBusOffline\",\"LegalConfigurationInvalid\",\"DuplicateModuleInstance\",\"RevisionConflict\",\"DuplicateCommand\",\"BlueprintMismatch\",\"UnknownModuleInstance\",\"UnknownModule\",\"UnknownSlot\",\"SlotCapacityExceeded\",\"CalibrationInvalid\",\"GripRequirementUnsatisfied\",\"InvalidCommand\"],\"fixtureCatalog\":{\"catalogCount\":6,\"catalogIds\":[\"catalog:survey-scanner.v1\",\"catalog:mining-cutter.v1\",\"catalog:repair-tool.v1\",\"catalog:emp-breacher.v1\",\"catalog:ballistic-sidearm.v1\",\"catalog:laser-cutter.v1\"],\"fixtureCount\":6,\"fixtureIds\":[\"blueprint:survey-scanner.v1\",\"blueprint:mining-cutter.v1\",\"blueprint:repair-tool.v1\",\"blueprint:emp-breacher.v1\",\"blueprint:ballistic-sidearm.v1\",\"blueprint:laser-cutter.v1\"],\"fixtures\":[{\"balanceTier\":\"provisional-v0\",\"blueprintSignature\":\"83ed3c78\",\"catalogId\":\"catalog:survey-scanner.v1\",\"catalogSignature\":\"6061188c\",\"category\":\"Scanner\",\"diagnostics\":[],\"fixtureId\":\"blueprint:survey-scanner.v1\",\"readiness\":\"Ready\",\"readinessProvenance\":{\"blueprintId\":\"blueprint:survey-scanner.v1\",\"catalogId\":\"catalog:survey-scanner.v1\",\"catalogVersion\":1,\"revision\":0,\"signature\":\"71bed0b1\",\"statsSignature\":\"9b903aa7\",\"suitRevision\":0,\"suitStateId\":\"suit-state:surface-equipment-nominal\"},\"slotCompatibility\":[{\"compatibleSlotTypeIds\":[\"slot-type:frame\"],\"moduleId\":\"module:survey-scanner.frame\",\"moduleInstanceId\":\"instance:00:module:survey-scanner.frame\",\"slotId\":\"slot:00:frame\",\"slotTypeId\":\"slot-type:frame\"},{\"compatibleSlotTypeIds\":[\"slot-type:scanner\"],\"moduleId\":\"module:survey-scanner.sensor\",\"moduleInstanceId\":\"instance:01:module:survey-scanner.sensor\",\"slotId\":\"slot:01:scanner\",\"slotTypeId\":\"slot-type:scanner\"},{\"compatibleSlotTypeIds\":[\"slot-type:control\"],\"moduleId\":\"module:survey-scanner.control\",\"moduleInstanceId\":\"instance:02:module:survey-scanner.control\",\"slotId\":\"slot:02:control\",\"slotTypeId\":\"slot-type:control\"}],\"statsProvenance\":{\"blueprintId\":\"blueprint:survey-scanner.v1\",\"catalogId\":\"catalog:survey-scanner.v1\",\"catalogVersion\":1,\"revision\":0,\"signature\":\"9b903aa7\"},\"thermal\":{\"activeThermalLoadMilliwatts\":100,\"heatPerActionMillijoules\":0,\"netThermalBurdenMilliwatts\":100,\"passiveDissipationMilliwatts\":0}},{\"balanceTier\":\"provisional-v0\",\"blueprintSignature\":\"b57be5b6\",\"catalogId\":\"catalog:mining-cutter.v1\",\"catalogSignature\":\"928fccc2\",\"category\":\"ExtractionTool\",\"diagnostics\":[],\"fixtureId\":\"blueprint:mining-cutter.v1\",\"readiness\":\"Ready\",\"readinessProvenance\":{\"blueprintId\":\"blueprint:mining-cutter.v1\",\"catalogId\":\"catalog:mining-cutter.v1\",\"catalogVersion\":1,\"revision\":0,\"signature\":\"c24091b1\",\"statsSignature\":\"bce505f1\",\"suitRevision\":0,\"suitStateId\":\"suit-state:surface-equipment-nominal\"},\"slotCompatibility\":[{\"compatibleSlotTypeIds\":[\"slot-type:frame\"],\"moduleId\":\"module:mining-cutter.frame\",\"moduleInstanceId\":\"instance:00:module:mining-cutter.frame\",\"slotId\":\"slot:00:frame\",\"slotTypeId\":\"slot-type:frame\"},{\"compatibleSlotTypeIds\":[\"slot-type:toolhead\"],\"moduleId\":\"module:mining-cutter.head\",\"moduleInstanceId\":\"instance:01:module:mining-cutter.head\",\"slotId\":\"slot:01:toolhead\",\"slotTypeId\":\"slot-type:toolhead\"},{\"compatibleSlotTypeIds\":[\"slot-type:powerpack\"],\"moduleId\":\"module:mining-cutter.power\",\"moduleInstanceId\":\"instance:02:module:mining-cutter.power\",\"slotId\":\"slot:02:powerpack\",\"slotTypeId\":\"slot-type:powerpack\"},{\"compatibleSlotTypeIds\":[\"slot-type:thermalsink\"],\"moduleId\":\"module:mining-cutter.thermal\",\"moduleInstanceId\":\"instance:03:module:mining-cutter.thermal\",\"slotId\":\"slot:03:thermalsink\",\"slotTypeId\":\"slot-type:thermalsink\"}],\"statsProvenance\":{\"blueprintId\":\"blueprint:mining-cutter.v1\",\"catalogId\":\"catalog:mining-cutter.v1\",\"catalogVersion\":1,\"revision\":0,\"signature\":\"bce505f1\"},\"thermal\":{\"activeThermalLoadMilliwatts\":1000,\"heatPerActionMillijoules\":700,\"netThermalBurdenMilliwatts\":200,\"passiveDissipationMilliwatts\":800}},{\"balanceTier\":\"provisional-v0\",\"blueprintSignature\":\"90fb406f\",\"catalogId\":\"catalog:repair-tool.v1\",\"catalogSignature\":\"e5aa9b07\",\"category\":\"RepairTool\",\"diagnostics\":[],\"fixtureId\":\"blueprint:repair-tool.v1\",\"readiness\":\"Ready\",\"readinessProvenance\":{\"blueprintId\":\"blueprint:repair-tool.v1\",\"catalogId\":\"catalog:repair-tool.v1\",\"catalogVersion\":1,\"revision\":0,\"signature\":\"d3bf5b56\",\"statsSignature\":\"ec14e364\",\"suitRevision\":0,\"suitStateId\":\"suit-state:surface-equipment-nominal\"},\"slotCompatibility\":[{\"compatibleSlotTypeIds\":[\"slot-type:frame\"],\"moduleId\":\"module:repair-tool.frame\",\"moduleInstanceId\":\"instance:00:module:repair-tool.frame\",\"slotId\":\"slot:00:frame\",\"slotTypeId\":\"slot-type:frame\"},{\"compatibleSlotTypeIds\":[\"slot-type:toolhead\"],\"moduleId\":\"module:repair-tool.head\",\"moduleInstanceId\":\"instance:01:module:repair-tool.head\",\"slotId\":\"slot:01:toolhead\",\"slotTypeId\":\"slot-type:toolhead\"},{\"compatibleSlotTypeIds\":[\"slot-type:control\"],\"moduleId\":\"module:repair-tool.control\",\"moduleInstanceId\":\"instance:02:module:repair-tool.control\",\"slotId\":\"slot:02:control\",\"slotTypeId\":\"slot-type:control\"}],\"statsProvenance\":{\"blueprintId\":\"blueprint:repair-tool.v1\",\"catalogId\":\"catalog:repair-tool.v1\",\"catalogVersion\":1,\"revision\":0,\"signature\":\"ec14e364\"},\"thermal\":{\"activeThermalLoadMilliwatts\":200,\"heatPerActionMillijoules\":0,\"netThermalBurdenMilliwatts\":200,\"passiveDissipationMilliwatts\":0}},{\"balanceTier\":\"provisional-v0\",\"blueprintSignature\":\"70c1316b\",\"catalogId\":\"catalog:emp-breacher.v1\",\"catalogSignature\":\"5d87a3c9\",\"category\":\"BreachingTool\",\"diagnostics\":[],\"fixtureId\":\"blueprint:emp-breacher.v1\",\"readiness\":\"Ready\",\"readinessProvenance\":{\"blueprintId\":\"blueprint:emp-breacher.v1\",\"catalogId\":\"catalog:emp-breacher.v1\",\"catalogVersion\":1,\"revision\":0,\"signature\":\"c839fb61\",\"statsSignature\":\"f6568005\",\"suitRevision\":0,\"suitStateId\":\"suit-state:surface-equipment-nominal\"},\"slotCompatibility\":[{\"compatibleSlotTypeIds\":[\"slot-type:frame\"],\"moduleId\":\"module:emp-breacher.frame\",\"moduleInstanceId\":\"instance:00:module:emp-breacher.frame\",\"slotId\":\"slot:00:frame\",\"slotTypeId\":\"slot-type:frame\"},{\"compatibleSlotTypeIds\":[\"slot-type:deliveryassembly\"],\"moduleId\":\"module:emp-breacher.delivery\",\"moduleInstanceId\":\"instance:01:module:emp-breacher.delivery\",\"slotId\":\"slot:01:deliveryassembly\",\"slotTypeId\":\"slot-type:deliveryassembly\"},{\"compatibleSlotTypeIds\":[\"slot-type:safety\"],\"moduleId\":\"module:emp-breacher.safety\",\"moduleInstanceId\":\"instance:02:module:emp-breacher.safety\",\"slotId\":\"slot:02:safety\",\"slotTypeId\":\"slot-type:safety\"}],\"statsProvenance\":{\"blueprintId\":\"blueprint:emp-breacher.v1\",\"catalogId\":\"catalog:emp-breacher.v1\",\"catalogVersion\":1,\"revision\":0,\"signature\":\"f6568005\"},\"thermal\":{\"activeThermalLoadMilliwatts\":600,\"heatPerActionMillijoules\":500,\"netThermalBurdenMilliwatts\":600,\"passiveDissipationMilliwatts\":0}},{\"balanceTier\":\"provisional-v0\",\"blueprintSignature\":\"3ec10a5a\",\"catalogId\":\"catalog:ballistic-sidearm.v1\",\"catalogSignature\":\"dfc16818\",\"category\":\"Sidearm\",\"diagnostics\":[],\"fixtureId\":\"blueprint:ballistic-sidearm.v1\",\"readiness\":\"Ready\",\"readinessProvenance\":{\"blueprintId\":\"blueprint:ballistic-sidearm.v1\",\"catalogId\":\"catalog:ballistic-sidearm.v1\",\"catalogVersion\":1,\"revision\":0,\"signature\":\"380ef815\",\"statsSignature\":\"e123ba40\",\"suitRevision\":0,\"suitStateId\":\"suit-state:surface-equipment-nominal\"},\"slotCompatibility\":[{\"compatibleSlotTypeIds\":[\"slot-type:frame\"],\"moduleId\":\"module:ballistic-sidearm.frame\",\"moduleInstanceId\":\"instance:00:module:ballistic-sidearm.frame\",\"slotId\":\"slot:00:frame\",\"slotTypeId\":\"slot-type:frame\"},{\"compatibleSlotTypeIds\":[\"slot-type:deliveryassembly\"],\"moduleId\":\"module:ballistic-sidearm.delivery\",\"moduleInstanceId\":\"instance:01:module:ballistic-sidearm.delivery\",\"slotId\":\"slot:01:deliveryassembly\",\"slotTypeId\":\"slot-type:deliveryassembly\"},{\"compatibleSlotTypeIds\":[\"slot-type:feedsystem\"],\"moduleId\":\"module:ballistic-sidearm.feed\",\"moduleInstanceId\":\"instance:02:module:ballistic-sidearm.feed\",\"slotId\":\"slot:02:feedsystem\",\"slotTypeId\":\"slot-type:feedsystem\"},{\"compatibleSlotTypeIds\":[\"slot-type:magazine\"],\"moduleId\":\"module:ballistic-sidearm.magazine\",\"moduleInstanceId\":\"instance:03:module:ballistic-sidearm.magazine\",\"slotId\":\"slot:03:magazine\",\"slotTypeId\":\"slot-type:magazine\"},{\"compatibleSlotTypeIds\":[\"slot-type:control\"],\"moduleId\":\"module:ballistic-sidearm.control\",\"moduleInstanceId\":\"instance:04:module:ballistic-sidearm.control\",\"slotId\":\"slot:04:control\",\"slotTypeId\":\"slot-type:control\"},{\"compatibleSlotTypeIds\":[\"slot-type:safety\"],\"moduleId\":\"module:ballistic-sidearm.safety\",\"moduleInstanceId\":\"instance:05:module:ballistic-sidearm.safety\",\"slotId\":\"slot:05:safety\",\"slotTypeId\":\"slot-type:safety\"}],\"statsProvenance\":{\"blueprintId\":\"blueprint:ballistic-sidearm.v1\",\"catalogId\":\"catalog:ballistic-sidearm.v1\",\"catalogVersion\":1,\"revision\":0,\"signature\":\"e123ba40\"},\"thermal\":{\"activeThermalLoadMilliwatts\":100,\"heatPerActionMillijoules\":0,\"netThermalBurdenMilliwatts\":100,\"passiveDissipationMilliwatts\":0}},{\"balanceTier\":\"provisional-v0\",\"blueprintSignature\":\"91c45732\",\"catalogId\":\"catalog:laser-cutter.v1\",\"catalogSignature\":\"b5e91b16\",\"category\":\"ExtractionTool\",\"diagnostics\":[],\"fixtureId\":\"blueprint:laser-cutter.v1\",\"readiness\":\"Ready\",\"readinessProvenance\":{\"blueprintId\":\"blueprint:laser-cutter.v1\",\"catalogId\":\"catalog:laser-cutter.v1\",\"catalogVersion\":1,\"revision\":0,\"signature\":\"9842057d\",\"statsSignature\":\"b070755e\",\"suitRevision\":0,\"suitStateId\":\"suit-state:surface-equipment-nominal\"},\"slotCompatibility\":[{\"compatibleSlotTypeIds\":[\"slot-type:frame\"],\"moduleId\":\"module:laser-cutter.frame\",\"moduleInstanceId\":\"instance:00:module:laser-cutter.frame\",\"slotId\":\"slot:00:frame\",\"slotTypeId\":\"slot-type:frame\"},{\"compatibleSlotTypeIds\":[\"slot-type:toolhead\"],\"moduleId\":\"module:laser-cutter.emitter\",\"moduleInstanceId\":\"instance:01:module:laser-cutter.emitter\",\"slotId\":\"slot:01:toolhead\",\"slotTypeId\":\"slot-type:toolhead\"},{\"compatibleSlotTypeIds\":[\"slot-type:powerpack\"],\"moduleId\":\"module:laser-cutter.power\",\"moduleInstanceId\":\"instance:02:module:laser-cutter.power\",\"slotId\":\"slot:02:powerpack\",\"slotTypeId\":\"slot-type:powerpack\"},{\"compatibleSlotTypeIds\":[\"slot-type:thermalsink\"],\"moduleId\":\"module:laser-cutter.thermal\",\"moduleInstanceId\":\"instance:03:module:laser-cutter.thermal\",\"slotId\":\"slot:03:thermalsink\",\"slotTypeId\":\"slot-type:thermalsink\"}],\"statsProvenance\":{\"blueprintId\":\"blueprint:laser-cutter.v1\",\"catalogId\":\"catalog:laser-cutter.v1\",\"catalogVersion\":1,\"revision\":0,\"signature\":\"b070755e\"},\"thermal\":{\"activeThermalLoadMilliwatts\":1500,\"heatPerActionMillijoules\":1000,\"netThermalBurdenMilliwatts\":400,\"passiveDissipationMilliwatts\":1100}}]},\"importedPublicApi\":[\"SURFACE_EQUIPMENT_FIXTURES\",\"MINING_CUTTER_FIXTURE\",\"BALLISTIC_SIDEARM_FIXTURE\",\"LASER_CUTTER_FIXTURE\",\"SURFACE_EQUIPMENT_DIAGNOSTIC_CODE_ORDER\",\"SURFACE_EQUIPMENT_BUDGET_READINESS_POLICY\",\"applySurfaceEquipmentCommand\",\"canonicalSurfaceEquipmentJson\",\"createCombatCapabilityProjection\",\"createInteractionCapabilityProjection\",\"createSurfaceEquipmentCommandId\",\"createSurfaceEquipmentSignature\",\"deriveSurfaceEquipmentStats\",\"evaluateEquipmentSuitReadiness\"],\"laserCutter\":{\"combatDamageTypesIncludesCutting\":true,\"damageType\":\"Cutting\",\"damageTypeAuthority\":\"imported Combat DamageType\",\"deliveryClass\":\"Beam\",\"fixtureId\":\"blueprint:laser-cutter.v1\",\"statsSignature\":\"b070755e\"},\"miningCutter\":{\"insufficientEnergy\":{\"availablePulseEnergyMillijoules\":1000,\"blockerCodes\":[\"PulseEnergyExceeded\"],\"blockerImpacts\":[\"Limited\"],\"policy\":{\"safetyCriticalShortfall\":\"Blocked\",\"utilityPositiveShortfall\":\"Limited\",\"zeroAvailable\":\"Blocked\"},\"readinessSignature\":\"4b076d5c\",\"requiredPulseEnergyMillijoules\":2100,\"state\":\"Limited\",\"suitSnapshotSignature\":\"fnv1a32:132adb25\"},\"nominal\":{\"blockerCodes\":[],\"readinessSignature\":\"c24091b1\",\"state\":\"Ready\",\"suitSnapshotSignature\":\"fnv1a32:871146d5\"}},\"modulePath\":\"/src/surface-equipment/index.ts\",\"projections\":{\"combat\":{\"currentReadiness\":\"Ready\",\"damageType\":\"Kinetic\",\"deliveryClass\":\"Projectile\",\"projectionSignature\":\"cd3ca06a\",\"readinessRequired\":\"Ready\",\"status\":\"Available\"},\"interaction\":{\"capabilityIds\":[\"capability.access\"],\"equipmentId\":\"blueprint:ballistic-sidearm.v1\",\"projectionSignature\":\"43fe0892\",\"rangeClass\":\"Long\",\"readiness\":\"Ready\",\"toolId\":\"tool:3ec10a5a\"}},\"scenarioName\":\"six-fixtures-cutter-readiness-sidearm-safety-projections\",\"suitModulePath\":\"/src/suit/index.ts\"}",
+    "scenarioSignature": "5688993b"
+  },
+  "v1Boundaries": [
+    "Pure TypeScript catalog, blueprint, command, diagnostics, readiness, and projection proof only.",
+    "No main.ts, UI, renderer, Three.js, TestBridge, package, Playwright config, CI-group, or product-runtime integration.",
+    "Readiness consumes an immutable Suit equipment-interface snapshot and does not reserve or consume Suit energy.",
+    "Interaction and Combat projections publish immutable facts and intent; they do not evaluate/complete interactions or create/fire runtime weapons.",
+    "Resource requirements are projected only; no inventory reservation, consumption, or transfer occurs.",
+    "Safety and legal class remain metadata; V1 applies no faction, security, or legal consequences.",
+    "All six fixture values remain provisional-v0 rather than production balance.",
+    "No screenshot is evidence for this non-visual domain slice."
+  ],
+  "verification": {
+    "command": "npm run test:e2e -- tests/e2e/surface-equipment-builder-core.spec.ts --workers=1 --retries=0",
+    "expectedResult": "one focused Playwright test passes and overwrites exactly two deterministic evidence files",
+    "observedResult": "pass",
+    "screenshot": "not captured: pure domain proof with no UI or render change",
+    "productIntegration": "none"
+  }
+}
