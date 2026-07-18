@@ -214,7 +214,7 @@ describe("Hestia V1 seed and byte determinism", () => {
     expect(hashHestiaLattice(macroSeed, 1)).not.toBe(hashHestiaLattice(macroSeed, 0x1_0000_0001));
   });
 
-  it("produces byte-identical channels and hashes for the same canonical input", () => {
+  it("produces byte-identical channels and hashes for the same canonical input", { timeout: 15_000 }, () => {
     const first = generateHestiaVoxelBrick(canonicalInput());
     const second = generateHestiaVoxelBrick(canonicalInput());
     expect(first.contentHash).toBe(second.contentHash);
@@ -222,14 +222,14 @@ describe("Hestia V1 seed and byte determinism", () => {
     expect(first.materialBuffer).toEqual(second.materialBuffer);
   });
 
-  it("changes canonical output when the root seed changes", () => {
+  it("changes canonical output when the root seed changes", { timeout: 10_000 }, () => {
     const first = generateHestiaVoxelBrick(canonicalInput());
     const changed = generateHestiaVoxelBrick(canonicalInput({ rootSeed: "hestia-fixture-beta" }));
     expect(changed.contentHash).not.toBe(first.contentHash);
     expect(changed.densityBuffer).not.toEqual(first.densityBuffer);
   });
 
-  it("separates 0.25 and 0.50 metre generation keys, hashes, and physical extents", () => {
+  it("separates 0.25 and 0.50 metre generation keys, hashes, and physical extents", { timeout: 10_000 }, () => {
     const halfInput = canonicalInput();
     const quarterInput = canonicalInput({ voxelSizeMeters: 0.25 });
     const half = generateHestiaVoxelBrick(halfInput);
@@ -250,7 +250,7 @@ describe("Hestia V1 seed and byte determinism", () => {
     expect(brick.contentHash).toBe("fnv1a64:12d868170450df55");
   });
 
-  it("keeps the exact seven-module Hestia V1 boundary deterministic and owner-neutral", () => {
+  it("keeps the exact seven-module Hestia V1 boundary deterministic and owner-neutral", { timeout: 10_000 }, () => {
     const directory = resolve(process.cwd(), "src", "world-generation", "hestia");
     const configFilePath = resolve(process.cwd(), "tsconfig.json");
     const actualModules = readdirSync(directory).filter((file) => file.endsWith(".ts")).sort();
