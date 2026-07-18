@@ -55,6 +55,18 @@ def _pump(stream, console, log, lock, redactor, captured):
     finally:
         stream.close()
 
+def _runtime_argv(argv, env):
+    if os.name != "nt" or os.path.splitext(argv[0])[1]:
+        return argv
+    path = env.get("PATH", "")
+    for extension in env.get("PATHEXT", ".COM;.EXE;.BAT;.CMD").split(os.pathsep):
+        if extension:
+            for directory in path.split(os.pathsep):
+                executable = os.path.abspath(os.path.join(directory, argv[0] + extension))
+                if os.path.isfile(executable):
+                    return [executable, *argv[1:]]
+    return argv
+
 def _run_attempt(
     plan, attempt, log, run_id, redactor, resolved_environment=None,
     runtime_working_directory=None,
@@ -63,7 +75,7 @@ def _run_attempt(
     if not isinstance(argv, list) or not argv or not all(isinstance(v, str) and v for v in argv): raise ValueError("command_argv must be a non-empty string array")
     env = os.environ.copy()
     env.update(resolved_environment if resolved_environment is not None else resolve_environment(plan.get("environment", {}), os.environ))
-    kwargs = dict(args=argv, cwd=runtime_working_directory or plan["working_directory"], env=env, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, bufsize=1)
+    kwargs = dict(args=_runtime_argv(argv, env), cwd=runtime_working_directory or plan["working_directory"], env=env, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, bufsize=1)
     if os.name == "nt":
         kwargs["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP | 0x00000004
     else: kwargs["start_new_session"] = True

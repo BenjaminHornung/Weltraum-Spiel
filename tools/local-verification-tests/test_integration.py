@@ -21,7 +21,7 @@ from tools.local_verification.parsing import (
     parse_vitest_counts,
     infer_framework,
 )
-from tools.local_verification.plan import build_plan, tokens_for_profile
+from tools.local_verification.plan import build_plan, compute_plan_hash, tokens_for_profile
 from tools.local_verification.process_control import get_process_identity
 from tools.local_verification.profiles import load_profile
 from tools.local_verification.redaction import REDACTED, Redactor
@@ -195,6 +195,33 @@ class ProcessAndReservationTests(unittest.TestCase):
             result = execute_plan(runnable_plan(repository, command), invocation_directory=repository)
             self.assertEqual(0, result["exit_code"])
             self.assertEqual(literal, json.loads(output.read_text(encoding="utf-8")))
+
+    @unittest.skipUnless(os.name == "nt", "Windows executable resolution regression")
+    def test_extensionless_command_resolves_from_child_path_without_mutating_plan(self):
+        with tempfile.TemporaryDirectory() as repository, tempfile.TemporaryDirectory() as bin_dir:
+            make_repository(repository)
+            Path(bin_dir, "path-shim.cmd").write_text("@echo off\r\nexit /b 0\r\n", encoding="utf-8")
+            plan = runnable_plan(repository, ["path-shim"])
+            canonical_argv = list(plan["command_argv"])
+            canonical_hash = plan["canonical_plan_hash"]
+
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                attempt = _run_attempt(
+                    plan,
+                    1,
+                    io.StringIO(),
+                    "windows-path-shim",
+                    Redactor({}),
+                    resolved_environment={"PATH": bin_dir, "PATHEXT": ".CMD"},
+                    runtime_working_directory=repository,
+                )
+
+            self.assertEqual(0, attempt["exit_code"])
+            self.assertEqual(1, attempt["attempt"])
+            self.assertEqual("windows-job-object", attempt["owned_process"]["kind"])
+            self.assertEqual(canonical_argv, plan["command_argv"])
+            self.assertEqual(canonical_hash, plan["canonical_plan_hash"])
+            self.assertEqual(canonical_hash, compute_plan_hash(plan))
 
     def test_runtime_log_redacts_configured_and_inline_secrets(self):
         with tempfile.TemporaryDirectory() as repository:
