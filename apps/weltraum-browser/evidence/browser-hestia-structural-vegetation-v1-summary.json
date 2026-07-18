@@ -1,0 +1,122 @@
+{
+  "schemaVersion": "browser-hestia-structural-vegetation-v1",
+  "status": "PASS",
+  "generator": "apps/weltraum-browser/tests/e2e/hestia-structural-vegetation.spec.ts",
+  "route": "/",
+  "proofScope": "pure-core-browser-proof-via-vegetation-public-barrel",
+  "dependencyShas": {
+    "structural": "67daf4f532873214b506967af46dd90d85b45986",
+    "adaptiveParent": "5fb372bdba677e43e71566121c53efb5e244b93a",
+    "hydrology": "501c24390b9ea2b8320b55cea56087875f2a63e2",
+    "dependencyMerge": "4aabdd1e1ab133a392f4a7ed1a75303e6baa4eae"
+  },
+  "testBridge": {
+    "beforeImport": {
+      "ownProperty": false,
+      "inWindow": false
+    },
+    "afterProof": {
+      "ownProperty": false,
+      "inWindow": false
+    }
+  },
+  "deterministicRepeat": {
+    "firstCanonicalHash": "fnv1a64-v1:116d7428c635f63f",
+    "secondCanonicalHash": "fnv1a64-v1:116d7428c635f63f",
+    "canonicalBytesEqual": true
+  },
+  "browserHealth": {
+    "consoleErrors": 0,
+    "pageErrors": 0,
+    "failedRequests": 0,
+    "warnings": 0,
+    "httpErrors": 0
+  },
+  "scenario": {
+    "modulePath": "/src/world-generation/hestia/vegetation/index.ts",
+    "fixture": {
+      "fixtureId": "hestia-structural-vegetation-v1-hydrology-fixture",
+      "hydrologyGeneratorVersion": "hestia.hydrology.generator.v2",
+      "hydrologyContentHash": "fnv1a32:60c8562c",
+      "terrainHeightMeters": 7.375,
+      "riverPointMeters": {
+        "x": 7,
+        "z": 0
+      }
+    },
+    "population": {
+      "instanceCount": 1,
+      "populationHash": "fnv1a64-v1:c1e20df81b461a1f",
+      "candidateSetHash": "fnv1a64-v1:83b3de1bf1038c00",
+      "umbrellaInstanceId": "hestia.vegetation.instance.v1:bebcea8517a29335",
+      "umbrellaInstanceHash": "fnv1a64-v1:bebcea8517a29335",
+      "rootQuantum": {
+        "x": -5,
+        "y": 59,
+        "z": -15
+      }
+    },
+    "proxy": {
+      "contentHash": "fnv1a64-v1:b36b01c2e76cbfaa",
+      "partCount": 35,
+      "rootParts": 1,
+      "trunkParts": 1,
+      "branchParts": 26,
+      "canopyParts": 7,
+      "flatCanopyLobes": true,
+      "singleConeOrSphere": false
+    },
+    "structural": {
+      "adaptiveLevel": 4,
+      "brickCount": 34,
+      "objectContentHash": "fnv1a64-v1:c48ae834cfe32efd",
+      "anchorCount": 162,
+      "intactComponentCount": 1,
+      "intactAnchoredCount": 1,
+      "intactDetachedCount": 0
+    },
+    "cut": {
+      "status": "Applied",
+      "contentHash": "fnv1a64-v1:56e0de4cbda77d6c",
+      "resultHash": "fnv1a64-v1:22036e24f09ce76f",
+      "changedVoxelCount": 25,
+      "detachedComponentId": "fnv1a64-v1:812de1bbff951184",
+      "detachedComponentHash": "fnv1a64-v1:4df33531d81d4f98",
+      "detachedCellCount": 10282,
+      "detachedCrownBranchProven": true,
+      "detachedMassKg": 9424.0625,
+      "centerOfMassMeters": {
+        "x": -0.48241157732864676,
+        "y": 15.354435744603244,
+        "z": -1.8201073237556786
+      },
+      "inertiaTensorKgMetersSquared": {
+        "xx": 19378.987862983005,
+        "yy": 19104.9101281515,
+        "zz": 19865.0666795886,
+        "xy": -1414.6425939737487,
+        "xz": -286.08562385679556,
+        "yz": 619.7367721184698
+      }
+    }
+  },
+  "checks": [
+    "PASS normal / route and TestBridge absence before import and after proof",
+    "PASS exact vegetation public-barrel dynamic import",
+    "PASS pinned Hydrology V2 fixture to deterministic Umbrella population",
+    "PASS multi-part root, trunk, branch, and flat-canopy proxy",
+    "PASS intersecting Adaptive Level-4 Structural bricks and root anchors",
+    "PASS intact single anchored component",
+    "PASS deterministic trunk cut and stable detached crown/branch component",
+    "PASS finite detached mass, center of mass, and inertia",
+    "PASS two byte-identical canonical scenario executions",
+    "PASS browser health 0 console errors / 0 page errors / 0 failed requests / 0 warnings"
+  ],
+  "visualUiChange": false,
+  "excludedClaims": [
+    "runtime-wiring",
+    "renderer-integration",
+    "physics-integration",
+    "gameplay-integration"
+  ]
+}
