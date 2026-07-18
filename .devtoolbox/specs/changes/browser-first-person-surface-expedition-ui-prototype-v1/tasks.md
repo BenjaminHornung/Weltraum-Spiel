@@ -48,7 +48,7 @@ DevToolbox MCP/CLI is unavailable. Direct-file fallback tracking applies. Every 
 
 ## 6. Commit and non-force push after explicit release authorization
 
-- [ ] **Objective:** Publish only the accepted bounded prototype when explicitly authorized.
+- [x] **Objective:** Publish only the accepted bounded prototype when explicitly authorized.
   - **Allowed final scope:** This change folder; `apps/weltraum-browser/prototypes/first-person-surface-expedition-v1/**`; the focused E2E file; approved evidence prefix under `apps/weltraum-browser/evidence/`; and `docs/design-audits/first-person-surface-expedition-ui-prototype-v1.md`.
   - **Forbidden:** `src/**`, package/lock/Vite/Playwright config, routes, Hestia/Voxel/Worker code, existing UI/concepts, Unity files, unrelated evidence, and unrelated Git changes.
   - **Acceptance criteria:** Fresh focused E2E and `git diff --check` pass; UI, reviewer, and human visual reviews are accepted; scoped staging is clean; exact commit message is `#WELTRAUM-000 Add first-person surface expedition UI prototype`; push is normal and non-force.
