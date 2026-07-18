@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Deterministic browser fixture for a first-person Hestia surface expedition HUD."
+    />
+    <title>Hestia Surface Expedition — Prototype Fixture</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0b0c'/%3E%3Ccircle cx='32' cy='32' r='18' fill='none' stroke='%2372ddd5' stroke-width='4'/%3E%3Cpath d='M32 8v14M32 42v14M8 32h14M42 32h14' stroke='%2372ddd5' stroke-width='4'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="./prototype.css" />
+  </head>
+  <body>
+    <main
+      id="world-root"
+      class="prototype-shell"
+      tabindex="0"
+      aria-label="Hestia surface vista. Press Tab here to toggle detail panels, or use the visible controls."
+      data-state="Exploration"
+      data-details="collapsed"
+    >
+      <canvas id="surface-vista" aria-hidden="true"></canvas>
+
+      <p class="fixture-notice" data-testid="fixture-notice">
+        <strong>Prototype Fixture</strong>
+        <span>Deterministic mock values — not live gameplay or world authority.</span>
+      </p>
+
+      <section class="hud-panel heading-panel" aria-labelledby="heading-title" data-testid="hud-heading">
+        <h2 id="heading-title">Surface Navigation</h2>
+        <div class="heading-line">
+          <span><b>Compass</b> W · NW · <strong>N</strong> · NE · E</span>
+          <span><b>Heading</b> 018° NNE</span>
+        </div>
+        <div class="heading-line">
+          <span><b>Site/Biome</b> Hestia / Basalt Shelf</span>
+          <span class="mode-readout">Mode <output id="primary-state" data-testid="prototype-state">Exploration</output></span>
+        </div>
+      </section>
+
+      <section
+        id="fixture-suit-status"
+        class="hud-panel suit-panel"
+        aria-labelledby="suit-title"
+        data-testid="hud-suit-status"
+        data-fixture-category="Suit Status"
+        data-fixture-id="suit-status-hestia-eva-01"
+      >
+        <h2 id="suit-title">Suit Status <span class="status-token safe-token">[OK] Stable</span></h2>
+        <dl class="readout-list">
+          <div><dt>Health</dt><dd>96%</dd></div>
+          <div><dt>Suit Integrity</dt><dd>91%</dd></div>
+          <div><dt>Oxygen</dt><dd>74 min</dd></div>
+          <div><dt>Energy</dt><dd>82%</dd></div>
+          <div
+            id="fixture-hazard"
+            data-fixture-category="Hazard"
+            data-fixture-id="hazard-silicate-dust-hz-04"
+          >
+            <dt>Hazard Level</dt><dd id="hazard-level">SAFE · Trace dust</dd>
+          </div>
+          <div class="detail-only" hidden><dt>Seal channel</dt><dd>A / nominal</dd></div>
+          <div class="detail-only" hidden><dt>Thermal margin</dt><dd>+18 K</dd></div>
+        </dl>
+      </section>
+
+      <section
+        id="fixture-objective"
+        class="hud-panel objective-panel minimal-optional"
+        aria-labelledby="objective-title"
+        data-testid="hud-objective"
+        data-fixture-category="Objective"
+        data-fixture-id="objective-survey-basalt-vent-07"
+      >
+        <h2 id="objective-title">Expedition Objective</h2>
+        <dl class="readout-list">
+          <div><dt>Objective</dt><dd>Survey vent HES-07</dd></div>
+          <div><dt>Distance</dt><dd>184 m</dd></div>
+          <div><dt>Next Action</dt><dd id="next-action">Approach marked shelf</dd></div>
+          <div><dt>Mission Context</dt><dd>Read-only geology survey</dd></div>
+          <div
+            id="fixture-ownership"
+            data-fixture-category="Ownership"
+            data-fixture-id="ownership-unclaimed-research-permit-17"
+          >
+            <dt>Ownership/Legality</dt><dd>[PERMIT] Unclaimed / survey allowed</dd>
+          </div>
+          <div class="detail-only" hidden><dt>Fixture reference</dt><dd>OBJ-HES-07-A</dd></div>
+          <div class="detail-only" hidden><dt>Return threshold</dt><dd>O₂ 35 min</dd></div>
+        </dl>
+      </section>
+
+      <section class="center-safe-zone" aria-label="Center targeting and interaction area" data-testid="hud-center">
+        <div class="crosshair" aria-hidden="true"><span></span></div>
+
+        <div
+          id="fixture-interaction-decision"
+          class="context-prompt"
+          data-show-state="Exploration InteractionHold"
+          data-fixture-category="Interaction Decision"
+          data-fixture-id="interaction-decision-basalt-sample-03"
+        >
+          <b>Context Prompt</b>
+          <span><kbd>E</kbd> Hold — inspect basalt sample</span>
+          <span class="authority-note">Mock decision only; no collection occurs.</span>
+        </div>
+
+        <div class="hold-progress state-reveal" data-show-state="InteractionHold" hidden>
+          <b>Hold Progress</b>
+          <div class="segmented-meter" aria-label="Hold progress 64 percent">
+            <i></i><i></i><i></i><i></i><i class="empty"></i><i class="empty"></i>
+          </div>
+          <span>64% · presentation held at fixture frame</span>
+        </div>
+
+        <div
+          id="fixture-scanner-discovery-tier"
+          class="scan-reveal state-reveal"
+          data-show-state="Scanner"
+          data-fixture-category="Scanner Discovery Tier"
+          data-fixture-id="scanner-discovery-tier-02-geologic"
+          hidden
+        >
+          <b>Scan Reveal · Tier 2</b>
+          <span>Basalt vent · silicate trace · confidence fixed at 87%</span>
+          <span class="authority-note">Fixture classification; not world truth.</span>
+        </div>
+      </section>
+
+      <aside class="state-detail-lane" aria-label="Current state details">
+        <div
+          class="hazard-alert state-reveal"
+          data-show-state="HazardWarning"
+          data-testid="hud-hazard-warning"
+          role="alert"
+          hidden
+        >
+          <b>[!] Hazard Warning · HZ-04</b>
+          <span>Abrasive silicate gust crossing survey line.</span>
+          <span>Reset frame HZ-RESET-00 · move to lee side.</span>
+        </div>
+
+        <section
+          class="inventory-detail state-reveal"
+          data-show-state="InventoryDetail"
+          data-testid="hud-inventory-detail"
+          aria-labelledby="inventory-title"
+          hidden
+        >
+          <h2 id="inventory-title">Inventory Detail · Read-only Mock</h2>
+          <dl class="readout-list compact-list">
+            <div><dt>Sample sleeve</dt><dd>1 / 4 fixture slots</dd></div>
+            <div><dt>Mass preview</dt><dd>0.42 kg</dd></div>
+            <div><dt>Transfer</dt><dd>[LOCKED] No gameplay authority</dd></div>
+          </dl>
+        </section>
+
+        <div
+          class="minimal-readout state-reveal"
+          data-show-state="MinimalHud"
+          data-testid="hud-minimal-readout"
+          hidden
+        >
+          <b>Minimal HUD</b>
+          <span>Suit stable · HES-07 184 m</span>
+        </div>
+      </aside>
+
+      <section class="hud-panel radar-panel minimal-optional" aria-labelledby="radar-title" data-testid="hud-radar">
+        <h2 id="radar-title">Local Map / Radar</h2>
+        <div class="radar-plot" role="img" aria-label="Local radar with ship return marker west and survey site marker northeast">
+          <span class="radar-ring ring-one"></span>
+          <span class="radar-ring ring-two"></span>
+          <span class="radar-axis axis-x"></span>
+          <span class="radar-axis axis-y"></span>
+          <span class="radar-marker ship-marker" aria-hidden="true">S</span>
+          <span class="radar-marker site-marker" aria-hidden="true">07</span>
+        </div>
+        <ul class="marker-key">
+          <li><span class="marker-shape ship-shape">S</span><b>Ship Return Marker</b> 312 m W</li>
+          <li><span class="marker-shape site-shape">07</span><b>Site Marker</b> 184 m NNE</li>
+        </ul>
+      </section>
+
+      <section class="hud-panel toolbelt-panel" aria-labelledby="toolbelt-title" data-testid="hud-toolbelt">
+        <h2 id="toolbelt-title">Toolbelt 1–5</h2>
+        <div class="tool-slots" role="group" aria-label="Toolbelt slots">
+          <button type="button" data-tool-slot="1" data-testid="key-1-tool" aria-label="Key 1, select Multi-Tool" aria-pressed="true"><kbd>1</kbd><span>Multi-Tool</span></button>
+          <button type="button" data-tool-slot="2" data-testid="key-2-tool" aria-label="Key 2, select Terrain Scanner" aria-pressed="false"><kbd>2</kbd><span>Scanner</span></button>
+          <button type="button" data-tool-slot="3" data-testid="key-3-tool" aria-label="Key 3, select Sample Extractor" aria-pressed="false"><kbd>3</kbd><span>Extractor</span></button>
+          <button type="button" data-tool-slot="4" data-testid="key-4-tool" aria-label="Key 4, select Beacon Launcher" aria-pressed="false"><kbd>4</kbd><span>Beacon</span></button>
+          <button type="button" data-tool-slot="5" data-testid="key-5-tool" aria-label="Key 5, select Repair Applicator" aria-pressed="false"><kbd>5</kbd><span>Repair</span></button>
+        </div>
+        <div class="toolbelt-summary">
+          <span>Active tool <output id="active-tool" data-testid="active-tool">Multi-Tool</output></span>
+          <span>Cooldown/Energy <output id="tool-cooldown">Ready / 12% draw</output></span>
+        </div>
+      </section>
+
+      <section
+        id="fixture-tool-capability"
+        class="hud-panel tool-panel minimal-optional"
+        aria-labelledby="tool-title"
+        data-testid="hud-tool-status"
+        data-fixture-category="Tool Capability"
+        data-fixture-id="tool-capability-multi-tool-mt-01"
+      >
+        <h2 id="tool-title">Tool Capability</h2>
+        <dl class="readout-list">
+          <div><dt>Active tool</dt><dd id="capability-tool" data-testid="tool-capability-active-tool">Multi-Tool</dd></div>
+          <div><dt>Range</dt><dd id="tool-range">1.8 m</dd></div>
+          <div><dt>Condition</dt><dd id="tool-condition">[OK] Nominal</dd></div>
+          <div><dt>Ammo/Charge/Heat</dt><dd id="tool-resource">Charge 68%</dd></div>
+          <div class="detail-only" hidden><dt>Fixture capability</dt><dd id="tool-capability">Inspect / fasten</dd></div>
+        </dl>
+      </section>
+
+      <nav class="command-deck" aria-label="Prototype state and detail controls" data-testid="command-controls">
+        <span class="command-label">State controls</span>
+        <div class="state-controls">
+          <button type="button" data-action="escape" data-state-target="Exploration" data-testid="key-escape-exploration" aria-label="Escape, close overlays and return to Exploration" aria-pressed="true"><kbd>Esc</kbd> Exploration</button>
+          <button type="button" data-action="scanner" data-state-target="Scanner" data-testid="key-q-scanner" aria-label="Key Q, Scanner" aria-pressed="false"><kbd>Q</kbd> Scanner</button>
+          <button type="button" data-action="interaction" data-state-target="InteractionHold" data-testid="key-e-interaction" aria-label="Key E, Interaction Hold" aria-pressed="false"><kbd>E</kbd> Interaction</button>
+          <button type="button" data-action="hazard-reset" data-state-target="HazardWarning" data-testid="key-r-hazard" aria-label="Key R, reset Hazard Scenario" aria-pressed="false"><kbd>R</kbd> Hazard reset</button>
+          <button type="button" data-action="inventory" data-state-target="InventoryDetail" data-testid="key-i-inventory" aria-label="Key I, Inventory Detail" aria-pressed="false"><kbd>I</kbd> Inventory</button>
+          <button type="button" data-action="minimal-toggle" data-state-target="MinimalHud" data-testid="key-h-minimal" aria-label="Key H, toggle Minimal HUD" aria-pressed="false"><kbd>H</kbd> Minimal HUD</button>
+          <button type="button" data-action="detail-toggle" data-testid="detail-toggle" aria-label="Tab, toggle Detail Panels" aria-pressed="false"><kbd>Tab</kbd> Details <span id="detail-state">collapsed</span></button>
+        </div>
+      </nav>
+
+      <p id="live-status" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true">Exploration fixture ready.</p>
+    </main>
+
+    <script src="./prototype.js"></script>
+  </body>
+</html>
