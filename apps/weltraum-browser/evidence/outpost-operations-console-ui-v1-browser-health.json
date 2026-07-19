@@ -1,0 +1,52 @@
+{
+  "prototype": "browser-outpost-operations-console-ui-prototype-v1",
+  "route": "/prototypes/outpost-operations-console-v1/",
+  "authorityNotice": "OUTPOST OPERATIONS PROTOTYPE · MOCK SERVICE DATA · NO GAMEPLAY AUTHORITY",
+  "focusedTestCount": 10,
+  "requiredScenarioCount": 9,
+  "requiredScreenshotCount": 7,
+  "browserHealth": {
+    "consoleErrors": 0,
+    "pageErrors": 0,
+    "failedRequests": 0,
+    "httpErrors": 0,
+    "missingAssets": 0
+  },
+  "screenshots": [
+    {
+      "file": "evidence/outpost-operations-console-ui-v1-overview-1920x1080.png",
+      "bytes": 126309
+    },
+    {
+      "file": "evidence/outpost-operations-console-ui-v1-pad-conflict-1920x1080.png",
+      "bytes": 133026
+    },
+    {
+      "file": "evidence/outpost-operations-console-ui-v1-cargo-blocked-1920x1080.png",
+      "bytes": 149034
+    },
+    {
+      "file": "evidence/outpost-operations-console-ui-v1-mission-board-1920x1080.png",
+      "bytes": 166887
+    },
+    {
+      "file": "evidence/outpost-operations-console-ui-v1-drone-link-lost-1920x1080.png",
+      "bytes": 120260
+    },
+    {
+      "file": "evidence/outpost-operations-console-ui-v1-responsive-1280x720.png",
+      "bytes": 108493
+    },
+    {
+      "file": "evidence/outpost-operations-console-ui-v1-keyboard-focus-1920x1080.png",
+      "bytes": 126792
+    }
+  ],
+  "mockBoundaries": [
+    "No gameplay or outpost authority",
+    "No Resource/Cargo authority",
+    "No economy or mission authority",
+    "No drone scheduler or legal authority",
+    "All commands are in-memory prototype intents"
+  ]
+}

@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <title>Aurelia Frontier Service Post 07 · Operations Prototype</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><rect width=%2216%22 height=%2216%22 fill=%22%23b99245%22/><path d=%22M3 8h10M8 3v10%22 stroke=%22%23121313%22 stroke-width=%222%22/></svg>" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#operations-workspace">Skip to operations workspace</a>
+
+    <div class="prototype-shell" data-testid="prototype-shell">
+      <header class="status-bar" aria-label="Outpost status">
+        <div class="station-identity">
+          <span class="station-mark" aria-hidden="true">AF</span>
+          <div>
+            <strong>Aurelia Frontier Service Post 07</strong>
+            <span>Local service terminal · V0 fixture</span>
+          </div>
+        </div>
+
+        <dl class="status-strip" aria-label="Current mock station status">
+          <div>
+            <dt>Link</dt>
+            <dd id="link-status">Local / Stable</dd>
+          </div>
+          <div>
+            <dt>Dock</dt>
+            <dd id="dock-status">Pad A / Connected</dd>
+          </div>
+          <div>
+            <dt>Access</dt>
+            <dd id="access-status">Permit Valid</dd>
+          </div>
+        </dl>
+
+        <label class="scenario-control" for="scenario-select">
+          <span>Review scenario</span>
+          <select id="scenario-select" data-testid="scenario-select">
+            <option value="nominal">Nominal service overview</option>
+            <option value="pad-conflict">Pad conflict</option>
+            <option value="refuel-unavailable">Refuel unavailable</option>
+            <option value="illegal-cargo">Illegal cargo blocks transfer</option>
+            <option value="repair-queue">Repair queue</option>
+            <option value="mission-accepted">Mission accepted</option>
+            <option value="drone-link-lost">Drone link lost</option>
+            <option value="lockdown">Outpost lockdown</option>
+            <option value="responsive">Responsive layout</option>
+          </select>
+        </label>
+      </header>
+
+      <nav class="section-tabs" aria-label="Outpost operations sections" data-testid="section-tabs">
+        <button type="button" data-section="pads" aria-current="page">Pad Control</button>
+        <button type="button" data-section="cargo">Cargo &amp; Storage</button>
+        <button type="button" data-section="refuel">Refuel</button>
+        <button type="button" data-section="repair">Repair Bay</button>
+        <button type="button" data-section="market">Market</button>
+        <button type="button" data-section="missions">Mission Board</button>
+        <button type="button" data-section="drones">Drone Control</button>
+        <button type="button" data-section="legal">Legal &amp; Access</button>
+      </nav>
+
+      <aside class="section-navigation" aria-label="Outpost operations navigation">
+        <div class="navigation-heading">
+          <strong>Operations</strong>
+          <span>Service sectors 01–08</span>
+        </div>
+        <nav aria-label="Desktop outpost operations sections" id="desktop-section-nav">
+          <button type="button" data-section="pads" aria-current="page"><span>01</span>Approach &amp; Pad Control</button>
+          <button type="button" data-section="cargo"><span>02</span>Cargo &amp; Storage</button>
+          <button type="button" data-section="refuel"><span>03</span>Refuel &amp; Consumables</button>
+          <button type="button" data-section="repair"><span>04</span>Repair Bay</button>
+          <button type="button" data-section="market"><span>05</span>Market Exchange</button>
+          <button type="button" data-section="missions"><span>06</span>Mission Board</button>
+          <button type="button" data-section="drones"><span>07</span>Drone Control</button>
+          <button type="button" data-section="legal"><span>08</span>Legal &amp; Access</button>
+        </nav>
+
+        <div class="command-key" aria-label="Keyboard navigation help">
+          <strong>Terminal keys</strong>
+          <span><kbd>1–8</kbd> Open section</span>
+          <span><kbd>Esc</kbd> Close detail</span>
+        </div>
+      </aside>
+
+      <main id="operations-workspace" class="operations-workspace" tabindex="-1">
+        <div id="section-content" data-testid="section-content"></div>
+      </main>
+
+      <aside id="context-column" class="context-column" aria-label="Context and status" data-testid="context-column">
+        <div class="context-header">
+          <strong>Context / Status</strong>
+          <button type="button" class="icon-button context-close" id="context-close" aria-label="Close status panel">Close</button>
+        </div>
+        <div id="context-content"></div>
+      </aside>
+
+      <button type="button" id="context-toggle" class="context-toggle" aria-controls="context-column" aria-expanded="false">
+        Status &amp; warnings
+      </button>
+
+      <footer class="authority-banner" data-testid="authority-banner">
+        OUTPOST OPERATIONS PROTOTYPE · MOCK SERVICE DATA · NO GAMEPLAY AUTHORITY
+      </footer>
+    </div>
+
+    <dialog id="telemetry-dialog" aria-labelledby="dialog-title" aria-describedby="dialog-description">
+      <form method="dialog" class="dialog-shell">
+        <header>
+          <div>
+            <h2 id="dialog-title">Local telemetry</h2>
+            <p id="dialog-description">Prototype-only fixture details. No scheduler or drone authority.</p>
+          </div>
+          <button type="submit" value="close" id="dialog-close">Close</button>
+        </header>
+        <div id="dialog-content"></div>
+      </form>
+    </dialog>
+
+    <div id="live-region" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+    <div id="alert-region" class="sr-only" role="alert" aria-atomic="true"></div>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
