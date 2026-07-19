@@ -38,7 +38,7 @@
 
 ## Phase 4 – Commit and push
 
-- [ ] 4. Commit and non-force push the verified branch.
+- [x] 4. Commit and non-force push the verified branch.
   - **Objective:** Publish the completed branch without integration actions.
   - **Files/search targets:** only verified in-scope diff.
   - **Acceptance:** exact commit subject `#WELTRAUM-000 Add SurfaceLocalFrame core`; branch `feature/browser-surface-local-frame-core-v1` pushed normally to origin; no PR/merge/archive.
