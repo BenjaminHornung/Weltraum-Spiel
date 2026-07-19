@@ -74,6 +74,8 @@ Focused verification command:
 npx playwright test tests/e2e/surface-local-frame-core.spec.ts --workers=1
 ```
 
+The focused E2E is intentionally executed directly. Assigning it to a package E2E group is deferred to a later mainline integration change; SurfaceLocalFrame Core V1 itself requires no package, lockfile, config, or CI change.
+
 ## Non-Goals
 
 - Runtime, runtime-owned navigation, flight, world, floating-origin, renderer, Three.js, graphics, or persistence integration.

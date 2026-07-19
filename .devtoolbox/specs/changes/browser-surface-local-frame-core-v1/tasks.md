@@ -20,7 +20,7 @@
   - **Acceptance:** Hestia-like shape, two distant anchors, Player/Ship/Drone absolute states, projection/reanchor/restore invariance, changed locals, TestBridge absent, no screenshots/UI, deterministic JSON/Markdown.
   - **Implementation guidance:** Generate stable evidence with no timestamps/randomness; avoid application source/runtime imports beyond the one dynamic module import; preserve semantic identities.
   - **Required skills/MCPs:** `playwright`; repository AGENTS; no Unity MCP/editor.
-  - **Verification:** Focused Playwright spec with one worker; repeat twice and compare SHA-256 of both evidence files.
+  - **Verification:** Execute the focused Playwright spec directly with one worker; repeat twice and compare SHA-256 of both evidence files. Package E2E-group assignment is deferred to a later mainline integration change because the SurfaceLocalFrame core itself requires no package, lockfile, config, or CI change.
   - **Report back:** changed files, scenario details, E2E command/result, evidence hashes for both runs, blockers, risks/unverified items.
   - **Stopping rule:** Stop if proof requires TestBridge, UI, screenshots, runtime wiring, config edits, or out-of-scope evidence.
 

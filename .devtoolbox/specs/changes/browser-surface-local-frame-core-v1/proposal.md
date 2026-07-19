@@ -23,5 +23,5 @@ Provide a versioned SurfaceLocalFrame V1 module that converts between explicit b
 
 - No runtime, renderer, controller, physics, Celestial, World/Streaming, Flight, Hestia/Voxel, terrain, or persistence-system integration.
 - No ephemeris computation, runtime globals, Date, Random, DOM, Three.js, TestBridge, UI, or screenshots.
-- No package/config/CI changes except the sole approved bookkeeping addition of `tests/e2e/surface-local-frame-core.spec.ts` to the existing `test:e2e:core` script in `apps/weltraum-browser/package.json`; dependencies and every other script/config/CI file remain unchanged.
+- No package, lockfile, config, or CI changes. The focused E2E is executed directly; assigning it to a package E2E group is deferred to a later mainline integration change.
 - No PR, merge, or DevToolbox archive.
