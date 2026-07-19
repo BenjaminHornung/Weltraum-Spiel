@@ -1,0 +1,662 @@
+import { expect, test } from "@playwright/test";
+import { mkdir, writeFile } from "node:fs/promises";
+import path from "node:path";
+
+const evidenceDir = path.resolve(process.cwd(), "evidence");
+const summaryPath = path.join(evidenceDir, "browser-surface-local-frame-core-v1-summary.json");
+const markdownPath = path.join(evidenceDir, "browser-surface-local-frame-core-v1.md");
+const generator = "apps/weltraum-browser/tests/e2e/surface-local-frame-core.spec.ts";
+const focusedCommand = "npx playwright test tests/e2e/surface-local-frame-core.spec.ts --workers=1";
+const tolerances = {
+  absolutePositionMeters: 5e-8,
+  absoluteVelocityMetersPerSecond: 1e-9,
+  absoluteOrientationQuaternionMagnitude: 1e-12,
+  absoluteDirectionMagnitude: 1e-12
+} as const;
+
+interface EvidenceVector3 {
+  readonly x: number;
+  readonly y: number;
+  readonly z: number;
+}
+
+interface EvidenceQuaternion extends EvidenceVector3 {
+  readonly w: number;
+}
+
+interface LocalDirectionEvidence {
+  readonly id: string;
+  readonly sourceValueBodyFixed: EvidenceVector3;
+  readonly projectedValueLocalAlpha: EvidenceVector3 | null;
+  readonly reanchoredValueLocalBeta: EvidenceVector3 | null;
+  readonly restoredValueBodyFixed: EvidenceVector3 | null;
+  readonly absoluteDirectionError: number | null;
+  readonly idPreserved: boolean;
+}
+
+interface NormalPageGuard {
+  readonly route: string;
+  readonly testBridgeOwnProperty: boolean;
+  readonly testBridgeInWindow: boolean;
+  readonly bodyContainsTestBridge: boolean;
+  readonly debugHudVisible: boolean;
+}
+
+interface LocalEntityEvidence {
+  readonly semanticKind: string;
+  readonly semanticId: string;
+  readonly stateId: string;
+  readonly projectedPositionLocalAlpha: EvidenceVector3;
+  readonly projectedVelocityLocalAlpha: EvidenceVector3;
+  readonly projectedPositionLocalBeta: EvidenceVector3;
+  readonly projectedVelocityLocalBeta: EvidenceVector3;
+  readonly restoredPositionBodyFixed: EvidenceVector3;
+  readonly restoredVelocityBodyFixed: EvidenceVector3;
+  readonly sourceOrientationBodyFixed: EvidenceQuaternion | null;
+  readonly projectedOrientationLocalAlpha: EvidenceQuaternion | null;
+  readonly reanchoredOrientationLocalBeta: EvidenceQuaternion | null;
+  readonly restoredOrientationBodyFixed: EvidenceQuaternion | null;
+  readonly absoluteOrientationError: number | null;
+  readonly orientationLocalChanged: boolean;
+  readonly directions: readonly LocalDirectionEvidence[];
+  readonly directionIdsPreserved: boolean;
+  readonly absolutePositionErrorMeters: number;
+  readonly absoluteVelocityErrorMetersPerSecond: number;
+  readonly positionLocalChanged: boolean;
+  readonly velocityLocalChanged: boolean;
+  readonly stateIdPreserved: boolean;
+  readonly semanticIdentityPreserved: boolean;
+}
+
+interface SurfaceLocalFrameEvidence {
+  readonly schemaVersion: "browser-surface-local-frame-core-v1";
+  readonly generator: string;
+  readonly test: string;
+  readonly normalPageGuard: NormalPageGuard;
+  readonly browserHealth: {
+    readonly consoleErrors: readonly string[];
+    readonly pageErrors: readonly string[];
+    readonly failedRequests: readonly string[];
+    readonly errorResponses: readonly string[];
+  };
+  readonly dynamicImport: {
+    readonly modulePath: string;
+    readonly importedPublicApi: readonly string[];
+  };
+  readonly tolerances: typeof tolerances;
+  readonly shapesAndAnchors: {
+    readonly bodyId: string;
+    readonly bodyFixedFrameId: string;
+    readonly shapeRevision: number;
+    readonly shapeKind: "Sphere" | "OblateEllipsoid";
+    readonly anchorAlpha: {
+      readonly anchorId: string;
+      readonly revision: number;
+      readonly geodeticLatitudeRadians: number;
+      readonly geodeticLongitudeRadians: number;
+      readonly geodeticHeightMeters: number;
+    };
+    readonly anchorBeta: {
+      readonly anchorId: string;
+      readonly revision: number;
+      readonly geodeticLatitudeRadians: number;
+      readonly geodeticLongitudeRadians: number;
+      readonly geodeticHeightMeters: number;
+    };
+    readonly semiMajorAxisMeters: number;
+    readonly semiMinorAxisMeters: number;
+  };
+  readonly entities: readonly LocalEntityEvidence[];
+  readonly canonicalRepeat: {
+    readonly identicalCanonicalResult: boolean;
+    readonly identicalSignature: boolean;
+    readonly canonicalResult: string;
+    readonly signature: string;
+    readonly secondCanonicalResult: string;
+    readonly secondSignature: string;
+  };
+  readonly deterministicInputs: {
+    readonly inputsUnchanged: boolean;
+    readonly authorityContextProvided: boolean;
+  };
+  readonly nonGoals: readonly string[];
+  readonly verification: {
+    readonly command: string;
+    readonly expectedResult: string;
+    readonly observedResult: "pass";
+  };
+}
+
+const createMarkdown = (evidence: SurfaceLocalFrameEvidence): string => `# Browser Surface Local Frame Core V1 Evidence
+
+Generated by \`${evidence.generator}\` through the normal-route Vite module graph.
+
+## Normal Browser Page
+
+- Route: \`${evidence.normalPageGuard.route}\`
+- TestBridge present: \`${evidence.normalPageGuard.testBridgeInWindow}\`
+- Debug HUD visible: \`${evidence.normalPageGuard.debugHudVisible}\`
+- Browser console errors: \`${evidence.browserHealth.consoleErrors.length}\`
+- Browser page errors: \`${evidence.browserHealth.pageErrors.length}\`
+- Failed network requests: \`${evidence.browserHealth.failedRequests.length}\`
+- HTTP error responses: \`${evidence.browserHealth.errorResponses.length}\`
+
+## Module And API
+
+- Dynamic import: \`${evidence.dynamicImport.modulePath}\`
+- Public API exercised: ${evidence.dynamicImport.importedPublicApi.map((name) => `\`${name}\``).join(", ")}
+- Authority context supplied on frame creation: \`${evidence.deterministicInputs.authorityContextProvided}\`
+- Canonical payloads deterministic across repeated run: \`${evidence.canonicalRepeat.identicalCanonicalResult}\`
+- Signatures deterministic across repeated run: \`${evidence.canonicalRepeat.identicalSignature}\`
+- Signature: \`${evidence.canonicalRepeat.signature}\` (\`${evidence.canonicalRepeat.canonicalResult}\`)
+
+## Surface State Invariance
+
+- Hestia-like shape: \`${evidence.shapesAndAnchors.shapeKind}\` with \(a=${evidence.shapesAndAnchors.semiMajorAxisMeters}\) m and \(b=${evidence.shapesAndAnchors.semiMinorAxisMeters}\) m
+- Anchor alpha: \`${evidence.shapesAndAnchors.anchorAlpha.anchorId}\` (\`lat=${evidence.shapesAndAnchors.anchorAlpha.geodeticLatitudeRadians}\`, \`lon=${evidence.shapesAndAnchors.anchorAlpha.geodeticLongitudeRadians}\`, \`h=${evidence.shapesAndAnchors.anchorAlpha.geodeticHeightMeters}\`)
+- Anchor beta: \`${evidence.shapesAndAnchors.anchorBeta.anchorId}\` (\`lat=${evidence.shapesAndAnchors.anchorBeta.geodeticLatitudeRadians}\`, \`lon=${evidence.shapesAndAnchors.anchorBeta.geodeticLongitudeRadians}\`, \`h=${evidence.shapesAndAnchors.anchorBeta.geodeticHeightMeters}\`)
+
+### Tracked absolute entities
+
+${evidence.entities.map((entity) =>
+  `- ${entity.semanticKind}/${entity.semanticId} (${entity.stateId}): ` +
+  `position changed in local reanchor \`${entity.positionLocalChanged}\`, velocity changed in local reanchor \`${entity.velocityLocalChanged}\`, ` +
+  `absolute invariant \`${entity.absolutePositionErrorMeters} / ${entity.absoluteVelocityErrorMetersPerSecond}\`, ` +
+  `orientation invariant \`${entity.absoluteOrientationError}\` with local reanchor change \`${entity.orientationLocalChanged}\`, ` +
+  `directions \`${entity.directions.map((direction) => `${direction.id}:${direction.absoluteDirectionError}`).join(", ")}\` with IDs preserved \`${entity.directionIdsPreserved}\`, ` +
+  `identity preserved \`${entity.stateIdPreserved && entity.semanticIdentityPreserved}\``
+).join("\n")}
+
+### Deterministic finite tolerances
+
+- Restored body-fixed position magnitude: \`< ${evidence.tolerances.absolutePositionMeters} m\`
+- Restored body-fixed velocity magnitude: \`< ${evidence.tolerances.absoluteVelocityMetersPerSecond} m/s\`
+- Sign-invariant restored body-fixed quaternion magnitude: \`< ${evidence.tolerances.absoluteOrientationQuaternionMagnitude}\`
+- Restored named body-fixed direction magnitude: \`< ${evidence.tolerances.absoluteDirectionMagnitude}\`
+
+## Determinism And Verification
+
+- Canonical payload 1: \`${evidence.canonicalRepeat.canonicalResult}\`
+- Canonical payload 2: \`${evidence.canonicalRepeat.secondCanonicalResult}\`
+- Signature 1: \`${evidence.canonicalRepeat.signature}\`
+- Signature 2: \`${evidence.canonicalRepeat.secondSignature}\`
+- Inputs unchanged by projection/reanchor calls: \`${evidence.deterministicInputs.inputsUnchanged}\`
+- Verification command: \`${evidence.verification.command}\`
+- Observed result: ${evidence.verification.observedResult}
+
+## Non-Goals
+
+${evidence.nonGoals.map((item) => `- ${item}`).join("\n")}
+`;
+
+const assertFinite = (value: number, label: string): void => {
+  if (!Number.isFinite(value)) {
+    throw new Error(`${label} must be finite.`);
+  }
+};
+
+test("normal page imports and proves SurfaceLocalFrame projection/reanchor invariants", async ({ page }) => {
+  const consoleErrors: string[] = [];
+  const pageErrors: string[] = [];
+  const failedRequests: string[] = [];
+  const errorResponses: string[] = [];
+
+  page.on("console", (message) => {
+    if (message.type() === "error") {
+      const location = message.location();
+      consoleErrors.push(`${message.text()}${location.url ? ` [${location.url}]` : ""}`);
+    }
+  });
+  page.on("pageerror", (error) => pageErrors.push(error.message));
+  page.on("requestfailed", (request) => failedRequests.push(`${request.method()} ${request.url()}`));
+  page.on("response", (response) => {
+    if (response.status() >= 400) {
+      errorResponses.push(`${response.status()} ${response.url()}`);
+    }
+  });
+
+  await page.goto("/");
+  await page.waitForSelector("#debug-scene", { state: "visible" });
+  const normalPageGuard: NormalPageGuard = await page.evaluate(() => ({
+    route: location.pathname,
+    testBridgeOwnProperty: Object.prototype.hasOwnProperty.call(window, "TestBridge"),
+    testBridgeInWindow: "TestBridge" in window,
+    bodyContainsTestBridge: (document.body.textContent ?? "").includes("TestBridge"),
+    debugHudVisible: document.querySelector<HTMLElement>("#debug-hud")?.offsetParent !== null
+  }));
+
+  expect(normalPageGuard).toEqual({
+    route: "/",
+    testBridgeOwnProperty: false,
+    testBridgeInWindow: false,
+    bodyContainsTestBridge: false,
+    debugHudVisible: false
+  });
+
+  const repeated = await page.evaluate(async (): Promise<{
+    readonly canonicalRepeat: SurfaceLocalFrameEvidence["canonicalRepeat"];
+    readonly dynamicImport: SurfaceLocalFrameEvidence["dynamicImport"];
+    readonly shapesAndAnchors: SurfaceLocalFrameEvidence["shapesAndAnchors"];
+    readonly entities: SurfaceLocalFrameEvidence["entities"];
+    readonly deterministicInputs: SurfaceLocalFrameEvidence["deterministicInputs"];
+  }> => {
+    const modulePath = "/src/surface-frame/index.ts";
+    const surfaceFrame = await import(modulePath);
+    const importedPublicApi = [
+      "createSurfaceBodyShape",
+      "createSurfaceAnchor",
+      "createSurfaceLocalFrame",
+      "projectAbsoluteSurfaceState",
+      "reanchorSurfaceLocalFrame",
+      "restoreAbsoluteSurfaceState",
+      "canonicalSerializeSurfaceLocalFrame",
+      "surfaceLocalFrameSignature"
+    ];
+
+    const run = () => {
+      const shape = surfaceFrame.createSurfaceBodyShape({
+        bodyId: "body.hestia",
+        bodyFixedFrameId: "frame.hestia.body-fixed",
+        revision: 4,
+        semiMajorAxisMeters: 6_378_137,
+        semiMinorAxisMeters: 6_356_752.314245
+      });
+      const anchorAlpha = surfaceFrame.createSurfaceAnchor({
+        bodyId: shape.bodyId,
+        bodyFixedFrameId: shape.bodyFixedFrameId,
+        anchorId: "surface.anchor.alpha",
+        revision: 1,
+        shape,
+        latitudeRadians: 0.35,
+        longitudeRadians: -1.2,
+        ellipsoidalHeightMeters: 12.25
+      });
+      const anchorBeta = surfaceFrame.createSurfaceAnchor({
+        bodyId: shape.bodyId,
+        bodyFixedFrameId: shape.bodyFixedFrameId,
+        anchorId: "surface.anchor.beta",
+        revision: 1,
+        shape,
+        latitudeRadians: -0.52,
+        longitudeRadians: 2.83,
+        ellipsoidalHeightMeters: 8
+      });
+      const frameAlpha = surfaceFrame.createSurfaceLocalFrame({
+        bodyId: shape.bodyId,
+        bodyFixedFrameId: shape.bodyFixedFrameId,
+        surfaceFrameId: "surface.hestia.alpha",
+        revision: 8,
+        shape,
+        anchor: anchorAlpha,
+        authorityContext: { phase: "alpha-beta", sampleTick: 7 }
+      });
+      const frameBeta = surfaceFrame.createSurfaceLocalFrame({
+        bodyId: shape.bodyId,
+        bodyFixedFrameId: shape.bodyFixedFrameId,
+        surfaceFrameId: "surface.hestia.beta",
+        revision: 9,
+        shape,
+        anchor: anchorBeta,
+        authorityContext: { phase: "alpha-beta", sampleTick: 7 }
+      });
+
+      const before = [
+        {
+          stateId: "state.player",
+          semanticIdentity: { kind: "Player", id: "player.one" },
+          bodyId: shape.bodyId,
+          bodyFixedFrameId: shape.bodyFixedFrameId,
+          bodyRevision: shape.revision,
+          positionBodyFixedMeters: surfaceFrame.geodeticToBodyFixed(shape, {
+            latitudeRadians: 0.25,
+            longitudeRadians: 0.12,
+            ellipsoidalHeightMeters: 900
+          }),
+          velocityBodyFixedMetersPerSecond: { x: 12.25, y: -3.5, z: 0.125 },
+          orientationBodyFixed: { x: 0, y: 0, z: 0, w: 1 },
+          directionsBodyFixed: [
+            { id: "forward", valueBodyFixed: { x: 0.12, y: -0.25, z: 0.97 } }
+          ]
+        },
+        {
+          stateId: "state.ship",
+          semanticIdentity: { kind: "Ship", id: "ship.alpha" },
+          bodyId: shape.bodyId,
+          bodyFixedFrameId: shape.bodyFixedFrameId,
+          bodyRevision: shape.revision,
+          positionBodyFixedMeters: surfaceFrame.geodeticToBodyFixed(shape, {
+            latitudeRadians: -0.2,
+            longitudeRadians: -2.1,
+            ellipsoidalHeightMeters: 1400
+          }),
+          velocityBodyFixedMetersPerSecond: { x: -5.5, y: 8.75, z: 0.5 },
+          orientationBodyFixed: { x: 0.1, y: 0.2, z: 0.3, w: 0.9273618495495703 },
+          directionsBodyFixed: [
+            { id: "up", valueBodyFixed: { x: 0.1, y: 0.2, z: 0.97 } },
+            { id: "starboard", valueBodyFixed: { x: 1, y: 0, z: 0 } }
+          ]
+        },
+        {
+          stateId: "state.drone",
+          semanticIdentity: { kind: "Drone", id: "drone.rally" },
+          bodyId: shape.bodyId,
+          bodyFixedFrameId: shape.bodyFixedFrameId,
+          bodyRevision: shape.revision,
+          positionBodyFixedMeters: surfaceFrame.geodeticToBodyFixed(shape, {
+            latitudeRadians: 0.73,
+            longitudeRadians: 1.15,
+            ellipsoidalHeightMeters: 420
+          }),
+          velocityBodyFixedMetersPerSecond: { x: 0.75, y: 1.5, z: -2.25 },
+          orientationBodyFixed: { x: 0, y: 0.7071067811865475, z: 0, w: 0.7071067811865476 },
+          directionsBodyFixed: [{ id: "down", valueBodyFixed: { x: -0.2, y: 0.1, z: -0.97 } }]
+        }
+      ];
+
+      const beforeSignature = before.map((state) => JSON.stringify(state));
+      const entities = before.map((state) => {
+        const projectedAlpha = surfaceFrame.projectAbsoluteSurfaceState(state, frameAlpha);
+        const projectedBeta = surfaceFrame.reanchorSurfaceLocalFrame(projectedAlpha, frameAlpha, frameBeta);
+        const restoredBeta = surfaceFrame.restoreAbsoluteSurfaceState(projectedBeta, frameBeta);
+
+        const positionError = Math.hypot(
+          restoredBeta.positionBodyFixedMeters.x - state.positionBodyFixedMeters.x,
+          restoredBeta.positionBodyFixedMeters.y - state.positionBodyFixedMeters.y,
+          restoredBeta.positionBodyFixedMeters.z - state.positionBodyFixedMeters.z
+        );
+        const velocityError = Math.hypot(
+          restoredBeta.velocityBodyFixedMetersPerSecond.x - state.velocityBodyFixedMetersPerSecond.x,
+          restoredBeta.velocityBodyFixedMetersPerSecond.y - state.velocityBodyFixedMetersPerSecond.y,
+          restoredBeta.velocityBodyFixedMetersPerSecond.z - state.velocityBodyFixedMetersPerSecond.z
+        );
+        const sourceOrientation = state.orientationBodyFixed ?? null;
+        const projectedOrientationAlpha = projectedAlpha.orientationLocal ?? null;
+        const reanchoredOrientationBeta = projectedBeta.orientationLocal ?? null;
+        const restoredOrientation = restoredBeta.orientationBodyFixed ?? null;
+        const orientationError = sourceOrientation === null || restoredOrientation === null
+          ? null
+          : Math.min(
+              Math.hypot(
+                restoredOrientation.x - sourceOrientation.x,
+                restoredOrientation.y - sourceOrientation.y,
+                restoredOrientation.z - sourceOrientation.z,
+                restoredOrientation.w - sourceOrientation.w
+              ),
+              Math.hypot(
+                restoredOrientation.x + sourceOrientation.x,
+                restoredOrientation.y + sourceOrientation.y,
+                restoredOrientation.z + sourceOrientation.z,
+                restoredOrientation.w + sourceOrientation.w
+              )
+            );
+        const orientationLocalChanged = projectedOrientationAlpha !== null && reanchoredOrientationBeta !== null && (
+          projectedOrientationAlpha.x !== reanchoredOrientationBeta.x ||
+          projectedOrientationAlpha.y !== reanchoredOrientationBeta.y ||
+          projectedOrientationAlpha.z !== reanchoredOrientationBeta.z ||
+          projectedOrientationAlpha.w !== reanchoredOrientationBeta.w
+        );
+
+        const sourceDirections = state.directionsBodyFixed ?? [];
+        const projectedDirectionsAlpha = (projectedAlpha.directionsLocal ?? []) as readonly {
+          readonly id: string;
+          readonly valueLocal: EvidenceVector3;
+        }[];
+        const reanchoredDirectionsBeta = (projectedBeta.directionsLocal ?? []) as readonly {
+          readonly id: string;
+          readonly valueLocal: EvidenceVector3;
+        }[];
+        const restoredDirections = (restoredBeta.directionsBodyFixed ?? []) as readonly {
+          readonly id: string;
+          readonly valueBodyFixed: EvidenceVector3;
+        }[];
+        const directions = sourceDirections.map((sourceDirection) => {
+          const projectedDirectionAlpha = projectedDirectionsAlpha.find((direction) => direction.id === sourceDirection.id);
+          const reanchoredDirectionBeta = reanchoredDirectionsBeta.find((direction) => direction.id === sourceDirection.id);
+          const restoredDirection = restoredDirections.find((direction) => direction.id === sourceDirection.id);
+          return {
+            id: sourceDirection.id,
+            sourceValueBodyFixed: sourceDirection.valueBodyFixed,
+            projectedValueLocalAlpha: projectedDirectionAlpha?.valueLocal ?? null,
+            reanchoredValueLocalBeta: reanchoredDirectionBeta?.valueLocal ?? null,
+            restoredValueBodyFixed: restoredDirection?.valueBodyFixed ?? null,
+            absoluteDirectionError: restoredDirection === undefined
+              ? null
+              : Math.hypot(
+                  restoredDirection.valueBodyFixed.x - sourceDirection.valueBodyFixed.x,
+                  restoredDirection.valueBodyFixed.y - sourceDirection.valueBodyFixed.y,
+                  restoredDirection.valueBodyFixed.z - sourceDirection.valueBodyFixed.z
+                ),
+            idPreserved: projectedDirectionAlpha?.id === sourceDirection.id &&
+              reanchoredDirectionBeta?.id === sourceDirection.id &&
+              restoredDirection?.id === sourceDirection.id
+          };
+        });
+        const directionIdsPreserved = projectedDirectionsAlpha.length === sourceDirections.length &&
+          reanchoredDirectionsBeta.length === sourceDirections.length &&
+          restoredDirections.length === sourceDirections.length &&
+          directions.every((direction) => direction.idPreserved);
+
+        const localPositionChanged = (
+          projectedAlpha.positionLocalMeters.x !== projectedBeta.positionLocalMeters.x ||
+          projectedAlpha.positionLocalMeters.y !== projectedBeta.positionLocalMeters.y ||
+          projectedAlpha.positionLocalMeters.z !== projectedBeta.positionLocalMeters.z
+        );
+        const localVelocityChanged = (
+          projectedAlpha.velocityLocalMetersPerSecond.x !== projectedBeta.velocityLocalMetersPerSecond.x ||
+          projectedAlpha.velocityLocalMetersPerSecond.y !== projectedBeta.velocityLocalMetersPerSecond.y ||
+          projectedAlpha.velocityLocalMetersPerSecond.z !== projectedBeta.velocityLocalMetersPerSecond.z
+        );
+
+        return {
+          semanticKind: state.semanticIdentity.kind,
+          semanticId: state.semanticIdentity.id,
+          stateId: state.stateId,
+          projectedPositionLocalAlpha: projectedAlpha.positionLocalMeters,
+          projectedVelocityLocalAlpha: projectedAlpha.velocityLocalMetersPerSecond,
+          projectedPositionLocalBeta: projectedBeta.positionLocalMeters,
+          projectedVelocityLocalBeta: projectedBeta.velocityLocalMetersPerSecond,
+          restoredPositionBodyFixed: restoredBeta.positionBodyFixedMeters,
+          restoredVelocityBodyFixed: restoredBeta.velocityBodyFixedMetersPerSecond,
+          sourceOrientationBodyFixed: sourceOrientation,
+          projectedOrientationLocalAlpha: projectedOrientationAlpha,
+          reanchoredOrientationLocalBeta: reanchoredOrientationBeta,
+          restoredOrientationBodyFixed: restoredOrientation,
+          absoluteOrientationError: orientationError,
+          orientationLocalChanged,
+          directions,
+          directionIdsPreserved,
+          absolutePositionErrorMeters: positionError,
+          absoluteVelocityErrorMetersPerSecond: velocityError,
+          positionLocalChanged: localPositionChanged,
+          velocityLocalChanged: localVelocityChanged,
+          stateIdPreserved: restoredBeta.stateId === state.stateId,
+          semanticIdentityPreserved: restoredBeta.semanticIdentity.kind === state.semanticIdentity.kind &&
+            restoredBeta.semanticIdentity.id === state.semanticIdentity.id
+        };
+      });
+
+      const after = before.map((state) => JSON.stringify(state));
+      const payload = {
+        schema: "weltraum.surface-local-frame-proof-run",
+        schemaVersion: 1,
+        shape,
+        anchors: [anchorAlpha, anchorBeta],
+        frames: [frameAlpha, frameBeta],
+        entities
+      };
+      const canonicalResult = surfaceFrame.canonicalSerializeSurfaceLocalFrame(payload);
+      const signature = surfaceFrame.surfaceLocalFrameSignature(payload);
+
+      return {
+        modulePath,
+        importedPublicApi,
+        shapesAndAnchors: {
+          bodyId: shape.bodyId,
+          bodyFixedFrameId: shape.bodyFixedFrameId,
+          shapeRevision: shape.revision,
+          shapeKind: shape.kind,
+          anchorAlpha: {
+            anchorId: anchorAlpha.anchorId,
+            revision: anchorAlpha.revision,
+            geodeticLatitudeRadians: anchorAlpha.geodetic.latitudeRadians,
+            geodeticLongitudeRadians: anchorAlpha.geodetic.longitudeRadians,
+            geodeticHeightMeters: anchorAlpha.geodetic.ellipsoidalHeightMeters
+          },
+          anchorBeta: {
+            anchorId: anchorBeta.anchorId,
+            revision: anchorBeta.revision,
+            geodeticLatitudeRadians: anchorBeta.geodetic.latitudeRadians,
+            geodeticLongitudeRadians: anchorBeta.geodetic.longitudeRadians,
+            geodeticHeightMeters: anchorBeta.geodetic.ellipsoidalHeightMeters
+          },
+          semiMajorAxisMeters: shape.semiMajorAxisMeters,
+          semiMinorAxisMeters: shape.semiMinorAxisMeters
+        },
+        canonicalResult,
+        signature,
+        entities,
+        inputsUnchanged: beforeSignature.every((entry, index) => entry === after[index])
+      };
+    };
+
+    const first = run();
+    const second = run();
+    return {
+      canonicalRepeat: {
+        canonicalResult: first.canonicalResult,
+        signature: first.signature,
+        secondCanonicalResult: second.canonicalResult,
+        secondSignature: second.signature,
+        identicalCanonicalResult: first.canonicalResult === second.canonicalResult,
+        identicalSignature: first.signature === second.signature
+      },
+      dynamicImport: {
+        modulePath: first.modulePath,
+        importedPublicApi: first.importedPublicApi
+      },
+      shapesAndAnchors: first.shapesAndAnchors,
+      entities: first.entities,
+      deterministicInputs: {
+        inputsUnchanged: first.inputsUnchanged && second.inputsUnchanged,
+        authorityContextProvided: true
+      }
+    };
+  });
+
+  expect(repeated.dynamicImport.modulePath).toBe("/src/surface-frame/index.ts");
+  expect(repeated.dynamicImport.importedPublicApi).toEqual([
+    "createSurfaceBodyShape",
+    "createSurfaceAnchor",
+    "createSurfaceLocalFrame",
+    "projectAbsoluteSurfaceState",
+    "reanchorSurfaceLocalFrame",
+    "restoreAbsoluteSurfaceState",
+    "canonicalSerializeSurfaceLocalFrame",
+    "surfaceLocalFrameSignature"
+  ]);
+
+  expect(repeated.canonicalRepeat.identicalCanonicalResult).toBe(true);
+  expect(repeated.canonicalRepeat.identicalSignature).toBe(true);
+  expect(repeated.entities).toHaveLength(3);
+  expect(repeated.entities.map((entity) => entity.directions.map((direction) => direction.id))).toEqual([
+    ["forward"],
+    ["up", "starboard"],
+    ["down"]
+  ]);
+  for (const entity of repeated.entities) {
+    expect(entity.absolutePositionErrorMeters).toBeLessThan(tolerances.absolutePositionMeters);
+    expect(entity.absoluteVelocityErrorMetersPerSecond).toBeLessThan(tolerances.absoluteVelocityMetersPerSecond);
+    assertFinite(entity.absolutePositionErrorMeters, "absolute position error");
+    assertFinite(entity.absoluteVelocityErrorMetersPerSecond, "absolute velocity error");
+    expect(entity.sourceOrientationBodyFixed).not.toBeNull();
+    expect(entity.projectedOrientationLocalAlpha).not.toBeNull();
+    expect(entity.reanchoredOrientationLocalBeta).not.toBeNull();
+    expect(entity.restoredOrientationBodyFixed).not.toBeNull();
+    expect(entity.absoluteOrientationError).not.toBeNull();
+    expect(entity.absoluteOrientationError!).toBeLessThan(tolerances.absoluteOrientationQuaternionMagnitude);
+    assertFinite(entity.absoluteOrientationError!, "absolute orientation error");
+    for (const quaternion of [
+      entity.sourceOrientationBodyFixed!,
+      entity.projectedOrientationLocalAlpha!,
+      entity.reanchoredOrientationLocalBeta!,
+      entity.restoredOrientationBodyFixed!
+    ]) {
+      for (const component of [quaternion.x, quaternion.y, quaternion.z, quaternion.w]) {
+        assertFinite(component, "orientation component");
+      }
+    }
+    expect(entity.orientationLocalChanged).toBe(true);
+    expect(entity.directionIdsPreserved).toBe(true);
+    for (const direction of entity.directions) {
+      expect(direction.projectedValueLocalAlpha).not.toBeNull();
+      expect(direction.reanchoredValueLocalBeta).not.toBeNull();
+      expect(direction.restoredValueBodyFixed).not.toBeNull();
+      expect(direction.absoluteDirectionError).not.toBeNull();
+      expect(direction.absoluteDirectionError!).toBeLessThan(tolerances.absoluteDirectionMagnitude);
+      assertFinite(direction.absoluteDirectionError!, `${direction.id} absolute direction error`);
+      for (const vector of [
+        direction.sourceValueBodyFixed,
+        direction.projectedValueLocalAlpha!,
+        direction.reanchoredValueLocalBeta!,
+        direction.restoredValueBodyFixed!
+      ]) {
+        for (const component of [vector.x, vector.y, vector.z]) {
+          assertFinite(component, `${direction.id} direction component`);
+        }
+      }
+      expect(direction.idPreserved).toBe(true);
+    }
+    expect(entity.positionLocalChanged).toBe(true);
+    expect(entity.velocityLocalChanged).toBe(true);
+    expect(entity.stateIdPreserved).toBe(true);
+    expect(entity.semanticIdentityPreserved).toBe(true);
+  }
+  expect(repeated.deterministicInputs.inputsUnchanged).toBe(true);
+
+  expect(consoleErrors).toEqual([]);
+  expect(pageErrors).toEqual([]);
+  expect(failedRequests).toEqual([]);
+  expect(errorResponses).toEqual([]);
+
+  const evidence: SurfaceLocalFrameEvidence = {
+    schemaVersion: "browser-surface-local-frame-core-v1",
+    generator,
+    test: "normal page imports and proves SurfaceLocalFrame projection/reanchor invariants",
+    normalPageGuard,
+    browserHealth: {
+      consoleErrors,
+      pageErrors,
+      failedRequests,
+      errorResponses
+    },
+    dynamicImport: {
+      modulePath: repeated.dynamicImport.modulePath,
+      importedPublicApi: repeated.dynamicImport.importedPublicApi
+    },
+    tolerances,
+    shapesAndAnchors: repeated.shapesAndAnchors,
+    entities: repeated.entities.map((entity) => ({
+      ...entity,
+      positionLocalChanged: entity.positionLocalChanged,
+      velocityLocalChanged: entity.velocityLocalChanged,
+      stateIdPreserved: entity.stateIdPreserved,
+      semanticIdentityPreserved: entity.semanticIdentityPreserved
+    })),
+    canonicalRepeat: repeated.canonicalRepeat,
+    deterministicInputs: repeated.deterministicInputs,
+    nonGoals: [
+      "No runtime, navigation, world, renderer, flight, TestBridge, UI logic, or screenshot-driven claims.",
+      "No Three.js, DOM scene state, or world-object mutation in core surface-frame API.",
+      "No timing, date, random, or non-deterministic seed usage."
+    ],
+    verification: {
+      command: focusedCommand,
+      expectedResult: "one focused Playwright test pass that writes exactly two task-owned evidence files",
+      observedResult: "pass"
+    }
+  };
+
+  await mkdir(evidenceDir, { recursive: true });
+  await writeFile(summaryPath, `${JSON.stringify(evidence, null, 2)}\n`, "utf8");
+  await writeFile(markdownPath, createMarkdown(evidence), "utf8");
+});
