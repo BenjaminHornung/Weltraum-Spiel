@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "browser-surface-resource-extraction-core-v1",
+  "route": "/",
+  "testBridgeAbsent": true,
+  "dynamicImport": "/src/surface-extraction/index.ts",
+  "flow": "scan -> prepare -> begin -> pulse 1 -> pulse 2 -> pulse 3 -> transfer -> depletion",
+  "deterministicRepeat": {
+    "byteIdentical": true,
+    "signatureIdentical": true,
+    "canonicalByteLength": 1322,
+    "signature": "weltraum.surface-extraction/v1/fnv1a32:4237431e"
+  },
+  "scan": {
+    "nodeId": "resource-node:iron-silicate-vein",
+    "confidence": 0.92,
+    "resourceId": "ore_iron_silicate",
+    "estimatedQuantity": 2.964,
+    "signature": "weltraum.surface-extraction/v1/fnv1a32:556f398f"
+  },
+  "pulses": [
+    {
+      "pulseIndex": 1,
+      "status": "Applied",
+      "extractedQuantity": 1,
+      "nodeRevision": 2,
+      "sessionRevision": 2,
+      "targetRevision": 1,
+      "pulseSignature": "weltraum.surface-extraction/v1/fnv1a32:e99db46f",
+      "eventIntentCount": 2,
+      "missionIntentCount": 1
+    },
+    {
+      "pulseIndex": 2,
+      "status": "Applied",
+      "extractedQuantity": 1,
+      "nodeRevision": 3,
+      "sessionRevision": 3,
+      "targetRevision": 2,
+      "pulseSignature": "weltraum.surface-extraction/v1/fnv1a32:92073a53",
+      "eventIntentCount": 2,
+      "missionIntentCount": 1
+    },
+    {
+      "pulseIndex": 3,
+      "status": "Applied",
+      "extractedQuantity": 1,
+      "nodeRevision": 4,
+      "sessionRevision": 4,
+      "targetRevision": 3,
+      "pulseSignature": "weltraum.surface-extraction/v1/fnv1a32:3b12cec4",
+      "eventIntentCount": 3,
+      "missionIntentCount": 2
+    }
+  ],
+  "final": {
+    "nodeRevision": 4,
+    "depletionState": "Depleted",
+    "remainingQuantity": 0,
+    "sessionRevision": 4,
+    "sessionState": "Completed",
+    "pulseSequence": 3,
+    "targetRevision": 3,
+    "targetQuantity": 3,
+    "targetSignature": "9fafa1c5",
+    "eventIntentCount": 9,
+    "missionIntentCount": 4
+  },
+  "browserHealth": {
+    "consoleErrors": 0,
+    "pageErrors": 0,
+    "failedRequests": 0,
+    "httpErrors": 0
+  },
+  "scope": [
+    "Pure TypeScript scan, preparation, session state, deterministic pulse, Resource Core transfer, depletion, and intent projection.",
+    "Normal route only with TestBridge absent and a single dynamic import from the surface-extraction public barrel.",
+    "No UI, renderer objects, physics simulation, DOM authority, global randomness, Date authority, Three.js, or second cargo engine."
+  ],
+  "status": "PASS"
+}
