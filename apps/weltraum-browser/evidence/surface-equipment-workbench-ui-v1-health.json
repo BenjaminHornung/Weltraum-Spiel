@@ -1,0 +1,61 @@
+{
+  "route": "http://127.0.0.1:5224/prototypes/surface-equipment-workbench-v1/",
+  "ownedServerCommand": "npm run dev -- --host 127.0.0.1 --port 5224 --strictPort",
+  "filtering": "Only request failures emitted after shutdown starts for the owned 127.0.0.1:5224 process are ignored.",
+  "totals": {
+    "consoleErrors": 0,
+    "uncaughtPageErrors": 0,
+    "failedRequestsOrResponses": 0,
+    "missingAssetOrResource404s": 0
+  },
+  "tests": [
+    {
+      "test": "blocks Sidearm safety and magazine, reaches ready, and preserves branching undo/redo",
+      "consoleErrors": [],
+      "uncaughtPageErrors": [],
+      "failedRequestsOrResponses": [],
+      "missingAssetOrResource404s": [],
+      "ignoredIntentionalShutdownFailures": []
+    },
+    {
+      "test": "covers Compare Two Builds, native keyboard activation, Delete, and editable suppression",
+      "consoleErrors": [],
+      "uncaughtPageErrors": [],
+      "failedRequestsOrResponses": [],
+      "missingAssetOrResource404s": [],
+      "ignoredIntentionalShutdownFailures": []
+    },
+    {
+      "test": "covers invalid mutation, diagnostic focus, install, replace, remove, and drag/drop install",
+      "consoleErrors": [],
+      "uncaughtPageErrors": [],
+      "failedRequestsOrResponses": [],
+      "missingAssetOrResource404s": [],
+      "ignoredIntentionalShutdownFailures": []
+    },
+    {
+      "test": "covers Mining Cutter thermal, Scanner interface, EMP restriction, Repair consumable, and drag/drop move",
+      "consoleErrors": [],
+      "uncaughtPageErrors": [],
+      "failedRequestsOrResponses": [],
+      "missingAssetOrResource404s": [],
+      "ignoredIntentionalShutdownFailures": []
+    },
+    {
+      "test": "keeps explicit mobile panes at 390x844 and captures responsive evidence",
+      "consoleErrors": [],
+      "uncaughtPageErrors": [],
+      "failedRequestsOrResponses": [],
+      "missingAssetOrResource404s": [],
+      "ignoredIntentionalShutdownFailures": []
+    },
+    {
+      "test": "shows the exact authority, six fixtures, thirteen roles, and all desktop panes",
+      "consoleErrors": [],
+      "uncaughtPageErrors": [],
+      "failedRequestsOrResponses": [],
+      "missingAssetOrResource404s": [],
+      "ignoredIntentionalShutdownFailures": []
+    }
+  ]
+}

@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Standalone local mock prototype for assembling surface equipment."
+    />
+    <title>Surface Equipment Workbench · UI Prototype</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="authority-bar" data-testid="authority-banner">
+      UI PROTOTYPE · MOCK BUILDER DATA · NO GAMEPLAY AUTHORITY
+    </header>
+
+    <main class="workbench" data-testid="surface-equipment-workbench">
+      <header class="workbench-header">
+        <div>
+          <h1>Surface Equipment Workbench</h1>
+          <p>Local draft only. Changes do not affect inventory, saves, or gameplay.</p>
+        </div>
+        <div class="history-controls" aria-label="Local prototype history">
+          <button type="button" data-command="undo" data-testid="undo-button">Undo</button>
+          <button type="button" data-command="redo" data-testid="redo-button">Redo</button>
+          <output id="history-state" data-testid="history-state">0 undo · 0 redo</output>
+        </div>
+      </header>
+
+      <nav class="fixture-strip" aria-label="Starting equipment fixtures">
+        <div id="fixture-selectors" class="fixture-selectors" data-testid="fixture-selectors"></div>
+      </nav>
+
+      <nav class="pane-control-strip" aria-label="Workbench panes" role="tablist">
+        <button
+          id="library-pane-control"
+          class="pane-control"
+          type="button"
+          role="tab"
+          data-pane-control="library"
+          data-testid="pane-control-library"
+          aria-selected="false"
+          aria-controls="library-pane"
+          tabindex="-1"
+        >Library</button>
+        <button
+          id="assembly-pane-control"
+          class="pane-control"
+          type="button"
+          role="tab"
+          data-pane-control="assembly"
+          data-testid="pane-control-assembly"
+          aria-selected="true"
+          aria-controls="assembly-pane"
+          tabindex="0"
+        >Assembly</button>
+        <button
+          id="inspection-pane-control"
+          class="pane-control"
+          type="button"
+          role="tab"
+          data-pane-control="inspection"
+          data-testid="pane-control-inspection"
+          aria-selected="false"
+          aria-controls="inspection-pane"
+          tabindex="-1"
+        >Inspection</button>
+      </nav>
+
+      <div class="workbench-grid" data-active-pane="assembly">
+        <aside id="library-pane" class="work-area library-pane" role="tabpanel" aria-labelledby="library-heading" data-testid="library-pane">
+          <header class="pane-header">
+            <h2 id="library-heading" class="pane-focus-target" tabindex="-1">Module Library</h2>
+            <span id="palette-count" aria-live="polite"></span>
+          </header>
+
+          <form class="library-filters" id="library-filters" aria-label="Module filters">
+            <label>
+              Search
+              <input
+                id="module-search"
+                data-testid="module-search"
+                type="search"
+                autocomplete="off"
+                placeholder="Name, role, capability"
+              />
+            </label>
+            <label>
+              Category
+              <select id="category-filter" data-testid="category-filter">
+                <option value="all">All roles</option>
+              </select>
+            </label>
+            <label>
+              Compatibility
+              <select id="compatibility-filter" data-testid="compatibility-filter">
+                <option value="all">All modules</option>
+                <option value="compatible">Compatible with this fixture</option>
+              </select>
+            </label>
+            <label>
+              Legal / license
+              <select id="legal-filter" data-testid="legal-filter">
+                <option value="all">All mock classes</option>
+                <option value="Open">Open</option>
+                <option value="Licensed">Licensed</option>
+                <option value="Restricted">Restricted</option>
+              </select>
+            </label>
+          </form>
+
+          <p class="selection-hint" id="selection-hint">
+            Select a slot, then install or replace it from the palette.
+          </p>
+          <p class="selection-hint" id="drag-instructions">
+            Drag an available module to a compatible empty or occupied slot. Drag an installed module to a compatible empty slot.
+          </p>
+          <ul id="module-palette" class="module-palette" data-testid="module-palette"></ul>
+        </aside>
+
+        <section id="assembly-pane" class="work-area assembly-pane" role="tabpanel" aria-labelledby="assembly-heading" data-testid="assembly-pane">
+          <header class="pane-header assembly-header">
+            <div>
+              <h2 id="assembly-heading" class="pane-focus-target" tabindex="-1">Assembly</h2>
+              <p id="fixture-description"></p>
+            </div>
+            <div class="build-reference" id="build-reference" data-testid="build-reference"></div>
+          </header>
+
+          <div class="assembly-toolbar" aria-label="Assembly actions">
+            <span id="selected-slot-state">No slot selected</span>
+            <button type="button" data-command="cancel-selection" data-testid="cancel-selection-button">
+              Clear selection
+            </button>
+          </div>
+
+          <ol id="assembly-slots" class="assembly-slots" data-testid="assembly-slots"></ol>
+
+          <section class="command-log" aria-labelledby="command-log-heading">
+            <h3 id="command-log-heading">Local prototype state</h3>
+            <p id="action-feedback" role="status" aria-live="polite" aria-atomic="true" data-testid="action-feedback">
+              Select a module or assembly slot to begin.
+            </p>
+            <ol id="history-log" data-testid="history-log"></ol>
+          </section>
+        </section>
+
+        <aside id="inspection-pane" class="work-area inspection-pane" role="tabpanel" aria-labelledby="inspection-heading" data-testid="inspection-pane">
+          <header class="pane-header inspection-header">
+            <div>
+              <h2 id="inspection-heading" class="pane-focus-target" tabindex="-1">Inspection</h2>
+              <p id="inspection-build-name"></p>
+            </div>
+            <strong id="readiness-state" class="readiness" data-testid="readiness-state">Blocked</strong>
+          </header>
+
+          <section aria-labelledby="metrics-heading">
+            <h3 id="metrics-heading">Derived mock metrics</h3>
+            <dl id="metric-list" class="metric-list" data-testid="metric-list"></dl>
+          </section>
+
+          <section class="inspection-group" aria-labelledby="capabilities-heading">
+            <h3 id="capabilities-heading">Capabilities &amp; interfaces</h3>
+            <dl id="capability-list" class="detail-list" data-testid="capability-list"></dl>
+          </section>
+
+          <section class="inspection-group" aria-labelledby="diagnostics-heading">
+            <h3 id="diagnostics-heading">Diagnostics</h3>
+            <ul
+              id="diagnostic-list"
+              class="diagnostic-list"
+              aria-live="off"
+              aria-atomic="true"
+              data-testid="diagnostic-list"
+            ></ul>
+          </section>
+
+          <section class="compare-section" aria-labelledby="compare-heading">
+            <div class="compare-heading-row">
+              <h3 id="compare-heading">Compare Two Builds</h3>
+              <button type="button" data-command="toggle-compare" data-testid="compare-button">
+                Compare
+              </button>
+            </div>
+            <div id="compare-controls" class="compare-controls" hidden>
+              <label for="compare-fixture">Candidate build</label>
+              <select id="compare-fixture" data-testid="compare-fixture-select"></select>
+            </div>
+            <div id="compare-panel" class="compare-panel" data-testid="compare-panel" hidden></div>
+          </section>
+        </aside>
+      </div>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
