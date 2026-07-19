@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <title>First-Person Locomotion Proving Ground</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header class="topbar">
+        <h1>PROVING GROUND / DIAGNOSTIC</h1>
+        <div class="topbar-state" aria-label="Current sandbox state">
+          <span>Preset <strong data-testid="active-preset">Grounded</strong></span>
+          <span>Camera <strong data-testid="active-camera">First-person · pointer free</strong></span>
+          <span>Input <strong data-testid="active-input">Idle</strong></span>
+        </div>
+      </header>
+
+      <main class="sandbox-layout">
+        <aside class="control-rail" aria-label="Locomotion controls">
+          <section aria-labelledby="pointer-heading">
+            <h2 id="pointer-heading">View control</h2>
+            <button
+              class="primary-action"
+              type="button"
+              data-testid="pointer-lock-engage"
+              aria-describedby="pointer-lock-help"
+              aria-pressed="false"
+            >
+              Engage pointer lock
+            </button>
+            <p id="pointer-lock-help" class="control-note">
+              Explicit gesture only. Move the mouse to look; Escape releases.
+            </p>
+            <p
+              class="state-line"
+              data-testid="pointer-lock-status"
+              role="status"
+              aria-live="polite"
+            >
+              Pointer lock inactive
+            </p>
+          </section>
+
+          <section aria-labelledby="preset-heading">
+            <h2 id="preset-heading">Locomotion preset</h2>
+            <div class="preset-list" role="group" aria-label="Provisional locomotion presets">
+              <button type="button" data-preset="Grounded" data-testid="preset-grounded" aria-pressed="true">Grounded</button>
+              <button type="button" data-preset="Heavy suit" data-testid="preset-heavy-suit" aria-pressed="false">Heavy suit</button>
+              <button type="button" data-preset="Low gravity" data-testid="preset-low-gravity" aria-pressed="false">Low gravity</button>
+              <button type="button" data-preset="Slippery" data-testid="preset-slippery" aria-pressed="false">Slippery</button>
+              <button type="button" data-preset="Precision" data-testid="preset-precision" aria-pressed="false">Precision</button>
+            </div>
+          </section>
+
+          <section aria-labelledby="automation-heading">
+            <h2 id="automation-heading">Visible input automation</h2>
+            <label for="automation-control">Selected intent</label>
+            <select id="automation-control" data-testid="automation-control">
+              <option value="forward">W · Forward</option>
+              <option value="left">A · Left</option>
+              <option value="backward">S · Backward</option>
+              <option value="right">D · Right</option>
+              <option value="sprint">Shift · Sprint</option>
+              <option value="crouch">Ctrl / C · Crouch</option>
+              <option value="jump">Space · Jump</option>
+            </select>
+            <div class="automation-actions" role="group" aria-label="Press, hold, or release selected input">
+              <button type="button" data-action="press" data-testid="automation-press" aria-pressed="false">Press</button>
+              <button type="button" data-action="hold" data-testid="automation-hold" aria-pressed="false">Hold</button>
+              <button type="button" data-action="release" data-testid="automation-release" aria-pressed="false">Release</button>
+            </div>
+            <p class="state-line" data-testid="automation-state" aria-live="polite">Automation idle</p>
+          </section>
+
+          <section aria-labelledby="camera-heading">
+            <h2 id="camera-heading">Camera presentation</h2>
+            <div class="toggle-row">
+              <span id="head-bob-label">Head Bob</span>
+              <button type="button" data-toggle="head-bob" data-testid="toggle-head-bob" aria-labelledby="head-bob-label" aria-pressed="true">On</button>
+            </div>
+            <div class="toggle-row">
+              <span id="fov-kick-label">FOV Kick</span>
+              <button type="button" data-toggle="fov-kick" data-testid="toggle-fov-kick" aria-labelledby="fov-kick-label" aria-pressed="true">On</button>
+            </div>
+            <p class="state-line" data-testid="camera-effective-state" role="status" aria-live="polite">
+              Effective: Head Bob on · FOV Kick on
+            </p>
+            <details>
+              <summary>Numerical camera fixtures</summary>
+              <dl class="fixture-list" data-testid="camera-fixtures"></dl>
+            </details>
+          </section>
+
+          <section aria-labelledby="course-heading">
+            <h2 id="course-heading">Course regions</h2>
+            <ul class="course-index" data-testid="course-region-index"></ul>
+          </section>
+
+          <button class="reset-action" type="button" data-testid="reset-sandbox">Reset to start (R)</button>
+        </aside>
+
+        <section class="viewport" aria-label="Three-dimensional locomotion course">
+          <canvas
+            id="proving-ground"
+            data-testid="proving-ground-canvas"
+            tabindex="0"
+            role="region"
+            aria-label="First-person locomotion course viewport"
+            aria-describedby="canvas-description pointer-lock-help"
+          >
+            The locomotion proving ground requires WebGL.
+          </canvas>
+          <p id="canvas-description" class="visually-hidden">
+            Focusable three-dimensional course view. Use WASD to move, Shift to sprint,
+            Ctrl or C to crouch, Space to jump, and the View control to request pointer lock.
+          </p>
+          <div class="reticle" aria-hidden="true"></div>
+          <p class="viewport-pointer-guide" data-testid="viewport-pointer-guide">
+            <strong data-testid="viewport-pointer-state">Pointer free</strong>
+            <span data-testid="viewport-pointer-action">Next: use View control to engage pointer lock.</span>
+          </p>
+          <p class="viewport-status" data-testid="viewport-status" role="status" aria-live="polite">
+            Ready at named start. Select Engage pointer lock to look around.
+          </p>
+        </section>
+
+        <aside class="diagnostic-rail" aria-label="Live diagnostics">
+          <section aria-labelledby="diagnostic-heading">
+            <h2 id="diagnostic-heading">Simulation telemetry</h2>
+            <dl class="diagnostic-list">
+              <div><dt>Speed</dt><dd data-testid="diagnostic-speed">0.00 m/s</dd></div>
+              <div><dt>Grounded</dt><dd data-testid="diagnostic-grounded">Yes</dd></div>
+              <div><dt>Slope</dt><dd data-testid="diagnostic-slope">0.00°</dd></div>
+              <div><dt>Traction</dt><dd data-testid="diagnostic-traction">1.00</dd></div>
+              <div><dt>Vertical velocity</dt><dd data-testid="diagnostic-vertical-velocity">0.00 m/s</dd></div>
+              <div><dt>Fixed-step backlog</dt><dd data-testid="diagnostic-backlog">0.00 steps</dd></div>
+              <div><dt>Frame time</dt><dd data-testid="diagnostic-frame-time">0.00 ms</dd></div>
+              <div><dt>Camera mode</dt><dd data-testid="diagnostic-camera-mode">First-person</dd></div>
+              <div><dt>Contact count</dt><dd data-testid="diagnostic-contact-count">1</dd></div>
+            </dl>
+          </section>
+
+          <section aria-labelledby="state-heading">
+            <h2 id="state-heading">Model state</h2>
+            <dl class="diagnostic-list compact">
+              <div><dt>Position</dt><dd data-testid="diagnostic-position">0.00 / 0.00 / 0.00</dd></div>
+              <div><dt>Stance</dt><dd data-testid="diagnostic-stance">Standing</dd></div>
+              <div><dt>Support</dt><dd data-testid="diagnostic-support">flat-ground</dd></div>
+              <div><dt>Tick</dt><dd data-testid="diagnostic-tick">0</dd></div>
+            </dl>
+          </section>
+
+          <section aria-labelledby="health-heading">
+            <h2 id="health-heading">Browser Health</h2>
+            <output
+              class="health-output"
+              data-testid="browser-health"
+              aria-live="polite"
+              aria-label="Runtime errors, console errors, failed requests, non-finite samples"
+            >0/0/0/0</output>
+            <p class="health-order">runtime / console / request / non-finite</p>
+          </section>
+
+          <section aria-labelledby="contact-heading">
+            <h2 id="contact-heading">Latest contacts</h2>
+            <ol class="contact-list" data-testid="contact-list">
+              <li>reset-support · flat-ground</li>
+            </ol>
+          </section>
+        </aside>
+      </main>
+
+      <footer class="footer-bar">
+        <span>WASD move · Shift sprint · Ctrl/C crouch · Space jump · R reset</span>
+        <strong>UX fixture — not final balance</strong>
+      </footer>
+    </div>
+
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

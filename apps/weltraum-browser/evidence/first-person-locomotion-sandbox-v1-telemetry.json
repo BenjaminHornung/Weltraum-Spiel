@@ -1,0 +1,309 @@
+{
+  "schemaVersion": "first-person-locomotion-sandbox-v1",
+  "generatedBy": "tests/e2e/first-person-locomotion-sandbox.spec.ts",
+  "route": "/prototypes/first-person-locomotion-sandbox-v1/",
+  "baseURL": "http://127.0.0.1:5223",
+  "runLabel": "focused-evidence-5223",
+  "fixtureNotice": "UX fixture — not final balance",
+  "browserHealthOrder": [
+    "page/runtime errors",
+    "console errors",
+    "failed requests",
+    "non-finite samples"
+  ],
+  "browserHealthExpected": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "browserHealthActual": [
+    {
+      "runtimeErrors": 0,
+      "consoleErrors": 0,
+      "failedRequests": 0,
+      "nonFiniteSamples": 0
+    },
+    {
+      "runtimeErrors": 0,
+      "consoleErrors": 0,
+      "failedRequests": 0,
+      "nonFiniteSamples": 0
+    },
+    {
+      "runtimeErrors": 0,
+      "consoleErrors": 0,
+      "failedRequests": 0,
+      "nonFiniteSamples": 0
+    },
+    {
+      "runtimeErrors": 0,
+      "consoleErrors": 0,
+      "failedRequests": 0,
+      "nonFiniteSamples": 0
+    },
+    {
+      "runtimeErrors": 0,
+      "consoleErrors": 0,
+      "failedRequests": 0,
+      "nonFiniteSamples": 0
+    },
+    {
+      "runtimeErrors": 0,
+      "consoleErrors": 0,
+      "failedRequests": 0,
+      "nonFiniteSamples": 0
+    },
+    {
+      "runtimeErrors": 0,
+      "consoleErrors": 0,
+      "failedRequests": 0,
+      "nonFiniteSamples": 0
+    },
+    {
+      "runtimeErrors": 0,
+      "consoleErrors": 0,
+      "failedRequests": 0,
+      "nonFiniteSamples": 0
+    },
+    {
+      "runtimeErrors": 0,
+      "consoleErrors": 0,
+      "failedRequests": 0,
+      "nonFiniteSamples": 0
+    },
+    {
+      "runtimeErrors": 0,
+      "consoleErrors": 0,
+      "failedRequests": 0,
+      "nonFiniteSamples": 0
+    },
+    {
+      "runtimeErrors": 0,
+      "consoleErrors": 0,
+      "failedRequests": 0,
+      "nonFiniteSamples": 0
+    }
+  ],
+  "status": {
+    "result": "passed",
+    "requiredCases": 11,
+    "completedCases": 11,
+    "requiredScreenshots": 4,
+    "completedScreenshots": 4,
+    "healthSamples": 11
+  },
+  "screenshots": [
+    "first-person-locomotion-sandbox-v1-course-overview.png",
+    "first-person-locomotion-sandbox-v1-crouch-blocked-standing.png",
+    "first-person-locomotion-sandbox-v1-desktop-focus.png",
+    "first-person-locomotion-sandbox-v1-narrow-pointer-state.png"
+  ],
+  "artifacts": [
+    {
+      "file": "first-person-locomotion-sandbox-v1-course-overview.png",
+      "kind": "screenshot",
+      "status": "captured",
+      "bytes": 90196
+    },
+    {
+      "file": "first-person-locomotion-sandbox-v1-crouch-blocked-standing.png",
+      "kind": "screenshot",
+      "status": "captured",
+      "bytes": 148819
+    },
+    {
+      "file": "first-person-locomotion-sandbox-v1-desktop-focus.png",
+      "kind": "screenshot",
+      "status": "captured",
+      "bytes": 90324
+    },
+    {
+      "file": "first-person-locomotion-sandbox-v1-narrow-pointer-state.png",
+      "kind": "screenshot",
+      "status": "captured",
+      "bytes": 26256
+    },
+    {
+      "file": "first-person-locomotion-sandbox-v1-telemetry.json",
+      "kind": "telemetry-json",
+      "status": "generated-after-gate"
+    },
+    {
+      "file": "first-person-locomotion-sandbox-v1-telemetry.md",
+      "kind": "telemetry-markdown",
+      "status": "generated-after-gate"
+    }
+  ],
+  "cases": [
+    {
+      "name": "direct route and named start",
+      "result": {
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "support": "flat-ground",
+        "tick": 0
+      },
+      "tolerance": "reset is exact; course catalog contains 10/20/35/50 degree ramps and 0.16/0.30/0.50 m steps"
+    },
+    {
+      "name": "walk and sprint distance bands",
+      "result": {
+        "walkMetres": 7.669444444444437,
+        "sprintMetres": 12.944444444444473,
+        "fixedSteps": 120
+      },
+      "tolerance": "walk 7.4-7.9 m; sprint 12.6-13.3 m; sprint exceeds walk by more than 4 m"
+    },
+    {
+      "name": "visible automation and keyboard convergence",
+      "result": {
+        "pressForwardZ": 0.0061111111111111106,
+        "visibleHoldForwardZ": 3.7361111111111165,
+        "keyboardForwardZ": 3.6694444444444496,
+        "selectionChangeReleasedPreviousHold": true
+      },
+      "tolerance": "visible Press/Hold/Release and real W keyboard input use the same normalized authority; 60-step forward outcomes differ by less than 0.35 m"
+    },
+    {
+      "name": "pointer lock and presentation accessibility",
+      "result": {
+        "chromiumPointerLockActivated": true,
+        "requestStatus": "Pointer lock active. Press Escape to release.",
+        "requestTransitionObserved": true,
+        "releaseObservedWhenActivated": true,
+        "errorStatusObserved": true,
+        "reducedMotion": {
+          "headBobEnabled": true,
+          "fovKickEnabled": true,
+          "reducedMotion": true,
+          "headBobEffective": false,
+          "fovKickEffective": false
+        }
+      },
+      "tolerance": "real Chromium request is accepted or explicitly denied; active locks release with Escape; deterministic error event preserves fallback controls; reduced motion suppresses both enabled effects"
+    },
+    {
+      "name": "crouch tunnel and blocked standing",
+      "result": {
+        "enteredZ": 23.008333333333212,
+        "blockedContact": "standing-blocked:crouch-tunnel",
+        "stoodAfterZ": 30.421111111110715
+      },
+      "tolerance": "aligned x -1.7..-0.7; enter z >= 23 crouched; standing clears only beyond tunnel capsule edge z > 30.35"
+    },
+    {
+      "name": "jump impulse and landing",
+      "result": {
+        "initialVerticalVelocity": 4.9365,
+        "peakHeight": 1.2834,
+        "landingSteps": 61
+      },
+      "tolerance": "initial vy 4.7-5.2 m/s; peak 1.15-1.40 m; grounded landing within 80 fixed steps"
+    },
+    {
+      "name": "slope limit boundary",
+      "result": {
+        "ramp35MaximumHeight": 4.201245229258259,
+        "ramp35MaximumZ": 21.78499999999994,
+        "ramp50MaximumHeight": 0.16365612404169316,
+        "ramp50MaximumZ": 5.115883566615927
+      },
+      "tolerance": "35 degree ramp reaches y > 4.0 and z > 11; 50 degree ramp stays below y 0.25 and z 5.25 with slope-blocked contact"
+    },
+    {
+      "name": "passable and blocked step heights",
+      "result": {
+        "passableMaximumHeight": 1.2,
+        "passableMaximumZ": 21.645555555555546,
+        "passableStepContacts": 4,
+        "blockedMaximumZ": 13.645555555555525
+      },
+      "tolerance": "0.30 m x4 stairs reach y > 1.15 and z > 18; 0.50 m first rise blocks at z 13.5-13.8"
+    },
+    {
+      "name": "slippery deceleration",
+      "result": {
+        "normal": {
+          "stopSteps": 9,
+          "stopDistance": 0.27500000000000213,
+          "measuredDeceleration": 26.000000000000007
+        },
+        "slippery": {
+          "stopSteps": 57,
+          "stopDistance": 1.8898666666666664,
+          "measuredDeceleration": 4.159999999999995
+        }
+      },
+      "tolerance": "normal <= 12 stop steps and < 0.5 m; slippery >= 50 stop steps and > 1.5 m; slippery measured deceleration < 30% of normal"
+    },
+    {
+      "name": "deterministic canonical mixed sequence",
+      "result": {
+        "replayCount": 2,
+        "checkpointCount": 7,
+        "deepEqual": true,
+        "final": {
+          "tick": 106,
+          "timeSeconds": 1.7666666666666653,
+          "position": {
+            "x": 3.109974719059193,
+            "y": 0.6649500000000004,
+            "z": 5.409732690806632
+          },
+          "velocity": {
+            "x": 1.1144184867064564,
+            "y": -3.4019999999999997,
+            "z": 2.045691664701936
+          },
+          "horizontalSpeed": 2.3295456532431564,
+          "verticalVelocity": -3.4019999999999997,
+          "grounded": false,
+          "crouched": false,
+          "standingBlocked": false,
+          "jumpedThisStep": false,
+          "landedThisStep": false,
+          "supportSurfaceId": "ramp-35",
+          "slopeDegrees": 35,
+          "traction": 1,
+          "bounds": {
+            "shape": "vertical-capsule",
+            "radius": 0.35,
+            "height": 1.8,
+            "cylinderHeight": 1.1
+          },
+          "presetName": "Grounded",
+          "finite": true,
+          "contacts": []
+        }
+      },
+      "tolerance": "two runs after exact Grounded reset deep-compare equal across canonical authoritative telemetry and ordered contact payloads"
+    },
+    {
+      "name": "exact reset finite state and Browser Health",
+      "result": {
+        "position": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "tick": 0,
+        "browserHealth": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "tolerance": "exact named start/reset; all numeric telemetry finite; health order page/runtime, console, request, non-finite is 0/0/0/0"
+    }
+  ]
+}
