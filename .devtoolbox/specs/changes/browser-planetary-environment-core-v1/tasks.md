@@ -1,0 +1,9 @@
+# Tasks: browser-planetary-environment-core-v1
+
+- [x] Complete `browser-planetary-environment-core-v1` as a single spec-governed execution on branch `feature/browser-planetary-environment-core-v1` (base `75d78d4c8d12e2d85a8fb70864feb19dbe8d9c8f`), with all artifacts and evidence scoped to `.devtoolbox/specs/changes/browser-planetary-environment-core-v1/**` + approved `apps/weltraum-browser` paths.
+  - Run `specs_validate` for `browser-planetary-environment-core-v1` after writing `proposal.md`, `design.md`, and `specs/default/spec.md` and record exit code/results.
+  - Implement and execute the required TypeScript verification stack: `npx tsc -p tsconfig.json`, focused `npx vitest run tests/unit/planetaryEnvironment*.test.ts --maxWorkers=1 --minWorkers=1`, full `npx vitest run --maxWorkers=4`, `npm run build`, and `npx playwright test --config tests/e2e/configs/planetary-environment-core.playwright.config.ts --workers=1 --retries=0` twice with byte-identical environment samples and zero `TestBridge` / UI / screenshot dependency.
+  - Perform mandatory scope audits and forbidden-path review (`src/planetary-environment` only under `apps/weltraum-browser/src`, forbidden domains untouched, no runtime or renderer imports, no lockfile/package changes).
+  - Perform a full evidence review: deterministic fixture evidence, signature determinism, and normal-route Playwright health checks in `apps/weltraum-browser/evidence/browser-planetary-environment-core-v1-summary.json` + `.md`.
+  - Draft `docs/browser-mainline/planetary-environment-core-v1.md` from spec outcomes, then run independent review + `completion preflight` flow before toggling this single top-level task.
+  - Close out with one final commit text: `#WELTRAUM-000 Add planetary environment core` and non-merge push to `origin/feature/browser-planetary-environment-core-v1`.

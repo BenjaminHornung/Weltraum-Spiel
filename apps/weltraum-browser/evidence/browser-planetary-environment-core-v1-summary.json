@@ -1,0 +1,112 @@
+{
+  "schemaVersion": "browser-planetary-environment-core-v1",
+  "route": "/",
+  "testBridgeAbsent": true,
+  "dynamicImport": "/src/planetary-environment/index.ts",
+  "fixtureCount": 6,
+  "deterministicRepeat": {
+    "identicalSampleBytes": true,
+    "identicalSignatures": true,
+    "sampleSignatures": [
+      "fnv1a32:b53bc54e",
+      "fnv1a32:806b725e",
+      "fnv1a32:2aea2b46",
+      "fnv1a32:36b8a29c",
+      "fnv1a32:574023e4",
+      "fnv1a32:75f3b5e1"
+    ]
+  },
+  "samples": [
+    {
+      "profileId": "environment.airless-moon",
+      "modelState": "Vacuum",
+      "pressureClass": "Vacuum",
+      "thermalClass": "ExtremeCold",
+      "breathability": "Vacuum",
+      "hazardIds": [
+        "Vacuum",
+        "ExtremeCold",
+        "Radiation"
+      ],
+      "signature": "fnv1a32:b53bc54e"
+    },
+    {
+      "profileId": "environment.thin-co2-moon",
+      "modelState": "Valid",
+      "pressureClass": "Thin",
+      "thermalClass": "ExtremeCold",
+      "breathability": "Toxic",
+      "hazardIds": [
+        "LowPressure",
+        "Hypoxia",
+        "ToxicAtmosphere",
+        "ExtremeCold",
+        "Radiation",
+        "Dust"
+      ],
+      "signature": "fnv1a32:806b725e"
+    },
+    {
+      "profileId": "environment.earth-reference",
+      "modelState": "Valid",
+      "pressureClass": "Nominal",
+      "thermalClass": "Temperate",
+      "breathability": "Breathable",
+      "hazardIds": [],
+      "signature": "fnv1a32:2aea2b46"
+    },
+    {
+      "profileId": "environment.high-pressure-toxic",
+      "modelState": "Valid",
+      "pressureClass": "Extreme",
+      "thermalClass": "ExtremeHeat",
+      "breathability": "Corrosive",
+      "hazardIds": [
+        "HighPressure",
+        "Hypoxia",
+        "ToxicAtmosphere",
+        "CorrosiveAtmosphere",
+        "ExtremeHeat",
+        "LowVisibility"
+      ],
+      "signature": "fnv1a32:36b8a29c"
+    },
+    {
+      "profileId": "environment.hestia-wet-spore",
+      "modelState": "Valid",
+      "pressureClass": "Nominal",
+      "thermalClass": "Temperate",
+      "breathability": "Toxic",
+      "hazardIds": [
+        "ToxicAtmosphere",
+        "Spores",
+        "LowVisibility"
+      ],
+      "signature": "fnv1a32:574023e4"
+    },
+    {
+      "profileId": "environment.unknown-exotic",
+      "modelState": "Valid",
+      "pressureClass": "Nominal",
+      "thermalClass": "Temperate",
+      "breathability": "Unknown",
+      "hazardIds": [
+        "Hypoxia",
+        "UnknownComposition"
+      ],
+      "signature": "fnv1a32:75f3b5e1"
+    }
+  ],
+  "browserHealth": {
+    "consoleErrors": 0,
+    "pageErrors": 0,
+    "failedRequests": 0,
+    "httpErrors": 0
+  },
+  "scope": [
+    "Pure TypeScript environment profiles, validation, analytic sampling, typed hazards, canonical bytes, and signatures.",
+    "Normal route only with TestBridge absent and no UI interaction or screenshot dependency.",
+    "No suit, surface, world generation, voxel, flight, celestial, spatial, renderer, Three.js, or runtime authority."
+  ],
+  "status": "PASS"
+}
