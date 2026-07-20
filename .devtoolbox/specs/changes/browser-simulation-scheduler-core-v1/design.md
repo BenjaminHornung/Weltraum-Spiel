@@ -34,7 +34,7 @@ Budget selection never partially charges an execution. If no eligible execution 
 
 ## Fairness proof
 
-Priority ranks are Critical=0, High=1, Normal=2, Low=3. Effective rank is `max(0, baseRank - floor(waitAge/fairnessWindowTicks))`. A continuously due Low job therefore reaches effective Critical after three windows. Recently planned higher-priority recurring jobs have their waiting origin reset by accepted results; equal effective rank uses stable age/due/job-ID ordering. No wall clock, randomness, or hidden counter is involved.
+Priority ranks are Critical=0, High=1, Normal=2, Low=3. Effective rank is `max(0, baseRank - floor(waitAge/fairnessWindowTicks))`. Waiting starts at the later of `lastPlannedTick` and `nextDueTick`, so an intentional future backoff cannot age a job before it becomes due. A continuously due Low job therefore reaches effective Critical after three windows. Recently planned higher-priority recurring jobs have their waiting origin reset by accepted results; equal effective rank uses stable age/due/job-ID ordering. No wall clock, randomness, or hidden counter is involved.
 
 ## Result receipts
 

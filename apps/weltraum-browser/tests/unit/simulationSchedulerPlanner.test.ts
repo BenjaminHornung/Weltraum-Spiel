@@ -116,6 +116,27 @@ describe("simulation scheduler deterministic planning", () => {
     }));
   });
 
+  it("does not age a future-backed-off retry before its next due tick", () => {
+    const backedOffLow = entry("backed-off-low", "Low", {
+      nextDueTick: 1000,
+      lastPlannedTick: 0,
+      maxCatchUpExecutions: 1
+    });
+    const waitingHigh = entry("waiting-high", "High", {
+      nextDueTick: 1000,
+      lastPlannedTick: 1000,
+      maxCatchUpExecutions: 1
+    });
+    const plan = planSimulationScheduler(snapshot([backedOffLow, waitingHigh], 1000, 1, 100));
+
+    expect(plan.requests[0]!.jobId).toBe("simulation-job:waiting-high.0");
+    expect(plan.diagnostics).toContainEqual(expect.objectContaining({
+      code: "JOB_SELECTED",
+      jobId: "simulation-job:waiting-high.0",
+      facts: expect.objectContaining({ effectivePriorityRank: 1 })
+    }));
+  });
+
   it("never exceeds budget and never partially charges an execution", () => {
     const tooExpensive = entry("expensive", "Critical", { costUnits: 5 });
     const plan = planSimulationScheduler(snapshot([tooExpensive], 100, 4));

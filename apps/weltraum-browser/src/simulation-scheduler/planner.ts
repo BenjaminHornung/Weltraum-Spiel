@@ -90,7 +90,7 @@ export const planSimulationScheduler = (source: unknown): SchedulerPlan => {
       definition.maxCatchUpExecutions,
       job.revision
     );
-    const waitingOrigin = job.lastPlannedTick ?? nextDueTick;
+    const waitingOrigin = Math.max(job.lastPlannedTick ?? nextDueTick, nextDueTick);
     const waitingAge = snapshot.universeTime.tick - waitingOrigin;
     const promotions = Math.floor(waitingAge / snapshot.fairness.windowTicks);
     candidates.push({

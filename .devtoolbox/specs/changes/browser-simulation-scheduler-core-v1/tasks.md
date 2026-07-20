@@ -10,4 +10,5 @@
   - Preserve the complete current-main E2E grouping and assign `simulation-scheduler-core.spec.ts` exactly once without lockfile drift.
   - Reject `RetryableFailure` `AtTick` values that are not strictly future relative to both completion and the validated scheduler snapshot, with deterministic errors and no mutation.
   - Add focused regressions for boundary ticks, `None`, immutability, same-UniverseTime reselection, and deterministic error identity.
+  - Start fairness aging no earlier than the current `nextDueTick`, so future retry backoff never grants priority promotion before the job becomes due.
   - Run the requested serial Node 22 unit/full/build/E2E matrices, repeated focused evidence comparison, audits, DevToolbox verification/preflight, and exact-head review gate.

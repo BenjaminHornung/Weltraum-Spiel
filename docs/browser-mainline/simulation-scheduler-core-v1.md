@@ -22,7 +22,7 @@ Scheduler job and definition identities are public Persistence `ExternalReferenc
 
 Planning reads only the validated snapshot's explicit UniverseTime. No wall clock, random source, callback, implicit global, or insertion order participates. Canonical persistence serialization produces the plan bytes and FNV-1a persistence signature; both omit themselves from the signed structure.
 
-Priority order is `Critical`, `High`, `Normal`, `Low`. A due job is promoted by one effective class for each complete fairness window since its last planned tick or initial due tick. A continuously waiting Low job therefore reaches effective Critical after at most three windows. Equal effective priorities sort by due tick, prior planned tick with null first, and ASCII job ID.
+Priority order is `Critical`, `High`, `Normal`, `Low`. A due job is promoted by one effective class for each complete fairness window since the later of its last planned tick and current next-due tick; a future backoff interval never counts as waiting time. A continuously waiting Low job therefore reaches effective Critical after at most three windows. Equal effective priorities sort by due tick, prior planned tick with null first, and ASCII job ID.
 
 Catch-up count is calculated arithmetically and capped at 1,024 globally plus the smaller per-definition maximum. Candidate arrays are never expanded by the raw size of a time jump. Every request consumes whole cost units, and selection stops before the explicit snapshot budget would be exceeded.
 

@@ -29,8 +29,8 @@ Results:
 
 - `npm ci`: PASS; 59 packages installed, 60 audited, 0 vulnerabilities.
 - TypeScript: PASS.
-- Focused Scheduler unit tests: PASS; 3 files, 37/37 tests.
-- Full unit matrix: PASS; 107 files, 1036/1036 tests.
+- Focused Scheduler unit tests: PASS; 3 files, 38/38 tests.
+- Full unit matrix: PASS; 107 files, 1037/1037 tests.
 - Production build: PASS; 165 modules transformed. Vite emitted only the existing advisory for a minified chunk larger than 500 kB.
 
 An initial sandboxed focused-test launch was blocked before test execution by Vite subprocess `spawn EPERM`. The same Node 22 command was rerun with the required subprocess permission and passed; the blocked launch is not counted as a test result.
@@ -89,7 +89,7 @@ Audits:
 - Scope audit: no Mission, Surface, Hestia, Voxel, Blender, Persistence-authority, renderer, DOM, Three.js, runtime-service, Unity, `Assets/**`, dependency, timeout, assertion, or lockfile changes.
 - The full core E2E matrix regenerated unrelated evidence files; those generated worktree changes were removed. Scheduler evidence remained byte-identical.
 
-## Retry regression contract
+## Retry and fairness regression contract
 
 Fresh coverage proves:
 
@@ -101,16 +101,19 @@ Fresh coverage proves:
 - rejected results leave the entire input snapshot and job unchanged;
 - rejected results do not change revisions, due/planned/completed ticks, failure count, receipts, event intents, or mode;
 - valid future retry is not immediately reselected at the same UniverseTime;
-- repeated invalid inputs produce structurally identical error objects.
+- repeated invalid inputs produce structurally identical error objects;
+- a future-backed-off Low retry does not age before `nextDueTick` and cannot jump ahead of genuinely waiting High work when it first becomes due.
 
 ## DevToolbox and independent review
 
 - DevToolbox execution: `eeacc99a8a1745f8bad0657692d4ab65`.
-- DevToolbox asynchronous verification operation: `08f4ccf355814aab8ee5319a87e8b356`.
+- Initial DevToolbox verification operation: `08f4ccf355814aab8ee5319a87e8b356`.
+- Post-fairness-fix DevToolbox verification operation: `39e653e54a9f484e8f094cd5e4b113b8`.
 - Wrapper result: `verified`; 2 passed, 1 warning, 0 failed, 0 skipped.
 - Specs: PASS.
-- Tests: PASS, 107 files and 1036 tests.
+- Fresh post-fix wrapper tests: PASS, 107 files and 1037 tests.
 - Build: PASS with only the existing chunk-size advisory.
 - The wrapper does not expose an explicit Node 22 pin, so its result is supplemental. The explicit Node `v22.23.1` direct matrix above is authoritative.
-- Independent read-only code review: no P1, P2, P3, maintainability-decay, or test-health findings.
+- Independent read-only code review before the first push: no P1, P2, P3, maintainability-decay, or test-health findings.
+- Codex Exact-Head review on `e67fd65fb267c74e1a98487d5ec0d676a54066be` found one P2: future retry backoff incorrectly counted toward fairness aging. The planner now starts aging at the later of `lastPlannedTick` and `nextDueTick`, with a focused regression.
 - Completion preflight and final exact-head remote review are recorded after the final local commit and push.
