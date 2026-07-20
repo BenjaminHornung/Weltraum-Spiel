@@ -185,6 +185,17 @@ export const applyJobExecutionResult = (source: unknown, resultSource: unknown):
   let dueTick = result.status === "TerminalFailure" || result.status === "Cancelled"
     ? null
     : nextDueTick(job, definition, result.nextDue);
+  if (
+    result.status === "RetryableFailure" &&
+    result.nextDue.kind === "AtTick" &&
+    (result.nextDue.tick <= result.completionTick || result.nextDue.tick <= snapshot.universeTime.tick)
+  ) {
+    return failPersistenceValidation(
+      "INVALID_VALUE",
+      "/nextDue/tick",
+      "Retryable failure next due tick must be later than both completion and snapshot Universe Time."
+    );
+  }
   switch (result.status) {
     case "Completed":
       completedTick = result.completionTick;

@@ -34,6 +34,8 @@ For each eligible job, selected catch-up requests use ascending scheduled tick a
 
 Result application uses expected job revision CAS. Accepted results increment scheduler/job revisions, update planned/completed/failure/mode/next-due state only as explicitly described by the result, and record a canonical result receipt. An identical result repeated for the same expected revision is an idempotent no-op. A different result repeated for that revision is a conflict. Other stale/future revisions are rejected without mutation.
 
+A `RetryableFailure` MUST NOT use `nextDue: None`. When it uses `nextDue: AtTick`, that tick MUST be strictly later than both the result `completionTick` and the validated scheduler snapshot's current UniverseTime tick. An earlier or equal tick fails closed with a deterministic validation error before any snapshot, revision, job history, failure count, receipt, event intent, or mode can change. `KeepCadence` continues to use the existing cadence authority.
+
 `NeedsReplan` and `NeedsPlayerAttention` transition only to their matching persistence modes; they do not execute a replan or continue automatically. `TerminalFailure` and destroyed state prevent later execution. Persistent events remain output intents and are never enqueued by the scheduler.
 
 Pause, Resume, Cancel, and Wake are explicit commands with job-revision CAS. Cancel is terminal. Resume does not bypass NeedsReplan/NeedsPlayerAttention/Destroyed. Wake is the only scheduler command that may transition Dormant to Background, and it requires an explicit next-due tick.

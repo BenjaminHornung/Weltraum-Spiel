@@ -32,13 +32,15 @@ Pause, Resume, Cancel, and Wake are explicit revision-checked commands. Dormant 
 
 Execution results use job-revision CAS. Accepted results advance job and scheduler revisions and store a canonical receipt keyed by job ID and expected revision. Repeating the identical result is an idempotent no-op; a different repeat for the same key is a conflict. Persistent events are returned as intents and never inserted into an event queue by this module.
 
+A `RetryableFailure` may use `KeepCadence` or an explicit `AtTick`, but `AtTick` must be strictly later than both the result completion tick and the validated snapshot's UniverseTime tick. Invalid retry intents fail closed before scheduler/job revisions, next-due/history fields, failure counts, receipts, event intents, or modes can change.
+
 ## Verification boundary
 
 Vitest covers validation, deterministic bytes/signatures, due and budget selection, priority/fairness, catch-up/large jumps, commands and modes, result CAS/receipts, input immutability, frozen outputs, unsafe values, unknown fields, and forbidden dependencies.
 
 The focused Playwright proof uses normal `/` on port 5231 without TestBridge, imports only `/src/simulation-scheduler/index.ts`, runs the same scheduler case twice, compares canonical bytes/signatures, asserts browser health 0/0/0/0, and writes deterministic JSON/Markdown evidence without screenshots.
 
-The focused spec is deliberately not added to `package.json` in this feature change because package and root test-group configuration are explicitly outside the approved write scope. Assigning it to `test:e2e:core` is deferred to a later mainline integration change; until then, the repository's static E2E-group membership gate will report this spec as unassigned.
+The focused spec is assigned exactly once to `test:e2e:core`. The repository's static E2E-group inventory must continue to report every discovered spec exactly once, with no unassigned, duplicate, or stale paths.
 
 ## Explicit limits
 

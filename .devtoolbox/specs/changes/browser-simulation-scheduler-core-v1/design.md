@@ -40,6 +40,10 @@ Priority ranks are Critical=0, High=1, Normal=2, Low=3. Effective rank is `max(0
 
 The snapshot stores canonical receipts keyed by job ID and expected revision. Reapplying the same result signature returns an idempotent decision and the unchanged snapshot. A different signature for the same key returns Conflict. Receipts make the rule independent of how far the job revision has advanced.
 
+## Retry backoff invariant
+
+Retry intent validation that depends only on envelope shape remains in `validation.ts`. Snapshot-relative `AtTick` validation belongs in `applyJobExecutionResult`, after the scheduler snapshot and result have been validated but before revisions, job fields, receipts, or event intents are constructed. The accepted tick must be greater than both `completionTick` and `snapshot.universeTime.tick`; the existing Persistence UniverseTime remains the only time authority.
+
 ## Verification and rollback
 
 Verification runs under Node 22.23.1 via an explicit Node-22 executable. Focused tests run during implementation; final gates are TypeScript, focused Vitest, full Vitest, build, focused Playwright twice, byte/hash comparison, diff/scope/secret/package audits, independent review, and completion preflight. Rollback is one feature commit; no mainline integration occurs in this task.

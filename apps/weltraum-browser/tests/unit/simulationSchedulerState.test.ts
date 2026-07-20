@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { createStableFixtureId, createUniverseClock } from "../../src/persistence/index";
+import {
+  PersistenceValidationError,
+  createStableFixtureId,
+  createUniverseClock
+} from "../../src/persistence/index";
 import {
   applyJobExecutionResult,
   applySchedulerCommand,
@@ -18,6 +22,17 @@ const dormantJobId = "simulation-job:dormant-outpost.0";
 const attentionJobId = "simulation-job:needs-player-attention.0";
 
 const jobFrom = (snapshot: SchedulerSnapshot, jobId: string) => snapshot.jobs.find((job) => job.jobId === jobId)!;
+
+const captureValidationError = (action: () => unknown): PersistenceValidationError => {
+  let error: unknown;
+  try {
+    action();
+  } catch (caught) {
+    error = caught;
+  }
+  expect(error).toBeInstanceOf(PersistenceValidationError);
+  return error as PersistenceValidationError;
+};
 
 const eventIntent = (tick = 100) => ({
   eventId: createStableFixtureId("event", "scheduler-result", 0),
@@ -157,6 +172,65 @@ describe("simulation scheduler result application", () => {
 
     const atDue = applyJobExecutionResult(source, result("Completed", { completionTick: 40 }));
     expect(atDue.kind).toBe("Accepted");
+  });
+
+  it.each([
+    ["before completion", 100, 99],
+    ["equal to completion", 100, 100],
+    ["after completion but not after the snapshot", 90, 100]
+  ] as const)(
+    "rejects RetryableFailure AtTick %s deterministically without mutation",
+    (_caseName, completionTick, nextDueTick) => {
+      const source = createSimulationSchedulerFixtureSnapshot(100);
+      const sourceBytes = JSON.stringify(source);
+      const sourceJob = clone(jobFrom(source, miningJobId));
+      const retryResult = result("RetryableFailure", {
+        completionTick,
+        nextDue: { kind: "AtTick", tick: nextDueTick },
+        persistentEventIntents: [eventIntent()]
+      });
+      const resultBytes = JSON.stringify(retryResult);
+
+      const first = captureValidationError(() => applyJobExecutionResult(source, retryResult));
+      const second = captureValidationError(() => applyJobExecutionResult(source, clone(retryResult)));
+      const errorShape = (error: PersistenceValidationError) => ({
+        name: error.name,
+        message: error.message,
+        code: error.code,
+        path: error.path,
+        issues: error.issues
+      });
+
+      expect(first).toMatchObject({ code: "INVALID_VALUE", path: "/nextDue/tick" });
+      expect(errorShape(second)).toEqual(errorShape(first));
+      expect(JSON.stringify(source)).toBe(sourceBytes);
+      expect(JSON.stringify(retryResult)).toBe(resultBytes);
+      expect(jobFrom(source, miningJobId)).toEqual(sourceJob);
+      expect(source).toMatchObject({ revision: 0, resultReceipts: [] });
+    }
+  );
+
+  it("accepts a genuinely future retry AtTick and cannot reselect it at the same UniverseTime", () => {
+    const source = createSimulationSchedulerFixtureSnapshot(100);
+    const accepted = applyJobExecutionResult(source, result("RetryableFailure", {
+      completionTick: 100,
+      nextDue: { kind: "AtTick", tick: 101 }
+    }));
+
+    expect(accepted.kind).toBe("Accepted");
+    if (accepted.kind !== "Accepted") throw new Error("Future retry was not accepted.");
+    expect(jobFrom(accepted.snapshot, miningJobId)).toMatchObject({
+      revision: 1,
+      mode: "Background",
+      nextDueTick: 101,
+      lastPlannedTick: 100,
+      lastCompletedTick: null,
+      failureCount: 1
+    });
+    expect(accepted.snapshot.resultReceipts).toHaveLength(1);
+    expect(accepted.persistentEventIntents).toEqual([]);
+    expect(planSimulationScheduler(accepted.snapshot).requests)
+      .not.toContainEqual(expect.objectContaining({ jobId: miningJobId }));
   });
 
   it("uses durable receipts for idempotence and conflicting-repeat detection", () => {
