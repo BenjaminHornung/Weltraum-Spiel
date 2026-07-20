@@ -16,7 +16,11 @@ Verified on 2026-07-20 in the isolated hotfix worktree from base `260dfd3a281ee6
 | Scope scan | changed-path allowlist | PASS |
 | Lockfile scan | package/lockfile diff | PASS: package.json only, no lockfile |
 | Forbidden import scan | mission imports for UI/economy/cargo/faction/world/navigation/interaction/suit/scheduler | PASS |
-| Secret scan | staged candidate diff patterns | PASS |
+| Secret scan | candidate diff patterns | PASS |
 | Whitespace | `git diff --check` | PASS |
 
 The first sandboxed Vitest attempt was not a product failure: Vite could not spawn a child process under the restricted Windows token (`spawn EPERM`). The same focused command passed outside that token. Test-generated modifications to pre-existing evidence files were restored to `HEAD`; the deterministic mission proof itself remained unchanged.
+
+## Review follow-up
+
+Exact-head Codex review on commit `57ef58ba41110ba2d8417d449db76e36d215f153` identified that an Offered mission could be forced toward the unavailable `failMission` transition. The finding was accepted, fixed by excluding Offered missions from time-failure precedence while retaining absolute expiry, and covered inside the focused lifecycle regression. TypeScript, focused unit, full unit, build, focused Playwright, and serial core E2E gates were all rerun successfully after the fix.

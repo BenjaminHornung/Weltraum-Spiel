@@ -589,6 +589,23 @@ describe("CAS, replay, terminal transitions, events, and intents", () => {
       })
     ).toMatchObject({ ok: true, instance: { state: "Failed" } });
 
+    const offeredDefinition = validateMissionDefinition({
+      ...HESTIA_GEOLOGICAL_SURVEY,
+      expiryPolicy: { kind: "AbsoluteUniverseTick", tick: 2_500 },
+      failureConditions: [{ kind: "UniverseTickReached", tick: 1_000 }]
+    });
+    const offeredWithEarlierFailure = offer(offeredDefinition).instance;
+    expect(offeredWithEarlierFailure.expiry?.tick).toBe(2_500);
+    expect(
+      expireMission({
+        commandId: commandId("offered-expiry-after-earlier-failure"),
+        expectedRevision: offeredWithEarlierFailure.revision,
+        at: createUniverseClock(2_500),
+        definition: offeredDefinition,
+        instance: offeredWithEarlierFailure
+      })
+    ).toMatchObject({ ok: true, instance: { state: "Expired" } });
+
     const collisionDefinition = validateMissionDefinition({
       ...HESTIA_GEOLOGICAL_SURVEY,
       failureConditions: [{ kind: "UniverseTickReached", tick: 2_500 }]

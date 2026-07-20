@@ -290,12 +290,15 @@ const prepareInstanceCommand = (
     command.instance.state === "Accepted" ||
     command.instance.state === "Active"
   ) {
-    const earliestDueFailureTick = definition.failureConditions.reduce<number | null>((earliest, condition) => {
-      if (condition.kind !== "UniverseTickReached" || command.at.tick < condition.tick) {
-        return earliest;
-      }
-      return earliest === null ? condition.tick : Math.min(earliest, condition.tick);
-    }, null);
+    const earliestDueFailureTick =
+      command.instance.state === "Offered"
+        ? null
+        : definition.failureConditions.reduce<number | null>((earliest, condition) => {
+            if (condition.kind !== "UniverseTickReached" || command.at.tick < condition.tick) {
+              return earliest;
+            }
+            return earliest === null ? condition.tick : Math.min(earliest, condition.tick);
+          }, null);
     const dueExpiryTick =
       command.instance.expiry !== null && command.at.tick >= command.instance.expiry.tick
         ? command.instance.expiry.tick

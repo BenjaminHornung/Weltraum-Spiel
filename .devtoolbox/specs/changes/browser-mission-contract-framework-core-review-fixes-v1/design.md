@@ -2,7 +2,9 @@
 
 ## Terminal transition precedence
 
-At command time, collect due `UniverseTickReached` failures and the due expiry. The required terminal transition is determined by the earliest trigger tick. Expiry wins when its tick is earlier than or equal to the earliest due failure tick; otherwise failure wins. This preserves the documented same-tick expiry precedence without allowing an older failure to be bypassed.
+At command time, collect due `UniverseTickReached` failures and the due expiry. For Accepted and Active missions, the required terminal transition is determined by the earliest trigger tick. Expiry wins when its tick is earlier than or equal to the earliest due failure tick; otherwise failure wins. This preserves the documented same-tick expiry precedence without allowing an older failure to be bypassed.
+
+Offered missions do not participate in failure-transition precedence because `failMission` is intentionally unavailable before acceptance. Their absolute expiry remains authoritative, preventing an offer from becoming stuck when a failure tick predates its expiry.
 
 ## Fail-closed command fingerprinting
 

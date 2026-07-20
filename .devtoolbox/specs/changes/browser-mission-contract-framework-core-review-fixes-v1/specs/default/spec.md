@@ -6,15 +6,19 @@
 
 ## Requirement: Earliest terminal trigger controls transition
 
-When failure and expiry triggers are both due, the core MUST require the transition whose trigger tick occurred first. Expiry MUST take precedence only when its trigger is earlier than or equal to the earliest due failure trigger.
+When failure and expiry triggers are both due on an Accepted or Active mission, the core MUST require the transition whose trigger tick occurred first. Expiry MUST take precedence only when its trigger is earlier than or equal to the earliest due failure trigger.
 
 ### Scenario: Failure predates expiry
 
-Given a mission failure condition due before expiry, attempting expiry after both ticks are due MUST return `FAILURE_CONDITION_REACHED`, and `failMission` MUST remain valid.
+Given an Accepted or Active mission failure condition due before expiry, attempting expiry after both ticks are due MUST return `FAILURE_CONDITION_REACHED`, and `failMission` MUST remain valid.
 
 ### Scenario: Failure and expiry share a tick
 
 Given both triggers share a tick, expiry MUST remain the required transition.
+
+### Scenario: Offered mission has an earlier failure tick
+
+Given an Offered mission with an absolute expiry and an earlier failure tick, the failure trigger MUST NOT require the unavailable `failMission` transition, and the offer MUST remain expirable at its absolute expiry.
 
 ## Requirement: Invalid numeric payloads reject deterministically
 
