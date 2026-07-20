@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 1,
+  "feature": "browser-shared-trajectory-predictor-core-v1",
+  "route": {
+    "route": "/",
+    "testBridgeOwnProperty": false,
+    "testBridgeInWindow": false
+  },
+  "moduleLoad": {
+    "path": "/src/trajectory/index.ts",
+    "loaded": true,
+    "importedPublicApi": [
+      "createHestiaCircularTrajectoryRequest",
+      "createHestiaAccelerationImpulseTrajectoryRequest",
+      "createHestiaTrajectoryHazard",
+      "createTrajectoryPredictionId",
+      "createTrajectorySegmentId",
+      "predictTrajectory",
+      "serializeCanonicalTrajectoryValue"
+    ]
+  },
+  "runtime": {
+    "nodeVersion": "v22.23.1",
+    "browserEngine": "chromium",
+    "realBrowserExecution": true,
+    "ticksPerSecond": 120
+  },
+  "scenarios": {
+    "hestiaNearCircularCoast": {
+      "status": "Completed",
+      "predictionId": "trajectory:hestia.circular.v1",
+      "frameId": "frame:body-inertial.planet.hestia",
+      "startTick": 0,
+      "endTick": 678136,
+      "orbitalRadiusMeters": 8682000,
+      "initialSpeedMetersPerSecond": 9653.045873327917,
+      "segmentKind": "GravityCoast",
+      "resolvedIntegrator": "VelocityVerlet",
+      "integrationSteps": 5846,
+      "totalSamples": 99,
+      "circularClosureWithinTolerance": true,
+      "positionClosureDistanceMeters": 13.461120594412153,
+      "finiteOutput": true
+    },
+    "hestiaAccelerationAndImpulse": {
+      "status": "Completed",
+      "predictionId": "trajectory:hestia.acceleration-impulse.v1",
+      "frameId": "frame:body-inertial.planet.hestia",
+      "startTick": 0,
+      "endTick": 1200,
+      "segmentKinds": [
+        "ConstantInertialAcceleration",
+        "ImpulseDeltaV"
+      ],
+      "accelerationIntegrator": "RungeKutta4",
+      "accelerationStepCount": 100,
+      "accelerationMetersPerSecondSquared": {
+        "x": 0,
+        "y": 0.1,
+        "z": 0
+      },
+      "zeroAccelerationFinalPositionMeters": {
+        "x": 8681463.371780764,
+        "y": 99997.93968571124,
+        "z": 0
+      },
+      "acceleratedFinalPositionMeters": {
+        "x": 8681463.371781822,
+        "y": 100002.93963421155,
+        "z": 0
+      },
+      "accelerationPositionEffectMeters": {
+        "x": 0.0000010579824447631836,
+        "y": 4.9999485003063455,
+        "z": 0
+      },
+      "zeroAccelerationFinalVelocityMetersPerSecond": {
+        "x": -107.32429550371599,
+        "y": 9999.381909937707,
+        "z": 0
+      },
+      "acceleratedFinalVelocityMetersPerSecond": {
+        "x": -107.32429496979192,
+        "y": 10000.381889339566,
+        "z": 0
+      },
+      "accelerationVelocityEffectMetersPerSecond": {
+        "x": 5.339240658486233e-7,
+        "y": 0.9999794018585817,
+        "z": 0
+      },
+      "impulseTick": 1200,
+      "impulseDeltaVelocityMetersPerSecond": {
+        "x": 0,
+        "y": 10,
+        "z": 0
+      },
+      "preImpulseVelocityMetersPerSecond": {
+        "x": -107.32429496979192,
+        "y": 10000.381889339566,
+        "z": 0
+      },
+      "postImpulseVelocityMetersPerSecond": {
+        "x": -107.32429496979192,
+        "y": 10010.381889339566,
+        "z": 0
+      },
+      "resultingImpulseVelocityDeltaMetersPerSecond": {
+        "x": 0,
+        "y": 10,
+        "z": 0
+      },
+      "positionPreservedByImpulse": true,
+      "massPreservedByImpulse": true,
+      "impulseSampleReasons": [
+        "ImpulsePostState",
+        "Final"
+      ],
+      "totalIntegrationSteps": 100,
+      "totalSamples": 12,
+      "finiteOutput": true,
+      "resultFrozen": true,
+      "nestedOutputFrozen": true
+    },
+    "hestiaFrameSweptSphericalHazard": {
+      "status": "Completed",
+      "predictionId": "trajectory:hestia.browser-swept.v1",
+      "frameId": "frame:body-inertial.planet.hestia",
+      "segmentKind": "GravityCoast",
+      "resolvedIntegrator": "SemiImplicitEuler",
+      "stepStartTick": 0,
+      "stepEndTick": 120,
+      "hazardId": "hazard:hestia.browser-swept",
+      "entryFraction": 0.25,
+      "exitFraction": 0.75,
+      "minimumCenterDistanceMeters": 0,
+      "minimumClearanceMeters": -1,
+      "startedInside": false,
+      "tangent": false,
+      "closestApproachHazardId": "hazard:hestia.browser-swept",
+      "finiteOutput": true
+    }
+  },
+  "sourceApproximation": {
+    "model": "InertialLinearPointMass",
+    "sourceEpochTick": 0,
+    "ticksPerSecond": 120
+  },
+  "deterministicRepeat": {
+    "predictionId": "trajectory:hestia.acceleration-impulse.v1",
+    "canonicalSignature": "fnv1a32:d19caf90",
+    "signaturesEqual": true,
+    "canonicalResultsEqual": true
+  },
+  "browserHealth": {
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpErrors": []
+  },
+  "scope": [
+    "Normal-route Chromium execution without TestBridge and a dynamic Vite import of the public trajectory barrel.",
+    "Renderer-independent Hestia BodyInertial predictions for near-circular GravityCoast, ConstantInertialAcceleration, exact ImpulseDeltaV and one swept spherical hazard.",
+    "Finite immutable results, explicit integrator policies, 120-tick timing, hazard facts and canonical repeat equality."
+  ],
+  "nonGoals": [
+    "No FlightController, navigation, autopilot, map, renderer, HUD, runtime loop, timewarp or background-simulation integration.",
+    "No SOI transition, patched conics, N-body gravity, atmosphere, fuel use, variable mass, body-fixed thrust or gameplay safety decision.",
+    "No screenshot because this pure core slice intentionally has no visible representation."
+  ],
+  "verification": {
+    "command": "npm run test:e2e -- tests/e2e/trajectory-predictor-core.spec.ts",
+    "expectedResult": "one focused Playwright test passes in real Chromium and writes deterministic timestamp-free JSON and Markdown evidence",
+    "observedResult": "PASS",
+    "screenshot": "not captured: renderer-independent core with no visible representation"
+  },
+  "status": "PASS"
+}
