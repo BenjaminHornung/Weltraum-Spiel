@@ -267,6 +267,39 @@ describe("ship power/thermal fixed-step pipeline", () => {
     expect(result.batteryResults[0]).toMatchObject({ flowState: "Charging", busPowerW: 2.5 });
   });
 
+  it("requests shutdown and reports brownout when positive requests are below operational minimums", () => {
+    const base = createInput();
+    const input: ShipPowerThermalStepInput = {
+      ...base,
+      definitions: { ...base.definitions, cooling: [] },
+      state: { ...base.state, cooling: [] },
+      consumerRequests: [
+        { consumerId: ids.consumerCritical, requestedPowerW: 6 },
+        { consumerId: missionConsumerId, requestedPowerW: 4 }
+      ],
+      heatContributions: []
+    };
+
+    const result = evaluateShipPowerThermalStep(input);
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) throw new Error("Expected a successful fixed step.");
+    expect(result.consumerResults).toMatchObject([
+      { consumerId: ids.consumerCritical, state: "Unavailable", allocatedPowerW: 0 },
+      { consumerId: missionConsumerId, state: "Shed", allocatedPowerW: 0 }
+    ]);
+    expect(result.actions.map((action) => [action.code, action.consumerId])).toEqual([
+      ["PowerBusBrownout", null],
+      ["RequestConsumerShutdown", ids.consumerCritical],
+      ["RequestConsumerShutdown", missionConsumerId]
+    ]);
+    expect(result.events.map((event) => event.code)).toEqual([
+      "PowerAllocationCompleted",
+      "PowerConsumerShed",
+      "PowerBusBrownout"
+    ]);
+  });
+
   it("routes composed battery charge-loss heat into the referenced thermal node", () => {
     const base = createInput();
     const input: ShipPowerThermalStepInput = {

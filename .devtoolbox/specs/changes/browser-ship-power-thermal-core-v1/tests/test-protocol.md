@@ -9,7 +9,7 @@
 - Worktree: isolated task-owned worktree; other worktrees are out of scope.
 
 ## Scope
-Verify the standalone TypeScript ship-power-thermal domain only. No runtime, UI, renderer, Flight, Combat, Ship Builder, Persistence, Navigation, package-script, infrastructure, or roadmap integration is permitted.
+Verify the standalone TypeScript ship-power-thermal domain only. No runtime, UI, renderer, Flight, Combat, Ship Builder, Persistence, Navigation, infrastructure, or roadmap integration is permitted. Package-script scope is limited to assigning this spec exactly once to `test:e2e:core`.
 
 ## Planned Static Verification
 1. Confirm Node major version 22.
@@ -37,7 +37,7 @@ The unit suite must map named tests to all 30 prompt cases: sufficient source; C
 ## Planned Browser Verification
 Focused command: npm run test:e2e -- tests/e2e/ship-power-thermal-core.spec.ts.
 
-The spec must load /, prove window.TestBridge absent, dynamically import /src/ship-power-thermal/index.ts, run the required generator/battery/load/cooling sequence twice, compare canonical results, and assert empty console, pageerror, requestfailed, and non-success (non-2xx) HTTP response collections. No screenshot is required. The spec is not added to a package E2E group.
+The spec must load /, prove window.TestBridge absent, dynamically import /src/ship-power-thermal/index.ts, run the required generator/battery/load/cooling sequence twice, compare canonical results, and assert empty console, pageerror, requestfailed, and non-success (non-2xx) HTTP response collections. No screenshot is required. The spec is assigned exactly once to the existing `test:e2e:core` group.
 
 ## Full Regression
 After focused proof: npm run test:e2e. Existing Playwright webServer owns Vite startup. No raw foreground server or unmanaged background process is allowed.

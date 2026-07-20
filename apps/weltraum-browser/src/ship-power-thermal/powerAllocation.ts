@@ -104,7 +104,9 @@ interface ProvisionalAllocation {
 const finalizeConsumer = (entry: ProvisionalAllocation): ConsumerPowerAllocationResult => {
   const requestedPowerW = entry.request.requestedPowerW;
   const provisionalPowerW = entry.allocatedPowerW;
-  if (provisionalPowerW >= requestedPowerW) {
+  const meetsMinimumOperationalPower = requestedPowerW === 0
+    || requestedPowerW >= entry.definition.minimumOperationalPowerW;
+  if (provisionalPowerW >= requestedPowerW && meetsMinimumOperationalPower) {
     return {
       consumerId: entry.request.consumerId,
       busId: entry.definition.busId,

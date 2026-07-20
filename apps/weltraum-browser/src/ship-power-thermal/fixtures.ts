@@ -10,8 +10,7 @@ import {
 import type {
   ShipPowerThermalDefinitions,
   ShipPowerThermalState,
-  ShipPowerThermalStepInput,
-  ValidatedShipPowerThermalStepInput
+  ShipPowerThermalStepInput
 } from "./types";
 import {
   assertValidShipPowerThermalDefinitions,
@@ -54,4 +53,8 @@ export const createShipPowerThermalStateFixture = (
 /** Complete neutral fixture boundary. Every numeric value is supplied by the calling test/scenario. */
 export const createShipPowerThermalFixture = (
   input: ShipPowerThermalStepInput
-): ValidatedShipPowerThermalStepInput => assertValidShipPowerThermalStepInput(input);
+): ShipPowerThermalStepInput => {
+  const { rejectedConsumerResults: _rejectedConsumerResults, ...fixture } =
+    assertValidShipPowerThermalStepInput(input);
+  return Object.freeze(fixture);
+};

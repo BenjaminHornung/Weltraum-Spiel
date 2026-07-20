@@ -218,6 +218,48 @@ describe("ship power source dispatch and allocation", () => {
     expect(result.busResults[0]).toMatchObject({ allocatedPowerW: 11.25, remainingSurplusPowerW: 18.75 });
   });
 
+  it("fails closed when a fully supplied request is below the consumer operational minimum", () => {
+    const throttleable = consumer("consumer:throttleable", "Mission", {
+      minimumOperationalPowerW: 5,
+      canThrottle: true,
+      canShed: true
+    });
+    const nonThrottleable = consumer("consumer:non-throttleable", "Mission", {
+      minimumOperationalPowerW: 5,
+      canThrottle: false,
+      canShed: false
+    });
+    const result = evaluate(makeInput({
+      sources: [source("source:main", { maxOutputW: 8 })],
+      consumers: [throttleable, nonThrottleable],
+      requests: [
+        { consumerId: throttleable.consumerId, requestedPowerW: 4 },
+        { consumerId: nonThrottleable.consumerId, requestedPowerW: 4 }
+      ]
+    }));
+    const byId = new Map(result.consumerResults.map((entry) => [entry.consumerId, entry]));
+
+    expect(byId.get(throttleable.consumerId)).toMatchObject({
+      state: "Shed",
+      requestedPowerW: 4,
+      allocatedPowerW: 0,
+      satisfactionFraction: 0
+    });
+    expect(byId.get(nonThrottleable.consumerId)).toMatchObject({
+      state: "Unavailable",
+      requestedPowerW: 4,
+      allocatedPowerW: 0,
+      satisfactionFraction: 0
+    });
+    expect(result.busResults[0]).toMatchObject({
+      requestedPowerW: 8,
+      availablePowerW: 8,
+      allocatedPowerW: 0,
+      unmetPowerW: 8,
+      remainingSurplusPowerW: 8
+    });
+  });
+
   it("serves Flight before Utility under undersupply regardless of insertion order", () => {
     const utility = consumer("consumer:a-utility", "Utility", { minimumOperationalPowerW: 1 });
     const flight = consumer("consumer:z-flight", "Flight", { minimumOperationalPowerW: 1 });

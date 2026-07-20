@@ -6,6 +6,7 @@ import {
   ShipPowerThermalValidationError,
   assertValidShipPowerThermalStepInput,
   createShipPowerThermalFixture,
+  evaluateShipPowerThermalStep,
   parsePowerBusId,
   parsePowerSourceId,
   validateShipPowerThermalDefinitions,
@@ -436,5 +437,14 @@ describe("ship power/thermal validation", () => {
     expect(fixture.deltaTimeSeconds).toBe(input.deltaTimeSeconds);
     expect(fixture.definitions.sources[0].maxOutputW).toBe(input.definitions.sources[0].maxOutputW);
     expect(fixture.state.batteries[0].storedEnergyJ).toBe(input.state.batteries[0].storedEnergyJ);
+    expect(fixture).not.toHaveProperty("rejectedConsumerResults");
+
+    const result = evaluateShipPowerThermalStep(fixture);
+    const repeated = evaluateShipPowerThermalStep(createShipPowerThermalFixture(input));
+    expect(result.ok).toBe(true);
+    expect(repeated.ok).toBe(true);
+    if (!result.ok || !repeated.ok) throw new Error("Expected deterministic public fixture roundtrip.");
+    expect(repeated.canonicalJson).toBe(result.canonicalJson);
+    expect(repeated.signature).toBe(result.signature);
   });
 });

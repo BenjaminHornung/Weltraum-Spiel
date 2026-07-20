@@ -55,7 +55,7 @@ Run from `apps/weltraum-browser` under Node 22:
 npm run test:e2e -- tests/e2e/ship-power-thermal-core.spec.ts
 ```
 
-The existing Playwright configuration owns Vite startup. The spec is intentionally not added to a package-script E2E group in this task.
+The existing Playwright configuration owns Vite startup. The spec is assigned exactly once to the existing `test:e2e:core` group.
 
 ## Explicitly Deferred
 
