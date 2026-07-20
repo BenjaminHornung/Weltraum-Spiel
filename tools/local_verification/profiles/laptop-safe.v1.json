@@ -1,0 +1,9 @@
+{
+  "profile_version": 1,
+  "name": "laptop-safe",
+  "max_concurrent_worktrees": 1,
+  "vitest_workers_per_worktree": 1,
+  "playwright_workers_per_focused_run": 1,
+  "full_matrix_global_concurrency": 1,
+  "port_range": {"start": 5201, "end": 5299}
+}
