@@ -2,9 +2,11 @@ import { describe, expect, it } from "vitest";
 import {
   MemoryContentCache,
   MemoryContentCacheError,
+  canonicalizeContentKey,
   canonicalizeCacheSnapshot,
   computeContentHash,
-  createContentKey
+  createContentKey,
+  type MemoryContentCacheObserver
 } from "../../src/streaming";
 
 const key = (id: string) => createContentKey({
@@ -50,6 +52,79 @@ describe("MemoryContentCache", () => {
     cache.put(entry("allowed", 4, 4));
     expect(cache.totalBytes).toBeLessThanOrEqual(8);
     expect(cache.has(key("allowed"))).toBe(true);
+  });
+
+  it("publishes frozen canonical events only for distinct pin transitions", () => {
+    const events: Parameters<MemoryContentCacheObserver>[0][] = [];
+    const observedPinCounts: number[] = [];
+    let cache: MemoryContentCache;
+    cache = new MemoryContentCache(16, (event) => {
+      events.push(event);
+      if (event.kind === "Pinned" || event.kind === "Unpinned") {
+        observedPinCounts.push(
+          cache.snapshot().entries.find((entry) => entry.canonicalKey === event.canonicalKey)?.pinCount ?? -1
+        );
+      }
+    });
+    cache.put(entry("first", 4, 1));
+    cache.put(entry("second", 4, 2));
+    events.length = 0;
+
+    const firstPin = cache.pin(key("first"));
+    const duplicateFirstPin = cache.pin(key("first"));
+    const secondPin = cache.pin(key("second"));
+    expect(cache.pin(key("missing"))).toBeUndefined();
+
+    duplicateFirstPin?.release();
+    duplicateFirstPin?.release();
+    firstPin?.release();
+    firstPin?.release();
+    secondPin?.release();
+
+    expect(events).toEqual([
+      { kind: "Pinned", canonicalKey: canonicalizeContentKey(key("first")) },
+      { kind: "Pinned", canonicalKey: canonicalizeContentKey(key("second")) },
+      { kind: "Unpinned", canonicalKey: canonicalizeContentKey(key("first")) },
+      { kind: "Unpinned", canonicalKey: canonicalizeContentKey(key("second")) }
+    ]);
+    expect(observedPinCounts).toEqual([1, 1, 0, 0]);
+    expect(events.every(Object.isFrozen)).toBe(true);
+    expect(cache.snapshot().pinnedEntries).toBe(0);
+  });
+
+  it("emits one clear reset and keeps stale pin releases silent", () => {
+    const events: Parameters<MemoryContentCacheObserver>[0][] = [];
+    const cache = new MemoryContentCache(16, (event) => events.push(event));
+    cache.put(entry("clear-pinned", 4, 1));
+    const pin = cache.pin(key("clear-pinned"));
+    events.length = 0;
+
+    cache.clear();
+    pin?.release();
+    pin?.release();
+
+    expect(events).toEqual([{ kind: "Cleared", entries: 1, bytes: 4 }]);
+    expect(Object.isFrozen(events[0])).toBe(true);
+    expect(pin?.isValid).toBe(false);
+    expect(pin?.isReleased).toBe(true);
+  });
+
+  it("isolates observer failures from pin release, clear, and later eviction", () => {
+    const cache = new MemoryContentCache(4, () => { throw new Error("observer failure"); });
+    expect(() => cache.put(entry("pinned", 4, 1))).not.toThrow();
+    const pin = cache.pin(key("pinned"));
+    expect(pin).toBeDefined();
+    expect(cache.snapshot().pinnedEntries).toBe(1);
+    expect(() => pin?.release()).not.toThrow();
+    expect(() => pin?.release()).not.toThrow();
+    expect(cache.snapshot().pinnedEntries).toBe(0);
+
+    expect(() => cache.put(entry("replacement", 4, 2))).not.toThrow();
+    expect(cache.has(key("pinned"))).toBe(false);
+    expect(cache.has(key("replacement"))).toBe(true);
+    expect(cache.snapshot().evictionCount).toBe(1);
+    expect(() => cache.clear()).not.toThrow();
+    expect(cache.snapshot()).toMatchObject({ entryCount: 0, totalBytes: 0, pinnedEntries: 0 });
   });
 
   it("rejects the same key with different content", () => {

@@ -27,7 +27,9 @@ The current browser runtime provides a playable local-space flight slice:
 - Ship Builder part/blueprint foundations plus deterministic stats, handling diagnostics and static flight-readiness reports. There is still no player-facing Builder UI, runtime handoff or active-ship replacement.
 - A player-facing Graphics dialog with versioned presets, strict local preference storage and a presentation-only Three.js adapter. Graphics choices do not alter simulation, navigation or world truth.
 
-The browser runtime does **not** yet provide full planets, voxel terrain, orbital flight, SOI or patched-conics navigation, seamless surface transitions, production multiplayer, a playable ship-builder UI, persistent cargo gameplay, full combat, economy or missions.
+The delivered `surfaceLab=1` route is a technical voxel/worker/mesh/render proving ground only. It is not player-facing voxel terrain or surface gameplay; no player-facing voxel terrain/gameplay is delivered by this route.
+
+The browser runtime does **not** yet provide full planets, player-facing voxel terrain/gameplay, orbital flight, SOI or patched-conics navigation, seamless surface transitions, production multiplayer, a playable ship-builder UI, persistent cargo gameplay, full combat, economy or missions.
 
 For the detailed snapshot, see [docs/current-mainline-state.md](docs/current-mainline-state.md). The longer planning index is [docs/roadmap/living-master-plan.md](docs/roadmap/living-master-plan.md).
 

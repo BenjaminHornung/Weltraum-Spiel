@@ -19,7 +19,7 @@ export default defineConfig({
   timeout: 30_000,
   expect: { timeout: 5_000 },
   forbidOnly: process.env.CI === "true",
-  workers: process.env.CI === "true" ? 1 : undefined,
+  workers: process.env.CI === "true" ? 1 : 2,
   outputDir: `./evidence/playwright-output${artifactSuffix}`,
   reporter: [["list"], ["html", { outputFolder: `./evidence/playwright-report${artifactSuffix}`, open: "never" }]],
   use: {

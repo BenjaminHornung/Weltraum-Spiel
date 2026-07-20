@@ -8660,3 +8660,280 @@ body[data-ui-surface="flight"] #graphics-settings-button {
     grid-row: 1;
   }
 }
+
+/* Hestia Surface Lab is an isolated technical proving-ground projection. */
+body[data-surface-lab="1"] #app > :not(#debug-scene):not(#surface-lab-hud):not(#surface-lab-failure) {
+  display: none !important;
+}
+
+body[data-surface-lab="1"] #debug-scene {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #081718;
+}
+
+.surface-lab-failure {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 40;
+  box-sizing: border-box;
+  width: min(620px, calc(100vw - 48px));
+  padding: 24px 28px;
+  transform: translate(-50%, -50%);
+  border: 1px solid #a66f54;
+  border-left: 5px solid #d7af68;
+  background: #161d1d;
+  color: #e8f0ed;
+  font-family: "Rajdhani Local", Inter, ui-sans-serif, system-ui, sans-serif;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+}
+
+.surface-lab-failure h1 {
+  margin: 0 0 12px;
+  color: #f1d49c;
+  font-size: 1.25rem;
+  letter-spacing: 0.1em;
+}
+
+.surface-lab-failure p {
+  margin: 7px 0 0;
+  line-height: 1.4;
+}
+
+.surface-lab-hud {
+  --surface-lab-edge: clamp(12px, 1.4vw, 22px);
+  --surface-lab-panel: #0b1819;
+  --surface-lab-border: #315756;
+  --surface-lab-muted: #91aaa5;
+  --surface-lab-text: #d4e5df;
+  --surface-lab-cyan: #6fc8c1;
+  --surface-lab-amber: #d7af68;
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  color: var(--surface-lab-text);
+  font-family: "Rajdhani Local", Inter, ui-sans-serif, system-ui, sans-serif;
+  pointer-events: none;
+}
+
+.surface-lab-mode-bar,
+.surface-lab-summary,
+.surface-lab-controls,
+.surface-lab-telemetry {
+  border: 1px solid var(--surface-lab-border);
+  background: var(--surface-lab-panel);
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.28);
+  pointer-events: auto;
+}
+
+.surface-lab-mode-bar {
+  position: absolute;
+  top: var(--surface-lab-edge);
+  right: var(--surface-lab-edge);
+  left: var(--surface-lab-edge);
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 7px 12px;
+  border-left: 4px solid var(--surface-lab-cyan);
+  letter-spacing: 0.08em;
+}
+
+.surface-lab-mode-bar strong {
+  color: #e7f5f0;
+  font-size: 1.1rem;
+  letter-spacing: 0.16em;
+}
+
+.surface-lab-mode-bar span,
+.surface-lab-mode-bar code {
+  color: var(--surface-lab-muted);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.surface-lab-mode-bar .surface-lab-not-gameplay {
+  margin-left: auto;
+  color: var(--surface-lab-amber);
+}
+
+.surface-lab-summary,
+.surface-lab-controls,
+.surface-lab-telemetry {
+  position: absolute;
+  padding: 12px 14px;
+}
+
+.surface-lab-summary {
+  top: calc(var(--surface-lab-edge) + 56px);
+  left: var(--surface-lab-edge);
+  width: min(300px, 28vw);
+  border-left: 4px solid var(--surface-lab-cyan);
+}
+
+.surface-lab-controls {
+  bottom: var(--surface-lab-edge);
+  left: var(--surface-lab-edge);
+  width: min(440px, 42vw);
+}
+
+.surface-lab-telemetry {
+  top: calc(var(--surface-lab-edge) + 56px);
+  right: var(--surface-lab-edge);
+  bottom: var(--surface-lab-edge);
+  width: min(370px, 33vw);
+  overflow: auto;
+  scrollbar-color: #416a67 #0b1819;
+}
+
+.surface-lab-hud h2 {
+  margin: 0 0 8px;
+  color: var(--surface-lab-cyan);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.surface-lab-summary strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #f0faf6;
+  font-size: 1.15rem;
+}
+
+.surface-lab-summary p,
+.surface-lab-controls-hint,
+.surface-lab-telemetry-notice {
+  margin: 4px 0;
+  color: var(--surface-lab-muted);
+  font-size: 0.78rem;
+  line-height: 1.25;
+}
+
+#surface-lab-risk,
+#surface-lab-warnings {
+  color: var(--surface-lab-amber);
+}
+
+.surface-lab-control-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 7px 0;
+}
+
+.surface-lab-generation-row {
+  display: grid;
+  grid-template-columns: minmax(130px, 1fr) 82px auto;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.surface-lab-hud button,
+.surface-lab-hud input,
+.surface-lab-hud select {
+  min-height: 31px;
+  border: 1px solid #416a67;
+  border-radius: 2px;
+  background: #102324;
+  color: var(--surface-lab-text);
+  font: inherit;
+  font-size: 0.78rem;
+}
+
+.surface-lab-hud button {
+  padding: 4px 9px;
+  cursor: pointer;
+}
+
+.surface-lab-hud button:hover,
+.surface-lab-hud button[aria-pressed="true"] {
+  border-color: var(--surface-lab-cyan);
+  background: #173130;
+  color: #f1fffa;
+}
+
+.surface-lab-hud input,
+.surface-lab-hud select {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 4px 7px;
+}
+
+.surface-lab-hud .surface-lab-primary-action {
+  border-color: #5caea7;
+  background: #1c4946;
+  font-weight: 600;
+}
+
+.surface-lab-hud button:focus-visible,
+.surface-lab-hud input:focus-visible,
+.surface-lab-hud select:focus-visible {
+  outline: 2px solid #b7f0e7;
+  outline-offset: 2px;
+}
+
+.surface-lab-telemetry-notice {
+  padding-bottom: 8px;
+  border-bottom: 1px solid #294644;
+  color: var(--surface-lab-amber);
+}
+
+.surface-lab-telemetry dl {
+  display: grid;
+  grid-template-columns: minmax(105px, 0.78fr) minmax(0, 1.22fr);
+  gap: 4px 9px;
+  margin: 0;
+  font-size: 0.73rem;
+  line-height: 1.18;
+}
+
+.surface-lab-telemetry dt {
+  color: var(--surface-lab-muted);
+}
+
+.surface-lab-telemetry dd {
+  min-width: 0;
+  margin: 0;
+  color: var(--surface-lab-text);
+  overflow-wrap: anywhere;
+  text-align: right;
+}
+
+.surface-lab-telemetry dd[id$="hashes"] {
+  max-height: 7.5em;
+  overflow: auto;
+  color: #91d8d1;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.66rem;
+}
+
+@media (max-width: 1100px) {
+  .surface-lab-summary {
+    width: 250px;
+  }
+
+  .surface-lab-controls {
+    width: 390px;
+  }
+
+  .surface-lab-telemetry {
+    width: 310px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .surface-lab-hud *,
+  .surface-lab-hud *::before,
+  .surface-lab-hud *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

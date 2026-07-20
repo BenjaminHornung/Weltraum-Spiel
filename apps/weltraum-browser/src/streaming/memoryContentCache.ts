@@ -86,6 +86,8 @@ export interface MemoryContentCacheObserver {
     | { readonly kind: "Miss"; readonly canonicalKey: ContentKeyCanonical }
     | { readonly kind: "Admitted"; readonly canonicalKey: ContentKeyCanonical; readonly byteLength: number }
     | { readonly kind: "Evicted"; readonly canonicalKey: ContentKeyCanonical; readonly byteLength: number }
+    | { readonly kind: "Pinned"; readonly canonicalKey: ContentKeyCanonical }
+    | { readonly kind: "Unpinned"; readonly canonicalKey: ContentKeyCanonical }
     | { readonly kind: "Cleared"; readonly entries: number; readonly bytes: number }
   >): void;
 }
@@ -199,6 +201,9 @@ export class MemoryContentCache {
     }
     this.#touch(entry);
     entry.pinCount += 1;
+    if (entry.pinCount === 1) {
+      this.#emit(Object.freeze({ kind: "Pinned", canonicalKey }));
+    }
     return this.#createPin(entry);
   }
 
@@ -385,6 +390,9 @@ export class MemoryContentCache {
         released = true;
         if (entry.active && entry.generation === cache.#generation && entry.pinCount > 0) {
           entry.pinCount -= 1;
+          if (entry.pinCount === 0) {
+            cache.#emit(Object.freeze({ kind: "Unpinned", canonicalKey: entry.canonicalKey }));
+          }
         }
       }
     });

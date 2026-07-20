@@ -1,8 +1,14 @@
-import { byteCount, planningEpoch, workerEpoch, type PlanningEpoch, type WorkerEpoch, type WorkerJobId } from "./ids";
+import { byteCount, nextWorkerEpoch, planningEpoch, workerEpoch, type PlanningEpoch, type WorkerEpoch, type WorkerJobId } from "./ids";
 import type { JobOutputDataMessage } from "./messages";
 import {
+  GENERATE_HESTIA_VOXEL_BRICK_MESH_JOB_KIND,
+  expectedHestiaVoxelInputBytes,
   snapshotWorkerJobRequest,
   transferListFor,
+  validateHestiaVoxelBrickMeshPayload,
+  validateHestiaVoxelBrickMeshResultDetails,
+  validateHestiaVoxelInputBundle,
+  validateHestiaVoxelWorkerOutputByteLength,
   validateTransferableBundle,
   validateTransformPayload,
   type TransferableBufferBundle,
@@ -19,6 +25,12 @@ export type WorkerJobTerminal =
   | { readonly kind: "Cancelled"; readonly reason: "CancelledBeforeStart" | "CancelledDuringExecution" }
   | { readonly kind: "Failed"; readonly failure: WorkerJobFailure; readonly integrationDecision?: WorkerResultIntegrationDecision };
 
+type CompletedWorkerJobTerminal = Extract<WorkerJobTerminal, { readonly kind: "Completed" }>;
+const acceptedCompletedTerminals = new WeakSet<CompletedWorkerJobTerminal>();
+
+export const isWorkerPoolAcceptedCompletedTerminal = (value: unknown): value is CompletedWorkerJobTerminal =>
+  typeof value === "object" && value !== null && acceptedCompletedTerminals.has(value as CompletedWorkerJobTerminal);
+
 export interface WorkerJobTicket {
   readonly jobId: WorkerJobId;
   readonly result: Promise<WorkerJobTerminal>;
@@ -29,9 +41,10 @@ export type WorkerPoolEvent =
   | { readonly type: "Queued"; readonly jobId: WorkerJobId; readonly queueDepth: number }
   | { readonly type: "Dispatched"; readonly jobId: WorkerJobId; readonly workerEpoch: WorkerEpoch; readonly inputBytes: number }
   | { readonly type: "OutputTransferred"; readonly jobId: WorkerJobId; readonly outputBytes: number }
-  | { readonly type: "Completed"; readonly jobId: WorkerJobId; readonly outputBytes: number }
+  | { readonly type: "Completed"; readonly jobId: WorkerJobId; readonly outputBytes: number; readonly executionDurationMs?: number }
   | { readonly type: "Cancelled" | "Failed" | "StaleResultRejected"; readonly jobId: WorkerJobId }
-  | { readonly type: "WorkerRestarted"; readonly workerEpoch: WorkerEpoch };
+  | { readonly type: "WorkerRestarted"; readonly workerEpoch: WorkerEpoch }
+  | { readonly type: "WorkerStateChanged"; readonly workerCount: number; readonly activeWorkers: number };
 
 export interface WorkerPoolOptions {
   readonly workerCount: number;
@@ -68,6 +81,7 @@ export class WorkerPool {
   private readonly records = new Map<WorkerJobId, TicketRecord>();
   private readonly seen = new Set<WorkerJobId>();
   private readonly handles: WorkerHandle[] = [];
+  private readonly replacementCandidates = new Set<WorkerHandle>();
   private readonly transportFactory: WorkerTransportFactory;
   private lifecycle: WorkerPoolSnapshot["state"] = "Stopped";
   private epoch: WorkerEpoch = workerEpoch(0);
@@ -97,6 +111,7 @@ export class WorkerPool {
     } catch (error) {
       for (const handle of this.handles) handle.terminate();
       this.handles.length = 0;
+      this.emitWorkerState();
       this.lifecycle = "Stopped";
       throw error;
     }
@@ -114,10 +129,20 @@ export class WorkerPool {
     if (request.workerEpoch !== 0) throw new RangeError("Caller requests must use workerEpoch 0; the pool binds it at dispatch.");
     if (request.planningEpoch !== this.plan) throw new RangeError("Request planningEpoch does not match the pool planning epoch.");
     if (request.jobKind === "TransformBuffer") validateTransformPayload(request.payload);
+    const hestiaPayload = request.jobKind === GENERATE_HESTIA_VOXEL_BRICK_MESH_JOB_KIND
+      ? validateHestiaVoxelBrickMeshPayload(request.payload)
+      : undefined;
+    if (hestiaPayload !== undefined) {
+      if (Number(request.inputRevision) !== Number(hestiaPayload.sourceRevision)) throw new RangeError("Hestia inputRevision must match sourceRevision.");
+      if (request.estimatedInputBytes !== expectedHestiaVoxelInputBytes(hestiaPayload)) throw new RangeError("Hestia estimated input bytes are invalid.");
+      if (request.estimatedOutputBytes <= 0) throw new RangeError("Hestia estimated output bytes must be positive.");
+      validateHestiaVoxelWorkerOutputByteLength(request.estimatedOutputBytes);
+    }
     const input = validateTransferableBundle(sourceInput);
     if (input.ownership !== "SenderToWorker" || input.revision !== request.inputRevision || input.byteLength !== request.estimatedInputBytes) {
       throw new RangeError("Input bundle does not match request ownership, revision, or byte estimate.");
     }
+    if (hestiaPayload !== undefined) validateHestiaVoxelInputBundle(hestiaPayload, input);
     const record = this.createRecord(request, input);
     if (this.seen.has(request.jobId)) {
       this.fail(record, "DuplicateJob", "Job IDs are unique for the lifetime of a pool.");
@@ -162,22 +187,42 @@ export class WorkerPool {
     if (this.lifecycle !== "Running") throw new Error("WorkerPool is not running.");
     const old = this.handles.find((handle) => handle.slot === slot);
     if (!old) throw new RangeError(`Unknown worker slot ${slot}.`);
+
+    const baseEpoch = this.epoch;
+    const candidate = this.createWorkerHandle(slot, nextWorkerEpoch(baseEpoch));
+    this.replacementCandidates.add(candidate);
+    try {
+      await candidate.start();
+      if (this.lifecycle !== "Running") throw new Error("WorkerPool stopped before replacement candidate admission.");
+      if (this.handles.find((handle) => handle.slot === slot) !== old || this.epoch !== baseEpoch) {
+        throw new Error("WorkerPool changed before replacement candidate admission.");
+      }
+
+      const index = this.handles.indexOf(old);
+      this.replacementCandidates.delete(candidate);
+      this.handles.splice(index, 1, candidate);
+      this.epoch = candidate.workerEpoch;
+      this.restarts += 1;
+    } catch (error) {
+      candidate.terminate();
+      throw error;
+    } finally {
+      this.replacementCandidates.delete(candidate);
+    }
+
     this.failActive(old, "Worker was explicitly replaced.");
     old.terminate();
-    try {
-      const replacement = await this.createHandle(slot, true);
-      this.dispatch();
-      return replacement.workerEpoch;
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Replacement worker failed to start.";
-      this.stopAfterReplacementFailure(message);
-      throw error;
-    }
+    this.emit({ type: "WorkerRestarted", workerEpoch: candidate.workerEpoch });
+    this.emitWorkerState();
+    this.dispatch();
+    return candidate.workerEpoch;
   }
 
   public async shutdown(): Promise<void> {
     if (this.lifecycle === "Stopped") return;
     this.lifecycle = "ShuttingDown";
+    for (const candidate of this.replacementCandidates) candidate.terminate();
+    this.replacementCandidates.clear();
     for (const request of this.queue.drain()) {
       const record = this.records.get(request.jobId);
       if (record) {
@@ -195,6 +240,7 @@ export class WorkerPool {
       finally { handle.terminate(); }
     }
     this.handles.length = 0;
+    this.emitWorkerState();
     this.lifecycle = "Stopped";
   }
 
@@ -226,19 +272,30 @@ export class WorkerPool {
   }
 
   private nextEpoch(): WorkerEpoch {
-    if (this.epoch >= Number.MAX_SAFE_INTEGER) throw new RangeError("Worker epoch space is exhausted.");
-    this.epoch = workerEpoch(this.epoch + 1);
+    this.epoch = nextWorkerEpoch(this.epoch);
     return this.epoch;
   }
 
-  private async createHandle(slot: number, replacement: boolean): Promise<WorkerHandle> {
+  private createWorkerHandle(slot: number, epoch: WorkerEpoch): WorkerHandle {
     const callbacks: WorkerHandleCallbacks = {
-      onCompleted: (handle, result, output) => this.completed(handle, result, output),
-      onCancelled: (handle, jobId) => this.cancelled(handle, jobId),
-      onFailed: (handle, failure) => this.workerFailed(handle, failure),
-      onFault: (handle, reason) => this.faulted(handle, reason),
+      onCompleted: (handle, result, output) => {
+        if (this.handles.includes(handle)) this.completed(handle, result, output);
+      },
+      onCancelled: (handle, jobId) => {
+        if (this.handles.includes(handle)) this.cancelled(handle, jobId);
+      },
+      onFailed: (handle, failure) => {
+        if (this.handles.includes(handle)) this.workerFailed(handle, failure);
+      },
+      onFault: (handle, reason) => {
+        if (this.handles.includes(handle)) this.faulted(handle, reason);
+      },
     };
-    const handle = new WorkerHandle(slot, this.nextEpoch(), this.transportFactory, callbacks);
+    return new WorkerHandle(slot, epoch, this.transportFactory, callbacks);
+  }
+
+  private async createHandle(slot: number, replacement: boolean): Promise<WorkerHandle> {
+    const handle = this.createWorkerHandle(slot, this.nextEpoch());
     const index = this.handles.findIndex((entry) => entry.slot === slot);
     if (index < 0) this.handles.push(handle); else this.handles.splice(index, 1, handle);
     this.handles.sort((left, right) => left.slot - right.slot);
@@ -248,8 +305,10 @@ export class WorkerPool {
       const failedIndex = this.handles.indexOf(handle);
       if (failedIndex >= 0) this.handles.splice(failedIndex, 1);
       handle.terminate();
+      this.emitWorkerState();
       throw error;
     }
+    this.emitWorkerState();
     if (replacement) {
       this.restarts += 1;
       this.emit({ type: "WorkerRestarted", workerEpoch: handle.workerEpoch });
@@ -283,6 +342,10 @@ export class WorkerPool {
     this.emit({ type: "OutputTransferred", jobId: result.jobId, outputBytes: output.outputBytes });
     const record = this.records.get(result.jobId);
     if (!record || record.handle !== handle) return this.replaceAfterFault(handle, "Result belongs to an unknown job.");
+    const hestiaPayload = record.request.jobKind === GENERATE_HESTIA_VOXEL_BRICK_MESH_JOB_KIND
+      ? validateHestiaVoxelBrickMeshPayload(record.request.payload)
+      : undefined;
+    const outputRevision = hestiaPayload?.outputRevision ?? validateTransformPayload(record.request.payload).outputRevision;
     const decision = integrateWorkerResult(Object.freeze({
       jobId: record.request.jobId,
       cancelled: record.cancelRequested,
@@ -290,13 +353,42 @@ export class WorkerPool {
       workerEpoch: handle.workerEpoch,
       targetKey: record.request.targetKey,
       inputRevision: record.request.inputRevision,
-      outputRevision: validateTransformPayload(record.request.payload).outputRevision,
+      outputRevision,
       algorithmVersion: record.request.algorithmVersion,
       maximumOutputBytes: byteCount(record.request.estimatedOutputBytes, "maximumOutputBytes"),
+      ...(hestiaPayload === undefined ? {} : { expectedHestiaPayload: hestiaPayload }),
     }), result, output.bundle);
     if (decision.kind === "Accepted") {
-      this.settle(record, Object.freeze({ kind: "Completed", result, output: decision.bundle }));
-      this.emit({ type: "Completed", jobId: result.jobId, outputBytes: output.outputBytes });
+      const normalizedDetails = result.details === undefined
+        ? undefined
+        : validateHestiaVoxelBrickMeshResultDetails(result.details);
+      if (hestiaPayload !== undefined && normalizedDetails === undefined) {
+        throw new Error("Accepted Hestia result details are missing.");
+      }
+      const acceptedResult: WorkerJobResult = Object.freeze({
+        jobId: record.request.jobId,
+        targetKey: record.request.targetKey,
+        planningEpoch: record.request.planningEpoch,
+        workerEpoch: handle.workerEpoch,
+        inputRevision: record.request.inputRevision,
+        outputRevision,
+        algorithmVersion: record.request.algorithmVersion,
+        outputBytes: decision.bundle.byteLength,
+        ...(result.contentHash === undefined ? {} : { contentHash: result.contentHash }),
+        ...(normalizedDetails === undefined ? {} : { details: normalizedDetails }),
+      });
+      const terminal: CompletedWorkerJobTerminal = Object.freeze({ kind: "Completed", result: acceptedResult, output: decision.bundle });
+      acceptedCompletedTerminals.add(terminal);
+      this.settle(record, terminal);
+      const executionDurationMs = hestiaPayload === undefined || normalizedDetails === undefined
+        ? undefined
+        : normalizedDetails.generationMilliseconds + normalizedDetails.meshingMilliseconds;
+      this.emit({
+        type: "Completed",
+        jobId: result.jobId,
+        outputBytes: output.outputBytes,
+        ...(executionDurationMs === undefined ? {} : { executionDurationMs }),
+      });
     } else if (record.cancelRequested) {
       this.settle(record, Object.freeze({ kind: "Cancelled", reason: "CancelledDuringExecution" }));
       this.emit({ type: "Cancelled", jobId: result.jobId });
@@ -338,6 +430,7 @@ export class WorkerPool {
   private replaceAfterFault(handle: WorkerHandle, reason: string): void {
     this.failActive(handle, reason);
     handle.terminate();
+    this.emitWorkerState();
     if (this.lifecycle !== "Running") return;
     void this.createHandle(handle.slot, true).then(() => this.dispatch()).catch((error: unknown) => {
       const message = error instanceof Error ? error.message : "Replacement worker failed to start.";
@@ -352,6 +445,7 @@ export class WorkerPool {
     }
     for (const handle of this.handles) handle.terminate();
     this.handles.length = 0;
+    this.emitWorkerState();
     this.lifecycle = "Stopped";
   }
 
@@ -381,6 +475,14 @@ export class WorkerPool {
     } catch {
       // Diagnostics cannot alter queue, dispatch, or lifecycle decisions.
     }
+  }
+
+  private emitWorkerState(): void {
+    this.emit({
+      type: "WorkerStateChanged",
+      workerCount: this.options.workerCount,
+      activeWorkers: this.handles.filter((handle) => handle.state === "Ready" || handle.state === "Busy").length,
+    });
   }
 }
 
