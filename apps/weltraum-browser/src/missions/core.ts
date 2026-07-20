@@ -271,7 +271,16 @@ const prepareInstanceCommand = (
   if (!("definitionId" in definition)) {
     return definition;
   }
-  const fingerprint = commandFingerprint(commandName, command, payload);
+  let fingerprint: PersistenceSignature;
+  try {
+    fingerprint = commandFingerprint(commandName, command, payload);
+  } catch (error) {
+    return rejection(
+      "INVALID_COMMAND",
+      "/command",
+      error instanceof Error ? error.message : "Mission command payload is invalid."
+    );
+  }
   const replay = replayOrCas(command.instance, command, fingerprint);
   if (replay !== null) {
     return replay;
@@ -281,20 +290,29 @@ const prepareInstanceCommand = (
     command.instance.state === "Accepted" ||
     command.instance.state === "Active"
   ) {
-    if (
-      commandName !== "expireMission" &&
-      command.instance.expiry !== null &&
-      command.at.tick >= command.instance.expiry.tick
-    ) {
+    const earliestDueFailureTick =
+      command.instance.state === "Offered"
+        ? null
+        : definition.failureConditions.reduce<number | null>((earliest, condition) => {
+            if (condition.kind !== "UniverseTickReached" || command.at.tick < condition.tick) {
+              return earliest;
+            }
+            return earliest === null ? condition.tick : Math.min(earliest, condition.tick);
+          }, null);
+    const dueExpiryTick =
+      command.instance.expiry !== null && command.at.tick >= command.instance.expiry.tick
+        ? command.instance.expiry.tick
+        : null;
+    const requiredTerminalCommand =
+      dueExpiryTick !== null && (earliestDueFailureTick === null || dueExpiryTick <= earliestDueFailureTick)
+        ? "expireMission"
+        : earliestDueFailureTick !== null
+          ? "failMission"
+          : null;
+    if (requiredTerminalCommand === "expireMission" && commandName !== "expireMission") {
       return rejection("EXPIRY_REQUIRED", "/at", "Mission expiry has been reached; expireMission is required.");
     }
-    if (
-      commandName !== "failMission" &&
-      commandName !== "expireMission" &&
-      definition.failureConditions.some(
-        (condition) => condition.kind === "UniverseTickReached" && command.at.tick >= condition.tick
-      )
-    ) {
+    if (requiredTerminalCommand === "failMission" && commandName !== "failMission") {
       return rejection(
         "FAILURE_CONDITION_REACHED",
         "/at",
@@ -316,7 +334,7 @@ const prerequisitesSatisfied = (
 ): boolean =>
   objective.prerequisiteObjectiveIds.every((prerequisiteId) => {
     const state = stateById.get(prerequisiteId)?.state;
-    return state === "Completed" || state === "Skipped";
+    return state === "Completed" || state === "Failed" || state === "Skipped";
   });
 
 const refreshObjectiveAvailability = (
@@ -739,9 +757,12 @@ export const failObjective = (command: ReasonedObjectiveMissionCommand): Mission
       ? rejection("OBJECTIVE_TERMINAL", "/objectiveId", "Objective is terminal.")
       : rejection("OBJECTIVE_NOT_ACTIVE", "/objectiveId", "Objective is not Active.");
   }
-  const objectiveStates = [...command.instance.objectiveStates];
-  objectiveStates[index] = { ...current, state: "Failed" };
+  const failedObjectiveStates = [...command.instance.objectiveStates];
+  failedObjectiveStates[index] = { ...current, state: "Failed" };
   const failsMission = shouldFailFromObjective(prepared.definition, command.objectiveId);
+  const objectiveStates = failsMission
+    ? failedObjectiveStates
+    : refreshObjectiveAvailability(prepared.definition, failedObjectiveStates, command.instance.state);
   const next = {
     ...instanceSignaturePayload(command.instance),
     state: failsMission ? "Failed" as const : command.instance.state,
