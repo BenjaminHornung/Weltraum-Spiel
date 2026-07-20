@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "feature": "browser-mission-contract-framework-core-v1",
+  "route": "/",
+  "testBridgeAbsent": true,
+  "modulePath": "/src/missions/index.ts",
+  "fixtureCount": 6,
+  "fixtureDefinitionIds": [
+    "mission-definition:hestia-geological-survey",
+    "mission-definition:ore-extraction-delivery",
+    "mission-definition:damaged-surface-relay-repair",
+    "mission-definition:black-box-data-core-recovery",
+    "mission-definition:hazard-zone-atmospheric-sampling",
+    "mission-definition:cargo-courier-outpost"
+  ],
+  "survey": {
+    "finalState": "RewardClaimed",
+    "rewardClaimState": "Claimed",
+    "signature": "fnv1a32:a7774218",
+    "objectiveStates": [
+      "Completed",
+      "Completed"
+    ],
+    "eventIntentCount": 22,
+    "rewardIntentKinds": [
+      "Resource",
+      "ReputationDelta"
+    ]
+  },
+  "extractionDelivery": {
+    "finalState": "Completed",
+    "signature": "fnv1a32:2d5dcd31",
+    "objectiveStates": [
+      "Completed",
+      "Completed",
+      "Completed"
+    ],
+    "extractedQuantity": 12,
+    "deliveredQuantity": 12
+  },
+  "expiry": {
+    "finalState": "Expired",
+    "expiryTick": 3600,
+    "penaltyIntentCount": 1
+  },
+  "deterministicRepeat": {
+    "byteIdentical": true,
+    "firstBytes": 804,
+    "secondBytes": 804
+  },
+  "health": {
+    "consoleErrors": 0,
+    "pageErrors": 0,
+    "requestFailures": 0,
+    "httpErrors": 0
+  },
+  "status": "PASS"
+}
