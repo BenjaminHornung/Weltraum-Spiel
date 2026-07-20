@@ -319,6 +319,41 @@ describe("mission lifecycle, graph modes, and objective progress", () => {
     ).toBe(true);
   });
 
+  it("refreshes sequential availability after a non-terminal objective failure", () => {
+    const definition = validateMissionDefinition({
+      ...HESTIA_GEOLOGICAL_SURVEY,
+      objectiveGraph: {
+        mode: "Sequential",
+        objectives: [
+          { ...HESTIA_GEOLOGICAL_SURVEY.objectiveGraph.objectives[0], requirementMode: "Optional" },
+          {
+            ...HESTIA_GEOLOGICAL_SURVEY.objectiveGraph.objectives[1],
+            hiddenUntilPrerequisitesMet: false,
+            prerequisiteObjectiveIds: []
+          }
+        ]
+      }
+    });
+    const active = activeMission(definition);
+    expect(active.objectiveStates.map((state) => state.state)).toEqual(["Active", "Locked"]);
+
+    const result = expectSuccess(
+      failObjective({
+        commandId: commandId("optional-failure-advances-sequence"),
+        expectedRevision: active.revision,
+        at: createUniverseClock(30),
+        definition,
+        instance: active,
+        objectiveId: objectiveIdAt(definition, 0),
+        reasonCode: parseExternalReferenceId("mission-reason:optional-objective-failed")
+      })
+    );
+
+    expect(result.instance.state).toBe("Active");
+    expect(result.instance.objectiveStates.map((state) => state.state)).toEqual(["Failed", "Active"]);
+    expect(result.outcomeIntents).toEqual([]);
+  });
+
   it("enforces eligibility and explicit expiry", () => {
     const ineligible = offer(HESTIA_GEOLOGICAL_SURVEY, { "license-level": 0 }).instance;
     expect(
@@ -396,6 +431,24 @@ describe("mission lifecycle, graph modes, and objective progress", () => {
       progress: { kind: "Target", targetId: MISSION_FIXTURE_IDS.outpost }
     });
     expect(result).toMatchObject({ ok: false, rejection: { code: "TARGET_MISMATCH" } });
+    expect(JSON.stringify(instance)).toBe(before);
+  });
+
+  it("rejects non-finite progress as a typed command error without throwing or mutating", () => {
+    const definition = HESTIA_GEOLOGICAL_SURVEY;
+    const instance = activeMission(definition);
+    const before = JSON.stringify(instance);
+    const result = applyObjectiveProgress({
+      commandId: commandId("non-finite-progress"),
+      expectedRevision: instance.revision,
+      at: createUniverseClock(30),
+      definition,
+      instance,
+      objectiveId: objectiveIdAt(definition, 0),
+      progress: { kind: "Count", amount: Number.POSITIVE_INFINITY }
+    });
+
+    expect(result).toMatchObject({ ok: false, rejection: { code: "INVALID_COMMAND", path: "/command" } });
     expect(JSON.stringify(instance)).toBe(before);
   });
 });
@@ -506,6 +559,33 @@ describe("CAS, replay, terminal transitions, events, and intents", () => {
         definition: timedDefinition,
         instance: timed,
         reasonCode: parseExternalReferenceId("mission-reason:time-condition")
+      })
+    ).toMatchObject({ ok: true, instance: { state: "Failed" } });
+
+    const earlierFailureDefinition = validateMissionDefinition({
+      ...HESTIA_GEOLOGICAL_SURVEY,
+      failureConditions: [{ kind: "UniverseTickReached", tick: 1_000 }]
+    });
+    let earlierFailure = offer(earlierFailureDefinition).instance;
+    earlierFailure = accept(earlierFailureDefinition, earlierFailure, 100).instance;
+    expect(earlierFailure.expiry?.tick).toBe(2_500);
+    expect(
+      expireMission({
+        commandId: commandId("earlier-failure-blocks-later-expiry"),
+        expectedRevision: earlierFailure.revision,
+        at: createUniverseClock(2_500),
+        definition: earlierFailureDefinition,
+        instance: earlierFailure
+      })
+    ).toMatchObject({ ok: false, rejection: { code: "FAILURE_CONDITION_REACHED" } });
+    expect(
+      failMission({
+        commandId: commandId("earlier-failure-transition"),
+        expectedRevision: earlierFailure.revision,
+        at: createUniverseClock(2_500),
+        definition: earlierFailureDefinition,
+        instance: earlierFailure,
+        reasonCode: parseExternalReferenceId("mission-reason:earlier-time-condition")
       })
     ).toMatchObject({ ok: true, instance: { state: "Failed" } });
 
