@@ -271,6 +271,23 @@ interface MutableGenerationMetrics {
   meshHashes: string[];
 }
 
+interface SurfaceLabGenerationInput {
+  readonly seed: string;
+  readonly voxelSizeMeters: HestiaVoxelSizeMeters;
+}
+
+interface StagedSurfaceLabGenerationJob {
+  readonly payload: GenerateHestiaVoxelBrickMeshPayload;
+  readonly request: WorkerJobRequest;
+  readonly cacheKey?: ReturnType<typeof createHestiaVoxelCacheKey>;
+  readonly canonicalCacheKey?: ReturnType<typeof canonicalizeContentKey>;
+  readonly hadCachedBrick: boolean;
+  readonly cached?: Readonly<{
+    payload: GenerateHestiaVoxelBrickMeshPayload;
+    request: WorkerJobRequest;
+  }>;
+}
+
 const freshMetrics = (): MutableGenerationMetrics => ({
   requestedChunks: 0,
   readyChunks: 0,
@@ -362,7 +379,10 @@ export class SurfaceLabController {
   public regenerate(seed = this.#seed): Promise<SurfaceLabTelemetrySnapshot> {
     this.#assertActive();
     assertHestiaRootSeed(seed);
-    return this.#beginGeneration("Regenerating", false, seed, this.#voxelSizeMeters);
+    return this.#beginGeneration("Regenerating", false, {
+      seed,
+      voxelSizeMeters: this.#voxelSizeMeters
+    });
   }
 
   public setResolution(voxelSizeMeters: HestiaVoxelSizeMeters): Promise<SurfaceLabTelemetrySnapshot> {
@@ -370,7 +390,10 @@ export class SurfaceLabController {
     if (voxelSizeMeters !== 0.25 && voxelSizeMeters !== 0.5) {
       throw new RangeError("Surface Lab voxel size must be 0.25 or 0.5 metres.");
     }
-    return this.#beginGeneration("Regenerating", true, this.#seed, voxelSizeMeters);
+    return this.#beginGeneration("Regenerating", true, {
+      seed: this.#seed,
+      voxelSizeMeters
+    });
   }
 
   public async restartWorker(slot: number): Promise<SurfaceLabTelemetrySnapshot> {
@@ -479,123 +502,155 @@ export class SurfaceLabController {
   #beginGeneration(
     lifecycle: "Requesting" | "Regenerating",
     allowCacheRead: boolean,
-    candidateSeed = this.#seed,
-    candidateVoxelSizeMeters = this.#voxelSizeMeters
+    input: SurfaceLabGenerationInput = { seed: this.#seed, voxelSizeMeters: this.#voxelSizeMeters }
   ): Promise<SurfaceLabTelemetrySnapshot> {
-    const incumbentSnapshot = this.readTelemetry();
     if (this.#disposeRequested || this.#pool.snapshot().state !== "Running") {
       throw new Error("Surface Lab cannot begin generation while its worker pool is stopped.");
     }
-    const generation = this.#generation + 1;
-    const plan = this.#plan + 1;
-    const staged = SURFACE_LAB_REGION.chunkCoordinates.map((coordinate) => {
-      const payload = this.#payloadFor(coordinate, candidateSeed, candidateVoxelSizeMeters, plan);
-      return Object.freeze({ payload, request: this.#requestFor(payload, generation, plan) });
+    const nextGeneration = this.#generation + 1;
+    const nextPlan = planningEpoch(this.#plan + 1);
+    const inputSignature = this.#inputSignature(input);
+    const stagedJobs: readonly StagedSurfaceLabGenerationJob[] = SURFACE_LAB_REGION.chunkCoordinates.map((coordinate) => {
+      const payload = this.#payloadFor(coordinate, input, nextPlan);
+      const request = this.#requestFor(payload, nextGeneration, nextPlan);
+      if (!allowCacheRead) return Object.freeze({ payload, request, hadCachedBrick: false });
+      const cacheKey = createHestiaVoxelCacheKey(payload, algorithmVersion(1));
+      const canonicalCacheKey = canonicalizeContentKey(cacheKey);
+      const cachedBrickContentHash = this.#cachedBrickHashes.get(canonicalCacheKey);
+      let cached: StagedSurfaceLabGenerationJob["cached"];
+      if (cachedBrickContentHash !== undefined) {
+        try {
+          const cachedPayload = validateHestiaVoxelBrickMeshPayload({
+            ...payload,
+            inputMode: "CachedCanonicalBrick",
+            cachedBrickContentHash
+          });
+          cached = Object.freeze({
+            payload: cachedPayload,
+            request: this.#requestFor(cachedPayload, nextGeneration, nextPlan)
+          });
+        } catch {
+          // A stale shadow entry is pruned only after this generation is admitted.
+        }
+      }
+      return Object.freeze({
+        payload,
+        request,
+        cacheKey,
+        canonicalCacheKey,
+        hadCachedBrick: cachedBrickContentHash !== undefined,
+        ...(cached === undefined ? {} : { cached })
+      });
     });
-    this.#pool.setPlanningEpoch(planningEpoch(plan));
-    this.#seed = candidateSeed;
-    this.#voxelSizeMeters = candidateVoxelSizeMeters;
-    this.#generation = generation;
-    this.#plan = plan;
-    this.#resolveSettled?.(incumbentSnapshot);
-    this.#cancelTickets();
-    this.#clearPublishedForGeneration();
+    const priorSettledSnapshot = this.#resolveSettled === undefined ? undefined : this.readTelemetry();
+    this.#pool.setPlanningEpoch(nextPlan);
+
+    this.#seed = input.seed;
+    this.#voxelSizeMeters = input.voxelSizeMeters;
+    if (priorSettledSnapshot !== undefined) this.#resolveSettled?.(priorSettledSnapshot);
+    this.#generation = nextGeneration;
+    const generation = this.#generation;
+    this.#plan = nextPlan;
     this.#lifecycle = lifecycle;
     this.#metrics = freshMetrics();
     this.#settledPromise = new Promise<SurfaceLabTelemetrySnapshot>((resolve) => { this.#resolveSettled = resolve; });
-    this.#tickets.clear();
-    for (const stagedJob of staged) {
-      const prepared = this.#prepareInput(stagedJob.payload, allowCacheRead);
-      const payload = prepared.payload;
-      const request = stagedJob.request.payload === payload
-        ? stagedJob.request
-        : this.#requestFor(payload, generation, plan);
-      try {
-        const ticket = this.#pool.enqueue(request, prepared.bundle);
-        this.#tickets.set(ticket, generation);
-        this.#metrics.requestedChunks += 1;
-        void ticket.result.then((terminal) => {
-          this.#forgetTicket(ticket, generation);
-          this.#handleTerminal(generation, payload, terminal);
-        }, () => {
-          this.#forgetTicket(ticket, generation);
-          this.#handleTicketRejection(generation);
-        });
-      } catch {
-        this.#recordFailure(generation);
+    try {
+      this.#cancelTickets();
+      this.#clearPublishedForGeneration(inputSignature);
+      this.#tickets.clear();
+      for (const staged of stagedJobs) {
+        const prepared = this.#prepareInput(staged, allowCacheRead);
+        const payload = prepared.payload;
+        const request = prepared.request;
+        try {
+          const ticket = this.#pool.enqueue(request, prepared.bundle);
+          this.#tickets.set(ticket, generation);
+          this.#metrics.requestedChunks += 1;
+          void ticket.result.then((terminal) => {
+            this.#forgetTicket(ticket, generation);
+            this.#handleTerminal(generation, payload, terminal);
+          }, () => {
+            this.#forgetTicket(ticket, generation);
+            this.#recordGenerationFailure(generation);
+          });
+        } catch {
+          this.#recordFailure(generation);
+        }
       }
+      this.#finishIfSettled(generation);
+      this.#emit();
+    } catch {
+      this.#recordGenerationFailure(generation, true);
     }
-    this.#finishIfSettled(generation);
-    this.#emit();
     return this.#settledPromise;
   }
 
-  #inputSignature(): string {
-    return `${this.#seed}\n${this.#voxelSizeMeters}`;
+  #inputSignature(input: SurfaceLabGenerationInput): string {
+    return `${input.seed}\n${input.voxelSizeMeters}`;
   }
 
-  #clearPublishedForGeneration(): void {
-    const signature = this.#inputSignature();
+  #clearPublishedForGeneration(signature: string): void {
     if (this.#publishedInputSignature !== undefined && this.#publishedInputSignature !== signature) {
       this.#cachedBrickHashes.clear();
     }
     this.#publishedInputSignature = signature;
-    for (const published of [...this.#published.values()]) this.#removeArtifact(published.artifact);
-    this.#published.clear();
+    for (const [key, published] of [...this.#published.entries()]) {
+      this.#removeArtifact(published.artifact);
+      this.#published.delete(key);
+    }
   }
 
   #prepareInput(
-    generatedPayload: GenerateHestiaVoxelBrickMeshPayload,
+    staged: StagedSurfaceLabGenerationJob,
     allowCacheRead: boolean
-  ): Readonly<{ payload: GenerateHestiaVoxelBrickMeshPayload; bundle: TransferableBufferBundle }> {
+  ): Readonly<{
+    payload: GenerateHestiaVoxelBrickMeshPayload;
+    request: WorkerJobRequest;
+    bundle: TransferableBufferBundle;
+  }> {
     if (!allowCacheRead) {
       this.#metrics.cacheBypasses += 1;
-      return Object.freeze({ payload: generatedPayload, bundle: emptyInputBundle() });
+      return Object.freeze({ payload: staged.payload, request: staged.request, bundle: emptyInputBundle() });
     }
-    const key = createHestiaVoxelCacheKey(generatedPayload, algorithmVersion(1));
-    const canonicalKey = canonicalizeContentKey(key);
-    const cachedBrickContentHash = this.#cachedBrickHashes.get(canonicalKey);
-    if (cachedBrickContentHash !== undefined) {
+    if (staged.cached !== undefined && staged.cacheKey !== undefined) {
       try {
-        const cachedPayload = validateHestiaVoxelBrickMeshPayload({
-          ...generatedPayload,
-          inputMode: "CachedCanonicalBrick",
-          cachedBrickContentHash
-        });
         const cachedBundle = createCachedHestiaVoxelInputBundle(
           this.#cache,
-          key,
-          cachedPayload,
+          staged.cacheKey,
+          staged.cached.payload,
           contentRevision(HESTIA_SOURCE_REVISION_V1)
         );
         if (cachedBundle !== undefined) {
           this.#metrics.cacheHits += 1;
-          return Object.freeze({ payload: cachedPayload, bundle: cachedBundle });
+          return Object.freeze({
+            payload: staged.cached.payload,
+            request: staged.cached.request,
+            bundle: cachedBundle
+          });
         }
       } catch {
         // A stale or corrupt cache entry is advisory only; generation remains authoritative.
       }
-      this.#cachedBrickHashes.delete(canonicalKey);
     }
+    if (staged.hadCachedBrick && staged.canonicalCacheKey !== undefined) this.#cachedBrickHashes.delete(staged.canonicalCacheKey);
     this.#metrics.cacheMisses += 1;
-    return Object.freeze({ payload: generatedPayload, bundle: emptyInputBundle() });
+    return Object.freeze({ payload: staged.payload, request: staged.request, bundle: emptyInputBundle() });
   }
 
   #payloadFor(
     brickCoordinate: Readonly<{ x: number; y: number; z: number }>,
-    seed: string,
-    voxelSizeMeters: HestiaVoxelSizeMeters,
+    input: SurfaceLabGenerationInput,
     plan: number
   ): GenerateHestiaVoxelBrickMeshPayload {
     return validateHestiaVoxelBrickMeshPayload({
       presetId: HESTIA_PRESET_ID,
       inputMode: "Generate",
-      rootSeed: seed,
+      rootSeed: input.seed,
       bodyId: voxelBodyId(this.#frameChain.bodyId),
       surfaceFrameId: surfaceFrameId(this.#frameChain.surfaceFrame.frameId),
       regionId: voxelRegionId(REGION_ID),
       brickCoordinate,
-      voxelSizeMeters,
+      voxelSizeMeters: input.voxelSizeMeters,
       generatorVersion: HESTIA_GENERATOR_VERSION_V1,
       materialRegistryVersion: HESTIA_MATERIAL_REGISTRY_VERSION_V1,
       sourceRevision: HESTIA_SOURCE_REVISION_V1,
@@ -634,9 +689,11 @@ export class SurfaceLabController {
       }
       return;
     }
+    if (this.#generationIsSettled()) return;
     if (terminal.kind !== "Completed") {
       if (terminal.kind === "Failed" && terminal.integrationDecision?.kind.startsWith("RejectedStale")) this.#staleRejects += 1;
-      this.#metrics.failedChunks += 1;
+      this.#recordGenerationFailure(generation);
+      return;
     } else {
       try {
         const decoded = this.#decode(payload, terminal, artifactRevision(payload.outputRevision));
@@ -658,15 +715,32 @@ export class SurfaceLabController {
         this.#metrics.brickHashes.push(decoded.brickContentHash);
         this.#metrics.meshHashes.push(decoded.meshContentHash);
       } catch {
-        this.#metrics.failedChunks += 1;
+        this.#recordGenerationFailure(generation);
+        return;
       }
     }
+    this.#updateGenerationSettlement(generation);
+  }
+
+  #recordGenerationFailure(generation: number, completeGeneration = false): void {
+    if (this.#disposeRequested || this.#lifecycle === "Disposed" || generation !== this.#generation || this.#generationIsSettled()) return;
+    this.#metrics.failedChunks += completeGeneration
+      ? SURFACE_LAB_REGION.chunkCount - this.#metrics.readyChunks - this.#metrics.failedChunks
+      : 1;
+    this.#updateGenerationSettlement(generation);
+  }
+
+  #updateGenerationSettlement(generation: number): void {
     const settled = this.#metrics.readyChunks + this.#metrics.failedChunks;
     this.#lifecycle = settled >= SURFACE_LAB_REGION.chunkCount
       ? this.#metrics.failedChunks === 0 ? "Ready" : "Failed"
       : settled > 0 ? "Partial" : this.#lifecycle;
     this.#emit();
     this.#finishIfSettled(generation);
+  }
+
+  #generationIsSettled(): boolean {
+    return this.#metrics.readyChunks + this.#metrics.failedChunks >= SURFACE_LAB_REGION.chunkCount;
   }
 
   #publish(decoded: SurfaceLabDecodedChunk): void {
@@ -726,17 +800,6 @@ export class SurfaceLabController {
   #recordFailure(generation: number): void {
     if (this.#disposeRequested || generation !== this.#generation) return;
     this.#metrics.failedChunks += 1;
-  }
-
-  #handleTicketRejection(generation: number): void {
-    if (this.#disposeRequested || generation !== this.#generation) return;
-    this.#metrics.failedChunks += 1;
-    const settled = this.#metrics.readyChunks + this.#metrics.failedChunks;
-    this.#lifecycle = settled >= SURFACE_LAB_REGION.chunkCount
-      ? "Failed"
-      : settled > 0 ? "Partial" : this.#lifecycle;
-    this.#emit();
-    this.#finishIfSettled(generation);
   }
 
   #finishIfSettled(generation: number): void {

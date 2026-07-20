@@ -11,6 +11,13 @@ const mirroredEvidenceDirectory = path.resolve(
 );
 const summaryPath = path.join(evidenceDirectory, "browser-hestia-microvoxel-surface-lab-v1-summary.json");
 const markdownPath = path.join(evidenceDirectory, "browser-hestia-microvoxel-surface-lab-v1.md");
+const atomicityEvidenceDirectory = path.resolve(
+  repositoryRoot,
+  ".devtoolbox/specs/changes/browser-surface-lab-generation-input-atomicity-v1/tests"
+);
+const atomicityScreenshotDirectory = path.join(atomicityEvidenceDirectory, "screenshots");
+const atomicityManifestPath = path.join(atomicityEvidenceDirectory, "surface-lab-atomicity-evidence.json");
+const atomicityMarkdownPath = path.join(atomicityEvidenceDirectory, "surface-lab-atomicity-run-summary.md");
 const focusedCommand = "npx playwright test tests/e2e/hestia-microvoxel-surface-lab.spec.ts --reporter=list";
 const readinessTimeoutMilliseconds = 120_000;
 const changedSeed = "hestia-surface-lab-v1-e2e-alt";
@@ -19,6 +26,13 @@ const screenshotPaths = {
   default: path.join(evidenceDirectory, "hestia-surface-lab-default-1920x1080.png"),
   wireframe: path.join(evidenceDirectory, "hestia-surface-lab-wireframe-1920x1080.png"),
   quarterMeter: path.join(evidenceDirectory, "hestia-surface-lab-quarter-meter-1920x1080.png")
+} as const;
+const atomicityScreenshotPaths = {
+  initialDefault: path.join(atomicityScreenshotDirectory, "surface-lab-initial-default-ready-1920x1080.png"),
+  sameSeed: path.join(atomicityScreenshotDirectory, "surface-lab-same-seed-regeneration-ready-1920x1080.png"),
+  changedSeed: path.join(atomicityScreenshotDirectory, "surface-lab-changed-seed-ready-before-presentation-toggles-1920x1080.png"),
+  changedSeedPresentation: path.join(atomicityScreenshotDirectory, "surface-lab-changed-seed-wireframe-boundaries-camera-1920x1080.png"),
+  quarterMeter: path.join(atomicityScreenshotDirectory, "surface-lab-quarter-meter-ready-1920x1080.png")
 } as const;
 
 interface BrowserEvents {
@@ -74,11 +88,81 @@ interface SettledObservation {
   readonly telemetry: SurfaceLabTelemetry;
 }
 
-interface ScreenshotObservation {
+type ScreenshotRole =
+  | "default"
+  | "wireframe-and-boundaries"
+  | "quarter-meter"
+  | "initial-default-ready"
+  | "same-seed-regeneration-ready"
+  | "changed-seed-ready-before-presentation-toggles"
+  | "changed-seed-wireframe-boundaries-camera"
+  | "quarter-meter-ready";
+
+interface ScreenshotObservation<TRole extends ScreenshotRole = ScreenshotRole> {
   readonly path: string;
   readonly width: number;
   readonly height: number;
-  readonly role: "default" | "wireframe-and-boundaries" | "quarter-meter";
+  readonly role: TRole;
+}
+
+type AtomicityState = Exclude<
+  ScreenshotRole,
+  "default" | "wireframe-and-boundaries" | "quarter-meter"
+>;
+
+interface AtomicityManifestState {
+  readonly state: AtomicityState;
+  readonly screenshot: {
+    readonly path: string;
+    readonly width: number;
+    readonly height: number;
+  };
+  readonly lifecycle: string;
+  readonly seed: string;
+  readonly resolution: { readonly voxelSizeMeters: number };
+  readonly extent: string;
+  readonly planningEpoch: number;
+  readonly counters: {
+    readonly requested: number;
+    readonly ready: number;
+    readonly failed: number;
+    readonly cancelled: number;
+    readonly staleRejects: number;
+    readonly queue: number;
+    readonly running: number;
+    readonly workerRestarts: number;
+  };
+  readonly brickHashes: readonly string[];
+  readonly meshHashes: readonly string[];
+  readonly presentation: {
+    readonly cameraMode: string;
+    readonly cameraPosition: string;
+    readonly cameraTarget: string;
+    readonly cameraQuaternion: string;
+    readonly fogEnabled: boolean;
+    readonly waterEnabled: boolean;
+    readonly vegetationEnabled: boolean;
+    readonly wireframeEnabled: boolean;
+    readonly boundariesEnabled: boolean;
+  };
+}
+
+interface AtomicityEvidenceManifest {
+  readonly schemaVersion: "browser-surface-lab-generation-input-atomicity-v1";
+  readonly status: "PASS";
+  readonly generator: "apps/weltraum-browser/tests/e2e/hestia-microvoxel-surface-lab.spec.ts";
+  readonly route: "/?surfaceLab=1";
+  readonly viewport: { readonly width: 1920; readonly height: 1080 };
+  readonly states: readonly AtomicityManifestState[];
+  readonly browserHealth: {
+    readonly consoleErrors: number;
+    readonly consoleWarnings: number;
+    readonly knownRajdhaniOrOtsWarnings: number;
+    readonly unexpectedWarnings: number;
+    readonly pageErrors: number;
+    readonly requestFailures: number;
+    readonly httpErrors: number;
+  };
 }
 
 interface SurfaceLabEvidence {
@@ -327,11 +411,11 @@ const pngDimensions = async (filePath: string): Promise<{ readonly width: number
   return { width: bytes.readUInt32BE(16), height: bytes.readUInt32BE(20) };
 };
 
-const captureScreenshot = async (
+const captureScreenshot = async <TRole extends ScreenshotRole>(
   page: Page,
   filePath: string,
-  role: ScreenshotObservation["role"]
-): Promise<ScreenshotObservation> => {
+  role: TRole
+): Promise<ScreenshotObservation<TRole>> => {
   await page.screenshot({ path: filePath, fullPage: false });
   const dimensions = await pngDimensions(filePath);
   expect(dimensions).toEqual({ width: 1_920, height: 1_080 });
@@ -340,6 +424,158 @@ const captureScreenshot = async (
     ...dimensions,
     role
   };
+};
+
+const atomicityTimingValueContracts = [
+  { selector: "#surface-lab-generation-time", text: /^(\d+\.\d{2}) ms$/ },
+  { selector: "#surface-lab-meshing-time", text: /^(\d+\.\d{2}) ms$/ },
+  { selector: "#surface-lab-upload-time", text: /^(\d+\.\d{2}) ms$/ },
+  { selector: "#surface-lab-frame-time", text: /^(\d+\.\d{2}) ms \u00b7 300-frame settled sample$/ }
+] as const;
+
+const captureAtomicityScreenshotWithNormalizedTimingGlyphs = async (
+  page: Page,
+  filePath: string,
+  role: AtomicityState
+): Promise<ScreenshotObservation<AtomicityState>> => {
+  for (const contract of atomicityTimingValueContracts) {
+    const timingValue = page.locator(contract.selector);
+    await expect(timingValue).toHaveCount(1);
+    await expect(timingValue).toBeVisible();
+    await expect(timingValue).toHaveText(contract.text);
+    const liveText = (await timingValue.textContent())?.trim() ?? "";
+    const milliseconds = Number(liveText.match(contract.text)?.[1] ?? Number.NaN);
+    expect(Number.isFinite(milliseconds), `${contract.selector} must expose a finite live millisecond value`).toBe(true);
+  }
+
+  // Timings remain asserted live; only their volatile glyphs are normalized in retained atomicity PNG pixels.
+  await page.screenshot({
+    path: filePath,
+    fullPage: false,
+    style: atomicityTimingValueContracts
+      .map((contract) => `${contract.selector} { color: transparent !important; text-shadow: none !important; }`)
+      .join("\n")
+  });
+  const dimensions = await pngDimensions(filePath);
+  expect(dimensions).toEqual({ width: 1_920, height: 1_080 });
+  return {
+    path: path.relative(repositoryRoot, filePath).split(path.sep).join("/"),
+    ...dimensions,
+    role
+  };
+};
+
+const toAtomicityManifestState = (
+  state: AtomicityState,
+  screenshot: ScreenshotObservation<AtomicityState>,
+  telemetry: SurfaceLabTelemetry
+): AtomicityManifestState => {
+  expect(screenshot.role).toBe(state);
+  return {
+    state,
+    screenshot: {
+      path: screenshot.path,
+      width: screenshot.width,
+      height: screenshot.height
+    },
+    lifecycle: telemetry.lifecycle,
+    seed: telemetry.seed,
+    resolution: { voxelSizeMeters: telemetry.voxelSizeMeters },
+    extent: telemetry.extent,
+    planningEpoch: telemetry.planningEpoch,
+    counters: {
+      requested: telemetry.requested,
+      ready: telemetry.ready,
+      failed: telemetry.failed,
+      cancelled: telemetry.cancelled,
+      staleRejects: telemetry.staleRejects,
+      queue: telemetry.queue,
+      running: telemetry.running,
+      workerRestarts: telemetry.workerRestarts
+    },
+    brickHashes: telemetry.brickHashes,
+    meshHashes: telemetry.meshHashes,
+    presentation: {
+      cameraMode: telemetry.cameraMode,
+      cameraPosition: telemetry.cameraPosition,
+      cameraTarget: telemetry.cameraTarget,
+      cameraQuaternion: telemetry.cameraQuaternion,
+      fogEnabled: telemetry.fogEnabled,
+      waterEnabled: telemetry.waterEnabled,
+      vegetationEnabled: telemetry.vegetationEnabled,
+      wireframeEnabled: telemetry.wireframeEnabled,
+      boundariesEnabled: telemetry.boundariesEnabled
+    }
+  };
+};
+
+const createAtomicityMarkdown = (evidence: AtomicityEvidenceManifest): string => {
+  const rows = evidence.states.map((state) => [
+    `| ${state.state}`,
+    `\`${state.screenshot.path}\``,
+    `${state.screenshot.width}x${state.screenshot.height}`,
+    state.lifecycle,
+    state.seed,
+    state.resolution.voxelSizeMeters,
+    state.extent,
+    state.planningEpoch,
+    `${state.counters.requested}/${state.counters.ready}/${state.counters.failed}`,
+    `${state.counters.queue}/${state.counters.running}`
+  ].join(" | ")).join("\n");
+  const hashes = evidence.states.map((state) => [
+    `### ${state.state}`,
+    "",
+    `- Brick hashes (ordered): \`${state.brickHashes.join("`, `")}\``,
+    `- Mesh hashes (ordered): \`${state.meshHashes.join("`, `")}\``,
+    `- Camera/presentation: mode=${state.presentation.cameraMode}, position=\`${state.presentation.cameraPosition}\`, target=\`${state.presentation.cameraTarget}\`, quaternion=\`${state.presentation.cameraQuaternion}\`, wireframe=${state.presentation.wireframeEnabled}, boundaries=${state.presentation.boundariesEnabled}`
+  ].join("\n")).join("\n\n");
+
+  return `# Surface Lab Generation Input Atomicity V1 — UI Run Summary
+
+- Status: **PASS**
+- Route: \`${evidence.route}\`
+- Generator: \`${evidence.generator}\`
+- Viewport and screenshot contract: \`${evidence.viewport.width}x${evidence.viewport.height}\`, PNG, \`fullPage: false\`
+
+These five screenshots demonstrate the reachable **visible UI states** and the
+telemetry published with those states. They do not purport to prove internal
+pre-admission, post-admission, stale-result suppression, promise/epoch
+atomicity, or failure semantics by appearance alone. Those internal paths are
+proven by focused unit tests.
+
+The four volatile performance timing values are asserted live before every
+capture, but their value glyphs are omitted from retained PNG pixels for byte
+reproducibility. The timing labels and rows remain visible, and pixels still do
+not prove internal atomicity.
+
+## State mappings
+
+| State | Screenshot | Dimensions | Lifecycle | Seed | Voxel m | Extent | Planning epoch | Requested/ready/failed | Queue/running |
+| --- | --- | --- | --- | --- | ---: | --- | ---: | --- | --- |
+${rows}
+
+## Hashes and presentation observations
+
+${hashes}
+
+## Browser health counters asserted by the test
+
+- Console errors: **${evidence.browserHealth.consoleErrors}**
+- Console warnings: **${evidence.browserHealth.consoleWarnings}**
+- Known Rajdhani/OTS warnings: **${evidence.browserHealth.knownRajdhaniOrOtsWarnings}**
+- Unexpected warnings: **${evidence.browserHealth.unexpectedWarnings}**
+- Page errors: **${evidence.browserHealth.pageErrors}**
+- Failed requests: **${evidence.browserHealth.requestFailures}**
+- HTTP responses >= 400: **${evidence.browserHealth.httpErrors}**
+
+## Nonvisual atomicity mapping
+
+The existing focused unit-test groups, rather than screenshots, prove stopped
+pool rejection; preparation/setup/validation failure; ticket rejection;
+cleanup/worker failure; stale/rapid regeneration; and replacement failure.
+The UI captures intentionally remain limited to successful, visibly reachable
+Ready states.
+`;
 };
 
 const createMarkdown = (evidence: SurfaceLabEvidence): string => {
@@ -412,6 +648,7 @@ test("live Hestia Surface Lab proves deterministic voxel, worker, mesh and rende
   const browserEvents = installBrowserEventCollectors(page);
   await mkdir(evidenceDirectory, { recursive: true });
   await mkdir(mirroredEvidenceDirectory, { recursive: true });
+  await mkdir(atomicityScreenshotDirectory, { recursive: true });
   await page.setViewportSize({ width: 1_920, height: 1_080 });
 
   await page.goto("/?surfaceLab=1", { waitUntil: "domcontentloaded" });
@@ -446,6 +683,11 @@ test("live Hestia Surface Lab proves deterministic voxel, worker, mesh and rende
   const screenshots: ScreenshotObservation[] = [
     await captureScreenshot(page, screenshotPaths.default, "default")
   ];
+  const initialDefaultScreenshot = await captureAtomicityScreenshotWithNormalizedTimingGlyphs(
+    page,
+    atomicityScreenshotPaths.initialDefault,
+    "initial-default-ready"
+  );
 
   await page.getByRole("button", { name: "Regenerate", exact: true }).click();
   const sameSeedCacheBypass = await waitForSettled(page, initialDefault.telemetry.planningEpoch);
@@ -453,6 +695,11 @@ test("live Hestia Surface Lab proves deterministic voxel, worker, mesh and rende
   expect(sameSeedCacheBypass.telemetry.cacheBypasses).toBe(16);
   expect(sameSeedCacheBypass.telemetry.brickHashes).toEqual(initialDefault.telemetry.brickHashes);
   expect(sameSeedCacheBypass.telemetry.meshHashes).toEqual(initialDefault.telemetry.meshHashes);
+  const sameSeedScreenshot = await captureAtomicityScreenshotWithNormalizedTimingGlyphs(
+    page,
+    atomicityScreenshotPaths.sameSeed,
+    "same-seed-regeneration-ready"
+  );
 
   await page.getByLabel("Deterministic Hestia seed").fill(changedSeed);
   await page.getByRole("button", { name: "Regenerate", exact: true }).click();
@@ -461,6 +708,11 @@ test("live Hestia Surface Lab proves deterministic voxel, worker, mesh and rende
   expect(changedSeedRun.telemetry.cacheBypasses).toBe(16);
   expect(changedSeedRun.telemetry.brickHashes).not.toEqual(initialDefault.telemetry.brickHashes);
   expect(changedSeedRun.telemetry.meshHashes).not.toEqual(initialDefault.telemetry.meshHashes);
+  const changedSeedScreenshot = await captureAtomicityScreenshotWithNormalizedTimingGlyphs(
+    page,
+    atomicityScreenshotPaths.changedSeed,
+    "changed-seed-ready-before-presentation-toggles"
+  );
 
   await page.getByRole("button", { name: "Fly", exact: true }).click();
   await expect(page.locator("body")).toHaveAttribute("data-surface-lab-camera-mode", "Fly");
@@ -474,8 +726,24 @@ test("live Hestia Surface Lab proves deterministic voxel, worker, mesh and rende
   await expect.poll(() => readTelemetry(page).then((telemetry) => telemetry.cameraPosition)).not.toBe(flyKeyboardPositionBefore);
   const flyKeyboardPositionAfter = (await readTelemetry(page)).cameraPosition;
 
-  await page.getByRole("button", { name: "Orbit", exact: true }).click();
-  await expect(page.locator("body")).toHaveAttribute("data-surface-lab-camera-mode", "Orbit");
+  await page.getByRole("button", { name: "Reset view", exact: true }).click();
+  await expect.poll(async () => {
+    const telemetry = await readTelemetry(page);
+    return {
+      cameraMode: telemetry.cameraMode,
+      cameraPosition: telemetry.cameraPosition,
+      cameraTarget: telemetry.cameraTarget
+    };
+  }).toEqual({
+    cameraMode: "Orbit",
+    cameraPosition: "46.0000, 34.0000, 52.0000",
+    cameraTarget: "0.0000, -4.0000, 0.0000"
+  });
+  const cameraHud = page.locator("#surface-lab-camera");
+  await expect(cameraHud).toBeVisible();
+  await expect(cameraHud).toContainText("Orbit");
+  await expect(cameraHud).toContainText("position 46.0, 34.0, 52.0");
+  await expect(cameraHud).toContainText("target 0.0, -4.0, 0.0");
   const orbitQuaternionBefore = (await readTelemetry(page)).cameraQuaternion;
   const box = await canvas.boundingBox();
   expect(box).not.toBeNull();
@@ -494,10 +762,19 @@ test("live Hestia Surface Lab proves deterministic voxel, worker, mesh and rende
   await expect(boundariesButton).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator("body")).toHaveAttribute("data-surface-lab-wireframe", "true");
   await expect(page.locator("body")).toHaveAttribute("data-surface-lab-boundaries", "true");
+  await page.evaluate(() => new Promise<void>((resolve) => {
+    requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+  }));
   const afterCameraAndPresentationControls = await readTelemetry(page);
+  assertSettledTelemetry(afterCameraAndPresentationControls);
   expect(afterCameraAndPresentationControls.brickHashes).toEqual(changedSeedRun.telemetry.brickHashes);
   expect(afterCameraAndPresentationControls.meshHashes).toEqual(changedSeedRun.telemetry.meshHashes);
   screenshots.push(await captureScreenshot(page, screenshotPaths.wireframe, "wireframe-and-boundaries"));
+  const changedSeedPresentationScreenshot = await captureAtomicityScreenshotWithNormalizedTimingGlyphs(
+    page,
+    atomicityScreenshotPaths.changedSeedPresentation,
+    "changed-seed-wireframe-boundaries-camera"
+  );
 
   await wireframeButton.click();
   await boundariesButton.click();
@@ -514,6 +791,11 @@ test("live Hestia Surface Lab proves deterministic voxel, worker, mesh and rende
   expect(quarterMeter.telemetry.brickHashes).not.toEqual(changedSeedRun.telemetry.brickHashes);
   expect(quarterMeter.telemetry.meshHashes).not.toEqual(changedSeedRun.telemetry.meshHashes);
   screenshots.push(await captureScreenshot(page, screenshotPaths.quarterMeter, "quarter-meter"));
+  const quarterMeterScreenshot = await captureAtomicityScreenshotWithNormalizedTimingGlyphs(
+    page,
+    atomicityScreenshotPaths.quarterMeter,
+    "quarter-meter-ready"
+  );
 
   expect(await readTestBridgeState(page)).toEqual({ ownProperty: false, inWindow: false });
   const knownRajdhaniOrOtsWarnings = browserEvents.consoleWarnings.filter((warning) =>
@@ -527,6 +809,38 @@ test("live Hestia Surface Lab proves deterministic voxel, worker, mesh and rende
   expect(browserEvents.requestFailures).toEqual([]);
   expect(browserEvents.httpErrors).toEqual([]);
   expect(unexpectedWarnings).toEqual([]);
+
+  const browserHealthCounters = {
+    consoleErrors: browserEvents.consoleErrors.length,
+    consoleWarnings: browserEvents.consoleWarnings.length,
+    knownRajdhaniOrOtsWarnings: knownRajdhaniOrOtsWarnings.length,
+    unexpectedWarnings: unexpectedWarnings.length,
+    pageErrors: browserEvents.pageErrors.length,
+    requestFailures: browserEvents.requestFailures.length,
+    httpErrors: browserEvents.httpErrors.length
+  } as const;
+  const atomicityStates = [
+    toAtomicityManifestState("initial-default-ready", initialDefaultScreenshot, initialDefault.telemetry),
+    toAtomicityManifestState("same-seed-regeneration-ready", sameSeedScreenshot, sameSeedCacheBypass.telemetry),
+    toAtomicityManifestState("changed-seed-ready-before-presentation-toggles", changedSeedScreenshot, changedSeedRun.telemetry),
+    toAtomicityManifestState("changed-seed-wireframe-boundaries-camera", changedSeedPresentationScreenshot, afterCameraAndPresentationControls),
+    toAtomicityManifestState("quarter-meter-ready", quarterMeterScreenshot, quarterMeter.telemetry)
+  ] as const;
+  const atomicityEvidence: AtomicityEvidenceManifest = {
+    schemaVersion: "browser-surface-lab-generation-input-atomicity-v1",
+    status: "PASS",
+    generator: "apps/weltraum-browser/tests/e2e/hestia-microvoxel-surface-lab.spec.ts",
+    route: "/?surfaceLab=1",
+    viewport: { width: 1_920, height: 1_080 },
+    states: atomicityStates,
+    browserHealth: browserHealthCounters
+  };
+  expect(atomicityEvidence.states).toHaveLength(5);
+  expect(atomicityEvidence.states.every((state) =>
+    state.screenshot.width === 1_920 && state.screenshot.height === 1_080
+  )).toBe(true);
+  await writeFile(atomicityManifestPath, `${JSON.stringify(atomicityEvidence, null, 2)}\n`, "utf8");
+  await writeFile(atomicityMarkdownPath, createAtomicityMarkdown(atomicityEvidence), "utf8");
 
   const evidence: SurfaceLabEvidence = {
     schemaVersion: "browser-hestia-microvoxel-surface-lab-v1",
