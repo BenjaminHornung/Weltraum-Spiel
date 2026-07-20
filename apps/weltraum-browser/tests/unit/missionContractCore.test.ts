@@ -326,11 +326,7 @@ describe("mission lifecycle, graph modes, and objective progress", () => {
         mode: "Sequential",
         objectives: [
           { ...HESTIA_GEOLOGICAL_SURVEY.objectiveGraph.objectives[0], requirementMode: "Optional" },
-          {
-            ...HESTIA_GEOLOGICAL_SURVEY.objectiveGraph.objectives[1],
-            hiddenUntilPrerequisitesMet: false,
-            prerequisiteObjectiveIds: []
-          }
+          HESTIA_GEOLOGICAL_SURVEY.objectiveGraph.objectives[1]
         ]
       }
     });

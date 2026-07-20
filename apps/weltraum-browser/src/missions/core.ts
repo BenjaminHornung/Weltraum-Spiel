@@ -334,7 +334,7 @@ const prerequisitesSatisfied = (
 ): boolean =>
   objective.prerequisiteObjectiveIds.every((prerequisiteId) => {
     const state = stateById.get(prerequisiteId)?.state;
-    return state === "Completed" || state === "Skipped";
+    return state === "Completed" || state === "Failed" || state === "Skipped";
   });
 
 const refreshObjectiveAvailability = (

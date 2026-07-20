@@ -12,7 +12,7 @@ Persistence fingerprints remain computed before state mutation and replay checks
 
 ## Sequential objective availability
 
-A failed objective that does not fail the mission is terminal for that objective but not for the graph. Availability is recalculated from the updated objective states so the next sequential objective can become active.
+A failed objective that does not fail the mission is terminal for that objective but not for the graph. Availability is recalculated from the updated objective states so the next sequential objective can become active. Explicit prerequisite edges treat `Failed` as a terminally processed predecessor, alongside `Completed` and `Skipped`; otherwise a non-terminal optional failure could leave the mission Active with no activatable successor.
 
 ## CI group ownership
 

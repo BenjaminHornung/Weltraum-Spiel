@@ -27,3 +27,7 @@ A command whose fingerprint cannot be canonicalized, including non-finite progre
 ## Requirement: Non-terminal objective failure advances availability
 
 When an objective with `failsMission: false` fails, the mission MUST remain non-terminal and sequential objective availability MUST be refreshed from the updated graph.
+
+### Scenario: Failed optional prerequisite has a successor
+
+Given a sequential successor that explicitly lists a non-terminally failed optional objective as a prerequisite, the failed predecessor MUST count as terminally processed and the successor MUST become Active.
