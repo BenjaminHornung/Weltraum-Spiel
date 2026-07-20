@@ -1,4 +1,4 @@
-import { byteCount, planningEpoch, workerEpoch, type PlanningEpoch, type WorkerEpoch, type WorkerJobId } from "./ids";
+import { byteCount, nextWorkerEpoch, planningEpoch, workerEpoch, type PlanningEpoch, type WorkerEpoch, type WorkerJobId } from "./ids";
 import type { JobOutputDataMessage } from "./messages";
 import {
   GENERATE_HESTIA_VOXEL_BRICK_MESH_JOB_KIND,
@@ -81,6 +81,7 @@ export class WorkerPool {
   private readonly records = new Map<WorkerJobId, TicketRecord>();
   private readonly seen = new Set<WorkerJobId>();
   private readonly handles: WorkerHandle[] = [];
+  private readonly replacementCandidates = new Set<WorkerHandle>();
   private readonly transportFactory: WorkerTransportFactory;
   private lifecycle: WorkerPoolSnapshot["state"] = "Stopped";
   private epoch: WorkerEpoch = workerEpoch(0);
@@ -186,23 +187,42 @@ export class WorkerPool {
     if (this.lifecycle !== "Running") throw new Error("WorkerPool is not running.");
     const old = this.handles.find((handle) => handle.slot === slot);
     if (!old) throw new RangeError(`Unknown worker slot ${slot}.`);
+
+    const baseEpoch = this.epoch;
+    const candidate = this.createWorkerHandle(slot, nextWorkerEpoch(baseEpoch));
+    this.replacementCandidates.add(candidate);
+    try {
+      await candidate.start();
+      if (this.lifecycle !== "Running") throw new Error("WorkerPool stopped before replacement candidate admission.");
+      if (this.handles.find((handle) => handle.slot === slot) !== old || this.epoch !== baseEpoch) {
+        throw new Error("WorkerPool changed before replacement candidate admission.");
+      }
+
+      const index = this.handles.indexOf(old);
+      this.replacementCandidates.delete(candidate);
+      this.handles.splice(index, 1, candidate);
+      this.epoch = candidate.workerEpoch;
+      this.restarts += 1;
+    } catch (error) {
+      candidate.terminate();
+      throw error;
+    } finally {
+      this.replacementCandidates.delete(candidate);
+    }
+
     this.failActive(old, "Worker was explicitly replaced.");
     old.terminate();
+    this.emit({ type: "WorkerRestarted", workerEpoch: candidate.workerEpoch });
     this.emitWorkerState();
-    try {
-      const replacement = await this.createHandle(slot, true);
-      this.dispatch();
-      return replacement.workerEpoch;
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Replacement worker failed to start.";
-      this.stopAfterReplacementFailure(message);
-      throw error;
-    }
+    this.dispatch();
+    return candidate.workerEpoch;
   }
 
   public async shutdown(): Promise<void> {
     if (this.lifecycle === "Stopped") return;
     this.lifecycle = "ShuttingDown";
+    for (const candidate of this.replacementCandidates) candidate.terminate();
+    this.replacementCandidates.clear();
     for (const request of this.queue.drain()) {
       const record = this.records.get(request.jobId);
       if (record) {
@@ -252,19 +272,30 @@ export class WorkerPool {
   }
 
   private nextEpoch(): WorkerEpoch {
-    if (this.epoch >= Number.MAX_SAFE_INTEGER) throw new RangeError("Worker epoch space is exhausted.");
-    this.epoch = workerEpoch(this.epoch + 1);
+    this.epoch = nextWorkerEpoch(this.epoch);
     return this.epoch;
   }
 
-  private async createHandle(slot: number, replacement: boolean): Promise<WorkerHandle> {
+  private createWorkerHandle(slot: number, epoch: WorkerEpoch): WorkerHandle {
     const callbacks: WorkerHandleCallbacks = {
-      onCompleted: (handle, result, output) => this.completed(handle, result, output),
-      onCancelled: (handle, jobId) => this.cancelled(handle, jobId),
-      onFailed: (handle, failure) => this.workerFailed(handle, failure),
-      onFault: (handle, reason) => this.faulted(handle, reason),
+      onCompleted: (handle, result, output) => {
+        if (this.handles.includes(handle)) this.completed(handle, result, output);
+      },
+      onCancelled: (handle, jobId) => {
+        if (this.handles.includes(handle)) this.cancelled(handle, jobId);
+      },
+      onFailed: (handle, failure) => {
+        if (this.handles.includes(handle)) this.workerFailed(handle, failure);
+      },
+      onFault: (handle, reason) => {
+        if (this.handles.includes(handle)) this.faulted(handle, reason);
+      },
     };
-    const handle = new WorkerHandle(slot, this.nextEpoch(), this.transportFactory, callbacks);
+    return new WorkerHandle(slot, epoch, this.transportFactory, callbacks);
+  }
+
+  private async createHandle(slot: number, replacement: boolean): Promise<WorkerHandle> {
+    const handle = this.createWorkerHandle(slot, this.nextEpoch());
     const index = this.handles.findIndex((entry) => entry.slot === slot);
     if (index < 0) this.handles.push(handle); else this.handles.splice(index, 1, handle);
     this.handles.sort((left, right) => left.slot - right.slot);
