@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { PerformanceTelemetry, createWorkerPoolTelemetryObserver } from "../../src/diagnostics/performance";
 import {
   StreamingWorkerRuntime,
   WorkerPool,
@@ -113,6 +114,38 @@ const createPool = async (workerCount = 1) => {
 };
 
 describe("WorkerPool lifecycle", () => {
+  it("reports only ready workers as active across startup, replacement failure, and shutdown", async () => {
+    const telemetry = new PerformanceTelemetry();
+    const transports: DeferredReadyTransport[] = [];
+    const pool = new WorkerPool({
+      workerCount: 1,
+      queueCapacity: 1,
+      initialPlanningEpoch: planningEpoch(1),
+      observe: createWorkerPoolTelemetryObserver(telemetry, 1),
+      transportFactory: () => {
+        const transport = new DeferredReadyTransport();
+        transports.push(transport);
+        return transport;
+      }
+    });
+
+    expect(telemetry.snapshot()).toMatchObject({ workerCount: 1, activeWorkers: 0 });
+    const start = pool.start();
+    expect(telemetry.snapshot()).toMatchObject({ workerCount: 1, activeWorkers: 0 });
+    transports[0]!.ready();
+    await start;
+    expect(telemetry.snapshot()).toMatchObject({ workerCount: 1, activeWorkers: 1 });
+
+    transports[0]!.fail("replacement telemetry failure");
+    await expect.poll(() => telemetry.snapshot().activeWorkers).toBe(0);
+    await expect.poll(() => transports.length).toBe(2);
+    transports[1]!.ready();
+    await expect.poll(() => telemetry.snapshot().activeWorkers).toBe(1);
+
+    await pool.shutdown();
+    expect(telemetry.snapshot()).toMatchObject({ workerCount: 1, activeWorkers: 0 });
+  });
+
   it("completes deterministic work and detaches transferred input", async () => {
     const { pool } = await createPool();
     const source = input(32);
@@ -197,14 +230,115 @@ describe("WorkerPool lifecycle", () => {
     expect(() => pool.enqueue(request("after-failed-replacement", 8), input(8))).toThrow("WorkerPool is not accepting jobs");
   });
 
-  it("explicit replacement advances epoch and never retries active work", async () => {
-    const { pool } = await createPool();
-    const ticket = pool.enqueue(request("replace", 512 * 1024), input(512 * 1024));
-    const before = pool.snapshot().latestWorkerEpoch;
-    const after = await pool.replaceWorker(0);
-    expect(after).toBeGreaterThan(before);
-    expect(await ticket.result).toMatchObject({ kind: "Failed", failure: { code: "WorkerFault" } });
+  it("keeps the admitted worker intact until a ready candidate swaps exactly once", async () => {
+    const transports: DeferredReadyTransport[] = [];
+    const pool = new WorkerPool({
+      workerCount: 1,
+      queueCapacity: 4,
+      initialPlanningEpoch: planningEpoch(1),
+      transportFactory: () => {
+        const transport = new DeferredReadyTransport();
+        transports.push(transport);
+        return transport;
+      }
+    });
+    const starting = pool.start();
+    transports[0]!.ready();
+    await starting;
+    const running = pool.enqueue(request("replace-running", 8), input(8));
+    const queued = pool.enqueue(request("replace-queued", 8), input(8));
+    const before = pool.snapshot();
+
+    const replacing = pool.replaceWorker(0);
+
+    expect(transports).toHaveLength(2);
+    expect(pool.snapshot()).toEqual(before);
+    expect(transports[0]!.terminated).toBe(false);
+    transports[1]!.ready();
+    const afterEpoch = await replacing;
+
+    expect(afterEpoch).toBeGreaterThan(before.latestWorkerEpoch);
+    expect(pool.snapshot()).toMatchObject({
+      state: "Running",
+      workerRestarts: before.workerRestarts + 1,
+      latestWorkerEpoch: afterEpoch,
+      runningJobs: 1,
+      queue: { size: 0 },
+      workers: [{ slot: 0, workerEpoch: afterEpoch, state: "Busy", jobId: workerJobId("replace-queued") }]
+    });
+    expect(transports[0]!.terminated).toBe(true);
+    expect(await running.result).toMatchObject({ kind: "Failed", failure: { code: "WorkerFault" } });
     await pool.shutdown();
+    expect(await queued.result).toMatchObject({ kind: "Failed", failure: { code: "Shutdown" } });
+  });
+
+  it("discards a failed candidate without changing the admitted worker, work, epochs, restarts, or pool state", async () => {
+    const transports: DeferredReadyTransport[] = [];
+    const pool = new WorkerPool({
+      workerCount: 1,
+      queueCapacity: 4,
+      initialPlanningEpoch: planningEpoch(1),
+      transportFactory: () => {
+        const transport = new DeferredReadyTransport();
+        transports.push(transport);
+        return transport;
+      }
+    });
+    const starting = pool.start();
+    transports[0]!.ready();
+    await starting;
+    const running = pool.enqueue(request("failed-candidate-running", 8), input(8));
+    const queued = pool.enqueue(request("failed-candidate-queued", 8), input(8));
+    const before = pool.snapshot();
+
+    const replacing = pool.replaceWorker(0);
+
+    expect(transports).toHaveLength(2);
+    expect(pool.snapshot()).toEqual(before);
+    transports[1]!.fail("synthetic candidate start failure");
+    await expect(replacing).rejects.toThrow("synthetic candidate start failure");
+
+    expect(pool.snapshot()).toEqual(before);
+    expect(transports[0]!.terminated).toBe(false);
+    expect(transports[1]!.terminated).toBe(true);
+    await pool.shutdown();
+    const terminals = await Promise.all([running.result, queued.result]);
+    expect(terminals.map((terminal) => terminal.kind).sort()).toEqual(["Cancelled", "Failed"]);
+  });
+
+  it("prevents candidate admission when shutdown wins during replacement startup", async () => {
+    const transports: DeferredReadyTransport[] = [];
+    const pool = new WorkerPool({
+      workerCount: 1,
+      queueCapacity: 4,
+      initialPlanningEpoch: planningEpoch(1),
+      transportFactory: () => {
+        const transport = new DeferredReadyTransport();
+        transports.push(transport);
+        return transport;
+      }
+    });
+    const starting = pool.start();
+    transports[0]!.ready();
+    await starting;
+    const before = pool.snapshot();
+    const replacing = pool.replaceWorker(0);
+    expect(transports).toHaveLength(2);
+
+    const shuttingDown = pool.shutdown();
+
+    await expect(replacing).rejects.toThrow("Worker terminated before becoming ready");
+    await shuttingDown;
+    expect(transports.every((transport) => transport.terminated)).toBe(true);
+    expect(pool.snapshot()).toMatchObject({
+      state: "Stopped",
+      activeWorkers: 0,
+      runningJobs: 0,
+      workerRestarts: before.workerRestarts,
+      latestWorkerEpoch: before.latestWorkerEpoch,
+      queue: { size: 0 },
+      workers: []
+    });
   });
 
   it("ignores late output from a terminated worker epoch after replacement", async () => {

@@ -28,8 +28,8 @@
     "canonicalIdentical": true
   },
   "diagnostics": {
-    "firstElapsedMs": 904.3000000715256,
-    "secondElapsedMs": 877,
+    "firstElapsedMs": 926.5,
+    "secondElapsedMs": 999.6000000089407,
     "performanceGated": false
   },
   "scenario": {
@@ -66,6 +66,24 @@
       "hitSource": "Cache",
       "pinnedSurvived": true,
       "releasedEntryEvicted": true,
+      "pinGauge": {
+        "transitions": [
+          0,
+          1,
+          0
+        ],
+        "finalTelemetry": {
+          "entries": 1,
+          "bytes": 786432,
+          "pinnedEntries": 0
+        },
+        "finalCacheSnapshot": {
+          "entries": 1,
+          "bytes": 786432,
+          "pinnedEntries": 0
+        },
+        "finalStateMatchesSnapshot": true
+      },
       "canonical": {
         "version": 1,
         "maxBytes": 1048576,

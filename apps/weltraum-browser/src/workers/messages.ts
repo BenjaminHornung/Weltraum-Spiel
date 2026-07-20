@@ -1,5 +1,5 @@
 import type { ByteCount, WorkerEpoch, WorkerJobId } from "./ids";
-import { validateTransferableBundle, type TransferableBufferBundle, type WorkerJobFailure, type WorkerJobRequest, type WorkerJobResult } from "./protocol";
+import { validateHestiaVoxelBrickMeshResultDetails, validateTransferableBundle, type TransferableBufferBundle, type WorkerJobFailure, type WorkerJobRequest, type WorkerJobResult } from "./protocol";
 
 export type WorkerControlRequest =
   | { readonly type: "InitializeWorker"; readonly workerEpoch: WorkerEpoch }
@@ -57,6 +57,16 @@ const isStableAscii = (value: unknown, maximumLength = 256): value is string =>
 const isOptionalStableAscii = (value: unknown, maximumLength = 256): value is string | undefined =>
   value === undefined || isStableAscii(value, maximumLength);
 
+const isOptionalResultDetails = (value: unknown): boolean => {
+  if (value === undefined) return true;
+  try {
+    validateHestiaVoxelBrickMeshResultDetails(value);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
 const isWorkerJobResult = (value: unknown): value is WorkerJobResult => {
   if (!isRecord(value)) return false;
   return isStableAscii(value.jobId)
@@ -67,7 +77,8 @@ const isWorkerJobResult = (value: unknown): value is WorkerJobResult => {
     && isSafeNonNegativeInteger(value.outputRevision)
     && isSafeNonNegativeInteger(value.algorithmVersion)
     && isSafeNonNegativeInteger(value.outputBytes)
-    && isOptionalStableAscii(value.contentHash, 128);
+    && isOptionalStableAscii(value.contentHash, 128)
+    && isOptionalResultDetails(value.details);
 };
 
 const isWorkerJobFailure = (value: unknown): value is WorkerJobFailure => {

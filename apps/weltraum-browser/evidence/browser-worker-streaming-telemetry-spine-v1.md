@@ -8,7 +8,10 @@
 - Queued/running cancellation: **verified**
 - Planning/Worker epoch rejection and replacement: **verified**
 - Cache miss/hit/pinning/release/eviction: **verified**
+- Exported cache telemetry observer: **verified**
+- Distinct-entry pin gauge: **0 -> 1 -> 0**
+- Final telemetry entries/bytes/pins equal cache snapshot: **verified**
 - Canonical repeat: **identical**
 - Browser health errors: 0/0/0/0
-- Timing evidence (not gated): 904.30 ms, 877.00 ms
+- Timing evidence (not gated): 926.50 ms, 999.60 ms
 - Focused command: `npm run test:e2e -- tests/e2e/worker-streaming-telemetry-spine.spec.ts`

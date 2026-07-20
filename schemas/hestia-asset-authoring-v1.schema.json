@@ -1,0 +1,480 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://weltraum.invalid/schemas/hestia-asset-authoring-v1.schema.json",
+  "title": "Hestia Asset Authoring Contract V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "asset",
+    "parts",
+    "joints",
+    "markers",
+    "materials"
+  ],
+  "properties": {
+    "schema": {
+      "const": "hestia.asset-authoring.v1"
+    },
+    "asset": {
+      "$ref": "#/$defs/asset"
+    },
+    "parts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/part"
+      }
+    },
+    "joints": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/joint"
+      }
+    },
+    "markers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/marker"
+      }
+    },
+    "materials": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/material"
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._:-]{0,127}$"
+    },
+    "representation": {
+      "enum": [
+        "Solid",
+        "Shell",
+        "LayeredShell",
+        "StructuralAssembly",
+        "ModularPart",
+        "Decorative",
+        "Hybrid"
+      ]
+    },
+    "coordinateFrame": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "upAxis",
+        "forwardAxis",
+        "handedness"
+      ],
+      "properties": {
+        "upAxis": {
+          "const": "+Y"
+        },
+        "forwardAxis": {
+          "const": "+Z"
+        },
+        "handedness": {
+          "const": "RIGHT"
+        }
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/id"
+      },
+      "uniqueItems": true
+    },
+    "asset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "assetId",
+        "assetRevision",
+        "representation",
+        "metersPerUnit",
+        "coordinateFrame"
+      ],
+      "properties": {
+        "assetId": {
+          "$ref": "#/$defs/id"
+        },
+        "assetRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "representation": {
+          "$ref": "#/$defs/representation"
+        },
+        "metersPerUnit": {
+          "const": 1
+        },
+        "coordinateFrame": {
+          "$ref": "#/$defs/coordinateFrame"
+        },
+        "defaultStructuralMaterialId": {
+          "$ref": "#/$defs/id"
+        },
+        "tags": {
+          "$ref": "#/$defs/tags"
+        }
+      }
+    },
+    "thinFeature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy",
+        "declaredMinimumThicknessMeters"
+      ],
+      "properties": {
+        "policy": {
+          "enum": [
+            "Reject",
+            "PreserveAsBeam",
+            "PreserveAsRod",
+            "PreserveAsShell",
+            "DecorativeOnly"
+          ]
+        },
+        "declaredMinimumThicknessMeters": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      }
+    },
+    "shellLayer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "structuralMaterialId",
+        "thicknessMeters"
+      ],
+      "properties": {
+        "structuralMaterialId": {
+          "$ref": "#/$defs/id"
+        },
+        "thicknessMeters": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      }
+    },
+    "shell": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "thicknessMeters",
+        "layers"
+      ],
+      "properties": {
+        "thicknessMeters": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "layers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/shellLayer"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "part": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "partId",
+        "representation",
+        "destructible",
+        "collisionPolicy",
+        "navigationPolicy",
+        "thinFeature"
+      ],
+      "properties": {
+        "partId": {
+          "$ref": "#/$defs/id"
+        },
+        "parentPartId": {
+          "$ref": "#/$defs/id"
+        },
+        "representation": {
+          "$ref": "#/$defs/representation"
+        },
+        "defaultRenderMaterialId": {
+          "$ref": "#/$defs/id"
+        },
+        "structuralMaterialId": {
+          "$ref": "#/$defs/id"
+        },
+        "destructible": {
+          "type": "boolean"
+        },
+        "collisionPolicy": {
+          "enum": [
+            "None",
+            "AuthoredMesh",
+            "Compound",
+            "Voxel"
+          ]
+        },
+        "navigationPolicy": {
+          "enum": [
+            "None",
+            "Obstacle",
+            "Walkable",
+            "Portal"
+          ]
+        },
+        "thinFeature": {
+          "$ref": "#/$defs/thinFeature"
+        },
+        "shell": {
+          "$ref": "#/$defs/shell"
+        },
+        "tags": {
+          "$ref": "#/$defs/tags"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "representation": {
+                "const": "Shell"
+              }
+            },
+            "required": [
+              "representation"
+            ]
+          },
+          "then": {
+            "required": [
+              "shell"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "representation": {
+                "const": "LayeredShell"
+              }
+            },
+            "required": [
+              "representation"
+            ]
+          },
+          "then": {
+            "required": [
+              "shell"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "representation": {
+                "const": "Decorative"
+              }
+            },
+            "required": [
+              "representation"
+            ]
+          },
+          "then": {
+            "properties": {
+              "destructible": {
+                "const": false
+              },
+              "collisionPolicy": {
+                "enum": [
+                  "None",
+                  "AuthoredMesh"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "joint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "jointId",
+        "parentPartId",
+        "childPartId",
+        "jointType",
+        "breakPolicy"
+      ],
+      "properties": {
+        "jointId": {
+          "$ref": "#/$defs/id"
+        },
+        "parentPartId": {
+          "$ref": "#/$defs/id"
+        },
+        "childPartId": {
+          "$ref": "#/$defs/id"
+        },
+        "jointType": {
+          "enum": [
+            "Fixed",
+            "Hinge",
+            "Slider",
+            "Breakable"
+          ]
+        },
+        "breakPolicy": {
+          "enum": [
+            "Never",
+            "Threshold",
+            "Scripted"
+          ]
+        },
+        "breakForceNewtons": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "breakTorqueNewtonMeters": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "tags": {
+          "$ref": "#/$defs/tags"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "breakPolicy": {
+                "const": "Threshold"
+              }
+            },
+            "required": [
+              "breakPolicy"
+            ]
+          },
+          "then": {
+            "anyOf": [
+              {
+                "required": [
+                  "breakForceNewtons"
+                ]
+              },
+              {
+                "required": [
+                  "breakTorqueNewtonMeters"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "marker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "markerId",
+        "markerType"
+      ],
+      "properties": {
+        "markerId": {
+          "$ref": "#/$defs/id"
+        },
+        "markerType": {
+          "enum": [
+            "Snap",
+            "Docking",
+            "Cargo",
+            "Interaction",
+            "Story",
+            "Spawn",
+            "CutInterface",
+            "ToolMount",
+            "Seat"
+          ]
+        },
+        "partId": {
+          "$ref": "#/$defs/id"
+        },
+        "interfaceId": {
+          "$ref": "#/$defs/id"
+        },
+        "tags": {
+          "$ref": "#/$defs/tags"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "markerType": {
+                "const": "CutInterface"
+              }
+            },
+            "required": [
+              "markerType"
+            ]
+          },
+          "then": {
+            "required": [
+              "interfaceId"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "markerType": {
+                "not": {
+                  "const": "CutInterface"
+                }
+              }
+            },
+            "required": [
+              "markerType"
+            ]
+          },
+          "then": {
+            "not": {
+              "required": [
+                "interfaceId"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "material": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "renderMaterialId"
+      ],
+      "properties": {
+        "renderMaterialId": {
+          "$ref": "#/$defs/id"
+        },
+        "structuralMaterialId": {
+          "$ref": "#/$defs/id"
+        },
+        "paletteIndex": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "tags": {
+          "$ref": "#/$defs/tags"
+        }
+      }
+    }
+  }
+}
