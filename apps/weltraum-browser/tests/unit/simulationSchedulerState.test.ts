@@ -147,6 +147,18 @@ describe("simulation scheduler result application", () => {
     expect(Object.isFrozen(decision.persistentEventIntents[0])).toBe(true);
   });
 
+  it("rejects completion ticks before the currently due execution without mutation", () => {
+    const source = createSimulationSchedulerFixtureSnapshot(100);
+    const sourceBytes = JSON.stringify(source);
+
+    expect(() => applyJobExecutionResult(source, result("Completed", { completionTick: 39 })))
+      .toThrowError(expect.objectContaining({ code: "INVALID_VALUE", path: "/completionTick" }));
+    expect(JSON.stringify(source)).toBe(sourceBytes);
+
+    const atDue = applyJobExecutionResult(source, result("Completed", { completionTick: 40 }));
+    expect(atDue.kind).toBe("Accepted");
+  });
+
   it("uses durable receipts for idempotence and conflicting-repeat detection", () => {
     const source = createSimulationSchedulerFixtureSnapshot(100);
     const original = result("Completed");

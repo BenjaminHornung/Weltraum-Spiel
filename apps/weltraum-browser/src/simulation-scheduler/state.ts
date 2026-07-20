@@ -145,6 +145,13 @@ export const applyJobExecutionResult = (source: unknown, resultSource: unknown):
   const blockReason = getStaticExecutionBlockReason(snapshot.revision, job, definition);
   if (blockReason !== undefined) return rejectedResult(snapshot, blockReason);
   if (job.nextDueTick! > snapshot.universeTime.tick) return rejectedResult(snapshot, "NotDue");
+  if (result.completionTick < job.nextDueTick!) {
+    return failPersistenceValidation(
+      "INVALID_VALUE",
+      "/completionTick",
+      "Execution completion tick cannot be earlier than the job's next due tick."
+    );
+  }
   if (result.completionTick > snapshot.universeTime.tick) {
     return failPersistenceValidation(
       "INVALID_VALUE",
