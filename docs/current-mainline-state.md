@@ -1,10 +1,10 @@
 # Current Browser Mainline State
 
-Stand: 2026-07-13
+Stand: 2026-07-20
 Status snapshot: browser mainline after the objective-chain,
 celestial-gravity-core, combat-weapon-damage-core, Persistence/Universe-Time/
 Event core, Ship Builder full-stats/readiness, Graphics Settings and Demo Scout
-nozzle-VFX merges
+nozzle-VFX merges, plus the query-gated Hestia Microvoxel Surface Lab
 
 ## Product Mainline
 
@@ -101,6 +101,30 @@ The navigation planner owns target and route actions. While it is open, held
 flight keys are cleared and manual flight input is suppressed.
 
 ## Implemented Foundations
+
+### Hestia Microvoxel Surface Lab
+
+The exact query route `/?surfaceLab=1` starts a full-screen technical proving
+ground outside the normal player runtime. It derives a fixed SurfaceLocalFrame
+from the canonical Hestia celestial definition, generates exactly 16
+deterministic voxel bricks through the existing WorkerPool, meshes them with
+Surface Nets, and publishes validated MeshArtifacts through ThreeRenderBackend.
+Same canonical input preserves brick and mesh identity; changed seed or
+resolution produces distinct deterministic content. Cache, cancellation,
+stale-result, worker-replacement, budget and disposal paths remain fail closed.
+
+This route is not player-facing voxel terrain or gameplay. It does not provide
+a planet shell, surface streaming, collision/player integration, seamless
+space-to-surface transitions, production hydrology, destruction or accepted
+final visual fidelity. The normal `/` flight runtime remains unchanged when
+the exact query gate is absent.
+
+Evidence:
+
+- [Surface Lab behavior specification](../.devtoolbox/specs/changes/browser-hestia-microvoxel-surface-lab-v1/specs/default/spec.md)
+- [Technical runtime evidence](../apps/weltraum-browser/evidence/browser-hestia-microvoxel-surface-lab-v1.md)
+- [Deterministic evidence summary](../apps/weltraum-browser/evidence/browser-hestia-microvoxel-surface-lab-v1-summary.json)
+- [Live browser E2E](../apps/weltraum-browser/tests/e2e/hestia-microvoxel-surface-lab.spec.ts)
 
 ### Celestial And Gravity Core
 

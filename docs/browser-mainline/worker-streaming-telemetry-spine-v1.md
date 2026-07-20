@@ -32,13 +32,15 @@ Content identity includes namespace, content ID, input revision, algorithm versi
 
 `MemoryContentCache` is disposable and reconstructable. It enforces an exact byte budget with deterministic LRU eviction, independent pin and lease counts, idempotent release, and same-key/hash consistency. Leased or pinned entries are not eviction candidates. A lease exposes the backing buffer without a per-hit copy under a contractually readonly API. Cache eviction or clearing never changes world truth.
 
+The exported cache observer reports frozen `Pinned` and `Unpinned` events only when a distinct entry crosses `0 -> 1` or returns from `1 -> 0` pins. Additional pins, non-final releases, repeated releases, and stale handles are silent. `clear()` publishes one `Cleared` reset rather than synthesizing per-entry `Unpinned` events.
+
 Residency states are generic (`NotRequested`, `Queued`, `Loading`, `Ready`, `Failed`, `Evicted`, `Cancelled`) and follow a closed transition graph. Residency is not visibility and is not simulation authority.
 
 ## Telemetry
 
-The versioned snapshot records worker, queue, job, transfer-byte, cache, loader, and queue-depth counters plus latency summaries. Updates are constant-time for the fixed schema. Reset clears cumulative counters and timing observations while preserving current gauges.
+The versioned snapshot records worker, queue, job, transfer-byte, cache, loader, and queue-depth counters plus latency summaries. The cache projection updates entries, bytes, and distinct pinned entries from observer events in O(1), without snapshots, entry scans, or payload inspection. `Pinned` increments the pin gauge, `Unpinned` decrements it, and the single `Cleared` event resets all three cache gauges. Reset clears cumulative counters and timing observations while preserving current gauges.
 
-Browser timestamps, heap estimates, long-task counts, and latency observations are diagnostic only. Canonical telemetry excludes all of them, so observation cannot change queue decisions or repeat signatures. Observer callbacks are isolated so exceptions cannot affect domain behavior.
+Browser timestamps, heap estimates, long-task counts, and latency observations are diagnostic only. Canonical telemetry excludes all of them, so observation cannot change queue decisions or repeat signatures. Observer callbacks are isolated so exceptions during pinning, unpinning, clearing, or other cache events cannot affect cache mutations, release idempotence, eviction, clear behavior, or other domain behavior.
 
 ## Verification boundary
 

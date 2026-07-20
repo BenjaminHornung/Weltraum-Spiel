@@ -5,3 +5,4 @@ export * from "./contentKey";
 export * from "./contentProvider";
 export * from "./memoryContentCache";
 export * from "./residency";
+export * from "./voxelBrickCache";

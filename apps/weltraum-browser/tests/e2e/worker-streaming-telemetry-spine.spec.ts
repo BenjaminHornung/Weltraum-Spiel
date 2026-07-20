@@ -36,6 +36,12 @@ interface ScenarioResult {
       readonly hitSource: "Cache";
       readonly pinnedSurvived: boolean;
       readonly releasedEntryEvicted: boolean;
+      readonly pinGauge: {
+        readonly transitions: readonly [0, 1, 0];
+        readonly finalTelemetry: { readonly entries: number; readonly bytes: number; readonly pinnedEntries: number };
+        readonly finalCacheSnapshot: { readonly entries: number; readonly bytes: number; readonly pinnedEntries: number };
+        readonly finalStateMatchesSnapshot: true;
+      };
       readonly canonical: unknown;
     };
     readonly telemetry: unknown;
@@ -173,11 +179,10 @@ test("normal route proves the real worker streaming telemetry spine twice", asyn
 
       let providerCalls = 0;
       let deduplicated = false;
-      const cache = new streaming.MemoryContentCache(1024 * 1024, (event) => {
-        if (event.kind === "Hit") telemetry.recordCacheHit();
-        else if (event.kind === "Miss") telemetry.recordCacheMiss();
-        else if (event.kind === "Evicted") telemetry.recordCacheEviction();
-      });
+      const cache = new streaming.MemoryContentCache(
+        1024 * 1024,
+        diagnostics.createMemoryContentCacheTelemetryObserver(telemetry)
+      );
       const fixture = streaming.createDeterministicContentProvider({ byteLength: 512 * 1024, chunkBytes: 64 * 1024 });
       const provider: ContentProvider = {
         async load(request) { providerCalls += 1; return fixture.load(request); }
@@ -199,8 +204,10 @@ test("normal route proves the real worker streaming telemetry spine twice", asyn
       const hit = await loader.load({ key: contentKey });
       if (hit.kind !== "Loaded" || hit.source !== "Cache") throw new Error("Expected cache hit.");
       hit.lease.release();
+      const pinnedEntriesBeforePin = telemetry.snapshot().pinnedEntries;
       const pin = cache.pin(contentKey);
       if (pin === undefined) throw new Error("Expected content pin.");
+      const pinnedEntriesAfterPin = telemetry.snapshot().pinnedEntries;
       const put = (id: string, bytes: number, fill: number) => {
         const key = streaming.createContentKey({ namespace: "fixture", contentId: id, inputRevision: 1, algorithmVersion: 1, outputRevision: 1 });
         const buffer = new ArrayBuffer(bytes); new Uint8Array(buffer).fill(fill);
@@ -211,6 +218,10 @@ test("normal route proves the real worker streaming telemetry spine twice", asyn
       put("c", 512 * 1024, 3);
       const pinnedSurvived = cache.has(contentKey) && !cache.has(keyB);
       pin.release();
+      const pinnedEntriesAfterFinalRelease = telemetry.snapshot().pinnedEntries;
+      if (pinnedEntriesBeforePin !== 0 || pinnedEntriesAfterPin !== 1 || pinnedEntriesAfterFinalRelease !== 0) {
+        throw new Error("Cache telemetry did not publish the distinct pin gauge transition 0 -> 1 -> 0.");
+      }
       put("d", 768 * 1024, 4);
       const releasedEntryEvicted = !cache.has(contentKey);
       const cacheSnapshot = cache.snapshot();
@@ -218,7 +229,24 @@ test("normal route proves the real worker streaming telemetry spine twice", asyn
       await pool.shutdown();
       telemetry.setWorkerState(1, 0);
       telemetry.setQueueState(0, 0);
-      telemetry.setCacheState(cacheSnapshot.entryCount, cacheSnapshot.totalBytes, cacheSnapshot.pinnedEntries);
+      const telemetrySnapshot = telemetry.snapshot();
+      const finalTelemetry = {
+        entries: telemetrySnapshot.cacheEntries,
+        bytes: telemetrySnapshot.cacheBytes,
+        pinnedEntries: telemetrySnapshot.pinnedEntries
+      };
+      const finalCacheSnapshot = {
+        entries: cacheSnapshot.entryCount,
+        bytes: cacheSnapshot.totalBytes,
+        pinnedEntries: cacheSnapshot.pinnedEntries
+      };
+      if (
+        finalTelemetry.entries !== finalCacheSnapshot.entries
+        || finalTelemetry.bytes !== finalCacheSnapshot.bytes
+        || finalTelemetry.pinnedEntries !== finalCacheSnapshot.pinnedEntries
+      ) {
+        throw new Error("Final telemetry cache gauges do not match MemoryContentCache.snapshot().");
+      }
       const semantic = {
         transfers,
         queuedCancellation: queuedTerminal.reason,
@@ -231,9 +259,15 @@ test("normal route proves the real worker streaming telemetry spine twice", asyn
           hitSource: hit.source,
           pinnedSurvived,
           releasedEntryEvicted,
+          pinGauge: {
+            transitions: [pinnedEntriesBeforePin, pinnedEntriesAfterPin, pinnedEntriesAfterFinalRelease] as const,
+            finalTelemetry,
+            finalCacheSnapshot,
+            finalStateMatchesSnapshot: true as const
+          },
           canonical: streaming.canonicalizeCacheSnapshot(cacheSnapshot)
         },
-        telemetry: diagnostics.canonicalizePerformanceTelemetrySnapshot(telemetry.snapshot())
+        telemetry: diagnostics.canonicalizePerformanceTelemetrySnapshot(telemetrySnapshot)
       };
       return { semantic, canonicalJson: JSON.stringify(semantic), elapsedMs: performance.now() - started };
     };
@@ -250,7 +284,14 @@ test("normal route proves the real worker streaming telemetry spine twice", asyn
     runningCancellation: "CancelledDuringExecution",
     staleDecision: "RejectedStalePlanningEpoch",
     replacementEpochDelta: 1,
-    cache: { providerCalls: 1, deduplicated: true, hitSource: "Cache", pinnedSurvived: true, releasedEntryEvicted: true }
+    cache: {
+      providerCalls: 1,
+      deduplicated: true,
+      hitSource: "Cache",
+      pinnedSurvived: true,
+      releasedEntryEvicted: true,
+      pinGauge: { transitions: [0, 1, 0], finalStateMatchesSnapshot: true }
+    }
   });
   const testBridgeAfter = await readTestBridgeState(page);
   expect(testBridgeAfter).toEqual({ ownProperty: false, inWindow: false });
@@ -270,5 +311,5 @@ test("normal route proves the real worker streaming telemetry spine twice", asyn
   } as const;
   await mkdir(evidenceDir, { recursive: true });
   await writeFile(summaryPath, `${JSON.stringify(evidence, null, 2)}\n`, "utf8");
-  await writeFile(markdownPath, `# Browser Worker Streaming Telemetry Spine V1 Evidence\n\n- Status: **PASS**\n- Route: \`/\` without TestBridge\n- Real module Worker: **verified**\n- Transfer sizes: 256 KiB, 1 MiB, 4 MiB\n- Sender buffers detached: **verified**\n- Queued/running cancellation: **verified**\n- Planning/Worker epoch rejection and replacement: **verified**\n- Cache miss/hit/pinning/release/eviction: **verified**\n- Canonical repeat: **identical**\n- Browser health errors: 0/0/0/0\n- Timing evidence (not gated): ${repeated.first.elapsedMs.toFixed(2)} ms, ${repeated.second.elapsedMs.toFixed(2)} ms\n- Focused command: \`${focusedCommand}\`\n`, "utf8");
+  await writeFile(markdownPath, `# Browser Worker Streaming Telemetry Spine V1 Evidence\n\n- Status: **PASS**\n- Route: \`/\` without TestBridge\n- Real module Worker: **verified**\n- Transfer sizes: 256 KiB, 1 MiB, 4 MiB\n- Sender buffers detached: **verified**\n- Queued/running cancellation: **verified**\n- Planning/Worker epoch rejection and replacement: **verified**\n- Cache miss/hit/pinning/release/eviction: **verified**\n- Exported cache telemetry observer: **verified**\n- Distinct-entry pin gauge: **0 -> 1 -> 0**\n- Final telemetry entries/bytes/pins equal cache snapshot: **verified**\n- Canonical repeat: **identical**\n- Browser health errors: 0/0/0/0\n- Timing evidence (not gated): ${repeated.first.elapsedMs.toFixed(2)} ms, ${repeated.second.elapsedMs.toFixed(2)} ms\n- Focused command: \`${focusedCommand}\`\n`, "utf8");
 });
