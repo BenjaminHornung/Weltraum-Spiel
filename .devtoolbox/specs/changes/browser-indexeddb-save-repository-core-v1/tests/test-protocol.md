@@ -1,147 +1,126 @@
-# Test Protocol: Browser IndexedDB Save Repository Core V1 Integration
+# Test Protocol: Browser IndexedDB Save Repository Core V1 Main-Drift Integration
 
 ## Evidence state
 
-This protocol describes the current-main integration branch only. The historical
-feature-branch closure evidence is **SUPERSEDED** because that branch also contained
-the separate `browser-vitest-cpu-contention-stability` scope.
+Overall status: **PENDING**.
 
-Overall integration status: **PENDING**. The recorded test, scope, DevToolbox, and
-completion gates passed, but the final integration commit, PR creation, and
-exact-head review are not complete.
+The integration is being rebased by merge onto the latest current main. The merge
+is in progress and not committed. All verification, DevToolbox completion, and
+local review evidence recorded before this drift is retained below only as
+**SUPERSEDED/HISTORICAL**. No final merge SHA, PR, or exact-head review is claimed.
 
-## Source control baseline
+## Source control and drift
 
-- Integration branch: `feature/browser-indexeddb-save-repository-core-v1-integration`
-- Current-main base: `f6d3fe69175b168ddea5e385c6d7b3452e6cba16`
-- Historical path source: `7b920eee22654698c75037a6b2287225ec5c46da`
-- Merge base: `5ff47aeef3c42c0b933e8480dafa5680759a40df`
-- Main/feature divergence at audit: `38/1`
-- Pre-commit integration HEAD: equal to the current-main base
-- Final integration SHA: **PENDING**; record it only after the integration commit
+- Initial main SHA: `f6d3fe69175b168ddea5e385c6d7b3452e6cba16`
+- Final current-main SHA: `33c019d2249fbbe3bfb0bdcf6ebbc5e1899a8e0e`
+- Feature path source: `7b920eee22654698c75037a6b2287225ec5c46da`
+- Pre-drift integration commit: `29861b785ce18d57e8379eb48ebd61f54769f5e5`
+- Main drift: 7 commits
+- Merge state: **IN PROGRESS / NOT COMMITTED**
+- Final post-drift integration SHA: **PENDING**
 
-The historical commit was not merged or cherry-picked. Only the Save Repository
-Core allowlist was reapplied.
+The only merge conflict was `apps/weltraum-browser/package.json`. It was resolved
+minimally so both `browser-storage-save-repository.spec.ts` and
+`tests/e2e/simulation-scheduler-core.spec.ts` occur exactly once in `test:e2e:core`.
+Unrelated generated evidence was restored to the merge index.
 
-## Environment
+The working merge diff against `33c019d2249fbbe3bfb0bdcf6ebbc5e1899a8e0e`
+contains only the Save Repository Core integration scope. Scope audit: **PASS**.
+
+## Fresh post-drift Node 22 verification
 
 - Node: `22.23.1`
-- npm: `11.13.0`
-- Chrome: `150.0.7871.129`
-- Working directory for npm commands: `apps/weltraum-browser`
-
-## Recorded current-main verification
+- Chrome for focused and core E2E: `150.0.7871.129`
+- Working directory: `apps/weltraum-browser`
 
 | Gate | Status | Result |
 | --- | --- | --- |
-| `npm ci` | PASS | 59 packages, 0 vulnerabilities |
 | `npx tsc -p tsconfig.json` | PASS | TypeScript completed successfully |
-| Five focused Vitest files, `--maxWorkers=1` | PASS | 5/5 files, 54/54 tests, 1.82 s |
-| `npm run test -- --maxWorkers=1` | PASS | 109/109 files, 1053/1053 tests, 109.89 s |
-| `npm run build` | PASS | 165 modules, Vite phase 1.14 s; known chunk-size warning only |
-| `npm run test:e2e:core -- --workers=1 --retries=0` | PASS | 35/35 tests, 64.7 s |
-| Focused browser-storage E2E run 1 | PASS | 4/4, 1 worker, 0 retries; run 11.7 s |
-| Focused browser-storage E2E run 2 | PASS | 4/4, 1 worker, 0 retries; run 11.5 s |
-| Port cleanup | PASS | 0 listeners on port 5173 after tests |
+| Five focused Vitest files, `--maxWorkers=1` | PASS | 5/5 files, 54/54 tests, 2.17 s |
+| `npm run test -- --maxWorkers=1` | PASS | 112/112 files, 1091/1091 tests, 101.75 s |
+| `npm run build` | PASS | 165 modules, Vite phase 1.46 s; existing chunk warning only |
+| Focused browser-storage E2E run 1 | PASS | 4/4, 1 worker, 0 retries; run 11.201 s |
+| Focused browser-storage E2E run 2 | PASS | 4/4, 1 worker, 0 retries; run 11.098 s |
+| Clean `test:e2e:core` rerun | PASS | 36/36, 1 worker, 0 retries; 72.6 s |
+| Final port cleanup | PASS | 0 listeners on port 5173 |
 
-The focused unit command covers:
+The first core-E2E attempt ran 0 tests because a transient leftover listener still
+held port 5173. The listener exited naturally; no process was killed. The clean
+serial rerun then passed 36/36.
 
-- `tests/unit/browserStorageCodec.test.ts`
-- `tests/unit/browserStorageCorruption.test.ts`
-- `tests/unit/browserStorageImportExport.test.ts`
-- `tests/unit/browserStorageMemoryRepository.test.ts`
-- `tests/unit/browserStorageRevision.test.ts`
+## Deterministic browser evidence
 
-## Browser acceptance evidence
+Both focused post-drift runs reproduced the unchanged deterministic evidence:
 
-The deterministic app evidence records a successful run on route `/` with
-`window.TestBridge` absent. IndexedDB reload persistence, stale CAS rejection,
-an exact revision increment of one, export/import, and controlled checksum
-corruption detection all passed. Cleanup recorded zero remaining slots, complete
-database deletion, and empty console, page, request, and HTTP error arrays.
+- JSON SHA-256: `17A637414095211350253FE263B110561CC796EDCD67153DB0C5968BC7054935`
+- Markdown SHA-256: `8BFC28E7CEB930F4C422B37736C4628ABF1C15365B68C54F92B6CD2B15DBAFD8`
 
-- JSON evidence SHA-256: `17A637414095211350253FE263B110561CC796EDCD67153DB0C5968BC7054935`
-- Markdown evidence SHA-256: `8BFC28E7CEB930F4C422B37736C4628ABF1C15365B68C54F92B6CD2B15DBAFD8`
+The evidence continues to prove route `/`, absent `window.TestBridge`, IndexedDB
+reload persistence, stale CAS preservation, exact +1 revision, export/import,
+checksum-corruption detection, zero remaining slots, database deletion, and empty
+console, page, request, and HTTP error arrays.
 
-## E2E grouping and scope audit
-
-The focused spec `tests/e2e/browser-storage-save-repository.spec.ts` is assigned
-exactly once, to `test:e2e:core`. The complete inventory contains 32 actual E2E
-specs and 32 assignments: core/live/ui = 19/9/4, with zero duplicates, ungrouped
-specs, or stale entries.
-
-Current scope evidence:
-
-- 28 changed paths, 0 allowlist violations;
-- forbidden imports: 0;
-- secret filename hits: 0;
-- `git diff --check`: PASS;
-- `apps/weltraum-browser/package.json` changed only for the E2E assignment;
-- `package-lock.json`, `src/persistence/**`, and `Assets/**`: unchanged;
-- `apps/weltraum-browser/vite.config.ts`: explicitly excluded and unchanged;
-- `.devtoolbox/specs/changes/browser-vitest-cpu-contention-stability/**`:
-  explicitly excluded and unchanged.
-
-Current main already provides the equivalent `test.maxWorkers: 1` rule. No
-Vitest CPU Contention Stability change was integrated.
-
-## Lifecycle and version regression proof
-
-Status: **PASS**
-
-The fresh focused proof covers connection closure on `versionchange`, blocked
-open, blocked delete, future IndexedDB database version, future repository marker,
-and terminal `close` behavior.
-
-## DevToolbox verification
+## Fresh post-drift DevToolbox verification
 
 - Execution: `8855f699ac0e4850bf81205c2c82d8aa`
 - Execution status: **VERIFIED**
-- Current operation: `df1d3f1f17f54371977ba4e6d908931c`
+- Verification operation: `75f376583fe6440e86dddb99d9558b2c`
 - Operation status: **COMPLETED/SUCCEEDED**
-- Completed at: `2026-07-20T20:10:19Z`
+- Completed at: `2026-07-21T05:40:05.899Z`
 - Specs: **PASS**
-- Test: **PASS**, exit 0 - 109/109 files, 1053/1053 tests, 109.94 s
-- Build: **PASS_WITH_WARNING**, exit 0 - 165 modules, Vite 0.778 s
+- Test: **PASS**, exit 0 - 112/112 files, 1091/1091 tests, 90.46 s
+- Build: **PASS_WITH_WARNING**, exit 0 - 165 modules, Vite 1.13 s
 - Summary: 2 passed, 1 warning, 0 failed, 0 skipped
-- Warning scope: the known Vite chunk-size warning and local npm user-config
-  warnings only
+- Warnings: known Vite chunk-size and local npm user-config warnings only
 
-This is the current authoritative DevToolbox verification. It is supporting
-evidence, not Node 22 runtime authority; the explicit local Node 22 gates recorded
-above remain authoritative.
+## Fresh post-drift local review
 
-## DevToolbox completion
-
-- Completion preflight: **PASS**
-- Preflight ID: `65f22c48d2e0497c9796454bd1e14829`
-- `canProceed`: `true`
-- Generated at: `2026-07-20T20:12:24Z`
-- Task 5.1: **CLOSED**
-- Post-toggle `specs_validate`: **PASS**, 5 tasks parsed
-
-## Local final review
-
-- Status: **COMPLETED**
 - Verdict: **READY**
 - P1: **0**
 - P2: **0**
-- Earlier P2 findings resolved: **2**
-  - stale historical test artifacts;
-  - missing lifecycle/version regression proof.
 
 Non-blocking P3 residuals:
 
-1. The blocked-open test asserts the exact product-internal message, which creates
-   test coupling to message wording.
-2. CAS, revision, import, and metadata transition logic is duplicated between the
-   Memory and IndexedDB adapters, creating a future semantic-parity risk.
+1. exact product-internal blocked-open message assertion as test coupling;
+2. duplicated CAS, revision, import, and metadata transition logic between Memory
+   and IndexedDB adapters as a future parity risk.
 
-## Pending gates
+## Fresh post-drift completion
 
-- Final integration commit SHA: **PENDING**.
-- PR creation: **PENDING**.
-- PR exact-head Codex review: **PENDING**, after PR creation.
+- `specs_validate`: **PASS**
+- Completion preflight ID: `6ba2a46724614826b0d58b0ff04182b4`
+- Completion preflight status: **PASS**
+- `canProceed`: `true`
+- Task 5.1: **CLOSED**
 
-The local `READY` verdict does not claim a final commit or PR result. Do not
-classify the branch as merge-ready until every pending gate passes.
+## Superseded pre-drift evidence
+
+Status: **SUPERSEDED/HISTORICAL**
+
+The pre-drift integration had passed 54/54 focused units, 1053/1053 full units,
+165-module build, two focused 4/4 E2E runs, 35/35 core E2E, lifecycle/version
+regressions, and its then-current scope audit.
+
+Historical DevToolbox records:
+
+- Execution: `8855f699ac0e4850bf81205c2c82d8aa`, status `VERIFIED`
+- Verification operation: `df1d3f1f17f54371977ba4e6d908931c`,
+  `COMPLETED/SUCCEEDED`
+- Historical completion preflight:
+  `65f22c48d2e0497c9796454bd1e14829`, PASS, `canProceed: true`
+- Historical Task 5.1 state: CLOSED
+- Historical local final review: READY, P1=0, P2=0
+
+Historical non-blocking P3 residuals were:
+
+1. exact product-internal blocked-open message assertion as test coupling;
+2. duplicated CAS, revision, import, and metadata transition logic between Memory
+   and IndexedDB adapters as a future parity risk.
+
+None of these pre-drift closure results closes the post-drift gates.
+
+## Pending post-drift gates
+
+- Final post-drift integration SHA: **PENDING**
+- PR creation: **PENDING**
+- PR exact-head Codex review: **PENDING**
