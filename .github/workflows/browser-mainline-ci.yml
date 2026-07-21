@@ -1,105 +1,44 @@
 name: Browser Mainline CI
 
 on:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
       - main
-    paths:
-      - "apps/weltraum-browser/**"
-      - ".gitattributes"
-      - ".github/workflows/browser-mainline-ci.yml"
-      - "infra/github-runner-truenas/**"
-      - "docs/operations/truenas-self-hosted-github-runner.md"
-      - "docs/browser-mainline/**"
-      - ".devtoolbox/specs/changes/browser-*/**"
-
-  repository_dispatch:
-    types:
-      - browser-mainline-ci
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: browser-mainline-${{ github.ref }}
+  group: browser-mainline-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
   browser-mainline:
     name: Browser mainline verification
-    if: >-
-      (github.event_name == 'push' &&
-       github.ref == 'refs/heads/main') ||
-      (github.event_name == 'repository_dispatch' &&
-       github.ref == 'refs/heads/main')
-    runs-on: [self-hosted, linux, x64, weltraum-browser]
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
-    env:
-      CI: "true"
-      PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
-      npm_config_cache: /home/runner/.npm
     defaults:
       run:
         working-directory: apps/weltraum-browser
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
-          fetch-depth: 0
-          lfs: false
+          fetch-depth: 1
+          lfs: true
+          persist-credentials: false
 
-      - name: Verify trusted main checkout
-        shell: bash
-        working-directory: .
-        env:
-          EVENT_NAME: ${{ github.event_name }}
-          EXPECTED_REF: ${{ github.ref }}
-          EXPECTED_SHA: ${{ github.sha }}
-        run: |
-          set -euo pipefail
-
-          case "${EVENT_NAME}" in
-            push|repository_dispatch) ;;
-            *)
-              echo "::error::Refusing unsupported event: ${EVENT_NAME}"
-              exit 1
-              ;;
-          esac
-
-          if [[ "${EXPECTED_REF}" != "refs/heads/main" ]]; then
-            echo "::error::Refusing non-main ref: ${EXPECTED_REF}"
-            exit 1
-          fi
-
-          actual_head="$(git rev-parse HEAD)"
-          if [[ "${actual_head}" != "${EXPECTED_SHA}" ]]; then
-            echo "::error::Checkout HEAD ${actual_head} does not match github.sha ${EXPECTED_SHA}."
-            exit 1
-          fi
-
-          git fetch --no-tags --prune origin \
-            +refs/heads/main:refs/remotes/origin/main
-
-          main_head="$(git rev-parse refs/remotes/origin/main)"
-          if ! git merge-base --is-ancestor "${EXPECTED_SHA}" refs/remotes/origin/main; then
-            echo "::error::github.sha ${EXPECTED_SHA} is not part of origin/main."
-            exit 1
-          fi
-
-          if [[ "${EVENT_NAME}" == "repository_dispatch" && "${main_head}" != "${EXPECTED_SHA}" ]]; then
-            echo "::error::repository_dispatch must execute the current main head ${main_head}, not ${EXPECTED_SHA}."
-            exit 1
-          fi
-
-          printf 'Verified event=%s ref=%s sha=%s origin_main=%s\n' \
-            "${EVENT_NAME}" "${EXPECTED_REF}" "${EXPECTED_SHA}" "${main_head}"
-
-      - name: Restore required browser LFS artifacts if checked out as pointers
+      - name: Verify required browser artifacts
         shell: bash
         working-directory: .
         run: |
           set -euo pipefail
+
           glb_path="apps/weltraum-browser/public/ships/demo_scout_mk1.glb"
           favicon_path="apps/weltraum-browser/public/favicon.png"
           reference_pngs=(
@@ -111,63 +50,57 @@ jobs:
             "apps/weltraum-browser/tests/e2e/render-backend-mesh-lifecycle.spec.ts-snapshots/render-backend-child-active.png"
             "apps/weltraum-browser/tests/e2e/render-backend-mesh-lifecycle.spec.ts-snapshots/render-backend-replacement-active.png"
           )
-          required_lfs_paths=("$glb_path" "$favicon_path" "${reference_pngs[@]}")
 
-          needs_lfs_pull=false
-          for path in "${required_lfs_paths[@]}"; do
-            if [ ! -f "$path" ]; then
+          required_paths=("$glb_path" "$favicon_path" "${reference_pngs[@]}")
+          for path in "${required_paths[@]}"; do
+            if [[ ! -f "$path" ]]; then
               echo "::error::Expected browser artifact is missing at $path"
               exit 1
             fi
             if head -c 80 "$path" | grep -q "version https://git-lfs.github.com/spec/v1"; then
-              needs_lfs_pull=true
+              echo "::error::Git LFS pointer was not resolved: $path"
+              exit 1
             fi
           done
 
-          if [ "$needs_lfs_pull" = true ]; then
-            include_paths=$(IFS=,; echo "${required_lfs_paths[*]}")
-            echo "Required browser artifacts include LFS pointers; pulling only $include_paths"
-            git lfs install --local
-            git lfs pull --include="$include_paths" --exclude=""
-          else
-            echo "Required browser artifacts are present as normal files; no LFS pull needed."
-          fi
-
-          if [ "$(head -c 4 "$glb_path")" != "glTF" ]; then
+          if [[ "$(head -c 4 "$glb_path")" != "glTF" ]]; then
             echo "::error::Demo Scout GLB did not resolve to a GLB binary."
             exit 1
           fi
 
           for path in "$favicon_path" "${reference_pngs[@]}"; do
-            png_signature=$(od -An -tx1 -N8 "$path" | tr -d ' \n')
-            if [ "$png_signature" != "89504e470d0a1a0a" ]; then
+            png_signature="$(od -An -tx1 -N8 "$path" | tr -d ' \n')"
+            if [[ "$png_signature" != "89504e470d0a1a0a" ]]; then
               echo "::error::Reference image did not resolve to a PNG binary: $path"
               exit 1
             fi
           done
 
-      - name: Verify runner toolchain
-        shell: bash
-        run: |
-          set -euo pipefail
-          command -v node npm git jq file >/dev/null
-          test "$(node --version | cut -d. -f1)" = "v22"
-          git lfs version
-          node --version
-          npm --version
-          jq --version
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/weltraum-browser/package-lock.json
 
       - name: Install browser dependencies
         id: install_browser_dependencies
         run: npm ci
 
-      - name: Verify pinned Playwright Chromium
+      - name: Install Playwright Chromium
+        id: install_playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Verify Playwright toolchain and WebGL
         id: verify_playwright
         shell: bash
         run: |
           set -euo pipefail
-          test "$PLAYWRIGHT_BROWSERS_PATH" = "/ms-playwright"
-          test "$npm_config_cache" = "/home/runner/.npm"
+
+          node --version
+          npm --version
+          npx playwright --version
+
           node --input-type=module <<'NODE'
           import { constants } from "node:fs";
           import { access, readFile } from "node:fs/promises";
@@ -175,24 +108,23 @@ jobs:
 
           const lock = JSON.parse(await readFile("package-lock.json", "utf8"));
           const expected = lock.packages?.["node_modules/@playwright/test"]?.version;
-          const installedTest = JSON.parse(await readFile("node_modules/@playwright/test/package.json", "utf8")).version;
-          const installedPlaywright = JSON.parse(await readFile("node_modules/playwright/package.json", "utf8")).version;
+          const installedTest = JSON.parse(
+            await readFile("node_modules/@playwright/test/package.json", "utf8")
+          ).version;
+          const installedPlaywright = JSON.parse(
+            await readFile("node_modules/playwright/package.json", "utf8")
+          ).version;
 
           if (!expected || expected !== installedTest || expected !== installedPlaywright) {
             throw new Error(
-              "Playwright version mismatch: lock=" + expected
-              + " @playwright/test=" + installedTest
-              + " playwright=" + installedPlaywright
+              `Playwright version mismatch: lock=${expected} @playwright/test=${installedTest} playwright=${installedPlaywright}`
             );
           }
           if (expected !== "1.61.1") {
-            throw new Error("Runner image expects Playwright 1.61.1, lockfile contains " + expected);
+            throw new Error(`Expected the pinned Playwright 1.61.1 toolchain, received ${expected}`);
           }
 
           const executable = chromium.executablePath();
-          if (!executable.startsWith("/ms-playwright/")) {
-            throw new Error("Chromium resolved outside /ms-playwright: " + executable);
-          }
           await access(executable, constants.X_OK);
 
           const browser = await chromium.launch({ headless: true });
@@ -212,19 +144,9 @@ jobs:
           if (!webgl.available) {
             throw new Error("Headless Chromium did not provide a WebGL context.");
           }
+
           console.log(JSON.stringify({ expected, executable, browserVersion, webgl }, null, 2));
           NODE
-
-      - name: Print browser tool and GLB diagnostics
-        shell: bash
-        run: |
-          set -euo pipefail
-          glb_path="public/ships/demo_scout_mk1.glb"
-          node --version
-          npm --version
-          npx playwright --version
-          file "$glb_path"
-          echo "Demo Scout GLB bytes: $(wc -c < "$glb_path")"
 
       - name: Run unit tests
         id: unit_tests
@@ -238,13 +160,14 @@ jobs:
         id: playwright_group_membership
         shell: bash
         run: |
+          set -euo pipefail
+
           node --input-type=module <<'NODE'
           import { readdir, readFile } from "node:fs/promises";
           import { join } from "node:path";
 
           async function discoverSpecs(directory) {
             const specs = [];
-
             for (const entry of await readdir(directory, { withFileTypes: true })) {
               const entryPath = join(directory, entry.name);
               if (entry.isDirectory()) {
@@ -253,128 +176,99 @@ jobs:
                 specs.push(entryPath.replaceAll("\\", "/"));
               }
             }
-
             return specs;
           }
 
           const packageJson = JSON.parse(await readFile("package.json", "utf8"));
+          const discoveredSpecs = (await discoverSpecs("tests/e2e")).sort();
+          const discoveredSpecSet = new Set(discoveredSpecs);
           const groupScripts = ["test:e2e:core", "test:e2e:live", "test:e2e:ui"];
-          const groupedByScript = new Map();
           const allowedSpecToken = /^tests\/e2e\/[A-Za-z0-9_./-]+\.spec\.ts$/;
 
-          function parseGroupScript(scriptName, script, discoveredSpecSet) {
+          function parseGroupScript(scriptName, script, knownSpecs) {
             if (typeof script !== "string") {
               throw new Error(`Missing required Playwright group script: ${scriptName}`);
             }
-
             const tokens = script.trim().split(/\s+/);
             if (tokens.length < 3 || tokens[0] !== "playwright" || tokens[1] !== "test") {
-              throw new Error(`${scriptName} must be 'playwright test' followed by at least one explicit spec path.`);
+              throw new Error(`${scriptName} must be 'playwright test' followed only by explicit spec paths.`);
             }
-
-            const specTokens = tokens.slice(2);
-            for (const token of specTokens) {
+            const specs = tokens.slice(2);
+            for (const token of specs) {
               if (!allowedSpecToken.test(token)) {
                 throw new Error(`${scriptName} contains a non-spec token: ${token}`);
               }
-              if (!discoveredSpecSet.has(token)) {
+              if (!knownSpecs.has(token)) {
                 throw new Error(`${scriptName} contains a stale or undiscovered spec path: ${token}`);
               }
             }
-
-            return specTokens;
+            return specs;
           }
 
           const parserFixtureSpecs = new Set([
             "tests/e2e/actually-run.spec.ts",
             "tests/e2e/not-run.spec.ts"
           ]);
-          const representative = parseGroupScript(
+          parseGroupScript(
             "parser-valid-fixture",
             "playwright test tests/e2e/actually-run.spec.ts",
             parserFixtureSpecs
           );
-          if (representative.length !== 1 || representative[0] !== "tests/e2e/actually-run.spec.ts") {
-            throw new Error("Strict group parser failed its valid representative assertion.");
-          }
-
-          const rejectedMutations = [
-            {
-              label: "shell-suffix",
-              script: "playwright test tests/e2e/actually-run.spec.ts || echo tests/e2e/not-run.spec.ts",
-              invalidToken: "||"
-            },
-            {
-              label: "grep-flag",
-              script: "playwright test tests/e2e/actually-run.spec.ts --grep tests/e2e/not-run.spec.ts",
-              invalidToken: "--grep"
-            }
-          ];
-          for (const mutation of rejectedMutations) {
-            let rejectionMessage = "";
+          for (const invalid of [
+            "playwright test tests/e2e/actually-run.spec.ts || echo tests/e2e/not-run.spec.ts",
+            "playwright test tests/e2e/actually-run.spec.ts --grep tests/e2e/not-run.spec.ts"
+          ]) {
+            let rejected = false;
             try {
-              parseGroupScript("parser-invalid-fixture", mutation.script, parserFixtureSpecs);
-            } catch (error) {
-              rejectionMessage = String(error);
+              parseGroupScript("parser-invalid-fixture", invalid, parserFixtureSpecs);
+            } catch {
+              rejected = true;
             }
-            if (!rejectionMessage.includes(`non-spec token: ${mutation.invalidToken}`)) {
-              throw new Error(`Strict group parser did not reject ${mutation.label} at ${mutation.invalidToken}.`);
+            if (!rejected) {
+              throw new Error(`Strict Playwright group parser accepted an unsafe command: ${invalid}`);
             }
           }
-          console.log("Strict parser self-checks passed: valid representative accepted; shell-suffix and --grep mutations rejected.");
 
           if (packageJson.scripts?.["test:e2e"] !== "playwright test") {
-            throw new Error("The aggregate test:e2e script must remain 'playwright test'.");
+            throw new Error("The aggregate test:e2e script must remain exactly 'playwright test'.");
           }
 
-          const discoveredSpecs = (await discoverSpecs("tests/e2e")).sort();
-          const discoveredSpecSet = new Set(discoveredSpecs);
-          for (const scriptName of groupScripts) {
-            const script = packageJson.scripts?.[scriptName];
-            groupedByScript.set(scriptName, parseGroupScript(scriptName, script, discoveredSpecSet));
-          }
-
-          const groupedSpecs = [...groupedByScript.values()].flat();
-          const groupedCounts = new Map();
-
+          const groupedSpecs = groupScripts.flatMap((scriptName) =>
+            parseGroupScript(scriptName, packageJson.scripts?.[scriptName], discoveredSpecSet)
+          );
+          const counts = new Map();
           for (const spec of groupedSpecs) {
-            groupedCounts.set(spec, (groupedCounts.get(spec) ?? 0) + 1);
+            counts.set(spec, (counts.get(spec) ?? 0) + 1);
           }
 
-          const unassigned = discoveredSpecs.filter((spec) => !groupedCounts.has(spec));
-          const duplicates = [...groupedCounts]
-            .filter(([, count]) => count > 1)
-            .map(([spec]) => spec)
-            .sort();
-          const stale = [...groupedCounts.keys()]
-            .filter((spec) => !discoveredSpecs.includes(spec))
-            .sort();
+          const unassigned = discoveredSpecs.filter((spec) => !counts.has(spec));
+          const duplicates = [...counts]
+            .filter(([, count]) => count !== 1)
+            .map(([spec, count]) => ({ spec, count }));
+          const extra = [...counts.keys()].filter((spec) => !discoveredSpecSet.has(spec));
 
-          if (unassigned.length || duplicates.length || stale.length) {
-            console.error(JSON.stringify({ unassigned, duplicates, stale }, null, 2));
+          if (unassigned.length || duplicates.length || extra.length) {
+            console.error(JSON.stringify({ unassigned, duplicates, extra }, null, 2));
             process.exit(1);
           }
 
-          console.log(`Validated ${discoveredSpecs.length} discovered and ${groupedSpecs.length} assigned Playwright specs.`);
-          for (const [scriptName, specs] of groupedByScript) {
-            console.log(`${scriptName} (${specs.length}): ${specs.join(", ")}`);
-          }
+          console.log(`Validated ${discoveredSpecs.length} Playwright specs assigned exactly once.`);
           NODE
 
       - name: Run Playwright core and autopilot E2E
-        if: ${{ !cancelled() && steps.install_browser_dependencies.outcome == 'success' && steps.verify_playwright.outcome == 'success' && steps.browser_build.outcome == 'success' && steps.playwright_group_membership.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.install_browser_dependencies.outcome == 'success' && steps.install_playwright.outcome == 'success' && steps.verify_playwright.outcome == 'success' && steps.browser_build.outcome == 'success' && steps.playwright_group_membership.outcome == 'success' }}
         env:
           WELTRAUM_PLAYWRIGHT_ARTIFACT_GROUP: core-autopilot
         run: npm run test:e2e:core
 
       - name: Run Playwright live runtime and objectives E2E
-        if: ${{ !cancelled() && steps.install_browser_dependencies.outcome == 'success' && steps.verify_playwright.outcome == 'success' && steps.browser_build.outcome == 'success' && steps.playwright_group_membership.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.install_browser_dependencies.outcome == 'success' && steps.install_playwright.outcome == 'success' && steps.verify_playwright.outcome == 'success' && steps.browser_build.outcome == 'success' && steps.playwright_group_membership.outcome == 'success' }}
         env:
           WELTRAUM_PLAYWRIGHT_ARTIFACT_GROUP: live-runtime
         run: npm run test:e2e:live
 
       - name: Run Playwright UI and layout E2E
-        if: ${{ !cancelled() && steps.install_browser_dependencies.outcome == 'success' && steps.verify_playwright.outcome == 'success' && steps.browser_build.outcome == 'success' && steps.playwright_group_membership.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.install_browser_dependencies.outcome == 'success' && steps.install_playwright.outcome == 'success' && steps.verify_playwright.outcome == 'success' && steps.browser_build.outcome == 'success' && steps.playwright_group_membership.outcome == 'success' }}
         env:
           WELTRAUM_PLAYWRIGHT_ARTIFACT_GROUP: ui-layout
         run: npm run test:e2e:ui
@@ -400,9 +294,9 @@ jobs:
 
       - name: Upload browser test artifacts
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: browser-mainline-ci-artifacts
+          name: browser-mainline-ci-artifacts-${{ github.run_id }}
           if-no-files-found: ignore
           retention-days: 3
           path: |

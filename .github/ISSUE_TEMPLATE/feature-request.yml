@@ -1,0 +1,39 @@
+name: Feature request
+description: Propose a player-facing or technical improvement for consideration.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or player need
+      description: Describe the problem before proposing an implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+      description: Define observable behavior and completion conditions.
+    validations:
+      required: true
+  - type: textarea
+    id: boundaries
+    attributes:
+      label: Scope and boundaries
+      description: State what must remain unchanged, including gameplay authority and determinism rules.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: References or evidence
+      description: Link relevant public sources only. Do not include private documents or credentials.
+  - type: checkboxes
+    id: license
+    attributes:
+      label: Licensing acknowledgment
+      options:
+        - label: I understand that accepted contributions are subject to the repository's noncommercial license.
+          required: true

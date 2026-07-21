@@ -1,0 +1,9 @@
+# Benjamin Hornung is the required owner for every repository path.
+* @BenjaminHornung
+
+# Protect the policy, automation, licensing, and security surfaces explicitly.
+/.github/ @BenjaminHornung
+/LICENSE @BenjaminHornung
+/README.md @BenjaminHornung
+/SECURITY.md @BenjaminHornung
+/CONTRIBUTING.md @BenjaminHornung

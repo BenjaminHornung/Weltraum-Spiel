@@ -351,6 +351,9 @@ def _temporary_property_blocks(adapter: Any, source: Any, scene: Any, collection
     blocks: list[Any] = [source]
     for obj in objects:
         blocks.append(obj)
+        data = getattr(obj, "data", None)
+        if data is not None:
+            blocks.append(data)
         for slot in getattr(obj, "material_slots", ()):
             material = getattr(slot, "material", None)
             if material is not None:
@@ -425,13 +428,19 @@ def main(argv: Sequence[str] | None = None) -> int:
         temporary_glb = _temporary_glb_path(output)
         property_blocks = _temporary_property_blocks(adapter, asset_source, scene, collection)
         snapshots = adapter.snapshot_hestia_properties(property_blocks)
+        root_snapshots = tuple(
+            (block, {key: value for key, value in values.items() if key == "hestia"})
+            for block, values in snapshots
+        )
         raw_snapshots = adapter.snapshot_hestia_properties(property_blocks, include_root=False)
         try:
+            adapter.clear_hestia_properties(root_snapshots)
             _attach_canonical_extras(adapter, asset_source, scene, collection, asset)
             adapter.clear_hestia_properties(raw_snapshots, include_root=False)
             export_result = adapter.export_glb(
                 temporary_glb,
                 collection=collection,
+                strip_root_hestia=False,
             )
         finally:
             adapter.restore_hestia_properties(snapshots)
