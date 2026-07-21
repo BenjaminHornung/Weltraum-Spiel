@@ -317,7 +317,7 @@ describe("Structural Microvoxel contracts", () => {
   });
 
   it("rejects every shared command-evidence invariant through the public Adaptive ingest boundary", () => {
-    const fixture = adaptiveFixture(1);
+    const fixture = adaptiveFixture(0, null);
     const journalDigest = fixture.editJournal.digest;
     const key = fixture.key;
     const receipt = {
