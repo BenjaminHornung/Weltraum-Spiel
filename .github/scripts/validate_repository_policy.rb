@@ -253,8 +253,11 @@ class RepositoryPolicy
     unless security.include?("security/advisories/new")
       raise PolicyError, "SECURITY.md: private reporting path is missing"
     end
-    unless contributing.include?("acceptance is entirely at the maintainer's discretion")
-      raise PolicyError, "CONTRIBUTING.md: maintainer acceptance authority is missing"
+    unless contributing.include?("The repository owner decides whether and when a pull request is merged.")
+      raise PolicyError, "CONTRIBUTING.md: replacement maintainer merge authority is missing"
+    end
+    unless contributing.include?("No separate SHA comment is required.")
+      raise PolicyError, "CONTRIBUTING.md: removal of the SHA-comment gate is not documented"
     end
   end
 
