@@ -13,14 +13,12 @@ Enable:
 - Restrict deletions.
 - Block force pushes.
 - Require a pull request before merging.
-- Required standard review approvals: `0`.
+- Required standard review approvals: `0` while the sole repository owner also authors integration pull requests.
 - Require conversation resolution before merging.
 - Require status checks to pass.
 - Require branches to be up to date before merging.
 - Require linear history.
 - Do not allow bypassing, including administrators.
-
-Do not require a normal GitHub approval or CODEOWNER approval while the sole repository owner also authors integration pull requests. GitHub does not allow authors to approve their own pull requests. The repository therefore uses the exact-head custom status `Owner Approval / current head` as the mandatory owner confirmation.
 
 Required status contexts:
 
@@ -28,27 +26,18 @@ Required status contexts:
 - `Dependency review`
 - `Repository policy`
 - `Codex Review / current head`
-- `Owner Approval / current head`
 
 After enabling CodeQL default setup, add the CodeQL JavaScript/TypeScript status shown by GitHub to the required checks.
 
-## Owner Approval Procedure
+Do not add a custom owner-approval status. The repository owner's normal GitHub **Squash and merge** action is the manual acceptance decision after required checks pass and conversations are resolved.
 
-Every non-draft pull request head starts with `Owner Approval / current head` pending. After reviewing the final diff and successful checks, `BenjaminHornung` posts exactly:
+## Pull Request and Merge Authority
 
-```text
-/approve-head <full-40-character-head-sha>
-```
+Public visibility allows anyone to fork the repository and propose a pull request. It does not grant write, maintain or admin permission.
 
-Any new push creates a new pending status, so approval of an older commit cannot authorize a later one.
+Only accounts with repository write authority can merge into `main`. Keep collaborator, team, deploy-key, GitHub App and integration permissions limited so that `BenjaminHornung` remains the only merge-capable human unless an explicit future access review changes that policy.
 
-Revoke an approval with:
-
-```text
-/revoke-head <full-40-character-head-sha>
-```
-
-## Pull Request and Merge Settings
+Pull request authors may close their own proposals. Closing a pull request does not modify `main`, merge code or grant repository permissions.
 
 Under General settings:
 
