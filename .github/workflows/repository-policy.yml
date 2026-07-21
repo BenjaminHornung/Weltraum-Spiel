@@ -4,27 +4,9 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      - ".github/**"
-      - ".gitignore"
-      - "LICENSE"
-      - "NOTICE"
-      - "README.md"
-      - "SECURITY.md"
-      - "CONTRIBUTING.md"
-      - "docs/operations/public-repository-security.md"
   push:
     branches:
       - main
-    paths:
-      - ".github/**"
-      - ".gitignore"
-      - "LICENSE"
-      - "NOTICE"
-      - "README.md"
-      - "SECURITY.md"
-      - "CONTRIBUTING.md"
-      - "docs/operations/public-repository-security.md"
 
 permissions:
   contents: read
@@ -90,6 +72,9 @@ jobs:
                   raise SystemExit(f"{path}: permissions write-all is forbidden")
               if re.search(r"(?m)^\s*id-token:\s*write\s*$", text):
                   raise SystemExit(f"{path}: id-token write requires a separate security change")
+              statuses_write = bool(re.search(r"(?m)^\s*statuses:\s*write\s*$", text))
+              if statuses_write and path.name not in {"codex-review-gate.yml", "owner-approval-gate.yml"}:
+                  raise SystemExit(f"{path}: statuses write is restricted to the two exact-head gates")
               for match in action_ref.finditer(text):
                   value = match.group(1)
                   if not full_sha.fullmatch(value):
@@ -174,6 +159,7 @@ jobs:
           owner = pathlib.Path(".github/workflows/owner-approval-gate.yml").read_text(encoding="utf-8")
           required = (
               "github.event.comment.user.login == 'BenjaminHornung'",
+              "github.event.comment.user.id == 25324591",
               "/approve-head",
               "/revoke-head",
               "requested_sha",
