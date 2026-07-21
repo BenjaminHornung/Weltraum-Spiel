@@ -137,9 +137,12 @@ describe("trajectory determinism and architecture", () => {
     const forbiddenImports = files.flatMap((file) =>
       Array.from(file.source.matchAll(importExpression), (match) => match[1] ?? "")
         .filter((specifier) => {
-          const pathParts = specifier.split("/");
+          const pathParts = specifier.toLowerCase().split(/[\\/]/);
           return specifier === "three" || specifier.startsWith("three/") ||
-            pathParts.some((part) => part === "navigation" || part === "flight" || part === "runtime");
+            pathParts.some((part) =>
+              part === "navigation" || part === "flight" || part === "runtime" || part === "ui" ||
+              part.includes("autopilot") || part.includes("renderer") || part.startsWith("render")
+            );
         })
         .map((specifier) => `${file.path}: ${specifier}`)
     );
@@ -149,5 +152,7 @@ describe("trajectory determinism and architecture", () => {
     expect(sources).not.toMatch(/\bDate\.now\s*\(/);
     expect(sources).not.toMatch(/\bperformance\.now\s*\(/);
     expect(sources).not.toMatch(/\bMath\.random\s*\(/);
+    expect(sources).not.toMatch(/\b(?:window|document)\b/);
+    expect(sources).not.toMatch(/\bTestBridge\b/);
   });
 });

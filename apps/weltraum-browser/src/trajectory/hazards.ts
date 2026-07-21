@@ -119,13 +119,13 @@ const chordContact = (
   const radius = finite(hazard.radiusMeters + hazard.safetyMarginMeters, `${path}/effectiveRadiusMeters`);
   const relativeStart = subtract(step.startState.positionMeters, hazard.centerMeters, `${path}/relativeStart`);
   const startDistance = magnitude(relativeStart, `${path}/startDistance`);
-  const deeplyInsideAtStart = startDistance < radius - epsilonMeters;
-  const penetratesInterior = closestDistance < radius - epsilonMeters;
+  const startsInside = startDistance < radius;
+  const penetratesInterior = closestDistance < radius;
 
   const chord = subtract(step.endState.positionMeters, step.startState.positionMeters, `${path}/chord`);
   const chordLengthSquared = dot(chord, chord, `${path}/chordLengthSquared`);
   if (chordLengthSquared === 0) {
-    if (deeplyInsideAtStart) {
+    if (startsInside) {
       return Object.freeze({
         entryFraction: 0,
         exitFraction: null,
@@ -189,7 +189,7 @@ const chordContact = (
   return Object.freeze({
     entryFraction,
     exitFraction,
-    startedInside: deeplyInsideAtStart,
+    startedInside: startsInside,
     tangent: false,
     zeroLength: false
   });

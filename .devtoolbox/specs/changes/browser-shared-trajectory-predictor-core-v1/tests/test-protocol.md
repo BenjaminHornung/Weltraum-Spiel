@@ -100,3 +100,39 @@ Explicitly fail if package.json, package-lock.json, main.ts, style.css, spatial,
 ## Completion rule
 
 DevToolbox specs validation and task completion preflight must pass. External verification, dual review, focused/full command matrix and scope evidence must remain passing. The user-accepted 2026-07-16 waiver applies only to the two DevToolbox `verify_run` timeout/tool failures documented above; it does not waive any product test, review, scope, unauthorized-path, specs-validation or completion-preflight failure, and no successful DevToolbox `verify_run` is claimed. Only then create the non-amended follow-up commit #WELTRAUM-000 Preserve ineffective impulse events and push the named feature branch; never rebase, force-push, open a PR or merge. Do not archive the change.
+## 2026-07-21 integration verification
+
+### Baseline and drift
+
+- Integration branch: `feature/browser-shared-trajectory-predictor-core-v1-integration`, created in an isolated worktree from `origin/main` `f6d3fe69175b168ddea5e385c6d7b3452e6cba16`.
+- At audit time, the remote feature head was `a8408c9b624f60ae1407c920dc02f177fcb9b680`, not the historically known `da7ec350164153d372d88167ef561fb0ab6d3054`. The remote later advanced to `da7ec35`; both commits are present through normal merges, without rebase or force-push.
+- The merge base of current main and the feature is `5ff47aeef3c42c0b933e8480dafa5680759a40df`.
+
+### Review fixes
+
+- A reviewer-classified P2 hazard regression was reproduced before the fix: 2 failed and 15 passed tests. With a large epsilon relative to the radius, a crossing reported entry fraction `0.5` instead of `0.25`, and a center-start case reported exit fraction `0` instead of `0.5`.
+- The fix uses the physical radius for inside/interior classification and reserves epsilon for the external tangential/near-miss band. Dedicated crossing and center-start regression tests cover the corrected behavior.
+- The P3 forbidden-import scan gap was hardened to cover autopilot, render/UI, DOM and `TestBridge` tokens in addition to the existing boundaries.
+
+### Fresh post-fix gates and deterministic evidence
+
+- Runtime: Node `v22.23.1`.
+- `npm ci`: pass, 59 packages and 0 vulnerabilities. TypeScript compilation: pass.
+- Focused eight-file unit suite, serial: 65/65 pass. Full unit suite, serial: 112 files and 1064 tests pass.
+- Production build: pass, 165 modules; only the pre-existing chunk-size warning above 500 kB remains.
+- First actual post-fix full core E2E run: 32/32 pass with `workers=1`, `retries=0` and no retry.
+- Focused predictor E2E Run 1 and Run 2: each 1/1 pass, run separately with `workers=1` and `retries=0`.
+- The two focused evidence files are byte-identical with SHA-256 `BB31308CC4F5BCFA066C63A48D53CE888257E09CF4AA8B99E1EDB38337F8F633`. Both report signature `fnv1a32:d19caf90`, 99 coast samples, 12 acceleration/impulse samples, segments `ConstantInertialAcceleration` then `ImpulseDeltaV`, hazard `hazard:hestia.browser-swept` with entry `0.25` and exit `0.75`, and zero console, page, request and HTTP browser-health errors.
+- E2E inventory: 32 discovered and 32 assigned exactly once; the predictor spec is assigned exactly once. `git diff --check`, lockfile audit, forbidden-import scan, allowlist audit and secret scan pass. The normal `/` route passes without `TestBridge`.
+
+### DevToolbox and integration scope
+
+- Historical DevToolbox `verify_run` timeouts and the old waiver remain historical evidence only and were not reused as integration verification.
+- Fresh integration execution: `483d9c8e8e61424da0bdddd19120c5b7`, with the fresh manual evidence above. Its existing pre-fix completion preflight reported `canProceed: true`; the controller must refresh the preflight after the final head.
+- The generated automated verification plan omitted the mandatory Node 22 wrapper and serial full-suite flags. Therefore this integration does not claim a successful automated `verify_run`; the explicitly controlled commands above are the product verification evidence.
+- The current integration scope is exactly the user allowlist plus `apps/weltraum-browser/package.json`, solely to assign `tests/e2e/trajectory-predictor-core.spec.ts` once to `test:e2e:core`. `package-lock.json` remains forbidden and unmodified. This integration instruction supersedes the historical 29-path/package prohibition only for that single package-script mapping, yielding exactly 30 changed paths.
+- No Unity or `Assets` work was performed, and no merge into main was performed.
+
+### Remaining gate
+
+The final integration head still requires a refreshed completion preflight, final push and an external exact-head review. No successful exact-head review is claimed in this section.

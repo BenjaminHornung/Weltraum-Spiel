@@ -52,6 +52,36 @@ describe("swept trajectory hazards", () => {
     expect(analysis?.event?.tangent).toBe(false);
   });
 
+  it("preserves physical entry and exit when geometry epsilon exceeds the hazard radius", () => {
+    const analysis = analyzeSweptTrajectoryHazards(
+      [step(1, -2, 2)],
+      [hazard("hazard:large-epsilon-crossing")],
+      2
+    )[0];
+
+    expect(analysis?.event).not.toBeNull();
+    expect(analysis?.event?.entry.fraction).toBeCloseTo(0.25, 12);
+    expect(analysis?.event?.exit?.fraction).toBeCloseTo(0.75, 12);
+    expect(analysis?.event?.minimumClearanceMeters).toBe(-1);
+    expect(analysis?.event?.startedInside).toBe(false);
+    expect(analysis?.event?.tangent).toBe(false);
+  });
+
+  it("preserves a physical start-inside event when geometry epsilon exceeds the hazard radius", () => {
+    const analysis = analyzeSweptTrajectoryHazards(
+      [step(1, 0, 2)],
+      [hazard("hazard:large-epsilon-start-inside")],
+      2
+    )[0];
+
+    expect(analysis?.event).not.toBeNull();
+    expect(analysis?.event?.entry.fraction).toBe(0);
+    expect(analysis?.event?.exit?.fraction).toBeCloseTo(0.5, 12);
+    expect(analysis?.event?.minimumClearanceMeters).toBe(-1);
+    expect(analysis?.event?.startedInside).toBe(true);
+    expect(analysis?.event?.tangent).toBe(false);
+  });
+
   it("reports stable tangency as one zero-duration contact", () => {
     const analysis = analyzeSweptTrajectoryHazards(
       [step(1, -2, 2, 1, 1)],
