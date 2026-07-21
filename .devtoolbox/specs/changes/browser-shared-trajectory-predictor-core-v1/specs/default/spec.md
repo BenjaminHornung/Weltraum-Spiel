@@ -93,12 +93,17 @@ The system SHALL report specific orbital energy, specific angular-momentum magni
 - THEN circular closure is explicitly inapplicable and finite remaining metrics are present
 
 ### Requirement: Budgeted immutable operation
-The system SHALL preflight segment, hazard, step and sample budgets before allocation or integration. Limit excess SHALL reject without partial results. The system SHALL not mutate caller input and SHALL recursively freeze every result.
+The system SHALL preflight segment, hazard, step, sample and combined hazard-sweep-work budgets before allocation or integration. V1 SHALL allow at most 250,000 hazard sweep chord checks and SHALL evaluate that limit without multiplication as `hazardCount > 0 && integrationStepCount > floor(250,000 / hazardCount)`. Limit excess SHALL reject without partial results. The system SHALL not mutate caller input and SHALL recursively freeze every result.
 
 #### Scenario: Excessive horizon
 - GIVEN a request exceeding the step or sample budget
 - WHEN prediction is requested
 - THEN status is RejectedBudgetExceeded without uncontrolled allocation
+
+#### Scenario: Combined hazard sweep work limit
+- GIVEN a request whose integration-step count multiplied by hazard count would exceed 250,000 chord checks
+- WHEN prediction is requested
+- THEN status is RejectedBudgetExceeded at `/hazards` before propagation and without partial results
 
 #### Scenario: Mutation attempt
 - GIVEN a completed result

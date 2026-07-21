@@ -28,6 +28,7 @@ import type {
 } from "./types";
 import {
   TRAJECTORY_V1_MAX_HAZARDS,
+  TRAJECTORY_V1_MAX_HAZARD_SWEEP_CHORD_CHECKS,
   TRAJECTORY_V1_MAX_INTEGRATION_STEPS,
   TRAJECTORY_V1_MAX_SAMPLES,
   TRAJECTORY_V1_MAX_SEGMENTS
@@ -620,6 +621,19 @@ export const validateTrajectoryPredictionRequest = (value: unknown): TrajectoryR
         "BudgetExceeded",
         "/sampleEverySteps",
         "Trajectory emitted sample budget exceeded.",
+        budgetEstimate
+      );
+    }
+    if (
+      budgetEstimate.hazardCount > 0 &&
+      budgetEstimate.integrationStepCount >
+        Math.floor(TRAJECTORY_V1_MAX_HAZARD_SWEEP_CHORD_CHECKS / budgetEstimate.hazardCount)
+    ) {
+      fail(
+        "RejectedBudgetExceeded",
+        "BudgetExceeded",
+        "/hazards",
+        "Trajectory hazard sweep work budget exceeded.",
         budgetEstimate
       );
     }

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   TRAJECTORY_V1_MAX_HAZARDS,
+  TRAJECTORY_V1_MAX_HAZARD_SWEEP_CHORD_CHECKS,
   TRAJECTORY_V1_MAX_INTEGRATION_STEPS,
   TRAJECTORY_V1_MAX_SEGMENTS,
   createHestiaAccelerationImpulseTrajectoryRequest,
@@ -317,7 +318,8 @@ describe("trajectory request validation", () => {
       ...base,
       stepTicks: 1,
       sampleEverySteps: TRAJECTORY_V1_MAX_INTEGRATION_STEPS,
-      segments: [{ ...segment, endTick: TRAJECTORY_V1_MAX_INTEGRATION_STEPS }]
+      segments: [{ ...segment, endTick: TRAJECTORY_V1_MAX_INTEGRATION_STEPS }],
+      hazards: []
     };
     const overLimit = {
       ...atLimit,
@@ -333,12 +335,83 @@ describe("trajectory request validation", () => {
       throw new Error("Exact integration-step budget should validate.");
     }
     expect(accepted.budgetEstimate.integrationStepCount).toBe(TRAJECTORY_V1_MAX_INTEGRATION_STEPS);
+    expect(accepted.budgetEstimate.hazardCount).toBe(0);
     expect(rejected.valid).toBe(false);
     if (rejected.valid) {
       throw new Error("Over-budget request should reject before propagation.");
     }
     expect(rejected.status).toBe("RejectedBudgetExceeded");
     expect(rejected.issues[0]?.code).toBe("BudgetExceeded");
+  });
+
+  it("preflights the combined hazard sweep work budget at its exact boundary", () => {
+    const base = createHestiaCircularTrajectoryRequest({ maximumStepTicks: 1_200 });
+    const segment = base.segments[0];
+    if (segment?.kind !== "GravityCoast") {
+      throw new Error("Circular fixture shape changed.");
+    }
+    const hazards = [
+      createHestiaTrajectoryHazard("hazard:hestia.budget-alpha"),
+      createHestiaTrajectoryHazard("hazard:hestia.budget-beta")
+    ];
+    const stepsAtLimit = TRAJECTORY_V1_MAX_HAZARD_SWEEP_CHORD_CHECKS / hazards.length;
+    const atLimit = {
+      ...base,
+      stepTicks: 1,
+      sampleEverySteps: stepsAtLimit,
+      segments: [{ ...segment, endTick: stepsAtLimit }],
+      hazards
+    };
+    const overLimit = {
+      ...atLimit,
+      sampleEverySteps: stepsAtLimit + 1,
+      segments: [{ ...segment, endTick: stepsAtLimit + 1 }]
+    };
+
+    const accepted = validateTrajectoryPredictionRequest(atLimit);
+    const rejected = validateTrajectoryPredictionRequest(overLimit);
+
+    expect(accepted.valid).toBe(true);
+    if (!accepted.valid) {
+      throw new Error("Exact combined hazard sweep work limit should validate.");
+    }
+    expect(accepted.budgetEstimate).toEqual({
+      segmentCount: 1,
+      hazardCount: 2,
+      integrationStepCount: stepsAtLimit,
+      sampleCount: 2
+    });
+    expect(rejected.valid).toBe(false);
+    if (rejected.valid) {
+      throw new Error("Combined hazard sweep work above the limit must reject during validation.");
+    }
+    expect(rejected.status).toBe("RejectedBudgetExceeded");
+    expect(rejected.issues[0]).toEqual({
+      code: "BudgetExceeded",
+      path: "/hazards",
+      message: "Trajectory hazard sweep work budget exceeded."
+    });
+    expect(rejected.budgetEstimate).toEqual({
+      segmentCount: 1,
+      hazardCount: 2,
+      integrationStepCount: stepsAtLimit + 1,
+      sampleCount: 2
+    });
+
+    const firstPublicRejection = predictTrajectory(overLimit);
+    const repeatedPublicRejection = predictTrajectory(overLimit);
+    const reversedHazardRejection = predictTrajectory({ ...overLimit, hazards: [...hazards].reverse() });
+
+    expect(firstPublicRejection.status).toBe("RejectedBudgetExceeded");
+    expect(repeatedPublicRejection).toEqual(firstPublicRejection);
+    expect(reversedHazardRejection).toEqual(firstPublicRejection);
+    expect(repeatedPublicRejection.canonicalSignature).toBe(firstPublicRejection.canonicalSignature);
+    expect(reversedHazardRejection.canonicalSignature).toBe(firstPublicRejection.canonicalSignature);
+    expect("samples" in firstPublicRejection).toBe(false);
+    expect("segmentResults" in firstPublicRejection).toBe(false);
+    expect("hazardEvents" in firstPublicRejection).toBe(false);
+    expect("closestApproaches" in firstPublicRejection).toBe(false);
+    expect("metrics" in firstPublicRejection).toBe(false);
   });
 
   it("rejects an excessive prospective sample horizon before allocation", () => {

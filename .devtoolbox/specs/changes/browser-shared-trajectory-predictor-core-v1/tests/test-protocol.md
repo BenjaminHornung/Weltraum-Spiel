@@ -48,6 +48,7 @@ From apps/weltraum-browser:
 - No result contains NaN or Infinity; caller input remains unchanged; result is recursively immutable.
 - Static checks exclude Three.js, navigation/flight/runtime owner imports, Date.now, performance.now and Math.random.
 - Excessive step/sample horizon rejects before uncontrolled allocation.
+- Combined hazard sweep work accepts exactly 250,000 step-hazard chord checks and rejects 250,002 fail-closed before propagation; repeated and hazard-reversed rejections remain canonically identical.
 
 ## Task 5.1 follow-up verification results
 

@@ -56,7 +56,7 @@ Validation maps to explicit result statuses: Completed, RejectedInvalidRequest, 
 
 ## Budgets
 
-The public v1 limits are 4,096 segments, 4,096 hazards, 250,000 integration steps and 50,000 emitted samples. Validation computes prospective step and sample counts before allocating result arrays or integrating. Overflow, unsafe arithmetic or limit excess rejects as RejectedBudgetExceeded.
+The public v1 limits are 4,096 segments, 4,096 hazards, 250,000 integration steps, 50,000 emitted samples and 250,000 hazard sweep chord checks. Validation computes prospective step and sample counts before allocating result arrays or integrating. It also rejects when `hazardCount > 0 && integrationStepCount > floor(250,000 / hazardCount)`, before propagation, so combined sweep work fails closed without unsafe multiplication. Overflow, unsafe arithmetic or limit excess rejects as RejectedBudgetExceeded.
 
 ## Metrics
 

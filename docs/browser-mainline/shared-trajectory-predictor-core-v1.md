@@ -86,9 +86,10 @@ V1 preflights prospective counts before allocating result arrays or integrating:
 | Segments | 4,096 |
 | Hazards | 4,096 |
 | Integration steps | 250,000 |
+| Hazard sweep chord checks | 250,000 |
 | Emitted samples | 50,000 |
 
-Unsafe arithmetic, count overflow or a limit excess is `RejectedBudgetExceeded`. These are conservative standalone-core limits, not promises about runtime scheduling, background simulation throughput or player-visible horizon length.
+The combined sweep-work preflight uses `hazardCount > 0 && integrationStepCount > floor(250,000 / hazardCount)`, avoiding multiplication overflow. Excess rejects at `/hazards` before propagation and publishes no partial trajectory data. Unsafe arithmetic, count overflow or any other limit excess is `RejectedBudgetExceeded`. These are conservative standalone-core limits, not promises about runtime scheduling, background simulation throughput or player-visible horizon length.
 
 ## Swept spherical hazards and ordering
 
