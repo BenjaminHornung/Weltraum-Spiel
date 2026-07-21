@@ -83,15 +83,18 @@ jobs:
           }
           action_ref = re.compile(r"(?m)^\s*uses:\s*([^\s#]+)\s*(?:#.*)?$")
           full_sha = re.compile(r"^[^@\s]+@[0-9a-f]{40}$")
+          forbidden_runner = re.compile(
+              r"(?im)^\s*runs-on:\s*.*(?:self-hosted|weltraum-browser|truenas).*$"
+          )
+          write_all = re.compile(r"(?im)^\s*permissions:\s*write-all\s*$")
 
           for path in workflows:
               text = path.read_text(encoding="utf-8")
-              lowered = text.casefold()
 
-              if "self-hosted" in lowered or "weltraum-browser" in lowered or "truenas" in lowered:
+              if forbidden_runner.search(text):
                   failures.append(f"{path}: self-hosted runner routing or retired runner label is forbidden")
 
-              if "write-all" in lowered:
+              if write_all.search(text):
                   failures.append(f"{path}: write-all workflow permission is forbidden")
 
               if re.search(r"(?m)^\s*id-token:\s*write\s*$", text):
