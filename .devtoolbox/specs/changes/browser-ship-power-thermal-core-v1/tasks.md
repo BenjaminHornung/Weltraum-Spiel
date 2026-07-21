@@ -67,7 +67,7 @@
   - Report: per-area summary, findings/fixes, every command/result, evidence, SHA/branch/commit/push, scope audit, known limits.
   - Stop: no force push, PR, merge, package change, skipped blocker, or unverified completion claim.
 
-- [ ] 7. Integrate the published feature against current main and complete review gates
+- [x] 7. Integrate the published feature against current main and complete review gates
   - Objective: preserve feature ancestry in a no-fast-forward integration branch, apply only the authorized E2E-group assignment and review fixes, and produce exact-head evidence without merging to main.
   - Files/search targets: all existing change-owned paths plus apps/weltraum-browser/package.json only for the single test:e2e:core assignment; no lockfile, CI, Unity, Assets, Scenes, ProjectSettings, or Packages changes.
   - Acceptance: feature is merged from current origin/main with both parents preserved; E2E inventory has every spec exactly once; reviewer P1/P2 findings are resolved; Node 22 tsc, seven focused unit files, full unit, build, core E2E, focused E2E twice, scope/secret/forbidden-import/package-lock gates, DevToolbox validation/verification/preflight, main-drift, pushed exact head, PR, and exact-head review pass. No merge to main.
