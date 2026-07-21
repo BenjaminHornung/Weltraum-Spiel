@@ -1,4 +1,5 @@
 import {
+  compareShipPowerThermalIds,
   parseBatteryId,
   parseCoolingId,
   parseHeatContributionId,
@@ -54,7 +55,20 @@ export const createShipPowerThermalStateFixture = (
 export const createShipPowerThermalFixture = (
   input: ShipPowerThermalStepInput
 ): ShipPowerThermalStepInput => {
-  const { rejectedConsumerResults: _rejectedConsumerResults, ...fixture } =
-    assertValidShipPowerThermalStepInput(input);
-  return Object.freeze(fixture);
+  const validated = assertValidShipPowerThermalStepInput(input);
+  const rejectedConsumerIds = new Set(
+    validated.rejectedConsumerResults.map((result) => result.consumerId)
+  );
+  const rejectedRequests = input.consumerRequests
+    .filter((request) => rejectedConsumerIds.has(request.consumerId))
+    .map((request) => Object.freeze({
+      consumerId: request.consumerId,
+      requestedPowerW: request.requestedPowerW
+    }));
+  const consumerRequests = Object.freeze([
+    ...validated.consumerRequests,
+    ...rejectedRequests
+  ].sort((left, right) => compareShipPowerThermalIds(left.consumerId, right.consumerId)));
+  const { rejectedConsumerResults: _rejectedConsumerResults, ...fixture } = validated;
+  return Object.freeze({ ...fixture, consumerRequests });
 };

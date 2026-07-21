@@ -132,6 +132,15 @@ const expectRecursivelyFiniteNumbers = (value: unknown, path = "$", seen = new S
   }
 };
 
+const expectRecursivelyFrozen = (value: unknown, seen = new Set<object>()): void => {
+  if (value === null || typeof value !== "object" || seen.has(value)) return;
+  seen.add(value);
+  expect(Object.isFrozen(value)).toBe(true);
+  for (const entry of Object.values(value as Readonly<Record<string, unknown>>)) {
+    expectRecursivelyFrozen(entry, seen);
+  }
+};
+
 describe("ship power/thermal validation", () => {
   it("accepts printable ASCII IDs and rejects unstable identities", () => {
     expect(parsePowerBusId("bus:main")).toBe("bus:main");
@@ -446,5 +455,52 @@ describe("ship power/thermal validation", () => {
     if (!result.ok || !repeated.ok) throw new Error("Expected deterministic public fixture roundtrip.");
     expect(repeated.canonicalJson).toBe(result.canonicalJson);
     expect(repeated.signature).toBe(result.signature);
+  });
+
+  it.each([
+    ["NaN", Number.NaN],
+    ["positive infinity", Number.POSITIVE_INFINITY],
+    ["negative infinity", Number.NEGATIVE_INFINITY]
+  ])("preserves a transient %s request for finite rejected roundtrip evidence", (_label, requestedPowerW) => {
+    const input = validInput();
+    const originalRequest = input.consumerRequests[0];
+    input.consumerRequests[0] = { consumerId: ids.consumerCritical, requestedPowerW };
+
+    const fixture = createShipPowerThermalFixture(input);
+
+    expect(fixture.consumerRequests.map((request) => request.consumerId)).toEqual([
+      ids.consumerCooling,
+      ids.consumerCritical
+    ]);
+    const preservedRequest = fixture.consumerRequests.find(
+      (request) => request.consumerId === ids.consumerCritical
+    );
+    expect(preservedRequest).not.toBe(input.consumerRequests[0]);
+    expect(Object.is(preservedRequest?.requestedPowerW, requestedPowerW)).toBe(true);
+    expectRecursivelyFrozen(fixture);
+    expect(input.consumerRequests[0]).toEqual({
+      consumerId: ids.consumerCritical,
+      requestedPowerW
+    });
+    expect(originalRequest).toEqual({
+      consumerId: ids.consumerCritical,
+      requestedPowerW: 20
+    });
+
+    const result = evaluateShipPowerThermalStep(fixture);
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) throw new Error("Expected transient request rejection evidence.");
+    expect(result.consumerResults).toContainEqual({
+      consumerId: ids.consumerCritical,
+      busId: ids.busMain,
+      priority: "Critical",
+      requestedPowerW: 0,
+      allocatedPowerW: 0,
+      satisfactionFraction: 0,
+      state: "RejectedInvalidRequest",
+      rejectionCode: "InvalidRequestedPowerW"
+    });
+    expectRecursivelyFiniteNumbers(result);
   });
 });
