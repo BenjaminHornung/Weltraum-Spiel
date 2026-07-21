@@ -63,7 +63,8 @@ jobs:
     if: >-
       github.event_name == 'issue_comment' &&
       github.event.issue.pull_request != null &&
-      github.event.comment.user.login == 'BenjaminHornung'
+      github.event.comment.user.login == 'BenjaminHornung' &&
+      github.event.comment.user.id == 25324591
     runs-on: ubuntu-24.04
     timeout-minutes: 3
     env:
