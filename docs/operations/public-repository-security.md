@@ -18,7 +18,7 @@ Enable:
 - Require status checks to pass.
 - Require branches to be up to date before merging.
 - Require linear history.
-- Do not allow bypassing, including administrators, except for a separately documented emergency process.
+- Do not allow bypassing, including administrators.
 
 Do not require a normal GitHub approval or CODEOWNER approval while the sole repository owner also authors integration pull requests. GitHub does not allow authors to approve their own pull requests. The repository therefore uses the exact-head custom status `Owner Approval / current head` as the mandatory owner confirmation.
 
@@ -26,6 +26,7 @@ Required status contexts:
 
 - `Browser mainline verification`
 - `Dependency review`
+- `Repository policy`
 - `Codex Review / current head`
 - `Owner Approval / current head`
 
@@ -71,7 +72,7 @@ Set workflow permissions to:
 
 For workflows from forks, require approval for **all external contributors** before running pull-request workflows.
 
-The `Browser Mainline CI` workflow runs untrusted pull-request code only on a fresh GitHub-hosted `ubuntu-24.04` VM and receives no repository secret. The `Codex Review Gate` uses `pull_request_target` without checkout and withholds `CODEX_REVIEW_TOKEN` from fork pull requests.
+The `Browser Mainline CI` workflow runs untrusted pull-request code only on a fresh GitHub-hosted `ubuntu-24.04` VM and receives no repository secret. The `Codex Review Gate` uses `pull_request_target` without checkout and withholds `CODEX_REVIEW_TOKEN` from fork pull requests. `Repository Policy` checks workflow syntax, immutable action pins, trusted-context allowlisting, retired-runner routing and license/security invariants.
 
 ## Remove the Self-hosted Runner
 
