@@ -9,8 +9,8 @@ nozzle-VFX merges, plus the query-gated Hestia Microvoxel Surface Lab
 ## Product Mainline
 
 The product mainline is the browser application under
-`apps/weltraum-browser` using Three.js `0.185.0`, TypeScript `7.0.2`, Vite
-`8.1.0`, Vitest `4.1.9` and Playwright `1.61.1`.
+`apps/weltraum-browser` using Three.js `0.185.1`, TypeScript `7.0.2`, Vite
+`8.1.5`, Vitest `4.1.10` and Playwright `1.61.1`.
 
 The final Unity implementation is immutable archive/reference material. Its
 repository snapshot is preserved by tag `unity-legacy-final-2026-07` and branch
@@ -130,7 +130,6 @@ Evidence:
 
 `apps/weltraum-browser/src/celestial` now provides a deterministic pure-data
 and pure-math seam for the documented Aurelia starter system:
-
 - validated stable body/catalog identities;
 - canonical serialization and deterministic signatures;
 - explicit reference frames;
