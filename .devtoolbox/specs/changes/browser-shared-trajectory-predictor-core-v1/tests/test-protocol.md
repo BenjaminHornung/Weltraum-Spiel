@@ -136,3 +136,12 @@ DevToolbox specs validation and task completion preflight must pass. External ve
 ### Remaining gate
 
 The final integration head still requires a refreshed completion preflight, final push and an external exact-head review. No successful exact-head review is claimed in this section.
+### Post-main-drift refresh
+
+- Before final review, `origin/main` advanced from `f6d3fe69175b168ddea5e385c6d7b3452e6cba16` to `33c019d2249fbbe3bfb0bdcf6ebbc5e1899a8e0e`. Main was merged normally with `--no-ff`, without rebase or force-push.
+- The only merge conflict was `apps/weltraum-browser/package.json`. Its resolution preserves the union of Main's new `tests/e2e/simulation-scheduler-core.spec.ts` assignment and the integration's single `tests/e2e/trajectory-predictor-core.spec.ts` assignment. The lockfile remains unchanged.
+- Clean-head post-merge verification used Node `v22.23.1`: `npm ci` passed with 59 packages and 0 vulnerabilities; TypeScript compilation passed; the focused eight-file suite passed 65/65; the serial full suite passed 115 files and 1102 tests; and the production build passed with 165 modules.
+- The first actual post-merge full core E2E run passed 33/33 on its first run with `workers=1`, `retries=0` and no retry. Focused predictor Run 1 and Run 2 each passed 1/1 separately. Both remained byte-identical with SHA-256 `BB31308CC4F5BCFA066C63A48D53CE888257E09CF4AA8B99E1EDB38337F8F633` and signature `fnv1a32:d19caf90`; semantic fields and browser health were unchanged.
+- E2E inventory found 33 tests, all assigned exactly once: core 20, live 9 and UI 4. Trajectory and simulation scheduler are each assigned once, with no unassigned, duplicate or stale entries.
+- `git diff --check`, package audit and lockfile audit passed. Test-generated general evidence was restored, while predictor evidence remained byte-identical.
+- A refreshed DevToolbox completion preflight, final push and external exact-head review remain pending at the time of this documentation edit; none is claimed here.
