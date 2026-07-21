@@ -42,21 +42,13 @@ npm run test:e2e:ui
 
 The pull request must pass the required GitHub checks. External fork workflows run only after maintainer approval.
 
-## Exact-Head Owner Approval
+## Merge Authority
 
-Every pull request head requires an explicit maintainer confirmation. After reviewing the final diff and successful checks, the repository owner posts:
+Anyone may propose a pull request. Only users with write, maintain or admin permission can merge changes into `main`; public contributors receive none of those permissions merely by opening a pull request.
 
-```text
-/approve-head <full-40-character-head-sha>
-```
+The repository owner decides whether and when a pull request is merged. The final manual confirmation is the owner's normal GitHub **Squash and merge** action after required checks pass and review conversations are resolved. No separate SHA comment is required.
 
-A new push invalidates the old approval and returns the gate to pending. Approval can be revoked with:
-
-```text
-/revoke-head <full-40-character-head-sha>
-```
-
-Only comments authored by `BenjaminHornung` are accepted by the gate. Contributors must not imitate, automate or request bypass of this command.
+A pull request author may close their own proposal. Closing a pull request does not modify `main`, does not merge code and does not grant repository permissions.
 
 ## Security Reports
 

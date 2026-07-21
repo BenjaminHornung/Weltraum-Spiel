@@ -304,7 +304,7 @@ def _validate_property_names(data_block: Any, owner: str) -> tuple[str, ...]:
         raise HestiaContractError(f"{owner} has a non-string custom property name")
     unknown = sorted(
         name for name in names
-        if name.startswith("hestia.") and name not in _KNOWN_INPUT_PROPERTY_NAMES
+        if name == "hestia" or (name.startswith("hestia.") and name not in _KNOWN_INPUT_PROPERTY_NAMES)
     )
     if unknown:
         raise HestiaContractError(f"{owner} has unknown Hestia custom property: {unknown[0]}")
@@ -1037,12 +1037,14 @@ def restore_hestia_properties(
         raise HestiaContractError(f"could not restore Hestia property: {key}") from exc
 
 
-def _strip_source_hestia_properties(data_blocks: Iterable[Any]) -> list[tuple[Any, Mapping[str, Any]]]:
-    snapshots = snapshot_hestia_properties(data_blocks, include_root=False)
+def _strip_source_hestia_properties(
+    data_blocks: Iterable[Any], *, include_root: bool = True
+) -> list[tuple[Any, Mapping[str, Any]]]:
+    snapshots = snapshot_hestia_properties(data_blocks, include_root=include_root)
     try:
-        clear_hestia_properties(snapshots, include_root=False)
+        clear_hestia_properties(snapshots, include_root=include_root)
     except Exception:
-        restore_hestia_properties(snapshots, include_root=False)
+        restore_hestia_properties(snapshots, include_root=include_root)
         raise
     return snapshots
 
@@ -1053,8 +1055,9 @@ def export_glb(
     objects: Iterable[Any] | None = None,
     collection: Any | None = None,
     scene: Any | None = None,
+    strip_root_hestia: bool = True,
 ) -> Any:
-    """Export GLB while preventing source ``hestia.*`` properties from leaking."""
+    """Export GLB while preventing source Hestia properties from leaking."""
 
     blender = _require_blender()
     if objects is not None and collection is not None:
@@ -1083,7 +1086,9 @@ def export_glb(
     )
     snapshots: list[tuple[Any, Mapping[str, Any]]] = []
     try:
-        snapshots = _strip_source_hestia_properties(_export_property_blocks(export_objects))
+        snapshots = _strip_source_hestia_properties(
+            _export_property_blocks(export_objects), include_root=strip_root_hestia
+        )
         if target_objects:
             for obj in selected_scene.objects:
                 obj.select_set(False)
@@ -1101,7 +1106,7 @@ def export_glb(
             kwargs["export_custom_properties"] = True
         return blender.ops.export_scene.gltf(**kwargs)
     finally:
-        restore_hestia_properties(snapshots, include_root=False)
+        restore_hestia_properties(snapshots, include_root=strip_root_hestia)
         for obj in getattr(selected_scene, "objects", ()):
             obj.select_set(False)
         for obj in previous_selection:
