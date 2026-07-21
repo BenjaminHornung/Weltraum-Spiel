@@ -92,7 +92,7 @@ For a complete local Playwright discovery run:
 npm run test:e2e
 ```
 
-The grouped E2E scripts are also the required GitHub Actions gates. Current toolchain versions are pinned in `apps/weltraum-browser/package.json`, including TypeScript 7.0.2, Three.js 0.185.0, Vite 8.1.0, Vitest 4.1.9 and Playwright 1.61.1.
+The grouped E2E scripts are also the required GitHub Actions gates. Current toolchain versions are pinned in `apps/weltraum-browser/package.json`, including TypeScript 7.0.2, Three.js 0.185.1, Vite 8.1.5, Vitest 4.1.10 and Playwright 1.61.1.
 
 On Windows, Playwright may need an installed Chrome/Chromium executable when the bundled browser cannot start:
 
