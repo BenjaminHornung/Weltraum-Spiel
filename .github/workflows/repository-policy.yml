@@ -45,6 +45,7 @@ jobs:
           fetch-depth: 1
           lfs: false
           persist-credentials: false
+          show-progress: false
 
       - name: Parse repository YAML
         shell: bash
@@ -62,7 +63,7 @@ jobs:
           end
           RUBY
 
-      - name: Enforce workflow trust and pinning policy
+      - name: Enforce immutable actions and hosted runners
         shell: bash
         run: |
           set -euo pipefail
@@ -71,16 +72,9 @@ jobs:
 
           import pathlib
           import re
-          import sys
 
           root = pathlib.Path(".github/workflows")
           workflows = sorted([*root.glob("*.yml"), *root.glob("*.yaml")])
-          failures: list[str] = []
-
-          allowed_target = {
-              "codex-review-gate.yml",
-              "owner-approval-gate.yml",
-          }
           action_ref = re.compile(r"(?m)^\s*uses:\s*([^\s#]+)\s*(?:#.*)?$")
           full_sha = re.compile(r"^[^@\s]+@[0-9a-f]{40}$")
           forbidden_runner = re.compile(
@@ -90,62 +84,105 @@ jobs:
 
           for path in workflows:
               text = path.read_text(encoding="utf-8")
-
               if forbidden_runner.search(text):
-                  failures.append(f"{path}: self-hosted runner routing or retired runner label is forbidden")
-
+                  raise SystemExit(f"{path}: self-hosted or retired runner routing is forbidden")
               if write_all.search(text):
-                  failures.append(f"{path}: write-all workflow permission is forbidden")
-
+                  raise SystemExit(f"{path}: permissions write-all is forbidden")
               if re.search(r"(?m)^\s*id-token:\s*write\s*$", text):
-                  failures.append(f"{path}: id-token write requires a separately reviewed policy change")
-
+                  raise SystemExit(f"{path}: id-token write requires a separate security change")
               for match in action_ref.finditer(text):
                   value = match.group(1)
                   if not full_sha.fullmatch(value):
-                      failures.append(f"{path}: action is not pinned to a full commit SHA: {value}")
+                      raise SystemExit(f"{path}: action is not pinned to a full SHA: {value}")
 
+          print(f"Validated immutable action pins and hosted runners in {len(workflows)} workflows.")
+          PY
+
+      - name: Enforce trusted-context workflow boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          from __future__ import annotations
+
+          import pathlib
+          import re
+
+          root = pathlib.Path(".github/workflows")
+          workflows = sorted([*root.glob("*.yml"), *root.glob("*.yaml")])
+          allowed_target = {
+              "codex-review-gate.yml",
+              "owner-approval-gate.yml",
+          }
+
+          for path in workflows:
+              text = path.read_text(encoding="utf-8")
               has_target = bool(re.search(r"(?m)^\s{2}pull_request_target:\s*$", text))
               if has_target and path.name not in allowed_target:
-                  failures.append(f"{path}: pull_request_target is not allowlisted")
-
+                  raise SystemExit(f"{path}: pull_request_target is not allowlisted")
               if path.name in allowed_target:
                   if not has_target:
-                      failures.append(f"{path}: trusted-context workflow lost pull_request_target")
-                  if "actions/checkout@" in text or re.search(r"(?im)\bgit\s+(?:clone|checkout|switch)\b", text):
-                      failures.append(f"{path}: trusted-context workflow must never check out repository content")
+                      raise SystemExit(f"{path}: trusted workflow lost pull_request_target")
+                  if "actions/checkout@" in text:
+                      raise SystemExit(f"{path}: trusted workflow must never use checkout")
+                  if re.search(r"(?im)\bgit\s+(?:clone|checkout|switch)\b", text):
+                      raise SystemExit(f"{path}: trusted workflow must never fetch PR code")
                   if not re.search(r"(?m)^\s*contents:\s*read\s*$", text):
-                      failures.append(f"{path}: trusted-context workflow must keep contents read-only")
+                      raise SystemExit(f"{path}: trusted workflow must keep contents read-only")
 
           codex = (root / "codex-review-gate.yml").read_text(encoding="utf-8")
-          if 'SOURCE_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}' not in codex:
-              failures.append("codex-review-gate.yml: fork trust classification is missing")
-          if 'if: steps.classify.outputs.trusted == \'true\'' not in codex:
-              failures.append("codex-review-gate.yml: secret-using steps are not trust-gated")
-          if "short_sha_resolves_to_head" not in codex:
-              failures.append("codex-review-gate.yml: unique short-SHA resolution is missing")
+          required_codex = (
+              'SOURCE_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}',
+              "steps.classify.outputs.trusted == 'true'",
+              "short_sha_resolves_to_head",
+          )
+          for marker in required_codex:
+              if marker not in codex:
+                  raise SystemExit(f"codex-review-gate.yml: missing security marker: {marker}")
 
           owner = (root / "owner-approval-gate.yml").read_text(encoding="utf-8")
-          if "github.event.comment.user.login == 'BenjaminHornung'" not in owner:
-              failures.append("owner-approval-gate.yml: exact owner identity check is missing")
-          if "/approve-head" not in owner or "requested_sha" not in owner or "current_head" not in owner:
-              failures.append("owner-approval-gate.yml: exact-head approval command is incomplete")
+          required_owner = (
+              "github.event.comment.user.login == 'BenjaminHornung'",
+              "/approve-head",
+              "requested_sha",
+              "current_head",
+          )
+          for marker in required_owner:
+              if marker not in owner:
+                  raise SystemExit(f"owner-approval-gate.yml: missing security marker: {marker}")
           if "secrets." in owner.casefold():
-              failures.append("owner-approval-gate.yml: owner gate must not consume secrets")
+              raise SystemExit("owner-approval-gate.yml: owner gate must not consume secrets")
+
+          print("Validated trusted-context and exact-head workflow boundaries.")
+          PY
+
+      - name: Enforce public licensing and policy notices
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          from __future__ import annotations
+
+          import pathlib
 
           license_text = pathlib.Path("LICENSE").read_text(encoding="utf-8")
           readme_text = pathlib.Path("README.md").read_text(encoding="utf-8")
+          notice_text = pathlib.Path("NOTICE").read_text(encoding="utf-8")
+          security_text = pathlib.Path("SECURITY.md").read_text(encoding="utf-8")
+          contributing_text = pathlib.Path("CONTRIBUTING.md").read_text(encoding="utf-8")
+
           if "PolyForm Noncommercial License 1.0.0" not in license_text:
-              failures.append("LICENSE: expected PolyForm Noncommercial 1.0.0 text is missing")
+              raise SystemExit("LICENSE: expected PolyForm Noncommercial 1.0.0 text is missing")
           if not license_text.startswith("Required Notice: Copyright 2026 Benjamin Hornung."):
-              failures.append("LICENSE: required copyright notice is missing")
+              raise SystemExit("LICENSE: required copyright notice is missing")
           if "source-available, not open source" not in readme_text:
-              failures.append("README.md: public noncommercial status is not prominent")
+              raise SystemExit("README.md: public noncommercial status is not prominent")
+          if "Commercial use is not permitted" not in notice_text:
+              raise SystemExit("NOTICE: commercial-use prohibition is missing")
+          if "security/advisories/new" not in security_text:
+              raise SystemExit("SECURITY.md: private vulnerability reporting path is missing")
+          if "/approve-head" not in contributing_text:
+              raise SystemExit("CONTRIBUTING.md: exact-head owner approval procedure is missing")
 
-          if failures:
-              for failure in failures:
-                  print(f"ERROR: {failure}", file=sys.stderr)
-              raise SystemExit(1)
-
-          print(f"Validated {len(workflows)} workflows and public repository policy files.")
+          print("Validated public licensing, security and contribution notices.")
           PY
