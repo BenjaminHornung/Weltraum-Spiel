@@ -13,12 +13,12 @@
     "test:e2e:ui": "playwright test tests/e2e/flight-ui-foundation.spec.ts tests/e2e/graphics-settings.spec.ts tests/e2e/ui-concept-parity.spec.ts tests/e2e/ui-concept-parity-v2.spec.ts"
   },
   "dependencies": {
-    "three": "0.185.0"
+    "three": "0.185.1"
   },
   "devDependencies": {
     "@playwright/test": "1.61.1",
     "@types/node": "26.0.1",
-    "@types/three": "0.185.0",
+    "@types/three": "0.185.1",
     "typescript": "7.0.2",
     "vite": "8.1.0",
     "vitest": "4.1.9"
