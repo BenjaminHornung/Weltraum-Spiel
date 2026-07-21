@@ -98,7 +98,7 @@ jobs:
           print(f"Validated immutable action pins and hosted runners in {len(workflows)} workflows.")
           PY
 
-      - name: Enforce trusted-context workflow boundary
+      - name: Enforce pull-request-target allowlist
         shell: bash
         run: |
           set -euo pipefail
@@ -115,45 +115,78 @@ jobs:
               "owner-approval-gate.yml",
           }
 
+          actual_target: set[str] = set()
           for path in workflows:
               text = path.read_text(encoding="utf-8")
-              has_target = bool(re.search(r"(?m)^\s{2}pull_request_target:\s*$", text))
-              if has_target and path.name not in allowed_target:
-                  raise SystemExit(f"{path}: pull_request_target is not allowlisted")
-              if path.name in allowed_target:
-                  if not has_target:
-                      raise SystemExit(f"{path}: trusted workflow lost pull_request_target")
-                  if "actions/checkout@" in text:
-                      raise SystemExit(f"{path}: trusted workflow must never use checkout")
-                  if re.search(r"(?im)\bgit\s+(?:clone|checkout|switch)\b", text):
-                      raise SystemExit(f"{path}: trusted workflow must never fetch PR code")
-                  if not re.search(r"(?m)^\s*contents:\s*read\s*$", text):
-                      raise SystemExit(f"{path}: trusted workflow must keep contents read-only")
+              if re.search(r"(?m)^\s{2}pull_request_target:\s*$", text):
+                  actual_target.add(path.name)
 
-          codex = (root / "codex-review-gate.yml").read_text(encoding="utf-8")
-          required_codex = (
-              'SOURCE_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}',
+          if actual_target != allowed_target:
+              raise SystemExit(
+                  f"pull_request_target allowlist mismatch: actual={sorted(actual_target)} expected={sorted(allowed_target)}"
+              )
+
+          for name in sorted(allowed_target):
+              text = (root / name).read_text(encoding="utf-8")
+              if "actions/checkout@" in text:
+                  raise SystemExit(f"{name}: trusted workflow must never use checkout")
+              if re.search(r"(?im)\bgit\s+(?:clone|checkout|switch)\b", text):
+                  raise SystemExit(f"{name}: trusted workflow must never fetch PR code")
+              if not re.search(r"(?m)^\s*contents:\s*read\s*$", text):
+                  raise SystemExit(f"{name}: trusted workflow must keep contents read-only")
+
+          print("Validated pull_request_target allowlist and no-checkout boundary.")
+          PY
+
+      - name: Enforce Codex public-fork boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          from __future__ import annotations
+
+          import pathlib
+
+          codex = pathlib.Path(".github/workflows/codex-review-gate.yml").read_text(encoding="utf-8")
+          source_expression = "SOURCE_REPOSITORY: $" + "{{ github.event.pull_request.head.repo.full_name }}"
+          required = (
+              source_expression,
               "steps.classify.outputs.trusted == 'true'",
               "short_sha_resolves_to_head",
+              "External PR uses manual owner review; Codex token withheld",
           )
-          for marker in required_codex:
+          for marker in required:
               if marker not in codex:
                   raise SystemExit(f"codex-review-gate.yml: missing security marker: {marker}")
 
-          owner = (root / "owner-approval-gate.yml").read_text(encoding="utf-8")
-          required_owner = (
+          print("Validated Codex fork classification, secret gate and exact short-SHA resolution.")
+          PY
+
+      - name: Enforce exact-head owner gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          from __future__ import annotations
+
+          import pathlib
+
+          owner = pathlib.Path(".github/workflows/owner-approval-gate.yml").read_text(encoding="utf-8")
+          required = (
               "github.event.comment.user.login == 'BenjaminHornung'",
               "/approve-head",
+              "/revoke-head",
               "requested_sha",
               "current_head",
+              'context="Owner Approval / current head"',
           )
-          for marker in required_owner:
+          for marker in required:
               if marker not in owner:
                   raise SystemExit(f"owner-approval-gate.yml: missing security marker: {marker}")
           if "secrets." in owner.casefold():
               raise SystemExit("owner-approval-gate.yml: owner gate must not consume secrets")
 
-          print("Validated trusted-context and exact-head workflow boundaries.")
+          print("Validated owner identity, exact-head approval and secret-free owner gate.")
           PY
 
       - name: Enforce public licensing and policy notices
