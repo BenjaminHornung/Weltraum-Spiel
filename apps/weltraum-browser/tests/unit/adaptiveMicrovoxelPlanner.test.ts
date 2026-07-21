@@ -416,21 +416,34 @@ describe("adaptive microvoxel planner and residency obligations 13-20", () => {
   }, 15_000);
 
   it("[17] retains the parent fallback until every required fine child is ready, then replaces it atomically", () => {
-    const fine = allFineChildren();
+    // [14] and [16] retain the full 64-child L2-to-L4 coverage proof. This
+    // transition-only case uses one immediate L3 parent so it stays isolated
+    // from the materialization cache warmed by earlier tests.
+    const atomicParent = key(3);
+    const atomicRegion = quantumBoundsForKey(atomicParent);
+    const atomicRequest: AdaptivePlanRequest = {
+      ...request,
+      requestId: stableAuthorityId("request.atomic-fallback"),
+      region: { kind: "aabb", bounds: atomicRegion }
+    };
+    const fine = childrenOf(atomicParent);
     const partial = planAdaptiveMicrovoxels({
-      snapshot: snapshot([resident(parent), ...fine.slice(0, -1).map((entry) => resident(entry))])
+      snapshot: snapshot(
+        [resident(atomicParent), ...fine.slice(0, -1).map((entry) => resident(entry))],
+        [atomicRequest]
+      )
     });
     expect(partial.fallback).toHaveLength(1);
-    expect(partial.fallback[0].requiredChildren).toHaveLength(64);
+    expect(partial.fallback[0].requiredChildren).toHaveLength(8);
     expect(partial.coverage).toHaveLength(1);
     expect(partial.coverage.map((entry) => entry.kind)).toEqual(["fallback"]);
-    expect(partial.coverage[0].bounds).toEqual(region);
+    expect(partial.coverage[0].bounds).toEqual(atomicRegion);
     const complete = planAdaptiveMicrovoxels({
-      snapshot: snapshot([resident(parent), ...fine.map((entry) => resident(entry))])
+      snapshot: snapshot([resident(atomicParent), ...fine.map((entry) => resident(entry))], [atomicRequest])
     });
     expect(complete.fallback).toEqual([]);
-    expect(complete.coverage).toHaveLength(64);
-    expect(complete.evict.map(serializeAdaptiveKey)).toContain(serializeAdaptiveKey(parent));
+    expect(complete.coverage).toHaveLength(8);
+    expect(complete.evict.map(serializeAdaptiveKey)).toContain(serializeAdaptiveKey(atomicParent));
   });
 
   it("[18] isolates stale, cancelled, malformed, incomplete, and over-budget results from authority and success coverage", () => {
