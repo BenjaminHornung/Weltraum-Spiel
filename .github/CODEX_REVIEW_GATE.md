@@ -35,9 +35,9 @@ The verifier polls with the read-only default token and accepts one of the Codex
 2. a top-level Codex result comment created after the exact-head request and containing:
    - the full current head in a recognized reviewed-head or reviewed-commit field; or
    - Codex's 10-character SHA in an explicit `Reviewed commit` field, after GitHub resolves that prefix to the full current head;
-3. a Codex `+1` reaction on the exact-head request, or a PR-level `+1` created after that request.
+3. a Codex `+1` reaction created on the exact-head request comment after that request was posted.
 
-A short SHA appearing elsewhere in prose or findings is not accepted. Author, timestamp and exact-head checks prevent an older review or reaction from satisfying a newer commit.
+PR-level reactions are intentionally not accepted because they are not bound to a specific request comment or commit. A short SHA appearing elsewhere in prose or findings is not accepted. Author, timestamp and exact-head checks prevent an older review or reaction from satisfying a newer commit.
 
 Every new push cancels the previous run and starts a new pending status for the new head. Draft PRs receive a successful deferred status and are checked when marked ready.
 
