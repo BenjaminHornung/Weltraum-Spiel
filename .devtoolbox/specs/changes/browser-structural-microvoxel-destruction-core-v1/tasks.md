@@ -157,7 +157,7 @@ Completion Preflight. No task is toggled or committed by this handoff.
 - [x] Stage only the 26 Structural restdiff paths plus the exact `package.json`
       grouping edit and create one Structural commit whose direct parent is
       Adaptive integration commit `9a94edca28bf46e4fb44ff7fee0d0bb89ab642c5`.
-- [ ] Fetch `origin/main` and inspect drift. If Main advanced, merge normally,
+- [x] Fetch `origin/main` and inspect drift. If Main advanced, merge normally,
       preserve every E2E assignment, resolve minimally, and rerun affected
       complete gates and evidence. Never force-push.
 - [ ] Push the continuation branch, create the PR, request exact-head Codex
