@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability privately
+    url: https://github.com/BenjaminHornung/Weltraum-Spiel/security/advisories/new
+    about: Do not disclose vulnerabilities, leaked credentials or exploitable workflow weaknesses publicly.
+  - name: Read the contribution rules
+    url: https://github.com/BenjaminHornung/Weltraum-Spiel/blob/main/CONTRIBUTING.md
+    about: Review scope, testing, security and licensing requirements before contributing.
