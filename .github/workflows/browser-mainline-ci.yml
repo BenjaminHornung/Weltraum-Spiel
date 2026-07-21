@@ -4,21 +4,9 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      - "apps/weltraum-browser/**"
-      - ".gitattributes"
-      - ".github/workflows/browser-mainline-ci.yml"
-      - "docs/browser-mainline/**"
-      - ".devtoolbox/specs/changes/browser-*/**"
   push:
     branches:
       - main
-    paths:
-      - "apps/weltraum-browser/**"
-      - ".gitattributes"
-      - ".github/workflows/browser-mainline-ci.yml"
-      - "docs/browser-mainline/**"
-      - ".devtoolbox/specs/changes/browser-*/**"
   workflow_dispatch:
 
 permissions:
