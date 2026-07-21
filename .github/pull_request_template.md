@@ -32,8 +32,6 @@ List exact commands and results:
 - [ ] I agree that my contribution is licensed under the repository's PolyForm Noncommercial License 1.0.0.
 - [ ] Commercial use remains prohibited without a separate written license from Benjamin Hornung.
 
-## Maintainer Approval
+## Maintainer Decision
 
-Do not mark this box yourself.
-
-- [ ] The repository owner reviewed the final exact head and posted `/approve-head <full-sha>`.
+Only the repository owner decides whether and when this pull request is merged. Passing checks does not imply acceptance. The owner's normal GitHub merge action is the final manual confirmation.
