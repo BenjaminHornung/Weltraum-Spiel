@@ -20,6 +20,7 @@ Thumbs.db
 
 # Local tooling and generated artifacts
 .devtoolbox/config/
+.ask-pro/sessions/
 .worktrees/
 artifacts/
 .cache/

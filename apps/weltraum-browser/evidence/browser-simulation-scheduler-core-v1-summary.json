@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "browser-simulation-scheduler-core-v1",
+  "status": "PASS",
+  "generator": "apps/weltraum-browser/tests/e2e/simulation-scheduler-core.spec.ts",
+  "normalRoute": {
+    "path": "/",
+    "testBridgeBefore": {
+      "ownProperty": false,
+      "inWindow": false
+    },
+    "testBridgeAfter": {
+      "ownProperty": false,
+      "inWindow": false
+    }
+  },
+  "modules": [
+    "/src/simulation-scheduler/index.ts"
+  ],
+  "browserHealth": {
+    "consoleErrors": 0,
+    "pageErrors": 0,
+    "requestFailures": 0,
+    "httpErrors": 0,
+    "unhandledRejections": 0
+  },
+  "deterministicRepeat": {
+    "canonicalBytesIdentical": true,
+    "signatureIdentical": true,
+    "signature": "fnv1a32:d670b296"
+  },
+  "plan": {
+    "requestOrder": [
+      "simulation-job:mission-deadline-check.0@90#0",
+      "simulation-job:mission-deadline-check.0@100#1",
+      "simulation-job:cargo-transfer.0@60#0",
+      "simulation-job:cargo-transfer.0@80#1",
+      "simulation-job:drone-survey.0@50#0"
+    ],
+    "blocked": [
+      "simulation-job:destroyed.0:Destroyed",
+      "simulation-job:dormant-outpost.0:Dormant",
+      "simulation-job:needs-player-attention.0:NeedsPlayerAttention"
+    ],
+    "totalCostUnits": 12,
+    "nextWakeTick": 100,
+    "canonicalBytes": "{\"blocked\":[{\"jobId\":\"simulation-job:destroyed.0\",\"reason\":\"Destroyed\"},{\"jobId\":\"simulation-job:dormant-outpost.0\",\"reason\":\"Dormant\"},{\"jobId\":\"simulation-job:needs-player-attention.0\",\"reason\":\"NeedsPlayerAttention\"}],\"deferred\":[{\"dueCount\":3,\"jobId\":\"simulation-job:cargo-transfer.0\",\"reason\":\"Budget\",\"selectedCount\":2},{\"dueCount\":3,\"jobId\":\"simulation-job:mining-background.0\",\"reason\":\"Budget\",\"selectedCount\":0},{\"dueCount\":1,\"jobId\":\"simulation-job:repair.0\",\"reason\":\"Budget\",\"selectedCount\":0},{\"dueCount\":3,\"jobId\":\"simulation-job:drone-survey.0\",\"reason\":\"Budget\",\"selectedCount\":1}],\"diagnostics\":[{\"code\":\"JOB_BLOCKED\",\"facts\":{\"reason\":\"Destroyed\"},\"jobId\":\"simulation-job:destroyed.0\"},{\"code\":\"JOB_BLOCKED\",\"facts\":{\"reason\":\"Dormant\"},\"jobId\":\"simulation-job:dormant-outpost.0\"},{\"code\":\"JOB_BLOCKED\",\"facts\":{\"reason\":\"NeedsPlayerAttention\"},\"jobId\":\"simulation-job:needs-player-attention.0\"},{\"code\":\"JOB_SELECTED\",\"facts\":{\"effectivePriorityRank\":0,\"selectedCount\":2},\"jobId\":\"simulation-job:mission-deadline-check.0\"},{\"code\":\"JOB_DEFERRED_BUDGET\",\"facts\":{\"dueCount\":3,\"selectedCount\":2},\"jobId\":\"simulation-job:cargo-transfer.0\"},{\"code\":\"JOB_SELECTED\",\"facts\":{\"effectivePriorityRank\":1,\"selectedCount\":2},\"jobId\":\"simulation-job:cargo-transfer.0\"},{\"code\":\"JOB_DEFERRED_BUDGET\",\"facts\":{\"dueCount\":3,\"selectedCount\":0},\"jobId\":\"simulation-job:mining-background.0\"},{\"code\":\"JOB_DEFERRED_BUDGET\",\"facts\":{\"dueCount\":1,\"selectedCount\":0},\"jobId\":\"simulation-job:repair.0\"},{\"code\":\"JOB_DEFERRED_BUDGET\",\"facts\":{\"dueCount\":3,\"selectedCount\":1},\"jobId\":\"simulation-job:drone-survey.0\"},{\"code\":\"JOB_SELECTED\",\"facts\":{\"effectivePriorityRank\":3,\"selectedCount\":1},\"jobId\":\"simulation-job:drone-survey.0\"}],\"nextWakeTick\":100,\"requests\":[{\"costUnits\":1,\"expectedRevision\":0,\"jobId\":\"simulation-job:mission-deadline-check.0\",\"payload\":{\"definitionKind\":\"mission.deadline-check\",\"definitionPayload\":{\"fixture\":\"mission-deadline-check\",\"neutral\":true},\"jobFacts\":{\"deadlineContract\":\"neutral\",\"schedulerFixture\":true},\"ownerId\":\"mission:deadline.0\",\"payloadSchemaVersion\":1,\"resultContractVersion\":1},\"reason\":\"Due\",\"scheduledTick\":90,\"sequence\":0},{\"costUnits\":1,\"expectedRevision\":1,\"jobId\":\"simulation-job:mission-deadline-check.0\",\"payload\":{\"definitionKind\":\"mission.deadline-check\",\"definitionPayload\":{\"fixture\":\"mission-deadline-check\",\"neutral\":true},\"jobFacts\":{\"deadlineContract\":\"neutral\",\"schedulerFixture\":true},\"ownerId\":\"mission:deadline.0\",\"payloadSchemaVersion\":1,\"resultContractVersion\":1},\"reason\":\"CatchUp\",\"scheduledTick\":100,\"sequence\":1},{\"costUnits\":4,\"expectedRevision\":0,\"jobId\":\"simulation-job:cargo-transfer.0\",\"payload\":{\"definitionKind\":\"cargo.transfer\",\"definitionPayload\":{\"fixture\":\"cargo-transfer\",\"neutral\":true},\"jobFacts\":{\"schedulerFixture\":true,\"transferContract\":\"neutral\"},\"ownerId\":\"container:transfer-source.0\",\"payloadSchemaVersion\":1,\"resultContractVersion\":1},\"reason\":\"Due\",\"scheduledTick\":60,\"sequence\":0},{\"costUnits\":4,\"expectedRevision\":1,\"jobId\":\"simulation-job:cargo-transfer.0\",\"payload\":{\"definitionKind\":\"cargo.transfer\",\"definitionPayload\":{\"fixture\":\"cargo-transfer\",\"neutral\":true},\"jobFacts\":{\"schedulerFixture\":true,\"transferContract\":\"neutral\"},\"ownerId\":\"container:transfer-source.0\",\"payloadSchemaVersion\":1,\"resultContractVersion\":1},\"reason\":\"CatchUp\",\"scheduledTick\":80,\"sequence\":1},{\"costUnits\":2,\"expectedRevision\":0,\"jobId\":\"simulation-job:drone-survey.0\",\"payload\":{\"definitionKind\":\"drone.survey\",\"definitionPayload\":{\"fixture\":\"drone-survey\",\"neutral\":true},\"jobFacts\":{\"schedulerFixture\":true,\"surveyContract\":\"neutral\"},\"ownerId\":\"drone:survey.0\",\"payloadSchemaVersion\":1,\"resultContractVersion\":1},\"reason\":\"Due\",\"scheduledTick\":50,\"sequence\":0}],\"schemaVersion\":1,\"sourceRevision\":0,\"sourceTime\":{\"epochSeconds\":0.8333333333333334,\"tick\":100},\"totalCostUnits\":12}"
+  },
+  "verification": {
+    "command": "npx playwright test --config tests/e2e/configs/simulation-scheduler-core.playwright.config.ts --workers=1 --retries=0",
+    "observedResult": "pass"
+  }
+}
