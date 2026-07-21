@@ -1,0 +1,58 @@
+name: Bug report
+description: Report a reproducible non-security defect in the browser mainline.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not report security vulnerabilities here. Use private vulnerability reporting instead.
+  - type: input
+    id: commit
+    attributes:
+      label: Commit SHA
+      description: Provide the full commit SHA where the issue occurs.
+      placeholder: 40-character SHA
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      description: Give the smallest reliable sequence that reproduces the defect.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Browser, operating system, Node version and relevant hardware.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Logs and evidence
+      description: Remove credentials, tokens, private URLs and personal information before posting.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Confirmation
+      options:
+        - label: This report does not contain a security vulnerability or secret.
+          required: true
+        - label: I searched existing issues for duplicates.
+          required: true
