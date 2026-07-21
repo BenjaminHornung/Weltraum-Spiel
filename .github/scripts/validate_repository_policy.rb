@@ -6,10 +6,7 @@ require "psych"
 require "set"
 
 WORKFLOW_ROOT = Pathname.new(".github/workflows")
-ALLOWED_TARGET_WORKFLOWS = Set[
-  "codex-review-gate.yml",
-  "owner-approval-gate.yml"
-].freeze
+ALLOWED_TARGET_WORKFLOWS = Set["codex-review-gate.yml"].freeze
 STATUS_WRITE_WORKFLOWS = ALLOWED_TARGET_WORKFLOWS
 ALLOWED_RUNNER = "ubuntu-24.04"
 ACTION_SHA_PATTERN = /\A[^@\s]+@[0-9a-f]{40}\z/
@@ -119,7 +116,6 @@ class RepositoryPolicy
     validate_workflows!(parsed)
     validate_trusted_context!(parsed)
     validate_codex_gate!
-    validate_owner_gate!
     validate_public_notices!
     run_regression_fixtures!
 
@@ -134,7 +130,6 @@ class RepositoryPolicy
     parsed.each do |path, root|
       context = path.to_s
       target_workflows << path.basename.to_s if Ast.event_names(root, context).include?("pull_request_target")
-
       jobs = Ast.mapping_value(root, "jobs", context)
       raise PolicyError, "#{context}: jobs mapping is required" unless jobs
 
@@ -171,10 +166,7 @@ class RepositoryPolicy
   def validate_permissions!(workflow_name, node, context)
     if node.is_a?(Psych::Nodes::Scalar)
       value = node.value
-      unless value == "read-all"
-        raise PolicyError, "#{context}: permissions #{value.inspect} is forbidden"
-      end
-
+      raise PolicyError, "#{context}: permissions #{value.inspect} is forbidden" unless value == "read-all"
       return
     end
 
@@ -200,9 +192,7 @@ class RepositoryPolicy
 
       Ast.values_for_key(root, "uses", context).each do |node|
         action = Ast.scalar_value(node, "#{context}: uses")
-        if action.start_with?("actions/checkout@")
-          raise PolicyError, "#{context}: trusted workflow must never use checkout"
-        end
+        raise PolicyError, "#{context}: trusted workflow must never use checkout" if action.start_with?("actions/checkout@")
       end
 
       Ast.values_for_key(root, "run", context).each do |node|
@@ -232,37 +222,12 @@ class RepositoryPolicy
       "steps.classify.outputs.trusted == 'true'",
       "short_sha_resolves_to_head",
       "External PR uses manual owner review; Codex token withheld",
-      "issues/${PR_NUMBER}/reactions?per_page=100"
+      "issues/comments/${REQUEST_COMMENT_ID}/reactions?per_page=100",
+      "REQUEST_CREATED_AT"
     ]
 
     required.each do |marker|
-      unless text.include?(marker)
-        raise PolicyError, "#{path}: missing security marker #{marker.inspect}"
-      end
-    end
-  end
-
-  def validate_owner_gate!
-    path = @workflow_root / "owner-approval-gate.yml"
-    text = path.read
-    required = [
-      "github.event.comment.user.login == 'BenjaminHornung'",
-      "github.event.comment.user.id == 25324591",
-      "/approve-head",
-      "/revoke-head",
-      "requested_sha",
-      "current_head",
-      'context="Owner Approval / current head"'
-    ]
-
-    required.each do |marker|
-      unless text.include?(marker)
-        raise PolicyError, "#{path}: missing security marker #{marker.inspect}"
-      end
-    end
-
-    if text.downcase.include?("secrets.")
-      raise PolicyError, "#{path}: owner gate must not consume secrets"
+      raise PolicyError, "#{path}: missing security marker #{marker.inspect}" unless text.include?(marker)
     end
   end
 
@@ -288,8 +253,8 @@ class RepositoryPolicy
     unless security.include?("security/advisories/new")
       raise PolicyError, "SECURITY.md: private reporting path is missing"
     end
-    unless contributing.include?("/approve-head")
-      raise PolicyError, "CONTRIBUTING.md: exact-head approval is missing"
+    unless contributing.include?("acceptance is entirely at the maintainer's discretion")
+      raise PolicyError, "CONTRIBUTING.md: maintainer acceptance authority is missing"
     end
   end
 
