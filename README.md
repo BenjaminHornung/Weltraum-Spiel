@@ -159,7 +159,7 @@ The old Unity-specific setup, controls and implementation notes remain available
 
 ## Contributions and Security
 
-All changes must arrive through a pull request. The current PR head must pass Browser Mainline CI, the Codex gate where applicable, and the exact-head owner approval gate. See [CONTRIBUTING.md](CONTRIBUTING.md) for the contribution contract and [SECURITY.md](SECURITY.md) for private vulnerability reporting.
+All changes must arrive through a pull request. The current PR head must pass Browser Mainline CI, Repository Policy, Dependency Review, and the Codex gate where applicable. Public contributors may propose or close their own pull requests, but only repository accounts with write authority can merge into `main`; the repository owner makes the final decision through the normal GitHub merge action. See [CONTRIBUTING.md](CONTRIBUTING.md) for the contribution contract and [SECURITY.md](SECURITY.md) for private vulnerability reporting.
 
 ## License
 
