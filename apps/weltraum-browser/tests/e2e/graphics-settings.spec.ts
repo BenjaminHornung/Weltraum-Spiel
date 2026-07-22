@@ -157,6 +157,8 @@ test("normal graphics settings flow applies, persists, cancels, resets, and capt
   await openGraphicsSettings(page);
   await expect(page.getByTestId("graphics-preset-current")).toHaveText("High");
   await page.getByTestId("graphics-cancel").click();
+  await expect(dialog).toBeHidden();
+  await expect(page.locator("#flight-hud")).not.toHaveAttribute("data-flight-input-blocked", "true");
   await page.keyboard.press("y");
   await expect(page.locator("#throttle-status")).toContainText("100%");
   expectNoBrowserFailures(failures);

@@ -135,8 +135,10 @@ class BlenderBoundaryTests(unittest.TestCase):
                 adapter.export_glb("ignored.glb", collection=collection, scene=scene)
 
     def test_source_properties_reject_unknown_hestia_and_canonical_camel_case(self) -> None:
-        with self.assertRaisesRegex(adapter.HestiaContractError, "unknown Hestia"):
-            adapter.extract_properties({"hestia.future_contract": 1})
+        for properties in ({"hestia.future_contract": 1}, {"hestia": {"attacker": True}}):
+            with self.subTest(properties=properties):
+                with self.assertRaisesRegex(adapter.HestiaContractError, "unknown Hestia"):
+                    adapter.extract_properties(properties)
         for canonical_name in ("assetRevision", "declaredMinimumThicknessM"):
             with self.subTest(canonical_name=canonical_name):
                 with self.assertRaisesRegex(adapter.HestiaContractError, "canonical camelCase"):
@@ -863,10 +865,9 @@ class BlenderBoundaryTests(unittest.TestCase):
             ]
 
         def clear_hestia_properties(snapshots: object, *, include_root: bool = True) -> None:
-            for block, _ in snapshots:  # type: ignore[union-attr]
-                for key in tuple(block):
-                    if key.startswith("hestia.") or (include_root and key == "hestia"):
-                        del block[key]
+            for block, values in snapshots:  # type: ignore[union-attr]
+                for key in values:
+                    del block[key]
 
         def restore_hestia_properties(snapshots: object) -> None:
             for block, values in snapshots:  # type: ignore[union-attr]
@@ -1013,7 +1014,9 @@ class BlenderBoundaryTests(unittest.TestCase):
                 collection=collection,
                 scene=scene,
             )
-            mocked_adapter.export_glb.assert_called_once_with(mock.ANY, collection=collection)  # type: ignore[attr-defined]
+            mocked_adapter.export_glb.assert_called_once_with(
+                mock.ANY, collection=collection, strip_root_hestia=False
+            )  # type: ignore[attr-defined]
 
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "asset.glb"
@@ -1039,7 +1042,9 @@ class BlenderBoundaryTests(unittest.TestCase):
                 collection=None,
                 scene=scene,
             )
-            mocked_adapter.export_glb.assert_called_once_with(mock.ANY, collection=None)  # type: ignore[attr-defined]
+            mocked_adapter.export_glb.assert_called_once_with(
+                mock.ANY, collection=None, strip_root_hestia=False
+            )  # type: ignore[attr-defined]
 
     def test_cli_treats_every_collection_option_as_explicit_and_fails_on_empty(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -1391,6 +1396,8 @@ class BlenderBoundaryTests(unittest.TestCase):
                         "ordinary": "object-preserved",
                     },
                 )
+                mesh_data = _PropertyBlock({"hestia": {"legacy": "mesh"}, "ordinary": "mesh-preserved"})
+                part_object.data = mesh_data
                 material = _PropertyBlock(
                     {
                         "hestia.render_material_id": "mat-render",
@@ -1408,6 +1415,7 @@ class BlenderBoundaryTests(unittest.TestCase):
                     for name, block in (
                         ("source", source),
                         ("part", part_object),
+                        ("mesh", mesh_data),
                         ("material", material),
                     )
                 }
@@ -1422,6 +1430,7 @@ class BlenderBoundaryTests(unittest.TestCase):
                             for name, block in (
                                 ("source", source),
                                 ("part", part_object),
+                                ("mesh", mesh_data),
                                 ("material", material),
                             )
                         }
@@ -1467,18 +1476,23 @@ class BlenderBoundaryTests(unittest.TestCase):
                             [],
                         )
                         self.assertEqual(expected_hestia[name], observed["hestia"])
+                observed_mesh = observed_during_export["mesh"]
+                self.assertEqual({"ordinary": "mesh-preserved"}, observed_mesh)
                 self.assertEqual(original_properties, {
                     name: json.loads(json.dumps(block))
                     for name, block in (
                         ("source", source),
                         ("part", part_object),
+                        ("mesh", mesh_data),
                         ("material", material),
                     )
                 })
-                mocked_adapter.export_glb.assert_called_once_with(mock.ANY, collection=source)  # type: ignore[attr-defined]
+                mocked_adapter.export_glb.assert_called_once_with(
+                    mock.ANY, collection=source, strip_root_hestia=False
+                )  # type: ignore[attr-defined]
 
     def test_export_restores_source_custom_properties_even_when_export_fails(self) -> None:
-        obj = _FakeObject("Part", {"hestia.part_id": "part-01", "ordinary": 4})
+        obj = _FakeObject("Part", {"hestia": {"attacker": True}, "hestia.part_id": "part-01", "ordinary": 4})
         obj._selected = True
         scene = types.SimpleNamespace(objects=(obj,))
         view_objects = types.SimpleNamespace(active=obj)
@@ -1499,6 +1513,8 @@ class BlenderBoundaryTests(unittest.TestCase):
                 adapter.export_glb("ignored.glb", objects=(obj,), scene=scene)
 
         self.assertNotIn("hestia.part_id", observed_during_export)
+        self.assertNotIn("hestia", observed_during_export)
+        self.assertEqual({"attacker": True}, obj["hestia"])
         self.assertEqual("part-01", obj["hestia.part_id"])
         self.assertEqual(4, obj["ordinary"])
         self.assertTrue(obj.select_get())

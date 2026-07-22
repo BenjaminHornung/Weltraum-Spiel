@@ -5,6 +5,9 @@ Browser-based low-poly spaceflight prototype with deterministic flight, navigati
 > **Product mainline:** `apps/weltraum-browser` using Three.js, TypeScript, Vite, Vitest and Playwright.
 > **Legacy/reference:** the immutable Unity snapshot at tag `unity-legacy-final-2026-07` and branch `archive/unity-legacy-final-2026-07`. No active Unity project exists on this branch.
 
+> [!IMPORTANT]
+> This repository is **source-available, not open source**. Original project code and assets may be used, modified and redistributed only for noncommercial purposes under the [PolyForm Noncommercial License 1.0.0](LICENSE). Commercial use, sale, monetized distribution, paid hosting, integration into a commercial product, or use with an anticipated commercial application requires a separate written license from Benjamin Hornung.
+
 ## Current State
 
 The current browser runtime provides a playable local-space flight slice:
@@ -89,7 +92,7 @@ For a complete local Playwright discovery run:
 npm run test:e2e
 ```
 
-The grouped E2E scripts are also the required GitHub Actions gates. Current toolchain versions are pinned in `apps/weltraum-browser/package.json`, including TypeScript 7.0.2, Three.js 0.185.0, Vite 8.1.0, Vitest 4.1.9 and Playwright 1.61.1.
+The grouped E2E scripts are also the required GitHub Actions gates. Current toolchain versions are pinned in `apps/weltraum-browser/package.json`, including TypeScript 7.0.2, Three.js 0.185.1, Vite 8.1.5, Vitest 4.1.10 and Playwright 1.61.1.
 
 On Windows, Playwright may need an installed Chrome/Chromium executable when the bundled browser cannot start:
 
@@ -153,3 +156,11 @@ Concept images under `docs/UI-Screenshots/` are design references. They do not p
 The archived Unity prototype remains useful for feature intent, terminology, historical behavior, assets and regression scenarios. Read it through `unity-legacy-final-2026-07:<path>` or the curated records under `docs/legacy-unity`; reusable retained sources live under `art/`.
 
 The old Unity-specific setup, controls and implementation notes remain available through the immutable archive refs, repository history and legacy documentation. They are no longer the root README or product onboarding path.
+
+## Contributions and Security
+
+All changes must arrive through a pull request. The current PR head must pass Browser Mainline CI, Repository Policy, Dependency Review, and the Codex gate where applicable. Public contributors may propose or close their own pull requests, but only repository accounts with write authority can merge into `main`; the repository owner makes the final decision through the normal GitHub merge action. See [CONTRIBUTING.md](CONTRIBUTING.md) for the contribution contract and [SECURITY.md](SECURITY.md) for private vulnerability reporting.
+
+## License
+
+Original project code and assets are licensed under the [PolyForm Noncommercial License 1.0.0](LICENSE). This license permits noncommercial study, experimentation, modification and redistribution subject to its terms. It does **not** permit commercial use. Third-party packages, tools and separately identified materials remain subject to their own licenses.

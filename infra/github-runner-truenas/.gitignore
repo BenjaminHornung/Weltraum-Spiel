@@ -1,9 +1,0 @@
-.env
-.env.*
-!.env.example
-runner-registration-token
-*.token
-*.log
-compose.override.yaml
-actions-runner-linux-x64-*.tar.gz
-actions-runner-linux-x64-*.tar.gz.partial
