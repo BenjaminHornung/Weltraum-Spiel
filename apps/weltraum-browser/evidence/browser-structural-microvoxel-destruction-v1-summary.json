@@ -1,0 +1,135 @@
+{
+  "schemaVersion": "browser-structural-microvoxel-destruction-v1",
+  "status": "PASS",
+  "generator": "apps/weltraum-browser/tests/e2e/structural-microvoxel-destruction.spec.ts",
+  "route": "/",
+  "proofScope": "pure-core-browser-proof-via-direct-vite-import",
+  "visualUiChange": false,
+  "testBridge": {
+    "ownProperty": false,
+    "inWindow": false
+  },
+  "obligations": [
+    {
+      "id": "SMV-BROWSER-01",
+      "status": "PASS",
+      "details": "Normal route loaded and both TestBridge absence checks passed before direct Vite imports."
+    },
+    {
+      "id": "SMV-BROWSER-02",
+      "status": "PASS",
+      "details": "The 85-cell Level-4 fixture uses binary material 1 at 512 kg/m^3, or exactly 1 kg per cell."
+    },
+    {
+      "id": "SMV-BROWSER-03",
+      "status": "PASS",
+      "details": "Center-inclusion SubtractSphere removed exactly neck cells z=1 and z=2: 2 cells and 2 kg."
+    },
+    {
+      "id": "SMV-BROWSER-04",
+      "status": "PASS",
+      "details": "Six-neighbor classification yielded one 64-cell anchored base and one 19-cell detached upper component while both endpoints of the retained bridging Joint remained active without adding connectivity."
+    },
+    {
+      "id": "SMV-BROWSER-05",
+      "status": "PASS",
+      "details": "Mass, COM, bounds, and all six symmetric inertia values are finite; every COM is inside its bounds."
+    },
+    {
+      "id": "SMV-BROWSER-06",
+      "status": "PASS",
+      "details": "Identical repeats preserved component IDs/content hashes and object content/evidence/result hashes."
+    },
+    {
+      "id": "SMV-BROWSER-07",
+      "status": "PASS",
+      "details": "Greedy mesh arrays are finite, axis-aligned, externally complete, and contain no occupied-to-occupied internal face."
+    },
+    {
+      "id": "SMV-BROWSER-08",
+      "status": "PASS",
+      "details": "The proof exercises only public pure-core barrels and makes no runtime, renderer, physics, or gameplay integration claim."
+    }
+  ],
+  "observations": {
+    "fixture": {
+      "adaptiveLevel": 4,
+      "occupiedBrickCount": 1,
+      "knownAirNeighborBrickCount": 3,
+      "materialId": 1,
+      "densityKgPerCubicMeter": 512,
+      "cellMassKg": 1,
+      "base": "8x8 at z=0",
+      "neck": "(8,8,z=1..3)",
+      "upper": "3x3x2 at x/y=7..9,z=4..5"
+    },
+    "command": {
+      "kind": "SubtractSphere",
+      "space": "global-quantum",
+      "centerQuantum": {
+        "x": 8,
+        "y": 8,
+        "z": 2
+      },
+      "radiusQuantum": 1,
+      "status": "Applied",
+      "selectedVoxelCount": 2,
+      "changedVoxelCount": 2
+    },
+    "mass": {
+      "beforeVoxelCount": 85,
+      "afterVoxelCount": 83,
+      "beforeMassKg": 85,
+      "afterMassKg": 83,
+      "removedMassKg": 2,
+      "componentMassesKg": [
+        64,
+        19
+      ],
+      "finite": true,
+      "centersOfMassInsideBounds": true,
+      "inertiaValueCountPerProduct": 6
+    },
+    "components": {
+      "totalCount": 2,
+      "anchoredCount": 1,
+      "detachedCount": 1,
+      "anchoredVoxelCount": 64,
+      "detachedVoxelCount": 19,
+      "jointsCreateConnectivity": false
+    },
+    "joint": {
+      "jointId": "joint.base-to-upper",
+      "remainsPresent": true,
+      "endpointAActive": true,
+      "endpointBActive": true,
+      "endpointComponentIdsDistinct": true
+    },
+    "deterministicHashes": {
+      "componentIdsEqual": true,
+      "componentContentHashesEqual": true,
+      "objectContentHashesEqual": true,
+      "evidenceHashesEqual": true,
+      "resultHashesEqual": true
+    },
+    "mesh": {
+      "status": "Produced",
+      "arraysFinite": true,
+      "axisAlignedNormals": true,
+      "noInternalFaces": true,
+      "exposedUnitFaceCoverageExact": true
+    }
+  },
+  "browserErrors": {
+    "console": [],
+    "page": [],
+    "request": [],
+    "http": []
+  },
+  "excludedClaims": [
+    "runtime-wiring",
+    "renderer-integration",
+    "physics-integration",
+    "gameplay-integration"
+  ]
+}

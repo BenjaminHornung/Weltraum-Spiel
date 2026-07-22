@@ -1,0 +1,251 @@
+{
+  "schemaVersion": "browser-adaptive-microvoxel-authority-v1",
+  "status": "PASS",
+  "generator": "apps/weltraum-browser/tests/e2e/adaptive-microvoxel-authority.spec.ts",
+  "route": "/",
+  "proofScope": "pure-core-browser-proof",
+  "visualUiChange": false,
+  "testBridge": {
+    "ownProperty": false,
+    "inWindow": false
+  },
+  "obligations": [
+    {
+      "id": "AMV-BROWSER-01",
+      "status": "PASS",
+      "details": "L0-L4 quantum ladder, negative alignment, safe bounds, ancestry, and half-open extents verified."
+    },
+    {
+      "id": "AMV-BROWSER-02",
+      "status": "PASS",
+      "details": "Every non-leaf parent has eight unique children that exactly partition its volume."
+    },
+    {
+      "id": "AMV-BROWSER-03",
+      "status": "PASS",
+      "details": "Invalid alignment, negative zero, unsafe numbers, and ancestry-unsafe coordinates fail closed."
+    },
+    {
+      "id": "AMV-BROWSER-04",
+      "status": "PASS",
+      "details": "Stable IDs reject empty, untrimmed, oversized, and unpaired-surrogate identities."
+    },
+    {
+      "id": "AMV-BROWSER-05",
+      "status": "PASS",
+      "details": "Only deeply frozen constant-v1 descriptor data is accepted; callback and malformed shapes fail closed."
+    },
+    {
+      "id": "AMV-BROWSER-06",
+      "status": "PASS",
+      "details": "Identity, version, revision, and sample variations change descriptor, content, and provenance authority."
+    },
+    {
+      "id": "AMV-BROWSER-07",
+      "status": "PASS",
+      "details": "Ordered edits apply exactly once and immutable journal snapshots preserve prior values."
+    },
+    {
+      "id": "AMV-BROWSER-08",
+      "status": "PASS",
+      "details": "Duplicate, gapped, malformed-coordinate, and non-finite edits fail closed."
+    },
+    {
+      "id": "AMV-BROWSER-09",
+      "status": "PASS",
+      "details": "A-B-A rematerialization restores exact canonical bytes, content hash, and provenance hash."
+    },
+    {
+      "id": "AMV-BROWSER-10",
+      "status": "PASS",
+      "details": "Constructor-issued immutable proof is accepted for exact authority, epoch, and snapshot."
+    },
+    {
+      "id": "AMV-BROWSER-11",
+      "status": "PASS",
+      "details": "Stale epoch/snapshot and wrong authority/key/revision proofs fail before request or coverage authority."
+    },
+    {
+      "id": "AMV-BROWSER-12",
+      "status": "PASS",
+      "details": "Copied, forged, and tampered proofs fail local-brand and digest validation."
+    },
+    {
+      "id": "AMV-BROWSER-13",
+      "status": "PASS",
+      "details": "Required and optional request sets preserve deterministic desired/materialize semantics."
+    },
+    {
+      "id": "AMV-BROWSER-14",
+      "status": "PASS",
+      "details": "Fallback remains atomic until all 64 L4 children are ready, then selected coverage replaces it."
+    },
+    {
+      "id": "AMV-BROWSER-15",
+      "status": "PASS",
+      "details": "Complete selected coverage is unique, gap-free, non-overlapping, and volume exact."
+    },
+    {
+      "id": "AMV-BROWSER-16",
+      "status": "PASS",
+      "details": "Brick-budget rejection is typed, deterministic, and side-effect empty."
+    },
+    {
+      "id": "AMV-BROWSER-17",
+      "status": "PASS",
+      "details": "Cancelled residency cannot gain selected or fallback coverage authority."
+    },
+    {
+      "id": "AMV-BROWSER-18",
+      "status": "PASS",
+      "details": "Collapse releases only derived products and rematerializes from retained authority."
+    },
+    {
+      "id": "AMV-BROWSER-19",
+      "status": "PASS",
+      "details": "Eviction is idempotent and reload preserves descriptor, journal, bytes, content, and provenance."
+    },
+    {
+      "id": "AMV-BROWSER-20",
+      "status": "PASS",
+      "details": "Canonical key/descriptor/journal/content/provenance/snapshot/proof/plan vectors match pinned literals."
+    }
+  ],
+  "observations": {
+    "extents": [
+      {
+        "level": 0,
+        "cellSizeMeters": 2,
+        "extentQuantum": 256,
+        "childCount": 8
+      },
+      {
+        "level": 1,
+        "cellSizeMeters": 1,
+        "extentQuantum": 128,
+        "childCount": 8
+      },
+      {
+        "level": 2,
+        "cellSizeMeters": 0.5,
+        "extentQuantum": 64,
+        "childCount": 8
+      },
+      {
+        "level": 3,
+        "cellSizeMeters": 0.25,
+        "extentQuantum": 32,
+        "childCount": 8
+      },
+      {
+        "level": 4,
+        "cellSizeMeters": 0.125,
+        "extentQuantum": 16,
+        "childCount": 0
+      }
+    ],
+    "rejectionCounts": {
+      "coordinate": 4,
+      "descriptor": 4,
+      "edit": 4,
+      "identity": 5,
+      "proof": 7
+    },
+    "proofFirstPath": "InvalidPlannerInput:snapshot/resident/0/validationProof",
+    "descriptorAuthority": {
+      "uniqueDescriptorDigests": 5,
+      "uniqueContentHashes": 5,
+      "uniqueProvenanceHashes": 5
+    },
+    "journal": {
+      "firstRecordCount": 1,
+      "secondRecordCount": 2,
+      "addThenSubtractOccupancy0": 0,
+      "subtractThenAddOccupancy0": 1
+    },
+    "aba": {
+      "aContentHash": "fnv1a64-v1:50c0020c4b891832",
+      "bContentHash": "fnv1a64-v1:95ba2c5457522be6",
+      "aProvenanceHash": "fnv1a64-v1:3188b7bcfd593186",
+      "bProvenanceHash": "fnv1a64-v1:02497ae49bc53ebc",
+      "restored": true
+    },
+    "planner": {
+      "requiredCount": 64,
+      "optionalCount": 64,
+      "fallbackCounts": [
+        1,
+        1,
+        0
+      ],
+      "selectedCount": 64,
+      "selectedVolume": 262144,
+      "rejectedSideEffectCount": 0,
+      "cancelledCoverageCount": 0
+    },
+    "release": {
+      "collapseReleasedCount": 1,
+      "evictionReleasedCounts": [
+        1,
+        0
+      ],
+      "authorityRetained": true
+    },
+    "canonicalVectors": {
+      "key": {
+        "byteLength": 216,
+        "canonicalHash": "fnv1a64-v1:69a1fd51ba189b76"
+      },
+      "descriptor": {
+        "byteLength": 188,
+        "canonicalHash": "fnv1a64-v1:fbe25906701bf507",
+        "descriptorDigest": "fnv1a64-v1:d35f808b2c5eee48"
+      },
+      "journal": {
+        "byteLength": 482,
+        "digest": "fnv1a64-v1:c8c7dc4baf7edc73",
+        "canonicalHash": "fnv1a64-v1:b827d6f7d538d9f7"
+      },
+      "materialized": {
+        "contentHash": "fnv1a64-v1:6fa95b9c11f2b5f6",
+        "provenanceHash": "fnv1a64-v1:52acc30fb9b5da37"
+      },
+      "snapshot": {
+        "acceptedDigest": "fnv1a64-v1:a4742926bffe485b",
+        "proofDigest": "fnv1a64-v1:a756afcc8e9eb4cf",
+        "rejectedDigest": "fnv1a64-v1:2d171393565cf1be"
+      },
+      "proof": {
+        "contentHash": "fnv1a64-v1:6fa95b9c11f2b5f6",
+        "provenanceHash": "fnv1a64-v1:52acc30fb9b5da37",
+        "descriptorDigest": "fnv1a64-v1:e37982c711163a94",
+        "journalDigest": "fnv1a64-v1:4144927f889a3178",
+        "proofDigest": "fnv1a64-v1:7ff499bc651aab0e"
+      },
+      "accepted": {
+        "planHash": "fnv1a64-v1:29d23cf307090000",
+        "desiredCount": 64,
+        "materializeCount": 64,
+        "uncoveredRequiredKeyCount": 64
+      },
+      "rejected": {
+        "planHash": "fnv1a64-v1:0c86d956b8677bce",
+        "budget": "brick-count",
+        "required": 64,
+        "limit": 0
+      }
+    }
+  },
+  "browserErrors": {
+    "console": [],
+    "page": [],
+    "request": [],
+    "http": []
+  },
+  "excludedClaims": [
+    "renderer",
+    "streaming",
+    "worker",
+    "TestBridge-integration"
+  ]
+}
