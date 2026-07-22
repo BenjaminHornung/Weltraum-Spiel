@@ -1,0 +1,261 @@
+{
+  "schemaVersion": 3,
+  "evidenceScope": "current-main-drift-integration",
+  "status": "PENDING",
+  "sourceControl": {
+    "integrationBranch": "feature/browser-indexeddb-save-repository-core-v1-integration",
+    "initialMainSha": "f6d3fe69175b168ddea5e385c6d7b3452e6cba16",
+    "finalCurrentMainSha": "33c019d2249fbbe3bfb0bdcf6ebbc5e1899a8e0e",
+    "featureSourceSha": "7b920eee22654698c75037a6b2287225ec5c46da",
+    "preDriftIntegrationCommit": "29861b785ce18d57e8379eb48ebd61f54769f5e5",
+    "mainDriftCommits": 7,
+    "mergeState": "IN_PROGRESS_UNCOMMITTED",
+    "finalPostDriftIntegrationSha": null,
+    "finalPostDriftIntegrationShaStatus": "PENDING"
+  },
+  "mergeResolution": {
+    "conflicts": [
+      {
+        "path": "apps/weltraum-browser/package.json",
+        "resolution": "MINIMAL",
+        "testE2eCoreAssignments": {
+          "tests/e2e/browser-storage-save-repository.spec.ts": 1,
+          "tests/e2e/simulation-scheduler-core.spec.ts": 1
+        }
+      }
+    ],
+    "unrelatedGeneratedEvidenceRestoredToMergeIndex": true
+  },
+  "postDriftVerification": {
+    "authority": "LOCAL_NODE_22",
+    "environment": {
+      "nodeVersion": "22.23.1",
+      "chromeVersion": "150.0.7871.129",
+      "chromeAppliesTo": [
+        "focusedBrowserStorageE2e",
+        "coreE2e"
+      ]
+    },
+    "typescript": {
+      "status": "PASS",
+      "command": "npx tsc -p tsconfig.json"
+    },
+    "focusedVitest": {
+      "status": "PASS",
+      "workers": 1,
+      "filesPassed": 5,
+      "filesTotal": 5,
+      "testsPassed": 54,
+      "testsTotal": 54,
+      "durationSeconds": 2.17
+    },
+    "fullVitest": {
+      "status": "PASS",
+      "workers": 1,
+      "filesPassed": 112,
+      "filesTotal": 112,
+      "testsPassed": 1091,
+      "testsTotal": 1091,
+      "durationSeconds": 101.75
+    },
+    "build": {
+      "status": "PASS",
+      "modules": 165,
+      "viteDurationSeconds": 1.46,
+      "warnings": [
+        "Existing Vite chunk-size warning"
+      ]
+    },
+    "focusedBrowserStorageE2e": {
+      "status": "PASS",
+      "workers": 1,
+      "retries": 0,
+      "runs": [
+        {
+          "testsPassed": 4,
+          "testsTotal": 4,
+          "runDurationSeconds": 11.201
+        },
+        {
+          "testsPassed": 4,
+          "testsTotal": 4,
+          "runDurationSeconds": 11.098
+        }
+      ],
+      "evidenceHashes": {
+        "status": "PASS",
+        "unchangedFromPreDrift": true,
+        "jsonSha256": "17A637414095211350253FE263B110561CC796EDCD67153DB0C5968BC7054935",
+        "markdownSha256": "8BFC28E7CEB930F4C422B37736C4628ABF1C15365B68C54F92B6CD2B15DBAFD8"
+      }
+    },
+    "coreE2e": {
+      "firstAttempt": {
+        "status": "TRANSIENT_PORT_LISTENER",
+        "testsRun": 0,
+        "port": 5173,
+        "listenerExitedNaturally": true,
+        "processKilled": false
+      },
+      "cleanRerun": {
+        "status": "PASS",
+        "testsPassed": 36,
+        "testsTotal": 36,
+        "workers": 1,
+        "retries": 0,
+        "durationSeconds": 72.6
+      }
+    },
+    "cleanup": {
+      "status": "PASS",
+      "port": 5173,
+      "remainingListeners": 0
+    },
+    "browserAssertions": {
+      "status": "PASS",
+      "route": "/",
+      "testBridgeAbsent": true,
+      "indexedDbWorked": true,
+      "reloadPersistence": true,
+      "staleCasPreservedRecord": true,
+      "matchingCasAdvancedExactlyOne": true,
+      "exportImport": true,
+      "checksumCorruptionDetected": true,
+      "remainingSlotCount": 0,
+      "databaseDeleted": true,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "requestFailures": [],
+      "httpErrors": []
+    }
+  },
+  "postDriftAudit": {
+    "e2eCoreGrouping": {
+      "status": "PASS",
+      "browserStorageOccurrences": 1,
+      "simulationSchedulerOccurrences": 1
+    },
+    "unrelatedGeneratedEvidence": {
+      "status": "RESTORED_TO_MERGE_INDEX"
+    },
+    "finalDiffAgainstCurrentMain": {
+      "status": "PASS",
+      "baseSha": "33c019d2249fbbe3bfb0bdcf6ebbc5e1899a8e0e",
+      "requirement": "SAVE_REPOSITORY_CORE_ONLY"
+    }
+  },
+  "postDriftDevtoolbox": {
+    "executionId": "8855f699ac0e4850bf81205c2c82d8aa",
+    "executionStatus": "VERIFIED",
+    "verificationOperationId": "75f376583fe6440e86dddb99d9558b2c",
+    "verificationStatus": "COMPLETED_SUCCEEDED",
+    "completedAtUtc": "2026-07-21T05:40:05.899Z",
+    "checks": {
+      "specs": {
+        "status": "PASS"
+      },
+      "test": {
+        "status": "PASS",
+        "exitCode": 0,
+        "filesPassed": 112,
+        "filesTotal": 112,
+        "testsPassed": 1091,
+        "testsTotal": 1091,
+        "durationSeconds": 90.46
+      },
+      "build": {
+        "status": "PASS_WITH_WARNING",
+        "exitCode": 0,
+        "modules": 165,
+        "viteDurationSeconds": 1.13,
+        "warnings": [
+          "Known Vite chunk-size warning",
+          "Local npm user-config warnings"
+        ]
+      }
+    },
+    "summary": {
+      "passed": 2,
+      "warnings": 1,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "postDriftLocalReview": {
+    "status": "COMPLETED",
+    "verdict": "READY",
+    "p1": 0,
+    "p2": 0,
+    "residualP3": [
+      "Exact product-internal blocked-open message assertion creates test coupling.",
+      "Duplicated CAS, revision, import, and metadata transition logic creates future Memory/IndexedDB parity risk."
+    ]
+  },
+  "postDriftCompletion": {
+    "specsValidate": {
+      "status": "PASS"
+    },
+    "completionPreflight": {
+      "id": "6ba2a46724614826b0d58b0ff04182b4",
+      "status": "PASS",
+      "canProceed": true
+    },
+    "task5_1": {
+      "status": "CLOSED"
+    }
+  },
+  "preDriftEvidence": {
+    "status": "SUPERSEDED_HISTORICAL",
+    "reason": "Recorded before the 7-commit main drift and does not close post-drift gates.",
+    "source": {
+      "mainSha": "f6d3fe69175b168ddea5e385c6d7b3452e6cba16",
+      "integrationCommit": "29861b785ce18d57e8379eb48ebd61f54769f5e5"
+    },
+    "centralVerification": {
+      "focusedVitest": "PASS_54_OF_54",
+      "fullVitest": "PASS_1053_OF_1053",
+      "buildModules": 165,
+      "focusedE2eRuns": [
+        "PASS_4_OF_4",
+        "PASS_4_OF_4"
+      ],
+      "coreE2e": "PASS_35_OF_35",
+      "lifecycleAndVersions": "PASS"
+    },
+    "devtoolbox": {
+      "executionId": "8855f699ac0e4850bf81205c2c82d8aa",
+      "executionStatus": "VERIFIED",
+      "verificationOperationId": "df1d3f1f17f54371977ba4e6d908931c",
+      "verificationStatus": "COMPLETED_SUCCEEDED",
+      "completionPreflight": {
+        "id": "65f22c48d2e0497c9796454bd1e14829",
+        "status": "PASS",
+        "canProceed": true
+      },
+      "task5_1Status": "CLOSED"
+    },
+    "localFinalReview": {
+      "verdict": "READY",
+      "p1": 0,
+      "p2": 0,
+      "residualP3": [
+        "Exact product-internal blocked-open message assertion creates test coupling.",
+        "Duplicated CAS, revision, import, and metadata transition logic creates future Memory/IndexedDB parity risk."
+      ]
+    }
+  },
+  "postDriftGates": {
+    "devtoolboxVerification": "PASS",
+    "completionPreflight": "PASS",
+    "localFinalReview": "READY",
+    "finalPostDriftIntegrationSha": "PENDING",
+    "finalSaveCoreOnlyDiffAudit": "PASS",
+    "pullRequest": "PENDING",
+    "exactHeadReview": "PENDING"
+  },
+  "pendingGates": [
+    "Final post-drift integration SHA",
+    "Pull request creation",
+    "PR exact-head Codex review"
+  ]
+}
