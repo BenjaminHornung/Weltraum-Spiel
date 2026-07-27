@@ -1,6 +1,7 @@
 import {
   adaptiveLevel,
   adaptivePlanningEpoch,
+  brickExtentQuantumForLevel,
   deepFreeze,
   globalQuantumCoordinate,
   stableAuthorityId,
@@ -27,9 +28,19 @@ import {
 } from "./validation";
 
 const hardReasons = new Set<HardAdaptiveRefinementReason>(HARD_ADAPTIVE_REFINEMENT_REASONS);
+const hardAuthorityTargetLevel = adaptiveLevel(4);
+const hardAuthorityExtentQuantum = brickExtentQuantumForLevel(hardAuthorityTargetLevel);
 
 const copyRegion = (region: AdaptiveRefinementRegion): AdaptiveRefinementRegion => {
-  if (region.kind === "aabb") return deepFreeze({ kind: "aabb", bounds: validateQuantumBounds(region.bounds) });
+  if (region.kind === "aabb") {
+    const bounds = validateQuantumBounds(region.bounds);
+    for (const axis of ["x", "y", "z"] as const) {
+      if (bounds.min[axis] % hardAuthorityExtentQuantum !== 0 || bounds.max[axis] % hardAuthorityExtentQuantum !== 0) {
+        return representationFail("InvalidContract", `region/bounds/${axis}`, "Hard L4 AABB coverage must align to target bricks.");
+      }
+    }
+    return deepFreeze({ kind: "aabb", bounds });
+  }
   const center = deepFreeze({
     x: globalQuantumCoordinate(region.center.x, "region/center/x"),
     y: globalQuantumCoordinate(region.center.y, "region/center/y"),
@@ -55,7 +66,7 @@ export const createHardAuthorityRequirement = (value: Readonly<{
     requestId: stableAuthorityId(value.requestId, "requirement/requestId"),
     reason: value.reason,
     region: copyRegion(value.region),
-    targetLevel: adaptiveLevel(4),
+    targetLevel: hardAuthorityTargetLevel,
     requiredForCoverage: true,
     ...(deadlinePlanningEpoch === undefined ? {} : { deadlinePlanningEpoch }),
     priority: representationFinite(value.priority, "requirement/priority")

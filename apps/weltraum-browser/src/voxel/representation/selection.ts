@@ -183,7 +183,7 @@ export const selectRepresentation = (input: RepresentationSelectionInput): Repre
   const cullRadius = representationPositiveFinite(input.thresholds.cullProjectedBoundsRadiusPixels, "selection/thresholds/cullProjectedBoundsRadiusPixels");
   const simulationRequirements = deepFreeze(rawSimulationRequirements
     .map((entry, index) => representationString(entry, `selection/simulationRequirements/${index}`)).sort(compareCanonicalCodeUnits));
-  const requiredAuthorityRequests = deepFreeze(rawAuthorityRequests
+  const authorityRequests = rawAuthorityRequests
     .map((entry) => {
       const request = entry as RepresentationSelectionInput["requiredAuthorityRequests"][number];
       return createHardAuthorityRequirement({
@@ -193,7 +193,13 @@ export const selectRepresentation = (input: RepresentationSelectionInput): Repre
         deadlinePlanningEpoch: request.deadlinePlanningEpoch,
         priority: request.priority
       });
-    }).sort((left, right) => compareCanonicalCodeUnits(left.requestId, right.requestId)));
+    }).sort((left, right) => compareCanonicalCodeUnits(left.requestId, right.requestId));
+  for (let index = 1; index < authorityRequests.length; index += 1) {
+    if (authorityRequests[index - 1].requestId === authorityRequests[index].requestId) {
+      return representationFail("InvalidSelection", "selection/requiredAuthorityRequests", "Authority request IDs must be unique.");
+    }
+  }
+  const requiredAuthorityRequests = deepFreeze(authorityRequests);
   const readiness = deepFreeze(rawReadiness
     .map((entry, index) => representationString(entry, `selection/readiness/${index}`)).sort(compareCanonicalCodeUnits));
   const fallbackDecision = copyFallbackDecision(input.fallbackDecision);

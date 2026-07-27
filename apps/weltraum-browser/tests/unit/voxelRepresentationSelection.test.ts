@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { adaptiveLevel, adaptivePlanningEpoch, globalQuantumCoordinate, isDeepFrozen } from "../../src/voxel/adaptive";
+import { adaptiveLevel, adaptivePlanningEpoch, brickExtentQuantumForLevel, globalQuantumCoordinate, isDeepFrozen } from "../../src/voxel/adaptive";
 import {
   HARD_ADAPTIVE_REFINEMENT_REASONS,
   REPRESENTATION_LADDER_SCHEMA_VERSION,
@@ -195,6 +195,23 @@ describe("voxel representation SSE and selection", () => {
     })).toThrow();
   });
 
+  it("rejects duplicate Authority request IDs before publication", () => {
+    const requirement = createHardAuthorityRequirement({
+      requestId: "request.duplicate",
+      reason: "ProjectileImpact",
+      region: {
+        kind: "sphere",
+        center: { x: globalQuantumCoordinate(0), y: globalQuantumCoordinate(0), z: globalQuantumCoordinate(0) },
+        radiusQuantum: globalQuantumCoordinate(1)
+      },
+      priority: 10
+    });
+    expect(() => selectRepresentation({
+      ...baseInput(100),
+      requiredAuthorityRequests: [requirement, { ...requirement, priority: 11 }]
+    })).toThrow();
+  });
+
   it("applies detail distance only to visual render preference", () => {
     const input = baseInput(100);
     const nearPolicy = createVoxelQualityPolicy({ detail: "Ultra", detailDistanceMeters: 1_000, streamingBudget: "Ultra" });
@@ -255,6 +272,25 @@ describe("voxel representation hard pins, interaction, and lifecycle", () => {
       expect(request.targetLevel).toBe(adaptiveLevel(4));
     }
     expect(selectedRank(selectRepresentation({ ...baseInput(100), qualityPolicy: low() }))).toBe(4);
+  });
+
+  it("requires hard L4 AABB requirements to align to target bricks", () => {
+    const extent = brickExtentQuantumForLevel(adaptiveLevel(4));
+    const requirement = (maxX: number) => createHardAuthorityRequirement({
+      requestId: "request.aabb",
+      reason: "CollisionRequired",
+      region: {
+        kind: "aabb",
+        bounds: {
+          min: { x: globalQuantumCoordinate(0), y: globalQuantumCoordinate(0), z: globalQuantumCoordinate(0) },
+          max: { x: globalQuantumCoordinate(maxX), y: globalQuantumCoordinate(extent), z: globalQuantumCoordinate(extent) }
+        }
+      },
+      priority: 1
+    });
+
+    expect(requirement(extent)).toMatchObject({ targetLevel: 4 });
+    expect(() => requirement(1)).toThrow();
   });
 
   it("never emits coarse or partial edits when proxy Authority coordinates, coverage, or budget are unavailable", () => {
