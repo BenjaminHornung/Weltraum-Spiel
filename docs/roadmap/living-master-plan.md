@@ -427,6 +427,9 @@ Planeten-/Terrain-Streaming, mehrere Biome und Sites, Multi-Drone-Operationen, F
 - **[RESEARCH] P04.05.05 Microvoxel Mesher Benchmark**
   Benötigt P04.05.01 und den Golden Corpus aus P13.05.02; Terrain und Gebäude dürfen getrennte Mesher verwenden. Acceptance vergleicht 0,25 m und 0,50 m für Topologie, Seams, Durchsatz, Speicher und Edit-Latenz, ohne WASM vor einem Benchmark festzuschreiben.
 
+- **[OPEN] P04.05.06 Feinere Microvoxel-Einheit für Kleinprojektile**
+  Die aktuelle Basisquantisierung von 0,125 m ist für kleine Geschosse und deren lokale Trefferwirkung noch zu grob. Nach P04.05.05 wird mindestens eine kleinere darstellbare Einheit spezifiziert und umgesetzt; Acceptance belegt Geschoss-/Treffermaßstab, deterministische Koordinaten, Meshing und Masseneigenschaften sowie CPU-, GPU-, Speicher- und Edit-Budgets, ohne die globale Basisquantisierung stillschweigend umzudeuten.
+
 ### P04.06 Galaxie, Sektoren und Birth Clusters
 
 - **[RESEARCH] P04.06.01 Birth Cluster Allocation**
