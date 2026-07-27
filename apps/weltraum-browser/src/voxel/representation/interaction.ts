@@ -91,14 +91,14 @@ export const resolveProxyInteraction = (value: Readonly<{
   authorityWorkBudget: number;
   priority: number;
 }>): ProxyInteractionResult => {
-  if (value.authorityCoordinates === null) {
-    return deepFreeze({ status: "NOT_READY", authorityCoordinates: null, authorityRequest: null, code: "AuthorityCoordinatesMissing" });
-  }
   if (!Number.isSafeInteger(value.requiredAuthorityWork) || value.requiredAuthorityWork < 0 || !Number.isSafeInteger(value.authorityWorkBudget) || value.authorityWorkBudget < 0) {
     return representationFail("InvalidContract", "interaction/budget", "Authority work and budget must be non-negative safe integers.");
   }
   if (value.requiredAuthorityWork > REPRESENTATION_MAX_WORK_UNITS || value.authorityWorkBudget > REPRESENTATION_MAX_WORK_UNITS) {
     return representationFail("InvalidContract", "interaction/budget", `Authority work and budget cannot exceed ${REPRESENTATION_MAX_WORK_UNITS}.`);
+  }
+  if (value.authorityCoordinates === null) {
+    return deepFreeze({ status: "NOT_READY", authorityCoordinates: null, authorityRequest: null, code: "AuthorityCoordinatesMissing" });
   }
   const coordinates = copyQuantumPoint(value.authorityCoordinates);
   const request = createHardAuthorityRequirement({

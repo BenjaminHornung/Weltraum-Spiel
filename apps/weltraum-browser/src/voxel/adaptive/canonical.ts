@@ -351,17 +351,23 @@ export interface AdaptiveValidatedRefinementRequest {
   readonly count: number;
 }
 
-const validateRefinementRequest = (value: AdaptiveRefinementRequest, index: number): AdaptiveValidatedRefinementRequest => {
-  const path = `snapshot/refinementRequests/${index}`;
+export const validateAdaptiveRefinementRequest = (
+  value: AdaptiveRefinementRequest,
+  index: number,
+  pathRoot = "snapshot/refinementRequests"
+): AdaptiveValidatedRefinementRequest => {
+  const path = `${pathRoot}/${index}`;
   const record = requirePlainRecord(value, path);
   const optionalDeadline = Object.hasOwn(record, "deadlinePlanningEpoch") ? ["deadlinePlanningEpoch"] : [];
   requireExactKeys(record, ["requestId", "region", "targetLevel", "reason", "requiredForCoverage", ...optionalDeadline, "priority"], path);
   const requestId = stableAuthorityId(value.requestId, `${path}/requestId`);
-  const targetLevel = adaptiveLevel(value.targetLevel);
+  const targetLevel = adaptiveLevel(value.targetLevel, `${path}/targetLevel`);
   if (!refinementReasons.has(value.reason)) return fail("InvalidPlannerInput", `${path}/reason`, "Unsupported refinement reason.");
   if (typeof value.requiredForCoverage !== "boolean") return fail("InvalidPlannerInput", `${path}/requiredForCoverage`, "Coverage requirement must be boolean.");
   if (!Number.isFinite(value.priority)) return fail("InvalidPlannerInput", `${path}/priority`, "Priority must be finite.");
-  const deadlinePlanningEpoch = value.deadlinePlanningEpoch === undefined ? undefined : adaptivePlanningEpoch(value.deadlinePlanningEpoch);
+  const deadlinePlanningEpoch = value.deadlinePlanningEpoch === undefined
+    ? undefined
+    : adaptivePlanningEpoch(value.deadlinePlanningEpoch, `${path}/deadlinePlanningEpoch`);
   const regionRecord = requirePlainRecord(value.region, `${path}/region`);
   const extent = brickExtentQuantumForLevel(targetLevel);
   let bounds: QuantumBounds;
@@ -499,7 +505,7 @@ export const validateAdaptivePlannerSnapshotSemantics = (
       "snapshot/refinementRequests",
       ADAPTIVE_MAX_REFINEMENT_REQUESTS
     ) as readonly AdaptiveRefinementRequest[]
-  ).map(validateRefinementRequest);
+  ).map((value, index) => validateAdaptiveRefinementRequest(value, index));
   const requestIds = new Set<string>();
   for (const { request } of refinementRequests) {
     if (requestIds.has(request.requestId)) return fail("InvalidPlannerInput", "snapshot/refinementRequests", "Duplicate request IDs are rejected.");

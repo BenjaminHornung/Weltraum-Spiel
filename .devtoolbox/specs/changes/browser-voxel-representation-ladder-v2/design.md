@@ -91,8 +91,10 @@ The accepted result contains separate `renderSelection`,
 `readiness`, `evictionEligibility`, `decisionReasons`, and `decisionHash`.
 Graphics policy filters only render products and render budgets. Interaction
 and Structural requirements are computed independently and remain identical
-for Low and Ultra. Any required budget failure returns one typed, side-effect-
-empty rejected result rather than partial acceptance.
+for Low and Ultra. Selection reuses the Adaptive request validator, preserves
+supported soft requests, and routes only hard interaction reasons through the
+L4 requirement factory. Any required budget failure returns one typed,
+side-effect-empty rejected result rather than partial acceptance.
 
 ### Interaction pins and lifecycle
 

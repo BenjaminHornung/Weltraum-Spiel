@@ -37,9 +37,9 @@ export const fail = (code: AdaptiveAuthorityErrorCode, path: string, message: st
   throw new AdaptiveAuthorityError(code, path, message);
 };
 
-export const adaptiveLevel = (value: number): AdaptiveLevel => {
+export const adaptiveLevel = (value: number, path = "level"): AdaptiveLevel => {
   if (!Number.isSafeInteger(value) || Object.is(value, -0) || value < 0 || value > 4) {
-    return fail("InvalidLevel", "level", "Adaptive level must be one of the integers 0, 1, 2, 3, or 4.");
+    return fail("InvalidLevel", path, "Adaptive level must be one of the integers 0, 1, 2, 3, or 4.");
   }
   return value as AdaptiveLevel;
 };
@@ -64,8 +64,8 @@ export const authorityRevision = (value: number): AuthorityRevision =>
   nonNegativeSafeInteger(value, "revision") as AuthorityRevision;
 
 export const adaptiveBrickRevision = authorityRevision;
-export const adaptivePlanningEpoch = (value: number): AdaptivePlanningEpoch =>
-  nonNegativeSafeInteger(value, "planningEpoch") as AdaptivePlanningEpoch;
+export const adaptivePlanningEpoch = (value: number, path = "planningEpoch"): AdaptivePlanningEpoch =>
+  nonNegativeSafeInteger(value, path) as AdaptivePlanningEpoch;
 export const adaptiveEditRevision = authorityRevision;
 
 export const editSequence = (value: number): EditSequence => {

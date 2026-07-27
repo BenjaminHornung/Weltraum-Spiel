@@ -102,7 +102,8 @@ An accepted outcome shall expose `renderSelection`, `simulationRequirements`,
 `requiredAuthorityRequests`, `fallbackDecision`, `readiness`,
 `evictionEligibility`, `decisionReasons`, and `decisionHash` separately. A
 rejected outcome shall be typed and side-effect empty. Simulation shall never be
-derived from render selection.
+derived from render selection. Selection shall validate and preserve supported
+soft Adaptive requests; hard interaction reasons shall still resolve to L4.
 
 ### Scenario: Coarse render with fine Authority
 

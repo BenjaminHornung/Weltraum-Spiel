@@ -1,12 +1,19 @@
-import { compareCanonicalCodeUnits, deepFreeze, hashAdaptiveCanonical } from "../adaptive";
+import {
+  compareCanonicalCodeUnits,
+  deepFreeze,
+  hashAdaptiveCanonical,
+  validateAdaptiveRefinementRequest
+} from "../adaptive";
 import { validateRepresentationLadderDescriptor } from "./descriptor";
 import { createHardAuthorityRequirement } from "./interaction";
 import { validateVoxelQualityPolicy } from "./policy";
 import {
   REPRESENTATION_DECISION_SCHEMA_VERSION,
+  HARD_ADAPTIVE_REFINEMENT_REASONS,
   REPRESENTATION_MAX_ACTIVE_PINS,
   REPRESENTATION_MAX_SELECTION_CANDIDATES,
   type EvictionEligibility,
+  type HardAdaptiveRefinementReason,
   type RepresentationBand,
   type RepresentationCandidate,
   type RepresentationSelectionInput,
@@ -27,6 +34,8 @@ import {
   representationRecord,
   representationString
 } from "./validation";
+
+const hardAuthorityReasons = new Set<string>(HARD_ADAPTIVE_REFINEMENT_REASONS);
 
 const point = (value: unknown, path: string) => {
   const record = representationRecord(value, path);
@@ -169,11 +178,16 @@ export const selectRepresentation = (input: RepresentationSelectionInput): Repre
   const simulationRequirements = deepFreeze(rawSimulationRequirements
     .map((entry, index) => representationString(entry, `selection/simulationRequirements/${index}`)).sort(compareCanonicalCodeUnits));
   const authorityRequests = rawAuthorityRequests
-    .map((entry) => {
-      const request = entry as RepresentationSelectionInput["requiredAuthorityRequests"][number];
+    .map((entry, index) => {
+      const request = validateAdaptiveRefinementRequest(
+        entry as RepresentationSelectionInput["requiredAuthorityRequests"][number],
+        index,
+        "selection/requiredAuthorityRequests"
+      ).request;
+      if (!hardAuthorityReasons.has(request.reason)) return request;
       return createHardAuthorityRequirement({
         requestId: request.requestId,
-        reason: request.reason as never,
+        reason: request.reason as HardAdaptiveRefinementReason,
         region: request.region,
         deadlinePlanningEpoch: request.deadlinePlanningEpoch,
         priority: request.priority

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { adaptiveLevel, adaptivePlanningEpoch, brickExtentQuantumForLevel, globalQuantumCoordinate, isDeepFrozen } from "../../src/voxel/adaptive";
+import { adaptiveLevel, adaptivePlanningEpoch, brickExtentQuantumForLevel, globalQuantumCoordinate, isDeepFrozen, stableAuthorityId } from "../../src/voxel/adaptive";
 import {
   HARD_ADAPTIVE_REFINEMENT_REASONS,
   REPRESENTATION_LADDER_SCHEMA_VERSION,
@@ -183,6 +183,35 @@ describe("voxel representation SSE and selection", () => {
     expect(isDeepFrozen(lowResult)).toBe(true);
   });
 
+  it("validates and preserves soft Adaptive requests in selection", () => {
+    const softRequest = (reason: "Inspection" | "PlayerProximity", requestId: string) => ({
+      requestId: stableAuthorityId(requestId),
+      region: {
+        kind: "sphere" as const,
+        center: { x: globalQuantumCoordinate(1), y: globalQuantumCoordinate(2), z: globalQuantumCoordinate(3) },
+        radiusQuantum: globalQuantumCoordinate(2)
+      },
+      targetLevel: adaptiveLevel(2),
+      reason,
+      requiredForCoverage: false,
+      deadlinePlanningEpoch: adaptivePlanningEpoch(9),
+      priority: 3
+    });
+    const inspection = softRequest("Inspection", "request.soft.inspection");
+    const proximity = softRequest("PlayerProximity", "request.soft.proximity");
+    const result = selectRepresentation({
+      ...baseInput(100),
+      requiredAuthorityRequests: [proximity, inspection]
+    });
+
+    expect(result.status).toBe("Accepted");
+    expect(result.requiredAuthorityRequests).toEqual([inspection, proximity]);
+    expect(result.requiredAuthorityRequests.every((request) => request.targetLevel === adaptiveLevel(2))).toBe(true);
+    expect(isDeepFrozen(result.requiredAuthorityRequests)).toBe(true);
+    (inspection as { priority: number }).priority = 99;
+    expect(result.requiredAuthorityRequests[0].priority).toBe(3);
+  });
+
   it("preserves Adaptive request deadlines in published requirements and decision hashes", () => {
     const requirement = (deadlinePlanningEpoch: number) => createHardAuthorityRequirement({
       requestId: "request.deadline",
@@ -203,10 +232,45 @@ describe("voxel representation SSE and selection", () => {
     expect(earlier.requiredAuthorityRequests[0].deadlinePlanningEpoch).toBe(7);
     expect(later.requiredAuthorityRequests[0].deadlinePlanningEpoch).toBe(8);
     expect(later.decisionHash).not.toBe(earlier.decisionHash);
-    expect(() => selectRepresentation({
+    let deadlineError: unknown;
+    try {
+      selectRepresentation({
+        ...baseInput(100),
+        requiredAuthorityRequests: [{ ...requirement(7), deadlinePlanningEpoch: Number.NaN as never }]
+      });
+    } catch (error) {
+      deadlineError = error;
+    }
+    expect(deadlineError).toMatchObject({ path: "selection/requiredAuthorityRequests/0/deadlinePlanningEpoch" });
+  });
+
+  it("validates request levels at selection ingress and still raises hard reasons to L4", () => {
+    const requirement = createHardAuthorityRequirement({
+      requestId: "request.hard-level",
+      reason: "ProjectileImpact",
+      region: {
+        kind: "sphere",
+        center: { x: globalQuantumCoordinate(0), y: globalQuantumCoordinate(0), z: globalQuantumCoordinate(0) },
+        radiusQuantum: globalQuantumCoordinate(1)
+      },
+      priority: 10
+    });
+    let levelError: unknown;
+    try {
+      selectRepresentation({
+        ...baseInput(100),
+        requiredAuthorityRequests: [{ ...requirement, targetLevel: 5 as never }]
+      });
+    } catch (error) {
+      levelError = error;
+    }
+    expect(levelError).toMatchObject({ path: "selection/requiredAuthorityRequests/0/targetLevel" });
+
+    const accepted = selectRepresentation({
       ...baseInput(100),
-      requiredAuthorityRequests: [{ ...requirement(7), deadlinePlanningEpoch: Number.NaN as never }]
-    })).toThrow();
+      requiredAuthorityRequests: [{ ...requirement, targetLevel: adaptiveLevel(2) }]
+    });
+    expect(accepted.requiredAuthorityRequests[0].targetLevel).toBe(adaptiveLevel(4));
   });
 
   it("rejects duplicate Authority request IDs before publication", () => {
@@ -363,6 +427,22 @@ describe("voxel representation hard pins, interaction, and lifecycle", () => {
       ...common, authorityCoordinates: coordinates, hasLevel4Coverage: true,
       authorityWorkBudget: REPRESENTATION_MAX_WORK_UNITS + 1
     })).toThrow();
+  });
+
+  it("validates proxy work budgets before returning missing-coordinate retry state", () => {
+    const common = {
+      requestId: "request.missing-coordinates",
+      reason: "ToolInteraction" as const,
+      authorityCoordinates: null,
+      hasLevel4Coverage: false,
+      requiredAuthorityWork: 10,
+      authorityWorkBudget: 10,
+      priority: 5
+    };
+    for (const invalid of [-1, 0.5, Number.NaN, Number.POSITIVE_INFINITY, REPRESENTATION_MAX_WORK_UNITS + 1]) {
+      expect(() => resolveProxyInteraction({ ...common, requiredAuthorityWork: invalid })).toThrow();
+      expect(() => resolveProxyInteraction({ ...common, authorityWorkBudget: invalid })).toThrow();
+    }
   });
 
   it("retains dirty/solving/rigid/unsettled/solve/handoff products and releases only explicit unpinned Settled products", () => {

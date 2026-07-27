@@ -78,7 +78,7 @@ preflight exist.
     Plannotator gate pass with no valid findings.
   - Evidence: test findings, reviewer report, DevToolbox results, human approval.
 
-- [x] 6.2 Publish an exact-head open PR without merge.
+- [ ] 6.2 Publish an exact-head open PR without merge.
   - Acceptance: clean logical commit(s) prefixed `#WELTRAUM-000`; re-fetch and
     merge current `origin/main` normally if it advanced; full reverify after a
     merge; push without force; PR title/body contract met; current-head CI,

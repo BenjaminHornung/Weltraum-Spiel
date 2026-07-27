@@ -2,9 +2,10 @@
 
 ## Status
 
-Implementation, local technical verification, linked DevToolbox verification
-and completion preflights, final human review, and exact-head publication checks
-are complete. PR #53 remains open and unmerged as required.
+Implementation and the latest local technical verification are complete. The
+linked DevToolbox completion preflight, final human review, updated publication
+commit, and new exact-head CI/Codex-review round remain pending. PR #53 remains
+open and unmerged as required.
 
 ## Baseline
 
@@ -35,19 +36,37 @@ are complete. PR #53 remains open and unmerged as required.
   contradictory eviction eligibility and unknown Authority region kinds reject,
   and all nested/top-level count caps preflight before entry traversal. Focused
   tests, full units, build, ladder E2E, and bounded re-review pass.
+- Exact-head Codex review on `a6ad6cfc2e10d03d126bdad03be0ba815e852d5d`
+  found that valid soft Adaptive requests were discarded and that malformed
+  interaction budgets could return coordinate `NOT_READY` before validation.
+  Selection now validates and defensively copies every Adaptive request,
+  preserves soft requests, and promotes only hard reasons through the L4 pin
+  factory. Interaction budget fields now validate before the missing-coordinate
+  return. The focused 36-test set and bounded technical re-review pass.
+- Bounded review also required exact indexed validation paths plus explicit
+  defensive-copy and non-L4 hard-request promotion coverage. Optional path
+  parameters preserve the existing standalone validator API while the canonical
+  request boundary supplies indexed target/deadline paths. The added regressions
+  pass and re-review found no correctness or maintainability regression.
+- The original execution `1df0c32f9b164594b596278a52147746` became
+  technically unusable when its persisted history JSON was left empty/malformed
+  after a timed-out synchronous verification call. In accordance with the
+  recovery exception, one replacement execution
+  `a3d3d5d4c13c4c96a75c2424eba63d87` was created for the remaining verification
+  and publication round; no per-task or per-review executions were created.
 
 ## Final matrix
 
 | Gate | Status | Evidence |
 | --- | --- | --- |
 | Node 22 / npm ci | PASS | Node 22.23.1; 59 packages installed; audit found 0 vulnerabilities. |
-| Focused representation units | PASS | Four files run separately; 30 tests. Combined six-file ladder/settings run after final review fix: 46 tests. |
+| Focused representation units | PASS | Latest Adaptive/selection run: 2 files / 36 tests, including soft-request preservation, defensive-copy, hard-L4 promotion, exact validation paths, and pre-coordinate budget rejection. |
 | Settings and Authority regressions | PASS | Settings: 36 tests; Adaptive/Structural regression set: 72 tests. |
-| Full unit / production build | PASS | Final post-gate Vitest: 141 files / 1,378 tests; TypeScript and Vite build passed. Existing npm-config and chunk-size warnings are non-blocking. |
+| Full unit / production build | PASS | Latest Vitest: 141 files / 1,381 tests; TypeScript and Vite build passed. Existing npm-config and chunk-size warnings are non-blocking. |
 | Focused E2E twice / byte identity | PASS | 1/1 twice, one worker, retries zero. SHA-256 JSON `38AA1A81BB35B02A131AB46FC079731651A540AF967CD84A947B8C5089BF1814`; Markdown `604BDC6D413FDD247E2AA4F79A6714870740922EA824DE62B61E9BB8342131A5`. |
-| Core / live / UI E2E | PASS | Node-22 reruns: core 41/41, live 14/14, UI 12/12. |
-| Static, scope, secret, lockfile scans | PASS | Inventory exact once in core; evidence parsed and volatile scan passed; diff/secret/import/nondeterminism/scope scans passed; no Unity, lockfile, workflow, Playwright-config, Adaptive source, or Structural source changes. |
-| DevToolbox verification/preflight | PASS | Operation `08b4eb9e2c1a4bb5968a9fa730052c30`: Specs/Test passed and Build passed with known warnings; completion preflight `45081271397d4e5e92154c396aba3735` passed. Fresh Build rerun operation `1c43f5734ffe45c2855278433e290120` also passed with only the same known warnings. |
-| Technical review | PASS | Earlier findings were fixed; the bounded follow-up review confirmed all three runtime Codex findings and fallback cap ordering resolved with no remaining actionable finding. |
-| Final Plannotator review | PASS | The approved exact full patch was mirrored into a temporary in-workspace review worktree because the gate rejects sibling paths. Source and mirror matched stable patch ID `edd58a7a0b0d4602c420ab35aab87918d489d7a8`; the human gate approved without feedback, the mirror was removed, and post-gate unit/build/E2E/hash checks passed on the unchanged source patch. |
-| Exact-head CI and Codex review | PASS | Head `17a0c6c06d0fd1ce8ead86f2261fbdd5987943d6`: Browser Mainline CI run `30295885465` passed in 26m10s; Repository Policy, Dependency Review, Current head reviewed, and Codex Review / current head passed; all valid review threads are resolved. PR #53 remains open, non-draft, mergeable, and unmerged. Task 6.2 completion preflight `4b97983ed90d407a8a46cc8ba5dcdd4a` passed. |
+| Core / live / UI E2E | PASS | Latest Node-22, one-worker, zero-retry runs: core 41/41, live 14/14, UI 12/12. |
+| Static, scope, secret, lockfile scans | PASS | Inventory exact once in core; evidence parsed and volatile scan passed; diff/secret/import/nondeterminism/scope scans passed; no Unity, lockfile, workflow, or Playwright-config changes. Adaptive changes are limited to reusable validation paths; Structural source remains unchanged. |
+| DevToolbox verification/preflight | PASS | Recovery execution `a3d3d5d4c13c4c96a75c2424eba63d87` operation `d9046704925b4f518f490dc1f1a678eb` completed 3 steps with 2 pass, 1 known-warning build, 0 fail, and 0 skip. Task 6.1 completion preflight `712e4c2e89784effb17c56944c3c1ee4` passed. Earlier operations `08b4eb9e2c1a4bb5968a9fa730052c30` and `1c43f5734ffe45c2855278433e290120` passed before the original execution became unreadable. |
+| Technical review | PASS | The bounded re-review found the two latest Codex fixes and the path/copy/promotion follow-up clean, with no correctness, API, or R1-R6/T1-T6 maintainability regression. |
+| Final Plannotator review | PENDING | The prior approval covered head `a6ad6cfc2e10d03d126bdad03be0ba815e852d5d`; the new code/doc/test patch requires a fresh final gate. |
+| Exact-head CI and Codex review | PENDING | The updated patch is not committed or pushed yet. Comments `3660076342` and `3660304384` remain open until the fixed head is published and reviewed. |

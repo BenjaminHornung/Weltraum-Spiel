@@ -132,8 +132,10 @@ An accepted decision publishes separate:
 Graphics quality filters visual products and visual budgets only. The same
 authority and Structural inputs therefore retain the same interaction and
 simulation requirements under Low and Ultra even when their render choices
-differ. A rejected selection is typed and whole-result empty; no partial
-selection, authority edit, or settled coverage is published.
+differ. Selection validates and preserves supported soft Adaptive requests;
+only hard interaction reasons are rebuilt through the L4 requirement factory.
+A rejected selection is typed and whole-result empty; no partial selection,
+authority edit, or settled coverage is published.
 
 ## Interaction pins and no coarse edits
 
