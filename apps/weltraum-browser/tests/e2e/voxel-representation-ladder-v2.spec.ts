@@ -190,7 +190,7 @@ test("normal Chromium route deterministically proves voxel representation ladder
         priorBandId: null,
         simulationRequirements: ["AdaptiveAuthorityCurrent", "StructuralAuthorityCurrent"],
         requiredAuthorityRequests: [hardRequest],
-        fallbackDecision: null,
+        fallbackGroup: null,
         readiness: ["DescriptorReady", "SourcesCurrent"],
         evictionEligibility: eviction
       } as const;

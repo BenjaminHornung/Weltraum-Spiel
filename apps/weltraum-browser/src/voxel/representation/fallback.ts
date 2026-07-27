@@ -7,6 +7,7 @@ import {
 } from "./types";
 import {
   deepFreeze,
+  representationArrayLengthPreflight,
   representationDenseArray,
   representationExactKeys,
   representationFail,
@@ -20,7 +21,11 @@ const readinessValues = new Set(["Ready", "Stale", "Invalid", "Cancelled", "Inco
 const fallbackGroup = (value: unknown, path: string): AtomicFallbackGroup => {
   const record = representationRecord(value, path);
   representationExactKeys(record, ["groupId", "parentId", "revision", "requiredChildIds", "children"], path);
-  const requiredChildIds = representationDenseArray(record.requiredChildIds, `${path}/requiredChildIds`, REPRESENTATION_MAX_FALLBACK_CHILDREN)
+  representationArrayLengthPreflight(record.requiredChildIds, `${path}/requiredChildIds`, REPRESENTATION_MAX_FALLBACK_CHILDREN);
+  representationArrayLengthPreflight(record.children, `${path}/children`, REPRESENTATION_MAX_FALLBACK_CHILDREN);
+  const rawRequiredChildIds = representationDenseArray(record.requiredChildIds, `${path}/requiredChildIds`, REPRESENTATION_MAX_FALLBACK_CHILDREN);
+  const rawChildren = representationDenseArray(record.children, `${path}/children`, REPRESENTATION_MAX_FALLBACK_CHILDREN);
+  const requiredChildIds = rawRequiredChildIds
     .map((entry, index) => representationId(entry, `${path}/requiredChildIds/${index}`))
     .sort(compareCanonicalCodeUnits);
   if (requiredChildIds.length < 1) {
@@ -31,7 +36,7 @@ const fallbackGroup = (value: unknown, path: string): AtomicFallbackGroup => {
       return representationFail("InvalidFallback", `${path}/requiredChildIds`, "Required fallback child IDs must be unique.");
     }
   }
-  const children = representationDenseArray(record.children, `${path}/children`, REPRESENTATION_MAX_FALLBACK_CHILDREN).map((entry, index) => {
+  const children = rawChildren.map((entry, index) => {
     const childPath = `${path}/children/${index}`;
     const child = representationRecord(entry, childPath);
     representationExactKeys(child, ["childId", "revision", "readiness"], childPath);

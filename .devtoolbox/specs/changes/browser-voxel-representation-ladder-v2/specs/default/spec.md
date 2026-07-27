@@ -142,7 +142,9 @@ derived, then derived products may be released while source bindings remain.
 A complete parent shall remain active for zero, partial, stale, invalid,
 cancelled, incomplete, or mixed-revision children. Only all required current
 same-revision children replace it atomically; mixed parent/fine settled coverage
-shall never be published.
+shall never be published. Selection shall derive its fallback decision from the
+raw bounded group through the atomic resolver rather than accept a caller-built
+decision.
 
 ### Scenario: Sixty-three of sixty-four
 

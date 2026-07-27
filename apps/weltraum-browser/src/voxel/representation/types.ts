@@ -176,7 +176,7 @@ export interface RepresentationSelectionInput {
   readonly priorBandId: string | null;
   readonly simulationRequirements: readonly string[];
   readonly requiredAuthorityRequests: readonly AdaptiveRefinementRequest[];
-  readonly fallbackDecision: AtomicFallbackDecision | null;
+  readonly fallbackGroup: AtomicFallbackGroup | null;
   readonly readiness: readonly string[];
   readonly evictionEligibility: EvictionEligibility;
 }

@@ -41,6 +41,9 @@ const copyRegion = (region: AdaptiveRefinementRegion): AdaptiveRefinementRegion 
     }
     return deepFreeze({ kind: "aabb", bounds });
   }
+  if ((region as { readonly kind?: unknown }).kind !== "sphere") {
+    return representationFail("InvalidContract", "region/kind", "Unsupported hard Authority region kind.");
+  }
   const center = deepFreeze({
     x: globalQuantumCoordinate(region.center.x, "region/center/x"),
     y: globalQuantumCoordinate(region.center.y, "region/center/y"),

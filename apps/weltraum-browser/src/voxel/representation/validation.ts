@@ -54,6 +54,17 @@ export const representationRecord = (value: unknown, path: string): Record<strin
 export const representationExactKeys = (record: Record<string, unknown>, keys: readonly string[], path: string): void =>
   fromAdaptive(() => requireExactKeys(record, keys, path));
 
+export const representationArrayLengthPreflight = (value: unknown, path: string, maximumLength: number): void => {
+  if (!Array.isArray(value)) return representationFail("InvalidContract", path, "Expected an array.");
+  const lengthDescriptor = Object.getOwnPropertyDescriptor(value, "length");
+  if (lengthDescriptor === undefined || !("value" in lengthDescriptor) || !Number.isSafeInteger(lengthDescriptor.value)) {
+    return representationFail("InvalidContract", path, "Array length must be a safe data property.");
+  }
+  if (lengthDescriptor.value > maximumLength) {
+    return representationFail("InvalidContract", path, `Array length ${lengthDescriptor.value} exceeds the finite limit ${maximumLength}.`);
+  }
+};
+
 export const representationDenseArray = (value: unknown, path: string, maximumLength: number): readonly unknown[] =>
   fromAdaptive(() => requireDenseDataPropertyArray(value, path, "InvalidCanonicalValue", { maximumLength }));
 

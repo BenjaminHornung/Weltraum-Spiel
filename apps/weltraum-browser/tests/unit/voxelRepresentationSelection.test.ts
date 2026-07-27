@@ -4,6 +4,7 @@ import {
   HARD_ADAPTIVE_REFINEMENT_REASONS,
   REPRESENTATION_LADDER_SCHEMA_VERSION,
   REPRESENTATION_MAX_ACTIVE_PINS,
+  REPRESENTATION_MAX_FALLBACK_CHILDREN,
   REPRESENTATION_MAX_SELECTION_CANDIDATES,
   REPRESENTATION_MAX_WORK_UNITS,
   computeScreenSpaceError,
@@ -63,7 +64,7 @@ const baseInput = (distance: number, reverse = false) => {
     priorBandId: null,
     simulationRequirements: ["StructuralSourceCurrent"],
     requiredAuthorityRequests: [],
-    fallbackDecision: null,
+    fallbackGroup: null,
     readiness: ["DescriptorReady"],
     evictionEligibility: deriveEvictionEligibility({ structuralState: "Settled", activePins: [] })
   } as const;
@@ -127,15 +128,28 @@ describe("voxel representation SSE and selection", () => {
     expect(() => selectRepresentation({ ...input, priorBandId: 7 as never })).toThrow();
   });
 
-  it("requires direct child fallback decisions to be unique and canonically ordered", () => {
+  it("derives fallback decisions only from complete revision-current groups", () => {
     const input = baseInput(125);
-    const fallback = {
-      groupId: "fallback.group", settledCoverage: "Children" as const, parentId: null,
-      childIds: ["child.a", "child.b"], reason: "AllRequiredCurrentChildrenReady"
+    const fallbackGroup = {
+      groupId: "fallback.group", parentId: "parent", revision: 7,
+      requiredChildIds: ["child.a", "child.b"],
+      children: [
+        { childId: "child.a", revision: 7, readiness: "Ready" as const },
+        { childId: "child.b", revision: 7, readiness: "Ready" as const }
+      ]
     };
-    expect(selectRepresentation({ ...input, fallbackDecision: fallback })).toMatchObject({ fallbackDecision: fallback });
-    expect(() => selectRepresentation({ ...input, fallbackDecision: { ...fallback, childIds: ["child.a", "child.a"] } })).toThrow();
-    expect(() => selectRepresentation({ ...input, fallbackDecision: { ...fallback, childIds: ["child.b", "child.a"] } })).toThrow();
+    expect(selectRepresentation({ ...input, fallbackGroup })).toMatchObject({
+      fallbackDecision: {
+        groupId: "fallback.group", settledCoverage: "Children", parentId: null,
+        childIds: ["child.a", "child.b"], reason: "AllRequiredCurrentChildrenReady"
+      }
+    });
+    expect(selectRepresentation({ ...input, fallbackGroup: { ...fallbackGroup, children: fallbackGroup.children.slice(0, 1) } })).toMatchObject({
+      fallbackDecision: {
+        groupId: "fallback.group", settledCoverage: "Parent", parentId: "parent",
+        childIds: [], reason: "ParentRetainedUntilAtomicReplacement"
+      }
+    });
   });
 
   it("culls deterministically with its separate distance/projected-bounds thresholds", () => {
@@ -233,6 +247,22 @@ describe("voxel representation SSE and selection", () => {
     expect(() => selectRepresentation({ ...input, candidates: overCap })).toThrow();
     expect(reads).toBe(0);
 
+    let descriptorReads = 0;
+    const descriptor = { ...input.descriptor };
+    Object.defineProperty(descriptor, "bands", { enumerable: true, get: () => { descriptorReads += 1; throw new Error("must not read"); } });
+    expect(() => selectRepresentation({
+      ...input,
+      descriptor,
+      fallbackGroup: {
+        groupId: "fallback.over-cap",
+        parentId: "parent",
+        revision: 1,
+        requiredChildIds: Array.from({ length: REPRESENTATION_MAX_FALLBACK_CHILDREN + 1 }, (_, index) => `child.${index}`),
+        children: []
+      }
+    })).toThrow();
+    expect(descriptorReads).toBe(0);
+
     const expensiveDescriptor = createRepresentationLadderDescriptor({
       schemaVersion: REPRESENTATION_LADDER_SCHEMA_VERSION,
       descriptorId: "selection.expensive-ladder.v2",
@@ -293,6 +323,19 @@ describe("voxel representation hard pins, interaction, and lifecycle", () => {
     expect(() => requirement(1)).toThrow();
   });
 
+  it("rejects unknown hard Authority region kinds instead of treating them as spheres", () => {
+    expect(() => createHardAuthorityRequirement({
+      requestId: "request.unknown-region",
+      reason: "CollisionRequired",
+      region: {
+        kind: "tile",
+        center: { x: globalQuantumCoordinate(0), y: globalQuantumCoordinate(0), z: globalQuantumCoordinate(0) },
+        radiusQuantum: globalQuantumCoordinate(1)
+      } as never,
+      priority: 1
+    })).toThrow();
+  });
+
   it("never emits coarse or partial edits when proxy Authority coordinates, coverage, or budget are unavailable", () => {
     const common = { requestId: "request.tool", reason: "ToolInteraction" as const, requiredAuthorityWork: 10, authorityWorkBudget: 10, priority: 5 };
     const missing = resolveProxyInteraction({ ...common, authorityCoordinates: null, hasLevel4Coverage: false });
@@ -331,6 +374,10 @@ describe("voxel representation hard pins, interaction, and lifecycle", () => {
     const settled = deriveEvictionEligibility({ structuralState: "Settled", activePins: [] });
     expect(settled.derivedProductsEvictable).toBe(true);
     expect(settled.retainedSourceBindings).toEqual(["AdaptiveAuthority", "EditJournal", "StructuralAuthority"]);
+    expect(() => selectRepresentation({
+      ...baseInput(100),
+      evictionEligibility: { ...settled, reasons: ["StructuralDirty"] }
+    })).toThrow();
   });
 
   it("rejects active lifecycle pins above the finite cap before reading entries", () => {

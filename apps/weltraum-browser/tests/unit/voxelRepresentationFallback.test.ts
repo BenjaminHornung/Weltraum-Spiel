@@ -57,6 +57,21 @@ describe("voxel representation atomic fallback", () => {
       ...group(0),
       requiredChildIds: Array.from({ length: REPRESENTATION_MAX_FALLBACK_CHILDREN + 1 }, (_, index) => `child.${index}`)
     })).toThrow();
+    let requiredChildReads = 0;
+    const requiredChildIds = ["child.00"];
+    Object.defineProperty(requiredChildIds, "0", { enumerable: true, get: () => { requiredChildReads += 1; throw new Error("must not read"); } });
+    let capError: unknown;
+    try {
+      resolveAtomicFallback({
+        ...group(0),
+        requiredChildIds,
+        children: Array.from({ length: REPRESENTATION_MAX_FALLBACK_CHILDREN + 1 }, () => children(1)[0])
+      });
+    } catch (error) {
+      capError = error;
+    }
+    expect(capError).toMatchObject({ path: "fallback/children" });
+    expect(requiredChildReads).toBe(0);
     expect(() => resolveAtomicFallbackGroups(Array.from({ length: REPRESENTATION_MAX_FALLBACK_GROUPS + 1 }, () => group(0)))).toThrow();
   });
 

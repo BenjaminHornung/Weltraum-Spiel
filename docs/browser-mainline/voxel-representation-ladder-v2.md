@@ -169,7 +169,9 @@ Fallback groups are bounded and revision-bound. Each group declares the exact
 canonical child IDs required for complete replacement. A complete parent remains the
 sole settled coverage for zero, partial, stale, invalid, cancelled,
 incomplete, or mixed-revision children. Parent and partial children are never
-published as mixed settled coverage. Only all required children that are
+published as mixed settled coverage. Selection receives the raw fallback group
+and derives the published decision through the atomic resolver; direct caller-
+built child-coverage decisions are not accepted. Only all required children that are
 current, ready, and at the exact group revision replace the parent in one
 atomic decision. The contract proves the required 64-child transition, while
 the helper remains count-driven within the finite child cap.

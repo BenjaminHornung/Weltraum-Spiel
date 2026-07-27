@@ -5,9 +5,7 @@ import { validateVoxelQualityPolicy } from "./policy";
 import {
   REPRESENTATION_DECISION_SCHEMA_VERSION,
   REPRESENTATION_MAX_ACTIVE_PINS,
-  REPRESENTATION_MAX_FALLBACK_CHILDREN,
   REPRESENTATION_MAX_SELECTION_CANDIDATES,
-  type AtomicFallbackDecision,
   type EvictionEligibility,
   type RepresentationBand,
   type RepresentationCandidate,
@@ -17,7 +15,9 @@ import {
   type ScreenSpaceErrorInput,
   type ScreenSpaceErrorResult
 } from "./types";
+import { resolveAtomicFallback } from "./fallback";
 import {
+  representationArrayLengthPreflight,
   representationDenseArray,
   representationExactKeys,
   representationFail,
@@ -89,29 +89,6 @@ const validateCandidates = (
   return deepFreeze(candidates);
 };
 
-const copyFallbackDecision = (value: AtomicFallbackDecision | null): AtomicFallbackDecision | null => {
-  if (value === null) return null;
-  const record = representationRecord(value, "selection/fallbackDecision");
-  representationExactKeys(record, ["groupId", "settledCoverage", "parentId", "childIds", "reason"], "selection/fallbackDecision");
-  const groupId = representationId(record.groupId, "selection/fallbackDecision/groupId");
-  const reason = representationString(record.reason, "selection/fallbackDecision/reason");
-  const childIds = representationDenseArray(record.childIds, "selection/fallbackDecision/childIds", REPRESENTATION_MAX_FALLBACK_CHILDREN)
-    .map((entry, index) => representationId(entry, `selection/fallbackDecision/childIds/${index}`));
-  for (let index = 1; index < childIds.length; index += 1) {
-    const order = compareCanonicalCodeUnits(childIds[index - 1], childIds[index]);
-    if (order === 0) return representationFail("InvalidSelection", "selection/fallbackDecision/childIds", "Fallback child IDs must be unique.");
-    if (order > 0) return representationFail("InvalidSelection", "selection/fallbackDecision/childIds", "Fallback child IDs must use canonical order.");
-  }
-  if (record.settledCoverage === "Parent") {
-    if (typeof record.parentId !== "string" || childIds.length !== 0) return representationFail("InvalidSelection", "selection/fallbackDecision", "Parent fallback cannot publish child coverage.");
-    return deepFreeze({ groupId, settledCoverage: "Parent", parentId: representationId(record.parentId, "selection/fallbackDecision/parentId"), childIds: [] as const, reason });
-  }
-  if (record.settledCoverage !== "Children" || record.parentId !== null || childIds.length === 0) {
-    return representationFail("InvalidSelection", "selection/fallbackDecision", "Child fallback must replace, not mix with, parent coverage.");
-  }
-  return deepFreeze({ groupId, settledCoverage: "Children", parentId: null, childIds: deepFreeze(childIds), reason });
-};
-
 const copyEvictionEligibility = (value: EvictionEligibility): EvictionEligibility => {
   const record = representationRecord(value, "selection/evictionEligibility");
   representationExactKeys(record, ["derivedProductsEvictable", "retainedSourceBindings", "reasons"], "selection/evictionEligibility");
@@ -122,6 +99,9 @@ const copyEvictionEligibility = (value: EvictionEligibility): EvictionEligibilit
   }
   const reasons = representationDenseArray(record.reasons, "selection/evictionEligibility/reasons", REPRESENTATION_MAX_ACTIVE_PINS)
     .map((entry, index) => representationString(entry, `selection/evictionEligibility/reasons/${index}`));
+  if (record.derivedProductsEvictable && reasons.length !== 0) {
+    return representationFail("InvalidSelection", "selection/evictionEligibility", "Evictable derived products cannot retain lifecycle blockers.");
+  }
   return deepFreeze({
     derivedProductsEvictable: record.derivedProductsEvictable,
     retainedSourceBindings: ["AdaptiveAuthority", "EditJournal", "StructuralAuthority"] as const,
@@ -153,7 +133,12 @@ const bandProjection = (input: RepresentationSelectionInput, band: Representatio
   computeScreenSpaceError({ ...input.projection, geometricErrorMeters: band.geometricErrorMeters });
 
 export const selectRepresentation = (input: RepresentationSelectionInput): RepresentationSelectionResult => {
-  // All count caps precede descriptor re-hashing, entry validation, and sorting.
+  // All count caps precede descriptor re-hashing, array entry validation, copying, and sorting.
+  representationArrayLengthPreflight(input.candidates, "selection/candidates", REPRESENTATION_MAX_SELECTION_CANDIDATES);
+  representationArrayLengthPreflight(input.simulationRequirements, "selection/simulationRequirements", REPRESENTATION_MAX_ACTIVE_PINS);
+  representationArrayLengthPreflight(input.requiredAuthorityRequests, "selection/requiredAuthorityRequests", REPRESENTATION_MAX_ACTIVE_PINS);
+  representationArrayLengthPreflight(input.readiness, "selection/readiness", REPRESENTATION_MAX_SELECTION_CANDIDATES);
+  const fallbackDecision = input.fallbackGroup === null ? null : resolveAtomicFallback(input.fallbackGroup);
   const rawCandidates = representationDenseArray(input.candidates, "selection/candidates", REPRESENTATION_MAX_SELECTION_CANDIDATES);
   const rawSimulationRequirements = representationDenseArray(input.simulationRequirements, "selection/simulationRequirements", REPRESENTATION_MAX_ACTIVE_PINS);
   const rawAuthorityRequests = representationDenseArray(input.requiredAuthorityRequests, "selection/requiredAuthorityRequests", REPRESENTATION_MAX_ACTIVE_PINS);
@@ -202,7 +187,6 @@ export const selectRepresentation = (input: RepresentationSelectionInput): Repre
   const requiredAuthorityRequests = deepFreeze(authorityRequests);
   const readiness = deepFreeze(rawReadiness
     .map((entry, index) => representationString(entry, `selection/readiness/${index}`)).sort(compareCanonicalCodeUnits));
-  const fallbackDecision = copyFallbackDecision(input.fallbackDecision);
   const evictionEligibility = copyEvictionEligibility(input.evictionEligibility);
   const cullingProjection = bandProjection(input, descriptor.bands[0]);
   const thresholds = deepFreeze({

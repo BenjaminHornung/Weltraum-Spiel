@@ -116,7 +116,9 @@ Fallback groups are bounded and revision-bound. Zero, partial, stale, invalid,
 cancelled, or incomplete children keep the complete parent. Exactly all
 required current, same-revision children replace the parent atomically. Parent
 and partial children are never published as settled mixed coverage. The helper
-supports the required 64-child vector while staying count-driven.
+supports the required 64-child vector while staying count-driven. Selection
+accepts the raw bounded fallback group and invokes that resolver itself; callers
+cannot publish a hand-built child-coverage decision.
 
 ### Settings V2
 
