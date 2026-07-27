@@ -114,7 +114,11 @@ describe("voxel representation descriptor V2", () => {
       { costs: { ...band(0).costs, estimatedBytes: REPRESENTATION_MAX_ESTIMATED_BYTES + 1 } },
       { costs: { ...band(0).costs, workUnits: REPRESENTATION_MAX_WORK_UNITS + 1 } },
       { costs: { ...band(0).costs, uploadUnits: REPRESENTATION_MAX_UPLOAD_UNITS + 1 } },
-      { coverageBoundsMeters: { min: { x: 0, y: 0, z: 0 }, max: { x: 0, y: 1, z: 1 } } }
+      { coverageBoundsMeters: { min: { x: 0, y: 0, z: 0 }, max: { x: 0, y: 1, z: 1 } } },
+      { coverageBoundsMeters: {
+        min: { x: -Number.MAX_VALUE, y: 0, z: 0 },
+        max: { x: Number.MAX_VALUE, y: 1, z: 1 }
+      } }
     ];
     for (const patch of cases) {
       expect(() => validateRepresentationLadderDescriptor({

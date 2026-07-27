@@ -83,7 +83,14 @@ export const resolveAtomicFallback = (value: unknown): AtomicFallbackDecision =>
       });
 };
 
-export const resolveAtomicFallbackGroups = (value: unknown): readonly AtomicFallbackDecision[] =>
-  deepFreeze(representationDenseArray(value, "fallbackGroups", REPRESENTATION_MAX_FALLBACK_GROUPS)
+export const resolveAtomicFallbackGroups = (value: unknown): readonly AtomicFallbackDecision[] => {
+  const decisions = representationDenseArray(value, "fallbackGroups", REPRESENTATION_MAX_FALLBACK_GROUPS)
     .map((entry) => resolveAtomicFallback(entry))
-    .sort((left, right) => compareCanonicalCodeUnits(left.groupId, right.groupId)));
+    .sort((left, right) => compareCanonicalCodeUnits(left.groupId, right.groupId));
+  for (let index = 1; index < decisions.length; index += 1) {
+    if (decisions[index - 1].groupId === decisions[index].groupId) {
+      return representationFail("InvalidFallback", "fallbackGroups", "Fallback group IDs must be unique.");
+    }
+  }
+  return deepFreeze(decisions);
+};

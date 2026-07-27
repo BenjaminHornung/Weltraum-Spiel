@@ -79,7 +79,8 @@ const coverageBounds = (value: unknown, path: string): RepresentationMeterBounds
   const min = meterPoint(record.min, `${path}/min`);
   const max = meterPoint(record.max, `${path}/max`);
   for (const axis of ["x", "y", "z"] as const) {
-    if (max[axis] <= min[axis]) {
+    const extent = max[axis] - min[axis];
+    if (!Number.isFinite(extent) || extent <= 0) {
       return representationFail("InvalidDescriptor", `${path}/${axis}`, "Coverage bounds must have positive finite extent.");
     }
   }

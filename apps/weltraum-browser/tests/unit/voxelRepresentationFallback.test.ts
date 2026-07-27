@@ -59,4 +59,11 @@ describe("voxel representation atomic fallback", () => {
     })).toThrow();
     expect(() => resolveAtomicFallbackGroups(Array.from({ length: REPRESENTATION_MAX_FALLBACK_GROUPS + 1 }, () => group(0)))).toThrow();
   });
+
+  it("rejects duplicate group IDs before publishing mixed settled coverage", () => {
+    expect(() => resolveAtomicFallbackGroups([
+      group(64),
+      { ...group(0), parentId: "parent.other" }
+    ])).toThrow();
+  });
 });
