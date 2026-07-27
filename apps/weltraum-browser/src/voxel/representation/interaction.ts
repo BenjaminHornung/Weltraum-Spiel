@@ -1,11 +1,13 @@
 import {
   adaptiveLevel,
+  adaptivePlanningEpoch,
   deepFreeze,
   globalQuantumCoordinate,
   stableAuthorityId,
   validateQuantumBounds,
   type AdaptiveRefinementRegion,
   type AdaptiveRefinementRequest,
+  type AdaptivePlanningEpoch,
   type QuantumPoint
 } from "../adaptive";
 import {
@@ -42,15 +44,20 @@ export const createHardAuthorityRequirement = (value: Readonly<{
   requestId: string;
   reason: HardAdaptiveRefinementReason;
   region: AdaptiveRefinementRegion;
+  deadlinePlanningEpoch?: AdaptivePlanningEpoch;
   priority: number;
 }>): AdaptiveRefinementRequest => {
   if (!hardReasons.has(value.reason)) return representationFail("InvalidContract", "requirement/reason", "Reason is not a hard L4 interaction reason.");
+  const deadlinePlanningEpoch = value.deadlinePlanningEpoch === undefined
+    ? undefined
+    : adaptivePlanningEpoch(value.deadlinePlanningEpoch);
   return deepFreeze({
     requestId: stableAuthorityId(value.requestId, "requirement/requestId"),
     reason: value.reason,
     region: copyRegion(value.region),
     targetLevel: adaptiveLevel(4),
     requiredForCoverage: true,
+    ...(deadlinePlanningEpoch === undefined ? {} : { deadlinePlanningEpoch }),
     priority: representationFinite(value.priority, "requirement/priority")
   });
 };

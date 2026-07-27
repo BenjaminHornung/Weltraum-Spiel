@@ -186,7 +186,13 @@ export const selectRepresentation = (input: RepresentationSelectionInput): Repre
   const requiredAuthorityRequests = deepFreeze(rawAuthorityRequests
     .map((entry) => {
       const request = entry as RepresentationSelectionInput["requiredAuthorityRequests"][number];
-      return createHardAuthorityRequirement({ requestId: request.requestId, reason: request.reason as never, region: request.region, priority: request.priority });
+      return createHardAuthorityRequirement({
+        requestId: request.requestId,
+        reason: request.reason as never,
+        region: request.region,
+        deadlinePlanningEpoch: request.deadlinePlanningEpoch,
+        priority: request.priority
+      });
     }).sort((left, right) => compareCanonicalCodeUnits(left.requestId, right.requestId)));
   const readiness = deepFreeze(rawReadiness
     .map((entry, index) => representationString(entry, `selection/readiness/${index}`)).sort(compareCanonicalCodeUnits));

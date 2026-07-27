@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { adaptiveLevel, globalQuantumCoordinate, isDeepFrozen } from "../../src/voxel/adaptive";
+import { adaptiveLevel, adaptivePlanningEpoch, globalQuantumCoordinate, isDeepFrozen } from "../../src/voxel/adaptive";
 import {
   HARD_ADAPTIVE_REFINEMENT_REASONS,
   REPRESENTATION_LADDER_SCHEMA_VERSION,
@@ -167,6 +167,32 @@ describe("voxel representation SSE and selection", () => {
       "evictionEligibility", "decisionReasons", "decisionHash"
     ]));
     expect(isDeepFrozen(lowResult)).toBe(true);
+  });
+
+  it("preserves Adaptive request deadlines in published requirements and decision hashes", () => {
+    const requirement = (deadlinePlanningEpoch: number) => createHardAuthorityRequirement({
+      requestId: "request.deadline",
+      reason: "ProjectileImpact",
+      region: {
+        kind: "sphere",
+        center: { x: globalQuantumCoordinate(0), y: globalQuantumCoordinate(0), z: globalQuantumCoordinate(0) },
+        radiusQuantum: globalQuantumCoordinate(1)
+      },
+      deadlinePlanningEpoch: adaptivePlanningEpoch(deadlinePlanningEpoch),
+      priority: 10
+    });
+    const earlier = selectRepresentation({ ...baseInput(100), requiredAuthorityRequests: [requirement(7)] });
+    const later = selectRepresentation({ ...baseInput(100), requiredAuthorityRequests: [requirement(8)] });
+
+    expect(earlier.status).toBe("Accepted");
+    expect(later.status).toBe("Accepted");
+    expect(earlier.requiredAuthorityRequests[0].deadlinePlanningEpoch).toBe(7);
+    expect(later.requiredAuthorityRequests[0].deadlinePlanningEpoch).toBe(8);
+    expect(later.decisionHash).not.toBe(earlier.decisionHash);
+    expect(() => selectRepresentation({
+      ...baseInput(100),
+      requiredAuthorityRequests: [{ ...requirement(7), deadlinePlanningEpoch: Number.NaN as never }]
+    })).toThrow();
   });
 
   it("applies detail distance only to visual render preference", () => {
