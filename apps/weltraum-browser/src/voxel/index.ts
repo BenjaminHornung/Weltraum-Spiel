@@ -6,3 +6,4 @@ export * from "./ids";
 export * from "./materials";
 export * from "./surfaceNets";
 export * from "./types";
+export * from "./representation";

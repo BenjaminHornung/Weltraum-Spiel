@@ -2,6 +2,7 @@ export type QualityPreset = "Low" | "Medium" | "High" | "Ultra" | "Custom";
 export type ConcreteQualityPreset = Exclude<QualityPreset, "Custom">;
 export type ShadowQuality = "Off" | "Low" | "Medium" | "High";
 export type TextureQuality = "Low" | "Medium" | "High" | "Ultra";
+export type VoxelQuality = "Low" | "Medium" | "High" | "Ultra";
 export type ToneMappingPreference = "None" | "Reinhard" | "ACESFilmic";
 export type FullscreenPreference = "Windowed" | "Fullscreen";
 export type FpsLimit = 0 | 30 | 60 | 120;
@@ -88,6 +89,14 @@ export interface GraphicsSettingsV1 {
   };
 }
 
+export interface GraphicsSettingsV2 extends GraphicsSettingsV1 {
+  readonly voxel: {
+    readonly detail: VoxelQuality;
+    readonly detailDistanceMeters: number;
+    readonly streamingBudget: VoxelQuality;
+  };
+}
+
 export interface ShadowPolicy {
   readonly enabled: boolean;
   readonly mapType: "Basic" | "PCF" | "PCFSoft";
@@ -151,7 +160,7 @@ export interface GraphicsRuntimePort {
   getCapabilities(): GraphicsCapabilityMap;
   getSnapshot(): GraphicsRuntimeSnapshot;
   apply(
-    settings: GraphicsSettingsV1,
+    settings: GraphicsSettingsV2,
     changedSettings: readonly GraphicsSettingId[]
   ): Promise<GraphicsApplyResult>;
 }
@@ -164,14 +173,14 @@ export interface StorageLike {
 export type GraphicsSettingsLoadReason = "Stored" | "Missing" | "Corrupt" | "Invalid" | "FutureVersion" | "Unavailable";
 
 export interface GraphicsSettingsLoadResult {
-  readonly settings: GraphicsSettingsV1;
+  readonly settings: GraphicsSettingsV2;
   readonly reason: GraphicsSettingsLoadReason;
   readonly message: string;
 }
 
 export interface GraphicsSettingsControllerSnapshot {
-  readonly confirmed: GraphicsSettingsV1;
-  readonly draft: GraphicsSettingsV1;
+  readonly confirmed: GraphicsSettingsV2;
+  readonly draft: GraphicsSettingsV2;
   readonly runtime: GraphicsRuntimeSnapshot;
   readonly capabilities: GraphicsCapabilityMap;
   readonly hasPendingChanges: boolean;

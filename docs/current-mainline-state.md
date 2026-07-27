@@ -102,6 +102,26 @@ flight keys are cleared and manual flight input is suppressed.
 
 ## Implemented Foundations
 
+### Voxel Representation Ladder V2 contract foundation
+
+The Browser now contains a pure, renderer-independent representation contract
+under `apps/weltraum-browser/src/voxel/representation`: a descriptor-driven
+`1..32` derived-band ladder, deterministic screen-space selection and
+hysteresis, revision-bound object/surface proxy identities, separate render and
+simulation outputs, hard Adaptive `L4` interaction requests, Structural
+lifecycle retention, and atomic parent fallback. The focused unit contract
+proves at least 12 bands; that proof count is not a fixed production ladder.
+
+Graphics Settings V2 also carries an explicit voxel detail/budget group and a
+pure provisional Low/Medium/High/Ultra visual policy. Voxel detail distance is
+separate from the camera `display.renderDistance`. No renderer, worker, GPU,
+streaming, SurfaceRegion/SurfaceTile/Celestial runtime, planet shell,
+collision/physics handoff, gameplay, save, or multiplayer integration consumes
+this contract. Voxel controls remain hidden and have no `SupportedLive` claim.
+
+See [Voxel Representation Ladder V2](browser-mainline/voxel-representation-ladder-v2.md)
+for the full contract and deterministic normal-route browser evidence paths.
+
 ### Hestia Microvoxel Surface Lab
 
 The exact query route `/?surfaceLab=1` starts a full-screen technical proving

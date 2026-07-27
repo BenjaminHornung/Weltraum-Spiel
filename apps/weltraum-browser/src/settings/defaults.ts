@@ -1,7 +1,13 @@
 import { cloneAndFreeze } from "./schema";
-import type { GraphicsRuntimeSnapshot, GraphicsSettingsV1 } from "./types";
+import type { GraphicsRuntimeSnapshot, GraphicsSettingsV2 } from "./types";
 
-const highDefaults: GraphicsSettingsV1 = {
+export const DEFAULT_VOXEL_SETTINGS: GraphicsSettingsV2["voxel"] = Object.freeze({
+  detail: "High",
+  detailDistanceMeters: 4_000,
+  streamingBudget: "High"
+});
+
+const highDefaults: GraphicsSettingsV2 = {
   qualityPreset: "High",
   display: {
     renderScale: 1,
@@ -26,11 +32,12 @@ const highDefaults: GraphicsSettingsV1 = {
     motionEffectsPreference: false
   },
   antiAliasing: { enabled: true },
-  vsync: { mode: "BrowserManaged" }
+  vsync: { mode: "BrowserManaged" },
+  voxel: DEFAULT_VOXEL_SETTINGS
 };
 
-export function createDefaultGraphicsSettings(): GraphicsSettingsV1 {
-  return cloneAndFreeze(highDefaults) as GraphicsSettingsV1;
+export function createDefaultGraphicsSettings(): GraphicsSettingsV2 {
+  return cloneAndFreeze(highDefaults) as GraphicsSettingsV2;
 }
 
 export function createDefaultRuntimeSnapshot(antiAliasingApplied = true): GraphicsRuntimeSnapshot {

@@ -53,15 +53,29 @@ function runtimePort(): GraphicsRuntimePort & { calls: GraphicsSettingsV1[] } {
 describe("graphics settings storage and controller", () => {
   it("falls back safely for corrupt storage", () => {
     const storage = new MemoryStorage();
-    storage.values.set(GRAPHICS_SETTINGS_STORAGE_KEY, "{broken");
+    const raw = "{broken";
+    storage.values.set(GRAPHICS_SETTINGS_STORAGE_KEY, raw);
     expect(loadGraphicsSettings(storage)).toEqual(expect.objectContaining({ reason: "Corrupt", settings: createDefaultGraphicsSettings() }));
+    expect(storage.values.get(GRAPHICS_SETTINGS_STORAGE_KEY)).toBe(raw);
   });
 
   it("falls back for a future version without overwriting it", () => {
     const storage = new MemoryStorage();
-    storage.values.set(GRAPHICS_SETTINGS_STORAGE_KEY, JSON.stringify({ schemaVersion: 2, settings: createDefaultGraphicsSettings() }));
+    storage.values.set(GRAPHICS_SETTINGS_STORAGE_KEY, JSON.stringify({ schemaVersion: 3, settings: createDefaultGraphicsSettings() }));
     expect(loadGraphicsSettings(storage).reason).toBe("FutureVersion");
-    expect(JSON.parse(storage.values.get(GRAPHICS_SETTINGS_STORAGE_KEY)!).schemaVersion).toBe(2);
+    expect(JSON.parse(storage.values.get(GRAPHICS_SETTINGS_STORAGE_KEY)!).schemaVersion).toBe(3);
+  });
+
+  it("does not overwrite missing or invalid storage while falling back", () => {
+    const missing = new MemoryStorage();
+    expect(loadGraphicsSettings(missing).reason).toBe("Missing");
+    expect(missing.getItem(GRAPHICS_SETTINGS_STORAGE_KEY)).toBeNull();
+
+    const invalid = new MemoryStorage();
+    const raw = JSON.stringify({ schemaVersion: 2, settings: { ...createDefaultGraphicsSettings(), voxel: { detail: "Auto" } } });
+    invalid.values.set(GRAPHICS_SETTINGS_STORAGE_KEY, raw);
+    expect(loadGraphicsSettings(invalid).reason).toBe("Invalid");
+    expect(invalid.getItem(GRAPHICS_SETTINGS_STORAGE_KEY)).toBe(raw);
   });
 
   it("applies and persists confirmed settings", async () => {

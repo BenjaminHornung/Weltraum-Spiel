@@ -23,6 +23,10 @@ describe("graphics settings presets", () => {
     expect(applyQualityPreset(defaults, "Low").display).toMatchObject({ renderScale: 0.65, maxDevicePixelRatio: 1, renderDistance: 1_500 });
     expect(applyQualityPreset(defaults, "Medium").display).toMatchObject({ renderScale: 0.8, maxDevicePixelRatio: 1.5, renderDistance: 3_000 });
     expect(applyQualityPreset(defaults, "Ultra").display).toMatchObject({ renderScale: 1.25, maxDevicePixelRatio: 2, renderDistance: 10_000 });
+    expect(applyQualityPreset(defaults, "Low").voxel).toEqual({ detail: "Low", detailDistanceMeters: 750, streamingBudget: "Low" });
+    expect(applyQualityPreset(defaults, "Medium").voxel).toEqual({ detail: "Medium", detailDistanceMeters: 2_000, streamingBudget: "Medium" });
+    expect(applyQualityPreset(defaults, "High").voxel).toEqual({ detail: "High", detailDistanceMeters: 4_000, streamingBudget: "High" });
+    expect(applyQualityPreset(defaults, "Ultra").voxel).toEqual({ detail: "Ultra", detailDistanceMeters: 8_000, streamingBudget: "Ultra" });
   });
 
   it("preserves personal FOV, FPS, and fullscreen preferences", () => {

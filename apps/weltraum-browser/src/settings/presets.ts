@@ -2,7 +2,7 @@ import { CONCRETE_PRESETS, cloneAndFreeze } from "./schema";
 import type {
   ConcreteQualityPreset,
   GraphicsSettingPath,
-  GraphicsSettingsV1,
+  GraphicsSettingsV2,
   ShadowPolicy,
   ShadowQuality,
   TexturePolicy,
@@ -15,12 +15,13 @@ interface PresetPolicy {
   readonly renderDistance: number;
   readonly shadowQuality: ShadowQuality;
   readonly textureQuality: TextureQuality;
-  readonly toneMapping: GraphicsSettingsV1["lighting"]["toneMapping"];
+  readonly toneMapping: GraphicsSettingsV2["lighting"]["toneMapping"];
   readonly exposure: number;
   readonly decorDensity: number;
   readonly bloomPreference: boolean;
   readonly motionEffectsPreference: boolean;
   readonly antiAliasing: boolean;
+  readonly voxelDetailDistanceMeters: number;
 }
 
 export const QUALITY_PRESET_POLICIES: Readonly<Record<ConcreteQualityPreset, PresetPolicy>> = Object.freeze({
@@ -35,7 +36,8 @@ export const QUALITY_PRESET_POLICIES: Readonly<Record<ConcreteQualityPreset, Pre
     decorDensity: 0.35,
     bloomPreference: false,
     motionEffectsPreference: false,
-    antiAliasing: false
+    antiAliasing: false,
+    voxelDetailDistanceMeters: 750
   }),
   Medium: Object.freeze({
     renderScale: 0.8,
@@ -48,7 +50,8 @@ export const QUALITY_PRESET_POLICIES: Readonly<Record<ConcreteQualityPreset, Pre
     decorDensity: 0.65,
     bloomPreference: false,
     motionEffectsPreference: false,
-    antiAliasing: true
+    antiAliasing: true,
+    voxelDetailDistanceMeters: 2_000
   }),
   High: Object.freeze({
     renderScale: 1,
@@ -61,7 +64,8 @@ export const QUALITY_PRESET_POLICIES: Readonly<Record<ConcreteQualityPreset, Pre
     decorDensity: 1,
     bloomPreference: false,
     motionEffectsPreference: false,
-    antiAliasing: true
+    antiAliasing: true,
+    voxelDetailDistanceMeters: 4_000
   }),
   Ultra: Object.freeze({
     renderScale: 1.25,
@@ -74,7 +78,8 @@ export const QUALITY_PRESET_POLICIES: Readonly<Record<ConcreteQualityPreset, Pre
     decorDensity: 1,
     bloomPreference: true,
     motionEffectsPreference: true,
-    antiAliasing: true
+    antiAliasing: true,
+    voxelDetailDistanceMeters: 8_000
   })
 });
 
@@ -100,7 +105,7 @@ export function resolveTexturePolicy(quality: TextureQuality, maxAnisotropy: num
   }) as TexturePolicy;
 }
 
-export function applyQualityPreset(base: GraphicsSettingsV1, preset: ConcreteQualityPreset): GraphicsSettingsV1 {
+export function applyQualityPreset(base: GraphicsSettingsV2, preset: ConcreteQualityPreset): GraphicsSettingsV2 {
   const policy = QUALITY_PRESET_POLICIES[preset];
   return cloneAndFreeze({
     ...base,
@@ -125,11 +130,16 @@ export function applyQualityPreset(base: GraphicsSettingsV1, preset: ConcreteQua
       bloomPreference: policy.bloomPreference,
       motionEffectsPreference: policy.motionEffectsPreference
     },
-    antiAliasing: { enabled: policy.antiAliasing }
-  }) as GraphicsSettingsV1;
+    antiAliasing: { enabled: policy.antiAliasing },
+    voxel: {
+      detail: preset,
+      detailDistanceMeters: policy.voxelDetailDistanceMeters,
+      streamingBudget: preset
+    }
+  }) as GraphicsSettingsV2;
 }
 
-function presetOwnedValue(settings: GraphicsSettingsV1): unknown {
+function presetOwnedValue(settings: GraphicsSettingsV2): unknown {
   return {
     display: {
       renderScale: settings.display.renderScale,
@@ -140,11 +150,12 @@ function presetOwnedValue(settings: GraphicsSettingsV1): unknown {
     textures: settings.textures,
     lighting: settings.lighting,
     effects: settings.effects,
-    antiAliasing: settings.antiAliasing
+    antiAliasing: settings.antiAliasing,
+    voxel: settings.voxel
   };
 }
 
-export function inferQualityPreset(settings: GraphicsSettingsV1): GraphicsSettingsV1["qualityPreset"] {
+export function inferQualityPreset(settings: GraphicsSettingsV2): GraphicsSettingsV2["qualityPreset"] {
   const comparable = JSON.stringify(presetOwnedValue(settings));
   for (const preset of CONCRETE_PRESETS) {
     if (JSON.stringify(presetOwnedValue(applyQualityPreset(settings, preset))) === comparable) {

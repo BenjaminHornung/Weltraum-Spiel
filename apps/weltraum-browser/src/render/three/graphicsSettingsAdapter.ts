@@ -12,7 +12,7 @@ import {
   type GraphicsRuntimePort,
   type GraphicsRuntimeSnapshot,
   type GraphicsSettingId,
-  type GraphicsSettingsV1,
+  type GraphicsSettingsV2,
   type ToneMappingPreference
 } from "../../settings";
 
@@ -167,8 +167,8 @@ export class ThreeGraphicsSettingsAdapter implements GraphicsRuntimePort {
     this.publishRuntimeMetadata();
   }
 
-  async apply(settings: GraphicsSettingsV1, changedSettings: readonly GraphicsSettingId[]): Promise<GraphicsApplyResult> {
-    this.settings = deepFreeze(structuredClone(settings)) as GraphicsSettingsV1;
+  async apply(settings: GraphicsSettingsV2, changedSettings: readonly GraphicsSettingId[]): Promise<GraphicsApplyResult> {
+    this.settings = deepFreeze(structuredClone(settings)) as GraphicsSettingsV2;
     const capabilities = this.getCapabilities();
     const applied = new Set<GraphicsSettingId>();
     const skipped = new Set<GraphicsSettingId>();
@@ -257,7 +257,7 @@ export class ThreeGraphicsSettingsAdapter implements GraphicsRuntimePort {
     });
   }
 
-  private async applyFullscreen(preference: GraphicsSettingsV1["display"]["fullscreenPreference"], warnings: string[]): Promise<boolean> {
+  private async applyFullscreen(preference: GraphicsSettingsV2["display"]["fullscreenPreference"], warnings: string[]): Promise<boolean> {
     try {
       if (preference === "Fullscreen" && document.fullscreenElement === null) {
         await (this.options.fullscreenElement ?? document.documentElement).requestFullscreen();

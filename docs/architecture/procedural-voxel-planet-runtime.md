@@ -54,6 +54,16 @@ Hardwareprofil werden erst durch Benchmarks festgelegt.
   bereits deterministische World-Streaming-Zuweisungen, Budgets und
   Transitionen. Das ist eine generische Foundation, keine implementierte
   prozedurale Planet-Shell oder Microvoxel-Region.
+- **[Implemented contract foundation]** The Browser representation ladder V2
+  under `apps/weltraum-browser/src/voxel/representation` is a pure,
+  renderer-independent derived-product contract above the unchanged Adaptive
+  authority. It defines descriptor-driven bands, deterministic screen-space
+  selection, revision-bound proxies, hard Adaptive L4 interaction requests,
+  Structural retention, and atomic parent fallback. It is not a runtime
+  consumer: no renderer, worker, GPU, streaming, SurfaceRegion/SurfaceTile or
+  Celestial runtime, planet shell, collision/physics handoff, gameplay, save,
+  or multiplayer integration is claimed. The full boundary is recorded in
+  [Voxel Representation Ladder V2](../browser-mainline/voxel-representation-ladder-v2.md).
 - Eine produktive planetare Shell, ein SurfaceRegion-Handoff und ein
   Microvoxel-Mesher werden durch dieses Dokument nicht als vorhanden behauptet.
 

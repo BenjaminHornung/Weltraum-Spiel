@@ -1,7 +1,7 @@
 import { createDefaultGraphicsSettings } from "./defaults";
 import { GRAPHICS_SETTINGS_STORAGE_KEY, cloneAndFreeze } from "./schema";
 import { createGraphicsSettingsEnvelope, decodeGraphicsSettingsEnvelope, validateGraphicsSettings } from "./validation";
-import type { GraphicsSettingsLoadResult, GraphicsSettingsV1, StorageLike } from "./types";
+import type { GraphicsSettingsLoadResult, GraphicsSettingsV2, StorageLike } from "./types";
 
 export interface SaveGraphicsSettingsResult {
   readonly ok: boolean;
@@ -54,7 +54,7 @@ export function loadGraphicsSettings(storage: StorageLike | null | undefined): G
   return cloneAndFreeze({ settings: decoded.value, reason: "Stored", message: "Stored graphics settings loaded." }) as GraphicsSettingsLoadResult;
 }
 
-export function saveGraphicsSettings(storage: StorageLike | null | undefined, settings: GraphicsSettingsV1): SaveGraphicsSettingsResult {
+export function saveGraphicsSettings(storage: StorageLike | null | undefined, settings: GraphicsSettingsV2): SaveGraphicsSettingsResult {
   if (!storage) {
     return { ok: false, message: "LocalStorage is unavailable." };
   }
