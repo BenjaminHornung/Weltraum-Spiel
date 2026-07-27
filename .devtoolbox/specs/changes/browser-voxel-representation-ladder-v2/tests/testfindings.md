@@ -3,9 +3,8 @@
 ## Status
 
 Implementation, local technical verification, linked DevToolbox verification
-and completion preflight, and final human review pass are complete. Follow-up
-exact-head Codex fixes are locally verified; publication CI/review remains open
-under 6.2.
+and completion preflights, final human review, and exact-head publication checks
+are complete. PR #53 remains open and unmerged as required.
 
 ## Baseline
 
@@ -51,4 +50,4 @@ under 6.2.
 | DevToolbox verification/preflight | PASS | Operation `08b4eb9e2c1a4bb5968a9fa730052c30`: Specs/Test passed and Build passed with known warnings; completion preflight `45081271397d4e5e92154c396aba3735` passed. Fresh Build rerun operation `1c43f5734ffe45c2855278433e290120` also passed with only the same known warnings. |
 | Technical review | PASS | Earlier findings were fixed; the bounded follow-up review confirmed all three runtime Codex findings and fallback cap ordering resolved with no remaining actionable finding. |
 | Final Plannotator review | PASS | The approved exact full patch was mirrored into a temporary in-workspace review worktree because the gate rejects sibling paths. Source and mirror matched stable patch ID `edd58a7a0b0d4602c420ab35aab87918d489d7a8`; the human gate approved without feedback, the mirror was removed, and post-gate unit/build/E2E/hash checks passed on the unchanged source patch. |
-| Exact-head CI and Codex review | PENDING | PR #53 remains open; current-head publication rerun belongs to task 6.2. |
+| Exact-head CI and Codex review | PASS | Head `17a0c6c06d0fd1ce8ead86f2261fbdd5987943d6`: Browser Mainline CI run `30295885465` passed in 26m10s; Repository Policy, Dependency Review, Current head reviewed, and Codex Review / current head passed; all valid review threads are resolved. PR #53 remains open, non-draft, mergeable, and unmerged. Task 6.2 completion preflight `4b97983ed90d407a8a46cc8ba5dcdd4a` passed. |
