@@ -97,20 +97,28 @@ export const resolveProxyInteraction = (value: Readonly<{
   if (value.requiredAuthorityWork > REPRESENTATION_MAX_WORK_UNITS || value.authorityWorkBudget > REPRESENTATION_MAX_WORK_UNITS) {
     return representationFail("InvalidContract", "interaction/budget", `Authority work and budget cannot exceed ${REPRESENTATION_MAX_WORK_UNITS}.`);
   }
+  const requestId = stableAuthorityId(value.requestId, "interaction/requestId");
+  const reason = value.reason;
+  if (!hardReasons.has(reason)) return representationFail("InvalidContract", "interaction/reason", "Reason is not a hard L4 interaction reason.");
+  const priority = representationFinite(value.priority, "interaction/priority");
+  const hasLevel4Coverage = value.hasLevel4Coverage;
+  if (typeof hasLevel4Coverage !== "boolean") {
+    return representationFail("InvalidContract", "interaction/hasLevel4Coverage", "Level 4 coverage state must be boolean.");
+  }
   if (value.authorityCoordinates === null) {
     return deepFreeze({ status: "NOT_READY", authorityCoordinates: null, authorityRequest: null, code: "AuthorityCoordinatesMissing" });
   }
   const coordinates = copyQuantumPoint(value.authorityCoordinates);
   const request = createHardAuthorityRequirement({
-    requestId: value.requestId,
-    reason: value.reason,
+    requestId,
+    reason,
     region: { kind: "sphere", center: coordinates, radiusQuantum: globalQuantumCoordinate(1) },
-    priority: value.priority
+    priority
   });
   if (value.requiredAuthorityWork > value.authorityWorkBudget) {
     return deepFreeze({ status: "Blocked", authorityCoordinates: null, authorityRequest: request, code: "AuthorityBudgetExceeded" });
   }
-  if (value.hasLevel4Coverage !== true) {
+  if (!hasLevel4Coverage) {
     return deepFreeze({ status: "NOT_READY", authorityCoordinates: null, authorityRequest: request, code: "Level4CoverageMissing" });
   }
   return deepFreeze({ status: "READY", authorityCoordinates: coordinates, authorityRequest: request });

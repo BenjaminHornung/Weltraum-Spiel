@@ -579,6 +579,47 @@ describe("voxel representation hard pins, interaction, and lifecycle", () => {
     }
   });
 
+  it("validates proxy request fields before returning missing-coordinate retry state", () => {
+    const common = {
+      requestId: "request.missing-coordinates",
+      reason: "ToolInteraction" as const,
+      authorityCoordinates: null,
+      hasLevel4Coverage: false,
+      requiredAuthorityWork: 10,
+      authorityWorkBudget: 10,
+      priority: 5
+    };
+
+    expect(() => resolveProxyInteraction({ ...common, requestId: "" })).toThrow();
+    expect(() => resolveProxyInteraction({ ...common, reason: "UnknownReason" as never })).toThrow();
+    expect(() => resolveProxyInteraction({ ...common, priority: Number.NaN })).toThrow();
+    expect(() => resolveProxyInteraction({ ...common, hasLevel4Coverage: 0 as never })).toThrow();
+  });
+
+  it("uses one validated proxy request snapshot when coordinates are ready", () => {
+    let reasonReads = 0;
+    let coverageReads = 0;
+    const input = {
+      requestId: "request.snapshot",
+      authorityCoordinates: { x: globalQuantumCoordinate(4), y: globalQuantumCoordinate(5), z: globalQuantumCoordinate(6) },
+      requiredAuthorityWork: 10,
+      authorityWorkBudget: 10,
+      priority: 5
+    } as unknown as Parameters<typeof resolveProxyInteraction>[0];
+    Object.defineProperty(input, "reason", {
+      enumerable: true,
+      get: () => (++reasonReads === 1 ? "ToolInteraction" : "UnknownReason")
+    });
+    Object.defineProperty(input, "hasLevel4Coverage", {
+      enumerable: true,
+      get: () => (++coverageReads === 1 ? true : 0)
+    });
+
+    expect(resolveProxyInteraction(input)).toMatchObject({ status: "READY" });
+    expect(reasonReads).toBe(1);
+    expect(coverageReads).toBe(1);
+  });
+
   it("retains dirty/solving/rigid/unsettled/solve/handoff products and releases only explicit unpinned Settled products", () => {
     expect(deriveEvictionEligibility({ structuralState: "Dirty", activePins: [] }).derivedProductsEvictable).toBe(false);
     expect(deriveEvictionEligibility({ structuralState: "Solving", activePins: [] }).derivedProductsEvictable).toBe(false);

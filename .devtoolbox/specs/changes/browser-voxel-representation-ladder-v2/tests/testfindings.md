@@ -2,13 +2,14 @@
 
 ## Status
 
-Tracking head `f3a3cb812da3fba012966e09fccb997f4942a1d0` passed every
-exact-head check, but its Codex review opened a valid P2 hard-request
-normalization finding. The failing AABB regression, smallest fail-closed
-boundary fix, fresh local verification, bounded technical re-review, and
-DevToolbox re-verification are complete. Human review approved the exact local
-patch and task 6.1 is closed. Publication and a replacement exact-head round
-remain pending. PR #53 remains open and unmerged as required.
+Implementation head `612eb313b757bec0010aeb8da264a1e306679cec` passed every
+exact-head check and the prior hard-AABB thread was fixed and resolved, but its
+Codex review opened a valid P2 missing-coordinate validation finding. The
+failing regression, smallest boundary-order fix, fresh local verification, and
+bounded technical re-review are complete. DevToolbox re-verification, a
+replacement human review, and task 6.1 completion preflight passed; task 6.1 is
+closed. Publication and another exact-head round remain pending. Task 6.2 is
+open, and PR #53 remains open and unmerged as required.
 
 ## Baseline
 
@@ -87,19 +88,30 @@ remain pending. PR #53 remains open and unmerged as required.
   records before property access, and the interaction boundary exports the
   shared hard-Authority level. The focused selection suite passes 23/23 and
   bounded re-review reports no remaining correctness or R1-R6/T1-T6 finding.
+- Implementation head `612eb313b757bec0010aeb8da264a1e306679cec` passed all five
+  checks and comment `3662144209` was resolved, but Codex comment `3662974732`
+  identified that missing Authority coordinates returned `NOT_READY` before
+  validating request identity, hard reason, priority, and the coverage flag. A
+  null-coordinate regression reproduced the issue with 23 passing / 1 failing
+  selection tests. `resolveProxyInteraction` now validates and snapshots those
+  fields before the readiness return and reuses the validated values downstream.
+  Review found one remaining double-read of the coverage flag; the final fix
+  snapshots both reason and coverage once, with changing-getter coverage. The
+  selection suite passes 25/25 and bounded re-review reports no remaining
+  correctness or R1-R6/T1-T6 finding.
 
 ## Final matrix
 
 | Gate | Status | Evidence |
 | --- | --- | --- |
 | Node 22 / npm ci | PASS | Node 22.23.1; 59 packages installed; audit found 0 vulnerabilities. |
-| Focused representation units | PASS | The new hard-AABB regression failed 1/22 before the boundary fix. After review hardening, selection passes 23/23 and the final focused representation set passes 39/39. |
+| Focused representation units | PASS | The missing-coordinate request-field regression failed with 23 passing / 1 failing test before the boundary fix. After review hardening, selection passes 25/25 and the final focused representation set passes 42/42. |
 | Settings and Authority regressions | PASS | Settings: 37/37; Adaptive/Structural regression set: 72/72. |
-| Full unit / production build | PASS | Final affected rerun: 141 files / 1,383 tests; TypeScript and Vite production build passed. Existing npm-config and chunk-size warnings remain non-blocking. |
+| Full unit / production build | PASS | Final affected rerun: 141 files / 1,385 tests; TypeScript and Vite production build passed. Existing npm-config and chunk-size warnings remain non-blocking. |
 | Focused E2E twice / byte identity | PASS | Final post-review run passed 1/1 twice with one worker and retries zero. SHA-256 JSON `38AA1A81BB35B02A131AB46FC079731651A540AF967CD84A947B8C5089BF1814`; Markdown `604BDC6D413FDD247E2AA4F79A6714870740922EA824DE62B61E9BB8342131A5`. |
-| Core / live / UI E2E | PASS | Final fresh Node-22, one-worker, zero-retry runs after the hard-AABB fix: core 41/41, live 14/14, UI 12/12. |
-| Static, scope, secret, lockfile scans | PASS | E2E inventory exact once in core; evidence parsed and volatile-field scan passed; diff/secret/forbidden-source/changed-path scans passed. Exactly the two production files, one unit-test file, and this change's two tracking files differ; no Unity, dependency, lockfile, workflow, Playwright-config, Adaptive, or Structural files changed. |
-| DevToolbox verification/preflight | PASS | Recovery execution `a3d3d5d4c13c4c96a75c2424eba63d87` remains authoritative. Fresh re-verification operation `ffdbb3a1e69740ce9280d4bfe61579b0` succeeded with 2 passed, 1 warning, 0 failed, and 0 skipped steps; spec validation and task 6.1 completion preflight passed. |
-| Technical review | PASS | Initial review found prevalidation property access and duplicated L4 ownership; both were fixed. Bounded re-review reports no correctness, regression, or R1-R6/T1-T6 finding. |
-| Final Plannotator review | PASS | Human review approved the exact five-file patch based on `f3a3cb812da3fba012966e09fccb997f4942a1d0`; source and review-mirror binary diffs matched hash `a886f3782a61a7cc6b92ed0f6a0068a5cefbe15c`. |
-| Exact-head CI and Codex review | PENDING | Head `f3a3cb812da3fba012966e09fccb997f4942a1d0` passed all five checks, but valid comment `3662144209` remains open until the fixed head is published and reviewed. |
+| Core / live / UI E2E | PASS | Final fresh Node-22, one-worker, zero-retry runs after the missing-coordinate fix: core 41/41, live 14/14, UI 12/12. |
+| Static, scope, secret, lockfile scans | PASS | Generated E2E evidence was restored after the passing matrix. Final three-file changed-path, diff, secret, inventory, evidence, forbidden-source, Unity, and lockfile scans passed; deterministic evidence hashes remain unchanged. |
+| DevToolbox verification/preflight | PASS | Recovery execution `a3d3d5d4c13c4c96a75c2424eba63d87` remains authoritative and records the failing reproduction. Fresh re-verification operation `b16c0c17102b49999be28a3818bfb39f`, spec validation, and task 6.1 completion preflight passed. |
+| Technical review | PASS | Review found a second read of the validated coverage flag. Reason and coverage are now snapshotted once, the regression covers changing getters, and bounded re-review reports no correctness, regression, or R1-R6/T1-T6 finding. |
+| Final Plannotator review | PASS | Replacement human review approved the exact four-file patch based on `612eb313b757bec0010aeb8da264a1e306679cec`; source and review-mirror binary diffs matched hash `a252c5692f8ec629f90ce7660b5079b88d6b6b92`. |
+| Exact-head CI and Codex review | PENDING | Head `612eb313b757bec0010aeb8da264a1e306679cec` passed all five checks and comment `3662144209` is resolved, but valid comment `3662974732` remains open until the fixed head is published and reviewed. |
