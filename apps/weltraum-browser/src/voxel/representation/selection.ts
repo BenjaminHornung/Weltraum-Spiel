@@ -217,7 +217,6 @@ export const selectRepresentation = (input: RepresentationSelectionInput): Repre
     thresholds,
     priorBandId
   });
-
   let renderSelection: Readonly<{ kind: "Band"; bandId: string }> | Readonly<{ kind: "Culled" }>;
   let decisionReasons: readonly string[];
   if (cullingProjection.distanceToBoundsMeters >= cullDistance && cullingProjection.projectedBoundsRadiusPixels <= cullRadius) {
@@ -240,7 +239,15 @@ export const selectRepresentation = (input: RepresentationSelectionInput): Repre
     );
     if (budgeted.length === 0) {
       const hasReady = visuallyEligible.length > 0;
-      return reject(hasReady ? "BudgetExceeded" : "NoReadyCandidate", hasReady ? "RenderBudgetExceeded" : "NoCurrentReadyRenderCandidate", decisionInputs);
+      const rejectedDecisionInputs = deepFreeze({
+        ...decisionInputs,
+        simulationRequirementsHash: hashAdaptiveCanonical(simulationRequirements),
+        requiredAuthorityRequestsHash: hashAdaptiveCanonical(requiredAuthorityRequests),
+        fallbackDecisionHash: hashAdaptiveCanonical(fallbackDecision),
+        readinessHash: hashAdaptiveCanonical(readiness),
+        evictionEligibilityHash: hashAdaptiveCanonical(evictionEligibility)
+      });
+      return reject(hasReady ? "BudgetExceeded" : "NoReadyCandidate", hasReady ? "RenderBudgetExceeded" : "NoCurrentReadyRenderCandidate", rejectedDecisionInputs);
     }
     const withinError = budgeted.filter((band) => bandProjection(input, band).projectedErrorPixels <= refine);
     let selected = withinError.length === 0

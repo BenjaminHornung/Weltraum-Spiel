@@ -2,10 +2,14 @@
 
 ## Status
 
-Implementation and the latest local technical verification are complete. The
-linked DevToolbox completion preflight, final human review, updated publication
-commit, and new exact-head CI/Codex-review round remain pending. PR #53 remains
-open and unmerged as required.
+Published head `575cbf510e0cd5bc6a171f0d2fc2fff94db5866e` passed every
+exact-head check, but its Codex review opened one valid P2 decision-identity
+finding. The local regression and implementation fix are complete; the full
+verification, technical re-review, spec validation, and DevToolbox
+re-verification are complete, final human review approved the exact
+implementation patch, and the task 6.1 completion preflight passed. The
+updated publication commit and replacement exact-head round remain pending.
+PR #53 remains open and unmerged as required.
 
 ## Baseline
 
@@ -54,19 +58,36 @@ open and unmerged as required.
   recovery exception, one replacement execution
   `a3d3d5d4c13c4c96a75c2424eba63d87` was created for the remaining verification
   and publication round; no per-task or per-review executions were created.
+- Exact-head CI, policy, dependency, and Codex-review checks passed on
+  `575cbf510e0cd5bc6a171f0d2fc2fff94db5866e`, but Codex comment `3660650274`
+  identified that side-effect-empty rejected decisions did not bind validated
+  Authority, simulation, fallback, readiness, or eviction inputs. The focused
+  regression first reproduced all seven variants with one identical hash, then
+  passed 21/21 after rejection-only decision inputs gained canonical hashes of
+  those normalized values. Accepted decision hashes and rejected publication
+  fields remain unchanged.
+- Focused technical review found that the first fix computed rejection-only
+  hashes on accepted paths and that its initial regression did not directly
+  exercise `NoReadyCandidate`, Authority region changes, or canonical input
+  reordering. Hash construction now occurs only in the shared rejection branch.
+  A dedicated regression covers both rejection codes, deadline and region
+  changes, all five related normalized input categories, and order-invariant
+  Authority/simulation/readiness inputs. The affected selection set passes
+  22/22, the full suite passes 1,382 tests, the build and focused E2E pass, and
+  bounded re-review reports no remaining correctness or R1-R6/T1-T6 finding.
 
 ## Final matrix
 
 | Gate | Status | Evidence |
 | --- | --- | --- |
 | Node 22 / npm ci | PASS | Node 22.23.1; 59 packages installed; audit found 0 vulnerabilities. |
-| Focused representation units | PASS | Latest Adaptive/selection run: 2 files / 36 tests, including soft-request preservation, defensive-copy, hard-L4 promotion, exact validation paths, and pre-coordinate budget rejection. |
-| Settings and Authority regressions | PASS | Settings: 36 tests; Adaptive/Structural regression set: 72 tests. |
-| Full unit / production build | PASS | Latest Vitest: 141 files / 1,381 tests; TypeScript and Vite build passed. Existing npm-config and chunk-size warnings are non-blocking. |
-| Focused E2E twice / byte identity | PASS | 1/1 twice, one worker, retries zero. SHA-256 JSON `38AA1A81BB35B02A131AB46FC079731651A540AF967CD84A947B8C5089BF1814`; Markdown `604BDC6D413FDD247E2AA4F79A6714870740922EA824DE62B61E9BB8342131A5`. |
-| Core / live / UI E2E | PASS | Latest Node-22, one-worker, zero-retry runs: core 41/41, live 14/14, UI 12/12. |
-| Static, scope, secret, lockfile scans | PASS | Inventory exact once in core; evidence parsed and volatile scan passed; diff/secret/import/nondeterminism/scope scans passed; no Unity, lockfile, workflow, or Playwright-config changes. Adaptive changes are limited to reusable validation paths; Structural source remains unchanged. |
-| DevToolbox verification/preflight | PASS | Recovery execution `a3d3d5d4c13c4c96a75c2424eba63d87` operation `d9046704925b4f518f490dc1f1a678eb` completed 3 steps with 2 pass, 1 known-warning build, 0 fail, and 0 skip. Task 6.1 completion preflight `712e4c2e89784effb17c56944c3c1ee4` passed. Earlier operations `08b4eb9e2c1a4bb5968a9fa730052c30` and `1c43f5734ffe45c2855278433e290120` passed before the original execution became unreadable. |
-| Technical review | PASS | The bounded re-review found the two latest Codex fixes and the path/copy/promotion follow-up clean, with no correctness, API, or R1-R6/T1-T6 maintainability regression. |
-| Final Plannotator review | PENDING | The prior approval covered head `a6ad6cfc2e10d03d126bdad03be0ba815e852d5d`; the new code/doc/test patch requires a fresh final gate. |
-| Exact-head CI and Codex review | PENDING | The updated patch is not committed or pushed yet. Comments `3660076342` and `3660304384` remain open until the fixed head is published and reviewed. |
+| Focused representation units | PASS | Descriptor 6/6, proxy 6/6, fallback 5/5, selection 22/22; the final combined Adaptive-contract/selection rerun passed 37/37. |
+| Settings and Authority regressions | PASS | Settings: 37/37; Adaptive/Structural regression set: 72/72. |
+| Full unit / production build | PASS | Final affected rerun: 141 files / 1,382 tests; TypeScript and Vite production build passed. Existing npm-config and chunk-size warnings remain non-blocking. |
+| Focused E2E twice / byte identity | PASS | 1/1 twice before review and 1/1 after review fixes, one worker, retries zero. SHA-256 JSON `38AA1A81BB35B02A131AB46FC079731651A540AF967CD84A947B8C5089BF1814`; Markdown `604BDC6D413FDD247E2AA4F79A6714870740922EA824DE62B61E9BB8342131A5`. |
+| Core / live / UI E2E | PASS | Fresh Node-22, one-worker, zero-retry runs after the decision-hash fix: core 41/41, live 14/14, UI 12/12. Full units/build/focused E2E were rerun after the review-only placement and test-coverage fixes. |
+| Static, scope, secret, lockfile scans | PASS | E2E inventory exact once in core; evidence parsed and volatile-field scan passed; diff/secret/forbidden-source/changed-path scans passed. Only the two intended source/test files and this change's tracking files differ; no Unity, dependency, lockfile, workflow, Playwright-config, Adaptive, or Structural files changed. |
+| DevToolbox verification/preflight | PASS | Recovery execution `a3d3d5d4c13c4c96a75c2424eba63d87` remains authoritative. Fresh async re-verification operation `015e12d095714783abd443f476eb1f70` succeeded with 2 pass, 1 known-warning build, and 0 fail; direct spec validation passed all six checks; task 6.1 completion preflight passed and the task was closed only after human approval. |
+| Technical review | PASS | Initial review found accepted-path hashing overhead and incomplete regression coverage. Both were fixed; affected tests pass 22/22 and bounded re-review reports no remaining correctness, regression, API, performance, or R1-R6/T1-T6 finding. |
+| Final Plannotator review | PASS | Human review approved stable patch ID `07386d1ea5e5eb407a031a11f5aa950d89203b18` through the clean in-project mirror; the mirror and implementation worktree patch IDs matched exactly before review, and the mirror was restored clean afterward. |
+| Exact-head CI and Codex review | PENDING | Head `575cbf510e0cd5bc6a171f0d2fc2fff94db5866e` passed all checks. Comments `3660076342` and `3660304384` are resolved; valid comment `3660650274` remains open until the fixed head is published and reviewed. |

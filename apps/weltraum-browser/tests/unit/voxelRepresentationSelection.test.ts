@@ -353,6 +353,86 @@ describe("voxel representation SSE and selection", () => {
     });
     expect(isDeepFrozen(rejected)).toBe(true);
   });
+
+  it("binds side-effect-empty rejection hashes to canonical non-render inputs", () => {
+    const requirement = (requestId: string, deadlinePlanningEpoch: number, centerX = 0) => createHardAuthorityRequirement({
+      requestId,
+      reason: "ProjectileImpact",
+      region: {
+        kind: "sphere",
+        center: { x: globalQuantumCoordinate(centerX), y: globalQuantumCoordinate(0), z: globalQuantumCoordinate(0) },
+        radiusQuantum: globalQuantumCoordinate(1)
+      },
+      deadlinePlanningEpoch: adaptivePlanningEpoch(deadlinePlanningEpoch),
+      priority: 10
+    });
+    const expensiveDescriptor = createRepresentationLadderDescriptor({
+      schemaVersion: REPRESENTATION_LADDER_SCHEMA_VERSION,
+      descriptorId: "selection.rejected-hash.v2",
+      bands: Array.from({ length: 12 }, (_, rank) => ({
+        ...makeBand(rank),
+        costs: { estimatedBytes: 64_000_001, workUnits: 100, uploadUnits: 10 }
+      }))
+    });
+    const rejectedInput = {
+      ...baseInput(100),
+      descriptor: expensiveDescriptor,
+      candidates: expensiveDescriptor.bands.map((band) => ({ bandId: band.bandId, readiness: "Ready" as const, sourceCurrent: true })),
+      qualityPolicy: low()
+    } as const;
+    const rejected = selectRepresentation(rejectedInput);
+    const rejectionHashes = [
+      rejected.decisionHash,
+      selectRepresentation({ ...rejectedInput, requiredAuthorityRequests: [requirement("request.rejected-hash", 7)] }).decisionHash,
+      selectRepresentation({ ...rejectedInput, requiredAuthorityRequests: [requirement("request.rejected-hash", 8)] }).decisionHash,
+      selectRepresentation({ ...rejectedInput, requiredAuthorityRequests: [requirement("request.rejected-hash", 7, 1)] }).decisionHash,
+      selectRepresentation({ ...rejectedInput, simulationRequirements: ["DifferentSimulationRequirement"] }).decisionHash,
+      selectRepresentation({
+        ...rejectedInput,
+        fallbackGroup: {
+          groupId: "fallback.rejected-hash", parentId: "parent", revision: 1,
+          requiredChildIds: ["child"], children: [{ childId: "child", revision: 1, readiness: "Ready" as const }]
+        }
+      }).decisionHash,
+      selectRepresentation({ ...rejectedInput, readiness: ["DifferentReadiness"] }).decisionHash,
+      selectRepresentation({
+        ...rejectedInput,
+        evictionEligibility: deriveEvictionEligibility({ structuralState: "Dirty", activePins: [] })
+      }).decisionHash
+    ];
+    expect(new Set(rejectionHashes).size).toBe(rejectionHashes.length);
+
+    const requestA = requirement("request.a", 7);
+    const requestB = requirement("request.b", 8, 1);
+    const ordered = selectRepresentation({
+      ...rejectedInput,
+      requiredAuthorityRequests: [requestA, requestB],
+      simulationRequirements: ["SimulationA", "SimulationB"],
+      readiness: ["ReadinessA", "ReadinessB"]
+    });
+    const reordered = selectRepresentation({
+      ...rejectedInput,
+      requiredAuthorityRequests: [requestB, requestA],
+      simulationRequirements: ["SimulationB", "SimulationA"],
+      readiness: ["ReadinessB", "ReadinessA"]
+    });
+    expect(reordered.decisionHash).toBe(ordered.decisionHash);
+
+    const noReadyInput = baseInput(100);
+    const noReadyEarlier = selectRepresentation({
+      ...noReadyInput,
+      candidates: noReadyInput.candidates.map((candidate) => ({ ...candidate, readiness: "Loading" as const })),
+      requiredAuthorityRequests: [requirement("request.no-ready", 7)]
+    });
+    const noReadyLater = selectRepresentation({
+      ...noReadyInput,
+      candidates: noReadyInput.candidates.map((candidate) => ({ ...candidate, readiness: "Loading" as const })),
+      requiredAuthorityRequests: [requirement("request.no-ready", 8)]
+    });
+    expect(noReadyEarlier).toMatchObject({ status: "Rejected", code: "NoReadyCandidate" });
+    expect(noReadyLater).toMatchObject({ status: "Rejected", code: "NoReadyCandidate" });
+    expect(noReadyLater.decisionHash).not.toBe(noReadyEarlier.decisionHash);
+  });
 });
 
 describe("voxel representation hard pins, interaction, and lifecycle", () => {
