@@ -2,14 +2,14 @@
 
 ## Status
 
-Implementation head `612eb313b757bec0010aeb8da264a1e306679cec` passed every
-exact-head check and the prior hard-AABB thread was fixed and resolved, but its
-Codex review opened a valid P2 missing-coordinate validation finding. The
-failing regression, smallest boundary-order fix, fresh local verification, and
-bounded technical re-review are complete. DevToolbox re-verification, a
-replacement human review, and task 6.1 completion preflight passed; task 6.1 is
-closed. Publication and another exact-head round remain pending. Task 6.2 is
-open, and PR #53 remains open and unmerged as required.
+Implementation head `4e4c4989f3d1d0ec925c8618e47bf9018cb9524f` fixed the prior
+missing-coordinate validation finding and passed its current-head Codex review,
+but that review opened a valid P2 double-read of accessor-backed Authority
+coordinates. The failing regression, smallest single-snapshot fix, fresh local
+verification, and bounded technical re-review are complete. Replacement
+DevToolbox re-verification, spec validation, and replacement human review passed.
+Publication and another exact-head round remain pending. Task 6.1 is closed,
+task 6.2 is open, and PR #53 remains open and unmerged as required.
 
 ## Baseline
 
@@ -99,19 +99,29 @@ open, and PR #53 remains open and unmerged as required.
   snapshots both reason and coverage once, with changing-getter coverage. The
   selection suite passes 25/25 and bounded re-review reports no remaining
   correctness or R1-R6/T1-T6 finding.
+- Implementation head `4e4c4989f3d1d0ec925c8618e47bf9018cb9524f` fixed comment
+  `3662974732`, which was replied to and resolved, and passed its exact-head
+  Codex review. Codex comment `3663344832` then identified that accessor-backed
+  Authority coordinates were checked and copied through separate reads. A
+  changing getter reproduced the raw `TypeError` with 24 passing / 1 failing
+  selection tests. `resolveProxyInteraction` now snapshots coordinates once,
+  branches on and copies that same value, and the regression asserts one read.
+  Selection passes 25/25, the focused representation set passes 42/42, the full
+  suite passes 1,385 tests, the build and focused E2E twice pass, deterministic
+  hashes are unchanged, and bounded re-review reports no finding.
 
 ## Final matrix
 
 | Gate | Status | Evidence |
 | --- | --- | --- |
 | Node 22 / npm ci | PASS | Node 22.23.1; 59 packages installed; audit found 0 vulnerabilities. |
-| Focused representation units | PASS | The missing-coordinate request-field regression failed with 23 passing / 1 failing test before the boundary fix. After review hardening, selection passes 25/25 and the final focused representation set passes 42/42. |
+| Focused representation units | PASS | The accessor-backed coordinate regression failed with 24 passing / 1 failing test before the single-snapshot fix. Selection now passes 25/25 and the final focused representation set passes 42/42. |
 | Settings and Authority regressions | PASS | Settings: 37/37; Adaptive/Structural regression set: 72/72. |
 | Full unit / production build | PASS | Final affected rerun: 141 files / 1,385 tests; TypeScript and Vite production build passed. Existing npm-config and chunk-size warnings remain non-blocking. |
 | Focused E2E twice / byte identity | PASS | Final post-review run passed 1/1 twice with one worker and retries zero. SHA-256 JSON `38AA1A81BB35B02A131AB46FC079731651A540AF967CD84A947B8C5089BF1814`; Markdown `604BDC6D413FDD247E2AA4F79A6714870740922EA824DE62B61E9BB8342131A5`. |
 | Core / live / UI E2E | PASS | Final fresh Node-22, one-worker, zero-retry runs after the missing-coordinate fix: core 41/41, live 14/14, UI 12/12. |
 | Static, scope, secret, lockfile scans | PASS | Generated E2E evidence was restored after the passing matrix. Final three-file changed-path, diff, secret, inventory, evidence, forbidden-source, Unity, and lockfile scans passed; deterministic evidence hashes remain unchanged. |
-| DevToolbox verification/preflight | PASS | Recovery execution `a3d3d5d4c13c4c96a75c2424eba63d87` remains authoritative and records the failing reproduction. Fresh re-verification operation `b16c0c17102b49999be28a3818bfb39f`, spec validation, and task 6.1 completion preflight passed. |
-| Technical review | PASS | Review found a second read of the validated coverage flag. Reason and coverage are now snapshotted once, the regression covers changing getters, and bounded re-review reports no correctness, regression, or R1-R6/T1-T6 finding. |
-| Final Plannotator review | PASS | Replacement human review approved the exact four-file patch based on `612eb313b757bec0010aeb8da264a1e306679cec`; source and review-mirror binary diffs matched hash `a252c5692f8ec629f90ce7660b5079b88d6b6b92`. |
-| Exact-head CI and Codex review | PENDING | Head `612eb313b757bec0010aeb8da264a1e306679cec` passed all five checks and comment `3662144209` is resolved, but valid comment `3662974732` remains open until the fixed head is published and reviewed. |
+| DevToolbox verification/preflight | PASS | Recovery execution `a3d3d5d4c13c4c96a75c2424eba63d87` remains authoritative and records the failing reproduction. Fresh coordinate-snapshot re-verification operation `ad5ac64a49fb4c638d8b86dc63b0b679` and spec validation passed; task 6.1 remains closed after its prior completion preflight. |
+| Technical review | PASS | Coordinates now join reason and coverage as single-read snapshots. The regression covers a getter that returns coordinates and then `null`; bounded re-review reports no correctness, regression, or R1-R6/T1-T6 finding. |
+| Final Plannotator review | PASS | Replacement human review approved the exact effective three-file patch based on `612eb313b757bec0010aeb8da264a1e306679cec`; source and review-mirror binary diffs matched hash `e7a0d8cb6fdf1459838032c90f8bb2c3622a1a3a`. |
+| Exact-head CI and Codex review | PENDING | Head `4e4c4989f3d1d0ec925c8618e47bf9018cb9524f` passed all five checks and comment `3662974732` is resolved, but valid comment `3663344832` remains open until the fixed head is published and reviewed. |

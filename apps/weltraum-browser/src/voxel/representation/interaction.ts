@@ -105,10 +105,11 @@ export const resolveProxyInteraction = (value: Readonly<{
   if (typeof hasLevel4Coverage !== "boolean") {
     return representationFail("InvalidContract", "interaction/hasLevel4Coverage", "Level 4 coverage state must be boolean.");
   }
-  if (value.authorityCoordinates === null) {
+  const authorityCoordinates = value.authorityCoordinates;
+  if (authorityCoordinates === null) {
     return deepFreeze({ status: "NOT_READY", authorityCoordinates: null, authorityRequest: null, code: "AuthorityCoordinatesMissing" });
   }
-  const coordinates = copyQuantumPoint(value.authorityCoordinates);
+  const coordinates = copyQuantumPoint(authorityCoordinates);
   const request = createHardAuthorityRequirement({
     requestId,
     reason,

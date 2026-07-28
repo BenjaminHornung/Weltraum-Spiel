@@ -599,9 +599,10 @@ describe("voxel representation hard pins, interaction, and lifecycle", () => {
   it("uses one validated proxy request snapshot when coordinates are ready", () => {
     let reasonReads = 0;
     let coverageReads = 0;
+    let coordinateReads = 0;
+    const coordinates = { x: globalQuantumCoordinate(4), y: globalQuantumCoordinate(5), z: globalQuantumCoordinate(6) };
     const input = {
       requestId: "request.snapshot",
-      authorityCoordinates: { x: globalQuantumCoordinate(4), y: globalQuantumCoordinate(5), z: globalQuantumCoordinate(6) },
       requiredAuthorityWork: 10,
       authorityWorkBudget: 10,
       priority: 5
@@ -614,10 +615,15 @@ describe("voxel representation hard pins, interaction, and lifecycle", () => {
       enumerable: true,
       get: () => (++coverageReads === 1 ? true : 0)
     });
+    Object.defineProperty(input, "authorityCoordinates", {
+      enumerable: true,
+      get: () => (++coordinateReads === 1 ? coordinates : null)
+    });
 
     expect(resolveProxyInteraction(input)).toMatchObject({ status: "READY" });
     expect(reasonReads).toBe(1);
     expect(coverageReads).toBe(1);
+    expect(coordinateReads).toBe(1);
   });
 
   it("retains dirty/solving/rigid/unsettled/solve/handoff products and releases only explicit unpinned Settled products", () => {
