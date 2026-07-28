@@ -184,12 +184,26 @@ export const selectRepresentation = (input: RepresentationSelectionInput): Repre
       const path = `${pathRoot}/${index}`;
       const record = representationRecord(entry, path);
       const rawRequest = record as unknown as RepresentationSelectionInput["requiredAuthorityRequests"][number];
-      if (typeof record.reason !== "string" || !hardAuthorityReasons.has(record.reason)) {
-        return validateAdaptiveRefinementRequest(rawRequest, index, pathRoot).request;
+      const hasDeadlinePlanningEpoch = Object.hasOwn(record, "deadlinePlanningEpoch");
+      representationExactKeys(record, [
+        "requestId", "region", "targetLevel", "reason", "requiredForCoverage",
+        ...(hasDeadlinePlanningEpoch ? ["deadlinePlanningEpoch"] : []), "priority"
+      ], path);
+      const requestSnapshot: RepresentationSelectionInput["requiredAuthorityRequests"][number] = {
+        requestId: rawRequest.requestId,
+        region: rawRequest.region,
+        targetLevel: rawRequest.targetLevel,
+        reason: rawRequest.reason,
+        requiredForCoverage: rawRequest.requiredForCoverage,
+        ...(hasDeadlinePlanningEpoch ? { deadlinePlanningEpoch: rawRequest.deadlinePlanningEpoch } : {}),
+        priority: rawRequest.priority
+      };
+      if (!hardAuthorityReasons.has(requestSnapshot.reason)) {
+        return validateAdaptiveRefinementRequest(requestSnapshot, index, pathRoot).request;
       }
-      adaptiveLevel(record.targetLevel as number, `${path}/targetLevel`);
+      adaptiveLevel(requestSnapshot.targetLevel, `${path}/targetLevel`);
       const request = validateAdaptiveRefinementRequest(
-        { ...rawRequest, targetLevel: HARD_AUTHORITY_TARGET_LEVEL },
+        { ...requestSnapshot, targetLevel: HARD_AUTHORITY_TARGET_LEVEL },
         index,
         pathRoot
       ).request;

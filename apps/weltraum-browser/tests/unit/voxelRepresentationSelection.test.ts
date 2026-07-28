@@ -212,6 +212,39 @@ describe("voxel representation SSE and selection", () => {
     expect(result.requiredAuthorityRequests[0].priority).toBe(3);
   });
 
+  it("classifies proxy-backed Adaptive requests from one coherent validated snapshot", () => {
+    let reasonReads = 0;
+    const request = new Proxy({
+      requestId: stableAuthorityId("request.proxy-reason"),
+      region: {
+        kind: "sphere" as const,
+        center: { x: globalQuantumCoordinate(1), y: globalQuantumCoordinate(2), z: globalQuantumCoordinate(3) },
+        radiusQuantum: globalQuantumCoordinate(2)
+      },
+      targetLevel: adaptiveLevel(2),
+      reason: "Inspection" as "Inspection" | "Explosion",
+      requiredForCoverage: false,
+      priority: 3
+    }, {
+      get(target, property, receiver) {
+        if (property === "reason") {
+          reasonReads += 1;
+          return reasonReads <= 2 ? "Inspection" : "Explosion";
+        }
+        return Reflect.get(target, property, receiver);
+      }
+    });
+
+    const result = selectRepresentation({ ...baseInput(100), requiredAuthorityRequests: [request] });
+
+    expect(result.requiredAuthorityRequests[0]).toMatchObject({
+      reason: "Inspection",
+      targetLevel: adaptiveLevel(2),
+      requiredForCoverage: false
+    });
+    expect(reasonReads).toBe(1);
+  });
+
   it("preserves Adaptive request deadlines in published requirements and decision hashes", () => {
     const requirement = (deadlinePlanningEpoch: number) => createHardAuthorityRequirement({
       requestId: "request.deadline",
