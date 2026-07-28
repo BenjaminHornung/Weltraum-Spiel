@@ -28,8 +28,8 @@ import {
 } from "./validation";
 
 const hardReasons = new Set<HardAdaptiveRefinementReason>(HARD_ADAPTIVE_REFINEMENT_REASONS);
-const hardAuthorityTargetLevel = adaptiveLevel(4);
-const hardAuthorityExtentQuantum = brickExtentQuantumForLevel(hardAuthorityTargetLevel);
+export const HARD_AUTHORITY_TARGET_LEVEL = adaptiveLevel(4);
+const hardAuthorityExtentQuantum = brickExtentQuantumForLevel(HARD_AUTHORITY_TARGET_LEVEL);
 
 const copyRegion = (region: AdaptiveRefinementRegion): AdaptiveRefinementRegion => {
   if (region.kind === "aabb") {
@@ -69,7 +69,7 @@ export const createHardAuthorityRequirement = (value: Readonly<{
     requestId: stableAuthorityId(value.requestId, "requirement/requestId"),
     reason: value.reason,
     region: copyRegion(value.region),
-    targetLevel: hardAuthorityTargetLevel,
+    targetLevel: HARD_AUTHORITY_TARGET_LEVEL,
     requiredForCoverage: true,
     ...(deadlinePlanningEpoch === undefined ? {} : { deadlinePlanningEpoch }),
     priority: representationFinite(value.priority, "requirement/priority")

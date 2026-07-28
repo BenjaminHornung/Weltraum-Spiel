@@ -271,6 +271,60 @@ describe("voxel representation SSE and selection", () => {
       requiredAuthorityRequests: [{ ...requirement, targetLevel: adaptiveLevel(2) }]
     });
     expect(accepted.requiredAuthorityRequests[0].targetLevel).toBe(adaptiveLevel(4));
+
+    const level4Extent = brickExtentQuantumForLevel(adaptiveLevel(4));
+    const aabbRequirement = createHardAuthorityRequirement({
+      requestId: "request.hard-level-aabb",
+      reason: "CollisionRequired",
+      region: {
+        kind: "aabb",
+        bounds: {
+          min: { x: globalQuantumCoordinate(0), y: globalQuantumCoordinate(0), z: globalQuantumCoordinate(0) },
+          max: { x: globalQuantumCoordinate(level4Extent), y: globalQuantumCoordinate(level4Extent), z: globalQuantumCoordinate(level4Extent) }
+        }
+      },
+      priority: 10
+    });
+    const acceptedAabb = selectRepresentation({
+      ...baseInput(100),
+      requiredAuthorityRequests: [{ ...aabbRequirement, targetLevel: adaptiveLevel(2) }]
+    });
+    expect(acceptedAabb.requiredAuthorityRequests[0]).toMatchObject({ targetLevel: adaptiveLevel(4), region: aabbRequirement.region });
+    expect(acceptedAabb).toEqual(selectRepresentation({ ...baseInput(100), requiredAuthorityRequests: [aabbRequirement] }));
+  });
+
+  it("rejects non-data hard request records before L4 normalization", () => {
+    const requirement = createHardAuthorityRequirement({
+      requestId: "request.hard-record",
+      reason: "ProjectileImpact",
+      region: {
+        kind: "sphere",
+        center: { x: globalQuantumCoordinate(0), y: globalQuantumCoordinate(0), z: globalQuantumCoordinate(0) },
+        radiusQuantum: globalQuantumCoordinate(1)
+      },
+      priority: 10
+    });
+    let reasonReads = 0;
+    const accessorRequest = { ...requirement };
+    Object.defineProperty(accessorRequest, "reason", {
+      enumerable: true,
+      get: () => {
+        reasonReads += 1;
+        return "ProjectileImpact";
+      }
+    });
+    const customPrototypeRequest = Object.assign(Object.create({ inherited: true }), requirement);
+    const hiddenFieldRequest = { ...requirement };
+    Object.defineProperty(hiddenFieldRequest, "priority", { enumerable: false, value: requirement.priority });
+    const symbolFieldRequest = { ...requirement, [Symbol("noncanonical")]: true };
+
+    for (const invalidRequest of [accessorRequest, customPrototypeRequest, hiddenFieldRequest, symbolFieldRequest]) {
+      expect(() => selectRepresentation({
+        ...baseInput(100),
+        requiredAuthorityRequests: [invalidRequest as typeof requirement]
+      })).toThrow();
+    }
+    expect(reasonReads).toBe(0);
   });
 
   it("rejects duplicate Authority request IDs before publication", () => {

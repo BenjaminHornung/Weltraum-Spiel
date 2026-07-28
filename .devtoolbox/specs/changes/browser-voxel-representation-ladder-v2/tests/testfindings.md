@@ -2,15 +2,13 @@
 
 ## Status
 
-Published head `575cbf510e0cd5bc6a171f0d2fc2fff94db5866e` passed every
-exact-head check, but its Codex review opened one valid P2 decision-identity
-finding. The local regression and implementation fix are complete; the full
-verification, technical re-review, spec validation, and DevToolbox
-re-verification are complete, final human review approved the exact
-implementation patch, and the task 6.1 completion preflight passed. The
-replacement implementation commit was published and its exact-head CI, policy,
-dependency, and Codex review round passed with no unresolved threads. PR #53
-remains open and unmerged as required.
+Tracking head `f3a3cb812da3fba012966e09fccb997f4942a1d0` passed every
+exact-head check, but its Codex review opened a valid P2 hard-request
+normalization finding. The failing AABB regression, smallest fail-closed
+boundary fix, fresh local verification, bounded technical re-review, and
+DevToolbox re-verification are complete. Human review approved the exact local
+patch and task 6.1 is closed. Publication and a replacement exact-head round
+remain pending. PR #53 remains open and unmerged as required.
 
 ## Baseline
 
@@ -76,19 +74,32 @@ remains open and unmerged as required.
   Authority/simulation/readiness inputs. The affected selection set passes
   22/22, the full suite passes 1,382 tests, the build and focused E2E pass, and
   bounded re-review reports no remaining correctness or R1-R6/T1-T6 finding.
+- Final tracking head `f3a3cb812da3fba012966e09fccb997f4942a1d0` passed all five
+  checks, but Codex comment `3662144209` identified that selection validated a
+  hard AABB at its declared coarse target before mandatory L4 promotion. A
+  32-quantum L4-aligned AABB declared at L2 reproduced the mismatch: selection
+  failed 1/22 while the equivalent sphere path promoted successfully. Selection
+  now validates the supplied level domain, validates hard requests against the
+  shared normalized L4 target at its owning boundary, and continues to validate
+  soft requests unchanged. Review then found that record access preceded the
+  fail-closed boundary and that L4 ownership was duplicated. Validation now
+  rejects accessor, custom-prototype, non-enumerable, and symbol-bearing request
+  records before property access, and the interaction boundary exports the
+  shared hard-Authority level. The focused selection suite passes 23/23 and
+  bounded re-review reports no remaining correctness or R1-R6/T1-T6 finding.
 
 ## Final matrix
 
 | Gate | Status | Evidence |
 | --- | --- | --- |
 | Node 22 / npm ci | PASS | Node 22.23.1; 59 packages installed; audit found 0 vulnerabilities. |
-| Focused representation units | PASS | Descriptor 6/6, proxy 6/6, fallback 5/5, selection 22/22; the final combined Adaptive-contract/selection rerun passed 37/37. |
+| Focused representation units | PASS | The new hard-AABB regression failed 1/22 before the boundary fix. After review hardening, selection passes 23/23 and the final focused representation set passes 39/39. |
 | Settings and Authority regressions | PASS | Settings: 37/37; Adaptive/Structural regression set: 72/72. |
-| Full unit / production build | PASS | Final affected rerun: 141 files / 1,382 tests; TypeScript and Vite production build passed. Existing npm-config and chunk-size warnings remain non-blocking. |
-| Focused E2E twice / byte identity | PASS | 1/1 twice before review and 1/1 after review fixes, one worker, retries zero. SHA-256 JSON `38AA1A81BB35B02A131AB46FC079731651A540AF967CD84A947B8C5089BF1814`; Markdown `604BDC6D413FDD247E2AA4F79A6714870740922EA824DE62B61E9BB8342131A5`. |
-| Core / live / UI E2E | PASS | Fresh Node-22, one-worker, zero-retry runs after the decision-hash fix: core 41/41, live 14/14, UI 12/12. Full units/build/focused E2E were rerun after the review-only placement and test-coverage fixes. |
-| Static, scope, secret, lockfile scans | PASS | E2E inventory exact once in core; evidence parsed and volatile-field scan passed; diff/secret/forbidden-source/changed-path scans passed. Only the two intended source/test files and this change's tracking files differ; no Unity, dependency, lockfile, workflow, Playwright-config, Adaptive, or Structural files changed. |
-| DevToolbox verification/preflight | PASS | Recovery execution `a3d3d5d4c13c4c96a75c2424eba63d87` remains authoritative. Fresh async re-verification operation `015e12d095714783abd443f476eb1f70` succeeded with 2 pass, 1 known-warning build, and 0 fail; direct spec validation passed all six checks; task 6.1 completion preflight passed and the task was closed only after human approval. |
-| Technical review | PASS | Initial review found accepted-path hashing overhead and incomplete regression coverage. Both were fixed; affected tests pass 22/22 and bounded re-review reports no remaining correctness, regression, API, performance, or R1-R6/T1-T6 finding. |
-| Final Plannotator review | PASS | Human review approved stable patch ID `07386d1ea5e5eb407a031a11f5aa950d89203b18` through the clean in-project mirror; the mirror and implementation worktree patch IDs matched exactly before review, and the mirror was restored clean afterward. |
-| Exact-head CI and Codex review | PASS | Replacement implementation head `0757618e375da25b7b1317f643af054f2e08c472` passed all five current-head checks, including browser mainline verification and Codex review. Reply `3662032031` records the fix for valid comment `3660650274`; all review threads are resolved, merge state is clean, and PR #53 remains open and unmerged. |
+| Full unit / production build | PASS | Final affected rerun: 141 files / 1,383 tests; TypeScript and Vite production build passed. Existing npm-config and chunk-size warnings remain non-blocking. |
+| Focused E2E twice / byte identity | PASS | Final post-review run passed 1/1 twice with one worker and retries zero. SHA-256 JSON `38AA1A81BB35B02A131AB46FC079731651A540AF967CD84A947B8C5089BF1814`; Markdown `604BDC6D413FDD247E2AA4F79A6714870740922EA824DE62B61E9BB8342131A5`. |
+| Core / live / UI E2E | PASS | Final fresh Node-22, one-worker, zero-retry runs after the hard-AABB fix: core 41/41, live 14/14, UI 12/12. |
+| Static, scope, secret, lockfile scans | PASS | E2E inventory exact once in core; evidence parsed and volatile-field scan passed; diff/secret/forbidden-source/changed-path scans passed. Exactly the two production files, one unit-test file, and this change's two tracking files differ; no Unity, dependency, lockfile, workflow, Playwright-config, Adaptive, or Structural files changed. |
+| DevToolbox verification/preflight | PASS | Recovery execution `a3d3d5d4c13c4c96a75c2424eba63d87` remains authoritative. Fresh re-verification operation `ffdbb3a1e69740ce9280d4bfe61579b0` succeeded with 2 passed, 1 warning, 0 failed, and 0 skipped steps; spec validation and task 6.1 completion preflight passed. |
+| Technical review | PASS | Initial review found prevalidation property access and duplicated L4 ownership; both were fixed. Bounded re-review reports no correctness, regression, or R1-R6/T1-T6 finding. |
+| Final Plannotator review | PASS | Human review approved the exact five-file patch based on `f3a3cb812da3fba012966e09fccb997f4942a1d0`; source and review-mirror binary diffs matched hash `a886f3782a61a7cc6b92ed0f6a0068a5cefbe15c`. |
+| Exact-head CI and Codex review | PENDING | Head `f3a3cb812da3fba012966e09fccb997f4942a1d0` passed all five checks, but valid comment `3662144209` remains open until the fixed head is published and reviewed. |

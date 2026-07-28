@@ -1,11 +1,12 @@
 import {
+  adaptiveLevel,
   compareCanonicalCodeUnits,
   deepFreeze,
   hashAdaptiveCanonical,
   validateAdaptiveRefinementRequest
 } from "../adaptive";
 import { validateRepresentationLadderDescriptor } from "./descriptor";
-import { createHardAuthorityRequirement } from "./interaction";
+import { createHardAuthorityRequirement, HARD_AUTHORITY_TARGET_LEVEL } from "./interaction";
 import { validateVoxelQualityPolicy } from "./policy";
 import {
   REPRESENTATION_DECISION_SCHEMA_VERSION,
@@ -179,12 +180,19 @@ export const selectRepresentation = (input: RepresentationSelectionInput): Repre
     .map((entry, index) => representationString(entry, `selection/simulationRequirements/${index}`)).sort(compareCanonicalCodeUnits));
   const authorityRequests = rawAuthorityRequests
     .map((entry, index) => {
+      const pathRoot = "selection/requiredAuthorityRequests";
+      const path = `${pathRoot}/${index}`;
+      const record = representationRecord(entry, path);
+      const rawRequest = record as unknown as RepresentationSelectionInput["requiredAuthorityRequests"][number];
+      if (typeof record.reason !== "string" || !hardAuthorityReasons.has(record.reason)) {
+        return validateAdaptiveRefinementRequest(rawRequest, index, pathRoot).request;
+      }
+      adaptiveLevel(record.targetLevel as number, `${path}/targetLevel`);
       const request = validateAdaptiveRefinementRequest(
-        entry as RepresentationSelectionInput["requiredAuthorityRequests"][number],
+        { ...rawRequest, targetLevel: HARD_AUTHORITY_TARGET_LEVEL },
         index,
-        "selection/requiredAuthorityRequests"
+        pathRoot
       ).request;
-      if (!hardAuthorityReasons.has(request.reason)) return request;
       return createHardAuthorityRequirement({
         requestId: request.requestId,
         reason: request.reason as HardAdaptiveRefinementReason,
