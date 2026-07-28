@@ -8,8 +8,9 @@ finding. The local regression and implementation fix are complete; the full
 verification, technical re-review, spec validation, and DevToolbox
 re-verification are complete, final human review approved the exact
 implementation patch, and the task 6.1 completion preflight passed. The
-updated publication commit and replacement exact-head round remain pending.
-PR #53 remains open and unmerged as required.
+replacement implementation commit was published and its exact-head CI, policy,
+dependency, and Codex review round passed with no unresolved threads. PR #53
+remains open and unmerged as required.
 
 ## Baseline
 
@@ -90,4 +91,4 @@ PR #53 remains open and unmerged as required.
 | DevToolbox verification/preflight | PASS | Recovery execution `a3d3d5d4c13c4c96a75c2424eba63d87` remains authoritative. Fresh async re-verification operation `015e12d095714783abd443f476eb1f70` succeeded with 2 pass, 1 known-warning build, and 0 fail; direct spec validation passed all six checks; task 6.1 completion preflight passed and the task was closed only after human approval. |
 | Technical review | PASS | Initial review found accepted-path hashing overhead and incomplete regression coverage. Both were fixed; affected tests pass 22/22 and bounded re-review reports no remaining correctness, regression, API, performance, or R1-R6/T1-T6 finding. |
 | Final Plannotator review | PASS | Human review approved stable patch ID `07386d1ea5e5eb407a031a11f5aa950d89203b18` through the clean in-project mirror; the mirror and implementation worktree patch IDs matched exactly before review, and the mirror was restored clean afterward. |
-| Exact-head CI and Codex review | PENDING | Head `575cbf510e0cd5bc6a171f0d2fc2fff94db5866e` passed all checks. Comments `3660076342` and `3660304384` are resolved; valid comment `3660650274` remains open until the fixed head is published and reviewed. |
+| Exact-head CI and Codex review | PASS | Replacement implementation head `0757618e375da25b7b1317f643af054f2e08c472` passed all five current-head checks, including browser mainline verification and Codex review. Reply `3662032031` records the fix for valid comment `3660650274`; all review threads are resolved, merge state is clean, and PR #53 remains open and unmerged. |
