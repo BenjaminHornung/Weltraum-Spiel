@@ -145,15 +145,16 @@ export const deriveEvictionEligibility = (value: Readonly<{
     }
     return pin as RepresentationLifecyclePinReason;
   });
-  if (value.structuralState !== "Dirty" && value.structuralState !== "Solving" && value.structuralState !== "Settled") {
+  const structuralState = value.structuralState;
+  if (structuralState !== "Dirty" && structuralState !== "Solving" && structuralState !== "Settled") {
     return representationFail("InvalidContract", "lifecycle/structuralState", "Unsupported Structural lifecycle state.");
   }
   const reasons = [
-    ...(value.structuralState === "Settled" ? [] : [`Structural${value.structuralState}`]),
+    ...(structuralState === "Settled" ? [] : [`Structural${structuralState}`]),
     ...[...new Set(pins)].sort()
   ];
   return deepFreeze({
-    derivedProductsEvictable: value.structuralState === "Settled" && reasons.length === 0,
+    derivedProductsEvictable: structuralState === "Settled" && reasons.length === 0,
     retainedSourceBindings: ["AdaptiveAuthority", "EditJournal", "StructuralAuthority"] as const,
     reasons: deepFreeze(reasons)
   });

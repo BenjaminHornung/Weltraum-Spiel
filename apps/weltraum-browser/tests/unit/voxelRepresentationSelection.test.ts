@@ -736,6 +736,28 @@ describe("voxel representation hard pins, interaction, and lifecycle", () => {
     })).toThrow();
   });
 
+  it("derives eviction from one validated Structural lifecycle snapshot", () => {
+    let structuralStateReads = 0;
+    const lifecycle = new Proxy({
+      structuralState: "Dirty" as "Dirty" | "Settled",
+      activePins: [] as const
+    }, {
+      get(target, property, receiver) {
+        if (property === "structuralState") {
+          structuralStateReads += 1;
+          return structuralStateReads === 1 ? "Dirty" : "Settled";
+        }
+        return Reflect.get(target, property, receiver);
+      }
+    });
+
+    expect(deriveEvictionEligibility(lifecycle)).toMatchObject({
+      derivedProductsEvictable: false,
+      reasons: ["StructuralDirty"]
+    });
+    expect(structuralStateReads).toBe(1);
+  });
+
   it("rejects active lifecycle pins above the finite cap before reading entries", () => {
     let reads = 0;
     const pins = Array.from({ length: REPRESENTATION_MAX_ACTIVE_PINS + 1 }, () => "ActiveRigidBody" as const);
