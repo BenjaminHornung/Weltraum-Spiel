@@ -94,6 +94,33 @@ describe("voxel representation atomic fallback", () => {
     expect(readinessReads).toBe(1);
   });
 
+  it("snapshots proxy-backed child evidence once before deciding fallback coverage", () => {
+    let readinessReads = 0;
+    const staleChild = new Proxy(
+      { childId: "child.00", revision: 4, readiness: "Stale" },
+      {
+        get(target, property, receiver) {
+          if (property === "readiness") {
+            readinessReads += 1;
+            return readinessReads === 1 ? "Stale" : "Ready";
+          }
+          return Reflect.get(target, property, receiver);
+        }
+      }
+    );
+    const childValues = children(64);
+    childValues[0] = staleChild as AtomicFallbackChild;
+
+    let fallbackError: unknown;
+    try {
+      resolveAtomicFallback({ ...group(64, childValues), parent: null });
+    } catch (error) {
+      fallbackError = error;
+    }
+    expect(fallbackError).toMatchObject({ code: "InvalidFallback", path: "fallback/parent" });
+    expect(readinessReads).toBe(1);
+  });
+
   it("rejects the legacy bare parent ID and inexact nested parent records", () => {
     const { parent: _parent, ...withoutParent } = group(0);
     expect(() => resolveAtomicFallback({ ...withoutParent, parentId: "parent.coarse" })).toThrow();

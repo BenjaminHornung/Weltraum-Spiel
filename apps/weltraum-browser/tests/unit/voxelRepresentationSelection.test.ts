@@ -640,13 +640,25 @@ describe("voxel representation hard pins, interaction, and lifecycle", () => {
     let reasonReads = 0;
     let deadlineReads = 0;
     let regionKindReads = 0;
+    let centerReads = 0;
     const region = {
-      center: { x: globalQuantumCoordinate(4), y: globalQuantumCoordinate(5), z: globalQuantumCoordinate(6) },
       radiusQuantum: globalQuantumCoordinate(1)
     } as unknown as Parameters<typeof createHardAuthorityRequirement>[0]["region"];
     Object.defineProperty(region, "kind", {
       enumerable: true,
       get: () => (++regionKindReads === 1 ? "sphere" : "tile")
+    });
+    Object.defineProperty(region, "center", {
+      enumerable: true,
+      get: () => {
+        centerReads += 1;
+        const offset = centerReads === 1 ? 0 : centerReads * 10;
+        return {
+          x: globalQuantumCoordinate(4 + offset),
+          y: globalQuantumCoordinate(5 + offset),
+          z: globalQuantumCoordinate(6 + offset)
+        };
+      }
     });
     const input = {
       requestId: "request.requirement-snapshot",
@@ -665,11 +677,15 @@ describe("voxel representation hard pins, interaction, and lifecycle", () => {
     expect(createHardAuthorityRequirement(input)).toMatchObject({
       reason: "ToolInteraction",
       deadlinePlanningEpoch: 7,
-      region: { kind: "sphere" }
+      region: {
+        kind: "sphere",
+        center: { x: globalQuantumCoordinate(4), y: globalQuantumCoordinate(5), z: globalQuantumCoordinate(6) }
+      }
     });
     expect(reasonReads).toBe(1);
     expect(deadlineReads).toBe(1);
     expect(regionKindReads).toBe(1);
+    expect(centerReads).toBe(1);
   });
 
   it("retains dirty/solving/rigid/unsettled/solve/handoff products and releases only explicit unpinned Settled products", () => {

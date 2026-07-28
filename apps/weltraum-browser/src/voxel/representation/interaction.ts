@@ -45,10 +45,11 @@ const copyRegion = (region: AdaptiveRefinementRegion): AdaptiveRefinementRegion 
   if (kind !== "sphere") {
     return representationFail("InvalidContract", "region/kind", "Unsupported hard Authority region kind.");
   }
+  const rawCenter = region.center;
   const center = deepFreeze({
-    x: globalQuantumCoordinate(region.center.x, "region/center/x"),
-    y: globalQuantumCoordinate(region.center.y, "region/center/y"),
-    z: globalQuantumCoordinate(region.center.z, "region/center/z")
+    x: globalQuantumCoordinate(rawCenter.x, "region/center/x"),
+    y: globalQuantumCoordinate(rawCenter.y, "region/center/y"),
+    z: globalQuantumCoordinate(rawCenter.z, "region/center/z")
   });
   const radiusQuantum = globalQuantumCoordinate(region.radiusQuantum, "region/radiusQuantum");
   if (radiusQuantum <= 0) return representationFail("InvalidContract", "region/radiusQuantum", "Sphere radius must be positive.");

@@ -40,13 +40,16 @@ const fallbackGroup = (value: unknown, path: string): AtomicFallbackGroup => {
     const childPath = `${path}/children/${index}`;
     const child = representationRecord(entry, childPath);
     representationExactKeys(child, ["childId", "revision", "readiness"], childPath);
-    if (typeof child.readiness !== "string" || !readinessValues.has(child.readiness)) {
+    const rawChildId = child.childId;
+    const rawChildRevision = child.revision;
+    const rawChildReadiness = child.readiness;
+    if (typeof rawChildReadiness !== "string" || !readinessValues.has(rawChildReadiness)) {
       return representationFail("InvalidFallback", `${childPath}/readiness`, "Unsupported fallback child readiness.");
     }
     return deepFreeze({
-      childId: representationId(child.childId, `${childPath}/childId`),
-      revision: representationNonNegativeSafeInteger(child.revision, `${childPath}/revision`),
-      readiness: child.readiness as AtomicFallbackGroup["children"][number]["readiness"]
+      childId: representationId(rawChildId, `${childPath}/childId`),
+      revision: representationNonNegativeSafeInteger(rawChildRevision, `${childPath}/revision`),
+      readiness: rawChildReadiness as AtomicFallbackGroup["children"][number]["readiness"]
     });
   }).sort((left, right) => compareCanonicalCodeUnits(left.childId, right.childId));
   for (let index = 1; index < children.length; index += 1) {

@@ -174,7 +174,8 @@ export const checkSurfaceProxyCurrentSource = (
   const checkedProxy = validateSurfaceProxyIdentity(proxy);
   const bodyId = representationId(current.bodyId, "current/bodyId");
   const surfaceFrameId = representationId(current.surfaceFrameId, "current/surfaceFrameId");
-  if (current.locationKind !== "Region" && current.locationKind !== "Tile") {
+  const locationKind = current.locationKind;
+  if (locationKind !== "Region" && locationKind !== "Tile") {
     return representationFail("InvalidIdentity", "current/locationKind", "Location kind must be Region or Tile.");
   }
   const locationId = representationId(current.locationId, "current/locationId");
@@ -200,7 +201,7 @@ export const checkSurfaceProxyCurrentSource = (
   if (checkedProxy.proxyContentHash !== proxyContentHash) return deepFreeze({ status: "Rejected", code: "ProxyContentHashMismatch" });
   if (checkedProxy.bodyId !== bodyId) return deepFreeze({ status: "Rejected", code: "BodyIdMismatch" });
   if (checkedProxy.surfaceFrameId !== surfaceFrameId) return deepFreeze({ status: "Rejected", code: "SurfaceFrameIdMismatch" });
-  if (checkedProxy.locationKind !== current.locationKind) return deepFreeze({ status: "Rejected", code: "LocationKindMismatch" });
+  if (checkedProxy.locationKind !== locationKind) return deepFreeze({ status: "Rejected", code: "LocationKindMismatch" });
   if (checkedProxy.locationId !== locationId) return deepFreeze({ status: "Rejected", code: "LocationIdMismatch" });
   if (checkedProxy.generatorVersion !== generatorVersion) return deepFreeze({ status: "Rejected", code: "GeneratorVersionMismatch" });
   if (checkedProxy.sourceRevision !== sourceRevision) return deepFreeze({ status: "Rejected", code: "StaleSourceRevision" });

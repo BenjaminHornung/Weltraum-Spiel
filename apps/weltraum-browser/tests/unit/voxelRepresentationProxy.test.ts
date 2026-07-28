@@ -148,4 +148,30 @@ describe("voxel representation revision-bound proxies", () => {
     expect(checkSurfaceProxyCurrentSource(proxy, { ...current, bandId: "band.other" })).toMatchObject({ code: "BandIdMismatch" });
     expect(checkSurfaceProxyCurrentSource(proxy, { ...current, proxyAlgorithmVersion: "tile-proxy.v3" })).toMatchObject({ code: "ProxyAlgorithmVersionMismatch" });
   });
+
+  it("uses one validated current surface location-kind snapshot", () => {
+    const proxy = createSurfaceProxyIdentity({
+      bodyId: "planet.test", surfaceFrameId: "frame.surface", locationKind: "Tile", locationId: "tile.4.5",
+      generatorVersion: "generator.v2", sourceRevision: 10, editRevision: 3, sourceContentHash: hash("surface"),
+      bandId: "band.tile", proxyAlgorithmVersion: "tile-proxy.v2"
+    });
+    let locationKindReads = 0;
+    const current = new Proxy({
+      bodyId: proxy.bodyId, surfaceFrameId: proxy.surfaceFrameId, locationKind: "Region" as "Region" | "Tile",
+      locationId: proxy.locationId, generatorVersion: proxy.generatorVersion, sourceRevision: proxy.sourceRevision,
+      editRevision: proxy.editRevision, sourceContentHash: proxy.sourceContentHash,
+      bandId: proxy.bandId, proxyAlgorithmVersion: proxy.proxyAlgorithmVersion
+    }, {
+      get(target, property, receiver) {
+        if (property === "locationKind") {
+          locationKindReads += 1;
+          return locationKindReads === 1 ? "Region" : "Tile";
+        }
+        return Reflect.get(target, property, receiver);
+      }
+    });
+
+    expect(checkSurfaceProxyCurrentSource(proxy, current)).toEqual({ status: "Rejected", code: "LocationKindMismatch" });
+    expect(locationKindReads).toBe(1);
+  });
 });
