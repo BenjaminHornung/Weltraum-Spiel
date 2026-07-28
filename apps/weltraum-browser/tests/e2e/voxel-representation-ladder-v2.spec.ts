@@ -268,7 +268,11 @@ test("normal Chromium route deterministically proves voxel representation ladder
       }));
       const requiredChildIds = children(64).map((child) => child.childId);
       const fallbackFor = (childValues: ReturnType<typeof children>) => representation.resolveAtomicFallback({
-        groupId: "fallback.browser", parentId: "parent.coarse", revision: 4, requiredChildIds, children: childValues
+        groupId: "fallback.browser",
+        parent: { parentId: "parent.coarse", revision: 4, readiness: "Ready" },
+        revision: 4,
+        requiredChildIds,
+        children: childValues
       });
       const fallbackZero = fallbackFor(children(0));
       const fallbackPartial = fallbackFor(children(1));

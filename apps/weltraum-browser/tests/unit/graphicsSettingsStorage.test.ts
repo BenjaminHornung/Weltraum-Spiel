@@ -89,6 +89,23 @@ describe("graphics settings storage and controller", () => {
     expect(loadGraphicsSettings(storage).settings.qualityPreset).toBe("Low");
   });
 
+  it.each(["Low", "Medium", "High", "Ultra"] as const)("keeps migrated %s preset identity stable through save and reload", async (preset) => {
+    const storage = new MemoryStorage();
+    const expected = applyQualityPreset(createDefaultGraphicsSettings(), preset);
+    const { voxel: _voxel, ...v1 } = expected;
+    storage.setItem(GRAPHICS_SETTINGS_STORAGE_KEY, JSON.stringify({ schemaVersion: 1, settings: v1 }));
+
+    const loaded = loadGraphicsSettings(storage);
+    expect(loaded.settings.voxel).toEqual(expected.voxel);
+    const controller = createGraphicsSettingsController({ initial: loaded, storage, runtime: runtimePort() });
+    controller.updateSetting("display.fieldOfView", expected.display.fieldOfView + 1);
+    expect((await controller.apply()).ok).toBe(true);
+
+    expect(controller.getSnapshot().confirmed.qualityPreset).toBe(preset);
+    expect(JSON.parse(storage.getItem(GRAPHICS_SETTINGS_STORAGE_KEY)!).settings.qualityPreset).toBe(preset);
+    expect(loadGraphicsSettings(storage).settings.qualityPreset).toBe(preset);
+  });
+
   it("Cancel neither persists nor applies", async () => {
     const storage = new MemoryStorage();
     const runtime = runtimePort();

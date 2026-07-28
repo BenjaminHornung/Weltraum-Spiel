@@ -20,7 +20,7 @@ const readinessValues = new Set(["Ready", "Stale", "Invalid", "Cancelled", "Inco
 
 const fallbackGroup = (value: unknown, path: string): AtomicFallbackGroup => {
   const record = representationRecord(value, path);
-  representationExactKeys(record, ["groupId", "parentId", "revision", "requiredChildIds", "children"], path);
+  representationExactKeys(record, ["groupId", "parent", "revision", "requiredChildIds", "children"], path);
   representationArrayLengthPreflight(record.requiredChildIds, `${path}/requiredChildIds`, REPRESENTATION_MAX_FALLBACK_CHILDREN);
   representationArrayLengthPreflight(record.children, `${path}/children`, REPRESENTATION_MAX_FALLBACK_CHILDREN);
   const rawRequiredChildIds = representationDenseArray(record.requiredChildIds, `${path}/requiredChildIds`, REPRESENTATION_MAX_FALLBACK_CHILDREN);
@@ -54,9 +54,28 @@ const fallbackGroup = (value: unknown, path: string): AtomicFallbackGroup => {
       return representationFail("InvalidFallback", `${path}/children`, "Fallback child IDs must be unique.");
     }
   }
+  const rawParent = record.parent;
+  const parent = rawParent === null
+    ? null
+    : (() => {
+        const parentPath = `${path}/parent`;
+        const parentRecord = representationRecord(rawParent, parentPath);
+        representationExactKeys(parentRecord, ["parentId", "revision", "readiness"], parentPath);
+        const rawParentId = parentRecord.parentId;
+        const rawParentRevision = parentRecord.revision;
+        const rawParentReadiness = parentRecord.readiness;
+        if (typeof rawParentReadiness !== "string" || !readinessValues.has(rawParentReadiness)) {
+          return representationFail("InvalidFallback", `${parentPath}/readiness`, "Unsupported fallback parent readiness.");
+        }
+        return deepFreeze({
+          parentId: representationId(rawParentId, `${parentPath}/parentId`),
+          revision: representationNonNegativeSafeInteger(rawParentRevision, `${parentPath}/revision`),
+          readiness: rawParentReadiness as NonNullable<AtomicFallbackGroup["parent"]>["readiness"]
+        });
+      })();
   return deepFreeze({
     groupId: representationId(record.groupId, `${path}/groupId`),
-    parentId: representationId(record.parentId, `${path}/parentId`),
+    parent,
     revision: representationNonNegativeSafeInteger(record.revision, `${path}/revision`),
     requiredChildIds: deepFreeze(requiredChildIds),
     children: deepFreeze(children)
@@ -71,21 +90,25 @@ export const resolveAtomicFallback = (value: unknown): AtomicFallbackDecision =>
       && child.readiness === "Ready"
       && child.revision === group.revision
     );
-  return complete
-    ? deepFreeze({
-        groupId: group.groupId,
-        settledCoverage: "Children",
-        parentId: null,
-        childIds: deepFreeze(group.children.map((child) => child.childId)),
-        reason: "AllRequiredCurrentChildrenReady"
-      })
-    : deepFreeze({
-        groupId: group.groupId,
-        settledCoverage: "Parent",
-        parentId: group.parentId,
-        childIds: [] as const,
-        reason: "ParentRetainedUntilAtomicReplacement"
-      });
+  if (complete) {
+    return deepFreeze({
+      groupId: group.groupId,
+      settledCoverage: "Children",
+      parentId: null,
+      childIds: deepFreeze(group.children.map((child) => child.childId)),
+      reason: "AllRequiredCurrentChildrenReady"
+    });
+  }
+  if (group.parent === null || group.parent.readiness !== "Ready" || group.parent.revision !== group.revision) {
+    return representationFail("InvalidFallback", "fallback/parent", "Incomplete fallback children require a ready parent at the group revision.");
+  }
+  return deepFreeze({
+    groupId: group.groupId,
+    settledCoverage: "Parent",
+    parentId: group.parent.parentId,
+    childIds: [] as const,
+    reason: "ParentRetainedUntilAtomicReplacement"
+  });
 };
 
 export const resolveAtomicFallbackGroups = (value: unknown): readonly AtomicFallbackDecision[] => {

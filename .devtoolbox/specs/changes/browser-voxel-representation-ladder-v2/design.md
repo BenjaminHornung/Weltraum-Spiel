@@ -114,9 +114,13 @@ retained.
 
 ### Atomic fallback
 
-Fallback groups are bounded and revision-bound. Zero, partial, stale, invalid,
-cancelled, or incomplete children keep the complete parent. Exactly all
-required current, same-revision children replace the parent atomically. Parent
+Fallback groups are bounded and revision-bound. The raw contract carries either
+an absent parent or one parent record with ID, revision, and readiness. Zero,
+partial, stale, invalid, cancelled, or incomplete children keep only a `Ready`
+parent at the exact group revision. Exactly all required current, same-revision
+children replace the parent atomically even when the parent is unavailable. If
+neither full children nor a complete current parent exists, the resolver fails
+closed with typed `InvalidFallback`; it does not publish settled coverage. Parent
 and partial children are never published as settled mixed coverage. The helper
 supports the required 64-child vector while staying count-driven. Selection
 accepts the raw bounded fallback group and invokes that resolver itself; callers
@@ -128,7 +132,9 @@ cannot publish a hand-built child-coverage decision.
 strict `voxel` group containing `detail` (`Low|Medium|High|Ultra`), independent
 positive `detailDistanceMeters`, and `streamingBudget`
 (`Low|Medium|High|Ultra`). V1 migration copies every prior field and appends
-deterministic voxel defaults. V2 validation remains exact-key and fail-closed;
+deterministic voxel defaults. Concrete V1 presets reuse their existing V2 preset
+voxel values so preset identity survives save/reload; Custom uses the default
+voxel values. V2 validation remains exact-key and fail-closed;
 future versions fail closed. Missing/corrupt/invalid/future storage is not
 silently overwritten. `display.renderDistance` remains camera/culling state.
 

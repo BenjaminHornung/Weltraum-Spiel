@@ -131,7 +131,7 @@ describe("voxel representation SSE and selection", () => {
   it("derives fallback decisions only from complete revision-current groups", () => {
     const input = baseInput(125);
     const fallbackGroup = {
-      groupId: "fallback.group", parentId: "parent", revision: 7,
+      groupId: "fallback.group", parent: { parentId: "parent", revision: 7, readiness: "Ready" as const }, revision: 7,
       requiredChildIds: ["child.a", "child.b"],
       children: [
         { childId: "child.a", revision: 7, readiness: "Ready" as const },
@@ -373,7 +373,7 @@ describe("voxel representation SSE and selection", () => {
       descriptor,
       fallbackGroup: {
         groupId: "fallback.over-cap",
-        parentId: "parent",
+        parent: { parentId: "parent", revision: 1, readiness: "Ready" },
         revision: 1,
         requiredChildIds: Array.from({ length: REPRESENTATION_MAX_FALLBACK_CHILDREN + 1 }, (_, index) => `child.${index}`),
         children: []
@@ -444,7 +444,7 @@ describe("voxel representation SSE and selection", () => {
       selectRepresentation({
         ...rejectedInput,
         fallbackGroup: {
-          groupId: "fallback.rejected-hash", parentId: "parent", revision: 1,
+          groupId: "fallback.rejected-hash", parent: { parentId: "parent", revision: 1, readiness: "Ready" }, revision: 1,
           requiredChildIds: ["child"], children: [{ childId: "child", revision: 1, readiness: "Ready" as const }]
         }
       }).decisionHash,
@@ -596,15 +596,15 @@ describe("voxel representation hard pins, interaction, and lifecycle", () => {
     expect(() => resolveProxyInteraction({ ...common, hasLevel4Coverage: 0 as never })).toThrow();
   });
 
-  it("uses one validated proxy request snapshot when coordinates are ready", () => {
+  it("uses one validated proxy input snapshot for budget admission", () => {
     let reasonReads = 0;
     let coverageReads = 0;
     let coordinateReads = 0;
+    let requiredWorkReads = 0;
+    let budgetReads = 0;
     const coordinates = { x: globalQuantumCoordinate(4), y: globalQuantumCoordinate(5), z: globalQuantumCoordinate(6) };
     const input = {
       requestId: "request.snapshot",
-      requiredAuthorityWork: 10,
-      authorityWorkBudget: 10,
       priority: 5
     } as unknown as Parameters<typeof resolveProxyInteraction>[0];
     Object.defineProperty(input, "reason", {
@@ -619,11 +619,57 @@ describe("voxel representation hard pins, interaction, and lifecycle", () => {
       enumerable: true,
       get: () => (++coordinateReads === 1 ? coordinates : null)
     });
+    Object.defineProperty(input, "requiredAuthorityWork", {
+      enumerable: true,
+      get: () => (++requiredWorkReads === 1 ? 20 : 0)
+    });
+    Object.defineProperty(input, "authorityWorkBudget", {
+      enumerable: true,
+      get: () => (++budgetReads === 1 ? 10 : 20)
+    });
 
-    expect(resolveProxyInteraction(input)).toMatchObject({ status: "READY" });
+    expect(resolveProxyInteraction(input)).toMatchObject({ status: "Blocked", code: "AuthorityBudgetExceeded" });
     expect(reasonReads).toBe(1);
     expect(coverageReads).toBe(1);
     expect(coordinateReads).toBe(1);
+    expect(requiredWorkReads).toBe(1);
+    expect(budgetReads).toBe(1);
+  });
+
+  it("publishes one validated hard Authority requirement snapshot", () => {
+    let reasonReads = 0;
+    let deadlineReads = 0;
+    let regionKindReads = 0;
+    const region = {
+      center: { x: globalQuantumCoordinate(4), y: globalQuantumCoordinate(5), z: globalQuantumCoordinate(6) },
+      radiusQuantum: globalQuantumCoordinate(1)
+    } as unknown as Parameters<typeof createHardAuthorityRequirement>[0]["region"];
+    Object.defineProperty(region, "kind", {
+      enumerable: true,
+      get: () => (++regionKindReads === 1 ? "sphere" : "tile")
+    });
+    const input = {
+      requestId: "request.requirement-snapshot",
+      region,
+      priority: 5
+    } as unknown as Parameters<typeof createHardAuthorityRequirement>[0];
+    Object.defineProperty(input, "reason", {
+      enumerable: true,
+      get: () => (++reasonReads === 1 ? "ToolInteraction" : "Inspection")
+    });
+    Object.defineProperty(input, "deadlinePlanningEpoch", {
+      enumerable: true,
+      get: () => adaptivePlanningEpoch(++deadlineReads === 1 ? 7 : 8)
+    });
+
+    expect(createHardAuthorityRequirement(input)).toMatchObject({
+      reason: "ToolInteraction",
+      deadlinePlanningEpoch: 7,
+      region: { kind: "sphere" }
+    });
+    expect(reasonReads).toBe(1);
+    expect(deadlineReads).toBe(1);
+    expect(regionKindReads).toBe(1);
   });
 
   it("retains dirty/solving/rigid/unsettled/solve/handoff products and releases only explicit unpinned Settled products", () => {

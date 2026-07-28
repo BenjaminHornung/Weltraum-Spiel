@@ -38,9 +38,10 @@ preflight exist.
 - [x] 3.2 Implement hard Level-4 interaction pins, lifecycle eviction, and
   count-driven atomic fallback.
   - Acceptance: every hard reason requests L4 independent of quality; missing
-    coverage/budget fails closed; dirty/solving/active/unsettled/handoff states
-    are not evictable; 0/partial/63-of-64/stale retain parent; 64-of-64 current
-    children replace atomically.
+  coverage/budget fails closed; dirty/solving/active/unsettled/handoff states
+  are not evictable; complete current children replace atomically without a
+  parent; incomplete children require a Ready parent at the group revision and
+  otherwise reject with typed `InvalidFallback`.
   - Evidence: focused pin/lifecycle/fallback tests.
 
 ## Phase 4 - Settings migration and policy

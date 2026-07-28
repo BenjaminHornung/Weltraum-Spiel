@@ -1,6 +1,6 @@
 import { GRAPHICS_LIMITS, GRAPHICS_SETTINGS_SCHEMA_VERSION, cloneAndFreeze } from "./schema";
 import { DEFAULT_VOXEL_SETTINGS } from "./defaults";
-import { inferQualityPreset } from "./presets";
+import { applyQualityPreset, inferQualityPreset } from "./presets";
 import type {
   ConcreteQualityPreset,
   FpsLimit,
@@ -165,9 +165,13 @@ export function decodeGraphicsSettingsEnvelope(value: unknown): DecodeGraphicsSe
     if (!validateGraphicsSettingsV1(value.settings)) {
       return { ok: false, reason: "Invalid", message: "Settings payload failed schema validation." };
     }
+    const settingsWithDefaults = { ...value.settings, voxel: DEFAULT_VOXEL_SETTINGS };
+    const voxel = value.settings.qualityPreset === "Custom"
+      ? DEFAULT_VOXEL_SETTINGS
+      : applyQualityPreset(settingsWithDefaults, value.settings.qualityPreset).voxel;
     return {
       ok: true,
-      value: cloneAndFreeze({ ...value.settings, voxel: DEFAULT_VOXEL_SETTINGS }) as GraphicsSettingsV2
+      value: cloneAndFreeze({ ...value.settings, voxel }) as GraphicsSettingsV2
     };
   }
   if (value.schemaVersion !== GRAPHICS_SETTINGS_SCHEMA_VERSION || !validateGraphicsSettings(value.settings)) {

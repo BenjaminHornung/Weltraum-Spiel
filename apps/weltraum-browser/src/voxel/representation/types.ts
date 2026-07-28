@@ -253,9 +253,15 @@ export interface AtomicFallbackChild {
   readonly readiness: "Ready" | "Stale" | "Invalid" | "Cancelled" | "Incomplete";
 }
 
+export interface AtomicFallbackParent {
+  readonly parentId: string;
+  readonly revision: number;
+  readonly readiness: "Ready" | "Stale" | "Invalid" | "Cancelled" | "Incomplete";
+}
+
 export interface AtomicFallbackGroup {
   readonly groupId: string;
-  readonly parentId: string;
+  readonly parent: AtomicFallbackParent | null;
   readonly revision: number;
   readonly requiredChildIds: readonly string[];
   readonly children: readonly AtomicFallbackChild[];

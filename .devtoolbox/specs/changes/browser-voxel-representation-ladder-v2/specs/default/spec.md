@@ -140,18 +140,23 @@ derived, then derived products may be released while source bindings remain.
 
 ## Requirement: Atomic revision-equal fallback
 
-A complete parent shall remain active for zero, partial, stale, invalid,
-cancelled, incomplete, or mixed-revision children. Only all required current
-same-revision children replace it atomically; mixed parent/fine settled coverage
-shall never be published. Selection shall derive its fallback decision from the
-raw bounded group through the atomic resolver rather than accept a caller-built
-decision.
+A complete current parent shall remain active for zero, partial, stale, invalid,
+cancelled, incomplete, or mixed-revision children. Each raw bounded group shall
+carry explicit parent presence, readiness, and revision evidence. Only all
+required current same-revision children replace the parent atomically. When the
+child set is incomplete and no ready parent at the group revision exists,
+resolution shall fail closed with typed `InvalidFallback` and publish no settled
+coverage. Mixed parent/fine settled coverage shall never be published. Selection
+shall derive its fallback decision from the raw group through the atomic resolver
+rather than accept a caller-built decision.
 
 ### Scenario: Sixty-three of sixty-four
 
-Given a complete parent and 63 of 64 current fine children, when fallback is
-resolved, then the parent remains the sole settled coverage. With all 64 current
-children, the children replace it atomically.
+Given a complete ready parent at the group revision and 63 of 64 current fine
+children, when fallback is resolved, then the parent remains the sole settled
+coverage. With all 64 current children, the children replace it atomically. If
+the children remain incomplete while the parent is absent, non-ready, or at a
+different revision, resolution fails closed with no settled coverage.
 
 ## Requirement: Finite budgets and atomic admission
 
@@ -171,14 +176,17 @@ resolution runs, then it is Blocked with no partial edit and unchanged input.
 The latest exact-key settings schema shall add voxel detail
 `Low|Medium|High|Ultra`, independent positive detail distance, and streaming
 budget `Low|Medium|High|Ultra`. V1 shall migrate explicitly by preserving every
-old field and adding deterministic defaults. Corrupt, invalid, or future data
-shall fail closed and shall not be silently overwritten. Camera
+old field and adding deterministic defaults. A concrete V1 quality preset shall
+receive that preset's existing V2 voxel values so its identity remains stable
+through save and reload; a Custom payload shall receive the default voxel values.
+Corrupt, invalid, or future data shall fail closed and shall not be silently overwritten. Camera
 `display.renderDistance` shall remain independent.
 
 ### Scenario: V1 preservation
 
 Given a valid non-default V1 payload, when loaded by V2, then every prior value
-is equal and only deterministic voxel defaults are added.
+is equal and only deterministic voxel defaults are added. Concrete preset
+identity remains stable through an unrelated setting change, save, and reload.
 
 ### Scenario: Future version
 

@@ -168,15 +168,19 @@ products are eligible for release.
 ## Atomic parent fallback
 
 Fallback groups are bounded and revision-bound. Each group declares the exact
-canonical child IDs required for complete replacement. A complete parent remains the
-sole settled coverage for zero, partial, stale, invalid, cancelled,
-incomplete, or mixed-revision children. Parent and partial children are never
-published as mixed settled coverage. Selection receives the raw fallback group
-and derives the published decision through the atomic resolver; direct caller-
-built child-coverage decisions are not accepted. Only all required children that are
-current, ready, and at the exact group revision replace the parent in one
-atomic decision. The contract proves the required 64-child transition, while
-the helper remains count-driven within the finite child cap.
+canonical child IDs required for complete replacement and carries explicit
+parent presence, readiness, and revision evidence. A complete `Ready` parent at
+the group revision remains the sole settled coverage for zero, partial, stale,
+invalid, cancelled, incomplete, or mixed-revision children. Parent and partial
+children are never published as mixed settled coverage. Selection receives the
+raw fallback group and derives the published decision through the atomic
+resolver; direct caller-built child-coverage decisions are not accepted. Only
+all required children that are current, ready, and at the exact group revision
+replace the parent in one atomic decision. If neither full children nor a
+complete current parent exists, resolution fails closed with typed
+`InvalidFallback` and publishes no settled coverage. The contract proves the
+required 64-child transition, while the helper remains count-driven within the
+finite child cap.
 
 ## Budgets and fail-closed admission
 
@@ -205,8 +209,11 @@ voxel.detailDistanceMeters: positive finite distance
 voxel.streamingBudget: Low | Medium | High | Ultra
 ```
 
-Valid V1 storage migrates explicitly by preserving every V1 field and adding
-deterministic voxel defaults (`High`, `4,000 m`, `High`). Missing, corrupt,
+Valid V1 storage migrates explicitly by preserving every V1 field. Concrete
+quality presets gain their matching V2 voxel values: Low (`Low`, `750 m`,
+`Low`), Medium (`Medium`, `2,000 m`, `Medium`), High (`High`, `4,000 m`,
+`High`), and Ultra (`Ultra`, `8,000 m`, `Ultra`). A derived Custom preset gains
+the deterministic defaults (`High`, `4,000 m`, `High`). Missing, corrupt,
 invalid, and future-version storage uses the existing fail-closed load result
 and is not silently overwritten. V2 values are defensively copied and frozen.
 

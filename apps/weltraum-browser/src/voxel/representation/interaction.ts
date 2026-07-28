@@ -32,7 +32,8 @@ export const HARD_AUTHORITY_TARGET_LEVEL = adaptiveLevel(4);
 const hardAuthorityExtentQuantum = brickExtentQuantumForLevel(HARD_AUTHORITY_TARGET_LEVEL);
 
 const copyRegion = (region: AdaptiveRefinementRegion): AdaptiveRefinementRegion => {
-  if (region.kind === "aabb") {
+  const kind = region.kind;
+  if (kind === "aabb") {
     const bounds = validateQuantumBounds(region.bounds);
     for (const axis of ["x", "y", "z"] as const) {
       if (bounds.min[axis] % hardAuthorityExtentQuantum !== 0 || bounds.max[axis] % hardAuthorityExtentQuantum !== 0) {
@@ -41,7 +42,7 @@ const copyRegion = (region: AdaptiveRefinementRegion): AdaptiveRefinementRegion 
     }
     return deepFreeze({ kind: "aabb", bounds });
   }
-  if ((region as { readonly kind?: unknown }).kind !== "sphere") {
+  if (kind !== "sphere") {
     return representationFail("InvalidContract", "region/kind", "Unsupported hard Authority region kind.");
   }
   const center = deepFreeze({
@@ -61,13 +62,15 @@ export const createHardAuthorityRequirement = (value: Readonly<{
   deadlinePlanningEpoch?: AdaptivePlanningEpoch;
   priority: number;
 }>): AdaptiveRefinementRequest => {
-  if (!hardReasons.has(value.reason)) return representationFail("InvalidContract", "requirement/reason", "Reason is not a hard L4 interaction reason.");
-  const deadlinePlanningEpoch = value.deadlinePlanningEpoch === undefined
+  const reason = value.reason;
+  if (!hardReasons.has(reason)) return representationFail("InvalidContract", "requirement/reason", "Reason is not a hard L4 interaction reason.");
+  const rawDeadlinePlanningEpoch = value.deadlinePlanningEpoch;
+  const deadlinePlanningEpoch = rawDeadlinePlanningEpoch === undefined
     ? undefined
-    : adaptivePlanningEpoch(value.deadlinePlanningEpoch);
+    : adaptivePlanningEpoch(rawDeadlinePlanningEpoch);
   return deepFreeze({
     requestId: stableAuthorityId(value.requestId, "requirement/requestId"),
-    reason: value.reason,
+    reason,
     region: copyRegion(value.region),
     targetLevel: HARD_AUTHORITY_TARGET_LEVEL,
     requiredForCoverage: true,
@@ -91,10 +94,12 @@ export const resolveProxyInteraction = (value: Readonly<{
   authorityWorkBudget: number;
   priority: number;
 }>): ProxyInteractionResult => {
-  if (!Number.isSafeInteger(value.requiredAuthorityWork) || value.requiredAuthorityWork < 0 || !Number.isSafeInteger(value.authorityWorkBudget) || value.authorityWorkBudget < 0) {
+  const requiredAuthorityWork = value.requiredAuthorityWork;
+  const authorityWorkBudget = value.authorityWorkBudget;
+  if (!Number.isSafeInteger(requiredAuthorityWork) || requiredAuthorityWork < 0 || !Number.isSafeInteger(authorityWorkBudget) || authorityWorkBudget < 0) {
     return representationFail("InvalidContract", "interaction/budget", "Authority work and budget must be non-negative safe integers.");
   }
-  if (value.requiredAuthorityWork > REPRESENTATION_MAX_WORK_UNITS || value.authorityWorkBudget > REPRESENTATION_MAX_WORK_UNITS) {
+  if (requiredAuthorityWork > REPRESENTATION_MAX_WORK_UNITS || authorityWorkBudget > REPRESENTATION_MAX_WORK_UNITS) {
     return representationFail("InvalidContract", "interaction/budget", `Authority work and budget cannot exceed ${REPRESENTATION_MAX_WORK_UNITS}.`);
   }
   const requestId = stableAuthorityId(value.requestId, "interaction/requestId");
@@ -116,7 +121,7 @@ export const resolveProxyInteraction = (value: Readonly<{
     region: { kind: "sphere", center: coordinates, radiusQuantum: globalQuantumCoordinate(1) },
     priority
   });
-  if (value.requiredAuthorityWork > value.authorityWorkBudget) {
+  if (requiredAuthorityWork > authorityWorkBudget) {
     return deepFreeze({ status: "Blocked", authorityCoordinates: null, authorityRequest: request, code: "AuthorityBudgetExceeded" });
   }
   if (!hasLevel4Coverage) {
