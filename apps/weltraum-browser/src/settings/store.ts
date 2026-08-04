@@ -6,7 +6,7 @@ import type {
   FpsLimit,
   FullscreenPreference,
   GraphicsSettingPath,
-  GraphicsSettingsV1,
+  GraphicsSettingsV2,
   QualityPreset,
   ShadowQuality,
   TextureQuality,
@@ -14,8 +14,8 @@ import type {
 } from "./types";
 
 export interface GraphicsDraftStoreSnapshot {
-  readonly confirmed: GraphicsSettingsV1;
-  readonly draft: GraphicsSettingsV1;
+  readonly confirmed: GraphicsSettingsV2;
+  readonly draft: GraphicsSettingsV2;
   readonly hasPendingChanges: boolean;
 }
 
@@ -32,17 +32,17 @@ function oneOf<T extends string | number>(value: unknown, allowed: readonly T[],
 
 type Mutable<T> = { -readonly [Key in keyof T]: T[Key] extends object ? Mutable<T[Key]> : T[Key] };
 
-function mutable(settings: GraphicsSettingsV1): Mutable<GraphicsSettingsV1> {
-  return structuredClone(settings) as Mutable<GraphicsSettingsV1>;
+function mutable(settings: GraphicsSettingsV2): Mutable<GraphicsSettingsV2> {
+  return structuredClone(settings) as Mutable<GraphicsSettingsV2>;
 }
 
 export class GraphicsDraftStore {
-  private confirmed: GraphicsSettingsV1;
-  private draft: GraphicsSettingsV1;
+  private confirmed: GraphicsSettingsV2;
+  private draft: GraphicsSettingsV2;
 
-  constructor(initial: GraphicsSettingsV1) {
-    this.confirmed = cloneAndFreeze(initial) as GraphicsSettingsV1;
-    this.draft = cloneAndFreeze(initial) as GraphicsSettingsV1;
+  constructor(initial: GraphicsSettingsV2) {
+    this.confirmed = cloneAndFreeze(initial) as GraphicsSettingsV2;
+    this.draft = cloneAndFreeze(initial) as GraphicsSettingsV2;
   }
 
   getSnapshot(): GraphicsDraftStoreSnapshot {
@@ -137,7 +137,7 @@ export class GraphicsDraftStore {
     if (isPresetOwnedPath(path)) {
       next.qualityPreset = inferQualityPreset(next);
     }
-    this.draft = cloneAndFreeze(next) as GraphicsSettingsV1;
+    this.draft = cloneAndFreeze(next) as GraphicsSettingsV2;
   }
 
   reset(): void {
@@ -145,12 +145,12 @@ export class GraphicsDraftStore {
   }
 
   cancel(): void {
-    this.draft = cloneAndFreeze(this.confirmed) as GraphicsSettingsV1;
+    this.draft = cloneAndFreeze(this.confirmed) as GraphicsSettingsV2;
   }
 
-  confirm(settings: GraphicsSettingsV1 = this.draft): void {
-    this.confirmed = cloneAndFreeze(settings) as GraphicsSettingsV1;
-    this.draft = cloneAndFreeze(settings) as GraphicsSettingsV1;
+  confirm(settings: GraphicsSettingsV2 = this.draft): void {
+    this.confirmed = cloneAndFreeze(settings) as GraphicsSettingsV2;
+    this.draft = cloneAndFreeze(settings) as GraphicsSettingsV2;
   }
 }
 

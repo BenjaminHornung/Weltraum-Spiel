@@ -171,6 +171,28 @@ describe("surface locomotion fixed-step core", () => {
     expect(sprint.velocityMetersPerSecond.z).toBeCloseTo(config.sprintSpeedMetersPerSecond, 8);
   });
 
+  it.each([0, Math.PI / 3])(
+    "maps A and D onto rendered camera-local left and right at yaw %s",
+    (yawRadians) => {
+      const start = initialState({ yawRadians });
+      const pressingD = advance(start, 1, { right: 1 });
+      const pressingA = advance(start, 1, { right: -1 });
+      const cameraRight = {
+        x: -Math.cos(yawRadians),
+        z: Math.sin(yawRadians)
+      };
+      const screenRightDisplacement =
+        (pressingD.positionMeters.x - start.positionMeters.x) * cameraRight.x
+        + (pressingD.positionMeters.z - start.positionMeters.z) * cameraRight.z;
+      const screenLeftDisplacement =
+        (pressingA.positionMeters.x - start.positionMeters.x) * cameraRight.x
+        + (pressingA.positionMeters.z - start.positionMeters.z) * cameraRight.z;
+
+      expect(screenRightDisplacement).toBeGreaterThan(0);
+      expect(screenLeftDisplacement).toBeLessThan(0);
+    }
+  );
+
   it("accelerates and decelerates without a velocity-zero shortcut", () => {
     const accelerating = advance(initialState(), 8, { forward: 1 });
     const oneBrakeTick = advance(accelerating, 1, {});
@@ -220,7 +242,7 @@ describe("surface locomotion fixed-step core", () => {
       positionMeters: { x: 0, y: 20, z: 0 },
       velocityMetersPerSecond: { x: 10, y: 0, z: 0 }
     });
-    const alongMomentum = advance(airborne, 1, { right: 1 }, airPort);
+    const alongMomentum = advance(airborne, 1, { right: -1 }, airPort);
     const perpendicular = advance(alongMomentum, 1, { forward: 1 }, airPort);
 
     expect(alongMomentum.velocityMetersPerSecond.x).toBe(10);

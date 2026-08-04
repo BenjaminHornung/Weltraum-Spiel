@@ -87,7 +87,7 @@ export const createSurfaceFirstPersonViewSnapshot = (
       z: state.positionMeters.z
     }),
     forward: Object.freeze({ x: sinYaw * cosPitch, y: sinPitch, z: cosYaw * cosPitch }),
-    right: Object.freeze({ x: cosYaw, y: 0, z: -sinYaw }),
+    right: Object.freeze({ x: -cosYaw, y: 0, z: sinYaw }),
     up: Object.freeze({ x: -sinYaw * sinPitch, y: cosPitch, z: -cosYaw * sinPitch }),
     surfaceUp: Object.freeze({ x: 0 as const, y: 1 as const, z: 0 as const }),
     yawRadians: state.yawRadians,

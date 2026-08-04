@@ -6,8 +6,11 @@ import {
   deepFreeze,
   globalQuantumCoordinate as adaptiveGlobalQuantumCoordinate,
   keyFromGlobalQuantum as adaptiveKeyFromGlobalQuantum,
+  requireExactKeys as adaptiveRequireExactKeys,
+  requirePlainRecord as adaptiveRequirePlainRecord,
   serializeAdaptiveKey as adaptiveSerializeKey,
   stableAuthorityId as adaptiveStableAuthorityId,
+  validateAdaptiveBrickKey as adaptiveValidateBrickKey,
   type AdaptiveBrickKey,
   type QuantumBounds,
   type QuantumPoint,
@@ -20,22 +23,36 @@ import {
 } from "./coordinates";
 import {
   hashStructuralCommand,
+  hashStructuralEvidence,
   hashStructuralObjectContent,
-  hashStructuralResult
+  hashStructuralResult,
+  projectStructuralResult
 } from "./canonical";
-import { deriveStructuralComponentClassification, StructuralConnectivityError } from "./connectivity";
-import { reconstructStructuralObjectInternal, structuralAddressForBrickCell } from "./model";
-import { deriveStructuralObjectMassProperties, StructuralMassError } from "./massProperties";
+import deriveStructuralComponentClassificationFromPreviousObject, {
+  StructuralConnectivityError
+} from "./connectivity";
+import {
+  structuralAddressForBrickCell,
+  validateStructuralObjectProjection
+} from "./model";
+import deriveStructuralObjectMassPropertiesFromPreviousObject, {
+  StructuralMassError
+} from "./massProperties";
 import {
   STRUCTURAL_BRICK_SCHEMA_VERSION,
   STRUCTURAL_COMMAND_EVIDENCE_SCHEMA_VERSION,
   STRUCTURAL_RESULT_SCHEMA_VERSION,
   STRUCTURAL_MAX_COMMAND_EVIDENCE,
+  STRUCTURAL_MAX_CHANGED_BRICK_KEYS,
+  STRUCTURAL_MAX_INVALIDATIONS,
   type StructuralAcceptedCommandResult,
   type StructuralBrick,
   type StructuralCommandEvidence,
   type StructuralCommandResult,
+  type StructuralComponentClassification,
   type StructuralDestructionCommand,
+  type StructuralDerivedInvalidation,
+  type StructuralMassProperties,
   type StructuralMaterialDefinition,
   type StructuralObject,
   type StructuralRejectedCommandResult,
@@ -45,8 +62,12 @@ import {
 import {
   StructuralValidationError,
   normalizeAdaptiveAuthorityFunction,
+  requireStructuralHash,
+  structuralFail,
+  structuralNonNegativeSafeInteger,
   structuralRevision,
   structuralDenseArray,
+  validateStructuralCommandEvidenceSemanticsInternal,
   validateStructuralDestructionCommand
 } from "./validation";
 
@@ -57,6 +78,139 @@ const globalQuantumCoordinate = normalizeAdaptiveAuthorityFunction(adaptiveGloba
 const keyFromGlobalQuantum = normalizeAdaptiveAuthorityFunction(adaptiveKeyFromGlobalQuantum);
 const serializeAdaptiveKey = normalizeAdaptiveAuthorityFunction(adaptiveSerializeKey);
 const stableAuthorityId = normalizeAdaptiveAuthorityFunction(adaptiveStableAuthorityId);
+const validateAdaptiveBrickKey = normalizeAdaptiveAuthorityFunction(adaptiveValidateBrickKey);
+const requireExactKeys = normalizeAdaptiveAuthorityFunction(adaptiveRequireExactKeys);
+const requirePlainRecord = normalizeAdaptiveAuthorityFunction(adaptiveRequirePlainRecord);
+
+export interface StructuralAcceptedCommandDerivations {
+  readonly classification: StructuralComponentClassification;
+  readonly massProperties: StructuralMassProperties;
+}
+
+const acceptedCommandDerivations =
+  new WeakMap<StructuralAcceptedCommandResult, Readonly<StructuralAcceptedCommandDerivations>>();
+
+export const readStructuralAcceptedCommandDerivations = (
+  result: Readonly<StructuralAcceptedCommandResult>
+): Readonly<StructuralAcceptedCommandDerivations> | undefined =>
+  acceptedCommandDerivations.get(result);
+
+const adaptiveKeyFromProjection = (value: unknown, path: string): ReturnType<typeof validateAdaptiveBrickKey> => {
+  if (typeof value !== "string") {
+    return structuralFail("InvalidContract", path, "Projected Adaptive brick keys must be canonical strings.");
+  }
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(value) as unknown;
+  } catch {
+    return structuralFail("InvalidContract", path, "Projected Adaptive brick key is not valid JSON.");
+  }
+  const key = validateAdaptiveBrickKey(parsed);
+  if (serializeAdaptiveKey(key) !== value) {
+    return structuralFail("InvalidContract", path, "Projected Adaptive brick key is not canonical.");
+  }
+  return key;
+};
+
+const invalidationFromProjection = (value: unknown, path: string): StructuralDerivedInvalidation => {
+  const record = requirePlainRecord(value, path);
+  requireExactKeys(record, ["kind", "sourceObjectRevision", "sourceContentHash"], path);
+  if (record.kind !== "Components" && record.kind !== "MassProperties" && record.kind !== "Mesh") {
+    return structuralFail("InvalidContract", `${path}/kind`, "Unsupported Structural invalidation kind.");
+  }
+  return deepFreeze({
+    kind: record.kind,
+    sourceObjectRevision: structuralRevision(record.sourceObjectRevision, `${path}/sourceObjectRevision`),
+    sourceContentHash: requireStructuralHash(record.sourceContentHash, `${path}/sourceContentHash`)
+  });
+};
+
+export const validateStructuralAcceptedCommandResultProjection = (
+  value: unknown
+): StructuralAcceptedCommandResult => {
+  const record = requirePlainRecord(value, "result");
+  requireExactKeys(record, [
+    "schemaVersion", "status", "commandId", "object", "changedBrickKeys",
+    "selectedVoxelCount", "changedVoxelCount", "invalidations", "resultHash"
+  ], "result");
+  if (
+    record.schemaVersion !== STRUCTURAL_RESULT_SCHEMA_VERSION
+    || (record.status !== "Applied" && record.status !== "NoChange")
+  ) {
+    return structuralFail("InvalidContract", "result", "Expected an accepted Structural result projection.");
+  }
+  const object = validateStructuralObjectProjection(record.object);
+  const changedBrickKeys = structuralDenseArray(
+    record.changedBrickKeys,
+    "result/changedBrickKeys",
+    STRUCTURAL_MAX_CHANGED_BRICK_KEYS
+  ).map((key, index) => adaptiveKeyFromProjection(key, `result/changedBrickKeys/${index}`));
+  for (let index = 1; index < changedBrickKeys.length; index += 1) {
+    if (serializeAdaptiveKey(changedBrickKeys[index - 1]) >= serializeAdaptiveKey(changedBrickKeys[index])) {
+      return structuralFail("InvalidContract", "result/changedBrickKeys", "Result changed brick keys must be canonical sorted and unique.");
+    }
+  }
+  const invalidations = structuralDenseArray(
+    record.invalidations,
+    "result/invalidations",
+    STRUCTURAL_MAX_INVALIDATIONS
+  ).map((entry, index) => invalidationFromProjection(entry, `result/invalidations/${index}`));
+  const selectedVoxelCount = structuralNonNegativeSafeInteger(
+    record.selectedVoxelCount,
+    "result/selectedVoxelCount"
+  );
+  const changedVoxelCount = structuralNonNegativeSafeInteger(
+    record.changedVoxelCount,
+    "result/changedVoxelCount"
+  );
+  const commandId = stableAuthorityId(record.commandId as string, "result/commandId");
+  const evidence = object.commandEvidence.at(-1);
+  if (
+    evidence === undefined
+    || evidence.commandId !== commandId
+    || evidence.status !== record.status
+    || evidence.selectedVoxelCount !== selectedVoxelCount
+    || evidence.changedVoxelCount !== changedVoxelCount
+    || canonicalAdaptiveJson(evidence.changedBrickKeys.map(serializeAdaptiveKey))
+      !== canonicalAdaptiveJson(changedBrickKeys.map(serializeAdaptiveKey))
+  ) {
+    return structuralFail("InvalidContract", "result", "Accepted result must match its final command evidence receipt.");
+  }
+  if (record.status === "NoChange") {
+    if (invalidations.length !== 0) {
+      return structuralFail("InvalidContract", "result/invalidations", "NoChange result must not invalidate derived products.");
+    }
+  } else {
+    const kinds = ["Components", "MassProperties", "Mesh"] as const;
+    if (
+      invalidations.length !== kinds.length
+      || invalidations.some((entry, index) =>
+        entry.kind !== kinds[index]
+        || entry.sourceObjectRevision !== evidence.previousObjectRevision
+        || entry.sourceContentHash !== evidence.previousContentHash)
+    ) {
+      return structuralFail("InvalidContract", "result/invalidations", "Applied result invalidations are noncanonical.");
+    }
+  }
+  const result = deepFreeze({
+    schemaVersion: STRUCTURAL_RESULT_SCHEMA_VERSION,
+    status: record.status as "Applied" | "NoChange",
+    commandId,
+    object,
+    changedBrickKeys: deepFreeze(changedBrickKeys),
+    selectedVoxelCount,
+    changedVoxelCount,
+    invalidations: deepFreeze(invalidations),
+    resultHash: requireStructuralHash(record.resultHash, "result/resultHash")
+  });
+  if (
+    hashStructuralResult(result) !== result.resultHash
+    || canonicalAdaptiveJson(projectStructuralResult(result)) !== canonicalAdaptiveJson(value)
+  ) {
+    return structuralFail("InvalidContract", "result", "Accepted Structural result projection commitment is invalid.");
+  }
+  return result;
+};
 
 class StructuralCommandError extends Error {
   readonly code: StructuralRejectionCode;
@@ -223,23 +377,23 @@ const rebuildBricks = (
 }));
 
 const publishStructuralObject = (
-  previous: StructuralObject,
-  bricks: readonly StructuralBrick[],
-  objectRevision: number,
-  editRevision: number,
+  candidate: StructuralObject,
   evidence: readonly StructuralCommandEvidence[]
-): StructuralObject => reconstructStructuralObjectInternal({
-  objectId: previous.objectId,
-  frame: previous.frame,
-  source: previous.source,
-  materials: previous.materials,
-  bricks,
-  anchors: previous.anchors,
-  joints: previous.joints,
-  objectRevision,
-  editRevision,
-  commandEvidence: evidence
-});
+): StructuralObject => {
+  const commandEvidence = validateStructuralCommandEvidenceSemanticsInternal(
+    evidence,
+    candidate.source,
+    candidate.frame,
+    candidate.objectRevision,
+    candidate.editRevision,
+    candidate.contentHash
+  );
+  return deepFreeze({
+    ...candidate,
+    commandEvidence,
+    evidenceHash: hashStructuralEvidence(commandEvidence)
+  });
+};
 
 const buildDerivationCandidate = (
   previous: StructuralObject,
@@ -376,13 +530,6 @@ export const applyStructuralDestructionCommand = (
       : object.editRevision;
     const candidateBricks = applied ? rebuildBricks(object, changes) : object.bricks;
     const preliminary = buildDerivationCandidate(object, candidateBricks, command.resultingObjectRevision, resultingEditRevision);
-    deriveStructuralComponentClassification(preliminary, {
-      maxVisitedCells: command.budgets.maxConnectivityCells,
-      maxIndexedFacts: command.budgets.maxConnectivityFacts,
-      maxComponents: command.budgets.maxComponents
-    });
-    deriveStructuralObjectMassProperties(preliminary, { maxVisitedCells: command.budgets.maxMassCells });
-
     const changedBrickKeys = deepFreeze(requiredKeys.filter((key) => changes.has(serializeAdaptiveKey(key))));
     const evidence: StructuralCommandEvidence = deepFreeze({
       schemaVersion: STRUCTURAL_COMMAND_EVIDENCE_SCHEMA_VERSION,
@@ -400,7 +547,20 @@ export const applyStructuralDestructionCommand = (
       changedVoxelCount,
       adaptiveJournalDigest: object.source.journalDigest
     });
-    const resultObject = publishStructuralObject(object, candidateBricks, command.resultingObjectRevision, resultingEditRevision, deepFreeze([...(commandEvidence as readonly StructuralCommandEvidence[]), evidence]));
+    const resultObject = publishStructuralObject(
+      preliminary,
+      deepFreeze([...(commandEvidence as readonly StructuralCommandEvidence[]), evidence])
+    );
+    const classification = deriveStructuralComponentClassificationFromPreviousObject(object, resultObject, {
+      maxVisitedCells: command.budgets.maxConnectivityCells,
+      maxIndexedFacts: command.budgets.maxConnectivityFacts,
+      maxComponents: command.budgets.maxComponents
+    });
+    const massProperties = deriveStructuralObjectMassPropertiesFromPreviousObject(
+      object,
+      resultObject,
+      { maxVisitedCells: command.budgets.maxMassCells }
+    );
     const invalidations = applied ? deepFreeze([
       deepFreeze({ kind: "Components" as const, sourceObjectRevision: object.objectRevision, sourceContentHash: object.contentHash }),
       deepFreeze({ kind: "MassProperties" as const, sourceObjectRevision: object.objectRevision, sourceContentHash: object.contentHash }),
@@ -417,7 +577,26 @@ export const applyStructuralDestructionCommand = (
       invalidations,
       resultHash: ""
     });
-    return deepFreeze({ ...partial, resultHash: hashStructuralResult(partial) });
+    const accepted = deepFreeze({ ...partial, resultHash: hashStructuralResult(partial) });
+    if (
+      massProperties.sourceRevision !== resultObject.objectRevision
+      || massProperties.sourceContentHash !== resultObject.contentHash
+      || classification.components.some((component) =>
+        component.objectId !== resultObject.objectId
+        || component.objectRevision !== resultObject.objectRevision
+        || component.sourceContentHash !== resultObject.contentHash)
+    ) {
+      throw new StructuralCommandError(
+        "InvalidContract",
+        "command/derivations",
+        "Accepted Structural derivations must bind the published result object."
+      );
+    }
+    acceptedCommandDerivations.set(
+      accepted,
+      deepFreeze({ classification, massProperties })
+    );
+    return accepted;
   } catch (error) {
     return rejectionFromError(object, fallbackCommandId, error);
   }

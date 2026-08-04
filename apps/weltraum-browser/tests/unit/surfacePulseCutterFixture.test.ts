@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   HESTIA_PULSE_CUTTER_COOLDOWN_SECONDS,
+  HESTIA_PULSE_CUTTER_ENERGY_RECOVERY_DELAY_SECONDS,
+  HESTIA_PULSE_CUTTER_ENERGY_RECOVERY_JOULES_PER_SECOND,
   HESTIA_PULSE_CUTTER_ID,
   HESTIA_PULSE_CUTTER_MAXIMUM_ENERGY_JOULES,
   HESTIA_PULSE_CUTTER_TERRAIN_EDIT_RADIUS_METERS,
@@ -33,7 +35,9 @@ describe("Hestia Pulse Cutter V1 fixture", () => {
     });
     expect(HESTIA_PULSE_CUTTER_V1.maximumTrackingErrorRadians).toBe(0.5 * Math.PI / 180);
     expect(HESTIA_PULSE_CUTTER_COOLDOWN_SECONDS).toBe(0.5);
-    expect(HESTIA_PULSE_CUTTER_MAXIMUM_ENERGY_JOULES).toBe(120);
+    expect(HESTIA_PULSE_CUTTER_MAXIMUM_ENERGY_JOULES).toBe(240);
+    expect(HESTIA_PULSE_CUTTER_ENERGY_RECOVERY_DELAY_SECONDS).toBe(3);
+    expect(HESTIA_PULSE_CUTTER_ENERGY_RECOVERY_JOULES_PER_SECOND).toBe(12);
     expect(HESTIA_PULSE_CUTTER_TERRAIN_EDIT_RADIUS_METERS).toBe(0.75);
     expect(JSON.stringify(HESTIA_PULSE_CUTTER_V1)).not.toMatch(/spread|random/i);
   });
@@ -43,7 +47,7 @@ describe("Hestia Pulse Cutter V1 fixture", () => {
     expect(state).toMatchObject({
       lifecycle: "Operational",
       cooldownSeconds: 0,
-      energy: 120,
+      energy: 240,
       heat: 0,
       shotSequence: 0
     });
@@ -65,5 +69,23 @@ describe("Hestia Pulse Cutter V1 fixture", () => {
     expect(first.weapon.cooldownSeconds).toBe(0);
     expect(first.weapon.heat).toBe(42);
     expect(Object.isFrozen(first)).toBe(true);
+  });
+
+  it("recovers finite Energy only after the accepted-shot delay", () => {
+    const state = createSurfaceCombatRuntimeState("frame.surface.hestia", { x: 0, y: 1.5, z: 20 });
+    const depleted = {
+      ...state,
+      weapon: createHestiaPulseCutterState({ energy: 0 }),
+      energyRecoveryDelayRemainingSeconds: 3
+    };
+    const beforeDelay = advanceSurfaceCombatRuntime(depleted, 2.5);
+    const atDelay = advanceSurfaceCombatRuntime(beforeDelay, 0.5);
+    const recovered = advanceSurfaceCombatRuntime(atDelay, 1);
+
+    expect(beforeDelay.weapon.energy).toBe(0);
+    expect(beforeDelay.energyRecoveryDelayRemainingSeconds).toBe(0.5);
+    expect(atDelay.weapon.energy).toBe(0);
+    expect(atDelay.energyRecoveryDelayRemainingSeconds).toBe(0);
+    expect(recovered.weapon.energy).toBe(12);
   });
 });

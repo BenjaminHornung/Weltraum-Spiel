@@ -37,7 +37,11 @@ export const replaySurfaceCombatPresentation = (
       surfaceFrameId: result.state.drone.frameId,
       positionMeters: result.hitPointMeters,
       normal: result.hitNormal,
-      kind: result.kind === "TerrainHit" ? "Terrain" : "Target",
+      kind: result.kind === "TerrainHit"
+        ? "Terrain"
+        : result.kind === "StructuralHit"
+          ? "Structural"
+          : "Target",
       simulationTick: result.snapshot.simulationTick
     });
   return deepFreeze({

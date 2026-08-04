@@ -1,5 +1,8 @@
 import {
+  HESTIA_COAST_LUSH_PRESET_ID,
+  HESTIA_GENERATOR_VERSION_COAST_LUSH_V1,
   HESTIA_GENERATOR_VERSION_V1,
+  HESTIA_PRESET_ID,
   HESTIA_SOURCE_REVISION_V1,
   generateHestiaVoxelBrick
 } from "../../world-generation/hestia";
@@ -88,7 +91,8 @@ const requireAuthorityInput = (value: unknown): SurfaceRegionVoxelAuthorityInput
     || !isStableId(value.bodyId)
     || !isStableId(value.surfaceFrameId)
     || !isStableId(value.regionId)
-    || value.generatorVersion !== HESTIA_GENERATOR_VERSION_V1
+    || (value.generatorVersion !== HESTIA_GENERATOR_VERSION_V1
+      && value.generatorVersion !== HESTIA_GENERATOR_VERSION_COAST_LUSH_V1)
     || !isStableId(value.seed)
     || (value.voxelSizeMeters !== 0.25 && value.voxelSizeMeters !== 0.5)
     || value.sourceRevision !== HESTIA_SOURCE_REVISION_V1
@@ -473,7 +477,7 @@ class SurfaceRegionVoxelAuthorityImpl implements SurfaceRegionVoxelAuthority, Su
             const positionY = global.y * brick.voxelSizeMeters;
             const positionZ = global.z * brick.voxelSizeMeters;
             const distance = Math.hypot(positionX - center.x, positionY - center.y, positionZ - center.z);
-            if (distance > intent.radiusMeters) continue;
+            if (distance >= intent.radiusMeters) continue;
             selectedSampleCount += 1;
             if (selectedSampleCount > this.state.maxChangedSamplesPerEdit) {
               return this.reject("BudgetExceeded", "SubtractSphere selected-sample budget was exceeded.");
@@ -661,6 +665,9 @@ export const createSurfaceRegionVoxelAuthority = (
   const bricks = new Map<string, VoxelBrick>();
   for (const coordinate of input.residentBrickCoordinates) {
     const brick = generateHestiaVoxelBrick({
+      profile: input.generatorVersion === HESTIA_GENERATOR_VERSION_COAST_LUSH_V1
+        ? HESTIA_COAST_LUSH_PRESET_ID
+        : HESTIA_PRESET_ID,
       rootSeed: input.seed,
       bodyId: voxelBodyId(input.bodyId),
       surfaceFrameId: surfaceFrameId(input.surfaceFrameId),

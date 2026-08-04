@@ -6,7 +6,11 @@ import {
   type GlobalQuantumCoordinate
 } from "../../voxel/adaptive";
 import { validateVoxelStableId } from "../../voxel";
-import type { SpatialVector3 } from "../../spatial";
+import {
+  createSpatialQuaternion,
+  type SpatialQuaternion,
+  type SpatialVector3
+} from "../../spatial";
 
 export { MICROVOXEL_BASE_QUANTUM_METERS } from "../../voxel/adaptive";
 
@@ -82,7 +86,7 @@ const positive = (value: unknown, path: string): number => {
 const safeNonNegativeInteger = (
   value: unknown,
   path: string,
-  code: "InvalidRevision" | "InvalidTick"
+  code: "InvalidNumber" | "InvalidRevision" | "InvalidTick"
 ): number => {
   if (typeof value !== "number" || !Number.isSafeInteger(value) || Object.is(value, -0) || value < 0) {
     return fail(code, path, "must be a non-negative safe integer and may not be negative zero.");
@@ -156,6 +160,24 @@ const vector = (value: SpatialVector3, path: string): Readonly<SpatialVector3> =
     y: finite(value.y, `${path}.y`),
     z: finite(value.z, `${path}.z`)
   });
+};
+
+const canonicalQuaternion = (
+  value: SpatialQuaternion,
+  path: string
+): Readonly<SpatialQuaternion> => {
+  requirePlainDataRecord(value, path);
+  const components = {
+    x: finite(value.x, `${path}.x`),
+    y: finite(value.y, `${path}.y`),
+    z: finite(value.z, `${path}.z`),
+    w: finite(value.w, `${path}.w`)
+  };
+  const magnitude = Math.hypot(components.x, components.y, components.z, components.w);
+  if (!Number.isFinite(magnitude) || magnitude === 0) {
+    return fail("InvalidVector", path, "must be a non-zero finite quaternion.");
+  }
+  return createSpatialQuaternion(components, path);
 };
 
 const boundedAxis = (value: unknown, path: string): number => {
@@ -641,26 +663,51 @@ export const SURFACE_FIRE_REJECTION_CODES = [
   "InvalidTarget",
   "FrameMismatch",
   "StaleRevision",
-  "AuthorityRefused"
+  "AuthorityRefused",
+  "BodyCapacityExceeded",
+  "ColliderBudgetExceeded",
+  "DetachedBodyImmutable"
 ] as const;
 export type SurfaceFireRejectionCode = (typeof SURFACE_FIRE_REJECTION_CODES)[number];
 export type SurfaceFireResultInput =
-  | Readonly<{ readonly status: "Accepted"; readonly commandId: string; readonly hit: "None" | "Target" | "Terrain" }>
+  | Readonly<{ readonly status: "Accepted"; readonly commandId: string; readonly hit: "None" | "Target" | "Terrain" | "Structural" }>
   | Readonly<{ readonly status: "Rejected"; readonly commandId: string; readonly code: SurfaceFireRejectionCode; readonly message: string }>;
 export type SurfaceFireResult =
-  | Readonly<{ readonly status: "Accepted"; readonly commandId: SurfaceCommandId; readonly hit: "None" | "Target" | "Terrain" }>
+  | Readonly<{ readonly status: "Accepted"; readonly commandId: SurfaceCommandId; readonly hit: "None" | "Target" | "Terrain" | "Structural" }>
   | Readonly<{ readonly status: "Rejected"; readonly commandId: SurfaceCommandId; readonly code: SurfaceFireRejectionCode; readonly message: string }>;
 
 export interface SurfaceCombatEventSummaryInput {
   readonly sequence: number;
   readonly eventId: string;
-  readonly kind: "FireAccepted" | "FireRejected" | "TargetDamaged" | "TargetDestroyed" | "TerrainHit";
+  readonly kind:
+    | "FireAccepted"
+    | "FireRejected"
+    | "TargetDamaged"
+    | "TargetDestroyed"
+    | "TerrainHit"
+    | "StructuralHit"
+    | "StructuralDamaged"
+    | "StructuralDetached";
   readonly simulationTick: number;
 }
 
 export interface SurfaceCombatEventSummary extends Omit<SurfaceCombatEventSummaryInput, "eventId"> {
   readonly eventId: SurfaceStableId;
 }
+
+export type SurfaceWeaponReadinessInput =
+  | Readonly<{ readonly kind: "Ready"; readonly nextShotReadyInSeconds: 0 }>
+  | Readonly<{ readonly kind: "Cooldown" | "Overheated"; readonly nextShotReadyInSeconds: number }>
+  | Readonly<{
+    readonly kind: "EnergyInsufficient";
+    readonly currentEnergyJoules: number;
+    readonly requiredEnergyJoules: number;
+    readonly recoveryDelayRemainingSeconds: number;
+    readonly recoveryRateJoulesPerSecond: number;
+    readonly nextShotReadyInSeconds: number;
+  }>;
+
+export type SurfaceWeaponReadiness = SurfaceWeaponReadinessInput;
 
 export interface SurfaceCombatSnapshotInput {
   readonly activeWeaponId: string;
@@ -669,6 +716,7 @@ export interface SurfaceCombatSnapshotInput {
   readonly heatJoules: number;
   readonly maximumHeatJoules: number;
   readonly cooldownSeconds: number;
+  readonly readiness: SurfaceWeaponReadinessInput;
   readonly target: null | Readonly<{
     readonly targetId: string;
     readonly condition: "Operational" | "Damaged" | "Disabled" | "Destroyed";
@@ -682,6 +730,7 @@ export interface SurfaceCombatSnapshotInput {
 
 export interface SurfaceCombatSnapshot extends Omit<SurfaceCombatSnapshotInput, "activeWeaponId" | "target" | "latestFireResult" | "events"> {
   readonly activeWeaponId: SurfaceStableId;
+  readonly readiness: SurfaceWeaponReadiness;
   readonly target: null | Readonly<{
     readonly targetId: SurfaceStableId;
     readonly condition: "Operational" | "Damaged" | "Disabled" | "Destroyed";
@@ -706,7 +755,7 @@ const fireResult = (value: SurfaceFireResultInput | null): SurfaceFireResult | n
     return canonicalCloneAndDeepFreeze({
       status: "Accepted" as const,
       commandId,
-      hit: enumValue(value.hit, ["None", "Target", "Terrain"] as const, "combat.latestFireResult.hit")
+      hit: enumValue(value.hit, ["None", "Target", "Terrain", "Structural"] as const, "combat.latestFireResult.hit")
     });
   }
   if (value.status !== "Rejected") return fail("InvalidEnum", "combat.latestFireResult.status", "must be Accepted or Rejected.");
@@ -715,6 +764,50 @@ const fireResult = (value: SurfaceFireResultInput | null): SurfaceFireResult | n
     commandId,
     code: enumValue(value.code, SURFACE_FIRE_REJECTION_CODES, "combat.latestFireResult.code"),
     message: message(value.message, "combat.latestFireResult.message")
+  });
+};
+
+const weaponReadiness = (
+  value: SurfaceWeaponReadinessInput,
+  path: string
+): Readonly<SurfaceWeaponReadiness> => {
+  requirePlainDataRecord(value, path);
+  const kind = enumValue(
+    value.kind,
+    ["Ready", "Cooldown", "Overheated", "EnergyInsufficient"] as const,
+    `${path}.kind`
+  );
+  if (kind === "Ready") {
+    if (value.nextShotReadyInSeconds !== 0) {
+      return fail("InvalidNumber", `${path}.nextShotReadyInSeconds`, "must be exactly zero when Ready.");
+    }
+    return canonicalCloneAndDeepFreeze({ kind, nextShotReadyInSeconds: 0 as const });
+  }
+  if (kind === "Cooldown" || kind === "Overheated") {
+    return canonicalCloneAndDeepFreeze({
+      kind,
+      nextShotReadyInSeconds: nonNegative(value.nextShotReadyInSeconds, `${path}.nextShotReadyInSeconds`)
+    });
+  }
+  const energy = value as Extract<SurfaceWeaponReadinessInput, { readonly kind: "EnergyInsufficient" }>;
+  const currentEnergyJoules = nonNegative(energy.currentEnergyJoules, `${path}.currentEnergyJoules`);
+  const requiredEnergyJoules = positive(energy.requiredEnergyJoules, `${path}.requiredEnergyJoules`);
+  if (currentEnergyJoules >= requiredEnergyJoules) {
+    return fail("InvalidNumber", `${path}.currentEnergyJoules`, "must be below requiredEnergyJoules.");
+  }
+  return canonicalCloneAndDeepFreeze({
+    kind,
+    currentEnergyJoules,
+    requiredEnergyJoules,
+    recoveryDelayRemainingSeconds: nonNegative(
+      energy.recoveryDelayRemainingSeconds,
+      `${path}.recoveryDelayRemainingSeconds`
+    ),
+    recoveryRateJoulesPerSecond: nonNegative(
+      energy.recoveryRateJoulesPerSecond,
+      `${path}.recoveryRateJoulesPerSecond`
+    ),
+    nextShotReadyInSeconds: nonNegative(energy.nextShotReadyInSeconds, `${path}.nextShotReadyInSeconds`)
   });
 };
 
@@ -745,7 +838,20 @@ export const createSurfaceCombatSnapshot = (input: SurfaceCombatSnapshotInput): 
     return {
       sequence,
       eventId: stableId(event.eventId, `combat.events.${index}.eventId`),
-      kind: enumValue(event.kind, ["FireAccepted", "FireRejected", "TargetDamaged", "TargetDestroyed", "TerrainHit"] as const, `combat.events.${index}.kind`),
+      kind: enumValue(
+        event.kind,
+        [
+          "FireAccepted",
+          "FireRejected",
+          "TargetDamaged",
+          "TargetDestroyed",
+          "TerrainHit",
+          "StructuralHit",
+          "StructuralDamaged",
+          "StructuralDetached"
+        ] as const,
+        `combat.events.${index}.kind`
+      ),
       simulationTick: safeNonNegativeInteger(event.simulationTick, `combat.events.${index}.simulationTick`, "InvalidTick")
     };
   });
@@ -756,6 +862,7 @@ export const createSurfaceCombatSnapshot = (input: SurfaceCombatSnapshotInput): 
     heatJoules,
     maximumHeatJoules,
     cooldownSeconds: nonNegative(input.cooldownSeconds, "combat.cooldownSeconds"),
+    readiness: weaponReadiness(input.readiness, "combat.readiness"),
     target,
     latestFireResult: fireResult(input.latestFireResult),
     events,
@@ -906,6 +1013,948 @@ export const createSurfaceVoxelEditResult = (input: SurfaceVoxelEditResultInput)
   }) as Readonly<SurfaceVoxelEditResult>;
 };
 
+const structuralContentHash = (value: unknown, path: string): string => {
+  if (typeof value !== "string" || !/^fnv1a64-v1:[0-9a-f]{16}$/.test(value)) {
+    return fail("InvalidHash", path, "must use authoritative fnv1a64-v1:<16 lowercase hex> format.");
+  }
+  return value;
+};
+
+const orderedStableIds = (
+  value: unknown,
+  path: string,
+  maximumLength: number
+): readonly SurfaceStableId[] => {
+  const ids = denseArray(value, path, maximumLength)
+    .map((id, index) => stableId(id, `${path}.${index}`));
+  for (let index = 1; index < ids.length; index += 1) {
+    if (compareCanonicalCodeUnits(ids[index - 1], ids[index]) >= 0) {
+      return fail("InvalidArray", path, "must contain unique IDs in canonical code-unit order.");
+    }
+  }
+  return ids;
+};
+
+type SurfaceStructuralAcceptedTransitionSnapshotInput = Readonly<{
+  readonly status: "Applied" | "NoChange";
+  readonly fireCommandId: string;
+  readonly structuralCommandId: string;
+  readonly objectId: string;
+  readonly previousObjectRevision: number;
+  readonly resultingObjectRevision: number;
+  readonly previousEditRevision: number;
+  readonly resultingEditRevision: number;
+  readonly previousContentHash: string;
+  readonly resultingContentHash: string;
+  readonly changedCellCount: number;
+  readonly changedBrickIds: readonly string[];
+  readonly supportResult: "Anchored" | "Detached" | "Empty";
+  readonly detachedComponentIds: readonly string[];
+  readonly authorityTransfer: SurfaceStructuralAuthorityTransferSnapshotInput | null;
+  readonly simulationTick: number;
+}>;
+
+type SurfaceStructuralRejectedTransitionSnapshotInput = Readonly<{
+  readonly status: "Rejected";
+  readonly fireCommandId: string;
+  readonly structuralCommandId: string | null;
+  readonly objectId: string;
+  readonly currentObjectRevision: number;
+  readonly currentEditRevision: number;
+  readonly currentContentHash: string;
+  readonly code:
+    | "BodyCapacityExceeded"
+    | "ColliderBudgetExceeded"
+    | "DetachedBodyImmutable"
+    | "StructuralAuthorityRefused";
+  readonly authorityTransfer: null;
+  readonly simulationTick: number;
+}>;
+
+export interface SurfaceStructuralAuthorityTransferSnapshotInput {
+  readonly transferCommandId: string;
+  readonly previousObjectRevision: number;
+  readonly resultingObjectRevision: number;
+  readonly previousEditRevision: number;
+  readonly resultingEditRevision: number;
+  readonly previousContentHash: string;
+  readonly resultingContentHash: string;
+  readonly transferredCellCount: number;
+  readonly changedBrickIds: readonly string[];
+  readonly sourceFragmentIds: readonly string[];
+}
+
+export interface SurfaceStructuralAuthorityTransferSnapshot
+  extends Omit<
+    SurfaceStructuralAuthorityTransferSnapshotInput,
+    "transferCommandId" | "changedBrickIds" | "sourceFragmentIds"
+  > {
+  readonly transferCommandId: SurfaceCommandId;
+  readonly changedBrickIds: readonly SurfaceBrickId[];
+  readonly sourceFragmentIds: readonly SurfaceStableId[];
+}
+
+export type SurfaceStructuralTransitionSnapshotInput =
+  | SurfaceStructuralAcceptedTransitionSnapshotInput
+  | SurfaceStructuralRejectedTransitionSnapshotInput;
+
+export type SurfaceStructuralTransitionSnapshot =
+  | Readonly<{
+    readonly status: "Applied" | "NoChange";
+    readonly fireCommandId: SurfaceCommandId;
+    readonly structuralCommandId: SurfaceCommandId;
+    readonly objectId: SurfaceStableId;
+    readonly previousObjectRevision: number;
+    readonly resultingObjectRevision: number;
+    readonly previousEditRevision: number;
+    readonly resultingEditRevision: number;
+    readonly previousContentHash: string;
+    readonly resultingContentHash: string;
+    readonly changedCellCount: number;
+    readonly changedBrickIds: readonly SurfaceBrickId[];
+    readonly supportResult: "Anchored" | "Detached" | "Empty";
+    readonly detachedComponentIds: readonly SurfaceStableId[];
+    readonly authorityTransfer: SurfaceStructuralAuthorityTransferSnapshot | null;
+    readonly simulationTick: number;
+  }>
+  | Readonly<{
+    readonly status: "Rejected";
+    readonly fireCommandId: SurfaceCommandId;
+    readonly structuralCommandId: SurfaceCommandId | null;
+    readonly objectId: SurfaceStableId;
+    readonly currentObjectRevision: number;
+    readonly currentEditRevision: number;
+    readonly currentContentHash: string;
+    readonly code:
+      | "BodyCapacityExceeded"
+      | "ColliderBudgetExceeded"
+      | "DetachedBodyImmutable"
+      | "StructuralAuthorityRefused";
+    readonly authorityTransfer: null;
+    readonly simulationTick: number;
+  }>;
+
+const structuralAuthorityTransfer = (
+  input: SurfaceStructuralAuthorityTransferSnapshotInput,
+  path: string
+): Readonly<SurfaceStructuralAuthorityTransferSnapshot> => {
+  requirePlainDataRecord(input, path);
+  const previousObjectRevision = safeNonNegativeInteger(
+    input.previousObjectRevision,
+    `${path}.previousObjectRevision`,
+    "InvalidRevision"
+  );
+  const resultingObjectRevision = safeNonNegativeInteger(
+    input.resultingObjectRevision,
+    `${path}.resultingObjectRevision`,
+    "InvalidRevision"
+  );
+  const previousEditRevision = safeNonNegativeInteger(
+    input.previousEditRevision,
+    `${path}.previousEditRevision`,
+    "InvalidRevision"
+  );
+  const resultingEditRevision = safeNonNegativeInteger(
+    input.resultingEditRevision,
+    `${path}.resultingEditRevision`,
+    "InvalidRevision"
+  );
+  const previousContentHash = structuralContentHash(
+    input.previousContentHash,
+    `${path}.previousContentHash`
+  );
+  const resultingContentHash = structuralContentHash(
+    input.resultingContentHash,
+    `${path}.resultingContentHash`
+  );
+  const transferredCellCount = safeNonNegativeInteger(
+    input.transferredCellCount,
+    `${path}.transferredCellCount`,
+    "InvalidNumber"
+  );
+  const changedBrickIds = orderedStableIds(input.changedBrickIds, `${path}.changedBrickIds`, 4096);
+  const sourceFragmentIds = orderedStableIds(input.sourceFragmentIds, `${path}.sourceFragmentIds`, 8);
+  if (
+    previousObjectRevision === Number.MAX_SAFE_INTEGER
+    || resultingObjectRevision !== previousObjectRevision + 1
+    || previousEditRevision === Number.MAX_SAFE_INTEGER
+    || resultingEditRevision !== previousEditRevision + 1
+    || previousContentHash === resultingContentHash
+    || transferredCellCount === 0
+    || changedBrickIds.length === 0
+    || sourceFragmentIds.length === 0
+  ) {
+    return fail(
+      "InvalidRevision",
+      path,
+      "must describe one non-empty, revision-advancing Structural authority transfer."
+    );
+  }
+  return canonicalCloneAndDeepFreeze({
+    transferCommandId: stableId(input.transferCommandId, `${path}.transferCommandId`),
+    previousObjectRevision,
+    resultingObjectRevision,
+    previousEditRevision,
+    resultingEditRevision,
+    previousContentHash,
+    resultingContentHash,
+    transferredCellCount,
+    changedBrickIds,
+    sourceFragmentIds
+  });
+};
+
+export const createSurfaceStructuralTransitionSnapshot = (
+  input: SurfaceStructuralTransitionSnapshotInput
+): Readonly<SurfaceStructuralTransitionSnapshot> => {
+  requirePlainDataRecord(input, "structuralTransition");
+  const status = enumValue(
+    input.status,
+    ["Applied", "NoChange", "Rejected"] as const,
+    "structuralTransition.status"
+  );
+  const fireCommandId = stableId(input.fireCommandId, "structuralTransition.fireCommandId");
+  const objectId = stableId(input.objectId, "structuralTransition.objectId");
+  const simulationTick = safeNonNegativeInteger(
+    input.simulationTick,
+    "structuralTransition.simulationTick",
+    "InvalidTick"
+  );
+  if (status === "Rejected") {
+    const rejected = input as SurfaceStructuralRejectedTransitionSnapshotInput;
+    if (rejected.authorityTransfer !== null) {
+      return fail(
+        "InvalidRecord",
+        "structuralTransition.authorityTransfer",
+        "must be null for Rejected transitions."
+      );
+    }
+    return canonicalCloneAndDeepFreeze({
+      status,
+      fireCommandId,
+      structuralCommandId: rejected.structuralCommandId === null
+        ? null
+        : stableId(rejected.structuralCommandId, "structuralTransition.structuralCommandId"),
+      objectId,
+      currentObjectRevision: safeNonNegativeInteger(
+        rejected.currentObjectRevision,
+        "structuralTransition.currentObjectRevision",
+        "InvalidRevision"
+      ),
+      currentEditRevision: safeNonNegativeInteger(
+        rejected.currentEditRevision,
+        "structuralTransition.currentEditRevision",
+        "InvalidRevision"
+      ),
+      currentContentHash: structuralContentHash(
+        rejected.currentContentHash,
+        "structuralTransition.currentContentHash"
+      ),
+      code: enumValue(
+        rejected.code,
+        [
+          "BodyCapacityExceeded",
+          "ColliderBudgetExceeded",
+          "DetachedBodyImmutable",
+          "StructuralAuthorityRefused"
+        ] as const,
+        "structuralTransition.code"
+      ),
+      authorityTransfer: null,
+      simulationTick
+    });
+  }
+
+  const accepted = input as SurfaceStructuralAcceptedTransitionSnapshotInput;
+  const previousObjectRevision = safeNonNegativeInteger(
+    accepted.previousObjectRevision,
+    "structuralTransition.previousObjectRevision",
+    "InvalidRevision"
+  );
+  const resultingObjectRevision = safeNonNegativeInteger(
+    accepted.resultingObjectRevision,
+    "structuralTransition.resultingObjectRevision",
+    "InvalidRevision"
+  );
+  if (previousObjectRevision === Number.MAX_SAFE_INTEGER || resultingObjectRevision !== previousObjectRevision + 1) {
+    return fail(
+      "InvalidRevision",
+      "structuralTransition.resultingObjectRevision",
+      "must advance previousObjectRevision exactly once."
+    );
+  }
+  const previousEditRevision = safeNonNegativeInteger(
+    accepted.previousEditRevision,
+    "structuralTransition.previousEditRevision",
+    "InvalidRevision"
+  );
+  const resultingEditRevision = safeNonNegativeInteger(
+    accepted.resultingEditRevision,
+    "structuralTransition.resultingEditRevision",
+    "InvalidRevision"
+  );
+  const previousContentHash = structuralContentHash(
+    accepted.previousContentHash,
+    "structuralTransition.previousContentHash"
+  );
+  const resultingContentHash = structuralContentHash(
+    accepted.resultingContentHash,
+    "structuralTransition.resultingContentHash"
+  );
+  const changedCellCount = safeNonNegativeInteger(
+    accepted.changedCellCount,
+    "structuralTransition.changedCellCount",
+    "InvalidNumber"
+  );
+  const changedBrickIds = orderedStableIds(
+    accepted.changedBrickIds,
+    "structuralTransition.changedBrickIds",
+    4096
+  );
+  if (status === "Applied") {
+    if (
+      previousEditRevision === Number.MAX_SAFE_INTEGER
+      || resultingEditRevision !== previousEditRevision + 1
+      || previousContentHash === resultingContentHash
+      || changedCellCount === 0
+      || changedBrickIds.length === 0
+    ) {
+      return fail(
+        "InvalidRevision",
+        "structuralTransition",
+        "Applied must advance edit/content state and describe non-empty changes."
+      );
+    }
+  } else if (
+    resultingEditRevision !== previousEditRevision
+    || resultingContentHash !== previousContentHash
+    || changedCellCount !== 0
+    || changedBrickIds.length !== 0
+  ) {
+    return fail(
+      "InvalidRevision",
+      "structuralTransition",
+      "NoChange must preserve edit/content state and contain no changed cells or bricks."
+    );
+  }
+  const supportResult = enumValue(
+    accepted.supportResult,
+    ["Anchored", "Detached", "Empty"] as const,
+    "structuralTransition.supportResult"
+  );
+  const detachedComponentIds = orderedStableIds(
+    accepted.detachedComponentIds,
+    "structuralTransition.detachedComponentIds",
+    8
+  );
+  if (supportResult === "Detached" && detachedComponentIds.length === 0) {
+    return fail(
+      "InvalidArray",
+      "structuralTransition.detachedComponentIds",
+      "Detached support requires at least one detached component ID."
+    );
+  }
+  if (supportResult !== "Detached" && detachedComponentIds.length !== 0) {
+    return fail(
+      "InvalidArray",
+      "structuralTransition.detachedComponentIds",
+      `${supportResult} support cannot list detached component IDs.`
+    );
+  }
+  if (supportResult === "Empty" && status !== "Applied") {
+    return fail(
+      "InvalidRecord",
+      "structuralTransition.supportResult",
+      "Empty means the applied Damage step itself made the current object empty."
+    );
+  }
+  let authorityTransfer: Readonly<SurfaceStructuralAuthorityTransferSnapshot> | null = null;
+  if (supportResult === "Detached") {
+    if (status !== "Applied" || accepted.authorityTransfer === null) {
+      return fail(
+        "InvalidRecord",
+        "structuralTransition.authorityTransfer",
+        "Detached Applied transitions require an authority transfer."
+      );
+    }
+    authorityTransfer = structuralAuthorityTransfer(
+      accepted.authorityTransfer,
+      "structuralTransition.authorityTransfer"
+    );
+    if (
+      authorityTransfer.transferCommandId === accepted.structuralCommandId
+      || authorityTransfer.previousObjectRevision !== resultingObjectRevision
+      || authorityTransfer.previousEditRevision !== resultingEditRevision
+      || authorityTransfer.previousContentHash !== resultingContentHash
+      || authorityTransfer.sourceFragmentIds.length !== detachedComponentIds.length
+    ) {
+      return fail(
+        "InvalidRevision",
+        "structuralTransition.authorityTransfer",
+        "must be a separate command chained exactly from the Damage result with one Fragment per detached Component."
+      );
+    }
+  } else if (accepted.authorityTransfer !== null) {
+    return fail(
+      "InvalidRecord",
+      "structuralTransition.authorityTransfer",
+      "must be null for NoChange, Anchored and Empty transitions."
+    );
+  }
+  return canonicalCloneAndDeepFreeze({
+    status,
+    fireCommandId,
+    structuralCommandId: stableId(
+      accepted.structuralCommandId,
+      "structuralTransition.structuralCommandId"
+    ),
+    objectId,
+    previousObjectRevision,
+    resultingObjectRevision,
+    previousEditRevision,
+    resultingEditRevision,
+    previousContentHash,
+    resultingContentHash,
+    changedCellCount,
+    changedBrickIds,
+    supportResult,
+    detachedComponentIds,
+    authorityTransfer,
+    simulationTick
+  });
+};
+
+export interface SurfaceDynamicBodySnapshotInput {
+  readonly bodyId: string;
+  readonly componentId: string;
+  readonly objectId: string;
+  readonly sourceObjectRevision: number;
+  readonly sourceContentHash: string;
+  readonly lifecycle: "Falling" | "Resting";
+  readonly positionMeters: SpatialVector3;
+  readonly orientation: SpatialQuaternion;
+  readonly linearVelocityMetersPerSecond: SpatialVector3;
+  readonly angularVelocityRadiansPerSecond: SpatialVector3;
+  readonly colliderRevision: number;
+  readonly simulationTick: number;
+}
+
+export interface SurfaceDynamicBodySnapshot
+  extends Omit<
+    SurfaceDynamicBodySnapshotInput,
+    "bodyId" | "componentId" | "objectId" | "orientation"
+  > {
+  readonly bodyId: SurfaceStableId;
+  readonly componentId: SurfaceStableId;
+  readonly objectId: SurfaceStableId;
+  readonly orientation: Readonly<SpatialQuaternion>;
+}
+
+export const createSurfaceDynamicBodySnapshot = (
+  input: SurfaceDynamicBodySnapshotInput
+): Readonly<SurfaceDynamicBodySnapshot> => {
+  requirePlainDataRecord(input, "dynamicBody");
+  return canonicalCloneAndDeepFreeze({
+    bodyId: stableId(input.bodyId, "dynamicBody.bodyId"),
+    componentId: stableId(input.componentId, "dynamicBody.componentId"),
+    objectId: stableId(input.objectId, "dynamicBody.objectId"),
+    sourceObjectRevision: safeNonNegativeInteger(
+      input.sourceObjectRevision,
+      "dynamicBody.sourceObjectRevision",
+      "InvalidRevision"
+    ),
+    sourceContentHash: structuralContentHash(
+      input.sourceContentHash,
+      "dynamicBody.sourceContentHash"
+    ),
+    lifecycle: enumValue(input.lifecycle, ["Falling", "Resting"] as const, "dynamicBody.lifecycle"),
+    positionMeters: vector(input.positionMeters, "dynamicBody.positionMeters"),
+    orientation: canonicalQuaternion(input.orientation, "dynamicBody.orientation"),
+    linearVelocityMetersPerSecond: vector(
+      input.linearVelocityMetersPerSecond,
+      "dynamicBody.linearVelocityMetersPerSecond"
+    ),
+    angularVelocityRadiansPerSecond: vector(
+      input.angularVelocityRadiansPerSecond,
+      "dynamicBody.angularVelocityRadiansPerSecond"
+    ),
+    colliderRevision: safeNonNegativeInteger(
+      input.colliderRevision,
+      "dynamicBody.colliderRevision",
+      "InvalidRevision"
+    ),
+    simulationTick: safeNonNegativeInteger(
+      input.simulationTick,
+      "dynamicBody.simulationTick",
+      "InvalidTick"
+    )
+  });
+};
+
+export interface SurfacePhysicsFailureSnapshotInput {
+  readonly code: "ContactBudgetExceeded" | "MotionBudgetExceeded" | "NonFiniteState";
+  readonly simulationTick: number;
+  readonly bodyIds: readonly string[];
+}
+
+export interface SurfacePhysicsFailureSnapshot
+  extends Omit<SurfacePhysicsFailureSnapshotInput, "bodyIds"> {
+  readonly bodyIds: readonly SurfaceStableId[];
+}
+
+export const createSurfacePhysicsFailureSnapshot = (
+  input: SurfacePhysicsFailureSnapshotInput
+): Readonly<SurfacePhysicsFailureSnapshot> => {
+  requirePlainDataRecord(input, "physicsFailure");
+  return canonicalCloneAndDeepFreeze({
+    code: enumValue(
+      input.code,
+      ["ContactBudgetExceeded", "MotionBudgetExceeded", "NonFiniteState"] as const,
+      "physicsFailure.code"
+    ),
+    simulationTick: safeNonNegativeInteger(
+      input.simulationTick,
+      "physicsFailure.simulationTick",
+      "InvalidTick"
+    ),
+    bodyIds: orderedStableIds(input.bodyIds, "physicsFailure.bodyIds", 8)
+  });
+};
+
+interface SurfaceStructuralObjectPresentationInput {
+  readonly objectId: string;
+  readonly treeInstanceId: string;
+  readonly speciesId: string;
+  readonly objectRevision: number;
+  readonly editRevision: number;
+  readonly contentHash: string;
+  readonly componentIds: readonly string[];
+  readonly meshArtifactId: string;
+}
+
+interface SurfaceStructuralObjectPresentation
+  extends Omit<
+    SurfaceStructuralObjectPresentationInput,
+    "objectId" | "treeInstanceId" | "speciesId" | "componentIds" | "meshArtifactId"
+  > {
+  readonly objectId: SurfaceStableId;
+  readonly treeInstanceId: SurfaceStableId;
+  readonly speciesId: SurfaceStableId;
+  readonly componentIds: readonly SurfaceStableId[];
+  readonly meshArtifactId: SurfaceStableId;
+}
+
+interface SurfaceStructuralComponentPresentationInput {
+  readonly componentId: string;
+  readonly objectId: string;
+  readonly sourceObjectRevision: number;
+  readonly sourceContentHash: string;
+  readonly anchored: true;
+  readonly bodyId: null;
+  readonly meshArtifactId: string;
+}
+
+interface SurfaceStructuralComponentPresentation
+  extends Omit<
+    SurfaceStructuralComponentPresentationInput,
+    "componentId" | "objectId" | "bodyId" | "meshArtifactId"
+  > {
+  readonly componentId: SurfaceStableId;
+  readonly objectId: SurfaceStableId;
+  readonly anchored: true;
+  readonly bodyId: null;
+  readonly meshArtifactId: SurfaceStableId;
+}
+
+export interface SurfaceStructuralBodySourceSnapshotInput {
+  readonly componentId: string;
+  readonly sourceFragmentId: string;
+  readonly bodyId: string;
+  readonly objectId: string;
+  readonly sourceObjectRevision: number;
+  readonly sourceContentHash: string;
+  readonly colliderRevision: number;
+  readonly meshArtifactId: string;
+}
+
+export interface SurfaceStructuralBodySourceSnapshot
+  extends Omit<
+    SurfaceStructuralBodySourceSnapshotInput,
+    "componentId" | "sourceFragmentId" | "bodyId" | "objectId" | "meshArtifactId"
+  > {
+  readonly componentId: SurfaceStableId;
+  readonly sourceFragmentId: SurfaceStableId;
+  readonly bodyId: SurfaceStableId;
+  readonly objectId: SurfaceStableId;
+  readonly meshArtifactId: SurfaceStableId;
+}
+
+export interface SurfaceStructuralPresentationSnapshotInput {
+  readonly bodyId: string;
+  readonly regionId: string;
+  readonly surfaceFrameId: string;
+  readonly regionRevision: number;
+  readonly objects: readonly SurfaceStructuralObjectPresentationInput[];
+  readonly components: readonly SurfaceStructuralComponentPresentationInput[];
+  readonly bodySources: readonly SurfaceStructuralBodySourceSnapshotInput[];
+  readonly dynamicBodies: readonly SurfaceDynamicBodySnapshotInput[];
+  readonly latestTransition: SurfaceStructuralTransitionSnapshotInput | null;
+  readonly physicsFailure: SurfacePhysicsFailureSnapshotInput | null;
+  readonly simulationTick: number;
+}
+
+export interface SurfaceStructuralPresentationSnapshot
+  extends Omit<
+    SurfaceStructuralPresentationSnapshotInput,
+    | "bodyId"
+    | "regionId"
+    | "surfaceFrameId"
+    | "objects"
+    | "components"
+    | "bodySources"
+    | "dynamicBodies"
+    | "latestTransition"
+    | "physicsFailure"
+  > {
+  readonly bodyId: SurfaceBodyId;
+  readonly regionId: SurfaceRegionId;
+  readonly surfaceFrameId: SurfaceFrameId;
+  readonly objects: readonly SurfaceStructuralObjectPresentation[];
+  readonly components: readonly SurfaceStructuralComponentPresentation[];
+  readonly bodySources: readonly SurfaceStructuralBodySourceSnapshot[];
+  readonly dynamicBodies: readonly SurfaceDynamicBodySnapshot[];
+  readonly latestTransition: SurfaceStructuralTransitionSnapshot | null;
+  readonly physicsFailure: SurfacePhysicsFailureSnapshot | null;
+}
+
+const ensureCanonicalFactOrder = (
+  values: readonly Readonly<{ readonly id: SurfaceStableId }>[] ,
+  path: string
+): void => {
+  for (let index = 1; index < values.length; index += 1) {
+    if (compareCanonicalCodeUnits(values[index - 1].id, values[index].id) >= 0) {
+      return fail("InvalidArray", path, "must contain unique facts in canonical stable-ID order.");
+    }
+  }
+};
+
+export const createSurfaceStructuralPresentationSnapshot = (
+  input: SurfaceStructuralPresentationSnapshotInput
+): Readonly<SurfaceStructuralPresentationSnapshot> => {
+  requirePlainDataRecord(input, "structuralPresentation");
+  const objects = denseArray(input.objects, "structuralPresentation.objects", 128)
+    .map((rawObject, index): SurfaceStructuralObjectPresentation => {
+      const object = rawObject as SurfaceStructuralObjectPresentationInput;
+      const path = `structuralPresentation.objects.${index}`;
+      requirePlainDataRecord(object, path);
+      return canonicalCloneAndDeepFreeze({
+        objectId: stableId(object.objectId, `${path}.objectId`),
+        treeInstanceId: stableId(object.treeInstanceId, `${path}.treeInstanceId`),
+        speciesId: stableId(object.speciesId, `${path}.speciesId`),
+        objectRevision: safeNonNegativeInteger(
+          object.objectRevision,
+          `${path}.objectRevision`,
+          "InvalidRevision"
+        ),
+        editRevision: safeNonNegativeInteger(
+          object.editRevision,
+          `${path}.editRevision`,
+          "InvalidRevision"
+        ),
+        contentHash: structuralContentHash(object.contentHash, `${path}.contentHash`),
+        componentIds: orderedStableIds(object.componentIds, `${path}.componentIds`, 128),
+        meshArtifactId: stableId(object.meshArtifactId, `${path}.meshArtifactId`)
+      });
+    });
+  ensureCanonicalFactOrder(
+    objects.map((object) => ({ id: object.objectId })),
+    "structuralPresentation.objects"
+  );
+
+  const components = denseArray(input.components, "structuralPresentation.components", 128)
+    .map((rawComponent, index): SurfaceStructuralComponentPresentation => {
+      const component = rawComponent as SurfaceStructuralComponentPresentationInput;
+      const path = `structuralPresentation.components.${index}`;
+      requirePlainDataRecord(component, path);
+      const anchored = booleanValue(component.anchored, `${path}.anchored`);
+      if (!anchored || component.bodyId !== null) {
+        return fail(
+          "InvalidRecord",
+          path,
+          "current Structural components must be anchored and have bodyId null."
+        );
+      }
+      return canonicalCloneAndDeepFreeze({
+        componentId: stableId(component.componentId, `${path}.componentId`),
+        objectId: stableId(component.objectId, `${path}.objectId`),
+        sourceObjectRevision: safeNonNegativeInteger(
+          component.sourceObjectRevision,
+          `${path}.sourceObjectRevision`,
+          "InvalidRevision"
+        ),
+        sourceContentHash: structuralContentHash(
+          component.sourceContentHash,
+          `${path}.sourceContentHash`
+        ),
+        anchored: true as const,
+        bodyId: null,
+        meshArtifactId: stableId(component.meshArtifactId, `${path}.meshArtifactId`)
+      });
+    });
+  ensureCanonicalFactOrder(
+    components.map((component) => ({ id: component.componentId })),
+    "structuralPresentation.components"
+  );
+
+  const bodySources = denseArray(input.bodySources, "structuralPresentation.bodySources", 8)
+    .map((rawBodySource, index): SurfaceStructuralBodySourceSnapshot => {
+      const bodySource = rawBodySource as SurfaceStructuralBodySourceSnapshotInput;
+      const path = `structuralPresentation.bodySources.${index}`;
+      requirePlainDataRecord(bodySource, path);
+      return canonicalCloneAndDeepFreeze({
+        componentId: stableId(bodySource.componentId, `${path}.componentId`),
+        sourceFragmentId: stableId(bodySource.sourceFragmentId, `${path}.sourceFragmentId`),
+        bodyId: stableId(bodySource.bodyId, `${path}.bodyId`),
+        objectId: stableId(bodySource.objectId, `${path}.objectId`),
+        sourceObjectRevision: safeNonNegativeInteger(
+          bodySource.sourceObjectRevision,
+          `${path}.sourceObjectRevision`,
+          "InvalidRevision"
+        ),
+        sourceContentHash: structuralContentHash(
+          bodySource.sourceContentHash,
+          `${path}.sourceContentHash`
+        ),
+        colliderRevision: safeNonNegativeInteger(
+          bodySource.colliderRevision,
+          `${path}.colliderRevision`,
+          "InvalidRevision"
+        ),
+        meshArtifactId: stableId(bodySource.meshArtifactId, `${path}.meshArtifactId`)
+      });
+    });
+  ensureCanonicalFactOrder(
+    bodySources.map((bodySource) => ({ id: bodySource.componentId })),
+    "structuralPresentation.bodySources"
+  );
+
+  const dynamicBodies = denseArray(input.dynamicBodies, "structuralPresentation.dynamicBodies", 8)
+    .map((body) => createSurfaceDynamicBodySnapshot(body as SurfaceDynamicBodySnapshotInput));
+  ensureCanonicalFactOrder(
+    dynamicBodies.map((body) => ({ id: body.bodyId })),
+    "structuralPresentation.dynamicBodies"
+  );
+
+  const objectById = new Map(objects.map((object) => [object.objectId, object] as const));
+  const componentById = new Map(components.map((component) => [component.componentId, component] as const));
+  const bodySourceByComponentId = new Map(
+    bodySources.map((bodySource) => [bodySource.componentId, bodySource] as const)
+  );
+  const bodySourceByBodyId = new Map(
+    bodySources.map((bodySource) => [bodySource.bodyId, bodySource] as const)
+  );
+  const bodyById = new Map(dynamicBodies.map((body) => [body.bodyId, body] as const));
+
+  for (const object of objects) {
+    const actualComponentIds = components
+      .filter((component) => component.objectId === object.objectId)
+      .map((component) => component.componentId);
+    if (
+      actualComponentIds.length !== object.componentIds.length
+      || actualComponentIds.some((componentId, index) => componentId !== object.componentIds[index])
+    ) {
+      return fail(
+        "InvalidArray",
+        "structuralPresentation.objects",
+        `componentIds must exactly bind the published components for ${object.objectId}.`
+      );
+    }
+  }
+
+  for (const component of components) {
+    const object = objectById.get(component.objectId);
+    if (object === undefined) {
+      return fail(
+        "InvalidIdentity",
+        "structuralPresentation.components",
+        `component ${component.componentId} references an unpublished object.`
+      );
+    }
+    if (
+      component.sourceObjectRevision !== object.objectRevision
+      || component.sourceContentHash !== object.contentHash
+    ) {
+      return fail(
+        "InvalidRevision",
+        "structuralPresentation.components",
+        `component ${component.componentId} must bind the published object revision and content hash.`
+      );
+    }
+  }
+
+  const seenBodyIds = new Set<SurfaceStableId>();
+  const seenSourceFragmentIds = new Set<SurfaceStableId>();
+  for (const bodySource of bodySources) {
+    const object = objectById.get(bodySource.objectId);
+    if (
+      object === undefined
+      || bodySource.sourceObjectRevision >= object.objectRevision
+      || componentById.has(bodySource.componentId)
+      || seenBodyIds.has(bodySource.bodyId)
+      || seenSourceFragmentIds.has(bodySource.sourceFragmentId)
+    ) {
+      return fail(
+        "InvalidRevision",
+        "structuralPresentation.bodySources",
+        `body source ${bodySource.componentId} must be unique, historical and separate from current components.`
+      );
+    }
+    seenBodyIds.add(bodySource.bodyId);
+    seenSourceFragmentIds.add(bodySource.sourceFragmentId);
+  }
+
+  for (const body of dynamicBodies) {
+    const bodySource = bodySourceByComponentId.get(body.componentId);
+    if (
+      bodySource === undefined
+      || bodySource.bodyId !== body.bodyId
+      || bodySource.objectId !== body.objectId
+      || bodySource.sourceObjectRevision !== body.sourceObjectRevision
+      || bodySource.sourceContentHash !== body.sourceContentHash
+      || bodySource.colliderRevision !== body.colliderRevision
+    ) {
+      return fail(
+        "InvalidRevision",
+        "structuralPresentation.dynamicBodies",
+        `body ${body.bodyId} must exactly bind one historical body source.`
+      );
+    }
+  }
+  for (const bodySource of bodySources) {
+    const body = bodyById.get(bodySource.bodyId);
+    if (
+      body === undefined
+      || body.componentId !== bodySource.componentId
+      || bodySourceByBodyId.get(body.bodyId)?.componentId !== body.componentId
+    ) {
+      return fail(
+        "InvalidIdentity",
+        "structuralPresentation.bodySources",
+        `body source ${bodySource.componentId} must lifecycle-bind exactly one Dynamic Body.`
+      );
+    }
+  }
+
+  const latestTransition = input.latestTransition === null
+    ? null
+    : createSurfaceStructuralTransitionSnapshot(input.latestTransition);
+  if (latestTransition !== null) {
+    const object = objectById.get(latestTransition.objectId);
+    if (object === undefined) {
+      return fail(
+        "InvalidIdentity",
+        "structuralPresentation.latestTransition.objectId",
+        "must reference a published Structural object."
+      );
+    }
+    const transitionRevision = latestTransition.status === "Rejected"
+      ? latestTransition.currentObjectRevision
+      : latestTransition.authorityTransfer?.resultingObjectRevision
+        ?? latestTransition.resultingObjectRevision;
+    const transitionEditRevision = latestTransition.status === "Rejected"
+      ? latestTransition.currentEditRevision
+      : latestTransition.authorityTransfer?.resultingEditRevision
+        ?? latestTransition.resultingEditRevision;
+    const transitionHash = latestTransition.status === "Rejected"
+      ? latestTransition.currentContentHash
+      : latestTransition.authorityTransfer?.resultingContentHash
+        ?? latestTransition.resultingContentHash;
+    if (
+      transitionRevision !== object.objectRevision
+      || transitionEditRevision !== object.editRevision
+      || transitionHash !== object.contentHash
+    ) {
+      return fail(
+        "InvalidRevision",
+        "structuralPresentation.latestTransition",
+        "must bind the published object revision, edit revision and content hash."
+      );
+    }
+    if (latestTransition.status !== "Rejected") {
+      const objectComponents = components.filter((component) => component.objectId === object.objectId);
+      const newBodySources = bodySources.filter((bodySource) =>
+        bodySource.objectId === object.objectId
+        && bodySource.sourceObjectRevision === latestTransition.resultingObjectRevision
+        && bodySource.sourceContentHash === latestTransition.resultingContentHash
+      );
+      if (
+        (latestTransition.supportResult === "Anchored"
+          && (objectComponents.length === 0 || newBodySources.length !== 0))
+        || (latestTransition.supportResult === "Empty" && objectComponents.length !== 0)
+        || (latestTransition.supportResult === "Empty" && newBodySources.length !== 0)
+      ) {
+        return fail(
+          "InvalidRecord",
+          "structuralPresentation.latestTransition.supportResult",
+          "must match the published Structural component support facts."
+        );
+      }
+      if (latestTransition.supportResult === "Detached") {
+        const transfer = latestTransition.authorityTransfer;
+        if (transfer === null) {
+          return fail(
+            "InvalidRecord",
+            "structuralPresentation.latestTransition.authorityTransfer",
+            "Detached presentation requires its chained authority transfer."
+          );
+        }
+        const componentIds = newBodySources.map((bodySource) => bodySource.componentId);
+        const fragmentIds = [...newBodySources]
+          .map((bodySource) => bodySource.sourceFragmentId)
+          .sort(compareCanonicalCodeUnits);
+        if (
+          componentIds.length !== latestTransition.detachedComponentIds.length
+          || componentIds.some((componentId, index) =>
+            componentId !== latestTransition.detachedComponentIds[index]
+          )
+          || fragmentIds.length !== transfer.sourceFragmentIds.length
+          || fragmentIds.some((fragmentId, index) => fragmentId !== transfer.sourceFragmentIds[index])
+        ) {
+          return fail(
+            "InvalidIdentity",
+            "structuralPresentation.bodySources",
+            "Detached transition Component and source Fragment IDs must exactly bind its new body sources."
+          );
+        }
+      }
+    }
+  }
+
+  return canonicalCloneAndDeepFreeze({
+    bodyId: stableId(input.bodyId, "structuralPresentation.bodyId"),
+    regionId: stableId(input.regionId, "structuralPresentation.regionId"),
+    surfaceFrameId: stableId(input.surfaceFrameId, "structuralPresentation.surfaceFrameId"),
+    regionRevision: safeNonNegativeInteger(
+      input.regionRevision,
+      "structuralPresentation.regionRevision",
+      "InvalidRevision"
+    ),
+    objects,
+    components,
+    bodySources,
+    dynamicBodies,
+    latestTransition,
+    physicsFailure: input.physicsFailure === null
+      ? null
+      : createSurfacePhysicsFailureSnapshot(input.physicsFailure),
+    simulationTick: safeNonNegativeInteger(
+      input.simulationTick,
+      "structuralPresentation.simulationTick",
+      "InvalidTick"
+    )
+  });
+};
+
 export interface SurfacePlayHudSnapshotInput {
   readonly mode: "SurfaceFirstPerson";
   readonly movementMode: SurfaceMovementMode;
@@ -915,7 +1964,15 @@ export interface SurfacePlayHudSnapshotInput {
   readonly heatJoules: number;
   readonly maximumHeatJoules: number;
   readonly cooldownSeconds: number;
+  readonly weaponReadiness: SurfaceWeaponReadinessInput;
   readonly targetCondition: "None" | "Operational" | "Damaged" | "Disabled" | "Destroyed";
+  readonly structuralPreparation?: Readonly<{
+    readonly status: "Queued" | "Running" | "ReadyToAdopt";
+    readonly objectId: string;
+    readonly queueDepth: number;
+    readonly inFlight: number;
+    readonly latencyMilliseconds: number;
+  }> | null;
   readonly latestAction: string | null;
   readonly latestBlock: string | null;
 }
@@ -940,7 +1997,35 @@ export const createSurfacePlayHudSnapshot = (input: SurfacePlayHudSnapshotInput)
     heatJoules,
     maximumHeatJoules,
     cooldownSeconds: nonNegative(input.cooldownSeconds, "hud.cooldownSeconds"),
+    weaponReadiness: weaponReadiness(input.weaponReadiness, "hud.weaponReadiness"),
     targetCondition: enumValue(input.targetCondition, ["None", "Operational", "Damaged", "Disabled", "Destroyed"] as const, "hud.targetCondition"),
+    ...(input.structuralPreparation === undefined
+      ? {}
+      : { structuralPreparation: input.structuralPreparation === null
+        ? null
+        : {
+          status: enumValue(
+            input.structuralPreparation.status,
+            ["Queued", "Running", "ReadyToAdopt"] as const,
+            "hud.structuralPreparation.status"
+          ),
+          objectId: stableId(input.structuralPreparation.objectId, "hud.structuralPreparation.objectId"),
+          queueDepth: safeNonNegativeInteger(
+            input.structuralPreparation.queueDepth,
+            "hud.structuralPreparation.queueDepth",
+            "InvalidNumber"
+          ),
+          inFlight: safeNonNegativeInteger(
+            input.structuralPreparation.inFlight,
+            "hud.structuralPreparation.inFlight",
+            "InvalidNumber"
+          ),
+          latencyMilliseconds: nonNegative(
+            input.structuralPreparation.latencyMilliseconds,
+            "hud.structuralPreparation.latencyMilliseconds"
+          )
+          }
+      }),
     latestAction: optionalHudText(input.latestAction, "hud.latestAction"),
     latestBlock: optionalHudText(input.latestBlock, "hud.latestBlock")
   });
@@ -1017,7 +2102,7 @@ export interface SurfaceImpactPresentationSnapshot {
   readonly surfaceFrameId: SurfaceFrameId;
   readonly positionMeters: Readonly<SpatialVector3>;
   readonly normal: Readonly<SpatialVector3>;
-  readonly kind: "Target" | "Terrain";
+  readonly kind: "Target" | "Terrain" | "Structural";
   readonly simulationTick: number;
 }
 
@@ -1026,7 +2111,7 @@ export interface SurfaceImpactPresentationSnapshotInput {
   readonly surfaceFrameId: string;
   readonly positionMeters: SpatialVector3;
   readonly normal: SpatialVector3;
-  readonly kind: "Target" | "Terrain";
+  readonly kind: "Target" | "Terrain" | "Structural";
   readonly simulationTick: number;
 }
 
@@ -1097,7 +2182,7 @@ export const createSurfaceImpactPresentationSnapshot = (
     surfaceFrameId: stableId(input.surfaceFrameId, "impactPresentation.surfaceFrameId"),
     positionMeters: vector(input.positionMeters, "impactPresentation.positionMeters"),
     normal: unitDirection(input.normal, "impactPresentation.normal"),
-    kind: enumValue(input.kind, ["Target", "Terrain"] as const, "impactPresentation.kind"),
+    kind: enumValue(input.kind, ["Target", "Terrain", "Structural"] as const, "impactPresentation.kind"),
     simulationTick: safeNonNegativeInteger(input.simulationTick, "impactPresentation.simulationTick", "InvalidTick")
   });
 };
@@ -1117,10 +2202,14 @@ export interface SurfaceWeaponPresentationPort {
 export interface SurfaceImpactPresentationPort {
   presentImpact(snapshot: Readonly<SurfaceImpactPresentationSnapshot>): void;
 }
+export interface SurfaceStructuralPresentationPort {
+  presentStructural(snapshot: Readonly<SurfaceStructuralPresentationSnapshot>): void;
+}
 
 export interface SurfacePlayPresentationPorts
   extends SurfacePlayerPresentationPort,
     SurfaceTerrainPresentationPort,
     SurfaceTargetPresentationPort,
     SurfaceWeaponPresentationPort,
-    SurfaceImpactPresentationPort {}
+    SurfaceImpactPresentationPort,
+    SurfaceStructuralPresentationPort {}

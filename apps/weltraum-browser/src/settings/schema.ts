@@ -1,6 +1,6 @@
 import type { ConcreteQualityPreset, FpsLimit, GraphicsSettingId, GraphicsSettingPath } from "./types";
 
-export const GRAPHICS_SETTINGS_SCHEMA_VERSION = 1 as const;
+export const GRAPHICS_SETTINGS_SCHEMA_VERSION = 2 as const;
 export const GRAPHICS_SETTINGS_STORAGE_KEY = "weltraum.browser.graphics-settings";
 
 export const GRAPHICS_LIMITS = Object.freeze({
@@ -8,6 +8,7 @@ export const GRAPHICS_LIMITS = Object.freeze({
   maxDevicePixelRatio: Object.freeze({ min: 1, max: 2 }),
   fieldOfView: Object.freeze({ min: 45, max: 100 }),
   renderDistance: Object.freeze({ min: 500, max: 20_000 }),
+  voxelDetailDistanceMeters: Object.freeze({ min: 100, max: 20_000 }),
   exposure: Object.freeze({ min: 0.5, max: 2 }),
   decorDensity: Object.freeze({ min: 0, max: 1 })
 });

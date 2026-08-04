@@ -1,7 +1,17 @@
 import type { VoxelMaterialId } from "../../voxel";
-import { HESTIA_MATERIAL_IDS, HESTIA_SEA_LEVEL_METERS } from "./preset";
+import {
+  classifyHestiaCoastLushMaterialSemantic,
+  type HestiaCoastLushSurfaceFields
+} from "./coastLushProfile";
+import {
+  HESTIA_COAST_LUSH_PRESET_ID,
+  HESTIA_MATERIAL_IDS,
+  HESTIA_SEA_LEVEL_METERS,
+  type HestiaGeneratorProfile
+} from "./preset";
 
 export interface HestiaMaterialSample {
+  readonly profile?: HestiaGeneratorProfile;
   readonly yMeters: number;
   readonly density: number;
   readonly surfaceHeight: number;
@@ -9,6 +19,7 @@ export interface HestiaMaterialSample {
   readonly wetDepression: number;
   /** Separate biological fBm remapped to [0, 1]. */
   readonly biological: number;
+  readonly coastLush?: HestiaCoastLushSurfaceFields;
 }
 
 const requireFiniteSample = (sample: HestiaMaterialSample): void => {
@@ -20,6 +31,17 @@ const requireFiniteSample = (sample: HestiaMaterialSample): void => {
 /** Normative V1 priority classifier. Every finite sample receives exactly one approved material ID. */
 export const classifyHestiaMaterial = (sample: HestiaMaterialSample): VoxelMaterialId => {
   requireFiniteSample(sample);
+  if (sample.profile === HESTIA_COAST_LUSH_PRESET_ID) {
+    if (sample.coastLush === undefined) {
+      throw new TypeError("coastLush fields are required for the Coast/Lush material profile");
+    }
+    return HESTIA_MATERIAL_IDS[classifyHestiaCoastLushMaterialSemantic({
+      yMeters: sample.yMeters,
+      density: sample.density,
+      surfaceHeight: sample.surfaceHeight,
+      fields: sample.coastLush
+    })];
+  }
   if (Math.abs(sample.yMeters - HESTIA_SEA_LEVEL_METERS) <= 0.75 && Math.abs(sample.density) <= 1.5) {
     return HESTIA_MATERIAL_IDS.ShallowWaterBoundary;
   }

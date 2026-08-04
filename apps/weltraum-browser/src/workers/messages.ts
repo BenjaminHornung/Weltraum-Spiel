@@ -1,11 +1,12 @@
 import type { ByteCount, WorkerEpoch, WorkerJobId } from "./ids";
-import { validateHestiaVoxelBrickMeshResultDetails, validateTransferableBundle, type TransferableBufferBundle, type WorkerJobFailure, type WorkerJobRequest, type WorkerJobResult } from "./protocol";
+import { validateHestiaVoxelBrickMeshResultDetails, validateTransferableBundle, type TransferableBufferBundle, type WorkerJobFailure, type WorkerJobRequest, type WorkerJobResult, type WorkerResultReleaseScope } from "./protocol";
 
 export type WorkerControlRequest =
   | { readonly type: "InitializeWorker"; readonly workerEpoch: WorkerEpoch }
   | { readonly type: "EnqueueJob"; readonly request: WorkerJobRequest }
   | { readonly type: "CancelJob"; readonly jobId: WorkerJobId; readonly workerEpoch: WorkerEpoch }
-  | { readonly type: "ReleaseResult"; readonly jobId: WorkerJobId; readonly workerEpoch: WorkerEpoch }
+  | ({ readonly type: "ReleaseResult"; readonly jobId: WorkerJobId; readonly workerEpoch: WorkerEpoch }
+    & WorkerResultReleaseScope)
   | { readonly type: "ReadStatus"; readonly workerEpoch: WorkerEpoch }
   | { readonly type: "ShutdownWorker"; readonly workerEpoch: WorkerEpoch };
 
@@ -33,8 +34,28 @@ export interface JobOutputDataMessage {
   readonly bundle: TransferableBufferBundle;
 }
 
-export type HostToWorkerMessage = WorkerControlRequest | JobInputDataMessage;
-export type WorkerToHostMessage = WorkerControlResponse | JobOutputDataMessage;
+export interface PreparedStructuralFirePrivateInputMessage {
+  readonly type: "PreparedStructuralFirePrivateInput";
+  readonly workerEpoch: WorkerEpoch;
+  readonly rootJobId: string;
+  readonly payload: unknown;
+}
+
+export interface PreparedStructuralFirePrivateOutputMessage {
+  readonly type: "PreparedStructuralFirePrivateOutput";
+  readonly workerEpoch: WorkerEpoch;
+  readonly rootJobId: string;
+  readonly payload: unknown;
+}
+
+export type HostToWorkerMessage =
+  | WorkerControlRequest
+  | JobInputDataMessage
+  | PreparedStructuralFirePrivateInputMessage;
+export type WorkerToHostMessage =
+  | WorkerControlResponse
+  | JobOutputDataMessage
+  | PreparedStructuralFirePrivateOutputMessage;
 
 export const isMessageRecord = (value: unknown): value is { readonly type: string } =>
   isRecord(value) && typeof value.type === "string";
@@ -67,6 +88,36 @@ const isOptionalResultDetails = (value: unknown): boolean => {
   }
 };
 
+interface BoundedProtocolDetailsBudget {
+  remainingNodes: number;
+  remainingStringCodeUnits: number;
+}
+
+const isBoundedJsonDetails = (
+  value: unknown,
+  depth: number,
+  budget: BoundedProtocolDetailsBudget
+): boolean => {
+  if (depth > 8 || budget.remainingNodes <= 0 || budget.remainingStringCodeUnits < 0) {
+    return false;
+  }
+  budget.remainingNodes -= 1;
+  if (value === null || typeof value === "boolean") return true;
+  if (typeof value === "string") {
+    budget.remainingStringCodeUnits -= value.length;
+    return budget.remainingStringCodeUnits >= 0;
+  }
+  if (typeof value === "number") return Number.isFinite(value);
+  if (Array.isArray(value)) {
+    return value.every((entry) => isBoundedJsonDetails(entry, depth + 1, budget));
+  }
+  if (!isRecord(value)) return false;
+  const prototype = Object.getPrototypeOf(value);
+  if (prototype !== Object.prototype && prototype !== null) return false;
+  return Object.keys(value).every((key) => isStableAscii(key, 128)
+    && isBoundedJsonDetails(value[key], depth + 1, budget));
+};
+
 const isWorkerJobResult = (value: unknown): value is WorkerJobResult => {
   if (!isRecord(value)) return false;
   return isStableAscii(value.jobId)
@@ -78,8 +129,16 @@ const isWorkerJobResult = (value: unknown): value is WorkerJobResult => {
     && isSafeNonNegativeInteger(value.algorithmVersion)
     && isSafeNonNegativeInteger(value.outputBytes)
     && isOptionalStableAscii(value.contentHash, 128)
-    && isOptionalResultDetails(value.details);
+    && isOptionalResultDetails(value.details)
+    && isOptionalBoundedProtocolDetails(value.protocolDetails)
+    && !(value.details !== undefined && value.protocolDetails !== undefined);
 };
+
+const isOptionalBoundedProtocolDetails = (value: unknown): boolean =>
+  value === undefined || isBoundedJsonDetails(value, 0, {
+    remainingNodes: 256,
+    remainingStringCodeUnits: 32 * 1024
+  });
 
 const isWorkerJobFailure = (value: unknown): value is WorkerJobFailure => {
   if (!isRecord(value)) return false;
@@ -127,6 +186,11 @@ export const isWorkerToHostMessage = (value: unknown): value is WorkerToHostMess
         && isSafeNonNegativeInteger(record.outputBytes)
         && isValidBundle(record.bundle)
         && record.bundle.byteLength === record.outputBytes;
+    case "PreparedStructuralFirePrivateOutput":
+      return isSafeNonNegativeInteger(record.workerEpoch)
+        && isStableAscii(record.rootJobId)
+        && isRecord(record.payload)
+        && typeof record.payload.kind === "string";
     default:
       return false;
   }

@@ -6,7 +6,12 @@ import {
   createHestiaSurfacePresentationSnapshot,
   type HestiaSurfaceRegionPresentationSnapshot
 } from "../../src/surface-play/environment";
+import { HESTIA_COAST_LUSH_PRESET_ID } from "../../src/world-generation/hestia";
 import { createSurfaceTerrainPresentationSnapshot } from "../../src/surface-play/contracts";
+import {
+  selectHestiaSurfaceWorld,
+  type HestiaSurfaceWorldFacts
+} from "../../src/surface-play/world";
 
 const identity = Object.freeze({
   bodyId: "planet.hestia",
@@ -14,16 +19,46 @@ const identity = Object.freeze({
   surfaceFrameId: "frame:surface_hestia_surface_play_v1"
 });
 
-const coordinates = Object.freeze(
-  [-2, -1, 0, 1].flatMap((z) => [-2, -1, 0, 1].map((x) => ({ x, y: -1, z })))
-);
+const worlds = new Map<string, Readonly<HestiaSurfaceWorldFacts>>();
+const worldFor = (
+  revision: number,
+  seed: string,
+  worldIdentity: Readonly<{
+    readonly bodyId: string;
+    readonly regionId: string;
+    readonly surfaceFrameId: string;
+  }> = identity
+): Readonly<HestiaSurfaceWorldFacts> => {
+  const key = `${worldIdentity.bodyId}:${worldIdentity.regionId}:${worldIdentity.surfaceFrameId}:${revision}:${seed}`;
+  const cached = worlds.get(key);
+  if (cached !== undefined) return cached;
+  const result = selectHestiaSurfaceWorld({
+    identity: { ...worldIdentity, regionRevision: revision },
+    rootSeed: seed,
+    voxelSizeMeters: 0.5,
+    frameOriginMeters: { x: 0, y: 0, z: 0 },
+    waterSurfaceHeightMeters: 0,
+    probe: {
+      sampleGround: () => ({
+        heightMeters: 8,
+        normal: { x: 0, y: 1, z: 0 },
+        capsuleClear: true
+      })
+    }
+  });
+  if (result.status !== "Selected") throw new Error(result.failure.message);
+  worlds.set(key, result.world);
+  return result.world;
+};
 
 const presentation = (
   revision = 3,
   seed = "hestia-surface-play-v1",
-  hashSuffix = "a"
+  hashSuffix = "a",
+  profile?: typeof HESTIA_COAST_LUSH_PRESET_ID
 ): Readonly<HestiaSurfaceRegionPresentationSnapshot> => {
-  const bricks = coordinates.map((coordinate, index) => ({
+  const world = worldFor(revision, seed);
+  const bricks = world.residentBrickCoordinates.map((coordinate, index) => ({
     brickId: `brick:hestia:${index}`,
     coordinate,
     terrainHash: `terrain-hash:${index}:${hashSuffix}`
@@ -34,8 +69,8 @@ const presentation = (
       regionRevision: revision,
       visibleBrickIds: bricks.map((brick) => brick.brickId)
     }),
-    rootSeed: seed,
-    voxelSizeMeters: 0.5,
+    world,
+    ...(profile === undefined ? {} : { profile }),
     bricks
   });
 };
@@ -62,34 +97,102 @@ describe("Hestia surface environment", () => {
     const terrain = target.scene.getObjectByName(HESTIA_SURFACE_ENVIRONMENT_NAMES.terrain) as THREE.Group;
     const water = target.scene.getObjectByName(HESTIA_SURFACE_ENVIRONMENT_NAMES.water) as THREE.Group;
     const vegetation = target.scene.getObjectByName(HESTIA_SURFACE_ENVIRONMENT_NAMES.vegetation) as THREE.Group;
+    const decorativeVegetation = target.scene.getObjectByName(
+      HESTIA_SURFACE_ENVIRONMENT_NAMES.decorativeVegetation
+    ) as THREE.Group;
+    const structuralVegetation = target.scene.getObjectByName(
+      HESTIA_SURFACE_ENVIRONMENT_NAMES.structuralVegetation
+    ) as THREE.Group;
+    const sky = target.scene.getObjectByName(HESTIA_SURFACE_ENVIRONMENT_NAMES.sky) as THREE.Mesh;
     const lighting = target.scene.getObjectByName(HESTIA_SURFACE_ENVIRONMENT_NAMES.lighting) as THREE.Group;
 
     expect(root).toBeInstanceOf(THREE.Group);
+    expect(sky).toBeInstanceOf(THREE.Mesh);
+    expect(sky.frustumCulled).toBe(false);
+    const skyMaterial = sky.material as THREE.ShaderMaterial;
+    expect(skyMaterial).toBeInstanceOf(THREE.ShaderMaterial);
+    expect(skyMaterial.side).toBe(THREE.BackSide);
+    expect(skyMaterial.depthWrite).toBe(false);
+    expect(skyMaterial.depthTest).toBe(false);
+    expect((skyMaterial.uniforms.uHorizonColor?.value as THREE.Color).getHex()).toBe(0xc5eaf4);
+    expect((skyMaterial.uniforms.uZenithColor?.value as THREE.Color).getHex()).toBe(0x4b9fd8);
+    expect((skyMaterial.uniforms.uCloudColor?.value as THREE.Color).getHex()).toBe(0xf7faf4);
     expect(terrain.userData.sourceTerrainRoot).toBe(target.terrainRoot.name);
     expect(target.terrainRoot.parent).toBe(target.scene);
     expect(water.children).toHaveLength(1);
     expect(water.children[0]).toBeInstanceOf(THREE.InstancedMesh);
     expect((water.children[0] as THREE.InstancedMesh).count).toBe(snapshot.waterPatches.length);
-    expect(vegetation.children.length).toBeGreaterThan(2);
-    expect(vegetation.children.every((child) => child instanceof THREE.InstancedMesh)).toBe(true);
-    expect(vegetation.getObjectByName("hestia-surface-umbrella-tree-trunks")).toBeInstanceOf(THREE.InstancedMesh);
-    const lowerCanopy = vegetation.getObjectByName("hestia-surface-umbrella-tree-lower-canopies") as THREE.InstancedMesh;
-    const upperCanopy = vegetation.getObjectByName("hestia-surface-umbrella-tree-upper-canopies") as THREE.InstancedMesh;
-    expect(lowerCanopy).toBeInstanceOf(THREE.InstancedMesh);
-    expect(upperCanopy).toBeInstanceOf(THREE.InstancedMesh);
-    expect(lowerCanopy.geometry).toBeInstanceOf(THREE.SphereGeometry);
-    expect(lowerCanopy.geometry).not.toBeInstanceOf(THREE.ConeGeometry);
+    expect(vegetation.children).toEqual([decorativeVegetation, structuralVegetation]);
+    expect(decorativeVegetation.children.length).toBeGreaterThan(0);
+    expect(decorativeVegetation.children.every((child) => child instanceof THREE.InstancedMesh)).toBe(true);
+    expect(structuralVegetation.children).toHaveLength(0);
+    expect(vegetation.getObjectByName("hestia-surface-umbrella-tree-trunks")).toBeUndefined();
+    expect(vegetation.getObjectByName("hestia-surface-umbrella-tree-lower-canopies")).toBeUndefined();
+    expect(vegetation.getObjectByName("hestia-surface-umbrella-tree-upper-canopies")).toBeUndefined();
 
     expect(target.scene.background).toBeInstanceOf(THREE.Color);
     expect((target.scene.background as THREE.Color).getHex()).toBe(0x071d22);
     expect(target.scene.fog).toBeInstanceOf(THREE.Fog);
     expect((target.scene.fog as THREE.Fog).color.getHex()).toBe(0x0b2b30);
+    expect((target.scene.fog as THREE.Fog).near).toBe(24);
+    expect((target.scene.fog as THREE.Fog).far).toBe(122);
     const key = lighting.getObjectByName("hestia-surface-aurelia-key-light") as THREE.DirectionalLight;
     const rim = lighting.getObjectByName("hestia-surface-cool-rim-light") as THREE.DirectionalLight;
     expect(key.color.getHex()).toBe(0xffbf78);
     expect(key.intensity).toBe(2.3);
     expect(rim.color.getHex()).toBe(0x4d9fa4);
     expect(rim.intensity).toBe(0.72);
+    environment.dispose();
+  });
+
+  it("projects the Coast/Lush palette, atmosphere and disjoint water sources", () => {
+    const target = backend();
+    const environment = createHestiaSurfaceEnvironment(target, identity);
+    const coast = presentation(3, "hestia-surface-play-v1", "a", HESTIA_COAST_LUSH_PRESET_ID);
+
+    expect(environment.sync(coast)).toBe("Applied");
+    const sky = target.scene.getObjectByName(HESTIA_SURFACE_ENVIRONMENT_NAMES.sky) as THREE.Mesh;
+    const water = target.scene.getObjectByName(HESTIA_SURFACE_ENVIRONMENT_NAMES.water) as THREE.Group;
+    const decorativeVegetation = target.scene.getObjectByName(
+      HESTIA_SURFACE_ENVIRONMENT_NAMES.decorativeVegetation
+    ) as THREE.Group;
+    expect(sky.visible).toBe(true);
+    const skyMaterial = sky.material as THREE.ShaderMaterial;
+    expect((skyMaterial.uniforms.uHorizonColor?.value as THREE.Color).getHex()).toBe(0xc5eaf4);
+    expect((skyMaterial.uniforms.uZenithColor?.value as THREE.Color).getHex()).toBe(0x4b9fd8);
+    expect((skyMaterial.uniforms.uCloudColor?.value as THREE.Color).getHex()).toBe(0xf7faf4);
+    expect(skyMaterial.fragmentShader.match(/cloudCluster\(/g)).toHaveLength(5);
+    expect((target.scene.fog as THREE.Fog).color.getHex()).toBe(0xa8cfd8);
+    expect((target.scene.fog as THREE.Fog).near).toBe(28);
+    expect((target.scene.fog as THREE.Fog).far).toBe(112);
+    expect(water.children.length).toBeLessThanOrEqual(2);
+    expect(water.children.every((child) => child instanceof THREE.InstancedMesh)).toBe(true);
+    expect(water.children.map((child) => (child as THREE.InstancedMesh).material as THREE.MeshPhongMaterial))
+      .toEqual(expect.arrayContaining([
+        expect.objectContaining({ opacity: 0.52 }),
+        expect.objectContaining({ opacity: 0.58 })
+      ]));
+    const shore = water.getObjectByName("hestia-surface-shore-water-patches") as THREE.InstancedMesh;
+    expect((shore.material as THREE.MeshPhongMaterial).vertexColors).toBe(true);
+    expect(shore.geometry.getAttribute("color")).toBeInstanceOf(THREE.BufferAttribute);
+    const expectedVegetationNames = [
+      ...(coast.scatter.some((fact) => fact.kind === "cyan_luminous_sprout")
+        ? ["hestia-coast-block-understory"]
+        : []),
+      ...(coast.scatter.some((fact) => fact.kind === "cyan_luminous_cap")
+        ? ["hestia-coast-tiered-block-trees"]
+        : [])
+    ];
+    expect(decorativeVegetation.children.map((child) => child.name)).toEqual(expectedVegetationNames);
+    expect(decorativeVegetation.children.every((child) => child instanceof THREE.InstancedMesh)).toBe(true);
+    expect(water.children.length + decorativeVegetation.children.length).toBeLessThanOrEqual(4);
+    const tieredTrees = decorativeVegetation.getObjectByName("hestia-coast-tiered-block-trees") as
+      | THREE.InstancedMesh
+      | undefined;
+    if (tieredTrees !== undefined) {
+      tieredTrees.geometry.computeBoundingBox();
+      expect(tieredTrees.geometry.boundingBox?.max.y).toBeGreaterThanOrEqual(6);
+    }
     environment.dispose();
   });
 
@@ -100,8 +203,10 @@ describe("Hestia surface environment", () => {
     const inputHashes = snapshot.bricks.map((brick) => brick.terrainHash);
     environment.sync(snapshot);
     const signature = environment.readState().presentationSignature;
-    const vegetation = target.scene.getObjectByName(HESTIA_SURFACE_ENVIRONMENT_NAMES.vegetation) as THREE.Group;
-    const originalChildren = [...vegetation.children];
+    const decorativeVegetation = target.scene.getObjectByName(
+      HESTIA_SURFACE_ENVIRONMENT_NAMES.decorativeVegetation
+    ) as THREE.Group;
+    const originalChildren = [...decorativeVegetation.children];
     const camera = new THREE.PerspectiveCamera();
 
     camera.position.set(12, 8, -4);
@@ -118,9 +223,9 @@ describe("Hestia surface environment", () => {
       terrainHashes: inputHashes
     });
     expect(snapshot.bricks.map((brick) => brick.terrainHash)).toEqual(inputHashes);
-    expect(vegetation.children).toEqual(originalChildren);
+    expect(decorativeVegetation.children).toEqual(originalChildren);
     expect(environment.sync(snapshot)).toBe("Unchanged");
-    expect(vegetation.children).toEqual(originalChildren);
+    expect(decorativeVegetation.children).toEqual(originalChildren);
     environment.dispose();
   });
 
@@ -129,27 +234,34 @@ describe("Hestia surface environment", () => {
     const environment = createHestiaSurfaceEnvironment(target, identity);
     const current = presentation(4);
     expect(environment.sync(current)).toBe("Applied");
-    const vegetation = target.scene.getObjectByName(HESTIA_SURFACE_ENVIRONMENT_NAMES.vegetation) as THREE.Group;
-    const currentChildren = [...vegetation.children];
+    const decorativeVegetation = target.scene.getObjectByName(
+      HESTIA_SURFACE_ENVIRONMENT_NAMES.decorativeVegetation
+    ) as THREE.Group;
+    const currentChildren = [...decorativeVegetation.children];
 
     expect(environment.sync(presentation(3, "older-seed", "older"))).toBe("Stale");
     expect(environment.sync(presentation(4, "conflicting-seed", "conflict"))).toBe("ConflictingRevision");
+    const mismatchedWorld = worldFor(5, "other", { ...identity, regionId: "region:hestia.other" });
+    const mismatchedBricks = mismatchedWorld.residentBrickCoordinates.map((coordinate, index) => ({
+      brickId: index === 0 ? "brick:other" : `brick:other:${index}`,
+      coordinate,
+      terrainHash: `other-hash:${index}`
+    }));
     const mismatched = createHestiaSurfacePresentationSnapshot({
       terrain: createSurfaceTerrainPresentationSnapshot({
         ...identity,
         regionId: "region:hestia.other",
         regionRevision: 5,
-        visibleBrickIds: ["brick:other"]
+        visibleBrickIds: mismatchedBricks.map((brick) => brick.brickId)
       }),
-      rootSeed: "other",
-      voxelSizeMeters: 0.5,
-      bricks: [{ brickId: "brick:other", coordinate: { x: 0, y: -1, z: 0 }, terrainHash: "other-hash" }]
+      world: mismatchedWorld,
+      bricks: mismatchedBricks
     });
     expect(environment.sync(mismatched)).toBe("IdentityMismatch");
-    expect(vegetation.children).toEqual(currentChildren);
+    expect(decorativeVegetation.children).toEqual(currentChildren);
 
     expect(environment.sync(presentation(5, "newer-seed", "newer"))).toBe("Applied");
-    expect(vegetation.children).not.toEqual(currentChildren);
+    expect(decorativeVegetation.children).not.toEqual(currentChildren);
     expect(environment.readState().regionRevision).toBe(5);
     environment.dispose();
   });

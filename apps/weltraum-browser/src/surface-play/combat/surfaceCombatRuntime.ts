@@ -19,9 +19,12 @@ import {
   createSurfaceCombatSnapshot,
   createSurfaceRayQuery,
   type SurfaceCombatEventSummaryInput,
-  type SurfaceFireRejectionCode
+  type SurfaceFireRejectionCode,
+  type SurfaceWeaponReadiness
 } from "../contracts";
 import {
+  HESTIA_PULSE_CUTTER_ENERGY_RECOVERY_DELAY_SECONDS,
+  HESTIA_PULSE_CUTTER_ENERGY_RECOVERY_JOULES_PER_SECOND,
   HESTIA_PULSE_CUTTER_MAXIMUM_ENERGY_JOULES,
   HESTIA_PULSE_CUTTER_TERRAIN_EDIT_RADIUS_METERS,
   HESTIA_PULSE_CUTTER_V1,
@@ -38,6 +41,7 @@ import {
 import {
   createSurfaceImpactIntent,
   type SurfaceCombatExecutionInput,
+  type SurfaceCombatFireProbe,
   type SurfaceCombatRaycastCandidate,
   type SurfaceCombatRaycastRequest,
   type SurfaceCombatRuntimeResult,
@@ -55,16 +59,71 @@ export const createSurfaceCombatRuntimeState = (
 ): Readonly<SurfaceCombatRuntimeState> => deepFreeze({
   weapon: createHestiaPulseCutterState(),
   drone: createSurfaceSurveyDrone(frameId, dronePositionMeters),
+  energyRecoveryDelayRemainingSeconds: 0,
   nextSurfaceEventSequence: 0
 });
 
 export const advanceSurfaceCombatRuntime = (
   state: Readonly<SurfaceCombatRuntimeState>,
   elapsedSeconds: number
-): Readonly<SurfaceCombatRuntimeState> => deepFreeze({
-  ...state,
-  weapon: advanceWeaponRuntimeState(state.weapon, elapsedSeconds, HESTIA_PULSE_CUTTER_V1)
-});
+): Readonly<SurfaceCombatRuntimeState> => {
+  const weapon = advanceWeaponRuntimeState(state.weapon, elapsedSeconds, HESTIA_PULSE_CUTTER_V1);
+  const delayBefore = state.energyRecoveryDelayRemainingSeconds;
+  const recoverySeconds = Math.max(0, elapsedSeconds - delayBefore);
+  const energy = weapon.energy === null
+    ? null
+    : Math.min(
+        HESTIA_PULSE_CUTTER_MAXIMUM_ENERGY_JOULES,
+        weapon.energy + recoverySeconds * HESTIA_PULSE_CUTTER_ENERGY_RECOVERY_JOULES_PER_SECOND
+      );
+  return deepFreeze({
+    ...state,
+    weapon: {
+      ...weapon,
+      energy
+    },
+    energyRecoveryDelayRemainingSeconds: Math.max(0, delayBefore - elapsedSeconds)
+  });
+};
+
+export const deriveSurfaceCombatWeaponReadiness = (
+  state: Readonly<SurfaceCombatRuntimeState>
+): Readonly<SurfaceWeaponReadiness> => {
+  const currentEnergyJoules = state.weapon.energy ?? 0;
+  const requiredEnergyJoules = HESTIA_PULSE_CUTTER_V1.energyPerShot ?? 0;
+  const energyReadyInSeconds = currentEnergyJoules < requiredEnergyJoules
+    ? state.energyRecoveryDelayRemainingSeconds
+      + (requiredEnergyJoules - currentEnergyJoules) / HESTIA_PULSE_CUTTER_ENERGY_RECOVERY_JOULES_PER_SECOND
+    : 0;
+  const heat = state.weapon.heat ?? 0;
+  const heatProfile = HESTIA_PULSE_CUTTER_V1.heat;
+  const heatReadyInSeconds = heatProfile !== null && heat + heatProfile.heatPerShot > heatProfile.maximumHeat
+    ? (heat + heatProfile.heatPerShot - heatProfile.maximumHeat) / heatProfile.coolingPerSecond
+    : 0;
+  const nextShotReadyInSeconds = Math.max(
+    state.weapon.cooldownSeconds,
+    energyReadyInSeconds,
+    heatReadyInSeconds
+  );
+
+  if (state.weapon.cooldownSeconds > 0) {
+    return deepFreeze({ kind: "Cooldown" as const, nextShotReadyInSeconds });
+  }
+  if (currentEnergyJoules < requiredEnergyJoules) {
+    return deepFreeze({
+      kind: "EnergyInsufficient" as const,
+      currentEnergyJoules,
+      requiredEnergyJoules,
+      recoveryDelayRemainingSeconds: state.energyRecoveryDelayRemainingSeconds,
+      recoveryRateJoulesPerSecond: HESTIA_PULSE_CUTTER_ENERGY_RECOVERY_JOULES_PER_SECOND,
+      nextShotReadyInSeconds
+    });
+  }
+  if (heatReadyInSeconds > 0) {
+    return deepFreeze({ kind: "Overheated" as const, nextShotReadyInSeconds });
+  }
+  return deepFreeze({ kind: "Ready" as const, nextShotReadyInSeconds: 0 as const });
+};
 
 const surfaceRejectionFor = (
   blocker: string | null
@@ -102,6 +161,7 @@ const buildSnapshot = (
   heatJoules: state.weapon.heat ?? 0,
   maximumHeatJoules: HESTIA_PULSE_CUTTER_V1.heat?.maximumHeat ?? 0,
   cooldownSeconds: state.weapon.cooldownSeconds,
+  readiness: deriveSurfaceCombatWeaponReadiness(state),
   target: {
     targetId: state.drone.damageable.targetEntityId,
     condition: targetCondition(state.drone.mode),
@@ -178,7 +238,7 @@ const validateBinding = (
 };
 
 const aimTarget = (
-  kind: "terrain" | "miss",
+  kind: "terrain" | "structural" | "miss",
   ray: Readonly<RayDelivery>,
   position: Readonly<{ x: number; y: number; z: number }>
 ): Readonly<CombatTargetSnapshot> => createCombatTarget({
@@ -222,28 +282,65 @@ const fireEventFrom = (
   return event;
 };
 
+export const probeSurfaceCombatFire = (
+  input: SurfaceCombatExecutionInput
+): Readonly<SurfaceCombatFireProbe> => {
+  const bindingRejection = validateBinding(input);
+  if (bindingRejection !== null) {
+    const fireResult = bindingRejection.snapshot.latestFireResult;
+    if (fireResult?.status !== "Rejected") {
+      throw new Error("Surface combat binding rejection has no rejection facts.");
+    }
+    return Object.freeze({
+      kind: "Blocked" as const,
+      code: fireResult.code,
+      message: fireResult.message
+    });
+  }
+  const ray = probeRay(input);
+  return Object.freeze({
+    kind: "Candidate" as const,
+    ray,
+    candidate: input.raycast.query({
+      binding: input.binding,
+      ray,
+      targets: [createSurfaceSurveyDroneTarget(input.state.drone, input.command.simulationTick)],
+      proxies: [createSurfaceSurveyDroneProxy(input.state.drone)]
+    })
+  });
+};
+
 export const executeSurfaceCombatFire = (
   input: SurfaceCombatExecutionInput
 ): Readonly<SurfaceCombatRuntimeResult> => {
-  const bindingRejection = validateBinding(input);
-  if (bindingRejection !== null) return bindingRejection;
-
-  const ray = probeRay(input);
-  const candidate = input.raycast.query({
-    binding: input.binding,
-    ray,
-    targets: [createSurfaceSurveyDroneTarget(input.state.drone, input.command.simulationTick)],
-    proxies: [createSurfaceSurveyDroneProxy(input.state.drone)]
-  });
+  const probe = probeSurfaceCombatFire(input);
+  if (probe.kind === "Blocked") return blockedResult(input, probe.code, probe.message);
+  const { ray, candidate } = probe;
   if (candidate.kind === "Blocked") {
     return blockedResult(input, candidate.code, candidate.message);
+  }
+  if (candidate.kind === "DetachedBodyHit") {
+    return blockedResult(
+      input,
+      "DetachedBodyImmutable",
+      "Falling and resting Structural bodies are immutable in this Surface Play slice."
+    );
+  }
+  if (candidate.kind === "StructuralPrepareHit") {
+    return blockedResult(
+      input,
+      "AuthorityRefused",
+      "Structural preparation is not an accepted combat fire."
+    );
   }
 
   const target = candidate.kind === "CombatTargetHit"
     ? candidate.target
     : candidate.kind === "TerrainHit"
       ? aimTarget("terrain", ray, candidate.point)
-      : aimTarget("miss", ray, add(ray.origin, scale(ray.direction, ray.maximumDistanceMeters)));
+      : candidate.kind === "StructuralHit"
+        ? aimTarget("structural", ray, candidate.point)
+        : aimTarget("miss", ray, add(ray.origin, scale(ray.direction, ray.maximumDistanceMeters)));
   const fired = fireWeapon({
     capability: HESTIA_PULSE_CUTTER_V1,
     state: input.state.weapon,
@@ -281,7 +378,7 @@ export const executeSurfaceCombatFire = (
     combatEvents = [...fired.events, resolved.event, ...applied.damage.events];
     hitPointMeters = resolved.hit.point;
     hitNormal = resolved.hit.normal;
-  } else if (candidate.kind === "TerrainHit") {
+  } else if (candidate.kind === "TerrainHit" || candidate.kind === "StructuralHit") {
     impactIntent = createSurfaceImpactIntent({
       sourceWeaponId: HESTIA_PULSE_CUTTER_V1.weaponId,
       fireEventId: fireEvent.eventId,
@@ -290,7 +387,9 @@ export const executeSurfaceCombatFire = (
       hitPointMeters: candidate.point,
       hitNormal: candidate.normal,
       energyDamageScalar: HESTIA_PULSE_CUTTER_V1.rawDamage,
-      suggestedEditRadiusMeters: HESTIA_PULSE_CUTTER_TERRAIN_EDIT_RADIUS_METERS
+      suggestedEditRadiusMeters: candidate.kind === "TerrainHit"
+        ? HESTIA_PULSE_CUTTER_TERRAIN_EDIT_RADIUS_METERS
+        : candidate.suggestedEditRadiusMeters
     });
     hitPointMeters = candidate.point;
     hitNormal = candidate.normal;
@@ -308,19 +407,60 @@ export const executeSurfaceCombatFire = (
     }
   }
   if (impactIntent !== null) {
-    summaries.push(surfaceEvent(input.state, summaries.length, impactIntent.intentId, "TerrainHit", input.command.simulationTick));
+    if (candidate.kind === "TerrainHit") {
+      summaries.push(surfaceEvent(input.state, summaries.length, impactIntent.intentId, "TerrainHit", input.command.simulationTick));
+    } else if (candidate.kind === "StructuralHit") {
+      summaries.push(surfaceEvent(
+        input.state,
+        summaries.length,
+        deriveCombatId<string>("surface-structural-hit", {
+          fireEventId: fireEvent.eventId,
+          objectId: candidate.objectId,
+          structuralCommandId: candidate.structuralCommandId
+        }),
+        "StructuralHit",
+        input.command.simulationTick
+      ));
+      summaries.push(surfaceEvent(
+        input.state,
+        summaries.length,
+        deriveCombatId<string>("surface-structural-damaged", {
+          fireEventId: fireEvent.eventId,
+          objectId: candidate.objectId,
+          structuralCommandId: candidate.structuralCommandId
+        }),
+        "StructuralDamaged",
+        input.command.simulationTick
+      ));
+      if (candidate.supportResult === "Detached") {
+        summaries.push(surfaceEvent(
+          input.state,
+          summaries.length,
+          deriveCombatId<string>("surface-structural-detached", {
+            fireEventId: fireEvent.eventId,
+            objectId: candidate.objectId,
+            structuralCommandId: candidate.structuralCommandId
+          }),
+          "StructuralDetached",
+          input.command.simulationTick
+        ));
+      }
+    }
   }
 
   const state = deepFreeze({
     weapon: fired.state,
     drone,
+    energyRecoveryDelayRemainingSeconds: HESTIA_PULSE_CUTTER_ENERGY_RECOVERY_DELAY_SECONDS,
     nextSurfaceEventSequence: input.state.nextSurfaceEventSequence + summaries.length
   });
   const hit = candidate.kind === "CombatTargetHit"
     ? "Target"
     : candidate.kind === "TerrainHit"
       ? "Terrain"
-      : "None";
+      : candidate.kind === "StructuralHit"
+        ? "Structural"
+        : "None";
   return deepFreeze({
     kind: candidate.kind,
     state,

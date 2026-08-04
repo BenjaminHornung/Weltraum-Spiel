@@ -4,6 +4,7 @@ import {
   hashAdaptiveCanonical as adaptiveHashCanonical,
   serializeAdaptiveKey as adaptiveSerializeKey
 } from "../adaptive";
+import { hasDeepFrozenIdentity } from "../adaptive/immutability";
 import { localCellIndexFromOffset, validateStructuralCellAddress } from "./coordinates";
 import {
   STRUCTURAL_COMPONENT_ID_VERSION,
@@ -24,18 +25,29 @@ import type {
   StructuralCellAddress,
   StructuralCommandEvidence,
   StructuralCommandResult,
+  StructuralComponentClassification,
   StructuralComponentId,
   StructuralDestructionCommand,
   StructuralFragmentId,
-  StructuralObject
+  StructuralTransferDetachedComponentsCommand,
+  StructuralTransferDetachedComponentsCommandV2,
+  StructuralObject,
+  StructuralObjectV2,
+  StructuralResultV2
 } from "./types";
-import { normalizeAdaptiveAuthorityFunction, structuralDenseArray, validateStructuralDestructionCommand } from "./validation";
+import {
+  normalizeAdaptiveAuthorityFunction,
+  structuralDenseArray,
+  validateStructuralDestructionCommand,
+  validateStructuralTransferDetachedComponentsCommand,
+  validateStructuralTransferDetachedComponentsCommandV2
+} from "./validation";
 
 const canonicalAdaptiveJson = normalizeAdaptiveAuthorityFunction(adaptiveCanonicalJson);
 const hashAdaptiveCanonical = normalizeAdaptiveAuthorityFunction(adaptiveHashCanonical);
 const serializeAdaptiveKey = normalizeAdaptiveAuthorityFunction(adaptiveSerializeKey);
 
-const projectCell = (cell: StructuralCellAddress) => {
+const createCellProjection = (cell: StructuralCellAddress) => {
   const validated = validateStructuralCellAddress(cell);
   return deepFreeze({
     brickKey: serializeAdaptiveKey(validated.brickKey),
@@ -43,7 +55,17 @@ const projectCell = (cell: StructuralCellAddress) => {
   });
 };
 
-const projectBrick = (brick: StructuralBrick) => deepFreeze({
+const cellProjectionByIdentity = new WeakMap<object, ReturnType<typeof createCellProjection>>();
+
+const projectCell = (cell: StructuralCellAddress): ReturnType<typeof createCellProjection> => {
+  const cached = cellProjectionByIdentity.get(cell);
+  if (cached !== undefined) return cached;
+  const projection = createCellProjection(cell);
+  if (hasDeepFrozenIdentity(cell)) cellProjectionByIdentity.set(cell, projection);
+  return projection;
+};
+
+const createBrickProjection = (brick: StructuralBrick) => deepFreeze({
   schemaVersion: brick.schemaVersion,
   key: serializeAdaptiveKey(brick.key),
   cells: structuralDenseArray(brick.cells, "brick/cells", STRUCTURAL_MAX_BRICK_CELLS)
@@ -53,8 +75,19 @@ const projectBrick = (brick: StructuralBrick) => deepFreeze({
     })
 });
 
-export const projectStructuralObjectContent = (object: StructuralObject) => deepFreeze({
-  schemaVersion: object.schemaVersion,
+const brickProjectionByIdentity = new WeakMap<object, ReturnType<typeof createBrickProjection>>();
+
+const projectBrick = (brick: StructuralBrick): ReturnType<typeof createBrickProjection> => {
+  const cached = brickProjectionByIdentity.get(brick);
+  if (cached !== undefined) return cached;
+  const projection = createBrickProjection(brick);
+  if (hasDeepFrozenIdentity(brick)) brickProjectionByIdentity.set(brick, projection);
+  return projection;
+};
+
+const createStructuralObjectContentProjection = (object: StructuralObject | StructuralObjectV2) => deepFreeze({
+  // V2 deliberately retains the V1 semantic content projection and content hash.
+  schemaVersion: "structural-microvoxel-object-v1" as const,
   objectId: object.objectId,
   frame: object.frame,
   source: deepFreeze({
@@ -79,10 +112,62 @@ export const projectStructuralObjectContent = (object: StructuralObject) => deep
   })
 });
 
-export const projectStructuralCommandEvidence = (evidence: StructuralCommandEvidence) => deepFreeze({
+interface StructuralObjectContentProjectionCacheEntry {
+  readonly objectId: StructuralObject["objectId"];
+  readonly frame: StructuralObject["frame"];
+  readonly source: StructuralObject["source"];
+  readonly materials: StructuralObject["materials"];
+  readonly anchors: StructuralObject["anchors"];
+  readonly joints: StructuralObject["joints"];
+  readonly projection: ReturnType<typeof createStructuralObjectContentProjection>;
+}
+
+const objectContentProjectionByBricks = new WeakMap<object, StructuralObjectContentProjectionCacheEntry>();
+
+export const projectStructuralObjectContent = (
+  object: StructuralObject | StructuralObjectV2
+): ReturnType<typeof createStructuralObjectContentProjection> => {
+  const cached = objectContentProjectionByBricks.get(object.bricks);
+  if (
+    cached !== undefined
+    && cached.objectId === object.objectId
+    && cached.frame === object.frame
+    && cached.source === object.source
+    && cached.materials === object.materials
+    && cached.anchors === object.anchors
+    && cached.joints === object.joints
+  ) return cached.projection;
+  const projection = createStructuralObjectContentProjection(object);
+  if (hasDeepFrozenIdentity(object.bricks)) {
+    objectContentProjectionByBricks.set(object.bricks, {
+      objectId: object.objectId,
+      frame: object.frame,
+      source: object.source,
+      materials: object.materials,
+      anchors: object.anchors,
+      joints: object.joints,
+      projection
+    });
+  }
+  return projection;
+};
+
+const createStructuralCommandEvidenceProjection = (evidence: StructuralCommandEvidence) => deepFreeze({
   ...evidence,
   changedBrickKeys: structuralDenseArray(evidence.changedBrickKeys, "evidence/changedBrickKeys", STRUCTURAL_MAX_CHANGED_BRICK_KEYS).map((key) => serializeAdaptiveKey(key as StructuralCommandEvidence["changedBrickKeys"][number]))
 });
+
+const evidenceProjectionByIdentity = new WeakMap<object, ReturnType<typeof createStructuralCommandEvidenceProjection>>();
+
+export const projectStructuralCommandEvidence = (
+  evidence: StructuralCommandEvidence
+): ReturnType<typeof createStructuralCommandEvidenceProjection> => {
+  const cached = evidenceProjectionByIdentity.get(evidence);
+  if (cached !== undefined) return cached;
+  const projection = createStructuralCommandEvidenceProjection(evidence);
+  if (hasDeepFrozenIdentity(evidence)) evidenceProjectionByIdentity.set(evidence, projection);
+  return projection;
+};
 
 export const projectStructuralObject = (object: StructuralObject) => deepFreeze({
   ...projectStructuralObjectContent(object),
@@ -91,6 +176,15 @@ export const projectStructuralObject = (object: StructuralObject) => deepFreeze(
   contentHash: object.contentHash,
   commandEvidence: structuralDenseArray(object.commandEvidence, "object/commandEvidence", STRUCTURAL_MAX_COMMAND_EVIDENCE).map((entry) => projectStructuralCommandEvidence(entry as StructuralCommandEvidence)),
   evidenceHash: object.evidenceHash
+});
+
+export const projectStructuralObjectV2 = (object: StructuralObjectV2) => deepFreeze({
+  ...projectStructuralObjectContent(object),
+  schemaVersion: object.schemaVersion,
+  objectRevision: object.objectRevision,
+  editRevision: object.editRevision,
+  contentHash: object.contentHash,
+  evidenceArchive: object.evidenceArchive
 });
 
 export const projectStructuralResult = (result: StructuralCommandResult) => deepFreeze(
@@ -115,6 +209,28 @@ export const projectStructuralResult = (result: StructuralCommandResult) => deep
   }
 );
 
+export const projectStructuralResultV2 = (result: StructuralResultV2) => deepFreeze(
+  result.status === "Rejected" ? {
+    schemaVersion: result.schemaVersion,
+    status: result.status,
+    commandId: result.commandId,
+    object: projectStructuralObjectV2(result.object),
+    code: result.code,
+    path: result.path,
+    resultHash: result.resultHash
+  } : {
+    schemaVersion: result.schemaVersion,
+    status: result.status,
+    commandId: result.commandId,
+    object: projectStructuralObjectV2(result.object),
+    changedBrickKeys: result.changedBrickKeys.map((key) => serializeAdaptiveKey(key)),
+    selectedVoxelCount: result.selectedVoxelCount,
+    changedVoxelCount: result.changedVoxelCount,
+    invalidations: result.invalidations,
+    resultHash: result.resultHash
+  }
+);
+
 export const canonicalStructuralJson = (value: unknown): string => canonicalAdaptiveJson(value);
 
 export const serializeStructuralCellAddress = (cell: StructuralCellAddress): string =>
@@ -126,10 +242,24 @@ export const serializeStructuralObject = (object: StructuralObject): string =>
 export const serializeStructuralCommand = (command: StructuralDestructionCommand): string =>
   canonicalAdaptiveJson(validateStructuralDestructionCommand(command));
 
+export const serializeStructuralTransferCommand = (
+  command: StructuralTransferDetachedComponentsCommand
+): string => canonicalAdaptiveJson(validateStructuralTransferDetachedComponentsCommand(command));
+
+export const serializeStructuralTransferCommandV2 = (
+  command: StructuralTransferDetachedComponentsCommandV2
+): string => canonicalAdaptiveJson(validateStructuralTransferDetachedComponentsCommandV2(command));
+
+export const serializeStructuralObjectV2 = (object: StructuralObjectV2): string =>
+  canonicalAdaptiveJson(projectStructuralObjectV2(object));
+
+export const serializeStructuralResultV2 = (result: StructuralResultV2): string =>
+  canonicalAdaptiveJson(projectStructuralResultV2(result));
+
 export const serializeStructuralResult = (result: StructuralCommandResult): string =>
   canonicalAdaptiveJson(projectStructuralResult(result));
 
-export const hashStructuralObjectContent = (object: StructuralObject): string =>
+export const hashStructuralObjectContent = (object: StructuralObject | StructuralObjectV2): string =>
   hashAdaptiveCanonical(projectStructuralObjectContent(object));
 
 export const hashStructuralEvidence = (evidence: readonly StructuralCommandEvidence[]): string =>
@@ -140,6 +270,45 @@ export const hashStructuralEvidence = (evidence: readonly StructuralCommandEvide
 
 export const hashStructuralCommand = (command: StructuralDestructionCommand): string =>
   hashAdaptiveCanonical(validateStructuralDestructionCommand(command));
+
+export const hashStructuralTransferCommand = (
+  command: StructuralTransferDetachedComponentsCommand
+): string => hashAdaptiveCanonical(validateStructuralTransferDetachedComponentsCommand(command));
+
+export const hashStructuralTransferCommandV2 = (
+  command: StructuralTransferDetachedComponentsCommandV2
+): string => hashAdaptiveCanonical(validateStructuralTransferDetachedComponentsCommandV2(command));
+
+export const hashStructuralOrderedFragmentIdsV2 = (
+  fragmentIds: readonly StructuralFragmentId[]
+): string => hashAdaptiveCanonical({
+  schemaVersion: "structural-microvoxel-ordered-fragment-ids-v2",
+  fragmentIds: [...fragmentIds]
+});
+
+export const hashStructuralClassificationV2 = (
+  object: StructuralObject | StructuralObjectV2,
+  classification: StructuralComponentClassification
+): string => hashAdaptiveCanonical({
+  schemaVersion: "structural-microvoxel-classification-v2",
+  objectId: object.objectId,
+  objectRevision: object.objectRevision,
+  editRevision: object.editRevision,
+  contentHash: object.contentHash,
+  authorityHash: hashStructuralAdaptiveAuthorityBinding(object.source),
+  fragments: classification.fragments.map((fragment) => ({
+    schemaVersion: fragment.schemaVersion,
+    fragmentIdVersion: fragment.fragmentIdVersion,
+    fragmentId: fragment.fragmentId,
+    componentId: fragment.componentId,
+    objectId: fragment.objectId,
+    objectRevision: fragment.objectRevision,
+    sourceContentHash: fragment.sourceContentHash,
+    sourceAdaptiveAuthorityDigest: fragment.sourceAdaptiveAuthorityDigest,
+    occupiedCells: fragment.occupiedCells.map(projectCell),
+    fragmentContentHash: fragment.fragmentContentHash
+  }))
+});
 
 export const hashStructuralResult = (result: StructuralCommandResult): string =>
   hashAdaptiveCanonical(result.status === "Rejected" ? {
@@ -158,6 +327,25 @@ export const hashStructuralResult = (result: StructuralCommandResult): string =>
     selectedVoxelCount: result.selectedVoxelCount,
     changedVoxelCount: result.changedVoxelCount,
     invalidations: structuralDenseArray(result.invalidations, "result/invalidations", STRUCTURAL_MAX_INVALIDATIONS)
+  });
+
+export const hashStructuralResultV2 = (result: StructuralResultV2): string =>
+  hashAdaptiveCanonical(result.status === "Rejected" ? {
+    schemaVersion: result.schemaVersion,
+    status: result.status,
+    commandId: result.commandId,
+    object: projectStructuralObjectV2(result.object),
+    code: result.code,
+    path: result.path
+  } : {
+    schemaVersion: result.schemaVersion,
+    status: result.status,
+    commandId: result.commandId,
+    object: projectStructuralObjectV2(result.object),
+    changedBrickKeys: result.changedBrickKeys.map((key) => serializeAdaptiveKey(key)),
+    selectedVoxelCount: result.selectedVoxelCount,
+    changedVoxelCount: result.changedVoxelCount,
+    invalidations: result.invalidations
   });
 
 export const hashStructuralAdaptiveAuthorityBinding = (source: StructuralObject["source"]): string =>

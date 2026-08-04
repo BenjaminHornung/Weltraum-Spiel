@@ -1,10 +1,12 @@
 # Current Browser Mainline State
 
-Stand: 2026-07-20
-Status snapshot: browser mainline after the objective-chain,
+Stand: 2026-07-27
+Status snapshot: staged feature-branch state after the objective-chain,
 celestial-gravity-core, combat-weapon-damage-core, Persistence/Universe-Time/
 Event core, Ship Builder full-stats/readiness, Graphics Settings and Demo Scout
-nozzle-VFX merges, plus the query-gated Hestia Microvoxel Surface Lab
+nozzle-VFX merges, plus the query-gated Hestia Microvoxel Surface Lab and the
+bounded Hestia First-Person Combat integration. The latter is implemented on
+`feature/browser-hestia-first-person-combat-integration-v1`, not yet on `main`.
 
 ## Product Mainline
 
@@ -102,6 +104,58 @@ flight keys are cleared and manual flight input is suppressed.
 
 ## Implemented Foundations
 
+### Voxel Representation Ladder V2 contract foundation
+
+The Browser now contains a pure, renderer-independent representation contract
+under `apps/weltraum-browser/src/voxel/representation`: a descriptor-driven
+`1..32` derived-band ladder, deterministic screen-space selection and
+hysteresis, revision-bound object/surface proxy identities, separate render and
+simulation outputs, hard Adaptive `L4` interaction requests, Structural
+lifecycle retention, and atomic parent fallback. The focused unit contract
+proves at least 12 bands; that proof count is not a fixed production ladder.
+
+Graphics Settings V2 also carries an explicit voxel detail/budget group and a
+pure provisional Low/Medium/High/Ultra visual policy. Voxel detail distance is
+separate from the camera `display.renderDistance`. No renderer, worker, GPU,
+streaming, SurfaceRegion/SurfaceTile/Celestial runtime, planet shell,
+collision/physics handoff, gameplay, save, or multiplayer integration consumes
+this contract. Voxel controls remain hidden and have no `SupportedLive` claim.
+
+See [Voxel Representation Ladder V2](browser-mainline/voxel-representation-ladder-v2.md)
+for the full contract and deterministic normal-route browser evidence paths.
+
+### Hestia First-Person Combat Slice (staged feature branch)
+
+The exact query route `/?surfacePlay=1` starts a bounded player-facing Hestia
+surface region outside the normal flight runtime. It owns one deterministic
+`SurfaceRegion` with two resident `0.50 m` voxel bricks, resolves the grounded
+player spawn from the same voxel authority used for collision, and presents a
+first-person camera, held Pulse Cutter, Survey Drone, Hestia environment and
+Suit HUD from immutable runtime snapshots.
+
+Surface Play has precedence over simultaneous `surfaceLab=1` or `testBridge=1`
+parameters and never installs `window.TestBridge`. Its fixed-tick path consumes
+one command per tick, advances locomotion before Combat Core fire resolution,
+and converts only accepted terrain hits into revision-bound `SubtractSphere`
+requests. Edit centers use symmetric half-even quantization at `0.125 m`; the
+radius and all movement/collision values remain physical metres. Accepted
+authority transitions replace collision binding before the next tick and
+selectively replace content-addressed terrain representations.
+
+This is a feature-branch capability, not a merged-mainline or global-planet
+claim. The region is finite; visible terrain is materialized at `0.50 m`, so the
+`0.125 m` command quantum must not be presented as visible terrain detail. It
+does not provide planet streaming, orbit/surface transitions, persistence,
+economy, cargo, multiplayer or a generalized weapon/encounter framework.
+
+Evidence:
+
+- [Architecture and limits](browser-mainline/hestia-first-person-combat-slice-v1.md)
+- [Behavior specification](../.devtoolbox/specs/changes/browser-hestia-first-person-combat-slice-v1/specs/default/spec.md)
+- [Runtime evidence](../apps/weltraum-browser/evidence/browser-hestia-first-person-combat-slice-v1.md)
+- [Deterministic evidence summary](../apps/weltraum-browser/evidence/browser-hestia-first-person-combat-slice-v1-summary.json)
+- [Live browser E2E](../apps/weltraum-browser/tests/e2e/hestia-first-person-combat-slice.spec.ts)
+
 ### Hestia Microvoxel Surface Lab
 
 The exact query route `/?surfaceLab=1` starts a full-screen technical proving
@@ -154,9 +208,11 @@ renderer-independent domain core for target selection, fire permission,
 Projectile/Beam delivery, authoritative hit resolution, layered
 Armor/Hull/Module damage and canonical semantic events.
 
-The core is not connected to Browser Runtime, player/debug UI, renderer/VFX,
-Flight, Navigation, enemy encounters, Ship Builder, Resources or persistence.
-It must not be described as a complete playable combat loop.
+The staged Surface Play feature branch adapts this core for one Pulse Cutter and
+one Survey Drone without transferring damage authority to presentation. The
+normal flight runtime remains unconnected, as do Navigation, Ship Builder,
+Resources and persistence. This bounded adapter must not be described as a
+complete playable combat loop.
 
 Evidence:
 

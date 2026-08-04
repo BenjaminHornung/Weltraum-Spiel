@@ -74,6 +74,7 @@ const snapshot = () => createSurfacePlayHudSnapshot({
   heatJoules: 10,
   maximumHeatJoules: 50,
   cooldownSeconds: 0,
+  weaponReadiness: { kind: "Ready", nextShotReadyInSeconds: 0 },
   targetCondition: "None",
   latestAction: null,
   latestBlock: null

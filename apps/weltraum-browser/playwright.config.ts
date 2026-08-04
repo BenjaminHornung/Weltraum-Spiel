@@ -5,11 +5,16 @@ const configuredBrowserPath = process.env.WELTRAUM_PLAYWRIGHT_EXECUTABLE_PATH;
 const launchOptions =
   configuredBrowserPath && existsSync(configuredBrowserPath) ? { executablePath: configuredBrowserPath } : undefined;
 const configuredArtifactGroup = process.env.WELTRAUM_PLAYWRIGHT_ARTIFACT_GROUP;
+const configuredReuseExistingServer = process.env.WELTRAUM_PLAYWRIGHT_REUSE_EXISTING_SERVER;
 
 if (configuredArtifactGroup !== undefined && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(configuredArtifactGroup)) {
   throw new Error(
     "WELTRAUM_PLAYWRIGHT_ARTIFACT_GROUP must contain lowercase letters, digits, and single hyphen separators only."
   );
+}
+
+if (configuredReuseExistingServer !== undefined && !["0", "1"].includes(configuredReuseExistingServer)) {
+  throw new Error("WELTRAUM_PLAYWRIGHT_REUSE_EXISTING_SERVER must be 0 or 1 when provided.");
 }
 
 const artifactSuffix = configuredArtifactGroup === undefined ? "" : `/${configuredArtifactGroup}`;
@@ -31,7 +36,7 @@ export default defineConfig({
   webServer: {
     command: "npm run dev -- --host 127.0.0.1 --port 5173 --strictPort",
     url: "http://127.0.0.1:5173",
-    reuseExistingServer: false,
+    reuseExistingServer: configuredReuseExistingServer === "1",
     timeout: 20_000
   },
   projects: [

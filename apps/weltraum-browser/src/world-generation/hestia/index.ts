@@ -1,3 +1,4 @@
+export * from "./coastLushProfile";
 export * from "./densityGenerator";
 export * from "./materialClassifier";
 export * from "./noise";

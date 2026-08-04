@@ -6,6 +6,7 @@ import {
   requireExactKeys as adaptiveRequireExactKeys,
   requireFinite as adaptiveRequireFinite,
   requirePlainRecord as adaptiveRequirePlainRecord,
+  serializeAdaptiveKey,
   stableAuthorityId as adaptiveStableAuthorityId
 } from "../adaptive";
 import {
@@ -14,8 +15,11 @@ import {
   validateStructuralCellAddress
 } from "./coordinates";
 import { serializeStructuralCellAddress } from "./canonical";
-import { deriveStructuralComponentClassification } from "./connectivity";
-import { getStructuralVoxel, structuralAddressForBrickCell } from "./model";
+import {
+  deriveStructuralComponentClassification,
+  isStructuralCanonicalComponentMembership
+} from "./connectivity";
+import { structuralAddressForBrickCell } from "./model";
 import {
   STRUCTURAL_COMPONENT_ID_VERSION,
   STRUCTURAL_COMPONENT_SCHEMA_VERSION,
@@ -27,7 +31,8 @@ import {
   type StructuralInertiaTensor,
   type StructuralMassBudgets,
   type StructuralMassProperties,
-  type StructuralObject
+  type StructuralObject,
+  type StructuralVoxelState
 } from "./types";
 import {
   normalizeAdaptiveAuthorityFunction,
@@ -59,21 +64,76 @@ export class StructuralMassError extends Error {
 }
 
 interface MassCell {
-  readonly address: StructuralCellAddress;
   readonly massKg: number;
   readonly center: Readonly<{ x: number; y: number; z: number }>;
-  readonly min: Readonly<{ x: number; y: number; z: number }>;
-  readonly max: Readonly<{ x: number; y: number; z: number }>;
+}
+
+interface MassInputCell {
+  readonly address: StructuralCellAddress;
+  readonly state: StructuralVoxelState;
+  readonly global: Readonly<{ x: number; y: number; z: number }>;
+  readonly cellIdentity: string;
+}
+
+interface CachedStructuralMassProperties {
+  readonly massProperties: StructuralMassProperties;
+  readonly inputsByCellIdentity: ReadonlyMap<string, MassInputCell>;
+  readonly inputsByGlobalIdentity: ReadonlyMap<string, MassInputCell>;
 }
 
 const zeroTensor = (): StructuralInertiaTensor => deepFreeze({ xx: 0, yy: 0, zz: 0, xy: 0, xz: 0, yz: 0 });
 
 const finite = (value: number, path: string): number => requireFinite(value, path);
+const massPropertiesByObject = new WeakMap<StructuralObject, CachedStructuralMassProperties>();
+const massInputIdentity = (brickKey: string, localIndex: number): string =>
+  brickKey + "/" + localIndex;
+
+const occupiedVoxelCount = (object: StructuralObject): number =>
+  object.bricks.reduce((count, brick) => count + brick.cells.length, 0);
+
+const cacheStructuralObjectMassProperties = (
+  object: StructuralObject,
+  massProperties: StructuralMassProperties,
+  inputs: readonly MassInputCell[]
+): void => {
+  if (!Object.isFrozen(object) || !Object.isFrozen(massProperties)) {
+    throw new TypeError("Cached Structural mass properties require immutable object identity and properties.");
+  }
+  if (
+    massProperties.sourceRevision !== object.objectRevision
+    || massProperties.sourceContentHash !== object.contentHash
+    || massProperties.occupiedVoxelCount !== occupiedVoxelCount(object)
+    || inputs.length !== massProperties.occupiedVoxelCount
+  ) {
+    throw new TypeError("Cached Structural mass properties do not bind the immutable object identity.");
+  }
+  const inputsByCellIdentity = new Map<string, MassInputCell>();
+  const inputsByGlobalIdentity = new Map<string, MassInputCell>();
+  for (const input of inputs) {
+    const globalIdentity = `${input.global.x}:${input.global.y}:${input.global.z}`;
+    if (
+      input.cellIdentity.length === 0
+      || inputsByCellIdentity.has(input.cellIdentity)
+      || inputsByGlobalIdentity.has(globalIdentity)
+    ) {
+      throw new TypeError("Cached Structural mass inputs require unique immutable cell identities.");
+    }
+    inputsByCellIdentity.set(input.cellIdentity, input);
+    inputsByGlobalIdentity.set(globalIdentity, input);
+  }
+  massPropertiesByObject.set(object, { massProperties, inputsByCellIdentity, inputsByGlobalIdentity });
+};
+
+const occupiedAddressKey = (address: StructuralCellAddress): string => {
+  const global = globalQuantumForStructuralCell(address);
+  return global.x + ":" + global.y + ":" + global.z;
+};
 
 const canonicalAddresses = (
   object: StructuralObject,
   addresses: readonly StructuralCellAddress[] | null,
-  maxVisitedCells: number
+  maxVisitedCells: number,
+  trustedCanonical: boolean
 ): readonly StructuralCellAddress[] => {
   if (addresses === null) {
     const copied: StructuralCellAddress[] = [];
@@ -88,6 +148,23 @@ const canonicalAddresses = (
       }
     }
     return deepFreeze(copied);
+  }
+  if (trustedCanonical) {
+    if (!isStructuralCanonicalComponentMembership(object, addresses)) {
+      throw new StructuralMassError(
+        "InvalidStructuralState",
+        "occupiedCells",
+        "Trusted canonical mass input must use identity-bound Structural Component membership from the current object."
+      );
+    }
+    if (addresses.length > maxVisitedCells) {
+      throw new StructuralMassError(
+        "BudgetExceeded",
+        "massBudgets/maxVisitedCells",
+        "Occupied-cell traversal exceeded the explicit mass budget."
+      );
+    }
+    return addresses;
   }
   const copied = structuralDenseArray(addresses, "occupiedCells", maxVisitedCells)
     .map((address, index) => validateStructuralCellAddress(address, `occupiedCells/${index}`))
@@ -174,11 +251,119 @@ const projectComponentForComparison = (
 const derive = (
   object: StructuralObject,
   budgetValue: StructuralMassBudgets,
-  addressValues: readonly StructuralCellAddress[] | null
+  addressValues: readonly StructuralCellAddress[] | null,
+  trustedCanonical = false,
+  reusedInputs: readonly MassInputCell[] | null = null
 ): StructuralMassProperties => {
   const maxVisitedCells = structuralPositiveBudget(budgetValue.maxVisitedCells, "massBudgets/maxVisitedCells");
-  const addresses = canonicalAddresses(object, addressValues, maxVisitedCells);
+  if (addressValues === null && reusedInputs === null) {
+    const cached = massPropertiesByObject.get(object);
+    if (cached !== undefined) {
+      if (cached.massProperties.occupiedVoxelCount > maxVisitedCells) {
+        throw new StructuralMassError(
+          "BudgetExceeded",
+          "massBudgets/maxVisitedCells",
+          "Occupied-cell traversal exceeded the explicit mass budget."
+        );
+      }
+      return cached.massProperties;
+    }
+  }
+  const addresses = addressValues === null
+    ? null
+    : canonicalAddresses(object, addressValues, maxVisitedCells, trustedCanonical);
   const materials = new Map(object.materials.map((material) => [material.materialId, material]));
+  const trustedInputs = addresses !== null && trustedCanonical
+    ? (() => {
+        const cached = massPropertiesByObject.get(object);
+        if (cached === undefined) return null;
+        return addresses.map((address, index) => {
+          const globalIdentity = [
+            address.brickKey.originQuantum.x + address.local.x,
+            address.brickKey.originQuantum.y + address.local.y,
+            address.brickKey.originQuantum.z + address.local.z
+          ].join(":");
+          const input = cached.inputsByGlobalIdentity.get(globalIdentity);
+          if (input === undefined) {
+            throw new StructuralMassError(
+              "InvalidStructuralState",
+              `occupiedCells/${index}`,
+              "Canonical Component membership is absent from current cached Structural mass inputs."
+            );
+          }
+          return input;
+        });
+      })()
+    : null;
+  const inputs: MassInputCell[] = reusedInputs !== null
+    ? [...reusedInputs]
+    : trustedInputs !== null
+      ? [...trustedInputs]
+      : [];
+  const statesByAddress = addresses === null || trustedInputs !== null
+    ? null
+    : new Map<string, StructuralVoxelState>();
+  const seenObjectAddresses = addresses === null ? new Set<string>() : null;
+  let visitedStateCells = 0;
+  if (reusedInputs === null && trustedInputs === null) {
+    for (let brickIndex = 0; brickIndex < object.bricks.length; brickIndex += 1) {
+      const brick = object.bricks[brickIndex];
+      const brickKey = serializeAdaptiveKey(brick.key);
+      for (let cellIndex = 0; cellIndex < brick.cells.length; cellIndex += 1) {
+        if (visitedStateCells >= maxVisitedCells) {
+          throw new StructuralMassError(
+            "BudgetExceeded",
+            "massBudgets/maxVisitedCells",
+            "Occupied-cell traversal exceeded the explicit mass budget."
+          );
+        }
+        const cell = brick.cells[cellIndex];
+        visitedStateCells += 1;
+        const address = structuralAddressForBrickCell(brick, cell.localIndex);
+        const addressKey = occupiedAddressKey(address);
+        const addressAlreadySeen = statesByAddress === null
+          ? seenObjectAddresses!.has(addressKey)
+          : statesByAddress.has(addressKey);
+        if (addressAlreadySeen) {
+          throw new StructuralMassError(
+            "InvalidStructuralState",
+            "object/bricks/cells",
+            "Mass derivation requires unique occupied-cell addresses."
+          );
+        }
+        if (statesByAddress === null) {
+          seenObjectAddresses!.add(addressKey);
+          inputs.push({
+            address,
+            state: cell.state,
+            global: globalQuantumForStructuralCell(address),
+            cellIdentity: massInputIdentity(brickKey, cell.localIndex)
+          });
+        } else {
+          statesByAddress.set(addressKey, cell.state);
+        }
+      }
+    }
+  }
+  if (addresses !== null && statesByAddress !== null) {
+    for (let index = 0; index < addresses.length; index += 1) {
+      const address = addresses[index];
+      const state = statesByAddress.get(occupiedAddressKey(address));
+      if (state === undefined) {
+        throw new StructuralMassError(
+          "InvalidStructuralState",
+          `occupiedCells/${index}`,
+          "Mass derivation requires currently occupied cells in present bricks."
+        );
+      }
+      inputs.push({
+        address,
+        state,
+        global: globalQuantumForStructuralCell(address),
+        cellIdentity: ""
+      });
+    }
+  }
   const side = MICROVOXEL_BASE_QUANTUM_METERS;
   const cellVolume = side * side * side;
   const cells: MassCell[] = [];
@@ -193,36 +378,46 @@ const derive = (
   let maxY = Number.NEGATIVE_INFINITY;
   let maxZ = Number.NEGATIVE_INFINITY;
 
-  for (let index = 0; index < addresses.length; index += 1) {
-    const address = addresses[index];
-    const state = getStructuralVoxel(object, address);
-    if (state === undefined || state === null) {
-      throw new StructuralMassError("InvalidStructuralState", `occupiedCells/${index}`, "Mass derivation requires currently occupied cells in present bricks.");
-    }
+  for (let index = 0; index < inputs.length; index += 1) {
+    const { state, global } = inputs[index];
     const material = materials.get(state.materialId);
     if (material === undefined) {
       throw new StructuralMassError("InvalidStructuralState", `occupiedCells/${index}/materialId`, "Occupied cell material has no density definition.");
     }
     const massKg = finite(material.densityKgPerCubicMeter * cellVolume, `mass/${index}`);
     if (massKg <= 0) throw new StructuralMassError("InvalidStructuralState", `mass/${index}`, "Occupied cell mass must be positive and finite.");
-    const global = globalQuantumForStructuralCell(address);
-    const min = deepFreeze({ x: global.x * side, y: global.y * side, z: global.z * side });
-    const max = deepFreeze({ x: (global.x + 1) * side, y: (global.y + 1) * side, z: (global.z + 1) * side });
-    const center = deepFreeze({ x: (global.x + 0.5) * side, y: (global.y + 0.5) * side, z: (global.z + 0.5) * side });
-    for (const [name, value] of Object.entries({ minX: min.x, minY: min.y, minZ: min.z, maxX: max.x, maxY: max.y, maxZ: max.z, centerX: center.x, centerY: center.y, centerZ: center.z })) finite(value, `mass/${index}/${name}`);
+    const cellMinX = global.x * side;
+    const cellMinY = global.y * side;
+    const cellMinZ = global.z * side;
+    const cellMaxX = (global.x + 1) * side;
+    const cellMaxY = (global.y + 1) * side;
+    const cellMaxZ = (global.z + 1) * side;
+    const center = {
+      x: (global.x + 0.5) * side,
+      y: (global.y + 0.5) * side,
+      z: (global.z + 0.5) * side
+    };
+    finite(cellMinX, `mass/${index}/minX`);
+    finite(cellMinY, `mass/${index}/minY`);
+    finite(cellMinZ, `mass/${index}/minZ`);
+    finite(cellMaxX, `mass/${index}/maxX`);
+    finite(cellMaxY, `mass/${index}/maxY`);
+    finite(cellMaxZ, `mass/${index}/maxZ`);
+    finite(center.x, `mass/${index}/centerX`);
+    finite(center.y, `mass/${index}/centerY`);
+    finite(center.z, `mass/${index}/centerZ`);
     totalMassKg = finite(totalMassKg + massKg, "totalMassKg");
     weightedX = finite(weightedX + massKg * center.x, "weightedCenter/x");
     weightedY = finite(weightedY + massKg * center.y, "weightedCenter/y");
     weightedZ = finite(weightedZ + massKg * center.z, "weightedCenter/z");
-    minX = Math.min(minX, min.x);
-    minY = Math.min(minY, min.y);
-    minZ = Math.min(minZ, min.z);
-    maxX = Math.max(maxX, max.x);
-    maxY = Math.max(maxY, max.y);
-    maxZ = Math.max(maxZ, max.z);
-    cells.push(deepFreeze({ address, massKg, center, min, max }));
+    minX = Math.min(minX, cellMinX);
+    minY = Math.min(minY, cellMinY);
+    minZ = Math.min(minZ, cellMinZ);
+    maxX = Math.max(maxX, cellMaxX);
+    maxY = Math.max(maxY, cellMaxY);
+    maxZ = Math.max(maxZ, cellMaxZ);
+    cells.push({ massKg, center });
   }
-
   if (cells.length === 0) {
     const payload = deepFreeze({
       schemaVersion: STRUCTURAL_MASS_PROPERTIES_SCHEMA_VERSION,
@@ -235,7 +430,11 @@ const derive = (
       sourceRevision: object.objectRevision,
       sourceContentHash: object.contentHash
     });
-    return deepFreeze({ ...payload, contentHash: hashAdaptiveCanonical(payload) });
+    const result = deepFreeze({ ...payload, contentHash: hashAdaptiveCanonical(payload) });
+    if (addressValues === null && Object.isFrozen(object)) {
+      cacheStructuralObjectMassProperties(object, result, inputs);
+    }
+    return result;
   }
 
   if (!(totalMassKg > 0) || !Number.isFinite(totalMassKg)) {
@@ -296,13 +495,74 @@ const derive = (
     sourceRevision: object.objectRevision,
     sourceContentHash: object.contentHash
   });
-  return deepFreeze({ ...payload, contentHash: hashAdaptiveCanonical(payload) });
+  const result = deepFreeze({ ...payload, contentHash: hashAdaptiveCanonical(payload) });
+  if (addressValues === null && Object.isFrozen(object)) {
+    cacheStructuralObjectMassProperties(object, result, inputs);
+  }
+  return result;
 };
 
 export const deriveStructuralObjectMassProperties = (
   object: StructuralObject,
   budgets: StructuralMassBudgets
 ): StructuralMassProperties => derive(object, budgets, null);
+
+const deriveStructuralObjectMassPropertiesFromPreviousObject = (
+  previous: StructuralObject,
+  object: StructuralObject,
+  budgets: StructuralMassBudgets
+): StructuralMassProperties => {
+  const maxVisitedCells = structuralPositiveBudget(budgets.maxVisitedCells, "massBudgets/maxVisitedCells");
+  const previousCached = massPropertiesByObject.get(previous);
+  if (
+    previousCached === undefined
+    || !Object.isFrozen(previous)
+    || !Object.isFrozen(object)
+    || previous.objectId !== object.objectId
+    || previous.frame !== object.frame
+    || previous.source !== object.source
+    || previous.materials !== object.materials
+    || previous.bricks.length !== object.bricks.length
+  ) return derive(object, budgets, null);
+  const reused: MassInputCell[] = [];
+  const seen = new Set<string>();
+  for (let brickIndex = 0; brickIndex < object.bricks.length; brickIndex += 1) {
+    const brick = object.bricks[brickIndex];
+    const brickKey = serializeAdaptiveKey(brick.key);
+    if (brickKey !== serializeAdaptiveKey(previous.bricks[brickIndex].key)) {
+      return derive(object, budgets, null);
+    }
+    for (const cell of brick.cells) {
+      if (reused.length >= maxVisitedCells) {
+        throw new StructuralMassError(
+          "BudgetExceeded",
+          "massBudgets/maxVisitedCells",
+          "Occupied-cell traversal exceeded the explicit mass budget."
+        );
+      }
+      const cellIdentity = massInputIdentity(brickKey, cell.localIndex);
+      const input = previousCached.inputsByCellIdentity.get(cellIdentity);
+      if (input === undefined || input.state !== cell.state || seen.has(cellIdentity)) {
+        return derive(object, budgets, null);
+      }
+      seen.add(cellIdentity);
+      reused.push(input);
+    }
+  }
+  return derive(object, budgets, null, false, reused);
+};
+
+export const deriveStructuralOccupiedCellMassProperties = (
+  object: StructuralObject,
+  occupiedCells: readonly StructuralCellAddress[],
+  budgets: StructuralMassBudgets
+): StructuralMassProperties => derive(object, budgets, occupiedCells);
+
+export const deriveStructuralCanonicalOccupiedCellMassProperties = (
+  object: StructuralObject,
+  occupiedCells: readonly StructuralCellAddress[],
+  budgets: StructuralMassBudgets
+): StructuralMassProperties => derive(object, budgets, occupiedCells, true);
 
 export const deriveStructuralComponentMassProperties = (
   object: StructuralObject,
@@ -328,3 +588,5 @@ export const deriveStructuralComponentMassProperties = (
   }
   return derive(object, budgets, expected.occupiedCells);
 };
+
+export default deriveStructuralObjectMassPropertiesFromPreviousObject;

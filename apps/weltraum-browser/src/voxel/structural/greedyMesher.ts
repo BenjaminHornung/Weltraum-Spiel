@@ -13,6 +13,7 @@ import { structuralAddressForBrickCell } from "./model";
 import {
   STRUCTURAL_GREEDY_MESH_ALGORITHM_VERSION,
   STRUCTURAL_MESH_SCHEMA_VERSION,
+  type StructuralBrick,
   type StructuralMeshBudgets,
   type StructuralMeshFailure,
   type StructuralMeshMaterialRange,
@@ -65,6 +66,30 @@ interface GreedyQuad {
   readonly state: OccupiedCell["state"];
 }
 
+export interface StructuralMeshDerivationStats {
+  readonly sourceBrickCount: number;
+  readonly occupiedCellCount: number;
+  readonly computedBrickProjectionCount: number;
+  readonly reusedBrickProjectionCount: number;
+}
+
+const meshDerivationStats =
+  new WeakMap<StructuralMeshProduct, Readonly<StructuralMeshDerivationStats>>();
+const brickProjections =
+  new WeakMap<StructuralBrick, readonly Readonly<OccupiedCell>[]>();
+
+export const readStructuralMeshDerivationStats = (
+  product: Readonly<StructuralMeshProduct>
+): Readonly<StructuralMeshDerivationStats> | undefined => meshDerivationStats.get(product);
+
+export const transferStructuralMeshDerivationStats = (
+  source: Readonly<StructuralMeshProduct>,
+  target: Readonly<StructuralMeshProduct>
+): void => {
+  const stats = meshDerivationStats.get(source);
+  if (stats !== undefined) meshDerivationStats.set(target, stats);
+};
+
 // Public determinism contract: faces use this order, followed by ascending
 // plane slice, row, and column. Rows/columns are Y/Z for X faces, X/Z for Y
 // faces, and X/Y for Z faces. Greedy rectangles expand columns before rows.
@@ -83,6 +108,25 @@ const FACES = deepFreeze<readonly FaceDefinition[]>([
 ]);
 
 const cellKey = (cell: QuantumCell): string => `${cell.x},${cell.y},${cell.z}`;
+
+const projectBrick = (
+  brick: Readonly<StructuralBrick>
+): Readonly<{
+  readonly cells: readonly Readonly<OccupiedCell>[];
+  readonly reused: boolean;
+}> => {
+  if (!Object.isFrozen(brick) || !Object.isFrozen(brick.cells)) {
+    throw new TypeError("Cached Structural mesh projections require immutable Brick identity and cells.");
+  }
+  const cached = brickProjections.get(brick);
+  if (cached !== undefined) return { cells: cached, reused: true };
+  const cells = deepFreeze(brick.cells.map((entry) => deepFreeze({
+    cell: globalQuantumForStructuralCell(structuralAddressForBrickCell(brick, entry.localIndex)),
+    state: entry.state
+  })));
+  brickProjections.set(brick, cells);
+  return { cells, reused: false };
+};
 
 const validateBudgets = (value: unknown): StructuralMeshBudgets => {
   const record = requirePlainRecord(value, "mesh/budgets");
@@ -221,12 +265,16 @@ export const extractStructuralMeshData = (
     // Only after the visited-cell gate passes do we allocate occupancy lookup
     // state. Output-sized arrays are deferred until every output budget passes.
     const occupied = new Map<string, OccupiedCell>();
+    let computedBrickProjectionCount = 0;
+    let reusedBrickProjectionCount = 0;
     for (const brick of object.bricks) {
-      for (const entry of brick.cells) {
-        const cell = globalQuantumForStructuralCell(structuralAddressForBrickCell(brick, entry.localIndex));
-        const key = cellKey(cell);
+      const projection = projectBrick(brick);
+      if (projection.reused) reusedBrickProjectionCount += 1;
+      else computedBrickProjectionCount += 1;
+      for (const occupiedCell of projection.cells) {
+        const key = cellKey(occupiedCell.cell);
         if (occupied.has(key)) return failure("InvalidStructuralState");
-        occupied.set(key, deepFreeze({ cell, state: entry.state }));
+        occupied.set(key, occupiedCell);
       }
     }
 
@@ -324,6 +372,12 @@ export const extractStructuralMeshData = (
       ...payload,
       contentHash: hashAdaptiveCanonical(payload)
     });
+    meshDerivationStats.set(product, deepFreeze({
+      sourceBrickCount: object.bricks.length,
+      occupiedCellCount: visitedCells,
+      computedBrickProjectionCount,
+      reusedBrickProjectionCount
+    }));
     return deepFreeze({ status: "Produced", product });
   } catch (error) {
     if (error instanceof StructuralValidationError) throw error;

@@ -5,6 +5,9 @@ import { API as TypeScriptAPI } from "typescript/unstable/sync";
 import { describe, expect, it } from "vitest";
 import { surfaceFrameId, voxelBodyId, voxelRegionId } from "../../src/voxel";
 import {
+  HESTIA_COAST_LUSH_PRESET_ID,
+  HESTIA_GENERATOR_VERSION_COAST_LUSH_V1,
+  HESTIA_SEED_NAMESPACE_COAST_LUSH_V1,
   createHestiaGenerationKey,
   deriveHestiaDomainSeed,
   fbm2,
@@ -26,7 +29,8 @@ const canonicalInput = (overrides: Partial<HestiaGenerationInput> = {}): HestiaG
   ...overrides
 });
 
-const HESTIA_V1_MODULES = Object.freeze([
+const HESTIA_GENERATOR_MODULES = Object.freeze([
+  "coastLushProfile.ts",
   "densityGenerator.ts",
   "index.ts",
   "materialClassifier.ts",
@@ -250,13 +254,13 @@ describe("Hestia V1 seed and byte determinism", () => {
     expect(brick.contentHash).toBe("fnv1a64:12d868170450df55");
   });
 
-  it("keeps the exact seven-module Hestia V1 boundary deterministic and owner-neutral", { timeout: 10_000 }, () => {
+  it("keeps the exact eight-module Hestia generator boundary deterministic and owner-neutral", { timeout: 10_000 }, () => {
     const directory = resolve(process.cwd(), "src", "world-generation", "hestia");
     const configFilePath = resolve(process.cwd(), "tsconfig.json");
     const actualModules = readdirSync(directory).filter((file) => file.endsWith(".ts")).sort();
-    expect(actualModules).toEqual([...HESTIA_V1_MODULES].sort());
+    expect(actualModules).toEqual([...HESTIA_GENERATOR_MODULES].sort());
     const allowedDependencies = new Set([
-      ...HESTIA_V1_MODULES.map((moduleName) => `./${moduleName.slice(0, -3)}`),
+      ...HESTIA_GENERATOR_MODULES.map((moduleName) => `./${moduleName.slice(0, -3)}`),
       "../../core/hash",
       "../../voxel"
     ]);
@@ -269,7 +273,7 @@ describe("Hestia V1 seed and byte determinism", () => {
         if (project === undefined) {
           throw new Error(`TypeScript project snapshot is missing ${configFilePath}`);
         }
-        for (const moduleName of HESTIA_V1_MODULES) {
+        for (const moduleName of HESTIA_GENERATOR_MODULES) {
           const filePath = join(directory, moduleName);
           const sourceFile = project.program.getSourceFile(filePath);
           if (sourceFile === undefined) {
@@ -303,5 +307,50 @@ describe("Hestia V1 seed and byte determinism", () => {
     expect(() => generateHestiaVoxelBrick(canonicalInput({
       bodyId: "Planet.Hestia" as HestiaGenerationInput["bodyId"]
     }))).toThrow(TypeError);
+    expect(() => generateHestiaVoxelBrick(canonicalInput({
+      profile: "hestia.invalid.profile" as HestiaGenerationInput["profile"]
+    }))).toThrow(TypeError);
+    expect(() => generateHestiaVoxelBrick({
+      ...canonicalInput({ profile: HESTIA_COAST_LUSH_PRESET_ID }),
+      generatorVersion: "hestia.microvoxel.generator.v1"
+    } as HestiaGenerationInput)).toThrow(/generatorVersion must match/);
+    expect(() => generateHestiaVoxelBrick({
+      ...canonicalInput({ profile: HESTIA_COAST_LUSH_PRESET_ID }),
+      presetId: "hestia.nebelwald-archipelago.preview.v1"
+    } as HestiaGenerationInput)).toThrow(/presetId must match/);
+    expect(() => generateHestiaVoxelBrick({
+      ...canonicalInput({ profile: HESTIA_COAST_LUSH_PRESET_ID }),
+      seedNamespace: "hestia.seed.v1"
+    } as HestiaGenerationInput)).toThrow(/seedNamespace must match/);
+  });
+
+  it("binds the explicit Coast/Lush profile to its versioned seed tuple and generation key", () => {
+    const coast = canonicalInput({
+      profile: HESTIA_COAST_LUSH_PRESET_ID,
+      rootSeed: "hestia-surface-play-coast-lush-v1",
+      surfaceFrameId: surfaceFrameId("frame:surface_hestia_surface_play_v1"),
+      regionId: voxelRegionId("region:hestia.surface-play.coast-lush.v1"),
+      brickCoordinate: { x: 4, y: 0, z: -2 }
+    });
+    const fnv1a32 = (value: string): number => {
+      let hash = 0x811c9dc5;
+      for (let index = 0; index < value.length; index += 1) {
+        hash = Math.imul((hash ^ value.charCodeAt(index)) >>> 0, 0x01000193) >>> 0;
+      }
+      return hash;
+    };
+    const tuple = `${HESTIA_SEED_NAMESPACE_COAST_LUSH_V1}\0${coast.rootSeed}\0${coast.bodyId}\0`
+      + `${coast.surfaceFrameId}\0${HESTIA_COAST_LUSH_PRESET_ID}\0`
+      + `${HESTIA_GENERATOR_VERSION_COAST_LUSH_V1}\0macro-elevation`;
+    expect(deriveHestiaDomainSeed(coast, "macro-elevation")).toBe(fnv1a32(tuple));
+    expect(createHestiaGenerationKey(coast)).toContain(HESTIA_GENERATOR_VERSION_COAST_LUSH_V1);
+    expect(createHestiaGenerationKey(coast)).toContain(HESTIA_COAST_LUSH_PRESET_ID);
+
+    const first = generateHestiaVoxelBrick(coast);
+    const second = generateHestiaVoxelBrick(coast);
+    expect(first.generatorVersion).toBe(HESTIA_GENERATOR_VERSION_COAST_LUSH_V1);
+    expect(first.contentHash).toBe(second.contentHash);
+    expect(first.densityBuffer).toEqual(second.densityBuffer);
+    expect(first.materialBuffer).toEqual(second.materialBuffer);
   });
 });

@@ -8,13 +8,32 @@ import {
   type HestiaSurfaceRegionPresentationSnapshotInput
 } from "../../src/surface-play/environment";
 import { createSurfaceTerrainPresentationSnapshot } from "../../src/surface-play/contracts";
+import { selectHestiaSurfaceWorld } from "../../src/surface-play/world";
 
-const brickCoordinates = Object.freeze([
-  { x: -1, y: -1, z: -1 },
-  { x: 0, y: -1, z: -1 },
-  { x: -1, y: -1, z: 0 },
-  { x: 0, y: -1, z: 0 }
-]);
+const identity = Object.freeze({
+  bodyId: "planet.hestia",
+  regionId: "region:hestia.surface-play.v1",
+  surfaceFrameId: "frame:surface_hestia_surface_play_v1",
+  regionRevision: 7
+});
+const rootSeed = "hestia-surface-play-v1";
+const worldResult = selectHestiaSurfaceWorld({
+  identity,
+  rootSeed,
+  voxelSizeMeters: 0.5,
+  frameOriginMeters: { x: 0, y: 0, z: 0 },
+  waterSurfaceHeightMeters: 0,
+  probe: {
+    sampleGround: () => ({
+      heightMeters: 8,
+      normal: { x: 0, y: 1, z: 0 },
+      capsuleClear: true
+    })
+  }
+});
+if (worldResult.status !== "Selected") throw new Error(worldResult.failure.message);
+const world = worldResult.world;
+const brickCoordinates = world.residentBrickCoordinates;
 
 const presentationInput = (
   overrides: Partial<HestiaSurfaceRegionPresentationSnapshotInput> = {}
@@ -26,14 +45,10 @@ const presentationInput = (
   }));
   return {
     terrain: createSurfaceTerrainPresentationSnapshot({
-      bodyId: "planet.hestia",
-      regionId: "region:hestia.surface-play.v1",
-      surfaceFrameId: "frame:surface_hestia_surface_play_v1",
-      regionRevision: 7,
+      ...identity,
       visibleBrickIds: bricks.map((brick) => brick.brickId)
     }),
-    rootSeed: "hestia-surface-play-v1",
-    voxelSizeMeters: 0.5,
+    world,
     bricks,
     ...overrides
   };
@@ -51,6 +66,9 @@ describe("Hestia surface presentation facts", () => {
     expect(second).toEqual(first);
     expect(second.presentationSignature).toBe(first.presentationSignature);
     expect(first.scatter.length).toBeGreaterThan(0);
+    expect(first.scatter.some((fact) => fact.kind === "cyan_luminous_sprout")).toBe(true);
+    expect(first.scatter.some((fact) => fact.kind === "cyan_luminous_cap")).toBe(true);
+    expect(first.scatter.map((fact) => String(fact.kind))).not.toContain("black_trunk");
     expect(first.waterPatches.length).toBeGreaterThan(0);
     expect(Object.isFrozen(first)).toBe(true);
     expect(Object.isFrozen(first.bricks)).toBe(true);
@@ -92,11 +110,13 @@ describe("Hestia surface presentation facts", () => {
 
     expect(random).not.toHaveBeenCalled();
     expect(input.bricks.map((brick) => brick.terrainHash)).toEqual(originalHashes);
-    expect(snapshot.bricks.map((brick) => brick.terrainHash)).toEqual(originalHashes);
+    expect(Object.fromEntries(snapshot.bricks.map((brick) => [brick.brickId, brick.terrainHash]))).toEqual(
+      Object.fromEntries(input.bricks.map((brick) => [brick.brickId, brick.terrainHash]))
+    );
     expect(snapshot.scatter.every((fact) =>
-      Math.abs(fact.positionMeters.x) > 2.25
-      || fact.positionMeters.z < -6
-      || fact.positionMeters.z > 18
+      Math.abs(fact.positionMeters.x - input.world.anchorCenterMeters.x) > 2.25
+      || fact.positionMeters.z < input.world.anchorCenterMeters.z - 18
+      || fact.positionMeters.z > input.world.anchorCenterMeters.z + 6
     )).toBe(true);
     random.mockRestore();
   });
@@ -124,6 +144,16 @@ describe("Hestia surface presentation facts", () => {
       ...input,
       bricks: [...input.bricks, input.bricks[0]!]
     })).toThrow("Duplicate brickId");
+    expect(() => createHestiaSurfacePresentationSnapshot({
+      ...input,
+      world: Object.freeze({
+        ...input.world,
+        environment: Object.freeze({
+          ...input.world.environment,
+          residentBrickCoordinates: input.world.environment.residentBrickCoordinates.slice(1)
+        })
+      })
+    })).toThrow("resident coverage");
   });
 
   it("contains no random or concept-image runtime dependency", () => {
@@ -135,5 +165,12 @@ describe("Hestia surface presentation facts", () => {
 
     expect(source).not.toMatch(/Math\.random/);
     expect(source).not.toMatch(/\.png|UI-Screenshots|concept.image|screenshot/i);
+    const presentationSource = readFileSync(
+      join(sourceDirectory, "hestiaSurfacePresentation.ts"),
+      "utf8"
+    );
+    expect(presentationSource).not.toMatch(
+      /generateHestiaScatter|createHestiaFieldContext|sampleHestiaSurfaceFields/
+    );
   });
 });

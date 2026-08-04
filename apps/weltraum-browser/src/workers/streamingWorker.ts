@@ -2,6 +2,7 @@ import { WorkerCancellationRegistry, yieldToWorkerEventLoop } from "./cancellati
 import { isMessageRecord, type HostToWorkerMessage, type WorkerToHostMessage } from "./messages";
 import {
   GENERATE_HESTIA_VOXEL_BRICK_MESH_JOB_KIND,
+  TRANSFORM_BUFFER_JOB_KIND,
   HESTIA_VOXEL_OUTPUT_LAYOUT_VERSION,
   expectedHestiaVoxelInputBytes,
   fnv1aBytes,
@@ -107,7 +108,7 @@ export class StreamingWorkerRuntime {
       }
       const input = validateTransferableBundle(sourceBundle);
       if (input.ownership !== "SenderToWorker" || input.revision !== request.inputRevision || input.byteLength !== request.estimatedInputBytes) throw new RangeError("Input ownership, revision, or byte length does not match the request.");
-      const execution = request.jobKind === "TransformBuffer"
+      const execution = request.jobKind === TRANSFORM_BUFFER_JOB_KIND
         ? await this.executeTransform(request, input, async () => {
             await this.checkpoint();
             if (token.isCancellationRequested) throw new WorkerJobCancelled();
@@ -227,6 +228,7 @@ export class StreamingWorkerRuntime {
       kind: GENERATE_HESTIA_VOXEL_BRICK_MESH_JOB_KIND,
       layoutVersion: HESTIA_VOXEL_OUTPUT_LAYOUT_VERSION,
       presetId: payload.presetId,
+      ...(payload.profile === undefined ? {} : { profile: payload.profile }),
       inputMode: payload.inputMode,
       rootSeed: payload.rootSeed,
       bodyId: payload.bodyId,

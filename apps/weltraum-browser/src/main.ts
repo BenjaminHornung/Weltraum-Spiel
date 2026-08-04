@@ -4,6 +4,8 @@ import { createBrowserRuntime, createRuntimeShipForFlightCase } from "./runtime/
 import { createGraphicsSettingsController, loadGraphicsSettings } from "./settings";
 import { startSurfaceLabRoute } from "./surface-lab/surfaceLabFailurePresenter";
 import { isSurfaceLabQuery } from "./surface-lab/surfaceLabQuery";
+import { startSurfacePlayRoute } from "./surface-play/surfacePlayFailurePresenter";
+import { isSurfacePlayQuery } from "./surface-play/surfacePlayQuery";
 import { createGraphicsSettingsPanel } from "./ui/graphicsSettingsPanel";
 import { createProvingGroundLowPolyRenderBatch } from "./world/provingGroundWorld";
 
@@ -63,7 +65,9 @@ const startNormalRuntime = (): void => {
   });
 };
 
-if (isSurfaceLabQuery(searchParams)) {
+if (isSurfacePlayQuery(searchParams)) {
+  void startSurfacePlayRoute(document, () => import("./surface-play"));
+} else if (isSurfaceLabQuery(searchParams)) {
   void startSurfaceLabRoute(document, () => import("./surface-lab"));
 } else {
   startNormalRuntime();

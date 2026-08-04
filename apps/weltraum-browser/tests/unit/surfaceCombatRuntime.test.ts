@@ -21,6 +21,7 @@ import {
   createHestiaPulseCutterState,
   createSurfaceCombatRuntimeState,
   executeSurfaceCombatFire,
+  probeSurfaceCombatFire,
   replaySurfaceCombatPresentation,
   type SurfaceCombatExecutionInput,
   type SurfaceCombatRuntimeState,
@@ -119,7 +120,7 @@ describe("surface combat runtime", () => {
     const result = executeSurfaceCombatFire(execution());
     expect(result.kind).toBe("CombatTargetHit");
     expect(result.state.weapon).toMatchObject({
-      energy: 108,
+      energy: 228,
       heat: 18,
       cooldownSeconds: 0.5,
       shotSequence: 1
@@ -161,6 +162,44 @@ describe("surface combat runtime", () => {
     expect(heatResult.state.weapon).toEqual(hot.weapon);
     expect(energyResult.state.drone.damageable).toEqual(base.drone.damageable);
     expect(heatResult.state.drone.damageable).toEqual(base.drone.damageable);
+  });
+
+  it("accepts twenty no-recovery shots, rejects the twenty-first, and recovers exactly one shot", () => {
+    let state = createSurfaceCombatRuntimeState(FRAME_ID, { x: 10, y: 1.5, z: 20 });
+    for (let tick = 1; tick <= 20; tick += 1) {
+      const accepted = executeSurfaceCombatFire(execution(state, tick));
+      expect(accepted.snapshot.latestFireResult).toMatchObject({ status: "Accepted" });
+      state = accepted.state;
+      if (tick < 20) state = advanceSurfaceCombatRuntime(state, 1.5);
+    }
+    expect(state.weapon.energy).toBe(0);
+    expect(state.energyRecoveryDelayRemainingSeconds).toBe(3);
+
+    state = advanceSurfaceCombatRuntime(state, 1.5);
+    const beforeRejectedWeapon = state.weapon;
+    const beforeRejectedDrone = state.drone;
+    const rejected = executeSurfaceCombatFire(execution(state, 21));
+    expect(rejected.snapshot.latestFireResult).toMatchObject({
+      status: "Rejected",
+      code: "InsufficientEnergy"
+    });
+    expect(rejected.snapshot.readiness).toMatchObject({
+      kind: "EnergyInsufficient",
+      currentEnergyJoules: 0,
+      requiredEnergyJoules: 12,
+      recoveryDelayRemainingSeconds: 1.5,
+      nextShotReadyInSeconds: 2.5
+    });
+    expect(rejected.state.weapon).toEqual(beforeRejectedWeapon);
+    expect(rejected.state.drone).toEqual(beforeRejectedDrone);
+    expect(rejected.snapshot.events.map((event) => event.kind)).toEqual(["FireRejected"]);
+
+    const delayElapsed = advanceSurfaceCombatRuntime(rejected.state, 1.5);
+    expect(delayElapsed.weapon.energy).toBe(0);
+    const oneShotRecovered = advanceSurfaceCombatRuntime(delayElapsed, 1);
+    expect(oneShotRecovered.weapon.energy).toBe(12);
+    expect(executeSurfaceCombatFire(execution(oneShotRecovered, 22)).snapshot.latestFireResult)
+      .toMatchObject({ status: "Accepted" });
   });
 
   it("uses Combat Core Beam resolution to choose the nearest valid proxy", () => {
@@ -325,6 +364,102 @@ describe("surface combat runtime", () => {
     expect(result.combatEvents.map((event) => event.phase)).toEqual(["WeaponFire"]);
     expect(Object.isFrozen(result.impactIntent)).toBe(true);
     expect(result.state.drone.damageable).toEqual(state.drone.damageable);
+  });
+
+  it("owns accepted Structural event ordering without mutating the drone", () => {
+    const input = execution(createSurfaceCombatRuntimeState(FRAME_ID, { x: 10, y: 1.5, z: 20 }));
+    const result = executeSurfaceCombatFire({
+      ...input,
+      raycast: {
+        query: () => ({
+          kind: "StructuralHit",
+          objectId: "surface-tree:one",
+          structuralCommandId: "surface-tree-command:one",
+          supportResult: "Detached",
+          suggestedEditRadiusMeters: 0.375,
+          point: { x: 0, y: 1.5, z: 8 },
+          normal: { x: 0, y: 0, z: -1 },
+          distanceMeters: 8
+        })
+      }
+    });
+
+    expect(result.kind).toBe("StructuralHit");
+    expect(result.snapshot.latestFireResult).toEqual({
+      status: "Accepted",
+      commandId: input.command.commandId,
+      hit: "Structural"
+    });
+    expect(result.snapshot.events.map((event) => event.kind)).toEqual([
+      "FireAccepted",
+      "StructuralHit",
+      "StructuralDamaged",
+      "StructuralDetached"
+    ]);
+    expect(result.state.weapon).toMatchObject({ energy: 228, heat: 18, shotSequence: 1 });
+    expect(result.state.drone).toEqual(input.state.drone);
+    expect(replaySurfaceCombatPresentation(result, PLAYER_ID, input.pose.muzzlePosition).impact?.kind)
+      .toBe("Structural");
+  });
+
+  it("probes Structural preparation without firing, charging, or publishing combat events", () => {
+    const input = execution(createSurfaceCombatRuntimeState(FRAME_ID, { x: 10, y: 1.5, z: 20 }));
+    const probe = probeSurfaceCombatFire({
+      ...input,
+      raycast: {
+        query: () => ({
+          kind: "StructuralPrepareHit",
+          objectId: "surface-tree:one",
+          structuralCommandId: "surface-tree-command:prepare-one",
+          point: { x: 0, y: 1.5, z: 8 },
+          normal: { x: 0, y: 0, z: -1 },
+          distanceMeters: 8
+        })
+      }
+    });
+
+    expect(probe).toMatchObject({
+      kind: "Candidate",
+      candidate: {
+        kind: "StructuralPrepareHit",
+        objectId: "surface-tree:one",
+        structuralCommandId: "surface-tree-command:prepare-one"
+      }
+    });
+    expect(input.state.weapon).toMatchObject({ energy: 240, heat: 0, shotSequence: 0 });
+    expect(input.state.nextSurfaceEventSequence).toBe(0);
+    expect(input.state.drone.damageable).toEqual(
+      createSurfaceCombatRuntimeState(FRAME_ID, { x: 10, y: 1.5, z: 20 }).drone.damageable
+    );
+  });
+
+  it("rejects detached-body and capacity preflight before firing with no Terrain fallback", () => {
+    const input = execution(createSurfaceCombatRuntimeState(FRAME_ID, { x: 10, y: 1.5, z: 20 }));
+    for (const [candidate, code] of [
+      [{
+        kind: "DetachedBodyHit" as const,
+        bodyId: "surface-body:fallen",
+        point: { x: 0, y: 1.5, z: 6 },
+        normal: { x: 0, y: 0, z: -1 },
+        distanceMeters: 6
+      }, "DetachedBodyImmutable"],
+      [{
+        kind: "Blocked" as const,
+        code: "BodyCapacityExceeded" as const,
+        message: "body capacity"
+      }, "BodyCapacityExceeded"]
+    ] as const) {
+      const result = executeSurfaceCombatFire({
+        ...input,
+        raycast: { query: () => candidate }
+      });
+      expect(result.kind).toBe("BlockedFire");
+      expect(result.snapshot.latestFireResult).toMatchObject({ status: "Rejected", code });
+      expect(result.snapshot.events.map((event) => event.kind)).toEqual(["FireRejected"]);
+      expect(result.state.weapon).toEqual(input.state.weapon);
+      expect(result.state.drone).toEqual(input.state.drone);
+      expect(result.impactIntent).toBeNull();
+    }
   });
 
   it("returns Miss without damage or edit intent", () => {

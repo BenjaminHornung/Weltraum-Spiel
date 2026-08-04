@@ -8661,6 +8661,96 @@ body[data-ui-surface="flight"] #graphics-settings-button {
   }
 }
 
+/* Hestia Surface Play is an isolated player-facing route projection. */
+body[data-ui-surface="surface-play"] #app > :not(#debug-scene):not(.surface-play-ui):not(#surface-play-loading):not(#surface-play-failure):not(#surface-play-debug-overlay) {
+  display: none !important;
+}
+
+body[data-ui-surface="surface-play"] #debug-scene {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #081718;
+}
+
+.surface-play-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  display: grid;
+  box-sizing: border-box;
+  place-items: center;
+  padding: 24px;
+  background: #071517;
+  color: #dcfbfa;
+  font-family: "Bahnschrift", "DIN Alternate", "Arial Narrow", sans-serif;
+}
+
+.surface-play-loading__panel {
+  width: min(520px, calc(100vw - 48px));
+  padding: 22px 24px;
+  border: 1px solid #407a7c;
+  border-left: 5px solid #7de2e5;
+  background: #101b1d;
+}
+
+.surface-play-loading h1 {
+  margin: 0;
+  color: #7de2e5;
+  font-size: clamp(1.05rem, 2.5vw, 1.35rem);
+  letter-spacing: 0.1em;
+}
+
+.surface-play-loading p {
+  margin: 12px 0 14px;
+  min-height: 1.4em;
+  line-height: 1.4;
+}
+
+.surface-play-loading__indicator {
+  position: relative;
+  height: 6px;
+  overflow: hidden;
+  border: 1px solid #407a7c;
+  background: #081718;
+}
+
+.surface-play-loading__fill {
+  width: 0;
+  height: 100%;
+  background: #7de2e5;
+}
+
+.surface-play-failure {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 40;
+  box-sizing: border-box;
+  width: min(620px, calc(100vw - 48px));
+  padding: 24px 28px;
+  transform: translate(-50%, -50%);
+  border: 1px solid #a66f54;
+  border-left: 5px solid #f2b84b;
+  background: #101b1d;
+  color: #dcfbfa;
+  font-family: "Bahnschrift", "DIN Alternate", "Arial Narrow", sans-serif;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+}
+
+.surface-play-failure h1 {
+  margin: 0 0 12px;
+  color: #f2b84b;
+  font-size: 1.25rem;
+  letter-spacing: 0.1em;
+}
+
+.surface-play-failure p {
+  margin: 7px 0 0;
+  line-height: 1.4;
+}
+
 /* Hestia Surface Lab is an isolated technical proving-ground projection. */
 body[data-surface-lab="1"] #app > :not(#debug-scene):not(#surface-lab-hud):not(#surface-lab-failure) {
   display: none !important;

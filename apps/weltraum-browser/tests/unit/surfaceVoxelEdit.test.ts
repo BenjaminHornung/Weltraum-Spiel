@@ -4,9 +4,13 @@ import {
   HESTIA_SOURCE_REVISION_V1
 } from "../../src/world-generation/hestia";
 import {
+  VOXEL_BRICK_APRON_WIDTH,
   VOXEL_BRICK_CELL_COUNT,
+  VOXEL_BRICK_CELL_DIMENSIONS,
   VOXEL_BRICK_SAMPLE_DIMENSIONS,
+  createSurfaceNetsVoxelMeshProduct,
   storedSampleToGlobalCoordinate,
+  validateVoxelMeshProduct,
   voxelSampleIndex
 } from "../../src/voxel";
 import {
@@ -140,6 +144,123 @@ describe("Hestia SurfaceRegion SubtractSphere edits", () => {
       expect(plan.expectedEditRevision).toBe(1);
     }
   });
+
+  it("keeps the live eighth-cut sphere boundary solid and every remesh product valid", () => {
+    const replay = [
+      { tick: 3_020, impact: "c41a709a5c7430ca", centerGlobalQuantum: { x: 510, y: 83, z: -291 } },
+      { tick: 3_065, impact: "46f35a54f101e11a", centerGlobalQuantum: { x: 511, y: 82, z: -300 } },
+      { tick: 3_107, impact: "6d81241be16063dc", centerGlobalQuantum: { x: 515, y: 81, z: -306 } },
+      { tick: 3_146, impact: "1a223ef280dc59f0", centerGlobalQuantum: { x: 518, y: 80, z: -311 } },
+      { tick: 3_243, impact: "969570a6e86826db", centerGlobalQuantum: { x: 523, y: 80, z: -321 } },
+      { tick: 28_872, impact: "43ca28a673c1bd5e", centerGlobalQuantum: { x: 525, y: 79, z: -328 } },
+      { tick: 28_924, impact: "cbd91e20470884a9", centerGlobalQuantum: { x: 524, y: 83, z: -303 } },
+      { tick: 28_981, impact: "076607d5d2abe04c", centerGlobalQuantum: { x: 528, y: 82, z: -308 } }
+    ] as const;
+    const boundaryCoordinates = [
+      { x: 131, y: 20, z: -78 },
+      { x: 133, y: 20, z: -78 },
+      { x: 132, y: 19, z: -77 },
+      { x: 133, y: 20, z: -76 }
+    ] as const;
+    const interiorCoordinate = { x: 132, y: 20, z: -77 } as const;
+    const residentBrickCoordinates = [-4, -3, -2, -1]
+      .flatMap((z) => [2, 3, 4, 5].map((x) => ({ x, y: 0, z })));
+    const sample = (authority: SurfaceRegionVoxelAuthority, global: Readonly<{ x: number; y: number; z: number }>) => {
+      const coordinate = {
+        x: Math.floor(global.x / VOXEL_BRICK_CELL_DIMENSIONS.x),
+        y: Math.floor(global.y / VOXEL_BRICK_CELL_DIMENSIONS.y),
+        z: Math.floor(global.z / VOXEL_BRICK_CELL_DIMENSIONS.z)
+      };
+      const brick = authority.materializeBrick(surfaceVoxelBrickKey(coordinate))?.voxelBrick;
+      if (brick === undefined) throw new Error(`Missing replay sample brick at ${JSON.stringify(coordinate)}.`);
+      const stored = {
+        x: global.x - coordinate.x * VOXEL_BRICK_CELL_DIMENSIONS.x + VOXEL_BRICK_APRON_WIDTH,
+        y: global.y - coordinate.y * VOXEL_BRICK_CELL_DIMENSIONS.y + VOXEL_BRICK_APRON_WIDTH,
+        z: global.z - coordinate.z * VOXEL_BRICK_CELL_DIMENSIONS.z + VOXEL_BRICK_APRON_WIDTH
+      };
+      const index = voxelSampleIndex(stored);
+      return Object.freeze({
+        density: brick.densityBuffer[index],
+        materialValue: brick.materialBuffer[index]
+      });
+    };
+
+    let authority = createSurfaceRegionVoxelAuthority({
+      schemaVersion: SURFACE_REGION_VOXEL_SCHEMA_VERSION,
+      bodyId: "planet.hestia",
+      surfaceFrameId: "frame:surface_hestia_surface_play_v1",
+      regionId: "region:hestia.surface-play.v1",
+      generatorVersion: HESTIA_GENERATOR_VERSION_V1,
+      seed: "hestia-surface-play-v1",
+      voxelSizeMeters: 0.5,
+      sourceRevision: HESTIA_SOURCE_REVISION_V1,
+      brickBounds: {
+        minInclusive: { x: 2, y: 0, z: -4 },
+        maxExclusive: { x: 6, y: 1, z: 0 }
+      },
+      residentBrickCoordinates,
+      maxSubtractRadiusMeters: 2,
+      maxChangedSamplesPerEdit: 20_000
+    });
+    let boundaryBeforeEighthCut: readonly Readonly<{ density: number; materialValue: number }>[] = [];
+    let interiorBeforeEighthCut: Readonly<{ density: number; materialValue: number }> | undefined;
+
+    for (const [sequence, fixture] of replay.entries()) {
+      if (sequence === 7) {
+        boundaryBeforeEighthCut = boundaryCoordinates.map((coordinate) => sample(authority, coordinate));
+        interiorBeforeEighthCut = sample(authority, interiorCoordinate);
+      }
+      const transition = applySurfaceVoxelEdit(authority, {
+        schemaVersion: SURFACE_VOXEL_EDIT_SCHEMA_VERSION,
+        editId: `surface-edit:hestia-surface-play-v1:${fixture.tick}:${sequence + 1}`,
+        expectedRegionRevision: authority.state.regionRevision,
+        tick: fixture.tick,
+        actorId: "surface-player:hestia-surface-play-v1",
+        sourceId: "hestia.pulse-cutter.v1",
+        sourceImpactIntentId: fixture.impact,
+        bodyId: authority.state.bodyId,
+        surfaceFrameId: authority.state.surfaceFrameId,
+        regionId: authority.state.regionId,
+        operation: "SubtractSphere",
+        centerGlobalQuantum: fixture.centerGlobalQuantum,
+        quantumMeters: SURFACE_VOXEL_EDIT_QUANTUM_METERS,
+        radiusMeters: 0.75
+      });
+      expect(transition.result.status).toBe("Applied");
+      const plan = createSurfaceVoxelRemeshPlan(transition.result, {
+        bodyId: transition.state.bodyId,
+        regionId: transition.state.regionId,
+        surfaceFrameId: transition.state.surfaceFrameId,
+        regionRevision: transition.state.regionRevision,
+        editRevision: transition.state.editRevision,
+        residentBrickKeys: transition.state.materializedBricks.map((brick) => brick.key),
+        maxRemeshBricks: residentBrickCoordinates.length,
+        maxEstimatedCellWork: VOXEL_BRICK_CELL_COUNT * residentBrickCoordinates.length
+      });
+      expect(plan.status).toBe("Planned");
+      if (plan.status !== "Planned") throw new Error(`Expected replay remesh plan, received ${plan.reason}.`);
+      for (const key of plan.orderedRemeshKeys) {
+        const brick = transition.authority.materializeBrick(key)?.voxelBrick;
+        if (brick === undefined) throw new Error(`Missing replay remesh brick ${key}.`);
+        expect(validateVoxelMeshProduct(createSurfaceNetsVoxelMeshProduct(brick))).toEqual({ valid: true });
+      }
+      authority = transition.authority;
+    }
+
+    expect(boundaryBeforeEighthCut).toHaveLength(boundaryCoordinates.length);
+    for (const [index, before] of boundaryBeforeEighthCut.entries()) {
+      expect(before).toMatchObject({ materialValue: 2 });
+      expect(before.density).toBeLessThan(0);
+      expect(sample(authority, boundaryCoordinates[index])).toEqual(before);
+    }
+    expect(interiorBeforeEighthCut).toMatchObject({ materialValue: 2 });
+    expect(interiorBeforeEighthCut?.density).toBeLessThan(0);
+    expect(sample(authority, interiorCoordinate)).toMatchObject({
+      density: expect.any(Number),
+      materialValue: 0
+    });
+    expect(sample(authority, interiorCoordinate).density).toBeGreaterThan(0);
+  }, 30_000);
 
   it("replaces a removed non-air material channel value with canonical air storage", () => {
     const candidate = base.state.materializedBricks

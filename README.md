@@ -29,10 +29,11 @@ The current browser runtime provides a playable local-space flight slice:
 - Resource/cargo domain foundations. These are data and validation cores, not complete player-facing gameplay systems.
 - Ship Builder part/blueprint foundations plus deterministic stats, handling diagnostics and static flight-readiness reports. There is still no player-facing Builder UI, runtime handoff or active-ship replacement.
 - A player-facing Graphics dialog with versioned presets, strict local preference storage and a presentation-only Three.js adapter. Graphics choices do not alter simulation, navigation or world truth.
+- On feature branch `feature/browser-hestia-first-person-combat-integration-v1`, an exact `/?surfacePlay=1` route provides a bounded first-person Hestia combat slice with grounded locomotion, a Pulse Cutter, one Survey Drone, authority-owned voxel edits and a player-facing Suit HUD. This staged branch capability is not yet a `main` capability.
 
 The delivered `surfaceLab=1` route is a technical voxel/worker/mesh/render proving ground only. It is not player-facing voxel terrain or surface gameplay; no player-facing voxel terrain/gameplay is delivered by this route.
 
-The browser runtime does **not** yet provide full planets, player-facing voxel terrain/gameplay, orbital flight, SOI or patched-conics navigation, seamless surface transitions, production multiplayer, a playable ship-builder UI, persistent cargo gameplay, full combat, economy or missions.
+The browser runtime does **not** yet provide full planets or global surface streaming, orbital flight, SOI or patched-conics navigation, seamless surface transitions, production multiplayer, a playable ship-builder UI, persistent cargo gameplay, a general combat loop, economy or missions.
 
 For the detailed snapshot, see [docs/current-mainline-state.md](docs/current-mainline-state.md). The longer planning index is [docs/roadmap/living-master-plan.md](docs/roadmap/living-master-plan.md).
 
@@ -73,6 +74,21 @@ Vite prints the local development URL. The normal player runtime is `/`.
 | Mouse wheel | Change inspection distance |
 
 Target selection, route preview, engagement and cancellation are performed through the visible navigation-planner UI. Opening the planner suppresses held flight input so UI interaction does not continue commanding the ship.
+
+### Hestia Surface Play controls
+
+On the staged feature branch, open `/?surfacePlay=1`, then use the visible **CLICK TO ENGAGE SUIT CONTROL** action to acquire pointer lock.
+
+| Input | Action |
+| --- | --- |
+| `W` / `A` / `S` / `D` | Walk relative to the first-person view |
+| `Left Shift` | Sprint while moving |
+| `Space` | Jump |
+| Mouse | Look while suit control owns pointer lock |
+| Left mouse button | Fire the held Pulse Cutter |
+| `Escape` | Release pointer lock and clear held gameplay input |
+
+Surface Play owns its input and lifecycle independently of flight, planner, terminal, Surface Lab and TestBridge routes.
 
 ## Verification
 
@@ -144,6 +160,7 @@ Player-facing and domain claims should be backed by tests and inspectable artifa
 - `apps/weltraum-browser/evidence/browser-world-chunk-registry-streaming-v1.md`
 - `apps/weltraum-browser/evidence/browser-celestial-gravity-core-v1.md`
 - `apps/weltraum-browser/evidence/browser-combat-weapon-damage-core-v1.md`
+- `apps/weltraum-browser/evidence/browser-hestia-first-person-combat-slice-v1.md`
 - `apps/weltraum-browser/evidence/browser-persistence-universe-time-event-core-v1.md`
 - `apps/weltraum-browser/evidence/browser-ship-builder-full-stats-flight-readiness-v1.md`
 - `apps/weltraum-browser/evidence/demo-scout-nozzle-vfx-snapshot.json`

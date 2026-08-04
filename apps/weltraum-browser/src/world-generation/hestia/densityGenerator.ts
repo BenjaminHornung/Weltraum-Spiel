@@ -16,13 +16,26 @@ import {
 import { classifyHestiaMaterial } from "./materialClassifier";
 import { fbm2, fbm3, ridgedNoise2, valueNoise2 } from "./noise";
 import {
+  sampleHestiaCoastLushDensityFields,
+  sampleHestiaCoastLushSurfaceFields,
+  type HestiaCoastLushSurfaceFields
+} from "./coastLushProfile";
+import {
+  HESTIA_COAST_LUSH_PRESET_ID,
   HESTIA_EDIT_REVISION_V1,
-  HESTIA_GENERATOR_VERSION_V1,
   HESTIA_SEA_LEVEL_METERS,
   HESTIA_SOURCE_REVISION_V1,
+  resolveHestiaGeneratorIdentity,
+  type HestiaFieldIdentityInput,
+  type HestiaGeneratorProfile,
   type HestiaGenerationInput
 } from "./preset";
-import { assertHestiaGenerationInput, createHestiaSeedSet, type HestiaSeedSet } from "./seed";
+import {
+  assertHestiaFieldIdentityInput,
+  assertHestiaGenerationInput,
+  createHestiaSeedSet,
+  type HestiaSeedSet
+} from "./seed";
 
 export interface HestiaSurfaceFields {
   readonly warpedX: number;
@@ -34,6 +47,7 @@ export interface HestiaSurfaceFields {
   readonly wetDepression: number;
   readonly biological: number;
   readonly surfaceHeight: number;
+  readonly coastLush?: HestiaCoastLushSurfaceFields;
 }
 
 export interface HestiaDensityFields extends HestiaSurfaceFields {
@@ -43,6 +57,12 @@ export interface HestiaDensityFields extends HestiaSurfaceFields {
 
 export interface HestiaFieldContext {
   readonly seeds: HestiaSeedSet;
+  readonly profile: HestiaGeneratorProfile;
+}
+
+export interface HestiaGroundSurfaceSample {
+  readonly heightMeters: number;
+  readonly fields: Readonly<HestiaDensityFields>;
 }
 
 export interface HestiaVoxelBrickSliceOptions {
@@ -62,13 +82,38 @@ const HESTIA_SURFACE_FIELD_KEYS = Object.freeze([
   "surfaceHeight"
 ] as const satisfies readonly (keyof HestiaSurfaceFields)[]);
 
+const HESTIA_COAST_LUSH_FIELD_KEYS = Object.freeze([
+  "warpX",
+  "warpZ",
+  "warpedX",
+  "warpedZ",
+  "macroElevation",
+  "ridgeNoise",
+  "wetDepression",
+  "biological",
+  "shelfMask",
+  "corridorMask",
+  "basinMask",
+  "overlookMask",
+  "ridgeNorthMask",
+  "ridgeWestMask",
+  "ridgeSouthMask",
+  "ridgeMask",
+  "stepOuterMask",
+  "stepMiddleMask",
+  "stepInnerMask",
+  "stepMask",
+  "wetFoldMask",
+  "surfaceHeight"
+] as const satisfies readonly (keyof HestiaCoastLushSurfaceFields)[]);
+
 const requireFinitePosition = (x: number, y: number, z: number): void => {
   if (!Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(z)) {
     throw new RangeError("Hestia field coordinates must be finite");
   }
 };
 
-const requireFiniteSurfaceFields = (value: HestiaSurfaceFields): void => {
+const requireFiniteSurfaceFields = (value: HestiaSurfaceFields, profile: HestiaGeneratorProfile): void => {
   if (typeof value !== "object" || value === null || Array.isArray(value)) {
     throw new TypeError("surfaceFields must be a HestiaSurfaceFields object");
   }
@@ -79,6 +124,16 @@ const requireFiniteSurfaceFields = (value: HestiaSurfaceFields): void => {
       throw new RangeError(`surfaceFields.${key} must be finite`);
     }
   }
+  if (profile === HESTIA_COAST_LUSH_PRESET_ID) {
+    if (typeof value.coastLush !== "object" || value.coastLush === null || Array.isArray(value.coastLush)) {
+      throw new TypeError("surfaceFields.coastLush must be a HestiaCoastLushSurfaceFields object");
+    }
+    for (const key of HESTIA_COAST_LUSH_FIELD_KEYS) {
+      if (!Number.isFinite(value.coastLush[key])) {
+        throw new RangeError(`surfaceFields.coastLush.${key} must be finite`);
+      }
+    }
+  }
 };
 
 const smoothstep = (edge0: number, edge1: number, value: number): number => {
@@ -86,9 +141,12 @@ const smoothstep = (edge0: number, edge1: number, value: number): number => {
   return amount * amount * (3 - 2 * amount);
 };
 
-export const createHestiaFieldContext = (input: HestiaGenerationInput): HestiaFieldContext => {
-  assertHestiaGenerationInput(input);
-  return Object.freeze({ seeds: createHestiaSeedSet(input) });
+export const createHestiaFieldContext = (input: HestiaFieldIdentityInput): HestiaFieldContext => {
+  assertHestiaFieldIdentityInput(input);
+  return Object.freeze({
+    seeds: createHestiaSeedSet(input),
+    profile: resolveHestiaGeneratorIdentity(input.profile).profile
+  });
 };
 
 export const sampleHestiaSurfaceFields = (
@@ -97,6 +155,21 @@ export const sampleHestiaSurfaceFields = (
   zMeters: number
 ): HestiaSurfaceFields => {
   requireFinitePosition(xMeters, 0, zMeters);
+  if (context.profile === HESTIA_COAST_LUSH_PRESET_ID) {
+    const coastLush = sampleHestiaCoastLushSurfaceFields(context.seeds, xMeters, zMeters);
+    return {
+      warpedX: coastLush.warpedX,
+      warpedZ: coastLush.warpedZ,
+      macroElevation: coastLush.macroElevation,
+      islandMask: coastLush.basinMask,
+      ridge: coastLush.ridgeMask,
+      erosion: coastLush.stepMask,
+      wetDepression: coastLush.wetDepression,
+      biological: coastLush.biological,
+      surfaceHeight: coastLush.surfaceHeight,
+      coastLush
+    };
+  }
   const warpX = 18 * fbm2(context.seeds.domainWarpX, xMeters * 0.0075, zMeters * 0.0075, 3);
   const warpZ = 18 * fbm2(context.seeds.domainWarpZ, xMeters * 0.0075, zMeters * 0.0075, 3);
   const warpedX = xMeters + warpX;
@@ -140,7 +213,12 @@ export const sampleHestiaDensityFields = (
   surfaceFields: HestiaSurfaceFields = sampleHestiaSurfaceFields(context, xMeters, zMeters)
 ): HestiaDensityFields => {
   requireFinitePosition(xMeters, yMeters, zMeters);
-  requireFiniteSurfaceFields(surfaceFields);
+  requireFiniteSurfaceFields(surfaceFields, context.profile);
+  if (context.profile === HESTIA_COAST_LUSH_PRESET_ID) {
+    const coastLush = surfaceFields.coastLush!;
+    const fields = sampleHestiaCoastLushDensityFields(context.seeds, yMeters, coastLush);
+    return { ...surfaceFields, ...fields };
+  }
   const rockBreakup = 1.4 * fbm3(
     context.seeds.rockBreakup,
     surfaceFields.warpedX * 0.055,
@@ -153,6 +231,22 @@ export const sampleHestiaDensityFields = (
     throw new RangeError("Hestia density field produced a non-finite result");
   }
   return { ...surfaceFields, rockBreakup, density };
+};
+
+/** Canonical V1 four-step fixed-point approximation of the zero-density surface. */
+export const sampleHestiaGroundSurface = (
+  context: HestiaFieldContext,
+  xMeters: number,
+  zMeters: number,
+  surface: HestiaSurfaceFields = sampleHestiaSurfaceFields(context, xMeters, zMeters)
+): Readonly<HestiaGroundSurfaceSample> => {
+  let heightMeters = surface.surfaceHeight;
+  for (let iteration = 0; iteration < 4; iteration += 1) {
+    const solved = sampleHestiaDensityFields(context, xMeters, heightMeters, zMeters, surface);
+    heightMeters = surface.surfaceHeight - solved.rockBreakup;
+  }
+  const fields = sampleHestiaDensityFields(context, xMeters, heightMeters, zMeters, surface);
+  return Object.freeze({ heightMeters, fields: Object.freeze(fields) });
 };
 
 class HestiaVoxelBrickGenerationSession {
@@ -181,15 +275,23 @@ class HestiaVoxelBrickGenerationSession {
         const global = storedSampleToGlobalCoordinate(this.input.brickCoordinate, { x, y, z });
         const position = globalSamplePositionMeters(global, this.input.voxelSizeMeters);
         const fields = sampleHestiaDensityFields(this.#context, position.x, position.y, position.z, surface);
+        // Surface Nets uses a half-open sign boundary. Coast's authored y=8
+        // shelf otherwise emits coincident triangles when Float32 stores an
+        // exact zero at the plateau edge; keep V1 byte semantics untouched.
+        const materializedDensity = this.#context.profile === HESTIA_COAST_LUSH_PRESET_ID && fields.density === 0
+          ? Math.fround(2 ** -149)
+          : fields.density;
         const index = voxelSampleIndex({ x, y, z });
-        this.#channels.densityBuffer[index] = fields.density;
+        this.#channels.densityBuffer[index] = materializedDensity;
         this.#channels.materialBuffer[index] = classifyHestiaMaterial({
+          profile: this.#context.profile,
           yMeters: position.y,
-          density: fields.density,
+          density: materializedDensity,
           surfaceHeight: fields.surfaceHeight,
           rockBreakup: fields.rockBreakup,
           wetDepression: fields.wetDepression,
-          biological: fields.biological
+          biological: fields.biological,
+          coastLush: fields.coastLush
         });
       }
       this.#nextColumn += 1;
@@ -213,7 +315,7 @@ class HestiaVoxelBrickGenerationSession {
       cellDimensions: VOXEL_BRICK_CELL_DIMENSIONS,
       sampleDimensions: VOXEL_BRICK_SAMPLE_DIMENSIONS,
       apronWidth: VOXEL_BRICK_APRON_WIDTH,
-      generatorVersion: HESTIA_GENERATOR_VERSION_V1,
+      generatorVersion: resolveHestiaGeneratorIdentity(this.input.profile).generatorVersion,
       materialRegistryVersion: HESTIA_MATERIAL_REGISTRY_VERSION_V1,
       sourceRevision: HESTIA_SOURCE_REVISION_V1,
       editRevision: HESTIA_EDIT_REVISION_V1,

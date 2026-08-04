@@ -1,11 +1,12 @@
 import { VOXEL_BRICK_CELL_DIMENSIONS, type VoxelMaterialId } from "../../voxel";
 import {
   createHestiaFieldContext,
-  sampleHestiaDensityFields,
-  sampleHestiaSurfaceFields
+  sampleHestiaGroundSurface
 } from "./densityGenerator";
 import { classifyHestiaMaterial } from "./materialClassifier";
+import { hestiaCoastLushScatterPolicy } from "./coastLushProfile";
 import {
+  HESTIA_COAST_LUSH_PRESET_ID,
   HESTIA_MATERIAL_IDS,
   HESTIA_SCATTER_SPACING_METERS,
   type HestiaGenerationInput
@@ -76,30 +77,40 @@ export const generateHestiaScatter = (
       const jitterZ = (hestiaUnitFloat(seeds.scatterJitter, anchorX, anchorZ, 1) * 2 - 1) * jitterLimit;
       const xMeters = anchorX * input.voxelSizeMeters + jitterX;
       const zMeters = anchorZ * input.voxelSizeMeters + jitterZ;
-      const surface = sampleHestiaSurfaceFields(context, xMeters, zMeters);
-      let yMeters = surface.surfaceHeight;
-      for (let iteration = 0; iteration < 4; iteration += 1) {
-        const solved = sampleHestiaDensityFields(context, xMeters, yMeters, zMeters, surface);
-        yMeters = surface.surfaceHeight - solved.rockBreakup;
-      }
-      const fields = sampleHestiaDensityFields(context, xMeters, yMeters, zMeters, surface);
+      const ground = sampleHestiaGroundSurface(context, xMeters, zMeters);
+      const yMeters = ground.heightMeters;
+      const fields = ground.fields;
       const materialId = classifyHestiaMaterial({
+        profile: context.profile,
         yMeters,
         density: fields.density,
         surfaceHeight: fields.surfaceHeight,
         rockBreakup: fields.rockBreakup,
         wetDepression: fields.wetDepression,
-        biological: fields.biological
+        biological: fields.biological,
+        coastLush: fields.coastLush
       });
-      const threshold = hestiaScatterAcceptanceThreshold(materialId);
+      const coastPolicy = fields.coastLush === undefined
+        ? undefined
+        : hestiaCoastLushScatterPolicy(fields.coastLush, yMeters, xMeters, zMeters);
+      const threshold = context.profile === HESTIA_COAST_LUSH_PRESET_ID
+        ? coastPolicy?.acceptanceThreshold
+        : hestiaScatterAcceptanceThreshold(materialId);
       if (threshold === undefined || hestiaUnitFloat(seeds.scatterAccept, anchorX, anchorZ) >= threshold) continue;
+      const kindSelector = hestiaUnitFloat(seeds.scatterKind, anchorX, anchorZ);
+      const kind = context.profile === HESTIA_COAST_LUSH_PRESET_ID
+        ? kindSelector < coastPolicy!.sproutThreshold ? "cyan_luminous_sprout" : "cyan_luminous_cap"
+        : scatterKind(kindSelector);
+      const uniformScale = 0.8 + 0.55 * hestiaUnitFloat(seeds.scatterScale, anchorX, anchorZ);
 
       records.push(freezeRecord({
-        id: `hestia.scatter.v1:${seedHex}:${anchorX}:${anchorZ}`,
-        kind: scatterKind(hestiaUnitFloat(seeds.scatterKind, anchorX, anchorZ)),
+        id: context.profile === HESTIA_COAST_LUSH_PRESET_ID
+          ? `hestia.scatter.coast-lush.v1:${seedHex}:${anchorX}:${anchorZ}`
+          : `hestia.scatter.v1:${seedHex}:${anchorX}:${anchorZ}`,
+        kind,
         positionMeters: { x: xMeters, y: yMeters, z: zMeters },
         yawRadians: Math.PI * 2 * hestiaUnitFloat(seeds.scatterYaw, anchorX, anchorZ),
-        uniformScale: 0.8 + 0.55 * hestiaUnitFloat(seeds.scatterScale, anchorX, anchorZ),
+        uniformScale,
         surfaceMaterialId: materialId,
         sourceAnchorGlobal: { x: anchorX, z: anchorZ }
       }));

@@ -143,6 +143,7 @@ describe("surface-play contracts", () => {
       heatJoules: 10,
       maximumHeatJoules: 50,
       cooldownSeconds: 0.25,
+      readiness: { kind: "Cooldown", nextShotReadyInSeconds: 0.25 },
       target: { targetId: "target.drone.survey.1", condition: "Damaged", integrity: 30, maximumIntegrity: 50 },
       latestFireResult: { status: "Accepted", commandId: "surface_command:0123456789abcdef", hit: "Target" },
       events: [
@@ -277,6 +278,7 @@ describe("surface-play contracts", () => {
       heatJoules: 0,
       maximumHeatJoules: 1,
       cooldownSeconds: 0,
+      readiness: { kind: "Ready" as const, nextShotReadyInSeconds: 0 as const },
       target: null,
       latestFireResult: null,
       events: [],
@@ -385,6 +387,7 @@ describe("surface-play contracts", () => {
       heatJoules: 10,
       maximumHeatJoules: 50,
       cooldownSeconds: 0,
+      weaponReadiness: { kind: "Ready", nextShotReadyInSeconds: 0 },
       targetCondition: "Operational",
       latestAction: "Pulse Cutter ready",
       latestBlock: null
@@ -404,9 +407,17 @@ describe("surface-play contracts", () => {
       presentTerrain: () => undefined,
       presentTarget: () => undefined,
       presentWeapon: () => undefined,
-      presentImpact: () => undefined
+      presentImpact: () => undefined,
+      presentStructural: () => undefined
     };
     expect(Object.keys(collisionPort).sort()).toEqual(["queryGroundContact", "queryLine", "queryRay", "sweepCapsule"]);
-    expect(Object.keys(presentation).sort()).toEqual(["presentImpact", "presentPlayer", "presentTarget", "presentTerrain", "presentWeapon"]);
+    expect(Object.keys(presentation).sort()).toEqual([
+      "presentImpact",
+      "presentPlayer",
+      "presentStructural",
+      "presentTarget",
+      "presentTerrain",
+      "presentWeapon"
+    ]);
   });
 });

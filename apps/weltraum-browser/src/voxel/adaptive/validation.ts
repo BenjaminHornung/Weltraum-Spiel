@@ -7,6 +7,7 @@ import type {
   GlobalQuantumCoordinate,
   StableAuthorityId
 } from "./types";
+import { hasDeepFrozenIdentity, markDeepFrozenIdentity } from "./immutability";
 
 export type AdaptiveAuthorityErrorCode =
   | "InvalidCanonicalValue"
@@ -37,9 +38,9 @@ export const fail = (code: AdaptiveAuthorityErrorCode, path: string, message: st
   throw new AdaptiveAuthorityError(code, path, message);
 };
 
-export const adaptiveLevel = (value: number): AdaptiveLevel => {
+export const adaptiveLevel = (value: number, path = "level"): AdaptiveLevel => {
   if (!Number.isSafeInteger(value) || Object.is(value, -0) || value < 0 || value > 4) {
-    return fail("InvalidLevel", "level", "Adaptive level must be one of the integers 0, 1, 2, 3, or 4.");
+    return fail("InvalidLevel", path, "Adaptive level must be one of the integers 0, 1, 2, 3, or 4.");
   }
   return value as AdaptiveLevel;
 };
@@ -64,8 +65,8 @@ export const authorityRevision = (value: number): AuthorityRevision =>
   nonNegativeSafeInteger(value, "revision") as AuthorityRevision;
 
 export const adaptiveBrickRevision = authorityRevision;
-export const adaptivePlanningEpoch = (value: number): AdaptivePlanningEpoch =>
-  nonNegativeSafeInteger(value, "planningEpoch") as AdaptivePlanningEpoch;
+export const adaptivePlanningEpoch = (value: number, path = "planningEpoch"): AdaptivePlanningEpoch =>
+  nonNegativeSafeInteger(value, path) as AdaptivePlanningEpoch;
 export const adaptiveEditRevision = authorityRevision;
 
 export const editSequence = (value: number): EditSequence => {
@@ -201,12 +202,19 @@ export const requireExactKeys = (value: Record<string, unknown>, keys: readonly 
 };
 
 export const deepFreeze = <T>(value: T, seen = new WeakSet<object>()): T => {
-  if (typeof value !== "object" || value === null || seen.has(value)) return value;
+  if (
+    typeof value !== "object"
+    || value === null
+    || seen.has(value)
+    || hasDeepFrozenIdentity(value)
+  ) return value;
   seen.add(value);
   for (const descriptor of Object.values(Object.getOwnPropertyDescriptors(value))) {
     if ("value" in descriptor) deepFreeze(descriptor.value, seen);
   }
-  return Object.freeze(value);
+  const frozen = Object.freeze(value);
+  markDeepFrozenIdentity(frozen);
+  return frozen;
 };
 
 export const isDeepFrozen = (value: unknown, seen = new WeakSet<object>()): boolean => {

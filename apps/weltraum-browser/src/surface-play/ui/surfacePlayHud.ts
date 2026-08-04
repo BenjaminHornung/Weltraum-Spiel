@@ -1,6 +1,6 @@
 import type { SurfacePlayHudSnapshot } from "../contracts";
 
-export type SurfacePlayWeaponStatus = "READY" | "COOLDOWN" | "OVERHEATED" | "NO ENERGY";
+export type SurfacePlayWeaponStatus = "READY" | "COOLDOWN" | "OVERHEATED" | "ENERGY LOW";
 
 export interface SurfacePlayHudOptions {
   readonly host: HTMLElement;
@@ -19,10 +19,12 @@ const meterPercent = (value: number, maximum: number): number =>
   maximum <= 0 ? 0 : Math.min(100, Math.max(0, (value / maximum) * 100));
 
 const weaponStatusFor = (snapshot: Readonly<SurfacePlayHudSnapshot>): SurfacePlayWeaponStatus => {
-  if (snapshot.maximumHeatJoules > 0 && snapshot.heatJoules >= snapshot.maximumHeatJoules) return "OVERHEATED";
-  if (snapshot.energyJoules <= 0) return "NO ENERGY";
-  if (snapshot.cooldownSeconds > 0) return "COOLDOWN";
-  return "READY";
+  switch (snapshot.weaponReadiness.kind) {
+    case "Cooldown": return "COOLDOWN";
+    case "Overheated": return "OVERHEATED";
+    case "EnergyInsufficient": return "ENERGY LOW";
+    case "Ready": return "READY";
+  }
 };
 
 const statusKey = (status: SurfacePlayWeaponStatus): string => status.toLowerCase().replace(" ", "-");
@@ -111,7 +113,24 @@ export const createSurfacePlayHud = (options: SurfacePlayHudOptions): SurfacePla
   const cooldown = documentPort.createElement("span");
   cooldown.id = "surface-play-cooldown";
   cooldown.className = "surface-play-hud__cooldown";
-  weaponPanel.append(weaponHeading, weaponStatus, heatLabel, heatValue, heatMeter, cooldown);
+  const readinessDetail = documentPort.createElement("span");
+  readinessDetail.id = "surface-play-readiness-detail";
+  readinessDetail.className = "surface-play-hud__readiness-detail";
+  const preparation = documentPort.createElement("span");
+  preparation.id = "surface-play-structural-preparation";
+  preparation.className = "surface-play-hud__readiness-detail";
+  preparation.setAttribute("role", "status");
+  preparation.setAttribute("aria-live", "polite");
+  weaponPanel.append(
+    weaponHeading,
+    weaponStatus,
+    heatLabel,
+    heatValue,
+    heatMeter,
+    cooldown,
+    readinessDetail,
+    preparation
+  );
 
   const center = documentPort.createElement("section");
   center.className = "surface-play-hud__center-safe";
@@ -123,21 +142,33 @@ export const createSurfacePlayHud = (options: SurfacePlayHudOptions): SurfacePla
   const target = documentPort.createElement("span");
   target.id = "surface-play-target";
   target.className = "surface-play-hud__target";
+  center.append(reticle, target);
+
+  const actionZone = documentPort.createElement("section");
+  actionZone.className = "surface-play-hud__transient-action-zone";
+  actionZone.dataset.zone = "transient-action";
+  actionZone.setAttribute("aria-label", "Surface action status");
   const action = documentPort.createElement("span");
   action.id = "surface-play-action";
   action.className = "surface-play-hud__action";
   action.setAttribute("role", "status");
   action.setAttribute("aria-live", "polite");
   action.setAttribute("aria-atomic", "true");
+  actionZone.append(action);
+
+  const warningZone = documentPort.createElement("section");
+  warningZone.className = "surface-play-hud__warning-zone";
+  warningZone.dataset.zone = "warning-next-action";
+  warningZone.setAttribute("aria-label", "Surface warning and next action");
   const block = documentPort.createElement("span");
   block.id = "surface-play-block";
   block.className = "surface-play-hud__block";
   block.setAttribute("role", "alert");
   block.setAttribute("aria-live", "assertive");
   block.setAttribute("aria-atomic", "true");
-  center.append(reticle, target, action, block);
+  warningZone.append(block);
 
-  root.append(locationPanel, suitPanel, weaponPanel, center);
+  root.append(locationPanel, suitPanel, weaponPanel, center, actionZone, warningZone);
   options.host.append(root);
 
   let disposed = false;
@@ -176,6 +207,13 @@ export const createSurfacePlayHud = (options: SurfacePlayHudOptions): SurfacePla
       heatMeter.dataset.tone = status === "OVERHEATED" ? "warning" : heatPercent >= 75 ? "warning" : "neutral";
       heatFill.setAttribute("style", `inline-size: ${heatPercent.toFixed(2)}%`);
       cooldown.textContent = `COOLDOWN ${snapshot.cooldownSeconds.toFixed(2)} S`;
+      readinessDetail.textContent = snapshot.weaponReadiness.kind === "Ready"
+        ? "READY TO FIRE"
+        : `READY IN ${snapshot.weaponReadiness.nextShotReadyInSeconds.toFixed(2)} S`;
+      preparation.hidden = snapshot.structuralPreparation == null;
+      preparation.textContent = snapshot.structuralPreparation == null
+        ? ""
+        : `PREPARING · ${snapshot.structuralPreparation.status.replace(/([a-z])([A-Z])/g, "$1 $2").toUpperCase()}`;
 
       const hasTarget = snapshot.targetCondition !== "None";
       target.hidden = !hasTarget;

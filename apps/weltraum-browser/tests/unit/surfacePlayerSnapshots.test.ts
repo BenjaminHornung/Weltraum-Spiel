@@ -56,4 +56,30 @@ describe("surface player snapshots", () => {
     expect(view.headBobOffsetMeters).toBe(0);
     expect("fov" in view).toBe(false);
   });
+
+  it.each([0, Math.PI / 3])(
+    "publishes rendered camera-local forward, right, and up at yaw %s",
+    (yawRadians) => {
+      const config = createHestiaAgileGroundedLocomotionPresetV1();
+      const pitchRadians = 0.2;
+      const view = createSurfaceFirstPersonViewSnapshot(
+        state(0, yawRadians, pitchRadians),
+        config
+      );
+      const sinYaw = Math.sin(yawRadians);
+      const cosYaw = Math.cos(yawRadians);
+      const sinPitch = Math.sin(pitchRadians);
+      const cosPitch = Math.cos(pitchRadians);
+
+      expect(view.forward.x).toBeCloseTo(sinYaw * cosPitch, 12);
+      expect(view.forward.y).toBeCloseTo(sinPitch, 12);
+      expect(view.forward.z).toBeCloseTo(cosYaw * cosPitch, 12);
+      expect(view.right.x).toBeCloseTo(-cosYaw, 12);
+      expect(view.right.y).toBe(0);
+      expect(view.right.z).toBeCloseTo(sinYaw, 12);
+      expect(view.up.x).toBeCloseTo(-sinYaw * sinPitch, 12);
+      expect(view.up.y).toBeCloseTo(cosPitch, 12);
+      expect(view.up.z).toBeCloseTo(-cosYaw * sinPitch, 12);
+    }
+  );
 });

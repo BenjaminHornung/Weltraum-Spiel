@@ -5,8 +5,10 @@ import {
 } from "../../voxel";
 import { fnv1aHash } from "../../core/hash";
 import {
-  HESTIA_GENERATOR_VERSION_V1,
+  HESTIA_COAST_LUSH_PRESET_ID,
   HESTIA_PRESET_ID,
+  resolveHestiaGeneratorIdentity,
+  type HestiaFieldIdentityInput,
   type HestiaGenerationInput
 } from "./preset";
 
@@ -69,21 +71,38 @@ const assertBrickCoordinate = (value: VoxelCoordinate): void => {
   }
 };
 
-export const assertHestiaGenerationInput = (
-  input: HestiaGenerationInput
+export const assertHestiaFieldIdentityInput = (
+  input: HestiaFieldIdentityInput
 ): void => {
-  if (typeof input !== "object" || input === null) throw new TypeError("Hestia generation input must be an object");
+  if (typeof input !== "object" || input === null) throw new TypeError("Hestia field identity input must be an object");
+  const identity = resolveHestiaGeneratorIdentity(input.profile);
+  const record = input as unknown as Record<string, unknown>;
+  if (record.presetId !== undefined && record.presetId !== identity.presetId) {
+    throw new TypeError("presetId must match the selected Hestia generator profile");
+  }
+  if (record.generatorVersion !== undefined && record.generatorVersion !== identity.generatorVersion) {
+    throw new TypeError("generatorVersion must match the selected Hestia generator profile");
+  }
+  if (record.seedNamespace !== undefined && record.seedNamespace !== identity.seedNamespace) {
+    throw new TypeError("seedNamespace must match the selected Hestia generator profile");
+  }
   assertHestiaRootSeed(input.rootSeed);
   assertStableId(input.bodyId, "bodyId");
   assertStableId(input.surfaceFrameId, "surfaceFrameId");
   assertStableId(input.regionId, "regionId");
+  if (input.voxelSizeMeters !== 0.25 && input.voxelSizeMeters !== 0.5) {
+    throw new RangeError("voxelSizeMeters must be exactly 0.25 or 0.50 for Hestia V1");
+  }
+};
+
+export const assertHestiaGenerationInput = (
+  input: HestiaGenerationInput
+): void => {
+  assertHestiaFieldIdentityInput(input);
   if (typeof input.brickCoordinate !== "object" || input.brickCoordinate === null) {
     throw new TypeError("brickCoordinate must be an x/y/z coordinate object");
   }
   assertBrickCoordinate(input.brickCoordinate);
-  if (input.voxelSizeMeters !== 0.25 && input.voxelSizeMeters !== 0.5) {
-    throw new RangeError("voxelSizeMeters must be exactly 0.25 or 0.50 for Hestia V1");
-  }
 };
 
 const fnv1a32Ascii = (value: string): number => {
@@ -101,17 +120,24 @@ const assertDomain = (domain: HestiaSeedDomain): void => {
 
 /** FNV-1a32 over the exact NUL-delimited Hestia V1 seed tuple. */
 export const deriveHestiaDomainSeed = (
-  input: HestiaGenerationInput,
+  input: HestiaFieldIdentityInput,
   domain: HestiaSeedDomain
 ): number => {
-  assertHestiaGenerationInput(input);
+  assertHestiaFieldIdentityInput(input);
   assertDomain(domain);
+  const identity = resolveHestiaGeneratorIdentity(input.profile);
+  if (identity.profile === HESTIA_COAST_LUSH_PRESET_ID) {
+    return fnv1a32Ascii(
+      `${identity.seedNamespace}\0${input.rootSeed}\0${input.bodyId}\0${input.surfaceFrameId}\0`
+      + `${identity.presetId}\0${identity.generatorVersion}\0${domain}`
+    );
+  }
   return fnv1a32Ascii(
     `hestia.seed.v1\0${input.rootSeed}\0${input.bodyId}\0${input.surfaceFrameId}\0${HESTIA_PRESET_ID}\0${domain}`
   );
 };
 
-export const createHestiaSeedSet = (input: HestiaGenerationInput): HestiaSeedSet => Object.freeze({
+export const createHestiaSeedSet = (input: HestiaFieldIdentityInput): HestiaSeedSet => Object.freeze({
   macroElevation: deriveHestiaDomainSeed(input, "macro-elevation"),
   islandRidge: deriveHestiaDomainSeed(input, "island-ridge"),
   rockBreakup: deriveHestiaDomainSeed(input, "rock-breakup"),
@@ -165,9 +191,10 @@ export const hestiaSeedHex = (seed: number): string => {
 /** Canonical job/cache identity; channel bytes remain authoritative in VoxelBrick. */
 export const createHestiaGenerationKey = (input: HestiaGenerationInput): string => {
   assertHestiaGenerationInput(input);
+  const identity = resolveHestiaGeneratorIdentity(input.profile);
   return JSON.stringify({
-    generatorVersion: HESTIA_GENERATOR_VERSION_V1,
-    presetId: HESTIA_PRESET_ID,
+    generatorVersion: identity.generatorVersion,
+    presetId: identity.presetId,
     rootSeed: input.rootSeed,
     bodyId: input.bodyId,
     surfaceFrameId: input.surfaceFrameId,

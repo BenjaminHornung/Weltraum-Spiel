@@ -21,10 +21,14 @@ import {
 } from "./ids";
 import {
   HESTIA_EDIT_REVISION_V1,
+  HESTIA_COAST_LUSH_PRESET_ID,
+  HESTIA_GENERATOR_VERSION_COAST_LUSH_V1,
   HESTIA_GENERATOR_VERSION_V1,
   HESTIA_PRESET_ID,
   HESTIA_SOURCE_REVISION_V1,
   assertHestiaGenerationInput,
+  resolveHestiaGeneratorIdentity,
+  type HestiaGeneratorProfile,
   type HestiaGenerationInput,
 } from "../world-generation/hestia";
 import {
@@ -66,6 +70,8 @@ import {
 export const JOB_PRIORITIES = ["Urgent", "High", "Normal"] as const;
 export type JobPriority = (typeof JOB_PRIORITIES)[number];
 export type TransferOwnership = "SenderToWorker" | "WorkerToConsumer";
+export const TRANSFORM_BUFFER_JOB_KIND = "TransformBuffer" as const;
+export const PREPARED_STRUCTURAL_FIRE_JOB_KIND = "PreparedStructuralFire" as const;
 export const GENERATE_HESTIA_VOXEL_BRICK_MESH_JOB_KIND = "GenerateHestiaVoxelBrickMesh" as const;
 export const HESTIA_VOXEL_INPUT_LAYOUT_VERSION = "hestia-voxel-brick-input-v1" as const;
 export const HESTIA_VOXEL_OUTPUT_LAYOUT_VERSION = "hestia-voxel-brick-mesh-transfer-v1" as const;
@@ -111,9 +117,9 @@ export interface TransformBufferPayload {
 export type HestiaVoxelInputMode = "Generate" | "CachedCanonicalBrick";
 
 export interface GenerateHestiaVoxelBrickMeshPayload extends HestiaGenerationInput {
-  readonly presetId: typeof HESTIA_PRESET_ID;
+  readonly presetId: HestiaGeneratorProfile;
   readonly inputMode: HestiaVoxelInputMode;
-  readonly generatorVersion: typeof HESTIA_GENERATOR_VERSION_V1;
+  readonly generatorVersion: typeof HESTIA_GENERATOR_VERSION_V1 | typeof HESTIA_GENERATOR_VERSION_COAST_LUSH_V1;
   readonly materialRegistryVersion: typeof HESTIA_MATERIAL_REGISTRY_VERSION_V1;
   readonly sourceRevision: typeof HESTIA_SOURCE_REVISION_V1;
   readonly editRevision: typeof HESTIA_EDIT_REVISION_V1;
@@ -126,7 +132,8 @@ export interface GenerateHestiaVoxelBrickMeshPayload extends HestiaGenerationInp
 export interface HestiaVoxelBrickMeshResultDetails {
   readonly kind: typeof GENERATE_HESTIA_VOXEL_BRICK_MESH_JOB_KIND;
   readonly layoutVersion: typeof HESTIA_VOXEL_OUTPUT_LAYOUT_VERSION;
-  readonly presetId: typeof HESTIA_PRESET_ID;
+  readonly presetId: HestiaGeneratorProfile;
+  readonly profile?: HestiaGeneratorProfile;
   readonly inputMode: HestiaVoxelInputMode;
   readonly rootSeed: string;
   readonly bodyId: VoxelBrick["bodyId"];
@@ -134,7 +141,7 @@ export interface HestiaVoxelBrickMeshResultDetails {
   readonly regionId: VoxelBrick["regionId"];
   readonly brickCoordinate: Readonly<VoxelCoordinate>;
   readonly voxelSizeMeters: HestiaGenerationInput["voxelSizeMeters"];
-  readonly generatorVersion: VoxelBrick["generatorVersion"];
+  readonly generatorVersion: typeof HESTIA_GENERATOR_VERSION_V1 | typeof HESTIA_GENERATOR_VERSION_COAST_LUSH_V1;
   readonly materialRegistryVersion: VoxelBrick["materialRegistryVersion"];
   readonly sourceRevision: VoxelBrick["sourceRevision"];
   readonly editRevision: VoxelBrick["editRevision"];
@@ -175,6 +182,12 @@ export interface WorkerJobResult {
   readonly outputBytes: ByteCount;
   readonly contentHash?: string;
   readonly details?: HestiaVoxelBrickMeshResultDetails;
+  readonly protocolDetails?: unknown;
+}
+
+export interface WorkerResultReleaseScope {
+  readonly rootJobId: string;
+  readonly targetKey: WorkerTargetKey;
 }
 
 export type WorkerFailureCode =
@@ -320,9 +333,32 @@ const parseCoordinate = (value: unknown, name: string): Readonly<VoxelCoordinate
   return Object.freeze({ x: record.x as number, y: record.y as number, z: record.z as number });
 };
 
+const resolveProtocolHestiaIdentity = (record: Record<string, unknown>) => {
+  const profile = record.profile === undefined
+    ? record.presetId === HESTIA_COAST_LUSH_PRESET_ID
+      ? HESTIA_COAST_LUSH_PRESET_ID
+      : record.presetId === HESTIA_PRESET_ID
+        ? HESTIA_PRESET_ID
+        : undefined
+    : record.profile;
+  if (profile !== HESTIA_PRESET_ID && profile !== HESTIA_COAST_LUSH_PRESET_ID) {
+    throw new RangeError("profile/presetId is not an approved Hestia identity.");
+  }
+  const identity = resolveHestiaGeneratorIdentity(profile);
+  if (record.presetId !== identity.presetId || record.generatorVersion !== identity.generatorVersion) {
+    throw new RangeError("presetId and generatorVersion must be an approved Hestia pair.");
+  }
+  return identity;
+};
+
 export const validateHestiaVoxelBrickMeshPayload = (value: unknown): GenerateHestiaVoxelBrickMeshPayload => {
   const record = requireRecord(value, "GenerateHestiaVoxelBrickMesh payload");
+  const identity = resolveProtocolHestiaIdentity(record);
+  const profile = record.profile === undefined && identity.profile === HESTIA_PRESET_ID
+    ? undefined
+    : identity.profile;
   const input: HestiaGenerationInput = Object.freeze({
+    ...(profile === undefined ? {} : { profile }),
     rootSeed: record.rootSeed as string,
     bodyId: voxelBodyId(record.bodyId),
     surfaceFrameId: surfaceFrameId(record.surfaceFrameId),
@@ -331,9 +367,7 @@ export const validateHestiaVoxelBrickMeshPayload = (value: unknown): GenerateHes
     voxelSizeMeters: record.voxelSizeMeters as HestiaGenerationInput["voxelSizeMeters"],
   });
   assertHestiaGenerationInput(input);
-  if (record.presetId !== HESTIA_PRESET_ID) throw new RangeError(`presetId must equal ${HESTIA_PRESET_ID}.`);
   if (record.inputMode !== "Generate" && record.inputMode !== "CachedCanonicalBrick") throw new RangeError("inputMode is invalid.");
-  if (record.generatorVersion !== HESTIA_GENERATOR_VERSION_V1) throw new RangeError("generatorVersion is invalid.");
   if (record.materialRegistryVersion !== HESTIA_MATERIAL_REGISTRY_VERSION_V1) throw new RangeError("materialRegistryVersion is invalid.");
   if (record.sourceRevision !== HESTIA_SOURCE_REVISION_V1) throw new RangeError("sourceRevision is invalid.");
   if (record.editRevision !== HESTIA_EDIT_REVISION_V1) throw new RangeError("editRevision is invalid.");
@@ -355,9 +389,9 @@ export const validateHestiaVoxelBrickMeshPayload = (value: unknown): GenerateHes
   }
   return Object.freeze({
     ...input,
-    presetId: HESTIA_PRESET_ID,
+    presetId: identity.presetId,
     inputMode: record.inputMode,
-    generatorVersion: generatorVersion(record.generatorVersion) as typeof HESTIA_GENERATOR_VERSION_V1,
+    generatorVersion: generatorVersion(record.generatorVersion) as typeof HESTIA_GENERATOR_VERSION_V1 | typeof HESTIA_GENERATOR_VERSION_COAST_LUSH_V1,
     materialRegistryVersion: materialRegistryVersion(record.materialRegistryVersion) as typeof HESTIA_MATERIAL_REGISTRY_VERSION_V1,
     sourceRevision: sourceRevision(record.sourceRevision) as typeof HESTIA_SOURCE_REVISION_V1,
     editRevision: editRevision(record.editRevision) as typeof HESTIA_EDIT_REVISION_V1,
@@ -484,12 +518,14 @@ const parseBounds = (value: unknown): VoxelMeshBounds => {
 
 export const validateHestiaVoxelBrickMeshResultDetails = (value: unknown): HestiaVoxelBrickMeshResultDetails => {
   const record = requireRecord(value, "Hestia worker result details");
+  const identity = resolveProtocolHestiaIdentity(record);
+  const profile = record.profile === undefined && identity.profile === HESTIA_PRESET_ID
+    ? undefined
+    : identity.profile;
   if (record.kind !== GENERATE_HESTIA_VOXEL_BRICK_MESH_JOB_KIND) throw new RangeError("Hestia result kind is invalid.");
   if (record.layoutVersion !== HESTIA_VOXEL_OUTPUT_LAYOUT_VERSION) throw new RangeError("Hestia result layoutVersion is invalid.");
-  if (record.presetId !== HESTIA_PRESET_ID) throw new RangeError("Hestia result presetId is invalid.");
   if (record.inputMode !== "Generate" && record.inputMode !== "CachedCanonicalBrick") throw new RangeError("Hestia result inputMode is invalid.");
-  if (record.generatorVersion !== HESTIA_GENERATOR_VERSION_V1
-    || record.materialRegistryVersion !== HESTIA_MATERIAL_REGISTRY_VERSION_V1
+  if (record.materialRegistryVersion !== HESTIA_MATERIAL_REGISTRY_VERSION_V1
     || record.sourceRevision !== HESTIA_SOURCE_REVISION_V1
     || record.editRevision !== HESTIA_EDIT_REVISION_V1
     || record.meshAlgorithmVersion !== VOXEL_MESH_ALGORITHM_VERSION) {
@@ -497,6 +533,7 @@ export const validateHestiaVoxelBrickMeshResultDetails = (value: unknown): Hesti
   }
   if (record.indexKind !== "Uint16Array" && record.indexKind !== "Uint32Array") throw new RangeError("Hestia result indexKind is invalid.");
   const input: HestiaGenerationInput = Object.freeze({
+    ...(profile === undefined ? {} : { profile }),
     rootSeed: record.rootSeed as string,
     bodyId: voxelBodyId(record.bodyId),
     surfaceFrameId: surfaceFrameId(record.surfaceFrameId),
@@ -508,9 +545,10 @@ export const validateHestiaVoxelBrickMeshResultDetails = (value: unknown): Hesti
   return Object.freeze({
     kind: GENERATE_HESTIA_VOXEL_BRICK_MESH_JOB_KIND,
     layoutVersion: HESTIA_VOXEL_OUTPUT_LAYOUT_VERSION,
-    presetId: HESTIA_PRESET_ID,
+    presetId: identity.presetId,
     inputMode: record.inputMode,
     ...input,
+    ...(profile === undefined ? {} : { profile }),
     generatorVersion: generatorVersion(record.generatorVersion),
     materialRegistryVersion: materialRegistryVersion(record.materialRegistryVersion),
     sourceRevision: sourceRevision(record.sourceRevision),
@@ -566,6 +604,7 @@ export const validateHestiaVoxelWorkerOutput = (
   const transferHash = fnv1aBytes(bundle.buffers);
   if (bundle.contentHash !== transferHash || result.contentHash !== transferHash) throw new RangeError("Hestia output transfer hash is invalid.");
   const identityMatches = details.presetId === payload.presetId
+    && (details.profile ?? HESTIA_PRESET_ID) === (payload.profile ?? HESTIA_PRESET_ID)
     && details.inputMode === payload.inputMode
     && details.rootSeed === payload.rootSeed
     && details.bodyId === payload.bodyId

@@ -1,7 +1,9 @@
-import { byteCount, nextWorkerEpoch, planningEpoch, workerEpoch, type PlanningEpoch, type WorkerEpoch, type WorkerJobId } from "./ids";
+import { byteCount, contentRevision, nextWorkerEpoch, planningEpoch, workerEpoch, type PlanningEpoch, type WorkerEpoch, type WorkerJobId } from "./ids";
 import type { JobOutputDataMessage } from "./messages";
 import {
   GENERATE_HESTIA_VOXEL_BRICK_MESH_JOB_KIND,
+  PREPARED_STRUCTURAL_FIRE_JOB_KIND,
+  TRANSFORM_BUFFER_JOB_KIND,
   expectedHestiaVoxelInputBytes,
   snapshotWorkerJobRequest,
   transferListFor,
@@ -15,10 +17,18 @@ import {
   type WorkerJobFailure,
   type WorkerJobRequest,
   type WorkerJobResult,
+  type WorkerResultReleaseScope,
 } from "./protocol";
 import { StableWorkerJobQueue, type WorkerJobQueueSnapshot } from "./queue";
 import { integrateWorkerResult, type WorkerResultIntegrationDecision } from "./resultGate";
-import { WorkerHandle, createBrowserWorkerTransport, type WorkerHandleCallbacks, type WorkerTransportFactory } from "./workerHandle";
+import {
+  WorkerHandle,
+  createBrowserWorkerTransport,
+  type WorkerHandleCallbacks,
+  type WorkerPrivateSession,
+  type WorkerTransportFactory
+} from "./workerHandle";
+import type { PreparedStructuralFirePrivateOutputMessage } from "./messages";
 
 export type WorkerJobTerminal =
   | { readonly kind: "Completed"; readonly result: WorkerJobResult; readonly output: TransferableBufferBundle }
@@ -35,6 +45,7 @@ export interface WorkerJobTicket {
   readonly jobId: WorkerJobId;
   readonly result: Promise<WorkerJobTerminal>;
   cancel(): boolean;
+  release?(scope: Readonly<WorkerResultReleaseScope>): boolean;
 }
 
 export type WorkerPoolEvent =
@@ -61,6 +72,8 @@ interface TicketRecord {
   readonly resolve: (terminal: WorkerJobTerminal) => void;
   status: "Queued" | "Running" | "Terminal";
   handle: WorkerHandle | undefined;
+  releaseHandle: WorkerHandle | undefined;
+  resultReleased: boolean;
   cancelRequested: boolean;
 }
 
@@ -128,7 +141,7 @@ export class WorkerPool {
     const request = snapshotWorkerJobRequest(source);
     if (request.workerEpoch !== 0) throw new RangeError("Caller requests must use workerEpoch 0; the pool binds it at dispatch.");
     if (request.planningEpoch !== this.plan) throw new RangeError("Request planningEpoch does not match the pool planning epoch.");
-    if (request.jobKind === "TransformBuffer") validateTransformPayload(request.payload);
+    if (request.jobKind === TRANSFORM_BUFFER_JOB_KIND) validateTransformPayload(request.payload);
     const hestiaPayload = request.jobKind === GENERATE_HESTIA_VOXEL_BRICK_MESH_JOB_KIND
       ? validateHestiaVoxelBrickMeshPayload(request.payload)
       : undefined;
@@ -166,6 +179,32 @@ export class WorkerPool {
       this.dispatch();
     }
     return this.ticket(record);
+  }
+
+  public openPrivateSession(
+    rootJobId: string,
+    receive: (message: PreparedStructuralFirePrivateOutputMessage) => void,
+    failed: (reason: string) => void,
+    preferredWorkerEpoch?: WorkerEpoch
+  ): WorkerPrivateSession | null {
+    if (this.lifecycle !== "Running") throw new Error("WorkerPool is not accepting jobs.");
+    const handle = this.handles.find((candidate) => candidate.state === "Ready"
+      && (preferredWorkerEpoch === undefined
+        || candidate.workerEpoch === preferredWorkerEpoch));
+    if (handle === undefined) return null;
+    const session = handle.openPrivateSession(rootJobId, receive, failed);
+    this.emitWorkerState();
+    return Object.freeze({
+      ...session,
+      close: () => {
+        const closed = session.close();
+        if (closed) {
+          this.emitWorkerState();
+          this.dispatch();
+        }
+        return closed;
+      }
+    });
   }
 
   public cancel(jobId: WorkerJobId): boolean {
@@ -264,11 +303,37 @@ export class WorkerPool {
   private createRecord(request: WorkerJobRequest, input: TransferableBufferBundle): TicketRecord {
     let resolve!: (terminal: WorkerJobTerminal) => void;
     const promise = new Promise<WorkerJobTerminal>((complete) => { resolve = complete; });
-    return { request, input, promise, resolve, status: "Queued", handle: undefined, cancelRequested: false };
+    return {
+      request,
+      input,
+      promise,
+      resolve,
+      status: "Queued",
+      handle: undefined,
+      releaseHandle: undefined,
+      resultReleased: false,
+      cancelRequested: false
+    };
   }
 
   private ticket(record: TicketRecord): WorkerJobTicket {
-    return Object.freeze({ jobId: record.request.jobId, result: record.promise, cancel: () => this.cancel(record.request.jobId) });
+    return Object.freeze({
+      jobId: record.request.jobId,
+      result: record.promise,
+      cancel: () => this.cancel(record.request.jobId),
+      release: (scope: Readonly<WorkerResultReleaseScope>) =>
+        this.releaseResult(record, scope)
+    });
+  }
+
+  private releaseResult(
+    record: TicketRecord,
+    scope: Readonly<WorkerResultReleaseScope>
+  ): boolean {
+    if (record.resultReleased) return true;
+    const released = record.releaseHandle?.releaseResult(record.request.jobId, scope) ?? false;
+    if (released) record.resultReleased = true;
+    return released;
   }
 
   private nextEpoch(): WorkerEpoch {
@@ -342,10 +407,16 @@ export class WorkerPool {
     this.emit({ type: "OutputTransferred", jobId: result.jobId, outputBytes: output.outputBytes });
     const record = this.records.get(result.jobId);
     if (!record || record.handle !== handle) return this.replaceAfterFault(handle, "Result belongs to an unknown job.");
+    if (record.request.jobKind === PREPARED_STRUCTURAL_FIRE_JOB_KIND) {
+      record.releaseHandle = handle;
+    }
     const hestiaPayload = record.request.jobKind === GENERATE_HESTIA_VOXEL_BRICK_MESH_JOB_KIND
       ? validateHestiaVoxelBrickMeshPayload(record.request.payload)
       : undefined;
-    const outputRevision = hestiaPayload?.outputRevision ?? validateTransformPayload(record.request.payload).outputRevision;
+    const outputRevision = hestiaPayload?.outputRevision
+      ?? (record.request.jobKind === TRANSFORM_BUFFER_JOB_KIND
+        ? validateTransformPayload(record.request.payload).outputRevision
+        : contentRevision(result.outputRevision, "outputRevision"));
     const decision = integrateWorkerResult(Object.freeze({
       jobId: record.request.jobId,
       cancelled: record.cancelRequested,
@@ -362,6 +433,11 @@ export class WorkerPool {
       const normalizedDetails = result.details === undefined
         ? undefined
         : validateHestiaVoxelBrickMeshResultDetails(result.details);
+      const normalizedProtocolDetails = result.protocolDetails === undefined
+        ? undefined
+        : record.request.jobKind === PREPARED_STRUCTURAL_FIRE_JOB_KIND
+          ? result.protocolDetails
+          : (() => { throw new RangeError("Worker protocol details are unsupported for this job kind."); })();
       if (hestiaPayload !== undefined && normalizedDetails === undefined) {
         throw new Error("Accepted Hestia result details are missing.");
       }
@@ -376,6 +452,9 @@ export class WorkerPool {
         outputBytes: decision.bundle.byteLength,
         ...(result.contentHash === undefined ? {} : { contentHash: result.contentHash }),
         ...(normalizedDetails === undefined ? {} : { details: normalizedDetails }),
+        ...(normalizedProtocolDetails === undefined
+          ? {}
+          : { protocolDetails: normalizedProtocolDetails }),
       });
       const terminal: CompletedWorkerJobTerminal = Object.freeze({ kind: "Completed", result: acceptedResult, output: decision.bundle });
       acceptedCompletedTerminals.add(terminal);
@@ -408,6 +487,9 @@ export class WorkerPool {
   private cancelled(handle: WorkerHandle, jobId: WorkerJobId): void {
     const record = this.records.get(jobId);
     if (!record || record.handle !== handle) return this.replaceAfterFault(handle, "Cancellation belongs to an unknown job.");
+    if (record.request.jobKind === PREPARED_STRUCTURAL_FIRE_JOB_KIND) {
+      record.releaseHandle = handle;
+    }
     this.settle(record, Object.freeze({ kind: "Cancelled", reason: "CancelledDuringExecution" }));
     this.emit({ type: "Cancelled", jobId });
     this.dispatch();
@@ -416,6 +498,9 @@ export class WorkerPool {
   private workerFailed(handle: WorkerHandle, failure: WorkerJobFailure): void {
     const record = this.records.get(failure.jobId);
     if (!record || record.handle !== handle) return this.replaceAfterFault(handle, "Failure belongs to an unknown job.");
+    if (record.request.jobKind === PREPARED_STRUCTURAL_FIRE_JOB_KIND) {
+      record.releaseHandle = handle;
+    }
     this.settle(record, Object.freeze({ kind: "Failed", failure }));
     this.emit({ type: "Failed", jobId: failure.jobId });
     if (failure.code === "ProtocolFault" || failure.code === "WrongWorkerEpoch" || failure.code === "UnknownJob") {

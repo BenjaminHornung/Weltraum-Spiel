@@ -21,6 +21,8 @@ import {
   STRUCTURAL_AIR_MATERIAL_ID,
   STRUCTURAL_COMMAND_SCHEMA_VERSION,
   STRUCTURAL_COMMAND_EVIDENCE_SCHEMA_VERSION,
+  STRUCTURAL_TRANSFER_COMMAND_SCHEMA_VERSION,
+  STRUCTURAL_TRANSFER_COMMAND_SCHEMA_VERSION_V2,
   STRUCTURAL_FRAME_BINDING_SCHEMA_VERSION,
   STRUCTURAL_SOURCE_BINDING_SCHEMA_VERSION,
   STRUCTURAL_MAX_CHANGED_BRICK_KEYS,
@@ -28,6 +30,7 @@ import {
   STRUCTURAL_MAX_MATERIAL_FILTER_IDS,
   STRUCTURAL_MAX_MATERIAL_TAGS,
   STRUCTURAL_MAX_PROOF_DIGESTS,
+  STRUCTURAL_MAX_TRANSFER_SOURCE_FRAGMENTS,
   type StructuralBoxShape,
   type StructuralClass,
   type StructuralCommandBudgets,
@@ -45,6 +48,9 @@ import {
   type StructuralSemanticKey,
   type StructuralSphereShape,
   type StructuralTag,
+  type StructuralTransferDetachedComponentsCommand,
+  type StructuralTransferDetachedComponentsCommandV2,
+  type StructuralFragmentId,
   type StructuralVoxelState
 } from "./types";
 
@@ -286,7 +292,36 @@ export const validateStructuralCommandBudgets = (value: unknown, path = "budgets
 const structuralCommandSequence = (value: unknown, path: string): StructuralCommandSequence =>
   structuralNonNegativeSafeInteger(value, path) as StructuralCommandSequence;
 
+const validatedDestructionCommands = new WeakSet<object>();
+const validatedTransferCommands = new WeakSet<object>();
+
+const publishValidatedDestructionCommand = (
+  command: StructuralDestructionCommand
+): StructuralDestructionCommand => {
+  validatedDestructionCommands.add(command);
+  return command;
+};
+
+const publishValidatedTransferCommand = (
+  command: StructuralTransferDetachedComponentsCommand
+): StructuralTransferDetachedComponentsCommand => {
+  validatedTransferCommands.add(command);
+  return command;
+};
+
+const validatedTransferCommandsV2 = new WeakSet<object>();
+
+const publishValidatedTransferCommandV2 = (
+  command: StructuralTransferDetachedComponentsCommandV2
+): StructuralTransferDetachedComponentsCommandV2 => {
+  validatedTransferCommandsV2.add(command);
+  return command;
+};
+
 export const validateStructuralDestructionCommand = (value: unknown, path = "command"): StructuralDestructionCommand => {
+  if (typeof value === "object" && value !== null && validatedDestructionCommands.has(value)) {
+    return value as StructuralDestructionCommand;
+  }
   const record = requirePlainRecord(value, path);
   const kind = record.kind;
   if (kind !== "SubtractSphere" && kind !== "SubtractBox" && kind !== "SetMaterialSphere" && kind !== "SetMaterialBox") {
@@ -324,12 +359,120 @@ export const validateStructuralDestructionCommand = (value: unknown, path = "com
     budgets: validateStructuralCommandBudgets(record.budgets, `${path}/budgets`),
     ...order
   };
-  if (kind === "SubtractSphere") return deepFreeze({ ...base, kind, shape: validateStructuralSphereShape(record.shape, `${path}/shape`) });
-  if (kind === "SubtractBox") return deepFreeze({ ...base, kind, shape: validateStructuralBoxShape(record.shape, `${path}/shape`) });
+  if (kind === "SubtractSphere") return publishValidatedDestructionCommand(deepFreeze({ ...base, kind, shape: validateStructuralSphereShape(record.shape, `${path}/shape`) }));
+  if (kind === "SubtractBox") return publishValidatedDestructionCommand(deepFreeze({ ...base, kind, shape: validateStructuralBoxShape(record.shape, `${path}/shape`) }));
   const materialId = structuralMaterialId(record.materialId, `${path}/materialId`, false);
   return kind === "SetMaterialSphere"
-    ? deepFreeze({ ...base, kind, shape: validateStructuralSphereShape(record.shape, `${path}/shape`), materialId })
-    : deepFreeze({ ...base, kind, shape: validateStructuralBoxShape(record.shape, `${path}/shape`), materialId });
+    ? publishValidatedDestructionCommand(deepFreeze({ ...base, kind, shape: validateStructuralSphereShape(record.shape, `${path}/shape`), materialId }))
+    : publishValidatedDestructionCommand(deepFreeze({ ...base, kind, shape: validateStructuralBoxShape(record.shape, `${path}/shape`), materialId }));
+};
+
+export const validateStructuralTransferDetachedComponentsCommand = (
+  value: unknown,
+  path = "command"
+): StructuralTransferDetachedComponentsCommand => {
+  if (typeof value === "object" && value !== null && validatedTransferCommands.has(value)) {
+    return value as StructuralTransferDetachedComponentsCommand;
+  }
+  const record = requirePlainRecord(value, path);
+  if (record.kind !== "TransferDetachedComponents") {
+    return structuralFail("InvalidContract", `${path}/kind`, "Unsupported Structural transfer command kind.");
+  }
+  const hasSequence = Object.hasOwn(record, "sequence");
+  const hasTick = Object.hasOwn(record, "tick");
+  if (hasSequence === hasTick) {
+    return structuralFail("InvalidContract", path, "A Structural transfer command requires exactly one sequence or tick field.");
+  }
+  requireExactKeys(record, [
+    "schemaVersion", "kind", "commandId", "targetObjectId", "expectedObjectRevision",
+    "resultingObjectRevision", "expectedAdaptiveSource", "sourceFragmentIds", "actor", "source", "budgets",
+    hasSequence ? "sequence" : "tick"
+  ], path);
+  if (record.schemaVersion !== STRUCTURAL_TRANSFER_COMMAND_SCHEMA_VERSION) {
+    return structuralFail("InvalidContract", `${path}/schemaVersion`, "Unsupported Structural transfer command schema.");
+  }
+  const sourceFragmentIds = structuralDenseArray(
+    record.sourceFragmentIds,
+    `${path}/sourceFragmentIds`,
+    STRUCTURAL_MAX_TRANSFER_SOURCE_FRAGMENTS
+  ).map((entry, index) => requireStructuralHash(entry, `${path}/sourceFragmentIds/${index}`) as StructuralFragmentId);
+  for (let index = 1; index < sourceFragmentIds.length; index += 1) {
+    if (sourceFragmentIds[index - 1] >= sourceFragmentIds[index]) {
+      return structuralFail(
+        "InvalidContract",
+        `${path}/sourceFragmentIds`,
+        "Structural transfer source Fragment IDs must be sorted and unique."
+      );
+    }
+  }
+  const order = hasSequence
+    ? { sequence: structuralCommandSequence(record.sequence, `${path}/sequence`) }
+    : { tick: structuralCommandSequence(record.tick, `${path}/tick`) };
+  return publishValidatedTransferCommand(deepFreeze({
+    schemaVersion: STRUCTURAL_TRANSFER_COMMAND_SCHEMA_VERSION,
+    kind: "TransferDetachedComponents",
+    commandId: stableAuthorityId(record.commandId as string, `${path}/commandId`),
+    targetObjectId: stableAuthorityId(record.targetObjectId as string, `${path}/targetObjectId`),
+    expectedObjectRevision: structuralRevision(record.expectedObjectRevision, `${path}/expectedObjectRevision`),
+    resultingObjectRevision: structuralRevision(record.resultingObjectRevision, `${path}/resultingObjectRevision`),
+    expectedAdaptiveSource: validateStructuralAdaptiveSourceBindingExpectation(
+      record.expectedAdaptiveSource,
+      `${path}/expectedAdaptiveSource`
+    ),
+    sourceFragmentIds: deepFreeze(sourceFragmentIds),
+    actor: stableAuthorityId(record.actor as string, `${path}/actor`),
+    source: stableAuthorityId(record.source as string, `${path}/source`),
+    budgets: validateStructuralCommandBudgets(record.budgets, `${path}/budgets`),
+    ...order
+  }));
+};
+
+export const validateStructuralTransferDetachedComponentsCommandV2 = (
+  value: unknown,
+  path = "command"
+): StructuralTransferDetachedComponentsCommandV2 => {
+  if (typeof value === "object" && value !== null && validatedTransferCommandsV2.has(value)) {
+    return value as StructuralTransferDetachedComponentsCommandV2;
+  }
+  const record = requirePlainRecord(value, path);
+  const hasSequence = Object.hasOwn(record, "sequence");
+  const hasTick = Object.hasOwn(record, "tick");
+  if (record.kind !== "TransferDetachedComponents" || hasSequence === hasTick) {
+    return structuralFail("InvalidContract", path, "V2 Structural transfer requires its kind and exactly one sequence or tick field.");
+  }
+  requireExactKeys(record, [
+    "schemaVersion", "kind", "commandId", "targetObjectId", "expectedObjectRevision",
+    "resultingObjectRevision", "expectedAdaptiveSource", "sourceFragmentSet", "actor", "source", "budgets",
+    hasSequence ? "sequence" : "tick"
+  ], path);
+  if (record.schemaVersion !== STRUCTURAL_TRANSFER_COMMAND_SCHEMA_VERSION_V2) {
+    return structuralFail("InvalidContract", `${path}/schemaVersion`, "Unsupported V2 Structural transfer command schema.");
+  }
+  const set = requirePlainRecord(record.sourceFragmentSet, `${path}/sourceFragmentSet`);
+  requireExactKeys(set, ["count", "orderedFragmentIdsHash", "classificationHash"], `${path}/sourceFragmentSet`);
+  const count = structuralNonNegativeSafeInteger(set.count, `${path}/sourceFragmentSet/count`);
+  if (count < 1) return structuralFail("InvalidContract", `${path}/sourceFragmentSet/count`, "V2 transfer requires at least one detached Fragment.");
+  const order = hasSequence
+    ? { sequence: structuralCommandSequence(record.sequence, `${path}/sequence`) }
+    : { tick: structuralCommandSequence(record.tick, `${path}/tick`) };
+  return publishValidatedTransferCommandV2(deepFreeze({
+    schemaVersion: STRUCTURAL_TRANSFER_COMMAND_SCHEMA_VERSION_V2,
+    kind: "TransferDetachedComponents",
+    commandId: stableAuthorityId(record.commandId as string, `${path}/commandId`),
+    targetObjectId: stableAuthorityId(record.targetObjectId as string, `${path}/targetObjectId`),
+    expectedObjectRevision: structuralRevision(record.expectedObjectRevision, `${path}/expectedObjectRevision`),
+    resultingObjectRevision: structuralRevision(record.resultingObjectRevision, `${path}/resultingObjectRevision`),
+    expectedAdaptiveSource: validateStructuralAdaptiveSourceBindingExpectation(record.expectedAdaptiveSource, `${path}/expectedAdaptiveSource`),
+    sourceFragmentSet: deepFreeze({
+      count,
+      orderedFragmentIdsHash: requireStructuralHash(set.orderedFragmentIdsHash, `${path}/sourceFragmentSet/orderedFragmentIdsHash`),
+      classificationHash: requireStructuralHash(set.classificationHash, `${path}/sourceFragmentSet/classificationHash`)
+    }),
+    actor: stableAuthorityId(record.actor as string, `${path}/actor`),
+    source: stableAuthorityId(record.source as string, `${path}/source`),
+    budgets: validateStructuralCommandBudgets(record.budgets, `${path}/budgets`),
+    ...order
+  }));
 };
 
 export const validateStructuralSphereShape = (value: unknown, path = "shape"): StructuralSphereShape => {

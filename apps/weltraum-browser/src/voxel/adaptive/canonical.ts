@@ -14,12 +14,22 @@ import {
   stableAuthorityId
 } from "./validation";
 import { brickExtentQuantumForLevel, compareAdaptiveBrickKeys, quantumBoundsForKey, validateAdaptiveBrickKey, validateQuantumBounds } from "./coordinates";
-import { validateAdaptiveEditJournal } from "./edits";
+import { ADAPTIVE_MAX_JOURNAL_RECORDS, createAdaptiveEditJournal, validateAdaptiveEditJournal } from "./edits";
+import { hasDeepFrozenIdentity } from "./immutability";
 import { validateMaterializedAdaptiveBrick } from "./materialization";
 import type {
   AdaptiveBaseFieldDescriptor,
+  AdaptiveAuthorityAdoptionCommitment,
+  AdaptiveAuthorityAdoptionCommitmentInput,
+  AdaptiveAuthorityAdoptionCommitmentPayload,
+  AdaptiveAuthorityProtocol,
+  AdaptiveAuthoritySnapshot,
+  AdaptiveAuthoritySnapshotInput,
+  AdaptiveAuthoritySnapshotPayload,
+  AdaptiveAuthoritySnapshotBrick,
   AdaptiveBaseFieldSample,
   AdaptiveBrickKey,
+  AdaptiveEditRecord,
   AdaptiveEditJournal,
   AdaptivePlannerSnapshot,
   AdaptivePlanResult,
@@ -31,6 +41,11 @@ import type {
 } from "./types";
 import {
   ADAPTIVE_BASE_FIELD_DESCRIPTOR_DIGEST_SCHEMA_VERSION,
+  ADAPTIVE_AUTHORITY_COMMITMENT_SCHEMA_VERSION,
+  ADAPTIVE_AUTHORITY_DERIVATION_ALGORITHM_VERSION,
+  ADAPTIVE_AUTHORITY_MATERIAL_TABLE_VERSION,
+  ADAPTIVE_AUTHORITY_PROTOCOL_SCHEMA_VERSION,
+  ADAPTIVE_AUTHORITY_SNAPSHOT_SCHEMA_VERSION,
   ADAPTIVE_RESIDENT_VALIDATION_PROOF_SCHEMA_VERSION,
   ADAPTIVE_RESIDENT_VALIDATION_PROOF_VERSION,
   ADAPTIVE_SNAPSHOT_PROJECTION_SCHEMA_VERSION
@@ -50,6 +65,9 @@ export type AdaptiveCanonicalValue =
   | readonly AdaptiveCanonicalValue[]
   | { readonly [key: string]: AdaptiveCanonicalValue };
 
+const canonicalValueByDeepFrozenIdentity = new WeakMap<object, AdaptiveCanonicalValue>();
+const serializedCanonicalByIdentity = new WeakMap<object, string>();
+
 const canonicalize = (value: unknown, path: string, ancestors: WeakSet<object>): AdaptiveCanonicalValue => {
   if (value === null || typeof value === "boolean") return value;
   if (typeof value === "string") return requireCanonicalString(value, path);
@@ -60,6 +78,10 @@ const canonicalize = (value: unknown, path: string, ancestors: WeakSet<object>):
   if (typeof value === "function" || typeof value === "symbol" || typeof value === "bigint" || value === undefined) {
     return fail("InvalidCanonicalValue", path, "Unsupported canonical value.");
   }
+  const cached = hasDeepFrozenIdentity(value)
+    ? canonicalValueByDeepFrozenIdentity.get(value)
+    : undefined;
+  if (cached !== undefined) return cached;
   if (Array.isArray(value)) {
     if (ancestors.has(value)) return fail("InvalidCanonicalValue", path, "Cycles are not canonical.");
     const array = requireDenseDataPropertyArray(value, path, "InvalidCanonicalValue");
@@ -69,7 +91,9 @@ const canonicalize = (value: unknown, path: string, ancestors: WeakSet<object>):
       (entry: unknown, index: number) => canonicalize(entry, `${path}/${index}`, ancestors)
     ) as AdaptiveCanonicalValue[];
     ancestors.delete(value);
-    return deepFreeze(result);
+    const canonical = deepFreeze(result);
+    if (hasDeepFrozenIdentity(value)) canonicalValueByDeepFrozenIdentity.set(value, canonical);
+    return canonical;
   }
   const record = requirePlainRecord(value, path);
   if (ancestors.has(record)) return fail("InvalidCanonicalValue", path, "Cycles are not canonical.");
@@ -79,28 +103,41 @@ const canonicalize = (value: unknown, path: string, ancestors: WeakSet<object>):
     result[key] = canonicalize(record[key], `${path}/${key}`, ancestors);
   }
   ancestors.delete(record);
-  return deepFreeze(result);
+  const canonical = deepFreeze(result);
+  if (hasDeepFrozenIdentity(record)) canonicalValueByDeepFrozenIdentity.set(record, canonical);
+  return canonical;
 };
 
 const serialize = (value: AdaptiveCanonicalValue): string => {
   if (value === null || typeof value !== "object") return JSON.stringify(value);
-  if (Array.isArray(value)) return `[${value.map(serialize).join(",")}]`;
-  return `{${Object.keys(value)
-    .sort(compareCanonicalCodeUnits)
-    .map((key) => `${JSON.stringify(key)}:${serialize((value as Record<string, AdaptiveCanonicalValue>)[key])}`)
-    .join(",")}}`;
+  const cached = serializedCanonicalByIdentity.get(value);
+  if (cached !== undefined) return cached;
+  const serialized = Array.isArray(value)
+    ? `[${value.map(serialize).join(",")}]`
+    : `{${Object.keys(value)
+      .sort(compareCanonicalCodeUnits)
+      .map((key) => `${JSON.stringify(key)}:${serialize((value as Record<string, AdaptiveCanonicalValue>)[key])}`)
+      .join(",")}}`;
+  serializedCanonicalByIdentity.set(value, serialized);
+  return serialized;
 };
 
 export const canonicalAdaptiveJson = (value: unknown): string => serialize(canonicalize(value, "", new WeakSet<object>()));
 
 export const hashAdaptiveCanonical = (value: unknown): string => {
   const bytes = new TextEncoder().encode(canonicalAdaptiveJson(value));
-  let hash = 0xcbf29ce484222325n;
+  let high = 0xcbf29ce4;
+  let low = 0x84222325;
   for (const byte of bytes) {
-    hash ^= BigInt(byte);
-    hash = BigInt.asUintN(64, hash * 0x100000001b3n);
+    low = (low ^ byte) >>> 0;
+    const lowProduct = low * 0x1b3;
+    const nextLow = lowProduct >>> 0;
+    const carry = Math.floor(lowProduct / 0x1_0000_0000);
+    const nextHigh = (high * 0x1b3 + carry) >>> 0;
+    high = (nextHigh + ((low << 8) >>> 0)) >>> 0;
+    low = nextLow;
   }
-  return `fnv1a64-v1:${hash.toString(16).padStart(16, "0")}`;
+  return `fnv1a64-v1:${high.toString(16).padStart(8, "0")}${low.toString(16).padStart(8, "0")}`;
 };
 
 const validateAdaptiveBaseFieldSample = (value: AdaptiveBaseFieldSample): AdaptiveBaseFieldSample => {
@@ -191,6 +228,259 @@ const plannerHash = (value: unknown, path: string): string => {
     return fail("InvalidPlannerInput", path, "Expected a canonical adaptive hash.");
   }
   return value;
+};
+
+export const ADAPTIVE_AUTHORITY_PROTOCOL: AdaptiveAuthorityProtocol = deepFreeze({
+  schemaVersion: ADAPTIVE_AUTHORITY_PROTOCOL_SCHEMA_VERSION,
+  derivationAlgorithmVersion: ADAPTIVE_AUTHORITY_DERIVATION_ALGORITHM_VERSION,
+  materialTableVersion: ADAPTIVE_AUTHORITY_MATERIAL_TABLE_VERSION
+});
+
+const validateAdaptiveAuthorityProtocol = (value: unknown): AdaptiveAuthorityProtocol => {
+  const record = requirePlainRecord(value, "authority/protocol");
+  requireExactKeys(record, ["schemaVersion", "derivationAlgorithmVersion", "materialTableVersion"], "authority/protocol");
+  if (
+    record.schemaVersion !== ADAPTIVE_AUTHORITY_PROTOCOL_SCHEMA_VERSION
+    || record.derivationAlgorithmVersion !== ADAPTIVE_AUTHORITY_DERIVATION_ALGORITHM_VERSION
+    || record.materialTableVersion !== ADAPTIVE_AUTHORITY_MATERIAL_TABLE_VERSION
+  ) return fail("InvalidPlannerInput", "authority/protocol", "Unsupported Adaptive authority protocol or version.");
+  return ADAPTIVE_AUTHORITY_PROTOCOL;
+};
+
+const canonicalAdaptiveAuthorityBricks = (
+  value: unknown,
+  path: string
+): readonly AdaptiveAuthoritySnapshotBrick[] => {
+  const entries = requireDenseDataPropertyArray(value, path, "InvalidPlannerInput", {
+    maximumLength: ADAPTIVE_MAX_RESIDENT_SUMMARIES
+  }).map((entry, index) => {
+    const entryPath = `${path}/${index}`;
+    const record = requirePlainRecord(entry, entryPath);
+    requireExactKeys(record, ["role", "brick"], entryPath);
+    return deepFreeze({
+      role: stableAuthorityId(record.role as string, `${entryPath}/role`),
+      brick: validateMaterializedAdaptiveBrick(record.brick as MaterializedAdaptiveBrick)
+    });
+  }).sort((left, right) => compareAdaptiveBrickKeys(left.brick.key, right.brick.key) || compareCanonicalCodeUnits(left.role, right.role));
+  for (let index = 1; index < entries.length; index += 1) {
+    if (serializeAdaptiveKey(entries[index - 1].brick.key) === serializeAdaptiveKey(entries[index].brick.key)) {
+      return fail("InvalidPlannerInput", path, "Adaptive authority brick keys must be unique.");
+    }
+  }
+  return deepFreeze(entries);
+};
+
+const validateAdaptiveAuthorityBrickBindings = (
+  bricks: readonly AdaptiveAuthoritySnapshotBrick[],
+  journal: AdaptiveEditJournal,
+  revision: number,
+  path: string
+): void => {
+  const first = bricks[0]?.brick;
+  if (first === undefined) return;
+  const expectedKey = first.key;
+  const expectedProvenance = first.provenance;
+  for (let index = 0; index < bricks.length; index += 1) {
+    const brick = bricks[index].brick;
+    const brickPath = `${path}/${index}/brick`;
+    if (
+      brick.key.bodyId !== expectedKey.bodyId
+      || brick.key.surfaceFrameId !== expectedKey.surfaceFrameId
+      || brick.key.regionId !== expectedKey.regionId
+      || brick.key.generatorVersion !== expectedKey.generatorVersion
+    ) return fail("InvalidPlannerInput", `${brickPath}/key`, "Adaptive authority bricks must share one source tuple.");
+    if (
+      brick.baseFieldDescriptorDigest !== expectedProvenance.baseFieldDescriptorDigest
+      || brick.provenance.baseFieldIdentity !== expectedProvenance.baseFieldIdentity
+      || brick.provenance.baseFieldVersion !== expectedProvenance.baseFieldVersion
+      || brick.provenance.baseFieldDescriptorDigest !== expectedProvenance.baseFieldDescriptorDigest
+      || brick.sourceRevision !== expectedProvenance.sourceRevision
+      || brick.provenance.sourceRevision !== expectedProvenance.sourceRevision
+      || brick.editRevision !== revision
+      || brick.provenance.editRevision !== revision
+      || brick.provenance.journalDigest !== journal.digest
+    ) return fail("InvalidPlannerInput", brickPath, "Adaptive authority brick provenance does not match the snapshot authority.");
+  }
+};
+
+const adaptiveAuthoritySnapshotPayload = (
+  value: Readonly<{
+    readonly authorityId: string;
+    readonly revision: number;
+    readonly bricks: unknown;
+    readonly orderedInputs: unknown;
+  }>,
+  path: string
+): AdaptiveAuthoritySnapshotPayload => {
+  const authorityId = stableAuthorityId(value.authorityId, `${path}/authorityId`);
+  const revision = authorityRevision(value.revision);
+  const bricks = canonicalAdaptiveAuthorityBricks(value.bricks, `${path}/bricks`);
+  const inputValues = requireDenseDataPropertyArray(value.orderedInputs, `${path}/orderedInputs`, "InvalidPlannerInput", {
+    maximumLength: ADAPTIVE_MAX_JOURNAL_RECORDS
+  });
+  const journal = createAdaptiveEditJournal(inputValues as readonly AdaptiveEditRecord[]);
+  if (journal.revision !== revision) {
+    return fail("InvalidPlannerInput", `${path}/revision`, "Adaptive authority revision must equal its ordered input revision.");
+  }
+  validateAdaptiveAuthorityBrickBindings(bricks, journal, revision, `${path}/bricks`);
+  return deepFreeze({
+    schemaVersion: ADAPTIVE_AUTHORITY_SNAPSHOT_SCHEMA_VERSION,
+    protocol: ADAPTIVE_AUTHORITY_PROTOCOL,
+    authorityId,
+    revision,
+    bricks,
+    orderedInputs: journal.records
+  });
+};
+
+export const validateAdaptiveAuthoritySnapshot = (value: AdaptiveAuthoritySnapshot): AdaptiveAuthoritySnapshot => {
+  const record = requirePlainRecord(value, "authority");
+  requireExactKeys(record, ["schemaVersion", "protocol", "authorityId", "revision", "bricks", "orderedInputs", "contentHash"], "authority");
+  if (record.schemaVersion !== ADAPTIVE_AUTHORITY_SNAPSHOT_SCHEMA_VERSION) {
+    return fail("InvalidPlannerInput", "authority/schemaVersion", "Unsupported Adaptive authority snapshot schema.");
+  }
+  const payload = adaptiveAuthoritySnapshotPayload({
+    authorityId: record.authorityId as string,
+    revision: record.revision as number,
+    bricks: record.bricks,
+    orderedInputs: record.orderedInputs
+  }, "authority");
+  validateAdaptiveAuthorityProtocol(record.protocol);
+  const contentHash = plannerHash(record.contentHash, "authority/contentHash");
+  if (hashAdaptiveCanonical(payload) !== contentHash) {
+    return fail("InvalidPlannerInput", "authority/contentHash", "Adaptive authority snapshot content hash mismatch.");
+  }
+  return deepFreeze({ ...payload, contentHash });
+};
+
+export const createAdaptiveAuthoritySnapshot = (input: AdaptiveAuthoritySnapshotInput): AdaptiveAuthoritySnapshot => {
+  const record = requirePlainRecord(input, "authorityInput");
+  requireExactKeys(record, ["authorityId", "revision", "bricks", "orderedInputs"], "authorityInput");
+  const payload = adaptiveAuthoritySnapshotPayload({
+    authorityId: input.authorityId,
+    revision: input.revision,
+    bricks: input.bricks,
+    orderedInputs: input.orderedInputs
+  }, "authorityInput");
+  return deepFreeze({
+    ...payload,
+    contentHash: hashAdaptiveCanonical(payload)
+  });
+};
+
+const adaptiveAuthorityAdoptionPayload = (
+  value: AdaptiveAuthorityAdoptionCommitmentPayload | AdaptiveAuthorityAdoptionCommitment
+): AdaptiveAuthorityAdoptionCommitmentPayload => ({
+  schemaVersion: value.schemaVersion,
+  protocol: value.protocol,
+  authorityId: value.authorityId,
+  predecessorRevision: value.predecessorRevision,
+  predecessorHash: value.predecessorHash,
+  candidateRevision: value.candidateRevision,
+  candidateHash: value.candidateHash
+});
+
+export const hashAdaptiveAuthorityAdoptionCommitment = (
+  value: AdaptiveAuthorityAdoptionCommitmentPayload | AdaptiveAuthorityAdoptionCommitment
+): string => hashAdaptiveCanonical(adaptiveAuthorityAdoptionPayload(value));
+
+const validateAdaptiveAuthorityAdoptionCommitment = (
+  value: AdaptiveAuthorityAdoptionCommitment
+): AdaptiveAuthorityAdoptionCommitment => {
+  const record = requirePlainRecord(value, "adoption");
+  requireExactKeys(record, ["schemaVersion", "protocol", "authorityId", "predecessorRevision", "predecessorHash", "candidateRevision", "candidateHash", "commitmentHash"], "adoption");
+  if (record.schemaVersion !== ADAPTIVE_AUTHORITY_COMMITMENT_SCHEMA_VERSION) {
+    return fail("InvalidPlannerInput", "adoption/schemaVersion", "Unsupported Adaptive authority adoption commitment schema.");
+  }
+  const protocol = validateAdaptiveAuthorityProtocol(record.protocol);
+  const payload = deepFreeze({
+    schemaVersion: ADAPTIVE_AUTHORITY_COMMITMENT_SCHEMA_VERSION,
+    protocol,
+    authorityId: stableAuthorityId(record.authorityId as string, "adoption/authorityId"),
+    predecessorRevision: authorityRevision(record.predecessorRevision as number),
+    predecessorHash: plannerHash(record.predecessorHash, "adoption/predecessorHash"),
+    candidateRevision: authorityRevision(record.candidateRevision as number),
+    candidateHash: plannerHash(record.candidateHash, "adoption/candidateHash")
+  });
+  const commitmentHash = plannerHash(record.commitmentHash, "adoption/commitmentHash");
+  if (hashAdaptiveAuthorityAdoptionCommitment(payload) !== commitmentHash) {
+    return fail("InvalidPlannerInput", "adoption/commitmentHash", "Adaptive authority adoption commitment hash mismatch.");
+  }
+  if (payload.candidateRevision !== payload.predecessorRevision + 1) {
+    return fail("InvalidPlannerInput", "adoption/candidateRevision", "Adaptive authority adoption must advance exactly one revision.");
+  }
+  return deepFreeze({ ...payload, commitmentHash });
+};
+
+export const createAdaptiveAuthorityAdoptionCommitment = (
+  input: AdaptiveAuthorityAdoptionCommitmentInput
+): AdaptiveAuthorityAdoptionCommitment => {
+  const record = requirePlainRecord(input, "adoptionInput");
+  requireExactKeys(record, ["predecessorSnapshot", "candidateSnapshot"], "adoptionInput");
+  const predecessor = validateAdaptiveAuthoritySnapshot(input.predecessorSnapshot);
+  const candidate = validateAdaptiveAuthoritySnapshot(input.candidateSnapshot);
+  if (predecessor.protocol.schemaVersion !== candidate.protocol.schemaVersion
+    || predecessor.protocol.derivationAlgorithmVersion !== candidate.protocol.derivationAlgorithmVersion
+    || predecessor.protocol.materialTableVersion !== candidate.protocol.materialTableVersion) {
+    return fail("InvalidPlannerInput", "adoptionInput", "Adaptive authority snapshots must use one protocol and version tuple.");
+  }
+  if (candidate.authorityId !== predecessor.authorityId) {
+    return fail("InvalidPlannerInput", "adoptionInput/candidateSnapshot/authorityId", "Adaptive authority adoption candidate belongs to a different authority.");
+  }
+  if (candidate.revision !== predecessor.revision + 1) {
+    return fail("InvalidPlannerInput", "adoptionInput/candidateSnapshot/revision", "Adaptive authority adoption must advance exactly one revision.");
+  }
+  const payload = deepFreeze({
+    schemaVersion: ADAPTIVE_AUTHORITY_COMMITMENT_SCHEMA_VERSION,
+    protocol: ADAPTIVE_AUTHORITY_PROTOCOL,
+    authorityId: predecessor.authorityId,
+    predecessorRevision: predecessor.revision,
+    predecessorHash: predecessor.contentHash,
+    candidateRevision: candidate.revision,
+    candidateHash: candidate.contentHash
+  });
+  return deepFreeze({
+    ...payload,
+    commitmentHash: hashAdaptiveAuthorityAdoptionCommitment(payload)
+  });
+};
+
+export const validateAdaptiveAuthorityAdoption = (
+  predecessorValue: AdaptiveAuthoritySnapshot,
+  candidateValue: AdaptiveAuthoritySnapshot,
+  commitmentValue: AdaptiveAuthorityAdoptionCommitment
+): AdaptiveAuthorityAdoptionCommitment => {
+  const predecessor = validateAdaptiveAuthoritySnapshot(predecessorValue);
+  const candidate = validateAdaptiveAuthoritySnapshot(candidateValue);
+  const commitment = validateAdaptiveAuthorityAdoptionCommitment(commitmentValue);
+  if (
+    candidate.orderedInputs.length !== predecessor.orderedInputs.length + 1
+    || canonicalAdaptiveJson(candidate.orderedInputs.slice(0, predecessor.orderedInputs.length))
+      !== canonicalAdaptiveJson(predecessor.orderedInputs)
+  ) return fail("InvalidPlannerInput", "adoption/candidate/orderedInputs", "Adaptive authority adoption history must extend the predecessor by exactly one input.");
+  if (
+    candidate.bricks.length !== predecessor.bricks.length
+    || candidate.bricks.some((entry, index) =>
+      entry.role !== predecessor.bricks[index]?.role
+      || serializeAdaptiveKey(entry.brick.key) !== serializeAdaptiveKey(predecessor.bricks[index]?.brick.key as AdaptiveBrickKey)
+    )
+  ) return fail("InvalidPlannerInput", "adoption/candidate/bricks", "Adaptive authority adoption candidate must preserve the predecessor brick role and key set.");
+  if (
+    candidate.authorityId !== predecessor.authorityId
+    || candidate.revision !== predecessor.revision + 1
+    || commitment.authorityId !== predecessor.authorityId
+    || commitment.predecessorRevision !== predecessor.revision
+    || commitment.predecessorHash !== predecessor.contentHash
+    || commitment.candidateRevision !== candidate.revision
+    || commitment.candidateHash !== candidate.contentHash
+    || commitment.protocol.schemaVersion !== predecessor.protocol.schemaVersion
+    || commitment.protocol.schemaVersion !== candidate.protocol.schemaVersion
+    || commitment.protocol.derivationAlgorithmVersion !== predecessor.protocol.derivationAlgorithmVersion
+    || commitment.protocol.derivationAlgorithmVersion !== candidate.protocol.derivationAlgorithmVersion
+    || commitment.protocol.materialTableVersion !== predecessor.protocol.materialTableVersion
+    || commitment.protocol.materialTableVersion !== candidate.protocol.materialTableVersion
+  ) return fail("InvalidPlannerInput", "adoption", "Adaptive authority adoption does not match the predecessor, candidate, or protocol authority.");
+  return commitment;
 };
 
 const plannerNonNegativeInteger = (value: unknown, path: string): number => {
@@ -351,17 +641,23 @@ export interface AdaptiveValidatedRefinementRequest {
   readonly count: number;
 }
 
-const validateRefinementRequest = (value: AdaptiveRefinementRequest, index: number): AdaptiveValidatedRefinementRequest => {
-  const path = `snapshot/refinementRequests/${index}`;
+export const validateAdaptiveRefinementRequest = (
+  value: AdaptiveRefinementRequest,
+  index: number,
+  pathRoot = "snapshot/refinementRequests"
+): AdaptiveValidatedRefinementRequest => {
+  const path = `${pathRoot}/${index}`;
   const record = requirePlainRecord(value, path);
   const optionalDeadline = Object.hasOwn(record, "deadlinePlanningEpoch") ? ["deadlinePlanningEpoch"] : [];
   requireExactKeys(record, ["requestId", "region", "targetLevel", "reason", "requiredForCoverage", ...optionalDeadline, "priority"], path);
   const requestId = stableAuthorityId(value.requestId, `${path}/requestId`);
-  const targetLevel = adaptiveLevel(value.targetLevel);
+  const targetLevel = adaptiveLevel(value.targetLevel, `${path}/targetLevel`);
   if (!refinementReasons.has(value.reason)) return fail("InvalidPlannerInput", `${path}/reason`, "Unsupported refinement reason.");
   if (typeof value.requiredForCoverage !== "boolean") return fail("InvalidPlannerInput", `${path}/requiredForCoverage`, "Coverage requirement must be boolean.");
   if (!Number.isFinite(value.priority)) return fail("InvalidPlannerInput", `${path}/priority`, "Priority must be finite.");
-  const deadlinePlanningEpoch = value.deadlinePlanningEpoch === undefined ? undefined : adaptivePlanningEpoch(value.deadlinePlanningEpoch);
+  const deadlinePlanningEpoch = value.deadlinePlanningEpoch === undefined
+    ? undefined
+    : adaptivePlanningEpoch(value.deadlinePlanningEpoch, `${path}/deadlinePlanningEpoch`);
   const regionRecord = requirePlainRecord(value.region, `${path}/region`);
   const extent = brickExtentQuantumForLevel(targetLevel);
   let bounds: QuantumBounds;
@@ -499,7 +795,7 @@ export const validateAdaptivePlannerSnapshotSemantics = (
       "snapshot/refinementRequests",
       ADAPTIVE_MAX_REFINEMENT_REQUESTS
     ) as readonly AdaptiveRefinementRequest[]
-  ).map(validateRefinementRequest);
+  ).map((value, index) => validateAdaptiveRefinementRequest(value, index));
   const requestIds = new Set<string>();
   for (const { request } of refinementRequests) {
     if (requestIds.has(request.requestId)) return fail("InvalidPlannerInput", "snapshot/refinementRequests", "Duplicate request IDs are rejected.");

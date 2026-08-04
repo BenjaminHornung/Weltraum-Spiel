@@ -1,6 +1,12 @@
 import type { WorkerEpoch, WorkerJobId } from "./ids";
-import { isWorkerToHostMessage, type HostToWorkerMessage, type JobOutputDataMessage, type WorkerToHostMessage } from "./messages";
-import { transferListFor, type TransferableBufferBundle, type WorkerJobFailure, type WorkerJobRequest, type WorkerJobResult } from "./protocol";
+import {
+  isWorkerToHostMessage,
+  type HostToWorkerMessage,
+  type JobOutputDataMessage,
+  type PreparedStructuralFirePrivateOutputMessage,
+  type WorkerToHostMessage
+} from "./messages";
+import { transferListFor, type TransferableBufferBundle, type WorkerJobFailure, type WorkerJobRequest, type WorkerJobResult, type WorkerResultReleaseScope } from "./protocol";
 
 export interface WorkerTransport {
   onmessage: ((event: MessageEvent<unknown>) => void) | null;
@@ -17,11 +23,20 @@ export const createBrowserWorkerTransport: WorkerTransportFactory = () =>
 
 export type WorkerHandleState = "Starting" | "Ready" | "Busy" | "Stopping" | "Stopped" | "Failed";
 
+const MAX_CLOSED_PRIVATE_ROOTS = 8;
+
 export interface WorkerHandleCallbacks {
   readonly onCompleted: (handle: WorkerHandle, result: WorkerJobResult, output: JobOutputDataMessage) => void;
   readonly onCancelled: (handle: WorkerHandle, jobId: WorkerJobId) => void;
   readonly onFailed: (handle: WorkerHandle, failure: WorkerJobFailure) => void;
   readonly onFault: (handle: WorkerHandle, reason: string) => void;
+}
+
+export interface WorkerPrivateSession {
+  readonly workerEpoch: WorkerEpoch;
+  readonly rootJobId: string;
+  post(payload: unknown, transfer?: readonly Transferable[]): void;
+  close(): boolean;
 }
 
 export class WorkerHandle {
@@ -30,6 +45,11 @@ export class WorkerHandle {
   private readyReject: ((error: Error) => void) | undefined;
   private output: JobOutputDataMessage | undefined;
   private activeJobId: WorkerJobId | undefined;
+  private privateRootJobId: string | undefined;
+  private privateReceiver:
+    ((message: PreparedStructuralFirePrivateOutputMessage) => void) | undefined;
+  private privateFailure: ((reason: string) => void) | undefined;
+  private readonly closedPrivateRoots = new Set<string>();
   public state: WorkerHandleState = "Stopped";
 
   public constructor(
@@ -40,6 +60,7 @@ export class WorkerHandle {
   ) {}
 
   public get jobId(): WorkerJobId | undefined { return this.activeJobId; }
+  public get privateRoot(): string | undefined { return this.privateRootJobId; }
 
   public start(): Promise<void> {
     if (this.state !== "Stopped") throw new Error("WorkerHandle can only start from Stopped.");
@@ -76,6 +97,54 @@ export class WorkerHandle {
     return true;
   }
 
+  public openPrivateSession(
+    rootJobId: string,
+    receive: (message: PreparedStructuralFirePrivateOutputMessage) => void,
+    failed: (reason: string) => void
+  ): WorkerPrivateSession {
+    if (this.state !== "Ready") throw new Error("WorkerHandle is not ready.");
+    this.closedPrivateRoots.delete(rootJobId);
+    this.state = "Busy";
+    this.privateRootJobId = rootJobId;
+    this.privateReceiver = receive;
+    this.privateFailure = failed;
+    return Object.freeze({
+      workerEpoch: this.workerEpoch,
+      rootJobId,
+      post: (payload: unknown, transfer: readonly Transferable[] = []) => {
+        if (this.state !== "Busy" || this.privateRootJobId !== rootJobId) {
+          throw new Error("Private worker session is not active.");
+        }
+        this.post({
+          type: "PreparedStructuralFirePrivateInput",
+          workerEpoch: this.workerEpoch,
+          rootJobId,
+          payload
+        }, [...transfer]);
+      },
+      close: () => this.closePrivateSession(rootJobId)
+    });
+  }
+
+  public releaseResult(
+    jobId: WorkerJobId,
+    scope: Readonly<WorkerResultReleaseScope>
+  ): boolean {
+    if (this.state !== "Ready") return false;
+    try {
+      this.post({
+        type: "ReleaseResult",
+        jobId,
+        workerEpoch: this.workerEpoch,
+        rootJobId: scope.rootJobId,
+        targetKey: scope.targetKey
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   public stop(): void {
     if (this.state === "Stopped") return;
     this.state = "Stopping";
@@ -84,6 +153,7 @@ export class WorkerHandle {
 
   public terminate(): void {
     const rejectPendingStart = this.readyReject;
+    const failPrivate = this.privateFailure;
     if (this.transport) {
       this.transport.onmessage = null;
       this.transport.onerror = null;
@@ -92,9 +162,14 @@ export class WorkerHandle {
     }
     this.transport = undefined;
     this.activeJobId = undefined;
+    this.privateRootJobId = undefined;
+    this.privateReceiver = undefined;
+    this.privateFailure = undefined;
+    this.closedPrivateRoots.clear();
     this.output = undefined;
     this.state = "Stopped";
     rejectPendingStart?.(new Error("Worker terminated before becoming ready."));
+    failPrivate?.("Worker terminated during a private Prepared Fire session.");
     this.clearReadyPromise();
   }
 
@@ -128,6 +203,15 @@ export class WorkerHandle {
       case "JobFailed":
         if (this.state !== "Busy" || message.failure.jobId !== this.activeJobId) return this.fault("Unexpected JobFailed message.");
         this.finishActive(); this.callbacks.onFailed(this, message.failure); return;
+      case "PreparedStructuralFirePrivateOutput":
+        if (this.state === "Busy"
+          && message.rootJobId === this.privateRootJobId
+          && this.privateReceiver !== undefined) {
+          this.privateReceiver(message);
+          return;
+        }
+        if (this.closedPrivateRoots.has(message.rootJobId)) return;
+        return this.fault("Unexpected Prepared Structural Fire private output.");
       case "WorkerStopped":
         if (this.state !== "Stopping") return this.fault("Unexpected WorkerStopped message.");
         this.terminate(); return;
@@ -137,10 +221,30 @@ export class WorkerHandle {
 
   private finishActive(): void { this.activeJobId = undefined; this.output = undefined; this.state = "Ready"; }
 
+  private closePrivateSession(rootJobId: string): boolean {
+    if (this.state !== "Busy" || this.privateRootJobId !== rootJobId) return false;
+    this.closedPrivateRoots.delete(rootJobId);
+    this.closedPrivateRoots.add(rootJobId);
+    if (this.closedPrivateRoots.size > MAX_CLOSED_PRIVATE_ROOTS) {
+      const oldest = this.closedPrivateRoots.values().next().value;
+      if (oldest !== undefined) this.closedPrivateRoots.delete(oldest);
+    }
+    this.privateRootJobId = undefined;
+    this.privateReceiver = undefined;
+    this.privateFailure = undefined;
+    this.state = "Ready";
+    return true;
+  }
+
   private fault(reason: string): void {
     if (this.state === "Failed" || this.state === "Stopped") return;
     this.state = "Failed";
     this.readyReject?.(new Error(reason));
+    this.privateFailure?.(reason);
+    this.privateRootJobId = undefined;
+    this.privateReceiver = undefined;
+    this.privateFailure = undefined;
+    this.closedPrivateRoots.clear();
     this.clearReadyPromise();
     this.callbacks.onFault(this, reason);
   }

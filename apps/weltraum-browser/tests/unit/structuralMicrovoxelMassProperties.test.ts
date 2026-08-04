@@ -22,6 +22,7 @@ import {
   deriveStructuralComponentMassProperties,
   deriveStructuralObjectMassProperties
 } from "../../src/voxel/structural";
+import { deriveStructuralOccupiedCellMassProperties } from "../../src/voxel/structural/massProperties";
 
 type OccupiedCell = Readonly<{ x: number; y?: number; z?: number }>;
 
@@ -100,6 +101,33 @@ describe("Structural Microvoxel mass properties", () => {
     } as typeof object;
 
     expect(() => deriveStructuralObjectMassProperties(forged, { maxVisitedCells: 1 }))
+      .toThrowError(/explicit mass budget/);
+    expect(getterCalls).toBe(0);
+  });
+
+  it("bounds occupied-subset state lookup by maxVisitedCells", () => {
+    const object = objectFixture([{ x: 0 }, { x: 1 }]);
+    const target = deriveStructuralComponentClassification(object, {
+      maxVisitedCells: 2,
+      maxComponents: 1,
+      maxIndexedFacts: 1
+    }).components[0].occupiedCells[1];
+    let getterCalls = 0;
+    const cells = [object.bricks[0].cells[0], object.bricks[0].cells[1]];
+    Object.defineProperty(cells, "1", {
+      enumerable: true,
+      configurable: true,
+      get: () => {
+        getterCalls += 1;
+        return object.bricks[0].cells[1];
+      }
+    });
+    const forged = {
+      ...object,
+      bricks: [{ ...object.bricks[0], cells }]
+    } as typeof object;
+
+    expect(() => deriveStructuralOccupiedCellMassProperties(forged, [target], { maxVisitedCells: 1 }))
       .toThrowError(/explicit mass budget/);
     expect(getterCalls).toBe(0);
   });

@@ -12,6 +12,11 @@ export const ADAPTIVE_SNAPSHOT_PROJECTION_SCHEMA_VERSION = "adaptive-microvoxel-
 export const ADAPTIVE_RESIDENT_VALIDATION_PROOF_SCHEMA_VERSION = "adaptive-microvoxel-resident-validation-proof-v1" as const;
 export const ADAPTIVE_RESIDENT_VALIDATION_PROOF_VERSION = "adaptive-microvoxel-resident-validation-proof-issuer-v1" as const;
 export const ADAPTIVE_PLAN_SCHEMA_VERSION = "adaptive-microvoxel-plan-v1" as const;
+export const ADAPTIVE_AUTHORITY_PROTOCOL_SCHEMA_VERSION = "hestia-unified-adaptive-authority-v1" as const;
+export const ADAPTIVE_AUTHORITY_SNAPSHOT_SCHEMA_VERSION = "hestia-unified-adaptive-authority-snapshot-v1" as const;
+export const ADAPTIVE_AUTHORITY_COMMITMENT_SCHEMA_VERSION = "hestia-unified-adaptive-authority-commitment-v1" as const;
+export const ADAPTIVE_AUTHORITY_DERIVATION_ALGORITHM_VERSION = "hestia-unified-adaptive-brick-derivation-v1" as const;
+export const ADAPTIVE_AUTHORITY_MATERIAL_TABLE_VERSION = "hestia-unified-surface-material-table-v1" as const;
 
 declare const brand: unique symbol;
 export type AdaptiveLevel = (0 | 1 | 2 | 3 | 4) & { readonly [brand]: "AdaptiveLevel" };
@@ -145,6 +150,59 @@ export interface MaterializedAdaptiveBrick {
   readonly editRevision: AuthorityRevision;
   readonly contentHash: string;
   readonly provenance: AdaptiveBrickProvenance;
+}
+
+export interface AdaptiveAuthorityProtocol {
+  readonly schemaVersion: typeof ADAPTIVE_AUTHORITY_PROTOCOL_SCHEMA_VERSION;
+  readonly derivationAlgorithmVersion: typeof ADAPTIVE_AUTHORITY_DERIVATION_ALGORITHM_VERSION;
+  readonly materialTableVersion: typeof ADAPTIVE_AUTHORITY_MATERIAL_TABLE_VERSION;
+}
+
+export interface AdaptiveAuthoritySnapshotBrick {
+  readonly role: StableAuthorityId;
+  readonly brick: MaterializedAdaptiveBrick;
+}
+
+export interface AdaptiveAuthoritySnapshotPayload {
+  readonly schemaVersion: typeof ADAPTIVE_AUTHORITY_SNAPSHOT_SCHEMA_VERSION;
+  readonly protocol: AdaptiveAuthorityProtocol;
+  readonly authorityId: StableAuthorityId;
+  readonly revision: AuthorityRevision;
+  readonly bricks: readonly AdaptiveAuthoritySnapshotBrick[];
+  readonly orderedInputs: readonly AdaptiveEditRecord[];
+}
+
+export interface AdaptiveAuthoritySnapshot extends AdaptiveAuthoritySnapshotPayload {
+  readonly contentHash: string;
+}
+
+export interface AdaptiveAuthoritySnapshotInput {
+  readonly authorityId: string;
+  readonly revision: number;
+  readonly bricks: readonly {
+    readonly role: string;
+    readonly brick: MaterializedAdaptiveBrick;
+  }[];
+  readonly orderedInputs: readonly AdaptiveEditRecord[];
+}
+
+export interface AdaptiveAuthorityAdoptionCommitmentPayload {
+  readonly schemaVersion: typeof ADAPTIVE_AUTHORITY_COMMITMENT_SCHEMA_VERSION;
+  readonly protocol: AdaptiveAuthorityProtocol;
+  readonly authorityId: StableAuthorityId;
+  readonly predecessorRevision: AuthorityRevision;
+  readonly predecessorHash: string;
+  readonly candidateRevision: AuthorityRevision;
+  readonly candidateHash: string;
+}
+
+export interface AdaptiveAuthorityAdoptionCommitment extends AdaptiveAuthorityAdoptionCommitmentPayload {
+  readonly commitmentHash: string;
+}
+
+export interface AdaptiveAuthorityAdoptionCommitmentInput {
+  readonly predecessorSnapshot: AdaptiveAuthoritySnapshot;
+  readonly candidateSnapshot: AdaptiveAuthoritySnapshot;
 }
 
 export interface AdaptivePlannerBudgets {

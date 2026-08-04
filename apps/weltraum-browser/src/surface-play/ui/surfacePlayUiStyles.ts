@@ -1,10 +1,10 @@
 export const SURFACE_PLAY_UI_STYLES = `
 .surface-play-ui {
   --surface-play-cyan: #8debf0;
-  --surface-play-cyan-dim: #4b9ea5;
+  --surface-play-cyan-dim: #57959a;
   --surface-play-amber: #f2b84b;
   --surface-play-red: #ff5f5f;
-  --surface-play-graphite: rgba(4, 18, 21, 0.94);
+  --surface-play-graphite: rgba(5, 19, 18, 0.82);
   position: absolute;
   inset: 0;
   z-index: 18;
@@ -25,13 +25,13 @@ export const SURFACE_PLAY_UI_STYLES = `
 .surface-play-hud__panel {
   position: absolute;
   display: grid;
-  gap: 0.35rem;
-  inline-size: min(20rem, 29vw);
-  padding: 0.75rem 1rem 0.85rem;
-  border: 1px solid var(--surface-play-cyan-dim);
+  gap: 0.28rem;
+  inline-size: min(19rem, 28vw);
+  padding: 0.65rem 0.85rem 0.72rem;
+  border-inline-start: 2px solid var(--surface-play-cyan-dim);
+  border-block-end: 1px solid rgba(87, 149, 154, 0.38);
   background: var(--surface-play-graphite);
-  box-shadow: 0 0 0 1px rgba(0, 9, 11, 0.7), 0 0.35rem 1.2rem rgba(0, 6, 8, 0.55);
-  clip-path: polygon(0 0, calc(100% - 0.7rem) 0, 100% 0.7rem, 100% 100%, 0.7rem 100%, 0 calc(100% - 0.7rem));
+  box-shadow: 0 0.35rem 1rem rgba(0, 6, 8, 0.28);
 }
 
 .surface-play-hud__location {
@@ -58,12 +58,13 @@ export const SURFACE_PLAY_UI_STYLES = `
 .surface-play-hud__eyebrow,
 .surface-play-hud__objective,
 .surface-play-hud__state,
-.surface-play-hud__cooldown {
+.surface-play-hud__cooldown,
+.surface-play-hud__readiness-detail {
   font-size: 0.78em;
 }
 
 .surface-play-hud__objective {
-  color: #b9d7d7;
+  color: #c4dcda;
 }
 
 .surface-play-hud__meter-label {
@@ -93,7 +94,7 @@ export const SURFACE_PLAY_UI_STYLES = `
 .surface-play-hud__meter[data-tone="warning"] .surface-play-hud__meter-fill,
 .surface-play-hud__weapon[data-status="cooldown"] .surface-play-hud__weapon-status,
 .surface-play-hud__weapon[data-status="overheated"] .surface-play-hud__weapon-status,
-.surface-play-hud__weapon[data-status="no-energy"] .surface-play-hud__weapon-status {
+.surface-play-hud__weapon[data-status="energy-low"] .surface-play-hud__weapon-status {
   color: var(--surface-play-amber);
   background-color: var(--surface-play-amber);
 }
@@ -109,7 +110,7 @@ export const SURFACE_PLAY_UI_STYLES = `
 
 .surface-play-hud__weapon[data-status="cooldown"] .surface-play-hud__weapon-status,
 .surface-play-hud__weapon[data-status="overheated"] .surface-play-hud__weapon-status,
-.surface-play-hud__weapon[data-status="no-energy"] .surface-play-hud__weapon-status {
+.surface-play-hud__weapon[data-status="energy-low"] .surface-play-hud__weapon-status {
   background: transparent;
 }
 
@@ -130,9 +131,7 @@ export const SURFACE_PLAY_UI_STYLES = `
   box-shadow: 0 0 0 1px rgba(0, 7, 9, 0.85);
 }
 
-.surface-play-hud__target,
-.surface-play-hud__action,
-.surface-play-hud__block {
+.surface-play-hud__target {
   position: absolute;
   inset-inline-start: 50%;
   max-inline-size: 22rem;
@@ -149,13 +148,39 @@ export const SURFACE_PLAY_UI_STYLES = `
   color: var(--surface-play-cyan);
 }
 
+.surface-play-hud__transient-action-zone,
+.surface-play-hud__warning-zone {
+  position: absolute;
+  inset-inline: 24%;
+  display: grid;
+  justify-items: center;
+  pointer-events: none;
+}
+
+.surface-play-hud__transient-action-zone {
+  inset-block-start: 8%;
+}
+
+.surface-play-hud__warning-zone {
+  inset-block-end: 10%;
+}
+
+.surface-play-hud__action,
+.surface-play-hud__block {
+  display: block;
+  max-inline-size: min(36rem, 100%);
+  padding: 0.3rem 0.65rem;
+  background: rgba(2, 14, 17, 0.88);
+  font-size: 0.78em;
+  text-align: center;
+  white-space: normal;
+}
+
 .surface-play-hud__action {
-  inset-block-start: calc(50% + 3rem);
   color: #d8f6f5;
 }
 
 .surface-play-hud__block {
-  inset-block-start: calc(50% + 4.6rem);
   color: var(--surface-play-amber);
   border-inline-start: 2px solid var(--surface-play-amber);
 }
@@ -207,6 +232,49 @@ export const SURFACE_PLAY_UI_STYLES = `
   outline-offset: 0.25rem;
 }
 
+.surface-play-debug-overlay {
+  position: absolute;
+  inset-block-start: 0.75rem;
+  inset-inline-end: 0.75rem;
+  z-index: 24;
+  display: grid;
+  gap: 0.22rem;
+  inline-size: min(34rem, calc(100vw - 1.5rem));
+  padding: 0.7rem 0.8rem;
+  border: 1px solid rgba(141, 235, 240, 0.68);
+  background: rgba(3, 12, 13, 0.94);
+  box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.42);
+  color: #d8f6f5;
+  font: 500 clamp(0.66rem, 0.78vw, 0.78rem)/1.35 "IBM Plex Mono", "Cascadia Mono", Consolas, monospace;
+  letter-spacing: 0.025em;
+  pointer-events: none;
+}
+
+.surface-play-debug-overlay__heading,
+.surface-play-debug-overlay__metric {
+  margin: 0;
+}
+
+.surface-play-debug-overlay__heading {
+  color: var(--surface-play-cyan, #8debf0);
+  font-size: 1em;
+  letter-spacing: 0.1em;
+}
+
+.surface-play-debug-overlay__graph {
+  display: block;
+  inline-size: 100%;
+  block-size: 4.5rem;
+  border-block: 1px solid rgba(141, 235, 240, 0.2);
+  background: rgba(0, 0, 0, 0.26);
+}
+
+.surface-play-debug-overlay__graph-line {
+  stroke: #8debf0;
+  stroke-width: 1.4;
+  vector-effect: non-scaling-stroke;
+}
+
 [hidden] {
   display: none !important;
 }
@@ -234,6 +302,11 @@ export const SURFACE_PLAY_UI_STYLES = `
 
   .surface-play-hud__center-safe {
     inset: 22% 30%;
+  }
+
+  .surface-play-hud__transient-action-zone,
+  .surface-play-hud__warning-zone {
+    inset-inline: 31%;
   }
 }
 

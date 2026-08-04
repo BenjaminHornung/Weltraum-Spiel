@@ -16,7 +16,13 @@ export const STRUCTURAL_BRICK_SCHEMA_VERSION = "structural-microvoxel-brick-v1" 
 export const STRUCTURAL_FRAME_BINDING_SCHEMA_VERSION = "structural-microvoxel-frame-binding-v1" as const;
 export const STRUCTURAL_SOURCE_BINDING_SCHEMA_VERSION = "structural-microvoxel-source-binding-v1" as const;
 export const STRUCTURAL_COMMAND_SCHEMA_VERSION = "structural-microvoxel-command-v1" as const;
+export const STRUCTURAL_TRANSFER_COMMAND_SCHEMA_VERSION = "structural-microvoxel-transfer-command-v1" as const;
 export const STRUCTURAL_RESULT_SCHEMA_VERSION = "structural-microvoxel-result-v1" as const;
+export const STRUCTURAL_OBJECT_SCHEMA_VERSION_V2 = "structural-microvoxel-object-v2" as const;
+export const STRUCTURAL_TRANSFER_COMMAND_SCHEMA_VERSION_V2 = "structural-microvoxel-transfer-command-v2" as const;
+export const STRUCTURAL_RESULT_SCHEMA_VERSION_V2 = "structural-microvoxel-result-v2" as const;
+export const STRUCTURAL_EVIDENCE_ORIGIN_SCHEMA_VERSION_V2 = "structural-evidence-origin-v2" as const;
+export const STRUCTURAL_EVIDENCE_SEGMENT_SCHEMA_VERSION_V2 = "structural-evidence-segment-v2" as const;
 export const STRUCTURAL_COMMAND_EVIDENCE_SCHEMA_VERSION = "structural-microvoxel-command-evidence-v1" as const;
 export const STRUCTURAL_COMPONENT_SCHEMA_VERSION = "structural-microvoxel-component-v1" as const;
 export const STRUCTURAL_COMPONENT_ID_VERSION = "structural-microvoxel-component-id-v1" as const;
@@ -38,6 +44,8 @@ export const STRUCTURAL_MAX_ANCHORS = 4_096 as const;
 export const STRUCTURAL_MAX_JOINTS = 4_096 as const;
 export const STRUCTURAL_MAX_COMMAND_EVIDENCE = 4_096 as const;
 export const STRUCTURAL_MAX_CHANGED_BRICK_KEYS = 4_096 as const;
+export const STRUCTURAL_MAX_TRANSFER_SOURCE_FRAGMENTS = 8 as const;
+export const STRUCTURAL_EVIDENCE_SEGMENT_MAX_RECEIPTS = 64 as const;
 export const STRUCTURAL_MAX_INVALIDATIONS = 3 as const;
 export const STRUCTURAL_MAX_PERSISTENCE_UTF8_BYTES = 16_777_216 as const;
 
@@ -169,6 +177,56 @@ export interface StructuralObject {
   readonly evidenceHash: string;
 }
 
+export interface StructuralEvidenceArchiveManifestV2 {
+  readonly originHash: string;
+  readonly headSegmentHash: string | null;
+  readonly receiptCount: number;
+  readonly archiveHash: string;
+}
+
+export type StructuralEvidenceOriginV2 =
+  | {
+      readonly schemaVersion: typeof STRUCTURAL_EVIDENCE_ORIGIN_SCHEMA_VERSION_V2;
+      readonly kind: "Fresh";
+      readonly originHash: string;
+    }
+  | {
+      readonly schemaVersion: typeof STRUCTURAL_EVIDENCE_ORIGIN_SCHEMA_VERSION_V2;
+      readonly kind: "MigratedV1";
+      readonly legacySchemaVersion: typeof STRUCTURAL_OBJECT_SCHEMA_VERSION;
+      readonly legacyEvidenceBytesHash: string;
+      readonly legacyReceiptCount: number;
+      readonly originHash: string;
+    };
+
+export type StructuralEvidencePredecessorV2 =
+  | { readonly kind: "Origin"; readonly hash: string }
+  | { readonly kind: "Segment"; readonly hash: string };
+
+export interface StructuralEvidenceSegmentV2 {
+  readonly schemaVersion: typeof STRUCTURAL_EVIDENCE_SEGMENT_SCHEMA_VERSION_V2;
+  readonly predecessor: StructuralEvidencePredecessorV2;
+  readonly firstReceiptOrdinal: number;
+  readonly endReceiptOrdinalExclusive: number;
+  readonly receipts: readonly StructuralCommandEvidence[];
+  readonly segmentHash: string;
+}
+
+export interface StructuralObjectV2 {
+  readonly schemaVersion: typeof STRUCTURAL_OBJECT_SCHEMA_VERSION_V2;
+  readonly objectId: StructuralObjectId;
+  readonly frame: StructuralFrameBinding;
+  readonly source: StructuralAdaptiveSourceBinding;
+  readonly materials: readonly StructuralMaterialDefinition[];
+  readonly bricks: readonly StructuralBrick[];
+  readonly anchors: readonly StructuralAnchor[];
+  readonly joints: readonly StructuralJoint[];
+  readonly objectRevision: StructuralRevision;
+  readonly editRevision: StructuralRevision;
+  readonly contentHash: string;
+  readonly evidenceArchive: StructuralEvidenceArchiveManifestV2;
+}
+
 export interface StructuralMaterialFilter {
   readonly materialIds: readonly StructuralMaterialId[];
 }
@@ -242,6 +300,40 @@ export type StructuralDestructionCommand =
   | StructuralSetMaterialSphereCommand
   | StructuralSetMaterialBoxCommand;
 
+export type StructuralTransferDetachedComponentsCommand = StructuralCommandOrder & {
+  readonly schemaVersion: typeof STRUCTURAL_TRANSFER_COMMAND_SCHEMA_VERSION;
+  readonly kind: "TransferDetachedComponents";
+  readonly commandId: StableAuthorityId;
+  readonly targetObjectId: StructuralObjectId;
+  readonly expectedObjectRevision: StructuralRevision;
+  readonly resultingObjectRevision: StructuralRevision;
+  readonly expectedAdaptiveSource: StructuralAdaptiveSourceBinding;
+  readonly sourceFragmentIds: readonly StructuralFragmentId[];
+  readonly actor: StableAuthorityId;
+  readonly source: StableAuthorityId;
+  readonly budgets: StructuralCommandBudgets;
+};
+
+export interface StructuralFragmentSetCommitmentV2 {
+  readonly count: number;
+  readonly orderedFragmentIdsHash: string;
+  readonly classificationHash: string;
+}
+
+export type StructuralTransferDetachedComponentsCommandV2 = StructuralCommandOrder & {
+  readonly schemaVersion: typeof STRUCTURAL_TRANSFER_COMMAND_SCHEMA_VERSION_V2;
+  readonly kind: "TransferDetachedComponents";
+  readonly commandId: StableAuthorityId;
+  readonly targetObjectId: StructuralObjectId;
+  readonly expectedObjectRevision: StructuralRevision;
+  readonly resultingObjectRevision: StructuralRevision;
+  readonly expectedAdaptiveSource: StructuralAdaptiveSourceBinding;
+  readonly sourceFragmentSet: StructuralFragmentSetCommitmentV2;
+  readonly actor: StableAuthorityId;
+  readonly source: StableAuthorityId;
+  readonly budgets: StructuralCommandBudgets;
+};
+
 export type StructuralRejectionCode =
   | "InvalidContract"
   | "WrongTarget"
@@ -284,6 +376,30 @@ export interface StructuralRejectedCommandResult {
 }
 
 export type StructuralCommandResult = StructuralAcceptedCommandResult | StructuralRejectedCommandResult;
+
+export interface StructuralAcceptedCommandResultV2 {
+  readonly schemaVersion: typeof STRUCTURAL_RESULT_SCHEMA_VERSION_V2;
+  readonly status: "Applied" | "NoChange";
+  readonly commandId: StableAuthorityId;
+  readonly object: StructuralObjectV2;
+  readonly changedBrickKeys: readonly AdaptiveBrickKey[];
+  readonly selectedVoxelCount: number;
+  readonly changedVoxelCount: number;
+  readonly invalidations: readonly StructuralDerivedInvalidation[];
+  readonly resultHash: string;
+}
+
+export interface StructuralRejectedCommandResultV2 {
+  readonly schemaVersion: typeof STRUCTURAL_RESULT_SCHEMA_VERSION_V2;
+  readonly status: "Rejected";
+  readonly commandId: StableAuthorityId | null;
+  readonly object: StructuralObjectV2;
+  readonly code: StructuralRejectionCode;
+  readonly path: string;
+  readonly resultHash: string;
+}
+
+export type StructuralResultV2 = StructuralAcceptedCommandResultV2 | StructuralRejectedCommandResultV2;
 
 export interface StructuralActiveAnchorFact {
   readonly anchorId: StableAuthorityId;

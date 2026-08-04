@@ -10,6 +10,7 @@ import {
   type QuantumBounds,
   type QuantumPoint
 } from "../adaptive";
+import { hasDeepFrozenIdentity } from "../adaptive/immutability";
 import type {
   StructuralCellAddress,
   StructuralFrameBinding,
@@ -43,10 +44,18 @@ const safeTranslate = (value: number, offset: number, path: string): number => {
   return result;
 };
 
+const validatedLocalCellOffsetByDeepFrozenIdentity = new WeakMap<object, StructuralLocalCellOffset>();
+
 export const validateStructuralLocalCellOffset = (value: unknown, path = "local"): StructuralLocalCellOffset => {
+  if (typeof value === "object" && value !== null && hasDeepFrozenIdentity(value)) {
+    const cached = validatedLocalCellOffsetByDeepFrozenIdentity.get(value);
+    if (cached !== undefined) return cached;
+  }
   const record = requirePlainRecord(value, path);
   requireExactKeys(record, ["x", "y", "z"], path);
-  return deepFreeze({ x: axis(record.x, `${path}/x`), y: axis(record.y, `${path}/y`), z: axis(record.z, `${path}/z`) });
+  const validated = deepFreeze({ x: axis(record.x, `${path}/x`), y: axis(record.y, `${path}/y`), z: axis(record.z, `${path}/z`) });
+  if (hasDeepFrozenIdentity(record)) validatedLocalCellOffsetByDeepFrozenIdentity.set(record, validated);
+  return validated;
 };
 
 export const structuralLocalCellIndex = (value: unknown, path = "localIndex"): StructuralLocalCellIndex => {
@@ -78,19 +87,37 @@ export const createStructuralCellAddress = (brickKeyValue: unknown, localValue: 
   return deepFreeze({ brickKey, local: validateStructuralLocalCellOffset(localValue) });
 };
 
+const validatedCellAddressByDeepFrozenIdentity = new WeakMap<object, StructuralCellAddress>();
+const globalQuantumByDeepFrozenAddress = new WeakMap<object, QuantumPoint>();
+
 export const validateStructuralCellAddress = (value: unknown, path = "cell"): StructuralCellAddress => {
+  if (typeof value === "object" && value !== null && hasDeepFrozenIdentity(value)) {
+    const cached = validatedCellAddressByDeepFrozenIdentity.get(value);
+    if (cached !== undefined) return cached;
+  }
   const record = requirePlainRecord(value, path);
   requireExactKeys(record, ["brickKey", "local"], path);
-  return createStructuralCellAddress(record.brickKey, record.local);
+  const validated = createStructuralCellAddress(record.brickKey, record.local);
+  if (hasDeepFrozenIdentity(record)) validatedCellAddressByDeepFrozenIdentity.set(record, validated);
+  return validated;
 };
 
 export const globalQuantumForStructuralCell = (addressValue: unknown): QuantumPoint => {
+  if (typeof addressValue === "object" && addressValue !== null && hasDeepFrozenIdentity(addressValue)) {
+    const cached = globalQuantumByDeepFrozenAddress.get(addressValue);
+    if (cached !== undefined) return cached;
+  }
   const address = validateStructuralCellAddress(addressValue);
-  return deepFreeze({
+  const global = deepFreeze({
     x: globalQuantumCoordinate(safeTranslate(address.brickKey.originQuantum.x, address.local.x, "globalCell/x"), "globalCell/x"),
     y: globalQuantumCoordinate(safeTranslate(address.brickKey.originQuantum.y, address.local.y, "globalCell/y"), "globalCell/y"),
     z: globalQuantumCoordinate(safeTranslate(address.brickKey.originQuantum.z, address.local.z, "globalCell/z"), "globalCell/z")
   });
+  if (typeof addressValue === "object" && addressValue !== null && hasDeepFrozenIdentity(addressValue)) {
+    globalQuantumByDeepFrozenAddress.set(addressValue, global);
+  }
+  if (hasDeepFrozenIdentity(address)) globalQuantumByDeepFrozenAddress.set(address, global);
+  return global;
 };
 
 export const objectLocalQuantumForGlobal = (point: QuantumPoint, frameValue: unknown): QuantumPoint => {

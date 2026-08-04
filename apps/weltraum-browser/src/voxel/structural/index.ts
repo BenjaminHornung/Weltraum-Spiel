@@ -17,6 +17,8 @@ export {
   validateStructuralAdaptiveSourceBindingExpectation,
   validateStructuralCommandBudgets,
   validateStructuralDestructionCommand,
+  validateStructuralTransferDetachedComponentsCommand,
+  validateStructuralTransferDetachedComponentsCommandV2,
   validateStructuralSphereShape,
   validateStructuralBoxShape,
   requireStructuralHash,
@@ -29,12 +31,24 @@ export {
   createStructuralBrick,
   validateStructuralAdaptiveSourceBinding,
   createStructuralObjectFromAdaptive,
+  validateStructuralObjectV2Projection,
   getStructuralVoxel,
   structuralAddressForBrickCell
 } from "./model";
-export * from "./connectivity";
-export * from "./massProperties";
-export * from "./commands";
+export {
+  StructuralConnectivityError,
+  deriveStructuralComponentClassification,
+  deriveStructuralComponents,
+  deriveStructuralFragments
+} from "./connectivity";
+export {
+  StructuralMassError,
+  deriveStructuralObjectMassProperties,
+  deriveStructuralComponentMassProperties
+} from "./massProperties";
+export { applyStructuralDestructionCommand } from "./commands";
+export { applyStructuralDetachedComponentTransfer, applyStructuralDetachedComponentTransferV2 } from "./transfer";
+export * from "./evidenceArchive";
 export * from "./greedyMesher";
 export * from "./persistence";
 export { MICROVOXEL_BASE_QUANTUM_METERS, ADAPTIVE_LEVELS } from "../adaptive";

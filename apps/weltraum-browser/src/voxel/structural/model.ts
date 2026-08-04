@@ -17,7 +17,11 @@ import {
   type MaterializedAdaptiveBrick,
   type StableAuthorityId
 } from "../adaptive";
-import { hashStructuralEvidence, hashStructuralObjectContent } from "./canonical";
+import {
+  hashStructuralEvidence,
+  hashStructuralObjectContent,
+  projectStructuralObject
+} from "./canonical";
 import {
   assertStructuralAddressMatchesFrame,
   createStructuralCellAddress,
@@ -28,10 +32,13 @@ import {
 import {
   STRUCTURAL_BRICK_SCHEMA_VERSION,
   STRUCTURAL_OBJECT_SCHEMA_VERSION,
+  STRUCTURAL_OBJECT_SCHEMA_VERSION_V2,
   STRUCTURAL_SOURCE_BINDING_SCHEMA_VERSION,
   STRUCTURAL_MAX_ANCHORS,
   STRUCTURAL_MAX_BRICKS,
   STRUCTURAL_MAX_BRICK_CELLS,
+  STRUCTURAL_MAX_CHANGED_BRICK_KEYS,
+  STRUCTURAL_MAX_COMMAND_EVIDENCE,
   STRUCTURAL_MAX_JOINTS,
   STRUCTURAL_MAX_MATERIAL_BINDINGS,
   STRUCTURAL_MAX_MATERIAL_DEFINITIONS,
@@ -42,11 +49,13 @@ import {
   type StructuralAnchor,
   type StructuralBrick,
   type StructuralBrickCell,
+  type StructuralCellAddress,
   type StructuralFrameBinding,
   type StructuralJoint,
   type StructuralJointEndpoint,
   type StructuralMaterialDefinition,
   type StructuralObject,
+  type StructuralObjectV2,
   type StructuralVoxelState
 } from "./types";
 import {
@@ -64,6 +73,7 @@ import {
   validateStructuralMaterialDefinition,
   validateStructuralVoxelState
 } from "./validation";
+import { validateStructuralEvidenceArchiveManifestV2 } from "./evidenceArchive";
 import {
   requireExactKeys as adaptiveRequireExactKeys,
   requirePlainRecord as adaptiveRequirePlainRecord
@@ -247,6 +257,172 @@ export const reconstructStructuralObjectInternal = (value: unknown): StructuralO
   return deepFreeze({ ...contentCandidate, contentHash, commandEvidence, evidenceHash });
 };
 
+const adaptiveKeyFromProjection = (value: unknown, path: string): ReturnType<typeof validateAdaptiveBrickKey> => {
+  if (typeof value !== "string") {
+    return structuralFail("InvalidContract", path, "Projected Adaptive brick keys must be canonical strings.");
+  }
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(value) as unknown;
+  } catch {
+    return structuralFail("InvalidContract", path, "Projected Adaptive brick key is not valid JSON.");
+  }
+  const key = validateAdaptiveBrickKey(parsed);
+  if (serializeAdaptiveKey(key) !== value) {
+    return structuralFail("InvalidContract", path, "Projected Adaptive brick key is not canonical.");
+  }
+  return key;
+};
+
+const addressFromProjection = (value: unknown, path: string): StructuralCellAddress => {
+  const record = requirePlainRecord(value, path);
+  requireExactKeys(record, ["brickKey", "localIndex"], path);
+  return validateStructuralCellAddress({
+    brickKey: adaptiveKeyFromProjection(record.brickKey, `${path}/brickKey`),
+    local: localCellOffsetFromIndex(record.localIndex)
+  }, path);
+};
+
+export const validateStructuralObjectProjection = (value: unknown): StructuralObject => {
+  const record = requirePlainRecord(value, "object");
+  requireExactKeys(record, [
+    "schemaVersion", "objectId", "frame", "source", "materials", "bricks", "anchors", "joints",
+    "objectRevision", "editRevision", "contentHash", "commandEvidence", "evidenceHash"
+  ], "object");
+  if (record.schemaVersion !== STRUCTURAL_OBJECT_SCHEMA_VERSION) {
+    return structuralFail("InvalidContract", "object/schemaVersion", "Unsupported Structural object projection version.");
+  }
+  const bricks = structuralDenseArray(record.bricks, "object/bricks", STRUCTURAL_MAX_BRICKS)
+    .map((value, index) => {
+      const path = `object/bricks/${index}`;
+      const brick = requirePlainRecord(value, path);
+      requireExactKeys(brick, ["schemaVersion", "key", "cells"], path);
+      return {
+        schemaVersion: brick.schemaVersion,
+        key: adaptiveKeyFromProjection(brick.key, `${path}/key`),
+        cells: brick.cells
+      };
+    });
+  const anchors = structuralDenseArray(record.anchors, "object/anchors", STRUCTURAL_MAX_ANCHORS)
+    .map((value, index) => {
+      const path = `object/anchors/${index}`;
+      const anchor = requirePlainRecord(value, path);
+      requireExactKeys(anchor, ["anchorId", "cell"], path);
+      return { anchorId: anchor.anchorId, cell: addressFromProjection(anchor.cell, `${path}/cell`) };
+    });
+  const joints = structuralDenseArray(record.joints, "object/joints", STRUCTURAL_MAX_JOINTS)
+    .map((value, index) => {
+      const path = `object/joints/${index}`;
+      const joint = requirePlainRecord(value, path);
+      requireExactKeys(joint, ["jointId", "jointClass", "endpointA", "endpointB"], path);
+      const endpoint = (candidate: unknown, endpointPath: string) => {
+        const projected = requirePlainRecord(candidate, endpointPath);
+        requireExactKeys(projected, ["cell", "role"], endpointPath);
+        return { cell: addressFromProjection(projected.cell, `${endpointPath}/cell`), role: projected.role };
+      };
+      return {
+        jointId: joint.jointId,
+        jointClass: joint.jointClass,
+        endpointA: endpoint(joint.endpointA, `${path}/endpointA`),
+        endpointB: endpoint(joint.endpointB, `${path}/endpointB`)
+      };
+    });
+  const commandEvidence = structuralDenseArray(
+    record.commandEvidence,
+    "object/commandEvidence",
+    STRUCTURAL_MAX_COMMAND_EVIDENCE
+  ).map((value, index) => {
+    const path = `object/commandEvidence/${index}`;
+    const evidence = requirePlainRecord(value, path);
+    requireExactKeys(evidence, [
+      "schemaVersion", "commandId", "commandHash", "status", "previousObjectRevision",
+      "resultingObjectRevision", "previousEditRevision", "resultingEditRevision",
+      "previousContentHash", "resultingContentHash", "changedBrickKeys", "selectedVoxelCount",
+      "changedVoxelCount", "adaptiveJournalDigest"
+    ], path);
+    return {
+      ...evidence,
+      changedBrickKeys: structuralDenseArray(
+        evidence.changedBrickKeys,
+        `${path}/changedBrickKeys`,
+        STRUCTURAL_MAX_CHANGED_BRICK_KEYS
+      ).map((key, keyIndex) =>
+        adaptiveKeyFromProjection(key, `${path}/changedBrickKeys/${keyIndex}`))
+    };
+  });
+  const rebuilt = reconstructStructuralObjectInternal({
+    objectId: record.objectId,
+    frame: record.frame,
+    source: record.source,
+    materials: record.materials,
+    bricks,
+    anchors,
+    joints,
+    objectRevision: record.objectRevision,
+    editRevision: record.editRevision,
+    commandEvidence
+  });
+  const projectedContentHash = requireStructuralHash(record.contentHash, "object/contentHash");
+  const projectedEvidenceHash = requireStructuralHash(record.evidenceHash, "object/evidenceHash");
+  if (
+    rebuilt.contentHash !== projectedContentHash
+    || hashStructuralObjectContent(rebuilt) !== projectedContentHash
+    || rebuilt.evidenceHash !== projectedEvidenceHash
+    || hashStructuralEvidence(rebuilt.commandEvidence) !== projectedEvidenceHash
+  ) {
+    return structuralFail("InvalidContract", "object", "Structural object projection hashes are invalid.");
+  }
+  if (canonicalAdaptiveJson(projectStructuralObject(rebuilt)) !== canonicalAdaptiveJson(value)) {
+    return structuralFail("InvalidContract", "object", "Structural object projection is noncanonical.");
+  }
+  return rebuilt;
+};
+
+export const validateStructuralObjectV2Projection = (value: unknown): StructuralObjectV2 => {
+  const record = requirePlainRecord(value, "object");
+  requireExactKeys(record, [
+    "schemaVersion", "objectId", "frame", "source", "materials", "bricks", "anchors", "joints",
+    "objectRevision", "editRevision", "contentHash", "evidenceArchive"
+  ], "object");
+  if (record.schemaVersion !== STRUCTURAL_OBJECT_SCHEMA_VERSION_V2) {
+    return structuralFail("InvalidContract", "object/schemaVersion", "Unsupported Structural Object V2 schema.");
+  }
+  const initialProjection = {
+    ...record,
+    schemaVersion: STRUCTURAL_OBJECT_SCHEMA_VERSION,
+    objectRevision: 0,
+    editRevision: 0,
+    commandEvidence: [],
+    evidenceHash: hashStructuralEvidence([])
+  } as Record<string, unknown>;
+  delete initialProjection.evidenceArchive;
+  const shared = validateStructuralObjectProjection(initialProjection);
+  const objectRevision = structuralRevision(record.objectRevision, "object/objectRevision");
+  const editRevision = structuralRevision(record.editRevision, "object/editRevision");
+  const contentHash = requireStructuralHash(record.contentHash, "object/contentHash");
+  const evidenceArchive = validateStructuralEvidenceArchiveManifestV2(record.evidenceArchive);
+  if (evidenceArchive.receiptCount !== objectRevision) {
+    return structuralFail("InvalidRevision", "object/evidenceArchive/receiptCount", "Structural Evidence receipt count must equal object revision.");
+  }
+  if (contentHash !== shared.contentHash) {
+    return structuralFail("InvalidContract", "object/contentHash", "Structural Object V2 semantic content hash mismatch.");
+  }
+  return deepFreeze({
+    schemaVersion: STRUCTURAL_OBJECT_SCHEMA_VERSION_V2,
+    objectId: shared.objectId,
+    frame: shared.frame,
+    source: shared.source,
+    materials: shared.materials,
+    bricks: shared.bricks,
+    anchors: shared.anchors,
+    joints: shared.joints,
+    objectRevision,
+    editRevision,
+    contentHash,
+    evidenceArchive
+  });
+};
+
 const validateMaterialBindings = (
   values: readonly unknown[],
   materials: readonly StructuralMaterialDefinition[]
@@ -367,5 +543,22 @@ export const getStructuralVoxel = (object: StructuralObject, addressValue: unkno
   return brick.cells.find((cell) => cell.localIndex === localIndex)?.state ?? null;
 };
 
-export const structuralAddressForBrickCell = (brick: StructuralBrick, localIndex: number) =>
-  createStructuralCellAddress(brick.key, localCellOffsetFromIndex(localIndex));
+const structuralAddressesByBrick = new WeakMap<StructuralBrick, Map<number, StructuralCellAddress>>();
+
+export const structuralAddressForBrickCell = (
+  brick: StructuralBrick,
+  localIndex: number
+): StructuralCellAddress => {
+  const cached = structuralAddressesByBrick.get(brick)?.get(localIndex);
+  if (cached !== undefined) return cached;
+  const address = createStructuralCellAddress(brick.key, localCellOffsetFromIndex(localIndex));
+  if (Object.isFrozen(brick)) {
+    let addresses = structuralAddressesByBrick.get(brick);
+    if (addresses === undefined) {
+      addresses = new Map();
+      structuralAddressesByBrick.set(brick, addresses);
+    }
+    addresses.set(localIndex, address);
+  }
+  return address;
+};

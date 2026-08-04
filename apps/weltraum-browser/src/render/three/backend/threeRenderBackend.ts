@@ -152,6 +152,19 @@ export class ThreeRenderBackend implements RenderBackend {
     return this.finish(renderCommandResult("Accepted"));
   }
 
+  resize(width: number, height: number, pixelRatio = this.options.pixelRatio ?? 1): void {
+    if (!Number.isFinite(width) || width <= 0 || !Number.isFinite(height) || height <= 0) {
+      throw new RangeError("Three.js viewport dimensions must be finite and positive.");
+    }
+    if (!Number.isFinite(pixelRatio) || pixelRatio <= 0) {
+      throw new RangeError("Three.js viewport pixel ratio must be finite and positive.");
+    }
+    this.camera.aspect = width / height;
+    this.camera.updateProjectionMatrix();
+    this.renderer?.setPixelRatio(pixelRatio);
+    this.renderer?.setSize(width, height, false);
+  }
+
   getCapabilities(): RenderBackendCapabilities {
     return capabilities;
   }

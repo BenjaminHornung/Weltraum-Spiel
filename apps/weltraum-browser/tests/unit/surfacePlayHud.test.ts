@@ -49,6 +49,7 @@ const hudSnapshot = (
   heatJoules: 10,
   maximumHeatJoules: 50,
   cooldownSeconds: 0,
+  weaponReadiness: { kind: "Ready", nextShotReadyInSeconds: 0 },
   targetCondition: "Damaged",
   latestAction: "TERRAIN IMPACT",
   latestBlock: "CUTTER COOLING",
@@ -83,6 +84,7 @@ describe("Surface Play HUD", () => {
       "80 / 100 J",
       "PULSE CUTTER",
       "READY",
+      "READY TO FIRE",
       "HEAT",
       "10 / 50 J",
       "COOLDOWN 0.00 S",
@@ -102,10 +104,17 @@ describe("Surface Play HUD", () => {
   });
 
   it.each([
-    [{ maximumHeatJoules: 50, heatJoules: 50, energyJoules: 0, cooldownSeconds: 2 }, "OVERHEATED", "overheated"],
-    [{ maximumHeatJoules: 50, heatJoules: 10, energyJoules: 0, cooldownSeconds: 2 }, "NO ENERGY", "no-energy"],
-    [{ maximumHeatJoules: 50, heatJoules: 10, energyJoules: 80, cooldownSeconds: 2 }, "COOLDOWN", "cooldown"],
-    [{ maximumHeatJoules: 50, heatJoules: 10, energyJoules: 80, cooldownSeconds: 0 }, "READY", "ready"]
+    [{ weaponReadiness: { kind: "Overheated", nextShotReadyInSeconds: 1.5 } }, "OVERHEATED", "overheated"],
+    [{ weaponReadiness: {
+      kind: "EnergyInsufficient",
+      currentEnergyJoules: 6,
+      requiredEnergyJoules: 12,
+      recoveryDelayRemainingSeconds: 2,
+      recoveryRateJoulesPerSecond: 12,
+      nextShotReadyInSeconds: 2.5
+    } }, "ENERGY LOW", "energy-low"],
+    [{ weaponReadiness: { kind: "Cooldown", nextShotReadyInSeconds: 2 } }, "COOLDOWN", "cooldown"],
+    [{ weaponReadiness: { kind: "Ready", nextShotReadyInSeconds: 0 } }, "READY", "ready"]
   ] as const)("renders explicit weapon status text for %o", (overrides, expectedText, expectedKey) => {
     const fixture = createHudFixture();
     fixture.hud.update(hudSnapshot(overrides));
@@ -123,6 +132,23 @@ describe("Surface Play HUD", () => {
     fixture.hud.update(hudSnapshot({ targetCondition: "Operational" }));
     expect(fixture.byId("surface-play-target").hidden).toBe(false);
     expect(fixture.byId("surface-play-target").textContent).toBe("TARGET · OPERATIONAL");
+  });
+
+  it("shows honest Structural preparation state without a fabricated percentage", () => {
+    const fixture = createHudFixture();
+    fixture.hud.update(hudSnapshot({
+      structuralPreparation: {
+        status: "ReadyToAdopt",
+        objectId: "surface-tree:one",
+        queueDepth: 0,
+        inFlight: 0,
+        latencyMilliseconds: 12.5
+      }
+    }));
+    const preparation = fixture.byId("surface-play-structural-preparation");
+    expect(preparation.hidden).toBe(false);
+    expect(preparation.textContent).toBe("PREPARING · READY TO ADOPT");
+    expect(preparation.textContent).not.toContain("%");
   });
 
   it("presents terrain results and fire blocks only from explicit snapshot text", () => {
@@ -153,7 +179,9 @@ describe("Surface Play HUD", () => {
       "edge-top-left",
       "edge-bottom-left",
       "edge-bottom-right",
-      "center-safe"
+      "center-safe",
+      "transient-action",
+      "warning-next-action"
     ]);
     const center = zones.find((element) => element.dataset.zone === "center-safe")!;
     expect(descendants(center).map((element) => element.textContent)).not.toEqual(expect.arrayContaining([
@@ -161,8 +189,14 @@ describe("Surface Play HUD", () => {
       "SUIT",
       "PULSE CUTTER"
     ]));
+    expect(descendants(center).map((element) => element.id)).not.toEqual(expect.arrayContaining([
+      "surface-play-action",
+      "surface-play-block"
+    ]));
     expect(SURFACE_PLAY_UI_STYLES).toContain("@media (max-width: 80rem) and (max-height: 45rem)");
     expect(SURFACE_PLAY_UI_STYLES).toContain(".surface-play-hud__center-safe");
+    expect(SURFACE_PLAY_UI_STYLES).toContain(".surface-play-hud__transient-action-zone");
+    expect(SURFACE_PLAY_UI_STYLES).toContain(".surface-play-hud__warning-zone");
   });
 
   it("contains no player HUD dependency on debug telemetry or TestBridge", () => {

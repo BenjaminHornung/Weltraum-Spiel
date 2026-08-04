@@ -6,4 +6,6 @@ export * from "./ids";
 export * from "./indexedDbSaveRepository";
 export * from "./memorySaveRepository";
 export * from "./saveRepository";
-export * from "./types";
+export * from "./types";export * from "./structuralEvidenceStore";
+export * from "./memoryStructuralEvidenceStore";
+export * from "./indexedDbStructuralEvidenceStore";

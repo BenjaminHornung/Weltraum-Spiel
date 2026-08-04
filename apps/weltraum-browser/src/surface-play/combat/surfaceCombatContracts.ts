@@ -14,6 +14,7 @@ import {
 import type {
   SurfaceAuthorityBinding,
   SurfaceCombatSnapshot,
+  SurfaceFireRejectionCode,
   SurfaceImpactPresentationSnapshot,
   SurfacePlayerSnapshot,
   SurfaceRayResult,
@@ -46,16 +47,41 @@ export type SurfaceCombatRaycastCandidate =
     readonly distanceMeters: number;
   }>
   | Readonly<{
-    readonly kind: "TerrainHit";
+      readonly kind: "TerrainHit";
     readonly colliderId: string;
     readonly point: Readonly<Vec3>;
     readonly normal: Readonly<Vec3>;
-    readonly distanceMeters: number;
-  }>
+      readonly distanceMeters: number;
+    }>
+  | Readonly<{
+      readonly kind: "StructuralHit";
+      readonly objectId: string;
+      readonly structuralCommandId: string;
+      readonly supportResult: "Anchored" | "Detached" | "Empty";
+      readonly suggestedEditRadiusMeters: number;
+      readonly point: Readonly<Vec3>;
+      readonly normal: Readonly<Vec3>;
+      readonly distanceMeters: number;
+    }>
+  | Readonly<{
+      readonly kind: "StructuralPrepareHit";
+      readonly objectId: string;
+      readonly structuralCommandId: string;
+      readonly point: Readonly<Vec3>;
+      readonly normal: Readonly<Vec3>;
+      readonly distanceMeters: number;
+    }>
+  | Readonly<{
+      readonly kind: "DetachedBodyHit";
+      readonly bodyId: string;
+      readonly point: Readonly<Vec3>;
+      readonly normal: Readonly<Vec3>;
+      readonly distanceMeters: number;
+    }>
   | Readonly<{ readonly kind: "Miss" }>
   | Readonly<{
     readonly kind: "Blocked";
-    readonly code: "FrameMismatch" | "StaleRevision" | "AuthorityRefused";
+    readonly code: SurfaceFireRejectionCode;
     readonly message: string;
   }>;
 
@@ -104,12 +130,14 @@ export const createSurfaceImpactIntent = (
 export interface SurfaceCombatRuntimeState {
   readonly weapon: Readonly<WeaponRuntimeState>;
   readonly drone: Readonly<SurfaceSurveyDroneState>;
+  readonly energyRecoveryDelayRemainingSeconds: number;
   readonly nextSurfaceEventSequence: number;
 }
 
 export type SurfaceCombatResolutionKind =
   | "CombatTargetHit"
   | "TerrainHit"
+  | "StructuralHit"
   | "Miss"
   | "BlockedFire";
 
@@ -131,6 +159,18 @@ export interface SurfaceCombatExecutionInput {
   readonly binding: Readonly<SurfaceAuthorityBinding>;
   readonly raycast: SurfaceTargetTerrainRaycastPort;
 }
+
+export type SurfaceCombatFireProbe =
+  | Readonly<{
+      readonly kind: "Candidate";
+      readonly ray: Readonly<RayDelivery>;
+      readonly candidate: SurfaceCombatRaycastCandidate;
+    }>
+  | Readonly<{
+      readonly kind: "Blocked";
+      readonly code: SurfaceFireRejectionCode;
+      readonly message: string;
+    }>;
 
 export interface SurfaceCombatPresentationReplay {
   readonly weapon: Readonly<SurfaceWeaponPresentationSnapshot>;

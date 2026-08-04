@@ -3,6 +3,7 @@ import { surfaceFrameId, voxelBodyId, voxelRegionId } from "../../src/voxel";
 import * as hestiaPublicApi from "../../src/world-generation/hestia";
 import {
   generateHestiaScatter,
+  HESTIA_COAST_LUSH_PRESET_ID,
   HESTIA_MATERIAL_IDS,
   type HestiaGenerationInput,
   type HestiaScatterRecord
@@ -27,6 +28,16 @@ const ordering = (left: HestiaScatterRecord, right: HestiaScatterRecord): number
   left.sourceAnchorGlobal.z - right.sourceAnchorGlobal.z
   || left.sourceAnchorGlobal.x - right.sourceAnchorGlobal.x
   || left.id.localeCompare(right.id);
+
+const coastInput = (x: number, z: number): HestiaGenerationInput => ({
+  profile: HESTIA_COAST_LUSH_PRESET_ID,
+  rootSeed: "hestia-surface-play-coast-lush-v1",
+  bodyId: voxelBodyId("planet.hestia"),
+  surfaceFrameId: surfaceFrameId("frame:surface_hestia_surface_play_v1"),
+  regionId: voxelRegionId("region:hestia.surface-play.coast-lush.v1"),
+  brickCoordinate: { x, y: 0, z },
+  voxelSizeMeters: 0.5
+});
 
 describe("Hestia V1 reconstructable scatter", () => {
   it("pins direct V1 material eligibility thresholds without widening the public barrel", () => {
@@ -219,5 +230,22 @@ describe("Hestia V1 reconstructable scatter", () => {
         sourceAnchorGlobal: { x: 28, z: 28 }
       }
     ]);
+  });
+
+  it("generates deterministic Coast/Lush scatter with only Sprout and Cap kinds", () => {
+    const inputs = [-4, -3, -2, -1].flatMap((z) => [2, 3, 4, 5].map((x) => coastInput(x, z)));
+    const first = inputs.flatMap((source) => generateHestiaScatter(source));
+    const second = inputs.flatMap((source) => generateHestiaScatter(source));
+    expect(first).toEqual(second);
+    expect(first.length).toBeGreaterThan(0);
+    expect(new Set(first.map((record) => record.id)).size).toBe(first.length);
+    expect(first.every((record) =>
+      record.id.startsWith("hestia.scatter.coast-lush.v1:")
+      && (record.kind === "cyan_luminous_sprout" || record.kind === "cyan_luminous_cap")
+      && record.positionMeters.y >= 1
+    )).toBe(true);
+    for (const source of inputs) {
+      expect([...generateHestiaScatter(source)].sort(ordering)).toEqual(generateHestiaScatter(source));
+    }
   });
 });

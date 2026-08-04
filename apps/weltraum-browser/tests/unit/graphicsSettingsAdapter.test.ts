@@ -122,7 +122,8 @@ describe("ThreeGraphicsSettingsAdapter", () => {
       scene,
       canvas
     });
-    const low = applyQualityPreset(createDefaultGraphicsSettings(), "Low");
+    const lowPreset = applyQualityPreset(createDefaultGraphicsSettings(), "Low");
+    const low = { ...lowPreset, voxel: { ...lowPreset.voxel, detailDistanceMeters: 20_000 } };
     const result = await adapter.apply(low, ["renderScale", "decorDensity", "antiAliasing"]);
 
     expect(renderer.pixelRatios.at(-1)).toBe(0.65);

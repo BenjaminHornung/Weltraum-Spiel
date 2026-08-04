@@ -19,6 +19,7 @@ import {
   requirePlainRecord,
   stableAuthorityId
 } from "./validation";
+import { hasDeepFrozenIdentity } from "./immutability";
 
 export const cellSizeQuantumForLevel = (level: AdaptiveLevel): number => 2 ** (4 - adaptiveLevel(level));
 export const cellSizeMetersForLevel = (level: AdaptiveLevel): number =>
@@ -97,13 +98,19 @@ export const createAdaptiveBrickKey = (input: AdaptiveBrickKeyInput): AdaptiveBr
   });
 };
 
+const validatedBrickKeyByDeepFrozenIdentity = new WeakMap<object, AdaptiveBrickKey>();
+
 export const validateAdaptiveBrickKey = (value: unknown): AdaptiveBrickKey => {
+  if (typeof value === "object" && value !== null && hasDeepFrozenIdentity(value)) {
+    const cached = validatedBrickKeyByDeepFrozenIdentity.get(value);
+    if (cached !== undefined) return cached;
+  }
   const record = requirePlainRecord(value, "key");
   requireExactKeys(record, ["schemaVersion", "bodyId", "surfaceFrameId", "regionId", "generatorVersion", "level", "originQuantum"], "key");
   if (record.schemaVersion !== ADAPTIVE_KEY_SCHEMA_VERSION) return fail("InvalidKey", "key/schemaVersion", "Unsupported key schema.");
   const origin = requirePlainRecord(record.originQuantum, "key/originQuantum");
   requireExactKeys(origin, ["x", "y", "z"], "key/originQuantum");
-  return createAdaptiveBrickKey({
+  const validated = createAdaptiveBrickKey({
     bodyId: record.bodyId as string,
     surfaceFrameId: record.surfaceFrameId as string,
     regionId: record.regionId as string,
@@ -111,6 +118,8 @@ export const validateAdaptiveBrickKey = (value: unknown): AdaptiveBrickKey => {
     level: record.level as number,
     originQuantum: origin as unknown as { readonly x: number; readonly y: number; readonly z: number }
   });
+  if (hasDeepFrozenIdentity(record)) validatedBrickKeyByDeepFrozenIdentity.set(record, validated);
+  return validated;
 };
 
 export const keyFromGlobalQuantum = (

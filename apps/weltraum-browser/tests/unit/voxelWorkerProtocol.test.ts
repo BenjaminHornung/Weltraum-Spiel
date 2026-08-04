@@ -9,6 +9,8 @@ import {
 } from "../../src/streaming";
 import {
   HESTIA_EDIT_REVISION_V1,
+  HESTIA_COAST_LUSH_PRESET_ID,
+  HESTIA_GENERATOR_VERSION_COAST_LUSH_V1,
   HESTIA_GENERATOR_VERSION_V1,
   HESTIA_PRESET_ID,
   HESTIA_SOURCE_REVISION_V1,
@@ -39,6 +41,7 @@ import {
   jobDeadline,
   planningEpoch,
   validateHestiaVoxelBrickMeshPayload,
+  validateHestiaVoxelBrickMeshResultDetails,
   validateHestiaVoxelWorkerOutputByteLength,
   validateHestiaVoxelWorkerOutput,
   workerEpoch,
@@ -234,6 +237,36 @@ describe("Hestia voxel worker protocol", () => {
     expect(new Uint8Array(sliced.densityBuffer.buffer)).toEqual(new Uint8Array(synchronous.densityBuffer.buffer));
     expect(sliced.materialBuffer).toEqual(synchronous.materialBuffer);
   }, 20_000);
+
+  it("accepts only the paired Coast/Lush worker identity and transports its profile", () => {
+    const coast = validateHestiaVoxelBrickMeshPayload({
+      ...generatedPayload(),
+      profile: HESTIA_COAST_LUSH_PRESET_ID,
+      presetId: HESTIA_COAST_LUSH_PRESET_ID,
+      generatorVersion: HESTIA_GENERATOR_VERSION_COAST_LUSH_V1,
+    });
+    expect(coast.profile).toBe(HESTIA_COAST_LUSH_PRESET_ID);
+    expect(coast.presetId).toBe(HESTIA_COAST_LUSH_PRESET_ID);
+    expect(coast.generatorVersion).toBe(HESTIA_GENERATOR_VERSION_COAST_LUSH_V1);
+    expect(() => validateHestiaVoxelBrickMeshPayload({
+      ...coast,
+      generatorVersion: HESTIA_GENERATOR_VERSION_V1,
+    })).toThrow(/approved Hestia pair/);
+    const details = generated.result.details;
+    if (details === undefined) throw new Error("Expected generated result details.");
+    expect(validateHestiaVoxelBrickMeshResultDetails({
+      ...details,
+      profile: HESTIA_COAST_LUSH_PRESET_ID,
+      presetId: HESTIA_COAST_LUSH_PRESET_ID,
+      generatorVersion: HESTIA_GENERATOR_VERSION_COAST_LUSH_V1,
+    }).profile).toBe(HESTIA_COAST_LUSH_PRESET_ID);
+    expect(() => validateHestiaVoxelBrickMeshResultDetails({
+      ...details,
+      profile: HESTIA_COAST_LUSH_PRESET_ID,
+      presetId: HESTIA_COAST_LUSH_PRESET_ID,
+      generatorVersion: HESTIA_GENERATOR_VERSION_V1,
+    })).toThrow(/approved Hestia pair/);
+  });
 
   it("publishes one canonical brick plus mesh as five exact transfer-owned buffers", () => {
     const payload = generatedPayload();

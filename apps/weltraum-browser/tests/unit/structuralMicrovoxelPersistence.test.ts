@@ -23,8 +23,10 @@ import {
   STRUCTURAL_MAX_PERSISTENCE_UTF8_BYTES,
   STRUCTURAL_OBJECT_SCHEMA_VERSION,
   STRUCTURAL_RESULT_SCHEMA_VERSION,
+  STRUCTURAL_TRANSFER_COMMAND_SCHEMA_VERSION,
   StructuralValidationError,
   applyStructuralDestructionCommand,
+  applyStructuralDetachedComponentTransfer,
   createStructuralObjectFromAdaptive,
   decodeStructuralObject,
   decodeStructuralResult,
@@ -34,6 +36,7 @@ import {
   getStructuralVoxel,
   structuralAddressForBrickCell,
   validateStructuralDestructionCommand,
+  validateStructuralTransferDetachedComponentsCommand,
   type StructuralAcceptedCommandResult,
   type StructuralCommandResult,
   type StructuralObject
@@ -160,6 +163,68 @@ describe("Structural Microvoxel persistence", () => {
     expect(restoredB.object.commandEvidence).toEqual(resultB.object.commandEvidence);
     expect(isDeepFrozen(restoredA)).toBe(true);
     expect(isDeepFrozen(restoredB)).toBe(true);
+  });
+
+  it("round-trips detached-transfer authority and Evidence V1 bytes and rejects persisted transfer tamper", () => {
+    const source = objectFixture();
+    const fragments = deriveStructuralComponentClassification(source, {
+      maxVisitedCells: 8,
+      maxComponents: 8,
+      maxIndexedFacts: 8
+    }).fragments;
+    const transfer = validateStructuralTransferDetachedComponentsCommand({
+      schemaVersion: STRUCTURAL_TRANSFER_COMMAND_SCHEMA_VERSION,
+      kind: "TransferDetachedComponents",
+      commandId: "command.persist-transfer",
+      targetObjectId: source.objectId,
+      expectedObjectRevision: source.objectRevision,
+      resultingObjectRevision: source.objectRevision + 1,
+      expectedAdaptiveSource: source.source,
+      sourceFragmentIds: fragments.map((fragment) => fragment.fragmentId),
+      actor: "actor.test",
+      source: "structural-authority.test",
+      sequence: 1,
+      budgets: {
+        maxVisitedBricks: 8,
+        maxVisitedCells: 64,
+        maxSelectedCells: 64,
+        maxChangedCells: 64,
+        maxConnectivityCells: 64,
+        maxConnectivityFacts: 64,
+        maxComponents: 8,
+        maxMassCells: 64
+      }
+    });
+    const result = accepted(applyStructuralDetachedComponentTransfer(source, transfer));
+    const encodedObject = encodeStructuralObject(result.object);
+    const encodedResult = encodeStructuralResult(result);
+    const restoredObject = decodeStructuralObject(encodedObject);
+    const restoredResult = decodeStructuralResult(encodedResult);
+
+    expect(encodeStructuralObject(restoredObject)).toBe(encodedObject);
+    expect(encodeStructuralResult(restoredResult)).toBe(encodedResult);
+    expect(restoredObject.bricks[0].cells).toEqual([]);
+    expect(restoredObject.commandEvidence.at(-1)).toEqual(result.object.commandEvidence.at(-1));
+    expect(restoredObject.commandEvidence.at(-1)).toMatchObject({
+      commandId: transfer.commandId,
+      status: "Applied",
+      selectedVoxelCount: 3,
+      changedVoxelCount: 3,
+      previousObjectRevision: source.objectRevision,
+      resultingObjectRevision: source.objectRevision + 1,
+      previousEditRevision: source.editRevision,
+      resultingEditRevision: source.editRevision + 1,
+      adaptiveJournalDigest: source.source.journalDigest
+    });
+
+    const objectProjection = JSON.parse(encodedObject) as Record<string, unknown>;
+    const evidence = objectProjection.commandEvidence as Record<string, unknown>[];
+    evidence[0] = { ...evidence[0], commandHash: "fnv1a64-v1:0000000000000501" };
+    expect(() => decodeStructuralObject(canonicalAdaptiveJson(objectProjection))).toThrow(StructuralValidationError);
+
+    const resultProjection = JSON.parse(encodedResult) as Record<string, unknown>;
+    resultProjection.changedVoxelCount = 2;
+    expect(() => decodeStructuralResult(canonicalAdaptiveJson(resultProjection))).toThrow(StructuralValidationError);
   });
 
   it("accepts append-only evidence with descending unique command IDs and revalidates it after persistence round-trip", () => {
