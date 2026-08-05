@@ -6,6 +6,7 @@ import { startSurfaceLabRoute } from "./surface-lab/surfaceLabFailurePresenter";
 import { isSurfaceLabQuery } from "./surface-lab/surfaceLabQuery";
 import { createGraphicsSettingsPanel } from "./ui/graphicsSettingsPanel";
 import { createProvingGroundLowPolyRenderBatch } from "./world/provingGroundWorld";
+import { isVoxelV2Query } from "./voxel-v2/query";
 
 const searchParams = new URLSearchParams(window.location.search);
 
@@ -63,7 +64,9 @@ const startNormalRuntime = (): void => {
   });
 };
 
-if (isSurfaceLabQuery(searchParams)) {
+if (isVoxelV2Query(searchParams)) {
+  void import("./voxel-v2/demo/startVoxelV2").then(({ startVoxelV2Route }) => startVoxelV2Route(document, searchParams));
+} else if (isSurfaceLabQuery(searchParams)) {
   void startSurfaceLabRoute(document, () => import("./surface-lab"));
 } else {
   startNormalRuntime();

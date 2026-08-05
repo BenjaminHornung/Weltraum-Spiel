@@ -1,0 +1,168 @@
+body[data-runtime-mode="voxel-v2"],
+body[data-runtime-mode="voxel-v2"] #app {
+  background: linear-gradient(180deg, #69cbe8 0%, #a5dfd3 46%, #d7c58f 100%);
+}
+
+body[data-runtime-mode="voxel-v2"] #app {
+  position: relative;
+}
+
+body[data-runtime-mode="voxel-v2"] #debug-scene {
+  background: transparent;
+  cursor: crosshair;
+}
+
+body[data-runtime-mode="voxel-v2"] #flight-hud,
+body[data-runtime-mode="voxel-v2"] .hud-center-safe-area,
+body[data-runtime-mode="voxel-v2"] #debug-hud {
+  display: none !important;
+}
+
+#voxel-v2-ui {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  color: #f3faed;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
+}
+
+#voxel-v2-ui[data-v2-presentation="beauty"] {
+  display: none;
+}
+
+#voxel-v2-reticle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(30, 77, 76, 0.28), 0 0 12px rgba(255, 255, 255, 0.28);
+}
+
+#voxel-v2-reticle::before,
+#voxel-v2-reticle::after {
+  position: absolute;
+  content: "";
+  background: rgba(255, 255, 255, 0.8);
+}
+
+#voxel-v2-reticle::before {
+  top: -5px;
+  left: 7px;
+  width: 1px;
+  height: 26px;
+}
+
+#voxel-v2-reticle::after {
+  top: 7px;
+  left: -5px;
+  width: 26px;
+  height: 1px;
+}
+
+#voxel-v2-status,
+#voxel-v2-prompt,
+#voxel-v2-view-label,
+#voxel-v2-hit,
+#voxel-v2-edit,
+#voxel-v2-revision {
+  position: absolute;
+  padding: 7px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  border-radius: 4px;
+  background: rgba(15, 50, 48, 0.28);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+}
+
+#voxel-v2-status {
+  top: 16px;
+  left: 16px;
+  color: #fff5d4;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+#voxel-v2-view-label {
+  top: 16px;
+  right: 16px;
+  text-transform: uppercase;
+}
+
+#voxel-v2-hit {
+  top: 56px;
+  left: 16px;
+  min-width: 120px;
+}
+
+#voxel-v2-edit {
+  top: 92px;
+  left: 16px;
+  min-width: 120px;
+}
+
+#voxel-v2-revision {
+  top: 128px;
+  left: 16px;
+  min-width: 120px;
+}
+
+#voxel-v2-prompt {
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff7de;
+  text-align: center;
+}
+
+#voxel-v2-diagnostics {
+  display: none;
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  width: min(440px, calc(100vw - 32px));
+  max-height: 42vh;
+  margin: 0;
+  padding: 10px;
+  overflow: auto;
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  border-radius: 4px;
+  background: rgba(8, 36, 38, 0.65);
+  color: #e9fff0;
+  font: 11px/1.4 ui-monospace, SFMono-Regular, Consolas, monospace;
+  white-space: pre-wrap;
+}
+
+body[data-voxel-v2-diagnostics="1"] #voxel-v2-diagnostics {
+  display: block;
+}
+
+#voxel-v2-failure {
+  position: fixed;
+  z-index: 40;
+  inset: 12vh 10vw auto;
+  padding: 24px;
+  border: 2px solid #9f3e32;
+  border-radius: 8px;
+  background: rgba(46, 21, 20, 0.94);
+  color: #fff5e6;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+
+#voxel-v2-failure h1 {
+  margin: 0 0 12px;
+  font-size: clamp(18px, 2vw, 28px);
+}
+
+#voxel-v2-failure p {
+  margin: 8px 0 0;
+}
+
+body[data-voxel-v2-state="Failed"] #voxel-v2-ui {
+  display: none;
+}

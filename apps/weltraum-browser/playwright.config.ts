@@ -5,6 +5,7 @@ const configuredBrowserPath = process.env.WELTRAUM_PLAYWRIGHT_EXECUTABLE_PATH;
 const launchOptions =
   configuredBrowserPath && existsSync(configuredBrowserPath) ? { executablePath: configuredBrowserPath } : undefined;
 const configuredArtifactGroup = process.env.WELTRAUM_PLAYWRIGHT_ARTIFACT_GROUP;
+const productionPreview = process.env.WELTRAUM_V2_PRODUCTION === "1";
 
 if (configuredArtifactGroup !== undefined && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(configuredArtifactGroup)) {
   throw new Error(
@@ -29,7 +30,9 @@ export default defineConfig({
     launchOptions
   },
   webServer: {
-    command: "npm run dev -- --host 127.0.0.1 --port 5173 --strictPort",
+    command: productionPreview
+      ? ".\\node_modules\\.bin\\vite.cmd preview --host 127.0.0.1 --port 5173 --strictPort"
+      : "npm run dev -- --host 127.0.0.1 --port 5173 --strictPort",
     url: "http://127.0.0.1:5173",
     reuseExistingServer: false,
     timeout: 20_000
