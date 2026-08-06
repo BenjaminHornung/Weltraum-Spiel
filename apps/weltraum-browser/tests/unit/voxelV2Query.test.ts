@@ -19,6 +19,7 @@ describe("Voxel V2 query boundary", () => {
     expect(voxelV2DiagnosticsEnabled("voxelV2Diagnostics=1&voxelV2Diagnostics=1")).toBe(false);
     expect(parseVoxelV2View("")).toBe("player");
     expect(parseVoxelV2View("voxelV2View=coast")).toBe("coast");
+    expect(parseVoxelV2View("voxelV2View=archipelago")).toBe("archipelago");
     expect(parseVoxelV2View("voxelV2View=river")).toBe("river");
     expect(() => parseVoxelV2View("voxelV2View=unknown")).toThrow("Invalid V2 presentation view");
     expect(() => parseVoxelV2View("voxelV2View=coast&voxelV2View=river")).toThrow("Invalid V2 presentation view");

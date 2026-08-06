@@ -4,6 +4,7 @@ import { enumerateWorldChunks, parseChunkKey } from "../domain/coordinates";
 import { suggestedSpawnCell } from "../domain/generator";
 import { raycastAuthority } from "../domain/dda";
 import { VoxelAuthority } from "../domain/authority";
+import { createMacroWorldDescriptor } from "../domain/macroDescriptor";
 import type { CellCoord, Vec3 } from "../domain/types";
 import { VoxelV2WorkerScheduler, type VoxelV2JobTerminal } from "../worker/scheduler";
 import { VoxelV2PlayerController } from "./playerController";
@@ -21,6 +22,7 @@ export interface VoxelV2LatencySnapshot {
   readonly current: number;
   readonly p50: number;
   readonly p95: number;
+  readonly p99: number;
   readonly max: number;
 }
 
@@ -55,7 +57,7 @@ export interface VoxelV2RuntimeDiagnostics {
 
 interface RuntimeOptions {
   readonly renderer: VoxelV2RendererPort;
-  readonly view: "player" | "coast" | "river";
+  readonly view: "player" | "coast" | "archipelago" | "river";
   readonly seed?: string;
   readonly worldVersion?: string;
   readonly now?: () => number;
@@ -79,7 +81,7 @@ class Samples {
   }
 
   public snapshot(): VoxelV2LatencySnapshot {
-    if (this.values.length === 0) return Object.freeze({ count: 0, current: 0, p50: 0, p95: 0, max: 0 });
+    if (this.values.length === 0) return Object.freeze({ count: 0, current: 0, p50: 0, p95: 0, p99: 0, max: 0 });
     const sorted = [...this.values].sort((left, right) => left - right);
     const percentile = (ratio: number): number => sorted[Math.max(0, Math.ceil(sorted.length * ratio) - 1)]!;
     return Object.freeze({
@@ -87,6 +89,7 @@ class Samples {
       current: this.current,
       p50: percentile(0.5),
       p95: percentile(0.95),
+      p99: percentile(0.99),
       max: sorted[sorted.length - 1]!
     });
   }
@@ -125,7 +128,10 @@ export class VoxelV2Runtime {
   public constructor(options: RuntimeOptions) {
     this.renderer = options.renderer;
     this.now = options.now ?? (() => performance.now());
-    this.authority = new VoxelAuthority(options.seed ?? DEFAULT_WORLD_SEED, options.worldVersion ?? WORLD_VERSION);
+    const seed = options.seed ?? DEFAULT_WORLD_SEED;
+    const worldVersion = options.worldVersion ?? WORLD_VERSION;
+    this.authority = new VoxelAuthority(seed, worldVersion);
+    this.renderer.setWorldDescriptor(createMacroWorldDescriptor(seed, worldVersion));
     this.scheduler = new VoxelV2WorkerScheduler({ now: this.now });
     this.renderer.setView(options.view);
   }
@@ -177,7 +183,7 @@ export class VoxelV2Runtime {
       const angles = this.player.viewAngles();
       this.renderer.setPlayerPose(playerSnapshot.position, angles.yaw, angles.pitch);
     }
-    this.renderer.render();
+    this.renderer.render(deltaSeconds);
   }
 
   public recordFrameTime(milliseconds: number): void { this.frameSamples.add(milliseconds); }
@@ -216,6 +222,7 @@ export class VoxelV2Runtime {
       this.inputToAuthoritySamples.add(authorityTime);
       this.renderer.setHitMarker(centerOfCell(hit.cell), result.status === "Accepted");
       if (result.status === "Accepted") {
+        this.renderer.invalidateVegetation(result.changedChunks);
         this.remeshChunksPerEditSamples.add(result.remeshChunkKeys.length);
         this.pendingEditConvergence.set(result.worldRevision, {
           worldRevision: result.worldRevision,

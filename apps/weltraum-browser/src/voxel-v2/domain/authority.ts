@@ -219,7 +219,7 @@ export class VoxelAuthority {
       return rejectedEdit(command, "OutOfRange", this.currentWorldRevision);
     }
 
-    const changed = new Map<string, { chunk: AuthorityChunkInternal; bounds: MutableBounds }>();
+    const changed = new Map<string, { chunk: AuthorityChunkInternal; bounds: MutableBounds; cells: CellCoord[] }>();
     let changedCells = 0;
     const radiusSquared = command.radiusCells * command.radiusCells;
     const minX = Math.ceil(command.center.x - command.radiusCells);
@@ -257,7 +257,8 @@ export class VoxelAuthority {
                 maxX: mapped.local.x,
                 maxY: mapped.local.y,
                 maxZ: mapped.local.z
-              }
+              },
+              cells: [{ x, y, z }]
             });
           } else {
             existing.bounds.minX = Math.min(existing.bounds.minX, mapped.local.x);
@@ -266,6 +267,7 @@ export class VoxelAuthority {
             existing.bounds.maxX = Math.max(existing.bounds.maxX, mapped.local.x);
             existing.bounds.maxY = Math.max(existing.bounds.maxY, mapped.local.y);
             existing.bounds.maxZ = Math.max(existing.bounds.maxZ, mapped.local.z);
+            existing.cells.push({ x, y, z });
           }
         }
       }
@@ -278,7 +280,7 @@ export class VoxelAuthority {
     this.currentWorldRevision += 1;
     const remeshKeys = new Set<string>();
     const changedChunks: EditChunkChange[] = [];
-    for (const { chunk, bounds } of changed.values()) {
+    for (const { chunk, bounds, cells: changedCellsForChunk } of changed.values()) {
       chunk.authorityRevision = this.currentWorldRevision;
       chunk.dirtyLocalAabb = cellAabb(bounds);
       chunk.contentSignature = contentSignature(chunk.cells);
@@ -294,10 +296,11 @@ export class VoxelAuthority {
       if (bounds.maxZ === CHUNK_EDGE - 1) addNeighbour(chunk.coord.x, chunk.coord.y, chunk.coord.z + 1);
       changedChunks.push({
         key: chunk.key,
-        coord: { ...chunk.coord },
-        authorityRevision: chunk.authorityRevision,
-        dirtyLocalAabb: { min: { ...chunk.dirtyLocalAabb.min }, max: { ...chunk.dirtyLocalAabb.max } },
-        contentSignature: chunk.contentSignature
+          coord: { ...chunk.coord },
+          authorityRevision: chunk.authorityRevision,
+          dirtyLocalAabb: { min: { ...chunk.dirtyLocalAabb.min }, max: { ...chunk.dirtyLocalAabb.max } },
+          changedCells: Object.freeze(changedCellsForChunk.map((cell) => ({ ...cell }))),
+          contentSignature: chunk.contentSignature
       });
     }
 

@@ -20,6 +20,42 @@ export interface CellAabb {
 
 export type PhysicalClass = "air" | "soil" | "rock" | "sand" | "wet" | "wood" | "foliage" | "flora";
 
+export type MacroBiome = "open-water" | "lagoon" | "wetland" | "coast" | "valley" | "forest" | "massif" | "savanna";
+export type MacroTerrainFamily = "water" | "sand" | "wet-rock" | "soil" | "grass" | "rock";
+export type MacroFeature = "ocean" | "lagoon" | "channel" | "coast" | "valley" | "island" | "massif" | "mainland";
+export type MacroTreeArchetype = "umbrella" | "buttress-root" | "coast-savanna" | "mangrove";
+
+export interface MacroAnchor {
+  readonly key: string;
+  readonly x: number;
+  readonly z: number;
+  readonly cluster: number;
+  readonly recommendedTreeArchetype: MacroTreeArchetype;
+}
+
+export interface MacroWorldSample {
+  readonly heightMeters: number;
+  readonly surfaceHeightMeters: number;
+  readonly surfaceLevelCells: number;
+  readonly isWater: boolean;
+  readonly isChannel: boolean;
+  readonly isShore: boolean;
+  readonly waterDepthMeters: number;
+  readonly biome: MacroBiome;
+  readonly terrainFamily: MacroTerrainFamily;
+  readonly feature: MacroFeature;
+  readonly slope: number;
+  readonly moisture: number;
+  readonly coastDistanceMeters: number;
+  readonly riverDistanceMeters: number;
+  readonly flowDirection: Readonly<{ readonly x: number; readonly z: number }>;
+  readonly strataIndex: number;
+  readonly terraceIndex: number;
+  readonly curvature: number;
+  readonly spawnClearing: boolean;
+  readonly anchor: MacroAnchor;
+}
+
 export interface PaletteRecord {
   readonly id: number;
   readonly name: string;
@@ -74,6 +110,7 @@ export interface EditChunkChange {
   readonly coord: ChunkCoord;
   readonly authorityRevision: number;
   readonly dirtyLocalAabb: CellAabb;
+  readonly changedCells: readonly CellCoord[];
   readonly contentSignature: string;
 }
 

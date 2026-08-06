@@ -1,0 +1,47 @@
+{
+  "repository": {
+    "headSha": "b9ba0e14d897ca2392013c456bd1b88b58934381",
+    "branch": "experiment/browser-hestia-voxel-v2-coast-lush-visual-parity-v1",
+    "dirtyStatusSha256": "b51bde963fa728c12302f7d5f8f32ef801e7fbdffd3119abc4e38d3f1e503fe5"
+  },
+  "browser": {
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+    "viewport": {
+      "width": 1920,
+      "height": 1080
+    }
+  },
+  "screenshots": [
+    {
+      "path": "evidence/hestia-voxel-v2-coast-lush-visual-parity/iteration-01-candidate/01-coastal-valley.png",
+      "sha256": "6bde94edee9eccb3c95c4bbc8b9579f356f4c9fbb319fc5711fa5f6220b96bff",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "path": "evidence/hestia-voxel-v2-coast-lush-visual-parity/iteration-01-candidate/02-archipelago-mountain.png",
+      "sha256": "1adaeb36f3761aaad7d71243f49db04360c5489d36df6992f3789627230dd9ce",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "path": "evidence/hestia-voxel-v2-coast-lush-visual-parity/iteration-01-candidate/03-wetland-roots.png",
+      "sha256": "f0e8f85f6d853d23c48a192ddf5d4ec39e46570e1ad9ebafdd0975530cee5c55",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "path": "evidence/hestia-voxel-v2-coast-lush-visual-parity/iteration-01-candidate/04-first-person-spawn-before-cut.png",
+      "sha256": "0b39c78faf4e26d2450f529794b9e09f08e322e04265b093e7e2dee146345dae",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "path": "evidence/hestia-voxel-v2-coast-lush-visual-parity/iteration-01-candidate/05-first-person-spawn-after-cut.png",
+      "sha256": "9a99c27a88dd9a5c7d2f39c889d74104fac6539a4b6be010d7bf8fab15479811",
+      "width": 1920,
+      "height": 1080
+    }
+  ],
+  "browserErrors": []
+}

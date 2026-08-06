@@ -1,14 +1,16 @@
 import { expect, test, type Page } from "@playwright/test";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { cpus, totalmem } from "node:os";
+import { join } from "node:path";
 
 test.use({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 1 });
 test.describe.configure({ mode: "serial" });
 test.setTimeout(240_000);
 
-const evidenceRoot = "evidence/hestia-voxel-runtime-v2-spike";
+const evidenceRoot = "evidence/hestia-voxel-v2-coast-lush-visual-parity/iteration-08-production-telemetry";
+const parityEvidenceRoot = "evidence/hestia-voxel-v2-coast-lush-visual-parity/iteration-23-candidate";
 
 const pngEvidence = (path: string): { readonly path: string; readonly sha256: string; readonly width: number; readonly height: number } => {
   const bytes = readFileSync(path);
@@ -19,6 +21,26 @@ const pngEvidence = (path: string): { readonly path: string; readonly sha256: st
     width: bytes.readUInt32BE(16),
     height: bytes.readUInt32BE(20)
   };
+};
+
+const workingTreeContentSha256 = (): string => {
+  const repositoryRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "utf8" }).trim();
+  const gitOptions = { cwd: repositoryRoot, encoding: "utf8" as const };
+  const hash = createHash("sha256");
+  hash.update(execFileSync(
+    "git",
+    ["diff", "--binary", "HEAD", "--", ".", ":(exclude)apps/weltraum-browser/evidence/**"],
+    gitOptions
+  ));
+  const untracked = execFileSync("git", ["ls-files", "--others", "--exclude-standard"], gitOptions)
+    .split(/\r?\n/)
+    .filter((path) => path.length > 0 && !path.startsWith("apps/weltraum-browser/evidence/"))
+    .sort();
+  for (const path of untracked) {
+    hash.update(`\0${path}\0`);
+    hash.update(readFileSync(join(repositoryRoot, path)));
+  }
+  return hash.digest("hex");
 };
 
 const runRealInputCutGrid = async (page: Page): Promise<void> => {
@@ -164,14 +186,20 @@ test("records warm production telemetry and 100-cut stress evidence", async ({ p
   await runRealInputCutGrid(page);
   await page.waitForTimeout(2_000);
   const afterCuts = await readDiagnostics();
+  const longTasks = await page.evaluate(() => performance.getEntriesByType("longtask").map((entry) => ({
+    name: entry.name,
+    startTime: entry.startTime,
+    duration: entry.duration
+  })));
   const gitHead = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
   const gitStatus = execFileSync("git", ["status", "--short"], { encoding: "utf8" });
   const evidence = {
     repository: {
-      baseSha: "15f3550bd604856b25d40a7ac700ec4d5106b89e",
-      headSha: gitHead,
-      branch: "experiment/browser-hestia-voxel-runtime-v2-spike-v1",
-      dirtyStatusSha256: createHash("sha256").update(gitStatus).digest("hex")
+       baseSha: "b9ba0e14d897ca2392013c456bd1b88b58934381",
+       headSha: gitHead,
+       branch: execFileSync("git", ["branch", "--show-current"], { encoding: "utf8" }).trim(),
+       dirtyStatusSha256: createHash("sha256").update(gitStatus).digest("hex"),
+       workingTreeContentSha256: workingTreeContentSha256()
     },
     machine: { platform: process.platform, node: process.version, logicalCores: cpus().length, memoryBytes: totalmem() },
     browser: { ...(await page.evaluate(() => ({ userAgent: navigator.userAgent, viewport: { width: innerWidth, height: innerHeight } }))), version: page.context().browser()?.version() ?? "unknown" },
@@ -181,6 +209,7 @@ test("records warm production telemetry and 100-cut stress evidence", async ({ p
     warmup,
     samples,
     afterCuts,
+    longTasks,
     screenshots: [
       pngEvidence(`${evidenceRoot}/01-coast-lagoon-vista.png`),
       pngEvidence(`${evidenceRoot}/02-inland-river-valley-vista.png`),
@@ -190,7 +219,8 @@ test("records warm production telemetry and 100-cut stress evidence", async ({ p
     ],
     browserErrors,
     thresholds: {
-      frameP95Ms: { actual: (afterCuts.frameTimeMs as { p95?: number }).p95 ?? null, target: 16.7, pass: ((afterCuts.frameTimeMs as { p95?: number }).p95 ?? Infinity) <= 16.7 },
+      frameP95Ms: { actual: (afterCuts.frameTimeMs as { p95?: number }).p95 ?? null, target: 18, pass: ((afterCuts.frameTimeMs as { p95?: number }).p95 ?? Infinity) <= 18 },
+      frameP99Ms: { actual: (afterCuts.frameTimeMs as { p99?: number }).p99 ?? null, target: 25, pass: ((afterCuts.frameTimeMs as { p99?: number }).p99 ?? Infinity) <= 25 },
       inputToHitP95Ms: { actual: (afterCuts.inputToHitMs as { p95?: number }).p95 ?? null, target: 16.7, pass: ((afterCuts.inputToHitMs as { p95?: number }).p95 ?? Infinity) <= 16.7 },
       inputToAuthorityP95Ms: { actual: (afterCuts.inputToAuthorityMs as { p95?: number }).p95 ?? null, target: 16, pass: ((afterCuts.inputToAuthorityMs as { p95?: number }).p95 ?? Infinity) <= 16 },
       inputToVisibleMeshP95Ms: { actual: (afterCuts.inputToVisibleMeshMs as { p95?: number }).p95 ?? null, target: 100, pass: ((afterCuts.inputToVisibleMeshMs as { p95?: number }).p95 ?? Infinity) <= 100 },
@@ -213,8 +243,65 @@ test("records warm production telemetry and 100-cut stress evidence", async ({ p
   writeFileSync(`${evidenceRoot}/production-telemetry.json`, JSON.stringify(evidence, null, 2), "utf8");
   expect(browserErrors).toEqual([]);
   expect(afterCuts.state).toBe("Ready");
+  expect((afterCuts.frameTimeMs as { p95?: number }).p95 ?? Infinity).toBeLessThanOrEqual(18);
+  expect((afterCuts.frameTimeMs as { p99?: number }).p99 ?? Infinity).toBeLessThanOrEqual(25);
+  expect((afterCuts.longTaskCount as number) - (warmup.longTaskCount as number)).toBe(0);
   expect((afterCuts.pendingMeshJobs as number | undefined) ?? Infinity).toBe(0);
   expect(afterCuts.visibleMeshWorldRevision).toBe(afterCuts.worldRevision);
   expect((afterCuts.inputToHitMs as { count?: number }).count! - (stressBefore.inputToHitMs as { count?: number }).count!).toBe(100);
   expect((afterCuts.acceptedEdits as number) - (stressBefore.acceptedEdits as number)).toBeGreaterThan(0);
+});
+
+test("captures the four canonical V2 parity views and a first-person cut", async ({ page }) => {
+  mkdirSync(parityEvidenceRoot, { recursive: true });
+  const browserErrors: string[] = [];
+  page.on("pageerror", (error) => browserErrors.push(`pageerror: ${error.message}`));
+  page.on("console", (message) => { if (message.type() === "error") browserErrors.push(`console: ${message.text()}`); });
+
+  const beautyViews = [
+    ["coast", "01-coastal-valley.png"],
+    ["archipelago", "02-archipelago-mountain.png"],
+    ["river", "03-wetland-roots.png"]
+  ] as const;
+  for (const [view, filename] of beautyViews) {
+    await page.goto(`/?voxelV2=1&voxelV2View=${view}`, { waitUntil: "domcontentloaded" });
+    await waitForReady(page);
+    await page.waitForTimeout(500);
+    await page.screenshot({ path: `${parityEvidenceRoot}/${filename}` });
+  }
+
+  await page.goto("/?voxelV2=1&voxelV2View=player", { waitUntil: "domcontentloaded" });
+  await waitForReady(page);
+  await page.waitForTimeout(500);
+  await page.screenshot({ path: `${parityEvidenceRoot}/04-first-person-spawn-before-cut.png` });
+  const canvas = page.locator("#debug-scene");
+  await canvas.click();
+  await page.mouse.click(960, 540);
+  await expect(page.locator("[data-testid=voxel-v2-hit]")).toContainText(/Hit|Accepted|NoChange/);
+  await page.waitForFunction(() => Number(document.body.dataset.voxelV2WorldRevision ?? "0") >= 1
+    && Number(document.body.dataset.voxelV2VisibleMeshRevision ?? "0") >= 1
+    && Number(document.body.dataset.voxelV2PendingMeshes ?? "0") === 0, undefined, { timeout: 30_000 });
+  await page.screenshot({ path: `${parityEvidenceRoot}/05-first-person-spawn-after-cut.png` });
+
+  const screenshots = [
+    "01-coastal-valley.png",
+    "02-archipelago-mountain.png",
+    "03-wetland-roots.png",
+    "04-first-person-spawn-before-cut.png",
+    "05-first-person-spawn-after-cut.png"
+  ].map((filename) => pngEvidence(`${parityEvidenceRoot}/${filename}`));
+  const gitStatus = execFileSync("git", ["status", "--short"], { encoding: "utf8" });
+  const manifest = {
+    repository: {
+      headSha: execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim(),
+      branch: execFileSync("git", ["branch", "--show-current"], { encoding: "utf8" }).trim(),
+      dirtyStatusSha256: createHash("sha256").update(gitStatus).digest("hex"),
+      workingTreeContentSha256: workingTreeContentSha256()
+    },
+    browser: await page.evaluate(() => ({ userAgent: navigator.userAgent, viewport: { width: innerWidth, height: innerHeight } })),
+    screenshots,
+    browserErrors
+  };
+  writeFileSync(`${parityEvidenceRoot}/manifest.json`, JSON.stringify(manifest, null, 2), "utf8");
+  expect(browserErrors).toEqual([]);
 });

@@ -1,0 +1,4829 @@
+{
+  "repository": {
+    "baseSha": "15f3550bd604856b25d40a7ac700ec4d5106b89e",
+    "headSha": "b9ba0e14d897ca2392013c456bd1b88b58934381",
+    "branch": "experiment/browser-hestia-voxel-runtime-v2-spike-v1",
+    "dirtyStatusSha256": "b2a26264634bf9bf8778a48c06b97a221ac56ea0b700fad7e86b19c1bdb70e89"
+  },
+  "machine": {
+    "platform": "win32",
+    "node": "v26.2.0",
+    "logicalCores": 16,
+    "memoryBytes": 33811132416
+  },
+  "browser": {
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+    "viewport": {
+      "width": 1920,
+      "height": 1080
+    },
+    "version": "151.0.7922.76"
+  },
+  "dependencies": {
+    "three": "0.185.1",
+    "vite": "8.1.5",
+    "playwright": "1.61.1"
+  },
+  "build": "vite preview production dist",
+  "route": "/?voxelV2=1&voxelV2Diagnostics=1&voxelV2View=player",
+  "warmup": {
+    "state": "Ready",
+    "worldRevision": 0,
+    "residentChunks": 129,
+    "player": {
+      "position": {
+        "x": 8.625,
+        "y": 9.25,
+        "z": 14.125
+      },
+      "yaw": 0,
+      "pitch": -0.32,
+      "velocityY": 0,
+      "grounded": true,
+      "stepsLastFrame": 1,
+      "accumulatorSeconds": 0.016533333333333216
+    },
+    "lastHit": null,
+    "acceptedEdits": 0,
+    "rejectedEdits": 0,
+    "pendingMeshJobs": 0,
+    "visibleMeshWorldRevision": 0,
+    "frameTimeMs": {
+      "count": 386,
+      "current": 16.599999999999454,
+      "p50": 16.699999999999818,
+      "p95": 16.800000000000182,
+      "max": 17.699999999999818
+    },
+    "inputToHitMs": {
+      "count": 0,
+      "current": 0,
+      "p50": 0,
+      "p95": 0,
+      "max": 0
+    },
+    "inputToAuthorityMs": {
+      "count": 0,
+      "current": 0,
+      "p50": 0,
+      "p95": 0,
+      "max": 0
+    },
+    "inputToVisibleMeshMs": {
+      "count": 0,
+      "current": 0,
+      "p50": 0,
+      "p95": 0,
+      "max": 0
+    },
+    "meshAdoptionMs": {
+      "count": 129,
+      "current": 1.3000000044703484,
+      "p50": 0.5999999940395355,
+      "p95": 1.6999999955296516,
+      "max": 2.2000000029802322
+    },
+    "remeshChunksPerEdit": {
+      "count": 0,
+      "current": 0,
+      "p50": 0,
+      "p95": 0,
+      "max": 0
+    },
+    "longTaskCount": 0,
+    "longTaskMaxMs": 0,
+    "render": {
+      "visibleChunks": 129,
+      "vertices": 317548,
+      "triangles": 158774,
+      "drawCalls": 207
+    },
+    "scheduler": {
+      "workerCount": 1,
+      "activeWorkers": 1,
+      "queueCapacity": 256,
+      "pendingJobs": 0,
+      "inFlightJobs": 0,
+      "submittedJobs": 385,
+      "completedJobs": 385,
+      "failedJobs": 0,
+      "coalescedJobs": 0,
+      "staleResults": 0,
+      "staleRequests": 0,
+      "rejectedJobs": 0,
+      "disposedJobs": 0,
+      "transferredToWorkerBytes": 5070216,
+      "transferredFromWorkerBytes": 18550144,
+      "queueWaitMs": {
+        "count": 385,
+        "current": 0,
+        "p50": 413.30000000447035,
+        "p95": 1515.9000000059605,
+        "max": 1642.2000000029802
+      },
+      "generationMs": {
+        "count": 256,
+        "current": 10.399999998509884,
+        "p50": 5.399999998509884,
+        "p95": 10,
+        "max": 12
+      },
+      "meshingMs": {
+        "count": 129,
+        "current": 7.399999998509884,
+        "p50": 4.699999995529652,
+        "p95": 8.399999998509884,
+        "max": 9.299999997019768
+      },
+      "disposed": false
+    }
+  },
+  "samples": [
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.016500000000000067
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 394,
+        "current": 16.599999999999454,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.01656666666666728
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 402,
+        "current": 16.600000000000364,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.016533333333333216
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 410,
+        "current": 16.599999999999454,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.01656666666666728
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 417,
+        "current": 16.700000000000728,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.016533333333333216
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 425,
+        "current": 16.599999999999454,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.01656666666666728
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 432,
+        "current": 16.700000000000728,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.01656666666666728
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 438,
+        "current": 16.700000000000728,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.01663333333333358
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 446,
+        "current": 16.699999999999818,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 2,
+        "accumulatorSeconds": 0.00003333333333322558
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 454,
+        "current": 16.799999999999272,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.01653333333333323
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 461,
+        "current": 16.599999999999454,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 0,
+        "accumulatorSeconds": 0.01660000000000044
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 469,
+        "current": 16.5,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.016566666666667295
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 477,
+        "current": 16.700000000000728,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.016500000000000094
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 484,
+        "current": 16.599999999999454,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.016599999999999563
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 493,
+        "current": 16.69999999999891,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.016633333333333635
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 500,
+        "current": 16.700000000000728,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.016633333333333677
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 509,
+        "current": 16.799999999999272,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 0,
+        "accumulatorSeconds": 0.016566666666667403
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 512,
+        "current": 16.5,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.01653333333333337
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 512,
+        "current": 16.600000000000364,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.01656666666666744
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 512,
+        "current": 16.600000000000364,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.01653333333333341
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 512,
+        "current": 16.69999999999891,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 0,
+        "accumulatorSeconds": 0.016599999999999747
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 512,
+        "current": 16.599999999998545,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.01656666666666753
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 512,
+        "current": 16.700000000000728,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.016599999999999792
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 512,
+        "current": 16.69999999999891,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.016566666666667586
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 512,
+        "current": 16.700000000000728,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.016633333333333927
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 512,
+        "current": 16.799999999999272,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.016566666666667656
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 512,
+        "current": 16.700000000000728,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.016633333333333996
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 512,
+        "current": 16.700000000000728,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.016566666666667725
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 512,
+        "current": 16.700000000000728,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.0165333333333337
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 512,
+        "current": 16.600000000000364,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.016600000000000042
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 512,
+        "current": 16.69999999999891,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.016533333333333757
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 512,
+        "current": 16.69999999999891,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.016600000000000097
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 512,
+        "current": 16.69999999999891,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.016566666666667878
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 512,
+        "current": 16.700000000000728,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.01663333333333421
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 512,
+        "current": 16.799999999999272,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.016566666666667933
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 512,
+        "current": 16.700000000000728,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.016633333333334274
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 512,
+        "current": 16.700000000000728,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 17.699999999999818
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.01656666666666799
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 512,
+        "current": 16.700000000000728,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 16.900000000000546
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.016533333333333965
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 512,
+        "current": 16.69999999999891,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 16.900000000000546
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.016600000000000305
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 512,
+        "current": 16.69999999999891,
+        "p50": 16.699999999999818,
+        "p95": 16.800000000000182,
+        "max": 16.900000000000546
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    },
+    {
+      "state": "Ready",
+      "worldRevision": 0,
+      "residentChunks": 129,
+      "player": {
+        "position": {
+          "x": 8.625,
+          "y": 9.25,
+          "z": 14.125
+        },
+        "yaw": 0,
+        "pitch": -0.32,
+        "velocityY": 0,
+        "grounded": true,
+        "stepsLastFrame": 1,
+        "accumulatorSeconds": 0.016633333333334385
+      },
+      "lastHit": null,
+      "acceptedEdits": 0,
+      "rejectedEdits": 0,
+      "pendingMeshJobs": 0,
+      "visibleMeshWorldRevision": 0,
+      "frameTimeMs": {
+        "count": 512,
+        "current": 16.799999999999272,
+        "p50": 16.69999999999891,
+        "p95": 16.800000000000182,
+        "max": 16.900000000000546
+      },
+      "inputToHitMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToAuthorityMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "inputToVisibleMeshMs": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "meshAdoptionMs": {
+        "count": 129,
+        "current": 1.3000000044703484,
+        "p50": 0.5999999940395355,
+        "p95": 1.6999999955296516,
+        "max": 2.2000000029802322
+      },
+      "remeshChunksPerEdit": {
+        "count": 0,
+        "current": 0,
+        "p50": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "longTaskCount": 0,
+      "longTaskMaxMs": 0,
+      "render": {
+        "visibleChunks": 129,
+        "vertices": 317548,
+        "triangles": 158774,
+        "drawCalls": 207
+      },
+      "scheduler": {
+        "workerCount": 1,
+        "activeWorkers": 1,
+        "queueCapacity": 256,
+        "pendingJobs": 0,
+        "inFlightJobs": 0,
+        "submittedJobs": 385,
+        "completedJobs": 385,
+        "failedJobs": 0,
+        "coalescedJobs": 0,
+        "staleResults": 0,
+        "staleRequests": 0,
+        "rejectedJobs": 0,
+        "disposedJobs": 0,
+        "transferredToWorkerBytes": 5070216,
+        "transferredFromWorkerBytes": 18550144,
+        "queueWaitMs": {
+          "count": 385,
+          "current": 0,
+          "p50": 413.30000000447035,
+          "p95": 1515.9000000059605,
+          "max": 1642.2000000029802
+        },
+        "generationMs": {
+          "count": 256,
+          "current": 10.399999998509884,
+          "p50": 5.399999998509884,
+          "p95": 10,
+          "max": 12
+        },
+        "meshingMs": {
+          "count": 129,
+          "current": 7.399999998509884,
+          "p50": 4.699999995529652,
+          "p95": 8.399999998509884,
+          "max": 9.299999997019768
+        },
+        "disposed": false
+      }
+    }
+  ],
+  "afterCuts": {
+    "state": "Ready",
+    "worldRevision": 94,
+    "residentChunks": 129,
+    "player": {
+      "position": {
+        "x": 7.650000000000011,
+        "y": 7,
+        "z": 9.625000000000043
+      },
+      "yaw": 0,
+      "pitch": -0.32,
+      "velocityY": 0,
+      "grounded": true,
+      "stepsLastFrame": 1,
+      "accumulatorSeconds": 0.016500000000004702
+    },
+    "lastHit": {
+      "status": "Accepted",
+      "cell": {
+        "x": 30,
+        "y": 24,
+        "z": 13
+      },
+      "worldRevision": 94,
+      "changedCells": 6
+    },
+    "acceptedEdits": 94,
+    "rejectedEdits": 7,
+    "pendingMeshJobs": 0,
+    "visibleMeshWorldRevision": 94,
+    "frameTimeMs": {
+      "count": 512,
+      "current": 16.700000000000728,
+      "p50": 16.69999999999709,
+      "p95": 16.799999999999272,
+      "max": 16.900000000001455
+    },
+    "inputToHitMs": {
+      "count": 101,
+      "current": 0,
+      "p50": 0,
+      "p95": 0.10000000149011612,
+      "max": 0.3999999985098839
+    },
+    "inputToAuthorityMs": {
+      "count": 94,
+      "current": 1.5,
+      "p50": 1.1999999955296516,
+      "p95": 2.100000001490116,
+      "max": 2.4000000059604645
+    },
+    "inputToVisibleMeshMs": {
+      "count": 94,
+      "current": 24.799999997019768,
+      "p50": 16.80000000447035,
+      "p95": 33.600000001490116,
+      "max": 38.5
+    },
+    "meshAdoptionMs": {
+      "count": 247,
+      "current": 0.5,
+      "p50": 0.7999999970197678,
+      "p95": 2,
+      "max": 2.7000000029802322
+    },
+    "remeshChunksPerEdit": {
+      "count": 94,
+      "current": 2,
+      "p50": 1,
+      "p95": 2,
+      "max": 3
+    },
+    "longTaskCount": 0,
+    "longTaskMaxMs": 0,
+    "render": {
+      "visibleChunks": 129,
+      "vertices": 320156,
+      "triangles": 160078,
+      "drawCalls": 197
+    },
+    "scheduler": {
+      "workerCount": 1,
+      "activeWorkers": 1,
+      "queueCapacity": 256,
+      "pendingJobs": 0,
+      "inFlightJobs": 0,
+      "submittedJobs": 503,
+      "completedJobs": 503,
+      "failedJobs": 0,
+      "coalescedJobs": 0,
+      "staleResults": 0,
+      "staleRequests": 0,
+      "rejectedJobs": 0,
+      "disposedJobs": 0,
+      "transferredToWorkerBytes": 9708088,
+      "transferredFromWorkerBytes": 34195712,
+      "queueWaitMs": {
+        "count": 503,
+        "current": 3.7999999970197678,
+        "p50": 56.19999999552965,
+        "p95": 1470.7999999970198,
+        "max": 1642.2000000029802
+      },
+      "generationMs": {
+        "count": 256,
+        "current": 10.399999998509884,
+        "p50": 5.399999998509884,
+        "p95": 10,
+        "max": 12
+      },
+      "meshingMs": {
+        "count": 247,
+        "current": 6.100000001490116,
+        "p50": 5,
+        "p95": 8.100000001490116,
+        "max": 10.300000004470348
+      },
+      "disposed": false
+    }
+  },
+  "screenshots": [
+    {
+      "path": "evidence/hestia-voxel-runtime-v2-spike/01-coast-lagoon-vista.png",
+      "sha256": "ddc437a5ef4265f73bf220f7a7e6f23bbb317c9be1e6635c068a7c4a47949e0b",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "path": "evidence/hestia-voxel-runtime-v2-spike/02-inland-river-valley-vista.png",
+      "sha256": "4d986a5337755fe3c4943aface0af147dfeaa93e1b4177ef13f974ce31cf1dfa",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "path": "evidence/hestia-voxel-runtime-v2-spike/03-first-person-spawn-interaction.png",
+      "sha256": "818feeedc9118b08f5a5d0a9fcf3f918a4a36933137ffae5211f7ed633d49be7",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "path": "evidence/hestia-voxel-runtime-v2-spike/04-before-terrain-cut.png",
+      "sha256": "d49c1d9a9fde813920801c7c917385f2fb77a534d3a27b4e5a35893fde72f4ef",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "path": "evidence/hestia-voxel-runtime-v2-spike/05-after-terrain-cut.png",
+      "sha256": "9336f1cf65273997d1456eb982f4a1fae2e2e62ab540512e60bd0efae86e6b4e",
+      "width": 1920,
+      "height": 1080
+    }
+  ],
+  "browserErrors": [],
+  "thresholds": {
+    "frameP95Ms": {
+      "actual": 16.799999999999272,
+      "target": 16.7,
+      "pass": false
+    },
+    "inputToHitP95Ms": {
+      "actual": 0.10000000149011612,
+      "target": 16.7,
+      "pass": true
+    },
+    "inputToAuthorityP95Ms": {
+      "actual": 2.100000001490116,
+      "target": 16,
+      "pass": true
+    },
+    "inputToVisibleMeshP95Ms": {
+      "actual": 33.600000001490116,
+      "target": 100,
+      "pass": true
+    },
+    "warmLocalCutLongTasks": {
+      "actual": 0,
+      "target": 0,
+      "pass": true
+    },
+    "stressInputs": {
+      "actual": 100,
+      "target": 100,
+      "pass": true
+    },
+    "stressAccepted": {
+      "actual": 93,
+      "target": ">0",
+      "pass": true
+    },
+    "readyAfterCuts": {
+      "actual": "Ready",
+      "target": "Ready",
+      "pass": true
+    },
+    "boundedPendingQueue": {
+      "actual": 0,
+      "target": 256,
+      "pass": true
+    },
+    "noBrowserErrors": {
+      "actual": 0,
+      "target": 0,
+      "pass": true
+    }
+  }
+}
