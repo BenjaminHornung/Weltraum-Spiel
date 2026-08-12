@@ -5,189 +5,63 @@
   "branch": "archive/cloud-research-prototypes-2026-08-12",
   "baseSha": "15f3550bd604856b25d40a7ac700ec4d5106b89e",
   "scope": "read-only research reports and isolated P01-P05 prototype source archives; no product integration",
+  "fontFilesIncluded": false,
   "githubPersistence": {
-    "branch": "archive/cloud-research-prototypes-2026-08-12",
-    "textMetadata": "prepared-for-connector-commit",
+    "textMetadata": "committed",
     "binaryPackages": "pending-local-git-handoff",
     "mainMustRemain": "15f3550bd604856b25d40a7ac700ec4d5106b89e"
   },
   "downloadableArchive": {
     "path": "weltraum-research-prototypes-archive-2026-08-12.zip",
-    "bytes": 8469894,
-    "sha256": "a7760ffec5e569874cf3abec037a944c657d63e43e8812ddc406382dae1a9ed0"
-  },
-  "researchCorpus": {
-    "path": "research-reports-2026-08-12.zip",
-    "bytes": 883642,
-    "sha256": "4bd482038f37e577970d968d03c25ad200280c046fc4337b940f2d675686e58b"
+    "bytes": 7595790,
+    "sha256": "7097b231c96cf7c4ad4a2215e8b8cc50925175488b8ff286e4886eca1e75ed21",
+    "reportCount": 45,
+    "representativeScreenshotCount": 7
   },
   "prototypePackages": [
     {
       "id": "P01",
       "path": "prototypes/packages/P01-editor-shell-source-only.zip",
-      "bytes": 1074571,
-      "sha256": "d3625f101f4a5ae2565f45adc23707b9f3ee8a37e895957c2f285ea628880876",
-      "originalArchive": {
-        "name": "P01_editor_shell_ui_prototype(1).zip",
-        "bytes": 1153006,
-        "sha256": "615b0165b356060dd9ad9a6373682923b7be297c7cb7e606192076edcf5e7fd1"
-      },
-      "sanitization": {
-        "excluded": [
-          "dist/**",
-          ".next/**",
-          ".vinext/**",
-          ".wrangler/**",
-          "node_modules/**",
-          "coverage/**",
-          "test-results/**",
-          "playwright-report/**",
-          "*.tsbuildinfo",
-          "font binaries"
-        ],
-        "reason": "Git archive stores source, contracts, tests, docs and evidence without generated caches/build outputs or embedded fonts."
-      }
+      "bytes": 1075140,
+      "sha256": "bb57c961e9198d63195a6da71b5688f8856bd1ffb12ba4b0826e56926c8a5334"
     },
     {
       "id": "P02",
       "path": "prototypes/packages/P02-mission-graph-source-only.zip",
-      "bytes": 1361683,
-      "sha256": "51da16e5ac598e211254f9589b31e3757a46c39d87c6ea4195795c30ea1894c8",
-      "originalArchive": {
-        "name": "P02_mission_graph_editor_prototype_2026-08-12(1).zip",
-        "bytes": 1498602,
-        "sha256": "6dbf7636dc5153e66e960ab948149fe0fb503120717eae4c6a663330e8678eb7"
-      },
-      "sanitization": {
-        "excluded": [
-          "dist/**",
-          ".next/**",
-          ".vinext/**",
-          ".wrangler/**",
-          "node_modules/**",
-          "coverage/**",
-          "test-results/**",
-          "playwright-report/**",
-          "*.tsbuildinfo",
-          "font binaries"
-        ],
-        "reason": "Git archive stores source, contracts, tests, docs and evidence without generated caches/build outputs or embedded fonts."
-      }
+      "bytes": 1361676,
+      "sha256": "f2ebb211a76fda836a7d54b8de7f96d01ccf70be270f6e381948f9be7a53125c"
     },
     {
       "id": "P03",
       "path": "prototypes/packages/P03-settlement-editor-source-only.zip",
-      "bytes": 279458,
-      "sha256": "ad6e8a9f91bb771368443e2b0810e5b22d380485517b47177d54cf3d4528075f",
-      "originalArchive": {
-        "name": "P03_settlement_editor_prototype_source(1).zip",
-        "bytes": 488823,
-        "sha256": "af9cc7f65d1f781006a23ad75d83e358b5fca02c0923339df270aa8bd137eddb"
-      },
-      "sanitization": {
-        "excluded": [
-          "dist/**",
-          ".next/**",
-          ".vinext/**",
-          ".wrangler/**",
-          "node_modules/**",
-          "coverage/**",
-          "test-results/**",
-          "playwright-report/**",
-          "*.tsbuildinfo",
-          "font binaries"
-        ],
-        "reason": "Git archive stores source, contracts, tests, docs and evidence without generated caches/build outputs or embedded fonts."
-      }
+      "bytes": 277176,
+      "sha256": "cc8a4f48a296f9c058c636ccf51640c21af4318a3e500e69bb64bf245754589c"
     },
     {
       "id": "P04",
       "path": "prototypes/packages/P04-star-system-map-source-only.zip",
-      "bytes": 1455852,
-      "sha256": "8fc787542db4fdabf6ae58730de3df41e530c6e71cd4a3a09f0a946faffdeab5",
-      "originalArchive": {
-        "name": "P04_star_system_map_prototype(1).zip",
-        "bytes": 1456932,
-        "sha256": "60a309d9441b1c4fc8464f0e93ab5fd3a3cf9d5606d9e26c18d4c4943bd93152"
-      },
-      "sanitization": {
-        "excluded": [
-          "dist/**",
-          ".next/**",
-          ".vinext/**",
-          ".wrangler/**",
-          "node_modules/**",
-          "coverage/**",
-          "test-results/**",
-          "playwright-report/**",
-          "*.tsbuildinfo",
-          "font binaries"
-        ],
-        "reason": "Git archive stores source, contracts, tests, docs and evidence without generated caches/build outputs or embedded fonts."
-      }
+      "bytes": 1455423,
+      "sha256": "994e5f6c2984e9ea985f00103360e6541a16487cf699f1b9b77a0add218436c4"
     },
     {
       "id": "P05",
       "path": "prototypes/packages/P05-ai-transaction-ux-source-only.zip",
-      "bytes": 123162,
-      "sha256": "e064acb0594b1ccaba128ce2d587c709169505b69b0c4f3331358524e9f6151b",
-      "originalArchive": {
-        "name": "P05_AI_Copilot_Transaction_UX_Prototype(1).zip",
-        "bytes": 670668,
-        "sha256": "988257c9d9ad74e57b7c963387c695612ace099aa8e55ed82e0982ac6cc4cbb7"
-      },
-      "sanitization": {
-        "excluded": [
-          "dist/**",
-          ".next/**",
-          ".vinext/**",
-          ".wrangler/**",
-          "node_modules/**",
-          "coverage/**",
-          "test-results/**",
-          "playwright-report/**",
-          "*.tsbuildinfo",
-          "font binaries"
-        ],
-        "reason": "Git archive stores source, contracts, tests, docs and evidence without generated caches/build outputs or embedded fonts."
-      }
+      "bytes": 120480,
+      "sha256": "ab82a804f5516449054bae034881cf690505a4e61e93342d78c910c63b1d78d2"
     }
   ],
-  "representativeScreenshots": [
-    {
-      "path": "prototypes/screenshots/P01-history-after-undo.png",
-      "bytes": 152176,
-      "sha256": "d33bf4016c5710a28fa28ec1c888455df5061db5c04cdd33d9312bf05743cc55"
-    },
-    {
-      "path": "prototypes/screenshots/P01-shell-overview.png",
-      "bytes": 305862,
-      "sha256": "f7f6f5987f26c3128cbd63d8e624660d5a51d7747b6ef2fce4840406b6c1ef6c"
-    },
-    {
-      "path": "prototypes/screenshots/P01-validation-blocked.png",
-      "bytes": 282221,
-      "sha256": "564dee71bc86e3c742005cdb4485ec69e75dba629597069bfbef98c6d690b793"
-    },
-    {
-      "path": "prototypes/screenshots/P02-mission-graph-overview.png",
-      "bytes": 374753,
-      "sha256": "8441fc602b16b46683bb7510e5f75e837aa44f3fc86ca191d3110e237ff4aa83"
-    },
-    {
-      "path": "prototypes/screenshots/P04-star-map-2d-overlays.png",
-      "bytes": 594640,
-      "sha256": "f21a2819596792a4462dc9e0a5315a7a3ba2a3758e1e8b7db4677b9dc426d86e"
-    },
-    {
-      "path": "prototypes/screenshots/P04-star-map-3d-overview.png",
-      "bytes": 578709,
-      "sha256": "3bfe778bb6103aafbec66433e36faa7a6007fa3fdbd77c05b216967ad5818b4d"
-    },
-    {
-      "path": "prototypes/screenshots/P04-surface-handoff.png",
-      "bytes": 169890,
-      "sha256": "538a6bd05a844c6e1e15c33e1baf9902da72c021b79dc19e79d3e8970ba89539"
-    }
-  ]
+  "sanitization": {
+    "excluded": [
+      "dist/**",
+      ".next/**",
+      ".vinext/**",
+      ".wrangler/**",
+      "node_modules/**",
+      "coverage/**",
+      "test-results/**",
+      "playwright-report/**",
+      "*.tsbuildinfo",
+      "font binaries"
+    ]
+  }
 }
