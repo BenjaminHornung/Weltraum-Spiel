@@ -1,0 +1,35 @@
+{
+  "name": "p05-ai-copilot-transaction-ux-sanitized",
+  "version": "0.2.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "description": "Sanitized client-only deterministic P05 mock transaction UX prototype",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "test": "npm run build && node --test tests/*.test.mjs",
+    "check": "npm run lint && npm test",
+    "preview": "vite preview --host 127.0.0.1"
+  },
+  "dependencies": {
+    "react": "19.2.6",
+    "react-dom": "19.2.6"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.4",
+    "@types/node": "22.19.19",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.0.2",
+    "eslint": "9.39.4",
+    "globals": "14.0.0",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.59.3",
+    "vite": "8.0.13"
+  },
+  "type": "module"
+}

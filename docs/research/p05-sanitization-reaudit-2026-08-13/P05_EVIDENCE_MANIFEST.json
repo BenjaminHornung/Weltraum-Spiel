@@ -1,0 +1,128 @@
+{
+  "schemaVersion": "p05-evidence-manifest/1",
+  "executionDate": "2026-08-13",
+  "taskDateInRequiredFilenames": "2026-08-12",
+  "package": {
+    "name": "p05-ai-copilot-transaction-ux-sanitized",
+    "version": "0.2.0",
+    "sourceArchive": "P05_SOURCE_ONLY_SANITIZED.zip",
+    "sourceArchiveSizeBytes": 42696,
+    "sourceArchiveSha256": "43088de468f78021dc2b9fd6f6233759a8cbc66816ef7026fda2f32094ae6b10",
+    "lockfileSha256": "862919cd5dfcf8d472940947fa14817a9e7bfdb35ea0956dad0d6a215d7e2add"
+  },
+  "quarantinedInput": {
+    "name": "P05_AI_Copilot_Transaction_UX_Prototype.zip",
+    "sha256": "988257c9d9ad74e57b7c963387c695612ace099aa8e55ed82e0982ac6cc4cbb7",
+    "disposition": "DISCARD / QUARANTINED",
+    "secretValuesRecorded": false
+  },
+  "environment": {
+    "node": "v24.14.0",
+    "npm": "11.9.0",
+    "requestedBrowserViewport": {
+      "width": 1365,
+      "height": 935,
+      "deviceScaleFactor": 1
+    },
+    "requestedColorScheme": "dark",
+    "requestedReducedMotion": "reduce"
+  },
+  "verification": {
+    "installFromLockfile": "PASS",
+    "lint": "PASS",
+    "build": "PASS",
+    "tests": {
+      "status": "PASS",
+      "passed": 3,
+      "failed": 0
+    },
+    "localHttpSmoke": {
+      "status": "PASS",
+      "htmlStatus": 200,
+      "javascriptStatus": 200,
+      "stylesheetStatus": 200
+    },
+    "rebuildFromFinalZip": "PASS"
+  },
+  "freshBuild": {
+    "includedInSourceArchive": false,
+    "files": [
+      {
+        "path": "assets/index-Bp6OOTks.css",
+        "sizeBytes": 23218,
+        "sha256": "ffd5185a45a8682eb301c2a2c14ba1a70c578929a5053a03d8f8ede0d2d0f2a0"
+      },
+      {
+        "path": "assets/index-BVeHewKR.js",
+        "sizeBytes": 216507,
+        "sha256": "60986586f0032d4706870a31e525c8220dde041f319b2488e9588d022773a5c2"
+      },
+      {
+        "path": "favicon.svg",
+        "sizeBytes": 712,
+        "sha256": "e6d2e59b7b5bbb0342e0fb496dfc262decbfe4426bbb7b047aec8d467d1dc6f7"
+      },
+      {
+        "path": "index.html",
+        "sizeBytes": 698,
+        "sha256": "736f07420b51fea8c9171090e9b2ea47e95757b91f914e85eb8ec91e61842ee0"
+      }
+    ]
+  },
+  "secretScans": [
+    {
+      "target": "quarantined-input",
+      "pathClass": "build_output",
+      "hitClass": "credential_assignment",
+      "count": 2,
+      "action": "discarded complete supplied build output"
+    },
+    {
+      "target": "sanitized-source-tree",
+      "count": 0,
+      "status": "PASS"
+    },
+    {
+      "target": "fresh-build-from-final-zip",
+      "count": 0,
+      "status": "PASS"
+    },
+    {
+      "target": "final-source-only-zip",
+      "count": 0,
+      "status": "PASS"
+    }
+  ],
+  "uxBoundaries": {
+    "externalAi": false,
+    "realAuthority": false,
+    "realCommit": false,
+    "deterministicFixtureFlow": true,
+    "visibleMockLabelsInSourceAndBuild": true,
+    "performanceClaim": false
+  },
+  "screenshots": {
+    "status": "BLOCKED",
+    "files": [],
+    "expectedStates": [
+      "instruction",
+      "validator-blocked",
+      "owner-gate-locked",
+      "commit-ready",
+      "mock-commit",
+      "mock-undo"
+    ],
+    "reasonClass": "browser-infrastructure-and-workspace-pruning",
+    "fabricatedOrReconstructed": false
+  },
+  "externalWrites": {
+    "github": false,
+    "productRepositories": false,
+    "deployment": false,
+    "externalAi": false
+  },
+  "ownerAction": {
+    "credentialRotationOrRevocationStatus": "UNKNOWN / OUTSIDE AGENT SCOPE"
+  },
+  "verdict": "REQUIRES_FIX"
+}

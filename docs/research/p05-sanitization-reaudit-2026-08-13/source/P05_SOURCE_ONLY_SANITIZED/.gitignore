@@ -1,0 +1,15 @@
+/node_modules/
+/dist/
+/coverage/
+/test-results/
+/playwright-report/
+/.cache/
+/.vite/
+/.wrangler/
+/.sites-runtime/
+/.env*
+!/.env.example
+*.log
+*.map
+*.tsbuildinfo
+.DS_Store
