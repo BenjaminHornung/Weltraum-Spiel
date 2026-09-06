@@ -1,6 +1,12 @@
 # Weltraum-Spiel
 
-Browser-based low-poly spaceflight prototype with deterministic flight, navigation and evidence-driven development.
+Browser-based spaceflight prototype with deterministic flight, navigation and evidence-driven development.
+
+Hestia's current visual design target is a fine, hard, axis-aligned
+microvoxel world. This is a design target, not a claim that the normal browser
+runtime already delivers a voxel planet or surface gameplay. See the
+[voxel-world decision and supersession index](docs/architecture/voxel-world-decision-and-supersession-index.md)
+for the source status, implementation boundary and historical pointers.
 
 > **Product mainline:** `apps/weltraum-browser` using Three.js, TypeScript, Vite, Vitest and Playwright.
 > **Legacy/reference:** the immutable Unity snapshot at tag `unity-legacy-final-2026-07` and branch `archive/unity-legacy-final-2026-07`. No active Unity project exists on this branch.
@@ -30,11 +36,11 @@ The current browser runtime provides a playable local-space flight slice:
 - Ship Builder part/blueprint foundations plus deterministic stats, handling diagnostics and static flight-readiness reports. There is still no player-facing Builder UI, runtime handoff or active-ship replacement.
 - A player-facing Graphics dialog with versioned presets, strict local preference storage and a presentation-only Three.js adapter. Graphics choices do not alter simulation, navigation or world truth.
 
-The delivered `surfaceLab=1` route is a technical voxel/worker/mesh/render proving ground only. It is not player-facing voxel terrain or surface gameplay; no player-facing voxel terrain/gameplay is delivered by this route.
+The delivered `surfaceLab=1` route is a technical voxel/worker/mesh/render proving ground only. It is not player-facing voxel terrain or surface gameplay; no player-facing voxel terrain/gameplay is delivered by this route. Its current Surface Nets output is technical evidence, not Hestia art-direction truth.
 
 The browser runtime does **not** yet provide full planets, player-facing voxel terrain/gameplay, orbital flight, SOI or patched-conics navigation, seamless surface transitions, production multiplayer, a playable ship-builder UI, persistent cargo gameplay, full combat, economy or missions.
 
-For the detailed snapshot, see [docs/current-mainline-state.md](docs/current-mainline-state.md). The longer planning index is [docs/roadmap/living-master-plan.md](docs/roadmap/living-master-plan.md).
+For the detailed implementation snapshot, see [docs/current-mainline-state.md](docs/current-mainline-state.md). The longer [planning index](docs/roadmap/living-master-plan.md) is not an implementation-status source; the decision/supersession index records how those sources relate.
 
 ## Quick Start
 

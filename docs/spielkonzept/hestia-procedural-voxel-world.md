@@ -3,6 +3,14 @@
 Stand: 2026-07-13
 Status: Verbindliche Docs-only-Planungsgrundlage, keine Runtime-Implementierung
 
+> **Aktueller Statuspointer, 2026-09-06:** Die in diesem historischen
+> Planungsdokument vorkommende visuelle Zielanweisung "Low-Poly" ist für
+> Hestia `SUPERSEDED_IN_PART`. Das aktuelle Hestia-Designziel sind feine,
+> harte, achsenorientierte Microvoxels. Die darin beschriebenen
+> Repräsentations-, Authority- und Persistenzgrenzen bleiben Planung, nicht
+> Runtime-Evidence. Siehe
+> [Voxel World Decision and Supersession Index](../architecture/voxel-world-decision-and-supersession-index.md).
+
 ## 1. Zweck und Authority
 
 Hestia wird als prozedurale Low-Poly-Microvoxelwelt geplant, deren globale
