@@ -3,6 +3,15 @@
 Stand: 2026-07-13
 Status: verbindliche Zielarchitektur, Docs-only, keine Runtime-Implementierung
 
+> **Aktueller Statuspointer, 2026-09-06:** Dieses Dokument bleibt eine
+> Zielarchitektur und kein Implementierungsnachweis. SDF-/Density-Felder dürfen
+> weiterhin Makro- oder technische Eingaben sein, aber Regular-Cells-,
+> Transvoxel- oder glatte Surface-Projektionen sind keine sichtbare
+> Hestia-Zielanweisung. Die aktuelle sichtbare Designrichtung, die weiterhin
+> offenen Planet-/Cube-Sphere-/Mesherentscheidungen und die gültigen
+> Lab-Produktgrenzen stehen im
+> [Voxel World Decision and Supersession Index](voxel-world-decision-and-supersession-index.md).
+
 ## 1. Binding Target Decision
 
 Hestias planetare Runtime wird als hierarchische, revisionierte

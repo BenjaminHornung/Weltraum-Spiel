@@ -5,6 +5,15 @@ Dokumenttyp: laufender Planungsindex, keine Implementierungsspezifikation
 Produkt-Mainline: Browser, Three.js und TypeScript
 Legacy/Referenz: Unity-Prototyp, historische Specs und Runtime-Evidence
 
+> **Aktueller Statuspointer, 2026-09-06:** Dieser Living Master Plan ist ein
+> Planungsindex, nicht die aktuelle Implementierungswahrheit. Für den
+> verifizierten Mainline-Code und die Einordnung späterer Proposal-/Patch- und
+> Visual-Source-Pins gilt
+> [Current Mainline State](../current-mainline-state.md) zusammen mit dem
+> [Voxel World Decision and Supersession Index](../architecture/voxel-world-decision-and-supersession-index.md).
+> Die hier dokumentierte Lab-/Produktgrenze und die bestehende BR/WP-Sequenz
+> werden dadurch nicht verändert.
+
 ## 1. Zweck
 
 Dieses Dokument ist die gemeinsame, laufend gepflegte Übersicht über bereits umgesetzte Grundlagen, offene Fähigkeiten, Abhängigkeiten und spätere Ausbaustufen. Es ersetzt keine fachliche Spec: Ein Arbeitspaket wird vor Umsetzung in einen eigenen DevToolbox-Change mit Ziel, Nicht-Zielen, Design, Tasks, Acceptance und Evidence überführt.

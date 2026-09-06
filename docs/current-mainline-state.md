@@ -1,10 +1,12 @@
 # Current Browser Mainline State
 
-Stand: 2026-07-20
-Status snapshot: browser mainline after the objective-chain,
+Stand: 2026-09-06
+Status snapshot: `main` at `15f3550bd604856b25d40a7ac700ec4d5106b89e`,
+after the objective-chain,
 celestial-gravity-core, combat-weapon-damage-core, Persistence/Universe-Time/
 Event core, Ship Builder full-stats/readiness, Graphics Settings and Demo Scout
-nozzle-VFX merges, plus the query-gated Hestia Microvoxel Surface Lab
+nozzle-VFX merges, the query-gated Hestia Microvoxel Surface Lab, Adaptive and
+Structural Microvoxel pure cores, and the browser IndexedDB Save Repository core
 
 ## Product Mainline
 
@@ -17,6 +19,32 @@ repository snapshot is preserved by tag `unity-legacy-final-2026-07` and branch
 `archive/unity-legacy-final-2026-07`; archived source paths can be addressed as
 `unity-legacy-final-2026-07:Assets/**`. No Unity project is active on this
 branch.
+
+## Current Truth And Scope Boundary
+
+This document is the compact implementation snapshot for the pinned `main`
+commit above. Code on that commit is the source for claims that something runs
+in the product. Pinned research, proposal, patch and visual-source documents
+can define a scoped design or decision context, but do not by themselves prove
+that it is implemented on `main`.
+
+The navigation and status rules for those documents, including the Hestia
+visual supersession, are recorded in the
+[Voxel World Decision and Supersession Index](architecture/voxel-world-decision-and-supersession-index.md).
+
+### Normal Browser Flight Path
+
+The normal `/` route starts `createBrowserRuntime`, the `DebugScene` renderer,
+the proving-ground presentation batch and the graphics-settings adapter through
+[`apps/weltraum-browser/src/main.ts`](../apps/weltraum-browser/src/main.ts).
+It is a playable local-space flight path, not a composed voxel-world runtime.
+
+### Separate Surface-Lab Path
+
+Only the exact `?surfaceLab=1` query selects the separate Surface Lab bootstrap.
+That technical route is outside the normal player runtime. It does not create a
+planetary shell, a player surface loop, a world-save adapter or a
+space-to-surface handoff.
 
 ## Playable Browser State
 
@@ -102,6 +130,41 @@ flight keys are cleared and manual flight input is suppressed.
 
 ## Implemented Foundations
 
+### Adaptive Microvoxel Pure Core
+
+`apps/weltraum-browser/src/voxel/adaptive` implements a deterministic,
+renderer-independent adaptive-authority core: 0.125 m base quantum,
+hierarchical keys, revisioned edits, materialization, residency, planning and
+parent-fallback coverage. The 0.125 m quantum is a contract of this isolated
+module, not a global planet-cell allocation or a product-wide visual profile.
+
+The normal entry point and `BrowserRuntime` do not import this module. Its
+dedicated unit and browser test sources cover this bounded core only; they do
+not establish live planet streaming, player interaction, collision, terrain
+rendering or save/load composition.
+
+### Structural Microvoxel Pure Core
+
+`apps/weltraum-browser/src/voxel/structural` implements a deterministic core
+over Adaptive input: structural voxel state, edit commands, connectivity,
+component and fragment descriptors, mass properties, greedy-mesh products and
+canonical persistence codecs. It is not connected to the normal browser
+runtime, a physics engine, moving fragment bodies or a collider chain.
+
+Accordingly, the core does not deliver playable destruction, mobile debris,
+integrated collision or an end-to-end destructive-world loop.
+
+### Browser IndexedDB Save Repository Core
+
+`apps/weltraum-browser/src/browser-storage/indexedDbSaveRepository.ts` provides
+a versioned browser `SaveRepository` with slot, revision, import/export and
+corruption/error handling. It is a standalone storage core: the normal entry
+point and `BrowserRuntime` do not compose it with player state, voxel state or
+the Persistence/Universe-Time domain core.
+
+There is therefore no player-facing save/load flow, no voxel-world save adapter
+and no integrated save loop on the normal route.
+
 ### Hestia Microvoxel Surface Lab
 
 The exact query route `/?surfaceLab=1` starts a full-screen technical proving
@@ -113,11 +176,12 @@ Same canonical input preserves brick and mesh identity; changed seed or
 resolution produces distinct deterministic content. Cache, cancellation,
 stale-result, worker-replacement, budget and disposal paths remain fail closed.
 
-This route is not player-facing voxel terrain or gameplay. It does not provide
-a planet shell, surface streaming, collision/player integration, seamless
-space-to-surface transitions, production hydrology, destruction or accepted
-final visual fidelity. The normal `/` flight runtime remains unchanged when
-the exact query gate is absent.
+This route is not player-facing voxel terrain or gameplay. Surface Nets is the
+current technical mesh product of this route, not the visible Hestia target
+style. The route does not provide a planet shell, surface streaming,
+collision/player integration, seamless space-to-surface transitions, production
+hydrology, destruction or accepted final visual fidelity. The normal `/` flight
+runtime remains unchanged when the exact query gate is absent.
 
 Evidence:
 
@@ -282,6 +346,9 @@ The project is not yet:
 
 - a seamless planet-to-planet or space-to-surface game;
 - a voxel planet/terrain runtime;
+- a composed Adaptive/Structural/IndexedDB-to-player runtime;
+- a player- or voxel-world save/load loop;
+- a moving-fragment, collider or physics handoff chain;
 - integrated orbital flight, SOI, patched conics or timewarp;
 - a persistent or multiplayer universe authority;
 - a complete ship builder;
