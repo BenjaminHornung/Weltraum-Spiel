@@ -243,6 +243,35 @@ describe("PG-TRAGWERK-01 proving-ground slice 4 (G5 + Bildabnahme)", () => {
     expect(dynamicMass + squeezed.debris.massKg).toBeCloseTo(referenceMass, 12);
     expect(squeezed.debris.massKg).toBeCloseTo(2 * 2700 * CELL_VOLUME, 12);
 
+    // Debris-Steiner-Cross-Check (P-PG-R4-Nachtrag, reine Test-Ergaenzung ohne
+    // Produktlogik-Aenderung): Single-Member-Sonderfall — das einzige
+    // Overflow-Fragment ist dasselbe wie im Installed-Referenzplan.
+    expect(squeezed.mergedDebrisFragmentIds).toEqual([installed.dynamicBodies[0].fragmentId]);
+    const member = installed.dynamicBodies[0];
+    const debris = squeezed.debris;
+    // Schwerpunkt des Single-Member-Debris faellt mit dem Fragment-COM zusammen.
+    expect(debris.centerOfMassMeters.x).toBeCloseTo(member.centerOfMassMeters.x, 9);
+    expect(debris.centerOfMassMeters.y).toBeCloseTo(member.centerOfMassMeters.y, 9);
+    expect(debris.centerOfMassMeters.z).toBeCloseTo(member.centerOfMassMeters.z, 9);
+    // Unabhaengige Steiner-Nachrechnung: I = I_eigen + m*(|d|^2 E - d d^T)
+    // mit d = c_fragment - c_debris.
+    const dx = member.centerOfMassMeters.x - debris.centerOfMassMeters.x;
+    const dy = member.centerOfMassMeters.y - debris.centerOfMassMeters.y;
+    const dz = member.centerOfMassMeters.z - debris.centerOfMassMeters.z;
+    const memberTensor = member.inertiaTensorKgMetersSquared;
+    const debrisTensor = debris.inertiaTensorKgMetersSquared;
+    expect(debrisTensor.xx).toBeCloseTo(memberTensor.xx + member.massKg * (dy * dy + dz * dz), 12);
+    expect(debrisTensor.yy).toBeCloseTo(memberTensor.yy + member.massKg * (dx * dx + dz * dz), 12);
+    expect(debrisTensor.zz).toBeCloseTo(memberTensor.zz + member.massKg * (dx * dx + dy * dy), 12);
+    expect(debrisTensor.xy).toBeCloseTo(memberTensor.xy - member.massKg * dx * dy, 12);
+    expect(debrisTensor.xz).toBeCloseTo(memberTensor.xz - member.massKg * dx * dz, 12);
+    expect(debrisTensor.yz).toBeCloseTo(memberTensor.yz - member.massKg * dy * dz, 12);
+    // Single-Member-Folge (d ~ 0): Debris-Tensor == Fragment-Eigentensor.
+    expect(debrisTensor.xx).toBeCloseTo(memberTensor.xx, 9);
+    expect(debrisTensor.yy).toBeCloseTo(memberTensor.yy, 9);
+    expect(debrisTensor.zz).toBeCloseTo(memberTensor.zz, 9);
+    expect(Math.abs(debrisTensor.xy) + Math.abs(debrisTensor.xz) + Math.abs(debrisTensor.yz)).toBeLessThan(1e-9);
+
     // Determinismus: erneute Ableitung liefert denselben Ledger-Hash.
     const again = deriveStructuralPhysicsTransition(
       cut.object,
