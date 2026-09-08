@@ -8,6 +8,7 @@ import {
   type MeterPoint
 } from "../adaptive";
 import { decodeStructuralObject, encodeStructuralObject } from "./persistence";
+import { deriveStructuralComponentClassification } from "./connectivity";
 import {
   STRUCTURAL_MAX_PERSISTENCE_UTF8_BYTES,
   STRUCTURAL_REGION_SAVE_MAX_MOTIONS,
@@ -204,6 +205,53 @@ const validateParentMotionSource = (value: unknown, path: string): StructuralPar
   return value;
 };
 
+const expectedFragmentIds = (object: StructuralObject): ReadonlySet<string> => {
+  const occupiedCellCount = object.bricks.reduce((sum, brick) => sum + brick.cells.length, 0);
+  const indexedFactCount = object.anchors.length + object.joints.length * 2;
+  try {
+    const classification = deriveStructuralComponentClassification(object, {
+      maxVisitedCells: Math.max(1, occupiedCellCount),
+      maxComponents: Math.max(1, occupiedCellCount),
+      maxIndexedFacts: Math.max(1, indexedFactCount)
+    });
+    return new Set(classification.fragments.map((fragment) => fragment.fragmentId));
+  } catch {
+    return structuralFail("InvalidContract", "regionSave/object", "Unable to derive the saved object's fragment coverage.");
+  }
+};
+
+const validateMotionCoverage = (
+  motions: readonly StructuralSavedFragmentMotion[],
+  object: StructuralObject,
+  path: string
+): void => {
+  const fragmentIds = expectedFragmentIds(object);
+  if (motions.length !== fragmentIds.size) {
+    return structuralFail(
+      "InvalidContract",
+      path,
+      fragmentIds.size === 0
+        ? "A region save with no dynamic fragments must carry an empty motion set."
+        : "Saved fragment motions must cover every dynamic fragment exactly once."
+    );
+  }
+  const seen = new Set<string>();
+  for (const motion of motions) {
+    if (!fragmentIds.has(motion.fragmentId)) {
+      return structuralFail("InvalidContract", path, "Saved fragment motion references a foreign fragment.");
+    }
+    if (seen.has(motion.fragmentId)) {
+      return structuralFail("InvalidContract", path, "Saved fragment motions must reference each fragment exactly once.");
+    }
+    seen.add(motion.fragmentId);
+  }
+  for (const fragmentId of fragmentIds) {
+    if (!seen.has(fragmentId)) {
+      return structuralFail("InvalidContract", path, "Saved fragment motions must cover every dynamic fragment exactly once.");
+    }
+  }
+};
+
 interface ValidatedRegionSaveBody {
   readonly object: StructuralObject;
   readonly parentMotionSource: StructuralParentMotionSource;
@@ -247,16 +295,7 @@ const validateSaveBody = (record: Record<string, unknown>): ValidatedRegionSaveB
   }
   const motions = structuralDenseArray(record.motions, "regionSave/motions", STRUCTURAL_REGION_SAVE_MAX_MOTIONS)
     .map((entry, index) => validateMotionBinding(entry, `regionSave/motions/${index}`, object));
-  if (motions.length === 0) {
-    return structuralFail("InvalidContract", "regionSave/motions", "A region save without fragment motion cannot restore movement state (no silent default).");
-  }
-  const seen = new Set<string>();
-  for (const motion of motions) {
-    if (seen.has(motion.fragmentId)) {
-      return structuralFail("InvalidContract", "regionSave/motions", "Saved fragment motions must reference each fragment exactly once.");
-    }
-    seen.add(motion.fragmentId);
-  }
+  validateMotionCoverage(motions, object, "regionSave/motions");
   const persistedHash = requireStructuralHash(record.saveHash, "regionSave/saveHash");
   const recomputed = hashSavePayload({
     objectContentHash: object.contentHash,
@@ -329,16 +368,7 @@ export const encodeStructuralRegionSave = (input: StructuralRegionSaveInput): st
   const object = decodeStructuralObject(canonicalAdaptiveJson(objectProjection));
   const motions = structuralDenseArray(record.motions, "regionSaveInput/motions", STRUCTURAL_REGION_SAVE_MAX_MOTIONS)
     .map((entry, index) => validateMotionBinding(entry, `regionSaveInput/motions/${index}`, object));
-  if (motions.length === 0) {
-    return structuralFail("InvalidContract", "regionSaveInput/motions", "A region save without fragment motion cannot restore movement state (no silent default).");
-  }
-  const seen = new Set<string>();
-  for (const motion of motions) {
-    if (seen.has(motion.fragmentId)) {
-      return structuralFail("InvalidContract", "regionSaveInput/motions", "Saved fragment motions must reference each fragment exactly once.");
-    }
-    seen.add(motion.fragmentId);
-  }
+  validateMotionCoverage(motions, object, "regionSaveInput/motions");
   const saveHash = hashSavePayload({
     objectContentHash: object.contentHash,
     objectRevision: object.objectRevision,

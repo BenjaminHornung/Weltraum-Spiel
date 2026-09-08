@@ -133,7 +133,7 @@ export interface StructuralPhysicsWorldPort<BodyRef> {
   removeBody(body: BodyRef): void;
 }
 
-export interface StructuralPhysicsCommitRequest<BodyRef> {
+interface StructuralPhysicsCommitRequestBase<BodyRef> {
   readonly port: StructuralPhysicsWorldPort<BodyRef>;
   readonly parentBody: BodyRef;
   readonly plan: StructuralInstalledPhysicsTransition;
@@ -141,13 +141,26 @@ export interface StructuralPhysicsCommitRequest<BodyRef> {
   readonly classification: StructuralComponentClassification;
   readonly parentWorldPose?: StructuralParentWorldPose;
   readonly preCutCenterAuthorMeters?: MeterPoint;
-  /**
-   * Nur beim Wiederaufbau aus einem Region-Save setzen; der Satz muss alle
-   * Plan-Fragmente geschlossen abdecken. Frische F8-Installationen duerfen
-   * das Feld auslassen und bleiben plan-abgeleitet.
-   */
-  readonly restoredFragmentMotions?: readonly StructuralRestoredFragmentMotion[];
 }
+
+export interface StructuralFreshPhysicsCommitRequest<BodyRef> extends StructuralPhysicsCommitRequestBase<BodyRef> {
+  readonly mode?: "fresh";
+  readonly restoredFragmentMotions?: never;
+}
+
+export interface StructuralRestorePhysicsCommitRequest<BodyRef> extends StructuralPhysicsCommitRequestBase<BodyRef> {
+  readonly mode: "restore";
+  /**
+   * Beim Wiederaufbau aus einem Region-Save verpflichtend; der Satz muss alle
+   * Plan-Fragmente geschlossen abdecken. Ein leerer Satz ist nur fuer einen
+   * installierten Plan ohne dynamische Fragmente gueltig.
+   */
+  readonly restoredFragmentMotions: readonly StructuralRestoredFragmentMotion[];
+}
+
+export type StructuralPhysicsCommitRequest<BodyRef> =
+  | StructuralFreshPhysicsCommitRequest<BodyRef>
+  | StructuralRestorePhysicsCommitRequest<BodyRef>;
 
 export interface StructuralCommittedFragment {
   readonly fragmentId: StructuralFragmentId;
@@ -305,6 +318,16 @@ export const commitStructuralPhysicsTransition = <BodyRef>(
 ): StructuralPhysicsCommitReceipt => {
   const { port, parentBody, plan, live, classification, parentWorldPose, preCutCenterAuthorMeters } = request;
   const restored = true;
+  const requestMode = (request as { readonly mode?: unknown }).mode;
+  if (requestMode !== undefined && requestMode !== "fresh" && requestMode !== "restore") {
+    fail(
+      "InvalidStructuralState",
+      "request/mode",
+      "Commit mode must be fresh or restore; unknown modes cannot fall back to a fresh install.",
+      "validate",
+      restored
+    );
+  }
   if (plan.status !== "Installed") {
     fail("InvalidStructuralState", "plan/status", "Commit requires an installed plan (no debris fallback).", "validate", restored);
   }
@@ -578,21 +601,35 @@ export const commitStructuralPhysicsTransition = <BodyRef>(
   // oder fremde Id scheitert HIER, vor der ersten Weltmutation: fehlende
   // Motion fuehrt niemals zu stillem Default-Weiterlaufen.
   const restoredMotions = ((): ReadonlyMap<string, StructuralRestoredFragmentMotion> | null => {
+    const isRestore = request.mode === "restore";
+    if (!isRestore) {
+      const motions = (request as { readonly restoredFragmentMotions?: readonly StructuralRestoredFragmentMotion[] }).restoredFragmentMotions;
+      if (motions !== undefined) {
+        fail(
+          "InvalidStructuralState",
+          "restoredFragmentMotions",
+          "Fresh installation cannot carry restored fragment motions; use restore mode.",
+          "validate",
+          restored
+        );
+      }
+      return null;
+    }
     const motions = request.restoredFragmentMotions;
-    if (motions === undefined) return null;
-    if (!Array.isArray(motions) || plan.dynamicBodies.length === 0 || motions.length !== plan.dynamicBodies.length) {
+    if (!Array.isArray(motions) || motions.length !== plan.dynamicBodies.length) {
       fail(
         "InvalidStructuralState",
         "restoredFragmentMotions",
-        "Restored motions must cover every planned fragment exactly once (no silent default).",
+        "Restore requires a motion for every planned fragment; missing motions cannot fall back to plan values.",
         "validate",
         restored
       );
     }
+    const restoredMotionList = motions as readonly StructuralRestoredFragmentMotion[];
     const plannedIds = new Set(plan.dynamicFragmentIds);
     const seen = new Set<string>();
     const byId = new Map<string, StructuralRestoredFragmentMotion>();
-    motions.forEach((motion, index) => {
+    restoredMotionList.forEach((motion, index) => {
       const path = `restoredFragmentMotions/${index}`;
       const candidate = motion as unknown as {
         readonly fragmentId: unknown;
@@ -672,10 +709,19 @@ export const commitStructuralPhysicsTransition = <BodyRef>(
       ? mapStructuralAuthorPointToWorld(pose.rotation, pose.translationMeters, anchor, authorPoint)
       : validateVector(authorPoint, "commit/authorPoint");
 
+  const parentMotion = plan.parentMotion;
+  validateVector(parentMotion.velocityMetersPerSecond, "plan/parentMotion/velocityMetersPerSecond");
+  validateVector(parentMotion.angularVelocityRadPerSecond, "plan/parentMotion/angularVelocityRadPerSecond");
+
   // Explizite kanonische Masseneigenschaften verlangen diagonale Tensoren
   // (alle bisherigen Fragmente); Nebendiagonalen wuerden eine
   // Hauptachsentransformation verlangen und werden fail-closed abgewiesen.
   for (let index = 0; index < plan.dynamicBodies.length; index += 1) {
+    validateVector(plan.dynamicBodies[index].centerOfMassMeters, `dynamicBodies/${index}/centerOfMassMeters`);
+    validateVector(
+      plan.dynamicBodies[index].initialVelocityMetersPerSecond,
+      `dynamicBodies/${index}/initialVelocityMetersPerSecond`
+    );
     const tensor = plan.dynamicBodies[index].inertiaTensorKgMetersSquared;
     if (Math.abs(tensor.xy) + Math.abs(tensor.xz) + Math.abs(tensor.yz) > 1e-9) {
       fail(
@@ -691,7 +737,6 @@ export const commitStructuralPhysicsTransition = <BodyRef>(
     }
   }
 
-  const parentMotion = plan.parentMotion;
   const bodiesBefore = port.bodiesLen();
   const collidersBefore = port.collidersLen();
   const created: BodyRef[] = [];

@@ -207,3 +207,27 @@ Tests (Datei `structuralPgTragwerkR4.test.ts`, 9 Tests):
 | Wiederaufbau am alten Helferpfad vorbei an F8 | Commit mit Prepared-Bindung + Platzhalter-Parent (Receipt ehrlich) | R4a/R4b (Receipt-, Bindungs-, Inventar-Assertions) |
 | Stale/Cancel-Niveau halten | Unveraendert | R4c |
 | Save-Failpfade (Objektvertrag) | Unveraendert | R4d |
+
+## P-PG-R4B-FIX — Review-Blocker-Nachtrag
+
+Basis: Paketstart bei `20e161d8bc8f9deef9b511f9bdf40a3731333bdd`, Branch
+`feature/pg-tragwerk-slice1`, derselbe Worktree, lokal, kein Push. Die vier
+Regressionsfaelle wurden failing-first angelegt. Vor dem Produktfix waren N0
+(leere Motions bei einer verankerten Region), N2b (expliziter Restore ohne
+Motion-Satz) und N4 (kein echter Write-Versuch im alten Test) rot. Die neue
+Y-Regression blieb gegen den bereits korrigierten Helper gruen; ein
+kontrollierter Rueckfall auf `(min.y + min.y) / 2` reproduzierte danach rot mit
+`0.625` statt `0.6875`. Der Helper wurde vor der Implementierung wieder auf die
+kanonische Formel `(min.y + max.y) / 2` zurueckgesetzt.
+
+| Befund | Fix | Test/Evidence |
+|---|---|---|
+| Voll verankerte Region mit `dynamicBodies.length === 0` wurde pauschal wegen leerer Motions abgewiesen; echte Fragmentabdeckung war nicht gebunden. | `regionSave.ts` leitet die Fragment-IDs aus dem gespeicherten Objekt ab und verlangt exakt diese Menge. `motions: []` ist nur bei null dynamischen Fragmenten gueltig; partielle, doppelte, fremde oder stale Bindungen bleiben fail-closed. | R4B-N0: Save/Decode/Restore einer 27-Collider-verankerten Region mit leerem Satz; R4B-N3/N4: leere/duplizierte/fremde dynamische Sets abgewiesen. |
+| Restore ohne Motion-Satz fiel still auf Plan-/Parent-Werte zurueck. | `physicsCommit.ts` trennt Fresh/Restore typisiert. Restore verlangt den vollstaendigen Motion-Satz (auch leer nur fuer zero-dynamic); Fresh bleibt ohne Motions plan-abgeleitet. Unbekannte Runtime-Modi fail-closed vor Weltmutation. | R4B-N2b: Restore ohne Motions `validate`/`worldRestored`; Fresh ohne Motions bleibt gueltig. R4B-N0 und N3 decken zero-dynamic bzw. geschlossene Bindung ab; F7/F8 bleiben gruen. |
+| R4B-Y pruefte den Produkt-/Commitpfad, nicht direkt `seedIntactParentVoxels`; ein Helper-Revert konnte unentdeckt bleiben. | Test-only Regression liest die Seed-Collider direkt gegen unabhaengige kanonische Zentren, insbesondere `y = 5.5 * 0.125 = 0.6875`. | R4B-Y-seed; der kontrollierte Helper-Revert fiel mit `0.625` gegen `0.6875`. |
+| R4B-N4 war nur ein manueller Throw nach Encode und pruefte keinen Write-/Torn-Pfad. | Testlokaler Storage-Seam (kein Produktionsadapter) zaehlt Write-Versuche, erhaelt das alte Artefakt bei Before-Write-Fehler und hinterlaesst bei Mid-Write-Fehler ein torn Artefakt. | R4B-N4: altes Artefakt bleibt identifizierbar, torn Artefakt wird durch `decodeStructuralRegionSave` fail-closed abgewiesen, gueltiges Artefakt laedt danach wieder. |
+
+Fokussiert: R4-Datei `12/12` PASS, F7/F8/Slice4 `17/17` PASS,
+`npx tsc --noEmit` sauber. Vollsuite: `145` Dateien / `1389` Tests PASS.
+Keine UI-/Renderer-/Scene-Aenderung und kein Produktions-Storage-Adapter; daher
+weiterhin keine Screenshot-Evidence.

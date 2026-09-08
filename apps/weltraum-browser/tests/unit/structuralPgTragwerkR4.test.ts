@@ -65,7 +65,8 @@ import {
  *   v/omega + Besitz-/Revisionsbindung in EINEM Artefakt). Rehydration in
  *   neuer Instanz AUSSCHLIESSLICH aus dem persistierten Artefakt
  *   (JSON-Roundtrip; Producer/Restore-Schnitt trennt Memory von Artefakt).
- * - Tamper/fehlende Motion/fehlgeschlagene Transaktion fail-closed.
+ * - Tamper/fehlende Motion bei dynamischen Fragmenten/fehlgeschlagene
+ *   Transaktion fail-closed; rein verankerte Regionen duerfen leer bleiben.
  * - Installation UND Wiederherstellung laufen ueber
  *   `commitStructuralPhysicsTransition` mit Prepared-Bindung
  *   (F8-Commitgrenze); der alte R4-Helferpfad (`installRegion`) ist entfernt.
@@ -246,11 +247,45 @@ const commitRegionSwap = (
       ? { parentWorldPose: { translationMeters: { ...parentPose.translation }, rotation: { ...parentPose.rotation } } }
       : {}),
     ...(preCutCenter !== undefined ? { preCutCenterAuthorMeters: { ...preCutCenter } } : {}),
-    ...(restoredMotions !== undefined ? { restoredFragmentMotions: restoredMotions } : {})
+    ...(restoredMotions === undefined
+      ? { mode: "fresh" as const }
+      : { mode: "restore" as const, restoredFragmentMotions: restoredMotions })
   });
   expect(created).toHaveLength(1 + plan.dynamicBodies.length);
   expect(plan.dynamicBodies).toHaveLength(1);
   return { receipt, anchoredBody: created[0].body, fragmentBody: created[1].body };
+};
+
+const commitAnchoredRegionSwap = (
+  world: R.World,
+  parentBody: R.RigidBody,
+  live: StructuralObject,
+  classification: ReturnType<typeof deriveStructuralComponentClassification>,
+  plan: StructuralInstalledPhysicsTransition,
+  restoredMotions: readonly StructuralRestoredFragmentMotion[]
+): { receipt: ReturnType<typeof commitStructuralPhysicsTransition>; anchoredBody: R.RigidBody } => {
+  const basePort = createRapierStructuralPort(world);
+  const created: RapierBodyRef[] = [];
+  const port: StructuralPhysicsWorldPort<RapierBodyRef> = {
+    ...basePort,
+    createBody: (pose) => {
+      const ref = basePort.createBody(pose);
+      created.push(ref);
+      return ref;
+    }
+  };
+  const request = {
+    port,
+    parentBody: { body: parentBody },
+    plan,
+    live,
+    classification,
+    mode: "restore",
+    restoredFragmentMotions: restoredMotions
+  } as const;
+  const receipt = commitStructuralPhysicsTransition(request);
+  expect(created).toHaveLength(1);
+  return { receipt, anchoredBody: created[0].body };
 };
 
 interface MovedRegionBundle {
@@ -493,6 +528,162 @@ describe("P-PG-R4B: Persistenz-Neufassung (Save, Y-Formel, abgesicherte Wiederhe
     await R.init();
   }, 120_000);
 
+  it("R4B-N0: rein verankerte Region erlaubt leere Motions und Restore-Roundtrip", () => {
+    const intact = createPgTragwerk01();
+    const classification = deriveStructuralComponentClassification(intact, pgConnectivityBudgets);
+    expect(classification.detachedComponents).toHaveLength(0);
+    expect(classification.fragments).toHaveLength(0);
+    const zeroMotion = {
+      velocityMetersPerSecond: { x: 0, y: 0, z: 0 },
+      angularVelocityRadPerSecond: { x: 0, y: 0, z: 0 }
+    } as const;
+    const plan = deriveStructuralPhysicsTransition(
+      intact, classification, zeroMotion, generousBudgets, componentMassBudgets, "explicit"
+    );
+    expect(plan.status).toBe("Installed");
+    if (plan.status !== "Installed") throw new Error("R4B-N0 requires an installed anchored-only plan.");
+    expect(plan.dynamicBodies).toHaveLength(0);
+
+    const artifact = encodeStructuralRegionSave({
+      object: intact,
+      parentMotionSource: "explicit",
+      parentMotion: zeroMotion,
+      motions: []
+    });
+    const save = decodeStructuralRegionSave(artifact);
+    expect(save.motions).toHaveLength(0);
+
+    const world = new R.World({ x: 0, y: -9.81, z: 0 });
+    const parent = world.createRigidBody(R.RigidBodyDesc.fixed());
+    const swap = commitAnchoredRegionSwap(world, parent, save.object, classification, plan, []);
+    expect(swap.receipt.fragments).toHaveLength(0);
+    expect(swap.anchoredBody.numColliders()).toBe(27);
+    expect(world.bodies.len()).toBe(1);
+    expect(world.colliders.len()).toBe(27);
+    world.free();
+
+    const cut = hetCutLive();
+    const foreignMotion = {
+      fragmentId: "fnv1a64-v1:deadbeefdeadbeef" as StructuralRestoredFragmentMotion["fragmentId"],
+      objectRevision: cut.objectRevision,
+      sourceContentHash: cut.contentHash,
+      translationMeters: { x: 0, y: 0, z: 0 },
+      rotation: { x: 0, y: 0, z: 0, w: 1 },
+      linvelMetersPerSecond: { x: 0, y: 0, z: 0 },
+      angvelRadPerSecond: { x: 0, y: 0, z: 0 }
+    };
+    expectFailClosed(() => encodeStructuralRegionSave({
+      object: cut,
+      parentMotionSource: "explicit",
+      parentMotion: zeroMotion,
+      motions: [foreignMotion]
+    }));
+  });
+
+  it("R4B-N2b: expliziter Restore ohne Motion-Satz scheitert, frische Installation bleibt gueltig", () => {
+    const live = hetCutLive();
+    const classification = deriveStructuralComponentClassification(live, pgConnectivityBudgets);
+    const plan = deriveStructuralPhysicsTransition(
+      live,
+      classification,
+      { velocityMetersPerSecond: { x: 0, y: 0, z: 0 }, angularVelocityRadPerSecond: { x: 0, y: 0, z: 0 } },
+      generousBudgets,
+      componentMassBudgets,
+      "explicit"
+    );
+    expect(plan.status).toBe("Installed");
+    if (plan.status !== "Installed") throw new Error("R4B-N2b requires an installed plan.");
+
+    const world = new R.World({ x: 0, y: -9.81, z: 0 });
+    const parent = world.createRigidBody(R.RigidBodyDesc.fixed());
+    const basePort = createRapierStructuralPort(world);
+    const created: RapierBodyRef[] = [];
+    const port: StructuralPhysicsWorldPort<RapierBodyRef> = {
+      ...basePort,
+      createBody: (pose) => {
+        const ref = basePort.createBody(pose);
+        created.push(ref);
+        return ref;
+      }
+    };
+    const restoreWithoutMotions = {
+      port,
+      parentBody: { body: parent },
+      plan,
+      live,
+      classification,
+      mode: "restore"
+    } as unknown as Parameters<typeof commitStructuralPhysicsTransition>[0];
+    let failure: unknown = null;
+    try {
+      commitStructuralPhysicsTransition(restoreWithoutMotions);
+    } catch (error) {
+      failure = error;
+    }
+    expect(failure).toBeInstanceOf(StructuralPhysicsCommitError);
+    expect((failure as StructuralPhysicsCommitError).phase).toBe("validate");
+    expect((failure as StructuralPhysicsCommitError).worldRestored).toBe(true);
+    expect(created).toHaveLength(0);
+    world.removeRigidBody(parent);
+    expect(world.bodies.len()).toBe(0);
+
+    const freshWorld = new R.World({ x: 0, y: -9.81, z: 0 });
+    const freshParent = freshWorld.createRigidBody(R.RigidBodyDesc.fixed());
+    const fresh = commitRegionSwap(freshWorld, freshParent, live, classification, plan);
+    expect(fresh.receipt.fragments).toHaveLength(1);
+    freshWorld.free();
+
+    const unknownModeWorld = new R.World({ x: 0, y: -9.81, z: 0 });
+    const unknownModeParent = unknownModeWorld.createRigidBody(R.RigidBodyDesc.fixed());
+    const unknownModeRequest = {
+      port: createRapierStructuralPort(unknownModeWorld),
+      parentBody: { body: unknownModeParent },
+      plan,
+      live,
+      classification,
+      mode: "restor" // malformed runtime caller; must not become fresh mode
+    } as unknown as Parameters<typeof commitStructuralPhysicsTransition>[0];
+    expect(() => commitStructuralPhysicsTransition(unknownModeRequest)).toThrow(StructuralPhysicsCommitError);
+    expect(unknownModeWorld.bodies.len()).toBe(1);
+    unknownModeWorld.removeRigidBody(unknownModeParent);
+    unknownModeWorld.free();
+    world.free();
+  });
+
+  it("R4B-Y-seed: Pre-Cut-Seeding nutzt die kanonische Zellmitte", () => {
+    const live = hetCutLive();
+    const classification = deriveStructuralComponentClassification(live, pgConnectivityBudgets);
+    const fragment = classification.fragments[0];
+    if (fragment === undefined) throw new Error("R4B-Y-seed requires one detached fragment.");
+    const plan = deriveStructuralPhysicsTransition(
+      live,
+      classification,
+      { velocityMetersPerSecond: { x: 0, y: 0, z: 0 }, angularVelocityRadPerSecond: { x: 0, y: 0, z: 0 } },
+      generousBudgets,
+      componentMassBudgets,
+      "explicit"
+    );
+    expect(plan.status).toBe("Installed");
+    if (plan.status !== "Installed") throw new Error("R4B-Y-seed requires an installed plan.");
+    const center = plan.dynamicBodies[0].centerOfMassMeters;
+    const world = new R.World({ x: 0, y: -9.81, z: 0 });
+    const body = world.createRigidBody(
+      R.RigidBodyDesc.dynamic().setTranslation(center.x, center.y, center.z)
+    );
+    seedIntactParentVoxels(world, body, voxelBoxEntries(live, fragment.occupiedCells), center);
+
+    const installed = world.colliders.getAll().sort((a, b) => a.translation().x - b.translation().x);
+    expect(installed).toHaveLength(5);
+    const expectedX = [14.5, 15.5, 16.5, 17.5, 18.5].map((x) => x * SIDE);
+    installed.forEach((collider, index) => {
+      const position = collider.translation();
+      expect(position.x).toBeCloseTo(expectedX[index], 6);
+      expect(position.y).toBeCloseTo(5.5 * SIDE, 6);
+      expect(position.z).toBeCloseTo(0.5 * SIDE, 6);
+    });
+    world.free();
+  });
+
   it("R4B-Y: kanonische Collider-Weltpositionen + COM nach Reload (unabhaengiges Orakel)", () => {
     const live = hetCutLive();
     const classification = deriveStructuralComponentClassification(live, pgConnectivityBudgets);
@@ -713,16 +904,16 @@ describe("P-PG-R4B: Persistenz-Neufassung (Save, Y-Formel, abgesicherte Wiederhe
 
   it("R4B-N2: Artefakt ohne Motion -> keine Rehydration; ohne Artefakt kein Bewegungszustand", () => {
     const bundle = produceMovedRegionArtifact(true);
-    // Leere Motions scheitern bereits beim Speichern und beim Laden —
-    // es gibt keinen unbewegten Default, der still weiterliefe.
+    // Leere Motions scheitern bei einem dynamischen Objekt bereits beim
+    // Speichern und beim Laden — es gibt keinen stillen Plan-Default.
     const emptiedInput = {
       ...(JSON.parse(bundle.artifact) as Record<string, unknown>),
       motions: [] as unknown[]
     };
     expectFailClosed(() => decodeStructuralRegionSave(canonicalAdaptiveJson(emptiedInput)));
 
-    // Objekt-Only-Save (alter Vertrag) + Commit OHNE Motions stellt den
-    // Bewegungszustand NICHT her: installiert an Plan-Pose, nicht an moved.
+    // Objekt-Only-Save (alter Vertrag) + frische Installation OHNE Motions
+    // stellt keinen gespeicherten Bewegungszustand her: Plan-Pose statt moved.
     const save = decodeStructuralRegionSave(bundle.artifact);
     const target = createGroundWorld();
     const classification = deriveStructuralComponentClassification(save.object, pgConnectivityBudgets);
@@ -794,6 +985,15 @@ describe("P-PG-R4B: Persistenz-Neufassung (Save, Y-Formel, abgesicherte Wiederhe
 
     // Leere Motions: kein stilles Default-Weiterlaufen.
     expect(attempt([])).toEqual({ bodies: 0, colliders: 0 });
+    const validMotion: StructuralRestoredFragmentMotion = {
+      fragmentId: classification.fragments[0].fragmentId,
+      translationMeters: { x: 0, y: 0, z: 0 },
+      rotation: { x: 0, y: 0, z: 0, w: 1 },
+      linvelMetersPerSecond: { x: 0, y: 0, z: 0 },
+      angvelRadPerSecond: { x: 0, y: 0, z: 0 }
+    };
+    // Duplicate Fragment-Id: keine doppelte Adoption.
+    expect(attempt([validMotion, validMotion])).toEqual({ bodies: 0, colliders: 0 });
     // Fremde Fragment-Id: keine Adoption.
     expect(attempt([{
       fragmentId: "fnv1a64-v1:deadbeefdeadbeef" as StructuralRestoredFragmentMotion["fragmentId"],
@@ -831,15 +1031,54 @@ describe("P-PG-R4B: Persistenz-Neufassung (Save, Y-Formel, abgesicherte Wiederhe
     // Encode ohne Motion ist keine gueltige Transaktion.
     expectFailClosed(() => encodeStructuralRegionSave({ ...input, motions: [] }));
     const artifact = encodeStructuralRegionSave(input);
-    // Store wirft: nichts persistiert, Reload unmoeglich.
+    // Test-local storage seam only: this models a real write attempt and
+    // deliberately leaves a torn value when the write fails mid-stream. It is
+    // not a production storage adapter.
+    type WriteFailure =
+      | { readonly kind: "before-write" }
+      | { readonly kind: "mid-write"; readonly afterCharacters: number };
+    let writeAttempts = 0;
     let stored: string | null = null;
-    expect(() => {
-      throw new Error("injected storage failure");
-    }).toThrow("injected storage failure");
-    expect(stored).toBeNull();
-    // Torn-Write: abgebrochenes Artefakt wird abgewiesen.
-    expectFailClosed(() => decodeStructuralRegionSave(artifact.slice(0, 64)));
-    expect(decodeStructuralRegionSave(artifact).motions).toHaveLength(1);
+    const readStored = (): string => {
+      if (stored === null) throw new Error("Expected test storage to contain an artifact.");
+      return stored;
+    };
+    const writeArtifact = (value: string, failure?: WriteFailure): void => {
+      writeAttempts += 1;
+      if (failure?.kind === "before-write") {
+        throw new Error("injected storage failure before commit");
+      }
+      if (failure?.kind === "mid-write") {
+        stored = value.slice(0, failure.afterCharacters);
+        throw new Error("injected storage failure during write");
+      }
+      stored = value;
+    };
+    const replacement = encodeStructuralRegionSave({
+      ...input,
+      motions: [{ ...input.motions[0], translationMeters: { x: 9, y: 2, z: 3 } }]
+    });
+
+    writeArtifact(artifact);
+    const oldArtifact = stored;
+    expect(oldArtifact).toBe(artifact);
+    expect(decodeStructuralRegionSave(readStored()).motions).toHaveLength(1);
+
+    // A failure before commit leaves the old, valid artifact in place.
+    expect(() => writeArtifact(replacement, { kind: "before-write" }))
+      .toThrow("injected storage failure before commit");
+    expect(stored).toBe(oldArtifact);
+    expect(decodeStructuralRegionSave(readStored()).motions[0].translationMeters.x).toBe(1);
+
+    // A failure after partial output leaves a torn artifact that must fail closed.
+    expect(() => writeArtifact(replacement, { kind: "mid-write", afterCharacters: 64 }))
+      .toThrow("injected storage failure during write");
+    expect(stored).toBe(replacement.slice(0, 64));
+    expectFailClosed(() => decodeStructuralRegionSave(readStored()));
+    expect(writeAttempts).toBe(3);
+
+    writeArtifact(artifact);
+    expect(decodeStructuralRegionSave(readStored()).motions).toHaveLength(1);
   });
 
   it("R4c: Stale Worker-/Proxyresultate nach neuerem Edit + Cancel → keine Adoption", () => {
