@@ -1,0 +1,72 @@
+{
+  "package": "P-PG-R5",
+  "role": "writer",
+  "branch": "feature/pg-tragwerk-slice1",
+  "baseSha": "497729ff9824492d1b1a0cf13760855a07f8b8cd",
+  "resultSha": "PENDING_LOCAL_COMMIT",
+  "push": "NOT_PERFORMED",
+  "scope": "R5 path + tests + evidence only; R3/R4 contracts reused, not modified",
+  "tests": {
+    "file": "tests/unit/structuralPgTragwerkR5.test.ts",
+    "tests": 7,
+    "status": "PASS",
+    "fullSuite": { "files": 143, "tests": 1370, "status": "PASS" },
+    "typecheck": "tsc --noEmit PASS"
+  },
+  "coverage": {
+    "baseBricks": 2,
+    "coveredBricks": 7,
+    "addedKnownAirBricks": 5,
+    "missingAfter": 0,
+    "occupiedBefore": 27,
+    "occupiedAfter": 26,
+    "coverageAfterCutFailsClosed": true
+  },
+  "mesh": {
+    "before": { "file": "evidence/pg-tragwerk-r5-mesh-before.json", "quads": 21, "vertices": 84 },
+    "after": { "file": "evidence/pg-tragwerk-r5-mesh-after.json", "quads": 23, "vertices": 92 },
+    "boundsMeters": { "min": { "x": 0, "y": 0, "z": 0 }, "max": { "x": 2.375, "y": 0.75, "z": 0.125 } },
+    "materials": [1, 2, 3],
+    "normals": "axis-aligned only, no averaging (no AO path in core)"
+  },
+  "lod": {
+    "low": "greedy colliders (1 box for 2-cell fragment)",
+    "high": "voxel colliders (2 boxes for 2-cell fragment)",
+    "fallbackDebrisIncluded": true,
+    "authorityEqual": true
+  },
+  "boundedWork": {
+    "readyEstimate": 234,
+    "limit": 512,
+    "measuredBound": 512,
+    "overloadRejected": "r5/budgets/occupied-or-bricks",
+    "overloadDeferred": "r5/budgets/total-work",
+    "invalidBudgetsRejected": "r5/budgets/invalid"
+  },
+  "largerFallback": {
+    "occupiedCells": 24,
+    "fragmentsAtLeast": 2,
+    "fragmentVoxelsGreaterThan": 2,
+    "result": "Fallback",
+    "kind": "merge-excess-fragments-into-single-debris-body",
+    "massConserved": true,
+    "deterministic": true
+  },
+  "scene": {
+    "schema": "pg-tragwerk-r5-scene-v1",
+    "materials": [1, 2, 3],
+    "lights": { "key": 2.5, "fill": 0.8, "ambient": 0.4 },
+    "deterministic": true
+  },
+  "measurementNote": "count/work metrics from dev machine (Pruefhardware); no target-hardware budgets decided",
+  "mapping": [
+    { "finding": "full known coverage renderable", "fix": "missing bricks as known air + produced mesh", "test": "R5a" },
+    { "finding": "scene with materials/light; geometry/material/light/before-after", "fix": "deterministic scene descriptor + before/after files", "test": "R5a+R5f" },
+    { "finding": "Low/High/LOD applied; authority equal", "fix": "LOD selects collider set of same plan", "test": "R5b" },
+    { "finding": "bounded collider/connectivity/queue work; finite total", "fix": "budget precheck + measured bound 512", "test": "R5c" },
+    { "finding": "overload deferred/rejected without matter loss", "fix": "Rejected/Deferred + invalid budgets fail-closed + pending queue with R5 payload", "test": "R5d+R5d2" },
+    { "finding": "fallback budget with >2 fragment cells", "fix": "two-cut multi-fragment fallback balance", "test": "R5e" },
+    { "finding": "budgets before buildup (G5)", "fix": "prepareR5Bounded before heavy derivation", "test": "R5c+R5d" },
+    { "finding": "coverage reject is no image acceptance (K12)", "fix": "produced mesh from full coverage + files", "test": "R5a" }
+  ]
+}

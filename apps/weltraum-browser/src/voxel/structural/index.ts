@@ -37,5 +37,6 @@ export * from "./massProperties";
 export * from "./commands";
 export * from "./physicsTransition";
 export * from "./greedyMesher";
+export * from "./provingGroundR5";
 export * from "./persistence";
 export { MICROVOXEL_BASE_QUANTUM_METERS, ADAPTIVE_LEVELS } from "../adaptive";
