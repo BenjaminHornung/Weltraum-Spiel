@@ -512,9 +512,10 @@ export const commitStructuralPhysicsTransition = <BodyRef>(
       fragments: deepFreeze(fragments.slice())
     });
   } catch (error) {
+    // Remove-Phase hat oben bereits abgeraeumt — nur Create/Validate hier.
     if (error instanceof StructuralPhysicsCommitError && error.phase === "remove") throw error;
-    if (error instanceof StructuralPhysicsCommitError) throw error;
     removeCreated();
+    if (error instanceof StructuralPhysicsCommitError) throw error;
     throw new StructuralPhysicsCommitError(
       "CommitFailed",
       "commit/create",

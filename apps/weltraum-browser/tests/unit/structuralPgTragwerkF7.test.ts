@@ -38,6 +38,8 @@ import { createRapierStructuralPort, type RapierBodyRef } from "./rapierStructur
  *   (Vor-Schnitt-Objekt, eigene Quaternion-/Kreuzprodukt-Arithmetik).
  * - T2b prueft Drehimpuls unter Rotation (Tensor rotiert mit dem Body).
  * - T3 prueft Commit-Fehler NACH Mutationsbeginn (Rollback, Parent intakt).
+ * - T3b prueft denselben Rollback ueber den fail()-Pfad (fehlendes
+ *   Plan-Fragment nach Mutationsbeginn statt injiziertem plain Error).
  * - T4 prueft echte Colliderzaehlung + Herkunftslabel.
  *
  * Solver-Provenienz: @dimforge/rapier3d-compat 0.12.0 (transitiv, lockfile-pin,
@@ -599,6 +601,67 @@ describe("P-PG-F7: Parentpose + Vor-Schnitt-COM uebernehmen (Commitfunktion)", (
     const commitFailure = failure as StructuralPhysicsCommitError;
     expect(commitFailure.code).toBe("CommitFailed");
     expect(commitFailure.phase).toBe("create");
+    expect(commitFailure.worldRestored).toBe(true);
+    // Welt exakt wie vor dem Commit: keine partiellen Bodies, Parent intakt.
+    expect(world.bodies.len()).toBe(1);
+    expect(world.colliders.len()).toBe(27);
+    expect(Number.isFinite(parentBody.translation().x)).toBe(true);
+    world.free();
+  }, 180_000);
+
+  it("T3b: fail()-Fehler NACH Mutationsbeginn (fehlendes Plan-Fragment) — Rollback, Parent unberuehrt", () => {
+    const { live, classification } = liveHeteroPlan("command.pg-tragwerk-f7-t3b-01");
+    const plan = deriveStructuralPhysicsTransition(
+      live,
+      classification,
+      restParentMotion,
+      generousBudgets,
+      componentMassBudgets
+    );
+    expect(plan.status).toBe("Installed");
+    if (plan.status !== "Installed") throw new Error("Installed plan required.");
+
+    const world = new R.World({ x: 0, y: -9.81, z: 0 });
+    const preCut = createPgTragwerk01();
+    const preCutMass = deriveStructuralObjectMassProperties(preCut, { maxVisitedCells: 64 });
+    if (preCutMass.centerOfMassMeters === null) throw new Error("Fixture requires finite center of mass.");
+    const parentBody = world.createRigidBody(
+      R.RigidBodyDesc.dynamic().setTranslation(
+        preCutMass.centerOfMassMeters.x,
+        preCutMass.centerOfMassMeters.y,
+        preCutMass.centerOfMassMeters.z
+      )
+    );
+    const cells: Parameters<typeof getStructuralVoxel>[1][] = [];
+    for (const brick of preCut.bricks) {
+      for (const cell of brick.cells) {
+        cells.push(structuralAddressForBrickCell(brick, cell.localIndex));
+      }
+    }
+    installDensityVoxels(world, parentBody, preCut, cells, preCutMass.centerOfMassMeters);
+    expect(world.bodies.len()).toBe(1);
+    expect(world.colliders.len()).toBe(27);
+
+    // Sabotage ueber den fail()-Pfad: Plan-Fragment fehlt in der
+    // Klassifikation — Fehler NACH Mutationsbeginn (verankerter Body +
+    // 21 Collider stehen bereits, physicsCommit.ts "Plan fragment missing").
+    const port = createRapierStructuralPort(world);
+    let failure: unknown = null;
+    try {
+      commitStructuralPhysicsTransition({
+        port,
+        parentBody: { body: parentBody },
+        plan,
+        live,
+        classification: { ...classification, fragments: [] }
+      });
+    } catch (error) {
+      failure = error;
+    }
+    expect(failure).toBeInstanceOf(StructuralPhysicsCommitError);
+    const commitFailure = failure as StructuralPhysicsCommitError;
+    expect(commitFailure.code).toBe("InvalidStructuralState");
+    expect(commitFailure.phase).toBe("validate");
     expect(commitFailure.worldRestored).toBe(true);
     // Welt exakt wie vor dem Commit: keine partiellen Bodies, Parent intakt.
     expect(world.bodies.len()).toBe(1);

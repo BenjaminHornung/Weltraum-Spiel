@@ -92,6 +92,16 @@ steppen; kein Rapier-Import im Produktcode, Adapter testseitig):
 - `T3` (injizierter Fehler beim 3. Collider-Add, d.h. nach 1 Body + 1 Collider):
   `CommitFailed`/`create`/`worldRestored:true`, Bodies/Collider 1/27 wie
   vorher, Parent lesbar. R3 deckte nur Ablehnung VOR Weltberührung ab.
+- Fix-Nachtrag P-PG-F7-FIX: `T3` injiziert einen plain `Error` und nahm den
+  aufgeräumten Pfad — der catch-Block warf jedes `StructuralPhysicsCommitError`
+  aus `fail()` (Create-/Validate-Phase nach Mutationsbeginn: Zähler-Mismatch,
+  fehlendes Fragment, leere Fragmentzellen, Validate-Wurf mid-loop) OHNE
+  `removeCreated()` erneut, erstellte Bodies blieben zurück und
+  `worldRestored:true` war falsch. Fix: `removeCreated()` vor dem Rethrow für
+  alle Nicht-Remove-Phasen (eine Zeile versetzt, keine neue Abstraktion).
+  `T3b` löst den Fehler über den `fail()`-Pfad aus (Plan-Fragment fehlt in der
+  Klassifikation, verankerter Body + 21 Collider stehen bereits): FAIL pre-Fix
+  (Bodies 2 statt 1), PASS post-Fix (1/27, Parent intakt, Flag wahr).
 - `T4` (Autorpose ohne Parentpose): Bodies 1 -> 2, Collider 27 -> 26,
   Label `author`/`explicit`; Live-Pose mit `explicit`-Plan wird rejected
   (Herkunftslabel stimmt).
@@ -108,10 +118,10 @@ eingefroren; dieser Nachweis supersediert sie.
 
 - Neu: `src/voxel/structural/physicsCommit.ts` (+ Export in `index.ts`),
   `tests/unit/rapierStructuralCommitPort.ts` (testseitiger Rapier-Adapter),
-  `tests/unit/structuralPgTragwerkF7.test.ts` (6 Tests: T1, T1b, T2, T2b, T3, T4).
+   `tests/unit/structuralPgTragwerkF7.test.ts` (7 Tests: T1, T1b, T2, T2b, T3, T3b, T4).
 - Kein Src-Diff ausser Commitfunktion; derive/Verträge unverändert (R4/R5 nur verwendet).
 - Basis-SHA: `b534a529ac93a010da38223db9f83dca702fe846`
-- F7-Datei: 6/6 PASS. Vollsuite: 144 Dateien / 1376 Tests PASS. `tsc --noEmit` sauber.
+- F7-Datei: 7/7 PASS. Vollsuite: 144 Dateien / 1377 Tests PASS. `tsc --noEmit` sauber.
 - Live-Zyklen: 20 Pre-Steps, Swap bei 0 Interim-Steps (Commit steppt strukturell nie),
   Bodies 1 -> 2, Collider 27 -> 26 (kein Ground-Body in F7-Welten).
 - Solver: @dimforge/rapier3d-compat 0.12.0 (transitiv, lockfile-pin,
@@ -126,5 +136,6 @@ eingefroren; dieser Nachweis supersediert sie.
 | Tensor nur per Steiner-Rückrechnung | Bewegungsnachweis: Impuls -> Δω, auch unter 90°-Rotation | T1b + T2b |
 | Parentpose/COM nicht übernommen | W(p)=T+R·(p-A), v_kind im Weltraum, Label-Guard | T2 (unabh. Orakel, A != C_post) + T4 (Label-Reject) |
 | Keine Commitfunktion mit Fehlerbehandlung nach Mutationsbeginn | `commitStructuralPhysicsTransition` (create-first, Rollback, Phasen-Fehler) | T3 (injizierter Post-Mutations-Fehler, Welt restauriert) |
+| fail()-Fehler nach Mutationsbeginn ohne removeCreated() (Review-Blocker) | `removeCreated()` vor Rethrow für Nicht-Remove-Phasen | T3b (fail()-Pfad, pre-Fix FAIL / post-Fix PASS) |
 | Zähler meldet Greedy-Listenlänge | Echte Body-Zähler im Receipt | T4 (5 vs 1, gleiche Masse) |
 | Zähler/Step-Differenz genügt nicht | Port ohne Step-Methode + Inventar-Assertions (Bodies/Collider vorher/nachher + pro Body) | T2/T4 (1 -> 2, 27 -> 26, 21/5) |
