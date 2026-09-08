@@ -39,6 +39,7 @@ export const STRUCTURAL_MAX_JOINTS = 4_096 as const;
 export const STRUCTURAL_MAX_COMMAND_EVIDENCE = 4_096 as const;
 export const STRUCTURAL_MAX_CHANGED_BRICK_KEYS = 4_096 as const;
 export const STRUCTURAL_MAX_INVALIDATIONS = 3 as const;
+export const STRUCTURAL_REGION_SAVE_MAX_MOTIONS = 4_096 as const;
 export const STRUCTURAL_MAX_PERSISTENCE_UTF8_BYTES = 16_777_216 as const;
 
 declare const structuralBrand: unique symbol;

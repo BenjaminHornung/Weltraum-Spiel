@@ -3,20 +3,29 @@ import R from "@dimforge/rapier3d-compat";
 import {
   STRUCTURAL_COMMAND_SCHEMA_VERSION,
   STRUCTURAL_MAX_PERSISTENCE_UTF8_BYTES,
+  StructuralPhysicsCommitError,
   StructuralValidationError,
   applyStructuralDestructionCommand,
+  commitStructuralPhysicsTransition,
   decodeStructuralObject,
+  decodeStructuralRegionSave,
   deriveStructuralComponentClassification,
   deriveStructuralObjectMassProperties,
   deriveStructuralPhysicsTransition,
   encodeStructuralObject,
+  encodeStructuralRegionSave,
   getStructuralVoxel,
   globalQuantumForStructuralCell,
   structuralAddressForBrickCell,
   validateStructuralDestructionCommand,
   type StructuralColliderBoxMeters,
-  type StructuralObject
+  type StructuralInstalledPhysicsTransition,
+  type StructuralObject,
+  type StructuralPhysicsWorldPort,
+  type StructuralRegionSave,
+  type StructuralRestoredFragmentMotion
 } from "../../src/voxel/structural";
+import { createRapierStructuralPort, type RapierBodyRef } from "./rapierStructuralCommitPort";
 import {
   byteCount,
   algorithmVersion,
@@ -35,6 +44,8 @@ import { transitionResidency, type ResidencyState } from "../../src/streaming";
 import { canonicalAdaptiveJson } from "../../src/voxel/adaptive";
 import {
   PG_DENSITIES,
+  PG_MATERIAL_BEAM,
+  PG_MATERIAL_STEEL,
   createPgTragwerk01,
   pgAccepted,
   pgCommandBudgets,
@@ -44,32 +55,24 @@ import {
 } from "./pgTragwerkFixture";
 
 /**
- * Paket P-PG-R4 — Persistenz, Residency und Asynchronitaet verbunden.
+ * Paket P-PG-R4B — Persistenz-Neufassung (Fokusaudit 08.09.2026, Abschnitte 4+5).
  *
- * Baut auf dem stabilen R3-Vertrag auf (exakte Partitionsbindung,
- * Step-Punkt-Swap, heterogener Transfer; keine Produktlogik-Aenderung):
- * reine Test-Scheibe ohne UI-/Render-/Szenenaenderung (JSON-/Markdown-
- * Evidence, kein Screenshot).
+ * - Y-Mittelpunktfehler behoben: Seed-Installation rechnet
+ *   `(min + max) / 2` auf allen Achsen (vorher `(min.y + min.y) / 2`,
+ *   alle Collider 0,0625 zu tief). Regression mit unabhaengigem Orakel
+ *   (handgerechnete kanonische Werte, y-Soll 0,6875).
+ * - Vollstaendiger versionierter Region-Save (Fragmentidentitaet + Pose +
+ *   v/omega + Besitz-/Revisionsbindung in EINEM Artefakt). Rehydration in
+ *   neuer Instanz AUSSCHLIESSLICH aus dem persistierten Artefakt
+ *   (JSON-Roundtrip; Producer/Restore-Schnitt trennt Memory von Artefakt).
+ * - Tamper/fehlende Motion/fehlgeschlagene Transaktion fail-closed.
+ * - Installation UND Wiederherstellung laufen ueber
+ *   `commitStructuralPhysicsTransition` mit Prepared-Bindung
+ *   (F8-Commitgrenze); der alte R4-Helferpfad (`installRegion`) ist entfernt.
+ *   Uebrig bleibt nur das Pre-Cut-Parent-Seeding der laufenden Welt.
  *
- * - R4a: Bewegtes Fragment (Pose, Rotation, Geschwindigkeiten, Besitz) ueber
- *   den vorgesehenen Savevertrag (encodeStructuralObject) speichern, Besitzer
- *   und Welt TATSAECHLICH freigeben (Owner-Referenz null, world.free()),
- *   neu laden (decodeStructuralObject), in frischer Welt an gespeicherter
- *   Pose mit gespeicherten Velocities neu installieren, weiter simulieren.
- *   Keine reinen Codec-Roundtrips ohne Freigabe.
- * - R4b: Region TATSAECHLICH evicten (Bodies aus der laufenden Welt entfernt,
- *   Residency Ready->Evicted) und zurueckkehren (Reload aus dem Save,
- *   Neuinstallation in derselben Welt, Evicted->Queued->Loading->Ready)
- *   ohne wiederauferstandene Zellen und ohne Doppel-Bodies.
- * - R4c: Alte Worker-/Proxyresultate werden NACH einem neueren Edit
- *   zugestellt und nachweisbar nicht adoptiert (Authority + neue Revision
- *   unveraendert); Cancel-Pfad (RejectedCancelled) abgedeckt.
- * - R4d: Fail-Pfade des Savevertrags (manipuliert, Uebergroesse,
- *   nicht-kanonisch) fail-closed abgewiesen; Authority unangetastet.
- *
- * Solver-Provenienz wie R3: @dimforge/rapier3d-compat 0.12.0, transitiv,
- * lockfile-pin, ohne Manifest-Eingriff; faellt der Pin weg, bricht der
- * Import explizit (fail-closed).
+ * Reine Test-Scheibe plus Save-Codec/Commit-Override, keine UI-/Render-/
+ * Szenenaenderung (JSON-/Markdown-Evidence, kein Screenshot).
  */
 
 const SIDE = 0.125;
@@ -123,7 +126,10 @@ const voxelBoxEntries = (
     };
   });
 
-const installCuboids = (
+/** NUR Pre-Cut-Parent-Seeding der laufenden Welt (kein Regions-Installer,
+ *  kein Restore-Pfad — beides laeuft ueber den Commit).
+ *  P-PG-R4B: Mittelpunkt kanonisch `(min + max) / 2` auf allen Achsen. */
+const seedIntactParentVoxels = (
   world: R.World,
   body: R.RigidBody,
   entries: readonly { box: StructuralColliderBoxMeters; density: number }[],
@@ -137,7 +143,7 @@ const installCuboids = (
       R.ColliderDesc.cuboid(hx, hy, hz)
         .setTranslation(
           (entry.box.minMeters.x + entry.box.maxMeters.x) / 2 - center.x,
-          (entry.box.minMeters.y + entry.box.minMeters.y) / 2 - center.y,
+          (entry.box.minMeters.y + entry.box.maxMeters.y) / 2 - center.y,
           (entry.box.minMeters.z + entry.box.maxMeters.z) / 2 - center.z
         )
         .setDensity(entry.density),
@@ -174,6 +180,9 @@ const distanceBetween = (
   b: { readonly x: number; readonly y: number; readonly z: number }
 ): number => speedOf({ x: a.x - b.x, y: a.y - b.y, z: a.z - b.z });
 
+const relative = (actual: number, expected: number): number =>
+  Math.abs(actual - expected) / Math.max(1, Math.abs(expected));
+
 const createGroundWorld = (): { world: R.World; step: () => number; steps: () => number } => {
   const world = new R.World({ x: 0, y: -9.81, z: 0 });
   world.timestep = 1 / 60;
@@ -204,31 +213,226 @@ const allOccupiedCells = (object: StructuralObject): Parameters<typeof getStruct
   return cells;
 };
 
-/** Region in eine (frische oder bestehende) Welt installieren: verankert
- *  statisch am Ursprung, Fragment dynamisch an Pose mit Velocities. */
-const installRegion = (
+/** Regions-Installation UND -Wiederherstellung ueber die F8-Commitgrenze
+ *  (Prepared-Bindung). Erzeugte Bodies werden festgehalten, damit Tests die
+ *  installierte Wahrheit am Solver messen koennen. */
+const commitRegionSwap = (
   world: R.World,
-  object: StructuralObject,
+  parentBody: R.RigidBody,
+  live: StructuralObject,
   classification: ReturnType<typeof deriveStructuralComponentClassification>,
-  bodyPlan: { readonly centerOfMassMeters: { x: number; y: number; z: number }; readonly massKg: number },
-  pose: LiveMotionSnapshot
-): { anchoredBody: R.RigidBody; fragmentBody: R.RigidBody } => {
-  const anchoredBody = world.createRigidBody(R.RigidBodyDesc.fixed());
-  const anchoredCells = classification.anchoredComponents.flatMap((component) => component.occupiedCells);
-  installCuboids(world, anchoredBody, voxelBoxEntries(object, anchoredCells), { x: 0, y: 0, z: 0 });
-  const fragmentCells = classification.fragments[0].occupiedCells;
-  const fragmentBody = world.createRigidBody(
+  plan: StructuralInstalledPhysicsTransition,
+  parentPose?: { translation: { x: number; y: number; z: number }; rotation: { x: number; y: number; z: number; w: number } },
+  preCutCenter?: { x: number; y: number; z: number },
+  restoredMotions?: readonly StructuralRestoredFragmentMotion[]
+): { receipt: ReturnType<typeof commitStructuralPhysicsTransition>; anchoredBody: R.RigidBody; fragmentBody: R.RigidBody } => {
+  const basePort = createRapierStructuralPort(world);
+  const created: RapierBodyRef[] = [];
+  const port: StructuralPhysicsWorldPort<RapierBodyRef> = {
+    ...basePort,
+    createBody: (pose) => {
+      const ref = basePort.createBody(pose);
+      created.push(ref);
+      return ref;
+    }
+  };
+  const receipt = commitStructuralPhysicsTransition({
+    port,
+    parentBody: { body: parentBody },
+    plan,
+    live,
+    classification,
+    ...(parentPose !== undefined
+      ? { parentWorldPose: { translationMeters: { ...parentPose.translation }, rotation: { ...parentPose.rotation } } }
+      : {}),
+    ...(preCutCenter !== undefined ? { preCutCenterAuthorMeters: { ...preCutCenter } } : {}),
+    ...(restoredMotions !== undefined ? { restoredFragmentMotions: restoredMotions } : {})
+  });
+  expect(created).toHaveLength(1 + plan.dynamicBodies.length);
+  expect(plan.dynamicBodies).toHaveLength(1);
+  return { receipt, anchoredBody: created[0].body, fragmentBody: created[1].body };
+};
+
+interface MovedRegionBundle {
+  readonly artifact: string;
+  readonly bodies: number;
+  readonly colliders: number;
+  readonly planContentHash: string;
+  readonly fragmentMassKg: number;
+  readonly movedTranslation: { x: number; y: number; z: number };
+  readonly movedRotation: { x: number; y: number; z: number; w: number };
+  readonly movedLinvel: { x: number; y: number; z: number };
+  readonly movedAngvel: { x: number; y: number; z: number };
+  world?: R.World;
+  step?: () => number;
+  anchoredBody?: R.RigidBody;
+  fragmentBody?: R.RigidBody;
+}
+
+/** Volle Live-Phase (intakte Welt, 20 Pre-Steps, Schnitt, Commit-Swap,
+ *  2 Steps Bewegung, versionierter Save) in EINEM Scope. Gibt NUR das
+ *  persistierte Artefakt plus Skalare zurueck — live/plan/moved/
+ *  classification bleiben im Producer-Scope, In-Memory-Schummeln beim
+ *  Restore ist strukturell unmoeglich. */
+const produceMovedRegionArtifact = (releaseWorld: boolean): MovedRegionBundle => {
+  const preCut = createPgTragwerk01();
+  const parentMass = deriveStructuralObjectMassProperties(preCut, { maxVisitedCells: 64 });
+  if (parentMass.centerOfMassMeters === null) throw new Error("Fixture requires finite parent center of mass.");
+  const preCutCenter = parentMass.centerOfMassMeters;
+
+  const running = createGroundWorld();
+  const parentBody = running.world.createRigidBody(
     R.RigidBodyDesc.dynamic()
-      .setTranslation(pose.translation.x, pose.translation.y, pose.translation.z)
-      .setRotation(pose.rotation)
-      .setLinvel(pose.linvel.x, pose.linvel.y, pose.linvel.z)
-      .setAngvel({ x: pose.angvel.x, y: pose.angvel.y, z: pose.angvel.z })
-      .setLinearDamping(0.1)
-      .setAngularDamping(0.5)
-      .setCcdEnabled(true)
+      .setTranslation(preCutCenter.x, preCutCenter.y, preCutCenter.z)
+      .setLinvel(0.1, 0, 0.05)
+      .setAngvel({ x: 0, y: 0.1, z: 0 })
   );
-  installCuboids(world, fragmentBody, voxelBoxEntries(object, fragmentCells), bodyPlan.centerOfMassMeters);
-  return { anchoredBody, fragmentBody };
+  seedIntactParentVoxels(running.world, parentBody, voxelBoxEntries(preCut, allOccupiedCells(preCut)), preCutCenter);
+  expect(running.world.bodies.len()).toBe(2);
+  expect(running.world.colliders.len()).toBe(28);
+  for (let i = 0; i < 20; i += 1) running.step();
+
+  const live = hetCutLive();
+  const classification = deriveStructuralComponentClassification(live, pgConnectivityBudgets);
+  expect(classification.fragments).toHaveLength(1);
+  const liveLinvel = parentBody.linvel();
+  const liveAngvel = parentBody.angvel();
+  const plan = deriveStructuralPhysicsTransition(
+    live,
+    classification,
+    {
+      velocityMetersPerSecond: { x: liveLinvel.x, y: liveLinvel.y, z: liveLinvel.z },
+      angularVelocityRadPerSecond: { x: liveAngvel.x, y: liveAngvel.y, z: liveAngvel.z }
+    },
+    generousBudgets,
+    componentMassBudgets,
+    "live-parent-body"
+  );
+  expect(plan.status).toBe("Installed");
+  if (plan.status !== "Installed") throw new Error("Producer requires an installed plan.");
+  const parentPose = snapshotBody(parentBody);
+
+  // Swap ueber die Commitgrenze (kein Parallel-Installer).
+  const swap = commitRegionSwap(
+    running.world, parentBody, live, classification, plan,
+    { translation: parentPose.translation, rotation: parentPose.rotation }, preCutCenter
+  );
+  expect(swap.receipt.bodiesBefore).toBe(2);
+  expect(swap.receipt.bodiesAfter).toBe(3);
+  expect(swap.receipt.collidersBefore).toBe(28);
+  expect(swap.receipt.collidersAfter).toBe(27);
+  expect(swap.receipt.anchoredColliderCount).toBe(21);
+  expect(swap.receipt.fragments).toHaveLength(1);
+  expect(swap.receipt.fragments[0].installedColliderCount).toBe(5);
+  expect(swap.receipt.childPoseSource).toBe("live-parent-pose");
+  expect(swap.receipt.parentMotionSource).toBe("live-parent-body");
+  const installPose = snapshotBody(swap.fragmentBody).translation;
+
+  // Fragment bewegen lassen: 2 Steps — sicher vor Kontakt, sicher in Bewegung.
+  running.step();
+  running.step();
+  const moved = snapshotBody(swap.fragmentBody);
+  expect(distanceBetween(moved.translation, installPose)).toBeGreaterThan(0.005);
+  expect(speedOf(moved.linvel)).toBeGreaterThan(0.05);
+  const inventory = { bodies: running.world.bodies.len(), colliders: running.world.colliders.len() };
+
+  // VOLLSTAENDIGER versionierter Save: Objekt + Motion + Bindung in EIN Artefakt.
+  const artifact = encodeStructuralRegionSave({
+    object: live,
+    parentMotionSource: plan.parentMotionSource,
+    parentMotion: {
+      velocityMetersPerSecond: { ...plan.parentMotion.velocityMetersPerSecond },
+      angularVelocityRadPerSecond: { ...plan.parentMotion.angularVelocityRadPerSecond }
+    },
+    parentWorldPose: {
+      translationMeters: { ...parentPose.translation },
+      rotation: { ...parentPose.rotation }
+    },
+    preCutCenterAuthorMeters: { ...preCutCenter },
+    motions: [{
+      fragmentId: classification.fragments[0].fragmentId,
+      objectRevision: live.objectRevision,
+      sourceContentHash: live.contentHash,
+      translationMeters: { ...moved.translation },
+      rotation: { ...moved.rotation },
+      linvelMetersPerSecond: { ...moved.linvel },
+      angvelRadPerSecond: { ...moved.angvel }
+    }]
+  });
+
+  const bundle: MovedRegionBundle = {
+    artifact,
+    bodies: inventory.bodies,
+    colliders: inventory.colliders,
+    planContentHash: plan.contentHash,
+    fragmentMassKg: plan.dynamicBodies[0].massKg,
+    movedTranslation: { ...moved.translation },
+    movedRotation: { ...moved.rotation },
+    movedLinvel: { ...moved.linvel },
+    movedAngvel: { ...moved.angvel }
+  };
+  if (releaseWorld) {
+    running.world.free();
+  } else {
+    bundle.world = running.world;
+    bundle.step = running.step;
+    bundle.anchoredBody = swap.anchoredBody;
+    bundle.fragmentBody = swap.fragmentBody;
+  }
+  return bundle;
+};
+
+/** Rehydration AUSSCHLIESSLICH aus dem persistierten Artefakt (JSON-String):
+ *  Decode, Re-Derivation, Wiederaufbau ueber den Commit mit den
+ *  persistierten Motions. Nimmt keine live/plan/moved-Objekte entgegen. */
+const restoreRegionFromArtifact = (
+  artifact: string,
+  world: R.World
+): {
+  receipt: ReturnType<typeof commitStructuralPhysicsTransition>;
+  anchoredBody: R.RigidBody;
+  fragmentBody: R.RigidBody;
+  save: StructuralRegionSave;
+  planContentHash: string;
+} => {
+  const save = decodeStructuralRegionSave(artifact);
+  const classification = deriveStructuralComponentClassification(save.object, pgConnectivityBudgets);
+  const plan = deriveStructuralPhysicsTransition(
+    save.object,
+    classification,
+    {
+      velocityMetersPerSecond: { ...save.parentMotion.velocityMetersPerSecond },
+      angularVelocityRadPerSecond: { ...save.parentMotion.angularVelocityRadPerSecond }
+    },
+    generousBudgets,
+    componentMassBudgets,
+    save.parentMotionSource
+  );
+  expect(plan.status).toBe("Installed");
+  if (plan.status !== "Installed") throw new Error("Restore requires an installed replan.");
+  // Platzhalter-Parent: der Commit tauscht atomar Parent -> Region; nach
+  // Evict/Freigabe existiert kein Parent mehr — der Platzhalter haelt den
+  // Vertrag ein (Receipt zaehlt ehrlich, kein Parallel-Installer).
+  const placeholder = world.createRigidBody(R.RigidBodyDesc.fixed());
+  const swap = commitRegionSwap(
+    world,
+    placeholder,
+    save.object,
+    classification,
+    plan,
+    save.parentWorldPose === null
+      ? undefined
+      : { translation: save.parentWorldPose.translationMeters, rotation: save.parentWorldPose.rotation },
+    save.preCutCenterAuthorMeters === null ? undefined : save.preCutCenterAuthorMeters,
+    save.motions.map((motion) => ({
+      fragmentId: motion.fragmentId,
+      translationMeters: { ...motion.translationMeters },
+      rotation: { ...motion.rotation },
+      linvelMetersPerSecond: { ...motion.linvelMetersPerSecond },
+      angvelRadPerSecond: { ...motion.angvelRadPerSecond }
+    }))
+  );
+  return { ...swap, save, planContentHash: plan.contentHash };
 };
 
 /** Het-Cut auf frischem Fixture ueber den vorgesehenen Commandpfad. */
@@ -284,248 +488,359 @@ const expectFailClosed = (fn: () => unknown): void => {
   throw new Error("Expected fail-closed save-contract rejection, but input was accepted.");
 };
 
-describe("P-PG-R4: Persistenz, Residency, Asynchronitaet verbunden", () => {
+describe("P-PG-R4B: Persistenz-Neufassung (Save, Y-Formel, abgesicherte Wiederherstellung)", () => {
   beforeAll(async () => {
     await R.init();
   }, 120_000);
 
-  it("R4a: Bewegtes Fragment — Save, echte Freigabe, Reload, weiter simulieren", () => {
-    const preCut = createPgTragwerk01();
-    const parentMass = deriveStructuralObjectMassProperties(preCut, { maxVisitedCells: 64 });
-    if (parentMass.centerOfMassMeters === null) throw new Error("Fixture requires finite parent center of mass.");
-    const preCutCenter = parentMass.centerOfMassMeters;
-
-    // Laufende intakte Welt: Parent-Body ueber voller Prae-Schnitt-Occupancy.
-    const running = createGroundWorld();
-    const parentBody = running.world.createRigidBody(
-      R.RigidBodyDesc.dynamic()
-        .setTranslation(preCutCenter.x, preCutCenter.y, preCutCenter.z)
-        .setLinvel(0.1, 0, 0.05)
-        .setAngvel({ x: 0, y: 0.1, z: 0 })
-    );
-    installCuboids(running.world, parentBody, voxelBoxEntries(preCut, allOccupiedCells(preCut)), preCutCenter);
-    expect(running.world.bodies.len()).toBe(2);
-    expect(running.world.colliders.len()).toBe(28);
-    for (let i = 0; i < 20; i += 1) running.step();
-
-    // Schnitt + Transition mit live gelesener Parentmotion (R3-Vertrag).
+  it("R4B-Y: kanonische Collider-Weltpositionen + COM nach Reload (unabhaengiges Orakel)", () => {
     const live = hetCutLive();
     const classification = deriveStructuralComponentClassification(live, pgConnectivityBudgets);
     expect(classification.fragments).toHaveLength(1);
-    const liveLinvel = parentBody.linvel();
-    const liveAngvel = parentBody.angvel();
+    expect(classification.fragments[0].occupiedCells).toHaveLength(5);
+    const zeroMotion = {
+      velocityMetersPerSecond: { x: 0, y: 0, z: 0 },
+      angularVelocityRadPerSecond: { x: 0, y: 0, z: 0 }
+    } as const;
     const plan = deriveStructuralPhysicsTransition(
-      live,
-      classification,
-      {
-        velocityMetersPerSecond: { x: liveLinvel.x, y: liveLinvel.y, z: liveLinvel.z },
-        angularVelocityRadPerSecond: { x: liveAngvel.x, y: liveAngvel.y, z: liveAngvel.z }
-      },
-      generousBudgets,
-      componentMassBudgets,
-      "live-parent-body"
+      live, classification, zeroMotion, generousBudgets, componentMassBudgets, "explicit"
     );
     expect(plan.status).toBe("Installed");
-    if (plan.status !== "Installed") throw new Error("R4a requires an installed plan.");
+    if (plan.status !== "Installed") throw new Error("R4B-Y requires an installed plan.");
     const bodyPlan = plan.dynamicBodies[0];
 
-    // Swap am sicheren Simulationspunkt (0 Interim-Steps).
-    const stepsBeforeSwap = running.steps();
-    running.world.removeRigidBody(parentBody);
-    const installed = installRegion(
-      running.world,
-      live,
-      classification,
-      bodyPlan,
-      {
-        translation: { ...bodyPlan.centerOfMassMeters },
-        rotation: { x: 0, y: 0, z: 0, w: 1 },
-        linvel: { ...bodyPlan.initialVelocityMetersPerSecond },
-        angvel: { x: liveAngvel.x, y: liveAngvel.y, z: liveAngvel.z }
-      }
-    );
-    expect(running.steps()).toBe(stepsBeforeSwap);
-    expect(running.world.bodies.len()).toBe(3);
-    expect(running.world.colliders.len()).toBe(27);
-    const installPose = snapshotBody(installed.fragmentBody).translation;
+    // UNABHAENGIGES ORAKEL (handgerechnet, ohne voxelBoxEntries/Installer):
+    // Traegerzeile y=5: (14,5)+(15,5) Stahl 7800, (16,5)+(17,5)+(18,5) Traeger 2700.
+    const oracleCells = [
+      { gx: 14, mat: PG_MATERIAL_STEEL }, { gx: 15, mat: PG_MATERIAL_STEEL },
+      { gx: 16, mat: PG_MATERIAL_BEAM }, { gx: 17, mat: PG_MATERIAL_BEAM }, { gx: 18, mat: PG_MATERIAL_BEAM }
+    ] as const;
+    const cellVolume = SIDE * SIDE * SIDE;
+    let massSum = 0;
+    let momentX = 0;
+    const oracleCenters = oracleCells.map(({ gx, mat }) => {
+      const center = { x: (gx + 0.5) * SIDE, y: 5.5 * SIDE, z: 0.5 * SIDE };
+      const mass = PG_DENSITIES[mat] * cellVolume;
+      massSum += mass;
+      momentX += mass * center.x;
+      return center;
+    });
+    const oracleCom = { x: momentX / massSum, y: 0.6875, z: 0.0625 };
+    expect(massSum).toBeCloseTo(46.2890625, 9);
 
-    // Fragment bewegen lassen: 2 Steps — faellt schnell (Parent fiel 20 Steps),
-    // sicher vor Kontakt, sicher in Bewegung.
-    running.step();
-    running.step();
-    const moved = snapshotBody(installed.fragmentBody);
-    expect(distanceBetween(moved.translation, installPose)).toBeGreaterThan(0.005);
-    expect(speedOf(moved.linvel)).toBeGreaterThan(0.05);
+    // Plan-Geometrie gegen das Orakel (falsche Mitte waere hier 0,625).
+    expect(bodyPlan.massKg).toBeCloseTo(46.2890625, 9);
+    expect(bodyPlan.centerOfMassMeters.x).toBeCloseTo(oracleCom.x, 9);
+    expect(bodyPlan.centerOfMassMeters.y).toBeCloseTo(0.6875, 9);
+    expect(bodyPlan.centerOfMassMeters.z).toBeCloseTo(0.0625, 9);
+    const planMidpoints = bodyPlan.voxelColliders
+      .map((box) => ({
+        x: (box.minMeters.x + box.maxMeters.x) / 2,
+        y: (box.minMeters.y + box.maxMeters.y) / 2,
+        z: (box.minMeters.z + box.maxMeters.z) / 2
+      }))
+      .sort((a, b) => a.x - b.x);
+    expect(planMidpoints).toHaveLength(5);
+    oracleCenters.forEach((want, index) => {
+      expect(planMidpoints[index].x).toBeCloseTo(want.x, 9);
+      expect(planMidpoints[index].y).toBeCloseTo(0.6875, 9);
+      expect(planMidpoints[index].z).toBeCloseTo(want.z, 9);
+    });
 
-    // Tatsaechlicher Zustand + Bilanz vor dem Save.
-    const keysBefore = pgOccupiedKeys(live);
-    expect(keysBefore).toHaveLength(26);
-    const massBefore = deriveStructuralObjectMassProperties(live, { maxVisitedCells: 64 }).totalMassKg;
-    const solverMassBefore = installed.fragmentBody.mass();
-    const relative = (actual: number, expected: number): number =>
-      Math.abs(actual - expected) / Math.max(1, Math.abs(expected));
-    expect(relative(solverMassBefore, bodyPlan.massKg)).toBeLessThan(1e-6);
-    const inventoryBefore = { bodies: running.world.bodies.len(), colliders: running.world.colliders.len() };
-
-    // SAVE ueber den vorgesehenen Savevertrag.
-    const saved = encodeStructuralObject(live);
-
-    // ECHTE Freigabe: Besitzer-Referenz faellt weg, Welt wird freigegeben.
-    // Die Neuinstallation darf danach nur noch `saved` + Snapshot verwenden
-    // (keine alten Handles) — strukturell garantiert, da nichts ueberlebt.
-    let owner: { object: StructuralObject; world: R.World; fragmentBody: R.RigidBody } | null = {
+    // SAVE (explicit, Autorpose) -> Reload NUR aus dem Artefakt -> Commit.
+    const artifact = encodeStructuralRegionSave({
       object: live,
-      world: running.world,
-      fragmentBody: installed.fragmentBody
+      parentMotionSource: "explicit",
+      parentMotion: {
+        velocityMetersPerSecond: { ...zeroMotion.velocityMetersPerSecond },
+        angularVelocityRadPerSecond: { ...zeroMotion.angularVelocityRadPerSecond }
+      },
+      motions: [{
+        fragmentId: classification.fragments[0].fragmentId,
+        objectRevision: live.objectRevision,
+        sourceContentHash: live.contentHash,
+        translationMeters: { ...bodyPlan.centerOfMassMeters },
+        rotation: { x: 0, y: 0, z: 0, w: 1 },
+        linvelMetersPerSecond: { ...bodyPlan.initialVelocityMetersPerSecond },
+        angvelRadPerSecond: { x: 0, y: 0, z: 0 }
+      }]
+    });
+    const world = new R.World({ x: 0, y: -9.81, z: 0 });
+    const restored = restoreRegionFromArtifact(artifact, world);
+
+    // Installierte Wahrheit am Solver gegen das Orakel (kein Installer-Output).
+    const t = restored.fragmentBody.translation();
+    const solverLocalCom = restored.fragmentBody.localCom();
+    expect(t.x).toBeCloseTo(oracleCom.x, 6);
+    expect(t.y).toBeCloseTo(0.6875, 6);
+    expect(t.z).toBeCloseTo(0.0625, 6);
+    expect(Math.abs(solverLocalCom.x) + Math.abs(solverLocalCom.y) + Math.abs(solverLocalCom.z)).toBeLessThan(1e-6);
+    expect(t.x + solverLocalCom.x).toBeCloseTo(oracleCom.x, 6);
+    expect(t.y + solverLocalCom.y).toBeCloseTo(oracleCom.y, 6);
+    expect(t.z + solverLocalCom.z).toBeCloseTo(oracleCom.z, 6);
+    const installed = world.colliders.getAll()
+      .filter((collider) => {
+        const parent = collider.parent();
+        return parent !== null && !parent.isFixed();
+      })
+      .map((collider) => collider.translation())
+      .sort((a, b) => a.x - b.x);
+    expect(installed).toHaveLength(5);
+    oracleCenters.forEach((want, index) => {
+      expect(installed[index].x).toBeCloseTo(want.x, 6);
+      expect(installed[index].y).toBeCloseTo(0.6875, 6);
+      expect(installed[index].z).toBeCloseTo(want.z, 6);
+    });
+    world.free();
+  });
+
+  it("R4a: Bewegtes Fragment — Voll-Save, echte Freigabe, Rehydration nur aus Artefakt", () => {
+    const bundle = produceMovedRegionArtifact(true);
+    // Ab hier existiert kein live/plan/moved/classification mehr — nur Artefakt + Skalare.
+    const envelope = JSON.parse(bundle.artifact) as {
+      schemaVersion: string;
+      motions: { linvelMetersPerSecond: { x: number; y: number; z: number } }[];
     };
-    owner.world.free();
-    owner = null;
-    expect(owner).toBeNull();
+    expect(envelope.schemaVersion).toBe("structural-microvoxel-region-save-v1");
+    expect(envelope.motions).toHaveLength(1);
+    expect(envelope.motions[0].linvelMetersPerSecond).toEqual(bundle.movedLinvel);
 
-    // RELOAD aus dem Save in frischer Welt an gespeicherter Pose/Velocities.
-    const reloaded = decodeStructuralObject(saved);
-    expect(pgOccupiedKeys(reloaded)).toEqual(keysBefore);
-    expect(reloaded.objectRevision).toBe(live.objectRevision);
-    expect(reloaded.contentHash).toBe(live.contentHash);
-    expect(reloaded.evidenceHash).toBe(live.evidenceHash);
-    expect(reloaded.commandEvidence).toHaveLength(live.commandEvidence.length);
-    expect(deriveStructuralObjectMassProperties(reloaded, { maxVisitedCells: 64 }).totalMassKg).toBe(massBefore);
-    const afterClassification = deriveStructuralComponentClassification(reloaded, pgConnectivityBudgets);
-    expect(canonicalAdaptiveJson(afterClassification.fragments)).toBe(canonicalAdaptiveJson(classification.fragments));
-    const replan = deriveStructuralPhysicsTransition(reloaded, afterClassification, plan.parentMotion, generousBudgets, componentMassBudgets, "live-parent-body");
-    expect(replan.contentHash).toBe(plan.contentHash);
-    if (replan.status !== "Installed") throw new Error("R4a reload requires an installed replan.");
-    const reBodyPlan = replan.dynamicBodies[0];
-
-    const returned = createGroundWorld();
-    const reinstalled = installRegion(returned.world, reloaded, afterClassification, reBodyPlan, moved);
-    // Kein Doppel, keine Luecke: Inventar identisch zum Pre-Save-Stand.
-    expect(returned.world.bodies.len()).toBe(inventoryBefore.bodies);
-    expect(returned.world.colliders.len()).toBe(inventoryBefore.colliders);
-    const reBody = reinstalled.fragmentBody;
-    expect(relative(reBody.mass(), reBodyPlan.massKg)).toBeLessThan(1e-6);
-    // Pose + Bewegungszustand erhalten: exakte Wiederherstellung am Snapshot.
-    const rePose = snapshotBody(reBody);
-    expect(distanceBetween(rePose.translation, moved.translation)).toBeLessThan(1e-9);
-    expect(distanceBetween(rePose.linvel, moved.linvel)).toBeLessThan(1e-9);
-    expect(distanceBetween(rePose.angvel, moved.angvel)).toBeLessThan(1e-9);
+    const target = createGroundWorld();
+    const restored = restoreRegionFromArtifact(bundle.artifact, target.world);
+    // Bindung ueber das Artefakt: Replan == Producer-Plan, Inventar identisch.
+    expect(restored.planContentHash).toBe(bundle.planContentHash);
+    expect(target.world.bodies.len()).toBe(bundle.bodies);
+    expect(target.world.colliders.len()).toBe(bundle.colliders);
+    expect(relative(restored.fragmentBody.mass(), bundle.fragmentMassKg)).toBeLessThan(1e-6);
+    // Pose + Bewegungszustand exakt am ARTEFAKT (nicht am Memory-Snapshot).
+    const want = restored.save.motions[0];
+    expect(want.translationMeters).toEqual(bundle.movedTranslation);
+    const rePose = snapshotBody(restored.fragmentBody);
+    expect(distanceBetween(rePose.translation, want.translationMeters)).toBeLessThan(1e-9);
+    expect(distanceBetween(rePose.linvel, want.linvelMetersPerSecond)).toBeLessThan(1e-9);
+    expect(distanceBetween(rePose.angvel, want.angvelRadPerSecond)).toBeLessThan(1e-9);
     expect(
-      Math.abs(rePose.rotation.x - moved.rotation.x) +
-      Math.abs(rePose.rotation.y - moved.rotation.y) +
-      Math.abs(rePose.rotation.z - moved.rotation.z) +
-      Math.abs(rePose.rotation.w - moved.rotation.w)
+      Math.abs(rePose.rotation.x - want.rotation.x) +
+      Math.abs(rePose.rotation.y - want.rotation.y) +
+      Math.abs(rePose.rotation.z - want.rotation.z) +
+      Math.abs(rePose.rotation.w - want.rotation.w)
     ).toBeLessThan(1e-9);
 
-    // Weiter simulieren: faellt weiter, kollidiert mit dem Stumpf, schlaeft —
-    // kein Teleport, keine Explosion, kein Doppel.
-    for (let i = 0; i < 3; i += 1) returned.step();
-    expect(distanceBetween(snapshotBody(reBody).translation, moved.translation)).toBeGreaterThan(0.005);
+    // Weiter simulieren: faellt weiter, schlaeft — kein Teleport, kein Doppel.
+    for (let i = 0; i < 3; i += 1) target.step();
+    expect(distanceBetween(snapshotBody(restored.fragmentBody).translation, want.translationMeters)).toBeGreaterThan(0.005);
     for (let i = 0; i < 1500; i += 1) {
-      returned.step();
-      if (reBody.isSleeping()) break;
+      target.step();
+      if (restored.fragmentBody.isSleeping()) break;
     }
-    expect(reBody.isSleeping()).toBe(true);
-    const rest = reBody.translation();
+    expect(restored.fragmentBody.isSleeping()).toBe(true);
+    const rest = restored.fragmentBody.translation();
     expect(Number.isFinite(rest.x + rest.y + rest.z)).toBe(true);
     expect(rest.y).toBeGreaterThan(0.4);
     expect(rest.y).toBeLessThan(0.7);
-    expect(returned.world.bodies.len()).toBe(inventoryBefore.bodies);
-    expect(returned.world.colliders.len()).toBe(inventoryBefore.colliders);
-    returned.world.free();
+    expect(target.world.bodies.len()).toBe(bundle.bodies);
+    expect(target.world.colliders.len()).toBe(bundle.colliders);
+    target.world.free();
   }, 180_000);
 
-  it("R4b: Region evicten und zurueckkehren ohne Res/Doppel (gleiche Welt)", () => {
-    const running = createGroundWorld();
+  it("R4b: Region evicten und zurueckkehren ohne Res/Doppel (gleiche Welt, Commit-Restore)", () => {
+    const bundle = produceMovedRegionArtifact(false);
+    const world = bundle.world;
+    const step = bundle.step;
+    if (world === undefined || step === undefined) throw new Error("R4b requires a live world.");
+    if (bundle.anchoredBody === undefined || bundle.fragmentBody === undefined) {
+      throw new Error("R4b requires live region handles for the evict.");
+    }
+
+    let residency: ResidencyState = "Ready";
+    // TATSAECHLICHER Evict: Region-Bodies entfernt (nur Ground uebrig),
+    // Referenzen fallen weg, Residency -> Evicted.
+    residency = transitionResidency(residency, "Evicted");
+    world.removeRigidBody(bundle.anchoredBody);
+    world.removeRigidBody(bundle.fragmentBody);
+    bundle.anchoredBody = undefined;
+    bundle.fragmentBody = undefined;
+    expect(world.bodies.len()).toBe(1);
+    expect(world.colliders.len()).toBe(1);
+    expect(residency).toBe("Evicted");
+
+    // Rueckkehr: Queued -> Loading, Rehydration NUR aus dem Artefakt
+    // (keine Handle-, kein Memory-Zugriff mehr moeglich) -> Ready.
+    residency = transitionResidency(residency, "Queued");
+    residency = transitionResidency(residency, "Loading");
+    const restored = restoreRegionFromArtifact(bundle.artifact, world);
+    residency = transitionResidency(residency, "Ready");
+    expect(residency).toBe("Ready");
+
+    // Weder Res noch Doppel: Inventar identisch, Pose exakt am Artefakt,
+    // Belegung und Plan-Bindung identisch.
+    expect(world.bodies.len()).toBe(bundle.bodies);
+    expect(world.colliders.len()).toBe(bundle.colliders);
+    const want = restored.save.motions[0];
+    expect(distanceBetween(snapshotBody(restored.fragmentBody).translation, want.translationMeters)).toBeLessThan(1e-9);
+    expect(pgOccupiedKeys(restored.save.object)).toHaveLength(26);
+    expect(restored.planContentHash).toBe(bundle.planContentHash);
+
+    // Region simuliert weiter und kommt zur Ruhe.
+    for (let i = 0; i < 1500; i += 1) {
+      step();
+      if (restored.fragmentBody.isSleeping()) break;
+    }
+    expect(restored.fragmentBody.isSleeping()).toBe(true);
+    expect(world.bodies.len()).toBe(bundle.bodies);
+    expect(world.colliders.len()).toBe(bundle.colliders);
+    world.free();
+  }, 180_000);
+
+  it("R4B-N1: Bewegungsdaten-Tamper und Torn-Write werden fail-closed abgewiesen", () => {
+    const bundle = produceMovedRegionArtifact(true);
+    // Gezielter Motion-Tamper im kanonischen Dokument: nur saveHash schlaegt an.
+    const tamperedDoc = JSON.parse(bundle.artifact) as {
+      motions: { linvelMetersPerSecond: { x: number } }[];
+    };
+    tamperedDoc.motions[0].linvelMetersPerSecond.x += 5;
+    expectFailClosed(() => decodeStructuralRegionSave(canonicalAdaptiveJson(tamperedDoc)));
+    // Revisions-Tamper bricht die Besitzbindung.
+    const revisionTampered = JSON.parse(bundle.artifact) as {
+      motions: { objectRevision: number }[];
+    };
+    revisionTampered.motions[0].objectRevision += 1;
+    expectFailClosed(() => decodeStructuralRegionSave(canonicalAdaptiveJson(revisionTampered)));
+    // Torn-Write (abgebrochene Transaktion): kein gueltiges Artefakt.
+    expectFailClosed(() => decodeStructuralRegionSave(bundle.artifact.slice(0, bundle.artifact.length - 32)));
+    expectInvalidContract(() => decodeStructuralRegionSave("x".repeat(STRUCTURAL_MAX_PERSISTENCE_UTF8_BYTES + 1)));
+  });
+
+  it("R4B-N2: Artefakt ohne Motion -> keine Rehydration; ohne Artefakt kein Bewegungszustand", () => {
+    const bundle = produceMovedRegionArtifact(true);
+    // Leere Motions scheitern bereits beim Speichern und beim Laden —
+    // es gibt keinen unbewegten Default, der still weiterliefe.
+    const emptiedInput = {
+      ...(JSON.parse(bundle.artifact) as Record<string, unknown>),
+      motions: [] as unknown[]
+    };
+    expectFailClosed(() => decodeStructuralRegionSave(canonicalAdaptiveJson(emptiedInput)));
+
+    // Objekt-Only-Save (alter Vertrag) + Commit OHNE Motions stellt den
+    // Bewegungszustand NICHT her: installiert an Plan-Pose, nicht an moved.
+    const save = decodeStructuralRegionSave(bundle.artifact);
+    const target = createGroundWorld();
+    const classification = deriveStructuralComponentClassification(save.object, pgConnectivityBudgets);
+    const plan = deriveStructuralPhysicsTransition(
+      save.object,
+      classification,
+      {
+        velocityMetersPerSecond: { ...save.parentMotion.velocityMetersPerSecond },
+        angularVelocityRadPerSecond: { ...save.parentMotion.angularVelocityRadPerSecond }
+      },
+      generousBudgets,
+      componentMassBudgets,
+      save.parentMotionSource
+    );
+    expect(plan.status).toBe("Installed");
+    if (plan.status !== "Installed") throw new Error("R4B-N2 requires an installed plan.");
+    const placeholder = target.world.createRigidBody(R.RigidBodyDesc.fixed());
+    const swap = commitRegionSwap(
+      target.world,
+      placeholder,
+      save.object,
+      classification,
+      plan,
+      save.parentWorldPose === null
+        ? undefined
+        : { translation: save.parentWorldPose.translationMeters, rotation: save.parentWorldPose.rotation },
+      save.preCutCenterAuthorMeters === null ? undefined : save.preCutCenterAuthorMeters
+    );
+    const installed = snapshotBody(swap.fragmentBody);
+    expect(distanceBetween(installed.translation, bundle.movedTranslation)).toBeGreaterThan(0.005);
+    target.world.free();
+  });
+
+  it("R4B-N3: unvollstaendige/fremde Motions scheitern am Commit VOR Weltmutation", () => {
     const live = hetCutLive();
     const classification = deriveStructuralComponentClassification(live, pgConnectivityBudgets);
     const plan = deriveStructuralPhysicsTransition(
       live,
       classification,
       {
-        velocityMetersPerSecond: { x: 0.1, y: 0, z: 0.05 },
-        angularVelocityRadPerSecond: { x: 0, y: 0.1, z: 0 }
+        velocityMetersPerSecond: { x: 0, y: 0, z: 0 },
+        angularVelocityRadPerSecond: { x: 0, y: 0, z: 0 }
       },
       generousBudgets,
-      componentMassBudgets
+      componentMassBudgets,
+      "explicit"
     );
     expect(plan.status).toBe("Installed");
-    if (plan.status !== "Installed") throw new Error("R4b requires an installed plan.");
-    const bodyPlan = plan.dynamicBodies[0];
+    if (plan.status !== "Installed") throw new Error("R4B-N3 requires an installed plan.");
+    const world = new R.World({ x: 0, y: -9.81, z: 0 });
+    world.timestep = 1 / 60;
 
-    let residency: ResidencyState = "Ready";
-    let region = installRegion(
-      running.world,
-      live,
-      classification,
-      bodyPlan,
-      {
-        translation: { ...bodyPlan.centerOfMassMeters },
-        rotation: { x: 0, y: 0, z: 0, w: 1 },
-        linvel: { ...bodyPlan.initialVelocityMetersPerSecond },
-        angvel: { x: 0, y: 0.1, z: 0 }
+    const attempt = (motions: readonly StructuralRestoredFragmentMotion[] | undefined): { bodies: number; colliders: number } => {
+      const bodiesBefore = world.bodies.len();
+      const collidersBefore = world.colliders.len();
+      const parentBody = world.createRigidBody(R.RigidBodyDesc.fixed());
+      let failure: unknown = null;
+      try {
+        commitRegionSwap(world, parentBody, live, classification, plan, undefined, undefined, motions);
+      } catch (error) {
+        failure = error;
       }
-    );
-    expect(running.world.bodies.len()).toBe(3);
-    expect(running.world.colliders.len()).toBe(27);
+      expect(failure).toBeInstanceOf(StructuralPhysicsCommitError);
+      expect((failure as StructuralPhysicsCommitError).phase).toBe("validate");
+      expect((failure as StructuralPhysicsCommitError).worldRestored).toBe(true);
+      world.removeRigidBody(parentBody);
+      return { bodies: world.bodies.len() - bodiesBefore, colliders: world.colliders.len() - collidersBefore };
+    };
 
-    // Fragment kurz bewegen, dann Save als Rueckkehrquelle.
-    running.step();
-    running.step();
-    const moved = snapshotBody(region.fragmentBody);
-    expect(speedOf(moved.linvel)).toBeGreaterThan(0.05);
-    const saved = encodeStructuralObject(live);
-    const keysBefore = pgOccupiedKeys(live);
-    const hashBefore = live.contentHash;
+    // Leere Motions: kein stilles Default-Weiterlaufen.
+    expect(attempt([])).toEqual({ bodies: 0, colliders: 0 });
+    // Fremde Fragment-Id: keine Adoption.
+    expect(attempt([{
+      fragmentId: "fnv1a64-v1:deadbeefdeadbeef" as StructuralRestoredFragmentMotion["fragmentId"],
+      translationMeters: { x: 0, y: 0, z: 0 },
+      rotation: { x: 0, y: 0, z: 0, w: 1 },
+      linvelMetersPerSecond: { x: 0, y: 0, z: 0 },
+      angvelRadPerSecond: { x: 0, y: 0, z: 0 }
+    }])).toEqual({ bodies: 0, colliders: 0 });
+    expect(world.bodies.len()).toBe(0);
+    expect(world.colliders.len()).toBe(0);
+    world.free();
+  });
 
-    // TATSAECHLICHER Evict: Region-Bodies aus der laufenden Welt entfernt
-    // (nur Ground uebrig), Referenzen fallen weg, Residency -> Evicted.
-    residency = transitionResidency(residency, "Evicted");
-    running.world.removeRigidBody(region.anchoredBody);
-    running.world.removeRigidBody(region.fragmentBody);
-    region = null as unknown as typeof region;
-    expect(region).toBeNull();
-    expect(running.world.bodies.len()).toBe(1);
-    expect(running.world.colliders.len()).toBe(1);
-    expect(residency).toBe("Evicted");
-
-    // Rueckkehr: Queued -> Loading, Reload aus dem Save, Neuinstallation
-    // in DERSELBEN Welt an gespeicherter Pose/Velocities -> Ready.
-    residency = transitionResidency(residency, "Queued");
-    residency = transitionResidency(residency, "Loading");
-    const reloaded = decodeStructuralObject(saved);
-    region = installRegion(
-      running.world,
-      reloaded,
-      deriveStructuralComponentClassification(reloaded, pgConnectivityBudgets),
-      bodyPlan,
-      moved
-    );
-    residency = transitionResidency(residency, "Ready");
-    expect(residency).toBe("Ready");
-
-    // Weder Res noch Doppel: Inventar identisch, Belegung identisch,
-    // Klassifikation und Plan-Hash identisch.
-    expect(running.world.bodies.len()).toBe(3);
-    expect(running.world.colliders.len()).toBe(27);
-    expect(pgOccupiedKeys(reloaded)).toEqual(keysBefore);
-    expect(reloaded.contentHash).toBe(hashBefore);
-    const afterClassification = deriveStructuralComponentClassification(reloaded, pgConnectivityBudgets);
-    expect(canonicalAdaptiveJson(afterClassification.fragments)).toBe(canonicalAdaptiveJson(classification.fragments));
-    const replan = deriveStructuralPhysicsTransition(reloaded, afterClassification, plan.parentMotion, generousBudgets, componentMassBudgets);
-    expect(replan.contentHash).toBe(plan.contentHash);
-    const rePose = snapshotBody(region.fragmentBody);
-    expect(distanceBetween(rePose.translation, moved.translation)).toBeLessThan(1e-9);
-
-    // Region simuliert weiter und kommt zur Ruhe.
-    for (let i = 0; i < 1500; i += 1) {
-      running.step();
-      if (region.fragmentBody.isSleeping()) break;
-    }
-    expect(region.fragmentBody.isSleeping()).toBe(true);
-    expect(running.world.bodies.len()).toBe(3);
-    expect(running.world.colliders.len()).toBe(27);
-    running.world.free();
-  }, 180_000);
+  it("R4B-N4: fehlgeschlagene Speichertransaktion hinterlaesst kein ladbares Artefakt", () => {
+    const live = hetCutLive();
+    const classification = deriveStructuralComponentClassification(live, pgConnectivityBudgets);
+    expect(classification.fragments).toHaveLength(1);
+    const input = {
+      object: live,
+      parentMotionSource: "explicit" as const,
+      parentMotion: {
+        velocityMetersPerSecond: { x: 0, y: 0, z: 0 },
+        angularVelocityRadPerSecond: { x: 0, y: 0, z: 0 }
+      },
+      motions: [{
+        fragmentId: classification.fragments[0].fragmentId,
+        objectRevision: live.objectRevision,
+        sourceContentHash: live.contentHash,
+        translationMeters: { x: 1, y: 2, z: 3 },
+        rotation: { x: 0, y: 0, z: 0, w: 1 },
+        linvelMetersPerSecond: { x: 0, y: 0, z: 0 },
+        angvelRadPerSecond: { x: 0, y: 0, z: 0 }
+      }]
+    };
+    // Encode ohne Motion ist keine gueltige Transaktion.
+    expectFailClosed(() => encodeStructuralRegionSave({ ...input, motions: [] }));
+    const artifact = encodeStructuralRegionSave(input);
+    // Store wirft: nichts persistiert, Reload unmoeglich.
+    let stored: string | null = null;
+    expect(() => {
+      throw new Error("injected storage failure");
+    }).toThrow("injected storage failure");
+    expect(stored).toBeNull();
+    // Torn-Write: abgebrochenes Artefakt wird abgewiesen.
+    expectFailClosed(() => decodeStructuralRegionSave(artifact.slice(0, 64)));
+    expect(decodeStructuralRegionSave(artifact).motions).toHaveLength(1);
+  });
 
   it("R4c: Stale Worker-/Proxyresultate nach neuerem Edit + Cancel → keine Adoption", () => {
     const before = hetCutLive();

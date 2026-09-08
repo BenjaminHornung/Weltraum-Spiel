@@ -111,3 +111,99 @@ Nebendiagonale < 1e-9).
 | Loch + Materialbilanz erhalten | Belegungs-/Massen-/Solver-Vergleiche vor/nach | R4a/R4b (Keys, Masse, Solver-1e-6) |
 | Keine Doppel-Bodies/Res-Zellen | Inventar- + Occupancy-Vergleiche | R4a/R4b (Bodies/Collider/Fragmente/Plan-Hash) |
 | R3-Finding low: Debris-Tensor ohne Assertion | Steiner-Cross-Check als Testnachtrag | Slice4-Fallback (6 Tensor- + 3 COM- + Identitaets-Assertions) |
+
+---
+
+# P-PG-R4B — Persistenz-Neufassung (Fokusaudit 08.09.2026, Abschnitte 4+5)
+
+Basis: Branch `feature/pg-tragwerk-slice1` @ `e5470be4` (F8-Commitgrenze),
+derselbe Branch/Worktree, lokal, kein Push. Vorlaeufer-Stand 145 Dateien /
+1381 Tests + tsc gruen.
+
+## Befund 4a — Y-Mittelpunktfehler
+
+`installCuboids` im R4-Test rechnete
+`(min.y + min.y) / 2 - center.y` statt `(min.y + max.y) / 2`; alle Collider
+0,0625 zu tief installiert (heterogene Fixture: y-Soll 0,6875, installiert
+0,625). Pre-Fix-Repro als failing Test belegt (installiert 0,625 vs. 0,6875,
+Delta exakt 0,0625). Produktcode (`toMetersBox`, `voxelCuboidForCell`) und
+R3-/F7-Helper waren korrekt — nur der R4-Pfad war betroffen.
+
+Fix: Formel auf `(min + max) / 2` auf allen Achsen korrigiert; Helper auf
+reines Pre-Cut-Parent-Seeding zurueckgestutzt (`seedIntactParentVoxels`).
+Regression R4B-Y: kanonische Collider-Weltpositionen (Solver-Readback
+`Collider.translation()`, Welt-Raum) + Plan-Mittelpunkte + Solver-
+`RigidBody.localCom()`
+gegen handgerechnete kanonische Werte (5,5 * 0,125 = 0,6875; Masse
+46,2890625 kg aus 2x Stahl 7800 + 3x Traeger 2700) — ohne denselben
+Installer fuer Soll und Ist.
+
+## Befund 4b/5 — Bewegter Zustand nicht im Save, ungebundener Restore
+
+Gespeichert wurde nur `encodeStructuralObject(live)`; Pose/Velocities lebten
+separat in `moved` im Speicher, `installRegion(..., moved)` uebernahm sie
+ungebunden (gefaelschte Pose still akzeptiert — Pre-Fix-Repro belegt).
+
+Fix (Produkt, minimal):
+- Neu `src/voxel/structural/regionSave.ts`: versionierter Container
+  `structural-microvoxel-region-save-v1` — Objekt (ueber bestehenden
+  Savevertrag eingebettet) + Parent-Motion + Parentpose/PreCut-COM (nur bei
+  `live-parent-body`) + Fragment-Motions mit Besitz-/Revisionsbindung
+  (fragmentId, objectRevision, sourceContentHash) + `saveHash` ueber alles.
+  Leere Motions, Dubletten, Stale-/Fremd-Bindung und Tamper fail-closed;
+  Encode selbstverifiziert (fehlgeschlagene Transaktion faellt beim
+  Speichern, nicht erst beim Reload).
+- `physicsCommit.ts` (additiv, F8-Semantik unveraendert): optionale
+  `restoredFragmentMotions` — geschlossen validiert VOR Weltmutation
+  (alle Plan-Fragmente exakt einmal, Einheitsquaternionen); ersetzt
+  Plan-abgeleitete Pose/Velocities. Fehlt eine Motion, scheitert der Commit
+  statt still default weiterzulaufen.
+- `types.ts`: `STRUCTURAL_REGION_SAVE_MAX_MOTIONS`; `index.ts`: Export.
+
+Tests (Datei `structuralPgTragwerkR4.test.ts`, 9 Tests):
+- R4a: Live-Phase im Producer-Scope (20 Pre-Steps, Commit-Swap 2->3/28->27,
+  2 Steps Bewegung), Voll-Save, `world.free()`; Restore NUR aus
+  Artefakt-String (kein live/plan/moved-Zugriff), Pose/Vel exakt < 1e-9 am
+  Artefakt, Replan-Hash identisch, weiter simulieren bis Sleep (Ruhe-Y
+  0,4..0,7), Inventar stabil.
+- R4b: echter Evict (3/27 -> 1/1, Handles genullt), Rueckkehr via
+  Artefakt+Commit in derselben Welt (3/27), Residency-Zyklus, Sleep.
+- R4B-N1: Motion-Tamper (kanonisch re-serialisiert — nur saveHash faengt
+  ihn), Revisions-Tamper, Torn-Write, Limit → fail-closed.
+- R4B-N2: leere Motions ungueltig (Encode+Decode); Objekt-Only-Save ohne
+  Motions stellt den Bewegungszustand NICHT her (Abstand > 0,005).
+- R4B-N3: leere/fremde Motions am Commit VOR Mutation abgewiesen
+  (validate, worldRestored:true, Zaehler unveraendert).
+- R4B-N4: Encode ohne Motion ungueltig; ein testlokaler fehlgeschlagener
+  Write hinterlaesst keinen Slotwert; Torn-Write abgewiesen; gueltiges
+  Artefakt laedt. Ein Produktions-Storage-Adapter ist ausserhalb dieses
+  Save-Codec-/Installations-Slices.
+- R4c/R4d unveraendert (Stale-Niveau gehalten, Save-Failpfade).
+
+## Quelle und Kennzahlen (R4B)
+
+- Neu: `src/voxel/structural/regionSave.ts`; geaendert: `physicsCommit.ts`
+  (Override additiv), `types.ts` (1 Konstante), `index.ts` (Export),
+  `tests/unit/structuralPgTragwerkR4.test.ts` (Neufassung, `installRegion`
+  entfernt), Evidence.
+- Basis-SHA: `e5470be4bf91bee33ef08e50426db713538a7b5d`
+- R4-Datei: 9/9 PASS. Vollsuite: 145 Dateien / 1386 Tests PASS.
+  `tsc --noEmit` sauber.
+- Solver: @dimforge/rapier3d-compat 0.12.0 (transitiv, lockfile-pin,
+  kein Manifest-Eingriff).
+- Kein Push (Paketvorgabe).
+
+## Befund -> Fix -> Test-Mapping (R4B)
+
+| Auditbefund (Abschnitte 4+5) | Fix/Umsetzung | Test |
+|---|---|---|
+| Y-Mittelpunkt `(min.y+min.y)/2`, Collider 0,0625 zu tief | Formel `(min+max)/2` alle Achsen; Helper auf Parent-Seeding reduziert | R4B-Y (Orakel 0,6875, Plan+Solver-Readback) |
+| Reload wiederholt Installationsfehler, keine kanonische Positionspruefung | Restore ueber Commit (Produktpfad), Orakel unabhaengig vom Installer | R4B-Y + R4a/R4b (Weltpositions-/COM-Assertions) |
+| Bewegter Zustand nur in `moved` (Memory), Save ohne Motion | Versionierter Region-Save (Identitaet+Pose+v/omega+Bindung+saveHash) | R4a/R4b (Artefakt-Roundtrip, Motion im Artefakt belegt) |
+| `owner = null` heisst nicht persistiert; Schummel-Moeglichkeit | Producer/Restore-Schnitt: Restore nimmt nur Artefakt-String | R4a (strukturell), R4B-N2 (ohne Artefakt kein Zustand) |
+| Tamper an Bewegungsdaten akzeptiert | saveHash + Bindungspruefung, fail-closed | R4B-N1 (kanonischer Tamper, Revision, Torn-Write) |
+| Fehlende Fragmente / leere Motion laufen still weiter | Non-empty-Pflicht (Codec) + geschlossene Commit-Bindung | R4B-N2/N3 (Encode-, Decode-, Commit-Abweisung) |
+| Fehlgeschlagene Speichertransaktion | Encode-Selbstverifikation; testlokaler Write-Fehler hinterlaesst keinen Slotwert; Torn-Artefakt abgewiesen | R4B-N4 |
+| Wiederaufbau am alten Helferpfad vorbei an F8 | Commit mit Prepared-Bindung + Platzhalter-Parent (Receipt ehrlich) | R4a/R4b (Receipt-, Bindungs-, Inventar-Assertions) |
+| Stale/Cancel-Niveau halten | Unveraendert | R4c |
+| Save-Failpfade (Objektvertrag) | Unveraendert | R4d |

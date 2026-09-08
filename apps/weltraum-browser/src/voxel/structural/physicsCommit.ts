@@ -102,6 +102,21 @@ export interface StructuralBodyPoseMotion {
 }
 
 /**
+ * P-PG-R4B — explizit persistierte Fragmentbewegung aus dem versionierten
+ * Region-Save. Ersetzt am Commit die Plan-abgeleitete Pose/Velocity des
+ * Fragments; Geometrie- und Partitionsbindung bleiben unveraendert
+ * (Prepared-Zustand). Nur geschlossen gueltig: alle Plan-Fragmente, exakt
+ * einmal — sonst scheitert der Commit VOR der ersten Weltmutation.
+ */
+export interface StructuralRestoredFragmentMotion {
+  readonly fragmentId: StructuralFragmentId;
+  readonly translationMeters: MeterPoint;
+  readonly rotation: StructuralWorldQuaternion;
+  readonly linvelMetersPerSecond: MeterPoint;
+  readonly angvelRadPerSecond: MeterPoint;
+}
+
+/**
  * Solver-neutrale Weltgrenze. Der Commit ruft niemals `step` auf (keine
  * Methode dafuer vorhanden): Ueberlappung zwischen altem Parent und neuen
  * Bodies ist ohne Step unbeobachtbar, der Tausch ist atomar im
@@ -126,6 +141,12 @@ export interface StructuralPhysicsCommitRequest<BodyRef> {
   readonly classification: StructuralComponentClassification;
   readonly parentWorldPose?: StructuralParentWorldPose;
   readonly preCutCenterAuthorMeters?: MeterPoint;
+  /**
+   * Nur beim Wiederaufbau aus einem Region-Save setzen; der Satz muss alle
+   * Plan-Fragmente geschlossen abdecken. Frische F8-Installationen duerfen
+   * das Feld auslassen und bleiben plan-abgeleitet.
+   */
+  readonly restoredFragmentMotions?: readonly StructuralRestoredFragmentMotion[];
 }
 
 export interface StructuralCommittedFragment {
@@ -551,6 +572,72 @@ export const commitStructuralPhysicsTransition = <BodyRef>(
   };
   const prepared = bindClassificationToPlan();
 
+  // P-PG-R4B: persistierte Fragmentbewegungen (Region-Save) ersetzen die
+  // Plan-abgeleitete Pose — aber nur geschlossen (alle Plan-Fragmente, exakt
+  // einmal, finite Vektoren, Einheitsquaternionen). Jede Luecke, Dublette
+  // oder fremde Id scheitert HIER, vor der ersten Weltmutation: fehlende
+  // Motion fuehrt niemals zu stillem Default-Weiterlaufen.
+  const restoredMotions = ((): ReadonlyMap<string, StructuralRestoredFragmentMotion> | null => {
+    const motions = request.restoredFragmentMotions;
+    if (motions === undefined) return null;
+    if (!Array.isArray(motions) || plan.dynamicBodies.length === 0 || motions.length !== plan.dynamicBodies.length) {
+      fail(
+        "InvalidStructuralState",
+        "restoredFragmentMotions",
+        "Restored motions must cover every planned fragment exactly once (no silent default).",
+        "validate",
+        restored
+      );
+    }
+    const plannedIds = new Set(plan.dynamicFragmentIds);
+    const seen = new Set<string>();
+    const byId = new Map<string, StructuralRestoredFragmentMotion>();
+    motions.forEach((motion, index) => {
+      const path = `restoredFragmentMotions/${index}`;
+      const candidate = motion as unknown as {
+        readonly fragmentId: unknown;
+        readonly translationMeters: unknown;
+        readonly rotation: unknown;
+        readonly linvelMetersPerSecond: unknown;
+        readonly angvelRadPerSecond: unknown;
+      };
+      if (typeof candidate !== "object" || candidate === null) {
+        fail("InvalidStructuralState", path, "Restored motion must be a record.", "validate", restored);
+      }
+      const rawId: unknown = candidate.fragmentId;
+      if (typeof rawId !== "string") {
+        fail("InvalidStructuralState", path, "Restored motion fragment id must be a string.", "validate", restored);
+      }
+      const fragmentId = rawId as string;
+      if (!plannedIds.has(fragmentId as StructuralFragmentId)) {
+        fail("InvalidStructuralState", path, "Restored motion references an unknown fragment id.", "validate", restored);
+      }
+      if (seen.has(fragmentId)) {
+        fail("InvalidStructuralState", path, "Restored motions must reference each planned fragment exactly once.", "validate", restored);
+      }
+      seen.add(fragmentId);
+      byId.set(fragmentId, deepFreeze({
+        fragmentId: fragmentId as StructuralFragmentId,
+        translationMeters: validateVector(candidate.translationMeters, `${path}/translationMeters`),
+        rotation: validateQuaternion(candidate.rotation, `${path}/rotation`),
+        linvelMetersPerSecond: validateVector(candidate.linvelMetersPerSecond, `${path}/linvelMetersPerSecond`),
+        angvelRadPerSecond: validateVector(candidate.angvelRadPerSecond, `${path}/angvelRadPerSecond`)
+      }));
+    });
+    for (const plannedId of plannedIds) {
+      if (!seen.has(plannedId)) {
+        fail(
+          "InvalidStructuralState",
+          "restoredFragmentMotions",
+          `Restored motions miss planned fragment ${plannedId} (no silent default).`,
+          "validate",
+          restored
+        );
+      }
+    }
+    return byId;
+  })();
+
   const useLivePose = parentWorldPose !== undefined;
   const childPoseSource = useLivePose ? ("live-parent-pose" as const) : ("author" as const);
   if (useLivePose && plan.parentMotionSource !== "live-parent-body") {
@@ -701,21 +788,40 @@ export const commitStructuralPhysicsTransition = <BodyRef>(
     for (let bodyIndex = 0; bodyIndex < plan.dynamicBodies.length; bodyIndex += 1) {
       const bodyPlan = plan.dynamicBodies[bodyIndex];
       const preparedFragment = prepared.fragments[bodyIndex];
-      const center = mapPoint(validateVector(bodyPlan.centerOfMassMeters, "commit/fragmentCenter"));
+      // P-PG-R4B: persistierte Motion (Region-Save) schlaegt die
+      // Plan-Ableitung; ohne Override bleibt das bisherige Verhalten.
+      const restoredMotion = restoredMotions?.get(bodyPlan.fragmentId);
+      if (restoredMotions !== null && restoredMotion === undefined) {
+        fail(
+          "InvalidStructuralState",
+          `fragments/${bodyPlan.fragmentId}/restored`,
+          "Restored motion missing for planned fragment (no silent default).",
+          "validate",
+          true
+        );
+      }
+      const center = restoredMotion
+        ? restoredMotion.translationMeters
+        : mapPoint(validateVector(bodyPlan.centerOfMassMeters, "commit/fragmentCenter"));
       const authorCenter = validateVector(bodyPlan.centerOfMassMeters, "commit/fragmentCenterAuthor");
-      const linvel = useLivePose
-        ? deriveStructuralWorldSplitVelocity(
+      const linvel = restoredMotion
+        ? restoredMotion.linvelMetersPerSecond
+        : useLivePose
+          ? deriveStructuralWorldSplitVelocity(
             parentMotion.velocityMetersPerSecond,
             parentMotion.angularVelocityRadPerSecond,
             pose.translationMeters,
             center
           )
-        : validateVector(bodyPlan.initialVelocityMetersPerSecond, "commit/plannedVelocity");
-      const angvel = validateVector(parentMotion.angularVelocityRadPerSecond, "commit/angvel");
+          : validateVector(bodyPlan.initialVelocityMetersPerSecond, "commit/plannedVelocity");
+      const angvel = restoredMotion
+        ? restoredMotion.angvelRadPerSecond
+        : validateVector(parentMotion.angularVelocityRadPerSecond, "commit/angvel");
+      const fragmentRotation = restoredMotion ? restoredMotion.rotation : (useLivePose ? pose.rotation : identityRotation());
       const body = port.createBody({
         dynamic: true,
         translationMeters: center,
-        rotation: useLivePose ? pose.rotation : identityRotation(),
+        rotation: fragmentRotation,
         linvelMetersPerSecond: linvel,
         angvelRadPerSecond: angvel
       });
