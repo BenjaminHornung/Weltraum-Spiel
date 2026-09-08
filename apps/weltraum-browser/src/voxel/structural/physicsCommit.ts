@@ -8,8 +8,15 @@ import {
   type MeterPoint
 } from "../adaptive";
 import { globalQuantumForStructuralCell } from "./coordinates";
+import {
+  hashStructuralFragmentContent,
+  hashStructuralFragmentId,
+  serializeStructuralCellAddress
+} from "./canonical";
+import { structuralAddressForBrickCell } from "./model";
 import type {
   StructuralCellAddress,
+  StructuralComponent,
   StructuralComponentClassification,
   StructuralFragmentId,
   StructuralObject
@@ -296,6 +303,253 @@ export const commitStructuralPhysicsTransition = <BodyRef>(
   if (hashAdaptiveCanonical(unsigned) !== planHash) {
     fail("InvalidStructuralState", "plan/contentHash", "Plan content hash mismatch.", "validate", restored);
   }
+  if (plan.objectId !== live.objectId) {
+    fail(
+      "InvalidStructuralState",
+      "plan/binding",
+      "Stale plan: object id does not match the live object. Commit refused before touching the world.",
+      "validate",
+      restored
+    );
+  }
+  // P-PG-F8 (Audit Abschnitt 4): Klassifikation + Plan VOR erster Weltmutation
+  // an denselben kanonischen Objektstand binden (exakte Partition,
+  // Fragmentidentitaeten, vollstaendige Restbelegung). Der Commit installierte
+  // bisher Zellen der ungebundenen Klassifikation bei unveraendertem Planhash
+  // (falsche Fragment-Collider, stiller Ankerverlust bei leerem Rest). Alle
+  // Pruefungen laufen vor dem ersten port.createBody; die Installation liest
+  // danach nur noch den gemeinsam validierten, eingefrorenen Prepared-Zustand.
+  interface StructuralPreparedFragment {
+    readonly fragmentId: StructuralFragmentId;
+    readonly occupiedCells: readonly StructuralCellAddress[];
+  }
+  interface StructuralPreparedInstall {
+    readonly anchoredCells: readonly StructuralCellAddress[];
+    readonly fragments: readonly StructuralPreparedFragment[];
+  }
+  const bindClassificationToPlan = (): StructuralPreparedInstall => {
+    if (classification.fragments.length !== classification.detachedComponents.length) {
+      fail(
+        "InvalidStructuralState",
+        "classification/binding",
+        "Fragment count must match detached-component count (same canonical object state).",
+        "validate",
+        restored
+      );
+    }
+    if (plan.dynamicBodies.length !== classification.fragments.length) {
+      fail(
+        "InvalidStructuralState",
+        "classification/binding",
+        "Plan fragment count must match classification fragment count.",
+        "validate",
+        restored
+      );
+    }
+    const plannedIds = new Set(plan.dynamicFragmentIds);
+    if (plannedIds.size !== plan.dynamicBodies.length) {
+      fail("InvalidStructuralState", "plan/binding", "Plan fragment ids must be unique.", "validate", restored);
+    }
+    for (const fragment of classification.fragments) {
+      if (!plannedIds.has(fragment.fragmentId)) {
+        fail(
+          "InvalidStructuralState",
+          "classification/binding",
+          "Classification fragment is not part of the plan (unbound classification).",
+          "validate",
+          restored
+        );
+      }
+    }
+    const fragmentComponentIds = new Set(classification.fragments.map((entry) => entry.componentId));
+    for (const component of classification.detachedComponents) {
+      if (!fragmentComponentIds.has(component.componentId)) {
+        fail(
+          "InvalidStructuralState",
+          "classification/binding",
+          "Detached component has no fragment in this classification state.",
+          "validate",
+          restored
+        );
+      }
+    }
+    // Fragment <-> Component an dieselbe Objektversion binden (P1 aus derive):
+    // stale/vertauschte Zellen scheitern hier, nicht erst in der Welt.
+    for (let index = 0; index < classification.fragments.length; index += 1) {
+      const path = `classification/fragments/${index}`;
+      const fragment = classification.fragments[index];
+      const component = classification.detachedComponents.find((entry) => entry.componentId === fragment.componentId);
+      if (component === undefined) {
+        fail("InvalidStructuralState", path, "Fragment has no matching detached component.", "validate", restored);
+      }
+      const bound = component as StructuralComponent;
+      if (
+        fragment.objectId !== live.objectId ||
+        fragment.objectRevision !== live.objectRevision ||
+        fragment.sourceContentHash !== live.contentHash ||
+        bound.objectId !== live.objectId ||
+        bound.objectRevision !== live.objectRevision ||
+        bound.sourceContentHash !== live.contentHash ||
+        fragment.sourceAdaptiveAuthorityDigest !== bound.sourceAdaptiveAuthorityDigest
+      ) {
+        fail(
+          "InvalidStructuralState",
+          path,
+          "Fragment and component must bind the same live object version and content hash.",
+          "validate",
+          restored
+        );
+      }
+      const fragmentCellKeys = fragment.occupiedCells.map((address) => serializeStructuralCellAddress(address)).sort();
+      const componentCellKeys = bound.occupiedCells.map((address) => serializeStructuralCellAddress(address)).sort();
+      if (
+        fragmentCellKeys.length !== componentCellKeys.length ||
+        fragmentCellKeys.some((key, keyIndex) => key !== componentCellKeys[keyIndex])
+      ) {
+        fail("InvalidStructuralState", path, "Fragment cells must exactly match the bound component cells.", "validate", restored);
+      }
+      const recomputedContent = hashStructuralFragmentContent({
+        componentId: fragment.componentId,
+        sourceContentHash: live.contentHash,
+        sourceAdaptiveAuthorityDigest: bound.sourceAdaptiveAuthorityDigest,
+        componentContentHash: bound.componentContentHash,
+        occupiedCellKeys: bound.occupiedCells.map((address) => serializeStructuralCellAddress(address))
+      });
+      if (recomputedContent !== fragment.fragmentContentHash) {
+        fail("InvalidStructuralState", path, "Fragment content hash must match the bound component and live version.", "validate", restored);
+      }
+      const recomputedId = hashStructuralFragmentId({
+        objectId: live.objectId,
+        objectRevision: live.objectRevision,
+        componentId: fragment.componentId,
+        fragmentContentHash: fragment.fragmentContentHash
+      });
+      if (recomputedId !== fragment.fragmentId) {
+        fail("InvalidStructuralState", path, "Fragment id must match the bound live version and content.", "validate", restored);
+      }
+    }
+    // Exakte Partition: Union(verankert + alle Fragmente) == kanonische
+    // Occupancy des live-Objekts — keine Doppelbelegung, keine Phantomzellen
+    // (verschoben/veraltet), keine Luecke (z.B. geleerter Anker-Rest).
+    const canonicalKeys = new Set<string>();
+    let totalOccupied = 0;
+    for (const brick of live.bricks) {
+      for (const cell of brick.cells) {
+        canonicalKeys.add(serializeStructuralCellAddress(structuralAddressForBrickCell(brick, cell.localIndex)));
+        totalOccupied += 1;
+      }
+    }
+    const claimedBy = new Map<string, string>();
+    const claimCell = (key: string, path: string): void => {
+      if (!canonicalKeys.has(key)) {
+        fail("InvalidStructuralState", path, "Claimed cell is not part of the canonical live occupancy (phantom or stale cell).", "validate", restored);
+      }
+      const firstClaim = claimedBy.get(key);
+      if (firstClaim !== undefined) {
+        fail("InvalidStructuralState", path, `Cell is claimed twice (first claim at ${firstClaim}).`, "validate", restored);
+      }
+      claimedBy.set(key, path);
+    };
+    let anchoredVoxels = 0;
+    classification.anchoredComponents.forEach((component, componentIndex) => {
+      const path = `classification/anchored/${componentIndex}`;
+      if (
+        component.objectId !== live.objectId ||
+        component.objectRevision !== live.objectRevision ||
+        component.sourceContentHash !== live.contentHash
+      ) {
+        fail("InvalidStructuralState", path, "Anchored component must bind the same live object version and content hash.", "validate", restored);
+      }
+      for (const address of component.occupiedCells) {
+        claimCell(serializeStructuralCellAddress(address), path);
+        anchoredVoxels += 1;
+      }
+    });
+    let fragmentVoxels = 0;
+    classification.fragments.forEach((fragment, fragmentIndex) => {
+      const path = `classification/fragments/${fragmentIndex}`;
+      for (const address of fragment.occupiedCells) {
+        claimCell(serializeStructuralCellAddress(address), path);
+        fragmentVoxels += 1;
+      }
+    });
+    if (claimedBy.size !== canonicalKeys.size || canonicalKeys.size !== totalOccupied) {
+      fail(
+        "InvalidStructuralState",
+        "classification/occupancy",
+        "Atomic install requires a disjoint, complete partition: anchored plus fragment cells must equal all live occupied cells.",
+        "validate",
+        restored
+      );
+    }
+    // Belegung gegen den Plan: Rest- und Fragmentvoxels muessen den
+    // Occupancy-Proof des Plans treffen (leerer Rest faellt hier, nicht stumm).
+    if (
+      anchoredVoxels !== plan.occupancyProof.anchoredVoxels ||
+      fragmentVoxels !== plan.occupancyProof.fragmentVoxels ||
+      totalOccupied !== plan.occupancyProof.totalOccupiedVoxels
+    ) {
+      fail(
+        "InvalidStructuralState",
+        "classification/occupancy",
+        "Classification occupancy does not match the plan occupancy proof (unbound classification).",
+        "validate",
+        restored
+      );
+    }
+    // Installationsgeometrie an den Plan binden: Voxel-Collider jedes
+    // Plan-Bodys muessen exakt aus seinen Klassifikationszellen folgen.
+    const side = MICROVOXEL_BASE_QUANTUM_METERS;
+    const boxKey = (minX: number, minY: number, minZ: number, maxX: number, maxY: number, maxZ: number): string =>
+      `${minX}|${minY}|${minZ}|${maxX}|${maxY}|${maxZ}`;
+    for (let bodyIndex = 0; bodyIndex < plan.dynamicBodies.length; bodyIndex += 1) {
+      const bodyPlan = plan.dynamicBodies[bodyIndex];
+      const path = `classification/geometry/${bodyIndex}`;
+      const fragment = classification.fragments.find((entry) => entry.fragmentId === bodyPlan.fragmentId);
+      if (fragment === undefined) {
+        fail("InvalidStructuralState", path, "Plan fragment missing in classification.", "validate", restored);
+      }
+      const bound = fragment as StructuralComponentClassification["fragments"][number];
+      if (bound.occupiedCells.length !== bodyPlan.occupiedVoxelCount) {
+        fail("InvalidStructuralState", path, "Fragment cell count must match the plan body voxel count.", "validate", restored);
+      }
+      const expected = bound.occupiedCells
+        .map((address) => {
+          const global = globalQuantumForStructuralCell(address);
+          return boxKey(
+            global.x * side, global.y * side, global.z * side,
+            (global.x + 1) * side, (global.y + 1) * side, (global.z + 1) * side
+          );
+        })
+        .sort();
+      const planned = bodyPlan.voxelColliders
+        .map((box) =>
+          boxKey(
+            box.minMeters.x, box.minMeters.y, box.minMeters.z,
+            box.maxMeters.x, box.maxMeters.y, box.maxMeters.z
+          )
+        )
+        .sort();
+      if (expected.length !== planned.length || expected.some((key, keyIndex) => key !== planned[keyIndex])) {
+        fail("InvalidStructuralState", path, "Fragment install geometry must exactly match the plan voxel colliders.", "validate", restored);
+      }
+    }
+    return deepFreeze({
+      anchoredCells: deepFreeze(
+        classification.anchoredComponents.flatMap((component) => component.occupiedCells)
+      ),
+      fragments: deepFreeze(
+        plan.dynamicBodies.map((bodyPlan) => {
+          const fragment = classification.fragments.find((entry) => entry.fragmentId === bodyPlan.fragmentId) as StructuralComponentClassification["fragments"][number];
+          return deepFreeze({
+            fragmentId: fragment.fragmentId,
+            occupiedCells: deepFreeze(fragment.occupiedCells.slice())
+          });
+        })
+      )
+    });
+  };
+  const prepared = bindClassificationToPlan();
 
   const useLivePose = parentWorldPose !== undefined;
   const childPoseSource = useLivePose ? ("live-parent-pose" as const) : ("author" as const);
@@ -354,35 +608,66 @@ export const commitStructuralPhysicsTransition = <BodyRef>(
   const bodiesBefore = port.bodiesLen();
   const collidersBefore = port.collidersLen();
   const created: BodyRef[] = [];
-  const removeCreated = (): void => {
+  let parentRemoved = false;
+  // P-PG-F8 (Audit Abschnitt 6) — ehrliches Cleanup, Vertrag:
+  // - Create/Add-Fehler: Parent unberuehrt, erstellte Bodies rollbacken;
+  //   worldRestored:true nur bei VERIFIZIERTEM Rueckbau (Bodies- UND
+  //   Colliderzaehlung stimmen wieder), sonst worldRestored:false mit
+  //   Cleanup-Kontext — keine sichere Wiederaufnahme behaupten, die
+  //   verbleibenden Handles bleiben in der Welt sichtbar.
+  // - Parent-Remove-Fehler: konservativ worldRestored:false (die
+  //   Remove-Semantik des Ports ist unbekannt), trotz Rollback-Versuch.
+  // - Fehler NACH erfolgreicher Parententfernung (z.B. Zaehl-Reads im
+  //   Receipt): die Welt kann nicht mehr restauriert werden -> Phase
+  //   "remove", worldRestored:false.
+  const removeCreated = (): { ok: boolean; failures: number } => {
+    let failures = 0;
     for (let index = created.length - 1; index >= 0; index -= 1) {
       try {
         port.removeBody(created[index]);
       } catch {
-        // Best effort: weiter abräumen, Fehlerkontext bleibt der Auslöser.
+        failures += 1;
       }
+    }
+    return { ok: failures === 0, failures };
+  };
+  const verifyRestored = (): boolean => {
+    try {
+      return port.bodiesLen() === bodiesBefore && port.collidersLen() === collidersBefore;
+    } catch {
+      return false;
     }
   };
 
   try {
     // 1) Verankerten Rest statisch installieren (Kontakt-Cuboids, masselos —
-    //    fixe Bodies tragen keine Masseneigenschaften).
-    const anchoredCells = classification.anchoredComponents.flatMap((component) => component.occupiedCells);
+    //    fixe Bodies tragen keine Masseneigenschaften). P-PG-F8 (Audit
+    //    Abschnitt 5): Der Restbody traegt die Parentpose (Translation +
+    //    Rotation), Collider-Offsets sind body-lokal im Autorframe
+    //    (Zellmitte - Anker) — die Engine rotiert sie mit dem Body.
+    //    Achsparallele Welt-Offsets am Ursprungs-Body waren unter
+    //    R != Identitaet falsch orientiert (Kontaktgeometrie verdreht).
+    //    Installationsquelle ist der validierte Prepared-Zustand.
     const anchoredBody = port.createBody({
       dynamic: false,
-      translationMeters: zeroVector(),
-      rotation: identityRotation(),
+      translationMeters: pose.translationMeters,
+      rotation: pose.rotation,
       linvelMetersPerSecond: zeroVector(),
       angvelRadPerSecond: zeroVector()
     });
     created.push(anchoredBody);
-    for (const address of anchoredCells) {
+    for (const address of prepared.anchoredCells) {
       const cellCenter = {
         x: (globalQuantumForStructuralCell(address).x + 0.5) * MICROVOXEL_BASE_QUANTUM_METERS,
         y: (globalQuantumForStructuralCell(address).y + 0.5) * MICROVOXEL_BASE_QUANTUM_METERS,
         z: (globalQuantumForStructuralCell(address).z + 0.5) * MICROVOXEL_BASE_QUANTUM_METERS
       };
-      const worldCenter = mapPoint(validateVector(cellCenter, "commit/anchoredCell"));
+      const authorCenter = validateVector(cellCenter, "commit/anchoredCell");
+      const localOffset = deepFreeze({
+        x: requireFinite(authorCenter.x - anchor.x, "commit/anchoredLocalX"),
+        y: requireFinite(authorCenter.y - anchor.y, "commit/anchoredLocalY"),
+        z: requireFinite(authorCenter.z - anchor.z, "commit/anchoredLocalZ")
+      });
       port.addCollider(
         anchoredBody,
         {
@@ -391,17 +676,17 @@ export const commitStructuralPhysicsTransition = <BodyRef>(
             y: MICROVOXEL_BASE_QUANTUM_METERS / 2,
             z: MICROVOXEL_BASE_QUANTUM_METERS / 2
           }),
-          offsetWrtBodyMeters: worldCenter
+          offsetWrtBodyMeters: localOffset
         },
         { kind: "massless" }
       );
     }
     const anchoredColliderCount = port.bodyColliderCount(anchoredBody);
-    if (anchoredColliderCount !== anchoredCells.length) {
+    if (anchoredColliderCount !== prepared.anchoredCells.length) {
       fail(
         "CommitFailed",
         "anchored/colliders",
-        `Anchored install incomplete: ${anchoredColliderCount} of ${anchoredCells.length} colliders present.`,
+        `Anchored install incomplete: ${anchoredColliderCount} of ${prepared.anchoredCells.length} colliders present.`,
         "create",
         true
       );
@@ -410,12 +695,12 @@ export const commitStructuralPhysicsTransition = <BodyRef>(
     // 2) Jedes Fragment dynamisch installieren: Kontakt als Voxel-Cuboids,
     //    kanonische Masse/Tensor explizit auf dem ersten Collider am Body-COM
     //    (Offset null -> Aggregationspfad trivial, kein Dichte-Shift).
+    //    Fragmentzellen stammen aus dem validierten Prepared-Zustand
+    //    (plan-aligniert); die Bindung ist oben bereits geprueft.
     const fragments: StructuralCommittedFragment[] = [];
-    for (const bodyPlan of plan.dynamicBodies) {
-      const fragment = classification.fragments.find((entry) => entry.fragmentId === bodyPlan.fragmentId);
-      if (fragment === undefined) {
-        fail("InvalidStructuralState", "classification/fragments", "Plan fragment missing in classification.", "validate", true);
-      }
+    for (let bodyIndex = 0; bodyIndex < plan.dynamicBodies.length; bodyIndex += 1) {
+      const bodyPlan = plan.dynamicBodies[bodyIndex];
+      const preparedFragment = prepared.fragments[bodyIndex];
       const center = mapPoint(validateVector(bodyPlan.centerOfMassMeters, "commit/fragmentCenter"));
       const authorCenter = validateVector(bodyPlan.centerOfMassMeters, "commit/fragmentCenterAuthor");
       const linvel = useLivePose
@@ -438,7 +723,7 @@ export const commitStructuralPhysicsTransition = <BodyRef>(
       // Collider-Offsets sind IMMER body-lokal = Autorframe (Boxmitte - COM):
       // Die Engine rotiert sie mit dem Body (R). Welt-Offsets waeren unter
       // R != Identitaet falsch (Kontakt-/Massen-Geometrie wuerde verdreht).
-      const fragmentCells = (fragment as { occupiedCells: readonly StructuralCellAddress[] }).occupiedCells;
+      const fragmentCells = preparedFragment.occupiedCells;
       const boxes = fragmentCells.map((address) => voxelCuboidForCell(address, authorCenter));
       if (boxes.length === 0) {
         fail("InvalidStructuralState", "fragment/cells", "Fragment must contain at least one cell.", "validate", true);
@@ -490,15 +775,20 @@ export const commitStructuralPhysicsTransition = <BodyRef>(
     try {
       port.removeBody(parentBody);
     } catch (error) {
-      removeCreated();
+      const cleanup = removeCreated();
+      const cleanupNote =
+        cleanup.ok && verifyRestored()
+          ? "created bodies rolled back, parent untouched"
+          : `created-body rollback INCOMPLETE (${cleanup.failures} remove failure(s)); recovery state explicit, no safe resume claimed`;
       fail(
         "CommitFailed",
         "parent/remove",
-        `Parent removal failed (${error instanceof Error ? error.message : String(error)}); created bodies rolled back.`,
+        `Parent removal failed (${error instanceof Error ? error.message : String(error)}); ${cleanupNote}.`,
         "remove",
         false
       );
     }
+    parentRemoved = true;
 
     return deepFreeze({
       schemaVersion: STRUCTURAL_PHYSICS_COMMIT_SCHEMA_VERSION,
@@ -512,16 +802,36 @@ export const commitStructuralPhysicsTransition = <BodyRef>(
       fragments: deepFreeze(fragments.slice())
     });
   } catch (error) {
-    // Remove-Phase hat oben bereits abgeraeumt — nur Create/Validate hier.
+    // Remove-Phase (inkl. Fehler nach erfolgreicher Parententfernung) meldet
+    // oben bereits worldRestored:false — hier nur Create/Validate.
     if (error instanceof StructuralPhysicsCommitError && error.phase === "remove") throw error;
-    removeCreated();
-    if (error instanceof StructuralPhysicsCommitError) throw error;
+    if (parentRemoved) {
+      throw new StructuralPhysicsCommitError(
+        "CommitFailed",
+        "commit/post-remove",
+        `Failure after parent removal (${error instanceof Error ? error.message : String(error)}); world cannot be restored, no safe resume.`,
+        "remove",
+        false
+      );
+    }
+    const cleanup = removeCreated();
+    const restored = cleanup.ok && verifyRestored();
+    if (error instanceof StructuralPhysicsCommitError) {
+      if (restored) throw error;
+      throw new StructuralPhysicsCommitError(
+        error.code,
+        error.path,
+        `${error.message} (cleanup incomplete: ${cleanup.failures} remove failure(s); world NOT restored, no safe resume)`,
+        error.phase,
+        false
+      );
+    }
     throw new StructuralPhysicsCommitError(
       "CommitFailed",
       "commit/create",
-      `Install failed after mutation began (${error instanceof Error ? error.message : String(error)}); created bodies rolled back, parent untouched.`,
+      `Install failed after mutation began (${error instanceof Error ? error.message : String(error)}); cleanup ${restored ? "verified, parent untouched" : "INCOMPLETE, world NOT restored, no safe resume"}.`,
       "create",
-      true
+      restored
     );
   }
 };

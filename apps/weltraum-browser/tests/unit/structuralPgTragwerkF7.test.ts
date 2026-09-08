@@ -643,8 +643,8 @@ describe("P-PG-F7: Parentpose + Vor-Schnitt-COM uebernehmen (Commitfunktion)", (
     expect(world.colliders.len()).toBe(27);
 
     // Sabotage ueber den fail()-Pfad: Plan-Fragment fehlt in der
-    // Klassifikation — Fehler NACH Mutationsbeginn (verankerter Body +
-    // 21 Collider stehen bereits, physicsCommit.ts "Plan fragment missing").
+    // Klassifikation — seit P-PG-F8 per Bindung VOR Mutationsbeginn
+    // abgewiesen (kein verankerter Body steht dann bereits).
     const port = createRapierStructuralPort(world);
     let failure: unknown = null;
     try {
