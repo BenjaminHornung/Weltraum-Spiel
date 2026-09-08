@@ -9,7 +9,11 @@ import {
   type MeterPoint
 } from "../adaptive";
 import { globalQuantumForStructuralCell } from "./coordinates";
-import { serializeStructuralCellAddress } from "./canonical";
+import {
+  hashStructuralFragmentContent,
+  hashStructuralFragmentId,
+  serializeStructuralCellAddress
+} from "./canonical";
 import { deriveStructuralComponentMassProperties, deriveStructuralObjectMassProperties } from "./massProperties";
 import { structuralAddressForBrickCell } from "./model";
 import type {
@@ -19,6 +23,7 @@ import type {
   StructuralComponentMassBudgets,
   StructuralFragment,
   StructuralFragmentId,
+  StructuralInertiaTensor,
   StructuralObject
 } from "./types";
 import { normalizeAdaptiveAuthorityFunction, structuralFail, structuralPositiveBudget } from "./validation";
@@ -75,6 +80,7 @@ export interface StructuralFragmentBodyPlan {
   readonly occupiedVoxelCount: number;
   readonly massKg: number;
   readonly centerOfMassMeters: MeterPoint;
+  readonly inertiaTensorKgMetersSquared: StructuralInertiaTensor;
   readonly initialVelocityMetersPerSecond: MeterPoint;
   readonly voxelColliders: readonly StructuralColliderBoxMeters[];
   readonly greedyColliders: readonly StructuralColliderBoxMeters[];
@@ -86,6 +92,7 @@ export interface StructuralDebrisBodyPlan {
   readonly occupiedVoxelCount: number;
   readonly massKg: number;
   readonly centerOfMassMeters: MeterPoint;
+  readonly inertiaTensorKgMetersSquared: StructuralInertiaTensor;
   readonly initialVelocityMetersPerSecond: MeterPoint;
   readonly voxelColliders: readonly StructuralColliderBoxMeters[];
   readonly greedyColliders: readonly StructuralColliderBoxMeters[];
@@ -100,12 +107,15 @@ export interface StructuralOccupancyProof {
   readonly complete: true;
 }
 
+export type StructuralParentMotionSource = "explicit" | "live-parent-body";
+
 interface StructuralTransitionPlanBase {
   readonly schemaVersion: typeof STRUCTURAL_PHYSICS_TRANSITION_SCHEMA_VERSION;
   readonly objectId: StructuralObject["objectId"];
   readonly objectRevision: StructuralObject["objectRevision"];
   readonly sourceContentHash: string;
   readonly parentMotion: StructuralBodyMotion;
+  readonly parentMotionSource: StructuralParentMotionSource;
   readonly dynamicBodies: readonly StructuralFragmentBodyPlan[];
   readonly dynamicFragmentIds: readonly StructuralFragmentId[];
   readonly occupancyProof: StructuralOccupancyProof;
@@ -289,6 +299,7 @@ interface FragmentWork {
   readonly component: StructuralComponent;
   readonly massKg: number;
   readonly center: MeterPoint;
+  readonly tensor: StructuralInertiaTensor;
   readonly velocity: MeterPoint;
   readonly voxelColliders: readonly StructuralColliderBoxMeters[];
   readonly greedyColliders: readonly StructuralColliderBoxMeters[];
@@ -300,10 +311,15 @@ export const deriveStructuralPhysicsTransition = (
   classification: StructuralComponentClassification,
   parentMotionValue: StructuralBodyMotion,
   budgetValue: StructuralPhysicsTransitionBudgets,
-  massBudgets: StructuralComponentMassBudgets
+  massBudgets: StructuralComponentMassBudgets,
+  parentMotionSourceValue: StructuralParentMotionSource = "explicit"
 ): StructuralPhysicsTransitionResult => {
   const budgets = validateBudgets(budgetValue);
   const parentMotion = validateMotion(parentMotionValue);
+  const parentMotionSource: StructuralParentMotionSource =
+    parentMotionSourceValue === "explicit" || parentMotionSourceValue === "live-parent-body"
+      ? parentMotionSourceValue
+      : fail("InvalidStructuralState", "parentMotionSource", "Parent motion source must be explicit or live-parent-body.");
   if (classification.fragments.length !== classification.detachedComponents.length) {
     fail("InvalidStructuralState", "classification", "Fragment count must match detached-component count.");
   }
@@ -319,7 +335,51 @@ export const deriveStructuralPhysicsTransition = (
     if (component === undefined) {
       fail("InvalidStructuralState", path, "Fragment has no matching detached component.");
     }
-    const mass = deriveStructuralComponentMassProperties(object, component as StructuralComponent, massBudgets);
+    // P1: Fragment und Component an dieselbe Objektversion binden.
+    // Veraltete (stale) Klassifikationen gegen ein neueres Objekt werden hier
+    // abgewiesen, bevor irgendeine Masseneigenschaft oder ein Collider entsteht.
+    const boundComponent = component as StructuralComponent;
+    if (
+      fragment.objectId !== object.objectId ||
+      fragment.objectRevision !== object.objectRevision ||
+      fragment.sourceContentHash !== object.contentHash ||
+      boundComponent.objectId !== object.objectId ||
+      boundComponent.objectRevision !== object.objectRevision ||
+      boundComponent.sourceContentHash !== object.contentHash ||
+      fragment.sourceAdaptiveAuthorityDigest !== boundComponent.sourceAdaptiveAuthorityDigest
+    ) {
+      fail("InvalidStructuralState", path, "Fragment and component must bind the same object version and content hash.");
+    }
+    // P1: exakte Zellmengenbindung Fragment <-> Component (keine verschobenen Zellen).
+    const fragmentCellKeys = fragment.occupiedCells.map((address) => serializeStructuralCellAddress(address)).sort();
+    const componentCellKeys = boundComponent.occupiedCells.map((address) => serializeStructuralCellAddress(address)).sort();
+    if (
+      fragmentCellKeys.length !== componentCellKeys.length ||
+      fragmentCellKeys.some((key, keyIndex) => key !== componentCellKeys[keyIndex])
+    ) {
+      fail("InvalidStructuralState", path, "Fragment cells must exactly match the bound component cells.");
+    }
+    // P1: Fragment-Hashes an Component und Objektversion binden.
+    const recomputedFragmentContent = hashStructuralFragmentContent({
+      componentId: fragment.componentId,
+      sourceContentHash: object.contentHash,
+      sourceAdaptiveAuthorityDigest: boundComponent.sourceAdaptiveAuthorityDigest,
+      componentContentHash: boundComponent.componentContentHash,
+      occupiedCellKeys: boundComponent.occupiedCells.map((address) => serializeStructuralCellAddress(address))
+    });
+    if (recomputedFragmentContent !== fragment.fragmentContentHash) {
+      fail("InvalidStructuralState", path, "Fragment content hash must match the bound component and object version.");
+    }
+    const recomputedFragmentId = hashStructuralFragmentId({
+      objectId: object.objectId,
+      objectRevision: object.objectRevision,
+      componentId: fragment.componentId,
+      fragmentContentHash: fragment.fragmentContentHash
+    });
+    if (recomputedFragmentId !== fragment.fragmentId) {
+      fail("InvalidStructuralState", path, "Fragment id must match the bound object version and content.");
+    }
+    const mass = deriveStructuralComponentMassProperties(object, boundComponent, massBudgets);
     if (mass.centerOfMassMeters === null) {
       fail("InvalidStructuralState", path, "Fragment mass derivation requires finite center of mass.");
     }
@@ -337,9 +397,10 @@ export const deriveStructuralPhysicsTransition = (
     const greedyColliders = deepFreeze(mergeGreedyQuantumBoxes(cells, path).map(toMetersBox));
     return deepFreeze({
       fragment,
-      component: component as StructuralComponent,
+      component: boundComponent,
       massKg: mass.totalMassKg,
       center,
+      tensor: mass.inertiaTensorKgMetersSquared,
       velocity: deriveStructuralSplitVelocity(parentMotion, parentCenter, center),
       voxelColliders,
       greedyColliders,
@@ -347,30 +408,52 @@ export const deriveStructuralPhysicsTransition = (
     });
   });
 
+  // P1: exakte Partition — Union(verankert + alle Fragmente) == kanonische
+  // Occupancy, keine Doppelbelegung (auch nicht fragmentintern oder zwischen
+  // Fragmenten), keine Phantomzellen (verschoben/veraltet/leer). Gezaehlt wird
+  // jede behauptete Zelle einzeln; Sets wuerden Duplikate still schlucken.
   const totalOccupied = object.bricks.reduce((sum, brick) => sum + brick.cells.length, 0);
-  const anchoredKeys = new Set<string>();
-  for (const component of classification.anchoredComponents) {
-    for (const address of component.occupiedCells) anchoredKeys.add(serializeStructuralCellAddress(address));
-  }
-  const fragmentKeys = new Set<string>();
-  for (const work of works) {
-    for (const address of work.fragment.occupiedCells) fragmentKeys.add(serializeStructuralCellAddress(address));
-  }
-  const allKeys = new Set<string>();
+  const canonicalKeys = new Set<string>();
   for (const brick of object.bricks) {
     for (const cell of brick.cells) {
-      allKeys.add(serializeStructuralCellAddress(structuralAddressForBrickCell(brick, cell.localIndex)));
+      canonicalKeys.add(serializeStructuralCellAddress(structuralAddressForBrickCell(brick, cell.localIndex)));
     }
   }
-  let overlap = false;
-  for (const key of fragmentKeys) {
-    if (anchoredKeys.has(key)) {
-      overlap = true;
-      break;
+  const claimedBy = new Map<string, string>();
+  const claimCell = (key: string, path: string): void => {
+    if (!canonicalKeys.has(key)) {
+      fail("InvalidStructuralState", path, "Claimed cell is not part of the canonical object occupancy (phantom or stale cell).");
     }
-  }
-  const fragmentVoxels = works.reduce((sum, work) => sum + work.voxelCount, 0);
-  if (overlap || anchoredKeys.size + fragmentVoxels !== totalOccupied || allKeys.size !== totalOccupied) {
+    const firstClaim = claimedBy.get(key);
+    if (firstClaim !== undefined) {
+      fail("InvalidStructuralState", path, `Cell is claimed twice (first claim at ${firstClaim}).`);
+    }
+    claimedBy.set(key, path);
+  };
+  let anchoredVoxels = 0;
+  classification.anchoredComponents.forEach((component, componentIndex) => {
+    const path = `anchored/${componentIndex}`;
+    if (
+      component.objectId !== object.objectId ||
+      component.objectRevision !== object.objectRevision ||
+      component.sourceContentHash !== object.contentHash
+    ) {
+      fail("InvalidStructuralState", path, "Anchored component must bind the same object version and content hash.");
+    }
+    for (const address of component.occupiedCells) {
+      claimCell(serializeStructuralCellAddress(address), path);
+      anchoredVoxels += 1;
+    }
+  });
+  let fragmentVoxels = 0;
+  works.forEach((work, workIndex) => {
+    const path = `fragments/${workIndex}`;
+    for (const address of work.fragment.occupiedCells) {
+      claimCell(serializeStructuralCellAddress(address), path);
+      fragmentVoxels += 1;
+    }
+  });
+  if (claimedBy.size !== canonicalKeys.size || canonicalKeys.size !== totalOccupied) {
     fail(
       "InvalidStructuralState",
       "occupancyProof",
@@ -379,7 +462,7 @@ export const deriveStructuralPhysicsTransition = (
   }
   const occupancyProof = deepFreeze({
     totalOccupiedVoxels: totalOccupied,
-    anchoredVoxels: anchoredKeys.size,
+    anchoredVoxels,
     fragmentVoxels,
     disjoint: true as const,
     complete: true as const
@@ -402,6 +485,7 @@ export const deriveStructuralPhysicsTransition = (
     occupiedVoxelCount: work.voxelCount,
     massKg: work.massKg,
     centerOfMassMeters: work.center,
+    inertiaTensorKgMetersSquared: work.tensor,
     initialVelocityMetersPerSecond: work.velocity,
     voxelColliders: work.voxelColliders,
     greedyColliders: work.greedyColliders
@@ -414,6 +498,7 @@ export const deriveStructuralPhysicsTransition = (
     objectRevision: object.objectRevision,
     sourceContentHash: object.contentHash,
     parentMotion,
+    parentMotionSource,
     dynamicBodies,
     dynamicFragmentIds,
     occupancyProof
@@ -437,6 +522,7 @@ export const deriveStructuralPhysicsTransition = (
   let debrisVoxels = 0;
   const debrisVoxelColliders: StructuralColliderBoxMeters[] = [];
   const debrisGreedyColliders: StructuralColliderBoxMeters[] = [];
+  const debrisMembers: FragmentWork[] = [];
   for (const work of overflowWorks) {
     debrisMass = requireFinite(debrisMass + work.massKg, "debris/massKg");
     weightedX = requireFinite(weightedX + work.massKg * work.center.x, "debris/centerX");
@@ -448,6 +534,7 @@ export const deriveStructuralPhysicsTransition = (
     debrisVoxels += work.voxelCount;
     debrisVoxelColliders.push(...work.voxelColliders);
     debrisGreedyColliders.push(...work.greedyColliders);
+    debrisMembers.push(work);
   }
   if (!(debrisMass > 0)) {
     fail("InvalidStructuralState", "debris", "Debris fallback requires positive merged mass.");
@@ -458,12 +545,39 @@ export const deriveStructuralPhysicsTransition = (
     z: requireFinite(weightedZ / debrisMass, "debris/centerZ")
   });
   const mergedDebrisFragmentIds = deepFreeze(overflowWorks.map((work) => work.fragment.fragmentId));
+  // Debris-Traegheit per Satz von Steiner um den Debris-Schwerpunkt:
+  // I = Summe(I_eigen + m * (|d|^2 * E - d * d^T)) mit d = c_fragment - c_debris.
+  let debrisXx = 0;
+  let debrisYy = 0;
+  let debrisZz = 0;
+  let debrisXy = 0;
+  let debrisXz = 0;
+  let debrisYz = 0;
+  for (const work of debrisMembers) {
+    const dx = requireFinite(work.center.x - debrisCenter.x, "debris/inertiaDx");
+    const dy = requireFinite(work.center.y - debrisCenter.y, "debris/inertiaDy");
+    const dz = requireFinite(work.center.z - debrisCenter.z, "debris/inertiaDz");
+    debrisXx = requireFinite(debrisXx + work.tensor.xx + work.massKg * (dy * dy + dz * dz), "debris/inertiaXx");
+    debrisYy = requireFinite(debrisYy + work.tensor.yy + work.massKg * (dx * dx + dz * dz), "debris/inertiaYy");
+    debrisZz = requireFinite(debrisZz + work.tensor.zz + work.massKg * (dx * dx + dy * dy), "debris/inertiaZz");
+    debrisXy = requireFinite(debrisXy + work.tensor.xy - work.massKg * dx * dy, "debris/inertiaXy");
+    debrisXz = requireFinite(debrisXz + work.tensor.xz - work.massKg * dx * dz, "debris/inertiaXz");
+    debrisYz = requireFinite(debrisYz + work.tensor.yz - work.massKg * dy * dz, "debris/inertiaYz");
+  }
   const debris = deepFreeze({
     debrisBodyId: `debris.${object.objectId}.r${object.objectRevision}.overflow`,
     mergedFragmentIds: mergedDebrisFragmentIds,
     occupiedVoxelCount: debrisVoxels,
     massKg: debrisMass,
     centerOfMassMeters: debrisCenter,
+    inertiaTensorKgMetersSquared: deepFreeze({
+      xx: debrisXx,
+      yy: debrisYy,
+      zz: debrisZz,
+      xy: debrisXy,
+      xz: debrisXz,
+      yz: debrisYz
+    }),
     initialVelocityMetersPerSecond: deepFreeze({
       x: requireFinite(weightedVx / debrisMass, "debris/velocityX"),
       y: requireFinite(weightedVy / debrisMass, "debris/velocityY"),
