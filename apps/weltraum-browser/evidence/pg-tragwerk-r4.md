@@ -88,7 +88,7 @@ Nebendiagonale < 1e-9).
 
 - Neu: `tests/unit/structuralPgTragwerkR4.test.ts` (4 Tests).
 - Ergaenzt (Test only): `tests/unit/structuralPgTragwerkSlice4.test.ts`
-  (+19 Assertions im Fallback-Test).
+  (14 expects im Fallback-Test: 6 Steiner + 3 COM + 5 Identitaet).
 - Kein Src-Diff (R3-Vertrag nur verwendet, nicht umgebaut).
 - Basis-SHA: `bd648e6471e46f53bb04f5f491bf4e7333de7f8d`
 - R4-Datei: 4/4 PASS. Slice4-Datei: 6/6 PASS (inkl. Steiner-Nachtrag).
