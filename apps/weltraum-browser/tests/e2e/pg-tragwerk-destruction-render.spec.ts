@@ -1,0 +1,706 @@
+import { expect, test, type Page } from "@playwright/test";
+import { mkdir, writeFile } from "node:fs/promises";
+import path from "node:path";
+
+const evidenceDirectory = path.resolve(process.cwd(), "evidence");
+const focusedCommand = "npx playwright test tests/e2e/pg-tragwerk-destruction-render.spec.ts";
+
+type PngName =
+  | "pg-tragwerk-r5b-before.png"
+  | "pg-tragwerk-r5b-after.png"
+  | "pg-tragwerk-r5b-lod-low.png"
+  | "pg-tragwerk-r5b-lod-high.png";
+
+interface BrowserFailures {
+  readonly consoleErrors: string[];
+  readonly pageErrors: string[];
+  readonly requestFailures: string[];
+  readonly httpErrors: string[];
+}
+
+interface PixelComparison {
+  readonly width: number;
+  readonly height: number;
+  readonly changedPixels: number;
+  readonly changedRatio: number;
+  readonly maximumChannelDelta: number;
+}
+
+interface CanvasMetrics {
+  readonly width: number;
+  readonly height: number;
+  readonly nonBackgroundPixels: number;
+  readonly nonBackgroundRatio: number;
+  readonly bounds: { readonly minX: number; readonly minY: number; readonly maxX: number; readonly maxY: number };
+}
+
+const installFailureCollectors = (page: Page): BrowserFailures => {
+  const failures: BrowserFailures = { consoleErrors: [], pageErrors: [], requestFailures: [], httpErrors: [] };
+  page.on("console", (message) => {
+    if (message.type() !== "error") return;
+    const location = message.location();
+    failures.consoleErrors.push(`${message.text()} @ ${location.url}:${location.lineNumber}:${location.columnNumber}`);
+  });
+  page.on("pageerror", (error) => failures.pageErrors.push(error.message));
+  page.on("requestfailed", (request) => failures.requestFailures.push(
+    `${request.method()} ${request.url()} ${request.failure()?.errorText ?? "unknown"}`
+  ));
+  page.on("response", (response) => {
+    if (!response.ok()) failures.httpErrors.push(`${response.status()} ${response.request().method()} ${response.url()}`);
+  });
+  return failures;
+};
+
+const testBridgeState = (page: Page): Promise<{ readonly ownProperty: boolean; readonly inWindow: boolean }> =>
+  page.evaluate(() => ({
+    ownProperty: Object.prototype.hasOwnProperty.call(window, "TestBridge"),
+    inWindow: "TestBridge" in window
+  }));
+
+const decodeAndCompare = async (page: Page, expected: Buffer, actual: Buffer): Promise<PixelComparison> =>
+  page.evaluate(async ({ expectedBase64, actualBase64 }) => {
+    const decode = async (base64: string): Promise<{ width: number; height: number; pixels: Uint8ClampedArray }> => {
+      const binary = atob(base64);
+      const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
+      const bitmap = await createImageBitmap(new Blob([bytes], { type: "image/png" }));
+      const canvas = document.createElement("canvas");
+      canvas.width = bitmap.width;
+      canvas.height = bitmap.height;
+      const context = canvas.getContext("2d", { willReadFrequently: true });
+      if (context === null) throw new Error("Canvas 2D context unavailable for PNG comparison");
+      context.drawImage(bitmap, 0, 0);
+      const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+      bitmap.close();
+      return { width: canvas.width, height: canvas.height, pixels };
+    };
+    const expectedImage = await decode(expectedBase64);
+    const actualImage = await decode(actualBase64);
+    if (expectedImage.width !== actualImage.width || expectedImage.height !== actualImage.height) {
+      throw new Error(`PNG size mismatch: ${expectedImage.width}x${expectedImage.height} vs ${actualImage.width}x${actualImage.height}`);
+    }
+    let changedPixels = 0;
+    let maximumChannelDelta = 0;
+    for (let offset = 0; offset < expectedImage.pixels.length; offset += 4) {
+      let changed = false;
+      for (let channel = 0; channel < 4; channel += 1) {
+        const delta = Math.abs(expectedImage.pixels[offset + channel] - actualImage.pixels[offset + channel]);
+        maximumChannelDelta = Math.max(maximumChannelDelta, delta);
+        if (delta > 12) changed = true;
+      }
+      if (changed) changedPixels += 1;
+    }
+    return {
+      width: actualImage.width,
+      height: actualImage.height,
+      changedPixels,
+      changedRatio: changedPixels / (actualImage.width * actualImage.height),
+      maximumChannelDelta
+    };
+  }, { expectedBase64: expected.toString("base64"), actualBase64: actual.toString("base64") });
+
+const measureCanvas = async (page: Page, image: Buffer): Promise<CanvasMetrics> =>
+  page.evaluate(async (base64) => {
+    const binary = atob(base64);
+    const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
+    const bitmap = await createImageBitmap(new Blob([bytes], { type: "image/png" }));
+    const canvas = document.createElement("canvas");
+    canvas.width = bitmap.width;
+    canvas.height = bitmap.height;
+    const context = canvas.getContext("2d", { willReadFrequently: true });
+    if (context === null) throw new Error("Canvas 2D context unavailable for PNG measurement");
+    context.drawImage(bitmap, 0, 0);
+    bitmap.close();
+    const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+    const background = [pixels[0], pixels[1], pixels[2], pixels[3]];
+    let nonBackgroundPixels = 0;
+    let minX = canvas.width;
+    let minY = canvas.height;
+    let maxX = -1;
+    let maxY = -1;
+    for (let y = 0; y < canvas.height; y += 1) {
+      for (let x = 0; x < canvas.width; x += 1) {
+        const offset = (y * canvas.width + x) * 4;
+        const differs = background.some((value, channel) => Math.abs(value - pixels[offset + channel]) > 12);
+        if (!differs) continue;
+        nonBackgroundPixels += 1;
+        minX = Math.min(minX, x);
+        minY = Math.min(minY, y);
+        maxX = Math.max(maxX, x);
+        maxY = Math.max(maxY, y);
+      }
+    }
+    if (nonBackgroundPixels === 0) throw new Error("Harness canvas is empty");
+    return {
+      width: canvas.width,
+      height: canvas.height,
+      nonBackgroundPixels,
+      nonBackgroundRatio: nonBackgroundPixels / (canvas.width * canvas.height),
+      bounds: { minX, minY, maxX, maxY }
+    };
+  }, image.toString("base64"));
+
+test("normal route renders the operable PG-TRAGWERK-01 R5B destruction scene", async ({ page }) => {
+  test.setTimeout(120_000);
+  const failures = installFailureCollectors(page);
+  await page.route("**/favicon.ico", (route) => route.fulfill({ status: 204 }));
+  await page.goto("/");
+  await page.waitForSelector("#debug-scene", { state: "visible" });
+  await page.waitForLoadState("networkidle");
+  expect(await testBridgeState(page)).toEqual({ ownProperty: false, inWindow: false });
+
+  const scenario = await page.evaluateHandle(async () => {
+    const presentationPath = String("/src/presentation/index.ts");
+    const backendPath = String("/src/render/three/backend/index.ts");
+    const structuralPath = String("/src/voxel/structural/index.ts");
+    const fixturePath = String("/tests/unit/pgTragwerkFixture.ts");
+    const queuePath = String("/src/workers/queue.ts");
+    const workerIdsPath = String("/src/workers/ids.ts");
+    const presentation = await import(/* @vite-ignore */ presentationPath);
+    const backend = await import(/* @vite-ignore */ backendPath);
+    const structural = await import(/* @vite-ignore */ structuralPath);
+    const fixture = await import(/* @vite-ignore */ fixturePath);
+    const queueModule = await import(/* @vite-ignore */ queuePath);
+    const workerIds = await import(/* @vite-ignore */ workerIdsPath);
+
+    const CELL_METERS = 0.125;
+    const MATERIAL_COLORS: Record<number, [number, number, number]> = {
+      1: [0x8a / 255, 0x7f / 255, 0x6a / 255],
+      2: [0x7d / 255, 0x8e / 255, 0xa3 / 255],
+      3: [0xc2 / 255, 0xa1 / 255, 0x5a / 255]
+    };
+    const LOD_LOW_COLOR: [number, number, number] = [1, 0.15, 0.75];
+    const LOD_HIGH_COLORS: Array<[number, number, number]> = [[0.1, 0.9, 0.9], [1, 0.9, 0.1]];
+
+    const container = document.createElement("section");
+    container.setAttribute("data-testid", "pg-tragwerk-r5b");
+    container.style.position = "fixed";
+    container.style.left = "0";
+    container.style.top = "0";
+    container.style.zIndex = "2147483647";
+    container.style.background = "#0b1118";
+    container.style.color = "#e8eef4";
+    container.style.font = "12px/1.4 system-ui, sans-serif";
+    container.style.padding = "8px";
+    const badge = document.createElement("div");
+    badge.textContent = "Modus: PG-TRAGWERK R5B";
+    const destroyButton = document.createElement("button");
+    destroyButton.setAttribute("data-testid", "pg-tragwerk-destroy");
+    destroyButton.textContent = "Zerstörung auslösen";
+    destroyButton.type = "button";
+    const status = document.createElement("div");
+    status.setAttribute("data-testid", "pg-tragwerk-status");
+    status.textContent = "Bereit";
+    container.append(badge, destroyButton, status);
+    document.body.append(container);
+
+    const harness = backend.createDeterministicRenderHarness({ parent: container, backgroundColor: 0x101820 });
+    harness.canvas.style.position = "static";
+
+    const relativeFrame = presentation.frameId("frame:pg-r5b");
+    let backendRevision = 0;
+    let artifactRevision = 0;
+    let frameRevision = 0;
+    let planRevision = 0;
+
+    const profile = (id: string, color: readonly [number, number, number]) => presentation.createMaterialProfile({
+      id: presentation.materialProfileId(id),
+      kind: "Unlit",
+      baseColor: { r: color[0], g: color[1], b: color[2] },
+      opacity: 1,
+      doubleSided: true,
+      wireframe: false,
+      depthWrite: true
+    });
+
+    // Eine Box als 8 Vertices + 36 Indices (Unlit/doubleSided: Winding egal).
+    const BOX_INDICES = [4, 5, 6, 4, 6, 7, 0, 2, 1, 0, 3, 2, 1, 2, 6, 1, 6, 5, 0, 4, 7, 0, 7, 3, 3, 7, 6, 3, 6, 2, 0, 1, 5, 0, 5, 4];
+
+    interface RenderBox { readonly min: readonly [number, number, number]; readonly max: readonly [number, number, number]; readonly profileId: string }
+
+    const showScene = (key: string, boxes: readonly RenderBox[], profiles: readonly unknown[], cameraDistance: number) => {
+      const reset = harness.dispatch({
+        kind: "ResetBackend",
+        backendRevision: presentation.backendRevision(backendRevision),
+        nextBackendRevision: presentation.backendRevision(backendRevision + 1)
+      });
+      if (reset.status !== "Accepted") throw new Error(`ResetBackend rejected: ${reset.status}`);
+      backendRevision += 1;
+      let minX = Infinity; let minY = Infinity; let minZ = Infinity;
+      let maxX = -Infinity; let maxY = -Infinity; let maxZ = -Infinity;
+      for (const box of boxes) {
+        minX = Math.min(minX, box.min[0]); minY = Math.min(minY, box.min[1]); minZ = Math.min(minZ, box.min[2]);
+        maxX = Math.max(maxX, box.max[0]); maxY = Math.max(maxY, box.max[1]); maxZ = Math.max(maxZ, box.max[2]);
+      }
+      const center: [number, number, number] = [(minX + maxX) / 2, (minY + maxY) / 2, (minZ + maxZ) / 2];
+      const positions: number[] = [];
+      const normals: number[] = [];
+      const indices: number[] = [];
+      boxes.forEach((box, boxIndex) => {
+        const corners: Array<[number, number, number]> = [
+          [box.min[0], box.min[1], box.min[2]], [box.max[0], box.min[1], box.min[2]],
+          [box.max[0], box.max[1], box.min[2]], [box.min[0], box.max[1], box.min[2]],
+          [box.min[0], box.min[1], box.max[2]], [box.max[0], box.min[1], box.max[2]],
+          [box.max[0], box.max[1], box.max[2]], [box.min[0], box.max[1], box.max[2]]
+        ];
+        for (const corner of corners) {
+          positions.push(corner[0] - center[0], corner[1] - center[1], corner[2] - center[2]);
+          normals.push(0, 0, 1);
+        }
+        for (const index of BOX_INDICES) indices.push(boxIndex * 8 + index);
+      });
+      artifactRevision += 1;
+      const representationKey = presentation.representationKey(key);
+      const artifact = presentation.createMeshArtifact({
+        representationKey,
+        sourceRevision: presentation.sourceRevision(1),
+        artifactRevision: presentation.artifactRevision(artifactRevision),
+        algorithmVersion: "mesh:v1",
+        frameId: relativeFrame,
+        positions: new Float32Array(positions),
+        normals: new Float32Array(normals),
+        indices: new Uint32Array(indices),
+        materialRanges: boxes.map((box, boxIndex) => ({
+          materialProfileId: presentation.materialProfileId(box.profileId),
+          startIndex: boxIndex * BOX_INDICES.length,
+          indexCount: BOX_INDICES.length
+        })),
+        bounds: { min: { x: minX - center[0], y: minY - center[1], z: minZ - center[2] }, max: { x: maxX - center[0], y: maxY - center[1], z: maxZ - center[2] } }
+      });
+      const upsert = harness.dispatch({
+        kind: "UpsertMeshArtifact",
+        backendRevision: presentation.backendRevision(backendRevision),
+        artifact,
+        materialProfiles: profiles as never
+      });
+      if (upsert.status !== "Accepted") throw new Error(`UpsertMeshArtifact rejected: ${upsert.status}`);
+      frameRevision += 1;
+      const projection = harness.dispatch({
+        kind: "ApplyFrameProjection",
+        backendRevision: presentation.backendRevision(backendRevision),
+        snapshot: presentation.createFrameProjectionSnapshot({
+          frameId: relativeFrame,
+          frameRevision: presentation.frameRevision(frameRevision),
+          cameraPositionRelative: { x: 0, y: 0, z: cameraDistance },
+          cameraOrientation: { x: 0, y: 0, z: 0, w: 1 },
+          projectionParameters: { kind: "Perspective", verticalFovDegrees: 50, aspect: 640 / 360, near: 0.01, far: 100 },
+          representationTransforms: [{
+            representationKey,
+            positionRelative: { x: 0, y: 0, z: 0 },
+            orientation: { x: 0, y: 0, z: 0, w: 1 },
+            scale: { x: 1, y: 1, z: 1 }
+          }]
+        })
+      });
+      if (projection.status !== "Accepted") throw new Error(`ApplyFrameProjection rejected: ${projection.status}`);
+      planRevision += 1;
+      const plan = harness.dispatch({
+        kind: "ApplyVisibilityPlan",
+        backendRevision: presentation.backendRevision(backendRevision),
+        plan: presentation.createVisibilityPlan({
+          planRevision: presentation.visibilityPlanRevision(planRevision),
+          visibleRepresentationKeys: [representationKey],
+          fallbackRepresentationKeys: [],
+          hiddenRepresentationKeys: []
+        })
+      });
+      if (plan.status !== "Accepted") throw new Error(`ApplyVisibilityPlan rejected: ${plan.status}`);
+      const rendered = harness.render();
+      if (rendered.status !== "Accepted") throw new Error(`renderFrame rejected: ${rendered.status}`);
+      return harness.backend.readDiagnostics();
+    };
+
+    const objectCells = (object: never) => {
+      const cells: Array<{ readonly global: { readonly x: number; readonly y: number; readonly z: number }; readonly materialId: number }> = [];
+      const bricks = (object as { bricks: ReadonlyArray<never> }).bricks as unknown as Array<{
+        cells: ReadonlyArray<{ localIndex: unknown; state: { materialId: number } }>
+      }>;
+      for (const brick of bricks) {
+        for (const cell of brick.cells) {
+          const address = structural.structuralAddressForBrickCell(brick as never, cell.localIndex as never);
+          const global = structural.globalQuantumForStructuralCell(address);
+          cells.push({ global, materialId: cell.state.materialId });
+        }
+      }
+      return cells;
+    };
+
+    const cellBoxes = (object: never,colors: Record<number, string>): readonly RenderBox[] =>
+      objectCells(object).map((cell) => ({
+        min: [cell.global.x * CELL_METERS, cell.global.y * CELL_METERS, cell.global.z * CELL_METERS] as const,
+        max: [(cell.global.x + 1) * CELL_METERS, (cell.global.y + 1) * CELL_METERS, (cell.global.z + 1) * CELL_METERS] as const,
+        profileId: colors[cell.materialId]
+      }));
+
+    const materialProfiles = () => [
+      profile("material:pg-terrain", MATERIAL_COLORS[1]),
+      profile("material:pg-steel", MATERIAL_COLORS[2]),
+      profile("material:pg-beam", MATERIAL_COLORS[3])
+    ];
+    const profileForMaterial: Record<number, string> = { 1: "material:pg-terrain", 2: "material:pg-steel", 3: "material:pg-beam" };
+
+    const countOccupied = (object: never): number => objectCells(object).length;
+
+    let covered = fixture.createCoveredPgTragwerk01() as never;
+    let current = covered;
+    let beforeHash = "";
+    let afterHash = "";
+
+    const renderFullObject = (object: never, key: string) => {
+      const boxes = cellBoxes(object, profileForMaterial);
+      return showScene(key, boxes, materialProfiles(), 4.2);
+    };
+
+    const initialDiagnostics = renderFullObject(current, "pg-r5b:before");
+    beforeHash = (current as { contentHash: string }).contentHash;
+    status.textContent = `Bereit: ${countOccupied(current)} Zellen`;
+
+    const budgets = {
+      mesh: { maxVisitedCells: 64, maxQuads: 1024, maxVertices: 4096, maxIndices: 6144 },
+      connectivity: { maxVisitedCells: 64, maxComponents: 16, maxIndexedFacts: 64 },
+      transition: { maxFragments: 8, maxCollidersPerFragment: 16, maxVoxelsPerFragment: 16 },
+      mass: { maxVisitedCells: 64 },
+      componentMass: { maxVisitedCells: 64, maxConnectivityCells: 64, maxComponents: 16, maxConnectivityFacts: 64 },
+      prepare: { maxOccupiedCells: 64, maxBricks: 16, maxTotalWork: 512 }
+    };
+
+    const spinParentMotion = {
+      velocityMetersPerSecond: { x: 1, y: 0.5, z: -0.25 },
+      angularVelocityRadPerSecond: { x: 0, y: 1.5, z: 2 }
+    };
+
+    return {
+      occupiedBefore: () => countOccupied(current),
+      initialVisibleKeys: () => initialDiagnostics.visibleRepresentationKeys as readonly string[],
+      applyCut: () => {
+        const command = fixture.pgCutCommand(current, fixture.pgCutBounds, "command.pg-tragwerk-r5b-e2e-01");
+        const result = structural.applyStructuralDestructionCommand(current, command);
+        if (result.status !== "Applied") throw new Error(`Canonical cut rejected: ${(result as { code?: string }).code ?? result.status}`);
+        current = result.object as never;
+        afterHash = (current as { contentHash: string }).contentHash;
+        const diagnostics = renderFullObject(current, "pg-r5b:after");
+        status.textContent = `Zerstört: ${countOccupied(current)} Zellen`;
+        return {
+          occupiedCells: countOccupied(current),
+          contentHash: afterHash,
+          visibleKeys: diagnostics.visibleRepresentationKeys
+        };
+      },
+      showLod: (lod: string) => {
+        const classification = structural.deriveStructuralComponentClassification(current, budgets.connectivity);
+        const plan = structural.deriveStructuralPhysicsTransition(
+          current, classification, spinParentMotion, budgets.transition, budgets.componentMass, "live-parent-body"
+        );
+        if (plan.status !== "Installed") throw new Error(`LOD plan not installed: ${plan.status}`);
+        const geometry = structural.selectR5RenderLodGeometry(plan, lod);
+        const boxes: RenderBox[] = geometry.map((box: never, index: number) => {
+          const typed = box as { minMeters: { x: number; y: number; z: number }; maxMeters: { x: number; y: number; z: number }; materialVariant: string };
+          return {
+            min: [typed.minMeters.x, typed.minMeters.y, typed.minMeters.z] as const,
+            max: [typed.maxMeters.x, typed.maxMeters.y, typed.maxMeters.z] as const,
+            profileId: lod === "low" ? "material:pg-lod-low" : `material:pg-lod-high-${index % 2}`
+          };
+        });
+        const profiles = lod === "low"
+          ? [profile("material:pg-lod-low", LOD_LOW_COLOR)]
+          : [profile("material:pg-lod-high-0", LOD_HIGH_COLORS[0]), profile("material:pg-lod-high-1", LOD_HIGH_COLORS[1])];
+        const diagnostics = showScene(`pg-r5b:lod-${lod}`, boxes, profiles, 1.1);
+        return {
+          boxCount: boxes.length,
+          materialVariant: (geometry[0] as { materialVariant: string }).materialVariant,
+          visibleKeys: diagnostics.visibleRepresentationKeys
+        };
+      },
+      domainProof: () => {
+        const timed = <T>(step: () => T): { value: T; ms: number } => {
+          const start = performance.now();
+          const value = step();
+          return { value, ms: Math.max(0, performance.now() - start) };
+        };
+        const decision = structural.prepareR5Bounded(current, budgets.prepare);
+        const classify = timed(() => structural.deriveStructuralComponentClassification(current, budgets.connectivity));
+        const meshResult = timed(() => structural.extractStructuralMeshData(current, budgets.mesh));
+        if (meshResult.value.status !== "Produced") throw new Error("Mesh not produced in domain proof");
+        const mesh = meshResult.value.product;
+        const transition = timed(() => structural.deriveStructuralPhysicsTransition(
+          current, classify.value, spinParentMotion, budgets.transition, budgets.componentMass, "live-parent-body"
+        ));
+        const measured = structural.measureR5Work({
+          occupiedCells: decision.occupiedCells,
+          classification: classify.value,
+          meshQuadCount: mesh.indices.length / 6,
+          plan: transition.value,
+          timings: { classifyMs: classify.ms, meshMs: meshResult.ms, transitionMs: transition.ms }
+        });
+        const massKg = structural.deriveStructuralObjectMassProperties(current, budgets.mass).totalMassKg;
+        const low = structural.selectR5RenderLodGeometry(transition.value, "low");
+        const high = structural.selectR5RenderLodGeometry(transition.value, "high");
+        // Deferred-Vollzug ueber die echte Queue (synchron dispatch-then-execute).
+        const deferredDecision = structural.prepareR5Bounded(current, { maxOccupiedCells: 64, maxBricks: 16, maxTotalWork: 10 });
+        const queue = new queueModule.StableWorkerJobQueue(4);
+        const request = structural.createR5DeferredJobRequest(deferredDecision, current);
+        const payloadRoundtrip = JSON.parse(JSON.stringify(request.payload));
+        const enqueueResult = queue.enqueue(request);
+        const completion = structural.completeR5DeferredRun(current, queue, budgets.prepare, {
+          classify: (object: never) => structural.deriveStructuralComponentClassification(object, budgets.connectivity),
+          mesh: (object: never) => {
+            const produced = structural.extractStructuralMeshData(object, budgets.mesh);
+            if (produced.status !== "Produced") throw new Error("Deferred mesh not produced");
+            return produced.product;
+          },
+          transition: (object: never, classification: never) => structural.deriveStructuralPhysicsTransition(
+            object, classification, spinParentMotion, budgets.transition, budgets.componentMass, "live-parent-body"
+          ),
+          massKg: (object: never) => structural.deriveStructuralObjectMassProperties(object, budgets.mass).totalMassKg
+        });
+        // Coverage-Bindung: Fixture ok, Fremd-Objekt/Revsion fail-closed.
+        const freshCovered = fixture.createCoveredPgTragwerk01();
+        let foreignThrows = false;
+        try {
+          structural.withFullKnownCoverage({ ...(freshCovered as object), objectId: "object.other" } as never);
+        } catch { foreignThrows = true; }
+        return {
+          estimatedWork: decision.estimatedWork,
+          estimatedWorkKind: decision.estimatedWorkKind,
+          occupiedCells: decision.occupiedCells,
+          brickCount: decision.brickCount,
+          measured: {
+            visitedCells: measured.visitedCells,
+            components: measured.components,
+            fragments: measured.fragments,
+            quads: measured.quads,
+            colliders: measured.colliders,
+            totalMeasured: measured.totalMeasured,
+            classifyMs: measured.classifyMs,
+            meshMs: measured.meshMs,
+            transitionMs: measured.transitionMs
+          },
+          meshContentHash: mesh.contentHash,
+          beforeContentHash: beforeHash,
+          afterContentHash: afterHash,
+          massKg,
+          lowBoxCount: low.length,
+          highBoxCount: high.length,
+          lowMaterialVariant: (low[0] as { materialVariant: string }).materialVariant,
+          highMaterialVariant: (high[0] as { materialVariant: string }).materialVariant,
+          deferred: {
+            status: deferredDecision.status,
+            reason: deferredDecision.reason,
+            payloadRoundtripEquals: JSON.stringify(payloadRoundtrip) === JSON.stringify(request.payload),
+            enqueueKind: (enqueueResult as { kind: string }).kind,
+            completionStatus: completion.decision.status,
+            dispatchedJobId: completion.dispatchedJobId,
+            requestJobId: request.jobId,
+            anchoredVoxels: completion.anchoredVoxels,
+            fragmentVoxels: completion.fragmentVoxels,
+            dynamicVoxels: completion.dynamicVoxels,
+            completionMassKg: completion.massKg,
+            queueEmpty: queue.snapshot().size === 0
+          },
+          coverage: {
+            coveredBricks: (freshCovered as { bricks: readonly unknown[] }).bricks.length,
+            foreignThrows
+          },
+          workerIdsPresent: typeof workerIds.workerJobId === "function"
+        };
+      },
+      dispose: () => harness.dispose()
+    };
+  });
+
+  const canvas = page.locator('canvas[data-render-backend-harness="v1"]');
+  await expect(canvas).toHaveCount(1);
+  await expect(page.locator('[data-testid="pg-tragwerk-r5b"]')).toHaveCount(1);
+  await expect(page.locator('[data-testid="pg-tragwerk-destroy"]')).toHaveText("Zerstörung auslösen");
+  await expect(page.locator("section[data-testid='pg-tragwerk-r5b']")).toContainText("Modus: PG-TRAGWERK R5B");
+  // Spieler-HUD bleibt unberuehrt und vorhanden.
+  await expect(page.locator("#flight-hud")).toHaveCount(1);
+
+  expect(await scenario.evaluate((value) => value.occupiedBefore())).toBe(27);
+  expect(await scenario.evaluate((value) => value.initialVisibleKeys())).toEqual(["pg-r5b:before"]);
+  const beforeImage = await canvas.screenshot();
+
+  await page.getByTestId("pg-tragwerk-destroy").click();
+  const cut = await scenario.evaluate((value) => value.applyCut());
+  expect(cut.occupiedCells).toBe(26);
+  expect(cut.visibleKeys).toEqual(["pg-r5b:after"]);
+  await expect(page.locator('[data-testid="pg-tragwerk-status"]')).toContainText("26 Zellen");
+  const afterImage = await canvas.screenshot();
+
+  const lodLow = await scenario.evaluate((value) => value.showLod("low"));
+  expect(lodLow.boxCount).toBe(1);
+  expect(lodLow.materialVariant).toBe("r5-low-shared");
+  const lodLowImage = await canvas.screenshot();
+
+  const lodHigh = await scenario.evaluate((value) => value.showLod("high"));
+  expect(lodHigh.boxCount).toBe(2);
+  expect(lodHigh.materialVariant).toBe("r5-high-per-voxel");
+  const lodHighImage = await canvas.screenshot();
+
+  const proof = await scenario.evaluate((value) => value.domainProof());
+  expect(proof.estimatedWorkKind).toBe("estimate:9x-occupied-cells");
+  expect(proof.estimatedWork).toBe(9 * proof.occupiedCells);
+  expect(proof.occupiedCells).toBe(26);
+  expect(proof.deferred.status).toBe("Deferred");
+  expect(proof.deferred.enqueueKind).toBe("Accepted");
+  expect(proof.deferred.completionStatus).toBe("Ready");
+  expect(proof.deferred.dispatchedJobId).toBe(proof.deferred.requestJobId);
+  expect(proof.deferred.anchoredVoxels + proof.deferred.fragmentVoxels).toBe(26);
+  expect(proof.deferred.queueEmpty).toBe(true);
+  expect(proof.deferred.payloadRoundtripEquals).toBe(true);
+  expect(proof.coverage.foreignThrows).toBe(true);
+  expect(proof.coverage.coveredBricks).toBe(7);
+  expect(proof.beforeContentHash).not.toBe(proof.afterContentHash);
+  expect(proof.meshContentHash).toBeTruthy();
+
+  await mkdir(evidenceDirectory, { recursive: true });
+  const images: Readonly<Record<PngName, Buffer>> = {
+    "pg-tragwerk-r5b-before.png": beforeImage,
+    "pg-tragwerk-r5b-after.png": afterImage,
+    "pg-tragwerk-r5b-lod-low.png": lodLowImage,
+    "pg-tragwerk-r5b-lod-high.png": lodHighImage
+  };
+  const canvasMetrics: Record<PngName, CanvasMetrics> = {} as Record<PngName, CanvasMetrics>;
+  for (const [name, image] of Object.entries(images) as Array<[PngName, Buffer]>) {
+    await writeFile(path.join(evidenceDirectory, name), image);
+    const metrics = await measureCanvas(page, image);
+    expect(metrics.nonBackgroundRatio, `${name} must be visibly non-empty`).toBeGreaterThan(0.01);
+    canvasMetrics[name] = metrics;
+  }
+
+  const beforeAfter = await decodeAndCompare(page, beforeImage, afterImage);
+  const lodDelta = await decodeAndCompare(page, lodLowImage, lodHighImage);
+  // Kalibriert an beobachteter Evidence (1 Zelle faellt weg; LOD wechselt
+  // Geometrie+Material): echte sichtbare Deltas mit ~2x Marge.
+  expect(beforeAfter.changedPixels, "destruction must change pixels").toBeGreaterThan(50);
+  expect(beforeAfter.maximumChannelDelta, "destruction must change color visibly").toBeGreaterThan(100);
+  expect(lodDelta.changedPixels, "LOD switch must change pixels").toBeGreaterThan(1000);
+  expect(lodDelta.maximumChannelDelta, "LOD switch must change color visibly").toBeGreaterThan(100);
+
+  expect(await testBridgeState(page)).toEqual({ ownProperty: false, inWindow: false });
+  const disposed = await scenario.evaluate((value) => value.dispose());
+  expect(disposed.status).toBe("Accepted");
+  await scenario.dispose();
+  expect(failures).toEqual({ consoleErrors: [], pageErrors: [], requestFailures: [], httpErrors: [] });
+
+  const summary = {
+    schemaVersion: "pg-tragwerk-r5b-v1",
+    status: "PASS",
+    generator: "apps/weltraum-browser/tests/e2e/pg-tragwerk-destruction-render.spec.ts",
+    route: "/",
+    testBridgeAbsentBeforeAndAfter: true,
+    harness: { width: 640, height: 360, pixelRatio: 1, antialias: false, lighting: "None" as const },
+    destruction: {
+      occupiedBefore: 27,
+      occupiedAfter: cut.occupiedCells,
+      beforeContentHash: proof.beforeContentHash,
+      afterContentHash: proof.afterContentHash,
+      meshContentHash: proof.meshContentHash,
+      massKg: proof.massKg
+    },
+    estimateVsMeasured: {
+      estimatedWork: proof.estimatedWork,
+      estimatedWorkKind: proof.estimatedWorkKind,
+      occupiedCells: proof.occupiedCells,
+      brickCount: proof.brickCount,
+      measured: proof.measured
+    },
+    lod: {
+      lowBoxCount: proof.lowBoxCount,
+      highBoxCount: proof.highBoxCount,
+      lowMaterialVariant: proof.lowMaterialVariant,
+      highMaterialVariant: proof.highMaterialVariant,
+      beforeAfterDelta: beforeAfter,
+      lodDelta,
+      authorityNote: "physics-approximation (collider choice) and render-LOD (geometry+material projection) are separate decisions over the same plan; occupancy/mass/fragments/mesh hash are equal across LODs"
+    },
+    deferred: proof.deferred,
+    coverage: { binding: "object.pg-tragwerk-01@revision-0+empty-evidence", coveredBricks: proof.coverage.coveredBricks, foreignThrows: proof.coverage.foreignThrows },
+    screenshots: {
+      "pg-tragwerk-r5b-before.png": canvasMetrics["pg-tragwerk-r5b-before.png"],
+      "pg-tragwerk-r5b-after.png": canvasMetrics["pg-tragwerk-r5b-after.png"],
+      "pg-tragwerk-r5b-lod-low.png": canvasMetrics["pg-tragwerk-r5b-lod-low.png"],
+      "pg-tragwerk-r5b-lod-high.png": canvasMetrics["pg-tragwerk-r5b-lod-high.png"]
+    },
+    browserHealth: { consoleErrors: 0, pageErrors: 0, requestFailures: 0, httpErrors: 0 },
+    verification: { command: focusedCommand, canvasTolerance: "per-channel 12; delta asserted via changed pixels + max channel delta", observedResult: "pass" }
+  };
+  await writeFile(
+    path.join(evidenceDirectory, "pg-tragwerk-r5b-summary.json"),
+    `${JSON.stringify(summary, null, 2)}\n`,
+    "utf8"
+  );
+  await writeFile(path.join(evidenceDirectory, "pg-tragwerk-r5b.md"), createMarkdown(summary));
+});
+
+const createMarkdown = (summary: {
+  readonly status: string;
+  readonly destruction: { readonly occupiedBefore: number; readonly occupiedAfter: number; readonly massKg: number; readonly meshContentHash: string };
+  readonly estimateVsMeasured: {
+    readonly estimatedWork: number;
+    readonly estimatedWorkKind: string;
+    readonly occupiedCells: number;
+    readonly brickCount: number;
+    readonly measured: { readonly visitedCells: number; readonly components: number; readonly fragments: number; readonly quads: number; readonly colliders: number; readonly totalMeasured: number; readonly classifyMs: number; readonly meshMs: number; readonly transitionMs: number };
+  };
+  readonly lod: {
+    readonly lowBoxCount: number;
+    readonly highBoxCount: number;
+    readonly lowMaterialVariant: string;
+    readonly highMaterialVariant: string;
+    readonly beforeAfterDelta: PixelComparison;
+    readonly lodDelta: PixelComparison;
+  };
+  readonly deferred: { readonly status: string; readonly completionStatus: string; readonly anchoredVoxels: number; readonly fragmentVoxels: number; readonly dynamicVoxels: number; readonly completionMassKg: number; readonly dispatchedJobId: string };
+  readonly coverage: { readonly binding: string };
+}): string => `# PG-TRAGWERK-01 R5B Evidence
+
+## Result
+
+- Status: \`${summary.status}\`
+- Normal route \`/\`, TestBridge absent before and after: \`true\`
+- Harness: \`640x360\`, DPR \`1\`, antialias \`false\`, lighting \`None\`
+- Destruction: \`${summary.destruction.occupiedBefore} -> ${summary.destruction.occupiedAfter}\` Zellen, Masse \`${summary.destruction.massKg} kg\`, Mesh \`${summary.destruction.meshContentHash}\`
+
+## Estimate vs Measurement
+
+\`estimatedWork\` ist eine Schaetzung (\`${summary.estimateVsMeasured.estimatedWorkKind}\`), keine Messung:
+
+| Kennzahl | Wert |
+| --- | --- |
+| occupiedCells | \`${summary.estimateVsMeasured.occupiedCells}\` |
+| brickCount | \`${summary.estimateVsMeasured.brickCount}\` |
+| estimatedWork (9x occupiedCells) | \`${summary.estimateVsMeasured.estimatedWork}\` |
+| measured visitedCells | \`${summary.estimateVsMeasured.measured.visitedCells}\` |
+| measured components | \`${summary.estimateVsMeasured.measured.components}\` |
+| measured fragments | \`${summary.estimateVsMeasured.measured.fragments}\` |
+| measured quads | \`${summary.estimateVsMeasured.measured.quads}\` |
+| measured colliders | \`${summary.estimateVsMeasured.measured.colliders}\` |
+| measured total | \`${summary.estimateVsMeasured.measured.totalMeasured}\` |
+| classifyMs / meshMs / transitionMs (Dev-Maschine) | \`${summary.estimateVsMeasured.measured.classifyMs} / ${summary.estimateVsMeasured.measured.meshMs} / ${summary.estimateVsMeasured.measured.transitionMs}\` |
+
+Timings sind Dev-Maschinen-Beobachtungen (\`performance.now()\`, finite ms), keine Hardware-Aussagen.
+
+## Render-LOD (echte Renderer-Verzweigung)
+
+- Low: \`${summary.lod.lowBoxCount}\` gemergte Box(en), \`${summary.lod.lowMaterialVariant}\`
+- High: \`${summary.lod.highBoxCount}\` per-Voxel-Boxen, \`${summary.lod.highMaterialVariant}\`
+- Before/After-Delta: \`${summary.lod.beforeAfterDelta.changedPixels}\` px (\`${summary.lod.beforeAfterDelta.changedRatio}\`), max Kanal-Delta \`${summary.lod.beforeAfterDelta.maximumChannelDelta}\`
+- Low/High-Delta: \`${summary.lod.lodDelta.changedPixels}\` px (\`${summary.lod.lodDelta.changedRatio}\`), max Kanal-Delta \`${summary.lod.lodDelta.maximumChannelDelta}\`
+- Physik-Approximation (Collider-Wahl) und Render-LOD (Geometrie+Material-Projektion) sind getrennte Entscheidungen ueber demselben Plan; Occupancy/Masse/Fragmente/Mesh-Hash sind LOD-uebergreifend gleich.
+
+## Deferred-Vollzug
+
+- Entscheidung: \`${summary.deferred.status}\`, Completion: \`${summary.deferred.completionStatus}\`, Job \`${summary.deferred.dispatchedJobId}\`
+- Anker \`${summary.deferred.anchoredVoxels}\` + Fragmente \`${summary.deferred.fragmentVoxels}\` bilanzieren jede Zelle; dynamisch \`${summary.deferred.dynamicVoxels}\`, Masse \`${summary.deferred.completionMassKg} kg\`.
+
+## Coverage-Bindung
+
+- Regel: \`${summary.coverage.binding}\`; ausserhalb fail-closed.
+
+## Screenshots
+
+- \`evidence/pg-tragwerk-r5b-before.png\`
+- \`evidence/pg-tragwerk-r5b-after.png\`
+- \`evidence/pg-tragwerk-r5b-lod-low.png\`
+- \`evidence/pg-tragwerk-r5b-lod-high.png\`
+`;

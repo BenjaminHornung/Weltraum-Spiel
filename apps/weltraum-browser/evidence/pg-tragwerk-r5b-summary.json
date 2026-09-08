@@ -1,0 +1,140 @@
+{
+  "schemaVersion": "pg-tragwerk-r5b-v1",
+  "status": "PASS",
+  "generator": "apps/weltraum-browser/tests/e2e/pg-tragwerk-destruction-render.spec.ts",
+  "route": "/",
+  "testBridgeAbsentBeforeAndAfter": true,
+  "harness": {
+    "width": 640,
+    "height": 360,
+    "pixelRatio": 1,
+    "antialias": false,
+    "lighting": "None"
+  },
+  "destruction": {
+    "occupiedBefore": 27,
+    "occupiedAfter": 26,
+    "beforeContentHash": "fnv1a64-v1:8a0c50f4a811382b",
+    "afterContentHash": "fnv1a64-v1:e2e234c9f752d25a",
+    "meshContentHash": "fnv1a64-v1:0f2c00f581a70d46",
+    "massKg": 158.203125
+  },
+  "estimateVsMeasured": {
+    "estimatedWork": 234,
+    "estimatedWorkKind": "estimate:9x-occupied-cells",
+    "occupiedCells": 26,
+    "brickCount": 7,
+    "measured": {
+      "visitedCells": 26,
+      "components": 2,
+      "fragments": 1,
+      "quads": 23,
+      "colliders": 3,
+      "totalMeasured": 55,
+      "classifyMs": 4.5,
+      "meshMs": 4.5,
+      "transitionMs": 9.399999998509884
+    }
+  },
+  "lod": {
+    "lowBoxCount": 1,
+    "highBoxCount": 2,
+    "lowMaterialVariant": "r5-low-shared",
+    "highMaterialVariant": "r5-high-per-voxel",
+    "beforeAfterDelta": {
+      "width": 640,
+      "height": 361,
+      "changedPixels": 109,
+      "changedRatio": 0.0004717797783933518,
+      "maximumChannelDelta": 210
+    },
+    "lodDelta": {
+      "width": 640,
+      "height": 361,
+      "changedPixels": 4324,
+      "changedRatio": 0.018715373961218838,
+      "maximumChannelDelta": 166
+    },
+    "authorityNote": "physics-approximation (collider choice) and render-LOD (geometry+material projection) are separate decisions over the same plan; occupancy/mass/fragments/mesh hash are equal across LODs"
+  },
+  "deferred": {
+    "status": "Deferred",
+    "reason": "r5/budgets/total-work",
+    "payloadRoundtripEquals": true,
+    "enqueueKind": "Accepted",
+    "completionStatus": "Ready",
+    "dispatchedJobId": "pg-r5-deferred-run",
+    "requestJobId": "pg-r5-deferred-run",
+    "anchoredVoxels": 24,
+    "fragmentVoxels": 2,
+    "dynamicVoxels": 2,
+    "completionMassKg": 158.203125,
+    "queueEmpty": true
+  },
+  "coverage": {
+    "binding": "object.pg-tragwerk-01@revision-0+empty-evidence",
+    "coveredBricks": 7,
+    "foreignThrows": true
+  },
+  "screenshots": {
+    "pg-tragwerk-r5b-before.png": {
+      "width": 640,
+      "height": 361,
+      "nonBackgroundPixels": 3883,
+      "nonBackgroundRatio": 0.0168066135734072,
+      "bounds": {
+        "minX": 209,
+        "minY": 146,
+        "maxX": 430,
+        "maxY": 215
+      }
+    },
+    "pg-tragwerk-r5b-after.png": {
+      "width": 640,
+      "height": 361,
+      "nonBackgroundPixels": 3774,
+      "nonBackgroundRatio": 0.01633483379501385,
+      "bounds": {
+        "minX": 209,
+        "minY": 146,
+        "maxX": 430,
+        "maxY": 215
+      }
+    },
+    "pg-tragwerk-r5b-lod-low.png": {
+      "width": 640,
+      "height": 361,
+      "nonBackgroundPixels": 4324,
+      "nonBackgroundRatio": 0.018715373961218838,
+      "bounds": {
+        "minX": 273,
+        "minY": 158,
+        "maxX": 366,
+        "maxY": 203
+      }
+    },
+    "pg-tragwerk-r5b-lod-high.png": {
+      "width": 640,
+      "height": 361,
+      "nonBackgroundPixels": 4324,
+      "nonBackgroundRatio": 0.018715373961218838,
+      "bounds": {
+        "minX": 273,
+        "minY": 158,
+        "maxX": 366,
+        "maxY": 203
+      }
+    }
+  },
+  "browserHealth": {
+    "consoleErrors": 0,
+    "pageErrors": 0,
+    "requestFailures": 0,
+    "httpErrors": 0
+  },
+  "verification": {
+    "command": "npx playwright test tests/e2e/pg-tragwerk-destruction-render.spec.ts",
+    "canvasTolerance": "per-channel 12; delta asserted via changed pixels + max channel delta",
+    "observedResult": "pass"
+  }
+}

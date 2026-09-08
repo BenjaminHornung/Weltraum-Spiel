@@ -26,6 +26,7 @@ import {
   type StructuralCommandResult,
   type StructuralObject
 } from "../../src/voxel/structural";
+import { withFullKnownCoverage } from "../../src/voxel/structural/provingGroundR5";
 
 /**
  * Paket P-PG-SLICE2 — wiederverwendetes Fixture PG-TRAGWERK-01 aus Slice 1.
@@ -241,3 +242,12 @@ export const pgApplyCanonicalCut = (): StructuralAcceptedCommandResult => {
     pgCutCommand(fixture, pgCutBounds, "command.pg-tragwerk-cut-01")
   ));
 };
+
+/**
+ * Paket P-PG-R5B — geschlossenes authored Fixture mit beigelegter bekannter
+ * Aussenluft (7 Bricks, 27 Zellen, Revision 0, leere Evidence). Einzige
+ * zugelassene Coverage-Quelle fuer R5B-Nachweise; wiederverwendet das
+ * kanonische Fixture statt es zu kopieren.
+ */
+export const createCoveredPgTragwerk01 = (): StructuralObject =>
+  withFullKnownCoverage(createPgTragwerk01());
