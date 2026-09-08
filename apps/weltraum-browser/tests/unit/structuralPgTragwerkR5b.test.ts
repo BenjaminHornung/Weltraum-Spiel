@@ -28,6 +28,7 @@ import {
   pgCutCommand,
   pgOccupiedKeys
 } from "./pgTragwerkFixture";
+import { reconstructStructuralObjectInternal } from "../../src/voxel/structural/model";
 
 /**
  * Paket P-PG-R5B — schliesst R5-Luecken minimal auf R5 auf (R3/R4/F8 unberuehrt).
@@ -168,7 +169,7 @@ describe("PG-TRAGWERK-01 proving-ground R5B (Schaetzung, Render-LOD, Deferred-Vo
     // Payload ist JSON-serialisierbar (cloneFreeze-sicher): Roundtrip ohne Verlust.
     expect(JSON.parse(JSON.stringify(request.payload))).toEqual(request.payload);
     expect(queue.enqueue(request).kind).toBe("Accepted");
-    const completion = completeR5DeferredRun(cut, queue, r5PrepareBudgets, {
+    const completion = completeR5DeferredRun(cut, queue, request, r5PrepareBudgets, {
       classify: (object) => deriveStructuralComponentClassification(object, pgConnectivityBudgets),
       mesh: (object) => producedMesh(object),
       transition: (object, classification) => deriveStructuralPhysicsTransition(
@@ -207,6 +208,65 @@ describe("PG-TRAGWERK-01 proving-ground R5B (Schaetzung, Render-LOD, Deferred-Vo
     const revised = cutCovered("command.pg-tragwerk-r5b-cut-d");
     expect(revised.objectRevision).not.toBe(0);
     expect(() => withFullKnownCoverage(revised)).toThrow();
+  });
+
+  it("R5B-f: Deferred bindet fremde und veraltete Jobs ab und requeued Hook-Fehler", () => {
+    const cut = cutCovered("command.pg-tragwerk-r5b-cut-f");
+    const deferred = prepareR5Bounded(cut, { maxOccupiedCells: 64, maxBricks: 16, maxTotalWork: 10 });
+    expect(deferred.status).toBe("Deferred");
+    const hooks = {
+      classify: (object: StructuralObject) => deriveStructuralComponentClassification(object, pgConnectivityBudgets),
+      mesh: (object: StructuralObject) => producedMesh(object),
+      transition: (object: StructuralObject, classification: ReturnType<typeof deriveStructuralComponentClassification>) => deriveStructuralPhysicsTransition(
+        object, classification, spinParentMotion, generousTransitionBudgets, componentMassBudgets, "live-parent-body"
+      ),
+      massKg: (object: StructuralObject) => deriveStructuralObjectMassProperties(object, { maxVisitedCells: 64 }).totalMassKg
+    };
+
+    const foreignRequest = createR5DeferredJobRequest(deferred, cut);
+    const foreignQueue = new StableWorkerJobQueue(2);
+    expect(foreignQueue.enqueue({ ...foreignRequest, targetKey: "object.foreign" as typeof foreignRequest.targetKey }).kind).toBe("Accepted");
+    expect(() => completeR5DeferredRun(cut, foreignQueue, foreignRequest, r5PrepareBudgets, hooks)).toThrow();
+    expect(foreignQueue.snapshot().size).toBe(1);
+
+    const fresh = createCoveredPgTragwerk01();
+    const staleDecision = prepareR5Bounded(fresh, { maxOccupiedCells: 64, maxBricks: 16, maxTotalWork: 10 });
+    const staleQueue = new StableWorkerJobQueue(2);
+    expect(staleQueue.enqueue(createR5DeferredJobRequest(staleDecision, fresh)).kind).toBe("Accepted");
+    const staleRequest = createR5DeferredJobRequest(staleDecision, fresh);
+    expect(() => completeR5DeferredRun(cut, staleQueue, staleRequest, r5PrepareBudgets, hooks)).toThrow();
+    expect(staleQueue.snapshot().size).toBe(1);
+
+    const hookErrorQueue = new StableWorkerJobQueue(2);
+    expect(hookErrorQueue.enqueue(foreignRequest).kind).toBe("Accepted");
+    expect(() => completeR5DeferredRun(cut, hookErrorQueue, foreignRequest, r5PrepareBudgets, {
+      ...hooks,
+      classify: () => { throw new Error("synthetic R5 hook failure"); }
+    })).toThrow("synthetic R5 hook failure");
+    expect(hookErrorQueue.snapshot().size).toBe(1);
+  });
+
+  it("R5B-g: Same-ID-Inhalt ausserhalb des kanonischen authored Digest wird abgewiesen", () => {
+    const base = createPgTragwerk01();
+    const foreign = reconstructStructuralObjectInternal({
+      objectId: base.objectId,
+      frame: base.frame,
+      source: base.source,
+      materials: base.materials.map((material) => material.materialId === 3
+        ? { ...material, densityKgPerCubicMeter: material.densityKgPerCubicMeter + 1 }
+        : material),
+      bricks: base.bricks,
+      anchors: base.anchors,
+      joints: base.joints,
+      objectRevision: base.objectRevision,
+      editRevision: base.editRevision,
+      commandEvidence: base.commandEvidence
+    });
+    expect(foreign.objectId).toBe(base.objectId);
+    expect(foreign.objectRevision).toBe(0);
+    expect(foreign.commandEvidence).toHaveLength(0);
+    expect(foreign.contentHash).not.toBe(base.contentHash);
+    expect(() => withFullKnownCoverage(foreign)).toThrow();
   });
 
   it("R5B-e: ungueltige Budgets bleiben Rejected r5/budgets/invalid (R5-Vertrag)", () => {

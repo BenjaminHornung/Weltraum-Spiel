@@ -1,9 +1,26 @@
 import { expect, test, type Page } from "@playwright/test";
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const evidenceDirectory = path.resolve(process.cwd(), "evidence");
 const focusedCommand = "npx playwright test tests/e2e/pg-tragwerk-destruction-render.spec.ts";
+const recordEvidence = process.env.WELTRAUM_RECORD_EVIDENCE === "1";
+const harnessDimensions = { width: 640, height: 360 } as const;
+
+const persistEvidence = async (fileName: string, content: Buffer | string): Promise<void> => {
+  const filePath = path.join(evidenceDirectory, fileName);
+  const bytes = typeof content === "string" ? Buffer.from(content, "utf8") : content;
+  try {
+    if ((await readFile(filePath)).equals(bytes)) return;
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+  }
+  if (!recordEvidence) {
+    throw new Error(`Evidence differs at ${fileName}; rerun with WELTRAUM_RECORD_EVIDENCE=1 to record it explicitly.`);
+  }
+  await mkdir(evidenceDirectory, { recursive: true });
+  await writeFile(filePath, bytes);
+};
 
 type PngName =
   | "pg-tragwerk-r5b-before.png"
@@ -152,7 +169,7 @@ test("normal route renders the operable PG-TRAGWERK-01 R5B destruction scene", a
     const presentationPath = String("/src/presentation/index.ts");
     const backendPath = String("/src/render/three/backend/index.ts");
     const structuralPath = String("/src/voxel/structural/index.ts");
-    const fixturePath = String("/tests/unit/pgTragwerkFixture.ts");
+    const fixturePath = String("/tests/support/pgTragwerkFixtureAdapter.ts");
     const queuePath = String("/src/workers/queue.ts");
     const workerIdsPath = String("/src/workers/ids.ts");
     const presentation = await import(/* @vite-ignore */ presentationPath);
@@ -162,12 +179,9 @@ test("normal route renders the operable PG-TRAGWERK-01 R5B destruction scene", a
     const queueModule = await import(/* @vite-ignore */ queuePath);
     const workerIds = await import(/* @vite-ignore */ workerIdsPath);
 
+    const CANVAS_WIDTH = 640;
+    const CANVAS_HEIGHT = 360;
     const CELL_METERS = 0.125;
-    const MATERIAL_COLORS: Record<number, [number, number, number]> = {
-      1: [0x8a / 255, 0x7f / 255, 0x6a / 255],
-      2: [0x7d / 255, 0x8e / 255, 0xa3 / 255],
-      3: [0xc2 / 255, 0xa1 / 255, 0x5a / 255]
-    };
     const LOD_LOW_COLOR: [number, number, number] = [1, 0.15, 0.75];
     const LOD_HIGH_COLORS: Array<[number, number, number]> = [[0.1, 0.9, 0.9], [1, 0.9, 0.1]];
 
@@ -282,7 +296,7 @@ test("normal route renders the operable PG-TRAGWERK-01 R5B destruction scene", a
           frameRevision: presentation.frameRevision(frameRevision),
           cameraPositionRelative: { x: 0, y: 0, z: cameraDistance },
           cameraOrientation: { x: 0, y: 0, z: 0, w: 1 },
-          projectionParameters: { kind: "Perspective", verticalFovDegrees: 50, aspect: 640 / 360, near: 0.01, far: 100 },
+          projectionParameters: { kind: "Perspective", verticalFovDegrees: 50, aspect: CANVAS_WIDTH / CANVAS_HEIGHT, near: 0.01, far: 100 },
           representationTransforms: [{
             representationKey,
             positionRelative: { x: 0, y: 0, z: 0 },
@@ -324,18 +338,36 @@ test("normal route renders the operable PG-TRAGWERK-01 R5B destruction scene", a
       return cells;
     };
 
-    const cellBoxes = (object: never,colors: Record<number, string>): readonly RenderBox[] =>
+    const cellBoxes = (object: never, colors: Record<number, string>): readonly RenderBox[] =>
       objectCells(object).map((cell) => ({
         min: [cell.global.x * CELL_METERS, cell.global.y * CELL_METERS, cell.global.z * CELL_METERS] as const,
         max: [(cell.global.x + 1) * CELL_METERS, (cell.global.y + 1) * CELL_METERS, (cell.global.z + 1) * CELL_METERS] as const,
         profileId: colors[cell.materialId]
       }));
 
-    const materialProfiles = () => [
-      profile("material:pg-terrain", MATERIAL_COLORS[1]),
-      profile("material:pg-steel", MATERIAL_COLORS[2]),
-      profile("material:pg-beam", MATERIAL_COLORS[3])
+    const sceneMeshBudgets = { maxVisitedCells: 64, maxQuads: 1024, maxVertices: 4096, maxIndices: 6144 };
+    const describeScene = (object: never, lod: "low" | "high") => {
+      const meshResult = structural.extractStructuralMeshData(object, sceneMeshBudgets);
+      if (meshResult.status !== "Produced") throw new Error(`Scene mesh not produced: ${meshResult.status}`);
+      return structural.describeR5Scene(object, meshResult.product, lod);
+    };
+    const colorFromHex = (hex: string): [number, number, number] => [
+      Number.parseInt(hex.slice(1, 3), 16) / 255,
+      Number.parseInt(hex.slice(3, 5), 16) / 255,
+      Number.parseInt(hex.slice(5, 7), 16) / 255
     ];
+    const materialProfiles = (materials: ReadonlyArray<{ readonly materialId: number; readonly displayColor: string }>) => {
+      const colorFor = (materialId: number): [number, number, number] => {
+        const material = materials.find((candidate) => candidate.materialId === materialId);
+        if (material === undefined) throw new Error(`Scene material ${materialId} missing`);
+        return colorFromHex(material.displayColor);
+      };
+      return [
+        profile("material:pg-terrain", colorFor(1)),
+        profile("material:pg-steel", colorFor(2)),
+        profile("material:pg-beam", colorFor(3))
+      ];
+    };
     const profileForMaterial: Record<number, string> = { 1: "material:pg-terrain", 2: "material:pg-steel", 3: "material:pg-beam" };
 
     const countOccupied = (object: never): number => objectCells(object).length;
@@ -344,10 +376,15 @@ test("normal route renders the operable PG-TRAGWERK-01 R5B destruction scene", a
     let current = covered;
     let beforeHash = "";
     let afterHash = "";
+    let lastCut: { readonly occupiedCells: number; readonly contentHash: string; readonly visibleKeys: readonly string[] } | null = null;
 
     const renderFullObject = (object: never, key: string) => {
+      const scene = describeScene(object, "low");
       const boxes = cellBoxes(object, profileForMaterial);
-      return showScene(key, boxes, materialProfiles(), 4.2);
+      if (scene.sourceContentHash !== (object as { contentHash: string }).contentHash) {
+        throw new Error("Scene descriptor is not bound to the rendered object.");
+      }
+      return showScene(key, boxes, materialProfiles(scene.materials), 4.2);
     };
 
     const initialDiagnostics = renderFullObject(current, "pg-r5b:before");
@@ -368,10 +405,7 @@ test("normal route renders the operable PG-TRAGWERK-01 R5B destruction scene", a
       angularVelocityRadPerSecond: { x: 0, y: 1.5, z: 2 }
     };
 
-    return {
-      occupiedBefore: () => countOccupied(current),
-      initialVisibleKeys: () => initialDiagnostics.visibleRepresentationKeys as readonly string[],
-      applyCut: () => {
+    const commitCutThroughStructuralCommand = () => {
         const command = fixture.pgCutCommand(current, fixture.pgCutBounds, "command.pg-tragwerk-r5b-e2e-01");
         const result = structural.applyStructuralDestructionCommand(current, command);
         if (result.status !== "Applied") throw new Error(`Canonical cut rejected: ${(result as { code?: string }).code ?? result.status}`);
@@ -384,7 +418,13 @@ test("normal route renders the operable PG-TRAGWERK-01 R5B destruction scene", a
           contentHash: afterHash,
           visibleKeys: diagnostics.visibleRepresentationKeys
         };
-      },
+      };
+    destroyButton.addEventListener("click", () => { lastCut = commitCutThroughStructuralCommand(); });
+
+    return {
+      occupiedBefore: () => countOccupied(current),
+      initialVisibleKeys: () => initialDiagnostics.visibleRepresentationKeys as readonly string[],
+      lastCut: () => lastCut,
       showLod: (lod: string) => {
         const classification = structural.deriveStructuralComponentClassification(current, budgets.connectivity);
         const plan = structural.deriveStructuralPhysicsTransition(
@@ -434,13 +474,15 @@ test("normal route renders the operable PG-TRAGWERK-01 R5B destruction scene", a
         const massKg = structural.deriveStructuralObjectMassProperties(current, budgets.mass).totalMassKg;
         const low = structural.selectR5RenderLodGeometry(transition.value, "low");
         const high = structural.selectR5RenderLodGeometry(transition.value, "high");
+        const lowScene = structural.describeR5Scene(current, mesh, "low");
+        const highScene = structural.describeR5Scene(current, mesh, "high");
         // Deferred-Vollzug ueber die echte Queue (synchron dispatch-then-execute).
         const deferredDecision = structural.prepareR5Bounded(current, { maxOccupiedCells: 64, maxBricks: 16, maxTotalWork: 10 });
         const queue = new queueModule.StableWorkerJobQueue(4);
         const request = structural.createR5DeferredJobRequest(deferredDecision, current);
         const payloadRoundtrip = JSON.parse(JSON.stringify(request.payload));
         const enqueueResult = queue.enqueue(request);
-        const completion = structural.completeR5DeferredRun(current, queue, budgets.prepare, {
+        const completion = structural.completeR5DeferredRun(current, queue, request, budgets.prepare, {
           classify: (object: never) => structural.deriveStructuralComponentClassification(object, budgets.connectivity),
           mesh: (object: never) => {
             const produced = structural.extractStructuralMeshData(object, budgets.mesh);
@@ -469,10 +511,13 @@ test("normal route renders the operable PG-TRAGWERK-01 R5B destruction scene", a
             fragments: measured.fragments,
             quads: measured.quads,
             colliders: measured.colliders,
-            totalMeasured: measured.totalMeasured,
-            classifyMs: measured.classifyMs,
-            meshMs: measured.meshMs,
-            transitionMs: measured.transitionMs
+            totalMeasured: measured.totalMeasured
+          },
+          scene: {
+            schemaVersion: lowScene.schemaVersion,
+            sourceContentHash: lowScene.sourceContentHash,
+            lowQuadCount: lowScene.quadCount,
+            highQuadCount: highScene.quadCount
           },
           meshContentHash: mesh.contentHash,
           beforeContentHash: beforeHash,
@@ -486,6 +531,10 @@ test("normal route renders the operable PG-TRAGWERK-01 R5B destruction scene", a
             status: deferredDecision.status,
             reason: deferredDecision.reason,
             payloadRoundtripEquals: JSON.stringify(payloadRoundtrip) === JSON.stringify(request.payload),
+            jobKind: String(request.jobKind),
+            targetKey: String(request.targetKey),
+            inputRevision: Number(request.inputRevision),
+            inputContentHash: request.payload.inputContentHash,
             enqueueKind: (enqueueResult as { kind: string }).kind,
             completionStatus: completion.decision.status,
             dispatchedJobId: completion.dispatchedJobId,
@@ -498,7 +547,8 @@ test("normal route renders the operable PG-TRAGWERK-01 R5B destruction scene", a
           },
           coverage: {
             coveredBricks: (freshCovered as { bricks: readonly unknown[] }).bricks.length,
-            foreignThrows
+            foreignThrows,
+            digest: String(structural.R5_AUTHORED_FIXTURE_DIGEST)
           },
           workerIdsPresent: typeof workerIds.workerJobId === "function"
         };
@@ -509,6 +559,13 @@ test("normal route renders the operable PG-TRAGWERK-01 R5B destruction scene", a
 
   const canvas = page.locator('canvas[data-render-backend-harness="v1"]');
   await expect(canvas).toHaveCount(1);
+  const captureCanvas = async (): Promise<Buffer> => {
+    const box = await canvas.boundingBox();
+    if (box === null) throw new Error("Deterministic harness canvas has no bounding box.");
+    return page.screenshot({
+      clip: { x: box.x, y: box.y, width: harnessDimensions.width, height: harnessDimensions.height }
+    });
+  };
   await expect(page.locator('[data-testid="pg-tragwerk-r5b"]')).toHaveCount(1);
   await expect(page.locator('[data-testid="pg-tragwerk-destroy"]')).toHaveText("Zerstörung auslösen");
   await expect(page.locator("section[data-testid='pg-tragwerk-r5b']")).toContainText("Modus: PG-TRAGWERK R5B");
@@ -517,24 +574,26 @@ test("normal route renders the operable PG-TRAGWERK-01 R5B destruction scene", a
 
   expect(await scenario.evaluate((value) => value.occupiedBefore())).toBe(27);
   expect(await scenario.evaluate((value) => value.initialVisibleKeys())).toEqual(["pg-r5b:before"]);
-  const beforeImage = await canvas.screenshot();
+  const beforeImage = await captureCanvas();
 
   await page.getByTestId("pg-tragwerk-destroy").click();
-  const cut = await scenario.evaluate((value) => value.applyCut());
+  const cut = await scenario.evaluate((value) => value.lastCut());
+  expect(cut).not.toBeNull();
+  if (cut === null) throw new Error("PG-TRAGWERK destroy button did not commit a cut.");
   expect(cut.occupiedCells).toBe(26);
   expect(cut.visibleKeys).toEqual(["pg-r5b:after"]);
   await expect(page.locator('[data-testid="pg-tragwerk-status"]')).toContainText("26 Zellen");
-  const afterImage = await canvas.screenshot();
+  const afterImage = await captureCanvas();
 
   const lodLow = await scenario.evaluate((value) => value.showLod("low"));
   expect(lodLow.boxCount).toBe(1);
   expect(lodLow.materialVariant).toBe("r5-low-shared");
-  const lodLowImage = await canvas.screenshot();
+  const lodLowImage = await captureCanvas();
 
   const lodHigh = await scenario.evaluate((value) => value.showLod("high"));
   expect(lodHigh.boxCount).toBe(2);
   expect(lodHigh.materialVariant).toBe("r5-high-per-voxel");
-  const lodHighImage = await canvas.screenshot();
+  const lodHighImage = await captureCanvas();
 
   const proof = await scenario.evaluate((value) => value.domainProof());
   expect(proof.estimatedWorkKind).toBe("estimate:9x-occupied-cells");
@@ -547,12 +606,19 @@ test("normal route renders the operable PG-TRAGWERK-01 R5B destruction scene", a
   expect(proof.deferred.anchoredVoxels + proof.deferred.fragmentVoxels).toBe(26);
   expect(proof.deferred.queueEmpty).toBe(true);
   expect(proof.deferred.payloadRoundtripEquals).toBe(true);
+  expect(proof.deferred.jobKind).toBe("PgTragwerkR5Deferred");
+  expect(proof.deferred.targetKey).toBe("object.pg-tragwerk-01");
+  expect(proof.deferred.inputRevision).toBe(1);
+  expect(proof.deferred.inputContentHash).toBe(proof.afterContentHash);
   expect(proof.coverage.foreignThrows).toBe(true);
   expect(proof.coverage.coveredBricks).toBe(7);
+  expect(proof.coverage.digest).toBeTruthy();
   expect(proof.beforeContentHash).not.toBe(proof.afterContentHash);
   expect(proof.meshContentHash).toBeTruthy();
+  expect(proof.scene.schemaVersion).toBe("pg-tragwerk-r5-scene-v1");
+  expect(proof.scene.sourceContentHash).toBe(proof.afterContentHash);
+  expect(proof.scene.lowQuadCount).toBe(proof.scene.highQuadCount);
 
-  await mkdir(evidenceDirectory, { recursive: true });
   const images: Readonly<Record<PngName, Buffer>> = {
     "pg-tragwerk-r5b-before.png": beforeImage,
     "pg-tragwerk-r5b-after.png": afterImage,
@@ -561,8 +627,9 @@ test("normal route renders the operable PG-TRAGWERK-01 R5B destruction scene", a
   };
   const canvasMetrics: Record<PngName, CanvasMetrics> = {} as Record<PngName, CanvasMetrics>;
   for (const [name, image] of Object.entries(images) as Array<[PngName, Buffer]>) {
-    await writeFile(path.join(evidenceDirectory, name), image);
     const metrics = await measureCanvas(page, image);
+    expect(metrics.width, `${name} must use the deterministic harness width`).toBe(harnessDimensions.width);
+    expect(metrics.height, `${name} must use the deterministic harness height`).toBe(harnessDimensions.height);
     expect(metrics.nonBackgroundRatio, `${name} must be visibly non-empty`).toBeGreaterThan(0.01);
     canvasMetrics[name] = metrics;
   }
@@ -583,12 +650,18 @@ test("normal route renders the operable PG-TRAGWERK-01 R5B destruction scene", a
   expect(failures).toEqual({ consoleErrors: [], pageErrors: [], requestFailures: [], httpErrors: [] });
 
   const summary = {
-    schemaVersion: "pg-tragwerk-r5b-v1",
+    schemaVersion: "pg-tragwerk-r5b-v2",
     status: "PASS",
     generator: "apps/weltraum-browser/tests/e2e/pg-tragwerk-destruction-render.spec.ts",
     route: "/",
     testBridgeAbsentBeforeAndAfter: true,
-    harness: { width: 640, height: 360, pixelRatio: 1, antialias: false, lighting: "None" as const },
+    harness: {
+      ...harnessDimensions,
+      screenshotDimensions: harnessDimensions,
+      pixelRatio: 1,
+      antialias: false,
+      lighting: "None" as const
+    },
     destruction: {
       occupiedBefore: 27,
       occupiedAfter: cut.occupiedCells,
@@ -604,6 +677,7 @@ test("normal route renders the operable PG-TRAGWERK-01 R5B destruction scene", a
       brickCount: proof.brickCount,
       measured: proof.measured
     },
+    scene: proof.scene,
     lod: {
       lowBoxCount: proof.lowBoxCount,
       highBoxCount: proof.highBoxCount,
@@ -614,7 +688,24 @@ test("normal route renders the operable PG-TRAGWERK-01 R5B destruction scene", a
       authorityNote: "physics-approximation (collider choice) and render-LOD (geometry+material projection) are separate decisions over the same plan; occupancy/mass/fragments/mesh hash are equal across LODs"
     },
     deferred: proof.deferred,
-    coverage: { binding: "object.pg-tragwerk-01@revision-0+empty-evidence", coveredBricks: proof.coverage.coveredBricks, foreignThrows: proof.coverage.foreignThrows },
+    coverage: {
+      binding: "object.pg-tragwerk-01@revision-0+empty-evidence",
+      digest: proof.coverage.digest,
+      coveredBricks: proof.coverage.coveredBricks,
+      foreignThrows: proof.coverage.foreignThrows,
+      sameIdForeignContentTest: "R5B-g"
+    },
+    scope: {
+      kind: "test-side-harness-slice",
+      productPaths: [
+        "applyStructuralDestructionCommand",
+        "prepareR5Bounded / StableWorkerJobQueue / completeR5DeferredRun",
+        "extractStructuralMeshData / describeR5Scene",
+        "selectR5RenderLodGeometry"
+      ],
+      harnessOnly: ["test-created PG-TRAGWERK overlay", "deterministic Three.js canvas projection"],
+      excluded: ["normal scene wiring", "player gameplay state", "persistence"]
+    },
     screenshots: {
       "pg-tragwerk-r5b-before.png": canvasMetrics["pg-tragwerk-r5b-before.png"],
       "pg-tragwerk-r5b-after.png": canvasMetrics["pg-tragwerk-r5b-after.png"],
@@ -624,24 +715,25 @@ test("normal route renders the operable PG-TRAGWERK-01 R5B destruction scene", a
     browserHealth: { consoleErrors: 0, pageErrors: 0, requestFailures: 0, httpErrors: 0 },
     verification: { command: focusedCommand, canvasTolerance: "per-channel 12; delta asserted via changed pixels + max channel delta", observedResult: "pass" }
   };
-  await writeFile(
-    path.join(evidenceDirectory, "pg-tragwerk-r5b-summary.json"),
-    `${JSON.stringify(summary, null, 2)}\n`,
-    "utf8"
-  );
-  await writeFile(path.join(evidenceDirectory, "pg-tragwerk-r5b.md"), createMarkdown(summary));
+  await Promise.all([
+    ...Object.entries(images).map(([name, image]) => persistEvidence(name, image)),
+    persistEvidence("pg-tragwerk-r5b-summary.json", `${JSON.stringify(summary, null, 2)}\n`),
+    persistEvidence("pg-tragwerk-r5b.md", createMarkdown(summary))
+  ]);
 });
 
 const createMarkdown = (summary: {
   readonly status: string;
-  readonly destruction: { readonly occupiedBefore: number; readonly occupiedAfter: number; readonly massKg: number; readonly meshContentHash: string };
+  readonly harness: { readonly width: number; readonly height: number; readonly screenshotDimensions: { readonly width: number; readonly height: number }; readonly pixelRatio: number; readonly antialias: boolean; readonly lighting: string };
+  readonly destruction: { readonly occupiedBefore: number; readonly occupiedAfter: number; readonly beforeContentHash: string; readonly afterContentHash: string; readonly massKg: number; readonly meshContentHash: string };
   readonly estimateVsMeasured: {
     readonly estimatedWork: number;
     readonly estimatedWorkKind: string;
     readonly occupiedCells: number;
     readonly brickCount: number;
-    readonly measured: { readonly visitedCells: number; readonly components: number; readonly fragments: number; readonly quads: number; readonly colliders: number; readonly totalMeasured: number; readonly classifyMs: number; readonly meshMs: number; readonly transitionMs: number };
+    readonly measured: { readonly visitedCells: number; readonly components: number; readonly fragments: number; readonly quads: number; readonly colliders: number; readonly totalMeasured: number };
   };
+  readonly scene: { readonly schemaVersion: string; readonly sourceContentHash: string; readonly lowQuadCount: number; readonly highQuadCount: number };
   readonly lod: {
     readonly lowBoxCount: number;
     readonly highBoxCount: number;
@@ -650,16 +742,35 @@ const createMarkdown = (summary: {
     readonly beforeAfterDelta: PixelComparison;
     readonly lodDelta: PixelComparison;
   };
-  readonly deferred: { readonly status: string; readonly completionStatus: string; readonly anchoredVoxels: number; readonly fragmentVoxels: number; readonly dynamicVoxels: number; readonly completionMassKg: number; readonly dispatchedJobId: string };
-  readonly coverage: { readonly binding: string };
+  readonly deferred: { readonly status: string; readonly completionStatus: string; readonly jobKind: string; readonly targetKey: string; readonly inputRevision: number; readonly inputContentHash: string; readonly anchoredVoxels: number; readonly fragmentVoxels: number; readonly dynamicVoxels: number; readonly completionMassKg: number; readonly dispatchedJobId: string };
+  readonly coverage: { readonly binding: string; readonly digest: string; readonly coveredBricks: number; readonly foreignThrows: boolean; readonly sameIdForeignContentTest: string };
+  readonly scope: { readonly kind: string; readonly productPaths: readonly string[]; readonly harnessOnly: readonly string[]; readonly excluded: readonly string[] };
+  readonly screenshots: Record<string, CanvasMetrics>;
+  readonly browserHealth: { readonly consoleErrors: number; readonly pageErrors: number; readonly requestFailures: number; readonly httpErrors: number };
 }): string => `# PG-TRAGWERK-01 R5B Evidence
 
 ## Result
 
 - Status: \`${summary.status}\`
-- Normal route \`/\`, TestBridge absent before and after: \`true\`
-- Harness: \`640x360\`, DPR \`1\`, antialias \`false\`, lighting \`None\`
-- Destruction: \`${summary.destruction.occupiedBefore} -> ${summary.destruction.occupiedAfter}\` Zellen, Masse \`${summary.destruction.massKg} kg\`, Mesh \`${summary.destruction.meshContentHash}\`
+- Normal route \`/\`; TestBridge absent before and after: \`true\`
+- Deterministic harness: \`${summary.harness.width}x${summary.harness.height}\`, screenshot contract \`${summary.harness.screenshotDimensions.width}x${summary.harness.screenshotDimensions.height}\`, DPR \`${summary.harness.pixelRatio}\`, antialias \`${summary.harness.antialias}\`, lighting \`${summary.harness.lighting}\`
+- Destruction: \`${summary.destruction.occupiedBefore} -> ${summary.destruction.occupiedAfter}\` Zellen, Masse \`${summary.destruction.massKg} kg\`
+- Content: \`${summary.destruction.beforeContentHash}\` -> \`${summary.destruction.afterContentHash}\`; Mesh \`${summary.destruction.meshContentHash}\`
+
+## Harness Scope
+
+- Typ: \`${summary.scope.kind}\`
+- Produktpfade: ${summary.scope.productPaths.map((path) => `\`${path}\``).join(", ")}
+- Harness-only: ${summary.scope.harnessOnly.map((path) => `\`${path}\``).join(", ")}
+- Explizit nicht behauptet: ${summary.scope.excluded.map((path) => `\`${path}\``).join(", ")}
+
+## Fix -> Befund -> Test
+
+- **F1 Button-Command:** Der sichtbare Button ruft den Structural-Command auf; E2E klickt den Button und prüft den echten Cut über \`lastCut\`.
+- **F2 Deferred-Bindung:** Job-ID, Target, Revision und Content-Payload werden vor Re-Prepare/Hooks geprüft; R5B-f prüft Fremd-/Stale-Jobs und Hook-Fehler mit Requeue.
+- **F3 Coverage:** Vollständige Coverage wird nach Rekonstruktion an den authored Digest gebunden; R5B-d und R5B-g prüfen Fremd-ID, Revision und Same-ID-Fremdinhalt.
+- **F4 Deterministische Evidence:** Timings bleiben Laufzeit-Messwerte und werden nicht persistiert; PNG/JSON/Markdown werden nur mit \`WELTRAUM_RECORD_EVIDENCE=1\` geändert oder byte-identisch bestätigt.
+- **F5 Harness-Grenze:** Der Browsergraph importiert das Fixture ausschließlich aus \`tests/support\`; der Harness dokumentiert echte Produktpfade und testseitige Projektion separat.
 
 ## Estimate vs Measurement
 
@@ -676,31 +787,37 @@ const createMarkdown = (summary: {
 | measured quads | \`${summary.estimateVsMeasured.measured.quads}\` |
 | measured colliders | \`${summary.estimateVsMeasured.measured.colliders}\` |
 | measured total | \`${summary.estimateVsMeasured.measured.totalMeasured}\` |
-| classifyMs / meshMs / transitionMs (Dev-Maschine) | \`${summary.estimateVsMeasured.measured.classifyMs} / ${summary.estimateVsMeasured.measured.meshMs} / ${summary.estimateVsMeasured.measured.transitionMs}\` |
 
-Timings sind Dev-Maschinen-Beobachtungen (\`performance.now()\`, finite ms), keine Hardware-Aussagen.
+## Scene und Render-LOD
 
-## Render-LOD (echte Renderer-Verzweigung)
-
+- Scene-Descriptor: \`${summary.scene.schemaVersion}\`, Source-Hash \`${summary.scene.sourceContentHash}\`, Low/High-Quads \`${summary.scene.lowQuadCount}/${summary.scene.highQuadCount}\`
 - Low: \`${summary.lod.lowBoxCount}\` gemergte Box(en), \`${summary.lod.lowMaterialVariant}\`
 - High: \`${summary.lod.highBoxCount}\` per-Voxel-Boxen, \`${summary.lod.highMaterialVariant}\`
 - Before/After-Delta: \`${summary.lod.beforeAfterDelta.changedPixels}\` px (\`${summary.lod.beforeAfterDelta.changedRatio}\`), max Kanal-Delta \`${summary.lod.beforeAfterDelta.maximumChannelDelta}\`
 - Low/High-Delta: \`${summary.lod.lodDelta.changedPixels}\` px (\`${summary.lod.lodDelta.changedRatio}\`), max Kanal-Delta \`${summary.lod.lodDelta.maximumChannelDelta}\`
-- Physik-Approximation (Collider-Wahl) und Render-LOD (Geometrie+Material-Projektion) sind getrennte Entscheidungen ueber demselben Plan; Occupancy/Masse/Fragmente/Mesh-Hash sind LOD-uebergreifend gleich.
+- Physik-Approximation und Render-LOD bleiben getrennte Projektionen desselben Plans.
 
 ## Deferred-Vollzug
 
-- Entscheidung: \`${summary.deferred.status}\`, Completion: \`${summary.deferred.completionStatus}\`, Job \`${summary.deferred.dispatchedJobId}\`
+- Entscheidung: \`${summary.deferred.status}\`, Completion: \`${summary.deferred.completionStatus}\`
+- Job: \`${summary.deferred.jobKind}\`, Target \`${summary.deferred.targetKey}\`, Revision \`${summary.deferred.inputRevision}\`, Input-Hash \`${summary.deferred.inputContentHash}\`
+- Dispatched Job-ID: \`${summary.deferred.dispatchedJobId}\`
 - Anker \`${summary.deferred.anchoredVoxels}\` + Fragmente \`${summary.deferred.fragmentVoxels}\` bilanzieren jede Zelle; dynamisch \`${summary.deferred.dynamicVoxels}\`, Masse \`${summary.deferred.completionMassKg} kg\`.
 
 ## Coverage-Bindung
 
-- Regel: \`${summary.coverage.binding}\`; ausserhalb fail-closed.
+- Regel: \`${summary.coverage.binding}\`; authored Digest \`${summary.coverage.digest}\`; Bricks \`${summary.coverage.coveredBricks}\`.
+- Fremde Objekt-ID wird verworfen: \`${summary.coverage.foreignThrows}\`; Same-ID-Fremdinhalt: Unit \`${summary.coverage.sameIdForeignContentTest}\`.
 
 ## Screenshots
 
+- Alle vier PNGs: \`${summary.harness.screenshotDimensions.width}x${summary.harness.screenshotDimensions.height}\`.
 - \`evidence/pg-tragwerk-r5b-before.png\`
 - \`evidence/pg-tragwerk-r5b-after.png\`
 - \`evidence/pg-tragwerk-r5b-lod-low.png\`
 - \`evidence/pg-tragwerk-r5b-lod-high.png\`
+
+## Browser Health
+
+- Console errors: \`${summary.browserHealth.consoleErrors}\`; page errors: \`${summary.browserHealth.pageErrors}\`; request failures: \`${summary.browserHealth.requestFailures}\`; HTTP errors: \`${summary.browserHealth.httpErrors}\`
 `;

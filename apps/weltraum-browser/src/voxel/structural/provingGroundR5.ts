@@ -2,10 +2,23 @@ import {
   ADAPTIVE_BRICK_CELLS_PER_AXIS,
   createAdaptiveBrickKey,
   deepFreeze,
+  hashAdaptiveCanonical,
   serializeAdaptiveKey,
   type AdaptiveBrickKey
 } from "../adaptive";
-import type { StableWorkerJobQueue, WorkerJobRequest } from "../../workers";
+import {
+  algorithmVersion,
+  byteCount,
+  contentRevision,
+  jobDeadline,
+  planningEpoch,
+  workerEpoch,
+  workerJobId,
+  workerJobKind,
+  workerTargetKey,
+  type StableWorkerJobQueue,
+  type WorkerJobRequest
+} from "../../workers";
 import { globalQuantumForStructuralCell } from "./coordinates";
 import { reconstructStructuralObjectInternal, structuralAddressForBrickCell } from "./model";
 import {
@@ -131,6 +144,58 @@ export const missingNeighborBrickOrigins = (
   );
 };
 
+const R5_AUTHORED_FIXTURE_BINDING_SCHEMA = "pg-tragwerk-r5b-authored-fixture-binding-v1" as const;
+
+/**
+ * Kanonischer Digest der geschlossenen, authored R5B-Referenz. Der erwartete
+ * Content-Hash bindet den vollstaendig belegten Fixture-Inhalt; Frame,
+ * Materialdefinitionen und Brickanzahl sind bewusst nochmals Bestandteil des
+ * Digest-Projekts, damit eine gleich benannte Fremdstruktur fail-closed bleibt.
+ */
+const R5_AUTHORED_FIXTURE_PROJECTION = deepFreeze({
+  schemaVersion: R5_AUTHORED_FIXTURE_BINDING_SCHEMA,
+  objectId: "object.pg-tragwerk-01",
+  contentHash: "fnv1a64-v1:8a0c50f4a811382b",
+  frame: deepFreeze({
+    schemaVersion: "structural-microvoxel-frame-binding-v1",
+    bodyId: "pg-tragwerk-01",
+    surfaceFrameId: "frame.pg-surface",
+    regionId: "region.pg-tragwerk-01",
+    generatorVersion: "generator.pg-v1",
+    objectOriginQuantum: deepFreeze({ x: 0, y: 0, z: 0 })
+  }),
+  materials: deepFreeze([
+    { materialId: 1, densityKgPerCubicMeter: 1_600, structuralClass: "terrain", destructible: false, tags: ["sockel"] },
+    { materialId: 2, densityKgPerCubicMeter: 7_800, structuralClass: "truss", destructible: true, tags: ["tragwerk"] },
+    { materialId: 3, densityKgPerCubicMeter: 2_700, structuralClass: "beam", destructible: true, tags: ["tragwerk"] }
+  ]),
+  brickCount: 7
+});
+
+export const R5_AUTHORED_FIXTURE_DIGEST = hashAdaptiveCanonical(R5_AUTHORED_FIXTURE_PROJECTION);
+
+const r5AuthoredFixtureProjection = (object: StructuralObject) => deepFreeze({
+  schemaVersion: R5_AUTHORED_FIXTURE_BINDING_SCHEMA,
+  objectId: object.objectId,
+  contentHash: object.contentHash,
+  frame: object.frame,
+  materials: object.materials.map((material) => ({
+    materialId: material.materialId,
+    densityKgPerCubicMeter: material.densityKgPerCubicMeter,
+    structuralClass: material.structuralClass,
+    destructible: material.destructible,
+    tags: material.tags
+  })),
+  brickCount: object.bricks.length
+});
+
+const assertR5AuthoredFixture = (object: StructuralObject): void => {
+  const digest = hashAdaptiveCanonical(r5AuthoredFixtureProjection(object));
+  if (digest !== R5_AUTHORED_FIXTURE_DIGEST) {
+    throw new Error(`R5 coverage requires the canonical authored fixture digest (received ${digest}).`);
+  }
+};
+
 /** Lege bekannte Aussenluft als leere Bricks bei; Occupancy/Masse/Konnektivitaet unveraendert.
  *
  * Ablaufvorgabe: Coverage wird auf dem ungeschnittenen Ausgangsobjekt (Revision 0,
@@ -138,8 +203,10 @@ export const missingNeighborBrickOrigins = (
  * aendert jede Brickliste den Content-Hash und bricht die Evidence-Kette — die
  * Rekonstruktion schlaegt dann fail-closed fehl (kein stilles Ummodeln).
  *
- * Paket P-PG-R5B: zusaetzlich an das geschlossene authored Fixture gebunden
- * (object.pg-tragwerk-01, Revision 0, leere Evidence) — fail-closed sonst.
+ * Paket P-PG-R5B: zusaetzlich an den kanonischen Digest des geschlossenen
+ * authored Fixture gebunden — fail-closed auch bei gleicher Objekt-ID und
+ * veraendertem Inhalt. Die Bindung wird nach der Structural-Rekonstruktion
+ * geprueft und gilt damit auch fuer den Reconstruct-Pfad.
  */
 export const withFullKnownCoverage = (object: StructuralObject): StructuralObject => {
   if (
@@ -152,31 +219,36 @@ export const withFullKnownCoverage = (object: StructuralObject): StructuralObjec
     );
   }
   const missing = missingNeighborBrickOrigins(object);
-  if (missing.length === 0) return object;
-  const emptyBricks = missing.map((origin) => ({
-    schemaVersion: STRUCTURAL_BRICK_SCHEMA_VERSION,
-    key: createAdaptiveBrickKey({
-      bodyId: object.frame.bodyId,
-      surfaceFrameId: object.frame.surfaceFrameId,
-      regionId: object.frame.regionId,
-      generatorVersion: object.frame.generatorVersion,
-      level: 4,
-      originQuantum: origin
-    }) as AdaptiveBrickKey,
-    cells: [] as const
-  }));
-  return reconstructStructuralObjectInternal({
-    objectId: object.objectId,
-    frame: object.frame,
-    source: object.source,
-    materials: object.materials,
-    bricks: [...object.bricks, ...emptyBricks],
-    anchors: object.anchors,
-    joints: object.joints,
-    objectRevision: object.objectRevision,
-    editRevision: object.editRevision,
-    commandEvidence: object.commandEvidence
-  });
+  const covered = missing.length === 0
+    ? object
+    : reconstructStructuralObjectInternal({
+      objectId: object.objectId,
+      frame: object.frame,
+      source: object.source,
+      materials: object.materials,
+      bricks: [
+        ...object.bricks,
+        ...missing.map((origin) => ({
+          schemaVersion: STRUCTURAL_BRICK_SCHEMA_VERSION,
+          key: createAdaptiveBrickKey({
+            bodyId: object.frame.bodyId,
+            surfaceFrameId: object.frame.surfaceFrameId,
+            regionId: object.frame.regionId,
+            generatorVersion: object.frame.generatorVersion,
+            level: 4,
+            originQuantum: origin
+          }) as AdaptiveBrickKey,
+          cells: [] as const
+        }))
+      ],
+      anchors: object.anchors,
+      joints: object.joints,
+      objectRevision: object.objectRevision,
+      editRevision: object.editRevision,
+      commandEvidence: object.commandEvidence
+    });
+  assertR5AuthoredFixture(covered);
+  return covered;
 };
 
 /** LOD ist Projektion: low = Greedy-Collider, high = Voxel-Collider desselben Plans (inkl. Debris). */
@@ -327,8 +399,9 @@ export const describeR5Scene = (
 /*   Render-LOD (sichtbare Geometrie/Material) sind getrennte            */
 /*   Entscheidungen mit gleicher Authority.                             */
 /* - createR5DeferredJobRequest/completeR5DeferredRun: Deferred-Pfad    */
-/*   als echter Queue-Job (synchron dispatch-then-execute, kein Worker-  */
-/*   Thread) mit Re-Prepare zu Ready und Materie-Erhalt. Timings sind   */
+/*   als lokaler StableWorkerJobQueue-Job (synchron dispatch-then-execute, */
+/*   kein WorkerPool-/Worker-Thread-Vertrag) mit Re-Prepare zu Ready und */
+/*   Materie-Erhalt. Timings sind                                       */
 /*   Dev-Maschinen-Beobachtungen via performance.now(), keine            */
 /*   Hardware-Aussagen.                                                 */
 /* ------------------------------------------------------------------ */
@@ -416,14 +489,22 @@ export const selectR5RenderLodGeometry = (
   );
 };
 
+/** Lokaler R5-Jobtyp; absichtlich kein WorkerPool-/StreamingWorker-Job. */
+export const R5_DEFERRED_JOB_KIND = workerJobKind("PgTragwerkR5Deferred");
+
 export interface R5DeferredPayload {
-  readonly kind: "pg-tragwerk-r5-deferred-v1";
+  readonly kind: "pg-tragwerk-r5-deferred-v2";
   readonly objectId: string;
   readonly objectRevision: number;
+  readonly inputContentHash: string;
   readonly estimatedWork: number;
 }
 
-/** Deferred-Entscheidung als echter, JSON-serialisierbarer Queue-Job (fail-closed ausserhalb Deferred). */
+/**
+ * Deferred-Entscheidung als JSON-serialisierbarer Job fuer die lokale
+ * StableWorkerJobQueue. Die Bytefelder sind 0, weil dieser Job keine
+ * Transferable-Buffers und keinen StreamingWorker ausfuehrt.
+ */
 export const createR5DeferredJobRequest = (
   decision: R5PrepareDecision,
   object: StructuralObject
@@ -431,22 +512,24 @@ export const createR5DeferredJobRequest = (
   if (decision.status !== "Deferred") {
     throw new Error(`R5 deferred job requires a Deferred decision (received "${decision.status}").`);
   }
+  const inputRevision = contentRevision(Number(object.objectRevision), "inputRevision");
   return deepFreeze({
-    jobId: "pg-r5-deferred-run" as WorkerJobRequest<R5DeferredPayload>["jobId"],
-    jobKind: "TransformBuffer" as WorkerJobRequest<R5DeferredPayload>["jobKind"],
-    targetKey: String(object.objectId) as WorkerJobRequest<R5DeferredPayload>["targetKey"],
-    planningEpoch: 1 as WorkerJobRequest<R5DeferredPayload>["planningEpoch"],
-    workerEpoch: 0 as WorkerJobRequest<R5DeferredPayload>["workerEpoch"],
-    inputRevision: Number(object.objectRevision) as WorkerJobRequest<R5DeferredPayload>["inputRevision"],
-    algorithmVersion: 1 as WorkerJobRequest<R5DeferredPayload>["algorithmVersion"],
+    jobId: workerJobId(`pg-r5-deferred:${object.objectId}:${String(object.objectRevision)}:${object.contentHash}`),
+    jobKind: R5_DEFERRED_JOB_KIND,
+    targetKey: workerTargetKey(object.objectId),
+    planningEpoch: planningEpoch(1),
+    workerEpoch: workerEpoch(0),
+    inputRevision,
+    algorithmVersion: algorithmVersion(1),
     priority: "Normal" as WorkerJobRequest<R5DeferredPayload>["priority"],
-    deadline: 0 as WorkerJobRequest<R5DeferredPayload>["deadline"],
-    estimatedInputBytes: 1 as WorkerJobRequest<R5DeferredPayload>["estimatedInputBytes"],
-    estimatedOutputBytes: 1 as WorkerJobRequest<R5DeferredPayload>["estimatedOutputBytes"],
+    deadline: jobDeadline(0),
+    estimatedInputBytes: byteCount(0),
+    estimatedOutputBytes: byteCount(0),
     payload: deepFreeze({
-      kind: "pg-tragwerk-r5-deferred-v1",
+      kind: "pg-tragwerk-r5-deferred-v2" as const,
       objectId: String(object.objectId),
       objectRevision: Number(object.objectRevision),
+      inputContentHash: object.contentHash,
       estimatedWork: decision.estimatedWork
     })
   });
@@ -472,20 +555,83 @@ export interface R5DeferredCompletion {
   readonly massKg: number;
 }
 
+const isR5DeferredPayloadForObject = (
+  value: unknown,
+  object: StructuralObject
+): value is R5DeferredPayload => {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return false;
+  const payload = value as Record<string, unknown>;
+  return payload.kind === "pg-tragwerk-r5-deferred-v2"
+    && payload.objectId === object.objectId
+    && payload.objectRevision === Number(object.objectRevision)
+    && payload.inputContentHash === object.contentHash
+    && typeof payload.estimatedWork === "number"
+    && Number.isSafeInteger(payload.estimatedWork)
+    && payload.estimatedWork >= 0;
+};
+
+function assertR5DeferredJobMatchesObject(
+  job: WorkerJobRequest,
+  expectedJob: WorkerJobRequest<R5DeferredPayload>,
+  object: StructuralObject
+): asserts job is WorkerJobRequest<R5DeferredPayload> {
+  if (expectedJob.jobKind !== R5_DEFERRED_JOB_KIND) {
+    throw new Error("R5 deferred completion received an invalid expected job kind.");
+  }
+  if (job.jobId !== expectedJob.jobId) {
+    throw new Error("R5 deferred completion received a foreign job ID.");
+  }
+  if (job.jobKind !== R5_DEFERRED_JOB_KIND) {
+    throw new Error("R5 deferred completion received a foreign job kind.");
+  }
+  if (String(job.targetKey) !== String(object.objectId)) {
+    throw new Error("R5 deferred completion target does not match the object.");
+  }
+  if (Number(job.inputRevision) !== Number(object.objectRevision)) {
+    throw new Error("R5 deferred completion input revision is stale for the object.");
+  }
+  if (!isR5DeferredPayloadForObject(expectedJob.payload, object)
+    || !isR5DeferredPayloadForObject(job.payload, object)) {
+    throw new Error("R5 deferred completion payload does not match the object content.");
+  }
+  const payload = job.payload;
+  const expectedPayload = expectedJob.payload;
+  if (payload.kind !== expectedPayload.kind
+    || payload.objectId !== expectedPayload.objectId
+    || payload.objectRevision !== expectedPayload.objectRevision
+    || payload.inputContentHash !== expectedPayload.inputContentHash
+    || payload.estimatedWork !== expectedPayload.estimatedWork) {
+    throw new Error("R5 deferred completion payload differs from the expected job.");
+  }
+  if (job.targetKey !== expectedJob.targetKey
+    || job.inputRevision !== expectedJob.inputRevision
+    || job.planningEpoch !== expectedJob.planningEpoch
+    || job.workerEpoch !== expectedJob.workerEpoch
+    || job.algorithmVersion !== expectedJob.algorithmVersion
+    || job.priority !== expectedJob.priority
+    || job.deadline !== expectedJob.deadline
+    || job.estimatedInputBytes !== expectedJob.estimatedInputBytes
+    || job.estimatedOutputBytes !== expectedJob.estimatedOutputBytes) {
+    throw new Error("R5 deferred completion job metadata differs from the expected job.");
+  }
+}
+
 const r5NowMs = (): number => {
   const now = performance.now();
   return Number.isFinite(now) ? now : 0;
 };
 
 /**
- * Deferred-Vollzug: synchron dispatch-then-execute (kein Worker-Thread).
- * Entnimmt den Job aus der Queue, bereitet mit entspannten Budgets erneut
- * zu Ready vor und faehrt die volle Ableitung bis zum Abschluss — die
- * Fragmente bilanzieren jede Zelle, die Masse bleibt erhalten.
+ * Deferred-Vollzug: synchron dispatch-then-execute ueber die lokale Queue.
+ * Der erwartete Job wird vor Re-Prepare und Hooks gegen Ziel, Revision,
+ * Content-Payload und Job-ID gebunden. Jeder Fehler requeued den dispatchten
+ * Job, damit Deferred-Arbeit weder bei Stale- noch Hook-/Budget-Fehlern
+ * verloren geht.
  */
 export const completeR5DeferredRun = (
   object: StructuralObject,
   queue: StableWorkerJobQueue,
+  expectedJob: WorkerJobRequest<R5DeferredPayload>,
   relaxedBudgets: R5PrepareBudgets,
   hooks: R5DeferredHooks
 ): R5DeferredCompletion => {
@@ -493,55 +639,64 @@ export const completeR5DeferredRun = (
   if (!dispatched) {
     throw new Error("R5 deferred run requires a dispatched queue job (queue empty).");
   }
-  const decision = prepareR5Bounded(object, relaxedBudgets);
-  if (decision.status !== "Ready") {
-    throw new Error(`R5 deferred run requires relaxed budgets reaching Ready (received "${decision.status}").`);
-  }
-  const classifyStart = r5NowMs();
-  const classification = hooks.classify(object);
-  const classifyMs = Math.max(0, r5NowMs() - classifyStart);
-  const meshStart = r5NowMs();
-  const mesh = hooks.mesh(object);
-  const meshMs = Math.max(0, r5NowMs() - meshStart);
-  const transitionStart = r5NowMs();
-  const plan = hooks.transition(object, classification);
-  const transitionMs = Math.max(0, r5NowMs() - transitionStart);
-  const measured = measureR5Work({
-    occupiedCells: decision.occupiedCells,
-    classification,
-    meshQuadCount: mesh.indices.length / 6,
-    plan,
-    timings: { classifyMs, meshMs, transitionMs }
-  });
-  const fragmentVoxels = classification.fragments.reduce(
-    (sum, fragment) => sum + fragment.occupiedCells.length, 0
-  );
-  const anchoredVoxels = classification.anchoredComponents.reduce(
-    (sum, component) => sum + component.occupiedCells.length, 0
-  );
-  const dynamicVoxels =
-    plan.dynamicBodies.reduce((sum, body) => sum + body.occupiedVoxelCount, 0) +
-    (plan.status === "Fallback" ? plan.debris.occupiedVoxelCount : 0);
-  // Materie-Erhalt auf zwei Ebenen: Klassifikation partitioniert alle Zellen
-  // (Anker + Fragmente), und der installierte Plan vertritt jede nicht
-  // verankerte Zelle dynamisch (direkt oder via Debris) — Anker bleibt statisch.
-  if (anchoredVoxels + fragmentVoxels !== decision.occupiedCells) {
-    throw new Error(
-      `R5 deferred run lost matter in classification: ${anchoredVoxels} anchored + ${fragmentVoxels} fragment vs ${decision.occupiedCells} occupied cells.`
+  try {
+    assertR5DeferredJobMatchesObject(dispatched, expectedJob, object);
+    const decision = prepareR5Bounded(object, relaxedBudgets);
+    if (decision.status !== "Ready") {
+      throw new Error(`R5 deferred run requires relaxed budgets reaching Ready (received "${decision.status}").`);
+    }
+    const classifyStart = r5NowMs();
+    const classification = hooks.classify(object);
+    const classifyMs = Math.max(0, r5NowMs() - classifyStart);
+    const meshStart = r5NowMs();
+    const mesh = hooks.mesh(object);
+    const meshMs = Math.max(0, r5NowMs() - meshStart);
+    const transitionStart = r5NowMs();
+    const plan = hooks.transition(object, classification);
+    const transitionMs = Math.max(0, r5NowMs() - transitionStart);
+    const measured = measureR5Work({
+      occupiedCells: decision.occupiedCells,
+      classification,
+      meshQuadCount: mesh.indices.length / 6,
+      plan,
+      timings: { classifyMs, meshMs, transitionMs }
+    });
+    const fragmentVoxels = classification.fragments.reduce(
+      (sum, fragment) => sum + fragment.occupiedCells.length, 0
     );
-  }
-  if (anchoredVoxels + dynamicVoxels !== decision.occupiedCells) {
-    throw new Error(
-      `R5 deferred run lost matter in transition: ${anchoredVoxels} anchored + ${dynamicVoxels} dynamic vs ${decision.occupiedCells} occupied cells.`
+    const anchoredVoxels = classification.anchoredComponents.reduce(
+      (sum, component) => sum + component.occupiedCells.length, 0
     );
+    const dynamicVoxels =
+      plan.dynamicBodies.reduce((sum, body) => sum + body.occupiedVoxelCount, 0) +
+      (plan.status === "Fallback" ? plan.debris.occupiedVoxelCount : 0);
+    // Materie-Erhalt auf zwei Ebenen: Klassifikation partitioniert alle Zellen
+    // (Anker + Fragmente), und der installierte Plan vertritt jede nicht
+    // verankerte Zelle dynamisch (direkt oder via Debris) — Anker bleibt statisch.
+    if (anchoredVoxels + fragmentVoxels !== decision.occupiedCells) {
+      throw new Error(
+        `R5 deferred run lost matter in classification: ${anchoredVoxels} anchored + ${fragmentVoxels} fragment vs ${decision.occupiedCells} occupied cells.`
+      );
+    }
+    if (anchoredVoxels + dynamicVoxels !== decision.occupiedCells) {
+      throw new Error(
+        `R5 deferred run lost matter in transition: ${anchoredVoxels} anchored + ${dynamicVoxels} dynamic vs ${decision.occupiedCells} occupied cells.`
+      );
+    }
+    return deepFreeze({
+      dispatchedJobId: dispatched.jobId,
+      decision,
+      measured,
+      anchoredVoxels,
+      fragmentVoxels,
+      dynamicVoxels,
+      massKg: hooks.massKg(object)
+    });
+  } catch (error) {
+    const requeued = queue.enqueue(dispatched);
+    if (requeued.kind !== "Accepted") {
+      throw new Error(`R5 deferred run failed and could not requeue the job (${requeued.kind}).`);
+    }
+    throw error;
   }
-  return deepFreeze({
-    dispatchedJobId: dispatched.jobId as WorkerJobRequest<R5DeferredPayload>["jobId"],
-    decision,
-    measured,
-    anchoredVoxels,
-    fragmentVoxels,
-    dynamicVoxels,
-    massKg: hooks.massKg(object)
-  });
 };
