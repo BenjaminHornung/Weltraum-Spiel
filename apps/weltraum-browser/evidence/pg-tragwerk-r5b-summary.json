@@ -1,0 +1,159 @@
+{
+  "schemaVersion": "pg-tragwerk-r5b-v3",
+  "status": "PASS",
+  "generator": "apps/weltraum-browser/tests/e2e/pg-tragwerk-destruction-render.spec.ts",
+  "route": "/",
+  "testBridgeAbsentBeforeAndAfter": true,
+  "harness": {
+    "width": 640,
+    "height": 360,
+    "screenshotDimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "pixelRatio": 1,
+    "antialias": false,
+    "lighting": "None"
+  },
+  "destruction": {
+    "occupiedBefore": 27,
+    "occupiedAfter": 26,
+    "beforeContentHash": "fnv1a64-v1:8a0c50f4a811382b",
+    "afterContentHash": "fnv1a64-v1:e2e234c9f752d25a",
+    "meshContentHash": "fnv1a64-v1:0f2c00f581a70d46",
+    "massKg": 158.203125
+  },
+  "estimateVsMeasured": {
+    "estimatedWork": 234,
+    "estimatedWorkKind": "estimate:9x-occupied-cells",
+    "occupiedCells": 26,
+    "brickCount": 7,
+    "measured": {
+      "visitedCells": 26,
+      "components": 2,
+      "fragments": 1,
+      "quads": 23,
+      "colliders": 3,
+      "totalMeasured": 55
+    }
+  },
+  "scene": {
+    "schemaVersion": "pg-tragwerk-r5-scene-v1",
+    "sourceContentHash": "fnv1a64-v1:e2e234c9f752d25a",
+    "lowQuadCount": 23,
+    "highQuadCount": 23
+  },
+  "visualEvidenceContract": {
+    "dimensions": {
+      "width": 640,
+      "height": 360
+    },
+    "perChannelTolerance": 12,
+    "nonEmptyMinimumRatio": 0.01,
+    "deltaBands": {
+      "beforeAfter": {
+        "observedChangedPixels": 109,
+        "observedChangedRatio": 0.0004730902777777778,
+        "observedMaximumChannelDelta": 210,
+        "minChangedPixels": 50,
+        "maxChangedPixels": 2048,
+        "minMaximumChannelDelta": 100
+      },
+      "lowHigh": {
+        "observedChangedPixels": 4324,
+        "observedChangedRatio": 0.01876736111111111,
+        "observedMaximumChannelDelta": 166,
+        "minChangedPixels": 1024,
+        "maxChangedPixels": 16384,
+        "minMaximumChannelDelta": 100
+      }
+    }
+  },
+  "lod": {
+    "lowBoxCount": 1,
+    "highBoxCount": 2,
+    "lowMaterialVariant": "r5-low-shared",
+    "highMaterialVariant": "r5-high-per-voxel",
+    "authorityNote": "physics-approximation (collider choice) and render-LOD (geometry+material projection) are separate decisions over the same plan; occupancy/mass/fragments/mesh hash are equal across LODs"
+  },
+  "negativeChecks": {
+    "identicalImagesRejected": true,
+    "emptyImageRejected": true
+  },
+  "deferred": {
+    "status": "Deferred",
+    "reason": "r5/budgets/total-work",
+    "payloadRoundtripEquals": true,
+    "jobKind": "PgTragwerkR5Deferred",
+    "targetKey": "object.pg-tragwerk-01",
+    "inputRevision": 1,
+    "inputContentHash": "fnv1a64-v1:e2e234c9f752d25a",
+    "enqueueKind": "Accepted",
+    "completionStatus": "Ready",
+    "dispatchedJobId": "pg-r5-deferred:object.pg-tragwerk-01:1:fnv1a64-v1:e2e234c9f752d25a",
+    "requestJobId": "pg-r5-deferred:object.pg-tragwerk-01:1:fnv1a64-v1:e2e234c9f752d25a",
+    "anchoredVoxels": 24,
+    "fragmentVoxels": 2,
+    "dynamicVoxels": 2,
+    "completionMassKg": 158.203125,
+    "queueEmpty": true
+  },
+  "coverage": {
+    "binding": "object.pg-tragwerk-01@revision-0+empty-evidence",
+    "digest": "fnv1a64-v1:17528f827d9344b2",
+    "coveredBricks": 7,
+    "foreignThrows": true,
+    "sameIdForeignContentTest": "R5B-g"
+  },
+  "scope": {
+    "kind": "test-side-harness-slice",
+    "productPaths": [
+      "applyStructuralDestructionCommand",
+      "prepareR5Bounded / StableWorkerJobQueue / completeR5DeferredRun",
+      "extractStructuralMeshData / describeR5Scene",
+      "selectR5RenderLodGeometry"
+    ],
+    "harnessOnly": [
+      "test-created PG-TRAGWERK overlay",
+      "deterministic Three.js canvas projection"
+    ],
+    "excluded": [
+      "normal scene wiring",
+      "player gameplay state",
+      "persistence"
+    ]
+  },
+  "screenshots": {
+    "pg-tragwerk-r5b-before.png": {
+      "width": 640,
+      "height": 360,
+      "nonEmpty": true
+    },
+    "pg-tragwerk-r5b-after.png": {
+      "width": 640,
+      "height": 360,
+      "nonEmpty": true
+    },
+    "pg-tragwerk-r5b-lod-low.png": {
+      "width": 640,
+      "height": 360,
+      "nonEmpty": true
+    },
+    "pg-tragwerk-r5b-lod-high.png": {
+      "width": 640,
+      "height": 360,
+      "nonEmpty": true
+    }
+  },
+  "browserHealth": {
+    "consoleErrors": 0,
+    "pageErrors": 0,
+    "requestFailures": 0,
+    "httpErrors": 0
+  },
+  "verification": {
+    "command": "npx playwright test tests/e2e/pg-tragwerk-destruction-render.spec.ts",
+    "canvasTolerance": "renderer-tolerant: per-channel 12; non-empty > 0.01; fixed before/after and low/high delta bands",
+    "observedResult": "pass"
+  }
+}
