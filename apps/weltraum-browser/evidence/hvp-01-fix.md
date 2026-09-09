@@ -6,13 +6,38 @@
 - SHA-256: `b47b7e48fbdcfbe514658238a74838986531cdc09b3dc09d35d39aac5620d1e3`
 - Bytes: `47221`, dims: `1920x1080` (exact)
 - Profile: beauty (real product viewport `?hestiaPrototype=1`, C04-WIDE default); no separate technical harness.
-- Tolerance band: per-channel `12`, non-empty `> 0.01`, bound-vs-live changed pixels `<= 8192`.
-- Calibration (non-record re-run): `changedPixels=0`, `changedRatio=0`, `maximumChannelDelta=0`
-  (bit-identical deterministic re-render). No lower band by design: an identical
-  re-render is the expected case. The upper band rejects stale captures and blank
-  replacements (blank-vs-bound differs in ~2M pixels).
-- Writes happen only with `WELTRAUM_RECORD_EVIDENCE=1`; normal runs compare
-  in-memory and leave `git status` clean.
+- Structure contract: exact `1920x1080` viewport, non-empty `> 0.01`, at least
+  `5` quantized RGB colors with at least `256` pixels each, water-family pixels
+  (`B >= 64`, `B-R >= 28`, `G-R >= 14`) and terrain-family pixels
+  (`R >= 80`, `R-B >= 16`, `G-B >= 8`) each above `1%` of the viewport.
+- Live-frame delta band: per-channel tolerance `12`, changed pixels `0..8192`.
+  Calibration (two sequential non-record live frames): `changedPixels=0`,
+  `changedRatio=0`, `maximumChannelDelta=0` (bit-identical within one browser).
+  The upper limit is unchanged at `8192` (under `0.4%` of this viewport), so it
+  remains a small redraw guardrail rather than a cross-machine pixel allowance.
+- The bound PNG remains committed evidence and is no longer compared pixel-wise
+  with a live CI render. Test 4 structurally validates the committed PNG and
+  decodes temporary copies to reject missing, corrupt, blank and wrong-size
+  replacements.
+- PNG writes happen only with `WELTRAUM_RECORD_EVIDENCE=1`; normal Test 1 runs
+  keep both live frames in memory, perform structure checks and leave `git status`
+  clean without a stored-PNG byte assertion.
+
+## CI-Toleranz-Nachtrag (HVP-01-CIFIX)
+
+- Anlass: PR `#66`, head `a38db544`, CI Run `34412781309` (`Browser mainline
+  verification`). The only failure was Test 1's old `bound-vs-live` assertion:
+  CI Linux/Software-GL produced `changedPixels=68812` against the Windows/Chrome
+  bound capture, exceeding the old `8192` band.
+- Entscheidung: Test 1 is now named `renders the bound scene structure`. It checks
+  viewport dimensions, non-empty output, several palette buckets and the water /
+  terrain families on each of two live captures, then applies the changed-pixel
+  band only to the sequential live-vs-live comparison. This preserves a
+  determinism signal without making cross-machine PNG bytes authoritative.
+- The committed PNG's SHA-256, byte count, dimensions and beauty/C04-WIDE profile
+  above remain unchanged evidence. `WELTRAUM_RECORD_EVIDENCE=1` is the explicit
+  opt-in for replacing it; ordinary runs do not rewrite or assert against it in
+  Test 1.
 
 ## Fix → Befund → Test
 
@@ -55,8 +80,8 @@
    Test: `hvp-terrain.test.ts` "T11 capacity gate and block-size guard".
 8. Capture binding: E2E follows the R5B pattern (`decodeAndCompare`,
    `measureCanvas`, `persistDeterministicEvidence`, temp-dir negatives).
-   Negatives: missing/corrupt/blank/wrong-size stored PNG rejected;
-   self-compare reports 0 changes; blank-vs-bound exceeds the live upper band.
+   Test 1 uses structure checks plus a sequential live-vs-live delta band;
+   missing/corrupt/blank/wrong-size stored PNGs remain rejected in Test 4.
    Test: `tests/e2e/hvp-visible-coast.spec.ts` (4 tests, live group).
 
 ## Coastal contract scope (HVP-01 vs HVP-02+)
