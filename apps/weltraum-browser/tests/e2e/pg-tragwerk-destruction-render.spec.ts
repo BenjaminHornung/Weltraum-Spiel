@@ -318,7 +318,7 @@ test("normal route renders the operable PG-TRAGWERK-01 R5B destruction scene", a
     const badge = document.createElement("div");
     badge.textContent = "Modus: PG-TRAGWERK R5B";
     const destroyButton = document.createElement("button");
-    destroyButton.setAttribute("data-testid", "pg-tragwerk-destroy");
+    destroyButton.setAttribute("data-testid", "pg-tragwerk-r5b-destroy");
     destroyButton.textContent = "Zerstörung auslösen";
     destroyButton.type = "button";
     const status = document.createElement("div");
@@ -687,7 +687,7 @@ test("normal route renders the operable PG-TRAGWERK-01 R5B destruction scene", a
     });
   };
   await expect(page.locator('[data-testid="pg-tragwerk-r5b"]')).toHaveCount(1);
-  await expect(page.locator('[data-testid="pg-tragwerk-destroy"]')).toHaveText("Zerstörung auslösen");
+  await expect(page.locator('[data-testid="pg-tragwerk-r5b-destroy"]')).toHaveText("Zerstörung auslösen");
   await expect(page.locator("section[data-testid='pg-tragwerk-r5b']")).toContainText("Modus: PG-TRAGWERK R5B");
   // Spieler-HUD bleibt unberuehrt und vorhanden.
   await expect(page.locator("#flight-hud")).toHaveCount(1);
@@ -696,7 +696,7 @@ test("normal route renders the operable PG-TRAGWERK-01 R5B destruction scene", a
   expect(await scenario.evaluate((value) => value.initialVisibleKeys())).toEqual(["pg-r5b:before"]);
   const beforeImage = await captureCanvas();
 
-  await page.getByTestId("pg-tragwerk-destroy").click();
+  await page.getByTestId("pg-tragwerk-r5b-destroy").click();
   const cut = await scenario.evaluate((value) => value.lastCut());
   expect(cut).not.toBeNull();
   if (cut === null) throw new Error("PG-TRAGWERK destroy button did not commit a cut.");
