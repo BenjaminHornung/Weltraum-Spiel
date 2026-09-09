@@ -1,6 +1,7 @@
 import { AutopilotExecutor, DirectLocalPlanner, FixedStepSimulationLoop, ObstacleAvoidanceLocalPlanner, autopilotSpeedProfileIds, createRoutePreviewProvenance, createTelemetrySnapshot, validatePreviewForLock, vec3 } from "../core";
 import type { AutopilotSpeedProfileId, ObstacleDescriptor, PresentationSnapshot, PreviewLockValidationResult, RoutePlan, RoutePlanningResult, ShipState, TargetDescriptor } from "../core";
 import { autopilotAuthority, createShipState, noAutopilotAuthority, playableLargeFieldRuntimeObstacles, playableLargeFieldTargets, provingGroundTargets } from "../world/provingGroundWorld";
+import { createPgTragwerkPlayerSlice, type PgTragwerkPlayerSnapshot } from "../provingGround/pgTragwerkPlayerSlice";
 import type { BrowserRuntimeCommand, BrowserRuntimeCommandCode, BrowserRuntimeCommandResult, BrowserRuntimeRejectionCode } from "./commands";
 import { clamp01, createManualFlightInputState, mergeManualFlightInputState, nextCameraMode, nextControlMode, type ManualFlightInputState } from "./input";
 import type { NavigationObjectiveOptionSnapshot, NavigationObjectiveSnapshot, NavigationObjectiveStatus, RoutePreviewSnapshot, TelemetrySnapshot } from "../sim/telemetry";
@@ -29,6 +30,7 @@ export interface BrowserRuntimeController {
   getPresentationSnapshot(): PresentationSnapshot;
   dispatchCommand(command: unknown): BrowserRuntimeCommandResult;
   getManualInput(): ManualFlightInputState;
+  getPgTragwerk(): PgTragwerkPlayerSnapshot;
   disturbShip(offsetX: number): TelemetrySnapshot;
 }
 
@@ -70,6 +72,7 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
   let ship = options.initialShip ?? createInitialShip();
   const loop = new FixedStepSimulationLoop(ship, executor, { fixedDeltaSeconds: 1 / 30, maxSubSteps: 10 });
   const navigationMapWorldAdapter = createProvingGroundNavigationMapWorldAdapter();
+  const pgTragwerk = createPgTragwerkPlayerSlice();
   let previousNavigationMapWorld: NavigationMapWorldAdapterSnapshot | undefined;
   let selectedTarget: TargetDescriptor | null = defaultTarget;
   let selectedPlanner: RoutePlan["planner"] = "ObstacleAvoidanceLocal";
@@ -637,6 +640,19 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
     return accepted("AutopilotCancelled", "Autopilot canceled. The previous route preview was preserved and marked stale.");
   };
 
+  const destroyPgTragwerk = (): CommandOutcome => {
+    const outcome = pgTragwerk.destroy();
+    if (outcome.status === "Applied") {
+      return accepted("PgTragwerkDestroyed", outcome.message);
+    }
+    if (outcome.status === "NoChange") {
+      return rejected("PgTragwerkRejected", outcome.message);
+    }
+    return outcome.code === "PgSeedUnavailable"
+      ? rejected("PgTragwerkUnavailable", outcome.message)
+      : rejected("PgTragwerkRejected", outcome.message);
+  };
+
   const dispatchCommand = (command: unknown): BrowserRuntimeCommandResult => {
     if (!command || typeof command !== "object") {
       return completeCommand(rejected("InvalidCommand", "Command ignored: use a supported cockpit action."));
@@ -683,6 +699,8 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
       case "CycleCameraMode":
         updateManualInput({ cameraMode: nextCameraMode(manualInput.cameraMode) });
         return completeCommand(accepted("CameraModeCycled", `Camera mode ${manualInput.cameraMode}.`));
+      case "DestroyPgTragwerk":
+        return completeCommand(destroyPgTragwerk());
       default:
         return completeCommand(rejected("InvalidCommand", "Command ignored: use a supported cockpit action."));
     }
@@ -716,6 +734,9 @@ export const createBrowserRuntime = (options: BrowserRuntimeOptions = {}) => {
     dispatchCommand,
     getManualInput() {
       return manualInput;
+    },
+    getPgTragwerk() {
+      return pgTragwerk.snapshot();
     },
     disturbShip(offsetX: number) {
       const current = loop.getShip();

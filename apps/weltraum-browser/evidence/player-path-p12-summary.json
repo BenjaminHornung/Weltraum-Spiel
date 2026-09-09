@@ -1,0 +1,15 @@
+{
+  "spec": "player-path-p12",
+  "entryButton": "#pg-proving-ground-open",
+  "dialog": "pg-tragwerk-dialog",
+  "destroyButton": "pg-tragwerk-destroy",
+  "testBridgeAbsent": true,
+  "cellsBeforeAfter": "27→26",
+  "cutStatus": "Applied",
+  "blockedSecondClick": "RevisionConflict",
+  "mutantControl": "destroy-button-removed-no-applied",
+  "screenshots": [
+    "player-path-p12-before.png",
+    "player-path-p12-after.png"
+  ]
+}

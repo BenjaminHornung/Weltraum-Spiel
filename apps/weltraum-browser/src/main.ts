@@ -5,6 +5,7 @@ import { createGraphicsSettingsController, loadGraphicsSettings } from "./settin
 import { startSurfaceLabRoute } from "./surface-lab/surfaceLabFailurePresenter";
 import { isSurfaceLabQuery } from "./surface-lab/surfaceLabQuery";
 import { createGraphicsSettingsPanel } from "./ui/graphicsSettingsPanel";
+import { createPgTragwerkPlayerPanel } from "./ui/pgTragwerkPlayerPanel";
 import { createProvingGroundLowPolyRenderBatch } from "./world/provingGroundWorld";
 
 const searchParams = new URLSearchParams(window.location.search);
@@ -52,6 +53,7 @@ const startNormalRuntime = (): void => {
     runtime: scene.getGraphicsSettingsPort()
   });
   createGraphicsSettingsPanel(graphicsSettingsController);
+  createPgTragwerkPlayerPanel(runtime.controller);
 
   if (searchParams.get("testBridge") === "1") {
     void import("./test-harness/browserBridge").then(({ installTestBridge }) => installTestBridge(runtime.controller, () => scene.getRenderSnapshot()));
