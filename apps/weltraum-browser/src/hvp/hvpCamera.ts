@@ -28,14 +28,16 @@ export interface HvpCameraOptions {
   readonly windowPort?: Pick<Window, "innerWidth" | "innerHeight" | "addEventListener" | "removeEventListener">;
 }
 
-const HVP_CAMERA_PRESETS: Record<HvpCameraPreset, { position: { x: number; y: number; z: number }; target: { x: number; y: number; z: number } }> = {
+const HVP_CAMERA_PRESETS: Record<HvpCameraPreset, { position: { x: number; y: number; z: number }; target: { x: number; y: number; z: number }; fov: number }> = {
   "C01-EYE": {
-    position: { x: 6, y: 2.4, z: 10 },
-    target: { x: 0, y: 0.2, z: 0 }
+    position: { x: -8, y: 3.15, z: -11 },
+    target: { x: 0, y: 1, z: 5 },
+    fov: 60
   },
   "C04-WIDE": {
-    position: { x: 20, y: 15, z: 24 },
-    target: { x: 0, y: -1, z: 0 }
+    position: { x: -24, y: 18, z: -28 },
+    target: { x: 0, y: 1, z: 1 },
+    fov: 55
   }
 };
 
@@ -100,6 +102,8 @@ export const createHvpCamera = (options: HvpCameraOptions): HvpCameraController 
     const pose = HVP_CAMERA_PRESETS[next];
     target.set(pose.target.x, pose.target.y, pose.target.z);
     camera.position.set(pose.position.x, pose.position.y, pose.position.z);
+    camera.fov = pose.fov;
+    camera.updateProjectionMatrix();
     deriveOrbitAngles();
     applyView();
   };
@@ -181,6 +185,7 @@ export const createHvpCamera = (options: HvpCameraOptions): HvpCameraController 
     const width = Math.max(1, windowPort.innerWidth);
     const height = Math.max(1, windowPort.innerHeight);
     camera.aspect = width / height;
+    camera.fov = HVP_CAMERA_PRESETS[preset].fov;
     camera.updateProjectionMatrix();
   };
 

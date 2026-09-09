@@ -29,12 +29,20 @@ import {
   HVP_TERRAIN_REPRESENTATION_KEY,
   HVP_WATER_MATERIAL_ID,
   HVP_WATER_REPRESENTATION_KEY,
+  assertHvpCoverageComplete,
+  createHvpSession,
   hvpBuildCoastBlockCells,
   hvpBuildWaterPlane,
-  hvpMeshBlocks
+  hvpMeshBlocks,
+  hvpServedCoverage,
+  type HvpSession,
+  type HvpSessionSeed
 } from "./hvpTerrain";
 
 const HVP_WATER_ALGORITHM_VERSION = "hvp-water-plane-v1";
+
+/** Fail-closed double-mount guard: at most one live HVP session per module. */
+let activeHvpMount = false;
 
 type HvpDocumentPort = Pick<Document, "body" | "querySelector" | "createElement">;
 type HvpWindowPort = Pick<Window,
@@ -190,9 +198,14 @@ export const startHvp = async (
     readonly documentPort?: HvpDocumentPort;
     readonly windowPort?: HvpWindowPort;
     readonly createBackend?: (options: ConstructorParameters<typeof ThreeRenderBackend>[0]) => ThreeRenderBackend;
+    readonly createSession?: (seed: HvpSessionSeed) => HvpSession;
   } = {}
 ): Promise<HvpBootstrapHandle> => {
   const documentPort = overrides.documentPort ?? document;
+  if (activeHvpMount || documentPort.querySelector("#hvp-hud") !== null) {
+    throw new Error("HVP-01 already mounted: dispose the live session before starting again.");
+  }
+  activeHvpMount = true;
   const windowPort = overrides.windowPort ?? window;
   documentPort.body.dataset.hestiaPrototype = "1";
   documentPort.body.dataset.hestiaPrototypeState = "Loading" satisfies HvpLifecycleState;
@@ -208,9 +221,13 @@ export const startHvp = async (
   const flightHudWasHidden = flightHud?.hidden ?? true;
 
   const pageHide = (): void => { void dispose(); };
+  const releaseMount = (): void => {
+    activeHvpMount = false;
+  };
   const dispose = (): Promise<void> => {
     if (disposePromise !== undefined) return disposePromise;
     disposed = true;
+    releaseMount();
     disposePromise = (async () => {
       windowPort.removeEventListener("pagehide", pageHide);
       if (animationFrame !== undefined) {
@@ -268,8 +285,15 @@ export const startHvp = async (
     }));
 
     const frame = frameId(HVP_FRAME_ID);
+    const coastCells = hvpBuildCoastBlockCells(HVP_COAST_BLOCK_SIZE_METERS);
+    const coverage = hvpServedCoverage(coastCells);
+    const session = (overrides.createSession ?? createHvpSession)({
+      solids: coverage.solids,
+      knownAir: coverage.knownAir
+    });
+    assertHvpCoverageComplete(session, coverage.solids, coverage.knownAir);
     const terrainMesh = hvpMeshBlocks(
-      hvpBuildCoastBlockCells(HVP_COAST_BLOCK_SIZE_METERS),
+      coastCells,
       HVP_COAST_BLOCK_SIZE_METERS,
       HVP_TERRAIN_MATERIAL_ID
     );
@@ -386,6 +410,7 @@ export const startHvp = async (
     const disposeFailure = async (): Promise<void> => {
       if (failureDisposed) return;
       failureDisposed = true;
+      releaseMount();
       failureRoot?.remove();
       failureRoot = undefined;
       for (const key of Object.keys(documentPort.body.dataset)) {

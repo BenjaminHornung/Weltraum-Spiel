@@ -7,6 +7,8 @@
  * stays out of scope for HVP-02.
  */
 
+import { fnv1aHash } from "../core/hash";
+
 export interface HvpCell {
   readonly x: number;
   readonly y: number;
@@ -33,6 +35,33 @@ export const HVP_LOCAL_AUTHORITY_ID = "hvp:local-authority-v1";
 
 /** HVP-01 visible coast meshes 1 m blocks; every corner stays on the 0.125 m quantum. */
 export const HVP_COAST_BLOCK_SIZE_METERS = 1;
+
+/** Hard output caps; every gate throws BudgetExceeded before the matching allocation. */
+const HVP_MAX_COAST_CELLS = 16_384;
+const HVP_MAX_MESH_CELLS = 65_536;
+const HVP_MAX_MESH_FACES = 131_072;
+
+/** HVP-01 S-channel: quantized centerline control points as [z, x] pairs. */
+const HVP_CHANNEL_CENTERLINE: readonly (readonly [number, number])[] = [
+  [-16, -3],
+  [-10, -4],
+  [-4, 3],
+  [3, 2],
+  [9, -3],
+  [16, 0]
+];
+
+export const HVP_CHANNEL_CORE_HALF_WIDTH_METERS = 1.5;
+export const HVP_CHANNEL_MARGIN_METERS = 1.5;
+export const HVP_CHANNEL_FLOOR_METERS = -1.5;
+
+/** Block sizes must stay positive, finite, and aligned to the 0.125 m quantum. */
+const assertHvpBlockSizeMeters = (value: number, owner: string): void => {
+  const quanta = value / HVP_CELL_SIZE_METERS;
+  if (!Number.isFinite(value) || !(value > 0) || Math.abs(quanta - Math.round(quanta)) > 1e-9) {
+    throw new TypeError(`${owner} requires a positive finite block size aligned to the 0.125 m quantum`);
+  }
+};
 
 export const hvpWorldToCellIndex = (worldMeters: number): number => {
   if (!Number.isFinite(worldMeters)) {
@@ -79,31 +108,192 @@ export const createHvpSession = (seed: HvpSessionSeed = {}): HvpSession => {
   });
 };
 
-/** Deterministic coast height in meters for world (x, z). Pure Math, no randomness. */
-export const hvpCoastHeightMeters = (x: number, z: number): number =>
-  1.6 * Math.sin(x * 0.16) * Math.cos(z * 0.14)
-  + 0.9 * Math.sin(x * 0.05 + 1.3) * Math.sin(z * 0.06 + 0.6)
-  + 0.35 * Math.sin((x + z) * 0.11);
+export interface HvpServedCoverage {
+  readonly solids: readonly HvpCell[];
+  readonly knownAir: readonly HvpCell[];
+}
 
-/** All solid 1 m coast blocks, in block units where worldMin = block * blockSize. */
-export const hvpBuildCoastBlockCells = (blockSizeMeters = HVP_COAST_BLOCK_SIZE_METERS): HvpCell[] => {
-  const minBlock = Math.round(HVP_REGION_MIN.x / blockSizeMeters);
-  const maxBlockExclusive = Math.round(HVP_REGION_MAX.x / blockSizeMeters);
-  const minBlockY = Math.round(HVP_REGION_MIN.y / blockSizeMeters);
-  const cells: HvpCell[] = [];
-  for (let bx = minBlock; bx < maxBlockExclusive; bx += 1) {
-    for (let bz = minBlock; bz < maxBlockExclusive; bz += 1) {
-      const height = hvpCoastHeightMeters(
-        (bx + 0.5) * blockSizeMeters,
-        (bz + 0.5) * blockSizeMeters
-      );
-      const topExclusive = Math.floor(height / blockSizeMeters + 1e-9);
-      for (let by = minBlockY; by < topExclusive; by += 1) {
-        cells.push({ x: bx, y: by, z: bz });
+const HVP_NEIGHBOR_OFFSETS: readonly (readonly [number, number, number])[] = [
+  [-1, 0, 0],
+  [1, 0, 0],
+  [0, -1, 0],
+  [0, 1, 0],
+  [0, 0, -1],
+  [0, 0, 1]
+];
+
+/**
+ * Bound coverage for a served block set: every solid plus every exposed
+ * non-solid neighbor as known air. Snapshots are frozen; callers retain no alias.
+ */
+export const hvpServedCoverage = (cells: readonly HvpCell[]): HvpServedCoverage => {
+  const occupied = new Map<string, HvpCell>();
+  for (const cell of cells) {
+    occupied.set(hvpCellKey(cell), cell);
+  }
+  const air = new Map<string, HvpCell>();
+  for (const cell of occupied.values()) {
+    for (const offset of HVP_NEIGHBOR_OFFSETS) {
+      const neighbor: HvpCell = { x: cell.x + offset[0], y: cell.y + offset[1], z: cell.z + offset[2] };
+      const key = hvpCellKey(neighbor);
+      if (!occupied.has(key) && !air.has(key)) {
+        air.set(key, Object.freeze(neighbor));
       }
     }
   }
-  return cells;
+  return Object.freeze({
+    solids: Object.freeze([...occupied.values()].map((cell) => Object.freeze({ ...cell }))),
+    knownAir: Object.freeze([...air.values()])
+  });
+};
+
+/**
+ * Fail-closed coverage gate: every served solid must read KnownSolid and
+ * every served exposed neighbor must read KnownAir. Any UnknownCoverage
+ * throws before the caller may claim readiness.
+ */
+export const assertHvpCoverageComplete = (
+  session: HvpSession,
+  solids: readonly HvpCell[],
+  knownAir: readonly HvpCell[]
+): void => {
+  const unknown: string[] = [];
+  for (const cell of solids) {
+    if (session.readCell(cell) !== "KnownSolid") {
+      unknown.push(hvpCellKey(cell));
+    }
+  }
+  for (const cell of knownAir) {
+    if (session.readCell(cell) !== "KnownAir") {
+      unknown.push(hvpCellKey(cell));
+    }
+  }
+  if (unknown.length > 0) {
+    throw new Error(`HVP coverage incomplete: ${unknown.length} served cells read UnknownCoverage (${unknown.slice(0, 4).join(" ")})`);
+  }
+};
+
+/**
+ * Order-independent leaf hash: cells sort stably by numeric (x, y, z) and
+ * hash over space keys plus seed-deterministic heights, so forward,
+ * backward, and shuffled inputs hash identically while seed changes differ.
+ */
+export const hvpHashCoastLeaf = (
+  cells: readonly HvpCell[],
+  seed = 0,
+  blockSizeMeters = HVP_COAST_BLOCK_SIZE_METERS
+): string => {
+  assertHvpBlockSizeMeters(blockSizeMeters, "hvpHashCoastLeaf");
+  const sorted = [...cells].sort((left, right) =>
+    left.x - right.x || left.y - right.y || left.z - right.z
+  );
+  const lines = sorted.map((cell) => {
+    const height = hvpCoastHeightMeters(
+      (cell.x + 0.5) * blockSizeMeters,
+      (cell.z + 0.5) * blockSizeMeters,
+      seed
+    );
+    return `${hvpCellKey(cell)}:${height.toFixed(5)}`;
+  });
+  return fnv1aHash(lines.join("\n"));
+};
+
+/** Deterministic coast height in meters for world (x, z). Pure Math, no randomness. */
+export const hvpCoastHeightMeters = (x: number, z: number, seed = 0): number => {
+  if (!Number.isFinite(seed)) {
+    throw new TypeError("hvpCoastHeightMeters requires a finite seed");
+  }
+  const s = seed * 0.618033988749895;
+  return 1.6 * Math.sin(x * 0.16 + s) * Math.cos(z * 0.14 - s * 0.717)
+    + 0.9 * Math.sin(x * 0.05 + 1.3 + s * 1.317) * Math.sin(z * 0.06 + 0.6 - s)
+    + 0.35 * Math.sin((x + z) * 0.11 + s * 0.5);
+};
+
+/** S-channel center x in meters for world z, piecewise linear through the control points. */
+export const hvpChannelCenterX = (z: number): number => {
+  if (!Number.isFinite(z)) {
+    throw new TypeError("hvpChannelCenterX requires a finite world coordinate");
+  }
+  const line = HVP_CHANNEL_CENTERLINE;
+  const first = line[0]!;
+  const last = line[line.length - 1]!;
+  if (z <= first[0]) {
+    return first[1];
+  }
+  if (z >= last[0]) {
+    return last[1];
+  }
+  for (let i = 1; i < line.length; i += 1) {
+    const previous = line[i - 1]!;
+    const next = line[i]!;
+    if (z <= next[0]) {
+      const t = (z - previous[0]) / (next[0] - previous[0]);
+      return previous[1] + (next[1] - previous[1]) * t;
+    }
+  }
+  return last[1];
+};
+
+/**
+ * HVP-01 visible coast surface: base terrain carved by the S-channel.
+ * The core is dredged to the -1.5 m floor plane; the 1.5 m margin rises
+ * to the banks with asymmetric profiles (linear east, smoothstep west).
+ * Outside the channel the base height passes through untouched.
+ */
+export const hvpCoastSurfaceMeters = (x: number, z: number, seed = 0): number => {
+  const base = hvpCoastHeightMeters(x, z, seed);
+  const distance = x - hvpChannelCenterX(z);
+  const absolute = Math.abs(distance);
+  if (absolute <= HVP_CHANNEL_CORE_HALF_WIDTH_METERS) {
+    return HVP_CHANNEL_FLOOR_METERS;
+  }
+  const outer = HVP_CHANNEL_CORE_HALF_WIDTH_METERS + HVP_CHANNEL_MARGIN_METERS;
+  if (absolute >= outer) {
+    return base;
+  }
+  const t = (absolute - HVP_CHANNEL_CORE_HALF_WIDTH_METERS) / HVP_CHANNEL_MARGIN_METERS;
+  const profile = distance > 0 ? t : t * t * (3 - 2 * t);
+  const carved = HVP_CHANNEL_FLOOR_METERS + (0 - HVP_CHANNEL_FLOOR_METERS) * profile;
+  return Math.min(base, carved);
+};
+
+/** All solid 1 m coast blocks, in block units where worldMin = block * blockSize. */
+export const hvpBuildCoastBlockCells = (
+  blockSizeMeters = HVP_COAST_BLOCK_SIZE_METERS,
+  seed = 0
+): readonly HvpCell[] => {
+  assertHvpBlockSizeMeters(blockSizeMeters, "hvpBuildCoastBlockCells");
+  const minBlock = Math.round(HVP_REGION_MIN.x / blockSizeMeters);
+  const maxBlockExclusive = Math.round(HVP_REGION_MAX.x / blockSizeMeters);
+  const minBlockY = Math.round(HVP_REGION_MIN.y / blockSizeMeters);
+  const columnTop = (bx: number, bz: number): number => {
+    const height = hvpCoastSurfaceMeters(
+      (bx + 0.5) * blockSizeMeters,
+      (bz + 0.5) * blockSizeMeters,
+      seed
+    );
+    return Math.floor(height / blockSizeMeters + 1e-9);
+  };
+  // Visited-count gate runs before any output allocation, mirroring greedyMesher.
+  let totalCells = 0;
+  for (let bx = minBlock; bx < maxBlockExclusive; bx += 1) {
+    for (let bz = minBlock; bz < maxBlockExclusive; bz += 1) {
+      totalCells += Math.max(0, columnTop(bx, bz) - minBlockY);
+      if (totalCells > HVP_MAX_COAST_CELLS) {
+        throw new Error(`hvpBuildCoastBlockCells BudgetExceeded: ${totalCells} cells exceed ${HVP_MAX_COAST_CELLS}`);
+      }
+    }
+  }
+  const cells: HvpCell[] = [];
+  for (let bx = minBlock; bx < maxBlockExclusive; bx += 1) {
+    for (let bz = minBlock; bz < maxBlockExclusive; bz += 1) {
+      const topExclusive = columnTop(bx, bz);
+      for (let by = minBlockY; by < topExclusive; by += 1) {
+        cells.push(Object.freeze({ x: bx, y: by, z: bz }));
+      }
+    }
+  }
+  return Object.freeze(cells);
 };
 
 export interface HvpBlockMesh {
@@ -184,15 +374,28 @@ export const hvpMeshBlocks = (
   cellSizeMeters: number,
   materialProfileId: string
 ): HvpBlockMesh => {
-  if (!(cellSizeMeters > 0) || !Number.isFinite(cellSizeMeters)) {
-    throw new TypeError("hvpMeshBlocks requires a positive finite cell size");
-  }
+  assertHvpBlockSizeMeters(cellSizeMeters, "hvpMeshBlocks");
   const unique = new Map<string, HvpCell>();
   for (const cell of cells) unique.set(hvpCellKey(cell), cell);
+  if (unique.size > HVP_MAX_MESH_CELLS) {
+    throw new Error(`hvpMeshBlocks BudgetExceeded: ${unique.size} cells exceed ${HVP_MAX_MESH_CELLS}`);
+  }
   const sorted = [...unique.values()].sort((left, right) =>
     left.x - right.x || left.y - right.y || left.z - right.z
   );
   const occupied = new Set(unique.keys());
+  // Face-count gate runs before any output-sized allocation, mirroring greedyMesher.
+  let exposedFaces = 0;
+  for (const cell of sorted) {
+    for (const direction of HVP_FACE_DIRECTIONS) {
+      if (!occupied.has(`${cell.x + direction[0]},${cell.y + direction[1]},${cell.z + direction[2]}`)) {
+        exposedFaces += 1;
+      }
+    }
+    if (exposedFaces > HVP_MAX_MESH_FACES) {
+      throw new Error(`hvpMeshBlocks BudgetExceeded: ${exposedFaces} faces exceed ${HVP_MAX_MESH_FACES}`);
+    }
+  }
   const positions: number[] = [];
   const normals: number[] = [];
   const indices: number[] = [];
@@ -255,7 +458,7 @@ export const hvpMeshBlocks = (
     }
   }
   const vertexCount = positions.length / 3;
-  return {
+  return Object.freeze({
     faceCount,
     outerFaceCount: faceCount - cavityFaceCount,
     cavityFaceCount,
@@ -267,7 +470,7 @@ export const hvpMeshBlocks = (
       max: Object.freeze({ x: maxX, y: maxY, z: maxZ })
     }),
     materialProfileId
-  };
+  });
 };
 
 export interface HvpWaterPlane {
@@ -281,7 +484,7 @@ export interface HvpWaterPlane {
 export const hvpBuildWaterPlane = (): HvpWaterPlane => {
   const min = HVP_REGION_MIN;
   const max = HVP_REGION_MAX;
-  return {
+  return Object.freeze({
     positions: new Float32Array([
       min.x, 0, min.z,
       max.x, 0, min.z,
@@ -294,5 +497,5 @@ export const hvpBuildWaterPlane = (): HvpWaterPlane => {
       min: Object.freeze({ x: min.x, y: 0, z: min.z }),
       max: Object.freeze({ x: max.x, y: 0, z: max.z })
     })
-  };
+  });
 };
