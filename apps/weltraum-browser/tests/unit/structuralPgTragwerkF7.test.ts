@@ -38,9 +38,14 @@ import { createRapierStructuralPort, type RapierBodyRef } from "./rapierStructur
  *   (Vor-Schnitt-Objekt, eigene Quaternion-/Kreuzprodukt-Arithmetik).
  * - T2b prueft Drehimpuls unter Rotation (Tensor rotiert mit dem Body).
  * - T3 prueft Commit-Fehler NACH Mutationsbeginn (Rollback, Parent intakt).
- * - T3b prueft denselben Rollback ueber den fail()-Pfad (fehlendes
- *   Plan-Fragment nach Mutationsbeginn statt injiziertem plain Error).
+ * - T3b prueft die fail()-Abweisung VOR Mutationsbeginn (fehlendes
+ *   Plan-Fragment, validate-Phase seit der P-PG-F8-Bindung — kein
+ *   Nach-Mutationsbeginn-Fall, Titel sachlich korrigiert per P-PROD-P04).
+ * - T3c prueft den typisierten fail()-Fehler NACH Mutationsbeginn
+ *   (Fragment-Colliderzaehlung, CommitFailed/create, Rollback verifiziert).
  * - T4 prueft echte Colliderzaehlung + Herkunftslabel.
+ * - T4b prueft die Label-Guard-Symmetrie (Autoren-Aufruf ohne Parentpose mit
+ *   live-parent-body-Plan wird abgewiesen, P-PROD-P04).
  *
  * Solver-Provenienz: @dimforge/rapier3d-compat 0.12.0 (transitiv, lockfile-pin,
  * kein Manifest-Eingriff; fail-closed bei Wegfall).
@@ -526,6 +531,40 @@ describe("P-PG-F7: Parentpose + Vor-Schnitt-COM uebernehmen (Commitfunktion)", (
     expect(relative(reader.y, tensor.yy)).toBeLessThan(1e-6);
     expect(relative(reader.z, tensor.zz)).toBeLessThan(1e-6);
 
+    // P-PROD-P04: Linearvelocity-Orakel unter nicht-trivialer Rotation.
+    // W(c) = T + R*(c - A), v = v_p + w x (W(c) - T) — unabhaengiges Orakel
+    // (eigene Arithmetik oben), 90°-Rotation um Y, w = (0,1/0,2/0,3).
+    const t2bQuat = { x: pose.rotation.x, y: pose.rotation.y, z: pose.rotation.z, w: pose.rotation.w };
+    const t2bOrigin = { x: pose.translationMeters.x, y: pose.translationMeters.y, z: pose.translationMeters.z };
+    const t2bCenter = bodyPlan.centerOfMassMeters;
+    const t2bOff = { x: t2bCenter.x - anchor.x, y: t2bCenter.y - anchor.y, z: t2bCenter.z - anchor.z };
+    const t2bRot = oracleQuatRotate(t2bQuat, t2bOff);
+    const t2bExpectedPos = { x: t2bOrigin.x + t2bRot.x, y: t2bOrigin.y + t2bRot.y, z: t2bOrigin.z + t2bRot.z };
+    const t2bArm = { x: t2bExpectedPos.x - t2bOrigin.x, y: t2bExpectedPos.y - t2bOrigin.y, z: t2bExpectedPos.z - t2bOrigin.z };
+    const t2bSpin = { x: 0.1, y: 0.2, z: 0.3 };
+    const t2bSwirl = oracleCross(t2bSpin, t2bArm);
+    const t2bExpectedVel = { x: 0.2 + t2bSwirl.x, y: -0.1 + t2bSwirl.y, z: 0.05 + t2bSwirl.z };
+    expect(receipt.fragments[0].translationMeters.x).toBeCloseTo(t2bExpectedPos.x, 6);
+    expect(receipt.fragments[0].translationMeters.y).toBeCloseTo(t2bExpectedPos.y, 6);
+    expect(receipt.fragments[0].translationMeters.z).toBeCloseTo(t2bExpectedPos.z, 6);
+    expect(receipt.fragments[0].linvelMetersPerSecond.x).toBeCloseTo(t2bExpectedVel.x, 6);
+    expect(receipt.fragments[0].linvelMetersPerSecond.y).toBeCloseTo(t2bExpectedVel.y, 6);
+    expect(receipt.fragments[0].linvelMetersPerSecond.z).toBeCloseTo(t2bExpectedVel.z, 6);
+    const t2bInstalledLin = fragmentBody.linvel();
+    expect(t2bInstalledLin.x).toBeCloseTo(t2bExpectedVel.x, 6);
+    expect(t2bInstalledLin.y).toBeCloseTo(t2bExpectedVel.y, 6);
+    expect(t2bInstalledLin.z).toBeCloseTo(t2bExpectedVel.z, 6);
+    // Gegenbeweis: naive Identitaetsrotation (c - A unrotiert, kein R) faellt
+    // deutlich daneben — das Orakel ist unter R != Identitaet nicht-trivial.
+    const t2bNaiveSwirl = oracleCross(t2bSpin, t2bOff);
+    const t2bNaiveVel = { x: 0.2 + t2bNaiveSwirl.x, y: -0.1 + t2bNaiveSwirl.y, z: 0.05 + t2bNaiveSwirl.z };
+    const t2bNaiveDist = Math.hypot(
+      t2bNaiveVel.x - t2bExpectedVel.x,
+      t2bNaiveVel.y - t2bExpectedVel.y,
+      t2bNaiveVel.z - t2bExpectedVel.z
+    );
+    expect(t2bNaiveDist).toBeGreaterThan(1e-3);
+
     // Body-x (Ixx = 0,1205) liegt auf Welt -z: J um Welt-z -> Delta-omega_z = 1.
     const com = receipt.fragments[0].translationMeters;
     const arm = 0.25;
@@ -609,7 +648,7 @@ describe("P-PG-F7: Parentpose + Vor-Schnitt-COM uebernehmen (Commitfunktion)", (
     world.free();
   }, 180_000);
 
-  it("T3b: fail()-Fehler NACH Mutationsbeginn (fehlendes Plan-Fragment) — Rollback, Parent unberuehrt", () => {
+  it("T3b: fail()-Fehler VOR Mutationsbeginn (fehlendes Plan-Fragment, validate-Phase) — Welt unberuehrt", () => {
     const { live, classification } = liveHeteroPlan("command.pg-tragwerk-f7-t3b-01");
     const plan = deriveStructuralPhysicsTransition(
       live,
@@ -644,7 +683,9 @@ describe("P-PG-F7: Parentpose + Vor-Schnitt-COM uebernehmen (Commitfunktion)", (
 
     // Sabotage ueber den fail()-Pfad: Plan-Fragment fehlt in der
     // Klassifikation — seit P-PG-F8 per Bindung VOR Mutationsbeginn
-    // abgewiesen (kein verankerter Body steht dann bereits).
+    // abgewiesen (kein verankerter Body steht dann bereits). P-PROD-P04:
+    // Titel sachlich korrigiert — dies ist KEIN Nach-Mutationsbeginn-Fall;
+    // den typisierten Nach-Mutationsbeginn-Fall deckt T3c ab.
     const port = createRapierStructuralPort(world);
     let failure: unknown = null;
     try {
@@ -663,6 +704,84 @@ describe("P-PG-F7: Parentpose + Vor-Schnitt-COM uebernehmen (Commitfunktion)", (
     expect(commitFailure.code).toBe("InvalidStructuralState");
     expect(commitFailure.phase).toBe("validate");
     expect(commitFailure.worldRestored).toBe(true);
+    // Welt exakt wie vor dem Commit: keine partiellen Bodies, Parent intakt.
+    expect(world.bodies.len()).toBe(1);
+    expect(world.colliders.len()).toBe(27);
+    expect(Number.isFinite(parentBody.translation().x)).toBe(true);
+    world.free();
+  }, 180_000);
+
+  it("T3c: typisierter fail()-Fehler NACH Mutationsbeginn (Fragment-Colliderzaehlung) — Rollback, Parent unberuehrt", () => {
+    // P-PROD-P04 (N03-Luecke): T3 injiziert einen plain Error, T3b scheitert
+    // seit P-PG-F8 VOR Mutationsbeginn — kein Test uebte bisher den
+    // typisierten fail()-Pfad NACH Mutationsbeginn aus (Fragmentzaehlung
+    // physicsCommit.ts, CommitFailed/create). Sabotage: bodyColliderCount
+    // luegt NUR fuer den Fragment-Body (verankerter Pfad bleibt ehrlich),
+    // sodass die Create-Phasenpruefung typisiert wirft und removeCreated()
+    // verifiziert zurueckrollt.
+    const { live, classification } = liveHeteroPlan("command.pg-tragwerk-f7-t3c-01");
+    const plan = deriveStructuralPhysicsTransition(
+      live,
+      classification,
+      restParentMotion,
+      generousBudgets,
+      componentMassBudgets
+    );
+    expect(plan.status).toBe("Installed");
+    if (plan.status !== "Installed") throw new Error("Installed plan required.");
+
+    const world = new R.World({ x: 0, y: -9.81, z: 0 });
+    const preCut = createPgTragwerk01();
+    const preCutMass = deriveStructuralObjectMassProperties(preCut, { maxVisitedCells: 64 });
+    if (preCutMass.centerOfMassMeters === null) throw new Error("Fixture requires finite center of mass.");
+    const parentBody = world.createRigidBody(
+      R.RigidBodyDesc.dynamic().setTranslation(
+        preCutMass.centerOfMassMeters.x,
+        preCutMass.centerOfMassMeters.y,
+        preCutMass.centerOfMassMeters.z
+      )
+    );
+    const cells: Parameters<typeof getStructuralVoxel>[1][] = [];
+    for (const brick of preCut.bricks) {
+      for (const cell of brick.cells) {
+        cells.push(structuralAddressForBrickCell(brick, cell.localIndex));
+      }
+    }
+    installDensityVoxels(world, parentBody, preCut, cells, preCutMass.centerOfMassMeters);
+    expect(world.bodies.len()).toBe(1);
+    expect(world.colliders.len()).toBe(27);
+
+    const basePort = createRapierStructuralPort(world);
+    const created: RapierBodyRef[] = [];
+    const port = {
+      ...basePort,
+      createBody: (pose: Parameters<typeof basePort.createBody>[0]): RapierBodyRef => {
+        const ref = basePort.createBody(pose);
+        created.push(ref);
+        return ref;
+      },
+      bodyColliderCount: (ref: RapierBodyRef): number => {
+        const honest = basePort.bodyColliderCount(ref);
+        // NUR der zweite erzeugte Body (Fragment) wird falsch gezaehlt —
+        // verankerter Body (erster) muss die Create-Pruefung passieren, damit
+        // der Fehler typisiert NACH Mutationsbeginn faellt.
+        if (created.length >= 2 && ref === created[1]) return honest - 1;
+        return honest;
+      }
+    };
+    let failure: unknown = null;
+    try {
+      commitStructuralPhysicsTransition({ port, parentBody: { body: parentBody }, plan, live, classification });
+    } catch (error) {
+      failure = error;
+    }
+    expect(failure).toBeInstanceOf(StructuralPhysicsCommitError);
+    const commitFailure = failure as StructuralPhysicsCommitError;
+    // Typisierter fail()-Pfad, nicht der generische Install-Catch.
+    expect(commitFailure.code).toBe("CommitFailed");
+    expect(commitFailure.phase).toBe("create");
+    expect(commitFailure.worldRestored).toBe(true);
+    expect(commitFailure.message).toMatch(/Fragment install incomplete/);
     // Welt exakt wie vor dem Commit: keine partiellen Bodies, Parent intakt.
     expect(world.bodies.len()).toBe(1);
     expect(world.colliders.len()).toBe(27);
@@ -810,6 +929,68 @@ describe("P-PG-F7: Parentpose + Vor-Schnitt-COM uebernehmen (Commitfunktion)", (
     }
     expect(labelFailure).toBeInstanceOf(StructuralPhysicsCommitError);
     expect((labelFailure as StructuralPhysicsCommitError).code).toBe("InvalidStructuralState");
+    world.free();
+  }, 180_000);
+
+  it("T4b: Autoren-Aufruf ohne Parentpose mit live-parent-body-Plan wird symmetrisch abgewiesen", () => {
+    // P-PROD-P04 (Label-Guard-Symmetrie, spiegelt regionSave.ts): Die
+    // Gegenrichtung zu T4 — ein live-Plan ohne Live-Pose wuerde still an der
+    // Autorpose installieren, aber das live-Label behalten. Muss VOR
+    // Weltmutation scheitern (validate, worldRestored:true).
+    const { live, classification } = liveHeteroPlan("command.pg-tragwerk-f7-t4b-01");
+    const livePlan = deriveStructuralPhysicsTransition(
+      live,
+      classification,
+      restParentMotion,
+      generousBudgets,
+      componentMassBudgets,
+      "live-parent-body"
+    );
+    expect(livePlan.status).toBe("Installed");
+    if (livePlan.status !== "Installed") throw new Error("Installed plan required.");
+
+    const world = new R.World({ x: 0, y: -9.81, z: 0 });
+    const preCut = createPgTragwerk01();
+    const preCutMass = deriveStructuralObjectMassProperties(preCut, { maxVisitedCells: 64 });
+    if (preCutMass.centerOfMassMeters === null) throw new Error("Fixture requires finite center of mass.");
+    const parentBody = world.createRigidBody(
+      R.RigidBodyDesc.dynamic().setTranslation(
+        preCutMass.centerOfMassMeters.x,
+        preCutMass.centerOfMassMeters.y,
+        preCutMass.centerOfMassMeters.z
+      )
+    );
+    const cells: Parameters<typeof getStructuralVoxel>[1][] = [];
+    for (const brick of preCut.bricks) {
+      for (const cell of brick.cells) {
+        cells.push(structuralAddressForBrickCell(brick, cell.localIndex));
+      }
+    }
+    installDensityVoxels(world, parentBody, preCut, cells, preCutMass.centerOfMassMeters);
+    expect(world.bodies.len()).toBe(1);
+    expect(world.colliders.len()).toBe(27);
+
+    const port = createRapierStructuralPort(world);
+    let failure: unknown = null;
+    try {
+      commitStructuralPhysicsTransition({
+        port,
+        parentBody: { body: parentBody },
+        plan: livePlan,
+        live,
+        classification
+      });
+    } catch (error) {
+      failure = error;
+    }
+    expect(failure).toBeInstanceOf(StructuralPhysicsCommitError);
+    const commitFailure = failure as StructuralPhysicsCommitError;
+    expect(commitFailure.code).toBe("InvalidStructuralState");
+    expect(commitFailure.phase).toBe("validate");
+    expect(commitFailure.worldRestored).toBe(true);
+    expect(commitFailure.message).toMatch(/author-pose install cannot carry a live-parent-body/i);
+    expect(world.bodies.len()).toBe(1);
+    expect(world.colliders.len()).toBe(27);
     world.free();
   }, 180_000);
 });
