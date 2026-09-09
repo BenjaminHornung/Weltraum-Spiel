@@ -58,7 +58,7 @@ export const HVP_CHANNEL_FLOOR_METERS = -1.5;
 /** Block sizes must stay positive, finite, and aligned to the 0.125 m quantum. */
 const assertHvpBlockSizeMeters = (value: number, owner: string): void => {
   const quanta = value / HVP_CELL_SIZE_METERS;
-  if (!Number.isFinite(value) || !(value > 0) || Math.abs(quanta - Math.round(quanta)) > 1e-9) {
+  if (!Number.isFinite(value) || !(value > 0) || Math.round(quanta) < 1 || Math.abs(quanta - Math.round(quanta)) > 1e-9) {
     throw new TypeError(`${owner} requires a positive finite block size aligned to the 0.125 m quantum`);
   }
 };
@@ -241,6 +241,9 @@ export const hvpChannelCenterX = (z: number): number => {
  * Outside the channel the base height passes through untouched.
  */
 export const hvpCoastSurfaceMeters = (x: number, z: number, seed = 0): number => {
+  if (!Number.isFinite(x)) {
+    throw new TypeError("hvpCoastSurfaceMeters requires a finite world coordinate");
+  }
   const base = hvpCoastHeightMeters(x, z, seed);
   const distance = x - hvpChannelCenterX(z);
   const absolute = Math.abs(distance);

@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { describe, expect, it, vi } from "vitest";
 import { backendRevision, renderCommandResult, type RenderCommand } from "../../src/presentation";
 import { createHvpSession } from "../../src/hvp/hvpTerrain";
-import { startHvp } from "../../src/hvp/hvpBootstrap";
+import { startHvp, startHvpRoute, type HvpBootstrapHandle } from "../../src/hvp/hvpBootstrap";
 
 class FakeElement extends EventTarget {
   id = "";
@@ -144,6 +144,7 @@ const harness = () => {
     body,
     host,
     canvas,
+    documentPort,
     windowPort,
     createBackend,
     overrides,
@@ -196,6 +197,40 @@ describe("HVP T08 bootstrap lifecycle", () => {
     expect(descendants(source.body).filter((element) => element.id === "hvp-hud")).toHaveLength(1);
     expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
     await second.dispose();
+  });
+
+  it("fails a restart closed while dispose is pending and recovers after settle", async () => {
+    const source = harness();
+    const first = await startHvp(source.overrides());
+
+    const pending = first.dispose();
+    await expect(startHvp(source.overrides())).rejects.toThrow(/already mounted/i);
+    expect(source.createBackend).toHaveBeenCalledTimes(1);
+
+    await pending;
+    const second = await startHvp(source.overrides());
+    expect(source.createBackend).toHaveBeenCalledTimes(2);
+    expect(descendants(source.body).filter((element) => element.id === "hvp-hud")).toHaveLength(1);
+    expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
+    await second.dispose();
+  });
+
+  it("keeps the live session clean when the route entry fires twice", async () => {
+    const source = harness();
+    let handle: HvpBootstrapHandle | undefined;
+    const documentPort = source.documentPort as unknown as Parameters<typeof startHvpRoute>[0];
+    const loadHvp = async (): Promise<{ startHvp(): Promise<HvpBootstrapHandle> }> => ({
+      startHvp: async () => (handle = await startHvp(source.overrides()))
+    });
+
+    await startHvpRoute(documentPort, loadHvp);
+    await startHvpRoute(documentPort, loadHvp);
+
+    expect(descendants(source.body).filter((element) => element.id === "hvp-hud")).toHaveLength(1);
+    expect(descendants(source.body).filter((element) => element.getAttribute("role") === "alert")).toHaveLength(0);
+    expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
+
+    await handle!.dispose();
   });
 
   it("never reaches Ready on incomplete coverage and stays fail-closed", async () => {

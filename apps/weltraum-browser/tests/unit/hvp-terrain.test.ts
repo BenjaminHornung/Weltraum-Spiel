@@ -181,6 +181,11 @@ describe("HVP T11 capacity gate and block-size guard", () => {
     expect(() => hvpBuildCoastBlockCells(0.5)).toThrow(/BudgetExceeded/);
   });
 
+  it("rejects tiny-positive sizes that round to zero quanta with TypeError", () => {
+    expect(() => hvpBuildCoastBlockCells(1e-12)).toThrow(TypeError);
+    expect(() => hvpMeshBlocks([cell(0)], 1e-12, "hvp:terrain")).toThrow(TypeError);
+  });
+
   it("fails with BudgetExceeded before allocating oversized outputs", () => {
     expect(() => hvpBuildCoastBlockCells(0.125)).toThrow(/BudgetExceeded/);
     const oversized: { x: number; y: number; z: number }[] = [];
@@ -213,6 +218,10 @@ describe("HVP-01 coastal S-channel", () => {
     expect(carveWest).toBeLessThan(0);
     expect(carveEast).not.toBeCloseTo(carveWest, 10);
     expect(hvpCoastSurfaceMeters(2 + 9, 3)).toBe(hvpCoastHeightMeters(2 + 9, 3));
+  });
+
+  it("rejects a non-finite surface x with TypeError like the channel center z-check", () => {
+    expect(() => hvpCoastSurfaceMeters(Number.NaN, 3)).toThrow(TypeError);
   });
 
   it("steps block tops from the dredged floor up to the banks in whole blocks", () => {

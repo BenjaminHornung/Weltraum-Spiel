@@ -189,6 +189,7 @@ export const startHvpRoute = async (
     const { startHvp } = await loadHvp();
     await startHvp();
   } catch (error) {
+    if (error instanceof Error && error.message.includes("already mounted")) return;
     presentHvpFailure(documentPort, error);
   }
 };
@@ -227,8 +228,9 @@ export const startHvp = async (
   const dispose = (): Promise<void> => {
     if (disposePromise !== undefined) return disposePromise;
     disposed = true;
-    releaseMount();
-    disposePromise = (async () => {
+    // The mount stays held until the async cleanup settles, so a restart
+    // racing a pending dispose still sees the live mount and fails closed.
+    const cleanup = (async () => {
       windowPort.removeEventListener("pagehide", pageHide);
       if (animationFrame !== undefined) {
         windowPort.cancelAnimationFrame(animationFrame);
@@ -250,6 +252,7 @@ export const startHvp = async (
         if (key === "hestiaPrototype" || key.startsWith("hestiaPrototype")) delete documentPort.body.dataset[key];
       }
     })();
+    disposePromise = cleanup.finally(() => { releaseMount(); });
     return disposePromise;
   };
 
