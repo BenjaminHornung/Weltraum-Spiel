@@ -163,7 +163,7 @@ export class StreamingWorkerRuntime {
       bundle: output,
       result: Object.freeze({
         jobId: request.jobId, targetKey: request.targetKey, planningEpoch: request.planningEpoch, workerEpoch: request.workerEpoch,
-        inputRevision: request.inputRevision, outputRevision: payload.outputRevision, algorithmVersion: request.algorithmVersion,
+        inputRevision: request.inputRevision, sourceInputDigest: request.sourceInputDigest, outputRevision: payload.outputRevision, algorithmVersion: request.algorithmVersion,
         outputBytes: output.byteLength, contentHash: hash,
       }),
     });
@@ -252,7 +252,7 @@ export class StreamingWorkerRuntime {
       bundle: output,
       result: Object.freeze({
         jobId: request.jobId, targetKey: request.targetKey, planningEpoch: request.planningEpoch, workerEpoch: request.workerEpoch,
-        inputRevision: request.inputRevision, outputRevision: payload.outputRevision, algorithmVersion: request.algorithmVersion,
+        inputRevision: request.inputRevision, sourceInputDigest: request.sourceInputDigest, outputRevision: payload.outputRevision, algorithmVersion: request.algorithmVersion,
         outputBytes: output.byteLength, contentHash: hash, details,
       }),
     });

@@ -59,6 +59,7 @@ import {
   type GenerateHestiaVoxelBrickMeshPayload,
   type HostToWorkerMessage,
   type TransferableBufferBundle,
+  type WorkerJobResult,
   type WorkerJobRequest,
   type WorkerJobTerminal,
   type WorkerJobTicket,
@@ -71,6 +72,7 @@ interface PendingJob {
   readonly request: WorkerJobRequest<GenerateHestiaVoxelBrickMeshPayload>;
   readonly resolve: (terminal: WorkerJobTerminal) => void;
   readonly reject: (error: Error) => void;
+  workerEpoch: number;
   cancelled: boolean;
   settled: boolean;
   cancelAttempts: number;
@@ -87,7 +89,10 @@ class FakeWorkerPool implements SurfaceLabWorkerPool {
   replacementError: Error | undefined;
   planningEpochError: Error | undefined;
   enqueueFailureAfter: number | undefined;
+  acceptCompletedTerminals = true;
+  deferWorkerEpochBinding = false;
   deferCancellationTerminals = false;
+  private readonly issuedCompletedTerminals = new WeakSet<object>();
   #startGate: Promise<void> | undefined;
   #releaseStart: (() => void) | undefined;
   #replaceGate: Promise<void> | undefined;
@@ -128,6 +133,7 @@ class FakeWorkerPool implements SurfaceLabWorkerPool {
       request: source as WorkerJobRequest<GenerateHestiaVoxelBrickMeshPayload>,
       resolve,
       reject,
+      workerEpoch: this.deferWorkerEpochBinding ? 0 : this.latestWorkerEpoch,
       cancelled: false,
       settled: false,
       cancelAttempts: 0
@@ -135,6 +141,7 @@ class FakeWorkerPool implements SurfaceLabWorkerPool {
     this.jobs.push(pending);
     return Object.freeze({
       jobId: source.jobId,
+      get workerEpoch() { return workerEpoch(pending.workerEpoch); },
       result,
       cancel: () => {
         pending.cancelAttempts += 1;
@@ -147,6 +154,10 @@ class FakeWorkerPool implements SurfaceLabWorkerPool {
         return true;
       }
     });
+  }
+
+  public isAcceptedCompletedTerminal(value: unknown): boolean {
+    return this.acceptCompletedTerminals && typeof value === "object" && value !== null && this.issuedCompletedTerminals.has(value);
   }
 
   public async replaceWorker(_slot: number): Promise<ReturnType<typeof workerEpoch>> {
@@ -205,12 +216,64 @@ class FakeWorkerPool implements SurfaceLabWorkerPool {
       const pending = planningJobs[index];
       if (pending === undefined || pending.settled) continue;
       pending.settled = true;
-      pending.resolve(Object.freeze({
+      pending.workerEpoch = this.latestWorkerEpoch;
+      const payload = pending.request.payload as GenerateHestiaVoxelBrickMeshPayload;
+      const terminal = Object.freeze({
         kind: "Completed",
-        result: Object.freeze({}) as Extract<WorkerJobTerminal, { kind: "Completed" }>["result"],
+        result: Object.freeze({
+          jobId: pending.request.jobId,
+          targetKey: pending.request.targetKey,
+          planningEpoch: pending.request.planningEpoch,
+          workerEpoch: workerEpoch(this.latestWorkerEpoch),
+          inputRevision: pending.request.inputRevision,
+          outputRevision: payload.outputRevision,
+          algorithmVersion: pending.request.algorithmVersion,
+          outputBytes: byteCount(0),
+          ...(pending.request.sourceInputDigest === undefined ? {} : { sourceInputDigest: pending.request.sourceInputDigest })
+        }),
         output: Object.freeze({}) as Extract<WorkerJobTerminal, { kind: "Completed" }>["output"]
-      }));
+      });
+      this.issuedCompletedTerminals.add(terminal);
+      pending.resolve(terminal);
     }
+  }
+
+  public completePlanningWithMutatedResult(
+    epoch: number,
+    mutate: (result: WorkerJobResult) => WorkerJobResult
+  ): void {
+    const planningJobs = this.jobs.filter((job) => job.request.planningEpoch === epoch);
+    for (const pending of planningJobs) {
+      if (pending.settled) continue;
+      pending.settled = true;
+      pending.workerEpoch = this.latestWorkerEpoch;
+      const payload = pending.request.payload as GenerateHestiaVoxelBrickMeshPayload;
+      const valid: WorkerJobResult = {
+        jobId: pending.request.jobId,
+        targetKey: pending.request.targetKey,
+        planningEpoch: pending.request.planningEpoch,
+        workerEpoch: workerEpoch(this.latestWorkerEpoch),
+        inputRevision: pending.request.inputRevision,
+        outputRevision: payload.outputRevision,
+        algorithmVersion: pending.request.algorithmVersion,
+        outputBytes: byteCount(0),
+        ...(pending.request.sourceInputDigest === undefined ? {} : { sourceInputDigest: pending.request.sourceInputDigest })
+      };
+      const terminal: Extract<WorkerJobTerminal, { readonly kind: "Completed" }> = Object.freeze({
+        kind: "Completed",
+        result: Object.freeze(mutate({ ...valid })),
+        output: Object.freeze({}) as Extract<WorkerJobTerminal, { kind: "Completed" }>["output"]
+      });
+      this.issuedCompletedTerminals.add(terminal);
+      pending.resolve(terminal);
+    }
+  }
+
+  public resolveJobWithTerminal(jobId: ReturnType<typeof workerJobId>, terminal: WorkerJobTerminal): void {
+    const pending = this.jobs.find((job) => job.request.jobId === jobId);
+    if (pending === undefined || pending.settled) throw new Error("Unknown pending job.");
+    pending.settled = true;
+    pending.resolve(terminal);
   }
 
   public rejectPlanningAsStale(epoch: number): void {
@@ -220,6 +283,17 @@ class FakeWorkerPool implements SurfaceLabWorkerPool {
         kind: "Failed",
         failure: Object.freeze({ jobId: pending.request.jobId, code: "ProtocolFault", message: "stale result" }),
         integrationDecision: Object.freeze({ kind: "RejectedStalePlanningEpoch" })
+      }));
+    }
+  }
+
+  public rejectPlanningAsDigestMismatch(epoch: number): void {
+    for (const pending of this.jobs.filter((job) => job.request.planningEpoch === epoch && !job.settled)) {
+      pending.settled = true;
+      pending.resolve(Object.freeze({
+        kind: "Failed",
+        failure: Object.freeze({ jobId: pending.request.jobId, code: "ProtocolFault", message: "source digest mismatch" }),
+        integrationDecision: Object.freeze({ kind: "RejectedSourceInputDigestMismatch" })
       }));
     }
   }
@@ -417,10 +491,16 @@ class RuntimeTransport implements WorkerTransport {
   public onerror: ((event: ErrorEvent) => void) | null = null;
   public onmessageerror: ((event: MessageEvent<unknown>) => void) | null = null;
   #terminated = false;
-  readonly #runtime = new StreamingWorkerRuntime((message, transfer = []) => {
-    const cloned = structuredClone(message, { transfer: [...transfer] }) as WorkerToHostMessage;
-    queueMicrotask(() => { if (!this.#terminated) this.onmessage?.({ data: cloned } as MessageEvent<unknown>); });
-  });
+  readonly #runtime: StreamingWorkerRuntime;
+
+  public constructor(private readonly gate?: RuntimeTransportGate) {
+    this.#runtime = new StreamingWorkerRuntime((message, transfer = []) => {
+      const cloned = structuredClone(message, { transfer: [...transfer] }) as WorkerToHostMessage;
+      const deliver = () => queueMicrotask(() => { if (!this.#terminated) this.onmessage?.({ data: cloned } as MessageEvent<unknown>); });
+      if (this.gate?.hold === true && (cloned.type === "JobOutputData" || cloned.type === "JobCompleted")) this.gate.pending.push(deliver);
+      else deliver();
+    });
+  }
 
   public postMessage(message: HostToWorkerMessage, transfer: Transferable[] = []): void {
     const cloned = structuredClone(message, { transfer }) as HostToWorkerMessage;
@@ -429,6 +509,16 @@ class RuntimeTransport implements WorkerTransport {
 
   public terminate(): void { this.#terminated = true; }
 }
+
+interface RuntimeTransportGate {
+  hold: boolean;
+  pending: Array<() => void>;
+}
+
+const releaseRuntimeTransportGate = (gate: RuntimeTransportGate): void => {
+  gate.hold = false;
+  for (const deliver of gate.pending.splice(0)) deliver();
+};
 
 const emptyInput = (): TransferableBufferBundle => Object.freeze({
   ownership: "SenderToWorker",
@@ -588,6 +678,199 @@ describe("Surface Lab controller", () => {
     });
     expect(commandCount(backend, "UpsertMeshArtifact")).toBe(16);
     expect(ready.cacheMisses).toBe(16);
+  });
+
+  it("binds adoption to the worker epoch that dispatches a queued ticket", async () => {
+    const workerPool = new FakeWorkerPool();
+    workerPool.deferWorkerEpochBinding = true;
+    const backend = new FakeBackend();
+    const controller = new SurfaceLabController({
+      workerPool,
+      backend,
+      decodeCompleted: decode,
+      admitToCache: (_cache, payload) => createHestiaVoxelCacheKey(payload, algorithmVersion(1))
+    });
+
+    await controller.start();
+    expect(workerPool.jobs.every((job) => job.workerEpoch === 0)).toBe(true);
+    workerPool.latestWorkerEpoch = 2;
+    workerPool.completePlanning(1);
+
+    await expect(controller.whenSettled()).resolves.toMatchObject({
+      lifecycle: "Ready",
+      readyChunks: 16,
+      failedChunks: 0,
+      staleRejects: 0
+    });
+  });
+
+  it("rejects a pool-untrusted completed terminal before decode, cache admission, or publication", async () => {
+    const workerPool = new FakeWorkerPool();
+    workerPool.acceptCompletedTerminals = false;
+    const backend = new FakeBackend();
+    let decodeCalls = 0;
+    let admissionCalls = 0;
+    const controller = new SurfaceLabController({
+      workerPool,
+      backend,
+      decodeCompleted: (...args) => {
+        decodeCalls += 1;
+        return decode(...args);
+      },
+      admitToCache: (_cache, payload) => {
+        admissionCalls += 1;
+        return createHestiaVoxelCacheKey(payload, algorithmVersion(1));
+      }
+    });
+
+    await controller.start();
+    workerPool.completePlanning(1);
+
+    await expect(controller.whenSettled()).resolves.toMatchObject({
+      lifecycle: "Failed",
+      readyChunks: 0,
+      failedChunks: 16,
+      staleRejects: 0
+    });
+    expect(decodeCalls).toBe(0);
+    expect(admissionCalls).toBe(0);
+    expect(commandCount(backend, "UpsertMeshArtifact")).toBe(0);
+  });
+
+  it("rejects a forged completed terminal never issued by the pool", async () => {
+    const workerPool = new FakeWorkerPool();
+    const backend = new FakeBackend();
+    let decodeCalls = 0;
+    let admissionCalls = 0;
+    const controller = new SurfaceLabController({
+      workerPool,
+      backend,
+      decodeCompleted: (...args) => {
+        decodeCalls += 1;
+        return decode(...args);
+      },
+      admitToCache: (_cache, payload) => {
+        admissionCalls += 1;
+        return createHestiaVoxelCacheKey(payload, algorithmVersion(1));
+      }
+    });
+
+    await controller.start();
+    for (const job of workerPool.jobs) {
+      const payload = job.request.payload as GenerateHestiaVoxelBrickMeshPayload;
+      workerPool.resolveJobWithTerminal(job.request.jobId, Object.freeze({
+        kind: "Completed",
+        result: Object.freeze({
+          jobId: job.request.jobId,
+          targetKey: job.request.targetKey,
+          planningEpoch: job.request.planningEpoch,
+          workerEpoch: workerEpoch(1),
+          inputRevision: job.request.inputRevision,
+          outputRevision: payload.outputRevision,
+          algorithmVersion: job.request.algorithmVersion,
+          outputBytes: byteCount(0),
+          ...(job.request.sourceInputDigest === undefined ? {} : { sourceInputDigest: job.request.sourceInputDigest })
+        }),
+        output: Object.freeze({})
+      }) as unknown as WorkerJobTerminal);
+    }
+
+    await expect(controller.whenSettled()).resolves.toMatchObject({
+      lifecycle: "Failed",
+      readyChunks: 0,
+      failedChunks: 16
+    });
+    expect(decodeCalls).toBe(0);
+    expect(admissionCalls).toBe(0);
+    expect(commandCount(backend, "UpsertMeshArtifact")).toBe(0);
+  });
+
+  it("rejects a pool-issued completed terminal with a tampered worker epoch", async () => {
+    const workerPool = new FakeWorkerPool();
+    const backend = new FakeBackend();
+    let decodeCalls = 0;
+    let admissionCalls = 0;
+    const controller = new SurfaceLabController({
+      workerPool,
+      backend,
+      decodeCompleted: (...args) => {
+        decodeCalls += 1;
+        return decode(...args);
+      },
+      admitToCache: (_cache, payload) => {
+        admissionCalls += 1;
+        return createHestiaVoxelCacheKey(payload, algorithmVersion(1));
+      }
+    });
+
+    await controller.start();
+    workerPool.completePlanningWithMutatedResult(1, (result) => ({ ...result, workerEpoch: workerEpoch(999) }));
+
+    await expect(controller.whenSettled()).resolves.toMatchObject({
+      lifecycle: "Failed",
+      readyChunks: 0,
+      failedChunks: 16
+    });
+    expect(decodeCalls).toBe(0);
+    expect(admissionCalls).toBe(0);
+    expect(commandCount(backend, "UpsertMeshArtifact")).toBe(0);
+  });
+
+  it("passes the active pool authorizer into decode and cache admission", async () => {
+    const workerPool = new FakeWorkerPool();
+    const backend = new FakeBackend();
+    const authorizerResults: boolean[] = [];
+    const controller = new SurfaceLabController({
+      workerPool,
+      backend,
+      decodeCompleted: (payload, terminal, presentationRevision, isAccepted) => {
+        authorizerResults.push(isAccepted?.(terminal) ?? false);
+        return decode(payload, terminal, presentationRevision);
+      },
+      admitToCache: (_cache, payload, terminal, isAccepted) => {
+        authorizerResults.push(terminal.kind === "Completed" ? isAccepted?.(terminal) ?? false : false);
+        return createHestiaVoxelCacheKey(payload, algorithmVersion(1));
+      }
+    });
+
+    await controller.start();
+    workerPool.completePlanning(1);
+
+    await expect(controller.whenSettled()).resolves.toMatchObject({ lifecycle: "Ready", readyChunks: 16 });
+    expect(authorizerResults).toHaveLength(32);
+    expect(authorizerResults.every((accepted) => accepted)).toBe(true);
+  });
+
+  it("rejects source-digest failures before decode, cache admission, or publication", async () => {
+    const workerPool = new FakeWorkerPool();
+    const backend = new FakeBackend();
+    let decodeCalls = 0;
+    let admissionCalls = 0;
+    const controller = new SurfaceLabController({
+      workerPool,
+      backend,
+      decodeCompleted: (...args) => {
+        decodeCalls += 1;
+        return decode(...args);
+      },
+      admitToCache: (_cache, payload) => {
+        admissionCalls += 1;
+        return createHestiaVoxelCacheKey(payload, algorithmVersion(1));
+      }
+    });
+
+    await controller.start();
+    workerPool.rejectPlanningAsDigestMismatch(1);
+
+    await expect(controller.whenSettled()).resolves.toMatchObject({
+      lifecycle: "Failed",
+      readyChunks: 0,
+      failedChunks: 16,
+      staleRejects: 0
+    });
+    expect(decodeCalls).toBe(0);
+    expect(admissionCalls).toBe(0);
+    expect(commandCount(backend, "UpsertMeshArtifact")).toBe(0);
   });
 
   it("accepts aggregate mesh buffers at exactly the 128 MiB region budget", async () => {
@@ -1016,6 +1299,44 @@ describe("Surface Lab controller", () => {
     expect(cached.meshHashes).toEqual(first.meshHashes);
 
     expect(backend.commands.some((command) => command.kind === "UpsertMeshArtifact")).toBe(true);
+    await controller.dispose();
+  }, 120_000);
+
+  it("rejects a cached terminal when its source residency is evicted before delivery", async () => {
+    const gate: RuntimeTransportGate = { hold: false, pending: [] };
+    const cache = new MemoryContentCache(32 * VOXEL_CHANNEL_BYTES);
+    const workerPool = new WorkerPool({
+      workerCount: 4,
+      queueCapacity: 32,
+      transportFactory: () => new RuntimeTransport(gate)
+    });
+    const backend = new FakeBackend();
+    const controller = new SurfaceLabController({ workerPool, backend, cache });
+
+    await controller.start();
+    await controller.whenSettled();
+    const cachedEntry = cache.snapshot().entries[0];
+    if (cachedEntry === undefined) throw new Error("Expected a cached canonical brick.");
+
+    gate.hold = true;
+    const restart = controller.restartWorker(0);
+    for (let attempt = 0; attempt < 20 && Number(workerPool.snapshot().currentPlanningEpoch) !== 2; attempt += 1) {
+      await new Promise<void>((resolve) => setTimeout(resolve, 0));
+    }
+    expect(workerPool.snapshot().currentPlanningEpoch).toBe(2);
+    expect(cache.delete(cachedEntry.key)).toBe(true);
+    releaseRuntimeTransportGate(gate);
+
+    await expect(restart).resolves.toMatchObject({
+      lifecycle: "Failed",
+      requestedChunks: 16,
+      readyChunks: 15,
+      failedChunks: 1,
+      cacheHits: 16,
+      cacheMisses: 0
+    });
+    expect(cache.snapshot().entryCount).toBe(15);
+    expect(commandCount(backend, "UpsertMeshArtifact")).toBe(31);
     await controller.dispose();
   }, 120_000);
 
@@ -1610,7 +1931,10 @@ describe("Surface Lab controller", () => {
     workerPool.replacementError = new Error("synthetic replacement rejection");
 
     await expect(controller.restartWorker(0)).rejects.toThrow("synthetic replacement rejection");
-    expect(controller.readTelemetry().lifecycle).toBe("Failed");
+    expect(controller.readTelemetry()).toMatchObject({ lifecycle: "Failed", readyChunks: 16, failedChunks: 0 });
+    // The settled generation promise preserves its Ready accounting; Failed lifecycle signals controller/pool
+    // health after the genuine replacement failure (already propagated via the throw above).
+    await expect(controller.whenSettled()).resolves.toMatchObject({ lifecycle: "Ready", readyChunks: 16, failedChunks: 0 });
     expect(workerPool.state).toBe("Stopped");
     expect(workerPool.jobs).toHaveLength(jobsBefore);
     expect(commandCount(backend, "RemoveRepresentation")).toBe(removalsBefore);
@@ -1628,6 +1952,23 @@ describe("Surface Lab controller", () => {
     expect(workerPool.jobs).toHaveLength(jobsBefore);
     expect(commandCount(backend, "RemoveRepresentation")).toBe(removalsBefore);
     expect(backend.resident.size).toBe(16);
+  });
+
+  it("settles an in-flight generation as failed when worker replacement rejects", async () => {
+    const { workerPool, controller } = fixture();
+    await controller.start();
+    workerPool.replacementError = new Error("synthetic in-flight replacement rejection");
+
+    await expect(controller.restartWorker(0)).rejects.toThrow("synthetic in-flight replacement rejection");
+    await expect(controller.whenSettled()).resolves.toMatchObject({
+      lifecycle: "Failed",
+      requestedChunks: 16,
+      readyChunks: 0,
+      failedChunks: 16
+    });
+    expect(controller.readTelemetry().cancelledJobs).toBe(16);
+    expect(workerPool.jobs.every((job) => job.cancelAttempts === 1)).toBe(true);
+    await controller.dispose();
   });
 
   it("removes all published artifacts and shuts down exactly once", async () => {
